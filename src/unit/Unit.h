@@ -6,6 +6,7 @@
 #include "UnitState.h"
 #include "ResourceClaims.h"
 #include "map/claims/ClaimPolicyConfig.h"
+#include "map/claims/ClaimReleaseReason.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
@@ -48,8 +49,14 @@ public:
     Uint64 materialClaimTask=0;
     ResourceClaims::MaterialClaimPolicyState materialClaimPolicyState;
     bool acquireMaterialClaimAt(Uint32 access);
-    void releaseActiveMaterialClaim();
-    bool activeMaterialClaimValid();
+    // The reason is observer telemetry only; it never changes the release.
+    void releaseActiveMaterialClaim(ResourceClaims::ReleaseReason reason);
+    bool activeMaterialClaimValid() { return !activeMaterialClaimInvalidity(); }
+    // Why the held claim is invalid (in validity-check order), or nothing.
+    std::optional<ResourceClaims::ReleaseReason> activeMaterialClaimInvalidity();
+    // Release an invalid held claim, recording which validity check failed.
+    void releaseInvalidActiveMaterialClaim()
+    { if (activeMaterialClaim) if (const auto reason = activeMaterialClaimInvalidity()) releaseActiveMaterialClaim(*reason); }
     bool takeActiveMaterialClaim();
     bool selectActiveMaterialClaim(const Uint16* field);
     bool prepareActiveMaterialPickup(int x,int y);

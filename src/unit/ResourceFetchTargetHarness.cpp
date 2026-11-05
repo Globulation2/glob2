@@ -695,9 +695,9 @@ TEST_SUITE("ActiveMaterialClaims")
             CHECK(map.materialAmountAtSlot(access,material)==(material==STONE?before:0u));
             if(material==STONE) {
                 REQUIRE(b->activeMaterialClaim);CHECK(b->activeMaterialClaimValid());
-                REQUIRE(a->acquireMaterialClaimAt(access));a->releaseActiveMaterialClaim();
+                REQUIRE(a->acquireMaterialClaimAt(access));a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
             } else if(material==WOOD)CHECK(map.getResource(access).type==NO_RES_TYPE);
-            a->releaseActiveMaterialClaim();b->releaseActiveMaterialClaim();
+            a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);b->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
             CHECK(map.materialClaimLedger().size()==0);
             a->attachedBuilding=nullptr;b->attachedBuilding=nullptr;
         }
@@ -1005,8 +1005,8 @@ TEST_CASE("mixed team farming reservations retain the strongest seed floor acros
     hireClaimWorker(*a,*innA);hireClaimWorker(*b,*innB);
     REQUIRE(a->acquireMaterialClaimAt(source));CHECK(a->activeMaterialClaim->reserve==1);
     CHECK_FALSE(b->acquireMaterialClaimAt(source));
-    a->releaseActiveMaterialClaim();REQUIRE(b->acquireMaterialClaimAt(source));CHECK(b->activeMaterialClaim->reserve==0);
-    CHECK_FALSE(a->acquireMaterialClaimAt(source));b->releaseActiveMaterialClaim();
+    a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);REQUIRE(b->acquireMaterialClaimAt(source));CHECK(b->activeMaterialClaim->reserve==0);
+    CHECK_FALSE(a->acquireMaterialClaimAt(source));b->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
     map.setMaterialAmountSlot(source,WHEAT,3);REQUIRE(a->acquireMaterialClaimAt(source));REQUIRE(b->acquireMaterialClaimAt(source));
     const auto before=f.game.checkSum();const auto gidA=a->gid,gidB=b->gid;
     auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(backend);
@@ -1207,7 +1207,7 @@ TEST_CASE("experimental destination cadence retains failed refresh and same clai
     seeker->handleActiveMaterialMovement();CHECK(seeker->materialClaimPolicyState.lastGoalAttempt==0);
     seeker->handleActiveMaterialMovement();CHECK(seeker->materialClaimPolicyState.lastGoalAttempt==2);
     CHECK(seeker->activeMaterialClaim==oldClaim);CHECK(seeker->materialClaimTask==oldTask);
-    holder->releaseActiveMaterialClaim();
+    holder->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
     seeker->handleActiveMaterialMovement();CHECK(seeker->activeMaterialClaim==oldClaim);
     seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==near);
     const auto sameTask=seeker->materialClaimTask;const auto sameProbe=seeker->materialClaimPolicyState.probe;
@@ -1306,7 +1306,7 @@ TEST_CASE("experimental farm selection memo preserves pooled source and resets b
     const auto held=unit->activeMaterialClaim;const auto task=unit->materialClaimTask;
     REQUIRE(unit->selectActiveMaterialClaim(field)); // Own reservation must be excluded on a fresh memo epoch.
     CHECK(unit->activeMaterialClaim==held);CHECK(unit->materialClaimTask==task);
-    unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;
+    unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;
     for(const auto holder:holders)map.releaseMaterialClaim(holder);
 }
 

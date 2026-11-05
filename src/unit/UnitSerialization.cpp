@@ -24,7 +24,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
     // Shadow ownership is diagnostic only; identity/relationships may change on
     // load and the completed-world sweep rebuilds it after links are resolved.
-    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
+    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Serialization);
     if (this->owner && this->owner->map->materialClaimTrackingEnabled()) this->owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 	stream->readEnterSection("Unit");
 

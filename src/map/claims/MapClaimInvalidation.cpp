@@ -20,7 +20,7 @@ void Map::invalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner> owner
         const auto gid=Uint16(owner);
         Unit* unit=game && team<unsigned(game->teamsCount()) ? game->teams[team]->myUnits[Unit::GIDtoID(gid)] : nullptr;
         if (unit && unit->scriptIdentity==Uint32(owner>>16) && unit->activeMaterialClaim)
-            unit->releaseActiveMaterialClaim();
+            unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::MapInvalidation);
         else { cancelClaimRoute(owner);releaseMaterialClaim(owner); } // Never touch a replacement in the reused slot.
     }
 }

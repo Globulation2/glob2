@@ -1050,6 +1050,26 @@ bundle policy capability 3; batches testing this option require the transport
 movement audit on every arm. This is an experimental variant, not a selected
 default or a demonstrated throughput improvement.
 
+Two optional keys apply to every source version and are omitted from the
+canonical JSON at their defaults, so existing policies keep their digests (the
+Python `canonical_policy` applies the same rule). `refresh_switch_margin_permille`
+(integer 0–900, default 0) adds hysteresis to destination refreshes: while a claim
+is held, another access is eligible only when its toroidal Chebyshev distance `d`
+satisfies `1000*d < (1000-margin)*d_held`; the held access stays eligible, and when
+the margin rejects every alternative the claim and route are kept (a
+`goal_refresh_same`). `terrain_component_prefilter` (boolean, default false) skips
+an access when no cell of its 3×3 stance shares the worker's terrain-only connected
+component (8-neighbour, toroidal, per movement class, ignoring units, buildings and
+resources). The labelling is derived per map, rebuilt when the terrain revision
+changes and never saved. Builds advertise both in `resource_claims_policy_options`.
+
+Live probe summaries count every `released` event by reason in
+`live.release_reason_counts` (names in `live.release_reason_names`, version
+`live.release_reason_version`; the counts sum to the `released` event count), and
+released journey rows carry `release_reason`. `live.selection_filter_counts`
+reports accesses skipped by the terrain prefilter or the refresh margin and
+refreshes kept by the margin. Older traces without these fields remain valid.
+
 Interaction confirmation accepts three to five binary scalar factors and records
 the half-fraction generator and aliasing. It is a diagnostic design, not proof
 that aliased interactions are absent. Whole-game plans preserve every selected

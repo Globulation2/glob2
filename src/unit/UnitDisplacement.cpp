@@ -27,7 +27,7 @@ std::optional<Offset> materialPickup(Unit& unit)
     const auto* observer=map.resourceClaimProbe();
     if(observer && !observer->observesDecisionOutcomes())observer=nullptr;
     std::optional<ResourceClaims::Probe::DecisionOutcome> outcome;
-    if(unit.activeMaterialClaim && !unit.activeMaterialClaimValid())unit.releaseActiveMaterialClaim();
+    unit.releaseInvalidActiveMaterialClaim();
     if(observer){outcome=observer->beginDecisionOutcome(unit,true);outcome->noAttempt="no_adjacent_candidate";}
     bool observed=false;
     for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)

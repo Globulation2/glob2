@@ -189,3 +189,45 @@ TEST_CASE("learned research assets bind exact trained sequence and typed cursor 
         CHECK(ResourceClaims::Mixed::view(model.name,8).x.empty());
     }
 }
+
+TEST_CASE("optional refresh margin and terrain prefilter keep every existing canonical identity" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    std::vector<ClaimPolicyConfig> existing;
+    for(unsigned version:{1u,2u,3u,4u}) {ClaimPolicyConfig c;c.sourceVersion=version;existing.push_back(c);}
+    {ClaimPolicyConfig c;c.sourceVersion=5;c.pattern="final-r32-exact24-assembled-v1";
+        c.patternFrame=ClaimPolicyConfig::PatternFrame::NearestD4;c.destinationRefreshJ=12;existing.push_back(c);}
+    for(const auto& config:existing) {
+        CAPTURE(config.sourceVersion);
+        const auto canonical=config.canonicalJson();
+        CHECK(canonical.find("refresh_switch_margin_permille")==std::string::npos);
+        CHECK(canonical.find("terrain_component_prefilter")==std::string::npos);
+        // Explicit defaults are accepted and canonicalize to the same identity.
+        auto wire=nlohmann::json::parse(canonical);
+        wire["refresh_switch_margin_permille"]=0;wire["terrain_component_prefilter"]=false;
+        const auto explicitDefaults=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(explicitDefaults==config);CHECK(explicitDefaults.digest()==config.digest());
+        CHECK(explicitDefaults.canonicalJson()==canonical);
+        for(unsigned margin:{1u,250u,900u}) {
+            wire=nlohmann::json::parse(canonical);wire["refresh_switch_margin_permille"]=margin;
+            const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+            CHECK(parsed.refreshSwitchMarginPermille==margin);CHECK(parsed.digest()!=config.digest());
+            CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+            CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("refresh_switch_margin_permille")==margin);
+        }
+        wire=nlohmann::json::parse(canonical);wire["terrain_component_prefilter"]=true;
+        const auto prefilter=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(prefilter.terrainComponentPrefilter);CHECK(prefilter.digest()!=config.digest());
+        CHECK(ClaimPolicyConfig::parse(prefilter.canonicalJson())==prefilter);
+        for(const auto& invalid:{nlohmann::json(901),nlohmann::json(-1),nlohmann::json(1.5),nlohmann::json(true),nlohmann::json("10"),nlohmann::json(nullptr)}) {
+            wire=nlohmann::json::parse(canonical);wire["refresh_switch_margin_permille"]=invalid;
+            CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        for(const auto& invalid:{nlohmann::json(1),nlohmann::json(0),nlohmann::json("true"),nlohmann::json(nullptr)}) {
+            wire=nlohmann::json::parse(canonical);wire["terrain_component_prefilter"]=invalid;
+            CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        auto outOfRange=config;outOfRange.refreshSwitchMarginPermille=901;CHECK_THROWS(outOfRange.validate());
+    }
+    // Digests recorded from the build before these options existed.
+    CHECK(existing[1].digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
+}

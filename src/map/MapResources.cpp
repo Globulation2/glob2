@@ -573,7 +573,7 @@ void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
         throw std::invalid_argument("active claims require material destinations and exclude shadow tracking");
     if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
-        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+        unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Configuration);unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
     materialClaimRoutes.reset();activeClaimRules.reset();
     materialClaimConfiguration.reset();materialClaimConfigurationDigest={};
@@ -598,7 +598,7 @@ void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
     const auto digest=Online::Sha256::digest(config.canonicalJson());
     auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
-        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+        unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Configuration);unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
     materialClaimRoutes.reset();activeClaimRules.reset();
     materialClaimConfiguration=std::move(frozen);materialClaimConfigurationDigest=digest;

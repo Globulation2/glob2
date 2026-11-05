@@ -14,6 +14,13 @@ ENUMS = {
 KEYS = set(ENUMS) | {'source_version', 'pattern', 'pattern_digest',
     'fallback_after_decisions', 'destination_refresh_j', 'route_refresh_j',
     'maximum_expansions', 'use_primary_gradient'}
+# Optional experiments accepted by every source version. Like the engine, the
+# canonical form omits a default value, so existing policies keep their digest.
+OPTIONS = {
+    'refresh_switch_margin_permille': 0,
+    'terrain_component_prefilter': False,
+}
+MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE = 900
 RECOVERY_V1 = {
     'recovery_source_version': 1,
     'recovery_cache_entries': 4,
@@ -34,8 +41,13 @@ def validate_policy(policy, capabilities=None):
     if type(version) is not int or version not in (1, 2, 3, 4, 5):
         raise ValueError('unsupported claim policy source version')
     expected_keys = KEYS | (set(RECOVERY_V1) if version >= 2 else set()) | ({'opportunistic_adjacent_pickup'} if version >= 3 else set()) | ({'direct_resource_probes'} if version == 4 else set()) | ({'pattern_format', 'pattern_frame'} if version == 5 else set())
-    if set(policy) != expected_keys:
+    if set(policy) - set(OPTIONS) != expected_keys:
         raise ValueError('claim policy requires all canonical configuration fields')
+    margin = policy.get('refresh_switch_margin_permille', 0)
+    if type(margin) is not int or not 0 <= margin <= MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE:
+        raise ValueError('invalid claim refresh switch margin')
+    if type(policy.get('terrain_component_prefilter', False)) is not bool:
+        raise ValueError('claim terrain component prefilter option must be boolean')
     if version >= 2:
         for key, value in RECOVERY_V1.items():
             if type(policy[key]) is not type(value) or policy[key] != value:
@@ -68,6 +80,10 @@ def validate_policy(policy, capabilities=None):
         supported = capabilities.get('resource_claims_policy_config_version')
         if type(supported) is not int or supported not in (1, 2, 3, 4, 5) or supported < version or 'experimental' not in capabilities.get('resource_claims_active_policies', []):
             raise ValueError('build does not advertise claim policy config version ' + str(version))
+        options = capabilities.get('resource_claims_policy_options', [])
+        for key, default in OPTIONS.items():
+            if policy.get(key, default) != default and (not isinstance(options, list) or key not in options):
+                raise ValueError('build does not advertise claim policy option ' + key)
         assets = capabilities.get('resource_claims_policy_mixed_patterns' if version == 5 else 'resource_claims_policy_patterns', [])
         asset = {'name': policy['pattern'], 'digest': policy['pattern_digest']}
         if version == 5:
@@ -77,9 +93,14 @@ def validate_policy(policy, capabilities=None):
     return policy
 
 
-def canonical_policy(policy):
+def normalized_policy(policy):
+    """The engine's canonical object: optional options at their default are omitted."""
     validate_policy(policy)
-    return json.dumps(policy, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
+    return {key: value for key, value in policy.items() if key not in OPTIONS or value != OPTIONS[key]}
+
+
+def canonical_policy(policy):
+    return json.dumps(normalized_policy(policy), sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
 
 
 def policy_digest(policy):

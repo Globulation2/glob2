@@ -25,34 +25,37 @@ bool canFulfillClaimWithoutTravel(Unit& unit,Uint32 access)
 }
 }
 
-void Unit::releaseActiveMaterialClaim()
+void Unit::releaseActiveMaterialClaim(ResourceClaims::ReleaseReason reason)
 {
     if(!activeMaterialClaim)return;
     if(materialClaimTask==std::numeric_limits<Uint64>::max())throw std::overflow_error("material claim task exhausted");
     const auto identity=ResourceClaims::unitOwner(gid,scriptIdentity);
-    if(const auto* probe=owner->map->resourceClaimProbe())probe->liveEvent(*this,ResourceClaims::Probe::LiveEvent::Released);
+    if(const auto* probe=owner->map->resourceClaimProbe())probe->liveRelease(*this,reason);
     owner->map->cancelClaimRoute(identity);
     owner->map->releaseMaterialClaim(identity);
     activeMaterialClaim.reset();++materialClaimTask;
     if(owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental)materialClaimPolicyState.probe=UINT32_MAX;
 }
 
-bool Unit::activeMaterialClaimValid()
+std::optional<ResourceClaims::ReleaseReason> Unit::activeMaterialClaimInvalidity()
 {
-    if(!activeMaterialClaim)return false;
+    using R=ResourceClaims::ReleaseReason;
+    if(!activeMaterialClaim)return R::Other;
     const auto& c=*activeMaterialClaim;auto& map=*owner->map;
+    // Same checks and short-circuit order as the former single predicate;
+    // only the reported category depends on which check failed first.
     if(isDead || hp<UNIT_HP_DEATH_THRESHOLD || medical!=MED_FREE || !attachedBuilding || activity!=ACT_FILLING
-        || c.material!=destinationPurpose || !canCarryMaterial(c.material) || !performance[HARVEST]
-        || !canFulfillClaimWithoutTravel(*this,c.access)
-        || (displacement!=DIS_GOING_TO_RESOURCE && displacement!=DIS_HARVESTING)
-        || c.source>=map.cellCount() || c.access>=map.cellCount()
-        || map.getResource(c.source).type!=c.resource || !map.materialAmountAtSlot(c.source,c.material)
-        || !map.materialAmountAtSlot(c.access,c.material)
-        || !map.materialDestinationValidSlot(owner->teamNumber,c.material,movementAccess(),
-            int(c.access%map.getW()),int(c.access/map.getW()),false,nullptr))return false;
+        || c.material!=destinationPurpose || !canCarryMaterial(c.material) || !performance[HARVEST])return R::UnitStateChanged;
+    if(!canFulfillClaimWithoutTravel(*this,c.access))return R::AccessInvalid;
+    if(displacement!=DIS_GOING_TO_RESOURCE && displacement!=DIS_HARVESTING)return R::UnitStateChanged;
+    if(c.source>=map.cellCount() || c.access>=map.cellCount())return R::AccessInvalid;
+    if(map.getResource(c.source).type!=c.resource || !map.materialAmountAtSlot(c.source,c.material)
+        || !map.materialAmountAtSlot(c.access,c.material))return R::ResourceDepleted;
+    if(!map.materialDestinationValidSlot(owner->teamNumber,c.material,movementAccess(),
+            int(c.access%map.getW()),int(c.access/map.getW()),false,nullptr))return R::AccessInvalid;
     const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(c.resource))[c.material];
-    if(yield.consumption!=ResourceConsumption::Infinite && map.materialAmountAtSlot(c.source,c.material)<=c.reserve)return false;
-    return true;
+    if(yield.consumption!=ResourceConsumption::Infinite && map.materialAmountAtSlot(c.source,c.material)<=c.reserve)return R::ResourceDepleted;
+    return std::nullopt;
 }
 
 namespace
@@ -167,6 +170,37 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         const bool nearestValid=nx<map.getW() && ny<map.getH();
         const auto delta=[](int a,int b,int size){return ((b-a+size/2)&(size-1))-size/2;};
         const int nearDx=nearestValid?delta(posX,nx,map.getW()):0,nearDy=nearestValid?delta(posY,ny,map.getH()):0;
+        // Optional filters, applied after deduplication and before any claim
+        // resolution or commit. Both are inert (no reads, no state) by default.
+        using Filter=ResourceClaims::Probe::SelectionFilter;
+        const auto* filterObserver=map.resourceClaimProbe();
+        const auto components=config.terrainComponentPrefilter?map.claimTerrainComponents(accessClass(movementAccess())):nullptr;
+        const unsigned margin=config.refreshSwitchMarginPermille;
+        const bool marginActive=margin && activeMaterialClaim;
+        const Uint32 heldAccess=marginActive?activeMaterialClaim->access:UINT32_MAX;
+        const Uint64 heldDistance=marginActive?Uint64(map.warpDistMax(posX,posY,int(heldAccess%map.getW()),int(heldAccess/map.getW()))):0;
+        bool marginRejected=false;
+        const auto filtered=[&](Uint32 access,unsigned x,unsigned y) {
+            if(components && !ResourceClaims::terrainComponentMayReach(*components,posX,posY,access)) {
+                if(filterObserver)filterObserver->selectionFilter(Filter::TerrainComponent);
+                return true;
+            }
+            // Refresh hysteresis: the held access stays eligible; another must
+            // be strictly closer by the configured fraction (integer only).
+            if(marginActive && access!=heldAccess &&
+                !(Uint64(map.warpDistMax(posX,posY,int(x),int(y)))*1000<Uint64(1000-margin)*heldDistance)) {
+                marginRejected=true;
+                if(filterObserver)filterObserver->selectionFilter(Filter::RefreshMargin);
+                return true;
+            }
+            return false;
+        };
+        // Nothing sufficiently closer: keep the held claim and its route.
+        const auto keptByMargin=[&] {
+            if(!marginRejected || !activeMaterialClaim)return false;
+            if(filterObserver)filterObserver->selectionFilter(Filter::RefreshMarginKept);
+            return true;
+        };
         if(config.sourceVersion==5) {
             const auto nearest=nearestValid?Uint32(map.coordToIndex(nx,ny)):UINT32_MAX;
             const unsigned frame=config.patternFrame==ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4?
@@ -185,6 +219,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 const auto access=Uint32(map.coordToIndex(x,y));
                 if(visited[access]==epoch)continue;
                 visited[access]=epoch;
+                if(filtered(access,x,y))continue;
                 if((!recovery.mayRoute || recovery.rejects(access)) && map.warpDistMax(posX,posY,x,y)>1)continue;
                 const auto resolved=resolveClaim(*this,access,&farmMemo);
                 if(!resolved || !map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),
@@ -197,6 +232,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 }
                 return true;
             }
+            if(keptByMargin())return true;
             if(recovery.mayRoute && !activeMaterialClaim)map.finishClaimRecoverySelection(*this,count,count);
             return false;
         }
@@ -221,6 +257,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 if(visited[access]==epoch)return false;
                 visited[access]=epoch;
                 if constexpr(Record){if constexpr(Physical)++rawChecks;else ++xyChecks;}
+                if(filtered(access,x,y))return false;
                 // A soft failed-route exclusion cannot forbid a pickup already
                 // within reach. Deduplicate first: this eligibility is constant for
                 // every probe leading to the same access during one selection.
@@ -264,6 +301,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
             else search.template operator()<true,false>();
         } else search.template operator()<false,false>();
         if(bestAccess==UINT32_MAX) {
+            if(keptByMargin())return true;
             if(config.usesRecovery() && recovery.mayRoute && !activeMaterialClaim)
                 map.finishClaimRecoverySelection(*this,candidateCount,candidateCount);
             return false;
@@ -295,7 +333,7 @@ bool Unit::prepareActiveMaterialPickup(int x,int y)
 {
     auto& map=*owner->map;
     if(!map.activeClaimsEnabled())return true;
-    if(activeMaterialClaim && !activeMaterialClaimValid())releaseActiveMaterialClaim();
+    releaseInvalidActiveMaterialClaim();
     const auto access=Uint32(map.coordToIndex(x,y));
     if(activeMaterialClaim) {
         if(activeMaterialClaim->access==access)return true;
@@ -312,14 +350,14 @@ bool Unit::prepareActiveMaterialPickup(int x,int y)
 
 bool Unit::takeActiveMaterialClaim()
 {
-    if(!activeMaterialClaimValid()){releaseActiveMaterialClaim();return false;}
+    if(const auto invalid=activeMaterialClaimInvalidity()){releaseActiveMaterialClaim(*invalid);return false;}
     const auto claim=*activeMaterialClaim;
-    if(owner->map->coordToIndex(posX+dx,posY+dy)!=claim.access){releaseActiveMaterialClaim();return false;}
+    if(owner->map->coordToIndex(posX+dx,posY+dy)!=claim.access){releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::PickupMismatch);return false;}
     // The reservation is no longer outstanding when the stock mutation checks
     // other owners' remaining capacity. The copied source never changes.
     const auto* probe=owner->map->resourceClaimProbe();
     if(probe)probe->liveEvent(*this,ResourceClaims::Probe::LiveEvent::HarvestBegin);
-    releaseActiveMaterialClaim();
+    releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Harvest);
     const bool taken=owner->map->takeClaimedMaterial(claim,owner->me);
     if(taken && owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental &&
         owner->map->materialClaimPolicyConfig().usesRecovery())owner->map->claimRecoveryHarvested(*this);
@@ -351,7 +389,7 @@ void Unit::handleActiveMaterialMovement()
         if(cadence.decisionOrdinal==UINT64_MAX)throw std::overflow_error("material claim decision ordinal exhausted");
         ++cadence.decisionOrdinal;
     }
-    if(activeMaterialClaim && !activeMaterialClaimValid())releaseActiveMaterialClaim();
+    releaseInvalidActiveMaterialClaim();
     if(observer)outcome=observer->beginDecisionOutcome(*this,false);
     const bool refresh=experimental && activeMaterialClaim && config.destinationRefreshJ
         && cadence.decisionOrdinal-cadence.lastGoalAttempt>=config.destinationRefreshJ;
@@ -401,7 +439,7 @@ void Unit::handleActiveMaterialMovement()
     } else if(result==ResourceClaims::StepResult::Failed) {
         if(observer)outcome->fallbackReason="path_failed";
         const auto failures=recoveryEnabled?map.recordClaimFailure(*this,ResourceClaims::ClaimFailureKind::PathFailed):0;
-        releaseActiveMaterialClaim();
+        releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::RouteFailed);
         if(recoveryEnabled && failures)fallback(failures);
     }
     if(observer)observer->finishDecisionOutcome(*outcome,*this);

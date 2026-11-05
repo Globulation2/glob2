@@ -6,6 +6,7 @@
 #include "ResourceClaims.h"
 #include "claims/ActiveMaterialClaims.h"
 #include "claims/ClaimRecovery.h"
+#include "claims/ClaimTerrainComponents.h"
 #include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
 namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
@@ -156,6 +157,8 @@ class Map
     std::unique_ptr<const ResourceClaims::ClaimPolicyConfig> materialClaimConfiguration;
     std::array<Uint8,32> materialClaimConfigurationDigest{};
     std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
+    // Derived from terrain only; never saved, checksummed or snapshotted.
+    mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;
     std::array<Uint64,4> materialClaimFarmEpoch{};
     std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
 	void markClaim(size_t index) { claimChanges.mark(chunkGeometry.chunkOf(index)); }
@@ -817,6 +820,10 @@ public:
     void reconcileMaterialClaims();
     void setMaterialClaimProbe(std::shared_ptr<ResourceClaims::Probe> probe) { materialClaimProbe=std::move(probe); }
     const ResourceClaims::Probe* resourceClaimProbe() const { return materialClaimProbe.get(); }
+    //! Terrain-only connected components for a movement class (claim prefilter).
+    std::shared_ptr<const ResourceClaims::TerrainComponentLabels> claimTerrainComponents(int movement) const
+    { return claimTerrainComponentCache.labels(*this, movement); }
+    Uint64 claimTerrainComponentRebuilds() const { return claimTerrainComponentCache.rebuilds(); }
     ResourceClaims::DecisionToken observeMaterialClaimDecision(const Unit&, const Uint16* field);
     ResourceClaims::DecisionToken observeMaterialClaimPickupDecision(const Unit&, int x, int y);
     void finishMaterialClaimProbe();

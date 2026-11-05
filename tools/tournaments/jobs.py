@@ -433,10 +433,10 @@ class EngineJob:
                 if 'resource_claims_policy' not in job['config'] and 'save' not in job['inputs']:
                     raise ValueError('engine experimental claim policy differs from frozen request')
             if 'resource_claims_policy' in job['config']:
-                from .claim_policy import policy_digest
+                from .claim_policy import normalized_policy, policy_digest
                 policy = job['config']['resource_claims_policy']
                 resolved = result.get('resolved', {})
-                if resolved.get('active_claim_policy') != 'experimental' or resolved.get('resource_claims_policy_config') != policy or resolved.get('resource_claims_policy_digest') != policy_digest(policy):
+                if resolved.get('active_claim_policy') != 'experimental' or resolved.get('resource_claims_policy_config') != normalized_policy(policy) or resolved.get('resource_claims_policy_digest') != policy_digest(policy):
                     raise ValueError('engine experimental claim policy differs from frozen request')
             if 'material_destinations' in job['config'] and result.get('resolved', {}).get('material_destinations_enabled') is not job['config']['material_destinations']:
                 raise ValueError('engine material destination mode differs from frozen request')

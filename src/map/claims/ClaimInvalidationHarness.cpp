@@ -22,7 +22,7 @@ void assign(Unit& unit,Building& building,Map& map,int sx,int sy,int ax,int ay) 
 }
 struct Detach {
     std::vector<Unit*> units;
-    ~Detach(){for(auto* unit:units){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}}
+    ~Detach(){for(auto* unit:units){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}}
 };
 }
 TEST_SUITE("ClaimInvalidation") {

@@ -24,7 +24,7 @@ struct Pursuit {
         REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,8))));
         REQUIRE(glob2test::awaitGradient(world.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,unit->movementAccess());}));
     }
-    ~Pursuit(){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    ~Pursuit(){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     template<class F> void neighbors(F apply) {
         for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if(dx||dy)apply(8+dx,8+dy);
     }
@@ -47,7 +47,7 @@ TEST_CASE("live claimed descent preserves RNG and waits for immobile traffic") {
     CHECK(f.unit->activeMaterialClaim==claim);CHECK(f.unit->entityRandom==random);
     CHECK_THROWS_AS(f.map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::Disabled),std::logic_error);
     CHECK(f.unit->activeMaterialClaim==claim);
-    f.unit->releaseActiveMaterialClaim();
+    f.unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
     CHECK(f.map.nextClaimGradientStep(*f.unit,&dx,&dy)==ResourceClaims::StepResult::Failed);
     CHECK(f.unit->entityRandom==random);
 }

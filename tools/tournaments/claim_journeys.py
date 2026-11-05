@@ -6,6 +6,9 @@ EVENTS = ('acquired','released','retargeted','harvest_begin','harvested','harves
           'fallback_release','route_initial','route_refresh','route_repair','route_probe_fallback','pending_path',
           'traffic_wait','geometry_contradiction','reanchor_joined','reanchor_failed','probe_tail_failed','obsolete_probe')
 TERMINALS = {'harvested','harvest_failed','retargeted','released','timeout','end_of_segment'}
+RELEASE_REASONS = ('harvest','route_failed','unit_state_changed','resource_depleted','access_invalid','pickup_mismatch',
+                   'job_ended','medical','unit_removed','serialization','map_invalidation','configuration','other')
+SELECTION_FILTERS = ('terrain_prefilter_rejections','refresh_margin_rejections','refresh_margin_kept')
 MOVEMENT_KINDS = ('medical','claimed_resource','unclaimed_resource','return_to_job','idle','other')
 
 
@@ -65,6 +68,9 @@ class Validator:
                 if value is not None and not natural(value,name):raise ValueError('positive journey schema bound required')
         self.ids = set(); self.censored = 0; self.steps = 0; self.cost = 0
         self.events = [0]*len(EVENTS); self.phases = [0]*16
+        # Release reasons and selection filters are additive; None for older traces.
+        self.release_reasons = None; self.selection_filters = None
+        self.journey_release_reasons = {}
 
     def row(self, row):
         if not self.enabled or type(row.get('schema_version')) is not int or row['schema_version'] != 1:
@@ -99,6 +105,12 @@ class Validator:
             if unavailable:
                 if row.get(name) is not None: raise ValueError('unavailable journey baseline must be null')
             else: natural(row.get(name), name)
+        if 'release_reason' in row:
+            reason = row['release_reason']
+            if reason is not None and (reason not in RELEASE_REASONS or row['terminal'] != 'released'):
+                raise ValueError('invalid journey release reason')
+            if reason is not None:
+                self.journey_release_reasons[reason] = self.journey_release_reasons.get(reason, 0) + 1
         self.ids.add(key);self.steps += row['steps'];self.cost += row['live_cost']
         self.censored += row['terminal'] in ('timeout','end_of_segment')
         self.events = [a+b for a,b in zip(self.events, events)]
@@ -143,6 +155,20 @@ class Validator:
             if key in live and (type(live[key]) is not bool or live[key] != expected):raise ValueError('inconsistent journey censor flag')
         if 'censored_journey_outcomes' in live and live['censored_journey_outcomes'] != self.censored:
             raise ValueError('inconsistent journey partial outcomes')
+        if 'release_reason_counts' in live:
+            reasons = live['release_reason_counts']
+            if (type(live.get('release_reason_version')) is not int or live['release_reason_version'] != 1
+                    or live.get('release_reason_names') != list(RELEASE_REASONS)
+                    or not isinstance(reasons, list) or len(reasons) != len(RELEASE_REASONS)):
+                raise ValueError('invalid release reason counters')
+            if sum(natural(x, 'release reason count') for x in reasons) != counts[EVENTS.index('released')]:
+                raise ValueError('release reasons disagree with released events')
+            self.release_reasons = dict(zip(RELEASE_REASONS, reasons))
+        if 'selection_filter_counts' in live:
+            filters = live['selection_filter_counts']
+            if not isinstance(filters, dict) or set(filters) != set(SELECTION_FILTERS):
+                raise ValueError('invalid selection filter counters')
+            self.selection_filters = {key: natural(filters[key], key) for key in SELECTION_FILTERS}
         if 'route_status_counts' in live:
             statuses=live['route_status_counts']
             if live.get('route_status_names') != ['found','unreachable','cost_limit','expansion_limit'] or not isinstance(statuses,list) or len(statuses)!=4:

@@ -302,7 +302,9 @@ struct Probe::Impl
         std::unique_ptr<Baseline> baseline;
         std::string policyDigest;
         std::array<Uint64,unsigned(LiveEvent::Count)> events{};
+        std::optional<ReleaseReason> releaseReason;
     };
+    std::optional<ReleaseReason> pendingReleaseReason;
     LiveMetrics live;
     MovementMetrics movement;
     std::optional<Uint32> movementEndTick;
@@ -328,7 +330,8 @@ struct Probe::Impl
             {"baseline_status",status},{"baseline_expansions",ready?Json(baseline->expansions):Json(nullptr)},
             {"baseline_elapsed_ns",ready?Json(baseline->elapsedNs):Json(nullptr)},
             {"baseline_contract","acquisition static occupancy; exact held-access 3x3 stance; not a dynamic-world optimum"},
-            {"policy_digest",j.policyDigest}}.dump()+"\n");
+            {"policy_digest",j.policyDigest},
+            {"release_reason",j.releaseReason?Json(ReleaseReasonNames[unsigned(*j.releaseReason)]):Json(nullptr)}}.dump()+"\n");
         ++live.journeyCompleted;
         if(std::string_view(terminal)=="timeout" || std::string_view(terminal)=="end_of_segment")++censoredJourneyOutcomes;
     }
@@ -377,7 +380,10 @@ struct Probe::Impl
             {"untracked_claim_moves",live.untrackedMoves},{"sample_every",config.sampleEvery},
             {"route_completed",live.routeCompleted},{"route_canceled",live.routeCanceled},{"route_expansions",live.routeExpansions},
             {"route_worker_elapsed_ns",live.routeElapsedNs},{"route_unobserved_work",live.routeUnobserved},{"route_restored_outputs",live.routeRestored},
-            {"route_status_counts",live.routeStatuses},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
+            {"route_status_counts",live.routeStatuses},
+            {"release_reason_version",1},{"release_reason_names",ReleaseReasonNames},{"release_reason_counts",live.releaseReasons},
+            {"selection_filter_counts",{{"terrain_prefilter_rejections",live.terrainPrefilterRejections},
+                {"refresh_margin_rejections",live.refreshMarginRejections},{"refresh_margin_kept",live.refreshMarginKept}}},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
             {"max_active",MaximumJourneys},{"max_admissions",std::min<unsigned>(MaximumJourneyAdmissions,config.maxSamples)},
             {"timeout_ticks",JourneyTimeout},{"continuation_policy","new-segment; inherited claims are not sampled acquisitions"},
             {"sampling_censored",bool(live.excludedCapacity || live.excludedLimit)},
@@ -954,7 +960,22 @@ void Probe::liveEvent(const Unit& unit,LiveEvent event) const
     else if(event==LiveEvent::Harvested)impl->closeJourney(at,"harvested",tick);
     else if(event==LiveEvent::HarvestFailed)impl->closeJourney(at,"harvest_failed",tick);
     else if(event==LiveEvent::Retargeted)impl->closeJourney(at,"retargeted",tick);
-    else if(event==LiveEvent::Released && !at->second.harvesting)impl->closeJourney(at,"released",tick);
+    else if(event==LiveEvent::Released && !at->second.harvesting) {
+        at->second.releaseReason=impl->pendingReleaseReason;impl->closeJourney(at,"released",tick);
+    }
+}
+void Probe::liveRelease(const Unit& unit,ReleaseReason reason) const
+{
+    if(impl->finished || impl->config.movementOnly)return;
+    ++impl->live.releaseReasons.at(unsigned(reason));
+    impl->pendingReleaseReason=reason;liveEvent(unit,LiveEvent::Released);impl->pendingReleaseReason.reset();
+}
+void Probe::selectionFilter(SelectionFilter filter,Uint64 count) const
+{
+    if(impl->finished || impl->config.movementOnly)return;
+    auto& live=impl->live;
+    (filter==SelectionFilter::TerrainComponent?live.terrainPrefilterRejections:
+        filter==SelectionFilter::RefreshMargin?live.refreshMarginRejections:live.refreshMarginKept)+=count;
 }
 void Probe::rawResourceProbes(unsigned material,Uint64 coordinates,Uint64 xyChecks,Uint64 attempts,Uint64 checks,Uint64 improvements,Uint64 finalSelections) const
 {

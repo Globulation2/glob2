@@ -31,6 +31,14 @@ struct ClaimPolicyConfig
     bool usePrimaryGradient=false;
     bool directResourceProbes=false; // Version 4 only; XY then physical tile candidates.
     bool opportunisticAdjacentPickup=false; // Versions 3+; old policies remain sticky.
+    // Optional experiments, any source version. Defaults are omitted from the
+    // canonical JSON so every existing policy keeps its exact digest.
+    // A held claim moves to another access on refresh only when that access is
+    // at least this many permille closer (toroidal Chebyshev); 0 is unrestricted.
+    unsigned refreshSwitchMarginPermille=0;
+    static constexpr unsigned MaximumRefreshSwitchMarginPermille=900;
+    // Skip accesses whose terrain-only connected component excludes the unit.
+    bool terrainComponentPrefilter=false;
     unsigned recoveryCandidateCount(std::size_t coordinates) const;
     unsigned maximumRecoveryCandidateCount() const;
     static ClaimPolicyConfig parse(std::string_view);

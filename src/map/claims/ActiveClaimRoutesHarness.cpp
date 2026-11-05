@@ -39,11 +39,11 @@ void enable(Map& map)
 struct Assignment
 {
     Unit& unit;
-    ~Assignment() { unit.releaseActiveMaterialClaim(); unit.attachedBuilding = nullptr; }
+    ~Assignment() { unit.releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other); unit.attachedBuilding = nullptr; }
 };
 void assign(Unit& unit, Building& building, Map& map, int x, int y)
 {
-    unit.releaseActiveMaterialClaim();
+    unit.releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
     unit.attachedBuilding = &building; unit.activity = Unit::ACT_FILLING;
     unit.displacement = Unit::DIS_GOING_TO_RESOURCE; unit.destinationPurpose = WHEAT; unit.medical = Unit::MED_FREE;
     const auto target = Uint32(map.coordToIndex(x, y));
@@ -75,7 +75,7 @@ TEST_SUITE("ActiveClaimRoutes")
             CHECK_FALSE(unit->prepareActiveMaterialPickup(9,8));
             CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
             CHECK(saveRoutes(map,false)==routes);
-            holder->releaseActiveMaterialClaim();
+            holder->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
             CHECK(unit->prepareActiveMaterialPickup(9,8)==opportunistic);
             CHECK(unit->entityRandom==random);
             if(opportunistic) {
@@ -572,6 +572,112 @@ TEST_SUITE("ActiveClaimRoutes")
         CHECK(map.materialAmountAtSlot(unreachable,WHEAT)==1);
         CHECK(map.materialAmountAtSlot(reachable,WHEAT)==1);
         trace<<"reachable_cost\t"<<possible.cost<<'\n';
+    }
+
+    TEST_CASE("terrain component prefilter selects reachable stock across the water divide")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned version:{1u,5u}) {
+        CAPTURE(version);
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+        auto& game=fixture.game;auto& map=game.map;
+        game.gameHeader.setResourceGrowthDisabled(true);
+        { Map::TerrainEditBatch edit(map);
+            for(int y=0;y<32;++y)for(int x:{7,8,16,17})map.setVertexTerrain(x,y,WATER);
+        }
+        // Terrain-only components: two land strips, joined across the torus
+        // seam on the far side; water separates them for ground movement.
+        const auto labels=map.claimTerrainComponents(accessClass(MovementAccess::Land));
+        const auto label=[&](int x,int y){return labels->at(Uint32(map.coordToIndex(x,y)));};
+        CHECK(label(7,8)==ResourceClaims::TerrainComponentLabels::None);
+        CHECK(label(16,8)==ResourceClaims::TerrainComponentLabels::None);
+        CHECK(label(8,8)!=ResourceClaims::TerrainComponentLabels::None);
+        CHECK(label(8,8)==label(14,18));CHECK(label(8,0)==label(15,31));
+        CHECK(label(5,8)==label(20,8));CHECK(label(0,8)==label(31,8));CHECK(label(5,8)!=label(8,8));
+        CHECK_FALSE(ResourceClaims::terrainComponentMayReach(*labels,8,8,Uint32(map.coordToIndex(5,8))));
+        CHECK(ResourceClaims::terrainComponentMayReach(*labels,8,8,Uint32(map.coordToIndex(14,18))));
+        // The water cell next to the bank is reachable through its stance.
+        CHECK(ResourceClaims::terrainComponentMayReach(*labels,8,8,Uint32(map.coordToIndex(16,8))));
+        const auto amphibious=map.claimTerrainComponents(accessClass(MovementAccess::Amphibious));
+        CHECK(amphibious->at(Uint32(map.coordToIndex(8,8)))==amphibious->at(Uint32(map.coordToIndex(5,8))));
+        const auto rebuilds=map.claimTerrainComponentRebuilds();
+        CHECK(map.claimTerrainComponents(accessClass(MovementAccess::Land))==labels);
+        CHECK(map.claimTerrainComponentRebuilds()==rebuilds);
+        map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig config;
+        config.sourceVersion=version;
+        if(version==5) {config.pattern="final-r32-exact24-assembled-v1";config.patternFrame=ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4;
+            config.opportunisticAdjacentPickup=true;}
+        config.fallback=ResourceClaims::ClaimPolicyConfig::Fallback::BoundedWaitRelease;
+        config.fallbackAfterDecisions=1;config.terrainComponentPrefilter=true;
+        map.setMaterialClaimPolicyConfig(config);
+        auto* building=fixture.addBuilding("inn",9,22);
+        auto* unit=fixture.addUnit(WORKER,8,8);auto* holder=fixture.addUnit(WORKER,11,10);
+        Assignment cleanup{*unit},holderCleanup{*holder};
+        unit->setPerformance(SWIM,0);holder->setPerformance(SWIM,0);
+        building->maxUnitWorking=2;building->setMaterial(WHEAT,0);building->updateCallLists();
+        for(auto* worker:{unit,holder}) {worker->medical=Unit::MED_FREE;worker->activity=Unit::ACT_RANDOM;worker->hungriness=0;}
+        const auto nearest=Uint32(map.coordToIndex(12,8));
+        const auto unreachable=Uint32(map.coordToIndex(5,8));
+        const auto reachable=Uint32(map.coordToIndex(14,18));
+        for(const auto at:{nearest,unreachable,reachable}) {
+            REQUIRE(map.incResourceByIndex(int(at%32),int(at/32),WHEAT,0));map.setMaterialAmountSlot(at,WHEAT,1);
+        }
+        glob2test::publishCurrentHiringSuggestions(game);
+        REQUIRE(building->subscribeToBringMaterialsStep());
+        REQUIRE(building->subscribeToBringMaterialsStep());
+        glob2test::discardPrematureHiringSuggestions(game);
+        for(auto* worker:{unit,holder}) {REQUIRE(worker->attachedBuilding==building);REQUIRE(worker->movementAccess()==MovementAccess::Land);}
+        REQUIRE(holder->acquireMaterialClaimAt(nearest));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        game.invalidateObservation();game.observeCompletedWorld();
+        // Resource placement changes no terrain: the cached labelling stays.
+        CHECK(map.claimTerrainComponents(accessClass(MovementAccess::Land))==labels);
+        unit->handleActiveMaterialMovement();REQUIRE(unit->activeMaterialClaim);
+        CHECK(unit->activeMaterialClaim->access==reachable);
+        const auto start=map.warpDistMax(unit->posX,unit->posY,int(reachable%32),int(reachable/32));
+        int dx=0,dy=0;
+        map.flushClaimRoutes();++game.stepCounter;game.observeCompletedWorld();
+        REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
+        // The first step moves toward the reachable stock.
+        CHECK(map.warpDistMax(unit->posX+dx,unit->posY+dy,int(reachable%32),int(reachable/32))<start);
+        CHECK(map.materialAmountAtSlot(unreachable,WHEAT)==1);
+        // Terrain edits invalidate the derived labels and rebuild them exactly.
+        { Map::TerrainEditBatch edit(map); for(int x:{7,8})map.setVertexTerrain(x,8,GRASS); }
+        const auto rebuilt=map.claimTerrainComponents(accessClass(MovementAccess::Land));
+        CHECK(rebuilt!=labels);CHECK(map.claimTerrainComponentRebuilds()>rebuilds);
+        CHECK(*rebuilt==*ResourceClaims::labelTerrainComponents(map,accessClass(MovementAccess::Land)));
+        }
+    }
+    TEST_CASE("refresh switch margin keeps the held claim unless an alternative is sufficiently closer")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned margin:{0u,400u,500u}) {
+            CAPTURE(margin);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+            ResourceClaims::ClaimPolicyConfig config;config.destinationRefreshJ=1;config.refreshSwitchMarginPermille=margin;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
+            const auto held=Uint32(map.coordToIndex(14,8)),closer=Uint32(map.coordToIndex(11,8));
+            map.setResourceByIndex(11,8,WHEAT,1);map.setMaterialAmountSlot(closer,WHEAT,3);
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            map.updateMaterialGradient(0,WHEAT,MovementAccess::Land,false);
+            const auto relabeled=[&]{const auto* cost=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);const auto labels=map.materialGradientDestinations(cost);return labels&&labels->x[map.coordToIndex(8,8)]==11;};
+            for(unsigned boundary=0;!relabeled() && boundary<4096;++boundary){++game.stepCounter;game.observeCompletedWorld();}
+            REQUIRE(relabeled());
+            game.invalidateObservation();game.observeCompletedWorld();
+            REQUIRE(unit->activeMaterialClaimValid());
+            const auto task=unit->materialClaimTask;
+            unit->materialClaimPolicyState.decisionOrdinal=4;unit->materialClaimPolicyState.lastGoalAttempt=0;
+            unit->handleActiveMaterialMovement();
+            REQUIRE(unit->activeMaterialClaim);
+            CHECK(unit->materialClaimPolicyState.lastGoalAttempt==5);
+            // Held distance 6, alternative 3: 3*1000 < (1000-margin)*6 only below 500.
+            if(margin==500) {CHECK(unit->activeMaterialClaim->access==held);CHECK(unit->materialClaimTask==task);}
+            else {CHECK(unit->activeMaterialClaim->access==closer);CHECK(unit->materialClaimTask!=task);}
+        }
     }
 
 }

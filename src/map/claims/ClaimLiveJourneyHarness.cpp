@@ -8,11 +8,13 @@
 #include <zlib.h>
 #include <sstream>
 #include <filesystem>
+#include <set>
 
 namespace {
 struct JourneyUnit : Unit {
     JourneyUnit(int x,int y,int slot,Team* team):Unit(x,y,GIDfrom(slot,0),WORKER,team,0) {}
     void pickupDecision() { handleDisplacement(); }
+    void endJob() { setNeedToRecheckMedical(true); stopAttachedForBuilding(false); }
     void committedMove(int x,int y) {
         owner->map->setGroundUnit(posX,posY,NOGUID);dx=x;dy=y;
         wrapPosition();owner->map->setGroundUnit(posX,posY,gid);
@@ -233,7 +235,7 @@ TEST_CASE("sampled journey capacity and segment censoring are bounded independen
     CHECK(trace.back()["live"]["sampling_censored"]==true);CHECK(trace.back()["live"]["admission_uncensored"]==false);
     CHECK(trace.back()["live"]["censored_journey_outcomes"]==8);
     CHECK(trace.back()["live"]["excluded_by_phase"][0]==2);
-    for(auto* unit:units){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    for(auto* unit:units){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
 }
 TEST_CASE("sampled blocker census preserves checksums and separates exact inherited and requester ages") {
     glob2test::HeadlessGlobals globals;
@@ -269,7 +271,7 @@ TEST_CASE("sampled blocker census preserves checksums and separates exact inheri
         std::vector<Uint32> checksums{fixture.game.checkSum(nullptr,nullptr,nullptr,false)};
         fixture.game.stepCounter=20;
         if(observe)probe->liveEvent(*units[2],ResourceClaims::Probe::LiveEvent::HarvestBegin);
-        units[2]->releaseActiveMaterialClaim();REQUIRE(units[2]->acquireMaterialClaimAt(target));
+        units[2]->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);REQUIRE(units[2]->acquireMaterialClaimAt(target));
         fixture.game.stepCounter=25;
         if(observe)probe->decision(fixture.game,*units[18],field.data(),target);
         checksums.push_back(fixture.game.checkSum(nullptr,nullptr,nullptr,false));
@@ -311,7 +313,7 @@ TEST_CASE("sampled blocker census preserves checksums and separates exact inheri
             }
             CHECK(inherited);CHECK(reacquired);
         }
-        for(auto* unit:units){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+        for(auto* unit:units){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     }
 }
 TEST_CASE("pooled blocker census distinguishes reserve-only shortage from reserved physical sources") {
@@ -346,7 +348,7 @@ TEST_CASE("pooled blocker census distinguishes reserve-only shortage from reserv
         checkBlockerHistograms(decision["blocker_census"]["direct"]);checkBlockerHistograms(decision["blocker_census"]["pooled"]);
     }
     CHECK(decisions[1]["blocker_census"]["pooled"]["histograms"][0]["potential_conflicting_owners"]==1);
-    first->releaseActiveMaterialClaim();second->releaseActiveMaterialClaim();
+    first->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);second->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
     first->attachedBuilding=nullptr;second->attachedBuilding=nullptr;query->attachedBuilding=nullptr;
 }
 
@@ -432,7 +434,7 @@ TEST_CASE("actual decision outcomes link selection and fallback without changing
         const auto random=seeker->entityRandom;
         seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==alternative);
         std::vector<Uint32> checksums{fixture.game.checkSum(nullptr,nullptr,nullptr,false)};
-        seeker->releaseActiveMaterialClaim();REQUIRE(other->acquireMaterialClaimAt(alternative));
+        seeker->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);REQUIRE(other->acquireMaterialClaimAt(alternative));
         seeker->handleActiveMaterialMovement();CHECK_FALSE(seeker->activeMaterialClaim);
         checksums.push_back(fixture.game.checkSum(nullptr,nullptr,nullptr,false));CHECK(seeker->entityRandom==random);
         if(!observation)reference=checksums;else {
@@ -452,7 +454,7 @@ TEST_CASE("actual decision outcomes link selection and fallback without changing
                 CHECK(counters[0]==2);CHECK(counters[1]==2);CHECK(counters[2]==1);CHECK(counters[6]==1);CHECK(counters[16]==1);
             }
         }
-        for(auto* unit:{seeker,holder,other}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+        for(auto* unit:{seeker,holder,other}){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     }
 }
 TEST_CASE("actual pickup outcome spans failed first candidate and successful later candidate") {
@@ -484,7 +486,7 @@ TEST_CASE("actual pickup outcome spans failed first candidate and successful lat
     CHECK(outcome["selected_is_nearest_access"]==false);CHECK(outcome["phase"]=="pickup");CHECK(outcome["route_result"]=="not_attempted");
     const auto& counts=trace.back()["decision_outcomes"]["material_phase_counters"][WHEAT][1];
     CHECK(counts[0]==2);CHECK(counts[2]==1);CHECK(counts[4]==1);CHECK(counts[11]==1);
-    for(auto* unit:{seeker,holder,exchanger}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    for(auto* unit:{seeker,holder,exchanger}){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
 }
 
 TEST_CASE("actual outcome keeps selection before route failure and counts cooldown scans separately") {
@@ -540,7 +542,7 @@ TEST_CASE("actual outcome keeps selection before route failure and counts cooldo
             CHECK(outcome["fallback"]=="none");CHECK(outcome["not_attempted_reason"].is_null());
             CHECK(counts[1]==1);CHECK(counts[6]==1);CHECK(counts[8]==0);CHECK(counts[19]==1);
         }
-        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     }
 }
 
@@ -571,7 +573,7 @@ TEST_CASE("source four raw probes recover stale and fully claimed XY without rep
         CHECK(counters[5]==((mode==5 && (scenario!=2 || closest))?1:0));
         if(mode!=5 || (scenario==2 && !closest)){CHECK(counters[2]==0);CHECK(counters[3]==0);CHECK(counters[4]==0);}
         else {CHECK(counters[2].get<Uint64>()>0);CHECK(counters[3].get<Uint64>()>0);CHECK(counters[4].get<Uint64>()>0);CHECK(counters[3].get<Uint64>()<=map.cellCount());}
-        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     }
 }
 TEST_CASE("raw probes reuse natural goal eligibility and pooled source reservation") {
@@ -606,7 +608,7 @@ TEST_CASE("raw probes reuse natural goal eligibility and pooled source reservati
             CHECK(other->acquireMaterialClaimAt(fresh)==(scenario==2));
             if(scenario==3)CHECK(seeker->activeMaterialClaim->reserve==1);
         }
-        for(auto* unit:{seeker,other}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+        for(auto* unit:{seeker,other}){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}
     }
 }
 
@@ -637,8 +639,67 @@ TEST_CASE("mixed source five uses exact D4 typed direct entry after stale initia
         CHECK(seeker->entityRandom==random);CHECK(seeker->activeMaterialClaimValid());
         const auto task=seeker->materialClaimTask;const auto probe=seeker->materialClaimPolicyState.probe;
         REQUIRE(seeker->selectActiveMaterialClaim(field));CHECK(seeker->materialClaimTask==task);CHECK(seeker->materialClaimPolicyState.probe==probe);
-        seeker->releaseActiveMaterialClaim();seeker->attachedBuilding=nullptr;
+        seeker->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);seeker->attachedBuilding=nullptr;
     }
 }
 
+TEST_CASE("release reasons count harvest route failure job end and invalidation causes") {
+    glob2test::HeadlessGlobals globals;
+    using R=ResourceClaims::ReleaseReason;
+    std::vector<Uint32> reference;
+    for(bool observe:{false,true}) {
+        CAPTURE(observe);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=1937});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.maximumExpansions=1;map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);
+        std::vector<JourneyUnit*> units;for(int slot=0;slot<5;++slot)units.push_back(worker(fixture,consumer,slot));
+        // Unit k stands at (8,8+k). Harvest and invalidation stock is adjacent;
+        // the route-failure claim is far beyond a one-expansion search.
+        const std::array<std::pair<int,int>,5> stock{{{9,8},{24,9},{9,10},{9,11},{9,12}}};
+        for(const auto& [x,y]:stock){map.setResourceByIndex(x,y,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(x,y),WHEAT,2);}
+        const auto path=(glob2test::artifactDir()/"release-reasons.jsonl.gz").string();
+        std::shared_ptr<ResourceClaims::Probe> probe;
+        if(observe) {std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=16;
+            probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);}
+        for(unsigned i=0;i<units.size();++i)REQUIRE(units[i]->acquireMaterialClaimAt(map.coordToIndex(stock[i].first,stock[i].second)));
+        std::vector<Uint32> checksums{fixture.game.checkSum()};
+        units[0]->dx=1;units[0]->dy=0;REQUIRE(units[0]->takeActiveMaterialClaim());
+        fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+        units[1]->handleActiveMaterialMovement();REQUIRE(units[1]->activeMaterialClaim);
+        for(unsigned attempt=0;attempt<8 && units[1]->activeMaterialClaim;++attempt) {
+            map.flushClaimRoutes();++fixture.game.stepCounter;map.publishClaimRoutes();
+            fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+            units[1]->handleActiveMaterialMovement();
+        }
+        CHECK_FALSE(units[1]->activeMaterialClaim);
+        units[2]->endJob();CHECK_FALSE(units[2]->activeMaterialClaim);
+        units[3]->displacement=Unit::DIS_RANDOM;units[3]->reconcileMaterialClaim();CHECK_FALSE(units[3]->activeMaterialClaim);
+        // Exhausting reserved stock invalidates its owners at the cell itself.
+        map.setMaterialAmountSlot(map.coordToIndex(9,12),WHEAT,0);units[4]->reconcileMaterialClaim();CHECK_FALSE(units[4]->activeMaterialClaim);
+        checksums.push_back(fixture.game.checkSum());
+        if(!observe)reference=checksums;
+        else {
+            CHECK(checksums==reference);
+            const auto& m=probe->liveMetrics();
+            std::array<Uint64,unsigned(R::Count)> expected{};
+            for(auto reason:{R::Harvest,R::RouteFailed,R::JobEnded,R::UnitStateChanged,R::MapInvalidation})expected[unsigned(reason)]=1;
+            CHECK(m.releaseReasons==expected);
+            CHECK(m.events[unsigned(ResourceClaims::Probe::LiveEvent::Released)]==5);
+            probe->finish();
+            const auto trace=rows(path);const auto& live=trace.back()["live"];
+            CHECK(live["release_reason_version"]==1);
+            CHECK(live["release_reason_names"]==nlohmann::json(ResourceClaims::ReleaseReasonNames));
+            CHECK(live["release_reason_counts"]==nlohmann::json(expected));
+            CHECK(live["selection_filter_counts"]["terrain_prefilter_rejections"]==0);
+            std::multiset<std::string> reasons;
+            for(const auto& row:trace)if(row["kind"]=="journey") {
+                if(row["terminal"]=="released")reasons.insert(row["release_reason"].get<std::string>());
+                else CHECK(row["release_reason"].is_null());
+            }
+            CHECK(reasons==std::multiset<std::string>{"route_failed","job_ended","unit_state_changed","map_invalidation"});
+        }
+        for(auto* unit:units){unit->releaseActiveMaterialClaim(R::Other);unit->attachedBuilding=nullptr;}
+    }
+}
 }

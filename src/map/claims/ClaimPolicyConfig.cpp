@@ -98,7 +98,8 @@ void ClaimPolicyConfig::validate() const
         || unsigned(routeTarget)>=RouteNames.size() || unsigned(pendingStep)>=PendingNames.size()
         || !interval(destinationRefreshJ) || !interval(routeRefreshJ)
         || !fallbackAfterDecisions || fallbackAfterDecisions>65535
-        || !maximumExpansions || maximumExpansions>4096)
+        || !maximumExpansions || maximumExpansions>4096
+        || refreshSwitchMarginPermille>MaximumRefreshSwitchMarginPermille)
         throw std::invalid_argument("invalid resource claim policy parameters");
 }
 std::string ClaimPolicyConfig::canonicalJson() const
@@ -121,6 +122,8 @@ std::string ClaimPolicyConfig::canonicalJson() const
     }
     if(sourceVersion>=3)result["opportunistic_adjacent_pickup"]=opportunisticAdjacentPickup;
     if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
+    if(refreshSwitchMarginPermille)result["refresh_switch_margin_permille"]=refreshSwitchMarginPermille;
+    if(terrainComponentPrefilter)result["terrain_component_prefilter"]=true;
     if(sourceVersion==5) {result["pattern_format"]="mixed-v1";result["pattern_frame"]=patternFrame==PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1";}
     return result.dump();
 }
@@ -166,6 +169,11 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
         else if(key=="opportunistic_adjacent_pickup" && result.sourceVersion>=3) {
             if(!value.is_boolean())throw std::invalid_argument("invalid adjacent pickup flag");
             result.opportunisticAdjacentPickup=value.get<bool>();
+        }
+        else if(key=="refresh_switch_margin_permille")result.refreshSwitchMarginPermille=number(value);
+        else if(key=="terrain_component_prefilter") {
+            if(!value.is_boolean())throw std::invalid_argument("invalid terrain component prefilter flag");
+            result.terrainComponentPrefilter=value.get<bool>();
         }
         else if(key=="pattern_format" && result.sourceVersion==5) {}
         else if(key=="pattern_frame" && result.sourceVersion==5) {

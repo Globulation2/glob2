@@ -6,6 +6,7 @@
 #include <string>
 #include <optional>
 #include "ResourceClaimDecisionToken.h"
+#include "ClaimReleaseReason.h"
 class Game;
 class Unit;
 class ComputeExecutor;
@@ -47,6 +48,11 @@ public:
         Uint64 excludedCapacity=0,excludedLimit=0,untrackedMoves=0;
         Uint64 routeCompleted=0,routeCanceled=0,routeExpansions=0,routeElapsedNs=0,routeUnobserved=0,routeRestored=0;
         std::array<Uint64,4> routeStatuses{};
+        // One count per Released event, by its reason; sums to events[Released].
+        std::array<Uint64,unsigned(ReleaseReason::Count)> releaseReasons{};
+        // Optional selection filters: accesses skipped, and refreshes kept
+        // only because the margin rejected every other candidate.
+        Uint64 terrainPrefilterRejections=0,refreshMarginRejections=0,refreshMarginKept=0;
     };
     struct Metrics {
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
@@ -81,6 +87,10 @@ public:
     const Metrics& metrics() const;
     // Observers never influence gameplay, consume RNG, or persist simulation state.
     void liveEvent(const Unit&, LiveEvent) const;
+    // A Released live event carrying its reason.
+    void liveRelease(const Unit&, ReleaseReason) const;
+    enum class SelectionFilter : unsigned { TerrainComponent, RefreshMargin, RefreshMarginKept };
+    void selectionFilter(SelectionFilter, Uint64 count=1) const;
     void moved(const Unit&, int oldX, int oldY) const;
     void routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent) const;
     const LiveMetrics& liveMetrics() const;
