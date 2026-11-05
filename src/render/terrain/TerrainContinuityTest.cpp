@@ -5,11 +5,14 @@
 #include "EngineFixtures.h"
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
+#include "TerrainStones.h"
 #include "map/TerrainTypeTable.h"
 #include "render/scene/SceneMap.h"
 #include <algorithm>
 #include <fstream>
 #include <map>
+#include <set>
+#include <tuple>
 #include <random>
 #include <sstream>
 #include <vector>
@@ -178,5 +181,112 @@ TEST_SUITE("TerrainContinuity")
 		CHECK(banded > edges / 50);
 		CHECK(marginBroken == 0);
 		CHECK(clipped == 0);
+	}
+
+	TEST_CASE("laid stones are wholly kept or dropped wherever they are drawn, whatever meets them [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		const auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const TerrainVisual::StoneMaps maps(catalog);
+		unsigned first = 1, count = 6;
+		if (const char *seeds = std::getenv("GLOB2_TERRAIN_CONTINUITY_SEEDS"))
+			std::sscanf(seeds, "%u,%u", &first, &count);
+		constexpr int scale = 2, n = 32 * scale;
+		// Per world stone (material, centre cell, number): which states its face
+		// texels were drawn in (1 dropped, 2 kept, 4 partly covered), and how the
+		// cells drew it (1 no stone layer, 2 its own layer, 4 another path's only;
+		// 8 and 16 its layer's kept and dropped bit).
+		unsigned stonesSeen = 0, mixed = 0, cutByTile = 0;
+		std::map<std::string, unsigned> mixedMaterials;
+		for (unsigned seed = first; seed < first + count; ++seed)
+		{
+			glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+			paintRandom(fixture.game.map, seed, 32);
+			SceneMap scene;
+			glob2test::observeMap(fixture.game.map, scene);
+			std::map<std::tuple<TerrainVisual::MaterialId, int, int, int>, unsigned> states, layers;
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+				{
+					const auto recipe = compositor.describe(scene, x, y);
+					if (recipe.uniform())
+						continue;
+					const auto mask = compositor.mask(recipe, scale);
+					std::array<bool, 4> cutting{};
+					for (unsigned slot = 0; slot < mask.colors; ++slot)
+						cutting[slot] = catalog.cutsStones(mask.palette[slot]);
+					for (unsigned slot = 0; slot < mask.colors; ++slot)
+					{
+						const auto material = mask.palette[slot];
+						const auto *stones = maps.get(material);
+						if (!stones)
+							continue;
+						const unsigned wrap = unsigned(stones->tiles() - 1);
+						for (int ty = 0; ty < n; ++ty)
+							for (int tx = 0; tx < n; ++tx)
+							{
+								const int px = tx * 256 / scale + 128 / scale, py = ty * 256 / scale + 128 / scale;
+								const auto texel = stones->at(int(unsigned(x) & wrap), int(unsigned(y) & wrap), px, py);
+								if (texel.face < int(TerrainVisual::StoneRimQ8))
+									continue; // Joints and the feathered rim.
+								const auto &sample = mask.samples[std::size_t(ty) * n + tx];
+								const unsigned largest = sample.slots & 3;
+								std::array<unsigned, 4> weight{};
+								unsigned rest = 65536;
+								for (unsigned k = 0, other = 0; k < 4; ++k)
+									if (k != largest) { weight[k] = sample.others[other++]; rest -= weight[k]; }
+								weight[largest] = rest;
+								bool cut = false;
+								for (unsigned k = 0; k < mask.colors; ++k) cut |= cutting[k] && weight[k];
+								if (cut)
+									continue; // Water, lava, holes and chasms cut stones by design.
+								const auto key = std::tuple{material, (x + texel.ownTile % 3 - 1) & 31,
+															(y + texel.ownTile / 3 - 1) & 31, int(texel.own)};
+								const unsigned w = weight[slot];
+								// Where the dominant path's kept stones lie over this one, the
+								// subordinate is cut along their outline by design.
+								bool overlaid = false;
+								for (unsigned k = 0; k < mask.colors; ++k)
+									overlaid |= k != slot && weight[k] && maps.has(mask.palette[k]);
+								if (overlaid && w < 65536 - 64)
+									continue;
+								states[key] |= w == 0 ? 1u : w >= 65536 - 64 ? 2u : 4u;
+								// Whether this cell drew the material as its stone layer, as
+								// another path's ground, or without stones (the palette limit).
+								bool layered = false;
+								for (unsigned l = 0; l < recipe.stoneLayerCount; ++l)
+									layered |= recipe.stoneLayers[l].material == material;
+								layers[key] |= !recipe.stones ? 1u : layered ? 2u : 4u;
+								for (unsigned l = 0; l < recipe.stoneLayerCount; ++l)
+									if (recipe.stoneLayers[l].material == material)
+										layers[key] |= (recipe.stoneLayers[l].kept[texel.ownTile] >> texel.own & 1u) ? 8u : 16u;
+							}
+					}
+				}
+			for (const auto &[key, state] : states)
+			{
+				++stonesSeen;
+				// Kept somewhere and dropped or partly drawn elsewhere: a cut.
+				if ((state & 2) && (state & 5))
+				{
+					++mixed;
+					const unsigned layer = layers[key];
+					++mixedMaterials[catalog.materials[std::get<0>(key)].key +
+									 (layer & 4 ? " (another path's layer)" : layer & 1 ? " (no stone layer)"
+									  : (layer & 24) == 24 ? " (same layer, cells disagree on its bit)" : layer & 8 ? " (kept bit, drawn missing)" : " (dropped bit, drawn)")];
+				}
+				cutByTile += state == 4;
+			}
+		}
+		{
+			std::ofstream report(glob2test::artifactDir() / "stones.txt");
+			report << stonesSeen << " stones; " << mixed << " kept in part only; " << cutByTile
+				   << " only ever partly drawn\n";
+			for (const auto &[k, v] : mixedMaterials) report << "  " << v << "  " << k << "\n";
+		}
+		MESSAGE(stonesSeen << " stones; " << mixed << " kept in part only");
+		CHECK(stonesSeen > 1000);
+		CHECK(mixed == 0);
 	}
 }

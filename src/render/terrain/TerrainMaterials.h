@@ -172,6 +172,10 @@ struct BorderClass
 {
 	std::string key;
 	bool shoreline = false;
+	// Laid stone paths do not end on whole stones against this class: water,
+	// lava, holes and chasms cut the stones along their own smooth edge, as a
+	// quay or a drop would, instead of filling the gaps of dropped stones.
+	bool cutsStones = false;
 };
 // A flat animated overlay drawn over the ground under any decor ("overlay"),
 // such as the glints that mark fertile ground. Each cycle lists one frame per
@@ -251,6 +255,13 @@ class Catalog
 	// Version 4: a's border class is stronger, or the same class with a higher
 	// edge precedence. Diagonal smooth contacts join the dominant material.
 	bool dominates(MaterialId a, MaterialId b) const;
+	// Whether laid stones are cut, not kept or dropped, where they meet this
+	// material (BorderClass::cutsStones; always false before version 4).
+	bool cutsStones(MaterialId id) const
+	{
+		return version >= 4 && materials[id].borderClass < borderClasses.size() &&
+			   borderClasses[materials[id].borderClass].cutsStones;
+	}
 	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
@@ -287,14 +298,25 @@ struct Recipe
 	// Q8 shore calm of each corner (see shoreCalm), zero away from land.
 	std::array<std::uint8_t, 4> calm{};
 	bool calmed() const { return calm != std::array<std::uint8_t, 4>{}; }
-	// Whole-stone path edges (see TerrainStones.h). When `stones` is set, the
-	// laid stones of stoneMaterial reach this cell: stoneGround is the ground
-	// a dropped stone reveals, and stonesKept holds, for this cell and its
-	// eight neighbours in row-major order from (-1,-1), one bit per stone
-	// centred in that cell, numbered as in the stone map: set when kept.
-	bool stones = false;
-	MaterialId stoneMaterial = 0, stoneGround = 0;
-	std::array<std::uint64_t, 9> stonesKept{};
+	// Whole-stone path edges (see TerrainStones.h). Each layer is one laid
+	// stone path whose stones reach this cell: ground is the land a dropped
+	// stone reveals, and kept holds, for this cell and its eight neighbours in
+	// row-major order from (-1,-1), one bit per stone centred in that cell,
+	// numbered as in the stone map: set when kept. Where two paths meet, both
+	// are layers, dominant first, so every cell a stone reaches decides it alike.
+	struct StoneLayer
+	{
+		MaterialId material = 0, ground = 0;
+		std::array<std::uint64_t, 9> kept{};
+		bool operator==(const StoneLayer &) const = default;
+	};
+	static constexpr unsigned MaxStoneLayers = 3;
+	bool stones = false; // stoneLayerCount > 0.
+	std::uint8_t stoneLayerCount = 0;
+	std::array<StoneLayer, MaxStoneLayers> stoneLayers{};
+	// Bit k set when corners[k] cuts stones (Catalog::cutsStones): samples
+	// covered by such a corner keep the smooth border.
+	std::uint8_t stoneCutCorners = 0;
 	// One material fills the whole cell: its corners agree and no stone
 	// border reaches it.
 	bool uniform() const
@@ -302,7 +324,7 @@ struct Recipe
 		return !stones && corners[1] == corners[0] && corners[2] == corners[0] && corners[3] == corners[0];
 	}
 	// The distinct materials the cell may draw, in palette order: its corners,
-	// then the stone material and the ground of a stone border. Returns the count.
+	// then each stone layer's material and ground. Returns the count.
 	unsigned palette(std::array<MaterialId, 4> &out) const
 	{
 		unsigned count = 0;
@@ -314,10 +336,10 @@ struct Recipe
 			if (count < out.size()) out[count++] = id;
 		};
 		for (const auto id : corners) add(id);
-		if (stones)
+		for (unsigned i = 0; i < stoneLayerCount; ++i)
 		{
-			add(stoneMaterial);
-			add(stoneGround);
+			add(stoneLayers[i].material);
+			add(stoneLayers[i].ground);
 		}
 		return count;
 	}

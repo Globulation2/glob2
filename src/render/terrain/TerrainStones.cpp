@@ -120,11 +120,20 @@ const StoneMap *StoneMaps::get(MaterialId id) const
 	return slot.map.get();
 }
 
-void applyStones(const Recipe &r, const StoneMap &map, int px, int py, Coverage &c)
+void applyStones(const Recipe &r, unsigned layer, const StoneMap &map, int px, int py, Coverage &c)
 {
+	const auto &stones = r.stoneLayers[layer];
+	const MaterialId stoneMaterial = stones.material, stoneGround = stones.ground;
+	// Water, lava, holes and chasms cut the stones along their smooth edge.
+	if (r.stoneCutCorners)
+		for (unsigned i = 0; i < 4; ++i)
+			if (c.weight[i])
+				for (unsigned k = 0; k < 4; ++k)
+					if ((r.stoneCutCorners >> k & 1u) && r.corners[k] == c.material[i])
+						return;
 	const unsigned wrap = unsigned(map.tiles() - 1);
 	const auto t = map.at(int(unsigned(r.x) & wrap), int(unsigned(r.y) & wrap), px, py);
-	const auto kept = [&](unsigned tile, unsigned stone) { return (r.stonesKept[tile] >> stone & 1u) != 0; };
+	const auto kept = [&](unsigned tile, unsigned stone) { return (stones.kept[tile] >> stone & 1u) != 0; };
 	const bool own = kept(t.ownTile, t.own);
 	// The nearer neighbour of the other state, within the joint band.
 	unsigned edge = 65535;
@@ -146,7 +155,7 @@ void applyStones(const Recipe &r, const StoneMap &map, int px, int py, Coverage 
 	int stone = -1;
 	unsigned stoneWeight = 0;
 	for (int i = 0; i < 4; ++i)
-		if (c.weight[i] && c.material[i] == r.stoneMaterial)
+		if (c.weight[i] && c.material[i] == stoneMaterial)
 		{
 			stone = i;
 			stoneWeight = c.weight[i];
@@ -162,7 +171,7 @@ void applyStones(const Recipe &r, const StoneMap &map, int px, int py, Coverage 
 		const unsigned others = 65536 - stoneWeight, rest = 65536 - target;
 		if (stone < 0 && (stone = freeSlot()) < 0)
 			return; // Four other materials: keep the smooth border here.
-		c.material[stone] = r.stoneMaterial;
+		c.material[stone] = stoneMaterial;
 		c.weight[stone] = 0;
 		if (others)
 		{
@@ -176,11 +185,11 @@ void applyStones(const Recipe &r, const StoneMap &map, int px, int py, Coverage 
 			// stone reveals the ground.
 			int ground = -1;
 			for (int i = 0; i < 4 && ground < 0; ++i)
-				if (i != stone && c.material[i] == r.stoneGround) ground = i;
+				if (i != stone && c.material[i] == stoneGround) ground = i;
 			if (ground < 0)
 				for (int i = 0; i < 4 && ground < 0; ++i)
 					if (i != stone && !c.weight[i]) ground = i;
-			c.material[ground] = r.stoneGround;
+			c.material[ground] = stoneGround;
 			c.weight[ground] = rest;
 		}
 		c.weight[stone] = target;
@@ -204,17 +213,17 @@ void applyStones(const Recipe &r, const StoneMap &map, int px, int py, Coverage 
 		// Beyond a dropped stone's joint the kept face lies about one grout
 		// width further than the joint, so the shadow continues across it.
 		c.margin = own ? unsigned(std::abs(t.face)) : edge + unsigned(std::max(0, -t.face));
-		if (c.material[dominant] == r.stoneMaterial)
+		if (c.material[dominant] == stoneMaterial)
 		{
 			int ground = -1;
 			for (int i = 0; i < 4; ++i)
 				if (i != dominant && c.weight[i] && (ground < 0 || c.weight[i] > c.weight[ground])) ground = i;
-			c.neighbor = ground < 0 ? r.stoneGround : c.material[ground];
+			c.neighbor = ground < 0 ? stoneGround : c.material[ground];
 		}
 		else
-			c.neighbor = r.stoneMaterial;
+			c.neighbor = stoneMaterial;
 	}
-	else if (c.neighbor == r.stoneMaterial || c.material[dominant] == r.stoneMaterial)
+	else if (c.neighbor == stoneMaterial || c.material[dominant] == stoneMaterial)
 	{
 		// The smooth border no longer marks a stone edge here.
 		c.margin = 65535;

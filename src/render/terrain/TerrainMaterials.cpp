@@ -122,6 +122,9 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto shoreline = entry.value("shoreline", nlohmann::json(false));
 			require(shoreline.is_boolean(), "border class shoreline must be a boolean");
 			v.shoreline = shoreline.get<bool>();
+			const auto cuts = entry.value("cuts_stones", nlohmann::json(false));
+			require(cuts.is_boolean(), "border class cuts_stones must be a boolean");
+			v.cutsStones = cuts.get<bool>();
 			c.borderClasses.push_back(std::move(v));
 		}
 		keys.clear();

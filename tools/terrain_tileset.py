@@ -445,7 +445,8 @@ def border_classes(document):
             or not entry["key"]
             or entry["key"] in result
             or type(entry.get("shoreline", False)) is not bool
-            or set(entry) - {"key", "shoreline"}
+            or type(entry.get("cuts_stones", False)) is not bool
+            or set(entry) - {"key", "shoreline", "cuts_stones"}
         ):
             raise ValueError("Invalid or duplicate border class")
         result[entry["key"]] = dict(rank=rank, shoreline=entry.get("shoreline", False))

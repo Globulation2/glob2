@@ -44,6 +44,9 @@ strongest first; each material names its `class` and its edge `profile`:
    turf; the three waters all use `still`.
 4. A `pair_treatments` entry still overrides one pair. The shipped catalog needs
    none.
+5. A class marked `"cuts_stones": true` cuts laid stone paths along its smooth
+   edge instead of meeting them on whole stones; see
+   [Whole-stone edges](#whole-stone-edges).
 
 `python3 tools/terrain_tileset.py --border-table` lists the profile of every
 material pair; `--compare OLD.json` lists only the pairs that changed. Version
@@ -242,20 +245,39 @@ the joints instead of cutting a stone. Boardwalk keeps the cut border, as sawn
 planks would. A material opts in with `"stones"`, the data path of its stone
 map (see [Stone maps](terrain-production.md#stone-maps)).
 
-A stone follows the smooth border at its centre: it is kept when its material
-has the largest coverage there. The decision is made once per stone, not per
-pixel. `Compositor::describe` records, for a cell and its eight neighbours, one
-bit per stone centred in each (`Recipe::stonesKept`), because a stone reaches at
-most one cell beyond the one holding its centre. A stone that spans two cells
-reads the same bit from both, and cached pages that compare recipes rebuild
-when any decision changes. Where two stone paths meet, the dominant one keeps
-whole stones; a cell whose corners, stone material and revealed ground would
-exceed four materials keeps the smooth border.
+A stone follows the smooth border at its centre: it is dropped only when land
+covers more of its centre than the stone material does. The decision is made
+once per stone, not per pixel, from the cell holding its centre, so every cell
+the stone reaches agrees. `Compositor::describe` records, for a cell and its
+eight neighbours, one bit per stone centred in each (`Recipe::StoneLayer::kept`),
+because a stone reaches at most one cell beyond the one holding its centre.
+Cached pages that compare recipes rebuild when any decision changes.
+
+Each stone path whose stones can reach a cell is one of its stone layers, up to
+three (`Recipe::stoneLayers`): paths among the cell's own corners first, then
+the dominant one. Layers apply from the last to the first, so where two paths
+meet the dominant path's kept stones lie over the other's and the subordinate
+is cut along their outline. Other stone paths never drop a stone, so two paths
+leave no gap between them.
+
+Some border classes cut stones instead (`"cuts_stones": true`; the shipped
+`cut`, `flow` and `pool` classes): water, lava, holes and chasms never drop a
+stone and are never revealed. Against them the path keeps its stones and the
+smooth edge cuts them, as a quay or a drop would, and samples a cutting material
+covers keep the smooth border (`Recipe::stoneCutCorners`).
+
+A dropped stone reveals the nearest land: the most common land among the cell's
+corners, else its 4×4 window, else its 6×6 one. Paths are discovered from that
+6×6 window (vertices −2…3), because a stone centred in a neighbouring cell
+reaches this one from that cell's window; `Compositor::prepareVisible` prepares
+every material of the same window near a stone path, so no layer or ground
+draws from an unprepared texture. A cell whose palette cannot hold its corners
+and a layer's stone material and ground leaves that layer out; the continuity
+test counts any stone this leaves inconsistent.
 
 Sampling a pixel then costs one stone-map lookup and a bit test. A kept stone's
 face fades into the ground it borders over one logical pixel, half on either
-side of the joint; a dropped stone reveals the most common other ground around
-the cell. The seam distance measures from the stone edge, so the path's seam
+side of the joint. The seam distance measures from the stone edge, so the path's seam
 cast draws a contact shadow along the stones. Kept stones may overhang into a
 cell whose corners all show other ground, so such cells are not uniform
 (`Recipe::uniform`) and draw a mask; their palette lists the stone material and

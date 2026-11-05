@@ -17,7 +17,7 @@ namespace TerrainVisual
 // The decision is made once per stone, at the stone's centre, from the same
 // smooth-border coverage the rest of the cell uses: a stone is kept when its
 // material is the largest there. Compositor::describe records the decisions
-// for a cell and its eight neighbours in the Recipe (stonesKept), so cached
+// for a cell and its eight neighbours in the Recipe (Recipe::StoneLayer), so cached
 // pages that compare recipes already rebuild when any of them changes, and
 // every pixel then needs only a stone-map lookup and a bit test.
 //
@@ -98,6 +98,8 @@ constexpr unsigned StoneRimQ8 = 256;
 // Replaces the stone material's share of a coverage sample at Q8 logical
 // position (px, py) of the recipe's cell with whole stones, and points the
 // seam distance at the stone edge so contact shading follows the stones.
-// Requires recipe.stones.
-void applyStones(const Recipe &, const StoneMap &, int px, int py, Coverage &);
+// Applies one stone layer (Recipe::stoneLayers[layer]) with its own stone map;
+// callers apply the layers from the last to the first, so the dominant path's
+// kept stones lie over the other's.
+void applyStones(const Recipe &, unsigned layer, const StoneMap &, int px, int py, Coverage &);
 } // namespace TerrainVisual

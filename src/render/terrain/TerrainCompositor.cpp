@@ -365,6 +365,25 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
                 const auto id = materialFor(map, corner);
                 usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
             }
+            // A stone border also draws stones reaching in from neighbouring
+            // cells, other paths' stone layers and the ground a dropped stone
+            // reveals, none of which need be a corner here. describeStones reads
+            // them from the cell's 6x6 vertex window (-2..3), so near a stone
+            // path prepare every material of that window at this cell's variant.
+            {
+                std::array<MaterialId, 36> window;
+                bool stone = false;
+                for (int dy = -2; dy <= 3; ++dy)
+                    for (int dx = -2; dx <= 3; ++dx)
+                    {
+                        const auto id = materialFor(map, map.vertexTerrainAt(wx + dx, wy + dy));
+                        window[(dy + 2) * 6 + dx + 2] = id;
+                        stone |= stoneMaps->has(id);
+                    }
+                if (stone)
+                    for (const auto id : window)
+                        usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
+            }
         }
     prepareSelected(hd, time, &usage, nativeComposition);
 }
@@ -860,121 +879,190 @@ void Compositor::describeStones(const SceneMap &map, Recipe &r) const
 	// Vertices -2..3 around the cell: each of the nine cells whose stones can
 	// reach it reads its own 4x4 window from them.
 	std::array<MaterialId, 36> vertices;
-	bool stoneFound = false;
-	MaterialId stone = 0;
+	// Stone paths whose stones can reach the cell, dominant first: where two meet,
+	// both are layers, so whichever cell draws a stone decides it the same way.
+	std::array<MaterialId, 4> paths{};
+	unsigned pathCount = 0;
 	for (int y = -2; y <= 3; ++y)
 		for (int x = -2; x <= 3; ++x)
 		{
 			const auto id = materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 			vertices[(y + 2) * 6 + x + 2] = id;
-			// Where two stone paths meet, the dominant one keeps whole stones.
-			if (x >= -1 && x <= 2 && y >= -1 && y <= 2 && stoneMaps->has(id) &&
-				(!stoneFound || definitions.dominates(id, stone)))
-			{
-				stone = id;
-				stoneFound = true;
-			}
+			// The whole window: a stone centred in a neighbouring cell reaches
+			// this one from that cell's window, a vertex beyond this cell's own.
+			if (stoneMaps->has(id) && pathCount < paths.size() &&
+				std::find(paths.begin(), paths.begin() + pathCount, id) == paths.begin() + pathCount)
+				paths[pathCount++] = id;
 		}
 	const auto vertex = [&](int x, int y) { return vertices[(y + 2) * 6 + x + 2]; };
-	if (!stoneFound)
+	if (!pathCount)
 		return;
+	// Paths among the cell's own corners come first: they cover its pixels,
+	// while the others only overhang from a neighbour. Then the dominant one.
+	const auto corner = [&](MaterialId id) { return std::find(r.corners.begin(), r.corners.end(), id) != r.corners.end(); };
+	std::sort(paths.begin(), paths.begin() + pathCount, [&](MaterialId a, MaterialId b)
+	{
+		if (corner(a) != corner(b)) return corner(a);
+		return definitions.dominates(a, b) || (!definitions.dominates(b, a) && a < b);
+	});
+	const unsigned layers = std::min(pathCount, Recipe::MaxStoneLayers);
 	bool varied = false;
 	for (int y = -1; y <= 2 && !varied; ++y)
 		for (int x = -1; x <= 2 && !varied; ++x)
-			varied = vertex(x, y) != stone;
+			varied = vertex(x, y) != paths[0];
 	if (!varied)
 		return; // Inside the path.
-	// A dropped stone reveals the most common other ground around the cell.
-	std::array<MaterialId, 16> others;
-	std::array<unsigned, 16> counts{};
+	// A dropped stone reveals the most common land around the cell: never water,
+	// lava, holes or chasms (Catalog::cutsStones), against which stones are kept
+	// and cut by the smooth edge, and never another stone layer, so two paths do
+	// not hand each other's dropped stones back and forth.
+	// The nearest land: the cell's corners, its 4x4 window, else the 6x6 one that every
+	// stone reaching it is decided from. Only land drops a stone, so without
+	// land in the 6x6 window no stone is dropped and the ground is unused.
+	std::array<MaterialId, 36> others;
+	std::array<unsigned, 36> counts{};
 	unsigned kinds = 0, best = 0;
-	for (int y = -1; y <= 2; ++y)
-		for (int x = -1; x <= 2; ++x)
-			if (const auto id = vertex(x, y); id != stone)
-			{
-				unsigned k = 0;
-				while (k < kinds && others[k] != id) ++k;
-				if (k == kinds) others[kinds++] = id;
-				if (++counts[k] > counts[best]) best = k;
-			}
-	const auto ground = others[best];
-	// The cell's palette holds four materials; beyond that keep the smooth border.
-	std::array<MaterialId, 6> wanted{r.corners[0], r.corners[1], r.corners[2], r.corners[3], stone, ground};
-	unsigned distinct = 0;
-	for (unsigned i = 0; i < wanted.size(); ++i)
-		distinct += std::find(wanted.begin(), wanted.begin() + i, wanted[i]) == wanted.begin() + i;
-	if (distinct > 4)
+	// Land among the cell's own corners first: it needs no palette slot.
+	for (const auto id : r.corners)
+		if (!stoneMaps->has(id) && !definitions.cutsStones(id))
+		{
+			unsigned k = 0;
+			while (k < kinds && others[k] != id) ++k;
+			if (k == kinds) others[kinds++] = id;
+			if (++counts[k] > counts[best]) best = k;
+		}
+	for (const int reach : {1, 2})
+	{
+		if (kinds)
+			break;
+		for (int y = -reach; y <= reach + 1; ++y)
+			for (int x = -reach; x <= reach + 1; ++x)
+				if (const auto id = vertex(x, y); !stoneMaps->has(id) && !definitions.cutsStones(id))
+				{
+					unsigned k = 0;
+					while (k < kinds && others[k] != id) ++k;
+					if (k == kinds) others[kinds++] = id;
+					if (++counts[k] > counts[best]) best = k;
+				}
+	}
+	std::array<Recipe::StoneLayer, Recipe::MaxStoneLayers> layer{};
+	for (unsigned l = 0; l < layers; ++l)
+	{
+		layer[l].material = paths[l];
+		layer[l].ground = kinds ? others[best] : paths[l];
+	}
+	// The cell's palette holds four materials; a second layer that does not fit
+	// is left out, and a first that does not fit keeps the smooth border.
+	const auto fits = [&](unsigned count)
+	{
+		std::array<MaterialId, 4 + 2 * Recipe::MaxStoneLayers> wanted{r.corners[0], r.corners[1], r.corners[2], r.corners[3]};
+		for (unsigned l = 0; l < count; ++l)
+		{
+			wanted[4 + 2 * l] = layer[l].material;
+			wanted[5 + 2 * l] = layer[l].ground;
+		}
+		const unsigned size = 4 + 2 * count;
+		unsigned distinct = 0;
+		for (unsigned i = 0; i < size; ++i)
+			distinct += std::find(wanted.begin(), wanted.begin() + i, wanted[i]) == wanted.begin() + i;
+		return distinct <= 4;
+	};
+	unsigned count = layers;
+	while (count && !fits(count))
+		--count;
+	if (!count)
 		return;
-	const auto *stones = stoneMaps->get(stone);
-	const unsigned wrap = unsigned(stones->tiles() - 1);
-	const auto &reach = stones->reaching(int(unsigned(r.x) & wrap), int(unsigned(r.y) & wrap));
 	thread_local std::unordered_map<StoneDecisionKey, std::uint64_t, StoneDecisionHash> decided;
 	if (decided.size() > 65536)
 		decided.clear();
-	std::array<std::uint64_t, 9> kept{};
-	for (int dy = -1; dy <= 1; ++dy)
-		for (int dx = -1; dx <= 1; ++dx)
-		{
-			const int slot = (dy + 1) * 3 + dx + 1;
-			if (!reach[slot])
-				continue; // No stone of that cell reaches this one.
-			const MaterialId corners[4] = {vertex(dx, dy), vertex(dx + 1, dy), vertex(dx, dy + 1), vertex(dx + 1, dy + 1)};
-			const auto count = std::count(std::begin(corners), std::end(corners), stone);
-			if (count == 4)
+	std::array<std::array<std::uint64_t, 9>, Recipe::MaxStoneLayers> reachOf{};
+	for (unsigned l = 0; l < count; ++l)
+	{
+		const auto stone = layer[l].material;
+		const auto *stones = stoneMaps->get(stone);
+		const unsigned wrap = unsigned(stones->tiles() - 1);
+		const auto &reach = stones->reaching(int(unsigned(r.x) & wrap), int(unsigned(r.y) & wrap));
+		for (unsigned slot = 0; slot < 9; ++slot)
+			reachOf[l][slot] = reach[slot];
+		auto &kept = layer[l].kept;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
 			{
-				kept[slot] = ~std::uint64_t(0);
-				continue;
+				const int slot = (dy + 1) * 3 + dx + 1;
+				if (!reach[slot])
+					continue; // No stone of that cell reaches this one.
+				const MaterialId corners[4] = {vertex(dx, dy), vertex(dx + 1, dy), vertex(dx, dy + 1), vertex(dx + 1, dy + 1)};
+				const auto own = std::count(std::begin(corners), std::end(corners), stone);
+				if (own == 4)
+				{
+					kept[slot] = ~std::uint64_t(0);
+					continue;
+				}
+				if (!own)
+					continue;
+				StoneDecisionKey key{instance, int(unsigned(r.x + dx) & unsigned(map.getMaskW())),
+					int(unsigned(r.y + dy) & unsigned(map.getMaskH())), map.getW(), map.getH(), map.terrainSeed(), stone, {}};
+				for (int y = -1; y <= 2; ++y)
+					for (int x = -1; x <= 2; ++x)
+						key.window[(y + 1) * 4 + x + 1] = vertex(dx + x, dy + y);
+				if (const auto found = decided.find(key); found != decided.end())
+				{
+					kept[slot] = found->second;
+					continue;
+				}
+				// Each stone follows the smooth border at its centre, which depends
+				// only on the cell holding it: every cell it reaches agrees.
+				const auto neighbour = describeCell(map, r.x + dx, r.y + dy, false);
+				const PreparedCoverage prepared(definitions, neighbour, PreparedCoverage::Detail::Weights);
+				const auto &centres = stones->centres(int(unsigned(r.x + dx) & wrap), int(unsigned(r.y + dy) & wrap));
+				std::uint64_t bits = 0;
+				for (std::size_t i = 0; i < centres.size(); ++i)
+				{
+					// Kept unless land covers more of its centre. Neither cutting
+					// materials nor other stone paths drop a stone: water cuts it
+					// along its edge, and where two paths meet the dominant one's
+					// kept stones lie over the other's, leaving no gap to fill.
+					const auto coverage = prepared.at(centres[i][0], centres[i][1]);
+					unsigned mine = 0, other = 0;
+					for (unsigned k = 0; k < 4; ++k)
+						if (coverage.material[k] == stone)
+							mine += coverage.weight[k];
+						else if (!definitions.cutsStones(coverage.material[k]) && !stoneMaps->has(coverage.material[k]))
+							other = std::max(other, coverage.weight[k]);
+					if (mine >= other) bits |= std::uint64_t(1) << i;
+				}
+				decided.emplace(key, bits);
+				kept[slot] = bits;
 			}
-			if (!count)
-				continue;
-			StoneDecisionKey key{instance, int(unsigned(r.x + dx) & unsigned(map.getMaskW())),
-				int(unsigned(r.y + dy) & unsigned(map.getMaskH())), map.getW(), map.getH(), map.terrainSeed(), stone, {}};
-			for (int y = -1; y <= 2; ++y)
-				for (int x = -1; x <= 2; ++x)
-					key.window[(y + 1) * 4 + x + 1] = vertex(dx + x, dy + y);
-			if (const auto found = decided.find(key); found != decided.end())
-			{
-				kept[slot] = found->second;
-				continue;
-			}
-			// Each stone follows the smooth border at its centre.
-			const auto neighbour = describeCell(map, r.x + dx, r.y + dy, false);
-			const PreparedCoverage prepared(definitions, neighbour, PreparedCoverage::Detail::Weights);
-			const auto &centres = stones->centres(int(unsigned(r.x + dx) & wrap), int(unsigned(r.y + dy) & wrap));
-			std::uint64_t bits = 0;
-			for (std::size_t i = 0; i < centres.size(); ++i)
-			{
-				// Kept where the stone material is the largest there.
-				const auto coverage = prepared.at(centres[i][0], centres[i][1]);
-				unsigned own = 0, other = 0;
-				for (unsigned k = 0; k < 4; ++k)
-					if (coverage.material[k] == stone)
-						own += coverage.weight[k];
-					else
-						other = std::max(other, coverage.weight[k]);
-				if (own > other) bits |= std::uint64_t(1) << i;
-			}
-			decided.emplace(key, bits);
-			kept[slot] = bits;
-		}
+		// Only reaching stones are ever looked up; the rest stay zero so equal
+		// cells keep equal recipes.
+		for (unsigned slot = 0; slot < 9; ++slot)
+			kept[slot] &= reach[slot];
+	}
 	// A cell of one material whose reaching stones all agree with it draws
 	// exactly as without stones, and keeps the uniform fast path.
 	if (r.corners[1] == r.corners[0] && r.corners[2] == r.corners[0] && r.corners[3] == r.corners[0])
 	{
-		const bool path = r.corners[0] == stone;
+		// Stones never cover a cutting material, so such a cell draws as before.
+		if (definitions.cutsStones(r.corners[0]))
+			return;
 		bool agrees = true;
-		for (unsigned slot = 0; slot < 9 && agrees; ++slot)
-			agrees = (path ? (reach[slot] & ~kept[slot]) : (reach[slot] & kept[slot])) == 0;
+		for (unsigned l = 0; l < count && agrees; ++l)
+		{
+			const bool path = r.corners[0] == layer[l].material;
+			for (unsigned slot = 0; slot < 9 && agrees; ++slot)
+				agrees = (path ? (reachOf[l][slot] & ~layer[l].kept[slot]) : layer[l].kept[slot]) == 0;
+		}
 		if (agrees)
 			return;
 	}
 	r.stones = true;
-	r.stoneMaterial = stone;
-	r.stoneGround = ground;
-	// Only reaching stones are ever looked up; the rest stay zero so equal
-	// cells keep equal recipes.
-	for (unsigned slot = 0; slot < 9; ++slot)
-		r.stonesKept[slot] = kept[slot] & reach[slot];
+	r.stoneLayerCount = std::uint8_t(count);
+	for (unsigned l = 0; l < count; ++l)
+		r.stoneLayers[l] = layer[l];
+	for (unsigned k = 0; k < 4; ++k)
+		if (definitions.cutsStones(r.corners[k]))
+			r.stoneCutCorners |= std::uint8_t(1u << k);
 }
 void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 {
@@ -1432,14 +1520,17 @@ void Compositor::buildMask(const Catalog &definitions, const StoneMaps &stones, 
 	cell.samples.resize(std::size_t(size) * size);
 	auto *sample = cell.samples.data();
 	const PreparedCoverage prepared(definitions, r);
-	const auto *stoneMap = r.stones ? stones.get(r.stoneMaterial) : nullptr;
+	std::array<const StoneMap *, Recipe::MaxStoneLayers> stoneMap{};
+	for (unsigned l = 0; l < r.stoneLayerCount; ++l)
+		stoneMap[l] = stones.get(r.stoneLayers[l].material);
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x, ++sample)
 		{
 			const int px = (x * 256 + 128) / scale, py = (y * 256 + 128) / scale;
 			auto coverage = prepared.at(px, py);
-			if (stoneMap)
-				applyStones(r, *stoneMap, px, py, coverage);
+			// The other path first, so the dominant one's kept stones lie on top.
+			for (unsigned l = r.stoneLayerCount; l-- > 0;)
+				applyStones(r, l, *stoneMap[l], px, py, coverage);
 			// Entries of one material add linearly in the blend, so they merge.
 			unsigned weights[4] = {};
 			for (int i = 0; i < 4; ++i)
