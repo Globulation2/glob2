@@ -260,7 +260,8 @@ struct SamplingPlan
 	bool pageFits, viewFits;
 };
 SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int bottom, int vx,
-						  int vy, int preferredResolution, int preferredDownsample = 0)
+						  int vy, int preferredResolution, int preferredDownsample = 0,
+						  bool stableView = false)
 {
 	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
 	const auto budget = gpu ? SoftwareTerrainCache::GPUBudget : SoftwareTerrainCache::Budget;
@@ -268,10 +269,21 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	const int y0 = chunkOf(top + vy), y1 = chunkOf(bottom + vy);
 	// A map smaller than one page repeats within that canonical page. All map
 	// dimensions are powers of two, so its period divides the page dimensions.
-	const auto visiblePages =
-		std::uint64_t(
-			std::min(x1 - x0 + 1, std::max(1, map.getW() / SoftwareTerrainCache::ChunkTiles))) *
-		std::min(y1 - y0 + 1, std::max(1, map.getH() / SoftwareTerrainCache::ChunkTiles));
+	constexpr int tiles = SoftwareTerrainCache::ChunkTiles;
+	// Size the interactive HD view for its worst alignment on the page grid.
+	// A pan can expose an extra row and column without changing the zoom.
+	const int columns = stableView ? (right - left + tiles - 1) / tiles + 1 : x1 - x0 + 1;
+	const int rows = stableView ? (bottom - top + tiles - 1) / tiles + 1 : y1 - y0 + 1;
+	const auto visiblePages = std::uint64_t(std::min(columns, std::max(1, map.getW() / tiles))) *
+		std::min(rows, std::max(1, map.getH() / tiles));
+	const auto cacheBudget = gpu ? SoftwareTerrainCache::GPUCacheBudget : budget;
+	const auto fitsDensity = [&](int scale)
+	{
+		const auto total = pageStorage(scale, gpu);
+		if (!stableView || !gpu) return visiblePages * total <= budget;
+		const auto texture = total - pageStorage(scale, false);
+		return visiblePages * texture <= budget && visiblePages * total <= cacheBudget;
+	};
 	const int limit = globalContainer->gfx->maximumTextureSize();
 	const auto fitsDevice = [&](int resolution)
 	{ return limit <= 0 || SoftwareTerrainCache::ChunkPixels * resolution <= limit; };
@@ -279,7 +291,7 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	// Cache and streaming draws choose density from the complete view, not from
 	// each submitted page. Memory pressure must not change sampling page by page.
 	while (resolution > 1 &&
-		   (!fitsDevice(resolution) || visiblePages * pageStorage(resolution, gpu) > budget))
+		   (!fitsDevice(resolution) || !fitsDensity(resolution)))
 		resolution /= 2;
 	// A zoomed-out view can exceed the budget even at native density. Streaming
 	// then recomposes and uploads the entire view every frame. Retain filtered
@@ -302,13 +314,14 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	const bool pageFits =
 		(limit <= 0 || SoftwareTerrainCache::ChunkPixels * resolution / downsample <= limit) &&
 		storage <= budget;
-	// The entire view needs CPU pixels, but its textures can be streamed from
-	// those pixels under the cache budget. Reserve room for at least one upload.
+	// Immediate draws can stream textures from retained CPU pixels. Progressive
+	// draws need the full view to fit eventually or some holes never fill.
 	const auto cpuStorage = pageStorage(resolution, false, downsample);
-	const auto minimumStorage = gpu ? visiblePages * cpuStorage + storage - cpuStorage
+	const auto minimumStorage = gpu && !stableView ? visiblePages * cpuStorage + storage - cpuStorage
 		: visiblePages * storage;
-	const auto cacheBudget = gpu ? SoftwareTerrainCache::GPUCacheBudget : budget;
-	return {resolution, downsample, cacheBudget, pageFits, pageFits && minimumStorage <= cacheBudget};
+	const bool texturesFit = !stableView || !gpu || visiblePages * (storage - cpuStorage) <= budget;
+	return {resolution, downsample, cacheBudget, pageFits,
+		pageFits && texturesFit && minimumStorage <= cacheBudget};
 }
 
 // Box-filter composed coverage in premultiplied space, then retain straight
@@ -370,7 +383,7 @@ void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int di
 }
 SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 							  int vy, int preferredResolution, bool tiledCapture,
-							  int preferredDownsample = 0)
+							  int preferredDownsample = 0, bool stableView = false)
 {
 	// A narrow atlas edge must not select HD pages after its wider neighbor
 	// selected native pages. That changes seams and repeatedly clears the cache.
@@ -386,7 +399,7 @@ SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right,
 				NativeTilePixels / SoftwareTerrainCache::capturePixelsPerCell(map.getW(), map.getH()));
 	}
 	return samplingPlan(map, left, top, right, bottom, vx, vy, preferredResolution,
-						preferredDownsample);
+						preferredDownsample, stableView);
 }
 void drawEmergencyTiles(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 						int vy, Uint32 visibleTeams, bool wholeMap, int preferredResolution)
@@ -552,12 +565,12 @@ int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time, bool tiledCapture, bool progressive)
+								   bool wholeMap, int time, bool tiledCapture, Preparation preparation)
 {
 	const bool fixedDensity = benchmarkDownsample > 0 && !tiledCapture;
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
 							   wholeMap, time, fixedDensity ? 1 : 0, tiledCapture,
-							   fixedDensity ? benchmarkDownsample : 0, progressive);
+							   fixedDensity ? benchmarkDownsample : 0, preparation);
 }
 namespace
 {
@@ -727,7 +740,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
 											   int preferredResolution, bool tiledCapture,
-											   int preferredDownsample, bool progressive)
+											   int preferredDownsample, Preparation preparation)
 {
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
@@ -743,6 +756,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         cpuMaterialLease.reset();
     }
 	PERF_SCOPE_TIME(TerrainCache);
+	const bool progressive = preparation == Preparation::Progressive;
+	const bool initialView = preparation == Preparation::InitialView;
 	copies.clear();
 	missingPages.clear();
 	++frame;
@@ -773,9 +788,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView);
 	};
 	prepareMaterials();
-	// A capture is drawn once, so it waits for streamed HD rather than
-	// keeping the native fallback that interactive frames replace later.
-	if (tiledCapture && nextGPU)
+	// The first gameplay view and tiled captures wait for their HD sources.
+	// Subsequent interactive frames publish pages as those sources arrive.
+	if ((tiledCapture || initialView) && nextGPU)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
@@ -784,7 +799,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
 						 preferredResolution > 0 ? preferredResolution : compositor.scale(),
-						 tiledCapture, preferredDownsample);
+						 tiledCapture, preferredDownsample, progressive || initialView);
 	if (!plan.viewFits)
 	{
         chunks.clear();
@@ -1411,7 +1426,7 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 #if !defined(GLOB2_MOBILE) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 	// Reduced desktop views cover many more mixed animated cells. Keep their
 	// native coverage too; otherwise every phase samples those contours again.
-	if (gpu && downsample > 1) budget = GPUBudget;
+	if (gpu && downsample > 1) budget = 128u * 1024u * 1024u;
 #endif
 	if (needed > budget)
 		return false;

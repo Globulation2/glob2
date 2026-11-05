@@ -1100,17 +1100,17 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
 									true));
 		CHECK(globals->terrainCompositor().scale() == 4);
-		CHECK(independent.resolution == 2);
+		CHECK(independent.resolution == 4);
 		SoftwareTerrainCache tiled;
 		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0, fixture.team->me, true,
 							  0, true));
-		CHECK(tiled.resolution == 1);
+		CHECK(tiled.resolution == 2);
 		const auto rebuilds = tiled.cacheRebuilds();
 		for (const auto &strip : {SDL_Rect{0, 0, 7, 64}, SDL_Rect{0, 0, 64, 7}})
 		{
 			REQUIRE(tiled.prepare(scene, *globals->terrain, strip.x, strip.y, strip.x + strip.w - 1,
 								  strip.y + strip.h - 1, 0, 0, fixture.team->me, true, 0, true));
-			CHECK(tiled.resolution == 1);
+			CHECK(tiled.resolution == 2);
 			CHECK(tiled.cacheRebuilds() == rebuilds);
 			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget);
 		}
@@ -1176,17 +1176,20 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map, scene);
 		SoftwareTerrainCache cache;
 		auto &gfx = *globals->gfx;
+		// 132 native pages exceed the 256 MiB texture reservation once mip
+		// storage is counted, so some composed pixels must stay parked.
+		constexpr int right = 173, bottom = 158;
 		const auto draw = [&](bool cached)
 		{
 			gfx.drawFilledRect(0, 0, 1600, 1280, 17, 29, 41);
 			gfx.beginMapTransform(.75f, .375f, .625f, 0, 0, 1600, 1280);
 			if (cached)
 			{
-				REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 125, 100, 15, 15,
+				REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 15, 15,
 					fixture.team->me, true, 19));
 				cache.draw(gfx);
 			}
-			else SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 125, 100,
+			else SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, right, bottom,
 				15, 15, fixture.team->me, true, 19);
 			gfx.endMapTransform();
 			return terrainPixels(true);

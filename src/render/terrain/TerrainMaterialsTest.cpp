@@ -8,6 +8,7 @@
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
+#include "DirectTerrain.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/scene/SceneMap.h"
 #include "TerrainCompiledPack.h"
@@ -936,7 +937,7 @@ TEST_SUITE("TerrainMaterials")
 		const auto prepare = [&]
 		{
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-				fixture.team->me, false, 0, false, true));
+				fixture.team->me, false, 0, false, SoftwareTerrainCache::Preparation::Progressive));
 		};
 		prepare();
 		CHECK(cache.cacheRebuilds() == 1);
@@ -956,12 +957,83 @@ TEST_SUITE("TerrainMaterials")
 
 		SoftwareTerrainCache wrapped;
 		REQUIRE(wrapped.prepare(scene, *globals->terrain, -3, 0, 3, 15, 0, 0,
-			fixture.team->me, true, 0, false, true));
+			fixture.team->me, true, 0, false, SoftwareTerrainCache::Preparation::Progressive));
 		REQUIRE(wrapped.missingPageRegions().size() == 1);
 		const auto region = wrapped.missingPageRegions().front();
 		CHECK(region.x == -3);
 		CHECK(region.w == 3);
 	}
+
+	TEST_CASE("interactive HD pages retain density across page boundaries [display]")
+	{
+		const auto directory = glob2test::artifactDir() / "pan-hd";
+		std::filesystem::create_directories(directory);
+		std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
+			directory / "frame.webp", std::filesystem::copy_options::overwrite_existing);
+		{
+			std::ofstream frames(directory / "frames.txt");
+			frames << "GLOB2_HIGHRES 1\n";
+			for (int frame = 0; frame < 256; ++frame)
+				frames << "terrain-grass" << frame << " 32 32 4 frame.webp -\n";
+		}
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
+		REQUIRE(globals->gfx->rendererCapabilities().accelerated);
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		GAGCore::Sprite::deferHighResolution("data/gfx/terrain-grass");
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+
+		SoftwareTerrainCache cache;
+		using Preparation = SoftwareTerrainCache::Preparation;
+		const auto prepare = [&](int offset, Preparation preparation)
+		{
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 21, 11, offset, offset,
+				fixture.team->me, true, 0, false, preparation));
+			CHECK(cache.samplingResolution() == 4);
+			cache.draw(*globals->gfx);
+			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+		};
+		prepare(0, Preparation::InitialView);
+		CHECK(cache.missingPageRegions().empty());
+		CHECK(cache.cacheRebuilds() == 2);
+		// This diagonal pan changes the visible working set from two pages to six.
+		prepare(12, Preparation::Progressive);
+		CHECK(cache.missingPageRegions().size() == 3);
+		for (int i = 0; i < 3; ++i)
+			prepare(12, Preparation::Progressive);
+		CHECK(cache.missingPageRegions().empty());
+		CHECK(cache.cacheRebuilds() == 6);
+		prepare(0, Preparation::Progressive);
+		CHECK(cache.cacheRebuilds() == 6);
+	}
+
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+	TEST_CASE("initial native atlas draw completes visible terrain coverage [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &target = *globals->gfx;
+		if (!target.isLegacyGLScreen()) return;
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; x += 2)
+				fixture.game.map.setVertexTerrain(x, y, SAND);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		CHECK(atlas.needsBackdrop(target, scene, 0, 0, 15, 15));
+		REQUIRE(atlas.draw(target, scene, 0, 0, 15, 15, 0, 0,
+			fixture.team->me, true, 0, {}, true));
+		CHECK_FALSE(atlas.needsBackdrop(target, scene, 0, 0, 15, 15));
+		CHECK(atlas.needsBackdrop(target, scene, 32, 32, 47, 47));
+	}
+#endif
 
 	TEST_CASE("unequal variant weights affect deterministic texture selection")
 	{

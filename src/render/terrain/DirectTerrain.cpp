@@ -323,7 +323,7 @@ struct DirectTerrain::State
 
     void advanceCoverage(const SceneMap &map, const TerrainVisual::Compositor &compositor,
                          const std::array<int, 4> &view,
-                         std::chrono::steady_clock::time_point deadline)
+                         std::chrono::steady_clock::time_point deadline, bool fillBackground)
     {
         if (!coverageStream) return;
         auto &stream = *coverageStream;
@@ -366,7 +366,7 @@ struct DirectTerrain::State
                 if (slot && !stream.ready[slot - 1])
                     uploadTile(slot - 1);
             }
-            else if (stream.backgroundCursor < stream.recipes.size())
+            else if (fillBackground && stream.backgroundCursor < stream.recipes.size())
             {
                 const auto index = stream.backgroundCursor++;
                 if (!stream.ready[index]) uploadTile(index);
@@ -419,7 +419,8 @@ DirectTerrain::~DirectTerrain() = default;
 
 bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
                          int right, int bottom, int viewportX, int viewportY,
-                         Uint32 visibleTeams, bool wholeMap, int animationTime, std::span<const SDL_Rect> regions)
+                         Uint32 visibleTeams, bool wholeMap, int animationTime,
+                         std::span<const SDL_Rect> regions, [[maybe_unused]] bool completeVisible)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     const auto context = SDL_GL_GetCurrentContext();
@@ -505,7 +506,10 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     // Check the deadline between work items. Driver allocation and the first
     // metadata upload are indivisible and can take longer than the slice.
     constexpr auto coverageSlice = std::chrono::milliseconds(3);
-    const auto deadline = std::chrono::steady_clock::now() + coverageSlice;
+    // The first frame waits for visible coverage only. Later camera moves
+    // retain the time slice and spend spare time filling the rest of the atlas.
+    const auto deadline = completeVisible ? std::chrono::steady_clock::time_point::max()
+        : std::chrono::steady_clock::now() + coverageSlice;
     try
     {
         if (!state->program)
@@ -537,7 +541,8 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
         }
         if (state->coverageStream)
             state->advanceCoverage(map, globalContainer->terrainCompositor(assets),
-                {left + viewportX, top + viewportY, right + viewportX, bottom + viewportY}, deadline);
+                {left + viewportX, top + viewportY, right + viewportX, bottom + viewportY},
+                deadline, !completeVisible);
         if (!wholeMap)
             state->updateDiscovery(map, visibleTeams);
     }
