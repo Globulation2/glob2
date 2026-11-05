@@ -1152,6 +1152,7 @@ TEST_SUITE("TerrainMaterials")
 			{
 				material["sprite"] = "data/gfx/terrain";
 				material.erase("variant_grid"); material.erase("variant_blocks"); material.erase("variant_block_group");
+				material.erase("stones"); // A stone map spans a variant block.
 				material["variants"] = {{{"frame", 272}, {"weight", 1}}};
 			}
 		const auto directory = glob2test::artifactDir() / "data/terrain/startup-override";
@@ -1658,6 +1659,7 @@ TEST_SUITE("TerrainMaterials")
 					material.erase("seam");
 					material.erase("surf");
 					material.erase("class");
+					material.erase("stones");
 				}
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
@@ -2275,7 +2277,11 @@ TEST_SUITE("TerrainMaterials")
 		auto j = shippedCatalog();
 		j["version"] = 3;
 		j.erase("border_classes");
-		for (auto &m : j["materials"]) m.erase("class");
+		for (auto &m : j["materials"])
+		{
+			m.erase("class");
+			m.erase("stones"); // Whole-stone edges are version 4.
+		}
 		for (auto &p : j["profiles"])
 		{
 			p.erase("precedence"); p.erase("coast");

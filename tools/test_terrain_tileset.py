@@ -309,6 +309,7 @@ class TerrainTileset(unittest.TestCase):
             material.pop("seam", None)
             material.pop("surf", None)
             material.pop("class", None)
+            material.pop("stones", None)
         self.assertEqual(len(validate(self.document)), catalog_frame_count(self.document))
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):
