@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "LossyAlphaFixture.h"
+#include "MipReduction.h"
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <AssetLoader.h>
@@ -64,6 +65,9 @@ TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
         }
         for (size_t i = 1; i < image.mips.size(); ++i) {
             const auto &input = image.mips[i - 1], &output = image.mips[i];
+            auto inPlace = input.pixels;
+            GAGCore::downsampleMip(inPlace.data(), input.width, input.height, inPlace.data());
+            CHECK(std::equal(output.pixels.begin(), output.pixels.end(), inPlace.begin()));
             for (int y = 0; y < output.height; ++y) for (int x = 0; x < output.width; ++x) {
                 unsigned sum[4] = {};
                 for (int dy = 0; dy < 2; ++dy) for (int dx = 0; dx < 2; ++dx) {

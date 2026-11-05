@@ -54,7 +54,15 @@ it is saved, checksummed or read by the simulation.
   during the fade; resource minimap colours tint their gameplay cells over that
   ground. In the overview this replaces the water, terrain and resource passes.
   The reusable image stretches over the map in a single draw, avoiding thousands
-  of translucent fills.
+  of translucent fills. A stationary view reuses the image and its texture
+  while its terrain, resources and discovery inputs are unchanged.
+  When detailed resources come into view, installed resource sprites are
+  requested on demand through the asset loader. The resource marker is used
+  while its sprite is pending. Tiled captures and cached editor swatches wait
+  for their artwork before storing the resulting image.
+  In the interactive Legacy OpenGL view, pages that need reduction below
+  native resolution use native artwork for composition. HD artwork still
+  streams for use when zooming back in.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
@@ -71,7 +79,8 @@ it is saved, checksummed or read by the simulation.
   Frame order is shared between that script and `MapOverlayQueue.cpp`.
 - In the overview `Game::drawMapTerritory` washes the land around each team's
   visible buildings in its colour, inside a solid border two points wide. The
-  team colour is brought up to a common brightness first, so a dark colour reads
+  renderer walks 4 × 4 tile ownership cells and draws runs with shared edges.
+  The team colour is brought up to a common brightness first, so a dark colour reads
   as well as a light one. An under-attack event raises the same pulsing mark as a
   player's ping.
 - The torus view draws its map texture through the same map transform at the

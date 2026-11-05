@@ -4,26 +4,45 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-namespace { ResourceSprites cache; GAGCore::Sprite* legacy = nullptr; }
-void ResourceSprites::clear() { cache=ResourceSprites{};legacy=nullptr; }
-const ResourceSprites& ResourceSprites::resolve(std::shared_ptr<const ResourceRegistry> definitions, std::shared_ptr<const MapAssetBundle> assets)
+namespace { ResourceSprites cache; }
+void ResourceSprites::clear() { cache = ResourceSprites{}; }
+ResourceSprites& ResourceSprites::resolve(std::shared_ptr<const ResourceRegistry> definitions, std::shared_ptr<const MapAssetBundle> assets)
 {
-    if (cache.definitions != definitions || cache.assets != assets || legacy != globalContainer->resources)
+    if (cache.definitions != definitions || cache.assets != assets || cache.legacy != globalContainer->resources)
     {
-        cache.definitions = std::move(definitions);
-        cache.assets = std::move(assets);
-        cache.customSprites = std::make_unique<MapAssetSprites>(cache.assets);
-        legacy = globalContainer->resources;
-        cache.sprites.assign(cache.definitions->size(), nullptr);
-        cache.legacyOnly = true;
-        for (unsigned id = 0; id < cache.sprites.size(); ++id)
-        {
-            const auto& presentation = cache.definitions->presentation(static_cast<ResourceId>(id));
-            auto* sprite = presentation.sprite == "data/gfx/ressource" ? legacy
-                : cache.customSprites->resolve(presentation.sprite);
-            cache.sprites[id] = sprite;
-            if (sprite != legacy || presentation.animationFrames != 1) cache.legacyOnly = false;
-        }
+        ResourceSprites next;
+        next.definitions = std::move(definitions);
+        next.assets = std::move(assets);
+        next.customSprites = std::make_unique<MapAssetSprites>(next.assets);
+        next.legacy = globalContainer->resources;
+        next.sprites.resize(next.definitions->size());
+        next.loadStates.resize(next.sprites.size(), LoadState::Unrequested);
+        cache = std::move(next);
     }
     return cache;
+}
+
+GAGCore::Sprite* ResourceSprites::sprite(ResourceId id, bool waitForLoad)
+{
+    const auto index = resourceIndex(id);
+    if (index >= sprites.size()) return nullptr;
+    auto *&resolved = sprites[index];
+    auto &state = loadStates[index];
+    if (state == LoadState::Resolved) return resolved;
+    const auto &path = definitions->presentation(id).sprite;
+    if (path == LegacyArtwork) return legacy;
+    if (waitForLoad || (assets && assets->sheets.contains(path)))
+    {
+        resolved = customSprites->resolve(path);
+        state = LoadState::Resolved;
+        return resolved;
+    }
+    if (state == LoadState::Unrequested)
+    {
+        GAGCore::Toolkit::requestSprite(path);
+        state = LoadState::Requested;
+    }
+    resolved = GAGCore::Toolkit::findSprite(path);
+    if (resolved) state = LoadState::Resolved;
+    return resolved;
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MipReduction.h"
 #include "GraphicContextPrivate.h"
 #include <RenderDevice.h>
 #include <Toolkit.h>
@@ -303,6 +304,40 @@ namespace GAGCore
                             return;
                         }
                     }
+#if !defined(GLOB2_WEBGL2) && SDL_BYTEORDER == SDL_LIL_ENDIAN
+                    if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
+                        sdlsurface->format == SDL_PIXELFORMAT_ARGB8888 &&
+                        sdlsurface->w > 0 && sdlsurface->h > 0 &&
+                        sdlsurface->pitch == sdlsurface->w * 4 &&
+                        !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
+                        // Generated pages can upload their existing pixels and
+                        // reuse the first reduced level for the rest of the chain.
+                        int w = sdlsurface->w, h = sdlsurface->h;
+                        const auto scratchBytes = size_t(std::max(1, w / 2)) * std::max(1, h / 2) * 4;
+                        auto scratch = std::make_unique_for_overwrite<unsigned char[]>(scratchBytes);
+                        const auto *pixels = static_cast<const unsigned char *>(sdlsurface->pixels);
+                        size_t bytes = 0;
+                        int level = 0;
+                        for (;;) {
+                            glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+                            bytes += size_t(w) * h * 4;
+                            if (w == 1 && h == 1) break;
+                            downsampleMip(pixels, w, h, scratch.get());
+                            pixels = scratch.get();
+                            w = std::max(1, w / 2);
+                            h = std::max(1, h / 2);
+                            ++level;
+                        }
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, level);
+                        glState.allocatedTextureBytes -= gpuBytes;
+                        gpuBytes = bytes;
+                        glState.allocatedTextureBytes += gpuBytes;
+                        glUploadedRevision = pixelRevision;
+                        std::vector<unsigned char>().swap(preparedUploadPixels);
+                        std::vector<AssetImage::Mip>().swap(preparedMips);
+                        return;
+                    }
+#endif
                     AssetImage fallback(nullptr);
                     const auto *levels = &preparedMips;
                     if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {

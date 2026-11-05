@@ -727,7 +727,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     }
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-	const bool nextGPU = globalContainer->gfx->rendererCapabilities().accelerated;
+	auto &gfx = *globalContainer->gfx;
+	const bool nextGPU = gfx.rendererCapabilities().accelerated;
+	// When even native-size pages need reduction, avoid preparing HD
+	// materials for the interactive Legacy OpenGL view.
+	const bool reducedLegacyView = gfx.isLegacyGLScreen() && !tiledCapture && !preferredDownsample &&
+		samplingPlan(map, left, top, right, bottom, vx, vy, 1).downsample > 1;
     {
         PERF_SCOPE_TIME(TerrainMaterials);
 	// CPU and device composition can rebuild complete pages beyond the
@@ -736,7 +741,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		compositor.prepareVisible(nextGPU, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView);
 	};
 	prepareMaterials();
 	// A capture is drawn once, so it waits for streamed HD rather than
@@ -772,7 +777,6 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	downsample = plan.downsample;
 	const auto storage = pageStorage(resolution, false, downsample);
 	const auto uploadReserve = gpu ? pageStorage(resolution, true, downsample) - storage : 0;
-    auto &gfx = *globalContainer->gfx;
     const auto *device = gfx.renderDevice();
     const auto visiblePages = std::uint64_t(std::min(x1-x0+1,std::max(1,map.getW()/ChunkTiles))) *
         std::min(y1-y0+1,std::max(1,map.getH()/ChunkTiles));

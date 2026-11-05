@@ -44,7 +44,8 @@ class Compositor
     void prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes);
     // Inclusive world-cell bounds, wrapped to the map. HD streams asynchronously
     // with native sources as fallback until each requested frame is available.
-    void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom);
+    void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
+                        bool nativeComposition = false);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
 	// geometry, never on the animation phase, so a page can keep it and re-blend
@@ -215,7 +216,7 @@ class Compositor
     Uint64 requestedMapIdentity = 0;
     std::vector<std::string> requestedTerrainPackages;
 #endif
-    void prepareSelected(bool hd, int time, const Usage *usage);
+    void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false);
     Usage recipeUsage(std::span<const Recipe> recipes) const;
     std::size_t cpuMaterialBytesSelected(std::span<const MaterialId>, const Usage *) const;
     std::shared_ptr<const CpuMaterials> cpuMaterialsSelected(std::span<const MaterialId>, const Usage *);

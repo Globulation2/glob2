@@ -341,7 +341,7 @@ static int run(int argc, char **argv)
 #endif
         std::printf("GPU=%s map=%s %dx%d viewport=%dx%d frames=%d\n", driver,
             path ? path : "maps/Oazis.map", gui.game.map.getW(), gui.game.map.getH(), width, height, frames);
-        std::printf("BENCH_TIMING wall=draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=draw_flush gpu_timestamp=unavailable final_presentation=outside_timing retry_discard=inside_timing retry_yield_ms=1\n");
+        std::printf("BENCH_TIMING wall=assets_draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=assets_draw_flush gpu_timestamp=unavailable final_presentation=outside_timing retry_discard=inside_timing retry_yield_ms=1\n");
         std::fflush(stdout);
         auto measure = [&](const char *label, auto draw)
         {
@@ -363,6 +363,9 @@ static int run(int argc, char **argv)
                 const auto scopesBefore = PerformanceTelemetry::collector().window;
                 Uint64 start = SDL_GetPerformanceCounter();
                 const auto cpuStart = std::clock();
+                // As in the application loop, let installed sprites requested
+                // by earlier draws become available before recording this one.
+                GAGCore::Toolkit::pollAssets();
                 std::clock_t submissionCPU{};unsigned deferredAttempts=0,intentionalHolds=0;
                 for(;;) {
                     // Admission retries must redraw the same camera state.

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MipReduction.h"
 #include <AssetLoader.h>
 #include <FileManager.h>
 #include <ThreadSupport.h>
@@ -111,31 +112,39 @@ void AssetImage::prepareUpload(bool highResolution) {
         if (width == 1 && height == 1) break;
         const int nextWidth = std::max(1, width / 2), nextHeight = std::max(1, height / 2);
         level = {nextWidth, nextHeight, std::vector<unsigned char>(size_t(nextWidth) * nextHeight * 4)};
-        const auto &input = mips.back().pixels;
-        for (int y = 0; y < nextHeight; ++y) for (int x = 0; x < nextWidth; ++x) {
-            const auto *top = input.data() + (size_t(y * 2) * width + x * 2) * 4;
-            const auto *bottom = top + (height > 1 ? width * 4 : 0);
-            const int right = width > 1 ? 4 : 0;
-            const unsigned alpha = top[3] + top[right + 3] + bottom[3] + bottom[right + 3];
-            // Most generated terrain footprints are opaque or undiscovered.
-            // Keep exactly the weighted filter's rounding without multiplying
-            // every channel by 255 or processing invisible RGB.
-            if (!alpha) continue; // The output was initialized to zero.
-            auto *pixel = level.pixels.data() + (size_t(y) * nextWidth + x) * 4;
-            pixel[3] = (alpha + 2) / 4;
-            if (alpha == 4u * 255) {
-                for (int c = 0; c < 3; ++c)
-                    pixel[c] = (unsigned(top[c]) + top[right + c] + bottom[c] + bottom[right + c] + 2) / 4;
-                continue;
-            }
-            unsigned sum[3] = {};
-            for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
-                for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
-            }
-            for (int c = 0; c < 3; ++c)
-                pixel[c] = (sum[c] + alpha / 2) / alpha;
-        }
+        downsampleMip(mips.back().pixels.data(), width, height, level.pixels.data());
         width = nextWidth; height = nextHeight;
+    }
+}
+void downsampleMip(const unsigned char *source, int width, int height,
+                               unsigned char *destination) {
+    const int nextWidth = std::max(1, width / 2), nextHeight = std::max(1, height / 2);
+    for (int y = 0; y < nextHeight; ++y) for (int x = 0; x < nextWidth; ++x) {
+        const auto *top = source + (size_t(y * 2) * width + x * 2) * 4;
+        const auto *bottom = top + (height > 1 ? width * 4 : 0);
+        const int right = width > 1 ? 4 : 0;
+        const unsigned alpha = top[3] + top[right + 3] + bottom[3] + bottom[right + 3];
+        // Most generated terrain footprints are opaque or undiscovered.
+        // Keep exactly the weighted filter's rounding without multiplying
+        // every channel by 255 or processing invisible RGB.
+        auto *pixel = destination + (size_t(y) * nextWidth + x) * 4;
+        if (!alpha) {
+            std::fill_n(pixel, 4, 0);
+            continue;
+        }
+        if (alpha == 4u * 255) {
+            for (int c = 0; c < 3; ++c)
+                pixel[c] = (unsigned(top[c]) + top[right + c] + bottom[c] + bottom[right + c] + 2) / 4;
+            pixel[3] = 255;
+            continue;
+        }
+        unsigned sum[3] = {};
+        for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
+            for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
+        }
+        for (int c = 0; c < 3; ++c)
+            pixel[c] = (sum[c] + alpha / 2) / alpha;
+        pixel[3] = (alpha + 2) / 4;
     }
 }
 AssetLoader::Options AssetLoader::Options::environment() {
