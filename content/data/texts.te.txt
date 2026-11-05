@@ -5724,6 +5724,12 @@ AI ద్వారా రూపొందించబడలేదు
 బసాల్ట్ కాలిబాట
 [scoria_blocks]
 స్కోరియా దిమ్మెలు
+[rime_ashlar]
+మంచు రాతి కట్టడం
+[moonstone_lozenge]
+చంద్రకాంత రాంబస్‌లు
+[frost_pinwheel]
+మంచు గిరగిర
 [terrain group water]
 నీరు
 [terrain group sand]

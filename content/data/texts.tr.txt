@@ -5748,6 +5748,12 @@ Arduvaz kaplama
 Bazalt geçit
 [scoria_blocks]
 Cüruf blokları
+[rime_ashlar]
+Kırağı kesme taşı
+[moonstone_lozenge]
+Aytaşı eşkenar dörtgenleri
+[frost_pinwheel]
+Ayaz fırıldağı
 [terrain group water]
 Su
 [terrain group sand]

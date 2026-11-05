@@ -189,7 +189,7 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(rough->entries.empty());
 		REQUIRE_FALSE(ice->entries.empty());
 		REQUIRE_FALSE(barren->entries.empty());
-		CHECK(paths->entries.back().id == "terrain/scoria_blocks");
+		CHECK(paths->entries.back().id == "terrain/frost_pinwheel");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/glacier_ice");
 		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");

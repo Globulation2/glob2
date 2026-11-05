@@ -5748,6 +5748,12 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 گذرگاه بازالتی
 [scoria_blocks]
 بلوک‌های اسکوریا
+[rime_ashlar]
+سنگ‌چین یخ‌زده
+[moonstone_lozenge]
+لوزی‌های سنگ ماه
+[frost_pinwheel]
+فرفره یخ‌بندان
 [terrain group water]
 آب
 [terrain group sand]

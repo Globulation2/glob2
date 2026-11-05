@@ -5748,6 +5748,12 @@ Mein-glas
 Chaoser vazalt
 [scoria_blocks]
 Bloc'hoù skoria
+[rime_ashlar]
+Mogerezh frim
+[moonstone_lozenge]
+Lozanjoù maen-loar
+[frost_pinwheel]
+Rod-avel frim
 [terrain group water]
 Água
 [terrain group sand]

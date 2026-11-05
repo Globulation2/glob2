@@ -5726,6 +5726,12 @@ Slate ashlar
 Basalt causeway
 [scoria_blocks]
 Scoria blocks
+[rime_ashlar]
+Rime ashlar
+[moonstone_lozenge]
+Moonstone lozenges
+[frost_pinwheel]
+Frost pinwheel
 [terrain group water]
 Water
 [terrain group sand]

@@ -113,6 +113,12 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(BASALT_CAUSEWAY, G::Paths, "basalt_causeway", "[basalt_causeway]", {63, 61, 60}, {76, 74, 76}),
 		// Dressed porous scoria in basketweave: plays exactly like road.
 		authored(SCORIA_BLOCKS, G::Paths, "scoria_blocks", "[scoria_blocks]", {74, 68, 63}, {88, 76, 68}),
+		// Glacier ice blocks in ashlar under drifting snow: plays exactly like road.
+		authored(RIME_ASHLAR, G::Paths, "rime_ashlar", "[rime_ashlar]", {181, 187, 212}, {181, 187, 212}),
+		// White marble lozenges with moonstone keystones: plays exactly like road.
+		authored(MOONSTONE_LOZENGE, G::Paths, "moonstone_lozenge", "[moonstone_lozenge]", {190, 192, 209}, {190, 192, 209}),
+		// Frosted quartz pavers in a pinwheel around ice squares: plays exactly like road.
+		authored(FROST_PINWHEEL, G::Paths, "frost_pinwheel", "[frost_pinwheel]", {185, 188, 210}, {185, 188, 210}),
 	}};
 	return rows;
 }();

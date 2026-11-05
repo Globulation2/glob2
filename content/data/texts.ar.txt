@@ -5748,6 +5748,12 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 جسر البازلت
 [scoria_blocks]
 كتل الخبث البركاني
+[rime_ashlar]
+حجارة صقيع منحوتة
+[moonstone_lozenge]
+معينات حجر القمر
+[frost_pinwheel]
+دولاب الصقيع
 [terrain group water]
 ماء
 [terrain group sand]

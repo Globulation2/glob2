@@ -398,6 +398,17 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(poolFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeRockPaths.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeRockPaths.dump(), TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL));
+
+		// Format 208 numbers its definitions from 50, before the ice paths.
+		auto beforeIcePaths = Json::parse(registry->serialize());
+		for (auto &item : beforeIcePaths["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_ICE_PATHS;
+		const auto rockFormat = TerrainRegistry::deserialize(beforeIcePaths.dump(), TERRAIN_COUNT_BEFORE_ICE_PATHS);
+		CHECK(rockFormat->serialize() == registry->serialize());
+		CHECK(rockFormat->digest() == registry->digest());
+		CHECK(rockFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump(), TERRAIN_COUNT_BEFORE_ROCK_PATHS));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

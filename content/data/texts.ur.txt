@@ -5724,6 +5724,12 @@ AI کی بنائی ہوئی نہیں
 بیسالٹ کی گزرگاہ
 [scoria_blocks]
 اسکوریا کے بلاک
+[rime_ashlar]
+پالے کی تراشیدہ اینٹیں
+[moonstone_lozenge]
+چاند پتھر کے معین
+[frost_pinwheel]
+پالے کی پھرکی
 [terrain group water]
 پانی
 [terrain group sand]

@@ -78,7 +78,13 @@ enum TerrainType : std::uint16_t
 	SLATE_ASHLAR=47,
 	BASALT_CAUSEWAY=48,
 	SCORIA_BLOCKS=49,
-	TERRAIN_COUNT=50,
+	// Ice paths (Paths, like road), format 209: ice blocks cut from the glacier in
+	// ashlar, white marble lozenges with moonstone keystones, and frosted quartz
+	// pavers in a pinwheel around ice squares, all drifting back under snow.
+	RIME_ASHLAR=50,
+	MOONSTONE_LOZENGE=51,
+	FROST_PINWHEEL=52,
+	TERRAIN_COUNT=53,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -115,6 +121,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 45;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL = 46;
 // Format 207 ended the built-ins at MOLTEN_LAVA_POOL.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_ROCK_PATHS = 47;
+// Format 208 ended the built-ins at SCORIA_BLOCKS.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_ICE_PATHS = 50;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

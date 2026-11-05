@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 50 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 53 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -103,7 +103,7 @@ colour and material stay free per biome:
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
-| Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps) |
+| Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges, frost pinwheel) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps); `_frost_paths` (snow in place of soil and moss, `weather`) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
@@ -167,7 +167,20 @@ offset half a square so no joint follows a tile edge: rims are bitten back and
 shed cinders into the joints, walked stretches dish the faces, vesicles come in
 clusters, some packed with ash, a few oxidised blocks are brown and bleed rust
 into their joints, and lost blocks are often only partly gone, leaving a pit of
-loose cinder. Mud is churned lumps about a fifth of a tile across and
+loose cinder. The three ice paths sit beside deep snow, wind-swept snow and the
+ice grounds of a frozen cave. `_frost_paths` swaps `_paving`'s soil, moss and
+weeds for the periwinkle of deep snow, so reclaimed stretches read as the
+surrounding snow drifting back over the road, and its `weather` adds wind-blown
+streaks settling in joints and hollows, powder feathering out of each drift,
+refrozen glaze on damp stretches, and sparse warm sanding grit on walked
+stretches, the cue that keeps a pale road apart from the slow, cyan ice.
+Rime ashlar is blocks cut from the glacier in uneven courses, each its own depth
+of blue, milky toward the rim and crossed by pale fracture planes. Moonstone
+lozenges are white marble diamonds a tile across on a 45 degree lattice, veined
+grey-blue flag by flag, with blue moonstone keystones where four meet, about
+half of them frosted over. Frost pinwheel is frosted quartz pavers turning
+around small ice squares, offset so no joint follows a tile edge, with sparse
+crystal glints and about half the squares frosted opaque. Mud is churned lumps about a fifth of a tile across and
 water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is a bed of loose, angular,
@@ -577,7 +590,7 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- |
 | `cover` | hedge, thicket, cliffs | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
-| `built` | road, brick_path, sandstone, overgrown_road, boardwalk, slate_ashlar, basalt_causeway, scoria_blocks | `paved`, `crisp` |
+| `built` | road, brick_path, sandstone, overgrown_road, boardwalk, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel | `paved`, `crisp` |
 | `flow` | lava, ember_field, molten_lava_pool | `molten` |
 | `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
 | `pool` (shoreline) | water, deep_water, dark_water | `still` |
@@ -586,7 +599,7 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- | --- | --- |
 | `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
-| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road, slate_ashlar, basalt_causeway, scoria_blocks |
+| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
 | `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field, molten_lava_pool |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
@@ -627,6 +640,7 @@ exception the classes cannot express, not the way to tune a material.
 | 4 | lava, ember_field, molten_lava_pool | no cast; scorch fringe `[214,110,40]` 128/640, `[160,80,40]` 96/512 and a hotter `[255,120,10]` 160/768 |
 | 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |
 | 3 | road (existing), brick_path, boardwalk, sandstone, overgrown_road | 48 / 512 |
+| 3 | rime_ashlar, moonstone_lozenge, frost_pinwheel | 24 / 512, a soft cast so their pale stone sits low in the snow |
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
 | 2 | heath, tundra | 48 / 480 |

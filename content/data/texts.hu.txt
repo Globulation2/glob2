@@ -5748,6 +5748,12 @@ Palalapok
 Bazaltút
 [scoria_blocks]
 Salakkőtömbök
+[rime_ashlar]
+Zúzmarás kváderkő
+[moonstone_lozenge]
+Holdkő rombuszok
+[frost_pinwheel]
+Dérforgó
 [terrain group water]
 Víz
 [terrain group sand]

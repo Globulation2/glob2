@@ -5748,6 +5748,12 @@ Dale de ardezie
 Drum de bazalt
 [scoria_blocks]
 Blocuri de zgură
+[rime_ashlar]
+Blocuri de chiciură
+[moonstone_lozenge]
+Romburi de piatra-lunii
+[frost_pinwheel]
+Morișcă de brumă
 [terrain group water]
 Apă
 [terrain group sand]

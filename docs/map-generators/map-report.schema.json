@@ -577,6 +577,15 @@
         "scoria_blocks": {
           "$ref": "#/$defs/coverage"
         },
+        "rime_ashlar": {
+          "$ref": "#/$defs/coverage"
+        },
+        "moonstone_lozenge": {
+          "$ref": "#/$defs/coverage"
+        },
+        "frost_pinwheel": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

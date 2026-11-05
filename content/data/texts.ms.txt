@@ -6870,6 +6870,12 @@ Jubin batu loh
 Jalan basalt
 [scoria_blocks]
 Bongkah skoria
+[rime_ashlar]
+Batu pahat fros
+[moonstone_lozenge]
+Rombus batu bulan
+[frost_pinwheel]
+Kincir fros
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

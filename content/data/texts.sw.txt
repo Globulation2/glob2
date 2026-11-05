@@ -5724,6 +5724,12 @@ Vibao vya slate
 Njia ya bazalti
 [scoria_blocks]
 Matofali ya skoria
+[rime_ashlar]
+Matofali ya barafu
+[moonstone_lozenge]
+Almasi za jiwe la mwezi
+[frost_pinwheel]
+Gurudumu la barafu
 [terrain group water]
 Maji
 [terrain group sand]

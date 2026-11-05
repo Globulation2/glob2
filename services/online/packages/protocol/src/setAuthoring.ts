@@ -51,6 +51,9 @@ export const TERRAIN_PRESETS = [
   'slate_ashlar',
   'basalt_causeway',
   'scoria_blocks',
+  'rime_ashlar',
+  'moonstone_lozenge',
+  'frost_pinwheel',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

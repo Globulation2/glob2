@@ -5748,6 +5748,12 @@ Lajes de ardósia
 Calçada de basalto
 [scoria_blocks]
 Blocos de escória
+[rime_ashlar]
+Cantaria de geada
+[moonstone_lozenge]
+Losangos de pedra-da-lua
+[frost_pinwheel]
+Cata-vento de geada
 [terrain group water]
 Água
 [terrain group sand]

@@ -5724,6 +5724,12 @@ FFmpeg не е наличен, така че записът е изключен.
 Базалтов път
 [scoria_blocks]
 Блокове от скория
+[rime_ashlar]
+Скрежна зидария
+[moonstone_lozenge]
+Ромбове от лунен камък
+[frost_pinwheel]
+Скрежна мелничка
 [terrain group water]
 Вода
 [terrain group sand]

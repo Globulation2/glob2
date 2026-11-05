@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "7111ab9d3e949817fa73b77c9e1c550f2cb8108dc9392db2651fb49984738b18"
+      "sha256": "89f36a19e04d5130f42e8803897e0aeb5dad1153385d56b7ac685234ee30c79a"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "d40370aedd1c6e59595597906926bed589e011d24b260494369361ead62f9a41"
+      "sha256": "53d1bf62c4ef29813460007e7bbad19328ad259d473a2b61c8690c7a3c1b6593"
     },
     {
       "runtime": "README.md",
@@ -103375,6 +103375,3846 @@
       "runtime": "terrain-scoria_blocks255.png",
       "source": "procedural-materials/terrain-scoria_blocks255.png",
       "sha256": "87fdd8a44626d0ff5344d579b9b5254c78e4b19a8b0a34e9af15c60d4ef120c7"
+    },
+    {
+      "runtime": "terrain-rime_ashlar0.png",
+      "source": "procedural-materials/terrain-rime_ashlar0.png",
+      "sha256": "2e39862a9a4441edf502c2263f7194108b3b0d96363293b0aa81639a72eb4bd8"
+    },
+    {
+      "runtime": "terrain-rime_ashlar1.png",
+      "source": "procedural-materials/terrain-rime_ashlar1.png",
+      "sha256": "3bdd5ddc0ff9368139ed67989f70ef1608f9ee13325a482e61babcc8c19026de"
+    },
+    {
+      "runtime": "terrain-rime_ashlar2.png",
+      "source": "procedural-materials/terrain-rime_ashlar2.png",
+      "sha256": "1a697cc43b4f13232153eb8531a549d42d9831bb4fd6fcc81b0ac815065d4f08"
+    },
+    {
+      "runtime": "terrain-rime_ashlar3.png",
+      "source": "procedural-materials/terrain-rime_ashlar3.png",
+      "sha256": "9c93ec05ec06e82482d50b9a5e6ad0bd0af0c753d9b476e77d0189ac27d9bfcd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar4.png",
+      "source": "procedural-materials/terrain-rime_ashlar4.png",
+      "sha256": "8a99840a0003fc3f850459b087e62994c5b77c61323a74d4057dbb0252b23c6b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar5.png",
+      "source": "procedural-materials/terrain-rime_ashlar5.png",
+      "sha256": "27cd7741a0c57f4aafae2f31a2be11651b2b9feed4e4374ba61b24a253924c3a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar6.png",
+      "source": "procedural-materials/terrain-rime_ashlar6.png",
+      "sha256": "5cf8354d19a39ab3e1e5bfa441353529d6b7fc83e9e6c948c1f436da03d1958f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar7.png",
+      "source": "procedural-materials/terrain-rime_ashlar7.png",
+      "sha256": "fd4f73029aac0daf8d2683741807f2aae0896a00bcd2afa3e630c2a1994a9d90"
+    },
+    {
+      "runtime": "terrain-rime_ashlar8.png",
+      "source": "procedural-materials/terrain-rime_ashlar8.png",
+      "sha256": "f4ae13508487cf6cc3815db5b231b833c7d644e14b3d1adb69fe7a85f3e27143"
+    },
+    {
+      "runtime": "terrain-rime_ashlar9.png",
+      "source": "procedural-materials/terrain-rime_ashlar9.png",
+      "sha256": "8d8735d69ef387e878da82032f7a422245dd2c144533a6f4bbac924f68eb07bd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar10.png",
+      "source": "procedural-materials/terrain-rime_ashlar10.png",
+      "sha256": "eb8d3b37a55dbc23d7b6dec28ab58de34c19961d4fda9e016af5302b8bdd0344"
+    },
+    {
+      "runtime": "terrain-rime_ashlar11.png",
+      "source": "procedural-materials/terrain-rime_ashlar11.png",
+      "sha256": "5352965a34e266ea0339a41906432ecd0d10d58649216796fe90142c99c670bf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar12.png",
+      "source": "procedural-materials/terrain-rime_ashlar12.png",
+      "sha256": "4668b7a79512f51db63abbac6395c6f5448c76da0083552d8277406779129bce"
+    },
+    {
+      "runtime": "terrain-rime_ashlar13.png",
+      "source": "procedural-materials/terrain-rime_ashlar13.png",
+      "sha256": "9c2733718d82590843a8c93d2cc61dcd6c62c55600f01240583d165b4c6b8931"
+    },
+    {
+      "runtime": "terrain-rime_ashlar14.png",
+      "source": "procedural-materials/terrain-rime_ashlar14.png",
+      "sha256": "1c007a8cbc6922b7854e35aca4015df311762e0e0b8bd3c1dc6558abf959e37d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar15.png",
+      "source": "procedural-materials/terrain-rime_ashlar15.png",
+      "sha256": "9240d3b60ea848b5d78a8144a89c8a45d869860b5fe3b3ef8b091e0d399a1c47"
+    },
+    {
+      "runtime": "terrain-rime_ashlar16.png",
+      "source": "procedural-materials/terrain-rime_ashlar16.png",
+      "sha256": "af59a2fdf4bba59b91c88ae25bbda308c45b1761c765d610d9e350426b27f7f7"
+    },
+    {
+      "runtime": "terrain-rime_ashlar17.png",
+      "source": "procedural-materials/terrain-rime_ashlar17.png",
+      "sha256": "da9e9faf3cff926f2a4a7ffc5056db7b30ee542e063f4506d35511836a28e4fe"
+    },
+    {
+      "runtime": "terrain-rime_ashlar18.png",
+      "source": "procedural-materials/terrain-rime_ashlar18.png",
+      "sha256": "ac9372772a47f234b34a55bec183c764890d755ea8f8be54846ed0ecff54308b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar19.png",
+      "source": "procedural-materials/terrain-rime_ashlar19.png",
+      "sha256": "de6f395d3e0f0bd4493dd358934065dcea61062840c49b1267a4b9d364fccc22"
+    },
+    {
+      "runtime": "terrain-rime_ashlar20.png",
+      "source": "procedural-materials/terrain-rime_ashlar20.png",
+      "sha256": "0eaea9af9714e63dcfa4a62e58ff47b41f89ddad03e356a7c02f2ebacd9948ff"
+    },
+    {
+      "runtime": "terrain-rime_ashlar21.png",
+      "source": "procedural-materials/terrain-rime_ashlar21.png",
+      "sha256": "dd399f740bd802ddcf4139216a37656c1911f74a44f9edcd632ac32617264b68"
+    },
+    {
+      "runtime": "terrain-rime_ashlar22.png",
+      "source": "procedural-materials/terrain-rime_ashlar22.png",
+      "sha256": "bb14cf602b237359d9d7657006cf57f8c17a94c8668bc4f9ecda0f1029d4c95f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar23.png",
+      "source": "procedural-materials/terrain-rime_ashlar23.png",
+      "sha256": "163334b04a18b9c2eab77a40cef9aa34c33ece2a20505b9d78959e1bf473b2f2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar24.png",
+      "source": "procedural-materials/terrain-rime_ashlar24.png",
+      "sha256": "c57763719c9869b8a435465abb12fbbb37ab038485aa87549bee028f214ba5f2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar25.png",
+      "source": "procedural-materials/terrain-rime_ashlar25.png",
+      "sha256": "8d1a2beff4cd7012e183eef1bedb771aa8800755266954c40e25dc5bd18b8f70"
+    },
+    {
+      "runtime": "terrain-rime_ashlar26.png",
+      "source": "procedural-materials/terrain-rime_ashlar26.png",
+      "sha256": "2966ecc624798206e6219e1c22fcc3040ba109aa764d4012543e06052ae163c3"
+    },
+    {
+      "runtime": "terrain-rime_ashlar27.png",
+      "source": "procedural-materials/terrain-rime_ashlar27.png",
+      "sha256": "63fcd2638864702935330bd300539a10452e6ab47c4dd448c79b4a7d5a421009"
+    },
+    {
+      "runtime": "terrain-rime_ashlar28.png",
+      "source": "procedural-materials/terrain-rime_ashlar28.png",
+      "sha256": "2e68c3563709e7fb8550737da89f2f196bec9e6f02f0c077c912987297d6ee0a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar29.png",
+      "source": "procedural-materials/terrain-rime_ashlar29.png",
+      "sha256": "189eac365365e0914cbacf43383fe03154d7b859563e938217c6d2171cbb4d2e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar30.png",
+      "source": "procedural-materials/terrain-rime_ashlar30.png",
+      "sha256": "507fc88ec8cec60dfb973c20c38718d056ed821d899c7c1c5889e76f5bb48bee"
+    },
+    {
+      "runtime": "terrain-rime_ashlar31.png",
+      "source": "procedural-materials/terrain-rime_ashlar31.png",
+      "sha256": "cecbc2e6ca4f538df4ff74db2de819e652241762451c7cf965bfd66dc9671852"
+    },
+    {
+      "runtime": "terrain-rime_ashlar32.png",
+      "source": "procedural-materials/terrain-rime_ashlar32.png",
+      "sha256": "6d6d3bbacad689e8bb1559e4d176aa3886aebcb89374e63f66fa10c919b1e1b9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar33.png",
+      "source": "procedural-materials/terrain-rime_ashlar33.png",
+      "sha256": "c29d7916589b19bbba7b85126aafe6d73e8ce6af5c382d729967d0f643c47e13"
+    },
+    {
+      "runtime": "terrain-rime_ashlar34.png",
+      "source": "procedural-materials/terrain-rime_ashlar34.png",
+      "sha256": "3180e8fc65fd9cab8628547ce1bc6cb98b4bc47cfa82a9e5633032613230d8eb"
+    },
+    {
+      "runtime": "terrain-rime_ashlar35.png",
+      "source": "procedural-materials/terrain-rime_ashlar35.png",
+      "sha256": "66e389a466d026a84000c2cc96c5e5ab54a698b9ef3d336ff284020d517799e9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar36.png",
+      "source": "procedural-materials/terrain-rime_ashlar36.png",
+      "sha256": "d9cf7f035ae5b777e73ab80dba59e946739dc2513e7d5f745e3271b7094e98ab"
+    },
+    {
+      "runtime": "terrain-rime_ashlar37.png",
+      "source": "procedural-materials/terrain-rime_ashlar37.png",
+      "sha256": "72c3ba665456bd7b7216b44e045464c031ce176b32e5c42634e9d619026cbc1b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar38.png",
+      "source": "procedural-materials/terrain-rime_ashlar38.png",
+      "sha256": "624bc8ad290911c7ef334a13ff3221f7aa762945a703c40b60b3085fb2ad9e89"
+    },
+    {
+      "runtime": "terrain-rime_ashlar39.png",
+      "source": "procedural-materials/terrain-rime_ashlar39.png",
+      "sha256": "792ff7fa6d48ea352542a1796a7faae50f21b71784b3bae5a98d93e01227749c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar40.png",
+      "source": "procedural-materials/terrain-rime_ashlar40.png",
+      "sha256": "21f9f32770731a7071317579d6a6db81e41ac8fd0e243a32bd56aa410c8582ba"
+    },
+    {
+      "runtime": "terrain-rime_ashlar41.png",
+      "source": "procedural-materials/terrain-rime_ashlar41.png",
+      "sha256": "51c0c3099db503b4f0e64d671efbd7d69485476184e0d4919713978099cbbb9b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar42.png",
+      "source": "procedural-materials/terrain-rime_ashlar42.png",
+      "sha256": "6632b913d2b45da8f15919adf187d51f299e1359266cb7e95d9222300a12247c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar43.png",
+      "source": "procedural-materials/terrain-rime_ashlar43.png",
+      "sha256": "9fa963545dda9f9c9ab5da695882599a28f329ebd134e3d7ab41f9503184c4ed"
+    },
+    {
+      "runtime": "terrain-rime_ashlar44.png",
+      "source": "procedural-materials/terrain-rime_ashlar44.png",
+      "sha256": "6b64b880bd9de3108be9cd839ad4054fc17421e3438f3c87e27e57ea30068aa5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar45.png",
+      "source": "procedural-materials/terrain-rime_ashlar45.png",
+      "sha256": "2e6d1c963bdf6567242e9d6351571320696d1ba61b40f41b14555c1d785ef045"
+    },
+    {
+      "runtime": "terrain-rime_ashlar46.png",
+      "source": "procedural-materials/terrain-rime_ashlar46.png",
+      "sha256": "62a34acafc2b5a4a8a0c3486bb12fc8dbba890e515d757dcf58799936dfa2444"
+    },
+    {
+      "runtime": "terrain-rime_ashlar47.png",
+      "source": "procedural-materials/terrain-rime_ashlar47.png",
+      "sha256": "528241e67d5c113d2cbebdca7a27e3228a9fbd7cbadf0c97a19b6df8d571a8e7"
+    },
+    {
+      "runtime": "terrain-rime_ashlar48.png",
+      "source": "procedural-materials/terrain-rime_ashlar48.png",
+      "sha256": "7dfdfb8bc32320177bb2f253bf87af9b2514ecbb67dcc972e92d8a8fd8ba47a8"
+    },
+    {
+      "runtime": "terrain-rime_ashlar49.png",
+      "source": "procedural-materials/terrain-rime_ashlar49.png",
+      "sha256": "4fc5207a82b95c24cd9cf8b7e24b1d4a54964934abe2d2d8589da62ec320239d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar50.png",
+      "source": "procedural-materials/terrain-rime_ashlar50.png",
+      "sha256": "4cad1a9d13a63a771c378eebdb6274b55e99ace44cfbb4ae89e7592cba1561a6"
+    },
+    {
+      "runtime": "terrain-rime_ashlar51.png",
+      "source": "procedural-materials/terrain-rime_ashlar51.png",
+      "sha256": "e981f4c52c7eb531dd0428725a92c70d54cfeb2d5eca2cb84469bc5df7adfd94"
+    },
+    {
+      "runtime": "terrain-rime_ashlar52.png",
+      "source": "procedural-materials/terrain-rime_ashlar52.png",
+      "sha256": "983134fd0809dc9120d5f9cf791a57a4b22a8806d594eec85412fdc32392eb64"
+    },
+    {
+      "runtime": "terrain-rime_ashlar53.png",
+      "source": "procedural-materials/terrain-rime_ashlar53.png",
+      "sha256": "61b3af3a9a2b30e90c55872fbc03f44cad5e1d8c11a737a6c1e6e55d5f05e931"
+    },
+    {
+      "runtime": "terrain-rime_ashlar54.png",
+      "source": "procedural-materials/terrain-rime_ashlar54.png",
+      "sha256": "8a5e0544312fb9da880aaf777a32134a8fd81508ff4a34dc593042c5bdaa51a4"
+    },
+    {
+      "runtime": "terrain-rime_ashlar55.png",
+      "source": "procedural-materials/terrain-rime_ashlar55.png",
+      "sha256": "1b5f3f02006b27194735c7b3c5a5e363f24ee1bc32563fd58169afbe741a68ff"
+    },
+    {
+      "runtime": "terrain-rime_ashlar56.png",
+      "source": "procedural-materials/terrain-rime_ashlar56.png",
+      "sha256": "49773e3ce1b251dbd1282b8a7a56c952fa6a6417d48e456b851f916c24b4f5fa"
+    },
+    {
+      "runtime": "terrain-rime_ashlar57.png",
+      "source": "procedural-materials/terrain-rime_ashlar57.png",
+      "sha256": "82388575a559d8080f56938eeb52ac3c5e5ae6a8813b6c713f4d89e8d09d6373"
+    },
+    {
+      "runtime": "terrain-rime_ashlar58.png",
+      "source": "procedural-materials/terrain-rime_ashlar58.png",
+      "sha256": "43b1d70743d4489b742a59de03305258b2329da723ca1e0892a9023c76cbb140"
+    },
+    {
+      "runtime": "terrain-rime_ashlar59.png",
+      "source": "procedural-materials/terrain-rime_ashlar59.png",
+      "sha256": "f479948cb530183ff4cfbf0bbad3060a15f27671d2e2a33faadd5ac6b9d29336"
+    },
+    {
+      "runtime": "terrain-rime_ashlar60.png",
+      "source": "procedural-materials/terrain-rime_ashlar60.png",
+      "sha256": "41c41743f91e4f1cdb2ddb37c1f487a5f438f29b00bb4f1b502d8f14c4da897f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar61.png",
+      "source": "procedural-materials/terrain-rime_ashlar61.png",
+      "sha256": "6e723fb350a349a92e6fe6db4eb64c447e9ed9489600e0f6c02bc9748bf0deec"
+    },
+    {
+      "runtime": "terrain-rime_ashlar62.png",
+      "source": "procedural-materials/terrain-rime_ashlar62.png",
+      "sha256": "6abcf0dbafa5a8ef3a77c6c0c04f808ebbc338e8ff9bd9b976d0831d93582f53"
+    },
+    {
+      "runtime": "terrain-rime_ashlar63.png",
+      "source": "procedural-materials/terrain-rime_ashlar63.png",
+      "sha256": "0642d126ed837584aafdd780eaf16c58cb6bc5e55169f43a6aed600fbfdfe7ce"
+    },
+    {
+      "runtime": "terrain-rime_ashlar64.png",
+      "source": "procedural-materials/terrain-rime_ashlar64.png",
+      "sha256": "1917c54adde2861e4cd7b326efe414da0eacecd0c2ed114e2fffe54fcdd3bb64"
+    },
+    {
+      "runtime": "terrain-rime_ashlar65.png",
+      "source": "procedural-materials/terrain-rime_ashlar65.png",
+      "sha256": "cd9ae1dd39d935faa63d6e6e7b044bbdde5db475c0c743cf77305daf9cfc0c3e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar66.png",
+      "source": "procedural-materials/terrain-rime_ashlar66.png",
+      "sha256": "016444b2ac528b0af57a6257f68ce5acfeed6b719a244193cf5d410df287a004"
+    },
+    {
+      "runtime": "terrain-rime_ashlar67.png",
+      "source": "procedural-materials/terrain-rime_ashlar67.png",
+      "sha256": "b8795e3f652c6fd3c97bc574b8f989544bd0648f2f1690f629089953391ee78b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar68.png",
+      "source": "procedural-materials/terrain-rime_ashlar68.png",
+      "sha256": "2c710b91d4c4c6165ffbbf283f025f69b334201b27f82828529437a8f0055c6e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar69.png",
+      "source": "procedural-materials/terrain-rime_ashlar69.png",
+      "sha256": "b299e524d8824eedc2c8c634627266298c68a49dea09188e1313d42d56db038f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar70.png",
+      "source": "procedural-materials/terrain-rime_ashlar70.png",
+      "sha256": "c925df2d95d36328e26d1979f53c216371d94245e403244565958b588a409e21"
+    },
+    {
+      "runtime": "terrain-rime_ashlar71.png",
+      "source": "procedural-materials/terrain-rime_ashlar71.png",
+      "sha256": "b25f273aeb0f4d2bbbd690feb85f80f4663644cd1de85d0307033aec4dd4c37c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar72.png",
+      "source": "procedural-materials/terrain-rime_ashlar72.png",
+      "sha256": "9f2b4da9b0a952a9e1c8cf43b2afb6678b22d3642aeab66532fc2ead27f241c1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar73.png",
+      "source": "procedural-materials/terrain-rime_ashlar73.png",
+      "sha256": "05c917db1b3c91b7185c2a84ad8d55762c57b5b649734ed2bf9e2fab1e28cf7f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar74.png",
+      "source": "procedural-materials/terrain-rime_ashlar74.png",
+      "sha256": "f5894fbe7e3b455ce0aadbc9c206d1dc82d918428eb268249e11108cd42450cf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar75.png",
+      "source": "procedural-materials/terrain-rime_ashlar75.png",
+      "sha256": "da928c991d21b72583644b7218f39ef1fc311a617cea256ea5aeaa2c2c75bc5b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar76.png",
+      "source": "procedural-materials/terrain-rime_ashlar76.png",
+      "sha256": "bbb4701d8b883d20601079b7f052a446f26f6db7bfdb8a4aab169b5ed3af67fe"
+    },
+    {
+      "runtime": "terrain-rime_ashlar77.png",
+      "source": "procedural-materials/terrain-rime_ashlar77.png",
+      "sha256": "f8c635018341e122d5bc228787456cce0e6ca7644747fe6ec308f31fc33c78d2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar78.png",
+      "source": "procedural-materials/terrain-rime_ashlar78.png",
+      "sha256": "de3d05227bc88fdbe9ba191164c8b885f7774da4efaab515beb76deeb5b22f2e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar79.png",
+      "source": "procedural-materials/terrain-rime_ashlar79.png",
+      "sha256": "05f1734743b84ebb0a171c11dca823a69b2f2de47ce81f2e7018e442f4cc731b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar80.png",
+      "source": "procedural-materials/terrain-rime_ashlar80.png",
+      "sha256": "8ebc3b3c671ba95d41e8ee5249aaa8b445ec362752a40376d8f4ac79efa118f8"
+    },
+    {
+      "runtime": "terrain-rime_ashlar81.png",
+      "source": "procedural-materials/terrain-rime_ashlar81.png",
+      "sha256": "3057475e013c3f03975e998f92285993b1649a6209df7b265af81faad7e50274"
+    },
+    {
+      "runtime": "terrain-rime_ashlar82.png",
+      "source": "procedural-materials/terrain-rime_ashlar82.png",
+      "sha256": "61bea09536a3a22b127ffd6f8a77eb745310162c2cc118006c9d6672f65adf88"
+    },
+    {
+      "runtime": "terrain-rime_ashlar83.png",
+      "source": "procedural-materials/terrain-rime_ashlar83.png",
+      "sha256": "aea59d115cd0c37e8c3389c8c6fc3bcd1c9d677ea6b99d68607a7ebfe7cd8710"
+    },
+    {
+      "runtime": "terrain-rime_ashlar84.png",
+      "source": "procedural-materials/terrain-rime_ashlar84.png",
+      "sha256": "1bb30c970ad45f1279f6118dbbdc2048d8b5a6477491464da8b72286c17d0cba"
+    },
+    {
+      "runtime": "terrain-rime_ashlar85.png",
+      "source": "procedural-materials/terrain-rime_ashlar85.png",
+      "sha256": "a95ec6a4e5ef8797b31adbf1171750059c3db75b8c7646651fb029cb985f920b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar86.png",
+      "source": "procedural-materials/terrain-rime_ashlar86.png",
+      "sha256": "cf9ceb231a7d16602c0cc2b4abba6564ff03623818c22e017b6ec9b6aed8cb28"
+    },
+    {
+      "runtime": "terrain-rime_ashlar87.png",
+      "source": "procedural-materials/terrain-rime_ashlar87.png",
+      "sha256": "e2d2813c7cfc90c5defc50a4ab2575cb209ee548d1bc0463324c006d7b264c4c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar88.png",
+      "source": "procedural-materials/terrain-rime_ashlar88.png",
+      "sha256": "4ed23e03a886b07496b883da670ba1fbd1b3cc5aac3cf44aeb8202c0ffe84b18"
+    },
+    {
+      "runtime": "terrain-rime_ashlar89.png",
+      "source": "procedural-materials/terrain-rime_ashlar89.png",
+      "sha256": "e9cf8c2fead446692c3315b0c5c486d3fa035e221fde169dc0af70a8755201d5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar90.png",
+      "source": "procedural-materials/terrain-rime_ashlar90.png",
+      "sha256": "9eaa422336da9664ae8259ee512ff6b8cbfdb5fdf8c8655232508a3d857cd32e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar91.png",
+      "source": "procedural-materials/terrain-rime_ashlar91.png",
+      "sha256": "cb2eab2f2c8221f543a7d3f148c71b236053f9de256277b3149d92fea32febb9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar92.png",
+      "source": "procedural-materials/terrain-rime_ashlar92.png",
+      "sha256": "37e7151a572efe85f88433471f7c028e123343321ca17b1d98d752cc811f40ac"
+    },
+    {
+      "runtime": "terrain-rime_ashlar93.png",
+      "source": "procedural-materials/terrain-rime_ashlar93.png",
+      "sha256": "cfe93950368e87b2b64c3296c101911e2600d9bcb481cb31a4b155fe0ed80aad"
+    },
+    {
+      "runtime": "terrain-rime_ashlar94.png",
+      "source": "procedural-materials/terrain-rime_ashlar94.png",
+      "sha256": "70d5456ed8dd838259bf3287c349bc39d3e5794a49d90558fb544936559d56e8"
+    },
+    {
+      "runtime": "terrain-rime_ashlar95.png",
+      "source": "procedural-materials/terrain-rime_ashlar95.png",
+      "sha256": "ea231e9698150761a49e14b8eccd463119937faa191abf980fde55e1872f3c1f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar96.png",
+      "source": "procedural-materials/terrain-rime_ashlar96.png",
+      "sha256": "ce292fa431a41de82adb077f249c7307b1c6aee4a64532948c82c1cc989ddbe3"
+    },
+    {
+      "runtime": "terrain-rime_ashlar97.png",
+      "source": "procedural-materials/terrain-rime_ashlar97.png",
+      "sha256": "40d0008e873b01de5f2d24552ef8bb7390b08e31d2e3248c45a662894aebdf41"
+    },
+    {
+      "runtime": "terrain-rime_ashlar98.png",
+      "source": "procedural-materials/terrain-rime_ashlar98.png",
+      "sha256": "496ca01edfddba4c2ce306370885781b40481cc33c90ff9a8dbafe66d0fef0af"
+    },
+    {
+      "runtime": "terrain-rime_ashlar99.png",
+      "source": "procedural-materials/terrain-rime_ashlar99.png",
+      "sha256": "3a53521b9d2d06a7eac83cd48eb83d731f1a5c8efd75031e0bbd4f828cdeb50d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar100.png",
+      "source": "procedural-materials/terrain-rime_ashlar100.png",
+      "sha256": "f6103d4fecdd8b82cac691d3b05ab8123ad2c22eb4654d3273f478887d438569"
+    },
+    {
+      "runtime": "terrain-rime_ashlar101.png",
+      "source": "procedural-materials/terrain-rime_ashlar101.png",
+      "sha256": "ffdb40f1aab6ceada484afe7f4023fa1156df9cfdd7ac48fb9280ddb3cd221ea"
+    },
+    {
+      "runtime": "terrain-rime_ashlar102.png",
+      "source": "procedural-materials/terrain-rime_ashlar102.png",
+      "sha256": "35509e13b8be4d793c2f8ff866e148025defbccb2eae732a8f2e964c1cc27954"
+    },
+    {
+      "runtime": "terrain-rime_ashlar103.png",
+      "source": "procedural-materials/terrain-rime_ashlar103.png",
+      "sha256": "74fcc6b056a0f79384d16707d0e201383956882f6d16f74d54606fce352bc933"
+    },
+    {
+      "runtime": "terrain-rime_ashlar104.png",
+      "source": "procedural-materials/terrain-rime_ashlar104.png",
+      "sha256": "3702cfecfc9a5bf17be6fc2e4d7ab1b7633b2881198c60942c5a32f2419087af"
+    },
+    {
+      "runtime": "terrain-rime_ashlar105.png",
+      "source": "procedural-materials/terrain-rime_ashlar105.png",
+      "sha256": "17f283f4f00f3ac7c671c7ed15ad07edd029e74d933a91f8954c3883fe730ace"
+    },
+    {
+      "runtime": "terrain-rime_ashlar106.png",
+      "source": "procedural-materials/terrain-rime_ashlar106.png",
+      "sha256": "f2385ee0384b50eb55faf8cb422eb928e046bf41d5cd540f820970b985767c11"
+    },
+    {
+      "runtime": "terrain-rime_ashlar107.png",
+      "source": "procedural-materials/terrain-rime_ashlar107.png",
+      "sha256": "0a931c3586c3630eeb18433b2e7e01334bb8d4388d9c9df4891b3257b1186688"
+    },
+    {
+      "runtime": "terrain-rime_ashlar108.png",
+      "source": "procedural-materials/terrain-rime_ashlar108.png",
+      "sha256": "a19534366fcb3858809a1da94e266eab11d4d1e723334a662d28ab13f52878ff"
+    },
+    {
+      "runtime": "terrain-rime_ashlar109.png",
+      "source": "procedural-materials/terrain-rime_ashlar109.png",
+      "sha256": "c857fbdbe8b16546f37c320f076a316cbb16b285b140138fcfe9b5f2e8c3d45f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar110.png",
+      "source": "procedural-materials/terrain-rime_ashlar110.png",
+      "sha256": "2d72e07fd2cac3edc9494115f0b4d74b3d566a7f163234d87675f8d02e07dd2d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar111.png",
+      "source": "procedural-materials/terrain-rime_ashlar111.png",
+      "sha256": "6894943c0ecf2dd29aa93060c88aa9e91aa8549866222c2469f99f744fefb5c0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar112.png",
+      "source": "procedural-materials/terrain-rime_ashlar112.png",
+      "sha256": "7362d118c6faed022405d467505679adc373fd99b0f830ad045a83ff93870964"
+    },
+    {
+      "runtime": "terrain-rime_ashlar113.png",
+      "source": "procedural-materials/terrain-rime_ashlar113.png",
+      "sha256": "b8657b0e530ae22ddc40dc80670d0dcbe76358721280a233e776609079d9747a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar114.png",
+      "source": "procedural-materials/terrain-rime_ashlar114.png",
+      "sha256": "142331a6dc2e493bd31cea88786a9809a378fe7663bd5b5e12c021c79174440f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar115.png",
+      "source": "procedural-materials/terrain-rime_ashlar115.png",
+      "sha256": "e669afd184ade73f0b97b8654b8087edd27db3ae883e97ffc86e5b1a28a67650"
+    },
+    {
+      "runtime": "terrain-rime_ashlar116.png",
+      "source": "procedural-materials/terrain-rime_ashlar116.png",
+      "sha256": "27b6f4c165325a9bb23bdd45726e9f5a305cfa506cb8eea9d4d16cbbc7f0a313"
+    },
+    {
+      "runtime": "terrain-rime_ashlar117.png",
+      "source": "procedural-materials/terrain-rime_ashlar117.png",
+      "sha256": "b93f8be5ee6f00841d2645c3c9373aaa4ec7a2cd01f075694b5a0e118245a1ac"
+    },
+    {
+      "runtime": "terrain-rime_ashlar118.png",
+      "source": "procedural-materials/terrain-rime_ashlar118.png",
+      "sha256": "2c41fd5095d2ca8972835ece1067446e434b2ff829a23ab836d4a0e69ef3a1e4"
+    },
+    {
+      "runtime": "terrain-rime_ashlar119.png",
+      "source": "procedural-materials/terrain-rime_ashlar119.png",
+      "sha256": "f03e19874df8e7a2e1f78ca151bc997cb7d894fa8ba066b7a820ae7def51a3ce"
+    },
+    {
+      "runtime": "terrain-rime_ashlar120.png",
+      "source": "procedural-materials/terrain-rime_ashlar120.png",
+      "sha256": "f54fa078eb67523f8fb63c781c517b01309d6ab58fc04e916b94f75b7276de68"
+    },
+    {
+      "runtime": "terrain-rime_ashlar121.png",
+      "source": "procedural-materials/terrain-rime_ashlar121.png",
+      "sha256": "78fa5dad495c4f751cf00062ead3030b45763e4b40cd33150af2a26c355edb57"
+    },
+    {
+      "runtime": "terrain-rime_ashlar122.png",
+      "source": "procedural-materials/terrain-rime_ashlar122.png",
+      "sha256": "6cded30aba74179563d6e963998e829a5c3a6fd9331622e19fdedf342e0c7822"
+    },
+    {
+      "runtime": "terrain-rime_ashlar123.png",
+      "source": "procedural-materials/terrain-rime_ashlar123.png",
+      "sha256": "b6e105991a758d4c90bddd00206a3fe3efb0c72eff444d64e116fe387549430a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar124.png",
+      "source": "procedural-materials/terrain-rime_ashlar124.png",
+      "sha256": "08aa649a8f099af72784f952f4428a16714a110893084b62c2767cdaea3a2858"
+    },
+    {
+      "runtime": "terrain-rime_ashlar125.png",
+      "source": "procedural-materials/terrain-rime_ashlar125.png",
+      "sha256": "911e0604f957fcc6e9ecf298642586a59bbbd73dd0214e0b719d1f3dde99e920"
+    },
+    {
+      "runtime": "terrain-rime_ashlar126.png",
+      "source": "procedural-materials/terrain-rime_ashlar126.png",
+      "sha256": "975cb906b05f15e2f0089966b6aa27bc23c4341c9090af833f965086006ba754"
+    },
+    {
+      "runtime": "terrain-rime_ashlar127.png",
+      "source": "procedural-materials/terrain-rime_ashlar127.png",
+      "sha256": "8a3be232925ac1b3b10759d7db3c52f7e02db008d3c5c22fa72e0a08a33c3468"
+    },
+    {
+      "runtime": "terrain-rime_ashlar128.png",
+      "source": "procedural-materials/terrain-rime_ashlar128.png",
+      "sha256": "925c492342710b88d004afe6499d13c637f9b09b4455dd8c47c12cc6f2925f5c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar129.png",
+      "source": "procedural-materials/terrain-rime_ashlar129.png",
+      "sha256": "ada4ef688a9a82fbc7c50b657545746486337b82d33c51f15d6725f837807396"
+    },
+    {
+      "runtime": "terrain-rime_ashlar130.png",
+      "source": "procedural-materials/terrain-rime_ashlar130.png",
+      "sha256": "4cef646dc4b8a921faa6ce77b7ff2b2eb37b5bb6c22cae69fde2f332099c7a1c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar131.png",
+      "source": "procedural-materials/terrain-rime_ashlar131.png",
+      "sha256": "aa7b309a76524385d7a74bc530f4d525fa7293f5a3f3b9fa7ca14b3a2985650c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar132.png",
+      "source": "procedural-materials/terrain-rime_ashlar132.png",
+      "sha256": "4d093404664ff5e14ac46aacc57518a8e17a8b611a335cbc7dc6bcd7be5e4661"
+    },
+    {
+      "runtime": "terrain-rime_ashlar133.png",
+      "source": "procedural-materials/terrain-rime_ashlar133.png",
+      "sha256": "fe29344b01340d300a132aaca48320fc896dc6a29afdb4041d49662adec1ea36"
+    },
+    {
+      "runtime": "terrain-rime_ashlar134.png",
+      "source": "procedural-materials/terrain-rime_ashlar134.png",
+      "sha256": "1c25f28285e2f7cdf078047177d0b2aa346af7ff442f0c67c7116595c2d1fc14"
+    },
+    {
+      "runtime": "terrain-rime_ashlar135.png",
+      "source": "procedural-materials/terrain-rime_ashlar135.png",
+      "sha256": "d0928f09f233d3b5bda5d428bf9ed500aa576071ca857598ecbdaa5e937d6aa2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar136.png",
+      "source": "procedural-materials/terrain-rime_ashlar136.png",
+      "sha256": "a22c19f8bc391de444cf8a6d2754710397fa72bb612ce7fadffbb2f8206dda41"
+    },
+    {
+      "runtime": "terrain-rime_ashlar137.png",
+      "source": "procedural-materials/terrain-rime_ashlar137.png",
+      "sha256": "e3fa961f16a749b722f5bfe45d0608a5ee673fed10934168ca3b8793c9989261"
+    },
+    {
+      "runtime": "terrain-rime_ashlar138.png",
+      "source": "procedural-materials/terrain-rime_ashlar138.png",
+      "sha256": "38b0bd802a8d1eed63a86aebb5e05c464b9627bf27071886ee6aceb8949dd897"
+    },
+    {
+      "runtime": "terrain-rime_ashlar139.png",
+      "source": "procedural-materials/terrain-rime_ashlar139.png",
+      "sha256": "fb0cf2667e99ad57eaaecc491de66378e1a54cc15db498cda1af7ecabb196702"
+    },
+    {
+      "runtime": "terrain-rime_ashlar140.png",
+      "source": "procedural-materials/terrain-rime_ashlar140.png",
+      "sha256": "89af13f4bce0bda199543ff862612d529ee8110af786c24966e696c26e94c616"
+    },
+    {
+      "runtime": "terrain-rime_ashlar141.png",
+      "source": "procedural-materials/terrain-rime_ashlar141.png",
+      "sha256": "3fe205e7bd9fb5e083e428bd38eb387481dc537bf72ecb74d36f8bedbff82c76"
+    },
+    {
+      "runtime": "terrain-rime_ashlar142.png",
+      "source": "procedural-materials/terrain-rime_ashlar142.png",
+      "sha256": "7097830bd9debf101847128bc6b547d87afef8b72eb8627876ffa57da58657f7"
+    },
+    {
+      "runtime": "terrain-rime_ashlar143.png",
+      "source": "procedural-materials/terrain-rime_ashlar143.png",
+      "sha256": "55304bdde40a2827d933a4441102d9fcd6ac7200ac28e02dd33bd0722df5961d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar144.png",
+      "source": "procedural-materials/terrain-rime_ashlar144.png",
+      "sha256": "a3a7ef2e48e80de89621c1e7d18dfbbb5c9eb6c3b2b78f3e0e108d296d602596"
+    },
+    {
+      "runtime": "terrain-rime_ashlar145.png",
+      "source": "procedural-materials/terrain-rime_ashlar145.png",
+      "sha256": "72c29cc7d3b60df5ed390c89789226aad3efc671c41c6b0627e9602691922a65"
+    },
+    {
+      "runtime": "terrain-rime_ashlar146.png",
+      "source": "procedural-materials/terrain-rime_ashlar146.png",
+      "sha256": "cf784b04bf6a90f118caff842855c4046a4a87734a9392816128a58664544a7d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar147.png",
+      "source": "procedural-materials/terrain-rime_ashlar147.png",
+      "sha256": "11d6124b00e4075864ffa93bffbe473003bf3e279289b035f7f68c1fef77d6b0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar148.png",
+      "source": "procedural-materials/terrain-rime_ashlar148.png",
+      "sha256": "440ec181166906415eee2d0decc0ac5f98ab7f97765f6926aff32629bf5ad8c9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar149.png",
+      "source": "procedural-materials/terrain-rime_ashlar149.png",
+      "sha256": "91ab6922112e81194059c34755d245ba692ae4093f5714a6f9992a938564b80e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar150.png",
+      "source": "procedural-materials/terrain-rime_ashlar150.png",
+      "sha256": "23104555cc63844143b0231ebae507b6b1444574006db5f421879dafc9522417"
+    },
+    {
+      "runtime": "terrain-rime_ashlar151.png",
+      "source": "procedural-materials/terrain-rime_ashlar151.png",
+      "sha256": "22aa23e4aeb105bf047738cd9405f7893fe6beae38eb298dd1cd79bb40cfb491"
+    },
+    {
+      "runtime": "terrain-rime_ashlar152.png",
+      "source": "procedural-materials/terrain-rime_ashlar152.png",
+      "sha256": "0bb91863826e194742204d935574a5d442fb07d74acf63462dc81bf4ef822263"
+    },
+    {
+      "runtime": "terrain-rime_ashlar153.png",
+      "source": "procedural-materials/terrain-rime_ashlar153.png",
+      "sha256": "5d075c9fb74a5e0638554f33e3758d64b4e4d8137ca2a9a4e198378de5e2c6ef"
+    },
+    {
+      "runtime": "terrain-rime_ashlar154.png",
+      "source": "procedural-materials/terrain-rime_ashlar154.png",
+      "sha256": "75403aecf89f715630f866d669200f014c4079212be2cad3983819ff75d05149"
+    },
+    {
+      "runtime": "terrain-rime_ashlar155.png",
+      "source": "procedural-materials/terrain-rime_ashlar155.png",
+      "sha256": "47452008fd8048b9895341885bd106e5291b989013245fae8f72b9a91816131c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar156.png",
+      "source": "procedural-materials/terrain-rime_ashlar156.png",
+      "sha256": "f3f398d89ff20c854e5311418f050d208b3339ef26273c53235c39a74df8beaf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar157.png",
+      "source": "procedural-materials/terrain-rime_ashlar157.png",
+      "sha256": "be1d1c84cba84b4270747ad5d892dc11a675e2c324e73426a88e1cf7759775a0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar158.png",
+      "source": "procedural-materials/terrain-rime_ashlar158.png",
+      "sha256": "051bf0c70423087e046beca2a959e54fc87f0f99d9e4d2c29e4fb94b82be0c25"
+    },
+    {
+      "runtime": "terrain-rime_ashlar159.png",
+      "source": "procedural-materials/terrain-rime_ashlar159.png",
+      "sha256": "128c32b16ad81cc4081f7c9b9680da3036d268e0fdf79fb9e97e6945ba6ecb39"
+    },
+    {
+      "runtime": "terrain-rime_ashlar160.png",
+      "source": "procedural-materials/terrain-rime_ashlar160.png",
+      "sha256": "764c97626508be7e659e39d38551ac916de5d0f59e42a5e5195fd664570d8dac"
+    },
+    {
+      "runtime": "terrain-rime_ashlar161.png",
+      "source": "procedural-materials/terrain-rime_ashlar161.png",
+      "sha256": "70396747c7d45c0cdb5aa9d7c991c3a55a0207898ec2f9778c96f5e07260932e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar162.png",
+      "source": "procedural-materials/terrain-rime_ashlar162.png",
+      "sha256": "1dc8742c42a6b90307ca1937c3137cc787cf215be4ed796c522d3048fa7d73a9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar163.png",
+      "source": "procedural-materials/terrain-rime_ashlar163.png",
+      "sha256": "cb22440f605d876fa8fb7e147e1078add4221956fd35ec39545b125f14fc9b78"
+    },
+    {
+      "runtime": "terrain-rime_ashlar164.png",
+      "source": "procedural-materials/terrain-rime_ashlar164.png",
+      "sha256": "450d99dcfdd91b5d8bb286664273de2bbb3d26ec7b836f924c9b4a3752cf4b55"
+    },
+    {
+      "runtime": "terrain-rime_ashlar165.png",
+      "source": "procedural-materials/terrain-rime_ashlar165.png",
+      "sha256": "9f7f4da1f166e54aa0897480885f128e6ae1fbb4e59be56d5fe73930790e7751"
+    },
+    {
+      "runtime": "terrain-rime_ashlar166.png",
+      "source": "procedural-materials/terrain-rime_ashlar166.png",
+      "sha256": "227df9f140ba8334463cabe2dc199b65b039c4dbfef48863390d196f8da64366"
+    },
+    {
+      "runtime": "terrain-rime_ashlar167.png",
+      "source": "procedural-materials/terrain-rime_ashlar167.png",
+      "sha256": "8b41cab5a057785e2a9dcdd4c9e96ff7ecd3b74c6f3d230fd85e394a4628a11c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar168.png",
+      "source": "procedural-materials/terrain-rime_ashlar168.png",
+      "sha256": "507560d7aabc2be0b937ff5906d8d57b27a6270829d90852a1092ebe0edca151"
+    },
+    {
+      "runtime": "terrain-rime_ashlar169.png",
+      "source": "procedural-materials/terrain-rime_ashlar169.png",
+      "sha256": "ec7bf6e3f36a2e81c8b9b10a30dadb6b4240a9f4e2a03456bcff3a2d51ecbdcf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar170.png",
+      "source": "procedural-materials/terrain-rime_ashlar170.png",
+      "sha256": "efd7839ca573f8c18ee03d2badb34294e043aaab64ce08a6b2779bb5fbfa465f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar171.png",
+      "source": "procedural-materials/terrain-rime_ashlar171.png",
+      "sha256": "1d8453aa1b2e24faa3fa99b00ee53431e4e7a327d57d9c36f2dab7cb4b0c0bf1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar172.png",
+      "source": "procedural-materials/terrain-rime_ashlar172.png",
+      "sha256": "6a0edd7844e9f6498b7388d00e01008b5e8dfd5acb47b6fd10c067a2685f0b50"
+    },
+    {
+      "runtime": "terrain-rime_ashlar173.png",
+      "source": "procedural-materials/terrain-rime_ashlar173.png",
+      "sha256": "30d6edaa9b7cefea9b47d8d58f0b8dd1ebc1d14b031ee571699b99a70a94761d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar174.png",
+      "source": "procedural-materials/terrain-rime_ashlar174.png",
+      "sha256": "55cf71345c162e8ad5a32a554b36da03ef772fee9a7420b1ba0c16b617a0d2d1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar175.png",
+      "source": "procedural-materials/terrain-rime_ashlar175.png",
+      "sha256": "2c33b82b8d4c6788f37f2bb36b691d4a7af03a521564d771632f0f8a9517b610"
+    },
+    {
+      "runtime": "terrain-rime_ashlar176.png",
+      "source": "procedural-materials/terrain-rime_ashlar176.png",
+      "sha256": "8f67bb15766337b3fab3d6223eb53222d81e4a395463164c37a8eecff17ce0f5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar177.png",
+      "source": "procedural-materials/terrain-rime_ashlar177.png",
+      "sha256": "3d3ec1cfa1a77a77884460921cb3b308ab5ad75dd1c981b7a154122a7b7b33a0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar178.png",
+      "source": "procedural-materials/terrain-rime_ashlar178.png",
+      "sha256": "ee9df6a26a81d4ce43579b3fcdb0049952ea23232a863addb69cd4c7bdbbb1cf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar179.png",
+      "source": "procedural-materials/terrain-rime_ashlar179.png",
+      "sha256": "af13d8aaa37123deeb23bd49b4fa58d526199805424535fe33585b7d27f857d0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar180.png",
+      "source": "procedural-materials/terrain-rime_ashlar180.png",
+      "sha256": "5dcd3b4bed82586525e149cb96ce1e0d4598e90bfc8f34df3770447454aabf3a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar181.png",
+      "source": "procedural-materials/terrain-rime_ashlar181.png",
+      "sha256": "7f3b8de8b45886d52a7ae7f83eaed1fa254e05adb0125ae51d0fc93d20e933d5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar182.png",
+      "source": "procedural-materials/terrain-rime_ashlar182.png",
+      "sha256": "5c8ef08dd2251c3acc9e42ec6d1c88924057e7cbeda0653987799f51d68a495c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar183.png",
+      "source": "procedural-materials/terrain-rime_ashlar183.png",
+      "sha256": "24e743150e844327109d66798338784fc64fb40914d9f838177e2b1007a89788"
+    },
+    {
+      "runtime": "terrain-rime_ashlar184.png",
+      "source": "procedural-materials/terrain-rime_ashlar184.png",
+      "sha256": "1894ce1144c3fe01b846fa6cb3851c6681a00d3c1349237d631f6620e1b2a4f5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar185.png",
+      "source": "procedural-materials/terrain-rime_ashlar185.png",
+      "sha256": "989b3f28f4909126f31656a30a0c224b3744c09ab7de08da797c9fee0554afa1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar186.png",
+      "source": "procedural-materials/terrain-rime_ashlar186.png",
+      "sha256": "39af6d3a39c3f0a3f7b35703c8a2637825fdbb43447fd3aa9f466c43bfb33f59"
+    },
+    {
+      "runtime": "terrain-rime_ashlar187.png",
+      "source": "procedural-materials/terrain-rime_ashlar187.png",
+      "sha256": "1bff47966f7b16f89ae1d4bf32d16c6edbf06371ade1e240a3859adc205baf78"
+    },
+    {
+      "runtime": "terrain-rime_ashlar188.png",
+      "source": "procedural-materials/terrain-rime_ashlar188.png",
+      "sha256": "a8ca527384cd8d501922f95aedcce93559f9a94e8321fd6471075f797800a58f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar189.png",
+      "source": "procedural-materials/terrain-rime_ashlar189.png",
+      "sha256": "abc138eb1ead117e52f685a5b7182f43adb93a52c9803a025a29d0ad2bdf5ed0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar190.png",
+      "source": "procedural-materials/terrain-rime_ashlar190.png",
+      "sha256": "c392b02aeda7e68d60dcb88acf57908487413114df7670783fa7bd69e5ac6b2f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar191.png",
+      "source": "procedural-materials/terrain-rime_ashlar191.png",
+      "sha256": "b425fdd4c8be8a2c45fee95085e1f4533a3451beede3fac6253d9392a5ba940b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar192.png",
+      "source": "procedural-materials/terrain-rime_ashlar192.png",
+      "sha256": "5f5e21740dc1c7c32fcf2c3baaf940e86590fc5c91dced9309f4d1d840d03636"
+    },
+    {
+      "runtime": "terrain-rime_ashlar193.png",
+      "source": "procedural-materials/terrain-rime_ashlar193.png",
+      "sha256": "e26577bace75e26bf269f3dc042fd20168cf89c966b1e9f1f5b2dc5574689f9b"
+    },
+    {
+      "runtime": "terrain-rime_ashlar194.png",
+      "source": "procedural-materials/terrain-rime_ashlar194.png",
+      "sha256": "9ffc75c74dadc6b8b30315493992ff3acd48ceba9054ddda555c78ab774793e3"
+    },
+    {
+      "runtime": "terrain-rime_ashlar195.png",
+      "source": "procedural-materials/terrain-rime_ashlar195.png",
+      "sha256": "6e56458474ccc8af3b0b176f4357a324c59b2234f2d2a7010325999dd19ca8aa"
+    },
+    {
+      "runtime": "terrain-rime_ashlar196.png",
+      "source": "procedural-materials/terrain-rime_ashlar196.png",
+      "sha256": "7678a63f81bcaaf5066f23fa2eabd9852dd7c598111da8a1ec360bcb1934eea0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar197.png",
+      "source": "procedural-materials/terrain-rime_ashlar197.png",
+      "sha256": "e0ed039badfd0d733d0ce228cab7e545a693ea5cab6cc8ab35c9d97315db98c1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar198.png",
+      "source": "procedural-materials/terrain-rime_ashlar198.png",
+      "sha256": "e08a206ccb5f9bb73a1afa6460d0df7448f695feaddcd87d53db39d89a8fb8e4"
+    },
+    {
+      "runtime": "terrain-rime_ashlar199.png",
+      "source": "procedural-materials/terrain-rime_ashlar199.png",
+      "sha256": "adfa5add41333053379dd7272e5ed73a9d942770bb8336db5b1c075ecc8ee4e2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar200.png",
+      "source": "procedural-materials/terrain-rime_ashlar200.png",
+      "sha256": "ce155ec694062656bdd73f35063ca8584717b530abb16ba25afbe074df70d5f8"
+    },
+    {
+      "runtime": "terrain-rime_ashlar201.png",
+      "source": "procedural-materials/terrain-rime_ashlar201.png",
+      "sha256": "5bc0351263008434f0570f5e9b99947475d29d6550a31ff5019c6055ea8b9f83"
+    },
+    {
+      "runtime": "terrain-rime_ashlar202.png",
+      "source": "procedural-materials/terrain-rime_ashlar202.png",
+      "sha256": "49b1f7ca3ec1a408e22210cdb05dbdca71b26118c3a54632bca618a95f4a9202"
+    },
+    {
+      "runtime": "terrain-rime_ashlar203.png",
+      "source": "procedural-materials/terrain-rime_ashlar203.png",
+      "sha256": "2fafab1bb7d7211f68f3ce1ea00ab8e2d5666f6f549346912037995f850955cd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar204.png",
+      "source": "procedural-materials/terrain-rime_ashlar204.png",
+      "sha256": "fc5473d9f5ff4404fdd050d075c156ee6339d7b90c9c4271eafe4c41746655a5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar205.png",
+      "source": "procedural-materials/terrain-rime_ashlar205.png",
+      "sha256": "cf2da14018fde9ba7ae6b6a10cc1d72d1a83317fbb28c54db8204a1e7e91509e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar206.png",
+      "source": "procedural-materials/terrain-rime_ashlar206.png",
+      "sha256": "a616c4a603f343687ca8f80a686e3d00ca01ed4291f0b44177224ef2741cf41f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar207.png",
+      "source": "procedural-materials/terrain-rime_ashlar207.png",
+      "sha256": "dacee1d8536a9782f5f35db99b6654aaf00ba987cced74e5d6e391d3fd87740f"
+    },
+    {
+      "runtime": "terrain-rime_ashlar208.png",
+      "source": "procedural-materials/terrain-rime_ashlar208.png",
+      "sha256": "8bbd390a94c26572145cda1cad3033d048ae3c56b44edbf6436c9b151304319a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar209.png",
+      "source": "procedural-materials/terrain-rime_ashlar209.png",
+      "sha256": "45f08237f2ec2ccf176f2c1330e0282d4774f70846fc6462b58650ef0d7e4c3e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar210.png",
+      "source": "procedural-materials/terrain-rime_ashlar210.png",
+      "sha256": "3646c290eaaee7d10ab53d82d86a47ef21ac99d9067a6221629db83c7188d37c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar211.png",
+      "source": "procedural-materials/terrain-rime_ashlar211.png",
+      "sha256": "3b2271632e00b72c2f3c97beceb1c168ec0d576a09e0b28dc1e3792e55a5bd24"
+    },
+    {
+      "runtime": "terrain-rime_ashlar212.png",
+      "source": "procedural-materials/terrain-rime_ashlar212.png",
+      "sha256": "b9fad35a074bc5d080d7b4f8cfad91f1f8720fba631ee06f8cb1494c05fe4095"
+    },
+    {
+      "runtime": "terrain-rime_ashlar213.png",
+      "source": "procedural-materials/terrain-rime_ashlar213.png",
+      "sha256": "ef780ccc0718b041422b9b2b0ce0eb02ce4213fa3bc6cec102ea98b12bac20c5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar214.png",
+      "source": "procedural-materials/terrain-rime_ashlar214.png",
+      "sha256": "19ef155baaa5c27d9700c6c482e9f75a2f4e1ff00a87a42f0c3623d76fe390a5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar215.png",
+      "source": "procedural-materials/terrain-rime_ashlar215.png",
+      "sha256": "22d9e6074fd91f03886ed955842c887fb17e9284a231e02434ed606048749f05"
+    },
+    {
+      "runtime": "terrain-rime_ashlar216.png",
+      "source": "procedural-materials/terrain-rime_ashlar216.png",
+      "sha256": "12302f6c4cc66b4977c74e14c3e6e82e72ef53b551c121c1657f3356a1c4bc47"
+    },
+    {
+      "runtime": "terrain-rime_ashlar217.png",
+      "source": "procedural-materials/terrain-rime_ashlar217.png",
+      "sha256": "42e233215bc300a0dd1c90274499e1850b60a492672e5268bebc9d90ebcadacf"
+    },
+    {
+      "runtime": "terrain-rime_ashlar218.png",
+      "source": "procedural-materials/terrain-rime_ashlar218.png",
+      "sha256": "51761fcc3a4f2afead591923812e7331a468335e76bf054a36f59a2fd2cfb7ff"
+    },
+    {
+      "runtime": "terrain-rime_ashlar219.png",
+      "source": "procedural-materials/terrain-rime_ashlar219.png",
+      "sha256": "41159d59bf04220cc6d45664102500ce3e8252195021f2abb93de601f83b689e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar220.png",
+      "source": "procedural-materials/terrain-rime_ashlar220.png",
+      "sha256": "dc45e94ade17e6f85638888c0d3cef2218642c1c826698036082fe0bc7a8f29c"
+    },
+    {
+      "runtime": "terrain-rime_ashlar221.png",
+      "source": "procedural-materials/terrain-rime_ashlar221.png",
+      "sha256": "4ecfe86670c0a18fbac5bd1d8ddc1774417dfd2358d97d48cc785189fbaadbf1"
+    },
+    {
+      "runtime": "terrain-rime_ashlar222.png",
+      "source": "procedural-materials/terrain-rime_ashlar222.png",
+      "sha256": "b528e4435e9f222329851fd2aad05d3f57ca630838e25aa890f58d692debce08"
+    },
+    {
+      "runtime": "terrain-rime_ashlar223.png",
+      "source": "procedural-materials/terrain-rime_ashlar223.png",
+      "sha256": "031ca9fe67c1bba058c8dcf3cfc9ca8562e512a2385bf981615ce2921e23e885"
+    },
+    {
+      "runtime": "terrain-rime_ashlar224.png",
+      "source": "procedural-materials/terrain-rime_ashlar224.png",
+      "sha256": "129a96667d29b0be9bbc7b6b4152586d3a7a46f27d36da503335f8a89efb92f4"
+    },
+    {
+      "runtime": "terrain-rime_ashlar225.png",
+      "source": "procedural-materials/terrain-rime_ashlar225.png",
+      "sha256": "950e75205dcb7492e855a56c9c1e10d88e72b1dd4bb062496ae34946641982d5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar226.png",
+      "source": "procedural-materials/terrain-rime_ashlar226.png",
+      "sha256": "8594a09a8b408a262ce96d01cbd99fc024911f54ff2e25d5dae591feb665cfcd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar227.png",
+      "source": "procedural-materials/terrain-rime_ashlar227.png",
+      "sha256": "2cd39fbdf05a4043e7f875514037dfebbef1a6aa63f93d2d72684588d3bdbb74"
+    },
+    {
+      "runtime": "terrain-rime_ashlar228.png",
+      "source": "procedural-materials/terrain-rime_ashlar228.png",
+      "sha256": "976f7ec4aa5a56fb3b14774acf5805ff77c474fad01e7158fa5a0112f8ecb541"
+    },
+    {
+      "runtime": "terrain-rime_ashlar229.png",
+      "source": "procedural-materials/terrain-rime_ashlar229.png",
+      "sha256": "9409de3754214fd7efe136ab7d87f2b0e912e7ab52921da152fdf2da78993b3d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar230.png",
+      "source": "procedural-materials/terrain-rime_ashlar230.png",
+      "sha256": "260c20df7dfe75f87fa2dd8968c1391e3b1e2c98137c7d3052b2d297c470bc35"
+    },
+    {
+      "runtime": "terrain-rime_ashlar231.png",
+      "source": "procedural-materials/terrain-rime_ashlar231.png",
+      "sha256": "057162543c7db497b0f6733e1f30d64809a6556339017f1c4bc9b6c81d5666f2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar232.png",
+      "source": "procedural-materials/terrain-rime_ashlar232.png",
+      "sha256": "b7b85a6022441a948d129747863a78e8035af3b2d1742e982b0388d50b3f15d0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar233.png",
+      "source": "procedural-materials/terrain-rime_ashlar233.png",
+      "sha256": "17d35b50b47b9c9c3b8ed4bb50b17f2afed2a759a244e33f8686103b06742319"
+    },
+    {
+      "runtime": "terrain-rime_ashlar234.png",
+      "source": "procedural-materials/terrain-rime_ashlar234.png",
+      "sha256": "2e234423e8990c8e61ffd590c3707022c71e40ed35a269e33c8dc09b63067d38"
+    },
+    {
+      "runtime": "terrain-rime_ashlar235.png",
+      "source": "procedural-materials/terrain-rime_ashlar235.png",
+      "sha256": "8ad9caea7e2595b58fefece92e8f86f4bd4c77b9b1bfc967582a1a08ce25449e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar236.png",
+      "source": "procedural-materials/terrain-rime_ashlar236.png",
+      "sha256": "c2e5ea679c2671e5b46c8ffc7215f638f8281dcdb3b09560bc67fa03e2f44ff2"
+    },
+    {
+      "runtime": "terrain-rime_ashlar237.png",
+      "source": "procedural-materials/terrain-rime_ashlar237.png",
+      "sha256": "b20c88ccc7aa8af6838787d50d644522c83ba2771d4f5ffb4d28a8c5c9963804"
+    },
+    {
+      "runtime": "terrain-rime_ashlar238.png",
+      "source": "procedural-materials/terrain-rime_ashlar238.png",
+      "sha256": "34bd1c3d49c89acb581a2c388f07ded87ada700546d66d6eddf863f6f3dfabb9"
+    },
+    {
+      "runtime": "terrain-rime_ashlar239.png",
+      "source": "procedural-materials/terrain-rime_ashlar239.png",
+      "sha256": "665cde953b9d570bba4abccc42dbb61bee8cd9bfda4674294124e8634b3b3dfd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar240.png",
+      "source": "procedural-materials/terrain-rime_ashlar240.png",
+      "sha256": "08d52e57cd1c3981a082bdc12354beb3356eaf1769bb193ce400afe0d631fb3d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar241.png",
+      "source": "procedural-materials/terrain-rime_ashlar241.png",
+      "sha256": "b1370c8513cbf42398879bf363bc050fd1f4fabafcca1e37fcaaf97d0b3ce994"
+    },
+    {
+      "runtime": "terrain-rime_ashlar242.png",
+      "source": "procedural-materials/terrain-rime_ashlar242.png",
+      "sha256": "5c1fa7683dae095fe9732ea4e9d90ced592f741ee480bca5d613f9d7159c6364"
+    },
+    {
+      "runtime": "terrain-rime_ashlar243.png",
+      "source": "procedural-materials/terrain-rime_ashlar243.png",
+      "sha256": "8869ad440e6473b393481857b9c61706b562882b5a4d1b910b909b48182b5ef0"
+    },
+    {
+      "runtime": "terrain-rime_ashlar244.png",
+      "source": "procedural-materials/terrain-rime_ashlar244.png",
+      "sha256": "a00852d91b8de9bee56267204dba0de9fb3e1dbf497d1c9faf54e1285822f6eb"
+    },
+    {
+      "runtime": "terrain-rime_ashlar245.png",
+      "source": "procedural-materials/terrain-rime_ashlar245.png",
+      "sha256": "6ee967ad64addd4cec1969dd55151d94fb40d43a94a2c6c7aacaa92636702a7e"
+    },
+    {
+      "runtime": "terrain-rime_ashlar246.png",
+      "source": "procedural-materials/terrain-rime_ashlar246.png",
+      "sha256": "e960a77a31915e37dcb2945cae387e10ae0b9909a41bf58eaa7db69bc202d4bd"
+    },
+    {
+      "runtime": "terrain-rime_ashlar247.png",
+      "source": "procedural-materials/terrain-rime_ashlar247.png",
+      "sha256": "10fcbf60de8310982754d284d6d698b5d958f3e95efccab73b3e7bb7683fabd5"
+    },
+    {
+      "runtime": "terrain-rime_ashlar248.png",
+      "source": "procedural-materials/terrain-rime_ashlar248.png",
+      "sha256": "a6de3e00b0a360f51aa03e9d4594110ef99bd4ea7c93cf318a01212df6dce9ad"
+    },
+    {
+      "runtime": "terrain-rime_ashlar249.png",
+      "source": "procedural-materials/terrain-rime_ashlar249.png",
+      "sha256": "bcf126dca611829d43f2945b9d4ba2f633a032c189d32348034a9b05f5433d9d"
+    },
+    {
+      "runtime": "terrain-rime_ashlar250.png",
+      "source": "procedural-materials/terrain-rime_ashlar250.png",
+      "sha256": "9eadf55aed2e58e4202c11ab12b03857995a0a6acd357d023b813514cee10cec"
+    },
+    {
+      "runtime": "terrain-rime_ashlar251.png",
+      "source": "procedural-materials/terrain-rime_ashlar251.png",
+      "sha256": "e6c4d4cf24a6902ccb0ff0415abc6a7d52debbe12f20fd57f4a7b543e9a17a25"
+    },
+    {
+      "runtime": "terrain-rime_ashlar252.png",
+      "source": "procedural-materials/terrain-rime_ashlar252.png",
+      "sha256": "b012ef45ffc587387d3fe85bb23865c30538a5e8b513275bc7d2343bcab0a445"
+    },
+    {
+      "runtime": "terrain-rime_ashlar253.png",
+      "source": "procedural-materials/terrain-rime_ashlar253.png",
+      "sha256": "ca7adeb23fdd331e28152a8da7838da42b56a09a1db414a2abda22f4f6ba167a"
+    },
+    {
+      "runtime": "terrain-rime_ashlar254.png",
+      "source": "procedural-materials/terrain-rime_ashlar254.png",
+      "sha256": "1f6bd36dc40f4f2b52b544a9fabb65eb8497a8cf466b4af6e4009b33458b0b00"
+    },
+    {
+      "runtime": "terrain-rime_ashlar255.png",
+      "source": "procedural-materials/terrain-rime_ashlar255.png",
+      "sha256": "24c9a75a0cc846bddc75d7b2ca0d4df795d38d129ffe2f7a8ef5ba8793cd0eea"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge0.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge0.png",
+      "sha256": "1c9cbb491b14cecf70a789c1395c1c643026e1bdb716cf3232258483b0fc4c00"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge1.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge1.png",
+      "sha256": "6a86d5561e7ece6c88d5898ad2d89efd56f33edf81e0aad4d98d08adc5a5f021"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge2.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge2.png",
+      "sha256": "bdf06f6529e6d396d0075c389f9d744419b65500ad38341b24758ec617b3fa91"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge3.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge3.png",
+      "sha256": "45f3d412a684152b780a5515eee2de65da1d14598b6b98fcbbc627ce71bf2cc0"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge4.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge4.png",
+      "sha256": "033a32bbdee5a4c3fabe7e4f832f78ed41144282d952c51ceebc1c937977ec2c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge5.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge5.png",
+      "sha256": "f0fb8c9a4a2e1e67815de7b511be82a943d3a0e97a383a9cdc20231d08a446e8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge6.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge6.png",
+      "sha256": "1ad08d6d89a70f463e2becea52f669e70ec7387c8fc518bbf88781f2dc828c5a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge7.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge7.png",
+      "sha256": "e4291eb83dd8474a148988d54d265c2053e7551f9671f85c4410946a75c6a056"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge8.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge8.png",
+      "sha256": "ea417ae5b0a7ce7f1700bd7b96920d56e0b9644a3e57599707164d8e8b8755e8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge9.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge9.png",
+      "sha256": "de2f7ac44c149033c05d4926cc3932add7f40ceb4c64b6a56d4d8eab40701e7f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge10.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge10.png",
+      "sha256": "65e61b4d6875edf415f3127c99c2f33a3841976c6060897b32bda56d112e3a22"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge11.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge11.png",
+      "sha256": "ff73c31857f3984f3f0707f155167d067755ef7af223ef31497afdaccaf4978d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge12.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge12.png",
+      "sha256": "5aea049ec6258724bdd00fcf03babc1ee60c024809d5c5e5a39ae2b8e245605a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge13.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge13.png",
+      "sha256": "b1b305793101c3c03a47bf226b6376ed408c41ab2334086041e2533251dbfc03"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge14.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge14.png",
+      "sha256": "d56d440717ed2ec6c32d6dc66c998472bfb8cde0f7d8a3c6392ea905883e6de8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge15.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge15.png",
+      "sha256": "5e26bbe193be7e507c13e333d0a67dbf4bfc2d0f0f6b66265ed27b826d119a75"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge16.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge16.png",
+      "sha256": "842a693067dcbdad9e617d97face9100edaca6c444b904b05326dbc4b5b8e17d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge17.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge17.png",
+      "sha256": "2522145ff76e9f8327a9f96aa5f2da8df784d5feb5c98736efc451318dfb30ef"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge18.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge18.png",
+      "sha256": "ea34d0664dba4c01452b3040ba648d5dc2019fd5ba3479525101235e303beed8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge19.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge19.png",
+      "sha256": "1ba81a8cfcb53243d2d0dede824c40d32b340a2556e799126bfaf7bf667235ba"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge20.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge20.png",
+      "sha256": "c4b2f2acd08f27b151cb3c4ce7fbb9fcb291cd8a5e04404a0215367b856a35ae"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge21.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge21.png",
+      "sha256": "8f655420d7e16c2f5609fe07efa4198d507a0dd53f3ebc49e5d6169758d6ddc7"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge22.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge22.png",
+      "sha256": "1d00900ecaaa2b549d2d2d7b95b2017d34561fe1ba763204e30c10f0d2c92b5b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge23.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge23.png",
+      "sha256": "904c9a1120deb26def3b6de9b414c1976fd60475411b4035bca3ddbaea2ab4f8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge24.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge24.png",
+      "sha256": "0efa4a79b5cb6858575dbf5da2212d1bae3dbbaf5a22c53d3e732ffcfc6690f2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge25.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge25.png",
+      "sha256": "7d53bc9b097a3d31b92f0b4421c2025fcfd4fa176baf4e54ee4ee669d75ee354"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge26.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge26.png",
+      "sha256": "dc4129bc13741535c99ba7f03fac10dd73274a2cf787f993f59d4c36e979fc26"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge27.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge27.png",
+      "sha256": "081dd409d4a295b1fcc987ed07dd77cb4a4a45074de8159ab4a354fb9b98c78c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge28.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge28.png",
+      "sha256": "9902947e5ca71074117b2da6b49b9c3ecafd7f60dad992c3c742adb5852593e8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge29.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge29.png",
+      "sha256": "c4fa1712175beb0fe51cad9b1aa0191a39eba8460f98deef458c6ccb864ab8d1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge30.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge30.png",
+      "sha256": "bef6372bf9ac8826dc6c3c233629f4325e6c9f9fa8e97960588d34984aa13217"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge31.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge31.png",
+      "sha256": "f061872fb125e09f459859cd225e7d714289e8efedbfa0368d1240317eb26adc"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge32.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge32.png",
+      "sha256": "9ad5e62d2702c7d16ff19d2aff488de9a5ed648dbf8ab26a87946b37fdfd0969"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge33.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge33.png",
+      "sha256": "538bd6a03c1b493c9857dcc02b3bbd5544e666b7ef00fd71267bdaab58da3396"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge34.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge34.png",
+      "sha256": "8612ef32198ecc9d69dd858946ce859d3a13ff84db9470bbd4cdcd607da221ac"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge35.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge35.png",
+      "sha256": "58868a44b1cf913fbdbe308da5c42fd11b593e15a92bd9dbcfd3f774110f15ba"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge36.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge36.png",
+      "sha256": "820f00e4fc61f001d147407607e8cabe625c1881ea24535efcac9bef30d19d0d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge37.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge37.png",
+      "sha256": "0a91c8c0d564b3cadd47f90f6bc88cbe344cb6b2f2815cb30b276b586875cf5e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge38.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge38.png",
+      "sha256": "49d3904d6a80969845f794d5288390ecc26a56357417be11d2ad118d4c0be386"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge39.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge39.png",
+      "sha256": "deadb3d3f5a550cc2f16c8a63ae79d93901d586c335b22cdd3842eee5cb16303"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge40.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge40.png",
+      "sha256": "3f8cbb58462e6afe3b9489bbed18a21b41eac11fdb109c16e7a2c567a759b845"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge41.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge41.png",
+      "sha256": "7188711abaf10a840c4ab39a5c4e4af40401750966f6ebc3851200d59435b600"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge42.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge42.png",
+      "sha256": "64c3f03277f282fe2f5d0e0098acfe4d86c9152a8ba7c11119eb6403b1ee9166"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge43.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge43.png",
+      "sha256": "41e4746d95c155d0ae28df28974f8f9fb2e1e3b5be688ff48c425c47f1539a00"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge44.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge44.png",
+      "sha256": "80f55c28a850cb1ab75b4c890db0152c4720b5da4bbbcb5f9fc8e8aa7d6e7266"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge45.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge45.png",
+      "sha256": "06a8c6a8a46de74bd7a458dd36349868270e86d4925cdd987b89625c16f377db"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge46.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge46.png",
+      "sha256": "0494ff745fa3959bcf061bec847bcbc0f717d03c7b5904c8e011da572e361804"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge47.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge47.png",
+      "sha256": "647bac3ce7b2809f0bd2bb0b8d239713f49654aaed7a1458d25c706116f6aa83"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge48.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge48.png",
+      "sha256": "3e028478e9f59c194624dd5214083f571d85146f326d9864df79fc48af2a90c3"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge49.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge49.png",
+      "sha256": "ecc41eeb40ac5768f792dc0a53811b0b7fcaa43347ca59232779e76749f7d860"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge50.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge50.png",
+      "sha256": "c18be6302a256d43ba6775c30af25fa25c1538313ba84e866c833260cc7fc884"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge51.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge51.png",
+      "sha256": "28607cc98d525541d02b8608e95698de65d76067c53ffc5dde3b9371b1c4088e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge52.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge52.png",
+      "sha256": "1dc57605336a59d9bed7b2d9e7d9b8e6300948f37a513fc0e4e5d1ac3f981c86"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge53.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge53.png",
+      "sha256": "5c8738233d5bf12d2dfdce1f992692579cac2095d3e4e0f80042ae54f7d5de9f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge54.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge54.png",
+      "sha256": "139329e432cb54ebbb4b3b9754561d360abc3b92064e59fb738b8254e48feaf8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge55.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge55.png",
+      "sha256": "05ab3023a4f4f4e3d88f8e6f5130778dfcdae399eea49eea0a061fae1de846e7"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge56.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge56.png",
+      "sha256": "0542141219b939b132c835ec6462c96d6c5a0563b852c420d630d9419512a93e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge57.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge57.png",
+      "sha256": "b8ec12c8510116103aaf2d73deca2ad3933f2a0e91e8be2efa79b3baf6279dff"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge58.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge58.png",
+      "sha256": "370bbd8b43ae562df0d444b14720d186a39a59bed66fc770b68161d2e3a0ec6b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge59.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge59.png",
+      "sha256": "5f7fcfe092e5ded8824c3057a7bf9eaaed010a6202cce0faa56cfe9be00fbd1d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge60.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge60.png",
+      "sha256": "a2ea0486554d22ae45638a1061da511127ac674e646130799cb3180555d2fee4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge61.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge61.png",
+      "sha256": "f6a4113070d153e8b79c2c1c9df2bcb66457411b38e627fd50a81b8a0e48635a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge62.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge62.png",
+      "sha256": "dfd1ffb0d6a81c5ef11d7695339ddb8a3bfd1543a2461bb3b58c91784c53c287"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge63.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge63.png",
+      "sha256": "ad36fb829a2e9286d813c97013f4fdadfb8f0942a11724bfbe3bc804345cc9a3"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge64.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge64.png",
+      "sha256": "a72c41f283ca92a4616b64a018334fda59d682600ca8a5f27514dfaf7196e551"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge65.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge65.png",
+      "sha256": "9216a870cefae54be97aae181b57991783d3d7a900d44cce3dd6a16ed2947812"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge66.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge66.png",
+      "sha256": "9643acb103825b92c12cf3fd979ae335fde63abc3a975e71d1e9eeba6c6f3f5d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge67.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge67.png",
+      "sha256": "ef1364ca2fb5cce805cfcc7349a28253799612fbe943db47508da026c00eaaf1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge68.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge68.png",
+      "sha256": "1f21e68b2adf227d9659ff58563b0c61f68711030da53e464bd5175c0eb68b52"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge69.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge69.png",
+      "sha256": "503439bad6099d4fe4f69369b9db0e299e8987571cd572628943754c505d9f6b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge70.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge70.png",
+      "sha256": "5bb7a5cbf54093f04f0c770611fd980b3620b9244a60446239307d57c974cf11"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge71.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge71.png",
+      "sha256": "ca0f1ffab75076b8682af074b90de6f6e292211969395841a8ce1adf957b5fde"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge72.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge72.png",
+      "sha256": "6406d71201e3cd4f04b76c53787207ecde90e99e033d81c2e000309320dee59a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge73.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge73.png",
+      "sha256": "351390c93bdd468b2dd8082c32101121df6e03abc2c1eda9429ad703e4116bb5"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge74.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge74.png",
+      "sha256": "ddf6b1eb4d62901d5c9a7639f6110d5500eb4634fc94eced80fa247e5506d4f6"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge75.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge75.png",
+      "sha256": "8df4bc43da28eb652a5a24ff6df87e5207a580db5df9f6a541de27066086bfea"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge76.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge76.png",
+      "sha256": "9d29ffdd0fd023cdaa4ab71d3ac5c66ecfc70361c62a36c61da69fdcc9606182"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge77.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge77.png",
+      "sha256": "ba27c34490b5353f78d083531e1dc70b3457ee65fbf34ff837c86eeb7cf2c918"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge78.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge78.png",
+      "sha256": "cd3b8a2f63a3dc3b14a265aeb0203c0e3887b3c810980c6ceec0d98adbd6326e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge79.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge79.png",
+      "sha256": "13b4c036ee338f9718b32fe23fb6db5b8de232343ecc3a8878dfc16f0add5776"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge80.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge80.png",
+      "sha256": "1713ff07a6edbad3a78cd4c7266aa2616310f5bc9075d167ca6ea6794b1bda16"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge81.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge81.png",
+      "sha256": "c2384db268b102012d1a283b63a2693f521af02a52cb2b8171ba5f18c6389171"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge82.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge82.png",
+      "sha256": "a4c55c1aca051a0ee4254723ffe8282bf816d06b7f428d43033ffeb3e639f586"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge83.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge83.png",
+      "sha256": "c1ebcfe5d62a705cfc2b5218d1383408c855c4b41cf75f2ea55655730c38058c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge84.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge84.png",
+      "sha256": "4164b9a64e6b1b3b0252401dab5e637cacc28c4ed0e1435c2d62bc122e7065ff"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge85.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge85.png",
+      "sha256": "8ec1fe30baea47ff116d6d9b9e0cb6d7348d51ffb6ddf7e490552ca370f886e6"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge86.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge86.png",
+      "sha256": "42e6144aa045bfac6043fd8f3232fa5d15b4528e8d1085a34bb7c5524314c7ed"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge87.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge87.png",
+      "sha256": "60ca342b223f459860416ed8b5f8f60178eb73d415b4efcba9be66063dcc9c7a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge88.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge88.png",
+      "sha256": "81f79267545cd96999de13f484cfd8757f52ba2180a2b25e13780dc3161b5d6c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge89.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge89.png",
+      "sha256": "118e416f1b8b4d02c6184d48bd00ae1edc279f45632f5c4ab7e233262765e4cc"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge90.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge90.png",
+      "sha256": "a1d4d746cdfb5565fd28d46ae2aa36868f5228b320e193f9df0c2a3994d3e57e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge91.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge91.png",
+      "sha256": "c9fa406e32f8cbd02fb58599473d196a99aac3f7aa13ee0be411a124d25e43ad"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge92.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge92.png",
+      "sha256": "631e27e98588ffd3bd5cf78bdefec8e4a2c1a44aabdc2004c4f6e7d44d1b4f18"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge93.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge93.png",
+      "sha256": "9e3640c57a49957e716edb714f26e9cc8026c5acd53ce479e872b71266586a6c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge94.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge94.png",
+      "sha256": "36abe0ffc9ddc5b4aa62cce211446571edce0a397c3e84524b998ce00b65147c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge95.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge95.png",
+      "sha256": "31c6cdcf6dca3a0d4725f325e3c61151317e236ababd58f72b5e35ac17c25f7f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge96.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge96.png",
+      "sha256": "e8c4ff88fdc1b45f315ca1b30a9fc12a12d5f79b90d1c3eaa8a8a49c56ee84fc"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge97.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge97.png",
+      "sha256": "4c1d05d4d7ce1e73dd4799d9a13b5477477705750066abba460f8bb6fca36744"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge98.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge98.png",
+      "sha256": "72b83cce678499efa4a7398ad7b28e74657f1446f5bd585657b7550dfdbb5af4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge99.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge99.png",
+      "sha256": "59c56a0ea7eb7cb954caec4cb2965cbbbfcde616a9b86463a2dc6adbcc2e5e73"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge100.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge100.png",
+      "sha256": "6f1b995f8dbe12f336a159bf9599cc3d3f99e7e80c98d52f96666b82c261bba9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge101.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge101.png",
+      "sha256": "95a739c316c68701925a3b2290e888683a4133ad04c389273b444f53757c3bd2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge102.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge102.png",
+      "sha256": "48bbcda64bf02318d1975e5cb11990d15055dc018d0c06d4393cfe3d4de22db0"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge103.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge103.png",
+      "sha256": "d9950ebb7a1b80c6046c1128a28c0ad14e3feee6e3f76359b9d3c93e6f35d3e7"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge104.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge104.png",
+      "sha256": "47bf9ed00d8d064884d175f185c2aa9632bf597dd8fe04c9e7f58c66eed17abd"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge105.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge105.png",
+      "sha256": "bc457dc0756b8edbaf3069b6ce6b9cfb9bf3937fa600bb7bd49840891a79757a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge106.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge106.png",
+      "sha256": "fdf3f4ee117455106f2f63c11be501adc47f5bf0a1feed67ecf99828bf9a74ca"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge107.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge107.png",
+      "sha256": "e06e9df79de62bf7b9ea26185329fbefdf62f12574a7dc6ada88b3e156b163b9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge108.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge108.png",
+      "sha256": "0eabe24f2ea94d15d0be506fc9fe9b5fee09b307fc7b76a4b3cee1bb9593c6e2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge109.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge109.png",
+      "sha256": "4cc6dceec2fab0f22a87bdd926f2325461d34727bcfdf33549d823928c7511ce"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge110.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge110.png",
+      "sha256": "532240cb0c24a7477613987a16e000ffbd1281900fb60f2f0f6647084ecdfd5c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge111.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge111.png",
+      "sha256": "4785d0eed26538e3e9dd21c2274c4a8834d14546996df22abaf80e8052f75dd3"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge112.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge112.png",
+      "sha256": "55f457a9a88f3535b08d5dd8467755e356f0d90192c9e3e26ec1fe9528e70792"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge113.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge113.png",
+      "sha256": "523f9df39dd1e4d1ea9a2d27040429187ac85bdcbf5bb31b2fddc9234b4aedf8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge114.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge114.png",
+      "sha256": "e86604fe304422cb967cc1e576dc66faa79b7c0e594c651d24a63e013904df8d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge115.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge115.png",
+      "sha256": "35109ba048505e403db15e5b5d592565a7e175208ff9517cbc6524b20f6fc417"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge116.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge116.png",
+      "sha256": "07e8f978a56dfa803bff134ad289b60a0869678c5eb91439cab8252db34ff952"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge117.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge117.png",
+      "sha256": "eef15f3cd740b0b20e95ecfcb2d6b6bf249461da54502f365a4189c46e1e0dbf"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge118.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge118.png",
+      "sha256": "09af96334d5daa24658b75f354507213b2b11d2d23065ee11f6673aad34bc368"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge119.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge119.png",
+      "sha256": "4da6abbabcb80d48724f98df460b311108a5afa8db0d43cdc85e8052cb703655"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge120.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge120.png",
+      "sha256": "8783713cd7478eea8c3f1460b45d595ed9f2f563a9c5be305bd4119c3d3bd2b8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge121.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge121.png",
+      "sha256": "d90a976b4595f179c9efc78365bd52719c393d19b4210e5f0d3a556ae727af9d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge122.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge122.png",
+      "sha256": "1abf34a46a2a57782f8dfc9deaf99bcc16ef13920c7f150c1925c3181ca43cfe"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge123.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge123.png",
+      "sha256": "2562b80a0c94722f9c5ebf32efa321399da53d9d44805a8f71d262db33e92b95"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge124.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge124.png",
+      "sha256": "d2a9d787003e90706ca897504d88b8e5534cc16aa84f9702f91c0c9a849ceafd"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge125.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge125.png",
+      "sha256": "23c243977291fc2359d1ed4d88a56c1a8e2411a8ea0ae6e13418e6380911a4b1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge126.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge126.png",
+      "sha256": "319c19a20ef7e3f7e1689fed3117569c24c005654a4e3f114543f383a944631c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge127.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge127.png",
+      "sha256": "9dd13d88d54be3875f8970d0a276b241598b63a9a0a8711105aa9ed59e4720e9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge128.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge128.png",
+      "sha256": "84f7793d618a3624e6608aef5ea773f255c1c30c9359fe1ba0a4189b159d12e6"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge129.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge129.png",
+      "sha256": "68a9be9ad363979fe4b19304931ec3c511e51ba254b556516b83894497b4cd08"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge130.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge130.png",
+      "sha256": "738f5a8a54205c6614f8f204fcdc75d05bbe8daba7951421a506ee53621e2d75"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge131.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge131.png",
+      "sha256": "d769b228b44867085d1e7513d68e341b390865f27dca90d8c345ff7d85001af5"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge132.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge132.png",
+      "sha256": "3cfc2a6a25b12f1276d67a0ca6aeea83ef8dbf2f6e3af4e9a52a2596c8ac283d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge133.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge133.png",
+      "sha256": "5836a4863e0cc8687ba5313fcb5e8cf229ac424a0972b04e514eea1f40bc98c8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge134.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge134.png",
+      "sha256": "b911b36a22877cb244964a335a931c745c9593fcee8015bbc42050dab74c2e32"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge135.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge135.png",
+      "sha256": "2bf7342a29e29289bff7d06451408dc84726f31c4f5aa7ab641fa1f82a679f69"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge136.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge136.png",
+      "sha256": "8e01af26718304848e71e81ae79551653583f05a168921b46c275c1b902ec615"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge137.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge137.png",
+      "sha256": "cd35a65292d39bfdbddfe0fa203f37e7c939a2875ec8a5dfc4e14a0493079492"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge138.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge138.png",
+      "sha256": "be4b68fb57e324e594595b7589d5543227cc231d437c78dee7e084cb0675e6c1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge139.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge139.png",
+      "sha256": "f7e007475a57de17ed9b5b52941ff33da7133918ac82bd5a85423065ec40fbed"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge140.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge140.png",
+      "sha256": "7e90ec8fb37916fa8e4af85e8ffe4ccb077396edfdd5c37514e46c7ae2d976fa"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge141.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge141.png",
+      "sha256": "bfd3647aaaa45333dd69ed05535afaeb54de62d3931e29cb6c888b6131cf1df0"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge142.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge142.png",
+      "sha256": "f3aef19360939fdbdc0f82986a908dc653d2aa85bf5ebab1d051187b369d0239"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge143.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge143.png",
+      "sha256": "f435cb5ea4c97a87a2fb709cd8ccee8891397934146757a538a6989f06ac6411"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge144.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge144.png",
+      "sha256": "eb4ab586c5140105051aabc2c1d002a94a38f7dee527b6901e1d9ce76947eea1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge145.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge145.png",
+      "sha256": "ebc39cb5db69eebfd379b907103e2121f68cb170ceda302a63c1f5797aee37f5"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge146.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge146.png",
+      "sha256": "3c2c6b3a5ea2062fb856ff60b10391f268e87cc1f3bfefe859bf2bc1358442bf"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge147.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge147.png",
+      "sha256": "c2cd4130c9d52c4b8cc54fe9e4ecb20fc3fc6e25ae4cc65f0006231bf9cc6e6e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge148.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge148.png",
+      "sha256": "0e450f1c3d623cc739edb4e426ec3adf178cea4f6ee609018307989c0338e3ea"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge149.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge149.png",
+      "sha256": "3a3341ba6b6f704b1922dcb628de92a0ba59fb72e24c57c3341799b8b005e96c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge150.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge150.png",
+      "sha256": "9cc41f6fa370d5dfbf305294f7f06598ba89b88172cb9dcb3388b40fb26300c1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge151.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge151.png",
+      "sha256": "ef30f11d6ecff89bbfeae221af237381f8d5de9066b85f28d1a13732de89437c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge152.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge152.png",
+      "sha256": "e2c1b9f466626bc373f9f07d397bb029dd40fc3674ade4734b8d4503519bbbc3"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge153.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge153.png",
+      "sha256": "7ca5754c6a9bda4e976c31d5cab6804c7b7905f2131206e1de5f2b352cdd2fa2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge154.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge154.png",
+      "sha256": "21462517368279653a572c75991358bcd9a34da729e9d852d489f183a700bbe4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge155.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge155.png",
+      "sha256": "e95720ce087786c23bacf265a537da70eef8adaca6b6631e1fdd17bee031ef1a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge156.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge156.png",
+      "sha256": "ee51e64d15dfb6c124a61d33e41c279186547de9478df0d26cedcce1a6294a19"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge157.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge157.png",
+      "sha256": "028289b35108760f20f53852f1ee6f1f6f19b810c3174527e1befb313d08ace2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge158.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge158.png",
+      "sha256": "5af758ca51c2cd53f1dc864e4e460402f48e2cbe846d78f54304bcabbf0a9e03"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge159.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge159.png",
+      "sha256": "93d79a77130a4f57f8b0f2b423437c0816fee4ed8916156828657a747bb3bafa"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge160.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge160.png",
+      "sha256": "366fd0b5c0b56346b1151f627c14aa87921b6fc88e70dd08d8fa77d45c5ffd16"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge161.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge161.png",
+      "sha256": "9f24d7d74238f5ba597a33031ca1c56a5467bd9d4979a78a0784aff6f6cc96f1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge162.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge162.png",
+      "sha256": "c437cbd11f200fb37a48f6679de429dfa0a9741c719e93a1ae267ac5e0c05364"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge163.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge163.png",
+      "sha256": "a4a3c2e9ad5d9a1944d0da2be335ce9fa657e7211c2444e0c523e03321ec0bff"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge164.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge164.png",
+      "sha256": "75ed0ebaf42bf85c6b45b417202f2ec32dce1429eae3c43bacdf6578e89e20bc"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge165.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge165.png",
+      "sha256": "75839395932b676835daed3bb9b6dd4d634a8a91d84a928c665d495c122cdcbc"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge166.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge166.png",
+      "sha256": "d861ab0f454160db0d8517e6b03cce5c05295e7a3d5e2b2494c6dbdaf4565d28"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge167.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge167.png",
+      "sha256": "3e2c60d92dd508bdd9a565e91e88e86f79d25f71d132779c4945fd6970f5286b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge168.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge168.png",
+      "sha256": "7f61bdcc21eb467368cd5ac3b48bc1078b0ed0f0214d0c5cfe2b9844c41c4748"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge169.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge169.png",
+      "sha256": "66e5834ae71a3f6cb3095dc2a49d11fe1bd04db3f03265315d458278c13a7381"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge170.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge170.png",
+      "sha256": "c89548067e1c49383e07d0d55047e806629a78d8854739e30092da6f92d2b59b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge171.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge171.png",
+      "sha256": "30fadedaa801ce7f44ef22d4818f773f3a1eb2c0174ae55e8b05e731ff80328e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge172.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge172.png",
+      "sha256": "bdf37fca33a5b0d3286747939ff8344c77c043bcc925ed6d0de1a522069bdf12"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge173.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge173.png",
+      "sha256": "64f84ba4a1c087a97733eeb2351047196b788a0b112962cb5114e0c8fbc4123c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge174.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge174.png",
+      "sha256": "5e2419a1dde30f16e500cf334442ea6b004023ead56eb24560a4e71c96354b16"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge175.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge175.png",
+      "sha256": "877ebc687963ebe9bdf112c622b5a31120f2d6e629c0dcf4f15626b1f67a1dc9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge176.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge176.png",
+      "sha256": "0602b531c08fce37a802e31564c4b3ae740bd4ed56744ad06a366af3b52a759d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge177.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge177.png",
+      "sha256": "848d724e1c24a708743fccc155b8278eb37ffb2c4a5184df171733ed8516ea56"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge178.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge178.png",
+      "sha256": "aa3fef662561f577f7fc536a2ea6f8361c824d1fa50132412d3a0070bc394ebb"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge179.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge179.png",
+      "sha256": "af225ea6e024b5ac827de0ea51113f2d2018bdca62f902806e8b78da644cdff0"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge180.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge180.png",
+      "sha256": "097be65e34eec7103ac86e610f96af1f9f3d0f41f77fb9c1208c0fb8d40356dd"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge181.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge181.png",
+      "sha256": "3ba1b4d60177690246bf914d6a30f335fd323a9c113ac9cb2c0d4e52fbeb16fa"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge182.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge182.png",
+      "sha256": "88b3737ea4f51532139ef60b48b6897f91610743b207204f2aa09068919e0c38"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge183.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge183.png",
+      "sha256": "31e6ea3f761b63477b0c22d61a45aeb3d599f736ce28b4136ba9927aabca025e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge184.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge184.png",
+      "sha256": "a9fbad0ae8faefed84d47dc13f9a3e130011463c7b1cf29ee1e51f758b761977"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge185.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge185.png",
+      "sha256": "317f17301e3f4ab56aba736721cfaaa3f9e8bc5dc9415a88cae48ba4b7f6ee52"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge186.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge186.png",
+      "sha256": "72f4ed01d0c090d0312e671bf6747c24ddbbd2a91907fbbf1364bc400eaa434a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge187.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge187.png",
+      "sha256": "867404d8aa5953ecb3f51d518fa92931db1b9b108b157356f8c14d7c8cf85725"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge188.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge188.png",
+      "sha256": "61ebf2683956142ebb7a5c867c0661e69deb4c7b639acbb94342783979550f7d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge189.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge189.png",
+      "sha256": "9457c2410e9b4c5417a869031c83be3dc8d22ebc619e07d2daedd7fc540b2c40"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge190.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge190.png",
+      "sha256": "1ba2cca6ad41bcf59fcc6ba3a05da3d85b52779e9d8c253207bb2fccb1a3bae9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge191.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge191.png",
+      "sha256": "b505d7b89142fa5be258625fb4921ed64a906d56e9de4e540f2f04338fe8460f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge192.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge192.png",
+      "sha256": "c7e0a1c1abbef62cc18eb5d7b689c34fe586e06b3d886e3b25c6afc45ad140bb"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge193.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge193.png",
+      "sha256": "e837110087d6898934f0fc30121bf22d349aa42ea0004a93ab32f636717e5b26"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge194.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge194.png",
+      "sha256": "edaf6706fe441f08646796beed278678855c397f38a07ec0a1b233f6544d59ad"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge195.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge195.png",
+      "sha256": "12581c4d4216e21b9128410bebc69ea44acc90c4cd3799ec77190d20104b6901"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge196.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge196.png",
+      "sha256": "5351ec5e05e672ae56fee92987fa99c574386c1743e46b543f276c8dcaa5a588"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge197.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge197.png",
+      "sha256": "90ae094a664344407814f27efff80f564b476af497db2cca307bca101f884619"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge198.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge198.png",
+      "sha256": "1449a9a1fc03171953d857e60f476fd47433019edcaf9fae722c201d4d41911c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge199.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge199.png",
+      "sha256": "a950cc3055a30bee3aa293a57b896f0f21c56bdffa4b27d0bcd94a0b535bfa34"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge200.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge200.png",
+      "sha256": "953c7a8ec5b4b8e8d64704201c750e55b9fda4a74edff319d2ada8569b615072"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge201.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge201.png",
+      "sha256": "4f4808e56bebae8f64297767daf3bed26a81e67c28ae7841959b335b7c97e31a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge202.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge202.png",
+      "sha256": "bf55f82bc0287ee55e10aa387041a9d8ec4ab93bf47d3cb67f0b2565c9976419"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge203.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge203.png",
+      "sha256": "58afb1ac3ca442858d02c722e50aa69d94346236a16f745e14ae0053e317c2c4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge204.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge204.png",
+      "sha256": "ff62f663ecd9290f7d9baf452cc70b1cad9e6c1b39ffca8059bd15ef980e0901"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge205.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge205.png",
+      "sha256": "374f79dfac768da9cbdf9c6bf5bf9eb176ca06b216b7667645c080a67f1a0928"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge206.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge206.png",
+      "sha256": "1111231b49f81767cc0b5a405e5dc5a2269ea21d05f291130be0d8f699c6019c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge207.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge207.png",
+      "sha256": "6b7040a3bb2884d4940d321c369dfe3886abf7887c875bba9fdf4ee2c962eda7"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge208.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge208.png",
+      "sha256": "6da499778624d88e6848cd572bd072d7dc40e1b075d6e8337b617acd8d8bd1f5"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge209.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge209.png",
+      "sha256": "03f2a58ce2bdf789e7546f0f2a3a60ee05bacc93ee16fa9351d22c25d5fd10dd"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge210.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge210.png",
+      "sha256": "e732a4bc8f0bc1b0261ad41891198ea8d88907ab539f313e8f6cb94bbdfa85f6"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge211.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge211.png",
+      "sha256": "74c151b8f6157541db465cad55ac6e2471c7c901690292b0140af50a0c2f15aa"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge212.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge212.png",
+      "sha256": "251b85453c1e7e7e428ad4c171cd9d7b1f4874f5a9977e4d4157f9e27935e6b4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge213.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge213.png",
+      "sha256": "446694aa1f588ef579c68c2be5a1c57b49e9bb48c485fe8eaadf5aca50e864a5"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge214.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge214.png",
+      "sha256": "0c15c5a578e9384c67abff016a0e3070c9c857655547150da4fbd0a2d516289b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge215.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge215.png",
+      "sha256": "63ba517b5ccd83209628fd147ce2b2f319d3c3ef89dc8b21d492d7a3e1abd4c4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge216.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge216.png",
+      "sha256": "69f62216737b29ff98ce00b9eec4ca7715ba9a776a10b7a3d7ddc3381929504a"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge217.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge217.png",
+      "sha256": "d47b0e5a2a5343821ab74061fa15933a7e7b5195a904b52021db4092b4df5998"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge218.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge218.png",
+      "sha256": "66d81a271d7eaa13b8d140228036bda42690e98ab78021d6dc3ea5a6d75873b4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge219.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge219.png",
+      "sha256": "064ff26766a5d19b20dd5d1d39d76adda33bfbf8c807e14dff5119731a8d1c24"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge220.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge220.png",
+      "sha256": "9646bec819d9a08ce9f41b46437a8b0ee6fe7d90b263be0c5f53bb9e80951de4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge221.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge221.png",
+      "sha256": "39c3fe29a55c6d4d471e35df2353ab1f0e3bdd0a3a63fc100a93f334b45acb96"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge222.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge222.png",
+      "sha256": "3efd18a28dddbe65b033fc8d7fb01bc1d53580d2369fe386fa71e402e102e637"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge223.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge223.png",
+      "sha256": "893a2811771bbaf72dd3a290356adf6e213811ef83a22d5e62d27213a83c0f2e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge224.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge224.png",
+      "sha256": "dc2188c84f7231219d1cbb008b7e7c3f0b59fbab544a3b646ebb4f3e5bbad0f9"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge225.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge225.png",
+      "sha256": "2b7f932f00942e00fb9b53b6bec0f0a2c0185abb44e02d86ca6f821418782ee8"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge226.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge226.png",
+      "sha256": "8c1d405cbfff920b7db2cd4fd106f8eab0c11a0bf05007299249e1c177aa1868"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge227.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge227.png",
+      "sha256": "5a8c911a6e8d2600b203009b1c8726bd180aad2101515e0bfdb6b0b25ce04079"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge228.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge228.png",
+      "sha256": "cdcab28284ba8d474eb2d9a026f90b6d0491e9d4e2f62b1192a534243f445155"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge229.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge229.png",
+      "sha256": "79b2fa916cfbc110a9a5fbf9772b3a51fd51a4de9519b846fc574f3b0c713993"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge230.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge230.png",
+      "sha256": "3154b4d1b15ab89a167c7058ae7fc5acab8cb835c9e3e420f6cedd02dc1e9064"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge231.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge231.png",
+      "sha256": "cb724c01a77d3e59dd092c370a56c9ef7a76d787487f462b771a9ae03464897e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge232.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge232.png",
+      "sha256": "97341fdd1e55aa5654543c1a8124ab1ecfa522e272bff804a1298bfb1d33e952"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge233.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge233.png",
+      "sha256": "9d9a793dcef66fa122fdccdbe6d995adbbf16bc4bdd206da150d1414970536c2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge234.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge234.png",
+      "sha256": "a35423cd9d74a4b38332525a4cfe6c08be6592421220283e9ccf26a8ebeb7f81"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge235.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge235.png",
+      "sha256": "a1f7bc04472d5771397ef541951c0cb085eba26c7d19f5ed947443577fbaa490"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge236.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge236.png",
+      "sha256": "63f8420bca44445cb6cd23f0cfd9f203c83c11eaed0435cf2a1b9ff11b632f9c"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge237.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge237.png",
+      "sha256": "cfab3f13487df85923c95e6cc76af916029e919c1ce92cc661e9e38804cb5b78"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge238.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge238.png",
+      "sha256": "0ddc4789dcc85ce26ee902e49fb932891d8fae991d76e2678a27b18c4e472799"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge239.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge239.png",
+      "sha256": "0672c9170ab12a17029333b5d070e31d806e954eab2d18234b8661b7a5bc8bb4"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge240.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge240.png",
+      "sha256": "e3080e52e6aaa98ae91cb9901577c29dccd01fdb2b4e8f8b5c0360467d4e4d0e"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge241.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge241.png",
+      "sha256": "a304301bce36da341d7c8489cbe5942fbea0515ebf8897e997b8276142877419"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge242.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge242.png",
+      "sha256": "fd58c79ea89a13f10ca8f62a82807dca975463aa7a7aa43d7ca460449ee03e90"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge243.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge243.png",
+      "sha256": "185e5b01a78fe88844b303ef8db6406fea8ddd2070261d4789f8063976e24789"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge244.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge244.png",
+      "sha256": "8e73376408134ad01d297289955a4a396c1517c9dad39198356ea581c941523b"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge245.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge245.png",
+      "sha256": "f2f8df0da77f7ef81a6dc91ce5ceac0993ccd4d0feb6393c28cfa05f84687bd1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge246.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge246.png",
+      "sha256": "544f116b2bbe12b85d654b4334f91189391106b82c6c6165d3caa0697bbec0fa"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge247.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge247.png",
+      "sha256": "3d4a7d504cd21431358ec230df6700bdc4ea3af61f7147f32ec867b9a1caf39f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge248.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge248.png",
+      "sha256": "30a87c39306a2950dcc968b2d3b12097a7aa8d34e7c0109e88886c5eb593c3ab"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge249.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge249.png",
+      "sha256": "bf94df37a29c13eb83383ab843c3ae53366b29179e375957b6751d9310cb61b2"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge250.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge250.png",
+      "sha256": "71c39df2271d3b522c7166a281004200c18a9867850d8c5903b3c3ed545ca9e1"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge251.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge251.png",
+      "sha256": "b0c5c95b62486870d735027fc08d2599bf9ca40759b07ac2b3f465496001f199"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge252.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge252.png",
+      "sha256": "6d4100557cc954bbca33cab1e1bc86cc782061faca0baf563e27e8c5f0027eab"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge253.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge253.png",
+      "sha256": "c779528b34402ec4bd71460cdf6728330d37eb04eaab644789691fbc560e1c2d"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge254.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge254.png",
+      "sha256": "f6f1caf6695a5e1eb03a9798d636efa88cd341a4067bdedb6898e74223a3799f"
+    },
+    {
+      "runtime": "terrain-moonstone_lozenge255.png",
+      "source": "procedural-materials/terrain-moonstone_lozenge255.png",
+      "sha256": "d625692fcde6b711acfd7a1388073ae8ffdfb2f7571f3ef5ed3f99ea5b124c45"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel0.png",
+      "source": "procedural-materials/terrain-frost_pinwheel0.png",
+      "sha256": "b1f22e93593258ecd3cce3e07fd9f0e23adad88cdfe3630ee1ce0ccb08899493"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel1.png",
+      "source": "procedural-materials/terrain-frost_pinwheel1.png",
+      "sha256": "af79c34036feff97a06c1e9fd821e4b4ccfdaedf04a84b8f80862ef63512d3bc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel2.png",
+      "source": "procedural-materials/terrain-frost_pinwheel2.png",
+      "sha256": "9ced5672fe35d7ba5b06ba5663c00e3334ed155071fc03d05da45d40356adc4c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel3.png",
+      "source": "procedural-materials/terrain-frost_pinwheel3.png",
+      "sha256": "2b4914cf05f0b25e4fdd3581dcccce9580221aec11eba19e3c4e678681b61bf0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel4.png",
+      "source": "procedural-materials/terrain-frost_pinwheel4.png",
+      "sha256": "be05c16cc41e7727f42efdc67809a03956337d38a3a94291ffd3d44dd9160e5f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel5.png",
+      "source": "procedural-materials/terrain-frost_pinwheel5.png",
+      "sha256": "a40440e054ab531a25c5badea2b04a0e63a809cb9ce082a5ec22392aea19f8b7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel6.png",
+      "source": "procedural-materials/terrain-frost_pinwheel6.png",
+      "sha256": "1d9944b7f14f358cdc7840dd3befebdd4a7afd82c5af264d6933eb9dc654807c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel7.png",
+      "source": "procedural-materials/terrain-frost_pinwheel7.png",
+      "sha256": "9769556ed4fde2569859cb0782c4ca3840b49682e16052ff971821eb5c90ea21"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel8.png",
+      "source": "procedural-materials/terrain-frost_pinwheel8.png",
+      "sha256": "7ff36d27b2ccbd89df20937917f96cc3a5e0411d651fb4b71e6ded138f9d97c7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel9.png",
+      "source": "procedural-materials/terrain-frost_pinwheel9.png",
+      "sha256": "d825c7406fa32122cd816ee42fcab4e6ae9fdbf92a6a5e8e6f5225f8b7fb0a97"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel10.png",
+      "source": "procedural-materials/terrain-frost_pinwheel10.png",
+      "sha256": "70b888aaa9f772a8068fc29b6acd0c9005263f7690e3c3e0caddcca2fa80be43"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel11.png",
+      "source": "procedural-materials/terrain-frost_pinwheel11.png",
+      "sha256": "01cf7598b86280544c6f9d24926aba8ed24320b4015c991212d239c46068a3ad"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel12.png",
+      "source": "procedural-materials/terrain-frost_pinwheel12.png",
+      "sha256": "ce7e6f85969de6b74deb3cc0bb6161734ed60617d3c1c03b0639df3772c4f7f8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel13.png",
+      "source": "procedural-materials/terrain-frost_pinwheel13.png",
+      "sha256": "6ccb99dedca6b7ebf269c831e40aee345eacf06644615fdb824308a7856e5e33"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel14.png",
+      "source": "procedural-materials/terrain-frost_pinwheel14.png",
+      "sha256": "cb10aad5fdc50712b1ffe307ca6ebf01dbf5c5b6bdd640a80be1ad15dd960831"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel15.png",
+      "source": "procedural-materials/terrain-frost_pinwheel15.png",
+      "sha256": "7f85692cd74c13b012354be5e3edc1801a498235c4b0de7c36a336ac61a20fcd"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel16.png",
+      "source": "procedural-materials/terrain-frost_pinwheel16.png",
+      "sha256": "d5ed3457ec64fe98d660b1580ad7075dc74ff41a9968a19baceaff63c8e0e7f8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel17.png",
+      "source": "procedural-materials/terrain-frost_pinwheel17.png",
+      "sha256": "d9b0329fc7c3d172005025156f989b85d56e20a69de0e2a447487f4ff343add1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel18.png",
+      "source": "procedural-materials/terrain-frost_pinwheel18.png",
+      "sha256": "dee9224364417ff25bd97b494b813b4563482ddf874d1fda25bd95c638446a89"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel19.png",
+      "source": "procedural-materials/terrain-frost_pinwheel19.png",
+      "sha256": "854cfdfb29541988ef8db6c70cd5283114f30b5ff704cc625e0b3075d1b216a2"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel20.png",
+      "source": "procedural-materials/terrain-frost_pinwheel20.png",
+      "sha256": "4d5606d9eb45611a4d4470c5eb4fb80427fd9a48bff3a8e09b3c833e0ccd2dd1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel21.png",
+      "source": "procedural-materials/terrain-frost_pinwheel21.png",
+      "sha256": "b32ae6089bd2f9ac465bebfb5019e66bee6a6cc92564cc6d1f354f63ea0ce730"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel22.png",
+      "source": "procedural-materials/terrain-frost_pinwheel22.png",
+      "sha256": "11bd929ddcdf2a5f0430f83e594532a78a79ff1a88361d2cc941be91b065f3ae"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel23.png",
+      "source": "procedural-materials/terrain-frost_pinwheel23.png",
+      "sha256": "436bb84e4abc1e5322ffad309e4462c8377b14d6aef2ea42a6b69975bf9c9d40"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel24.png",
+      "source": "procedural-materials/terrain-frost_pinwheel24.png",
+      "sha256": "5d28e2017101deb6a41872a7ea367751f002b9545986ff4c20644db29614380e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel25.png",
+      "source": "procedural-materials/terrain-frost_pinwheel25.png",
+      "sha256": "92639970f25b83fe6b06505ecd90e9e599f37a002e0a3d13af82628c3416c60d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel26.png",
+      "source": "procedural-materials/terrain-frost_pinwheel26.png",
+      "sha256": "45794df16b1588594b5beb65201dfa94d37f95b30d4afb017db0a54983236d12"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel27.png",
+      "source": "procedural-materials/terrain-frost_pinwheel27.png",
+      "sha256": "78fe74e3f7c6632f9a53b47d4fea62a01b323a92259dd8571cefdd2a009be339"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel28.png",
+      "source": "procedural-materials/terrain-frost_pinwheel28.png",
+      "sha256": "97377f5b2084951765bc07506f1dbd9178d8ee4bda5928419397de6419479daa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel29.png",
+      "source": "procedural-materials/terrain-frost_pinwheel29.png",
+      "sha256": "fba03ec1f1330aada7730d5f5263a0185ac0bb3d681263dea0163ff321690f1c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel30.png",
+      "source": "procedural-materials/terrain-frost_pinwheel30.png",
+      "sha256": "709122dd1584cf5ed1e727f14c238e68033c587eeca5add835641c9001bb6547"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel31.png",
+      "source": "procedural-materials/terrain-frost_pinwheel31.png",
+      "sha256": "fa285fa53ce4016cfda32e12ec68106c0cf17e6fbd771fa09beb4a9ce42a2c44"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel32.png",
+      "source": "procedural-materials/terrain-frost_pinwheel32.png",
+      "sha256": "5f19da94a19a0f6ca44a0a49bcb300a996832211dab82a113c62e33d67a2e2ee"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel33.png",
+      "source": "procedural-materials/terrain-frost_pinwheel33.png",
+      "sha256": "2e8d7a5cbeecc295076ee5d43a74b1eddb252666f61e707c421dbdb072631371"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel34.png",
+      "source": "procedural-materials/terrain-frost_pinwheel34.png",
+      "sha256": "eaf7cb7a1f8491b5a99f94401584c88d860e4fe1ac9302625bcf9e1df3cd3649"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel35.png",
+      "source": "procedural-materials/terrain-frost_pinwheel35.png",
+      "sha256": "6b832074202c50b9ffd83d272e9c8b6264f999094bfa31d6014efd4b63839c15"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel36.png",
+      "source": "procedural-materials/terrain-frost_pinwheel36.png",
+      "sha256": "c48a6bf13770cbc8c19f1e1d95b26e4891e087408e7ee8788102f03e8b8a52a2"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel37.png",
+      "source": "procedural-materials/terrain-frost_pinwheel37.png",
+      "sha256": "dfd8761eb2843231ff02d78834588f7090636c560d55509c0c11bcc505628922"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel38.png",
+      "source": "procedural-materials/terrain-frost_pinwheel38.png",
+      "sha256": "b0d6c85a8466efbafd16af071f677b009805acaf3bcf5a9b880d2e117f764142"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel39.png",
+      "source": "procedural-materials/terrain-frost_pinwheel39.png",
+      "sha256": "cc75834a0545480ff1c4464d83f92d7a1ecd2d0148438d3f38087c15c6177020"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel40.png",
+      "source": "procedural-materials/terrain-frost_pinwheel40.png",
+      "sha256": "52dedc8a2e8b7565c614389706d17b4e6e3b0ef75b902116d84ddfd52e28eef1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel41.png",
+      "source": "procedural-materials/terrain-frost_pinwheel41.png",
+      "sha256": "70eabcf0f6b31406ecb9a73b478f0acb2324670564d4dea128accdecd458960d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel42.png",
+      "source": "procedural-materials/terrain-frost_pinwheel42.png",
+      "sha256": "c823345fd4984dd94221935f3db8fc5fa1553b08f08fd4b7c542c058388f9958"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel43.png",
+      "source": "procedural-materials/terrain-frost_pinwheel43.png",
+      "sha256": "d9217ccf8dd51917ebb623f839cd4dcde71ec68ff276c8c06ef513d7c6a362a7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel44.png",
+      "source": "procedural-materials/terrain-frost_pinwheel44.png",
+      "sha256": "29ef36a5c064317262f674bc0583d5351b83220ee2cd8f7418bbe2996b8af97b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel45.png",
+      "source": "procedural-materials/terrain-frost_pinwheel45.png",
+      "sha256": "d185d51694e53340e1c4a2ebccf4645bd351b2f5f78a6003d57fc1e9a947fcef"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel46.png",
+      "source": "procedural-materials/terrain-frost_pinwheel46.png",
+      "sha256": "b019583fedd28dc9c1ae430d24f30e202ac37155ec8c684e1884c0b70aa06b4d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel47.png",
+      "source": "procedural-materials/terrain-frost_pinwheel47.png",
+      "sha256": "c69d7d5eec08996e77695fb74a4545929cc819ac26dbe6e0ddf779bcb9ccb23e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel48.png",
+      "source": "procedural-materials/terrain-frost_pinwheel48.png",
+      "sha256": "f3a3f12a1aeb3f207e6aad4fa59dcfe3d303928aeeaba91bf821dcd31b63fa2d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel49.png",
+      "source": "procedural-materials/terrain-frost_pinwheel49.png",
+      "sha256": "97f00b1b790100ef3df08ca57ce1dae7a759e5a6ccb7afe80aedbbe57afb8235"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel50.png",
+      "source": "procedural-materials/terrain-frost_pinwheel50.png",
+      "sha256": "ca7e979aa10a13ef6518afb124b4a29877b1f4962ec590a07ff38583f47f427b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel51.png",
+      "source": "procedural-materials/terrain-frost_pinwheel51.png",
+      "sha256": "ce1e54d8c085b7209c743c083f82f283788cd57caa4cfa4e46d3be836b251671"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel52.png",
+      "source": "procedural-materials/terrain-frost_pinwheel52.png",
+      "sha256": "c9ff36b4e54352907bf19f04c2fa1a96ab7248c69363bbff57e9a12b670edb75"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel53.png",
+      "source": "procedural-materials/terrain-frost_pinwheel53.png",
+      "sha256": "137e9c12f09f926802a62db1b7577209b0857be527db99031944062b0db897d3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel54.png",
+      "source": "procedural-materials/terrain-frost_pinwheel54.png",
+      "sha256": "0f35343e579ca67e46aaeff34b3f2ea88f203beb03cadfe116a02da1119e7334"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel55.png",
+      "source": "procedural-materials/terrain-frost_pinwheel55.png",
+      "sha256": "af5ade3035f3d8ee0fe9217da423a27bba0cfd1d8b91fae2d42a6c067ddef5dd"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel56.png",
+      "source": "procedural-materials/terrain-frost_pinwheel56.png",
+      "sha256": "41b253a3dde61fd8c3794065f34069ace676f8ee74a2c12fbcc73aa09d1f293a"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel57.png",
+      "source": "procedural-materials/terrain-frost_pinwheel57.png",
+      "sha256": "041b56354464717ee6bc047de25c5b2aa316622e08d6910975655e164d0a4c9e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel58.png",
+      "source": "procedural-materials/terrain-frost_pinwheel58.png",
+      "sha256": "712544615fe132f6c188068bf8ae64635bafbc7c1cf9e325205e28e1ecfef501"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel59.png",
+      "source": "procedural-materials/terrain-frost_pinwheel59.png",
+      "sha256": "c84fde18ff7c5ee6d559c6b76170f892f5b41946278151bb002b9fee285da8e6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel60.png",
+      "source": "procedural-materials/terrain-frost_pinwheel60.png",
+      "sha256": "4a2ac65d09a6ad6fd04f7e52a356f40651d6b7c6fe1c05184ed77247585738f8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel61.png",
+      "source": "procedural-materials/terrain-frost_pinwheel61.png",
+      "sha256": "6d7cfba8e8d1794da3c8d9693969cc7c5b9dffea51ee61a6a9b8a9189f19352e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel62.png",
+      "source": "procedural-materials/terrain-frost_pinwheel62.png",
+      "sha256": "d6d6bab2c9988058e111df5c6dca3a8e23bc1d87ac943e6ac73b7d3200e147cc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel63.png",
+      "source": "procedural-materials/terrain-frost_pinwheel63.png",
+      "sha256": "eefb2f09bc76d43a280df3f28fe13bc797519ae0bd5b3614920f1a85f3a491be"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel64.png",
+      "source": "procedural-materials/terrain-frost_pinwheel64.png",
+      "sha256": "78d89da33972cf827a3ec5d5dce8d898075afb6eb1c9799eb89abf4f7c362484"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel65.png",
+      "source": "procedural-materials/terrain-frost_pinwheel65.png",
+      "sha256": "5e905b8e40b7c893a280208a2065351db1b71b73cd0c0ab97b047897e4573abc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel66.png",
+      "source": "procedural-materials/terrain-frost_pinwheel66.png",
+      "sha256": "4f31cad1ebb3503f7b9fbdda7a0f30f55c4f6a79ea1c8720e1cacd0948e9bd0e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel67.png",
+      "source": "procedural-materials/terrain-frost_pinwheel67.png",
+      "sha256": "0813ce068809387232a3d0197bfc3915fd2977bcd0efacf743fe3f8011686856"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel68.png",
+      "source": "procedural-materials/terrain-frost_pinwheel68.png",
+      "sha256": "393c78d5ce1f2d0c643bdb7bc29a82d9b525ae65b043aaa4374ebe809b734906"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel69.png",
+      "source": "procedural-materials/terrain-frost_pinwheel69.png",
+      "sha256": "800cba925bfaa4b3f6fd83f2b0819efbe2929cad2291e97e67348ca1681563bb"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel70.png",
+      "source": "procedural-materials/terrain-frost_pinwheel70.png",
+      "sha256": "83a6ec0d391e744d7a9f4ece71d458a32174a4acacc7e33960eff0d43d5e6070"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel71.png",
+      "source": "procedural-materials/terrain-frost_pinwheel71.png",
+      "sha256": "3a55fb9acef164d8f817f9743a3a1cacd7687aec2f3c1fe6a06b2d447433de15"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel72.png",
+      "source": "procedural-materials/terrain-frost_pinwheel72.png",
+      "sha256": "dbc3f6fa667d6de124360fb6785d79cadd859ddc55db01370a0bc9b4a63924de"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel73.png",
+      "source": "procedural-materials/terrain-frost_pinwheel73.png",
+      "sha256": "cc1948ac8b91a03ad70aea10bc2f18c1996d031cb02668e69f2db293da2c3f0f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel74.png",
+      "source": "procedural-materials/terrain-frost_pinwheel74.png",
+      "sha256": "1cd352c86d3a6573446cf4719de13d9cf620d1b256b4785214dc5414bbc2d38f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel75.png",
+      "source": "procedural-materials/terrain-frost_pinwheel75.png",
+      "sha256": "7037dd5e23245fc3e83a03c51634eac97ca19d6c9d8970f7f7434c62cadd02ef"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel76.png",
+      "source": "procedural-materials/terrain-frost_pinwheel76.png",
+      "sha256": "3b1f0173f49ea55dda7877718353ebd75a6f3721f72597919037a0ac8450e133"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel77.png",
+      "source": "procedural-materials/terrain-frost_pinwheel77.png",
+      "sha256": "cbaa384a2964f9107ce0b5ea7cf7754ca82841d2b25e2a099608994285abba78"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel78.png",
+      "source": "procedural-materials/terrain-frost_pinwheel78.png",
+      "sha256": "c0675627b7bc4c168745389a84a87a7e6cb7e72577cd4d439a522f074a2557f3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel79.png",
+      "source": "procedural-materials/terrain-frost_pinwheel79.png",
+      "sha256": "cd1c050d115b425021aa38367d10ccba2dfaea4f264057b69e55eddc2ad68bd3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel80.png",
+      "source": "procedural-materials/terrain-frost_pinwheel80.png",
+      "sha256": "d9291317a1d76f1fb906164d9bc3cb96d26cbe8a40ebb7475f90ef4d825349b1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel81.png",
+      "source": "procedural-materials/terrain-frost_pinwheel81.png",
+      "sha256": "685acba638047e13aec7f95ad846a70111f2f207791c0e3ee5a2681b0633e484"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel82.png",
+      "source": "procedural-materials/terrain-frost_pinwheel82.png",
+      "sha256": "23ad741b946a07ce0bfff1e1cd438367347f0f28213efbb6a1049e7211f82952"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel83.png",
+      "source": "procedural-materials/terrain-frost_pinwheel83.png",
+      "sha256": "628eba13dbf025297ef8ca752b03576325c06e12c7ffaa20500a5148b6dcd15f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel84.png",
+      "source": "procedural-materials/terrain-frost_pinwheel84.png",
+      "sha256": "1d19f1a525e1afb8df315c0de02b78d835930292c6c2689199d7a2de6262ac34"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel85.png",
+      "source": "procedural-materials/terrain-frost_pinwheel85.png",
+      "sha256": "0cc0888d33a901485d3a225d39140c561f1a08c6d1ae3237e910623df35b4909"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel86.png",
+      "source": "procedural-materials/terrain-frost_pinwheel86.png",
+      "sha256": "bb8c94e793b55f0493ad6cd5a3769a2eb6d6d2b92aee534f7c6da783ca267b30"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel87.png",
+      "source": "procedural-materials/terrain-frost_pinwheel87.png",
+      "sha256": "a4e8499c9a58684064ada4bec451dd7d5a78e352153e870a4f9c03989fe1790b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel88.png",
+      "source": "procedural-materials/terrain-frost_pinwheel88.png",
+      "sha256": "b207a2a9231553fc54269d8d76711fedfa80ca0c0b3e6d0906eb51a14c204569"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel89.png",
+      "source": "procedural-materials/terrain-frost_pinwheel89.png",
+      "sha256": "5b1f1044b183e9f8c5dd0c427ed993a8408144978940d9ce81e5ba4bc9e58bc1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel90.png",
+      "source": "procedural-materials/terrain-frost_pinwheel90.png",
+      "sha256": "6e575ea1d6643108d35aa558c6e8b7606d0d155d6e19c993a343860a87b59848"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel91.png",
+      "source": "procedural-materials/terrain-frost_pinwheel91.png",
+      "sha256": "2dec54c2f2fb166cf4ee3e472a0177c0563d9fa40a7dc09bac5edd9a44f1d5ab"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel92.png",
+      "source": "procedural-materials/terrain-frost_pinwheel92.png",
+      "sha256": "38e62d6d3e304cdfa911b0c10fbdb0da8aaa7d297620d3341d719227a00d0f8b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel93.png",
+      "source": "procedural-materials/terrain-frost_pinwheel93.png",
+      "sha256": "dc728ff2274b042ffa78c0abaf08e050b74c3f509b15017146a8e8106aa009ed"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel94.png",
+      "source": "procedural-materials/terrain-frost_pinwheel94.png",
+      "sha256": "fa6420fb9ddd83bb06580dde83801e2762175df88460e466732ee1aea1183ef0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel95.png",
+      "source": "procedural-materials/terrain-frost_pinwheel95.png",
+      "sha256": "b98d88f7c42590760f47549796e956384af1d8ef8ff38fea5fe416e52b05161e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel96.png",
+      "source": "procedural-materials/terrain-frost_pinwheel96.png",
+      "sha256": "1916f4697bc76a2cd1d1d217fbb878a6877cca9d3812135eb8e8b9bea1464904"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel97.png",
+      "source": "procedural-materials/terrain-frost_pinwheel97.png",
+      "sha256": "22c59c5e2195722aa3d1ba8d4bbe1e607bb7030ce9a5f1d06dbbfa63f48aeaa0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel98.png",
+      "source": "procedural-materials/terrain-frost_pinwheel98.png",
+      "sha256": "ce19cf34bee1f2be65205d93c8d7f7bea8ca4feaa55be913dbb8037bcfa1e9aa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel99.png",
+      "source": "procedural-materials/terrain-frost_pinwheel99.png",
+      "sha256": "369de29864c01d84e3b9bef04b7646d0c78f9376710bf12538e03f178d986ee1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel100.png",
+      "source": "procedural-materials/terrain-frost_pinwheel100.png",
+      "sha256": "86f1b4fccb6a4669ee25ac4a1cd2e45f2ae577700309ec99f562637d8344691d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel101.png",
+      "source": "procedural-materials/terrain-frost_pinwheel101.png",
+      "sha256": "0b37af2330059373a0cef700ce6e661e7bb4b6c5b7d3d45c9e5bd96ef89bf6ae"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel102.png",
+      "source": "procedural-materials/terrain-frost_pinwheel102.png",
+      "sha256": "0072853b6a59f60e088b04adaee49082466c3d8cb8707cfc5b06421ddf593ead"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel103.png",
+      "source": "procedural-materials/terrain-frost_pinwheel103.png",
+      "sha256": "8974b4e75691c7ce36537a87b2c7fe70375a874c2c52f2132645d51061d64329"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel104.png",
+      "source": "procedural-materials/terrain-frost_pinwheel104.png",
+      "sha256": "7665d9532e14b500d545660378984be6b0c4be7cbf595af5517dcf2a81cac25a"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel105.png",
+      "source": "procedural-materials/terrain-frost_pinwheel105.png",
+      "sha256": "613cf4a56afb56eaf1117e26f24fc9e52d1d5fb04a2ca36bccb24135e571c64e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel106.png",
+      "source": "procedural-materials/terrain-frost_pinwheel106.png",
+      "sha256": "a656ba690f987e6a0d7c6e9e6614a98e3edbf17a4bfb087c216144579fd7a99c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel107.png",
+      "source": "procedural-materials/terrain-frost_pinwheel107.png",
+      "sha256": "1eac90e6e2187ae949b190acb3ad1d19cbd6aa0d518f8c7a751d0b8685105dda"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel108.png",
+      "source": "procedural-materials/terrain-frost_pinwheel108.png",
+      "sha256": "baab86783b1a249abadcc11f1642c1253007bc3681eec81502bb1487880df2b4"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel109.png",
+      "source": "procedural-materials/terrain-frost_pinwheel109.png",
+      "sha256": "e0dca3b3a990de6ba71cfd11f1d674593b5aca31c3965bb4b0219f1db1b841a4"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel110.png",
+      "source": "procedural-materials/terrain-frost_pinwheel110.png",
+      "sha256": "4f229c260e9e877bbae04278bbaf30189e8cad0f586829acbf2a76fb9d52b3b7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel111.png",
+      "source": "procedural-materials/terrain-frost_pinwheel111.png",
+      "sha256": "33c32ae883eebe07a6e96005c9b013cbf05786fefba7ba54ae8fceec19f46f1f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel112.png",
+      "source": "procedural-materials/terrain-frost_pinwheel112.png",
+      "sha256": "3862b42813663a6feb24d12ff9d8494c9ec4c4ae1c378b63355b937626ae1a12"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel113.png",
+      "source": "procedural-materials/terrain-frost_pinwheel113.png",
+      "sha256": "fa8033f1f796d0f905b25bb7fcea0920fa85674218e13c46007bdda85eafd338"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel114.png",
+      "source": "procedural-materials/terrain-frost_pinwheel114.png",
+      "sha256": "b9bf23d584e7577baab25494de4eabe1f37460e0ba20890f9f5482e84088e19c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel115.png",
+      "source": "procedural-materials/terrain-frost_pinwheel115.png",
+      "sha256": "5f679cbae4c7a2132e1a6962585c8e6c26586d633f5c356abf2aab997f650774"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel116.png",
+      "source": "procedural-materials/terrain-frost_pinwheel116.png",
+      "sha256": "f4c87a1fb2099d72d7826cbee3093f22db688ef13b75894ce7a7618b029a71fe"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel117.png",
+      "source": "procedural-materials/terrain-frost_pinwheel117.png",
+      "sha256": "d292be465ddaa36a77da361d9c8182752fdc04bc5f7c664d6330d0c6396a01fa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel118.png",
+      "source": "procedural-materials/terrain-frost_pinwheel118.png",
+      "sha256": "ac0897267fab952745015d9cbf12413f49cd2c868386ba46b6bacfdd974f2beb"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel119.png",
+      "source": "procedural-materials/terrain-frost_pinwheel119.png",
+      "sha256": "57ec1a82438fa5ed331a39b88b7fdae8d68093e3929aaf2c832ad7c671dcfaa1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel120.png",
+      "source": "procedural-materials/terrain-frost_pinwheel120.png",
+      "sha256": "1c79127616b07e6ff73726a09c12561d9f82394aba2c428f7b8271cfe537bb90"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel121.png",
+      "source": "procedural-materials/terrain-frost_pinwheel121.png",
+      "sha256": "b4cd85dc5e0af2db827b45be9d18ea30fdbff9da22793e9d2359bae5c6b9d512"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel122.png",
+      "source": "procedural-materials/terrain-frost_pinwheel122.png",
+      "sha256": "f9cac8e3d653b72199fb2d34214e59fe28026685dc4f3692d62b386dc83b4ba6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel123.png",
+      "source": "procedural-materials/terrain-frost_pinwheel123.png",
+      "sha256": "fc98e85cd674d56c34b7ce1f01448506d7f66c8d88c3dc5f2bd6c920bc149a8a"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel124.png",
+      "source": "procedural-materials/terrain-frost_pinwheel124.png",
+      "sha256": "6a79a7fa8627b57a4dd4e27e269222ababa53d569f66d8d79d83845d024cbcaa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel125.png",
+      "source": "procedural-materials/terrain-frost_pinwheel125.png",
+      "sha256": "c9f83d39555d93dfef99cd8033fd9ade164009c49bb97283b9edb1da5780b158"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel126.png",
+      "source": "procedural-materials/terrain-frost_pinwheel126.png",
+      "sha256": "1fea784f5d7d88cdbcb069455de5fad1901409619403faf786b0d732f47be823"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel127.png",
+      "source": "procedural-materials/terrain-frost_pinwheel127.png",
+      "sha256": "2b13b8e629e63b82a9671480dd57eb6bae163cb759d3c0a14066ee01bd13663f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel128.png",
+      "source": "procedural-materials/terrain-frost_pinwheel128.png",
+      "sha256": "71130f34a5af399063696c14c2e425626975fd55f3fe977f69cacca3641e3e04"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel129.png",
+      "source": "procedural-materials/terrain-frost_pinwheel129.png",
+      "sha256": "47fbef8c4231e4816e4bf8542896a5a5379b2ecf3e540fc66723d55eb51ab8e1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel130.png",
+      "source": "procedural-materials/terrain-frost_pinwheel130.png",
+      "sha256": "182b66f1bb32c824f83a2413162df5dad4e99ba974be9e3f45dd62b719b79d6f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel131.png",
+      "source": "procedural-materials/terrain-frost_pinwheel131.png",
+      "sha256": "bd41785a517359e39beb4dff0f2d388bff91a79e7abe08a4494fcfb785dd40a6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel132.png",
+      "source": "procedural-materials/terrain-frost_pinwheel132.png",
+      "sha256": "ce86deeaf8abd5765d661d096ab0d42959d5a11ae4dac46876d55946aa04a133"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel133.png",
+      "source": "procedural-materials/terrain-frost_pinwheel133.png",
+      "sha256": "657f9314a190c9c52b27e39dda7dd2c9d656d3b3574668a74a21b15cfa085a1e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel134.png",
+      "source": "procedural-materials/terrain-frost_pinwheel134.png",
+      "sha256": "dfb3fad344e1444d65a67637e4f7bb78f053fc637db46871d71e424fb354f014"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel135.png",
+      "source": "procedural-materials/terrain-frost_pinwheel135.png",
+      "sha256": "c4c411a9e612baa7eb87df49be61b8e6fbb9562e40da63ff1a6bf056759007d7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel136.png",
+      "source": "procedural-materials/terrain-frost_pinwheel136.png",
+      "sha256": "a70879585d35a545d7c678f9661339baf17295a4a917573434a71ddc46eed365"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel137.png",
+      "source": "procedural-materials/terrain-frost_pinwheel137.png",
+      "sha256": "2b271e0cac78c530b5d8234f26960252ff5d7eb98684ffc0ed8bb476e055fd79"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel138.png",
+      "source": "procedural-materials/terrain-frost_pinwheel138.png",
+      "sha256": "5e6970b8fb508c5b5ade595b5c7956923518da9f49b90ca2fbac75a81c8e82eb"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel139.png",
+      "source": "procedural-materials/terrain-frost_pinwheel139.png",
+      "sha256": "9ba6b0a5c3c5cc4d3278e9c7cb743208947ffa34651499cec97ac8a0c8fd7436"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel140.png",
+      "source": "procedural-materials/terrain-frost_pinwheel140.png",
+      "sha256": "22b7c05a56581daa150f1611c67fada5ce8dfbe940681b6f8fc605e00506e61c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel141.png",
+      "source": "procedural-materials/terrain-frost_pinwheel141.png",
+      "sha256": "0777d5528a855a8c2ef62c8a99305eef019ea06a7f839aa76cce32c591ba0d9d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel142.png",
+      "source": "procedural-materials/terrain-frost_pinwheel142.png",
+      "sha256": "b8ff3d63d5a3c61dddf601f4cde165c5cd564f6d3d62a5e0d415bb8c2c8e8d3d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel143.png",
+      "source": "procedural-materials/terrain-frost_pinwheel143.png",
+      "sha256": "81715a7dd7e732995c189703a21fe7413935d6c8c9924f335f5b188a951c6e41"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel144.png",
+      "source": "procedural-materials/terrain-frost_pinwheel144.png",
+      "sha256": "71ec582f63543fd6650ffc5b38002d893b1ccfdeedb81935bd1f1065c41ec5c0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel145.png",
+      "source": "procedural-materials/terrain-frost_pinwheel145.png",
+      "sha256": "5e819e450f355879709f08a830adab7958269ab65c774fa2a4dfc10f635db257"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel146.png",
+      "source": "procedural-materials/terrain-frost_pinwheel146.png",
+      "sha256": "cbc700f3cc9fb237e94229e22679255161a9148591cd054050b94fe0182a6f45"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel147.png",
+      "source": "procedural-materials/terrain-frost_pinwheel147.png",
+      "sha256": "b62642d10c2ab28043702cee0e95dbf4e304b591a400f986ea583af1f1d08d78"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel148.png",
+      "source": "procedural-materials/terrain-frost_pinwheel148.png",
+      "sha256": "74a504177e1a2267ea3eb85c27a6638ff071ac212bfc9d0f4112cf8326126b27"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel149.png",
+      "source": "procedural-materials/terrain-frost_pinwheel149.png",
+      "sha256": "80fadb3d6856d1e84fe06ab3b3555ba9296ecf9ed7bb7edad9c40e0ccee39616"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel150.png",
+      "source": "procedural-materials/terrain-frost_pinwheel150.png",
+      "sha256": "cb3b30eba72fc54703f3f4d97b539bcf8fe39cae5b0f7b90f885703739b3f640"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel151.png",
+      "source": "procedural-materials/terrain-frost_pinwheel151.png",
+      "sha256": "f6dff321bb06b767fbb0e2a25ddf0190cdf9ecbed558003b489f2b1eb551b51c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel152.png",
+      "source": "procedural-materials/terrain-frost_pinwheel152.png",
+      "sha256": "2db641da2221a14dfb6418af23c13e7c23f78c2c7cf68925e9e26def06b82b60"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel153.png",
+      "source": "procedural-materials/terrain-frost_pinwheel153.png",
+      "sha256": "11ac9b91bc5c946f938402d812daef324c2ef301b869e347148a486cc6719c82"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel154.png",
+      "source": "procedural-materials/terrain-frost_pinwheel154.png",
+      "sha256": "405bc47ea57bdae16a570ef260e30c1b09115dad49d4b9b020f9734ee4254729"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel155.png",
+      "source": "procedural-materials/terrain-frost_pinwheel155.png",
+      "sha256": "618eba4f59edc45ba771c28ba7eb1ebd0321bd9e0f2f39a8e5dd63ad82d77dd6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel156.png",
+      "source": "procedural-materials/terrain-frost_pinwheel156.png",
+      "sha256": "f342a130616545654582a7a44fcc6c853cf1ef4f1126e8fabacbd5519660f7dc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel157.png",
+      "source": "procedural-materials/terrain-frost_pinwheel157.png",
+      "sha256": "1b0ea8536a79ec0169838057891676066f261dd793c2c3b04fbff9f2b417ca4c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel158.png",
+      "source": "procedural-materials/terrain-frost_pinwheel158.png",
+      "sha256": "8c56b1e499a5945e1f78f275ba67b0a8da85f51e3fafe19d2bbec257b565cb79"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel159.png",
+      "source": "procedural-materials/terrain-frost_pinwheel159.png",
+      "sha256": "cbc666424d1e6e0da767bb93fd7226126ee7f3e4a899024a677e4fc219882b9b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel160.png",
+      "source": "procedural-materials/terrain-frost_pinwheel160.png",
+      "sha256": "7e1160d7c616fdc865de6b8127c1954748dba414c6c7b7637db0e19366fa3194"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel161.png",
+      "source": "procedural-materials/terrain-frost_pinwheel161.png",
+      "sha256": "537df48e3b67ad4e4f848fe00cc9ce5dc10a3c1b130ee67fff848de92d057351"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel162.png",
+      "source": "procedural-materials/terrain-frost_pinwheel162.png",
+      "sha256": "cb05390cb2e862be9002b429737e76e87974a9e16b17569009500664b0a0af5e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel163.png",
+      "source": "procedural-materials/terrain-frost_pinwheel163.png",
+      "sha256": "11f4a502d49f3025ea0e17257b923bb35c0810a43e33246ffa8796d3cc9acf00"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel164.png",
+      "source": "procedural-materials/terrain-frost_pinwheel164.png",
+      "sha256": "7e81d7d21aa1a0f22fda7ffdb850ad0dd33d34c458b24f869f1f98cb1e85d5b1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel165.png",
+      "source": "procedural-materials/terrain-frost_pinwheel165.png",
+      "sha256": "394a24b884e1e8c08f1bfe3af5a5bdc6e7acd4a55a4c872b08cfb4c3047a2ed8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel166.png",
+      "source": "procedural-materials/terrain-frost_pinwheel166.png",
+      "sha256": "e46cf548ce5c98d548728d89aaa4ce47b469b837a8240de180d052d7d797d62a"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel167.png",
+      "source": "procedural-materials/terrain-frost_pinwheel167.png",
+      "sha256": "1b43154d1f084bab3f95353f83eac7e82fb3e8e0712cd95fa2cccc3b615bf971"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel168.png",
+      "source": "procedural-materials/terrain-frost_pinwheel168.png",
+      "sha256": "d4a8116e0b8460f16042a0657929d3789eed31ceb6ecb418380160c7dbdf68b0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel169.png",
+      "source": "procedural-materials/terrain-frost_pinwheel169.png",
+      "sha256": "d056c9c8a4b774843d6bbf2a81c2ac5b1c7ef027f5bae051620e9f80ab9af5cd"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel170.png",
+      "source": "procedural-materials/terrain-frost_pinwheel170.png",
+      "sha256": "a44d8a91547f6751a484913bb1f758b4f0e7914920ebec60a4f4a005f360b087"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel171.png",
+      "source": "procedural-materials/terrain-frost_pinwheel171.png",
+      "sha256": "1a9f0a698d441bb81135179ba5772fb64a5d217de210313e8545ca114a2b4ec8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel172.png",
+      "source": "procedural-materials/terrain-frost_pinwheel172.png",
+      "sha256": "b693543fabb2beadd8364d53db8ebe441fc525f34ff136dfa725390301707f1c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel173.png",
+      "source": "procedural-materials/terrain-frost_pinwheel173.png",
+      "sha256": "295f5538c082cddf712363ce92c8712ad67ddb6140c77ac2fd4cc13a09cf2000"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel174.png",
+      "source": "procedural-materials/terrain-frost_pinwheel174.png",
+      "sha256": "e179c53b74cb20a98f7d5c271d05100726669a209a56b0e136bad77ba8f6c2fc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel175.png",
+      "source": "procedural-materials/terrain-frost_pinwheel175.png",
+      "sha256": "e102b3a119e41c934356046b52b330387e15680882173482b6a79683ff816f11"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel176.png",
+      "source": "procedural-materials/terrain-frost_pinwheel176.png",
+      "sha256": "43d45d5c2dd497df716d2c0f963ae7b581f2ef9120a9d0455e757520fa870403"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel177.png",
+      "source": "procedural-materials/terrain-frost_pinwheel177.png",
+      "sha256": "bcd8a04ce651c217345bf24ec40e84d3dd4afba1c2adc593c3edcbeffd4631e8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel178.png",
+      "source": "procedural-materials/terrain-frost_pinwheel178.png",
+      "sha256": "4c4a011adc1b9d3194d81df57430a48efa3aa73c2588e641839c6294deb2bbd1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel179.png",
+      "source": "procedural-materials/terrain-frost_pinwheel179.png",
+      "sha256": "6c600ca6f9adc5131609ff1cf3c0a6a65bee85b7c0a2711e597d976d222dd6fb"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel180.png",
+      "source": "procedural-materials/terrain-frost_pinwheel180.png",
+      "sha256": "04cc3ec296b851e118583b2875ab34042c6fdea7bec07fc151c45edffad57bbc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel181.png",
+      "source": "procedural-materials/terrain-frost_pinwheel181.png",
+      "sha256": "f047f3fea8e73d949c1428efd3416c08e3908bce5180c84e12b935a08baf57f4"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel182.png",
+      "source": "procedural-materials/terrain-frost_pinwheel182.png",
+      "sha256": "ed9376e59e22faefedf4c3bffd7021f1e74a0f2072aa315e3f99bb39cd2660d3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel183.png",
+      "source": "procedural-materials/terrain-frost_pinwheel183.png",
+      "sha256": "8540f4793c0f9942f92d7ef2d8f93a6bac8fe7d807d2dd2bd5369e5bd8597585"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel184.png",
+      "source": "procedural-materials/terrain-frost_pinwheel184.png",
+      "sha256": "6bbb16ae0dafe06d614a06492c943b7d50ed6b5a578538b4af6b155711a7e797"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel185.png",
+      "source": "procedural-materials/terrain-frost_pinwheel185.png",
+      "sha256": "71945d58f0af89f0f6f0abaf46d13bdba9f9683c53c8b484aa10d0cf906797c8"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel186.png",
+      "source": "procedural-materials/terrain-frost_pinwheel186.png",
+      "sha256": "2862e478cf9ad3c510e8062fb889a41552238bd9b2dd633850c8cb0226592c26"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel187.png",
+      "source": "procedural-materials/terrain-frost_pinwheel187.png",
+      "sha256": "3e161036c7b6ef4d8a95c31e84f7ab3da05c7240470119cec250964c0713daae"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel188.png",
+      "source": "procedural-materials/terrain-frost_pinwheel188.png",
+      "sha256": "9825f1d29214dc263cd0a06d8d24366c463ad5e273dc19ea0b90f2c6b2e4d575"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel189.png",
+      "source": "procedural-materials/terrain-frost_pinwheel189.png",
+      "sha256": "f7108f795650c9bc29465e20d0b5760cf7687f02248dec0bedf0782c62cf1b65"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel190.png",
+      "source": "procedural-materials/terrain-frost_pinwheel190.png",
+      "sha256": "ccffced00bedb06c2049b943c75a14bc43750d53fef81232e0aa0ad7b2bee827"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel191.png",
+      "source": "procedural-materials/terrain-frost_pinwheel191.png",
+      "sha256": "d10f2c0b5fda38f150fcb49030e14f9d2f3f1c64271e9a7a38859ce391ae704c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel192.png",
+      "source": "procedural-materials/terrain-frost_pinwheel192.png",
+      "sha256": "f75c5d952d2942279dcdff39e7ef047b006ddf539ec5645befa8c7116897cf54"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel193.png",
+      "source": "procedural-materials/terrain-frost_pinwheel193.png",
+      "sha256": "3d9b1f49c6947d1709f0405a0accf3341b17cd4cf57560a3c791e9f879d588ab"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel194.png",
+      "source": "procedural-materials/terrain-frost_pinwheel194.png",
+      "sha256": "50725dbcc4becb547d7b66faa91fe6215829a85ad5d260e7a18d7b600bd47f23"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel195.png",
+      "source": "procedural-materials/terrain-frost_pinwheel195.png",
+      "sha256": "1090bce9dcc528cf831dc39808a1b9343b1d2adfd49d128fa62e2fc81a1ffe63"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel196.png",
+      "source": "procedural-materials/terrain-frost_pinwheel196.png",
+      "sha256": "d95b95b6128d245a45a2d319caff40e4d1dad22e90101a3a420bc1444b0d4d23"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel197.png",
+      "source": "procedural-materials/terrain-frost_pinwheel197.png",
+      "sha256": "0bb29788cb698f7c16214141e7e1af5dd76d7275ccbfc73b67255604debd9462"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel198.png",
+      "source": "procedural-materials/terrain-frost_pinwheel198.png",
+      "sha256": "b7e6bf2822cd6e8787509d9afeb94f2a4a80da7b8ce0c83a1edfbc58e8e850c3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel199.png",
+      "source": "procedural-materials/terrain-frost_pinwheel199.png",
+      "sha256": "f1741e647794862ec7be1b9cda67d5ab3fd52527b0a88b677eb75857915f4717"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel200.png",
+      "source": "procedural-materials/terrain-frost_pinwheel200.png",
+      "sha256": "b6653fdb8ea02cef796500512c31fd53b8a434a31994184eb4521015a8c50f83"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel201.png",
+      "source": "procedural-materials/terrain-frost_pinwheel201.png",
+      "sha256": "8869cbd30c8feb95877dfc58f87d00fcc9a714ec80236fdb7181d3f59912b6b6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel202.png",
+      "source": "procedural-materials/terrain-frost_pinwheel202.png",
+      "sha256": "6def9dd46f4121ef766b260fde366ff66a0bdcf7a5cbb56b1a604c8f1e51394d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel203.png",
+      "source": "procedural-materials/terrain-frost_pinwheel203.png",
+      "sha256": "b076e899ce805cb775aaa87246f8da1a3ca080ab02f7078ecadc4814eb355ba7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel204.png",
+      "source": "procedural-materials/terrain-frost_pinwheel204.png",
+      "sha256": "18b82aff531c8d77bd72962c09869f2f5822d8dd77e13a69ab2149dddfc2a5fc"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel205.png",
+      "source": "procedural-materials/terrain-frost_pinwheel205.png",
+      "sha256": "7a907b5bd3e16a955faf459eebea041c944f61621b2bb830d2aba0c7c5d5553e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel206.png",
+      "source": "procedural-materials/terrain-frost_pinwheel206.png",
+      "sha256": "ad95ae172b2ee10ca26939afb20158bc304b3c75b9d00b70b3004131964028f7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel207.png",
+      "source": "procedural-materials/terrain-frost_pinwheel207.png",
+      "sha256": "4d36299bfa4b2206beea56587a6bc4278b3453aa464ec206559a5d85daffdd71"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel208.png",
+      "source": "procedural-materials/terrain-frost_pinwheel208.png",
+      "sha256": "0b3ffa4b24ceb96906e0ccfe9aa8d0685534af5aedd8f0b49594289020e0f58e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel209.png",
+      "source": "procedural-materials/terrain-frost_pinwheel209.png",
+      "sha256": "0c4ac41aecb6f39bc4c58ed1964c9c5473beebeabd9e3bb6a99349dec24dd1c0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel210.png",
+      "source": "procedural-materials/terrain-frost_pinwheel210.png",
+      "sha256": "cafc7a4896078e412a2305a4f8624611cdde7f92a01ec3af783a092fbc55e1fa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel211.png",
+      "source": "procedural-materials/terrain-frost_pinwheel211.png",
+      "sha256": "067dd8bb40fa2af6a483bb4399b80a904f2557d2b13045f91d17e31d62deca17"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel212.png",
+      "source": "procedural-materials/terrain-frost_pinwheel212.png",
+      "sha256": "4aee684836e518daae8133fc177d1dfbb7349a5c07cb36132681a995e7d43df2"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel213.png",
+      "source": "procedural-materials/terrain-frost_pinwheel213.png",
+      "sha256": "0a21a230b8185763408f81f35109eea5204b331db0d977e1cfd38d42a7c134aa"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel214.png",
+      "source": "procedural-materials/terrain-frost_pinwheel214.png",
+      "sha256": "9f1410d927ec2c4caa5d093daca0f1627a029b6e3ae8540abf33f6576bed6acb"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel215.png",
+      "source": "procedural-materials/terrain-frost_pinwheel215.png",
+      "sha256": "9ed746b91f4ed7551a75f144591e7c3d6208df494af89932399c39c1c7504755"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel216.png",
+      "source": "procedural-materials/terrain-frost_pinwheel216.png",
+      "sha256": "9f1c5149fa6fb3d045a72f386da11d4a9fc1ddbb68f9304167ee89b678da80c6"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel217.png",
+      "source": "procedural-materials/terrain-frost_pinwheel217.png",
+      "sha256": "34bd527c5a76decd41984b0279b1062baa675a04d9388c5afad755290876e50e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel218.png",
+      "source": "procedural-materials/terrain-frost_pinwheel218.png",
+      "sha256": "fe3815b70a3d57e9a021f5e56980f3049852673c4c013fb6b7d1074995fd7643"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel219.png",
+      "source": "procedural-materials/terrain-frost_pinwheel219.png",
+      "sha256": "92fea66154b9a22cd011392521e207879d4ef171d0e0c001f11acfa8a6a09dff"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel220.png",
+      "source": "procedural-materials/terrain-frost_pinwheel220.png",
+      "sha256": "8561472ce12a477d04c06475f9ba59d85f8a919b7101351b1231359f7e08ee0e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel221.png",
+      "source": "procedural-materials/terrain-frost_pinwheel221.png",
+      "sha256": "d626bf42cdf1e7a236bc78b2913a5a0d0aefcf5cadaaf81abfa21940ba3ed434"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel222.png",
+      "source": "procedural-materials/terrain-frost_pinwheel222.png",
+      "sha256": "210deee53c5820aad7cd3f3c2e7a18bc3cfd3b996f7a675f7d2319993ae5e588"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel223.png",
+      "source": "procedural-materials/terrain-frost_pinwheel223.png",
+      "sha256": "748111c43fb9d2e671e382b5e9609da6acce7eae2d91a224cbd91d9f5504a961"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel224.png",
+      "source": "procedural-materials/terrain-frost_pinwheel224.png",
+      "sha256": "b6a28b17db2fe0977f812609aade6fef2c5f863d395f888b136e752bcd00ea0c"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel225.png",
+      "source": "procedural-materials/terrain-frost_pinwheel225.png",
+      "sha256": "e8d1e68b04d6ab73a05358ed983cf1c64e0bf18d20b2ab90e97f6d13a3279e10"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel226.png",
+      "source": "procedural-materials/terrain-frost_pinwheel226.png",
+      "sha256": "e5611d27425503527d3f8d16c3c4eae42db1820dad9ea732dbce5b6d8219f42b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel227.png",
+      "source": "procedural-materials/terrain-frost_pinwheel227.png",
+      "sha256": "0105e9b06d35e684dfa26c374782e75cc1f839e7401f72dd15516547c0f00379"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel228.png",
+      "source": "procedural-materials/terrain-frost_pinwheel228.png",
+      "sha256": "ba4366d315072b8f402f94e71c3ed879cf0c72e3e6f5d534c12c0424bd700860"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel229.png",
+      "source": "procedural-materials/terrain-frost_pinwheel229.png",
+      "sha256": "ce0b312a8770f14aa56ebade51795d456e716810647c8568fa1100b6ce8557a2"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel230.png",
+      "source": "procedural-materials/terrain-frost_pinwheel230.png",
+      "sha256": "3179e7bd4c89077c164ea30ecbb3f0c2df2418f2605fbb6974d1eef5b5e04770"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel231.png",
+      "source": "procedural-materials/terrain-frost_pinwheel231.png",
+      "sha256": "47b9a76cd4ea7f407de2a4dc39c27bf2ac7b734a85a83f6fddbf2e30a4a1dbf1"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel232.png",
+      "source": "procedural-materials/terrain-frost_pinwheel232.png",
+      "sha256": "fe92c5ec2cdfb87dd76b0e48f1f6fe15805466b56695a43b656d562fbaf06f26"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel233.png",
+      "source": "procedural-materials/terrain-frost_pinwheel233.png",
+      "sha256": "fc1a1a41b99d000bbfcbcaa0a97ff598fa5ce27e91bbeb7991e72a2622b2e44b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel234.png",
+      "source": "procedural-materials/terrain-frost_pinwheel234.png",
+      "sha256": "4e9ad5b746dd50a7f73f5f48e0ac39195986c90c057fd0b9c4008cfea1c28407"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel235.png",
+      "source": "procedural-materials/terrain-frost_pinwheel235.png",
+      "sha256": "d0585ed3d49a7070746ecb69ed9ef18ce8a015c09fe02a44aea17de174ab47ec"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel236.png",
+      "source": "procedural-materials/terrain-frost_pinwheel236.png",
+      "sha256": "4db258f54f65b29444a650688cad7c9f24ea096626cc3121ee70292772e17ec3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel237.png",
+      "source": "procedural-materials/terrain-frost_pinwheel237.png",
+      "sha256": "adb5139d0952bd23ff365d5df6cf08264912ad7e4ba477346a77926e04cf7a2f"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel238.png",
+      "source": "procedural-materials/terrain-frost_pinwheel238.png",
+      "sha256": "eb02ef72c1b7c26d9401c777ca1fd2e572bf84ce05a5b8f846f3601801f8676b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel239.png",
+      "source": "procedural-materials/terrain-frost_pinwheel239.png",
+      "sha256": "a90fa0ed2f3d80145f3463ca417750face61cb6581dd39b84fc21236bc3aa876"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel240.png",
+      "source": "procedural-materials/terrain-frost_pinwheel240.png",
+      "sha256": "5d873bfa9217536ed499c5209a64eb799b29ac7ace3cad70838d08adf90f5e2d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel241.png",
+      "source": "procedural-materials/terrain-frost_pinwheel241.png",
+      "sha256": "fb165347fbc121af3506a808bdb14bf2ebb1990d0938253bdc4e5e954f70d972"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel242.png",
+      "source": "procedural-materials/terrain-frost_pinwheel242.png",
+      "sha256": "ebae8ac7381c8473ec486fa56d872b1d00d6a348a34922d9f4a2db3eb909f6a9"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel243.png",
+      "source": "procedural-materials/terrain-frost_pinwheel243.png",
+      "sha256": "f399a6960cab63dae10ece761ded396178c6498f9e29c70224e6cd89d6137fb7"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel244.png",
+      "source": "procedural-materials/terrain-frost_pinwheel244.png",
+      "sha256": "c4f80ce4590a5dc0c977e371ac1fbf0881fc25ed80502ea3db81cafe57ff869e"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel245.png",
+      "source": "procedural-materials/terrain-frost_pinwheel245.png",
+      "sha256": "90854968094265cde12cf61dda5159466dcd7f3574ba90b89b18bee6b042491b"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel246.png",
+      "source": "procedural-materials/terrain-frost_pinwheel246.png",
+      "sha256": "4712def0231d7ccb0fa8eff994d683262174bde7e48a6eee305fb84b05615fd5"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel247.png",
+      "source": "procedural-materials/terrain-frost_pinwheel247.png",
+      "sha256": "0f576857300ba6d78a2a37d45e5551a06c1266d834ed333ee4f388f33650b711"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel248.png",
+      "source": "procedural-materials/terrain-frost_pinwheel248.png",
+      "sha256": "bbef2d014f5b6f2cee950611e122a0cb8568ad4eb1a08a5aa14d34571c2bc986"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel249.png",
+      "source": "procedural-materials/terrain-frost_pinwheel249.png",
+      "sha256": "46085bb97b033ea0fd5a1cbb9a47b1fe7f87dcd20dc2e54e63c1a82cd8975edd"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel250.png",
+      "source": "procedural-materials/terrain-frost_pinwheel250.png",
+      "sha256": "5a5ad352828aae33b71e6bc3587f533f7e2ad4daec049b9832f359645adb04d3"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel251.png",
+      "source": "procedural-materials/terrain-frost_pinwheel251.png",
+      "sha256": "eff445b27fe17d77130b32b333d07378819fd611318ca650428b68a9395174cf"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel252.png",
+      "source": "procedural-materials/terrain-frost_pinwheel252.png",
+      "sha256": "14ac25b1c190b71474f76438d0546679df10248ce7af133a221b635397f0b0e2"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel253.png",
+      "source": "procedural-materials/terrain-frost_pinwheel253.png",
+      "sha256": "989cf93cf06e656165d19960eb7bfcb076cb574e791f725e5cb784c9038656c0"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel254.png",
+      "source": "procedural-materials/terrain-frost_pinwheel254.png",
+      "sha256": "32b31abaeafa08c9428f7f930a073f13e23861cfede1c9ec0560f318dc3fcc3d"
+    },
+    {
+      "runtime": "terrain-frost_pinwheel255.png",
+      "source": "procedural-materials/terrain-frost_pinwheel255.png",
+      "sha256": "edaf650d98e5c3c894b671b039fe18c8c2708bc8482ee24e5974d1e6149ce8c0"
     }
   ]
 }

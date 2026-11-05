@@ -5748,6 +5748,12 @@ Ubin batu sabak
 Jalan basal
 [scoria_blocks]
 Balok skoria
+[rime_ashlar]
+Batu pahat embun beku
+[moonstone_lozenge]
+Belah ketupat batu bulan
+[frost_pinwheel]
+Kincir embun beku
 [terrain group water]
 Air
 [terrain group sand]
