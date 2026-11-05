@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="1.06015" status="run" />
+  <testcase classname="TerrainMaterials" name="animation_blend_steps is optional and bounded by the phase length" time="0.057137" status="run" />
+  <testcase classname="TerrainMaterials" name="owned prepared materials survive animation and share unchanged revisions [display]" time="1.12567" status="run" />
+  <testcase classname="TerrainMaterials" name="single vertices own their corner and animation does not reseed variants" time="0.044789" status="run" />
+  <testcase classname="TerrainMaterials" name="streamed animated HD keeps later phases resident across advances [display]" time="1.19641" status="run" />
+  <testcase classname="TerrainMaterials" name="weighted choices are stable and all existing variants are reachable" time="0.070334" status="run" />
+  </testsuite></testsuites>

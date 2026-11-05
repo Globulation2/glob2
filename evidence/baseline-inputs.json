@@ -1,0 +1,18 @@
+{
+  "revision": "2992ab4990817478f06ef45e1fd5683e40dc928e",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/ci-exit-effect-release",
+    "--filter",
+    "TerrainMaterials/weighted choices*",
+    "--jobs",
+    "1",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-variant-clock/baseline.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-variant-clock/baseline"
+  ],
+  "exit_code": 1
+}

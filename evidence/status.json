@@ -1,0 +1,40 @@
+{
+  "pid": 3812300,
+  "revision": "2a59c4ebe06d9a31aae521fd33cddd99a8af22a8",
+  "phase": "finished; review baselinefailureandall-animation-phasechecks beforepublishing",
+  "results": [
+    {
+      "name": "build",
+      "exit_code": 0,
+      "seconds": 134.8
+    },
+    {
+      "name": "weighted-and-animation",
+      "exit_code": 0,
+      "seconds": 4.4
+    }
+  ],
+  "note": "Test-only phase-normalized stability/reachability. Staticfamiliesretain100tickcomparison; animatedfamiliescheckallphasesand100cycles,plusdeclaredstridewithoutspatialrerolls. No materialskip/clockdisable/runtimechange. Originalbaselinefailurealreadyretained. Separateidleandroidbuild/privateprefix, otherexactd888consumersunchanged.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/ci-exit-effect-release",
+    "--binary",
+    "engine",
+    "--filter",
+    "TerrainMaterials/weighted choices*",
+    "--filter",
+    "TerrainMaterials/*animat*",
+    "--filter",
+    "TerrainMaterials/*clock*",
+    "--fullscreen",
+    "--jobs",
+    "1",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-variant-clock/fixed.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-variant-clock/fixed"
+  ],
+  "child_pid": 3814121
+}
