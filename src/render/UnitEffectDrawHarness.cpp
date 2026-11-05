@@ -218,7 +218,9 @@ TEST_CASE("exit effects travel with a unit that has walked on from its exit tile
 
 	for (const auto &[typeName, kind] : {std::pair{"swarm", UnitEffect::Kind::Spawn},
 		std::pair{"hospital", UnitEffect::Kind::Heal}})
+	for (const int progress : {0, 128, 255})
 	{
+		INFO(std::string(typeName) << " movement progress=" << progress);
 		Game game(nullptr);
 		game.map.setSize(5, 5, GRASS);
 		game.map.setGame(&game);
@@ -227,11 +229,15 @@ TEST_CASE("exit effects travel with a unit that has walked on from its exit tile
 		REQUIRE(building != nullptr);
 		exitX = building->posX + building->type->width / 2;
 		exitY = building->posY + building->type->height;
-		Unit* unit = game.addUnit(exitX + Walked, exitY, 0, WORKER, 0, 0, 0, 1);
+		// Exercise the start, middle and end of an eastward step. The unit
+		// is drawn between its previous and destination tiles at this progress.
+		Unit* unit = game.addUnit(exitX + Walked, exitY, 0, WORKER, 0, progress, 1, 0);
 		REQUIRE(unit != nullptr);
 
 		game.animations->clear();
+        const std::string name = std::string("travel-") + typeName + "-progress" + std::to_string(progress);
 		const Frame ordinary = draw(game);
+		save(ordinary, name + "-none");
 		game.animations->clear();
 		if (kind == UnitEffect::Kind::Spawn)
 			game.animations->onUnitSpawn(game.map, exitX, exitY, game.teams[0], unit->gid, building->gid, 0, 1);
@@ -244,10 +250,11 @@ TEST_CASE("exit effects travel with a unit that has walked on from its exit tile
 		for (int tick = 0; tick <= 14; ++tick)
 			game.animations->step();
 		const Frame frame = draw(game);
-		save(frame, std::string("travel-") + typeName);
+		save(frame, name);
 		// The burst is centred on the unit, not left behind on the exit tile.
 		const auto [cx, cy] = differenceCentre(frame, ordinary);
-		const double unitX = (exitX + Walked) * 32 + 16, exitPixelX = exitX * 32 + 16;
+		const double unitX = (exitX + Walked) * 32 + 16 - ((255 - progress) >> 3);
+		const double exitPixelX = exitX * 32 + 16;
 		CHECK_MESSAGE(std::abs(cx - unitX) < 16, typeName, " effect centred at x ", cx, ", unit at ", unitX);
 		CHECK_MESSAGE(std::abs(cx - unitX) < std::abs(cx - exitPixelX), typeName, " effect nearer the unit");
 		CHECK_MESSAGE(std::abs(cy - (exitY * 32 + 16)) < 24, typeName, " effect centred at y ", cy);
