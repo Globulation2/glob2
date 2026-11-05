@@ -5748,6 +5748,12 @@ AI 생성 아님
 현무암 둑길
 [scoria_blocks]
 스코리아 블록
+[rime_ashlar]
+서리 마름돌
+[moonstone_lozenge]
+월장석 마름모 타일
+[frost_pinwheel]
+서리 바람개비
 [terrain group water]
 물
 [terrain group sand]

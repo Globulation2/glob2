@@ -5748,6 +5748,12 @@ Losas de pizarra
 Calzada de basalto
 [scoria_blocks]
 Bloques de escoria
+[rime_ashlar]
+Sillares de escarcha
+[moonstone_lozenge]
+Rombos de piedra lunar
+[frost_pinwheel]
+Molinete de escarcha
 [terrain group water]
 Agua
 [terrain group sand]

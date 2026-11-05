@@ -707,7 +707,10 @@
     "molten_lava_pool",
     "slate_ashlar",
     "basalt_causeway",
-    "scoria_blocks"
+    "scoria_blocks",
+    "rime_ashlar",
+    "moonstone_lozenge",
+    "frost_pinwheel"
   ],
   "bindings": {
     "water": "water",
@@ -759,7 +762,10 @@
     "molten_lava_pool": "molten_lava_pool",
     "slate_ashlar": "slate_ashlar",
     "basalt_causeway": "basalt_causeway",
-    "scoria_blocks": "scoria_blocks"
+    "scoria_blocks": "scoria_blocks",
+    "rime_ashlar": "rime_ashlar",
+    "moonstone_lozenge": "moonstone_lozenge",
+    "frost_pinwheel": "frost_pinwheel"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

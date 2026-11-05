@@ -6868,6 +6868,12 @@ Tisa ng pisarra
 Daang basalto
 [scoria_blocks]
 Bloke ng eskorya
+[rime_ashlar]
+Batong may hamog na yelo
+[moonstone_lozenge]
+Mga rombo ng moonstone
+[frost_pinwheel]
+Pinwheel ng hamog na yelo
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

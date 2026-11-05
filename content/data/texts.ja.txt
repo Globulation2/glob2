@@ -5748,6 +5748,12 @@ AI 生成ではない
 玄武岩の石畳
 [scoria_blocks]
 スコリアのブロック
+[rime_ashlar]
+霧氷の切石
+[moonstone_lozenge]
+ムーンストーンの菱形石
+[frost_pinwheel]
+霜の風車敷き
 [terrain group water]
 水
 [terrain group sand]

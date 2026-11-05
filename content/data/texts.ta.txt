@@ -6868,6 +6868,12 @@ GL மட்டும்
 பசால்ட் பாதை
 [scoria_blocks]
 ஸ்கோரியா கற்கட்டிகள்
+[rime_ashlar]
+உறைபனிக் கல் கட்டு
+[moonstone_lozenge]
+நிலவுக்கல் சாய்சதுரங்கள்
+[frost_pinwheel]
+உறைபனிச் சுழலி
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

@@ -5748,6 +5748,12 @@ Schieferplatten
 Basaltdamm
 [scoria_blocks]
 Schlackenblöcke
+[rime_ashlar]
+Raureif-Quader
+[moonstone_lozenge]
+Mondstein-Rauten
+[frost_pinwheel]
+Frost-Windrad
 [terrain group water]
 Wasser
 [terrain group sand]

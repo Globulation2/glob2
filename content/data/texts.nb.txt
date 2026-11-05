@@ -5724,6 +5724,12 @@ Skiferheller
 Basaltdemning
 [scoria_blocks]
 Slaggblokker
+[rime_ashlar]
+Rimfrostkvader
+[moonstone_lozenge]
+Månesteinsruter
+[frost_pinwheel]
+Frostvindmølle
 [terrain group water]
 Vann
 [terrain group sand]

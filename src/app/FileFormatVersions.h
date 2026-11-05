@@ -410,3 +410,8 @@ static constexpr int FILE_FORMAT_VERSION_MOLTEN_LAVA_POOL = 207;
 //! from 47 to 50, so earlier files carry custom terrain IDs starting at 47 that the loader
 //! renumbers.
 static constexpr int FILE_FORMAT_VERSION_ROCK_PATHS = 208;
+
+//! Built-in ice paths (rime ashlar, moonstone lozenge, frost pinwheel): TERRAIN_COUNT grew
+//! from 50 to 53, so earlier files carry custom terrain IDs starting at 50 that the loader
+//! renumbers.
+static constexpr int FILE_FORMAT_VERSION_ICE_PATHS = 209;

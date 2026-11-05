@@ -24,7 +24,7 @@ describe('built-in terrain presets', () => {
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-17)).toEqual([
+    expect(TERRAIN_PRESETS.slice(-20)).toEqual([
       'sandstone',
       'pumice',
       'frozen_lake',
@@ -42,6 +42,9 @@ describe('built-in terrain presets', () => {
       'slate_ashlar',
       'basalt_causeway',
       'scoria_blocks',
+      'rime_ashlar',
+      'moonstone_lozenge',
+      'frost_pinwheel',
     ]);
   });
 

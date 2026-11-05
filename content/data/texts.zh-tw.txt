@@ -5748,6 +5748,12 @@ AI 生成
 玄武岩堤道
 [scoria_blocks]
 火山渣砌塊
+[rime_ashlar]
+霧凇方石
+[moonstone_lozenge]
+月光石菱磚
+[frost_pinwheel]
+霜花風車磚
 [terrain group water]
 水
 [terrain group sand]

@@ -5724,6 +5724,12 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 ব্যাসল্ট বাঁধ
 [scoria_blocks]
 স্কোরিয়া পাথরের ব্লক
+[rime_ashlar]
+তুষারকণা পাথরের গাঁথনি
+[moonstone_lozenge]
+চন্দ্রকান্ত মণির রম্বস
+[frost_pinwheel]
+তুষার ঘূর্ণি টালি
 [terrain group water]
 জল
 [terrain group sand]
