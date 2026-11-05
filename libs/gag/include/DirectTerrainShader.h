@@ -190,19 +190,19 @@ vec3 surf(vec4 indices, vec2 uv, vec3 edge, vec3 color) {
     float front;
     if (liquidSide) {
         if (margin < band.y)
-            color = mix(color, shallow.rgb / 255.0, band.x * (band.y - margin) / (256.0 * band.y) * land / 256.0);
+            color = mix(color, shallow.rgb / 255.0, band.x * (band.y - margin) / (256.0 * band.y));
         front = margin + run;
     } else {
         if (margin < band.w)
-            color *= 1.0 - band.z * (band.w - margin) / (256.0 * band.w) * land / 256.0;
+            color *= 1.0 - band.z * (band.w - margin) / (256.0 * band.w);
         if (margin < run)
-            color = mix(color, shallow.rgb / 255.0, band.x * (run - margin) / (512.0 * run) * land / 256.0);
+            color = mix(color, shallow.rgb / 255.0, band.x * (run - margin) / (512.0 * run));
         front = abs(margin - run);
     }
     if (front < shape.w) {
         float breakup = 96.0 + (bump(mod(floor(position.x * 5.0 / 128.0), 1024.0)) +
             bump(mod(floor(position.y * 7.0 / 128.0) + phase, 1024.0))) * 160.0 / 512.0;
-        color = mix(color, foam, shape.z * (shape.w - front) / shape.w * breakup / 65536.0 * land / 256.0);
+        color = mix(color, foam, shape.z * (shape.w - front) / shape.w * breakup / 65536.0);
     }
     return color;
 }

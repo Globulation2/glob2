@@ -1391,29 +1391,42 @@ TEST_SUITE("TerrainMaterials")
 				}
 			return result;
 		};
-		// Land with a calmer shore wash scales the wash's reach and bands; the
-		// default full wash is the unscaled one.
+		// Land with a calmer shore wash shortens the wash's reach and swing but
+		// keeps every band at full strength; the default full wash is unscaled.
 		const auto wash = [&](int land)
 		{
-			unsigned change = 0, reach = 0;
-			for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
-				for (int margin = 0; margin < 2048; margin += 16)
-					for (bool surfSide : {false, true})
+			// Peak colour change, and the swing: the farthest land pixel whose
+			// colour changes over the period as the wash runs in and out.
+			unsigned peak = 0, reach = 0;
+			for (int margin = 0; margin < 2048; margin += 16)
+				for (bool surfSide : {false, true})
+				{
+					std::array<unsigned, 3> first{};
+					bool moves = false;
+					for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
 					{
 						unsigned value[3] = {180, 160, 120};
 						TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value, land);
 						const unsigned delta = unsigned(std::abs(int(value[0]) - 180) + std::abs(int(value[1]) - 160) +
 													   std::abs(int(value[2]) - 120));
-						change += delta;
-						if (delta && !surfSide) reach = std::max(reach, unsigned(margin));
+						peak = std::max(peak, delta);
+						if (!time)
+							first = {value[0], value[1], value[2]};
+						else
+							moves |= first != std::array<unsigned, 3>{value[0], value[1], value[2]};
 					}
-			return std::pair{change, reach};
+					if (moves && !surfSide) reach = std::max(reach, unsigned(margin));
+				}
+			return std::pair{peak, reach};
 		};
 		const auto full = wash(256), calm = wash(77), none = wash(0);
-		CHECK(calm.first < full.first / 2);
-		CHECK(calm.first > 0);
 		CHECK(calm.second < full.second);
-		CHECK(none.first == 0);
+		CHECK(none.second <= calm.second);
+		// The foam and bands stay about as visible as on a beach; only a long run
+		// stacks the sheet over the wet band. Damping the bands too would leave
+		// the calm peak near 30% of the full one.
+		CHECK(calm.first * 4 >= full.first * 3);
+		CHECK(none.first * 4 >= full.first * 3);
 		for (int margin = 0; margin < 2048; margin += 64)
 		{
 			unsigned a[3] = {180, 160, 120}, b[3] = {180, 160, 120};

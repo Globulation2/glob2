@@ -71,8 +71,8 @@ struct Surf
 // is updated in place. surfSide is true when the sample's dominant material is
 // the surf one. wx and wy are the sample's non-negative Q8 world pixel
 // coordinates. land is the Q8 shore wash of the land material across the
-// shoreline (Material::shoreWash): it scales the wash's reach and every band's
-// strength. The integer arithmetic is mirrored exactly by
+// shoreline (Material::shoreWash): it scales the wash's reach and swing; the
+// bands keep their full strength. The integer arithmetic is mirrored exactly by
 // libs/gag/shaders/terrain-compose-fragment.glsl and, in floating point, by the
 // direct terrain shader (libs/gag/include/DirectTerrainShader.h).
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,

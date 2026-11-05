@@ -573,7 +573,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.shallowWidth)
 		{
-			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth * land / 256;
+			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth;
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -583,14 +583,14 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.wetWidth)
 		{
-			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth * land / 256;
+			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth;
 			for (int k = 0; k < 3; ++k)
 				value[k] = value[k] * unsigned(dark) / 256;
 		}
 		// A thin sheet of water covers the land the wash has reached.
 		if (margin < run)
 		{
-			const int amount = s.shallow * (run - margin) / (2 * run) * land / 256;
+			const int amount = s.shallow * (run - margin) / (2 * run);
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -600,7 +600,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		const int breakup = 96 + (surfBump(wx * 5 >> 7 & 1023) +
 								  surfBump(((wy * 7 >> 7) + phase) & 1023)) * 160 / 512;
-		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256 * land / 256;
+		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256;
 		for (int k = 0; k < 3; ++k)
 			value[k] = surfMix(value[k], s.foamColor[k], amount);
 	}

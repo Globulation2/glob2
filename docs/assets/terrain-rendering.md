@@ -289,12 +289,13 @@ period and drain over the rest, staggered along the coast by a smooth world-spac
 field whose 256- and 512-pixel wavelengths divide every map size, so the pattern
 wraps cleanly; another field breaks the foam line into patches.
 
-The land side sets how hard the wash breaks on it: a material's optional
-`shore_wash_q8` (0–256, default 256) scales the wash's reach and the strength
-of every band (shallows, wet band, sheet and foam) wherever a liquid's surf meets
-it. Laid paths (the `built` border class: trail, brick and stone paths and
-boardwalk) take 77, about 30%, so water laps quietly against a quay or a road
-instead of breaking over it. The page shader receives each palette slot's value
+The land side sets how far the wash breaks on it: a material's optional
+`shore_wash_q8` (0–256, default 256) scales the wash's reach, and so how far it
+swings with each wave, wherever a liquid's surf meets it. The bands (shallows,
+wet band, sheet and foam) keep their full strength, so the shoreline stays as
+visible as a beach's. Laid paths (the `built` border class: trail, brick and
+stone paths and boardwalk) take 77, about 30%, so water laps against a quay or
+a road instead of washing over it. The page shader receives each palette slot's value
 in `surfLand`; direct terrain stores its damping (256 minus the wash) in the
 otherwise unused fourth field of the foam record, so hand-built records keep the
 full wash.
