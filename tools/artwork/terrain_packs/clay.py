@@ -20,9 +20,9 @@ from terrain_core import (
 @recipe(name="clay", group="barren", label="Clay", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (150, 76, 46), "mid": (184, 102, 64), "light": (204, 128, 88), "crack": (112, 56, 34)},
-        style=Style(luma=124, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=124, std=5.6, grain_max=8), periodic=True, grid=8, blocks=4)
 def render_clay(ctx):
-    """Red baked clay in bold plates, split again by the barren group's cracks."""
+    """Red baked clay in bold plates, under the barren group's mark."""
     p = RECIPES["clay"].palette
     size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
     f1, f2, _, common1, common2, _ = block_worley(ctx, 6)

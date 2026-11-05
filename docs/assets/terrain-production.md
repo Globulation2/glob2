@@ -102,7 +102,7 @@ colour and material stay free per biome:
 | Water, deep water, lava (lava, ember field, molten lava pool) | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite, arctic tundra) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite, arctic tundra) | firm, level, packed ground: faded colour, relief two to twelve native pixels across damped, a fine compaction grain, evenly strewn grit and small flat stones with short shadows, and a few faint hairline cracks; contrast targets about 0.7 of other grounds' so it reads quiet and buildable rather than broken | `barren_mark` (`level_ground`, `compaction_grain`, `group_gravel`, `group_cracks`); `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges, frost pinwheel) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps); `_frost_paths` (snow in place of soil and moss, `weather`) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
@@ -110,20 +110,20 @@ colour and material stay free per biome:
 | Obstacles (boulders, hedge, thicket, cliffs, glacier) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
-shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
+shared mark; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
 volcanic ash is dark charcoal fine-grained ash with scattered porous black stones and
 rusty mineral specks;
 weathered sandstone is a solid bed of ochre stone worn into large, low, rounded slabs with
 fine joints, rust stain and pale nodules; laterite is a packed bed of rounded, hardened
 iron-red nodules (a few glossy brown-black iron) over a red crust whose softer cracks run
 between them, with lower patches of bare ochre fines; heath is clumps of dormant and dead heather cushions,
-each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
+each built of lit sprig tufts, over pale packed sandy peat; tundra is its cold
 counterpart on frost-patterned ground: polygons about two cells across with faint
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
-grey stones, and the shared cracks in dark peaty earth. Arctic tundra is tundra
-under snow: the same polygons, stones and cracks, with snow drifts in place of the
+grey stones, and the shared mark in dark peaty earth. Arctic tundra is tundra
+under snow: the same polygons, stones and packed ground, with snow drifts in place of the
 moss pads (the same cushion helper and placement, merged into scalloped drifts), rime
-on the rims, a dusting on the stones and the cracks running faintly through the snow
+on the rims, a dusting on the stones and the faint cracks running on through the snow
 as blue fissures. Paths are all laid by the
 globs, never natural ground, and all of them have been walked for years: the
 `_paving` family module settles every stone with its own tilt, sink or heave

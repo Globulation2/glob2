@@ -27,10 +27,10 @@ from terrain_core import (
         palette={"dark": (58, 54, 50), "mid": (72, 67, 62), "light": (88, 82, 76), "glint": (140, 134, 126),
                  "stone": (26, 24, 24), "stone_lit": (92, 88, 84), "pore": (12, 11, 11), "rust": (176, 88, 32),
                  "crack": (22, 20, 19)},
-        style=Style(luma=66, std=13, grain_max=13), periodic=True, grid=8, blocks=4)
+        style=Style(luma=66, std=9.1, grain_max=13), periodic=True, grid=8, blocks=4)
 def render_volcanic_ash(ctx):
     """Dark charcoal fine-grained ash with scattered porous black stones and
-    occasional rusty mineral specks, under the barren group's cracks: dense
+    occasional rusty mineral specks, under the barren group's mark: dense
     one-pixel grit over broad light and dark patches, near-black pitted
     stones with a pinprick highlight, sparse pale flecks in clusters."""
     p = RECIPES["volcanic_ash"].palette

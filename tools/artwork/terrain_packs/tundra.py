@@ -30,12 +30,12 @@ from ._heather import heather_cushions, soft_shadow
                  "stones": [(150, 145, 138), (120, 118, 115), (138, 132, 126), (110, 106, 102), (160, 154, 146)],
                  "stem": (76, 80, 52), "body": (94, 98, 62), "tip": (126, 120, 84),
                  "dead": (114, 80, 62), "deadtip": (130, 94, 72)},
-        style=Style(luma=86, std=13, grain_max=12, match=0.7), periodic=True, grid=8, blocks=4)
+        style=Style(luma=86, std=9.1, grain_max=12, match=0.7), periodic=True, grid=8, blocks=4)
 def render_tundra(ctx):
     """Cold counterpart of heath on frost-patterned ground: polygons about two
     cells across outlined by faint pale raised rims, dull flat olive moss pads
     (a few bearberry dabs) in their centres, beds of grey stones, and the
-    barren group's cracks in the exposed dark peaty earth."""
+    barren group's packed grit in the exposed dark peaty earth."""
     p = RECIPES["tundra"].palette
     size = ctx.size
     centre, _ = frost_polygons(ctx)
@@ -65,7 +65,7 @@ def frost_polygons(ctx, per_cell=0.25, warp=14):
 
 
 def tundra_ground(ctx, p, rim):
-    """Dark peaty earth under the barren group's cracks, with a faint pale
+    """Dark peaty earth under the barren group's mark, with a faint pale
     raised rim along the polygon borders and sparse pale lichen."""
     size = ctx.size
     base = layout_field(ctx, lambda rng: fbm(rng, 5, 3, size=size))
