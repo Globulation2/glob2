@@ -1,0 +1,32 @@
+{
+  "pid": 3753699,
+  "phase": "finished; review fresh128native candidates before updating1390 and exactrevision rebuild",
+  "results": [],
+  "note": "Artifacts-only freshStudio128candidate derivation. Intentionalmaster1444fertilecontribution64to48/SIM127to128requiresnewactualnative refs. No source/binary/dependency mutation, no fixturepromotion before review, no browserguard bypass. Nativefullfailuresretainedseparately.",
+  "native_full_result": {
+    "tests": "3573",
+    "failures": "12290",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "revision": "d888ee5a398a60b56deb83c469dc31cd6ed9f10e",
+  "changes": {
+    "studio-trace.json": {
+      "simRevision": {
+        "old": 127,
+        "new": 128
+      }
+    },
+    "generator-studio-trace.json": {
+      "simRevision": {
+        "old": 127,
+        "new": 128
+      },
+      "simVersion": {
+        "old": "207-75-6c8b3f94e0644054cc3ebc97f7907d9288026e0990c8a0e4407ad6a9cedc019b",
+        "new": "207-75-0751f51065b6dcbcafcaf9c04a221e6b8d51afa2bb6772d5bd53363f022a60db"
+      }
+    }
+  },
+  "no_canonical_source_edits": true
+}
