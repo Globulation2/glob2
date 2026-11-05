@@ -70,10 +70,13 @@ struct Surf
 // Applies surf to one composed sample. value holds the composed channels and
 // is updated in place. surfSide is true when the sample's dominant material is
 // the surf one. wx and wy are the sample's non-negative Q8 world pixel
-// coordinates. The integer arithmetic is mirrored exactly by
-// libs/gag/shaders/terrain-compose-fragment.glsl.
+// coordinates. land is the Q8 shore wash of the land material across the
+// shoreline (Material::shoreWash): it scales the wash's reach and every band's
+// strength. The integer arithmetic is mirrored exactly by
+// libs/gag/shaders/terrain-compose-fragment.glsl and, in floating point, by the
+// direct terrain shader (libs/gag/include/DirectTerrainShader.h).
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
-			   unsigned value[3]);
+			   unsigned value[3], int land = 256);
 // Share of each wash (of 1024) spent rushing up the beach; the rest drains back
 // more slowly. Mirrored as washIn in libs/gag/shaders/terrain-compose-fragment.glsl.
 constexpr int SurfWashInQ10 = 224;
@@ -213,6 +216,9 @@ struct Material
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 	Surf surf;
+	// Q8 strength of a liquid's surf where it washes against this material
+	// ("shore_wash_q8", default 256): paved paths take a calmer wash.
+	int shoreWash = 256;
 	// Set by the compositor for animated surf liquids: their mean native colour,
 	// toward which shore calm pulls the waves.
 	bool shoreCalm = false;

@@ -1391,6 +1391,39 @@ TEST_SUITE("TerrainMaterials")
 				}
 			return result;
 		};
+		// Land with a calmer shore wash scales the wash's reach and bands; the
+		// default full wash is the unscaled one.
+		const auto wash = [&](int land)
+		{
+			unsigned change = 0, reach = 0;
+			for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
+				for (int margin = 0; margin < 2048; margin += 16)
+					for (bool surfSide : {false, true})
+					{
+						unsigned value[3] = {180, 160, 120};
+						TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value, land);
+						const unsigned delta = unsigned(std::abs(int(value[0]) - 180) + std::abs(int(value[1]) - 160) +
+													   std::abs(int(value[2]) - 120));
+						change += delta;
+						if (delta && !surfSide) reach = std::max(reach, unsigned(margin));
+					}
+			return std::pair{change, reach};
+		};
+		const auto full = wash(256), calm = wash(77), none = wash(0);
+		CHECK(calm.first < full.first / 2);
+		CHECK(calm.first > 0);
+		CHECK(calm.second < full.second);
+		CHECK(none.first == 0);
+		for (int margin = 0; margin < 2048; margin += 64)
+		{
+			unsigned a[3] = {180, 160, 120}, b[3] = {180, 160, 120};
+			TerrainVisual::applySurf(darkSurf, false, margin, 5000, 9000, 40, a);
+			TerrainVisual::applySurf(darkSurf, false, margin, 5000, 9000, 40, b, 256);
+			CHECK(std::equal(a, a + 3, b));
+		}
+		// Laid paths take the calmer wash.
+		CHECK(definitions.materials[definitions.find("road")].shoreWash == 77);
+		CHECK(definitions.materials[definitions.find("grass")].shoreWash == 256);
 		bool moved = false;
 		for (int k = 0; k < darkSurf.period; k += darkSurf.ticks)
 		{
@@ -1573,7 +1606,9 @@ TEST_SUITE("TerrainMaterials")
 								TerrainVisual::applySurf(selfSurf.period ? selfSurf : otherSurf,
 														 selfSurf.period > 0, int(mask.margin),
 														 r.x * 8192 + (2 * x + 1) * 4096 / size,
-														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value);
+														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value,
+														 c.materials[selfSurf.period ? mask.neighbor
+																					 : mask.material[dominant]].shoreWash);
 							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) |
 													(value[1] << 8) | value[2];
 							mismatches += pixels(actual, x, y) != expected;
@@ -1660,6 +1695,7 @@ TEST_SUITE("TerrainMaterials")
 					material.erase("surf");
 					material.erase("class");
 					material.erase("stones");
+					material.erase("shore_wash_q8");
 				}
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)

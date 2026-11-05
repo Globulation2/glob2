@@ -54,6 +54,8 @@ struct SurfConstants
     std::int32_t ticks=1;
     // Shore calm: Q8 strength in bits 24-31 (zero disables) over the mean RGB.
     std::uint32_t calm=0;
+    // Q8 strength of surf washing against this slot's material as land.
+    std::int32_t land=256;
 };
 struct CoverageSample
 {
@@ -84,10 +86,11 @@ struct WeightedComposeData
     SDL_Rect targetRect{}; // Target pixels, top-left origin.
 };
 // Surf uniforms in manifest order and std140 layout: surfPlace, then
-// surfShape[4], surfBand[4] and surfColor[4], one ivec4 per palette slot.
-inline std::array<std::int32_t,52> surfUniforms(const WeightedComposeData &data)
+// surfShape[4], surfBand[4] and surfColor[4], one ivec4 per palette slot, and
+// surfLand, each slot's shore wash as land.
+inline std::array<std::int32_t,56> surfUniforms(const WeightedComposeData &data)
 {
-    std::array<std::int32_t,52> values{data.surfOriginX,data.surfOriginY,std::int32_t(data.surfTime),
+    std::array<std::int32_t,56> values{data.surfOriginX,data.surfOriginY,std::int32_t(data.surfTime),
                                        std::int32_t(data.shoreCalm)};
     for(unsigned slot=0;slot<4;++slot) {
         const auto &surf=data.surfs[slot];
@@ -97,6 +100,7 @@ inline std::array<std::int32_t,52> surfUniforms(const WeightedComposeData &data)
         for(unsigned k=0;k<4;++k) {
             values[4+slot*4+k]=shape[k];values[20+slot*4+k]=band[k];values[36+slot*4+k]=color[k];
         }
+        values[52+slot]=surf.land;
     }
     return values;
 }

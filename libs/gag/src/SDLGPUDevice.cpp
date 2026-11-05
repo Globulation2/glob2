@@ -38,9 +38,10 @@ const char *platformDriver()
 }
 static_assert(sizeof(SDL_Vertex) == Layout::primitive_stride);
 static_assert(Layout::terrain_compose_stride == Layout::primitive_stride && Layout::terrain_reduce_stride == Layout::primitive_stride);
-static_assert(Layout::terrain_compose_fragment_size == 352 && Layout::terrain_compose_fragment_params_offset == 0 &&
+static_assert(Layout::terrain_compose_fragment_size == 368 && Layout::terrain_compose_fragment_params_offset == 0 &&
     Layout::terrain_compose_fragment_seamGeometry_offset == 16 && Layout::terrain_compose_fragment_seamFringe_offset == 80 &&
-    Layout::terrain_compose_fragment_surfPlace_offset == 144 && Layout::terrain_compose_fragment_surfColor_offset == 288);
+    Layout::terrain_compose_fragment_surfPlace_offset == 144 && Layout::terrain_compose_fragment_surfColor_offset == 288 &&
+    Layout::terrain_compose_fragment_surfLand_offset == 352);
 static_assert(Layout::terrain_reduce_fragment_size == 16 && Layout::terrain_reduce_fragment_params_offset == 0);
 static_assert(offsetof(SDL_Vertex, position) == Layout::primitive_attributes[0].offset);
 static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].offset);
@@ -947,7 +948,8 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
         const auto &surf=data.surfs[i];
         if(surf.period<0 || surf.period>65535 || surf.ticks<1 || surf.ticks>std::max(surf.period,1) || surf.reach<0 || surf.foamWidth<0 || surf.reach+surf.foamWidth>2048 ||
             surf.shallowWidth<0 || surf.shallowWidth>2048 || surf.wetWidth<0 || surf.wetWidth>2048 ||
-            surf.shallow<0 || surf.shallow>256 || surf.wet<0 || surf.wet>256 || surf.foam<0 || surf.foam>256)
+            surf.shallow<0 || surf.shallow>256 || surf.wet<0 || surf.wet>256 || surf.foam<0 || surf.foam>256 ||
+            surf.land<0 || surf.land>256)
             throw std::invalid_argument("Invalid terrain surf constants");
         if(data.materials[i] && (data.materials[i]==packet.target || data.materials[i]->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied))
             throw std::invalid_argument("Terrain material must provide canonical straight pixels");

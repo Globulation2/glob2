@@ -506,6 +506,10 @@
           "name": "surfColor",
           "type": "ivec4",
           "count": 4
+        },
+        {
+          "name": "surfLand",
+          "type": "ivec4"
         }
       ]
     },
