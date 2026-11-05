@@ -5713,7 +5713,7 @@ Volcanic ash
 [glacier_ice]
 Glacier ice
 [overgrown_road]
-Overgrown road
+Mossy setts
 [laterite]
 Laterite
 [cliffs]

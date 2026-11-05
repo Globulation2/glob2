@@ -1,76 +1,62 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The road terrain material."""
-import bisect
-import math
-
+"""The road (trail) terrain material."""
+from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, stone_fates, uneven_rows
 from terrain_core import (
+    NATIVE_PX,
     RECIPES,
     Style,
-    clamp01,
     fbm,
-    lattice_noise,
     layout_field,
-    mix,
     ramp,
     recipe,
-    shade,
-    smoothstep,
-    worn_edge,
 )
 
 
+def sett_rectangles(size, rng):
+    """Setts in running courses of uneven height, each with its own corner
+    radius, wrapping the block."""
+    stones = []
+    y = 0
+    for height in uneven_rows(size, rng, heights=(5, 6, 7, 8, 9, 10, 11)):
+        start = rng.random() * size
+        x, row = start, []
+        while True:
+            length = rng.uniform(30.0, 58.0)
+            if start + size - (x + length) < 30.0:
+                row.append((x, start + size - x))
+                break
+            row.append((x, length))
+            x += length
+        for x0, length in row:
+            stones.append((x0, y, length, height, rng.uniform(3.0, 10.0)))
+        y += height
+    return stones
+
+
 @recipe(name='road', group="legacy", label='Road', profile="paved", border_class="built",
-        seam={'height': 3, 'cast_q8': 48, 'cast_width_q8': 512}, palette={'dark': (95, 84, 71), 'mid': (135, 122, 103), 'light': (165, 149, 128)}, style=Style(luma=121.2, std=23.2, grain_max=22.9),
+        seam={'height': 3, 'cast_q8': 48, 'cast_width_q8': 512},
+        palette={'dark': (74, 72, 64), 'mid': (122, 120, 110), 'light': (172, 168, 154),
+                 'warm': (152, 124, 86), 'cool': (100, 112, 124), 'stain': (138, 96, 58), 'joint': (62, 50, 36),
+                 'grit': (112, 98, 76), 'soil': (70, 56, 40), 'dust': (132, 120, 100)},
+        style=Style(luma=116, std=22, grain_max=11),
         periodic=True, grid=8, blocks=4, preview=(133, 120, 101), minimap=(176, 138, 98))
 def render_road(ctx):
-    """Laid stone setts in straight courses, with straight mortar joints.
+    """An old trail of stone setts in uneven running courses: settled, chipped
+    and sunken, a few cracked or lost to the dirt, grit and moss in the joints
+    and the ground creeping back at its edges.
 
-    Course and joint geometry is periodic and common to every layout, so no
-    layout can cut a boundary stone; only stone tone and texture vary inside.
-    Each joint takes the paths group's crisp, lighter worn lip.
+    Course and sett geometry is periodic and common to every layout, so no
+    layout can cut a boundary stone; tones and wear vary inside.
     """
     p, size = RECIPES["road"].palette, ctx.size
-    course = 32  # HD pixels per course: eight native pixels, dividing every block.
-    rows = size // course
-    joints = []
-    for _ in range(rows):
-        # Joint positions for one course, wrapping once around the block.
-        start = ctx.shared_rng.random() * size
-        row, x = [start], start
-        while True:
-            length = ctx.shared_rng.uniform(30.0, 58.0)
-            if start + size - (x + length) < 30.0:
-                break
-            x += length
-            row.append(x)
-        joints.append(row)
-    stones = sum(len(row) for row in joints)
-    common_tones = [ctx.shared_rng.random() for _ in range(stones)]
-    own_tones = [ctx.rng.random() for _ in range(stones)]
-    height, mortar, tone = [0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size)
-    first = 0
-    for k, row in enumerate(joints):
-        starts = row + [row[0] + size]
-        for y in range(k * course, (k + 1) * course):
-            dy = min(y - k * course, (k + 1) * course - 1 - y) + 0.5
-            for x in range(size):
-                ux = x + 0.5 if x + 0.5 >= row[0] else x + 0.5 + size
-                stone = bisect.bisect_right(starts, ux) - 1
-                dx = min(ux - starts[stone], starts[stone + 1] - ux)
-                i = y * size + x
-                # Rounded corners: worn setts, not sawn bricks.
-                edge = min(dx, dy) if min(dx, dy) > 5 else 5 - math.hypot(max(0.0, 5 - dx), max(0.0, 5 - dy))
-                mortar[i] = 1 - smoothstep(1.5, 3.0, edge)
-                height[i] = smoothstep(1.5, 9.0, edge)
-                w = ctx.interior_mask[i]
-                tone[i] = common_tones[first + stone] + (own_tones[first + stone] - common_tones[first + stone]) * w
-        first += len(row)
+    centres, ids, edge, _, _ = rectangle_geometry(size, sett_rectangles(size, ctx.shared_rng))
+    decay = decay_fields(ctx, reclaim=(0.72, 0.9))
+    reach = 32 + 58 + NATIVE_PX
+    fates, common = stone_fates(ctx, decay, centres, reach, lost=0.06, cracked=0.12, sink=0.5, heave=0.3)
     texture = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
-    shade_tone = [clamp01(0.45 * v + 0.55 * s) for v, s in zip(texture, tone)]
-    rgb = ramp(shade_tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = shade(rgb, height, 0.22)
-    rgb = mix(rgb, tuple(c * 0.62 for c in p["dark"]), mortar, 0.9)
-    rgb = worn_edge(rgb, mortar)
-    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.09 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
+    rgb = stone_colour(lambda tone: ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
+                       ids, fates, texture, p, strength=0.45, own=0.75, staining=0.45)
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 20.0,
+                creep=1.0, chipping=1.6, bevel=2.0, bevel_strength=0.28, moss=0.5, weeds=0.5, lichen=0.5,
+                grit=0.4, dust=0.22)
     return rgb, None

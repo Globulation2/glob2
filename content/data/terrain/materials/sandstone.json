@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-sandstone",
   "profile": "paved",
   "class": "built",
-  "preview": [145, 132, 102],
+  "preview": [138, 127, 99],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [145, 132, 102],
+  "minimap": [138, 127, 99],
   "seam": {
     "height": 3,
     "cast_q8": 48,

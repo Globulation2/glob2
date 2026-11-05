@@ -2,16 +2,18 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "d96c36fa26d4e459a994f3ad49800822adab3e8aaa2a00d0cfa41af54492817d",
-    "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1"
+    "tools/artwork/terrain_synth.py": "8f478809b4b7fe7cc7b97fab5eebd8fad6795c29b0d2fdaa39bab79fc32f983b",
+    "tools/artwork/terrain_core.py": "8a98a23ed1ddf79b0081dd20a8263e4c780404dc5dbe62b92f1a01836e85345b",
+    "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1",
+    "tools/artwork/terrain_packs/overgrown_road.py": "f79cbc959e26671e83a6468e9e45bf863c11e1a5f1a667916cac195674abd4f7"
   },
   "material": "overgrown_road",
   "group": "paths",
-  "label": "Overgrown road",
+  "label": "Mossy setts",
   "recipe": {
     "name": "overgrown_road",
     "group": "paths",
-    "label": "Overgrown road",
+    "label": "Mossy setts",
     "profile": "paved",
     "border_class": "built",
     "seam": {
@@ -99,6 +101,7 @@
     },
     "phases": 1,
     "animation_ticks": 8,
+    "blend_steps": 0,
     "alpha_range": [
       255,
       255
@@ -196,12 +199,12 @@
       }
     }
   },
-  "python": "3.12.12",
+  "python": "3.11.15",
   "pillow": "12.2.0",
   "platform": {
-    "system": "darwin",
-    "machine": "arm64",
-    "libc": null
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.39"
   },
   "runtime_sha256": {
     "content/data/gfx/terrain-overgrown_road0.png": "eb20a5fba33979390e90ba810575881b7c9afea41ac281195d1ee22122bf043d",

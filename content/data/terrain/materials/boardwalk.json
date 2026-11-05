@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-boardwalk",
   "profile": "crisp",
   "class": "built",
-  "preview": [128, 119, 105],
+  "preview": [115, 102, 84],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [128, 119, 105],
+  "minimap": [115, 102, 84],
   "seam": {
     "height": 3,
     "cast_q8": 48,

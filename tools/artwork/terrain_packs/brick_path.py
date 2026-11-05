@@ -2,32 +2,30 @@
 """The brick path terrain material."""
 import math
 
+from ._paving import decay_fields, dress, stone_fates, stone_field
 from terrain_core import (
     NATIVE_PX,
     RECIPES,
     Style,
+    clamp01,
     fbm,
-    lattice_noise,
     layout_field,
-    mix,
     recipe,
-    shade,
-    smoothstep,
-    worn_edge,
 )
 
 
-# Brick firings, after the reference: red, plum, grey-brown, dark, rust.
+# Brick firings, after the reference but weathered: red, plum, grey-brown,
+# dark, rust, all dulled by years of boots and rain.
 BRICK_FIRINGS = [
-    ((156, 84, 68), 3), ((116, 82, 76), 3), ((118, 102, 88), 3),
-    ((94, 68, 64), 2), ((166, 96, 70), 1),
+    ((150, 80, 60), 3), ((120, 72, 60), 3), ((134, 94, 72), 3),
+    ((98, 60, 50), 2), ((168, 98, 68), 2), ((170, 140, 96), 1), ((74, 50, 48), 1),
 ]
 
 
-def pick_firing(rng):
-    """One weighted brick firing colour."""
+def firing_of(u):
+    """The weighted brick firing colour for a tone in [0, 1)."""
     total = sum(w for _, w in BRICK_FIRINGS)
-    r = rng.random() * total
+    r = u * total
     for colour, w in BRICK_FIRINGS:
         r -= w
         if r < 0:
@@ -46,8 +44,8 @@ def herringbone(size, width, length):
     same running across or down the screen.
 
     Returns the brick list and, per pixel, the brick index, the distance from
-    the brick face's edge, the joint mask and the position along the brick
-    (0..1) for lengthwise firing gradients.
+    the brick face's edge (negative in the joint) and the position along the
+    brick (0..1) for lengthwise firing gradients.
     """
     assert (size // 2) % width == 0 and (size // 2) % length == 0
     origins = set()
@@ -64,7 +62,6 @@ def herringbone(size, width, length):
         bricks.append((ox, (oy + width) % size, width, length, 1))
     ids = [-1] * (size * size)
     edge = [0.0] * (size * size)
-    joint = [0.0] * (size * size)
     along = [0.0] * (size * size)
     gap = NATIVE_PX  # one native pixel of joint on each brick's right and bottom side
     radius = 0.75 * NATIVE_PX
@@ -76,7 +73,7 @@ def herringbone(size, width, length):
                 i = row + (x0 + u) % size
                 ids[i] = k
                 if u >= fw or v >= fh:
-                    joint[i], edge[i] = 1.0, 0.0
+                    edge[i] = -0.5 * NATIVE_PX
                 else:
                     dx = min(u + 0.5, fw - u - 0.5)
                     dy = min(v + 0.5, fh - v - 0.5)
@@ -84,55 +81,54 @@ def herringbone(size, width, length):
                     if dx < radius and dy < radius:
                         e = radius - math.hypot(radius - dx, radius - dy)
                     edge[i] = e
-                    joint[i] = 1.0 if e < 0 else 0.0
                 along[i] = (v / bh) if vertical else (u / bw)
     assert min(ids) >= 0
-    return bricks, ids, edge, joint, along
+    return bricks, ids, edge, along
 
 
 @recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"joint": (38, 28, 28)},
-        # Small pavers put more joint into every tile than ground has grain.
-        style=Style(luma=112, std=20, grain_max=18), periodic=True, grid=8, blocks=4)
+        palette={"joint": (72, 58, 46), "grit": (162, 142, 112), "dust": (140, 116, 92), "soil": (74, 60, 46),
+                 "crack": (54, 38, 32)},
+        style=Style(luma=100, std=20, grain_max=12), periodic=True, grid=8, blocks=4)
 def render_brick_path(ctx):
-    """Brick path: clay pavers laid in an axis-aligned herringbone, so the
-    path reads the same whichever way it runs."""
+    """Brick path: long clay pavers laid in an axis-aligned herringbone, so the
+    path reads the same whichever way it runs, worn by years of use: bricks
+    settled and chipped, some cracked across or lost to the soil, sand and
+    grit in the joints, dust over the firings and moss where it is damp."""
     p, size = RECIPES["brick_path"].palette, ctx.size
-    # Pavers of 2:1 proportion, 4 x 8 native px with their joint: a quarter of
-    # a tile long, so the path reads as brick at the globs' scale rather than
-    # as slabs, and every joint lands on whole native pixels, so the 32 px
-    # tiles stay crisp.
-    bricks, ids, edge, joint, along = herringbone(size, 4 * NATIVE_PX, 8 * NATIVE_PX)
-    # Joint geometry is a fixed lattice common to every layout; brick firings
-    # come from the shared stream at the block edge and each layout's own
-    # stream inside, like road's stone tones.
-    def firings(rng):
-        out = []
-        for _ in bricks:
-            c = pick_firing(rng)
-            lift = 1 + (rng.random() - 0.5) * 0.16
-            slope = (rng.random() - 0.5) * 0.18
-            out.append((tuple(v * lift for v in c), slope))
-        return out
-    common, own = firings(ctx.shared_rng), firings(ctx.rng)
-    interior = ctx.interior_mask
+    # Pavers of 2:1 proportion, 8 x 16 native px with their joint: half a
+    # tile long, the same range as the trail's setts and the sandstone flags,
+    # so a brick is still a brick at 32 px per cell, and every joint lands on
+    # whole native pixels, so the tiles stay crisp.
+    bricks, ids, edge, along = herringbone(size, 8 * NATIVE_PX, 16 * NATIVE_PX)
+    centres = [((x0 + bw / 2) % size, (y0 + bh / 2) % size) for x0, y0, bw, bh, _ in bricks]
+    decay = decay_fields(ctx, reclaim=(0.88, 0.97))
+    reach = 32 + 16 * NATIVE_PX
+    fates, common = stone_fates(ctx, decay, centres, reach, lost=0.035, cracked=0.12, sink=0.5, heave=0.3)
+    # Bricks crack across their length, not along it.
+    across = [(math.pi / 2 if not vertical else 0.0) + (1 if s.kink > 0 else -1) * 0.0
+              for (_, _, _, _, vertical), s in zip(bricks, fates)]
     mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size))
+    # Bricks were laid batch by batch, so firings drift in broad runs.
+    batch = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 3, 2, size=size))
+    firing = [firing_of(clamp01(0.7 * s.tone + 0.3 * b)) for s, b in zip(fates, batch)]
     rgb = ([0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size))
-    # Each brick one firing, a little brighter or darker and graded end to end,
-    # with a fine mottle across all of them.
+    # Each brick one firing, graded end to end by its settling, with a fine
+    # mottle across all of them.
+    # A few bricks have spalled: their fired skin is gone and the dark, rough
+    # core shows.
+    spalled = [s.tone > 0.9 for s in fates]
     for i in range(size * size):
-        k, w = ids[i], interior[i]
-        (ca, sa), (cb, sb) = common[k], own[k]
-        slope = sa + (sb - sa) * w
-        f = (1 + slope * (along[i] - 0.5) * 2) * (1 + 0.14 * (mottle[i] - 0.5) * 2)
+        k = ids[i]
+        s = fates[k]
+        c = firing[k]
+        f = (1 + 0.09 * s.cast * (along[i] - 0.5) * 2) * (1 + 0.12 * (mottle[i] - 0.5) * 2)
+        if spalled[k]:
+            f *= 0.7 + 0.25 * (mottle[i] - 0.5) * 2
         for ch in range(3):
-            rgb[ch][i] = (ca[ch] + (cb[ch] - ca[ch]) * w) * f
-    # A slight bevel, dark recessed joints and the Paths group's worn lip.
-    height = [smoothstep(0.0, 1.5 * NATIVE_PX, e) for e in edge]
-    rgb = shade(rgb, height, 0.25)
-    rgb = mix(rgb, p["joint"], joint, 0.95)
-    rgb = worn_edge(rgb, joint, light=(NATIVE_PX, NATIVE_PX), strength=0.18)
-    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.07 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
+            rgb[ch][i] = c[ch] * f
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 4 * NATIVE_PX,
+                joint=(0.0, 1.5), creep=0.0, chipping=0.8, bevel=1.5, bevel_strength=0.3,
+                crack_along=across, moss=0.25, weeds=0.3, lichen=0.2, grit=0.95, grit_cover=0.22, dust=0.18, lip=0.2)
     return rgb, None

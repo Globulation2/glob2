@@ -65,7 +65,7 @@ def hex_paving(size, columns, gap):
     return centres, radius, ids.ravel().tolist(), (best - gap / 2).ravel().tolist()
 
 
-@recipe(name="overgrown_road", group="paths", label="Overgrown road", profile="paved", border_class="built",
+@recipe(name="overgrown_road", group="paths", label="Mossy setts", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
         palette={"dark": (95, 102, 84), "mid": (135, 144, 118), "light": (169, 178, 150),
                  "warm": (148, 144, 116), "cool": (116, 130, 128), "joint": (54, 42, 32),
@@ -73,7 +73,8 @@ def hex_paving(size, columns, gap):
                  "leaf": (104, 126, 58), "lichen": (156, 150, 96), "shadow": (34, 32, 26), "crack": (64, 58, 50)},
         style=Style(luma=120, std=24, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
 def render_overgrown_road(ctx):
-    """Overgrown road: neat hexagonal stone setts in dark joints, decaying.
+    """Mossy setts (material key overgrown_road): neat hexagonal stone setts
+    in dark joints, decaying.
     Moss tints stretches of the joints, some setts are cracked or lost to soil
     and weeds, and in a few reclaimed patches the moss creeps over the stone.
     The hex lattice is the same in every layout; boundary setts take the
