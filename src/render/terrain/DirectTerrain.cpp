@@ -572,7 +572,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
             state->initialize(map, data);
             if (!data.pendingCoverage.empty())
             {
-                auto &stream = state->coverageStream.emplace();
+                auto &stream = state->coverageStream.emplace(State::CoverageStream{});
                 stream.recipes = std::move(data.pendingCoverage);
                 stream.slots = std::move(data.masks);
                 stream.ready.resize(stream.recipes.size());
