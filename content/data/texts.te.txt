@@ -5734,6 +5734,24 @@ AI ద్వారా రూపొందించబడలేదు
 ఆర్కిటిక్ టండ్రా నేల
 [glacier]
 హిమానీనదం
+[icefall]
+మంచు జలపాతం
+[sandstone_benches]
+ఇసుకరాతి అరుగులు
+[obsidian_ridge]
+అబ్సిడియన్ శిఖరం
+[granite_tors]
+గ్రానైట్ బండలు
+[travertine_terraces]
+ట్రావర్టైన్ మెట్లు
+[penitentes]
+మంచు ముళ్లు
+[termite_mounds]
+చెదపురుగుల పుట్టలు
+[hoodoos]
+హూడూ స్తంభాలు
+[petrified_stumps]
+శిలాజ మొద్దులు
 [terrain group water]
 నీరు
 [terrain group sand]

@@ -5758,6 +5758,24 @@ Dérforgó
 Sarkvidéki tundratalaj
 [glacier]
 Gleccser
+[icefall]
+Jégzuhatag
+[sandstone_benches]
+Homokkőpadok
+[obsidian_ridge]
+Obszidiángerinc
+[granite_tors]
+Gránittornyok
+[travertine_terraces]
+Travertinteraszok
+[penitentes]
+Vezeklő hótüskék
+[termite_mounds]
+Termeszvárak
+[hoodoos]
+Földpiramisok
+[petrified_stumps]
+Megkövesedett tönkök
 [terrain group water]
 Víz
 [terrain group sand]

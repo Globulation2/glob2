@@ -226,6 +226,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals;
 		const auto definitions = catalog();
 		CHECK(definitions.materials[definitions.find("cliffs")].decor.connectedOpen);
+		CHECK(definitions.materials[definitions.find("icefall")].decor.connectedOpen);
 		CHECK_FALSE(definitions.materials[definitions.find("hedge")].decor.connectedOpen);
 		auto document = nlohmann::json::parse(definitions.serialized);
 		for (auto &material : document["materials"])

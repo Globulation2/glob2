@@ -5758,6 +5758,24 @@ AI 生成
 极地苔原地面
 [glacier]
 冰川
+[icefall]
+冰瀑
+[sandstone_benches]
+砂岩台地
+[obsidian_ridge]
+黑曜石山脊
+[granite_tors]
+花岗岩突岩
+[travertine_terraces]
+钙华梯田
+[penitentes]
+忏悔冰柱
+[termite_mounds]
+白蚁丘
+[hoodoos]
+怪岩柱
+[petrified_stumps]
+石化树桩
 [terrain group water]
 水
 [terrain group sand]

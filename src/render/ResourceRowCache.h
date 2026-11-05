@@ -35,7 +35,8 @@ public:
     {
         // Raised decor holds one layer per compositor decor slot, in drawing order.
         Layer resources, overlay;
-        std::array<Layer, 3> decor;
+        std::array<Layer, 7> decor; // Compositor::DecorSlots
+
         std::uint64_t resourceRevision = 0;
         std::uint32_t tick = 0; // simulation tick the resource frames were chosen at
         int animationTime = 0;  // presentation time the overlay frames were chosen at

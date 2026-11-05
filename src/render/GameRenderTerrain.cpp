@@ -65,6 +65,10 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     auto *decorSprite = compositor.decorSprite();
     if (!decorSprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.decor.sprite.empty(); })) return false;
+    // The terrace depth field, built once per terrain revision (null when no
+    // material is tiered); rows read it only while they are rebuilt.
+    const auto tierField = compositor.tierField(map);
+    static_assert(std::tuple_size_v<decltype(ResourceRowCache::Row::decor)> == TerrainVisual::Compositor::DecorSlots);
     auto *overlaySprite = compositor.overlaySprite();
     if (!overlaySprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.overlay.sprite.empty(); })) return false;
@@ -152,7 +156,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     }
                     store(row.resources.frames[x], frame, resourcesChanged);
                     std::array<TerrainVisual::Compositor::DecorLayer, TerrainVisual::Compositor::DecorSlots> decor{};
-                    if (decorSprite) decor = compositor.decorLayers(map, x, mapY);
+                    if (decorSprite) decor = compositor.decorLayers(map, x, mapY, tierField.get());
                     for (unsigned slot = 0; slot < decor.size(); ++slot)
                     {
                         store(row.decor[slot].frames[x], decor[slot].frame, decorChanged[slot]);
@@ -224,7 +228,8 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 if (frame < 0) continue;
                 const int h = layerSprite->getH(frame);
                 int dx = (layerSprite->getW(frame) - 32) >> 1;
-                int dy = layerKey >= DecorLayerKey ? TerrainVisual::decorOffsetY(h) : (h - 32) >> 1;
+                int dy = layerKey >= DecorLayerKey ? TerrainVisual::decorOffsetY(h) +
+                    TerrainVisual::Compositor::decorSlotRise(unsigned(layerKey - DecorLayerKey)) : (h - 32) >> 1;
                 gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
             }
             gfx->finishDrawingSprite(layerSprite, 255);
@@ -314,6 +319,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
     auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
     const bool capture = (drawOptions & DRAW_TILED_CAPTURE) != 0;
     const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
+    const auto tierField = compositor.tierField(sceneMap);
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
         if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
@@ -360,7 +366,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 			if (visible(x, y))
 			{
 				visibleColumns.push_back(x);
-				rowDecor.push_back(compositor.decorLayers(sceneMap, x + viewportX, y + viewportY));
+				rowDecor.push_back(compositor.decorLayers(sceneMap, x + viewportX, y + viewportY, tierField.get()));
 			}
 		for (unsigned slot = 0; slot < TerrainVisual::Compositor::DecorSlots; ++slot)
 			for (std::size_t column = 0; column < visibleColumns.size(); ++column)
@@ -376,8 +382,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 				}
 				globalContainer->gfx->drawSprite(
 					(x << 5) - TerrainVisual::decorOffsetX(layer.sprite->getW(layer.frame)),
-					(y << 5) - TerrainVisual::decorOffsetY(layer.sprite->getH(layer.frame)), layer.sprite,
-					layer.frame);
+					(y << 5) - TerrainVisual::decorOffsetY(layer.sprite->getH(layer.frame)) -
+						TerrainVisual::Compositor::decorSlotRise(slot), layer.sprite, layer.frame);
 			}
 		for (int x : visibleColumns)
 		{

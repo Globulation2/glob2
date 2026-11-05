@@ -166,7 +166,8 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE(obstacles);
 		CHECK(ids(*obstacles) ==
 			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket", "terrain/cliffs",
-									   "terrain/glacier"});
+									   "terrain/glacier", "terrain/icefall", "terrain/sandstone_benches",
+									   "terrain/obsidian_ridge", "terrain/granite_tors", "terrain/travertine_terraces"});
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());

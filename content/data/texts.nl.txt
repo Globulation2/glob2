@@ -5758,6 +5758,24 @@ Rijpmolentje
 Arctische toendrabodem
 [glacier]
 Gletsjer
+[icefall]
+IJsval
+[sandstone_benches]
+Zandsteenbanken
+[obsidian_ridge]
+Obsidiaanrug
+[granite_tors]
+Granietrotsen
+[travertine_terraces]
+Travertijnterrassen
+[penitentes]
+Boetelingensneeuw
+[termite_mounds]
+Termietenheuvels
+[hoodoos]
+Aardpiramides
+[petrified_stumps]
+Versteende stronken
 [terrain group water]
 Water
 [terrain group sand]

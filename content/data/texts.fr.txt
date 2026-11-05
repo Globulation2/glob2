@@ -5758,6 +5758,24 @@ Moulinet de givre
 Sol de toundra arctique
 [glacier]
 Glacier
+[icefall]
+Chute de séracs
+[sandstone_benches]
+Bancs de grès
+[obsidian_ridge]
+Crête d'obsidienne
+[granite_tors]
+Chaos granitiques
+[travertine_terraces]
+Terrasses de travertin
+[penitentes]
+Pénitents de neige
+[termite_mounds]
+Termitières
+[hoodoos]
+Cheminées de fée
+[petrified_stumps]
+Souches pétrifiées
 [terrain group water]
 Eau
 [terrain group sand]

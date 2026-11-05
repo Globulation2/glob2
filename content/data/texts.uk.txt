@@ -5758,6 +5758,24 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Арктичний тундровий ґрунт
 [glacier]
 Льодовик
+[icefall]
+Льодоспад
+[sandstone_benches]
+Пісковикові уступи
+[obsidian_ridge]
+Обсидіановий гребінь
+[granite_tors]
+Гранітні останці
+[travertine_terraces]
+Травертинові тераси
+[penitentes]
+Снігові каяльники
+[termite_mounds]
+Термітники
+[hoodoos]
+Кам'яні гриби
+[petrified_stumps]
+Скам'янілі пні
 [terrain group water]
 Вода
 [terrain group sand]

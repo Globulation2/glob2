@@ -15,8 +15,9 @@ below the cell, so a tall frame grows upward: its cell is the 32x32 square 48
 pixels from either side and 16 from the bottom. Boulders rise well over a cell
 into the rows above and cast long shadows to the lower right. Connected
 foliage uses cropped 32x64 native frames (128x256 HD): a raised canopy whose
-long shadow falls on the open ground south of it; cliffs use the same
-frames, their plateau raised twelve native pixels above walls of rock. Smaller objects stand on the
+long shadow falls on the open ground south of it; cliffs and the other rock
+masses use the same layout in 32x68 frames, raised twenty native pixels above
+walls of rock. Smaller objects stand on the
 lower part of their cell and rise up to sixteen native pixels into the cell
 above, as trees do; drawn back to front, interior cells overlap into one
 continuous mass. A frame
@@ -934,6 +935,63 @@ def render_glacier(rng, edge):
     return draw_rocks(canvas, rng, rocks, strata=0.0, shadow=0.5)
 
 
+def mass_blocks(tone_lo, tone_hi, wall):
+    """Object frames the decor schema requires of a connected mass; connected
+    frames replace them in play (Catalog::decorFrame)."""
+    def render(rng, edge):
+        canvas = Canvas()
+        tone = mix3(tone_lo, tone_hi, rng.random())
+        rx = rng.uniform(40, 50) if edge else rng.uniform(66, 82)
+        rocks = [make_rock(rng, S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15, rx, rx * 0.74,
+                           rng.uniform(-0.4, 0.4), wall, 10, rng.uniform(8, 14), tone,
+                           points=8, jag=0.25, peak_offset=0.5)]
+        return draw_rocks(canvas, rng, rocks, strata=0.1, shadow=0.45)
+    return render
+
+
+spec("sandstone_benches", "flat-topped sandstone benches: a pale caprock on thick, stepped beds")(
+    mass_blocks((210, 160, 112), (232, 196, 150), 44))
+spec("obsidian_ridge", "a heap of glassy black obsidian shards with sharp glints")(
+    mass_blocks((50, 50, 60), (78, 76, 90), 40))
+spec("granite_tors", "rounded, sheeted granite blocks with moss in the hollows")(
+    mass_blocks((140, 134, 122), (168, 160, 146), 48))
+spec("travertine_terraces", "matte calcite terraces holding shallow milky pools")(
+    mass_blocks((214, 204, 184), (232, 224, 208), 34))
+
+
+class _Rendered:
+    """A finished HD frame where a spec renderer returns a Canvas."""
+
+    def __init__(self, image):
+        self._image = image
+
+    def image(self):
+        return self._image
+
+
+def _register_outcrops():
+    import terrain_outcrops
+    for name, (_, note) in terrain_outcrops.SETS.items():
+        spec(name, note)(lambda rng, edge, name=name: _Rendered(
+            terrain_outcrops.render_object(name, rng.getrandbits(64), edge)))
+
+
+_register_outcrops()
+
+
+@spec("icefall", "a glacier icefall: crevassed snow standing on sheer, fluted blue ice walls")
+def render_icefall_blocks(rng, edge):
+    # Object frames the decor schema requires; connected frames replace them in
+    # play (Catalog::decorFrame). Tilted blocks of the same blue ice.
+    canvas = Canvas()
+    tone = mix3((150, 196, 226), (182, 216, 238), rng.random())
+    rx = rng.uniform(40, 50) if edge else rng.uniform(66, 82)
+    rocks = [make_rock(rng, S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15, rx, rx * 0.74,
+                       rng.uniform(-0.4, 0.4), rng.uniform(40, 52), 10, rng.uniform(8, 14), tone,
+                       points=8, jag=0.25, peak_offset=0.5)]
+    return draw_rocks(canvas, rng, rocks, strata=0.0, shadow=0.45)
+
+
 # Connected foliage is a raised surface over its painted footprint, not a set of
 # individually lit domes. Crowns are anchored on map vertices: every vertex has
 # one of two seeded colours (cornerColours in TerrainMaterials.cpp), and each
@@ -941,10 +999,11 @@ def render_glacier(rng, edge):
 # vertex. A cell's frame therefore depends only on its corner mask and its four
 # corner colours, and neighbouring frames agree wherever they meet, so large
 # patches continue without seams and without a periodic repeat.
-CONNECTED = ("hedge", "thicket", "cliffs", "glacier")
+MASS_SETS = ("icefall", "sandstone_benches", "obsidian_ridge", "granite_tors", "travertine_terraces")
+CONNECTED = ("hedge", "thicket", "cliffs", "glacier") + MASS_SETS
 # Connected sets whose edges stand on open ground ("connected_open"): a cliff's
 # rim and walls belong on the grass beside it, where foliage keeps a clear border.
-OPEN_EDGED = ("cliffs", "glacier")
+OPEN_EDGED = ("cliffs", "glacier") + MASS_SETS
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell
 BAND = 20                     # vertex crowns centre this close to a cell edge
@@ -975,6 +1034,21 @@ CANOPY_STYLE = {
 
 
 CONNECTED_FRAMES = 16 * CANOPY_VARIANTS + CANOPY_VARIANTS * (CANOPY_INTERIORS - 1)
+# Where an open-edged mass meets a different connected mass, each corner of a
+# cell is the mass's own (1), open ground (0) or the other mass (2), and the
+# edge pulls back from the other mass so the two stand apart across a valley
+# half a cell wide. Codes are base-3 corner states (TL, TR, BL, BR); only codes
+# with both an own and a foreign corner need frames ("connected_foreign").
+FOREIGN_CODES = [code for code in range(81)
+                 if any(code // 3 ** k % 3 == 1 for k in range(4)) and any(code // 3 ** k % 3 == 2 for k in range(4))]
+FOREIGN_FRAMES = len(FOREIGN_CODES) * CANOPY_VARIANTS
+
+
+def foreign_masks(code):
+    """(own mask, foreign mask) of a base-3 corner code."""
+    own = sum(1 << k for k in range(4) if code // 3 ** k % 3 == 1)
+    foreign = sum(1 << k for k in range(4) if code // 3 ** k % 3 == 2)
+    return own, foreign
 
 
 def connected_first(name):
@@ -986,33 +1060,70 @@ def connected_first(name):
 def connected_rise(name):
     """(HD rows above the cell, HD rise of the raised top) of a connected frame:
     cliffs stand taller than foliage."""
-    return (CLIFF_TOP, CLIFF_RAISE) if name in CLIFF_STYLES else (CANOPY_TOP, raise_of(name))
+    if name in CLIFF_STYLES:
+        return CLIFF_TOP, CLIFF_RAISE
+    if name in MASS_SETS:
+        return CLIFF_TOP, MASSES[name]["lift"]
+    return CANOPY_TOP, raise_of(name)
 
 
 def connected_size(name):
-    """HD size of a connected frame: rows above the cell, the cell, and as many
-    below it for the long shadow (canopies) or the cast shadow (cliffs)."""
+    """HD size of a connected frame: rows above the cell, the cell, and rows
+    below it for the long shadow (canopies) or the cast shadow (rock masses).
+    Rock frames are taller than 64 native, so the runtime keeps their bottom
+    16 native pixels below the cell and they grow upward (decorOffsetY)."""
+    if name in CLIFF_STYLES or name in MASS_SETS:
+        return CELL, CLIFF_TOP + CELL + CLIFF_BELOW
     return CELL, CELL + 2 * connected_rise(name)[0]
 
 
 def frame_count(name):
-    return FRAMES + (CONNECTED_FRAMES if name in CONNECTED else 0)
+    """Frames a set renders: objects, connected tiles, and valley tiles for open-edged sets."""
+    return FRAMES + (CONNECTED_FRAMES if name in CONNECTED else 0) + (FOREIGN_FRAMES if name in OPEN_EDGED else 0)
+
+
+# Sets numbered before valley tiles existed keep their frames; their valley
+# tiles sit in one block after FOREIGN_RETROFIT_AFTER instead, and later sets
+# follow that block, so adding a set never renumbers an existing frame.
+RETROFIT_FOREIGN = ("cliffs", "glacier")
+FOREIGN_RETROFIT_AFTER = "petrified_stumps"
+
+
+def block_size(name):
+    """Frames a set occupies in its own numbered block."""
+    retrofit = name in RETROFIT_FOREIGN
+    return frame_count(name) - (FOREIGN_FRAMES if retrofit else 0)
+
+
+def foreign_first(name):
+    if name in RETROFIT_FOREIGN:
+        return (first_frame(FOREIGN_RETROFIT_AFTER) + block_size(FOREIGN_RETROFIT_AFTER) +
+                RETROFIT_FOREIGN.index(name) * FOREIGN_FRAMES)
+    return connected_first(name) + CONNECTED_FRAMES
 
 
 def connected_frame(index):
-    """(mask, colours, interior) of a connected frame index past FRAMES.
+    """(mask, colours, interior, foreign mask) of a connected frame index past FRAMES.
 
     Mask-major frames with interior variant 0 come first, then the extra
-    interior variants of the filled mask, colour-major."""
+    interior variants of the filled mask, colour-major, then (open-edged sets)
+    the frames against another mass, code-major in FOREIGN_CODES order."""
     if index < 16 * CANOPY_VARIANTS:
-        return index // CANOPY_VARIANTS, index % CANOPY_VARIANTS, 0
+        return index // CANOPY_VARIANTS, index % CANOPY_VARIANTS, 0, 0
     index -= 16 * CANOPY_VARIANTS
-    return 15, index // (CANOPY_INTERIORS - 1), index % (CANOPY_INTERIORS - 1) + 1
+    if index < CANOPY_VARIANTS * (CANOPY_INTERIORS - 1):
+        return 15, index // (CANOPY_INTERIORS - 1), index % (CANOPY_INTERIORS - 1) + 1, 0
+    index -= CANOPY_VARIANTS * (CANOPY_INTERIORS - 1)
+    own, foreign = foreign_masks(FOREIGN_CODES[index // CANOPY_VARIANTS])
+    return own, index % CANOPY_VARIANTS, 0, foreign
 
 
 def frame_number(name, index):
-    return (first_frame(name) + index if index < FRAMES else
-            connected_first(name) + index - FRAMES)
+    if index < FRAMES:
+        return first_frame(name) + index
+    if index < FRAMES + CONNECTED_FRAMES:
+        return connected_first(name) + index - FRAMES
+    return foreign_first(name) + index - FRAMES - CONNECTED_FRAMES
 
 
 def runtime_hash(x, y, salt):
@@ -1230,10 +1341,15 @@ def canopy_surface(name, colours, interior):
     return image, heights
 
 
-@functools.lru_cache(maxsize=16)
-def canopy_field(mask):
-    """Bilinear corner field over the cell and halo, clamped to the cell edge."""
-    bits = [(mask >> k) & 1 for k in range(4)]
+@functools.lru_cache(maxsize=96)
+def canopy_field(mask, foreign=0):
+    """Bilinear corner field over the cell and halo, clamped to the cell edge.
+
+    A foreign corner (another mass) counts as -1, so along an edge to it the
+    field crosses one half a quarter of the way from the own corner: the two
+    masses' rims stand half a cell apart. Along an edge between own and open
+    corners only those two values count, as before, so frames still agree."""
+    bits = [1 if (mask >> k) & 1 else -1 if (foreign >> k) & 1 else 0 for k in range(4)]
     size = CELL + 2 * HALO
     values = []
     for y in range(size):
@@ -1241,7 +1357,7 @@ def canopy_field(mask):
         for x in range(size):
             u = clamp((x - HALO + 0.5) / CELL)
             value = lerp(lerp(bits[0], bits[1], u), lerp(bits[2], bits[3], u), v)
-            if mask in (6, 9):
+            if mask in (6, 9) and not foreign:
                 # Substantial joins avoid hourglass pinholes at diagonal corners.
                 value += 0.24 * math.sin(u * math.pi) ** 2 * math.sin(v * math.pi) ** 2
             values.append(int(clamp(value) * 255))
@@ -1352,17 +1468,21 @@ def render_connected(name, mask, colours, interior=0):
 
 # Cliffs use the connected corner-mask layout of hedge and thicket, but they are
 # a raised block of rock rather than foliage: a craggy plateau split by joints,
-# standing twice the height of foliage, whose exposed fronts drop as fractured
-# walls into a long shadow. Frames are 32x64 native: CLIFF_TOP rows above the
-# cell hold the raised plateau.
+# standing well above foliage, whose exposed fronts drop as fractured walls into
+# a long shadow. Frames are 32x68 native: CLIFF_TOP rows above the cell hold the
+# raised plateau and CLIFF_BELOW rows below it the shadow.
 #
 # The plateau has no discrete objects to repeat. Each vertex colour owns a patch
 # of noise fields, and a cell blends the patches of its four corners with
 # bilinear weights, so along a shared edge only the edge's two vertices count and
 # neighbouring frames agree exactly. Filled cells add a seeded interior patch
 # whose weight vanishes at the cell edge.
-CLIFF_TOP = 64
-CLIFF_RAISE = 48
+CLIFF_TOP = 80               # frame rows above the cell: the raised top (20 native)
+CLIFF_BELOW = 64             # frame rows below it, for the contact shadow (16 native)
+# Every rock-like mass stands this many HD rows above its footprint (20 native),
+# which is also the runtime's terrace rise (TerrainVisual::DecorTierRise), so a
+# terrace's wall reaches the terrace below.
+CLIFF_RAISE = 80
 CLIFF_PATCH = 2 * (CELL + HALO)
 CLIFF_FACETS = 9              # wall facets across the range of the column field
 CLIFF_SHELVES = 3             # weathered beds across the range of the crag field
@@ -1715,14 +1835,14 @@ def ice_face(style, base, shade, t, c, g, band):
     return tuple(int(clamp(v, 0, 255)) for v in colour)
 
 
-def render_cliff(name, mask, colours, interior=0):
+def render_cliff(name, mask, colours, interior=0, foreign=0):
     """A 32x64 native frame: contact shadow, fractured wall, then the plateau.
 
     The same ownership rules as render_connected: the frame draws the rock whose
     footprint lies in its cell, and the next row's plateau covers this row's
     wall wherever the cliff continues.
     """
-    frame = Image.new("RGBA", (CELL, CELL + 2 * CLIFF_TOP))
+    frame = Image.new("RGBA", (CELL, CLIFF_TOP + CELL + CLIFF_BELOW))
     if not mask:
         return frame
     style = CLIFF_STYLES[name]
@@ -1731,7 +1851,7 @@ def render_cliff(name, mask, colours, interior=0):
     # continuous broken line rather than single spikes.
     smooth = heights.filter(ImageFilter.GaussianBlur(3))
     bumps = smooth.point(lambda v: int(smoothstep(0.35 * 255, 0.70 * 255, v) * 255 * style["amplitude"]))
-    raw = ImageChops.add(canopy_field(mask), bumps).filter(ImageFilter.GaussianBlur(2.0))
+    raw = ImageChops.add(canopy_field(mask, foreign), bumps).filter(ImageFilter.GaussianBlur(2.0))
     coverage = raw.point(lambda v: int(smoothstep(0.50 * 255, 0.54 * 255, v) * 255))
     cell = (HALO, HALO, HALO + CELL, HALO + CELL)
     own = Image.new("L", coverage.size)
@@ -1828,6 +1948,289 @@ def render_cliff(name, mask, colours, interior=0):
     return frame
 
 
+# A glacier icefall uses the cliffs' layout and wall construction, in ice: a
+# wind-packed snow surface with patches of scoured blue ice, cut by crevasses
+# that run across the flow, standing higher than the cliffs on sheer, fluted
+# blue walls. Each crevasse follows a horizontal cell edge: its offset and
+# width at a vertex depend only on that vertex's colour, and its course and
+# opening between two vertices only on the colours of the edge's ends, so the
+# cells above and below the edge draw the same crack and it runs on from cell
+# to cell across the whole patch, opening and pinching out as it goes.
+ICEFALL_RAISE = CLIFF_RAISE   # HD rows the snow surface stands above its footprint (20 native)
+ICEFALL_STYLE = dict(
+    snow=((0.0, (196, 210, 230)), (0.45, (226, 234, 246)), (1.0, (246, 250, 254))),
+    ice=((0.0, (104, 164, 208)), (1.0, (150, 202, 232))),
+    crevasse=((0.0, (150, 196, 226)), (0.45, (64, 118, 176)), (1.0, (22, 52, 100))),
+    # Walls: deep blue at the foot, paler toward the lip, then a rind of snow.
+    wall=((0.0, (34, 78, 136)), (0.55, (84, 146, 196)), (0.9, (160, 206, 232)), (1.0, (232, 242, 250))),
+    amplitude=0.18,
+)
+
+
+def stretched_patch(rng, cells_x, cells_y, size=CLIFF_PATCH):
+    """Smooth value noise in 0..1, with more lattice cells down than across."""
+    lattice = Image.new("L", (cells_x + 3, cells_y + 3))
+    lattice.putdata([rng.randrange(256) for _ in range((cells_x + 3) * (cells_y + 3))])
+    sx, sy = size / cells_x, size / cells_y
+    big = lattice.resize((int(sx * (cells_x + 3)), int(sy * (cells_y + 3))), Image.Resampling.BICUBIC)
+    data = big.crop((int(sx), int(sy), int(sx) + size, int(sy) + size)).getdata()
+    return [v / 255 for v in data]
+
+
+@functools.lru_cache(maxsize=4)
+def icefall_patch(colour):
+    """(tone, scour, crevasse, opening, grain) noise of one vertex colour."""
+    rng = random.Random(fnv1a32(f"icefall-patch:{colour}"))
+    return (octaves(rng, 2, 3), octaves(rng, 3, 2), stretched_patch(rng, 2, 3),
+            octaves(rng, 3, 2), stretched_patch(rng, 5, 26))
+
+
+@functools.lru_cache(maxsize=8)
+def icefall_detail(interior):
+    """The same fields wholly inside a filled cell, one set per interior variant."""
+    rng = random.Random(fnv1a32(f"icefall-interior:{interior}"))
+    return (octaves(rng, 1, 3, CELL), octaves(rng, 2, 2, CELL), stretched_patch(rng, 1, 2, CELL),
+            octaves(rng, 2, 2, CELL), stretched_patch(rng, 3, 13, CELL))
+
+
+ICEFALL_CRACK_OFFSET = (-38, 30)    # HD rows a crevasse sits from the edge at a vertex of each colour
+ICEFALL_CRACK_WIDTH = (1.0, 8.0)     # its half width there: a snow bridge, or gaping
+
+
+@functools.lru_cache(maxsize=4)
+def icefall_crack_shape(first, second):
+    """(harmonics, swell) of the crevasse between two vertex colours: terms
+    that vanish at both vertices, so only the vertex values meet there. The
+    harmonics fall off quickly, giving a jagged course rather than a wave."""
+    rng = random.Random(fnv1a32(f"icefall-crack:{first}:{second}"))
+    harmonics = [(k, rng.uniform(-1, 1) * 12 / k ** 1.3) for k in range(1, 9)]
+    # A negative swell pinches the crack shut between the two vertices.
+    return harmonics, rng.uniform(-11, 7)
+
+
+def icefall_crack(first, second, t):
+    """(row offset, half width) of the crevasse a fraction t along an edge."""
+    harmonics, swell = icefall_crack_shape(first, second)
+    ease = t * t * (3 - 2 * t)
+    hump = math.sin(math.pi * t)
+    offset = lerp(ICEFALL_CRACK_OFFSET[first], ICEFALL_CRACK_OFFSET[second], ease) \
+        + sum(a * math.sin(k * math.pi * t) for k, a in harmonics)
+    # Jagged walls: the width wavers with the higher harmonics too.
+    jitter = sum(a * math.sin((k + 3) * math.pi * t) for k, a in harmonics[:4]) * 0.15
+    width = lerp(ICEFALL_CRACK_WIDTH[first], ICEFALL_CRACK_WIDTH[second], ease) + swell * hump + jitter * hump
+    # Slivers narrower than this close up, so a pinched crack ends cleanly.
+    return offset, width if width > 2.0 else 0.0
+
+
+@functools.lru_cache(maxsize=48)
+def icefall_surface(colours, interior, filled):
+    """Lit surface colour, outline heights and wall streaks of the cell plus halo."""
+    style = ICEFALL_STYLE
+    size = CELL + 2 * HALO
+    patches = [icefall_patch((colours >> k) & 1) for k in range(4)]
+    detail = icefall_detail(interior) if filled else None
+    centre = CLIFF_PATCH // 2
+    count = len(patches[0])
+    fields = [[0.0] * (size * size) for _ in range(count)]
+    for y in range(size):
+        v = clamp((y - HALO + 0.5) / CELL)
+        for x in range(size):
+            u = clamp((x - HALO + 0.5) / CELL)
+            weights = [(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v]
+            samples = [(y - HALO - (CELL if k & 2 else 0) + centre) * CLIFF_PATCH
+                       + x - HALO - (CELL if k & 1 else 0) + centre for k in range(4)]
+            inside = 0.0
+            if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
+                # Zero at the cell edge, so neighbours never see it.
+                inside = 0.35 * smoothstep(0.0, 0.32, min(u, 1 - u, v, 1 - v))
+                weights = [w * (1 - inside) for w in weights]
+            norm = math.sqrt(sum(w * w for w in weights) + inside * inside)
+            i = y * size + x
+            j = (y - HALO) * CELL + x - HALO
+            for f in range(count):
+                total = sum(w * (patches[k][f][samples[k]] - 0.5) for k, w in enumerate(weights) if w)
+                if inside:
+                    total += inside * (detail[f][j] - 0.5)
+                fields[f][i] = clamp(0.5 + total / norm)
+    tone, scour, _, _, grain = fields
+    # Crevasses of the cell's top and bottom edges, the only two it can see.
+    bit = lambda k: (colours >> k) & 1
+    crack = [0.0] * (size * size)
+    near = [0.0] * (size * size)      # 1 under the near (south) lip, 0 on the far wall
+    for edge_row, first, second in ((HALO, bit(0), bit(1)), (HALO + CELL, bit(2), bit(3))):
+        for x in range(size):
+            offset, width = icefall_crack(first, second, clamp((x - HALO + 0.5) / CELL))
+            if width < 0.5:
+                continue
+            centre = edge_row + offset
+            for y in range(max(0, int(centre - width - 2)), min(size, int(centre + width + 3))):
+                core = clamp(1 - abs(y + 0.5 - centre) / width) ** 0.6
+                i = y * size + x
+                if core > crack[i]:
+                    crack[i] = core
+                    near[i] = smoothstep(-0.3, 0.6, (y + 0.5 - centre) / width)
+    relief = [0.5 + 0.10 * (t - 0.5) + 0.04 * (g - 0.5) - 0.42 * k for t, g, k in zip(tone, grain, crack)]
+    lx, ly, lz = CANOPY_LIGHT
+    norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
+    flat = lz / norm_l
+    image = Image.new("RGB", (size, size))
+    pix = image.load()
+    for y in range(size):
+        for x in range(size):
+            i = y * size + x
+            gx = (relief[y * size + min(x + 1, size - 1)] - relief[y * size + max(x - 1, 0)]) * 12
+            gy = (relief[min(y + 1, size - 1) * size + x] - relief[max(y - 1, 0) * size + x]) * 12
+            lam = (-gx * lx - gy * ly + lz) / (math.sqrt(gx * gx + gy * gy + 1) * norm_l)
+            # Wind-packed snow with faint sastrugi; scoured ridges bare blue ice.
+            colour = ramp(style["snow"], clamp(0.5 + 0.7 * (tone[i] - 0.5) + 0.25 * (grain[i] - 0.5)))
+            bare = smoothstep(0.605, 0.635, scour[i] + 0.10 * (grain[i] - 0.5))
+            if bare:
+                colour = mix3(colour, ramp(style["ice"], tone[i]), 0.85 * bare)
+            if crack[i]:
+                # The far wall faces the viewer and catches skylight; the gap
+                # under the near lip falls into deep blue shadow.
+                inner = ramp(style["crevasse"], clamp(crack[i] * (0.55 + 0.6 * near[i])))
+                colour = mix3(colour, inner, smoothstep(0.0, 0.2, crack[i]))
+            shade = clamp(0.92 + 0.9 * (lam - flat), 0.45, 1.12)
+            pix[x, y] = tuple(int(clamp(c * shade, 0, 255)) for c in colour)
+    # The outline follows the snow's broad swell, not the crevasses: a crack
+    # meeting the rim shows on the wall below it instead.
+    heights = Image.new("L", (size, size))
+    heights.putdata([int(clamp(0.22 + 0.62 * t) * 255) for t in tone])
+    # Wall streaks: fluting from the fine grain, and crevasses carried down the face.
+    marks = Image.new("L", (size, size))
+    marks.putdata([int(clamp(0.5 + 0.9 * (g - 0.5) - 0.5 * k) * 255) for g, k in zip(grain, crack)])
+    return image, heights, marks.filter(ImageFilter.GaussianBlur((0.4, 30))), marks.filter(ImageFilter.GaussianBlur(1.0))
+
+
+def icefall_wall(t, c, g):
+    """Fluting: vertical runnels from the column field over blue that deepens
+    toward the foot, with a snow rind at the lip."""
+    colour = ramp(ICEFALL_STYLE["wall"], clamp(t * 0.96 + 0.08 * (c - 0.5)))
+    shade = clamp(0.82 + 0.42 * (c - 0.5) + 0.10 * (g - 0.5))
+    if t > 0.94:
+        shade = max(shade, 0.98)
+    return tuple(int(clamp(colour[k] * shade, 0, 255)) for k in range(3))
+
+
+# The connected Barriers masses beside cliffs: each names its surface (the lit
+# top, outline heights and wall marks over the cell and halo), its wall colour
+# at a height fraction, how far it stands above its footprint (HD rows; 64 at
+# most in a 32x64 frame), how much its outline swells, its contact-shadow tint
+# and the colours of its lit lip and its far, shaded rim.
+MASSES = {
+    "icefall": dict(surface=lambda c, i, f: icefall_surface(c, i, f), wall=icefall_wall, lift=ICEFALL_RAISE,
+                    amplitude=0.18, shadow=(18, 28, 52), lip=(252, 254, 255), far=(120, 160, 206)),
+}
+
+
+def _register_masses():
+    import terrain_masses
+    looks = {
+        "sandstone_benches": dict(lift=CLIFF_RAISE, amplitude=0.20, shadow=(42, 26, 16), lip=(246, 226, 190), far=(150, 104, 70)),
+        "obsidian_ridge": dict(lift=CLIFF_RAISE, amplitude=0.24, shadow=(10, 10, 16), lip=(150, 156, 176), far=(20, 20, 26)),
+        "granite_tors": dict(lift=CLIFF_RAISE, amplitude=0.18, shadow=(20, 22, 18), lip=(214, 208, 194), far=(88, 84, 76)),
+        "travertine_terraces": dict(lift=CLIFF_RAISE, amplitude=0.20, shadow=(48, 40, 28), lip=(248, 244, 234), far=(170, 150, 118)),
+    }
+    for name, (surface, wall) in terrain_masses.SURFACES.items():
+        MASSES[name] = dict(surface=surface, wall=wall, **looks[name])
+
+
+_register_masses()
+
+
+def render_mass(name, mask, colours, interior=0, foreign=0):
+    """A 32x64 native frame of a connected mass: contact shadow, wall, then the top.
+
+    The same ownership rules as render_cliff: the frame draws the mass whose
+    footprint lies in its cell, and the next row's top covers this row's wall
+    wherever the mass continues. Corners of another mass (`foreign`) pull the
+    rim back a quarter of the cell, leaving a valley between the two.
+    """
+    frame = Image.new("RGBA", (CELL, CLIFF_TOP + CELL + CLIFF_BELOW))
+    if not mask:
+        return frame
+    look = MASSES[name]
+    lift = look["lift"]
+    surface, heights, columns, rough = surface_cached(name, colours, interior, mask == 15)
+    smooth = heights.filter(ImageFilter.GaussianBlur(3))
+    bumps = smooth.point(lambda v: int(smoothstep(0.35 * 255, 0.70 * 255, v) * 255 * look["amplitude"]))
+    raw = ImageChops.add(canopy_field(mask, foreign), bumps).filter(ImageFilter.GaussianBlur(2.0))
+    coverage = raw.point(lambda v: int(smoothstep(0.50 * 255, 0.54 * 255, v) * 255))
+    cell = (HALO, HALO, HALO + CELL, HALO + CELL)
+    own = Image.new("L", coverage.size)
+    own.paste(coverage.crop(cell), cell[:2])
+
+    # Contact shadow, shifted less than the halo so it continues across cell edges.
+    shadow = ImageChops.lighter(ImageChops.lighter(
+        shifted(coverage, 2, 5).filter(ImageFilter.GaussianBlur(1.5)).point(lambda v: int(v * 0.62)),
+        shifted(coverage, 10, 13).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.50))),
+        shifted(coverage, 16, 20).filter(ImageFilter.GaussianBlur(5)).point(lambda v: int(v * 0.36)))
+    layer = Image.new("RGBA", (CELL, CELL), look["shadow"] + (255,))
+    layer.putalpha(shadow.crop(cell))
+    frame.alpha_composite(layer, (0, CLIFF_TOP))
+
+    # Wall: how far above the foot of the face each pixel stands, carried past
+    # the cell edge as for cliffs, so a continuing face has no false foot.
+    wall_alpha, wall_height = Image.new("L", own.size), Image.new("L", own.size)
+    width, height = own.size
+    solid = Image.new("L", (width, height + lift))
+    solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, 0))
+    solid.paste(solid.crop((0, height - 1, width, height)).resize((width, lift)), (0, height))
+    for d in range(lift + 1):
+        wall_alpha = ImageChops.lighter(wall_alpha, shifted(own, 0, -d))
+        wall_height = ImageChops.lighter(
+            wall_height, solid.crop((0, d, width, d + height)).point(lambda v, d=d: v and int(d * 255 / lift)))
+    column, grit, height_px = columns.load(), rough.load(), wall_height.load()
+    wall = Image.new("RGB", own.size)
+    wp = wall.load()
+    wall_colour = look["wall"]
+    for y in range(height):
+        yy = min(y + lift, height - 1)
+        for x in range(width):
+            wp[x, y] = wall_colour(height_px[x, y] / 255, column[x, yy] / 255, grit[x, yy] / 255)
+    region = (HALO, HALO - lift, HALO + CELL, HALO + CELL)
+    layer = wall.crop(region).convert("RGBA")
+    layer.putalpha(wall_alpha.crop(region))
+    frame.alpha_composite(layer, (0, CLIFF_TOP - lift))
+
+    # Broad light over the top, rising toward the rims that face the light.
+    dome = coverage.filter(ImageFilter.GaussianBlur(14)).load()
+    shade = Image.new("L", coverage.size)
+    sh = shade.load()
+    lx, ly, _ = CANOPY_LIGHT
+    for y in range(coverage.size[1]):
+        for x in range(coverage.size[0]):
+            gx = dome[min(x + 2, coverage.size[0] - 1), y] - dome[max(x - 2, 0), y]
+            gy = dome[x, min(y + 2, coverage.size[1] - 1)] - dome[x, max(y - 2, 0)]
+            sh[x, y] = int(clamp(0.5 + (gx * lx + gy * ly) / 255 * 1.4) * 255)
+    lighter = surface.point(lambda v: min(255, int(v * 1.06 + 4)))
+    darker = surface.point(lambda v: int(v * 0.86))
+    top = Image.composite(lighter, Image.composite(surface, darker, shade.point(lambda v: min(255, v * 2))),
+                          shade.point(lambda v: max(0, v * 2 - 255)))
+    # A crisp lit lip toward the light; the far rims fall into shade.
+    rim = coverage.filter(ImageFilter.GaussianBlur(0.8))
+    lit = ImageChops.lighter(ImageChops.subtract(rim, shifted(rim, 2, 2)),
+                             ImageChops.subtract(rim, shifted(rim, 0, -2))).point(lambda v: min(255, v * 2))
+    dark = ImageChops.subtract(rim, shifted(rim, -4, 0)).point(lambda v: min(255, v * 2))
+    top = Image.composite(Image.new("RGB", top.size, look["lip"]), top, lit.point(lambda v: v * 3 // 4))
+    top = Image.composite(Image.composite(Image.new("RGB", top.size, look["far"]), surface,
+                                          Image.new("L", top.size, 150)), top, dark)
+    layer = top.crop(cell).convert("RGBA")
+    layer.putalpha(own.crop(cell))
+    frame.alpha_composite(layer, (0, CLIFF_TOP - lift))
+    return frame
+
+
+@functools.lru_cache(maxsize=96)
+def surface_cached(name, colours, interior, filled):
+    return MASSES[name]["surface"](colours, interior, filled)
+
+
+def render_icefall(mask, colours, interior=0, foreign=0):
+    return render_mass("icefall", mask, colours, interior, foreign)
+
+
 # --------------------------------------------------------------------------
 # Frames, provenance and CLI
 # --------------------------------------------------------------------------
@@ -1848,8 +2251,10 @@ def render_frame(name, index):
         hd = SPECS[name].render(rng, index >= FULL).image()
     elif name in CLIFF_STYLES:
         hd = render_cliff(name, *connected_frame(index - FRAMES))
+    elif name in MASS_SETS:
+        hd = render_mass(name, *connected_frame(index - FRAMES))
     else:
-        hd = render_connected(name, *connected_frame(index - FRAMES))
+        hd = render_connected(name, *connected_frame(index - FRAMES)[:3])
     native = hd.resize((hd.width // SCALE, hd.height // SCALE), Image.Resampling.BOX)
     return native, hd
 
@@ -1879,7 +2284,9 @@ def synthesize(names, jobs=None):
     return out
 
 
-ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop", "cliffs", "glacier"]
+ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop", "cliffs", "glacier", "icefall",
+         "sandstone_benches", "obsidian_ridge", "granite_tors", "travertine_terraces",
+         "penitentes", "termite_mounds", "hoodoos", "petrified_stumps"]
 assert sorted(ORDER) == sorted(SPECS)
 # The first sets were numbered before any connected frames, which follow them;
 # later sets append their object and connected frames together, so adding a set
@@ -1891,8 +2298,12 @@ def first_frame(name):
     k = ORDER.index(name)
     if k < LEGACY_SETS:
         return k * FRAMES
-    return (LEGACY_SETS * FRAMES + 2 * CONNECTED_FRAMES +
-            sum(frame_count(other) for other in ORDER[LEGACY_SETS:k]))
+    total = LEGACY_SETS * FRAMES + 2 * CONNECTED_FRAMES
+    for other in ORDER[LEGACY_SETS:k]:
+        total += block_size(other)
+        if other == FOREIGN_RETROFIT_AFTER:
+            total += len(RETROFIT_FOREIGN) * FOREIGN_FRAMES
+    return total
 
 
 def generator_sha():
@@ -1928,6 +2339,8 @@ def write(results, root):
             "connected": list(range(connected_first(name), connected_first(name) + 16 * CANOPY_VARIANTS)) if name in CONNECTED else [],
             "connected_interior": list(range(connected_first(name) + 16 * CANOPY_VARIANTS,
                                              connected_first(name) + CONNECTED_FRAMES)) if name in CONNECTED else [],
+            "connected_foreign": list(range(foreign_first(name), foreign_first(name) + FOREIGN_FRAMES))
+            if name in OPEN_EDGED else [],
             "native_size": native_size(name),
             "runtime_sha256": hashes,
             "highres_sha256": hd_hashes,
@@ -1976,8 +2389,14 @@ def write_catalog(root):
             material["decor"]["connected_corners"] = True
             if material["key"] in OPEN_EDGED:
                 material["decor"]["connected_open"] = True
+                first = foreign_first(material["key"])
+                material["decor"]["connected_foreign"] = list(range(first, first + FOREIGN_FRAMES))
+                # Rock-like masses terrace toward the middle of a large patch.
+                material["decor"]["connected_tiers"] = True
             else:
                 material["decor"].pop("connected_open", None)
+                material["decor"].pop("connected_foreign", None)
+                material["decor"].pop("connected_tiers", None)
     terrain_catalog.save(root / "content", document)
 
 

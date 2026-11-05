@@ -51,7 +51,9 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
-			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
+			tieredDecor |= m.decor.connectedTiers;
+			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
+				 m.decor.connectedForeign})
 				for (int frame : frames)
 				{
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > MaximumDecorFrame ||
@@ -61,6 +63,10 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 					reach.include(decor->getW(frame), decor->getH(frame));
 				}
 			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
+			// Terraces draw the connected frames up to MaxDecorTiers rises higher.
+			if (m.decor.connectedTiers && !m.decor.connected.empty())
+				reach.up = std::max(reach.up, decorOffsetY(decor->getH(m.decor.connected.front())) +
+					MaxDecorTiers * DecorTierRise);
             sharedDecorSprite = decor;
 		}
 		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
@@ -541,49 +547,86 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
             return found->second;
     return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
 }
+// The kind of decor a material draws: 0 connected masses that stand on open
+// ground, 1 connected foliage, 2 other obstacles, 3 none.
 unsigned Compositor::decorSlot(MaterialId id) const
 {
 	const auto &decor = definitions.materials[id].decor;
 	if (!decorSprites[id] || decor.full.empty())
-		return DecorSlots;
+		return 3;
 	if (decor.connected.empty())
 		return 2;
 	return decor.connectedOpen ? 0 : 1;
 }
-std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y) const
+std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y,
+	const TierField *tiers) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
 	std::array<DecorLayer, DecorSlots> layers{};
 	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
-	std::array<unsigned, 4> slots;
+	std::array<unsigned, 4> kinds;
 	bool openGround = false;
 	for (unsigned k = 0; k < corners.size(); ++k)
 	{
 		materials[k] = materialFor(map, corners[k]);
-		slots[k] = decorSlot(materials[k]);
-		openGround |= slots[k] == DecorSlots;
+		kinds[k] = decorSlot(materials[k]);
+		openGround |= kinds[k] == 3;
 	}
+	if (std::all_of(kinds.begin(), kinds.end(), [](unsigned kind) { return kind == 3; }))
+		return layers;
+	const unsigned colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
+	// Masses on open ground: each distinct one draws its own corners and stands
+	// back from every other connected corner. The mass with more north corners
+	// draws first (then the larger share, then the lower id), so the southern
+	// one's raised top and wall stand in front.
+	std::array<MaterialId, 4> masses{};
+	unsigned distinct = 0;
+	for (unsigned k = 0; k < 4; ++k)
+		if (kinds[k] == 0 && std::find(masses.begin(), masses.begin() + distinct, materials[k]) == masses.begin() + distinct)
+			masses[distinct++] = materials[k];
+	const auto rank = [&](MaterialId id) {
+		unsigned north = 0, all = 0;
+		for (unsigned k = 0; k < 4; ++k)
+			if (materials[k] == id)
+				north += k < 2, ++all;
+		return std::tuple(north, all);
+	};
+	std::sort(masses.begin(), masses.begin() + distinct, [&](MaterialId a, MaterialId b) {
+		const auto ra = rank(a), rb = rank(b);
+		return ra != rb ? ra > rb : a < b;
+	});
+	for (unsigned m = 0; m < std::min(distinct, 2u); ++m)
+	{
+		const auto id = masses[m];
+		unsigned own = 0, foreign = 0, count = 0;
+		for (unsigned k = 0; k < 4; ++k)
+			if (materials[k] == id)
+				own |= 1u << k, ++count;
+			else if (kinds[k] < 2)
+				foreign |= 1u << k;
+		int frame = foreign ? definitions.decorForeignFrame(id, own, foreign, colours) : -1;
+		if (frame < 0)
+			frame = definitions.decorFrame(id, x, y, count < 4, map.terrainSeed(), own, colours);
+		if (frame >= 0)
+			layers[m] = {decorSprites[id], frame};
+	}
+	// Foliage and other obstacles, as before: one material per slot by presentation hashing.
 	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
 	// borders a three-to-one split. Presentation hashing never consumes game RNG.
 	const unsigned pick = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
-	unsigned colours = 0;
-	bool coloured = false;
-	for (unsigned slot = 0; slot < DecorSlots; ++slot)
+	for (unsigned kind = 1; kind <= 2 && !openGround; ++kind)
 	{
-		// Only decor that draws its edge on open ground stands beside it.
-		if (slot > 0 && openGround)
-			break;
 		unsigned k = pick, tries = 0;
-		while (slots[k] != slot && tries++ < 4)
+		while (kinds[k] != kind && tries++ < 4)
 			k = (k + 1) & 3u;
-		if (slots[k] != slot)
+		if (kinds[k] != kind)
 			continue;
 		// Obstacle clusters sit in the middle of the cell rather than on their
-		// corners: where an open-ground plateau holds most of the cell, one
-		// would stand on top of it, so the plateau's edge is drawn alone.
-		if (slot == 2 && std::count(slots.begin(), slots.end(), 0u) > std::count(slots.begin(), slots.end(), 2u))
+		// corners: where an open-ground mass holds most of the cell, one would
+		// stand on top of it, so the mass's edge is drawn alone.
+		if (kind == 2 && std::count(kinds.begin(), kinds.end(), 0u) > std::count(kinds.begin(), kinds.end(), 2u))
 			continue;
 		const auto chosen = materials[k];
 		const auto &decor = definitions.materials[chosen].decor;
@@ -591,21 +634,109 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		for (unsigned c = 0; c < 4; ++c)
 		{
 			count += materials[c] == chosen;
-			// Connected decor joins every corner of its own slot, so hedge and
-			// thicket form one crown, but meets other slots as an edge.
-			if (materials[c] == chosen || (!decor.connected.empty() && slots[c] == slot))
+			// Connected foliage joins every foliage corner, so hedge and thicket
+			// form one crown, but meets other kinds as an edge.
+			if (materials[c] == chosen || (!decor.connected.empty() && kinds[c] == kind))
 				mask |= 1u << c;
-		}
-		if (!coloured)
-		{
-			colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
-			coloured = true;
 		}
 		const int frame = definitions.decorFrame(chosen, x, y, count < 4, map.terrainSeed(), mask, colours);
 		if (frame >= 0)
-			layers[slot] = {decorSprites[chosen], frame};
+			layers[kind + 1] = {decorSprites[chosen], frame};
 	}
+	// Terraces: nested, so the first missing one ends the stack.
+	if (tiers && distinct)
+		for (int tier = 1; tier <= MaxDecorTiers; ++tier)
+		{
+			const int frame = decorTierFrame(map, *tiers, x, y, tier);
+			if (frame < 0)
+				break;
+			layers[TierSlot + unsigned(tier - 1)] = {layers[0].sprite ? layers[0].sprite : sharedDecorSprite, frame};
+		}
 	return layers;
+}
+std::shared_ptr<const Compositor::TierField> Compositor::tierField(const SceneMap &map) const
+{
+	if (!tieredDecor)
+		return nullptr;
+	const int w = map.getW(), h = map.getH();
+	std::lock_guard lock(tierMutex);
+	if (tierCache && tierCache->revision == map.terrainRevision() && tierCache->registry == map.frozenTerrainRegistry().get() &&
+		tierCache->w == w && tierCache->h == h && tierCache->seed == map.terrainSeed())
+		return tierCache;
+	auto field = std::make_shared<TierField>();
+	field->revision = map.terrainRevision();
+	field->registry = map.frozenTerrainRegistry().get();
+	field->w = w;
+	field->h = h;
+	field->seed = map.terrainSeed();
+	// Chebyshev distance, in vertices, to the nearest vertex of another
+	// material, capped where the highest terrace needs no more: two raster
+	// passes each way, run twice so distances carry around the torus.
+	constexpr std::uint8_t cap = 2 * MaxDecorTiers + 2;
+	std::vector<MaterialId> material(std::size_t(w) * h);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			material[std::size_t(y) * w + x] = materialFor(map, map.vertexTerrainAt(x, y));
+	auto &depth = field->depth;
+	depth.assign(material.size(), 0);
+	const auto at = [&](int x, int y) { return std::size_t((y + h) % h) * w + std::size_t((x + w) % w); };
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const auto id = material[at(x, y)];
+			if (!definitions.materials[id].decor.connectedTiers)
+				continue;
+			bool edge = false;
+			for (int dy = -1; dy <= 1 && !edge; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					edge |= material[at(x + dx, y + dy)] != id;
+			depth[at(x, y)] = edge ? 0 : cap;
+		}
+	const auto relax = [&](int x, int y, int dx, int dy) {
+		auto &d = depth[at(x, y)];
+		d = std::min<std::uint8_t>(d, std::uint8_t(depth[at(x + dx, y + dy)] + 1));
+	};
+	for (int round = 0; round < 2; ++round)
+	{
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+				if (depth[at(x, y)])
+					relax(x, y, -1, 0), relax(x, y, -1, -1), relax(x, y, 0, -1), relax(x, y, 1, -1);
+		for (int y = h - 1; y >= 0; --y)
+			for (int x = w - 1; x >= 0; --x)
+				if (depth[at(x, y)])
+					relax(x, y, 1, 0), relax(x, y, 1, 1), relax(x, y, 0, 1), relax(x, y, -1, 1);
+	}
+	tierCache = field;
+	return tierCache;
+}
+int Compositor::decorTierFrame(const SceneMap &map, const TierField &field, int x, int y, int tier) const
+{
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	if (tier < 1 || tier > MaxDecorTiers || field.w != map.getW() || field.h != map.getH())
+		return -1;
+	// A vertex joins terrace k when it lies 2k vertices deep, or 2k+1 by a
+	// seeded per-vertex choice, so terraces wander like ledges rather than
+	// tracing rings around the patch; each terrace sits inside the one below.
+	const std::uint32_t salt = mapSeedSalt(map.terrainSeed()) ^ 0x7e55e5u;
+	unsigned mask = 0;
+	int deepest = -1;
+	for (unsigned k = 0; k < 4; ++k)
+	{
+		const unsigned vx = unsigned(x + int(k & 1)) & unsigned(map.getMaskW());
+		const unsigned vy = unsigned(y + int(k >> 1)) & unsigned(map.getMaskH());
+		const int need = 2 * tier + int(hash(vx, vy, salt) & 1u);
+		if (field.depth[std::size_t(vy) * field.w + vx] >= need)
+			mask |= 1u << k, deepest = int(k);
+	}
+	if (!mask)
+		return -1;
+	// A deep corner's neighbours share its material, so every terraced corner
+	// of the cell belongs to the same mass.
+	const auto material = materialFor(map, map.cellCorners(x, y)[unsigned(deepest)]);
+	return definitions.decorFrame(material, x, y, mask != 15, map.terrainSeed(), mask,
+		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 MaterialId Compositor::overlayMaterial(const SceneMap &map, int x, int y, bool &found) const
 {

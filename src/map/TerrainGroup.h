@@ -83,13 +83,13 @@ inline constexpr auto TERRAIN_GROUPS = []
 		paths.groundSpeedQ8 = 512;
 	}
 	{
-		// Boulders, hedges, thickets: impassable on the ground, stop projectiles.
+		// Barriers (stone pillars, hedge, thicket, cliffs): impassable on the ground, stop projectiles.
 		auto &obstacles =
 			define(TerrainGroup::Obstacles, "obstacles", "[terrain group obstacles]", true);
 		obstacles.projectileBlocks = true;
 	}
 	{
-		// Crags (rock spires, basalt columns): impassable on the ground, towers shoot over them.
+		// Outcrops (rock spires, basalt columns): impassable on the ground, towers shoot over them.
 		define(TerrainGroup::Ridges, "ridges", "[terrain group ridges]", true);
 	}
 	{

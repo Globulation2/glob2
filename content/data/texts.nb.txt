@@ -5734,6 +5734,24 @@ Frostvindmølle
 Arktisk tundramark
 [glacier]
 Isbre
+[icefall]
+Isfall
+[sandstone_benches]
+Sandsteinsbenker
+[obsidian_ridge]
+Obsidianrygg
+[granite_tors]
+Granittårn
+[travertine_terraces]
+Travertinterrasser
+[penitentes]
+Botsnø
+[termite_mounds]
+Termittuer
+[hoodoos]
+Jordpyramider
+[petrified_stumps]
+Forsteinede stubber
 [terrain group water]
 Vann
 [terrain group sand]

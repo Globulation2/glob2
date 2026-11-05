@@ -5734,6 +5734,24 @@ AI کی بنائی ہوئی نہیں
 قطبی ٹنڈرا کی زمین
 [glacier]
 گلیشیئر
+[icefall]
+برفانی آبشار
+[sandstone_benches]
+ریتلے پتھر کے چبوترے
+[obsidian_ridge]
+آبسیڈین کی چوٹی
+[granite_tors]
+گرینائٹ کی چٹانیں
+[travertine_terraces]
+ٹراورٹائن کے چبوترے
+[penitentes]
+برفانی نوکیں
+[termite_mounds]
+دیمک کے ٹیلے
+[hoodoos]
+ہوڈو ستون
+[petrified_stumps]
+پتھرائے ہوئے تنے
 [terrain group water]
 پانی
 [terrain group sand]

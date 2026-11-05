@@ -5758,6 +5758,24 @@ Molinet de gebre
 Sòl de tundra àrtica
 [glacier]
 Glacera
+[icefall]
+Cascada de gel
+[sandstone_benches]
+Bancals de gres
+[obsidian_ridge]
+Cresta d'obsidiana
+[granite_tors]
+Tors de granit
+[travertine_terraces]
+Terrasses de travertí
+[penitentes]
+Neus penitents
+[termite_mounds]
+Termiters
+[hoodoos]
+Xemeneies de fades
+[petrified_stumps]
+Soques petrificades
 [terrain group water]
 Aigua
 [terrain group sand]

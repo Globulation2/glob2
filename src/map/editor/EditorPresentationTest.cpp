@@ -171,7 +171,9 @@ TEST_SUITE("EditorPresentation")
 								 "wind_swept_snow", "weathered_sandstone", "windy_sand_dune", "hardpan",
 								 "tundra", "volcanic_ash", "glacier_ice", "overgrown_road", "laterite", "cliffs",
 								 "molten_lava_pool", "slate_ashlar", "basalt_causeway", "scoria_blocks",
-								 "rime_ashlar", "moonstone_lozenge", "frost_pinwheel", "arctic_tundra", "glacier"})
+								 "rime_ashlar", "moonstone_lozenge", "frost_pinwheel", "arctic_tundra", "glacier",
+								 "icefall", "sandstone_benches", "obsidian_ridge", "granite_tors", "travertine_terraces",
+								 "penitentes", "termite_mounds", "hoodoos", "petrified_stumps"})
 		{
 			CAPTURE(terrain);
 			editor.performAction(std::string("select terrain ") + terrain);

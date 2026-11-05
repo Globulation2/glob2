@@ -5637,7 +5637,7 @@ Rice
 [Fish]
 Fish
 [boulders]
-Boulders
+Stone pillars
 [hedge]
 Hedge
 [thicket]
@@ -5736,6 +5736,24 @@ Frost pinwheel
 Arctic tundra
 [glacier]
 Glacier
+[icefall]
+Icefall
+[sandstone_benches]
+Sandstone benches
+[obsidian_ridge]
+Obsidian ridge
+[granite_tors]
+Granite tors
+[travertine_terraces]
+Travertine terraces
+[penitentes]
+Penitentes
+[termite_mounds]
+Termite mounds
+[hoodoos]
+Hoodoos
+[petrified_stumps]
+Petrified stumps
 [terrain group water]
 Water
 [terrain group sand]
@@ -5747,9 +5765,9 @@ Snow and ice
 [terrain group paths]
 Paths
 [terrain group obstacles]
-Obstacles
+Barriers
 [terrain group ridges]
-Crags
+Outcrops
 [terrain group barren]
 Barren ground
 [terrain group rough]

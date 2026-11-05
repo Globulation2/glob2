@@ -250,13 +250,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge", "connected", "connected_interior"})
+			for (const auto *key : {"full", "edge", "connected", "connected_interior", "connected_foreign"})
 			{
 				const std::string name = key;
 				if (name.starts_with("connected") && !d.contains(key)) continue;
 				auto &frames = name == "full" ? v.decor.full : name == "edge" ? v.decor.edge :
-					name == "connected" ? v.decor.connected : v.decor.connectedInterior;
-				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
+					name == "connected" ? v.decor.connected : name == "connected_interior" ?
+					v.decor.connectedInterior : v.decor.connectedForeign;
+				const std::size_t limit = name == "connected_foreign" ? ForeignCodes * 16 : 256;
+				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= limit,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
 					frames.push_back(integerInRange(frame, 0, 65535));
@@ -277,6 +279,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				require(!v.decor.connectedOpen || !v.decor.connected.empty(),
 					"connected_open needs connected frames");
 			}
+			if (d.contains("connected_tiers"))
+			{
+				require(d.at("connected_tiers").is_boolean(), "connected_tiers must be a boolean");
+				v.decor.connectedTiers = d.at("connected_tiers").get<bool>();
+				require(!v.decor.connectedTiers || v.decor.connectedOpen, "connected_tiers needs connected_open");
+			}
+			require(v.decor.connectedForeign.empty() ||
+				(v.decor.connectedCorners && v.decor.connectedOpen && v.decor.connectedForeign.size() == ForeignCodes * 16),
+				"connected_foreign needs connected_corners, connected_open and 16 colours per code");
 			require(v.decor.connectedInterior.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
 				"connected_interior needs connected_corners and equal variants per colour");
@@ -448,6 +459,32 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 		return -1;
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
+}
+int foreignCodeIndex(unsigned ownMask, unsigned foreignMask)
+{
+	if (!(ownMask & 15u) || !(foreignMask & 15u) || (ownMask & foreignMask))
+		return -1;
+	unsigned code = 0, scale = 1;
+	for (unsigned k = 0; k < 4; ++k, scale *= 3)
+		code += scale * (ownMask >> k & 1u ? 1u : foreignMask >> k & 1u ? 2u : 0u);
+	// Rank among the codes that have both an own and a foreign corner.
+	int index = 0;
+	for (unsigned c = 0; c < code; ++c)
+	{
+		bool own = false, foreign = false;
+		for (unsigned k = 0, s = 1; k < 4; ++k, s *= 3)
+			own |= c / s % 3 == 1, foreign |= c / s % 3 == 2;
+		index += own && foreign;
+	}
+	return index;
+}
+int Catalog::decorForeignFrame(MaterialId id, unsigned ownMask, unsigned foreignMask, unsigned colours) const
+{
+	const auto &d = materials[id].decor;
+	const int code = foreignCodeIndex(ownMask, foreignMask);
+	if (d.connectedForeign.empty() || code < 0)
+		return -1;
+	return d.connectedForeign[unsigned(code) * 16 + (colours & 15u)];
 }
 int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t time, std::uint32_t seed, bool *animated) const
 {

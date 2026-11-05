@@ -5758,6 +5758,24 @@ Frosta ventoturnilo
 Arkta tundra grundo
 [glacier]
 Glaĉero
+[icefall]
+Glaciofalo
+[sandstone_benches]
+Grejsaj benkoj
+[obsidian_ridge]
+Obsidiana kresto
+[granite_tors]
+Granitaj turoj
+[travertine_terraces]
+Travertinaj terasoj
+[penitentes]
+Pentantaj neĝoj
+[termite_mounds]
+Termitejoj
+[hoodoos]
+Ŝtonaj kamentuboj
+[petrified_stumps]
+Ŝtoniĝintaj stumpoj
 [terrain group water]
 Akvo
 [terrain group sand]

@@ -120,7 +120,26 @@ struct Decor
 	// cells with undecorated corners show this material's edge, as for a cliff
 	// whose rim and walls stand on the grass, instead of no raised decor.
 	bool connectedOpen = false;
+	// Optional frames against another connected mass ("connected_foreign", needs
+	// connected_corners and connected_open): where corners belong to another mass,
+	// the rim pulls back a quarter of the cell, so two masses stand apart across a
+	// valley half a cell wide. ForeignCodes masks, code-major, 16 colours each.
+	std::vector<int> connectedForeign;
+	// Terraced masses ("connected_tiers", needs connected_open): deep inside a
+	// large patch the same corner frames are drawn again, lifted, as up to
+	// MaxDecorTiers terraces stepping up toward the middle (Compositor::decorTierFrame).
+	bool connectedTiers = false;
 };
+// Terraces of a tiered mass: at most this many above the base, each drawn
+// DecorTierRise native pixels above the one below.
+inline constexpr int MaxDecorTiers = 3;
+inline constexpr int DecorTierRise = 20;
+// Corner codes with own (1) and foreign (2) corners in base 3 (TL, TR, BL, BR),
+// in increasing code order: the layout of Decor::connectedForeign.
+inline constexpr unsigned ForeignCodes = 50;
+// Index of a cell's own/foreign corner masks in ForeignCodes order, or -1 when
+// the cell has no own or no foreign corner.
+int foreignCodeIndex(unsigned ownMask, unsigned foreignMask);
 // Decor frames may be up to MaximumDecorFrame native pixels on each side. A
 // frame up to 64 px tall is centred on its 32 px cell; a taller frame keeps a
 // 64 px frame's bottom edge, 16 px below the cell, and grows upward, so tall
@@ -228,6 +247,9 @@ class Catalog
 	// cornerColours selects the variant of corner-tiled connected decor.
 	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0,
 		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
+	// The connected_foreign frame of a cell whose other corners hold another
+	// mass, or -1 when the material has none.
+	int decorForeignFrame(MaterialId material, unsigned ownMask, unsigned foreignMask, unsigned cornerColours) const;
 	// Overlay frame for a cell of this material at a presentation time (the
 	// clock `frame` uses for animated materials), or -1 when the material has
 	// no overlay, the cell is not chosen or its step is empty.

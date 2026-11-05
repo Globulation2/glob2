@@ -56,6 +56,15 @@ export const TERRAIN_PRESETS = [
   'frost_pinwheel',
   'arctic_tundra',
   'glacier',
+  'icefall',
+  'sandstone_benches',
+  'obsidian_ridge',
+  'granite_tors',
+  'travertine_terraces',
+  'penitentes',
+  'termite_mounds',
+  'hoodoos',
+  'petrified_stumps',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

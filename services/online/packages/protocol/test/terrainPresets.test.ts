@@ -47,6 +47,15 @@ describe('built-in terrain presets', () => {
       'frost_pinwheel',
       'arctic_tundra',
       'glacier',
+      'icefall',
+      'sandstone_benches',
+      'obsidian_ridge',
+      'granite_tors',
+      'travertine_terraces',
+      'penitentes',
+      'termite_mounds',
+      'hoodoos',
+      'petrified_stumps',
     ]);
   });
 

@@ -5758,6 +5758,24 @@ Chong chóng sương giá
 Đất lãnh nguyên Bắc Cực
 [glacier]
 Sông băng
+[icefall]
+Thác băng
+[sandstone_benches]
+Bậc sa thạch
+[obsidian_ridge]
+Sống núi đá vỏ chai
+[granite_tors]
+Khối đá granit
+[travertine_terraces]
+Ruộng bậc thang travertin
+[penitentes]
+Gai tuyết
+[termite_mounds]
+Gò mối
+[hoodoos]
+Trụ đá nấm
+[petrified_stumps]
+Gốc cây hóa đá
 [terrain group water]
 Nước
 [terrain group sand]

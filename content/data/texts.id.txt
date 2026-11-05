@@ -5758,6 +5758,24 @@ Kincir embun beku
 Tanah tundra Arktik
 [glacier]
 Gletser
+[icefall]
+Air terjun es
+[sandstone_benches]
+Bangku batu pasir
+[obsidian_ridge]
+Punggung obsidian
+[granite_tors]
+Tor granit
+[travertine_terraces]
+Teras travertin
+[penitentes]
+Salju penitentes
+[termite_mounds]
+Gundukan rayap
+[hoodoos]
+Cerobong peri
+[petrified_stumps]
+Tunggul membatu
 [terrain group water]
 Air
 [terrain group sand]

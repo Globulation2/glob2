@@ -5758,6 +5758,24 @@ CPU %0%
 Έδαφος αρκτικής τούνδρας
 [glacier]
 Παγετώνας
+[icefall]
+Παγοκαταρράκτης
+[sandstone_benches]
+Πάγκοι ψαμμίτη
+[obsidian_ridge]
+Κορυφογραμμή οψιανού
+[granite_tors]
+Γρανιτικοί βράχοι
+[travertine_terraces]
+Αναβαθμίδες τραβερτίνη
+[penitentes]
+Χιόνια μετανοούντων
+[termite_mounds]
+Τερμιτοφωλιές
+[hoodoos]
+Καμινάδες νεράιδων
+[petrified_stumps]
+Απολιθωμένα κούτσουρα
 [terrain group water]
 Νερό
 [terrain group sand]
