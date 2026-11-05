@@ -1,0 +1,44 @@
+{
+  "pid": 3689533,
+  "revision": "2992ab4990817478f06ef45e1fd5683e40dc928e",
+  "phase": "finished; review baselinefailureandexpandedmovementphasechecks/screenshotsbeforepublishing",
+  "results": [
+    {
+      "name": "baseline-build",
+      "exit_code": 0,
+      "seconds": 3667.6
+    },
+    {
+      "name": "baseline-case",
+      "exit_code": 1,
+      "seconds": 2.0
+    },
+    {
+      "name": "fixed-build",
+      "exit_code": 0,
+      "seconds": 28.4
+    },
+    {
+      "name": "all-unit-effect-cases",
+      "exit_code": 0,
+      "seconds": 15.4
+    }
+  ],
+  "note": "Baseline8bfmaster fixturecreatesdelta0,dx0,dy1butassertsnexttileY; originalproductiondrawinterpolates31pxup. Proposedtest-only3eastwardmovementphasesretain16pxX/24pxYandnearer-unitassertions. No sourceedituntilbaselineprocessends. Separatebuild/privateclonedrecordingprefixprotectactiveexactd888helpers.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/ci-exit-effect-release",
+    "--filter",
+    "UnitEffect*/*",
+    "--jobs",
+    "1",
+    "--fullscreen",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/exit-effect-coordinates/fixed.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/exit-effect-coordinates/fixed"
+  ],
+  "child_pid": 3774698
+}

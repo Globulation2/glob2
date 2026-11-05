@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="2" errors="0" skipped="0"><testsuite name="UnitEffectDraw"><testcase classname="UnitEffectDraw" name="exit effects travel with a unit that has walked on from its exit tile [display:640x480][artifacts]" time="1.69938" status="run">
+      <failure message="39.6258 &lt;  24" type="CHECK">
+src/render/UnitEffectDrawHarness.cpp:253:
+CHECK( std::abs(cy - (exitY * 32 + 16)) &lt; 24 ) is NOT correct!
+  values: CHECK( 39.6258 &lt;  24 )
+  logged: 0x55b2c32d4b83 effect centred at y 232.374
+
+      </failure>
+      <failure message="29.9678 &lt;  24" type="CHECK">
+src/render/UnitEffectDrawHarness.cpp:253:
+CHECK( std::abs(cy - (exitY * 32 + 16)) &lt; 24 ) is NOT correct!
+  values: CHECK( 29.9678 &lt;  24 )
+  logged: 0x55b2c32d4c54 effect centred at y 178.032
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

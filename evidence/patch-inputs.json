@@ -1,0 +1,5 @@
+{
+  "original_sha256": "0ece0c9b36836e8dcd840b0c980a9e51977f2fa51c67c365681cc3c19a56ff66",
+  "patched_sha256": "e2383110d9360c83b45f0b2a7f217c31cc4fee5b4f8c8841226eea60137ae23c",
+  "coverage": "Same16pxX/24pxYandnearer-unitassertions, expandedto0/128/255progressforeachspawn/heal, no runtimechange. Baselinebuild/testmustfinishbeforepatchisapplied."
+}

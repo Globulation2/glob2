@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="12" failures="0" errors="0" skipped="0"><testsuite name="UnitEffectDeterminism"><testcase classname="UnitEffectDeterminism" name="recording unit effects leaves every tick's checksum unchanged [slow][display:640x480]" time="6.3209" status="run" />
+  </testsuite><testsuite name="UnitEffectDraw"><testcase classname="UnitEffectDraw" name="exit effects travel with a unit that has walked on from its exit tile [display:640x480][artifacts]" time="2.8178" status="run" />
+  <testcase classname="UnitEffectDraw" name="service effects play over a unit leaving a hospital and a school [display:640x480][artifacts]" time="2.68301" status="run" />
+  <testcase classname="UnitEffectDraw" name="the spawn effect plays over a new worker and then leaves the ordinary picture [display:640x480][artifacts]" time="2.46508" status="run" />
+  </testsuite><testsuite name="UnitEffect"><testcase classname="UnitEffect" name="A produced unit fades in and its silhouette settles" time="0" status="run" />
+    <testcase classname="UnitEffect" name="The swarm glow peaks once and is over within the lifetime" time="0" status="run" />
+    <testcase classname="UnitEffect" name="Dust appears with the unit and is gone by its duration" time="0" status="run" />
+    <testcase classname="UnitEffect" name="A spawn's motes keep their identity from frame to frame" time="0" status="run" />
+    <testcase classname="UnitEffect" name="Shimmer twinkles finish within the lifetime" time="0" status="run" />
+    <testcase classname="UnitEffect" name="A serviced unit's shimmer settles over a second" time="0" status="run" />
+    <testcase classname="UnitEffect" name="Service icons scatter, keep clear of the level number and finish" time="0.008655" status="run" />
+    <testcase classname="UnitEffect" name="A trained unit's level number rises and fades like a combat level-up" time="0" status="run" />
+  </testsuite></testsuites>
