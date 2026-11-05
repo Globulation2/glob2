@@ -32,6 +32,13 @@ vec2 atlasUV(float index, vec2 pixel, vec2 size) {
     return (base + pixel) / size;
 }
 
+vec2 maskAtlasUV(float index, vec2 pixel) {
+    float columns = coverageSize.x / 16.0;
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * 16.0;
+    vec2 samplePixel = clamp(pixel * 0.5 - 0.25, vec2(0.5), vec2(15.5));
+    return (base + samplePixel) / coverageSize;
+}
+
 #ifdef DIRECT_TERRAIN_PACKED
 vec4 decodeRecord(vec4 low, vec4 high) {
     return floor(low * 255.0 + 0.5) + floor(high * 255.0 + 0.5) * 256.0;
@@ -164,18 +171,19 @@ void main() {
     vec4 indices = readRecord(cells, slot, mapSize);
     vec2 uv = clamp(fract(world) * 32.0, vec2(0.5), vec2(31.5));
     float mask = readScalar(coverageIndex, cell, mapSize);
+    if (mask >= 65535.0) discard;
     vec4 quiet = DIRECT_TERRAIN_SAMPLE(shoreCalm, cell);
     vec2 position = uv / 32.0;
     float calm = mix(mix(quiet.x, quiet.y, position.x), mix(quiet.z, quiet.w, position.x), position.y);
     vec4 color = material(indices.x, uv, calm);
     if (mask > 0.0) {
-        vec4 weights = DIRECT_TERRAIN_SAMPLE(coverage, atlasUV(mask - 1.0, uv, coverageSize));
+        vec4 weights = DIRECT_TERRAIN_SAMPLE(coverage, maskAtlasUV(mask - 1.0, uv));
         weights /= max(dot(weights, vec4(1.0)), 0.00001);
         color *= weights.x;
         if (weights.y > 0.0) color += weights.y * material(indices.y, uv, calm);
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
-        float packedEdge = readScalar(edges, atlasUV(mask - 1.0, uv, coverageSize), coverageSize);
+        float packedEdge = readScalar(edges, maskAtlasUV(mask - 1.0, uv), coverageSize);
         float selectors = floor(packedEdge / 4096.0);
         vec3 edge = vec3(mod(packedEdge, 4096.0), mod(selectors, 4.0), floor(selectors / 4.0));
         if (color.a > 0.0)

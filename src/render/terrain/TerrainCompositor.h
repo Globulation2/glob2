@@ -47,6 +47,7 @@ class Compositor
     void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
                         bool nativeComposition = false);
 	Recipe describe(const SceneMap &, int x, int y) const;
+	Recipe describeOverview(const SceneMap &, int x, int y) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
 	// geometry, never on the animation phase, so a page can keep it and re-blend
 	// only the textures when an animated material changes phase.
@@ -147,7 +148,7 @@ class Compositor
     std::size_t cpuMaterialBytes(std::span<const MaterialId> needed = {}) const;
     std::shared_ptr<const CpuMaterials> cpuMaterialsForRecipes(std::span<const Recipe> recipes);
     std::size_t cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const;
-	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
+	std::uint64_t textureRevision(MaterialId id) const { return textureRevisions[id]; }
 	int scale() const { return resolution; }
     // Diagnostic: HD preparations, and those that drew a native source for a
     // material whose HD frames had already appeared (streaming fallback).
@@ -188,7 +189,8 @@ class Compositor
 	bool hasNeighborhoodProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
-    void describeShoreCalm(const SceneMap&, Recipe &) const;
+    Recipe describe(const SceneMap &, int x, int y, bool shoreCalm) const;
+	void describeShoreCalm(const SceneMap&, Recipe &) const;
     std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
@@ -223,7 +225,7 @@ class Compositor
     bool publishedSubset = false;
     bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
                          const std::vector<unsigned char> *wanted);
-	std::vector<std::uint64_t> materialRevisions;
+	std::vector<std::uint64_t> textureRevisions;
 	std::vector<int> highResolutionSizes; // Largest source size seen per material.
 	HighResolutionCoverage coverage;
 	int resolution = 1;

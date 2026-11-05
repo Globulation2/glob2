@@ -759,7 +759,8 @@ void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
 		border.ordinate[coordinate] = secondary(p) + t * ds;
 		border.normal[coordinate] = std::abs(dp) / std::sqrt(dp * dp + ds * ds);
 	}
-	prepareNearestSegments();
+	if (edgeMetadata)
+		prepareNearestSegments();
 	hasBorder = true;
 }
 
@@ -885,7 +886,7 @@ Coverage PreparedCoverage::roughCoverage(int px, int py) const
 	if (edgeDistance <= 256)
 	{
 		auto band = patchCoverage(px, py);
-		band.margin = borderMargin(sample);
+		if (edgeMetadata) band.margin = borderMargin(sample);
 		return band;
 	}
 	const auto &border = naturalBorder;
@@ -918,7 +919,7 @@ Coverage PreparedCoverage::roughCoverage(int px, int py) const
 	result.weight[0] = unsigned(std::clamp(32768.f + signedDistance * borderBlendScale, 0.f, 65536.f));
 	result.weight[1] = 65536 - result.weight[0];
 	result.neighbor = borderMaterials[result.weight[0] >= result.weight[1] ? 1 : 0];
-	result.margin = borderMargin(sample);
+	if (edgeMetadata) result.margin = borderMargin(sample);
 	if (edgeDistance < 1024)
 	{
 		const std::array<int, 2> displacement{dx, dy};
@@ -935,7 +936,8 @@ Coverage PreparedCoverage::roughCoverage(int px, int py) const
 	return result;
 }
 
-PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
+PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r, Detail detail)
+	: edgeMetadata(detail == Detail::Surface)
 {
 	smooth.prepare(c, r);
 	prepareBorders(c, r);

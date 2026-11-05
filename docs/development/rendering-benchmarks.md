@@ -129,8 +129,10 @@ Direct terrain is the default for flat views with Original artwork
 (`highResolutionArtwork=0`) on legacy OpenGL, programmable OpenGL, WebGL2,
 SDL GPU with the direct terrain shaders, and WebGPU with the WGSL assets.
 It uses the map's terrain variants, coverage, contact bands, surf, and
-discovery. HD artwork, tiled captures, and backends without direct terrain
-support use composed terrain pages.
+discovery. With HD artwork enabled, Legacy OpenGL still uses the native atlas
+at or below one raster pixel per native terrain texel. Closer views use HD
+pages, and the atlas stays resident for the next zoom-out. Editor views, tiled
+captures, and backends without direct terrain support use composed pages.
 
 The shader blends in floating point and uses linear atlas sampling. The page
 renderer can box-filter composed terrain when zoomed out. Compare captures
@@ -138,13 +140,18 @@ at native zoom and during motion to check color and distant texture detail.
 
 `FRAME_DIRECT_TERRAIN` reports cumulative draws and upload bytes plus
 resident texture bytes. A rising draw count confirms direct terrain
-drew the frame. After startup, camera motion and animation should leave upload
-bytes stable. Terrain, asset bundle, or registry changes rebuild the atlases.
+drew the frame. Legacy OpenGL uploads mixed coverage progressively, starting
+with the current viewport. Once coverage is resident, camera motion and
+animation leave upload bytes stable. Terrain, asset bundle, or registry changes
+rebuild the atlases.
 Discovery changes can upload a separate visibility texture. On programmable GL,
 `FRAME_DEVICE` also reports physical uploads for the whole renderer. Compare capture
 pixels, frame p95 and p99, startup time, and resident terrain memory on the same
-map and camera path. HD artwork, other backends, and tiled captures use the
-page renderer. Direct terrain also falls back when map tables or atlases
+map and camera path. When zooming across native density with HD enabled,
+check aggregate atlas and page residency. A direct draw at higher density
+fills regions that are still waiting on HD pages. Returning to native
+density should reuse the atlas without rebuilding it. Direct terrain also falls
+back when map tables or atlases
 exceed the device texture dimensions, 16-bit index capacity, or 64 MiB texture
 budget. On programmable GL, actual GPU uploads happen during frame submission,
 where device-wide memory pressure can defer the frame. Far zoom uses the shared overview. For a large-map admission check,
@@ -154,10 +161,11 @@ set `GLOB2_BENCH_SIZE=512x64`, `GLOB2_BENCH_SPARSE_TERRAIN=1`,
 coverage atlas. GPU time for a terrain-only draw and elapsed time
 for the complete renderer through GPU completion are separate measurements.
 
-Use `GLOB2_RENDER_EXECUTION=parallel` to test building direct terrain coverage
-with presentation workers. The graphics thread allocates the atlases, prepares
-material textures, and uploads the result. Compare first-frame time and captures
-against the default serial initialization.
+On device renderers, use `GLOB2_RENDER_EXECUTION=parallel` to test building
+direct terrain coverage with presentation workers. Legacy OpenGL prepares
+coverage on the graphics thread in time slices and draws the overview beneath
+pending tiles. Measure the first metadata upload separately from subsequent
+coverage uploads.
 
 For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
 to freeze terrain animation and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of

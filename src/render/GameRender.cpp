@@ -301,46 +301,98 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 				}
 			}
 	// The overview fully replaces detailed terrain at the far end of zoom.
-	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	const bool legacy = frame.target.isLegacyGLScreen();
 	bool direct = false;
-	// Direct terrain uses native-resolution art. The benchmark can force pages
-	// to measure transitions through the same fallback used for HD and captures.
-	if (!view.render.benchmarkForceTerrainPages && !globalContainer->settings.highResolutionArtwork &&
-		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE))
+	bool terrainBackdrop = false;
+	// The direct atlas contains native artwork. At higher raster density,
+	// route HD views through the page compositor so streamed HD art is used.
+	// Keep the native atlas resident for the next zoom-out.
+	const bool hdArtwork = globalContainer->settings.highResolutionArtwork;
+	const double rasterDensity = frame.target.mapTransformScale() * frame.target.getRasterScale();
+	const bool nativeTerrain = !hdArtwork || (legacy && rasterDensity <= 1);
+	// Editors and tiled captures need complete, current terrain immediately.
+	const bool allowAtlas = !view.render.benchmarkForceTerrainPages && !scene.editor &&
+		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE);
+	const bool progressiveHD = allowAtlas && legacy && !nativeTerrain;
+	const auto drawBackdrop = [&]
+	{
+		const auto alpha = view.render.detail.terrainOverview;
+		view.render.detail.terrainOverview = 1;
+		try
+		{
+			drawMapOverview(frame.left, frame.top, frame.right, frame.bottom,
+				frame.viewportX, frame.viewportY, frame.localTeam, frame.options, scene.map, view.render);
+		}
+		catch (const std::bad_alloc &)
+		{
+			view.render.detail.terrainOverview = alpha;
+			return;
+		}
+		view.render.detail.terrainOverview = alpha;
+		terrainBackdrop = true;
+	};
+	const auto drawAtlas = [&](std::span<const SDL_Rect> regions)
 	{
 		PERF_SCOPE_TIME(Terrain);
 		try
 		{
-			direct = view.render.directTerrain().draw(frame.target, scene.map,
-				frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
-				frame.viewportY, frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time);
+			auto &terrain = view.render.directTerrain();
+			if (legacy && terrain.needsBackdrop(frame.target, scene.map,
+				frame.left + frame.viewportX, frame.top + frame.viewportY,
+				frame.right + frame.viewportX, frame.bottom + frame.viewportY))
+				drawBackdrop();
+			direct = terrain.draw(frame.target, scene.map, frame.left, frame.top, frame.right,
+				frame.bottom, frame.viewportX, frame.viewportY, frame.visibleTeams,
+				frame.options & DRAW_WHOLE_MAP, time, regions);
+			if (!direct && terrain.preparing())
+			{
+				if (progressiveHD)
+				{
+					if (!terrainBackdrop) drawBackdrop();
+				}
+				else
+					overviewOnly = terrainBackdrop;
+			}
 		}
 		catch (const std::bad_alloc &)
-		{ /* The reference renderer remains available under memory pressure. */ }
-	}
-	// Reference terrain pages use the same discovery rule as direct terrain.
-	SoftwareTerrainCache *softwareTerrainCache = nullptr;
+		{ /* The page compositor remains available under memory pressure. */ }
+	};
+
+	if (allowAtlas && nativeTerrain)
+		drawAtlas({});
+
+	SoftwareTerrainCache *pagesForView = nullptr;
 	if (!direct && !overviewOnly)
 	{
 		try
 		{
-			softwareTerrainCache = &view.render.terrainCache(scene.map.identity());
+			pagesForView = &view.render.terrainCache(scene.map.identity());
 		}
 		catch (const std::bad_alloc &)
-		{ /* Keep the uncached renderer available under memory pressure. */
+		{ /* Keep the uncached renderer available under memory pressure. */ }
+	}
+	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
+		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
+		frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
+		frame.options & DRAW_TILED_CAPTURE, progressiveHD);
+	if (progressiveHD)
+	{
+		if (!cached)
+			drawAtlas({});
+		else if (!pagesForView->missingPageRegions().empty())
+		{
+			drawAtlas(pagesForView->missingPageRegions());
+			if (!direct && !terrainBackdrop)
+				drawBackdrop();
 		}
 	}
-	bool cached = softwareTerrainCache &&
-		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
-									  frame.bottom, frame.viewportX, frame.viewportY,
-									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
-									  frame.options & DRAW_TILED_CAPTURE);
 	if (cached)
 	{
 		PERF_SCOPE_TIME(Terrain);
-		softwareTerrainCache->draw(frame.target);
+		pagesForView->draw(frame.target);
 	}
-	else if (!overviewOnly && !direct)
+	else if (!overviewOnly && !direct && !terrainBackdrop)
 		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
 
     const auto *atlas = view.render.existingDirectTerrain();
@@ -364,7 +416,8 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 
 	if (!overviewOnly)
 		tilePass(&Game::drawMapResources, scene.map, &view.render);
-	tilePass(&Game::drawMapOverview, scene.map, view.render);
+	if (!terrainBackdrop || direct || cached)
+		tilePass(&Game::drawMapOverview, scene.map, view.render);
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);

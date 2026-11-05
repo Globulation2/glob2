@@ -552,12 +552,38 @@ int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time, bool tiledCapture)
+								   bool wholeMap, int time, bool tiledCapture, bool progressive)
 {
 	const bool fixedDensity = benchmarkDownsample > 0 && !tiledCapture;
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
 							   wholeMap, time, fixedDensity ? 1 : 0, tiledCapture,
-							   fixedDensity ? benchmarkDownsample : 0);
+							   fixedDensity ? benchmarkDownsample : 0, progressive);
+}
+namespace
+{
+// Only a contact between a surf material and a dry material can animate.
+bool hasShoreline(const TerrainVisual::Recipe &recipe, const TerrainVisual::Compositor &compositor)
+{
+    const auto liquid = [&](auto id) { return compositor.catalog().materials[id].surf.period > 0; };
+    const bool first = liquid(recipe.corners.front());
+    return std::any_of(recipe.corners.begin() + 1, recipe.corners.end(),
+        [&](auto id) { return liquid(id) != first; });
+}
+
+bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
+                     const TerrainVisual::Compositor &compositor)
+{
+    const auto &surf = compositor.catalog().materials[id].surf;
+    return surf.period && previousTime / surf.ticks != compositor.surfTime() / surf.ticks;
+}
+
+bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
+                     const TerrainVisual::Compositor &compositor)
+{
+    return previousTime != compositor.surfTime() && hasShoreline(recipe, compositor) &&
+        std::any_of(recipe.corners.begin(), recipe.corners.end(),
+            [&](auto id) { return surfStepChanged(id, previousTime, compositor); });
+}
 }
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
@@ -572,7 +598,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         const auto old = std::find_if(page.materialRevisions.begin(), page.materialRevisions.end(),
                                       [id](const auto &revision) { return revision.first == id; });
         return old == page.materialRevisions.end() ||
-               old->second != compositor.materialRevision(id);
+               old->second != compositor.textureRevision(id);
     };
     // Keep oversized HD cells and the optimized reduction path
     // serial. A CPU job covers at most 16K sampled pixels.
@@ -587,8 +613,9 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     {
         const auto &tile = tiles[i];
         if (wasValid && page.tiles[i] == tile &&
-            (!tile.discovered || std::none_of(tile.recipe.corners.begin(),
-                                              tile.recipe.corners.end(), materialChanged)))
+            (!tile.discovered || (std::none_of(tile.recipe.corners.begin(),
+                                               tile.recipe.corners.end(), materialChanged) &&
+                                  !tileSurfChanged(tile.recipe, page.surfTime, compositor))))
             continue;
         changed.push_back(i);
         hasDiscoveredChanges = hasDiscoveredChanges || tile.discovered;
@@ -700,7 +727,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
 											   int preferredResolution, bool tiledCapture,
-											   int preferredDownsample)
+											   int preferredDownsample, bool progressive)
 {
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
@@ -717,7 +744,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     }
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
+	missingPages.clear();
 	++frame;
+	if (left > right || top > bottom) return true;
     if (!enabled)
     {
         gpuPages.reset();
@@ -853,7 +882,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				{
 					// Visible CPU pages are protected; their renderer allocations
 					// can still be retired and uploaded later during drawing.
-					if (!gpu) return false;
+					if (!gpu || progressive) return false;
 					for (auto it = chunks.begin(); it != chunks.end(); ++it)
 						if ((*it)->image && (oldest == chunks.end() ||
 							(*it)->textureUsed < (*oldest)->textureUsed)) oldest = it;
@@ -908,32 +937,78 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								ox * 4,
 							static_cast<const Uint8 *>(tile->pixels) + y * tile->pitch, n * 4);
 		};
-		for (int cy = y0; cy <= y1; ++cy)
-			for (int cx = x0; cx <= x1; ++cx)
+		const auto terrainRevision = map.terrainRevision();
+		const int columns = x1 - x0 + 1;
+		const auto pageCount = std::size_t(columns) * (y1 - y0 + 1);
+		// Rotate the first candidate so animated pages at the top of the view
+		// cannot monopolize the one composition or upload admitted each frame.
+		auto firstPage = progressive ? frame % pageCount : 0;
+		const auto findPage = [&](int cx, int cy) -> Chunk *
+		{
+			const int wx = (cx * ChunkTiles) & map.getMaskW();
+			const int wy = (cy * ChunkTiles) & map.getMaskH();
+			for (auto &chunk : chunks)
+				if (chunk->x == wx && chunk->y == wy && chunk->scale == resolution &&
+					chunk->downsample == downsample)
+					return chunk.get();
+			return nullptr;
+		};
+		const auto missing = [&](int originX, int originY)
+		{
+			const int x = std::max(left, originX), y = std::max(top, originY);
+			missingPages.push_back({x, y, std::min(right + 1, originX + ChunkTiles) - x,
+				std::min(bottom + 1, originY + ChunkTiles) - y});
+		};
+		if (progressive)
+			for (std::size_t i = 0; i < pageCount; ++i)
 			{
-				const int wx = (cx * ChunkTiles) & map.getMaskW(),
-						  wy = (cy * ChunkTiles) & map.getMaskH();
-				Chunk *entry = nullptr;
-				for (auto &c : chunks)
-					if (c->x == wx && c->y == wy && c->scale == resolution && c->downsample == downsample)
-					{
-						entry = c.get();
-						break;
-					}
-				// Compare the complete vertex window including the contour halo.
+				const auto index = (firstPage + i) % pageCount;
+				const auto *page = findPage(x0 + int(index % columns), y0 + int(index / columns));
+				if (!page || !page->valid || !page->image)
+				{
+					firstPage = index;
+					break;
+				}
+			}
+		bool updateAdmitted = false;
+		Chunk *updatedPage = nullptr;
+		for (std::size_t i = 0; i < pageCount; ++i)
+			{
+				const auto index = (firstPage + i) % pageCount;
+				const int cx = x0 + int(index % columns), cy = y0 + int(index / columns);
+				const int wx = (cx * ChunkTiles) & map.getMaskW();
+				const int wy = (cy * ChunkTiles) & map.getMaskH();
+				Chunk *entry = findPage(cx, cy);
+				// Animation and artwork revisions change pixels but keep their
+				// recipes. The terrain revision avoids scanning the vertex
+				// window on ordinary frames.
+				const bool sameTerrain = entry && entry->valid &&
+					entry->recipeTerrainRevision == terrainRevision && entry->seed == map.terrainSeed();
+				// Compare the complete vertex window on edits, including the
+				// one-vertex halo needed by borders and shore calm.
 				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
-				const int halo = compositor.neighborhoodBorders() ? 1 : 0;
-				for (int y = -halo; y <= ChunkTiles + halo; ++y)
-					for (int x = -halo; x <= ChunkTiles + halo; ++x)
-						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+				if (!sameTerrain)
+				{
+					for (int y = -1; y <= ChunkTiles + 1; ++y)
+						for (int x = -1; x <= ChunkTiles + 1; ++x)
+							sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+				}
 				const auto revisionChanged = [&](const auto &revision)
-				{ return compositor.materialRevision(revision.first) != revision.second; };
-				bool unchanged = entry && entry->valid && (!gpuPages || gpuPages->find(*entry)) && entry->sources == sources &&
-								 entry->seed == map.terrainSeed() &&
-								 std::none_of(entry->materialRevisions.begin(),
-											  entry->materialRevisions.end(), revisionChanged);
-				if (unchanged)
-					for (int y = 0; y < ChunkTiles && unchanged; ++y)
+				{ return compositor.textureRevision(revision.first) != revision.second; };
+				const auto pageChanged = [&](const Chunk &page)
+				{
+					return std::any_of(page.materialRevisions.begin(), page.materialRevisions.end(),
+						[&](const auto &revision) {
+							return revisionChanged(revision) || (page.hasShoreline &&
+								surfStepChanged(revision.first, page.surfTime, compositor));
+						});
+				};
+				bool sameContent = entry && entry->valid && (!gpuPages || gpuPages->find(*entry)) &&
+								 (sameTerrain || entry->sources == sources) &&
+								 entry->seed == map.terrainSeed();
+				const bool artChanged = sameContent && pageChanged(*entry);
+				if (sameContent && (progressive || !artChanged))
+					for (int y = 0; y < ChunkTiles && sameContent; ++y)
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
 							const bool discovered =
@@ -942,13 +1017,38 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 															 wy + y + 1, visibleTeams);
 							if (discovered != entry->tiles[y * ChunkTiles + x].discovered)
 							{
-								unchanged = false;
+								sameContent = false;
 								break;
 							}
 						}
-				if (unchanged)
+				const bool unchanged = sameContent && !artChanged;
+				const bool requiresWork = !unchanged || (progressive && !entry->image);
+				const bool defer = progressive && requiresWork && updateAdmitted &&
+					(!entry || updatedPage != entry);
+				if (defer && (!sameContent || !entry->image))
+				{
+					missing(cx * ChunkTiles - vx, cy * ChunkTiles - vy);
+					continue;
+				}
+				if (progressive && requiresWork && !defer)
+				{
+					// A page that cannot reserve storage leaves the work slot
+					// available for a resident page that needs an art refresh.
+					if ((!entry || (gpu && !entry->image)) &&
+						!makeRoom((entry ? 0 : storage) + uploadReserve, uploadReserve))
+					{
+						missing(cx * ChunkTiles - vx, cy * ChunkTiles - vy);
+						continue;
+					}
+					updateAdmitted = true;
+					updatedPage = entry;
+				}
+				// While a page waits for a surf or artwork refresh, reuse its
+				// uploaded pixels only if terrain and discovery still match.
+				if (unchanged || defer)
 				{
 					entry->used = frame;
+					entry->recipeTerrainRevision = terrainRevision;
 					++hits;
 					copies.push_back(
 						{entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
@@ -958,12 +1058,16 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				for (int y = 0; y < ChunkTiles; ++y)
 					for (int x = 0; x < ChunkTiles; ++x)
 					{
-						auto &t = tiles[y * ChunkTiles + x];
+						const int index = y * ChunkTiles + x;
+						auto &t = tiles[index];
 						t.discovered = wholeMap || map.isMapPartiallyDiscovered(
 													   wx + x - 1, wy + y - 1, wx + x + 1,
 													   wy + y + 1, visibleTeams);
 						if (t.discovered)
-							t.recipe = compositor.describe(map, wx + x, wy + y);
+						{
+							t.recipe = sameTerrain && entry->tiles[index].discovered
+								? entry->tiles[index].recipe : compositor.describe(map, wx + x, wy + y);
+						}
 					}
 				// Reduced pages average native composition. A retained native
 				// page is already that exact input, including coverage and alpha;
@@ -974,7 +1078,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					for (auto &c : chunks)
 						if (c->x == wx && c->y == wy && c->scale == 1 && c->downsample == 1 &&
 							c->valid && c->tiles == tiles &&
-							std::none_of(c->materialRevisions.begin(), c->materialRevisions.end(), revisionChanged))
+							!pageChanged(*c))
 						{
 							native = c.get();
 							nativeUsed = native->used;
@@ -985,7 +1089,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						}
 				if (!entry)
 				{
-					if (!makeRoom(storage + uploadReserve))
+					if (!progressive && !makeRoom(storage + uploadReserve))
 					{
 						// Native reuse is optional. Do not reject a view that fits
 						// only after its idle reduction input is evicted.
@@ -1017,6 +1121,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					entry = fresh.get();
 					chunks.push_back(std::move(fresh));
 				}
+				if (progressive) updatedPage = entry;
 				entry->used = frame;
 				const auto materialChanged = [&](TerrainVisual::MaterialId id)
 				{
@@ -1025,9 +1130,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						[id](const auto &revision) { return revision.first == id; });
 					return previous == entry->materialRevisions.end() || revisionChanged(*previous);
 				};
-				const bool sourcesChanged =
-					std::any_of(entry->materialRevisions.begin(), entry->materialRevisions.end(),
-								revisionChanged);
+				const bool sourcesChanged = pageChanged(*entry);
 				if (!entry->valid || sourcesChanged || entry->tiles != tiles || (gpuPages && !gpuPages->find(*entry)))
 				{
 					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
@@ -1053,7 +1156,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							if (wasValid && entry->tiles[i] == tiles[i] &&
 								(!tiles[i].discovered ||
 								 std::none_of(tiles[i].recipe.corners.begin(),
-											  tiles[i].recipe.corners.end(), materialChanged)))
+											  tiles[i].recipe.corners.end(), materialChanged) &&
+                                 !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor)))
 								continue;
 							auto &held = entry->masks[i];
 							const auto &recipe = tiles[i].recipe;
@@ -1128,15 +1232,18 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (entry->image && !gpuPages) entry->image->markPixelsChanged();
 					entry->tiles = tiles;
 					entry->materialRevisions.clear();
+					entry->surfTime = compositor.surfTime();
+					entry->hasShoreline = false;
 					for (const auto &tile : tiles)
-						if (tile.discovered)
-							for (auto id : tile.recipe.corners)
-								if (std::none_of(entry->materialRevisions.begin(),
-												 entry->materialRevisions.end(),
-												 [id](const auto &revision)
-												 { return revision.first == id; }))
-									entry->materialRevisions.emplace_back(
-										id, compositor.materialRevision(id));
+					{
+						if (!tile.discovered)
+							continue;
+						entry->hasShoreline |= hasShoreline(tile.recipe, compositor);
+						for (auto id : tile.recipe.corners)
+							if (std::none_of(entry->materialRevisions.begin(), entry->materialRevisions.end(),
+										 [id](const auto &revision) { return revision.first == id; }))
+								entry->materialRevisions.emplace_back(id, compositor.textureRevision(id));
+					}
 					if (!gpu)
 						buildOpaqueRuns(*entry);
 					entry->valid = true;
@@ -1146,13 +1253,27 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				}
 				else
 					++hits;
-				entry->sources = sources;
+				if (!sameTerrain) entry->sources = sources;
 				entry->seed = map.terrainSeed();
+				entry->recipeTerrainRevision = terrainRevision;
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
-		if (gpu && !gpuPages && std::any_of(copies.begin(), copies.end(), [](const auto &copy) { return !copy.chunk->image; }) &&
-			!makeRoom(uploadReserve)) throw std::bad_alloc();
+		if (progressive)
+		{
+			// Admit the only parked image before drawing. Never evict a page
+			// already selected for this frame just to upload the new one.
+			if (gpu && updatedPage && !updatedPage->image && !makeRoom(uploadReserve, uploadReserve))
+				std::erase_if(copies, [&](const Copy &copy) {
+					if (copy.chunk != updatedPage) return false;
+					missing(copy.x / 32, copy.y / 32);
+					return true;
+				});
+		}
+		else if (gpu && !gpuPages &&
+			std::any_of(copies.begin(), copies.end(), [](const auto &copy) { return !copy.chunk->image; }) &&
+			!makeRoom(uploadReserve))
+			throw std::bad_alloc();
 	}
 	catch (const std::bad_alloc &)
 	{

@@ -60,9 +60,21 @@ it is saved, checksummed or read by the simulation.
   requested on demand through the asset loader. The resource marker is used
   while its sprite is pending. Tiled captures and cached editor swatches wait
   for their artwork before storing the resulting image.
-  In the interactive Legacy OpenGL view, pages that need reduction below
-  native resolution use native artwork for composition. HD artwork still
-  streams for use when zooming back in.
+  Legacy OpenGL streams a compact native terrain atlas in interactive views
+  at or below native raster density. Mixed coverage is filled in visible
+  order, with the overview beneath tiles that are still pending. Above
+  native density, enabling HD artwork selects the page compositor. Legacy
+  OpenGL admits at most one visible page composition or upload per frame and
+  draws the native atlas in regions that are still missing. Uploaded pages
+  can wait for animation or artwork refreshes while terrain and discovery
+  still match. Zooming back out reuses the native atlas. The page compositor also handles editor
+  views, tiled captures and maps that exceed the atlas limits.
+  Overview pages compose only visible cells and sample palette weights
+  without preparing shoreline distance or shading data.
+  Animation and artwork updates reuse existing page recipes while the terrain
+  revision and seed match. Newly discovered cells compute their own recipes.
+  Surf steps invalidate pages with a shoreline. Open-water pages refresh when
+  their source artwork changes.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
