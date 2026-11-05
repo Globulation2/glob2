@@ -103,7 +103,7 @@ colour and material stay free per biome:
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
-| Paths (road, brick path, boardwalk, sandstone tiles, overgrown road) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone`, `hex_paving` (overgrown road) |
+| Paths (road, brick path, boardwalk, sandstone tiles, mossy setts) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
@@ -121,11 +121,28 @@ each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
 counterpart on frost-patterned ground: polygons about two cells across with faint
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
 grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
-globs, never natural ground: road is stone setts in running-bond courses; brick
-path is clay pavers, two by one and a quarter of a tile long, in an axis-aligned
-herringbone that reads the same whichever way the path runs; boardwalk is long weathered planks
-with grain, knots and nails; sandstone tiles are square flags, two by two per
-cell, ochre and grey in a checker; overgrown road is hexagonal stone setts
+globs, never natural ground, and all of them have been walked for years: the
+`_paving` family module settles every stone with its own tilt, sink or heave
+(half of it following broad subsidence hollows, so neighbours sink together)
+and its own bevel width, chips the rims, cracks a few stones, loses a few to
+the soil (ten times as many in reclaimed patches of a broad growth field),
+fills the joints with soil, grit and moss, lets moss creep over the stone in
+reclaimed patches, grows weeds from lost stones, blotches lichen, casts the
+raised stones' shadows, draws the group's worn lip and dulls everything with a
+dust wash. Each path keeps its own lattice, colour and wear language so the
+four stay apart at 32 px: road (the trail) is cool grey setts in running
+courses of uneven height, lost in clusters to dark soil; brick path is dark
+terracotta pavers, two by one and half a tile long, in an axis-aligned
+herringbone that reads the same whichever way the path runs, set in pale sand
+mortar that is lost to soil in places, with a few spalled dark bricks;
+sandstone tiles are square flags, two by two per cell with some cut as double
+flags, in two families (warm ochre and cool grey-tan) with joints of varying
+width, split by wider cracks and marked by lichen; boardwalk is warm planks in
+runs of uneven width, silvered where the weather had them longest, cupped and
+tilted, split along the grain, rotting dark at damp ends or right through,
+with a few rotted away from one end over the soil. Mossy setts (material key
+`overgrown_road`, renamed once the other paths were worn too) is hexagonal
+stone setts
 about twelve native pixels across in dark joints, decaying: moss along part of
 the joints, a few cracked setts, and reclaimed patches where setts are lost to
 soil, olive moss and weeds and moss creeps over the stone edges. Its hex lattice
