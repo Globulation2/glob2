@@ -148,8 +148,9 @@ Discovery changes can upload a separate visibility texture. On programmable GL,
 `FRAME_DEVICE` also reports physical uploads for the whole renderer. Compare capture
 pixels, frame p95 and p99, startup time, and resident terrain memory on the same
 map and camera path. When zooming across native density with HD enabled,
-check aggregate atlas and page residency and confirm that returning to the
-atlas resumes its draw count without rebuilding it. Direct terrain also falls
+check aggregate atlas and page residency. A direct draw at higher density
+fills regions that are still waiting on HD pages. Returning to native
+density should reuse the atlas without rebuilding it. Direct terrain also falls
 back when map tables or atlases
 exceed the device texture dimensions, 16-bit index capacity, or 64 MiB texture
 budget. On programmable GL, actual GPU uploads happen during frame submission,

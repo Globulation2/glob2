@@ -2,8 +2,10 @@
 #pragma once
 
 #include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_rect.h>
 #include <cstddef>
 #include <memory>
+#include <span>
 
 class SceneMap;
 namespace GAGCore { class GraphicContext; }
@@ -16,9 +18,11 @@ public:
     DirectTerrain();
     ~DirectTerrain();
 
+    // Legacy GL may restrict the draw to tile rectangles with missing HD pages.
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
-              Uint32 visibleTeams, bool wholeMap, int animationTime);
+              Uint32 visibleTeams, bool wholeMap, int animationTime,
+              std::span<const SDL_Rect> regions = {});
     bool preparing() const;
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &, int left, int top, int right, int bottom) const;
     std::size_t textureBytes() const;

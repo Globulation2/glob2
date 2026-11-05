@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <tuple>
 #include <vector>
 
@@ -98,7 +99,7 @@ class SoftwareTerrainCache
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
-							 int preferredDownsample = 0);
+							 int preferredDownsample = 0, bool progressive = false);
 	// Frees kept masks of pages not drawn this frame, oldest first, until
 	// `needed` more bytes fit the mask budget. Returns whether they now fit.
 	bool releaseMasks(std::size_t needed);
@@ -107,6 +108,7 @@ class SoftwareTerrainCache
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
+	std::vector<SDL_Rect> missingPages;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
@@ -146,7 +148,8 @@ class SoftwareTerrainCache
 	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
 				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
-				 bool tiledCapture = false);
+				 bool tiledCapture = false, bool progressive = false);
+	std::span<const SDL_Rect> missingPageRegions() const { return missingPages; }
 	void draw(GAGCore::GraphicContext &);
 	std::size_t bytes() const;
 	std::size_t residentTextureBytes() const;

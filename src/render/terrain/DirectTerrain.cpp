@@ -419,7 +419,7 @@ DirectTerrain::~DirectTerrain() = default;
 
 bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
                          int right, int bottom, int viewportX, int viewportY,
-                         Uint32 visibleTeams, bool wholeMap, int animationTime)
+                         Uint32 visibleTeams, bool wholeMap, int animationTime, std::span<const SDL_Rect> regions)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     const auto context = SDL_GL_GetCurrentContext();
@@ -574,11 +574,18 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
         glMultiTexCoord2f(GL_TEXTURE0, float(x + viewportX), float(y + viewportY));
         glVertex2f(float(x * TilePixels), float(y * TilePixels));
     };
+    const auto quad = [&](int x, int y, int endX, int endY) {
+        corner(x, y);
+        corner(endX, y);
+        corner(endX, endY);
+        corner(x, endY);
+    };
     glBegin(GL_QUADS);
-    corner(left, top);
-    corner(right + 1, top);
-    corner(right + 1, bottom + 1);
-    corner(left, bottom + 1);
+    if (regions.empty())
+        quad(left, top, right + 1, bottom + 1);
+    else
+        for (const auto &region : regions)
+            quad(region.x, region.y, region.x + region.w, region.y + region.h);
     glEnd();
     gfx.countRenderBatchDraw();
     ++state->frames;

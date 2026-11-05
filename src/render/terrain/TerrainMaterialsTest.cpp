@@ -926,6 +926,43 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(cache.cacheRebuilds() == before + 1);
 	}
 
+	TEST_CASE("progressive terrain pages keep the native fallback limited to missing regions [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto prepare = [&]
+		{
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
+				fixture.team->me, false, 0, false, true));
+		};
+		prepare();
+		CHECK(cache.cacheRebuilds() == 1);
+		REQUIRE(cache.missingPageRegions().size() == 1);
+		CHECK(cache.missingPageRegions().front().w == 16);
+		CHECK(cache.missingPageRegions().front().h == 16);
+		prepare();
+		CHECK(cache.cacheRebuilds() == 2);
+		CHECK(cache.missingPageRegions().empty());
+		prepare();
+		CHECK(cache.cacheRebuilds() == 2);
+		fixture.game.map.unsetMapDiscovered();
+		glob2test::observeMap(fixture.game.map, scene);
+		prepare();
+		CHECK(cache.cacheRebuilds() == 3);
+		CHECK(cache.missingPageRegions().size() == 1);
+
+		SoftwareTerrainCache wrapped;
+		REQUIRE(wrapped.prepare(scene, *globals->terrain, -3, 0, 3, 15, 0, 0,
+			fixture.team->me, true, 0, false, true));
+		REQUIRE(wrapped.missingPageRegions().size() == 1);
+		const auto region = wrapped.missingPageRegions().front();
+		CHECK(region.x == -3);
+		CHECK(region.w == 3);
+	}
+
 	TEST_CASE("unequal variant weights affect deterministic texture selection")
 	{
 		glob2test::HeadlessGlobals globals;
