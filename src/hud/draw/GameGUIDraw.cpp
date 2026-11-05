@@ -809,7 +809,13 @@ void GameGUI::drawAll(int team)
 			globalContainer->gfx->setClipRect();
 		else
 			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
+		// Keep the page planner's tile span constant across sub-tile scroll.
+		// The map clip excludes the extra pixels beyond the visible view.
+		const bool stableHDView = globalContainer->settings.highResolutionArtwork &&
+			globalContainer->gfx->isLegacyGLScreen() && camera.zoom * globalContainer->gfx->getRasterScale() > 1;
+		const double fringeX = stableHDView ? 32.0 : camera.fractionX();
+		const double fringeY = stableHDView ? 32.0 : camera.fractionY();
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW() + fringeX)), int(std::ceil(camera.visibleH() + fringeY)), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
 			globalContainer->settings.buildingParticles ? &visibleBuildings : nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
 		if (globalContainer->settings.buildingParticles)
 		{

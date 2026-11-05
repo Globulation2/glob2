@@ -62,11 +62,16 @@ it is saved, checksummed or read by the simulation.
   for their artwork before storing the resulting image.
   Legacy OpenGL streams a compact native terrain atlas in interactive views
   at or below native raster density. Mixed coverage is filled in visible
-  order, with the overview beneath tiles that are still pending. Above
-  native density, enabling HD artwork selects the page compositor. Legacy
+  order, with the overview beneath tiles that are still pending during play.
+  The first detailed frame waits for visible textured terrain. Native views
+  complete visible atlas coverage and HD views wait for their artwork and pages.
+  Above native density, enabling HD artwork selects the page compositor. Legacy
   OpenGL admits at most one visible page composition or upload per frame and
-  draws the native atlas in regions that are still missing. Uploaded pages
-  can wait for animation or artwork refreshes while terrain and discovery
+  draws the native atlas in regions that are still missing. The HD page density
+  accounts for the largest number of pages the view can touch at its current
+  size, so a pan across a page boundary keeps the same sampling density.
+  If the full view cannot fit at native page density, the atlas covers the view.
+  Uploaded pages can wait for animation or artwork refreshes while terrain and discovery
   still match. Zooming back out reuses the native atlas. The page compositor also handles editor
   views, tiled captures and maps that exceed the atlas limits.
   Overview pages compose only visible cells and sample palette weights

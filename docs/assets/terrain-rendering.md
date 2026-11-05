@@ -285,12 +285,11 @@ until memory pressure retires them. Returning to a density revalidates terrain,
 discovery and material revisions before reusing its pixels.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
 but the cache also draws GPU pages. Software page storage stays bounded by
-32 MiB. GPU density selection retains its 128 MiB allowance, and resident
-textures remain bounded by 128 MiB of conservative texture/mip reservations.
-On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
+32 MiB. GPU density selection and resident texture and mip reservations use a
+256 MiB allowance. On desktop, the total GPU-page cache has a 384 MiB ceiling including CPU pixels,
 bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
-quality. Android and browser builds retain the 128 MiB total ceiling.
+quality. Android and browser builds use a 256 MiB total ceiling.
 These are maximum memory allowances, not up-front allocations.
 Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip

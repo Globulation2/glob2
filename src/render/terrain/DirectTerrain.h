@@ -19,10 +19,11 @@ public:
     ~DirectTerrain();
 
     // Legacy GL may restrict the draw to tile rectangles with missing HD pages.
+    // completeVisible waits for the current view and leaves offscreen coverage queued.
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
               Uint32 visibleTeams, bool wholeMap, int animationTime,
-              std::span<const SDL_Rect> regions = {});
+              std::span<const SDL_Rect> regions = {}, bool completeVisible = false);
     bool preparing() const;
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &, int left, int top, int right, int bottom) const;
     std::size_t textureBytes() const;
