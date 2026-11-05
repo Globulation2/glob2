@@ -5742,6 +5742,12 @@ Laterita
 Torgennoù
 [molten_lava_pool]
 Poull lava teuz
+[slate_ashlar]
+Mein-glas
+[basalt_causeway]
+Chaoser vazalt
+[scoria_blocks]
+Bloc'hoù skoria
 [terrain group water]
 Água
 [terrain group sand]

@@ -170,7 +170,7 @@ TEST_SUITE("EditorPresentation")
 		for (const char *terrain : {"lush_grass", "dry_grass", "dune_sand", "pale_sand", "sandstone", "pumice", "frozen_lake",
 								 "wind_swept_snow", "weathered_sandstone", "windy_sand_dune", "hardpan",
 								 "tundra", "volcanic_ash", "glacier_ice", "overgrown_road", "laterite", "cliffs",
-								 "molten_lava_pool"})
+								 "molten_lava_pool", "slate_ashlar", "basalt_causeway", "scoria_blocks"})
 		{
 			CAPTURE(terrain);
 			editor.performAction(std::string("select terrain ") + terrain);

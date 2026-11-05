@@ -1050,6 +1050,27 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(OVERGROWN_ROAD).name) == "overgrown_road");
 		CHECK(TerrainRegistry::builtins()->find("overgrown_road") == OVERGROWN_ROAD);
 	}
+	TEST_CASE("rock paths share every rule of the other paths")
+	{
+		const std::pair<TerrainType, const char *> rockPaths[] = {
+			{SLATE_ASHLAR, "slate_ashlar"}, {BASALT_CAUSEWAY, "basalt_causeway"}, {SCORIA_BLOCKS, "scoria_blocks"}};
+		for (auto [path, name] : rockPaths)
+		{
+			CAPTURE(name);
+			for (auto member : {TRAIL, BRICK_PATH, BOARDWALK, SANDSTONE, OVERGROWN_ROAD})
+			{
+				CAPTURE(member);
+				CHECK(terrainGroup(path) == terrainGroup(member));
+				CHECK(sameTerrainProperties(terrainProperties(path), terrainProperties(member)));
+				CHECK(TerrainRegistry::builtins()->propertyIndex(path) ==
+					  TerrainRegistry::builtins()->propertyIndex(member));
+			}
+			CHECK(terrainGroup(path) == TerrainGroup::Paths);
+			CHECK(terrainPaintable(path));
+			CHECK(std::string(terrainPresentation(path).name) == name);
+			CHECK(TerrainRegistry::builtins()->find(name) == path);
+		}
+	}
 	TEST_CASE("laterite shares every rule of dirt")
 	{
 		CHECK(terrainGroup(LATERITE) == TerrainGroup::Barren);

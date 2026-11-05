@@ -704,7 +704,10 @@
     "overgrown_road",
     "laterite",
     "cliffs",
-    "molten_lava_pool"
+    "molten_lava_pool",
+    "slate_ashlar",
+    "basalt_causeway",
+    "scoria_blocks"
   ],
   "bindings": {
     "water": "water",
@@ -753,7 +756,10 @@
     "overgrown_road": "overgrown_road",
     "laterite": "laterite",
     "cliffs": "cliffs",
-    "molten_lava_pool": "molten_lava_pool"
+    "molten_lava_pool": "molten_lava_pool",
+    "slate_ashlar": "slate_ashlar",
+    "basalt_causeway": "basalt_causeway",
+    "scoria_blocks": "scoria_blocks"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

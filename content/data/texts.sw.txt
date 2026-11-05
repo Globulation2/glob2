@@ -5718,6 +5718,12 @@ Udongo wa lateriti
 Majabali
 [molten_lava_pool]
 Dimbwi la lava iliyoyeyuka
+[slate_ashlar]
+Vibao vya slate
+[basalt_causeway]
+Njia ya bazalti
+[scoria_blocks]
+Matofali ya skoria
 [terrain group water]
 Maji
 [terrain group sand]

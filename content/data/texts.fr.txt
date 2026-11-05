@@ -5742,6 +5742,12 @@ Latérite
 Falaises
 [molten_lava_pool]
 Bassin de lave en fusion
+[slate_ashlar]
+Dallage d'ardoise
+[basalt_causeway]
+Chaussée de basalte
+[scoria_blocks]
+Blocs de scorie
 [terrain group water]
 Eau
 [terrain group sand]

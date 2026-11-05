@@ -5742,6 +5742,12 @@ Laterit
 Útesy
 [molten_lava_pool]
 Jazierko roztavenej lávy
+[slate_ashlar]
+Bridlicová dlažba
+[basalt_causeway]
+Čadičová cesta
+[scoria_blocks]
+Bloky trosky
 [terrain group water]
 Voda
 [terrain group sand]

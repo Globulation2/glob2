@@ -5742,6 +5742,12 @@ AI 생성 아님
 절벽
 [molten_lava_pool]
 용암 웅덩이
+[slate_ashlar]
+점판암 포석
+[basalt_causeway]
+현무암 둑길
+[scoria_blocks]
+스코리아 블록
 [terrain group water]
 물
 [terrain group sand]

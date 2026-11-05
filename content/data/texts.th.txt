@@ -5718,6 +5718,12 @@ AI ทำงาน​อย่างไร
 หน้าผา
 [molten_lava_pool]
 บ่อลาวาหลอมเหลว
+[slate_ashlar]
+แผ่นหินชนวน
+[basalt_causeway]
+ทางหินบะซอลต์
+[scoria_blocks]
+ก้อนหินสกอเรีย
 [terrain group water]
 น้ำ
 [terrain group sand]

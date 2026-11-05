@@ -5742,6 +5742,12 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 منحدرات
 [molten_lava_pool]
 بركة حمم منصهرة
+[slate_ashlar]
+حجارة الأردواز
+[basalt_causeway]
+جسر البازلت
+[scoria_blocks]
+كتل الخبث البركاني
 [terrain group water]
 ماء
 [terrain group sand]

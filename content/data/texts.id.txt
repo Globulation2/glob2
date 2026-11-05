@@ -5742,6 +5742,12 @@ Laterit
 Tebing
 [molten_lava_pool]
 Kolam lava cair
+[slate_ashlar]
+Ubin batu sabak
+[basalt_causeway]
+Jalan basal
+[scoria_blocks]
+Balok skoria
 [terrain group water]
 Air
 [terrain group sand]

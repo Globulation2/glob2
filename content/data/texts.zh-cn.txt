@@ -5742,6 +5742,12 @@ AI 生成
 悬崖
 [molten_lava_pool]
 熔岩池
+[slate_ashlar]
+板岩铺路
+[basalt_causeway]
+玄武岩堤道
+[scoria_blocks]
+火山渣砌块
 [terrain group water]
 水
 [terrain group sand]

@@ -5718,6 +5718,12 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 খাড়া পাহাড়
 [molten_lava_pool]
 গলিত লাভার পুকুর
+[slate_ashlar]
+স্লেট পাথরের পথ
+[basalt_causeway]
+ব্যাসল্ট বাঁধ
+[scoria_blocks]
+স্কোরিয়া পাথরের ব্লক
 [terrain group water]
 জল
 [terrain group sand]

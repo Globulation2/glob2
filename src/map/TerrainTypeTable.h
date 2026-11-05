@@ -107,6 +107,12 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(CLIFFS, G::Obstacles, "cliffs", "[cliffs]", {118, 92, 70}, {136, 108, 82}),
 		// Red-hot crust on bright yellow molten channels: plays exactly like lava.
 		authored(MOLTEN_LAVA_POOL, G::Lava, "molten_lava_pool", "[molten_lava_pool]", {214, 74, 14}, {183, 63, 12}),
+		// Blue-grey slate slabs in random ashlar: plays exactly like road.
+		authored(SLATE_ASHLAR, G::Paths, "slate_ashlar", "[slate_ashlar]", {91, 94, 97}, {104, 108, 118}),
+		// Polygonal basalt in pale ash joints: plays exactly like road.
+		authored(BASALT_CAUSEWAY, G::Paths, "basalt_causeway", "[basalt_causeway]", {63, 61, 60}, {76, 74, 76}),
+		// Dressed porous scoria in basketweave: plays exactly like road.
+		authored(SCORIA_BLOCKS, G::Paths, "scoria_blocks", "[scoria_blocks]", {74, 68, 63}, {88, 76, 68}),
 	}};
 	return rows;
 }();

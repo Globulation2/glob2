@@ -5742,6 +5742,12 @@ CPU %0%
 Γκρεμοί
 [molten_lava_pool]
 Λίμνη λιωμένης λάβας
+[slate_ashlar]
+Πλάκες σχιστόλιθου
+[basalt_causeway]
+Βασαλτικός δρόμος
+[scoria_blocks]
+Όγκοι σκωρίας
 [terrain group water]
 Νερό
 [terrain group sand]

@@ -6862,6 +6862,12 @@ GL மட்டும்
 செங்குத்துப் பாறைகள்
 [molten_lava_pool]
 உருகிய லாவா குளம்
+[slate_ashlar]
+சிலேட் கற்பலகைகள்
+[basalt_causeway]
+பசால்ட் பாதை
+[scoria_blocks]
+ஸ்கோரியா கற்கட்டிகள்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

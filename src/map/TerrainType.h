@@ -73,7 +73,12 @@ enum TerrainType : std::uint16_t
 	CLIFFS=45,
 	// Bright molten lava pool (Lava, like lava), format 207.
 	MOLTEN_LAVA_POOL=46,
-	TERRAIN_COUNT=47,
+	// Rock paths (Paths, like road), format 208: blue-grey slate slabs in random
+	// ashlar, polygonal basalt drifted with ash, and dressed scoria in basketweave.
+	SLATE_ASHLAR=47,
+	BASALT_CAUSEWAY=48,
+	SCORIA_BLOCKS=49,
+	TERRAIN_COUNT=50,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -108,6 +113,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_LATERITE = 44;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 45;
 // Format 206 ended the built-ins at CLIFFS.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL = 46;
+// Format 207 ended the built-ins at MOLTEN_LAVA_POOL.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_ROCK_PATHS = 47;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

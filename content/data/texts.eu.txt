@@ -5742,6 +5742,12 @@ Laterita
 Labarrak
 [molten_lava_pool]
 Laba urtuaren putzua
+[slate_ashlar]
+Arbel-lauzak
+[basalt_causeway]
+Basaltozko galtzada
+[scoria_blocks]
+Eskoria-blokeak
 [terrain group water]
 Ura
 [terrain group sand]

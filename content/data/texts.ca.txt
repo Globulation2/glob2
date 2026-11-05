@@ -5742,6 +5742,12 @@ Laterita
 Penya-segats
 [molten_lava_pool]
 Bassa de lava fosa
+[slate_ashlar]
+Llosa de pissarra
+[basalt_causeway]
+Calçada de basalt
+[scoria_blocks]
+Blocs d'escòria
 [terrain group water]
 Aigua
 [terrain group sand]

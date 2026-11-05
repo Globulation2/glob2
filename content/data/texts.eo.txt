@@ -5742,6 +5742,12 @@ Laterito
 Klifoj
 [molten_lava_pool]
 Lageto de fandita lafo
+[slate_ashlar]
+Ardezaj platoj
+[basalt_causeway]
+Bazalta digvojo
+[scoria_blocks]
+Skoriaj blokoj
 [terrain group water]
 Akvo
 [terrain group sand]

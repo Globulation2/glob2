@@ -5742,6 +5742,12 @@ Suolo lateritico
 Scogliere
 [molten_lava_pool]
 Pozza di lava fusa
+[slate_ashlar]
+Lastre d'ardesia
+[basalt_causeway]
+Selciato di basalto
+[scoria_blocks]
+Blocchi di scoria
 [terrain group water]
 Acqua
 [terrain group sand]

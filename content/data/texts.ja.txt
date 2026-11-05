@@ -5742,6 +5742,12 @@ AI 生成ではない
 断崖
 [molten_lava_pool]
 溶岩の池
+[slate_ashlar]
+スレートの敷石
+[basalt_causeway]
+玄武岩の石畳
+[scoria_blocks]
+スコリアのブロック
 [terrain group water]
 水
 [terrain group sand]

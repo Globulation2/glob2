@@ -5742,6 +5742,12 @@ FFmpeg није доступан, па је снимање искључено. �
 Литице
 [molten_lava_pool]
 Језеро растопљене лаве
+[slate_ashlar]
+Плоче од шкриљца
+[basalt_causeway]
+Базалтни пут
+[scoria_blocks]
+Блокови шљаке
 [terrain group water]
 Вода
 [terrain group sand]

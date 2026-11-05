@@ -6862,6 +6862,12 @@ Lupang laterita
 Bangin
 [molten_lava_pool]
 Lawa ng tunaw na lava
+[slate_ashlar]
+Tisa ng pisarra
+[basalt_causeway]
+Daang basalto
+[scoria_blocks]
+Bloke ng eskorya
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

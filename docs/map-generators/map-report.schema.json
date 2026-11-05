@@ -568,6 +568,15 @@
         "molten_lava_pool": {
           "$ref": "#/$defs/coverage"
         },
+        "slate_ashlar": {
+          "$ref": "#/$defs/coverage"
+        },
+        "basalt_causeway": {
+          "$ref": "#/$defs/coverage"
+        },
+        "scoria_blocks": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

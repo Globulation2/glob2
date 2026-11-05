@@ -5742,6 +5742,12 @@ Laterit
 Uçurumlar
 [molten_lava_pool]
 Erimiş lav gölü
+[slate_ashlar]
+Arduvaz kaplama
+[basalt_causeway]
+Bazalt geçit
+[scoria_blocks]
+Cüruf blokları
 [terrain group water]
 Su
 [terrain group sand]

@@ -5742,6 +5742,12 @@ Laterit
 Klippen
 [molten_lava_pool]
 Lavasee
+[slate_ashlar]
+Schieferplatten
+[basalt_causeway]
+Basaltdamm
+[scoria_blocks]
+Schlackenblöcke
 [terrain group water]
 Wasser
 [terrain group sand]

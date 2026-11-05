@@ -6862,6 +6862,12 @@ MCP सर्व्हर सक्षम करा
 कडे
 [molten_lava_pool]
 वितळलेल्या लावाचे तळे
+[slate_ashlar]
+स्लेटच्या फरशा
+[basalt_causeway]
+बेसाल्टचा मार्ग
+[scoria_blocks]
+स्कोरियाचे ठोकळे
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]
