@@ -2764,7 +2764,7 @@ TEST_SUITE("TerrainValidation")
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
-			{.display = true, .width = 1024, .height = 1280, .seed = 7331});
+			{.display = true, .width = 1024, .height = 1536, .seed = 7331});
 		globals->terrainCompositor().prepare(false, 0);
 		glob2test::HeadlessGame fixture({.wDec = 5,
 										 .hDec = 6,
@@ -2774,7 +2774,7 @@ TEST_SUITE("TerrainValidation")
 										 .seed = 7331});
 		auto &map = fixture.game.map;
 		// Ocean and a sand beach on the left, as in the mixed gallery.
-		for (int y = 0; y < 40; ++y)
+		for (int y = 0; y < 48; ++y)
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 5)
@@ -2784,16 +2784,16 @@ TEST_SUITE("TerrainValidation")
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row on a four-cell pitch, so interior variants, boundaries and seams
-		// are all visible in the 40 rendered rows (room for 50 types).
+		// are all visible in the 48 rendered rows (room for 60 types).
 		std::vector<TerrainType> types;
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
 		REQUIRE(types.size() == TERRAIN_COUNT - BOULDERS);
-		REQUIRE(types.size() <= 50);
+		REQUIRE(types.size() <= 60);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..39 are rendered
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..47 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
 					map.paintCell(ox + dx, oy + dy, types[n]);
@@ -2813,9 +2813,9 @@ TEST_SUITE("TerrainValidation")
 			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
 		glob2test::observeMap(map,scene);
-		fixture.game.drawMapTerrain(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapTerrain(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		// Raised obstacle decor is drawn with the resources, row by row.
-		fixture.game.drawMapResources(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
@@ -2905,10 +2905,12 @@ TEST_SUITE("TerrainValidation")
 					material.decor.connectedInterior.end());
 				for (int frame : frames)
 				{
+					// Foliage stands one cell above its own; terraces stand taller.
 					auto *hd = decor->baseFrame(frame);
 					REQUIRE(hd);
-					CHECK(hd->getW() == 128);
-					CHECK(hd->getH() == 256);
+					CHECK(hd->getW() == 4 * decor->getW(frame));
+					CHECK(hd->getH() == 4 * decor->getH(frame));
+					CHECK(hd->getH() >= 256);
 				}
 			}
 			else if (material.key == "boulders")
