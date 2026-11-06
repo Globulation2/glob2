@@ -40,8 +40,7 @@ class SmoothBorders
   private:
 	struct NoiseLayer
 	{
-		// At most ten lattice vertices span a tile at the 4px finest spacing,
-		// shifted by half a spacing (see JaggedPhase).
+		// At most ten lattice vertices span a tile at the 4px finest spacing.
 		static constexpr int Stride = 10;
 		int shift = 0, offsetX = 0, offsetY = 0;
 		// Linear interpolation leaves creases between lattice points.
@@ -58,9 +57,9 @@ class SmoothBorders
 		MaterialId material = 0;
 		std::array<NoiseLayer, 2> noise{}; // Broad meander: the period and half of it.
 		NoiseLayer detail{};               // Fine edge roughness at DetailPeriod.
-		// Fractal grit at 32, 16, 8 and 4 px, each 0.6 of the last; the finest
-		// two ridged. Irregular at every scale, like a natural coastline.
-		std::array<NoiseLayer, 4> grit{};
+		// Light grit at 16 px and, ridged, 8 px: the irregularity left below
+		// the teeth (Pair), steeply weaker at finer scales as on real coasts.
+		std::array<NoiseLayer, 2> grit{};
 		float feather = 1;   // Pixels; the ramp width shared with a competitor is the mean.
 		float bias = 0;      // Saddle bias that joins diagonal lobes of this material.
 	};
@@ -77,15 +76,39 @@ class SmoothBorders
 	std::array<float, 4> cornerWiggle{};  // Multiplicative noise strength per corner.
 	std::array<float, 4> cornerDetail{};  // Fine roughness strength per corner.
 	std::array<float, 4> cornerJagged{};  // Angular grit strength per corner.
-	std::array<float, 4> cornerSpeckle{}; // Pixels pebbles reach across a border, per corner.
 	std::array<float, 4> cornerSquareness{}; // 0 round to 1 square, per corner.
 	bool anyShare = false, fullShare = false;
 	// The tile's world origin in logical pixels and the look seed, for pebbles.
 	float originX = 0, originY = 0;
 	std::uint32_t seed = 0;
-	// Each material's pebbles: the share of one at a Q8 local position, 0 to 1.
+	// One axis of a pair's teeth: value noise fine along one axis (the edge)
+	// and broad across it, so a contour displaced by it cannot fold back on
+	// itself into islands or overhangs.
+	struct EdgeLayer
+	{
+		static constexpr int Fine = 8, Long = 3;
+		int fineShift = 0, longShift = 0; // Log2 of the Q8 lattice spacings.
+		int fineOffset = 0, longOffset = 0;
+		float weight = 0;
+		float vertices[Long][Fine]{};
+		float at(int fine, int along, bool linear) const;
+	};
+	// The shape the dominant material gives a contact (Profile::teeth): pure in
+	// the pair and world position, added antisymmetrically to the pair's
+	// distance, so both tiles of an edge agree and weights still sum to one.
+	struct Pair
+	{
+		float amplitude = 0; // Signed pixels from the lower field's side.
+		bool linear = false;
+		std::array<EdgeLayer, 3> alongX{}, alongY{}; // Fine along x, fine along y.
+	};
+	std::array<Pair, 15> pairs{};
+	static unsigned pairIndex(unsigned f, unsigned g); // f < g < 6.
+	// Each material's grains: the push of one at a Q8 local position, 0 to 1.
 	float pebble(unsigned field, int px, int py) const;
 	std::array<std::uint32_t, 6> pebbleSalt{};
+	std::array<float, 6> pebbleReach{}; // Pixels each field's clasts reach; 0 sheds none.
+	std::array<bool, 6> angular{};
 	int width = 0, height = 0; // Map size in cells, for wrapping pebbles.
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);
 };

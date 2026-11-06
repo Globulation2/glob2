@@ -163,6 +163,16 @@ def _validate(document, root):
         integer(p.get("squareness_q8", 0), 0, 256, "Smooth squareness")
         integer(p.get("detail_q8", 0), 0, 1024, "Smooth detail")
         integer(p.get("jagged_q8", 0), 0, 2048, "Smooth jagged grit")
+        for field in ("teeth_q8", "teeth_form", "facets", "clasts"):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
+        integer(p.get("teeth_q8", 0), 0, 2560, "Edge teeth")
+        if p.get("teeth_form", "points") not in ("points", "lobes"):
+            raise ValueError("Teeth form must be points or lobes")
+        if not isinstance(p.get("facets", False), bool):
+            raise ValueError("Facets must be a boolean")
+        if p.get("clasts", "none") not in ("none", "round", "angular"):
+            raise ValueError("Clasts must be none, round or angular")
         if p.get("wiggle_period", 64) not in (32, 64, 128, 256):
             raise ValueError("Smooth wiggle period must be 32, 64, 128 or 256 pixels")
         if version == 1 and "feather_q8" in p:

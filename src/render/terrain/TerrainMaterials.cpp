@@ -168,6 +168,19 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.amplitude = integerInRange(p.value("amplitude_q8", nlohmann::json(512)), 0, 1024);
 		v.speckle = integerInRange(p.value("speckle_q8", nlohmann::json(0)), 0, 1024);
 		v.bridge = integerInRange(p.value("bridge_q8", nlohmann::json(0)), 0, 1024);
+		for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts"})
+			require(version >= 4 || !p.contains(field), "teeth, facets and clasts require catalog version 4");
+		v.teeth = integerInRange(p.value("teeth_q8", nlohmann::json(0)), 0, 2560);
+		const auto form = p.value("teeth_form", std::string{"points"});
+		require(form == "points" || form == "lobes", "teeth form must be points or lobes");
+		v.lobes = form == "lobes";
+		const auto facets = p.value("facets", nlohmann::json(false));
+		require(facets.is_boolean(), "facets must be a boolean");
+		v.facets = facets.get<bool>();
+		const auto clasts = p.value("clasts", std::string{"none"});
+		require(clasts == "none" || clasts == "round" || clasts == "angular", "clasts must be none, round or angular");
+		v.clasts = clasts == "round" ? Profile::Clasts::Round
+			: clasts == "angular" ? Profile::Clasts::Angular : Profile::Clasts::None;
 		v.shearScale = version >= 3 ? 256 : 128;
 		// A version-4 rough profile without smooth parameters takes them from its
 		// contour strength (amplitude times roughness): a quarter as the broad
@@ -181,6 +194,13 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			if (!p.contains("detail_q8")) v.detail = std::min(1024, strength / 8);
 			if (!p.contains("jagged_q8")) v.jagged = std::min(2048, strength * (v.roughness + 256) / 512);
 			if (!p.contains("squareness_q8") && !v.roughness) v.squareness = 256;
+			// Teeth carry most of a rough edge's shape, at half a tile and below.
+			// Resistant edges (roughness from 320) break into straight facets and
+			// angular chips; softer ones scatter rounded grains.
+			if (!p.contains("teeth_q8")) v.teeth = std::min(2560, strength * 2);
+			if (!p.contains("facets")) v.facets = v.roughness >= 320;
+			if (!p.contains("clasts") && v.speckle)
+				v.clasts = v.facets ? Profile::Clasts::Angular : Profile::Clasts::Round;
 		}
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
 		if (smooth && !p.contains("contours_q12"))

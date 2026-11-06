@@ -147,6 +147,8 @@
     },
     {
       "key": "molten",
+      "teeth_q8": 1280,
+      "teeth_form": "lobes",
       "shape": "smooth",
       "precedence": 0,
       "feather_q8": 320,
@@ -330,6 +332,7 @@
     },
     {
       "key": "brush",
+      "clasts": "none",
       "shape": "contextual",
       "precedence": 20,
       "coast": "shore",
@@ -391,6 +394,7 @@
     },
     {
       "key": "turf",
+      "clasts": "none",
       "shape": "contextual",
       "precedence": 10,
       "coast": "shore",

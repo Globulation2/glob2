@@ -1720,7 +1720,8 @@ TEST_SUITE("TerrainMaterials")
 				{
 					auto &p = j["profiles"][i];
 					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
-							 "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8"})
+							 "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8", "teeth_q8",
+							 "teeth_form", "facets", "clasts"})
 						p.erase(field);
 					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
@@ -2330,6 +2331,7 @@ TEST_SUITE("TerrainMaterials")
 					const auto x = TerrainVisual::MaterialId(a), y = TerrainVisual::MaterialId(b);
 					CHECK(c.profileFor(x, y) == c.profileFor(y, x));
 					CHECK_FALSE((c.dominates(x, y) && c.dominates(y, x)));
+					CHECK(c.shapes(x, y) != c.shapes(y, x));
 				}
 		// Earlier catalogs keep the roughest-profile rule.
 		auto j = shippedCatalog();
@@ -2343,6 +2345,7 @@ TEST_SUITE("TerrainMaterials")
 		for (auto &p : j["profiles"])
 		{
 			p.erase("precedence"); p.erase("coast");
+			for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts"}) p.erase(field);
 			if (p.value("shape", "") != "smooth") continue;
 			p.erase("shape"); p.erase("wiggle_q8"); p.erase("wiggle_period"); p.erase("squareness_q8");
 			p["roughness_q8"] = 0;

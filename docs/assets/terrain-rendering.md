@@ -183,28 +183,50 @@ A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders
 `wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends),
 `squareness_q8` (0 round to 256 square corners), `detail_q8` (0–1024, Q8 pixels
 of fine roughness on a 16-pixel lattice) and `jagged_q8` (0–2048, Q8 pixels of
-grit). Grit is fractal noise of world position: octaves on 32-, 16-, 8- and
-4-pixel lattices that keep most of their strength down to the finest, the two
-finest ridged (folded at zero into sharp creases). Their sum is boosted and
-clipped to its bound, so contours break up irregularly at every scale with no
-regular rhythm, like a natural coastline.
+light grit on 16- and 8-pixel lattices, the finer ridged). These are noises of
+each material's own field, so they roughen both sides alike.
 
-`speckle_q8` scatters pebbles: half the cells of a 4-pixel world grid hold one
-of each material, 1.25 to 2.75 pixels across at a hashed offset, which pushes
-that material's border out by twice the profile's speckle. Grains of either
-material therefore lie detached across the other's edge and bite into it. The
-shift is applied to the pair's distance, antisymmetrically, so weights still
-sum to one and seams and surf ring the grains, and only where both fields have
-risen. `feather_q8` and `bridge_q8` keep their meanings.
+Most of a natural edge's shape comes from its **teeth**, which belong to the
+contact rather than to either material. One side of every contact shapes it
+(`Catalog::shapes`): the dominant material by border class and precedence, as
+in the real world, where the resistant side of an eroding contact keeps the
+headlands, the land shapes a pooled liquid's shore, and an advancing flow pushes
+its own front. `teeth_q8` (0–2560) of the contact's profile sets the
+displacement in Q8 pixels. The teeth are value noise of world position on 32-,
+16- and 8-pixel lattices along the edge, most of the energy at about one
+feature per tile edge and falling steeply at finer scales, folded at zero into
+crests. `teeth_form` chooses the polarity: `points` (the default) push sharp
+crests of the shaping material into its neighbour, with rounded bays between;
+`lobes` turn them round, so rounded tongues advance with sharp cusps pointing
+back, as lava fronts do. `facets` interpolates the teeth linearly so their
+flanks run straight, as broken rock does; the finest octave is faceted always.
+The lattice is fine along the edge and 128 pixels across it, blended by the
+bare splines' slope direction, so a contour displaced by teeth cannot fold back
+into islands or overhangs.
+
+**Clasts** are grains a material sheds across its own edges, whatever it meets:
+`clasts` is `none`, `round` (sand, soil) or `angular` (irregular chips at a
+hashed rotation, for rock and ice), and `speckle_q8` of the material's own
+profile sets their reach. Half the cells of an 8-pixel world grid hold one,
+2.5 to 5.5 pixels across, and each pushes its material's border out by a hashed
+share of twice the reach, so fewer grains reach the far side. Turf and brush
+shed none.
+
+Teeth and clasts are added to the pair's distance antisymmetrically, so
+weights still sum to one and seams and surf follow them, and they fade in only
+where both fields have risen, so they never reach a vertex or a uniform
+neighbouring cell. `feather_q8` and `bridge_q8` keep their meanings.
 
 A rough profile that names none of these takes them from its contour strength,
 `amplitude_q8 × roughness_q8 / 256`: a quarter of it as `wiggle_q8`, an eighth
-as `detail_q8`, and that strength times `(roughness_q8 + 256) / 512` as
-`jagged_q8`. Rock therefore breaks up most, soil, sand and turf roughen, and a
-beach is only slightly irregular. A profile without roughness (foliage that hides its own
-edge) gets square corners. Smooth profiles (roads, tracks, liquids, lava) keep
-their clean lines. `roughness_q8` and `contours_q12` no longer shape version-4
-contacts directly.
+as `detail_q8`, that strength times `(roughness_q8 + 256) / 512` as
+`jagged_q8`, and twice it as `teeth_q8`. From `roughness_q8` 320 its teeth are
+faceted and its clasts angular; below, a profile with `speckle_q8` sheds rounded
+grains. Rock therefore breaks up most, soil, sand and turf roughen, and a beach
+is only slightly irregular. A profile without roughness (foliage that hides its
+own edge) gets square corners. Smooth profiles (roads, tracks, liquids) keep
+their clean lines; lava sets lobed teeth. `roughness_q8` and `contours_q12` no
+longer shape version-4 contacts directly.
 
 The noises of one field together stay within the bound that keeps every field
 positive where its vertices reach, scaled down alike when a profile asks for

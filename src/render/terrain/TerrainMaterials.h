@@ -40,6 +40,18 @@ struct Profile
 	int feather = 256;    // Q8 native-pixel edge softness.
 	int amplitude = 512;  // Q8 pixel limit on local contour displacement.
 	int speckle = 0;      // Q8 pixel reach of detached pebbles beside an edge.
+	// Version 4: the shape the dominant side of a contact gives it (see
+	// Catalog::shapes). Teeth are Q8 pixels of displacement along the edge,
+	// sharp on one side and rounded on the other: points push sharp crests of
+	// the shaping material into its neighbour, as resistant rock does; lobes
+	// push rounded tongues with sharp re-entrant cusps, as an advancing flow
+	// does. Facets interpolate the teeth linearly, so flanks run straight.
+	int teeth = 0;
+	bool lobes = false, facets = false;
+	// Version 4: loose or broken grains this material sheds across its own
+	// edges into a neighbour, within speckle reach: none, rounded grains
+	// (sand, soil) or angular chips (rock, ice).
+	enum class Clasts : unsigned char { None, Round, Angular } clasts = Clasts::None;
 	int bridge = 0;       // Q8 pixel half-width of the neck joining diagonal lobes.
 	int shearScale = 128; // Version 3 reads shear curves as pixel displacement (256).
 	bool legacyEdges = false;
@@ -256,6 +268,10 @@ class Catalog
 	// Version 4: a's border class is stronger, or the same class with a higher
 	// edge precedence. Diagonal smooth contacts join the dominant material.
 	bool dominates(MaterialId a, MaterialId b) const;
+	// Version 4: a gives the contact of a and b its shape: the dominant
+	// material, or the lower key between equals. Pure in the pair, so every
+	// tile agrees, and exactly one of shapes(a, b) and shapes(b, a) holds.
+	bool shapes(MaterialId a, MaterialId b) const;
 	// Whether a seam shadow, fringe or surf band is drawn where a meets b.
 	bool bandsBetween(MaterialId a, MaterialId b) const
 	{
