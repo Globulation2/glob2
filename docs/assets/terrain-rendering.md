@@ -425,6 +425,20 @@ in `surfLand`; direct terrain stores its damping (256 minus the wash) in the
 otherwise unused fourth field of the foam record, so hand-built records keep the
 full wash.
 
+Seams and surf measure the distance to the shaped contour: the smooth field's
+distance plus the contact's teeth and the sample's own clasts, divided by the
+slope of that whole shaped distance. Teeth and clasts change within a few
+pixels along an edge, so without their slope a band would stand wide in front
+of each crest and vanish along its flanks. A sample counts only its own
+material's clasts: a neighbour's grain that stops short of the surface would
+otherwise ring the water with surf.
+
+In Legacy GL views at more than native density, the animated shoreline cells
+drawn over the static pages take full-detail coverage masks (32 to 128 texels
+a side, built by background workers nearest the view centre first); until a
+cell's mask lands it uses the native 16-texel mask, which would otherwise
+square off teeth and clasts at the waterline.
+
 Surf reads the same per-sample distance as seams, which is exact only within
 eight logical pixels of the edge, so each band and `reach_q8` plus
 `foam_width_q8` must end within 2048. Water/sand edges use the `beach` coast

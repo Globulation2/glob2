@@ -366,7 +366,9 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 					for (int t = across; t > 1; t >>= 1) ++layer.longShift;
 					layer.fineOffset = (fineOrigin % fine) * 256;
 					layer.longOffset = (longOrigin % across) * 256;
-					const int columns = std::min(EdgeLayer::Fine - 1, (fineOrigin % fine + 32) / fine + 1);
+					// One pixel beyond the tile too: band distances difference the teeth
+					// forward by a pixel, at the same world positions as the next tile.
+					const int columns = std::min(EdgeLayer::Fine - 1, (fineOrigin % fine + 33) / fine + 1);
 					const int rows = std::min(EdgeLayer::Long - 1, (longOrigin % across + 32) / across + 1);
 					const std::uint32_t layerSalt = salt ^ (0x3c6ef372u * (axis * 3 + octave + 1));
 					for (int y = 0; y <= rows; ++y)
@@ -480,6 +482,29 @@ Coverage SmoothBorders::at(int px, int py) const
 		if (pebbleReach[f] > 0)
 			grains[f] = pebbleReach[f] * pebble(f, px, py);
 	// Each pair's teeth from field f's side, evaluated once per sample.
+	const auto ridge = [](float n) { return 1 - 2 * std::abs(std::clamp(TeethContrast * n, -1.f, 1.f)) - TeethMean; };
+	// The pair's teeth at a Q8 position, with its edge's direction from the
+	// sample (across: the share of the edge running across x).
+	const auto teethAt = [&](const Pair &pair, int qx, int qy, float across)
+	{
+		float alongX = 0, alongY = 0;
+		// The finest octave is always faceted: small straight flanks meeting
+		// at corners read as a broken natural edge, rounded ones as ink.
+		for (unsigned o = 0; o < 3; ++o)
+		{
+			const bool linear = pair.linear || o == 2;
+			alongX += pair.alongX[o].at(qx, qy, linear);
+			alongY += pair.alongY[o].at(qy, qx, linear);
+		}
+		// An edge across x (slope along x) varies along y, and the reverse;
+		// diagonals blend both.
+		return pair.amplitude * (across * ridge(alongY) + (1 - across) * ridge(alongX));
+	};
+	const auto acrossOf = [&](unsigned lo, unsigned hi)
+	{
+		const float gx = rawX[lo] - rawX[hi], gy = rawY[lo] - rawY[hi], g2 = gx * gx + gy * gy;
+		return g2 > 1e-8f ? gx * gx / g2 : .5f;
+	};
 	std::array<float, 15> teeth{};
 	std::uint16_t teethDone = 0;
 	const auto teethOf = [&](unsigned f, unsigned g)
@@ -491,21 +516,7 @@ Coverage SmoothBorders::at(int px, int py) const
 		if (!(teethDone >> index & 1u))
 		{
 			teethDone |= std::uint16_t(1u << index);
-			const auto ridge = [](float n) { return 1 - 2 * std::abs(std::clamp(TeethContrast * n, -1.f, 1.f)) - TeethMean; };
-			float alongX = 0, alongY = 0;
-			// The finest octave is always faceted: small straight flanks meeting
-			// at corners read as a broken natural edge, rounded ones as ink.
-			for (unsigned o = 0; o < 3; ++o)
-			{
-				const bool linear = pair.linear || o == 2;
-				alongX += pair.alongX[o].at(px, py, linear);
-				alongY += pair.alongY[o].at(py, px, linear);
-			}
-			// An edge across x (slope along x) varies along y, and the reverse;
-			// diagonals blend both.
-			const float gx = rawX[lo] - rawX[hi], gy = rawY[lo] - rawY[hi], g2 = gx * gx + gy * gy;
-			const float across = g2 > 1e-8f ? gx * gx / g2 : .5f;
-			teeth[index] = pair.amplitude * (across * ridge(alongY) + (1 - across) * ridge(alongX));
+			teeth[index] = teethAt(pair, px, py, acrossOf(lo, hi));
 		}
 		return f == lo ? teeth[index] : -teeth[index];
 	};
@@ -514,6 +525,11 @@ Coverage SmoothBorders::at(int px, int py) const
 	// Both are antisymmetric in the pair, so weights still sum to one and seams
 	// and surf follow them, and both fade in only where the two fields have
 	// risen, so they never reach a vertex or a uniform neighbour.
+	const auto risenOf = [&](unsigned f, unsigned g)
+	{
+		const float risen = std::clamp((std::min(score[f], score[g]) - .02f) / .13f, 0.f, 1.f);
+		return risen * risen * (3 - 2 * risen);
+	};
 	const auto distance = [&](unsigned f, unsigned g)
 	{
 		const float gx = slopeX[f] - slopeX[g], gy = slopeY[f] - slopeY[g];
@@ -522,11 +538,43 @@ Coverage SmoothBorders::at(int px, int py) const
 		// that list the pair in either order then agree to the last bit.
 		const float shape = teethOf(f, g) + (grains[f] - grains[g]);
 		if (shape != 0)
-		{
-			const float risen = std::clamp((std::min(score[f], score[g]) - .02f) / .13f, 0.f, 1.f);
-			d += shape * risen * risen * (3 - 2 * risen);
-		}
+			d += shape * risenOf(f, g);
 		return d;
+	};
+	// The distance to the shaped contour, for seams and surf. Teeth and clasts
+	// displace the contour by a few pixels over a few pixels along it, so their
+	// own slope is as steep as the field's: without it a
+	// band would stand wide in front of each crest and vanish along its flanks
+	// and around grains. Dividing by the slope of the whole shaped distance
+	// (forward differences one pixel on, at the same world positions in every
+	// tile) gives the distance to straight flanks exactly.
+	const auto bandDistance = [&](unsigned f, unsigned g)
+	{
+		const float gx = slopeX[f] - slopeX[g], gy = slopeY[f] - slopeY[g];
+		const float g1 = std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		float d = (score[f] - score[g]) / g1;
+		// Only the sample's own grains: the neighbour's lie beyond its contour,
+		// and one that stops short of the surface would ring the water with surf.
+		const float shape = teethOf(f, g) + grains[f];
+		if (shape == 0)
+			return d;
+		const float risen = risenOf(f, g);
+		if (risen <= 0)
+			return d;
+		const unsigned lo = std::min(f, g), hi = std::max(f, g);
+		const auto &pair = pairs[pairIndex(lo, hi)];
+		const float across = pair.amplitude ? acrossOf(lo, hi) : 0;
+		const float sign = f == lo ? 1.f : -1.f;
+		const auto shapeAt = [&](int qx, int qy)
+		{
+			float s = pair.amplitude ? sign * teethAt(pair, qx, qy, across) : 0;
+			if (pebbleReach[f] > 0) s += pebbleReach[f] * pebble(f, qx, qy);
+			return s;
+		};
+		const float sx = (shapeAt(px + 256, py) - shape) * risen;
+		const float sy = (shapeAt(px, py + 256) - shape) * risen;
+		const float nx = gx / g1 + sx, ny = gy / g1 + sy;
+		return (d + shape * risen) / std::max(std::sqrt(nx * nx + ny * ny), .5f);
 	};
 	// Each material's distance to its strongest competitor ramps its weight
 	// over the two materials' mean feather. Two materials therefore sum to one
@@ -567,7 +615,7 @@ Coverage SmoothBorders::at(int px, int py) const
 		// A field that has not risen here has no contour within band reach, and a
 		// first-order distance to it would be meaningless.
 		if (g != top && (bands[top] >> g & 1u) && score[g] > MinimumBandScore)
-			if (const float d = std::max(0.f, distance(top, g)); d < nearest)
+			if (const float d = std::max(0.f, bandDistance(top, g)); d < nearest)
 			{
 				nearest = d;
 				out.neighbor = fields[g].material;
