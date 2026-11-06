@@ -1085,11 +1085,11 @@ TEST_SUITE("TerrainPresentation")
 		{
 			bool ready = false;
 			for (int attempt = 0; attempt < attempts && !ready; ++attempt)
-				ready = atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, whole, time);
+				ready = atlas.prepare(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, whole, time);
 			return ready;
 		};
 		REQUIRE(prepare(0, true, 200));
-		REQUIRE_FALSE(atlas.animationRegions().empty());
+		REQUIRE_FALSE(atlas.preparedRegions().empty());
 		GAGCore::Sprite::finishHighResolution();
 		// Water's crossfade changes the pixels every frame, from the one pass.
 		std::vector<Uint8> previous;
@@ -1098,7 +1098,7 @@ TEST_SUITE("TerrainPresentation")
 			CAPTURE(time);
 			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
 			REQUIRE(prepare(time, true, 1));
-			atlas.drawAnimation(gfx, 0, 0, true, time);
+			atlas.drawPrepared(gfx, 0, 0, true, time);
 			const auto pixels = terrainPixels(true);
 			if (time > 0) CHECK(pixels != previous);
 			previous = pixels;
@@ -1110,13 +1110,13 @@ TEST_SUITE("TerrainPresentation")
 				fixture.game.map.setVertexTerrain(x, y, GRASS);
 		glob2test::observeMap(fixture.game.map, scene);
 		REQUIRE(prepare(0, true, 300));
-		REQUIRE_FALSE(atlas.animationRegions().empty());
+		REQUIRE_FALSE(atlas.preparedRegions().empty());
 		GAGCore::Sprite::finishHighResolution();
 		for (int time = 0; time < 9; ++time)
 		{
 			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
 			REQUIRE(prepare(time, true, 1));
-			atlas.drawAnimation(gfx, 0, 0, true, time);
+			atlas.drawPrepared(gfx, 0, 0, true, time);
 			const auto pixels = terrainPixels(true);
 			if (time > 0) CHECK(pixels != previous);
 			previous = pixels;
@@ -1130,8 +1130,8 @@ TEST_SUITE("TerrainPresentation")
 			gfx.drawFilledRect(0, 0, 2048, 2048, 11, 23, 37);
 			const auto hidden = terrainPixels(true);
 			REQUIRE(prepare(9, false, 1));
-			CHECK(atlas.animationRegions().empty());
-			atlas.drawAnimation(gfx, 0, 0, false, 9);
+			CHECK(atlas.preparedRegions().empty());
+			atlas.drawPrepared(gfx, 0, 0, false, 9);
 			CHECK(terrainPixels(true) == hidden);
 		}
 		gfx.endMapTransform();

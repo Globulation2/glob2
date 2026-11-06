@@ -26,9 +26,14 @@ struct AssetImage {
     // the graphics context compresses high-resolution artwork; empty below
     // 4x4 or when compression is off.
     struct Mip { int width, height; std::vector<unsigned char> pixels, compressed; };
-    // Set by the graphics context once it knows the device takes S3TC; images
-    // prepared afterwards arrive with their compressed levels.
+    // Whether workers prepare compressed levels. On by default on desktop GL,
+    // so artwork decoded before the graphics context exists has them too; the
+    // context turns it off when the device lacks S3TC.
+#if !defined(GLOB2_WEBGL2) && SDL_BYTEORDER == SDL_LIL_ENDIAN
+    inline static std::atomic<bool> compressHighResolution{true};
+#else
     inline static std::atomic<bool> compressHighResolution{false};
+#endif
     mutable SDL_Surface *surface = nullptr;
     mutable std::vector<unsigned char> uploadPixels;
     mutable std::vector<Mip> mips;

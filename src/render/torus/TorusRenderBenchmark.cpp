@@ -585,8 +585,6 @@ static int run(int argc, char **argv)
                             std::printf("BENCH_TERRAIN_SWITCH frame=%d active=legacy-gl\n", cameraFrame);
                             switchedBackend = true;
                         }
-                        gui.view.render.benchmarkForceTerrainPages = cameraFrame < 4 ||
-                            (!switchToHD && !switchToTiled && cameraFrame >= 68);
                         if (switchToTiled && cameraFrame >= 68)
                             frameOptions |= Game::DRAW_TILED_CAPTURE;
                         if (switchToHD && cameraFrame >= 68 && !globalContainer->settings.highResolutionArtwork)

@@ -41,8 +41,8 @@ TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
         p[2] = x < 32 ? 90 + (x + y) * 2 : (cell ? 40 : 170);
         p[3] = x < 48 ? 255 : (y * 8) % 256;
     }
-    GAGCore::AssetImage::compressHighResolution = true;
-    struct Restore { ~Restore() { GAGCore::AssetImage::compressHighResolution = false; } } restore;
+    const bool previous = GAGCore::AssetImage::compressHighResolution.exchange(true);
+    struct Restore { bool value; ~Restore() { GAGCore::AssetImage::compressHighResolution = value; } } restore{previous};
     GAGCore::AssetImage image(surface);
     image.prepareUpload(true);
     REQUIRE(image.mips.size() > 3);

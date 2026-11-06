@@ -265,17 +265,24 @@ void main() {
     vec4 indices = readRecord(cells, slot, mapSize);
     float halfTexel = 16.0 / artTilePixels;
     vec2 uv = clamp(fract(world) * 32.0, vec2(halfTexel), vec2(32.0 - halfTexel));
+#ifdef DIRECT_TERRAIN_HD_MASKS
+    // Legacy GL: one mask atlas at the display density. Zero is a uniform cell;
+    // 65535 a mixed cell whose mask is still being built, drawn from its first
+    // material until it lands.
+    float hd = readScalar(hdIndex, cell, mapSize);
+    bool mixed = hd > 0.0 && hd < 65535.0;
+#else
     float mask = readScalar(coverageIndex, cell, mapSize);
     if (mask >= 65535.0) discard;
+    bool mixed = mask > 0.0;
+#endif
     vec4 quiet = DIRECT_TERRAIN_SAMPLE(shoreCalm, cell);
     vec2 position = uv / 32.0;
     float calm = mix(mix(quiet.x, quiet.y, position.x), mix(quiet.z, quiet.w, position.x), position.y);
     vec4 color = material(indices.x, uv, calm);
-    if (mask > 0.0) {
+    if (mixed) {
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        float hd = readScalar(hdIndex, cell, mapSize);
-        vec4 weights = hd > 0.0 ? DIRECT_TERRAIN_SAMPLE(hdCoverage, hdMaskUV(hd - 1.0, uv))
-                                : DIRECT_TERRAIN_SAMPLE(coverage, maskAtlasUV(mask - 1.0, uv));
+        vec4 weights = DIRECT_TERRAIN_SAMPLE(hdCoverage, hdMaskUV(hd - 1.0, uv));
 #else
         vec4 weights = DIRECT_TERRAIN_SAMPLE(coverage, maskAtlasUV(mask - 1.0, uv));
 #endif
@@ -285,7 +292,7 @@ void main() {
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        vec3 edge = hd > 0.0 ? hdEdgeAt(hd - 1.0, uv) : edgeAt(mask - 1.0, uv);
+        vec3 edge = hdEdgeAt(hd - 1.0, uv);
 #else
         vec3 edge = edgeAt(mask - 1.0, uv);
 #endif

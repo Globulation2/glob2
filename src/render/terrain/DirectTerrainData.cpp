@@ -75,9 +75,65 @@ struct Atlas
 };
 }
 
-DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<TerrainVisual::Compositor> owner,
-                                                  int maxSize, bool streamCoverage)
+void DirectTerrainData::appendRecords(std::vector<Record> &variants, const TerrainVisual::Material &material, Uint16 first)
 {
+    const int blendSteps = material.animationFrames > 1 && material.animationTicks > 1
+        ? (material.animationBlendSteps ? material.animationBlendSteps : material.animationTicks) : 0;
+    variants.push_back({first, Uint16(material.animationFrames), Uint16(material.animationTicks), Uint16(blendSteps)});
+    const auto &surf = material.surf;
+    variants.push_back({Uint16(surf.period), Uint16(surf.reach), Uint16(surf.foam), Uint16(surf.foamWidth)});
+    variants.push_back({Uint16(surf.shallow), Uint16(surf.shallowWidth), Uint16(surf.wet), Uint16(surf.wetWidth)});
+    variants.push_back({surf.shallowColor[0], surf.shallowColor[1], surf.shallowColor[2], Uint16(surf.ticks)});
+    // The fourth field damps a liquid's wash against this material as land;
+    // zero keeps the full wash.
+    variants.push_back({surf.foamColor[0], surf.foamColor[1], surf.foamColor[2], Uint16(256 - material.shoreWash)});
+    const auto &seam = material.seam;
+    const auto cast = material.decor.connected.empty() ? seam.cast : 0;
+    variants.push_back({Uint16(seam.height), Uint16(cast), Uint16(seam.castWidth), Uint16(seam.fringe)});
+    variants.push_back({seam.fringeColor[0], seam.fringeColor[1], seam.fringeColor[2], Uint16(seam.fringeWidth)});
+    const auto &mean = material.calmMean;
+    variants.push_back({mean[0], mean[1], mean[2],
+        Uint16(material.shoreCalm ? 256 - TerrainVisual::ShoreCalmContrastQ8 : 0)});
+}
+
+Uint16 DirectTerrainData::Palette::slot(const TerrainVisual::Catalog &catalog, const TerrainVisual::Recipe &recipe,
+                                        TerrainVisual::MaterialId id)
+{
+    const auto variant = catalog.variantIndex(id, recipe.x, recipe.y, recipe.seed);
+    const auto key = std::pair{id, variant};
+    if (const auto found = slots.find(key); found != slots.end())
+        return found->second;
+    if (variants.size() / VariantRecords >= 65535)
+        throw std::runtime_error("Direct terrain variant metadata exceeds sixteen bits");
+    const auto slot = static_cast<Uint16>(variants.size() / VariantRecords);
+    appendRecords(variants, catalog.materials.at(id), 0);
+    slots.emplace(key, slot);
+    sources.push_back({id, variant});
+    return slot;
+}
+
+void DirectTerrainData::describeCell(Palette &palette, const TerrainVisual::Catalog &catalog,
+                                     const TerrainVisual::Recipe &recipe, Record &cell, Uint16 &mask, Pixel &calm)
+{
+    calm = recipe.calm;
+    cell = {};
+    if (recipe.uniform())
+    {
+        cell[0] = palette.slot(catalog, recipe, recipe.corners.front());
+        mask = 0;
+        return;
+    }
+    // The record's slots follow the coverage palette: corners, then stones.
+    std::array<TerrainVisual::MaterialId, 4> ids;
+    for (unsigned slot = 0, n = recipe.palette(ids); slot < n; ++slot)
+        cell[slot] = palette.slot(catalog, recipe, ids[slot]);
+    mask = PendingMask;
+}
+
+DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<TerrainVisual::Compositor> owner,
+                                                  int maxSize, Mode mode)
+{
+    const bool streamCoverage = mode != Mode::Native;
     const int width = map.getW(), height = map.getH();
     if (width <= 0 || height <= 0 || maxSize < AtlasWidth || width > maxSize || height > maxSize)
         throw std::runtime_error("Direct terrain map exceeds the texture limits");
@@ -86,6 +142,23 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
     auto &compositor = *owner;
     const auto &catalog = compositor.catalog();
     const auto count = std::size_t(width) * height;
+    if (mode == Mode::Tables)
+    {
+        DirectTerrainData data{};
+        data.cells.resize(count);
+        data.masks.resize(count);
+        data.calm.resize(count);
+        if (count * (sizeof(Record) + sizeof(Uint16) + sizeof(Pixel) + sizeof(Uint8)) > TextureBudget)
+            throw std::runtime_error("Direct terrain map tables exceed the texture budget");
+        for (int y = 0; y < height; ++y)
+            for (int x = 0; x < width; ++x)
+            {
+                const auto i = map.coordToIndex(x, y);
+                if (i % 64 == 0) co_yield 0;
+                describeCell(data.palette, catalog, compositor.describe(map, x, y), data.cells[i], data.masks[i], data.calm[i]);
+            }
+        co_return data;
+    }
     Atlas<Pixel> art;
     Atlas<Pixel, MaskPixels> coverage;
     Atlas<Uint16, MaskPixels> edges;
@@ -120,23 +193,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
             });
         }
         const auto slot = static_cast<Uint16>(variants.size() / VariantRecords);
-        const int blendSteps = material.animationFrames > 1 && material.animationTicks > 1
-            ? (material.animationBlendSteps ? material.animationBlendSteps : material.animationTicks) : 0;
-        variants.push_back({first, Uint16(material.animationFrames), Uint16(material.animationTicks), Uint16(blendSteps)});
-        const auto &surf = material.surf;
-        variants.push_back({Uint16(surf.period), Uint16(surf.reach), Uint16(surf.foam), Uint16(surf.foamWidth)});
-        variants.push_back({Uint16(surf.shallow), Uint16(surf.shallowWidth), Uint16(surf.wet), Uint16(surf.wetWidth)});
-        variants.push_back({surf.shallowColor[0], surf.shallowColor[1], surf.shallowColor[2], Uint16(surf.ticks)});
-        // The fourth field damps a liquid's wash against this material as land;
-        // zero keeps the full wash.
-        variants.push_back({surf.foamColor[0], surf.foamColor[1], surf.foamColor[2], Uint16(256 - material.shoreWash)});
-        const auto &seam = material.seam;
-        const auto cast = material.decor.connected.empty() ? seam.cast : 0;
-        variants.push_back({Uint16(seam.height), Uint16(cast), Uint16(seam.castWidth), Uint16(seam.fringe)});
-        variants.push_back({seam.fringeColor[0], seam.fringeColor[1], seam.fringeColor[2], Uint16(seam.fringeWidth)});
-        const auto &mean = material.calmMean;
-        variants.push_back({mean[0], mean[1], mean[2],
-            Uint16(material.shoreCalm ? 256 - TerrainVisual::ShoreCalmContrastQ8 : 0)});
+        appendRecords(variants, material, first);
         variantSlots.emplace(key, slot);
         sources.push_back({id, variant});
         return slot;
@@ -220,7 +277,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
 
 DirectTerrainData DirectTerrainData::build(const SceneMap &map, std::shared_ptr<TerrainVisual::Compositor> compositor, int maxSize)
 {
-    auto build = begin(map, std::move(compositor), maxSize, false);
+    auto build = begin(map, std::move(compositor), maxSize, Mode::Native);
     build.advance();
     return build.take();
 }

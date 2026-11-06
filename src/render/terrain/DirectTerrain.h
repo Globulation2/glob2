@@ -18,28 +18,30 @@ public:
     DirectTerrain();
     ~DirectTerrain();
 
-    // Legacy GL may restrict the draw to tile rectangles with missing HD pages.
+    // Programmable devices: one native direct-terrain packet for the view.
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
-              Uint32 visibleTeams, bool wholeMap, int animationTime,
-              std::span<const SDL_Rect> regions = {});
+              Uint32 visibleTeams, bool wholeMap, int animationTime);
     bool preparing() const;
-    // The map exceeded a device or budget limit; direct terrain will not draw it.
+    // A device or budget limit stopped direct terrain for this map.
     bool failed() const;
-    // Prepare the single HD pass above native density: visible variants'
-    // artwork near the display density, and full-detail masks for mixed cells
-    // (built in the background; native masks stand in until they land).
-    // Returns false until the native map metadata is ready.
-    bool prepareAnimation(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
-                          int right, int bottom, int viewportX, int viewportY,
-                          Uint32 visibleTeams, bool wholeMap, int animationTime);
-    std::span<const SDL_Rect> animationRegions() const;
-    // Draw every visible cell, with the time/view used by prepareAnimation.
-    void drawAnimation(GAGCore::GraphicContext &, int viewportX, int viewportY,
-                       bool wholeMap, int animationTime);
-    // Mixed visible cells still drawn with native masks after the last prepare.
+    // Legacy GL, at every zoom: artwork near the display density and a
+    // coverage mask per visible mixed cell, built in the background (a mixed
+    // cell draws its first material until its mask lands). Returns false
+    // until the map's per-cell tables are ready. A complete prepare (editor,
+    // captures) builds the tables and every visible mask now and waits for
+    // streamed HD artwork.
+    bool prepare(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
+                 int right, int bottom, int viewportX, int viewportY,
+                 Uint32 visibleTeams, bool wholeMap, int animationTime, bool complete = false);
+    std::span<const SDL_Rect> preparedRegions() const;
+    // Draw the prepared view, with the time and view prepare used.
+    void drawPrepared(GAGCore::GraphicContext &, int viewportX, int viewportY,
+                      bool wholeMap, int animationTime);
+    // Mixed visible cells still waiting for their masks after the last prepare.
     std::size_t pendingHdMasks() const;
-    bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &, int left, int top, int right, int bottom) const;
+    // Nothing of this map can draw yet: show the overview.
+    bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;
     std::size_t textureBytes() const;
     std::size_t uploadBytes() const;
     unsigned draws() const;
@@ -48,11 +50,11 @@ public:
 
 private:
     void prepareHdMasks(const SceneMap &, int left, int top, int right, int bottom,
-                        int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile);
+                        int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile, bool complete);
     bool drawInternal(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
                       int right, int bottom, int viewportX, int viewportY,
                       Uint32 visibleTeams, bool wholeMap, int animationTime,
-                      std::span<const SDL_Rect>, bool prepareOnly);
+                      bool complete, bool prepareOnly);
     struct State;
     std::unique_ptr<State> state;
 };
