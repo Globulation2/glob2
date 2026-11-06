@@ -10,7 +10,7 @@ from .analysis import POLICIES, reanalyze
 from .bundles import inspect_bundle
 from .common import atomic_json, digest, read_json
 from .coordinator import Coordinator
-from .jobs import DEFAULT_GAME_TICKS, win_probability_threshold
+from .jobs import DEFAULT_GAME_TICKS, REMOVED_CLAIM_FIELDS, win_probability_threshold
 from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
 
 
@@ -28,25 +28,14 @@ class Planner:
         self.jobs, self.maps = [], {}
         if config.get('parameter_domain', 'search') not in ('search', 'legal'):
             raise ValueError('parameter_domain must be search or legal')
-        if 'resource_claims_active' in config:
-            if any(config['resource_claims_active'] not in self.bundles[build]['capabilities'].get('resource_claims_active_policies', []) for build in self.builds):
-                raise ValueError('active policy absent from pinned build catalog')
-        if 'resource_claims_policy' in config:
-            from .claim_policy import validate_policy
-            for build in self.builds:
-                validate_policy(config['resource_claims_policy'], self.bundles[build]['capabilities'])
+        removed = set(config) & set(REMOVED_CLAIM_FIELDS)
+        if removed:
+            raise ValueError('removed resource-claim research fields: ' + ', '.join(sorted(removed))
+                             + '; use resource_claims default or off')
+        if config.get('resource_claims', 'default') not in ('default', 'off'):
+            raise ValueError('resource_claims must be default or off')
         if config.get('resource_claims') == 'default' and any('resource_claims_default' not in self.bundles[build]['capabilities'] for build in self.builds):
             raise ValueError('build has no default resource-claim policy')
-        if 'resource_claims_movement_only' in config and any(self.bundles[build]['capabilities'].get('resource_claims_movement_only_version') != 2 for build in self.builds):
-            raise ValueError('build does not advertise movement-only observer version 2')
-        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 3 for build in self.builds):
-            raise ValueError('build does not advertise claim probe version 3')
-        if 'material_destinations' in config:
-            if type(config['material_destinations']) is not bool:
-                raise ValueError('material_destinations must be a boolean')
-            if config['material_destinations'] and any(
-                    self.bundles[build]['capabilities'].get('material_destinations_version') != 1 for build in self.builds):
-                raise ValueError('build does not advertise material destinations version 1')
         experiments = config.get('experiments', [])
         if not isinstance(experiments, list) or any(not isinstance(key, str) or not key for key in experiments):
             raise ValueError('experiments must be a list of experiment keys')
@@ -120,8 +109,7 @@ class Planner:
                             'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
-                            **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
+                            **({'resource_claims': config['resource_claims']} if 'resource_claims' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -171,8 +159,7 @@ class Planner:
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
-                            **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
+                            **({'resource_claims': config['resource_claims']} if 'resource_claims' in config else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)

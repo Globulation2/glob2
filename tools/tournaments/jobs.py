@@ -1,25 +1,15 @@
 """Job-type adapters; scheduling and transport have no experiment-specific logic."""
 import csv
 import gzip
-import json
 import re
 from pathlib import Path
 from .common import read_json
 
 _TYPES = {}
-_CLAIM_OBSERVERS = ('resource_claims_probe', 'resource_claims_movement_only')
-
-def _claims_off(config):
-    """True for a game set up without claims: an explicit resource_claims off,
-    or material_destinations (true or false) without a claim policy."""
-    if 'resource_claims_active' in config or 'resource_claims_policy' in config:
-        return False
-    return config.get('resource_claims') == 'off' or 'material_destinations' in config
-
-
-def _claim_sampling(config):
-    return next(config[key] for key in _CLAIM_OBSERVERS if key in config)
-
+# Research-era claim setups the engine no longer accepts. Reject them by name
+# so an old manifest fails clearly instead of as an unknown field.
+REMOVED_CLAIM_FIELDS = ('material_destinations', 'resource_claims_active', 'resource_claims_policy',
+                         'resource_claims_probe', 'resource_claims_movement_only')
 _UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
 DEFAULT_GAME_TICKS = 90000
 DEFAULT_WIN_PROBABILITY_PERMILLE = 950
@@ -128,8 +118,11 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims', 'resource_claims_active', 'resource_claims_policy', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
+        if self.kind == 'game' and set(config) & set(REMOVED_CLAIM_FIELDS):
+            raise ValueError('removed resource-claim research fields: ' + ', '.join(sorted(set(config) & set(REMOVED_CLAIM_FIELDS)))
+                             + '; use resource_claims default or off')
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
@@ -140,48 +133,13 @@ class EngineJob:
                 raise ValueError('benchmark_warmup_ticks must leave a positive measured window')
         if 'gradient_backend' in config and config['gradient_backend'] not in ('cpu','scalar','sse2','neon','opencl','vulkan','webgpu'):
             raise ValueError('invalid gradient_backend')
-        if self.kind == 'game' and 'material_destinations' in config:
-            if type(config['material_destinations']) is not bool:
-                raise ValueError('material_destinations must be a boolean')
-            if config['material_destinations'] and job['outputs'].get('replay'):
-                raise ValueError('material destinations cannot record replay output')
         if self.kind == 'game' and 'resource_claims' in config:
             # Without this key a new game uses its pinned engine's default:
             # claims off before the shipped default, contention-v1 after it.
             if config['resource_claims'] not in ('default', 'off'):
                 raise ValueError('resource_claims must be default or off')
-            if config['resource_claims'] == 'default' and any(k in config for k in ('material_destinations', 'resource_claims_active', 'resource_claims_policy')):
-                raise ValueError('resource_claims default excludes explicit claim setup')
-            if config['resource_claims'] == 'off' and any(k in config for k in ('resource_claims_active', 'resource_claims_policy')):
-                raise ValueError('resource_claims off excludes claim policies')
             if config['resource_claims'] == 'off' and job['outputs'].get('replay'):
                 raise ValueError('resource_claims off cannot record replay output')
-        if self.kind == 'game' and 'resource_claims_active' in config:
-            if config['resource_claims_active'] != 'prototype-stationary-v1' or config.get('material_destinations') is not True:
-                raise ValueError('active claims require known prototype and material destinations')
-            if job['outputs'].get('replay'):
-                raise ValueError('active claims exclude replay')
-        if 'resource_claims_policy' in config:
-            from .claim_policy import validate_policy
-            validate_policy(config['resource_claims_policy'])
-            if config.get('material_destinations') is not True or 'resource_claims_active' in config or job['outputs'].get('replay'):
-                raise ValueError('experimental claim policy requires material destinations and excludes other modes and replay')
-        if sum(key in config for key in _CLAIM_OBSERVERS) > 1:
-            raise ValueError('choose exactly one claim observer')
-        if 'resource_claims_probe' in config and _claims_off(config) and 'save' not in job['inputs']:
-            raise ValueError('active probe requires active new game or saved state')
-        if self.kind == 'game' and any(key in config for key in _CLAIM_OBSERVERS):
-            claims = _claim_sampling(config)
-            bounds = {'sample_every': (1, 1000000000), 'max_samples': (1, 1000000), 'max_bytes': (1024, 2147483647)}
-            if not isinstance(claims, dict) or set(claims) != set(bounds):
-                raise ValueError('claim observer requires sample_every, max_samples and max_bytes')
-            for key, (low, high) in bounds.items():
-                if type(claims[key]) is not int or not low <= claims[key] <= high:
-                    raise ValueError('invalid claim observer ' + key)
-            if 'resource-claims-shadow.jsonl.gz' not in job['outputs'].get('required', []):
-                raise ValueError('claim observer requires its compressed JSONL artifact')
-            if job['outputs'].get('result', 'full') != 'full':
-                raise ValueError('claim observer requires full result provenance')
         if self.kind == 'game' and 'resource_gradient_collection' in config:
             collection = config['resource_gradient_collection']
             _validate_resource_gradient_collection(collection)
@@ -211,7 +169,7 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'resource_claims', 'resource_claims_active', 'resource_claims_policy', 'win_probability_permille')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'resource_claims', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
             experiments = config.get('experiments', [])
             if (not isinstance(experiments, list) or len(experiments) > 64 or
@@ -246,12 +204,6 @@ class EngineJob:
                     'team-timeline' not in job['outputs'].get('telemetry', []) or
                     job['outputs'].get('log_mode', 'full') not in ('full', 'gameplay')):
                 raise ValueError('required gameplay telemetry needs game team-timeline and full or gameplay logs')
-        if 'require_movement_audit' in job.get('labels', {}):
-            required = job['labels']['require_movement_audit']
-            if type(required) is not bool:
-                raise ValueError('require_movement_audit must be a boolean')
-            if required and (self.kind != 'game' or not any(k in config for k in _CLAIM_OBSERVERS)):
-                raise ValueError('required movement audit needs an explicit game claim observer')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
@@ -302,15 +254,12 @@ class EngineJob:
             if 'save' not in inputs:
                 if config.get('resource_claims') == 'default' and 'resource_claims_default' not in capabilities:
                     raise ValueError('bundle has no default resource-claim policy')
-                # Claims-off setups (explicit off, or material_destinations
-                # without a policy: its meaning before the shipped default)
-                # must be explicit on engines whose new games default to claims.
-                if _claims_off(config) and capabilities.get('resource_claims_switch_version') == 1:
+                # Claims off must be explicit on engines whose new games default
+                # to claims; engines before the switch have no claims to disable.
+                if config.get('resource_claims') == 'off' and capabilities.get('resource_claims_switch_version') == 1:
                     if outputs.get('replay', False):
                         raise ValueError('claims-off games cannot record replay output')
                     add('--resource-claims', 'off')
-            if config.get('material_destinations', False):
-                args.append('--material-destinations')
             for experiment in config.get('experiments', []):
                 add('--experiment', experiment)
             # Planners freeze the threshold in the job. Low-level requests keep
@@ -322,24 +271,6 @@ class EngineJob:
             for telemetry in outputs.get('telemetry', []):
                 add('--telemetry', telemetry)
             if outputs.get('replay', False): args.append('--write-replay')
-            if 'resource_claims_active' in config:
-                add('--resource-claims-active', config['resource_claims_active'])
-            if 'resource_claims_policy' in config:
-                from .claim_policy import canonical_policy
-                add('--resource-claims-policy-json', canonical_policy(config['resource_claims_policy']))
-            if any(key in config for key in _CLAIM_OBSERVERS):
-                claims = _claim_sampling(config)
-                observer = next(key for key in _CLAIM_OBSERVERS if key in config)
-                capabilities = bundle.get('capabilities', {})
-                if observer == 'resource_claims_movement_only' and capabilities.get('resource_claims_movement_only_version') != 2:
-                    raise ValueError('bundle lacks movement-only observer version 2')
-                if observer == 'resource_claims_probe' and capabilities.get('resource_claims_probe_version') != 3:
-                    raise ValueError('bundle lacks claim probe version 3')
-                args.append('--'+observer.replace('_','-'))
-                for key, flag in (('sample_every', '--resource-claims-sample-every'),
-                                  ('max_samples', '--resource-claims-max-samples'),
-                                  ('max_bytes', '--resource-claims-max-bytes')):
-                    add(flag, claims[key])
             if 'resource_gradient_collection' in config:
                 collection = config['resource_gradient_collection']
                 args.append('--resource-gradient-probe')
@@ -402,65 +333,11 @@ class EngineJob:
                     not result['benchmark_run_cpu_ns'] or not 0<result['benchmark_measured_ticks']<=result['ticks']-job['config']['benchmark_warmup_ticks']):
                     raise ValueError('engine did not attest a measured CPU window')
             resolved = result.get('resolved', {})
-            if resolved.get('active_claim_policy') == 'experimental':
-                from .claim_policy import attested_policy_digest
-                attested_policy_digest(resolved)
-                if ('resource_claims_policy' not in job['config'] and 'save' not in job['inputs']
-                        and (_claims_off(job['config']) or resolved.get('resource_claims') != 'default')):
-                    raise ValueError('engine experimental claim policy differs from frozen request')
             if job['config'].get('resource_claims') == 'default' and resolved.get('resource_claims') != 'default':
                 raise ValueError('engine did not attest its default resource-claim policy')
-            if _claims_off(job['config']) and 'save' not in job['inputs'] and resolved.get('active_claim_policy', 'disabled') != 'disabled':
-                raise ValueError('engine claim policy differs from frozen claims-off request')
-            if 'resource_claims_policy' in job['config']:
-                from .claim_policy import normalized_policy, policy_digest
-                policy = job['config']['resource_claims_policy']
-                resolved = result.get('resolved', {})
-                if resolved.get('active_claim_policy') != 'experimental' or resolved.get('resource_claims_policy_config') != normalized_policy(policy) or resolved.get('resource_claims_policy_digest') != policy_digest(policy):
-                    raise ValueError('engine experimental claim policy differs from frozen request')
-            if 'material_destinations' in job['config'] and result.get('resolved', {}).get('material_destinations_enabled') is not job['config']['material_destinations']:
-                raise ValueError('engine material destination mode differs from frozen request')
-            if 'resource_claims_active' in job['config'] and result.get('resolved', {}).get('active_claim_policy') != job['config']['resource_claims_active']:
-                raise ValueError('engine active claim policy differs from frozen request')
-        if result.get('status') == 'completed' and any(key in job['config'] for key in _CLAIM_OBSERVERS):
-            from .resource_claims import ARTIFACT, trace_rows
-            mode = result.get('resolved', {}).get('material_destinations_enabled')
-            if type(mode) is not bool:
-                raise ValueError('engine did not attest saved/new material destination mode')
-            if 'material_destinations' in job['config'] and mode != job['config']['material_destinations']:
-                raise ValueError('engine material destination mode differs from frozen request')
-            attestation = result.get('resource_claims_shadow', {})
-            movement_only = 'resource_claims_movement_only' in job['config']
-            actual_policy = result.get('resolved', {}).get('active_claim_policy')
-            if movement_only and actual_policy not in ('disabled','prototype-stationary-v1','experimental'):
-                raise ValueError('movement-only observer lacks claim mode provenance')
-            active = actual_policy != 'disabled' if movement_only else True
-            if attestation.get('movement_only',False) is not movement_only:
-                raise ValueError('engine claim observation mode differs from request')
-            if attestation.get('schema_version') != 2 or attestation.get('enforced') is not active:
-                raise ValueError('engine did not attest requested claim enforcement mode')
-            if not movement_only:
-                expected_policy = ('experimental' if 'resource_claims_policy' in job['config']
-                                   else job['config'].get('resource_claims_active'))
-                # Saved-state identity freezes its policy. Do not silently
-                # relabel an experimental continuation as the old prototype.
-                if actual_policy not in ('prototype-stationary-v1', 'experimental') or (expected_policy is not None and actual_policy != expected_policy):
-                    raise ValueError('engine active claim policy differs from frozen request')
-            sampling = _claim_sampling(job['config'])
-            with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
-                rows = trace_rows(stream)
-                schema = next(rows)
-                if schema.get('movement_only') is not movement_only:
-                    raise ValueError('movement-only schema mismatch')
-                for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
-                    if sampling[config_key] != schema.get(schema_key):
-                        raise ValueError('resource claim sampling limits changed')
-                from .claim_journeys import attest_digests
-                for row in rows:
-                    if row['kind'] == 'journey':
-                        attest_digests([row['policy_digest']], result.get('resolved', {}))
-                if (movement_only or job.get('labels', {}).get('require_movement_audit')) and row['movement_audit']['coverage_known'] is not True:
-                    raise ValueError('required movement audit lacks known segment coverage')
+            # Engines before the claims switch attest nothing and have no claims.
+            if job['config'].get('resource_claims') == 'off' and resolved.get('resource_claims', 'off') != 'off':
+                raise ValueError('engine resource-claim mode differs from frozen claims-off request')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
             collection=job['config']['resource_gradient_collection']
             if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:
