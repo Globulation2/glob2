@@ -26,7 +26,7 @@ whether Emscripten emits single or double quotes. Changes to these rewriting
 rules bump the static packaging policy so changed output receives a new cache
 identity even when the build inputs are unchanged.
 
-The destination is `gs://glob2-browser-pharaoh-418820-20260909` in project
+The destination is `gs://glob2-browser` in project
 `bradley-personal-20261027`. Versioned JavaScript, WebAssembly and data objects receive
 explicit content types and immutable one-year caching. Publication uses
 `platforms/web/publish-static.py` to verify the complete package and upload its gzip
@@ -36,7 +36,7 @@ revalidation. All assets are uploaded before `index.html`, which is published la
 and also requires revalidation. Older assets remain available
 for open sessions and rollback; publication never synchronizes with deletion.
 The public entry point is
-<https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html>.
+<https://storage.googleapis.com/glob2-browser/index.html>.
 
 The release environment requires `GLOB2_BROWSER_WIF_PROVIDER` and
 `GLOB2_BROWSER_SERVICE_ACCOUNT` variables. The dedicated `glob2-browser-release`
