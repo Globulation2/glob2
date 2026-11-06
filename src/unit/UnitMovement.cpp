@@ -748,6 +748,11 @@ void Unit::handleMovementGoingToResource()
         }
         if(!supplier){handleActiveMaterialMovement();return;}
     }
+    handleClassicMaterialMovement();
+}
+
+void Unit::handleClassicMaterialMovement()
+{
     const MaterialClaimObservation claimObservation{*this};
 	Map *map=owner->map;
 

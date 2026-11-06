@@ -42,7 +42,7 @@ class Validator:
             if type(row.get(key)) is not bool: raise ValueError('invalid outcome boolean')
         if row.get('phase') not in ('movement','pickup'): raise ValueError('invalid outcome phase')
         if row.get('route_result') not in ('not_attempted','ready','pending','failed','arrived'): raise ValueError('invalid outcome route')
-        if row.get('fallback') not in ('none','wait','roam','release_job'): raise ValueError('invalid outcome fallback')
+        if row.get('fallback') not in ('none','wait','roam','release_job','gradient'): raise ValueError('invalid outcome fallback')
         if row.get('fallback_reason') not in ('none','no_resource','cooldown','path_failed'): raise ValueError('invalid outcome fallback reason')
         if (row['attempted'] and row.get('not_attempted_reason') is not None or
             not row['attempted'] and row.get('not_attempted_reason') not in ('held_claim','missing_field','cooldown','no_adjacent_candidate')):

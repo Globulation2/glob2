@@ -356,3 +356,15 @@ TEST_CASE("traffic sidestep and wait limit are omitted at defaults and have stri
         auto c=base;c.trafficWaitLimit=65;CHECK_THROWS(c.validate());
     }
 }
+TEST_CASE("gradient fallback is a new canonical value that leaves existing identities unchanged" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        auto wire=nlohmann::json::parse(base.canonicalJson());wire["fallback"]="gradient";
+        const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(parsed.fallback==ClaimPolicyConfig::Fallback::Gradient);CHECK(parsed.digest()!=base.digest());
+        CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("fallback")=="gradient");
+        CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+        wire["fallback"]="Gradient";CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+    }
+}

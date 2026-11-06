@@ -383,9 +383,12 @@ void Unit::handleActiveMaterialMovement()
     const auto& config=map.materialClaimPolicyConfig();
     auto& cadence=materialClaimPolicyState;
     const bool recoveryEnabled=experimental && config.usesRecovery();
+    using F=ResourceClaims::ClaimPolicyConfig::Fallback;
+    const bool gradientFallback=experimental && config.fallback==F::Gradient;
     const auto fallback=[&](unsigned failures) {
         cadence.fallbackCount=failures;
-        using F=ResourceClaims::ClaimPolicyConfig::Fallback;
+        // The movement itself follows the finished decision outcome below.
+        if(gradientFallback){if(observer)outcome->fallback="gradient";return;}
         const bool release=config.fallback==F::ReleaseJob || (config.fallback==F::BoundedWaitRelease && failures>=config.fallbackAfterDecisions);
         if(const auto* probe=map.resourceClaimProbe())probe->liveEvent(*this,release?ResourceClaims::Probe::LiveEvent::FallbackRelease:
             config.fallback==F::Roam?ResourceClaims::Probe::LiveEvent::FallbackRoam:ResourceClaims::Probe::LiveEvent::FallbackWait);
@@ -434,6 +437,11 @@ void Unit::handleActiveMaterialMovement()
             } else fallback(cadence.fallbackCount==UINT32_MAX?UINT32_MAX:cadence.fallbackCount+1);
         }
         if(observer)observer->finishDecisionOutcome(*outcome,*this);
+        // Also during route-admission cooldown: the worker never idles here.
+        if(gradientFallback) {
+            if(const auto* probe=map.resourceClaimProbe())probe->policyExtension(ResourceClaims::Probe::PolicyExtension::FallbackGradient);
+            handleClassicMaterialMovement();
+        }
         return;
     }
     if(experimental && !recoveryEnabled)cadence.fallbackCount=0;

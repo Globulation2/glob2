@@ -1105,6 +1105,13 @@ costs one bounded search and keeps the reservation, whereas a release would also
 discard the claim, reselect and route again. If the repair finds no path the
 ordinary route-failure release applies. The counter is saved and checksummed only
 for policies that set the limit.
+`fallback: "gradient"` (advertised as `fallback_gradient`): a decision that
+finds no claim (including one restricted by route-admission cooldown) runs the
+ordinary claims-off material movement for that decision, keeping the job; it
+neither idles nor releases, except where claims-off movement itself abandons an
+unreachable material. Failure accounting and the next decision's selection
+attempt are unchanged. Arriving next to stock, the worker reserves it through
+the ordinary pickup check.
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version

@@ -61,6 +61,8 @@ public:
     bool selectActiveMaterialClaim(const Uint16* field);
     bool prepareActiveMaterialPickup(int x,int y);
     void handleActiveMaterialMovement();
+    // The claims-off natural/market material movement for one decision.
+    void handleClassicMaterialMovement();
 	// Owner-thread hooks; excluded from immutable state record copies.
 	Unit* populationPrevious=nullptr;
 	Unit* populationNext=nullptr;

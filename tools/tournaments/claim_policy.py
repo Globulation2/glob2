@@ -7,7 +7,7 @@ import struct
 INTERVALS = {0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128}
 ENUMS = {
     'selection': {'first_available', 'closest_geometric'},
-    'fallback': {'wait', 'roam', 'release_job', 'bounded_wait_release'},
+    'fallback': {'wait', 'roam', 'release_job', 'bounded_wait_release', 'gradient'},
     'route_target': {'claimed_access', 'probe_then_gradient'},
     'pending_step': {'wait', 'direct_heading', 'gradient'},
 }
@@ -27,6 +27,7 @@ OPTIONS = {
 # Enum values added after their key; a build must advertise them by name.
 ENUM_OPTIONS = {
     ('pending_step', 'gradient'): 'pending_step_gradient',
+    ('fallback', 'gradient'): 'fallback_gradient',
 }
 MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE = 900
 # Claimants per source stay below spendable*permille/1000 (integer, rounded

@@ -874,4 +874,37 @@ TEST_SUITE("ActiveClaimRoutes")
             else CHECK(waits==arm.limit); // the last wait requests the repair
         }
     }
+
+    TEST_CASE("gradient fallback takes the claims-off material step and keeps the job")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        for(auto fallback:{Config::Fallback::Wait,Config::Fallback::Gradient}) for(unsigned version:{2u,5u}) {
+            CAPTURE(int(fallback));CAPTURE(version);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+            Config config;config.sourceVersion=version;config.fallback=fallback;
+            if(version==5) {config.pattern="final-r32-exact24-assembled-v1";config.patternFrame=Config::PatternFrame::NearestD4;config.opportunisticAdjacentPickup=true;}
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);auto* holder=fixture.addUnit(WORKER,11,11);
+            Assignment cleanup{*unit},holderCleanup{*holder};
+            // The only stock is held by another worker: selection finds nothing.
+            assign(*holder,*building,map,12,8);map.setMaterialAmountSlot(Uint32(map.coordToIndex(12,8)),WHEAT,1);
+            unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
+            unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            game.invalidateObservation();game.observeCompletedWorld();
+            const auto random=unit->entityRandom;
+            unit->handleActiveMaterialMovement();
+            CHECK_FALSE(unit->activeMaterialClaim);CHECK(unit->attachedBuilding==building);CHECK(unit->activity==Unit::ACT_FILLING);
+            if(fallback==Config::Fallback::Wait) {CHECK(unit->dx==0);CHECK(unit->dy==0);continue;}
+            const int dx=unit->dx,dy=unit->dy;const auto movement=unit->movement;const auto after=unit->entityRandom;
+            REQUIRE((dx||dy));
+            CHECK(map.warpDistMax(8+dx,8+dy,12,8)<map.warpDistMax(8,8,12,8));
+            // The same decision taken by the ordinary claims-off movement.
+            unit->entityRandom=random;unit->dx=0;unit->dy=0;unit->direction=UNIT_DIRECTION_NONE;
+            unit->handleClassicMaterialMovement();
+            CHECK(unit->dx==dx);CHECK(unit->dy==dy);CHECK(unit->movement==movement);CHECK(unit->entityRandom==after);
+        }
+    }
 }

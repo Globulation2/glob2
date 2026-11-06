@@ -64,6 +64,11 @@ OVERSUBSCRIPTION_PARITY = [
 # Engine-reported (game run resolved config/digest) canonical JSON for the
 # production policy with each overhead experiment enabled.
 OVERHEAD_PARITY = {
+    'fallback_gradient': [
+        (json.loads('{"destination_refresh_j":12,"fallback":"gradient","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"destination_refresh_j":12,"fallback":"gradient","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         'fba1cc861b773f435cf0e08a8899a444c6b0c16240a4fb22a2d1ba645e793309'),
+    ],
     'traffic_wait_limit': [
         (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_wait_limit":8,"use_primary_gradient":false}'),
          '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_wait_limit":8,"use_primary_gradient":false}',
@@ -252,6 +257,28 @@ class TrafficOptions(unittest.TestCase):
             for value, engine_json, engine_digest in OVERHEAD_PARITY[name]:
                 self.assertEqual(canonical_policy(value), engine_json)
                 self.assertEqual(policy_digest(value), engine_digest)
+
+
+class GradientFallback(unittest.TestCase):
+    def test_new_value_is_canonical_and_needs_capability(self):
+        base = PARITY[0][0]
+        option = base | {'fallback': 'gradient'}
+        self.assertEqual(validate_policy(option), option)
+        self.assertIn('"fallback":"gradient"', canonical_policy(option))
+        self.assertEqual(policy_digest(base), PARITY[0][2])
+        caps = {'resource_claims_policy_config_version': 5, 'resource_claims_active_policies': ['experimental'],
+            'resource_claims_policy_mixed_patterns': [{'name': base['pattern'], 'digest': base['pattern_digest'],
+                'format': 'mixed-v1', 'frame': 'nearest-d4-v1'}],
+            'resource_claims_policy_options': sorted(OPTIONS)}
+        with self.assertRaises(ValueError):
+            validate_policy(option, caps)
+        validate_policy(option, caps | {'resource_claims_policy_options': sorted(OPTIONS) + ['fallback_gradient']})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        self.assertIn('fallback_gradient', OVERHEAD_PARITY)
+        for value, engine_json, engine_digest in OVERHEAD_PARITY['fallback_gradient']:
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
 
 
 def journey_trace(release_reasons=None, filters=None):

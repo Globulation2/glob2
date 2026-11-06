@@ -12,7 +12,9 @@ namespace ResourceClaims
 struct ClaimPolicyConfig
 {
     enum class Selection : std::uint8_t { FirstAvailable, ClosestGeometric };
-    enum class Fallback : std::uint8_t { Wait, Roam, ReleaseJob, BoundedWaitRelease };
+    // Gradient: with no claim, take the ordinary claims-off material movement
+    // for that decision, keeping the job; selection retries as before.
+    enum class Fallback : std::uint8_t { Wait, Roam, ReleaseJob, BoundedWaitRelease, Gradient };
     enum class RouteTarget : std::uint8_t { ClaimedAccess, ProbeThenGradient };
     // Gradient: while a route computes or awaits admission, take the ordinary
     // natural-material gradient step (the claims-off movement) instead of
