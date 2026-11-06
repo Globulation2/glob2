@@ -583,10 +583,6 @@ Coverage SmoothBorders::at(int px, int py) const
 	Coverage out;
 	std::array<float, 4> raw{};
 	float total = 0;
-	unsigned top = 0;
-	for (unsigned f = 1; f < weighted; ++f)
-		if (score[f] > score[top])
-			top = f;
 	for (unsigned f = 0; f < weighted; ++f)
 	{
 		unsigned rival = f == 0 ? 1 : 0;
@@ -598,6 +594,14 @@ Coverage SmoothBorders::at(int px, int py) const
 		raw[f] = weighted == 1 ? 1.f : std::clamp(.5f + distance(f, rival) / ramp, 0.f, 1.f);
 		total += raw[f];
 	}
+	// The dominant field is the one the sample is coloured with, teeth and
+	// grains included, as the compositor records it. Choosing by raw score
+	// instead would leave a tooth's trough coloured by the neighbour but
+	// measured from the other side, with no seam or surf where they meet.
+	unsigned top = 0;
+	for (unsigned f = 1; f < weighted; ++f)
+		if (raw[f] > raw[top])
+			top = f;
 	unsigned sum = 0;
 	for (unsigned f = 0; f < weighted; ++f)
 	{
