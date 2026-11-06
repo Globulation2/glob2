@@ -5,6 +5,16 @@
 using ResourceClaims::ClaimPolicyConfig;
 TEST_SUITE("ClaimPolicyConfig")
 {
+TEST_CASE("shipped default policy keeps the exact evaluated contention policy")
+{
+    // Canonical bytes of the policy evaluated for shipping (policy-contention.json).
+    constexpr std::string_view evaluated=R"({"claim_gradient_demand":true,"claim_trigger":"contention","contention_min_workers":2,"contention_radius":2,"destination_refresh_j":12,"fallback":"release_job","fallback_after_decisions":16,"max_claim_distance_factor_permille":2000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"refresh_switch_margin_permille":250,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"terrain_component_prefilter":true,"traffic_sidestep":true,"traffic_wait_limit":8,"use_primary_gradient":false})";
+    const auto shipped=ClaimPolicyConfig::shippedDefault();
+    CHECK(shipped.canonicalJson()==evaluated);
+    CHECK(ClaimPolicyConfig::parse(evaluated)==shipped);
+    CHECK(shipped.contentionTriggered());
+    CHECK(ClaimPolicyConfig::ShippedDefaultName=="contention-v1");
+}
 TEST_CASE("explicit policy JSON roundtrips canonical defaults and immutable asset identity")
 {
     const auto defaults=ClaimPolicyConfig::parse(R"({"source_version":1})");

@@ -148,6 +148,17 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(sourceVersion==5) {result["pattern_format"]="mixed-v1";result["pattern_frame"]=patternFrame==PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1";}
     return result.dump();
 }
+ClaimPolicyConfig ClaimPolicyConfig::shippedDefault()
+{
+    ClaimPolicyConfig c;
+    c.sourceVersion=5;c.pattern=std::string(Mixed::Final24R32Name);c.patternFrame=PatternFrame::NearestD4;
+    c.fallback=Fallback::ReleaseJob;c.pendingStep=PendingStep::Gradient;
+    c.destinationRefreshJ=12;c.refreshSwitchMarginPermille=250;
+    c.opportunisticAdjacentPickup=true;c.claimGradientDemand=true;c.terrainComponentPrefilter=true;
+    c.maxClaimDistanceFactorPermille=2000;c.trafficSidestep=true;c.trafficWaitLimit=8;
+    c.claimTrigger=ClaimTrigger::Contention;c.contentionMinWorkers=2;c.contentionRadius=2;
+    return c;
+}
 std::string ClaimPolicyConfig::digest() const {return Online::Sha256::hex(canonicalJson());}
 ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
 {

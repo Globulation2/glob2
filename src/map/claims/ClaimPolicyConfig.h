@@ -7,10 +7,15 @@
 
 namespace ResourceClaims
 {
-// Temporary, explicit live experiment. Defaults reproduce the format-195
-// prototype; none of these parameters enables claims in an ordinary game.
+// Live resource-claim policy. Member defaults reproduce the format-195
+// prototype; new games use shippedDefault() unless set up otherwise.
 struct ClaimPolicyConfig
 {
+    // The built-in policy every new game (single player, LAN, online, campaign,
+    // headless) starts with: the v5 assembled pattern, claims engaged only
+    // under contention. Changing it changes the simulation (SIM_REVISION).
+    static constexpr std::string_view ShippedDefaultName="contention-v1";
+    static ClaimPolicyConfig shippedDefault();
     enum class Selection : std::uint8_t { FirstAvailable, ClosestGeometric };
     // Gradient: with no claim, take the ordinary claims-off material movement
     // for that decision, keeping the job; selection retries as before.
