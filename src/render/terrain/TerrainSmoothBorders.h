@@ -59,8 +59,13 @@ class SmoothBorders
 		float feather = 1;   // Pixels; the ramp width shared with a competitor is the mean.
 		float bias = 0;      // Saddle bias that joins diagonal lobes of this material.
 	};
-	std::array<Field, 4> fields{};
-	unsigned count = 0;
+	// The tile's corner materials first: only they take coverage. Halo
+	// materials (Recipe::halo) follow and only give seams and surf a distance.
+	std::array<Field, 6> fields{};
+	unsigned count = 0, weighted = 0;
+	// Bit g of bands[f]: fields f and g draw a seam or surf band where they
+	// meet (Catalog::bandsBetween). Seams and surf measure only to those.
+	std::array<std::uint8_t, 6> bands{};
 	// Index into fields for each neighbourhood vertex, or -1 outside the palette.
 	std::array<int, 16> owner{};
 	std::array<int, 4> cornerShare{};     // Q12 per corner, TL TR BL BR.

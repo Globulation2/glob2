@@ -256,6 +256,17 @@ class Catalog
 	// Version 4: a's border class is stronger, or the same class with a higher
 	// edge precedence. Diagonal smooth contacts join the dominant material.
 	bool dominates(MaterialId a, MaterialId b) const;
+	// Whether a seam shadow, fringe or surf band is drawn where a meets b.
+	bool bandsBetween(MaterialId a, MaterialId b) const
+	{
+		const auto &x = materials[a], &y = materials[b];
+		if ((x.surf.period > 0) != (y.surf.period > 0))
+			return true;
+		if (x.seam.fringe || y.seam.fringe)
+			return true;
+		const auto &higher = x.seam.height > y.seam.height ? x.seam : y.seam;
+		return x.seam.height != y.seam.height && higher.cast && higher.castWidth;
+	}
 	// Whether laid stones are cut, not kept or dropped, where they meet this
 	// material (BorderClass::cutsStones; always false before version 4).
 	bool cutsStones(MaterialId id) const
@@ -318,11 +329,18 @@ struct Recipe
 	// Bit k set when corners[k] cuts stones (Catalog::cutsStones): samples
 	// covered by such a corner keep the smooth border.
 	std::uint8_t stoneCutCorners = 0;
+	// Neighbourhood materials that are no corner here but draw a seam or surf
+	// band against one. They never cover a sample of this cell; they give its
+	// seams and surf the distance to their contour beyond the tile edge, so the
+	// bands continue across it, even into a cell whose corners all agree.
+	static constexpr unsigned MaxHalo = 3;
+	std::uint8_t haloCount = 0;
+	std::array<MaterialId, MaxHalo> halo{};
 	// One material fills the whole cell: its corners agree and no stone
 	// border reaches it.
 	bool uniform() const
 	{
-		return !stones && corners[1] == corners[0] && corners[2] == corners[0] && corners[3] == corners[0];
+		return !stones && !haloCount && corners[1] == corners[0] && corners[2] == corners[0] && corners[3] == corners[0];
 	}
 	// The distinct materials the cell may draw, in palette order: its corners,
 	// then each stone layer's material and ground. Returns the count.
@@ -342,6 +360,8 @@ struct Recipe
 			add(stoneLayers[i].material);
 			add(stoneLayers[i].ground);
 		}
+		for (unsigned i = 0; i < haloCount; ++i)
+			add(halo[i]);
 		return count;
 	}
 	bool operator==(const Recipe &) const = default;

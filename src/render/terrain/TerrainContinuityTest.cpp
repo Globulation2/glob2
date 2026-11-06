@@ -90,7 +90,7 @@ TEST_SUITE("TerrainContinuity")
 		// 1% of full coverage: feathered edges are steep, so a real cut or a
 		// different contour on either side differs by far more.
 		constexpr int Tolerance = 656;
-		unsigned edges = 0, broken = 0, sums = 0, marginBroken = 0, clipped = 0, banded = 0;
+		unsigned edges = 0, broken = 0, sums = 0, marginBroken = 0, clipped = 0, banded = 0, marginFullPalette = 0;
 		std::map<std::string, unsigned> marginPairs;
 		std::map<std::string, unsigned> brokenPairs;
 		std::ostringstream examples;
@@ -135,6 +135,9 @@ TEST_SUITE("TerrainContinuity")
 								else if (std::abs(int(a.margin) - int(b.margin)) > 256 || a.neighbor != b.neighbor)
 								{
 									++marginBroken;
+									std::array<TerrainVisual::MaterialId, 4> pa, pb;
+									if (ra.palette(pa) == 4 || rb.palette(pb) == 4)
+										++marginFullPalette;
 									++marginPairs[catalog.materials[a.neighbor].key + "/" + catalog.materials[b.neighbor].key];
 								}
 							}
@@ -168,7 +171,8 @@ TEST_SUITE("TerrainContinuity")
 		{
 			std::ofstream report(glob2test::artifactDir() / "continuity.txt");
 			report << broken << " of " << edges << " edge samples disagree; " << sums << " bad sums; "
-				   << banded << " samples within a band; " << marginBroken << " seam/surf margins disagree; " << clipped << " bands clipped by a uniform cell\n";
+				   << banded << " samples within a band; " << marginBroken << " seam/surf margins disagree (" << marginFullPalette
+				   << " beside a full palette); " << clipped << " bands clipped by a uniform cell\n";
 			for (const auto &[k, n] : marginPairs) report << "  margin " << n << "  " << k << "\n";
 			report << examples.str() << summary.str();
 		}

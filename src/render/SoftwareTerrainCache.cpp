@@ -599,10 +599,13 @@ namespace
 // Only a contact between a surf material and a dry material can animate.
 bool hasShoreline(const TerrainVisual::Recipe &recipe, const TerrainVisual::Compositor &compositor)
 {
+    // The palette includes halo materials, so a cell beside the water's edge
+    // whose corners are all land still animates its wash.
     const auto liquid = [&](auto id) { return compositor.catalog().materials[id].surf.period > 0; };
-    const bool first = liquid(recipe.corners.front());
-    return std::any_of(recipe.corners.begin() + 1, recipe.corners.end(),
-        [&](auto id) { return liquid(id) != first; });
+    std::array<TerrainVisual::MaterialId, 4> palette;
+    const unsigned count = recipe.palette(palette);
+    const bool first = liquid(palette[0]);
+    return std::any_of(palette.begin() + 1, palette.begin() + count, [&](auto id) { return liquid(id) != first; });
 }
 
 bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
@@ -615,8 +618,10 @@ bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
 bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
                      const TerrainVisual::Compositor &compositor)
 {
+    std::array<TerrainVisual::MaterialId, 4> palette;
+    const unsigned count = recipe.palette(palette);
     return previousTime != compositor.surfTime() && hasShoreline(recipe, compositor) &&
-        std::any_of(recipe.corners.begin(), recipe.corners.end(),
+        std::any_of(palette.begin(), palette.begin() + count,
             [&](auto id) { return surfStepChanged(id, previousTime, compositor); });
 }
 }
@@ -717,8 +722,10 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
                 held->mask.scale == resolution)
                 result.reused = &held->mask;
+            std::array<TerrainVisual::MaterialId, 4> palette;
+            const unsigned paletteCount = recipe.palette(palette);
             result.keepMask = tiles[i].discovered && !recipe.uniform() &&
-                              std::any_of(recipe.corners.begin(), recipe.corners.end(),
+                              std::any_of(palette.begin(), palette.begin() + paletteCount,
                                           [&](auto id) { return compositor.animated(id); });
             results.push_back(std::move(result));
         }
@@ -1214,9 +1221,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							std::optional<TerrainVisual::Compositor::CellMask> passing;
 							const TerrainVisual::Compositor::CellMask *cellMask =
 								held ? &held->mask : nullptr;
-							const auto &corners = recipe.corners;
+							// The palette, as in tryBuildCpuPage: halo surf animates too.
+							std::array<TerrainVisual::MaterialId, 4> palette;
+							const unsigned paletteCount = recipe.palette(palette);
 							if (tiles[i].discovered && !native && !cellMask && !recipe.uniform() &&
-								std::any_of(corners.begin(), corners.end(),
+								std::any_of(palette.begin(), palette.begin() + paletteCount,
 											[&](auto id) { return compositor.animated(id); }))
 							{
 								passing = compositor.mask(recipe, maskScale);

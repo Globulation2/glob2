@@ -49,10 +49,12 @@ constexpr float PixelsPerFieldUnit = 32.f / 2.5f;
 // The strongest multiplicative noise keeps every field positive where its
 // vertices reach, so meanders never cut a material off its own vertex.
 constexpr float MaximumWiggle = .75f;
+// Score below which a field is too far from its contour for seams and surf.
+constexpr float MinimumBandScore = .05f;
 // Combined meander, detail and grit of one field, in field units. A contour
 // moves by the difference of two fields' noise, so up to twice this; it must
 // stay out of band reach of the next uniform cell, about half a cell away.
-constexpr float MaximumDisplacement = 4.f / PixelsPerFieldUnit;
+constexpr float MaximumDisplacement = 7.f / PixelsPerFieldUnit;
 // Squareness of a vertex on a 45-degree staircase. A slight negative value
 // pulls the spline towards its vertices just enough that the contour through a
 // staircase of vertices runs straight, within a pixel, instead of stepping.
@@ -114,7 +116,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	if (!r.hasNeighborhood || c.version < 4)
 		return;
 	const auto &corners = r.corners;
-	if (std::all_of(corners.begin(), corners.end(), [&](auto id) { return id == corners[0]; }))
+	if (!r.haloCount && std::all_of(corners.begin(), corners.end(), [&](auto id) { return id == corners[0]; }))
 		return;
 	// Version 4 draws every contact smoothly; profiles only set parameters.
 	const bool everyContact = c.version >= 4;
@@ -178,8 +180,15 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	// between halo materials lies over half a cell beyond the tile edge, outside
 	// the reach of every seam and surf band.
 	owner.fill(-1);
-	for (const auto id : corners)
+	std::array<MaterialId, 4 + Recipe::MaxHalo> members{};
+	unsigned memberCount = 0;
+	for (const auto id : corners) members[memberCount++] = id;
+	for (unsigned i = 0; i < r.haloCount; ++i) members[memberCount++] = r.halo[i];
+	for (unsigned m = 0; m < memberCount; ++m)
 	{
+		const auto id = members[m];
+		if (m == 4)
+			weighted = count; // Halo fields follow the corner fields.
 		unsigned index = 0;
 		while (index < count && fields[index].material != id)
 			++index;
@@ -233,6 +242,12 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 				}
 		}
 	}
+	if (memberCount <= 4)
+		weighted = count;
+	for (unsigned f = 0; f < count; ++f)
+		for (unsigned g = 0; g < count; ++g)
+			if (f != g && c.bandsBetween(fields[f].material, fields[g].material))
+				bands[f] |= std::uint8_t(1u << g);
 	for (unsigned i = 0; i < owner.size(); ++i)
 		for (unsigned f = 0; f < count; ++f)
 			if (fields[f].material == r.neighborhood[i])
@@ -241,7 +256,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	// dominant material joins its lobes through a neck there, so roads and
 	// rivers continue diagonally; equal materials take a seeded choice. The bias
 	// vanishes on every tile edge, so neighbouring tiles are unaffected.
-	if (count == 2 && corners[0] == corners[3] && corners[1] == corners[2])
+	if (weighted == 2 && corners[0] == corners[3] && corners[1] == corners[2])
 	{
 		const auto a = corners[0], b = corners[1];
 		bool joinA = c.dominates(a, b);
@@ -288,7 +303,7 @@ Coverage SmoothBorders::at(int px, int py) const
 		dwx[i] *= slopeU;
 		dwy[i] *= slopeV;
 	}
-	std::array<float, 4> value{}, slopeX{}, slopeY{};
+	std::array<float, 6> value{}, slopeX{}, slopeY{};
 	for (int j = 0; j < 4; ++j)
 		for (int i = 0; i < 4; ++i)
 			if (const int f = owner[j * 4 + i]; f >= 0)
@@ -301,10 +316,10 @@ Coverage SmoothBorders::at(int px, int py) const
 	const float detail = bilinear(cornerDetail, u, v);
 	const float jagged = bilinear(cornerJagged, u, v);
 	const float saddle = 16 * u * (1 - u) * v * (1 - v);
-	std::array<float, 4> score{};
+	std::array<float, 6> score{};
 	for (unsigned f = 0; f < count; ++f)
 	{
-		// Noise and its gradient per Q8 pixel.
+		// Noise per Q8 pixel; only the broad meander's slope enters the distance.
 		float noise = 0, noiseX = 0, noiseY = 0, gx, gy;
 		for (const auto &layer : fields[f].noise)
 		{
@@ -313,18 +328,15 @@ Coverage SmoothBorders::at(int px, int py) const
 			noiseY += wiggle * gy;
 		}
 		noise += detail * fields[f].detail.at(px, py, gx, gy);
-		noiseX += detail * gx;
-		noiseY += detail * gy;
 		for (const auto &layer : fields[f].jagged)
-		{
 			noise += jagged * layer.at(px, py, gx, gy);
-			noiseX += jagged * gx;
-			noiseY += jagged * gy;
-		}
 		const float scale = 1 + noise;
 		score[f] = value[f] * scale + fields[f].bias * saddle;
-		// Per pixel. The noise slope matters once fine detail roughens a contour:
-		// without it seams and surf would measure the wrong distance.
+		// Per pixel. Fine detail and grit move the contour through the score, but
+		// their steep slopes would make a first-order distance claim every
+		// contour within a few pixels: extrapolating a 4px zigzag over the eight
+		// pixels of a band. Distances use the smooth slope, so bands follow the
+		// teeth near a contour and stay put away from one.
 		slopeX[f] = slopeX[f] * scale / 32 + value[f] * noiseX * 256;
 		slopeY[f] = slopeY[f] * scale / 32 + value[f] * noiseY * 256;
 	}
@@ -338,36 +350,42 @@ Coverage SmoothBorders::at(int px, int py) const
 	// Each material's distance to its strongest competitor ramps its weight
 	// over the two materials' mean feather. Two materials therefore sum to one
 	// exactly, and three meet with equal shares at their junction.
+	// Coverage comes from the corner fields alone, exactly as without a halo.
 	Coverage out;
 	std::array<float, 4> raw{};
 	float total = 0;
 	unsigned top = 0;
-	for (unsigned f = 1; f < count; ++f)
+	for (unsigned f = 1; f < weighted; ++f)
 		if (score[f] > score[top])
 			top = f;
-	for (unsigned f = 0; f < count; ++f)
+	for (unsigned f = 0; f < weighted; ++f)
 	{
 		unsigned rival = f == 0 ? 1 : 0;
-		for (unsigned g = 0; g < count; ++g)
+		for (unsigned g = 0; g < weighted; ++g)
 			if (g != f && score[g] > score[rival])
 				rival = g;
 		const float ramp = (fields[f].feather + fields[rival].feather) / 2;
-		raw[f] = std::clamp(.5f + distance(f, rival) / ramp, 0.f, 1.f);
+		// One corner material owns the whole cell, whatever lies beyond it.
+		raw[f] = weighted == 1 ? 1.f : std::clamp(.5f + distance(f, rival) / ramp, 0.f, 1.f);
 		total += raw[f];
 	}
 	unsigned sum = 0;
-	for (unsigned f = 0; f < count; ++f)
+	for (unsigned f = 0; f < weighted; ++f)
 	{
 		out.material[f] = fields[f].material;
 		out.weight[f] = unsigned(raw[f] / total * 65536);
 		sum += out.weight[f];
 	}
 	out.weight[top] += 65536 - sum;
-	// Seams and surf take the nearest contour of another material.
+	// Seams and surf take the nearest contour of a material they draw a band
+	// against, halo materials beyond the tile edge included. Contours without a
+	// band neither hide one behind them nor depend on which tile measures.
 	float nearest = 256;
 	out.neighbor = fields[top == 0 ? 1 : 0].material;
 	for (unsigned g = 0; g < count; ++g)
-		if (g != top && fields[g].material != fields[top].material)
+		// A field that has not risen here has no contour within band reach, and a
+		// first-order distance to it would be meaningless.
+		if (g != top && (bands[top] >> g & 1u) && score[g] > MinimumBandScore)
 			if (const float d = std::max(0.f, distance(top, g)); d < nearest)
 			{
 				nearest = d;

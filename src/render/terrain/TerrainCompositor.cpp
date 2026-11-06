@@ -812,7 +812,10 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y, bool detailed) co
 {
 	auto r = describeCell(map, x, y, detailed);
 	if (detailed)
+	{
 		describeStones(map, r);
+		describeHalo(map, r);
+	}
 	return r;
 }
 Recipe Compositor::describeCell(const SceneMap &map, int x, int y, bool shoreCalm) const
@@ -1064,6 +1067,41 @@ void Compositor::describeStones(const SceneMap &map, Recipe &r) const
 		if (definitions.cutsStones(r.corners[k]))
 			r.stoneCutCorners |= std::uint8_t(1u << k);
 }
+void Compositor::describeHalo(const SceneMap &map, Recipe &r) const
+{
+	if (definitions.version < 4 || !hasNeighborhoodProfiles)
+		return;
+	std::array<MaterialId, 4> palette;
+	unsigned count = r.palette(palette);
+	std::array<MaterialId, 16> window;
+	for (int y = -1; y <= 2; ++y)
+		for (int x = -1; x <= 2; ++x)
+			window[(y + 1) * 4 + x + 1] = materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
+	// The window's nearest vertices first: those beside the tile's own edge.
+	static constexpr std::array<unsigned, 16> order{5, 6, 9, 10, 1, 2, 4, 7, 8, 11, 13, 14, 0, 3, 12, 15};
+	for (const auto i : order)
+	{
+		const auto id = window[i];
+		// Every non-corner band material needs a field, even one a stone layer
+		// already put in the palette: only corners and halo materials get one.
+		if (std::find(r.corners.begin(), r.corners.end(), id) != r.corners.end() ||
+			std::find(r.halo.begin(), r.halo.begin() + r.haloCount, id) != r.halo.begin() + r.haloCount)
+			continue;
+		if (std::none_of(r.corners.begin(), r.corners.end(),
+				[&](MaterialId corner) { return definitions.bandsBetween(corner, id); }))
+			continue;
+		const bool listed = std::find(palette.begin(), palette.begin() + count, id) != palette.begin() + count;
+		if (r.haloCount == Recipe::MaxHalo || (!listed && count == palette.size()))
+			break; // The palette is full: these bands keep their previous reach.
+		r.halo[r.haloCount++] = id;
+		if (!listed) palette[count++] = id;
+	}
+	if (r.haloCount && !r.hasNeighborhood)
+	{
+		r.hasNeighborhood = true;
+		r.neighborhood = window;
+	}
+}
 void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 {
 	if (std::none_of(r.corners.begin(), r.corners.end(),
@@ -1292,6 +1330,13 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         const auto id = palette[i];
         const auto variant = definitions->variantIndex(id, recipe.x, recipe.y, recipe.seed);
         const auto &texture = textures.at(id).at(variant);
+        if (!texture.pixels)
+        {
+            // A halo material (Recipe::halo) is listed for its bands and never
+            // covers a sample, so its texture need not be prepared.
+            sources[id] = {};
+            continue;
+        }
         sources[id] = {variant, 0, texture.size, *texture.pixels,
                        texture.size % (32 * scale) ? 0 : texture.size / (32 * scale)};
     }

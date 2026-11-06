@@ -197,10 +197,23 @@ edge) gets square corners. Smooth profiles (roads, tracks, liquids, lava) keep
 their clean lines. `roughness_q8` and `contours_q12` no longer shape version-4
 contacts directly.
 
-The noises of one field together move a contour at most four pixels; scaled
-down alike when a profile asks for more. A contour moves by the difference of
-two fields' noise, and must stay beyond band reach (eight pixels) of the next
-uniform cell, about half a cell away, which draws no seam or surf bands.
+The noises of one field together move a contour at most seven pixels, scaled
+down alike when a profile asks for more.
+
+Seams and surf need the distance to a contour that may lie beyond the tile
+edge. A cell therefore also gives a field to each material of its 4×4 vertex
+window that is no corner but draws a band against one (`Recipe::halo`, at most
+three, in free palette slots): a seam shadow, a fringe or surf
+(`Catalog::bandsBetween`). Halo fields never take coverage, so weights are
+unchanged; they make the distance and band neighbour equal on both sides of
+every tile edge, and a cell whose corners all agree draws the bands of a
+contour just beyond it instead of cutting them off. Distances measure only to
+materials that draw a band with the sample's material, so a contour without a
+band neither hides one behind it nor depends on which tile measures, and skip a
+field that has not risen at the sample. They use the smooth slope of the
+fields: fine detail and grit move the contour through the score, but a
+first-order distance extrapolating their steep slopes would put every contour
+within a few pixels.
 
 `SmoothBorders` gives each corner material of a cell a field interpolated
 through the 4×4 vertex neighbourhood with Catmull-Rom splines; the strongest
@@ -233,8 +246,8 @@ two materials' mean feather from a first-order distance to the competing field,
 and seams and surf read that distance to the nearest field of any neighbourhood
 material, including vertices beyond the cell edge.
 
-Seams and surf read the distance including the noise's own slope, so bands keep
-their width along rough contours as well as smooth ones.
+Seams and surf follow the contour's grit through the score and measure across
+it with the smooth slope.
 
 In version 1–3 catalogs, a vertex is smooth when every contact with its eight
 neighbours resolves to a smooth profile. A cell interpolates its four corner
