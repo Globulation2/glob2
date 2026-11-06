@@ -474,6 +474,8 @@
       "resistance_q8": 24,
       "cohesion_q8": 40,
       "grain_q8": 512,
+      "speckle_q8": 0,
+      "clasts": "none",
       "shape": "contextual",
       "coast": "beach",
       "roughness_q8": 256,
