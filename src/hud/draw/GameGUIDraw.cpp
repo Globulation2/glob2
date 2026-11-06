@@ -147,7 +147,6 @@ void GameGUI::drawCheckButton(int x, int y, std::string caption, bool isSet)
 	globalContainer->gfx->drawString(x+20, y, globalContainer->littleFont, caption);
 }
 
-
 void GameGUI::drawRadioButton(int x, int y, bool isSet)
 {
 	if(isSet)
@@ -442,7 +441,6 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->gfx->drawSprite(pos+12, i, globalContainer->gamegui, 17);
 	}
 
-
 	int index;
 	// draw main menu button
 	if (inGameMenu == IGM_MAIN)
@@ -550,7 +548,6 @@ void GameGUI::drawOverlayInfos(void)
 					globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 0, 0, 190);
 				});
 		}
-
 
 	}
 	// draw message List
@@ -937,27 +934,6 @@ void GameGUI::drawAll(int team)
 		introCover.draw(*globalContainer->gfx, globalContainer->gfx->getW(), globalContainer->gfx->getH(), now,
 		                globalContainer->menuFont, globalContainer->standardFont, clouds);
 	}
-}
-
-void GameGUI::beginIntroCover(Uint64 now)
-{
-	IntroCover::Title title;
-	title.map = game.mapHeader.getMapName();
-	for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
-	{
-		const BasePlayer &base = game.gameHeader.getBasePlayer(i);
-		IntroCover::Player player;
-		player.name = base.name;
-		if (base.teamNumber >= 0 && base.teamNumber < Team::MAX_COUNT && game.teams[base.teamNumber])
-		{
-			const GAGCore::Color colour = game.teams[base.teamNumber]->color;
-			player.r = colour.r;
-			player.g = colour.g;
-			player.b = colour.b;
-		}
-		title.players.push_back(std::move(player));
-	}
-	introCover.begin(now, std::move(title));
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

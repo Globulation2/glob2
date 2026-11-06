@@ -447,3 +447,26 @@ std::vector<GAGGUI::ui::Host *> GameGUI::inspectionHosts()
 		hosts.push_back(&hiveCards->host());
 	return hosts;
 }
+
+// The opening cover's title, taken once from the session as the game starts;
+// drawing then reads only this snapshot.
+void GameGUI::beginIntroCover(Uint64 now)
+{
+	IntroCover::Title title;
+	title.map = game.mapHeader.getMapName();
+	for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
+	{
+		const BasePlayer &base = game.gameHeader.getBasePlayer(i);
+		IntroCover::Player player;
+		player.name = base.name;
+		if (base.teamNumber >= 0 && base.teamNumber < Team::MAX_COUNT && game.teams[base.teamNumber])
+		{
+			const GAGCore::Color colour = game.teams[base.teamNumber]->color;
+			player.r = colour.r;
+			player.g = colour.g;
+			player.b = colour.b;
+		}
+		title.players.push_back(std::move(player));
+	}
+	introCover.begin(now, std::move(title));
+}
