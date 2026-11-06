@@ -1,0 +1,12 @@
+master motion frames=360 median=5.79 p95=36.23 p99=64.26 max=76.36 over33=23 over16=60
+master pan5 frames=360 median=5.10 p95=23.48 p99=57.57 max=63.72 over33=8 over16=21
+async motion frames=360 median=6.67 p95=100.16 p99=133.21 max=133.82 over33=64 over16=80
+async pan5 frames=360 median=5.97 p95=58.16 p99=122.90 max=136.17 over33=24 over16=30
+single motion frames=360 median=7.81 p95=28.78 p99=107.55 max=144.02 over33=12 over16=32
+single pan5 frames=360 median=6.52 p95=12.02 p99=16.71 max=23.27 over33=0 over16=4
+master motion frames=360 median=6.19 p95=37.65 p99=64.78 max=69.74 over33=24 over16=62
+master pan5 frames=360 median=5.77 p95=25.48 p99=57.02 max=61.74 over33=11 over16=23
+async motion frames=360 median=7.84 p95=84.80 p99=142.02 max=292.66 over33=65 over16=85
+async pan5 frames=360 median=6.32 p95=64.00 p99=135.67 max=185.74 over33=25 over16=31
+single motion frames=360 median=8.21 p95=32.57 p99=123.28 max=139.28 over33=17 over16=40
+single pan5 frames=360 median=7.23 p95=12.71 p99=17.74 max=43.46 over33=2 over16=4
