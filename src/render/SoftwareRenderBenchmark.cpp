@@ -23,6 +23,7 @@
 #include <chrono>
 #include <cstdio>
 #include <fstream>
+#include <Environment.h>
 #include <cstdlib>
 #include <vector>
 #ifdef WIN32
@@ -191,6 +192,11 @@ static void interactiveBenchmark()
 	static int run(int argc, char **argv)
 	{
 		SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+#ifdef __APPLE__
+		// Create the window hidden and never activate it; PROFILE_VISIBLE shows it.
+		if (!std::getenv("PROFILE_VISIBLE"))
+			GAGCore::setProcessEnvironment("GLOB2_TEST_HIDDEN_WINDOWS", "1", 0);
+#endif
 		// Keep -s dimensions as measured pixels across display densities. Opt in
 		// to native Retina/HiDPI presentation explicitly for lifecycle profiling.
 		const bool nativeDisplay = getenv("PROFILE_NATIVE_DISPLAY") != nullptr;

@@ -40,6 +40,20 @@ extern "C" void glob2_gl_restore_texture_units(int previous);
 
 namespace GAGCore
 {
+namespace
+{
+// GLOB2_TEST_HIDDEN_WINDOWS=1 (set by test/run_tests.py for [display] cases and by
+// the render benchmarks) keeps test windows off the desktop: they are created hidden
+// and never activate the process, so automated runs don't steal focus. Readback reads
+// the context's own framebuffer, so it does not depend on the window being shown.
+// Unset in ordinary launches, which keep their normal visible, activating window.
+bool hiddenTestWindows()
+{
+	const char *value = SDL_getenv_unsafe("GLOB2_TEST_HIDDEN_WINDOWS");
+	return value && *value && std::string(value) != "0";
+}
+}
+
 GraphicContext::RenderingIdentity GraphicContext::renderingIdentity() const
 {
 	RenderingIdentity identity;
@@ -321,6 +335,13 @@ int GraphicContext::maximumTextureSize() const
 
 		// Request native Mac momentum before Cocoa registers application defaults.
 		SDL_SetHint(SDL_HINT_MAC_SCROLL_MOMENTUM, "1");
+		if (hiddenTestWindows())
+		{
+			// Must precede SDL_Init: Cocoa otherwise brings the process to the front.
+			SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+			SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_SHOWN, "0");
+			SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_RAISED, "0");
+		}
 		// Load the SDL library
 		if ( !SDL_Init(SDL_INIT_VIDEO) )
 		{
@@ -908,6 +929,8 @@ int GraphicContext::maximumTextureSize() const
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		if ((flags & RESIZABLE) || (nativeDesktop && (flags & FULLSCREEN)))
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
+		if (hiddenTestWindows())
+			sdlFlags |= SDL_WINDOW_HIDDEN;
 		#if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL)
 		if ((flags & USEGPU) || configuredBackend == RendererBackend::ProgrammableGL)
 		{

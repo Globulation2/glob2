@@ -39,6 +39,7 @@
 #include <cassert>
 #include <cstdio>
 #include <ctime>
+#include <Environment.h>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -252,6 +253,11 @@ public:
 static int run(int argc, char **argv)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+#ifdef __APPLE__
+    // Create the window hidden and never activate it; GLOB2_BENCH_VISIBLE shows it.
+    if (!std::getenv("GLOB2_BENCH_VISIBLE"))
+        GAGCore::setProcessEnvironment("GLOB2_TEST_HIDDEN_WINDOWS", "1", 0);
+#endif
     globalContainer = new GlobalContainer;
     std::vector<std::string> launchArgs{"play"};
         launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
