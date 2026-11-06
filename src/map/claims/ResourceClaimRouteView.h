@@ -14,7 +14,7 @@ struct RouteProfile
     OccupancyPolicy occupancy = OccupancyPolicy::Static;
 };
 
-// Shared frozen-world contract for the exact oracle and alternative A* routes.
+// Frozen-world passability shared by claim route searches and route following.
 // Static routing ignores moving traffic but retains immobile ground blockers.
 // FrozenUnits additionally blocks other units at their sampled positions.
 inline bool routePassable(const MapState::View& view, std::size_t index, const RouteProfile& profile)

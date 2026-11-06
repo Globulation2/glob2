@@ -20,7 +20,7 @@ void Map::invalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner> owner
         const auto gid=Uint16(owner);
         Unit* unit=game && team<unsigned(game->teamsCount()) ? game->teams[team]->myUnits[Unit::GIDtoID(gid)] : nullptr;
         if (unit && unit->scriptIdentity==Uint32(owner>>16) && unit->activeMaterialClaim)
-            unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::MapInvalidation);
+            unit->releaseActiveMaterialClaim();
         else { cancelClaimRoute(owner);releaseMaterialClaim(owner); } // Never touch a replacement in the reused slot.
     }
 }
@@ -33,8 +33,8 @@ void Map::invalidateMaterialClaimsAt(size_t index,bool source,bool access,Uint32
         const auto other=materialClaims.ownersAtAccess(Uint32(index));
         owners.insert(owners.end(),other.begin(),other.end());
     }
-    // Prototype policy: invalidate the affected pursuit, rather than silently
-    // selecting which overcommitted packet survives a capacity decrease.
+    // Invalidate the affected pursuits, rather than silently selecting which
+    // overcommitted reservation survives a capacity decrease.
     invalidateMaterialClaimOwners(std::move(owners),teams);
 }
 

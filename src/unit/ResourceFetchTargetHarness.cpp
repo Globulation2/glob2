@@ -24,12 +24,10 @@
 #include <vector>
 #include <sstream>
 #include <filesystem>
-#include <zlib.h>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include "map/claims/ResourceClaimProbe.h"
 #include "map/claims/ActiveRouteRuntime.h"
-#include "map/claims/ClaimPolicyConfig.h"
+#include "map/claims/ClaimPolicy.h"
 #include <fstream>
 #include <set>
 
@@ -413,8 +411,7 @@ TEST_SUITE("ActiveMaterialClaims")
         for(int material:{WOOD,CHERRY,STONE,ALGA}) {
             CAPTURE(material);
             glob2test::HeadlessGame f({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-            auto& map=f.game.map;map.setMaterialDestinationsEnabled(true);
-            map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig{});
+            auto& map=f.game.map;map.enableResourceClaims();
             auto* consumer=f.addBuilding("inn",20,20);REQUIRE(consumer);
             auto* a=f.addUnit(WORKER,8,8);auto* b=f.addUnit(WORKER,8,9);REQUIRE(a);REQUIRE(b);
             if(material==ALGA) {
@@ -439,9 +436,9 @@ TEST_SUITE("ActiveMaterialClaims")
             CHECK(map.materialAmountAtSlot(access,material)==(material==STONE?before:0u));
             if(material==STONE) {
                 REQUIRE(b->activeMaterialClaim);CHECK(b->activeMaterialClaimValid());
-                REQUIRE(a->acquireMaterialClaimAt(access));a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+                REQUIRE(a->acquireMaterialClaimAt(access));a->releaseActiveMaterialClaim();
             } else if(material==WOOD)CHECK(map.getResource(access).type==NO_RES_TYPE);
-            a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);b->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+            a->releaseActiveMaterialClaim();b->releaseActiveMaterialClaim();
             CHECK(map.materialClaimLedger().size()==0);
             a->attachedBuilding=nullptr;b->attachedBuilding=nullptr;
         }
@@ -451,8 +448,7 @@ TEST_SUITE("ActiveMaterialClaims")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
         auto& map=f.game.map;auto* team=f.game.teams[0];
-        map.setMaterialDestinationsEnabled(true);
-        map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        map.enableResourceClaims();
         auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);
         REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
         auto make=[&](int slot) {
@@ -478,7 +474,7 @@ TEST_SUITE("ActiveMaterialClaims")
         b->recordLethalDamage(b->hp-UNIT_HP_DEATH_THRESHOLD+1,GameplayMeasurements::COMBAT);
         CHECK_FALSE(b->activeMaterialClaim);CHECK(map.materialClaimLedger().size()==0);
         REQUIRE(b->acquireMaterialClaimAt(source));
-        map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::Disabled);
+        map.disableResourceClaims();
         CHECK_FALSE(map.activeClaimsEnabled());CHECK(a->materialClaimTask==0);CHECK(b->materialClaimTask==0);
         CHECK_FALSE(a->activeMaterialClaim);CHECK_FALSE(b->activeMaterialClaim);
         CHECK_NOTHROW(map.rebuildActiveMaterialClaims());
@@ -491,7 +487,7 @@ TEST_SUITE("ActiveMaterialClaims")
         options.header=true;options.experiments.set(ExperimentId::FarmAreas,true);
         glob2test::HeadlessGame f(options);
         auto& map=f.game.map;auto* team=f.game.teams[0];
-        map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        map.enableResourceClaims();
         auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);
         for(int x:{9,10}) {REQUIRE(map.incResourceByIndex(x,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(x,8),WHEAT,2);map.addFarmArea(x,8,0);}
         auto make=[&](int slot) {
@@ -516,7 +512,7 @@ TEST_CASE("map export projects active ownership out without mutating the live ma
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto& map=f.game.map;
-    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    map.enableResourceClaims();
     auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);auto* u=f.addUnit(WORKER,8,8);REQUIRE(u);
     REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
     hireClaimWorker(*u,*inn);
@@ -530,8 +526,8 @@ TEST_CASE("map export projects active ownership out without mutating the live ma
     restoredBackend->write(bytes.data(),bytes.size());restoredBackend->seekFromStart(0);
     GAGCore::BinaryInputStream input(restoredBackend);
     glob2test::HeadlessGame restored;
-    // A map starts a new game: the shipped policy, but none of the exported claims.
-    REQUIRE(restored.game.load(&input));CHECK(restored.game.map.shippedResourceClaimsActive());
+    // A map starts a new game: claims enabled, but none of the exported claims.
+    REQUIRE(restored.game.load(&input));CHECK(restored.game.map.activeClaimsEnabled());
     CHECK(restored.game.map.materialClaimLedger().size()==0);
     const auto* copy=restored.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];REQUIRE(copy);
     CHECK_FALSE(copy->activeMaterialClaim);CHECK(copy->materialClaimTask==0);
@@ -544,7 +540,7 @@ TEST_CASE("saved rule changes preserve deferred active claim invalidation" * doc
     options.experiments.set(ExperimentId::FarmAreas,true);
     glob2test::HeadlessGame f(options);auto& map=f.game.map;
     f.game.gameHeader.setResourceGrowthDisabled(true);
-    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    map.enableResourceClaims();
     auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);auto* u=f.addUnit(WORKER,8,8);REQUIRE(u);
     REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));map.addFarmArea(9,8,0);
     hireClaimWorker(*u,*inn);REQUIRE(u->acquireMaterialClaimAt(Uint32(map.coordToIndex(9,8))));
@@ -573,7 +569,7 @@ TEST_CASE("post-tick incapacitating hits save consistently with either death rul
         CAPTURE(noPermadeath);
         glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto& map=f.game.map;f.game.gameHeader.setPermadeathDisabled(noPermadeath);
-        map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        map.enableResourceClaims();
         auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);auto* u=f.addUnit(WORKER,8,8);REQUIRE(u);
         REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
         hireClaimWorker(*u,*inn);REQUIRE(u->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,12))));
@@ -596,7 +592,7 @@ TEST_CASE("mixed team farming reservations retain the strongest seed floor acros
     glob2test::GameOptions options;options.wDec=6;options.hDec=6;options.teams=2;options.header=true;options.loadDefaultRace=true;
     options.clearImmobile=true;options.discovered=true;options.experiments.set(ExperimentId::FarmAreas,true);
     glob2test::HeadlessGame f(options);auto& map=f.game.map;
-    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    map.enableResourceClaims();
     auto* innA=f.addBuilding("inn",20,20,0,0);auto* innB=f.addBuilding("inn",40,40,0,1);REQUIRE(innA);REQUIRE(innB);
     auto* a=f.addUnit(WORKER,8,8,0);auto* b=f.addUnit(WORKER,8,9,1);REQUIRE(a);REQUIRE(b);
     REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));const auto source=Uint32(map.coordToIndex(9,8));
@@ -604,8 +600,8 @@ TEST_CASE("mixed team farming reservations retain the strongest seed floor acros
     hireClaimWorker(*a,*innA);hireClaimWorker(*b,*innB);
     REQUIRE(a->acquireMaterialClaimAt(source));CHECK(a->activeMaterialClaim->reserve==1);
     CHECK_FALSE(b->acquireMaterialClaimAt(source));
-    a->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);REQUIRE(b->acquireMaterialClaimAt(source));CHECK(b->activeMaterialClaim->reserve==0);
-    CHECK_FALSE(a->acquireMaterialClaimAt(source));b->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+    a->releaseActiveMaterialClaim();REQUIRE(b->acquireMaterialClaimAt(source));CHECK(b->activeMaterialClaim->reserve==0);
+    CHECK_FALSE(a->acquireMaterialClaimAt(source));b->releaseActiveMaterialClaim();
     map.setMaterialAmountSlot(source,WHEAT,3);REQUIRE(a->acquireMaterialClaimAt(source));REQUIRE(b->acquireMaterialClaimAt(source));
     const auto before=f.game.checkSum();const auto gidA=a->gid,gidB=b->gid;
     auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(backend);
@@ -622,98 +618,6 @@ TEST_CASE("mixed team farming reservations retain the strongest seed floor acros
     CHECK(map.materialAmountAtSlot(source,WHEAT)==1);CHECK(map.materialClaimLedger().size()==0);
 }
 
-TEST_CASE("active fetch moves harvests and delivers across threads and pending saves" * doctest::test_suite("ActiveMaterialClaims"))
-{
-    glob2test::HeadlessGlobals globals;
-    const auto run=[&](unsigned participants) {
-        glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7183});
-        auto& game=f.game; auto& map=game.map;
-        map.computeExecutor().configure(participants);
-        game.gameHeader.setResourceGrowthDisabled(true);
-        game.gameHeader.getWinningConditions().clear(); // Let CLI parity runs continue through delivery.
-        map.setMaterialDestinationsEnabled(true);
-        map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
-        auto* inn=f.addBuilding("inn",18,8); REQUIRE(inn);
-        inn->maxUnitWorking=1; inn->setMaterial(WHEAT,0); inn->updateCallLists();
-        auto* unit=f.addUnit(WORKER,8,8); REQUIRE(unit);
-        unit->medical=Unit::MED_FREE; unit->activity=Unit::ACT_RANDOM; unit->hungriness=0;
-        const auto gid=unit->gid; const auto buildingGid=inn->gid;
-        REQUIRE(map.incResourceByIndex(13,8,WHEAT,0));
-        const auto source=Uint32(map.coordToIndex(13,8)); map.setMaterialAmountSlot(source,WHEAT,1);
-        glob2test::publishCurrentHiringSuggestions(game);
-        REQUIRE(inn->subscribeToBringMaterialsStep());
-        REQUIRE(unit->attachedBuilding==inn); REQUIRE(inn->unitsWorking.size()==1);
-        glob2test::discardPrematureHiringSuggestions(game);
-        REQUIRE_FALSE(unit->activeMaterialClaim);
-        std::unique_ptr<glob2test::HeadlessGame> pendingCopy, cachedCopy;
-        const auto copyGame=[&](const char* label) {
-            auto* backend=new GAGCore::MemoryStreamBackend;
-            GAGCore::BinaryOutputStream output(backend);
-            const auto before=game.checkSum(); f.gui.save(&output,label); output.flush();
-            const auto bytes=backend->takeContents(); CHECK(game.checkSum()==before);
-            if(participants==1) {
-                std::ofstream saved(glob2test::artifactDir()/(std::string(label)+".game"),std::ios::binary);
-                saved.write(bytes.data(),std::streamsize(bytes.size())); REQUIRE(saved.good());
-            }
-            auto result=std::make_unique<glob2test::HeadlessGame>();
-            result->game.map.clear();
-            // clear() retains cell storage. Remove the old extent so loading
-            // cannot validate a saved claim against the fixture's preset map.
-            result->game.map.resourceCells.clear();
-            REQUIRE(result->game.map.cellCount()==0);
-            result->game.map.computeExecutor().configure(participants);
-            auto* inputBackend=new GAGCore::MemoryStreamBackend;
-            inputBackend->write(bytes.data(),bytes.size()); inputBackend->seekFromStart(0);
-            GAGCore::BinaryInputStream input(inputBackend); REQUIRE(result->gui.load(&input,true));
-            REQUIRE(result->game.checkSum()==before);
-            return result;
-        };
-        std::vector<Uint32> trace;
-        std::ofstream evidence(glob2test::artifactDir()/("active-fetch-"+std::to_string(participants)+"-participants.tsv"));
-        REQUIRE(evidence.good()); evidence<<"tick\tchecksum\tx\ty\tclaim\tstock\tdelivered\n";
-        bool moved=false, harvested=false; Uint64 pendingTick=0;
-        for(unsigned tick=0;tick<2048;++tick) {
-            CAPTURE(participants); CAPTURE(tick);
-            f.step();
-            for(auto* copy:{pendingCopy.get(),cachedCopy.get()}) if(copy) {
-                copy->step(); REQUIRE(copy->game.checkSum()==game.checkSum());
-                CHECK(copy->game.teams[0]->myBuildings[Building::GIDtoID(buildingGid)]->material(WHEAT)==inn->material(WHEAT));
-            }
-            REQUIRE(game.teams[0]->myUnits[Unit::GIDtoID(gid)]==unit);
-            CHECK(unit->materialClaimPolicyState==ResourceClaims::MaterialClaimPolicyState{});
-            const bool traveling=unit->activeMaterialClaim && unit->displacement==Unit::DIS_GOING_TO_RESOURCE;
-            if(traveling && !pendingCopy && map.materialClaimRoutes && !map.materialClaimRoutes->states.empty()) {
-                const auto& state=map.materialClaimRoutes->states.begin()->second;
-                REQUIRE(state.pending); CHECK(state.due==game.stepCounter);
-                CHECK(unit->posX==8); CHECK(unit->posY==8);
-                CHECK(map.materialClaimState().at(source)==1);
-                pendingTick=game.stepCounter; pendingCopy=copyGame("active-fetch-pending");
-            }
-            if(traveling && pendingCopy && !cachedCopy && map.materialClaimRoutes && !map.materialClaimRoutes->states.empty()) {
-                const auto& state=map.materialClaimRoutes->states.begin()->second;
-                if(!state.pending) {
-                    CHECK(game.stepCounter>pendingTick); REQUIRE(state.route.status==ResourceClaims::RouteStatus::Found);
-                    cachedCopy=copyGame("active-fetch-cached");
-                }
-            }
-            moved|=unit->posX!=8 || unit->posY!=8;
-            harvested|=unit->hasCarriedMaterial(WHEAT);
-            if(unit->hasCarriedMaterial(WHEAT)) CHECK_FALSE(unit->activeMaterialClaim);
-            trace.push_back(game.checkSum());
-            evidence<<game.stepCounter<<'\t'<<trace.back()<<'\t'<<unit->posX<<'\t'<<unit->posY<<'\t'
-                <<bool(unit->activeMaterialClaim)<<'\t'<<map.materialAmountAtSlot(source,WHEAT)<<'\t'<<inn->material(WHEAT)<<'\n';
-            if(inn->material(WHEAT)==1)break;
-        }
-        REQUIRE(pendingCopy); REQUIRE(cachedCopy); CHECK(moved); CHECK(harvested);
-        CHECK(inn->material(WHEAT)==1); CHECK(map.materialAmountAtSlot(source,WHEAT)==0);
-        CHECK(map.materialClaimLedger().size()==0); CHECK(evidence.good());
-        return trace;
-    };
-    const auto ownerOnly=run(1), parallel=run(3);
-    REQUIRE(ownerOnly.size()==parallel.size());
-    for(std::size_t tick=0;tick<ownerOnly.size();++tick) {CAPTURE(tick); REQUIRE(ownerOnly[tick]==parallel[tick]);}
-}
-
 TEST_CASE("active save rejects invalid deferred map references on a fresh loader" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;
@@ -725,7 +629,7 @@ TEST_CASE("active save rejects invalid deferred map references on a fresh loader
     resources.push_back(custom);
     map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",resources}}.dump());
     const auto customType=resourceIndex(*map.resourceRegistry().find("saved-claim-food"));
-    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    map.enableResourceClaims();
     auto* inn=f.addBuilding("inn",20,20);auto* unit=f.addUnit(WORKER,8,8);REQUIRE(inn);REQUIRE(unit);
     REQUIRE(map.incResourceByIndex(12,12,customType,0));hireClaimWorker(*unit,*inn);
     REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,12))));
@@ -747,82 +651,78 @@ TEST_CASE("active save rejects invalid deferred map references on a fresh loader
     }
 }
 
-TEST_CASE("experimental fallback choices preserve or release the actual assignment" * doctest::test_suite("ActiveMaterialClaims"))
-{
-    glob2test::HeadlessGlobals globals;
-    using Config=ResourceClaims::ClaimPolicyConfig;
-    for(auto fallback:{Config::Fallback::Wait,Config::Fallback::Roam,Config::Fallback::ReleaseJob,Config::Fallback::BoundedWaitRelease}) {
-        CAPTURE(unsigned(fallback));
-        glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        auto& map=f.game.map;map.setMaterialDestinationsEnabled(true);
-        Config config;config.fallback=fallback;config.fallbackAfterDecisions=2;map.setMaterialClaimPolicyConfig(config);
-        auto* a=f.addBuilding("inn",20,20);auto* b=f.addBuilding("inn",24,20);REQUIRE(a);REQUIRE(b);
-        auto* holder=f.addUnit(WORKER,8,8);REQUIRE(holder);
-        REQUIRE(map.incResourceByIndex(13,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(13,8),WHEAT,1);
-        hireClaimWorker(*holder,*a);
-        // Admit one free worker at a time: the real hiring planner chooses
-        // candidates and need not select an arbitrary fixture pointer.
-        auto* seeker=f.addUnit(WORKER,8,9);REQUIRE(seeker);hireClaimWorker(*seeker,*b);
-        REQUIRE(holder->acquireMaterialClaimAt(Uint32(map.coordToIndex(13,8))));
-        const auto held=holder->activeMaterialClaim;
-        const GradientFieldKey demandKey{GradientFieldFamily::Materials,0,Uint8(seeker->movementAccess()),WHEAT};
-        const auto queryBucket=f.game.stepCounter&127;
-        const auto beforeQueries=map.gradientRuntime->adaptive.enroll(demandKey).queries[queryBucket];
-        seeker->handleActiveMaterialMovement();
-        // Selection reads are real demand even when every available unit of
-        // stock is reserved and this worker must wait instead of descending.
-        CHECK(map.gradientRuntime->adaptive.fields.at(demandKey).queries[queryBucket]==beforeQueries+1);
-        CHECK(seeker->materialClaimPolicyState.decisionOrdinal==1);
-        CHECK(seeker->materialClaimPolicyState.fallbackCount==1);
-        CHECK_FALSE(seeker->activeMaterialClaim);
-        if(fallback==Config::Fallback::ReleaseJob) {CHECK(seeker->attachedBuilding==nullptr);CHECK(b->unitsWorking.empty());}
-        else {
-            CHECK(seeker->attachedBuilding==b);
-            CHECK(seeker->movement==(fallback==Config::Fallback::Roam?Unit::MOV_RANDOM_GROUND:Unit::MOV_GOING_DX_DY));
-            seeker->handleActiveMaterialMovement();
-            CHECK(seeker->materialClaimPolicyState.decisionOrdinal==2);
-            CHECK((seeker->attachedBuilding==nullptr)==(fallback==Config::Fallback::BoundedWaitRelease));
-        }
-        CHECK(holder->activeMaterialClaim==held);CHECK(map.materialClaimLedger().size()==1);
-    }
-}
-
-TEST_CASE("experimental destination cadence retains failed refresh and same claim identity" * doctest::test_suite("ActiveMaterialClaims"))
+TEST_CASE("a claim worker that finds no claimable stock records demand and gives up its job" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-    auto& map=f.game.map;map.setMaterialDestinationsEnabled(true);
-    ResourceClaims::ClaimPolicyConfig config;config.destinationRefreshJ=2;
-    config.pattern="spiral:k1:unit:s1:every:forward:d0:seed1";map.setMaterialClaimPolicyConfig(config);
+    auto& map=f.game.map;map.enableResourceClaims();
+    auto* a=f.addBuilding("inn",20,20);auto* b=f.addBuilding("inn",24,20);REQUIRE(a);REQUIRE(b);
+    auto* holder=f.addUnit(WORKER,8,8);REQUIRE(holder);
+    REQUIRE(map.incResourceByIndex(13,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(13,8),WHEAT,1);
+    hireClaimWorker(*holder,*a);
+    // Admit one free worker at a time: the real hiring planner chooses
+    // candidates and need not select an arbitrary fixture pointer.
+    auto* seeker=f.addUnit(WORKER,8,9);REQUIRE(seeker);hireClaimWorker(*seeker,*b);
+    REQUIRE(holder->acquireMaterialClaimAt(Uint32(map.coordToIndex(13,8))));
+    const auto held=holder->activeMaterialClaim;
+    const GradientFieldKey demandKey{GradientFieldFamily::Materials,0,Uint8(seeker->movementAccess()),WHEAT};
+    const auto queryBucket=f.game.stepCounter&127;
+    const auto beforeQueries=map.gradientRuntime->adaptive.enroll(demandKey).queries[queryBucket];
+    seeker->handleActiveMaterialMovement();
+    // Selection reads are real demand even when every available unit of
+    // stock is reserved.
+    CHECK(map.gradientRuntime->adaptive.fields.at(demandKey).queries[queryBucket]==beforeQueries+1);
+    CHECK(seeker->materialClaimPolicyState.decisionOrdinal==1);
+    CHECK_FALSE(seeker->activeMaterialClaim);
+    // The worker is freed for work it can do rather than waiting.
+    CHECK(seeker->attachedBuilding==nullptr);CHECK(b->unitsWorking.empty());
+    CHECK(holder->activeMaterialClaim==held);CHECK(map.materialClaimLedger().size()==1);
+}
+TEST_CASE("destination refresh keeps the claim when it finds nothing better and survives saves" * doctest::test_suite("ActiveMaterialClaims"))
+{
+    glob2test::HeadlessGlobals globals;
+    using ResourceClaims::Policy::DestinationRefreshDecisions;
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=f.game.map;f.game.gameHeader.setResourceGrowthDisabled(true);map.enableResourceClaims();
     auto* a=f.addBuilding("inn",20,20);auto* b=f.addBuilding("inn",24,20);REQUIRE(a);REQUIRE(b);
     auto* seeker=f.addUnit(WORKER,8,8);auto* holder=f.addUnit(WORKER,8,10);REQUIRE(seeker);REQUIRE(holder);
-    REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));REQUIRE(map.incResourceByIndex(24,24,WHEAT,0));
-    const auto near=Uint32(map.coordToIndex(9,8)),far=Uint32(map.coordToIndex(24,24));
-    map.setMaterialAmountSlot(near,WHEAT,1);
+    REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));REQUIRE(map.incResourceByIndex(14,12,WHEAT,0));
+    const auto near=Uint32(map.coordToIndex(9,8)),far=Uint32(map.coordToIndex(14,12));
+    map.setMaterialAmountSlot(near,WHEAT,1);map.setMaterialAmountSlot(far,WHEAT,1);
+    // Publish the field first: waiting for it runs whole game ticks.
+    REQUIRE(glob2test::awaitGradient(f.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
     hireClaimWorker(*seeker,*a);hireClaimWorker(*holder,*b);
     REQUIRE(seeker->acquireMaterialClaimAt(far));REQUIRE(holder->acquireMaterialClaimAt(near));
     const auto oldClaim=seeker->activeMaterialClaim;const auto oldTask=seeker->materialClaimTask;
-    f.game.observeCompletedWorld(); // Route submission reads the last completed world.
-    seeker->handleActiveMaterialMovement();CHECK(seeker->materialClaimPolicyState.lastGoalAttempt==0);
-    seeker->handleActiveMaterialMovement();CHECK(seeker->materialClaimPolicyState.lastGoalAttempt==2);
+    f.game.invalidateObservation();f.game.observeCompletedWorld(); // Route submission reads the last completed world.
+    auto& cadence=seeker->materialClaimPolicyState;
+    REQUIRE(seeker->activeMaterialClaimValid());
+    // Not yet due: the held claim and its task are kept without selection.
+    cadence.lastGoalAttempt=10;cadence.decisionOrdinal=10+DestinationRefreshDecisions-2;
+    seeker->handleActiveMaterialMovement();CHECK(cadence.lastGoalAttempt==10);
+    // Due, but the nearer stock is held by another worker: the refresh keeps
+    // the old reservation.
+    seeker->handleActiveMaterialMovement();CHECK(cadence.lastGoalAttempt==10+DestinationRefreshDecisions);
     CHECK(seeker->activeMaterialClaim==oldClaim);CHECK(seeker->materialClaimTask==oldTask);
-    holder->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+    // Once it is free, the next due refresh takes it.
+    holder->releaseActiveMaterialClaim();
     seeker->handleActiveMaterialMovement();CHECK(seeker->activeMaterialClaim==oldClaim);
+    cadence.decisionOrdinal=cadence.lastGoalAttempt+DestinationRefreshDecisions-1;
     seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==near);
-    const auto sameTask=seeker->materialClaimTask;const auto sameProbe=seeker->materialClaimPolicyState.probe;
+    CHECK(map.materialClaimLedger().materialCount(far,WHEAT)==0);
+    const auto sameTask=seeker->materialClaimTask;
     seeker->handleActiveMaterialMovement();seeker->handleActiveMaterialMovement();
-    CHECK(seeker->materialClaimTask==sameTask);CHECK(seeker->materialClaimPolicyState.probe==sameProbe);
-    CHECK(seeker->materialClaimPolicyState.lastGoalAttempt==6);
+    CHECK(seeker->materialClaimTask==sameTask);
     f.game.observeCompletedWorld();
     auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(backend);
-    f.gui.save(&output,"experimental-cadence");output.flush();const auto bytes=backend->takeContents();
+    f.gui.save(&output,"claim-refresh-cadence");output.flush();const auto bytes=backend->takeContents();
     GameGUI resumed;auto* inputBackend=new GAGCore::MemoryStreamBackend;inputBackend->write(bytes.data(),bytes.size());inputBackend->seekFromStart(0);
     GAGCore::BinaryInputStream input(inputBackend);REQUIRE(resumed.load(&input,true));
     REQUIRE(resumed.game.checkSum()==f.game.checkSum());
-    CHECK(resumed.game.map.materialClaimPolicyConfig()==config);
+    const auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(seeker->gid)];REQUIRE(copy);
+    CHECK(copy->materialClaimPolicyState==seeker->materialClaimPolicyState);
     for(unsigned tick=0;tick<64;++tick) {CAPTURE(tick);f.step();resumed.game.step(0);resumed.consumeClientEvents();REQUIRE(resumed.game.checkSum()==f.game.checkSum());}
 }
-
 TEST_CASE("natural claim access keeps goal precedence and rechecks visible harvest eligibility" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;
@@ -835,7 +735,7 @@ TEST_CASE("natural claim access keeps goal precedence and rechecks visible harve
             definitions["resources"][WHEAT]["properties"]["visibleToHarvest"]=true;
             map.installResourceDefinitions(definitions.dump());
         }
-        map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        map.enableResourceClaims();
         auto* building=f.addBuilding("inn",20,20);auto* unit=f.addUnit(WORKER,8,8);REQUIRE(building);REQUIRE(unit);
         REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
         map.setMapDiscovered(12,12,unit->owner->me); // Discovered fixture terrain is not necessarily current harvest visibility.
@@ -863,16 +763,14 @@ TEST_CASE("natural claim access keeps goal precedence and rechecks visible harve
     }
 }
 
-TEST_CASE("experimental farm selection memo preserves pooled source and resets between decisions" * doctest::test_suite("ActiveMaterialClaims"))
+TEST_CASE("farm selection memo preserves pooled source and resets between decisions" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::GameOptions options;
     options.wDec=5;options.hDec=5;options.discovered=true;options.clearImmobile=true;options.loadDefaultRace=true;
     options.header=true;options.seed=9183;options.experiments.set(ExperimentId::FarmAreas,true);
     glob2test::HeadlessGame f(options);auto& map=f.game.map;
-    map.setMaterialDestinationsEnabled(true);
-    ResourceClaims::ClaimPolicyConfig config;config.selection=ResourceClaims::ClaimPolicyConfig::Selection::ClosestGeometric;
-    map.setMaterialClaimPolicyConfig(config);
+    map.enableResourceClaims();
     auto* inn=f.addBuilding("inn",20,20);auto* unit=f.addUnit(WORKER,7,11);
     unit->attachedBuilding=inn;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
     unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
@@ -905,15 +803,14 @@ TEST_CASE("experimental farm selection memo preserves pooled source and resets b
     const auto held=unit->activeMaterialClaim;const auto task=unit->materialClaimTask;
     REQUIRE(unit->selectActiveMaterialClaim(field)); // Own reservation must be excluded on a fresh memo epoch.
     CHECK(unit->activeMaterialClaim==held);CHECK(unit->materialClaimTask==task);
-    unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;
+    unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;
     for(const auto holder:holders)map.releaseMaterialClaim(holder);
 }
 
 TEST_CASE("stationary carriers claim adjacent stock and deliver with saved continuation" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;
-    for(bool experimental:{false,true}) {
-        CAPTURE(experimental);
+    {
         glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9721});
         auto& game=f.game;auto& map=game.map;
         auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
@@ -921,9 +818,7 @@ TEST_CASE("stationary carriers claim adjacent stock and deliver with saved conti
         for(const char* capability:{"walk","swim","fly"})definition["behaviors"][capability]=false;
         game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));game.configureBuildingCatalog();
         game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
-        map.setMaterialDestinationsEnabled(true);
-        if(experimental)map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig{});
-        else map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        map.enableResourceClaims();
         auto* inn=f.addBuilding("inn",10,8);REQUIRE(inn);inn->maxUnitWorking=1;inn->setMaterial(WHEAT,0);inn->updateCallLists();
         auto* unit=f.addUnit(WORKER,9,8);REQUIRE(unit);unit->hungriness=0;
         REQUIRE(unit->performance[WALK]==0);REQUIRE(unit->performance[SWIM]==0);REQUIRE(unit->performance[FLY]==0);
@@ -933,26 +828,23 @@ TEST_CASE("stationary carriers claim adjacent stock and deliver with saved conti
         REQUIRE(map.incResourceByIndex(15,15,WHEAT,0));
         glob2test::publishCurrentHiringSuggestions(game);REQUIRE(inn->subscribeToBringMaterialsStep());
         REQUIRE(unit->attachedBuilding==inn);glob2test::discardPrematureHiringSuggestions(game);
+        // Remote stock needs travel this carrier cannot do; adjacent stock it
+        // can claim. (One uncrowded worker would not engage claims by itself.)
         CHECK_FALSE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(15,15))));
-        std::unique_ptr<glob2test::HeadlessGame> restored;
-        bool observedClaim=false,delivered=false;
+        REQUIRE(unit->acquireMaterialClaimAt(source));REQUIRE(unit->activeMaterialClaimValid());
+        CHECK(map.materialClaimLedger().materialCount(source,WHEAT)==1);
+        game.invalidateObservation();
+        auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
+        const auto before=game.checkSum();f.gui.save(&output,"stationary claim continuation");output.flush();
+        auto* copied=new GAGCore::MemoryStreamBackend(*bytes);copied->seekFromStart(0);
+        auto restored=std::make_unique<glob2test::HeadlessGame>();
+        restored->game.map.clear();restored->game.map.resourceCells.clear();
+        GAGCore::BinaryInputStream input(copied);REQUIRE(restored->gui.load(&input,true));
+        REQUIRE(restored->game.checkSum()==before);CHECK(game.checkSum()==before);
+        bool observedClaim=true,delivered=false;
         for(unsigned tick=0;tick<512 && !delivered;++tick) {
-            game.step(0);
-            if(restored) {restored->game.step(0);REQUIRE(restored->game.checkSum()==game.checkSum());}
+            game.step(0);restored->game.step(0);REQUIRE(restored->game.checkSum()==game.checkSum());
             CHECK(unit->posX==9);CHECK(unit->posY==8);
-            if(unit->activeMaterialClaim && !observedClaim) {
-                observedClaim=true;REQUIRE(unit->activeMaterialClaimValid());
-                CHECK(map.materialClaimLedger().materialCount(source,WHEAT)==1);
-                const auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game));
-                REQUIRE(snapshot.claims);CHECK(snapshot.claims->counts.cells[source]==1);
-                auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
-                const auto before=game.checkSum();f.gui.save(&output,"stationary claim continuation");output.flush();
-                auto* copied=new GAGCore::MemoryStreamBackend(*bytes);copied->seekFromStart(0);
-                restored=std::make_unique<glob2test::HeadlessGame>();
-                restored->game.map.clear();restored->game.map.resourceCells.clear();
-                GAGCore::BinaryInputStream input(copied);REQUIRE(restored->gui.load(&input,true));
-                REQUIRE(restored->game.checkSum()==before);CHECK(game.checkSum()==before);
-            }
             delivered=game.teams[0]->stats.events().delivered[WHEAT]>0;
         }
         REQUIRE(observedClaim);REQUIRE(delivered);REQUIRE(restored);
@@ -969,8 +861,7 @@ TEST_CASE("lost mobility releases claims needing source or consumer travel" * do
     for(bool remoteConsumer:{false,true}) {
         CAPTURE(remoteConsumer);
         glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        auto& map=f.game.map;map.setMaterialDestinationsEnabled(true);
-        map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+        auto& map=f.game.map;map.enableResourceClaims();
         auto* inn=f.addBuilding("inn",remoteConsumer?20:10,8);REQUIRE(inn);
         auto* unit=f.addUnit(WORKER,9,8);REQUIRE(unit);
         unit->attachedBuilding=inn;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;unit->destinationPurpose=WHEAT;
@@ -989,56 +880,40 @@ TEST_CASE("lost mobility releases claims needing source or consumer travel" * do
 TEST_CASE("claim gradient demand records pursuit evidence on the natural material field" * doctest::test_suite("ActiveMaterialClaims"))
     {
         glob2test::HeadlessGlobals globals;
-        using Config=ResourceClaims::ClaimPolicyConfig;
-        for(bool demand:{false,true}) {
-            CAPTURE(demand);
-            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
-            auto& game=fixture.game;auto& map=game.map;map.setMaterialDestinationsEnabled(true);
-            Config config;config.claimGradientDemand=demand;map.setMaterialClaimPolicyConfig(config);
-            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
-            struct Cleanup { Unit& unit; ~Cleanup(){unit.releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit.attachedBuilding=nullptr;} } cleanup{*unit};
-            unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
-            unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
-            map.setResourceByIndex(14,8,WHEAT,1);map.setMaterialAmountSlot(Uint32(map.coordToIndex(14,8)),WHEAT,3);
-            REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(14,8))));
-            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
-            game.invalidateObservation();game.observeCompletedWorld();
-            const GradientFieldKey key{GradientFieldFamily::Materials,0,Uint8(accessClass(MovementAccess::Land)),Uint8(WHEAT)};
-            auto& fields=map.gradientRuntime->adaptive.fields;
-            const auto evidence=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.total[2]);};
-            const auto queries=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.count128);};
-            const auto before=evidence(),queried=queries();
-            unit->handleActiveMaterialMovement(); // route computing: demand only
-            CHECK(unit->dx==0);CHECK(unit->dy==0);
-            CHECK(evidence()==before);CHECK(queries()==queried+(demand?1:0));
-            map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();game.invalidateObservation();game.observeCompletedWorld();
-            const auto published=queries();
-            unit->handleActiveMaterialMovement(); // published route: a real step
-            CHECK((unit->dx||unit->dy));REQUIRE(unit->activeMaterialClaim);
-            CHECK(evidence()==before+(demand?1:0));CHECK(queries()==published+(demand?1:0));
-        }
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+        auto& game=fixture.game;auto& map=game.map;map.enableResourceClaims();
+        auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+        struct Cleanup { Unit& unit; ~Cleanup(){unit.releaseActiveMaterialClaim();unit.attachedBuilding=nullptr;} } cleanup{*unit};
+        unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
+        unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+        map.setResourceByIndex(14,8,WHEAT,1);map.setMaterialAmountSlot(Uint32(map.coordToIndex(14,8)),WHEAT,3);
+        REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(14,8))));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        game.invalidateObservation();game.observeCompletedWorld();
+        const GradientFieldKey key{GradientFieldFamily::Materials,0,Uint8(accessClass(MovementAccess::Land)),Uint8(WHEAT)};
+        auto& fields=map.gradientRuntime->adaptive.fields;
+        const auto evidence=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.total[2]);};
+        const auto queries=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.count128);};
+        const auto queried=queries();
+        // Route computing: the worker takes the ordinary gradient step, and the
+        // claim adds field demand.
+        unit->handleActiveMaterialMovement();
+        CHECK((unit->dx||unit->dy));
+        CHECK(queries()>queried);
+        map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();game.invalidateObservation();game.observeCompletedWorld();
+        const auto published=queries();const auto before=evidence();
+        // Published route: a routed step is also movement evidence on the
+        // natural material field, so adaptive refresh keeps serving it.
+        unit->handleActiveMaterialMovement();
+        CHECK((unit->dx||unit->dy));REQUIRE(unit->activeMaterialClaim);
+        CHECK(evidence()==before+1);CHECK(queries()==published+1);
     }
 #endif
 
 namespace
 {
-// claim_trigger "contention" fixtures: inns needing wheat and free workers the
-// ordinary hiring step admits; the policy is the production v5 policy with the
-// contention trigger, optionally with the combined (combo A) options.
-ResourceClaims::ClaimPolicyConfig contentionPolicy(bool combined,unsigned minWorkers=3,unsigned radius=1)
-{
-    using Config=ResourceClaims::ClaimPolicyConfig;
-    Config c;c.sourceVersion=5;c.pattern="final-r32-exact24-assembled-v1";
-    c.patternFrame=Config::PatternFrame::NearestD4;c.destinationRefreshJ=12;c.opportunisticAdjacentPickup=true;
-    c.claimTrigger=Config::ClaimTrigger::Contention;c.contentionMinWorkers=minWorkers;c.contentionRadius=radius;
-    if(combined) {
-        c.refreshSwitchMarginPermille=250;c.fallback=Config::Fallback::ReleaseJob;c.claimGradientDemand=true;
-        c.pendingStep=Config::PendingStep::Gradient;c.maxClaimDistanceFactorPermille=2000;
-        c.trafficSidestep=true;c.trafficWaitLimit=8;c.terrainComponentPrefilter=true;
-    }
-    c.validate();
-    return c;
-}
+// Contention fixtures: inns needing wheat and free workers the ordinary
+// hiring step admits, in a game with claims on or off.
 struct ContentionRun
 {
     std::vector<std::vector<int>> units;   // per tick: x,y,targetX,targetY,validTarget,displacement,carried,claimed per unit
@@ -1047,16 +922,15 @@ struct ContentionRun
     bool claimedAndHarvested=false,claimFreeAfterHarvest=true;
     int delivered=0;
 };
-enum class ContentionMode { Off, Contention, Combined };
-ContentionRun runContentionFixture(ContentionMode mode,unsigned participants,int workers,int inns,const std::vector<std::pair<int,int>>& stock,unsigned ticks)
+ContentionRun runContentionFixture(bool claims,unsigned participants,int workers,int inns,const std::vector<std::pair<int,int>>& stock,unsigned ticks)
 {
     glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=5311});
     auto& game=f.game;auto& map=game.map;
     map.computeExecutor().configure(participants);
     game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
-    map.setMaterialDestinationsEnabled(true);
-    if(mode!=ContentionMode::Off)map.setMaterialClaimPolicyConfig(contentionPolicy(mode==ContentionMode::Combined));
-    CHECK(map.claimContentionEnabled()==(mode!=ContentionMode::Off));
+    // Both arms keep destination planes, so they differ only in claims.
+    if(claims)map.enableResourceClaims();else map.setMaterialDestinationsEnabled(true);
+    CHECK(map.activeClaimsEnabled()==claims);
     std::vector<Building*> buildings;
     for(int i=0;i<inns;++i) {
         auto* inn=f.addBuilding("inn",20,2+5*i);REQUIRE(inn);
@@ -1089,79 +963,79 @@ ContentionRun runContentionFixture(ContentionMode mode,unsigned participants,int
         run.units.push_back(row);run.checksums.push_back(game.checkSum());
     }
     for(auto* b:buildings)run.delivered+=b->material(WHEAT);
-    for(auto* u:units)u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+    for(auto* u:units)u->releaseActiveMaterialClaim();
     return run;
 }
 }
 
-TEST_CASE("an uncrowded contention worker moves exactly as with claims off" * doctest::test_suite("ClaimContention"))
+TEST_CASE("an uncrowded worker moves exactly as with claims off" * doctest::test_suite("ClaimContention"))
 {
     glob2test::HeadlessGlobals globals;
     const std::vector<std::pair<int,int>> stock{{12,8},{12,20},{26,14}};
-    const auto off=runContentionFixture(ContentionMode::Off,1,1,1,stock,3000);
-    for(auto mode:{ContentionMode::Contention,ContentionMode::Combined}) {
-        CAPTURE(int(mode));
-        const auto contention=runContentionFixture(mode,1,1,1,stock,3000);
-        CHECK(off.delivered>=2);CHECK(contention.delivered==off.delivered);
-        CHECK(contention.maxClaimed==0);
-        REQUIRE(contention.units.size()==off.units.size());
-        for(std::size_t tick=0;tick<off.units.size();++tick){CAPTURE(tick);REQUIRE(contention.units[tick]==off.units[tick]);}
-    }
+    const auto off=runContentionFixture(false,1,1,1,stock,3000);
+    const auto claims=runContentionFixture(true,1,1,1,stock,3000);
+    CHECK(off.delivered>=2);CHECK(claims.delivered==off.delivered);
+    CHECK(claims.maxClaimed==0);
+    REQUIRE(claims.units.size()==off.units.size());
+    for(std::size_t tick=0;tick<off.units.size();++tick){CAPTURE(tick);REQUIRE(claims.units[tick]==off.units[tick]);}
 }
 
-TEST_CASE("crowded contention workers engage claims, spread, harvest and stay deterministic" * doctest::test_suite("ClaimContention"))
+TEST_CASE("crowded workers engage claims, spread, harvest and stay deterministic" * doctest::test_suite("ClaimContention"))
 {
     glob2test::HeadlessGlobals globals;
     // Five workers and five inns; one tight cluster of single-unit wheat.
     std::vector<std::pair<int,int>> stock;
     for(int y=7;y<=12;++y)for(int x=12;x<=13;++x)stock.emplace_back(x,y);
-    const auto off=runContentionFixture(ContentionMode::Off,1,5,5,stock,1200);
-    for(auto mode:{ContentionMode::Contention,ContentionMode::Combined}) {
-        CAPTURE(int(mode));
-        const auto one=runContentionFixture(mode,1,5,5,stock,1200);
-        const auto two=runContentionFixture(mode,2,5,5,stock,1200);
-        CHECK(one.maxClaimed>=3);
-        // Claims are exact capacity on single-unit stock: one holder per source.
-        CHECK(one.maxDistinctClaims==one.maxClaimed);
-        CHECK(one.claimedAndHarvested);CHECK(one.claimFreeAfterHarvest);
-        CHECK(one.delivered>=5);
-        MESSAGE("mode "<<int(mode)<<" delivered "<<one.delivered<<" (claims off "<<off.delivered<<"), max concurrent claims "<<one.maxClaimed);
-        REQUIRE(one.checksums.size()==two.checksums.size());
-        for(std::size_t tick=0;tick<one.checksums.size();++tick){CAPTURE(tick);REQUIRE(one.checksums[tick]==two.checksums[tick]);REQUIRE(one.units[tick]==two.units[tick]);}
-    }
+    const auto off=runContentionFixture(false,1,5,5,stock,1200);
+    const auto one=runContentionFixture(true,1,5,5,stock,1200);
+    const auto two=runContentionFixture(true,2,5,5,stock,1200);
+    CHECK(one.maxClaimed>=3);
+    // Claims are exact capacity on single-unit stock: one holder per source.
+    CHECK(one.maxDistinctClaims==one.maxClaimed);
+    CHECK(one.claimedAndHarvested);CHECK(one.claimFreeAfterHarvest);
+    CHECK(one.delivered>=5);
+    MESSAGE("delivered "<<one.delivered<<" (claims off "<<off.delivered<<"), max concurrent claims "<<one.maxClaimed);
+    REQUIRE(one.checksums.size()==two.checksums.size());
+    for(std::size_t tick=0;tick<one.checksums.size();++tick){CAPTURE(tick);REQUIRE(one.checksums[tick]==two.checksums[tick]);REQUIRE(one.units[tick]==two.units[tick]);}
 }
 
 TEST_CASE("contention decisions count same-material fetch targets on the torus and keep a held claim" * doctest::test_suite("ClaimContention"))
 {
     glob2test::HeadlessGlobals globals;
+    using namespace ResourceClaims::Policy;
+    static_assert(ContentionMinWorkers==2 && ContentionRadius==3);
     glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=5311});
-    auto& game=f.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
-    map.setMaterialClaimPolicyConfig(contentionPolicy(false,3,1));
+    auto& game=f.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.enableResourceClaims();
     auto* inn=f.addBuilding("inn",14,14);REQUIRE(inn);
     const int w=map.getW();
     std::vector<Unit*> units;
-    struct Cleanup { std::vector<Unit*>& units; ~Cleanup(){for(auto* u:units){u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);u->attachedBuilding=nullptr;}} } cleanup{units};
+    struct Cleanup { std::vector<Unit*>& units; ~Cleanup(){for(auto* u:units){u->releaseActiveMaterialClaim();u->attachedBuilding=nullptr;}} } cleanup{units};
     const auto fetcher=[&](int x,int y,int tx,int ty,int material=WHEAT) {
         auto* u=f.addUnit(WORKER,x,y);REQUIRE(u);units.push_back(u);
         u->attachedBuilding=inn;u->activity=Unit::ACT_FILLING;u->displacement=Unit::DIS_GOING_TO_RESOURCE;
         u->destinationPurpose=material;u->medical=Unit::MED_FREE;u->targetX=tx;u->targetY=ty;u->setValidTarget(true);
         return u;
     };
-    // Self targets column 0; neighbours target the wrapped column w-1 and row +1.
-    auto* self=fetcher(4,4,0,8);auto* left=fetcher(5,4,w-1,8);
+    // Self targets column 0. A different material on the same cell and the
+    // same material ContentionRadius+1 tiles away never count.
+    auto* self=fetcher(4,4,0,8);
+    auto* wood=fetcher(7,4,0,8,WOOD);auto* far=fetcher(8,4,4,8);(void)wood;(void)far;
+    map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
+    CHECK(map.claimContentionOthers(*self,WOOD,0,8)==1);
+    CHECK_FALSE(self->materialClaimDecision()); // 1 < 2: ordinary movement
+    // A neighbour targeting the wrapped column w-1 counts: 2 >= 2.
+    auto* left=fetcher(5,4,w-1,8);
     map.prepareClaimContention(0);
     CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==1);
-    CHECK_FALSE(self->materialClaimDecision()); // 2 < 3: ordinary
-    auto* below=fetcher(6,4,1,9);
-    // Different material and out-of-radius targets never count.
-    auto* wood=fetcher(7,4,0,8,WOOD);auto* far=fetcher(8,4,3,8);(void)wood;(void)far;
+    CHECK(self->materialClaimDecision());
+    // So does one exactly ContentionRadius tiles away.
+    auto* corner=fetcher(6,4,3,11);
     map.prepareClaimContention(0);
     CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==2);
-    CHECK(map.claimContentionOthers(*self,WOOD,0,8)==1);
-    CHECK(self->materialClaimDecision());       // 3 >= 3: claim path this decision
     // An invalid ordinary target is not counted.
-    below->setValidTarget(false);map.prepareClaimContention(0);
-    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==1);
+    corner->setValidTarget(false);left->setValidTarget(false);map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
     CHECK_FALSE(self->materialClaimDecision());
     // A held claim counts at its access and keeps its holder in claim mode,
     // even uncrowded, until it is released; then the worker is ordinary.
@@ -1173,8 +1047,145 @@ TEST_CASE("contention decisions count same-material fetch targets on the torus a
     CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
     CHECK(map.claimContentionOthers(*self,WHEAT,int(access%Uint32(w)),int(access/Uint32(w)))>=1);
     CHECK(left->materialClaimDecision());
-    left->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Harvest);
-    left->targetX=20;left->targetY=2;map.prepareClaimContention(0);
+    left->releaseActiveMaterialClaim();
+    left->targetX=20;left->targetY=2;left->setValidTarget(true);map.prepareClaimContention(0);
     CHECK_FALSE(left->materialClaimDecision());
     CHECK_FALSE(left->usesMaterialClaimPickup());
+}
+
+namespace
+{
+// Hire-time claim check fixtures: more free workers and wheat-needing inn
+// places than claimable stock. Two single units of wheat lie within the
+// contention radius of each other, so hired workers crowd them; those whose
+// claim selection finds nothing give up their jobs, and the hire check must
+// then keep them (or an equivalent worker) from being hired straight back.
+struct HireRun
+{
+    std::vector<Uint32> checksums;
+    std::vector<unsigned> releases;  // per worker: jobs given up while not carrying wheat
+    Uint64 skipped=0,searched=0;     // hire-time searches with no claimable target / in total
+    int delivered=0;
+};
+HireRun runHireFixture(unsigned participants,unsigned ticks)
+{
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7411});
+    auto& game=f.game;auto& map=game.map;
+    map.computeExecutor().configure(participants);
+    game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
+    map.enableResourceClaims();
+    std::vector<Building*> buildings;
+    for(int i=0;i<4;++i) {
+        auto* inn=f.addBuilding("inn",20,2+5*i);REQUIRE(inn);
+        inn->maxUnitWorking=2;inn->setMaterial(WHEAT,0);inn->updateCallLists();buildings.push_back(inn);
+    }
+    std::vector<Unit*> units;
+    for(int i=0;i<8;++i) {
+        auto* unit=f.addUnit(WORKER,4,6+i);REQUIRE(unit);
+        unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;unit->hungriness=0;units.push_back(unit);
+    }
+    for(const auto& [x,y]:std::vector<std::pair<int,int>>{{12,8},{13,10}}) {
+        REQUIRE(map.incResourceByIndex(x,y,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(x,y),WHEAT,1);
+    }
+    HireRun run;run.releases.assign(units.size(),0);
+    std::vector<bool> attached(units.size(),false);
+    for(unsigned tick=0;tick<ticks;++tick) {
+        CAPTURE(tick);
+        f.step();
+        const auto& index=map.claimHireTargetIndex();
+        if(index.team==0)for(std::size_t i=0;i<index.requests.size();++i) {
+            ++run.searched;
+            if(index.results[i].state!=ResourceClaims::HireTarget::State::None)continue;
+            ++run.skipped;
+            // A worker without a claimable target is never hired for it.
+            const auto* u=game.teams[0]->myUnits[Unit::GIDtoID(index.requests[i].gid)];REQUIRE(u);
+            CHECK_FALSE((u->attachedBuilding && u->activity==Unit::ACT_FILLING && u->destinationPurpose==index.requests[i].material));
+        }
+        for(std::size_t i=0;i<units.size();++i) {
+            const bool now=units[i]->attachedBuilding!=nullptr;
+            if(attached[i] && !now && !units[i]->hasCarriedMaterial(WHEAT))++run.releases[i];
+            attached[i]=now;
+        }
+        run.checksums.push_back(game.checkSum());
+    }
+    for(auto* b:buildings)run.delivered+=b->material(WHEAT);
+    for(auto* u:units)u->releaseActiveMaterialClaim();
+    return run;
+}
+}
+
+TEST_CASE("hiring skips workers with no claimable target and stays deterministic across threads" * doctest::test_suite("ClaimHireTargets"))
+{
+    glob2test::HeadlessGlobals globals;
+    const auto one=runHireFixture(1,600);
+    Uint64 releases=0;unsigned most=0;
+    for(auto r:one.releases){releases+=r;most=std::max(most,r);}
+    MESSAGE("hire searches "<<one.searched<<", skipped "<<one.skipped<<", releases "<<releases<<", delivered "<<one.delivered);
+    CHECK(one.searched>0);
+    CHECK(one.skipped>0);
+    // Without the check a released worker is hired straight back for the
+    // same reserved stock and released again, over and over.
+    CHECK(most<=2);
+    CHECK(one.delivered==2);
+    for(unsigned threads:{2u,4u}) {
+        CAPTURE(threads);
+        const auto other=runHireFixture(threads,600);
+        REQUIRE(other.checksums.size()==one.checksums.size());
+        for(std::size_t tick=0;tick<one.checksums.size();++tick){CAPTURE(tick);REQUIRE(other.checksums[tick]==one.checksums[tick]);}
+        CHECK(other.releases==one.releases);CHECK(other.skipped==one.skipped);CHECK(other.delivered==one.delivered);
+    }
+}
+
+TEST_CASE("the hire check rejects reserved stock and cargo-blocked workers and accepts claimable stock" * doctest::test_suite("ClaimHireTargets"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7411});
+    auto& game=f.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.enableResourceClaims();
+    auto* inn=f.addBuilding("inn",20,2);REQUIRE(inn);
+    auto* holder=f.addUnit(WORKER,8,8);auto* u=f.addUnit(WORKER,4,6);REQUIRE(holder);REQUIRE(u);
+    const auto stock=Uint32(map.coordToIndex(12,8));
+    REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));map.setMaterialAmountSlot(stock,WHEAT,1);
+    REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+    u->medical=Unit::MED_FREE;u->activity=Unit::ACT_RANDOM;
+    // No hiring pass ran this tick, so the check searches on the owner.
+    REQUIRE_FALSE(map.claimHireTargetIndex().current(0,game.stepCounter));
+    CHECK(u->materialClaimHireAllowed(*inn,WHEAT));
+    // With the only stock reserved by another worker there is nothing to claim.
+    holder->attachedBuilding=inn;holder->activity=Unit::ACT_FILLING;holder->displacement=Unit::DIS_GOING_TO_RESOURCE;
+    holder->destinationPurpose=WHEAT;holder->medical=Unit::MED_FREE;
+    REQUIRE(holder->acquireMaterialClaimAt(stock));
+    CHECK_FALSE(u->materialClaimHireAllowed(*inn,WHEAT));
+    holder->releaseActiveMaterialClaim();holder->attachedBuilding=nullptr;holder->activity=Unit::ACT_RANDOM;
+    CHECK(u->materialClaimHireAllowed(*inn,WHEAT));
+    // Claim resolution requires cargo room, so a worker carrying another
+    // material could never claim wheat and would only be released again.
+    u->carriedMaterial=WOOD;
+    CHECK_FALSE(u->canCarryMaterial(WHEAT));
+    CHECK_FALSE(u->materialClaimHireAllowed(*inn,WHEAT));
+    u->carriedMaterial=-1;
+}
+
+TEST_CASE("the hire check never runs with claims off" * doctest::test_suite("ClaimHireTargets"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7411});
+    auto& game=f.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);
+    map.disableResourceClaims();
+    auto* inn=f.addBuilding("inn",20,2);REQUIRE(inn);
+    inn->maxUnitWorking=2;inn->setMaterial(WHEAT,0);inn->updateCallLists();
+    auto* u=f.addUnit(WORKER,4,6);auto* w=f.addUnit(WORKER,4,8);REQUIRE(u);REQUIRE(w);
+    REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(12,8),WHEAT,1);
+    for(auto* unit:{u,w}){unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;unit->hungriness=0;}
+    u->carriedMaterial=WOOD;
+    CHECK(u->materialClaimHireAllowed(*inn,WHEAT));
+    u->carriedMaterial=-1;
+    bool hired=false;
+    for(unsigned tick=0;tick<64;++tick) {
+        f.step();
+        hired|=w->attachedBuilding==inn || u->attachedBuilding==inn;
+        CHECK_FALSE(map.claimHireTargetIndex().current(0,game.stepCounter));
+        CHECK(map.claimHireTargetIndex().requests.empty());
+    }
+    CHECK(hired);
+    CHECK(u->materialClaimHireAllowed(*inn,WHEAT));CHECK(w->materialClaimHireAllowed(*inn,WHEAT));
 }

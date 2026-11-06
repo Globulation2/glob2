@@ -174,7 +174,7 @@ TEST_SUITE("ClaimRoutePipeline")
         CHECK(restored.publish(10).empty()); REQUIRE(restored.publish(11).size() == 1);
         REQUIRE(pipeline.publish(11).size() == 1); CHECK(pipeline.admissionAvailable());
     }
-    TEST_CASE("experimental present terrain bounds preserve cost across cached terrain leases")
+    TEST_CASE("present terrain bounds preserve optimal cost across cached terrain leases")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
@@ -190,20 +190,30 @@ TEST_SUITE("ClaimRoutePipeline")
                 std::fill(terrain->cellRules.begin(),terrain->cellRules.end(),iteration%2?TRAIL:GRASS);
                 world.terrain=terrain;
                 for(int movement:{0,AIR_MOVEMENT_CLASS}) {
-                    ResourceClaims::RouteInput input{world,{movement,1,0xffff,ResourceClaims::OccupancyPolicy::Static},0,Uint32(15*world.width+13)};
+                    CAPTURE(iteration);CAPTURE(movement);
+                    const ResourceClaims::RouteInput input{world,{movement,1,0xffff,ResourceClaims::OccupancyPolicy::Static},0,Uint32(15*world.width+13)};
                     const Uint64 tick=iteration*4+(movement==0?0:2);
                     pipeline.submit(1,1,tick,input);
-                    input.presentTerrainHeuristic=true;pipeline.submit(2,1,tick,input);
-                    const auto outputs=pipeline.publish(tick+1);REQUIRE(outputs.size()==2);
+                    const auto outputs=pipeline.publish(tick+1);REQUIRE(outputs.size()==1);
+                    // The heuristic built from present terrain stays admissible:
+                    // the route cost equals an uninformed exact search.
+                    const auto view=world.view();ResourceClaims::RouteSearch oracle;
+                    const int tx=int(input.target%world.width),ty=int(input.target/world.width);
+                    const auto exact=oracle.find(field::Grid(world.width,world.height),input.start,input.maximumCost,
+                        [&](Uint32 i){return ResourceClaims::routePassable(view,i,input.profile);},
+                        [&](Uint32 i,bool diagonal){return ResourceClaims::routeEntryCost(view,i,input.profile,diagonal);},
+                        [&](Uint32 i){
+                            const int dx=std::abs(int(i%world.width)-tx),dy=std::abs(int(i/world.width)-ty);
+                            return std::max(std::min(dx,int(world.width)-dx),std::min(dy,int(world.height)-dy))<=1;},
+                        [](Uint32){return Uint64(0);});
                     CHECK(outputs[0].route.status==ResourceClaims::RouteStatus::Found);
-                    CHECK(outputs[1].route.status==outputs[0].route.status);
-                    CHECK(outputs[1].route.cost==outputs[0].route.cost);
-                    CHECK(outputs[1].route.expansions<=outputs[0].route.expansions);
+                    CHECK(outputs[0].route.status==exact.status);
+                    CHECK(outputs[0].route.cost==exact.cost);
+                    CHECK(outputs[0].route.expansions<=exact.expansions);
                 }
             }
         }
     }
-
     TEST_CASE("present terrain minima invalidate when snapshot pool refills the same object")
     {
         glob2test::HeadlessGlobals globals;
@@ -229,39 +239,21 @@ TEST_SUITE("ClaimRoutePipeline")
                 for(int x=5;x<=15;++x)terrain->cellRules[cell(x,8)]=TRAIL;
             }
             auto world=original;world.terrain=terrain;
-            ResourceClaims::RouteInput input{world,{},cell(5,5),cell(15,5)};
-            input.radius=0;input.presentTerrainHeuristic=true;
+            const ResourceClaims::RouteInput input{world,{},cell(5,5),cell(15,5)};
             pipeline.submit(1,phase+1,phase*2,input);
             const auto outputs=pipeline.publish(phase*2+1);REQUIRE(outputs.size()==1);
             const auto view=world.view();ResourceClaims::RouteSearch oracle;
             const auto exact=oracle.find(field::Grid(world.width,world.height),input.start,input.maximumCost,
                 [&](Uint32 i){return ResourceClaims::routePassable(view,i,input.profile);},
                 [&](Uint32 i,bool diagonal){return ResourceClaims::routeEntryCost(view,i,input.profile,diagonal);},
-                [&](Uint32 i){return i==input.target;},[](Uint32){return Uint64(0);});
+                // Routes end within one tile of the target, where pickup happens.
+                [&](Uint32 i){return std::abs(int(i%original.width)-15)<=1 && std::abs(int(i/original.width)-5)<=1;},
+                [](Uint32){return Uint64(0);});
             REQUIRE(exact.status==ResourceClaims::RouteStatus::Found);
             CHECK(outputs[0].route.status==exact.status);CHECK(outputs[0].route.cost==exact.cost);
             if(!phase)initialCost=exact.cost;else CHECK(exact.cost<initialCost);
         }
         CHECK(allocations==1);
-    }
-
-    TEST_CASE("route diagnostics count canceled work once without publishing or sealing staging")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
-        const auto world=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
-        ComputeExecutor executor;executor.configure(1);ResourceClaims::RoutePipeline pipeline(executor);
-        ResourceClaims::RouteInput input{world,{},0,10};input.diagnostics=true;
-        pipeline.submit(1,1,10,input);
-        const auto staged=pipeline.takeDiagnostics();CHECK(staged.completed==0);CHECK(staged.unobserved==1);
-        CHECK_FALSE(pipeline.sealedSubmissionTick().has_value());
-        const auto outputs=pipeline.exportPending();REQUIRE(outputs.size()==1);
-        const auto completed=pipeline.takeDiagnostics();CHECK(completed.completed==1);CHECK(completed.canceled==0);
-        CHECK(completed.expansions==outputs[0].route.expansions);CHECK(completed.unobserved==0);
-        pipeline.cancel(1);CHECK(pipeline.publish(11).empty());
-        const auto canceled=pipeline.takeDiagnostics();CHECK(canceled.completed==0);CHECK(canceled.canceled==1);
-        CHECK(canceled.expansions==0);CHECK(canceled.elapsedNs==0);
-        CHECK(pipeline.takeDiagnostics().canceled==0);
     }
 
 }

@@ -8,9 +8,9 @@
 #include "claims/ClaimRecovery.h"
 #include "claims/ClaimTerrainComponents.h"
 #include "claims/ClaimContention.h"
+#include "claims/ClaimHireTargets.h"
 #include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
-namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
 #include "OwnerRandom.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
@@ -148,25 +148,24 @@ class Map
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
-	MapState::ChangeTracker claimChanges;
 	ResourceClaims::Ledger materialClaims;
-    ResourceClaims::ActiveClaimPolicy activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
+    // Whether this game uses resource claims (ResourceClaims::Policy). Fixed at
+    // new-game setup and saved; saves before format 213 load without claims.
+    bool resourceClaimsEnabled=false;
+    // Rules the held claims were validated under (farm areas, growth, resource
+    // catalog); a change invalidates every claim at the next publication.
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
-    std::unique_ptr<const ResourceClaims::ClaimPolicyConfig> materialClaimConfiguration;
-    // setMaterialClaimPolicyConfig without the tick-zero check.
-    void installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
-    std::array<Uint8,32> materialClaimConfigurationDigest{};
-    std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
+    Uint32 claimRuntimeChecksum(bool deep, bool includePending) const;
     // Derived from terrain only; never saved, checksummed or snapshotted.
     mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;
-    // Derived per-team target occupancy (claim_trigger contention); rebuilt from
-    // unit state before each team steps its units, never saved or checksummed.
+    // Derived per-team target occupancy for the contention trigger; rebuilt
+    // from unit state before each team steps its units, never saved or checksummed.
     ResourceClaims::ContentionIndex claimContention;
-    std::array<Uint64,4> materialClaimFarmEpoch{};
-    std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
-	void markClaim(size_t index) { claimChanges.mark(chunkGeometry.chunkOf(index)); }
-	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); markDiscoveryChanged(); claimChanges.markAll(); }
+    // Derived per-team table of hire-time claim target searches, rebuilt
+    // immediately before each team's hiring phase; never saved or checksummed.
+    ResourceClaims::HireTargetIndex claimHireTargets;
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); markDiscoveryChanged(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
 	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
@@ -176,7 +175,7 @@ class Map
 		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
 		const auto count = chunkGeometry.count();
 		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
-		areaChanges.reset(count); visibilityChanges.reset(count); ++discoveryRevisionValue; claimChanges.reset(count);
+		areaChanges.reset(count); visibilityChanges.reset(count); ++discoveryRevisionValue;
 		materialClaims.reset(std::size_t(w) * h);
 	}
 	mutable std::mutex waterSnapshotMutex;
@@ -263,8 +262,8 @@ public:
 	Uint64 discoveryRevision() const { return discoveryRevisionValue; }
 	WorldRandomStreams worldRandom;
 	EntityRandom& privateRandom(RandomDomain domain);
-	std::array<Uint64, 6> snapshotGenerations() const
-	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation, claimChanges.generation}; }
+	std::array<Uint64, 5> snapshotGenerations() const
+	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
 	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
 	{
@@ -274,7 +273,6 @@ public:
 		case MapState::TrackedArray::Resources: return resourceChanges;
 		case MapState::TrackedArray::Occupancy: return occupancyChanges;
 		case MapState::TrackedArray::Areas: return areaChanges;
-		case MapState::TrackedArray::Claims: return claimChanges;
 		default: return visibilityChanges;
 		}
 	}
@@ -789,26 +787,19 @@ public:
 	// derived seed data coherent. Reads never invalidate preparation caches.
 	size_t cellCount() const { return resourceCells.size(); }
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
-    // Temporary shadow collection: rebuilt after load, never used by gameplay.
-    bool activeClaimsEnabled() const { return activeClaimPolicy!=ResourceClaims::ActiveClaimPolicy::Disabled; }
-    ResourceClaims::ActiveClaimPolicy materialClaimPolicy() const { return activeClaimPolicy; }
-    void setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy);
-    const ResourceClaims::ClaimPolicyConfig& materialClaimPolicyConfig() const;
-    void setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
-    //! New-game setup: material destinations plus the shipped default claim
-    //! policy. Saved games keep whatever they stored (claims off before format 213).
-    void applyShippedResourceClaims();
-    //! New-game setup without destinations or claims (the pre-default behaviour).
+    bool activeClaimsEnabled() const { return resourceClaimsEnabled; }
+    //! New-game setup: material destination planes plus resource claims.
+    //! Saved games keep whatever they stored (claims off before format 213).
+    void enableResourceClaims();
+    //! New-game setup without destination planes or claims.
     void disableResourceClaims();
-    //! True when the frozen policy is exactly ClaimPolicyConfig::shippedDefault().
-    bool shippedResourceClaimsActive() const;
-    ResourceClaims::StepResult nextClaimGradientStep(const Unit&, int*, int*);
     ResourceClaims::StepResult nextClaimRouteStep(Unit&, int*, int*);
     //! True unless the held claim has a published route (computing, awaiting
     //! admission or not yet requested).
     bool claimRouteComputing(const Unit&) const;
-    //! claim_gradient_demand: demand, and optionally movement evidence, for the
-    //! held claim's natural-material field, mirroring pathfindMaterial.
+    //! Gradient demand, and optionally movement evidence, for the held claim's
+    //! natural-material field, so adaptive refresh keeps serving claim workers
+    //! as it serves gradient followers (mirrors pathfindMaterial).
     void claimPursuitGradientSignal(Unit&, bool recordOutcome, bool moved);
     void cancelClaimRoute(ResourceClaims::Owner);
     void flushClaimRoutes();
@@ -820,6 +811,12 @@ public:
     unsigned recordClaimFailure(const Unit&, ResourceClaims::ClaimFailureKind);
     void claimRecoveryHarvested(const Unit&);
     void forgetClaimRecovery(ResourceClaims::Owner);
+    //! Hire-time claim check: search, from the state frozen just before this
+    //! team's hiring phase, every free worker on a published fetch shortlist
+    //! of a building needing units. Team::syncStep calls it immediately before
+    //! Team::updateAllBuildingTasks; Unit::materialClaimHireAllowed reads it.
+    void prepareClaimHireTargets(int team);
+    const ResourceClaims::HireTargetIndex& claimHireTargetIndex() const { return claimHireTargets; }
 
     void saveActiveClaimRoutes(GAGCore::OutputStream*) const;
     void loadActiveClaimRoutes(GAGCore::InputStream*, Sint32 versionMinor);
@@ -832,40 +829,28 @@ public:
     void checkActiveClaimRules();
     bool activeClaimFarmConnected(const ResourceClaims::Claim&, Uint32 teamMask);
     bool takeClaimedMaterial(const ResourceClaims::Claim&, Uint32 teamMask);
-    //! Per-tick claim observer boundary: releases invalid active claims and
-    //! publishes the probe.
-    void reconcileMaterialClaims();
-    void setMaterialClaimProbe(std::shared_ptr<ResourceClaims::Probe> probe) { materialClaimProbe=std::move(probe); }
-    const ResourceClaims::Probe* resourceClaimProbe() const { return materialClaimProbe.get(); }
     //! Terrain-only connected components for a movement class (claim prefilter).
     std::shared_ptr<const ResourceClaims::TerrainComponentLabels> claimTerrainComponents(int movement) const
     { return claimTerrainComponentCache.labels(*this, movement); }
     Uint64 claimTerrainComponentRebuilds() const { return claimTerrainComponentCache.rebuilds(); }
-    //! Experimental policy with claim_trigger "contention".
-    bool claimContentionEnabled() const;
     //! Snapshot the team target occupancy; Team::syncStep calls this before its units step.
     void prepareClaimContention(int team);
-    //! Snapshot same-team workers other than `unit` fetching `material` whose
-    //! target lies within the policy radius of (x,y); snapshots lazily if stale.
+    //! Same-team workers other than `unit` fetching `material` whose target
+    //! lies within ContentionRadius of (x,y); snapshots lazily if stale.
     unsigned claimContentionOthers(const Unit& unit,int material,int x,int y);
-    void finishMaterialClaimProbe();
-    struct MaterialClaimTelemetry {
-        Uint64 farmQueries=0, farmCacheHits=0, farmFloodCells=0;
-    } materialClaimTelemetry;
-	const ResourceClaims::Counts& materialClaimState() const { return materialClaims.counts(); }
 	const ResourceClaims::Ledger& materialClaimLedger() const { return materialClaims; }
-	bool observeMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim)
-	{ return materialClaims.observe(owner, claim, [this](size_t index) { markClaim(index); }); }
-	//! Claim-count limit of the active policy (permille of spendable stock).
-	Uint32 materialClaimLimitPermille() const;
-	//! Ledger availability under the active policy's limit. Selection,
-	//! acquisition, revalidation and telemetry all use this same rule.
+	//! Record a claim without the capacity check (load path only, see
+	//! rebuildActiveMaterialClaims).
+	bool recordMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim)
+	{ return materialClaims.record(owner, claim); }
+	//! Ledger availability: one claimant per spendable unit of stock. Selection,
+	//! acquisition and revalidation all use this same rule.
 	bool materialClaimAvailable(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false) const
-	{ return materialClaims.available(owner, claim, capacity, infinite, materialClaimLimitPermille()); }
+	{ return materialClaims.available(owner, claim, capacity, infinite); }
 	bool acquireMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false)
-	{ return materialClaims.acquire(owner, claim, capacity, infinite, [this](size_t index) { markClaim(index); }, materialClaimLimitPermille()); }
+	{ return materialClaims.acquire(owner, claim, capacity, infinite); }
 	bool releaseMaterialClaim(ResourceClaims::Owner owner)
-	{ return materialClaims.release(owner, [this](size_t index) { markClaim(index); }); }
+	{ return materialClaims.release(owner); }
 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
 	const Tile getTile(size_t index) const
@@ -1031,7 +1016,10 @@ public:
 	//! empty gaps stop pooling. Choose the highest stock above that source's
 	//! configured reserve, then shortest distance, then tile index.
 	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt, std::optional<ResourceClaims::Owner> availableOwner = std::nullopt);
-    std::optional<size_t> pickClaimFarmHarvestTileSlot(int x, int y, int material, Uint32 teamMask, std::optional<size_t> entry = std::nullopt);
+    // The same pick with caller-owned flood scratch and no map mutation, for
+    // parallel readers of a frozen map (hire target searches).
+    struct FarmFloodScratch { std::vector<Uint32> stamps; std::vector<size_t> queue; Uint32 generation = 0; };
+    std::optional<size_t> pickFarmHarvestTileSlotIn(FarmFloodScratch& scratch, int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt, std::optional<ResourceClaims::Owner> availableOwner = std::nullopt) const;
 
 	//! Revalidate the touched target's requested stock before delivery. Eligible
 	//! farm yields pool from the connected field; destructive or nonfarmable
@@ -1256,7 +1244,8 @@ public:
         Sint32* targetX, Sint32* targetY, bool markets = false, const Building* consumer = nullptr) const;
 	void setMaterialRoutingCacheBudget(Uint64 bytes);
 	Uint64 materialRoutingCacheBytes() const;
-    // Opt-in until backend, persistence and gameplay experiments are complete.
+    // Destination planes record, per cell, the material destination its
+    // gradient leads to. Claims need them; they are set up with claims.
     void setMaterialDestinationsEnabled(bool enabled);
     bool materialDestinationsEnabled() const;
     std::shared_ptr<const gradient_kernel::OwnedDestinations> materialGradientDestinations(const Uint16* field) const;
@@ -1461,6 +1450,7 @@ public:
 	std::vector<Uint32> farmFloodStamps;
 	std::vector<size_t> farmFloodQueue;
 	Uint32 farmFloodGeneration = 0;
+	std::optional<size_t> pickFarmTileWith(std::vector<Uint32>& stamps, std::vector<size_t>& queue, Uint32& generation, int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner) const;
 	//! Team whose view is locally displayed. Mirror of GameGUI::localTeamNo, used only to
 	//! decide whether to refresh the displayed*View caches above. Not in checkSum.
 	Sint32 displayedTeam = NO_DISPLAYED_TEAM;
@@ -1595,8 +1585,8 @@ protected:
 
 public:
 	Uint32 checkSum(bool heavy, bool includePending = true, bool legacy152 = false);
-	Sint32 warpDist1d(int p, int q, int l);///distance of coordinates p and q on a loop of length l
-	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
+	Sint32 warpDist1d(int p, int q, int l) const;///distance of coordinates p and q on a loop of length l
+	Sint32 warpDistSquare(int px, int py, int qx, int qy) const; //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 

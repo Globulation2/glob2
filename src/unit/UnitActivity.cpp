@@ -84,7 +84,7 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical())
 	{
-        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Medical);
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 		// disconnect from building
 		if (attachedBuilding)
 		{
@@ -160,7 +160,7 @@ void Unit::handleActivity(void)
 						owner->game->publishClientEvent(ClientEvent::UnitConverted{
 							UnitRef{gid, scriptIdentity}, UnitRef{targetGID, identity}});
                         owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
-                        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::UnitRemoved);
+                        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 						scriptIdentity = identity;
 						owner->game->unitCargo.transfer(gid,targetGID);
 						gid=targetGID;

@@ -168,13 +168,8 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
-        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="claimRecovery" || name=="claimRecoveryRoute")) {
-            suppressedAt=sections.size(); return;
-        }
-        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="materialClaimPolicyState" || name=="materialClaimPolicyConfig" || name=="experimentalRoute")) {
-            suppressedAt=sections.size(); return;
-        }
-        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="activeMaterialClaim" || name=="activeMaterialClaims")) {
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="activeMaterialClaim" || name=="materialClaimPolicyState"
+                || name=="activeMaterialClaims")) {
             suppressedAt=sections.size(); return;
         }
         if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="materialDestinations" ||

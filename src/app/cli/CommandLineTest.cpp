@@ -260,72 +260,38 @@ TEST_CASE("interval exploration requires explicit headless collection") {
 }
 }
 
-TEST_CASE("removed research claim observers are unknown options" * doctest::test_suite("ResourceClaimsCommandLine")) {
-    for(const auto* flag:{"--resource-claims-shadow","--resource-claims-deep-stratified","--resource-claims-capture-only","--resource-claims-deep-missing"})
-        CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz",flag}));
-    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-probe"}));
-}
-
-TEST_CASE("material destination experiment is explicit new game only" * doctest::test_suite("CommandLine"))
-{
-    const std::vector<std::string> base={"game","run","--output-dir","artifacts/metadata-cli-test","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations"};
-    CHECK_NOTHROW(Cli::parse(base));
-    auto replay=base;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
-    CHECK_THROWS(Cli::parse({"game","repeat","test.game","--material-destinations"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--material-destinations"}));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--resource-claims-probe"}));
-}
-
-TEST_CASE("active material claim prototype requires explicit isolated metadata mode" * doctest::test_suite("CommandLine"))
-{
-    std::vector<std::string> args={"game","run","--output-dir","artifacts/active-claims-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-active","prototype-stationary-v1"};
-    CHECK_NOTHROW(Cli::parse(args));
-    auto replay=args;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
-    args.back()="unapproved-policy";CHECK_THROWS(Cli::parse(args));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-claims-cli","--load-game","test.game","--resource-claims-active","prototype-stationary-v1"}));
-}
-
-TEST_CASE("claim probe requires an active policy or a saved game" * doctest::test_suite("CommandLine"))
-{
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--load-game","active.game","--resource-claims-probe","--resource-claims-sample-every","1"}));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--material-destinations","--resource-claims-active","prototype-stationary-v1","--resource-claims-probe"}));
-    // New games default to the shipped policy; only an explicit off has nothing to probe.
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims","off","--resource-claims-probe"}));
-}
-
-TEST_CASE("resource claims switch selects the shipped default or a claims-off new game" * doctest::test_suite("CommandLine"))
+TEST_CASE("resource claims switch selects the default or a claims-off new game" * doctest::test_suite("CommandLine"))
 {
     const std::vector<std::string> base={"game","run","--output-dir","artifacts/claims-switch-cli","--map-file","test.map","--game-seed","42","--player","castor"};
     auto with=[&](std::initializer_list<std::string> extra){auto args=base;args.insert(args.end(),extra);return args;};
+    CHECK_NOTHROW(Cli::parse(base));
     CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default"})));
     CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default","--write-replay"})));
     CHECK_NOTHROW(Cli::parse(with({"--resource-claims","off"})));
-    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","off","--material-destinations"})));
     CHECK_THROWS(Cli::parse(with({"--resource-claims","on"})));
+    // A replay restores claims on playback, so a claims-off game cannot record one.
     CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--write-replay"})));
-    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--resource-claims-active","prototype-stationary-v1"})));
-    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--resource-claims-policy-json",R"({"source_version":1})"})));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game","--resource-claims","off"}));
-    // An explicit policy no longer needs --material-destinations: the default enables them.
-    CHECK_NOTHROW(Cli::parse(with({"--resource-claims-policy-json",R"({"source_version":1})"})));
+    // A saved game keeps the claim setting it was started with.
+    for(const auto* value:{"default","off"})
+        CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game","--resource-claims",value}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game"}));
 }
 
-TEST_CASE("movement-only observer is independent of claim enforcement" * doctest::test_suite("CommandLine"))
+TEST_CASE("removed resource claim research options are unknown options" * doctest::test_suite("CommandLine"))
 {
-    const std::vector<std::string> args={"game","run","--output-dir","artifacts/movement-only-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-movement-only"};
-    CHECK_NOTHROW(Cli::parse(args));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/movement-only-cli","--load-game","classic.game","--resource-claims-movement-only"}));
-    auto bad=args;bad.push_back("--resource-claims-probe");CHECK_THROWS(Cli::parse(bad));
-}
-
-TEST_CASE("explicit live claim policy JSON is new-game research only")
-{
-    std::vector<std::string> args={"game","run","--output-dir","artifacts/policy-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-policy-json",R"({"source_version":1,"route_refresh_j":6})"};
-    CHECK_NOTHROW(Cli::parse(args));
-    auto probe=args;probe.push_back("--resource-claims-probe");CHECK_NOTHROW(Cli::parse(probe));
-    auto bad=args;bad.back()=R"({"source_version":1,"route_refresh_j":5})";CHECK_THROWS(Cli::parse(bad));
-    bad=args;bad.insert(bad.end(),{"--resource-claims-active","prototype-stationary-v1"});CHECK_THROWS(Cli::parse(bad));
-    bad=args;bad.insert(bad.end(),{"--write-replay","test.replay"});CHECK_THROWS(Cli::parse(bad));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/policy-cli","--load-game","test.game","--resource-claims-policy-json",R"({"source_version":1})"}));
+    const std::vector<std::string> newGame={"game","run","--output-dir","artifacts/claims-cli-test","--map-file","test.map","--game-seed","42","--player","castor"};
+    const std::vector<std::string> saved={"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz"};
+    for(const auto* flag:{"--resource-claims-probe","--resource-claims-movement-only","--material-destinations",
+        "--resource-claims-shadow","--resource-claims-deep-stratified","--resource-claims-capture-only","--resource-claims-deep-missing"}) {
+        CAPTURE(flag);
+        auto a=newGame;a.push_back(flag);CHECK_THROWS(Cli::parse(a));
+        auto b=saved;b.push_back(flag);CHECK_THROWS(Cli::parse(b));
+    }
+    for(const auto& [option,value]:std::vector<std::pair<std::string,std::string>>{
+        {"--resource-claims-active","prototype-stationary-v1"},{"--resource-claims-policy-json",R"({"source_version":1})"},
+        {"--resource-claims-sample-every","1"},{"--resource-claims-max-samples","10"},{"--resource-claims-max-bytes","4096"}}) {
+        CAPTURE(option);
+        auto args=newGame;args.insert(args.end(),{option,value});CHECK_THROWS(Cli::parse(args));
+    }
+    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-probe"}));
 }

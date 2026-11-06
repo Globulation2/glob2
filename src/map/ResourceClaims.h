@@ -5,9 +5,6 @@
 #include <array>
 #include <cstdint>
 #include <limits>
-#include <map>
-#include <optional>
-#include <span>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
@@ -19,6 +16,12 @@ using Owner = std::uint64_t;
 // Include both so different live slots and successive occupants never alias.
 constexpr Owner unitOwner(std::uint16_t gid, std::uint32_t generation)
 { return (Owner(generation) << 16) | gid; }
+// One worker's reservation of one unit of a material. source is the cell whose
+// stock the claim draws on; access is the cell the worker picks up at. They
+// differ for a pooled farm field, where a worker harvests at the edge it reaches
+// while the stock comes from the field's ripest connected tile. exclusive marks
+// a harvest that consumes or destroys the whole deposit (no other claimant);
+// reserve is the seed floor a pooled finite source keeps for regrowth.
 struct Claim
 {
     std::uint32_t source = 0, access = 0;
@@ -29,31 +32,10 @@ struct Claim
     bool operator==(const Claim&) const = default;
 };
 
-// One byte per cell on the common path. Values of 255 use the sparse exact
-// totals below; saturation alone would lose information on the next release.
-struct Counts
-{
-    std::vector<std::uint8_t> cells;
-    std::map<std::uint32_t, std::uint32_t> overflow;
-    std::uint32_t at(std::size_t index) const
-    {
-        const auto count = cells.at(index);
-        if (count != 255) return count;
-        const auto found = overflow.find(std::uint32_t(index));
-        return found == overflow.end() ? 255 : found->second;
-    }
-};
-
 // Owner-thread bookkeeping. No availability decisions depend on hash iteration
 // order. Capacity/eligibility come from the current world, never stale gradients.
 class Ledger
 {
-public:
-    // Claim-count limit as a permille of spendable stock. Exact (1000) is the
-    // original one-claimant-per-unit rule; Unlimited admits any count.
-    static constexpr std::uint32_t ExactLimitPermille = 1000;
-    static constexpr std::uint32_t UnlimitedLimitPermille = std::numeric_limits<std::uint32_t>::max();
-private:
     struct Tile
     {
         std::array<std::uint32_t, MaterialCount> materials{};
@@ -66,22 +48,16 @@ private:
         Claim claim;
         std::size_t sourcePosition=0,accessPosition=0;
     };
-    Counts counts_;
+    std::size_t cells_ = 0;
     std::unordered_map<Owner, Record> owners_;
     std::unordered_map<std::uint32_t, Tile> tiles_;
     std::unordered_map<std::uint32_t,std::vector<Owner>> accesses_;
 
     void validate(const Claim& claim) const
     {
-        if (claim.source >= counts_.cells.size() || claim.access >= counts_.cells.size())
+        if (claim.source >= cells_ || claim.access >= cells_)
             throw std::out_of_range("resource claim tile");
         if (claim.material >= MaterialCount) throw std::out_of_range("resource claim material");
-    }
-    void updateCount(std::uint32_t source, std::uint32_t total)
-    {
-        counts_.cells[source] = std::uint8_t(std::min(total, std::uint32_t(255)));
-        if (total > 255) counts_.overflow[source] = total;
-        else counts_.overflow.erase(source);
     }
     void remove(const Record& record)
     {
@@ -113,7 +89,6 @@ private:
             }
         }
         tile.exclusive -= claim.exclusive;
-        updateCount(claim.source, tile.total);
         if (!tile.total) tiles_.erase(found);
     }
     void add(Owner owner,Record& record)
@@ -128,16 +103,14 @@ private:
             tile.reserves[claim.material]=claim.reserve;tile.reserveOwners[claim.material]=1;
         } else if (claim.reserve && claim.reserve==tile.reserves[claim.material]) ++tile.reserveOwners[claim.material];
         tile.exclusive += claim.exclusive;
-        updateCount(claim.source, tile.total);
     }
 public:
     void reset(std::size_t cells)
     {
         if (cells > std::numeric_limits<std::uint32_t>::max())
             throw std::length_error("resource claim map too large");
-        counts_.cells.assign(cells, 0); counts_.overflow.clear(); owners_.clear(); tiles_.clear(); accesses_.clear();
+        cells_ = cells; owners_.clear(); tiles_.clear(); accesses_.clear();
     }
-    const Counts& counts() const { return counts_; }
     std::size_t size() const { return owners_.size(); }
     const Claim* find(Owner owner) const
     {
@@ -174,10 +147,8 @@ public:
     // holders approaching through a different farm or an ordinary pickup.
     // Infinite yields carry reserve zero and bypass finite stock/floor limits.
     // Same-material claimants (excluding this owner's replaced claim) must stay
-    // below floor(spendable*limitPermille/1000); spendable is stock above the
-    // shared floor. Exclusivity and floor rules do not depend on the limit.
-    bool available(Owner owner, const Claim& claim, std::uint32_t capacity, bool infinite = false,
-        std::uint32_t limitPermille = ExactLimitPermille) const
+    // below spendable, the stock above the shared floor: one claimant per unit.
+    bool available(Owner owner, const Claim& claim, std::uint32_t capacity, bool infinite = false) const
     {
         validate(claim);
         if (!capacity && !infinite) return false;
@@ -205,40 +176,32 @@ public:
         const auto floor=std::max(otherReserve,claim.reserve);
         if (physical<floor) return false;
         const std::uint64_t spendable=physical-floor;
-        if (limitPermille==UnlimitedLimitPermille) return spendable!=0;
-        // limitPermille>=1000 in policy use, so the scaled limit is zero only
-        // when spendable is; 1000 reduces exactly to claimed+1<=spendable.
-        const std::uint64_t limit=limitPermille==ExactLimitPermille?spendable:spendable*limitPermille/1000;
-        return std::uint64_t(tile->second.materials[claim.material]-ownMaterial)+1<=limit;
+        return std::uint64_t(tile->second.materials[claim.material]-ownMaterial)+1<=spendable;
     }
-    // Shadow observation deliberately allows overcommitment. The same mutation
-    // maintains counts once enforcement starts using acquire instead.
-    template<class Changed> bool observe(Owner owner, const Claim& claim, Changed&& changed)
+    // Record without the capacity check. acquire uses it after checking; the
+    // load path uses it directly to keep claims saved under different rules
+    // until the scheduled rule-change invalidation releases them.
+    bool record(Owner owner, const Claim& claim)
     {
         validate(claim);
         auto found = owners_.find(owner);
         if (found != owners_.end() && found->second.claim == claim) return false;
-        const auto old = found == owners_.end() ? std::optional<Claim>{} : found->second.claim;
-        if (old) remove(found->second);
+        if (found != owners_.end()) remove(found->second);
         auto& record=owners_.insert_or_assign(owner,Record{claim}).first->second;
         add(owner,record);
-        if (old) changed(old->source);
-        if (!old || old->source != claim.source) changed(claim.source);
         return true;
     }
-    template<class Changed> bool acquire(Owner owner, const Claim& claim, std::uint32_t capacity,
-        bool infinite, Changed&& changed, std::uint32_t limitPermille = ExactLimitPermille)
+    bool acquire(Owner owner, const Claim& claim, std::uint32_t capacity, bool infinite)
     {
-        if (!available(owner, claim, capacity, infinite, limitPermille)) return false;
-        observe(owner, claim, changed);
+        if (!available(owner, claim, capacity, infinite)) return false;
+        record(owner, claim);
         return true;
     }
-    template<class Changed> bool release(Owner owner, Changed&& changed)
+    bool release(Owner owner)
     {
         const auto found = owners_.find(owner);
         if (found == owners_.end()) return false;
-        const auto claim = found->second.claim;
-        remove(found->second); owners_.erase(found); changed(claim.source);
+        remove(found->second); owners_.erase(found);
         return true;
     }
     // Sorting also supplies a deterministic save/rebuild and invariant-audit view.

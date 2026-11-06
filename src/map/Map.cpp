@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
 #include "claims/ActiveRouteRuntime.h"
-#include "claims/ClaimPolicyConfig.h"
 #include "gradient/GradientTargetCell.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
@@ -552,14 +551,8 @@ void Map::configureCompute(unsigned threads)
 void Map::clear()
 {
     materialClaimRoutes.reset();
-    materialClaimConfiguration.reset();
-    materialClaimConfigurationDigest={};
-    materialClaimProbe.reset();
-    materialClaimFarmCache.clear();
-    materialClaimFarmEpoch = {};
-    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
+    resourceClaimsEnabled=false;
     activeClaimRules.reset();
-    materialClaimTelemetry = {};
     materialClaims.reset(0);
 	if (game) game->areaEffects.reset();
 	loadedHistoricalGrowthVersion = 0;

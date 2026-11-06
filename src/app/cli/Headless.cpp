@@ -1,4 +1,3 @@
-#include "map/claims/ClaimMixedPatterns.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
@@ -41,9 +40,7 @@
 #include "ReplayWriter.h"
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
-#include "map/claims/ResourceClaimProbe.h"
-#include "map/claims/ClaimPolicyConfig.h"
-#include "map/claims/ResourceClaimPilotPatterns.h"
+#include "map/claims/ClaimPolicy.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "GameGUI.h"
@@ -560,7 +557,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims","--resource-claims-active","--resource-claims-policy-json"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--resource-claims"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -680,26 +677,13 @@ struct HeadlessRunner
 			for(size_t p=0;p<players.size();++p)if(BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)==AI::JAVASCRIPT && !scriptedPlayers.count(p))throw std::invalid_argument("JavaScript player requires --ai-script");
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
-            // initGame applied the shipped claim policy. Explicit research setup
-            // replaces it before the first tick and never records a replay.
-            const bool claimsOff=one(options,"--resource-claims","default")=="off";
-            if(claimsOff || options.count("--material-destinations") || options.count("--resource-claims-active")
-                || options.count("--resource-claims-policy-json")) {
-                if(recordReplay)throw std::invalid_argument("Non-default resource claim setup cannot record a replay");
-                // Fresh map initialization has not admitted simulation field requests.
-                // The setters enforce the drained boundary; never silently discard work.
-                auto& map=engine.gui.game.map;
-                if(claimsOff) {
-                    map.disableResourceClaims();
-                    if(options.count("--material-destinations")) map.setMaterialDestinationsEnabled(true);
-                }
-                if(options.count("--resource-claims-active")) {
-                    if(one(options,"--resource-claims-active")!="prototype-stationary-v1")
-                        throw std::invalid_argument("invalid active claim prototype selection");
-                    map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
-                }
-                if(options.count("--resource-claims-policy-json"))
-                    map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::parse(one(options,"--resource-claims-policy-json")));
+            // initGame enabled resource claims. A claims-off baseline replaces
+            // that before the first tick and never records a replay.
+            if(one(options,"--resource-claims","default")=="off") {
+                if(recordReplay)throw std::invalid_argument("--resource-claims off cannot record a replay");
+                // Fresh map initialization has not admitted simulation field
+                // requests; the setter enforces that drained boundary.
+                engine.gui.game.map.disableResourceClaims();
             }
 		}
 		if(options.count("--map-script"))
@@ -754,19 +738,6 @@ struct HeadlessRunner
                 one(options,"--resource-gradient-exploration"),
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
                 (output/"gradient-decisions.csv").string());
-        }
-        const bool movementOnly=options.count("--resource-claims-movement-only");
-        if (options.count("--resource-claims-probe") || movementOnly) {
-            if(!movementOnly && !engine.gui.game.map.activeClaimsEnabled())
-                throw std::invalid_argument("claim probe requires an active claim policy");
-            ResourceClaims::Probe::Config probe;
-            probe.movementOnly=movementOnly;
-            probe.movementStartTick=engine.gui.game.stepCounter;
-            probe.sampleEvery=integer(one(options,"--resource-claims-sample-every","1000"),1,1000000000);
-            probe.maxSamples=integer(one(options,"--resource-claims-max-samples","10000"),1,1000000);
-            probe.maxOutputBytes=integer(one(options,"--resource-claims-max-bytes","67108864"),1024,2147483647);
-            engine.gui.game.map.setMaterialClaimProbe(std::make_shared<ResourceClaims::Probe>(engine.gui.game.map.computeExecutor(),
-                (output/"resource-claims-shadow.jsonl.gz").string(),probe));
         }
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
@@ -842,7 +813,6 @@ struct HeadlessRunner
         const auto initialChecksum=initialSamples.front().sample.value;
         if (engine.diagnostics) engine.diagnostics->finish();
         if (engine.warriorTactics) engine.warriorTactics->finish();
-        engine.gui.game.map.finishMaterialClaimProbe();
         const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -1021,16 +991,9 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
-        result << ",\"active_claim_policy\":" << quote(engine.gui.game.map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental?"experimental":engine.gui.game.map.activeClaimsEnabled()?"prototype-stationary-v1":"disabled");
-        if(engine.gui.game.map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
-            const auto& config=engine.gui.game.map.materialClaimPolicyConfig();
-            result << ",\"resource_claims_policy_config\":" << config.canonicalJson()
-                << ",\"resource_claims_policy_digest\":" << quote(config.digest());
-        }
-        result << ",\"resource_claims\":" << quote(engine.gui.game.map.shippedResourceClaimsActive()?"default":engine.gui.game.map.activeClaimsEnabled()?"custom":"off");
-        if(engine.gui.game.map.shippedResourceClaimsActive())
-            result << ",\"resource_claims_policy_name\":" << quote(std::string(ResourceClaims::ClaimPolicyConfig::ShippedDefaultName));
-        result << ",\"material_destinations_enabled\":" << (engine.gui.game.map.materialDestinationsEnabled()?"true":"false");
+        result << ",\"resource_claims\":" << quote(engine.gui.game.map.activeClaimsEnabled()?"default":"off");
+        if(engine.gui.game.map.activeClaimsEnabled())
+            result << ",\"resource_claims_policy_name\":" << quote(std::string(ResourceClaims::Policy::Name));
         if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
                 << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
@@ -1039,19 +1002,6 @@ struct HeadlessRunner
         }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
-        if (const auto* probe=game.map.resourceClaimProbe()) {
-            const auto& claims=game.map.materialClaimTelemetry;
-            const auto& m=probe->metrics();
-            result << ",\"resource_claims_shadow\":{\"schema_version\":2,\"enforced\":" << (game.map.activeClaimsEnabled()?"true":"false")
-                << ",\"movement_only\":" << (movementOnly?"true":"false")
-                << ",\"ledger_mode\":" << quote(game.map.activeClaimsEnabled()?"active":"disabled")
-                << ",\"continuation_policy\":" << quote(!movementOnly && game.map.activeClaimsEnabled()?"persist-authoritative-claims-and-routes":"segment-observation-only")
-                << ",\"farm_queries\":" << claims.farmQueries
-                << ",\"farm_cache_hits\":" << claims.farmCacheHits << ",\"farm_flood_cells\":" << claims.farmFloodCells
-                << ",\"active\":" << game.map.materialClaimLedger().size()
-                << ",\"capture_bytes\":" << m.captureBytes << ",\"output_bytes\":" << m.outputBytes;
-            result << '}';
-        }
 		result << ",\"javascriptControllers\":[";
 		bool scriptComma = false;
 		for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
@@ -1174,29 +1124,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"material_destinations_version\":1,\"resource_claims_probe_version\":3,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":2,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"resource_claims_policy_options\":[\"refresh_switch_margin_permille\",\"terrain_component_prefilter\",\"claim_oversubscription_permille\",\"pending_step_gradient\",\"max_claim_distance_factor_permille\",\"traffic_sidestep\",\"traffic_wait_limit\",\"fallback_gradient\",\"claim_gradient_demand\",\"claim_trigger\",\"contention_min_workers\",\"contention_radius\"],\"resource_claims_release_reason_version\":1,\"resource_claims_default\":\"" << ResourceClaims::ClaimPolicyConfig::ShippedDefaultName << "\",\"resource_claims_switch_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
-
-            // Config asset identities are frozen by the planner before dispatch.
-            // This catalog path is diagnostic setup, never a simulation hot loop.
-            nlohmann::json policyPatterns=nlohmann::json::array();
-            for(const auto& pattern:ResourceClaims::Experiment::pilotPatterns()) {
-                ResourceClaims::ClaimPolicyConfig config;config.pattern=pattern.name;
-                const auto canonical=nlohmann::json::parse(config.canonicalJson());
-                policyPatterns.push_back({{"name",pattern.name},{"digest",canonical.at("pattern_digest")}});
-            }
-            nlohmann::json mixedPatterns=nlohmann::json::array();
-            for(const auto name:ResourceClaims::Mixed::Names)
-            for(const auto frame:{ResourceClaims::ClaimPolicyConfig::PatternFrame::MapAxes,
-                                  ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4}) {
-                ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=5;
-                config.pattern=std::string(name);config.patternFrame=frame;
-                const auto canonical=nlohmann::json::parse(config.canonicalJson());
-                mixedPatterns.push_back({{"name",config.pattern},{"format",canonical.at("pattern_format")},
-                    {"frame",canonical.at("pattern_frame")},{"digest",canonical.at("pattern_digest")}});
-            }
-            std::cout << policyPatterns.dump() << ",\"resource_claims_policy_mixed_patterns\":" << mixedPatterns.dump()
-                << ",\"resource_claims_policy_default\":"
-                << ResourceClaims::ClaimPolicyConfig{}.canonicalJson() << ",\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_default\":\"" << ResourceClaims::Policy::Name << "\",\"resource_claims_switch_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

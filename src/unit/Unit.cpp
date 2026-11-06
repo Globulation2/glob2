@@ -39,7 +39,7 @@ Unit::~Unit()
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
         owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
-        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::UnitRemoved);
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -275,9 +275,10 @@ void Unit::setTargetBuilding(Building * b)
 
 void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
 {
-    if(owner->map->activeClaimsEnabled())releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::JobEnded);
-    if(owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
-        materialClaimPolicyState.lastGoalAttempt=0;materialClaimPolicyState.fallbackCount=0;materialClaimPolicyState.probe=UINT32_MAX;
+    if(owner->map->activeClaimsEnabled()) {
+        releaseActiveMaterialClaim();
+        // A new job starts its refresh cadence afresh.
+        materialClaimPolicyState.lastGoalAttempt=0;
     }
     const MaterialClaimObservation claimObservation{*this};
 	Building* b=building;
@@ -570,7 +571,7 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
-    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -650,7 +651,7 @@ void Unit::recordLethalDamage(int damage, int cause)
         // Release before the damage write so an end-of-tick save cannot retain
         // ownership for a worker already unable to finish the pickup.
         if(owner->map->activeClaimsEnabled())
-            releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::UnitRemoved);
+            releaseActiveMaterialClaim();
     }
 }
 

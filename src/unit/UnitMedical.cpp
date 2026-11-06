@@ -51,7 +51,7 @@ bool Unit::isUnitHungry(void)
 
 void Unit::standardRandomActivity()
 {
-    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::JobEnded);
+    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 	if (attachedBuilding) attachedBuilding->releaseService(this);
 	attachedBuilding=NULL;
 	setTargetBuilding(NULL);
@@ -65,7 +65,7 @@ void Unit::standardRandomActivity()
 
 void Unit::stopAttachedForBuilding(bool goingInside)
 {
-    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::JobEnded);
+    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 	if (verbose)
 		printf("guid=(%d) stopAttachedForBuilding()\n", gid);
 	assert(attachedBuilding);
@@ -235,7 +235,7 @@ void Unit::resolveDeath()
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
         owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
-        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::UnitRemoved);
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 		if (!isDead)
 		{
             // Guard crowding excludes dead units immediately, before the

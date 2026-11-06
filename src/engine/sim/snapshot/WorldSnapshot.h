@@ -78,7 +78,6 @@ struct Resources
 	ChunkStamps stamps; // cells and stockIndices
 };
 using OccupancyCell = MapState::OccupancyCell;
-struct Claims { ResourceClaims::Counts counts; ChunkStamps stamps; };
 struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
 using AreaCell = MapState::AreaCell;
 struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
@@ -174,7 +173,6 @@ struct Handle
 	std::shared_ptr<const Catalogs> catalogs;
 	std::shared_ptr<const Terrain> terrain;
 	std::shared_ptr<const Resources> resources;
-	std::shared_ptr<const Claims> claims;
 	std::shared_ptr<const Occupancy> occupancy;
 	std::shared_ptr<const Areas> areas;
 	std::shared_ptr<const Visibility> visibility;
@@ -186,7 +184,7 @@ struct Handle
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
     Uint32 activeClaimRuntimeChecksum = 0;
-	std::array<Uint64, 6> mapGenerations{};
+	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;
     Handle checksumView(bool mapChecksums = false) const;
@@ -210,8 +208,6 @@ struct Handle
 	{ checkTileIndex(index); return terrain ? (*terrain->rules)[terrain->cellRules.at(index)].properties : terrainProperties(GRASS); }
 	ResourceCell resourceAt(std::size_t index) const
 	{ checkTileIndex(index); return resources ? resources->cells.at(index) : ResourceCell{}; }
-	Uint32 materialClaimCountAt(std::size_t index) const
-	{ checkTileIndex(index); return claims ? claims->counts.at(index) : 0; }
 	OccupancyCell occupancyAt(std::size_t index) const
 	{ checkTileIndex(index); return occupancy ? occupancy->cells.at(index) : OccupancyCell{}; }
 	AreaCell areasAt(std::size_t index) const

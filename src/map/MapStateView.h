@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "MapState.h"
-#include "ResourceClaims.h"
 #include "Material.h"
 #include "ResourceRegistry.h"
 #include "CellRules.h"
@@ -28,8 +27,6 @@ struct View
 	unsigned wDec = 0;
 	Uint32 wMask = 0, hMask = 0;
 	std::span<const ResourceCell> resources;
-	const ResourceClaims::Counts* claims = nullptr;
-	Uint32 materialClaimCount(std::size_t index) const { return claims ? claims->at(index) : 0; }
 	std::span<const OccupancyCell> occupancy;
 	std::span<const AreaCell> areas;
 	// The rule index of each cell into rules (CellRules.h).

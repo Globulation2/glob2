@@ -8,9 +8,6 @@
 #include "Game.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
-#include "claims/ClaimedGradientStep.h"
-#include "claims/ResourceClaimRouteView.h"
-#include "claims/ResourceClaimProbe.h"
 
 
 
@@ -197,7 +194,6 @@ void Map::claimPursuitGradientSignal(Unit& unit,bool recordOutcome,bool moved)
     const auto* field=getMaterialGradientSlot(team,material,unit.movementAccess(),false,nullptr,&key);
     if(!key)return;
     gradientMovementDemand(*key);
-    if(const auto* probe=resourceClaimProbe())probe->policyExtension(ResourceClaims::Probe::PolicyExtension::ClaimGradientSignal);
     if(!recordOutcome || !field)return;
     const int x=unit.posX,y=unit.posY;
     const Uint16 here=field[coordToIndex(x,y)];
@@ -211,43 +207,4 @@ void Map::claimPursuitGradientSignal(Unit& unit,bool recordOutcome,bool moved)
             requestGradientField(&materialGradients[team][material][swim],int(gradient_preparation::Kind::Materials),team,material,movementAccessFromLegacy(swim));
     }
     gradientMovementOutcome(GradientQueryContext{*key,x,y,unit.entityRandom},field,outcome);
-}
-
-ResourceClaims::StepResult Map::nextClaimGradientStep(const Unit& unit,int* dx,int* dy)
-{
-    using Result=ResourceClaims::StepResult;
-    if(!activeClaimsEnabled() || !unit.activeMaterialClaim || !game || !cellCount())return Result::Failed;
-    const auto& claim=*unit.activeMaterialClaim;
-    if(claim.access>=cellCount())return Result::Failed;
-    if(warpDistMax(unit.posX,unit.posY,claim.access%getW(),claim.access/getW())<=1)return Result::Arrived;
-    const auto access=unit.movementAccess();
-    const int movement=accessClass(access);
-    std::optional<GradientFieldKey> key;
-    // This reservation is for natural stock. Supplier-specific mixed fields
-    // remain on their existing routing path and never select a replacement here.
-    const auto* values=getMaterialGradientSlot(unit.owner->teamNumber,claim.material,access,false,nullptr,&key);
-    if(key)gradientMovementDemand(*key);
-    if(!values)return Result::Failed;
-    const auto destinations=materialGradientDestinations(values);
-    if(!destinations)return Result::Failed;
-    const auto view=stateView();
-    const ResourceClaims::RouteProfile profile{movement,unit.owner->me,unit.gid,ResourceClaims::OccupancyPolicy::FrozenUnits};
-    const auto geometry=[&](std::size_t index) {
-        return gradient_kernel::terrainAllowsMovement(view.terrainProperties(index),movement)
-            && (movement==AIR_MOVEMENT_CLASS ? !MapState::resourceBlocksAir(view,index)
-                : !(view.areas[index].forbidden&profile.teamMask) && view.occupancy[index].building==0xffff
-                    && !MapState::resourceBlocksGround(view,index));
-    };
-    const auto result=ResourceClaims::claimedGradientStep(field::Grid(getW(),getH()),
-        std::span<const Uint16>(values,cellCount()),*destinations,Uint32(coordToIndex(unit.posX,unit.posY)),claim.access,
-        geometry,[&](auto index){return ResourceClaims::routePassable(view,index,profile);},
-        [&](auto index,bool diagonal){return ResourceClaims::routeEntryCost(view,index,profile,diagonal);});
-    using Status=ResourceClaims::ClaimedGradientStep::Status;
-    switch(result.status) {
-    case Status::Ready:*dx=result.dx;*dy=result.dy;return Result::Ready;
-    case Status::Pending:return Result::Pending;
-    case Status::Arrived:return Result::Arrived;
-    case Status::Unavailable:return Result::Failed;
-    }
-    return Result::Failed;
 }

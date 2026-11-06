@@ -43,11 +43,8 @@ Uint32 unitChecksum(const SimulationSnapshot::UnitView& u,const SimulationSnapsh
             const auto& c=*u.activeMaterialClaim;
             h.add(c.source);h.add(c.access);h.add(c.material);h.add(c.resource);h.add(c.exclusive);h.add(c.reserve);
         }
-    }
-    if(u.experimentalMaterialClaims) {
         h.add(u.materialClaimPolicyState.decisionOrdinal>>32);h.add(u.materialClaimPolicyState.decisionOrdinal);
         h.add(u.materialClaimPolicyState.lastGoalAttempt>>32);h.add(u.materialClaimPolicyState.lastGoalAttempt);
-        h.add(u.materialClaimPolicyState.fallbackCount);h.add(u.materialClaimPolicyState.probe);
     }
     // Additional cargo is sparse. Empty allocation nodes are not state.
     if ((u.capabilityFlags & UnitRuntimeTraits::ExtendedCargo) || u.widePrimaryCargo()) {

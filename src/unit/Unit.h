@@ -5,8 +5,10 @@
 
 #include "UnitState.h"
 #include "ResourceClaims.h"
-#include "map/claims/ClaimPolicyConfig.h"
-#include "map/claims/ClaimReleaseReason.h"
+#include "map/claims/ClaimPolicy.h"
+#include "map/claims/ClaimHireTargets.h"
+namespace gradient_kernel { struct OwnedDestinations; }
+namespace ResourceClaims { struct TerrainComponentLabels; }
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
@@ -49,27 +51,38 @@ public:
     Uint64 materialClaimTask=0;
     ResourceClaims::MaterialClaimPolicyState materialClaimPolicyState;
     bool acquireMaterialClaimAt(Uint32 access);
-    // The reason is observer telemetry only; it never changes the release.
-    void releaseActiveMaterialClaim(ResourceClaims::ReleaseReason reason);
-    bool activeMaterialClaimValid() { return !activeMaterialClaimInvalidity(); }
-    // Why the held claim is invalid (in validity-check order), or nothing.
-    std::optional<ResourceClaims::ReleaseReason> activeMaterialClaimInvalidity();
-    // Release an invalid held claim, recording which validity check failed.
+    void releaseActiveMaterialClaim();
+    // Whether the held claim is still one this worker can finish: its job,
+    // stance, the stock above the claim's reserve and the access tile.
+    bool activeMaterialClaimValid();
     void releaseInvalidActiveMaterialClaim()
-    { if (activeMaterialClaim) if (const auto reason = activeMaterialClaimInvalidity()) releaseActiveMaterialClaim(*reason); }
+    { if (activeMaterialClaim && !activeMaterialClaimValid()) releaseActiveMaterialClaim(); }
     bool takeActiveMaterialClaim();
     bool selectActiveMaterialClaim(const Uint16* field);
+    // Hire-time claim check: whether hiring this free unit to fetch material
+    // for building may proceed. A worker that would find nothing to claim, or
+    // that carries another material and so can never claim this one, would
+    // only be released again by the release fallback; hiring tries the next
+    // candidate instead. True whenever claims are off or the search cannot
+    // judge the worker (no published field or destination planes).
+    bool materialClaimHireAllowed(const Building& building,int material);
+    // The claim target search behind that check: the same pattern walk as
+    // selectActiveMaterialClaim for a worker without a claim, stopping at the
+    // first available target instead of committing it. A pure read of the
+    // frozen map that borrows the published destinations and terrain labels,
+    // with per-thread scratch, so concurrent searches never share state.
+    ResourceClaims::HireTarget searchHireClaimTarget(int material,const gradient_kernel::OwnedDestinations& destinations,
+        const ResourceClaims::TerrainComponentLabels* components);
     bool prepareActiveMaterialPickup(int x,int y);
     void handleActiveMaterialMovement();
     // The claims-off natural/market material movement for one decision.
     void handleClassicMaterialMovement();
     // With claims enabled: whether this resource decision uses claim movement.
-    // Always true except under claim_trigger "contention", where a worker
-    // without a claim uses ordinary movement unless its ordinary target is
-    // contended (observer telemetry counts each outcome).
+    // A worker holding a claim stays in claim mode; one without a claim uses
+    // ordinary movement unless its ordinary target is contended.
     bool materialClaimDecision();
-    // Whether pickup and harvest use the claim ledger: claims enabled, and
-    // under claim_trigger "contention" only while the worker holds a claim.
+    // Whether pickup and harvest use the claim ledger: claims enabled and the
+    // worker holds a claim.
     bool usesMaterialClaimPickup() const;
 	// Owner-thread hooks; excluded from immutable state record copies.
 	Unit* populationPrevious=nullptr;

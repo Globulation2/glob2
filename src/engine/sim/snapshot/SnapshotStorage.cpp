@@ -72,7 +72,6 @@ MemoryMetrics Storage::memoryMetrics() const
 	account(terrain, [&](const Terrain& value, bool leased) { remember(value.vertices, leased); remember(value.rules, leased); return vectorBytes(value.cellRules); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, [&](const Occupancy& value,bool){ return vectorBytes(value.cells); }); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
-	account(claims, [&](const Claims& value, bool) { return vectorBytes(value.counts.cells) + Uint64(value.counts.overflow.size()) * sizeof(decltype(value.counts.overflow)::value_type); });
 	account(entities, [&](const Entities& value, bool) {
 		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.funding) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingRanges) + vectorBytes(value.unitRanges) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});

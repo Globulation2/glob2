@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <memory>
 #include <optional>
-#include <chrono>
 
 namespace ResourceClaims
 {
@@ -18,19 +17,14 @@ struct RouteIdentity
     std::uint64_t task = 0, request = 0;
     bool operator==(const RouteIdentity&) const = default;
 };
-struct RouteDiagnostics {
-    std::uint64_t completed=0,canceled=0,expansions=0,elapsedNs=0,unobserved=0,restored=0;
-    std::array<std::uint64_t,4> statuses{};
-};
 struct RouteInput
 {
     SimulationSnapshot::Handle world;
     RouteProfile profile;
+    // The route ends on any cell within one tile (toroidal Chebyshev) of
+    // target, the claimed access tile, where the worker can pick up.
     std::uint32_t start = 0, target = 0, maximumCost = 65533;
-    unsigned radius = 1; // zero for a probe waypoint, one for a source access tile
     std::uint32_t maximumExpansions = 4096;
-    bool presentTerrainHeuristic = false;
-    bool diagnostics = false;
 };
 struct RoutePublication
 {
@@ -39,7 +33,6 @@ struct RoutePublication
     std::uint32_t start = 0, target = 0;
     Route route;
     std::uint32_t width = 0, height = 0;
-    std::uint64_t workerElapsedNs = 0;
 };
 
 // Fixed-boundary publication. Completion and exportPending join computation but
@@ -63,7 +56,6 @@ class RoutePipeline
         std::exception_ptr error;
         bool canceled = false; // Owner-only; the worker does not read this flag.
         bool restored = false;
-        bool accounted = false, cancellationAccounted = false;
     };
     ComputeExecutor& executor;
     std::deque<std::unique_ptr<Work>> pending;
@@ -71,29 +63,12 @@ class RoutePipeline
     std::size_t maximumPending;
     std::optional<std::uint64_t> lastSubmission;
     std::optional<std::uint64_t> sealedTick;
-    RouteDiagnostics diagnosticTotals;
-    void account(Work& work) {
-        if(work.error)std::rethrow_exception(work.error);
-        if(work.restored) {
-            if(!work.accounted){++diagnosticTotals.restored;work.accounted=true;}
-            return;
-        }
-        if(!work.input.diagnostics)return;
-        if(!work.accounted) {
-            ++diagnosticTotals.completed;diagnosticTotals.expansions+=work.output.route.expansions;
-            diagnosticTotals.elapsedNs+=work.output.workerElapsedNs;
-            ++diagnosticTotals.statuses[unsigned(work.output.route.status)];work.accounted=true;
-        }
-        if(work.canceled && !work.cancellationAccounted){++diagnosticTotals.canceled;work.cancellationAccounted=true;}
-    }
-
 
     static void run(void* context, std::size_t index) noexcept
     {
         auto& work = *static_cast<Group*>(context)->jobs[index];
         try {
             const auto& input = work.input;
-            const auto started=input.diagnostics?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
             const auto view = input.world.view();
             const field::Grid grid(view.width, view.height);
             const int tx = int(input.target % view.width), ty = int(input.target / view.width);
@@ -102,14 +77,12 @@ class RoutePipeline
                 const auto dy = unsigned(std::abs(int(cell / view.width) - ty));
                 return std::max(std::min(dx, unsigned(view.width) - dx), std::min(dy, unsigned(view.height) - dy));
             };
-            // Minimum entering cost over compiled rules, outside the hot loop.
-            unsigned minimum = std::numeric_limits<unsigned>::max();
-            if (!input.presentTerrainHeuristic) for (std::size_t rule = 0; rule < view.rules->size(); ++rule) {
-                const auto& steps = (*view.rules)[rule].ground[input.profile.movement];
-                minimum = std::min({minimum, unsigned(steps.cardinal), unsigned(steps.diagonal)});
-            }
-            unsigned cardinal=minimum, diagonal=minimum;
-            if (input.presentTerrainHeuristic) {
+            // Admissible A* heuristic: octile distance priced at the cheapest
+            // cardinal and diagonal entry costs among the terrain rules present
+            // on this map for the unit's movement class, computed outside the
+            // hot loop and cached per thread until the terrain changes.
+            unsigned cardinal=0, diagonal=0;
+            {
                 // A publication lease is immutable, but BufferPool reuses its
                 // object/control block after consumers release it. Copy version
                 // values: reading them through an old weak lease sees the refill.
@@ -148,30 +121,18 @@ class RoutePipeline
             work.output.route = scratch.find(grid, input.start, input.maximumCost,
                 [&](std::uint32_t i) { return routePassable(view, i, input.profile); },
                 [&](std::uint32_t i, bool diagonal) { return routeEntryCost(view, i, input.profile, diagonal); },
-                [&](std::uint32_t i) { return distance(i) <= input.radius; },
+                [&](std::uint32_t i) { return distance(i) <= 1; },
                 [&](std::uint32_t i) {
-                    if (!input.presentTerrainHeuristic) {const auto d=distance(i);return std::uint64_t(d>input.radius?d-input.radius:0)*minimum;}
                     const unsigned ax=unsigned(std::abs(int(i%view.width)-tx)), ay=unsigned(std::abs(int(i/view.width)-ty));
                     const unsigned wx=std::min(ax,unsigned(view.width)-ax), wy=std::min(ay,unsigned(view.height)-ay);
-                    const unsigned x=wx>input.radius?wx-input.radius:0, y=wy>input.radius?wy-input.radius:0;
+                    const unsigned x=wx>1?wx-1:0, y=wy>1?wy-1:0;
                     return std::uint64_t(std::max(x,y)-std::min(x,y))*cardinal+std::uint64_t(std::min(x,y))*diagonal;
                 },
                 input.maximumExpansions);
-            if(input.diagnostics)work.output.workerElapsedNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-started).count();
         } catch (...) { work.error = std::current_exception(); }
         work.input.world = {}; // Drop the immutable lease after computation.
     }
 public:
-    // Pure observation: do not flush staging, join workers, publish routes, or
-    // change the admission boundary when collecting final diagnostic costs.
-    RouteDiagnostics takeDiagnostics() {
-        for(auto& work:pending) {
-            if(work->restored || (work->group && executor.finished(work->group->batch)))account(*work);
-        }
-        auto result=diagnosticTotals;diagnosticTotals={};
-        for(const auto& work:pending)if(work->input.diagnostics && !work->accounted)++result.unobserved;
-        return result;
-    }
     std::uint64_t requestSequence() const { return nextRequest; }
     std::optional<std::uint64_t> sealedSubmissionTick() const { return sealedTick; }
     void restoreControl(std::uint64_t value, std::optional<std::uint64_t> tick)
@@ -248,7 +209,6 @@ public:
             auto& work = *pending.front();
             if (work.group) executor.join(work.group->batch, {JoinReason::TickDeadline, Uint32(tick)});
             if (work.error) std::rethrow_exception(work.error);
-            account(work);
             if (!work.canceled) result.push_back(std::move(work.output));
             pending.pop_front();
         }
@@ -261,7 +221,6 @@ public:
         for (auto& work : pending) {
             if (work->group) executor.join(work->group->batch, {JoinReason::Save, ComputeTelemetry::NoTick});
             if (work->error) std::rethrow_exception(work->error);
-            account(*work);
             if (!work->canceled) result.push_back(work->output);
         }
         return result;

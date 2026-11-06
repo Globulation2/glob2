@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Material.h"
-#include "map/claims/ResourceClaimProbe.h"
 #include <algorithm>
 #include <climits>
 #include "Unit.h"
@@ -23,33 +22,17 @@ namespace {
 std::optional<Offset> materialPickup(Unit& unit)
 {
     auto& map=*unit.owner->map;
-    if(!map.activeClaimsEnabled())return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
-    // Contention-triggered claims: a worker without a valid claim picks up
-    // exactly as with claims off; its harvest then uses takeHarvest too.
-    if(map.claimContentionEnabled()) {
-        unit.releaseInvalidActiveMaterialClaim();
-        if(!unit.activeMaterialClaim)return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
-    }
-    const auto* observer=map.resourceClaimProbe();
-    if(observer && !observer->observesDecisionOutcomes())observer=nullptr;
-    std::optional<ResourceClaims::Probe::DecisionOutcome> outcome;
-    unit.releaseInvalidActiveMaterialClaim();
-    if(observer){outcome=observer->beginDecisionOutcome(unit,true);outcome->noAttempt="no_adjacent_candidate";}
-    bool observed=false;
+    // A worker without a valid claim picks up exactly as with claims off; its
+    // harvest then uses takeHarvest too.
+    if(map.activeClaimsEnabled())unit.releaseInvalidActiveMaterialClaim();
+    if(!unit.activeMaterialClaim)return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
+    // A claimed worker picks up only its own reservation, or exchanges it for
+    // adjacent stock it can reserve (prepareActiveMaterialPickup).
     for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)
         if(map.isMaterialTakeableSlot(unit.posX+dx,unit.posY+dy,unit.destinationPurpose)
-            && !map.isForbidden(unit.posX+dx,unit.posY+dy,unit.owner->me)) {
-            if(!unit.activeMaterialClaim && !observed) {
-                observed=true;
-                if(observer)outcome=observer->beginDecisionOutcome(unit,true);
-            }
-            if(observer)outcome->attempted=true;
-            if(unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy)) {
-                if(observer){outcome->selected=true;observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome);}
-                return Offset{dx,dy};
-            }
-        }
-    if(observer){observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome);}
+            && !map.isForbidden(unit.posX+dx,unit.posY+dy,unit.owner->me)
+            && unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy))
+            return Offset{dx,dy};
     return std::nullopt;
 }
 

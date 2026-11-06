@@ -11,7 +11,7 @@ class Map;
 class Unit;
 namespace ResourceClaims
 {
-// Derived target occupancy for the claim_trigger "contention" policy. One
+// Derived target occupancy for the contention trigger (Policy::ContentionRadius). One
 // snapshot per team, taken immediately before that team steps its units, of
 // every live same-team worker fetching a material: ACT_FILLING, MED_FREE,
 // attached, and going to or harvesting at a resource. Its target cell is the

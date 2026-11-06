@@ -7,11 +7,15 @@
 
 namespace ResourceClaims
 {
-// Versioned experimental retry heuristic, not a connectivity proof. All clocks
+// Bounded retry of claim routes after failures: a heuristic that limits how
+// much route work one worker can spend on unreachable stock, not a
+// connectivity proof. Recently failed accesses are skipped (unless already in
+// pickup range), selection resumes after the pattern entry that failed, and
+// route submissions are rate limited per owner. All clocks
 // use unsigned elapsed ticks so a bounded interval also works across tick wrap.
 struct ClaimRecovery
 {
-    static constexpr unsigned SourceVersion=1, CacheEntries=4, TtlTicks=128;
+    static constexpr unsigned CacheEntries=4, TtlTicks=128;
     static constexpr unsigned AttemptWindowTicks=64, MaxAttempts=4, BackoffTicks=16;
     static constexpr std::uint32_t NoTile=UINT32_MAX;
     struct Entry {

@@ -23,7 +23,7 @@
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
     // A reused unit slot drops its previous claim before the saved one loads.
-    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Serialization);
+    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
 	stream->readEnterSection("Unit");
 
 	// unit specification
@@ -276,16 +276,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
             claim.exclusive=exclusive;activeMaterialClaim=claim;
         }
         stream->readLeaveSection();
-    }
-    if(versionMinor>=ResourceClaims::PolicyConfigFormat) {
-        GAGCore::BinaryInputStream::CheckedReads checked(stream);
         stream->readEnterSection("materialClaimPolicyState");
         const Uint64 ordinalHigh=stream->readUint32("ordinalHigh"),ordinalLow=stream->readUint32("ordinalLow");
         const Uint64 goalHigh=stream->readUint32("goalHigh"),goalLow=stream->readUint32("goalLow");
         materialClaimPolicyState.decisionOrdinal=(ordinalHigh<<32)|ordinalLow;
         materialClaimPolicyState.lastGoalAttempt=(goalHigh<<32)|goalLow;
-        materialClaimPolicyState.fallbackCount=stream->readUint32("fallbackCount");
-        materialClaimPolicyState.probe=stream->readUint32("probe");
         if(materialClaimPolicyState.lastGoalAttempt>materialClaimPolicyState.decisionOrdinal)
             throw std::runtime_error("invalid material claim policy cadence");
         stream->readLeaveSection();
@@ -404,12 +399,11 @@ void Unit::save(GAGCore::OutputStream *stream)
         stream->writeUint8(claim.exclusive,"exclusive");stream->writeUint16(claim.reserve,"reserve");
     }
     stream->writeLeaveSection();
-    const auto cadence=persistClaims && owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental
+    const auto cadence=persistClaims && owner->map->activeClaimsEnabled()
         ? materialClaimPolicyState : ResourceClaims::MaterialClaimPolicyState{};
     stream->writeEnterSection("materialClaimPolicyState");
     stream->writeUint32(cadence.decisionOrdinal>>32,"ordinalHigh");stream->writeUint32(cadence.decisionOrdinal,"ordinalLow");
     stream->writeUint32(cadence.lastGoalAttempt>>32,"goalHigh");stream->writeUint32(cadence.lastGoalAttempt,"goalLow");
-    stream->writeUint32(cadence.fallbackCount,"fallbackCount");stream->writeUint32(cadence.probe,"probe");
     stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
@@ -642,11 +636,8 @@ Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
                 const auto& c=*activeMaterialClaim;
                 append(c.source);append(c.access);append(c.material);append(c.resource);append(c.exclusive);append(c.reserve);
             }
-        }
-        if(owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
             append(materialClaimPolicyState.decisionOrdinal>>32);append(materialClaimPolicyState.decisionOrdinal);
             append(materialClaimPolicyState.lastGoalAttempt>>32);append(materialClaimPolicyState.lastGoalAttempt);
-            append(materialClaimPolicyState.fallbackCount);append(materialClaimPolicyState.probe);
         }
 		if (hasCapability(UnitRuntimeTraits::ExtendedCargo) || widePrimaryCargo()) {
 			const auto* extra=owner->game->unitCargo.find(gid); append(extra?extra->size():0);

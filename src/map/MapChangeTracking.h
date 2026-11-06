@@ -45,5 +45,5 @@ struct ChangeTracker
 	void markAll() { ++generation; std::fill(chunks.begin(), chunks.end(), generation); }
 	void reset(std::size_t count) { ++generation; chunks.assign(count, generation); }
 };
-enum class TrackedArray { Terrain, Resources, Occupancy, Areas, Visibility, Claims };
+enum class TrackedArray { Terrain, Resources, Occupancy, Areas, Visibility };
 } // namespace MapState

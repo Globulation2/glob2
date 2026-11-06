@@ -56,7 +56,7 @@ TEST_SUITE("WorldSnapshot")
         CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
     }
 
-    TEST_CASE("claims have immutable exact counts and independent dirty chunks")
+    TEST_CASE("resource claims are not snapshot state and leave captured stock shared")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
@@ -64,57 +64,17 @@ TEST_SUITE("WorldSnapshot")
         SimulationSnapshot::Store store;
         store.setVerification(true);
         const auto before = store.captureBoundary(fixture.game);
-        REQUIRE(before.claims);
         const auto index = map.coordToIndex(4, 4);
-        CHECK(before.materialClaimCountAt(index) == 0);
+        // Claims reserve stock in the ledger only; no snapshot consumer reads
+        // them, so recording and releasing one copies no resource arrays.
         const auto copied = store.metrics.mapBytesCopied;
-        map.observeMaterialClaim(10, {Uint32(index), Uint32(index), 0, 0});
+        REQUIRE(map.recordMaterialClaim(10, {Uint32(index), Uint32(index), 0, 0}));
         const auto after = store.captureBoundary(fixture.game);
         CHECK(after.resources == before.resources);
-        CHECK(after.claims != before.claims);
-        CHECK(before.materialClaimCountAt(index) == 0);
-        CHECK(after.materialClaimCountAt(index) == 1);
-        CHECK(after.view().materialClaimCount(index) == 1);
-        CHECK(after.tileAt(index).materialClaims == 1);
-        const auto& geometry = map.chunks();
-        size_t chunkCells = 0;
-        geometry.forEachRow(geometry.chunkOf(index), [&](size_t, size_t n) { chunkCells += n; });
-        // A new buffer needs its initial fill. Once warmed, only changed
-        // one-byte claim chunks are copied, never resource stock arrays.
-        CHECK(store.metrics.mapBytesCopied - copied == map.cellCount());
-        CHECK(chunkCells <= map.cellCount());
-        auto narrow = after.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Resources));
-        CHECK_FALSE(narrow.claims); CHECK(narrow.materialClaimCountAt(index) == 0);
-        for (unsigned owner = 11; owner < 310; ++owner)
-            map.observeMaterialClaim(owner, {Uint32(index), Uint32(index), 0, 0});
-        const auto overflow = store.captureBoundary(fixture.game);
-        CHECK(overflow.materialClaimCountAt(index) == 300);
-        CHECK(overflow.claims->counts.cells[index] == 255);
-        CHECK(after.materialClaimCountAt(index) == 1);
-        for (unsigned owner = 10; owner < 310; ++owner) map.releaseMaterialClaim(owner);
+        REQUIRE(map.releaseMaterialClaim(10));
         const auto released = store.captureBoundary(fixture.game);
-        CHECK(released.materialClaimCountAt(index) == 0);
-        CHECK(overflow.materialClaimCountAt(index) == 300);
-        CHECK_THROWS_AS(released.materialClaimCountAt(map.cellCount()), std::out_of_range);
-    }
-
-    TEST_CASE("warmed claim captures copy only the changed byte plane chunk")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
-        auto& map = fixture.game.map;
-        SimulationSnapshot::Store store; store.setVerification(true);
-        const auto index = map.coordToIndex(4, 4);
-        store.captureBoundary(fixture.game);
-        map.observeMaterialClaim(1, {Uint32(index), Uint32(index), 0, 0});
-        store.captureBoundary(fixture.game);
-        const auto copied = store.metrics.mapBytesCopied;
-        map.releaseMaterialClaim(1);
-        const auto changed = store.captureBoundary(fixture.game);
-        size_t expected = 0;
-        map.chunks().forEachRow(map.chunks().chunkOf(index), [&](size_t, size_t n) { expected += n; });
-        CHECK(store.metrics.mapBytesCopied - copied == expected);
-        CHECK(changed.materialClaimCountAt(index) == 0);
+        CHECK(released.resources == before.resources);
+        CHECK(store.metrics.mapBytesCopied == copied);
     }
 
     TEST_CASE("named views retain only their standard inputs")

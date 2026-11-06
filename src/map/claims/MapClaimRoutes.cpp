@@ -5,10 +5,8 @@
 #include "Team.h"
 #include "Version.h"
 #include "ActiveRouteRuntime.h"
-#include "ClaimPolicyConfig.h"
-#include "ResourceClaimProbe.h"
-#include "gradient/DirectFlightDirection.h"
-#include "online/Sha256.h"
+#include "ClaimPolicy.h"
+#include "ClaimPattern.h"
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <set>
@@ -92,20 +90,20 @@ template<class F> void recoveryValues(const ResourceClaims::ClaimRecovery& r,F&&
 }
 RouteProfile profileOf(const Unit& unit)
 { return {accessClass(unit.movementAccess()), unit.owner->me, unit.gid, OccupancyPolicy::Static}; }
-bool endsAtTarget(const Map& map, const Route& route, Uint32 start, Uint32 target, unsigned radius=1)
+bool endsAtTarget(const Map& map, const Route& route, Uint32 start, Uint32 target)
 {
     if (route.status != RouteStatus::Found) return true;
     const auto end = route.cells.empty() ? start : route.cells.back();
     const auto dx = unsigned(std::abs(int(end % map.getW()) - int(target % map.getW())));
     const auto dy = unsigned(std::abs(int(end / map.getW()) - int(target / map.getW())));
-    return std::min(dx, unsigned(map.getW()) - dx) <= radius && std::min(dy, unsigned(map.getH()) - dy) <= radius;
+    return std::min(dx, unsigned(map.getW()) - dx) <= 1 && std::min(dy, unsigned(map.getH()) - dy) <= 1;
 }
 }
 
 ResourceClaims::ClaimRecoverySelection Map::beginClaimRecoverySelection(const Unit& unit)
 {
     using namespace ResourceClaims;
-    if(activeClaimPolicy!=ActiveClaimPolicy::Experimental || !materialClaimPolicyConfig().usesRecovery())return {};
+    if(!activeClaimsEnabled())return {};
     if(!materialClaimRoutes)materialClaimRoutes=std::make_unique<ActiveRouteRuntime>(compute);
     auto& recovery=materialClaimRoutes->recovery[unitOwner(unit.gid,unit.scriptIdentity)];
     recovery.setContext(unit.destinationPurpose,accessClass(unit.movementAccess()));
@@ -153,8 +151,6 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
     using namespace ResourceClaims;
     if (!activeClaimsEnabled() || !unit.activeMaterialClaim || !game || !cellCount()) return ResourceClaims::StepResult::Failed;
     const auto owner = unitOwner(unit.gid, unit.scriptIdentity);
-    const auto* observer=resourceClaimProbe();
-    const auto record=[&](Probe::LiveEvent event){if(observer)observer->routeEvent(owner,unit.materialClaimTask,game->stepCounter,event);};
     const auto current = Uint32(coordToIndex(unit.posX, unit.posY));
     const auto target = unit.activeMaterialClaim->access;
     if (target >= cellCount()) return ResourceClaims::StepResult::Failed;
@@ -166,224 +162,146 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
         (found->second.identity.task != unit.materialClaimTask || found->second.target != target)) {
         cancelClaimRoute(owner); found = runtime.states.end();
     }
-    if (activeClaimPolicy == ActiveClaimPolicy::Experimental) {
-        const auto& config = materialClaimPolicyConfig();
-        const auto ordinal = unit.materialClaimPolicyState.decisionOrdinal;
-        const auto live = stateView();
-        auto traffic = profileOf(unit); traffic.occupancy = OccupancyPolicy::FrozenUnits;
-        const auto geometry = [&](Uint32 cell) {
-            return gradient_kernel::terrainAllowsMovement(live.terrainProperties(cell), traffic.movement)
-                && (traffic.movement == AIR_MOVEMENT_CLASS ? !MapState::resourceBlocksAir(live, cell)
-                    : !(live.areas[cell].forbidden & traffic.teamMask) && live.occupancy[cell].building == 0xffff
-                        && !MapState::resourceBlocksGround(live, cell));
-        };
-        // pending_step=gradient: the ordinary natural-material gradient step,
-        // exactly as claims-off movement takes it (demand, outcome, refresh).
-        const auto gradientWhileWaiting = [&]() {
-            if (config.pendingStep != ClaimPolicyConfig::PendingStep::Gradient) return false;
-            int gx = 0, gy = 0; bool stopWork = false;
-            if (!pathfindMaterial(unit.entityRandom, unit.owner->teamNumber, unit.activeMaterialClaim->material, unit.movementAccess(),
-                    unit.posX, unit.posY, &gx, &gy, &stopWork, nullptr, false) || (!gx && !gy)) return false;
-            if (observer) observer->policyExtension(Probe::PolicyExtension::PendingGradientStep);
-            *dx = gx; *dy = gy; return true;
-        };
-        const auto request = [&](ActiveRouteRuntime::State& state, bool direct, bool avoidUnits = false) {
-            if (state.pending) return false;
-            if(config.usesRecovery()) {
-                const auto selection=beginClaimRecoverySelection(unit);
-                if(!runtime.pipeline.admissionAvailable() || !selection.mayRoute) {state.awaitingAdmission=state.route.status!=RouteStatus::Found || state.route.cells.empty();return false;}
-                auto& recovery=runtime.recovery.at(owner);
-                if(recovery.failureStreak)recovery.admit(game->stepCounter);
-            } else if(!runtime.pipeline.admissionAvailable())return false;
-            state.awaitingAdmission=false;
-            if(direct)state.probeFinished=true;
-            Uint32 waypoint = target; unsigned radius = 1;
-            if (!state.probeFinished && config.routeTarget == ClaimPolicyConfig::RouteTarget::ProbeThenGradient &&
-                unit.materialClaimPolicyState.probe < cellCount() && unit.materialClaimPolicyState.probe != target) {
-                waypoint = unit.materialClaimPolicyState.probe; radius = 0;
-            }
-            using C = SimulationSnapshot::Component;
-            const auto mask = SimulationSnapshot::bit(C::Catalogs) | SimulationSnapshot::bit(C::Terrain)
-                | SimulationSnapshot::bit(C::Resources) | SimulationSnapshot::bit(C::Occupancy) | SimulationSnapshot::bit(C::Areas);
-            // A traffic repair plans around the units sampled now (FrozenUnits).
-            RouteInput input{game->observation().project(mask), avoidUnits ? traffic : profileOf(unit), current, waypoint};
-            input.radius = radius; input.maximumExpansions = config.maximumExpansions;
-            input.presentTerrainHeuristic = true; input.diagnostics = observer!=nullptr;
-            const auto reason=!state.identity.request?Probe::LiveEvent::RouteInitial:direct?Probe::LiveEvent::RouteRepair:Probe::LiveEvent::RouteRefresh;
-            state.identity = runtime.pipeline.submit(owner, unit.materialClaimTask, game->stepCounter, std::move(input));
-            record(reason);
-            state.pendingStart = current; state.pendingTarget = waypoint; state.pendingRadius = radius;
-            state.due = Uint64(game->stepCounter) + 1; state.pending = true; state.lastRefreshOrdinal = ordinal;
-            return true;
-        };
-        if (found == runtime.states.end()) {
-            if (runtime.states.size() >= MaximumStates) return config.usesRecovery()?ResourceClaims::StepResult::Pending:ResourceClaims::StepResult::Failed;
-            ActiveRouteRuntime::State state;
-            state.target = target; state.start = current; state.pending = false;state.cacheRouteDigest();
-            found = runtime.states.emplace(owner, std::move(state)).first;
-            if (!request(found->second, false)) {
-                runtime.states.erase(found);
-                return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
-            }
+    const auto live = stateView();
+    auto traffic = profileOf(unit); traffic.occupancy = OccupancyPolicy::FrozenUnits;
+    // Static geometry only: a cell other units merely stand on is traffic,
+    // not a reason to discard the route.
+    const auto geometry = [&](Uint32 cell) {
+        return gradient_kernel::terrainAllowsMovement(live.terrainProperties(cell), traffic.movement)
+            && (traffic.movement == AIR_MOVEMENT_CLASS ? !MapState::resourceBlocksAir(live, cell)
+                : !(live.areas[cell].forbidden & traffic.teamMask) && live.occupancy[cell].building == 0xffff
+                    && !MapState::resourceBlocksGround(live, cell));
+    };
+    // Routes are computed off the owner thread and published on the next
+    // tick. Rather than stand still meanwhile, the worker takes the ordinary
+    // material gradient step for the claimed material, exactly as claims-off
+    // movement would (demand, movement outcome and reactive refresh
+    // included); the published route then rejoins from wherever it got to.
+    const auto gradientWhileWaiting = [&]() {
+        int gx = 0, gy = 0; bool stopWork = false;
+        if (!pathfindMaterial(unit.entityRandom, unit.owner->teamNumber, unit.activeMaterialClaim->material, unit.movementAccess(),
+                unit.posX, unit.posY, &gx, &gy, &stopWork, nullptr, false) || (!gx && !gy)) return false;
+        *dx = gx; *dy = gy; return true;
+    };
+    const auto request = [&](ActiveRouteRuntime::State& state, bool avoidUnits = false) {
+        if (state.pending) return false;
+        // Bounded recovery limits how often one worker may resubmit failed
+        // routes; without admission the request is retried next decision.
+        const auto selection = beginClaimRecoverySelection(unit);
+        if (!runtime.pipeline.admissionAvailable() || !selection.mayRoute) {
+            state.awaitingAdmission = state.route.status != RouteStatus::Found || state.route.cells.empty();
+            return false;
         }
-        auto& state = found->second;
-        const auto waiting = [&]() {
-            if (!state.pending) {
-                if (!state.awaitingAdmission) return ResourceClaims::StepResult::Failed;
-                return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
-            }
-            record(Probe::LiveEvent::PendingPath);
-            if (config.pendingStep == ClaimPolicyConfig::PendingStep::DirectHeading) {
-                const auto step = direct_flight::select(unit.posX, unit.posY,
-                    state.pendingTarget % getW(), state.pendingTarget / getW(), getW(), getH(),
-                    [&](int x,int y) {return routePassable(live, coordToIndex(x,y), traffic);});
-                if (step.dx || step.dy) {*dx=step.dx; *dy=step.dy; return ResourceClaims::StepResult::Ready;}
-            }
-            if (gradientWhileWaiting()) return ResourceClaims::StepResult::Ready;
-            return ResourceClaims::StepResult::Pending;
-        };
-        if(state.awaitingAdmission)request(state,true);
-        // A completed failed route resolves before cadence can issue another
-        // request: J=1 must not pin an unreachable reservation indefinitely.
-        if (state.route.status != RouteStatus::Found) {
-            if (!state.pending && state.pendingRadius==0) {record(Probe::LiveEvent::RouteProbeFallback);request(state,true);}
-            return waiting();
-        }
-        if (state.reanchor) {
-            state.reanchor = false;
-            if (current != state.start) {
-                bool joined = false;
-                const auto limit = std::min<std::size_t>(8, state.route.cells.size());
-                // Prefer an exact prefix stance, then a single legal rejoin edge.
-                for (unsigned i=0;i<limit;++i) if (state.route.cells[i]==current) {state.cursor=i+1;joined=true;break;}
-                if (!joined) for (unsigned i=0;i<limit;++i) {
-                    const auto cell=state.route.cells[i];
-                    if (warpDistMax(unit.posX,unit.posY,cell%getW(),cell/getW())==1 && geometry(cell)) {
-                        state.cursor=i; joined=true; break;
-                    }
-                }
-                if(joined)record(Probe::LiveEvent::ReanchorJoined);
-                if (!joined) {record(Probe::LiveEvent::ReanchorFailed);state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false; request(state,true); return waiting();}
-            }
-        }
-        while (state.cursor < state.route.cells.size() && state.route.cells[state.cursor] == current) ++state.cursor;
-        if (state.followingGradient || (state.pathRadius == 0 && current == state.pathTarget)) {
-            state.followingGradient = true; state.probeFinished=true;
-            const auto tail = nextClaimGradientStep(unit,dx,dy);
-            if (tail != ResourceClaims::StepResult::Failed) return tail;
-            record(Probe::LiveEvent::ProbeTailFailed);record(Probe::LiveEvent::RouteProbeFallback);
-            state.followingGradient=false; state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false; request(state,true); return waiting();
-        }
-        // A refresh never discards a still usable route while its worker runs.
-        if (!state.pending && !state.followingGradient && config.routeRefreshJ && ordinal - state.lastRefreshOrdinal >= config.routeRefreshJ)
-            request(state, false);
-        if (config.trafficSidestep && state.cursor < state.route.cells.size() &&
-            current != (state.cursor ? state.route.cells[state.cursor-1] : state.start)) {
-            // After a sidestep, rejoin at the furthest window cell that is the
-            // current stance or one legal step away from it.
-            const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
-            for (auto j = limit; j-- > state.cursor;) {
-                const auto cell = state.route.cells[j];
-                if (cell == current) {state.cursor = unsigned(j + 1); break;}
-                if (warpDistMax(unit.posX,unit.posY,cell%getW(),cell/getW())==1) {state.cursor = unsigned(j); break;}
-            }
-        }
-        const auto anchor = state.cursor ? state.route.cells[state.cursor-1] : state.start;
-        const bool adjacentRejoin = state.cursor < state.route.cells.size() &&
-            warpDistMax(unit.posX,unit.posY,state.route.cells[state.cursor]%getW(),state.route.cells[state.cursor]/getW())==1;
-        if ((current != anchor && !adjacentRejoin) || state.cursor == state.route.cells.size()) {
-            state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false; request(state,true); return waiting();
-        }
-        const auto next = state.route.cells[state.cursor];
-        if (!geometry(next)) {record(Probe::LiveEvent::GeometryContradiction);state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false; request(state,true); return waiting();}
-        if (!routePassable(live,next,traffic)) {
-            if (config.trafficSidestep) {
-                // A free legal neighbour that keeps route progress: adjacent to
-                // (or on) a later cell of the reanchor window, furthest first.
-                const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
-                std::size_t best = 0; int bx = 0, by = 0;
-                for (int oy = -1; oy <= 1; ++oy) for (int ox = -1; ox <= 1; ++ox) {
-                    if (!ox && !oy) continue;
-                    const int cx = (unit.posX + ox + getW()) % getW(), cy = (unit.posY + oy + getH()) % getH();
-                    const auto cell = Uint32(coordToIndex(cx, cy));
-                    if (cell == next || !geometry(cell) || !routePassable(live, cell, traffic)) continue;
-                    for (auto j = limit; j-- > std::size_t(state.cursor) + 1;) {
-                        const auto later = state.route.cells[j];
-                        if (later == cell || warpDistMax(cx, cy, later % getW(), later / getW()) == 1) {
-                            if (j > best) {best = j; bx = ox; by = oy;}
-                            break;
-                        }
-                    }
-                }
-                if (best) {
-                    state.trafficWaits = 0;
-                    if (observer) observer->policyExtension(Probe::PolicyExtension::TrafficSidestep);
-                    *dx = bx; *dy = by; return ResourceClaims::StepResult::Ready;
-                }
-            }
-            record(Probe::LiveEvent::TrafficWait);
-            if (config.trafficWaitLimit && ++state.trafficWaits >= config.trafficWaitLimit) {
-                if (observer) observer->policyExtension(Probe::PolicyExtension::TrafficWaitLimit);
-                state.trafficWaits = 0;
-                state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false;
-                request(state, true, true); return waiting();
-            }
-            return ResourceClaims::StepResult::Pending;
-        }
-        state.trafficWaits = 0;
-        int sx=int(next%getW())-unit.posX, sy=int(next/getW())-unit.posY;
-        if (sx>1)sx-=getW();else if(sx< -1)sx+=getW();
-        if (sy>1)sy-=getH();else if(sy< -1)sy+=getH();
-        if (std::abs(sx)>1 || std::abs(sy)>1 || (!sx&&!sy)) {state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false;request(state,true);return waiting();}
-        *dx=sx;*dy=sy;return ResourceClaims::StepResult::Ready;
-    }
-    if (found == runtime.states.end()) {
-        if (runtime.states.size() >= MaximumStates || !runtime.pipeline.admissionAvailable()) return ResourceClaims::StepResult::Failed;
-        // Retain only route inputs. In particular, a pending route must not
-        // keep old entity records and every published gradient plane alive.
+        auto& recovery = runtime.recovery.at(owner);
+        if (recovery.failureStreak) recovery.admit(game->stepCounter);
+        state.awaitingAdmission = false;
         using C = SimulationSnapshot::Component;
         const auto mask = SimulationSnapshot::bit(C::Catalogs) | SimulationSnapshot::bit(C::Terrain)
             | SimulationSnapshot::bit(C::Resources) | SimulationSnapshot::bit(C::Occupancy) | SimulationSnapshot::bit(C::Areas);
-        RouteInput input{game->observation().project(mask), profileOf(unit), current, target};
-        input.diagnostics = observer!=nullptr;
-        const auto identity = runtime.pipeline.submit(owner, unit.materialClaimTask, game->stepCounter, std::move(input));
-        record(Probe::LiveEvent::RouteInitial);record(Probe::LiveEvent::PendingPath);
-        auto inserted=runtime.states.emplace(owner, ActiveRouteRuntime::State{identity, current, target, 0, Uint64(game->stepCounter) + 1});
-        inserted.first->second.cacheRouteDigest();
-        return ResourceClaims::StepResult::Pending;
+        // A traffic replan plans around the units sampled now (FrozenUnits);
+        // ordinary routes ignore moving units, which will have moved on.
+        RouteInput input{game->observation().project(mask), avoidUnits ? traffic : profileOf(unit), current, target};
+        input.maximumExpansions = Policy::RouteMaximumExpansions;
+        state.identity = runtime.pipeline.submit(owner, unit.materialClaimTask, game->stepCounter, std::move(input));
+        state.due = Uint64(game->stepCounter) + 1; state.pending = true;
+        return true;
+    };
+    if (found == runtime.states.end()) {
+        if (runtime.states.size() >= MaximumStates) return ResourceClaims::StepResult::Pending;
+        ActiveRouteRuntime::State state;
+        state.target = target; state.start = current; state.pending = false; state.cacheRouteDigest();
+        found = runtime.states.emplace(owner, std::move(state)).first;
+        if (!request(found->second)) {
+            runtime.states.erase(found);
+            return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
+        }
     }
     auto& state = found->second;
-    if (state.pending) {record(Probe::LiveEvent::PendingPath);return ResourceClaims::StepResult::Pending;}
-    if (state.route.status != RouteStatus::Found) return ResourceClaims::StepResult::Failed;
+    const auto waiting = [&]() {
+        if (!state.pending && !state.awaitingAdmission) return ResourceClaims::StepResult::Failed;
+        return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
+    };
+    // Drop the route and plan a new one from the current cell.
+    const auto replan = [&](bool avoidUnits = false) {
+        state.route = {}; state.cacheRouteDigest(); state.cursor = 0; state.reanchor = false;
+        request(state, avoidUnits);
+        return waiting();
+    };
+    if (state.awaitingAdmission) request(state);
+    // A completed failed route resolves here; recovery decides whether the
+    // claim is released (see Unit::handleActiveMaterialMovement).
+    if (state.route.status != RouteStatus::Found) return waiting();
+    if (state.reanchor) {
+        state.reanchor = false;
+        if (current != state.start) {
+            bool joined = false;
+            const auto limit = std::min<std::size_t>(8, state.route.cells.size());
+            // Prefer an exact prefix stance, then a single legal rejoin edge.
+            for (unsigned i=0;i<limit;++i) if (state.route.cells[i]==current) {state.cursor=i+1;joined=true;break;}
+            if (!joined) for (unsigned i=0;i<limit;++i) {
+                const auto cell=state.route.cells[i];
+                if (warpDistMax(unit.posX,unit.posY,cell%getW(),cell/getW())==1 && geometry(cell)) {
+                    state.cursor=i; joined=true; break;
+                }
+            }
+            if (!joined) return replan();
+        }
+    }
     // Consume a step only after the unit has actually moved. A blocked attempt
     // therefore retries the same step, without skipping cells in its path.
     while (state.cursor < state.route.cells.size() && state.route.cells[state.cursor] == current) ++state.cursor;
-    const auto anchor = state.cursor ? state.route.cells[state.cursor - 1] : state.start;
-    if (current != anchor || state.cursor == state.route.cells.size()) {
-        cancelClaimRoute(owner); return ResourceClaims::StepResult::Failed;
+    if (state.cursor < state.route.cells.size() &&
+        current != (state.cursor ? state.route.cells[state.cursor-1] : state.start)) {
+        // After a traffic sidestep, rejoin at the furthest window cell that is
+        // the current stance or one legal step away from it.
+        const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
+        for (auto j = limit; j-- > state.cursor;) {
+            const auto cell = state.route.cells[j];
+            if (cell == current) {state.cursor = unsigned(j + 1); break;}
+            if (warpDistMax(unit.posX,unit.posY,cell%getW(),cell/getW())==1) {state.cursor = unsigned(j); break;}
+        }
     }
+    const auto anchor = state.cursor ? state.route.cells[state.cursor-1] : state.start;
+    const bool adjacentRejoin = state.cursor < state.route.cells.size() &&
+        warpDistMax(unit.posX,unit.posY,state.route.cells[state.cursor]%getW(),state.route.cells[state.cursor]/getW())==1;
+    if ((current != anchor && !adjacentRejoin) || state.cursor == state.route.cells.size()) return replan();
     const auto next = state.route.cells[state.cursor];
-    const auto live = stateView();
-    const auto profile = profileOf(unit);
-    // Immobile markers include harvesting workers and zero-step waiters. They
-    // are traffic too; distinguish them from actual changes to map geometry.
-    const bool geometry = gradient_kernel::terrainAllowsMovement(live.terrainProperties(next), profile.movement)
-        && (profile.movement == AIR_MOVEMENT_CLASS ? !MapState::resourceBlocksAir(live, next)
-            : !(live.areas[next].forbidden & profile.teamMask) && live.occupancy[next].building == 0xffff
-                && !MapState::resourceBlocksGround(live, next));
-    if (!geometry) {
-        record(Probe::LiveEvent::GeometryContradiction);
-        cancelClaimRoute(owner); return ResourceClaims::StepResult::Failed;
+    if (!geometry(next)) return replan();
+    if (!routePassable(live,next,traffic)) {
+        // Blocked by traffic: step to a free legal neighbour that keeps route
+        // progress (on, or adjacent to, a later cell of the 8-cell window,
+        // furthest first) instead of queueing behind the blocker.
+        const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
+        std::size_t best = 0; int bx = 0, by = 0;
+        for (int oy = -1; oy <= 1; ++oy) for (int ox = -1; ox <= 1; ++ox) {
+            if (!ox && !oy) continue;
+            const int cx = (unit.posX + ox + getW()) % getW(), cy = (unit.posY + oy + getH()) % getH();
+            const auto cell = Uint32(coordToIndex(cx, cy));
+            if (cell == next || !geometry(cell) || !routePassable(live, cell, traffic)) continue;
+            for (auto j = limit; j-- > std::size_t(state.cursor) + 1;) {
+                const auto later = state.route.cells[j];
+                if (later == cell || warpDistMax(cx, cy, later % getW(), later / getW()) == 1) {
+                    if (j > best) {best = j; bx = ox; by = oy;}
+                    break;
+                }
+            }
+        }
+        if (best) {
+            state.trafficWaits = 0;
+            *dx = bx; *dy = by; return ResourceClaims::StepResult::Ready;
+        }
+        if (++state.trafficWaits >= Policy::TrafficWaitLimit) {
+            state.trafficWaits = 0;
+            return replan(true);
+        }
+        return ResourceClaims::StepResult::Pending;
     }
-    auto traffic = profile; traffic.occupancy = OccupancyPolicy::FrozenUnits;
-    if (!routePassable(live, next, traffic)) {record(Probe::LiveEvent::TrafficWait);return ResourceClaims::StepResult::Pending;}
-    int stepX = int(next % getW()) - unit.posX, stepY = int(next / getW()) - unit.posY;
-    if (stepX > 1) stepX -= getW(); else if (stepX < -1) stepX += getW();
-    if (stepY > 1) stepY -= getH(); else if (stepY < -1) stepY += getH();
-    if (std::abs(stepX) > 1 || std::abs(stepY) > 1 || (!stepX && !stepY)) {
-        cancelClaimRoute(owner); return ResourceClaims::StepResult::Failed;
-    }
-    *dx = stepX; *dy = stepY; return ResourceClaims::StepResult::Ready;
+    state.trafficWaits = 0;
+    int sx=int(next%getW())-unit.posX, sy=int(next/getW())-unit.posY;
+    if (sx>1)sx-=getW();else if(sx< -1)sx+=getW();
+    if (sy>1)sy-=getH();else if(sy< -1)sy+=getH();
+    if (std::abs(sx)>1 || std::abs(sy)>1 || (!sx&&!sy)) return replan();
+    *dx=sx;*dy=sy;return ResourceClaims::StepResult::Ready;
 }
 
 bool Map::claimRouteComputing(const Unit& unit) const
@@ -409,28 +327,20 @@ void Map::publishClaimRoutes()
         if (found == runtime.states.end() || found->second.identity != output.identity) continue;
         auto& state=found->second;
         state.pending = false;
-        if (activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {
-            // A refresh submitted before reaching the probe can become obsolete
-            // while the old path enters its gradient tail. Retire its scheduled
-            // request without pulling the unit back to an already reached probe.
-            if (state.followingGradient && state.pendingRadius==0) {
-                if(const auto* observer=resourceClaimProbe())observer->routeEvent(output.identity.unit,output.identity.task,game->stepCounter,ResourceClaims::Probe::LiveEvent::ObsoleteProbe);
-                continue;
-            }
-            if (output.route.status==ResourceClaims::RouteStatus::Found || state.route.status!=ResourceClaims::RouteStatus::Found) {
-                state.start=output.start; state.pathTarget=output.target; state.pathRadius=state.pendingRadius;
-                state.cursor=0; state.reanchor=true; state.followingGradient=false; state.route=std::move(output.route);state.cacheRouteDigest();
-            }
-        } else {state.route = std::move(output.route);state.cacheRouteDigest();}
+        // A failed replan keeps a still usable earlier route; recovery
+        // accounting sees the failure only once that route is gone too.
+        if (output.route.status==ResourceClaims::RouteStatus::Found || state.route.status!=ResourceClaims::RouteStatus::Found) {
+            state.start=output.start; state.cursor=0; state.reanchor=true;
+            state.route=std::move(output.route); state.cacheRouteDigest();
+        }
     }
-    if(const auto* observer=resourceClaimProbe())observer->routeWork(runtime.pipeline.takeDiagnostics());
 }
 
 void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
 {
     using namespace ResourceClaims;
     stream->writeEnterSection("activeMaterialClaims");
-    stream->writeUint8(unsigned(activeClaimPolicy), "policy");
+    stream->writeUint8(resourceClaimsEnabled, "enabled");
     const auto pending = materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<RoutePublication>{};
     stream->writeEnterSection("sequence"); write64(stream, materialClaimRoutes ? materialClaimRoutes->pipeline.requestSequence() : 0); stream->writeLeaveSection();
     const auto sealed = materialClaimRoutes ? materialClaimRoutes->pipeline.sealedSubmissionTick() : std::optional<Uint64>{};
@@ -440,18 +350,6 @@ void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
         stream->writeEnterSection(i); write64(stream, (*activeClaimRules)[i]); stream->writeLeaveSection();
     }
     stream->writeLeaveSection();
-    if (VERSION_MINOR >= PolicyConfigFormat) {
-        stream->writeEnterSection("materialClaimPolicyConfig");
-        const bool configured=activeClaimPolicy==ActiveClaimPolicy::Experimental;
-        stream->writeUint8(configured,"has");
-        if (configured) {
-            if (!materialClaimConfiguration) throw std::logic_error("experimental claim policy has no configuration");
-            const auto json=materialClaimConfiguration->canonicalJson();
-            if (json.size()>4096) throw std::length_error("claim policy configuration exceeds save allowance");
-            stream->writeUint32(json.size(),"bytes"); stream->write(json.data(),json.size(),"json");
-        }
-        stream->writeLeaveSection();
-    }
     stream->writeUint32(materialClaimRoutes ? materialClaimRoutes->states.size() : 0, "states");
     stream->writeEnterSection("records");
     unsigned i = 0;
@@ -461,19 +359,9 @@ void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
         stream->writeUint32(state.cursor, "cursor"); stream->writeUint8(state.pending, "pending");
         stream->writeEnterSection("due"); write64(stream, state.due); stream->writeLeaveSection();
         saveRoute(stream, state.route);
-        if(activeClaimPolicy==ActiveClaimPolicy::Experimental) {
-            stream->writeEnterSection("experimentalRoute");
-            stream->writeUint32(state.pathTarget,"pathTarget"); stream->writeUint8(state.pathRadius,"pathRadius");
-            stream->writeUint32(state.pendingStart,"pendingStart"); stream->writeUint32(state.pendingTarget,"pendingTarget");
-            stream->writeUint8(state.pendingRadius,"pendingRadius");
-            stream->writeEnterSection("refreshOrdinal");write64(stream,state.lastRefreshOrdinal);stream->writeLeaveSection();
-            stream->writeUint8(state.reanchor,"reanchor"); stream->writeUint8(state.followingGradient,"followingGradient");
-            stream->writeUint8(state.probeFinished,"probeFinished");
-            if(materialClaimPolicyConfig().trafficWaitLimit)stream->writeUint32(state.trafficWaits,"trafficWaits");
-            stream->writeLeaveSection();
-        }
-        stream->writeEnterSection("claimRecoveryRoute");
-        stream->writeUint8(state.awaitingAdmission,"awaitingAdmission");stream->writeLeaveSection();
+        stream->writeUint8(state.reanchor, "reanchor");
+        stream->writeUint8(state.awaitingAdmission, "awaitingAdmission");
+        stream->writeUint32(state.trafficWaits, "trafficWaits");
         stream->writeLeaveSection();
     }
     stream->writeLeaveSection();
@@ -501,21 +389,20 @@ void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
 void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMinor)
 {
     using namespace ResourceClaims;
-    materialClaimRoutes.reset(); activeClaimRules.reset(); materialClaimConfiguration.reset();
-    materialClaimConfigurationDigest={}; activeClaimPolicy = ActiveClaimPolicy::Disabled;
+    materialClaimRoutes.reset(); activeClaimRules.reset(); resourceClaimsEnabled = false;
+    // Saves before format 213 have no claims and continue without them.
     if (versionMinor < ActiveClaimsFormat) return;
     GAGCore::BinaryInputStream::CheckedReads checked(stream);
-    stream->readEnterSection("activeMaterialClaims"); const auto policy = stream->readUint8("policy");
-    const auto maximumPolicy=versionMinor>=PolicyConfigFormat ? ActiveClaimPolicy::Experimental : ActiveClaimPolicy::PrototypeStationaryV1;
-    if (policy > unsigned(maximumPolicy) || (policy && !materialDestinationsEnabled()))
-        throw std::runtime_error("Invalid saved active material policy");
-    activeClaimPolicy = ActiveClaimPolicy(policy);
+    stream->readEnterSection("activeMaterialClaims"); const auto enabled = stream->readUint8("enabled");
+    if (enabled > 1 || (enabled && !materialDestinationsEnabled()))
+        throw std::runtime_error("Invalid saved resource claim setting");
+    resourceClaimsEnabled = enabled;
     stream->readEnterSection("sequence"); const auto sequence = read64(stream); stream->readLeaveSection();
     stream->readEnterSection("sealed"); const auto hasSealed = stream->readUint8("has"); const auto sealed = read64(stream); stream->readLeaveSection();
     if (hasSealed > 1 || bool(sequence) != bool(hasSealed) || (!hasSealed && sealed) || (hasSealed && sealed > game->stepCounter)) throw std::runtime_error("Invalid saved route admission boundary");
-    if (!policy && sequence) throw std::runtime_error("Disabled active route sequence");
+    if (!enabled && sequence) throw std::runtime_error("Disabled active route sequence");
     stream->readEnterSection("rulesEpoch"); const auto hasRules = stream->readUint8("has");
-    if (hasRules > 1 || bool(hasRules) != bool(policy)) throw std::runtime_error("Invalid active claim rules epoch");
+    if (hasRules > 1 || bool(hasRules) != bool(enabled)) throw std::runtime_error("Invalid active claim rules epoch");
     if (hasRules) {
         activeClaimRules.emplace();
         for (unsigned i = 0; i < activeClaimRules->size(); ++i) {
@@ -525,23 +412,9 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
             throw std::runtime_error("Invalid active claim rules epoch values");
     }
     stream->readLeaveSection();
-    if (versionMinor>=PolicyConfigFormat) {
-        stream->readEnterSection("materialClaimPolicyConfig"); const auto has=stream->readUint8("has");
-        if (has>1 || bool(has)!=(activeClaimPolicy==ActiveClaimPolicy::Experimental))
-            throw std::runtime_error("saved claim configuration does not match policy");
-        if (has) {
-            const auto length=stream->readUint32("bytes");
-            if (!length || length>4096) throw std::runtime_error("invalid saved claim configuration length");
-            std::string json(length,'\0'); stream->read(json.data(),length,"json");
-            auto config=ClaimPolicyConfig::parse(json);
-            materialClaimConfigurationDigest=Online::Sha256::digest(config.canonicalJson());
-            materialClaimConfiguration=std::make_unique<const ClaimPolicyConfig>(std::move(config));
-        }
-        stream->readLeaveSection();
-    }
     const auto count = stream->readUint32("states");
-    if (count > MaximumStates || (count && !policy)) throw std::runtime_error("Invalid active route state count");
-    if (policy) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute);
+    if (count > MaximumStates || (count && !enabled)) throw std::runtime_error("Invalid active route state count");
+    if (enabled) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute);
     stream->readEnterSection("records");
     for (unsigned i = 0; i < count; ++i) {
         stream->readEnterSection(i); ActiveRouteRuntime::State state; state.identity = loadIdentity(stream);
@@ -551,41 +424,14 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
         stream->readEnterSection("due"); state.due = read64(stream); stream->readLeaveSection();
         if (state.start >= cellCount() || state.target >= cellCount() || pending > 1 || !state.due ||
             state.due > Uint64(game->stepCounter) + 1) throw std::runtime_error("Invalid active route state");
-        state.route = loadRoute(stream, *this, state.start);state.cacheRouteDigest();
-        const bool experimental=activeClaimPolicy==ActiveClaimPolicy::Experimental;
-        state.pathTarget=state.target; state.pendingStart=state.start; state.pendingTarget=state.target;
-        if(experimental) {
-            stream->readEnterSection("experimentalRoute");
-            state.pathTarget=stream->readUint32("pathTarget"); state.pathRadius=stream->readUint8("pathRadius");
-            state.pendingStart=stream->readUint32("pendingStart"); state.pendingTarget=stream->readUint32("pendingTarget");
-            state.pendingRadius=stream->readUint8("pendingRadius");
-            stream->readEnterSection("refreshOrdinal");state.lastRefreshOrdinal=read64(stream);stream->readLeaveSection();
-            const auto reanchor=stream->readUint8("reanchor"), tail=stream->readUint8("followingGradient");
-            const auto finished=stream->readUint8("probeFinished");
-            state.reanchor=reanchor;state.followingGradient=tail;state.probeFinished=finished;
-            // Present only for policies that set traffic_wait_limit.
-            if(materialClaimPolicyConfig().trafficWaitLimit) {
-                state.trafficWaits=stream->readUint32("trafficWaits");
-                if(state.trafficWaits>=materialClaimPolicyConfig().trafficWaitLimit)throw std::runtime_error("Invalid saved traffic wait count");
-            }
-            stream->readLeaveSection();
-            if(state.pathTarget>=cellCount() || state.pendingStart>=cellCount() || state.pendingTarget>=cellCount() ||
-                state.pathRadius>1 || state.pendingRadius>1 || reanchor>1 || tail>1 || finished>1 || (tail && !finished) ||
-                (state.pendingRadius==1 && state.pendingTarget!=state.target) ||
-                (state.route.status==RouteStatus::Found && state.pathRadius==1 && state.pathTarget!=state.target) ||
-                ((state.pendingRadius==0 || state.pathRadius==0) && materialClaimPolicyConfig().routeTarget!=ClaimPolicyConfig::RouteTarget::ProbeThenGradient) ||
-                (tail && (reanchor || state.pathRadius!=0 || state.route.status!=RouteStatus::Found || state.cursor!=state.route.cells.size())) ||
-                !endsAtTarget(*this,state.route,state.start,state.pathTarget,state.pathRadius))
-                throw std::runtime_error("Invalid experimental route state");
-        }
-        if(versionMinor>=ClaimRecoveryFormat) {
-            stream->readEnterSection("claimRecoveryRoute");const auto awaiting=stream->readUint8("awaitingAdmission");stream->readLeaveSection();
-            if(awaiting>1 || (awaiting && (!experimental || !materialClaimPolicyConfig().usesRecovery() || state.pending)))
-                throw std::runtime_error("Invalid deferred recovery route");
-            state.awaitingAdmission=awaiting;
-        }
+        state.route = loadRoute(stream, *this, state.start); state.cacheRouteDigest();
+        const auto reanchor = stream->readUint8("reanchor"), awaiting = stream->readUint8("awaitingAdmission");
+        state.trafficWaits = stream->readUint32("trafficWaits");
+        if (reanchor > 1 || awaiting > 1 || (awaiting && state.pending) || state.trafficWaits >= Policy::TrafficWaitLimit)
+            throw std::runtime_error("Invalid active route progress");
+        state.reanchor = reanchor; state.awaitingAdmission = awaiting;
         if (!state.identity.task || state.identity.request > sequence || state.cursor > state.route.cells.size() ||
-            (!experimental && ((!state.pending && !endsAtTarget(*this, state.route, state.start, state.target)) || (state.pending && (state.cursor || !state.route.cells.empty())))) ||
+            !endsAtTarget(*this, state.route, state.start, state.target) ||
             !materialClaimRoutes->states.emplace(state.identity.unit, std::move(state)).second)
             throw std::runtime_error("Invalid duplicate active route state");
         stream->readLeaveSection();
@@ -602,41 +448,36 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
         output.start = stream->readUint32("start"); output.target = stream->readUint32("target");
         output.width = getW(); output.height = getH();
         const auto found = materialClaimRoutes->states.find(output.identity.unit);
-        if (!pendingOwners.insert(output.identity.unit).second || found == materialClaimRoutes->states.end() || !found->second.pending || found->second.identity != output.identity ||
-            (activeClaimPolicy==ActiveClaimPolicy::Experimental ?
-                found->second.pendingStart != output.start || found->second.pendingTarget != output.target :
-                found->second.start != output.start || found->second.target != output.target) || found->second.due != output.due)
+        if (!pendingOwners.insert(output.identity.unit).second || found == materialClaimRoutes->states.end() || !found->second.pending
+            || found->second.identity != output.identity || found->second.target != output.target || found->second.due != output.due)
             throw std::runtime_error("Mismatched saved active route");
         output.route = loadRoute(stream, *this, output.start);
-        if (!endsAtTarget(*this, output.route, output.start, output.target, activeClaimPolicy==ActiveClaimPolicy::Experimental?found->second.pendingRadius:1)) throw std::runtime_error("Invalid active route terminal");
+        if (!endsAtTarget(*this, output.route, output.start, output.target)) throw std::runtime_error("Invalid active route terminal");
         pending.push_back(std::move(output)); stream->readLeaveSection();
     }
     stream->readLeaveSection();
-    if(versionMinor>=ClaimRecoveryFormat) {
-        stream->readEnterSection("claimRecovery");const auto count=stream->readUint32("count");
-        if(count>MaximumStates || (count && (activeClaimPolicy!=ActiveClaimPolicy::Experimental || !materialClaimPolicyConfig().usesRecovery())))
-            throw std::runtime_error("Invalid recovery record count");
-        const auto maximumCursor=materialClaimPolicyConfig().sourceVersion>=4?materialClaimPolicyConfig().maximumRecoveryCandidateCount():65536u;
-        for(unsigned i=0;i<count;++i) {
-            stream->readEnterSection(i);const auto owner=read64(stream);ClaimRecovery value;
-            recoveryFields(value,[&](auto& field,const char* name){
-                const auto next=stream->readUint32(name);using T=std::remove_reference_t<decltype(field)>;
-                if(next>std::numeric_limits<T>::max())throw std::runtime_error("Invalid recovery field width");
-                field=T(next);
-            });stream->readLeaveSection();
-            const auto team=Unit::GIDtoTeam(Uint16(owner)),slot=Unit::GIDtoID(Uint16(owner));
-            const Unit* unit=team<Team::MAX_COUNT && game->teams[team]?game->teams[team]->myUnits[slot]:nullptr;
-            if(!unit || unit->scriptIdentity!=Uint32(owner>>16) || value.replacement>=ClaimRecovery::CacheEntries ||
-                value.attempts>ClaimRecovery::MaxAttempts || (!value.windowKnown && value.attempts) ||
-                (value.pinnedAccess!=ClaimRecovery::NoTile && value.pinnedAccess>=cellCount()) ||
-                value.nextProbe>maximumCursor || value.movement>=MOVEMENT_CLASS_COUNT || value.material>=MaterialSlotCount)
-                throw std::runtime_error("Invalid recovery owner or context");
-            for(const auto& e:value.entries)if(e.ttl>ClaimRecovery::TtlTicks || (e.access!=ClaimRecovery::NoTile && e.access>=cellCount()))
-                throw std::runtime_error("Invalid recovery exclusion");
-            if(!materialClaimRoutes->recovery.emplace(owner,value).second)throw std::runtime_error("Duplicate recovery owner");
-        }
-        stream->readLeaveSection();
+    stream->readEnterSection("claimRecovery");
+    const auto recoveryCount = stream->readUint32("count");
+    if (recoveryCount > MaximumStates || (recoveryCount && !enabled)) throw std::runtime_error("Invalid recovery record count");
+    for (unsigned i = 0; i < recoveryCount; ++i) {
+        stream->readEnterSection(i); const auto owner = read64(stream); ClaimRecovery value;
+        recoveryFields(value,[&](auto& field,const char* name){
+            const auto next=stream->readUint32(name);using T=std::remove_reference_t<decltype(field)>;
+            if(next>std::numeric_limits<T>::max())throw std::runtime_error("Invalid recovery field width");
+            field=T(next);
+        });stream->readLeaveSection();
+        const auto team=Unit::GIDtoTeam(Uint16(owner)),slot=Unit::GIDtoID(Uint16(owner));
+        const Unit* unit=team<Team::MAX_COUNT && game->teams[team]?game->teams[team]->myUnits[slot]:nullptr;
+        if(!unit || unit->scriptIdentity!=Uint32(owner>>16) || value.replacement>=ClaimRecovery::CacheEntries ||
+            value.attempts>ClaimRecovery::MaxAttempts || (!value.windowKnown && value.attempts) ||
+            (value.pinnedAccess!=ClaimRecovery::NoTile && value.pinnedAccess>=cellCount()) ||
+            value.nextProbe>Pattern::Entries.size() || value.movement>=MOVEMENT_CLASS_COUNT || value.material>=MaterialSlotCount)
+            throw std::runtime_error("Invalid recovery owner or context");
+        for(const auto& e:value.entries)if(e.ttl>ClaimRecovery::TtlTicks || (e.access!=ClaimRecovery::NoTile && e.access>=cellCount()))
+            throw std::runtime_error("Invalid recovery exclusion");
+        if(!materialClaimRoutes->recovery.emplace(owner,value).second)throw std::runtime_error("Duplicate recovery owner");
     }
+    stream->readLeaveSection();
     if (materialClaimRoutes) {
         const auto expected = std::count_if(materialClaimRoutes->states.begin(), materialClaimRoutes->states.end(), [](const auto& entry) { return entry.second.pending; });
         if (std::size_t(expected) != pending.size()) throw std::runtime_error("Missing pending active route");
@@ -646,85 +487,42 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
     stream->readLeaveSection();
 }
 
-Uint32 Map::activeClaimRouteChecksum(bool includePending) const
+// One layout for the deep (Map::checkSum) and the routine snapshot claim
+// checksums. The deep form hashes every route cell and, when asked, the
+// pending outputs; the per-tick snapshot form hashes each route's cached digest.
+Uint32 Map::claimRuntimeChecksum(bool deep, bool includePending) const
 {
-    const auto pending = includePending && materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<ResourceClaims::RoutePublication>{};
+    const auto pending = deep && includePending && materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<ResourceClaims::RoutePublication>{};
     Uint32 hash = 2166136261u;
     const auto mix = [&](Uint64 value) { hash = (hash ^ Uint32(value)) * 16777619u; hash = (hash ^ Uint32(value >> 32)) * 16777619u; };
-    mix(unsigned(activeClaimPolicy));
-    if (activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental)
-        for (auto byte:materialClaimConfigurationDigest) mix(byte);
-    mix(activeClaimRules.has_value());
-    if (activeClaimRules) for (auto rule : *activeClaimRules) mix(rule);
-    mix(materialClaimRoutes ? materialClaimRoutes->pipeline.requestSequence() : 0);
-    const auto sealed = materialClaimRoutes ? materialClaimRoutes->pipeline.sealedSubmissionTick() : std::optional<Uint64>{};
-    mix(sealed.has_value()); mix(sealed.value_or(0));
-    mix(materialClaimRoutes ? materialClaimRoutes->states.size() : 0);
     const auto route = [&](const ResourceClaims::Route& value) {
         mix(unsigned(value.status)); mix(value.cost); mix(value.expansions); mix(value.cells.size());
         for (auto cell : value.cells) mix(cell);
     };
-    if (materialClaimRoutes) {
-        for (const auto& [owner, state] : materialClaimRoutes->states) {
-            mix(owner); mix(state.identity.task); mix(state.identity.request); mix(state.start); mix(state.target);
-            mix(state.cursor); mix(state.due); mix(state.pending); route(state.route);
-            if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {
-                mix(state.pathTarget);mix(state.pathRadius);mix(state.pendingStart);mix(state.pendingTarget);mix(state.pendingRadius);
-                mix(state.lastRefreshOrdinal);mix(state.reanchor);mix(state.followingGradient);mix(state.probeFinished);
-                if(materialClaimPolicyConfig().trafficWaitLimit)mix(state.trafficWaits);
-            }
-        }
-        for (const auto& output : pending) {
-            mix(output.identity.unit); mix(output.identity.task); mix(output.identity.request); mix(output.due); route(output.route);
-            if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {mix(output.start);mix(output.target);}
-        }
-    }
-    if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialClaimPolicyConfig().usesRecovery()) {
-        mix(ResourceClaims::ClaimRecovery::SourceVersion);
-        mix(materialClaimRoutes?materialClaimRoutes->recovery.size():0);
-        if(materialClaimRoutes) {
-            for(const auto& [owner,value]:materialClaimRoutes->recovery) {
-                mix(owner);recoveryValues(value,[&](auto field){mix(field);});
-            }
-            for(const auto& [owner,state]:materialClaimRoutes->states)mix(state.awaitingAdmission);
-        }
-    }
-    return hash;
-}
-
-Uint32 Map::activeClaimSnapshotChecksum() const
-{
-    Uint32 hash = 2166136261u;
-    const auto mix = [&](Uint64 value) { hash = (hash ^ Uint32(value)) * 16777619u; hash = (hash ^ Uint32(value >> 32)) * 16777619u; };
-    mix(unsigned(activeClaimPolicy));
-    if (activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental)
-        for (auto byte:materialClaimConfigurationDigest) mix(byte);
     mix(activeClaimRules.has_value());
     if (activeClaimRules) for (auto rule : *activeClaimRules) mix(rule);
     mix(materialClaimRoutes ? materialClaimRoutes->pipeline.requestSequence() : 0);
     const auto sealed = materialClaimRoutes ? materialClaimRoutes->pipeline.sealedSubmissionTick() : std::optional<Uint64>{};
     mix(sealed.has_value()); mix(sealed.value_or(0));
     mix(materialClaimRoutes ? materialClaimRoutes->states.size() : 0);
-    if (materialClaimRoutes) {
-        for (const auto& [owner, state] : materialClaimRoutes->states) {
-            mix(owner); mix(state.identity.task); mix(state.identity.request); mix(state.start); mix(state.target);
-            mix(state.cursor); mix(state.due); mix(state.pending); mix(state.routeDigest);
-            if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {
-                mix(state.pathTarget);mix(state.pathRadius);mix(state.pendingStart);mix(state.pendingTarget);mix(state.pendingRadius);
-                mix(state.lastRefreshOrdinal);mix(state.reanchor);mix(state.followingGradient);mix(state.probeFinished);
-                if(materialClaimPolicyConfig().trafficWaitLimit)mix(state.trafficWaits);
-            }
-        }
+    if (!materialClaimRoutes) { mix(0); return hash; }
+    for (const auto& [owner, state] : materialClaimRoutes->states) {
+        mix(owner); mix(state.identity.task); mix(state.identity.request); mix(state.start); mix(state.target);
+        mix(state.cursor); mix(state.due); mix(state.pending);
+        if (deep) route(state.route); else mix(state.routeDigest);
+        mix(state.reanchor); mix(state.trafficWaits);
     }
-    if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialClaimPolicyConfig().usesRecovery()) {
-        mix(ResourceClaims::ClaimRecovery::SourceVersion);
-        mix(materialClaimRoutes?materialClaimRoutes->recovery.size():0);
-        if(materialClaimRoutes) {
-            for(const auto& [owner,value]:materialClaimRoutes->recovery) {
-                mix(owner);recoveryValues(value,[&](auto field){mix(field);});
-            }
-            for(const auto& [owner,state]:materialClaimRoutes->states)mix(state.awaitingAdmission);
-        }
+    for (const auto& output : pending) {
+        mix(output.identity.unit); mix(output.identity.task); mix(output.identity.request); mix(output.due);
+        route(output.route); mix(output.start); mix(output.target);
     }
+    mix(materialClaimRoutes->recovery.size());
+    for (const auto& [owner,value]:materialClaimRoutes->recovery) {
+        mix(owner); recoveryValues(value,[&](auto field){mix(field);});
+    }
+    for (const auto& [owner,state]:materialClaimRoutes->states) mix(state.awaitingAdmission);
     return hash;
 }
+
+Uint32 Map::activeClaimRouteChecksum(bool includePending) const { return claimRuntimeChecksum(true, includePending); }
+Uint32 Map::activeClaimSnapshotChecksum() const { return claimRuntimeChecksum(false, false); }

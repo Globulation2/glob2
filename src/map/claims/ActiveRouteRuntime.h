@@ -14,6 +14,8 @@ struct ActiveRouteRuntime
     struct State
     {
         RouteIdentity identity;
+        // start: first cell of the published route; target: the claimed access.
+        // cursor: index of the next route cell to enter.
         std::uint32_t start = 0, target = 0, cursor = 0;
         std::uint64_t due = 0;
         bool pending = true;
@@ -25,16 +27,15 @@ struct ActiveRouteRuntime
             mix(unsigned(route.status));mix(route.cost);mix(route.expansions);mix(route.cells.size());
             for(auto cell:route.cells)mix(cell);
         }
-        // Format 196 experiment only: target above remains the reservation access.
-        std::uint32_t pathTarget = 0, pendingStart = 0, pendingTarget = 0;
-        unsigned pathRadius = 1, pendingRadius = 1;
-        std::uint64_t lastRefreshOrdinal = 0;
-        bool reanchor = false, followingGradient = false, probeFinished = false;
+        // A newly published route was planned from where the worker stood when
+        // it was requested; the next step first rejoins it from the worker's
+        // current cell (the worker kept moving on the gradient meanwhile).
+        bool reanchor = false;
+        // No route admission was available (pipeline full or recovery
+        // backoff); the request is retried on the next decision.
         bool awaitingAdmission = false;
-        // Consecutive traffic waits; saved and checksummed only when the
-        // policy sets traffic_wait_limit, so it is zero otherwise.
+        // Consecutive decisions spent waiting behind traffic on this route.
         std::uint32_t trafficWaits = 0;
-
     };
     RoutePipeline pipeline;
     std::map<Owner, State> states;

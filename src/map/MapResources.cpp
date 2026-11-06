@@ -10,10 +10,8 @@
 #include "Building.h"
 #include "Team.h"
 #include "Unit.h"
-#include "claims/ResourceClaimProbe.h"
 #include "claims/ActiveRouteRuntime.h"
-#include "claims/ClaimPolicyConfig.h"
-#include "online/Sha256.h"
+#include "claims/ClaimPolicy.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "TerrainResourceProperties.h"
@@ -24,7 +22,6 @@
 #include <map>
 #include <cstdlib>
 #include <limits>
-#include <chrono>
 
 
 
@@ -60,7 +57,7 @@ bool Map::isFarmableResourceByIndex(int resourceType) const
     return MapState::isFarmableResource(liveCells,resourceType);
 }
 
-std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner)
+std::optional<size_t> Map::pickFarmTileWith(std::vector<Uint32>& stamps, std::vector<size_t>& queue, Uint32& generation, int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner) const
 {
 	if (resourceType < 0 || resourceType >= int(MaterialCount)) return std::nullopt;
 
@@ -77,35 +74,35 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 
 	// One stamp buffer per map, bumped instead of cleared. Wrapping the counter
 	// would make stale stamps read as visited, so the wrap resets the buffer.
-	if (farmFloodStamps.size() != size)
+	if (stamps.size() != size)
 	{
-		farmFloodStamps.assign(size, 0);
-		farmFloodGeneration = 0;
+		stamps.assign(size, 0);
+		generation = 0;
 	}
-	if (++farmFloodGeneration == 0)
+	if (++generation == 0)
 	{
-		std::fill(farmFloodStamps.begin(), farmFloodStamps.end(), 0);
-		farmFloodGeneration = 1;
+		std::fill(stamps.begin(), stamps.end(), 0);
+		generation = 1;
 	}
 
 	// Flood the field from every tile of the unit's own 3x3, breadth-first over
 	// the 8 neighbours. The stamps keep every tile on the queue once, including
 	// the 3x3 seeds, which a map narrow enough to wrap can contribute twice.
-	std::vector<size_t>& frontier = farmFloodQueue;
+	std::vector<size_t>& frontier = queue;
 	frontier.clear();
-    // Shadow travel observations enter the projected field at its target tile;
-    // real harvesting still starts from all touched tiles around the unit.
+    // A claim resolves a pooled field from its access tile; real harvesting
+    // starts from all touched tiles around the unit.
     if (entry && inField(*entry)) {
-        farmFloodStamps[*entry]=farmFloodGeneration;
+        stamps[*entry]=generation;
         frontier.push_back(*entry);
     }
 	for (int tdy = -1; !entry && tdy <= 1; tdy++)
 		for (int tdx = -1; tdx <= 1; tdx++)
 		{
 			const size_t index = coordToIndex(x + tdx, y + tdy);
-			if (farmFloodStamps[index] == farmFloodGeneration || !inField(index))
+			if (stamps[index] == generation || !inField(index))
 				continue;
-			farmFloodStamps[index] = farmFloodGeneration;
+			stamps[index] = generation;
 			frontier.push_back(index);
 		}
 	if (frontier.empty())
@@ -155,15 +152,23 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 				if (tdx == 0 && tdy == 0)
 					continue;
 				const size_t neighbour = coordToIndex(tx + tdx, ty + tdy);
-				if (farmFloodStamps[neighbour] == farmFloodGeneration || !inField(neighbour))
+				if (stamps[neighbour] == generation || !inField(neighbour))
 					continue;
-				farmFloodStamps[neighbour] = farmFloodGeneration;
+				stamps[neighbour] = generation;
 				frontier.push_back(neighbour);
 			}
 	}
 	if (bestAmount == 0)
 		return std::nullopt;
 	return best;
+}
+std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner)
+{
+	return pickFarmTileWith(farmFloodStamps, farmFloodQueue, farmFloodGeneration, x, y, resourceType, teamMask, entry, availableOwner);
+}
+std::optional<size_t> Map::pickFarmHarvestTileSlotIn(FarmFloodScratch& scratch, int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner) const
+{
+	return pickFarmTileWith(scratch.stamps, scratch.queue, scratch.generation, x, y, resourceType, teamMask, entry, availableOwner);
 }
 
 bool Map::takeHarvest(int x,int y,int dx,int dy,MaterialId materialId,Uint32 teamMask)
@@ -500,70 +505,9 @@ template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) co
 template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
 
 
-void Map::reconcileMaterialClaims()
-{
-    if (game && materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
-}
-
-void Map::finishMaterialClaimProbe()
-{
-    if (materialClaimProbe) {
-        if(game)materialClaimProbe->publish(game->stepCounter);
-        if(materialClaimRoutes)materialClaimProbe->routeWork(materialClaimRoutes->pipeline.takeDiagnostics());
-        materialClaimProbe->finish();
-    }
-}
-
-std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material,Uint32 teamMask,std::optional<size_t> entry)
-{
-    ++materialClaimTelemetry.farmQueries;
-    const std::array<Uint64,4> epoch{resourceChanges.generation,areaChanges.generation,
-        game?game->gameHeader.observationRevision():0,identity()};
-    if (epoch!=materialClaimFarmEpoch) { materialClaimFarmCache.clear(); materialClaimFarmEpoch=epoch; }
-    const std::array<Uint32,5> key{teamMask,Uint32(material),Uint32(x&wMask),Uint32(y&hMask),entry?Uint32(*entry):UINT32_MAX};
-    const auto found=materialClaimFarmCache.find(key);
-    if (found!=materialClaimFarmCache.end()) { ++materialClaimTelemetry.farmCacheHits; return found->second; }
-    const auto result=pickFarmHarvestTileSlot(x,y,material,teamMask,entry);
-    materialClaimTelemetry.farmFloodCells+=farmFloodQueue.size();
-    if (materialClaimFarmCache.size()>=4096) materialClaimFarmCache.clear();
-    materialClaimFarmCache.emplace(key,result);
-    return result;
-}
-
-void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
-{
-    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && policy!=ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1)
-        throw std::invalid_argument("unknown active claim research policy");
-    if(policy==activeClaimPolicy)return;
-    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && !materialDestinationsEnabled())
-        throw std::invalid_argument("active claims require material destinations");
-    if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
-    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
-        unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Configuration);unit->materialClaimTask=0;unit->materialClaimPolicyState={};
-    }
-    materialClaimRoutes.reset();activeClaimRules.reset();
-    materialClaimConfiguration.reset();materialClaimConfigurationDigest={};
-    activeClaimPolicy=policy;
-    materialClaims.reset(cellCount());claimChanges.markAll();
-    checkActiveClaimRules();
-    if(game)game->invalidateObservation();
-}
-
-const ResourceClaims::ClaimPolicyConfig& Map::materialClaimPolicyConfig() const
-{
-    static const ResourceClaims::ClaimPolicyConfig prototype;
-    return materialClaimConfiguration?*materialClaimConfiguration:prototype;
-}
-
-bool Map::claimContentionEnabled() const
-{
-    return activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialClaimConfiguration
-        && materialClaimConfiguration->contentionTriggered();
-}
-
 void Map::prepareClaimContention(int team)
 {
-    if(claimContentionEnabled() && game)claimContention.rebuild(*this,team,game->stepCounter);
+    if(activeClaimsEnabled() && game)claimContention.rebuild(*this,team,game->stepCounter);
 }
 
 unsigned Map::claimContentionOthers(const Unit& unit,int material,int x,int y)
@@ -571,78 +515,54 @@ unsigned Map::claimContentionOthers(const Unit& unit,int material,int x,int y)
     const int team=unit.owner->teamNumber;
     const Uint64 tick=game?game->stepCounter:0;
     if(!claimContention.current(team,tick))claimContention.rebuild(*this,team,tick);
-    return claimContention.others(*this,unit,material,x,y,materialClaimPolicyConfig().contentionRadius);
+    return claimContention.others(*this,unit,material,x,y,ResourceClaims::Policy::ContentionRadius);
 }
 
-Uint32 Map::materialClaimLimitPermille() const
-{
-    static_assert(ResourceClaims::ClaimPolicyConfig::ExactClaimOversubscriptionPermille==ResourceClaims::Ledger::ExactLimitPermille);
-    static_assert(ResourceClaims::ClaimPolicyConfig::UnlimitedClaimOversubscription==ResourceClaims::Ledger::UnlimitedLimitPermille);
-    return materialClaimConfiguration?materialClaimConfiguration->claimOversubscriptionPermille:ResourceClaims::Ledger::ExactLimitPermille;
-}
-
-void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
-{
-    if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
-    installMaterialClaimPolicyConfig(std::move(config));
-}
-
-void Map::installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
-{
-    config.validate();
-    if(!materialDestinationsEnabled())
-        throw std::invalid_argument("experimental claims require material destinations");
-    const auto digest=Online::Sha256::digest(config.canonicalJson());
-    auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
-    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
-        unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Configuration);unit->materialClaimTask=0;unit->materialClaimPolicyState={};
-    }
-    materialClaimRoutes.reset();activeClaimRules.reset();
-    materialClaimConfiguration=std::move(frozen);materialClaimConfigurationDigest=digest;
-    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Experimental;
-    materialClaims.reset(cellCount());claimChanges.markAll();checkActiveClaimRules();
-    if(game)game->invalidateObservation();
-}
-
-void Map::applyShippedResourceClaims()
+void Map::enableResourceClaims()
 {
     // A map exported from a running match keeps its tick but carries no claim
     // or route state, so loading it is still new-game setup.
     setMaterialDestinationsEnabled(true);
-    installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::shippedDefault());
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    resourceClaimsEnabled=true;
+    materialClaims.reset(cellCount());checkActiveClaimRules();
+    if(game)game->invalidateObservation();
 }
 
 void Map::disableResourceClaims()
 {
-    setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::Disabled);
+    if(game && game->stepCounter && resourceClaimsEnabled)throw std::logic_error("resource claims can only be disabled at new-game setup");
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    resourceClaimsEnabled=false;
+    materialClaims.reset(cellCount());
     setMaterialDestinationsEnabled(false);
-}
-
-bool Map::shippedResourceClaimsActive() const
-{
-    return activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialDestinationsEnabled()
-        && materialClaimPolicyConfig()==ResourceClaims::ClaimPolicyConfig::shippedDefault();
+    if(game)game->invalidateObservation();
 }
 
 void Map::rebuildActiveMaterialClaims()
 {
     const std::array<Uint64,3> currentRules{Uint64(farmAreasEnabled()),Uint64(game && game->gameHeader.isResourceGrowthDisabled()),resourceRegistry().checksum()};
     const bool rulesMismatch=activeClaimRules && *activeClaimRules!=currentRules;
-    materialClaims.reset(cellCount());claimChanges.markAll();
+    materialClaims.reset(cellCount());
     for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         if(!activeClaimsEnabled() && (unit->activeMaterialClaim || unit->materialClaimTask))
             throw std::runtime_error("disabled active claims contain unit state");
         const auto& cadence=unit->materialClaimPolicyState;
-        if(materialClaimPolicy()!=ResourceClaims::ActiveClaimPolicy::Experimental) {
-            if(cadence!=ResourceClaims::MaterialClaimPolicyState{})throw std::runtime_error("nonexperimental claims contain policy state");
-        } else if(cadence.lastGoalAttempt>cadence.decisionOrdinal || (cadence.probe!=UINT32_MAX && cadence.probe>=cellCount()))
-            throw std::runtime_error("invalid saved material claim policy state");
+        if(!activeClaimsEnabled() && cadence!=ResourceClaims::MaterialClaimPolicyState{})
+            throw std::runtime_error("disabled claims contain policy state");
+        if(cadence.lastGoalAttempt>cadence.decisionOrdinal)throw std::runtime_error("invalid saved material claim policy state");
         if(unit->activeMaterialClaim) {
             const auto& saved=*unit->activeMaterialClaim;
             if(saved.source>=cellCount() || saved.access>=cellCount() || !validMaterial(saved.material) || !unit->materialClaimTask)
                 throw std::runtime_error("invalid saved active claim structure");
             if(rulesMismatch) {
-                observeMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),saved);
+                recordMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),saved);
                 continue; // Preserve the scheduled rule-change invalidation for next publication.
             }
             if(!resourceRegistry().valid(static_cast<ResourceId>(saved.resource))
@@ -667,8 +587,6 @@ void Map::rebuildActiveMaterialClaims()
         if(!unit || ResourceClaims::unitOwner(gid,unit->scriptIdentity)!=owner || !unit->activeMaterialClaim
             || unit->materialClaimTask!=state.identity.task || unit->activeMaterialClaim->access!=state.target)
             throw std::runtime_error("saved claim route does not match unit claim");
-        if(materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental && state.lastRefreshOrdinal>unit->materialClaimPolicyState.decisionOrdinal)
-            throw std::runtime_error("saved route refresh exceeds unit decision ordinal");
     }
 
 }

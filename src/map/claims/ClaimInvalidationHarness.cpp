@@ -6,10 +6,6 @@
 #include <nlohmann/json.hpp>
 
 namespace {
-void enable(Map& map) {
-    map.setMaterialDestinationsEnabled(true);
-    map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
-}
 void assign(Unit& unit,Building& building,Map& map,int sx,int sy,int ax,int ay) {
     unit.attachedBuilding=&building;unit.activity=Unit::ACT_FILLING;
     unit.displacement=Unit::DIS_GOING_TO_RESOURCE;unit.destinationPurpose=WHEAT;unit.medical=Unit::MED_FREE;
@@ -22,14 +18,14 @@ void assign(Unit& unit,Building& building,Map& map,int sx,int sy,int ax,int ay) 
 }
 struct Detach {
     std::vector<Unit*> units;
-    ~Detach(){for(auto* unit:units){unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit->attachedBuilding=nullptr;}}
+    ~Detach(){for(auto* unit:units){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}}
 };
 }
 TEST_SUITE("ClaimInvalidation") {
 TEST_CASE("stock decreases retain valid reservations and evict only deterministic excess") {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-    auto& map=world.game.map;enable(map);
+    auto& map=world.game.map;map.enableResourceClaims();
     auto* building=world.addBuilding("inn",2,2);
     map.setResourceByIndex(12,12,WHEAT,1);map.setMaterialAmount(map.coordToIndex(12,12),MaterialId::Food,5);
     Detach cleanup;
@@ -50,7 +46,7 @@ TEST_CASE("removing a farm bridge releases remote disconnected claims but preser
     glob2test::HeadlessGlobals globals;
     glob2test::GameOptions options{.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true};
     options.experiments.set(ExperimentId::FarmAreas,true);
-    glob2test::HeadlessGame world(options);auto& map=world.game.map;enable(map);
+    glob2test::HeadlessGame world(options);auto& map=world.game.map;map.enableResourceClaims();
     auto* building=world.addBuilding("inn",2,2);
     for(int x=8;x<=12;++x){map.setResourceByIndex(x,12,WHEAT,1);map.setMaterialAmount(map.coordToIndex(x,12),MaterialId::Food,5);map.addFarmArea(x,12,0);}
     auto* remote=world.addUnit(WORKER,5,8);auto* local=world.addUnit(WORKER,6,8);Detach cleanup{{remote,local}};
@@ -65,7 +61,7 @@ TEST_CASE("pooled physical source paint preserves ownership while forbidden acce
     glob2test::HeadlessGlobals globals;
     glob2test::GameOptions options{.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true};
     options.experiments.set(ExperimentId::FarmAreas,true);
-    glob2test::HeadlessGame world(options);auto& map=world.game.map;enable(map);
+    glob2test::HeadlessGame world(options);auto& map=world.game.map;map.enableResourceClaims();
     auto* building=world.addBuilding("inn",2,2);
     for(int x=8;x<=12;++x){map.setResourceByIndex(x,12,WHEAT,1);map.setMaterialAmount(map.coordToIndex(x,12),MaterialId::Food,5);map.addFarmArea(x,12,0);}
     auto* unit=world.addUnit(WORKER,5,8);Detach cleanup{{unit}};
@@ -87,7 +83,7 @@ TEST_CASE("pooled source fog loss preserves ownership until access visibility ex
     glob2test::HeadlessGame world(options);auto& map=world.game.map;
     auto definitions=nlohmann::json::parse(map.resourceRegistry().serialize());
     definitions["resources"][WHEAT]["properties"]["visibleToHarvest"]=true;
-    map.installResourceDefinitions(definitions.dump());enable(map);
+    map.installResourceDefinitions(definitions.dump());map.enableResourceClaims();
     REQUIRE(map.resourcePropertiesByIndex(WHEAT).visibleToHarvest);
     auto* building=world.addBuilding("inn",2,2);
     for(int x=8;x<=10;++x){
@@ -109,12 +105,12 @@ TEST_CASE("pooled source fog loss preserves ownership until access visibility ex
 TEST_CASE("forbidden endpoints and changed global harvest rules invalidate claims without touching replacement owners") {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-    auto& map=world.game.map;enable(map);auto* building=world.addBuilding("inn",2,2);
+    auto& map=world.game.map;map.enableResourceClaims();auto* building=world.addBuilding("inn",2,2);
     map.setResourceByIndex(12,12,WHEAT,1);map.setMaterialAmount(map.coordToIndex(12,12),MaterialId::Food,5);
     auto* unit=world.addUnit(WORKER,5,8);Detach cleanup{{unit}};
     assign(*unit,*building,map,12,12,12,12);
     const auto stale=ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity+1);
-    map.observeMaterialClaim(stale,*unit->activeMaterialClaim);
+    map.recordMaterialClaim(stale,*unit->activeMaterialClaim);
     map.invalidateMaterialClaimOwners({stale});
     CHECK(unit->activeMaterialClaim.has_value());
     map.addForbidden(12,12,0);CHECK_FALSE(unit->activeMaterialClaim);

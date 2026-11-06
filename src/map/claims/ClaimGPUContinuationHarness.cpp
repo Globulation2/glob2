@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Temporary bounded whole-game device experiment. Never substitutes a fake device.
+// Opt-in whole-game device check: a frozen claims save runs identically with
+// material gradients published by a real GPU backend and by the CPU. Never
+// substitutes a fake device.
 #include "EngineFixtures.h"
 #include "GradientRuntime.h"
 #include "field/GradientAccelerators.h"
-#include "map/claims/ClaimPolicyConfig.h"
-#include "map/claims/ResourceClaimProbe.h"
-#include <nlohmann/json.hpp>
-#include <zlib.h>
-#include <sstream>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <atomic>
@@ -53,18 +50,8 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
         REQUIRE(game.mapHeader.getNumberOfTeams()==2);
         REQUIRE(map.cellCount()==4096);
         REQUIRE(map.materialDestinationsEnabled());
-        REQUIRE(map.materialClaimPolicyConfig().usePrimaryGradient);
+        REQUIRE(map.activeClaimsEnabled());
         REQUIRE_FALSE(game.gameHeader.isResourceGrowthDisabled());
-        std::shared_ptr<ResourceClaims::Probe> probe;
-        std::string probePath;
-        if(std::getenv("GLOB2_CLAIM_GPU_REQUIRE_RAW")) {
-            REQUIRE(map.materialClaimPolicyConfig().sourceVersion==4);
-            REQUIRE(map.materialClaimPolicyConfig().directResourceProbes);
-            ResourceClaims::Probe::Config options;options.sampleEvery=UINT32_MAX;options.maxSamples=1;
-            probePath=(glob2test::artifactDir()/((mode==Backend::CPU?std::string("cpu"):name)+"-raw.jsonl.gz")).string();
-            probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),probePath,options);
-            map.setMaterialClaimProbe(probe);
-        }
         auto& rt=*map.gradientRuntime;
         struct Counts {
             std::mutex mutex;
@@ -135,20 +122,6 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
         REQUIRE(output.good());
         CHECK(claimedTicks>0);
         CHECK(stockHash()!=initialStock);
-        if(probe) {
-            map.finishMaterialClaimProbe();
-            gzFile file=gzopen(probePath.c_str(),"rb");REQUIRE(file);
-            std::string text;char buffer[4096];int count;
-            while((count=gzread(file,buffer,sizeof(buffer)))>0) {
-                text.append(buffer,count);REQUIRE(text.size()<=4*1024*1024);
-            }
-            REQUIRE(count==0);REQUIRE(gzclose(file)==Z_OK);
-            std::istringstream lines(text);std::string line;nlohmann::json footer;
-            while(std::getline(lines,line))footer=nlohmann::json::parse(line);
-            Uint64 checks=0,improvements=0,finalSelections=0;
-            for(const auto& row:footer.at("raw_resource_probes").at("material_counters")) {checks+=row.at(3).get<Uint64>();improvements+=row.at(4).get<Uint64>();finalSelections+=row.at(5).get<Uint64>();}
-            REQUIRE(checks>0);metadata<<"raw_unique_candidate_checks="<<checks<<"\nraw_provisional_improvements="<<improvements<<"\nraw_final_selections="<<finalSelections<<'\n';
-        }
         metadata<<"backend="<<(mode==Backend::CPU?"cpu":name)<<" claimed_ticks="<<claimedTicks
                 <<" initial_stock_hash="<<initialStock<<" final_stock_hash="<<stockHash()<<'\n';
         if(mode!=Backend::CPU) {
