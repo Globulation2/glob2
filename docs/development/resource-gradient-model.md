@@ -23,10 +23,10 @@ cells remain available until replacement publication, normally eight ticks after
 capture. Replacements of an existing shared field have a 32-tick minimum
 between admissions, including reactive, history and safety refreshes. First-use
 initialization of a missing field remains available immediately. A demanded
-field is eligible for a safety refresh when its serving capture reaches 1,024
+field is eligible for a safety refresh when its serving capture reaches 256
 ticks, even if its predicted benefit is below threshold. Admission remains
 subject to executor capacity and normal publication delay, so serving age can
-exceed 1,024 while a replacement is pending. Idle fields do not refresh solely
+exceed 256 while a replacement is pending. Idle fields do not refresh solely
 because they aged. Demand is registered before cached-unreachable returns, so a
 new source or opened route can recover. Team aliveness is not a substitute for actual demand.
 The minimum applies separately to each family/team/movement/material identity.
@@ -98,7 +98,7 @@ as a positive signed 64-bit integer. Every pool must agree, and preparation
 records that attested value as actual collection policy. Fresh bundles must also
 attest matching `build_options.refresh_age_cap_ticks` and
 `build_options.refresh_minimum_interval_ticks` in every pool. The current cap
-is `1024` and the current minimum is `32`; the correctness floor is eight ticks. Missing or contradictory attestations fail rather
+is `256` and the current minimum is `32`; the correctness floor is eight ticks. Missing or contradictory attestations fail rather
 than assuming a default. Frozen historical exports remain
 readable and their bytes are not amended.
 Hash-only qualification receipts accept only the canonical declaration or the
@@ -106,7 +106,7 @@ explicitly reconstructed historical 128000 declaration.
 
 An untrained header is an explicit placeholder, not a mapped resource-only model.
 Ordinary execution retains cold/reactive/history initialization and the demanded
-1,024-tick safety refresh without pretending that placeholder predictions
+256-tick safety refresh without pretending that placeholder predictions
 establish adaptive quality. Collection bootstrapping requires explicit positive fixed intervals.
 Interval 0 is available only with a trained generic model. Engine promotion still
 requires total-compute and per-family quality evidence.
@@ -280,7 +280,7 @@ load. Keep diagnostic quality repeats separate from production timings.
 
 Review age/demand joint support explicitly. Historical uncapped cohorts retain
 their original policy metadata; their H128 labels remain compatible with a
-changed deployment cap. The 1,024-tick demanded safety refresh is an explicit
+changed deployment cap. The 256-tick demanded safety refresh is an explicit
 policy, not a learned prediction or a guarantee of publication by that age.
 
 Scheduling/state changes require save/load, thread/platform checksum and

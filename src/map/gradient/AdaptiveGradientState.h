@@ -20,7 +20,7 @@ struct AdaptiveGradientState
 {
     using Counts=AdaptiveGradientFeatures::Counts;
     using Inputs=AdaptiveGradientFeatures::Base;
-    static constexpr unsigned MinimumInterval=32, MaximumAge=1024, QueryHistoryTicks=128;
+    static constexpr unsigned MinimumInterval=32, MaximumAge=256, QueryHistoryTicks=128;
     // The generated deployment model owns its benefit cutoff. Define this in
     // the implementation so coefficient updates do not widen header rebuilds.
     static const std::int64_t Threshold;

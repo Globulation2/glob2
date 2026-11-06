@@ -19,7 +19,7 @@ class ExplorationIntervalTests(unittest.TestCase):
   with self.assertRaises(ValueError):exploration_intervals(None,65537)
 
 class ModelThresholdPolicyTests(unittest.TestCase):
- def bundle(self,value,cap=1024,minimum=32):
+ def bundle(self,value,cap=256,minimum=32):
   return {'build_options':{'refresh_threshold_milli':value,'refresh_age_cap_ticks':cap,'refresh_minimum_interval_ticks':minimum}}
  def test_default_matches_selected_a24_with_demanded_age_cap(self):
   self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],24000)
@@ -27,7 +27,7 @@ class ModelThresholdPolicyTests(unittest.TestCase):
   self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],32)
   self.assertEqual(ADAPTIVE_POLICY['publication_delay'],8)
   self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
-  self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024)
+  self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],256)
  def test_qualified_model_threshold_overrides_current_tool_default(self):
   before=copy.deepcopy(ADAPTIVE_POLICY)
   self.assertEqual(policy_from_bundles([self.bundle(16000),self.bundle(16000)])['threshold_milli'],16000)

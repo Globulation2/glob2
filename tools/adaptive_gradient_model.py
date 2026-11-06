@@ -11,7 +11,7 @@ from tools import resource_gradient_model as integer
 from tools.resource_gradient_dataset import registered_split
 HEADS=integer.HEADS
 
-DEPLOYMENT_AGE_CAP_TICKS = 1024
+DEPLOYMENT_AGE_CAP_TICKS = 256
 DEPLOYMENT_MINIMUM_INTERVAL_TICKS = d.DEFAULT_MINIMUM_INTERVAL_TICKS
 
 

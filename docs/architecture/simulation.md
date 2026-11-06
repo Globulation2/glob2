@@ -538,7 +538,7 @@ checksum adapter remains available for diagnostic fixtures.
   units over capture-relative offsets 8..127. Warm admissions for each exact
   field are at least 32 ticks apart, including reactive recovery; publication
   remains eight ticks after capture. Cold initialization remains immediate. A demanded field whose serving
-  capture reaches 1,024 ticks is eligible for a safety refresh, subject to
+  capture reaches 256 ticks is eligible for a safety refresh, subject to
   capacity and publication delay; idle fields remain idle. There is no
   round-robin filler or global one-field-per-tick quota. Cold initialization and
   explicit reactive recovery remain available without a model benefit prediction.

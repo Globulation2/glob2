@@ -23,10 +23,10 @@ TEST_CASE("logical keys distinguish all families teams classes and materials") {
 TEST_CASE("idle fields submit nothing and demanded fields below the safety cap require model benefit") {
     AdaptiveGradientState::Field field;field.serving.known=true;
     unsigned predictions=0;const auto low=[&](const auto&,const auto&){++predictions;return 0;};
-    CHECK_FALSE(field.evaluate(1000,{},true,low).requested());CHECK(predictions==0);
+    CHECK_FALSE(field.evaluate(AdaptiveGradientState::MaximumAge-1,{},true,low).requested());CHECK(predictions==0);
     field.queried(32);CHECK_FALSE(field.evaluate(32,{},true,low).requested());CHECK(predictions==1);
-    CHECK_FALSE(field.evaluate(1000,{},true,low).requested());CHECK(predictions==1);
-    field.queried(1000);CHECK(field.evaluate(1000,{},true,low).requested()==false);
+    CHECK_FALSE(field.evaluate(AdaptiveGradientState::MaximumAge-1,{},true,low).requested());CHECK(predictions==1);
+    field.queried(AdaptiveGradientState::MaximumAge-1);CHECK(field.evaluate(AdaptiveGradientState::MaximumAge-1,{},true,low).requested()==false);
 }
 TEST_CASE("cold history reactive model and deferred admissions obey one association and spacing") {
     using State=AdaptiveGradientState;using Reason=State::Reason;
@@ -65,7 +65,7 @@ TEST_CASE("all warm reasons including retained old-save work wait32 admission ti
     State::Field cold;cold.submitted=100;cold.queried(101);
     CHECK(cold.evaluate(101,{},false,{}).reason==Reason::Cold);
 }
-TEST_CASE("demanded capture age is bounded at1024 without aging idle fields into work") {
+TEST_CASE("demanded capture age is bounded at256 without aging idle fields into work") {
     using State=AdaptiveGradientState;using Reason=State::Reason;
     for(unsigned captureTick:{100u,UINT32_MAX-500}) {
         State::Field f;f.serving=f.capture(captureTick,{},3);f.submitted=captureTick+4;
@@ -87,12 +87,13 @@ TEST_CASE("age cap uses the serving capture and retains association minimum and 
     const auto low=[](const auto&,const auto&){return 0;};
     State::Field f;const auto captured=f.capture(100,{},3);
     f.admitted(104);f.published(captured); // Publication must retain capture100.
-    f.queried(1123);CHECK_FALSE(f.evaluate(1123,{},true,low).requested());
-    f.queried(1124);CHECK(f.evaluate(1124,{},true,low).reason==Reason::AgeCap);
+    const unsigned cap=100+State::MaximumAge;
+    f.queried(cap-1);CHECK_FALSE(f.evaluate(cap-1,{},true,low).requested());
+    f.queried(cap);CHECK(f.evaluate(cap,{},true,low).reason==Reason::AgeCap);
     CHECK(f.serving.tick==100);CHECK(f.submitted==104);
-    f.queued=true;CHECK_FALSE(f.evaluate(1125,{},true,low).requested());f.queued=false;
-    f.inflight=true;f.queried(1125);CHECK_FALSE(f.evaluate(1125,{},true,low).requested());f.inflight=false;
-    f.submitted=1120;const auto boundary=1120+State::MinimumInterval;f.queried(boundary-1);CHECK_FALSE(f.evaluate(boundary-1,{},true,low).requested());
+    f.queued=true;CHECK_FALSE(f.evaluate(cap+1,{},true,low).requested());f.queued=false;
+    f.inflight=true;f.queried(cap+1);CHECK_FALSE(f.evaluate(cap+1,{},true,low).requested());f.inflight=false;
+    f.submitted=cap-4;const auto boundary=f.submitted+State::MinimumInterval;f.queried(boundary-1);CHECK_FALSE(f.evaluate(boundary-1,{},true,low).requested());
     f.queried(boundary);CHECK(f.evaluate(boundary,{},true,low).reason==Reason::AgeCap);
     f.reactive=true;CHECK(f.evaluate(boundary,{},true,low).reason==Reason::Reactive);f.reactive=false;
     f.serving.known=false;CHECK(f.evaluate(boundary,{},true,low).reason==Reason::HistoryInitialization);
@@ -103,8 +104,8 @@ TEST_CASE("research intervals remain explicit below the shared demanded age cap"
     State::Field f;f.serving.known=true;const auto low=[](const auto&,const auto&){return 0;};
     f.queried(31);CHECK_FALSE(f.evaluate(31,{},true,low,32).requested());
     f.queried(32);CHECK(f.evaluate(32,{},true,low,32).reason==Reason::Bootstrap);
-    f.queried(1023);CHECK_FALSE(f.evaluate(1023,{},true,low,4096).requested());
-    f.queried(1024);CHECK(f.evaluate(1024,{},true,low,4096).reason==Reason::AgeCap);
+    f.queried(State::MaximumAge-1);CHECK_FALSE(f.evaluate(State::MaximumAge-1,{},true,low,4096).requested());
+    f.queried(State::MaximumAge);CHECK(f.evaluate(State::MaximumAge,{},true,low,4096).reason==Reason::AgeCap);
 }
 TEST_CASE("benefit threshold is inclusive at24 units and the32 tick warm minimum remains") {
     AdaptiveGradientState::Field f;f.serving.known=true;f.submitted=0;
@@ -113,6 +114,7 @@ TEST_CASE("benefit threshold is inclusive at24 units and the32 tick warm minimum
     f.queried(32);CHECK(f.evaluate(32,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).reason==AdaptiveGradientState::Reason::Model);
     CHECK(AdaptiveGradientState::Threshold==24000);
     CHECK(AdaptiveGradientState::MinimumInterval==32);
+    CHECK(AdaptiveGradientState::MaximumAge==256);
 }
 TEST_CASE("mutations never allocate unseen scopes and equivalent ground classes share turnover") {
     AdaptiveGradientState state;const GradientFieldKey first{GradientFieldFamily::Markets,0,0,0},second{GradientFieldFamily::Markets,0,1,0};
@@ -151,7 +153,8 @@ TEST_CASE("queued and deferred age-cap reasons retain binary and text admission 
     for(bool text:{false,true})for(bool queued:{false,true}) {
         State state;const GradientFieldKey key{GradientFieldFamily::Clear,0,1,255};
         auto& f=state.enroll(key);f.serving=f.capture(100,{},3);f.submitted=104;
-        f.queried(1124);REQUIRE(f.evaluate(1124,{},true,low).reason==Reason::AgeCap);
+        const unsigned cap=100+State::MaximumAge;
+        f.queried(cap);REQUIRE(f.evaluate(cap,{},true,low).reason==Reason::AgeCap);
         if(queued)f.queued=true;else f.defer(Reason::AgeCap);
         auto* backend=new GAGCore::MemoryStreamBackend;
         std::unique_ptr<GAGCore::OutputStream> out(text?static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(backend)):new GAGCore::BinaryOutputStream(backend));state.save(out.get());out->flush();
@@ -160,10 +163,10 @@ TEST_CASE("queued and deferred age-cap reasons retain binary and text admission 
         State restored;restored.load(in.get(),1,MOVEMENT_CLASS_COUNT,4);CHECK(restored.checksum()==state.checksum());
         auto& loaded=restored.fields.at(key);CHECK(loaded.acceptedReason==Reason::AgeCap);
         CHECK(loaded.serving.tick==100);CHECK(loaded.submitted==104);
-        if(queued)CHECK_FALSE(loaded.evaluate(1125,{},true,low).requested());
-        else CHECK(loaded.evaluate(1125,{},true,low).reason==Reason::AgeCap);
+        if(queued)CHECK_FALSE(loaded.evaluate(cap+1,{},true,low).requested());
+        else CHECK(loaded.evaluate(cap+1,{},true,low).reason==Reason::AgeCap);
         // Admission consumes this reason once; publication starts a new capture clock.
-        for(auto* field:{&f,&loaded}) {field->queued=false;field->admitted(1125);CHECK(field->inflight);CHECK(field->acceptedReason==Reason::None);const auto next=field->capture(1125,{},3);field->published(next);field->queried(2148);CHECK_FALSE(field->evaluate(2148,{},true,low).requested());field->queried(2149);CHECK(field->evaluate(2149,{},true,low).reason==Reason::AgeCap);}
+        for(auto* field:{&f,&loaded}) {field->queued=false;field->admitted(cap+1);CHECK(field->inflight);CHECK(field->acceptedReason==Reason::None);const auto next=field->capture(cap+1,{},3);field->published(next);const unsigned nextCap=cap+1+State::MaximumAge;field->queried(nextCap-1);CHECK_FALSE(field->evaluate(nextCap-1,{},true,low).requested());field->queried(nextCap);CHECK(field->evaluate(nextCap,{},true,low).reason==Reason::AgeCap);}
         CHECK(restored.checksum()==state.checksum());
     }
 }
