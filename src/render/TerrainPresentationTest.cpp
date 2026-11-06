@@ -1137,6 +1137,125 @@ TEST_SUITE("TerrainPresentation")
 		gfx.endMapTransform();
 	}
 
+	TEST_CASE("Legacy GL zoom keeps each cell's old mask until its new density lands [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		// Blocks of grass, sand and water: most cells are mixed.
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		const auto settle = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			for (int attempt = 0; attempt < 2000; ++attempt)
+			{
+				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
+				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
+				SDL_Delay(1);
+			}
+			REQUIRE_FALSE(atlas.pendingHdMasks());
+			gfx.endMapTransform();
+		};
+		const auto frame = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 0, 0, true, 0);
+			auto pixels = terrainPixels(true);
+			gfx.endMapTransform();
+			return pixels;
+		};
+		// 32-texel masks at this zoom, then 64-texel masks at twice it.
+		settle(.76f, 26, 19);
+		gfx.beginMapTransform(1.6f, 0, 0, 0, 0, 640, 480);
+		REQUIRE(atlas.prepare(gfx, scene, 0, 0, 12, 9, 0, 0, fixture.team->me, true, 0));
+		gfx.endMapTransform();
+		const auto pending = atlas.pendingHdMasks();
+		REQUIRE(pending > 20); // The new density has barely started.
+		const auto stepped = frame(1.6f, 12, 9);
+		settle(1.6f, 12, 9);
+		const auto built = frame(1.6f, 12, 9);
+		// Old masks differ from new ones only in contour detail. A cell drawn
+		// from its first material alone would differ across whole cells.
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < built.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(built[i + k]) - int(stepped[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(built.size() / 4);
+		CAPTURE(pending);
+		CAPTURE(share);
+		CHECK(share < .03);
+	}
+
+	TEST_CASE("Legacy GL cells never seen draw their whole-map base mask until their own lands [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		// The left half at 32-texel masks, until the base covers the whole map.
+		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
+		for (int attempt = 0; attempt < 4000; ++attempt)
+		{
+			const bool ready = atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
+			if (ready && !atlas.preparing() && !atlas.pendingHdMasks() && !atlas.pendingBaseMasks()) break;
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		REQUIRE_FALSE(atlas.pendingBaseMasks());
+		// The right half has never been shown: its first frame draws the base.
+		REQUIRE(atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0));
+		const auto pending = atlas.pendingHdMasks();
+		REQUIRE(pending > 20);
+		const auto frame = [&]
+		{
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 32, 0, true, 0);
+			return terrainPixels(true);
+		};
+		const auto first = frame();
+		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		{
+			atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0);
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		const auto built = frame();
+		gfx.endMapTransform();
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < built.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(built[i + k]) - int(first[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(built.size() / 4);
+		CAPTURE(pending);
+		CAPTURE(share);
+		CHECK(share < .05);
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
@@ -2702,7 +2821,7 @@ TEST_SUITE("TerrainValidation")
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
-			{.display = true, .width = 1024, .height = 1280, .seed = 7331});
+			{.display = true, .width = 1024, .height = 1536, .seed = 7331});
 		globals->terrainCompositor().prepare(false, 0);
 		glob2test::HeadlessGame fixture({.wDec = 5,
 										 .hDec = 6,
@@ -2712,7 +2831,7 @@ TEST_SUITE("TerrainValidation")
 										 .seed = 7331});
 		auto &map = fixture.game.map;
 		// Ocean and a sand beach on the left, as in the mixed gallery.
-		for (int y = 0; y < 40; ++y)
+		for (int y = 0; y < 48; ++y)
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 5)
@@ -2722,16 +2841,16 @@ TEST_SUITE("TerrainValidation")
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row on a four-cell pitch, so interior variants, boundaries and seams
-		// are all visible in the 40 rendered rows (room for 50 types).
+		// are all visible in the 48 rendered rows (room for 60 types).
 		std::vector<TerrainType> types;
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
 		REQUIRE(types.size() == TERRAIN_COUNT - BOULDERS);
-		REQUIRE(types.size() <= 50);
+		REQUIRE(types.size() <= 60);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..39 are rendered
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..47 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
 					map.paintCell(ox + dx, oy + dy, types[n]);
@@ -2751,9 +2870,9 @@ TEST_SUITE("TerrainValidation")
 			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
 		glob2test::observeMap(map,scene);
-		fixture.game.drawMapTerrain(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapTerrain(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		// Raised obstacle decor is drawn with the resources, row by row.
-		fixture.game.drawMapResources(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
@@ -2843,10 +2962,12 @@ TEST_SUITE("TerrainValidation")
 					material.decor.connectedInterior.end());
 				for (int frame : frames)
 				{
+					// Foliage stands one cell above its own; terraces stand taller.
 					auto *hd = decor->baseFrame(frame);
 					REQUIRE(hd);
-					CHECK(hd->getW() == 128);
-					CHECK(hd->getH() == 256);
+					CHECK(hd->getW() == 4 * decor->getW(frame));
+					CHECK(hd->getH() == 4 * decor->getH(frame));
+					CHECK(hd->getH() >= 256);
 				}
 			}
 			else if (material.key == "boulders")

@@ -40,6 +40,8 @@ public:
                       bool wholeMap, int animationTime);
     // Mixed visible cells still waiting for their masks after the last prepare.
     std::size_t pendingHdMasks() const;
+    // Mixed cells of the whole map whose low-density base mask is still missing.
+    std::size_t pendingBaseMasks() const;
     // Nothing of this map can draw yet: show the overview.
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;
     std::size_t textureBytes() const;

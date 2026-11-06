@@ -25,6 +25,16 @@ uniform float artTilePixels;
 uniform sampler2D hdIndex, hdCoverage, hdEdges;
 uniform vec2 hdCoverageSize;
 uniform float hdTilePixels;
+// The atlas a density change retired (hdPreviousTile zero when there is none):
+// a cell still pending in hdIndex draws its old mask from it.
+uniform sampler2D hdPreviousIndex, hdPreviousCoverage, hdPreviousEdges;
+uniform vec2 hdPreviousSize;
+uniform float hdPreviousTile;
+// A low-density mask of every mixed cell, laid out like the map (hdBaseTile
+// zero when there is none); an unbuilt cell's tile is empty.
+uniform sampler2D hdBaseCoverage, hdBaseEdges;
+uniform vec2 hdBaseSize;
+uniform float hdBaseTile;
 #endif
 
 // The offline generator supplies its own interface above this shared shader.
@@ -117,30 +127,31 @@ vec3 edgeAt(float index, vec2 pixel) {
 }
 
 #ifdef DIRECT_TERRAIN_HD_MASKS
-vec2 hdTileBase(float index) {
-    float columns = hdCoverageSize.x / hdTilePixels;
-    return vec2(mod(index, columns), floor(index / columns)) * hdTilePixels;
+// One mask atlas: its size in texels and its tile side.
+vec2 hdTileBase(float index, vec2 size, float tile) {
+    float columns = size.x / tile;
+    return vec2(mod(index, columns), floor(index / columns)) * tile;
 }
 // Texel t of a tile holds the compositor sample centred at (t + 0.5) * 32 / T.
-vec2 hdMaskUV(float index, vec2 pixel) {
-    vec2 samplePixel = clamp(pixel * (hdTilePixels / 32.0), vec2(0.5), vec2(hdTilePixels - 0.5));
-    return (hdTileBase(index) + samplePixel) / hdCoverageSize;
+vec2 hdMaskUV(float index, vec2 pixel, vec2 size, float tile) {
+    vec2 samplePixel = clamp(pixel * (tile / 32.0), vec2(0.5), vec2(tile - 0.5));
+    return (hdTileBase(index, size, tile) + samplePixel) / size;
 }
-vec3 hdEdgeTexel(float index, vec2 texel) {
-    float packedEdge = readScalar(hdEdges, (hdTileBase(index) + texel + 0.5) / hdCoverageSize, hdCoverageSize);
+vec3 hdEdgeTexel(sampler2D image, float index, vec2 texel, vec2 size, float tile) {
+    float packedEdge = readScalar(image, (hdTileBase(index, size, tile) + texel + 0.5) / size, size);
     float selectors = floor(packedEdge / 4096.0);
     return vec3(mod(packedEdge, 4096.0), mod(selectors, 4.0), floor(selectors / 4.0));
 }
 // As edgeAt, at one texel per sample.
-vec3 hdEdgeAt(float index, vec2 pixel) {
-    vec2 p = pixel * (hdTilePixels / 32.0) - 0.5;
-    vec2 low = clamp(floor(p), vec2(0.0), vec2(hdTilePixels - 2.0));
+vec3 hdEdgeAt(sampler2D image, float index, vec2 pixel, vec2 size, float tile) {
+    vec2 p = pixel * (tile / 32.0) - 0.5;
+    vec2 low = clamp(floor(p), vec2(0.0), vec2(tile - 2.0));
     vec2 f = p - low;
     vec2 high = low + 1.0;
-    vec3 e00 = hdEdgeTexel(index, low);
-    vec3 e10 = hdEdgeTexel(index, vec2(high.x, low.y));
-    vec3 e01 = hdEdgeTexel(index, vec2(low.x, high.y));
-    vec3 e11 = hdEdgeTexel(index, high);
+    vec3 e00 = hdEdgeTexel(image, index, low, size, tile);
+    vec3 e10 = hdEdgeTexel(image, index, vec2(high.x, low.y), size, tile);
+    vec3 e01 = hdEdgeTexel(image, index, vec2(low.x, high.y), size, tile);
+    vec3 e11 = hdEdgeTexel(image, index, high, size, tile);
     vec3 nearest = f.y < 0.5 ? (f.x < 0.5 ? e00 : e10) : (f.x < 0.5 ? e01 : e11);
     if (nearest.y == nearest.z)
         return nearest;
@@ -267,10 +278,32 @@ void main() {
     vec2 uv = clamp(fract(world) * 32.0, vec2(halfTexel), vec2(32.0 - halfTexel));
 #ifdef DIRECT_TERRAIN_HD_MASKS
     // Legacy GL: one mask atlas at the display density. Zero is a uniform cell;
-    // 65535 a mixed cell whose mask is still being built, drawn from its first
-    // material until it lands.
+    // 65535 a mixed cell whose mask is still being built, drawn from the
+    // retired atlas if it has one, else from the whole-map base atlas, else
+    // from its first material, until it lands.
     float hd = readScalar(hdIndex, cell, mapSize);
     bool mixed = hd > 0.0 && hd < 65535.0;
+    vec2 atlasSize = hdCoverageSize;
+    float atlasTile = hdTilePixels;
+    bool retired = false;
+    if (hd >= 65535.0 && hdPreviousTile > 0.0) {
+        float old = readScalar(hdPreviousIndex, cell, mapSize);
+        if (old > 0.0 && old < 65535.0) {
+            hd = old;
+            mixed = true;
+            retired = true;
+            atlasSize = hdPreviousSize;
+            atlasTile = hdPreviousTile;
+        }
+    }
+    bool base = false;
+    if (hd >= 65535.0 && !retired && hdBaseTile > 0.0) {
+        hd = slot.y * mapSize.x + slot.x + 1.0;
+        mixed = true;
+        base = true;
+        atlasSize = hdBaseSize;
+        atlasTile = hdBaseTile;
+    }
 #else
     float mask = readScalar(coverageIndex, cell, mapSize);
     if (mask >= 65535.0) discard;
@@ -280,10 +313,19 @@ void main() {
     vec2 position = uv / 32.0;
     float calm = mix(mix(quiet.x, quiet.y, position.x), mix(quiet.z, quiet.w, position.x), position.y);
     vec4 color = material(indices.x, uv, calm);
-    if (mixed) {
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        vec4 weights = DIRECT_TERRAIN_SAMPLE(hdCoverage, hdMaskUV(hd - 1.0, uv));
-#else
+    vec4 weights = vec4(0.0);
+    if (mixed) {
+        vec2 maskUV = hdMaskUV(hd - 1.0, uv, atlasSize, atlasTile);
+        weights = base ? DIRECT_TERRAIN_SAMPLE(hdBaseCoverage, maskUV)
+                : retired ? DIRECT_TERRAIN_SAMPLE(hdPreviousCoverage, maskUV)
+                          : DIRECT_TERRAIN_SAMPLE(hdCoverage, maskUV);
+        // An unbuilt base tile is empty: the cell keeps its first material.
+        mixed = dot(weights, vec4(1.0)) > 0.5;
+    }
+#endif
+    if (mixed) {
+#ifndef DIRECT_TERRAIN_HD_MASKS
         vec4 weights = DIRECT_TERRAIN_SAMPLE(coverage, maskAtlasUV(mask - 1.0, uv));
 #endif
         weights /= max(dot(weights, vec4(1.0)), 0.00001);
@@ -292,7 +334,9 @@ void main() {
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        vec3 edge = hdEdgeAt(hd - 1.0, uv);
+        vec3 edge = base ? hdEdgeAt(hdBaseEdges, hd - 1.0, uv, atlasSize, atlasTile)
+                  : retired ? hdEdgeAt(hdPreviousEdges, hd - 1.0, uv, atlasSize, atlasTile)
+                            : hdEdgeAt(hdEdges, hd - 1.0, uv, atlasSize, atlasTile);
 #else
         vec3 edge = edgeAt(mask - 1.0, uv);
 #endif
