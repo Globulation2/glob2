@@ -1,7 +1,7 @@
 {
   "key": "wind_swept_snow",
   "sprite": "data/gfx/terrain-wind_swept_snow",
-  "profile": "soil",
+  "profile": "snow",
   "class": "solid",
   "preview": [202, 206, 226],
   "variants": [

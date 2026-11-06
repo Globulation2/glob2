@@ -1,7 +1,7 @@
 {
   "key": "deep_snow",
   "sprite": "data/gfx/terrain-deep_snow",
-  "profile": "soil",
+  "profile": "snow",
   "class": "solid",
   "preview": [196, 202, 228],
   "variants": [
