@@ -5,6 +5,8 @@
 #include <ThreadSupport.h>
 #include <webp/decode.h>
 #include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <condition_variable>
 #include <cstdlib>
 #include <deque>
@@ -80,6 +82,120 @@ std::shared_ptr<const AssetImage> decodeImage(std::shared_ptr<const AssetLoader:
 
 
 }
+namespace {
+// BC3 (DXT5) block encoder for worker threads: a bounding box inset by a
+// sixteenth of its range, its diagonal chosen by each channel's covariance
+// with the widest one (the real-time encoder of van Waveren), then nearest
+// palette entries. Pixels are B, G, R, A bytes.
+std::uint16_t to565(int r, int g, int b) {
+    return std::uint16_t(((r * 31 + 127) / 255) << 11 | ((g * 63 + 127) / 255) << 5 | ((b * 31 + 127) / 255));
+}
+void from565(std::uint16_t c, int &r, int &g, int &b) {
+    r = (c >> 11) & 31; g = (c >> 5) & 63; b = c & 31;
+    r = (r << 3) | (r >> 2); g = (g << 2) | (g >> 4); b = (b << 3) | (b >> 2);
+}
+void encodeBC3Block(const unsigned char *pixels, int width, unsigned char *out) {
+    int px[16][4];
+    for (int y = 0; y < 4; ++y)
+        for (int x = 0; x < 4; ++x) {
+            const auto *p = pixels + (size_t(y) * width + x) * 4;
+            auto *q = px[y * 4 + x];
+            q[0] = p[2]; q[1] = p[1]; q[2] = p[0]; q[3] = p[3];
+        }
+    // Alpha: endpoints max and min, eight levels between them.
+    int amin = 255, amax = 0;
+    for (auto &p : px) { amin = std::min(amin, p[3]); amax = std::max(amax, p[3]); }
+    out[0] = std::uint8_t(amax); out[1] = std::uint8_t(amin);
+    std::uint64_t alphaBits = 0;
+    if (amax > amin) {
+        int levels[8] = {amax, amin};
+        for (int i = 1; i < 7; ++i) levels[i + 1] = ((7 - i) * amax + i * amin + 3) / 7;
+        for (int i = 0; i < 16; ++i) {
+            int best = 0, bestError = 256;
+            for (int k = 0; k < 8; ++k)
+                if (const int e = std::abs(px[i][3] - levels[k]); e < bestError) { bestError = e; best = k; }
+            alphaBits |= std::uint64_t(best) << (3 * i);
+        }
+    }
+    for (int i = 0; i < 6; ++i) out[2 + i] = std::uint8_t(alphaBits >> (8 * i));
+    // Colour: inset bounding box, diagonal by covariance with the widest channel.
+    int lo[3] = {255, 255, 255}, hi[3] = {0, 0, 0}, mean[3] = {0, 0, 0};
+    for (auto &p : px)
+        for (int c = 0; c < 3; ++c) { lo[c] = std::min(lo[c], p[c]); hi[c] = std::max(hi[c], p[c]); mean[c] += p[c]; }
+    int axis = 0;
+    for (int c = 1; c < 3; ++c) if (hi[c] - lo[c] > hi[axis] - lo[axis]) axis = c;
+    for (int c = 0; c < 3; ++c) mean[c] = (mean[c] + 8) / 16;
+    for (int c = 0; c < 3; ++c) {
+        if (c != axis) {
+            long covariance = 0;
+            for (auto &p : px) covariance += long(p[c] - mean[c]) * (p[axis] - mean[axis]);
+            if (covariance < 0) std::swap(lo[c], hi[c]);
+        }
+    }
+    for (int c = 0; c < 3; ++c) {
+        const int inset = (hi[c] - lo[c]) / 16;
+        hi[c] -= inset; lo[c] += inset;
+    }
+    // Nearest palette entries for a pair of endpoints, and their total error.
+    struct Fit { std::uint16_t c0, c1; std::uint32_t bits; long error; };
+    const auto fit = [&](const int *a, const int *b)
+    {
+        Fit result{to565(a[0], a[1], a[2]), to565(b[0], b[1], b[2]), 0, 0};
+        if (result.c0 < result.c1) std::swap(result.c0, result.c1);
+        int palette[4][3];
+        from565(result.c0, palette[0][0], palette[0][1], palette[0][2]);
+        from565(result.c1, palette[1][0], palette[1][1], palette[1][2]);
+        for (int c = 0; c < 3; ++c) {
+            palette[2][c] = (2 * palette[0][c] + palette[1][c] + 1) / 3;
+            palette[3][c] = (palette[0][c] + 2 * palette[1][c] + 1) / 3;
+        }
+        const int entries = result.c0 == result.c1 ? 1 : 4;
+        for (int i = 0; i < 16; ++i) {
+            int best = 0, bestError = 1 << 30;
+            for (int k = 0; k < entries; ++k) {
+                int e = 0;
+                for (int c = 0; c < 3; ++c) { const int d = px[i][c] - palette[k][c]; e += d * d; }
+                if (e < bestError) { bestError = e; best = k; }
+            }
+            result.bits |= std::uint32_t(best) << (2 * i);
+            result.error += bestError;
+        }
+        return result;
+    };
+    Fit best = fit(hi, lo);
+    // One least-squares refinement of both endpoints for the chosen indices.
+    if (best.c0 != best.c1) {
+        static constexpr float weight[4] = {1, 0, 2.f / 3, 1.f / 3};
+        float aa = 0, ab = 0, bb = 0, x0[3] = {}, x1[3] = {};
+        for (int i = 0; i < 16; ++i) {
+            const float w = weight[(best.bits >> (2 * i)) & 3], v = 1 - w;
+            aa += w * w; ab += w * v; bb += v * v;
+            for (int c = 0; c < 3; ++c) { x0[c] += w * px[i][c]; x1[c] += v * px[i][c]; }
+        }
+        const float det = aa * bb - ab * ab;
+        if (det > 1e-3f) {
+            int e0[3], e1[3];
+            for (int c = 0; c < 3; ++c) {
+                e0[c] = std::clamp(int(std::lround((bb * x0[c] - ab * x1[c]) / det)), 0, 255);
+                e1[c] = std::clamp(int(std::lround((aa * x1[c] - ab * x0[c]) / det)), 0, 255);
+            }
+            if (const Fit refined = fit(e0, e1); refined.error < best.error) best = refined;
+        }
+    }
+    out[8] = std::uint8_t(best.c0); out[9] = std::uint8_t(best.c0 >> 8);
+    out[10] = std::uint8_t(best.c1); out[11] = std::uint8_t(best.c1 >> 8);
+    const std::uint32_t colorBits = best.bits;
+    for (int i = 0; i < 4; ++i) out[12 + i] = std::uint8_t(colorBits >> (8 * i));
+}
+void compressBC3(AssetImage::Mip &level) {
+    if (level.width < 4 || level.height < 4) return;
+    level.compressed.resize(size_t(level.width / 4) * (level.height / 4) * 16);
+    auto *out = level.compressed.data();
+    for (int y = 0; y < level.height; y += 4)
+        for (int x = 0; x < level.width; x += 4, out += 16)
+            encodeBC3Block(level.pixels.data() + (size_t(y) * level.width + x) * 4, level.width, out);
+}
+}
 void AssetImage::prepareUpload(bool highResolution) {
 #if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
     uploadPixels.resize(size_t(surface->w) * surface->h * 4);
@@ -115,6 +231,12 @@ void AssetImage::prepareUpload(bool highResolution) {
         downsampleMip(mips.back().pixels.data(), width, height, level.pixels.data());
         width = nextWidth; height = nextHeight;
     }
+#if !defined(GLOB2_WEBGL2) && SDL_BYTEORDER == SDL_LIL_ENDIAN
+    // The driver would otherwise compress each level inside glTexImage2D on
+    // the graphics thread: tens of milliseconds for a 2048-pixel HD sheet.
+    if (compressHighResolution.load(std::memory_order_relaxed))
+        for (auto &mip : mips) compressBC3(mip);
+#endif
 }
 void downsampleMip(const unsigned char *source, int width, int height,
                                unsigned char *destination) {

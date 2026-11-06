@@ -116,6 +116,7 @@ int GraphicContext::maximumTextureSize() const
 		isTextureSRectangle = false;
 		hasS3TCCompression = (strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL)
 			&& !std::getenv("GLOB2_DISABLE_S3TC");
+		AssetImage::compressHighResolution = hasS3TCCompression;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
