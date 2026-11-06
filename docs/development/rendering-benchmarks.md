@@ -159,8 +159,9 @@ slices while the overview shows, and terrain edits update only the cells near
 a changed vertex. Each frame the pass streams the visible variants' artwork into
 one atlas near the display density (8 to 128 pixels a cell), and background
 workers build a coverage mask for each visible mixed cell into one atlas at the
-same density (8 to 128 texels a side), nearest the view centre first; a mixed
-cell draws its first material until its mask lands. `FRAME_HD` reports the
+same density (8 to 128 texels a side), nearest the view centre first; after a
+density change a mixed cell draws its previous-density mask until the new one
+lands, and a cell without any mask draws its first material. `FRAME_HD` reports the
 visible mixed cells still waiting. The editor and captures complete the view
 first: they build every visible mask in parallel and wait for streamed HD
 artwork. Pages serve only the software and programmable-device renderers.

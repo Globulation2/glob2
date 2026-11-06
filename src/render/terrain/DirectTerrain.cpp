@@ -30,6 +30,7 @@
 #include <SDL3/SDL.h>
 #include <algorithm>
 #include <array>
+#include <utility>
 #include <cstdio>
 #include <chrono>
 #include <unordered_set>
@@ -161,8 +162,17 @@ struct DirectTerrain::State
         int size = 2048;
         static constexpr unsigned FirstUnit = Count;
         GLuint program = 0, index = 0, coverage = 0, edges = 0;
-        std::array<GLint, 9> uniforms{};
+        std::array<GLint, 11> uniforms{};
         int tile = 0;              // Texels per cell side; 0 before the first prepare.
+        // The atlas a density change or growth retired. A cell whose new mask
+        // has not landed draws its old one, so a zoom never drops a cell back
+        // to its first material; the atlas goes once the view is complete.
+        struct Previous {
+            GLuint index = 0, coverage = 0, edges = 0;
+            int size = 0, tile = 0;   // tile is 0 when there is none; the textures stay as a spare.
+            std::size_t bytes = 0;
+            std::vector<Uint16> slotOf;
+        } previous;
         std::vector<Uint16> slotOf; // Per map cell: atlas slot plus one, or zero.
         std::vector<int> cellOf;    // Per slot: map cell index, or -1.
         std::vector<Uint64> used;   // Per slot: frame last visible.
@@ -293,6 +303,9 @@ struct DirectTerrain::State
             glDeleteTextures(1, &hd.index);
             glDeleteTextures(1, &hd.coverage);
             glDeleteTextures(1, &hd.edges);
+            glDeleteTextures(1, &hd.previous.index);
+            glDeleteTextures(1, &hd.previous.coverage);
+            glDeleteTextures(1, &hd.previous.edges);
             if (hd.program) glDeleteProgram(hd.program);
             glDeleteTextures(Count, textures.data());
         }
@@ -401,8 +414,8 @@ struct DirectTerrain::State
         glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
         width = map.getW();
         height = map.getH();
-        if (units < int(Hd::FirstUnit) + 3)
-            throw std::runtime_error("Direct terrain requires eleven texture units");
+        if (units < int(Hd::FirstUnit) + 6)
+            throw std::runtime_error("Direct terrain requires fourteen texture units");
         const auto count = data.cells.size();
         visibility.resize(count);
         glGenTextures(Count, textures.data());
@@ -476,6 +489,15 @@ struct DirectTerrain::State
                     if (const auto slot = hd.slotOf[i]) hd.cellOf[slot - 1] = -1;
                     setHdIndex(int(i), mask);
                 }
+                // The retired atlas holds the old shape: never fall back to it.
+                if (!hd.previous.slotOf.empty() && hd.previous.slotOf[i])
+                {
+                    hd.previous.slotOf[i] = 0;
+                    const Uint16 pending = DirectTerrainData::PendingMask;
+                    glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 3);
+                    glBindTexture(GL_TEXTURE_2D, hd.previous.index);
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &pending);
+                }
                 masksChanged = true;
             }
         // Results already queued were built from the old recipes.
@@ -490,6 +512,88 @@ struct DirectTerrain::State
         glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
         glBindTexture(GL_TEXTURE_2D, hd.index);
         glTexSubImage2D(GL_TEXTURE_2D, 0, cell % width, cell / width, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &value);
+    }
+
+    // A new mask atlas at another density or size. The old one becomes the
+    // fallback when it shows more of the view than the existing fallback;
+    // otherwise it is discarded, so rapid zooms keep the most complete one.
+    // Textures are recycled between the two, so a zoom allocates nothing
+    // unless the atlas grows.
+    void restartHdAtlas(int tile, int size, bool retireCurrent)
+    {
+        auto &old = hd.previous;
+        if (retireCurrent && hd.tile)
+        {
+            // The current atlas becomes the fallback; the new one takes the
+            // old fallback's (or spare) textures.
+            std::swap(hd.index, old.index);
+            std::swap(hd.coverage, old.coverage);
+            std::swap(hd.edges, old.edges);
+            std::swap(hd.size, old.size);
+            std::swap(hd.bytes, old.bytes);
+            old.tile = hd.tile;
+            old.slotOf = std::move(hd.slotOf);
+        }
+        const auto make = [&](GLuint &texture, unsigned unit, GLint filter)
+        {
+            glGenTextures(1, &texture);
+            glActiveTexture(GL_TEXTURE0 + unit);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        };
+        if (!hd.index)
+        {
+            make(hd.index, Hd::FirstUnit, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, nullptr);
+        }
+        // Every mixed cell starts pending; uniform cells need no mask.
+        glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
+        glBindTexture(GL_TEXTURE_2D, hd.index);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_SHORT, cellMasks.data());
+        if (!hd.coverage)
+        {
+            make(hd.coverage, Hd::FirstUnit + 1, GL_LINEAR);
+            make(hd.edges, Hd::FirstUnit + 2, GL_NEAREST);
+            hd.size = 0;
+        }
+        if (hd.size != size)
+        {
+            glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 1);
+            glBindTexture(GL_TEXTURE_2D, hd.coverage);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 2);
+            glBindTexture(GL_TEXTURE_2D, hd.edges);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, size, size, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, nullptr);
+            hd.size = size;
+        }
+        bytes -= hd.bytes;
+        hd.bytes = std::size_t(size) * size * 6 + cellMasks.size() * sizeof(Uint16);
+        bytes += hd.bytes;
+        hd.tile = tile;
+        hd.slotOf.assign(cellMasks.size(), 0);
+        const std::size_t slots = std::min<std::size_t>(65534, std::size_t(size / tile) * (size / tile));
+        hd.cellOf.assign(slots, -1);
+        hd.used.assign(slots, 0);
+        // Results in flight were built for the old tiles. Recipes do not
+        // depend on the density and stay.
+        ++hd.generation;
+        {
+            std::lock_guard lock(hd.mutex);
+            hd.jobs.clear();
+            hd.done.clear();
+        }
+        hd.inFlight.clear();
+    }
+
+    // The fallback has nothing left to show. Its textures stay as the spare
+    // for the next zoom.
+    void retirePreviousHdAtlas()
+    {
+        hd.previous.tile = 0;
+        hd.previous.slotOf.clear();
     }
 
 #endif
@@ -954,82 +1058,43 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         glUniform1i(glGetUniformLocation(hd.program, "hdIndex"), State::Hd::FirstUnit);
         glUniform1i(glGetUniformLocation(hd.program, "hdCoverage"), State::Hd::FirstUnit + 1);
         glUniform1i(glGetUniformLocation(hd.program, "hdEdges"), State::Hd::FirstUnit + 2);
+        glUniform1i(glGetUniformLocation(hd.program, "hdPreviousIndex"), State::Hd::FirstUnit + 3);
+        glUniform1i(glGetUniformLocation(hd.program, "hdPreviousCoverage"), State::Hd::FirstUnit + 4);
+        glUniform1i(glGetUniformLocation(hd.program, "hdPreviousEdges"), State::Hd::FirstUnit + 5);
         const char *names[] = {"mapSize", "artSize", "coverageSize", "variantSize", "animationTime",
-                               "wholeMap", "artTilePixels", "hdCoverageSize", "hdTilePixels"};
+                               "wholeMap", "artTilePixels", "hdCoverageSize", "hdTilePixels",
+                               "hdPreviousSize", "hdPreviousTile"};
         for (unsigned i = 0; i < hd.uniforms.size(); ++i)
             hd.uniforms[i] = glGetUniformLocation(hd.program, names[i]);
         glUniform2f(hd.uniforms[0], float(width), float(height));
         glUniform2f(hd.uniforms[2], DirectTerrainData::AtlasWidth, 1.f); // Native masks are not used.
-        const auto make = [&](GLuint &texture, unsigned unit, int w, int h, GLint internal, GLenum format,
-                              GLenum type, GLint filter)
-        {
-            glGenTextures(1, &texture);
-            glActiveTexture(GL_TEXTURE0 + unit);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexImage2D(GL_TEXTURE_2D, 0, internal, w, h, 0, format, type, nullptr);
-        };
-        // Every mixed cell starts pending; uniform cells need no mask.
-        make(hd.index, State::Hd::FirstUnit, width, height, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT, GL_NEAREST);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_SHORT, state->cellMasks.data());
-        make(hd.coverage, State::Hd::FirstUnit + 1, hd.size, hd.size, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR);
-        make(hd.edges, State::Hd::FirstUnit + 2, hd.size, hd.size, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT, GL_NEAREST);
-        hd.bytes = std::size_t(hd.size) * hd.size * 6 + state->cellMasks.size() * sizeof(Uint16);
-        state->bytes += hd.bytes;
-        hd.slotOf.assign(state->cellMasks.size(), 0);
     }
-    // Back to pending: the cell draws its first material until a mask lands.
+    // Back to pending: the cell draws its old mask, or else its first
+    // material, until a new mask lands.
     const auto release = [&](int cell) { state->setHdIndex(cell, state->cellMasks[cell]); };
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.
+    int size = hd.size;
     {
-        std::size_t mixed = 0;
+        std::size_t mixed = 0, current = 0, previous = 0;
         for (int y = top; y <= bottom; ++y)
             for (int x = left; x <= right; ++x)
-                mixed += state->cellMasks[map.coordToIndex(x + viewportX, y + viewportY)] != 0;
-        const auto fits = [&](int size) { return std::size_t(size / tile) * (size / tile) >= mixed + mixed / 4; };
-        if (hd.size < State::MaxAtlasSize && !fits(hd.size))
-        {
-            // Grow once; every resident mask starts again below.
-            hd.size = State::MaxAtlasSize;
-            for (GLuint texture : {hd.coverage, hd.edges})
             {
-                glBindTexture(GL_TEXTURE_2D, texture);
-                if (texture == hd.coverage)
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, hd.size, hd.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-                else
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, hd.size, hd.size, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, nullptr);
+                const int cell = map.coordToIndex(x + viewportX, y + viewportY);
+                if (!state->cellMasks[cell]) continue;
+                ++mixed;
+                current += !hd.slotOf.empty() && hd.slotOf[cell];
+                previous += !hd.previous.slotOf.empty() && hd.previous.slotOf[cell];
             }
-            state->bytes -= hd.bytes;
-            hd.bytes = std::size_t(hd.size) * hd.size * 6 + state->cellMasks.size() * sizeof(Uint16);
-            state->bytes += hd.bytes;
-            hd.tile = 0;
-        }
-        while (tile > 8 && !fits(hd.size))
+        const auto fits = [&](int atlas) { return std::size_t(atlas / tile) * (atlas / tile) >= mixed + mixed / 4; };
+        if (size < State::MaxAtlasSize && !fits(size))
+            size = State::MaxAtlasSize; // Grow once rather than draw coarser.
+        while (tile > 8 && !fits(size))
             tile /= 2;
+        if (hd.tile != tile || hd.size != size || !hd.coverage)
+            state->restartHdAtlas(tile, size, current > 0 && current >= previous);
     }
     const int atlasSize = hd.size;
-    if (hd.tile != tile)
-    {
-        // A new density invalidates every tile; the index resets with it.
-        for (int cell = 0; cell < int(hd.slotOf.size()); ++cell)
-            if (hd.slotOf[cell]) release(cell);
-        hd.tile = tile;
-        ++hd.generation;
-        hd.recipes.clear();
-        {
-            std::lock_guard lock(hd.mutex);
-            hd.jobs.clear();
-            hd.done.clear();
-        }
-        hd.inFlight.clear();
-        const std::size_t slots = std::min<std::size_t>(65534, std::size_t(atlasSize / tile) * (atlasSize / tile));
-        hd.cellOf.assign(slots, -1);
-        hd.used.assign(slots, 0);
-    }
     ++hd.frame;
     // Visible mixed cells: keep resident ones, and queue the rest nearest the
     // view centre first, so a zoom or pan fills in from the middle outwards.
@@ -1148,6 +1213,9 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         std::lock_guard lock(hd.mutex);
         for (auto &result : later) hd.done.push_back(std::move(result));
     }
+    // The new atlas covers the view: the retired one has nothing left to show.
+    if (!hd.pending && hd.previous.tile)
+        state->retirePreviousHdAtlas();
 #endif
 }
 
@@ -1176,8 +1244,10 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
             : unit == State::Variants ? state->animation.variants : state->textures[unit];
         glBindTexture(GL_TEXTURE_2D, texture);
     }
-    const GLuint extra[] = {state->hd.index, state->hd.coverage, state->hd.edges};
-    for (unsigned i = 0; i < 3; ++i)
+    const auto &previous = state->hd.previous;
+    const GLuint extra[] = {state->hd.index, state->hd.coverage, state->hd.edges,
+                            previous.index, previous.coverage, previous.edges};
+    for (unsigned i = 0; i < std::size(extra); ++i)
     {
         glActiveTexture(GL_TEXTURE0 + State::Hd::FirstUnit + i);
         glBindTexture(GL_TEXTURE_2D, extra[i]);
@@ -1189,6 +1259,8 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     glUniform1i(uniforms[5], wholeMap);
     glUniform1f(uniforms[6], float(state->animation.pixels));
     glUniform1f(uniforms[8], float(state->hd.tile));
+    glUniform2f(uniforms[9], float(previous.size), float(previous.size));
+    glUniform1f(uniforms[10], float(previous.tile)); // Zero: no fallback atlas.
     glEnable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
     glBlendEquation(GL_FUNC_ADD);

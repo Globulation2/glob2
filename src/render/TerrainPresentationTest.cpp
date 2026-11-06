@@ -1137,6 +1137,68 @@ TEST_SUITE("TerrainPresentation")
 		gfx.endMapTransform();
 	}
 
+	TEST_CASE("Legacy GL zoom keeps each cell's old mask until its new density lands [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		// Blocks of grass, sand and water: most cells are mixed.
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		const auto settle = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			for (int attempt = 0; attempt < 2000; ++attempt)
+			{
+				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
+				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
+				SDL_Delay(1);
+			}
+			REQUIRE_FALSE(atlas.pendingHdMasks());
+			gfx.endMapTransform();
+		};
+		const auto frame = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 0, 0, true, 0);
+			auto pixels = terrainPixels(true);
+			gfx.endMapTransform();
+			return pixels;
+		};
+		// 32-texel masks at this zoom, then 64-texel masks at twice it.
+		settle(.76f, 26, 19);
+		gfx.beginMapTransform(1.6f, 0, 0, 0, 0, 640, 480);
+		REQUIRE(atlas.prepare(gfx, scene, 0, 0, 12, 9, 0, 0, fixture.team->me, true, 0));
+		gfx.endMapTransform();
+		const auto pending = atlas.pendingHdMasks();
+		REQUIRE(pending > 20); // The new density has barely started.
+		const auto stepped = frame(1.6f, 12, 9);
+		settle(1.6f, 12, 9);
+		const auto built = frame(1.6f, 12, 9);
+		// Old masks differ from new ones only in contour detail. A cell drawn
+		// from its first material alone would differ across whole cells.
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < built.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(built[i + k]) - int(stepped[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(built.size() / 4);
+		CAPTURE(pending);
+		CAPTURE(share);
+		CHECK(share < .03);
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
