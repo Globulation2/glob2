@@ -305,7 +305,8 @@ class TerrainTileset(unittest.TestCase):
         for profile in self.document["profiles"]:
             for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
                           "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8",
-                          "teeth_q8", "teeth_form", "facets", "clasts"):
+                          "teeth_q8", "teeth_form", "facets", "clasts", "resistance_q8",
+                          "cohesion_q8", "grain_q8", "spread_q8"):
                 profile.pop(field, None)
             profile.setdefault("roughness_q8", 0)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4

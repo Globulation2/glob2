@@ -202,6 +202,37 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			if (!p.contains("clasts") && v.speckle)
 				v.clasts = v.facets ? Profile::Clasts::Angular : Profile::Clasts::Round;
 		}
+		// Physical properties: what the edge family is made of decides the shape
+		// of its contacts, so a new terrain names a handful of physical numbers
+		// instead of tuning contour parameters. Explicit parameters still win.
+		for (const char *field : {"resistance_q8", "cohesion_q8", "grain_q8", "spread_q8"})
+		{
+			require(version >= 4 || !p.contains(field), "physical properties require catalog version 4");
+			v.physical |= p.contains(field);
+		}
+		v.resistance = integerInRange(p.value("resistance_q8", nlohmann::json(0)), 0, 256);
+		v.cohesion = integerInRange(p.value("cohesion_q8", nlohmann::json(0)), 0, 256);
+		v.grain = integerInRange(p.value("grain_q8", nlohmann::json(0)), 0, 1024);
+		v.spread = integerInRange(p.value("spread_q8", nlohmann::json(0)), 0, 256);
+		if (v.physical)
+		{
+			// Resistant, cohesive material keeps a rough edge; loose material is
+			// smoothed into arcs. Teeth run from 1.5 to 10.5 pixels.
+			const int rough = (v.resistance + v.cohesion) / 2;
+			const auto unset = [&](const char *field) { return !p.contains(field); };
+			if (unset("teeth_q8")) v.teeth = 384 + 9 * rough;
+			if (unset("teeth_form")) v.lobes = v.spread >= 128; // An advancing flow.
+			if (unset("facets")) v.facets = v.resistance >= 128; // Brittle material breaks straight.
+			if (unset("jagged_q8")) v.jagged = 256 + 6 * v.resistance;
+			if (unset("wiggle_q8")) v.wiggle = v.teeth / 8;
+			if (unset("detail_q8")) v.detail = v.teeth / 16;
+			if (unset("speckle_q8")) v.speckle = v.grain;
+			if (unset("clasts"))
+				v.clasts = !v.grain ? Profile::Clasts::None
+					: v.facets ? Profile::Clasts::Angular : Profile::Clasts::Round;
+			// The more resistant material shapes a contact within its class.
+			if (unset("precedence")) v.precedence = std::min(255, v.resistance);
+		}
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
 		if (smooth && !p.contains("contours_q12"))
 		{

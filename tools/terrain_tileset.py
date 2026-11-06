@@ -173,6 +173,10 @@ def _validate(document, root):
             raise ValueError("Facets must be a boolean")
         if p.get("clasts", "none") not in ("none", "round", "angular"):
             raise ValueError("Clasts must be none, round or angular")
+        for field, top in (("resistance_q8", 256), ("cohesion_q8", 256), ("grain_q8", 1024), ("spread_q8", 256)):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
+            integer(p.get(field, 0), 0, top, field)
         if p.get("wiggle_period", 64) not in (32, 64, 128, 256):
             raise ValueError("Smooth wiggle period must be 32, 64, 128 or 256 pixels")
         if version == 1 and "feather_q8" in p:

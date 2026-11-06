@@ -228,6 +228,40 @@ own edge) gets square corners. Smooth profiles (roads, tracks, liquids) keep
 their clean lines; lava sets lobed teeth. `roughness_q8` and `contours_q12` no
 longer shape version-4 contacts directly.
 
+### Physical properties
+
+A version-4 profile describes what its edge family is made of, and the contact
+parameters above follow from that, so a new terrain names a few physical
+numbers rather than tuning contours. Each is Q8 from 0 to 256 except `grain_q8`:
+
+| Property | Meaning | Drives |
+| --- | --- | --- |
+| `resistance_q8` | Hardness against erosion and wear | Who shapes a contact within a class (`precedence`), faceted teeth and angular clasts from 128, grit (`jagged_q8` = 256 + 6 × resistance) |
+| `cohesion_q8` | How well the material holds together (roots, binding) | With resistance, the teeth: `teeth_q8` = 384 + 9 × (resistance + cohesion) / 2, so loose sand makes smooth arcs and rock a broken edge |
+| `grain_q8` | Q8 pixels its loose grains reach (0 for continuous material) | `speckle_q8` and `clasts` |
+| `spread_q8` | How much it advances over its neighbours (flow, growth) | Lobed teeth from 128 |
+
+Meander and fine detail follow the teeth (`wiggle_q8` an eighth of them,
+`detail_q8` a sixteenth). Any parameter a profile names explicitly overrides
+its derived value, and profiles without physical properties (built surfaces,
+canopy) keep their explicit parameters. Border classes still give the order
+across forms (cover, cut, built, flow, solid, pool), and coast profiles still
+let the land draw its shore with its own physical properties.
+
+The shipped natural families:
+
+| Profile | Resistance | Cohesion | Grain | Spread | Result |
+| --- | --- | --- | --- | --- | --- |
+| `rock` | 230 | 230 | 448 | | Large faceted teeth, angular chips |
+| `frozen` | 150 | 150 | 128 | | Faceted teeth, fine angular chips |
+| `soil` | 100 | 180 | 320 | | Rounded teeth, rounded grains |
+| `brush` | 80 | 200 | | | Rounded teeth, no grains |
+| `turf` | 64 | 220 | | | Rooted edge that shapes loose sand |
+| `sand` | 24 | 40 | 512 | | Gentle arcs, scattered grains |
+| `shore` | 40 | 140 | | | Vegetated or soil coast |
+| `beach` | 10 | 20 | | | Smooth beach arcs |
+| `molten` | 60 | 160 | | 230 | Lobed lava fronts |
+
 The noises of one field together stay within the bound that keeps every field
 positive where its vertices reach, scaled down alike when a profile asks for
 more.

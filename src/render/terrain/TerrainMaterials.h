@@ -52,6 +52,12 @@ struct Profile
 	// edges into a neighbour, within speckle reach: none, rounded grains
 	// (sand, soil) or angular chips (rock, ice).
 	enum class Clasts : unsigned char { None, Round, Angular } clasts = Clasts::None;
+	// Version 4 physical properties, Q8 from 0 to 256 (grain in Q8 pixels),
+	// from which the contact parameters above derive when a profile does not
+	// name them (see docs/assets/terrain-rendering.md#physical-properties).
+	// physical is false when a profile names none of them.
+	bool physical = false;
+	int resistance = 0, cohesion = 0, grain = 0, spread = 0;
 	int bridge = 0;       // Q8 pixel half-width of the neck joining diagonal lobes.
 	int shearScale = 128; // Version 3 reads shear curves as pixel displacement (256).
 	bool legacyEdges = false;

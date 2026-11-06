@@ -1721,7 +1721,8 @@ TEST_SUITE("TerrainMaterials")
 					auto &p = j["profiles"][i];
 					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
 							 "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8", "teeth_q8",
-							 "teeth_form", "facets", "clasts"})
+							 "teeth_form", "facets", "clasts", "resistance_q8", "cohesion_q8", "grain_q8",
+							 "spread_q8"})
 						p.erase(field);
 					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
@@ -1757,7 +1758,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 3321468473678997995ull : 15811041248938215183ull));
+			CHECK(digest == (legacy ? 3321468473678997995ull : 1612554945493919761ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -2318,10 +2319,11 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("chasm", "lava") == "crisp");
 		CHECK(profile("hedge", "void_hole") == "canopy");
 		CHECK(profile("thicket", "water") == "canopy");
-		// Natural ground: precedence ranks rock over soil over ice, brush and turf.
+		// Natural ground: resistance ranks rock over ice over soil, brush and turf.
 		CHECK(profile("boulders", "mud") == "rock");
 		CHECK(profile("dirt", "grass") == "soil");
-		CHECK(profile("deep_snow", "ice") == "soil");
+		CHECK(profile("deep_snow", "ice") == "frozen");
+		CHECK(profile("sand", "grass") == "turf"); // Rooted turf holds its edge on loose sand.
 		CHECK(profile("heath", "grass") == "brush");
 		CHECK(profile("grass", "lush_grass") == "turf");
 		for (unsigned a = 0; a < c.materials.size(); ++a)
@@ -2345,7 +2347,9 @@ TEST_SUITE("TerrainMaterials")
 		for (auto &p : j["profiles"])
 		{
 			p.erase("precedence"); p.erase("coast");
-			for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts"}) p.erase(field);
+			for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts", "resistance_q8", "cohesion_q8",
+					 "grain_q8", "spread_q8"})
+				p.erase(field);
 			if (p.value("shape", "") != "smooth") continue;
 			p.erase("shape"); p.erase("wiggle_q8"); p.erase("wiggle_period"); p.erase("squareness_q8");
 			p["roughness_q8"] = 0;
