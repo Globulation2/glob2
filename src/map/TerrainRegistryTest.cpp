@@ -409,6 +409,40 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(rockFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump(), TERRAIN_COUNT_BEFORE_ROCK_PATHS));
+
+		// Format 209 numbers its definitions from 53, before arctic tundra.
+		auto beforeArcticTundra = Json::parse(registry->serialize());
+		for (auto &item : beforeArcticTundra["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA;
+		const auto iceFormat =
+			TerrainRegistry::deserialize(beforeArcticTundra.dump(), TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA);
+		CHECK(iceFormat->serialize() == registry->serialize());
+		CHECK(iceFormat->digest() == registry->digest());
+		CHECK(iceFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeArcticTundra.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeArcticTundra.dump(), TERRAIN_COUNT_BEFORE_ICE_PATHS));
+
+		// Format 210 numbers its definitions from 54, before glacier.
+		auto beforeGlacier = Json::parse(registry->serialize());
+		for (auto &item : beforeGlacier["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_GLACIER;
+		const auto glacierless = TerrainRegistry::deserialize(beforeGlacier.dump(), TERRAIN_COUNT_BEFORE_GLACIER);
+		CHECK(glacierless->serialize() == registry->serialize());
+		CHECK(glacierless->digest() == registry->digest());
+		CHECK(glacierless->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump(), TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA));
+
+		// Format 211 numbers its definitions from 55, before the Barriers and Outcrops looks.
+		auto beforeIcefall = Json::parse(registry->serialize());
+		for (auto &item : beforeIcefall["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_ICEFALL;
+		const auto glacierFormat = TerrainRegistry::deserialize(beforeIcefall.dump(), TERRAIN_COUNT_BEFORE_ICEFALL);
+		CHECK(glacierFormat->serialize() == registry->serialize());
+		CHECK(glacierFormat->digest() == registry->digest());
+		CHECK(glacierFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcefall.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcefall.dump(), TERRAIN_COUNT_BEFORE_GLACIER));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

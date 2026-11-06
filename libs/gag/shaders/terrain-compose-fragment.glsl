@@ -56,7 +56,8 @@ uvec3 terrainSurfMix(uvec3 value, int packedColor, int amount) {
     return (value * uint(256 - amount) + surfColor * uint(amount)) / 256u;
 }
 // CPU reference: TerrainVisual::applySurf in src/render/terrain/TerrainMaterials.cpp.
-uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value) {
+// land is the Q8 shore wash of the land material across the shoreline.
+uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value, int land) {
     ivec4 shape = surfShape[slot], band = surfBand[slot], colors = surfColor[slot];
     if (margin >= (surfSide ? max(band.y, shape.w) : max(band.w, shape.y + shape.w))) return value;
     uint time = uint(surfPlace.z) - uint(surfPlace.z) % uint(colors.z);
@@ -66,24 +67,24 @@ uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value
     int u = (phase + offset) & 1023;
     const int washIn = 224; // TerrainVisual::SurfWashInQ10
     int rise = u < washIn ? u * 512 / washIn : 512 + (u - washIn) * 512 / (1024 - washIn);
-    int run = shape.y * terrainSurfBump(rise) / 256;
+    int run = shape.y * terrainSurfBump(rise) / 256 * land / 256;
     value = min(value, uvec3(255u));
     int front;
     if (surfSide) {
         if (margin < band.y)
-            value = terrainSurfMix(value, colors.x, band.x * (band.y - margin) / band.y);
+            value = terrainSurfMix(value, colors.x, band.x * (band.y - margin) / band.y * land / 256);
         front = margin + run;
     } else {
         if (margin < band.w)
-            value = value * uint(256 - band.z * (band.w - margin) / band.w) / 256u;
+            value = value * uint(256 - band.z * (band.w - margin) / band.w * land / 256) / 256u;
         if (margin < run)
-            value = terrainSurfMix(value, colors.x, band.x * (run - margin) / (2 * run));
+            value = terrainSurfMix(value, colors.x, band.x * (run - margin) / (2 * run) * land / 256);
         front = margin < run ? run - margin : margin - run;
     }
     if (front < shape.w) {
         int breakup = 96 + (terrainSurfBump(((world.x * 5) >> 7) & 1023) +
             terrainSurfBump((((world.y * 7) >> 7) + phase) & 1023)) * 160 / 512;
-        value = terrainSurfMix(value, colors.y, shape.z * (shape.w - front) / shape.w * breakup / 256);
+        value = terrainSurfMix(value, colors.y, shape.z * (shape.w - front) / shape.w * breakup / 256 * land / 256);
     }
     return value;
 }
@@ -139,7 +140,8 @@ void main() {
         // Q8 world pixels of the sample centre, as the coverage samples it.
         int size = int(params.x);
         ivec2 world = surfPlace.xy + (2 * pixel + 1) * 4096 / size;
-        value = terrainSurf(surfSelf ? dominant : neighbor, surfSelf, margin, world, value);
+        value = terrainSurf(surfSelf ? dominant : neighbor, surfSelf, margin, world, value,
+            surfLand[surfSelf ? neighbor : dominant]);
     }
     uint packedColor = (((alpha + 32768u) / 65536u) << 24u) |
         (value.r << 16u) | (value.g << 8u) | value.b;

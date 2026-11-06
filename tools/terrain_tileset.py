@@ -264,6 +264,10 @@ def _validate(document, root):
                     type(n) is not int or not 0 <= n <= 255 for n in color
                 ):
                     raise ValueError(f"Invalid surf {field} color")
+        if "shore_wash_q8" in m:
+            if version < 3:
+                raise ValueError("shore_wash_q8 requires catalog version 3")
+            integer(m["shore_wash_q8"], 0, 256, "shore_wash_q8")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),
@@ -313,14 +317,26 @@ def _validate(document, root):
             grid = integer(m["variant_grid"], 1, 16, "Variant grid")
             if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid * blocks:
                 raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid*blocks variants")
+        if "stones" in m:
+            # Whole-stone path edges: the stone map spans one variant block.
+            if version < 4 or "variant_grid" not in m:
+                raise ValueError("stones require catalog version 4 and a variant_grid")
+            stones = assets(root) / data_path(m["stones"], "Stone map")
+            if not stones.is_file():
+                raise ValueError(f"Missing stone map: {stones}")
+            with Image.open(stones) as image:
+                side = m["variant_grid"] * 128
+                if image.size != (2 * side, side):
+                    raise ValueError(f"Stone map must be two {side}x{side} blocks: {stones}")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")
-            for key in ("full", "edge", "connected", "connected_interior"):
+            for key in ("full", "edge", "connected", "connected_interior", "connected_foreign"):
                 if key.startswith("connected") and key not in decor:
                     continue
                 frames = decor.get(key)
-                if not isinstance(frames, list) or not frames or len(frames) > 256:
+                limit = 50 * 16 if key == "connected_foreign" else 256
+                if not isinstance(frames, list) or not frames or len(frames) > limit:
                     raise ValueError("Decor frames must be a non-empty array")
                 if key.startswith("connected") and len(frames) % 16:
                     raise ValueError("Connected decor needs equal variants for all 16 masks")
@@ -342,6 +358,18 @@ def _validate(document, root):
                     raise ValueError("connected_open must be a boolean")
                 if decor["connected_open"] and not decor.get("connected"):
                     raise ValueError("connected_open needs connected frames")
+            if "connected_tiers" in decor:
+                if not isinstance(decor["connected_tiers"], bool):
+                    raise ValueError("connected_tiers must be a boolean")
+                if decor["connected_tiers"] and not decor.get("connected_open"):
+                    raise ValueError("connected_tiers needs connected_open")
+            if "connected_foreign" in decor:
+                frames = decor["connected_foreign"]
+                if (not isinstance(frames, list) or len(frames) != 50 * 16 or
+                        not all(isinstance(f, int) and not isinstance(f, bool) and 0 <= f <= 65535 for f in frames)):
+                    raise ValueError("connected_foreign needs 16 frames for each of the 50 own/foreign corner codes")
+                if not (decor.get("connected_corners") and decor.get("connected_open")):
+                    raise ValueError("connected_foreign needs connected_corners and connected_open")
             decor_sprites.add(decor["sprite"])
         if "overlay" in m:
             overlay = m["overlay"]

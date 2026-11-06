@@ -238,6 +238,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		}
 		v.variantBlocks = integerInRange(m.value("variant_blocks", nlohmann::json(1)), 1, 16);
 		require(!m.contains("variant_blocks") || v.variantGrid, "variant_blocks requires variant_grid");
+		if (m.contains("stones"))
+		{
+			// The stone map numbers the stones of one variant block.
+			require(version >= 4 && v.variantGrid, "stones require catalog version 4 and a variant_grid");
+			v.stones = dataPath(m.at("stones"));
+		}
 		if (m.contains("variant_block_group"))
 		{
 			const auto &group = m.at("variant_block_group");
@@ -250,13 +256,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge", "connected", "connected_interior"})
+			for (const auto *key : {"full", "edge", "connected", "connected_interior", "connected_foreign"})
 			{
 				const std::string name = key;
 				if (name.starts_with("connected") && !d.contains(key)) continue;
 				auto &frames = name == "full" ? v.decor.full : name == "edge" ? v.decor.edge :
-					name == "connected" ? v.decor.connected : v.decor.connectedInterior;
-				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
+					name == "connected" ? v.decor.connected : name == "connected_interior" ?
+					v.decor.connectedInterior : v.decor.connectedForeign;
+				const std::size_t limit = name == "connected_foreign" ? ForeignCodes * 16 : 256;
+				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= limit,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
 					frames.push_back(integerInRange(frame, 0, 65535));
@@ -277,6 +285,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				require(!v.decor.connectedOpen || !v.decor.connected.empty(),
 					"connected_open needs connected frames");
 			}
+			if (d.contains("connected_tiers"))
+			{
+				require(d.at("connected_tiers").is_boolean(), "connected_tiers must be a boolean");
+				v.decor.connectedTiers = d.at("connected_tiers").get<bool>();
+				require(!v.decor.connectedTiers || v.decor.connectedOpen, "connected_tiers needs connected_open");
+			}
+			require(v.decor.connectedForeign.empty() ||
+				(v.decor.connectedCorners && v.decor.connectedOpen && v.decor.connectedForeign.size() == ForeignCodes * 16),
+				"connected_foreign needs connected_corners, connected_open and 16 colours per code");
 			require(v.decor.connectedInterior.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
 				"connected_interior needs connected_corners and equal variants per colour");
@@ -329,6 +346,11 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				integerInRange(s.value("fringe_width_q8", nlohmann::json(0)), 0, 2048);
 			if (s.contains("fringe"))
 				v.seam.fringeColor = rgbColor(s.at("fringe"));
+		}
+		if (m.contains("shore_wash_q8"))
+		{
+			require(version >= 3, "shore_wash_q8 requires catalog version 3");
+			v.shoreWash = integerInRange(m.at("shore_wash_q8"), 0, 256);
 		}
 		if (m.contains("surf"))
 		{
@@ -449,6 +471,32 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
 }
+int foreignCodeIndex(unsigned ownMask, unsigned foreignMask)
+{
+	if (!(ownMask & 15u) || !(foreignMask & 15u) || (ownMask & foreignMask))
+		return -1;
+	unsigned code = 0, scale = 1;
+	for (unsigned k = 0; k < 4; ++k, scale *= 3)
+		code += scale * (ownMask >> k & 1u ? 1u : foreignMask >> k & 1u ? 2u : 0u);
+	// Rank among the codes that have both an own and a foreign corner.
+	int index = 0;
+	for (unsigned c = 0; c < code; ++c)
+	{
+		bool own = false, foreign = false;
+		for (unsigned k = 0, s = 1; k < 4; ++k, s *= 3)
+			own |= c / s % 3 == 1, foreign |= c / s % 3 == 2;
+		index += own && foreign;
+	}
+	return index;
+}
+int Catalog::decorForeignFrame(MaterialId id, unsigned ownMask, unsigned foreignMask, unsigned colours) const
+{
+	const auto &d = materials[id].decor;
+	const int code = foreignCodeIndex(ownMask, foreignMask);
+	if (d.connectedForeign.empty() || code < 0)
+		return -1;
+	return d.connectedForeign[unsigned(code) * 16 + (colours & 15u)];
+}
 int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t time, std::uint32_t seed, bool *animated) const
 {
 	if (animated) *animated = false;
@@ -501,7 +549,7 @@ void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned 
 		rgb[k] = (rgb[k] * keep + mean[k] * (256 - keep) + 128) / 256;
 }
 void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigned time,
-			   unsigned value[3])
+			   unsigned value[3], int land)
 {
 	// Beyond every band (most samples of a mixed cell) surf changes nothing.
 	if (margin >= (surfSide ? std::max(s.shallowWidth, s.foamWidth) : std::max(s.wetWidth, s.reach + s.foamWidth)))
@@ -517,7 +565,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	// The wash rushes up over the first 30% of its period and drains slowly.
 	constexpr int in = SurfWashInQ10;
 	const int rise = u < in ? u * 512 / in : 512 + (u - in) * 512 / (1024 - in);
-	const int run = s.reach * surfBump(rise) / 256;
+	const int run = s.reach * surfBump(rise) / 256 * land / 256;
 	for (int k = 0; k < 3; ++k)
 		value[k] = std::min(value[k], 255u);
 	int front;
@@ -525,7 +573,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.shallowWidth)
 		{
-			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth;
+			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth * land / 256;
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -535,14 +583,14 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.wetWidth)
 		{
-			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth;
+			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth * land / 256;
 			for (int k = 0; k < 3; ++k)
 				value[k] = value[k] * unsigned(dark) / 256;
 		}
 		// A thin sheet of water covers the land the wash has reached.
 		if (margin < run)
 		{
-			const int amount = s.shallow * (run - margin) / (2 * run);
+			const int amount = s.shallow * (run - margin) / (2 * run) * land / 256;
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -552,7 +600,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		const int breakup = 96 + (surfBump(wx * 5 >> 7 & 1023) +
 								  surfBump(((wy * 7 >> 7) + phase) & 1023)) * 160 / 512;
-		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256;
+		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256 * land / 256;
 		for (int k = 0; k < 3; ++k)
 			value[k] = surfMix(value[k], s.foamColor[k], amount);
 	}

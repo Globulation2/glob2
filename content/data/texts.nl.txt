@@ -5754,18 +5754,34 @@ Rijpblokken
 Maansteenruiten
 [frost_pinwheel]
 Rijpmolentje
+[arctic_tundra]
+Arctische toendrabodem
+[glacier]
+Gletsjer
+[icefall]
+IJsval
+[sandstone_benches]
+Zandsteenbanken
+[obsidian_ridge]
+Obsidiaanrug
+[granite_tors]
+Granietrotsen
+[travertine_terraces]
+Travertijnterrassen
+[penitentes]
+Boetelingensneeuw
+[termite_mounds]
+Termietenheuvels
+[hoodoos]
+Aardpiramides
+[petrified_stumps]
+Versteende stronken
 [terrain group water]
 Water
 [terrain group sand]
 Zand
 [terrain group grass]
 Gras
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 IJs
 [terrain group paths]

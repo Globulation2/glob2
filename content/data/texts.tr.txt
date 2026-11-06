@@ -5754,18 +5754,34 @@ Kırağı kesme taşı
 Aytaşı eşkenar dörtgenleri
 [frost_pinwheel]
 Ayaz fırıldağı
+[arctic_tundra]
+Arktik tundra toprağı
+[glacier]
+Buzul
+[icefall]
+Buz şelalesi
+[sandstone_benches]
+Kumtaşı sekileri
+[obsidian_ridge]
+Obsidyen sırtı
+[granite_tors]
+Granit kayalıkları
+[travertine_terraces]
+Traverten terasları
+[penitentes]
+Tövbekâr karlar
+[termite_mounds]
+Termit tümsekleri
+[hoodoos]
+Peri bacaları
+[petrified_stumps]
+Taşlaşmış kütükler
 [terrain group water]
 Su
 [terrain group sand]
 Kum
 [terrain group grass]
 Çimen
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Buz
 [terrain group paths]

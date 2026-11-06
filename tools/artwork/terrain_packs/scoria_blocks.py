@@ -57,7 +57,7 @@ def pores(ctx, rng, density):
                  "soil": (44, 40, 38), "rubble": (104, 62, 46), "grit": (96, 90, 84),
                  "cinder": (30, 27, 26), "cinder_red": (112, 58, 38), "rust": (126, 70, 42),
                  "ash_fill": (124, 118, 108), "joint": (90, 84, 78)},
-        style=Style(luma=70, std=17, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=70, std=17, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_scoria_blocks(ctx):
     p, size = RECIPES["scoria_blocks"].palette, ctx.size
     rects = basketweave(size, ctx.shared_rng)

@@ -120,7 +120,9 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         variants.push_back({Uint16(surf.period), Uint16(surf.reach), Uint16(surf.foam), Uint16(surf.foamWidth)});
         variants.push_back({Uint16(surf.shallow), Uint16(surf.shallowWidth), Uint16(surf.wet), Uint16(surf.wetWidth)});
         variants.push_back({surf.shallowColor[0], surf.shallowColor[1], surf.shallowColor[2], Uint16(surf.ticks)});
-        variants.push_back({surf.foamColor[0], surf.foamColor[1], surf.foamColor[2], 0});
+        // The fourth field damps a liquid's wash against this material as land;
+        // zero keeps the full wash.
+        variants.push_back({surf.foamColor[0], surf.foamColor[1], surf.foamColor[2], Uint16(256 - material.shoreWash)});
         const auto &seam = material.seam;
         const auto cast = material.decor.connected.empty() ? seam.cast : 0;
         variants.push_back({Uint16(seam.height), Uint16(cast), Uint16(seam.castWidth), Uint16(seam.fringe)});
@@ -144,8 +146,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
             if (streamCoverage && i % 64 == 0) co_yield 0;
             const auto recipe = compositor.describe(map, x, y);
             calm[i] = recipe.calm;
-            if (std::all_of(recipe.corners.begin(), recipe.corners.end(),
-                            [&](auto id) { return id == recipe.corners.front(); }))
+            if (recipe.uniform())
             {
                 cells[i][0] = variantSlot(recipe, recipe.corners.front());
                 continue;
@@ -170,10 +171,10 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         const auto &recipe = mixed[i];
         const auto cell = map.coordToIndex(recipe.x, recipe.y);
         auto &record = cells[cell];
-        unsigned slot = 0;
-        for (auto corner = recipe.corners.begin(); corner != recipe.corners.end(); ++corner)
-            if (std::find(recipe.corners.begin(), corner, *corner) == corner)
-                record[slot++] = variantSlot(recipe, *corner);
+        // The record's slots follow the coverage palette: corners, then stones.
+        std::array<TerrainVisual::MaterialId, 4> palette;
+        for (unsigned slot = 0, n = recipe.palette(palette); slot < n; ++slot)
+            record[slot] = variantSlot(recipe, palette[slot]);
         masks[cell] = Uint16(i + 1);
     }
     if (!streamCoverage)

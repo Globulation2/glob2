@@ -194,7 +194,11 @@ evaluated. The remap keeps both cell ends and one slope at each, so fields stay
 continuous across cells while contours hug the midlines and corners tighten from
 arcs toward right angles; roads use 224, tracks 128 and liquids and lava 0.
 Corner shares take the squarest smooth contact around a vertex and interpolate
-like wiggle.
+like wiggle. A square vertex whose 3×3 neighbourhood is two materials split by a
+45-degree line (a staircase edge, or one step off it) takes a squareness of -0.2
+instead, which runs the contour along the staircase straight to within a pixel.
+Right-angled corners keep their profile squareness, and round profiles are
+unchanged. Shallower staircases (2:1 and steeper) still step.
 
 Meanders multiply each field by world-anchored value noise of the material's own
 `wiggle_period`, in two octaves. Noise never reaches a zero field, so a material
@@ -217,6 +221,39 @@ material's variant borders toward one periodic master while keeping interior
 texture detail. The four-pixel border blend operates on premultiplied RGBA, so both
 color and opacity agree across variants without introducing dark transparent fringes.
 The compositor does not bake a texture-by-mask-by-material-pair product.
+
+### Whole-stone edges
+
+Laid stone paths end on whole stones: where trail, brick path, mossy setts,
+sandstone tiles or the ashlar, causeway, scoria, lozenge and pinwheel paths meet
+other ground, each stone is kept or dropped as a unit, so the edge runs along
+the joints instead of cutting a stone. Boardwalk keeps the cut border, as sawn
+planks would. A material opts in with `"stones"`, the data path of its stone
+map (see [Stone maps](terrain-production.md#stone-maps)).
+
+A stone follows the smooth border at its centre: it is kept when its material
+has the largest coverage there. The decision is made once per stone, not per
+pixel. `Compositor::describe` records, for a cell and its eight neighbours, one
+bit per stone centred in each (`Recipe::stonesKept`), because a stone reaches at
+most one cell beyond the one holding its centre. A stone that spans two cells
+reads the same bit from both, and cached pages that compare recipes rebuild
+when any decision changes. Where two stone paths meet, the dominant one keeps
+whole stones; a cell whose corners, stone material and revealed ground would
+exceed four materials keeps the smooth border.
+
+Sampling a pixel then costs one stone-map lookup and a bit test. A kept stone's
+face fades into the ground it borders over one logical pixel, half on either
+side of the joint; a dropped stone reveals the most common other ground around
+the cell. The seam distance measures from the stone edge, so the path's seam
+cast draws a contact shadow along the stones. Kept stones may overhang into a
+cell whose corners all show other ground, so such cells are not uniform
+(`Recipe::uniform`) and draw a mask; their palette lists the stone material and
+the revealed ground after the corners (`Recipe::palette`). Every pipeline,
+software and GPU pages at any oversampling and direct terrain, reads the same
+masks. Overview recipes leave stones out.
+
+Stone maps are decoded on first use (four bytes per texel, 4 MiB for an 8×8
+block at HD resolution) and kept; a map without stone paths decodes none.
 
 ### Seams
 
@@ -251,6 +288,16 @@ over `foam_width_q8` on either side. Washes rush up over the first 30% of the
 period and drain over the rest, staggered along the coast by a smooth world-space
 field whose 256- and 512-pixel wavelengths divide every map size, so the pattern
 wraps cleanly; another field breaks the foam line into patches.
+
+The land side sets how hard the wash breaks on it: a material's optional
+`shore_wash_q8` (0–256, default 256) scales the wash's reach and the strength
+of every band (shallows, wet band, sheet and foam) wherever a liquid's surf meets
+it. Laid paths (the `built` border class: trail, brick and stone paths and
+boardwalk) take 77, about 30%, so water laps quietly against a quay or a road
+instead of breaking over it. The page shader receives each palette slot's value
+in `surfLand`; direct terrain stores its damping (256 minus the wash) in the
+otherwise unused fourth field of the foam record, so hand-built records keep the
+full wash.
 
 Surf reads the same per-sample distance as seams, which is exact only within
 eight logical pixels of the edge, so each band and `reach_q8` plus

@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-weathered_sandstone",
   "profile": "rock",
   "class": "solid",
-  "preview": [157, 134, 89],
+  "preview": [156, 135, 93],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [157, 134, 89],
+  "minimap": [156, 135, 93],
   "seam": {
     "height": 2,
     "cast_q8": 40,

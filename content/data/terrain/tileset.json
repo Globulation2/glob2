@@ -710,7 +710,18 @@
     "scoria_blocks",
     "rime_ashlar",
     "moonstone_lozenge",
-    "frost_pinwheel"
+    "frost_pinwheel",
+    "arctic_tundra",
+    "glacier",
+    "icefall",
+    "sandstone_benches",
+    "obsidian_ridge",
+    "granite_tors",
+    "travertine_terraces",
+    "penitentes",
+    "termite_mounds",
+    "hoodoos",
+    "petrified_stumps"
   ],
   "bindings": {
     "water": "water",
@@ -765,7 +776,18 @@
     "scoria_blocks": "scoria_blocks",
     "rime_ashlar": "rime_ashlar",
     "moonstone_lozenge": "moonstone_lozenge",
-    "frost_pinwheel": "frost_pinwheel"
+    "frost_pinwheel": "frost_pinwheel",
+    "arctic_tundra": "arctic_tundra",
+    "glacier": "glacier",
+    "icefall": "icefall",
+    "sandstone_benches": "sandstone_benches",
+    "obsidian_ridge": "obsidian_ridge",
+    "granite_tors": "granite_tors",
+    "travertine_terraces": "travertine_terraces",
+    "penitentes": "penitentes",
+    "termite_mounds": "termite_mounds",
+    "hoodoos": "hoodoos",
+    "petrified_stumps": "petrified_stumps"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

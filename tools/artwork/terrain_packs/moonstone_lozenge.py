@@ -16,6 +16,7 @@ from terrain_core import (
     mix,
     ramp,
     recipe,
+    record_stones,
     smoothstep,
 )
 
@@ -59,7 +60,7 @@ def lozenge_paving(size, diag, key, gap):
         palette={**FROST, "dark": (196, 194, 200), "mid": (220, 218, 222), "light": (238, 236, 238),
                  "warm": (230, 222, 216), "cool": (206, 208, 230), "vein": (146, 150, 176),
                  "key": (108, 120, 176), "key_light": (170, 180, 226)},
-        style=Style(luma=192, std=20, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=192, std=20, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_moonstone_lozenge(ctx):
     """Polished white marble lozenges with grey-blue veins and blue moonstone
     keystones: a kept, formal floor with hairline cracks and a frost sheen."""
@@ -90,5 +91,7 @@ def render_moonstone_lozenge(ctx):
                 joint=(0.0, 1.8), creep=2.5, chipping=1.0, bevel=1.6, bevel_strength=0.3,
                 moss=1.0, weeds=0.35, lichen=0.4, grit=0.6, dust=0.15, lip=0.2, shadow=0.3, damp=0.5,
                 finish_grain=0.05)
+    # Keystones are inlays: they follow the diamonds around them at a border.
+    record_stones(ctx, ids, edge, centres, inlays=range(first_key, len(centres)))
     rgb = weather(ctx, rgb, edge, decay, streaks=0.45, glaze=0.3)
     return rgb, None

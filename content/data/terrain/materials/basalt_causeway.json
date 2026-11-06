@@ -1038,5 +1038,7 @@
     "height": 3,
     "cast_q8": 48,
     "cast_width_q8": 512
-  }
+  },
+  "stones": "data/terrain/stones/basalt_causeway.png",
+  "shore_wash_q8": 77
 }

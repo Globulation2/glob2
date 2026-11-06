@@ -7,8 +7,11 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 210
-// version 210 persists material destination planes, active claims, pending unit routes, claim policy cadence and bounded claim recovery; snapshot-v4 checksums.
+#define VERSION_MINOR 213
+// version 213 persists material destination planes, active claims, pending unit routes, claim policy cadence and bounded claim recovery; snapshot-v4 checksums.
+// version 212 adds nine built-in Barriers and Outcrops looks; custom terrain IDs move up by nine.
+// version 211 adds built-in glacier; custom terrain IDs move up by one.
+// version 210 adds built-in arctic tundra; custom terrain IDs move up by one.
 // version 209 adds built-in rime ashlar, moonstone lozenge and frost pinwheel; custom terrain IDs move up by three.
 // version 208 adds built-in slate ashlar, basalt causeway and scoria blocks; custom terrain IDs move up by three.
 // version 207 adds built-in molten lava pool; custom terrain IDs move up by one.

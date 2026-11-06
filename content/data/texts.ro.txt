@@ -5754,18 +5754,34 @@ Blocuri de chiciură
 Romburi de piatra-lunii
 [frost_pinwheel]
 Morișcă de brumă
+[arctic_tundra]
+Sol de tundră arctică
+[glacier]
+Ghețar
+[icefall]
+Cascadă de gheață
+[sandstone_benches]
+Bănci de gresie
+[obsidian_ridge]
+Creastă de obsidian
+[granite_tors]
+Stânci de granit
+[travertine_terraces]
+Terase de travertin
+[penitentes]
+Zăpezi penitente
+[termite_mounds]
+Termitiere
+[hoodoos]
+Hornuri ale zânelor
+[petrified_stumps]
+Cioturi pietrificate
 [terrain group water]
 Apă
 [terrain group sand]
 Nisip
 [terrain group grass]
 Iarbă
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gheață
 [terrain group paths]

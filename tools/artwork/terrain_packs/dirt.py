@@ -21,9 +21,9 @@ from terrain_core import (
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (104, 82, 56), "mid": (136, 108, 74), "light": (160, 132, 96), "pebble": (86, 68, 48),
                  "crack": (66, 48, 32)},
-        style=Style(luma=116, std=10, grain_max=9), periodic=True, grid=8, blocks=4)
+        style=Style(luma=116, std=7, grain_max=9), periodic=True, grid=8, blocks=4)
 def render_dirt(ctx):
-    """The original speckled earth and stones, under the barren group's cracks."""
+    """The original speckled earth and stones, under the barren group's mark."""
     p = RECIPES["dirt"].palette
     common, common_grain, common_pebbles = dirt_fields(ctx.shared_rng, ctx.size)
     own, own_grain, own_pebbles = dirt_fields(ctx.rng, ctx.size)

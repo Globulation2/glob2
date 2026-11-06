@@ -5690,12 +5690,6 @@ Air
 Pasir
 [terrain group grass]
 Rumput
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ais
 [terrain group paths]
@@ -6876,6 +6870,28 @@ Batu pahat fros
 Rombus batu bulan
 [frost_pinwheel]
 Kincir fros
+[arctic_tundra]
+Tanah tundra artik
+[glacier]
+Glasier
+[icefall]
+Air terjun ais
+[sandstone_benches]
+Bangku batu pasir
+[obsidian_ridge]
+Rabung obsidian
+[granite_tors]
+Tor granit
+[travertine_terraces]
+Teres travertin
+[penitentes]
+Salji penitentes
+[termite_mounds]
+Busut anai-anai
+[hoodoos]
+Cerobong pari-pari
+[petrified_stumps]
+Tunggul membatu
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

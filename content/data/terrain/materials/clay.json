@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-clay",
   "profile": "soil",
   "class": "solid",
-  "preview": [175, 107, 77],
+  "preview": [172, 108, 79],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [175, 107, 77],
+  "minimap": [172, 108, 79],
   "seam": {
     "height": 2,
     "cast_q8": 40,

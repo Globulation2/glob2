@@ -732,7 +732,7 @@ void Map::removeTeam(void)
 
 namespace
 {
-// Material destination planes and claim state were first saved in format 210.
+// Material destination planes and claim state were first saved in format 213.
 constexpr int MaterialDestinationsFormat = FILE_FORMAT_VERSION_RESOURCE_CLAIMS;
 static_assert(ResourceClaims::ActiveClaimsFormat == FILE_FORMAT_VERSION_RESOURCE_CLAIMS);
 bool loadFlag(GAGCore::InputStream *stream, const char *name)
@@ -989,7 +989,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
     if (VERSION_MINOR<MaterialDestinationsFormat && gradientRuntime->materialDestinationsEnabled)
-        throw std::runtime_error("Material destinations require save format 210");
+        throw std::runtime_error("Material destinations require save format 213");
 	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
 	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
 	stream->writeEnterSection("mapRuntime");

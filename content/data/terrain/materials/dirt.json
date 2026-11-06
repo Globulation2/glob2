@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-dirt",
   "profile": "soil",
   "class": "solid",
-  "preview": [138, 112, 81],
+  "preview": [137, 112, 82],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [138, 112, 81],
+  "minimap": [137, 112, 82],
   "seam": {
     "height": 2,
     "cast_q8": 40,

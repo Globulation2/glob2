@@ -58,3 +58,8 @@ gha-creds-*.json
 
 # Browser development copies of the canonical online translation catalogs.
 /platforms/web/locales/
+/.playwright-mcp
+/browser
+/glob2
+/platform
+/profile-300

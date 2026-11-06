@@ -5754,18 +5754,34 @@ Izozkarrezko harlanduak
 Ilargi-harrizko erronboak
 [frost_pinwheel]
 Izotz-haize-errota
+[arctic_tundra]
+Tundra artikoko lurra
+[glacier]
+Glaziarra
+[icefall]
+Izotz-jauzia
+[sandstone_benches]
+Hareharri-bankuak
+[obsidian_ridge]
+Obsidiana-gailurra
+[granite_tors]
+Granitozko harkaitzak
+[travertine_terraces]
+Trabertino-terrazak
+[penitentes]
+Elur penitenteak
+[termite_mounds]
+Termita-tontorrak
+[hoodoos]
+Maitagarrien tximiniak
+[petrified_stumps]
+Harritutako enborrak
 [terrain group water]
 Ura
 [terrain group sand]
 Harea
 [terrain group grass]
 Belarra
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Izotza
 [terrain group paths]

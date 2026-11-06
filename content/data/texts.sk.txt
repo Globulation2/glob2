@@ -5754,18 +5754,34 @@ Kvádre z inovati
 Kosoštvorce z mesačného kameňa
 [frost_pinwheel]
 Mrazivý veterník
+[arctic_tundra]
+Arktická tundrová pôda
+[glacier]
+Ľadovec
+[icefall]
+Ľadopád
+[sandstone_benches]
+Pieskovcové lavice
+[obsidian_ridge]
+Obsidiánový hrebeň
+[granite_tors]
+Žulové skaly
+[travertine_terraces]
+Travertínové terasy
+[penitentes]
+Kajúcny sneh
+[termite_mounds]
+Termitiská
+[hoodoos]
+Skalné hríby
+[petrified_stumps]
+Skamenené pne
 [terrain group water]
 Voda
 [terrain group sand]
 Piesok
 [terrain group grass]
 Tráva
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ľad
 [terrain group paths]

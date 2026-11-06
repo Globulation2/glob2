@@ -176,6 +176,8 @@ vec3 surf(vec4 indices, vec2 uv, vec3 edge, vec3 color) {
         return color;
     vec4 shallow = variantRecord(index, 3.0);
     vec3 foam = variantRecord(index, 4.0).rgb / 255.0;
+    // Q8 shore wash of the land material across the shoreline, stored as its damping.
+    float land = 256.0 - variantRecord(liquidSide ? indices[neighbor] : indices[dominant], 4.0).w;
     float time = animationTime - mod(animationTime, shallow.w);
     float phase = floor(mod(time, shape.x) * 1024.0 / shape.x);
     vec2 position = mod(floor(world), mapSize) * 8192.0 + floor(uv) * 256.0 + 128.0;
@@ -184,23 +186,23 @@ vec3 surf(vec4 indices, vec2 uv, vec3 edge, vec3 color) {
                    bump(mod(floor((position.x + position.y) / 64.0), 1024.0));
     float u = mod(phase + offset, 1024.0);
     float rise = floor(u < 224.0 ? u * 512.0 / 224.0 : 512.0 + (u - 224.0) * 512.0 / 800.0);
-    float run = floor(shape.y * bump(rise) / 256.0);
+    float run = floor(floor(shape.y * bump(rise) / 256.0) * land / 256.0);
     float front;
     if (liquidSide) {
         if (margin < band.y)
-            color = mix(color, shallow.rgb / 255.0, band.x * (band.y - margin) / (256.0 * band.y));
+            color = mix(color, shallow.rgb / 255.0, band.x * (band.y - margin) / (256.0 * band.y) * land / 256.0);
         front = margin + run;
     } else {
         if (margin < band.w)
-            color *= 1.0 - band.z * (band.w - margin) / (256.0 * band.w);
+            color *= 1.0 - band.z * (band.w - margin) / (256.0 * band.w) * land / 256.0;
         if (margin < run)
-            color = mix(color, shallow.rgb / 255.0, band.x * (run - margin) / (512.0 * run));
+            color = mix(color, shallow.rgb / 255.0, band.x * (run - margin) / (512.0 * run) * land / 256.0);
         front = abs(margin - run);
     }
     if (front < shape.w) {
         float breakup = 96.0 + (bump(mod(floor(position.x * 5.0 / 128.0), 1024.0)) +
             bump(mod(floor(position.y * 7.0 / 128.0) + phase, 1024.0))) * 160.0 / 512.0;
-        color = mix(color, foam, shape.z * (shape.w - front) / shape.w * breakup / 65536.0);
+        color = mix(color, foam, shape.z * (shape.w - front) / shape.w * breakup / 65536.0 * land / 256.0);
     }
     return color;
 }

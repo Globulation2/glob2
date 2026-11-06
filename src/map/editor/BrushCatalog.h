@@ -157,9 +157,6 @@ constexpr bool terrainGroupIsClassic(TerrainGroup group)
 {
 	return group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass;
 }
-// The string-table key of the sentence a group's rule line carries on how it
-// plays (water, sand and grass), or nullptr for the other groups.
-const char *terrainGroupNoteKey(TerrainGroup group);
 // The selectable built-in members of a catalogue group, in table order.
 std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group);
 // One line of plain rules read from the properties, so a brush tells the author

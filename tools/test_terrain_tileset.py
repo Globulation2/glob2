@@ -194,8 +194,10 @@ class TerrainTileset(unittest.TestCase):
     def test_open_edged_decor_is_a_flag_on_connected_frames(self):
         cliffs = next(m for m in self.document["materials"] if m["key"] == "cliffs")
         hedge = next(m for m in self.document["materials"] if m["key"] == "hedge")
-        # Cliffs stand on open ground; foliage keeps a clear border.
+        glacier = next(m for m in self.document["materials"] if m["key"] == "glacier")
+        # Cliffs and glacier stand on open ground; foliage keeps a clear border.
         self.assertIs(cliffs["decor"]["connected_open"], True)
+        self.assertIs(glacier["decor"]["connected_open"], True)
         self.assertNotIn("connected_open", hedge["decor"])
         cliffs["decor"]["connected_open"] = 1
         with self.assertRaises(ValueError):
@@ -307,6 +309,8 @@ class TerrainTileset(unittest.TestCase):
             material.pop("seam", None)
             material.pop("surf", None)
             material.pop("class", None)
+            material.pop("stones", None)
+            material.pop("shore_wash_q8", None)
         self.assertEqual(len(validate(self.document)), catalog_frame_count(self.document))
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):

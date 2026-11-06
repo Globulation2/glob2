@@ -5754,18 +5754,34 @@ Sillares de escarcha
 Rombos de piedra lunar
 [frost_pinwheel]
 Molinete de escarcha
+[arctic_tundra]
+Suelo de tundra ártica
+[glacier]
+Glaciar
+[icefall]
+Cascada de hielo
+[sandstone_benches]
+Bancos de arenisca
+[obsidian_ridge]
+Cresta de obsidiana
+[granite_tors]
+Tors de granito
+[travertine_terraces]
+Terrazas de travertino
+[penitentes]
+Nieves penitentes
+[termite_mounds]
+Termiteros
+[hoodoos]
+Chimeneas de hadas
+[petrified_stumps]
+Tocones petrificados
 [terrain group water]
 Agua
 [terrain group sand]
 Arena
 [terrain group grass]
 Hierba
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Hielo
 [terrain group paths]

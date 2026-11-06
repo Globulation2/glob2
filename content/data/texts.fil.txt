@@ -5714,12 +5714,6 @@ Tubig
 Buhangin
 [terrain group grass]
 Damo
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Yelo
 [terrain group paths]
@@ -6874,6 +6868,28 @@ Batong may hamog na yelo
 Mga rombo ng moonstone
 [frost_pinwheel]
 Pinwheel ng hamog na yelo
+[arctic_tundra]
+Lupang tundra ng Artiko
+[glacier]
+Glacier
+[icefall]
+Talon ng yelo
+[sandstone_benches]
+Mga baitang ng sandstone
+[obsidian_ridge]
+Tagaytay ng obsidian
+[granite_tors]
+Mga tor ng granite
+[travertine_terraces]
+Mga terasa ng travertine
+[penitentes]
+Niyebeng penitentes
+[termite_mounds]
+Mga punso ng anay
+[hoodoos]
+Mga hoodoo
+[petrified_stumps]
+Mga tuod na naging bato
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

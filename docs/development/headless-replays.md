@@ -39,10 +39,10 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
-Format 210 corrects worker material-target projection and harvest eligibility.
+Format 213 corrects worker material-target projection and harvest eligibility.
 These corrections can change ordinary worker movement even when experimental
 claims are disabled. It also extends authoritative snapshot checksums
-to cover claim routes and bounded recovery, so the replay floor is 210. Earlier saves remain loadable
+to cover claim routes and bounded recovery, so the replay floor is 213. Earlier saves remain loadable
 and adopt the corrected simulation. Material destination and claim experiments
 remain explicit new-game options and cannot record replays.
 

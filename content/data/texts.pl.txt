@@ -5754,18 +5754,34 @@ Szronione ciosy
 Romby z kamienia księżycowego
 [frost_pinwheel]
 Szronowy wiatraczek
+[arctic_tundra]
+Gleba tundry arktycznej
+[glacier]
+Lodowiec
+[icefall]
+Lodospad
+[sandstone_benches]
+Ławice piaskowca
+[obsidian_ridge]
+Grzbiet obsydianowy
+[granite_tors]
+Ostańce granitowe
+[travertine_terraces]
+Tarasy trawertynowe
+[penitentes]
+Penitenty śnieżne
+[termite_mounds]
+Termitiery
+[hoodoos]
+Grzyby skalne
+[petrified_stumps]
+Skamieniałe pnie
 [terrain group water]
 Woda
 [terrain group sand]
 Piasek
 [terrain group grass]
 Trawa
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Lód
 [terrain group paths]

@@ -5730,18 +5730,34 @@ FFmpeg не е наличен, така че записът е изключен.
 Ромбове от лунен камък
 [frost_pinwheel]
 Скрежна мелничка
+[arctic_tundra]
+Арктическа тундрова почва
+[glacier]
+Ледник
+[icefall]
+Ледопад
+[sandstone_benches]
+Пясъчникови прагове
+[obsidian_ridge]
+Обсидианов хребет
+[granite_tors]
+Гранитни скали
+[travertine_terraces]
+Травертинови тераси
+[penitentes]
+Покаяни снегове
+[termite_mounds]
+Термитници
+[hoodoos]
+Земни пирамиди
+[petrified_stumps]
+Вкаменени пънове
 [terrain group water]
 Вода
 [terrain group sand]
 Пясък
 [terrain group grass]
 Трева
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Лед
 [terrain group paths]

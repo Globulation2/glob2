@@ -23,7 +23,7 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 210 extends authoritative snapshot checksums to
+//! the reader still accepts. Version 213 extends authoritative snapshot checksums to
 //! claim routes and bounded recovery (snapshot v4); earlier recordings follow different
 //! simulation trajectories or checksum coverage.
 //! Save compatibility has a separate floor in Version.h.

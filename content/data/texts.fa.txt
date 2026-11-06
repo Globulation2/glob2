@@ -5754,18 +5754,34 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 لوزی‌های سنگ ماه
 [frost_pinwheel]
 فرفره یخ‌بندان
+[arctic_tundra]
+زمین توندرای قطبی
+[glacier]
+یخچال طبیعی
+[icefall]
+آبشار یخی
+[sandstone_benches]
+سکوهای ماسه‌سنگی
+[obsidian_ridge]
+ستیغ ابسیدین
+[granite_tors]
+تخته‌سنگ‌های گرانیتی
+[travertine_terraces]
+پلکان تراورتن
+[penitentes]
+برف‌های توبه‌کار
+[termite_mounds]
+تپه‌های موریانه
+[hoodoos]
+دودکش‌های جن
+[petrified_stumps]
+کنده‌های سنگ‌شده
 [terrain group water]
 آب
 [terrain group sand]
 ماسه
 [terrain group grass]
 چمن
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 یخ
 [terrain group paths]

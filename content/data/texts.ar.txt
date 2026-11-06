@@ -5754,18 +5754,34 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 معينات حجر القمر
 [frost_pinwheel]
 دولاب الصقيع
+[arctic_tundra]
+أرض التندرا القطبية
+[glacier]
+نهر جليدي
+[icefall]
+شلال جليدي
+[sandstone_benches]
+مصاطب الحجر الرملي
+[obsidian_ridge]
+سلسلة الزجاج البركاني
+[granite_tors]
+صخور الغرانيت
+[travertine_terraces]
+مدرجات الترافرتين
+[penitentes]
+أشواك الثلج
+[termite_mounds]
+تلال النمل الأبيض
+[hoodoos]
+أعمدة الهودو
+[petrified_stumps]
+جذوع متحجرة
 [terrain group water]
 ماء
 [terrain group sand]
 رمل
 [terrain group grass]
 عشب
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 جليد
 [terrain group paths]

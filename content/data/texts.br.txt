@@ -5754,18 +5754,34 @@ Mogerezh frim
 Lozanjoù maen-loar
 [frost_pinwheel]
 Rod-avel frim
+[arctic_tundra]
+Douar toundra arktek
+[glacier]
+Geleira
+[icefall]
+Cascata de gelo
+[sandstone_benches]
+Bancadas de arenito
+[obsidian_ridge]
+Crista de obsidiana
+[granite_tors]
+Torres de granito
+[travertine_terraces]
+Terraços de travertino
+[penitentes]
+Neves penitentes
+[termite_mounds]
+Cupinzeiros
+[hoodoos]
+Chaminés de fada
+[petrified_stumps]
+Tocos petrificados
 [terrain group water]
 Água
 [terrain group sand]
 Areia
 [terrain group grass]
 Grama
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gelo
 [terrain group paths]

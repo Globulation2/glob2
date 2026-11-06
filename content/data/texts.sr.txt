@@ -5754,18 +5754,34 @@ FFmpeg није доступан, па је снимање искључено. �
 Ромбови од месечевог камена
 [frost_pinwheel]
 Мразна вртешка
+[arctic_tundra]
+Арктичко тундрено тло
+[glacier]
+Глечер
+[icefall]
+Ледопад
+[sandstone_benches]
+Пешчарски прагови
+[obsidian_ridge]
+Опсидијански гребен
+[granite_tors]
+Гранитне стене
+[travertine_terraces]
+Травертинске терасе
+[penitentes]
+Покајнички снег
+[termite_mounds]
+Термитњаци
+[hoodoos]
+Земљане пирамиде
+[petrified_stumps]
+Окамењени пањеви
 [terrain group water]
 Вода
 [terrain group sand]
 Песак
 [terrain group grass]
 Трава
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Лед
 [terrain group paths]

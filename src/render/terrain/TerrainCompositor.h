@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainMaterials.h"
+#include "TerrainStones.h"
 #include "TerrainType.h"
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
 #include <memory>
+#include <mutex>
 #include <span>
 
 class SceneMap;
@@ -91,12 +93,48 @@ class Compositor
 	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
     GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
-    GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
 	// How far the largest decor frame reaches past its cell, for view culling.
 	DecorReach decorReach() const { return reach; }
-	// Any undecorated corner suppresses raised objects. Decorated-only borders
-	// choose one material, weighted by corner count, using presentation hashing.
-	int decorFrame(const SceneMap &, int x, int y) const;
+	// Terraces of tiered masses. TierField holds, per map vertex, how many
+	// vertices deep it lies inside its mass (capped); it is presentation only,
+	// built once per terrain revision and shared, so per-cell queries are a few
+	// array reads with no locking. tierField returns null when no material is
+	// tiered; callers fetch it once per draw and pass it to decorLayers.
+	struct TierField
+	{
+		std::uint64_t revision = 0;
+		const void *registry = nullptr;
+		int w = 0, h = 0;
+		std::uint32_t seed = 0;
+		std::vector<std::uint8_t> depth;
+	};
+	std::shared_ptr<const TierField> tierField(const SceneMap &) const;
+	// A cell's raised decor, one frame per slot, drawn in slot order: up to two
+	// connected masses that stand on open ground (cliffs, icefall, glacier...),
+	// connected foliage (hedge and thicket, which join one another), every other
+	// obstacle, then the terraces of tiered masses. Each slot draws only from
+	// its own corners, so masses keep their walls against foliage and crags.
+	// Where an open-edged mass meets another connected material it stands back
+	// from it (connected_foreign), so the two show their own rims and walls
+	// across a valley half a cell wide; the mass with more north corners draws
+	// first. An undecorated corner suppresses the foliage and obstacle slots;
+	// within those, mixed materials choose one by presentation hashing,
+	// weighted by corner count. Terrace slot k draws decorSlotRise higher.
+	static constexpr unsigned TierSlot = 4;
+	static constexpr unsigned DecorSlots = TierSlot + MaxDecorTiers;
+	static constexpr int decorSlotRise(unsigned slot)
+	{
+		return slot >= TierSlot ? int(slot - TierSlot + 1) * DecorTierRise : 0;
+	}
+	struct DecorLayer
+	{
+		GAGCore::Sprite *sprite = nullptr;
+		int frame = -1;
+	};
+	std::array<DecorLayer, DecorSlots> decorLayers(const SceneMap &, int x, int y,
+		const TierField *tiers = nullptr) const;
+	// The frame of terrace `tier` (1..MaxDecorTiers) over a cell, or -1.
+	int decorTierFrame(const SceneMap &, const TierField &, int x, int y, int tier) const;
 	// Flat animated overlays (fertile glints), drawn under decor. A cell draws
 	// one only when all four corners carry an overlay. `time` is the presentation
 	// clock that animates lava and water (MapRenderState::animationTime), not the
@@ -146,6 +184,7 @@ class Compositor
             std::shared_ptr<const MaterialPixels> pixels;
         };
         std::shared_ptr<const Catalog> definitions;
+        std::shared_ptr<const StoneMaps> stones;
         std::vector<std::vector<Texture>> textures;
         std::vector<char> included;
         std::size_t bytes = 0;
@@ -184,10 +223,10 @@ class Compositor
       std::vector<CpuPublication> publishedPixels;
       std::weak_ptr<const Catalog> publishedCatalog;
       std::size_t cpuPublicationBytes() const;
-      static void composePixels(const Catalog &, const Recipe &, SDL_Surface *, int, int, int,
+      static void composePixels(const Catalog &, const StoneMaps &, const Recipe &, SDL_Surface *, int, int, int,
                                 std::span<const PreparedMaterialView>, const CellMask *,
                                 unsigned surfTime);
-      static void buildMask(const Catalog &, const Recipe &, int, CellMask &);
+      static void buildMask(const Catalog &, const StoneMaps &, const Recipe &, int, CellMask &);
 	struct Texture
 	{
 		GAGCore::DrawableSurface *source = nullptr;
@@ -201,9 +240,14 @@ class Compositor
 	bool hasNeighborhoodProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
-    Recipe describe(const SceneMap &, int x, int y, bool shoreCalm) const;
+    // Detailed recipes add shore calm and whole-stone path edges.
+    Recipe describe(const SceneMap &, int x, int y, bool detailed) const;
+    Recipe describeCell(const SceneMap &, int x, int y, bool shoreCalm) const;
 	void describeShoreCalm(const SceneMap&, Recipe &) const;
-    std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
+	void describeStones(const SceneMap &, Recipe &) const;
+	std::shared_ptr<const StoneMaps> stoneMaps;
+	std::uint64_t instance = 0; // Distinguishes compositors in shared presentation caches.
+    unsigned decorSlot(MaterialId) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
@@ -212,6 +256,9 @@ class Compositor
 	std::vector<GAGCore::Sprite *> decorSprites;
     GAGCore::Sprite *sharedDecorSprite = nullptr;
     bool mixedDecorSprites = false;
+    bool tieredDecor = false;
+    mutable std::mutex tierMutex;
+    mutable std::shared_ptr<const TierField> tierCache;
 	DecorReach reach;
 	std::vector<GAGCore::Sprite *> overlaySprites;
 	GAGCore::Sprite *sharedOverlaySprite = nullptr;

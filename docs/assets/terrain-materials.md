@@ -50,8 +50,13 @@ Each material supplies:
   and `variant_grid`, see [Positional variants](terrain-production.md#positional-variants);
 - optional `variant_blocks` for interchangeable interiors and `variant_block_group`
   for materials that share layout selection, see [Interchangeable blocks](terrain-production.md#interchangeable-blocks);
+- optional `stones` (version 4, with `variant_grid`), the data path of a laid
+  path's stone map, so its borders keep or drop whole stones; see
+  [Whole-stone edges](terrain-rendering.md#whole-stone-edges);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](terrain-rendering.md#seams).
+- optional `shore_wash_q8` (version 3, 0–256, default 256), the strength of a
+  liquid's surf where it washes against this material, see [Surf](terrain-rendering.md#surf);
 - optional `surf` (version 3) with `period`, `ticks`, `reach_q8`, `shallow`, `shallow_q8`,
   `shallow_width_q8`, `wet_q8`, `wet_width_q8`, `foam`, `foam_q8` and
   `foam_width_q8`, see [Surf](terrain-rendering.md#surf).

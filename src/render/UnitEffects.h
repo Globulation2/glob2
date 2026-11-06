@@ -3,7 +3,7 @@
 
 // Effects played when a building changes a unit. When a swarm produces a unit,
 // the swarm glows briefly, the unit fades in as a team-colour silhouette that
-// settles over a second, and a short cloud of team-coloured dust twinkles on its
+// settles over a second and a half, and a short cloud of team-coloured dust twinkles on its
 // birth tile. When a unit leaves a building that healed, fed or trained it, it
 // shimmers in the service's colour while copies of that building's map icon
 // burst out of it; a trained unit also floats its new level.
@@ -23,25 +23,25 @@ namespace UnitEffect
 //! What the building did; stored in snapshot records as its value.
 enum class Kind : std::uint8_t { Spawn, Heal, Feed, Train };
 
-constexpr float EmergeTicks = 10;      //!< the unit fades in and slides out of the swarm
-constexpr float ShimmerTicks = 30;     //!< its silhouette settles to normal shading
-constexpr float DustTicks = 22.5f;     //!< the dust cloud fades out
-constexpr float PulseRiseTicks = 3;    //!< the swarm glow brightens...
-constexpr float PulseFallTicks = 10;   //!< ...then fades
+constexpr float EmergeTicks = 15;      //!< the unit fades in and slides out of the swarm
+constexpr float ShimmerTicks = 45;     //!< its silhouette settles to normal shading
+constexpr float DustTicks = 33.75f;     //!< the dust cloud fades out
+constexpr float PulseRiseTicks = 4.5f;    //!< the swarm glow brightens...
+constexpr float PulseFallTicks = 15;   //!< ...then fades
 constexpr int ShimmerTwinkles = 5;
 //! Twinkles start in turn over the shimmer, the last ending a little after it.
 constexpr float TwinkleStagger = 0.14f * ShimmerTicks, TwinkleTicks = 0.55f * ShimmerTicks;
 constexpr float TwinklesEnd = (ShimmerTwinkles - 1) * TwinkleStagger + TwinkleTicks;
 //! Every part has finished by this age, after which the record is dropped.
-constexpr int LifetimeTicks = 34;
+constexpr int LifetimeTicks = 51;
 //! A serviced unit's silhouette, in the service's colour, settles like a spawn's.
-constexpr float ServiceShimmerTicks = 30, ServiceShimmerPeak = 0.9f;
-constexpr int ServiceIcons = 7;
+constexpr float ServiceShimmerTicks = 45, ServiceShimmerPeak = 0.9f;
+constexpr int ServiceIcons = 3;
 //! Icons start up to IconDelayTicks late and each lasts up to IconTicks.
-constexpr float IconTicks = 22.5f, IconDelayTicks = 4;
-constexpr float IconSize = 10, IconReach = 22;
+constexpr float IconTicks = 33.75f, IconDelayTicks = 6;
+constexpr float IconSize = 12, IconReach = 30;
 //! A trained unit's level number rises like a combat level-up's.
-constexpr float LevelTicks = 20;
+constexpr float LevelTicks = 30;
 //! A service effect waits for its unit to be half out of the building, at most this long.
 constexpr int MaxEmergeTicks = 16;
 //! Ticks a unit moving `speed` (action delta per tick) takes to be half out.
@@ -175,9 +175,9 @@ void forEachDustGlow(float age, Visit visit)
 {
 	if (age < 0 || age >= DustTicks)
 		return;
-	const float t = age / DustTicks, appear = clamp01(age / 3);
+	const float t = age / DustTicks, appear = clamp01(age / 4.5f);
 	visit(Glow{0, -10 * t, lerp(18, 42, easeOut(t)), 0.5f * DustIntensity * appear * (1 - t), 0.82f});
-	const float flash = clamp01(std::min(age / 24, age / (DustTicks * 0.6f)));
+	const float flash = clamp01(std::min(age / 36, age / (DustTicks * 0.6f)));
 	visit(Glow{0, 0, 14, 0.7f * DustIntensity * appear * (1 - easeOut(flash)), 0.92f});
 }
 
@@ -189,7 +189,7 @@ void forEachDustMote(std::uint32_t seed, float age, Visit visit)
 	if (age < 0 || age >= DustTicks)
 		return;
 	Random random(seed);
-	const float appear = clamp01(age / 3);
+	const float appear = clamp01(age / 4.5f);
 	for (int k = 0; k < DustMotes; ++k)
 	{
 		// Draw every random number before any early exit so each mote keeps its identity.
@@ -235,7 +235,7 @@ void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 		const float reach = IconReach * (0.45f + random.next() * 0.9f);
 		const float delay = random.next() * IconDelayTicks, life = IconTicks * (0.65f + random.next() * 0.35f);
 		const float speed = 1.1f + random.next() * 1.6f, curl = (random.next() - 0.5f) * 14;
-		const float driftX = (random.next() - 0.5f) * 8, driftY = random.next() * 7;
+		const float driftX = (random.next() - 0.5f) * 8, driftY = -2 - random.next() * 6;
 		const float scale = 0.7f + random.next() * 0.6f, overshoot = 1.05f + random.next() * 0.3f;
 		const float t = (age - delay) / life;
 		if (t <= 0 || t >= 1)

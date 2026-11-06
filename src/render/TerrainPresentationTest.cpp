@@ -49,6 +49,41 @@
 
 namespace
 {
+// Four panels: cliffs on the left of each, against thicket, hedge, rock
+// spires and basalt columns, along a stepped border with a cliff spur and a
+// pocket of the neighbour, all inside a grass margin.
+template <class Map>
+void paintCliffPanels(Map &map)
+{
+	const TerrainType neighbours[4] = {THICKET, HEDGE, RIDGE_ROCK, OUTCROP};
+	for (int panel = 0; panel < 4; ++panel)
+	{
+		const int ox = (panel & 1) * 16, oy = (panel >> 1) * 16;
+		for (int y = 2; y <= 13; ++y)
+			for (int x = 1; x <= 14; ++x)
+			{
+				static constexpr int border[12] = {6, 6, 7, 8, 8, 7, 6, 5, 5, 6, 7, 7};
+				bool cliff = x < border[y - 2];
+				if (y >= 5 && y <= 6 && x >= 9 && x <= 11) cliff = true;  // spur
+				if (y >= 10 && y <= 11 && x >= 2 && x <= 3) cliff = false; // pocket
+				map.setVertexTerrain(ox + x, oy + y, cliff ? CLIFFS : neighbours[panel]);
+			}
+	}
+}
+// The one raised frame a cell draws, or -1; a cell drawing several slots fails.
+int onlyDecorFrame(const TerrainVisual::Compositor &compositor, const SceneMap &map, int x, int y)
+{
+	int frame = -1, drawn = 0;
+	for (const auto &layer : compositor.decorLayers(map, x, y))
+		if (layer.frame >= 0)
+		{
+			frame = layer.frame;
+			++drawn;
+			CHECK(layer.sprite);
+		}
+	CHECK(drawn <= 1);
+	return frame;
+}
 // Keep the real accelerated device, sampling, upload path and presentation
 // surface while selecting the existing CPU compositor as the reference.
 class CPUCompositionDevice : public GAGCore::RenderDevice
@@ -1833,6 +1868,12 @@ TEST_SUITE("TerrainValidation")
 										 : x < 9  ? OUTCROP
 										 : x < 12 ? GRASS
 												  : WATER);
+			// Cliffs touching ridge rock, outcrop, hedge and grass: cells that
+			// draw a cliff edge and another obstacle in separate decor slots.
+			for (int y = 6; y <= 11; ++y)
+				for (int x = 3; x <= 9; ++x)
+					if (x <= 6 || y <= 7)
+						map.setVertexTerrain(x, y, CLIFFS);
 		}
 		for (const auto [x, y] : {std::pair{3, 5}, std::pair{5, 5}, std::pair{6, 10}})
 			map.setResourceByIndex(x, y, WOOD, 3);
@@ -1950,10 +1991,9 @@ TEST_SUITE("TerrainValidation")
 				map.setVertexTerrain(4 + int(k & 1), 4 + int(k >> 1), corners[k]);
 			SceneMap scene;
 			glob2test::observeMap(map, scene);
-			const int frame = compositor.decorFrame(scene, 4, 4);
-			CHECK(compositor.decorFrame(scene, 4, 4) == frame);
-			CHECK(compositor.decorFrame(scene, 20, 20) == frame); // wrapped coordinates
-			CHECK((compositor.decorSprite(scene, 4, 4) != nullptr) == (frame >= 0));
+			const int frame = onlyDecorFrame(compositor, scene, 4, 4);
+			CHECK(onlyDecorFrame(compositor, scene, 4, 4) == frame);
+			CHECK(onlyDecorFrame(compositor, scene, 20, 20) == frame); // wrapped coordinates
 			return frame;
 		};
 		for (const auto pair : {std::pair{OUTCROP, RIDGE_ROCK}, std::pair{HEDGE, THICKET},
@@ -1983,15 +2023,25 @@ TEST_SUITE("TerrainValidation")
 				CHECK(((mask != 0 && frame == expected(first, mask)) ||
 					   (mask != 15 && frame == expected(second, 15 ^ mask))));
 			}
-		const int four = frameFor({OUTCROP, RIDGE_ROCK, BOULDERS, HEDGE});
-		const std::array<TerrainVisual::MaterialId, 4> ids{
-			definitions.find("outcrop"), definitions.find("ridge_rock"),
-			definitions.find("boulders"), definitions.find("hedge")};
-		bool valid = false;
+		// Foliage and the other obstacles draw separate slots, each from its own
+		// corners: the hedge corner as a foliage edge, one rock among the rest.
 		for (unsigned k = 0; k < 4; ++k)
-			valid |= four == definitions.decorFrame(
-								 ids[k], 4, 4, true, map.terrainSeed(), 1u << k,
-								 TerrainVisual::cornerColours(4, 4, 15, 15, map.terrainSeed()));
+			map.setVertexTerrain(4 + int(k & 1), 4 + int(k >> 1),
+								 std::array{OUTCROP, RIDGE_ROCK, BOULDERS, HEDGE}[k]);
+		SceneMap fourScene;
+		glob2test::observeMap(map, fourScene);
+		const auto four = compositor.decorLayers(fourScene, 4, 4);
+		const auto colours = TerrainVisual::cornerColours(4, 4, 15, 15, map.terrainSeed());
+		CHECK(four[0].frame == -1);
+		CHECK(four[1].frame == -1);
+		CHECK(four[2].frame == definitions.decorFrame(definitions.find("hedge"), 4, 4, true,
+													  map.terrainSeed(), 8, colours));
+		const std::array<TerrainVisual::MaterialId, 3> rocks{
+			definitions.find("outcrop"), definitions.find("ridge_rock"), definitions.find("boulders")};
+		bool valid = false;
+		for (unsigned k = 0; k < 3; ++k)
+			valid |= four[3].frame == definitions.decorFrame(rocks[k], 4, 4, true, map.terrainSeed(),
+															 1u << k, colours);
 		CHECK(valid);
 		for (const auto undecorated : {GRASS, SAND, WATER, plain})
 			CHECK(frameFor({OUTCROP, RIDGE_ROCK, OUTCROP, undecorated}) == -1);
@@ -2015,7 +2065,7 @@ TEST_SUITE("TerrainValidation")
 				for (int y = 0; y < 16; y += 2)
 					for (int x = 0; x < 16; x += 2)
 					{
-						const int frame = compositor.decorFrame(scene, x, y);
+						const int frame = onlyDecorFrame(compositor, scene, x, y);
 						const auto &frames =
 							definitions.materials[definitions.find("ridge_rock")].decor.edge;
 						minority += std::find(frames.begin(), frames.end(), frame) != frames.end();
@@ -2072,18 +2122,18 @@ TEST_SUITE("TerrainValidation")
 			{
 				const int x = panel * 16 + 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
 				const auto id = catalog.find(panel ? "thicket" : "hedge");
-				CHECK(compositor.decorFrame(scene, x, y) ==
+				CHECK(onlyDecorFrame(compositor, scene, x, y) ==
 					  (mask == 15 ? catalog.decorFrame(id, x, y, false, scene.terrainSeed(), mask,
 													   TerrainVisual::cornerColours(
 														   x, y, 31, 31, scene.terrainSeed()))
 								  : -1));
 			}
 		for (const auto [x, y] : {std::pair{31, 31}})
-			CHECK(compositor.decorFrame(scene, x, y) ==
+			CHECK(onlyDecorFrame(compositor, scene, x, y) ==
 				  catalog.decorFrame(
 					  catalog.find("hedge"), x, y, false, scene.terrainSeed(), 15,
 					  TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
-		const int border = compositor.decorFrame(scene, 15, 27);
+		const int border = onlyDecorFrame(compositor, scene, 15, 27);
 		const auto colours = TerrainVisual::cornerColours(15, 27, 31, 31, scene.terrainSeed());
 		CHECK((border == catalog.decorFrame(catalog.find("hedge"), 15, 27, true,
 											scene.terrainSeed(), 15, colours) ||
@@ -2240,7 +2290,7 @@ TEST_SUITE("TerrainValidation")
 			map.setVertexTerrain(x, 16, CLIFFS);
 		for (int y = 15; y <= 22; ++y)
 			map.setVertexTerrain(20, y, CLIFFS);
-		// Cliffs against hedge: connected decor joins, so the two meet without a wall.
+		// Cliffs against hedge: each keeps its own edge, so the cliff shows its wall.
 		for (int y = 26; y <= 29; ++y)
 			for (int x = 4; x <= 27; ++x)
 				map.setVertexTerrain(x, y, x < 16 ? CLIFFS : HEDGE);
@@ -2257,27 +2307,327 @@ TEST_SUITE("TerrainValidation")
 		{
 			const int x = 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
 			CAPTURE(mask);
-			CHECK(compositor.decorFrame(scene, x, y) ==
+			CHECK(onlyDecorFrame(compositor, scene, x, y) ==
 				  (mask ? catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask,
 											 TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed()))
 						: -1));
 		}
-		// A cell where cliffs, hedge and grass meet keeps the foliage rule: hedge
-		// suppresses raised decor beside open ground.
+		// Where cliffs meet hedge, each draws its own corners in its own slot,
+		// the cliffs standing back from the hedge across a valley.
+		{
+			const auto layers = compositor.decorLayers(scene, 15, 27);
+			const auto colours = TerrainVisual::cornerColours(15, 27, 31, 31, scene.terrainSeed());
+			CHECK(layers[0].frame == catalog.decorForeignFrame(id, 5, 10, colours));
+			CHECK(layers[0].frame >= 0);
+			CHECK(layers[1].frame == -1);
+			CHECK(layers[2].frame == catalog.decorFrame(catalog.find("hedge"), 15, 27, true,
+														scene.terrainSeed(), 10, colours));
+			CHECK(layers[3].frame == -1);
+		}
+		// Where cliffs, hedge and grass meet, the cliffs still draw their edge
+		// on the open ground but the hedge, beside grass, draws nothing.
 		map.setVertexTerrain(15, 25, GRASS);
 		SceneMap mixed;
 		glob2test::observeMap(map, mixed);
-		CHECK(compositor.decorFrame(mixed, 15, 25) == -1);
-		// The plateau's frames come from the cliffs set and stand 64 native pixels tall.
-		const int inside = compositor.decorFrame(scene, 18, 3);
+		const auto mixedLayers = compositor.decorLayers(mixed, 15, 25);
+		CHECK(mixedLayers[0].frame >= 0);
+		CHECK(mixedLayers[2].frame == -1);
+		// The plateau's frames come from the cliffs set: 20 native pixels of raised
+		// top above the cell and 16 of shadow below it, 68 in all.
+		const int inside = onlyDecorFrame(compositor, scene, 18, 3);
 		REQUIRE(inside >= 0);
-		CHECK(compositor.decorSprite(scene, 18, 3)->getH(inside) == 64);
+		CHECK(compositor.decorLayers(scene, 18, 3)[0].sprite->getH(inside) == 68);
 
 		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "raised-cliffs.png").string().c_str()));
+	}
+
+	TEST_CASE("cliffs beside foliage and crags [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		paintCliffPanels(map);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const char *keys[4] = {"thicket", "hedge", "ridge_rock", "outcrop"};
+		for (int panel = 0; panel < 4; ++panel)
+		{
+			// The cell straddling the border's first row: cliffs on its left
+			// corners, the neighbour on its right ones. Both draw, each its own.
+			const int x = (panel & 1) * 16 + 5, y = (panel >> 1) * 16 + 2;
+			const auto layers = compositor.decorLayers(scene, x, y);
+			const auto colours = TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed());
+			const auto neighbour = catalog.find(keys[panel]);
+			CAPTURE(keys[panel]);
+			// Against foliage the cliffs stand back across a valley; against
+			// crags they draw their plain edge.
+			const auto cliffs = catalog.find("cliffs");
+			CHECK(layers[0].frame == (panel < 2 ? catalog.decorForeignFrame(cliffs, 5, 10, colours) :
+				  catalog.decorFrame(cliffs, x, y, true, scene.terrainSeed(), 5, colours)));
+			const unsigned slot = panel < 2 ? 2 : 3;
+			CHECK(layers[slot].frame ==
+				  catalog.decorFrame(neighbour, x, y, true, scene.terrainSeed(), 10, colours));
+			CHECK(layers[5 - slot].frame == -1);
+		}
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "cliffs-beside-obstacles.png").string().c_str()));
+	}
+
+	TEST_CASE("icefall and other masses stand apart across valleys [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, DEEP_SNOW);
+		// An icefall with a hole, a strip and a lone vertex on the snow.
+		for (int y = 2; y <= 12; ++y)
+			for (int x = 2; x <= 15; ++x)
+				if (!(x >= 7 && x <= 9 && y >= 6 && y <= 8))
+					map.setVertexTerrain(x, y, ICEFALL);
+		for (int x = 2; x <= 9; ++x)
+			map.setVertexTerrain(x, 15, ICEFALL);
+		map.setVertexTerrain(13, 15, ICEFALL);
+		// Icefall against cliffs and against glacier along straight borders, and
+		// against hedge along a ragged one.
+		for (int y = 2; y <= 12; ++y)
+			for (int x = 18; x <= 29; ++x)
+				map.setVertexTerrain(x, y, x < 23 ? ICEFALL : y < 7 ? CLIFFS : GLACIER);
+		for (int y = 17; y <= 27; ++y)
+			for (int x = 4; x <= 27; ++x)
+				map.setVertexTerrain(x, y, x < 15 + (y % 2) ? ICEFALL : HEDGE);
+
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const auto icefall = catalog.find("icefall"), cliffs = catalog.find("cliffs");
+		REQUIRE(!catalog.materials[icefall].decor.connected.empty());
+		CHECK(catalog.materials[icefall].decor.connectedOpen);
+		CHECK(catalog.materials[icefall].decor.connectedTiers);
+		const auto colours = [&](int x, int y) { return TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed()); };
+		// A plain icefall cell draws one mass frame.
+		CHECK(onlyDecorFrame(compositor, scene, 4, 4) ==
+			  catalog.decorFrame(icefall, 4, 4, false, scene.terrainSeed(), 15, colours(4, 4)));
+		// Where icefall meets cliffs, each draws its own corners and stands back
+		// from the other: cell (22, 3) has icefall on its west corners. Both hold
+		// one north corner and two in all, so the lower material id draws first.
+		const auto layers = compositor.decorLayers(scene, 22, 3);
+		const int ice = catalog.decorForeignFrame(icefall, 0b0101, 0b1010, colours(22, 3));
+		const int rock = catalog.decorForeignFrame(cliffs, 0b1010, 0b0101, colours(22, 3));
+		CHECK(ice >= 0);
+		CHECK(rock >= 0);
+		CHECK(std::minmax(layers[0].frame, layers[1].frame) == std::minmax(ice, rock));
+		// Hedge and thicket still join each other: one foliage frame, no mass.
+		map.setVertexTerrain(6, 30, HEDGE);
+		map.setVertexTerrain(7, 30, HEDGE);
+		map.setVertexTerrain(6, 31, THICKET);
+		map.setVertexTerrain(7, 31, THICKET);
+		SceneMap foliage;
+		glob2test::observeMap(map, foliage);
+		const auto joined = compositor.decorLayers(foliage, 6, 30);
+		CHECK(joined[0].frame == -1);
+		CHECK(joined[1].frame == -1);
+
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "raised-icefall.png").string().c_str()));
+	}
+
+	TEST_CASE("large barrier masses terrace toward their middle [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, GRASS);
+		// A broad granite massif, a narrow sandstone ridge, and an obsidian patch
+		// touching the granite: terraces, a single tier and a valley all show.
+		for (int y = 2; y <= 17; ++y)
+			for (int x = 2; x <= 19; ++x)
+				if ((x - 10) * (x - 10) + (y - 9) * (y - 9) * 2 < 90)
+					map.setVertexTerrain(x, y, GRANITE_TORS);
+		for (int y = 21; y <= 23; ++y)
+			for (int x = 3; x <= 28; ++x)
+				map.setVertexTerrain(x, y, SANDSTONE_BENCHES);
+		for (int y = 4; y <= 15; ++y)
+			for (int x = 20; x <= 29; ++x)
+				map.setVertexTerrain(x, y, OBSIDIAN_RIDGE);
+
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto field = compositor.tierField(scene);
+		REQUIRE(field);
+		using TerrainVisual::Compositor;
+		// The massif's middle stands at least two terraces up; its rim and the
+		// three-vertex-wide ridge stay on the ground tier.
+		CHECK(compositor.decorTierFrame(scene, *field, 10, 9, 1) >= 0);
+		CHECK(compositor.decorTierFrame(scene, *field, 10, 9, 2) >= 0);
+		CHECK(compositor.decorTierFrame(scene, *field, 2, 9, 1) == -1);
+		CHECK(compositor.decorTierFrame(scene, *field, 12, 21, 1) == -1);
+		// decorLayers places them in the terrace slots.
+		const auto middle = compositor.decorLayers(scene, 10, 9, field.get());
+		CHECK(middle[Compositor::TierSlot].frame == compositor.decorTierFrame(scene, *field, 10, 9, 1));
+		CHECK(middle[Compositor::TierSlot + 1].frame == compositor.decorTierFrame(scene, *field, 10, 9, 2));
+		// Terraces nest: a cell never has a higher terrace without the lower one.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				for (int k = 2; k <= TerrainVisual::MaxDecorTiers; ++k)
+					if (compositor.decorTierFrame(scene, *field, x, y, k) >= 0)
+						CHECK(compositor.decorTierFrame(scene, *field, x, y, k - 1) >= 0);
+		// Foliage never terraces.
+		for (int y = 26; y <= 31; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, HEDGE);
+		SceneMap hedged;
+		glob2test::observeMap(map, hedged);
+		const auto hedgeField = compositor.tierField(hedged);
+		REQUIRE(hedgeField);
+		CHECK(compositor.decorTierFrame(hedged, *hedgeField, 10, 28, 1) == -1);
+
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "terraced-masses.png").string().c_str()));
+	}
+
+	// Draws eight-tile views of a painted 32x32 map at 4x with HD frames on
+	// programmable OpenGL, terrain and decor as the game draws them, and saves
+	// each as <name>-hd.png. Skips where programmable OpenGL is unavailable.
+	struct HdView
+	{
+		const char *name;
+		int x, y;
+	};
+	template <class Paint>
+	void captureHd(Paint paint, std::initializer_list<HdView> views)
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::USEGPU), .seed = 7331});
+		auto &gfx = *globals->gfx;
+		bool programmable = false;
+		for (const auto &choice : gfx.rendererAvailability())
+			programmable |= choice.backend == RendererBackend::ProgrammableGL && choice.available;
+		if (!programmable)
+		{
+			MESSAGE("No programmable OpenGL: HD capture skipped");
+			return;
+		}
+		REQUIRE(gfx.requestBackendSwitch(RendererBackend::ProgrammableGL));
+		gfx.nextFrame();
+		REQUIRE(gfx.backendSwitchStatus().active == RendererBackend::ProgrammableGL);
+		REQUIRE(gfx.renderer);
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore
+		{
+			~Restore() { GAGCore::Sprite::setHighResolution(false); }
+		} restore;
+		globals->terrainCompositor().prepare(true, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		paint(fixture.game.map);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		for (const auto &view : views)
+		{
+			MapRenderState render;
+			{
+				GAGCore::FrameDrawBatch frameBatch(&gfx);
+				gfx.setClipRect();
+				gfx.beginMapTransform(4, 0, 0, 0, 0, 1024, 1024);
+				Game::drawMapTerrain(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, 0);
+				Game::drawMapResources(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, &render);
+				GAGCore::Sprite::flushBatches(&gfx);
+				gfx.endMapTransform();
+			}
+			gfx.renderer->flush();
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(),
+																				 SDL_DestroySurface);
+			REQUIRE(captured);
+			CHECK(IMG_SavePNG(captured.get(),
+				(glob2test::artifactDir() / (std::string(view.name) + "-hd.png")).string().c_str()));
+			gfx.nextFrame();
+		}
+	}
+
+	// Switching to programmable OpenGL saves the renderer choice.
+	GLOB2_TEST_CASE("cliffs beside foliage and crags in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		// The stepped border of the thicket and rock-spire panels.
+		captureHd([](auto &map) { paintCliffPanels(map); },
+				  {{"cliffs-beside-thicket", 2, 1}, {"cliffs-beside-crags", 2, 17}});
+	}
+
+	GLOB2_TEST_CASE("paths along staircases and corners in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		captureHd(
+			[](auto &map)
+			{
+				for (int y = 0; y < 32; ++y)
+					for (int x = 0; x < 32; ++x)
+					{
+						// A brick path three vertices wide along a 45-degree
+						// staircase, and a trail plaza with a notch and a bump.
+						const int d = x - y;
+						if (y >= 2 && y <= 28 && d >= -12 && d < -9)
+							map.setVertexTerrain(x, y, BRICK_PATH);
+						if (x >= 18 && x <= 28 && y >= 4 && y <= 12 && !(x == 28 && y == 8))
+							map.setVertexTerrain(x, y, TRAIL);
+					}
+				map.setVertexTerrain(17, 8, TRAIL);
+			},
+			{{"brick-path-staircase", 0, 12}, {"trail-plaza-corner", 15, 2}});
+	}
+
+	GLOB2_TEST_CASE("stone paths end on whole stones in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		// Four stone paths, each a staircase beside a block with a notch and a bump.
+		static constexpr TerrainType paths[4] = {SANDSTONE, SLATE_ASHLAR, OVERGROWN_ROAD, MOONSTONE_LOZENGE};
+		captureHd(
+			[](auto &map)
+			{
+				for (int panel = 0; panel < 4; ++panel)
+				{
+					const int ox = (panel & 1) * 16, oy = (panel >> 1) * 16;
+					for (int y = 1; y <= 14; ++y)
+						for (int x = 1; x <= 14; ++x)
+						{
+							const bool stairs = x - y >= -1 && x - y < 2 && x <= 7;
+							const bool block = x >= 9 && x <= 14 && y >= 2 && y <= 8 && !(x == 14 && y == 5);
+							if (stairs || block || (x == 8 && y == 4))
+								map.setVertexTerrain(ox + x, oy + y, paths[panel]);
+						}
+				}
+			},
+			{{"sandstone", 3, 0}, {"slate-ashlar", 19, 0}, {"mossy-setts", 3, 16}, {"moonstone-lozenge", 19, 16}});
 	}
 
 	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
@@ -2438,26 +2788,26 @@ TEST_SUITE("TerrainValidation")
 			INFO(terrainPresentation(types[n]).name);
 			if (decor.full.empty())
 			{
-				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
+				CHECK(onlyDecorFrame(compositor, scene, ox + 1, oy + 1) == -1);
 				continue;
 			}
 			// Filled connected cells may also choose an alternative interior.
 			auto full = decor.connected.empty() ? decor.full : decor.connected;
 			full.insert(full.end(), decor.connectedInterior.begin(), decor.connectedInterior.end());
-			CHECK(contains(full, compositor.decorFrame(scene, ox + 1, oy + 1)));
+			CHECK(contains(full, onlyDecorFrame(compositor, scene, ox + 1, oy + 1)));
 			// Painted cells cover vertices ox..ox+3, so the cells just outside
 			// the island have two of its corners: only open-edged decor (cliffs)
 			// draws its edge there.
 			for (const int x : {ox - 1, ox + 3})
 			{
-				const int frame = compositor.decorFrame(scene, x, oy + 1);
+				const int frame = onlyDecorFrame(compositor, scene, x, oy + 1);
 				if (decor.connectedOpen)
 					CHECK(contains(decor.connected, frame));
 				else
 					CHECK(frame == -1);
 			}
 		}
-		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
+		CHECK(onlyDecorFrame(compositor, scene, 5, 30) == -1);
 		// Painted islands keep their identity.
 		for (std::size_t n = 0; n < types.size(); ++n)
 			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 4) == types[n]);

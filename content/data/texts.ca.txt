@@ -5754,18 +5754,34 @@ Carreus de gebre
 Rombes de pedra de lluna
 [frost_pinwheel]
 Molinet de gebre
+[arctic_tundra]
+Sòl de tundra àrtica
+[glacier]
+Glacera
+[icefall]
+Cascada de gel
+[sandstone_benches]
+Bancals de gres
+[obsidian_ridge]
+Cresta d'obsidiana
+[granite_tors]
+Tors de granit
+[travertine_terraces]
+Terrasses de travertí
+[penitentes]
+Neus penitents
+[termite_mounds]
+Termiters
+[hoodoos]
+Xemeneies de fades
+[petrified_stumps]
+Soques petrificades
 [terrain group water]
 Aigua
 [terrain group sand]
 Sorra
 [terrain group grass]
 Herba
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gel
 [terrain group paths]

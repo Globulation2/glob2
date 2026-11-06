@@ -22,10 +22,10 @@ from terrain_core import (
         palette={"fines": (118, 110, 98), "gap": (78, 72, 64), "crack": (64, 58, 52),
                  "chips": [(162, 156, 146), (148, 144, 138), (170, 160, 144), (138, 134, 128),
                            (156, 146, 132), (176, 170, 160)]},
-        style=Style(luma=136, std=16, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=136, std=11.2, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
 def render_shale(ctx):
     """Shale: big flat plates of grey stone, each lying at its own level so
-    one overlaps the next, with jagged broken edges, under the barren cracks."""
+    one overlaps the next, with jagged broken edges, under the barren mark."""
     p = RECIPES["shale"].palette
     size = ctx.size
     height, common, ids = plates(ctx, 3, stretch=1.7, step=0.35, rise=0.05)

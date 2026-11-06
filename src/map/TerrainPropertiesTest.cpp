@@ -1016,6 +1016,20 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(TUNDRA).name) == "tundra");
 		CHECK(TerrainRegistry::builtins()->find("tundra") == TUNDRA);
 	}
+	TEST_CASE("arctic tundra shares every rule of tundra and the barren group")
+	{
+		CHECK(terrainGroup(ARCTIC_TUNDRA) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(ARCTIC_TUNDRA));
+		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH, WEATHERED_SANDSTONE, TUNDRA})
+		{
+			CAPTURE(member);
+			CHECK(sameTerrainProperties(terrainProperties(ARCTIC_TUNDRA), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(ARCTIC_TUNDRA) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(std::string(terrainPresentation(ARCTIC_TUNDRA).name) == "arctic_tundra");
+		CHECK(TerrainRegistry::builtins()->find("arctic_tundra") == ARCTIC_TUNDRA);
+	}
 	TEST_CASE("volcanic ash shares every rule of dirt")
 	{
 		CHECK(terrainGroup(VOLCANIC_ASH) == TerrainGroup::Barren);
@@ -1122,6 +1136,39 @@ TEST_SUITE("TerrainRuntime")
 			  TerrainRegistry::builtins()->propertyIndex(LAVA));
 		CHECK(std::string(terrainPresentation(MOLTEN_LAVA_POOL).name) == "molten_lava_pool");
 		CHECK(TerrainRegistry::builtins()->find("molten_lava_pool") == MOLTEN_LAVA_POOL);
+	}
+	TEST_CASE("glacier shares every rule of cliffs")
+	{
+		CHECK(terrainGroup(GLACIER) == TerrainGroup::Obstacles);
+		CHECK(terrainPaintable(GLACIER));
+		CHECK(sameTerrainProperties(terrainProperties(GLACIER), terrainProperties(CLIFFS)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(GLACIER) == TerrainRegistry::builtins()->propertyIndex(CLIFFS));
+		CHECK_FALSE(terrainProperties(GLACIER).walkable);
+		CHECK(terrainProperties(GLACIER).projectileBlocks);
+		CHECK(std::string(terrainPresentation(GLACIER).name) == "glacier");
+		CHECK(TerrainRegistry::builtins()->find("glacier") == GLACIER);
+	}
+	TEST_CASE("the new Barriers masses play like cliffs and the Outcrops looks like rock spires")
+	{
+		for (const auto type : {ICEFALL, SANDSTONE_BENCHES, OBSIDIAN_RIDGE, GRANITE_TORS, TRAVERTINE_TERRACES})
+		{
+			CAPTURE(int(type));
+			CHECK(terrainGroup(type) == TerrainGroup::Obstacles);
+			CHECK(terrainPaintable(type));
+			CHECK(sameTerrainProperties(terrainProperties(type), terrainProperties(CLIFFS)));
+			CHECK(terrainProperties(type).projectileBlocks);
+		}
+		for (const auto type : {PENITENTES, TERMITE_MOUNDS, HOODOOS, PETRIFIED_STUMPS})
+		{
+			CAPTURE(int(type));
+			CHECK(terrainGroup(type) == TerrainGroup::Ridges);
+			CHECK(terrainPaintable(type));
+			CHECK(sameTerrainProperties(terrainProperties(type), terrainProperties(RIDGE_ROCK)));
+			CHECK_FALSE(terrainProperties(type).walkable);
+			CHECK_FALSE(terrainProperties(type).projectileBlocks);
+		}
+		CHECK(TerrainRegistry::builtins()->find("icefall") == ICEFALL);
+		CHECK(TerrainRegistry::builtins()->find("petrified_stumps") == PETRIFIED_STUMPS);
 	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{

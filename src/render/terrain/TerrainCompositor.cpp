@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include <atomic>
+#include <unordered_map>
 #include "map/TerrainRegistry.h"
 #include "TerrainCompiledPack.h"
 #include "TerrainPresentation.h"
@@ -15,12 +17,19 @@
 
 namespace TerrainVisual
 {
+namespace
+{
+// Numbers compositors for presentation caches that outlive one of them.
+std::atomic<std::uint64_t> compositorInstances{0};
+} // namespace
 Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
     : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
 	hasNeighborhoodProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
 		[](const auto &profile) { return profile.shape != BoundaryShape::Patch; });
 	pack = CompiledPack::load(definitions);
+	stoneMaps = std::make_shared<const StoneMaps>(definitions);
+	instance = ++compositorInstances;
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
 		const auto found =
@@ -51,7 +60,9 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
-			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
+			tieredDecor |= m.decor.connectedTiers;
+			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
+				 m.decor.connectedForeign})
 				for (int frame : frames)
 				{
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > MaximumDecorFrame ||
@@ -61,6 +72,10 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 					reach.include(decor->getW(frame), decor->getH(frame));
 				}
 			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
+			// Terraces draw the connected frames up to MaxDecorTiers rises higher.
+			if (m.decor.connectedTiers && !m.decor.connected.empty())
+				reach.up = std::max(reach.up, decorOffsetY(decor->getH(m.decor.connected.front())) +
+					MaxDecorTiers * DecorTierRise);
             sharedDecorSprite = decor;
 		}
 		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
@@ -292,8 +307,11 @@ void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> re
     Usage usage;
     for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
     for (const auto &r : recipes)
-        for (const auto id : r.corners)
-            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    {
+        std::array<MaterialId, 4> palette;
+        for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
+            usage[palette[i]][definitions.variantIndex(palette[i], r.x, r.y, r.seed)] = 1;
+    }
     prepareSelected(hd, time, &usage);
 }
 #ifdef __EMSCRIPTEN__
@@ -541,62 +559,195 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
             return found->second;
     return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
 }
-std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
+// The kind of decor a material draws: 0 connected masses that stand on open
+// ground, 1 connected foliage, 2 other obstacles, 3 none.
+unsigned Compositor::decorSlot(MaterialId id) const
+{
+	const auto &decor = definitions.materials[id].decor;
+	if (!decorSprites[id] || decor.full.empty())
+		return 3;
+	if (decor.connected.empty())
+		return 2;
+	return decor.connectedOpen ? 0 : 1;
+}
+std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y,
+	const TierField *tiers) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
+	std::array<DecorLayer, DecorSlots> layers{};
 	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
-	std::array<bool, 4> decorated{};
-	bool open = false, closed = false;
+	std::array<unsigned, 4> kinds;
+	bool openGround = false;
 	for (unsigned k = 0; k < corners.size(); ++k)
 	{
 		materials[k] = materialFor(map, corners[k]);
-		decorated[k] = decorSprites[materials[k]] && !definitions.materials[materials[k]].decor.full.empty();
-		if (decorated[k])
-			(definitions.materials[materials[k]].decor.connectedOpen ? open : closed) = true;
+		kinds[k] = decorSlot(materials[k]);
+		openGround |= kinds[k] == 3;
 	}
-	// An undecorated corner suppresses all raised objects in the cell, unless
-	// every decorated corner draws its edge against open ground.
-	const bool anyOpenGround = std::find(decorated.begin(), decorated.end(), false) != decorated.end();
-	if (!open && !closed)
-		return {0, 0};
-	if (anyOpenGround && closed)
-		return {0, 0};
-	if (materials[0] == materials[1] && materials[0] == materials[2] &&
-		materials[0] == materials[3])
-		return {materials[0], 4};
+	if (std::all_of(kinds.begin(), kinds.end(), [](unsigned kind) { return kind == 3; }))
+		return layers;
+	const unsigned colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
+	// Masses on open ground: each distinct one draws its own corners and stands
+	// back from every other connected corner. The mass with more north corners
+	// draws first (then the larger share, then the lower id), so the southern
+	// one's raised top and wall stand in front.
+	std::array<MaterialId, 4> masses{};
+	unsigned distinct = 0;
+	for (unsigned k = 0; k < 4; ++k)
+		if (kinds[k] == 0 && std::find(masses.begin(), masses.begin() + distinct, materials[k]) == masses.begin() + distinct)
+			masses[distinct++] = materials[k];
+	const auto rank = [&](MaterialId id) {
+		unsigned north = 0, all = 0;
+		for (unsigned k = 0; k < 4; ++k)
+			if (materials[k] == id)
+				north += k < 2, ++all;
+		return std::tuple(north, all);
+	};
+	std::sort(masses.begin(), masses.begin() + distinct, [&](MaterialId a, MaterialId b) {
+		const auto ra = rank(a), rb = rank(b);
+		return ra != rb ? ra > rb : a < b;
+	});
+	for (unsigned m = 0; m < std::min(distinct, 2u); ++m)
+	{
+		const auto id = masses[m];
+		unsigned own = 0, foreign = 0, count = 0;
+		for (unsigned k = 0; k < 4; ++k)
+			if (materials[k] == id)
+				own |= 1u << k, ++count;
+			else if (kinds[k] < 2)
+				foreign |= 1u << k;
+		int frame = foreign ? definitions.decorForeignFrame(id, own, foreign, colours) : -1;
+		if (frame < 0)
+			frame = definitions.decorFrame(id, x, y, count < 4, map.terrainSeed(), own, colours);
+		if (frame >= 0)
+			layers[m] = {decorSprites[id], frame};
+	}
+	// Foliage and other obstacles, as before: one material per slot by presentation hashing.
 	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
 	// borders a three-to-one split. Presentation hashing never consumes game RNG.
-	// Open ground is never chosen: the next decorated corner stands in for it.
-	unsigned k = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
-	while (!decorated[k])
-		k = (k + 1) & 3u;
-	const auto chosen = materials[k];
-	return {chosen, unsigned(std::count(materials.begin(), materials.end(), chosen))};
+	const unsigned pick = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
+	for (unsigned kind = 1; kind <= 2 && !openGround; ++kind)
+	{
+		unsigned k = pick, tries = 0;
+		while (kinds[k] != kind && tries++ < 4)
+			k = (k + 1) & 3u;
+		if (kinds[k] != kind)
+			continue;
+		// Obstacle clusters sit in the middle of the cell rather than on their
+		// corners: where an open-ground mass holds most of the cell, one would
+		// stand on top of it, so the mass's edge is drawn alone.
+		if (kind == 2 && std::count(kinds.begin(), kinds.end(), 0u) > std::count(kinds.begin(), kinds.end(), 2u))
+			continue;
+		const auto chosen = materials[k];
+		const auto &decor = definitions.materials[chosen].decor;
+		unsigned mask = 0, count = 0;
+		for (unsigned c = 0; c < 4; ++c)
+		{
+			count += materials[c] == chosen;
+			// Connected foliage joins every foliage corner, so hedge and thicket
+			// form one crown, but meets other kinds as an edge.
+			if (materials[c] == chosen || (!decor.connected.empty() && kinds[c] == kind))
+				mask |= 1u << c;
+		}
+		const int frame = definitions.decorFrame(chosen, x, y, count < 4, map.terrainSeed(), mask, colours);
+		if (frame >= 0)
+			layers[kind + 1] = {decorSprites[chosen], frame};
+	}
+	// Terraces: nested, so the first missing one ends the stack.
+	if (tiers && distinct)
+		for (int tier = 1; tier <= MaxDecorTiers; ++tier)
+		{
+			const int frame = decorTierFrame(map, *tiers, x, y, tier);
+			if (frame < 0)
+				break;
+			layers[TierSlot + unsigned(tier - 1)] = {layers[0].sprite ? layers[0].sprite : sharedDecorSprite, frame};
+		}
+	return layers;
 }
-GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
+std::shared_ptr<const Compositor::TierField> Compositor::tierField(const SceneMap &map) const
 {
-	const auto [material, count] = decorMaterial(map, x, y);
-	return count ? decorSprites[material] : nullptr;
+	if (!tieredDecor)
+		return nullptr;
+	const int w = map.getW(), h = map.getH();
+	std::lock_guard lock(tierMutex);
+	if (tierCache && tierCache->revision == map.terrainRevision() && tierCache->registry == map.frozenTerrainRegistry().get() &&
+		tierCache->w == w && tierCache->h == h && tierCache->seed == map.terrainSeed())
+		return tierCache;
+	auto field = std::make_shared<TierField>();
+	field->revision = map.terrainRevision();
+	field->registry = map.frozenTerrainRegistry().get();
+	field->w = w;
+	field->h = h;
+	field->seed = map.terrainSeed();
+	// Chebyshev distance, in vertices, to the nearest vertex of another
+	// material, capped where the highest terrace needs no more: two raster
+	// passes each way, run twice so distances carry around the torus.
+	constexpr std::uint8_t cap = 2 * MaxDecorTiers + 2;
+	std::vector<MaterialId> material(std::size_t(w) * h);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			material[std::size_t(y) * w + x] = materialFor(map, map.vertexTerrainAt(x, y));
+	auto &depth = field->depth;
+	depth.assign(material.size(), 0);
+	const auto at = [&](int x, int y) { return std::size_t((y + h) % h) * w + std::size_t((x + w) % w); };
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const auto id = material[at(x, y)];
+			if (!definitions.materials[id].decor.connectedTiers)
+				continue;
+			bool edge = false;
+			for (int dy = -1; dy <= 1 && !edge; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					edge |= material[at(x + dx, y + dy)] != id;
+			depth[at(x, y)] = edge ? 0 : cap;
+		}
+	const auto relax = [&](int x, int y, int dx, int dy) {
+		auto &d = depth[at(x, y)];
+		d = std::min<std::uint8_t>(d, std::uint8_t(depth[at(x + dx, y + dy)] + 1));
+	};
+	for (int round = 0; round < 2; ++round)
+	{
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+				if (depth[at(x, y)])
+					relax(x, y, -1, 0), relax(x, y, -1, -1), relax(x, y, 0, -1), relax(x, y, 1, -1);
+		for (int y = h - 1; y >= 0; --y)
+			for (int x = w - 1; x >= 0; --x)
+				if (depth[at(x, y)])
+					relax(x, y, 1, 0), relax(x, y, 1, 1), relax(x, y, 0, 1), relax(x, y, -1, 1);
+	}
+	tierCache = field;
+	return tierCache;
 }
-int Compositor::decorFrame(const SceneMap &map, int x, int y) const
+int Compositor::decorTierFrame(const SceneMap &map, const TierField &field, int x, int y, int tier) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto [material, count] = decorMaterial(map, x, y);
-	if (!count)
+	if (tier < 1 || tier > MaxDecorTiers || field.w != map.getW() || field.h != map.getH())
 		return -1;
-	const auto &decor = definitions.materials[material].decor;
+	// A vertex joins terrace k when it lies 2k vertices deep, or 2k+1 by a
+	// seeded per-vertex choice, so terraces wander like ledges rather than
+	// tracing rings around the patch; each terrace sits inside the one below.
+	const std::uint32_t salt = mapSeedSalt(map.terrainSeed()) ^ 0x7e55e5u;
 	unsigned mask = 0;
-	const auto corners = map.cellCorners(x, y);
-	for (unsigned k = 0; k < corners.size(); ++k)
-		if (const auto id = materialFor(map, corners[k]);
-			id == material ||
-			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty()))
-			mask |= 1u << k;
-	return definitions.decorFrame(
-		material, x, y, count < 4, map.terrainSeed(), mask,
+	int deepest = -1;
+	for (unsigned k = 0; k < 4; ++k)
+	{
+		const unsigned vx = unsigned(x + int(k & 1)) & unsigned(map.getMaskW());
+		const unsigned vy = unsigned(y + int(k >> 1)) & unsigned(map.getMaskH());
+		const int need = 2 * tier + int(hash(vx, vy, salt) & 1u);
+		if (field.depth[std::size_t(vy) * field.w + vx] >= need)
+			mask |= 1u << k, deepest = int(k);
+	}
+	if (!mask)
+		return -1;
+	// A deep corner's neighbours share its material, so every terraced corner
+	// of the cell belongs to the same mass.
+	const auto material = materialFor(map, map.cellCorners(x, y)[unsigned(deepest)]);
+	return definitions.decorFrame(material, x, y, mask != 15, map.terrainSeed(), mask,
 		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 MaterialId Compositor::overlayMaterial(const SceneMap &map, int x, int y, bool &found) const
@@ -638,7 +789,14 @@ Recipe Compositor::describeOverview(const SceneMap &map, int x, int y) const
 {
 	return describe(map, x, y, false);
 }
-Recipe Compositor::describe(const SceneMap &map, int x, int y, bool shoreCalm) const
+Recipe Compositor::describe(const SceneMap &map, int x, int y, bool detailed) const
+{
+	auto r = describeCell(map, x, y, detailed);
+	if (detailed)
+		describeStones(map, r);
+	return r;
+}
+Recipe Compositor::describeCell(const SceneMap &map, int x, int y, bool shoreCalm) const
 {
 	Recipe r;
 	r.x = x & map.getMaskW();
@@ -668,6 +826,155 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y, bool shoreCalm) c
 			r.neighborhood[(y + 1) * 4 + x + 1] =
 				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
+}
+namespace
+{
+// Stone decisions of one cell depend only on its 4x4 vertex window, its
+// position and the map seed, and up to nine cells ask for each, so a small
+// per-thread cache makes each decision once. Keys carry the compositor's
+// instance, so a different catalog never reuses them.
+struct StoneDecisionKey
+{
+	std::uint64_t instance;
+	int x, y, width, height;
+	std::uint32_t seed;
+	MaterialId stone;
+	std::array<MaterialId, 16> window;
+	bool operator==(const StoneDecisionKey &) const = default;
+};
+struct StoneDecisionHash
+{
+	std::size_t operator()(const StoneDecisionKey &k) const
+	{
+		std::uint64_t h = 1469598103934665603ull;
+		const auto mix = [&](std::uint64_t v) { h = (h ^ v) * 1099511628211ull; };
+		mix(k.instance); mix(unsigned(k.x)); mix(unsigned(k.y)); mix(unsigned(k.width));
+		mix(unsigned(k.height)); mix(k.seed); mix(k.stone);
+		for (const auto id : k.window) mix(id);
+		return std::size_t(h);
+	}
+};
+} // namespace
+void Compositor::describeStones(const SceneMap &map, Recipe &r) const
+{
+	// Vertices -2..3 around the cell: each of the nine cells whose stones can
+	// reach it reads its own 4x4 window from them.
+	std::array<MaterialId, 36> vertices;
+	bool stoneFound = false;
+	MaterialId stone = 0;
+	for (int y = -2; y <= 3; ++y)
+		for (int x = -2; x <= 3; ++x)
+		{
+			const auto id = materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
+			vertices[(y + 2) * 6 + x + 2] = id;
+			// Where two stone paths meet, the dominant one keeps whole stones.
+			if (x >= -1 && x <= 2 && y >= -1 && y <= 2 && stoneMaps->has(id) &&
+				(!stoneFound || definitions.dominates(id, stone)))
+			{
+				stone = id;
+				stoneFound = true;
+			}
+		}
+	const auto vertex = [&](int x, int y) { return vertices[(y + 2) * 6 + x + 2]; };
+	if (!stoneFound)
+		return;
+	bool varied = false;
+	for (int y = -1; y <= 2 && !varied; ++y)
+		for (int x = -1; x <= 2 && !varied; ++x)
+			varied = vertex(x, y) != stone;
+	if (!varied)
+		return; // Inside the path.
+	// A dropped stone reveals the most common other ground around the cell.
+	std::array<MaterialId, 16> others;
+	std::array<unsigned, 16> counts{};
+	unsigned kinds = 0, best = 0;
+	for (int y = -1; y <= 2; ++y)
+		for (int x = -1; x <= 2; ++x)
+			if (const auto id = vertex(x, y); id != stone)
+			{
+				unsigned k = 0;
+				while (k < kinds && others[k] != id) ++k;
+				if (k == kinds) others[kinds++] = id;
+				if (++counts[k] > counts[best]) best = k;
+			}
+	const auto ground = others[best];
+	// The cell's palette holds four materials; beyond that keep the smooth border.
+	std::array<MaterialId, 6> wanted{r.corners[0], r.corners[1], r.corners[2], r.corners[3], stone, ground};
+	unsigned distinct = 0;
+	for (unsigned i = 0; i < wanted.size(); ++i)
+		distinct += std::find(wanted.begin(), wanted.begin() + i, wanted[i]) == wanted.begin() + i;
+	if (distinct > 4)
+		return;
+	const auto *stones = stoneMaps->get(stone);
+	const unsigned wrap = unsigned(stones->tiles() - 1);
+	const auto &reach = stones->reaching(int(unsigned(r.x) & wrap), int(unsigned(r.y) & wrap));
+	thread_local std::unordered_map<StoneDecisionKey, std::uint64_t, StoneDecisionHash> decided;
+	if (decided.size() > 65536)
+		decided.clear();
+	std::array<std::uint64_t, 9> kept{};
+	for (int dy = -1; dy <= 1; ++dy)
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			const int slot = (dy + 1) * 3 + dx + 1;
+			if (!reach[slot])
+				continue; // No stone of that cell reaches this one.
+			const MaterialId corners[4] = {vertex(dx, dy), vertex(dx + 1, dy), vertex(dx, dy + 1), vertex(dx + 1, dy + 1)};
+			const auto count = std::count(std::begin(corners), std::end(corners), stone);
+			if (count == 4)
+			{
+				kept[slot] = ~std::uint64_t(0);
+				continue;
+			}
+			if (!count)
+				continue;
+			StoneDecisionKey key{instance, int(unsigned(r.x + dx) & unsigned(map.getMaskW())),
+				int(unsigned(r.y + dy) & unsigned(map.getMaskH())), map.getW(), map.getH(), map.terrainSeed(), stone, {}};
+			for (int y = -1; y <= 2; ++y)
+				for (int x = -1; x <= 2; ++x)
+					key.window[(y + 1) * 4 + x + 1] = vertex(dx + x, dy + y);
+			if (const auto found = decided.find(key); found != decided.end())
+			{
+				kept[slot] = found->second;
+				continue;
+			}
+			// Each stone follows the smooth border at its centre.
+			const auto neighbour = describeCell(map, r.x + dx, r.y + dy, false);
+			const PreparedCoverage prepared(definitions, neighbour, PreparedCoverage::Detail::Weights);
+			const auto &centres = stones->centres(int(unsigned(r.x + dx) & wrap), int(unsigned(r.y + dy) & wrap));
+			std::uint64_t bits = 0;
+			for (std::size_t i = 0; i < centres.size(); ++i)
+			{
+				// Kept where the stone material is the largest there.
+				const auto coverage = prepared.at(centres[i][0], centres[i][1]);
+				unsigned own = 0, other = 0;
+				for (unsigned k = 0; k < 4; ++k)
+					if (coverage.material[k] == stone)
+						own += coverage.weight[k];
+					else
+						other = std::max(other, coverage.weight[k]);
+				if (own > other) bits |= std::uint64_t(1) << i;
+			}
+			decided.emplace(key, bits);
+			kept[slot] = bits;
+		}
+	// A cell of one material whose reaching stones all agree with it draws
+	// exactly as without stones, and keeps the uniform fast path.
+	if (r.corners[1] == r.corners[0] && r.corners[2] == r.corners[0] && r.corners[3] == r.corners[0])
+	{
+		const bool path = r.corners[0] == stone;
+		bool agrees = true;
+		for (unsigned slot = 0; slot < 9 && agrees; ++slot)
+			agrees = (path ? (reach[slot] & ~kept[slot]) : (reach[slot] & kept[slot])) == 0;
+		if (agrees)
+			return;
+	}
+	r.stones = true;
+	r.stoneMaterial = stone;
+	r.stoneGround = ground;
+	// Only reaching stones are ever looked up; the rest stay zero so equal
+	// cells keep equal recipes.
+	for (unsigned slot = 0; slot < 9; ++slot)
+		r.stonesKept[slot] = kept[slot] & reach[slot];
 }
 void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 {
@@ -744,8 +1051,11 @@ Compositor::Usage Compositor::recipeUsage(std::span<const Recipe> recipes) const
     Usage usage;
     for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
     for (const auto &r : recipes)
-        for (auto id : r.corners)
-            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    {
+        std::array<MaterialId, 4> palette;
+        for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
+            usage[palette[i]][definitions.variantIndex(palette[i], r.x, r.y, r.seed)] = 1;
+    }
     return usage;
 }
 std::size_t Compositor::cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const
@@ -821,6 +1131,7 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
         previous->included == included && publishedRevisions == textureRevisions)
         return previous;
     auto next = std::make_shared<CpuMaterials>();
+    next->stones = stoneMaps;
     next->definitions = publishedCatalog.lock();
     if (!next->definitions)
     {
@@ -887,25 +1198,26 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
 {
     scratch.sources.resize(definitions->materials.size());
     auto &sources = scratch.sources;
-    for (auto id : recipe.corners)
+    std::array<MaterialId, 4> palette;
+    for (unsigned i = 0, n = recipe.palette(palette); i < n; ++i)
     {
+        const auto id = palette[i];
         const auto variant = definitions->variantIndex(id, recipe.x, recipe.y, recipe.seed);
         const auto &texture = textures.at(id).at(variant);
         sources[id] = {variant, 0, texture.size, *texture.pixels,
                        texture.size % (32 * scale) ? 0 : texture.size / (32 * scale)};
     }
-    if (!mask && std::any_of(recipe.corners.begin(), recipe.corners.end(),
-                             [&](auto id) { return id != recipe.corners[0]; }))
+    if (!mask && !recipe.uniform())
     {
-        buildMask(*definitions, recipe, scale, scratch.mask);
+        buildMask(*definitions, *stones, recipe, scale, scratch.mask);
         mask = &scratch.mask;
     }
-    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask, surfTime);
+    composePixels(*definitions, *stones, recipe, target, 0, 0, scale, sources, mask, surfTime);
 }
 Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
 {
     CellMask result;
-    buildMask(*definitions, recipe, scale, result);
+    buildMask(*definitions, *stones, recipe, scale, result);
     return result;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
@@ -913,14 +1225,17 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 {
     thread_local std::vector<PreparedMaterialView> sources;
     sources.resize(definitions.materials.size());
-    for (auto id : r.corners)
+    std::array<MaterialId, 4> palette;
+    for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
     {
+        const auto id = palette[i];
         sources[id] = preparedMaterial(r, id);
         sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
     }
-    composePixels(definitions, r, target, ox, oy, scale, sources, mask, preparedTime);
+    composePixels(definitions, *stoneMaps, r, target, ox, oy, scale, sources, mask, preparedTime);
 }
-void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_Surface *target,
+void Compositor::composePixels(const Catalog &definitions, const StoneMaps &stones, const Recipe &r,
+                               SDL_Surface *target,
                                int ox, int oy, int scale,
                                std::span<const PreparedMaterialView> prepared, const CellMask *mask,
                                unsigned surfTime)
@@ -931,8 +1246,7 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 	// Resolve immutable pixel storage once per tile, rather than through
 	// vector/array accessors for every channel of every instrumented pixel.
     const auto *sources = prepared.data();
-	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
-									 [&](auto id) { return id == r.corners[0]; });
+	const bool uniform = r.uniform();
 	// Q8 shore calm of a sample, for animated liquids near land.
 	const unsigned calmStrength = 256 - ShoreCalmContrastQ8;
 	const auto calmAt = [&](int x, int y)
@@ -1004,7 +1318,7 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 	// Uncached composition reuses one mask per thread rather than allocating.
 	thread_local CellMask scratch;
 	if (!mask)
-        buildMask(definitions, r, scale, scratch);
+        buildMask(definitions, stones, r, scale, scratch);
 	const auto &cell = mask ? *mask : scratch;
 	if (cell.recipe != r || cell.scale != scale)
 		throw std::runtime_error("Terrain cell mask does not match its recipe");
@@ -1082,8 +1396,9 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 				// Q8 world pixels of the sample centre, as the coverage samples it.
 				const int wx = r.x * 8192 + (2 * x + 1) * 4096 / size;
 				const int wy = r.y * 8192 + (2 * y + 1) * 4096 / size;
+				const auto land = definitions.materials[selfSurf.period ? neighbor : dominant].shoreWash;
 				applySurf(selfSurf.period ? selfSurf : otherSurf, selfSurf.period > 0, margin, wx,
-						  wy, surfTime, value);
+						  wy, surfTime, value, land);
 			}
 			*p = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
 		}
@@ -1096,9 +1411,10 @@ Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
 }
 void Compositor::mask(const Recipe &r, int scale, CellMask &cell) const
 {
-    buildMask(definitions, r, scale, cell);
+    buildMask(definitions, *stoneMaps, r, scale, cell);
 }
-void Compositor::buildMask(const Catalog &definitions, const Recipe &r, int scale, CellMask &cell)
+void Compositor::buildMask(const Catalog &definitions, const StoneMaps &stones, const Recipe &r, int scale,
+                           CellMask &cell)
 {
 	cell.palette = {};
 	cell.colors = 0;
@@ -1111,18 +1427,19 @@ void Compositor::buildMask(const Catalog &definitions, const Recipe &r, int scal
 				return slot;
 		throw std::runtime_error("Terrain coverage names a material outside its cell");
 	};
-	for (auto id : r.corners)
-		if (std::find(cell.palette.begin(), cell.palette.begin() + cell.colors, id) ==
-			cell.palette.begin() + cell.colors)
-			cell.palette[cell.colors++] = id;
+	cell.colors = r.palette(cell.palette);
 	const int size = 32 * scale;
 	cell.samples.resize(std::size_t(size) * size);
 	auto *sample = cell.samples.data();
 	const PreparedCoverage prepared(definitions, r);
+	const auto *stoneMap = r.stones ? stones.get(r.stoneMaterial) : nullptr;
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x, ++sample)
 		{
-			const auto coverage = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			const int px = (x * 256 + 128) / scale, py = (y * 256 + 128) / scale;
+			auto coverage = prepared.at(px, py);
+			if (stoneMap)
+				applyStones(r, *stoneMap, px, py, coverage);
 			// Entries of one material add linearly in the blend, so they merge.
 			unsigned weights[4] = {};
 			for (int i = 0; i < 4; ++i)

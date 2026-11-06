@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <array>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -32,7 +33,10 @@ public:
     };
     struct Row
     {
-        Layer resources, decor, overlay;
+        // Raised decor holds one layer per compositor decor slot, in drawing order.
+        Layer resources, overlay;
+        std::array<Layer, 7> decor; // Compositor::DecorSlots
+
         std::uint64_t resourceRevision = 0;
         std::uint32_t tick = 0; // simulation tick the resource frames were chosen at
         int animationTime = 0;  // presentation time the overlay frames were chosen at

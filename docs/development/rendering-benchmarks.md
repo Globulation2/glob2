@@ -24,7 +24,11 @@ each mode in a separate fresh process with identical warmup and camera settings
 when comparing cloud cost: running both shares terrain and device caches, so the
 second mode benefits from the first mode's work. Alternate process order across
 repeated pairs to limit drift from temperature and background activity. Set
-`GLOB2_BENCH_VISIBLE=1` to show and present the completed fixture.
+`GLOB2_BENCH_VISIBLE=1` to show and present the completed fixture; otherwise, on
+macOS, the window is created hidden and never activates the process
+(`GLOB2_TEST_HIDDEN_WINDOWS`, see [test/README.md](../../test/README.md)), so
+repeated captures don't steal focus. `software-render-benchmark` does the same
+unless `PROFILE_VISIBLE` is set.
 `GLOB2_BENCH_NATIVE_CLOUD_DETAIL=1` restores the original dense cloud grid for
 a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
 zero measures the same terrain without units. Retain executable hashes, commands,

@@ -97,6 +97,7 @@ from terrain_core import (  # noqa: E402
 import terrain_packs  # noqa: E402,F401  registers every material recipe
 from terrain_tileset import BUILTIN_NAMES, LEGACY_BINDINGS  # noqa: E402
 import terrain_catalog  # noqa: E402
+import terrain_stones  # noqa: E402
 
 PILLOW_VERSION = "12.2.0"
 FRAME_PREFIX = "content/data/gfx/terrain-"
@@ -105,6 +106,10 @@ SPRITE_PREFIX = "data/gfx/terrain-"
 HD_PREFIX = "content/data/highres/v1/terrain-"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain synthesis v1"
+# Stone maps of the laid paths with whole-stone edges (see terrain_stones.py).
+STONE_MAP_PREFIX = "data/terrain/stones/"
+# Q8 surf strength washing against laid paths (built border class).
+SHORE_WASH_BUILT = 77
 
 
 # Catalogue order of the built-in types, from the engine's generated name list.
@@ -300,6 +305,11 @@ def material_block(name, phases):
         block["variant_block_group"] = rec.block_group
     block["minimap"] = list(minimap)
     block["seam"] = dict(rec.seam)
+    if rec.stone_edges:
+        block["stones"] = f"{STONE_MAP_PREFIX}{name}.png"
+    if rec.border_class == "built":
+        # Water laps gently at laid paths: their shoreline wash is a calmer 30%.
+        block["shore_wash_q8"] = SHORE_WASH_BUILT
     return block
 
 
@@ -421,6 +431,23 @@ def provenance_document(name, phases, hashes, root, hd_hashes=None):
         "runtime_sha256": hashes,
         "highres_sha256": hd_hashes or {},
     }
+
+
+def _stone_map_job(name):
+    return name, terrain_stones.stone_map(name).tobytes()
+
+
+def write_stone_maps(names, root, jobs=None):
+    """Render each named path's stone geometry and write its stone map."""
+    names = [n for n in names if RECIPES[n].stone_edges]
+    out = root / "content" / STONE_MAP_PREFIX
+    out.mkdir(parents=True, exist_ok=True)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=jobs or default_jobs()) as pool:
+        for name, data in pool.map(_stone_map_job, names):
+            size = RECIPES[name].grid * N
+            Image.frombytes("RGBA", (2 * size, size), data).save(out / f"{name}.png", optimize=True)
+            print(f"{name:<18} stone map {size}x{size} (two blocks)")
+    return names
 
 
 def write_material(name, phases, hd_phases, root):
@@ -549,6 +576,9 @@ def main(argv=None):
                              "from the committed frames, without rendering (writing frames also does this)")
     parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/ (no frames written)")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
+    parser.add_argument("--stone-maps", action="store_true",
+                        help="write the stone maps of the selected whole-stone paths (content/data/terrain/stones/) "
+                             "and their catalog blocks, without writing frames")
     parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: one per core, bounded by memory)")
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root to read and write")
     args = parser.parse_args(argv)
@@ -559,6 +589,12 @@ def main(argv=None):
         parser.error(f"unknown material(s): {', '.join(unknown)}; known: {', '.join(SYNTH_ORDER)}")
     root = args.root.resolve()
     jobs = args.jobs or None
+
+    if args.stone_maps:
+        written = write_stone_maps(names, root, jobs)
+        write_catalog({name: committed_phases(name, root) for name in written}, root)
+        print(f"Wrote {len(written)} stone maps and merged their catalog blocks")
+        return
 
     if args.hd:
         hd = synthesize(names, jobs, hd=True)

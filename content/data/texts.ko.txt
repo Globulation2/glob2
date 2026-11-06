@@ -5754,18 +5754,34 @@ AI 생성 아님
 월장석 마름모 타일
 [frost_pinwheel]
 서리 바람개비
+[arctic_tundra]
+북극 툰드라 지형
+[glacier]
+빙하
+[icefall]
+아이스폴
+[sandstone_benches]
+사암 단구
+[obsidian_ridge]
+흑요석 능선
+[granite_tors]
+화강암 토르
+[travertine_terraces]
+석회화 계단
+[penitentes]
+페니텐테
+[termite_mounds]
+흰개미 둔덕
+[hoodoos]
+후두
+[petrified_stumps]
+규화목 그루터기
 [terrain group water]
 물
 [terrain group sand]
 모래
 [terrain group grass]
 풀
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 얼음
 [terrain group paths]

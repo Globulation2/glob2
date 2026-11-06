@@ -226,6 +226,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals;
 		const auto definitions = catalog();
 		CHECK(definitions.materials[definitions.find("cliffs")].decor.connectedOpen);
+		CHECK(definitions.materials[definitions.find("icefall")].decor.connectedOpen);
 		CHECK_FALSE(definitions.materials[definitions.find("hedge")].decor.connectedOpen);
 		auto document = nlohmann::json::parse(definitions.serialized);
 		for (auto &material : document["materials"])
@@ -1151,6 +1152,7 @@ TEST_SUITE("TerrainMaterials")
 			{
 				material["sprite"] = "data/gfx/terrain";
 				material.erase("variant_grid"); material.erase("variant_blocks"); material.erase("variant_block_group");
+				material.erase("stones"); // A stone map spans a variant block.
 				material["variants"] = {{{"frame", 272}, {"weight", 1}}};
 			}
 		const auto directory = glob2test::artifactDir() / "data/terrain/startup-override";
@@ -1389,6 +1391,39 @@ TEST_SUITE("TerrainMaterials")
 				}
 			return result;
 		};
+		// Land with a calmer shore wash scales the wash's reach and bands; the
+		// default full wash is the unscaled one.
+		const auto wash = [&](int land)
+		{
+			unsigned change = 0, reach = 0;
+			for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
+				for (int margin = 0; margin < 2048; margin += 16)
+					for (bool surfSide : {false, true})
+					{
+						unsigned value[3] = {180, 160, 120};
+						TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value, land);
+						const unsigned delta = unsigned(std::abs(int(value[0]) - 180) + std::abs(int(value[1]) - 160) +
+													   std::abs(int(value[2]) - 120));
+						change += delta;
+						if (delta && !surfSide) reach = std::max(reach, unsigned(margin));
+					}
+			return std::pair{change, reach};
+		};
+		const auto full = wash(256), calm = wash(77), none = wash(0);
+		CHECK(calm.first < full.first / 2);
+		CHECK(calm.first > 0);
+		CHECK(calm.second < full.second);
+		CHECK(none.first == 0);
+		for (int margin = 0; margin < 2048; margin += 64)
+		{
+			unsigned a[3] = {180, 160, 120}, b[3] = {180, 160, 120};
+			TerrainVisual::applySurf(darkSurf, false, margin, 5000, 9000, 40, a);
+			TerrainVisual::applySurf(darkSurf, false, margin, 5000, 9000, 40, b, 256);
+			CHECK(std::equal(a, a + 3, b));
+		}
+		// Laid paths take the calmer wash.
+		CHECK(definitions.materials[definitions.find("road")].shoreWash == 77);
+		CHECK(definitions.materials[definitions.find("grass")].shoreWash == 256);
 		bool moved = false;
 		for (int k = 0; k < darkSurf.period; k += darkSurf.ticks)
 		{
@@ -1571,7 +1606,9 @@ TEST_SUITE("TerrainMaterials")
 								TerrainVisual::applySurf(selfSurf.period ? selfSurf : otherSurf,
 														 selfSurf.period > 0, int(mask.margin),
 														 r.x * 8192 + (2 * x + 1) * 4096 / size,
-														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value);
+														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value,
+														 c.materials[selfSurf.period ? mask.neighbor
+																					 : mask.material[dominant]].shoreWash);
 							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) |
 													(value[1] << 8) | value[2];
 							mismatches += pixels(actual, x, y) != expected;
@@ -1657,6 +1694,8 @@ TEST_SUITE("TerrainMaterials")
 					material.erase("seam");
 					material.erase("surf");
 					material.erase("class");
+					material.erase("stones");
+					material.erase("shore_wash_q8");
 				}
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
@@ -2274,7 +2313,11 @@ TEST_SUITE("TerrainMaterials")
 		auto j = shippedCatalog();
 		j["version"] = 3;
 		j.erase("border_classes");
-		for (auto &m : j["materials"]) m.erase("class");
+		for (auto &m : j["materials"])
+		{
+			m.erase("class");
+			m.erase("stones"); // Whole-stone edges are version 4.
+		}
 		for (auto &p : j["profiles"])
 		{
 			p.erase("precedence"); p.erase("coast");
@@ -2376,6 +2419,27 @@ TEST_SUITE("TerrainMaterials")
 		const TerrainVisual::PreparedCoverage square(c, recipe), arc(round, recipe);
 		CHECK(weightOf(square.at(19 * 256, 19 * 256), road) > 32768);
 		CHECK(weightOf(arc.at(19 * 256, 19 * 256), road) < 32768);
+		// A 45-degree staircase of road vertices runs as one straight diagonal
+		// rather than square steps: along every pixel row, the road's far edge
+		// keeps a constant offset from the diagonal, apart from the meander.
+		const auto stairs = [&](int x, int y) { return ((x - y) % size + size) % size < 6 ? road : grass; };
+		std::vector<float> offset;
+		for (int y = 4; y < 10; ++y)
+		{
+			std::vector<TerrainVisual::PreparedCoverage> row;
+			for (int x = y + 3; x <= y + 7; ++x) row.emplace_back(c, contextualRecipe(x, y, size, stairs));
+			for (int py = 128; py < 8192; py += 256)
+			{
+				float position = -1;
+				for (int sx = 0; sx < 5 * 8192 && position < 0; sx += 32)
+					if (weightOf(row[sx / 8192].at(sx % 8192, py), road) < 32768)
+						position = sx / 256.f;
+				REQUIRE(position >= 0);
+				offset.push_back(position - py / 256.f);
+			}
+		}
+		const auto [nearest, farthest] = std::minmax_element(offset.begin(), offset.end());
+		CHECK(*farthest - *nearest < 4.f);
 	}
 	TEST_CASE("single vertices own their corner and animation does not reseed variants")
 	{

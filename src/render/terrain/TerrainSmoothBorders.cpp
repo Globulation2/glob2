@@ -49,6 +49,36 @@ constexpr float PixelsPerFieldUnit = 32.f / 2.5f;
 // The strongest multiplicative noise keeps every field positive where its
 // vertices reach, so meanders never cut a material off its own vertex.
 constexpr float MaximumWiggle = .75f;
+// Squareness of a vertex on a 45-degree staircase. A slight negative value
+// pulls the spline towards its vertices just enough that the contour through a
+// staircase of vertices runs straight, within a pixel, instead of stepping.
+constexpr float DiagonalSquareness = -.2f;
+// Whether the vertex's 3x3 neighbourhood holds exactly two materials split by
+// a 45-degree line: the vertices on either side of one of the lines
+// dx - dy = t + 1/2 or dx + dy = t + 1/2 are uniform. Both a staircase's edge
+// vertices and the vertices one step off it match, so the whole staircase
+// straightens, while a right-angled corner vertex does not.
+template <typename Vertex>
+bool onDiagonal(const Vertex &vertex, int cx, int cy)
+{
+	for (const int sign : {1, -1})
+		for (int t = -2; t <= 1; ++t)
+		{
+			int side[2] = {-1, -1};
+			bool split = true;
+			for (int dy = -1; dy <= 1 && split; ++dy)
+				for (int dx = -1; dx <= 1 && split; ++dx)
+				{
+					int &material = side[dx - sign * dy > t];
+					const int other = vertex(cx + dx, cy + dy);
+					split = material < 0 || material == other;
+					material = other;
+				}
+			if (split && side[0] != side[1])
+				return true;
+		}
+	return false;
+}
 } // namespace
 
 float SmoothBorders::NoiseLayer::at(int px, int py) const
@@ -99,7 +129,10 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 			}
 		cornerShare[k] = smooth ? 4096 : 0;
 		cornerWiggle[k] = std::min(MaximumWiggle, float(wiggle) / 256 / PixelsPerFieldUnit);
-		cornerSquareness[k] = float(square) / 256;
+		// Square profiles keep right angles but run straight along diagonals;
+		// round profiles are left as they are.
+		cornerSquareness[k] = square && smooth && onDiagonal(vertex, cx, cy) ? DiagonalSquareness
+																			 : float(square) / 256;
 		anyShare |= smooth;
 		all &= smooth;
 	}

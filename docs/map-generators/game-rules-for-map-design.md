@@ -90,9 +90,8 @@ then shows the new types in its **Terrain** tab, and you paint them like built-i
 terrain. The dock shows a composed swatch of every brush, grouped into collapsible
 sections: one per terrain group, grass, sand, water and deep water first and the rest
 in table order (see [experimental features](../features/experimental-features.md)), with the
-group's rules under its heading (grass, sand and water add a sentence on how they
-shape growth and building), then **Custom** for the map's imported definitions in
-natural name order with their own rules. Types whose experiment is off are shown locked, and their
+group's rules on one line under its heading, then **Custom** for the map's
+imported definitions in natural name order with their own rules. Types whose experiment is off are shown locked, and their
 section offers **Enable for this map**. The editor action `open terrain palette <group>`
 switches the dock to the Terrain tab, expands that group and scrolls it to the top,
 keeping the brush you had; `open resource palette [group]` does the same for
@@ -129,11 +128,12 @@ Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge
 `scree`, `brick_path`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
 `spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, the grass and
 sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`, then `sandstone`,
-`pumice`, `frozen_lake`, `wind_swept_snow`, `weathered_sandstone`, `hardpan`, `tundra`, `volcanic_ash`, `glacier_ice`, `overgrown_road`, `laterite`, `cliffs`, `molten_lava_pool`, `slate_ashlar`, `basalt_causeway`, `scoria_blocks`, `rime_ashlar`, `moonstone_lozenge` and `frost_pinwheel`). The looks share every rule of grass or sand and differ only in artwork and
+`pumice`, `frozen_lake`, `wind_swept_snow`, `weathered_sandstone`, `hardpan`, `tundra`, `volcanic_ash`, `glacier_ice`, `overgrown_road`, `laterite`, `cliffs`, `molten_lava_pool`, `slate_ashlar`, `basalt_causeway`, `scoria_blocks`, `rime_ashlar`, `moonstone_lozenge`, `frost_pinwheel`, `arctic_tundra`, `glacier`, `icefall`, `sandstone_benches`, `obsidian_ridge`, `granite_tors`, `travertine_terraces`, `penitentes`, `termite_mounds`, `hoodoos` and `petrified_stumps`). The looks share every rule of grass or sand and differ only in artwork and
 colours; sandstone tiles, overgrown road, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges and frost pinwheel follow the path rules of road, brick path and boardwalk, and a
 pumice field and hardpan the rough-ground rules of mud, mudflat and scree; a frozen lake and glacier ice play exactly
-like ice, wind-swept snow exactly like deep snow, and weathered sandstone and tundra exactly like dirt, as do volcanic ash and laterite; cliffs play exactly like hedge and thicket:
-impassable, and they stop projectiles; a molten lava pool plays exactly like lava. The earlier names
+like ice, wind-swept snow exactly like deep snow, and weathered sandstone and tundra exactly like dirt, as do volcanic ash, laterite and arctic tundra; cliffs, glacier, icefall, sandstone benches, obsidian ridge, granite tors and travertine terraces play
+exactly like hedge and thicket: impassable, and they stop projectiles; penitentes, termite mounds, hoodoos
+and petrified stumps play exactly like rock spires: impassable on the ground, but towers shoot over them; a molten lava pool plays exactly like lava. The earlier names
 `gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
 `shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in
 `src/map/TerrainTypeTable.h`), but maps, saves and reports are written with the

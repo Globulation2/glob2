@@ -349,6 +349,9 @@ unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 		 : versionMinor < FILE_FORMAT_VERSION_MOLTEN_LAVA_POOL ? TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL
 		 : versionMinor < FILE_FORMAT_VERSION_ROCK_PATHS ? TERRAIN_COUNT_BEFORE_ROCK_PATHS
 		 : versionMinor < FILE_FORMAT_VERSION_ICE_PATHS ? TERRAIN_COUNT_BEFORE_ICE_PATHS
+		 : versionMinor < FILE_FORMAT_VERSION_ARCTIC_TUNDRA ? TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA
+		 : versionMinor < FILE_FORMAT_VERSION_GLACIER ? TERRAIN_COUNT_BEFORE_GLACIER
+		 : versionMinor < FILE_FORMAT_VERSION_ICEFALL ? TERRAIN_COUNT_BEFORE_ICEFALL
 																   : unsigned(TERRAIN_COUNT);
 }
 std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins, unsigned saved)
@@ -365,7 +368,8 @@ std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins
 		savedBuiltins == TERRAIN_COUNT_BEFORE_GLACIER_ICE || savedBuiltins == TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD ||
 		savedBuiltins == TERRAIN_COUNT_BEFORE_LATERITE || savedBuiltins == TERRAIN_COUNT_BEFORE_CLIFFS ||
 		savedBuiltins == TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL || savedBuiltins == TERRAIN_COUNT_BEFORE_ROCK_PATHS ||
-		savedBuiltins == TERRAIN_COUNT_BEFORE_ICE_PATHS)
+		savedBuiltins == TERRAIN_COUNT_BEFORE_ICE_PATHS || savedBuiltins == TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_GLACIER || savedBuiltins == TERRAIN_COUNT_BEFORE_ICEFALL)
 		return saved < savedBuiltins ? saved : saved - savedBuiltins + TERRAIN_COUNT;
 	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
 	if (saved <= TRAIL)
@@ -393,7 +397,10 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_LATERITE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_CLIFFS &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_ROCK_PATHS &&
-		savedBuiltinCount != TERRAIN_COUNT_BEFORE_ICE_PATHS && savedBuiltinCount != TERRAIN_COUNT)
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_ICE_PATHS &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GLACIER &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_ICEFALL && savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())

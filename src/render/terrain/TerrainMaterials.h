@@ -70,10 +70,13 @@ struct Surf
 // Applies surf to one composed sample. value holds the composed channels and
 // is updated in place. surfSide is true when the sample's dominant material is
 // the surf one. wx and wy are the sample's non-negative Q8 world pixel
-// coordinates. The integer arithmetic is mirrored exactly by
-// libs/gag/shaders/terrain-compose-fragment.glsl.
+// coordinates. land is the Q8 shore wash of the land material across the
+// shoreline (Material::shoreWash): it scales the wash's reach and every band's
+// strength. The integer arithmetic is mirrored exactly by
+// libs/gag/shaders/terrain-compose-fragment.glsl and, in floating point, by the
+// direct terrain shader (libs/gag/include/DirectTerrainShader.h).
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
-			   unsigned value[3]);
+			   unsigned value[3], int land = 256);
 // Share of each wash (of 1024) spent rushing up the beach; the rest drains back
 // more slowly. Mirrored as washIn in libs/gag/shaders/terrain-compose-fragment.glsl.
 constexpr int SurfWashInQ10 = 224;
@@ -120,7 +123,26 @@ struct Decor
 	// cells with undecorated corners show this material's edge, as for a cliff
 	// whose rim and walls stand on the grass, instead of no raised decor.
 	bool connectedOpen = false;
+	// Optional frames against another connected mass ("connected_foreign", needs
+	// connected_corners and connected_open): where corners belong to another mass,
+	// the rim pulls back a quarter of the cell, so two masses stand apart across a
+	// valley half a cell wide. ForeignCodes masks, code-major, 16 colours each.
+	std::vector<int> connectedForeign;
+	// Terraced masses ("connected_tiers", needs connected_open): deep inside a
+	// large patch the same corner frames are drawn again, lifted, as up to
+	// MaxDecorTiers terraces stepping up toward the middle (Compositor::decorTierFrame).
+	bool connectedTiers = false;
 };
+// Terraces of a tiered mass: at most this many above the base, each drawn
+// DecorTierRise native pixels above the one below.
+inline constexpr int MaxDecorTiers = 3;
+inline constexpr int DecorTierRise = 20;
+// Corner codes with own (1) and foreign (2) corners in base 3 (TL, TR, BL, BR),
+// in increasing code order: the layout of Decor::connectedForeign.
+inline constexpr unsigned ForeignCodes = 50;
+// Index of a cell's own/foreign corner masks in ForeignCodes order, or -1 when
+// the cell has no own or no foreign corner.
+int foreignCodeIndex(unsigned ownMask, unsigned foreignMask);
 // Decor frames may be up to MaximumDecorFrame native pixels on each side. A
 // frame up to 64 px tall is centred on its 32 px cell; a taller frame keeps a
 // 64 px frame's bottom edge, 16 px below the cell, and grows upward, so tall
@@ -185,11 +207,18 @@ struct Material
 	int variantGrid = 0;
 	// Interchangeable blocks share boundary geometry; choose one per map block.
 	int variantBlocks = 1;
+	// Laid stone paths ("stones"): the data path of the stone map that numbers
+	// the stones of the variant block, so their borders keep or drop whole
+	// stones (see TerrainStones.h). Empty for every other material.
+	std::string stones;
 	Decor decor;
 	Overlay overlay;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 	Surf surf;
+	// Q8 strength of a liquid's surf where it washes against this material
+	// ("shore_wash_q8", default 256): paved paths take a calmer wash.
+	int shoreWash = 256;
 	// Set by the compositor for animated surf liquids: their mean native colour,
 	// toward which shore calm pulls the waves.
 	bool shoreCalm = false;
@@ -228,6 +257,9 @@ class Catalog
 	// cornerColours selects the variant of corner-tiled connected decor.
 	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0,
 		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
+	// The connected_foreign frame of a cell whose other corners hold another
+	// mass, or -1 when the material has none.
+	int decorForeignFrame(MaterialId material, unsigned ownMask, unsigned foreignMask, unsigned cornerColours) const;
 	// Overlay frame for a cell of this material at a presentation time (the
 	// clock `frame` uses for animated materials), or -1 when the material has
 	// no overlay, the cell is not chosen or its step is empty.
@@ -254,6 +286,40 @@ struct Recipe
 	// Q8 shore calm of each corner (see shoreCalm), zero away from land.
 	std::array<std::uint8_t, 4> calm{};
 	bool calmed() const { return calm != std::array<std::uint8_t, 4>{}; }
+	// Whole-stone path edges (see TerrainStones.h). When `stones` is set, the
+	// laid stones of stoneMaterial reach this cell: stoneGround is the ground
+	// a dropped stone reveals, and stonesKept holds, for this cell and its
+	// eight neighbours in row-major order from (-1,-1), one bit per stone
+	// centred in that cell, numbered as in the stone map: set when kept.
+	bool stones = false;
+	MaterialId stoneMaterial = 0, stoneGround = 0;
+	std::array<std::uint64_t, 9> stonesKept{};
+	// One material fills the whole cell: its corners agree and no stone
+	// border reaches it.
+	bool uniform() const
+	{
+		return !stones && corners[1] == corners[0] && corners[2] == corners[0] && corners[3] == corners[0];
+	}
+	// The distinct materials the cell may draw, in palette order: its corners,
+	// then the stone material and the ground of a stone border. Returns the count.
+	unsigned palette(std::array<MaterialId, 4> &out) const
+	{
+		unsigned count = 0;
+		const auto add = [&](MaterialId id)
+		{
+			for (unsigned i = 0; i < count; ++i)
+				if (out[i] == id) return;
+			// describe() sets stones only when all of them fit.
+			if (count < out.size()) out[count++] = id;
+		};
+		for (const auto id : corners) add(id);
+		if (stones)
+		{
+			add(stoneMaterial);
+			add(stoneGround);
+		}
+		return count;
+	}
 	bool operator==(const Recipe &) const = default;
 };
 struct Coverage

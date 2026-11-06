@@ -38,7 +38,7 @@ def ashlar_rectangles(size, rng):
         seam=SEAM,
         palette={**FROST, "deep": (156, 168, 210), "mid": (198, 206, 234), "light": (234, 236, 248),
                  "warm": (216, 214, 228), "cool": (160, 174, 220)},
-        style=Style(luma=186, std=22, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=186, std=22, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_rime_ashlar(ctx):
     """Blocks cut from the glacier: each its own depth of blue, with internal
     fracture planes, bright chipped rims, snow-packed joints and drifts."""

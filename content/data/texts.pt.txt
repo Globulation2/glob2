@@ -5754,18 +5754,34 @@ Cantaria de geada
 Losangos de pedra-da-lua
 [frost_pinwheel]
 Cata-vento de geada
+[arctic_tundra]
+Solo de tundra ártica
+[glacier]
+Glaciar
+[icefall]
+Cascata de gelo
+[sandstone_benches]
+Bancadas de arenito
+[obsidian_ridge]
+Crista de obsidiana
+[granite_tors]
+Penedos de granito
+[travertine_terraces]
+Socalcos de travertino
+[penitentes]
+Neves penitentes
+[termite_mounds]
+Termiteiras
+[hoodoos]
+Chaminés de fada
+[petrified_stumps]
+Cepos petrificados
 [terrain group water]
 Água
 [terrain group sand]
 Areia
 [terrain group grass]
 Relva
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gelo
 [terrain group paths]

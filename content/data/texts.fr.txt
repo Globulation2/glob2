@@ -5754,18 +5754,34 @@ Pierres de givre
 Losanges de pierre de lune
 [frost_pinwheel]
 Moulinet de givre
+[arctic_tundra]
+Sol de toundra arctique
+[glacier]
+Glacier
+[icefall]
+Chute de séracs
+[sandstone_benches]
+Bancs de grès
+[obsidian_ridge]
+Crête d'obsidienne
+[granite_tors]
+Chaos granitiques
+[travertine_terraces]
+Terrasses de travertin
+[penitentes]
+Pénitents de neige
+[termite_mounds]
+Termitières
+[hoodoos]
+Cheminées de fée
+[petrified_stumps]
+Souches pétrifiées
 [terrain group water]
 Eau
 [terrain group sand]
 Sable
 [terrain group grass]
 Herbe
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Glace
 [terrain group paths]

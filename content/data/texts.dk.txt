@@ -5754,18 +5754,34 @@ Rimfrostkvadre
 Månestensruder
 [frost_pinwheel]
 Frostmølle
+[arctic_tundra]
+Arktisk tundrajord
+[glacier]
+Gletsjer
+[icefall]
+Isfald
+[sandstone_benches]
+Sandstensbænke
+[obsidian_ridge]
+Obsidiankam
+[granite_tors]
+Granittårne
+[travertine_terraces]
+Travertinterrasser
+[penitentes]
+Bodssne
+[termite_mounds]
+Termitboer
+[hoodoos]
+Jordpyramider
+[petrified_stumps]
+Forstenede stubbe
 [terrain group water]
 Vand
 [terrain group sand]
 Sand
 [terrain group grass]
 Græs
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Is
 [terrain group paths]

@@ -5730,18 +5730,34 @@ AI से नहीं बना
 चंद्रकांत समचतुर्भुज
 [frost_pinwheel]
 पाला फिरकी
+[arctic_tundra]
+आर्कटिक टुंड्रा की भूमि
+[glacier]
+हिमनद
+[icefall]
+हिमप्रपात
+[sandstone_benches]
+बलुआ पत्थर की चबूतरियाँ
+[obsidian_ridge]
+ओब्सीडियन कटक
+[granite_tors]
+ग्रेनाइट टॉर
+[travertine_terraces]
+ट्रैवर्टीन सीढ़ीदार चबूतरे
+[penitentes]
+पेनिटेंटेस हिम
+[termite_mounds]
+दीमक की बाँबियाँ
+[hoodoos]
+हूडू स्तंभ
+[petrified_stumps]
+जीवाश्म ठूँठ
 [terrain group water]
 पानी
 [terrain group sand]
 रेत
 [terrain group grass]
 घास
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 बर्फ़
 [terrain group paths]

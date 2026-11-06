@@ -5637,7 +5637,7 @@ Rice
 [Fish]
 Fish
 [boulders]
-Boulders
+Stone pillars
 [hedge]
 Hedge
 [thicket]
@@ -5732,26 +5732,42 @@ Rime ashlar
 Moonstone lozenges
 [frost_pinwheel]
 Frost pinwheel
+[arctic_tundra]
+Arctic tundra
+[glacier]
+Glacier
+[icefall]
+Icefall
+[sandstone_benches]
+Sandstone benches
+[obsidian_ridge]
+Obsidian ridge
+[granite_tors]
+Granite tors
+[travertine_terraces]
+Travertine terraces
+[penitentes]
+Penitentes
+[termite_mounds]
+Termite mounds
+[hoodoos]
+Hoodoos
+[petrified_stumps]
+Petrified stumps
 [terrain group water]
 Water
 [terrain group sand]
 Sand
 [terrain group grass]
 Grass
-[terrain group note water]
-Globs swim across it, algae grow in it, and it waters the land around it so crops spread faster. Nothing can be built on it.
-[terrain group note sand]
-Walkable, but nothing is built on sand and nothing grows in it. A band of sand inland also holds back the crops spreading next to it; on a coast it is the beach.
-[terrain group note grass]
-Buildable, and crops and trees grow on it, but it does not water its neighbours: water and fertile ground do that.
 [terrain group ice]
 Snow and ice
 [terrain group paths]
 Paths
 [terrain group obstacles]
-Obstacles
+Barriers
 [terrain group ridges]
-Crags
+Outcrops
 [terrain group barren]
 Barren ground
 [terrain group rough]

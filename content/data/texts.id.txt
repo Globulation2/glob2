@@ -5754,18 +5754,34 @@ Batu pahat embun beku
 Belah ketupat batu bulan
 [frost_pinwheel]
 Kincir embun beku
+[arctic_tundra]
+Tanah tundra Arktik
+[glacier]
+Gletser
+[icefall]
+Air terjun es
+[sandstone_benches]
+Bangku batu pasir
+[obsidian_ridge]
+Punggung obsidian
+[granite_tors]
+Tor granit
+[travertine_terraces]
+Teras travertin
+[penitentes]
+Salju penitentes
+[termite_mounds]
+Gundukan rayap
+[hoodoos]
+Cerobong peri
+[petrified_stumps]
+Tunggul membatu
 [terrain group water]
 Air
 [terrain group sand]
 Pasir
 [terrain group grass]
 Rumput
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Es
 [terrain group paths]

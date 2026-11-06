@@ -5754,18 +5754,34 @@ Conci di brina
 Losanghe di pietra di luna
 [frost_pinwheel]
 Girandola di brina
+[arctic_tundra]
+Terreno di tundra artica
+[glacier]
+Ghiacciaio
+[icefall]
+Seraccata
+[sandstone_benches]
+Banchi di arenaria
+[obsidian_ridge]
+Cresta di ossidiana
+[granite_tors]
+Tor di granito
+[travertine_terraces]
+Terrazze di travertino
+[penitentes]
+Nevi penitenti
+[termite_mounds]
+Termitai
+[hoodoos]
+Camini delle fate
+[petrified_stumps]
+Ceppi pietrificati
 [terrain group water]
 Acqua
 [terrain group sand]
 Sabbia
 [terrain group grass]
 Erba
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ghiaccio
 [terrain group paths]

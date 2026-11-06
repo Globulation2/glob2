@@ -9,7 +9,7 @@ enum class StepResult : std::uint8_t { Pending, Ready, Failed, Arrived };
 struct ActiveRouteRuntime;
 // Claims, policy cadence and recovery were consolidated into one shipped format
 // (FILE_FORMAT_VERSION_RESOURCE_CLAIMS); unshipped intermediate saves are not read.
-inline constexpr int ActiveClaimsFormat = 210;
+inline constexpr int ActiveClaimsFormat = 213;
 inline constexpr int PolicyConfigFormat = ActiveClaimsFormat;
 inline constexpr int ClaimRecoveryFormat = ActiveClaimsFormat;
 }

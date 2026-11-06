@@ -247,7 +247,7 @@ TEST_CASE("exit effects travel with a unit that has walked on from its exit tile
 			game.animations->onUnitLeftBuilding(game.map, unit->gid, exitX, exitY, 0, 1, game.teams[0], 0);
 		}
 		// Past the swarm's glow (PulseRiseTicks + PulseFallTicks), which stays on the swarm.
-		for (int tick = 0; tick <= 14; ++tick)
+		for (int tick = 0; tick <= int(UnitEffect::PulseRiseTicks + UnitEffect::PulseFallTicks) + 1; ++tick)
 			game.animations->step();
 		const Frame frame = draw(game);
 		save(frame, name);

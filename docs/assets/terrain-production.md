@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 53 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 55 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -102,25 +102,29 @@ colour and material stay free per biome:
 | Water, deep water, lava (lava, ember field, molten lava pool) | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite, arctic tundra) | firm, level, packed ground: faded colour, relief two to twelve native pixels across damped, a fine compaction grain, evenly strewn grit and small flat stones with short shadows, and a few faint hairline cracks; contrast targets about 0.7 of other grounds' so it reads quiet and buildable rather than broken | `barren_mark` (`level_ground`, `compaction_grain`, `group_gravel`, `group_cracks`); `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges, frost pinwheel) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps); `_frost_paths` (snow in place of soil and moss, `weather`) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
-| Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
+| Outcrops (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns; penitentes, termite mounds, hoodoos, petrified stumps) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
-| Obstacles (boulders, hedge, thicket, cliffs) | tall raised decor | `terrain_decor.py` |
+| Barriers (`boulders`, shown as Stone pillars; hedge, thicket, cliffs, glacier, icefall, sandstone benches, obsidian ridge, granite tors, travertine terraces) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
-shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
+shared mark; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
 volcanic ash is dark charcoal fine-grained ash with scattered porous black stones and
 rusty mineral specks;
 weathered sandstone is a solid bed of ochre stone worn into large, low, rounded slabs with
 fine joints, rust stain and pale nodules; laterite is a packed bed of rounded, hardened
 iron-red nodules (a few glossy brown-black iron) over a red crust whose softer cracks run
 between them, with lower patches of bare ochre fines; heath is clumps of dormant and dead heather cushions,
-each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
+each built of lit sprig tufts, over pale packed sandy peat; tundra is its cold
 counterpart on frost-patterned ground: polygons about two cells across with faint
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
-grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
+grey stones, and the shared mark in dark peaty earth. Arctic tundra is tundra
+under snow: the same polygons, stones and packed ground, with snow drifts in place of the
+moss pads (the same cushion helper and placement, merged into scalloped drifts), rime
+on the rims, a dusting on the stones and the faint cracks running on through the snow
+as blue fissures. Paths are all laid by the
 globs, never natural ground, and all of them have been walked for years: the
 `_paving` family module settles every stone with its own tilt, sink or heave
 (half of it following broad subsidence hollows, so neighbours sink together)
@@ -235,7 +239,9 @@ in the synthesiser).
 
 Obstacle terrain is drawn in two layers, as forest is. The ground material is
 composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
-undergrowth for thicket, talus for cliffs, and rock for ridge rock and outcrop. A decor sprite per
+undergrowth for thicket, talus for cliffs, moraine on snow for glacier, trampled snow and fallen ice for
+icefall, ground strewn with loose stones of their own rock for the other masses and the Outcrops looks
+(`terrain_packs/_strewn.py`, with the group's ledges under the Outcrops looks), and rock for ridge rock and outcrop. A decor sprite per
 cell is then drawn with the resources, row by row, so objects stand up, overlap
 neighbouring cells and occlude each other.
 
@@ -245,23 +251,31 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws raised decor only when every corner resolves to a decorated
-  material. An undecorated corner, such as ordinary grass, sand or water, suppresses all
-  raised objects in that cell, preserving a clear border against open ground.
-  Eligibility follows rendered material bindings, including custom materials.
-  The exception is connected decor with `"connected_open": true` (cliffs): when
-  every decorated corner of a cell has it, open-ground corners simply count as
-  empty in the corner mask, so the rim and walls stand on the grass. A cell where
-  such a material meets foliage and open ground keeps the foliage rule.
+- A cell draws up to seven decor layers, in order: up to two connected masses
+  that stand on open ground (`"connected_open": true`: cliffs, glacier and the
+  other Barriers masses), connected foliage (hedge and thicket), every other
+  obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
+  masses. Each layer draws only from its own corners, so cliffs show their walls where they
+  meet foliage or crags, and the foliage or rocks keep their own edge on the
+  other side. Eligibility follows rendered material bindings, including custom
+  materials.
+- An undecorated corner, such as ordinary grass, sand or water, suppresses the
+  foliage and obstacle layers in that cell, preserving a clear border against
+  open ground. The open-ground layer still draws there, so the rim and walls of
+  cliffs and glacier stand on the grass.
+- Obstacle clusters stand in the middle of their cell, not on their corners,
+  so a cell where cliffs hold more corners than the obstacles draws only the
+  cliff edge; otherwise a stray rock would stand on the plateau.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
-  interior variants. A border between decorated materials draws just one
+  interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
   corner, so two-plus-two corners give each material equal odds and three-plus-one
   corners give a three-to-one split. This uses no simulation random numbers.
 - Mixed decorated cells use the selected material's `edge` frames, including
-  when it occupies just one corner. Connected foliage retains its authored
-  corner geometry; adjacent connected foliage materials join into one crown of
-  the selected material. No overlapping ornaments or new artwork are needed.
+  when it occupies just one corner. Connected decor retains its authored
+  corner geometry; connected materials of the same layer join into one crown of
+  the selected material (hedge with thicket), while other layers' corners count
+  as an edge. No overlapping ornaments or new artwork are needed.
 - Connected arrays have 16 mask groups with equal variant counts (top-left bit 1,
   top-right bit 2, bottom-left bit 4, bottom-right bit 8). `connected_corners`
   retains its seeded corner-colour variants; `connected_interior` supplies
@@ -329,8 +343,10 @@ sloping top facets meeting at an off-centre peak, so each face takes one light
 value.
 
 Cliffs use the same connected corner tiles, but as rock: a weathered ochre
-plateau standing twelve native pixels above its footprint, twice the rise of
-foliage, in 32×64 frames. Its relief is broad shelves with fine grain, pits,
+plateau standing twenty native pixels above its footprint, well above
+foliage, in 32×68 frames (20 native rows above the cell, 16 of shadow below; the
+runtime keeps a taller frame's bottom 16 below the cell, so it grows upward).
+Every rock-like mass stands as high, which is also the terrace rise. Its relief is broad shelves with fine grain, pits,
 lichen stains, loose rocks and a few jointed fractures, under broad light that
 rises toward the rims facing the light. Each south face is the plateau's own
 stone, stretched down the drop and put in shade: broad facets each turned their
@@ -346,18 +362,83 @@ by the frames that share it. Its ground material is talus: the chips and cobbles
 of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
-follows the crags rather than the cell grid. Connected materials join one
-another, so cliffs painted against hedge or thicket meet them without a wall.
+follows the crags rather than the cell grid. Cliffs draw in their own decor
+layer, so against hedge, thicket or crags they keep their walls and the
+neighbour keeps its own edge.
+
+Glacier is the same connected plateau rendered in ice by a second cliff style
+(`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed
+drifts and smoother, low shelves, split by transverse crevasses that open on
+blue depths, over walls of blue ice that deepen toward the foot, crossed by
+broken debris bands under a white snow cornice at the lip, with a blue cast
+shadow. A cell edge has only four variants, which would line its crevasses up
+along rows, so glacier crevasses belong to the hash-chosen interiors of filled
+cells, at most two per cell on separate rows. Its ground material is moraine:
+the talus chips and cobbles, thinned out, in cold grey stone on packed snow.
+Glacier sets `connected_open` like cliffs; against crags it keeps its walls,
+as cliffs do.
+
+Where an open-edged mass meets another connected material (another mass, or
+hedge and thicket), each draws only its own corners, the mass with more north
+corners first, and the mass stands back from the other: its `connected_foreign`
+frames count each corner as its own, open ground or another mass, and a foreign
+corner counts as -1 in the corner field, so the rim crosses a quarter of the way
+from its own corner and two masses stand apart across a valley half a cell wide,
+each with its own rim and wall. Along an edge only that edge's two corners count,
+so these frames agree with their neighbours too. There are 50 such corner codes
+(base 3, with at least one own and one foreign corner), 16 colours each. Hedge
+against thicket still joins.
+
+Open-edged masses also terrace (`connected_tiers`). `Compositor::tierField` keeps,
+for each map vertex, how many vertices deep it lies inside its mass (Chebyshev
+distance to another material, capped), built by raster passes once per terrain
+revision and shared, so a cell's terraces cost four array reads in
+`Compositor::decorLayers`. Terrace k (up to `MaxDecorTiers`, three) covers the
+corners at least 2k vertices deep, or 2k + 1 by a seeded per-vertex choice so
+terraces wander like ledges, drawn with the same corner frames `DecorTierRise`
+(twenty native pixels) higher per terrace. Terraces nest and draw after the base
+decor in their row, so a large patch climbs toward its middle while thin strips
+stay one tier. The decor reach grows by the terraces' rise so culling keeps them
+in view.
+
+The masses beside cliffs and glacier share one renderer (`render_mass`): each
+names a surface (`tools/artwork/terrain_masses.py`, numpy) giving its lit top,
+outline heights and wall marks over the cell and halo, a wall colour by height,
+its rise and its rim and shadow colours. Surfaces are built only from parts
+neighbouring frames share: per-vertex-colour noise patches with variance-preserving
+bilinear weights, an interior patch that vanishes at the cell edge, features
+(shards, blocks) placed in vertex discs, edge boxes keyed by both end colours and
+filled-cell interiors, and cracks that follow cell edges. Icefall is a wind-packed
+snow surface with patches of scoured blue ice and crevasses that follow horizontal
+cell edges (their offset and width at a vertex depend only on its colour, their
+course only on the edge's two colours), on fluted blue walls with a snow rind.
+Sandstone benches are a pale caprock split by joints over thick beds that step back
+at their feet. Obsidian ridge is a heap of flat glassy shards, each turned its own
+way to the sky with an occasional glint and bright crests where they meet. Granite
+tors are rounded blocks broken by sheeting joints, with moss in the shaded gaps.
+Travertine terraces are matte calcite steps holding shallow milky pools, each
+spilling over a rounded drape.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795; then each later
 set appends its twelve object frames and its connected frames, so cliffs take
-796–807 and 808–1175), the HD frames, provenance and, with
+796–807 and 808–1175 and glacier 1176–1187 and 1188–1555; icefall, sandstone benches, obsidian ridge,
+granite tors and travertine terraces take 1180 frames each from 1556, their valley tiles included;
+penitentes, termite mounds, hoodoos and petrified stumps twelve each from 7456; then the valley tiles of
+cliffs and glacier, which were numbered before those existed, at 7504–9103), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
+
+The Outcrops looks (`tools/artwork/terrain_outcrops.py`) are object decor like rock
+spires: one cluster per cell, kept inside its own cell's footprint so row order
+draws it correctly, rendered as a height field in the three-quarter view with
+ray-marched shadows. Penitentes are snow-ice blades all facing one way; termite
+mounds are fluted red-earth mounds with chimneys; hoodoos are banded pillars
+waisted by weathering under dark caprocks; petrified stumps are snapped stone
+stumps showing their growth rings.
 
 ### Ground overlays: fertile glints
 
@@ -433,6 +514,23 @@ edges continue theirs rather than a shared band, and the border blend is skipped
 as for periodic edges. Use it for a field that must be larger than one cell, such
 as travelling waves. Map artwork bundles do not accept the key, so maps that
 carry custom art still load in older clients.
+
+#### Stone maps
+
+Laid stone paths set `stone_edges=True` on their recipe, and their geometry
+calls `record_stones(ctx, ids, edge, centres)` (the shared `dress` step does so
+for every path built on `_paving.py`). `terrain_synth.py --stone-maps` renders
+layout 0 of each such path, since every layout shares the stone layout, and
+writes `content/data/terrain/stones/<key>.png` together with the material's
+`stones` catalog field. Rerun it whenever a path's stone layout changes. The map
+covers the whole variant block at HD resolution (four texels per logical pixel).
+Each RGBA8 texel holds the texel's stone and the stone across the nearest joint,
+each as its number among the stones centred in one cell plus that cell's offset
+(`(dx + 1) + 3 (dy + 1)`), and the joint distance in native pixels × 32; a cell
+may hold the centres of at most 64 stones, and no stone may reach more than one
+cell beyond the cell holding its centre (`terrain_stones.py` checks both). See
+[Whole-stone edges](terrain-rendering.md#whole-stone-edges) for the runtime.
+Sawn wooden paths such as boardwalk leave the flag off.
 
 #### Interchangeable blocks
 
@@ -588,7 +686,7 @@ without pair treatments. Classes, strongest first:
 
 | Class | Materials | Edge profile |
 | --- | --- | --- |
-| `cover` | hedge, thicket, cliffs | `canopy` |
+| `cover` | hedge, thicket, cliffs, glacier | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
 | `built` | road, brick_path, sandstone, overgrown_road, boardwalk, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel | `paved`, `crisp` |
 | `flow` | lava, ember_field, molten_lava_pool | `molten` |
@@ -597,7 +695,7 @@ without pair treatments. Classes, strongest first:
 
 | Profile | Shape | Precedence / coast | roughness / amplitude / feather / speckle / bridge (Q8) | Materials |
 | --- | --- | --- | --- | --- |
-| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
+| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs, glacier |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
 | `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
@@ -635,7 +733,7 @@ exception the classes cannot express, not the way to tune a material.
 | 7 | dark_water | 80 / 704 |
 | 6 | deep_water | 72 / 640, a drop-off lip on shallow water and shores |
 | 5 | water (existing) | 72 / 640 |
-| 4 | boulders, hedge, thicket, cliffs | 88 / 832, a sense of height on the grass side |
+| 4 | boulders, hedge, thicket, cliffs, glacier | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field, molten_lava_pool | no cast; scorch fringe `[214,110,40]` 128/640, `[160,80,40]` 96/512 and a hotter `[255,120,10]` 160/768 |
 | 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |
@@ -643,7 +741,7 @@ exception the classes cannot express, not the way to tune a material.
 | 3 | rime_ashlar, moonstone_lozenge, frost_pinwheel | 24 / 512, a soft cast so their pale stone sits low in the snow |
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
-| 2 | heath, tundra | 48 / 480 |
+| 2 | heath, tundra, arctic_tundra | 48 / 480 |
 | 2 | dirt, clay, shale, weathered_sandstone, volcanic_ash, laterite | 40 / 448 |
 | 1 | sand (existing), mud, mudflat, scree, pumice, hardpan | no cast |
 

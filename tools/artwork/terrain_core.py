@@ -811,6 +811,10 @@ class Recipe:
     blocks: int = 1
     block_group: str = ""
     note: str = ""
+    # Laid stone paths whose edges follow whole stones ("stones" in the
+    # catalog): the runtime keeps or drops each stone as a unit, so a border
+    # never cuts one. Sawn materials such as boardwalk leave this off.
+    stone_edges: bool = False
 
     @property
     def cells(self):
@@ -858,6 +862,8 @@ class Ctx:
         self.t = phase / phases
         # Shared by every variant of a periodic material (and every phase).
         self.base_rng = random.Random(fnv1a32(f"{name}:base"))
+        # Laid-stone geometry recorded by record_stones, for stone maps.
+        self.stones = None
 
     @property
     def interior_mask(self):
@@ -869,6 +875,19 @@ class Ctx:
             return self.rng.random() * self.size, self.rng.random() * self.size
         span = max(1.0, N - 2 * margin)
         return margin + self.rng.random() * span, margin + self.rng.random() * span
+
+
+def record_stones(ctx, ids, edge, centres, inlays=()):
+    """Keep a laid surface's stone geometry on the render context.
+
+    `ids` gives each render pixel's stone, `edge` its distance from the stone
+    face's edge in render pixels (negative inside the joint) and `centres`
+    each stone's centre. `inlays` names small stones set between others, such
+    as keystones, which follow the stones around them at a border rather than
+    standing alone. The stone layout is common to every layout of the block,
+    so any layout's record describes the world's stones.
+    """
+    ctx.stones = (ids, edge, centres, frozenset(inlays))
 
 
 def ground(ctx, cells, octaves, anchors, warp=0.0, stretch=(0.02, 0.98), grit=0.12):
@@ -909,10 +928,11 @@ def layout_field(ctx, make):
 
 
 def group_cracks(ctx, cells=7, width=0.065, gaps=0.30, warp=5):
-    """Barren mark: broken dry cracks one to two native pixels wide.
+    """Broken dry cracks, one to two native pixels wide at the default width.
 
     Warped Voronoi edges, gated by broad noise so the network breaks into
     separate fissures rather than closed plates (clay keeps its own plates).
+    The barren mark draws them thin and faint; rock grounds use them as veins.
     """
     f1, f2, _, _, _, _ = block_worley(ctx, cells)
     size = ctx.size
@@ -924,13 +944,77 @@ def group_cracks(ctx, cells=7, width=0.065, gaps=0.30, warp=5):
             for e, g in zip(edge, gate)]
 
 
+def level_ground(rgb, keep=0.5):
+    """Damp relief two to twelve native pixels across toward the broad tone,
+    keeping the finest grain, so the ground reads level.
+
+    The filters read inward past the band every layout shares, so the outer
+    16 render px (the perimeter strip all layouts repeat byte for byte) keep
+    the ground as it is, and the levelling fades in over the next 16 px."""
+    import numpy as np
+    from scipy.ndimage import uniform_filter
+
+    size = math.isqrt(len(rgb[0]))
+    a = np.array(rgb, dtype=np.float64).reshape(3, size, size)
+    broad = np.stack([uniform_filter(ch, 49, mode="wrap") for ch in a])
+    mid = np.stack([uniform_filter(ch, 7, mode="wrap") for ch in a])
+    levelled = broad + keep * (mid - broad) + (a - mid)
+    centre = np.arange(size) + 0.5
+    edge = np.minimum(centre, size - centre)
+    d = np.minimum(edge[:, None], edge[None, :])
+    t = np.clip((d - 16) / 16, 0, 1)
+    weight = t * t * (3 - 2 * t)
+    return [list(ch.ravel()) for ch in a + (levelled - a) * weight]
+
+
+def compaction_grain(ctx, rgb, amount=0.035):
+    """Very fine, even grain of tamped earth."""
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 192, size=ctx.size))
+    return [[c * (1 + amount * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+
+
+def group_gravel(ctx, rgb, count, radius_min, radius_max, lift, shadow=0.0, offset=3):
+    """Small flat stones strewn evenly: paler, greyer bodies of the ground's
+    own colour, each casting a short shadow `offset` render px down-right."""
+    import numpy as np
+
+    size = ctx.size
+
+    def make(rng):
+        mask = [0.0] * (size * size)
+        for _ in range(count * ctx.area_scale):
+            stamp_disc(mask, rng.random() * size, rng.random() * size,
+                       rng.uniform(radius_min, radius_max), 1.0, 0.45)
+        return mask
+
+    body = layout_field(ctx, make)
+    cast = [max(0.0, s - b) for b, s in zip(body, shifted(body, offset, offset))]
+    tone = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    a = np.array(rgb, dtype=np.float64).reshape(3, size, size)
+    b = np.array(body).reshape(size, size)
+    s = np.array(cast).reshape(size, size)
+    t = np.array(tone).reshape(size, size)
+    grey = a.mean(axis=0, keepdims=True)
+    stone = (a + (grey - a) * 0.35) * (1 + lift * (0.6 + 0.8 * t))
+    a = (a + (stone - a) * b) * (1 - shadow * s)
+    return [list(ch.ravel()) for ch in a]
+
+
 def barren_mark(ctx, rgb, crack_colour, cells=7, strength=1.0, fade=0.22):
-    """Faded colour plus shared dry cracks with a lit lower lip."""
-    rgb = desaturate(rgb, fade)
-    cracks = group_cracks(ctx, cells)
-    lip = [max(0.0, b - a) for a, b in zip(cracks, shifted(cracks, 1, 1))]
-    rgb = mix(rgb, crack_colour, cracks, strength)
-    return [[c * (1 + 0.20 * l) for c, l in zip(channel, lip)] for channel in rgb]
+    """Barren mark: faded, level, packed ground strewn with fine grit and
+    small flat stones, with a few faint hairline cracks.
+
+    Firm and buildable, but dry: nothing grows. `crack_colour` may be a colour
+    or an RGB triple of fields. The recipes' style targets keep the contrast
+    low (about 0.7 of a cracked ground's), so the packing is not undone.
+    """
+    rgb = desaturate(rgb, fade + 0.05)
+    rgb = level_ground(rgb, 0.5)
+    rgb = compaction_grain(ctx, rgb)
+    cracks = group_cracks(ctx, cells, width=0.045, gaps=0.45)
+    rgb = mix(rgb, crack_colour, cracks, strength * 0.45)
+    rgb = group_gravel(ctx, rgb, 30, 2.2, 3.0, lift=0.28)
+    return group_gravel(ctx, rgb, 8, 5.0, 7.0, lift=0.38, shadow=0.35, offset=3)
 
 
 def worn_edge(rgb, lines, light=(1, 1), strength=0.16):

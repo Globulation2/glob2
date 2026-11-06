@@ -5754,18 +5754,34 @@ Kvádry z jinovatky
 Kosočtverce z měsíčního kamene
 [frost_pinwheel]
 Mrazivý větrník
+[arctic_tundra]
+Arktická tundrová půda
+[glacier]
+Ledovec
+[icefall]
+Ledopád
+[sandstone_benches]
+Pískovcové lavice
+[obsidian_ridge]
+Obsidiánový hřbet
+[granite_tors]
+Žulové skalky
+[travertine_terraces]
+Travertinové terasy
+[penitentes]
+Kajícný sníh
+[termite_mounds]
+Termitiště
+[hoodoos]
+Skalní hřiby
+[petrified_stumps]
+Zkamenělé pařezy
 [terrain group water]
 Voda
 [terrain group sand]
 Písek
 [terrain group grass]
 Tráva
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Led
 [terrain group paths]

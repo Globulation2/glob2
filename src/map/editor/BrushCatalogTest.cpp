@@ -139,15 +139,10 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog[3].key == "deep-water");
 		CHECK(ids(catalog[3]) == std::vector<std::string>{"terrain/deep_water", "terrain/dark_water"});
 		CHECK(catalog[4].key == "ice");
-		// Classic ground explains how it plays under the shared rule line.
-		for (const auto *key : {"water", "sand", "grass"})
-		{
-			const auto *group = findBrushGroup(catalog, BrushSection::Terrain, key);
-			REQUIRE(group);
-			CHECK(group->rules.find('\n') != std::string::npos);
-			CHECK(group->rules.find("[terrain group note") == std::string::npos);
-		}
-		CHECK(findBrushGroup(catalog, BrushSection::Terrain, "ice")->rules.find('\n') == std::string::npos);
+		// Every group, classic ground included, shows only its one-line rule summary.
+		for (const auto &group : catalog)
+			if (group.section == BrushSection::Terrain)
+				CHECK(group.rules.find('\n') == std::string::npos);
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
@@ -170,7 +165,9 @@ TEST_SUITE("BrushCatalog")
 		const auto *obstacles = findBrushGroup(catalog, BrushSection::Terrain, "obstacles");
 		REQUIRE(obstacles);
 		CHECK(ids(*obstacles) ==
-			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket", "terrain/cliffs"});
+			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket", "terrain/cliffs",
+									   "terrain/glacier", "terrain/icefall", "terrain/sandstone_benches",
+									   "terrain/obsidian_ridge", "terrain/granite_tors", "terrain/travertine_terraces"});
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
@@ -193,7 +190,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/glacier_ice");
 		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");
-		CHECK(barren->entries.back().id == "terrain/laterite");
+		CHECK(barren->entries.back().id == "terrain/arctic_tundra");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-volcanic_ash",
   "profile": "soil",
   "class": "solid",
-  "preview": [69, 65, 61],
+  "preview": [69, 65, 62],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [69, 65, 61],
+  "minimap": [69, 65, 62],
   "seam": {
     "height": 2,
     "cast_q8": 40,

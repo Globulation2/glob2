@@ -685,7 +685,7 @@ opt-in for new games and never enabled by default. A new game enables them with
 `--material-destinations` (material destination planes on gradient fields) plus
 one claim policy: `--resource-claims-policy-json JSON` (the configurable
 `experimental` policy) or `--resource-claims-active prototype-stationary-v1` (the
-original fixed prototype). Both exclude replay recording. Saved games (format 210
+original fixed prototype). Both exclude replay recording. Saved games (format 213
 and later) retain their destination planes, claim ledger, routes, recovery state
 and the exact canonical policy, and reject policy overrides on load.
 

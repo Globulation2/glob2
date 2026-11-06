@@ -5730,18 +5730,34 @@ AI ทำงาน​อย่างไร
 หินมูนสโตนข้าวหลามตัด
 [frost_pinwheel]
 กังหันน้ำค้างแข็ง
+[arctic_tundra]
+พื้นดินทุนดราอาร์กติก
+[glacier]
+ธารน้ำแข็ง
+[icefall]
+น้ำตกน้ำแข็ง
+[sandstone_benches]
+ขั้นหินทราย
+[obsidian_ridge]
+สันหินออบซิเดียน
+[granite_tors]
+กองหินแกรนิต
+[travertine_terraces]
+ขั้นบันไดหินทราเวอร์ทีน
+[penitentes]
+หนามหิมะ
+[termite_mounds]
+จอมปลวก
+[hoodoos]
+เสาหินฮูดู
+[petrified_stumps]
+ตอไม้กลายเป็นหิน
 [terrain group water]
 น้ำ
 [terrain group sand]
 ทราย
 [terrain group grass]
 หญ้า
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 น้ำแข็ง
 [terrain group paths]

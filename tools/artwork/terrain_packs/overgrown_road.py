@@ -19,6 +19,7 @@ from terrain_core import (
     mix,
     normalize_like,
     ramp,
+    record_stones,
     recipe,
     shade,
     smoothstep,
@@ -71,7 +72,7 @@ def hex_paving(size, columns, gap):
                  "warm": (148, 144, 116), "cool": (116, 130, 128), "joint": (54, 42, 32),
                  "soil": (62, 52, 40), "moss_dark": (58, 66, 38), "moss": (88, 98, 52), "moss_light": (122, 128, 70),
                  "leaf": (104, 126, 58), "lichen": (156, 150, 96), "shadow": (34, 32, 26), "crack": (64, 58, 50)},
-        style=Style(luma=120, std=24, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=120, std=24, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_overgrown_road(ctx):
     """Mossy setts (material key overgrown_road): neat hexagonal stone setts
     in dark joints, decaying.
@@ -84,6 +85,7 @@ def render_overgrown_road(ctx):
     gap = 1.0 * NATIVE_PX
     columns = 2 * max(1, round(size / (2 * 9 * NATIVE_PX)))
     centres, radius, ids, edge = hex_paving(size, columns, gap)
+    record_stones(ctx, ids, edge, centres)
     interior = ctx.interior_mask
     # Reclaimed patches: where this broad field is high, setts are lost and
     # moss creeps over the stone; elsewhere the road is mostly intact.

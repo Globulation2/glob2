@@ -5730,18 +5730,34 @@ Matofali ya barafu
 Almasi za jiwe la mwezi
 [frost_pinwheel]
 Gurudumu la barafu
+[arctic_tundra]
+Ardhi ya tundra ya aktiki
+[glacier]
+Mto wa barafu
+[icefall]
+Maporomoko ya barafu
+[sandstone_benches]
+Madawati ya mchanga-mawe
+[obsidian_ridge]
+Kingo cha obsidiani
+[granite_tors]
+Miamba ya graniti
+[travertine_terraces]
+Matuta ya travatini
+[penitentes]
+Miiba ya theluji
+[termite_mounds]
+Vichuguu
+[hoodoos]
+Nguzo za mawe
+[petrified_stumps]
+Visiki vilivyogeuka mawe
 [terrain group water]
 Maji
 [terrain group sand]
 Mchanga
 [terrain group grass]
 Nyasi
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Barafu
 [terrain group paths]

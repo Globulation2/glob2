@@ -5754,18 +5754,34 @@ Zúzmarás kváderkő
 Holdkő rombuszok
 [frost_pinwheel]
 Dérforgó
+[arctic_tundra]
+Sarkvidéki tundratalaj
+[glacier]
+Gleccser
+[icefall]
+Jégzuhatag
+[sandstone_benches]
+Homokkőpadok
+[obsidian_ridge]
+Obszidiángerinc
+[granite_tors]
+Gránittornyok
+[travertine_terraces]
+Travertinteraszok
+[penitentes]
+Vezeklő hótüskék
+[termite_mounds]
+Termeszvárak
+[hoodoos]
+Földpiramisok
+[petrified_stumps]
+Megkövesedett tönkök
 [terrain group water]
 Víz
 [terrain group sand]
 Homok
 [terrain group grass]
 Fű
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Jég
 [terrain group paths]

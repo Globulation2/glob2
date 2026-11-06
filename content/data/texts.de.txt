@@ -5754,18 +5754,34 @@ Raureif-Quader
 Mondstein-Rauten
 [frost_pinwheel]
 Frost-Windrad
+[arctic_tundra]
+Arktischer Tundraboden
+[glacier]
+Gletscher
+[icefall]
+Eisbruch
+[sandstone_benches]
+Sandsteinbänke
+[obsidian_ridge]
+Obsidiangrat
+[granite_tors]
+Granitfelsen
+[travertine_terraces]
+Travertinterrassen
+[penitentes]
+Büßerschnee
+[termite_mounds]
+Termitenhügel
+[hoodoos]
+Felstürme
+[petrified_stumps]
+Versteinerte Baumstümpfe
 [terrain group water]
 Wasser
 [terrain group sand]
 Sand
 [terrain group grass]
 Gras
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Eis
 [terrain group paths]

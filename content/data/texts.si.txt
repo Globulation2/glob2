@@ -5754,18 +5754,34 @@ Ivjasti klesanci
 Rombi iz mesečevega kamna
 [frost_pinwheel]
 Ivjasta vetrnica
+[arctic_tundra]
+Arktična tundrska tla
+[glacier]
+Ledenik
+[icefall]
+Ledeni slap
+[sandstone_benches]
+Peščenjakove police
+[obsidian_ridge]
+Obsidianski greben
+[granite_tors]
+Granitni skalniki
+[travertine_terraces]
+Travertinske terase
+[penitentes]
+Spokorniški sneg
+[termite_mounds]
+Termitnjaki
+[hoodoos]
+Zemeljske piramide
+[petrified_stumps]
+Okameneli štori
 [terrain group water]
 Voda
 [terrain group sand]
 Pesek
 [terrain group grass]
 Trava
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Led
 [terrain group paths]

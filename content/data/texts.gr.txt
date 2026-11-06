@@ -5754,18 +5754,34 @@ CPU %0%
 Ρόμβοι σεληνόλιθου
 [frost_pinwheel]
 Ανεμόμυλος παγετού
+[arctic_tundra]
+Έδαφος αρκτικής τούνδρας
+[glacier]
+Παγετώνας
+[icefall]
+Παγοκαταρράκτης
+[sandstone_benches]
+Πάγκοι ψαμμίτη
+[obsidian_ridge]
+Κορυφογραμμή οψιανού
+[granite_tors]
+Γρανιτικοί βράχοι
+[travertine_terraces]
+Αναβαθμίδες τραβερτίνη
+[penitentes]
+Χιόνια μετανοούντων
+[termite_mounds]
+Τερμιτοφωλιές
+[hoodoos]
+Καμινάδες νεράιδων
+[petrified_stumps]
+Απολιθωμένα κούτσουρα
 [terrain group water]
 Νερό
 [terrain group sand]
 Άμμος
 [terrain group grass]
 Γρασίδι
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Πάγος
 [terrain group paths]

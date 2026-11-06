@@ -195,7 +195,7 @@ class GpuTerrainPageCache
             data->targetRect={x*cellSize,y*cellSize,cellSize,cellSize};
             std::array<TerrainVisual::MaterialId,4> palette{};
             const auto &recipe=tile.recipe;
-            const bool uniform=std::all_of(recipe.corners.begin(),recipe.corners.end(),[&](auto id){return id==recipe.corners[0];});
+            const bool uniform=recipe.uniform();
             if(uniform) {palette[0]=recipe.corners[0];data->paletteCount=1;}
             else {const auto mask=coverage(compositor,recipe,chunk.scale);
                 data->coverage=mask.data;palette=mask.palette;data->paletteCount=mask.colors;}
@@ -208,7 +208,8 @@ class GpuTerrainPageCache
                 const std::uint32_t calm=material.shoreCalm?
                     std::uint32_t(256-TerrainVisual::ShoreCalmContrastQ8)<<24|material.calmMean[0]<<16|material.calmMean[1]<<8|material.calmMean[2]:0;
                 data->surfs[slot]={surf.period,surf.reach,surf.foam,surf.foamWidth,surf.shallow,surf.shallowWidth,
-                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks,calm};
+                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks,calm,
+                                   material.shoreWash};
             }
             data->surfOriginX=recipe.x*8192;data->surfOriginY=recipe.y*8192;data->surfTime=compositor.surfTime();
             for(unsigned k=0;k<4;++k)data->shoreCalm|=std::uint32_t(recipe.calm[k])<<(8*k);
@@ -716,9 +717,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
                 held->mask.scale == resolution)
                 result.reused = &held->mask;
-            result.keepMask = tiles[i].discovered &&
-                              std::any_of(recipe.corners.begin(), recipe.corners.end(),
-                                          [&](auto id) { return id != recipe.corners[0]; }) &&
+            result.keepMask = tiles[i].discovered && !recipe.uniform() &&
                               std::any_of(recipe.corners.begin(), recipe.corners.end(),
                                           [&](auto id) { return compositor.animated(id); });
             results.push_back(std::move(result));
@@ -1216,9 +1215,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							const TerrainVisual::Compositor::CellMask *cellMask =
 								held ? &held->mask : nullptr;
 							const auto &corners = recipe.corners;
-							if (tiles[i].discovered && !native && !cellMask &&
-								std::any_of(corners.begin(), corners.end(),
-											[&](auto id) { return id != corners[0]; }) &&
+							if (tiles[i].discovered && !native && !cellMask && !recipe.uniform() &&
 								std::any_of(corners.begin(), corners.end(),
 											[&](auto id) { return compositor.animated(id); }))
 							{
@@ -1235,9 +1232,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							if (tiles[i].discovered)
 							{
 								// Calmed shore cells vary within a variant; compose those.
-								if (gpu && downsample > 1 && !native && !recipe.calmed() &&
-									std::all_of(corners.begin(), corners.end(),
-												[&](auto id) { return id == corners[0]; }))
+								if (gpu && downsample > 1 && !native && !recipe.calmed() && recipe.uniform())
 									copyUniform(recipe, target, x * n, y * n, n);
 								else if (downsample > 1)
 								{
@@ -1286,10 +1281,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						if (!tile.discovered)
 							continue;
 						entry->hasShoreline |= hasShoreline(tile.recipe, compositor);
-						for (auto id : tile.recipe.corners)
+						std::array<TerrainVisual::MaterialId, 4> palette;
+						for (unsigned k = 0, n = tile.recipe.palette(palette); k < n; ++k)
+						{
+							const auto id = palette[k];
 							if (std::none_of(entry->materialRevisions.begin(), entry->materialRevisions.end(),
 										 [id](const auto &revision) { return revision.first == id; }))
 								entry->materialRevisions.emplace_back(id, compositor.textureRevision(id));
+						}
 					}
 					if (!gpu)
 						buildOpaqueRuns(*entry);
