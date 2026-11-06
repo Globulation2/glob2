@@ -1654,9 +1654,15 @@ bool Engine::finishSession()
     return (request->replay ? loadReplay(request->filename) : request->campaign ? initCampaign(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
 }
 
+void Engine::beginIntroCover()
+{
+    if (!globalContainer->runNoX) gui.beginIntroCover(SDL_GetTicks());
+}
+
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
     beginSession(SDL_GetTicks());
+    beginIntroCover();
     if (startSimulationThread(SDL_GetTicks()))
     {
         // The simulation runs on its own thread; this thread handles input and draws

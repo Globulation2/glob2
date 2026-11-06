@@ -743,7 +743,8 @@ bool CustomGameScreen::generateMap()
 		// round trip through disk, so the serialized bytes just move to another in-memory owner.
 		auto *memory = new MemoryStreamBackend();
 		BinaryOutputStream saveStream(memory);
-		game->save(&saveStream, true, "Random map");
+		// Named after its generator, which the game and its saves then show.
+		game->save(&saveStream, true, generatorName(setup.generator));
 		// save() finalizes mapHeader in place (map offset, SHA1) as it writes, so this is
 		// already exactly what re-reading a saved copy of it back would have produced.
 		mapHeader = game->mapHeader;

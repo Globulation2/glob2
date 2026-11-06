@@ -175,6 +175,9 @@ public:
     // Incremental session API. Requires an initialized game; the host owns
     // scheduling. GUI input and modal flows remain transitional legacy code.
     void beginSession(Uint64 now);
+    //! Cover the first five seconds of an interactive game with parting clouds
+    //! while the simulation and renderer keep running underneath. No-op headless.
+    void beginIntroCover();
     bool stepSession(Uint64 now);
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
     // Track a range in the next supplied event batch until GameGUI consumes it.
