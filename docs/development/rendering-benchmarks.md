@@ -156,8 +156,10 @@ check aggregate atlas and page residency. A direct draw at higher density
 fills regions that are still waiting on HD pages. Returning to native
 density should reuse the atlas without rebuilding it. Direct terrain also falls
 back when map tables or atlases
-exceed the device texture dimensions, 16-bit index capacity, or 64 MiB texture
-budget. On programmable GL, actual GPU uploads happen during frame submission,
+exceed the device texture dimensions, 16-bit index capacity, or texture
+budget: 256 MiB on desktop, enough for a 512x512 map's native coverage, and 64
+MiB on mobile and web. Check traces for `DIRECT_TERRAIN_FALLBACK`: a fallback
+silently drops the whole view to synchronous page composition. On programmable GL, actual GPU uploads happen during frame submission,
 where device-wide memory pressure can defer the frame. Far zoom uses the shared overview. For a large-map admission check,
 set `GLOB2_BENCH_SIZE=512x64`, `GLOB2_BENCH_SPARSE_TERRAIN=1`,
 `GLOB2_BENCH_UNITS=0`, and `GLOB2_BENCH_ZOOM=0.55`. The sparse fixture uses
