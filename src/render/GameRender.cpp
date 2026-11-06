@@ -374,26 +374,38 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	}
 	DirectTerrain *animationTerrain = nullptr;
 	std::span<const SDL_Rect> animationRegions;
+	// Experimental (GLOB2_TERRAIN_DIRECT_HD): one per-frame GPU pass draws every
+	// visible cell from full-detail masks, and the static pages are not used.
+	bool directHd = false;
 	if (progressiveHD)
 	{
 		try
 		{
 			auto &terrain = view.render.directTerrain();
+			const bool everyCell = DirectTerrain::directHdRequested();
 			if (terrain.prepareAnimation(frame.target, scene.map,
 				frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
-				frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time))
+				frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time, everyCell))
 			{
 				animationTerrain = &terrain;
 				animationRegions = terrain.animationRegions();
+				directHd = everyCell && !animationRegions.empty();
 			}
 		}
 		catch (const std::bad_alloc &) { /* Pages remain the allocation fallback. */ }
 	}
-	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
+	const bool cached = !directHd && pagesForView && pagesForView->prepare(scene.map, frame.terrain,
 		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
 		frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
 		frame.options & DRAW_TILED_CAPTURE, progressiveHD, animationRegions);
-	if (progressiveHD)
+	if (directHd)
+	{
+		PERF_SCOPE_TIME(Terrain);
+		animationTerrain->drawAnimation(frame.target, frame.viewportX, frame.viewportY,
+			frame.options & DRAW_WHOLE_MAP, time);
+		direct = true;
+	}
+	else if (progressiveHD)
 	{
 		if (!cached)
 			drawAtlas({});
