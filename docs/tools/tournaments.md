@@ -146,6 +146,7 @@ Game options:
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script; probability early victory is appended unless explicitly disabled |
 | `--win-probability PERMILLE` | New games default to 950 (95%); 0 disables, otherwise 501–1000; saved games retain their conditions |
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
+| `--resource-claims default\|off` | New-game [resource claims](#resource-claims); `off` is a claims-off baseline that cannot record a replay; forbidden when loading a save. Tournament game configuration: `resource_claims` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--benchmark-warmup N` | Opt in to in-engine CPU counters, excluding the first N simulated ticks; tournament game configuration: `benchmark_warmup_ticks`. Loading a save keeps the absolute `ticks` limit; warmup must leave measured ticks. Whole-process resource usage also includes startup/loading. |
@@ -677,271 +678,35 @@ per-tick checksums across platforms; passing transport tests or builds is insuff
 Keep measured coverage, command output and other run-specific evidence in the
 ignored `artifacts/` workspace or in pull-request attachments.
 
-## Resource-claim policies
+## Resource claims
 
-Material claims let fetching workers reserve stock and route to it, instead of
-every worker following the shared material gradient to the same tile. Every new
-game (single player, LAN, online, campaign, replay playback and `game run`)
-starts with material destination planes and the built-in `contention-v1` policy
-(`ResourceClaims::ClaimPolicyConfig::shippedDefault()`): source version 5 with the
-assembled `final-r32-exact24-assembled-v1` pattern, claims engaged only when at
-least two same-team workers target cells within two tiles. Saved games keep what
+Every new game (single player, LAN, online, campaign, replay playback and
+`game run`) starts with material destination planes and resource claims, using
+the `contention-v1` policy described in
+[resource claims](../architecture/units.md#resource-claims). Saved games keep what
 they stored: saves from before format 213 have no claims and continue without
-them; format 213 and later saves retain their destination planes, claim ledger,
-routes, recovery state and the exact canonical policy, and reject policy
-overrides on load.
+them, and later saves continue with their claim state. Loading a save rejects
+`--resource-claims`.
 
-`game run` replaces the default for a new game with `--resource-claims off` (no
-claims and no destination planes; add `--material-destinations` to keep the
-planes alone), `--resource-claims-policy-json JSON` (any configurable
-`experimental` policy) or `--resource-claims-active prototype-stationary-v1` (the
-original fixed prototype). Each of these research setups excludes replay
-recording. `result.json` reports `resolved.resource_claims`
-(`default`, `custom` or `off`) and, for the default, its
-`resource_claims_policy_name`. Bundles advertise the default as the capability
-`resource_claims_default` with `resource_claims_switch_version: 1`.
+`game run --resource-claims off` starts a new game without claims or destination
+planes, as a baseline for measuring the feature; it cannot record a replay.
+`result.json` reports `resolved.resource_claims` (`default` or `off`) and, for
+`default`, `resolved.resource_claims_policy_name`. Bundles advertise the
+capabilities `resource_claims_default` (the policy name) and
+`resource_claims_switch_version: 1` (the `--resource-claims` switch).
 
 A game job without claim keys uses its pinned engine's default: claims off for
-bundles built before the default, `contention-v1` after it. `resource_claims:
-"off"` requests a claims-off baseline explicitly, and `resource_claims:
-"default"` requires a bundle that advertises a default. `material_destinations`
-without a policy keeps its earlier meaning, claims off (with or without planes),
-so existing manifests resolve the same way on new bundles; the adapter forwards
-`--resource-claims off` only to bundles that advertise the switch. Claims-off and
-explicit-policy jobs cannot record replays. Collectors reject results whose
-attested mode differs from the request.
+bundles built before claims, claims on after. Set `resource_claims: "off"` for a
+claims-off baseline (forwarded only to bundles that advertise the switch) or
+`resource_claims: "default"` to require a bundle with claims. Claims-off jobs
+cannot record replays, and collectors reject results whose attested mode differs
+from the request. The research keys of earlier development bundles
+(`material_destinations`, `resource_claims_active`, `resource_claims_policy`,
+`resource_claims_probe`, `resource_claims_movement_only`) are rejected.
 
-Tournament game jobs freeze an explicit policy as the complete canonical object in
-`resource_claims_policy` together with `material_destinations: true`. The adapter
-forwards `--resource-claims-policy-json`, and requires the pinned bundle's
-`material_destinations_version: 1`, `resource_claims_policy_config_version`,
-`resource_claims_policy_options` and pattern catalogs
-(`resource_claims_policy_patterns` for source versions 1–4,
-`resource_claims_policy_mixed_patterns` for source version 5). Obtain canonical
-fields and compiled pattern asset digests from the executable's capabilities; do
-not rely on implicit defaults. The standard-library `claim_policy` validator checks
-the full configuration; collectors attest the exact canonical configuration and
-SHA256 digest in `resolved.resource_claims_policy_config` and
-`resolved.resource_claims_policy_digest`. Analyze different digests separately.
-
-### Policy contract
-
-Source version 1 is the original configuration. Version 2 adds bounded
-failed-route recovery as explicit canonical fields: four rejected accesses with a
-128-tick soft expiry, at most four recovery route attempts per 64-tick window, a
-16-tick backoff, and first-available recovery scanning from a retained cursor.
-Version 3 adds the explicit boolean `opportunistic_adjacent_pickup`: a worker can
-exchange a distant reservation for available material within pickup range; an
-already reachable held reservation keeps priority and other workers'
-reservations stay protected. Version 4 adds the explicit boolean
-`direct_resource_probes`, which also tests each pattern entry's own tile after its
-published destination. Version 5 uses explicitly typed `mixed-v1` pattern entries
-with `pattern_frame` `mapaxes` or `nearest-d4-v1`; each entry encodes its
-unit/nearest-resource origin and gradient/direct check, and only `first_available`
-selection is accepted. The digest covers the format/frame prefix and the ordered
-little-endian coordinates and tag bytes. Every version keeps its canonical
-identity; executables accept all versions up to their advertised one. Saved
-policies of every version remain loadable.
-
-Three optional keys apply to every source version and are omitted from the
-canonical JSON at their defaults, so existing policies keep their digests (the
-Python `canonical_policy` applies the same rule). `refresh_switch_margin_permille`
-(integer 0–900, default 0) adds hysteresis to destination refreshes: while a claim
-is held, another access is eligible only when its toroidal Chebyshev distance `d`
-satisfies `1000*d < (1000-margin)*d_held`; the held access stays eligible, and when
-the margin rejects every alternative the claim and route are kept (a
-`goal_refresh_same`). `terrain_component_prefilter` (boolean, default false) skips
-an access when no cell of its 3×3 stance shares the worker's terrain-only connected
-component (8-neighbour, toroidal, per movement class, ignoring units, buildings and
-resources). The labelling is derived per map, rebuilt when the terrain revision
-changes and never saved. `claim_oversubscription_permille` (integer 1000–100000 or
-`"unlimited"`, default 1000) relaxes the capacity gate: a source admits another
-same-material claimant only while its existing claimant count stays below
-`floor(spendable*permille/1000)`, where `spendable` is the stock above the shared
-seed floor. 1000 is the exact one-claimant-per-unit rule; `"unlimited"` admits any
-number while at least one unit is spendable. Exclusive sources, seed floors and
-infinite yields behave as before, and selection, acquisition, stock-decrease
-revalidation and the overcommit telemetry all use the scaled limit. Surplus
-holders that arrive after the stock is gone fail the harvest and release
-(`resource_depleted`). Builds advertise all three in `resource_claims_policy_options`.
-
-Claim overhead experiments. These change only opt-in values, so every existing
-policy keeps its meaning and digest. Builds advertise each one by name in
-`resource_claims_policy_options` (a new value of an existing key by
-`<key>_<value>`), and the Python contract refuses a policy whose build does not.
-`pending_step: "gradient"` (advertised as `pending_step_gradient`): while the
-held claim's route is computing or awaiting route admission, the worker takes
-the ordinary natural-material gradient step for the claimed material, the same
-step claims-off movement takes (demand, movement outcome and reactive refresh
-included), instead of a zero-displacement wait. The published route then rejoins
-through the existing reanchor window or is repaired from the new position. With
-no gradient step available the worker waits as before. `"redecide"` is not
-implemented.
-`max_claim_distance_factor_permille` (integer 1000–100000, default 0 = off)
-rejects, in both selection loops and before any claim resolution, a candidate
-access whose toroidal Chebyshev distance `d` from the worker satisfies
-`1000*d > permille*d_nearest + 1000*4`, where `d_nearest` is the distance to the
-nearest material destination recorded at the worker's cell by the destination
-plane (the plane's `x/y` at the worker) and 4 tiles is a fixed slack for nearby
-stock. A decision with no recorded nearest destination is not capped. A held
-claim that the cap rejects on refresh is kept, like any failed refresh.
-`traffic_sidestep` (boolean, default false): when the next route cell is blocked
-by traffic (`routePassable` with frozen units false, geometry intact), the worker
-steps instead to a free legal neighbour that is on, or one step from, a later
-route cell within the 8-cell reanchor window (furthest such cell first, then a
-fixed neighbour order); the next decision rejoins the route at that cell. With no
-such neighbour it waits as before. `traffic_wait_limit` (integer 0–64, default 0
-= unlimited) counts consecutive traffic waits per route; on reaching the limit
-it repairs the route from the current cell, planning around the units sampled at
-that moment (frozen-unit occupancy) rather than releasing the claim: a repair
-costs one bounded search and keeps the reservation, whereas a release would also
-discard the claim, reselect and route again. If the repair finds no path the
-ordinary route-failure release applies. The counter is saved and checksummed only
-for policies that set the limit.
-`fallback: "gradient"` (advertised as `fallback_gradient`): a decision that
-finds no claim (including one restricted by route-admission cooldown) runs the
-ordinary claims-off material movement for that decision, keeping the job; it
-neither idles nor releases, except where claims-off movement itself abandons an
-unreachable material. Failure accounting and the next decision's selection
-attempt are unchanged. Arriving next to stock, the worker reserves it through
-the ordinary pickup check.
-`claim_gradient_demand` (boolean, default false): each decision pursuing a held
-claim (not yet adjacent, route not failed) registers movement demand for the
-claimed material's natural gradient field. When the route is published, the
-decision also records the same movement evidence `pathfindMaterial` records
-(moved, at-goal, goal-valid) and requests the field refresh on an invalid goal,
-so reactive refresh sees claim workers as it sees gradient followers. Decisions
-whose route is still computing record demand only.
-`claim_trigger` (`"always"` by default, or `"contention"`) with
-`contention_min_workers` (integer 2 to 16, default 3) and `contention_radius`
-(integer 0 to 4, default 1): with `"contention"`, a fetching worker without a
-claim takes the ordinary claims-off material step and pickup for that decision
-unless its ordinary target is crowded. A worker's target is its claimed access
-while it holds a claim, otherwise its valid ordinary `targetX`/`targetY` (the
-target projected by its previous ordinary decision); a worker with no valid
-target is never crowded. The decision is crowded when at least
-`contention_min_workers` same-team workers fetching the same material (going to
-or harvesting at a resource, claimed or not, itself included) target cells within
-toroidal Chebyshev `contention_radius` of its target; the worker then takes the
-claim path with every other configured option. A claimed worker stays in claim
-mode until the claim is released or harvested. The counts read a per-team target
-index rebuilt from unit state as each team starts its unit step, so it is derived
-and never saved. The two parameters are rejected unless the trigger is
-`"contention"`. Live probe summaries report `live.contention_counts`
-(`ordinary_decisions`, `contention_tests`, `contention_triggers`,
-`claim_mode_decisions`; version `live.contention_version`).
-
-### Probe trace and live footer
-
-Run `resource_claims_probe: {"sample_every": N, "max_samples": N, "max_bytes": N}`
-on a game with an active claim policy (new or saved; CLI `--resource-claims-probe`
-with `--resource-claims-sample-every`, `--resource-claims-max-samples` and
-`--resource-claims-max-bytes`). It requires bundle capability
-`resource_claims_probe_version: 3`, the compressed `resource-claims-shadow.jsonl.gz`
-artifact in `outputs.required` (the historical file name) and full results. The
-probe observes only; it never changes simulation results, consumes randomness or
-persists state, so checksums with and without it are identical.
-
-The trace (schema `version: 2`) holds a schema row, bounded journey rows and one
-summary row. `sample_every` selects claim acquisitions as journeys by diagnostic
-hashing; at most eight run at once and at most `min(512, max_samples)` are
-admitted. A journey row records committed movement for one sampled acquisition
-and a static acquisition-time baseline route to the held pickup access; partial
-(timeout or end-of-segment) costs are not completed-route regret. Admission
-exclusions censor sampling and are counted. Aggregate by game: sampled units are
-not independent replicates. The byte budget and a free-space reserve fail the
-collection instead of truncating it.
-
-The summary's `live` object is the live footer: `event_counts` for every claim
-event (names in the schema's `live_event_names`), journey admission and phase
-counters, claimed-pursuit moves and weighted cost, route work counters,
-`release_reason_counts` (names in `release_reason_names`; they sum to the
-`released` event count, and released journey rows carry `release_reason`),
-`selection_filter_counts` (accesses skipped by the terrain prefilter or the refresh
-margin, and refreshes kept by the margin), `policy_extension_counts` and, for
-`claim_trigger: "contention"`, `contention_counts`. Claimed-pursuit totals cover held
-claims only and cannot establish total pursuit travel.
-
-`decision_outcomes` (version 2) keeps fixed material/phase counters of each claim
-selection decision: eligible, attempted, acquired, held/retargeted, no candidate,
-not attempted (cooldown, missing field), route result and fallback. Categories
-overlap: a failed refresh can retain the old claim, so `no_candidate` and
-`held_same` can both increase. `cooldown_wait` is independent of whether selection
-was attempted. `no_candidate` does not establish global resource absence, and a
-`pending` route result can mean a blocked cached step as well as unfinished route
-work. Immediate selection and route results do not establish eventual harvest or
-delivery.
-
-Every trace advertises `movement_audit_version: 1`. Its summary
-counts committed neighboring grid moves and weighted entry costs for every live
-transport-capable unit, partitioned into medical travel, claimed or unclaimed
-resource pursuit, return to the job, idle movement and other activity. Stationary
-decisions contribute no move; non-neighbor updates are explicitly excluded.
-Unclaimed resource pursuit combines natural-resource and supplier travel; its
-source kind is unavailable. Segment start/end and coverage availability are
-explicit, with an exclusive end taken from the engine's final publication. An
-unspecified start or unpublished end remains null. These totals do not reconstruct
-travel before loading or establish wasted movement. Compare these totals alongside delivery,
-labour and shortage metrics before evaluating roam or job-release fallbacks.
-
-Results attest the observer in `resource_claims_shadow` (historical key;
-`schema_version: 2`) with actual enforcement, `movement_only`, `ledger_mode`,
-farm-flood cache counters, the active claim count and trace bytes. The
-`gradient_execution.destination_published_bytes` and
-`destination_pending_reserved_bytes` result fields describe current destination
-allocations when metadata is enabled; they exclude snapshots, scratch space and
-allocator overhead, so use whole-process RSS and paired release-build CPU
-measurements for overhead.
-
-For classic-versus-claims travel comparisons, use the
-`resource_claims_movement_only` job observer (CLI `--resource-claims-movement-only`)
-instead of the probe. It requires `resource_claims_movement_only_version: 2`, the
-same bounded configuration and artifact, and full results. It records the movement
-audit only (no claim events or journeys), works with or without claims, and never
-changes the game's claim policy; results report `ledger_mode: "disabled"` for a
-classic baseline. Collectors reject journeys or claim events in its trace and
-unknown segment coverage.
-
-Collect per-game footers from a results directory with:
-
-```sh
-python -m tools.tournaments.resource_claims RESULTS --output REPORT.json
-```
-
-It validates every trace, attests journey policy digests against the resolved
-policy, keeps failed or missing games explicit and refuses to mix policies or trace
-schemas in one report.
-
-### Paired policy plans and gameplay endpoints
-
-`tools.tournaments.resource_claim_live` plans paired whole-game policy batches from
-a frozen cohort and split: every policy replays each selected original tuple,
-seed, seat and stopping rule, and it never dispatches games:
-
-```sh
-python -m tools.tournaments.resource_claim_live factors CONTROL.json FACTORS.json --patterns SHORTLIST.json
-python -m tools.tournaments.resource_claim_live interactions CONTROL.json BINARY_FACTORS.json INTERACTIONS.json
-python -m tools.tournaments.resource_claim_live plan COHORT.json SPLIT.json BUNDLE.json CONFIG_BATCH.json PLAN.json --additional-reserved-bytes BYTES
-```
-
-`CONTROL.json` is a complete canonical configuration; config batches contain a
-`configs` array of `{label, policy}` entries. Planning defaults to 256 jobs, a
-32 GiB campaign and an 8 GiB free-space reserve, reserving every attempt's
-artifact/log cap plus an equal transfer copy; a batch that exceeds a bound is
-rejected in full. Held-out games require explicit `--stage confirmation
---partition holdout`.
-
-Use the bounded gameplay analyzer for exact team-timeline metrics:
-
-```sh
-python -m tools.tournaments.resource_claim_gameplay RESULTS --build-design DESIGN.json --output INVENTORY.json
-python -m tools.tournaments.resource_claim_gameplay RESULTS --design DESIGN.json --baseline POLICY_DIGEST --output REPORT.json
-```
-
-Freeze the design before comparing resource outcomes. It records paired initial
-states, policy identity, seats and a common observed tick window across all
-planned policies. Missing variants or timeline boundaries remain unavailable;
-early-ended matches are not extrapolated.
+Compare claims on and off with paired seeds and seat rotations, using the ordinary
+delivery and labour measurements (`log_mode: "gameplay"` with `team-timeline`
+telemetry) alongside outcomes and CPU.
 
 ## Map-generation telemetry
 

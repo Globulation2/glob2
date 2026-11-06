@@ -265,20 +265,45 @@ the discarded game's sectors before restoring its own projectile rows.
 
 ### Resource claims
 
-Fetching workers in new games use material claims. A worker without a claim
-follows the shared material gradient as before. When at least two same-team
-workers fetching the same material target cells within two tiles of its target,
-it instead reserves one stock unit (a farm tile, resource cell or supplier) within
-twice the distance to the nearest destination and routes to it, so a crowd
-spreads over the available stock rather than converging on one tile. A
-claimed worker refreshes its choice every twelve decisions, switching only to an
-access at least 25% closer. A crowded worker that finds nothing to claim gives up
-its job, as an idle worker would, and is free to be hired elsewhere. The built-in policy is
-`contention-v1` (`ResourceClaims::ClaimPolicyConfig::shippedDefault()` in
-`src/map/claims/`). Saved games store their policy and continue with it; saves
-from before format 213 continue without claims. `game run --resource-claims off`
-and explicit research policies are described in
-[resource-claim policies](../tools/tournaments.md#resource-claim-policies).
+Without claims, every worker fetching a material follows the same shared
+gradient to the nearest stock, so a late-game crowd converges on one farm tile
+and most of it arrives to find the stock already taken. New games use material
+claims instead: a claim reserves one unit of natural stock (a resource cell or a pooled
+farm tile) for one worker and routes that worker to it, so a crowd
+spreads over the stock that is actually there. The policy, `contention-v1`, is
+fixed in `src/map/claims/ClaimPolicy.h`; changing it changes the simulation.
+
+- **Contention trigger.** A worker without a claim moves exactly as with claims
+  off. It switches to claim selection only for a decision on which at least two
+  same-team workers fetching the same material (itself included) target cells
+  within three tiles of its own target. Uncrowded workers keep the cheaper
+  gradient movement.
+- **Selection.** The worker walks a learned 24-entry search pattern
+  (`final-r32-exact24-assembled-v1`, `ClaimPattern.h`), oriented towards its
+  nearest destination, and takes the first claimable candidate. Candidates in a
+  different terrain component, or more than 2.5 times the distance to the
+  nearest destination plus four tiles away, are skipped.
+- **Pursuit.** Routes are searched off the owner thread and published on the next
+  tick; meanwhile the worker takes the ordinary gradient step. On a route blocked
+  by traffic it sidesteps along the route, and after eight waits it replans
+  around the units it sees. Pursuit keeps adaptive gradient refresh demand alive.
+  A claimed worker re-runs selection every 24 decisions and switches to the better
+  candidate it finds. Adjacent claimable stock can replace a distant claim.
+- **Nothing to claim.** A crowded worker that finds nothing to claim gives up its
+  job, as an idle worker would, and is free to be hired elsewhere. Failed routes
+  go through bounded recovery: four remembered unreachable accesses, at most four
+  route attempts per 64 ticks and a 16-tick backoff (`ClaimRecovery.h`).
+- **Hiring.** Before a team's hiring phase, each free worker on a fetch shortlist
+  runs the same claim search it would run once hired, as a pure read of the
+  frozen state (in parallel for large passes). Hiring skips a worker with nothing
+  claimable, or one carrying another material, since it would only be released
+  again.
+
+Saved games store whether they use claims, together with the ledger, routes,
+selection cadence and recovery state, and continue as they were. Saves from
+before format 213 continue without claims. `game run --resource-claims off`
+starts a claims-off baseline; see
+[resource claims in tournaments](../tools/tournaments.md#resource-claims).
 
 ## Presentation and persistence
 
