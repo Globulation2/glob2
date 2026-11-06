@@ -793,6 +793,12 @@ public:
     void setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
     ResourceClaims::StepResult nextClaimGradientStep(const Unit&, int*, int*);
     ResourceClaims::StepResult nextClaimRouteStep(Unit&, int*, int*);
+    //! True unless the held claim has a published route (computing, awaiting
+    //! admission or not yet requested).
+    bool claimRouteComputing(const Unit&) const;
+    //! claim_gradient_demand: demand, and optionally movement evidence, for the
+    //! held claim's natural-material field, mirroring pathfindMaterial.
+    void claimPursuitGradientSignal(Unit&, bool recordOutcome, bool moved);
     void cancelClaimRoute(ResourceClaims::Owner);
     void flushClaimRoutes();
     void publishClaimRoutes();

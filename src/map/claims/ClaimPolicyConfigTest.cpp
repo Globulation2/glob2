@@ -368,3 +368,18 @@ TEST_CASE("gradient fallback is a new canonical value that leaves existing ident
         wire["fallback"]="Gradient";CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
     }
 }
+TEST_CASE("claim gradient demand is omitted at its default and must be boolean" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        CHECK_FALSE(base.claimGradientDemand);
+        auto wire=nlohmann::json::parse(base.canonicalJson());
+        CHECK(base.canonicalJson().find("claim_gradient_demand")==std::string::npos);
+        wire["claim_gradient_demand"]=false;CHECK(ClaimPolicyConfig::parse(wire.dump()).digest()==base.digest());
+        wire["claim_gradient_demand"]=true;const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(parsed.claimGradientDemand);CHECK(parsed.digest()!=base.digest());CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+        for(const auto& invalid:{nlohmann::json(1),nlohmann::json("true"),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());wire["claim_gradient_demand"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+    }
+}

@@ -29,6 +29,7 @@
 #include <StreamBackend.h>
 #include "map/claims/ResourceClaimProbe.h"
 #include "map/claims/ActiveRouteRuntime.h"
+#include "map/claims/ClaimPolicyConfig.h"
 #include <fstream>
 
 namespace
@@ -1500,4 +1501,36 @@ TEST_CASE("capture-only preserves bottom-k membership while skipping nonretained
     }
     }
 }
+TEST_CASE("claim gradient demand records pursuit evidence on the natural material field" * doctest::test_suite("ActiveMaterialClaims"))
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        for(bool demand:{false,true}) {
+            CAPTURE(demand);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;map.setMaterialDestinationsEnabled(true);
+            Config config;config.claimGradientDemand=demand;map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            struct Cleanup { Unit& unit; ~Cleanup(){unit.releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);unit.attachedBuilding=nullptr;} } cleanup{*unit};
+            unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
+            unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+            map.setResourceByIndex(14,8,WHEAT,1);map.setMaterialAmountSlot(Uint32(map.coordToIndex(14,8)),WHEAT,3);
+            REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(14,8))));
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            game.invalidateObservation();game.observeCompletedWorld();
+            const GradientFieldKey key{GradientFieldFamily::Materials,0,Uint8(accessClass(MovementAccess::Land)),Uint8(WHEAT)};
+            auto& fields=map.gradientRuntime->adaptive.fields;
+            const auto evidence=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.total[2]);};
+            const auto queries=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.count128);};
+            const auto before=evidence(),queried=queries();
+            unit->handleActiveMaterialMovement(); // route computing: demand only
+            CHECK(unit->dx==0);CHECK(unit->dy==0);
+            CHECK(evidence()==before);CHECK(queries()==queried+(demand?1:0));
+            map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();game.invalidateObservation();game.observeCompletedWorld();
+            const auto published=queries();
+            unit->handleActiveMaterialMovement(); // published route: a real step
+            CHECK((unit->dx||unit->dy));REQUIRE(unit->activeMaterialClaim);
+            CHECK(evidence()==before+(demand?1:0));CHECK(queries()==published+(demand?1:0));
+        }
+    }
 #endif

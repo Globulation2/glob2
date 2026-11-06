@@ -51,6 +51,9 @@ struct ClaimPolicyConfig
     static constexpr unsigned MaximumClaimOversubscriptionPermille=100000;
     static constexpr unsigned UnlimitedClaimOversubscription=UINT32_MAX;
     unsigned claimOversubscriptionPermille=ExactClaimOversubscriptionPermille;
+    // Held-claim pursuit registers natural-material gradient demand and
+    // movement evidence, as ordinary gradient-following workers do.
+    bool claimGradientDemand=false;
     // On a traffic-blocked next route cell, step to a legal free neighbour
     // adjacent to a later route cell in the reanchor window, then rejoin.
     bool trafficSidestep=false;

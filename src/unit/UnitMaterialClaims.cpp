@@ -449,6 +449,10 @@ void Unit::handleActiveMaterialMovement()
     auto result=ResourceClaims::StepResult::Failed;
     if(experimental && config.usePrimaryGradient)result=map.nextClaimGradientStep(*this,&stepX,&stepY);
     if(result==ResourceClaims::StepResult::Failed)result=map.nextClaimRouteStep(*this,&stepX,&stepY);
+    // Pursuit while routed (moving or traffic-blocked) is gradient-relevant;
+    // a computing route already took its own gradient step or is unrelated.
+    if(experimental && config.claimGradientDemand && result!=ResourceClaims::StepResult::Failed && result!=ResourceClaims::StepResult::Arrived)
+        map.claimPursuitGradientSignal(*this,!map.claimRouteComputing(*this),result==ResourceClaims::StepResult::Ready);
     if(observer)outcome->route=result==ResourceClaims::StepResult::Ready?"ready":result==ResourceClaims::StepResult::Pending?"pending":result==ResourceClaims::StepResult::Arrived?"arrived":"failed";
     if(result==ResourceClaims::StepResult::Ready) {
         dx=Sint8(stepX);dy=Sint8(stepY);directionFromDxDy();

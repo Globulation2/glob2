@@ -372,6 +372,13 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
     *dx = stepX; *dy = stepY; return ResourceClaims::StepResult::Ready;
 }
 
+bool Map::claimRouteComputing(const Unit& unit) const
+{
+    if (!materialClaimRoutes) return true;
+    const auto found = materialClaimRoutes->states.find(ResourceClaims::unitOwner(unit.gid, unit.scriptIdentity));
+    return found == materialClaimRoutes->states.end() || found->second.pending || found->second.awaitingAdmission;
+}
+
 void Map::cancelClaimRoute(ResourceClaims::Owner owner)
 {
     if (!materialClaimRoutes) return;

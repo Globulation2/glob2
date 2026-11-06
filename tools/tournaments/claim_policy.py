@@ -23,6 +23,7 @@ OPTIONS = {
     'max_claim_distance_factor_permille': 0,
     'traffic_sidestep': False,
     'traffic_wait_limit': 0,
+    'claim_gradient_demand': False,
 }
 # Enum values added after their key; a build must advertise them by name.
 ENUM_OPTIONS = {
@@ -70,6 +71,8 @@ def validate_policy(policy, capabilities=None):
     if oversubscription != 'unlimited' and (type(oversubscription) is not int or not
             MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE <= oversubscription <= MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE):
         raise ValueError('invalid claim oversubscription permille')
+    if type(policy.get('claim_gradient_demand', False)) is not bool:
+        raise ValueError('claim gradient demand option must be boolean')
     if type(policy.get('traffic_sidestep', False)) is not bool:
         raise ValueError('claim traffic sidestep option must be boolean')
     limit = policy.get('traffic_wait_limit', 0)

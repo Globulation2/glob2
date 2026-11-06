@@ -64,6 +64,11 @@ OVERSUBSCRIPTION_PARITY = [
 # Engine-reported (game run resolved config/digest) canonical JSON for the
 # production policy with each overhead experiment enabled.
 OVERHEAD_PARITY = {
+    'claim_gradient_demand': [
+        (json.loads('{"claim_gradient_demand":true,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"claim_gradient_demand":true,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         '38e8b43d926a8df4d00658bada905360a521cee5266046e351053ec0da6e79bb'),
+    ],
     'fallback_gradient': [
         (json.loads('{"destination_refresh_j":12,"fallback":"gradient","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
          '{"destination_refresh_j":12,"fallback":"gradient","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
@@ -277,6 +282,22 @@ class GradientFallback(unittest.TestCase):
     def test_engine_canonical_json_and_digest_match(self):
         self.assertIn('fallback_gradient', OVERHEAD_PARITY)
         for value, engine_json, engine_digest in OVERHEAD_PARITY['fallback_gradient']:
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
+
+
+class ClaimGradientDemand(unittest.TestCase):
+    def test_default_is_omitted_and_value_must_be_boolean(self):
+        base = PARITY[0][0]
+        self.assertEqual(policy_digest(base | {'claim_gradient_demand': False}), PARITY[0][2])
+        self.assertIn('"claim_gradient_demand":true', canonical_policy(base | {'claim_gradient_demand': True}))
+        for value in (1, 'true', None):
+            with self.assertRaises(ValueError):
+                validate_policy(base | {'claim_gradient_demand': value})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        self.assertIn('claim_gradient_demand', OVERHEAD_PARITY)
+        for value, engine_json, engine_digest in OVERHEAD_PARITY['claim_gradient_demand']:
             self.assertEqual(canonical_policy(value), engine_json)
             self.assertEqual(policy_digest(value), engine_digest)
 

@@ -130,6 +130,7 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
     if(refreshSwitchMarginPermille)result["refresh_switch_margin_permille"]=refreshSwitchMarginPermille;
     if(terrainComponentPrefilter)result["terrain_component_prefilter"]=true;
+    if(claimGradientDemand)result["claim_gradient_demand"]=true;
     if(trafficSidestep)result["traffic_sidestep"]=true;
     if(trafficWaitLimit)result["traffic_wait_limit"]=trafficWaitLimit;
     if(maxClaimDistanceFactorPermille)result["max_claim_distance_factor_permille"]=maxClaimDistanceFactorPermille;
@@ -201,6 +202,10 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
             const auto limit=number(value);
             if(limit>MaximumTrafficWaitLimit)throw std::invalid_argument("traffic wait limit out of range");
             result.trafficWaitLimit=limit;
+        }
+        else if(key=="claim_gradient_demand") {
+            if(!value.is_boolean())throw std::invalid_argument("invalid claim gradient demand flag");
+            result.claimGradientDemand=value.get<bool>();
         }
         else if(key=="claim_oversubscription_permille") {
             if(value.is_string()) {

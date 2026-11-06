@@ -1112,6 +1112,13 @@ neither idles nor releases, except where claims-off movement itself abandons an
 unreachable material. Failure accounting and the next decision's selection
 attempt are unchanged. Arriving next to stock, the worker reserves it through
 the ordinary pickup check.
+`claim_gradient_demand` (boolean, default false): each decision pursuing a held
+claim (not yet adjacent, route not failed) registers movement demand for the
+claimed material's natural gradient field. When the route is published, the
+decision also records the same movement evidence `pathfindMaterial` records
+(moved, at-goal, goal-valid) and requests the field refresh on an invalid goal,
+so reactive refresh sees claim workers as it sees gradient followers. Decisions
+whose route is still computing record demand only.
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version
