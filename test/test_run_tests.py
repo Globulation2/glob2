@@ -348,6 +348,35 @@ class EndToEndTest(unittest.TestCase):
                                                          EXPECTED_FULLSCREEN='1' if fullscreen else '0'))
                         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    @unittest.skipIf(os.name == 'nt', 'display cases are skipped on Windows')
+    def test_display_windows_stay_hidden_on_macos_unless_fullscreen(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            (build / 'test').mkdir(parents=True)
+            binary = build / 'test' / run_tests.BINARIES['engine']
+            listing = LISTING.replace('\n', '\\n').replace('"', '\\"')
+            binary.write_text('#!/bin/sh\n'
+                              'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
+                              'test "${GLOB2_TEST_HIDDEN_WINDOWS-unset}" = "$EXPECTED_HIDDEN" || exit 9\n'
+                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites><testsuite><testcase classname=\\"src/render/PointBarRenderTest.cpp\\" name=\\"renders the bar [display:1024x768][artifacts]\\"/></testsuite></testsuites>" > "${a#-o=}";; esac; done\n')
+            binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
+            default = '1' if sys.platform == 'darwin' else 'unset'
+            for fullscreen, inherited, expected in ((False, None, default), (False, '0', '0'),
+                                                    (True, None, '0'), (True, '1', '0')):
+                with self.subTest(fullscreen=fullscreen, inherited=inherited):
+                    command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                               '--build-dir', str(build), '--filter', 'PointBar/*',
+                               '--junit', str(Path(directory) / 'junit.xml')]
+                    if fullscreen:
+                        command.append('--fullscreen')
+                    # An existing DISPLAY keeps the Linux runner from wrapping the case in xvfb.
+                    environment = dict(os.environ, DISPLAY=':0', EXPECTED_HIDDEN=expected)
+                    environment.pop('GLOB2_TEST_HIDDEN_WINDOWS', None)
+                    if inherited is not None:
+                        environment['GLOB2_TEST_HIDDEN_WINDOWS'] = inherited
+                    result = subprocess.run(command, capture_output=True, text=True, env=environment)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def run_python_fake(self, cases, report, extra=(), required_filters=(), process_output='', exit_code=0):
         listing = ET.Element('doctest')
         for case in cases:

@@ -55,6 +55,24 @@ void install()
 		GAGCore::setProcessEnvironment("SDL_RENDER_DRIVER", "software",
 				   0); // the dummy driver has no accelerated renderer
 	}
+	else
+	{
+		// On macOS, real windows stay off the desktop unless a fullscreen check
+		// needs the screen: GraphicContext creates them hidden, and no window
+		// activates the process (covers tests calling SDL_CreateWindow directly).
+#ifdef __APPLE__
+		const char *fullscreen = SDL_getenv_unsafe("GLOB2_TEST_FULLSCREEN");
+		if (!fullscreen || std::string(fullscreen) != "1")
+			GAGCore::setProcessEnvironment("GLOB2_TEST_HIDDEN_WINDOWS", "1", 0);
+#endif
+		const char *hidden = SDL_getenv_unsafe("GLOB2_TEST_HIDDEN_WINDOWS");
+		if (hidden && *hidden && std::string(hidden) != "0")
+		{
+			SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+			SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_SHOWN, "0");
+			SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_RAISED, "0");
+		}
+	}
 	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
 }
 

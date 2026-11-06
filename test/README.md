@@ -105,6 +105,16 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
+On macOS, display cases keep their windows off the desktop so a run doesn't take
+over the screen or keyboard focus: the runner and the test entry point set
+`GLOB2_TEST_HIDDEN_WINDOWS=1`, which makes `GraphicContext` create its window
+hidden and sets SDL's background-app and no-activation hints, so windows that
+tests create with `SDL_CreateWindow` directly don't activate the process either.
+Readback and captures read the rendering context, not the screen, so results
+are the same. `--fullscreen` turns this off because fullscreen checks need the
+screen; set `GLOB2_TEST_HIDDEN_WINDOWS=0` to watch a run, or `=1` to opt in on
+other desktops.
+
 Windows CI replays native engine access violations and CRT aborts under GDB with a fresh profile
 and separate artifacts. Harnesses retain function names for backtraces; shipped
 programs keep their normal release stripping. Logs appear in

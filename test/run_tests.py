@@ -356,6 +356,13 @@ def run_job(job, args, build_dir):
     env['GLOB2_TEST_FULLSCREEN'] = '1' if args.fullscreen else '0'
     if job.display:
         env['GLOB2_TEST_DISPLAY'] = '1'
+        # On macOS, display windows are hidden and never activate, so runs don't
+        # steal focus. --fullscreen checks need the screen; set
+        # GLOB2_TEST_HIDDEN_WINDOWS=0 to watch, or =1 to opt in elsewhere.
+        if args.fullscreen:
+            env['GLOB2_TEST_HIDDEN_WINDOWS'] = '0'
+        elif platform.system() == 'Darwin':
+            env.setdefault('GLOB2_TEST_HIDDEN_WINDOWS', '1')
         env.pop('SDL_VIDEODRIVER', None)
         if platform.system() == 'Linux':
             env.setdefault('LIBGL_ALWAYS_SOFTWARE', '1')
