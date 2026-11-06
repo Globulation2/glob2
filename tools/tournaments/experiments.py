@@ -35,6 +35,8 @@ class Planner:
             from .claim_policy import validate_policy
             for build in self.builds:
                 validate_policy(config['resource_claims_policy'], self.bundles[build]['capabilities'])
+        if config.get('resource_claims') == 'default' and any('resource_claims_default' not in self.bundles[build]['capabilities'] for build in self.builds):
+            raise ValueError('build has no default resource-claim policy')
         if 'resource_claims_movement_only' in config and any(self.bundles[build]['capabilities'].get('resource_claims_movement_only_version') != 2 for build in self.builds):
             raise ValueError('build does not advertise movement-only observer version 2')
         if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 3 for build in self.builds):
@@ -119,7 +121,7 @@ class Planner:
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -170,7 +172,7 @@ class Planner:
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
