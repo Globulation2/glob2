@@ -64,17 +64,31 @@ Route loadRoute(GAGCore::InputStream* in, const Map& map, Uint32 start)
     }
     return route;
 }
+// One field order for save, load and both checksums. f(field,name,index)
+// receives index -1 for scalar fields and the entry index for cache entries.
+template<class R,class F> void visitRecoveryFields(R& r,F&& f)
+{
+    f(r.nextProbe,"nextProbe",-1);f(r.pinnedAccess,"pinnedAccess",-1);f(r.windowStart,"windowStart",-1);
+    f(r.backoffStart,"backoffStart",-1);f(r.failureStreak,"failureStreak",-1);
+    f(r.material,"material",-1);f(r.movement,"movement",-1);f(r.replacement,"replacement",-1);f(r.attempts,"attempts",-1);
+    f(r.recovering,"recovering",-1);f(r.windowKnown,"windowKnown",-1);f(r.backoffKnown,"backoffKnown",-1);
+    for(unsigned i=0;i<r.entries.size();++i) {
+        auto& e=r.entries[i];
+        f(e.access,"access",int(i));f(e.tick,"tick",int(i));f(e.ttl,"ttl",int(i));
+    }
+}
 template<class F> void recoveryFields(ResourceClaims::ClaimRecovery& r,F&& f)
 {
-    f(r.nextProbe,"nextProbe");f(r.pinnedAccess,"pinnedAccess");f(r.windowStart,"windowStart");
-    f(r.backoffStart,"backoffStart");f(r.failureStreak,"failureStreak");
-    f(r.material,"material");f(r.movement,"movement");f(r.replacement,"replacement");f(r.attempts,"attempts");
-    f(r.recovering,"recovering");f(r.windowKnown,"windowKnown");f(r.backoffKnown,"backoffKnown");
-    for(unsigned i=0;i<r.entries.size();++i) {
+    visitRecoveryFields(r,[&](auto& field,const char* name,int index) {
+        if(index<0){f(field,name);return;}
         // Indexed keys are stable in both binary and text streams.
-        auto& e=r.entries[i];const auto key=std::to_string(i);
-        f(e.access,("access"+key).c_str());f(e.tick,("tick"+key).c_str());f(e.ttl,("ttl"+key).c_str());
-    }
+        const auto key=name+std::to_string(index);f(field,key.c_str());
+    });
+}
+// Checksums run every tick: hash the same fields without building names.
+template<class F> void recoveryValues(const ResourceClaims::ClaimRecovery& r,F&& f)
+{
+    visitRecoveryFields(r,[&](const auto& field,const char*,int){f(field);});
 }
 RouteProfile profileOf(const Unit& unit)
 { return {accessClass(unit.movementAccess()), unit.owner->me, unit.gid, OccupancyPolicy::Static}; }
@@ -670,7 +684,7 @@ Uint32 Map::activeClaimRouteChecksum(bool includePending) const
         mix(materialClaimRoutes?materialClaimRoutes->recovery.size():0);
         if(materialClaimRoutes) {
             for(const auto& [owner,value]:materialClaimRoutes->recovery) {
-                mix(owner);auto copy=value;recoveryFields(copy,[&](auto& field,const char*){mix(field);});
+                mix(owner);recoveryValues(value,[&](auto field){mix(field);});
             }
             for(const auto& [owner,state]:materialClaimRoutes->states)mix(state.awaitingAdmission);
         }
@@ -707,7 +721,7 @@ Uint32 Map::activeClaimSnapshotChecksum() const
         mix(materialClaimRoutes?materialClaimRoutes->recovery.size():0);
         if(materialClaimRoutes) {
             for(const auto& [owner,value]:materialClaimRoutes->recovery) {
-                mix(owner);auto copy=value;recoveryFields(copy,[&](auto& field,const char*){mix(field);});
+                mix(owner);recoveryValues(value,[&](auto field){mix(field);});
             }
             for(const auto& [owner,state]:materialClaimRoutes->states)mix(state.awaitingAdmission);
         }
