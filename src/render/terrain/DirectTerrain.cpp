@@ -152,7 +152,6 @@ struct DirectTerrain::State
         std::map<unsigned, Entry> entries;
         std::vector<unsigned> freePairs;
         std::vector<SDL_Rect> regions;
-        bool everyCell = false;
     } animation;
     // Experimental full-detail masks for visible mixed cells (GLOB2_TERRAIN_DIRECT_HD).
     struct Hd {
@@ -737,14 +736,14 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
 
 bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMap &map,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
-    Uint32 visibleTeams, bool wholeMap, int animationTime, bool everyCell)
+    Uint32 visibleTeams, bool wholeMap, int animationTime)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     if (!gfx.isLegacyGLScreen() || left > right || top > bottom) return false;
+    // Native coverage may still be streaming for some visible cells; those
+    // draw nothing and the caller's overview shows beneath them.
     if (!drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
-                      visibleTeams, wholeMap, animationTime, {}, true) ||
-        needsBackdrop(gfx, map, left + viewportX, top + viewportY,
-                      right + viewportX, bottom + viewportY))
+                      visibleTeams, wholeMap, animationTime, {}, true))
         return false;
     auto &out = state->animation;
     out.regions.clear();
@@ -783,7 +782,7 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
                     dry |= material.surf.period == 0;
                 }
                 animated |= wet && dry;
-                animated |= everyCell;
+                animated = true; // The single pass draws every visible cell.
                 if (animated)
                     for (auto slot : cell)
                         if (slot) wanted.insert(slot);
@@ -796,7 +795,6 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
             }
         }
     }
-    out.everyCell = everyCell;
     if (wanted.empty()) return true;
 
     // Two endpoints per visible material variant, sampled near the display
@@ -925,17 +923,11 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
         }
         if (glGetError() != GL_NO_ERROR)
             throw std::runtime_error("Animated terrain source upload failed");
-        // Full-detail masks: for every cell in the experimental single pass, else
-        // for the animated cells this pass draws over full-detail pages. The
-        // native 16-texel masks would square off fine contours and clasts there.
-        if (everyCell && state->hd.failed) { out.regions.clear(); return false; }
-        if (!state->hd.failed)
-        {
-            int tile = 32;
-            while (tile < 128 && tile < 32 * density) tile *= 2;
-            prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile,
-                everyCell ? std::span<const SDL_Rect>{} : std::span<const SDL_Rect>(out.regions));
-        }
+        // Full-detail masks for every visible mixed cell.
+        if (state->hd.failed) { out.regions.clear(); return false; }
+        int tile = 32;
+        while (tile < 128 && tile < 32 * density) tile *= 2;
+        prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile);
         return true;
     }
     catch (const std::exception &error)
@@ -954,16 +946,6 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
 #endif
 }
 
-bool DirectTerrain::directHdRequested()
-{
-    static const bool requested = []
-    {
-        const char *value = std::getenv("GLOB2_TERRAIN_DIRECT_HD");
-        return value && *value && std::strcmp(value, "0") != 0;
-    }();
-    return requested;
-}
-
 std::size_t DirectTerrain::pendingHdMasks() const
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
@@ -974,7 +956,7 @@ std::size_t DirectTerrain::pendingHdMasks() const
 }
 
 void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int right, int bottom,
-    int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile, std::span<const SDL_Rect> only)
+    int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     auto &hd = state->hd;
@@ -1045,25 +1027,13 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         glBindTexture(GL_TEXTURE_2D, hd.index);
         glTexSubImage2D(GL_TEXTURE_2D, 0, cell % width, cell / width, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &value);
     };
-    // With regions, only their cells (view coordinates) take full-detail masks.
-    std::vector<char> wanted;
-    if (!only.empty())
-    {
-        wanted.assign(std::size_t(right - left + 1) * (bottom - top + 1), 0);
-        for (const auto &rect : only)
-            for (int y = std::max(top, rect.y); y < std::min(bottom + 1, rect.y + rect.h); ++y)
-                for (int x = std::max(left, rect.x); x < std::min(right + 1, rect.x + rect.w); ++x)
-                    wanted[std::size_t(y - top) * (right - left + 1) + (x - left)] = 1;
-    }
-    const auto selected = [&](int x, int y)
-    { return wanted.empty() || wanted[std::size_t(y - top) * (right - left + 1) + (x - left)]; };
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.
     {
         std::size_t mixed = 0;
         for (int y = top; y <= bottom; ++y)
             for (int x = left; x <= right; ++x)
-                mixed += selected(x, y) && state->cellMasks[map.coordToIndex(x + viewportX, y + viewportY)] != 0;
+                mixed += state->cellMasks[map.coordToIndex(x + viewportX, y + viewportY)] != 0;
         while (tile > 32 && std::size_t(atlasSize / tile) * (atlasSize / tile) < mixed + mixed / 4)
             tile /= 2;
     }
@@ -1098,8 +1068,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
                     x + viewportX + 1, y + viewportY + 1, visibleTeams))
                 continue;
             const int cell = map.coordToIndex(x + viewportX, y + viewportY);
-            if (!state->cellMasks[cell] || !selected(x, y))
-                continue; // One material: no mask needed; or drawn by pages.
+            if (!state->cellMasks[cell])
+                continue; // One material: no mask needed.
             if (const auto slot = hd.slotOf[cell])
                 hd.used[slot - 1] = hd.frame;
             else
@@ -1279,6 +1249,15 @@ bool DirectTerrain::needsBackdrop(GAGCore::GraphicContext &gfx, const SceneMap &
     return stream.requested != std::array<int, 4>{left, top, right, bottom} ||
         stream.viewCursor < std::size_t(std::min(right - left + 1, state->width)) *
             std::min(bottom - top + 1, state->height);
+#else
+    return false;
+#endif
+}
+
+bool DirectTerrain::failed() const
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    return state && state->failed;
 #else
     return false;
 #endif

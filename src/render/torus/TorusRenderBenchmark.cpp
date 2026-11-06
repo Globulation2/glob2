@@ -412,7 +412,7 @@ static int run(int argc, char **argv)
                         PerformanceTelemetry::Id::Resources, PerformanceTelemetry::Id::GroundUnits})
                         std::printf("FRAME_SCOPE frame=%d scope=%u elapsed_ms=%.6f\n", i, unsigned(id),
                             (scopes[unsigned(id)].time.total - scopesBefore[unsigned(id)].time.total) / 1e6);
-                    if (auto *direct = gui.view.render.existingDirectTerrain(); direct && DirectTerrain::directHdRequested())
+                    if (auto *direct = gui.view.render.existingDirectTerrain())
                         std::printf("FRAME_HD frame=%d pending=%zu texture_bytes=%zu\n", i, direct->pendingHdMasks(),
                             direct->textureBytes());
                     if (auto *cache = gui.view.render.existingTerrainCache())
