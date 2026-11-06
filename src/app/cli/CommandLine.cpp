@@ -371,15 +371,28 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        // New games use the shipped claim policy. Every other choice is a
+        // research setup for a new game and records no replay.
+        if(r.has("--resource-claims")) {
+            const auto claims=r.get("--resource-claims");
+            if(claims!="default" && claims!="off")
+                throw std::invalid_argument("--resource-claims must be default or off");
+            if(r.has("--load-game"))
+                throw std::invalid_argument("--resource-claims cannot override a saved game");
+            if(claims=="off" && (r.has("--resource-claims-active") || r.has("--resource-claims-policy-json")))
+                throw std::invalid_argument("--resource-claims off excludes other claim policies");
+            if(claims=="off" && r.has("--write-replay"))
+                throw std::invalid_argument("--resource-claims off cannot record a replay");
+        }
+        const bool claimsOff=r.has("--resource-claims") && r.get("--resource-claims")=="off";
         if(r.has("--resource-claims-active")) {
-            if(r.get("--resource-claims-active")!="prototype-stationary-v1" || !r.has("--material-destinations")
+            if(r.get("--resource-claims-active")!="prototype-stationary-v1"
                 || r.has("--load-game") || r.has("--write-replay"))
-                throw std::invalid_argument("active claim prototype requires new-game material destinations and excludes replay");
+                throw std::invalid_argument("active claim prototype requires a new game and excludes replay");
         }
         if(r.has("--resource-claims-policy-json")) {
-            if(!r.has("--material-destinations") || r.has("--resource-claims-active")
-                || r.has("--load-game") || r.has("--write-replay"))
-                throw std::invalid_argument("claim policy JSON requires new-game material destinations and excludes other claim modes/replay");
+            if(r.has("--resource-claims-active") || r.has("--load-game") || r.has("--write-replay"))
+                throw std::invalid_argument("claim policy JSON requires a new game and excludes other claim modes/replay");
             ResourceClaims::ClaimPolicyConfig::parse(r.get("--resource-claims-policy-json"));
         }
         if (r.has("--material-destinations") && (r.has("--load-game") || r.has("--write-replay")))
@@ -389,7 +402,7 @@ void constraints(const Request &r)
         for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes"})
             if(r.has(option) && !r.has("--resource-claims-probe") && !r.has("--resource-claims-movement-only"))
                 throw std::invalid_argument("claim sample options require an explicit observer");
-        if(r.has("--resource-claims-probe") && !r.has("--resource-claims-active") && !r.has("--resource-claims-policy-json") && !r.has("--load-game"))
+        if(r.has("--resource-claims-probe") && claimsOff)
             throw std::invalid_argument("claim probe requires an active claim policy");
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
@@ -586,9 +599,10 @@ const std::vector<Command> &commands()
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
              flag("--resource-claims-probe", "Record live claim events, sampled journeys, decision outcome counts and transport movement from an active-policy game"),
              flag("--resource-claims-movement-only", "Measure transport movement only, with or without claims; never changes claim enforcement"),
-             value("--resource-claims-policy-json", "JSON", "Explicit live resource-claim experiment configuration; requires material destinations"),
-             value("--resource-claims-active", "policy", "Experimental active policy: prototype-stationary-v1; requires material destinations"),
-             flag("--material-destinations", "Enable experimental material destination metadata for a new game; excludes replay recording"),
+             choice("--resource-claims", "New-game resource claims: default (the shipped contention-v1 policy) or off (no claims or material destinations); off excludes replay recording", {"default", "off"}, "default"),
+             value("--resource-claims-policy-json", "JSON", "Replace the default claim policy for a new game; excludes replay recording"),
+             value("--resource-claims-active", "policy", "Legacy fixed prototype policy: prototype-stationary-v1; excludes replay recording"),
+             flag("--material-destinations", "Keep material destination metadata with --resource-claims off (otherwise implied); excludes replay recording"),
              integer("--resource-claims-sample-every", "Sample one in N claim acquisitions as live journeys using diagnostic hashing", 1, 1000000000, "1000"),
              integer("--resource-claims-max-samples", "Maximum admitted live journeys (at most 512; excluded journeys are counted)", 1, 1000000, "10000"),
              integer("--resource-claims-max-bytes", "Maximum compressed claim trace bytes; exhaustion fails collection", 1024, 2147483647, "67108864"),

@@ -63,6 +63,7 @@ void create(Game &g,const char *name,int x,int y,int workers,bool site=false)
 {
     const int type=g.buildingsTypes.getTypeNum(name,0,site);
     REQUIRE(type>=0);
+    CAPTURE(std::string(name));CAPTURE(x);CAPTURE(y);
     REQUIRE(g.checkRoomForBuilding(x,y,g.buildingsTypes.get(type),0,false));
     order(g,std::make_shared<OrderCreate>(0,x,y,type,workers,site ? 0 : workers, site ? std::nullopt : std::optional<Sint32>(4)));
 }
@@ -469,7 +470,10 @@ TEST_CASE("expanded lessons complete through player orders and saved continuatio
         }
         if(name=="fortifications") {
             create(w.game,"defencetower",96,96,3,true);done(0);
-            create(w.game,"stonewall",99,95,2,true);create(w.game,"stonewall",99,98,2,true);done(1);
+            // A worker may be passing over a wall site; a player waits for it to move on.
+            const auto roomFor=[&](int x,int y){return w.game.checkRoomForBuilding(x,y,w.game.buildingsTypes.get(w.game.buildingsTypes.getTypeNum("stonewall",0,true)),0,false);};
+            until(w,[&]{return roomFor(99,95);},2000);create(w.game,"stonewall",99,95,2,true);
+            until(w,[&]{return roomFor(99,98);},2000);create(w.game,"stonewall",99,98,2,true);done(1);
             CHECK(w.game.teams[1]->liveBuildings.size()==3);
             auto *tower=find(w.game,IntBuildingType::DEFENSE_BUILDING);REQUIRE(tower);
             order(w.game,std::make_shared<OrderModifyBuilding>(tower->gid,2));done(2);

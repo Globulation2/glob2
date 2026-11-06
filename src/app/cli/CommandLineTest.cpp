@@ -289,7 +289,26 @@ TEST_CASE("claim probe requires an active policy or a saved game" * doctest::tes
 {
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--load-game","active.game","--resource-claims-probe","--resource-claims-sample-every","1"}));
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--material-destinations","--resource-claims-active","prototype-stationary-v1","--resource-claims-probe"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
+    // New games default to the shipped policy; only an explicit off has nothing to probe.
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims","off","--resource-claims-probe"}));
+}
+
+TEST_CASE("resource claims switch selects the shipped default or a claims-off new game" * doctest::test_suite("CommandLine"))
+{
+    const std::vector<std::string> base={"game","run","--output-dir","artifacts/claims-switch-cli","--map-file","test.map","--game-seed","42","--player","castor"};
+    auto with=[&](std::initializer_list<std::string> extra){auto args=base;args.insert(args.end(),extra);return args;};
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default"})));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default","--write-replay"})));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","off"})));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","off","--material-destinations"})));
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","on"})));
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--write-replay"})));
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--resource-claims-active","prototype-stationary-v1"})));
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--resource-claims-policy-json",R"({"source_version":1})"})));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game","--resource-claims","off"}));
+    // An explicit policy no longer needs --material-destinations: the default enables them.
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims-policy-json",R"({"source_version":1})"})));
 }
 
 TEST_CASE("movement-only observer is independent of claim enforcement" * doctest::test_suite("CommandLine"))

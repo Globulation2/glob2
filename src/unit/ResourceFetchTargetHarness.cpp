@@ -530,7 +530,9 @@ TEST_CASE("map export projects active ownership out without mutating the live ma
     restoredBackend->write(bytes.data(),bytes.size());restoredBackend->seekFromStart(0);
     GAGCore::BinaryInputStream input(restoredBackend);
     glob2test::HeadlessGame restored;
-    REQUIRE(restored.game.load(&input));CHECK_FALSE(restored.game.map.activeClaimsEnabled());
+    // A map starts a new game: the shipped policy, but none of the exported claims.
+    REQUIRE(restored.game.load(&input));CHECK(restored.game.map.shippedResourceClaimsActive());
+    CHECK(restored.game.map.materialClaimLedger().size()==0);
     const auto* copy=restored.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];REQUIRE(copy);
     CHECK_FALSE(copy->activeMaterialClaim);CHECK(copy->materialClaimTask==0);
 }

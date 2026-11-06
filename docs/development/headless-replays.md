@@ -40,11 +40,14 @@ Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
 Format 213 corrects worker material-target projection and harvest eligibility.
-These corrections can change ordinary worker movement even when experimental
-claims are disabled. It also extends authoritative snapshot checksums
+These corrections can change ordinary worker movement even when claims are
+disabled. It also extends authoritative snapshot checksums
 to cover claim routes and bounded recovery, so the replay floor is 213. Earlier saves remain loadable
-and adopt the corrected simulation. Material destination and claim experiments
-remain explicit new-game options and cannot record replays.
+and adopt the corrected simulation, still without claims. New games start with the
+shipped `contention-v1` claim policy; a replay's header is the saved starting
+state, so playback restores that policy. Other claim setups (`game run
+--resource-claims off`, an explicit policy) remain research options that cannot
+record replays; see [resource-claim policies](../tools/tournaments.md#resource-claim-policies).
 
 Unit format 153 embeds resolved unit definitions, assigned job purposes and
 extended cargo before dependent state. It uses network protocol 69 and simulation

@@ -583,10 +583,15 @@ Uint32 Map::materialClaimLimitPermille() const
 
 void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
 {
+    if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
+    installMaterialClaimPolicyConfig(std::move(config));
+}
+
+void Map::installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
+{
     config.validate();
     if(!materialDestinationsEnabled())
         throw std::invalid_argument("experimental claims require material destinations");
-    if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
     const auto digest=Online::Sha256::digest(config.canonicalJson());
     auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
@@ -597,6 +602,26 @@ void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
     activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Experimental;
     materialClaims.reset(cellCount());claimChanges.markAll();checkActiveClaimRules();
     if(game)game->invalidateObservation();
+}
+
+void Map::applyShippedResourceClaims()
+{
+    // A map exported from a running match keeps its tick but carries no claim
+    // or route state, so loading it is still new-game setup.
+    setMaterialDestinationsEnabled(true);
+    installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::shippedDefault());
+}
+
+void Map::disableResourceClaims()
+{
+    setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::Disabled);
+    setMaterialDestinationsEnabled(false);
+}
+
+bool Map::shippedResourceClaimsActive() const
+{
+    return activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialDestinationsEnabled()
+        && materialClaimPolicyConfig()==ResourceClaims::ClaimPolicyConfig::shippedDefault();
 }
 
 void Map::rebuildActiveMaterialClaims()

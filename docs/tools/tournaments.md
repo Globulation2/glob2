@@ -680,16 +680,38 @@ ignored `artifacts/` workspace or in pull-request attachments.
 ## Resource-claim policies
 
 Material claims let fetching workers reserve stock and route to it, instead of
-every worker following the shared material gradient to the same tile. Claims are
-opt-in for new games and never enabled by default. A new game enables them with
-`--material-destinations` (material destination planes on gradient fields) plus
-one claim policy: `--resource-claims-policy-json JSON` (the configurable
-`experimental` policy) or `--resource-claims-active prototype-stationary-v1` (the
-original fixed prototype). Both exclude replay recording. Saved games (format 213
-and later) retain their destination planes, claim ledger, routes, recovery state
-and the exact canonical policy, and reject policy overrides on load.
+every worker following the shared material gradient to the same tile. Every new
+game (single player, LAN, online, campaign, replay playback and `game run`)
+starts with material destination planes and the built-in `contention-v1` policy
+(`ResourceClaims::ClaimPolicyConfig::shippedDefault()`): source version 5 with the
+assembled `final-r32-exact24-assembled-v1` pattern, claims engaged only when at
+least two same-team workers target cells within two tiles. Saved games keep what
+they stored: saves from before format 213 have no claims and continue without
+them; format 213 and later saves retain their destination planes, claim ledger,
+routes, recovery state and the exact canonical policy, and reject policy
+overrides on load.
 
-Tournament game jobs freeze the complete canonical policy object in
+`game run` replaces the default for a new game with `--resource-claims off` (no
+claims and no destination planes; add `--material-destinations` to keep the
+planes alone), `--resource-claims-policy-json JSON` (any configurable
+`experimental` policy) or `--resource-claims-active prototype-stationary-v1` (the
+original fixed prototype). Each of these research setups excludes replay
+recording. `result.json` reports `resolved.resource_claims`
+(`default`, `custom` or `off`) and, for the default, its
+`resource_claims_policy_name`. Bundles advertise the default as the capability
+`resource_claims_default` with `resource_claims_switch_version: 1`.
+
+A game job without claim keys uses its pinned engine's default: claims off for
+bundles built before the default, `contention-v1` after it. `resource_claims:
+"off"` requests a claims-off baseline explicitly, and `resource_claims:
+"default"` requires a bundle that advertises a default. `material_destinations`
+without a policy keeps its earlier meaning, claims off (with or without planes),
+so existing manifests resolve the same way on new bundles; the adapter forwards
+`--resource-claims off` only to bundles that advertise the switch. Claims-off and
+explicit-policy jobs cannot record replays. Collectors reject results whose
+attested mode differs from the request.
+
+Tournament game jobs freeze an explicit policy as the complete canonical object in
 `resource_claims_policy` together with `material_destinations: true`. The adapter
 forwards `--resource-claims-policy-json`, and requires the pinned bundle's
 `material_destinations_version: 1`, `resource_claims_policy_config_version`,
@@ -701,7 +723,6 @@ not rely on implicit defaults. The standard-library `claim_policy` validator che
 the full configuration; collectors attest the exact canonical configuration and
 SHA256 digest in `resolved.resource_claims_policy_config` and
 `resolved.resource_claims_policy_digest`. Analyze different digests separately.
-Configurability does not select or approve a shipping policy.
 
 ### Policy contract
 

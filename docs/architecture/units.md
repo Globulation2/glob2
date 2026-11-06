@@ -263,6 +263,23 @@ rows even when its number of definitions is unchanged. Live catalog setup reject
 resizing while projectiles retain launch-time damage rows. Save loading replaces
 the discarded game's sectors before restoring its own projectile rows.
 
+### Resource claims
+
+Fetching workers in new games use material claims. A worker without a claim
+follows the shared material gradient as before. When at least two same-team
+workers fetching the same material target cells within two tiles of its target,
+it instead reserves one stock unit (a farm tile, resource cell or supplier) within
+twice the distance to the nearest destination and routes to it, so a crowd
+spreads over the available stock rather than converging on one tile. A
+claimed worker refreshes its choice every twelve decisions, switching only to an
+access at least 25% closer. A crowded worker that finds nothing to claim gives up
+its job, as an idle worker would, and is free to be hired elsewhere. The built-in policy is
+`contention-v1` (`ResourceClaims::ClaimPolicyConfig::shippedDefault()` in
+`src/map/claims/`). Saved games store their policy and continue with it; saves
+from before format 213 continue without claims. `game run --resource-claims off`
+and explicit research policies are described in
+[resource-claim policies](../tools/tournaments.md#resource-claim-policies).
+
 ## Presentation and persistence
 
 Presentation identity selects an existing mesh/skin slot independently of unit

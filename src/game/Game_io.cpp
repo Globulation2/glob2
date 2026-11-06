@@ -483,6 +483,10 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 
 	}
 	gameSection.commit();
+    // Every game started from a map uses the shipped claim policy; saved games
+    // restore their own (none before format 213). Conversions keep the map as is.
+    if (!mapHeader.getIsSavedGame() && initialization==MapLoadInitialization::Normal)
+        map.applyShippedResourceClaims();
     map.rebuildActiveMaterialClaims();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.

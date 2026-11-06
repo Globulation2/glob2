@@ -154,6 +154,8 @@ class Map
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
     std::unique_ptr<const ResourceClaims::ClaimPolicyConfig> materialClaimConfiguration;
+    // setMaterialClaimPolicyConfig without the tick-zero check.
+    void installMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
     std::array<Uint8,32> materialClaimConfigurationDigest{};
     std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
     // Derived from terrain only; never saved, checksummed or snapshotted.
@@ -793,6 +795,13 @@ public:
     void setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy);
     const ResourceClaims::ClaimPolicyConfig& materialClaimPolicyConfig() const;
     void setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
+    //! New-game setup: material destinations plus the shipped default claim
+    //! policy. Saved games keep whatever they stored (claims off before format 213).
+    void applyShippedResourceClaims();
+    //! New-game setup without destinations or claims (the pre-default behaviour).
+    void disableResourceClaims();
+    //! True when the frozen policy is exactly ClaimPolicyConfig::shippedDefault().
+    bool shippedResourceClaimsActive() const;
     ResourceClaims::StepResult nextClaimGradientStep(const Unit&, int*, int*);
     ResourceClaims::StepResult nextClaimRouteStep(Unit&, int*, int*);
     //! True unless the held claim has a published route (computing, awaiting

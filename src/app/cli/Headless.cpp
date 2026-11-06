@@ -560,7 +560,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims-active","--resource-claims-policy-json"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims","--resource-claims-active","--resource-claims-policy-json"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -680,18 +680,26 @@ struct HeadlessRunner
 			for(size_t p=0;p<players.size();++p)if(BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)==AI::JAVASCRIPT && !scriptedPlayers.count(p))throw std::invalid_argument("JavaScript player requires --ai-script");
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
-            if(options.count("--material-destinations")) {
-                if(recordReplay)throw std::invalid_argument("Material destination research mode cannot record a replay");
+            // initGame applied the shipped claim policy. Explicit research setup
+            // replaces it before the first tick and never records a replay.
+            const bool claimsOff=one(options,"--resource-claims","default")=="off";
+            if(claimsOff || options.count("--material-destinations") || options.count("--resource-claims-active")
+                || options.count("--resource-claims-policy-json")) {
+                if(recordReplay)throw std::invalid_argument("Non-default resource claim setup cannot record a replay");
                 // Fresh map initialization has not admitted simulation field requests.
-                // The setter enforces the drained boundary; never silently discard work.
-                engine.gui.game.map.setMaterialDestinationsEnabled(true);
+                // The setters enforce the drained boundary; never silently discard work.
+                auto& map=engine.gui.game.map;
+                if(claimsOff) {
+                    map.disableResourceClaims();
+                    if(options.count("--material-destinations")) map.setMaterialDestinationsEnabled(true);
+                }
                 if(options.count("--resource-claims-active")) {
                     if(one(options,"--resource-claims-active")!="prototype-stationary-v1")
                         throw std::invalid_argument("invalid active claim prototype selection");
-                    engine.gui.game.map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+                    map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
                 }
                 if(options.count("--resource-claims-policy-json"))
-                    engine.gui.game.map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::parse(one(options,"--resource-claims-policy-json")));
+                    map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::parse(one(options,"--resource-claims-policy-json")));
             }
 		}
 		if(options.count("--map-script"))
@@ -1019,6 +1027,9 @@ struct HeadlessRunner
             result << ",\"resource_claims_policy_config\":" << config.canonicalJson()
                 << ",\"resource_claims_policy_digest\":" << quote(config.digest());
         }
+        result << ",\"resource_claims\":" << quote(engine.gui.game.map.shippedResourceClaimsActive()?"default":engine.gui.game.map.activeClaimsEnabled()?"custom":"off");
+        if(engine.gui.game.map.shippedResourceClaimsActive())
+            result << ",\"resource_claims_policy_name\":" << quote(std::string(ResourceClaims::ClaimPolicyConfig::ShippedDefaultName));
         result << ",\"material_destinations_enabled\":" << (engine.gui.game.map.materialDestinationsEnabled()?"true":"false");
         if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
@@ -1163,7 +1174,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"material_destinations_version\":1,\"resource_claims_probe_version\":3,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":2,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"resource_claims_policy_options\":[\"refresh_switch_margin_permille\",\"terrain_component_prefilter\",\"claim_oversubscription_permille\",\"pending_step_gradient\",\"max_claim_distance_factor_permille\",\"traffic_sidestep\",\"traffic_wait_limit\",\"fallback_gradient\",\"claim_gradient_demand\",\"claim_trigger\",\"contention_min_workers\",\"contention_radius\"],\"resource_claims_release_reason_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"material_destinations_version\":1,\"resource_claims_probe_version\":3,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":2,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"resource_claims_policy_options\":[\"refresh_switch_margin_permille\",\"terrain_component_prefilter\",\"claim_oversubscription_permille\",\"pending_step_gradient\",\"max_claim_distance_factor_permille\",\"traffic_sidestep\",\"traffic_wait_limit\",\"fallback_gradient\",\"claim_gradient_demand\",\"claim_trigger\",\"contention_min_workers\",\"contention_radius\"],\"resource_claims_release_reason_version\":1,\"resource_claims_default\":\"" << ResourceClaims::ClaimPolicyConfig::ShippedDefaultName << "\",\"resource_claims_switch_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
 
             // Config asset identities are frozen by the planner before dispatch.
             // This catalog path is diagnostic setup, never a simulation hot loop.
