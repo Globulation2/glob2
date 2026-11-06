@@ -103,7 +103,7 @@ jobs:
       contents: read
       id-token: write
     env:
-      BUCKET: gs://glob2-browser-pharaoh-418820-20260909
+      BUCKET: gs://glob2-browser
       PUBLIC_URL: ${{ vars.GLOB2_BROWSER_PUBLIC_URL }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -169,6 +169,6 @@ jobs:
           if [ -n "$PUBLIC_URL" ]; then
             echo "Threaded public frontend: $PUBLIC_URL (HTTPS and isolation headers verified)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'Serial fallback: https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Serial fallback: https://storage.googleapis.com/glob2-browser/index.html' >> "$GITHUB_STEP_SUMMARY"
             echo 'Set GLOB2_BROWSER_PUBLIC_URL to a Caddy or equivalent HTTPS frontend with COOP/COEP headers to publish a threaded public URL.' >> "$GITHUB_STEP_SUMMARY"
           fi
