@@ -925,12 +925,16 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
         }
         if (glGetError() != GL_NO_ERROR)
             throw std::runtime_error("Animated terrain source upload failed");
-        if (everyCell)
+        // Full-detail masks: for every cell in the experimental single pass, else
+        // for the animated cells this pass draws over full-detail pages. The
+        // native 16-texel masks would square off fine contours and clasts there.
+        if (everyCell && state->hd.failed) { out.regions.clear(); return false; }
+        if (!state->hd.failed)
         {
-            if (state->hd.failed) { out.regions.clear(); return false; }
             int tile = 32;
             while (tile < 128 && tile < 32 * density) tile *= 2;
-            prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile);
+            prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile,
+                everyCell ? std::span<const SDL_Rect>{} : std::span<const SDL_Rect>(out.regions));
         }
         return true;
     }
@@ -970,7 +974,7 @@ std::size_t DirectTerrain::pendingHdMasks() const
 }
 
 void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int right, int bottom,
-    int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile)
+    int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile, std::span<const SDL_Rect> only)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     auto &hd = state->hd;
@@ -1041,13 +1045,25 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         glBindTexture(GL_TEXTURE_2D, hd.index);
         glTexSubImage2D(GL_TEXTURE_2D, 0, cell % width, cell / width, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &value);
     };
+    // With regions, only their cells (view coordinates) take full-detail masks.
+    std::vector<char> wanted;
+    if (!only.empty())
+    {
+        wanted.assign(std::size_t(right - left + 1) * (bottom - top + 1), 0);
+        for (const auto &rect : only)
+            for (int y = std::max(top, rect.y); y < std::min(bottom + 1, rect.y + rect.h); ++y)
+                for (int x = std::max(left, rect.x); x < std::min(right + 1, rect.x + rect.w); ++x)
+                    wanted[std::size_t(y - top) * (right - left + 1) + (x - left)] = 1;
+    }
+    const auto selected = [&](int x, int y)
+    { return wanted.empty() || wanted[std::size_t(y - top) * (right - left + 1) + (x - left)]; };
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.
     {
         std::size_t mixed = 0;
         for (int y = top; y <= bottom; ++y)
             for (int x = left; x <= right; ++x)
-                mixed += state->cellMasks[map.coordToIndex(x + viewportX, y + viewportY)] != 0;
+                mixed += selected(x, y) && state->cellMasks[map.coordToIndex(x + viewportX, y + viewportY)] != 0;
         while (tile > 32 && std::size_t(atlasSize / tile) * (atlasSize / tile) < mixed + mixed / 4)
             tile /= 2;
     }
@@ -1082,8 +1098,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
                     x + viewportX + 1, y + viewportY + 1, visibleTeams))
                 continue;
             const int cell = map.coordToIndex(x + viewportX, y + viewportY);
-            if (!state->cellMasks[cell])
-                continue; // One material: no mask needed.
+            if (!state->cellMasks[cell] || !selected(x, y))
+                continue; // One material: no mask needed; or drawn by pages.
             if (const auto slot = hd.slotOf[cell])
                 hd.used[slot - 1] = hd.frame;
             else
@@ -1191,7 +1207,7 @@ void DirectTerrain::drawAnimation(GAGCore::GraphicContext &gfx, int viewportX, i
     GAGCore::Sprite::flushBatches(&gfx);
     if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
     RestoreGL restore;
-    const bool hd = state->animation.everyCell && state->hd.program && !state->hd.failed;
+    const bool hd = state->hd.program && !state->hd.failed && state->hd.tile;
     const auto &uniforms = hd ? state->hd.uniforms : decltype(state->hd.uniforms){};
     glUseProgram(hd ? state->hd.program : state->program);
     for (unsigned unit = 0; unit < State::Count; ++unit)

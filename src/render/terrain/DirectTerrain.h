@@ -50,7 +50,8 @@ public:
 
 private:
     void prepareHdMasks(const SceneMap &, int left, int top, int right, int bottom,
-                        int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile);
+                        int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile,
+                        std::span<const SDL_Rect> only = {});
     bool drawInternal(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
                       int right, int bottom, int viewportX, int viewportY,
                       Uint32 visibleTeams, bool wholeMap, int animationTime,
