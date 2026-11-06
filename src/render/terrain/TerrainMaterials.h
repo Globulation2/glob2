@@ -35,6 +35,7 @@ struct Profile
 	int wigglePeriod = 64; // Smooth: logical pixels between the broadest meanders.
 	int squareness = 0;    // Smooth: Q8 from round (0) to square (256) corners.
 	int detail = 0;        // Smooth: Q8 pixels of fine (16 px) edge roughness.
+	int jagged = 0;        // Smooth: Q8 pixels (0-2048) of angular grit (8 and 4 px, creased).
 	int roughness = 192;  // Q8 multiplier; 256 represents 1.
 	int feather = 256;    // Q8 native-pixel edge softness.
 	int amplitude = 512;  // Q8 pixel limit on local contour displacement.

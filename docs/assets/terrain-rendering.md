@@ -181,13 +181,26 @@ described above remain for version 1–3 catalogs.
 
 A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders),
 `wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends),
-`squareness_q8` (0 round to 256 square corners) and `detail_q8` (0–1024, Q8
-pixels of fine roughness on a 16-pixel lattice). `feather_q8` and `bridge_q8`
-keep their meanings. A rough profile that names none of these takes its meander
-from its contour strength: `wiggle_q8` is `amplitude_q8 × roughness_q8 / 256`,
-`detail_q8` a third of that, and a profile without roughness (foliage that hides
-its own edge) gets square corners. `roughness_q8` and `contours_q12` no longer
-shape version-4 contacts.
+`squareness_q8` (0 round to 256 square corners), `detail_q8` (0–1024, Q8 pixels
+of fine roughness on a 16-pixel lattice) and `jagged_q8` (0–2048, Q8 pixels of
+angular grit). Grit uses two octaves on 8- and 4-pixel lattices, interpolated
+linearly so the contour creases into teeth, with lattice values that are always
+strong highs or lows. Its lattice is offset by half a spacing, so no crease
+falls on a tile edge. `feather_q8` and `bridge_q8` keep their meanings.
+
+A rough profile that names none of these takes them from its contour strength,
+`amplitude_q8 × roughness_q8 / 256`: a quarter of it as `wiggle_q8`, an eighth
+as `detail_q8`, and that strength times `roughness_q8 / 256` again as
+`jagged_q8`. Rock therefore breaks into teeth, soil, sand and turf roughen, and
+a beach stays smooth. A profile without roughness (foliage that hides its own
+edge) gets square corners. Smooth profiles (roads, tracks, liquids, lava) keep
+their clean lines. `roughness_q8` and `contours_q12` no longer shape version-4
+contacts directly.
+
+The noises of one field together move a contour at most four pixels; scaled
+down alike when a profile asks for more. A contour moves by the difference of
+two fields' noise, and must stay beyond band reach (eight pixels) of the next
+uniform cell, about half a cell away, which draws no seam or surf bands.
 
 `SmoothBorders` gives each corner material of a cell a field interpolated
 through the 4×4 vertex neighbourhood with Catmull-Rom splines; the strongest

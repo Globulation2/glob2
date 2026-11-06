@@ -156,11 +156,13 @@ def _validate(document, root):
         for field in ("wiggle_q8", "wiggle_period", "squareness_q8"):
             if not smooth and version < 4 and field in p:
                 raise ValueError(f"{field} requires the smooth shape")
-        if version < 4 and "detail_q8" in p:
-            raise ValueError("detail_q8 requires catalog version 4")
+        for field in ("detail_q8", "jagged_q8"):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
         integer(p.get("wiggle_q8", 0), 0, 2048, "Smooth wiggle")
         integer(p.get("squareness_q8", 0), 0, 256, "Smooth squareness")
         integer(p.get("detail_q8", 0), 0, 1024, "Smooth detail")
+        integer(p.get("jagged_q8", 0), 0, 2048, "Smooth jagged grit")
         if p.get("wiggle_period", 64) not in (32, 64, 128, 256):
             raise ValueError("Smooth wiggle period must be 32, 64, 128 or 256 pixels")
         if version == 1 and "feather_q8" in p:

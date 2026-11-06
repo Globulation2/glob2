@@ -40,9 +40,13 @@ class SmoothBorders
   private:
 	struct NoiseLayer
 	{
+		// At most ten lattice vertices span a tile at the 4px finest spacing,
+		// shifted by half a spacing (see JaggedPhase).
+		static constexpr int Stride = 10;
 		int shift = 0, offsetX = 0, offsetY = 0;
-		// At most five lattice vertices span a tile at the 8px finest spacing.
-		float vertices[25]{};
+		// Linear interpolation leaves creases between lattice points: angular grit.
+		bool linear = false;
+		float vertices[Stride * Stride]{};
 		// Value and its gradient per Q8 pixel.
 		float at(int px, int py, float &dx, float &dy) const;
 	};
@@ -51,6 +55,7 @@ class SmoothBorders
 		MaterialId material = 0;
 		std::array<NoiseLayer, 2> noise{}; // Broad meander: the period and half of it.
 		NoiseLayer detail{};               // Fine edge roughness at DetailPeriod.
+		std::array<NoiseLayer, 2> jagged{}; // Angular grit at 8 and 4 px.
 		float feather = 1;   // Pixels; the ramp width shared with a competitor is the mean.
 		float bias = 0;      // Saddle bias that joins diagonal lobes of this material.
 	};
@@ -61,6 +66,7 @@ class SmoothBorders
 	std::array<int, 4> cornerShare{};     // Q12 per corner, TL TR BL BR.
 	std::array<float, 4> cornerWiggle{};  // Multiplicative noise strength per corner.
 	std::array<float, 4> cornerDetail{};  // Fine roughness strength per corner.
+	std::array<float, 4> cornerJagged{};  // Angular grit strength per corner.
 	std::array<float, 4> cornerSquareness{}; // 0 round to 1 square, per corner.
 	bool anyShare = false, fullShare = false;
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);
