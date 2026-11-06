@@ -755,4 +755,47 @@ TEST_SUITE("ActiveClaimRoutes")
             for(std::size_t i=0;i<owners.size();++i)CHECK((map.materialClaimLedger().find(owners[i])!=nullptr)==(i<4));
         }
     }
+
+    TEST_CASE("pending gradient step moves the worker while its route computes and stays deterministic")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        std::vector<std::vector<int>> traces;
+        for(auto step:{Config::PendingStep::Wait,Config::PendingStep::Gradient}) for(unsigned threads:{1u,2u}) for(bool text:{false,true}) {
+            CAPTURE(int(step));CAPTURE(threads);CAPTURE(text);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;
+            map.computeExecutor().configure(threads);map.setMaterialDestinationsEnabled(true);
+            Config config;config.pendingStep=step;map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            unit->materialClaimPolicyState.decisionOrdinal=1;game.invalidateObservation();game.observeCompletedWorld();
+            const auto target=unit->activeMaterialClaim->access;
+            const auto distance=[&](int x,int y){return map.warpDistMax(x,y,int(target%map.getW()),int(target/map.getW()));};
+            const auto move=[&](int dx,int dy){map.setGroundUnit(unit->posX,unit->posY,NOGUID);unit->posX=(unit->posX+dx+map.getW())%map.getW();unit->posY=(unit->posY+dy+map.getH())%map.getH();map.setGroundUnit(unit->posX,unit->posY,unit->gid);};
+            const auto roundtrip=[&]{const auto before=map.activeClaimRouteChecksum(true);const auto bytes=saveRoutes(map,text);restoreRoutes(map,bytes,text);CHECK(saveRoutes(map,text)==bytes);CHECK(map.activeClaimRouteChecksum(true)==before);};
+            int dx=0,dy=0;
+            const auto first=map.nextClaimRouteStep(*unit,&dx,&dy);
+            if(step==Config::PendingStep::Wait){CHECK(first==ResourceClaims::StepResult::Pending);continue;}
+            // The route is still computing; the worker takes the gradient step.
+            REQUIRE(first==ResourceClaims::StepResult::Ready);
+            CHECK(distance(unit->posX+dx,unit->posY+dy)<distance(unit->posX,unit->posY));
+            std::vector<int> trace{dx,dy};
+            move(dx,dy);roundtrip();
+            for(unsigned decision=0;decision<4 && distance(unit->posX,unit->posY)>1;++decision) {
+                map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();game.invalidateObservation();game.observeCompletedWorld();
+                ++unit->materialClaimPolicyState.decisionOrdinal;
+                const auto result=map.nextClaimRouteStep(*unit,&dx,&dy);
+                REQUIRE(result==ResourceClaims::StepResult::Ready);
+                CHECK(distance(unit->posX+dx,unit->posY+dy)<distance(unit->posX,unit->posY));
+                trace.insert(trace.end(),{dx,dy});move(dx,dy);roundtrip();
+            }
+            REQUIRE(unit->activeMaterialClaim);CHECK(unit->activeMaterialClaim->access==target);
+            trace.push_back(int(map.activeClaimRouteChecksum(true)));
+            traces.push_back(trace);
+        }
+        REQUIRE(traces.size()==4);
+        for(const auto& trace:traces)CHECK(trace==traces.front());
+    }
 }

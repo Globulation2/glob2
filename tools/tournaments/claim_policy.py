@@ -9,7 +9,7 @@ ENUMS = {
     'selection': {'first_available', 'closest_geometric'},
     'fallback': {'wait', 'roam', 'release_job', 'bounded_wait_release'},
     'route_target': {'claimed_access', 'probe_then_gradient'},
-    'pending_step': {'wait', 'direct_heading'},
+    'pending_step': {'wait', 'direct_heading', 'gradient'},
 }
 KEYS = set(ENUMS) | {'source_version', 'pattern', 'pattern_digest',
     'fallback_after_decisions', 'destination_refresh_j', 'route_refresh_j',
@@ -20,6 +20,10 @@ OPTIONS = {
     'refresh_switch_margin_permille': 0,
     'terrain_component_prefilter': False,
     'claim_oversubscription_permille': 1000,
+}
+# Enum values added after their key; a build must advertise them by name.
+ENUM_OPTIONS = {
+    ('pending_step', 'gradient'): 'pending_step_gradient',
 }
 MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE = 900
 # Claimants per source stay below spendable*permille/1000 (integer, rounded
@@ -93,6 +97,9 @@ def validate_policy(policy, capabilities=None):
         for key, default in OPTIONS.items():
             if policy.get(key, default) != default and (not isinstance(options, list) or key not in options):
                 raise ValueError('build does not advertise claim policy option ' + key)
+        for (key, value), name in ENUM_OPTIONS.items():
+            if policy[key] == value and (not isinstance(options, list) or name not in options):
+                raise ValueError('build does not advertise claim policy option ' + name)
         assets = capabilities.get('resource_claims_policy_mixed_patterns' if version == 5 else 'resource_claims_policy_patterns', [])
         asset = {'name': policy['pattern'], 'digest': policy['pattern_digest']}
         if version == 5:

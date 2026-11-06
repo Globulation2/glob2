@@ -42,6 +42,9 @@ public:
         PendingPath, TrafficWait, GeometryContradiction, ReanchorJoined,
         ReanchorFailed, ProbeTailFailed, ObsoleteProbe, Count
     };
+    // Opt-in movement/selection policy extensions (observer counts only).
+    enum class PolicyExtension : unsigned { PendingGradientStep, TrafficSidestep, TrafficWaitLimit,
+        DistanceFactorRejection, FallbackGradient, ClaimGradientSignal, Count };
     struct LiveMetrics {
         std::array<Uint64,unsigned(LiveEvent::Count)> events{};
         Uint64 moves=0,liveCost=0,journeyEligible=0,journeySampled=0,journeyAdmitted=0,journeyCompleted=0;
@@ -53,6 +56,7 @@ public:
         // Optional selection filters: accesses skipped, and refreshes kept
         // only because the margin rejected every other candidate.
         Uint64 terrainPrefilterRejections=0,refreshMarginRejections=0,refreshMarginKept=0;
+        std::array<Uint64,unsigned(PolicyExtension::Count)> policyExtensions{};
     };
     struct Metrics {
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
@@ -91,6 +95,7 @@ public:
     void liveRelease(const Unit&, ReleaseReason) const;
     enum class SelectionFilter : unsigned { TerrainComponent, RefreshMargin, RefreshMarginKept };
     void selectionFilter(SelectionFilter, Uint64 count=1) const;
+    void policyExtension(PolicyExtension, Uint64 count=1) const;
     void moved(const Unit&, int oldX, int oldY) const;
     void routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent) const;
     const LiveMetrics& liveMetrics() const;

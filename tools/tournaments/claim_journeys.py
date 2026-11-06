@@ -9,6 +9,8 @@ TERMINALS = {'harvested','harvest_failed','retargeted','released','timeout','end
 RELEASE_REASONS = ('harvest','route_failed','unit_state_changed','resource_depleted','access_invalid','pickup_mismatch',
                    'job_ended','medical','unit_removed','serialization','map_invalidation','configuration','other')
 SELECTION_FILTERS = ('terrain_prefilter_rejections','refresh_margin_rejections','refresh_margin_kept')
+POLICY_EXTENSIONS = ('pending_gradient_steps','traffic_sidesteps','traffic_wait_limit_repairs',
+                     'distance_factor_rejections','fallback_gradient_decisions','claim_gradient_signals')
 MOVEMENT_KINDS = ('medical','claimed_resource','unclaimed_resource','return_to_job','idle','other')
 
 
@@ -69,7 +71,7 @@ class Validator:
         self.ids = set(); self.censored = 0; self.steps = 0; self.cost = 0
         self.events = [0]*len(EVENTS); self.phases = [0]*16
         # Release reasons and selection filters are additive; None for older traces.
-        self.release_reasons = None; self.selection_filters = None
+        self.release_reasons = None; self.selection_filters = None; self.policy_extensions = None
         self.journey_release_reasons = {}
 
     def row(self, row):
@@ -169,6 +171,12 @@ class Validator:
             if not isinstance(filters, dict) or set(filters) != set(SELECTION_FILTERS):
                 raise ValueError('invalid selection filter counters')
             self.selection_filters = {key: natural(filters[key], key) for key in SELECTION_FILTERS}
+        if 'policy_extension_counts' in live or 'policy_extension_version' in live:
+            extensions = live.get('policy_extension_counts')
+            if (type(live.get('policy_extension_version')) is not int or live['policy_extension_version'] != 1
+                    or not isinstance(extensions, dict) or set(extensions) != set(POLICY_EXTENSIONS)):
+                raise ValueError('invalid policy extension counters')
+            self.policy_extensions = {key: natural(extensions[key], key) for key in POLICY_EXTENSIONS}
         if 'route_status_counts' in live:
             statuses=live['route_status_counts']
             if live.get('route_status_names') != ['found','unreachable','cost_limit','expansion_limit'] or not isinstance(statuses,list) or len(statuses)!=4:

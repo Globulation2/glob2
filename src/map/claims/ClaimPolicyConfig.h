@@ -14,7 +14,10 @@ struct ClaimPolicyConfig
     enum class Selection : std::uint8_t { FirstAvailable, ClosestGeometric };
     enum class Fallback : std::uint8_t { Wait, Roam, ReleaseJob, BoundedWaitRelease };
     enum class RouteTarget : std::uint8_t { ClaimedAccess, ProbeThenGradient };
-    enum class PendingStep : std::uint8_t { Wait, DirectHeading };
+    // Gradient: while a route computes or awaits admission, take the ordinary
+    // natural-material gradient step (the claims-off movement) instead of
+    // standing still; with no such step the worker waits as before.
+    enum class PendingStep : std::uint8_t { Wait, DirectHeading, Gradient };
     static constexpr unsigned SourceVersion=2;
     static constexpr unsigned LatestSourceVersion=5;
     unsigned sourceVersion=SourceVersion;

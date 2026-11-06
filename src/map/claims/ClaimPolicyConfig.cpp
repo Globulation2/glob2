@@ -62,7 +62,7 @@ template<class E,std::size_t N> E enumeration(const Json& value,const std::array
 constexpr std::array SelectionNames{"first_available","closest_geometric"};
 constexpr std::array FallbackNames{"wait","roam","release_job","bounded_wait_release"};
 constexpr std::array RouteNames{"claimed_access","probe_then_gradient"};
-constexpr std::array PendingNames{"wait","direct_heading"};
+constexpr std::array PendingNames{"wait","direct_heading","gradient"};
 unsigned number(const Json& value)
 {
     if(!(value.is_number_integer() || value.is_number_unsigned()) || value.is_number_float()

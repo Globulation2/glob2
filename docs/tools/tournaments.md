@@ -1072,6 +1072,19 @@ revalidation and the overcommit telemetry all use the scaled limit. Surplus
 holders that arrive after the stock is gone fail the harvest and release
 (`resource_depleted`). Builds advertise all three in `resource_claims_policy_options`.
 
+Claim overhead experiments. These change only opt-in values, so every existing
+policy keeps its meaning and digest. Builds advertise each one by name in
+`resource_claims_policy_options` (a new value of an existing key by
+`<key>_<value>`), and the Python contract refuses a policy whose build does not.
+`pending_step: "gradient"` (advertised as `pending_step_gradient`): while the
+held claim's route is computing or awaiting route admission, the worker takes
+the ordinary natural-material gradient step for the claimed material, the same
+step claims-off movement takes (demand, movement outcome and reactive refresh
+included), instead of a zero-displacement wait. The published route then rejoins
+through the existing reanchor window or is repaired from the new position. With
+no gradient step available the worker waits as before. `"redecide"` is not
+implemented.
+
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version
 `live.release_reason_version`; the counts sum to the `released` event count), and

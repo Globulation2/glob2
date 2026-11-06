@@ -163,6 +163,16 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
                     : !(live.areas[cell].forbidden & traffic.teamMask) && live.occupancy[cell].building == 0xffff
                         && !MapState::resourceBlocksGround(live, cell));
         };
+        // pending_step=gradient: the ordinary natural-material gradient step,
+        // exactly as claims-off movement takes it (demand, outcome, refresh).
+        const auto gradientWhileWaiting = [&]() {
+            if (config.pendingStep != ClaimPolicyConfig::PendingStep::Gradient) return false;
+            int gx = 0, gy = 0; bool stopWork = false;
+            if (!pathfindMaterial(unit.entityRandom, unit.owner->teamNumber, unit.activeMaterialClaim->material, unit.movementAccess(),
+                    unit.posX, unit.posY, &gx, &gy, &stopWork, nullptr, false) || (!gx && !gy)) return false;
+            if (observer) observer->policyExtension(Probe::PolicyExtension::PendingGradientStep);
+            *dx = gx; *dy = gy; return true;
+        };
         const auto request = [&](ActiveRouteRuntime::State& state, bool direct) {
             if (state.pending) return false;
             if(config.usesRecovery()) {
@@ -196,11 +206,17 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
             ActiveRouteRuntime::State state;
             state.target = target; state.start = current; state.pending = false;state.cacheRouteDigest();
             found = runtime.states.emplace(owner, std::move(state)).first;
-            if (!request(found->second, false)) {runtime.states.erase(found); return ResourceClaims::StepResult::Pending;}
+            if (!request(found->second, false)) {
+                runtime.states.erase(found);
+                return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
+            }
         }
         auto& state = found->second;
         const auto waiting = [&]() {
-            if (!state.pending) return state.awaitingAdmission?ResourceClaims::StepResult::Pending:ResourceClaims::StepResult::Failed;
+            if (!state.pending) {
+                if (!state.awaitingAdmission) return ResourceClaims::StepResult::Failed;
+                return gradientWhileWaiting() ? ResourceClaims::StepResult::Ready : ResourceClaims::StepResult::Pending;
+            }
             record(Probe::LiveEvent::PendingPath);
             if (config.pendingStep == ClaimPolicyConfig::PendingStep::DirectHeading) {
                 const auto step = direct_flight::select(unit.posX, unit.posY,
@@ -208,6 +224,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
                     [&](int x,int y) {return routePassable(live, coordToIndex(x,y), traffic);});
                 if (step.dx || step.dy) {*dx=step.dx; *dy=step.dy; return ResourceClaims::StepResult::Ready;}
             }
+            if (gradientWhileWaiting()) return ResourceClaims::StepResult::Ready;
             return ResourceClaims::StepResult::Pending;
         };
         if(state.awaitingAdmission)request(state,true);

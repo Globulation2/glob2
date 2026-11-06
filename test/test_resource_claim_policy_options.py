@@ -8,7 +8,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.tournaments.claim_policy import (OPTIONS, RECOVERY_V1, canonical_policy, normalized_policy,
     policy_digest, validate_policy)
-from tools.tournaments.claim_journeys import EVENTS, RELEASE_REASONS, Validator
+from tools.tournaments.claim_journeys import EVENTS, POLICY_EXTENSIONS, RELEASE_REASONS, Validator
 
 
 def policy(version=2):
@@ -59,6 +59,17 @@ OVERSUBSCRIPTION_PARITY = [
      '{"claim_oversubscription_permille":"unlimited","destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
      '27ebf691125c94cc2a0b61ca15d2144f8d3f1d7d1d2f6a6fecec1c17d1500263'),
 ]
+
+
+# Engine-reported (game run resolved config/digest) canonical JSON for the
+# production policy with each overhead experiment enabled.
+OVERHEAD_PARITY = {
+    'pending_step_gradient': [
+        (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         '0f066f05128e2ef8ed947da8b904b5532bdf38a0b830889789810001617124af'),
+    ],
+}
 
 
 class PolicyOptions(unittest.TestCase):
@@ -156,6 +167,33 @@ class ClaimOversubscription(unittest.TestCase):
             self.assertEqual(policy_digest(value), engine_digest)
 
 
+class PendingGradient(unittest.TestCase):
+    def test_new_value_is_canonical_and_needs_capability(self):
+        base = PARITY[0][0]
+        option = base | {'pending_step': 'gradient'}
+        self.assertEqual(validate_policy(option), option)
+        self.assertIn('"pending_step":"gradient"', canonical_policy(option))
+        self.assertNotEqual(policy_digest(option), policy_digest(base))
+        self.assertEqual(policy_digest(base), PARITY[0][2])
+        for bad in ('Gradient', 'redecide', ''):
+            with self.assertRaises(ValueError):
+                validate_policy(base | {'pending_step': bad})
+        caps = {'resource_claims_policy_config_version': 5, 'resource_claims_active_policies': ['experimental'],
+            'resource_claims_policy_mixed_patterns': [{'name': base['pattern'], 'digest': base['pattern_digest'],
+                'format': 'mixed-v1', 'frame': 'nearest-d4-v1'}],
+            'resource_claims_policy_options': sorted(OPTIONS)}
+        validate_policy(base, caps)
+        with self.assertRaises(ValueError):
+            validate_policy(option, caps)
+        validate_policy(option, caps | {'resource_claims_policy_options': sorted(OPTIONS) + ['pending_step_gradient']})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        for value, engine_json, engine_digest in OVERHEAD_PARITY.get('pending_step_gradient', []):
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
+        self.assertIn('pending_step_gradient', OVERHEAD_PARITY)
+
+
 def journey_trace(release_reasons=None, filters=None):
     events = [0]*len(EVENTS); events[0] = 1; events[1] = 2
     schema = {'live_journey_version': 1, 'live_event_names': list(EVENTS), 'sample_every': 1, 'max_samples': 32}
@@ -192,6 +230,25 @@ class ReleaseReasonReader(unittest.TestCase):
         schema, summary = journey_trace(counts); summary['live']['release_reason_names'] = list(reversed(RELEASE_REASONS))
         with self.assertRaises(ValueError):
             Validator(schema).finish(summary)
+
+
+class PolicyExtensionReader(unittest.TestCase):
+    def test_counts_are_optional_exact_and_natural(self):
+        schema, summary = journey_trace()
+        reader = Validator(schema); reader.finish(summary)
+        self.assertIsNone(reader.policy_extensions)
+        counts = {key: i for i, key in enumerate(POLICY_EXTENSIONS)}
+        schema, summary = journey_trace()
+        summary['live'] |= {'policy_extension_version': 1, 'policy_extension_counts': counts}
+        reader = Validator(schema); reader.finish(summary)
+        self.assertEqual(reader.policy_extensions, counts)
+        for broken in ({'policy_extension_version': 2, 'policy_extension_counts': counts},
+                       {'policy_extension_version': 1, 'policy_extension_counts': counts | {'other': 1}},
+                       {'policy_extension_version': 1, 'policy_extension_counts': counts | {POLICY_EXTENSIONS[0]: -1}},
+                       {'policy_extension_counts': counts}):
+            schema, summary = journey_trace(); summary['live'] |= broken
+            with self.assertRaises(ValueError):
+                Validator(schema).finish(summary)
 
 
 if __name__ == '__main__':

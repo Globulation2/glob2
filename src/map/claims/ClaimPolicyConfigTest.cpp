@@ -273,3 +273,33 @@ TEST_CASE("claim oversubscription keeps every existing canonical identity and ha
     CHECK(existing[1].digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
     CHECK(existing[4].digest()=="362f54bc04bd81fb1120c727cbb6413348f0dbd1fa63278d61e1728503c3e9f0");
 }
+namespace
+{
+ClaimPolicyConfig productionPolicy()
+{
+    ClaimPolicyConfig c;c.sourceVersion=5;c.pattern="final-r32-exact24-assembled-v1";
+    c.patternFrame=ClaimPolicyConfig::PatternFrame::NearestD4;c.destinationRefreshJ=12;c.opportunisticAdjacentPickup=true;
+    return c;
+}
+void checkExistingIdentities()
+{
+    // Digests recorded before the overhead experiments existed.
+    CHECK(ClaimPolicyConfig{}.digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
+    CHECK(productionPolicy().digest()=="362f54bc04bd81fb1120c727cbb6413348f0dbd1fa63278d61e1728503c3e9f0");
+}
+}
+TEST_CASE("pending gradient step is a new canonical value that leaves existing identities unchanged" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        CHECK(base.pendingStep==ClaimPolicyConfig::PendingStep::Wait);
+        auto wire=nlohmann::json::parse(base.canonicalJson());wire["pending_step"]="gradient";
+        const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(parsed.pendingStep==ClaimPolicyConfig::PendingStep::Gradient);
+        CHECK(parsed.digest()!=base.digest());CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+        CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("pending_step")=="gradient");
+        for(const char* bad:{"Gradient","redecide","gradient_step",""}) {
+            CAPTURE(bad);wire["pending_step"]=bad;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+    }
+}

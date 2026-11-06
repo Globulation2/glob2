@@ -383,7 +383,11 @@ struct Probe::Impl
             {"route_status_counts",live.routeStatuses},
             {"release_reason_version",1},{"release_reason_names",ReleaseReasonNames},{"release_reason_counts",live.releaseReasons},
             {"selection_filter_counts",{{"terrain_prefilter_rejections",live.terrainPrefilterRejections},
-                {"refresh_margin_rejections",live.refreshMarginRejections},{"refresh_margin_kept",live.refreshMarginKept}}},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
+                {"refresh_margin_rejections",live.refreshMarginRejections},{"refresh_margin_kept",live.refreshMarginKept}}},
+            {"policy_extension_version",1},{"policy_extension_counts",{{"pending_gradient_steps",live.policyExtensions[0]},
+                {"traffic_sidesteps",live.policyExtensions[1]},{"traffic_wait_limit_repairs",live.policyExtensions[2]},
+                {"distance_factor_rejections",live.policyExtensions[3]},{"fallback_gradient_decisions",live.policyExtensions[4]},
+                {"claim_gradient_signals",live.policyExtensions[5]}}},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
             {"max_active",MaximumJourneys},{"max_admissions",std::min<unsigned>(MaximumJourneyAdmissions,config.maxSamples)},
             {"timeout_ticks",JourneyTimeout},{"continuation_policy","new-segment; inherited claims are not sampled acquisitions"},
             {"sampling_censored",bool(live.excludedCapacity || live.excludedLimit)},
@@ -976,6 +980,11 @@ void Probe::selectionFilter(SelectionFilter filter,Uint64 count) const
     auto& live=impl->live;
     (filter==SelectionFilter::TerrainComponent?live.terrainPrefilterRejections:
         filter==SelectionFilter::RefreshMargin?live.refreshMarginRejections:live.refreshMarginKept)+=count;
+}
+void Probe::policyExtension(PolicyExtension kind,Uint64 count) const
+{
+    if(impl->finished || impl->config.movementOnly)return;
+    impl->live.policyExtensions.at(unsigned(kind))+=count;
 }
 void Probe::rawResourceProbes(unsigned material,Uint64 coordinates,Uint64 xyChecks,Uint64 attempts,Uint64 checks,Uint64 improvements,Uint64 finalSelections) const
 {
