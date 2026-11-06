@@ -435,10 +435,14 @@ otherwise ring the water with surf.
 
 In Legacy GL every visible mixed cell takes a coverage mask at the display
 density (8 to 128 texels a side), built by background workers nearest the view
-centre first. After a zoom changes the density, a cell keeps drawing its mask
-from the previous density until its new one lands, so it never drops back to
-plain material; only a cell that has never had a mask draws its first material.
-The previous atlas is released once the new density covers the view.
+centre first. Until a cell's mask lands it draws its mask from the previous
+density, if a zoom just changed it, or else its base mask: a low-density mask
+of every mixed cell on the map (8 texels a side, 4 or 2 on large maps), laid
+out like the map and built by the workers whenever visible cells leave them
+idle, nearest the first view first. Only a cell whose base mask is not built
+yet, just after a map loads, draws its first material. The previous atlas is
+released once the new density covers the view; its textures are reused by the
+next zoom.
 
 Surf reads the same per-sample distance as seams, which is exact only within
 eight logical pixels of the edge, so each band and `reach_q8` plus

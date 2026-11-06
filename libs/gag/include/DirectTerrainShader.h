@@ -30,6 +30,11 @@ uniform float hdTilePixels;
 uniform sampler2D hdPreviousIndex, hdPreviousCoverage, hdPreviousEdges;
 uniform vec2 hdPreviousSize;
 uniform float hdPreviousTile;
+// A low-density mask of every mixed cell, laid out like the map (hdBaseTile
+// zero when there is none); an unbuilt cell's tile is empty.
+uniform sampler2D hdBaseCoverage, hdBaseEdges;
+uniform vec2 hdBaseSize;
+uniform float hdBaseTile;
 #endif
 
 // The offline generator supplies its own interface above this shared shader.
@@ -274,7 +279,8 @@ void main() {
 #ifdef DIRECT_TERRAIN_HD_MASKS
     // Legacy GL: one mask atlas at the display density. Zero is a uniform cell;
     // 65535 a mixed cell whose mask is still being built, drawn from the
-    // retired atlas if it has one, else from its first material, until it lands.
+    // retired atlas if it has one, else from the whole-map base atlas, else
+    // from its first material, until it lands.
     float hd = readScalar(hdIndex, cell, mapSize);
     bool mixed = hd > 0.0 && hd < 65535.0;
     vec2 atlasSize = hdCoverageSize;
@@ -290,6 +296,14 @@ void main() {
             atlasTile = hdPreviousTile;
         }
     }
+    bool base = false;
+    if (hd >= 65535.0 && !retired && hdBaseTile > 0.0) {
+        hd = slot.y * mapSize.x + slot.x + 1.0;
+        mixed = true;
+        base = true;
+        atlasSize = hdBaseSize;
+        atlasTile = hdBaseTile;
+    }
 #else
     float mask = readScalar(coverageIndex, cell, mapSize);
     if (mask >= 65535.0) discard;
@@ -299,12 +313,19 @@ void main() {
     vec2 position = uv / 32.0;
     float calm = mix(mix(quiet.x, quiet.y, position.x), mix(quiet.z, quiet.w, position.x), position.y);
     vec4 color = material(indices.x, uv, calm);
-    if (mixed) {
 #ifdef DIRECT_TERRAIN_HD_MASKS
+    vec4 weights = vec4(0.0);
+    if (mixed) {
         vec2 maskUV = hdMaskUV(hd - 1.0, uv, atlasSize, atlasTile);
-        vec4 weights = retired ? DIRECT_TERRAIN_SAMPLE(hdPreviousCoverage, maskUV)
-                               : DIRECT_TERRAIN_SAMPLE(hdCoverage, maskUV);
-#else
+        weights = base ? DIRECT_TERRAIN_SAMPLE(hdBaseCoverage, maskUV)
+                : retired ? DIRECT_TERRAIN_SAMPLE(hdPreviousCoverage, maskUV)
+                          : DIRECT_TERRAIN_SAMPLE(hdCoverage, maskUV);
+        // An unbuilt base tile is empty: the cell keeps its first material.
+        mixed = dot(weights, vec4(1.0)) > 0.5;
+    }
+#endif
+    if (mixed) {
+#ifndef DIRECT_TERRAIN_HD_MASKS
         vec4 weights = DIRECT_TERRAIN_SAMPLE(coverage, maskAtlasUV(mask - 1.0, uv));
 #endif
         weights /= max(dot(weights, vec4(1.0)), 0.00001);
@@ -313,7 +334,8 @@ void main() {
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        vec3 edge = retired ? hdEdgeAt(hdPreviousEdges, hd - 1.0, uv, atlasSize, atlasTile)
+        vec3 edge = base ? hdEdgeAt(hdBaseEdges, hd - 1.0, uv, atlasSize, atlasTile)
+                  : retired ? hdEdgeAt(hdPreviousEdges, hd - 1.0, uv, atlasSize, atlasTile)
                             : hdEdgeAt(hdEdges, hd - 1.0, uv, atlasSize, atlasTile);
 #else
         vec3 edge = edgeAt(mask - 1.0, uv);

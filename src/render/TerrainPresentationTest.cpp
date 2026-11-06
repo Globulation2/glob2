@@ -1199,6 +1199,63 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .03);
 	}
 
+	TEST_CASE("Legacy GL cells never seen draw their whole-map base mask until their own lands [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		// The left half at 32-texel masks, until the base covers the whole map.
+		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
+		for (int attempt = 0; attempt < 4000; ++attempt)
+		{
+			const bool ready = atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
+			if (ready && !atlas.preparing() && !atlas.pendingHdMasks() && !atlas.pendingBaseMasks()) break;
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		REQUIRE_FALSE(atlas.pendingBaseMasks());
+		// The right half has never been shown: its first frame draws the base.
+		REQUIRE(atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0));
+		const auto pending = atlas.pendingHdMasks();
+		REQUIRE(pending > 20);
+		const auto frame = [&]
+		{
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 32, 0, true, 0);
+			return terrainPixels(true);
+		};
+		const auto first = frame();
+		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		{
+			atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0);
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		const auto built = frame();
+		gfx.endMapTransform();
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < built.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(built[i + k]) - int(first[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(built.size() / 4);
+		CAPTURE(pending);
+		CAPTURE(share);
+		CHECK(share < .05);
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
