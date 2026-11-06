@@ -20,6 +20,7 @@ OPTIONS = {
     'refresh_switch_margin_permille': 0,
     'terrain_component_prefilter': False,
     'claim_oversubscription_permille': 1000,
+    'max_claim_distance_factor_permille': 0,
 }
 # Enum values added after their key; a build must advertise them by name.
 ENUM_OPTIONS = {
@@ -30,6 +31,10 @@ MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE = 900
 # down); 1000 is exact capacity and 'unlimited' removes the count limit.
 MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE = 1000
 MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE = 100000
+# Candidates beyond permille/1000 of the nearest destination distance plus
+# ClaimDistanceSlackTiles (4) are rejected; 0 disables the cap.
+MINIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE = 1000
+MAXIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE = 100000
 RECOVERY_V1 = {
     'recovery_source_version': 1,
     'recovery_cache_entries': 4,
@@ -61,6 +66,10 @@ def validate_policy(policy, capabilities=None):
     if oversubscription != 'unlimited' and (type(oversubscription) is not int or not
             MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE <= oversubscription <= MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE):
         raise ValueError('invalid claim oversubscription permille')
+    distance = policy.get('max_claim_distance_factor_permille', 0)
+    if type(distance) is not int or not (distance == 0 or
+            MINIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE <= distance <= MAXIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE):
+        raise ValueError('invalid claim distance factor permille')
     if version >= 2:
         for key, value in RECOVERY_V1.items():
             if type(policy[key]) is not type(value) or policy[key] != value:

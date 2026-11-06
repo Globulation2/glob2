@@ -100,6 +100,8 @@ void ClaimPolicyConfig::validate() const
         || !fallbackAfterDecisions || fallbackAfterDecisions>65535
         || !maximumExpansions || maximumExpansions>4096
         || refreshSwitchMarginPermille>MaximumRefreshSwitchMarginPermille
+        || (maxClaimDistanceFactorPermille && (maxClaimDistanceFactorPermille<MinimumClaimDistanceFactorPermille
+            || maxClaimDistanceFactorPermille>MaximumClaimDistanceFactorPermille))
         || (claimOversubscriptionPermille!=UnlimitedClaimOversubscription
             && (claimOversubscriptionPermille<ExactClaimOversubscriptionPermille
                 || claimOversubscriptionPermille>MaximumClaimOversubscriptionPermille)))
@@ -127,6 +129,7 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
     if(refreshSwitchMarginPermille)result["refresh_switch_margin_permille"]=refreshSwitchMarginPermille;
     if(terrainComponentPrefilter)result["terrain_component_prefilter"]=true;
+    if(maxClaimDistanceFactorPermille)result["max_claim_distance_factor_permille"]=maxClaimDistanceFactorPermille;
     if(claimOversubscriptionPermille==UnlimitedClaimOversubscription)result["claim_oversubscription_permille"]="unlimited";
     else if(claimOversubscriptionPermille!=ExactClaimOversubscriptionPermille)
         result["claim_oversubscription_permille"]=claimOversubscriptionPermille;
@@ -180,6 +183,12 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
         else if(key=="terrain_component_prefilter") {
             if(!value.is_boolean())throw std::invalid_argument("invalid terrain component prefilter flag");
             result.terrainComponentPrefilter=value.get<bool>();
+        }
+        else if(key=="max_claim_distance_factor_permille") {
+            const auto permille=number(value);
+            if(permille && (permille<MinimumClaimDistanceFactorPermille || permille>MaximumClaimDistanceFactorPermille))
+                throw std::invalid_argument("claim distance factor permille out of range");
+            result.maxClaimDistanceFactorPermille=permille;
         }
         else if(key=="claim_oversubscription_permille") {
             if(value.is_string()) {

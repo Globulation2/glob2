@@ -180,9 +180,17 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         const Uint32 heldAccess=marginActive?activeMaterialClaim->access:UINT32_MAX;
         const Uint64 heldDistance=marginActive?Uint64(map.warpDistMax(posX,posY,int(heldAccess%map.getW()),int(heldAccess/map.getW()))):0;
         bool marginRejected=false;
+        // Distance cap relative to the nearest destination (integer only).
+        const unsigned distanceFactor=nearestValid?config.maxClaimDistanceFactorPermille:0;
+        const Uint64 distanceLimit=distanceFactor?Uint64(distanceFactor)*Uint64(map.warpDistMax(posX,posY,int(nx),int(ny)))
+            +Uint64(1000)*ResourceClaims::ClaimPolicyConfig::ClaimDistanceSlackTiles:0;
         const auto filtered=[&](Uint32 access,unsigned x,unsigned y) {
             if(components && !ResourceClaims::terrainComponentMayReach(*components,posX,posY,access)) {
                 if(filterObserver)filterObserver->selectionFilter(Filter::TerrainComponent);
+                return true;
+            }
+            if(distanceFactor && Uint64(map.warpDistMax(posX,posY,int(x),int(y)))*1000>distanceLimit) {
+                if(filterObserver)filterObserver->policyExtension(ResourceClaims::Probe::PolicyExtension::DistanceFactorRejection);
                 return true;
             }
             // Refresh hysteresis: the held access stays eligible; another must

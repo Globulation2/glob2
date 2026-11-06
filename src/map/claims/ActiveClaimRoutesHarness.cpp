@@ -798,4 +798,36 @@ TEST_SUITE("ActiveClaimRoutes")
         REQUIRE(traces.size()==4);
         for(const auto& trace:traces)CHECK(trace==traces.front());
     }
+
+    TEST_CASE("claim distance factor rejects candidates far beyond the nearest destination")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        // Nearest destination (12,8) is held by another worker at distance 4;
+        // the only free stock is (14,18) at distance 10. Limit: f*4/1000+4.
+        for(unsigned version:{2u,5u}) for(unsigned factor:{0u,1000u,1500u,2000u}) {
+            CAPTURE(version);CAPTURE(factor);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+            Config config;config.sourceVersion=version;config.maxClaimDistanceFactorPermille=factor;
+            if(version==5) {config.pattern="final-r32-exact24-assembled-v1";config.patternFrame=Config::PatternFrame::NearestD4;config.opportunisticAdjacentPickup=true;}
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);auto* holder=fixture.addUnit(WORKER,11,11);
+            Assignment cleanup{*unit},holderCleanup{*holder};
+            assign(*holder,*building,map,12,8);map.setMaterialAmountSlot(Uint32(map.coordToIndex(12,8)),WHEAT,1);
+            assign(*unit,*building,map,14,18);map.setMaterialAmountSlot(Uint32(map.coordToIndex(14,18)),WHEAT,1);
+            unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+            REQUIRE(holder->activeMaterialClaimValid());
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            game.invalidateObservation();game.observeCompletedWorld();
+            const auto* field=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);REQUIRE(field);
+            const auto destinations=map.materialGradientDestinations(field);REQUIRE(destinations);
+            REQUIRE(destinations->x[map.coordToIndex(8,8)]==12);REQUIRE(destinations->y[map.coordToIndex(8,8)]==8);
+            const bool selected=unit->selectActiveMaterialClaim(field);
+            const bool admitted=factor==0 || factor>=1500; // 1000*10 <= f*4+4000
+            CHECK(selected==admitted);
+            if(selected)CHECK(unit->activeMaterialClaim->access==Uint32(map.coordToIndex(14,18)));
+            else CHECK_FALSE(unit->activeMaterialClaim);
+        }
+    }
 }

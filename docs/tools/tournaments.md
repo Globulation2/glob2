@@ -1084,6 +1084,14 @@ included), instead of a zero-displacement wait. The published route then rejoins
 through the existing reanchor window or is repaired from the new position. With
 no gradient step available the worker waits as before. `"redecide"` is not
 implemented.
+`max_claim_distance_factor_permille` (integer 1000–100000, default 0 = off)
+rejects, in both selection loops and before any claim resolution, a candidate
+access whose toroidal Chebyshev distance `d` from the worker satisfies
+`1000*d > permille*d_nearest + 1000*4`, where `d_nearest` is the distance to the
+nearest material destination recorded at the worker's cell by the destination
+plane (the plane's `x/y` at the worker) and 4 tiles is a fixed slack for nearby
+stock. A decision with no recorded nearest destination is not capped. A held
+claim that the cap rejects on refresh is kept, like any failed refresh.
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version

@@ -64,6 +64,11 @@ OVERSUBSCRIPTION_PARITY = [
 # Engine-reported (game run resolved config/digest) canonical JSON for the
 # production policy with each overhead experiment enabled.
 OVERHEAD_PARITY = {
+    'max_claim_distance_factor_permille': [
+        (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"max_claim_distance_factor_permille":3000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"max_claim_distance_factor_permille":3000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         '6cf23e3ea8bc1497fd13bf8d8f445f60f0812a3fcb9dce83e3fb455acc19a30c'),
+    ],
     'pending_step_gradient': [
         (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
          '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
@@ -192,6 +197,27 @@ class PendingGradient(unittest.TestCase):
             self.assertEqual(canonical_policy(value), engine_json)
             self.assertEqual(policy_digest(value), engine_digest)
         self.assertIn('pending_step_gradient', OVERHEAD_PARITY)
+
+
+class ClaimDistanceFactor(unittest.TestCase):
+    def test_default_is_omitted_and_domain_is_strict(self):
+        base = PARITY[0][0]
+        explicit = base | {'max_claim_distance_factor_permille': 0}
+        self.assertEqual(canonical_policy(explicit), PARITY[0][1])
+        self.assertEqual(policy_digest(explicit), PARITY[0][2])
+        for value in (1000, 2500, 100000):
+            option = base | {'max_claim_distance_factor_permille': value}
+            self.assertIn('"max_claim_distance_factor_permille":%d' % value, canonical_policy(option))
+            self.assertNotEqual(policy_digest(option), PARITY[0][2])
+        for value in (1, 999, 100001, -1, 1500.0, True, '2000', None):
+            with self.assertRaises(ValueError):
+                validate_policy(base | {'max_claim_distance_factor_permille': value})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        self.assertIn('max_claim_distance_factor_permille', OVERHEAD_PARITY)
+        for value, engine_json, engine_digest in OVERHEAD_PARITY['max_claim_distance_factor_permille']:
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
 
 
 def journey_trace(release_reasons=None, filters=None):

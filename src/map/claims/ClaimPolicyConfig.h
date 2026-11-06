@@ -49,6 +49,15 @@ struct ClaimPolicyConfig
     static constexpr unsigned MaximumClaimOversubscriptionPermille=100000;
     static constexpr unsigned UnlimitedClaimOversubscription=UINT32_MAX;
     unsigned claimOversubscriptionPermille=ExactClaimOversubscriptionPermille;
+    // Reject candidates whose toroidal Chebyshev distance d from the unit has
+    // 1000*d > permille*d_nearest + 1000*ClaimDistanceSlackTiles, where
+    // d_nearest is the distance to the destination plane's nearest material
+    // destination at the unit's cell. 0 disables; no nearest destination
+    // disables it for that decision.
+    static constexpr unsigned MinimumClaimDistanceFactorPermille=1000;
+    static constexpr unsigned MaximumClaimDistanceFactorPermille=100000;
+    static constexpr unsigned ClaimDistanceSlackTiles=4;
+    unsigned maxClaimDistanceFactorPermille=0;
     unsigned recoveryCandidateCount(std::size_t coordinates) const;
     unsigned maximumRecoveryCandidateCount() const;
     static ClaimPolicyConfig parse(std::string_view);

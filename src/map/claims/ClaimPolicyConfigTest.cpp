@@ -303,3 +303,27 @@ TEST_CASE("pending gradient step is a new canonical value that leaves existing i
         }
     }
 }
+TEST_CASE("claim distance factor is omitted at its default and has a strict domain" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        CHECK(base.maxClaimDistanceFactorPermille==0);
+        const auto canonical=base.canonicalJson();
+        CHECK(canonical.find("max_claim_distance_factor_permille")==std::string::npos);
+        auto wire=nlohmann::json::parse(canonical);wire["max_claim_distance_factor_permille"]=0;
+        CHECK(ClaimPolicyConfig::parse(wire.dump()).digest()==base.digest());
+        for(unsigned permille:{1000u,2500u,100000u}) {
+            wire["max_claim_distance_factor_permille"]=permille;
+            const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+            CHECK(parsed.maxClaimDistanceFactorPermille==permille);CHECK(parsed.digest()!=base.digest());
+            CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+            CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("max_claim_distance_factor_permille")==permille);
+        }
+        for(const auto& invalid:{nlohmann::json(1),nlohmann::json(999),nlohmann::json(100001),nlohmann::json(-1),
+            nlohmann::json(1500.0),nlohmann::json(true),nlohmann::json("2000"),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());wire["max_claim_distance_factor_permille"]=invalid;
+            CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        for(unsigned bad:{1u,999u,100001u}) {auto c=base;c.maxClaimDistanceFactorPermille=bad;CHECK_THROWS(c.validate());}
+    }
+}
