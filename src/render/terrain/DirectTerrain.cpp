@@ -876,10 +876,28 @@ bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMa
                 const auto input = compositor.phasePixels(source.material, source.variant, phase);
                 if (input.size() != std::size_t(stamp.size) * stamp.size)
                     throw std::runtime_error("Animated terrain source changed dimensions");
+                // Box-filter each block in premultiplied colour. Point samples at a
+                // block's corner would read a tile's two edges asymmetrically, so
+                // neighbouring variants, blended to meet at their borders, would not.
                 std::vector<Pixel> tile(std::size_t(pixels) * pixels);
+                const int block = std::max(1, stamp.size / pixels);
                 for (int y = 0; y < pixels; ++y)
                     for (int x = 0; x < pixels; ++x)
-                        tile[y * pixels + x] = input[(y * stamp.size / pixels) * stamp.size + x * stamp.size / pixels];
+                    {
+                        unsigned sum[4] = {};
+                        for (int dy = 0; dy < block; ++dy)
+                            for (int dx = 0; dx < block; ++dx)
+                            {
+                                const auto &p = input[std::size_t(y * stamp.size / pixels + dy) * stamp.size +
+                                                      x * stamp.size / pixels + dx];
+                                for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
+                                sum[3] += p[3];
+                            }
+                        auto &out = tile[y * pixels + x];
+                        const unsigned count = unsigned(block * block);
+                        for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
+                        out[3] = Uint8((sum[3] + count / 2) / count);
+                    }
                 const unsigned index = entry.pair * 2 + parity;
                 const int columns = atlasSize / pixels;
                 glActiveTexture(GL_TEXTURE0 + State::Art);
