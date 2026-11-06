@@ -152,11 +152,31 @@ def _validate(document, root):
             if version < 4 and field in p:
                 raise ValueError(f"{field} requires catalog version 4")
         integer(p.get("precedence", 0), 0, 255, "Profile precedence")
+        # Version 4 draws every contact smoothly, so any profile may set these.
         for field in ("wiggle_q8", "wiggle_period", "squareness_q8"):
-            if not smooth and field in p:
+            if not smooth and version < 4 and field in p:
                 raise ValueError(f"{field} requires the smooth shape")
+        for field in ("detail_q8", "jagged_q8"):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
         integer(p.get("wiggle_q8", 0), 0, 2048, "Smooth wiggle")
         integer(p.get("squareness_q8", 0), 0, 256, "Smooth squareness")
+        integer(p.get("detail_q8", 0), 0, 1024, "Smooth detail")
+        integer(p.get("jagged_q8", 0), 0, 2048, "Smooth jagged grit")
+        for field in ("teeth_q8", "teeth_form", "facets", "clasts"):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
+        integer(p.get("teeth_q8", 0), 0, 2560, "Edge teeth")
+        if p.get("teeth_form", "points") not in ("points", "lobes"):
+            raise ValueError("Teeth form must be points or lobes")
+        if not isinstance(p.get("facets", False), bool):
+            raise ValueError("Facets must be a boolean")
+        if p.get("clasts", "none") not in ("none", "round", "angular"):
+            raise ValueError("Clasts must be none, round or angular")
+        for field, top in (("resistance_q8", 256), ("cohesion_q8", 256), ("grain_q8", 1024), ("spread_q8", 256)):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
+            integer(p.get(field, 0), 0, top, field)
         if p.get("wiggle_period", 64) not in (32, 64, 128, 256):
             raise ValueError("Smooth wiggle period must be 32, 64, 128 or 256 pixels")
         if version == 1 and "feather_q8" in p:
@@ -441,7 +461,8 @@ def border_classes(document):
             or not entry["key"]
             or entry["key"] in result
             or type(entry.get("shoreline", False)) is not bool
-            or set(entry) - {"key", "shoreline"}
+            or type(entry.get("cuts_stones", False)) is not bool
+            or set(entry) - {"key", "shoreline", "cuts_stones"}
         ):
             raise ValueError("Invalid or duplicate border class")
         result[entry["key"]] = dict(rank=rank, shoreline=entry.get("shoreline", False))

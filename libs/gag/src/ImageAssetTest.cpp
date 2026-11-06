@@ -12,6 +12,8 @@
 #include <fstream>
 #include <cstring>
 #include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <utility>
 namespace {
 const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
@@ -23,6 +25,66 @@ std::string read(SDL_IOStream *stream) {
 }
 }
 TEST_SUITE("ImageAssets") {
+#if !defined(GLOB2_WEBGL2) && SDL_BYTEORDER == SDL_LIL_ENDIAN
+TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
+    // A smooth gradient, hard edges and graded alpha: the cases HD art has.
+    auto *surface = SDL_CreateSurface(64, 32, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(surface != nullptr);
+    for (int y = 0; y < surface->h; ++y) for (int x = 0; x < surface->w; ++x) {
+        auto *p = static_cast<unsigned char*>(surface->pixels) + y * surface->pitch + x * 4;
+        // Left half: a smooth two-axis gradient, as in painted terrain. Right
+        // half: 8-pixel cells of two colours meeting at hard edges, with
+        // graded alpha in the last quarter.
+        const bool cell = ((x / 8) + (y / 8)) % 2;
+        p[0] = x < 32 ? 40 + x * 4 : (cell ? 30 : 210);
+        p[1] = x < 32 ? 30 + y * 5 : (cell ? 60 : 190);
+        p[2] = x < 32 ? 90 + (x + y) * 2 : (cell ? 40 : 170);
+        p[3] = x < 48 ? 255 : (y * 8) % 256;
+    }
+    GAGCore::AssetImage::compressHighResolution = true;
+    struct Restore { ~Restore() { GAGCore::AssetImage::compressHighResolution = false; } } restore;
+    GAGCore::AssetImage image(surface);
+    image.prepareUpload(true);
+    REQUIRE(image.mips.size() > 3);
+    const auto expand = [](unsigned c, int bits) { return int((c << (8 - bits)) | (c >> (2 * bits - 8))); };
+    for (const auto &level : image.mips) {
+        CAPTURE(level.width);
+        if (level.width < 4 || level.height < 4) { CHECK(level.compressed.empty()); continue; }
+        REQUIRE(level.compressed.size() == size_t(level.width / 4) * (level.height / 4) * 16);
+        double squared = 0; int worstAlpha = 0;
+        const auto *block = level.compressed.data();
+        for (int by = 0; by < level.height; by += 4) for (int bx = 0; bx < level.width; bx += 4, block += 16) {
+            const int a0 = block[0], a1 = block[1];
+            int alphas[8] = {a0, a1};
+            for (int i = 1; i < 7; ++i) alphas[i + 1] = a0 > a1 ? ((7 - i) * a0 + i * a1 + 3) / 7 : (i < 5 ? ((5 - i) * a0 + i * a1 + 2) / 5 : (i == 5 ? 0 : 255));
+            std::uint64_t alphaBits = 0;
+            for (int i = 0; i < 6; ++i) alphaBits |= std::uint64_t(block[2 + i]) << (8 * i);
+            const unsigned c0 = block[8] | block[9] << 8, c1 = block[10] | block[11] << 8;
+            int palette[4][3];
+            for (int k = 0; k < 2; ++k) {
+                const unsigned c = k ? c1 : c0;
+                palette[k][0] = expand(c >> 11, 5); palette[k][1] = expand((c >> 5) & 63, 6); palette[k][2] = expand(c & 31, 5);
+            }
+            for (int c = 0; c < 3; ++c) {
+                palette[2][c] = (2 * palette[0][c] + palette[1][c] + 1) / 3;
+                palette[3][c] = (palette[0][c] + 2 * palette[1][c] + 1) / 3;
+            }
+            const std::uint32_t colorBits = block[12] | block[13] << 8 | block[14] << 16 | std::uint32_t(block[15]) << 24;
+            for (int i = 0; i < 16; ++i) {
+                const auto *p = level.pixels.data() + (size_t(by + i / 4) * level.width + bx + i % 4) * 4;
+                const auto *q = palette[(colorBits >> (2 * i)) & 3];
+                for (int c = 0; c < 3; ++c) { const double d = q[c] - p[2 - c]; squared += d * d; }
+                worstAlpha = std::max(worstAlpha, std::abs(alphas[(alphaBits >> (3 * i)) & 7] - p[3]));
+            }
+        }
+        const double rmse = std::sqrt(squared / (3.0 * level.width * level.height));
+        // Below 16 pixels, 4x4 blocks mix the gradient, both cell colours and
+        // graded alpha: more colours than a block's four-entry palette holds.
+        CHECK(rmse < (level.width >= 16 ? 12 : 24));
+        CHECK(worstAlpha <= 18);
+    }
+}
+#endif
 TEST_CASE("prepared image adoption separates shared pixels and transfers exclusive pixels") {
     auto *pixels = SDL_CreateSurface(2, 1, SDL_PIXELFORMAT_ARGB8888);
     REQUIRE(pixels != nullptr);

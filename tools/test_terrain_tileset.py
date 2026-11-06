@@ -71,11 +71,14 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["profiles"][0].update(coast="absent"),
             lambda d: d["profiles"][0].update(coast=d["profiles"][0]["key"]),
             lambda d: d["profiles"][0].update(precedence=256),
-            lambda d: d["profiles"][0].update(wiggle_q8=64),
+            # Version 4 draws every profile smoothly: any profile may set these,
+            # within their ranges.
+            lambda d: d["profiles"][0].update(wiggle_q8=2049),
+            lambda d: d["profiles"][0].update(detail_q8=1025),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_period=48),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_q8=2049),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(squareness_q8=257),
-            lambda d: d["profiles"][0].update(squareness_q8=64),
+            lambda d: d["profiles"][0].update(squareness_q8=257),
         ]
         for mutate in mutations:
             with self.subTest(mutate=mutate):
@@ -301,7 +304,9 @@ class TerrainTileset(unittest.TestCase):
         self.document.pop("bundle_profiles", None)
         for profile in self.document["profiles"]:
             for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
-                          "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8"):
+                          "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8",
+                          "teeth_q8", "teeth_form", "facets", "clasts", "resistance_q8",
+                          "cohesion_q8", "grain_q8", "spread_q8"):
                 profile.pop(field, None)
             profile.setdefault("roughness_q8", 0)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4

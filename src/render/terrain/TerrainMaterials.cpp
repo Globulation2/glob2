@@ -122,6 +122,9 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto shoreline = entry.value("shoreline", nlohmann::json(false));
 			require(shoreline.is_boolean(), "border class shoreline must be a boolean");
 			v.shoreline = shoreline.get<bool>();
+			const auto cuts = entry.value("cuts_stones", nlohmann::json(false));
+			require(cuts.is_boolean(), "border class cuts_stones must be a boolean");
+			v.cutsStones = cuts.get<bool>();
 			c.borderClasses.push_back(std::move(v));
 		}
 		keys.clear();
@@ -144,11 +147,17 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		for (const char *field : {"precedence", "coast"})
 			require(version >= 4 || !p.contains(field), "precedence and coast require catalog version 4");
 		v.precedence = integerInRange(p.value("precedence", nlohmann::json(0)), 0, 255);
+		// Version 4 draws every contact with smooth geometry, so any profile may
+		// set its parameters; earlier catalogs reserve them for smooth profiles.
 		for (const char *field : {"wiggle_q8", "wiggle_period", "squareness_q8"})
-			require(smooth || !p.contains(field), "wiggle requires the smooth shape");
+			require(smooth || version >= 4 || !p.contains(field), "wiggle requires the smooth shape");
+		for (const char *field : {"detail_q8", "jagged_q8"})
+			require(version >= 4 || !p.contains(field), "detail and jagged require catalog version 4");
 		v.wiggle = integerInRange(p.value("wiggle_q8", nlohmann::json(0)), 0, 2048);
 		v.wigglePeriod = integerInRange(p.value("wiggle_period", nlohmann::json(64)), 32, 256);
 		v.squareness = integerInRange(p.value("squareness_q8", nlohmann::json(0)), 0, 256);
+		v.detail = integerInRange(p.value("detail_q8", nlohmann::json(0)), 0, 1024);
+		v.jagged = integerInRange(p.value("jagged_q8", nlohmann::json(0)), 0, 2048);
 		require((v.wigglePeriod & (v.wigglePeriod - 1)) == 0, "wiggle period must be a power of two");
 		require(version >= 2 || !p.contains("feather_q8"),
 				"boundary feather requires catalog version 2");
@@ -159,7 +168,71 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.amplitude = integerInRange(p.value("amplitude_q8", nlohmann::json(512)), 0, 1024);
 		v.speckle = integerInRange(p.value("speckle_q8", nlohmann::json(0)), 0, 1024);
 		v.bridge = integerInRange(p.value("bridge_q8", nlohmann::json(0)), 0, 1024);
+		for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts"})
+			require(version >= 4 || !p.contains(field), "teeth, facets and clasts require catalog version 4");
+		v.teeth = integerInRange(p.value("teeth_q8", nlohmann::json(0)), 0, 2560);
+		const auto form = p.value("teeth_form", std::string{"points"});
+		require(form == "points" || form == "lobes", "teeth form must be points or lobes");
+		v.lobes = form == "lobes";
+		const auto facets = p.value("facets", nlohmann::json(false));
+		require(facets.is_boolean(), "facets must be a boolean");
+		v.facets = facets.get<bool>();
+		const auto clasts = p.value("clasts", std::string{"none"});
+		require(clasts == "none" || clasts == "round" || clasts == "angular", "clasts must be none, round or angular");
+		v.clasts = clasts == "round" ? Profile::Clasts::Round
+			: clasts == "angular" ? Profile::Clasts::Angular : Profile::Clasts::None;
 		v.shearScale = version >= 3 ? 256 : 128;
+		// A version-4 rough profile without smooth parameters takes them from its
+		// contour strength (amplitude times roughness): a quarter as the broad
+		// meander, an eighth as fine detail, and fractal grit that grows with
+		// roughness again, so rock breaks up most and a beach is only pebbly. A profile
+		// without roughness (foliage that hides its own edge) gets square corners.
+		if (version >= 4 && !smooth && !p.contains("wiggle_q8"))
+		{
+			const int strength = v.amplitude * v.roughness / 256;
+			v.wiggle = std::min(2048, strength / 4);
+			if (!p.contains("detail_q8")) v.detail = std::min(1024, strength / 8);
+			if (!p.contains("jagged_q8")) v.jagged = std::min(2048, strength * (v.roughness + 256) / 512);
+			if (!p.contains("squareness_q8") && !v.roughness) v.squareness = 256;
+			// Teeth carry most of a rough edge's shape, at half a tile and below.
+			// Resistant edges (roughness from 320) break into straight facets and
+			// angular chips; softer ones scatter rounded grains.
+			if (!p.contains("teeth_q8")) v.teeth = std::min(2560, strength * 2);
+			if (!p.contains("facets")) v.facets = v.roughness >= 320;
+			if (!p.contains("clasts") && v.speckle)
+				v.clasts = v.facets ? Profile::Clasts::Angular : Profile::Clasts::Round;
+		}
+		// Physical properties: what the edge family is made of decides the shape
+		// of its contacts, so a new terrain names a handful of physical numbers
+		// instead of tuning contour parameters. Explicit parameters still win.
+		for (const char *field : {"resistance_q8", "cohesion_q8", "grain_q8", "spread_q8"})
+		{
+			require(version >= 4 || !p.contains(field), "physical properties require catalog version 4");
+			v.physical |= p.contains(field);
+		}
+		v.resistance = integerInRange(p.value("resistance_q8", nlohmann::json(0)), 0, 256);
+		v.cohesion = integerInRange(p.value("cohesion_q8", nlohmann::json(0)), 0, 256);
+		v.grain = integerInRange(p.value("grain_q8", nlohmann::json(0)), 0, 1024);
+		v.spread = integerInRange(p.value("spread_q8", nlohmann::json(0)), 0, 256);
+		if (v.physical)
+		{
+			// Resistant, cohesive material keeps a rough edge; loose material is
+			// smoothed into arcs. Teeth run from 1.5 to 10.5 pixels.
+			const int rough = (v.resistance + v.cohesion) / 2;
+			const auto unset = [&](const char *field) { return !p.contains(field); };
+			if (unset("teeth_q8")) v.teeth = 384 + 9 * rough;
+			if (unset("teeth_form")) v.lobes = v.spread >= 128; // An advancing flow.
+			if (unset("facets")) v.facets = v.resistance >= 128; // Brittle material breaks straight.
+			if (unset("jagged_q8")) v.jagged = 256 + 6 * v.resistance;
+			if (unset("wiggle_q8")) v.wiggle = v.teeth / 8;
+			if (unset("detail_q8")) v.detail = v.teeth / 16;
+			if (unset("speckle_q8")) v.speckle = v.grain;
+			if (unset("clasts"))
+				v.clasts = !v.grain ? Profile::Clasts::None
+					: v.facets ? Profile::Clasts::Angular : Profile::Clasts::Round;
+			// The more resistant material shapes a contact within its class.
+			if (unset("precedence")) v.precedence = std::min(255, v.resistance);
+		}
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
 		if (smooth && !p.contains("contours_q12"))
 		{
@@ -573,7 +646,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.shallowWidth)
 		{
-			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth * land / 256;
+			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth;
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -583,14 +656,14 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		if (margin < s.wetWidth)
 		{
-			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth * land / 256;
+			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth;
 			for (int k = 0; k < 3; ++k)
 				value[k] = value[k] * unsigned(dark) / 256;
 		}
 		// A thin sheet of water covers the land the wash has reached.
 		if (margin < run)
 		{
-			const int amount = s.shallow * (run - margin) / (2 * run) * land / 256;
+			const int amount = s.shallow * (run - margin) / (2 * run);
 			for (int k = 0; k < 3; ++k)
 				value[k] = surfMix(value[k], s.shallowColor[k], amount);
 		}
@@ -600,7 +673,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	{
 		const int breakup = 96 + (surfBump(wx * 5 >> 7 & 1023) +
 								  surfBump(((wy * 7 >> 7) + phase) & 1023)) * 160 / 512;
-		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256 * land / 256;
+		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256;
 		for (int k = 0; k < 3; ++k)
 			value[k] = surfMix(value[k], s.foamColor[k], amount);
 	}

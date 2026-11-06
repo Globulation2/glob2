@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <typeindex>
+#include <atomic>
 #include <utility>
 #include <vector>
 
@@ -21,7 +22,13 @@ struct PackedSpriteFrame;
 
 // CPU data only: destroying this object never calls a rendering API.
 struct AssetImage {
-    struct Mip { int width, height; std::vector<unsigned char> pixels; };
+    // compressed: BC3 (DXT5) blocks of the level, prepared on the worker when
+    // the graphics context compresses high-resolution artwork; empty below
+    // 4x4 or when compression is off.
+    struct Mip { int width, height; std::vector<unsigned char> pixels, compressed; };
+    // Set by the graphics context once it knows the device takes S3TC; images
+    // prepared afterwards arrive with their compressed levels.
+    inline static std::atomic<bool> compressHighResolution{false};
     mutable SDL_Surface *surface = nullptr;
     mutable std::vector<unsigned char> uploadPixels;
     mutable std::vector<Mip> mips;

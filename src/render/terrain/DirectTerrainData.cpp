@@ -15,7 +15,14 @@ using Pixel = DirectTerrainData::Pixel;
 using Record = DirectTerrainData::Record;
 constexpr int TilePixels = DirectTerrainData::TilePixels;
 constexpr int MaskPixels = DirectTerrainData::MaskPixels;
+// Map tables, native art and a native coverage mask for every mixed cell. A
+// 512x512 map holds tens of thousands of mixed cells; desktop GPUs keep them
+// all resident, so large maps never fall back to the page compositor.
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
 constexpr std::size_t TextureBudget = 64u * 1024 * 1024;
+#else
+constexpr std::size_t TextureBudget = 256u * 1024 * 1024;
+#endif
 
 template<class Texel, int Pixels = TilePixels>
 struct Atlas

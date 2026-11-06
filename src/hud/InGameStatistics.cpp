@@ -86,13 +86,18 @@ void InGameStatisticsPanel::selectMetric(const std::string &id)
 void InGameStatisticsPanel::setBounds(fe::Rect value)
 {
     refreshPresentation();
+    // Metric descriptions stay inside the panel rather than covering the map.
+    host().setTooltipArea(value);
     if (bounds.x == value.x && bounds.y == value.y && bounds.w == value.w && bounds.h == value.h) return;
     bounds = value;
     host().relayout();
 }
-void InGameStatisticsPanel::paintPanel(fe::Canvas &canvas, fe::Rect)
+void InGameStatisticsPanel::paintPanel(fe::Canvas &, fe::Rect)
 {
-    canvas.fillRect(bounds, theme().palette.panel);
+    // Embedded in the HUD: the desktop right menu (GameGUI::drawPanel) and the
+    // touch statistics sheet have already painted this area in their own
+    // colours. A themed panel fill here would draw a second, differently
+    // coloured slab under the list, below the HUD's own header.
 }
 void InGameStatisticsPanel::drawEmbedded(GAGCore::DrawableSurface &surface, Uint32 tick)
 {

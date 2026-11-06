@@ -52,6 +52,9 @@ class Host
 	// interactive targets are conservatively blocked, including human input.
 	// Newly covered captures are cancelled; text drafts are never committed or cancelled.
 	void setBlockedRegions(std::vector<Rect> regions);
+	// Confines tooltips to this logical area, such as the panel a HUD-embedded
+	// host owns; empty (the default) allows the whole safe area.
+	void setTooltipArea(Rect area) { tooltipArea = area; }
 	// Raw domain canvases use point ownership rather than blocking their entire
 	// extent for a small card. Any popup owns input over the underlying canvas.
 	bool inputBlockedAt(Point point) const;
@@ -146,6 +149,9 @@ class Host
 	Uint32 lastTick = 0;
 	std::string tooltipKey, tooltipSuppressedKey;
 	Uint32 tooltipSince = 0;
+	Rect tooltipArea;
+	// The part of a node its clipping ancestors leave visible.
+	Rect visibleRect(const Node &target) const;
 	// The scrollable an inertial touch drag is moving, kept while it coasts or
 	// bounces. `lastWritten` detects content moved by something else meanwhile.
 	struct ActiveScroll

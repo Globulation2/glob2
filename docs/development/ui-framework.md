@@ -1318,8 +1318,11 @@ action rows.
 For an icon-only button, pass empty visible text and a translated
 `accessibleLabel`; unnamed icon-only buttons are rejected. Set `tooltip` to the
 translated label. The host displays it after 600 ms of pointer hover or keyboard
-focus, keeps it inside the safe viewport, and dismisses it on activation or target
-change. Touch actions retain their normal minimum target size. A missing asset
+focus, anchors it to the visible part of a target partly scrolled out of view,
+keeps it inside the safe viewport (or the narrower `Host::setTooltipArea`, which a
+host embedded in a HUD panel sets to that panel), and dismisses it on activation or
+target change. It stays hidden while scrolled content is dragged, coasting or
+springing back, and the delay restarts once the content settles. Touch actions retain their normal minimum target size. A missing asset
 restores the accessible label as visible button text; missing raster files are
 logged when the asset is first requested. These names support diagnostics and
 harnesses; they do not establish native screen-reader integration.

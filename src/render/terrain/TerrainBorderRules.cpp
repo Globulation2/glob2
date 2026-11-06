@@ -70,4 +70,15 @@ bool Catalog::dominates(MaterialId a, MaterialId b) const
 		return ca < cb;
 	return profiles[materials[a].profile].precedence > profiles[materials[b].profile].precedence;
 }
+
+bool Catalog::shapes(MaterialId a, MaterialId b) const
+{
+	if (a == b)
+		return false;
+	if (dominates(a, b))
+		return true;
+	if (dominates(b, a))
+		return false;
+	return materials[a].key != materials[b].key ? materials[a].key < materials[b].key : a < b;
+}
 } // namespace TerrainVisual

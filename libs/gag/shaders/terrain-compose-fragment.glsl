@@ -72,19 +72,19 @@ uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value
     int front;
     if (surfSide) {
         if (margin < band.y)
-            value = terrainSurfMix(value, colors.x, band.x * (band.y - margin) / band.y * land / 256);
+            value = terrainSurfMix(value, colors.x, band.x * (band.y - margin) / band.y);
         front = margin + run;
     } else {
         if (margin < band.w)
-            value = value * uint(256 - band.z * (band.w - margin) / band.w * land / 256) / 256u;
+            value = value * uint(256 - band.z * (band.w - margin) / band.w) / 256u;
         if (margin < run)
-            value = terrainSurfMix(value, colors.x, band.x * (run - margin) / (2 * run) * land / 256);
+            value = terrainSurfMix(value, colors.x, band.x * (run - margin) / (2 * run));
         front = margin < run ? run - margin : margin - run;
     }
     if (front < shape.w) {
         int breakup = 96 + (terrainSurfBump(((world.x * 5) >> 7) & 1023) +
             terrainSurfBump((((world.y * 7) >> 7) + phase) & 1023)) * 160 / 512;
-        value = terrainSurfMix(value, colors.y, shape.z * (shape.w - front) / shape.w * breakup / 256 * land / 256);
+        value = terrainSurfMix(value, colors.y, shape.z * (shape.w - front) / shape.w * breakup / 256);
     }
     return value;
 }

@@ -29,6 +29,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <ScopedEnvironment.h>
 #include <InterfacePresentation.h>
+#include <GestureScroll.h>
 #include <algorithm>
 #include <cmath>
 #include <set>
@@ -1597,6 +1598,153 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     strings->setLang(language);GAGCore::userTextScale=textScale;
     gui.setPublishedScene(nullptr);
     gui.init(); CHECK_FALSE(gui.statisticsPanel);
+}
+
+TEST_CASE("desktop statistics list stays inside its viewport and on the right menu background [display:1024x768][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto &gui = world.gui;
+    gui.init(); gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
+    gui.clearSelection(); gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+    gui.prepareLocalPresentation(gui.frameScene);
+    auto fixture = statisticsHistoryFixture(gui); gui.setPublishedScene(&fixture);
+    auto *gfx = globalContainer->gfx;
+    auto capture = [&](const std::string &name) {
+        std::shared_ptr<SDL_Surface> pixels;
+        std::string error;
+        const auto request = gfx->requestMemoryCapture([&](auto image, auto, auto why) { pixels = std::move(image); error = why; });
+        REQUIRE(request);
+        glob2test::drawGUI(gui, 0); gfx->nextFrame();
+        if (!pixels) gfx->cancelMemoryCapture(request);
+        INFO(error); REQUIRE(pixels);
+        REQUIRE(IMG_SavePNG(pixels.get(), (glob2test::artifactDir()/(name + ".png")).string().c_str()));
+        return pixels;
+    };
+    auto &panel = gui.statistics();
+    panel.selectTopic(InGameStatisticsPanel::Topic::Economy); panel.update(0);
+    capture("statistics-scroll-rest");
+    auto &host = panel.host();
+    auto *scroll = host.find("stats/scroll/2");
+    REQUIRE(scroll);
+    REQUIRE(scroll->scrollMaximum() > 0);
+    const auto root = host.rootBounds();
+    const auto viewport = scroll->bounds;
+    REQUIRE(viewport.y > root.y);
+    // The header and topic buttons above the list, and the gap below it.
+    const GAGGUI::ui::Rect above{root.x, root.y, root.w, viewport.y - root.y};
+    const GAGGUI::ui::Rect below{root.x, viewport.bottom(), root.w, root.bottom() - viewport.bottom()};
+    // The captured pixels covering a logical rectangle, row by row.
+    auto region = [&](const std::shared_ptr<SDL_Surface> &s, GAGGUI::ui::Rect r) {
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+            SDL_ConvertSurface(s.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+        REQUIRE(rgba);
+        const int x0 = r.x * rgba->w / gfx->getW(), x1 = r.right() * rgba->w / gfx->getW();
+        const int y0 = r.y * rgba->h / gfx->getH(), y1 = r.bottom() * rgba->h / gfx->getH();
+        std::vector<Uint8> values;
+        for (int y = y0; y < y1; ++y) {
+            const auto *row = static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch;
+            values.insert(values.end(), row + 4 * x0, row + 4 * x1);
+        }
+        return values;
+    };
+    // The map beside the panel, where nothing of the panel may draw.
+    const GAGGUI::ui::Rect beside{root.x - 160, root.y, 160, root.h};
+    const auto rest = capture("statistics-scroll-top");
+    const auto restAbove = region(rest, above), restBelow = region(rest, below), restBeside = region(rest, beside);
+    // The panel area is the right menu's own background, not a themed slab:
+    // the padding beside the list matches the menu just below the panel.
+    {
+        const auto inside = region(rest, {root.x + 1, root.bottom() - 2, 1, 1});
+        const auto outside = region(rest, {root.x + 1, root.bottom() + 1, 1, 1});
+        REQUIRE(inside.size() == outside.size());
+        for (std::size_t i = 0; i < inside.size(); ++i)
+            CHECK(std::abs(int(inside[i]) - int(outside[i])) <= 16);
+    }
+    // Page through the list and both overscroll springs: the rows move, the
+    // header, topic buttons and the area below the viewport never do.
+    const int maximum = scroll->scrollMaximum();
+    for (const auto [offset, stretch] : {std::pair{maximum / 2, 0}, std::pair{maximum, 0},
+             std::pair{maximum, viewport.h / 3}, std::pair{0, -viewport.h / 3}}) {
+        INFO("offset " << offset << " overscroll " << stretch);
+        scroll = host.find("stats/scroll/2");
+        REQUIRE(scroll);
+        scroll->scrollTo(offset, host);
+        scroll->setOverscroll(stretch, host);
+        const auto frame = capture("statistics-scroll-" + std::to_string(offset) + "-" + std::to_string(stretch));
+        REQUIRE(host.find("stats/scroll/2"));
+        CHECK(host.find("stats/scroll/2")->overscroll() == stretch);
+        CHECK(region(frame, above) == restAbove);
+        CHECK(region(frame, below) == restBelow);
+    }
+    if ((scroll = host.find("stats/scroll/2"))) scroll->setOverscroll(0, host);
+    scroll->scrollTo(0, host);
+    // The real path: a trackpad gesture past the end, its momentum and the
+    // spring back, with new statistics samples rebuilding the panel meanwhile.
+    Uint32 time = 1000;
+    int step = 0;
+    GAGCore::GestureScrollEvent gesture;
+    gesture.sequence = 777; gesture.logical = true;
+    gesture.x = viewport.center().x; gesture.y = viewport.center().y;
+    auto frameCheck = [&](const char *stage, bool check) {
+        time += 16; panel.update(time);
+        if (step++ % 3 == 0) {
+            auto copy = std::make_shared<SimulationSnapshot::History>(*fixture.world.history);
+            fixture.world.history = copy;
+        }
+        if (!check) return;
+        INFO(stage << " step " << step << " offset " << host.find("stats/scroll/2")->scrollOffset()
+             << " overscroll " << host.find("stats/scroll/2")->overscroll());
+        // Paint twice, longer apart than the tooltip delay, as a pointer
+        // resting over the moving list would see it.
+        capture(std::string("statistics-gesture-") + std::to_string(step) + "a");
+        SDL_Delay(650);
+        const auto frame = capture(std::string("statistics-gesture-") + std::to_string(step));
+        CHECK(region(frame, above) == restAbove);
+        CHECK(region(frame, below) == restBelow);
+        CHECK(region(frame, beside) == restBeside);
+    };
+    auto send = [&](GAGCore::ScrollGesturePhase phase, double dy, GAGCore::ScrollGesturePhase momentum = GAGCore::ScrollGesturePhase::None) {
+        gesture.timestamp = SDL_MS_TO_NS(time); gesture.phase = phase; gesture.momentum = momentum; gesture.dy = dy;
+        auto event = GAGCore::gestureScrollEvent(gesture);
+        gui.processEvent(&event);
+    };
+    // A trackpad scroll happens with the pointer resting over the list.
+    SDL_Event motion{}; motion.type = SDL_EVENT_MOUSE_MOTION;
+    motion.motion.x = float(viewport.center().x); motion.motion.y = float(viewport.y + 8);
+    gui.processEvent(&motion);
+    send(GAGCore::ScrollGesturePhase::Began, 0);
+    int deepest = 0;
+    for (int i = 0; i < 24; ++i) {
+        send(GAGCore::ScrollGesturePhase::Changed, -40);
+        frameCheck("drag", i % 6 == 5);
+        deepest = std::max(deepest, host.find("stats/scroll/2")->overscroll());
+    }
+    CHECK(deepest > 0);
+    send(GAGCore::ScrollGesturePhase::Ended, 0);
+    for (int i = 0; i < 30; ++i) {
+        if (i < 20) send(GAGCore::ScrollGesturePhase::None, -20 * std::pow(.9, i), i == 0 ? GAGCore::ScrollGesturePhase::Began : GAGCore::ScrollGesturePhase::Changed);
+        frameCheck("bounce", i % 6 == 0);
+    }
+    send(GAGCore::ScrollGesturePhase::None, 0, GAGCore::ScrollGesturePhase::Ended);
+    for (int i = 0; i < 60 && host.animating(); ++i) { time += 16; panel.update(time); }
+    CHECK_FALSE(host.animating());
+    CHECK(host.find("stats/scroll/2")->overscroll() == 0);
+    // Once settled, a resting pointer earns the metric's description, kept
+    // within the panel beside the map rather than spilling over it.
+    GAGGUI::ui::Rect target;
+    for (const auto *node : host.interactiveNodes())
+        if (node->key.starts_with("stats/metric/") && viewport.contains(node->bounds))
+            target = node->bounds;
+    REQUIRE_FALSE(target.empty());
+    motion.motion.x = float(target.center().x); motion.motion.y = float(target.center().y);
+    gui.processEvent(&motion);
+    const auto hovered = capture("statistics-hover");
+    SDL_Delay(700);
+    const auto described = capture("statistics-tooltip");
+    CHECK(region(described, root) != region(hovered, root));
+    CHECK(region(described, beside) == restBeside);
+    gui.setPublishedScene(nullptr);
 }
 
 TEST_CASE("statistics sheet scroll stays open and fits phone rotations [display][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))

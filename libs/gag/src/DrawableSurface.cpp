@@ -370,7 +370,11 @@ namespace GAGCore
                         const auto &level = (*levels)[mip];
                         const int w = level.width, h = level.height;
                         if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, int(mip) - 1); break; }
-                        glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
+                        if (compress && !level.compressed.empty())
+                            glCompressedTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0,
+                                GLsizei(level.compressed.size()), level.compressed.data());
+                        else
+                            glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
                         const size_t bytes = compress ? size_t((w + 3) / 4) * ((h + 3) / 4) * 16 : size_t(w) * h * 4;
                         gpuBytes += bytes; glState.allocatedTextureBytes += bytes;
                     }
