@@ -183,10 +183,15 @@ A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders
 `wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends),
 `squareness_q8` (0 round to 256 square corners), `detail_q8` (0–1024, Q8 pixels
 of fine roughness on a 16-pixel lattice) and `jagged_q8` (0–2048, Q8 pixels of
-angular grit). Grit uses two octaves on 8- and 4-pixel lattices, interpolated
-linearly so the contour creases into teeth, with lattice values that are always
-strong highs or lows. Its lattice is offset by half a spacing, so no crease
-falls on a tile edge. `feather_q8` and `bridge_q8` keep their meanings.
+grit). Grit breaks a contour into straight-sided teeth with sharp tips on both
+sides, like the authored rough contours of earlier catalogs. Most of it is
+teeth along the contour: triangle waves of world x and y with a 16-pixel period,
+blended by the squared components of the contour's direction and phased per
+material pair, so edges of any heading are serrated and the teeth wrap with the
+map. The rest is pyramid grit: one hashed feature point per cell of 16- and
+8-pixel lattices, each a square pyramid turned by its own angle, which breaks
+the teeth's regularity. Teeth fade in only where both materials' fields have
+risen. `feather_q8` and `bridge_q8` keep their meanings.
 
 A rough profile that names none of these takes them from its contour strength,
 `amplitude_q8 × roughness_q8 / 256`: a quarter of it as `wiggle_q8`, an eighth
@@ -197,8 +202,9 @@ edge) gets square corners. Smooth profiles (roads, tracks, liquids, lava) keep
 their clean lines. `roughness_q8` and `contours_q12` no longer shape version-4
 contacts directly.
 
-The noises of one field together move a contour at most seven pixels, scaled
-down alike when a profile asks for more.
+The noises of one field together stay within the bound that keeps every field
+positive where its vertices reach, scaled down alike when a profile asks for
+more.
 
 Seams and surf need the distance to a contour that may lie beyond the tile
 edge. A cell therefore also gives a field to each material of its 4×4 vertex
@@ -246,8 +252,8 @@ two materials' mean feather from a first-order distance to the competing field,
 and seams and surf read that distance to the nearest field of any neighbourhood
 material, including vertices beyond the cell edge.
 
-Seams and surf follow the contour's grit through the score and measure across
-it with the smooth slope.
+Seams and surf follow the teeth, which shift the pair's distance, and measure
+across the contour with the smooth slope.
 
 In version 1–3 catalogs, a vertex is smooth when every contact with its eight
 neighbours resolves to a smooth profile. A cell interpolates its four corner
