@@ -771,7 +771,6 @@ void Unit::handleClassicMaterialMovement()
             const bool sharedMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
             demandField=map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,MovementAccess::Air,sharedMarkets,attachedBuilding,&demandKey);
             if(!demandField){if(demandKey)map->gradientMovementDemand(*demandKey);waitForGradient();return;}
-            map->observeMaterialClaimDecision(*this,demandField);
         }
         const auto observeFlight=[&](bool moved,bool valid) {
             if(!demandKey)return;
@@ -808,7 +807,7 @@ void Unit::handleClassicMaterialMovement()
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
     bool projectedValid=false;
-	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, access, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets,&targetX,&targetY,&projectedValid,this); });
+	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, access, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets,&targetX,&targetY,&projectedValid); });
     setValidTarget(projectedValid);
 	if (result == StepResult::Pending || result == StepResult::AtGoal) { waitForGradient(); return; }
 	if (result == StepResult::Step)

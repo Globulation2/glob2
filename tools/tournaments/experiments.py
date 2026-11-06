@@ -35,10 +35,10 @@ class Planner:
             from .claim_policy import validate_policy
             for build in self.builds:
                 validate_policy(config['resource_claims_policy'], self.bundles[build]['capabilities'])
-        if 'resource_claims_movement_only' in config and any(self.bundles[build]['capabilities'].get('resource_claims_movement_only_version') != 1 for build in self.builds):
-            raise ValueError('build does not advertise movement-only observer version 1')
-        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') not in (1, 2) for build in self.builds):
-            raise ValueError('build does not advertise active claim probe version 1 or 2')
+        if 'resource_claims_movement_only' in config and any(self.bundles[build]['capabilities'].get('resource_claims_movement_only_version') != 2 for build in self.builds):
+            raise ValueError('build does not advertise movement-only observer version 2')
+        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 3 for build in self.builds):
+            raise ValueError('build does not advertise claim probe version 3')
         if 'material_destinations' in config:
             if type(config['material_destinations']) is not bool:
                 raise ValueError('material_destinations must be a boolean')
@@ -119,7 +119,6 @@ class Planner:
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
@@ -171,7 +170,6 @@ class Planner:
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
-                            **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},

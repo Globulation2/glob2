@@ -686,7 +686,7 @@ struct HeadlessRunner
                 // The setter enforces the drained boundary; never silently discard work.
                 engine.gui.game.map.setMaterialDestinationsEnabled(true);
                 if(options.count("--resource-claims-active")) {
-                    if(one(options,"--resource-claims-active")!="prototype-stationary-v1" || one(options,"--resource-claims-shadow","false")=="true")
+                    if(one(options,"--resource-claims-active")!="prototype-stationary-v1")
                         throw std::invalid_argument("invalid active claim prototype selection");
                     engine.gui.game.map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
                 }
@@ -747,23 +747,14 @@ struct HeadlessRunner
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
                 (output/"gradient-decisions.csv").string());
         }
-        engine.gui.game.map.setMaterialClaimTrackingEnabled(one(options,"--resource-claims-shadow","false")=="true");
         const bool movementOnly=options.count("--resource-claims-movement-only");
-        if (engine.gui.game.map.materialClaimTrackingEnabled() || options.count("--resource-claims-probe") || movementOnly) {
-            if(!movementOnly && !engine.gui.game.map.materialClaimTrackingEnabled() && !engine.gui.game.map.activeClaimsEnabled())
-                throw std::invalid_argument("claim probe requires active or shadow ledger mode");
+        if (options.count("--resource-claims-probe") || movementOnly) {
+            if(!movementOnly && !engine.gui.game.map.activeClaimsEnabled())
+                throw std::invalid_argument("claim probe requires an active claim policy");
             ResourceClaims::Probe::Config probe;
             probe.movementOnly=movementOnly;
             probe.movementStartTick=engine.gui.game.stepCounter;
             probe.sampleEvery=integer(one(options,"--resource-claims-sample-every","1000"),1,1000000000);
-            probe.deepContext=one(options,"--resource-claims-deep-context","");
-            probe.deepStratified=options.count("--resource-claims-deep-stratified")!=0;
-            probe.missingSampleEvery=integer(one(options,"--resource-claims-missing-sample-every","256"),1,1000000000);
-            probe.deepMissing=options.count("--resource-claims-deep-missing")!=0;
-            if(options.count("--resource-claims-missing-top-k")){probe.deepMissingTopK=integer(one(options,"--resource-claims-missing-top-k","1"),1,64);probe.deepMissing=true;}
-            probe.deepTopFour=options.count("--resource-claims-deep-top-four")!=0;
-            probe.captureOnly=options.count("--resource-claims-capture-only");
-            if(options.count("--resource-claims-deep-top-k")){probe.deepTopK=integer(one(options,"--resource-claims-deep-top-k","4"),1,64);probe.deepTopFour=true;}
             probe.maxSamples=integer(one(options,"--resource-claims-max-samples","10000"),1,1000000);
             probe.maxOutputBytes=integer(one(options,"--resource-claims-max-bytes","67108864"),1024,2147483647);
             engine.gui.game.map.setMaterialClaimProbe(std::make_shared<ResourceClaims::Probe>(engine.gui.game.map.computeExecutor(),
@@ -1037,28 +1028,17 @@ struct HeadlessRunner
         }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
-        if (game.map.materialClaimTrackingEnabled() || game.map.resourceClaimProbe()) {
+        if (const auto* probe=game.map.resourceClaimProbe()) {
             const auto& claims=game.map.materialClaimTelemetry;
-            result << ",\"resource_claims_shadow\":{\"schema_version\":1,\"enforced\":" << (game.map.activeClaimsEnabled()?"true":"false")
+            const auto& m=probe->metrics();
+            result << ",\"resource_claims_shadow\":{\"schema_version\":2,\"enforced\":" << (game.map.activeClaimsEnabled()?"true":"false")
                 << ",\"movement_only\":" << (movementOnly?"true":"false")
-                << ",\"ledger_mode\":" << quote(game.map.activeClaimsEnabled()?"active":game.map.materialClaimTrackingEnabled()?"shadow":"disabled")
-                << ",\"continuation_policy\":" << quote(movementOnly?"segment-observation-only":game.map.activeClaimsEnabled()?"persist-authoritative-claims-and-routes":"rebuild-observational-state-after-load")
-                << ",\"reconciliations\":" << claims.reconciliations
-                << ",\"changed\":" << claims.changed << ",\"released\":" << claims.released
-                << ",\"overcommitted_selections\":" << claims.overcommittedSelections
-                << ",\"unit_reconcile_ns\":" << claims.unitReconcileNs << ",\"sweep_ns\":" << claims.sweepNs
-                << ",\"sweeps\":" << claims.sweeps << ",\"farm_queries\":" << claims.farmQueries
+                << ",\"ledger_mode\":" << quote(game.map.activeClaimsEnabled()?"active":"disabled")
+                << ",\"continuation_policy\":" << quote(!movementOnly && game.map.activeClaimsEnabled()?"persist-authoritative-claims-and-routes":"segment-observation-only")
+                << ",\"farm_queries\":" << claims.farmQueries
                 << ",\"farm_cache_hits\":" << claims.farmCacheHits << ",\"farm_flood_cells\":" << claims.farmFloodCells
-                << ",\"peak_active\":" << claims.peakActive
-                << ",\"active\":" << game.map.materialClaimLedger().size();
-            if (const auto* probe=game.map.resourceClaimProbe()) {
-                const auto& m=probe->metrics();
-                result << ",\"decisions\":" << m.decisions << ",\"sampled\":" << m.sampled
-                    << ",\"contested\":" << m.contested << ",\"submitted\":" << m.submitted << ",\"completed\":" << m.completed
-                    << ",\"excluded_sample_limit\":" << m.excludedSampleLimit << ",\"excluded_queue_limit\":" << m.excludedQueueLimit
-                    << ",\"excluded_missing_field\":" << m.excludedMissingField
-                    << ",\"capture_bytes\":" << m.captureBytes << ",\"output_bytes\":" << m.outputBytes;
-            }
+                << ",\"active\":" << game.map.materialClaimLedger().size()
+                << ",\"capture_bytes\":" << m.captureBytes << ",\"output_bytes\":" << m.outputBytes;
             result << '}';
         }
 		result << ",\"javascriptControllers\":[";
@@ -1183,7 +1163,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_deep_stratified_version\":2,\"resource_claims_deep_topk_version\":5,\"resource_claims_deep_topk_max\":64,\"resource_claims_deep_missing_version\":2,\"resource_claims_deep_missing_max\":64,\"resource_claims_capture_only_version\":1,\"resource_claims_probe_version\":2,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"resource_claims_policy_options\":[\"refresh_switch_margin_permille\",\"terrain_component_prefilter\",\"claim_oversubscription_permille\",\"pending_step_gradient\",\"max_claim_distance_factor_permille\",\"traffic_sidestep\",\"traffic_wait_limit\",\"fallback_gradient\",\"claim_gradient_demand\",\"claim_trigger\",\"contention_min_workers\",\"contention_radius\"],\"resource_claims_release_reason_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"material_destinations_version\":1,\"resource_claims_probe_version\":3,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":2,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"resource_claims_policy_options\":[\"refresh_switch_margin_permille\",\"terrain_component_prefilter\",\"claim_oversubscription_permille\",\"pending_step_gradient\",\"max_claim_distance_factor_permille\",\"traffic_sidestep\",\"traffic_wait_limit\",\"fallback_gradient\",\"claim_gradient_demand\",\"claim_trigger\",\"contention_min_workers\",\"contention_radius\"],\"resource_claims_release_reason_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
 
             // Config asset identities are frozen by the planner before dispatch.
             // This catalog path is diagnostic setup, never a simulation hot loop.

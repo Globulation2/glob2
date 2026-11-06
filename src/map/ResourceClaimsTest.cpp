@@ -160,7 +160,7 @@ TEST_SUITE("ResourceClaims")
         for (unsigned owner = 101; owner < 600; owner += 2) claims.release(owner, mark);
         CHECK(claims.counts().at(1) == 0); CHECK(claims.size() == 0);
     }
-    TEST_CASE("shadow claims preserve overcommitment and reject invalid identities")
+    TEST_CASE("observed claims preserve overcommitment and reject invalid identities")
     {
         ResourceClaims::Ledger claims; claims.reset(4);
         const auto mark = [](unsigned) {};

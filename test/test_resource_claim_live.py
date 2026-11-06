@@ -17,7 +17,7 @@ def fixture():
          'destination_refresh_j': 0, 'route_refresh_j': 0, 'route_target': 'claimed_access',
          'pending_step': 'wait', 'maximum_expansions': 4096, 'use_primary_gradient': False}
     bundle = {'id': 'b'*64, 'source_revision': 'c'*40, 'capabilities': {
-        'material_destinations_version': 1, 'resource_claims_probe_version': 1,
+        'material_destinations_version': 1, 'resource_claims_probe_version': 3,
         'resource_claims_policy_config_version': 1, 'resource_claims_active_policies': ['experimental'],
         'resource_claims_policy_patterns': [{'name': p['pattern'], 'digest': p['pattern_digest']}]}}
     split = {'games': {'g1': 'discovery', 'g2': 'holdout'}, 'strata': {'g1': 'pooled', 'g2': 'protected'},
@@ -28,7 +28,7 @@ def fixture():
         jobs.append(job('game', 'e'*64, seeds={'map': 100+i, 'game': 200+i},
             config={'generator': 1, 'params': {'width': 8, 'height': 8, 'teams': 2},
                     'players': ['cortex', 'maxima'], 'ticks': 180000, 'experiments': ['farm-areas'],
-                    'material_destinations': True, 'resource_claims_shadow': {
+                    'material_destinations': True, 'resource_claims_probe': {
                         'sample_every': 256, 'max_samples': 32768, 'max_bytes': 134217728},
                     'win_probability_permille': 950},
             outputs={'required': ['resource-claims-shadow.jsonl.gz']},
@@ -41,11 +41,11 @@ class LivePlans(unittest.TestCase):
     def test_probe_capability_versions_are_explicit(self):
         from tools.tournaments.experiments import Planner
         p,bundle,split,cohort=fixture()
-        for version in (1,2):
+        for version in (3,):
             bundle['capabilities']['resource_claims_probe_version']=version
             Planner('test',{'resource_claims_probe':{}},[bundle])
             plan(cohort,split,bundle,[{'label':'control','policy':p}])
-        for version in (None,0,3):
+        for version in (None,0,1,2):
             bundle['capabilities']['resource_claims_probe_version']=version
             with self.assertRaises(ValueError):Planner('test',{'resource_claims_probe':{}},[bundle])
             with self.assertRaises(ValueError):plan(cohort,split,bundle,[{'label':'control','policy':p}])

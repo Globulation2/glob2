@@ -113,6 +113,7 @@ public:
 
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
+    // Releases an active claim that is no longer valid (no-op without claims).
     void reconcileMaterialClaim();
     struct MaterialClaimObservation {
         Unit& unit;

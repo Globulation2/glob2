@@ -40,16 +40,16 @@ std::optional<Offset> materialPickup(Unit& unit)
         if(map.isMaterialTakeableSlot(unit.posX+dx,unit.posY+dy,unit.destinationPurpose)
             && !map.isForbidden(unit.posX+dx,unit.posY+dy,unit.owner->me)) {
             if(!unit.activeMaterialClaim && !observed) {
-                const auto token=map.observeMaterialClaimPickupDecision(unit,unit.posX+dx,unit.posY+dy);observed=true;
-                if(observer){outcome=observer->beginDecisionOutcome(unit,true);outcome->token=token;}
+                observed=true;
+                if(observer)outcome=observer->beginDecisionOutcome(unit,true);
             }
             if(observer)outcome->attempted=true;
             if(unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy)) {
-                if(observer){outcome->selected=true;observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome,unit);}
+                if(observer){outcome->selected=true;observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome);}
                 return Offset{dx,dy};
             }
         }
-    if(observer){observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome,unit);}
+    if(observer){observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome);}
     return std::nullopt;
 }
 
@@ -102,7 +102,6 @@ void Unit::handleDisplacement(void)
 			{
 				if (auto off = materialPickup(*this))
 				{
-                    if(!owner->map->activeClaimsEnabled())owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 					dx = off->dx;
 					dy = off->dy;
                     // During harvesting these coordinates identify the touched
@@ -318,7 +317,6 @@ void Unit::handleDisplacement(void)
 									int dummyDist;
 									if (auto off = materialPickup(*this))
 									{
-                                        if(!owner->map->activeClaimsEnabled())owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 										dx = off->dx;
 										dy = off->dy;
                                         targetX=(posX+dx)&(owner->map->getW()-1);

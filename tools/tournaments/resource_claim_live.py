@@ -96,7 +96,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
     if not configs or len(configs) > 128:
         raise ValueError('provide 1 to 128 explicit canonical policy configs')
     caps = bundle['capabilities']
-    if caps.get('material_destinations_version') != 1 or caps.get('resource_claims_probe_version') not in (1, 2):
+    if caps.get('material_destinations_version') != 1 or caps.get('resource_claims_probe_version') != 3:
         raise ValueError('bundle needs destination metadata and active probe capabilities')
     identities = set()
     for row in configs:
@@ -134,7 +134,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             raise ValueError('expected frozen new-game inline tuples without external dependencies')
         for row in configs:
             config = copy.deepcopy(original['config'])
-            probe = config.pop('resource_claims_shadow', config.pop('resource_claims_probe', None))
+            probe = config.pop('resource_claims_probe', None)
             for key in ('resource_claims_active', 'resource_claims_policy'):
                 config.pop(key, None)
             if not isinstance(probe, dict):

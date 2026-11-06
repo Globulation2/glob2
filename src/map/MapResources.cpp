@@ -500,37 +500,11 @@ template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) co
 template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
 
 
-void Map::setMaterialClaimTrackingEnabled(bool enabled)
-{
-    if(activeClaimsEnabled()) {
-        if(enabled)throw std::invalid_argument("active claims and shadow tracking are separate modes");
-        return;
-    }
-    materialClaimTracking=enabled;
-    materialClaimTelemetry={};
-    materialClaimFarmCache.clear(); materialClaimFarmEpoch={};
-    materialClaims.reset(cellCount());
-    claimChanges.markAll();
-    if (enabled) reconcileMaterialClaims();
-}
-
 void Map::reconcileMaterialClaims()
 {
-    if (!game) return;
-    if (materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
-    if (!materialClaimTracking) return;
-    const auto start=std::chrono::steady_clock::now();
-    for (int team=0;team<game->teamsCount();++team)
-        for (Unit* unit:game->teams[team]->liveUnits) unit->reconcileMaterialClaim();
-    ++materialClaimTelemetry.sweeps;
-    materialClaimTelemetry.sweepNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+    if (game && materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
 }
 
-ResourceClaims::DecisionToken Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
-{
-    if ((materialClaimTracking || activeClaimsEnabled()) && materialClaimProbe && game) return materialClaimProbe->decision(*game,unit,field);
-    return {};
-}
 void Map::finishMaterialClaimProbe()
 {
     if (materialClaimProbe) {
@@ -538,14 +512,6 @@ void Map::finishMaterialClaimProbe()
         if(materialClaimRoutes)materialClaimProbe->routeWork(materialClaimRoutes->pipeline.takeDiagnostics());
         materialClaimProbe->finish();
     }
-}
-
-ResourceClaims::DecisionToken Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
-{
-    if ((!materialClaimTracking && !activeClaimsEnabled()) || !materialClaimProbe || !game) return {};
-    const auto* field=lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementAccess(),
-        unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding);
-    return materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
 }
 
 std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material,Uint32 teamMask,std::optional<size_t> entry)
@@ -569,8 +535,8 @@ void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
     if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && policy!=ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1)
         throw std::invalid_argument("unknown active claim research policy");
     if(policy==activeClaimPolicy)return;
-    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && (!materialDestinationsEnabled() || materialClaimTracking))
-        throw std::invalid_argument("active claims require material destinations and exclude shadow tracking");
+    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && !materialDestinationsEnabled())
+        throw std::invalid_argument("active claims require material destinations");
     if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         unit->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Configuration);unit->materialClaimTask=0;unit->materialClaimPolicyState={};
@@ -618,8 +584,8 @@ Uint32 Map::materialClaimLimitPermille() const
 void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
 {
     config.validate();
-    if(!materialDestinationsEnabled() || materialClaimTracking)
-        throw std::invalid_argument("experimental claims require material destinations and exclude shadow tracking");
+    if(!materialDestinationsEnabled())
+        throw std::invalid_argument("experimental claims require material destinations");
     if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
     const auto digest=Online::Sha256::digest(config.canonicalJson());
     auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));

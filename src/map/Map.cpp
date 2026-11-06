@@ -557,7 +557,6 @@ void Map::clear()
     materialClaimProbe.reset();
     materialClaimFarmCache.clear();
     materialClaimFarmEpoch = {};
-    materialClaimTracking = false;
     activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
     activeClaimRules.reset();
     materialClaimTelemetry = {};

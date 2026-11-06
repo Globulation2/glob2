@@ -258,13 +258,11 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         Uint32 bestAccess=UINT32_MAX,bestProbe=UINT32_MAX;unsigned bestScore=UINT_MAX,bestOrdinal=0;
         std::optional<ResolvedClaim> bestResolved;
         // Dispatch once. Raw=false instantiation contains no raw-probe branch
-        // or counter work in the per-pattern loop and retains XY-only ordering.
-        const auto search=[&]<bool Raw,bool Record>() {
-            Uint64 coordinates=0,xyChecks=0,rawAttempts=0,rawChecks=0,rawImprovements=0;
+        // in the per-pattern loop and retains XY-only ordering.
+        const auto search=[&]<bool Raw>() {
             const auto consider=[&]<bool Physical>(Uint32 access,unsigned x,unsigned y,Uint32 probe,unsigned i) {
                 if(visited[access]==epoch)return false;
                 visited[access]=epoch;
-                if constexpr(Record){if constexpr(Physical)++rawChecks;else ++xyChecks;}
                 if(filtered(access,x,y))return false;
                 // A soft failed-route exclusion cannot forbid a pickup already
                 // within reach. Deduplicate first: this eligibility is constant for
@@ -279,7 +277,6 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 if(bestAccess!=UINT32_MAX && score>=bestScore)return false;
                 const auto resolved=resolveClaim(*this,access,&farmMemo);if(!resolved)return false;
                 if(!map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),resolved->claim,resolved->capacity,resolved->infinite))return false;
-                if constexpr(Record && Physical)++rawImprovements;
                 bestAccess=access;bestProbe=probe;bestScore=score;bestResolved=*resolved;bestOrdinal=Raw?2*i+unsigned(Physical):i;
                 return true;
             };
@@ -290,24 +287,17 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 const int oy=tag==0?posY:tag==1?ny:posY+nearDy/2;
                 const int probeX=ox+probes.x[i],probeY=oy+probes.y[i];
                 const auto probe=Uint32(map.coordToIndex(probeX,probeY));
-                if constexpr(Record)++coordinates;
                 const auto x=destinations->x[probe],y=destinations->y[probe];
                 if((!Raw || 2*i>=firstCandidate) && x<map.getW() && y<map.getH() && consider.template operator()<false>(Uint32(map.coordToIndex(x,y)),x,y,probe,unsigned(i)) && firstAvailable)break;
                 if constexpr(Raw) {
                     // ClosestGeometric scans both candidates; FirstAvailable
                     // reaches this only when XY did not yield its winner.
-                    if constexpr(Record)++rawAttempts;
                     if(consider.template operator()<true>(probe,unsigned(probeX)&(map.getW()-1),unsigned(probeY)&(map.getH()-1),probe,unsigned(i)) && firstAvailable)break;
                 }
             }
-            if constexpr(Record)if(const auto* observer=map.resourceClaimProbe())
-                observer->rawResourceProbes(destinationPurpose,coordinates,xyChecks,rawAttempts,rawChecks,rawImprovements);
         };
-        if(config.directResourceProbes) {
-            const auto* observer=map.resourceClaimProbe();
-            if(observer && observer->observesDecisionOutcomes())search.template operator()<true,true>();
-            else search.template operator()<true,false>();
-        } else search.template operator()<false,false>();
+        if(config.directResourceProbes)search.template operator()<true>();
+        else search.template operator()<false>();
         if(bestAccess==UINT32_MAX) {
             if(keptByMargin())return true;
             if(config.usesRecovery() && recovery.mayRoute && !activeMaterialClaim)
@@ -316,9 +306,6 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         }
         const auto oldTask=materialClaimTask;
         if(!commitResolvedClaim(*this,*bestResolved))return false;
-        if(config.directResourceProbes && (bestOrdinal&1))
-            if(const auto* observer=map.resourceClaimProbe();observer && observer->observesDecisionOutcomes())
-                observer->rawResourceProbes(destinationPurpose,0,0,0,0,0,1);
         if(oldTask!=materialClaimTask || materialClaimPolicyState.probe==UINT32_MAX) {
             materialClaimPolicyState.probe=bestProbe;
             if(config.usesRecovery())map.finishClaimRecoverySelection(*this,bestOrdinal,candidateCount);
@@ -444,14 +431,14 @@ void Unit::handleActiveMaterialMovement()
         if(key)map.gradientMovementDemand(*key);
         if(experimental)cadence.lastGoalAttempt=cadence.decisionOrdinal;
         if(field) {
-            const auto token=map.observeMaterialClaimDecision(*this,field);const auto previousTask=materialClaimTask;
-            if(observer){outcome=observer->beginDecisionOutcome(*this,false);outcome->token=token;outcome->attempted=true;}
+            const auto previousTask=materialClaimTask;
+            if(observer){outcome=observer->beginDecisionOutcome(*this,false);outcome->attempted=true;}
             const bool selected=selectActiveMaterialClaim(field);
             if(observer)outcome->selected=selected;
             if(refresh)if(const auto* probe=map.resourceClaimProbe())probe->liveEvent(*this,!selected?ResourceClaims::Probe::LiveEvent::GoalRefreshFailed:
                 previousTask==materialClaimTask?ResourceClaims::Probe::LiveEvent::GoalRefreshSame:ResourceClaims::Probe::LiveEvent::GoalRefreshChanged);
         }
-        else if(observer) {observer->missingDecision(*owner->game,*this,nullptr,UINT32_MAX,0,true);outcome->noAttempt="missing_field";}
+        else if(observer)outcome->noAttempt="missing_field";
         // Failed refresh leaves the old valid reservation and route untouched.
     }
     if(observer)observer->selectedDecisionOutcome(*outcome,*this);
@@ -467,7 +454,7 @@ void Unit::handleActiveMaterialMovement()
                 else if(observer){outcome->fallbackReason="cooldown";outcome->noAttempt="cooldown";}
             } else fallback(cadence.fallbackCount==UINT32_MAX?UINT32_MAX:cadence.fallbackCount+1);
         }
-        if(observer)observer->finishDecisionOutcome(*outcome,*this);
+        if(observer)observer->finishDecisionOutcome(*outcome);
         // Also during route-admission cooldown: the worker never idles here.
         if(gradientFallback) {
             if(const auto* probe=map.resourceClaimProbe())probe->policyExtension(ResourceClaims::Probe::PolicyExtension::FallbackGradient);
@@ -493,5 +480,5 @@ void Unit::handleActiveMaterialMovement()
         releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::RouteFailed);
         if(recoveryEnabled && failures)fallback(failures);
     }
-    if(observer)observer->finishDecisionOutcome(*outcome,*this);
+    if(observer)observer->finishDecisionOutcome(*outcome);
 }

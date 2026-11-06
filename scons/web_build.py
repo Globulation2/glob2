@@ -237,7 +237,6 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 '#src/map/claims/ClaimInvalidationHarness.cpp',
                 '#src/map/claims/ClaimedGradientStepHarness.cpp',
                 '#src/map/claims/ClaimLiveJourneyHarness.cpp',
-                '#src/map/claims/ResourceClaimDeepEventTest.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
                 ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/map/gradient/InitialBuildingGradientHarness.cpp',

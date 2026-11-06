@@ -260,10 +260,10 @@ TEST_CASE("interval exploration requires explicit headless collection") {
 }
 }
 
-TEST_CASE("resource claim shadow collection is an explicit game-run observer" * doctest::test_suite("ResourceClaimsCommandLine")) {
-    const auto request=Cli::parse({"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz","--resource-claims-shadow"});
-    CHECK(request.get("--resource-claims-shadow")=="true");
-    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-shadow"}));
+TEST_CASE("removed research claim observers are unknown options" * doctest::test_suite("ResourceClaimsCommandLine")) {
+    for(const auto* flag:{"--resource-claims-shadow","--resource-claims-deep-stratified","--resource-claims-capture-only","--resource-claims-deep-missing"})
+        CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz",flag}));
+    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-probe"}));
 }
 
 TEST_CASE("material destination experiment is explicit new game only" * doctest::test_suite("CommandLine"))
@@ -273,20 +273,19 @@ TEST_CASE("material destination experiment is explicit new game only" * doctest:
     auto replay=base;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
     CHECK_THROWS(Cli::parse({"game","repeat","test.game","--material-destinations"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--material-destinations"}));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--resource-claims-shadow"}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--resource-claims-probe"}));
 }
 
 TEST_CASE("active material claim prototype requires explicit isolated metadata mode" * doctest::test_suite("CommandLine"))
 {
     std::vector<std::string> args={"game","run","--output-dir","artifacts/active-claims-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-active","prototype-stationary-v1"};
     CHECK_NOTHROW(Cli::parse(args));
-    auto shadow=args;shadow.push_back("--resource-claims-shadow");CHECK_THROWS(Cli::parse(shadow));
     auto replay=args;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
     args.back()="unapproved-policy";CHECK_THROWS(Cli::parse(args));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-claims-cli","--load-game","test.game","--resource-claims-active","prototype-stationary-v1"}));
 }
 
-TEST_CASE("active claim observer is independent of shadow tracking" * doctest::test_suite("CommandLine"))
+TEST_CASE("claim probe requires an active policy or a saved game" * doctest::test_suite("CommandLine"))
 {
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--load-game","active.game","--resource-claims-probe","--resource-claims-sample-every","1"}));
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--material-destinations","--resource-claims-active","prototype-stationary-v1","--resource-claims-probe"}));
@@ -298,10 +297,7 @@ TEST_CASE("movement-only observer is independent of claim enforcement" * doctest
     const std::vector<std::string> args={"game","run","--output-dir","artifacts/movement-only-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-movement-only"};
     CHECK_NOTHROW(Cli::parse(args));
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/movement-only-cli","--load-game","classic.game","--resource-claims-movement-only"}));
-    for(const auto* flag:{"--resource-claims-probe","--resource-claims-shadow","--resource-claims-deep-context"}) {
-        auto bad=args;bad.push_back(flag);if(std::string(flag)=="--resource-claims-deep-context")bad.push_back("{}");
-        CHECK_THROWS(Cli::parse(bad));
-    }
+    auto bad=args;bad.push_back("--resource-claims-probe");CHECK_THROWS(Cli::parse(bad));
 }
 
 TEST_CASE("explicit live claim policy JSON is new-game research only")
@@ -311,7 +307,6 @@ TEST_CASE("explicit live claim policy JSON is new-game research only")
     auto probe=args;probe.push_back("--resource-claims-probe");CHECK_NOTHROW(Cli::parse(probe));
     auto bad=args;bad.back()=R"({"source_version":1,"route_refresh_j":5})";CHECK_THROWS(Cli::parse(bad));
     bad=args;bad.insert(bad.end(),{"--resource-claims-active","prototype-stationary-v1"});CHECK_THROWS(Cli::parse(bad));
-    bad=args;bad.push_back("--resource-claims-shadow");CHECK_THROWS(Cli::parse(bad));
     bad=args;bad.insert(bad.end(),{"--write-replay","test.replay"});CHECK_THROWS(Cli::parse(bad));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/policy-cli","--load-game","test.game","--resource-claims-policy-json",R"({"source_version":1})"}));
 }

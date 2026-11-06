@@ -5,34 +5,26 @@
 #include <array>
 #include <string>
 #include <optional>
-#include "ResourceClaimDecisionToken.h"
 #include "ClaimReleaseReason.h"
-class Game;
 class Unit;
 class ComputeExecutor;
 namespace ResourceClaims
 {
 struct RouteDiagnostics;
-// Temporary decision-event experiment, never consulted by simulation decisions.
+// Observer of an active claim game: live claim events, sampled journeys,
+// decision outcome counters and the all-transport movement audit, written as
+// a bounded compressed JSONL trace. Never consulted by simulation decisions.
 class Probe
 {
     struct Impl;
     std::unique_ptr<Impl> impl;
 public:
     struct Config {
+        // Journey sampling period and admission cap (at most 512 journeys).
         Uint32 sampleEvery=1000, maxSamples=10000;
         Uint64 maxOutputBytes=64ull*1024*1024;
-        unsigned maxPending=8;
-        std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
-        bool captureOnly=false; // V1 work scope: submit only current bottom-k replacements.
-        unsigned deepTopK=0; // Explicit V4 capacity 1..16; zero keeps legacy capture.
-        bool deepMissing=false; // Additive missing-destination stream; requires deepContext.
-        Uint32 missingSampleEvery=256;
-        unsigned deepMissingTopK=0; // Explicit V2; zero preserves legacy single minimum.
-        bool deepTopFour=false; // Explicit V3 diagnostic, requires deepStratified.
-        bool deepStratified=false; // Explicit V2 diagnostic; deepContext alone remains V1.
         std::optional<Uint32> movementStartTick;
-        bool movementOnly=false; // No ledger, decision sampling, or journey baselines required.
+        bool movementOnly=false; // Movement audit only: no claim events or journeys.
     };
     enum class LiveEvent : unsigned {
         Acquired, Released, Retargeted, HarvestBegin, Harvested, HarvestFailed,
@@ -63,8 +55,7 @@ public:
         std::array<Uint64,4> contention{};
     };
     struct Metrics {
-        Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
-        Uint64 excludedSampleLimit=0, excludedQueueLimit=0, excludedMissingField=0, captureBytes=0, outputBytes=0;
+        Uint64 captureBytes=0, outputBytes=0;
     };
     enum class MovementKind : unsigned { Medical, ClaimedResource, UnclaimedResource, ReturnToJob, Idle, Other, Count };
     struct MovementMetrics {
@@ -73,13 +64,10 @@ public:
     };
     Probe(ComputeExecutor&, std::string path, Config);
     ~Probe();
-    DecisionToken decision(Game&, const Unit&, const Uint16* field, Uint32 pickupAccess = UINT32_MAX);
-    void missingDecision(Game&,const Unit&,const Uint16*,Uint32 pickupAccess=UINT32_MAX,Uint64 legacyOrdinal=0,bool naturalOnly=false) const;
-    // Owner-stack observation only. Never shared with a diagnostic worker.
+    // Owner-stack observation of one claim selection decision; counted only.
     struct DecisionOutcome {
-        DecisionToken token;
-        Uint64 owner=0,preTask=0,selectedTask=0;
-        Uint32 tick=0,preSource=UINT32_MAX,preAccess=UINT32_MAX,selectedSource=UINT32_MAX,selectedAccess=UINT32_MAX;
+        Uint64 preTask=0,selectedTask=0;
+        Uint32 preAccess=UINT32_MAX,selectedAccess=UINT32_MAX;
         unsigned material=0; bool pickup=false,attempted=false,selected=false;
         const char* noAttempt="held_claim";
         const char* route="not_attempted";
@@ -89,7 +77,7 @@ public:
     bool observesDecisionOutcomes() const;
     DecisionOutcome beginDecisionOutcome(const Unit&, bool pickup) const;
     void selectedDecisionOutcome(DecisionOutcome&, const Unit&) const;
-    void finishDecisionOutcome(const DecisionOutcome&, const Unit&) const;
+    void finishDecisionOutcome(const DecisionOutcome&) const;
     void publish(Uint32 tick);
     void finish();
     const Metrics& metrics() const;
@@ -107,6 +95,5 @@ public:
     const LiveMetrics& liveMetrics() const;
     const MovementMetrics& movementMetrics() const;
     void routeWork(const RouteDiagnostics&) const;
-    void rawResourceProbes(unsigned material, Uint64 coordinates, Uint64 xyChecks, Uint64 attempts, Uint64 checks, Uint64 improvements, Uint64 finalSelections=0) const;
 };
 }

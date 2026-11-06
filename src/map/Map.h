@@ -50,7 +50,6 @@ namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
 class MapAssetBundle;
 #include "BitArray.h"
 
-#include "map/claims/ResourceClaimDecisionToken.h"
 namespace SimulationSnapshot { struct Handle; }
 namespace gradient_kernel { enum class Family; }
 
@@ -151,7 +150,6 @@ class Map
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
 	MapState::ChangeTracker claimChanges;
 	ResourceClaims::Ledger materialClaims;
-    bool materialClaimTracking = false;
     ResourceClaims::ActiveClaimPolicy activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
@@ -825,8 +823,8 @@ public:
     void checkActiveClaimRules();
     bool activeClaimFarmConnected(const ResourceClaims::Claim&, Uint32 teamMask);
     bool takeClaimedMaterial(const ResourceClaims::Claim&, Uint32 teamMask);
-    bool materialClaimTrackingEnabled() const { return materialClaimTracking; }
-    void setMaterialClaimTrackingEnabled(bool enabled);
+    //! Per-tick claim observer boundary: releases invalid active claims and
+    //! publishes the probe.
     void reconcileMaterialClaims();
     void setMaterialClaimProbe(std::shared_ptr<ResourceClaims::Probe> probe) { materialClaimProbe=std::move(probe); }
     const ResourceClaims::Probe* resourceClaimProbe() const { return materialClaimProbe.get(); }
@@ -841,12 +839,9 @@ public:
     //! Snapshot same-team workers other than `unit` fetching `material` whose
     //! target lies within the policy radius of (x,y); snapshots lazily if stale.
     unsigned claimContentionOthers(const Unit& unit,int material,int x,int y);
-    ResourceClaims::DecisionToken observeMaterialClaimDecision(const Unit&, const Uint16* field);
-    ResourceClaims::DecisionToken observeMaterialClaimPickupDecision(const Unit&, int x, int y);
     void finishMaterialClaimProbe();
     struct MaterialClaimTelemetry {
-        Uint64 reconciliations=0, changed=0, released=0, overcommittedSelections=0, peakActive=0;
-        Uint64 unitReconcileNs=0, sweepNs=0, sweeps=0, farmQueries=0, farmCacheHits=0, farmFloodCells=0;
+        Uint64 farmQueries=0, farmCacheHits=0, farmFloodCells=0;
     } materialClaimTelemetry;
 	const ResourceClaims::Counts& materialClaimState() const { return materialClaims.counts(); }
 	const ResourceClaims::Ledger& materialClaimLedger() const { return materialClaims; }
@@ -861,11 +856,7 @@ public:
 	bool acquireMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false)
 	{ return materialClaims.acquire(owner, claim, capacity, infinite, [this](size_t index) { markClaim(index); }, materialClaimLimitPermille()); }
 	bool releaseMaterialClaim(ResourceClaims::Owner owner)
-	{
-        const bool changed=materialClaims.release(owner, [this](size_t index) { markClaim(index); });
-        if (changed && materialClaimTracking) ++materialClaimTelemetry.released;
-        return changed;
-    }
+	{ return materialClaims.release(owner, [this](size_t index) { markClaim(index); }); }
 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
 	const Tile getTile(size_t index) const
@@ -1284,7 +1275,7 @@ public:
     void gradientMovementOutcome(const GradientQueryContext&,const Uint16*,const GradientQueryResult&);
     bool requestGradientField(Uint16** slot, int kind, int team, int material, MovementAccess movementAccessValue, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
     StepResult queryMaterialStep(EntityRandom&, int, Uint8, MovementAccess movementAccessValue, int, int, int*, int*, bool*, Building*, bool = false,
-        Sint32* projectedX = nullptr, Sint32* projectedY = nullptr, bool* projectedValid = nullptr, const Unit* observer = nullptr);
+        Sint32* projectedX = nullptr, Sint32* projectedY = nullptr, bool* projectedValid = nullptr);
 
     StepResult queryForbiddenStep(const Uint16*, int, MovementAccess movementAccessValue, int, int, int*, int*);
 	const Uint16 *getForbiddenGradient(int teamNumber, MovementAccess movementAccessValue);

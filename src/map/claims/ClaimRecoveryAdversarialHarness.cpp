@@ -36,7 +36,7 @@ nlohmann::json forkClassicCheckpoint(Game& game,ResourceClaims::ClaimPolicyConfi
     auto& map=game.map;config.validate();
     REQUIRE(game.stepCounter>0);REQUIRE(map.materialDestinationsEnabled());
     REQUIRE(map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Disabled);
-    REQUIRE_FALSE(map.materialClaimTracking);REQUIRE_FALSE(map.materialClaimRoutes);
+    REQUIRE_FALSE(map.materialClaimRoutes);
     REQUIRE(map.materialClaimLedger().size()==0);
     std::vector<Unit*> units;
     for(int team=0;team<game.teamsCount();++team)for(auto* unit:game.teams[team]->liveUnits) {

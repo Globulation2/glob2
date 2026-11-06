@@ -19,7 +19,6 @@
 #include <stdexcept>
 #include <limits>
 #include <numeric>
-#include <chrono>
 #include "field/TerrainMovementCosts.h"
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -41,7 +40,6 @@ Unit::~Unit()
 	if (owner && owner->game) {
         owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
         if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::UnitRemoved);
-        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -573,7 +571,6 @@ void Unit::syncStep(void)
 void Unit::resetAtLevel(Sint32 newLevel)
 {
     if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
-        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -820,53 +817,6 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
 
 void Unit::reconcileMaterialClaim()
 {
-    if(owner && owner->map && owner->map->activeClaimsEnabled()) {
+    if(owner && owner->map && owner->map->activeClaimsEnabled())
         releaseInvalidActiveMaterialClaim();
-        return;
-    }
-    if (!owner || !owner->map || !owner->map->materialClaimTrackingEnabled()) return;
-    Map& map=*owner->map;
-    struct ReconcileTiming {
-        Map& map;
-        std::chrono::steady_clock::time_point start=std::chrono::steady_clock::now();
-        ~ReconcileTiming() { map.materialClaimTelemetry.unitReconcileNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count(); }
-    } timing{map};
-    ++map.materialClaimTelemetry.reconciliations;
-    const auto release=[&] { map.releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity)); };
-    if (isDead || hp<UNIT_HP_DEATH_THRESHOLD || medical!=MED_FREE || !attachedBuilding
-        || activity!=ACT_FILLING || !validMaterial(destinationPurpose)
-        || !performance[HARVEST] || !canCarryMaterial(destinationPurpose)) { release(); return; }
-    const bool harvesting=displacement==DIS_HARVESTING;
-    if (!harvesting && (displacement!=DIS_GOING_TO_RESOURCE || !validTarget())) { release(); return; }
-    const auto access=map.coordToIndex(harvesting?posX+dx:targetX,harvesting?posY+dy:targetY);
-    const int x=int(access%map.getW()), y=int(access/map.getW());
-    if(!performance[WALK] && !performance[SWIM] && !performance[FLY] &&
-        (map.warpDistMax(posX,posY,x,y)>1 || !map.doesUnitTouchBuilding(this,attachedBuilding->gid))) {
-        release();return;
-    }
-    if (!map.isMaterialTakeableSlot(x,y,destinationPurpose)
-        || map.isForbidden(x,y,owner->me)) { release(); return; }
-    auto source=access;
-    const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[destinationPurpose];
-    const bool exclusive=yield.consumption==ResourceConsumption::All || yield.destroysDeposit;
-    const bool pooledHarvest=!exclusive && map.farmAreasEnabled() && map.isFarmArea(x,y,owner->me)
-        && map.isFarmableResourceByIndex(map.getResource(access).type);
-    if (pooledHarvest) {
-        const auto pooled=map.pickClaimFarmHarvestTileSlot(posX,posY,destinationPurpose,owner->me,
-            harvesting?std::nullopt:std::optional<size_t>(access));
-        if (!pooled) { release(); return; }
-        source=*pooled;
-    }
-    const auto& sourceYield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[destinationPurpose];
-    const Uint16 reserve=pooledHarvest && sourceYield.consumption!=ResourceConsumption::Infinite && !owner->game->gameHeader.isResourceGrowthDisabled()?sourceYield.seedReserve:0;
-    const ResourceClaims::Claim claim{Uint32(source),Uint32(access),Uint8(destinationPurpose),map.getResource(source).type,exclusive,reserve};
-    if (map.observeMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity),claim)) {
-        ++map.materialClaimTelemetry.changed;
-        const Uint32 amount=map.materialAmountAtSlot(source,destinationPurpose);
-        const Uint32 capacity=amount>reserve?amount-reserve:0;
-        if (!map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),claim,capacity,
-            sourceYield.consumption==ResourceConsumption::Infinite))
-            ++map.materialClaimTelemetry.overcommittedSelections;
-        map.materialClaimTelemetry.peakActive=std::max<Uint64>(map.materialClaimTelemetry.peakActive,map.materialClaimLedger().size());
-    }
 }

@@ -139,7 +139,7 @@ class LivePolicy(unittest.TestCase):
         self.assertEqual(args[args.index('--resource-claims-policy-json')+1], canonical_policy(policy()))
         self.assertNotIn('--resource-claims-active', args)
         for key, value in (('material_destinations', False), ('resource_claims_active', 'prototype-stationary-v1'),
-                           ('resource_claims_shadow', {})):
+                           ('resource_claims_movement_only', {'sample_every': 1, 'max_samples': 1, 'max_bytes': 1024})):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 adapter.validate(item | {'config': item['config'] | {key: value}})
         with self.assertRaises(ValueError):
@@ -204,19 +204,18 @@ class LivePolicy(unittest.TestCase):
             Planner('ai_comparison', config, [bundle | {'capabilities': capabilities | {'resource_claims_policy_patterns': []}}])
 
     def test_saved_experimental_probe_inherits_frozen_save_policy(self):
-        from tools.tournaments.resource_claims import ARTIFACT, COLUMNS
+        from tools.tournaments.resource_claims import ARTIFACT
+        from claim_trace_fixture import trace
         sampling = {'sample_every': 1000, 'max_samples': 512, 'max_bytes': 1048576}
         item = {'config': {'ticks': 64, 'resource_claims_probe': sampling},
                 'inputs': {'save': 'frozen'}, 'seeds': {}, 'outputs': {'required': [ARTIFACT]}}
         adapter = EngineJob('game'); adapter.validate(item)
-        rows = [{'kind': 'schema', 'version': 1, 'patterns': ['p'], 'policies': ['first_available'],
-                 'outcome_columns': list(COLUMNS), 'sample_every': 1000, 'max_samples': 512,
-                 'max_output_bytes': 1048576, 'claims_enforced': True},
-                {'kind': 'summary', 'complete': True, 'submitted': 0, 'completed': 0}]
+        rows = trace(policy(), journeys=0)
+        rows[0].update(sample_every=1000, max_samples=512); rows[-1]['live'].update(sample_every=1000, max_admissions=512)
         result = {'schema_version': 1, 'status': 'completed',
             'resolved': {'material_destinations_enabled': True, 'active_claim_policy': 'experimental',
                          'resource_claims_policy_config': policy(), 'resource_claims_policy_digest': policy_digest(policy())},
-            'resource_claims_shadow': {'schema_version': 1, 'enforced': True, 'submitted': 0, 'completed': 0}}
+            'resource_claims_shadow': {'schema_version': 2, 'enforced': True, 'movement_only': False}}
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)/'output'; output.mkdir()
             with gzip.open(output/ARTIFACT, 'wt') as stream:
@@ -234,7 +233,8 @@ class LivePolicy(unittest.TestCase):
                 adapter.collect(item, directory)
 
     def test_analyzer_rejects_distinct_live_configs_even_with_identical_trace_schemas(self):
-        from tools.tournaments.resource_claims import analyze, COLUMNS
+        from tools.tournaments.resource_claims import analyze
+        from claim_trace_fixture import trace
         policies = [policy(), policy() | {'route_refresh_j': 1}]
         jobs = [{'id': str(i), 'type': 'game', 'config': {'resource_claims_policy': p}}
                 for i, p in enumerate(policies)]
@@ -242,10 +242,7 @@ class LivePolicy(unittest.TestCase):
             'active_claim_policy': 'experimental', 'material_destinations_enabled': True,
             'resource_claims_policy_config': p, 'resource_claims_policy_digest': policy_digest(p)}}}
             for item, p in zip(jobs, policies)]
-        rows = [{'kind': 'schema', 'version': 1, 'patterns': ['p'], 'policies': ['first_available'],
-                 'outcome_columns': list(COLUMNS), 'sample_every': 1000, 'max_samples': 512,
-                 'max_output_bytes': 1048576, 'claims_enforced': True},
-                {'kind': 'summary', 'complete': True, 'submitted': 0, 'completed': 0}]
+        rows = trace(policy(), journeys=0)
         packed = gzip.compress((''.join(json.dumps(row)+'\n' for row in rows)).encode())
         class Source:
             manifest = {'jobs': jobs}
@@ -253,7 +250,7 @@ class LivePolicy(unittest.TestCase):
             def open_artifact(self, *args): return io.BytesIO(packed)
         with patch('tools.tournaments.resource_claims.Results', return_value=Source()):
             with self.assertRaisesRegex(ValueError, 'mixed claim trace'):
-                analyze('/unused', draws=5)
+                analyze('/unused')
 
 
 if __name__ == '__main__': unittest.main()

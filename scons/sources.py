@@ -439,7 +439,6 @@ CLIENT_SOURCES = (
     'map/pathfind/MapTerrainSafety.cpp',
     'map/MapQuery.cpp',
     'map/MapResources.cpp',
-    'map/claims/ResourceClaimOracle.cpp',
     'map/claims/ClaimPolicyConfig.cpp',
     'map/claims/ResourceClaimProbe.cpp',
     'map/claims/MapClaimRoutes.cpp',
