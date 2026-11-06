@@ -1092,6 +1092,19 @@ nearest material destination recorded at the worker's cell by the destination
 plane (the plane's `x/y` at the worker) and 4 tiles is a fixed slack for nearby
 stock. A decision with no recorded nearest destination is not capped. A held
 claim that the cap rejects on refresh is kept, like any failed refresh.
+`traffic_sidestep` (boolean, default false): when the next route cell is blocked
+by traffic (`routePassable` with frozen units false, geometry intact), the worker
+steps instead to a free legal neighbour that is on, or one step from, a later
+route cell within the 8-cell reanchor window (furthest such cell first, then a
+fixed neighbour order); the next decision rejoins the route at that cell. With no
+such neighbour it waits as before. `traffic_wait_limit` (integer 0–64, default 0
+= unlimited) counts consecutive traffic waits per route; on reaching the limit
+it repairs the route from the current cell, planning around the units sampled at
+that moment (frozen-unit occupancy) rather than releasing the claim: a repair
+costs one bounded search and keeps the reservation, whereas a release would also
+discard the claim, reselect and route again. If the repair finds no path the
+ordinary route-failure release applies. The counter is saved and checksummed only
+for policies that set the limit.
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version

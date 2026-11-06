@@ -100,6 +100,7 @@ void ClaimPolicyConfig::validate() const
         || !fallbackAfterDecisions || fallbackAfterDecisions>65535
         || !maximumExpansions || maximumExpansions>4096
         || refreshSwitchMarginPermille>MaximumRefreshSwitchMarginPermille
+        || trafficWaitLimit>MaximumTrafficWaitLimit
         || (maxClaimDistanceFactorPermille && (maxClaimDistanceFactorPermille<MinimumClaimDistanceFactorPermille
             || maxClaimDistanceFactorPermille>MaximumClaimDistanceFactorPermille))
         || (claimOversubscriptionPermille!=UnlimitedClaimOversubscription
@@ -129,6 +130,8 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
     if(refreshSwitchMarginPermille)result["refresh_switch_margin_permille"]=refreshSwitchMarginPermille;
     if(terrainComponentPrefilter)result["terrain_component_prefilter"]=true;
+    if(trafficSidestep)result["traffic_sidestep"]=true;
+    if(trafficWaitLimit)result["traffic_wait_limit"]=trafficWaitLimit;
     if(maxClaimDistanceFactorPermille)result["max_claim_distance_factor_permille"]=maxClaimDistanceFactorPermille;
     if(claimOversubscriptionPermille==UnlimitedClaimOversubscription)result["claim_oversubscription_permille"]="unlimited";
     else if(claimOversubscriptionPermille!=ExactClaimOversubscriptionPermille)
@@ -189,6 +192,15 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
             if(permille && (permille<MinimumClaimDistanceFactorPermille || permille>MaximumClaimDistanceFactorPermille))
                 throw std::invalid_argument("claim distance factor permille out of range");
             result.maxClaimDistanceFactorPermille=permille;
+        }
+        else if(key=="traffic_sidestep") {
+            if(!value.is_boolean())throw std::invalid_argument("invalid traffic sidestep flag");
+            result.trafficSidestep=value.get<bool>();
+        }
+        else if(key=="traffic_wait_limit") {
+            const auto limit=number(value);
+            if(limit>MaximumTrafficWaitLimit)throw std::invalid_argument("traffic wait limit out of range");
+            result.trafficWaitLimit=limit;
         }
         else if(key=="claim_oversubscription_permille") {
             if(value.is_string()) {

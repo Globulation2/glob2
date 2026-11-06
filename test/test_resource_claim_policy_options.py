@@ -64,6 +64,16 @@ OVERSUBSCRIPTION_PARITY = [
 # Engine-reported (game run resolved config/digest) canonical JSON for the
 # production policy with each overhead experiment enabled.
 OVERHEAD_PARITY = {
+    'traffic_wait_limit': [
+        (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_wait_limit":8,"use_primary_gradient":false}'),
+         '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_wait_limit":8,"use_primary_gradient":false}',
+         'f2d4a00e14e48e9fb3d78a4c1a609de0c9a7a4d0d176ffe465fa9b35a0cbbbb3'),
+    ],
+    'traffic_sidestep': [
+        (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_sidestep":true,"use_primary_gradient":false}'),
+         '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"traffic_sidestep":true,"use_primary_gradient":false}',
+         'ee70546f9b3fa444862824d149d0b186dfc9f0ce7e235a9a761bf50a89376627'),
+    ],
     'max_claim_distance_factor_permille': [
         (json.loads('{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"max_claim_distance_factor_permille":3000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
          '{"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"max_claim_distance_factor_permille":3000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
@@ -218,6 +228,30 @@ class ClaimDistanceFactor(unittest.TestCase):
         for value, engine_json, engine_digest in OVERHEAD_PARITY['max_claim_distance_factor_permille']:
             self.assertEqual(canonical_policy(value), engine_json)
             self.assertEqual(policy_digest(value), engine_digest)
+
+
+class TrafficOptions(unittest.TestCase):
+    def test_defaults_are_omitted_and_domains_are_strict(self):
+        base = PARITY[0][0]
+        explicit = base | {'traffic_sidestep': False, 'traffic_wait_limit': 0}
+        self.assertEqual(canonical_policy(explicit), PARITY[0][1])
+        self.assertEqual(policy_digest(explicit), PARITY[0][2])
+        self.assertIn('"traffic_sidestep":true', canonical_policy(base | {'traffic_sidestep': True}))
+        for value in (1, 8, 64):
+            self.assertIn('"traffic_wait_limit":%d' % value, canonical_policy(base | {'traffic_wait_limit': value}))
+        for value in (65, -1, 2.0, True, '4'):
+            with self.assertRaises(ValueError):
+                validate_policy(base | {'traffic_wait_limit': value})
+        for value in (1, 'true', None):
+            with self.assertRaises(ValueError):
+                validate_policy(base | {'traffic_sidestep': value})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        for name in ('traffic_sidestep', 'traffic_wait_limit'):
+            self.assertIn(name, OVERHEAD_PARITY)
+            for value, engine_json, engine_digest in OVERHEAD_PARITY[name]:
+                self.assertEqual(canonical_policy(value), engine_json)
+                self.assertEqual(policy_digest(value), engine_digest)
 
 
 def journey_trace(release_reasons=None, filters=None):

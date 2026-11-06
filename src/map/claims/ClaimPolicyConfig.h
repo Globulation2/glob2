@@ -49,6 +49,13 @@ struct ClaimPolicyConfig
     static constexpr unsigned MaximumClaimOversubscriptionPermille=100000;
     static constexpr unsigned UnlimitedClaimOversubscription=UINT32_MAX;
     unsigned claimOversubscriptionPermille=ExactClaimOversubscriptionPermille;
+    // On a traffic-blocked next route cell, step to a legal free neighbour
+    // adjacent to a later route cell in the reanchor window, then rejoin.
+    bool trafficSidestep=false;
+    // After this many consecutive traffic waits, repair the route from the
+    // current cell around the sampled units (0 is unlimited waiting).
+    static constexpr unsigned MaximumTrafficWaitLimit=64;
+    unsigned trafficWaitLimit=0;
     // Reject candidates whose toroidal Chebyshev distance d from the unit has
     // 1000*d > permille*d_nearest + 1000*ClaimDistanceSlackTiles, where
     // d_nearest is the distance to the destination plane's nearest material

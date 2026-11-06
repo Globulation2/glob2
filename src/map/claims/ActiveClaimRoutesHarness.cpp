@@ -830,4 +830,48 @@ TEST_SUITE("ActiveClaimRoutes")
             else CHECK_FALSE(unit->activeMaterialClaim);
         }
     }
+
+    TEST_CASE("traffic sidestep and wait limit move past a unit blocking the next route cell")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        struct Arm { bool sidestep; unsigned limit; };
+        for(const auto arm:{Arm{false,0},Arm{true,0},Arm{false,3},Arm{true,2}}) for(bool text:{false,true}) {
+            CAPTURE(arm.sidestep);CAPTURE(arm.limit);CAPTURE(text);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;map.setMaterialDestinationsEnabled(true);
+            Config config;config.trafficSidestep=arm.sidestep;config.trafficWaitLimit=arm.limit;map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
+            unit->materialClaimPolicyState.decisionOrdinal=1;game.observeCompletedWorld();
+            const auto target=unit->activeMaterialClaim->access;
+            const auto distance=[&](int x,int y){return map.warpDistMax(x,y,int(target%map.getW()),int(target/map.getW()));};
+            const auto move=[&](int dx,int dy){map.setGroundUnit(unit->posX,unit->posY,NOGUID);unit->posX=(unit->posX+dx+map.getW())%map.getW();unit->posY=(unit->posY+dy+map.getH())%map.getH();map.setGroundUnit(unit->posX,unit->posY,unit->gid);};
+            const auto roundtrip=[&]{const auto before=map.activeClaimRouteChecksum(true);const auto bytes=saveRoutes(map,text);restoreRoutes(map,bytes,text);CHECK(saveRoutes(map,text)==bytes);CHECK(map.activeClaimRouteChecksum(true)==before);};
+            const auto boundary=[&]{map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();game.invalidateObservation();game.observeCompletedWorld();};
+            int dx=0,dy=0;
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            boundary();
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
+            const int blockedX=unit->posX+dx,blockedY=unit->posY+dy;
+            // An ordinary (mobile) unit: static routes ignore it, traffic does not.
+            REQUIRE(fixture.addUnit(WORKER,blockedX,blockedY));
+            const auto start=distance(unit->posX,unit->posY);
+            unsigned ready=0,waits=0;
+            for(unsigned decision=0;decision<16 && distance(unit->posX,unit->posY)>1;++decision) {
+                boundary();++unit->materialClaimPolicyState.decisionOrdinal;
+                const auto result=map.nextClaimRouteStep(*unit,&dx,&dy);
+                REQUIRE(result!=ResourceClaims::StepResult::Failed);
+                REQUIRE(unit->activeMaterialClaim);
+                if(result==ResourceClaims::StepResult::Ready) {
+                    CHECK_FALSE((unit->posX+dx==blockedX && unit->posY+dy==blockedY));
+                    move(dx,dy);++ready;
+                } else {++waits;roundtrip();}
+            }
+            if(!arm.sidestep && !arm.limit) {CHECK(ready==0);CHECK(waits==16);continue;}
+            CHECK(distance(unit->posX,unit->posY)<=1);CHECK(distance(unit->posX,unit->posY)<start);
+            if(arm.sidestep)CHECK(waits==0);
+            else CHECK(waits==arm.limit); // the last wait requests the repair
+        }
+    }
 }

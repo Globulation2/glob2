@@ -327,3 +327,32 @@ TEST_CASE("claim distance factor is omitted at its default and has a strict doma
         for(unsigned bad:{1u,999u,100001u}) {auto c=base;c.maxClaimDistanceFactorPermille=bad;CHECK_THROWS(c.validate());}
     }
 }
+TEST_CASE("traffic sidestep and wait limit are omitted at defaults and have strict domains" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        CHECK_FALSE(base.trafficSidestep);CHECK(base.trafficWaitLimit==0);
+        const auto canonical=base.canonicalJson();
+        CHECK(canonical.find("traffic_")==std::string::npos);
+        auto wire=nlohmann::json::parse(canonical);wire["traffic_sidestep"]=false;wire["traffic_wait_limit"]=0;
+        CHECK(ClaimPolicyConfig::parse(wire.dump()).digest()==base.digest());
+        wire["traffic_sidestep"]=true;
+        const auto sidestep=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(sidestep.trafficSidestep);CHECK(sidestep.digest()!=base.digest());CHECK(ClaimPolicyConfig::parse(sidestep.canonicalJson())==sidestep);
+        wire["traffic_sidestep"]=false;
+        for(unsigned limit:{1u,8u,64u}) {
+            wire["traffic_wait_limit"]=limit;const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+            CHECK(parsed.trafficWaitLimit==limit);CHECK(parsed.digest()!=base.digest());
+            CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("traffic_wait_limit")==limit);
+            CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+        }
+        for(const auto& invalid:{nlohmann::json(65),nlohmann::json(-1),nlohmann::json(2.0),nlohmann::json(true),nlohmann::json("4")}) {
+            CAPTURE(invalid.dump());wire["traffic_wait_limit"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        wire["traffic_wait_limit"]=0;
+        for(const auto& invalid:{nlohmann::json(1),nlohmann::json("true"),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());wire["traffic_sidestep"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        auto c=base;c.trafficWaitLimit=65;CHECK_THROWS(c.validate());
+    }
+}

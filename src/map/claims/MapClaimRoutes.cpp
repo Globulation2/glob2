@@ -173,7 +173,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
             if (observer) observer->policyExtension(Probe::PolicyExtension::PendingGradientStep);
             *dx = gx; *dy = gy; return true;
         };
-        const auto request = [&](ActiveRouteRuntime::State& state, bool direct) {
+        const auto request = [&](ActiveRouteRuntime::State& state, bool direct, bool avoidUnits = false) {
             if (state.pending) return false;
             if(config.usesRecovery()) {
                 const auto selection=beginClaimRecoverySelection(unit);
@@ -191,7 +191,8 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
             using C = SimulationSnapshot::Component;
             const auto mask = SimulationSnapshot::bit(C::Catalogs) | SimulationSnapshot::bit(C::Terrain)
                 | SimulationSnapshot::bit(C::Resources) | SimulationSnapshot::bit(C::Occupancy) | SimulationSnapshot::bit(C::Areas);
-            RouteInput input{game->observation().project(mask), profileOf(unit), current, waypoint};
+            // A traffic repair plans around the units sampled now (FrozenUnits).
+            RouteInput input{game->observation().project(mask), avoidUnits ? traffic : profileOf(unit), current, waypoint};
             input.radius = radius; input.maximumExpansions = config.maximumExpansions;
             input.presentTerrainHeuristic = true; input.diagnostics = observer!=nullptr;
             const auto reason=!state.identity.request?Probe::LiveEvent::RouteInitial:direct?Probe::LiveEvent::RouteRepair:Probe::LiveEvent::RouteRefresh;
@@ -262,6 +263,17 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
         // A refresh never discards a still usable route while its worker runs.
         if (!state.pending && !state.followingGradient && config.routeRefreshJ && ordinal - state.lastRefreshOrdinal >= config.routeRefreshJ)
             request(state, false);
+        if (config.trafficSidestep && state.cursor < state.route.cells.size() &&
+            current != (state.cursor ? state.route.cells[state.cursor-1] : state.start)) {
+            // After a sidestep, rejoin at the furthest window cell that is the
+            // current stance or one legal step away from it.
+            const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
+            for (auto j = limit; j-- > state.cursor;) {
+                const auto cell = state.route.cells[j];
+                if (cell == current) {state.cursor = unsigned(j + 1); break;}
+                if (warpDistMax(unit.posX,unit.posY,cell%getW(),cell/getW())==1) {state.cursor = unsigned(j); break;}
+            }
+        }
         const auto anchor = state.cursor ? state.route.cells[state.cursor-1] : state.start;
         const bool adjacentRejoin = state.cursor < state.route.cells.size() &&
             warpDistMax(unit.posX,unit.posY,state.route.cells[state.cursor]%getW(),state.route.cells[state.cursor]/getW())==1;
@@ -270,7 +282,41 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
         }
         const auto next = state.route.cells[state.cursor];
         if (!geometry(next)) {record(Probe::LiveEvent::GeometryContradiction);state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false; request(state,true); return waiting();}
-        if (!routePassable(live,next,traffic)) {record(Probe::LiveEvent::TrafficWait);return ResourceClaims::StepResult::Pending;}
+        if (!routePassable(live,next,traffic)) {
+            if (config.trafficSidestep) {
+                // A free legal neighbour that keeps route progress: adjacent to
+                // (or on) a later cell of the reanchor window, furthest first.
+                const auto limit = std::min<std::size_t>(state.cursor + 8, state.route.cells.size());
+                std::size_t best = 0; int bx = 0, by = 0;
+                for (int oy = -1; oy <= 1; ++oy) for (int ox = -1; ox <= 1; ++ox) {
+                    if (!ox && !oy) continue;
+                    const int cx = (unit.posX + ox + getW()) % getW(), cy = (unit.posY + oy + getH()) % getH();
+                    const auto cell = Uint32(coordToIndex(cx, cy));
+                    if (cell == next || !geometry(cell) || !routePassable(live, cell, traffic)) continue;
+                    for (auto j = limit; j-- > std::size_t(state.cursor) + 1;) {
+                        const auto later = state.route.cells[j];
+                        if (later == cell || warpDistMax(cx, cy, later % getW(), later / getW()) == 1) {
+                            if (j > best) {best = j; bx = ox; by = oy;}
+                            break;
+                        }
+                    }
+                }
+                if (best) {
+                    state.trafficWaits = 0;
+                    if (observer) observer->policyExtension(Probe::PolicyExtension::TrafficSidestep);
+                    *dx = bx; *dy = by; return ResourceClaims::StepResult::Ready;
+                }
+            }
+            record(Probe::LiveEvent::TrafficWait);
+            if (config.trafficWaitLimit && ++state.trafficWaits >= config.trafficWaitLimit) {
+                if (observer) observer->policyExtension(Probe::PolicyExtension::TrafficWaitLimit);
+                state.trafficWaits = 0;
+                state.route={};state.cacheRouteDigest(); state.cursor=0; state.reanchor=false; state.followingGradient=false;
+                request(state, true, true); return waiting();
+            }
+            return ResourceClaims::StepResult::Pending;
+        }
+        state.trafficWaits = 0;
         int sx=int(next%getW())-unit.posX, sy=int(next/getW())-unit.posY;
         if (sx>1)sx-=getW();else if(sx< -1)sx+=getW();
         if (sy>1)sy-=getH();else if(sy< -1)sy+=getH();
@@ -402,6 +448,7 @@ void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
             stream->writeEnterSection("refreshOrdinal");write64(stream,state.lastRefreshOrdinal);stream->writeLeaveSection();
             stream->writeUint8(state.reanchor,"reanchor"); stream->writeUint8(state.followingGradient,"followingGradient");
             stream->writeUint8(state.probeFinished,"probeFinished");
+            if(materialClaimPolicyConfig().trafficWaitLimit)stream->writeUint32(state.trafficWaits,"trafficWaits");
             stream->writeLeaveSection();
         }
         stream->writeEnterSection("claimRecoveryRoute");
@@ -495,6 +542,11 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
             const auto reanchor=stream->readUint8("reanchor"), tail=stream->readUint8("followingGradient");
             const auto finished=stream->readUint8("probeFinished");
             state.reanchor=reanchor;state.followingGradient=tail;state.probeFinished=finished;
+            // Present only for policies that set traffic_wait_limit.
+            if(materialClaimPolicyConfig().trafficWaitLimit) {
+                state.trafficWaits=stream->readUint32("trafficWaits");
+                if(state.trafficWaits>=materialClaimPolicyConfig().trafficWaitLimit)throw std::runtime_error("Invalid saved traffic wait count");
+            }
             stream->readLeaveSection();
             if(state.pathTarget>=cellCount() || state.pendingStart>=cellCount() || state.pendingTarget>=cellCount() ||
                 state.pathRadius>1 || state.pendingRadius>1 || reanchor>1 || tail>1 || finished>1 || (tail && !finished) ||
@@ -598,6 +650,7 @@ Uint32 Map::activeClaimRouteChecksum(bool includePending) const
             if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {
                 mix(state.pathTarget);mix(state.pathRadius);mix(state.pendingStart);mix(state.pendingTarget);mix(state.pendingRadius);
                 mix(state.lastRefreshOrdinal);mix(state.reanchor);mix(state.followingGradient);mix(state.probeFinished);
+                if(materialClaimPolicyConfig().trafficWaitLimit)mix(state.trafficWaits);
             }
         }
         for (const auto& output : pending) {
@@ -638,6 +691,7 @@ Uint32 Map::activeClaimSnapshotChecksum() const
             if(activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental) {
                 mix(state.pathTarget);mix(state.pathRadius);mix(state.pendingStart);mix(state.pendingTarget);mix(state.pendingRadius);
                 mix(state.lastRefreshOrdinal);mix(state.reanchor);mix(state.followingGradient);mix(state.probeFinished);
+                if(materialClaimPolicyConfig().trafficWaitLimit)mix(state.trafficWaits);
             }
         }
     }

@@ -31,6 +31,9 @@ struct ActiveRouteRuntime
         std::uint64_t lastRefreshOrdinal = 0;
         bool reanchor = false, followingGradient = false, probeFinished = false;
         bool awaitingAdmission = false;
+        // Consecutive traffic waits; saved and checksummed only when the
+        // policy sets traffic_wait_limit, so it is zero otherwise.
+        std::uint32_t trafficWaits = 0;
 
     };
     RoutePipeline pipeline;
