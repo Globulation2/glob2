@@ -358,6 +358,9 @@ void Team::syncStep(void)
 	int nbUsefulUnitsAlone = 0;
 	bool hasHealthyOrRecoveringUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
+	// Contention-triggered claims compare against where this team's workers
+	// were heading as its unit step begins (a no-op for every other policy).
+	map->prepareClaimContention(teamNumber);
 	// Select once per team. The usual loop has no aura branch per unit;
 	// pulse services still run immediately before that unit's normal update.
 	const auto stepUnits = [&]<bool areaPulse>() {

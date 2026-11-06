@@ -589,6 +589,25 @@ const ResourceClaims::ClaimPolicyConfig& Map::materialClaimPolicyConfig() const
     return materialClaimConfiguration?*materialClaimConfiguration:prototype;
 }
 
+bool Map::claimContentionEnabled() const
+{
+    return activeClaimPolicy==ResourceClaims::ActiveClaimPolicy::Experimental && materialClaimConfiguration
+        && materialClaimConfiguration->contentionTriggered();
+}
+
+void Map::prepareClaimContention(int team)
+{
+    if(claimContentionEnabled() && game)claimContention.rebuild(*this,team,game->stepCounter);
+}
+
+unsigned Map::claimContentionOthers(const Unit& unit,int material,int x,int y)
+{
+    const int team=unit.owner->teamNumber;
+    const Uint64 tick=game?game->stepCounter:0;
+    if(!claimContention.current(team,tick))claimContention.rebuild(*this,team,tick);
+    return claimContention.others(*this,unit,material,x,y,materialClaimPolicyConfig().contentionRadius);
+}
+
 Uint32 Map::materialClaimLimitPermille() const
 {
     static_assert(ResourceClaims::ClaimPolicyConfig::ExactClaimOversubscriptionPermille==ResourceClaims::Ledger::ExactLimitPermille);

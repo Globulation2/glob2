@@ -24,6 +24,9 @@ OPTIONS = {
     'traffic_sidestep': False,
     'traffic_wait_limit': 0,
     'claim_gradient_demand': False,
+    'claim_trigger': 'always',
+    'contention_min_workers': 3,
+    'contention_radius': 1,
 }
 # Enum values added after their key; a build must advertise them by name.
 ENUM_OPTIONS = {
@@ -40,6 +43,14 @@ MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE = 100000
 MAXIMUM_TRAFFIC_WAIT_LIMIT = 64
 MINIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE = 1000
 MAXIMUM_CLAIM_DISTANCE_FACTOR_PERMILLE = 100000
+# claim_trigger "contention": an unclaimed worker uses claims-off movement
+# unless at least contention_min_workers same-team fetchers of its material
+# (itself included) target cells within contention_radius of its target. The
+# two parameters must stay at their defaults unless the trigger is contention.
+CLAIM_TRIGGERS = ('always', 'contention')
+MINIMUM_CONTENTION_MIN_WORKERS = 2
+MAXIMUM_CONTENTION_MIN_WORKERS = 16
+MAXIMUM_CONTENTION_RADIUS = 4
 RECOVERY_V1 = {
     'recovery_source_version': 1,
     'recovery_cache_entries': 4,
@@ -71,6 +82,17 @@ def validate_policy(policy, capabilities=None):
     if oversubscription != 'unlimited' and (type(oversubscription) is not int or not
             MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE <= oversubscription <= MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE):
         raise ValueError('invalid claim oversubscription permille')
+    trigger = policy.get('claim_trigger', 'always')
+    if not isinstance(trigger, str) or trigger not in CLAIM_TRIGGERS:
+        raise ValueError('unknown claim trigger')
+    workers = policy.get('contention_min_workers', 3)
+    if type(workers) is not int or not MINIMUM_CONTENTION_MIN_WORKERS <= workers <= MAXIMUM_CONTENTION_MIN_WORKERS:
+        raise ValueError('invalid claim contention minimum workers')
+    radius = policy.get('contention_radius', 1)
+    if type(radius) is not int or not 0 <= radius <= MAXIMUM_CONTENTION_RADIUS:
+        raise ValueError('invalid claim contention radius')
+    if trigger != 'contention' and (workers != 3 or radius != 1):
+        raise ValueError('claim contention parameters require claim_trigger contention')
     if type(policy.get('claim_gradient_demand', False)) is not bool:
         raise ValueError('claim gradient demand option must be boolean')
     if type(policy.get('traffic_sidestep', False)) is not bool:

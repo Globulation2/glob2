@@ -31,6 +31,7 @@
 #include "map/claims/ActiveRouteRuntime.h"
 #include "map/claims/ClaimPolicyConfig.h"
 #include <fstream>
+#include <set>
 
 namespace
 {
@@ -1534,3 +1535,162 @@ TEST_CASE("claim gradient demand records pursuit evidence on the natural materia
         }
     }
 #endif
+
+namespace
+{
+// claim_trigger "contention" fixtures: inns needing wheat and free workers the
+// ordinary hiring step admits; the policy is the production v5 policy with the
+// contention trigger, optionally with the combined (combo A) options.
+ResourceClaims::ClaimPolicyConfig contentionPolicy(bool combined,unsigned minWorkers=3,unsigned radius=1)
+{
+    using Config=ResourceClaims::ClaimPolicyConfig;
+    Config c;c.sourceVersion=5;c.pattern="final-r32-exact24-assembled-v1";
+    c.patternFrame=Config::PatternFrame::NearestD4;c.destinationRefreshJ=12;c.opportunisticAdjacentPickup=true;
+    c.claimTrigger=Config::ClaimTrigger::Contention;c.contentionMinWorkers=minWorkers;c.contentionRadius=radius;
+    if(combined) {
+        c.refreshSwitchMarginPermille=250;c.fallback=Config::Fallback::ReleaseJob;c.claimGradientDemand=true;
+        c.pendingStep=Config::PendingStep::Gradient;c.maxClaimDistanceFactorPermille=2000;
+        c.trafficSidestep=true;c.trafficWaitLimit=8;c.terrainComponentPrefilter=true;
+    }
+    c.validate();
+    return c;
+}
+struct ContentionRun
+{
+    std::vector<std::vector<int>> units;   // per tick: x,y,targetX,targetY,validTarget,displacement,carried,claimed per unit
+    std::vector<Uint32> checksums;
+    unsigned maxClaimed=0,maxDistinctClaims=0;
+    bool claimedAndHarvested=false,claimFreeAfterHarvest=true;
+    int delivered=0;
+};
+enum class ContentionMode { Off, Contention, Combined };
+ContentionRun runContentionFixture(ContentionMode mode,unsigned participants,int workers,int inns,const std::vector<std::pair<int,int>>& stock,unsigned ticks)
+{
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=5311});
+    auto& game=f.game;auto& map=game.map;
+    map.computeExecutor().configure(participants);
+    game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
+    map.setMaterialDestinationsEnabled(true);
+    if(mode!=ContentionMode::Off)map.setMaterialClaimPolicyConfig(contentionPolicy(mode==ContentionMode::Combined));
+    CHECK(map.claimContentionEnabled()==(mode!=ContentionMode::Off));
+    std::vector<Building*> buildings;
+    for(int i=0;i<inns;++i) {
+        auto* inn=f.addBuilding("inn",20,2+5*i);REQUIRE(inn);
+        inn->maxUnitWorking=1;inn->setMaterial(WHEAT,0);inn->updateCallLists();buildings.push_back(inn);
+    }
+    std::vector<Unit*> units;
+    for(int i=0;i<workers;++i) {
+        auto* unit=f.addUnit(WORKER,4,6+i);REQUIRE(unit);
+        unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;unit->hungriness=0;units.push_back(unit);
+    }
+    for(const auto& [x,y]:stock) {REQUIRE(map.incResourceByIndex(x,y,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(x,y),WHEAT,1);}
+    ContentionRun run;
+    std::vector<bool> carried(units.size(),false),claimed(units.size(),false);
+    for(unsigned tick=0;tick<ticks;++tick) {
+        CAPTURE(tick);
+        f.step();
+        std::vector<int> row;unsigned holding=0;std::set<Uint32> accesses;
+        for(std::size_t i=0;i<units.size();++i) {
+            auto* u=units[i];REQUIRE(game.teams[0]->myUnits[Unit::GIDtoID(u->gid)]==u);
+            const bool has=u->hasCarriedMaterial(WHEAT);
+            if(u->activeMaterialClaim){++holding;accesses.insert(u->activeMaterialClaim->access);claimed[i]=true;}
+            if(has && !carried[i] && claimed[i])run.claimedAndHarvested=true;
+            // Harvest ends claim mode: no claim is held while carrying.
+            if(has && u->activeMaterialClaim)run.claimFreeAfterHarvest=false;
+            if(has)claimed[i]=false;
+            carried[i]=has;
+            row.insert(row.end(),{u->posX,u->posY,u->targetX,u->targetY,int(u->validTarget()),int(u->displacement),int(has),int(bool(u->activeMaterialClaim))});
+        }
+        run.maxClaimed=std::max(run.maxClaimed,holding);run.maxDistinctClaims=std::max(run.maxDistinctClaims,unsigned(accesses.size()));
+        run.units.push_back(row);run.checksums.push_back(game.checkSum());
+    }
+    for(auto* b:buildings)run.delivered+=b->material(WHEAT);
+    for(auto* u:units)u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);
+    return run;
+}
+}
+
+TEST_CASE("an uncrowded contention worker moves exactly as with claims off" * doctest::test_suite("ClaimContention"))
+{
+    glob2test::HeadlessGlobals globals;
+    const std::vector<std::pair<int,int>> stock{{12,8},{12,20},{26,14}};
+    const auto off=runContentionFixture(ContentionMode::Off,1,1,1,stock,3000);
+    for(auto mode:{ContentionMode::Contention,ContentionMode::Combined}) {
+        CAPTURE(int(mode));
+        const auto contention=runContentionFixture(mode,1,1,1,stock,3000);
+        CHECK(off.delivered>=2);CHECK(contention.delivered==off.delivered);
+        CHECK(contention.maxClaimed==0);
+        REQUIRE(contention.units.size()==off.units.size());
+        for(std::size_t tick=0;tick<off.units.size();++tick){CAPTURE(tick);REQUIRE(contention.units[tick]==off.units[tick]);}
+    }
+}
+
+TEST_CASE("crowded contention workers engage claims, spread, harvest and stay deterministic" * doctest::test_suite("ClaimContention"))
+{
+    glob2test::HeadlessGlobals globals;
+    // Five workers and five inns; one tight cluster of single-unit wheat.
+    std::vector<std::pair<int,int>> stock;
+    for(int y=7;y<=12;++y)for(int x=12;x<=13;++x)stock.emplace_back(x,y);
+    const auto off=runContentionFixture(ContentionMode::Off,1,5,5,stock,1200);
+    for(auto mode:{ContentionMode::Contention,ContentionMode::Combined}) {
+        CAPTURE(int(mode));
+        const auto one=runContentionFixture(mode,1,5,5,stock,1200);
+        const auto two=runContentionFixture(mode,2,5,5,stock,1200);
+        CHECK(one.maxClaimed>=3);
+        // Claims are exact capacity on single-unit stock: one holder per source.
+        CHECK(one.maxDistinctClaims==one.maxClaimed);
+        CHECK(one.claimedAndHarvested);CHECK(one.claimFreeAfterHarvest);
+        CHECK(one.delivered>=5);
+        MESSAGE("mode "<<int(mode)<<" delivered "<<one.delivered<<" (claims off "<<off.delivered<<"), max concurrent claims "<<one.maxClaimed);
+        REQUIRE(one.checksums.size()==two.checksums.size());
+        for(std::size_t tick=0;tick<one.checksums.size();++tick){CAPTURE(tick);REQUIRE(one.checksums[tick]==two.checksums[tick]);REQUIRE(one.units[tick]==two.units[tick]);}
+    }
+}
+
+TEST_CASE("contention decisions count same-material fetch targets on the torus and keep a held claim" * doctest::test_suite("ClaimContention"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=5311});
+    auto& game=f.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+    map.setMaterialClaimPolicyConfig(contentionPolicy(false,3,1));
+    auto* inn=f.addBuilding("inn",14,14);REQUIRE(inn);
+    const int w=map.getW();
+    std::vector<Unit*> units;
+    struct Cleanup { std::vector<Unit*>& units; ~Cleanup(){for(auto* u:units){u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);u->attachedBuilding=nullptr;}} } cleanup{units};
+    const auto fetcher=[&](int x,int y,int tx,int ty,int material=WHEAT) {
+        auto* u=f.addUnit(WORKER,x,y);REQUIRE(u);units.push_back(u);
+        u->attachedBuilding=inn;u->activity=Unit::ACT_FILLING;u->displacement=Unit::DIS_GOING_TO_RESOURCE;
+        u->destinationPurpose=material;u->medical=Unit::MED_FREE;u->targetX=tx;u->targetY=ty;u->setValidTarget(true);
+        return u;
+    };
+    // Self targets column 0; neighbours target the wrapped column w-1 and row +1.
+    auto* self=fetcher(4,4,0,8);auto* left=fetcher(5,4,w-1,8);
+    map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==1);
+    CHECK_FALSE(self->materialClaimDecision()); // 2 < 3: ordinary
+    auto* below=fetcher(6,4,1,9);
+    // Different material and out-of-radius targets never count.
+    auto* wood=fetcher(7,4,0,8,WOOD);auto* far=fetcher(8,4,3,8);(void)wood;(void)far;
+    map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==2);
+    CHECK(map.claimContentionOthers(*self,WOOD,0,8)==1);
+    CHECK(self->materialClaimDecision());       // 3 >= 3: claim path this decision
+    // An invalid ordinary target is not counted.
+    below->setValidTarget(false);map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==1);
+    CHECK_FALSE(self->materialClaimDecision());
+    // A held claim counts at its access and keeps its holder in claim mode,
+    // even uncrowded, until it is released; then the worker is ordinary.
+    const auto stock=Uint32(map.coordToIndex(10,20));
+    map.setResourceByIndex(10,20,WHEAT,1);map.setMaterialAmountSlot(stock,WHEAT,1);
+    REQUIRE(left->acquireMaterialClaimAt(stock));
+    const auto access=left->activeMaterialClaim->access;
+    map.prepareClaimContention(0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
+    CHECK(map.claimContentionOthers(*self,WHEAT,int(access%Uint32(w)),int(access/Uint32(w)))>=1);
+    CHECK(left->materialClaimDecision());
+    left->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Harvest);
+    left->targetX=20;left->targetY=2;map.prepareClaimContention(0);
+    CHECK_FALSE(left->materialClaimDecision());
+    CHECK_FALSE(left->usesMaterialClaimPickup());
+}

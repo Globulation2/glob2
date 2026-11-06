@@ -57,6 +57,10 @@ public:
         // only because the margin rejected every other candidate.
         Uint64 terrainPrefilterRejections=0,refreshMarginRejections=0,refreshMarginKept=0;
         std::array<Uint64,unsigned(PolicyExtension::Count)> policyExtensions{};
+        // claim_trigger "contention": resource decisions by mode, indexed by
+        // ContentionEvent. Tests are ordinary-mode decisions with a valid
+        // ordinary target; triggers are the tests that engaged claim selection.
+        std::array<Uint64,4> contention{};
     };
     struct Metrics {
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
@@ -96,6 +100,8 @@ public:
     enum class SelectionFilter : unsigned { TerrainComponent, RefreshMargin, RefreshMarginKept };
     void selectionFilter(SelectionFilter, Uint64 count=1) const;
     void policyExtension(PolicyExtension, Uint64 count=1) const;
+    enum class ContentionEvent : unsigned { OrdinaryDecision, Test, Trigger, ClaimModeDecision };
+    void contentionEvent(ContentionEvent) const;
     void moved(const Unit&, int oldX, int oldY) const;
     void routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent) const;
     const LiveMetrics& liveMetrics() const;

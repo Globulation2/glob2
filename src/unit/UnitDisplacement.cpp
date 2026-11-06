@@ -24,6 +24,12 @@ std::optional<Offset> materialPickup(Unit& unit)
 {
     auto& map=*unit.owner->map;
     if(!map.activeClaimsEnabled())return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
+    // Contention-triggered claims: a worker without a valid claim picks up
+    // exactly as with claims off; its harvest then uses takeHarvest too.
+    if(map.claimContentionEnabled()) {
+        unit.releaseInvalidActiveMaterialClaim();
+        if(!unit.activeMaterialClaim)return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
+    }
     const auto* observer=map.resourceClaimProbe();
     if(observer && !observer->observesDecisionOutcomes())observer=nullptr;
     std::optional<ResourceClaims::Probe::DecisionOutcome> outcome;
@@ -135,7 +141,7 @@ void Unit::handleDisplacement(void)
 					movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
 					stopAttachedForBuilding(false); break;
 				}
-				const bool gotResource = owner->map->activeClaimsEnabled()?takeActiveMaterialClaim():owner->map->takeHarvest(posX, posY, dx, dy,
+				const bool gotResource = usesMaterialClaimPickup()?takeActiveMaterialClaim():owner->map->takeHarvest(posX, posY, dx, dy,
 					static_cast<MaterialId>(destinationPurpose), owner->me);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.

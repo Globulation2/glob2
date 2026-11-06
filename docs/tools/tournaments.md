@@ -1119,6 +1119,24 @@ decision also records the same movement evidence `pathfindMaterial` records
 (moved, at-goal, goal-valid) and requests the field refresh on an invalid goal,
 so reactive refresh sees claim workers as it sees gradient followers. Decisions
 whose route is still computing record demand only.
+`claim_trigger` (`"always"` by default, or `"contention"`) with
+`contention_min_workers` (integer 2 to 16, default 3) and `contention_radius`
+(integer 0 to 4, default 1): with `"contention"`, a fetching worker without a
+claim takes the ordinary claims-off material step and pickup for that decision
+unless its ordinary target is crowded. A worker's target is its claimed access
+while it holds a claim, otherwise its valid ordinary `targetX`/`targetY` (the
+target projected by its previous ordinary decision); a worker with no valid
+target is never crowded. The decision is crowded when at least
+`contention_min_workers` same-team workers fetching the same material (going to
+or harvesting at a resource, claimed or not, itself included) target cells within
+toroidal Chebyshev `contention_radius` of its target; the worker then takes the
+claim path with every other configured option. A claimed worker stays in claim
+mode until the claim is released or harvested. The counts read a per-team target
+index rebuilt from unit state as each team starts its unit step, so it is derived
+and never saved. The two parameters are rejected unless the trigger is
+`"contention"`. Live probe summaries report `live.contention_counts`
+(`ordinary_decisions`, `contention_tests`, `contention_triggers`,
+`claim_mode_decisions`; version `live.contention_version`).
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version

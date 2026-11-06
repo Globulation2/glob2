@@ -63,6 +63,14 @@ public:
     void handleActiveMaterialMovement();
     // The claims-off natural/market material movement for one decision.
     void handleClassicMaterialMovement();
+    // With claims enabled: whether this resource decision uses claim movement.
+    // Always true except under claim_trigger "contention", where a worker
+    // without a claim uses ordinary movement unless its ordinary target is
+    // contended (observer telemetry counts each outcome).
+    bool materialClaimDecision();
+    // Whether pickup and harvest use the claim ledger: claims enabled, and
+    // under claim_trigger "contention" only while the worker holds a claim.
+    bool usesMaterialClaimPickup() const;
 	// Owner-thread hooks; excluded from immutable state record copies.
 	Unit* populationPrevious=nullptr;
 	Unit* populationNext=nullptr;

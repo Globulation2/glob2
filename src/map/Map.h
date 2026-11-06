@@ -7,6 +7,7 @@
 #include "claims/ActiveMaterialClaims.h"
 #include "claims/ClaimRecovery.h"
 #include "claims/ClaimTerrainComponents.h"
+#include "claims/ClaimContention.h"
 #include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
 namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
@@ -159,6 +160,9 @@ class Map
     std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
     // Derived from terrain only; never saved, checksummed or snapshotted.
     mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;
+    // Derived per-team target occupancy (claim_trigger contention); rebuilt from
+    // unit state before each team steps its units, never saved or checksummed.
+    ResourceClaims::ContentionIndex claimContention;
     std::array<Uint64,4> materialClaimFarmEpoch{};
     std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
 	void markClaim(size_t index) { claimChanges.mark(chunkGeometry.chunkOf(index)); }
@@ -830,6 +834,13 @@ public:
     std::shared_ptr<const ResourceClaims::TerrainComponentLabels> claimTerrainComponents(int movement) const
     { return claimTerrainComponentCache.labels(*this, movement); }
     Uint64 claimTerrainComponentRebuilds() const { return claimTerrainComponentCache.rebuilds(); }
+    //! Experimental policy with claim_trigger "contention".
+    bool claimContentionEnabled() const;
+    //! Snapshot the team target occupancy; Team::syncStep calls this before its units step.
+    void prepareClaimContention(int team);
+    //! Snapshot same-team workers other than `unit` fetching `material` whose
+    //! target lies within the policy radius of (x,y); snapshots lazily if stale.
+    unsigned claimContentionOthers(const Unit& unit,int material,int x,int y);
     ResourceClaims::DecisionToken observeMaterialClaimDecision(const Unit&, const Uint16* field);
     ResourceClaims::DecisionToken observeMaterialClaimPickupDecision(const Unit&, int x, int y);
     void finishMaterialClaimProbe();

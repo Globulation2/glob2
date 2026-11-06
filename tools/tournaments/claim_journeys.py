@@ -11,6 +11,8 @@ RELEASE_REASONS = ('harvest','route_failed','unit_state_changed','resource_deple
 SELECTION_FILTERS = ('terrain_prefilter_rejections','refresh_margin_rejections','refresh_margin_kept')
 POLICY_EXTENSIONS = ('pending_gradient_steps','traffic_sidesteps','traffic_wait_limit_repairs',
                      'distance_factor_rejections','fallback_gradient_decisions','claim_gradient_signals')
+# claim_trigger "contention" decision modes (observer-only, live summary).
+CONTENTION_COUNTS = ('ordinary_decisions','contention_tests','contention_triggers','claim_mode_decisions')
 MOVEMENT_KINDS = ('medical','claimed_resource','unclaimed_resource','return_to_job','idle','other')
 
 
@@ -71,7 +73,7 @@ class Validator:
         self.ids = set(); self.censored = 0; self.steps = 0; self.cost = 0
         self.events = [0]*len(EVENTS); self.phases = [0]*16
         # Release reasons and selection filters are additive; None for older traces.
-        self.release_reasons = None; self.selection_filters = None; self.policy_extensions = None
+        self.release_reasons = None; self.selection_filters = None; self.policy_extensions = None; self.contention = None
         self.journey_release_reasons = {}
 
     def row(self, row):
@@ -177,6 +179,14 @@ class Validator:
                     or not isinstance(extensions, dict) or set(extensions) != set(POLICY_EXTENSIONS)):
                 raise ValueError('invalid policy extension counters')
             self.policy_extensions = {key: natural(extensions[key], key) for key in POLICY_EXTENSIONS}
+        if 'contention_counts' in live or 'contention_version' in live:
+            contention = live.get('contention_counts')
+            if (type(live.get('contention_version')) is not int or live['contention_version'] != 1
+                    or not isinstance(contention, dict) or set(contention) != set(CONTENTION_COUNTS)):
+                raise ValueError('invalid contention counters')
+            self.contention = {key: natural(contention[key], key) for key in CONTENTION_COUNTS}
+            if self.contention['contention_triggers'] > self.contention['contention_tests']:
+                raise ValueError('contention triggers exceed tests')
         if 'route_status_counts' in live:
             statuses=live['route_status_counts']
             if live.get('route_status_names') != ['found','unreachable','cost_limit','expansion_limit'] or not isinstance(statuses,list) or len(statuses)!=4:

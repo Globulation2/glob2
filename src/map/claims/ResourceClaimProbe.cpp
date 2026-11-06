@@ -387,7 +387,9 @@ struct Probe::Impl
             {"policy_extension_version",1},{"policy_extension_counts",{{"pending_gradient_steps",live.policyExtensions[0]},
                 {"traffic_sidesteps",live.policyExtensions[1]},{"traffic_wait_limit_repairs",live.policyExtensions[2]},
                 {"distance_factor_rejections",live.policyExtensions[3]},{"fallback_gradient_decisions",live.policyExtensions[4]},
-                {"claim_gradient_signals",live.policyExtensions[5]}}},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
+                {"claim_gradient_signals",live.policyExtensions[5]}}},
+            {"contention_version",1},{"contention_counts",{{"ordinary_decisions",live.contention[0]},{"contention_tests",live.contention[1]},
+                {"contention_triggers",live.contention[2]},{"claim_mode_decisions",live.contention[3]}}},{"route_status_names",Json::array({"found","unreachable","cost_limit","expansion_limit"})},
             {"max_active",MaximumJourneys},{"max_admissions",std::min<unsigned>(MaximumJourneyAdmissions,config.maxSamples)},
             {"timeout_ticks",JourneyTimeout},{"continuation_policy","new-segment; inherited claims are not sampled acquisitions"},
             {"sampling_censored",bool(live.excludedCapacity || live.excludedLimit)},
@@ -985,6 +987,11 @@ void Probe::policyExtension(PolicyExtension kind,Uint64 count) const
 {
     if(impl->finished || impl->config.movementOnly)return;
     impl->live.policyExtensions.at(unsigned(kind))+=count;
+}
+void Probe::contentionEvent(ContentionEvent event) const
+{
+    if(impl->finished || impl->config.movementOnly)return;
+    ++impl->live.contention.at(unsigned(event));
 }
 void Probe::rawResourceProbes(unsigned material,Uint64 coordinates,Uint64 xyChecks,Uint64 attempts,Uint64 checks,Uint64 improvements,Uint64 finalSelections) const
 {

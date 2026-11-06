@@ -738,7 +738,7 @@ void Unit::handleMovementExitingBuilding()
 
 void Unit::handleMovementGoingToResource()
 {
-    if(owner->map->activeClaimsEnabled()) {
+    if(owner->map->activeClaimsEnabled() && materialClaimDecision()) {
         bool supplier=false;
         if(!activeMaterialClaim && attachedBuilding) {
             const auto* field=owner->map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementAccess(),attachedBuilding->fetchesFromMarkets(),attachedBuilding);

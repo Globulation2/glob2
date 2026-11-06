@@ -70,6 +70,20 @@ struct ClaimPolicyConfig
     static constexpr unsigned MaximumClaimDistanceFactorPermille=100000;
     static constexpr unsigned ClaimDistanceSlackTiles=4;
     unsigned maxClaimDistanceFactorPermille=0;
+    // Always: every fetching worker selects claims (the original behaviour).
+    // Contention: a worker without a claim follows ordinary (claims-off)
+    // material movement, and engages claim selection only for a decision on
+    // which at least contentionMinWorkers same-team workers fetching the same
+    // material (itself included) target cells within contentionRadius
+    // (toroidal Chebyshev) of its ordinary target. The two contention
+    // parameters must stay at their defaults unless the trigger is Contention.
+    enum class ClaimTrigger : std::uint8_t { Always, Contention };
+    ClaimTrigger claimTrigger=ClaimTrigger::Always;
+    static constexpr unsigned DefaultContentionMinWorkers=3,MinimumContentionMinWorkers=2,MaximumContentionMinWorkers=16;
+    static constexpr unsigned DefaultContentionRadius=1,MaximumContentionRadius=4;
+    unsigned contentionMinWorkers=DefaultContentionMinWorkers;
+    unsigned contentionRadius=DefaultContentionRadius;
+    bool contentionTriggered() const { return claimTrigger==ClaimTrigger::Contention; }
     unsigned recoveryCandidateCount(std::size_t coordinates) const;
     unsigned maximumRecoveryCandidateCount() const;
     static ClaimPolicyConfig parse(std::string_view);

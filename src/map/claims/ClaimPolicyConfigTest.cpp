@@ -383,3 +383,41 @@ TEST_CASE("claim gradient demand is omitted at its default and must be boolean" 
         }
     }
 }
+TEST_CASE("claim trigger and contention parameters are omitted at their defaults and strictly bounded" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    checkExistingIdentities();
+    for(const auto& base:{ClaimPolicyConfig{},productionPolicy()}) {
+        CHECK_FALSE(base.contentionTriggered());
+        const auto canonical=base.canonicalJson();
+        for(const char* key:{"claim_trigger","contention_min_workers","contention_radius"})CHECK(canonical.find(key)==std::string::npos);
+        auto wire=nlohmann::json::parse(canonical);
+        wire["claim_trigger"]="always";wire["contention_min_workers"]=3;wire["contention_radius"]=1;
+        CHECK(ClaimPolicyConfig::parse(wire.dump()).digest()==base.digest());
+        // Non-default contention parameters require the contention trigger.
+        {auto w=wire;w["contention_min_workers"]=4;CHECK_THROWS(ClaimPolicyConfig::parse(w.dump()));}
+        {auto w=wire;w["contention_radius"]=0;CHECK_THROWS(ClaimPolicyConfig::parse(w.dump()));}
+        wire["claim_trigger"]="contention";
+        const auto triggered=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(triggered.contentionTriggered());CHECK(triggered.digest()!=base.digest());
+        const auto triggeredWire=nlohmann::json::parse(triggered.canonicalJson());
+        CHECK(triggeredWire.at("claim_trigger")=="contention");
+        CHECK_FALSE(triggeredWire.contains("contention_min_workers"));CHECK_FALSE(triggeredWire.contains("contention_radius"));
+        CHECK(ClaimPolicyConfig::parse(triggered.canonicalJson())==triggered);
+        for(unsigned workers:{2u,5u,16u}) for(unsigned radius:{0u,2u,4u}) {
+            CAPTURE(workers);CAPTURE(radius);
+            auto w=wire;w["contention_min_workers"]=workers;w["contention_radius"]=radius;
+            const auto parsed=ClaimPolicyConfig::parse(w.dump());
+            CHECK(parsed.contentionMinWorkers==workers);CHECK(parsed.contentionRadius==radius);
+            CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);CHECK(parsed.digest()!=triggered.digest());
+        }
+        for(const auto& invalid:{nlohmann::json(1),nlohmann::json(17),nlohmann::json(-3),nlohmann::json(2.0),nlohmann::json("3"),nlohmann::json(true)}) {
+            CAPTURE(invalid.dump());auto w=wire;w["contention_min_workers"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(w.dump()));
+        }
+        for(const auto& invalid:{nlohmann::json(5),nlohmann::json(-1),nlohmann::json(1.0),nlohmann::json("1"),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());auto w=wire;w["contention_radius"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(w.dump()));
+        }
+        for(const auto& invalid:{nlohmann::json("Contention"),nlohmann::json("never"),nlohmann::json(1),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());auto w=wire;w["claim_trigger"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(w.dump()));
+        }
+    }
+}

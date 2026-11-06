@@ -373,6 +373,37 @@ bool Unit::takeActiveMaterialClaim()
     return taken;
 }
 
+bool Unit::usesMaterialClaimPickup() const
+{
+    const auto& map=*owner->map;
+    return map.activeClaimsEnabled() && (!map.claimContentionEnabled() || activeMaterialClaim.has_value());
+}
+
+bool Unit::materialClaimDecision()
+{
+    auto& map=*owner->map;
+    if(!map.claimContentionEnabled())return true;
+    using C=ResourceClaims::Probe::ContentionEvent;
+    const auto* probe=map.resourceClaimProbe();
+    // A held claim keeps the worker in claim mode until it is released or
+    // harvested; an invalid claim is released first, exactly as claim
+    // movement would, and the worker is tested afresh.
+    releaseInvalidActiveMaterialClaim();
+    if(activeMaterialClaim){if(probe)probe->contentionEvent(C::ClaimModeDecision);return true;}
+    // The contention test reads the target projected by this worker's last
+    // ordinary decision; without one there is nothing to be crowded about.
+    if(validTarget()) {
+        if(probe)probe->contentionEvent(C::Test);
+        const auto& config=map.materialClaimPolicyConfig();
+        if(map.claimContentionOthers(*this,destinationPurpose,targetX,targetY)+1>=config.contentionMinWorkers) {
+            if(probe)probe->contentionEvent(C::Trigger);
+            return true;
+        }
+    }
+    if(probe)probe->contentionEvent(C::OrdinaryDecision);
+    return false;
+}
+
 void Unit::handleActiveMaterialMovement()
 {
     auto& map=*owner->map;

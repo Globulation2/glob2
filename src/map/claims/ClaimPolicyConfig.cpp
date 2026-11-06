@@ -63,6 +63,7 @@ constexpr std::array SelectionNames{"first_available","closest_geometric"};
 constexpr std::array FallbackNames{"wait","roam","release_job","bounded_wait_release","gradient"};
 constexpr std::array RouteNames{"claimed_access","probe_then_gradient"};
 constexpr std::array PendingNames{"wait","direct_heading","gradient"};
+constexpr std::array TriggerNames{"always","contention"};
 unsigned number(const Json& value)
 {
     if(!(value.is_number_integer() || value.is_number_unsigned()) || value.is_number_float()
@@ -105,7 +106,11 @@ void ClaimPolicyConfig::validate() const
             || maxClaimDistanceFactorPermille>MaximumClaimDistanceFactorPermille))
         || (claimOversubscriptionPermille!=UnlimitedClaimOversubscription
             && (claimOversubscriptionPermille<ExactClaimOversubscriptionPermille
-                || claimOversubscriptionPermille>MaximumClaimOversubscriptionPermille)))
+                || claimOversubscriptionPermille>MaximumClaimOversubscriptionPermille))
+        || unsigned(claimTrigger)>=TriggerNames.size()
+        || contentionMinWorkers<MinimumContentionMinWorkers || contentionMinWorkers>MaximumContentionMinWorkers
+        || contentionRadius>MaximumContentionRadius
+        || (!contentionTriggered() && (contentionMinWorkers!=DefaultContentionMinWorkers || contentionRadius!=DefaultContentionRadius)))
         throw std::invalid_argument("invalid resource claim policy parameters");
 }
 std::string ClaimPolicyConfig::canonicalJson() const
@@ -137,6 +142,9 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(claimOversubscriptionPermille==UnlimitedClaimOversubscription)result["claim_oversubscription_permille"]="unlimited";
     else if(claimOversubscriptionPermille!=ExactClaimOversubscriptionPermille)
         result["claim_oversubscription_permille"]=claimOversubscriptionPermille;
+    if(contentionTriggered())result["claim_trigger"]=TriggerNames[unsigned(claimTrigger)];
+    if(contentionMinWorkers!=DefaultContentionMinWorkers)result["contention_min_workers"]=contentionMinWorkers;
+    if(contentionRadius!=DefaultContentionRadius)result["contention_radius"]=contentionRadius;
     if(sourceVersion==5) {result["pattern_format"]="mixed-v1";result["pattern_frame"]=patternFrame==PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1";}
     return result.dump();
 }
@@ -218,6 +226,19 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
                     throw std::invalid_argument("claim oversubscription permille out of range");
                 result.claimOversubscriptionPermille=permille;
             }
+        }
+        else if(key=="claim_trigger")result.claimTrigger=enumeration<ClaimTrigger>(value,TriggerNames);
+        else if(key=="contention_min_workers") {
+            // Bounded before assignment so the domain error names the key.
+            const auto count=number(value);
+            if(count<MinimumContentionMinWorkers || count>MaximumContentionMinWorkers)
+                throw std::invalid_argument("contention minimum workers out of range");
+            result.contentionMinWorkers=count;
+        }
+        else if(key=="contention_radius") {
+            const auto radius=number(value);
+            if(radius>MaximumContentionRadius)throw std::invalid_argument("contention radius out of range");
+            result.contentionRadius=radius;
         }
         else if(key=="pattern_format" && result.sourceVersion==5) {}
         else if(key=="pattern_frame" && result.sourceVersion==5) {

@@ -8,7 +8,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.tournaments.claim_policy import (OPTIONS, RECOVERY_V1, canonical_policy, normalized_policy,
     policy_digest, validate_policy)
-from tools.tournaments.claim_journeys import EVENTS, POLICY_EXTENSIONS, RELEASE_REASONS, Validator
+from tools.tournaments.claim_journeys import CONTENTION_COUNTS, EVENTS, POLICY_EXTENSIONS, RELEASE_REASONS, Validator
 
 
 def policy(version=2):
@@ -61,6 +61,20 @@ OVERSUBSCRIPTION_PARITY = [
 ]
 
 
+# Engine-reported (game run resolved config/digest) canonical JSON for the
+# production policy with claim_trigger contention, non-default contention
+# parameters, and the combined policy with contention.
+CONTENTION_PARITY = [
+        (json.loads('{"claim_trigger":"contention","destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"claim_trigger":"contention","destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         '98acfbb77cf8b6254a10eaa3ab19145a35dfbc38d566c15ece17415974b75fee'),
+        (json.loads('{"claim_trigger":"contention","contention_min_workers":4,"contention_radius":2,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+         '{"claim_trigger":"contention","contention_min_workers":4,"contention_radius":2,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+         '7e604396ac3e2a9072743adde4b0ae2461a23aa1a607926502ddb40ab3bdf1db'),
+        (json.loads('{"claim_gradient_demand":true,"claim_trigger":"contention","destination_refresh_j":12,"fallback":"release_job","fallback_after_decisions":16,"max_claim_distance_factor_permille":2000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"refresh_switch_margin_permille":250,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"terrain_component_prefilter":true,"traffic_sidestep":true,"traffic_wait_limit":8,"use_primary_gradient":false}'),
+         '{"claim_gradient_demand":true,"claim_trigger":"contention","destination_refresh_j":12,"fallback":"release_job","fallback_after_decisions":16,"max_claim_distance_factor_permille":2000,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"gradient","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"refresh_switch_margin_permille":250,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"terrain_component_prefilter":true,"traffic_sidestep":true,"traffic_wait_limit":8,"use_primary_gradient":false}',
+         '33d868c0ccd3e5afbf3765a8ffe809b18c3390c8a78a90bb64d6fa237cbd78ae'),
+]
 # Engine-reported (game run resolved config/digest) canonical JSON for the
 # production policy with each overhead experiment enabled.
 OVERHEAD_PARITY = {
@@ -300,6 +314,73 @@ class ClaimGradientDemand(unittest.TestCase):
         for value, engine_json, engine_digest in OVERHEAD_PARITY['claim_gradient_demand']:
             self.assertEqual(canonical_policy(value), engine_json)
             self.assertEqual(policy_digest(value), engine_digest)
+
+
+class ContentionTrigger(unittest.TestCase):
+    def test_defaults_are_omitted_and_existing_digests_unchanged(self):
+        base = PARITY[0][0]
+        explicit = base | {'claim_trigger': 'always', 'contention_min_workers': 3, 'contention_radius': 1}
+        self.assertEqual(policy_digest(explicit), PARITY[0][2])
+        self.assertEqual(canonical_policy(explicit), canonical_policy(base))
+        triggered = base | {'claim_trigger': 'contention'}
+        self.assertIn('"claim_trigger":"contention"', canonical_policy(triggered))
+        self.assertNotIn('contention_min_workers', canonical_policy(triggered | {'contention_min_workers': 3}))
+        self.assertNotEqual(policy_digest(triggered), policy_digest(base))
+
+    def test_domains_are_strict_and_parameters_need_the_trigger(self):
+        base = PARITY[0][0]
+        for workers in (2, 16):
+            validate_policy(base | {'claim_trigger': 'contention', 'contention_min_workers': workers})
+        for radius in (0, 4):
+            validate_policy(base | {'claim_trigger': 'contention', 'contention_radius': radius})
+        for bad in ({'claim_trigger': 'Contention'}, {'claim_trigger': 'never'}, {'claim_trigger': 1}, {'claim_trigger': None},
+                    {'claim_trigger': 'contention', 'contention_min_workers': 1},
+                    {'claim_trigger': 'contention', 'contention_min_workers': 17},
+                    {'claim_trigger': 'contention', 'contention_min_workers': 3.0},
+                    {'claim_trigger': 'contention', 'contention_min_workers': True},
+                    {'claim_trigger': 'contention', 'contention_radius': 5},
+                    {'claim_trigger': 'contention', 'contention_radius': -1},
+                    {'claim_trigger': 'contention', 'contention_radius': '1'},
+                    {'contention_min_workers': 4}, {'contention_radius': 0},
+                    {'claim_trigger': 'always', 'contention_radius': 2}):
+            with self.assertRaises(ValueError, msg=str(bad)):
+                validate_policy(base | bad)
+
+    def test_capabilities_must_advertise_non_default_values(self):
+        base = PARITY[0][0]
+        caps = {'resource_claims_policy_config_version': 5, 'resource_claims_active_policies': ['experimental'],
+            'resource_claims_policy_mixed_patterns': [{'name': base['pattern'], 'digest': base['pattern_digest'],
+                'format': base['pattern_format'], 'frame': base['pattern_frame']}]}
+        validate_policy(base | {'claim_trigger': 'always'}, caps)
+        for option in ({'claim_trigger': 'contention'}, {'claim_trigger': 'contention', 'contention_radius': 2}):
+            with self.assertRaises(ValueError):
+                validate_policy(base | option, caps)
+            validate_policy(base | option, caps | {'resource_claims_policy_options': sorted(OPTIONS)})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        self.assertEqual(len(CONTENTION_PARITY), 3)
+        for value, engine_json, engine_digest in CONTENTION_PARITY:
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
+
+    def test_live_contention_counts_are_read_and_checked(self):
+        schema, summary = journey_trace()
+        reader = Validator(schema); reader.finish(summary)
+        self.assertIsNone(reader.contention)
+        counts = {'ordinary_decisions': 9, 'contention_tests': 5, 'contention_triggers': 2, 'claim_mode_decisions': 7}
+        self.assertEqual(set(counts), set(CONTENTION_COUNTS))
+        schema, summary = journey_trace()
+        summary['live'] |= {'contention_version': 1, 'contention_counts': counts}
+        reader = Validator(schema); reader.finish(summary)
+        self.assertEqual(reader.contention, counts)
+        for broken in ({'contention_version': 2, 'contention_counts': counts},
+                       {'contention_version': 1, 'contention_counts': counts | {'other': 1}},
+                       {'contention_version': 1, 'contention_counts': counts | {'contention_triggers': 6}},
+                       {'contention_version': 1, 'contention_counts': counts | {'ordinary_decisions': -1}},
+                       {'contention_counts': counts}):
+            schema, summary = journey_trace(); summary['live'] |= broken
+            with self.assertRaises(ValueError):
+                Validator(schema).finish(summary)
 
 
 def journey_trace(release_reasons=None, filters=None):
