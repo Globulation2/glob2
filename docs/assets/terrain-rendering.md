@@ -433,10 +433,9 @@ of each crest and vanish along its flanks. A sample counts only its own
 material's clasts: a neighbour's grain that stops short of the surface would
 otherwise ring the water with surf.
 
-In Legacy GL views at more than native density, every mixed cell takes a
-full-detail coverage mask (32 to 128 texels a side, built by background
-workers nearest the view centre first); until a cell's mask lands it uses the
-native 16-texel mask, which squares off teeth and clasts.
+In Legacy GL every visible mixed cell takes a coverage mask at the display
+density (8 to 128 texels a side), built by background workers nearest the view
+centre first; until a cell's mask lands it draws its first material.
 
 Surf reads the same per-sample distance as seams, which is exact only within
 eight logical pixels of the edge, so each band and `reach_q8` plus

@@ -88,8 +88,6 @@ struct MapRenderState
     struct ResourceRowMetrics { std::uint64_t eligibilityCells = 0, frameCells = 0, animatedCells = 0; };
     ResourceRowMetrics resourceRowMetrics;
     std::size_t peakTerrainTextureBytes = 0;
-    // Benchmark only: force page rendering during transition measurements.
-    bool benchmarkForceTerrainPages = false;
     std::unique_ptr<ResourceRowCache> resourceRows;
 	DirectTerrain &directTerrain();
 	const DirectTerrain *existingDirectTerrain() const { return directTerrain_.get(); }

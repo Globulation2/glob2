@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
+#include <thread>
+#include <chrono>
 #include <Environment.h>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
@@ -15,6 +17,7 @@
 #include <SDL3/SDL.h>
 // Expose camera and settings widgets for deterministic integration checks.
 #include "TorusView.h"
+#include "render/terrain/DirectTerrain.h"
 #include "SettingsScreen.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
@@ -114,9 +117,18 @@ static void tiledCapture(bool hd = false)
     Game::ViewState baseline;
     baseline.render.animationTime = view.standaloneRender.animationTime;
     baseline.render.areaAnimationTick = 0;
-    glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
-                 baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
-    Sprite::flushBatches(globalContainer->gfx);
+    // A fresh view draws the overview until its terrain tables are ready, and
+    // mixed cells their first material until their masks land: draw the
+    // reference until it is complete.
+    for (int attempt = 0; attempt < 400; ++attempt)
+    {
+        glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
+                     baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
+        Sprite::flushBatches(globalContainer->gfx);
+        const auto *direct = baseline.render.existingDirectTerrain();
+        if (!direct || (!direct->preparing() && direct->pendingHdMasks() == 0)) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    }
     std::vector<unsigned char> pixels(2048 * 2048 * 4);
     glReadPixels(0, 0, 2048, 2048, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
