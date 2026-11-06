@@ -205,7 +205,7 @@ bare splines' slope direction, so a contour displaced by teeth cannot fold back
 into islands or overhangs.
 
 **Clasts** are grains a material sheds across its own edges, whatever it meets:
-`clasts` is `none`, `round` (soil; the shipped sand sets `none`) or `angular` (irregular chips at a
+`clasts` is `none`, `round` (soil; the shipped sand and snow set `none`) or `angular` (irregular chips at a
 hashed rotation, for rock and ice), and `speckle_q8` of the material's own
 profile sets their reach. Half the cells of an 8-pixel world grid hold one,
 2.5 to 5.5 pixels across, and each pushes its material's border out by a hashed
