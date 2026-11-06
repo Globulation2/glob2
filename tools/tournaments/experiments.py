@@ -39,18 +39,6 @@ class Planner:
             raise ValueError('build does not advertise movement-only observer version 1')
         if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') not in (1, 2) for build in self.builds):
             raise ValueError('build does not advertise active claim probe version 1 or 2')
-        if config.get('resource_claims_deep_missing') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_missing_version') != 1 for build in self.builds):
-            raise ValueError('build lacks missing capture capability')
-        if 'resource_claims_capture_only' in config and (config['resource_claims_capture_only'] is not True or 'resource_claims_deep_top_k' not in config or any(self.bundles[build]['capabilities'].get('resource_claims_capture_only_version') != 1 for build in self.builds)):
-            raise ValueError('capture-only requires numeric top-k and capability1')
-        if 'resource_claims_deep_top_k' in config and (type(config['resource_claims_deep_top_k']) is not int or not 1 <= config['resource_claims_deep_top_k'] <= 64 or any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') not in ((5,) if config['resource_claims_deep_top_k'] > 16 else (4, 5)) or self.bundles[build]['capabilities'].get('resource_claims_deep_topk_max', 0) < config['resource_claims_deep_top_k'] for build in self.builds)):
-            raise ValueError('bundle lacks configured V4 top-k capture')
-        if config.get('resource_claims_deep_top_four') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') not in (3, 4, 5) for build in self.builds):
-            raise ValueError('bundle lacks V3 top-four capture')
-        if config.get('resource_claims_deep_stratified') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_stratified_version') != 2 for build in self.builds):
-            raise ValueError('stratified deep capture requires capability V2')
-        if 'resource_claims_deep_context' in config and any(self.bundles[build]['capabilities'].get('resource_claims_deep_version') != 1 for build in self.builds):
-            raise ValueError('build does not advertise deep claim capture version 1')
         if 'material_destinations' in config:
             if type(config['material_destinations']) is not bool:
                 raise ValueError('material_destinations must be a boolean')
@@ -132,7 +120,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'resource_claims_capture_only', 'resource_claims_deep_top_k', 'resource_claims_deep_missing', 'resource_claims_missing_sample_every') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -184,7 +172,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'resource_claims_capture_only', 'resource_claims_deep_top_k', 'resource_claims_deep_missing', 'resource_claims_missing_sample_every') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)

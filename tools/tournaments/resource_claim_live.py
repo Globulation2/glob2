@@ -80,17 +80,13 @@ def fractional_configs(control, factors):
 
 
 def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery',
-         deep_capture=False, round_id='live-round1', max_jobs=256, campaign_bytes=32*GiB, disk_reserve_bytes=8*GiB,
+         round_id='live-round1', max_jobs=256, campaign_bytes=32*GiB, disk_reserve_bytes=8*GiB,
          additional_reserved_bytes=0, free_bytes=None):
     """Reuse every selected original tuple for every policy, never repair draws."""
     if stage not in ('factor', 'interaction', 'confirmation') or partition not in ('discovery', 'holdout'):
         raise ValueError('invalid stage or partition')
     if not isinstance(round_id, str) or not round_id or len(round_id) > 128:
         raise ValueError('explicit bounded live round identity required')
-    if type(deep_capture) is not bool or deep_capture and stage != 'confirmation':
-        raise ValueError('deep capture is an explicit confirmation-stage option')
-    if deep_capture and bundle['capabilities'].get('resource_claims_deep_version') != 1:
-        raise ValueError('bundle does not advertise deep capture')
     if partition == 'holdout' and stage != 'confirmation':
         raise ValueError('holdout only permitted in explicit confirmation stage')
     if digest({k: v for k, v in split.items() if k != 'identity'}) != split.get('identity'):
@@ -133,25 +129,13 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
     if not originals or len(originals)*len(configs) > max_jobs:
         raise ValueError('paired stage exceeds job budget; explicitly select a smaller config batch')
     jobs = []
-    deep_splits = {}
-    if deep_capture:
-        for row in configs:
-            key = policy_digest(row['policy'])
-            deep_cohort = digest(['claims-live-deep-v1', split['cohort_identity'], split['identity'], bundle['id'], key, stage, round_id])
-            capture_split = {'version': 1, 'source_identity': bundle['source_revision'],
-                'cohort_identity': deep_cohort, 'policy_digest': key,
-                'games': copy.deepcopy(split['games']),
-                'strata': copy.deepcopy(split.get('strata', {})),
-                'original_split_identity': split['identity'], 'round_id': round_id}
-            capture_split['identity'] = digest(capture_split)
-            deep_splits[key] = capture_split
     for original in originals:
         if original['type'] != 'game' or original['inputs'] or original.get('depends_on'):
             raise ValueError('expected frozen new-game inline tuples without external dependencies')
         for row in configs:
             config = copy.deepcopy(original['config'])
             probe = config.pop('resource_claims_shadow', config.pop('resource_claims_probe', None))
-            for key in ('resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context'):
+            for key in ('resource_claims_active', 'resource_claims_policy'):
                 config.pop(key, None)
             if not isinstance(probe, dict):
                 raise ValueError('frozen cohort must include bounded probe settings')
@@ -171,18 +155,8 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             labels['require_gameplay_telemetry']=True
             if needs_movement:
                 labels['require_movement_audit']=True
-            outputs['required'] = [name for name in outputs.get('required', []) if not name.startswith('resource-claims-deep/')]
             if 'resource-claims-shadow.jsonl.gz' not in outputs['required']:
                 outputs['required'].append('resource-claims-shadow.jsonl.gz')
-            if deep_capture:
-                capture_split = deep_splits[key]
-                capture_game = labels['initial_state_identity']
-                config['resource_claims_deep_context'] = {
-                    'source_revision': bundle['source_revision'], 'bundle_id': bundle['id'],
-                    'cohort_id': capture_split['cohort_identity'], 'game_id': capture_game}
-                labels['deep_game_identity'] = capture_game
-                labels['deep_split_identity'] = capture_split['identity']
-                outputs['required'].append('resource-claims-deep/manifest.json')
             limits = copy.deepcopy(original['limits'])
             if any(type(limits.get(k)) is not int or limits[k] <= 0 for k in ('artifact_bytes', 'log_bytes')):
                 raise ValueError('each attempt needs explicit artifact and log caps')
@@ -196,7 +170,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
         raise ValueError('worst-case attempts plus spool and additional reservations exceed campaign budget')
     if free_bytes is not None and free_bytes-reserved < disk_reserve_bytes:
         raise ValueError('planned allocation would violate free-space reserve')
-    identity = digest([cohort['id'], split['identity'], bundle['id'], stage, partition, round_id, deep_capture, configs])
+    identity = digest([cohort['id'], split['identity'], bundle['id'], stage, partition, round_id, configs])
     result = {'schema_version': 1, 'id': f'claims-live-{stage}-{bundle["source_revision"][:10]}-{identity[:12]}',
         'kind': 'ai_comparison', 'jobs': jobs,
         'settings': {'artifact_budget_bytes': campaign_bytes, 'disk_reserve_bytes': disk_reserve_bytes,
@@ -209,8 +183,6 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             'storage_model': 'one attempt per job plus equally sized spool/transfer copy; retries require a new budget review; explicit other reservations',
             'selection_allowed': False, 'dispatch_authorized': False,
             'paired_inputs': 'Original tuple/seeds/seats/stopping rule and split preserved; no policy-dependent resampling.',
-            'deep_capture': deep_capture, 'deep_splits': deep_splits,
-            'deep_context_identity': 'Per-policy, source bundle and round, independent of batch membership; original game IDs and split roles preserved.',
             'release_gate': 'Native validation, resource allocation, and explicit stage review before submission.'}}
     validate_experiment(result)
     return result
@@ -226,7 +198,6 @@ def main():
     create.add_argument('--stage', choices=('factor', 'interaction', 'confirmation'), default='factor')
     create.add_argument('--partition', choices=('discovery', 'holdout'), default='discovery')
     create.add_argument('--round-id', default='live-round1')
-    create.add_argument('--deep-capture', action='store_true')
     create.add_argument('--max-jobs', type=int, default=256)
     create.add_argument('--campaign-bytes', type=int, default=32*GiB)
     create.add_argument('--disk-reserve-bytes', type=int, default=8*GiB)
@@ -239,7 +210,7 @@ def main():
         result = fractional_configs(read(args.control), read(args.factors))
     else:
         result = plan(read(args.cohort), read(args.split), read(args.bundle), read(args.configs)['configs'],
-            stage=args.stage, partition=args.partition, deep_capture=args.deep_capture, round_id=args.round_id, max_jobs=args.max_jobs,
+            stage=args.stage, partition=args.partition, round_id=args.round_id, max_jobs=args.max_jobs,
             campaign_bytes=args.campaign_bytes, disk_reserve_bytes=args.disk_reserve_bytes,
             additional_reserved_bytes=args.additional_reserved_bytes,
             free_bytes=shutil.disk_usage(Path(args.output).resolve().parent).free)

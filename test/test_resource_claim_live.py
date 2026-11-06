@@ -30,8 +30,8 @@ def fixture():
                     'players': ['cortex', 'maxima'], 'ticks': 180000, 'experiments': ['farm-areas'],
                     'material_destinations': True, 'resource_claims_shadow': {
                         'sample_every': 256, 'max_samples': 32768, 'max_bytes': 134217728},
-                    'resource_claims_deep_context': {'source_revision': 'old'}, 'win_probability_permille': 950},
-            outputs={'required': ['resource-claims-shadow.jsonl.gz', 'resource-claims-deep/manifest.json']},
+                    'win_probability_permille': 950},
+            outputs={'required': ['resource-claims-shadow.jsonl.gz']},
             limits={'artifact_bytes': 1024, 'log_bytes': 512, 'timeout_seconds': 21600},
             labels={'initial_state_identity': game, 'discovery_split': split['games'][game], 'farm_mode': split['strata'][game]}))
     return p, bundle, split, {'id': 'frozen32', 'jobs': jobs, 'design': {'split_identity': split['identity']}}
@@ -107,7 +107,6 @@ class LivePlans(unittest.TestCase):
             self.assertEqual(item['labels']['initial_state_identity'], 'g1')
             self.assertEqual(item['labels']['discovery_split'], 'discovery')
             self.assertNotIn('resource_claims_shadow', item['config'])
-            self.assertNotIn('resource_claims_deep_context', item['config'])
             self.assertEqual(item['build'], bundle['id'])
             self.assertEqual(item['outputs']['log_mode'],'gameplay')
             self.assertIn('team-timeline',item['outputs']['telemetry'])
@@ -128,25 +127,6 @@ class LivePlans(unittest.TestCase):
         invalid = copy.deepcopy(bundle); invalid['capabilities']['resource_claims_policy_patterns'] = []
         with self.assertRaises(ValueError): plan(cohort, split, invalid, configs)
         with self.assertRaises(ValueError): plan(cohort | {'jobs': cohort['jobs'][:1]}, split, bundle, configs)
-
-    def test_deep_confirmation_context_is_policy_specific_and_batch_stable(self):
-        p, bundle, split, cohort = fixture()
-        bundle['capabilities']['resource_claims_deep_version'] = 1
-        configs = [{'label':'control','policy':p}, {'label':'heading','policy':p|{'pending_step':'direct_heading'}}]
-        with self.assertRaises(ValueError):plan(cohort,split,bundle,configs,deep_capture=True)
-        full=plan(cohort,split,bundle,configs,stage='confirmation',deep_capture=True)
-        single=plan(cohort,split,bundle,configs[:1],stage='confirmation',deep_capture=True)
-        contexts=[j['config']['resource_claims_deep_context'] for j in full['jobs']]
-        self.assertEqual(contexts[0]['game_id'],contexts[1]['game_id'])
-        self.assertEqual(contexts[0]['game_id'],'g1')
-        self.assertNotEqual(contexts[0]['cohort_id'],contexts[1]['cohort_id'])
-        self.assertEqual(contexts[0],single['jobs'][0]['config']['resource_claims_deep_context'])
-        self.assertEqual(full['jobs'][0]['id'],single['jobs'][0]['id'])
-        self.assertEqual(full['jobs'][0]['labels']['initial_state_identity'],'g1')
-        self.assertIn('resource-claims-deep/manifest.json',full['jobs'][0]['outputs']['required'])
-        captured=full['design']['deep_splits'][policy_digest(p)]
-        self.assertEqual(captured['games'][contexts[0]['game_id']],'discovery')
-        self.assertEqual(captured['original_split_identity'],split['identity'])
 
     def test_fraction_is_small_explicit_and_validated(self):
         p, _, _, _ = fixture()

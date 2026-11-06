@@ -44,7 +44,7 @@ class MovementOnly(unittest.TestCase):
         self.assertNotIn('--resource-claims-shadow',command);self.assertNotIn('--resource-claims-probe',command)
         with self.assertRaisesRegex(ValueError,'bundle lacks'):
             adapter.command(request,bundle|{'capabilities':{}},'/attempt',{'save':'/save.gz'})
-        for key in ('resource_claims_shadow','resource_claims_probe','resource_claims_deep_context'):
+        for key in ('resource_claims_shadow','resource_claims_probe'):
             bad=copy.deepcopy(request);bad['config'][key]={}
             with self.subTest(key=key),self.assertRaises(ValueError):adapter.validate(bad)
 

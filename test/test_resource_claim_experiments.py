@@ -119,47 +119,6 @@ class ResourceClaimExperiments(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'saved game'):
             validate_job(saved)
 
-    def test_deep_context_forwarding_requires_observer_and_manifest(self):
-        item = plan(self.bundle())['jobs'][0]
-        context = {'source_revision':'source','bundle_id':item['build'],'cohort_id':'cohort','game_id':'game'}
-        item['config']['resource_claims_deep_context'] = context
-        with self.assertRaisesRegex(ValueError, 'manifest'):
-            EngineJob('game').validate(item)
-        item['outputs']['required'].append('resource-claims-deep/manifest.json')
-        EngineJob('game').validate(item)
-        command = EngineJob('game').command(item, {'directory':'/bundle','executable':'glob2','source_revision':'source'}, '/attempt', {})
-        self.assertEqual(json.loads(command[command.index('--resource-claims-deep-context')+1]),context)
-        item['config']['resource_claims_deep_context'] = context | {'game_id':''}
-        with self.assertRaisesRegex(ValueError, 'bounded'):
-            EngineJob('game').validate(item)
-
-    def test_deep_collector_requires_complete_uncensored_context(self):
-        from tools.resource_claim_deep import DESIGN
-        item=plan(self.bundle())['jobs'][0]
-        context={'source_revision':'source','bundle_id':item['build'],'cohort_id':'cohort','game_id':'game'}
-        item['config']['resource_claims_deep_context']=context
-        item['outputs']['required'].append('resource-claims-deep/manifest.json')
-        with tempfile.TemporaryDirectory() as directory:
-            output=Path(directory)/'output';deep=output/'resource-claims-deep';deep.mkdir(parents=True)
-            result={'schema_version':1,'status':'completed','resolved':{'material_destinations_enabled':True},
-                    'resource_claims_shadow':{'schema_version':1,'enforced':False,'submitted':1,'completed':1}}
-            (output/'result.json').write_text(json.dumps(result))
-            rows=trace();rows[0].update(sample_every=item['config']['resource_claims_shadow']['sample_every'],
-                max_samples=item['config']['resource_claims_shadow']['max_samples'],
-                max_output_bytes=item['config']['resource_claims_shadow']['max_bytes'])
-            with gzip.open(output/ARTIFACT,'wt') as f:f.write(stream(rows).getvalue())
-            manifest={'version':1,'complete':True,'censored':False,'design':DESIGN,'context':context,'eligible':0,
-                'ordinal':0,'captured_ordinal':0,'replacements':0,'file_sha256':'','excluded_eligible_admission':0,
-                'excluded_eligible_sample_cap':0,'excluded_eligible_queue_cap':0}
-            for change in ({'complete':False},{'censored':True},{'context':{}},{'eligible':-1},{'captured_ordinal':1},
-                           {'excluded_eligible_sample_cap':1,'excluded_eligible_admission':1}):
-                (deep/'manifest.json').write_text(json.dumps(manifest|change))
-                with self.assertRaises(ValueError):EngineJob('game').collect(item,directory)
-            (deep/'manifest.json').write_text(json.dumps(manifest))
-            self.assertEqual(EngineJob('game').collect(item,directory),result)
-            (deep/'event.bin').write_bytes(b'unexpected')
-            with self.assertRaisesRegex(ValueError,'zero-eligible'):EngineJob('game').collect(item,directory)
-
     def test_active_probe_config_and_per_event_mode_attestation(self):
         item = plan(self.bundle())['jobs'][0]
         item['config']['resource_claims_probe'] = item['config'].pop('resource_claims_shadow')
