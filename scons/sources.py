@@ -141,6 +141,7 @@ CLIENT_SOURCES = (
     'game/rules/CustomGameRules.cpp',
     'game/screens/CustomGameScreen.cpp',
     'render/clouds/DynamicClouds.cpp',
+    'render/clouds/IntroCover.cpp',
     'map/editor/screens/EditorMainMenu.cpp',
     'game/screens/EndGameScreen.cpp',
     'engine/Engine.cpp',

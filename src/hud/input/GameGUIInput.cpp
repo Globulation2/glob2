@@ -124,8 +124,34 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	return true;
 }
 
+bool GameGUI::introCoverConsumes(const SDL_Event &event)
+{
+	const Uint64 now = SDL_GetTicks();
+	if (!introCover.blocksInput(now))
+		return false;
+	switch (event.type)
+	{
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_FINGER_DOWN:
+		introCover.skip(now);
+		return true;
+	case SDL_EVENT_KEY_UP:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	case SDL_EVENT_MOUSE_WHEEL:
+	case SDL_EVENT_FINGER_UP:
+	case SDL_EVENT_FINGER_MOTION:
+	case SDL_EVENT_TEXT_INPUT:
+		return true;
+	default:
+		return false;
+	}
+}
+
 void GameGUI::processEvent(SDL_Event *event)
 {
+	if (introCoverConsumes(*event))
+		return;
     // Live diagnostic dumps and dialog construction are exceptional owner work.
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
     const bool ownerDialog = gameMenuScreen && inGameMenu != IGM_TELEMETRY

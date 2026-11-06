@@ -100,7 +100,7 @@ GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader player
         globalContainer->settings.gameSpeed = speed;
     }
     // Without this, a generated map falls back to a name-based library
-    // lookup ("Random map" -> maps/Random_map.map) that never exists; a
+    // lookup (a generator's name -> maps/<name>.map) that never exists; a
     // premade map's on-disk path can also legitimately differ from its
     // declared map name (user libraries, duplicate names).
     co_return co_await initGameTask(map, players, true, false, false, sourceFileName);
