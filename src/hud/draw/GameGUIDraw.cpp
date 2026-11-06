@@ -110,7 +110,8 @@ void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
         GAGGUI::ui::SurfaceCanvas canvas(*globalContainer->gfx, theme,
             GAGGUI::ui::resolvePresentation(*globalContainer->gfx, theme.touchTextScale));
         canvas.fillRounded({control.x + 5, control.y + 5, 22, 22}, 11, theme.palette.panel);
-        canvas.drawIcon({control.x + 7, control.y + 7, 18, 18}, *Glob2UI::uiIcon(Glob2UI::UIIcon::Map), theme.palette.ink);
+        if (!panelMapIcon) panelMapIcon = Glob2UI::uiIcon(Glob2UI::UIIcon::Map);
+        canvas.drawIcon({control.x + 7, control.y + 7, 18, 18}, *panelMapIcon, theme.palette.ink);
     }
 }
 

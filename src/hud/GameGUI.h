@@ -6,6 +6,7 @@
 namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 #include <ui/PositionedControls.h>
+#include <ui/Icon.h>
 
 #include <InputState.h>
 #include <functional>
@@ -530,6 +531,9 @@ private:
 	void drawPanelButtons(int y);
 	//! Draw a single button of the panel
 	void drawPanelButton(int y, int pos, int numButtons, int sprite);
+	// Held for the HUD's life: the icon cache releases icons nobody keeps, so a
+	// temporary reference would reload its images every frame.
+	std::shared_ptr<const GAGGUI::ui::IconAsset> panelMapIcon;
 	//! Draw a choice of buildings or flags. Thin coordinator over the four helpers below.
 	//! `panelTopY` is the single Y origin for both the sprite grid and the mouse hit grid;
 	//! all four helpers anchor to it so layout and hit-test cannot drift apart.
