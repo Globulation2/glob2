@@ -183,21 +183,17 @@ A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders
 `wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends),
 `squareness_q8` (0 round to 256 square corners), `detail_q8` (0–1024, Q8 pixels
 of fine roughness on a 16-pixel lattice) and `jagged_q8` (0–2048, Q8 pixels of
-grit). Grit breaks a contour into straight-sided teeth with sharp tips on both
-sides, like the authored rough contours of earlier catalogs. Most of it is
-teeth along the contour: triangle waves of world x and y with a 16-pixel period,
-blended by the squared components of the contour's direction and phased per
-material pair, so edges of any heading are serrated and the teeth wrap with the
-map. The rest is pyramid grit: one hashed feature point per cell of 16- and
-8-pixel lattices, each a square pyramid turned by its own angle, which breaks
-the teeth's regularity. Teeth fade in only where both materials' fields have
-risen. `feather_q8` and `bridge_q8` keep their meanings.
+grit). Grit is fractal noise of world position: octaves on 32-, 16-, 8- and
+4-pixel lattices, each about 0.6 the strength of the last, the two finest
+ridged (folded at zero into sharp creases). Their sum is boosted and clipped to
+its bound, so contours break up irregularly at every scale with no regular
+rhythm, like a natural coastline. `feather_q8` and `bridge_q8` keep their meanings.
 
 A rough profile that names none of these takes them from its contour strength,
 `amplitude_q8 × roughness_q8 / 256`: a quarter of it as `wiggle_q8`, an eighth
-as `detail_q8`, and that strength times `roughness_q8 / 256` again as
-`jagged_q8`. Rock therefore breaks into teeth, soil, sand and turf roughen, and
-a beach stays smooth. A profile without roughness (foliage that hides its own
+as `detail_q8`, and that strength times `(roughness_q8 + 256) / 512` as
+`jagged_q8`. Rock therefore breaks up most, soil, sand and turf roughen, and a
+beach is only slightly irregular. A profile without roughness (foliage that hides its own
 edge) gets square corners. Smooth profiles (roads, tracks, liquids, lava) keep
 their clean lines. `roughness_q8` and `contours_q12` no longer shape version-4
 contacts directly.

@@ -171,15 +171,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.shearScale = version >= 3 ? 256 : 128;
 		// A version-4 rough profile without smooth parameters takes them from its
 		// contour strength (amplitude times roughness): a quarter as the broad
-		// meander, an eighth as fine detail, and angular grit that grows with
-		// roughness again, so rock breaks into teeth while a beach stays smooth. A profile
+		// meander, an eighth as fine detail, and fractal grit that grows with
+		// roughness again, so rock breaks up most and a beach is only pebbly. A profile
 		// without roughness (foliage that hides its own edge) gets square corners.
 		if (version >= 4 && !smooth && !p.contains("wiggle_q8"))
 		{
 			const int strength = v.amplitude * v.roughness / 256;
 			v.wiggle = std::min(2048, strength / 4);
 			if (!p.contains("detail_q8")) v.detail = std::min(1024, strength / 8);
-			if (!p.contains("jagged_q8")) v.jagged = std::min(2048, strength * v.roughness / 256);
+			if (!p.contains("jagged_q8")) v.jagged = std::min(2048, strength * (v.roughness + 256) / 512);
 			if (!p.contains("squareness_q8") && !v.roughness) v.squareness = 256;
 		}
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");

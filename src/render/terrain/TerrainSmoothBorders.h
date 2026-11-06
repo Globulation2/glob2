@@ -44,31 +44,23 @@ class SmoothBorders
 		// shifted by half a spacing (see JaggedPhase).
 		static constexpr int Stride = 10;
 		int shift = 0, offsetX = 0, offsetY = 0;
-		// Linear interpolation leaves creases between lattice points: angular grit.
+		// Linear interpolation leaves creases between lattice points.
 		bool linear = false;
+		// Ridged layers fold the noise at zero (1 - 2|n|) into sharp creases.
+		bool ridged = false;
+		float weight = 1;
 		float vertices[Stride * Stride]{};
 		// Value and its gradient per Q8 pixel.
 		float at(int px, int py, float &dx, float &dy) const;
-	};
-	// Cellular grit: one feature point per lattice cell, hashed in world space,
-	// each a square pyramid turned by its own angle. Pyramids' level sets are
-	// polygons, so a contour through them breaks into straight-sided teeth with
-	// sharp tips pointing both ways: a sawtooth without a lattice's regularity.
-	struct ConeLayer
-	{
-		static constexpr int MaxCells = 10; // 32 / 4 + 2 per axis.
-		int spacing = 0;                    // Q8 pixels; zero when unused.
-		int cells = 0;                      // Per axis, from one cell before the tile.
-		std::array<std::array<float, 2>, MaxCells * MaxCells> points{}; // Q8 local.
-		std::array<std::array<float, 2>, MaxCells * MaxCells> axes{};   // Each pyramid's rotation.
-		float at(int px, int py) const;
 	};
 	struct Field
 	{
 		MaterialId material = 0;
 		std::array<NoiseLayer, 2> noise{}; // Broad meander: the period and half of it.
 		NoiseLayer detail{};               // Fine edge roughness at DetailPeriod.
-		std::array<ConeLayer, 2> jagged{}; // Pyramid grit at 16 and 8 px.
+		// Fractal grit at 32, 16, 8 and 4 px, each 0.6 of the last; the finest
+		// two ridged. Irregular at every scale, like a natural coastline.
+		std::array<NoiseLayer, 4> grit{};
 		float feather = 1;   // Pixels; the ramp width shared with a competitor is the mean.
 		float bias = 0;      // Saddle bias that joins diagonal lobes of this material.
 	};
@@ -87,9 +79,6 @@ class SmoothBorders
 	std::array<float, 4> cornerJagged{};  // Angular grit strength per corner.
 	std::array<float, 4> cornerSquareness{}; // 0 round to 1 square, per corner.
 	bool anyShare = false, fullShare = false;
-	// The tile's world origin in logical pixels, for teeth along contours.
-	float originX = 0, originY = 0;
-	std::uint32_t seed = 0;
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);
 };
 } // namespace TerrainVisual
