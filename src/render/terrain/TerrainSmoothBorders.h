@@ -77,8 +77,16 @@ class SmoothBorders
 	std::array<float, 4> cornerWiggle{};  // Multiplicative noise strength per corner.
 	std::array<float, 4> cornerDetail{};  // Fine roughness strength per corner.
 	std::array<float, 4> cornerJagged{};  // Angular grit strength per corner.
+	std::array<float, 4> cornerSpeckle{}; // Pixels pebbles reach across a border, per corner.
 	std::array<float, 4> cornerSquareness{}; // 0 round to 1 square, per corner.
 	bool anyShare = false, fullShare = false;
+	// The tile's world origin in logical pixels and the look seed, for pebbles.
+	float originX = 0, originY = 0;
+	std::uint32_t seed = 0;
+	// Each material's pebbles: the share of one at a Q8 local position, 0 to 1.
+	float pebble(unsigned field, int px, int py) const;
+	std::array<std::uint32_t, 6> pebbleSalt{};
+	int width = 0, height = 0; // Map size in cells, for wrapping pebbles.
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);
 };
 } // namespace TerrainVisual

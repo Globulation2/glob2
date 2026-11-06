@@ -184,10 +184,18 @@ A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders
 `squareness_q8` (0 round to 256 square corners), `detail_q8` (0–1024, Q8 pixels
 of fine roughness on a 16-pixel lattice) and `jagged_q8` (0–2048, Q8 pixels of
 grit). Grit is fractal noise of world position: octaves on 32-, 16-, 8- and
-4-pixel lattices, each about 0.6 the strength of the last, the two finest
-ridged (folded at zero into sharp creases). Their sum is boosted and clipped to
-its bound, so contours break up irregularly at every scale with no regular
-rhythm, like a natural coastline. `feather_q8` and `bridge_q8` keep their meanings.
+4-pixel lattices that keep most of their strength down to the finest, the two
+finest ridged (folded at zero into sharp creases). Their sum is boosted and
+clipped to its bound, so contours break up irregularly at every scale with no
+regular rhythm, like a natural coastline.
+
+`speckle_q8` scatters pebbles: half the cells of a 4-pixel world grid hold one
+of each material, 1.25 to 2.75 pixels across at a hashed offset, which pushes
+that material's border out by twice the profile's speckle. Grains of either
+material therefore lie detached across the other's edge and bite into it. The
+shift is applied to the pair's distance, antisymmetrically, so weights still
+sum to one and seams and surf ring the grains, and only where both fields have
+risen. `feather_q8` and `bridge_q8` keep their meanings.
 
 A rough profile that names none of these takes them from its contour strength,
 `amplitude_q8 × roughness_q8 / 256`: a quarter of it as `wiggle_q8`, an eighth

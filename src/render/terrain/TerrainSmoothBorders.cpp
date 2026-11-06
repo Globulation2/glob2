@@ -53,6 +53,10 @@ constexpr float MaximumWiggle = .75f;
 constexpr float MinimumBandScore = .05f;
 // Boost of the summed fractal grit before it is clipped to its bound.
 constexpr float GritContrast = 3.5f;
+// Logical pixels between pebble cells (dividing every map size, so pebbles wrap).
+constexpr float PebbleCell = 4.f;
+// Pebbles push a border out by this multiple of a profile's speckle reach.
+constexpr float PebbleReach = 2.f;
 // Combined meander, detail and grit of one field, in field units: as much as
 // keeps every field positive where its vertices reach (MaximumWiggle). Halo
 // fields keep seams and surf continuous at any displacement within it.
@@ -114,6 +118,29 @@ float SmoothBorders::NoiseLayer::at(int px, int py, float &dx, float &dy) const
 	return weight * value;
 }
 
+float SmoothBorders::pebble(unsigned field, int px, int py) const
+{
+	// Half the cells of a 4px world grid hold a pebble of 1.25 to 2.75 px
+	// radius at a hashed offset; edges feather over three quarters of a pixel.
+	const float x = originX + float(px) / 256, y = originY + float(py) / 256;
+	const int cx = int(std::floor(x / PebbleCell)), cy = int(std::floor(y / PebbleCell));
+	const int columns = width * 32 / int(PebbleCell), rows = height * 32 / int(PebbleCell);
+	float share = 0;
+	for (int dy = -1; dy <= 1; ++dy)
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			const auto h = hash(wrap(cx + dx, columns), wrap(cy + dy, rows), pebbleSalt[field] ^ seed);
+			if (h & 1u)
+				continue;
+			const float ox = (float(cx + dx) + .2f + .6f * float(h >> 1 & 255) / 255) * PebbleCell;
+			const float oy = (float(cy + dy) + .2f + .6f * float(h >> 9 & 255) / 255) * PebbleCell;
+			const float radius = 1.25f + 1.5f * float(h >> 17 & 255) / 255;
+			const float d = std::sqrt((x - ox) * (x - ox) + (y - oy) * (y - oy));
+			share = std::max(share, std::clamp((radius - d) / .75f, 0.f, 1.f));
+		}
+	return share;
+}
+
 void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 {
 	if (!r.hasNeighborhood || c.version < 4)
@@ -123,6 +150,11 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		return;
 	// Version 4 draws every contact smoothly; profiles only set parameters.
 	const bool everyContact = c.version >= 4;
+	originX = float(r.x * 32);
+	originY = float(r.y * 32);
+	seed = mapSeedSalt(r.seed);
+	width = r.width;
+	height = r.height;
 	// Shares and wiggle are decided per vertex from its eight neighbours, all of
 	// which lie in the 4x4 neighbourhood, so adjacent tiles agree on every
 	// shared corner.
@@ -133,7 +165,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		const int cx = int(k & 1), cy = int(k >> 1);
 		const auto own = vertex(cx, cy);
 		bool smooth = true;
-		int wiggle = 0, square = 0, detail = 0, jagged = 0;
+		int wiggle = 0, square = 0, detail = 0, jagged = 0, speckle = 0;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -149,9 +181,11 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 					square = std::max(square, profile.squareness);
 					detail = std::max(detail, profile.detail);
 					jagged = std::max(jagged, profile.jagged);
+					speckle = std::max(speckle, profile.speckle);
 				}
 			}
 		cornerShare[k] = smooth ? 4096 : 0;
+		cornerSpeckle[k] = float(speckle) / 256;
 		cornerWiggle[k] = std::min(MaximumWiggle, float(wiggle) / 256 / PixelsPerFieldUnit);
 		// Detail shares the bound that keeps every field positive at its vertices.
 		cornerDetail[k] = std::min(MaximumWiggle - cornerWiggle[k], float(detail) / 256 / PixelsPerFieldUnit);
@@ -197,6 +231,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 			++index;
 		if (index < count)
 			continue;
+		pebbleSalt[count] = c.materials[id].salt ^ 0x3c6ef372u;
 		auto &field = fields[count++];
 		field.material = id;
 		const auto &edge = c.profiles[c.materials[id].profile];
@@ -206,17 +241,17 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		const std::uint32_t seed = mapSeedSalt(r.seed);
 		// Layers: the two meander octaves, fine detail, then fractal grit.
 		struct Plan { NoiseLayer *layer; int period; float weight; bool ridged; };
-		// Each grit octave 0.6 of the last, the ridged ones a little stronger so
-		// rough edges break into sharp points.
-		const float gritTotal = 1 + .6f + .5f + .35f;
+		// Grit keeps most of its energy down to the finest octaves, as natural
+		// edges do: crunchy at every scale. The finest two are ridged.
+		const float gritTotal = 1 + .7f + .8f + .7f;
 		const Plan plans[] = {
 			{&field.noise[0], edge.wigglePeriod, 2.f / 3, false},
 			{&field.noise[1], edge.wigglePeriod >> 1, 1.f / 3, false},
 			{&field.detail, DetailPeriod, 1.f, false},
 			{&field.grit[0], 32, 1 / gritTotal, false},
-			{&field.grit[1], 16, .6f / gritTotal, false},
-			{&field.grit[2], 8, .5f / gritTotal, true},
-			{&field.grit[3], 4, .35f / gritTotal, true},
+			{&field.grit[1], 16, .7f / gritTotal, false},
+			{&field.grit[2], 8, .8f / gritTotal, true},
+			{&field.grit[3], 4, .7f / gritTotal, true},
 		};
 		for (unsigned octave = 0; octave < std::size(plans); ++octave)
 		{
@@ -349,10 +384,25 @@ Coverage SmoothBorders::at(int px, int py) const
 	}
 	// Signed pixel distance from field f to field g, from a first-order
 	// expansion of their score difference.
+	// Pebbles: each material's grains push its border out by the profile's
+	// reach, so specks of either material lie detached across the other's
+	// edge. Antisymmetric in the pair, so weights still sum to one and seams and
+	// surf ring the grains; only where both fields have risen.
+	const float reach = PebbleReach * bilinear(cornerSpeckle, u, v);
+	std::array<float, 6> grains{};
+	if (reach > 0)
+		for (unsigned f = 0; f < count; ++f)
+			grains[f] = pebble(f, px, py);
 	const auto distance = [&](unsigned f, unsigned g)
 	{
 		const float gx = slopeX[f] - slopeX[g], gy = slopeY[f] - slopeY[g];
-		return (score[f] - score[g]) / std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		float d = (score[f] - score[g]) / std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		if (reach > 0 && grains[f] != grains[g])
+		{
+			const float risen = std::clamp((std::min(score[f], score[g]) - .02f) / .13f, 0.f, 1.f);
+			d += reach * (grains[f] - grains[g]) * risen * risen * (3 - 2 * risen);
+		}
+		return d;
 	};
 	// Each material's distance to its strongest competitor ramps its weight
 	// over the two materials' mean feather. Two materials therefore sum to one
