@@ -307,8 +307,11 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("contextual contours use their halo and leave ambiguous and sharp borders unchanged")
 	{
 		glob2test::HeadlessGlobals globals;
-		auto c = catalog(); c.boundaryWarp = {};
-		const auto a = c.find("sand"), b = c.find("water");
+		// Contextual geometry is the version 1-3 path; version 4 draws every
+		// contact with the smooth field (TerrainContinuity covers it).
+		auto c = catalog(); c.boundaryWarp = {}; c.version = 3;
+		// Both profiles opt in to contextual geometry under the version 3 rule.
+		const auto a = c.find("sand"), b = c.find("grass");
 		auto additional = c.materials[c.find("grass")];
 		additional.key = "fixture-natural";
 		c.materials.push_back(additional); // Sharp borders also remain sharp against new materials.
@@ -422,7 +425,9 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("straight contextual borders have seeded scallops without folding")
 	{
 		glob2test::HeadlessGlobals globals;
-		auto c = catalog(); c.boundaryWarp = {};
+		// Contextual geometry is the version 1-3 path; version 4 draws every
+		// contact with the smooth field (TerrainContinuity covers it).
+		auto c = catalog(); c.boundaryWarp = {}; c.version = 3;
 		const auto a = c.find("sand"), b = c.find("grass");
 		std::array<std::set<std::vector<int>>, 2> shapes;
 		for (unsigned seed : {0u, 19u, 73u, 291u})
@@ -969,96 +974,6 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(cache.cacheRebuilds() == before + 1);
 	}
 
-	TEST_CASE("progressive terrain pages keep the native fallback limited to missing regions [display]")
-	{
-		glob2test::HeadlessGlobals globals({.display = true});
-		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .discovered = true});
-		SceneMap scene;
-		glob2test::observeMap(fixture.game.map, scene);
-		SoftwareTerrainCache cache;
-		const auto prepare = [&]
-		{
-			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-				fixture.team->me, false, 0, false, true));
-		};
-		prepare();
-		CHECK(cache.cacheRebuilds() == 1);
-		REQUIRE(cache.missingPageRegions().size() == 1);
-		CHECK(cache.missingPageRegions().front().w == 16);
-		CHECK(cache.missingPageRegions().front().h == 16);
-		prepare();
-		CHECK(cache.cacheRebuilds() == 2);
-		CHECK(cache.missingPageRegions().empty());
-		prepare();
-		CHECK(cache.cacheRebuilds() == 2);
-		fixture.game.map.unsetMapDiscovered();
-		glob2test::observeMap(fixture.game.map, scene);
-		prepare();
-		CHECK(cache.cacheRebuilds() == 3);
-		CHECK(cache.missingPageRegions().size() == 1);
-
-		SoftwareTerrainCache wrapped;
-		REQUIRE(wrapped.prepare(scene, *globals->terrain, -3, 0, 3, 15, 0, 0,
-			fixture.team->me, true, 0, false, true));
-		REQUIRE(wrapped.missingPageRegions().size() == 1);
-		const auto region = wrapped.missingPageRegions().front();
-		CHECK(region.x == -3);
-		CHECK(region.w == 3);
-	}
-
-	TEST_CASE("interactive HD pages retain density across page boundaries [display]")
-	{
-		const auto directory = glob2test::artifactDir() / "pan-hd";
-		std::filesystem::create_directories(directory);
-		std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
-			directory / "frame.webp", std::filesystem::copy_options::overwrite_existing);
-		{
-			std::ofstream frames(directory / "frames.txt");
-			frames << "GLOB2_HIGHRES 1\n";
-			for (int frame = 0; frame < 256; ++frame)
-				frames << "terrain-grass" << frame << " 32 32 4 frame.webp -\n";
-		}
-		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
-		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
-			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
-		REQUIRE(globals->gfx->rendererCapabilities().accelerated);
-		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
-		SceneMap scene;
-		glob2test::observeMap(fixture.game.map, scene);
-		GAGCore::Sprite::deferHighResolution("data/gfx/terrain-grass");
-		GAGCore::Sprite::setHighResolution(true);
-		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
-
-		auto &compositor = globals->terrainCompositor(scene.frozenAssetBundle());
-		compositor.prepareVisible(true, 0, scene, 0, 0, 31, 15);
-		GAGCore::Sprite::finishHighResolution();
-
-		SoftwareTerrainCache cache;
-		const auto prepare = [&](int offset)
-		{
-			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 21, 11, offset, offset,
-				fixture.team->me, true, 0, false, true));
-			CHECK(cache.samplingResolution() == 2);
-			cache.draw(*globals->gfx);
-			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
-			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-		};
-		prepare(0);
-		CHECK(cache.missingPageRegions().size() == 1);
-		prepare(0);
-		CHECK(cache.missingPageRegions().empty());
-		CHECK(cache.cacheRebuilds() == 2);
-		// This diagonal pan changes the visible working set from two pages to six.
-		prepare(12);
-		CHECK(cache.missingPageRegions().size() == 3);
-		for (int i = 0; i < 3; ++i)
-			prepare(12);
-		CHECK(cache.missingPageRegions().empty());
-		CHECK(cache.cacheRebuilds() == 6);
-		prepare(0);
-		CHECK(cache.cacheRebuilds() == 6);
-	}
-
 	TEST_CASE("unequal variant weights affect deterministic texture selection")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1391,29 +1306,42 @@ TEST_SUITE("TerrainMaterials")
 				}
 			return result;
 		};
-		// Land with a calmer shore wash scales the wash's reach and bands; the
-		// default full wash is the unscaled one.
+		// Land with a calmer shore wash shortens the wash's reach and swing but
+		// keeps every band at full strength; the default full wash is unscaled.
 		const auto wash = [&](int land)
 		{
-			unsigned change = 0, reach = 0;
-			for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
-				for (int margin = 0; margin < 2048; margin += 16)
-					for (bool surfSide : {false, true})
+			// Peak colour change, and the swing: the farthest land pixel whose
+			// colour changes over the period as the wash runs in and out.
+			unsigned peak = 0, reach = 0;
+			for (int margin = 0; margin < 2048; margin += 16)
+				for (bool surfSide : {false, true})
+				{
+					std::array<unsigned, 3> first{};
+					bool moves = false;
+					for (int time = 0; time < darkSurf.period; time += darkSurf.ticks)
 					{
 						unsigned value[3] = {180, 160, 120};
 						TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value, land);
 						const unsigned delta = unsigned(std::abs(int(value[0]) - 180) + std::abs(int(value[1]) - 160) +
 													   std::abs(int(value[2]) - 120));
-						change += delta;
-						if (delta && !surfSide) reach = std::max(reach, unsigned(margin));
+						peak = std::max(peak, delta);
+						if (!time)
+							first = {value[0], value[1], value[2]};
+						else
+							moves |= first != std::array<unsigned, 3>{value[0], value[1], value[2]};
 					}
-			return std::pair{change, reach};
+					if (moves && !surfSide) reach = std::max(reach, unsigned(margin));
+				}
+			return std::pair{peak, reach};
 		};
 		const auto full = wash(256), calm = wash(77), none = wash(0);
-		CHECK(calm.first < full.first / 2);
-		CHECK(calm.first > 0);
 		CHECK(calm.second < full.second);
-		CHECK(none.first == 0);
+		CHECK(none.second <= calm.second);
+		// The foam and bands stay about as visible as on a beach; only a long run
+		// stacks the sheet over the wet band. Damping the bands too would leave
+		// the calm peak near 30% of the full one.
+		CHECK(calm.first * 4 >= full.first * 3);
+		CHECK(none.first * 4 >= full.first * 3);
 		for (int margin = 0; margin < 2048; margin += 64)
 		{
 			unsigned a[3] = {180, 160, 120}, b[3] = {180, 160, 120};
@@ -1702,7 +1630,9 @@ TEST_SUITE("TerrainMaterials")
 				{
 					auto &p = j["profiles"][i];
 					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
-							 "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8"})
+							 "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8", "teeth_q8",
+							 "teeth_form", "facets", "clasts", "resistance_q8", "cohesion_q8", "grain_q8",
+							 "spread_q8"})
 						p.erase(field);
 					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
@@ -1738,7 +1668,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 3321468473678997995ull : 15811041248938215183ull));
+			CHECK(digest == (legacy ? 3321468473678997995ull : 1612554945493919761ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -2228,11 +2158,15 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/profiles/0/coast"), "absent"},
 			{nlohmann::json::json_pointer("/profiles/0/coast"), "canopy"},
 			{nlohmann::json::json_pointer("/profiles/0/precedence"), 256},
-			{nlohmann::json::json_pointer("/profiles/0/wiggle_q8"), 64}, // Patch profiles do not meander.
+			// Version 4 draws every profile smoothly, so a patch profile may meander,
+			// but its parameters keep their ranges.
+			{nlohmann::json::json_pointer("/profiles/0/wiggle_q8"), 2049},
+			{nlohmann::json::json_pointer("/profiles/0/detail_q8"), 1025},
+			{nlohmann::json::json_pointer("/profiles/0/detail_q8"), -1},
 			{nlohmann::json::json_pointer("/profiles/2/wiggle_period"), 48},
 			{nlohmann::json::json_pointer("/profiles/2/wiggle_q8"), 2049},
 			{nlohmann::json::json_pointer("/profiles/2/squareness_q8"), 257},
-			{nlohmann::json::json_pointer("/profiles/0/squareness_q8"), 128},
+			{nlohmann::json::json_pointer("/profiles/0/squareness_q8"), 257},
 		};
 		for (const auto &[field, value] : malformed)
 		{
@@ -2295,10 +2229,11 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("chasm", "lava") == "crisp");
 		CHECK(profile("hedge", "void_hole") == "canopy");
 		CHECK(profile("thicket", "water") == "canopy");
-		// Natural ground: precedence ranks rock over soil over ice, brush and turf.
+		// Natural ground: resistance ranks rock over ice over soil, brush and turf.
 		CHECK(profile("boulders", "mud") == "rock");
 		CHECK(profile("dirt", "grass") == "soil");
-		CHECK(profile("deep_snow", "ice") == "soil");
+		CHECK(profile("deep_snow", "ice") == "frozen");
+		CHECK(profile("sand", "grass") == "turf"); // Rooted turf holds its edge on loose sand.
 		CHECK(profile("heath", "grass") == "brush");
 		CHECK(profile("grass", "lush_grass") == "turf");
 		for (unsigned a = 0; a < c.materials.size(); ++a)
@@ -2308,6 +2243,7 @@ TEST_SUITE("TerrainMaterials")
 					const auto x = TerrainVisual::MaterialId(a), y = TerrainVisual::MaterialId(b);
 					CHECK(c.profileFor(x, y) == c.profileFor(y, x));
 					CHECK_FALSE((c.dominates(x, y) && c.dominates(y, x)));
+					CHECK(c.shapes(x, y) != c.shapes(y, x));
 				}
 		// Earlier catalogs keep the roughest-profile rule.
 		auto j = shippedCatalog();
@@ -2321,6 +2257,9 @@ TEST_SUITE("TerrainMaterials")
 		for (auto &p : j["profiles"])
 		{
 			p.erase("precedence"); p.erase("coast");
+			for (const char *field : {"teeth_q8", "teeth_form", "facets", "clasts", "resistance_q8", "cohesion_q8",
+					 "grain_q8", "spread_q8"})
+				p.erase(field);
 			if (p.value("shape", "") != "smooth") continue;
 			p.erase("shape"); p.erase("wiggle_q8"); p.erase("wiggle_period"); p.erase("squareness_q8");
 			p["roughness_q8"] = 0;

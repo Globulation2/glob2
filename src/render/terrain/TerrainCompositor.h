@@ -245,6 +245,7 @@ class Compositor
     Recipe describeCell(const SceneMap &, int x, int y, bool shoreCalm) const;
 	void describeShoreCalm(const SceneMap&, Recipe &) const;
 	void describeStones(const SceneMap &, Recipe &) const;
+	void describeHalo(const SceneMap &, Recipe &) const;
 	std::shared_ptr<const StoneMaps> stoneMaps;
 	std::uint64_t instance = 0; // Distinguishes compositors in shared presentation caches.
     unsigned decorSlot(MaterialId) const;

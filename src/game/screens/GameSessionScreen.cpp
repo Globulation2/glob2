@@ -132,6 +132,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		clock = lastTick = tick;
 		engine->prepareRun();
 		engine->beginSession(clock);
+		engine->beginIntroCover();
 		nextTick = clock;
 		started = true;
 		finishingSession = false;

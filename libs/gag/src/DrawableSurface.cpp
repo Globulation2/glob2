@@ -362,15 +362,22 @@ namespace GAGCore
                     // or edited pixels use the fallback chain and can change on
                     // every animation phase; driver-side DXT encoding stalls the
                     // render thread for those updates.
+                    // Only blocks a worker prepared: the driver never encodes on
+                    // this thread. Anything else uploads uncompressed.
                     const bool compress=glState.hasS3TCCompression &&
-                        preparedUploadRevision == pixelRevision && !preparedMips.empty();
+                        preparedUploadRevision == pixelRevision && !preparedMips.empty() &&
+                        !preparedMips.front().compressed.empty();
 #endif
                     const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
                     for (size_t mip = 0; mip < levels->size(); ++mip) {
                         const auto &level = (*levels)[mip];
                         const int w = level.width, h = level.height;
                         if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, int(mip) - 1); break; }
-                        glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
+                        if (compress)
+                            glCompressedTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0,
+                                GLsizei(level.compressed.size()), level.compressed.data());
+                        else
+                            glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
                         const size_t bytes = compress ? size_t((w + 3) / 4) * ((h + 3) / 4) * 16 : size_t(w) * h * 4;
                         gpuBytes += bytes; glState.allocatedTextureBytes += bytes;
                     }

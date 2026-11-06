@@ -116,6 +116,7 @@ int GraphicContext::maximumTextureSize() const
 		isTextureSRectangle = false;
 		hasS3TCCompression = (strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL)
 			&& !std::getenv("GLOB2_DISABLE_S3TC");
+		AssetImage::compressHighResolution = hasS3TCCompression;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
@@ -263,13 +264,21 @@ int GraphicContext::maximumTextureSize() const
 	// interface out on 366x274, narrower than the 368px main menu panel.
 	void GraphicContext::applyWindowMinimumSize(void)
 	{
-        if (window && (compactWindowAllowed || (renderer && phonePresentationRequested()))) { SDL_SetWindowMinimumSize(window,1,1); return; }
 		if (!window) return;
+		// SDL enforces a new minimum by resizing the window, a window-server
+		// round trip on macOS; refreshes call this every frame, so apply it only
+		// when it changes.
+		const auto apply = [&](int w, int h)
+		{
+			int currentW = 0, currentH = 0;
+			SDL_GetWindowMinimumSize(window, &currentW, &currentH);
+			if (currentW != w || currentH != h) SDL_SetWindowMinimumSize(window, w, h);
+		};
+        if (compactWindowAllowed || (renderer && phonePresentationRequested())) { apply(1, 1); return; }
 		#ifdef GLOB2_WEBGL2
 		return;
 		#endif
-		SDL_SetWindowMinimumSize(window,
-			std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
+		apply(std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
 			std::max(1, static_cast<int>(minH * uiScale + 0.5f)));
 	}
 

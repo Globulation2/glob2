@@ -1067,7 +1067,7 @@ TEST_SUITE("TerrainPresentation")
 	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
-	TEST_CASE("Legacy GL HD water blends every frame without rebuilding terrain pages [display]")
+	TEST_CASE("Legacy GL single pass animates water and shores and hides undiscovered terrain [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
 			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
@@ -1080,75 +1080,60 @@ TEST_SUITE("TerrainPresentation")
 		GAGCore::Sprite::setHighResolution(true);
 		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
 		DirectTerrain atlas;
-		SoftwareTerrainCache pages;
 		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
-		bool ready = false;
-		for (int attempt = 0; attempt < 200 && !ready; ++attempt)
-			ready = atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, 0);
-		REQUIRE(ready);
-		REQUIRE_FALSE(atlas.animationRegions().empty());
+		const auto prepare = [&](int time, bool whole, int attempts)
+		{
+			bool ready = false;
+			for (int attempt = 0; attempt < attempts && !ready; ++attempt)
+				ready = atlas.prepare(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, whole, time);
+			return ready;
+		};
+		REQUIRE(prepare(0, true, 200));
+		REQUIRE_FALSE(atlas.preparedRegions().empty());
 		GAGCore::Sprite::finishHighResolution();
+		// Water's crossfade changes the pixels every frame, from the one pass.
 		std::vector<Uint8> previous;
 		for (int time = 0; time < 9; ++time)
 		{
 			CAPTURE(time);
 			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
-			REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, time));
-			REQUIRE(pages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-				fixture.team->me, true, time, false, true, atlas.animationRegions()));
-			pages.draw(gfx);
-			atlas.drawAnimation(gfx, 0, 0, true, time);
+			REQUIRE(prepare(time, true, 1));
+			atlas.drawPrepared(gfx, 0, 0, true, time);
 			const auto pixels = terrainPixels(true);
 			if (time > 0) CHECK(pixels != previous);
 			previous = pixels;
-			CHECK(pages.cacheRebuilds() == 0);
 		}
 
-        // The same pass owns complete mixed shoreline cells. Static land in
-        // those pages must stay cached while its adjacent water animates.
-        for (int y = 0; y < 32; ++y)
-            for (int x = 12; x <= 20; ++x)
-                fixture.game.map.setVertexTerrain(x, y, GRASS);
-        glob2test::observeMap(fixture.game.map, scene);
-        ready = false;
-        for (int attempt = 0; attempt < 300 && !ready; ++attempt)
-            ready = atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, 0);
-        REQUIRE(ready);
-        REQUIRE_FALSE(atlas.animationRegions().empty());
-        GAGCore::Sprite::finishHighResolution();
-        SoftwareTerrainCache shorePages;
-        const auto shoreFrame = [&](int time)
-        {
-            REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, time));
-            REQUIRE(shorePages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-                fixture.team->me, true, time, false, true, atlas.animationRegions()));
-            shorePages.draw(gfx);
-            atlas.drawAnimation(gfx, 0, 0, true, time);
-        };
-        for (int i = 0; i < 4; ++i) shoreFrame(0);
-        const auto rebuilt = shorePages.cacheRebuilds();
-        REQUIRE(rebuilt > 0);
-        for (int time = 1; time < 9; ++time)
-        {
-            shoreFrame(time);
-            CHECK(shorePages.cacheRebuilds() == rebuilt);
-        }
+		// A shoreline: land and water cells draw together and keep animating.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 12; x <= 20; ++x)
+				fixture.game.map.setVertexTerrain(x, y, GRASS);
+		glob2test::observeMap(fixture.game.map, scene);
+		REQUIRE(prepare(0, true, 300));
+		REQUIRE_FALSE(atlas.preparedRegions().empty());
+		GAGCore::Sprite::finishHighResolution();
+		for (int time = 0; time < 9; ++time)
+		{
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			REQUIRE(prepare(time, true, 1));
+			atlas.drawPrepared(gfx, 0, 0, true, time);
+			const auto pixels = terrainPixels(true);
+			if (time > 0) CHECK(pixels != previous);
+			previous = pixels;
+		}
 
-        // Changing discovery must remove both cached land and animated water.
-        fixture.game.map.unsetMapDiscovered();
-        glob2test::observeMap(fixture.game.map, scene);
-        for (int i = 0; i < 3; ++i)
-        {
-            gfx.drawFilledRect(0, 0, 2048, 2048, 11, 23, 37);
-            const auto hidden = terrainPixels(true);
-            REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, false, 9));
-            CHECK(atlas.animationRegions().empty());
-            REQUIRE(shorePages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-                fixture.team->me, false, 9, false, true, atlas.animationRegions()));
-            shorePages.draw(gfx);
-            atlas.drawAnimation(gfx, 0, 0, false, 9);
-            CHECK(terrainPixels(true) == hidden);
-        }
+		// Changing discovery hides land and water alike.
+		fixture.game.map.unsetMapDiscovered();
+		glob2test::observeMap(fixture.game.map, scene);
+		for (int i = 0; i < 3; ++i)
+		{
+			gfx.drawFilledRect(0, 0, 2048, 2048, 11, 23, 37);
+			const auto hidden = terrainPixels(true);
+			REQUIRE(prepare(9, false, 1));
+			CHECK(atlas.preparedRegions().empty());
+			atlas.drawPrepared(gfx, 0, 0, false, 9);
+			CHECK(terrainPixels(true) == hidden);
+		}
 		gfx.endMapTransform();
 	}
 

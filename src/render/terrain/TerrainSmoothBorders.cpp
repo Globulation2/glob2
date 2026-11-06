@@ -49,10 +49,34 @@ constexpr float PixelsPerFieldUnit = 32.f / 2.5f;
 // The strongest multiplicative noise keeps every field positive where its
 // vertices reach, so meanders never cut a material off its own vertex.
 constexpr float MaximumWiggle = .75f;
+// Score below which a field is too far from its contour for seams and surf.
+constexpr float MinimumBandScore = .05f;
+// Boost of the summed grit before it is clipped to its bound.
+constexpr float GritContrast = 4.f;
+// Logical pixels between pebble cells (dividing every map size, so pebbles wrap).
+constexpr float PebbleCell = 8.f;
+// Clasts push a border out by this multiple of a profile's speckle reach.
+constexpr float PebbleReach = 2.f;
+// Teeth: logical pixels between lattice points along an edge per octave, their
+// weights, and the broad spacing across the edge that keeps contours unfolded.
+// Most of the energy lies at the 32 px scale, about one feature per tile edge,
+// falling steeply at finer scales as on real coasts.
+constexpr int TeethPeriods[3] = {32, 16, 8};
+constexpr float TeethWeights[3] = {1 / 2.5f, .8f / 2.5f, .7f / 2.5f};
+constexpr int TeethAcross = 128;
+// Ridging folds the summed teeth noise at zero into crests: boosted first so
+// crests stay sharp and few, then centred so the contour keeps its place.
+constexpr float TeethContrast = 2.5f, TeethMean = -.07f;
+// Combined meander, detail and grit of one field, in field units: as much as
+// keeps every field positive where its vertices reach (MaximumWiggle). Halo
+// fields keep seams and surf continuous at any displacement within it.
+constexpr float MaximumDisplacement = MaximumWiggle;
 // Squareness of a vertex on a 45-degree staircase. A slight negative value
 // pulls the spline towards its vertices just enough that the contour through a
 // staircase of vertices runs straight, within a pixel, instead of stepping.
 constexpr float DiagonalSquareness = -.2f;
+// Logical pixels between the lattice points of the fine detail octave.
+constexpr int DetailPeriod = 16;
 // Whether the vertex's 3x3 neighbourhood holds exactly two materials split by
 // a 45-degree line: the vertices on either side of one of the lines
 // dx - dy = t + 1/2 or dx + dy = t + 1/2 are uniform. Both a staircase's edge
@@ -81,17 +105,88 @@ bool onDiagonal(const Vertex &vertex, int cx, int cy)
 }
 } // namespace
 
-float SmoothBorders::NoiseLayer::at(int px, int py) const
+float SmoothBorders::NoiseLayer::at(int px, int py, float &dx, float &dy) const
 {
+	dx = dy = 0;
 	if (!shift)
 		return 0;
 	const int x = px + offsetX, y = py + offsetY;
-	const int ix = std::min(x >> shift, 3), iy = std::min(y >> shift, 3);
-	const float u = smoothstep(float(x - (ix << shift)) / float(1 << shift));
-	const float v = smoothstep(float(y - (iy << shift)) / float(1 << shift));
-	const auto lerp = [](float a, float b, float t) { return a + (b - a) * t; };
-	return lerp(lerp(vertices[iy * 5 + ix], vertices[iy * 5 + ix + 1], u),
-				lerp(vertices[(iy + 1) * 5 + ix], vertices[(iy + 1) * 5 + ix + 1], u), v);
+	const int ix = std::min(x >> shift, Stride - 2), iy = std::min(y >> shift, Stride - 2);
+	const float span = float(1 << shift);
+	const float tu = std::clamp(float(x - (ix << shift)) / span, 0.f, 1.f);
+	const float tv = std::clamp(float(y - (iy << shift)) / span, 0.f, 1.f);
+	const float u = linear ? tu : smoothstep(tu), v = linear ? tv : smoothstep(tv);
+	const float du = (linear ? 1 : 6 * tu * (1 - tu)) / span, dv = (linear ? 1 : 6 * tv * (1 - tv)) / span;
+	const float a = vertices[iy * Stride + ix], b = vertices[iy * Stride + ix + 1];
+	const float c = vertices[(iy + 1) * Stride + ix], d = vertices[(iy + 1) * Stride + ix + 1];
+	const float top = a + (b - a) * u, bottom = c + (d - c) * u;
+	const float value = top + (bottom - top) * v;
+	if (ridged)
+		return weight * (1 - 2 * std::abs(value)); // Its slope is never used.
+	dx = weight * ((b - a) + ((d - c) - (b - a)) * v) * du;
+	dy = weight * (bottom - top) * dv;
+	return weight * value;
+}
+
+float SmoothBorders::EdgeLayer::at(int fine, int along, bool linear) const
+{
+	if (!fineShift)
+		return 0;
+	const int x = fine + fineOffset, y = along + longOffset;
+	const int ix = std::min(x >> fineShift, Fine - 2), iy = std::min(y >> longShift, Long - 2);
+	const float tu = std::clamp(float(x - (ix << fineShift)) / float(1 << fineShift), 0.f, 1.f);
+	const float tv = smoothstep(std::clamp(float(y - (iy << longShift)) / float(1 << longShift), 0.f, 1.f));
+	const float u = linear ? tu : smoothstep(tu);
+	const float top = vertices[iy][ix] + (vertices[iy][ix + 1] - vertices[iy][ix]) * u;
+	const float bottom = vertices[iy + 1][ix] + (vertices[iy + 1][ix + 1] - vertices[iy + 1][ix]) * u;
+	return weight * (top + (bottom - top) * tv);
+}
+
+unsigned SmoothBorders::pairIndex(unsigned f, unsigned g)
+{
+	// Rows of the upper triangle of a 6x6 matrix: f < g.
+	return f * (11 - f) / 2 + g - f - 1;
+}
+
+float SmoothBorders::pebble(unsigned field, int px, int py) const
+{
+	// Half the cells of an 8px world grid hold a clast of 2.5 to 5.5 px radius
+	// at a hashed offset, rounded or an irregular angular chip at a hashed
+	// rotation; edges feather over three quarters of a pixel. Each clast pushes
+	// by its own hashed share, so fewer reach the far side of a border.
+	const float x = originX + float(px) / 256, y = originY + float(py) / 256;
+	const int cx = int(std::floor(x / PebbleCell)), cy = int(std::floor(y / PebbleCell));
+	const int columns = width * 32 / int(PebbleCell), rows = height * 32 / int(PebbleCell);
+	// Offsets within the cell; exact, since cells are whole pixels.
+	const float lx = x - float(cx) * PebbleCell, ly = y - float(cy) * PebbleCell;
+	float share = 0;
+	for (int dy = -1; dy <= 1; ++dy)
+		for (int dx = -1; dx <= 1; ++dx)
+		{
+			const auto h = hash(wrap(cx + dx, columns), wrap(cy + dy, rows), pebbleSalt[field] ^ seed);
+			if (h & 1u)
+				continue;
+			// Relative to the sample's own cell, exactly: the same arithmetic on
+			// both sides of the map's wrap.
+			const float ox = (float(dx) + .2f + .6f * float(h >> 1 & 255) / 255) * PebbleCell - lx;
+			const float oy = (float(dy) + .2f + .6f * float(h >> 9 & 255) / 255) * PebbleCell - ly;
+			const float radius = (1.25f + 1.5f * float(h >> 17 & 255) / 255) * PebbleCell / 4;
+			const float push = .35f + .65f * float(h >> 25 & 127) / 127;
+			float d;
+			if (angular[field])
+			{
+				const auto turn = hash(h, 0x51ed27u);
+				const float angle = float(turn & 1023) * (6.2831853f / 1024);
+				const float ca = std::cos(angle), sa = std::sin(angle);
+				const float rx = std::abs(ox * ca + oy * sa), ry = std::abs(oy * ca - ox * sa);
+				const float stretch = 1.2f + .8f * float(turn >> 10 & 255) / 255;
+				d = std::max({rx, ry * stretch, (rx + ry) * .8f});
+			}
+			else
+				d = std::sqrt(ox * ox + oy * oy);
+			share = std::max(share, push * std::clamp((radius - d) / .75f, 0.f, 1.f));
+		}
+	return share;
 }
 
 void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
@@ -99,8 +194,15 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	if (!r.hasNeighborhood || c.version < 4)
 		return;
 	const auto &corners = r.corners;
-	if (std::all_of(corners.begin(), corners.end(), [&](auto id) { return id == corners[0]; }))
+	if (!r.haloCount && std::all_of(corners.begin(), corners.end(), [&](auto id) { return id == corners[0]; }))
 		return;
+	// Version 4 draws every contact smoothly; profiles only set parameters.
+	const bool everyContact = c.version >= 4;
+	originX = float(r.x * 32);
+	originY = float(r.y * 32);
+	seed = mapSeedSalt(r.seed);
+	width = r.width;
+	height = r.height;
 	// Shares and wiggle are decided per vertex from its eight neighbours, all of
 	// which lie in the 4x4 neighbourhood, so adjacent tiles agree on every
 	// shared corner.
@@ -111,7 +213,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		const int cx = int(k & 1), cy = int(k >> 1);
 		const auto own = vertex(cx, cy);
 		bool smooth = true;
-		int wiggle = 0, square = 0;
+		int wiggle = 0, square = 0, detail = 0, jagged = 0;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -119,16 +221,33 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 				if (other == own)
 					continue;
 				const auto &profile = c.profiles[c.profileFor(own, other)];
-				if (profile.shape != BoundaryShape::Smooth)
+				if (!everyContact && profile.shape != BoundaryShape::Smooth)
 					smooth = false;
 				else
 				{
 					wiggle = std::max(wiggle, profile.wiggle);
 					square = std::max(square, profile.squareness);
+					detail = std::max(detail, profile.detail);
+					jagged = std::max(jagged, profile.jagged);
 				}
 			}
 		cornerShare[k] = smooth ? 4096 : 0;
 		cornerWiggle[k] = std::min(MaximumWiggle, float(wiggle) / 256 / PixelsPerFieldUnit);
+		// Detail shares the bound that keeps every field positive at its vertices.
+		cornerDetail[k] = std::min(MaximumWiggle - cornerWiggle[k], float(detail) / 256 / PixelsPerFieldUnit);
+		cornerJagged[k] = std::min(MaximumWiggle - cornerWiggle[k] - cornerDetail[k],
+								   float(jagged) / 256 / PixelsPerFieldUnit);
+		// A contour lies about half a cell from the next uniform cell, which
+		// draws no seam or surf bands, and bands reach eight pixels: together the
+		// noises of one field stay within MaximumDisplacement, scaled down alike.
+		if (const float total = cornerWiggle[k] + cornerDetail[k] + cornerJagged[k];
+			total > MaximumDisplacement)
+		{
+			const float scale = MaximumDisplacement / total;
+			cornerWiggle[k] *= scale;
+			cornerDetail[k] *= scale;
+			cornerJagged[k] *= scale;
+		}
 		// Square profiles keep right angles but run straight along diagonals;
 		// round profiles are left as they are.
 		cornerSquareness[k] = square && smooth && onDiagonal(vertex, cx, cy) ? DiagonalSquareness
@@ -144,54 +263,128 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	// between halo materials lies over half a cell beyond the tile edge, outside
 	// the reach of every seam and surf band.
 	owner.fill(-1);
-	for (const auto id : corners)
+	std::array<MaterialId, 4 + Recipe::MaxHalo> members{};
+	unsigned memberCount = 0;
+	for (const auto id : corners) members[memberCount++] = id;
+	for (unsigned i = 0; i < r.haloCount; ++i) members[memberCount++] = r.halo[i];
+	for (unsigned m = 0; m < memberCount; ++m)
 	{
+		const auto id = members[m];
+		if (m == 4)
+			weighted = count; // Halo fields follow the corner fields.
 		unsigned index = 0;
 		while (index < count && fields[index].material != id)
 			++index;
 		if (index < count)
 			continue;
+		pebbleSalt[count] = c.materials[id].salt ^ 0x3c6ef372u;
+		const auto &edge = c.profiles[c.materials[id].profile];
+		// A material sheds its own clasts, whatever it meets.
+		pebbleReach[count] = edge.clasts == Profile::Clasts::None ? 0 : PebbleReach * float(edge.speckle) / 256;
+		angular[count] = edge.clasts == Profile::Clasts::Angular;
 		auto &field = fields[count++];
 		field.material = id;
-		const auto &edge = c.profiles[c.materials[id].profile];
 		field.feather = float(edge.feather) / 256;
 		// Per-material value noise in world space: the same function in every
 		// tile, so a pair's contour meanders by the difference of its two fields.
 		const std::uint32_t seed = mapSeedSalt(r.seed);
-		for (unsigned octave = 0; octave < field.noise.size(); ++octave)
+		// Layers: the two meander octaves, fine detail, then light grit.
+		struct Plan { NoiseLayer *layer; int period; float weight; bool ridged; };
+		const Plan plans[] = {
+			{&field.noise[0], edge.wigglePeriod, 2.f / 3, false},
+			{&field.noise[1], edge.wigglePeriod >> 1, 1.f / 3, false},
+			{&field.detail, DetailPeriod, 1.f, false},
+			{&field.grit[0], 16, 1 / 1.6f, false},
+			{&field.grit[1], 8, .6f / 1.6f, true},
+		};
+		for (unsigned octave = 0; octave < std::size(plans); ++octave)
 		{
-			auto &layer = field.noise[octave];
-			const int spacing = std::min({edge.wigglePeriod >> octave, r.width * 32, r.height * 32});
-			if (spacing < 8)
+			auto &layer = *plans[octave].layer;
+			layer.weight = plans[octave].weight;
+			layer.ridged = plans[octave].ridged;
+			const int period = plans[octave].period;
+			const int spacing = std::min({period, r.width * 32, r.height * 32});
+			if (spacing < 4)
 				continue;
 			layer.shift = 8;
 			for (int s = spacing; s > 1; s >>= 1)
 				++layer.shift;
-			layer.offsetX = (r.x * 32 % spacing) * 256;
-			layer.offsetY = (r.y * 32 % spacing) * 256;
-			const int columns = std::min(4, (layer.offsetX / 256 + 32) / spacing + 1);
-			const int rows = std::min(4, (layer.offsetY / 256 + 32) / spacing + 1);
-			// The finer octave carries a third of the meander.
-			const float weight = octave ? 1.f / 3 : 2.f / 3;
+			const int phase = 0;
+			layer.offsetX = ((r.x * 32 + phase) % spacing) * 256;
+			layer.offsetY = ((r.y * 32 + phase) % spacing) * 256;
+			const int columns = std::min(NoiseLayer::Stride - 1, (layer.offsetX / 256 + 32) / spacing + 1);
+			const int rows = std::min(NoiseLayer::Stride - 1, (layer.offsetY / 256 + 32) / spacing + 1);
 			for (int y = 0; y <= rows; ++y)
 				for (int x = 0; x <= columns; ++x)
 				{
-					const int gx = wrap(r.x * 32 / spacing + x, r.width * 32 / spacing);
-					const int gy = wrap(r.y * 32 / spacing + y, r.height * 32 / spacing);
+					const int gx = wrap((r.x * 32 + phase) / spacing + x, r.width * 32 / spacing);
+					const int gy = wrap((r.y * 32 + phase) / spacing + y, r.height * 32 / spacing);
 					const auto h = hash(gx, gy, c.materials[id].salt ^ seed ^ (0x7c3b9a15u + octave * 0x9e3779b9u));
-					layer.vertices[y * 5 + x] = weight * (float(h & 65535) / 32767.5f - 1);
+					layer.vertices[y * NoiseLayer::Stride + x] = float(h & 65535) / 32767.5f - 1;
 				}
 		}
 	}
+	if (memberCount <= 4)
+		weighted = count;
+	for (unsigned f = 0; f < count; ++f)
+		for (unsigned g = 0; g < count; ++g)
+			if (f != g && c.bandsBetween(fields[f].material, fields[g].material))
+				bands[f] |= std::uint8_t(1u << g);
 	for (unsigned i = 0; i < owner.size(); ++i)
 		for (unsigned f = 0; f < count; ++f)
 			if (fields[f].material == r.neighborhood[i])
 				owner[i] = int(f);
+	// Each pair's teeth, shaped by its dominant material (Catalog::shapes).
+	for (unsigned f = 0; f < count; ++f)
+		for (unsigned g = f + 1; g < count; ++g)
+		{
+			const auto a = fields[f].material, b = fields[g].material;
+			const auto &profile = c.profiles[c.profileFor(a, b)];
+			auto &pair = pairs[pairIndex(f, g)];
+			if (!profile.teeth)
+				continue;
+			// Points push crests of the shaper into its neighbour; lobes push
+			// rounded tongues, the same crests turned the other way.
+			const bool fShapes = c.shapes(a, b);
+			pair.amplitude = float(profile.teeth) / 256 * ((fShapes != profile.lobes) ? 1.f : -1.f);
+			pair.linear = profile.facets;
+			const auto lo = std::min(a, b), hi = std::max(a, b);
+			const std::uint32_t salt = hash(c.materials[lo].salt, c.materials[hi].salt, seed ^ 0x6a09e667u);
+			for (unsigned axis = 0; axis < 2; ++axis)
+				for (unsigned octave = 0; octave < 3; ++octave)
+				{
+					auto &layer = (axis ? pair.alongY : pair.alongX)[octave];
+					// Along x the edge runs horizontally: fine in x, broad in y.
+					const int fineCells = (axis ? r.height : r.width) * 32, longCells = (axis ? r.width : r.height) * 32;
+					const int fineOrigin = (axis ? r.y : r.x) * 32, longOrigin = (axis ? r.x : r.y) * 32;
+					const int fine = std::min(TeethPeriods[octave], fineCells), across = std::min(TeethAcross, longCells);
+					if (fine < 4)
+						continue;
+					layer.weight = TeethWeights[octave];
+					layer.fineShift = layer.longShift = 8;
+					for (int t = fine; t > 1; t >>= 1) ++layer.fineShift;
+					for (int t = across; t > 1; t >>= 1) ++layer.longShift;
+					layer.fineOffset = (fineOrigin % fine) * 256;
+					layer.longOffset = (longOrigin % across) * 256;
+					// One pixel beyond the tile too: band distances difference the teeth
+					// forward by a pixel, at the same world positions as the next tile.
+					const int columns = std::min(EdgeLayer::Fine - 1, (fineOrigin % fine + 33) / fine + 1);
+					const int rows = std::min(EdgeLayer::Long - 1, (longOrigin % across + 32) / across + 1);
+					const std::uint32_t layerSalt = salt ^ (0x3c6ef372u * (axis * 3 + octave + 1));
+					for (int y = 0; y <= rows; ++y)
+						for (int x = 0; x <= columns; ++x)
+						{
+							const int gf = wrap(fineOrigin / fine + x, fineCells / fine);
+							const int gl = wrap(longOrigin / across + y, longCells / across);
+							layer.vertices[y][x] = float(hash(gf, gl, layerSalt) & 65535) / 32767.5f - 1;
+						}
+				}
+		}
 	// A diagonal pair of one material meets the other diagonal at a saddle. The
 	// dominant material joins its lobes through a neck there, so roads and
 	// rivers continue diagonally; equal materials take a seeded choice. The bias
 	// vanishes on every tile edge, so neighbouring tiles are unaffected.
-	if (count == 2 && corners[0] == corners[3] && corners[1] == corners[2])
+	if (weighted == 2 && corners[0] == corners[3] && corners[1] == corners[2])
 	{
 		const auto a = corners[0], b = corners[1];
 		bool joinA = c.dominates(a, b);
@@ -238,7 +431,7 @@ Coverage SmoothBorders::at(int px, int py) const
 		dwx[i] *= slopeU;
 		dwy[i] *= slopeV;
 	}
-	std::array<float, 4> value{}, slopeX{}, slopeY{};
+	std::array<float, 6> value{}, slopeX{}, slopeY{};
 	for (int j = 0; j < 4; ++j)
 		for (int i = 0; i < 4; ++i)
 			if (const int f = owner[j * 4 + i]; f >= 0)
@@ -247,61 +440,182 @@ Coverage SmoothBorders::at(int px, int py) const
 				slopeX[f] += dwx[i] * wy[j];
 				slopeY[f] += wx[i] * dwy[j];
 			}
+	// The bare splines' slopes orient each pair's teeth along its edge.
+	const std::array<float, 6> rawX = slopeX, rawY = slopeY;
 	const float wiggle = bilinear(cornerWiggle, u, v);
+	const float detail = bilinear(cornerDetail, u, v);
+	const float jagged = bilinear(cornerJagged, u, v);
 	const float saddle = 16 * u * (1 - u) * v * (1 - v);
-	std::array<float, 4> score{};
+	std::array<float, 6> score{};
 	for (unsigned f = 0; f < count; ++f)
 	{
-		float noise = 0;
+		// Noise per Q8 pixel; only the broad meander's slope enters the distance.
+		float noise = 0, noiseX = 0, noiseY = 0, gx, gy;
 		for (const auto &layer : fields[f].noise)
-			noise += layer.at(px, py);
-		const float scale = 1 + wiggle * noise;
+		{
+			noise += wiggle * layer.at(px, py, gx, gy);
+			noiseX += wiggle * gx;
+			noiseY += wiggle * gy;
+		}
+		noise += detail * fields[f].detail.at(px, py, gx, gy);
+		// Summed octaves rarely approach their bound; boosted and clipped to it,
+		// typical edges break up several pixels while the bound still holds.
+		float grit = 0;
+		for (const auto &layer : fields[f].grit)
+			grit += layer.at(px, py, gx, gy);
+		noise += jagged * std::clamp(GritContrast * grit, -1.f, 1.f);
+		const float scale = 1 + noise;
 		score[f] = value[f] * scale + fields[f].bias * saddle;
-		// Per pixel; the slow noise contributes little slope of its own.
-		slopeX[f] *= scale / 32;
-		slopeY[f] *= scale / 32;
+		// Per pixel. Fine detail and grit move the contour through the score, but
+		// their steep slopes would make a first-order distance claim every
+		// contour within a few pixels: extrapolating a 4px zigzag over the eight
+		// pixels of a band. Distances use the smooth slope, so bands follow the
+		// teeth near a contour and stay put away from one.
+		slopeX[f] = slopeX[f] * scale / 32 + value[f] * noiseX * 256;
+		slopeY[f] = slopeY[f] * scale / 32 + value[f] * noiseY * 256;
 	}
+	// Clasts: a material that sheds them pushes its border out by each grain's
+	// share of its reach, so detached chips lie across its edge in the
+	// neighbour, thinning with distance.
+	std::array<float, 6> grains{};
+	for (unsigned f = 0; f < count; ++f)
+		if (pebbleReach[f] > 0)
+			grains[f] = pebbleReach[f] * pebble(f, px, py);
+	// Each pair's teeth from field f's side, evaluated once per sample.
+	const auto ridge = [](float n) { return 1 - 2 * std::abs(std::clamp(TeethContrast * n, -1.f, 1.f)) - TeethMean; };
+	// The pair's teeth at a Q8 position, with its edge's direction from the
+	// sample (across: the share of the edge running across x).
+	const auto teethAt = [&](const Pair &pair, int qx, int qy, float across)
+	{
+		float alongX = 0, alongY = 0;
+		// The finest octave is always faceted: small straight flanks meeting
+		// at corners read as a broken natural edge, rounded ones as ink.
+		for (unsigned o = 0; o < 3; ++o)
+		{
+			const bool linear = pair.linear || o == 2;
+			alongX += pair.alongX[o].at(qx, qy, linear);
+			alongY += pair.alongY[o].at(qy, qx, linear);
+		}
+		// An edge across x (slope along x) varies along y, and the reverse;
+		// diagonals blend both.
+		return pair.amplitude * (across * ridge(alongY) + (1 - across) * ridge(alongX));
+	};
+	const auto acrossOf = [&](unsigned lo, unsigned hi)
+	{
+		const float gx = rawX[lo] - rawX[hi], gy = rawY[lo] - rawY[hi], g2 = gx * gx + gy * gy;
+		return g2 > 1e-8f ? gx * gx / g2 : .5f;
+	};
+	std::array<float, 15> teeth{};
+	std::uint16_t teethDone = 0;
+	const auto teethOf = [&](unsigned f, unsigned g)
+	{
+		const unsigned lo = std::min(f, g), hi = std::max(f, g), index = pairIndex(lo, hi);
+		const auto &pair = pairs[index];
+		if (!pair.amplitude)
+			return 0.f;
+		if (!(teethDone >> index & 1u))
+		{
+			teethDone |= std::uint16_t(1u << index);
+			teeth[index] = teethAt(pair, px, py, acrossOf(lo, hi));
+		}
+		return f == lo ? teeth[index] : -teeth[index];
+	};
 	// Signed pixel distance from field f to field g, from a first-order
-	// expansion of their score difference.
+	// expansion of their score difference, plus the pair's teeth and clasts.
+	// Both are antisymmetric in the pair, so weights still sum to one and seams
+	// and surf follow them, and both fade in only where the two fields have
+	// risen, so they never reach a vertex or a uniform neighbour.
+	const auto risenOf = [&](unsigned f, unsigned g)
+	{
+		const float risen = std::clamp((std::min(score[f], score[g]) - .02f) / .13f, 0.f, 1.f);
+		return risen * risen * (3 - 2 * risen);
+	};
 	const auto distance = [&](unsigned f, unsigned g)
 	{
 		const float gx = slopeX[f] - slopeX[g], gy = slopeY[f] - slopeY[g];
-		return (score[f] - score[g]) / std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		float d = (score[f] - score[g]) / std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		// Grouped so that swapping f and g negates every term exactly: tiles
+		// that list the pair in either order then agree to the last bit.
+		const float shape = teethOf(f, g) + (grains[f] - grains[g]);
+		if (shape != 0)
+			d += shape * risenOf(f, g);
+		return d;
+	};
+	// The distance to the shaped contour, for seams and surf. Teeth and clasts
+	// displace the contour by a few pixels over a few pixels along it, so their
+	// own slope is as steep as the field's: without it a
+	// band would stand wide in front of each crest and vanish along its flanks
+	// and around grains. Dividing by the slope of the whole shaped distance
+	// (forward differences one pixel on, at the same world positions in every
+	// tile) gives the distance to straight flanks exactly.
+	const auto bandDistance = [&](unsigned f, unsigned g)
+	{
+		const float gx = slopeX[f] - slopeX[g], gy = slopeY[f] - slopeY[g];
+		const float g1 = std::max(std::sqrt(gx * gx + gy * gy), 1e-4f);
+		float d = (score[f] - score[g]) / g1;
+		// Only the sample's own grains: the neighbour's lie beyond its contour,
+		// and one that stops short of the surface would ring the water with surf.
+		const float shape = teethOf(f, g) + grains[f];
+		if (shape == 0)
+			return d;
+		const float risen = risenOf(f, g);
+		if (risen <= 0)
+			return d;
+		const unsigned lo = std::min(f, g), hi = std::max(f, g);
+		const auto &pair = pairs[pairIndex(lo, hi)];
+		const float across = pair.amplitude ? acrossOf(lo, hi) : 0;
+		const float sign = f == lo ? 1.f : -1.f;
+		const auto shapeAt = [&](int qx, int qy)
+		{
+			float s = pair.amplitude ? sign * teethAt(pair, qx, qy, across) : 0;
+			if (pebbleReach[f] > 0) s += pebbleReach[f] * pebble(f, qx, qy);
+			return s;
+		};
+		const float sx = (shapeAt(px + 256, py) - shape) * risen;
+		const float sy = (shapeAt(px, py + 256) - shape) * risen;
+		const float nx = gx / g1 + sx, ny = gy / g1 + sy;
+		return (d + shape * risen) / std::max(std::sqrt(nx * nx + ny * ny), .5f);
 	};
 	// Each material's distance to its strongest competitor ramps its weight
 	// over the two materials' mean feather. Two materials therefore sum to one
 	// exactly, and three meet with equal shares at their junction.
+	// Coverage comes from the corner fields alone, exactly as without a halo.
 	Coverage out;
 	std::array<float, 4> raw{};
 	float total = 0;
 	unsigned top = 0;
-	for (unsigned f = 1; f < count; ++f)
+	for (unsigned f = 1; f < weighted; ++f)
 		if (score[f] > score[top])
 			top = f;
-	for (unsigned f = 0; f < count; ++f)
+	for (unsigned f = 0; f < weighted; ++f)
 	{
 		unsigned rival = f == 0 ? 1 : 0;
-		for (unsigned g = 0; g < count; ++g)
+		for (unsigned g = 0; g < weighted; ++g)
 			if (g != f && score[g] > score[rival])
 				rival = g;
 		const float ramp = (fields[f].feather + fields[rival].feather) / 2;
-		raw[f] = std::clamp(.5f + distance(f, rival) / ramp, 0.f, 1.f);
+		// One corner material owns the whole cell, whatever lies beyond it.
+		raw[f] = weighted == 1 ? 1.f : std::clamp(.5f + distance(f, rival) / ramp, 0.f, 1.f);
 		total += raw[f];
 	}
 	unsigned sum = 0;
-	for (unsigned f = 0; f < count; ++f)
+	for (unsigned f = 0; f < weighted; ++f)
 	{
 		out.material[f] = fields[f].material;
 		out.weight[f] = unsigned(raw[f] / total * 65536);
 		sum += out.weight[f];
 	}
 	out.weight[top] += 65536 - sum;
-	// Seams and surf take the nearest contour of another material.
+	// Seams and surf take the nearest contour of a material they draw a band
+	// against, halo materials beyond the tile edge included. Contours without a
+	// band neither hide one behind them nor depend on which tile measures.
 	float nearest = 256;
 	out.neighbor = fields[top == 0 ? 1 : 0].material;
 	for (unsigned g = 0; g < count; ++g)
-		if (g != top && fields[g].material != fields[top].material)
-			if (const float d = std::max(0.f, distance(top, g)); d < nearest)
+		// A field that has not risen here has no contour within band reach, and a
+		// first-order distance to it would be meaningless.
+		if (g != top && (bands[top] >> g & 1u) && score[g] > MinimumBandScore)
+			if (const float d = std::max(0.f, bandDistance(top, g)); d < nearest)
 			{
 				nearest = d;
 				out.neighbor = fields[g].material;

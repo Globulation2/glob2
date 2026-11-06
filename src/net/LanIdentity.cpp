@@ -98,11 +98,17 @@ void provisionLanIdentity(NetworkConfig &config)
 	X509_gmtime_adj(X509_getm_notBefore(cert.get()), -60);
 	X509_gmtime_adj(X509_getm_notAfter(cert.get()), 7 * 24 * 60 * 60);
 	X509_set_pubkey(cert.get(), key.get());
-	auto *name = X509_get_subject_name(cert.get());
-	X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC,
-							   reinterpret_cast<const unsigned char *>("Globulation 2 LAN session"),
-							   -1, -1, 0);
-	X509_set_issuer_name(cert.get(), name);
+	// OpenSSL 4 returns the certificate's own subject name as const, so build
+	// the name separately and copy it in as both subject and issuer.
+	using Name = std::unique_ptr<X509_NAME, decltype(&X509_NAME_free)>;
+	Name name(X509_NAME_new(), X509_NAME_free);
+	if (!name ||
+		X509_NAME_add_entry_by_txt(name.get(), "CN", MBSTRING_ASC,
+								   reinterpret_cast<const unsigned char *>("Globulation 2 LAN session"),
+								   -1, -1, 0) != 1 ||
+		X509_set_subject_name(cert.get(), name.get()) != 1 ||
+		X509_set_issuer_name(cert.get(), name.get()) != 1)
+		throw std::runtime_error("LAN identity name failed");
 	X509V3_CTX context{};
 	X509V3_set_ctx(&context, cert.get(), cert.get(), nullptr, nullptr, 0);
 	std::string san = "DNS:localhost";

@@ -110,6 +110,7 @@ void GameGUI::init()
     tutorialHighlights.clear();
     tutorialDestination=0;
 	torusView.reset();
+	introCover.reset();
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);

@@ -69,7 +69,7 @@ the blob volume is content-addressed, so an older blob archive plus a newer dump
 restores everything except files added in between.
 
 **Setting up** (once per deployment; the official instance uses the bucket
-`glob2-backups-pharaoh-418820` in `northamerica-northeast2` and the service account
+`glob2-backups` in `northamerica-northeast2` and the service account
 `glob2-staging-host`):
 
 ```sh

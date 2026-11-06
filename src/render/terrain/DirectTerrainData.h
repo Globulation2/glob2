@@ -4,6 +4,7 @@
 #include "TerrainMaterials.h"
 #include <SDL3/SDL_stdinc.h>
 #include <array>
+#include <map>
 #include <coroutine>
 #include <exception>
 #include <memory>
@@ -48,8 +49,29 @@ struct DirectTerrainData
         std::array<Uint16, MaskPixels * MaskPixels> edges;
     };
     static CoverageTile makeCoverage(const TerrainVisual::Compositor &, const TerrainVisual::Recipe &);
+
+    // Variant records for streamed artwork (Legacy GL): one slot per material
+    // variant a cell uses, with art index zero until the art atlas places it.
+    // Kept across terrain edits so a re-described cell extends the same table.
+    struct Palette
+    {
+        std::vector<Record> variants = std::vector<Record>(VariantRecords);
+        std::vector<Source> sources = std::vector<Source>(1);
+        std::map<std::pair<TerrainVisual::MaterialId, unsigned>, Uint16> slots;
+        Uint16 slot(const TerrainVisual::Catalog &, const TerrainVisual::Recipe &, TerrainVisual::MaterialId);
+    };
+    // A cell's palette record, mixed-cell marker (PendingMask, or zero when
+    // uniform) and shore calm, from its recipe.
+    static void describeCell(Palette &, const TerrainVisual::Catalog &, const TerrainVisual::Recipe &,
+                             Record &cell, Uint16 &mask, Pixel &calm);
+    static void appendRecords(std::vector<Record> &variants, const TerrainVisual::Material &, Uint16 firstArt);
+    Palette palette; // Tables mode only; variants and sources stay empty then.
+
     class Build;
-    static Build begin(SceneMap, std::shared_ptr<TerrainVisual::Compositor>, int maximumTextureSize, bool streamCoverage);
+    // Tables mode builds only the per-cell tables and the palette: no native
+    // artwork or coverage, which Legacy GL streams at the display density.
+    enum class Mode { Native, NativeStreamedCoverage, Tables };
+    static Build begin(SceneMap, std::shared_ptr<TerrainVisual::Compositor>, int maximumTextureSize, Mode);
     static DirectTerrainData build(const SceneMap &, std::shared_ptr<TerrainVisual::Compositor>, int maximumTextureSize);
 };
 

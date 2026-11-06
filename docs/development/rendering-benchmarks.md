@@ -151,13 +151,21 @@ rebuild the atlases.
 Discovery changes can upload a separate visibility texture. On programmable GL,
 `FRAME_DEVICE` also reports physical uploads for the whole renderer. Compare capture
 pixels, frame p95 and p99, startup time, and resident terrain memory on the same
-map and camera path. When zooming across native density with HD enabled,
-check aggregate atlas and page residency. A direct draw at higher density
-fills regions that are still waiting on HD pages. Returning to native
-density should reuse the atlas without rebuilding it. Direct terrain also falls
-back when map tables or atlases
-exceed the device texture dimensions, 16-bit index capacity, or 64 MiB texture
-budget. On programmable GL, actual GPU uploads happen during frame submission,
+map and camera path.
+
+Legacy GL draws all terrain with one direct pass at every zoom, in games, the
+editor and tiled captures. The map's per-cell tables are built once, in 3 ms
+slices while the overview shows, and terrain edits update only the cells near
+a changed vertex. Each frame the pass streams the visible variants' artwork into
+one atlas near the display density (8 to 128 pixels a cell), and background
+workers build a coverage mask for each visible mixed cell into one atlas at the
+same density (8 to 128 texels a side), nearest the view centre first; a mixed
+cell draws its first material until its mask lands. `FRAME_HD` reports the
+visible mixed cells still waiting. The editor and captures complete the view
+first: they build every visible mask in parallel and wait for streamed HD
+artwork. Pages serve only the software and programmable-device renderers.
+Direct terrain stops (`DIRECT_TERRAIN_FALLBACK`) only for device limits, such as
+a map wider than the maximum texture size; Legacy GL then shows the overview. On programmable GL, actual GPU uploads happen during frame submission,
 where device-wide memory pressure can defer the frame. Far zoom uses the shared overview. For a large-map admission check,
 set `GLOB2_BENCH_SIZE=512x64`, `GLOB2_BENCH_SPARSE_TERRAIN=1`,
 `GLOB2_BENCH_UNITS=0`, and `GLOB2_BENCH_ZOOM=0.55`. The sparse fixture uses

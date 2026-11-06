@@ -4,7 +4,12 @@
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
 #include "render/scene/SceneMap.h"
+#include <SDL3_image/SDL_image.h>
+#include <Toolkit.h>
+#include <filesystem>
 #include <map>
+#include <sstream>
+#include <fstream>
 #include <set>
 #include <tuple>
 #include <vector>
@@ -76,9 +81,10 @@ TEST_SUITE("TerrainStones")
 		recipe.width = recipe.height = 8;
 		recipe.corners = {1, 2, 1, 2};
 		recipe.stones = true;
-		recipe.stoneMaterial = 1;
-		recipe.stoneGround = 2;
-		recipe.stonesKept[4] = 1; // The left stone is kept, the right one dropped.
+		recipe.stoneLayerCount = 1;
+		recipe.stoneLayers[0].material = 1;
+		recipe.stoneLayers[0].ground = 2;
+		recipe.stoneLayers[0].kept[4] = 1; // The left stone is kept, the right one dropped.
 		const auto weightOf = [](const TerrainVisual::Coverage &c, TerrainVisual::MaterialId id)
 		{
 			unsigned w = 0;
@@ -88,7 +94,7 @@ TEST_SUITE("TerrainStones")
 		};
 		const auto sample = [&](TerrainVisual::Coverage c, int px)
 		{
-			TerrainVisual::applyStones(recipe, map, px, 4096, c);
+			TerrainVisual::applyStones(recipe, 0, map, px, 4096, c);
 			unsigned sum = 0;
 			for (auto w : c.weight) sum += w;
 			CHECK(sum == 65536);
@@ -127,6 +133,79 @@ TEST_SUITE("TerrainStones")
 		CHECK(dropped.neighbor == 1);
 		CHECK(dropped.margin == 32 + 96);
 		CHECK(sample(half, 1024).margin == 65535);
+	}
+
+	TEST_CASE("laid stone path borders leave no undrawn pixels [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto &compositor = globals->terrainCompositor();
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		// A brick causeway from grass over a beach, onto boardwalk across water;
+		// slate, basalt and moonstone paths meeting each other and the water.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				TerrainType t = GRASS;
+				if (y < 10) t = WATER;
+				else if (y < 15) t = SAND;
+				if (x >= 4 && x <= 9 && y < 10) t = BOARDWALK;
+				if (x >= 4 && x <= 9 && y >= 10) t = BRICK_PATH;
+				if (x >= 14 && x <= 21 && y >= 6) t = SLATE_ASHLAR;
+				if (x >= 22 && x <= 29 && y >= 6) t = BASALT_CAUSEWAY;
+				if ((x - 21) * (x - 21) + (y - 20) * (y - 20) < 16) t = MOONSTONE_LOZENGE;
+				if (x >= 14 && x <= 29 && y >= 27) t = WATER;
+				map.setVertexTerrain(x, y, t);
+			}
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		constexpr int scale = 4, n = 32 * scale;
+		GAGCore::DrawableSurface image(32 * n, 32 * n);
+		auto *surface = image.getSDLSurface();
+		unsigned holes = 0, holeCells = 0;
+		std::ostringstream holeLog;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const auto recipe = compositor.describe(scene, x, y);
+				if (recipe.uniform())
+					continue; // One prepared material, drawn whole.
+				// Prepare only what this cell's view needs, as a zoomed-in game
+				// view does: on a whole map every variant is in use somewhere.
+				compositor.prepareVisible(true, 0, scene, x, y, x, y);
+				const auto mask = compositor.mask(recipe, scale);
+				compositor.compose(recipe, surface, x * n, y * n, scale, &mask);
+				unsigned cell = 0;
+				for (int py = 0; py < n; ++py)
+				{
+					const auto *row = reinterpret_cast<const std::uint32_t *>(
+						static_cast<const std::uint8_t *>(surface->pixels) + std::size_t(y * n + py) * surface->pitch);
+					for (int px = 0; px < n; ++px)
+						cell += (row[x * n + px] >> 24) != 0xFF;
+				}
+				if (cell)
+				{
+					++holeCells;
+					holeLog << "cell " << x << "," << y << ": " << cell << " layers " << unsigned(recipe.stoneLayerCount);
+					for (unsigned l = 0; l < recipe.stoneLayerCount; ++l)
+						holeLog << " " << compositor.catalog().materials[recipe.stoneLayers[l].material].key << "/"
+								<< compositor.catalog().materials[recipe.stoneLayers[l].ground].key;
+					holeLog << " corners";
+					for (const auto c : recipe.corners) holeLog << " " << compositor.catalog().materials[c].key;
+					holeLog << "\n";
+					MESSAGE("undrawn pixels at cell " << x << "," << y << ": " << cell << " stones=" << recipe.stones
+							<< " stone=" << recipe.stoneLayers[0].material << " ground=" << recipe.stoneLayers[0].ground << " corners="
+							<< recipe.corners[0] << "," << recipe.corners[1] << "," << recipe.corners[2] << ","
+							<< recipe.corners[3]);
+				}
+				holes += cell;
+			}
+		const auto directory = glob2test::artifactDir() / "stone-borders";
+		std::filesystem::create_directories(directory);
+		REQUIRE(IMG_SavePNG(surface, (directory / "mixed-borders.png").string().c_str()));
+		std::ofstream(directory / "holes.txt") << holeLog.str();
+		CHECK(holeCells == 0);
+		CHECK(holes == 0);
 	}
 
 	TEST_CASE("laid stone paths draw whole stones along every border [display]")
@@ -168,8 +247,9 @@ TEST_SUITE("TerrainStones")
 				const auto recipe = compositor.describe(scene, x, y);
 				if (!recipe.stones)
 					continue;
-				CHECK(recipe.stoneMaterial == brick);
-				CHECK(recipe.stoneGround == grass);
+				CHECK(recipe.stoneLayerCount == 1);
+				CHECK(recipe.stoneLayers[0].material == brick);
+				CHECK(recipe.stoneLayers[0].ground == grass);
 				++cells;
 				const auto mask = compositor.mask(recipe, 4);
 				unsigned slot = 0;

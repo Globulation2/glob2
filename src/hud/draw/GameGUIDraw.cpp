@@ -110,7 +110,8 @@ void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
         GAGGUI::ui::SurfaceCanvas canvas(*globalContainer->gfx, theme,
             GAGGUI::ui::resolvePresentation(*globalContainer->gfx, theme.touchTextScale));
         canvas.fillRounded({control.x + 5, control.y + 5, 22, 22}, 11, theme.palette.panel);
-        canvas.drawIcon({control.x + 7, control.y + 7, 18, 18}, *Glob2UI::uiIcon(Glob2UI::UIIcon::Map), theme.palette.ink);
+        if (!panelMapIcon) panelMapIcon = Glob2UI::uiIcon(Glob2UI::UIIcon::Map);
+        canvas.drawIcon({control.x + 7, control.y + 7, 18, 18}, *panelMapIcon, theme.palette.ink);
     }
 }
 
@@ -927,6 +928,36 @@ void GameGUI::drawAll(int team)
     if(typingInputScreen){globalContainer->gfx->setClipRect();drawInGameTextInput();}
     if(scrollableText)drawInGameScrollableText();
 
+	// The opening clouds cover everything drawn above, which keeps rendering.
+	const Uint64 now = SDL_GetTicks();
+	if (introCover.active(now))
+	{
+		globalContainer->gfx->setClipRect();
+		const bool clouds = globalContainer->gfx->rendererCapabilities().cloudLayers && !globalContainer->reducedMotion;
+		introCover.draw(*globalContainer->gfx, globalContainer->gfx->getW(), globalContainer->gfx->getH(), now,
+		                globalContainer->menuFont, globalContainer->standardFont, clouds);
+	}
+}
+
+void GameGUI::beginIntroCover(Uint64 now)
+{
+	IntroCover::Title title;
+	title.map = game.mapHeader.getMapName();
+	for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
+	{
+		const BasePlayer &base = game.gameHeader.getBasePlayer(i);
+		IntroCover::Player player;
+		player.name = base.name;
+		if (base.teamNumber >= 0 && base.teamNumber < Team::MAX_COUNT && game.teams[base.teamNumber])
+		{
+			const GAGCore::Color colour = game.teams[base.teamNumber]->color;
+			player.r = colour.r;
+			player.g = colour.g;
+			player.b = colour.b;
+		}
+		title.players.push_back(std::move(player));
+	}
+	introCover.begin(now, std::move(title));
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

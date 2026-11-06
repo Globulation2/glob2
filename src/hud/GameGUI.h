@@ -6,6 +6,7 @@
 namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 #include <ui/PositionedControls.h>
+#include <ui/Icon.h>
 
 #include <InputState.h>
 #include <functional>
@@ -21,6 +22,7 @@ namespace Online { class SkinDownloads; }
 
 #include "Game.h"
 #include "TorusView.h"
+#include "IntroCover.h"
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -193,6 +195,10 @@ public:
 	
 	/// Show the dialog that says that the replay ended
 	void showEndOfReplayScreen(bool client = false);
+
+	/// Cover the screen with clouds for the first five seconds of a game. The
+	/// simulation and the map renderer keep running underneath. See IntroCover.
+	void beginIntroCover(Uint64 now);
 	
 	///This is an enum for the current highlight object. The highlighted object is shown with a large arrow.
 	///This is primarily for tutorials
@@ -380,6 +386,10 @@ public:
 	bool enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &orders, const std::function<bool()> &commit);
 	int viewportX, viewportY;
 	MapCamera camera;
+	IntroCover introCover;
+	/// Swallow gameplay input while the opening cover is closed; a press skips
+	/// to the parting. Returns whether the event was consumed.
+	bool introCoverConsumes(const SDL_Event &event);
 	bool zoomControlPushed=false;
 	void updateCamera();
 	bool zoomMap(double steps,int x,int y);
@@ -530,6 +540,9 @@ private:
 	void drawPanelButtons(int y);
 	//! Draw a single button of the panel
 	void drawPanelButton(int y, int pos, int numButtons, int sprite);
+	// Held for the HUD's life: the icon cache releases icons nobody keeps, so a
+	// temporary reference would reload its images every frame.
+	std::shared_ptr<const GAGGUI::ui::IconAsset> panelMapIcon;
 	//! Draw a choice of buildings or flags. Thin coordinator over the four helpers below.
 	//! `panelTopY` is the single Y origin for both the sprite grid and the mouse hit grid;
 	//! all four helpers anchor to it so layout and hit-test cannot drift apart.

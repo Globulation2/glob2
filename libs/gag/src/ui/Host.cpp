@@ -383,6 +383,26 @@ void Host::settleScroll(GAGCore::Ticks time)
 	}
 }
 
+Rect Host::visibleRect(const Node &target) const
+{
+	auto find = [&](auto &&self, const Node &node, Rect clip) -> std::optional<Rect>
+	{
+		if (&node == &target)
+			return node.bounds.intersect(clip);
+		if (node.clipsChildren())
+			clip = clip.intersect(node.bounds);
+		for (const auto &child : node.children)
+			if (child)
+				if (auto found = self(self, *child, clip))
+					return found;
+		return std::nullopt;
+	};
+	const Node *root = activeRoot();
+	if (!root)
+		return {};
+	return find(find, *root, current.viewport).value_or(Rect{});
+}
+
 Node *Host::interactiveAt(Point point) const
 {
 	auto *root = activeRoot();
@@ -983,7 +1003,9 @@ void Host::paint(Canvas &canvas, Uint32 tick)
 		if (auto *node = find(focusKey))
 			canvas.strokeRect(node->bounds.inset(-metricsValue.focusRing + 1), themeValue.palette.focus);
 	Node *tip = nullptr;
-	if (!popup && pressedKey.empty())
+	// No tooltip while content is dragged, coasting or springing back: the
+	// target moves under a still pointer, and the delay restarts once it settles.
+	if (!popup && pressedKey.empty() && !scrolling)
 	{
 		if (keyboardFocus)
 			tip = focusedNode();
@@ -1003,21 +1025,26 @@ void Host::paint(Canvas &canvas, Uint32 tick)
 		Uint32(tick - tooltipSince) >= 600)
 	{
 		const auto &p = themeValue.palette;
+		const Rect area = tooltipArea.empty() ? current.safe : tooltipArea.intersect(current.safe);
+		// Anchor to what is shown of a target partly scrolled out of view.
+		Rect anchor = visibleRect(*tip);
+		if (anchor.empty())
+			anchor = tip->bounds;
 		const int pad = current.pt(8);
-		const int maxWidth = std::max(1, std::min(current.pt(280), current.safe.w) - 2 * pad);
+		const int maxWidth = std::max(1, std::min(current.pt(280), area.w) - 2 * pad);
 		const auto text = layoutText(canvas.measurer(), FontRole::Support, tip->tooltipText(),
 									 maxWidth, metricsValue.lineGap);
 		int width = 0;
 		for (const auto &line : text.lines)
 			width = std::max(width, canvas.measurer().width(FontRole::Support, line));
-		const int w = std::min(current.safe.w, width + 2 * pad),
-				  h = std::min(current.safe.h, text.height + 2 * pad);
-		const int x = std::clamp(tip->bounds.x, current.safe.x, current.safe.right() - w);
-		const int proposedY = tip->bounds.bottom() + current.pt(4);
+		const int w = std::min(area.w, width + 2 * pad),
+				  h = std::min(area.h, text.height + 2 * pad);
+		const int x = std::clamp(anchor.x, area.x, area.right() - w);
+		const int proposedY = anchor.bottom() + current.pt(4);
 		const int y = std::clamp(
-			proposedY + h <= current.safe.bottom() ? proposedY : tip->bounds.y - h - current.pt(4),
-			current.safe.y, current.safe.bottom() - h);
-		canvas.pushClip(current.safe);
+			proposedY + h <= area.bottom() ? proposedY : anchor.y - h - current.pt(4),
+			area.y, area.bottom() - h);
+		canvas.pushClip(area);
 		canvas.fillRounded({x, y, w, h}, metricsValue.radius, p.panel);
 		canvas.strokeRect({x, y, w, h}, p.line);
 		int lineY = y + pad;
