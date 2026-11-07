@@ -132,8 +132,11 @@ constexpr int kMudHomeClear = 6;
 // in radius, kHammockShore tiles from any bank, kHammockHomeClear tiles beyond a clearing's levee
 // clearance, kHammockSpacing tiles between centres; a knot left with fewer than kHammockLeast tiles
 // after its two-thick trim is not laid.
-constexpr double kHammockLow = 2.2, kHammockHigh = 3.8, kHammockRoughness = 0.35;
-constexpr int kHammockShore = 2, kHammockHomeClear = 6, kHammockSpacing = 14, kHammockLeast = 8;
+// A knot is drawn no bigger than its centre's room allows (its steps from the bank less
+// kHammockShore, over 1.2 for the rough outline), so the big ones stand in the broad dry reaches.
+// One tile of grass between a hammock and a bank's mixed tiles keeps the lane beside it.
+constexpr double kHammockLow = 2.8, kHammockHigh = 5.0, kHammockRoughness = 0.3;
+constexpr int kHammockShore = 1, kHammockHomeClear = 6, kHammockSpacing = 16, kHammockLeast = 10;
 constexpr int kHammockTries = 12; // candidate draws per hammock wanted
 // Moss: the swamp's grass where the wetness field passes this, beyond kMossHomeClear tiles past a
 // clearing's levee clearance.
@@ -146,13 +149,15 @@ struct Season
 	const char *name;
 	// Grass: lush where the wetness passes `lush` (or near the water), dry where it is under `dry`.
 	float lush, dry;
-	// One look for the moss a season: two Fertile looks side by side would leave a mixed tile that
-	// the terrain dump (and so the growth tool) cannot score.
-	TerrainType deep, bank, mud, mudSecond, moss;
+	// The dry season's moss shows peat (loam) in patches away from the water. A moss/loam tile plays
+	// as moss (one rule group), but the terrain dump records it as mixed and the growth tool scores it
+	// as nothing, so food is measured with the season pinned wet (the rules are the same; contract).
+	TerrainType deep, bank, mud, mudSecond, moss, mossSecond;
+	int peatShare; // of 65536
 };
 constexpr std::array<Season, 2> kSeasons{{
-	{"wet", 0.15f, 0.04f, DARK_WATER, SAND, MUD, MUDFLAT, MOSS},
-	{"dry", 0.28f, 0.20f, DARK_WATER, PALE_SAND, MUDFLAT, HARDPAN, LOAM},
+	{"wet", 0.15f, 0.04f, DARK_WATER, SAND, MUD, MUDFLAT, MOSS, MOSS, 0},
+	{"dry", 0.28f, 0.20f, DARK_WATER, PALE_SAND, MUDFLAT, HARDPAN, MOSS, LOAM, 22000},
 }};
 
 struct Geometry
@@ -404,9 +409,13 @@ void planHammocks(Layout &L, const EvergladesOptions &o, GenerationContext &cont
 	const char *stream = "glades-hammocks";
 	std::vector<int> candidates;
 	for (int i = 0; i < n; ++i)
-		if (shore[i] >= kHammockShore + 2 && !home[i])
+		if (shore[i] >= kHammockShore + 3 && !home[i])
 			candidates.push_back(i);
 	context.shuffle(candidates.begin(), candidates.end(), stream);
+	// The broadest dry ground first (in random order within each step), so the hammocks stand where
+	// there is room for a big one.
+	std::stable_sort(candidates.begin(), candidates.end(),
+					 [&](int a, int b) { return shore[a] > shore[b]; });
 	std::vector<unsigned char> taken(size_t(n), 0);
 	std::vector<std::vector<int>> placed;
 	const int tries = std::min<int>(int(candidates.size()), L.hammocksWanted * kHammockTries);
@@ -417,7 +426,8 @@ void planHammocks(Layout &L, const EvergladesOptions &o, GenerationContext &cont
 			continue;
 		const int cx = t.remainderX(centre), cy = centre / t.w;
 		const double radius =
-			kHammockLow + (kHammockHigh - kHammockLow) * context.bounded(stream, 1001) / 1000.0;
+			std::min(kHammockLow + (kHammockHigh - kHammockLow) * context.bounded(stream, 1001) / 1000.0,
+					 std::max(2.2, (shore[centre] - kHammockShore) / 1.2));
 		const RadialShape shape(radius, kHammockRoughness, context, stream);
 		const int box = int(std::ceil(shape.maximumRadius())) + 1;
 		std::vector<int> tiles;
@@ -742,7 +752,7 @@ TerrainSketch lookSketch(const Layout &L, int seasonIndex, GenerationContext &co
 			}
 			break;
 		case MOSS:
-			looks[i] = season.moss;
+			looks[i] = fromWet[i] >= 3 && split[i] < season.peatShare ? season.mossSecond : season.moss;
 			break;
 		case MUDFLAT:
 			looks[i] = split[i] < 40000 ? season.mud : season.mudSecond;
