@@ -32,6 +32,12 @@ python3 test/run_coverage.py --quick --timeout 900 -j4
 python3 -m unittest discover -s test -p test_run_coverage.py -v
 ```
 
+Each test binary gets its own profile and report: `unit/` and `engine/` hold
+`glob2-unit-tests` and `glob2-engine-tests`, and `map/` and `sim/` hold the module
+binaries their runs also execute. Functions compiled into two binaries carry
+different hashes, so their profiles are never merged; per-job profiles are named
+by the writing binary's build ID (`job-NNNNN.<id>.profdata`).
+
 Use an optimized coverage build for the full tier, including expensive generator
 registry contracts and custom-game previews:
 

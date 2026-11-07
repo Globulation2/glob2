@@ -66,6 +66,49 @@ def compact_profiles(profiles, successful):
     return {'raw_profiles_retained': False, 'raw_profile_bytes_removed': size}
 
 
+def binary_label(binary, kind):
+    """The test-runner label of a binary: glob2-map-tests -> map, src/glob2 -> client."""
+    if kind == 'client':
+        return 'client'
+    return binary.name.removeprefix('glob2-').removesuffix('.exe').removesuffix('-tests')
+
+
+def profiles_for_binary(profiles, binary, primary, profdata_tool):
+    """The profiles one binary wrote.
+
+    Per-job profiles name their writer's build ID (job-NNNNN.<id>.profdata, see
+    test/case_coverage.py); raw profiles record it. Anything unattributable
+    goes to the kind's primary binary.
+    """
+    import case_coverage
+    wanted = case_coverage.binary_id_of_file(binary)
+    kept = []
+    for profile in profiles:
+        if profile.suffix == '.profdata':
+            _, _, identity = profile.stem.partition('.')
+            if (wanted and identity == wanted) or (primary and (not identity or not wanted)):
+                kept.append(profile)
+            continue
+        writer = case_coverage.binary_id(profile, profdata_tool[-1])
+        if (wanted and writer == wanted) or (primary and (not writer or not wanted)):
+            kept.append(profile)
+    return kept
+
+
+# test/run_tests.py --binary unit also runs glob2-map-tests, and --binary engine
+# also runs glob2-sim-tests; their profiles land in the same directory.
+KIND_COMPANIONS = {'unit': ('glob2-map-tests',), 'engine': ('glob2-sim-tests',)}
+
+
+def kind_binaries(build, kind):
+    """The binaries whose profiles a coverage kind collects, primary first."""
+    if kind == 'client':
+        return [build / 'src/glob2']
+    test = build / 'test'
+    return [test / f'glob2-{kind}-tests'] + [test / name for name in KIND_COMPANIONS.get(kind, ())
+                                            if (test / name).exists()]
+
+
 def instrumentation_flags(optimization, debug_info):
     debug = '-g' if debug_info == 'full' else '-gline-tables-only'
     return f'{debug} -O{optimization} -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE'
@@ -231,33 +274,48 @@ def main():
             profiles = sorted(raw.glob('*.profraw')) + sorted(raw.glob('job-*.profdata'))
             if not profiles:
                 raise RuntimeError(f'{kind}: no profiles were produced')
-            profile = directory / 'coverage.profdata'
-            status = run(tool(args.llvm_profdata) + ['merge', '-sparse', *map(str, profiles), '-o', str(profile)], f'{kind}/merge.log')
-            if status:
-                raise RuntimeError(f'{kind}: profile merge failed')
-            binary = build / 'src/glob2' if kind == 'client' else build / 'test' / f'glob2-{kind}-tests'
-            covargs = [str(binary), f'-instr-profile={profile}', f'-ignore-filename-regex={IGNORE}']
-            warnings = directory / 'export.log'
-            with (directory / 'coverage.json').open('w') as stream, warnings.open('w') as err:
-                command = tool(args.llvm_cov) + ['export', *covargs, '-skip-expansions']
-                manifest['commands'].append(command)
-                if args.stream_logs:
-                    print(f'Coverage JSON export ({kind}): {shlex.join(command)}', flush=True)
-                result = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=err)
-            if result.returncode or warnings.read_text().strip():
-                raise RuntimeError(f'{kind}: coverage diagnostics require investigation; see export.log')
-            summary = summarize(json.loads((directory / 'coverage.json').read_text()))
-            (directory / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
-            html_status = run(tool(args.llvm_cov) + ['show', *covargs, '-format=html',
-                          f'-output-dir={directory / "html"}', '-show-branches=count'], f'{kind}/html.log')
+            # A kind's run can cover a companion module binary (unit + map, engine + sim).
+            # Each binary gets its own profile and report: functions compiled into both
+            # carry different hashes, and llvm-cov reports a merged profile as mismatched.
+            binaries = kind_binaries(build, kind)
+            html_status = 0
+            for index, binary in enumerate(binaries):
+                label = binary_label(binary, kind)
+                report = directory if index == 0 else output / label
+                report.mkdir(parents=True, exist_ok=True)
+                selected = profiles_for_binary(profiles, binary, index == 0, tool(args.llvm_profdata))
+                if not selected:
+                    if index == 0:
+                        raise RuntimeError(f'{kind}: no profiles were produced by {binary.name}')
+                    continue
+                relative = report.relative_to(output).as_posix()
+                profile = report / 'coverage.profdata'
+                status = run(tool(args.llvm_profdata) + ['merge', '-sparse', *map(str, selected), '-o', str(profile)],
+                             f'{relative}/merge.log')
+                if status:
+                    raise RuntimeError(f'{label}: profile merge failed')
+                covargs = [str(binary), f'-instr-profile={profile}', f'-ignore-filename-regex={IGNORE}']
+                warnings = report / 'export.log'
+                with (report / 'coverage.json').open('w') as stream, warnings.open('w') as err:
+                    command = tool(args.llvm_cov) + ['export', *covargs, '-skip-expansions']
+                    manifest['commands'].append(command)
+                    if args.stream_logs:
+                        print(f'Coverage JSON export ({label}): {shlex.join(command)}', flush=True)
+                    result = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=err)
+                if result.returncode or warnings.read_text().strip():
+                    raise RuntimeError(f'{label}: coverage diagnostics require investigation; see {relative}/export.log')
+                summary = summarize(json.loads((report / 'coverage.json').read_text()))
+                (report / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+                html_status |= run(tool(args.llvm_cov) + ['show', *covargs, '-format=html',
+                                   f'-output-dir={report / "html"}', '-show-branches=count'], f'{relative}/html.log')
+                manifest['binaries'][label] = {'test_exit': test_status, 'profiles': len(selected)}
             failed |= html_status
-            manifest['binaries'][kind] = {'test_exit': test_status, 'profiles': len(profiles)}
             if args.coverage_map and kind != 'client':
                 import case_coverage
                 case_maps.append(directory / 'coverage-map.json.gz')
-                case_coverage.write_map(raw, [binary], case_maps[-1], tool(args.llvm_profdata)[-1], tool(args.llvm_cov)[-1])
+                case_coverage.write_map(raw, binaries, case_maps[-1], tool(args.llvm_profdata)[-1], tool(args.llvm_cov)[-1])
             if args.discard_merged_profiles:
-                manifest['binaries'][kind].update(compact_profiles(
+                manifest['binaries'][binary_label(binaries[0], kind)].update(compact_profiles(
                     profiles, successful=test_status == 0 and html_status == 0))
         if args.coverage_map and case_maps:
             import case_coverage
@@ -267,7 +325,7 @@ def main():
         print(error, file=sys.stderr)
         failed = 1
     finally:
-        (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+        (output / 'manifest.json').write_text(json.dumps(manifest, indent=2, default=str) + '\n')
         print(f'Coverage evidence: {output}', flush=True)
     return int(bool(failed))
 
