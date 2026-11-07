@@ -54,6 +54,21 @@ class CycleTest(unittest.TestCase):
         self.assertIsNone(layering.directory('src/map/X.h', 2))
 
 
+class BudgetSlackTest(unittest.TestCase):
+    def test_a_new_source_file_does_not_trip_budgets_but_a_new_wide_include_does(self):
+        import json, tempfile
+        from unittest.mock import patch
+        budget = json.loads(layering.BUDGET.read_text())
+        header = 'src/game/Game.h'
+        real = layering.IncludeGraph.fanin
+        def shifted(extra):
+            return lambda self, units=None: {**real(self, units), header: budget[header] + extra}
+        with patch.object(layering.IncludeGraph, 'fanin', shifted(1)):
+            self.assertEqual([e for e in layering.check() if header in e], [])
+        with patch.object(layering.IncludeGraph, 'fanin', shifted(100)):
+            self.assertTrue([e for e in layering.check() if header in e])
+
+
 class RepositoryTest(unittest.TestCase):
     def test_repository_passes(self):
         self.assertEqual(layering.check(), [])

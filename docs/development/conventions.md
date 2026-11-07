@@ -36,7 +36,8 @@ because release builds do not use LTO.
 
 `python3 test/check_header_layering.py` enforces this from the static include
 graph in a few seconds: layer ranks in `test/header_layers.json`, no version
-defaults in headers, no new directory-level include cycles, and fan-in budgets in
+defaults in headers, no new directory-level include cycles, and fan-in budgets (with
+2% slack, so new source files do not trip them) in
 `test/header_fanin_budget.json`. Existing violations are listed in
 `test/header_layering_allowlist.txt` and `test/header_cycles_allowlist.txt`; after
 removing some, run it with `--write` to drop their lines and lower the budgets.
