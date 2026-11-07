@@ -18,7 +18,7 @@ double mean(const std::valarray<unsigned char> &v)
 
 TEST_SUITE("IntroCover")
 {
-TEST_CASE("five seconds: covered, then parting; a skip parts at once")
+TEST_CASE("three seconds: covered, then parting; a skip parts at once")
 {
 	IntroCover cover;
 	const Uint64 t0 = 10000;

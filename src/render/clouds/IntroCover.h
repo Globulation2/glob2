@@ -14,7 +14,7 @@ class DrawableSurface;
 class Font;
 }
 
-//! A five-second bank of cloud that covers the screen as a game starts, then
+//! A three-second bank of cloud that covers the screen as a game starts, then
 //! parts to reveal the map. Presentation only: the simulation and the map
 //! renderer keep running underneath the whole time, so their caches warm up
 //! before the player sees them. Once the bank has gone, what remains is the
@@ -22,8 +22,8 @@ class Font;
 class IntroCover
 {
 public:
-	static constexpr Uint32 COVER_MS = 2200; //!< closed, showing the title
-	static constexpr Uint32 PART_MS = 2800;  //!< parting
+	static constexpr Uint32 COVER_MS = 1100; //!< closed, showing the title
+	static constexpr Uint32 PART_MS = 1900;  //!< parting
 	static constexpr Uint32 TOTAL_MS = COVER_MS + PART_MS;
 
 	struct Player
@@ -45,8 +45,19 @@ public:
 	{
 		int w = 0, h = 0;
 		std::valarray<unsigned char> shadow; //!< black, cast down and right
-		std::valarray<unsigned char> body;   //!< the bank's shaded underside
-		std::valarray<unsigned char> light;  //!< white, where billows face the sun
+		std::valarray<unsigned char> body;   //!< the bank's coverage
+		std::valarray<unsigned char> light;  //!< coverage times tone: creases dark, sunlit tops bright
+	};
+
+	//! One layer of the bank. The near layer rushes past as the view drops
+	//! through it; the far one grows slowly and thins later.
+	struct Depth
+	{
+		float zoom = .7f;   //!< exp(zoom) is how far the layer has grown by the end
+		float lead = 1.3f;  //!< how much sooner than `part` the layer clears
+		float wind = 1;     //!< drift speed
+		float size = 1;     //!< billow size
+		int seed = 0;
 	};
 
 	IntroCover();
@@ -69,6 +80,7 @@ public:
 	          GAGCore::Font *playerFont, bool clouds);
 
 	//! The bank at `part` (0 closed, 1 gone) for a w x h screen, `seconds` in.
+	static void computeLayers(int w, int h, double seconds, float part, Layers &out, const Depth &depth);
 	static void computeLayers(int w, int h, double seconds, float part, Layers &out);
 
 private:
@@ -82,7 +94,7 @@ private:
 	Uint64 start = 0;
 	Uint32 partFrom = COVER_MS, end = TOTAL_MS;
 	Title title;
-	Layers layers;
+	Layers layers, farLayers;
 	std::unique_ptr<GAGCore::DrawableSurface> surface;
 	TitleLayout layoutTitle(int w, int h, GAGCore::Font *titleFont, GAGCore::Font *playerFont) const;
 	void drawTitle(GAGCore::DrawableSurface &gfx, int w, const TitleLayout &layout, float alpha,
