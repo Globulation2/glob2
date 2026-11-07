@@ -459,6 +459,10 @@ void GameGUI::beginIntroCover(Uint64 now)
 		const BasePlayer &base = game.gameHeader.getBasePlayer(i);
 		IntroCover::Player player;
 		player.name = base.name;
+		// Custom games name AIs "Maxima / 1 - Red"; the dot shows the colony.
+		if (base.type >= BasePlayer::P_AI)
+			if (const auto cut = player.name.find(" / "); cut != std::string::npos)
+				player.name.resize(cut);
 		if (base.teamNumber >= 0 && base.teamNumber < Team::MAX_COUNT && game.teams[base.teamNumber])
 		{
 			const GAGCore::Color colour = game.teams[base.teamNumber]->color;
