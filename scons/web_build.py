@@ -136,6 +136,10 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_inputs = list(source_files(root, 'web'))
         asset_tools = ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/shared_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json']
         def prepare_assets(target, source, env):
+            # Name the sibling by path, as scons/runtime_assets.py does: the
+            # action can run where SConstruct's scons/ entry is not on sys.path.
+            if str(Path(__file__).resolve().parent) not in sys.path:
+                sys.path.insert(0, str(Path(__file__).resolve().parent))
             import shared_assets
             def produce(output):
                 export_assets(root, output, platform='web', optimized=True, lossy=identity['mode']=='release',
