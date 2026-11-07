@@ -4,6 +4,7 @@
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "AIResourcePolicy.h"
+#include <algorithm>
 #include <PerformanceTelemetry.h>
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
@@ -432,28 +433,34 @@ void AICastor::computeHydratationMap()
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
-			if (terrainProvidesFertility(queries->terrainPropertiesAt(x,y)))
-				for (int r=1; r<range; r++)
+			const auto& terrain=queries->terrainPropertiesAt(x,y);
+			if (!terrainProvidesFertility(terrain))
+				continue;
+			// Weigh each source by the engine's strength: water (256/256) keeps its
+			// historical full weight; Fertile ground (48/256) only waters weakly.
+			const int strengthQ8=std::min<int>(terrain.fertilityQ8,256);
+			for (int r=1; r<range; r++)
 				{
+					const Uint16 add=Uint16((range-r)*strengthQ8/256);
 					for (int dx=-r; dx<=r; dx++)
 					{
 						Uint16 *gp=&gradient[((x+dx)&wMask)+(((y -r)&hMask)<<wDec)];
-						*gp+=(range-r);
+						*gp+=add;
 					}
 					for (int dx=-r; dx<=r; dx++)
 					{
 						Uint16 *gp=&gradient[((x+dx)&wMask)+(((y +r)&hMask)<<wDec)];
-						*gp+=(range-r);
+						*gp+=add;
 					}
 					for (int dy=(1-r); dy<r; dy++)
 					{
 						Uint16 *gp=&gradient[((x -r)&wMask)+(((y+dy)&hMask)<<wDec)];
-						*gp+=(range-r);
+						*gp+=add;
 					}
 					for (int dy=(1-r); dy<r; dy++)
 					{
 						Uint16 *gp=&gradient[((x +r)&wMask)+(((y+dy)&hMask)<<wDec)];
-						*gp+=(range-r);
+						*gp+=add;
 					}
 				}
 		}

@@ -44,6 +44,40 @@ struct CastorResourcePolicyAccess
     }
 };
 
+struct CastorHydrationAccess
+{
+    static std::vector<Uint8> hydration(AICastor& ai)
+    {
+        Game& game=*ai.player->game;
+        const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
+        ai.observation=world.get();ai.queries=&queries;ai.observedTeam=ai.teamAt(ai.teamNumber);
+        const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;};
+        try {ai.computeHydratationMap();} catch(...) {clear();throw;}
+        clear();
+        return std::vector<Uint8>(ai.hydratationMap,ai.hydratationMap+game.map.getW()*game.map.getH());
+    }
+};
+
+TEST_CASE("Castor hydration weighs Fertile ground at its engine strength, not as water" * doctest::test_suite("AIRules"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.header=true});
+    auto& map=world.game.map;
+    // Two identical 6x6 blocks far apart: real water and loam.
+    for(int y=10;y<17;++y) for(int x=10;x<17;++x) map.paintVertexSquare(x,y,WATER,1);
+    for(int y=10;y<17;++y) for(int x=42;x<49;++x) map.paintVertexSquare(x,y,LOAM,1);
+    AICastor ai(world.game.players[0]);
+    const auto h=CastorHydrationAccess::hydration(ai);
+    const auto at=[&](int x,int y){return int(h[map.coordToIndex(x,y)]);};
+    // Same offset beside each block.
+    const int nearWater=at(18,13),nearLoam=at(50,13);
+    CHECK(nearWater>0);
+    CHECK(nearLoam<nearWater);
+    CHECK(nearLoam*4<=nearWater);
+    CHECK(at(13,40)==0);
+}
+
 TEST_CASE("Castor waits for configured recovery rather than exhausted finite food" * doctest::test_suite("AIRules"))
 {
     glob2test::HeadlessGlobals globals;
