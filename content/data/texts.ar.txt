@@ -1812,6 +1812,8 @@ OpenGL غير متوفر في هذا الإصدار.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 المستنقعات
 [Everglades need at least one colony.]

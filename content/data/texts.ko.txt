@@ -1812,6 +1812,8 @@ Globulation 2 커서를 표시합니다.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 늪지
 [Everglades need at least one colony.]

@@ -1812,6 +1812,8 @@ Set
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Bataklıklar
 [Everglades need at least one colony.]

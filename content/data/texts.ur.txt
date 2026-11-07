@@ -1776,6 +1776,8 @@ Globulation 2 کا کرسر دکھائیں۔
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 دلدلی نالے
 [Everglades need at least one colony.]

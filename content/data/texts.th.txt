@@ -1776,6 +1776,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 บึง
 [Everglades need at least one colony.]

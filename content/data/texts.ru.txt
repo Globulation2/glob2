@@ -1812,6 +1812,8 @@ OpenGL недоступен в этой сборке.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Старицы
 [Everglades need at least one colony.]

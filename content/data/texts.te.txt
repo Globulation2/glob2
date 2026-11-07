@@ -1776,6 +1776,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 చిత్తడి కాలువలు
 [Everglades need at least one colony.]

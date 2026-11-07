@@ -1812,6 +1812,8 @@ OpenGL در این نسخه موجود نیست.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 مرداب‌ها
 [Everglades need at least one colony.]

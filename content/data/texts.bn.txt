@@ -1776,6 +1776,8 @@ Globulation 2-এর কার্সার দেখান।
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 জলাভূমি
 [Everglades need at least one colony.]

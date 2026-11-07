@@ -1812,6 +1812,8 @@ Cortex
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Βαλτόνερα
 [Everglades need at least one colony.]

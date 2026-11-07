@@ -1800,6 +1800,8 @@ Benteng sungai
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Alur paya
 [Everglades need at least one colony.]

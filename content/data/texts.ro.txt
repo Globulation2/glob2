@@ -1812,6 +1812,8 @@ Dig
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Canale mlăștinoase
 [Everglades need at least one colony.]

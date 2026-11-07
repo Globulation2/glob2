@@ -1812,6 +1812,8 @@ OpenGL није доступан у овој верзији.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Мртваје
 [Everglades need at least one colony.]

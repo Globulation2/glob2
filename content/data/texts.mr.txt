@@ -1776,6 +1776,8 @@ Globulation 2 कर्सर दाखवा.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 दलदली
 [Everglades need at least one colony.]

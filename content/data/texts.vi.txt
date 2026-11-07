@@ -1812,6 +1812,8 @@ Kích thước khoảng trống
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Lạch lầy
 [Everglades need at least one colony.]

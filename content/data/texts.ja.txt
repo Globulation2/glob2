@@ -1812,6 +1812,8 @@ Globulation 2のカーソルを表示します。
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 沼沢
 [Everglades need at least one colony.]

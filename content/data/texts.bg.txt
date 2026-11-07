@@ -1776,6 +1776,8 @@ OpenGL не е наличен в тази компилация.
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Блатни канали
 [Everglades need at least one colony.]

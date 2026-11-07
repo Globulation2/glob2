@@ -1812,6 +1812,8 @@ Tanggul
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Rawa-rawa
 [Everglades need at least one colony.]

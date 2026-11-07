@@ -887,6 +887,7 @@
 [Levee]
 [Mudflats]
 [Hammocks]
+[Moss]
 [Sloughs]
 [Everglades need at least one colony.]
 [Too many colonies for this map; use a bigger map or fewer colonies.]

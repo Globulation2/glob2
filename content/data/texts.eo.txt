@@ -1812,6 +1812,8 @@ Digo
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Marĉkanaloj
 [Everglades need at least one colony.]

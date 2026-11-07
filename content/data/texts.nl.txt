@@ -1812,6 +1812,8 @@ Dijk
 
 [Hammocks]
 
+[Moss]
+
 [Sloughs]
 Moerassloten
 [Everglades need at least one colony.]
