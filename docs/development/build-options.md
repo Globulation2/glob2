@@ -99,8 +99,8 @@ core build still recompiles about half of them: a source that includes a header
 generated in the build directory (such as `glob2/BuildConfig.h`) carries that
 directory's path in its preprocessed text, so it misses the compiler-cache entry
 the full build made. Later core builds are incremental as usual. Editing
-`src/game/Game.h` recompiles about 32% fewer client sources in the core profile
-(254 instead of 373). Test registry
+`src/game/Game.h` recompiles about 20% fewer client sources in the core profile
+(219 instead of 274), and `src/unit/Unit.h` about 22% fewer. Test registry
 entries name the groups they need with `require={'generators'}`, `'editor'` or
 `'ai:castor'`, and core test binaries leave those entries out. A single case
 that needs one takes `* glob2test::needs({"ai:castor"})` (`test/support/ProfileNeeds.h`)
