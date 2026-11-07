@@ -25,7 +25,7 @@ Tests create and drop their own databases on the server named by
 `TEST_DATABASE_URL` (default `postgres://glob2:glob2@127.0.0.1:55432/postgres`).
 Requested hosted platform verification runs against a Postgres service;
 ordinary PR checks are lightweight and local verification is the standard path.
-See [contributor verification](../../AGENTS.md#validation-and-ci-feedback).
+See [contributor verification](../../AGENTS.md#validation-and-ci).
 Generated protocol fixtures also select native compatibility checks; these include the C++ contract tests. The web app's Playwright suites
 (`apps/web/e2e`: page smoke tests and axe accessibility checks) run locally with
 `npm run build -w @glob2/web && npm run e2e -w @glob2/web` against a seeded API

@@ -352,7 +352,7 @@ tests cover:
 
 Requested hosted native-program verification covers both suites. Choose focused
 local verification from the affected relay boundaries; see
-[verification policy](../../AGENTS.md#validation-and-ci-feedback).
+[verification policy](../../AGENTS.md#validation-and-ci).
 
 ## Limits and follow-ups
 

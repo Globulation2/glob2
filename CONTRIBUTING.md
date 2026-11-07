@@ -41,7 +41,7 @@ Local-only files do not constitute attached review evidence.
 The author may merge their own changes; a second maintainer's approval is optional.
 Pull requests run the fast gate; label one `ci:full` to run the full development
 matrix on it. The fast gate alone does not establish platform coverage. Follow the complete
-[verification and merge policy](AGENTS.md#validation-and-ci-feedback).
+[verification and merge policy](AGENTS.md#validation-and-ci).
 
 ## Find help
 
