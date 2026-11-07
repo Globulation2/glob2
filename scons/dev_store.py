@@ -294,6 +294,24 @@ def _managed_cache_limit():
     return MANAGED_CONFIG["max_size"]
 
 
+def require_free_space(path, what="this build"):
+    """Stop before filling the disk: GLOB2_MIN_FREE_GIB (default 10, 0 disables)."""
+    import shutil
+    minimum = float(os.environ.get("GLOB2_MIN_FREE_GIB", "10"))
+    if minimum <= 0:
+        return
+    probe = Path(path)
+    while not probe.exists() and probe != probe.parent:
+        probe = probe.parent
+    free = shutil.disk_usage(probe).free / 2**30
+    if free < minimum:
+        raise SystemExit(
+            f"Only {free:.1f} GiB free on the disk holding {path}; {what} needs at least {minimum:g} GiB. "
+            "See python3 tools/dev_environment.py disk, worktrees --finished and builds --gc; "
+            "GLOB2_MIN_FREE_GIB=0 overrides."
+        )
+
+
 def paths(root):
     tools = mobile_tools(root, False)
     lock = json.loads((Path(root) / "platforms/mobile/android-tools.json").read_text())

@@ -347,6 +347,10 @@ def main():
     import jobserver
     env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
     jobserver.register_lane(env.Dir('#').abspath, bdir, sys.argv)
+    from dev_store import require_free_space
+    require_free_space(bdir)
+    # Build-directory GC (dev_environment.py builds --gc) reads this stamp.
+    Path(bdir, '.last-use').touch()
     env['BUILDDIR'] = bdir
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
