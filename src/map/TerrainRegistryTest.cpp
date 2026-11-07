@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "TerrainCatalog.h"
 #include "TerrainRegistry.h"
+#include "io/TerrainFormatHistory.h"
 #include "field/RuntimeTerrainGradient.h"
 #include <nlohmann/json.hpp>
 #include <queue>
@@ -464,7 +466,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(std::string(terrainPresentation(BRICK_PATH).name) == "brick_path");
 		CHECK(builtin->find("shale") == SHALE);
 		CHECK(terrainTypeByName("road") == TRAIL);
-		CHECK(terrainTypeByName("no_such_terrain") == TERRAIN_COUNT);
+		CHECK_FALSE(terrainTypeByName("no_such_terrain"));
 		CHECK_FALSE(builtin->find("no_such_terrain"));
 
 		// Authoring JSON may name the old base and appearance; it imports and

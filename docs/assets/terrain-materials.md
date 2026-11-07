@@ -25,7 +25,7 @@ maps keep loading; any other bundled key keeps its profile and becomes `solid`. 
 an entry for every profile key a released catalog has shipped. Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
-names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`
+names to material keys. Every paintable built-in terrain in `src/map/TerrainCatalog.cpp`
 requires a binding: the five legacy names (water, sand, grass, ice and road) plus the
 terrain-catalogue names, which `tools/terrain_builtin_names.json` mirrors for the Python
 validator. Several names may bind the same material. The catalogue materials behind those

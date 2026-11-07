@@ -99,7 +99,7 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | `markets-v2` | Markets V2 | Workers fetch shared market stock; upgrades add wheat and wood, then all resources. [Markets V2](markets-v2.md). |
 
 Each terrain group is one `TerrainProperties` profile in `src/map/TerrainGroup.h`;
-`src/map/TerrainTypeTable.h` lists its members and
+`src/map/TerrainGroupTable.h` lists its members and
 [terrain materials](../assets/terrain-materials.md) covers their artwork.
 
 Trail retains terrain ID `4` and

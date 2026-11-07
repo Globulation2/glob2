@@ -136,7 +136,7 @@ exactly like hedge and thicket: impassable, and they stop projectiles; penitente
 and petrified stumps play exactly like rock spires: impassable on the ground, but towers shoot over them; a molten lava pool plays exactly like lava. The earlier names
 `gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
 `shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in
-`src/map/TerrainTypeTable.h`), but maps, saves and reports are written with the
+`src/map/TerrainCatalog.cpp`), but maps, saves and reports are written with the
 current names. There are no shore
 types: mixed corners make transitions. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.

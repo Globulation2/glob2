@@ -19,7 +19,7 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Topology.h"
-#include "TerrainTypeTable.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <cmath>
 #include <functional>

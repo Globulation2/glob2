@@ -7,9 +7,16 @@
   "libs/gag/include/SDLGraphicContext.h": 234,
   "libs/gag/include/GraphicContext.h": 226,
   "libs/gag/include/AssetLoader.h": 245,
+<<<<<<< HEAD
   "src/team/Team.h": 390,
   "src/map/TerrainType.h": 500,
   "src/map/TerrainTypeTable.h": 451,
+=======
+  "src/team/Team.h": 499,
+  "src/map/TerrainType.h": 501,
+  "src/map/TerrainCatalog.h": 2,
+  "src/map/io/TerrainFormatHistory.h": 1,
+>>>>>>> 56d4aea153 (Move the terrain catalogue rows out of headers)
   "third_party/nlohmann-json/include/nlohmann/json.hpp": 174,
   "src/ai/AI.h": 123,
   "src/common/ComputeExecutor.h": 117,

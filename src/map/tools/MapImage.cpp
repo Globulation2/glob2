@@ -32,7 +32,7 @@ struct Category
 	TerrainType terrain;
 	int resource;
 };
-constexpr Category terrainCategory(TerrainType type)
+Category terrainCategory(TerrainType type)
 {
     const auto c=terrainPresentation(type).image;
     return {c.r,c.g,c.b,type,NO_RES};
@@ -40,12 +40,14 @@ constexpr Category terrainCategory(TerrainType type)
 // Explicit legacy image-format palette: these named built-in content choices
 // define nearest-color and vertex-majority ties. Keep in sync with CLI.md. Every
 // other built-in terrain follows in identity order with its own image colour.
-constexpr auto palette = [] {
-    constexpr std::array<Category,12> legacy{{terrainCategory(GRASS), terrainCategory(SAND), terrainCategory(WATER),
+// Built once at start-up from the out-of-line terrain catalogue.
+constexpr std::size_t paletteSize = 12 + TERRAIN_COUNT - 3;
+const auto palette = [] {
+    const std::array<Category,12> legacy{{terrainCategory(GRASS), terrainCategory(SAND), terrainCategory(WATER),
         {0,64,0,GRASS,WOOD}, {255,255,0,GRASS,WHEAT}, {128,128,128,GRASS,STONE},
         {0,255,255,WATER,ALGA}, {255,0,255,GRASS,PAPYRUS}, {255,0,0,GRASS,CHERRY},
         {255,128,0,GRASS,ORANGE}, {128,0,255,GRASS,PRUNE}, {255,255,255,GRASS,NO_RES}}};
-    std::array<Category,legacy.size()+TERRAIN_COUNT-3> result{};
+    std::array<Category,paletteSize> result{};
     unsigned cursor=0;
     for (const auto& entry : legacy) result[cursor++]=entry;
     for (unsigned type=0;type<TERRAIN_COUNT;++type)
@@ -54,12 +56,12 @@ constexpr auto palette = [] {
     return result;
 }();
 constexpr int marker = 11;
-std::array<int, palette.size()> paletteResourceIds(const Map& map)
+std::array<int, paletteSize> paletteResourceIds(const Map& map)
 {
     // Resolve the legacy colors by content key, never by a runtime dense ID.
     static constexpr const char* keys[] = {
         "trees", "wheat", "rocks", "algae", "papyrus", "cherry-tree", "orange-tree", "prune-tree"};
-    std::array<int, palette.size()> ids;
+    std::array<int, paletteSize> ids;
     ids.fill(NO_RES);
     for (unsigned i = 0; i < std::size(keys); ++i)
         if (const auto id = map.resourceRegistry().find(keys[i])) ids[i + 3] = resourceIndex(*id);
@@ -412,7 +414,7 @@ DecodedMapImage decodeMapImage(const std::string &path, int mapW, int mapH)
 	for (int y = 0; y < mapH; ++y)
 		for (int x = 0; x < mapW; ++x)
 		{
-			std::array<int, palette.size()> votes{};
+			std::array<int, paletteSize> votes{};
 			const int x0 = x * pixels->w / mapW;
 			const int y0 = y * pixels->h / mapH;
 			for (int sy = y0; sy < std::max(y0 + 1, (y + 1) * pixels->h / mapH); ++sy)

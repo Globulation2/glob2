@@ -7,7 +7,7 @@
 // A terrain group is one gameplay mechanic: every built-in type in a group shares
 // this exact property profile and differs only in artwork, name and colours.
 // Groups also organize the editor palette. Add a mechanic here and a visual
-// variant in TerrainTypeTable.h.
+// variant in TerrainGroupTable.h and TerrainCatalog.cpp.
 enum class TerrainGroup : std::uint8_t
 {
 	Water,
