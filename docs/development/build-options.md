@@ -149,10 +149,15 @@ python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf -
 `--baseline master` resolves the baseline of the branch's merge base
 (`dev_baseline.py path --merge-base HEAD`); any build directory works too. The
 metric is wall time unless `--metric REGEX` picks a number the benchmark prints.
-Screening uses three pairs; quoted numbers use `perf=1 opt=3` and seven pairs
-(`--pin` adds the Linux benchmark cpuset); for those, build the master baseline
-with `dev_baseline.py build --variants perf-o3`, which `--baseline master` then
-selects for an `opt=3` candidate, as does `tools/inline_guard.py`. `dev_baseline.py gc --keep 3` removes
+Screening uses three pairs; quoted numbers use `perf=1 opt=3` and seven pairs.
+For those, build the master baseline with `dev_baseline.py build --variants
+perf-o3`, which `--baseline master` then selects for an `opt=3` candidate, as
+does `tools/inline_guard.py`. The change it reports is the median of the
+per-pair changes, with their interquartile range, so load from other work on a
+shared machine lands on both halves of a pair rather than deciding the result.
+On a shared machine, also pin with `--pin [CPUS]` (taskset, by default the last
+CPU), and prefer a CPU-time metric the benchmark prints (for example `/usr/bin/time
+-f cpu=%U` with `--metric 'cpu=([0-9.]+)'`) over wall time. `dev_baseline.py gc --keep 3` removes
 older baselines that no comparison is using, and `dev_baseline.py seed WORKTREE`
 copies a baseline's dev build into a fresh worktree so its first build recompiles
 only what differs.
