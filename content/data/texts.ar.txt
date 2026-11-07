@@ -1960,7 +1960,11 @@ OpenGL غير متوفر في هذا الإصدار.
 دلتا النهر
 [Meandering rivers]
 أنهار كثيرة التعرج
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

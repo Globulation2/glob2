@@ -1952,7 +1952,11 @@ Tepi tasik berpasir
 Delta sungai
 [Meandering rivers]
 Sungai-sungai yang berliku-liku
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

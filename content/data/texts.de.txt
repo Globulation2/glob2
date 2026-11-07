@@ -1960,7 +1960,11 @@ Sandiges Seeufer
 Flussdelta
 [Meandering rivers]
 Mäandernde Flüsse
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

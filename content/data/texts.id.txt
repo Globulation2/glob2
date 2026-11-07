@@ -1960,7 +1960,11 @@ Tepi danau berpasir
 Delta sungai
 [Meandering rivers]
 Sungai berliku-liku
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1960,7 +1960,11 @@ Kumlu göl kıyısı
 Nehir deltası
 [Meandering rivers]
 Menderesli nehirler
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

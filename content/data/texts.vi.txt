@@ -1960,7 +1960,11 @@ Bờ hồ đầy cát
 Châu thổ sông
 [Meandering rivers]
 Sông quanh co
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

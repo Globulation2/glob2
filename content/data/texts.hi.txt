@@ -1928,7 +1928,11 @@ Globulation 2 का कर्सर दिखाएँ।
 नदी का डेल्टा
 [Meandering rivers]
 बलखाती नदियाँ
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

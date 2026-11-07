@@ -1960,7 +1960,11 @@ Riba sorrenca del llac
 Delta del riu
 [Meandering rivers]
 Rius amb meandres
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

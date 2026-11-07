@@ -100,3 +100,5 @@
 [Deep lakes]
 [Bedrock]
 [Greenstone]
+[Banks]
+[River bluffs]

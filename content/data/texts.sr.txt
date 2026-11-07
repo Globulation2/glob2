@@ -1960,7 +1960,11 @@ OpenGL није доступан у овој верзији.
 Делта реке
 [Meandering rivers]
 Меандрирајуће реке
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

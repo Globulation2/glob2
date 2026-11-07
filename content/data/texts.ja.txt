@@ -1960,7 +1960,11 @@ Globulation 2のカーソルを表示します。
 河口の三角州
 [Meandering rivers]
 蛇行する川筋
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

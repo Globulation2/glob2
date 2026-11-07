@@ -1960,7 +1960,11 @@ Piesočnatý breh jazera
 Riečna delta
 [Meandering rivers]
 Meandrujúce rieky
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

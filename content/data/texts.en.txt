@@ -1928,8 +1928,12 @@ Sandy lake shore
 River delta
 [Meandering rivers]
 Meandering rivers
+[Banks]
+Banks
 [Deep channels]
 Deep channels
+[River bluffs]
+River bluffs
 [Divide outcrops]
 Divide outcrops
 [Deep water]

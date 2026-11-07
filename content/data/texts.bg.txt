@@ -1928,7 +1928,11 @@ OpenGL не е наличен в тази компилация.
 Речна делта
 [Meandering rivers]
 Криволичещи реки
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

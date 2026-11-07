@@ -1960,7 +1960,11 @@ Hiekkainen järvenranta
 Jokisuisto
 [Meandering rivers]
 Meanderoivat joet
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

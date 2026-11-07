@@ -1928,7 +1928,11 @@ Globulation 2-এর কার্সার দেখান।
 নদী বদ্বীপ
 [Meandering rivers]
 আঁকাবাঁকা নদী
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

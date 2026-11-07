@@ -1928,7 +1928,11 @@ Sandstrand langs innsjøen
 Elvedelta
 [Meandering rivers]
 Slyngende elver
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

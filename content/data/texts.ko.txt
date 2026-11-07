@@ -1960,7 +1960,11 @@ Globulation 2 커서를 표시합니다.
 강 삼각주
 [Meandering rivers]
 굽이치는 강
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

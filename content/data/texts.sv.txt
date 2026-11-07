@@ -1960,7 +1960,11 @@ Sandig sjöstrand
 Flodens delta
 [Meandering rivers]
 Meandrande floder
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

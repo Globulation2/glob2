@@ -1960,7 +1960,11 @@ OpenGL недоступний у цій збірці.
 Дельта річки
 [Meandering rivers]
 Звивисті річки
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

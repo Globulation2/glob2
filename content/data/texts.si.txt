@@ -1960,7 +1960,11 @@ Peščena obala jezera
 Rečna delta
 [Meandering rivers]
 Vijugaste reke
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

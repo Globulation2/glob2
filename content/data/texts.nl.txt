@@ -1960,7 +1960,11 @@ Zandige meeroever
 Rivierdelta
 [Meandering rivers]
 Meanderende rivieren
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1960,7 +1960,11 @@ Margem arenosa do lago
 Delta do rio
 [Meandering rivers]
 Rios com meandros
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

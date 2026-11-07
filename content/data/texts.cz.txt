@@ -1960,7 +1960,11 @@ Písečný břeh jezera
 Říční delta
 [Meandering rivers]
 Meandrující řeky
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

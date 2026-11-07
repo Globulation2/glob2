@@ -1960,7 +1960,11 @@ Homokos tópart
 Folyódelta
 [Meandering rivers]
 Kanyargó folyók
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

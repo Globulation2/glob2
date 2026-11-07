@@ -1960,7 +1960,11 @@ Sandet søbred
 Floddelta
 [Meandering rivers]
 Bugtede floder
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

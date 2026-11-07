@@ -1960,7 +1960,11 @@ Piaszczysty brzeg jeziora
 Delta rzeki
 [Meandering rivers]
 Meandrujące rzeki
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1928,7 +1928,11 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 สามเหลี่ยม​ปากแม่น้ำ
 [Meandering rivers]
 แม่น้ำ​ที่​คดเคี้ยว
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

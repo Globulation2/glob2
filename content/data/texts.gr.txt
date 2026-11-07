@@ -1960,7 +1960,11 @@ Cortex
 Δέλτα ποταμού
 [Meandering rivers]
 Μαιανδρικοί ποταμοί
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1928,7 +1928,11 @@ Globulation 2 کا کرسر دکھائیں۔
 دریائی ڈیلٹا
 [Meandering rivers]
 بل کھاتے دریا
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

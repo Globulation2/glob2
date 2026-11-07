@@ -1960,7 +1960,11 @@ OpenGL در این نسخه موجود نیست.
 دلتای رودخانه
 [Meandering rivers]
 رودخانه‌های مارپیچ
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

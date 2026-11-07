@@ -1960,7 +1960,11 @@ Riva sabbiosa del lago
 Delta del fiume
 [Meandering rivers]
 Fiumi con meandri
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

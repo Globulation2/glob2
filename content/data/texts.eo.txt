@@ -1960,7 +1960,11 @@ Sabla lagbordo
 Riverdelto
 [Meandering rivers]
 Meandrantaj riveroj
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

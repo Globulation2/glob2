@@ -1960,7 +1960,11 @@ OpenGL 在此版本中不可用。
 河口三角洲
 [Meandering rivers]
 曲流河道
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1928,7 +1928,11 @@ Globulation 2 कर्सर दाखवा.
 नदीचा त्रिभुज प्रदेश
 [Meandering rivers]
 नागमोडी नद्या
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

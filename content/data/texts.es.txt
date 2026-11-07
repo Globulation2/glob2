@@ -1960,7 +1960,11 @@ Orilla arenosa del lago
 Delta del río
 [Meandering rivers]
 Ríos serpenteantes
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

@@ -1960,7 +1960,11 @@ OpenGL недоступен в этой сборке.
 Дельта реки
 [Meandering rivers]
 Петляющие реки
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

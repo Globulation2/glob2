@@ -1960,7 +1960,11 @@ Rive sableuse du lac
 Delta de la rivière
 [Meandering rivers]
 Rivières à méandres
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

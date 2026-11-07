@@ -1928,7 +1928,11 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 ஆற்றுக் கழிமுகம்
 [Meandering rivers]
 வளைந்து செல்லும் ஆறுகள்
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 

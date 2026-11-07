@@ -1960,7 +1960,11 @@ Mal nisipos al lacului
 Delta râului
 [Meandering rivers]
 Râuri cu meandre
+[Banks]
+
 [Deep channels]
+
+[River bluffs]
 
 [Divide outcrops]
 
