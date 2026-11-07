@@ -1872,6 +1872,14 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கடற்கரைக் காயல்கள்
 [Central island]
 மத்திய தீவு
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 ஓதச் சமவெளிகளுக்குக் குறைந்தது ஒரு குடியிருப்பு தேவை.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

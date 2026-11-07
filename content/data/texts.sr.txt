@@ -1904,6 +1904,14 @@ OpenGL није доступан у овој верзији.
 Лагуне
 [Central island]
 Средишње острво
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Плимским равницама треба бар једна колонија.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

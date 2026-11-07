@@ -1872,6 +1872,14 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ลากูน
 [Central island]
 เกาะ​กลาง
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 พื้นที่ราบ​น้ำขึ้น​น้ำลง​จำเป็นต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

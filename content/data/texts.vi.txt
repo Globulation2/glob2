@@ -1904,6 +1904,14 @@ Vũng triều
 Đầm phá
 [Central island]
 Đảo trung tâm
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Bãi triều cần ít nhất một thuộc địa.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

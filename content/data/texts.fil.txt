@@ -1896,6 +1896,14 @@ Mga munting lawang-dagat
 Mga Lagoon
 [Central island]
 Gitnang isla
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Ang mga tidal flat ay nangangailangan ng kahit isang kolonya.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

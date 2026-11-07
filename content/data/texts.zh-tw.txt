@@ -1904,6 +1904,14 @@ AI 策略與對抗
 潟湖
 [Central island]
 中央島
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 潮間帶至少需要一個殖民地。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

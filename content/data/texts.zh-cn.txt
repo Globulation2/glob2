@@ -1904,6 +1904,14 @@ OpenGL 在此版本中不可用。
 潟湖
 [Central island]
 中央岛
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 潮间带至少需要一个殖民地。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

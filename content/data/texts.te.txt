@@ -1872,6 +1872,14 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 తీర సరస్సులు
 [Central island]
 మధ్య ద్వీపం
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 అలల మైదానాలకు కనీసం ఒక కాలనీ అవసరం.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

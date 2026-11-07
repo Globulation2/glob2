@@ -1904,6 +1904,14 @@ Plimski tolmuni
 Lagune
 [Central island]
 Osrednji otok
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Plimske ravnice potrebujejo vsaj eno kolonijo.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

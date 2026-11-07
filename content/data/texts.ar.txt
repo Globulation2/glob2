@@ -1904,6 +1904,14 @@ OpenGL غير متوفر في هذا الإصدار.
 البحيرات الشاطئية
 [Central island]
 الجزيرة المركزية
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 تحتاج السهول المدّية إلى مستعمرة واحدة على الأقل.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

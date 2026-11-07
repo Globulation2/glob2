@@ -1904,6 +1904,14 @@ Globulation 2のカーソルを表示します。
 潟湖
 [Central island]
 中央の島
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 干潟には少なくとも1つのコロニーが必要です。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

@@ -1904,6 +1904,14 @@ Homokpadok
 Lagúnák
 [Central island]
 Középső sziget
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Az árapálysíksághoz legalább egy kolónia kell.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

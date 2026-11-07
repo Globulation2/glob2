@@ -1896,6 +1896,14 @@ Kolam air pasang
 Lagun
 [Central island]
 Pulau tengah
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Dataran pasang surut memerlukan sekurang-kurangnya satu koloni.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

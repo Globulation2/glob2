@@ -1872,6 +1872,14 @@ Globulation 2-এর কার্সার দেখান।
 উপহ্রদ
 [Central island]
 কেন্দ্রীয় দ্বীপ
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 জোয়ারভাটার সমতলভূমিতে অন্তত একটি কলোনি থাকা প্রয়োজন।
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

@@ -1872,6 +1872,14 @@ OpenGL не е наличен в тази компилация.
 Лагуни
 [Central island]
 Централен остров
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Приливните плитчини се нуждаят от поне една колония.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

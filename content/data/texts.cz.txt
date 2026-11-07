@@ -1904,6 +1904,14 @@ Přílivové tůně
 Laguny
 [Central island]
 Střední ostrov
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Přílivové pláně potřebují alespoň jednu kolonii.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

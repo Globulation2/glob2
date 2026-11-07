@@ -1872,6 +1872,14 @@ Tide pools
 Lagoons
 [Central island]
 Central island
+[Tide]
+Tide
+[Neap tide]
+Neap tide
+[Mean tide]
+Mean tide
+[Spring tide]
+Spring tide
 [Tidal flats need at least one colony.]
 Tidal flats need at least one colony.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

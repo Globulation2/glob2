@@ -1872,6 +1872,14 @@ Globulation 2 का कर्सर दिखाएँ।
 लैगून
 [Central island]
 बीच का द्वीप
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 ज्वारीय समतलों के लिए कम से कम एक बस्ती चाहिए।
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

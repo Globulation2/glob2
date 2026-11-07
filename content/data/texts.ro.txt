@@ -1904,6 +1904,14 @@ Bălți de maree
 Lagune
 [Central island]
 Insula centrală
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Câmpiile de maree au nevoie de cel puțin o colonie.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

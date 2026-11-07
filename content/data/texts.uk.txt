@@ -1904,6 +1904,14 @@ OpenGL недоступний у цій збірці.
 Лагуни
 [Central island]
 Центральний острів
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Припливним мілинам потрібна хоча б одна колонія.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

@@ -1872,6 +1872,14 @@ Globulation 2 कर्सर दाखवा.
 किनारी खाऱ्या पाण्याची सरोवरे
 [Central island]
 मध्यवर्ती बेट
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 भरती-ओहोटीच्या सपाट प्रदेशाला किमान एका वसाहतीची गरज असते.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

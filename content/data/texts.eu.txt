@@ -1904,6 +1904,14 @@ Marea-putzuak
 Albuferak
 [Central island]
 Erdiko uhartea
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Marea-lautadek gutxienez kolonia bat behar dute.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

@@ -1904,6 +1904,14 @@ Prílivové mláky
 Lagúny
 [Central island]
 Stredný ostrov
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Prílivové pláne potrebujú aspoň jednu kolóniu.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

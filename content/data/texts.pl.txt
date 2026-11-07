@@ -1904,6 +1904,14 @@ Rozlewiska pływowe
 Laguny
 [Central island]
 Wyspa środkowa
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Równiny pływowe potrzebują co najmniej jednej kolonii.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

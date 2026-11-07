@@ -1904,6 +1904,14 @@ OpenGL در این نسخه موجود نیست.
 تالاب‌های ساحلی
 [Central island]
 جزیرهٔ مرکزی
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 پهنه‌های جزر و مدی دست‌کم به یک مستعمره نیاز دارند.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

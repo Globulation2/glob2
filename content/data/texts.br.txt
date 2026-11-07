@@ -1904,6 +1904,14 @@ Poças de maré
 Lagoas
 [Central island]
 Ilha central
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 As planícies de maré precisam de pelo menos uma colônia.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

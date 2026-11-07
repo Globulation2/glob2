@@ -1872,6 +1872,14 @@ Vidimbwi vya mawimbi
 Maziwa ya pwani
 [Central island]
 Kisiwa cha kati
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Tambarare za mawimbi zinahitaji angalau makazi moja.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

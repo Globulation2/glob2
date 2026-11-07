@@ -1904,6 +1904,14 @@ Tidvattenpölar
 Laguner
 [Central island]
 Central ö
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Tidvattenslätter kräver minst en koloni.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

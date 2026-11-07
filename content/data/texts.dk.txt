@@ -1904,6 +1904,14 @@ Tidevandspøle
 Laguner
 [Central island]
 Central ø
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Vadehavet kræver mindst én koloni.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

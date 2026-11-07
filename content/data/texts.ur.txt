@@ -1872,6 +1872,14 @@ Globulation 2 کا کرسر دکھائیں۔
 ساحلی جھیلیں
 [Central island]
 مرکزی جزیرہ
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 مدوجزر کے ہموار علاقوں کے لیے کم از کم ایک بستی درکار ہے۔
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]

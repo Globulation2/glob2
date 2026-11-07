@@ -1904,6 +1904,14 @@ Tajdaj flakoj
 Lagunoj
 [Central island]
 Centra insulo
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Tajdaj ebenaĵoj bezonas almenaŭ unu kolonion.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
