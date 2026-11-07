@@ -7,7 +7,6 @@ src/ai -> src/field
 src/ai -> src/game
 src/ai -> src/map
 src/ai -> src/online
-src/ai -> src/resource
 src/ai -> src/scripting
 src/ai -> src/team
 src/ai -> src/unit
@@ -21,7 +20,6 @@ src/app -> src/net
 src/app -> src/online
 src/building -> src/engine
 src/building -> src/map
-src/building -> src/resource
 src/building -> src/team
 src/building -> src/unit
 src/campaign -> src/ui
@@ -36,7 +34,6 @@ src/engine -> src/net
 src/engine -> src/online
 src/engine -> src/render
 src/engine -> src/replay
-src/engine -> src/resource
 src/engine -> src/team
 src/engine -> src/unit
 src/engine/sim -> src/game/orders
@@ -53,7 +50,6 @@ src/game -> src/hud
 src/game -> src/map
 src/game -> src/net
 src/game -> src/online
-src/game -> src/resource
 src/game -> src/scripting
 src/game -> src/team
 src/game -> src/ui
@@ -80,7 +76,6 @@ src/map -> src/game
 src/map -> src/hud
 src/map -> src/online
 src/map -> src/render
-src/map -> src/resource
 src/map -> src/scripting
 src/map -> src/team
 src/map -> src/ui
@@ -104,25 +99,21 @@ src/render -> src/engine
 src/render -> src/field
 src/render -> src/game
 src/render -> src/map
-src/render -> src/resource
 src/render -> src/ui
 src/render -> src/unit
 src/render/scene -> src/engine/sim
 src/replay -> src/app
 src/replay -> src/game
-src/resource -> src/game
 src/scripting -> src/ai
 src/scripting -> src/app
 src/scripting -> src/building
 src/scripting -> src/game
 src/scripting -> src/map
-src/scripting -> src/resource
 src/scripting -> src/ui
 src/team -> src/ai
 src/team -> src/building
 src/team -> src/engine
 src/team -> src/game
-src/team -> src/resource
 src/team -> src/unit
 src/team/stats -> src/engine/sim
 src/ui -> src/app
@@ -131,9 +122,7 @@ src/ui -> src/hive
 src/ui -> src/map
 src/ui -> src/online
 src/unit -> src/building
-src/unit -> src/game
 src/unit -> src/map
 src/unit -> src/online
 src/unit -> src/render
-src/unit -> src/resource
 src/unit -> src/team
