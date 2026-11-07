@@ -10,18 +10,17 @@
 
 namespace
 {
-bool canFulfillClaimWithoutTravel(Unit& unit,Uint32 access,const Building* building)
+bool canFulfillClaimWithoutTravel(const Map& map,const Unit& unit,Uint32 access,const Building* building)
 {
     if(unit.performance[WALK] || unit.performance[SWIM] || unit.performance[FLY])return true;
-    auto& map=*unit.owner->map;
     // Stationary transport is supported by hiring when pickup and consumer
     // both touch the unit. Farm stock may be remote; only its access matters.
     return access<map.cellCount() && building &&
         map.warpDistMax(unit.posX,unit.posY,int(access%map.getW()),int(access/map.getW()))<=1 &&
-        map.doesUnitTouchBuilding(&unit,building->gid).has_value();
+        map.doesPosTouchBuilding(unit.posX,unit.posY,building->gid).has_value();
 }
-bool canFulfillClaimWithoutTravel(Unit& unit,Uint32 access)
-{return canFulfillClaimWithoutTravel(unit,access,unit.attachedBuilding);}
+bool canFulfillClaimWithoutTravel(const Unit& unit,Uint32 access)
+{return canFulfillClaimWithoutTravel(*unit.owner->map,unit,access,unit.attachedBuilding);}
 
 // The candidate filters every claim search applies, after deduplication and
 // before any claim resolution: the terrain prefilter (an access whose stance
@@ -32,14 +31,14 @@ struct CandidateFilter
     const ResourceClaims::TerrainComponentLabels* components=nullptr;
     int posX=0,posY=0;
     Uint64 distanceLimit=0; // Zero: no recorded nearest destination, no cap.
-    CandidateFilter(Map& map,int x,int y,bool nearestValid,unsigned nx,unsigned ny,const ResourceClaims::TerrainComponentLabels* labels)
+    CandidateFilter(const Map& map,int x,int y,bool nearestValid,unsigned nx,unsigned ny,const ResourceClaims::TerrainComponentLabels* labels)
         : components(labels),posX(x),posY(y)
     {
         using namespace ResourceClaims::Policy;
         if(nearestValid)distanceLimit=Uint64(MaxClaimDistanceFactorPermille)*Uint64(map.warpDistMax(x,y,int(nx),int(ny)))
             +Uint64(1000)*ClaimDistanceSlackTiles;
     }
-    bool rejects(Map& map,Uint32 access,unsigned x,unsigned y) const
+    bool rejects(const Map& map,Uint32 access,unsigned x,unsigned y) const
     {
         if(components && !ResourceClaims::terrainComponentMayReach(*components,posX,posY,access))return true;
         return distanceLimit && Uint64(map.warpDistMax(posX,posY,int(x),int(y)))*1000>distanceLimit;
@@ -58,7 +57,7 @@ struct VisitedCells
     bool visit(Uint32 cell) { if(stamps[cell]==epoch)return false; stamps[cell]=epoch; return true; }
 };
 // The access an entry of the learned pattern names, or nullopt off the plane.
-std::optional<std::pair<unsigned,unsigned>> patternAccess(Map& map,const gradient_kernel::OwnedDestinations& destinations,
+std::optional<std::pair<unsigned,unsigned>> patternAccess(const Map& map,const gradient_kernel::OwnedDestinations& destinations,
     const ResourceClaims::Pattern::View& probes,unsigned i,int posX,int posY,bool nearestValid,unsigned nx,unsigned ny)
 {
     const auto tag=probes.tag[i];
@@ -119,51 +118,54 @@ struct FarmClaimDecisionMemo
     }
 };
 // Resolution of a candidate access for material on behalf of building, after
-// the caller's unit state checks: shared by selection and the hire-time search
-// (which passes its own flood scratch so it never mutates the map).
-std::optional<ResolvedClaim> resolveClaimFor(Unit& unit,Uint32 access,int destinationPurpose,const Building* building,FarmClaimDecisionMemo* memo,
-    Map::FarmFloodScratch* scratch=nullptr)
+// the caller's unit state checks: shared by selection and the hire-time search.
+// It reads the map only; pick(access,owner) chooses a pooled field's source and
+// returns it with the flooded component, so the hire search can pass a
+// scratch-based flood that never mutates the map.
+template<class Pick>
+std::optional<ResolvedClaim> resolveClaimFor(const Map& map,const Unit& unit,Uint32 access,int material,const Building* building,
+    FarmClaimDecisionMemo* memo,Pick&& pick)
 {
-    auto* owner=unit.owner;auto& map=*owner->map;
-    const auto gid=unit.gid;const auto scriptIdentity=unit.scriptIdentity;
-    const int posX=unit.posX,posY=unit.posY;
-    if(!map.activeClaimsEnabled() || access>=map.cellCount() || !validMaterial(destinationPurpose)
-        || !canFulfillClaimWithoutTravel(unit,access,building)
-        || !map.materialAmountAtSlot(access,destinationPurpose)
-        || !map.materialDestinationValidSlot(owner->teamNumber,destinationPurpose,unit.movementAccess(),
+    const auto* owner=unit.owner;
+    if(!map.activeClaimsEnabled() || access>=map.cellCount() || !validMaterial(material)
+        || !canFulfillClaimWithoutTravel(map,unit,access,building)
+        || !map.materialAmountAtSlot(access,material)
+        || !map.materialDestinationValidSlot(owner->teamNumber,material,unit.movementAccess(),
             int(access%map.getW()),int(access/map.getW()),false,nullptr))return std::nullopt;
-    const auto identity=ResourceClaims::unitOwner(gid,scriptIdentity);
+    const auto identity=ResourceClaims::unitOwner(unit.gid,unit.scriptIdentity);
     auto source=access;
-    const auto& initial=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[destinationPurpose];
-    const bool exclusive=initial.consumption==ResourceConsumption::All || initial.destroysDeposit;
-    const bool pooled=!exclusive && map.farmAreasEnabled() && map.isFarmArea(int(access%map.getW()),int(access/map.getW()),owner->me)
-        && map.isFarmableResourceByIndex(map.getResource(access).type);
-    if(pooled) {
+    const auto terms=map.claimTerms(map.getResource(access).type,material,access,owner->me);
+    if(terms.pooled) {
         if(memo && memo->contains(access)) {
             source=memo->sources[access];
             if(source==UINT32_MAX)return std::nullopt;
         } else {
-            const auto selected=scratch?map.pickFarmHarvestTileSlotIn(*scratch,posX,posY,destinationPurpose,owner->me,access,identity)
-                :map.pickFarmHarvestTileSlot(posX,posY,destinationPurpose,owner->me,access,identity);
+            const auto& [selected,component]=pick(access,identity);
             // All early eligibility guards above precede the flood. Its queue is
             // cleared at entry and contains this entire nonempty component even
             // when every surplus unit is claimed. Copy before any other picker.
-            if(memo)memo->remember(scratch?scratch->queue:map.farmFloodQueue,selected);
+            if(memo)memo->remember(component,selected);
             if(!selected)return std::nullopt;
             source=Uint32(*selected);
         }
     }
-    const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[destinationPurpose];
-    const auto amount=map.materialAmountAtSlot(source,destinationPurpose);
-    const unsigned reserve=pooled && yield.consumption!=ResourceConsumption::Infinite && !owner->game->gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
-    const ResourceClaims::Claim claim{source,access,Uint8(destinationPurpose),map.getResource(source).type,exclusive,Uint16(reserve)};
-    return ResolvedClaim{claim,amount>reserve?amount-reserve:0,yield.consumption==ResourceConsumption::Infinite};
+    // A pooled source is a connected farm tile of the same field, so its terms
+    // differ from the access tile's only by its own yield's seed floor.
+    const auto sourceTerms=map.claimTerms(map.getResource(source).type,material,access,owner->me);
+    const auto amount=map.materialAmountAtSlot(source,material);
+    const ResourceClaims::Claim claim{source,access,Uint8(material),map.getResource(source).type,terms.exclusive,sourceTerms.reserve};
+    return ResolvedClaim{claim,amount>sourceTerms.reserve?amount-sourceTerms.reserve:0u,sourceTerms.infinite};
 }
 std::optional<ResolvedClaim> resolveClaim(Unit& unit,Uint32 access,FarmClaimDecisionMemo* memo=nullptr)
 {
     if(unit.isDead || unit.hp<UNIT_HP_DEATH_THRESHOLD || unit.medical!=Unit::MED_FREE || !unit.attachedBuilding || unit.activity!=Unit::ACT_FILLING
         || !unit.canCarryMaterial(unit.destinationPurpose) || !unit.performance[HARVEST])return std::nullopt;
-    return resolveClaimFor(unit,access,unit.destinationPurpose,unit.attachedBuilding,memo);
+    auto& map=*unit.owner->map;
+    const int x=unit.posX,y=unit.posY,material=unit.destinationPurpose;const auto team=unit.owner->me;
+    return resolveClaimFor(map,unit,access,material,unit.attachedBuilding,memo,[&](Uint32 entry,ResourceClaims::Owner owner) {
+        const auto selected=map.pickFarmHarvestTileSlot(x,y,material,team,entry,owner);
+        return std::pair<std::optional<size_t>,const std::vector<size_t>&>{selected,map.farmFloodQueue};
+    });
 }
 // The owner cannot mutate stock, eligibility or ledger between selection and
 // commit. Keep the resolved winner, while the ledger still checks availability
@@ -232,14 +234,13 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
     return false;
 }
 
-ResourceClaims::HireTarget Unit::searchHireClaimTarget(int material,const gradient_kernel::OwnedDestinations& destinations,
-    const ResourceClaims::TerrainComponentLabels* components)
+ResourceClaims::HireTarget Unit::searchHireClaimTarget(const Map& map,int material,const gradient_kernel::OwnedDestinations& destinations,
+    const ResourceClaims::TerrainComponentLabels* components) const
 {
     // Mirrors selectActiveMaterialClaim for this worker as if it were hired
     // now: no held claim and no recovery history, the same pattern frame,
     // filters, resolution and ledger availability, but no commit.
     using ResourceClaims::HireTarget;
-    auto& map=*owner->map;
     HireTarget result;
     if(!(performance[WALK] || performance[SWIM] || performance[FLY]))return result;
     result.state=HireTarget::State::None;
@@ -261,7 +262,10 @@ ResourceClaims::HireTarget Unit::searchHireClaimTarget(int material,const gradie
         const auto [x,y]=*cell;
         const auto access=Uint32(map.coordToIndex(x,y));
         if(!visited.visit(access) || filter.rejects(map,access,x,y))continue;
-        const auto resolved=resolveClaimFor(*this,access,material,nullptr,&farmMemo,&scratch);
+        const auto resolved=resolveClaimFor(map,*this,access,material,nullptr,&farmMemo,[&](Uint32 entry,ResourceClaims::Owner owner) {
+            const auto selected=map.pickFarmHarvestTileSlotIn(scratch,posX,posY,material,this->owner->me,entry,owner);
+            return std::pair<std::optional<size_t>,const std::vector<size_t>&>{selected,scratch.queue};
+        });
         if(resolved && map.materialClaimAvailable(identity,resolved->claim,resolved->capacity,resolved->infinite)) {
             result.state=HireTarget::State::Found;result.claim=resolved->claim;
             result.capacity=resolved->capacity;result.infinite=resolved->infinite;
@@ -280,14 +284,8 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
     // Claim resolution needs cargo room for the material: a worker carrying
     // another material can never claim it, and would only be released again.
     if(!canCarryMaterial(material))return false;
-    // As handleMovementGoingToResource: a projected supplier destination is
-    // fetched by ordinary movement and never consults claims.
-    {
-        const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),building.fetchesFromMarkets(),&building);
-        Sint32 x=0,y=0;
-        if(field && map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,&x,&y,
-            building.fetchesFromMarkets(),&building) && !map.materialAmountAtSlot(map.coordToIndex(x,y),material))return true;
-    }
+    // As handleMovementGoingToResource: supplier fetches never consult claims.
+    if(projectsSupplierFetch(building,material))return true;
     const auto& index=map.claimHireTargetIndex();
     const HireTarget* target=index.current(owner->teamNumber,owner->game->stepCounter)?index.find(gid,material):nullptr;
     HireTarget local;
@@ -297,7 +295,7 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
         if(const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),false,nullptr))
             if(const auto destinations=map.materialGradientDestinations(field)) {
                 const auto components=map.claimTerrainComponents(accessClass(movementAccess()));
-                local=searchHireClaimTarget(material,*destinations,components.get());
+                local=searchHireClaimTarget(map,material,*destinations,components.get());
             }
         target=&local;
     }
@@ -307,6 +305,15 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
     // phase are the only ledger changes since the pass. Two hires may share
     // one last free source; the claim step then decides.
     return map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),target->claim,target->capacity,target->infinite);
+}
+
+bool Unit::projectsSupplierFetch(const Building& building,int material)
+{
+    auto& map=*owner->map;
+    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),building.fetchesFromMarkets(),&building);
+    Sint32 x=0,y=0;
+    return field && map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,&x,&y,
+        building.fetchesFromMarkets(),&building) && !map.materialAmountAtSlot(map.coordToIndex(x,y),material);
 }
 
 bool Unit::prepareActiveMaterialPickup(int x,int y)

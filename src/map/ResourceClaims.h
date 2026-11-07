@@ -32,8 +32,23 @@ struct Claim
     bool operator==(const Claim&) const = default;
 };
 
-// Owner-thread bookkeeping. No availability decisions depend on hash iteration
-// order. Capacity/eligibility come from the current world, never stale gradients.
+// The terms a claim on one material of one resource type carries, given where
+// it is picked up (Map::claimTerms). Selection, load and revalidation must all
+// derive them the same way: load and revalidation compare stored claims
+// against recomputed terms.
+struct ClaimTerms
+{
+    bool exclusive = false; // The harvest consumes or destroys the whole deposit.
+    bool pooled = false;    // Picked up in a farm field that pools its stock.
+    bool infinite = false;  // The yield never depletes.
+    std::uint16_t reserve = 0; // Seed floor kept back from a pooled finite yield.
+};
+
+// Bookkeeping, mutated on the owner thread only. The hire-time target pass
+// reads it concurrently from compute workers (available, find), while the
+// owner waits for that pass and so mutates nothing. No availability decision
+// depends on hash iteration order. Capacity/eligibility come from the current
+// world, never stale gradients.
 class Ledger
 {
     struct Tile

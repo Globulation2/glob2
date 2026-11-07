@@ -30,7 +30,6 @@ public:
     // Snapshot workers other than `self` fetching `material` whose target lies
     // within toroidal Chebyshev `radius` of (x,y). Cost O((2r+1) log n).
     unsigned others(const Map&,const Unit& self,int material,int x,int y,unsigned radius) const;
-    std::size_t size(int team) const { return teams[team].keys.size(); }
 private:
     struct TeamSnapshot {
         Uint64 tick=UINT64_MAX;

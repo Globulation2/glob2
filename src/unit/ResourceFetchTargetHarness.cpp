@@ -115,9 +115,8 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedCost, int swi
 	const auto* initial = glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,access); });
 	require(game.map.publishedCostClass(initial) == expectedCost,
 		"the shared field retains its selected preparation cost");
-	// Task assignment: ascend the resource gradient once, same call as
-	// Unit.cpp/UnitDisplacement.cpp.
-	game.map.materialAvailableUpdateSlot(teamNumber, WHEAT, access, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
+	// The planning target at task assignment.
+	glob2test::materialPlanningTarget(game.map,teamNumber, WHEAT, access, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
 	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer wheat tile");
 	require(game.map.getGradient(teamNumber, WHEAT, access, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"initial target is the gradient's goal");
@@ -277,7 +276,7 @@ TEST_SUITE("ResourceFetchTarget")
             const auto* field=map.getMaterialGradientSlot(0,WHEAT,movement);
             return field && field[map.coordToIndex(16,18)]==GRADIENT_AT_GOAL ? field : nullptr;
         });
-        REQUIRE(map.isGradientPeak(map.getMaterialGradientSlot(0,WHEAT,movement),20,16));
+        REQUIRE(glob2test::isGradientPeak(map,map.getMaterialGradientSlot(0,WHEAT,movement),20,16));
         const auto before=unit->entityRandom;
         unit->stepGoingToResource();
         CHECK(unit->targetX==16); CHECK(unit->targetY==18); CHECK(unit->validTarget());
@@ -634,6 +633,10 @@ TEST_CASE("active save rejects invalid deferred map references on a fresh loader
     REQUIRE(map.incResourceByIndex(12,12,customType,0));hireClaimWorker(*unit,*inn);
     REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,12))));
     const auto valid=*unit->activeMaterialClaim;
+    // These saves are corrupted on purpose to exercise the loader, so the
+    // save-time audit (which would reject them first) is off here.
+    struct Audit { bool saved=Map::claimSaveAudit; ~Audit(){Map::claimSaveAudit=saved;} } restoreAudit;
+    Map::claimSaveAudit=false;
     for(unsigned corruption=0;corruption<4;++corruption) {
         CAPTURE(corruption);
         unit->activeMaterialClaim=valid;
@@ -649,6 +652,18 @@ TEST_CASE("active save rejects invalid deferred map references on a fresh loader
         if(corruption) CHECK_THROWS_AS(restored.game.load(&input),std::runtime_error);
         else { REQUIRE(restored.game.load(&input)); CHECK(restored.game.checkSum()==f.game.checkSum()); }
     }
+    // With the audit on, the same corruption fails at save time instead.
+    Map::claimSaveAudit=true;
+    {
+        auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(backend);
+        CHECK_NOTHROW(f.game.save(&output,false,"audited-claim"));
+    }
+    unit->activeMaterialClaim->source=Uint32(map.cellCount());
+    {
+        auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(backend);
+        CHECK_THROWS(f.game.save(&output,false,"audited-claim"));
+    }
+    unit->activeMaterialClaim=valid;
 }
 
 TEST_CASE("a claim worker that finds no claimable stock records demand and gives up its job" * doctest::test_suite("ActiveMaterialClaims"))
@@ -959,6 +974,8 @@ ContentionRun runContentionFixture(bool claims,unsigned participants,int workers
             carried[i]=has;
             row.insert(row.end(),{u->posX,u->posY,u->targetX,u->targetY,int(u->validTarget()),int(u->displacement),int(has),int(bool(u->activeMaterialClaim))});
         }
+        // The ledger always holds exactly the units' claims.
+        REQUIRE_NOTHROW(map.auditActiveMaterialClaims());
         run.maxClaimed=std::max(run.maxClaimed,holding);run.maxDistinctClaims=std::max(run.maxDistinctClaims,unsigned(accesses.size()));
         run.units.push_back(row);run.checksums.push_back(game.checkSum());
     }
@@ -1101,6 +1118,7 @@ HireRun runHireFixture(unsigned participants,unsigned ticks)
             const auto* u=game.teams[0]->myUnits[Unit::GIDtoID(index.requests[i].gid)];REQUIRE(u);
             CHECK_FALSE((u->attachedBuilding && u->activity==Unit::ACT_FILLING && u->destinationPurpose==index.requests[i].material));
         }
+        REQUIRE_NOTHROW(map.auditActiveMaterialClaims());
         for(std::size_t i=0;i<units.size();++i) {
             const bool now=units[i]->attachedBuilding!=nullptr;
             if(attached[i] && !now && !units[i]->hasCarriedMaterial(WHEAT))++run.releases[i];
@@ -1133,6 +1151,45 @@ TEST_CASE("hiring skips workers with no claimable target and stays deterministic
         REQUIRE(other.checksums.size()==one.checksums.size());
         for(std::size_t tick=0;tick<one.checksums.size();++tick){CAPTURE(tick);REQUIRE(other.checksums[tick]==one.checksums[tick]);}
         CHECK(other.releases==one.releases);CHECK(other.skipped==one.skipped);CHECK(other.delivered==one.delivered);
+    }
+}
+
+TEST_CASE("the parallel hire pass gives the serial results at every thread count" * doctest::test_suite("ClaimHireTargets"))
+{
+    glob2test::HeadlessGlobals globals;
+    // The fixture's passes are far below the parallel threshold; lower it so
+    // every pass runs on the compute executor.
+    struct Threshold {
+        std::size_t saved=ResourceClaims::HireTargetIndex::parallelSearches;
+        ~Threshold(){ResourceClaims::HireTargetIndex::parallelSearches=saved;}
+    } restore;
+    const auto serial=runHireFixture(1,600);
+    REQUIRE(serial.searched>0);
+    ResourceClaims::HireTargetIndex::parallelSearches=1;
+    for(unsigned threads:{1u,2u,4u}) {
+        CAPTURE(threads);
+        const auto parallel=runHireFixture(threads,600);
+        REQUIRE(parallel.checksums.size()==serial.checksums.size());
+        for(std::size_t tick=0;tick<serial.checksums.size();++tick){CAPTURE(tick);REQUIRE(parallel.checksums[tick]==serial.checksums[tick]);}
+        CHECK(parallel.searched==serial.searched);CHECK(parallel.skipped==serial.skipped);CHECK(parallel.delivered==serial.delivered);
+    }
+}
+
+TEST_CASE("claims can be turned off at setup, also on a map exported mid-match, but not after a tick" * doctest::test_suite("ActiveMaterialClaims"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(Uint32 start:{0u,5000u}) {
+        CAPTURE(start);
+        glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7411});
+        auto& game=f.game;auto& map=game.map;
+        game.stepCounter=start; // An exported map keeps the tick it was saved at.
+        map.enableResourceClaims();
+        REQUIRE_NOTHROW(map.disableResourceClaims());
+        CHECK_FALSE(map.activeClaimsEnabled());CHECK_FALSE(map.materialDestinationsEnabled());
+        map.enableResourceClaims();
+        f.step();
+        CHECK_THROWS_AS(map.disableResourceClaims(),std::logic_error);
+        CHECK(map.activeClaimsEnabled());
     }
 }
 

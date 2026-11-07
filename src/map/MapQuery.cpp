@@ -411,7 +411,7 @@ Sint32 Map::warpDistSquare(int px, int py, int qx, int qy) const
 	return ((dx*dx)+(dy*dy));
 }
 
-Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
+Sint32 Map::warpDistMax(int px, int py, int qx, int qy) const
 {
 	Sint32 dx=warpDist1d(px,qx,w);
 	Sint32 dy=warpDist1d(py,qy,h);

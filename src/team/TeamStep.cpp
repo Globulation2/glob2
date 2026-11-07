@@ -262,7 +262,6 @@ namespace
             u->setValidTarget(u->queryMaterialDestination(resource,&u->targetX,&u->targetY,nullptr,
                 b->fetchesFromMarkets(),b)==RouteResult::Reachable);
 		}
-        u->reconcileMaterialClaim();
 	}
 }
 

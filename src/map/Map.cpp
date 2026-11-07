@@ -552,6 +552,7 @@ void Map::clear()
 {
     materialClaimRoutes.reset();
     resourceClaimsEnabled=false;
+    claimSetupTick.reset();
     activeClaimRules.reset();
     materialClaims.reset(0);
 	if (game) game->areaEffects.reset();

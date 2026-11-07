@@ -21,7 +21,6 @@ const HireTarget* HireTargetIndex::find(Uint16 gid,int material) const
 
 namespace
 {
-constexpr std::size_t ParallelHireSearches=64;
 // Same free-candidate filter as Building::hireMaterialUnit for a fetch job;
 // the search itself also needs a mobile harvester that can carry material.
 bool searchable(const Unit* u,const Team& team,int material)
@@ -77,16 +76,18 @@ void Map::prepareClaimHireTargets(int teamNumber)
         }
         perRequest[i]=&at->second;
     }
+    // Workers see the map and units only through const references.
+    const Map& frozen=*this;
     const auto search=[&](std::size_t i) {
-        Unit* u=team.myUnits[Unit::GIDtoID(index.requests[i].gid)];
+        const Unit* u=team.myUnits[Unit::GIDtoID(index.requests[i].gid)];
         const auto* input=perRequest[i];
-        if(input->destinations)index.results[i]=u->searchHireClaimTarget(index.requests[i].material,*input->destinations,
+        if(input->destinations)index.results[i]=u->searchHireClaimTarget(frozen,index.requests[i].material,*input->destinations,
             input->components.get());
     };
     // Each search is a pure function of the frozen state and its own key, so
     // the serial and parallel forms give identical results. A search costs
     // about a microsecond; below this many requests the dispatch would cost
     // the owner more than the searches themselves.
-    if(index.requests.size()<ParallelHireSearches)for(std::size_t i=0;i<index.requests.size();++i)search(i);
+    if(index.requests.size()<HireTargetIndex::parallelSearches)for(std::size_t i=0;i<index.requests.size();++i)search(i);
     else compute.run(index.requests.size(),search,{ComputeProducer::Other,game->stepCounter,game->stepCounter});
 }

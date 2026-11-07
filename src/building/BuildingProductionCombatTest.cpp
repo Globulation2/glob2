@@ -702,7 +702,7 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     Sint32 pickupX=-1,pickupY=-1;
     REQUIRE(worker->queryMaterialDestination(WOOD,&pickupX,&pickupY,&distance,false,receiver)==RouteResult::Reachable);
     CHECK(world.game.map.doesPosTouchBuilding(pickupX,pickupY,supplier->gid).has_value());
-    CHECK(world.game.map.isGradientPeak(supplierField,pickupX,pickupY));
+    CHECK(glob2test::isGradientPeak(world.game.map,supplierField,pickupX,pickupY));
     CHECK(supplierField[world.game.map.coordToIndex(pickupX,pickupY)]<GRADIENT_AT_GOAL);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
     REQUIRE((glob2test::publishCurrentHiringSuggestions(*receiver->owner->game), receiver->subscribeToBringMaterialsStep()));

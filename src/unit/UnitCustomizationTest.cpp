@@ -2671,7 +2671,7 @@ TEST_SUITE("UnitCustomization")
         static_assert(offsetof(UnitState,configuredVisionRadius)==offsetof(UnitState,underAttackTimer)+1);
         static_assert(offsetof(UnitState,hp)%alignof(Sint32)==0);
         // Native layout budgets; the vision cache must not enlarge compact storage.
-        // Temporary claim experiments additionally retain per-unit refresh cadence.
+        // Units also carry their resource-claim selection cadence (decision ordinals).
         static_assert(sizeof(void*)!=8 || sizeof(UnitState)<=264);
         static_assert(sizeof(ResourceClaims::MaterialClaimPolicyState)<=24);
         static_assert(sizeof(void*)!=8 || sizeof(Unit)<=344+sizeof(ResourceClaims::MaterialClaimPolicyState));

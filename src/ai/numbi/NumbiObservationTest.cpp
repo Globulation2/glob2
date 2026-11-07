@@ -28,7 +28,7 @@ TEST_SUITE("NumbiObservation")
     CAPTURE(resource);CAPTURE(swim);CAPTURE(x);CAPTURE(y);
     int snapshotX=-1,snapshotY=-1,snapshotDistance=-1,liveX=-1,liveY=-1,liveDistance=-1;
     const bool captured=query.resourceAvailableUpdate(0,resource,movementAccessFromLegacy(swim),x,y,&snapshotX,&snapshotY,&snapshotDistance);
-    const bool live=map.materialAvailableUpdateSlot(0,resource,movementAccessFromLegacy(swim),x,y,&liveX,&liveY,&liveDistance);
+    const bool live=glob2test::materialPlanningTarget(map,0,resource,movementAccessFromLegacy(swim),x,y,&liveX,&liveY,&liveDistance);
     CHECK(captured==live);
     // Destination outputs are meaningful only on success. The live Pending /
     // Unreachable adapter leaves them untouched; the private oracle may write
@@ -54,7 +54,7 @@ TEST_SUITE("NumbiObservation")
   map.setResourceByIndex(5,5,WHEAT,1);
   int initialX,initialY,initialDistance;
   glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
-  REQUIRE(map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&initialX,&initialY,&initialDistance));
+  REQUIRE(glob2test::materialPlanningTarget(map,0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&initialX,&initialY,&initialDistance));
   map.setNoResource(5,5,0);map.setResourceByIndex(24,24,WHEAT,1);
   auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
   NumbiObservation::ResourceInitializations cache;
@@ -64,7 +64,7 @@ TEST_SUITE("NumbiObservation")
    REQUIRE(query.resourceAvailableUpdate(0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&x,&y,&distance));
    CHECK(x==initialX);CHECK(y==initialY);CHECK(distance==initialDistance);
    int liveX=-1,liveY=-1,liveDistance=-1;
-   REQUIRE(map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&liveX,&liveY,&liveDistance));
+   REQUIRE(glob2test::materialPlanningTarget(map,0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&liveX,&liveY,&liveDistance));
    CHECK(x==liveX);CHECK(y==liveY);CHECK(distance==liveDistance);
    if(map.materialDestinationsEnabled()) {
     Sint32 workerX=-1,workerY=-1;
@@ -112,7 +112,7 @@ TEST_SUITE("NumbiObservation")
    for(int y=0;y<32;++y)for(int x=0;x<32;++x) {
     int sx=-1,sy=-1,sd=-1,lx=-1,ly=-1,ld=-1;
     const bool captured=query.resourceAvailableUpdate(0,WHEAT,movementAccessFromLegacy(swim),x,y,&sx,&sy,&sd);
-    const bool live=map.materialAvailableUpdateSlot(0,WHEAT,movementAccessFromLegacy(swim),x,y,&lx,&ly,&ld);
+    const bool live=glob2test::materialPlanningTarget(map,0,WHEAT,movementAccessFromLegacy(swim),x,y,&lx,&ly,&ld);
     CHECK(captured==live);
     if(live) {
      CHECK(sx==lx);CHECK(sy==ly);CHECK(sd==ld);

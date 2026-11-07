@@ -2,6 +2,7 @@
 #pragma once
 #include "ClaimRouteSearch.h"
 #include "ResourceClaimRouteView.h"
+#include "ClaimPolicy.h"
 #include "ComputeExecutor.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include <deque>
@@ -24,7 +25,7 @@ struct RouteInput
     // The route ends on any cell within one tile (toroidal Chebyshev) of
     // target, the claimed access tile, where the worker can pick up.
     std::uint32_t start = 0, target = 0, maximumCost = 65533;
-    std::uint32_t maximumExpansions = 4096;
+    std::uint32_t maximumExpansions = Policy::RouteMaximumExpansions;
 };
 struct RoutePublication
 {

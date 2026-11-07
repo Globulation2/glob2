@@ -18,7 +18,7 @@ TEST_SUITE("WarrushObservation")
   game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
   glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
-  game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land,4,4,&x,&y,&distance);
+  glob2test::materialPlanningTarget(game.map,0,materialIndex(MaterialId::Food),MovementAccess::Land,4,4,&x,&y,&distance);
   AIWarrush full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);
   full.setRandomEngine(fullRandom);projected.setRandomEngine(projectedRandom);

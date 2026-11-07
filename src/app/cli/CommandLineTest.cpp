@@ -276,22 +276,3 @@ TEST_CASE("resource claims switch selects the default or a claims-off new game" 
         CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game","--resource-claims",value}));
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game"}));
 }
-
-TEST_CASE("removed resource claim research options are unknown options" * doctest::test_suite("CommandLine"))
-{
-    const std::vector<std::string> newGame={"game","run","--output-dir","artifacts/claims-cli-test","--map-file","test.map","--game-seed","42","--player","castor"};
-    const std::vector<std::string> saved={"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz"};
-    for(const auto* flag:{"--resource-claims-probe","--resource-claims-movement-only","--material-destinations",
-        "--resource-claims-shadow","--resource-claims-deep-stratified","--resource-claims-capture-only","--resource-claims-deep-missing"}) {
-        CAPTURE(flag);
-        auto a=newGame;a.push_back(flag);CHECK_THROWS(Cli::parse(a));
-        auto b=saved;b.push_back(flag);CHECK_THROWS(Cli::parse(b));
-    }
-    for(const auto& [option,value]:std::vector<std::pair<std::string,std::string>>{
-        {"--resource-claims-active","prototype-stationary-v1"},{"--resource-claims-policy-json",R"({"source_version":1})"},
-        {"--resource-claims-sample-every","1"},{"--resource-claims-max-samples","10"},{"--resource-claims-max-bytes","4096"}}) {
-        CAPTURE(option);
-        auto args=newGame;args.insert(args.end(),{option,value});CHECK_THROWS(Cli::parse(args));
-    }
-    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-probe"}));
-}

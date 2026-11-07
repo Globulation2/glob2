@@ -100,12 +100,8 @@ void Map::revalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner> owner
             && *unit->activeMaterialClaim==claim && unit->activeMaterialClaimValid()
             && (!checkFarmConnectivity || activeClaimFarmConnected(claim,unit->owner->me));
         if (valid) {
-            const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[claim.material];
-            const bool exclusive=yield.consumption==ResourceConsumption::All || yield.destroysDeposit;
-            const bool pooled=!exclusive && farmAreasEnabled() && (areaCells[claim.access].farm&unit->owner->me)
-                && isFarmableResourceByIndex(claim.resource);
-            const auto reserve=pooled && yield.consumption!=ResourceConsumption::Infinite && !game->gameHeader.isResourceGrowthDisabled() ? yield.seedReserve : 0;
-            valid=claim.exclusive==exclusive && claim.reserve==reserve;
+            const auto terms=claimTerms(claim.resource,claim.material,claim.access,unit->owner->me);
+            valid=claim.exclusive==terms.exclusive && claim.reserve==terms.reserve;
         }
         if (!valid) invalidateMaterialClaimOwners({owner});
     }

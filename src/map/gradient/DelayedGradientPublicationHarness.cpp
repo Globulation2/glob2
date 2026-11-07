@@ -272,7 +272,7 @@ TEST_CASE("successful planning reads leave warm natural fields idle beyond query
         CHECK(map.queryMaterialDistance(0,WHEAT,MovementAccess::Land,8,8,&distance)==RouteResult::Reachable);
         CHECK(map.materialAvailableSlot(0,WHEAT,MovementAccess::Land,8,8));
         CHECK(map.materialAvailableSlot(0,WHEAT,MovementAccess::Land,8,8,&distance));
-        CHECK(map.materialAvailableUpdateSlot(0,WHEAT,MovementAccess::Land,8,8,&targetX,&targetY,&distance));
+        CHECK(glob2test::materialPlanningTarget(map,0,WHEAT,MovementAccess::Land,8,8,&targetX,&targetY,&distance));
         CHECK(inn->considerUnitForMaterial(worker,WHEAT,&distance));
         CHECK_FALSE(field.demand);
         CHECK(field.count32==0);CHECK(field.count128==0);

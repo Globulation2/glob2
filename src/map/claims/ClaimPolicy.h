@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string_view>
 
-// The resource-claim policy every new game uses ("contention-v1").
+// The resource-claim policy every new game uses ("contention-v2").
 //
 // Without claims, every worker fetching a material follows the same shared
 // gradient to the same nearest stock, so a late-game crowd converges on one
@@ -12,11 +12,17 @@
 // for one worker and routes that worker to it, so a crowd spreads over the
 // stock that is actually there. Supplier (market) fetches keep ordinary movement.
 //
-// Changing any value here changes the simulation: bump SIM_REVISION and
-// regenerate the golden match record.
+// Claims bind claimers only. The ledger is shared by all teams, so one team's
+// claims block another team's claimers; but an unclaimed worker of any team
+// still harvests claimed stock, and the resulting stock drop evicts the claims
+// it no longer covers, highest owner ID first.
+//
+// Changing any value here changes the simulation: bump SIM_REVISION, regenerate
+// the golden match record, and change Name (development builds used
+// "contention-v1" with different values; a name must identify one policy).
 namespace ResourceClaims::Policy
 {
-inline constexpr std::string_view Name="contention-v1";
+inline constexpr std::string_view Name="contention-v2";
 
 // Claims engage only under contention. A worker without a claim moves exactly
 // as with claims off, and switches to claim selection for a decision on which
@@ -29,8 +35,9 @@ inline constexpr unsigned ContentionMinWorkers=2;
 inline constexpr unsigned ContentionRadius=3;
 
 // A worker holding a claim re-runs selection every this many movement
-// decisions and always switches to the better candidate it finds, so a claim
-// taken early in a long walk does not pin the worker once closer stock frees
+// decisions and takes the first claimable entry in pattern order, which may be
+// the claim it already holds (then its route is kept). A claim taken early in a
+// long walk therefore does not pin the worker once better-placed stock frees
 // up. Between refreshes it keeps its target and route.
 inline constexpr unsigned DestinationRefreshDecisions=24;
 

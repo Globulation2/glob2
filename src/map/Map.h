@@ -152,11 +152,16 @@ class Map
     // Whether this game uses resource claims (ResourceClaims::Policy). Fixed at
     // new-game setup and saved; saves before format 213 load without claims.
     bool resourceClaimsEnabled=false;
+    // The tick at which enableResourceClaims set up this game; claims may be
+    // disabled only while no tick has run since. Not saved: a loaded save
+    // keeps its own claim setting.
+    std::optional<Uint64> claimSetupTick;
     // Rules the held claims were validated under (farm areas, growth, resource
     // catalog); a change invalidates every claim at the next publication.
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
-    Uint32 claimRuntimeChecksum(bool deep, bool includePending) const;
+    Uint32 claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs) const;
+    void validateActiveMaterialClaims(ResourceClaims::Ledger& ledger) const;
     // Derived from terrain only; never saved, checksummed or snapshotted.
     mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;
     // Derived per-team target occupancy for the contention trigger; rebuilt
@@ -787,6 +792,8 @@ public:
 	// derived seed data coherent. Reads never invalidate preparation caches.
 	size_t cellCount() const { return resourceCells.size(); }
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
+    // Caller-owned farm flood scratch, for readers that must not mutate the map.
+    struct FarmFloodScratch { std::vector<Uint32> stamps; std::vector<size_t> queue; Uint32 generation = 0; };
     bool activeClaimsEnabled() const { return resourceClaimsEnabled; }
     //! New-game setup: material destination planes plus resource claims.
     //! Saved games keep whatever they stored (claims off before format 213).
@@ -821,6 +828,13 @@ public:
     void saveActiveClaimRoutes(GAGCore::OutputStream*) const;
     void loadActiveClaimRoutes(GAGCore::InputStream*, Sint32 versionMinor);
     void rebuildActiveMaterialClaims();
+    //! Throws unless the ledger and claim routes are exactly what load would
+    //! rebuild from the units (see validateActiveMaterialClaims). Saves run it
+    //! when GLOB2_CLAIM_AUDIT is set (the test runner sets it).
+    void auditActiveMaterialClaims() const;
+    //! Whether saves run auditActiveMaterialClaims (from GLOB2_CLAIM_AUDIT).
+    //! Tests that save deliberately corrupt state turn it off.
+    static bool claimSaveAudit;
     void invalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner>,Uint32 teams=~Uint32(0));
     void invalidateMaterialClaimsAt(size_t,bool source=true,bool access=true,Uint32 teams=~Uint32(0));
     std::vector<ResourceClaims::Owner> farmMaterialClaimOwners(size_t,Uint32 teams=~Uint32(0),MaterialMask materials=~MaterialMask(0));
@@ -828,6 +842,7 @@ public:
     void invalidateAllActiveMaterialClaims();
     void checkActiveClaimRules();
     bool activeClaimFarmConnected(const ResourceClaims::Claim&, Uint32 teamMask);
+    bool activeClaimFarmConnectedIn(FarmFloodScratch&, const ResourceClaims::Claim&, Uint32 teamMask) const;
     bool takeClaimedMaterial(const ResourceClaims::Claim&, Uint32 teamMask);
     //! Terrain-only connected components for a movement class (claim prefilter).
     std::shared_ptr<const ResourceClaims::TerrainComponentLabels> claimTerrainComponents(int movement) const
@@ -843,6 +858,11 @@ public:
 	//! rebuildActiveMaterialClaims).
 	bool recordMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim)
 	{ return materialClaims.record(owner, claim); }
+	//! The terms of a claim on material of resource type `resource` picked up
+	//! at `access` by team `teamMask` (ResourceClaims::ClaimTerms).
+	ResourceClaims::ClaimTerms claimTerms(Uint16 resource, int material, Uint32 access, Uint32 teamMask) const;
+	//! The seed floor a pooled claim on this yield keeps back for regrowth.
+	Uint16 pooledClaimReserve(const YieldProperties& yield) const;
 	//! Ledger availability: one claimant per spendable unit of stock. Selection,
 	//! acquisition and revalidation all use this same rule.
 	bool materialClaimAvailable(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false) const
@@ -1015,10 +1035,12 @@ public:
 	//! in the team's farm area. Flood 8-connected sources from the unit's 3x3;
 	//! empty gaps stop pooling. Choose the highest stock above that source's
 	//! configured reserve, then shortest distance, then tile index.
+	//! entry: flood from that tile only (a claim's access tile) instead of the
+	//! unit's 3x3. availableOwner: consider only tiles where the claim ledger
+	//! still has room for that owner's claim on the material.
 	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt, std::optional<ResourceClaims::Owner> availableOwner = std::nullopt);
     // The same pick with caller-owned flood scratch and no map mutation, for
     // parallel readers of a frozen map (hire target searches).
-    struct FarmFloodScratch { std::vector<Uint32> stamps; std::vector<size_t> queue; Uint32 generation = 0; };
     std::optional<size_t> pickFarmHarvestTileSlotIn(FarmFloodScratch& scratch, int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt, std::optional<ResourceClaims::Owner> availableOwner = std::nullopt) const;
 
 	//! Revalidate the touched target's requested stock before delivery. Eligible
@@ -1291,7 +1313,6 @@ public:
 	bool materialAvailableSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
     bool materialAvailable(int team,MaterialId material,MovementAccess movementAccessValue,int x,int y,int* distance,bool markets=false,const Building* consumer=nullptr) {
         return materialAvailableSlot(team,materialIndex(material),movementAccessValue,x,y,distance,markets,consumer); }
-	bool materialAvailableUpdateSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
 	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
 	Building *touchedStockedMarketSlot(Unit *unit, int resourceType) const;
 	//! A stock of resourceType in one of the team's markets appeared or ran out:
@@ -1305,11 +1326,6 @@ public:
 	//! on the AIs' Uint8 maps alike: the goal is the maximum of the element type.
 	template<typename T>
 	bool getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
-	//! Whether (x, y) is a local maximum of gradient: no neighbour holds a strictly higher
-	//! value. True at any tile getGlobalGradientDestination's ascent could end on, including
-	//! gradients like a market-seeded field whose goal is a finite cost, not the type's max.
-	template<typename T>
-	bool isGradientPeak(const T *gradient, int x, int y) const;
 
 	RouteResult queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, MovementAccess movementAccessValue, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
@@ -1587,7 +1603,7 @@ public:
 	Uint32 checkSum(bool heavy, bool includePending = true, bool legacy152 = false);
 	Sint32 warpDist1d(int p, int q, int l) const;///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy) const; //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
-	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
+	Sint32 warpDistMax(int px, int py, int qx, int qy) const; //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:

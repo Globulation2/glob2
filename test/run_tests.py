@@ -350,6 +350,8 @@ def run_job(job, args, build_dir):
         env.setdefault('GLOB2_TEST_SHADER_DIRECTORY', str(shader_directory.resolve()))
     env.update(GLOB2_USER_DATA_DIR=str(profile), HOME=str(home), USERPROFILE=str(home),
                TMPDIR=str(root), TMP=str(root), TEMP=str(root), SDL_AUDIODRIVER='dummy')
+    # Every save audits resource-claim state against what load would rebuild.
+    env.setdefault('GLOB2_CLAIM_AUDIT', '1')
     env.pop('GLOB2_MOBILE_UI', None)
     env.pop('GLOB2_USER_DIR', None)
     # Always override inherited opt-in: a standard run must not take over the desktop.

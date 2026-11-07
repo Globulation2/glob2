@@ -22,8 +22,6 @@
 
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
-    // A reused unit slot drops its previous claim before the saved one loads.
-    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
 	stream->readEnterSection("Unit");
 
 	// unit specification
@@ -254,7 +252,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	verbose = false;
     activeMaterialClaim.reset();materialClaimTask=0;materialClaimPolicyState={};
-    if(versionMinor>=ResourceClaims::ActiveClaimsFormat) {
+    if(versionMinor>=FILE_FORMAT_VERSION_RESOURCE_CLAIMS) {
         GAGCore::BinaryInputStream::CheckedReads checked(stream);
         stream->readEnterSection("activeMaterialClaim");
         const auto has=stream->readUint8("has");

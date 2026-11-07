@@ -9,12 +9,15 @@
 #include "ClaimPattern.h"
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <cstdlib>
 #include <set>
 
 namespace
 {
 using namespace ResourceClaims;
-constexpr unsigned MaximumStates = Team::MAX_COUNT * Unit::MAX_COUNT, MaximumRouteCells = 4096;
+// A route search expands at most RouteMaximumExpansions cells, so neither a
+// route's length nor its recorded expansions can exceed it.
+constexpr unsigned MaximumStates = Team::MAX_COUNT * Unit::MAX_COUNT, MaximumRouteCells = Policy::RouteMaximumExpansions;
 void write64(GAGCore::OutputStream* out, Uint64 value)
 { out->writeUint32(Uint32(value), "low"); out->writeUint32(Uint32(value >> 32), "high"); }
 Uint64 read64(GAGCore::InputStream* in)
@@ -336,9 +339,14 @@ void Map::publishClaimRoutes()
     }
 }
 
+bool Map::claimSaveAudit=std::getenv("GLOB2_CLAIM_AUDIT")!=nullptr;
+
 void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
 {
     using namespace ResourceClaims;
+    // Opt-in (tests set GLOB2_CLAIM_AUDIT): fail here, where an invariant hole
+    // is saved, rather than later as a save that cannot load.
+    if (claimSaveAudit) auditActiveMaterialClaims();
     stream->writeEnterSection("activeMaterialClaims");
     stream->writeUint8(resourceClaimsEnabled, "enabled");
     const auto pending = materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<RoutePublication>{};
@@ -389,9 +397,9 @@ void Map::saveActiveClaimRoutes(GAGCore::OutputStream* stream) const
 void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMinor)
 {
     using namespace ResourceClaims;
-    materialClaimRoutes.reset(); activeClaimRules.reset(); resourceClaimsEnabled = false;
+    materialClaimRoutes.reset(); activeClaimRules.reset(); resourceClaimsEnabled = false; claimSetupTick.reset();
     // Saves before format 213 have no claims and continue without them.
-    if (versionMinor < ActiveClaimsFormat) return;
+    if (versionMinor < FILE_FORMAT_VERSION_RESOURCE_CLAIMS) return;
     GAGCore::BinaryInputStream::CheckedReads checked(stream);
     stream->readEnterSection("activeMaterialClaims"); const auto enabled = stream->readUint8("enabled");
     if (enabled > 1 || (enabled && !materialDestinationsEnabled()))
@@ -487,12 +495,13 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
     stream->readLeaveSection();
 }
 
-// One layout for the deep (Map::checkSum) and the routine snapshot claim
-// checksums. The deep form hashes every route cell and, when asked, the
-// pending outputs; the per-tick snapshot form hashes each route's cached digest.
-Uint32 Map::claimRuntimeChecksum(bool deep, bool includePending) const
+// One layout for both claim checksums. Map::checkSum (activeClaimRouteChecksum)
+// hashes every route cell, plus the pending route outputs on its heavy pass;
+// the per-tick snapshot checksum (activeClaimSnapshotChecksum) hashes each
+// route's cached digest and never joins pending work.
+Uint32 Map::claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs) const
 {
-    const auto pending = deep && includePending && materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<ResourceClaims::RoutePublication>{};
+    const auto pending = hashRouteCells && includePendingOutputs && materialClaimRoutes ? materialClaimRoutes->pipeline.exportPending() : std::vector<ResourceClaims::RoutePublication>{};
     Uint32 hash = 2166136261u;
     const auto mix = [&](Uint64 value) { hash = (hash ^ Uint32(value)) * 16777619u; hash = (hash ^ Uint32(value >> 32)) * 16777619u; };
     const auto route = [&](const ResourceClaims::Route& value) {
@@ -509,7 +518,7 @@ Uint32 Map::claimRuntimeChecksum(bool deep, bool includePending) const
     for (const auto& [owner, state] : materialClaimRoutes->states) {
         mix(owner); mix(state.identity.task); mix(state.identity.request); mix(state.start); mix(state.target);
         mix(state.cursor); mix(state.due); mix(state.pending);
-        if (deep) route(state.route); else mix(state.routeDigest);
+        if (hashRouteCells) route(state.route); else mix(state.routeDigest);
         mix(state.reanchor); mix(state.trafficWaits);
     }
     for (const auto& output : pending) {

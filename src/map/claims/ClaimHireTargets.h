@@ -31,6 +31,11 @@ public:
     void reset(int team,Uint64 tick) {this->team=team;this->tick=tick;requests.clear();results.clear();}
     bool current(int team,Uint64 tick) const {return this->team==team && this->tick==tick;}
     const HireTarget* find(Uint16 gid,int material) const;
+    // Passes with at least this many searches run on the compute executor;
+    // smaller ones run serially on the owner, where dispatch would cost more
+    // than the searches. Results are identical either way. Tests lower it to
+    // exercise the parallel path; it never affects the simulation.
+    static inline std::size_t parallelSearches=64;
     int team=-1;
     Uint64 tick=UINT64_MAX;
     std::vector<Request> requests; // Sorted by key, unique.

@@ -2455,7 +2455,7 @@ TEST_CASE("weighted AIR market oracle follows live pickup and uses AIR cost buck
     const auto* live=glob2test::awaitGradient(game,[&](){return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air,true);});REQUIRE(live);
     CHECK(*std::max_element(live,live+map.size)<GRADIENT_AT_GOAL);
     Sint32 tx=0,ty=0;int distance=0;
-    REQUIRE(map.materialAvailableUpdateSlot(0,WHEAT,MovementAccess::Air,8,8,&tx,&ty,&distance,true,nullptr));
+    REQUIRE(glob2test::materialPlanningTarget(map,0,WHEAT,MovementAccess::Air,8,8,&tx,&ty,&distance,true,nullptr));
     Sint32 px=0,py=0;CHECK_FALSE(map.getGlobalGradientDestination(live,8,8,&px,&py));CHECK(px==tx);CHECK(py==ty);
     const GradientFieldKey key{GradientFieldFamily::Markets,0,AIR_MOVEMENT_CLASS,WHEAT};EntityRandom random;random.seed(42,54);
     GradientQueryContext context{key,8,8,random};context.mode=GradientQueryContext::Mode::DirectFlight;
