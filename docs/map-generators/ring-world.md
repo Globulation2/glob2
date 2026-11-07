@@ -29,7 +29,7 @@ revision 3 laid them for the same seed.
   walk all of them can have). Every colony's tor is the same stencil turned by quarter turns, so every
   face holds the same five stone. Nothing is planted within 3 tiles of a tor, and the walk to every
   face is opened after the resources are laid. With the spine off there is no rock and no quarry.
-- **Deep ocean swims slowly.** Ocean six or more steps from any land is deep water (`deep-water`):
+- **Deep ocean swims slowly.** Ocean six tiles or more from any land in a straight line is deep water (`deep-water`):
   swimmable but slower, no algae. The coastal shallows keep their beaches and the algae band, and an
   island keeps a ring of shallows. Raiding across the ocean or reaching the islands takes longer than
   in revision 3; every route on foot is unchanged.
@@ -38,9 +38,11 @@ revision 3 laid them for the same seed.
   (impassable, blocks arrows). Neither comes within 18 tiles of a home, so every home's shore is as
   in revision 3.
 - **Green lakes.** Every lake's beach is loam (buildable crop land that waters its surroundings a
-  little), and outside the home gardens (12 tiles round a home's middle) a frayed ring of loam about
-  five vertices deep surrounds it. The lakes are the belt's richest farmland; the home gardens stay
-  plain grass, so every home starts as it did.
+  little), inside the home gardens too, and outside the gardens (12 tiles round a home's middle) a
+  frayed ring of loam about five vertices deep surrounds it. The lakes are the belt's richest
+  farmland. Beyond a lake's beach the gardens stay plain grass, so a lakeside home and an inland one
+  start on comparable ground; a lakeside home's kit takes the wettest ground, which can be beside
+  its loam beach rather than where revision 3 put it.
 - **Themed islands.** Islands out at sea carry one prize each: stone islands are volcanic (a pumice
   beach round grass carrying the stone), fruit and grain islands are lush green.
 
@@ -52,12 +54,12 @@ constants record why each choice was made.
 | Stage | What happens |
 | --- | --- |
 | Belt | Centre line and width are whole-number harmonics of the map length and the coast is lattice noise whose cells tile the torus, so the seam can't be seen. A dry spine beside the centre line and one shared coast budget keep the belt one landmass and the ocean a band whatever `belt-width` and `coast-roughness` ask. |
-| Stamp | Revision 3's terrain: grass, lakes (`lake-density`, kept off the spine and 5 tiles from the ocean), islands (`resource-islands`, 7 tiles of water round each) and the order-independent beach pass (`layBeaches`); then the deep ocean core (`deepCore` at 6 steps, opened, bodies under 12 vertices dropped). Planned from the request alone. |
+| Stamp | Revision 3's terrain: grass, lakes (`lake-density`, kept off the spine and 5 tiles from the ocean), islands (`resource-islands`, 7 tiles of water round each) and the order-independent beach pass (`layBeaches`); then the deep ocean core (ocean 6 tiles or more from land in a straight line, opened, bodies under 12 vertices dropped; straight-line distance keeps its edge following the coast, where eight-neighbour steps drew it in stairs). Planned from the request alone. |
 | Colonies | Revision 3's slot search, unchanged. |
 | Tors | For every colony, every tile within 32 steps' walk on its side of the spine and 10 tiles off the centre line is tried with each of four facings; the stencil (11 by 5 tiles of rock with the face left out of its near rim) and one tile round it must be dry land 3 steps from water off every home's ground, and the face, the rock behind it and the ground before it plain grass. The common walk is the one that keeps the worst colony nearest it and itself nearest 16 (a step of miss costs three of distance); each colony takes its candidate nearest that walk, facing its swarm, furthest inland. All or none. |
 | Road | Doorsteps five tiles outside each colony's ground, furthest from water; waypoints on a line between consecutive colonies keep every leg under a quarter of the ring, so each walk goes forwards. Each leg is the cheapest walk (10 a step, 14 diagonally; 3 more per step nearer than 10 to water; up to 15 more from a noise, so it wanders; 40 more within 8 tiles of a colony's ground), never on water corners, within 4 tiles of a colony's ground or within 2 of a tor. Every road tile's corners are trail. |
 | Spine | Runs along the ring from a random start; across, the rock is 1.8 to 2.8 tiles each side (tapering at a run's ends) of a centre line wandering 3 tiles off the belt's own; none within 8 steps of water, 16 tiles of a home or 3 of the road or a tor; cores kept only where they are two tiles thick, pieces under 10 tiles dropped. |
-| Mechanic sketch | On a copy of the stamp: lake loam rings; mudflat and boulders on ocean beach vertices by the share of ocean in a 6-tile disc round them (bays under 42%, headlands over 56%, each on half of them by a noise), clear of homes, the road and the tors; volcanic islands; a frayed scree apron round the spine 12 or more steps from water; the road; the rock (`rockVertices`). Any group of boulders or spine that parts the walkable ground round it (the quarry faces counted as blocking) is dropped and the sketch painted again. |
+| Mechanic sketch | On a copy of the stamp: lake loam rings; mudflat and boulders on ocean beach vertices by the share of ocean in a 6-tile disc round them (bays under 42%, headlands over 56%, each on half of them by a noise), clear of homes, the road and the tors; volcanic islands; a frayed scree apron round the spine 12 or more steps from water; the road; the rock (`rockVertices`). Any group of boulders or spine that parts the walkable ground round it (the quarry faces counted as blocking) is dropped and the sketch painted again, for up to 24 rounds; a sketch still parting after the last is refused. |
 | Resources | The quarry faces' stone first; then, as in revision 3, every home's kit (never within 3 tiles of a tor), themed island prizes, the ambient scatter, shallows algae, the ground before every face cleared, the starting-crop promise and cramped-start reopening (quarry stone protected); the walk from every swarm to its face opened (a deposit costs four steps); the belt road backstop (`openBeltRoad`, never over a face). |
 | Looks | Painted last with `composeLooks` by climate, so no stage above saw them: grass lush near water and dry far from it by straight-line distance with a wide fray, beach, deep water, two loam looks, mud, headland, rock and road looks, pumice on volcanic islands' beaches. |
 
@@ -119,18 +121,26 @@ all shore); they keep their grass.
 
 ## Limits
 
-- **Calibration.** A four-AI game (`map study ring-world --seed 101`, 256x256, Nicowar, Cortex,
-  Cabino and Maxima, game seed 1, 20,000 ticks, both maps played by the master release binary)
-  harvested 2,499 wheat and 433 wood with 186 worker births and 82 buildings on revision 4, against
-  3,228 wheat, 452 wood, 254 births and 88 buildings on revision 3 (those figures are from 20-tile
-  gardens; the gardens are 12 tiles now). Maxima (team 3) stalls near 20 units on this seed (17, 7
-  and 23 births over game seeds 1 to 3, against 73, 73 and 35 on revision 3) because its building
-  placement treats loam, like water, as ground to keep five or six tiles clear of; the loam rings
-  near its home take its building room. That is an AI defect, being fixed in the AI rather than by
-  keeping loam off the homes (wider gardens restored 47, 33 and 37 births). Over
-  three map seeds (101 to 103) and three game seeds each, revision 4 harvested 6% more wheat (23,981
-  against 22,718) with 6% more births, 12% more buildings and the weakest colony's wheat 63% higher
-  (3,237 against 1,984 summed over the games). Single games vary widely.
+- **Calibration.** Nine four-AI games (`map study ring-world --seed 101`, 102 and 103, 256x256,
+  Nicowar, Cortex, Cabino and Maxima in that order, game seeds 1 to 3, 20,000 ticks, both revisions
+  played by the master release binary) on the current design (12-tile gardens, straight-line deep
+  ocean):
+
+  | Map seed | Wheat (3 / 4) | Wood (3 / 4) | Births (3 / 4) | Buildings (3 / 4) | Weakest colony's wheat (3 / 4) |
+  | --- | --- | --- | --- | --- | --- |
+  | 101 | 9,160 / 7,336 | 1,495 / 1,116 | 690 / 546 | 230 / 216 | 1,052 / 1,157 |
+  | 102 | 5,332 / 8,139 | 937 / 1,285 | 421 / 614 | 164 / 237 | 382 / 1,141 |
+  | 103 | 8,226 / 9,160 | 1,044 / 1,159 | 697 / 708 | 175 / 224 | 550 / 823 |
+  | All | 22,718 / 24,635 | 3,476 / 3,560 | 1,808 / 1,868 | 569 / 677 | 1,984 / 3,121 |
+
+  Revision 4 harvested 8% more wheat and 2% more wood, with 3% more births, 19% more buildings and
+  the weakest colony's wheat 57% higher; seed 101 is weaker than on revision 3, seed 102 much
+  stronger. Per seat over the three games of each map (births): seed 101 209 / 152 / 115 / 70,
+  seed 102 259 / 82 / 145 / 128, seed 103 217 / 246 / 58 / 187. Maxima in seat 3 stays small on seed
+  101 (28, 17 and 25 births): its building placement treats loam, like water, as ground to keep
+  clear, and the loam rings near its home take its building room. That is an AI defect, being fixed
+  in the AI rather than by keeping loam off the homes. Cabino in seat 2 on seed 103 (16, 19 and 23
+  births) was not investigated. Single games vary widely; this is a calibration, not a tournament.
 - **Quarry walk.** The planned walk to every face is equal (16 steps where all colonies' ground
   allows); the walk measured on the finished map, round deposits, is within two steps on the seeds
   checked (the contract allows six). Where some colony's ground has no room near 16 the common walk

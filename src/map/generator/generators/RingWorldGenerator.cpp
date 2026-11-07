@@ -65,8 +65,8 @@ using namespace MapGeneration;
 //   shared helper and check reads, and paints looks over it with composeLooks (Sketch.h) at the very
 //   end, after every resource stage, so looks never change a rule or what a helper saw. The 2.0
 //   features are planned from the stamp and the swarms alone, so validateWorld plans them again.
-// - Deep ocean (`deep-water`): ocean vertices kDeepSteps or more from any land are deep water
-//   (deepCore): swimmable but slower, no algae, still waters the land. The coastal shallows keep the
+// - Deep ocean (`deep-water`): ocean vertices kDeepSteps or more tiles from any land in a straight
+//   line are deep water: swimmable but slower, no algae, still waters the land. The coastal shallows keep the
 //   beaches and the algae band; swimming across the ocean to the other coast or an island is slower.
 // - The rock spine (`rock-spine`): a broken band of rock (Ridges: impassable, towers shoot over it)
 //   along the belt's dry centre line, cut into segments of 16 to 30 tiles with passes of 5 to 8, and
@@ -85,8 +85,10 @@ using namespace MapGeneration;
 // - Coasts: low shores in the bays are mudflat (Rough: slow, unbuildable, holds nothing, and unlike
 //   sand it does not inhibit growth) and the tips of headlands are boulders (Obstacles), never within
 //   kCoastKeep of a home. Every lake's beach is loam (Fertile: buildable crop land that waters its
-//   surroundings), since sand there only held growth back, and outside the home gardens a frayed ring
-//   of loam about kLoamDeep vertices deep surrounds it; the gardens keep plain grass.
+//   surroundings), since sand there only held growth back, inside the home gardens too (a lakeside
+//   home's kit then takes the wettest ground beside that loam); outside the gardens a frayed ring of
+//   loam about kLoamDeep vertices deep surrounds it, and the gardens keep plain grass beyond the beach
+//   so a lakeside home and an inland one start on comparable ground.
 // - Islands themed: a stone island is volcanic (a pumice beach, Rough, round grass carrying its stone);
 //   fruit and grain islands are lush green.
 // - A climate, looks only (`climate`: temperate, steppe, tropical): grass graded by distance from
@@ -130,7 +132,7 @@ constexpr const char *kCoastStream = "ring-world-coast";
 constexpr const char *kLookStream = "ring-world-looks";
 constexpr const char *kClimateStream = "ring-world-climate";
 constexpr const char *kIsleStream = "ring-world-isles";
-// Deep ocean: ocean vertices at least kDeepSteps eight-neighbour steps from land, opened by kDeepOpen
+// Deep ocean: ocean vertices at least kDeepSteps tiles from land in a straight line, opened by kDeepOpen
 // and only in bodies of kDeepLeast vertices or more, so no lone dark vertex reads as a hole.
 constexpr int kDeepSteps = 6, kDeepOpen = 1, kDeepLeast = 12;
 // The spine: rock runs of kSpineRunLeast plus up to kSpineRunExtra tiles along the belt, passes of
@@ -402,7 +404,15 @@ Stamp stampRing(const Axes &axes, GenerationContext &context, const RingWorldOpt
 	}
 	if (options.deepWater)
 	{
-		std::vector<unsigned char> core = deepCore(t, stamp.ocean, kDeepSteps);
+		// Straight-line distance from land: deepCore's eight-neighbour steps drew the edge as the union
+		// of squares round every land vertex, which stepped like stairs along every diagonal coast.
+		std::vector<unsigned char> land(area, 0);
+		for (size_t i = 0; i < area; ++i)
+			land[i] = !stamp.ocean[i];
+		const std::vector<std::int64_t> fromLand = distanceSquaredTo(t, land);
+		std::vector<unsigned char> core(area, 0);
+		for (size_t i = 0; i < area; ++i)
+			core[i] = stamp.ocean[i] && fromLand[i] >= std::int64_t(kDeepSteps) * kDeepSteps;
 		const std::vector<unsigned char> grown = dilateRound(t, erode(t, core, kDeepOpen), kDeepOpen);
 		for (size_t i = 0; i < area; ++i)
 			core[i] = core[i] && grown[i];
@@ -508,6 +518,7 @@ struct Features
 	int roadTiles = 0, segments = 0, spineTiles = 0, tors = 0, dropped = 0, torBand = -1, torMiss = -1;
 	int mud = 0, headlands = 0, loam = 0, scree = 0, ash = 0;
 	bool roadOmitted = false, torsOmitted = false;
+	std::string failure; // set when the features cannot be laid without cutting ground off
 };
 
 // The swarms' corners and the ground each colony's settlement stands on (the 10x10 square round its
@@ -1053,7 +1064,11 @@ Features planFeatures(const Stamp &stamp, const Torus &t, const Axes &axes, cons
 	// walkable ground, with the quarry faces' stone counted as blocking), and paint again.
 	const std::vector<unsigned char> before = walkableTiles(stamp.terrain, t);
 	std::vector<unsigned char> dropBoulders(size_t(n), 0);
-	for (int round = 0; round < 24; ++round)
+	// Each round drops one parting group; a sketch still parting after the last round is refused
+	// rather than written (validateWorld would refuse it anyway).
+	constexpr int kPartingRounds = 24;
+	bool settled = false;
+	for (int round = 0; round < kPartingRounds; ++round)
 	{
 		paintMechanics(f, stamp, t, homes, oceanSteps, fray, gate, dropBoulders);
 		const std::vector<unsigned char> after = walkableTiles(f.mechanics, t);
@@ -1063,7 +1078,10 @@ Features planFeatures(const Stamp &stamp, const Torus &t, const Axes &axes, cons
 		std::vector<int> label;
 		const int parting = partingGroup(t, before, blocked, label);
 		if (parting < 0)
+		{
+			settled = true;
 			break;
+		}
 		++f.dropped;
 		std::vector<unsigned char> group(size_t(n), 0);
 		bool torInGroup = false;
@@ -1087,6 +1105,8 @@ Features planFeatures(const Stamp &stamp, const Torus &t, const Axes &axes, cons
 		}
 		f.spine = dropSmallRegions(t, blocksOfTwo(t, f.spine), kSpineLeast);
 	}
+	if (!settled)
+		f.failure = "Ring world cannot lay its rock and coasts without cutting ground off on this seed.";
 	f.spineTiles = int(std::count(f.spine.begin(), f.spine.end(), 1));
 	{
 		const std::vector<int> parts = connectedRegions(f.spine, t.w, t.h, true, GridNeighbors::Eight);
@@ -1576,6 +1596,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	for (int team = 0; team < teams; ++team)
 		homes.push_back({context.bootX[team], context.bootY[team]});
 	const Features features = planFeatures(stamp, t, axes, homes, options, context);
+	if (!features.failure.empty())
+	{
+		context.detail = features.failure;
+		return false;
+	}
 	writeVertices(map, features.mechanics);
 	const int climateIndex =
 		options.climate > 0 ? std::clamp(options.climate, 1, 3) - 1 : int(context.bounded(kClimateStream, 3));
@@ -1864,6 +1889,8 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	for (int team = 0; team < teams; ++team)
 		homes.push_back({game.teamStart(team).x, game.teamStart(team).y});
 	const Features features = planFeatures(stamp, t, axes, homes, options, replay);
+	if (!features.failure.empty())
+		return features.failure;
 	if (const std::string fault =
 			quarryFault(map, t, features.quarry, features.owner, teams, features.tors > 0 ? kTorFace : 0);
 		!fault.empty())
