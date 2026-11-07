@@ -751,11 +751,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				faces.push_back(i);
 		const int wanted = int(scaledCount(std::int64_t(std::lround(faces.size() / kQuarryPitch)), o.stone));
 		context.shuffle(faces.begin(), faces.end(), "rain-quarries");
+		context.telemetry.measure("rain-shadow.quarries.wanted", wanted);
 		std::vector<int> centres;
 		std::vector<std::vector<int>> ambient;
 		for (int k = 0; k < teams; ++k)
 			centres.push_back(faceOf(k));
-		const int spacing = int(kQuarryPitch / 2);
+		// Faces keep this far apart (Chebyshev, so the two faces of one ridge count too), closer as
+		// stone-amount rises: kQuarryPitch / 3 at the default, never less than a face's own width and a gap.
+		const int spacing = std::max(2 * kAmbientQuarryHalf + 3, int(kQuarryPitch / 3 * 100 / std::max(50, o.stone)));
 		for (int c : faces)
 		{
 			if (L.ambientQuarries >= wanted)
