@@ -259,8 +259,8 @@ A material opts in with a `decor` block:
   other Barriers masses), connected foliage (hedge and thicket), every other
   obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
   masses. Each layer draws only from its own corners, so cliffs show their walls where they
-  meet foliage or crags, and the foliage or rocks keep their own edge on the
-  other side. Eligibility follows rendered material bindings, including custom
+  meet foliage or crags, and the foliage keeps its own edge on the other side.
+  Eligibility follows rendered material bindings, including custom
   materials.
 - An undecorated corner, such as ordinary grass, sand or water, suppresses the
   foliage and obstacle layers in that cell, preserving a clear border against
@@ -269,6 +269,12 @@ A material opts in with a `decor` block:
 - Obstacle clusters stand in the middle of their cell, not on their corners,
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
+- Stone pillars and the Outcrops looks also keep clear of open-ground masses
+  (`"clear_of_masses": 1`, an integer 0..3, obstacles and foliage only): a cell
+  draws no obstacle when a mass vertex lies within that many vertices of its
+  corners, so spires and pillars never crowd a cliff's rim, walls or terraces.
+  0 checks only the cell's own corners. The cells still play as obstacles; only
+  their ornament is dropped, and the mass's own rim usually covers them.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
@@ -366,8 +372,8 @@ of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Cliffs draw in their own decor
-layer, so against hedge, thicket or crags they keep their walls and the
-neighbour keeps its own edge.
+layer, so against hedge, thicket or crags they keep their walls; hedge and
+thicket keep their own edge, while crags keep clear of the rim.
 
 Glacier is the same connected plateau rendered in ice by a second cliff style
 (`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed

@@ -249,6 +249,9 @@ class Compositor
 	std::shared_ptr<const StoneMaps> stoneMaps;
 	std::uint64_t instance = 0; // Distinguishes compositors in shared presentation caches.
     unsigned decorSlot(MaterialId) const;
+	// Whether a connected open-ground mass vertex lies within `reach` vertices
+	// of cell (x,y)'s corners (Decor::clearOfMasses).
+	bool massWithin(const SceneMap &, int x, int y, int reach) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;

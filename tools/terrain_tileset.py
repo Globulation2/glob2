@@ -383,6 +383,10 @@ def _validate(document, root):
                     raise ValueError("connected_tiers must be a boolean")
                 if decor["connected_tiers"] and not decor.get("connected_open"):
                     raise ValueError("connected_tiers needs connected_open")
+            if "clear_of_masses" in decor:
+                integer(decor["clear_of_masses"], 0, 3, "clear_of_masses")
+                if decor.get("connected_open"):
+                    raise ValueError("clear_of_masses is for obstacles and foliage, not masses")
             if "connected_foreign" in decor:
                 frames = decor["connected_foreign"]
                 if (not isinstance(frames, list) or len(frames) != 50 * 16 or

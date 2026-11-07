@@ -589,6 +589,15 @@ unsigned Compositor::decorSlot(MaterialId id) const
 		return 2;
 	return decor.connectedOpen ? 0 : 1;
 }
+bool Compositor::massWithin(const SceneMap &map, int x, int y, int reach) const
+{
+	// The cell's corners span (x,y)..(x+1,y+1); vertexTerrainAt wraps the torus.
+	for (int dy = -reach; dy <= 1 + reach; ++dy)
+		for (int dx = -reach; dx <= 1 + reach; ++dx)
+			if (decorSlot(materialFor(map, map.vertexTerrainAt(x + dx, y + dy))) == 0)
+				return true;
+	return false;
+}
 std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y,
 	const TierField *tiers) const
 {
@@ -661,6 +670,9 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 			continue;
 		const auto chosen = materials[k];
 		const auto &decor = definitions.materials[chosen].decor;
+		// Spires and pillars keep clear of a mass's rim and terraces.
+		if (decor.clearOfMasses >= 0 && massWithin(map, x, y, decor.clearOfMasses))
+			continue;
 		unsigned mask = 0, count = 0;
 		for (unsigned c = 0; c < 4; ++c)
 		{
