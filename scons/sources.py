@@ -754,6 +754,39 @@ def profile_sources(profile):
     return tuple(source for source in CLIENT_SOURCES if source not in excluded)
 
 
+# Module libraries (libglob2_map.a, libglob2_sim.a) and the module test binaries that
+# link them (glob2-map-tests, glob2-sim-tests; test/tests.py). Each group is a filter
+# over CLIENT_SOURCES, so manifest order and every other consumer stay as they are;
+# the game itself still links the loose objects. Dependency direction: sim uses map.
+# Map's remaining references into sim (Game hooks, unit geometry, building routes,
+# Sector combat) are welds the map test binary stubs (test/tests.py MAP_STUBS);
+# `python3 tools/link_graph.py --within map closure map/Map.o --external` lists them.
+#
+# MAP_SOURCES: terrain, cells, resources, fields, gradients, routing, pathfinding and
+# claims, the map file format, and the shared utilities and snapshot views they read.
+# Editor, previews, tools and generators stay out (they build on a Game).
+_MAP_PREFIXES = ('map/', 'field/', 'resource/', 'common/')
+_MAP_EXCLUDED = ('map/editor/', 'map/preview/', 'map/tools/', 'map/generator/')
+# src/map files that belong to the simulation: Sector holds bullets and combat damage;
+# MapTiling and MapSetImport build a Game around a map.
+_SIM_MAP_FILES = ('map/Sector.cpp', 'map/MapTiling.cpp', 'map/MapSetImport.cpp')
+# Map reads and writes snapshot views (WorldSnapshot.h) and owns their storage.
+_MAP_EXTRA = ('engine/sim/snapshot/WorldSnapshot.cpp',)
+MAP_SOURCES = tuple(source for source in CLIENT_SOURCES
+                    if (source.startswith(_MAP_PREFIXES) and not source.startswith(_MAP_EXCLUDED)
+                        and source not in _SIM_MAP_FILES) or source in _MAP_EXTRA)
+# SIM_SOURCES: what a headless Game needs to load, step, save and verify: game rules
+# and orders, units, buildings, teams, the simulation thread and snapshots, replays,
+# map scripts and every AI (Game::load and the AI pipeline reach AIRegistry).
+_SIM_PREFIXES = ('game/', 'unit/', 'building/', 'team/', 'engine/sim/', 'replay/', 'scripting/', 'ai/')
+_SIM_EXCLUDED = ('game/screens/', 'unit/render/', 'building/hud/', 'team/stats/TeamStatChart.cpp',
+                 'scripting/map/ScriptEditorScreen.cpp')
+SIM_SOURCES = tuple(source for source in CLIENT_SOURCES
+                    if ((source.startswith(_SIM_PREFIXES) and not source.startswith(_SIM_EXCLUDED))
+                        or source in _SIM_MAP_FILES) and source not in MAP_SOURCES)
+MODULE_SOURCES = {'map': MAP_SOURCES, 'sim': SIM_SOURCES}
+
+
 # glob2-relay (role=relay): the match relay links only the turn core, the stream
 # classes its codecs use, OpenSSL and the header-only Boost.Beast; no SDL library.
 RELAY_SOURCES = (
