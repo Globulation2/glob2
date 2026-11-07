@@ -441,6 +441,17 @@ def main():
     paths.add_argument("--field")
     commands.add_parser("status")
     commands.add_parser("lanes", help="builds running on this machine and the CPU token pool")
+    trees = commands.add_parser("worktrees", help="every worktree with size, activity and PR state")
+    trees.add_argument("--json", action="store_true")
+    trees.add_argument("--finished", action="store_true", help="only merged or closed, clean, unlocked trees")
+    trees.add_argument("--remove", type=Path, nargs="+", metavar="PATH", help="remove these worktrees")
+    trees.add_argument("--discard", action="store_true", help="also remove trees with uncommitted changes")
+    trees.add_argument("--yes", action="store_true", help="do not ask for confirmation")
+    build_dirs = commands.add_parser("builds", help="build directories of every checkout, largest first")
+    build_dirs.add_argument("--gc", action="store_true", help="delete idle, unlocked build directories")
+    build_dirs.add_argument("--idle", type=float, default=14, help="days without use before --gc deletes (default 14)")
+    build_dirs.add_argument("--dry-run", action="store_true")
+    commands.add_parser("disk", help="where the space goes, largest first")
     sdkmanager = commands.add_parser("sdkmanager")
     sdkmanager.add_argument("arguments", nargs=argparse.REMAINDER)
     prune = commands.add_parser("prune")
@@ -504,6 +515,47 @@ def main():
                            "directory": str(jobserver.directory())},
             "lanes": jobserver.live_lanes(),
         }
+    elif args.command == "worktrees":
+        import dev_disk
+
+        if args.remove:
+            confirm = (lambda prompt: True) if args.yes else (lambda prompt: input(prompt).strip().lower() == "y")
+            for path in args.remove:
+                print(dev_disk.remove_worktree(path, args.discard, confirm))
+            return
+        rows = dev_disk.worktrees()
+        if args.finished:
+            rows = [row for row in rows if dev_disk.finished(row)]
+        if args.json:
+            print(json.dumps(rows, indent=2))
+            return
+        for row in sorted(rows, key=lambda r: -(r["build_bytes"] + r["artifacts_bytes"])):
+            pr = row["pr"]
+            state = (f"#{pr['number']} {pr['state'].lower()}" if pr else "no PR") + (" merged" if row["merged_into_master"] else "")
+            flags = " ".join(flag for flag in ("dirty", "locked", "scratch") if row[flag])
+            idle = f"{row['idle_days']:6.1f} d" if row["idle_days"] is not None else "missing "
+            print(f"{dev_disk.gib(row['build_bytes'] + row['artifacts_bytes'])}  idle {idle}  "
+                  f"{state:22s} {flags:18s} {row['branch'] or '(detached)'}  {row['path']}")
+        finished = [row for row in rows if dev_disk.finished(row)]
+        print(f"{len(finished)} finished worktrees hold {dev_disk.gib(sum(r['build_bytes'] + r['artifacts_bytes'] for r in finished)).strip()}"
+              " of builds and artifacts; remove them with --remove PATH...")
+        return
+    elif args.command == "builds":
+        import dev_disk
+
+        rows = dev_disk.builds(checkouts())
+        if args.gc:
+            result = {"deleted" if not args.dry_run else "would_delete": dev_disk.gc_builds(rows, args.idle, not args.dry_run)}
+        else:
+            result = rows
+    elif args.command == "disk":
+        import dev_disk
+
+        for row in dev_disk.disk(checkouts(), store.home()):
+            print(f"{dev_disk.gib(row['bytes'])}  {row['what']}")
+        usage = shutil.disk_usage(ROOT)
+        print(f"free {dev_disk.gib(usage.free).strip()} of {dev_disk.gib(usage.total).strip()}")
+        return
     elif args.command == "prune":
         result = store.prune(args.dry_run)
     else:

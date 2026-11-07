@@ -1181,7 +1181,9 @@ def export_assets(
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
                               sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
     sys.path.insert(0, str(ROOT / "scons"))
-    from dev_store import Lease
+    from dev_store import Lease, require_free_space
+    if not worker:
+        require_free_space(output, "the runtime asset export")
 
     with Lease(Path(output).resolve(), exclusive=True, track_use=False):
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,

@@ -708,6 +708,8 @@ def main(argv=None):
     args.tier = resolve_tier(args)
 
     build_dir = (args.build_dir or native_build_directory()).resolve()
+    from dev_store import require_free_space
+    require_free_space(args.artifacts, 'the test run')
     kinds = ['engine', 'unit'] if args.binary == 'all' else [args.binary]
     cases = []
     for kind in kinds:
