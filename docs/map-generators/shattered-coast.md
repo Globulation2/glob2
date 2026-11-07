@@ -48,10 +48,10 @@ comments record why. Revision 8's stages run unchanged, then the coast pass:
 | Beaches and starts | `layBeaches`, colonies on the widest grass patches (relaxing the spacing on crowded maps), meadows, beaches again; swarms and workers. |
 | Home deposits | Wheat, wood, stone and a reinforcing crop along compass directions, algae on the water, `smoothResources`; the starting-resource guarantee and buried-start relief. |
 | Expansion clumps | Spaced wheat, wood, stone and algae clumps outside a 32-tile home buffer, chosen by rule group. |
-| Rock | Knots: lenses at least two tiles thick on vacant grass with two tiles of vacant grass round them, at most one per 8,192 tiles, 26 apart; quarry faces on 75% of them at the default stone amount; sea stacks on 60% of the qualifying islands; a parting check drops any knot or stack that cuts ground off. |
+| Rock | Knots: lenses at least two tiles thick on vacant grass with two tiles of vacant grass round them, at most one per 8,192 tiles, 26 apart; quarry faces on 75% of them at the default stone amount (a knot whose face does not fit hands its turn to the next); sea stacks on 60% of the qualifying islands; a parting check drops any knot or stack that cuts ground off. |
 | Deep cores | `deepCore` at four steps, opened, specks under 12 vertices dropped, never at a corner of a tile holding algae. |
-| Mudflats | Beach vertices of bodies of at most 500 water vertices where a noise field passes, outside 28 tiles of every swarm. |
-| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, by climate; quarry stone stocked and checked with `quarryFault`. |
+| Mudflats | Beach vertices of bodies of at most 500 water vertices where a noise field (a stream of its own, so the toggle changes no other look) passes, outside 28 tiles of every swarm. |
+| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, by climate; quarry stone stocked, and generation refuses the map if any face tile is left without its stone. |
 
 ## Controls
 
@@ -76,11 +76,11 @@ against revision 8 on the same seeds (the starts are identical):
 | Variant | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
 | Revision 8 | 1470 | 41.5 (29) | 186.3 (144) |
-| Revision 9, defaults | 1559 | 41.7 (29) | 195.3 (148) |
-| No deep water | 1559 | 41.7 (29) | 195.3 (148) |
+| Revision 9, defaults | 1556 | 41.7 (29) | 195.0 (147) |
+| No deep water | 1556 | 41.7 (29) | 195.0 (147) |
 | No mudflats | 1466 | 41.5 (29) | 185.7 (143) |
-| No outcrops | 1564 | 41.7 (29) | 196.0 (149) |
-| Each climate | 1559 | 41.7 (29) | 195.3 (148) |
+| No outcrops | 1560 | 41.7 (29) | 195.6 (148) |
+| Each climate | 1556 | 41.7 (29) | 195.0 (147) |
 
 Mudflats carry the gain: total food +6%, +5% within 48 steps; within 24 steps food is unchanged, since no mud lies within 28 tiles of a home. Without them
 revision 9 matches revision 8 to within 0.5% (the rock knots and stacks take a few tiles of
@@ -100,7 +100,9 @@ grass). Deep water and the climate change no food at all.
   shores keep their sand.
 - Knots need wide vacant grass away from the homes; crowded or resource-rich maps place fewer than
   wanted (telemetry `shattered-coast.knots.shortfall`). Quarry faces are ambient: no colony is
-  promised one, and the walk to the nearest varies by tens of tiles between colonies.
+  promised one, and the walk to the nearest varies by tens of tiles between colonies (uneven by
+  design). Generation refuses a map with a face tile left without its stone; `validateWorld` does
+  not recheck the faces, since the pass works from revision 8's finished map.
 - One calibration map (seed 101, 4 AIs, three game seeds): total worker births 178 against
   revision 8's 177, every seat within single-game noise. No rotation tournament or human playtest
   has been recorded for revision 9.

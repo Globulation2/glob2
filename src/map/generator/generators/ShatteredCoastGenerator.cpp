@@ -1014,6 +1014,8 @@ constexpr const char *kKnotStream = "shattered-coast-knots";
 constexpr const char *kStackStream = "shattered-coast-stacks";
 constexpr const char *kLookStream = "shattered-coast-looks";
 constexpr const char *kClimateStream = "shattered-coast-climate";
+// The mudflats' noise draws from a stream of its own, so turning them off changes no look.
+constexpr const char *kMudStream = "shattered-coast-mud";
 // Deep water: water vertices at least kDeepSteps eight-connected steps from land, opened by
 // kDeepOpen and kept only in bodies of kDeepLeast vertices or more, so no lone dark vertex reads as
 // a hole. Four steps leave two tiles of pure shallow water along every shore.
@@ -1242,11 +1244,13 @@ Outcrops planOutcrops(const Map &map, const Torus &t, GenerationContext &context
 		placed.push_back({c, kept, side >= 0 ? bx : -bx, side >= 0 ? by : -by});
 	}
 
-	// Quarry faces on the first share of the knots by stone-amount.
+	// Quarry faces on the share of the knots stone-amount sets, in the knots' order: a knot whose face
+	// does not fit (too few rim tiles, or too little rock left behind it) hands its turn to the next.
 	const int faceQuota = int(std::min<std::int64_t>(
 		std::int64_t(placed.size()), scaledCount(int(std::lround(placed.size() * kFaceShare)), o.stone)));
 	std::vector<std::vector<int>> faces(placed.size());
-	for (size_t q = 0; q < placed.size() && int(q) < faceQuota; ++q)
+	int faced = 0;
+	for (size_t q = 0; q < placed.size() && faced < faceQuota; ++q)
 	{
 		const Placed &p = placed[q];
 		std::vector<unsigned char> local(size_t(n), 0);
@@ -1274,7 +1278,10 @@ Outcrops planOutcrops(const Map &map, const Torus &t, GenerationContext &context
 		for (int i : p.tiles)
 			rockLeft += blocks[i];
 		if (int(face.size()) >= kFaceLeast && rockLeft >= 6)
+		{
 			faces[q] = face;
+			++faced;
+		}
 	}
 
 	// Sea stacks: the smallest islands, whole.
@@ -1550,7 +1557,7 @@ bool coastPass(Game &game, GenerationContext &context, const ShatteredCoastOptio
 			if (l >= 0)
 				++size[l];
 		const std::vector<unsigned char> homes = swarmSurroundings(t, context, kMudHome);
-		const std::vector<int> mud = periodicNoise(t.w, t.h, 7, context.stream(kLookStream));
+		const std::vector<int> mud = periodicNoise(t.w, t.h, 7, context.stream(kMudStream));
 		for (int i = 0; i < n; ++i)
 		{
 			generationCheckpoint();
@@ -1589,12 +1596,16 @@ bool coastPass(Game &game, GenerationContext &context, const ShatteredCoastOptio
 			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			++quarryStone;
 		}
-	const std::vector<int> noOwner(size_t(n), -1);
-	if (const std::string fault = quarryFault(map, t, rock.quarry, noOwner, 0, 0); !fault.empty())
-	{
-		context.detail = fault;
-		return false;
-	}
+	// Every face tile must hold its stone: a face is vacant pure grass by construction, so one that cannot
+	// is a defect, refused rather than drawn as a face with nothing in it.
+	for (int i = 0; i < n; ++i)
+		if (rock.quarry[i] && (!map.isResource(t.remainderX(i), i / t.w) ||
+							   map.getResource(t.remainderX(i), i / t.w).type != STONE))
+		{
+			context.detail = "A quarry face at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
+							 ") holds no stone.";
+			return false;
+		}
 
 	context.telemetry.choice("shattered-coast.climate", climate.name);
 	context.telemetry.choice("shattered-coast.deep-water", o.deepWater ? "on" : "off");

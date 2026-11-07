@@ -4424,6 +4424,26 @@ inline void shatteredCoastContracts()
 		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
 	}
 	{
+		// The mudflats draw their noise from a stream of their own: turning them off changes only the
+		// mud vertices (back to beach sand), never a look elsewhere.
+		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		on.options["climate"] = off.options["climate"] = 1;
+		off.options["mudflats"] = 0;
+		Game a(nullptr), b(nullptr);
+		const auto withMud = build(a, on, "mudflats");
+		build(b, off, "no mudflats");
+		int changed = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				if (a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y))
+				{
+					assert(terrainGroup(a.map.vertexTerrainAt(x, y)) == TerrainGroup::Rough &&
+						   terrainGroup(b.map.vertexTerrainAt(x, y)) == TerrainGroup::Sand);
+					++changed;
+				}
+		assert(changed == measure(withMud, "shattered-coast.mudflat.vertices") && changed > 0);
+	}
+	{
 		// Outcrops: knots, stacks and stocked faces with them, no ridges vertex without; faces follow
 		// the stone amount, none at 0; every face tile holds its stone.
 		D on = make(8, 8, 4, 23), off = make(8, 8, 4, 23), bare = make(8, 8, 4, 23), rich = make(8, 8, 4, 23);
