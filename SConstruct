@@ -386,6 +386,8 @@ def main():
     if env['mingw'] or isWindowsPlatform:
         # Windows caps command lines at 32K; pass the link arguments via @response-file
         env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
+        # The module libraries (libglob2_sim.a, libglob2_map.a) archive thousands of objects.
+        env['ARCOM'] = '${TEMPFILE("$AR $ARFLAGS $TARGET $SOURCES", "$ARCOMSTR")}'
 
     if env['mingwcross']:
             env.Platform('cygwin')
