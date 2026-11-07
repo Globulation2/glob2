@@ -32,6 +32,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include "TerrainTypeTable.h"
 
 namespace GeneratorContracts
 {
@@ -2669,6 +2670,187 @@ inline void bastionKeysContracts()
 		 "growth, pools and rampart corruption");
 }
 
+inline void rainShadowContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("rain-shadow"));
+	assert(definition.legacyId == 27 && definition.revision == 7);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("ridges") == 4 && request.option("ridge-thickness") == 3 &&
+		   request.option("climate") == 0 && request.option("lithology") == 0);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	// Generates and validates, reporting what failed.
+	const auto build = [&](Game &g, const D &r, const char *what, bool telemetry = false)
+	{
+		const auto result = service.generate(g, r, telemetry);
+		if (!result)
+			std::fprintf(stderr, "Rain shadow %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
+						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Rain shadow %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	// The envelope: every size and colony count revision 6 accepted at its defaults.
+	for (auto [w, h, teams] : {std::tuple{7, 7, 1}, std::tuple{7, 7, 2}, std::tuple{7, 7, 4}, std::tuple{8, 8, 1},
+							   std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{8, 8, 8}, std::tuple{9, 9, 4},
+							   std::tuple{9, 9, 12}, std::tuple{9, 7, 4}, std::tuple{7, 9, 4}, std::tuple{8, 7, 2},
+							   std::tuple{7, 8, 2}})
+	{
+		Game g(nullptr);
+		build(g, make(w, h, teams, 7), "envelope");
+	}
+	// Every climate and every rock comes up at random, and each can be pinned at every size.
+	std::set<std::string> climates, rocks;
+	for (std::uint32_t seed = 1; seed <= 16; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		assert(result);
+		climates.insert(choice(result, "rain-shadow.climate"));
+		rocks.insert(choice(result, "rain-shadow.lithology"));
+	}
+	assert(climates.size() == 3 && rocks.size() == 3);
+	const char *climateNames[] = {"temperate", "steppe", "desert"}, *rockNames[] = {"granite", "sandstone", "volcanic"};
+	for (int look = 1; look <= 3; ++look)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
+		{
+			D pinned = make(dimension, dimension, teams, 11);
+			pinned.options["climate"] = look;
+			pinned.options["lithology"] = 4 - look;
+			Game g(nullptr);
+			const auto result = build(g, pinned, "pinned look", true);
+			assert(choice(result, "rain-shadow.climate") == climateNames[look - 1]);
+			assert(choice(result, "rain-shadow.lithology") == rockNames[3 - look]);
+			// Every home holds the same quarry, never below the floor.
+			assert(measure(result, "rain-shadow.quarries.home-stone") >= 8);
+		}
+	{
+		// The looks are only looks: a temperate granite map and a desert volcanic one have the same
+		// rules on every tile and the same deposits.
+		D temperate = make(8, 8, 4, 23), desert = make(8, 8, 4, 23);
+		temperate.options["climate"] = 1;
+		temperate.options["lithology"] = 1;
+		desert.options["climate"] = 3;
+		desert.options["lithology"] = 3;
+		Game a(nullptr), b(nullptr);
+		build(a, temperate, "temperate");
+		build(b, desert, "desert");
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				const auto &p = a.map.terrainPropertiesAt(x, y), &q = b.map.terrainPropertiesAt(x, y);
+				assert(p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
+					   p.resourcesGrow == q.resourcesGrow && p.inhibitionQ8 == q.inhibitionQ8 &&
+					   p.fertilityQ8 == q.fertilityQ8 && p.projectileBlocks == q.projectileBlocks);
+				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
+			}
+		assert(differentLooks > 1000);
+	}
+	// Thin, thick, straight and steep ridges stay sealed outside their passes (validateWorld floods
+	// across every ridge with the passes shut), and passes close rather than cut a home's quarry.
+	// (Slant 3 on a 256 map leaves room for three ridges, as revision 6 also required.)
+	for (auto [thickness, slant, spacing, dimension, teams, seed, ridges] :
+		 {std::tuple{2, 1, 48, 8, 4, 3u, 4}, std::tuple{2, 3, 48, 9, 4, 5u, 4}, std::tuple{2, 0, 24, 9, 8, 9u, 4},
+		  std::tuple{6, 2, 96, 8, 4, 13u, 4}, std::tuple{3, 3, 24, 8, 6, 17u, 3}, std::tuple{4, 0, 32, 7, 2, 19u, 4}})
+	{
+		D r = make(dimension, dimension, teams, seed);
+		r.options["ridges"] = ridges;
+		r.options["ridge-thickness"] = thickness;
+		r.options["slant"] = slant;
+		r.options["pass-spacing"] = spacing;
+		Game g(nullptr);
+		build(g, r, "ridge variant");
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		// No ambient stone: every stone on the map is a home's quarry, which stays (an unscaled kit),
+		// and taking one away is refused; so is taking away a piece of ridge.
+		Game zero(nullptr);
+		const auto result = build(zero, r, "no resources", true);
+		assert(measure(result, "rain-shadow.quarries.ambient") == 0);
+		GenerationContext check(r);
+		Game damaged(nullptr);
+		assert(service.generate(damaged, r));
+		bool removed = false;
+		for (int i = 0; i < 256 * 256 && !removed; ++i)
+			if (damaged.map.isResource(i % 256, i / 256) && damaged.map.getResource(i % 256, i / 256).type == STONE)
+			{
+				damaged.map.replaceResource(i % 256, i / 256, Resource{});
+				removed = true;
+			}
+		assert(removed && !definition.validateWorld(damaged, check).empty());
+		Game breached(nullptr);
+		assert(service.generate(breached, r));
+		bool opened = false;
+		for (int i = 0; i < 256 * 256 && !opened; ++i)
+			if (terrainGroup(breached.map.vertexTerrainAt(i % 256, i / 256)) == TerrainGroup::Ridges)
+			{
+				breached.map.setVertexTerrain(i % 256, i / 256, GRASS);
+				opened = true;
+			}
+		assert(opened && !definition.validateWorld(breached, check).empty());
+	}
+	{
+		// Ambient quarry faces follow stone-amount.
+		D few = make(8, 8, 4, 41), many = make(8, 8, 4, 41);
+		many.options["stone-amount"] = 300;
+		Game a(nullptr), b(nullptr);
+		const int normal = measure(build(a, few, "default stone", true), "rain-shadow.quarries.ambient");
+		const int more = measure(build(b, many, "abundant stone", true), "rain-shadow.quarries.ambient");
+		assert(normal > 4 && more > normal);
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	build(abundant, r, "abundant resources");
+	GenerationContext context(r);
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the streams' fields grow, but every pass floor is sand
+	// and stays open, every quarry keeps its stone and every colony can still walk to every other.
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Rain shadow growth: %s\n", growthError.c_str());
+	assert(growthError.empty());
+	puts("PASS Rain shadow: envelope, climates and rocks pinned and random, looks keep the rules, sealed "
+		 "thin and steep ridges, home quarries equal, damage refused, ambient quarries scale, growth "
+		 "keeps the passes and quarries");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -2702,5 +2884,6 @@ inline void generatorContracts()
 	run("bajada", bajadaContracts);
 	run("braided-river", braidedRiverContracts);
 	run("caravanserai", caravanseraiContracts);
+	run("rain-shadow", rainShadowContracts);
 }
 } // namespace GeneratorContracts
