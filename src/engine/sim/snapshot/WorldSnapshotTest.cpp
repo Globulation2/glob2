@@ -25,6 +25,35 @@ constexpr SimulationSnapshot::CaptureOptions allOptions{
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("boundary serials identify a capture and never repeat after a store reset")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .clearImmobile=true, .loadDefaultRace=true}};
+        SimulationSnapshot::Store store;
+        const auto first = store.captureBoundary(fixture.game, {.presentation=true});
+        REQUIRE(first.boundarySerial != 0);
+        // A reused boundary and its projections keep the serial.
+        CHECK(store.captureBoundary(fixture.game, {.presentation=true}).boundarySerial == first.boundarySerial);
+        CHECK(store.captureBoundary(fixture.game).boundarySerial == first.boundarySerial);
+        CHECK(first.presentationView({.presentation=true}).boundarySerial == first.boundarySerial);
+        CHECK(first.simulationView().boundarySerial == first.boundarySerial);
+        // An owner edit and a tracked map change each capture a new boundary.
+        store.invalidateBoundary();
+        const auto edited = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(edited.boundarySerial > first.boundarySerial);
+        fixture.game.map.markTerrain(0);
+        const auto painted = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(painted.boundarySerial > edited.boundarySerial);
+        // A reset returns the revisions to their start; the serial still moves on.
+        store.reset();
+        const auto restarted = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(restarted.observationRevision == first.observationRevision);
+        CHECK(restarted.boundarySerial > painted.boundarySerial);
+        // Separate stores never share a serial.
+        SimulationSnapshot::Store other;
+        CHECK(other.captureBoundary(fixture.game, {.presentation=true}).boundarySerial > restarted.boundarySerial);
+    }
+
     TEST_CASE("material source coordinates stay immutable with their captured publication")
     {
         using Frozen = const gradient_kernel::OwnedDestinations&;

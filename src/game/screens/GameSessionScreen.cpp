@@ -320,7 +320,7 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 	// Keep client/network updates responsive between capped drawing frames.
     // Unlimited removes the drawing wait; no fixed 120 FPS ceiling remains.
     if (engine->simulationThreaded())
-        return std::min(Uint32(8), globalContainer->gfx->renderFrameWait());
+        return GAGCore::pacedScreenWait(globalContainer->gfx->renderFrameWait());
 	return engine->sessionPollDelay(clock + static_cast<Uint32>(now - lastTick));
 }
 

@@ -12,6 +12,7 @@
 #include "UnitConsts.h"
 #include <FileManager.h>
 #include <RenderFramePacer.h>
+#include <SDLGraphicContext.h>
 #include <ScreenStack.h>
 #include <Toolkit.h>
 #include <filesystem>
@@ -108,23 +109,35 @@ void removeMap(const std::string &file)
 
 TEST_SUITE("EditorFlows")
 {
-	TEST_CASE("the editor follows the render pacer like a running game")
+	TEST_CASE("the editor waits like a running game and does not spin while idle [display]")
 	{
-		constexpr std::uint64_t ms = 1000000;
-		GAGCore::RenderFramePacer pacer;
-		pacer.configure(60);
-		REQUIRE(pacer.begin(1000 * ms));
-		// Early in a fast frame: input still wakes the editor within 8 ms.
-		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1001 * ms)) == 8);
-		// Close to the next frame: wake exactly when it is due.
-		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1012 * ms)) == 5);
-		// A frame slower than 1/60 s is followed at once. The former fixed
-		// 33 ms budget waited another 13 ms here, halving the rate to 30 FPS.
-		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1020 * ms)) == 0);
-		// Unlimited never waits for a frame, as in game; it used to wait 33 ms.
-		pacer.configure(0);
-		REQUIRE(pacer.begin(1020 * ms));
-		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1020 * ms)) == 0);
+		glob2test::HeadlessGlobals globals(displayOptions());
+		auto *gfx = globals->gfx;
+		GAGGUI::ScreenStack screens(*gfx);
+		auto owned = blankEditor();
+		MapEdit &editor = *owned;
+		screens.push(std::make_unique<MapEditorScreen>(screens, std::move(owned)));
+		// Unlimited: an idle editor waits for input instead of redrawing at once.
+		gfx->setTargetRenderFps(0);
+		Uint32 tick = 0;
+		for (int frame = 0; frame < 3; ++frame)
+			screens.frame(tick += 8, {});
+		const auto prepared = editor.scenePreparations();
+		screens.frame(tick += 8, {});
+		REQUIRE(editor.scenePreparations() == prepared);
+		CHECK(screens.delay(tick, 33) == GAGCore::InputWakeMilliseconds);
+		// Input makes the next frame follow at once, as in game.
+		SDL_Event motion{};
+		motion.type = SDL_EVENT_MOUSE_MOTION;
+		motion.motion.x = motion.motion.xrel = 300;
+		motion.motion.y = motion.motion.yrel = 300;
+		screens.frame(tick += 8, {motion});
+		CHECK(screens.delay(tick, 33) == 0);
+		// A capped target never waits longer than the input wake, never 33 ms.
+		gfx->setTargetRenderFps(60);
+		screens.frame(tick += 8, {});
+		CHECK(screens.delay(tick, 33) <= GAGCore::InputWakeMilliseconds);
+		gfx->setTargetRenderFps(globalContainer->settings.targetRenderFps);
 	}
 
 	TEST_CASE("the editor keeps its scene until the world or the request changes [display]")
@@ -135,33 +148,58 @@ TEST_SUITE("EditorFlows")
 		const auto draw = [&]
 		{
 			editor.drawMap(0, 0, globals->gfx->getW(), globals->gfx->getH());
+			globals->gfx->nextFrame();
 			return editor.scenePreparations();
 		};
-		const auto first = draw();
-		REQUIRE(first >= 1);
+		auto expected = draw();
+		REQUIRE(expected >= 1);
 		const auto *scene = editor.view.scene;
 		REQUIRE(scene == &editor.view.render.ownScene);
+		// Each change rebuilds the scene once, then it is kept again.
+		const auto rebuildsOnce = [&](const char *change)
+		{
+			INFO(change);
+			CHECK(draw() == ++expected);
+			CHECK(draw() == expected);
+			CHECK(editor.view.scene == scene);
+		};
 		// Idle frames redraw the scene they already have.
-		CHECK(draw() == first);
-		CHECK(draw() == first);
-		CHECK(editor.view.scene == scene);
-		// A tracked map edit (painting) rebuilds it once, then it is kept again.
+		CHECK(draw() == expected);
+		CHECK(draw() == expected);
+		// Panning moves no input of the scene.
+		editor.viewportX = 7;
+		editor.viewportY = 3;
+		CHECK(draw() == expected);
+		// Tracked map edits (painting) and owner edits (placing a unit).
 		editor.game.map.markTerrain(0);
-		CHECK(draw() == first + 1);
-		CHECK(draw() == first + 1);
-		// An owner edit (placing a unit) rebuilds it, and the unit is in it.
+		rebuildsOnce("terrain");
 		auto *worker = editor.game.addUnit(20, 20, 0, WORKER, 0, 0, 0, 0);
 		REQUIRE(worker);
-		CHECK(draw() == first + 2);
+		rebuildsOnce("unit");
 		CHECK(editor.view.scene->entities.unit(worker->gid));
-		CHECK(draw() == first + 2);
-		// A request change without a world change (selection) rebuilds it too.
+		// Request changes without a world change.
 		editor.view.selectedUnit = worker;
-		CHECK(draw() == first + 3);
-		CHECK(draw() == first + 3);
+		rebuildsOnce("selection");
+		editor.isFertilityOn = true;
+		rebuildsOnce("fertility overlay");
+		editor.isFertilityOn = false;
+		rebuildsOnce("overlay off");
+		REQUIRE(editor.zoomMap(1, 300, 300));
+		rebuildsOnce("zoom");
+		// Adding teams rebuilds the game header, which resets the snapshot store.
+		// Its revisions start again from the same values; the scene must not stay.
+		for (int added = 0; added < 2; ++added)
+		{
+			editor.performAction("add team");
+			draw();
+			CHECK(editor.view.scene->entities.teamCount == editor.game.teamsCount());
+		}
+		expected = draw();
+		editor.team = editor.team == 0 ? 1 : 0;
+		rebuildsOnce("active team");
 		// Standalone tools still get the current scene from preparePresentation.
 		editor.preparePresentation();
-		CHECK(editor.scenePreparations() == first + 3);
+		CHECK(editor.scenePreparations() == expected);
 		CHECK(editor.view.scene == scene);
 	}
 

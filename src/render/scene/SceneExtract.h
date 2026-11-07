@@ -6,7 +6,6 @@
 #include "sim/EntityRef.h"
 #include "sim/snapshot/Requirements.h"
 
-#include <array>
 #include <memory>
 #include <unordered_map>
 
@@ -14,21 +13,6 @@ namespace SimulationSnapshot { struct Handle; }
 struct SceneInputs;
 
 class OverlayArea;
-
-//! The inputs one prepared scene was built from: the world boundary and the
-//! request. Equal keys prepare the same scene, so a client drawing an unchanged
-//! world can keep its last scene. The key moves with game time, an owner edit
-//! (observation revision), configuration or any tracked map array, the same
-//! conditions under which SimulationSnapshot::Store captures a new boundary.
-struct SceneSourceKey
-{
-    SceneRequest request;
-    Uint32 tick = 0;
-    Uint64 worldIdentity = 0, observationRevision = 0, configurationRevision = 0;
-    std::array<Uint64, 5> mapGenerations{};
-    static SceneSourceKey of(const SimulationSnapshot::Handle& world, const SceneRequest& request);
-    bool operator==(const SceneSourceKey&) const = default;
-};
 
 //! Prepares derived presentation data from immutable world and view inputs.
 //! Retains derived caches between frames; never reads the live simulation.

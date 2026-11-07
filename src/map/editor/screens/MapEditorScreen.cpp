@@ -43,6 +43,7 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 	if (!isExecutionRunning())
 		return;
 	lastFrame = tick;
+	hadInput = !input.events().empty();
 	if (!started)
 	{
 		editor->beginEditing();
@@ -112,23 +113,16 @@ void MapEditorScreen::handleExecutionEvent(SDL_Event event)
 }
 void MapEditorScreen::drawExecution()
 {
-	if (started && isExecutionRunning())
-		editor->drawEditing();
-}
-Uint32 MapEditorScreen::nativeFrameDelay(Uint32 renderWait)
-{
-	// Like a running game: wake when the render pacer's next frame is due,
-	// and at least every 8 ms so input stays responsive. A frame slower than
-	// the target period is followed at once, never by a fixed 33 ms budget.
-	return std::min<Uint32>(8, renderWait);
+	if (!started || !isExecutionRunning())
+		return;
+	const auto preparations = editor->scenePreparations();
+	editor->drawEditing();
+	idle = !hadInput && !editor->touchAnimating() && editor->scenePreparations() == preparations;
 }
 Uint32 MapEditorScreen::executionDelay(Uint32 now, Uint32)
 {
-#ifndef __EMSCRIPTEN__
-	if (editor)
-		return nativeFrameDelay(editor->renderFrameWait());
-#endif
-	// Browser painting follows animation frames; this paces updates only.
+	// Browser update cadence; painting follows animation frames there. Native
+	// stacks ignore it because the editor follows the render pacer.
 	const Uint32 elapsed = now - lastFrame;
 	// Touch content coasting or bouncing frames at 16 ms so it stays smooth.
 	const Uint32 budget = editor && editor->touchAnimating() ? 16 : 33;

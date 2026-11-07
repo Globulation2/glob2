@@ -99,6 +99,13 @@ namespace GAGGUI
 		virtual bool interceptsQuit() const { return false; }
 		virtual void drawExecution();
 		virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
+		//! True for a screen that draws every frame the render pacer admits. Native
+		//! screen stacks then wait GAGCore::pacedScreenWait() after its frames
+		//! instead of executionDelay(); browser hosts keep executionDelay().
+		virtual bool followsRenderPacer() const { return false; }
+		//! For such a screen: its last frame had no input and nothing new to show,
+		//! so without a frame target it need not be redrawn in a tight loop.
+		virtual bool executionIdle() const { return false; }
 		//! How the host's wait after this frame counts in performance telemetry:
 		//! untimed (menus), pacing sleep, or waiting for the network.
 		enum class ExecutionWait { Untimed, Pacing, Network };

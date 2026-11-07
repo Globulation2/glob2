@@ -49,8 +49,7 @@ class MapEdit;
 class PhoneEditor;
 class EditorDock;
 struct InspectorModel;
-class SceneExtractor;
-struct SceneSourceKey;
+struct EditorSceneCache;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -1019,18 +1018,12 @@ private:
 	void drawTerrainBrushPreview();
 public:
     // Explicit owner observation for editor drawing and standalone editor tools.
-    // Keeps the last scene while the world and the request are unchanged.
+    // Keeps the current scene while the world and the request are unchanged.
     void preparePresentation();
-    //! How many times preparePresentation actually rebuilt the scene.
-    Uint64 scenePreparations() const { return scenePreparationCount; }
-    //! Milliseconds until the render pacer admits the next frame (0 when due or uncapped).
-    Uint32 renderFrameWait() const;
+    //! Scenes prepared so far; a frame that kept its scene does not count.
+    Uint64 scenePreparations() const;
 private:
-    // One extractor for the editor's life keeps its overlay and connection
-    // caches; the key records what the current scene was built from.
-    std::unique_ptr<SceneExtractor> sceneExtractor;
-    std::unique_ptr<SceneSourceKey> preparedSource;
-    Uint64 scenePreparationCount = 0;
+    std::unique_ptr<EditorSceneCache> sceneCache; // see EditorSceneCache.h
 	void drawStatus();
 	// --- end WS-B brush painting ---
 	///Handles a click or drag of the mouse when removing objects
