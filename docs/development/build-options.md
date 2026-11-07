@@ -346,9 +346,10 @@ compilations run from different working directories), and four objects differ
 in data: three embed `BuildPaths.h`'s absolute build-directory paths, and
 `TextSort.cpp`'s `assert` text names `third_party/natsort/strnatcmp.c` where
 SCons, finding it through `-I.`, has `./third_party/...`. In the ordinary
-(non-parity) CMake build, the `__FILE__` difference above also shows in
-doctest's JUnit `classname` (`../../../libs/...`); test names and results are
-unaffected.
+(non-parity) CMake build, the `__FILE__` difference above also reaches
+doctest's case file names (`../../../src/...`); `test/run_tests.py` maps them
+back to repository paths (`source_name`), so the module case contract, JUnit
+class names and results match the SCons build.
 
 The `build-system equivalence` workflow
 (`.github/workflows/build-system-equivalence.yml`) runs that comparison with
