@@ -384,8 +384,12 @@ def main():
     if env['mingw'] or env['mingwcross']:
         Tool('mingw')(env)
     if env['mingw'] or isWindowsPlatform:
-        # Windows caps command lines at 32K; pass the link arguments via @response-file
+        # Windows caps command lines at 32K; pass the link arguments, and on
+        # MinGW the module library archive arguments, via @response-file
         env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
+        if env['mingw']:
+            # MSVC's lib tool already uses a response file.
+            env['ARCOM'] = '${TEMPFILE("$AR $ARFLAGS $TARGET $SOURCES", "$ARCOMSTR")}'
 
     if env['mingwcross']:
             env.Platform('cygwin')
