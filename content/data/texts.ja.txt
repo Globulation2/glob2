@@ -1964,6 +1964,10 @@ Globulation 2のカーソルを表示します。
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 開始地点の谷の果物
 [Moat]

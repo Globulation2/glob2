@@ -1932,6 +1932,10 @@ Globulation 2 کا کرسر دکھائیں۔
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 آبائی وادیوں میں پھل
 [Moat]

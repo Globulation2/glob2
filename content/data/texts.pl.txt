@@ -1964,6 +1964,10 @@ Meandrujące rzeki
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Owoce w dolinach startowych
 [Moat]

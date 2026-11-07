@@ -1964,6 +1964,10 @@ Meandrande floder
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Frukt i startdalarna
 [Moat]

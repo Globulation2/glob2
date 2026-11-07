@@ -1932,6 +1932,10 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 ఇంటి లోయలలో పండ్లు
 [Moat]

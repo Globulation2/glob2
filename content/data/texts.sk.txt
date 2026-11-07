@@ -1964,6 +1964,10 @@ Meandrujúce rieky
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Ovocie v domovských údoliach
 [Moat]

@@ -1964,6 +1964,10 @@ Menderesli nehirler
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Başlangıç vadilerinde meyve
 [Moat]

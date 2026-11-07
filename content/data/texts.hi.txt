@@ -1932,6 +1932,10 @@ Globulation 2 का कर्सर दिखाएँ।
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 शुरुआती घाटियों में फल
 [Moat]

@@ -1964,6 +1964,10 @@ Meandrantaj riveroj
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruktoj en hejmvaloj
 [Moat]

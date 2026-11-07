@@ -1964,6 +1964,10 @@ Rivières à méandres
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruits dans les vallées de départ
 [Moat]

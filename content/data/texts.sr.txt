@@ -1964,6 +1964,10 @@ OpenGL није доступан у овој верзији.
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Воће у почетним долинама
 [Moat]

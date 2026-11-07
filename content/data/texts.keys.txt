@@ -965,6 +965,8 @@
 [Meandering rivers]
 [Deep channels]
 [Divide outcrops]
+[Deep water]
+[Rock outcrops]
 [Fruit in home valleys]
 [Moat]
 [Stone in the orchard]

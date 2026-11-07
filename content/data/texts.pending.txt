@@ -95,3 +95,5 @@
 [Deep ocean]
 [Rock spine]
 [Ring road]
+[Deep water]
+[Rock outcrops]

@@ -1964,6 +1964,10 @@ Cortex
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Φρούτα στις αρχικές κοιλάδες
 [Moat]

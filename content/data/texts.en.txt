@@ -1932,6 +1932,10 @@ Meandering rivers
 Deep channels
 [Divide outcrops]
 Divide outcrops
+[Deep water]
+Deep water
+[Rock outcrops]
+Rock outcrops
 [Fruit in home valleys]
 Fruit in home valleys
 [Moat]

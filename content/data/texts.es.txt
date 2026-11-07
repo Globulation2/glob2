@@ -1964,6 +1964,10 @@ Ríos serpenteantes
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruta en los valles iniciales
 [Moat]

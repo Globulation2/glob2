@@ -1932,6 +1932,10 @@ Globulation 2-এর কার্সার দেখান।
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 নিজ উপত্যকায় ফল
 [Moat]

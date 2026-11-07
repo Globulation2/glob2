@@ -1932,6 +1932,10 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 ผลไม้​ใน​หุบเขา​บ้านเกิด
 [Moat]

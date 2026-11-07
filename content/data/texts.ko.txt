@@ -1964,6 +1964,10 @@ Globulation 2 커서를 표시합니다.
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 시작 골짜기의 과일
 [Moat]

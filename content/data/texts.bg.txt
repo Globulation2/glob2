@@ -1932,6 +1932,10 @@ OpenGL не е наличен в тази компилация.
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Плодове в домашните долини
 [Moat]

@@ -1964,6 +1964,10 @@ AI 策略與對抗
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 起始山谷中的水果
 [Moat]

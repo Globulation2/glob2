@@ -1964,6 +1964,10 @@ OpenGL недоступний у цій збірці.
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Фрукти в стартових долинах
 [Moat]

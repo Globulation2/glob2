@@ -1964,6 +1964,10 @@ Bugtede floder
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Frugt i startdalene
 [Moat]

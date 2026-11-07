@@ -1964,6 +1964,10 @@ OpenGL غير متوفر في هذا الإصدار.
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 الفاكهة في وديان البداية
 [Moat]

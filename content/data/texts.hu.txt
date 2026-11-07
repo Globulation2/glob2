@@ -1964,6 +1964,10 @@ Kanyargó folyók
 
 [Divide outcrops]
 
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Gyümölcs a kezdővölgyekben
 [Moat]
