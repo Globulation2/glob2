@@ -69,4 +69,18 @@ It also caps `globalContainer` references in non-test simulation code per direct
 (`test/global_container_budget.json`): simulation code reads the game's own
 registries, so that tests can build a game without the application globals.
 `python3 tools/include_graph.py top|fanin|why` reports which translation units a
-header reaches and through which includers.
+header reaches and through which includers. `include_graph.py cost --days 60
+--attribute 5` ranks headers by what their edits actually cost: edits in the
+window times today's fan-in, with the includers that bring the costliest headers
+to the most translation units. Raw fan-in treats a header nobody edits like one
+edited daily, so start decoupling work from the cost ranking.
+
+Decoupling must not slow the simulation. Keep hot accessors (per-cell map reads,
+`MapStateView.h` queries, entity reference factories, the constexpr terrain cost
+tables) inline; a body may move to another header, never out of line. For a
+change to how simulation headers or their owners are held, build `perf=1 opt=3`
+and run `python3 tools/inline_guard.py --baseline master build/linux/client/perf/o3`.
+It lists hot-directory objects that gained calls into core simulation classes
+(an accessor that stopped being inlined), and exits non-zero if any did. Add a
+`tools/perf_ab.py` table at the perf-confirm tier (see
+[comparing against master](build-options.md#comparing-against-master)).

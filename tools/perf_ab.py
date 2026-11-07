@@ -64,8 +64,8 @@ def resolve_baseline(spec: str, candidate: Path) -> Path:
     if spec != 'master':
         return Path(spec).resolve()
     variant = 'perf' if identity(candidate).get('mode') == 'perf' else 'dev'
-    if identity(candidate).get('opt') == 3:
-        raise SystemExit('baselines are built at perf=1 opt=2; build the opt=3 baseline in a worktree for confirmation')
+    if variant == 'perf' and identity(candidate).get('opt') == 3:
+        variant = 'perf-o3'  # python3 tools/dev_baseline.py build --variants perf-o3
     result = subprocess.run([sys.executable, str(ROOT / 'tools/dev_baseline.py'), 'path', '--merge-base', 'HEAD',
                              '--variant', variant], capture_output=True, text=True)
     if result.returncode != 0:
