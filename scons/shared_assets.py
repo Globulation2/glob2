@@ -32,8 +32,14 @@ def _git(root: Path, *args: str) -> bytes:
 
 def content_key(root, paths, extra) -> str:
     """A key for the content of `paths` (files under root) and the `extra` options."""
-    root = Path(root).resolve()
-    relative = sorted({str(Path(path).resolve().relative_to(root)) for path in paths})
+    root = Path(os.path.abspath(root))
+    relative, outside = set(), set()
+    for path in paths:
+        absolute = Path(os.path.abspath(path))  # keep symlinked inputs inside the checkout
+        try:
+            relative.add(absolute.relative_to(root).as_posix())
+        except ValueError:
+            outside.add(absolute)
     digest = hashlib.sha256(json.dumps(extra, sort_keys=True).encode())
     try:
         staged = {}
@@ -44,7 +50,9 @@ def content_key(root, paths, extra) -> str:
         modified = {name.decode() for name in _git(root, 'diff-files', '--name-only', '-z').split(b'\0') if name}
     except (OSError, subprocess.CalledProcessError):
         staged, modified = {}, set()
-    for name in relative:
+    for path in sorted(outside):
+        digest.update(f'{path}\0sha256 {hashlib.sha256(path.read_bytes()).hexdigest()}\0'.encode())
+    for name in sorted(relative):
         if name in staged and name not in modified:
             identity = 'blob ' + staged[name]
         else:
