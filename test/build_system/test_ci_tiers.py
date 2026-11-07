@@ -1,6 +1,5 @@
 import importlib.util
 import io
-import math
 import json
 import os
 from pathlib import Path
@@ -52,19 +51,11 @@ class TierTest(unittest.TestCase):
                 self.assertTrue(self.profile([path,'SConstruct'])['compatibility'])
                 self.assertTrue(self.profile([path,'SConstruct'])['android'])
     def selection(self, paths, event='pull_request', draft=False):
-        # A known passing observation for every current check isolates policy
-        # integration from missing-history expansion or a network dependency.
-        history = {'schema': 1, 'updated_at': 100, 'records': [
-            dict(name=check['name'], branch='master', event='push', sha='a'*40,
-                 run_id=i+1, attempt=1, created_at=1, end=2, seconds=1,
-                 failed=0, paths=['src/map/Map.cpp'])
-            for i, check in enumerate(inventory.inventory())]}
         with tempfile.TemporaryDirectory() as directory:
             old_cwd=Path.cwd()
             try:
                 os.chdir(directory)
                 with patch.object(selector,'changed_paths',return_value=paths), \
-                     patch.object(selector,'_prediction_inputs',return_value=(history,None,[])), \
                      patch.object(guard,'activated',return_value=False), \
                      patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
                      patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'DRAFT':str(draft).lower(),
@@ -87,36 +78,35 @@ class TierTest(unittest.TestCase):
                 self.assertTrue(observed['selection']['native'])
                 self.assertTrue(observed['selection']['android'])
                 self.assertTrue(observed['full_matrix'])
-                self.assertFalse(observed['tiers_enabled'])
                 self.assertEqual(outputs['verification_mode'],'full')
                 self.assertEqual(set(observed['execution_plan']['executed_ids']),
                                  {check['id'] for check in inventory.inventory()})
 
-    def test_default_pull_requests_execute_predictive_budget_in_draft_and_ready(self):
+    def test_pull_request_events_select_affected_checks_in_draft_and_ready(self):
         for draft in (True,False):
             with self.subTest(draft=draft):
                 observed,outputs,summary=self.selection(['src/map/Map.cpp'],draft=draft)
-                plan=observed['execution_plan'];predictor=plan['predictor']
+                plan=observed['execution_plan']
                 self.assertEqual(observed['draft'],draft)
-                self.assertEqual(outputs['verification_mode'],'predictive')
-                self.assertTrue(observed['predictive_enabled'])
-                self.assertFalse(observed['tiers_enabled'])
+                self.assertEqual(outputs['verification_mode'],'affected')
                 self.assertFalse(observed['full_matrix'])
-                candidates=[check for check in inventory.inventory() if not check.get('full_only')]
-                self.assertEqual(predictor['selected_count'],math.ceil(.12*len(candidates)))
-                self.assertEqual(len(plan['ranked_ids']),predictor['selected_count'])
                 self.assertEqual(plan['executed_ids'],inventory.dependency_closure(plan['ranked_ids']))
-                self.assertEqual(predictor['unknown_ids'],[])
                 for job,on in plan['jobs'].items():
                     self.assertEqual(outputs['run_'+job.replace('-','_')],str(on).lower())
-                self.assertIn('Ranked budget: 12%',summary)
-        # Pushes retain the entire development inventory regardless of a draft
-        # PR's policy or the learned ranking.
+                self.assertIn(f"{plan['executed_count']} of {plan['inventory_count']} checks execute",summary)
+                self.assertNotIn('Ranked budget',summary)
+        # Pushes retain the entire development inventory.
         master,_,_=self.selection(['src/map/Map.cpp'],event='push',draft=True)
         self.assertTrue(master['full_matrix'])
         workflow=(ROOT/'.github/workflows/build.yml').read_text()
-        self.assertIn('types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]',workflow)
+        # Pull requests reach the full matrix only through the ci:full caller.
+        self.assertNotIn('\n  pull_request:',workflow.split('\nconcurrency:',1)[0])
         self.assertIn('DRAFT: ${{ github.event.pull_request.draft }}',workflow)
+        caller=(ROOT/'.github/workflows/ci-full-label.yml').read_text()
+        self.assertIn('types: [labeled, synchronize, reopened, ready_for_review]',caller)
+        self.assertIn("uses: ./.github/workflows/build.yml",caller)
+        self.assertIn("revision: ${{ github.event.pull_request.head.sha }}",caller)
+        self.assertIn("contains(github.event.pull_request.labels.*.name, 'ci:full')",caller)
 
     def test_cheap_only_summary_does_not_claim_engine_verification(self):
         observed,outputs,summary=self.selection(['README.md'])
@@ -177,7 +167,7 @@ class BaselineTest(unittest.TestCase):
 class AggregateGateTest(unittest.TestCase):
     def evidence(self, selected):
         plan=inventory.execution_plan(selected)
-        plan.update(mode='predictive',run_attempt=2)
+        plan.update(mode='affected',run_attempt=2)
         needs={'changes':{'result':'success'},**{
             job:{'result':'success' if expected else 'skipped'}
             for job,expected in plan['jobs'].items()}}

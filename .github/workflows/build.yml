@@ -1,17 +1,16 @@
 name: build
 
+# The full development matrix. Pull requests run the fast gate (ci-fast.yml) instead;
+# a pull request labelled ci:full calls this workflow through ci-full-label.yml.
 on:
   push:
     branches: [master]
   workflow_call:
     inputs:
       revision:
-        description: Exact release candidate revision
+        description: Exact revision to verify (a release candidate or a ci:full pull request head)
         required: true
         type: string
-  pull_request:
-    # PRs run cheap contracts plus a 12% ranked check budget; ci:full runs everything.
-    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
@@ -147,9 +146,6 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
           DRAFT: ${{ github.event.pull_request.draft }}
           CI_CALLED_FULL: ${{ inputs.revision != '' }}
-          CI_PREDICTIVE_ENABLED: ${{ vars.CI_PREDICTIVE_ENABLED || 'true' }}
-          CI_PR_CHECK_BUDGET: ${{ vars.CI_PR_CHECK_BUDGET || '0.12' }}
-          CI_PR_FULL_AUDIT_PERCENT: ${{ vars.CI_PR_FULL_AUDIT_PERCENT || '0' }}
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
