@@ -81,7 +81,8 @@ def configure(env, root, output, browser=False):
     rules.verify()
     directory = prepare(root, output)
     env.Append(CPPPATH=[str(directory.resolve())])
-    env.Append(CPPDEFINES=[('GLOB2_RENDER_SHADER_DIR', '\\"' + ('/shaders' if browser else str(directory.resolve())) + '\\"')])
+    # The shader directory reaches the two consumers through glob2/BuildPaths.h
+    # (scons/checkout_paths.py), never as a -D on every compile line.
     files = [str(path) for path in sorted(directory.rglob('*')) if path.is_file() and not path.name.startswith('.')
              and 'native-sources' not in path.relative_to(directory).parts
              and path.suffix not in ('.h', '.air')]

@@ -124,8 +124,8 @@ Fast-build success alone does not establish release readiness or waive simulatio
 determinism, save/load continuity, replay/network acceptance, numeric guards, or
 platform checks. Keep incomplete platform coverage explicit in review evidence.
 
-The development command uses a 12 GiB compiler-cache ceiling; `CCACHE_MAXSIZE`
-overrides it. Shared cache/dependency pruning defaults to 32 GiB, configurable
+The managed compiler cache has a 20 GiB ceiling in its own `ccache.conf`;
+`CCACHE_MAXSIZE` overrides it. Shared cache/dependency pruning defaults to 32 GiB, configurable
 with `GLOB2_DEV_BUDGET_GIB`. Builds never prune the managed store automatically;
 inspect `tools/dev_environment.py status` and explicitly run its `prune` command.
 See [Build options](docs/development/build-options.md#fast-development-builds)

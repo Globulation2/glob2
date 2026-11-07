@@ -95,8 +95,6 @@ def configure(env, server_only, relay=False):
         configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
-    configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
-    configfile.add("PACKAGE_RUNTIME_ASSET_DIR", "generated WebP artwork for source builds", '\"' + str(Path(env["BUILDDIR"]).resolve() / "runtime-assets").replace("\\", "\\\\") + '\"')
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
@@ -281,17 +279,14 @@ def configure(env, server_only, relay=False):
     import skin_materials
     skin_materials.register(env)
     import renderer_shaders
-    renderer_shaders.configure(env, env.Dir('#').abspath, env['BUILDDIR'])
+    shader_directory = renderer_shaders.configure(env, env.Dir('#').abspath, env['BUILDDIR'])
+    import checkout_paths
+    checkout_paths.register(env, PACKAGE_SOURCE_DIR=env.Dir('#').abspath,
+                         PACKAGE_RUNTIME_ASSET_DIR=str(Path(env['BUILDDIR']).resolve() / 'runtime-assets'),
+                         GLOB2_RENDER_SHADER_DIR=str(shader_directory.resolve()))
+    checkout_paths.register_stamp(env, env.Dir('#').abspath)
     renderer_shaders.install(env)
     conf.Finish()
-    contents = configfile.f.getvalue()
-    previous = None
-    if os.path.exists("config.h"):
-        with open("config.h") as source:
-            previous = source.read()
-    if previous != contents:
-        with open("config.h", "w") as output:
-            output.write(contents)
 
 def main():
     AddOption('--portaudio',
