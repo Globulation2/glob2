@@ -13,7 +13,6 @@
 #include "BuildingCapabilities.h"
 #include "ResourceRegistry.h"
 #include "CellRules.h"
-#include "MapAssetBundle.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
 #include "field/GradientDestinationPlanes.h"
@@ -21,6 +20,7 @@
 #include <span>
 #include <stdexcept>
 #include <limits>
+class MapAssetBundle;
 
 namespace SimulationSnapshot
 {

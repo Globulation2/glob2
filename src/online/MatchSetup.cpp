@@ -1,3 +1,4 @@
+#include "AI.h"
 #include "UnitCatalog.h"
 #include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "AIImplementationId.h"
 #include "EngineTiming.h"
 #include "GameHeader.h"
 #include "GenerationRequest.h"
@@ -30,7 +31,7 @@ struct CustomGameSetup
 	struct Colony
 	{
 		Controller controller = Computer;
-		AI::ImplementationID ai = AI::NUMBI;
+		AIImplementationIds::ImplementationID ai = AIImplementationIds::NUMBI;
 		std::string aiLibraryId;
 		int alliance = 0;
 	};

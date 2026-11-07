@@ -43,6 +43,7 @@ using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
 namespace TurretTargeting { class Pipeline; }
 class TeamStatsPipeline;
+class Player;
 class HiringPipeline;
 namespace HiringPlanner { struct BuildingLists; }
 class GameGUI;
