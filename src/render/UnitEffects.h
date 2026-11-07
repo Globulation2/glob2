@@ -36,7 +36,7 @@ constexpr float TwinklesEnd = (ShimmerTwinkles - 1) * TwinkleStagger + TwinkleTi
 constexpr int LifetimeTicks = 51;
 //! A serviced unit's silhouette, in the service's colour, settles like a spawn's.
 constexpr float ServiceShimmerTicks = 45, ServiceShimmerPeak = 0.9f;
-constexpr int ServiceIcons = 3;
+constexpr int ServiceIcons = 1;
 //! Icons start up to IconDelayTicks late and each lasts up to IconTicks.
 constexpr float IconTicks = 33.75f, IconDelayTicks = 6;
 constexpr float IconSize = 12, IconReach = 30;
@@ -230,7 +230,7 @@ void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 		// Draw every random number before any early exit so each icon keeps its identity.
 		const float slot = (k + 0.5f) / ServiceIcons, jitter = (random.next() - 0.5f) * 1.6f / ServiceIcons;
 		const float sweep = clamp01(lerp(slot, random.next(), 0.6f) + jitter);
-		const float angle = (-90 + 80 * (sweep - 0.5f)) * Pi / 180;
+		const float angle = (-90 + 50 * (sweep - 0.5f)) * Pi / 180;
 		const float reach = IconReach * (0.45f + random.next() * 0.9f);
 		const float delay = random.next() * IconDelayTicks, life = IconTicks * (0.65f + random.next() * 0.35f);
 		const float speed = 1.1f + random.next() * 1.6f, curl = (random.next() - 0.5f) * 14;
