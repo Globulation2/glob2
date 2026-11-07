@@ -109,6 +109,17 @@ def args(**overrides):
 
 
 class ListingTest(unittest.TestCase):
+    def test_source_names_are_repository_paths_in_both_build_systems(self):
+        # SCons passes root-relative paths; CMake absolute ones, which CCACHE_BASEDIR
+        # rewrites relative to build/cmake/dev.
+        for name in ('src/map/MapQueryTest.cpp', '../../../src/map/MapQueryTest.cpp',
+                     './src/map/MapQueryTest.cpp', str(run_tests.ROOT / 'src/map/MapQueryTest.cpp')):
+            self.assertEqual(run_tests.source_name(name), 'src/map/MapQueryTest.cpp')
+        self.assertEqual(run_tests.source_name('/usr/include/doctest.h'), '/usr/include/doctest.h')
+        listing = LISTING.replace('filename="', 'filename="../../../')
+        self.assertEqual([case.file for case in run_tests.parse_listing(listing, 'engine')],
+                         [case.file for case in run_tests.parse_listing(LISTING, 'engine')])
+
     def test_parses_names_suites_and_tags(self):
         cases = run_tests.parse_listing(LISTING, 'engine')
         self.assertEqual([case.label for case in cases][:2],

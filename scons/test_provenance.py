@@ -6,12 +6,14 @@ inside a build action rather than at every SConscript read and a commit that
 changes no compiled input relinks nothing. Browser and mobile test executables
 run away from their build directory, so they still embed the identity in
 glob2/TestBuildProvenance.h (GLOB2_TEST_PROVENANCE_EMBEDDED).
+
+The experimental CMake build writes the same sidecar through write_sidecar
+(scons/cmake_generate.py test-provenance), so this module imports SCons lazily.
 """
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
-from SCons.Script import Action, AlwaysBuild, Value
 from build_layout import write_if_changed
 
 
@@ -39,23 +41,29 @@ def _binary_sha256(binary, previous):
     return digest.hexdigest(), stamp
 
 
+def write_sidecar(root, binary, sidecar, configuration):
+    """Record the source identity, `configuration` and the binary's hash in `sidecar`."""
+    path = Path(sidecar)
+    try:
+        previous = json.loads(path.read_text())
+    except (OSError, ValueError):
+        previous = {}
+    metadata = _source_identity(Path(root))
+    metadata.update(configuration)
+    metadata['binarySha256'], metadata['binaryStamp'] = _binary_sha256(Path(binary), previous)
+    write_if_changed(str(path), json.dumps(metadata, sort_keys=True) + '\n')
+
+
 def attach_sidecar(env, program):
     """Write <program>.provenance.json after every build of `program`; returns the node."""
+    from SCons.Script import Action, AlwaysBuild
     root = Path(env.Dir('#').srcnode().abspath)
     binary = Path(program[0].abspath)
     sidecar = str(binary) + '.provenance.json'
     configuration = _configuration(env)
 
     def generate(target, source, env):
-        path = Path(str(target[0]))
-        try:
-            previous = json.loads(path.read_text())
-        except (OSError, ValueError):
-            previous = {}
-        metadata = _source_identity(root)
-        metadata.update(configuration)
-        metadata['binarySha256'], metadata['binaryStamp'] = _binary_sha256(binary, previous)
-        write_if_changed(str(path), json.dumps(metadata, sort_keys=True) + '\n')
+        write_sidecar(root, binary, str(target[0]), configuration)
         return 0
 
     node = env.Command(sidecar, program, Action(generate, 'Recording $TARGET'))
@@ -65,6 +73,7 @@ def attach_sidecar(env, program):
 
 def register_test_provenance(env, output):
     """Embedded identity for browser and mobile test executables."""
+    from SCons.Script import Action, Value
     root = Path(env.Dir('#').srcnode().abspath)
     metadata = _source_identity(root)
     metadata.update(_configuration(env))

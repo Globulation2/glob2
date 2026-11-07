@@ -185,11 +185,28 @@ def list_cases(binary, kind):
     return parse_listing(completed.stdout, kind)
 
 
+def source_name(filename):
+    """Doctest's source file name as a repository path.
+
+    SCons compiles root-relative paths; the experimental CMake build passes absolute
+    ones, which ccache's CCACHE_BASEDIR rewrites relative to the build directory
+    ("../../../src/..."). Both name the same file."""
+    path = filename.replace('\\', '/')
+    if os.path.isabs(path):
+        try:
+            return Path(os.path.normpath(path)).relative_to(ROOT).as_posix()
+        except ValueError:
+            return path
+    while path.startswith(('../', './')):
+        path = path.split('/', 1)[1]
+    return path
+
+
 def parse_listing(xml_text, kind):
     cases = []
     for element in ET.fromstring(xml_text).iter('TestCase'):
         name = element.get('name', '')
-        cases.append(Case(FAMILY[kind], element.get('testsuite', ''), name, element.get('filename', ''),
+        cases.append(Case(FAMILY[kind], element.get('testsuite', ''), name, source_name(element.get('filename', '')),
                           int(element.get('line', '0') or 0), parse_tags(name), program=kind))
     return cases
 
@@ -422,7 +439,7 @@ def junit_execution_issue(job, junit_text):
     if not executed:
         return 'JUnit report contains no executed test cases'
     expected = Counter((case.file, case.name) for case in job.cases)
-    actual = Counter((case.get('classname', ''), case.get('name', '')) for case in executed)
+    actual = Counter((source_name(case.get('classname', '')), case.get('name', '')) for case in executed)
     missing, unexpected = expected - actual, actual - expected
     if missing or unexpected:
         def describe(cases):
@@ -699,8 +716,8 @@ def merge_junit(results, path):
                 by_file_and_name = {(case.file, case.name): case.suite for case in result.job.cases}
                 for testcase in document.iter('testcase'):
                     name = testcase.get('name', '')
-                    suite = (by_file_and_name.get((testcase.get('classname', ''), name))
-                             or testcase.get('classname') or 'tests')
+                    file = source_name(testcase.get('classname', ''))
+                    suite = by_file_and_name.get((file, name)) or file or 'tests'
                     testcase.set('classname', suite)
                     if result.note and not testcase.findall('failure') and not testcase.findall('error'):
                         failure = ET.SubElement(testcase, 'failure', message='run_tests: ' + result.note, type='run_tests')

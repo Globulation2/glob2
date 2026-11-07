@@ -972,7 +972,7 @@ set(GLOB2_RELAY_GAG_SOURCES
     libs/gag/src/StreamBackend.cpp
 )
 
-# scons/sources.py MAP_SOURCES: libglob2_map.a (not built by CMake yet).
+# scons/sources.py MAP_SOURCES: the glob2_map module library.
 set(GLOB2_MAP_SOURCES
     src/field/OpenCLGradient.cpp
     src/field/GradientAccelerators.cpp
@@ -1037,7 +1037,7 @@ set(GLOB2_MAP_SOURCES
     src/common/Utilities.cpp
 )
 
-# scons/sources.py SIM_SOURCES: libglob2_sim.a (not built by CMake yet).
+# scons/sources.py SIM_SOURCES: the glob2_sim module library.
 set(GLOB2_SIM_SOURCES
     src/ai/castor/Control.cpp
     src/ai/castor/GetOrder.cpp

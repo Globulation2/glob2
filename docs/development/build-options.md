@@ -250,17 +250,18 @@ No speedup is assumed before measuring matching source and toolchain inputs.
 
 ### Experimental CMake build
 
-A CMake + Ninja build of the native Linux fast-development client runs beside
+A CMake + Ninja build of the native Linux fast-development tier runs beside
 SCons while the two are compared object for object. SCons remains the default
-and the only build for every other target, for tests and harnesses, and for
-anything installed or shipped. It needs CMake 3.25 or later, Ninja and
-`pkg-config`; if the host lacks CMake or Ninja, `pip install cmake ninja` into a
-development virtual environment provides both.
+and the only build for every other target and for anything installed or
+shipped. It needs CMake 3.25 or later, Ninja and `pkg-config`; if the host lacks
+CMake or Ninja, `pip install cmake ninja` into a development virtual environment
+provides both.
 
 ```sh
 python3 tools/dev_build.py --generator=cmake            # configure if needed, build glob2
-python3 tools/dev_build.py --generator=cmake usl gag -j8
-cmake --preset dev && cmake --build --preset dev        # the same, directly
+python3 tools/dev_build.py --generator=cmake engine-tests unit-tests map-generator-golden-test -j8
+cmake --preset dev && cmake --build --preset dev        # glob2, directly
+python3 test/run_tests.py --build-dir build/cmake/dev -j12
 python3 tools/compare_build_systems.py                  # parity report
 ```
 
@@ -270,37 +271,94 @@ When ccache is installed it is the compiler launcher, with the managed cache
 directory and settings SCons uses. Ninja does not draw from the SCons
 [token pool](#parallel-lanes); the wrapper passes `-j8` unless given `-jN`.
 
-What it builds: `libusl.a`, `libgag.a`, `libGlob2JavaScript.a` (QuickJS and
-openlibm with the strict numeric flags of `scons/javascript.py`, applied per
-source), every client object, as the object library `glob2_client`, and the
-`glob2` executable, with the numeric symbol guard run after linking. Source
-lists, include directories and the strict-numeric source sets come from
-`cmake/sources.cmake`, which `python3 scons/export_cmake_sources.py` writes from
-`scons/sources.py` and `scons/javascript.py`. Commit the regenerated file with any
-manifest change; `test/build_system/test_cmake_sources.py` fails while it is
-stale. `BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `SkinMaterials.h`, the
+What it builds:
+
+- `libusl.a`, `libgag.a`, `libGlob2JavaScript.a` (QuickJS and openlibm with the
+  strict numeric flags of `scons/javascript.py`, applied per source), every
+  client object, as the object library `glob2_client`, and `glob2`. The numeric
+  symbol guard runs once the guarded client objects are compiled, before any
+  program links them.
+- `glob2-engine-tests`, `glob2-unit-tests`, `glob2-map-tests` and
+  `glob2-sim-tests` from the `test/tests.py` registry, as `test/SConscript`
+  builds them: the test include directories and `SDL_MAIN_HANDLED`, one object
+  library per group of entries with the same `cxxflags`, `defines` and `require`
+  (so `-fno-access-control` entries and the `GLOB2_ORDER_CODEC_ONLY` codec
+  objects compile separately, the latter once for every binary that links
+  them), the client objects reused wherever SCons reuses them, the `glob2_map`
+  and `glob2_sim` module archives linked as one `--start-group` group, and a
+  `<binary>.provenance.json` sidecar written by `scons/test_provenance.py` on
+  every build of the alias.
+- The `test/tests.py` `PROGRAMS` and the `src/SConscript` harnesses listed in
+  `scons/harness_programs.py` (now the table SCons builds them from too):
+  `MapGeneratorGoldenTest`, `LANSessionHarness`, the `transport-test`
+  programs, `OnlinePlayHarness`, `mobile-gallery` and the skin tools.
+- The runtime assets: the `scons/runtime_assets.py` export, shared through the
+  development store, into `build/cmake/dev/runtime-assets`, which `BuildPaths.h`
+  names. A depfile lists every asset input and the directories holding them,
+  so the export runs again only when one changes. `identity.json` is the SCons
+  dev-tier identity plus `"generator": "cmake"`, which `test/run_tests.py`
+  reads for its timeout scale and SCons refuses to adopt.
+
+Tests, programs and harnesses are not part of the default build, as in SCons;
+the SCons aliases (`engine-tests`, `unit-tests`, `tests`, `glob2-tools`,
+`transport-test`, `map-generator-golden-test`, the legacy per-harness aliases
+and the rest) are CMake targets of the same names.
+
+Source lists, include directories, the strict-numeric source sets, the test
+registry and the harness table come from `cmake/sources.cmake` and
+`cmake/tests.cmake`, which `python3 scons/export_cmake_sources.py` writes from
+`scons/sources.py`, `scons/javascript.py`, `test/tests.py` and
+`scons/harness_programs.py`. Commit the regenerated files with any change to
+those; `test/build_system/test_cmake_sources.py` fails while one is stale.
+`BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `SkinMaterials.h`, the
 renderer shaders, the Hive contract, the online error catalog and
 `SkinRenderRecipe.h` come from the SCons generators, through
 `scons/cmake_generate.py`.
 
-What it does not do yet: export runtime assets (`BuildPaths.h` points the
-CMake `glob2` at the SCons dev build's `runtime-assets`, so run
-`tools/dev_build.py` once before starting it), build the pinned recording
-libraries (it uses `GLOB2_SDL3_PREFIX`'s `recording/` or the SCons build's
-prefix), tests and harnesses, the relay, installation and packaging, PCH or
-unity variants, or any browser, mobile, macOS or Windows target.
+What it does not do yet: build the pinned recording libraries (it uses
+`GLOB2_SDL3_PREFIX`'s `recording/` or the SCons build's prefix), the relay and
+its tests, installation and packaging, the perf (`perf=1`) and release tiers,
+PCH or unity variants, or any browser, mobile, macOS or Windows target.
+`-DGLOB2_EXPORT_RUNTIME_ASSETS=OFF` skips the asset export and points
+`BuildPaths.h` at `GLOB2_RUNTIME_ASSET_DIR` (default: the SCons dev build's).
 
-`tools/compare_build_systems.py` builds `glob2` with both systems into
-`build/parity/scons` and `build/parity/cmake`, both with an extra
-`-ffile-prefix-map=<checkout>/=`, then compares each source's compile command
-(the `-I` search order and the multiset of all other flags, with paths
-normalised) and the sha256 of each pair of objects, raw and with debug sections
-stripped. The CMake parity build runs without ccache: `CCACHE_BASEDIR` rewrites
-CMake's absolute source paths relative to its build directory, so in the
-ordinary preset `__FILE__` reads `../../../src/...` where SCons has `src/...`,
-and objects that use it differ in that string. `--no-build` reuses existing parity builds, `--time-noop` also times a
-no-change rebuild of both ordinary dev builds, and `--json` writes the full
-report. It exits 1 on any flag or source-set difference.
+`tools/compare_build_systems.py` builds glob2, both test binaries, the test
+programs and the harnesses with both systems into `build/parity/scons` and
+`build/parity/cmake`, both with an extra `-ffile-prefix-map=<checkout>/=`
+(`--glob2-only` limits it to glob2). It then compares every compilation in the
+two `compile_commands.json` files: the `-I` search order and the multiset of
+all other flags, with paths normalised. A source compiled more than once (test
+support in both binaries, a production source compiled again with test
+defines) must have the same multiset of compilations in both. Matching
+compilations' objects are compared by sha256, raw and with debug sections
+stripped. The CMake parity build compiles through ccache with
+`-DGLOB2_CCACHE_BASEDIR=` (empty): `CCACHE_BASEDIR` rewrites CMake's absolute
+source paths relative to its build directory, so in the ordinary preset
+`__FILE__` reads `../../../src/...` where SCons has `src/...`, and objects that
+use it differ in that string. `--no-build` reuses existing parity builds,
+`--time-noop` also times a no-change rebuild of both ordinary dev builds,
+`--json` writes the full report and `--summary` appends a Markdown summary. It
+exits 1 on any flag or source-set difference; object differences are reported
+only.
+
+Remaining object differences: every object's debug sections differ (the
+compilations run from different working directories), and four objects differ
+in data: three embed `BuildPaths.h`'s absolute build-directory paths, and
+`TextSort.cpp`'s `assert` text names `third_party/natsort/strnatcmp.c` where
+SCons, finding it through `-I.`, has `./third_party/...`. In the ordinary
+(non-parity) CMake build, the `__FILE__` difference above also reaches
+doctest's case file names (`../../../src/...`); `test/run_tests.py` maps them
+back to repository paths (`source_name`), so the module case contract, JUnit
+class names and results match the SCons build.
+
+The `build-system equivalence` workflow
+(`.github/workflows/build-system-equivalence.yml`) runs that comparison with
+GCC 13 on Ubuntu 24.04 on master pushes and on pull requests that touch
+`CMakeLists.txt`, `CMakePresets.json`, `cmake/`, `scons/`, `SConstruct`, any
+`SConscript`, `test/tests.py` or the comparison script. It fails on a flag or
+source-set difference and writes object-hash results to the step summary and
+the `build-system-equivalence` artifact without failing on them until parity
+is exact.
 
 ### Shared renderer shader assets
 
