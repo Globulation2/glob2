@@ -26,6 +26,15 @@ Setup verifies downloaded archives and publishes tools
 atomically. Dependency bundles include compiler fingerprints and verified
 libraries, plus pinned SDL Java sources for Android packaging.
 
+Native and browser builds also share their runtime-asset export. The store keeps
+one finished export per input key in `caches/runtime-assets/<key>/` (the key
+covers the exported files' Git blob ids or content hashes, the export tools and
+the export options), and a build whose key is present copies it into its build
+directory instead of re-encoding: copy-on-write on APFS, XFS and Btrfs, a plain
+copy elsewhere, never hard links, so builds cannot alter a stored tree. The
+encoded-image cache that exports reuse between different inputs lives in
+`caches/asset-cache/`. Both are ordinary prunable cache entries.
+
 Use `GLOB2_DEV_MODE=isolated` for checkout-local installations and caches with
 vcpkg binary caching disabled. CI release verification selects this mode
 explicitly. Run shared-store pruning and migration in shared mode; those commands

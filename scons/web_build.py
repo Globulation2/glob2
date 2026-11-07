@@ -133,14 +133,21 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_stamp = asset_root.with_suffix('.json')
         from runtime_assets import sprite_packing_profile
         packing = sprite_packing_profile(arguments.get('sprite_packing', 'auto'), identity['mode'] == 'release')
-        def prepare_assets(target, source, env):
-            export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release',
-                          jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
-                          packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
-            return 0
         asset_inputs = list(source_files(root, 'web'))
-        exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], packing, [str(p) for p in asset_inputs]])],
+        asset_tools = ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/shared_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json']
+        def prepare_assets(target, source, env):
+            import shared_assets
+            def produce(output):
+                export_assets(root, output, platform='web', optimized=True, lossy=identity['mode']=='release',
+                              jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
+                              packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
+            # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+            key = shared_assets.content_key(root, asset_inputs + [root / path for path in asset_tools],
+                                            ['runtime-assets-v1', 'web', identity['mode'] == 'release', packing])
+            shared_assets.export(root, asset_root, key, produce)
+            return 0
+        exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] + asset_tools +
+            [Value([identity['mode'], packing, [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
