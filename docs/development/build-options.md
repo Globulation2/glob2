@@ -238,7 +238,10 @@ unity variants, or any browser, mobile, macOS or Windows target.
 `-ffile-prefix-map=<checkout>/=`, then compares each source's compile command
 (the `-I` search order and the multiset of all other flags, with paths
 normalised) and the sha256 of each pair of objects, raw and with debug sections
-stripped. `--no-build` reuses existing parity builds, `--time-noop` also times a
+stripped. The CMake parity build runs without ccache: `CCACHE_BASEDIR` rewrites
+CMake's absolute source paths relative to its build directory, so in the
+ordinary preset `__FILE__` reads `../../../src/...` where SCons has `src/...`,
+and objects that use it differ in that string. `--no-build` reuses existing parity builds, `--time-noop` also times a
 no-change rebuild of both ordinary dev builds, and `--json` writes the full
 report. It exits 1 on any flag or source-set difference.
 

@@ -60,7 +60,10 @@ def build_scons(jobs):
 
 
 def build_cmake(jobs):
-    run(['cmake', '--preset', 'dev', '-B', str(CMAKE_DIRECTORY),
+    # Without ccache: its CCACHE_BASEDIR rewrites CMake's absolute source paths
+    # relative to the build directory (__FILE__ becomes "../../../src/..."),
+    # which no prefix map can match to SCons' root-relative paths.
+    run(['cmake', '--preset', 'dev', '-B', str(CMAKE_DIRECTORY), '-DGLOB2_CCACHE=OFF',
          '-DGLOB2_EXTRA_COMPILE_FLAGS=' + PREFIX_MAP])
     run(['cmake', '--build', str(CMAKE_DIRECTORY), '--target', 'glob2', '--', '-j' + str(jobs or 8)])
 
@@ -116,14 +119,21 @@ def database(directory):
     path = Path(directory) / 'compile_commands.json'
     if not path.exists():
         raise SystemExit(f'{path} is missing; build first or drop --no-build')
-    result = {}
+    candidates = collections.defaultdict(list)
     for entry in json.loads(path.read_text()):
         source = Path(os.path.normpath(os.path.join(entry['directory'], entry['file'])))
+        if Path(directory).resolve() in source.parents:
+            continue  # configure probes and generated sources
         output = entry.get('output')
         if output:
             output = Path(os.path.normpath(os.path.join(entry['directory'], output)))
-        result[source.relative_to(ROOT).as_posix()] = (entry, output)
-    return result
+        candidates[source.relative_to(ROOT).as_posix()].append((entry, output))
+    # SCons registers a source again for each test program that compiles it
+    # separately; prefer the built object, then the one outside test/.
+    test = Path(directory).resolve() / 'test'
+    return {source: sorted(entries, key=lambda item: (not (item[1] and item[1].exists()),
+                                                      bool(item[1] and test in item[1].parents)))[0]
+            for source, entries in candidates.items()}
 
 
 def digest(path, strip=False):
