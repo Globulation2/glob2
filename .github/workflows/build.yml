@@ -223,7 +223,17 @@ jobs:
             --debug-info line-tables-only --profile-pool-size 4 \
             --discard-merged-profiles --stream-logs \
             --cc clang-18 --cxx clang++-18 \
-            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
+            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18 \
+            --coverage-map artifacts/coverage-map/coverage-map.json.gz
+      # test/run_tests.py --affected reads this (python3 test/select_affected.py --fetch).
+      - name: Retain the per-case coverage map
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-map
+          path: artifacts/coverage-map/coverage-map.json.gz
+          if-no-files-found: warn
+          retention-days: 30
       - name: Retain coverage and failing test evidence
         if: always()
         uses: actions/upload-artifact@v4

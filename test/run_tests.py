@@ -427,6 +427,8 @@ def run_job(job, args, build_dir):
             case = job.cases[0]
             env['GLOB2_TEST_ARTIFACTS'] = str(artifacts / sanitized(case.suite or 'no-suite') / sanitized(case.name))
     env[jobserver.HELD] = '1'  # the test process runs under this job's token
+    if getattr(job, 'profile_file', None):
+        env['LLVM_PROFILE_FILE'] = job.profile_file  # --profile-per-job
     command = xvfb_prefix(job) + [str(binary), '-r=junit', f'-o={junit}', '--no-breaks=true'] + doctest_filter(job)
     if args.verbose and job.whole:
         command += ['-s']
@@ -699,6 +701,17 @@ def main(argv=None):
                              'full: everything. An explicit --filter or --tag selects from the full inventory unless --tier is given')
     parser.add_argument('--quick', action='store_true', help='same as --tier display (skip [slow] cases)')
     parser.add_argument('--update-fixtures', action='store_true', help='rewrite [golden] fixtures instead of checking them')
+    parser.add_argument('--affected', action='store_true',
+                        help='run only cases whose recorded coverage touches the change (test/select_affected.py)')
+    parser.add_argument('--coverage-map', type=Path, default=ROOT / 'artifacts' / 'coverage-map.json.gz',
+                        help='per-case coverage map for --affected (default: artifacts/coverage-map.json.gz)')
+    parser.add_argument('--affected-base', default='origin/master', help='compare the change against this revision')
+    parser.add_argument('--profile-per-job', type=Path, metavar='DIR',
+                        help='Clang coverage builds: record each job\'s executed functions under DIR')
+    parser.add_argument('--write-coverage-map', type=Path, metavar='FILE',
+                        help='with --profile-per-job, write the per-case coverage map (.json.gz) after the run')
+    parser.add_argument('--llvm-profdata', default=os.environ.get('LLVM_PROFDATA', 'llvm-profdata'))
+    parser.add_argument('--llvm-cov', default=os.environ.get('LLVM_COV', 'llvm-cov'))
     parser.add_argument('--junit', type=Path, default=ROOT / 'artifacts' / 'tests' / 'junit.xml')
     parser.add_argument('--artifacts', type=Path, default=ROOT / 'artifacts' / 'tests')
     parser.add_argument('--keep-profiles', action='store_true', help='leave every disposable profile on disk')
@@ -723,6 +736,14 @@ def main(argv=None):
     if args.coverage_profile == 'compatibility':
         args.compatibility_filters = json.loads((ROOT / 'test/ci-compatibility.json').read_text())
     kept, skipped = select(cases, args)
+    if args.affected:
+        import select_affected
+        coverage = select_affected.load_map(args.coverage_map) if args.coverage_map.exists() else None
+        labels = [f'{case.binary}:{case.label}' for case in kept + skipped]
+        selection = select_affected.select(labels, select_affected.changed_files(args.affected_base), coverage)
+        print(f'[run_tests] --affected: {selection.reason}', flush=True)
+        kept = [case for case in kept if selection.keeps(f'{case.binary}:{case.label}')]
+        skipped = [case for case in skipped if selection.keeps(f'{case.binary}:{case.label}')]
     if args.coverage_profile == 'compatibility' and not kept and not skipped:
         raise SystemExit('Compatibility inventory selected no cases; update test/ci-compatibility.json')
     if args.list:
@@ -750,7 +771,25 @@ def main(argv=None):
     network_lock = threading.Lock()
     display_slots = threading.Semaphore(args.display_jobs or min(4, args.jobs))
 
+    if args.profile_per_job:
+        args.profile_per_job.mkdir(parents=True, exist_ok=True)
+        import case_coverage
+        job_index = {id(job): index for index, job in enumerate(jobs)}
+
     def run(job):
+        if args.profile_per_job:
+            index = job_index[id(job)]
+            result = run_profiled(job, index)
+            case_coverage.finish_job(args.profile_per_job, index, [f'{case.binary}:{case.label}' for case in job.cases],
+                                     args.llvm_profdata)
+            return result
+        return run_unprofiled(job)
+
+    def run_profiled(job, index):
+        job.profile_file = case_coverage.job_environment(args.profile_per_job, index)
+        return run_unprofiled(job)
+
+    def run_unprofiled(job):
         # One machine-wide CPU token per running test process (scons/jobserver.py).
         if job.has('network'):
             with network_lock, jobserver.slot():
@@ -775,6 +814,12 @@ def main(argv=None):
         args.write_timings.parent.mkdir(parents=True, exist_ok=True)
         args.write_timings.write_text(json.dumps({'schema': 1, 'family': os.environ.get('CI_RUNNER_FAMILY'),
             'seconds': {r.job.label: max(0.001, r.seconds) for r in results if r.status == 'pass'}}, indent=2) + '\n')
+    if args.write_coverage_map:
+        import case_coverage
+        binaries = sorted({binary_path(build_dir, job.binary) for job in jobs})
+        count = case_coverage.write_map(args.profile_per_job, binaries, args.write_coverage_map,
+                                        args.llvm_profdata, args.llvm_cov)
+        print(f'[run_tests] coverage map: {args.write_coverage_map} ({count} cases)', flush=True)
     totals = merge_junit(results + skipped_results, args.junit)
     ok = report(results, skipped, args)
     print(f'[run_tests] JUnit report: {args.junit} ({totals["tests"]} cases)', flush=True)

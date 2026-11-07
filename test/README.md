@@ -83,6 +83,16 @@ about a quarter of the full inventory's time; `--tier display` adds display case
 (`-O0`) builds, and `GLOB2_TEST_TIMEOUT_SCALE` overrides the multiplier. `--filter` or `--tag`
 without `--tier` selects from the full inventory, so naming a case always runs it.
 
+`--affected` narrows the selection to the cases a change can reach, using the
+per-case coverage map that master's Clang coverage job records
+(`python3 test/select_affected.py --fetch` downloads it to
+`artifacts/coverage-map.json.gz`). A case runs when the files it executed
+intersect the change, when it has no record yet, or when it is on the always-run
+list (golden simulation, save formats, replays); a change to a header, the build
+system, `test/`, `content/` or CI configuration, or a map older than seven days or
+not from an ancestor, runs the whole tier. `test/select_affected.py --list` shows
+the choice without running anything.
+
 `test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--tier`, `--filter`
 (suite/name globs), `--tag`, `--exclude-tag` and `--shard K/N`
 (deterministic by sorted name), then runs each engine case in its own process with
