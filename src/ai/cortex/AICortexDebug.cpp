@@ -15,7 +15,6 @@
 #include "team/Team.h"
 #include "building/Building.h"
 #include "unit/UnitConsts.h"
-#include "Game.h"
 #include "map/Map.h"
 #include "Utilities.h"
 #include "TeamStat.h"

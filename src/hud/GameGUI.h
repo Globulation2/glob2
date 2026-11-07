@@ -20,7 +20,11 @@ namespace Online { class SkinDownloads; }
 #include <valarray>
 #include <variant>
 
-#include "Game.h"
+#include "GameEvent.h"
+#include "TeamCapacity.h"
+#include "UnitConsts.h"
+#include "sim/EntityRef.h"
+#include <deque>
 #include "TorusView.h"
 #include "IntroCover.h"
 #include "Brush.h"
@@ -62,6 +66,11 @@ namespace GAGGUI
 using namespace GAGGUI;
 
 class TeamStats;
+class Game;
+struct DeferredGameSHA1;
+class Team;
+class Building;
+class Unit;
 class InGameTextInput;
 class Order;
 class MapMarkOrder;
@@ -157,7 +166,7 @@ public:
 	void waitForAutosave();
     bool savePending();
 	//! return the local team of the player who is running glob2
-	Team *getLocalTeam(void) { return game.teams[localTeamNo]; }
+	Team *getLocalTeam(void);
 
 	//! Apply every queued simulation notice (ClientEvents) to the GUI. The
 	//! engine calls this after each tick; executeOrder, step and drawAll call
@@ -273,7 +282,10 @@ public:
 	///Game::clientRequests), so they outlive it.
 	ClientEvents clientEvents;
 	ClientRequests clientRequests;
-	Game game;
+	/// Held through a pointer so that GameGUI.h (and Engine.h) need not include
+	/// Game.h; `game` is the same object, bound once at construction.
+	std::unique_ptr<Game> gameOwner;
+	Game& game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
 	std::vector<GAGGUI::ui::Host *> inspectionHosts();
@@ -333,7 +345,7 @@ public:
 	SceneRequest sceneRequest(bool includeTiming = true);
     void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
 	/// Standalone owner-side observation through the shared read boundary.
-	void prepareLocalPresentation(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,scene); }
+	void prepareLocalPresentation(PresentationFrame& scene);
     // Explicit observation for standalone clients and owner-side tools.
     void prepareLocalPresentation()
     {
@@ -734,8 +746,8 @@ private:
 	//! throws std::bad_variant_access rather than silently reinterpreting bytes.
 	//! Precondition: selectionMode is the matching mode (caller-guaranteed).
 	//! The entity accessors return null once the entity is gone.
-	Building* selectionBuilding() const { return game.resolveBuilding(std::get<BuildingRef>(selection)); }
-	Unit* selectionUnit() const { return game.resolveUnit(std::get<UnitRef>(selection)); }
+	Building* selectionBuilding() const;
+	Unit* selectionUnit() const;
 	int selectionResource() const { return std::get<int>(selection); }
 	//! Selected building/unit, or null in any other mode or once it is gone.
 	Building* selectedBuildingOrNull() const;
@@ -749,7 +761,7 @@ private:
 	void handleClientEvent(ClientEventVariant&& event);
 	//! GameEvents per team, aged like Team::updateEvents did, until step()
 	//! shows the local team's.
-	std::array<std::deque<GameEvent>, Team::MAX_COUNT> pendingTeamEvents;
+	std::array<std::deque<GameEvent>, TEAM_MAX_COUNT> pendingTeamEvents;
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;

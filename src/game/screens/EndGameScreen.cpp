@@ -29,6 +29,7 @@
 #include <cmath>
 #include <iterator>
 #include <typeinfo>
+#include "GameGUI.h"
 
 namespace fe = Glob2UI;
 using fe::Element;

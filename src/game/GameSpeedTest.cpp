@@ -22,6 +22,7 @@
 #include <iostream>
 #include <regex>
 #include <set>
+#include "Game.h"
 
 using namespace GAGGUI;
 

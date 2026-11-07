@@ -3,12 +3,12 @@
 
 #include <stdlib.h>
 
-#include "Game.h"
 #include "Marshaling.h"
 #include "Order.h"
 #include "Brush.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
+#include "Game.h"
 
 // OrderModify' code
 

@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <system_error>
+#include "Game.h"
 
 SimulationRunner::SimulationRunner(Engine &engine) : engine(engine) {}
 

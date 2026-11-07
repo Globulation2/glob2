@@ -5,7 +5,6 @@
 #include "shared_runtime/Runtime.h"
 #include "Material.h"
 #include "AIResourcePolicy.h"
-#include "Game.h"
 #include "Building.h"
 
 using namespace AISharedRuntime;

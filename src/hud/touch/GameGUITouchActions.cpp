@@ -11,6 +11,7 @@
 #include "UnitDisplayNames.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "Building.h"
 using namespace GAGCore;
 
 namespace

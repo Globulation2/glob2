@@ -31,6 +31,7 @@
 #include <chrono>
 #include <filesystem>
 #include "MapDrawer.h"
+#include "Game.h"
 class SettingsPaintHarness:public SettingsScreen
 {
 public:

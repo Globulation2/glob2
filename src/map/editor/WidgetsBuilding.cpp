@@ -4,7 +4,6 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include <GAG.h>
-#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "TeamDisplay.h"

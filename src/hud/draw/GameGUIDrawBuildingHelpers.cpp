@@ -11,7 +11,6 @@
 
 #include "BuildingFailureDisplay.h"
 #include "BuildingPresentation.h"
-#include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"

@@ -7,7 +7,6 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 
-#include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"

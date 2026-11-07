@@ -5,7 +5,7 @@
 #include "CortexConstants.h"
 #include "BuildingCapabilities.h"
 #include "BuildingType.h"
-#include "Game.h"
+class Game;
 #include "Team.h"
 #include <algorithm>
 #include <limits>
@@ -97,9 +97,5 @@ inline AIPlanning::BuildingCandidate selectBuilding(const AIEngine::AIWorldView&
 }
 
 namespace Cortex {
-inline AIPlanning::BuildingCandidate selectBuilding(::Game& game,::Team& team,int role,int productionClass=WORKER,int qualification=-1)
-{
-    const auto view=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
-    return selectBuilding(*view,view->teams[team.teamNumber],role,productionClass,qualification);
-}
+AIPlanning::BuildingCandidate selectBuilding(::Game& game,::Team& team,int role,int productionClass=WORKER,int qualification=-1);
 }

@@ -24,6 +24,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include "Game.h"
 
 namespace
 {
