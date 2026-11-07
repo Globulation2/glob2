@@ -112,6 +112,14 @@ directories idle for longer than `--idle` days that no build holds. `tools/check
 --fix` gzips logs over 1 MiB and converts `.ppm`/`.bmp` captures to PNG; it never
 deletes copied build trees.
 
+Evidence now lives in pull request descriptions, but older evidence refs
+(`evidence/*`, `codex/snapshots/*`, `codex/turn-diffs/*`, `archive/*` and their tags)
+keep large blobs in every clone's object store. `python3 tools/expire_evidence_refs.py`
+reports them and the space only they hold; `--apply` deletes them locally, expires
+reflogs and repacks, and `--apply --remote` also deletes them on origin. The remote
+deletion is irreversible and breaks links to those refs: the maintainer decided to
+accept that, and runs it.
+
 Builds, test runs and asset exports stop before filling the disk: they fail when
 less than `GLOB2_MIN_FREE_GIB` (default 10) GiB is free, naming these commands.
 `GLOB2_MIN_FREE_GIB=0` disables the check.
