@@ -41,7 +41,13 @@ existing neighbor preference and clearing-flag spacing.
 Econo and Nicowar share the farming scan in
 `src/ai/shared_runtime/Farming.cpp`, running every 250 ticks. It protects seed
 resources on a checkerboard and temporarily protects edge donors to expand fields.
-Wood is reserved within six water-gradient steps and wheat within ten. Spreading
+Wood is reserved within six water-gradient steps and wheat within ten. The
+gradient starts from irrigating water only (swimmable fertility sources, see
+`terrainIsIrrigatingWater`). Fertile ground (Loam, Moss, Spring meadow) also
+joins a zone where the engine's land fertility there reaches what a long straight
+shore gives at that zone's edge, so its weaker contribution counts at its real
+strength. Nicowar's building orders keep their minimum distances from irrigating
+water only; Fertile ground is ordinary building land for them. Spreading
 wood beside wheat (including diagonals) or in the outer wheat band is cleared;
 obsolete clearing paint is released unless needed beside a friendly building.
 The farm-areas experiment uses farm paint for eligible wheat and forbidden paint

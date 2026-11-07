@@ -167,6 +167,29 @@ TEST_CASE("Maxima terrain snapshots retain independent properties and migrate le
   AIMaximaPlacement::fields(archive,restored);
   CHECK(restored.walkable);CHECK(restored.buildable);CHECK_FALSE(restored.swimmable);
   CHECK(restored.fertilitySource==!legacy);
+  // Fertile ground keeps its fertility flag but is never water for placement.
+  CHECK_FALSE(restored.irrigatingWater());
   CHECK(input.readUint32("sentinel")==0x12345678);
+ }
+}
+
+TEST_CASE("Maxima water tiles stay irrigating water through current and legacy snapshots [save-format]")
+{
+ for(bool legacy:{false,true})
+ {
+  auto* memory=new GAGCore::MemoryStreamBackend;
+  GAGCore::BinaryOutputStream output(memory);
+  AIMaximaPlacement::WorldTile tile;
+  tile.buildable=false; tile.walkable=false; tile.swimmable=true; tile.fertilitySource=true;
+  if(legacy) { LegacyTerrainWriter archive(&output); AIMaximaPlacement::fields(archive,tile); }
+  else { AIMaximaContinuation::Writer archive(&output); AIMaximaPlacement::fields(archive,tile); }
+  output.flush();
+  const auto bytes=memory->takeContents();
+  auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
+  GAGCore::BinaryInputStream input(source);
+  AIMaximaContinuation::Reader archive(&input,false,legacy?FILE_FORMAT_VERSION_TERRAIN_PROPERTIES-1:VERSION_MINOR);
+  AIMaximaPlacement::WorldTile restored;
+  AIMaximaPlacement::fields(archive,restored);
+  CHECK(restored.swimmable);CHECK(restored.fertilitySource);CHECK(restored.irrigatingWater());
  }
 }

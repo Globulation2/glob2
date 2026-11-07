@@ -5,8 +5,12 @@
 #include "shared_runtime/Runtime.h"
 #include "Material.h"
 #include "AIResourcePolicy.h"
+#include "AITerrainPredicates.h"
 #include "Game.h"
 #include "Building.h"
+#include "FertilityField.h"
+
+#include <cstdint>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -18,6 +22,17 @@ namespace
 // Water-gradient steps: the outer wheat band is kept free of spreading wood.
 constexpr int WoodWaterDistance = 6;
 constexpr int WheatWaterDistance = 10;
+// Fertile ground (loam, moss, spring meadow) is crop land that waters its
+// surroundings weakly, so a distance to it says little. It counts as farm zone
+// where the engine's land fertility at least matches what the water rule
+// grants at its edge: a long straight shore at distance d leaves the offsets
+// d..15 of the 16-weight triangular kernel, (16-d)(17-d)/2 of 256 per axis.
+constexpr std::uint32_t shoreFertilityAt(int distance)
+{
+	return std::uint32_t((16-distance)*(17-distance)/2)*(Fertility::kScale/256);
+}
+static_assert(shoreFertilityAt(WheatWaterDistance)==21u*256u);
+static_assert(shoreFertilityAt(WoodWaterDistance)==55u*256u);
 // Permanent donors at (1,1); temporary expansion donors at (0,1) and (1,0).
 constexpr int PatternStride = 2;
 }
@@ -41,6 +56,19 @@ void AISharedRuntime::updateFarmingAreas(Runtime& runtime)
 	AISharedRuntime::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new Entities::Water);
 	Gradient& water_gradient=runtime.get_gradient_manager().get_gradient(gi_water);
+	const AIEngine::AIWorldView& world=runtime.observation();
+	const std::vector<std::uint32_t>* landFertility=world.growth ? &world.growth->landField().values() : nullptr;
+	if(landFertility && landFertility->size()!=std::size_t(world.width)*std::size_t(world.height)) landFertility=nullptr;
+	// Water and DeepWater use the historical distance rule unchanged; maps
+	// without Fertile ground therefore keep exactly their previous farm zones.
+	const auto inZone=[&](int x,int y,int distance)
+	{
+		if(water_gradient.within_dist(x, y, distance)) return true;
+		if(!landFertility) return false;
+		const auto index=world.tileIndex(x,y);
+		return terrainIsFertileGround(world.terrainPropertiesAt(index))
+			&& (*landFertility)[index]>=shoreFertilityAt(distance);
+	};
 
 	for(int x=0; x<mi.get_width(); ++x)
 	{
@@ -57,8 +85,8 @@ void AISharedRuntime::updateFarmingAreas(Runtime& runtime)
 				const auto type=map.resources[map.index(x,y)].resource.type;
 				const auto properties=type==NO_RES_TYPE ? ResourceProperties{} : map.resourceProperties(type);
 				const bool nonLand=properties.ecology!=ResourceEcology::Land;
-				bool is_in_wheat_zone = nonLand || water_gradient.within_dist(x, y, wheat_dist);
-				bool is_in_wood_zone = nonLand || water_gradient.within_dist(x, y, wood_dist);
+				bool is_in_wheat_zone = nonLand || inZone(x, y, wheat_dist);
+				bool is_in_wood_zone = nonLand || inZone(x, y, wood_dist);
 				const bool reserveWood=AIResourcePolicy::needsSeedReserve(map,map.index(x,y),MaterialId::Wood);
 				const bool reserveFood=AIResourcePolicy::needsSeedReserve(map,map.index(x,y),MaterialId::Food);
 
@@ -76,19 +104,19 @@ void AISharedRuntime::updateFarmingAreas(Runtime& runtime)
 				//Expand the farm horizontally
 				if((x%PatternStride==0 && y%PatternStride==1))
 				{
-					if(reserveWood && mi.is_resource(x-1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x+1,y) && (nonLand || water_gradient.within_dist(x+1, y, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x+1,y),MaterialId::Wood))
+					if(reserveWood && mi.is_resource(x-1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x+1,y) && (nonLand || inZone(x+1, y, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x+1,y),MaterialId::Wood))
 					{
 						farm_spot = true;
 					}
-					else if(reserveFood && mi.is_resource(x-1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x+1,y) && (nonLand || water_gradient.within_dist(x+1, y, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x+1,y),MaterialId::Food))
+					else if(reserveFood && mi.is_resource(x-1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x+1,y) && (nonLand || inZone(x+1, y, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x+1,y),MaterialId::Food))
 					{
 						farm_spot = true;
 					}
-					else if(reserveWood && mi.is_resource(x+1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x-1,y) && (nonLand || water_gradient.within_dist(x-1, y, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x-1,y),MaterialId::Wood))
+					else if(reserveWood && mi.is_resource(x+1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x-1,y) && (nonLand || inZone(x-1, y, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x-1,y),MaterialId::Wood))
 					{
 						farm_spot = true;
 					}
-					else if(reserveFood && mi.is_resource(x+1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x-1,y) && (nonLand || water_gradient.within_dist(x-1, y, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x-1,y),MaterialId::Food))
+					else if(reserveFood && mi.is_resource(x+1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x-1,y) && (nonLand || inZone(x-1, y, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x-1,y),MaterialId::Food))
 					{
 						farm_spot = true;
 					}
@@ -97,19 +125,19 @@ void AISharedRuntime::updateFarmingAreas(Runtime& runtime)
 				//Expand the farm vertically
 				if((x%PatternStride==1 && y%PatternStride==0))
 				{
-					if(reserveWood && mi.is_resource(x, y-1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y+1) && (nonLand || water_gradient.within_dist(x, y+1, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y+1),MaterialId::Wood))
+					if(reserveWood && mi.is_resource(x, y-1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y+1) && (nonLand || inZone(x, y+1, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y+1),MaterialId::Wood))
 					{
 						farm_spot = true;
 					}
-					else if(reserveFood && mi.is_resource(x, y-1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y+1) && (nonLand || water_gradient.within_dist(x, y+1, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y+1),MaterialId::Food))
+					else if(reserveFood && mi.is_resource(x, y-1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y+1) && (nonLand || inZone(x, y+1, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y+1),MaterialId::Food))
 					{
 						farm_spot = true;
 					}
-					else if(reserveWood && mi.is_resource(x, y+1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y-1) && (nonLand || water_gradient.within_dist(x, y-1, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y-1),MaterialId::Wood))
+					else if(reserveWood && mi.is_resource(x, y+1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y-1) && (nonLand || inZone(x, y-1, wood_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y-1),MaterialId::Wood))
 					{
 						farm_spot = true;
 					}
-					else if(reserveFood && mi.is_resource(x, y+1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y-1) && (nonLand || water_gradient.within_dist(x, y-1, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y-1),MaterialId::Food))
+					else if(reserveFood && mi.is_resource(x, y+1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y-1) && (nonLand || inZone(x, y-1, wheat_dist)) && AIResourcePolicy::canSpreadTo(map,map.index(x,y),map.index(x,y-1),MaterialId::Food))
 					{
 						farm_spot = true;
 					}

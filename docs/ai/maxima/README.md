@@ -32,6 +32,13 @@ scoring. Such placements receive a small compactness bonus for saved access land
 and are exempt from the general spacing penalty. Standalone sites remain available;
 no barracks campus is reserved.
 
+New parcels keep clear of irrigating water so the crop belt it feeds can grow:
+six tiles where possible, five as a fallback. Only swimmable fertility sources
+(Water, Deep water and their blends) count. Fertile ground (Loam, Moss, Spring
+meadow) is buildable crop land with a weak fertility contribution, so it is
+ordinary building land for placement; farming judges its crops by the engine's
+fertility field. Coastal wheat backing likewise starts from actual water only.
+
 - [Economy and staffing](economy.md): worker allocation, production and development.
 - [Farming](farming.md): renewable resources, access and clearing.
 - [Food capacity](food.md): supply claims, placement, retirement and relocation.

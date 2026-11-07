@@ -12,6 +12,7 @@
 #include "ai/observation/AIWorldView.h"
 #include "shared_runtime/Runtime.h"
 #include "AIMaximaRuntime.h"
+#include "AITerrainPredicates.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -167,6 +168,10 @@ class RuntimeContinuationTest
         game.map.addForbidden(4,5,0);
         game.map.addClearArea(4,5,0);
         game.map.setMapDiscovered(4,5,game.teams[0]->me);
+        // A Fertile-ground block and a water block: both are fertility sources,
+        // but only the water is Water for placement and farm-zone distances.
+        for(int y=20;y<=23;++y) for(int x=20;x<=23;++x) game.map.setVertexTerrain(x,y,LOAM);
+        for(int y=20;y<=23;++y) for(int x=4;x<=7;++x) game.map.setVertexTerrain(x,y,WATER);
         const int type=game.buildingsTypes.getTypeNum("inn",0,false);
         REQUIRE(game.addBuilding(12,12,type,0));
         const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
@@ -195,6 +200,15 @@ class RuntimeContinuationTest
             CHECK(snapshot.backs_onto_sand(x,y)==live.backs_onto_sand(x,y));
             for(auto& predicate:predicates)
                 CHECK(predicate.match_source(*world,x,y)==predicate.match_source(&game.map,x,y));
+        }
+        {
+            GradientInfo water=info(new Entities::Water);
+            CHECK(terrainProvidesFertility(game.map.terrainPropertiesAt(21,21)));
+            CHECK(game.map.terrainPropertiesAt(21,21).buildable);
+            CHECK_FALSE(water.match_source(*world,21,21));
+            CHECK_FALSE(water.match_source(&game.map,21,21));
+            CHECK(water.match_source(*world,5,21));
+            CHECK(water.match_source(&game.map,5,21));
         }
         game.map.setNoResource(4,5,0);
         game.map.removeForbidden(4,5,0);
@@ -663,6 +677,31 @@ TEST_CASE("irrigation heuristics require a positive enabled fertility contributi
     source.fertilityQ8=0;CHECK_FALSE(terrainProvidesFertility(source));
     source.fertilityQ8=256;source.fertilitySource=false;
     CHECK_FALSE(terrainProvidesFertility(source));
+}
+
+TEST_CASE("Fertile ground is a fertility source but not irrigating water" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    for(TerrainType water:{WATER,DEEP_WATER})
+    {
+        CHECK(terrainIsIrrigatingWater(terrainProperties(water)));
+        CHECK_FALSE(terrainIsFertileGround(terrainProperties(water)));
+    }
+    for(TerrainType fertile:{LOAM,MOSS,SPRING_MEADOW})
+    {
+        const auto p=terrainProperties(fertile);
+        CHECK(terrainProvidesFertility(p));CHECK(p.buildable);
+        CHECK_FALSE(terrainIsIrrigatingWater(p));
+        CHECK(terrainIsFertileGround(p));
+    }
+    CHECK_FALSE(terrainIsIrrigatingWater(terrainProperties(GRASS)));
+    CHECK_FALSE(terrainIsFertileGround(terrainProperties(GRASS)));
+    // Blends of water corners stay water; a three-water-one-loam cell swims and
+    // irrigates, while two loam corners make walkable Fertile ground.
+    const auto w=terrainProperties(WATER),d=terrainProperties(DEEP_WATER),l=terrainProperties(LOAM);
+    CHECK(terrainIsIrrigatingWater(combineCornerRules(w,d,w,d)));
+    CHECK(terrainIsIrrigatingWater(combineCornerRules(w,w,w,l)));
+    CHECK(terrainIsFertileGround(combineCornerRules(w,w,l,l)));
 }
 
 TEST_CASE("position entities retain historical binary and text payloads" *

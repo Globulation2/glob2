@@ -829,12 +829,12 @@ void Planner::prepareWaterDistanceCache(const WorldState& world) const
 	bool changed=int(waterMaskCache.size())!=size;
 	if(!changed)
 		for(int i=0;i<size;++i)
-			if((waterMaskCache[i]!=0)!=world.tiles[i].fertilitySource){changed=true;break;}
+			if((waterMaskCache[i]!=0)!=world.tiles[i].irrigatingWater()){changed=true;break;}
 	if(!changed&&int(waterDistanceCache.size())==size)return;
 
 	waterMaskCache.assign(size,0);waterDistanceCache.assign(size,INT_MAX);
 	auto& queue=distanceFrontiers[0];queue.clear();
-	for(int i=0;i<size;++i)if(world.tiles[i].fertilitySource)
+	for(int i=0;i<size;++i)if(world.tiles[i].irrigatingWater())
 	{
 		waterMaskCache[i]=1;waterDistanceCache[i]=0;queue.push_back(i);
 	}

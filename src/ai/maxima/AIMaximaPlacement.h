@@ -230,7 +230,11 @@ struct WorldTile
 	bool swimmable;
 	bool growthInhibiting;
 	bool walkable;
+	/// Engine fertility-source flag: true for water and for Fertile ground.
 	bool fertilitySource;
+	/// Swimmable irrigating water. Fertile ground is buildable crop land, so it
+	/// is deliberately not water for placement clearance.
+	bool irrigatingWater() const { return fertilitySource && swimmable; }
 	bool canWalk() const { return walkable && !swimmable; }
 	bool canTravel(bool swim) const { return canWalk() || (swim && swimmable); }
 	bool permanentResource;
