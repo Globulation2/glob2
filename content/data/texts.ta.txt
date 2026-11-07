@@ -1924,6 +1924,10 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 ஆற்றுக் கழிமுகம்
 [Meandering rivers]
 வளைந்து செல்லும் ஆறுகள்
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 தொடக்கப் பள்ளத்தாக்குகளில் பழங்கள்
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

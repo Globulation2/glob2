@@ -1956,6 +1956,10 @@ Sabla lagbordo
 Riverdelto
 [Meandering rivers]
 Meandrantaj riveroj
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fruktoj en hejmvaloj
 [Moat]
@@ -2007,6 +2011,8 @@ Larĝo de la ŝirmflanko
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

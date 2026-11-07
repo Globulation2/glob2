@@ -1956,6 +1956,10 @@ Kumlu göl kıyısı
 Nehir deltası
 [Meandering rivers]
 Menderesli nehirler
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Başlangıç vadilerinde meyve
 [Moat]
@@ -2007,6 +2011,8 @@ Rüzgâraltı genişliği
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

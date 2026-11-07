@@ -1956,6 +1956,10 @@ Piesočnatý breh jazera
 Riečna delta
 [Meandering rivers]
 Meandrujúce rieky
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Ovocie v domovských údoliach
 [Moat]
@@ -2007,6 +2011,8 @@ Rozostup priesmykov
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

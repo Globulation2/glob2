@@ -1956,6 +1956,10 @@ Sandet søbred
 Floddelta
 [Meandering rivers]
 Bugtede floder
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Frugt i startdalene
 [Moat]
@@ -2007,6 +2011,8 @@ Læsidens bredde
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

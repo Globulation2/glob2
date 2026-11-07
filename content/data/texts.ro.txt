@@ -1956,6 +1956,10 @@ Mal nisipos al lacului
 Delta râului
 [Meandering rivers]
 Râuri cu meandre
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fructe în văile de pornire
 [Moat]
@@ -2007,6 +2011,8 @@ Lățimea zonei adăpostite
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

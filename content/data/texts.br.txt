@@ -1956,6 +1956,10 @@ Margem arenosa do lago
 Delta do rio
 [Meandering rivers]
 Rios com meandros
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Frutas nos vales iniciais
 [Moat]
@@ -2007,6 +2011,8 @@ Largura do sotavento
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

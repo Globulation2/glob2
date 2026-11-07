@@ -1956,6 +1956,10 @@ Homokos tópart
 Folyódelta
 [Meandering rivers]
 Kanyargó folyók
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Gyümölcs a kezdővölgyekben
 [Moat]
@@ -2007,6 +2011,8 @@ Szélárnyék szélessége
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

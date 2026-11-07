@@ -1924,6 +1924,10 @@ Globulation 2 कर्सर दाखवा.
 नदीचा त्रिभुज प्रदेश
 [Meandering rivers]
 नागमोडी नद्या
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 सुरुवातीच्या दऱ्यांमधील फळे
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2 कर्सर दाखवा.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

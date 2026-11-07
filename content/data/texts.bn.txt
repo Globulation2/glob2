@@ -1924,6 +1924,10 @@ Globulation 2-এর কার্সার দেখান।
 নদী বদ্বীপ
 [Meandering rivers]
 আঁকাবাঁকা নদী
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 নিজ উপত্যকায় ফল
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2-এর কার্সার দেখান।
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

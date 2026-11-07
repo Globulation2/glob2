@@ -1924,6 +1924,10 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 నదీ డెల్టా
 [Meandering rivers]
 వంకర నదులు
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 ఇంటి లోయలలో పండ్లు
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

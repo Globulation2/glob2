@@ -1956,6 +1956,10 @@ Sandiges Seeufer
 Flussdelta
 [Meandering rivers]
 Mäandernde Flüsse
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Obst in den Starttälern
 [Moat]
@@ -2007,6 +2011,8 @@ Leebreite
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

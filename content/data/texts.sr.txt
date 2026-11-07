@@ -1956,6 +1956,10 @@ OpenGL није доступан у овој верзији.
 Делта реке
 [Meandering rivers]
 Меандрирајуће реке
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Воће у почетним долинама
 [Moat]
@@ -2007,6 +2011,8 @@ OpenGL није доступан у овој верзији.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

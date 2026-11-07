@@ -1948,6 +1948,10 @@ Tepi tasik berpasir
 Delta sungai
 [Meandering rivers]
 Sungai-sungai yang berliku-liku
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Buah-buahan di lembah asal
 [Moat]
@@ -1999,6 +2003,8 @@ Lebar lindungan angin
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

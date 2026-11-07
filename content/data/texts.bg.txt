@@ -1924,6 +1924,10 @@ OpenGL не е наличен в тази компилация.
 Речна делта
 [Meandering rivers]
 Криволичещи реки
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Плодове в домашните долини
 [Moat]
@@ -1975,6 +1979,8 @@ OpenGL не е наличен в тази компилация.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

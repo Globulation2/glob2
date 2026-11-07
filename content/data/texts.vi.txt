@@ -1956,6 +1956,10 @@ Bờ hồ đầy cát
 Châu thổ sông
 [Meandering rivers]
 Sông quanh co
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Trái cây ở thung lũng khởi đầu
 [Moat]
@@ -2007,6 +2011,8 @@ Khoảng cách đèo
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

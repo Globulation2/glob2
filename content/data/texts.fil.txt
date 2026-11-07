@@ -1948,6 +1948,10 @@ Mabuhanging baybayin ng lawa
 Delta ng ilog
 [Meandering rivers]
 Mga paliko-likong ilog
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Prutas sa mga panimulang lambak
 [Moat]
@@ -1999,6 +2003,8 @@ Lapad ng bahaging kubli sa hangin
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

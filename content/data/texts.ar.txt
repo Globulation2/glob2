@@ -1956,6 +1956,10 @@ OpenGL غير متوفر في هذا الإصدار.
 دلتا النهر
 [Meandering rivers]
 أنهار كثيرة التعرج
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 الفاكهة في وديان البداية
 [Moat]
@@ -2007,6 +2011,8 @@ OpenGL غير متوفر في هذا الإصدار.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

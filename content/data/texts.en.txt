@@ -1924,6 +1924,10 @@ Sandy lake shore
 River delta
 [Meandering rivers]
 Meandering rivers
+[Deep channels]
+Deep channels
+[Divide outcrops]
+Divide outcrops
 [Fruit in home valleys]
 Fruit in home valleys
 [Moat]
@@ -1976,6 +1980,8 @@ Climate
 Temperate
 [Steppe]
 Steppe
+[Tropical]
+Tropical
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 No ridge stands behind the homes; use fewer ridges or a bigger map.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]

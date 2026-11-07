@@ -1956,6 +1956,10 @@ Sandig sjöstrand
 Flodens delta
 [Meandering rivers]
 Meandrande floder
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Frukt i startdalarna
 [Moat]
@@ -2007,6 +2011,8 @@ Läsidans bredd
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

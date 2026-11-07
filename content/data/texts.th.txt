@@ -1924,6 +1924,10 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 สามเหลี่ยม​ปากแม่น้ำ
 [Meandering rivers]
 แม่น้ำ​ที่​คดเคี้ยว
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 ผลไม้​ใน​หุบเขา​บ้านเกิด
 [Moat]
@@ -1975,6 +1979,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

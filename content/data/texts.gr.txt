@@ -1956,6 +1956,10 @@ Cortex
 Δέλτα ποταμού
 [Meandering rivers]
 Μαιανδρικοί ποταμοί
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Φρούτα στις αρχικές κοιλάδες
 [Moat]
@@ -2007,6 +2011,8 @@ Cortex
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

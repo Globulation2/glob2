@@ -1956,6 +1956,10 @@ AI 策略與對抗
 河口三角洲
 [Meandering rivers]
 曲流河道
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 起始山谷中的水果
 [Moat]
@@ -2007,6 +2011,8 @@ AI 策略與對抗
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

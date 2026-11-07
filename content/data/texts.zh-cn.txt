@@ -1956,6 +1956,10 @@ OpenGL 在此版本中不可用。
 河口三角洲
 [Meandering rivers]
 曲流河道
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 起始山谷中的水果
 [Moat]
@@ -2007,6 +2011,8 @@ OpenGL 在此版本中不可用。
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

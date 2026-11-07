@@ -1956,6 +1956,10 @@ Riba sorrenca del llac
 Delta del riu
 [Meandering rivers]
 Rius amb meandres
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fruita a les valls inicials
 [Moat]
@@ -2007,6 +2011,8 @@ Amplada del sotavent
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

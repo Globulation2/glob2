@@ -1956,6 +1956,10 @@ Riva sabbiosa del lago
 Delta del fiume
 [Meandering rivers]
 Fiumi con meandri
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Frutta nelle valli iniziali
 [Moat]
@@ -2007,6 +2011,8 @@ Larghezza del sottovento
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

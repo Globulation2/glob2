@@ -1956,6 +1956,10 @@ Rive sableuse du lac
 Delta de la rivière
 [Meandering rivers]
 Rivières à méandres
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fruits dans les vallées de départ
 [Moat]
@@ -2007,6 +2011,8 @@ Largeur sous le vent
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

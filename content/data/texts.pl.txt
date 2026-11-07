@@ -1956,6 +1956,10 @@ Piaszczysty brzeg jeziora
 Delta rzeki
 [Meandering rivers]
 Meandrujące rzeki
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Owoce w dolinach startowych
 [Moat]
@@ -2007,6 +2011,8 @@ Szerokość strony zawietrznej
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

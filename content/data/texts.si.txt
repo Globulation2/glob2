@@ -1956,6 +1956,10 @@ Peščena obala jezera
 Rečna delta
 [Meandering rivers]
 Vijugaste reke
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Sadje v začetnih dolinah
 [Moat]
@@ -2007,6 +2011,8 @@ Razmik prelazov
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

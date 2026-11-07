@@ -1956,6 +1956,10 @@ Tepi danau berpasir
 Delta sungai
 [Meandering rivers]
 Sungai berliku-liku
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Buah di lembah awal
 [Moat]
@@ -2007,6 +2011,8 @@ Lebar sisi teduh
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

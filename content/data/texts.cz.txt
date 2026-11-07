@@ -1956,6 +1956,10 @@ Písečný břeh jezera
 Říční delta
 [Meandering rivers]
 Meandrující řeky
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Ovoce v domovských údolích
 [Moat]
@@ -2007,6 +2011,8 @@ Rozestup průsmyků
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

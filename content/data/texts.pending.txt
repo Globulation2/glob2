@@ -87,3 +87,6 @@
 [Neap tide]
 [Mean tide]
 [Spring tide]
+[Deep channels]
+[Divide outcrops]
+[Tropical]

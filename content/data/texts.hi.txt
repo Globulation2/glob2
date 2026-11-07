@@ -1924,6 +1924,10 @@ Globulation 2 का कर्सर दिखाएँ।
 नदी का डेल्टा
 [Meandering rivers]
 बलखाती नदियाँ
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 शुरुआती घाटियों में फल
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2 का कर्सर दिखाएँ।
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

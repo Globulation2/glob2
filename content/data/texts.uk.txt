@@ -1956,6 +1956,10 @@ OpenGL недоступний у цій збірці.
 Дельта річки
 [Meandering rivers]
 Звивисті річки
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Фрукти в стартових долинах
 [Moat]
@@ -2007,6 +2011,8 @@ OpenGL недоступний у цій збірці.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

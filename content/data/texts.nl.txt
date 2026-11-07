@@ -1956,6 +1956,10 @@ Zandige meeroever
 Rivierdelta
 [Meandering rivers]
 Meanderende rivieren
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fruit in de startdalen
 [Moat]
@@ -2007,6 +2011,8 @@ Breedte van de lijzijde
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

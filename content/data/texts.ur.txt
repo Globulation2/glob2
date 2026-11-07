@@ -1924,6 +1924,10 @@ Globulation 2 کا کرسر دکھائیں۔
 دریائی ڈیلٹا
 [Meandering rivers]
 بل کھاتے دریا
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 آبائی وادیوں میں پھل
 [Moat]
@@ -1975,6 +1979,8 @@ Globulation 2 کا کرسر دکھائیں۔
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

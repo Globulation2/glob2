@@ -1956,6 +1956,10 @@ Aintziraren ertz hareatsua
 Ibai-delta
 [Meandering rivers]
 Ibai meandrodunak
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Fruta hasierako haranetan
 [Moat]
@@ -2007,6 +2011,8 @@ Haizebearen zabalera
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

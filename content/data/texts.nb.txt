@@ -1924,6 +1924,10 @@ Sandstrand langs innsjøen
 Elvedelta
 [Meandering rivers]
 Slyngende elver
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 Frukt i hjemmedaler
 [Moat]
@@ -1975,6 +1979,8 @@ Lebredde
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

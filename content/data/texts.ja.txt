@@ -1956,6 +1956,10 @@ Globulation 2のカーソルを表示します。
 河口の三角州
 [Meandering rivers]
 蛇行する川筋
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 開始地点の谷の果物
 [Moat]
@@ -2007,6 +2011,8 @@ Globulation 2のカーソルを表示します。
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

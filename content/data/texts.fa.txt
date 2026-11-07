@@ -1956,6 +1956,10 @@ OpenGL در این نسخه موجود نیست.
 دلتای رودخانه
 [Meandering rivers]
 رودخانه‌های مارپیچ
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 میوه در دره‌های آغازین
 [Moat]
@@ -2007,6 +2011,8 @@ OpenGL در این نسخه موجود نیست.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 

@@ -1956,6 +1956,10 @@ Globulation 2 커서를 표시합니다.
 강 삼각주
 [Meandering rivers]
 굽이치는 강
+[Deep channels]
+
+[Divide outcrops]
+
 [Fruit in home valleys]
 시작 골짜기의 과일
 [Moat]
@@ -2007,6 +2011,8 @@ Globulation 2 커서를 표시합니다.
 [Temperate]
 
 [Steppe]
+
+[Tropical]
 
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
 
