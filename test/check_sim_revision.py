@@ -29,8 +29,8 @@ RECORD = 'test/fixtures/multiplayer/FourSquares1.g2mr'
 TRACE = 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt'
 # What the sim version key is computed from (deploy/sim_version.py).
 KEY_INPUTS = ('src/app/Version.h', 'src/game/SimRevision.h')
-FIX = ('bump SIM_REVISION in src/game/SimRevision.h, then regenerate the record and trace with '
-       "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
+FIX = ('bump SIM_REVISION in src/game/SimRevision.h, then regenerate every revision-keyed fixture with '
+       'python3 tools/refresh_sim_fixtures.py')
 
 
 def load_sim_version():
@@ -91,8 +91,7 @@ def check(root, base=None):
     recorded = record_sim_version((root / RECORD).read_bytes())
     if recorded != key:
         problems.append(f'{RECORD} was recorded with sim version {recorded}, but this tree is {key}; '
-                        "regenerate it with python3 test/run_tests.py --update-fixtures "
-                        "--filter 'TurnEngineHarness/the committed*'")
+                        "regenerate it with python3 tools/refresh_sim_fixtures.py")
     if base:
         if git(root, 'cat-file', '-e', f'{base}^{{commit}}', check=False).returncode != 0:
             git(root, 'fetch', '--no-tags', '--depth=1', 'origin', base, check=False)

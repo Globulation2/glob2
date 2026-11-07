@@ -150,8 +150,8 @@ simulation equivalence job verifies it on Linux, Windows, macOS and in three bro
 requires identical traces (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
 simulation change makes it stale and must bump `SIM_REVISION`; `python3
-test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`
-records a fresh match and trace.
+tools/refresh_sim_fixtures.py` records a fresh match and trace along with the other
+revision-keyed fixtures.
 
 Building catalogs are part of match rules identity: a setup carries the canonical
 embedded catalog and its hash, and clients and verifiers compare it with the map

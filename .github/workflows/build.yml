@@ -1389,8 +1389,8 @@ jobs:
           # that needs a new sim version (test/check_sim_revision.py checks the bump).
           assert committed.replace(b'\r\n', b'\n') == reference, (
               'Every platform agrees, but not with the committed trace: the simulation changed. '
-              'Bump SIM_REVISION in src/game/SimRevision.h and regenerate test/fixtures/multiplayer with '
-              "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
+              'Bump SIM_REVISION in src/game/SimRevision.h and regenerate the fixtures with '
+              'python3 tools/refresh_sim_fixtures.py')
           print(f'All {expected} selected match verify traces match')
           PY
 
