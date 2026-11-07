@@ -9,6 +9,7 @@
 #include "MapEdit.h"
 #include "MapEditDialog.h"
 #include "PhoneEditor.h"
+#include "render/scene/SceneExtract.h"
 #include "EditorDock.h"
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"

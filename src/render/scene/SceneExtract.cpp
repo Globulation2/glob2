@@ -380,6 +380,12 @@ bool SceneExtractor::prepareChunk(const SceneInputs& input, PresentationFrame& s
     return true;
 }
 
+SceneSourceKey SceneSourceKey::of(const SimulationSnapshot::Handle& world, const SceneRequest& request)
+{
+    return {request, world.tick, world.worldIdentity, world.observationRevision, world.configurationRevision,
+        world.mapGenerations};
+}
+
 SimulationSnapshot::CaptureOptions SceneExtractor::captureOptions(const SceneRequest& request)
 {
     return {.presentation=true, .history=request.includeHistory, .telemetry=request.includeTelemetry,

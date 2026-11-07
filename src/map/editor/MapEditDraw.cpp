@@ -43,6 +43,11 @@ void MapEdit::draw(Uint64 frameTick)
 	drawDialog();
 }
 
+Uint32 MapEdit::renderFrameWait() const
+{
+	return globalContainer->gfx ? globalContainer->gfx->renderFrameWait() : 0;
+}
+
 void MapEdit::preparePresentation()
 {
     SceneRequest request;
@@ -51,7 +56,20 @@ void MapEdit::preparePresentation()
     request.selectedBuilding=Game::refOf(view.selectedBuilding);
     request.selectedUnit=Game::refOf(view.selectedUnit);
     request.view.displayW=int(camera.visibleW());request.view.displayH=int(camera.visibleH());
-    SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,view.render.ownScene);
+    // Capture is cheap for an unchanged world: the snapshot store returns its
+    // latest boundary. Preparing the scene is not, so a frame that changed
+    // neither the world nor the request draws the scene it already has.
+    const auto world=game.captureReadBoundary(SceneExtractor::captureOptions(request));
+    auto source=SceneSourceKey::of(world,request);
+    if (view.scene!=&view.render.ownScene || !preparedSource || *preparedSource!=source)
+    {
+        if (!sceneExtractor) sceneExtractor=std::make_unique<SceneExtractor>();
+        // Forget the old key first, so a preparation that throws is never reused.
+        preparedSource.reset();
+        sceneExtractor->prepare(world,request,view.render.ownScene);
+        preparedSource=std::make_unique<SceneSourceKey>(std::move(source));
+        ++scenePreparationCount;
+    }
     view.scene=&view.render.ownScene;
 }
 

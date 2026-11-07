@@ -36,6 +36,35 @@ static_assert(!AcceptsLivePresentationSource<Building>);
 
 TEST_SUITE("SceneExtract")
 {
+    TEST_CASE("a scene source key changes exactly when the world boundary or request does")
+    {
+        SimulationSnapshot::Handle world;
+        world.tick=7;world.worldIdentity=3;world.observationRevision=11;world.configurationRevision=5;
+        world.mapGenerations={1,2,3,4,5};
+        SceneRequest request;request.localTeam=1;request.includeScriptAreas=true;
+        const auto key=SceneSourceKey::of(world,request);
+        CHECK(key==SceneSourceKey::of(world,request));
+        // Leased payloads do not identify the boundary; only its revisions do.
+        auto leased=world;leased.entities=std::make_shared<SimulationSnapshot::Entities>();
+        CHECK(key==SceneSourceKey::of(leased,request));
+        const auto differs=[&](auto change) {
+            auto changedWorld=world;auto changedRequest=request;
+            change(changedWorld,changedRequest);
+            return key!=SceneSourceKey::of(changedWorld,changedRequest);
+        };
+        using H=SimulationSnapshot::Handle;
+        CHECK(differs([](H& w,SceneRequest&) { ++w.tick; }));
+        CHECK(differs([](H& w,SceneRequest&) { ++w.worldIdentity; }));
+        CHECK(differs([](H& w,SceneRequest&) { ++w.observationRevision; }));
+        CHECK(differs([](H& w,SceneRequest&) { ++w.configurationRevision; }));
+        for (size_t array=0; array<world.mapGenerations.size(); ++array)
+            CHECK(differs([&](H& w,SceneRequest&) { ++w.mapGenerations[array]; }));
+        CHECK(differs([](H&,SceneRequest& r) { r.view.overlay=1; }));
+        CHECK(differs([](H&,SceneRequest& r) { r.view.displayW=640; }));
+        CHECK(differs([](H&,SceneRequest& r) { r.localTeam=2; }));
+        CHECK(differs([](H&,SceneRequest& r) { r.selectedUnit=UnitRef{4,1}; }));
+    }
+
     TEST_CASE("superseded and retired frames promptly release all world leases")
     {
         SceneBuffer<PresentationFrame> buffer;

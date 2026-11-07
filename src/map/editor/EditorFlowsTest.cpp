@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Editor flows that guard unsaved work: quit and window close, replacing,
 // sharing and rerolling the map, overwrite confirmation, fertility progress
-// and dialogs that must not mark an unchanged map modified.
+// and dialogs that must not mark an unchanged map modified. Also the editor's
+// frame pacing and the scene it keeps between unchanged frames.
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "EditorDock.h"
 #include "MapEditorScreen.h"
 #include "LoadSaveDialog.h"
+#include "UnitConsts.h"
 #include <FileManager.h>
+#include <RenderFramePacer.h>
 #include <ScreenStack.h>
 #include <Toolkit.h>
 #include <filesystem>
@@ -105,6 +108,63 @@ void removeMap(const std::string &file)
 
 TEST_SUITE("EditorFlows")
 {
+	TEST_CASE("the editor follows the render pacer like a running game")
+	{
+		constexpr std::uint64_t ms = 1000000;
+		GAGCore::RenderFramePacer pacer;
+		pacer.configure(60);
+		REQUIRE(pacer.begin(1000 * ms));
+		// Early in a fast frame: input still wakes the editor within 8 ms.
+		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1001 * ms)) == 8);
+		// Close to the next frame: wake exactly when it is due.
+		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1012 * ms)) == 5);
+		// A frame slower than 1/60 s is followed at once. The former fixed
+		// 33 ms budget waited another 13 ms here, halving the rate to 30 FPS.
+		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1020 * ms)) == 0);
+		// Unlimited never waits for a frame, as in game; it used to wait 33 ms.
+		pacer.configure(0);
+		REQUIRE(pacer.begin(1020 * ms));
+		CHECK(MapEditorScreen::nativeFrameDelay(pacer.waitMilliseconds(1020 * ms)) == 0);
+	}
+
+	TEST_CASE("the editor keeps its scene until the world or the request changes [display]")
+	{
+		glob2test::HeadlessGlobals globals(displayOptions());
+		MapEdit editor;
+		blank(editor);
+		const auto draw = [&]
+		{
+			editor.drawMap(0, 0, globals->gfx->getW(), globals->gfx->getH());
+			return editor.scenePreparations();
+		};
+		const auto first = draw();
+		REQUIRE(first >= 1);
+		const auto *scene = editor.view.scene;
+		REQUIRE(scene == &editor.view.render.ownScene);
+		// Idle frames redraw the scene they already have.
+		CHECK(draw() == first);
+		CHECK(draw() == first);
+		CHECK(editor.view.scene == scene);
+		// A tracked map edit (painting) rebuilds it once, then it is kept again.
+		editor.game.map.markTerrain(0);
+		CHECK(draw() == first + 1);
+		CHECK(draw() == first + 1);
+		// An owner edit (placing a unit) rebuilds it, and the unit is in it.
+		auto *worker = editor.game.addUnit(20, 20, 0, WORKER, 0, 0, 0, 0);
+		REQUIRE(worker);
+		CHECK(draw() == first + 2);
+		CHECK(editor.view.scene->entities.unit(worker->gid));
+		CHECK(draw() == first + 2);
+		// A request change without a world change (selection) rebuilds it too.
+		editor.view.selectedUnit = worker;
+		CHECK(draw() == first + 3);
+		CHECK(draw() == first + 3);
+		// Standalone tools still get the current scene from preparePresentation.
+		editor.preparePresentation();
+		CHECK(editor.scenePreparations() == first + 3);
+		CHECK(editor.view.scene == scene);
+	}
+
 	TEST_CASE("window close quits a clean editor and asks in the editor when it is dirty [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());

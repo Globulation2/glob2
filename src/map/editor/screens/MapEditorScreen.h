@@ -24,6 +24,8 @@ class MapEditorScreen : public GAGGUI::Screen
 	void drawExecution() override;
 	std::vector<GAGGUI::ui::Host *> inspectionHosts() override;
 	Uint32 executionDelay(Uint32 now, Uint32) override;
+	//! Native wait before the next update and draw, given the render pacer's wait.
+	static Uint32 nativeFrameDelay(Uint32 renderWait);
 
 	// Follows the editor's live presentation; ScreenStack re-reads it each frame.
     bool usesResponsiveViewport() const override;
