@@ -165,6 +165,10 @@ jobs:
           rm -f build/linux/client/release/src/GlobalContainerArgs.o
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
+      - name: Check the stencil vectorizer
+        if: ${{ inputs.compiler == 'clang-18' }}
+        run: python3 tools/compiler/check_stencil_vectorizer.py --cxx clang++-18
+
       - name: Test compiler cache integration
         if: ${{ inputs.compiler == 'g++-13' && !inputs.generator_only }}
         id: test_compiler_cache_integration
