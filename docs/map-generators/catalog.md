@@ -32,7 +32,7 @@ guide is warranted.
 | [Continents](continents.md) | `continents` | 44 |
 | [Contested commons](../../src/map/generator/generators/ContestedCommonsGenerator.cpp) | `contested-commons` | 9 |
 | [Coral](coral.md) | `coral` | 21 |
-| [Crater lakes](../../src/map/generator/generators/CraterLakesGenerator.cpp) | `crater-lakes` | 4 |
+| [Crater lakes](crater-lakes.md) | `crater-lakes` | 4 |
 | [Drowned Forest](drowned-forest.md) | `drowned-forest` | 67 |
 | [Drumlin field](drumlin-field.md) | `drumlin-field` | 43 |
 | [Emoji](emoji/design.md) | `emoji` | 34 |
