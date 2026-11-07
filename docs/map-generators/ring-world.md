@@ -97,7 +97,7 @@ settings. Mean per colony, worst colony in brackets.
 | Variant | Total | Within 24 of swarm | Within 48 |
 | --- | --- | --- | --- |
 | Revision 3 | 1,684 | 98.0 (50) | 301.2 (251) |
-| Revision 4, defaults | 1,899 | 113.4 (70) | 339.0 (264) |
+| Revision 4, defaults | 1,902 | 112.2 (68) | 340.4 (262) |
 | Each climate pinned | 1,902 | 112.2 (68) | 340.4 (262) |
 | Deep ocean off | 1,902 | 112.2 (68) | 340.4 (262) |
 | Rock spine off | 1,915 | 114.5 (68) | 344.9 (270) |
