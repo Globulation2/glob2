@@ -4,6 +4,7 @@ import os
 import glob
 import io
 import atexit
+import SCons.Errors
 from pathlib import Path
 sys.path.append( os.path.abspath("scons") )
 import bundle
@@ -319,7 +320,11 @@ def main():
     SConsignFile(str(Path(bdir) / '.sconsign'))
     # Rehash a file only when its timestamp moved: a no-change build otherwise
     # rereads every source and header.
-    Decider('content-timestamp')
+    # SCons before 4.1 (Ubuntu 22.04's) names the same decider MD5-timestamp.
+    try:
+        Decider('content-timestamp')
+    except SCons.Errors.UserError:
+        Decider('MD5-timestamp')
     # Development and measurement builds also reuse scanned #include lists until
     # a file changes. After adding a header that shadows another on the include
     # path, run once with --implicit-deps-changed. Release builds always rescan.
