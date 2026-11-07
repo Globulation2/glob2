@@ -163,6 +163,14 @@ when a process exits, so a killed build leaks nothing. Children of a token holde
 acquire nothing. `GLOB2_JOBSERVER=0` disables the pool and `GLOB2_JOBSERVER_TOKENS`
 resizes it; Windows builds run without it. `python3 tools/dev_environment.py
 lanes` lists the builds running now.
+### Up-to-date checks
+
+SCons rehashes a file only when its timestamp changed (`Decider('content-timestamp')`),
+and every build except `release=1` keeps the scanned `#include` list of each file
+until that file changes (`implicit_cache`). Together they take a no-change
+`tools/dev_build.py . engine-tests unit-tests` from about 68 s to about 27 s on a
+32-core Linux host. After adding a header that shadows another one on the include
+path, or moving include directories, run one build with `--implicit-deps-changed`.
 
 `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
 the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction
