@@ -502,7 +502,8 @@ class MapGeneratorDefaultsTest
 			if (corruption == 2)
 			{
 				// Close the circular home/court boundary, regardless of the seed's
-				// rotation. This plugs every door without removing any structural wall.
+				// rotation, with cliff terrain: the doors are rough ground, which holds no
+				// stone. This plugs every door without removing any structural wall.
 				double outer = -1;
 				for (const auto &record : result.telemetry.records())
 					if (record.key == "gauntlet.arena.outer-radius")
@@ -512,9 +513,10 @@ class MapGeneratorDefaultsTest
 					for (int x = 0; x < world.map.getW(); ++x)
 						if (std::abs(std::hypot(x - world.map.getW() / 2.,
 											   y - world.map.getH() / 2.) - outer) < 1.5 &&
-							world.map.getResource(x, y).type != STONE)
+							terrainGroup(world.map.vertexTerrainAt(x, y)) != TerrainGroup::Obstacles &&
+							terrainGroup(world.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges)
 						{
-							world.map.setResourceByIndex(x, y, STONE, 1);
+							world.map.setVertexTerrain(x, y, CLIFFS);
 							++changed;
 						}
 			}
