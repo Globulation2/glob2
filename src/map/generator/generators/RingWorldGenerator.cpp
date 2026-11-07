@@ -63,7 +63,8 @@ using namespace MapGeneration;
 // - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
 //   SAND, WATER, DEEP_WATER, LOAM, MUDFLAT, SCREE, SHALE, TRAIL, BOULDERS, RIDGE_ROCK) that every
 //   shared helper and check reads, and paints looks over it with composeLooks (Sketch.h) at the very
-//   end, after every resource stage, so looks never change a rule or what a helper saw.
+//   end, after every resource stage, so looks never change a rule or what a helper saw. The 2.0
+//   features are planned from the stamp and the swarms alone, so validateWorld plans them again.
 // - Deep ocean (`deep-water`): ocean vertices kDeepSteps or more from any land are deep water
 //   (deepCore): swimmable but slower, no algae, still waters the land. The coastal shallows keep the
 //   beaches and the algae band; swimming across the ocean to the other coast or an island is slower.
@@ -79,11 +80,13 @@ using namespace MapGeneration;
 //   fits nowhere, no colony gets one.
 // - The ring road (`ring-road`): trail (Paths: twice the walking speed, buildable, holds nothing, so
 //   no crop ever grows on it or across it) from each colony's doorstep to the next all the way round
-//   the world: the cheapest walk that keeps off the wet farmland, laid before any deposit.
+//   the world: the cheapest walk that keeps off the wet farmland, laid before any deposit. Being
+//   permanent, it keeps the belt's loop open whatever grows; openBeltRoad stays as the backstop.
 // - Coasts: low shores in the bays are mudflat (Rough: slow, unbuildable, holds nothing, and unlike
 //   sand it does not inhibit growth) and the tips of headlands are boulders (Obstacles), never within
-//   kCoastKeep of a home. Lakes away from the homes are ringed with loam (Fertile: buildable crop land
-//   that waters its surroundings), their beaches included, since sand there only held growth back.
+//   kCoastKeep of a home. Every lake's beach is loam (Fertile: buildable crop land that waters its
+//   surroundings), since sand there only held growth back, and outside the home gardens a frayed ring
+//   of loam about kLoamDeep vertices deep surrounds it; the gardens keep plain grass.
 // - Islands themed: a stone island is volcanic (ash on its bare ground, pumice on its beach, the
 //   stone on grass at its middle); fruit and grain islands stay green.
 // - A climate, looks only (`climate`: temperate, steppe, tropical): grass graded by distance from
@@ -175,7 +178,7 @@ struct Climate
 };
 constexpr Climate kClimates[3] = {
 	{"temperate", PALE_SAND, DEEP_WATER, SPRING_MEADOW, MOSS, RIDGE_ROCK, TRAIL, MUDFLAT, GRANITE_TORS, 8, 26},
-	{"steppe", SAND, DEEP_WATER, LOAM, SPRING_MEADOW, HOODOOS, SANDSTONE, HARDPAN, SANDSTONE_BENCHES, 5, 14},
+	{"steppe", SAND, DEEP_WATER, LOAM, SPRING_MEADOW, HOODOOS, SANDSTONE, HARDPAN, SANDSTONE_BENCHES, 5, 17},
 	{"tropical", SAND, DARK_WATER, MOSS, LOAM, OUTCROP, OVERGROWN_ROAD, MUD, BOULDERS, 14, 48}};
 
 double unitDraw(std::mt19937 &rng)
@@ -911,10 +914,13 @@ void paintMechanics(Features &f, const Stamp &stamp, const Torus &t, const std::
 	islandVertex = dilate(t, islandVertex, 1);
 	// Lakes: loam rings outside the gardens.
 	const std::vector<int> fromLake = stepsFrom(t, stamp.lake);
+	// The ring's reach is measured straight (Euclidean), so it rounds the lake rather than squaring it.
+	const std::vector<std::int64_t> lakeReach = distanceSquaredTo(t, stamp.lake);
 	for (int i = 0; i < n; ++i)
 	{
-		if ((mech[i] != GRASS && mech[i] != SAND) || f.keep[i] || fromLake[i] < 1 ||
-			fromLake[i] > kLoamDeep + 2 * (gate[i] - 32768) / 32768)
+		const double reach = kLoamDeep + 2.0 * (gate[i] - 32768) / 32768;
+		if ((mech[i] != GRASS && mech[i] != SAND) || f.keep[i] || fromLake[i] < 1 || lakeReach[i] < 0 ||
+			double(lakeReach[i]) > reach * reach)
 			continue;
 		const int x = t.remainderX(i), y = i / t.w;
 		// The beach itself turns to loam everywhere (sand there only held growth back, and no grass is
@@ -1106,7 +1112,11 @@ TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, 
 	std::vector<unsigned char> wet(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 		wet[i] = wetType(mech[i]);
-	const std::vector<int> fromWet = stepsFrom(t, wet);
+	// Straight-line distance, so the grass grades in rounded bands rather than squares.
+	const std::vector<std::int64_t> wetReach = distanceSquaredTo(t, wet);
+	std::vector<double> fromWet(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		fromWet[i] = wetReach[i] < 0 ? 1e9 : std::sqrt(double(wetReach[i]));
 	std::mt19937 &random = context.stream(kLookStream);
 	const std::vector<int> fray = fractalNoise(t.w, t.h, 32, 3, random);
 	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
