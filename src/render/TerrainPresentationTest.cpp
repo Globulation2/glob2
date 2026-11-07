@@ -2516,7 +2516,11 @@ TEST_SUITE("TerrainValidation")
 		for (int y = 17; y <= 27; ++y)
 			for (int x = 4; x <= 27; ++x)
 				map.setVertexTerrain(x, y, x < 15 + (y % 2) ? ICEFALL : HEDGE);
-		// Four masses meeting at one cell, one on each corner.
+		// Three masses and a hedge meeting at one cell, then four masses.
+		map.setVertexTerrain(25, 29, ICEFALL);
+		map.setVertexTerrain(26, 29, CLIFFS);
+		map.setVertexTerrain(25, 30, HEDGE);
+		map.setVertexTerrain(26, 30, GLACIER);
 		map.setVertexTerrain(29, 29, ICEFALL);
 		map.setVertexTerrain(30, 29, CLIFFS);
 		map.setVertexTerrain(29, 30, GLACIER);
@@ -2543,34 +2547,51 @@ TEST_SUITE("TerrainValidation")
 		CHECK(ice >= 0);
 		CHECK(rock >= 0);
 		CHECK(std::minmax(layers[0].frame, layers[1].frame) == std::minmax(ice, rock));
-		// Where icefall, cliffs and glacier meet, all three draw, or the missing
-		// one would end in a square notch along the neighbouring cells' edges.
-		// Cell (22, 6): icefall west (two corners), cliffs north-east, glacier
-		// south-east. The third mass takes the obstacle slot, drawn last.
+		// Where three or four masses meet, every one draws, or a missing one
+		// would end in a square notch along the neighbouring cells' edges. Each
+		// stands back from every other corner, all masses or foliage here. Masses
+		// rank by more north corners, then more corners, then lower material id,
+		// and take slots 0 onward in that order.
+		const auto glacier = catalog.find("glacier"), obsidian = catalog.find("obsidian_ridge");
+		const auto apart = [&](auto id, unsigned own, int x, int y) {
+			const int frame = catalog.decorForeignFrame(id, own, 15u ^ own, colours(x, y));
+			CHECK(frame >= 0);
+			return frame;
+		};
+		// Cell (22, 6): icefall on the west corners, cliffs north-east, glacier
+		// south-east.
 		{
-			const auto glacier = catalog.find("glacier");
 			const auto three = compositor.decorLayers(scene, 22, 6);
-			const auto c = colours(22, 6);
-			CHECK(three[0].frame == catalog.decorForeignFrame(icefall, 0b0101, 0b1010, c));
-			CHECK(three[1].frame == catalog.decorForeignFrame(cliffs, 0b0010, 0b1101, c));
-			CHECK(three[2].frame == -1);
-			CHECK(three[3].frame == catalog.decorForeignFrame(glacier, 0b1000, 0b0111, c));
-			CHECK(three[3].frame >= 0);
+			CHECK(three[0].frame == apart(icefall, 0b0101, 22, 6));
+			CHECK(three[1].frame == apart(cliffs, 0b0010, 22, 6));
+			CHECK(three[2].frame == apart(glacier, 0b1000, 22, 6));
+			CHECK(three[3].frame == -1);
 		}
-		// Four masses fill slots 0 to 3: the north pair first, each pair in
-		// material id order, every one standing back from the other three.
+		// Cell (25, 29): icefall north-west, cliffs north-east, hedge south-west,
+		// glacier south-east. The hedge draws after all three masses, in slot 3.
 		{
-			const auto glacier = catalog.find("glacier"), obsidian = catalog.find("obsidian_ridge");
+			const auto mixed = compositor.decorLayers(scene, 25, 29);
+			const auto own = [&](auto id) { return id == icefall ? 0b0001u : 0b0010u; };
+			const auto first = std::min(icefall, cliffs), second = std::max(icefall, cliffs);
+			CHECK(mixed[0].frame == apart(first, own(first), 25, 29));
+			CHECK(mixed[1].frame == apart(second, own(second), 25, 29));
+			CHECK(mixed[2].frame == apart(glacier, 0b1000, 25, 29));
+			const int hedge = catalog.decorFrame(catalog.find("hedge"), 25, 29, true, scene.terrainSeed(), 0b0100,
+				colours(25, 29));
+			CHECK(hedge >= 0);
+			CHECK(mixed[3].frame == hedge);
+		}
+		// Cell (29, 29): one mass on each corner.
+		{
 			const auto four = compositor.decorLayers(scene, 29, 29);
-			const auto c = colours(29, 29);
-			const auto frame = [&](auto id, unsigned own) { return catalog.decorForeignFrame(id, own, 15u ^ own, c); };
-			// The initializer-list overload returns values, not references to temporaries.
-			const auto north = std::minmax({frame(icefall, 0b0001), frame(cliffs, 0b0010)});
-			const auto south = std::minmax({frame(glacier, 0b0100), frame(obsidian, 0b1000)});
-			CHECK(north.first >= 0);
-			CHECK(south.first >= 0);
-			CHECK(std::minmax({four[0].frame, four[1].frame}) == north);
-			CHECK(std::minmax({four[2].frame, four[3].frame}) == south);
+			const auto own = [&](auto id) {
+				return id == icefall ? 0b0001u : id == cliffs ? 0b0010u : id == glacier ? 0b0100u : 0b1000u;
+			};
+			const auto expect = [&](auto id) { return apart(id, own(id), 29, 29); };
+			CHECK(four[0].frame == expect(std::min(icefall, cliffs)));
+			CHECK(four[1].frame == expect(std::max(icefall, cliffs)));
+			CHECK(four[2].frame == expect(std::min(glacier, obsidian)));
+			CHECK(four[3].frame == expect(std::max(glacier, obsidian)));
 		}
 		// Hedge and thicket still join each other: one foliage frame, no mass.
 		map.setVertexTerrain(6, 30, HEDGE);
