@@ -205,6 +205,11 @@ class ModuleBinaryTest(unittest.TestCase):
         self.assertEqual(set(floors), assigned['map'] | assigned['sim'])
         self.assertFalse(assigned['map'] & assigned['sim'])
         self.assertTrue(all(count > 0 for count in floors.values()))
+        core, core_floors = run_tests.module_registry('core')
+        cortex = 'src/ai/cortex/CortexPolicyCoverageTest.cpp'
+        self.assertIn(cortex, assigned['sim'])
+        self.assertNotIn(cortex, core['sim'])
+        self.assertEqual(set(core_floors), core['map'] | core['sim'])
 
 
 class ShardTest(unittest.TestCase):

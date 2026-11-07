@@ -194,13 +194,24 @@ def parse_listing(xml_text, kind):
     return cases
 
 
-def module_registry():
-    """{program: registered test files} and the case floors from test/tests.py."""
+def module_registry(profile='full'):
+    """{program: registered test files} and the case floors from test/tests.py, without
+    the entries a compile profile does not build (their 'require' names a left-out
+    optional source group)."""
     sys.path.insert(0, str(ROOT / 'test'))
     import tests
-    assigned = {kind: {tests.source_path(entry if isinstance(entry, str) else entry[0]) for entry in entries}
+    import sources
+    left_out = set(sources.OPTIONAL_SOURCES) - sources.profile_features(profile)
+
+    def built(entry):
+        return isinstance(entry, str) or not set(entry[1].get('require', ())) & left_out
+    assigned = {kind: {tests.source_path(entry if isinstance(entry, str) else entry[0])
+                       for entry in entries if built(entry)}
                 for kind, entries in (('map', tests.MAP_TESTS), ('sim', tests.SIM_TESTS))}
-    return assigned, tests.MODULE_CASE_FLOORS
+    kept = set().union(*assigned.values())
+    floors = {path: count for path, count in tests.MODULE_CASE_FLOORS.items()
+              if path in kept or profile == 'full'}
+    return assigned, floors
 
 
 def case_contract(cases, listed, assigned, floors):
@@ -225,12 +236,16 @@ def case_contract(cases, listed, assigned, floors):
     return problems
 
 
+def compile_profile(build_dir):
+    try:
+        return json.loads((Path(build_dir) / 'profile.json').read_text()).get('compile_profile', 'full')
+    except (OSError, ValueError, AttributeError):
+        return 'full'
+
+
 def note_compile_profile(build_dir):
     """Say when the binaries come from a reduced compile profile (scons/sources.py)."""
-    try:
-        profile = json.loads((Path(build_dir) / 'profile.json').read_text()).get('compile_profile', 'full')
-    except (OSError, ValueError, AttributeError):
-        return
+    profile = compile_profile(build_dir)
     if profile != 'full':
         print(f'[run_tests] compile_profile={profile}: cases needing the code it leaves out are not built '
               'or not listed; verify final changes with the full profile', flush=True)
@@ -805,7 +820,7 @@ def main(argv=None):
         cases += list_cases(binary, kind)
         listed.append(kind)
     note_compile_profile(build_dir)
-    problems = case_contract(cases, listed, *module_registry())
+    problems = case_contract(cases, listed, *module_registry(compile_profile(build_dir)))
     if problems:
         raise SystemExit('[run_tests] module case contract failed:\n  ' + '\n  '.join(problems))
     if args.coverage_profile == 'compatibility':
