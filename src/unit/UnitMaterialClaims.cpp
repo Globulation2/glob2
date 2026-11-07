@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Unit.h"
 #include "Map.h"
-#include "Game.h"
+#include "Team.h"
 #include "Building.h"
 #include "map/claims/ClaimPattern.h"
 #include "map/claims/ClaimRecovery.h"
@@ -287,7 +287,7 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
     // As handleMovementGoingToResource: supplier fetches never consult claims.
     if(projectsSupplierFetch(building,material))return true;
     const auto& index=map.claimHireTargetIndex();
-    const HireTarget* target=index.current(owner->teamNumber,owner->game->stepCounter)?index.find(gid,material):nullptr;
+    const HireTarget* target=index.current(owner->teamNumber,owner->ctx.tick())?index.find(gid,material):nullptr;
     HireTarget local;
     if(!target) {
         // Not in this phase's pass (a building that joined the call lists

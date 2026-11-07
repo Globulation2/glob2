@@ -34,6 +34,16 @@ keep simulation headers (`src/map`, `src/unit`, `src/building`, `src/team`,
 UI and the full SDL umbrella. Hot per-cell accessors stay inline in their headers
 because release builds do not use LTO.
 
+Team, building and unit code reaches its game through `Team::ctx`
+(`src/engine/sim/SimContext.h`): plain pointers to the game header, map header,
+map, building types, unit cargo, area effects, animations, step counter, teams and
+players, plus `ctx.services` (`sim/SimServices.h`, implemented by `Game`) for the
+few calls such as `allocateScriptIdentity` or `resolveUnit`. Use `owner->ctx.x` and
+the specific header of `x` rather than `owner->game->x` and `Game.h`; the pointer
+read costs the same as the `game` read it replaces. Code that owns a game-wide
+pipeline (hiring, turret targeting, team statistics, area effects) still takes a
+`Game&`.
+
 `python3 test/check_header_layering.py` enforces this from the static include
 graph in a few seconds: layer ranks in `test/header_layers.json`, no version
 defaults in headers, no new directory-level include cycles, and fan-in budgets (with

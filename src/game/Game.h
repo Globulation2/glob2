@@ -31,6 +31,8 @@
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"
 #include "sim/ScriptClientChannel.h"
+#include "sim/SimContext.h"
+#include "sim/SimServices.h"
 
 namespace GAGCore
 {
@@ -157,7 +159,7 @@ struct DeferredGameSHA1
 	void apply(GAGCore::ChunkedBuffer& contents) const;
 };
 
-class Game
+class Game : public SimServices
 {
 	bool hasSavedRandomState = false;
 public:
@@ -190,6 +192,9 @@ private:
 	bool waterOnlyUnits=false;
 	static const bool verbose = false;
 public:
+	//! What a Team keeps to reach this game without Game.h (sim/SimContext.h).
+	SimContext simContext();
+
 	///Constructor. GUI can be NULL
 	Game(GameGUI *gui, MapEdit* edit=NULL);
 
@@ -271,7 +276,7 @@ public:
     void loadHiring(GAGCore::InputStream*, int versionMinor);
     Uint32 hiringChecksum() const;
     std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
-    const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;
+    const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const final;
     void drainTeamStats();
     void saveTeamStats(GAGCore::OutputStream*);
     void loadTeamStats(GAGCore::InputStream*, int versionMinor);
@@ -284,9 +289,9 @@ public:
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI(const SimulationSnapshot::Handle&);
 	// Normal-game target lists use the selected three-entry, two-tick cadence.
-	void forgetTurret(BuildingRef);
+	void forgetTurret(BuildingRef) final;
 	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1);
-	TurretTargeting::Pipeline* turretTargeting() const { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
+	TurretTargeting::Pipeline* turretTargeting() const final { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
@@ -326,7 +331,7 @@ public:
 	//! Advance live state after observing and applying due orders; never captures.
 	void advanceLiveSimulation(Sint32 localTeam);
 
-	void dirtyWarFlagGradient();
+	void dirtyWarFlagGradient() final;
 
 	// Script interface
 	int teamsCount() const { return mapHeader.getNumberOfTeams(); }
@@ -351,8 +356,8 @@ public:
 	// Optional creation-time training levels participate in placement validation;
 	// they cannot be applied after a unit has occupied an incompatible tile.
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy,
-        const std::array<int, NB_ABILITY>* initialLevels = nullptr);
-	bool isBuildingTypeAvailable(int typeNum) const;
+        const std::array<int, NB_ABILITY>* initialLevels = nullptr) final;
+	bool isBuildingTypeAvailable(int typeNum) const final;
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
@@ -385,8 +390,8 @@ public:
 		}
 		return ref;
 	}
-	Building *resolveBuilding(BuildingRef ref) const;
-	Unit *resolveUnit(UnitRef ref) const;
+	Building *resolveBuilding(BuildingRef ref) const final;
+	Unit *resolveUnit(UnitRef ref) const final;
 
 	bool checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
 	bool checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow=true);
@@ -501,7 +506,7 @@ public:
 	ClientEvents *clientEvents = nullptr;
 	ClientRequests *clientRequests = nullptr;
 	///Queue a notice for the client; a no-op without one.
-	void publishClientEvent(ClientEventVariant event);
+	void publishClientEvent(ClientEventVariant event) final;
 	///Execute an order and publish the client-visible effects it has
 	///(messages, voice, marks, pause, ghost removal, reconciliation). Orders
 	///that only concern the client (map marks, pause) are not passed to
@@ -535,7 +540,7 @@ public:
 		return ((building ? Team::MAX_COUNT : 0) + team) * SCRIPT_ENTITY_SLOTS_PER_TEAM + slot;
 	}
 	std::array<Uint32, SCRIPT_ENTITY_KINDS * Team::MAX_COUNT * SCRIPT_ENTITY_SLOTS_PER_TEAM> scriptGenerations{};
-	Uint32 allocateScriptIdentity(bool building, Uint16 gid);
+	Uint32 allocateScriptIdentity(bool building, Uint16 gid) final;
 	int totalPrestige;
 	int prestigeToReach;
 	bool totalPrestigeReached;

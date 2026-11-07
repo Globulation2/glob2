@@ -23,6 +23,7 @@
 
 #include "BaseTeam.h"
 #include "WinningConditions.h"
+#include "sim/SimContext.h"
 
 class Building;
 class BuildingsTypes;
@@ -67,7 +68,8 @@ public:
 		START_POS_FROM_SWARM = 3,
 	};
 
-	Team(Game *game);
+	//! ctx comes from game->simContext().
+	Team(Game *game, const SimContext &ctx);
 
 	virtual ~Team(void);
 
@@ -154,6 +156,8 @@ private:
 
 public:
 	Game *game;
+	//! The game state entity code reads per tick; see sim/SimContext.h.
+	SimContext ctx;
 	Map *map;
 
 	Unit **myUnits;

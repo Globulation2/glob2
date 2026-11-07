@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Building.h"
 #include "BuildingType.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "Map.h"
 #include "Team.h"
 #include "Unit.h"
 #include <bit>
@@ -105,7 +106,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 	else
 	{
 		if (purpose < 0 || purpose >= NB_ABILITY || !spec.training[purpose].enabled
-			|| owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+			|| owner->ctx.gameHeader->isUnitUpgradesDisabled()) return false;
 		allowed = unit ? (interaction->trainingMask&(1u<<purpose))!=0 : true;
 		if (unit && !unit->needsTraining(spec.training[purpose], purpose)) return false;
 		if (unit && !unit->trainingVisitSafe(*this,purpose)) return false;

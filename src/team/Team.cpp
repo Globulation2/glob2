@@ -4,8 +4,11 @@
 
 #include "BuildingType.h"
 #include "EngineTiming.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "Map.h"
 #include "GlobalContainer.h"
+#include "Building.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -18,16 +21,16 @@ const int Team::MAX_COUNT;
 
 Uint32 Team::attackableTeams() const
 {
-	return game->gameHeader.isPeacefulModeEnabled() ? 0 : enemies;
+	return ctx.gameHeader->isPeacefulModeEnabled() ? 0 : enemies;
 }
 
-Team::Team(Game *game)
-:BaseTeam()
+Team::Team(Game *game, const SimContext &ctx)
+:BaseTeam(), ctx(ctx)
 {
-	assert(game);
+	assert(game && ctx.map && ctx.services);
 	this->game=game;
-	this->map=&game->map;
-	race.setCatalog(game->gameHeader.getUnitCatalog());
+	this->map=ctx.map;
+	race.setCatalog(ctx.gameHeader->getUnitCatalog());
 	init();
 }
 
@@ -191,9 +194,9 @@ void Team::update()
 
 bool Team::openMarket()
 {
-	int numberOfTeam=game->mapHeader.getNumberOfTeams();
+	int numberOfTeam=ctx.mapHeader->getNumberOfTeams();
 	for (int ti=0; ti<numberOfTeam; ti++)
-		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
+		if (ti!=teamNumber && (ctx.teams[ti]->sharedVisionExchange & me))
 			return true;
 	return false;
 }
@@ -238,7 +241,7 @@ void Team::updateEvents()
 	while(!events.empty())
 	{
 		const GameEvent& event = events.front();
-		if((game->stepCounter - event.getStep()) > GAME_EVENT_MAX_AGE_TICKS)
+		if((ctx.tick() - event.getStep()) > GAME_EVENT_MAX_AGE_TICKS)
 		{
 			events.pop();
 		}
@@ -263,10 +266,10 @@ bool Team::wasRecentEvent(GameEventType type)
 
 std::string Team::getFirstPlayerName(void) const
 {
-	for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
+	for (int i=0; i<ctx.gameHeader->getNumberOfPlayers(); i++)
 	{
-		if (game->players[i]->team == this)
-			return game->players[i]->name;
+		if (ctx.players[i]->team == this)
+			return ctx.players[i]->name;
 	}
 	return {};
 }
@@ -275,8 +278,8 @@ std::string Team::getFirstPlayerName(void) const
 
 void Team::checkWinConditions()
 {
-	std::list<std::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
-	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	const auto& conditions = ctx.gameHeader->getWinningConditions();
+	for(auto i = conditions.begin(); i!=conditions.end(); ++i)
 	{
 		if((*i)->hasTeamWon(teamNumber, game))
 		{

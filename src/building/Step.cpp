@@ -16,7 +16,8 @@
 #include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "sim/SimServices.h"
+#include "Map.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Order.h"
@@ -30,7 +31,7 @@ void Building::step(void)
 		// for this operation, before the later production and worker updates.
 		const auto demand = materialDemand();
 		computeWishedMaterials(wishedMaterials, demand);
-		if (((owner->game->stepCounter + gid) & 255) == 0)
+		if (((owner->ctx.tick() + gid) & 255) == 0)
 			freeIdleGradients();
 		updateCallLists(demand);
 	}
@@ -280,7 +281,7 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
 // front; temporary unavailability never permanently consumes a candidate.
 bool Building::hireMaterialUnit(const int *targets, const int *served)
 {
-	const auto *lists = owner->game->hiringCandidates(*this);
+	const auto *lists = owner->ctx.services->hiringCandidates(*this);
 	if (!lists)
 		return false;
 
@@ -292,7 +293,7 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 			if (list.key == Hiring::Key{job, material})
 				for (const auto &suggestion : list.candidates)
 				{
-					auto *u = owner->game->resolveUnit(suggestion.unit);
+					auto *u = owner->ctx.services->resolveUnit(suggestion.unit);
 					if (!u || u->isDead || u->owner != owner ||
 						!u->hasCapability(UnitRuntimeTraits::Transport) || !u->performance[BUILD] ||
 						u->activity != Unit::ACT_RANDOM || u->medical != Unit::MED_FREE)
@@ -513,7 +514,7 @@ bool Building::subscribeForFlagingStep()
 
 bool Building::hireFlagUnits()
 {
-	const auto *lists = owner->game->hiringCandidates(*this);
+	const auto *lists = owner->ctx.services->hiringCandidates(*this);
 	if (!lists)
 		return false;
 
@@ -544,7 +545,7 @@ bool Building::hireFlagUnits()
 					if (list.key.job == Hiring::Job(unsigned(Hiring::Job::Clear) + role))
 						for (const auto &entry : list.candidates)
 						{
-							auto *u = owner->game->resolveUnit(entry.unit);
+							auto *u = owner->ctx.services->resolveUnit(entry.unit);
 							if (!u || u->isDead || u->owner != owner || u->attachedBuilding == this)
 								continue;
 							int travel = -1, distance = 0;

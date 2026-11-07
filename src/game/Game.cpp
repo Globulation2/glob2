@@ -57,6 +57,23 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	init(gui, edit);
 }
 
+SimContext Game::simContext()
+{
+	SimContext ctx;
+	ctx.gameHeader = &gameHeader;
+	ctx.mapHeader = &mapHeader;
+	ctx.map = &map;
+	ctx.buildingsTypes = &buildingsTypes;
+	ctx.unitCargo = &unitCargo;
+	ctx.areaEffects = &areaEffects;
+	ctx.animations = animations.get();
+	ctx.stepCounter = &stepCounter;
+	ctx.teams = teams;
+	ctx.players = players;
+	ctx.services = this;
+	return ctx;
+}
+
 Game::~Game()
 {
 	clearGame();

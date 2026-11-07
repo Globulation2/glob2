@@ -15,7 +15,10 @@
 #include <BinaryStream.h>
 #include <stdexcept>
 #include <algorithm>
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
+#include "sim/SimServices.h"
+#include "Map.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -42,8 +45,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	// identity
 	this->gid=gid;
 	setOwner(team);
-	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
-	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
+	scriptIdentity=owner->ctx.services->allocateScriptIdentity(true,gid);
+	entityRandom.initialize(owner->ctx.gameHeader->getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// type
 	bindType(typeNum,types);
@@ -152,8 +155,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 Building::~Building()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
-    owner->game->forgetTurret(Game::refOf(this));
-	owner->game->areaEffects.changed(gid);
+    owner->ctx.services->forgetTurret(BuildingRef{gid, scriptIdentity});
+	owner->ctx.areaEffects->changed(gid);
 	freeGradients();
 }
 
@@ -183,13 +186,13 @@ void Building::dirtyGradients()
 // changes (moves, types, ranges) still drop everything.
 bool Building::keepsStaleGradients(GradientDrop cause) const
 {
-	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->game->map.buildingGradientPipelineActive();
+	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->map->buildingGradientPipelineActive();
 }
 
 void Building::resetPathfindGradients(GradientDrop cause)
 {
 	const bool keep = keepsStaleGradients(cause);
-	const Uint32 now = owner->game->stepCounter;
+	const Uint32 now = owner->ctx.tick();
 	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
 	std::bitset<BUILDING_GRADIENT_COUNT> kept;
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
@@ -206,10 +209,10 @@ void Building::resetPathfindGradients(GradientDrop cause)
 		}
 		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
 		dropGradientSlot(i, cause);
-        owner->game->map.recordFieldCost(globalGradient[i],-1);
+        owner->map->recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
-		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
+		owner->map->recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
 	}
@@ -219,17 +222,17 @@ void Building::freeIdleGradients()
 {
 	// Units keep a gradient alive by reading it; 500 ticks after the last one, it goes.
 	constexpr Uint32 IDLE_TICKS = 500;
-	Uint32 now = owner->game->stepCounter;
+	Uint32 now = owner->ctx.tick();
 	for (int c=0; c<BUILDING_GRADIENT_COUNT; c++)
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
 			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
 			dropGradientSlot(c, GradientDrop::Idle);
-            owner->game->map.recordFieldCost(globalGradient[c],-1);
+            owner->map->recordFieldCost(globalGradient[c],-1);
 			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
-			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
+			owner->map->recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
 	}
@@ -243,7 +246,7 @@ void Building::freeGradients()
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		dropGradientSlot(i, GradientDrop::New);
-        if(globalGradient[i] && owner && owner->game)owner->game->map.recordFieldCost(globalGradient[i],-1);
+        if(globalGradient[i] && owner && owner->game)owner->map->recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
@@ -276,12 +279,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	gid = stream->readUint16("gid");
 	if (gid >= MAX_COUNT * Team::MAX_COUNT || GIDtoTeam(gid) != owner->teamNumber)
 		throw std::runtime_error("Invalid building identity");
-	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
+	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->ctx.services->allocateScriptIdentity(true,gid);
 	setOwner(owner);
 	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
 		loadEntityRandom(stream, entityRandom);
 	else
-		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
+		entityRandom.initialize(owner->ctx.gameHeader->getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// position
 	posX = stream->readSint32("posX");
@@ -831,11 +834,11 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 void Building::bindType(Sint32 id, BuildingsTypes* catalog)
 {
-    if (!catalog) catalog=&owner->game->buildingsTypes;
+    if (!catalog) catalog=owner->ctx.buildingsTypes;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
     typeNum=Uint16(id);
-    owner->game->areaEffects.changed(gid);
+    owner->ctx.areaEffects->changed(gid);
 }
 
 void Building::configureProductionState()
@@ -851,7 +854,7 @@ std::shared_ptr<SharedBuildingGradient> Building::leaseGradient(int slot)
     if (!lease) {
         lease=std::make_shared<SharedBuildingGradient>();
         lease->values=globalGradient[slot];lease->search=globalGradientSearch[slot].get();
-        lease->width=owner->game->map.getW();lease->height=owner->game->map.getH();
+        lease->width=owner->map->getW();lease->height=owner->map->getH();
     }
     return lease;
 }

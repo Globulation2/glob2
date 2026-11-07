@@ -6,8 +6,10 @@
 #include <cmath>
 
 #include "BuildingType.h"
-#include "Game.h"
+#include "AreaEffects.h"
+#include "sim/SimServices.h"
 #include "Map.h"
+#include "Building.h"
 #include "Team.h"
 #include "Unit.h"
 
@@ -40,7 +42,7 @@ bool allRemainingUnitsTrapped(Team& team)
 	// An active ally may clear an exit. Do not attempt a reachability proof.
 	for (int i = 0; i < Team::MAX_COUNT; ++i)
 	{
-		Team* ally = team.game->teams[i];
+		Team* ally = team.ctx.teams[i];
 		if (ally && ally != &team && (team.allies & ally->me)
 			&& ally->isAlive && !ally->hasLost && ally->playersMask != 0)
 			return false;
@@ -393,7 +395,7 @@ void Team::syncStep(void)
 		}
 	}
 	};
-	if (game->areaEffects.enabled() && !(game->stepCounter & (BuildingAreaEffects::PulseTicks-1)))
+	if (ctx.areaEffects->enabled() && !(ctx.tick() & (BuildingAreaEffects::PulseTicks-1)))
 		stepUnits.template operator()<true>();
 	else
 		stepUnits.template operator()<false>();
@@ -410,7 +412,7 @@ void Team::syncStep(void)
 			{
 				if (!building->type->isVirtual)
 				{
-					stats.events().variants.resize(game->buildingsTypes.size());
+					stats.events().variants.resize(ctx.buildingsTypes->size());
 					++stats.events().variants[building->typeNum].removed[GameplayMeasurements::DEMOLISHED];
 					if (building->type->shortTypeNum>=0 && building->type->shortTypeNum<IntBuildingType::NB_BUILDING && building->getLongLevel()<NB_BUILDING_LONG_LEVELS)
 						++stats.events().removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum][building->getLongLevel()];
@@ -451,7 +453,7 @@ void Team::syncStep(void)
 
 		// Selections notice the removal when their BuildingRef stops resolving;
 		// the client still needs the gid to drop its pending per-gid shadow.
-		game->publishClientEvent(ClientEvent::BuildingRemoved{building->gid});
+		ctx.services->publishClientEvent(ClientEvent::BuildingRemoved{building->gid});
 
 		detachBuilding(Building::GIDtoID(building->gid));
 		delete building;
@@ -501,7 +503,7 @@ void Team::syncStep(void)
 		}
 
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
-		(*it)->turretStep(game->stepCounter);
+		(*it)->turretStep(ctx.tick());
 
 	bool isDying= (playersMask==0)
 		|| allRemainingUnitsTrapped(*this)
@@ -521,7 +523,7 @@ void Team::syncStep(void)
 
 void Team::dirtyGlobalGradient()
 {
-	game->dirtyWarFlagGradient();
+	ctx.services->dirtyWarFlagGradient();
 	for (Building* building : liveBuildings)
 		building->resetPathfindGradients(Building::GradientDrop::Team);
 }

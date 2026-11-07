@@ -12,7 +12,11 @@
 #include "Building.h"
 #include <stdexcept>
 #include "BuildingType.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
+#include "sim/SimServices.h"
+#include "Utilities.h"
+#include "Map.h"
 #include "Team.h"
 #include "Unit.h"
 #include "UnitCargo.h"
@@ -28,18 +32,18 @@
 int Building::getEffectiveMaxHp(void) const
 {
 	const BuildingRuntimeTraits* healthType = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
-		? owner->game->buildingsTypes.getRuntime(constructionOriginTypeNum) : runtime;
-	return healthType->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
+		? owner->ctx.buildingsTypes->getRuntime(constructionOriginTypeNum) : runtime;
+	return healthType->hpMax * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 int Building::getEffectiveInitHp(void) const
 {
-	return type->hpInit * owner->game->gameHeader.getBuildingHpMultiplier();
+	return type->hpInit * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 int Building::getEffectiveHpInc(void) const
 {
-	return type->hpInc * owner->game->gameHeader.getBuildingHpMultiplier();
+	return type->hpInc * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 void Building::releaseAllWorkers()
@@ -64,7 +68,7 @@ void Building::kill(int diagnosticRemoval)
 	if (!type->isVirtual)
 	{
 		auto& measurements=owner->stats.events();
-		measurements.variants.resize(owner->game->buildingsTypes.size());
+		measurements.variants.resize(owner->ctx.buildingsTypes->size());
 		++measurements.variants[typeNum].removed[diagnosticRemoval];
 		if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && getLongLevel()<NB_BUILDING_LONG_LEVELS)
 			++measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
@@ -133,7 +137,7 @@ void Building::kill(int diagnosticRemoval)
 
 	buildingState=DEAD;
 	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1;
-	owner->game->areaEffects.changed(gid);
+	owner->ctx.areaEffects->changed(gid);
 	owner->stockSuppliers.remove(this);
 	owner->directStockSuppliers.remove(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
@@ -157,7 +161,7 @@ bool Building::fetchesFromMarkets() const
 
 bool Building::isUpgradeAvailable() const
 {
-	return owner->game->isBuildingTypeAvailable(type->nextLevel);
+	return owner->ctx.services->isBuildingTypeAvailable(type->nextLevel);
 }
 
 bool Building::canUnitWorkHere(Unit* unit,bool attraction,int role)
@@ -715,23 +719,23 @@ Uint32 Building::checkSum(std::vector<Uint32> *fields, bool legacy152)
 
 int Building::getEffectiveArmor() const
 {
-	if (!type->armor || !owner->game->areaEffects.enabled())
+	if (!type->armor || !owner->ctx.areaEffects->enabled())
 		return type->armor;
 	const auto *base = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
-						   ? owner->game->buildingsTypes.get(constructionOriginTypeNum)
+						   ? owner->ctx.buildingsTypes->get(constructionOriginTypeNum)
 						   : type;
 	const int x = posX - type->decLeft + base->decLeft + (base->width - 1) / 2;
 	const int y = posY - type->decTop + base->decTop + (base->height - 1) / 2;
-	const auto factor = owner->game->areaEffects.at(
+	const auto factor = owner->ctx.areaEffects->at(
 		BuildingAreaEffects::BuildingArmor, owner->teamNumber, owner->map->coordToIndex(x, y));
 	return factor == BuildingAreaEffects::Neutral ? type->armor
 												  : BuildingAreaEffects::scale(type->armor, factor);
 }
 int Building::applyAreaAttack(int value) const
 {
-	if (!value || !owner->game->areaEffects.enabled())
+	if (!value || !owner->ctx.areaEffects->enabled())
 		return value;
-	const auto factor = owner->game->areaEffects.at(
+	const auto factor = owner->ctx.areaEffects->at(
 		BuildingAreaEffects::BuildingAttack, owner->teamNumber,
 		owner->map->coordToIndex(posX + (type->width - 1) / 2, posY + (type->height - 1) / 2));
 	return factor == BuildingAreaEffects::Neutral ? value

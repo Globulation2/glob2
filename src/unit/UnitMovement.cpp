@@ -5,7 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
+#include "GameHeader.h"
 
 #include "Building.h"
 
@@ -315,7 +315,7 @@ void Unit::handleMovementAttackingAround()
 						{
 							int id=Building::GIDtoID(gid);
 							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
-							Building *b=owner->game->teams[team]->myBuildings[id];
+							Building *b=owner->ctx.teams[team]->myBuildings[id];
 							int shootDamage=b->runtime->damage(typeNum);
 							newQuality/=(1+shootDamage);
 							tryAcquireAttackTarget(x, y, newQuality, quality);
@@ -329,7 +329,7 @@ void Unit::handleMovementAttackingAround()
 						if (owner->attackableTeams() & tm)
 						{
 							int id=Building::GIDtoID(gid);
-							Unit *u=owner->game->teams[team]->myUnits[id];
+							Unit *u=owner->ctx.teams[team]->myUnits[id];
 							if (((owner->sharedVisionExchange & tm)==0))
 							{
 								int attackStrength=u->getRealAttackStrength();
@@ -357,7 +357,7 @@ void Unit::handleMovementAttackingAround()
 		const Uint16* guardGradient = performance[FLY] || attachedBuilding ? nullptr
 			: owner->map->getGuardAreasGradient(owner->teamNumber, movementAccess());
 		if (!performance[FLY] && !attachedBuilding && !guardGradient) { waitForGradient(); return; }
-		const bool balancing = owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
+		const bool balancing = owner->ctx.gameHeader->hasExperiment(ExperimentId::GuardAreaBalancing);
 		auto insideGuardArea = [&](int x, int y)
 		{
 			if (balancing || performance[FLY])
@@ -722,7 +722,7 @@ void Unit::handleMovementExitingBuilding()
 		jobPurpose=UnitJobPurpose::None;
 		activity=ACT_RANDOM;
 		movement=MOV_EXITING_BUILDING;
-		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner, UnitEffect::emergeTicks(speed));
+		owner->ctx.animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner, UnitEffect::emergeTicks(speed));
 		attachedBuilding->removeUnitFromInside(this);
 		attachedBuilding->updateConstructionState();
 		attachedBuilding=NULL;

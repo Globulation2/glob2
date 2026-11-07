@@ -5,7 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
+#include "GameHeader.h"
 
 #include "Building.h"
 
@@ -39,7 +39,7 @@ void Unit::selectPreferredGroundMovement(void)
 bool Unit::isUnitHungry(void)
 {
 	// A saved hungry unit must recover under no hunger rather than keep seeking food.
-	if (owner->game->gameHeader.isHungerDisabled() || hungriness<=0) return false;
+	if (owner->ctx.gameHeader->isHungerDisabled() || hungriness<=0) return false;
 	int realTrigHungry;
 	if (carriedMaterial==-1)
 		realTrigHungry=trigHungry;
@@ -107,8 +107,8 @@ void Unit::handleMagic(void)
 	if (magicActionTimeout > 0)
 		return;
 
-	Map *map = &owner->game->map;
-	Team **teams = owner->game->teams;
+	Map *map = owner->map;
+	Team **teams = owner->ctx.teams;
 
 	bool hasUsedMagicAction = false;
 	if (performance[MAGIC_ATTACK_AIR] || performance[MAGIC_ATTACK_GROUND])
@@ -143,7 +143,7 @@ void Unit::handleMagic(void)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
 							const int strength=applyAreaAttack(int(std::clamp<Sint64>(
-								(Sint64(attackForce)+experienceLevel)*owner->game->gameHeader.getGlassCannonScale(),0,INT_MAX)));
+								(Sint64(attackForce)+experienceLevel)*owner->ctx.gameHeader->getGlassCannonScale(),0,INT_MAX)));
 							const int damage=int(std::clamp<Sint64>(Sint64(strength)-enemyUnit->getRealArmor(true),0,INT_MAX));
 							if (damage > 0)
 							{
@@ -153,7 +153,7 @@ void Unit::handleMagic(void)
 								enemyUnit->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
 								enemyUnit->hp = int(std::max<Sint64>(INT_MIN,Sint64(enemyUnit->hp)-damage));
 
-								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
+								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->ctx.tick(), xi, yi, enemyUnit->typeNum));
 
 								incrementExperience(damage);
 								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
@@ -185,7 +185,7 @@ void Unit::handleMedical(void)
 	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING && !attachedBuilding)
 	{
 		medical=MED_FREE;
-		if (!owner->game->gameHeader.isHungerDisabled() && hungriness > 0 && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
+		if (!owner->ctx.gameHeader->isHungerDisabled() && hungriness > 0 && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
 			setNeedToRecheckMedical(1);
 			medical = MED_HUNGRY;
@@ -205,7 +205,7 @@ void Unit::handleMedical(void)
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
 	// Custom-game "no hunger" rule: units never grow hungry or starve.
-	if (!owner->game->gameHeader.isHungerDisabled() && hungriness>0)
+	if (!owner->ctx.gameHeader->isHungerDisabled() && hungriness>0)
 	{
 		hungry = Sint32(std::max<Sint64>(INT_MIN,Sint64(hungry)-hungriness));
 		if (hungry<=0)
@@ -229,7 +229,7 @@ void Unit::resolveDeath()
 {
 	// Custom-game "no permadeath" rule: clamp back up instead of letting the
 	// unit cross the death threshold; like the rule's description, HP stops at 1.
-	if (owner->game->gameHeader.isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD+1)
+	if (owner->ctx.gameHeader->isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD+1)
 		hp = UNIT_HP_DEATH_THRESHOLD+1;
 
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
@@ -275,8 +275,8 @@ void Unit::resolveDeath()
 			clearCargo();
 
 			// generate death animation (no-op in headless mode)
-			owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);
-			owner->game->animations->onUnitGone(gid);
+			owner->ctx.animations->onUnitDeath(*owner->map, posX, posY, owner);
+			owner->ctx.animations->onUnitGone(gid);
 		}
 		isDead = true;
 	}

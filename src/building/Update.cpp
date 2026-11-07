@@ -12,7 +12,8 @@
 #include "MaterialDemand.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "Map.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
@@ -26,7 +27,7 @@ void Building::updateBuildingSite(void)
 
 	fundConstructionFromInventory();
 	const bool resourceFull = constructionReserved == constructionBudget;
-	const bool instantComplete = !resourceFull && owner->game->gameHeader.isInstantConstructionEnabled();
+	const bool instantComplete = !resourceFull && owner->ctx.gameHeader->isInstantConstructionEnabled();
 	if ((resourceFull || instantComplete || siteCompletionPending) && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		siteCompletionPending=true;
@@ -37,7 +38,7 @@ void Building::updateBuildingSite(void)
 		// replacing it. Reserved service budgets cannot become construction costs.
 		if (!unitsInside.empty()) return;
 		const int completedTypeNum=getConstructionCompletionTypeNum();
-		BuildingType* completed=owner->game->buildingsTypes.get(completedTypeNum);
+		BuildingType* completed=owner->ctx.buildingsTypes->get(completedTypeNum);
 		if (!canTransferMaterialsTo(completed)) return;
 		const int completedX=(posX-type->decLeft+completed->decLeft)&owner->map->getMaskW();
 		const int completedY=(posY-type->decTop+completed->decTop)&owner->map->getMaskH();
@@ -49,7 +50,7 @@ void Building::updateBuildingSite(void)
 					   : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADED
 															: GameplayMeasurements::NEW_BUILDING;
 			auto& measurements=owner->stats.events();
-			measurements.variants.resize(owner->game->buildingsTypes.size());
+			measurements.variants.resize(owner->ctx.buildingsTypes->size());
 			++measurements.variants[completedTypeNum].completed[kind];
 			if (completed->shortTypeNum>=0 && completed->shortTypeNum<IntBuildingType::NB_BUILDING && completed->level<NB_UNIT_LEVELS)
 				++measurements.completed[kind][completed->shortTypeNum][completed->level];
@@ -65,7 +66,7 @@ void Building::updateBuildingSite(void)
 		}
 		const bool zeroCost = constructionBudget == BuildingMaterialCost{};
 		constructionBudget.fill(0);
-		const BuildingType* originType=constructionOriginTypeNum>=0 ? owner->game->buildingsTypes.get(constructionOriginTypeNum) : nullptr;
+		const BuildingType* originType=constructionOriginTypeNum>=0 ? owner->ctx.buildingsTypes->get(constructionOriginTypeNum) : nullptr;
 		constructionOriginTypeNum=-1;
 		repairInitialDeficit=repairHealthGranted=0;
 
@@ -118,7 +119,7 @@ void Building::updateBuildingSite(void)
 		owner->addToStaticAbilitiesLists(this);
 
 		setMapDiscovered();
-		owner->pushGameEvent(GameEvent::buildingCompleted(owner->game->stepCounter, getMidX(), getMidY(), typeNum));
+		owner->pushGameEvent(GameEvent::buildingCompleted(owner->ctx.tick(), getMidX(), getMidY(), typeNum));
 
 		// we need to do an update again
 		updateCallLists();
@@ -293,7 +294,7 @@ void Building::getMaterialCountToRepair(int materials[MaterialCount])
 		return;
 	}
 	int repairLevelTypeNum=type->prevLevel;
-	BuildingType *repairBt=owner->game->buildingsTypes.get(repairLevelTypeNum);
+	BuildingType *repairBt=owner->ctx.buildingsTypes->get(repairLevelTypeNum);
 	assert(repairBt);
 	Sint64 fDestructionRatio=(Sint64(hp)<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 	Sint32 fTotErr=0;
@@ -327,7 +328,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	if (targetLevelTypeNum==BUILDING_LEVEL_NONE)
 		return false;
 
-	BuildingType *targetBt=owner->game->buildingsTypes.get(targetLevelTypeNum);
+	BuildingType *targetBt=owner->ctx.buildingsTypes->get(targetLevelTypeNum);
 	if (!canTransferMaterialsTo(targetBt)) return false;
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
@@ -430,7 +431,7 @@ void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	BuildingType *targetBt=owner->game->buildingsTypes.get(type->nextLevel);
+	BuildingType *targetBt=owner->ctx.buildingsTypes->get(type->nextLevel);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
@@ -464,7 +465,7 @@ bool Building::isHardSpaceForBuildingSite(void)
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState)
 {
 	// Also informs extracted scene controls and AI feasibility checks.
-	if (requestedState==UPGRADE && owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+	if (requestedState==UPGRADE && owner->ctx.gameHeader->isUnitUpgradesDisabled()) return false;
 	if (requestedState==REPAIR && !type->semantics.repairable) return false;
 	int futureBuildingTypeId=BUILDING_LEVEL_NONE;
 	if (requestedState==UPGRADE)
@@ -476,7 +477,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 
 	if (futureBuildingTypeId==BUILDING_LEVEL_NONE)
 		return true;
-	BuildingType *bt=owner->game->buildingsTypes.get(futureBuildingTypeId);
+	BuildingType *bt=owner->ctx.buildingsTypes->get(futureBuildingTypeId);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;
