@@ -419,8 +419,9 @@ Sandstone benches are a pale caprock split by joints over thick beds that step b
 at their feet. Obsidian ridge is a heap of flat glassy shards, each turned its own
 way to the sky with an occasional glint and bright crests where they meet. Granite
 tors are rounded blocks broken by sheeting joints, with moss in the shaded gaps.
-Travertine terraces are matte calcite steps holding shallow milky pools, each
-spilling over a rounded drape.
+Travertine terraces show only the stone, since the renderer stacks the tiers: ivory
+to beige calcite in soft horizontal beds, with porous beds of pinholes and a few long
+lenses between denser, almost clean ones, on fluted pale flowstone walls.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at

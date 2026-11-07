@@ -445,42 +445,47 @@ def granite_wall(t, c, g):
 
 
 # --------------------------------------------------------------------------
-# Travertine terraces: matte calcite steps holding shallow, milky pools, each
-# spilling over a rounded drape to the step below.
+# Travertine terraces: the stone itself (the renderer stacks the tiers).
+# Ivory to beige calcite in faint wavy bands, pocked with the small,
+# sideways-stretched pores travertine is known for, with rusty stains.
 # --------------------------------------------------------------------------
 
-TRAVERTINE_PATCH = [lambda r: octaves(r, 2, 3), lambda r: octaves(r, 2, 2), lambda r: octaves(r, 6, 2)]
-TRAVERTINE_DETAIL = [lambda r: octaves(r, 1, 3, CELL), lambda r: octaves(r, 1, 2, CELL), lambda r: octaves(r, 3, 2, CELL)]
+TRAVERTINE_PATCH = [lambda r: octaves(r, 2, 3, stretch=2), lambda r: octaves(r, 2, 3, stretch=5),
+                    lambda r: octaves(r, 14, 2, stretch=3), lambda r: octaves(r, 32, 2), lambda r: octaves(r, 4, 2),
+                    lambda r: octaves(r, 5, 2, stretch=3)]
+TRAVERTINE_DETAIL = [lambda r: octaves(r, 1, 3, CELL, stretch=2), lambda r: octaves(r, 1, 3, CELL, stretch=5),
+                     lambda r: octaves(r, 6, 2, CELL, stretch=3), lambda r: octaves(r, 14, 2, CELL),
+                     lambda r: octaves(r, 2, 2, CELL), lambda r: octaves(r, 2, 2, CELL, stretch=3)]
 
 
 def travertine_surface(colours, interior, filled):
     patches = [_patches("travertine", TRAVERTINE_PATCH, c) for c in (0, 1)]
     detail = _details("travertine", TRAVERTINE_DETAIL, interior) if filled else None
-    level_field, wet, tone = (blend(colours, [patches[0][i], patches[1][i]], detail[i] if detail else None)
-                              for i in range(3))
-    t = level_field * 3.2
-    lv = np.floor(t)
-    f = t - lv
-    drape = smooth(0.70, 1.0, f) ** 0.8
-    lip = smooth(0.0, 0.04, f) * smooth(0.14, 0.06, f)
-    relief = 0.12 * (lv + drape) + 0.03 * lip
-    n, lam = light(relief, 9)
-    rgb = mix((218, 210, 192), (232, 226, 212), tone)
-    rgb = np.where((f > 0.68)[..., None], mix(rgb, (204, 180, 146), 0.25), rgb)
-    rgb = mix(rgb, (244, 240, 230), lip * 0.6)
-    pool = (f > 0.12) & (f < 0.6) & (wet > 0.55)
-    depth = np.clip((f - 0.12) / 0.5, 0, 1)
-    water = mix((196, 214, 206), (164, 194, 192), depth)        # matte, milky: no glint
-    rgb = np.where(pool[..., None], water, rgb)
-    rgb = rgb * np.clip(0.94 + 0.6 * (lam - LIGHT[2]), 0.6, 1.08)[..., None]
-    return images(rgb, 0.4 + 0.5 * tone, 0.5 + 0.8 * (tone - 0.5), wet)
+    tone, band, pores, grain, stain, lenses = (blend(colours, [patches[0][i], patches[1][i]], detail[i] if detail else None)
+                                       for i in range(6))
+    layers = smooth(0.30, 0.70, band)                            # bedding, broad and wavy across the stone
+    # Pores follow the bedding: porous beds riddled with pinholes and a few
+    # long lenses, dense beds between them almost clean.
+    porous = smooth(0.40, 0.70, 0.5 * band + 0.5 * stain)        # beds that wander and pinch out
+    pit = np.maximum(smooth(0.71, 0.80, pores) * porous, smooth(0.80, 0.86, lenses) * smooth(0.3, 0.6, porous))
+    soft = ndimage.gaussian_filter(pit, 1.6)                     # weathered, not punched in
+    relief = 0.5 + 0.04 * (tone - 0.5) + 0.02 * layers - 0.03 * soft + 0.015 * (grain - 0.5)
+    n, lam = light(relief, 14)
+    rgb = ramp(0.5 + 0.9 * (tone - 0.5), [(0, (206, 190, 160)), (0.5, (224, 212, 188)), (1, (238, 230, 212))])
+    rgb = mix(rgb, (198, 180, 148), (1 - layers) * 0.20)
+    rgb = mix(rgb, (192, 150, 104), smooth(0.55, 0.85, 0.5 * stain + 0.5 * tone) * 0.14)  # iron staining
+    rgb = rgb * (0.95 + 0.08 * grain)[..., None]
+    rgb = mix(rgb, (160, 138, 108), pit * 0.45)                   # pore floors in shadow
+    rgb = rgb * np.clip(0.96 + 0.6 * (lam - LIGHT[2]), 0.7, 1.1)[..., None]
+    return images(rgb, 0.4 + 0.5 * tone, 0.5 + 0.8 * (grain - 0.5) - 0.4 * pit, stain)
 
 
 def travertine_wall(t, c, g):
-    colour = tuple(int(a + (b - a) * t) for a, b in zip((188, 156, 116), (226, 214, 190)))
-    shade = 0.84 + 0.28 * (c - 0.5)
-    if g > 0.62:
-        colour = tuple(int(a * 0.7 + b * 0.3) for a, b in zip(colour, (176, 122, 70)))   # ochre staining
+    """Fluted white flowstone, cream at the foot, with an occasional ochre seep."""
+    colour = tuple(int(a + (b - a) * t ** 0.8) for a, b in zip((206, 190, 160), (244, 240, 230)))
+    shade = 0.80 + 0.36 * (c - 0.5)
+    if c > 0.78:
+        colour = tuple(int(a * 0.86 + b * 0.14) for a, b in zip(colour, (190, 140, 88)))  # ochre seep down a flute
     return tuple(int(min(255, ch * shade)) for ch in colour)
 
 
