@@ -407,6 +407,12 @@ before interpreting timings. Run without concurrent builds and repeat paired
 measurements; profiling overhead and one fixture do not establish performance
 on every browser or game stage.
 
+Automated browsers (`navigator.webdriver`, as under Playwright) and `?intro=0`
+open games without the opening cloud cover by setting `GLOB2_INTRO_COVER=0`.
+While the cover is closed, its first key press only parts the clouds, so
+scripted gameplay input would otherwise be swallowed. Native runs honour the
+same variable.
+
 Normal gameplay does not poll WebGL errors, because `getError()` can force GPU
 synchronization. `?gl-errors=1` enables frame-boundary error collection for
 renderer validation; `renderContext.error` is `null` when collection is
