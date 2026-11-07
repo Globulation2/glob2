@@ -3,7 +3,7 @@
 #include "ClearingLandscape.h"
 #include "Contact.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -95,8 +95,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 // rival, on its own side of the forest (equalCostSites, Contact.h). Each is a pocket cut in the
 // forest holding a fruit grove, a wheat patch and a stone clump. Costs are measured on the planted
 // forest, so the groves lie at the same worker-hours from every home whatever the forest's gaps.
-void hideGroves(Map &map, const Layout &L, GenerationContext &context, const OldGrowthOptions &o,
-				int teams)
+void hideGroves(GenerationMap &map, const Layout &L, GenerationContext &context,
+				const OldGrowthOptions &o, int teams)
 {
 	const Torus &t = L.t;
 	const int n = t.size();
@@ -164,7 +164,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "old growth layout";
 	const OldGrowthOptions o(context.request);
@@ -175,7 +175,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -275,12 +275,12 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	const OldGrowthOptions o(context.request);
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "old growth"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

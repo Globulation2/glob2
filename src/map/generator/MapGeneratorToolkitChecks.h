@@ -30,6 +30,7 @@
 #include "UnitConsts.h"
 #include "GraphMaze.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -342,10 +343,12 @@ inline void plantingChecks()
 		for (int i = 0; i < shore.size(); ++i)
 			if (!allowed[i])
 				assert(terrain[i] == before[i]);
-		writeVertices(shoreGame.map, terrain);
+		writeVertices(GenerationMap(shoreGame.map).ref(), terrain);
 		const auto fertility = cropGrowthField(terrain, shore);
-		assert(plantShoreFields(shoreGame.map, shore, fields, fertility, 0) == 0);
-		assert(plantShoreFields(shoreGame.map, shore, fields, fertility, 100) >= 48);
+		assert(plantShoreFields(GenerationMap(shoreGame.map).ref(), shore, fields, fertility, 0) ==
+			   0);
+		assert(plantShoreFields(GenerationMap(shoreGame.map).ref(), shore, fields, fertility,
+								100) >= 48);
 		for (const auto &field : fields)
 			for (int y = 0; y < 4; ++y)
 				for (int x = 0; x < 4; ++x)
@@ -374,9 +377,10 @@ inline void plantingChecks()
 		assert(!openFields.empty() && pureTiles(terrain, shore, WATER) == water);
 		for (int i = 0; i < shore.size(); ++i)
 			assert(terrain[i] != SAND || before[i] == SAND);
-		writeVertices(openGame.map, terrain);
+		writeVertices(GenerationMap(openGame.map).ref(), terrain);
 		const auto openFertility = cropGrowthField(terrain, shore);
-		assert(plantShoreFields(openGame.map, shore, openFields, openFertility, 100) > 0);
+		assert(plantShoreFields(GenerationMap(openGame.map).ref(), shore, openFields, openFertility,
+								100) > 0);
 		const auto envelope = fertileCropEnvelope(openGame.map, openFertility);
 		assert(!envelope[shore.at(32, 32)]);
 		for (int tick = 0; tick < 256; ++tick) openGame.map.growResources();
@@ -391,7 +395,7 @@ inline void plantingChecks()
 	const Torus t(map);
 	assert(clearGround(map, 5, 5));
 	const auto anywhere = [](int) { return true; };
-	assert(growPatch(map, t, t.at(20, 20), WHEAT, 12, anywhere) == 12);
+	assert(growPatch(GenerationMap(map).ref(), t, t.at(20, 20), WHEAT, 12, anywhere) == 12);
 	assert(countResource(map, WHEAT) == 12 && !clearGround(map, 20, 20));
 	std::vector<unsigned char> wheat(t.size(), 0), seed(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -423,7 +427,7 @@ inline void plantingChecks()
 	// Only eligible tiles are planted, and the count stops where eligibility does: a 2 by 4 box.
 	const auto box = [&](int i)
 	{ return i % t.w >= 40 && i % t.w < 42 && i / t.w >= 40 && i / t.w < 44; };
-	assert(growPatch(map, t, t.at(40, 40), WOOD, 50, box) == 8);
+	assert(growPatch(GenerationMap(map).ref(), t, t.at(40, 40), WOOD, 50, box) == 8);
 	assert(countResource(map, WOOD) == 8);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
@@ -433,8 +437,8 @@ inline void plantingChecks()
 	// exhaust its four tiles honestly, and leave all surrounding ground clear.
 	const auto seamPatch = [&](int i)
 	{ return i % t.w < 2 && i / t.w >= 10 && i / t.w < 12 && clear(i); };
-	assert(plantPatchNear(map, t, {63, 10, 3}, WHEAT, 12, seamPatch) == 4);
-	assert(plantPatchNear(map, t, {63, 10, 3}, WHEAT, 12, seamPatch) == 0);
+	assert(plantPatchNear(GenerationMap(map).ref(), t, {63, 10, 3}, WHEAT, 12, seamPatch) == 4);
+	assert(plantPatchNear(GenerationMap(map).ref(), t, {63, 10, 3}, WHEAT, 12, seamPatch) == 0);
 	assert(clearGround(map, 63, 10) && clearGround(map, 2, 10));
 
 	GenerationRequest request;
@@ -449,7 +453,7 @@ inline void plantingChecks()
 				map.setVertexTerrain(x, y, WATER);
 	}
 	map.layBeaches();
-	seedAlgae(map, context, t, "algae", 100, AlgaeBand::anyWater(1));
+	seedAlgae(GenerationMap(map).ref(), context, t, "algae", 100, AlgaeBand::anyWater(1));
 	const int anywhereAlgae = countResource(map, ALGA);
 	assert(anywhereAlgae > 0);
 	std::vector<unsigned char> wet(t.size()), dry(t.size());
@@ -465,14 +469,14 @@ inline void plantingChecks()
 	}
 	const std::vector<int> offshore = stepsFrom(t, dry, wet);
 	// The band constrains the clumps' centres, so single-tile clumps show it exactly.
-	seedAlgae(map, context, t, "algae", 100, AlgaeBand{2, 3, 1, 0});
+	seedAlgae(GenerationMap(map).ref(), context, t, "algae", 100, AlgaeBand{2, 3, 1, 0});
 	assert(countResource(map, ALGA) > 0);
 	for (int i = 0; i < t.size(); ++i)
 		if (map.getResource(i % t.w, i / t.w).type == ALGA)
 			assert(offshore[i] >= 2 && offshore[i] <= 3);
 	assert(scaledCount(40, 0) == 0);
 	map.setNoResource(8, 40, 1);
-	seedAlgae(map, context, t, "algae", 0, AlgaeBand::anyWater(1));
+	seedAlgae(GenerationMap(map).ref(), context, t, "algae", 0, AlgaeBand::anyWater(1));
 
 	// The swarm clearance: the 4x4 footprint and kSwarmClearance tiles round it.
 	context.bootX[0] = 30;
@@ -486,7 +490,7 @@ inline void plantingChecks()
 			map.setResourceByIndex(30 + dx, 10 + dy, STONE, 1);
 	std::vector<unsigned char> keep(t.size(), 0);
 	keep[t.at(30, 10)] = 1;
-	clearAroundSwarms(map, context, t, &keep);
+	clearAroundSwarms(GenerationMap(map).ref(), context, t, &keep);
 	for (int dy = -3; dy < 7; ++dy)
 		for (int dx = -3; dx < 7; ++dx)
 		{
@@ -537,12 +541,12 @@ inline void roadChecks()
 		map.setResourceByIndex(15, y, STONE, 1);
 	}
 	assert(countResource(map, STONE) == 32);
-	assert(openRoad(map, Torus(map), {t.at(2, 8)}, goal));
+	assert(openRoad(GenerationMap(map).ref(), Torus(map), {t.at(2, 8)}, goal));
 	assert(countResource(map, STONE) == 31);
 	std::vector<unsigned char> wall(t.size(), 0);
 	for (int y = 0; y < t.h; ++y)
 		wall[t.at(9, y)] = wall[t.at(15, y)] = 1;
-	assert(!openRoad(map, Torus(map), {t.at(2, 8)}, goal, &wall));
+	assert(!openRoad(GenerationMap(map).ref(), Torus(map), {t.at(2, 8)}, goal, &wall));
 	assert(countResource(map, STONE) == 31);
 }
 
@@ -566,20 +570,20 @@ inline void settlementChecks()
 		game.addTeam();
 		const std::vector<unsigned char> everywhere(t.size(), 1);
 		assert(settleColonies(
-			game, context, "starts", [&](int) { return everywhere; },
+			GenerationWorld(game).ref(), context, "starts", [&](int) { return everywhere; },
 			[](int team) { return MapGeneratorPoint(team ? 44 : 12, 20); }));
 		assert(context.bootX[0] == 12 && context.bootY[0] == 20 && context.bootX[1] == 44);
 		ColonyWalk walk = walkFromFirstColony(map, 2, "the map", "");
 		assert(walk.error.empty() && walk.workers[1].size() == 3 && walk.steps[t.at(12, 19)] >= 0);
 		for (int i : walk.workers[1])
 			assert(walk.steps[i] > 0);
-		assert(!reopenCrampedStarts(game, context, {}));
+		assert(!reopenCrampedStarts(GenerationWorld(game).ref(), context, {}));
 		// Scoring the finished colonies.
-		growPatch(map, t, t.at(12, 26), WHEAT, 10, [](int) { return true; });
-		growPatch(map, t, t.at(44, 26), WHEAT, 10, [](int) { return true; });
-		growPatch(map, t, t.at(8, 14), WOOD, 10, [](int) { return true; });
-		growPatch(map, t, t.at(40, 14), WOOD, 10, [](int) { return true; });
-		const StartQualityReport report = scoreStarts(game, 2);
+		growPatch(GenerationMap(map).ref(), t, t.at(12, 26), WHEAT, 10, [](int) { return true; });
+		growPatch(GenerationMap(map).ref(), t, t.at(44, 26), WHEAT, 10, [](int) { return true; });
+		growPatch(GenerationMap(map).ref(), t, t.at(8, 14), WOOD, 10, [](int) { return true; });
+		growPatch(GenerationMap(map).ref(), t, t.at(40, 14), WOOD, 10, [](int) { return true; });
+		const StartQualityReport report = scoreStarts(GenerationWorld(game).ref(), 2);
 		assert(report.measured && report.colonies.size() == 2);
 		double winShare = 0;
 		for (const ColonyQuality &colony : report.colonies)
@@ -627,7 +631,7 @@ inline void settlementChecks()
 		GenerationContext context(request);
 		context.bootX[0] = 20;
 		context.bootY[0] = 20;
-		guaranteeStartingResources(game, context, 24, 32);
+		guaranteeStartingResources(GenerationWorld(game).ref(), context, 24, 32);
 		const auto nearest = [&](int type)
 		{
 			const std::vector<int> steps =
@@ -660,7 +664,7 @@ inline void settlementChecks()
 				}
 		pocket.setResourceByIndex(28, 20, WHEAT, 1);
 		pocket.setResourceByIndex(12, 20, WOOD, 1);
-		guaranteeStartingResources(walled, context, 24, 32);
+		guaranteeStartingResources(GenerationWorld(walled).ref(), context, 24, 32);
 		assert(countResource(pocket, STONE) < 24 && countResource(pocket, WHEAT) == 1 &&
 			   countResource(pocket, WOOD) == 1);
 		// The same pocket with the ring protected: the stone stays and crops are placed inside.
@@ -672,7 +676,7 @@ inline void settlementChecks()
 				designed.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 		designed.setResourceByIndex(28, 20, WHEAT, 1);
 		designed.setResourceByIndex(12, 20, WOOD, 1);
-		guaranteeStartingResources(keep, context, 24, 32, 0, &ring);
+		guaranteeStartingResources(GenerationWorld(keep).ref(), context, 24, 32, 0, &ring);
 		assert(countResource(designed, STONE) == 24 && countResource(designed, WHEAT) > 1 &&
 			   countResource(designed, WOOD) > 1);
 		// A protected *placement* band has a different meaning from the stone
@@ -686,7 +690,8 @@ inline void settlementChecks()
 		for (int y = 18; y <= 25; ++y)
 			for (int x = 25; x <= 33; ++x)
 				allowed[t.at(x, y)] = 1;
-		const int placed = placeResourceClump(band.map, context, {25, 20}, WOOD, 2, &allowed);
+		const int placed =
+			placeResourceClump(GenerationMap(band.map).ref(), context, {25, 20}, WOOD, 2, &allowed);
 		assert(placed > 0);
 		for (int y = 0; y < t.h; ++y)
 			for (int x = 0; x < t.w; ++x)
@@ -696,7 +701,8 @@ inline void settlementChecks()
 		// rejection of a too-short mask happens before any world mutation.
 		Game topup(nullptr);
 		grassMap(topup, 6, 6);
-		guaranteeStartingResources(topup, context, 24, 32, 0, nullptr, &allowed);
+		guaranteeStartingResources(GenerationWorld(topup).ref(), context, 24, 32, 0, nullptr,
+								   &allowed);
 		assert(countResource(topup.map, WHEAT) > 0 && countResource(topup.map, WOOD) > 0);
 		for (int y = 0; y < t.h; ++y)
 			for (int x = 0; x < t.w; ++x)
@@ -708,7 +714,8 @@ inline void settlementChecks()
 			for (int x = 25; x <= 33; ++x)
 				packed.map.setResourceByIndex(x, y, WHEAT, 1);
 		const int beforeWheat = countResource(packed.map, WHEAT);
-		guaranteeStartingResources(packed, context, 24, 32, 0, nullptr, &allowed);
+		guaranteeStartingResources(GenerationWorld(packed).ref(), context, 24, 32, 0, nullptr,
+								   &allowed);
 		// With no free allowed grass, the opt-in backstop trades a small
 		// *accessible* surplus patch for the missing crop. It must not erase
 		// the whole wheat belt or plant outside the farm mask.
@@ -733,7 +740,8 @@ inline void settlementChecks()
 		GenerationContext context(request);
 		game.addTeam();
 		const std::vector<unsigned char> everywhere(t.size(), 1);
-		assert(placeSettlement(game, context, 0, everywhere, {30, 30}, "starts"));
+		assert(placeSettlement(GenerationWorld(game).ref(), context, 0, everywhere, {30, 30},
+							   "starts"));
 		for (int dy = -12; dy <= 12; ++dy)
 			for (int dx = -12; dx <= 12; ++dx)
 				if (clearGround(map, t.x(30 + dx), t.y(30 + dy)))
@@ -749,9 +757,10 @@ inline void settlementChecks()
 		};
 		assert(sites() < 16);
 		const int buried = countResource(map, WOOD);
-		openCrampedStarts(game, context);
+		openCrampedStarts(GenerationWorld(game).ref(), context);
 		assert(sites() >= 16 && countResource(map, WOOD) < buried && countResource(map, WOOD) > 0);
-		assert(reopenCrampedStarts(game, context, {100, 150, 100, 100, 100}));
+		assert(
+			reopenCrampedStarts(GenerationWorld(game).ref(), context, {100, 150, 100, 100, 100}));
 	}
 }
 
@@ -764,17 +773,17 @@ inline void balancedStartChecks()
 	Map &map = game.map;
 	const Torus t(map);
 	const auto anywhere = [](int) { return true; };
-	growPatch(map, t, t.at(16, 16), WHEAT, 12, anywhere);
-	growPatch(map, t, t.at(22, 16), WOOD, 12, anywhere);
-	growPatch(map, t, t.at(48, 48), WHEAT, 12, anywhere);
-	growPatch(map, t, t.at(42, 48), WOOD, 12, anywhere);
+	growPatch(GenerationMap(map).ref(), t, t.at(16, 16), WHEAT, 12, anywhere);
+	growPatch(GenerationMap(map).ref(), t, t.at(22, 16), WOOD, 12, anywhere);
+	growPatch(GenerationMap(map).ref(), t, t.at(48, 48), WHEAT, 12, anywhere);
+	growPatch(GenerationMap(map).ref(), t, t.at(42, 48), WOOD, 12, anywhere);
 	GenerationRequest request;
 	request.seed = 4;
 	request.nbTeams = 2;
 	request.nbWorkers = 4;
 	GenerationContext context(request), again(request);
-	assert(chooseBalancedStarts(game, context, 20 * 20));
-	assert(chooseBalancedStarts(game, again, 20 * 20));
+	assert(chooseBalancedStarts(GenerationWorld(game).ref(), context, 20 * 20));
+	assert(chooseBalancedStarts(GenerationWorld(game).ref(), again, 20 * 20));
 	for (int team = 0; team < 2; ++team)
 	{
 		assert(context.bootX[team] == again.bootX[team] &&
@@ -786,10 +795,10 @@ inline void balancedStartChecks()
 	// No wood anywhere: no balanced set exists, and the boot tiles are left alone.
 	Game bare(nullptr);
 	grassMap(bare, 6, 6);
-	growPatch(bare.map, t, t.at(16, 16), WHEAT, 12, anywhere);
+	growPatch(GenerationMap(bare.map).ref(), t, t.at(16, 16), WHEAT, 12, anywhere);
 	GenerationContext untouched(request);
 	untouched.bootX[0] = untouched.bootY[0] = 7;
-	assert(!chooseBalancedStarts(bare, untouched, 20 * 20));
+	assert(!chooseBalancedStarts(GenerationWorld(bare).ref(), untouched, 20 * 20));
 	assert(untouched.bootX[0] == 7 && untouched.bootY[0] == 7);
 }
 
@@ -812,7 +821,7 @@ inline void scatterChecks()
 	GenerationRequest request;
 	request.seed = 13;
 	GenerationContext context(request);
-	scatterResources(game, context, {40, 20, 30, 0, 0});
+	scatterResources(GenerationWorld(game).ref(), context, {40, 20, 30, 0, 0});
 	int wheat[2] = {0, 0}, wood[2] = {0, 0}, stone[2] = {0, 0};
 	for (int y = 0; y < game.map.getH(); ++y)
 		for (int x = 0; x < game.map.getW(); ++x)
@@ -1143,7 +1152,7 @@ inline void layerChecks()
 	std::vector<int> tiles;
 	for (int x = 0; x < 20; ++x)
 		tiles.push_back(t.at(x, 5));
-	plantFields(map, t, tiles, 6, 3, [](int i) { return -i; });
+	plantFields(GenerationMap(map).ref(), t, tiles, 6, 3, [](int i) { return -i; });
 	assert(countResource(map, WHEAT) == 6 && countResource(map, WOOD) == 3);
 	assert(map.getResource(8, 5).type == WHEAT && map.getResource(0, 5).type == WOOD);
 	assert(map.getResource(9, 5).type == NO_RES_TYPE);
@@ -1188,7 +1197,7 @@ inline void wallChecks()
 		for (int x = 6; x < 26; ++x)
 			sketch[t.at(x, y)] = GRASS;
 	layBeaches(sketch, t);
-	writeVertices(map, sketch);
+	writeVertices(GenerationMap(map).ref(), sketch);
 	std::vector<unsigned char> sea(t.size(), 0), none(t.size(), 0), all(t.size(), 1);
 	for (int i = 0; i < t.size(); ++i)
 		sea[i] = map.vertexTerrainAt(i % t.w, i / t.w) == WATER;
@@ -1427,10 +1436,11 @@ inline void arenaChecks()
 	request.seed = 5;
 	GenerationContext context(request);
 	const auto anywhere = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
-	assert(plantRound(map, t, context, 32, 32, 10, {0.0, kPi / 2, kPi}, STONE, 0, 2, anywhere) ==
-		   3);
+	assert(plantRound(GenerationMap(map).ref(), t, context, 32, 32, 10, {0.0, kPi / 2, kPi}, STONE,
+					  0, 2, anywhere) == 3);
 	assert(map.getResource(42, 32).type == STONE && map.getResource(22, 32).type == STONE);
-	assert(plantOrchard(map, t, context, 32, 32, 20, {0.0}, 4, 2, 0, anywhere) == 3);
+	assert(plantOrchard(GenerationMap(map).ref(), t, context, 32, 32, 20, {0.0}, 4, 2, 0,
+						anywhere) == 3);
 	assert(map.getResource(52, 32).type == CHERRY + 1);
 
 	game.addTeam();
@@ -1438,37 +1448,40 @@ inline void arenaChecks()
 	for (int y = 4; y < 10; ++y)
 		for (int x = 4; x < 10; ++x)
 			allowed[t.at(x, y)] = 1;
-	const int tower = placeTower(game, 0, 1, 3, 3, 4, allowed);
+	const int tower = placeTower(GenerationWorld(game).ref(), 0, 1, 3, 3, 4, allowed);
 	assert(tower == t.at(4, 4));
 	assert(map.getBuilding(4, 4) != NOGBID && map.getBuilding(5, 5) != NOGBID);
 	assert(game.teams[0]->turrets.size() == 1 && game.teams[0]->turrets.front()->bullets > 0);
 	std::vector<unsigned char> none(t.size(), 0);
-	assert(placeTower(game, 0, 1, 30, 30, 4, none) == -1);
+	assert(placeTower(GenerationWorld(game).ref(), 0, 1, 30, 30, 4, none) == -1);
 	// The closest ordinary site cannot cover x=14. The constraint must choose
 	// the farther legal footprint at x=8 (its east tile x=9 has range 5), and
 	// reject an impossible target without adding a partially valid tower.
-	const int covering = placeTower(game, 0, 0, 5, 8, 4, allowed, true, {{14, 8}, {14, 9}});
+	const int covering =
+		placeTower(GenerationWorld(game).ref(), 0, 0, 5, 8, 4, allowed, true, {{14, 8}, {14, 9}});
 	assert(covering == t.at(8, 7));
 	const auto towerCount = game.teams[0]->turrets.size();
-	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {{30, 30}}) == -1);
+	assert(placeTower(GenerationWorld(game).ref(), 0, 0, 5, 8, 4, allowed, true, {{30, 30}}) == -1);
 	assert(game.teams[0]->turrets.size() == towerCount);
 	// Supplying a starting tower is a finite initial stock, not a new refill
 	// rule. Existing calls remain empty; the opt-in uses the actual type's cap.
 	assert(game.teams[0]->turrets.front()->material(STONE) == 0);
-	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {}, true) >= 0);
+	assert(placeTower(GenerationWorld(game).ref(), 0, 0, 5, 8, 4, allowed, true, {}, true) >= 0);
 	const auto supplied = game.teams[0]->turrets.back();
 	assert(supplied->material(STONE) == supplied->type->maxMaterial[STONE]);
 	assert(supplied->desiredMaxUnitWorking == 0);
 	// A stocked starter inn registers feeding service immediately but does not
 	// receive fruit. Its entire footprint must obey the same placement mask.
 	std::vector<unsigned char> innGround(t.size(), 1);
-	const int innSite = placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, innGround, {WHEAT});
+	const int innSite = placeStartingBuilding(GenerationWorld(game).ref(), 0, "inn", 0, 18, 18, 3,
+											  innGround, {WHEAT});
 	assert(innSite >= 0 && !game.teams[0]->canFeedUnit.empty());
 	const auto inn = game.teams[0]->canFeedUnit.front();
 	assert(inn->material(WHEAT) == inn->type->maxMaterial[WHEAT]);
 	assert(inn->material(CHERRY) == 0 && inn->material(ORANGE) == 0 &&
 		   inn->material(PRUNE) == 0);
-	assert(placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, none, {WHEAT}) == -1);
+	assert(placeStartingBuilding(GenerationWorld(game).ref(), 0, "inn", 0, 18, 18, 3, none,
+								 {WHEAT}) == -1);
 
 	// seaEntry finds the one grass gap in a walled coast.
 	TerrainSketch sketch(t.size(), WATER);
@@ -1476,7 +1489,7 @@ inline void arenaChecks()
 		for (int x = 20; x < 44; ++x)
 			sketch[t.at(x, y)] = GRASS;
 	layBeaches(sketch, t);
-	writeVertices(map, sketch);
+	writeVertices(GenerationMap(map).ref(), sketch);
 	const std::vector<unsigned char> lakes(t.size(), 0), inside(t.size(), 1);
 	const std::vector<unsigned char> margin = seaMargin(map, t, seaVertices(map, t, lakes), lakes);
 	std::vector<unsigned char> island(t.size(), 0);
@@ -2022,7 +2035,7 @@ inline void colonyLeakChecks()
 		for (int x = 24; x < 36; ++x)
 			causeway[t.at(x, y)] = sketch[t.at(x, y)] = SAND;
 	layBeaches(sketch, t);
-	writeVertices(game.map, sketch);
+	writeVertices(GenerationMap(game.map).ref(), sketch);
 	for (int k = 0; k < 2; ++k)
 		game.addTeam();
 	GenerationRequest request;
@@ -2035,7 +2048,8 @@ inline void colonyLeakChecks()
 		homes[k].assign(t.size(), 0);
 		for (int i = 0; i < t.size(); ++i)
 			homes[k][i] = game.map.isGrass(i % t.w, i / t.w) && (k == 0 ? i % t.w < 30 : i % t.w > 30);
-		assert(placeSettlement(game, context, k, homes[k], MapGeneratorPoint(k ? 44 : 12, 24)));
+		assert(placeSettlement(GenerationWorld(game).ref(), context, k, homes[k],
+							   MapGeneratorPoint(k ? 44 : 12, 24)));
 	}
 	game.map.setResourceByIndex(30, 31, WHEAT, 1);
 	assert(colonyLeak(game.map, t, 2, roadTiles(t, causeway)) == (std::array<int, 2>{-1, -1}));
@@ -2156,8 +2170,9 @@ inline void farmAndTowerChecks()
 			}
 	}
 	layBeaches(sketch, t);
-	writeVertices(map, sketch);
-	const int planted = plantFarm(map, t, farm, 10, 10, [](int) { return true; });
+	writeVertices(GenerationMap(map).ref(), sketch);
+	const int planted =
+		plantFarm(GenerationMap(map).ref(), t, farm, 10, 10, [](int) { return true; });
 	assert(planted == 20 && countResource(map, WHEAT) == 10 && countResource(map, WOOD) == 10);
 	int woodRow = -1;
 	for (int i = 0; i < t.size(); ++i)
@@ -2438,7 +2453,8 @@ inline void wallRouteAndStencilChecks()
 		GenerationContext context(request);
 		game.addTeam();
 		const std::vector<unsigned char> everywhere(t.size(), 1);
-		assert(placeSettlement(game, context, 0, everywhere, {30, 30}, "starts"));
+		assert(placeSettlement(GenerationWorld(game).ref(), context, 0, everywhere, {30, 30},
+							   "starts"));
 		GeneratorDefinition definition{"test-colony", 998, "Test colony", 1, false, {}, nullptr, true};
 		assert(validateGeneratedWorld(game, request, definition).empty());
 		request.nbWorkers = 5;
@@ -2446,9 +2462,9 @@ inline void wallRouteAndStencilChecks()
 		request.nbWorkers = 4;
 		// Natural non-growing terrain is permitted; it is the expected way to
 		// contain crops. A scenario override on even such a tile is forbidden.
-		paintTile(game.map, 5, 7, SAND);
-		paintTile(game.map, 6, 7, TRAIL);
-		paintTile(game.map, 7, 7, ICE);
+		paintTile(GenerationMap(game.map).ref(), 5, 7, SAND);
+		paintTile(GenerationMap(game.map).ref(), 6, 7, TRAIL);
+		paintTile(GenerationMap(game.map).ref(), 7, 7, ICE);
 		assert(!game.map.canResourcesGrow(5, 7));
 		assert(validateGeneratedWorld(game, request, definition).empty());
 		// A generated map may not disable resource growth anywhere, even one tile: no-growth
@@ -2545,20 +2561,20 @@ inline void containedPlotChecks()
 	std::vector<int> labels(t.size(), -1);
 	for (int i : tiles)
 		labels[i] = 0;
-	writeVertices(game.map, sketch);
+	writeVertices(GenerationMap(game.map).ref(), sketch);
 	assert(containedPlotsMismatch(game.map, t, labels).empty());
 	const auto dry = cropGrowthField(sketch, t);
-	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 10) == 0);
-	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 3, false) == 3);
-	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 0, false) == 0);
-	assert(plantContainedPlot(game.map, t, tiles, dry, WOOD, 10000, false) ==
+	assert(plantContainedPlot(GenerationMap(game.map).ref(), t, tiles, dry, WOOD, 10) == 0);
+	assert(plantContainedPlot(GenerationMap(game.map).ref(), t, tiles, dry, WOOD, 3, false) == 3);
+	assert(plantContainedPlot(GenerationMap(game.map).ref(), t, tiles, dry, WOOD, 0, false) == 0);
+	assert(plantContainedPlot(GenerationMap(game.map).ref(), t, tiles, dry, WOOD, 10000, false) ==
 		   int(tiles.size()) - 3);
 	assert(containedPlotsMismatch(game.map, t, labels).empty());
 	// A grass path across the cap invalidates the structural proof even before a crop spreads.
 	for (int x = 0; x <= 10; ++x)
 		for (int y = 0; y <= 2; ++y)
 			sketch[t.at(x, y)] = GRASS;
-	writeVertices(game.map, sketch);
+	writeVertices(GenerationMap(game.map).ref(), sketch);
 	assert(!containedPlotsMismatch(game.map, t, labels).empty());
 
 	// The thinner natural-map bund must seal an irregular plot at both wrapped seams,
@@ -2571,12 +2587,12 @@ inline void containedPlotChecks()
 			plotLabels[i] = 0;
 		Game probe(nullptr);
 		grassMap(probe, 6, 6);
-		writeVertices(probe.map, thin);
+		writeVertices(GenerationMap(probe.map).ref(), thin);
 		assert(containedPlotsMismatch(probe.map, t, plotLabels).empty());
 		for (int x = 0; x <= 8; ++x)
 			for (int y = 0; y <= 2; ++y)
 				thin[t.at(x, y)] = GRASS;
-		writeVertices(probe.map, thin);
+		writeVertices(GenerationMap(probe.map).ref(), thin);
 		assert(!containedPlotsMismatch(probe.map, t, plotLabels).empty());
 	}
 
@@ -2687,7 +2703,7 @@ inline void siteOperationChecks()
 	assert(frontage[WHEAT].nearestStep == 0 && !frontage[WHEAT].renewableEdges);
 	TerrainSketch terrain(t.size(), GRASS);
 	fillRectangle(terrain, t, {20, 20, 30, 30}, WATER);
-	writeVertices(game.map, terrain);
+	writeVertices(GenerationMap(game.map).ref(), terrain);
 	assert(!groundUnitTiles(game.map)[t.at(24, 24)]);
 	assert(groundUnitTiles(game.map, true)[t.at(24, 24)]);
 
@@ -2696,12 +2712,12 @@ inline void siteOperationChecks()
 	terrain.assign(t.size(), GRASS);
 	fillRectangle(terrain, t, {-10, -10, 11, 11}, SAND);
 	fillRectangle(terrain, t, {-8, -8, 9, 9}, GRASS);
-	writeVertices(contained.map, terrain);
+	writeVertices(GenerationMap(contained.map).ref(), terrain);
 	contained.map.setResourceByIndex(30, 30, WHEAT, 1);
 	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] < 0);
 	// Breach a wide strip through the sand ring: the same proof must now reject it.
 	fillRectangle(terrain, t, {5, -2, 13, 3}, GRASS);
-	writeVertices(contained.map, terrain);
+	writeVertices(GenerationMap(contained.map).ref(), terrain);
 	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] >= 0);
 
 	// Dry open fields need no sand seal: they are finite harvest stock, not
@@ -2733,7 +2749,7 @@ inline void siteOperationChecks()
 	fillRectangle(terrain, t, {-12, -12, 13, -6}, WATER);
 	fillRectangle(terrain, t, {-6, -2, 7, 7}, SAND);
 	fillRectangle(terrain, t, {-4, 0, 5, 5}, GRASS);
-	writeVertices(growing.map, terrain);
+	writeVertices(GenerationMap(growing.map).ref(), terrain);
 	std::vector<unsigned char> inside(t.size(), 0);
 	fillRectangle(inside, t, {-4, 0, 5, 5});
 	const auto savedRandom = syncRandEngine();

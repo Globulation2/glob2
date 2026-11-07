@@ -10,7 +10,7 @@ struct GenerationContext;
 #include "Sketch.h"
 #include <utility>
 #include <vector>
-class Map;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -44,7 +44,7 @@ struct ShoreField
 std::vector<ShoreField> layShoreFields(TerrainSketch &, const Torus &,
 									   const std::vector<unsigned char> &allowed,
 									   std::vector<int> &plotOf, int firstPlot, bool contained = true);
-int plantShoreFields(Map &, const Torus &, const std::vector<ShoreField> &,
+int plantShoreFields(GenerationMap &, const Torus &, const std::vector<ShoreField> &,
 					 const Fertility::Field &, int percent);
 
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
@@ -62,7 +62,7 @@ std::vector<int> stampContainedPlot(TerrainSketch &, const Torus &,
 /// Plant up to `wanted` deposits in a contained plot, preferring exact crop fertility (tile index
 /// breaks ties). With renewable=true, dry tiles are excluded; false also serves finite dry groves
 /// and quarries. Returns actual deposits planted, so essential shortfalls can fail explicitly.
-int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
+int plantContainedPlot(GenerationMap &, const Torus &, const std::vector<int> &tiles,
 					   const Fertility::Field &, int resource, int wanted, bool renewable = true);
 
 /// Prove on final terrain that eight-neighbour grass growth cannot leave or join differently
@@ -72,7 +72,8 @@ int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
 /// `dry` is zero (the engine's water probe never lets it spread). Empty means sealed. Does not
 /// assume a particular outline or sand graphic. `finiteWheat` additionally permits dry farmable
 /// land crops (wheat, maize) on the marked tiles.
-std::string containedPlotsMismatch(const Map &, const Torus &, const std::vector<int> &plotOf,
+std::string containedPlotsMismatch(const GenerationMap &, const Torus &,
+								   const std::vector<int> &plotOf,
 								   const Fertility::Field *dry = nullptr,
 								   const std::vector<unsigned char> *finiteWheat = nullptr);
 
@@ -261,18 +262,20 @@ growFarmFields(const Torus &, const std::vector<unsigned char> &occupied,
 /// plot, if any, or 0 is returned) that a unit from `sources` can walk to once crops are cleared -
 /// water, stone and buildings block, wheat and wood do not. A validator's proof that a farm is joined
 /// to its home.
-double farmReachable(const Map &, const Torus &, const Farm &, const std::vector<int> &sources);
+double farmReachable(const GenerationMap &, const Torus &, const Farm &,
+					 const std::vector<int> &sources);
 
 /// Clears any deposit a later layer left on a farm's building plot, so every plot stays buildable. Run
 /// it after the last deposits go down.
-void clearFarmPlots(Map &, const Torus &, const std::vector<Farm> &);
+void clearFarmPlots(GenerationMap &, const Torus &, const std::vector<Farm> &);
 
 /// Plants a laid farm, once the terrain is written. A farm is a wheat farm: `wheat` tiles go on the
 /// crop rows' pure grass that `eligible` allows, nearest the water first (where it regrows best), and
 /// `wood` tiles make one small woodlot along a single crop row, the one with the most room, nearest its
 /// water. Returns how many tiles were planted.
 template <typename Eligible>
-int plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood, Eligible eligible);
+int plantFarm(GenerationMap &map, const Torus &t, const Farm &farm, int wheat, int wood,
+			  Eligible eligible);
 
 /// A sealed oval garden against a shore or a wall (Central Quarry's isle, Hidden Oasis' basin): a
 /// holder's foothold of wheat and wood that can never spread over the building ground round it.
@@ -292,35 +295,36 @@ std::vector<unsigned char> stampSealedOval(TerrainSketch &, const Torus &,
 /// `wood` wood (at most two fifths), dealt over the plot by noise rather than grown as two blobs.
 /// Draws a noise field from `cropsStream`, then one from `splitStream`. Returns {wheat, wood} tiles
 /// standing in the garden afterwards.
-std::pair<int, int> plantSealedGarden(Map &, const Torus &, GenerationContext &,
+std::pair<int, int> plantSealedGarden(GenerationMap &, const Torus &, GenerationContext &,
 									  const std::vector<unsigned char> &garden, int wheat, int wood,
-									  const std::string &cropsStream, const std::string &splitStream);
+									  const std::string &cropsStream,
+									  const std::string &splitStream);
 
 /// Crops regrow only within the engine's square growth probe of water, and kits plant the most fertile
 /// ground first, so fields end in ruler-straight lines along the probe's square contours. This takes
 /// off every wheat and wood deposit on watered ground farther than a round distance from pure water,
 /// `leastReach` to `leastReach + reachSpread` tiles by `noise`, so fields round a pond are round.
 /// Tiles of `keep` (the fields round a home) are never touched. Returns how many it took.
-int trimFieldsBeyondWater(Map &, const Torus &, const std::vector<unsigned char> &keep,
+int trimFieldsBeyondWater(GenerationMap &, const Torus &, const std::vector<unsigned char> &keep,
 						  const Fertility::Field &watered, int leastReach, int reachSpread,
 						  const std::vector<int> &noise);
 /// Frays every field's edge: wheat and wood up to `depth` tiles in from a field's edge are taken off
 /// where `noise` says so, so every edge wanders. Never on `keep`. Returns how many it took.
-int frayFieldEdges(Map &, const Torus &, const std::vector<unsigned char> &keep, int depth,
-				   const std::vector<int> &noise);
+int frayFieldEdges(GenerationMap &, const Torus &, const std::vector<unsigned char> &keep,
+				   int depth, const std::vector<int> &noise);
 /// Where trails and routes cut through fields they leave one-tile strips of crop between two lanes. In
 /// two passes, every wheat or wood tile open (clear grass) on two opposite sides goes, except on
 /// `protect` (the kits). Returns how many went.
-int removeCropSlivers(Map &, const Torus &, const std::vector<unsigned char> &protect);
+int removeCropSlivers(GenerationMap &, const Torus &, const std::vector<unsigned char> &protect);
 } // namespace MapGeneration
 
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Resources.h"
 #include <algorithm>
 #include <utility>
 template <typename Eligible>
-int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood,
-							 Eligible eligible)
+int MapGeneration::plantFarm(GenerationMap &map, const Torus &t, const Farm &farm, int wheat,
+							 int wood, Eligible eligible)
 {
 	const std::vector<int> fromWater = stepsFrom(t, farm.water);
 	std::vector<std::pair<int, int>> crops;

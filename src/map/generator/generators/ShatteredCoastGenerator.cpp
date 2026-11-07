@@ -3,12 +3,11 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "ShatteredCoastGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Growth.h"
@@ -249,7 +248,7 @@ struct TerrainMix
 	double water, sand, grass;
 };
 
-static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &grassCount)
+static void countTerrain(const GenerationMap &map, int &waterCount, int &sandCount, int &grassCount)
 {
 	waterCount = sandCount = grassCount = 0;
 	for (int y = 0; y < map.getH(); y++)
@@ -398,7 +397,7 @@ static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &ba
 
 // Every tile draws its terrain independently, in the fitted shares: pure white noise, which the
 // smoothing passes then grow into blobs.
-static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
+static void paintPatchwork(GenerationMap &map, std::mt19937 &rng, const TerrainMix &mix)
 {
 	int totalRatio = 0x7FFF;
 	int waterRatio = (int)(((double)mix.water) * ((double)totalRatio));
@@ -456,7 +455,8 @@ static const int kSmoothingDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
 // shores. That fragmentation is the "shattered" look; at 8 passes the difference mostly disappears,
 // since by then the blobs are large anyway. The first pass has no brake (allowed is zeroed), so the
 // initial noise always gets one free round of clumping before the shares are policed.
-static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const TerrainMix &base)
+static void smoothPatchwork(GenerationMap &map, std::mt19937 &rng, int smooth,
+							const TerrainMix &base)
 {
 	const int w = map.getW(), h = map.getH();
 	for (int i = 0; i < smooth; i++)
@@ -518,7 +518,7 @@ static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const Terra
 // of the grass, used as a squared distance, so colonies sit about the side of a square of that much
 // grass apart - further apart on grassy maps and with few colonies, closer on watery or crowded
 // ones.
-static bool placeColonies(Map &map, GenerationContext &context,
+static bool placeColonies(GenerationMap &map, GenerationContext &context,
 						  const ShatteredCoastOptions &options, int grassCount, double totalCount)
 {
 	const int w = map.getW(), h = map.getH();
@@ -641,9 +641,10 @@ static bool placeColonies(Map &map, GenerationContext &context,
 	return true;
 }
 
-static bool terrain(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static bool terrain(GenerationWorld &game, GenerationContext &context,
+					const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	// Each vertex write re-derives its four tiles at once; the batch holds the map-wide follow-up
 	// (terrain generation, route invalidation) until the terrain is finished.
 	auto batch = map.editTerrain();
@@ -675,9 +676,10 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	return true;
 }
 
-static void resources(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static void resources(GenerationWorld &game, GenerationContext &context,
+					  const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 
 	int *bootX = context.bootX.data();
@@ -890,9 +892,10 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 
 // A second, independent furnishing pass gives the coast destinations beyond the home deposits.
 // Run after all opening repairs: no new deposit or RNG draw can change the established starts.
-static void expansionResources(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static void expansionResources(GenerationWorld &game, GenerationContext &context,
+							   const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const auto protectedHome = swarmSurroundings(t, context, 32);
 	const auto vacant = [&](int i)
@@ -961,7 +964,7 @@ static void expansionResources(Game &game, GenerationContext &context, const Sha
 	}
 }
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const ShatteredCoastOptions options(context.request);
 	if (!terrain(game, context, options))
@@ -989,7 +992,7 @@ static bool generate(Game &game, GenerationContext &context)
 // The terrain is texture rather than design, and the colony search takes the widest grass it
 // finds, so this is the one promise worth making: a colony that can reach its crops and has
 // somewhere to put its first buildings. A seed that leaves one walled into a cove is rerolled.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

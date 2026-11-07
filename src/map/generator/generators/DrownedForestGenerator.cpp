@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DrownedForestGenerator.h"
 #include "Contact.h"
-#include "Building.h"
-#include "BuildingType.h"
-#include "Team.h"
 #include "Drawing.h"
 #include "Farmland.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
 #include "Growth.h"
@@ -1153,7 +1150,8 @@ Layout settlementLayout(const Layout &source, const std::vector<int> &homes, int
 	addJunctions(L, homes, size);
 	return L;
 }
-std::vector<int> occupiedClearings(const Game &game, const GenerationContext &c, const Layout &L)
+std::vector<int> occupiedClearings(const GenerationWorld &game, const GenerationContext &c,
+								   const Layout &L)
 {
 	std::vector<int> homes;
 	const auto units = unitTilesByTeam(game.map, c.request.nbTeams);
@@ -1176,12 +1174,12 @@ std::vector<int> occupiedClearings(const Game &game, const GenerationContext &c,
 	return homes;
 }
 
-bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
+bool buildWorld(GenerationWorld &game, GenerationContext &c, const Layout &source,
 				const std::vector<int> &homes)
 {
 	const Layout &L = source;
 	const DrownedForestOptions o(c.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	writeVertices(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
@@ -1402,14 +1400,15 @@ bool independentExits(const Torus &t, const std::vector<unsigned char> &permanen
 
 // A worker may leave a hypothetical building site before construction. The
 // configured starting building's reachable faces anchor future city circulation.
-std::vector<int> colonyEntrances(const Game &game, int team, const Torus &t,
-								const std::vector<unsigned char> &walk,
-								const std::vector<int> &reached)
+std::vector<int> colonyEntrances(const GenerationWorld &game, int team, const Torus &t,
+								 const std::vector<unsigned char> &walk,
+								 const std::vector<int> &reached)
 {
 	std::vector<int> result;
-	for (const auto *b : game.teams[team]->liveBuildings.entries())
+	const int startingType = game.startingBuildingType().typeNum;
+	for (const GenerationBuilding &b : game.teamBuildings(team))
 	{
-		if (!b || b->typeNum != game.buildingsTypes.getStartingBuildingTypeNum())
+		if (b.typeNum != startingType)
 			continue;
 		const auto add = [&](int x, int y)
 		{
@@ -1417,24 +1416,24 @@ std::vector<int> colonyEntrances(const Game &game, int team, const Torus &t,
 			if (walk[i] && reached[i] >= 0)
 				result.push_back(i);
 		};
-		for (int x = b->posX; x < b->posX + b->type->width; ++x)
+		for (int x = b.posX; x < b.posX + b.type.width; ++x)
 		{
-			add(x, b->posY - 1);
-			add(x, b->posY + b->type->height);
+			add(x, b.posY - 1);
+			add(x, b.posY + b.type.height);
 		}
-		for (int y = b->posY; y < b->posY + b->type->height; ++y)
+		for (int y = b.posY; y < b.posY + b.type.height; ++y)
 		{
-			add(b->posX - 1, y);
-			add(b->posX + b->type->width, y);
+			add(b.posX - 1, y);
+			add(b.posX + b.type.width, y);
 		}
 		break;
 	}
 	return result;
 }
 
-std::string checkWorld(const Game &game, const GenerationContext &c, const Layout &L)
+std::string checkWorld(const GenerationWorld &game, const GenerationContext &c, const Layout &L)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	auto walk = groundUnitTiles(map);
 	const auto permanent = sketchWalk(L);
@@ -1710,7 +1709,8 @@ SelectedLayout selectLayoutAfresh(GenerationContext &c)
 		}
 		c.stage = "drowned forest settlements";
 		std::map<std::vector<int>, Layout> settled;
-		const auto builder = [&](Game &g, GenerationContext &probe, const std::vector<int> &homes)
+		const auto builder =
+			[&](GenerationWorld &g, GenerationContext &probe, const std::vector<int> &homes)
 		{
 			auto [where, inserted] = settled.try_emplace(homes);
 			if (inserted)
@@ -1780,7 +1780,7 @@ SelectedLayout selectedLayout(const GenerationRequest &r, GenerationContext &c)
 	c.telemetry.replay(cache.telemetry);
 	return cache.layout;
 }
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "drowned forest landscape search";
 	const auto selected = selectedLayout(c.request, c);
@@ -1796,7 +1796,7 @@ bool generate(Game &game, GenerationContext &c)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const auto selected = selectedLayout(c.request, replay);

@@ -3,7 +3,7 @@
 #include "Ressource.h"
 #include <array>
 #include <vector>
-class Game;
+class GenerationWorld;
 
 namespace MapGeneration
 {
@@ -90,5 +90,6 @@ double mapFairness(const std::vector<double> &probability);
 /// computes for scoring, so a freshly generated map carries real fertility data instead of the
 /// zeroes a never-computed tile defaults to (see FertilityCalculator, which is otherwise the
 /// only thing that ever populates these two fields, and never runs as part of generation).
-StartQualityReport scoreStarts(Game &game, int nbTeams, const StartQualityScale &scale = {});
+StartQualityReport scoreStarts(GenerationWorld &game, int nbTeams,
+							   const StartQualityScale &scale = {});
 } // namespace MapGeneration

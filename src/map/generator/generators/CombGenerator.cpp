@@ -3,7 +3,7 @@
 #include "Farmland.h"
 #include "Channels.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -339,7 +339,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	return L;
 }
 
-bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vector<int> &sites)
+bool populate(GenerationWorld &game, GenerationContext &c, const Layout &L,
+			  const std::vector<int> &sites)
 {
 	const auto &t = L.t;
 	const CombOptions o(c.request);
@@ -442,7 +443,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 }
 
 // The nearest usable gathering face, with resources excluded from the walk itself.
-std::vector<int> supplyWalk(const Map &map, const Torus &t, int type)
+std::vector<int> supplyWalk(const GenerationMap &map, const Torus &t, int type)
 {
 	const auto open = groundUnitTiles(map);
 	std::vector<unsigned char> deposits(t.size(), 0);
@@ -453,7 +454,7 @@ std::vector<int> supplyWalk(const Map &map, const Torus &t, int type)
 		gathering[i] &= open[i];
 	return stepsFrom(t, gathering, open);
 }
-std::string checkWorld(const Game &game, const Layout &L, GenerationContext *trace)
+std::string checkWorld(const GenerationWorld &game, const Layout &L, GenerationContext *trace)
 {
 	const auto &t = L.t;
 	const auto &map = game.map;
@@ -641,7 +642,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	}
 	return {};
 }
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "comb layout";
 	const auto L = design(c.request, c);
@@ -650,7 +651,8 @@ bool generate(Game &game, GenerationContext &c)
 		c.detail = L.failure;
 		return false;
 	}
-	Game preview(nullptr);
+	GenerationScratchWorld previewStorage;
+	GenerationWorld &preview = previewStorage.world();
 	preview.map.setSize(c.request.wDec, c.request.hDec);
 	if (!populate(preview, c, L, {}))
 		return false;
@@ -702,7 +704,8 @@ bool generate(Game &game, GenerationContext &c)
 			proposals.push_back(sites);
 		}
 	}
-	const auto build = [&](Game &world, GenerationContext &probe, const std::vector<int> &sites)
+	const auto build =
+		[&](GenerationWorld &world, GenerationContext &probe, const std::vector<int> &sites)
 	{ return populate(world, probe, L, sites); };
 	c.stage = "comb settlements";
 	auto choice = chooseScoredSettlements(
@@ -723,7 +726,7 @@ bool generate(Game &game, GenerationContext &c)
 	c.detail = checkWorld(game, L, &c);
 	return c.detail.empty();
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const auto L = design(c.request, replay);

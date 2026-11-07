@@ -2,7 +2,7 @@
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Channels.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Morphology.h"
 #include "TerrainType.h"
 #include "Topology.h"
@@ -35,7 +35,7 @@ std::vector<unsigned char> beachTiles(const TerrainSketch &sketch, const Torus &
 	return beach;
 }
 
-std::vector<unsigned char> beachTiles(const Map &map, const Torus &t)
+std::vector<unsigned char> beachTiles(const GenerationMap &map, const Torus &t)
 {
 	std::vector<unsigned char> beach(size_t(t.size()), 0);
 	for (int y = 0; y < t.h; ++y)
@@ -210,7 +210,7 @@ SandFord fordAlong(const Torus &t, const std::vector<ShapePoint> &centreline,
 	return f;
 }
 
-std::string fordWalkabilityFault(const Map &map, const Torus &t, const SandFord &f)
+std::string fordWalkabilityFault(const GenerationMap &map, const Torus &t, const SandFord &f)
 {
 	const auto walkable = [&](double x, double y)
 	{
@@ -239,7 +239,7 @@ std::string fordWalkabilityFault(const Map &map, const Torus &t, const SandFord 
 	return "";
 }
 
-bool fordLandingWalkable(const Map &map, const Torus &t, const SandFord &f, int side)
+bool fordLandingWalkable(const GenerationMap &map, const Torus &t, const SandFord &f, int side)
 {
 	const double s = side * (f.span + 1.0);
 	const int at = ChannelDetail::tileOf(t, f.x + f.acrossX * s, f.y + f.acrossY * s);

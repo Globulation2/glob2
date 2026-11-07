@@ -9,8 +9,8 @@
 #include <string>
 #include <utility>
 #include <vector>
-class Game;
-class Map;
+class GenerationWorld;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -130,14 +130,14 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
 /// The engine draws each deposit's amount and look from the gameplay RNG (Map::setResource). Every
 /// orbit takes its lowest-indexed tile's, so deposits are symmetric in size as well as type. Fails,
 /// naming the tile in `detail`, when an orbit's deposits differ in type.
-bool equaliseDeposits(Map &, const Symmetry &, std::string &detail);
+bool equaliseDeposits(GenerationMap &, const Symmetry &, std::string &detail);
 
 /// Whether a finished world is exactly symmetric: every element maps terrain vertices, tile graphics
 /// (by class), deposits (type and amount), buildings and units onto themselves, with the colonies
 /// permuted one to one, and those permutations carry colony 0 onto every other colony. Empty when it
 /// is; otherwise what broke, and where. `permutations`, if given, receives each non-identity element's
 /// colony permutation.
-std::string orbitMismatch(const Game &, const Symmetry &, int teams,
+std::string orbitMismatch(const GenerationWorld &, const Symmetry &, int teams,
 						  std::vector<std::vector<int>> *permutations = nullptr);
 /// The least distance between any two of `sites`, the short way round the wrap, from whole-tile
 /// positions (each site truncated to its tile); the shorter side when there is only one. What a

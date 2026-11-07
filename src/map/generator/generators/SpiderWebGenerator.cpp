@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SpiderWebGenerator.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -484,7 +484,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 // Every colony's kit, identical and unscaled: wheat and wood on the hub side of the swarm, either
 // side of the spoke, and a quarry out beyond the swarm.
-void furnishPads(Map &map, const Layout &L, GenerationContext &context)
+void furnishPads(GenerationMap &map, const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
@@ -507,7 +507,8 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 // Stone at the knots, a prize on every dew drop, the orchard of all three fruits round the hub's
 // pond with a quarry, then the threads' own wheat and wood in patches. The patches are sampled in
 // the wedge's frame, so every colony's stretch of web is farmed alike.
-void stockWeb(Map &map, const Layout &L, GenerationContext &context, const SpiderWebOptions &o)
+void stockWeb(GenerationMap &map, const Layout &L, GenerationContext &context,
+			  const SpiderWebOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.size();
@@ -583,11 +584,11 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 				[&](int i) { return splitKey[i]; });
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "web layout";
 	const SpiderWebOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
@@ -696,11 +697,11 @@ std::string validateRequest(const GenerationRequest &r)
 // Checked on the finished world: every spoke is still land from the hub to the frame, and colony 0
 // can walk to every other colony and onto the hub, with water, buildings and every resource
 // blocking.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "web"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

@@ -5,6 +5,7 @@
 #include "TerrainCornerPresentation.h"
 #include "TerrainPresentation.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "GlobalContainer.h"
 #include "GenerationContext.h"
 #include "GenerationValidation.h"
@@ -630,7 +631,7 @@ void placeImportedSettlements(Game &game, GenerationContext &context, const Gene
 		for (int dy = -1; dy <= 5; ++dy)
 			for (int dx = -1; dx <= 5; ++dx)
 				home[wrapCoord(at.y + dy, h) * w + wrapCoord(at.x + dx, w)] = 1;
-		if (!MapGeneration::placeSettlement(game, context, team, home, at, "map-image-settlements"))
+		if (GenerationWorld world(game); !MapGeneration::placeSettlement(world, context, team, home, at, "map-image-settlements"))
 			throw std::runtime_error(context.detail);
 	}
 }
@@ -642,7 +643,8 @@ void validateImportedMap(Game &game, const GenerationRequest &request)
 	const auto error = validateGeneratedWorld(game, request, definition);
 	if (!error.empty())
 		throw std::runtime_error(error);
-	MapGeneration::scoreStarts(game, request.nbTeams);
+	GenerationWorld world(game);
+	MapGeneration::scoreStarts(world, request.nbTeams);
 	const auto script = game.sgslScript.compileScript(&game);
 	if (script.type != ErrorReport::ET_OK)
 		throw std::runtime_error(script.getErrorString());

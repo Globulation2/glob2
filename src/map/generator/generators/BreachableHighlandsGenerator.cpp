@@ -3,7 +3,7 @@
 #include "Centrepieces.h"
 #include "Drawing.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
 #include "Growth.h"
@@ -313,7 +313,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "breachable layout";
 	const BreachableHighlandsOptions o(context.request);
@@ -323,7 +323,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	context.stage = "breachable terrain";
 	writeVertices(map, L.terrain);
@@ -427,12 +427,12 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
 	const BreachableHighlandsOptions o(context.request);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const auto error = designMismatch(L, map, "breachable highlands"); !error.empty())
 		return error;
 	const Torus &t = L.t;

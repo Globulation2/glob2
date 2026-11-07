@@ -3,7 +3,7 @@
 #include "ClearingLandscape.h"
 #include "Contact.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Homes.h"
 #include "LatticeNoise.h"
@@ -70,7 +70,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 							 {o.homeSize, 0, o.lakes, o.lakeSize, "locust", true});
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "locust layout";
 	const LocustOptions o(context.request);
@@ -80,7 +80,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	context.stage = "locust terrain";
 	TerrainSketch terrain(t.size(), GRASS);
@@ -202,11 +202,11 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const auto error = designMismatch(L, map, "locust"); !error.empty())
 		return error;
 	const Torus &t = L.t;

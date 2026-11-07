@@ -5,6 +5,7 @@
 #include <utility>
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "GameGUI.h"
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"

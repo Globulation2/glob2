@@ -3,7 +3,7 @@
 #include "Contact.h"
 #include "Drawing.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "Homes.h"
@@ -560,7 +560,7 @@ struct Catalogue
 {
 	int tallGrass, scrub, deadTrees, campSite, maize, rice, potatoes, fish;
 };
-std::optional<Catalogue> catalogue(const Map &map)
+std::optional<Catalogue> catalogue(const GenerationMap &map)
 {
 	const auto &registry = map.resourceRegistry();
 	int ids[8];
@@ -575,7 +575,7 @@ std::optional<Catalogue> catalogue(const Map &map)
 	}
 	return Catalogue{ids[0], ids[1], ids[2], ids[3], ids[4], ids[5], ids[6], ids[7]};
 }
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "savannah layout";
 	const Layout L = design(context.request, context);
@@ -769,13 +769,13 @@ bool generate(Game &game, GenerationContext &context)
 	// shortfalls fail, while optional deposits saturate inside their pre-reserved plots.
 	return true;
 }
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
 	if (const auto error = designMismatch(L, game.map, "Savannah"); !error.empty())
 		return error;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	// Dry-ground deposits are the only spreading ones allowed outside a plot: they cannot spread.
 	const auto fertility = cropGrowthField(L.terrain, t);

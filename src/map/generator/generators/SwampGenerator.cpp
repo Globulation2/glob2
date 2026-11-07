@@ -1,7 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SwampGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Pipeline.h"
 #include "StartingPositions.h"
@@ -19,7 +19,7 @@ using namespace MapGeneration;
 // is rich; the cost is that movement and building room are broken up by ponds a colony must walk
 // round until it can swim. Smoothing defaults to 6 (features about 30 tiles) so ponds are big
 // enough to read, and grass between them wide enough to build on.
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, true);
 	if (!generateHeightField(game, context, terrain,
@@ -45,7 +45,7 @@ static bool generate(Game &game, GenerationContext &context)
 // the best spots it left. So the only promise this landscape can make is the floor every colony
 // needs — wheat and wood it can walk to, and room for a first base — and the service rolls
 // another seed when a field does not leave one.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

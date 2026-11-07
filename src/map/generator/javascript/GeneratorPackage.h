@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <string>
+class Game;
 
 namespace MapGeneration::JavaScript
 {

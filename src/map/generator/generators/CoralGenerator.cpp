@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CoralGenerator.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Farmland.h"
@@ -685,7 +685,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-void furnishPads(Map &map, const Layout &L, GenerationContext &context)
+void furnishPads(GenerationMap &map, const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
@@ -710,7 +710,8 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 // coral from the nearest pad, normalised to the farthest land: a fork halfway out carries a
 // middling stone deposit, a bud at the far end a big grove. Fields are ranked by patch noise
 // sampled in the wedge frame, leaning towards home, so the trunk and first forks are farmland.
-void stockCoral(Map &map, const Layout &L, GenerationContext &context, const CoralOptions &o)
+void stockCoral(GenerationMap &map, const Layout &L, GenerationContext &context,
+				const CoralOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.size();
@@ -803,11 +804,11 @@ std::vector<int> expansionCorners(const Layout &L, ShapePoint centre, Generation
 	return corners;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "coral layout";
 	const CoralOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
@@ -956,11 +957,11 @@ std::string validateRequest(const GenerationRequest &r)
 // Checked on the finished world: every trunk is still land from its pad to its tip, every colony
 // can walk to its own trunk's tip, and with land bridges colony 0 can walk to every colony; water,
 // buildings and every resource block.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "coral"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

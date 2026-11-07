@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "StartDiagnostics.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "Grid.h"
-#include "Map.h"
 #include <algorithm>
 
 namespace MapGeneration
@@ -22,13 +21,13 @@ constexpr int kInnSize = 2;         ///< a level-0 inn
 
 /// Walking steps from a colony's starting workers to every tile it can reach. Workers rather
 /// than the boot tile: the swarm occupies the boot tile and nobody walks out of it.
-std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
+std::vector<int> walkFromWorkers(const GenerationMap &map, const std::vector<int> &workers)
 {
 	const Torus t(map);
 	return stepsFrom(t, tileMask(t, workers), groundUnitTiles(map));
 }
 
-bool neighbourHolds(const Map &map, int x, int y, MaterialMask materials)
+bool neighbourHolds(const GenerationMap &map, int x, int y, MaterialMask materials)
 {
 	for (int dy = -1; dy <= 1; ++dy)
 	{
@@ -48,7 +47,8 @@ constexpr auto isStone = materialBit(MaterialId::Stone);
 constexpr MaterialMask isFruit = materialBit(MaterialId::Cherries) | materialBit(MaterialId::Oranges) | materialBit(MaterialId::Prunes);
 
 /// Food that is a race: this colony reaches it, and some rival reaches it within the slack.
-int nearestContestedWheat(const Map &map, const std::vector<std::vector<int>> &fields, int team)
+int nearestContestedWheat(const GenerationMap &map, const std::vector<std::vector<int>> &fields,
+						  int team)
 {
 	const int w = map.getW(), h = map.getH();
 	int nearest = -1;
@@ -90,7 +90,7 @@ int nearestContestedWheat(const Map &map, const std::vector<std::vector<int>> &f
 
 /// Walks the route to the nearest rival downhill through the colony's own field and returns the
 /// narrowest 5x5 window on it, or -1 when no rival is reachable.
-int chokeWidth(const Map &map, const std::vector<int> &dist,
+int chokeWidth(const GenerationMap &map, const std::vector<int> &dist,
 			   const std::vector<std::vector<int>> &workers, int team)
 {
 	const int w = map.getW();
@@ -147,10 +147,11 @@ int chokeWidth(const Map &map, const std::vector<int> &dist,
 }
 } // namespace
 
-StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const StartQualityScale &scale)
+StartDiagnosticsReport diagnoseStarts(GenerationWorld &game, int requestedTeams,
+									  const StartQualityScale &scale)
 {
 	StartDiagnosticsReport report;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const int nbTeams = std::min(game.teamsCount(), requestedTeams);
 	if (nbTeams <= 0)
@@ -209,8 +210,8 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 			if (d <= scale.catchmentSteps)
 			{
                 double foodRenewal = 0, woodExpansion = 0;
-                const double scarcity = double(1u << game.gameHeader.getResourceScarcityLevel());
-                for (int dy = -1; dy <= 1; ++dy)
+				const double scarcity = double(1u << game.resourceScarcityLevel());
+				for (int dy = -1; dy <= 1; ++dy)
 				{
 					::MapGeneration::generationCheckpoint();
 					for (int dx = -1; dx <= 1; ++dx)
@@ -283,9 +284,9 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 	return report;
 }
 
-int removeResourceNear(Game &game, int team, int resource, int radius)
+int removeResourceNear(GenerationWorld &game, int team, int resource, int radius)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	if (team < 0 || team >= game.teamsCount())
 		return -1;

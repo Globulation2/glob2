@@ -2,7 +2,7 @@
 #include "EmojiGenerator.h"
 #include "Drawing.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Homes.h"
 #include "LatticeNoise.h"
@@ -427,7 +427,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 // Choose from the finished terrain. Converting the eligible mask to an area grid lets the
 // existing whole-region dispersion search do the spacing without modifying the landscape.
-std::vector<MapGeneratorPoint> existingStarts(Map &map, const Layout &L,
+std::vector<MapGeneratorPoint> existingStarts(GenerationMap &map, const Layout &L,
 											  const Fertility::Field &fertility,
 											  GenerationContext &context)
 {
@@ -537,7 +537,7 @@ std::vector<MapGeneratorPoint> existingStarts(Map &map, const Layout &L,
 	return sites;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "emoji layout";
 	const EmojiOptions o(context.request);
@@ -548,7 +548,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	const Torus &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	writeVertices(map, L.terrain);
 	const auto fertility = Fertility::forMap(map, false);
 	context.stage = "emoji existing-land starts";
@@ -700,7 +700,7 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StoneHighlandsGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
@@ -726,7 +726,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 // Terrain straight from the design: pond water inside a two-tile sand beach, grass everywhere
 // else, and stone on every ridge tile. Algae only regrows beside a tile of pure sand, which a
 // one-tile beach never makes: every tile takes its terrain from its four corner vertices.
-bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
+bool stampTerrain(GenerationMap &map, GenerationContext &context, const Layout &L)
 {
 	const Torus &t = L.t;
 	constexpr int kBeach = 2;
@@ -769,7 +769,7 @@ bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
 
 // Every home gets the same kit: a wheat patch and a wood patch of kHomeKit tiles each, a few
 // steps from the swarm on either side of the way down to its pond.
-void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley)
+void furnishHome(GenerationMap &map, const Layout &L, int bootX, int bootY, int homeValley)
 {
 	const Torus &t = L.t;
 	const int cx = bootX + 2, cy = bootY + 2;
@@ -831,7 +831,7 @@ void stampBox(const Torus &t, std::vector<unsigned char> &mask, int cx, int cy, 
 
 // Ambient farmland: the most fertile ground around each pond, in patches, split 2:1 between
 // wheat and wood by an unrelated noise field so the two crops alternate around the shore.
-void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
+void scatterFarmland(GenerationMap &map, GenerationContext &context, const Layout &L,
 					 const std::vector<int> &pondDistance,
 					 const std::vector<unsigned char> &keepClear, int wheatPercent, int woodPercent)
 {
@@ -899,7 +899,7 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 }
 
 // Algae in the open water of every pond.
-void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaePercent)
+void seedAlgae(GenerationMap &map, GenerationContext &context, const Layout &L, int algaePercent)
 {
 	const Torus &t = L.t;
 	const std::vector<int> noise = periodicNoise(t.w, t.h, 6, context.stream("highlands-algae"));
@@ -924,7 +924,7 @@ constexpr int kValleyFruit = 4;
 
 // Fruit is rare: small groves beside the ponds of valleys no colony starts in, a prize for
 // whoever holds the passes to them - or in any valley, colonies' own included, if asked.
-void plantFruit(Map &map, GenerationContext &context, const Layout &L,
+void plantFruit(GenerationMap &map, GenerationContext &context, const Layout &L,
 				const std::vector<int> &pondDistance, const std::vector<unsigned char> &keepClear,
 				const std::vector<unsigned char> &homeValley, int fruit, bool inHomeValleys)
 {
@@ -978,11 +978,11 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "highland layout";
 	const StoneHighlandsOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
@@ -1070,11 +1070,11 @@ std::string validateRequest(const GenerationRequest &r)
 // Checked on the finished world against the rebuilt design: every ridge still carries its stone,
 // every pass is open and reachable on foot, and every colony can walk to every other. Water,
 // buildings and every resource tile (farmland included) block the flood; units don't.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "highland"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

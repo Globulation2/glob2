@@ -763,6 +763,11 @@ public:
     //! the game's growth settings; stateView() adds the growth field.
     MapState::View cellView() const;
     MapState::View stateView() const;
+    //! The live view itself, kept current by refreshLiveView(); GenerationMap
+    //! (map/generator/core/GenerationWorld.h) reads cells through it.
+    const MapState::View &liveView() const { return liveCells; }
+    //! The vertex terrain array itself, for the same reader.
+    const std::vector<TerrainType> &vertexTerrainArray() const { return vertexTerrain; }
     //! Rebind liveCells after an array, registry or habitat table is replaced.
     void refreshLiveView();
     //! Expected growth opportunities per visit for a deposit of this type here.

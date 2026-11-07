@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Grid.h"
-class Game;
+class GenerationWorld;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -25,5 +25,5 @@ SeparatedSites selectSeparatedSites(const Torus &, const std::vector<int> &candi
 // picked first. Requires resources to already be on the map. Returns false (leaving bootX/bootY
 // untouched) when no set of legal, mutually distant sites can reach both resources, so a caller
 // can fall back to a terrain-only search.
-bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSquare);
+bool chooseBalancedStarts(GenerationWorld &game, GenerationContext &context, int minDistSquare);
 } // namespace MapGeneration

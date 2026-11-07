@@ -310,7 +310,7 @@ e.overload(object,"furnishBiome",[&e](JSValueConst self,int n,JSValueConst*a){re
   std::vector<unsigned char> * default8 = nullptr;
   Script::JSValueOwner fallback8(e.ctx, (n>6 && !JS_IsUndefined(a[6]))?JS_UNDEFINED:JS_NULL);
   Argument<const std::vector<unsigned char> *> arg8(e,(n>6 && !JS_IsUndefined(a[6]))?a[6]:fallback8.get());
-  MapGeneration::furnishBiome(e.game->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()); return JS_UNDEFINED;
+  MapGeneration::furnishBiome(e.world->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,root,"Biomes",objectOwner.release())<0)e.fail(); }
  { Script::JSValueOwner objectOwner(e.ctx,JS_NewObject(e.ctx));auto object=objectOwner.get();e.check(object);
@@ -378,7 +378,7 @@ e.overload(object,"plantHomeKit",[&e](JSValueConst self,int n,JSValueConst*a){re
   Argument<int> arg7(e,a[5]);
   e.preflight("wood",arg7.get());
   Argument<std::function<bool(int)>> arg8(e,a[6]);
-  MapGeneration::plantHomeKit(e.game->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()); return JS_UNDEFINED;
+  MapGeneration::plantHomeKit(e.world->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"stampRoundHomes",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<9 || n>9) throw TypeMismatch("Wrong argument count");
@@ -413,7 +413,7 @@ e.overload(object,"plantOpenHomeKit",[&e](JSValueConst self,int n,JSValueConst*a
   Argument<int> arg8(e,a[6]);
   e.preflight("quarry",arg8.get());
   Argument<std::function<bool(int)>> arg9(e,a[7]);
-  MapGeneration::plantOpenHomeKit(e.game->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get()); return JS_UNDEFINED;
+  MapGeneration::plantOpenHomeKit(e.world->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"stampTeardropHome",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<6 || n>6) throw TypeMismatch("Wrong argument count");
@@ -482,7 +482,7 @@ e.overload(object,"furnishGround",[&e](JSValueConst self,int n,JSValueConst*a){r
   std::function<bool(int)> default10 = [ ] ( int ) { return true ; };
   Script::JSValueOwner fallback10(e.ctx, (n>8 && !JS_IsUndefined(a[8]))?JS_UNDEFINED:e.write(default10));
   Argument<std::function<bool(int)>> arg10(e,(n>8 && !JS_IsUndefined(a[8]))?a[8]:fallback10.get());
-  MapGeneration::furnishGround(e.game->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get(), arg10.get()); return JS_UNDEFINED;
+  MapGeneration::furnishGround(e.world->map, arg1.get(), (*e.generation), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get(), arg10.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"topUpWheatNearby",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<6 || n>6) throw TypeMismatch("Wrong argument count");
@@ -496,7 +496,7 @@ e.overload(object,"topUpWheatNearby",[&e](JSValueConst self,int n,JSValueConst*a
   e.preflight("wanted",arg4.get());
   Argument<const std::vector<unsigned char> &> arg5(e,a[4]);
   Argument<std::function<bool(int)>> arg6(e,a[5]);
-  return e.write(MapGeneration::topUpWheatNearby(e.game->map, arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()));
+  return e.write(MapGeneration::topUpWheatNearby(e.world->map, arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()));
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,object,"kHomeSwarmReach",e.write(MapGeneration::kHomeSwarmReach))<0)e.fail();
 if(JS_SetPropertyStr(e.ctx,object,"kHomePondShare",e.write(MapGeneration::kHomePondShare))<0)e.fail();
@@ -623,7 +623,7 @@ e.overload(object,"equaliseDeposits",[&e](JSValueConst self,int n,JSValueConst*a
   if(!e.game || e.inspecting || e.readonly) throw TypeMismatch("World access unavailable in this callback");
   Argument<const MapGeneration::Symmetry &> arg1(e,a[0]);
   Argument<std::string &> arg2(e,a[1]);
-  auto nativeResult=MapGeneration::equaliseDeposits(e.game->map, arg1.get(), arg2.get());
+  auto nativeResult=MapGeneration::equaliseDeposits(e.world->map, arg1.get(), arg2.get());
   Script::JSValueOwner result(e.ctx,JS_NewObject(e.ctx));e.check(result.get());
   if(JS_SetPropertyStr(e.ctx,result.get(),"result",e.write(nativeResult))<0)e.fail();
   if(JS_SetPropertyStr(e.ctx,result.get(),"detail",e.write(arg2.get()))<0)e.fail();
@@ -638,7 +638,7 @@ e.overload(object,"orbitMismatch",[&e](JSValueConst self,int n,JSValueConst*a){r
   std::vector<std::vector<int>> * default3 = nullptr;
   Script::JSValueOwner fallback3(e.ctx, (n>2 && !JS_IsUndefined(a[2]))?JS_UNDEFINED:JS_NULL);
   Argument<std::vector<std::vector<int>> *> arg3(e,(n>2 && !JS_IsUndefined(a[2]))?a[2]:fallback3.get());
-  return e.write(MapGeneration::orbitMismatch((*e.game), arg1.get(), arg2.get(), arg3.get()));
+  return e.write(MapGeneration::orbitMismatch((*e.world), arg1.get(), arg2.get(), arg3.get()));
 })(e,self,n,a);});
 e.overload(object,"nearestSiteDistance",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
@@ -710,7 +710,7 @@ e.overload(object,"fillInResource",[&e](JSValueConst self,int n,JSValueConst*a){
   e.preflight("resourceType",arg3.get());
   Argument<int> arg4(e,a[2]);
   e.preflight("maxFillSize",arg4.get());
-  MapGeneration::fillInResource(e.game->map, (*e.generation), arg2.get(), arg3.get(), arg4.get()); return JS_UNDEFINED;
+  MapGeneration::fillInResource(e.world->map, (*e.generation), arg2.get(), arg3.get(), arg4.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"placeResourceClump",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<3 || n>4) throw TypeMismatch("Wrong argument count");
@@ -724,7 +724,7 @@ e.overload(object,"placeResourceClump",[&e](JSValueConst self,int n,JSValueConst
   std::vector<unsigned char> * default5 = nullptr;
   Script::JSValueOwner fallback5(e.ctx, (n>3 && !JS_IsUndefined(a[3]))?JS_UNDEFINED:JS_NULL);
   Argument<const std::vector<unsigned char> *> arg5(e,(n>3 && !JS_IsUndefined(a[3]))?a[3]:fallback5.get());
-  return e.write(MapGeneration::placeResourceClump(e.game->map, (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
+  return e.write(MapGeneration::placeResourceClump(e.world->map, (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
 })(e,self,n,a);});
 e.overload(object,"placeResourceClumpInArea",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<3 || n>4) throw TypeMismatch("Wrong argument count");
@@ -738,7 +738,7 @@ e.overload(object,"placeResourceClumpInArea",[&e](JSValueConst self,int n,JSValu
   std::vector<unsigned char> * default5 = nullptr;
   Script::JSValueOwner fallback5(e.ctx, (n>3 && !JS_IsUndefined(a[3]))?JS_UNDEFINED:JS_NULL);
   Argument<const std::vector<unsigned char> *> arg5(e,(n>3 && !JS_IsUndefined(a[3]))?a[3]:fallback5.get());
-  return e.write(MapGeneration::placeResourceClumpInArea(e.game->map, (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
+  return e.write(MapGeneration::placeResourceClumpInArea(e.world->map, (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
 })(e,self,n,a);});
 e.overload(object,"setScaledResource",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<5 || n>5) throw TypeMismatch("Wrong argument count");
@@ -753,14 +753,14 @@ e.overload(object,"setScaledResource",[&e](JSValueConst self,int n,JSValueConst*
   e.preflight("size",arg4.get());
   Argument<int> arg5(e,a[4]);
   e.preflight("percent",arg5.get());
-  MapGeneration::setScaledResource(e.game->map, arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get()); return JS_UNDEFINED;
+  MapGeneration::setScaledResource(e.world->map, arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"scatterResources",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<1 || n>1) throw TypeMismatch("Wrong argument count");
   if(!e.game || e.inspecting || e.readonly) throw TypeMismatch("World access unavailable in this callback");
   if(!e.generation || e.inspecting) throw TypeMismatch("Generation context unavailable");
   Argument<const MapGeneration::ResourceDensities &> arg2(e,a[0]);
-  MapGeneration::scatterResources((*e.game), (*e.generation), arg2.get()); return JS_UNDEFINED;
+  MapGeneration::scatterResources((*e.world), (*e.generation), arg2.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"guaranteeStartingResources",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>5) throw TypeMismatch("Wrong argument count");
@@ -780,7 +780,7 @@ e.overload(object,"guaranteeStartingResources",[&e](JSValueConst self,int n,JSVa
   std::vector<unsigned char> * default6 = nullptr;
   Script::JSValueOwner fallback6(e.ctx, (n>4 && !JS_IsUndefined(a[4]))?JS_UNDEFINED:JS_NULL);
   Argument<const std::vector<unsigned char> *> arg6(e,(n>4 && !JS_IsUndefined(a[4]))?a[4]:fallback6.get());
-  MapGeneration::guaranteeStartingResources((*e.game), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()); return JS_UNDEFINED;
+  MapGeneration::guaranteeStartingResources((*e.world), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"openCrampedStarts",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<0 || n>3) throw TypeMismatch("Wrong argument count");
@@ -797,7 +797,7 @@ e.overload(object,"openCrampedStarts",[&e](JSValueConst self,int n,JSValueConst*
   std::vector<unsigned char> * default4 = nullptr;
   Script::JSValueOwner fallback4(e.ctx, (n>2 && !JS_IsUndefined(a[2]))?JS_UNDEFINED:JS_NULL);
   Argument<const std::vector<unsigned char> *> arg4(e,(n>2 && !JS_IsUndefined(a[2]))?a[2]:fallback4.get());
-  MapGeneration::openCrampedStarts((*e.game), (*e.generation), arg2.get(), arg3.get(), arg4.get()); return JS_UNDEFINED;
+  MapGeneration::openCrampedStarts((*e.world), (*e.generation), arg2.get(), arg3.get(), arg4.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"resourceFrontages",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>3) throw TypeMismatch("Wrong argument count");
@@ -809,7 +809,7 @@ e.overload(object,"resourceFrontages",[&e](JSValueConst self,int n,JSValueConst*
   Script::JSValueOwner fallback3(e.ctx, (n>2 && !JS_IsUndefined(a[2]))?JS_UNDEFINED:JS_NULL);
   Argument<const Fertility::Field *> arg3(e,(n>2 && !JS_IsUndefined(a[2]))?a[2]:fallback3.get());
   if(arg3.get()) prepareFertilityRead(*arg3.get());
-  return e.write(MapGeneration::resourceFrontages(e.game->map, arg1.get(), arg2.get(), arg3.get()));
+  return e.write(MapGeneration::resourceFrontages(e.world->map, arg1.get(), arg2.get(), arg3.get()));
 })(e,self,n,a);});
 e.overload(object,"materialFrontages",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>3) throw TypeMismatch("Wrong argument count");
@@ -820,7 +820,7 @@ e.overload(object,"materialFrontages",[&e](JSValueConst self,int n,JSValueConst*
   bool default3 = false;
   Script::JSValueOwner fallback3(e.ctx, (n>2 && !JS_IsUndefined(a[2]))?JS_UNDEFINED:e.write(default3));
   Argument<bool> arg3(e,(n>2 && !JS_IsUndefined(a[2]))?a[2]:fallback3.get());
-  return e.write(MapGeneration::materialFrontages(e.game->map, arg1.get(), arg2.get(), arg3.get()));
+  return e.write(MapGeneration::materialFrontages(e.world->map, arg1.get(), arg2.get(), arg3.get()));
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,root,"Resources",objectOwner.release())<0)e.fail(); }
  { Script::JSValueOwner objectOwner(e.ctx,JS_NewObject(e.ctx));auto object=objectOwner.get();e.check(object);
@@ -947,7 +947,7 @@ e.overload(object,"settleStartingTowers",[&e](JSValueConst self,int n,JSValueCon
   e.preflight("level",arg3.get());
   Argument<bool> arg4(e,a[2]);
   Argument<const std::vector<unsigned char> *> arg5(e,a[3]);
-  return e.write(MapGeneration::settleStartingTowers((*e.game), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
+  return e.write(MapGeneration::settleStartingTowers((*e.world), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
 })(e,self,n,a);});
 e.overload(object,"raiseTowers",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
@@ -955,7 +955,7 @@ e.overload(object,"raiseTowers",[&e](JSValueConst self,int n,JSValueConst*a){ret
   Argument<const MapGeneration::TowerPlan &> arg1(e,a[0]);
   Argument<int> arg2(e,a[1]);
   e.preflight("level",arg2.get());
-  return e.write(MapGeneration::raiseTowers((*e.game), arg1.get(), arg2.get()));
+  return e.write(MapGeneration::raiseTowers((*e.world), arg1.get(), arg2.get()));
 })(e,self,n,a);});
 e.overload(object,"towerFootprints",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
