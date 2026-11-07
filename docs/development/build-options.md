@@ -338,6 +338,15 @@ use it differ in that string. `--no-build` reuses existing parity builds,
 exits 1 on any flag or source-set difference; object differences are reported
 only.
 
+Remaining object differences: every object's debug sections differ (the
+compilations run from different working directories), and four objects differ
+in data: three embed `BuildPaths.h`'s absolute build-directory paths, and
+`TextSort.cpp`'s `assert` text names `third_party/natsort/strnatcmp.c` where
+SCons, finding it through `-I.`, has `./third_party/...`. In the ordinary
+(non-parity) CMake build, the `__FILE__` difference above also shows in
+doctest's JUnit `classname` (`../../../libs/...`); test names and results are
+unaffected.
+
 The `build-system equivalence` workflow
 (`.github/workflows/build-system-equivalence.yml`) runs that comparison with
 GCC 13 on Ubuntu 24.04 on master pushes and on pull requests that touch
