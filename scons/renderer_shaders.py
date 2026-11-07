@@ -6,6 +6,17 @@ import json
 import os
 
 
+def inputs(root):
+    """Checked-in files whose content decides the generated shader assets."""
+    root = Path(root)
+    sources = [root / 'tools/shaders/generate.py', root / 'libs/gag/shaders/renderer-manifest.json',
+               root / 'libs/gag/shaders/skin-materials.json',
+               root / 'libs/gag/include/SkinDeformation.h',
+               root / 'libs/gag/include/DirectTerrainShader.h']
+    sources.extend(sorted((root / 'libs/gag/shaders').glob('*.glsl')))
+    return sources
+
+
 def prepare(root, output):
     root, output = Path(root), Path(output)
     script = root / 'tools/shaders/generate.py'
@@ -44,11 +55,7 @@ def prepare(root, output):
     naga = os.environ.get('GLOB2_NAGA')
     spirv_cross = os.environ.get('GLOB2_SPIRV_CROSS')
     dxc = os.environ.get('GLOB2_DXC')
-    sources = [script, root / 'libs/gag/shaders/renderer-manifest.json',
-               root / 'libs/gag/shaders/skin-materials.json',
-               root / 'libs/gag/include/SkinDeformation.h',
-               root / 'libs/gag/include/DirectTerrainShader.h']
-    sources.extend(sorted((root / 'libs/gag/shaders').glob('*.glsl')))
+    sources = inputs(root)
     identity = {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
     if compiler:
         compiler = str(Path(compiler).resolve())
@@ -67,7 +74,7 @@ def prepare(root, output):
     return directory
 
 
-def configure(env, root, output, browser=False):
+def verify_compute(root):
     # Compute shaders are embedded so headless/mobile packages need no asset lookup.
     compute_script = Path(root) / 'tools/shaders/gradient_compute.py'
     spec = importlib.util.spec_from_file_location('glob2_gradient_shaders', compute_script)
@@ -79,6 +86,10 @@ def configure(env, root, output, browser=False):
     rules = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(rules)
     rules.verify()
+
+
+def configure(env, root, output, browser=False):
+    verify_compute(root)
     directory = prepare(root, output)
     env.Append(CPPPATH=[str(directory.resolve())])
     # The shader directory reaches the two consumers through glob2/BuildPaths.h
