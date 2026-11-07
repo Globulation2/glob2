@@ -109,10 +109,12 @@ class Compositor
 		std::vector<std::uint8_t> depth;
 	};
 	std::shared_ptr<const TierField> tierField(const SceneMap &) const;
-	// A cell's raised decor, one frame per slot, drawn in slot order: up to two
+	// A cell's raised decor, one frame per slot, drawn in slot order: two
 	// connected masses that stand on open ground (cliffs, icefall, glacier...),
 	// connected foliage (hedge and thicket, which join one another), every other
-	// obstacle, then the terraces of tiered masses. Each slot draws only from
+	// obstacle, then the terraces of tiered masses. A third mass takes the
+	// obstacle slot, which masses holding three corners never leave to an
+	// obstacle; four masses fill slots 0 to 3 in rank order. Each slot draws only from
 	// its own corners, so masses keep their walls against foliage and crags.
 	// Where an open-edged mass meets another connected material it stands back
 	// from it (connected_foreign), so the two show their own rims and walls

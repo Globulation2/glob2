@@ -628,8 +628,14 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		const auto ra = rank(a), rb = rank(b);
 		return ra != rb ? ra > rb : a < b;
 	});
-	for (unsigned m = 0; m < std::min(distinct, 2u); ++m)
+	// Every mass draws, or its corner would be an empty notch cut square along
+	// the neighbouring cells, which draw it up to the shared edge. A third mass
+	// takes the obstacle slot, which is free: obstacles stand back wherever
+	// masses hold most of the cell. A fourth leaves no corner for foliage, so
+	// four masses fill slots 0 to 3 in rank order.
+	for (unsigned m = 0; m < distinct; ++m)
 	{
+		const unsigned slot = distinct == 3 && m == 2 ? 3 : m;
 		const auto id = masses[m];
 		unsigned own = 0, foreign = 0, count = 0;
 		for (unsigned k = 0; k < 4; ++k)
@@ -641,7 +647,7 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		if (frame < 0)
 			frame = definitions.decorFrame(id, x, y, count < 4, map.terrainSeed(), own, colours);
 		if (frame >= 0)
-			layers[m] = {decorSprites[id], frame};
+			layers[slot] = {decorSprites[id], frame};
 	}
 	// Foliage and other obstacles, as before: one material per slot by presentation hashing.
 	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
@@ -652,7 +658,7 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		unsigned k = pick, tries = 0;
 		while (kinds[k] != kind && tries++ < 4)
 			k = (k + 1) & 3u;
-		if (kinds[k] != kind)
+		if (kinds[k] != kind || layers[kind + 1].sprite)
 			continue;
 		// Obstacle clusters sit in the middle of the cell rather than on their
 		// corners: where an open-ground mass holds most of the cell, one would

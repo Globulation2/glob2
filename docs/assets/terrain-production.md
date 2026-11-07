@@ -258,7 +258,10 @@ A material opts in with a `decor` block:
   that stand on open ground (`"connected_open": true`: cliffs, glacier and the
   other Barriers masses), connected foliage (hedge and thicket), every other
   obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
-  masses. Each layer draws only from its own corners, so cliffs show their walls where they
+  masses. Where three masses meet in one cell, the third (fewest north corners)
+  draws in the obstacle layer; four masses fill the first four layers in that
+  order. Every mass at a cell draws, so none ends in a square notch along the
+  cell grid. Each layer draws only from its own corners, so cliffs show their walls where they
   meet foliage or crags, and the foliage or rocks keep their own edge on the
   other side. Eligibility follows rendered material bindings, including custom
   materials.
