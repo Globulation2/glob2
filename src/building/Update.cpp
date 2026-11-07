@@ -14,6 +14,7 @@
 #include "FixedPoint.h"
 #include "GameHeader.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
@@ -400,7 +401,7 @@ bool Building::tryToBuildingSiteRoom(void)
         // Supplier lists were restored before the final site position. Diff the
         // settled footprint too, including providers without occupancy cells.
         if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
-            for(int material=0;material<MaterialCount;++material)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,material);
+            for(int material=0;material<MaterialCount;++material)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,material);
         }
 		resetPathfindGradients();
 
@@ -449,7 +450,7 @@ void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 	}
 	if(owner->teamNumber == owner->map->getDisplayedTeam())
 		owner->map->computeDisplayedForbidden(owner->teamNumber);
-	owner->map->updateForbiddenGradient(owner->teamNumber);
+	owner->map->routing().updateForbiddenGradient(owner->teamNumber);
 }
 
 void Building::addForbiddenZoneToUpgradeArea(void)      { modifyForbiddenZoneForUpgradeArea(true); }

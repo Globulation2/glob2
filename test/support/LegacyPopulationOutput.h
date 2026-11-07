@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Game.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
@@ -48,7 +49,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
-        const auto& runtime=*game->map.gradientRuntime;
+        const auto& runtime=*game->map.routing().gradientRuntime;
         if (preservePending) {
             // These formats share the current material/swim slot encoding.
             // Cold demands and new cache families have no historical equivalent.
@@ -58,7 +59,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
                 throw std::logic_error("Historical pending runtime contains unrepresentable demand or caches");
             const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*MOVEMENT_CLASS_COUNT;
             runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) {
-                if (!*slot || game->map.gradientDestination(slot)>=legacyEnd)
+                if (!*slot || game->map.routing().gradientDestination(slot)>=legacyEnd)
                     throw std::logic_error("Historical pending runtime requires a published legacy field destination");
             });
             const auto publishedBuilding=[&](int team,int id,Uint32 identity,int slot) {
@@ -128,18 +129,18 @@ public:
         if (team<0 || team>=Team::MAX_COUNT || material<0 || material>=MaterialCount
             || swim<0 || swim>=SWIM_CLASS_COUNT)
             throw std::invalid_argument("Invalid historical material field key");
-        auto& slot=map.materialGradients[team][material][swim];
+        auto& slot=map.routing().materialGradients[team][material][swim];
         bool pending=false;
-        for (const auto& request:map.gradientRuntime->fieldRequests) if (request.slot==&slot) pending=true;
-        map.gradientRuntime->pipeline.visitLogical([&](auto* destination,unsigned,bool) {
+        for (const auto& request:map.routing().gradientRuntime->fieldRequests) if (request.slot==&slot) pending=true;
+        map.routing().gradientRuntime->pipeline.visitLogical([&](auto* destination,unsigned,bool) {
             if (destination==&slot) pending=true;
         });
         if (slot || pending) throw std::logic_error("Historical material reference must precede enrollment");
         auto field=std::make_unique_for_overwrite<Uint16[]>(map.getW()*map.getH());
-        map.seedMaterialGradient(team,Uint8(material),swim,field.get());
-        map.propagateGradient(field.get(),swim);
+        map.routing().seedMaterialGradient(team,Uint8(material),swim,field.get());
+        map.routing().propagateGradient(field.get(),swim);
         slot=field.release();
-        map.publishPlane(&slot);
+        map.routing().publishPlane(&slot);
     }
     LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version,
         GradientLayout gradients=GradientLayout::Empty)
@@ -201,11 +202,11 @@ public:
             if (name=="resourceRoutingCache" || name=="airFields"
                 || (!preservePending && (name=="gradientPipeline" || name=="buildingGradientPipeline"))) {
                 if (name=="gradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
-                    BinaryOutputStream::writeUint8(game->map.gradientRuntime->pipeline.enabled()
-                        ? game->map.gradientRuntime->pipeline.delayTicks() : 8,"delay");
+                    BinaryOutputStream::writeUint8(game->map.routing().gradientRuntime->pipeline.enabled()
+                        ? game->map.routing().gradientRuntime->pipeline.delayTicks() : 8,"delay");
                     BinaryOutputStream::writeUint8(0,"count");
                 } else if (name=="buildingGradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) {
-                    BinaryOutputStream::writeUint8(game->map.gradientRuntime->buildings.delayTicks(),"delay");
+                    BinaryOutputStream::writeUint8(game->map.routing().gradientRuntime->buildings.delayTicks(),"delay");
                     if (hasInitialBuildingGradient(formatVersion)) BinaryOutputStream::writeUint32(0,"count");
                     else BinaryOutputStream::writeUint16(0,"count");
                     BinaryOutputStream::writeUint8(0,"count"); // No admitted results.
@@ -275,7 +276,7 @@ public:
                 // Before delayed fields, the material cache followed the pipeline.
                 // Empty entries have no changed per-entry encoding.
                 injecting=true;
-                game->map.saveMaterialRoutingCache(this);
+                game->map.routing().saveMaterialRoutingCache(this);
                 injecting=false;
             }
         }

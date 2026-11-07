@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MenuColony.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "EngineTiming.h"
 #include "ReplayWriter.h"
@@ -72,7 +73,7 @@ bool MenuColony::load(const std::string& path)
 		if (!(state >> loaded->syncRandom)) throw std::runtime_error("invalid colony RNG");
 		loaded->setWaitingOnMask(0);
 		// The map round-robin updater expects at least one lazy gradient.
-		loaded->map.getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
+		loaded->map.routing().getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
 		centerX = loaded->teams[0]->startPosX;
 		centerY = loaded->teams[0]->startPosY;
 

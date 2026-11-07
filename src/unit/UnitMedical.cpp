@@ -5,6 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GameHeader.h"
 
 #include "Building.h"
@@ -241,7 +242,7 @@ void Unit::resolveDeath()
             // Guard crowding excludes dead units immediately, before the
             // population list removes them on a subsequent simulation step.
             if (hasCapability(UnitRuntimeTraits::GuardIdle))
-                owner->map->gradientGuardCostsChanged(owner->teamNumber);
+                owner->map->routing().gradientGuardCostsChanged(owner->teamNumber);
 			++owner->stats.events().deaths[typeNum][diagnosticDeathCause];
 			if (diagnosticDeathCause == GameplayMeasurements::COMBAT)
 				owner->stats.recordCombatDeath(this);

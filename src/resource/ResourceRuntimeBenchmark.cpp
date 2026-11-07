@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in bounded component stress measurements, not a before/after gameplay gate.
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "ResourceRegistry.h"
@@ -111,17 +112,17 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         // part of the lookup measurement. Absent natural materials use the
         // shared negative field immediately and never enroll a ticket.
         for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-            map.getMaterialGradientSlot(team,material,MovementAccess::Land);
+            map.routing().getMaterialGradientSlot(team,material,MovementAccess::Land);
         glob2test::awaitGradient(world.game,[&]() -> const Uint16* {
             for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-                if(!map.getMaterialGradientSlot(team,material,MovementAccess::Land)) return nullptr;
-            return map.getMaterialGradientSlot(0,0,MovementAccess::Land);
+                if(!map.routing().getMaterialGradientSlot(team,material,MovementAccess::Land)) return nullptr;
+            return map.routing().getMaterialGradientSlot(0,0,MovementAccess::Land);
         });
         std::uint64_t digest=0;
         for(int repeat=0;repeat<3;++repeat) {
             start=Clock::now();
             for(int team=0;team<8;++team) for(unsigned m=0;m<MaterialCount;++m) {
-                const auto* field=map.getMaterialGradientSlot(team,m,MovementAccess::Land);
+                const auto* field=map.routing().getMaterialGradientSlot(team,m,MovementAccess::Land);
                 REQUIRE(field);
                 digest+=field[(team*313+repeat)%cells];
             }
@@ -141,7 +142,7 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
             start=Clock::now();
             std::vector<Uint16> scratch(cells);
             for(int team=0;team<8;++team)
-                map.seedMaterialGradient(team,materialIndex(MaterialId::Food),0,scratch.data(),false);
+                map.routing().seedMaterialGradient(team,materialIndex(MaterialId::Food),0,scratch.data(),false);
             digest+=scratch[0];
             row["repeats"].push_back({{"repeat",repeat},{"published_field_read_ns",fieldReadNs},
                 {"source_query_ns",queryNs},{"mutation_ns",mutationNs},
@@ -149,15 +150,15 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         }
         unsigned fields=0;
         for(int team=0;team<8;++team) for(unsigned m=0;m<MaterialCount;++m)
-            for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) fields+=map.materialGradients[team][m][swim]!=nullptr;
+            for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) fields+=map.routing().materialGradients[team][m][swim]!=nullptr;
         CHECK(fields==8*(multi?3:1));
         CHECK(map.materialSourceCounts[materialIndex(MaterialId::Food)]==deposits.size());
         row["allocated_material_fields"]=fields;
         row["material_field_bytes"]=fields*cells*sizeof(Uint16);
-        row["absent_shared_field_bytes"]=map.gradientRuntime->absentMaterialField.capacity()*sizeof(Uint16);
-        row["consumer_cache_fields"]=map.gradientRuntime->materialFields.size();
-        row["consumer_cache_bytes"]=map.materialRoutingCacheBytes();
-        row["seed_cache_bytes"]=map.gradientRuntime->resourceSeeds.allocatedBytes();
+        row["absent_shared_field_bytes"]=map.routing().gradientRuntime->absentMaterialField.capacity()*sizeof(Uint16);
+        row["consumer_cache_fields"]=map.routing().gradientRuntime->materialFields.size();
+        row["consumer_cache_bytes"]=map.routing().materialRoutingCacheBytes();
+        row["seed_cache_bytes"]=map.routing().gradientRuntime->resourceSeeds.allocatedBytes();
         row["stock_index_bytes"]=map.resourceStockIndices.capacity()*sizeof(Uint32);
         row["stock_sidecar_bytes"]=map.resourceStocks.capacity()*sizeof(std::array<Uint16,MaterialCount>);
         row["stock_free_list_bytes"]=map.freeResourceStocks.capacity()*sizeof(Uint32);

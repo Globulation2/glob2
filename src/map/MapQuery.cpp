@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "BuildingType.h"
@@ -156,49 +157,49 @@ std::optional<Offset> Map::doesUnitTouchMaterialSource(Unit *unit, MaterialId ma
 	return std::nullopt;
 }
 
-bool Map::marketsV2Enabled() const
+bool MapRouting::marketsV2Enabled() const
 {
-	return game && game->buildingsTypes.usesMarketRouting();
+	return map.game && map.game->buildingsTypes.usesMarketRouting();
 }
 
-bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const
+bool MapRouting::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const
 {
 	if (!marketsV2Enabled() || gid == NOGBID || Building::GIDtoTeam(gid) != teamNumber)
 		return false;
-	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+	const Building *b = map.game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 	// The stock is the team's shared pool; only a market whose level takes the
 	// resource at all hands it out.
 	return stockSupplierEligibleSlot(b,nullptr,resourceType,1);
 }
 
-void Map::invalidateSupplierLocations()
+void MapRouting::invalidateSupplierLocations()
 {
 	gradientRuntime->supplierLocationsDirty=true;
 	for (auto& team : gradientRuntime->stockRevision) for (auto& revision : team) ++revision;
 }
 
-Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
+Building *MapRouting::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 {
 	const int teamNumber=unit->owner->teamNumber;
 	const Building* consumer=unit->attachedBuilding;
 	const unsigned modes=materialSupplyModesSlot(consumer,resourceType);
-	const bool overlays=(modes&2) || game->buildingsTypes.usesOverlaySuppliers();
+	const bool overlays=(modes&2) || map.game->buildingsTypes.usesOverlaySuppliers();
 	if (overlays && gradientRuntime->supplierLocationsDirty)
 	{
 		auto& locations=gradientRuntime->overlaySupplierLocations;
 		locations.clear();
-		for (int team=0; team<game->mapHeader.getNumberOfTeams(); ++team)
-			for (const Building* supplier : game->teams[team]->stockSuppliers)
+		for (int team=0; team<map.game->mapHeader.getNumberOfTeams(); ++team)
+			for (const Building* supplier : map.game->teams[team]->stockSuppliers)
 				if (!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround))
 					for (int y=0; y<supplier->type->height; ++y)
 						for (int x=0; x<supplier->type->width; ++x)
-							locations[coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
-		for (int team=0; team<game->mapHeader.getNumberOfTeams(); ++team)
-			for (const Building* supplier : game->teams[team]->directStockSuppliers)
+							locations[map.coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
+		for (int team=0; team<map.game->mapHeader.getNumberOfTeams(); ++team)
+			for (const Building* supplier : map.game->teams[team]->directStockSuppliers)
 				if (!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround))
 					for (int y=0; y<supplier->type->height; ++y)
 						for (int x=0; x<supplier->type->width; ++x)
-							locations[coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
+							locations[map.coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
 		for (auto& [tile, suppliers] : locations) {
 			std::sort(suppliers.begin(),suppliers.end());
 			suppliers.erase(std::unique(suppliers.begin(),suppliers.end()),suppliers.end());
@@ -208,7 +209,7 @@ Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 	Building* best=nullptr;
 	const auto consider = [&](Uint16 gid) {
 		if (gid==NOGBID || Building::GIDtoTeam(gid)!=teamNumber) return;
-		Building* supplier=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+		Building* supplier=map.game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 		if (!stockSupplierEligibleSlot(supplier,consumer,resourceType,modes)) return;
 		if (!best || supplier->type->semantics.market.pickupPenalty < best->type->semantics.market.pickupPenalty ||
 			(supplier->type->semantics.market.pickupPenalty == best->type->semantics.market.pickupPenalty && supplier->gid<best->gid)) best=supplier;
@@ -216,17 +217,17 @@ Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 	for (int dx=-1; dx<=1; ++dx)
 		for (int dy=-1; dy<=1; ++dy)
 		{
-			const Uint16 gid=getBuilding(unit->posX+dx,unit->posY+dy);
+			const Uint16 gid=map.getBuilding(unit->posX+dx,unit->posY+dy);
 			if (!overlays)
 			{
 				if (isStockedMarketTile(gid,teamNumber,resourceType)) {
-					Building* candidate=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+					Building* candidate=map.game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 					if (stockSupplierEligibleSlot(candidate,consumer,resourceType,1)) return candidate;
 				}
 				continue;
 			}
 			consider(gid);
-			const auto found=gradientRuntime->overlaySupplierLocations.find(coordToIndex(unit->posX+dx,unit->posY+dy));
+			const auto found=gradientRuntime->overlaySupplierLocations.find(map.coordToIndex(unit->posX+dx,unit->posY+dy));
 			if (found!=gradientRuntime->overlaySupplierLocations.end()) for (const Uint16 overlay : found->second) consider(overlay);
 		}
 	return best;
@@ -354,12 +355,12 @@ void Map::markImmobileUnit(int x, int y, int teamNumber)
 {
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == teamNumber) return;
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	occupancyCells[index].immobileUnit = teamNumber;
 	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
 }
 
 
@@ -367,12 +368,12 @@ void Map::clearImmobileUnit(int x, int y)
 {
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE) return;
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	occupancyCells[index].immobileUnit = IMMOBILE_UNIT_NONE;
 	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
 }
 
 

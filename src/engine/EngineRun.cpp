@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PresentationWork.h>
+#include "gradient/MapRouting.h"
 #include "OwnerTickProfile.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -1014,7 +1015,7 @@ void Engine::teardownSession()
 	executor.cancelPresentationAndWait();
 	if (executor.telemetryMode() == ComputeTelemetryMode::Trace)
 	{
-		gui.game.map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+		gui.game.map.routing().finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
 		gui.game.map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
 	}
 	executor.joinAll({JoinReason::Teardown, ComputeTelemetry::NoTick});

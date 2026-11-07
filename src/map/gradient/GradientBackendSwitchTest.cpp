@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientRuntime.h"
 #include "field/GradientSelection.h"
@@ -28,7 +29,7 @@ TEST_CASE("backend switch drains privately and preserves pending publication" *
 	auto &map = fixture.game.map;
 	setBackend(Backend::Scalar);
 	map.configureCompute(2);
-	auto &pipeline = map.gradientRuntime->pipeline;
+	auto &pipeline = map.routing().gradientRuntime->pipeline;
 	pipeline.onPublished = {};
 	std::atomic<Backend> observed{Backend::CPU};
 	pipeline.configure(map.computeExecutor(), 3, 1,
@@ -42,7 +43,7 @@ TEST_CASE("backend switch drains privately and preserves pending publication" *
 	pipeline.submit(&slot, 0, [](auto &job) { job.data[0] = 41; });
 	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
 	CHECK(backend() == Backend::Scalar);
-	map.applyGradientBackendRequest();
+	map.routing().applyGradientBackendRequest();
 	CHECK(observed.load() == Backend::Scalar);
 	CHECK(backend() == Backend::CPU);
 	CHECK(slot[0] == 0);
@@ -58,15 +59,15 @@ TEST_CASE("backend switch drains privately and preserves pending publication" *
 	pipeline.finish();
 	CHECK(observed.load() == Backend::CPU);
 	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets});
-	map.applyGradientBackendRequest();
+	map.routing().applyGradientBackendRequest();
 	CHECK(slot[0] == 42);
 	CHECK(pipeline.pendingCount() == 1);
 	pipeline.advance();
 	pipeline.advance();
 	pipeline.advance();
 	CHECK(slot[0] == 100);
-	CHECK_FALSE(map.gradientRuntime->backendSession);
-	CHECK_FALSE(map.gradientRuntime->deviceService);
+	CHECK_FALSE(map.routing().gradientRuntime->backendSession);
+	CHECK_FALSE(map.routing().gradientRuntime->deviceService);
 	pipeline.reset();
 	delete[] slot;
 }
@@ -94,7 +95,7 @@ TEST_CASE("repeated backend requests coalesce without moving publication ticks" 
 	auto &map = fixture.game.map;
 	setBackend(Backend::Scalar);
 	map.configureCompute(2);
-	auto &pipeline = map.gradientRuntime->pipeline;
+	auto &pipeline = map.routing().gradientRuntime->pipeline;
 	pipeline.onPublished = {};
 	pipeline.configure(map.computeExecutor(), 4, 1, [](auto &job, auto &) { ++job.data[0]; });
 	auto *serving = new std::uint16_t[1]{7};
@@ -102,14 +103,14 @@ TEST_CASE("repeated backend requests coalesce without moving publication ticks" 
 	pipeline.submit(&serving, 0, [](auto &job) { job.data[0] = 20; });
 	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
 	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets});
-	map.applyGradientBackendRequest(); // Last request cancels the earlier change.
+	map.routing().applyGradientBackendRequest(); // Last request cancels the earlier change.
 	CHECK(serving[0] == 7);
 	CHECK(pipeline.pendingCount() == 1);
 	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
-	map.applyGradientBackendRequest();
+	map.routing().applyGradientBackendRequest();
 	CHECK(serving[0] == 7);
 	CHECK(pipeline.pendingCount() == 1);
-	map.applyGradientBackendRequest();
+	map.routing().applyGradientBackendRequest();
 	for (unsigned i = 0; i < 3; ++i)
 	{
 		pipeline.advance();
@@ -138,14 +139,14 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
         map.configureCompute(threads);
         world.addUnit(WORKER,10,10);
         for (unsigned tick=0;tick<16;++tick) world.game.step(0);
-        CHECK_FALSE(map.gradientRuntime->backendSession);
-        CHECK_FALSE(map.gradientRuntime->deviceService);
-        CHECK(map.gradientExecutionMetrics().empty());
-        map.finishGradientPipeline({JoinReason::Save,ComputeTelemetry::NoTick});
-        map.applyGradientBackendRequest();
+        CHECK_FALSE(map.routing().gradientRuntime->backendSession);
+        CHECK_FALSE(map.routing().gradientRuntime->deviceService);
+        CHECK(map.routing().gradientExecutionMetrics().empty());
+        map.routing().finishGradientPipeline({JoinReason::Save,ComputeTelemetry::NoTick});
+        map.routing().applyGradientBackendRequest();
         map.clear();
-        CHECK_FALSE(map.gradientRuntime->backendSession);
-        CHECK_FALSE(map.gradientRuntime->deviceService);
+        CHECK_FALSE(map.routing().gradientRuntime->backendSession);
+        CHECK_FALSE(map.routing().gradientRuntime->deviceService);
         CHECK_FALSE(globalContainer->gradientDeviceShutdown);
     }
 }

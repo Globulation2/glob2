@@ -19,6 +19,7 @@
 #include "AreaEffects.h"
 #include "sim/SimServices.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -186,7 +187,7 @@ void Building::dirtyGradients()
 // changes (moves, types, ranges) still drop everything.
 bool Building::keepsStaleGradients(GradientDrop cause) const
 {
-	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->map->buildingGradientPipelineActive();
+	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->map->routing().buildingGradientPipelineActive();
 }
 
 void Building::resetPathfindGradients(GradientDrop cause)
@@ -209,10 +210,10 @@ void Building::resetPathfindGradients(GradientDrop cause)
 		}
 		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
 		dropGradientSlot(i, cause);
-        owner->map->recordFieldCost(globalGradient[i],-1);
+        owner->map->routing().recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
-		owner->map->recycleBuildingGradientBuffer(globalGradient[i]);
+		owner->map->routing().recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
 	}
@@ -229,10 +230,10 @@ void Building::freeIdleGradients()
 		{
 			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
 			dropGradientSlot(c, GradientDrop::Idle);
-            owner->map->recordFieldCost(globalGradient[c],-1);
+            owner->map->routing().recordFieldCost(globalGradient[c],-1);
 			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
-			owner->map->recycleBuildingGradientBuffer(globalGradient[c]);
+			owner->map->routing().recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
 	}
@@ -246,7 +247,7 @@ void Building::freeGradients()
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		dropGradientSlot(i, GradientDrop::New);
-        if(globalGradient[i] && owner && owner->game)owner->map->recordFieldCost(globalGradient[i],-1);
+        if(globalGradient[i] && owner && owner->game)owner->map->routing().recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];

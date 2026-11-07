@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GenerationWorld.h"
 #include "generator/shared/ResourceSemantics.h"
 #include "generator/shared/BalancedStarts.h"
@@ -42,9 +43,9 @@ CHECK_MAP_ID_ARGUMENT(HarvestArgument,MaterialId,ResourceId,map.takeHarvest(0,0,
 CHECK_MAP_ID_ARGUMENT(MaterialHabitatArgument,MaterialId,ResourceId,map.terrainSupportsMaterialAt(0,0,id));
 CHECK_MAP_ID_ARGUMENT(MaterialGrowthArgument,MaterialId,ResourceId,map.materialGrowthRateAt(0,id));
 CHECK_MAP_ID_ARGUMENT(MaterialExpansionArgument,MaterialId,ResourceId,map.materialExpansionRateAt(0,id));
-CHECK_MAP_ID_ARGUMENT(MaterialGradientArgument,MaterialId,ResourceId,map.getMaterialGradient(0,id,MovementAccess::Land));
-CHECK_MAP_ID_ARGUMENT(MaterialAvailabilityArgument,MaterialId,ResourceId,map.materialAvailable(0,id,MovementAccess::Land,0,0));
-CHECK_MAP_ID_ARGUMENT(MaterialDistanceArgument,MaterialId,ResourceId,map.materialAvailable(0,id,MovementAccess::Land,0,0,static_cast<int*>(nullptr)));
+CHECK_MAP_ID_ARGUMENT(MaterialGradientArgument,MaterialId,ResourceId,map.routing().getMaterialGradient(0,id,MovementAccess::Land));
+CHECK_MAP_ID_ARGUMENT(MaterialAvailabilityArgument,MaterialId,ResourceId,map.routing().materialAvailable(0,id,MovementAccess::Land,0,0));
+CHECK_MAP_ID_ARGUMENT(MaterialDistanceArgument,MaterialId,ResourceId,map.routing().materialAvailable(0,id,MovementAccess::Land,0,0,static_cast<int*>(nullptr)));
 CHECK_MAP_ID_ARGUMENT(ResourceIncrementArgument,ResourceId,MaterialId,map.incResource(0,0,id,0));
 CHECK_MAP_ID_ARGUMENT(ResourceSetArgument,ResourceId,MaterialId,map.setResource(0,0,id,0));
 CHECK_MAP_ID_ARGUMENT(ResourcePropertiesArgument,ResourceId,MaterialId,map.resourceProperties(id));
@@ -1420,8 +1421,8 @@ TEST_CASE("custom ground and air obstruction independently govern routes across 
             {
                 if(x==8 && y==8) return true;
                 int dx=0,dy=0;
-                const bool found=air ? map.pathfindAirPointToPoint(x,y,8,8,&dx,&dy)
-                    : map.pathfindPointToPoint(x,y,8,8,&dx,&dy,MovementAccess::Land,1,32);
+                const bool found=air ? map.routing().pathfindAirPointToPoint(x,y,8,8,&dx,&dy)
+                    : map.routing().pathfindPointToPoint(x,y,8,8,&dx,&dy,MovementAccess::Land,1,32);
                 if(!found) return false;
                 REQUIRE((dx || dy));
                 const int nx=(x+dx+map.getW())%map.getW(),ny=(y+dy+map.getH())%map.getH();

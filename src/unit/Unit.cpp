@@ -5,6 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GameHeader.h"
 #include "UnitCargo.h"
 #include "AreaEffects.h"
@@ -801,10 +802,10 @@ bool Unit::continueExtendedCargoCollection()
 bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
 {
 	Map& map=*owner->map;
-    if (map.queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer)!=RouteResult::Reachable) return false;
+    if (map.routing().queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer)!=RouteResult::Reachable) return false;
     if (!x || !y) return true;
-    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
-    return map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer);
+    const auto* field=map.routing().getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
+    return map.routing().projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer);
 
 }
 
@@ -812,10 +813,10 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
 {
     Map& map=*owner->map;
     if (performance[FLY]) return findMaterialDestination(material,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
-    const auto result=map.queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer);
+    const auto result=map.routing().queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer);
     if (result!=RouteResult::Reachable || !x || !y) return result;
-    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
-    return map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer)
+    const auto* field=map.routing().getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
+    return map.routing().projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer)
         ? RouteResult::Reachable : RouteResult::Unreachable;
 
 }

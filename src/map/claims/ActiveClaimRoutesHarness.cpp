@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "ComputeExecutor.h"
@@ -356,7 +357,7 @@ TEST_SUITE("ActiveClaimRoutes")
         glob2test::discardPrematureHiringSuggestions(game);
         for(auto* worker:{unit,holder}) {REQUIRE(worker->attachedBuilding==building);REQUIRE(worker->movementAccess()==MovementAccess::Land);}
         REQUIRE(holder->acquireMaterialClaimAt(nearest));
-        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
         game.invalidateObservation();game.observeCompletedWorld();
         // Resource placement changes no terrain: the cached labelling stays.
         CHECK(map.claimTerrainComponents(accessClass(MovementAccess::Land))==labels);
@@ -388,9 +389,9 @@ TEST_SUITE("ActiveClaimRoutes")
             Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
             const auto held=Uint32(map.coordToIndex(14,8)),closer=Uint32(map.coordToIndex(11,8));
             map.setResourceByIndex(11,8,WHEAT,1);map.setMaterialAmountSlot(closer,WHEAT,3);
-            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
-            map.updateMaterialGradient(0,WHEAT,MovementAccess::Land,false);
-            const auto relabeled=[&]{const auto* cost=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);const auto labels=map.materialGradientDestinations(cost);return labels&&labels->x[map.coordToIndex(8,8)]==11;};
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            map.routing().updateMaterialGradient(0,WHEAT,MovementAccess::Land,false);
+            const auto relabeled=[&]{const auto* cost=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);const auto labels=map.routing().materialGradientDestinations(cost);return labels&&labels->x[map.coordToIndex(8,8)]==11;};
             for(unsigned boundary=0;!relabeled() && boundary<4096;++boundary){++game.stepCounter;game.observeCompletedWorld();}
             REQUIRE(relabeled());
             game.invalidateObservation();game.observeCompletedWorld();
@@ -496,7 +497,7 @@ TEST_SUITE("ActiveClaimRoutes")
             map.computeExecutor().configure(threads);map.enableResourceClaims();
             auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
             Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
-            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
             unit->materialClaimPolicyState.decisionOrdinal=1;game.invalidateObservation();game.observeCompletedWorld();
             const auto target=unit->activeMaterialClaim->access;
             const auto distance=[&](int x,int y){return map.warpDistMax(x,y,int(target%map.getW()),int(target/map.getW()));};
@@ -543,10 +544,10 @@ TEST_SUITE("ActiveClaimRoutes")
             assign(*unit,*building,map,8,freeY);map.setMaterialAmountSlot(free,WHEAT,1);
             unit->releaseActiveMaterialClaim();
             REQUIRE(holder->activeMaterialClaimValid());
-            REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+            REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
             game.invalidateObservation();game.observeCompletedWorld();
-            const auto* field=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);REQUIRE(field);
-            const auto destinations=map.materialGradientDestinations(field);REQUIRE(destinations);
+            const auto* field=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);REQUIRE(field);
+            const auto destinations=map.routing().materialGradientDestinations(field);REQUIRE(destinations);
             REQUIRE(destinations->x[map.coordToIndex(8,8)]==12);REQUIRE(destinations->y[map.coordToIndex(8,8)]==8);
             const bool selected=unit->selectActiveMaterialClaim(field);
             CHECK(selected==admitted);
@@ -614,7 +615,7 @@ TEST_SUITE("ActiveClaimRoutes")
         assign(*holder,*building,map,12,8);map.setMaterialAmountSlot(Uint32(map.coordToIndex(12,8)),WHEAT,1);
         unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
         unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
-        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
         game.invalidateObservation();game.observeCompletedWorld();
         unit->handleActiveMaterialMovement();
         // Rather than wait on stock others hold, the worker is freed for hiring.

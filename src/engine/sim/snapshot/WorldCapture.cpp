@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SharedBuildingGradient.h"
+#include "gradient/MapRouting.h"
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
 #include "Building.h"
@@ -586,11 +587,11 @@ Handle capture(const Game& game,
 		const ResourceFields *kept = previous && previous->worldIdentity == result->worldIdentity
 										 ? previous->resourceFields.get()
 										 : nullptr;
-		for (const auto &plane : game.map.publishedResourceFields())
+		for (const auto &plane : game.map.routing().publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
-            const auto destinations=game.map.materialGradientDestinations(*plane.slot);
-            const auto destinationGeneration=game.map.materialGradientDestinationGeneration(plane.slot);
+            const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
+            const auto destinationGeneration=game.map.routing().materialGradientDestinationGeneration(plane.slot);
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;

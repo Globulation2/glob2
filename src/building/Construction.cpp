@@ -17,6 +17,7 @@
 #include "GameHeader.h"
 #include "AreaEffects.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
@@ -116,7 +117,7 @@ void Building::transferMaterialsPointer(bool wasShared)
 			assert(Sint64(owner->teamMaterials[r])+localMaterials[r]<=std::numeric_limits<Sint32>::max());
 			owner->teamMaterials[r] += localMaterials[r];
 			localMaterials[r] = 0;
-			owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+			owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,r);
 		}
 	updateMaterialsPointer();
 }
@@ -258,7 +259,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		owner->ctx.areaEffects->changed(gid);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -356,7 +357,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
     // Recovery may shift an overlay footprint after capability registration.
     if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
-        for(int material=0;material<MaterialCount;++material)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,material);
+        for(int material=0;material<MaterialCount;++material)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,material);
     }
 
 	maxUnitWorking=maxUnitWorkingPrevious;
@@ -383,9 +384,9 @@ void Building::launchDelete(void)
 		owner->ctx.areaEffects->changed(gid);
 		owner->stockSuppliers.remove(this);
 		owner->directStockSuppliers.remove(this);
-		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->routing().invalidateSupplierLocations();
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitInside=0;
@@ -404,7 +405,7 @@ void Building::cancelDelete(void)
 	owner->ctx.areaEffects->changed(gid);
 	owner->addToStaticAbilitiesLists(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resource);
+		for (int resource=0; resource<MaterialCount; ++resource) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resource);
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();

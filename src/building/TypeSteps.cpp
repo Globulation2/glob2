@@ -16,6 +16,7 @@
 #include "FixedPoint.h"
 #include "sim/SimServices.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "UnitTiming.h"
@@ -182,7 +183,7 @@ void Building::convertStoneToBullet()
 		changeMaterial(resource, -(cost));
 		owner->stats.events().consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
+		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }

@@ -10,6 +10,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
@@ -49,12 +50,12 @@ void buildScheduled(PipelineJob& job)
 }
 } // namespace
 
-bool Map::buildingGradientPipelineActive() const
+bool MapRouting::buildingGradientPipelineActive() const
 {
 	return gradientRuntime->buildings.enabled();
 }
 
-Map::BuildingGradientPipelineStatus Map::buildingGradientPipelineStatus() const
+MapRouting::BuildingGradientPipelineStatus MapRouting::buildingGradientPipelineStatus() const
 {
 	const auto& rt = *gradientRuntime;
 	const auto& metrics = rt.buildings.metrics;
@@ -63,7 +64,7 @@ Map::BuildingGradientPipelineStatus Map::buildingGradientPipelineStatus() const
 		rt.buildingSynchronous, metrics.maxPending, rt.synchronousByReason};
 }
 
-const char* Map::buildingSyncReasonName(BuildingSyncReason reason)
+const char* MapRouting::buildingSyncReasonName(BuildingSyncReason reason)
 {
 	static constexpr const char* names[] = {"inactive", "cold_new", "cold_idle", "cold_own", "cold_team", "cold_area",
 		"overflow", "other"};
@@ -71,12 +72,12 @@ const char* Map::buildingSyncReasonName(BuildingSyncReason reason)
 	return names[std::size_t(reason)];
 }
 
-void Map::noteBuildingSyncReason(BuildingSyncReason reason)
+void MapRouting::noteBuildingSyncReason(BuildingSyncReason reason)
 {
 	gradientRuntime->syncReason = buildingGradientPipelineActive() ? reason : BuildingSyncReason::Inactive;
 }
 
-void Map::carryPendingBuildingGenerations(Uint32 from, Uint32 to)
+void MapRouting::carryPendingBuildingGenerations(Uint32 from, Uint32 to)
 {
 	// Superseded jobs (the editing team's reset buildings) are discarded anyway.
 	gradientRuntime->buildings.visitOwnerFields([&](building_gradient::Job& p) {
@@ -84,11 +85,11 @@ void Map::carryPendingBuildingGenerations(Uint32 from, Uint32 to)
 	});
 }
 
-Building* Map::buildingGradientDestination(int team, int id, Uint32 identity) const
+Building* MapRouting::buildingGradientDestination(int team, int id, Uint32 identity) const
 {
-	if (!game || team < 0 || team >= game->teamsCount() || id < 0 || id >= Building::MAX_COUNT || !game->teams[team])
+	if (!map.game || team < 0 || team >= map.game->teamsCount() || id < 0 || id >= Building::MAX_COUNT || !map.game->teams[team])
 		return nullptr;
-	Building* building = game->teams[team]->myBuildings[id];
+	Building* building = map.game->teams[team]->myBuildings[id];
 	return building && building->scriptIdentity == identity ? building : nullptr;
 }
 
@@ -96,11 +97,11 @@ Building* Map::buildingGradientDestination(int team, int id, Uint32 identity) co
 // map-only tests) builds its fields synchronously. A change with pending work
 // would move deadlines, so it is refused; with an empty pipeline (a new match,
 // or a fork of a loaded game) it reconfigures.
-void Map::ensureBuildingGradientPipeline()
+void MapRouting::ensureBuildingGradientPipeline()
 {
 	auto& rt = *gradientRuntime;
 	auto& pipeline = rt.buildings;
-	const unsigned delay = game ? unsigned(game->gameHeader.getBuildingGradientDelay()) : 0;
+	const unsigned delay = map.game ? unsigned(map.game->gameHeader.getBuildingGradientDelay()) : 0;
 	if (pipeline.delayTicks() == delay) return;
 	if (pipeline.pendingCount() || !rt.buildingRequests.empty() || !rt.stagedBuildings.empty())
 		throw std::logic_error("Scheduled building gradients cannot change with pending work");
@@ -135,7 +136,7 @@ void Map::ensureBuildingGradientPipeline()
 		// the later one wins as the later synchronous build would. (Values of
 		// one boundary are equal; a boundary repeated within one tick, as in
 		// direct map stepping, can differ.) At most four entries per team.
-		if (!sameTick.empty() && (sameTick.front().captureTick != p.captureTick || sameTick.front().publishTick != game->stepCounter))
+		if (!sameTick.empty() && (sameTick.front().captureTick != p.captureTick || sameTick.front().publishTick != map.game->stepCounter))
 			sameTick.clear();
 		const auto publishedEarlier = [&](int other) {
 			for (const auto& e : sameTick)
@@ -151,7 +152,7 @@ void Map::ensureBuildingGradientPipeline()
 			const auto stamped = b->lastGlobalGradientUpdateStepCounter[other];
 			if (stamped > p.captureTick || (stamped == p.captureTick && !publishedEarlier(other))) newest = false;
 		}
-		sameTick.push_back({p.team, p.buildingId, slot, p.captureTick, game->stepCounter});
+		sameTick.push_back({p.team, p.buildingId, slot, p.captureTick, map.game->stepCounter});
 		if (newest)
 		{
 			b->setLocked(b->routeAccess(swim, p.route),p.locked);
@@ -159,8 +160,8 @@ void Map::ensureBuildingGradientPipeline()
 		}
         if(auto& stats=gradientRuntime->workStats) {
             const auto key=GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route));
-            stats->published(key,game->stepCounter,p.workReason,size);
-            if(b->globalGradientSearch[slot])stats->partial(key,game->stepCounter,0,b->globalGradientSearch[slot]->settledCost(),true);
+            stats->published(key,map.game->stepCounter,p.workReason,map.size);
+            if(b->globalGradientSearch[slot])stats->partial(key,map.game->stepCounter,0,b->globalGradientSearch[slot]->settledCost(),true);
         }
 		b->refreshRequested.reset(slot);
 		return true;
@@ -173,14 +174,14 @@ void Map::ensureBuildingGradientPipeline()
 	};
 	// Work observed at c publishes at boundary c + remaining.
 	pipeline.deadline = [this](unsigned remaining) {
-		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining);
+		return ComputeExecutor::advanceDue(std::uint64_t(map.game ? map.game->stepCounter : 0) + remaining);
 	};
 	// Statistics record what readers needed, so they default to seeds only.
-	if (delay) pipeline.configure(compute, delay, buildScheduled);
+	if (delay) pipeline.configure(map.compute, delay, buildScheduled);
 	else pipeline.drain();
 }
 
-void Map::resetBuildingGradientPipeline() noexcept
+void MapRouting::resetBuildingGradientPipeline() noexcept
 {
 	auto& rt = *gradientRuntime;
 	rt.stagedBuildings.clear(); // Reserved jobs are pending too; drain retires them.
@@ -188,14 +189,14 @@ void Map::resetBuildingGradientPipeline() noexcept
 	rt.buildings.drain();
 }
 
-bool Map::requestBuildingRefresh(Building* building, int slot)
+bool MapRouting::requestBuildingRefresh(Building* building, int slot)
 {
 	auto& rt = *gradientRuntime;
 	if (!buildingGradientPipelineActive()) return false;
-	if (!building->globalGradient[slot] && game->preparingBuildingGradient(*building, slot)) return true;
+	if (!building->globalGradient[slot] && map.game->preparingBuildingGradient(*building, slot)) return true;
     if(auto& stats=rt.workStats) {
         const auto key=GradientWorkStats::buildingKey(building->owner->teamNumber,slotSwim(slot),Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(slotRoute(slot)));
-        stats->request(key,game->stepCounter,unsigned(building->globalGradient[slot]?AdaptiveGradientState::Reason::Reactive:AdaptiveGradientState::Reason::Cold),building->refreshRequested.test(slot));
+        stats->request(key,map.game->stepCounter,unsigned(building->globalGradient[slot]?AdaptiveGradientState::Reason::Reactive:AdaptiveGradientState::Reason::Cold),building->refreshRequested.test(slot));
     }
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
@@ -209,7 +210,7 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
 	return true;
 }
 
-int Map::predictBuildingDepth(const Building* building, int slot) const
+int MapRouting::predictBuildingDepth(const Building* building, int slot) const
 {
 	// Clearing and Combat goals move with resources and enemies: full depth.
 	if (slotRoute(slot) != BuildingRoute::Footprint) return COST_LIMIT;
@@ -223,7 +224,7 @@ int Map::predictBuildingDepth(const Building* building, int slot) const
 	return std::min(BuildingGradientDepth::target(serving, previous), COST_LIMIT);
 }
 
-void Map::stageBuildingGradientPreparation()
+void MapRouting::stageBuildingGradientPreparation()
 {
 	if (!buildingGradientPipelineActive()) return;
 	auto& rt = *gradientRuntime;
@@ -250,8 +251,8 @@ void Map::stageBuildingGradientPreparation()
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
 		p.slot = request.slot; p.swim = preparationCostClass(p.team,slotSwim(request.slot)); p.route = slotRoute(request.slot);
-		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
-        if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);
+		p.epoch = request.epoch; p.captureTick = map.game->stepCounter; p.generation = map.topologyGeneration;
+        if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route)),map.game->stepCounter,map.size);
 		p.data.reset(acquireBuildingGradientBuffer());
 		p.search = acquireBuildingGradientSearch();
 		// Cold initialization stays lazy for every route, including flags.
@@ -263,7 +264,7 @@ void Map::stageBuildingGradientPreparation()
 	}
 }
 
-void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation)
+void MapRouting::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation)
 {
 	auto& rt = *gradientRuntime;
 	if (rt.stagedBuildings.empty()) return;

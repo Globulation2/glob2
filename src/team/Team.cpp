@@ -7,6 +7,7 @@
 #include "GameHeader.h"
 #include "MapHeader.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "Building.h"
 #include "Team.h"
@@ -92,7 +93,7 @@ void Team::attachUnit(int id, Unit* unit)
 	assert(!myUnits[id] || myUnits[id]==unit);
 	liveUnits.append(*unit);
 	myUnits[id]=unit;
-    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->gradientGuardCostsChanged(teamNumber);
+    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->routing().gradientGuardCostsChanged(teamNumber);
 	if (taskSwapNext==0xffff) taskSwapNext=id;
 }
 Unit* Team::detachUnit(int id)
@@ -102,7 +103,7 @@ Unit* Team::detachUnit(int id)
 	assert(unit->owner==this);
 	Unit* next=unit->populationNext;
 	liveUnits.remove(*unit);
-    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->gradientGuardCostsChanged(teamNumber);
+    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->routing().gradientGuardCostsChanged(teamNumber);
 	myUnits[id]=nullptr;
 	if (taskSwapNext==id) taskSwapNext=next ? Unit::GIDtoID(next->gid)
 		: liveUnits.empty() ? 0xffff : Unit::GIDtoID(liveUnits.front()->gid);

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
@@ -1333,21 +1334,21 @@ TEST_SUITE("EngineSession")
 		                    }
 		            }
 		            auto regular = seed;
-		            map.updateGlobalGradient(regular.data());
+		            map.routing().updateGlobalGradient(regular.data());
 		            require(regular == expected, "Synchronous gradient differs from queue oracle");
 		            auto scheduled = seed;
-		            auto task = map.updateGlobalGradientTask(scheduled.data());
+		            auto task = map.routing().updateGlobalGradientTask(scheduled.data());
 		            unsigned slices = 0;
 		            while (!task.advance()) require(++slices < 1000, "Gradient did not converge");
 		            require(task.result() && (!fixture || slices >= 8) && scheduled == expected,
 		                    "Scheduled gradient must yield and match the queue oracle");
 		            auto cancelled = seed;
 		            {
-		                auto partial = map.updateGlobalGradientTask(cancelled.data());
+		                auto partial = map.routing().updateGlobalGradientTask(cancelled.data());
 		                if (fixture) require(!partial.advance() && !partial.advance(), "Gradient cancellation must precede completion");
 		            }
 		            // Monotonic relaxation can resume from an interrupted sweep.
-		            map.updateGlobalGradient(cancelled.data());
+		            map.routing().updateGlobalGradient(cancelled.data());
 		            require(cancelled == expected, "Interrupted gradient could not converge on restart");
 		        }
 		    }

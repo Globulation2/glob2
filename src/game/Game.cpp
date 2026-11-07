@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Team.h"
+#include "gradient/MapRouting.h"
 #include <algorithm>
 #include <bit>
 #include <iostream>
@@ -218,7 +219,7 @@ void Game::configureBuildingCatalog()
 	areaEffects.configure(*this);
 	bool routingChanged=false;
 	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
-	if (routingChanged) map.invalidateSupplierLocations();
+	if (routingChanged) map.routing().invalidateSupplierLocations();
 	for (Team* team : teams)
 		if (team)
 		{
@@ -233,7 +234,7 @@ void Game::configureBuildingCatalog()
 			if (routingChanged)
 			{
 				team->dirtyGlobalGradient();
-				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
+				for (int resource=0; resource<MaterialCount; ++resource) map.routing().dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
 }
@@ -281,7 +282,7 @@ void Game::clearGame()
 {
     unitCargo.clear();
     turretTargetingPipeline.reset();
-	map.resetGradientPipeline(true); // Drain callbacks and discard old-world caches before team destruction.
+	map.routing().resetGradientPipeline(true); // Drain callbacks and discard old-world caches before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
     map.computeExecutor().resetTelemetry();
@@ -338,7 +339,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 			throw std::logic_error("A saved match cannot change its AI delay");
 		// Pending building fields carry deadlines from the old delay. Without
 		// any, the next tick reconfigures the pipeline from the new header.
-		const auto buildings=map.buildingGradientPipelineStatus();
+		const auto buildings=map.routing().buildingGradientPipelineStatus();
 		if ((buildings.pending || buildings.queued)
 			&& gameHeader.getBuildingGradientDelay()!=newGameHeader.getBuildingGradientDelay())
 			throw std::logic_error("A saved match cannot change its building gradient delay with pending fields");

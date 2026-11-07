@@ -16,6 +16,7 @@
 #include "../../src/team/Team.h"
 #include "../../src/ai/AIImplementation.h"
 #include "../../src/map/Map.h"
+#include "gradient/MapRouting.h"
 #include "Order.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -555,7 +556,7 @@ void armyBirthsMatchPlatformChecksums()
     std::ofstream output;
     // Record the same delayed schedule used by normal verification. Dedicated
     // gradient-publication suites vary executor counts and check every tick.
-    f.game.map.configureGradientPipeline(0,8);
+    f.game.map.routing().configureGradientPipeline(0,8);
     if(record) output.open(path);
     else expected.open(path);
     REQUIRE((record?output.good():expected.good()));

@@ -1,4 +1,5 @@
 #include <Environment.h>
+#include "gradient/MapRouting.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "GameGUI.h"
@@ -246,7 +247,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 		CHECK(buildings > 0);
 	};
 	checkIdentities(legacy.game);
-	legacy.game.map.finishGradientPipeline();
+	legacy.game.map.routing().finishGradientPipeline();
 	auto *storage = new GAGCore::MemoryStreamBackend;
 	GAGCore::BinaryOutputStream output(storage);
 	legacy.game.save(&output, false, "Master124 upgraded");

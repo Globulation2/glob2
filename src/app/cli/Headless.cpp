@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "gradient/MapRouting.h"
 #include "Headless.h"
 #include "OwnerTickProfile.h"
 #include "ResourceGrowth.h"
@@ -572,11 +573,11 @@ struct HeadlessRunner
 				applyGameRule(header, rule);
 				forkSettings.push_back("rule:"+rule);
 			}
-			const auto buildings=engine.gui.game.map.buildingGradientPipelineStatus();
+			const auto buildings=engine.gui.game.map.routing().buildingGradientPipelineStatus();
 			if(!forkSettings.empty() && (buildings.pending || buildings.queued))
 				throw std::invalid_argument("cannot fork a saved game with pending building gradients");
 			// Apply the forked delay now, so a save before the first tick records it.
-			engine.gui.game.map.ensureBuildingGradientPipeline();
+			engine.gui.game.map.routing().ensureBuildingGradientPipeline();
 		}
 		else
 		{
@@ -717,24 +718,24 @@ struct HeadlessRunner
             engine.gui.game.map.computeExecutor().configureTelemetry(computeMode);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
-		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
-		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
+		const auto pipeline = engine.gui.game.map.routing().gradientPipelineStatus();
+		if (!pipeline.enabled) engine.gui.game.map.routing().configureGradientPipeline(1, gradientDelay);
 		else {
 			if (options.count("--gradient-delay") && gradientDelay != pipeline.delay) {
 				if (pipeline.pending) throw std::invalid_argument("cannot change the delay with pending gradients");
-				engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
+				engine.gui.game.map.routing().configureGradientPipeline(1, gradientDelay);
 			}
-			engine.gui.game.map.setGradientWorkerCount(1);
+			engine.gui.game.map.routing().setGradientWorkerCount(1);
 		}
         if (options.count("--gradient-work-stats")) {
             const auto path=fs::absolute(one(options,"--gradient-work-stats"));
             fs::create_directories(path.parent_path());
-            engine.gui.game.map.configureGradientWorkStats(path.string());
+            engine.gui.game.map.routing().configureGradientWorkStats(path.string());
         }
         if (options.count("--resource-gradient-exploration")) {
             if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
                 throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
-            engine.gui.game.map.configureResourceGradientExploration(
+            engine.gui.game.map.routing().configureResourceGradientExploration(
                 one(options,"--resource-gradient-exploration"),
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
                 (output/"gradient-decisions.csv").string());
@@ -801,14 +802,14 @@ struct HeadlessRunner
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
-			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
+			engine.gui.game.map.routing().finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			engine.gui.game.drainHiring();
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 			if (tickProfile) tickProfile->write(output);
 		}
-		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
+		else { engine.run(); engine.gui.game.map.routing().finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
         if (!engine.latestChecksum) throw std::runtime_error("Missing terminal snapshot checksum");
         const auto initialChecksum=initialSamples.front().sample.value;
         if (engine.diagnostics) engine.diagnostics->finish();
@@ -824,8 +825,8 @@ struct HeadlessRunner
 		// Finalize reporting only after continuation saves. A report endpoint
 		// must not add an off-cadence sample to a subsequently resumed game.
 		game.winProbabilitySyncStep(true);
-		const auto pipelineResult = game.map.gradientPipelineStatus();
-		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+		const auto pipelineResult = game.map.routing().gradientPipelineStatus();
+		const auto buildingResult = game.map.routing().buildingGradientPipelineStatus();
 		const auto gradient=gradient_kernel::configuration();
         const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
         std::sort(tickDurations.begin(),tickDurations.end());
@@ -902,7 +903,7 @@ struct HeadlessRunner
 			<< ",\"building_gradient_pending\":" << buildingResult.pending
 			<< ",\"building_gradient_synchronous_by_reason\":{";
 		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
-			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+			result << (reason ? "," : "") << quote(MapRouting::buildingSyncReasonName(MapRouting::BuildingSyncReason(reason)))
 				<< ':' << buildingResult.synchronousByReason[reason];
 		result << '}';
 
@@ -963,7 +964,7 @@ struct HeadlessRunner
         result << ']';
 		result << ",\"gradient_execution\":{";
 		bool gradientComma=false;
-		for (const auto& [name,value] : game.map.gradientExecutionMetrics()) {
+		for (const auto& [name,value] : game.map.routing().gradientExecutionMetrics()) {
 			if (gradientComma) result << ',';
 			gradientComma=true; result << quote(name) << ':' << value;
 		}
