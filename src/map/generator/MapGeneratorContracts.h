@@ -33,6 +33,10 @@
 #include <tuple>
 #include <vector>
 #include "TerrainTypeTable.h"
+#include "HeightFieldLooks.h"
+#include "HeightMap.h"
+#include "RiverGenerator.h"
+#include "Terrain.h"
 
 namespace GeneratorContracts
 {
@@ -4507,6 +4511,288 @@ inline void shatteredCoastContracts()
 		 "cuts ground off or crowds a colony, stocked quarries following stone, resource extremes, growth");
 }
 
+// River 2.0 (revision 6): both banks pinned over the envelope revision 5 accepted, at 128, 256 and 512
+// with several colony counts; the river's course unchanged (the finished map's water, deep or plain,
+// is the height field's water vertex for vertex); deep cores that keep two tiles of shallows and the
+// map's algae; levees, mud and rock off the beach; pavement beyond the water's reach; bluffs that cut
+// nothing off and keep their stone, damage refused; deep water and bluffs switching off cleanly;
+// resource extremes; and growth.
+inline void riverContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
+	assert(definition.legacyId == 2 && definition.revision == 6);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
+		   request.option("river-width") == 35);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "River %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
+						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "River %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && std::holds_alternative<std::int64_t>(record.value))
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	// The terrain promises on a finished map: the water is the height field's (the course is
+	// unchanged); deep water stands at least three steps from any land, so two whole tiles of shallows
+	// line every bank; no levee, mud, scree or rock vertex touches plain water; every Barren vertex lies
+	// 22 or more steps from water; no blocking terrain parts the ground.
+	const auto checkTerrain = [&](const Game &g, const D &r)
+	{
+		const Map &map = g.map;
+		const int w = map.getW(), h = map.getH();
+		const Torus t(map);
+		GenerationContext replay(r);
+		const RiverOptions options(r);
+		const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(r, false);
+		const TerrainSketch stamp = heightFieldSketch(
+			r, replay, terrain,
+			[&](HeightMap &hm, unsigned pw, unsigned ph, float smoothing)
+			{ hm.makeRiver(options.river_width * (pw + ph) / 2 / 100, smoothing, options.winding); });
+		const TerrainSketch finished = mapSketch(map);
+		const std::vector<unsigned char> wet = wetVertices(finished), was = wetVertices(stamp);
+		// placeStarts paints grass round each swarm, as it always has; elsewhere the water is the field's.
+		std::vector<unsigned char> swarm(size_t(w) * h, 0);
+		for (int k = 0; k < r.nbTeams; ++k)
+			for (int dy = -3; dy <= 7; ++dy)
+				for (int dx = -2; dx <= 7; ++dx)
+					swarm[size_t(t.at(g.teams[k]->startPosX + dx, g.teams[k]->startPosY + dy))] = 1;
+		for (size_t i = 0; i < wet.size(); ++i)
+			assert(swarm[i] || wet[i] == was[i]);
+		std::vector<unsigned char> land(size_t(w) * h, 0);
+		for (size_t i = 0; i < land.size(); ++i)
+			land[i] = !wet[i];
+		const std::vector<int> fromLand = stepsFrom(t, land), fromWet = stepsFromWet(t, finished);
+		for (int i = 0; i < w * h; ++i)
+		{
+			const TerrainGroup group = terrainGroup(TerrainType(finished[size_t(i)]));
+			if (group == TerrainGroup::DeepWater)
+				assert(fromLand[size_t(i)] >= 3);
+			if (group == TerrainGroup::Barren)
+				assert(fromWet[size_t(i)] >= 22);
+			if (group == TerrainGroup::Fertile || group == TerrainGroup::Ridges ||
+				(group == TerrainGroup::Rough && finished[size_t(i)] != MUDFLAT))
+				assert(fromWet[size_t(i)] >= 2);
+		}
+		assert(partingBarrier(map) < 0);
+	};
+	// The envelope: every size and colony count, banks pinned in turn. A seed the service refuses
+	// (revision 5 refused the same seeds: no balanced or separated starts, or no floor) is rolled
+	// again, as the lobby does.
+	int pinned = 0;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 7},
+							std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (definition.validateRequest && !definition.validateRequest(r).empty())
+				continue;
+			if (dimensions.first + dimensions.second >= 16 && teams != 4 && teams != 12)
+				continue; // the large maps only twice, for time
+			r.options["banks"] = 1 + pinned % 2;
+			++pinned;
+			bool generated = false;
+			for (int roll = 0; roll < 6 && !generated; ++roll)
+			{
+				Game probe(nullptr);
+				generated = bool(service.generate(probe, r));
+				if (!generated)
+					++r.seed;
+			}
+			if (!generated)
+				continue; // revision 5 refuses this size and colony count on these seeds too
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			assert(choice(result, "river.banks") == (r.option("banks") == 1 ? "temperate" : "desert"));
+			assert(measure(result, "river.deep.vertices") > 0 && measure(result, "river.levee.vertices") > 0);
+			// Every alga the deep water displaced found a shallow.
+			assert(measure(result, "river.algae.reseated") == measure(result, "river.displaced.algae"));
+			checkTerrain(g, r);
+		}
+	assert(pinned >= 16);
+	// Both banks come up at random, and each pinned holds at 128, 256 and 512.
+	std::set<std::string> banks;
+	for (std::uint32_t seed = 1; seed <= 8; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		if (result)
+			banks.insert(choice(result, "river.banks"));
+	}
+	assert(banks.size() == 2);
+	for (int b = 1; b <= 2; ++b)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
+		{
+			D r = make(dimension, dimension, teams, 3);
+			r.options["banks"] = b;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned banks");
+			if (b == 2 && dimension >= 8)
+				assert(measure(result, "river.hardpan.vertices") > 0 && measure(result, "river.pavement.vertices") > 0);
+			if (dimension >= 8)
+				assert(measure(result, "river.bluffs.placed") > 0 && measure(result, "river.quarry.stone") > 0);
+			checkTerrain(g, r);
+		}
+	{
+		// The banks change ground, not the river: the same seed has the same water, deep or plain, and
+		// the same walking everywhere within the green ribbon.
+		D temperate = make(8, 8, 4, 13), desert = make(8, 8, 4, 13);
+		temperate.options["banks"] = 1;
+		desert.options["banks"] = 2;
+		Game a(nullptr), b(nullptr);
+		build(a, temperate, "temperate");
+		build(b, desert, "desert");
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				assert(a.map.terrainPropertiesAt(x, y).swimmable == b.map.terrainPropertiesAt(x, y).swimmable);
+	}
+	{
+		// Deep water off: no deep vertex anywhere, and every tile walks alike.
+		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		off.options["deep-channel"] = 0;
+		Game a(nullptr), b(nullptr);
+		build(a, on, "deep channel");
+		const auto result = build(b, off, "no deep channel");
+		assert(measure(result, "river.deep.vertices") == 0 && measure(result, "river.displaced.algae") == 0);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::DeepWater);
+				assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+			}
+	}
+	{
+		// Bluffs: rock and stocked faces with them, no ridges vertex without; faces follow the stone
+		// amount, none at 0.
+		D on = make(8, 8, 4, 3), off = make(8, 8, 4, 3), bare = make(8, 8, 4, 3), rich = make(8, 8, 4, 3);
+		off.options["bluffs"] = 0;
+		bare.options["stone-amount"] = 0;
+		rich.options["stone-amount"] = 300;
+		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
+		const auto withBluffs = build(a, on, "bluffs"), without = build(b, off, "no bluffs"),
+				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
+		assert(measure(withBluffs, "river.bluffs.placed") > 1 && measure(withBluffs, "river.bluffs.faces") > 0);
+		assert(measure(withBluffs, "river.rock.vertices") > 0);
+		assert(measure(without, "river.bluffs.placed") == 0 && measure(without, "river.rock.vertices") == 0);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
+		assert(measure(noStone, "river.bluffs.faces") == 0 && measure(noStone, "river.quarry.stone") == 0);
+		assert(measure(moreStone, "river.quarry.stone") > measure(withBluffs, "river.quarry.stone"));
+		// Taking the quarry faces' stone away (every stone tile beside rock: the band's own stone may stand there too) is refused.
+		GenerationContext check(on);
+		int removed = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			const int x = i % 256, y = i / 256;
+			if (!a.map.isResource(x, y) || a.map.getResource(x, y).type != STONE)
+				continue;
+			bool besideRock = false;
+			for (int dy = -1; dy <= 2 && !besideRock; ++dy)
+				for (int dx = -1; dx <= 2 && !besideRock; ++dx)
+					besideRock = terrainGroup(a.map.vertexTerrainAt((x + dx) & 255, (y + dy) & 255)) == TerrainGroup::Ridges;
+			if (besideRock)
+			{
+				a.map.replaceResource(x, y, Resource{});
+				++removed;
+			}
+		}
+		assert(removed > 0 && definition.validateWorld(a, check).find("quarry") != std::string::npos);
+		// A ring of rock drawn round a patch of open ground cuts it off, and is refused.
+		Game ringed(nullptr);
+		build(ringed, on, "bluffs again");
+		bool drawn = false;
+		for (int cy = 8; cy < 248 && !drawn; cy += 4)
+			for (int cx = 8; cx < 248 && !drawn; cx += 4)
+			{
+				bool open = true;
+				for (int dy = -6; dy <= 6 && open; ++dy)
+					for (int dx = -6; dx <= 6 && open; ++dx)
+						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
+							   !ringed.map.isResource(cx + dx, cy + dy) && ringed.map.getBuilding(cx + dx, cy + dy) == NOGBID &&
+							   terrainGroup(ringed.map.vertexTerrainAt(cx + dx, cy + dy)) != TerrainGroup::Ridges;
+				if (!open)
+					continue;
+				for (int dy = -5; dy <= 5; ++dy)
+					for (int dx = -5; dx <= 5; ++dx)
+						if (std::max(std::abs(dx), std::abs(dy)) >= 4)
+							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
+				drawn = true;
+			}
+		const std::string ringError = definition.validateWorld(ringed, check);
+		assert(drawn && (ringError.find("cuts ground off") != std::string::npos || ringError.find("Colony") != std::string::npos));
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		build(zero, r, "no resources");
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources && control.id != "hilltop-stone")
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	build(abundant, r, "abundant resources");
+	checkTerrain(abundant, r);
+	const auto count = [&](int type)
+	{
+		int n = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			n += abundant.map.isResource(i % 256, i / 256) && abundant.map.getResource(i % 256, i / 256).type == type;
+		return n;
+	};
+	const int cropsBefore = count(WHEAT) + count(WOOD), stoneBefore = count(STONE);
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the crops spread along the levees, every quarry keeps its
+	// stone and no rock parts the ground. (A colony may lose its building room to the crops, which the
+	// floor check reports; revision 5 did the same.)
+	for (int tick = 0; tick < 3072; ++tick)
+		abundant.map.growResources();
+	GenerationContext context(r);
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "River growth: %s\n", growthError.c_str());
+	assert(growthError.empty() || growthError.find("building origins") != std::string::npos);
+	std::fprintf(stderr, "River growth: crops %d -> %d, stone %d -> %d\n", cropsBefore, count(WHEAT) + count(WOOD), stoneBefore, count(STONE));
+	assert(count(WHEAT) + count(WOOD) > cropsBefore && count(STONE) >= stoneBefore && partingBarrier(abundant.map) < 0);
+	puts("PASS River: envelope with pinned banks, the river's water unchanged, shallows round every deep core, "
+		 "algae reseated, levees and rock off the beach, pavement beyond the water's reach, random banks, deep "
+		 "water and bluffs switching off, bluffs that never cut ground off, stocked quarries, damage refused, "
+		 "resource extremes, growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -4546,5 +4832,6 @@ inline void generatorContracts()
 	run("everglades", evergladesContracts);
 	run("ring-world", ringWorldContracts);
 	run("shattered-coast", shatteredCoastContracts);
+	run("river", riverContracts);
 }
 } // namespace GeneratorContracts
