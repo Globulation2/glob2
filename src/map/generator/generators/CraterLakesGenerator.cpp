@@ -431,6 +431,7 @@ Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const 
 		forCorners(t, i, [&](int v) { grass = grass && mech[v] == GRASS && fromWater[v] >= outer; });
 		open[i] = grass;
 	}
+	const std::vector<int> fromOpen = stepsFrom(t, open);
 	std::vector<std::vector<int>> faces(na);
 	std::vector<int> faceX(na, 0), faceY(na, 0);
 	for (int a = 0; a < arcs; ++a)
@@ -464,26 +465,40 @@ Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const 
 		}
 		if (centre < 0)
 			continue;
-		std::vector<unsigned char> wall(size_t(n), 0);
-		for (int i : arcTiles[a])
-			wall[i] = 1;
+		// quarryNear's selection (arc tiles within kFaceHalf of the centre, one step from open ground),
+		// read from one flood of the open ground rather than a whole-map flood per arc.
 		std::vector<int> face;
-		for (int i : quarryNear(t, wall, open, centre, kFaceHalf, 1))
-		{
-			bool fit = home.clear(i, kQuarryHome);
-			forCorners(t, i, [&](int v) { fit = fit && mech[v] == GRASS && fromWater[v] >= 3; });
-			if (fit)
-				face.push_back(i);
-		}
+		const int ccx = t.remainderX(centre), ccy = centre / t.w;
+		for (int dy = -kFaceHalf; dy <= kFaceHalf; ++dy)
+			for (int dx = -kFaceHalf; dx <= kFaceHalf; ++dx)
+			{
+				const int i = t.at(ccx + dx, ccy + dy);
+				if (arcOf[i] != a || fromOpen[i] != 1)
+					continue;
+				bool fit = home.clear(i, kQuarryHome);
+				forCorners(t, i, [&](int v) { fit = fit && mech[v] == GRASS && fromWater[v] >= 3; });
+				if (fit)
+					face.push_back(i);
+			}
+		std::sort(face.begin(), face.end());
 		if (int(face.size()) < kFaceLeast)
 			continue;
-		// The rock behind the face must still stand two tiles thick.
-		for (int i : face)
-			wall[i] = 0;
-		const std::vector<unsigned char> blocks = blocksOfTwo(t, wall);
+		// The rock behind the face must still stand two tiles thick: count the arc tiles left in some 2x2
+		// block of arc tiles that are not face tiles.
+		const auto rockTile = [&](int i) { return arcOf[i] == a && !std::binary_search(face.begin(), face.end(), i); };
 		int rockLeft = 0;
 		for (int i : arcTiles[a])
-			rockLeft += blocks[i];
+		{
+			if (!rockTile(i))
+				continue;
+			const int x = t.remainderX(i), y = i / t.w;
+			bool block = false;
+			for (int oy = -1; oy <= 0 && !block; ++oy)
+				for (int ox = -1; ox <= 0 && !block; ++ox)
+					block = rockTile(t.at(x + ox, y + oy)) && rockTile(t.at(x + ox + 1, y + oy)) &&
+							rockTile(t.at(x + ox, y + oy + 1)) && rockTile(t.at(x + ox + 1, y + oy + 1));
+			rockLeft += block;
+		}
 		if (rockLeft < 6)
 			continue;
 		faces[a] = face;

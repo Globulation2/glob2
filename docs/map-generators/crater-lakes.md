@@ -112,6 +112,11 @@ no food at all.
 
 ## Limits
 
+- The pass doubles generation time in the same build (512×512, 4 colonies: 17.9 s against 8.9 s
+  with rims and deep water off, unoptimised development build); revision 5 takes 0.5 s in a release
+  build.
+- Every map shape and colony count revision 5 accepted (7 sizes and rectangles × 1–12 colonies × 2
+  seeds) still generates at the defaults, with each crater type and with each layer off.
 - Calibration (seed 101, Nicowar, Cortex, Cabino and Maxima, game seeds 1–3, 20,000 ticks, kettle
   type drawn): total worker births 622 against revision 5's 644 (−3%), wheat harvested −8%, wood
   +4%, buildings 216 against 210. Per seat over the three games: Nicowar 80 against 93, Cortex 121
