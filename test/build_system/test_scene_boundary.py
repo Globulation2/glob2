@@ -28,7 +28,7 @@ SCENE_INCLUDES = {
     *TERRAIN_HEADERS, *FIELD_HEADERS,
     *(f'field/{name}' for name in FIELD_HEADERS), 'map/TerrainProperties.h',
     'ResourceRegistry.h', 'ResourceProperties.h', 'Material.h', 'resource/Material.h', 'BuildingType.h',
-    'ExperimentalFeatures.h', 'Types.h', 'SDL3_net/SDL_net.h',
+    'ExperimentalFeatures.h', 'Types.h', 'SDL3_net/SDL_net.h', 'GAGColor.h',
 }
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/render/torus/TorusViewRender.cpp', 'src/hud/draw/GameGUIDraw*.cpp',
@@ -60,7 +60,8 @@ class SceneBoundaryTests(unittest.TestCase):
         # Audit their full local dependency chain, not only the Scene include.
         headers += [ROOT / 'src/resource' / name for name in
                     ('ResourceRegistry.h', 'ResourceProperties.h', 'Material.h')]
-        headers += [ROOT / 'src/game/ExperimentalFeatures.h', ROOT / 'libs/gag/include/Types.h']
+        headers += [ROOT / 'src/common/ExperimentalFeatures.h', ROOT / 'libs/gag/include/Types.h',
+                    ROOT / 'libs/gag/include/GAGColor.h']
         for path in headers:
             for name in include.findall(path.read_text()):
                 if '/' not in name and name.islower():
