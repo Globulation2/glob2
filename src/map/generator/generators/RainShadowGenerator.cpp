@@ -77,9 +77,10 @@ using namespace MapGeneration;
 // along the ridges (and the quarry slid along the valley wall, the same way for every home) to keep
 // clear of the quarries; a pass that still cannot is closed, never a quarry moved. The windward gap
 // between the rock and the streams (kept at four tiles so the streams' growth reaches as far into the
-// valley as before) is spring seeps, fertile ground that waters at 48/256, with patches of scree
-// against the rock. The lee sand starts at the rock now (sand no longer spoils stone), with a frayed
-// scree skirt one to three tiles wide in front of it. Pass floors are sand, so a pass never grows shut,
+// valley as before) is spring seeps, fertile ground that waters at 48/256, with no scree (a skirt on
+// the windward foot cost 6% of the growth potential and was dropped). On the lee side a frayed scree
+// skirt one to three tiles wide lies at the foot of the rock and the sand runs on from it (sand no
+// longer spoils stone, so nothing keeps it off the rock but the scree). Pass floors are sand, so a pass never grows shut,
 // and its mouths are scree, slow to rush. Hardpan pans were considered for the far lee and left out:
 // hardpan does not inhibit growth, so it would change what the lee band is for.
 //
@@ -403,7 +404,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 
 	// Passes are cut every `passSpacing` tiles along the ridge (as many whole passes as fit in one turn
-	// along it, never fewer than one), and on straight ridges every other ridge's passes are shifted by
+	// along it, never fewer than one: the along phase repeats every turn, so a fractional count would
+	// leave a seam; a turn is the map's side over the hypotenuse of ridges and slant, 62 tiles at the
+	// defaults, which is why the control steps by 16), and on straight ridges every other ridge's passes are shifted by
 	// half a spacing, so no pass lines up with the one on the next ridge; a slanted ridge staggers its
 	// own passes, since each crossing of the map shifts the along phase by a fraction of a turn. The
 	// whole pattern may shift along the ridges to keep clear of the homes' quarries.
@@ -666,7 +669,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Inland lakes along the middle of every valley (first play: the valleys "feel too empty"): sites
 	// thrown at least kLakeSpacing apart over the map and kept where the across phase is within
 	// kLakeBand of the valley's middle, each a rough disc, joined by a wandering river to the nearest
-	// stream tile it can see without crossing rock (its own valley's). Rivers leave the lee sand alone
+	// stream tile it can see without crossing rock or a pass (its own valley's). Rivers leave the lee sand alone
 	// but cross the valley's grass.
 	if (o.inlandLakes)
 	{
@@ -693,10 +696,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				const int i = byDistance[c].second;
 				const double ox = t.offsetX(site.x, t.remainderX(i)), oy = t.offsetY(site.y, i / t.w);
 				const double length = ::MapGeneration::Numeric::hypot(ox, oy);
+				// Nor a pass: water is kept off the pass floors below, so a river through one would be
+				// cut in two and reach the next valley's stream as two dead ends.
 				bool clear = true;
 				for (double s = 0; s <= length && clear; s += 0.5)
-					clear = !L.band[t.at(int(std::floor(site.x + 0.5 + ox * s / std::max(1.0, length))),
-										 int(std::floor(site.y + 0.5 + oy * s / std::max(1.0, length))))];
+				{
+					const int j = t.at(int(std::floor(site.x + 0.5 + ox * s / std::max(1.0, length))),
+									   int(std::floor(site.y + 0.5 + oy * s / std::max(1.0, length))));
+					clear = !L.band[j] && !L.pass[j];
+				}
 				if (clear)
 					mouthTile = i;
 			}
@@ -828,10 +836,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			--L.ambientQuarries;
 		}
 		context.telemetry.measure("rain-shadow.quarries.ambient", L.ambientQuarries);
-		int homeStone = 0;
-		for (int i = 0; i < n; ++i)
-			homeStone += L.quarryOf[i] == 0;
-		context.telemetry.measure("rain-shadow.quarries.home-stone", homeStone);
+		if (context.telemetry.enabled())
+		{
+			int homeStone = 0;
+			for (int i = 0; i < n; ++i)
+				homeStone += L.quarryOf[i] == 0;
+			context.telemetry.measure("rain-shadow.quarries.home-stone", homeStone);
+		}
 	}
 
 	// Talus and seeps. Scree skirts the lee foot of the rock (one tile, frayed to three) and frays
@@ -948,7 +959,7 @@ bool generate(Game &game, GenerationContext &context)
 					return true;
 			return false;
 		};
-		const int o2 = std::max(1, RainShadowOptions(context.request).leeWidth);
+		const int o2 = std::max(1, o.leeWidth);
 		TerrainSketch looks(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
@@ -1110,8 +1121,12 @@ GeneratorDefinition rainShadowDefinition()
 																							   3),
 		 GeneratorControl{"ridge-thickness", "Ridge thickness", 2, 6, 1, 3, ControlGroup::Terrain}
 			 .withSearchRange(2, 4),
-		 GeneratorControl{"pass-spacing", "Pass spacing", 24, 96, 8, 48, ControlGroup::Terrain}
-			 .withSearchRange(32, 64),
+		 // Passes come in whole numbers per turn along a ridge (the pattern must wrap the torus), and a
+		 // turn is short: about 62 tiles on a 256 map with four ridges and slant 1. So the spacing is
+		 // offered in steps that each change that number there (16, 32, 48: four, two and one per turn);
+		 // revision 7's 24 to 96 in eights changed nothing from 48 up.
+		 GeneratorControl{"pass-spacing", "Pass spacing", 16, 48, 16, 48, ControlGroup::Terrain}
+			 .withSearchRange(16, 48),
 		 GeneratorControl{"pass-width", "Pass width", 3, 9, 1, 5, ControlGroup::Terrain}
 			 .withSearchRange(5, 8),
 		 GeneratorControl{"lee-width", "Lee width", 2, 12, 1, 6, ControlGroup::Terrain}

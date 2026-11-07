@@ -45,8 +45,8 @@ reads) and paints looks over it with `composeLooks` (`shared/Sketch.h`), so look
 | Quarry and passes | The face of the ridge straight upwind of colony 0's home is found; the pass pattern is shifted along the ridges, and the quarry slid along the valley wall (the same way for every home), to keep every home's quarry clear of the passes. |
 | Sway | The ridge warp (12% of a spacing, 40-tile cells) fades to nothing across every home's valley and eases back over 24 tiles. |
 | Rock | The band round every crest, drawn a tile thicker than `ridge-thickness` (1.5 for 2), less the passes. A pass that would still cut a home's quarry is closed whole. Colony 0's stretch of ridge round its quarry is stamped onto every home's and the quarry face (7 wide, 2 deep) copied with it. Rock vertices only where all four tiles are rock (`rockVertices`). A flood across every ridge with the passes shut must find no way over, or the band is thickened half a tile and rebuilt. |
-| Water | Streams along the windward foot (20 long every 24, 7 deep, four tiles out from the ridge's nominal edge), none within 4 tiles of a pass; inland lakes joined by a wandering river to the nearest stream of their own valley (one that crosses no rock). No water within 3 tiles of a quarry. |
-| Lee | Sand from the rock as far as `lee-width` downwind (`upwindSteps`), so it stops where a pass lets the rain through; scree skirt in front of it (`talusApron`, one tile, frayed to three). |
+| Water | Streams along the windward foot (20 long every 24, 7 deep, four tiles out from the ridge's nominal edge), none within 4 tiles of a pass; inland lakes joined by a wandering river to the nearest stream of their own valley (one whose straight line crosses no rock and no pass floor: water is kept off the passes, so a river through one was cut in two). No water within 3 tiles of a quarry. |
+| Lee | A scree skirt at the lee foot of the rock (`talusApron`, one tile, frayed to three), then sand as far as `lee-width` downwind of the rock (`upwindSteps`), so it stops where a pass lets the rain through. No scree on the windward foot: the gap there is spring seeps. |
 | Ambient quarries | Faces of 3 to 10 tiles on both faces of the ridges, one per 48 tiles of face at the default `stone-amount`, clear of passes, roads, homes and water; a face that would open a way across the ridge is given back to the rock. |
 | Terrain | Mechanics, sand patches (`sprinkleSand`), beaches (which never eat the rock), then the looks. Quarry tiles and their approach stay plain grass. |
 | Resources | Home kits (14 wheat, 12 wood by the pond), farmland on the fertile ground (`furnishGround`: a third under wheat, a fifth under wood), outcrops, fruit, algae, quarry stone; the starting-crop guarantee, cramped-start relief and route opening never touch the rock or a quarry. |
@@ -58,7 +58,7 @@ reads) and paints looks over it with `composeLooks` (`shared/Sketch.h`), so look
 | Ridges | 2–8 (4) | Crossings of the map; fewer on a small map so the valleys fit. |
 | Slant | 0–3 (1) | Ridges climbed following one across the width; with a slant every ridge is one spiral, which staggers its own passes (straight ridges stagger by parity). |
 | Ridge thickness | 2–6 (3) | Nominal rock thickness; the rock blocks about a third of a tile more (more where the sealing check thickens it). |
-| Pass spacing | 24–96 (48) | Tiles between passes along a ridge. |
+| Pass spacing | 16–48 in steps of 16 (48) | Tiles between passes along a ridge, rounded to a whole number of passes per turn along it (the pattern must wrap the torus). A turn is the map's side over the hypotenuse of ridges and slant, about 62 tiles on a 256 map with four ridges and slant 1, so 16, 32 and 48 give four, two and one pass per turn there. Revision 7's first range, 24 to 96 in eights, gave one pass from 48 up: half its steps were dead. At 16 the passes crowd the homes' quarries and several close (six on seed 1 at the defaults otherwise). |
 | Pass width | 3–9 (5) | Width of every pass. |
 | Lee width | 2–12 (6) | Depth of the lee sand band. |
 | Home size | 10–20 (12) | Home radius; shrinks to fit the valley. |
@@ -78,7 +78,11 @@ against revision 6. Climate and rock are looks only and every one measures the s
 | Revision | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
 | 6 | 930 | 37.2 (22) | 101.4 (73) |
-| 7, any climate and rock | 942 | 38.2 (27) | 123.5 (104) |
+| 7, any climate and rock | 881 | 37.8 (27) | 113.0 (94) |
+
+The revision 7 row was measured again on 2026-11-07: the first figures (942, 38.2, 123.5 within 48,
+worst 104) predate later changes on the branch, and the review fixes since (pass spacing range,
+rivers kept out of passes) leave the default maps of seeds 1–6 tile for tile as they were.
 
 Spring seeps are counted as farmland only where a tile is wholly seep, and their own watering
 (48/256) is counted, so the seep strip is if anything undercounted. The terrain dump of `map study`

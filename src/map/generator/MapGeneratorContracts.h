@@ -2993,8 +2993,8 @@ inline void rainShadowContracts()
 	// across every ridge with the passes shut), and passes close rather than cut a home's quarry.
 	// (Slant 3 on a 256 map leaves room for three ridges, as revision 6 also required.)
 	for (auto [thickness, slant, spacing, dimension, teams, seed, ridges] :
-		 {std::tuple{2, 1, 48, 8, 4, 3u, 4}, std::tuple{2, 3, 48, 9, 4, 5u, 4}, std::tuple{2, 0, 24, 9, 8, 9u, 4},
-		  std::tuple{6, 2, 96, 8, 4, 13u, 4}, std::tuple{3, 3, 24, 8, 6, 17u, 3}, std::tuple{4, 0, 32, 7, 2, 19u, 4}})
+		 {std::tuple{2, 1, 48, 8, 4, 3u, 4}, std::tuple{2, 3, 48, 9, 4, 5u, 4}, std::tuple{2, 0, 16, 9, 8, 9u, 4},
+		  std::tuple{6, 2, 48, 8, 4, 13u, 4}, std::tuple{3, 3, 16, 8, 6, 17u, 3}, std::tuple{4, 0, 32, 7, 2, 19u, 4}})
 	{
 		D r = make(dimension, dimension, teams, seed);
 		r.options["ridges"] = ridges;
