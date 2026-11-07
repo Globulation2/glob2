@@ -11,8 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def command(arguments):
     options = {word.split('=', 1)[0]: word.split('=', 1)[1] for word in arguments if '=' in word}
-    defaults = ['dev_fast=1'] if 'dev_fast' not in options else []
-    if 'linker' not in options:
+    # perf=1 is the optimized measurement tier: no fast-development flags, and the
+    # platform linker so its output directory is build/<toolchain>/client/perf[/o3].
+    perf = options.get('perf', '0').lower() in ('1', 'true', 'yes', 'on')
+    defaults = ['dev_fast=1'] if 'dev_fast' not in options and not perf else []
+    if 'linker' not in options and not perf:
         defaults.append('linker=auto')
     if options.get('target') == 'web' and 'web_variant' not in options:
         defaults.append('web_variant=threaded')

@@ -1,10 +1,10 @@
 # Simulation memory benchmarks
 
-Compare whole-game memory and CPU with identical retained inputs and optimized binaries.
+Compare whole-game memory and CPU with identical retained inputs and perf binaries ([build tiers](build-options.md#build-tiers)).
 
 ## Native simulation memory and CPU comparisons
 
-Build the client itself with `scons release=1 server=0`; the `tests` target alone
+Build the client itself with `scons perf=1` (`opt=3` for the quoted numbers); the `tests` target alone
 can leave an older game executable in place. Preserve a baseline with the same
 benchmark instrumentation, build options and dependencies before rebuilding.
 The structured runner accepts `--benchmark-warmup N` when loading a saved game.
@@ -21,7 +21,7 @@ an absolute game tick, and the warmup must leave a nonempty measured window.
 ```sh
 python3 tools/memory_benchmark.py \
   --baseline artifacts/memory/baseline/glob2 \
-  --candidate build/darwin/client/release/src/glob2 \
+  --candidate build/darwin/client/perf/src/glob2 \
   --fixture 0=artifacts/memory/initial.game.gz \
   --fixture 15000=artifacts/memory/checkpoint-15000.game.gz \
   --fixture 45000=artifacts/memory/checkpoint-45000.game.gz \

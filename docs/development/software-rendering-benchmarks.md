@@ -1,13 +1,13 @@
 # Software renderer benchmarks
 
-Measure the production software backend with matching release binaries and retained scenes. [Backend architecture](../architecture/software-rendering.md) explains rasterization and caches.
+Measure the production software backend with matching perf binaries ([build tiers](build-options.md#build-tiers)) and retained scenes. [Backend architecture](../architecture/software-rendering.md) explains rasterization and caches.
 
 ```sh
-scons release=1 server=0 opengl=0 software-render-benchmark
+scons perf=1 opengl=0 software-render-benchmark
 PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
   PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
   GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \
-  build/darwin/client/release/test/SoftwareRenderBenchmark --renderer software --window-size 1280x800 --mute --no-fullscreen
+  build/darwin/client/perf/test/SoftwareRenderBenchmark --renderer software --window-size 1280x800 --mute --no-fullscreen
 ```
 
 Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
@@ -31,7 +31,7 @@ use the existing structured runner with its saved seed and orders, for example:
 
 ```sh
 GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
-  build/darwin/client/release/src/glob2 game run \
+  build/darwin/client/perf/src/glob2 game run \
   --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
   --save every:6000 --save final --telemetry checksums \
   --output-dir "$PWD/artifacts/software-renderer/populated"
@@ -46,7 +46,7 @@ run at least twelve alternating pairs on the same fixtures, resolution and hardw
 ```sh
 python3 tools/software_render_benchmark.py \
   --baseline artifacts/software-renderer/baseline/SoftwareRenderBenchmark \
-  --candidate build/darwin/client/release/test/SoftwareRenderBenchmark \
+  --candidate build/darwin/client/perf/test/SoftwareRenderBenchmark \
   --save artifacts/software-renderer/initial.game.gz --save artifacts/software-renderer/mid.game.gz \
   --save artifacts/software-renderer/late.game.gz --repeat 12 \
   --output artifacts/software-renderer/comparison

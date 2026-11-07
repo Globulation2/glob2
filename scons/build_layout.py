@@ -86,6 +86,16 @@ def build_identity(arguments, host=None):
     if target == 'web':
         toolchain = 'emscripten'
     mode = 'profile' if enabled(arguments.get('profile', 0)) else ('release' if enabled(arguments.get('release', 0)) else 'debug')
+    perf = enabled(arguments.get('perf', 0))
+    level = str(arguments.get('opt', '2'))
+    if level not in ('2', '3'):
+        raise ValueError('opt must be 2 or 3')
+    if level != '2' and not perf:
+        raise ValueError('opt selects the optimization level of a perf=1 build')
+    if perf:
+        if mode != 'debug' or any(development.get(key) for key in ('dev_fast', 'pch', 'unity')) or target != 'native':
+            raise ValueError('perf=1 is a native measurement build; it excludes release, profile, dev_fast, pch and unity')
+        mode = 'perf'
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
@@ -96,6 +106,8 @@ def build_identity(arguments, host=None):
         if legacy == '0': identity['web_legacy_gl'] = False
     if recording_codec != 'h264':
         identity['recording_codec'] = recording_codec
+    if perf:
+        identity['opt'] = int(level)
     if retain_symbols:
         identity['retain_symbols'] = True
     if size_profile != 'none':
@@ -145,6 +157,8 @@ def default_directory(identity):
     if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
         role += '-tcp'
     path = Path('build') / identity['toolchain'] / role / identity['mode']
+    if identity.get('opt', 2) != 2:
+        path /= 'o' + str(identity['opt'])
     if identity.get('size_optimization'):
         path /= 'size-' + identity['size_optimization']
     if identity.get('lean_images'):

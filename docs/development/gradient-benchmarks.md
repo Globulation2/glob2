@@ -73,7 +73,7 @@ same compiler, flags, inputs and CPU affinity. Fixed-origin retries intentionall
 measure a worst case; successful units move on in real games.
 
 ```sh
-build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark \
+build/linux/client/perf/test/glob2-engine-tests -ts=TerrainHazardBenchmark \
   '-tc=*idle decisions*,*shared terrain fields*'
 ```
 
@@ -219,7 +219,7 @@ propagation; ordinary test runs exclude the benchmark tag.
 
 ## GPU correctness and performance
 
-Use identical release builds and retained inputs with
+Use identical perf builds ([build tiers](build-options.md#build-tiers)) and retained inputs with
 `--gradient-backend cpu|scalar|sse2|neon|opencl|vulkan|webgpu` and
 `--gradient-algorithm buckets|frozen8|jacobi`. OpenCL uses Frozen8; Vulkan and
 WebGPU retain both GPU algorithms. A one-participant pool stays on CPU.
