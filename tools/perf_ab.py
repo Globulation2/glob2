@@ -18,13 +18,16 @@ and the tier, ready to paste into a pull request:
 (tools/dev_baseline.py), built for the same tier as the candidate; a directory
 uses that build. Tiers come from each build's identity.json: perf-screen (-O2,
 three pairs is enough for direction) and perf-confirm (opt=3, seven pairs, the
-number to quote). On Linux, `--pin` runs each process under
-test/run_with_benchmark_cpuset.py.
+number to quote). The Δ% column is the median of the per-pair changes, with
+their interquartile range, so load that drifts during a run (other builds on a
+shared machine) does not decide it. On Linux, `--pin [CPUS]` runs every process
+on the same CPUs with taskset, by default the last one.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import re
 import shlex
@@ -73,10 +76,13 @@ def resolve_baseline(spec: str, candidate: Path) -> Path:
     return Path(result.stdout.strip())
 
 
-def measure(command: list[str], build: Path, metric: re.Pattern | None, pin: bool) -> float:
+def measure(command: list[str], build: Path, metric: re.Pattern | None, pin: str | None) -> float:
     argv = [part.replace('{build}', str(build)) for part in command]
-    if pin and platform.system() == 'Linux':
-        argv = [sys.executable, str(ROOT / 'test/run_with_benchmark_cpuset.py'), '--', *argv]
+    if pin is not None and platform.system() == 'Linux':
+        # Unprivileged: one CPU list for every run, so both builds share the
+        # same core and cache. test/run_with_benchmark_cpuset.py reserves whole
+        # cores in a cgroup partition instead, but needs sudo.
+        argv = ['taskset', '-c', pin, *argv]
     started = time.perf_counter()
     result = subprocess.run(argv, capture_output=True, text=True)
     elapsed = time.perf_counter() - started
@@ -92,13 +98,17 @@ def measure(command: list[str], build: Path, metric: re.Pattern | None, pin: boo
 
 def table(name: str, metric_name: str, base: Path, cand: Path, base_values: list[float], cand_values: list[float]) -> str:
     base_median, cand_median = statistics.median(base_values), statistics.median(cand_values)
-    delta = 100 * (cand_median - base_median) / base_median if base_median else float('nan')
+    # The change is the median of the per-pair ratios: load that drifts during a
+    # run lands on both halves of a pair, but would skew the two side medians.
+    ratios = sorted(100 * (cand - base) / base for base, cand in zip(base_values, cand_values) if base)
+    delta = statistics.median(ratios) if ratios else float('nan')
+    low, high = (ratios[len(ratios) // 4], ratios[(3 * len(ratios)) // 4]) if ratios else (delta, delta)
     tiers = {tier(base), tier(cand)}
     host = f'{platform.system().lower()} {platform.machine()}'
     return ('| bench | metric | base (sha) | cand (sha) | Δ% | pairs | tier | host |\n'
             '| --- | --- | ---: | ---: | ---: | ---: | --- | --- |\n'
             f'| {name} | {metric_name} | {base_median:.4g} ({revision(base)}) | {cand_median:.4g} ({revision(cand)}) '
-            f'| {delta:+.1f} | {len(base_values)} | {" / ".join(sorted(tiers))} | {host} |\n')
+            f'| {delta:+.1f} ({low:+.1f}..{high:+.1f}) | {len(base_values)} | {" / ".join(sorted(tiers))} | {host} |\n')
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -114,7 +124,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument('--metric', help='regex whose group 1 is the metric; default wall seconds')
     parser.add_argument('--metric-name', default=None)
     parser.add_argument('--name', default='benchmark')
-    parser.add_argument('--pin', action='store_true', help='Linux: run under the benchmark cpuset')
+    parser.add_argument('--pin', nargs='?', const=str((os.cpu_count() or 1) - 1), metavar='CPUS',
+                        help='Linux: run every process on these CPUs with taskset (default: the last CPU)')
     parser.add_argument('--json', type=Path, help='also write raw samples here')
     args = parser.parse_args(argv[:split])
     command = argv[split + 1:]

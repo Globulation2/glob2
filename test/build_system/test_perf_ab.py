@@ -28,7 +28,7 @@ class PerfAbTest(unittest.TestCase):
                                      '--metric', r'ms=([0-9.]+)', '--metric-name', 'ms', '--name', 'fake', '--', *command],
                                     capture_output=True, text=True, check=True)
             self.assertIn('| fake | ms | 2 (', result.stdout)
-            self.assertIn('| -25.0 | 3 | perf-screen O2 |', result.stdout)
+            self.assertIn('| -25.0 (-25.0..-25.0) | 3 | perf-screen O2 |', result.stdout)
             self.assertEqual(log.read_text().split(), ['base', 'cand', 'cand', 'base', 'base', 'cand'])
 
 
