@@ -30,7 +30,8 @@ class MetricsTest(unittest.TestCase):
 
     def test_master_and_nightly_are_full_not_last_push_diff(self):
         workflow = (Path(__file__).resolve().parents[2] / '.github/workflows/build.yml').read_text()
-        self.assertIn("cron: '0 6 * * *'", workflow)
+        self.assertIn("cron: '0 */4 * * *'", workflow)  # master runs on a schedule, not every push
+        self.assertNotIn('\n  push:', workflow)
         self.assertIn('if [ "$GITHUB_EVENT_NAME" = pull_request ]', workflow)
         self.assertIn('cancel-in-progress: ${{ github.event_name == \'pull_request\' ||', workflow)
 
