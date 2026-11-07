@@ -56,7 +56,7 @@ guide is warranted.
 | [Maze](maze.md) | `maze` | 11 |
 | [Old growth](old-growth.md) | `old-growth` | 28 |
 | [Old islands](../../src/map/generator/generators/RuggedArchipelagoGenerator.cpp) | `rugged-archipelago` | 8 |
-| [Old random](../../src/map/generator/generators/ShatteredCoastGenerator.cpp) | `shattered-coast` | 7 |
+| [Old random](shattered-coast.md) | `shattered-coast` | 7 |
 | [Old town](old-town.md) | `old-town` | 31 |
 | [Orchard Commons](orchard-commons.md) | `orchard-commons` | 58 |
 | [Plantations](plantations.md) | `plantations` | 48 |
