@@ -64,7 +64,8 @@ def programs():
     registry = _load('glob2_test_registry', ROOT / 'test/tests.py')
     harnesses = _load('glob2_harness_programs', ROOT / 'scons/harness_programs.py').HARNESS_PROGRAMS
     aliases = ['tests'] + [alias for _, _, alias, _ in registry.PROGRAMS] + [program.alias for program in harnesses]
-    targets = (['glob2-engine-tests', 'glob2-unit-tests'] + [target for target, *_ in registry.PROGRAMS]
+    targets = (['glob2-engine-tests', 'glob2-unit-tests', 'glob2-map-tests', 'glob2-sim-tests']
+               + [target for target, *_ in registry.PROGRAMS]
                + [program.target for program in harnesses])
     return list(dict.fromkeys(aliases)), targets
 

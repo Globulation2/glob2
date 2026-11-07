@@ -64,9 +64,9 @@ def content():
         _list('GLOB2_RELAY_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.RELAY_GAG_SOURCES],
               'scons/sources.py RELAY_GAG_SOURCES (not built by CMake yet).'),
         _list('GLOB2_MAP_SOURCES', ['src/' + name for name in sources.MAP_SOURCES],
-              'scons/sources.py MAP_SOURCES: libglob2_map.a (not built by CMake yet).'),
+              'scons/sources.py MAP_SOURCES: the glob2_map module library.'),
         _list('GLOB2_SIM_SOURCES', ['src/' + name for name in sources.SIM_SOURCES],
-              'scons/sources.py SIM_SOURCES: libglob2_sim.a (not built by CMake yet).'),
+              'scons/sources.py SIM_SOURCES: the glob2_sim module library.'),
         _list('GLOB2_INCLUDE_DIRECTORIES', sources.INCLUDE_DIRECTORIES,
               'scons/sources.py INCLUDE_DIRECTORIES, in search order.'),
         _list('GLOB2_JAVASCRIPT_SOURCES',
@@ -108,35 +108,63 @@ def _groups(name, entries, comment):
     return blocks
 
 
+def test_binaries():
+    """test/SConscript's test binaries: (key, target, compiled entries, production entries,
+    module libraries, every client object?, aliases that build it)."""
+    return (
+        ('ENGINE_TESTS', 'glob2-engine-tests', registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS,
+         [], (), True, ('engine-tests', 'tests')),
+        ('UNIT_TESTS', 'glob2-unit-tests', registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS,
+         registry.UNIT_PRODUCTION_SOURCES, (), False, ('unit-tests', 'tests')),
+        # The module binaries hold cases moved out of the two above, so engine-tests and
+        # unit-tests build them too.
+        ('MAP_TESTS', 'glob2-map-tests', registry.SUPPORT + registry.MAP_STUBS + registry.MAP_TESTS,
+         registry.MAP_PRODUCTION_SOURCES, ('map',), False, ('map-tests', 'unit-tests', 'tests')),
+        ('SIM_TESTS', 'glob2-sim-tests',
+         registry.SUPPORT + registry.SIM_SUPPORT + registry.SIM_STUBS + registry.SIM_TESTS,
+         registry.SIM_PRODUCTION_SOURCES, ('sim', 'map'), False, ('sim-tests', 'engine-tests', 'tests')),
+    )
+
+
 def tests_content():
     client = {name for name in (*sources.CLIENT_SOURCES, *NATIVE_CLIENT_SOURCES)
               if name != ENTRY_POINT and name.endswith('.cpp')}
+    binaries = test_binaries()
+    blocks = ['set(GLOB2_TEST_BINARIES ' + ' '.join(key for key, *_ in binaries) + ')\n']
     # test/SConscript production_objects: plain client sources reuse the client
-    # object; the rest compile again with the test flags.
-    reused, compiled = [], []
-    for path, options in _entries(registry.UNIT_PRODUCTION_SOURCES):
-        key = path[len('src/'):] if path.startswith('src/') else None
-        if key in client and not options.get('defines') and not options.get('cxxflags'):
-            if options.get('require'):
-                raise SystemExit(f'{path}: a reused client object cannot carry requirements')
-            reused.append(path)
-        else:
-            compiled.append((path, options))
-    engine = list(_entries(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS))
-    unit = list(_entries(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS)) + compiled
-    blocks = _groups('GLOB2_ENGINE_TESTS', engine,
-                     'glob2-engine-tests: SUPPORT, ENGINE_SUPPORT and ENGINE_TESTS, plus every client object.')
-    blocks += _groups('GLOB2_UNIT_TESTS', unit,
-                      'glob2-unit-tests: SUPPORT, UNIT_STUBS, UNIT_TESTS and the UNIT_PRODUCTION_SOURCES '
-                      'compiled again.')
-    blocks.append(_list('GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES', reused,
-                        'UNIT_PRODUCTION_SOURCES whose client objects glob2-unit-tests links.'))
+    # object; the rest compile again with the test flags, once for every binary
+    # (their 'unit-' objects are shared).
+    compiled = {}
+    for key, target, entries, production, modules, everything, aliases in binaries:
+        reused, again = [], []
+        for path, options in _entries(production):
+            name = path[len('src/'):] if path.startswith('src/') else None
+            if name in client and not options.get('defines') and not options.get('cxxflags'):
+                if options.get('require'):
+                    raise SystemExit(f'{path}: a reused client object cannot carry requirements')
+                reused.append(path)
+            else:
+                compiled.setdefault(path, options)
+                again.append(path)
+        blocks.append(f'set(GLOB2_{key}_TARGET {target})\n'
+                      f'set(GLOB2_{key}_ALL_CLIENT_OBJECTS {"ON" if everything else "OFF"})\n'
+                      f'set(GLOB2_{key}_MODULES {" ".join(modules)})\n'
+                      f'set(GLOB2_{key}_ALIASES {" ".join(aliases)})\n')
+        blocks += _groups('GLOB2_' + key, list(_entries(entries)), f'{target}: the registry entries it compiles.')
+        blocks.append(_list(f'GLOB2_{key}_REUSED_CLIENT_SOURCES', reused,
+                            f'Production sources whose client objects {target} links.'))
+        blocks.append(_list(f'GLOB2_{key}_PRODUCTION_SOURCES', again,
+                            f'Production sources {target} links compiled again (GLOB2_TEST_PRODUCTION).'))
+    blocks += _groups('GLOB2_TEST_PRODUCTION', list(compiled.items()),
+                      'Production sources compiled again with the test flags, shared by the binaries.')
     blocks.append(_list('GLOB2_TEST_PROGRAMS', [target for target, *_ in registry.PROGRAMS],
                         'test/tests.py PROGRAMS: compiled with the test flags, linked with every client object.'))
     for target, source, alias, group in registry.PROGRAMS:
         blocks.append(f'set(GLOB2_TEST_PROGRAM_{target}_SOURCE {registry.source_path(source)})\n'
                       f'set(GLOB2_TEST_PROGRAM_{target}_ALIAS {alias})\n'
-                      f'set(GLOB2_TEST_PROGRAM_{target}_GROUP {group})\n')
+                      f'set(GLOB2_TEST_PROGRAM_{target}_GROUP {group})\n'
+                      f'set(GLOB2_TEST_PROGRAM_{target}_REQUIRE '
+                      f'{" ".join(sorted(registry.PROGRAM_REQUIRES.get(target, ())))})\n')
     blocks.append(_list('GLOB2_TEST_PROGRAM_SIDECARS',
                         [target for target, source, *_ in registry.PROGRAMS
                          if source.endswith('TranslationPreviewHarness.cpp')],

@@ -47,7 +47,8 @@ class CMakeSourcesTests(unittest.TestCase):
     def test_every_registry_entry_is_exported(self):
         text = export_cmake_sources.tests_content()
         for table in ('SUPPORT', 'ENGINE_SUPPORT', 'ENGINE_TESTS', 'UNIT_STUBS', 'UNIT_TESTS',
-                      'UNIT_PRODUCTION_SOURCES'):
+                      'UNIT_PRODUCTION_SOURCES', 'MAP_TESTS', 'MAP_STUBS', 'MAP_PRODUCTION_SOURCES', 'SIM_TESTS',
+                      'SIM_SUPPORT', 'SIM_STUBS', 'SIM_PRODUCTION_SOURCES'):
             for entry in getattr(registry, table):
                 source = entry if isinstance(entry, str) else entry[0]
                 with self.subTest(table=table, source=source):
@@ -63,7 +64,8 @@ class CMakeSourcesTests(unittest.TestCase):
         block = r'set\((GLOB2_\w+_TESTS_\d+)_{}\n((?:    .*\n)*)\)'
         groups = dict(re.findall(block.format('SOURCES'), text))
         flags = dict(re.findall(block.format('CXXFLAGS'), text))
-        for table, binary in (('ENGINE_TESTS', 'GLOB2_ENGINE_TESTS'), ('UNIT_TESTS', 'GLOB2_UNIT_TESTS')):
+        for table in ('ENGINE_TESTS', 'UNIT_TESTS', 'MAP_TESTS', 'SIM_TESTS'):
+            binary = 'GLOB2_' + table
             for entry in getattr(registry, table):
                 source, options = (entry, {}) if isinstance(entry, str) else entry
                 path = registry.source_path(source)
@@ -96,11 +98,12 @@ class CMakeSourcesTests(unittest.TestCase):
         self.assertIn('include("${GLOB2_ROOT}/cmake/tests.cmake")', cmake)
         for name in ('GLOB2_CLIENT_SOURCES', 'GLOB2_GAG_SOURCES', 'GLOB2_USL_SOURCES',
                      'GLOB2_JAVASCRIPT_SOURCES', 'GLOB2_INCLUDE_DIRECTORIES', 'GLOB2_STRICT_NUMERIC_SOURCES',
-                     'GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES', 'GLOB2_TEST_PROGRAMS', 'GLOB2_HARNESS_PROGRAMS',
+                     'GLOB2_TEST_BINARIES', 'GLOB2_TEST_PROGRAMS', 'GLOB2_HARNESS_PROGRAMS',
                      'GLOB2_TEST_LEGACY_ALIASES'):
             self.assertRegex(cmake, r'\b' + name + r'\b')
-        self.assertIn('glob2_test_objects(engine_objects ENGINE_TESTS', cmake)
-        self.assertIn('glob2_test_objects(unit_objects UNIT_TESTS', cmake)
+        self.assertIn('foreach(binary IN LISTS GLOB2_TEST_BINARIES)', cmake)
+        self.assertIn('glob2_test_objects(unused TEST_PRODUCTION', cmake)
+        self.assertIn('glob2_objects_of(module_objects glob2_client ${GLOB2_${upper}_SOURCES})', cmake)
         self.assertNotRegex(cmake, r'[\w/]+\.(cpp|c)\b', 'list sources in scons/sources.py, not CMakeLists.txt')
 
     def test_build_config_matches_sconstruct_rendering(self):

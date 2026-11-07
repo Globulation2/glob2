@@ -278,13 +278,16 @@ What it builds:
   client object, as the object library `glob2_client`, and `glob2`. The numeric
   symbol guard runs once the guarded client objects are compiled, before any
   program links them.
-- `glob2-engine-tests` and `glob2-unit-tests` from the `test/tests.py`
-  registry, as `test/SConscript` builds them: the test include directories and
-  `SDL_MAIN_HANDLED`, one object library per group of entries with the same
-  `cxxflags`, `defines` and `require` (so `-fno-access-control` entries and the
-  `GLOB2_ORDER_CODEC_ONLY` codec objects compile separately), the client objects
-  reused wherever SCons reuses them, and a `<binary>.provenance.json` sidecar
-  written by `scons/test_provenance.py` on every build of the alias.
+- `glob2-engine-tests`, `glob2-unit-tests`, `glob2-map-tests` and
+  `glob2-sim-tests` from the `test/tests.py` registry, as `test/SConscript`
+  builds them: the test include directories and `SDL_MAIN_HANDLED`, one object
+  library per group of entries with the same `cxxflags`, `defines` and `require`
+  (so `-fno-access-control` entries and the `GLOB2_ORDER_CODEC_ONLY` codec
+  objects compile separately, the latter once for every binary that links
+  them), the client objects reused wherever SCons reuses them, the `glob2_map`
+  and `glob2_sim` module archives linked as one `--start-group` group, and a
+  `<binary>.provenance.json` sidecar written by `scons/test_provenance.py` on
+  every build of the alias.
 - The `test/tests.py` `PROGRAMS` and the `src/SConscript` harnesses listed in
   `scons/harness_programs.py` (now the table SCons builds them from too):
   `MapGeneratorGoldenTest`, `LANSessionHarness`, the `transport-test`
