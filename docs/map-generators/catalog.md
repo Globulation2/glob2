@@ -70,7 +70,7 @@ guide is warranted.
 | [Sierpiński Gardens](fractal-maps.md) | `sierpinski-gardens` | 49 |
 | [Spider web](spider-web.md) | `spider-web` | 20 |
 | [Stone highlands](stone-highlands.md) | `stone-highlands` | 14 |
-| [Swamp](../../src/map/generator/generators/SwampGenerator.cpp) | `swamp` | 1 |
+| [Swamp](swamp.md) | `swamp` | 1 |
 | [Switchbacks](switchbacks.md) | `switchbacks` | 24 |
 | [Symmetric arena](symmetric-arena.md) | `symmetric-arena` | 15 |
 | [The Comb](comb.md) | `comb` | 62 |
