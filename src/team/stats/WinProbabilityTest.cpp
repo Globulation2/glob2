@@ -1,3 +1,4 @@
+#include "Version.h"
 #include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"

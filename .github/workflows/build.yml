@@ -128,6 +128,10 @@ jobs:
           python3 test/check_sim_revision.py --base "$BASE_SHA"
       - name: Check private RNG ownership
         run: python3 test/check_entity_random.py
+      - name: Check header layering and fan-in budgets
+        run: |
+          python3 -m unittest discover -s test -p test_check_header_layering.py -v
+          python3 test/check_header_layering.py
       - name: Check documentation links and navigation
         run: |
           python3 -m venv artifacts/docs-venv

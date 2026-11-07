@@ -2,7 +2,6 @@
 #pragma once
 #include "HiringPlanner.h"
 #include "ComputeExecutor.h"
-#include "Version.h"
 #include <deque>
 #include <optional>
 #include <map>
@@ -59,6 +58,7 @@ class HiringPipeline
 	void drain(JoinReason = JoinReason::Teardown);
 	const HiringPlanner::BuildingLists *suggestions(const Building &) const;
 	void save(GAGCore::OutputStream *);
-	void load(Game &, GAGCore::InputStream *, int versionMinor = VERSION_MINOR);
+	void load(Game &, GAGCore::InputStream *); // current format
+	void load(Game &, GAGCore::InputStream *, int versionMinor);
 	Uint32 checkSum() const;
 };

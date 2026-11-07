@@ -191,6 +191,8 @@ std::string simDataHashOf(const std::vector<SimDataFile>& files)
 	return toHex(hash.finish());
 }
 
+SimDataFile simRevisionEntry() { return simRevisionEntry(SIM_REVISION); }
+
 SimDataFile simRevisionEntry(int revision)
 {
 	return {"#sim-revision", std::to_string(revision)};

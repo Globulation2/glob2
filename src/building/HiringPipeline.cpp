@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Version.h"
 #include "HiringPipeline.h"
 #include "Game.h"
 #include "Team.h"
@@ -602,6 +603,8 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 	s->writeLeaveSection();
 	s->writeLeaveSection();
 }
+void HiringPipeline::load(Game &game, GAGCore::InputStream *s) { load(game, s, VERSION_MINOR); }
+
 void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 {
 	this->game = &game;

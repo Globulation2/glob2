@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Version.h"
 #include "TeamStatsPipeline.h"
 #include "Game.h"
 #include "Team.h"
@@ -220,6 +221,8 @@ void TeamStatsPipeline::save(GAGCore::OutputStream *s)
 	}
 	s->writeLeaveSection();
 }
+void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s) { load(game, s, VERSION_MINOR); }
+
 void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 {
 	worldIdentity = game.map.identity();

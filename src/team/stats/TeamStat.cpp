@@ -2063,6 +2063,8 @@ void TeamStats::saveSample(GAGCore::OutputStream *stream, const TeamStatsSample 
         stream->writeLeaveSection();
 	}
 }
+TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream) { return loadSample(stream, VERSION_MINOR); }
+
 TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionMinor,bool privateAdaptive174)
 {
 	TeamStatsSample sample;
