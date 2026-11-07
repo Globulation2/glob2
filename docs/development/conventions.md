@@ -41,5 +41,8 @@ defaults in headers, no new directory-level include cycles, and fan-in budgets (
 `test/header_fanin_budget.json`. Existing violations are listed in
 `test/header_layering_allowlist.txt` and `test/header_cycles_allowlist.txt`; after
 removing some, run it with `--write` to drop their lines and lower the budgets.
+It also caps `globalContainer` references in non-test simulation code per directory
+(`test/global_container_budget.json`): simulation code reads the game's own
+registries, so that tests can build a game without the application globals.
 `python3 tools/include_graph.py top|fanin|why` reports which translation units a
 header reaches and through which includers.

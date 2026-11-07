@@ -69,6 +69,14 @@ class BudgetSlackTest(unittest.TestCase):
             self.assertTrue([e for e in layering.check() if header in e])
 
 
+class GlobalContainerRatchetTest(unittest.TestCase):
+    def test_new_simulation_uses_fail(self):
+        from unittest.mock import patch
+        real = layering.global_container_uses
+        with patch.object(layering, 'global_container_uses', lambda g, l: {**real(g, l), 'src/unit': 1}):
+            self.assertTrue([e for e in layering.check() if 'src/unit uses globalContainer' in e])
+
+
 class RepositoryTest(unittest.TestCase):
     def test_repository_passes(self):
         self.assertEqual(layering.check(), [])
