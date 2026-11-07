@@ -163,6 +163,8 @@ def main():
                         help='discard raw profiles after successful tests, merge, export and HTML; retain failed-run inputs')
     parser.add_argument('--stream-logs', action='store_true',
                         help='also stream command output to CI logs before artifact upload')
+    parser.add_argument('--coverage-map', type=Path,
+                        help='also record which source files each test case executes (test/select_affected.py)')
     parser.add_argument('-j', '--jobs', type=int, default=4)
     args = parser.parse_args()
     default_build = 'native-coverage' if args.optimization == 0 else f'native-coverage-o{args.optimization}'
@@ -195,6 +197,7 @@ def main():
         failed = run(command, 'build.log')
         if failed:
             raise RuntimeError('coverage build failed; see build.log')
+        case_maps = []
         for kind in (('unit', 'engine', 'client') if args.with_cli else ('unit', 'engine')):
             directory = output / kind
             raw = directory / 'raw'
@@ -214,6 +217,9 @@ def main():
             for option in ('no_display', 'fullscreen'):
                 if getattr(args, option):
                     command.append('--' + option.replace('_', '-'))
+            if args.coverage_map and kind != 'client':
+                command += ['--profile-per-job', str(raw), '--llvm-profdata', tool(args.llvm_profdata)[-1],
+                            '--llvm-cov', tool(args.llvm_cov)[-1]]
             if kind == 'client':
                 command = [sys.executable, str(ROOT / 'test/test_cli_smoke.py'),
                            '--binary', str(build / 'src/glob2'), '--junit', str(directory / 'junit.xml'),
@@ -221,7 +227,8 @@ def main():
             status = run(command, f'{kind}/tests.log', env)
             test_status = status
             failed |= status
-            profiles = sorted(raw.glob('*.profraw'))
+            # --coverage-map leaves one merged profile per test job instead of raw profiles.
+            profiles = sorted(raw.glob('*.profraw')) + sorted(raw.glob('job-*.profdata'))
             if not profiles:
                 raise RuntimeError(f'{kind}: no profiles were produced')
             profile = directory / 'coverage.profdata'
@@ -245,9 +252,16 @@ def main():
                           f'-output-dir={directory / "html"}', '-show-branches=count'], f'{kind}/html.log')
             failed |= html_status
             manifest['binaries'][kind] = {'test_exit': test_status, 'profiles': len(profiles)}
+            if args.coverage_map and kind != 'client':
+                import case_coverage
+                case_maps.append(directory / 'coverage-map.json.gz')
+                case_coverage.write_map(raw, [binary], case_maps[-1], tool(args.llvm_profdata)[-1], tool(args.llvm_cov)[-1])
             if args.discard_merged_profiles:
                 manifest['binaries'][kind].update(compact_profiles(
                     profiles, successful=test_status == 0 and html_status == 0))
+        if args.coverage_map and case_maps:
+            import case_coverage
+            case_coverage.combine_maps(case_maps, args.coverage_map)
     except (RuntimeError, OSError, subprocess.CalledProcessError) as error:
         manifest['error'] = str(error)
         print(error, file=sys.stderr)
