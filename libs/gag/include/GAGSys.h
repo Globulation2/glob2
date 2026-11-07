@@ -24,6 +24,9 @@
 
    #undef max
    #undef min
+   // winuser.h renames SendMessage to SendMessageA/W; the AI runtime has a
+   // SendMessage order class and nothing calls the Win32 API.
+   #undef SendMessage
 
 	#define HAVE_OPENGL
 	#define _USE_MATH_DEFINES // To get M_PI
