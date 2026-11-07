@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string_view>
 #include <tuple>
+#include <vector>
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <FormatableString.h>
@@ -644,8 +645,10 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 fe::Element EnginePerformancePanel::taskCosts(const fe::Presentation &p)
 {
 	using I = pt::Id;
-	const std::initializer_list<
-		std::pair<const char *, std::initializer_list<std::pair<I, const char *>>>>
+	// Owning containers: a nested initializer_list's inner arrays are temporaries
+	// that die once `groups` is initialised, leaving the loop below reading freed
+	// stack memory (a crash on "Compare task costs").
+	const std::vector<std::pair<const char *, std::vector<std::pair<I, const char *>>>>
 		groups{{"Owner work",
 				{{I::Units, "Units"},
 				 {I::Buildings, "Buildings"},
