@@ -87,6 +87,8 @@ sand and barren ground as inhibitors), 256x256, 4 colonies, seeds 1–3, revisio
 | Neap tide | 194 | 30.6 (30) | 42.7 (40) |
 | Mean tide | 199 | 30.6 (30) | 43.5 (41) |
 | Spring tide | 207 | 30.7 (30) | 44.6 (42) |
+| Revision 8, central island off | 102 | 22.1 (21) | 24.1 (23) |
+| Revision 9, central island off | 206 | 30.5 (29) | 42.0 (39) |
 
 Nothing round an island inhibits growth any longer: revision 8's sand flats refused a share of every
 growth roll whose mirrored probe landed off the island. The lagoons, which now exist, add water within
