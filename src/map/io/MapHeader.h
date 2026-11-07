@@ -6,7 +6,7 @@
 #include "BaseTeam.h"
 #include "SaveLoadProfile.h"
 #include <stdexcept>
-#include "Team.h"
+#include "TeamCapacity.h"
 #include "ExperimentalFeatures.h"
 #include <vector>
 
@@ -138,7 +138,7 @@ private:
 	
 	/// The teams in the map. BaseTeam is used to allow access to information like team numbers and
 	/// team colors without loading the entire game.
-	BaseTeam teams[Team::MAX_COUNT];
+	BaseTeam teams[TEAM_MAX_COUNT];
 	
 	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;

@@ -10,6 +10,7 @@
 #include <span>
 
 #include "Map.h"
+#include "Team.h"
 #include "Building.h"
 #include "Unit.h"
 #include "UnitCatalog.h"

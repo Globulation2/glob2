@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "TeamCapacity.h"
 #include "AIImplementationId.h"
 #include "CustomGameSetup.h"
 #include "LegacyGenerationDescriptor.h"
@@ -55,7 +56,7 @@ struct CustomGamePreferences
 			FIELD(stoneRatio, 0, 64), FIELD(riverDiameter, 0, 160),
 			FIELD(craterDensity, 0, 64), FIELD(extraIslands, 0, 10),
 			FIELD(oldIslandSize, 1, 70), FIELD(oldBeach, 0, 4),
-			FIELD(smooth, 1, 8), FIELD(nbTeams, 2, Team::MAX_COUNT),
+			FIELD(smooth, 1, 8), FIELD(nbTeams, 2, TEAM_MAX_COUNT),
 			FIELD(nbWorkers, 1, 8)
 #undef FIELD
 		};
@@ -150,7 +151,7 @@ struct CustomGamePreferences
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
 		if (!word("glob2-custom-game") || !number(version, 1, 8) || !word("setup") ||
-			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
+			!number(random, 0, 1) || !number(s.capacity, 1, TEAM_MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1))
 			return false;
@@ -227,14 +228,14 @@ struct CustomGamePreferences
 		// that wire size independent of the live cap; version 4 stores a count.
 		constexpr int legacyColonyCount = 12;
 		int colonyCount = legacyColonyCount;
-		if (version >= 4 && !number(colonyCount, 1, Team::MAX_COUNT)) return false;
+		if (version >= 4 && !number(colonyCount, 1, TEAM_MAX_COUNT)) return false;
 		if (s.capacity > colonyCount) return false;
 		int humans = 0;
 		for (int i = 0; i < colonyCount; ++i) {
 			auto &c = s.colonies[i];
 			int controller, ai;
 			if (!number(controller, 0, CustomGameSetup::Closed) || !number(ai, 0, AIImplementationIds::SIZE - 1) ||
-				!number(c.alliance, 0, Team::MAX_COUNT - 1)) return false;
+				!number(c.alliance, 0, TEAM_MAX_COUNT - 1)) return false;
 			c.controller = CustomGameSetup::Controller(controller);
 			c.ai = AIImplementationIds::ImplementationID(ai);
 			if (version >= 5 && (!(in >> std::quoted(c.aiLibraryId)) || c.aiLibraryId.size() > 128))

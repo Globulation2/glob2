@@ -16,6 +16,7 @@
 //   2. savePlayerInfo() -> loadPlayerInfo() round-trip stays aligned
 // Links libgag_server.a for TextStream + MemoryStreamBackend.
 
+#include "Team.h"
 #include "Glob2Test.h"
 #include <string>
 #include <cstdio>

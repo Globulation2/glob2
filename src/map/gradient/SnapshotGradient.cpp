@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Team.h"
 #include "SnapshotGradient.h"
 #include "GradientExecutionAudit.h"
 #include "ComputeExecutor.h"

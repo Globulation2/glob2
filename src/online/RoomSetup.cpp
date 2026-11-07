@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include "Team.h"
 #include "RoomSetup.h"
 
 #include "CustomGameRules.h"

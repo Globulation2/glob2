@@ -7,7 +7,7 @@
 #include <span>
 #include <exception>
 #include <stdexcept>
-#include "Team.h"
+#include "TeamCapacity.h"
 #include "BuildingGradientSearch.h"
 #include "Building.h"
 #include "SeedCells.h"
@@ -59,7 +59,7 @@ struct MaterialSeedCache
     std::vector<Uint32> resourceTraits;
     std::vector<Uint32> forbiddenMasks;
     std::array<Bits, MaterialCount> goals, airGoals;
-    std::array<Bits, Team::MAX_COUNT> forbidden;
+    std::array<Bits, TEAM_MAX_COUNT> forbidden;
     Bits buildings, airBuildings;
     std::array<std::vector<Uint64>, 4> stamps;
     bool disabled = false;
