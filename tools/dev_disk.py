@@ -234,3 +234,60 @@ def disk(checkouts: list[Path], store_home: Path) -> list[dict]:
     measured = sizes(list(targets.values()))
     rows = [{'what': name, 'path': str(path), 'bytes': measured[path]} for name, path in targets.items()]
     return sorted((row for row in rows if row['bytes']), key=lambda row: -row['bytes'])
+
+
+def stale_toolchains(checkouts: list[Path], home: Path) -> list[Path]:
+    """Toolchain installations no registered checkout would select.
+
+    Mobile and Emscripten toolchains are keyed by their checkout manifests
+    (dev_store.mobile_tools, dev_store.browser_sdk); a key no checkout produces is
+    stale. Shared archive components are stale when no kept toolchain links to them."""
+    sys.path.insert(0, str(ROOT / 'scons'))
+    import dev_store
+    manifests = {
+        'mobile': ['platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/emulator.json'],
+        'emscripten': ['platforms/web/toolchain.json'],
+    }
+    wanted: dict[str, set[str]] = {kind: set() for kind in manifests}
+    for checkout in checkouts:
+        for kind, files in manifests.items():
+            if all((checkout / name).is_file() for name in files):
+                wanted[kind].add(dev_store.key(checkout, files))
+    stale, kept = [], []
+    for kind in manifests:
+        for entry in sorted((home / 'toolchains' / kind).glob('*')) if (home / 'toolchains' / kind).is_dir() else ():
+            (kept if entry.name in wanted[kind] else stale).append(entry)
+    linked = set()
+    for tree in kept:
+        for directory, names, files in os.walk(tree):
+            for name in names + files:
+                path = Path(directory) / name
+                if path.is_symlink():
+                    try:
+                        linked.add(path.resolve())
+                    except OSError:
+                        pass
+            names[:] = [n for n in names if not (Path(directory) / n).is_symlink()]
+    artifacts = home / 'toolchains' / 'artifacts'
+    for component in sorted(artifacts.glob('*')) if artifacts.is_dir() else ():
+        resolved = component.resolve()
+        if not any(target == resolved or resolved in target.parents for target in linked):
+            stale.append(component)
+    return stale
+
+
+def prune_toolchains(checkouts: list[Path], home: Path, apply: bool) -> list[dict]:
+    sys.path.insert(0, str(ROOT / 'scons'))
+    import dev_store
+    report = []
+    for path in stale_toolchains(checkouts, home):
+        entry = {'path': str(path), 'bytes': size(path), 'removed': False}
+        if apply:
+            try:
+                with dev_store.Lease(path, exclusive=True, blocking=False, track_use=False):
+                    shutil.rmtree(path)
+                    entry['removed'] = True
+            except ValueError:
+                entry['busy'] = True
+        report.append(entry)
+    return report

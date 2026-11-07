@@ -456,6 +456,8 @@ def main():
     sdkmanager.add_argument("arguments", nargs=argparse.REMAINDER)
     prune = commands.add_parser("prune")
     prune.add_argument("--dry-run", action="store_true")
+    prune.add_argument("--toolchains", action="store_true",
+                       help="remove mobile/Emscripten toolchains and archive components no checkout uses")
     migrate_parser = commands.add_parser("migrate")
     mode = migrate_parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
@@ -556,6 +558,10 @@ def main():
         usage = shutil.disk_usage(ROOT)
         print(f"free {dev_disk.gib(usage.free).strip()} of {dev_disk.gib(usage.total).strip()}")
         return
+    elif args.command == "prune" and args.toolchains:
+        import dev_disk
+
+        result = dev_disk.prune_toolchains(checkouts(), store.home(), not args.dry_run)
     elif args.command == "prune":
         result = store.prune(args.dry_run)
     else:
