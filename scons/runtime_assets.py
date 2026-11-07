@@ -123,6 +123,9 @@ def prepare_assets(env):
     ]
 
     def export(target, source, env):
+        # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
+        if str(Path(__file__).resolve().parent) not in sys.path:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
         import shared_assets
 
         def produce(output):
