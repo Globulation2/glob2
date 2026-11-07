@@ -197,6 +197,10 @@ constexpr double kWashLow = 6, kWashHigh = 14;
 // ranges and sand in the basin, where the finest grains settle. kDuneSlope weighs the slope.
 constexpr int kDuneCell = 24, kDuneSlope = 64000, kDuneWavelength = 16, kDuneStretch = 320;
 constexpr int kDunePercent = 48;
+// Looks: of the dune sand, this share (the highest) is drawn as wind-rippled crests; green ground is
+// lush within kLushReach steps of water and dry beyond kGreenReach; plain grass within kPlainGarden
+// tiles of every swarm.
+constexpr int kDuneCrestPercent = 30, kLushReach = 4, kGreenReach = 9, kPlainGarden = 16;
 // Ambient farmland on the fans and meadows (share of fertile tiles) and desert features (one per
 // this many desert tiles), before the amounts scale them.
 constexpr int kFarmWheatPercent = 26, kFarmWoodPercent = 9;
@@ -307,6 +311,7 @@ struct Layout
 	std::vector<int> facing;                                      // per colony
 	std::vector<int> townOf, farmOf, homeOf; // per tile: town, home farm, home footprint, or -1
 	std::vector<unsigned char> water, sand, green, meadow, stone, ridge, fringe, pass;
+	std::vector<unsigned char> salt; // the playa's salt flats, a part of `sand`
 	int passes = 0, lakes = 0, dryFans = 0, neutralFans = 0, emptyTrees = 0;
 	std::string failure;
 };
@@ -810,7 +815,7 @@ void stampHomes(int teams, Layout &L,
 		{
 			const auto [vx, vy] = turnStencilVertex(facing, s.dx, s.dy);
 			const int v = t.at(fan.x + vx, fan.y + vy);
-			L.water[v] = L.sand[v] = L.green[v] = L.fringe[v] = L.meadow[v] = 0;
+			L.water[v] = L.sand[v] = L.salt[v] = L.green[v] = L.fringe[v] = L.meadow[v] = 0;
 			const MapGeneratorPoint p = placeTile(s.dx, s.dy);
 			L.homeOf[t.at(p.x, p.y)] = k;
 		}
@@ -879,6 +884,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.farmOf.assign(n, -1);
 	L.homeOf.assign(n, -1);
 	L.pass.assign(n, 0);
+	L.salt.assign(n, 0);
 	std::vector<unsigned char> canyon(n, 0);
 
 	designHome(o, context, L);
@@ -1111,7 +1117,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						if (half > 1 && off < half)
 							L.water[i] = 1;
 						else if (outside < saltEdge && !L.water[i])
-							L.sand[i] = 1;
+							L.sand[i] = L.salt[i] = 1;
 						else if (outside < saltEdge + kMeadow && meadowNoise.at(x, y) > kMeadowGap)
 							L.meadow[i] = 1;
 					}
@@ -1261,7 +1267,48 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = SAND;
 	}
 	layBeaches(terrain, t);
-	writeVertices(map, terrain);
+	// The looks, inside each vertex's rule group so nothing plays differently: green ground lush by
+	// the water and drying with distance from it, the gravel dry grass, dune crests wind-rippled, and
+	// the salt flats and the beaches round the playa's lakes pale. The garden round every swarm stays
+	// plain grass, where the starting-crop guarantee looks for it.
+	{
+		std::vector<unsigned char> wet(n, 0);
+		for (int i = 0; i < n; ++i)
+			wet[i] = terrain[i] == WATER;
+		const std::vector<int> fromWater = stepsFrom(t, wet);
+		const int crestCut = percentile(desertValues, 100 - kDunePercent * kDuneCrestPercent / 100);
+		const auto garden = [&](int i)
+		{
+			const int k = L.homeOf[i];
+			if (k < 0)
+				return false;
+			const MapGeneratorPoint s = L.swarms[k];
+			return t.dist2(t.remainderX(i), i / t.w, s.x + 2, s.y + 2) < kPlainGarden * kPlainGarden;
+		};
+		TerrainSketch looks(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			if (terrain[i] == GRASS)
+			{
+				if (garden(i) || L.townOf[i] >= 0)
+					continue;
+				if (L.green[i] || L.meadow[i])
+					looks[i] = fromWater[i] <= kLushReach ? LUSH_GRASS
+							   : fromWater[i] <= kGreenReach ? GRASS
+															 : DRY_GRASS;
+				else
+					looks[i] = DRY_GRASS;
+			}
+			else if (terrain[i] == SAND)
+			{
+				if (L.salt[i] || (fromWater[i] <= 1 && !L.green[i] && L.homeOf[i] < 0))
+					looks[i] = PALE_SAND;
+				else if (openDesert(i) && dunes[i] >= duneCut)
+					looks[i] = dunes[i] >= crestCut ? WINDY_SAND_DUNE : DUNE_SAND;
+			}
+		}
+		writeVertices(map, composeLooks(terrain, looks));
+	}
 	for (int i = 0; i < n; ++i)
 		if (L.stone[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
 			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
@@ -1409,7 +1456,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			{
 				const auto [x, y] = turnStencilTile(L.facing[colony], s.dx, s.dy);
 				const int px = t.x(L.fans[colony].x + x), py = t.y(L.fans[colony].y + y);
-				return map.isWater(px, py) ? 2 : map.isGrass(px, py) ? 0 : 1;
+				// What a tile is to play on, not what it looks like: the looks follow the water, and
+				// a neighbour's water can reach a home's margin.
+				const auto &rules = map.terrainPropertiesAt(px, py);
+				return rules.swimmable ? 2 : rules.buildable ? 0 : 1;
 			};
 			if (kind(k) != kind(0))
 			{
