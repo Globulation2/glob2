@@ -109,7 +109,9 @@ namespace GAGCore
                 it = loadingSprites.erase(it);
             } else ++it;
         }
-        if (remaining().count()) assets().poll(remaining());
+        // Sprite decoding can spend the whole turn; generic loads still get
+        // a turn so their finalizers are published (AssetLoader::poll).
+        assets().poll(std::max(remaining(), std::chrono::milliseconds(1)));
         const bool reloaded = Sprite::pollHighResolutionUntil(deadline);
         return loadingSprites.empty() && reloaded;
     }
