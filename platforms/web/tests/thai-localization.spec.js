@@ -1,4 +1,5 @@
 const {test, expect} = require('@playwright/test');
+const { languageLabel } = require('./language-label');
 const {createHash} = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -127,7 +128,7 @@ for (const variant of ['serial', 'threaded']) {
     await clickMainMenu(page, 'settings');
     await clickControl(page, 'nav.5');
     await clickControl(page, 'player.language');
-    await clickByLabel(page, /^popup\/\d+$/, 'ไทย');
+    await clickByLabel(page, /^popup\/\d+$/, languageLabel('th'));
     await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
       .toMatch(/^language=th$/m);
     await clickSettingsDone(page);
