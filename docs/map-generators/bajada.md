@@ -22,8 +22,9 @@ everything from grass, sand and water.
   shoot over it (the Ridges rule group). Stone stands only on quarry faces: one in the range straight
   above every home's town, the same on every home, and more along the faces between the homes
   (`stone-amount`). A colony's back is safe except through a pass.
-- **Talus is slow.** Scree skirts the rock and the passes' mouths: walkable at reduced speed, no
-  buildings, nothing grows.
+- **Talus is slow.** Scree skirts the foot of the rock, one tile frayed out to three: walkable at
+  reduced speed, no buildings, nothing grows. It stops at the pass floors (sand, so a pass never grows
+  shut), the homes, the fans and their springs' notches.
 - **Pavement is room that never grows shut.** Desert beyond the reach of any water is mostly
   pavement: buildable, but no crop can stand on it and it slows growth near it as sand does. It lies
   only beyond the water's reach, so it costs the fans no farmland. Towns are ringed by pavement
@@ -50,7 +51,7 @@ of each rule group, which every shared helper and check reads) and paints looks 
 | Neutral fans | Spring fans, dry fans (washes only) and empty slots, clear of the homes. |
 | Playa | Lakes with salt rims and meadows, the hardpan pan across the basin floor with salt crust patches, and cienegas at its edge. |
 | Homes stamped | Every home's footprint is erased and the stencil drawn over it, tile for tile, turned half a turn below the far face. |
-| Quarries and talus | Each home's quarry face is found in the stencil's columns, so every home's is the same; ambient faces along the ranges; scree round the rock. |
+| Quarries and talus | Each home's quarry face is found in the stencil's columns, so every home's is the same; ambient faces along the ranges; a face tile is taken only where no water, beach or pass floor could reach its corners (ambient faces skipped that check and left unstocked holes in the rock); scree round the rock (`talusApron`). |
 | Terrain | Rock vertices only where all four tiles are rock, so the blocked region is exactly the drawn one and every quarry tile keeps four grass corners. Dune bands; pavement beyond the water's reach; looks by lithology and slope. |
 | Resources | The stencil's crops, farmland on neutral fans, meadows and cienegas (`furnishGround`), outcrops and lone scrub on dry grass, fruit groves, algae, quarry stone. |
 
@@ -80,19 +81,32 @@ revision 4 against revision 3:
 | Design | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
 | Broad fan (r3) | 481 | 26.0 (24) | 69.8 (48) |
-| Broad fan | 518 | 25.5 (23) | 69.7 (47) |
+| Broad fan | 576 | 26.5 (24) | 77.2 (53) |
 | Long fan (r3) | 503 | 28.5 (26) | 72.5 (59) |
-| Long fan | 541 | 27.2 (24) | 73.8 (58) |
+| Long fan | 601 | 29.1 (26) | 81.6 (66) |
 | Twin springs (r3) | 511 | 31.1 (24) | 77.0 (64) |
-| Twin springs | 558 | 29.6 (23) | 76.4 (63) |
-| Canyon mouth | 504 | 25.3 (23) | 65.5 (52) |
-| Cienega | 532 | 35.2 (32) | 76.3 (64) |
-| Coalescing pair | 543 | 26.7 (24) | 77.8 (59) |
+| Twin springs | 618 | 31.5 (24) | 83.8 (70) |
+| Canyon mouth | 580 | 27.8 (25) | 77.8 (61) |
+| Cienega | 587 | 37.3 (33) | 83.5 (70) |
+| Coalescing pair | 608 | 29.3 (26) | 87.7 (66) |
+| Revision 3, random design | 501 | 27.6 (24) | 74.2 (61) |
 
-Within 24 steps the original designs lost 2–5% to pavement inhibition and kept their food within 48;
-total food rose 7–9% with the cienegas. Canyon mouth is the leanest design within 48 steps. The
-terrain dump counts a tile between two looks of one rule group as that group (`map study`), so
-these figures supersede the first revision 4 measurements, which undercounted every such tile.
+Every design now holds at least revision 3's food within 48 steps, and total food rose 13–21% with
+the cienegas. Canyon mouth was the leanest design (71.9, worst 58, within 48 steps, at the same
+measure) until its spring grew to 4.5 tiles, its arm across the fan to eight tiles with three forks,
+and a short arm was added towards the town (2026-11-07); it stays in the random pool. Broad fan's
+worst colony (53 within 48 steps) is now the lowest of any design, on a seed whose neighbouring fans
+lie further off; its mean is above revision 3's. The terrain dump counts a tile between two looks of
+one rule group as that group (`map study`), so these figures supersede the first revision 4
+measurements, which undercounted every such tile.
+
+A four-AI calibration game (`map study bajada --seed 101`, 256×256, twin springs, volcanic; Nicowar,
+Cortex, Cabino and Maxima, game seed 1, 20,000 ticks, master release game binary) harvested 2,001
+wheat and 286 wood with 133 worker births and 57 buildings; per colony 514, 687, 339 and 461 wheat,
+the weakest (team 2, Cabino) with 23 births and 41 units at the end. One game varies by up to 40%.
+
+The shape sweep (every size and rectangle, 1 to 12 colonies, seeds 1 and 2) accepts the same 68 of
+84 combinations as revision 3 and refuses the same 16 for too many colonies.
 
 ## Limits
 
@@ -105,6 +119,10 @@ these figures supersede the first revision 4 measurements, which undercounted ev
 - No rotation tournament or human playtest has been recorded for revision 4.
 
 ## Verification
+
+`validateWorld` rebuilds the design and requires, among other checks, every home tile outside the
+range and outside any overlap to play by exactly colony 0's rules (`sameTerrainProperties`: speed,
+growth, fertility, what it holds, not only water, building ground or neither).
 
 The source definition and its request/world validators define accepted settings and
 finished-map guarantees. Run the focused Bajada contracts (`MapGeneratorContracts.h`) and the

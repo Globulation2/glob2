@@ -276,12 +276,18 @@ HomeDesign homeDesign(int design, bool flip)
 	else if (design == 1)
 		d = {"long fan", {{7, 5.5, 4.5}}, {-15, 15}, 11, {-9, 15}, {{7, 10, 0.1, 11, 1.8, 5}}, {0, 16}, {0, 28}};
 	else if (design == 3)
+	{
 		// Canyon mouth: the spring sits in the range's notch and one strong trunk runs far down the fan
-		// before it splits, with a short arm out across the fan, and the town tucks in under the
-		// range. (A trunk drawn closer to the town met its rough outline on some maps and the home grew
-		// no streams at all.)
-		d = {"canyon mouth", {{6, 5, 4}}, {-15, 14}, 11, {-9, 14},
-			 {{6, 9.5, 0.0, 11, 1.9, 4}, {8, 9.5, 0.25, 6, 1.4, 2}}, {-1, 15}, {-2, 27}};
+		// before it splits, with an arm out across the fan and a short one towards the town, and the
+		// town tucks in under the range. (A trunk drawn closer to the town met its rough outline on
+		// some maps and the home grew no streams at all.) Its first draw (a spring of 4, one short arm
+		// of two forks) was the leanest design, 71.9 growth within 48 steps of the swarm (worst 58)
+		// against revision 3's 74.2 (61); the bigger spring, the longer arm and the town arm make it
+		// 77.8 (61), and 27.8 (25) within 24.
+		d = {"canyon mouth", {{6, 5, 4.5}}, {-15, 14}, 11, {-9, 14},
+			 {{6, 9.5, 0.0, 11, 1.9, 4}, {8, 9.5, 0.35, 8, 1.5, 3}, {4, 9.5, -0.45, 7, 1.4, 2}},
+			 {-1, 15}, {-2, 27}};
+	}
 	else if (design == 4)
 	{
 		// Cienega: a big spring in a meadow of spring grass that waters itself, its two short streams
@@ -1389,6 +1395,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// where the range runs straight round every home, so every home's quarry is the same; and
 	// `stone-amount` sets how many more stand along the faces between the homes, never near a pass.
 	{
+		// Stone stands on pure grass: a tile whose corners a pass floor or a beach (laid a vertex out
+		// from any water) could reach would never hold it.
+		const auto dry = [&](int q)
+		{
+			const int qx = t.remainderX(q), qy = q / t.w;
+			for (int ny = -2; ny <= 2; ++ny)
+				for (int nx = -2; nx <= 2; ++nx)
+				{
+					const int j = t.at(qx + nx, qy + ny);
+					if (L.water[j] || (std::abs(nx) <= 1 && std::abs(ny) <= 1 && (L.sand[j] || L.pass[j])))
+						return false;
+				}
+			return true;
+		};
 		// Marks the face of the range `r` in column `x` on `side` (the face a fan below it hangs from),
 		// kQuarryDepth tiles deep, and says whether it found one.
 		const auto face = [&](int r, int x, int side, int owner)
@@ -1410,7 +1430,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				for (int d = 0; d < kQuarryDepth; ++d)
 				{
 					const int q = t.at(x, y - side * d);
-					if (L.stone[q])
+					if (L.stone[q] && dry(q))
 					{
 						L.quarry[q] = 1;
 						L.quarryOf[q] = owner;
@@ -1436,16 +1456,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					{
 						const auto [qx, qy] = turnStencilTile(L.facing[k], column + dx, dy - d);
 						const int q = t.at(fan.x + qx, fan.y + qy);
-						// Stone stands on pure grass: a tile whose corners a pass floor or a beach
-						// (laid a vertex out from any water) could reach would never hold it.
-						bool wet = false;
-						for (int ny = -2; ny <= 2; ++ny)
-							for (int nx = -2; nx <= 2; ++nx)
-							{
-								const int j = t.at(fan.x + qx + nx, fan.y + qy + ny);
-								wet |= L.water[j] || ((std::abs(nx) <= 1 && std::abs(ny) <= 1) && (L.sand[j] || L.pass[j]));
-							}
-						if (L.stone[q] && !wet)
+						if (L.stone[q] && dry(q))
 						{
 							L.quarry[q] = 1;
 							L.quarryOf[q] = k;
@@ -1499,13 +1510,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<unsigned char> rock(n, 0);
 		for (int i = 0; i < n; ++i)
 			rock[i] = L.stone[i] && !L.quarry[i];
-		const std::vector<unsigned char> one = dilate(t, rock, 1), three = dilate(t, rock, 3),
-										 nearQuarry = dilate(t, L.quarry, 1);
+		const std::vector<unsigned char> nearQuarry = dilate(t, L.quarry, 1);
 		const std::vector<int> fray = periodicNoise(t.w, t.h, 5, context.stream("bajada-talus"));
+		std::vector<unsigned char> eligible(n, 0);
 		for (int i = 0; i < n; ++i)
-			L.scree[i] = !L.stone[i] && (one[i] || (three[i] && fray[i] > 30000)) && !homeClaim[i] &&
-						 L.homeOf[i] < 0 && !L.water[i] && !L.sand[i] && !L.green[i] && !L.meadow[i] &&
-						 !L.fringe[i] && !L.pass[i] && !canyon[i] && !L.pad[i] && !nearQuarry[i];
+			eligible[i] = !L.stone[i] && !homeClaim[i] && L.homeOf[i] < 0 && !L.water[i] && !L.sand[i] &&
+						  !L.green[i] && !L.meadow[i] && !L.fringe[i] && !L.pass[i] && !canyon[i] &&
+						  !L.pad[i] && !nearQuarry[i];
+		L.scree = talusApron(t, rock, eligible, fray, 1, 3, 30000);
 	}
 	context.telemetry.measure("bajada.passes", L.passes);
 	context.telemetry.measure("bajada.lakes", L.lakes);
@@ -1842,16 +1854,16 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			};
 			if (ridgeAt(k) || ridgeAt(0))
 				continue;
-			const auto kind = [&](int colony)
+			const auto rules = [&](int colony) -> const TerrainProperties &
 			{
 				const auto [x, y] = turnStencilTile(L.facing[colony], s.dx, s.dy);
-				const int px = t.x(L.fans[colony].x + x), py = t.y(L.fans[colony].y + y);
-				// What a tile is to play on, not what it looks like: the looks follow the water, and
-				// a neighbour's water can reach a home's margin.
-				const auto &rules = map.terrainPropertiesAt(px, py);
-				return rules.swimmable ? 2 : rules.buildable ? 0 : 1;
+				return map.terrainPropertiesAt(t.x(L.fans[colony].x + x), t.y(L.fans[colony].y + y));
 			};
-			if (kind(k) != kind(0))
+			// What a tile is to play on, every rule of it (speed, growth, fertility, what it holds),
+			// not what it looks like: the looks follow the water, and a neighbour's water can reach a
+			// home's margin. Comparing only water, building ground and the rest let sand stand where
+			// colony 0 had pavement or scree.
+			if (!sameTerrainProperties(rules(k), rules(0)))
 			{
 				const auto [x, y] = turnStencilTile(L.facing[k], s.dx, s.dy);
 				return "Colony " + std::to_string(k) + "'s home differs from colony 0's at (" +
