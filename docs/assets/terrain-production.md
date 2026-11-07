@@ -262,9 +262,9 @@ A material opts in with a `decor` block:
   grid: masses fill the first layers in rank order (more north corners, then
   more corners, then the lower id), and foliage beside three masses draws after
   them. Each layer draws only from its own corners, so cliffs show their walls
-  where they meet foliage or crags, and the foliage or rocks keep their own edge
-  on the other side. Eligibility follows rendered material bindings, including custom
-  materials.
+  where they meet foliage or crags, and the foliage keeps its own edge on the
+  other side (crags keep clear of the rim, below). Eligibility follows rendered
+  material bindings, including custom materials.
 - An undecorated corner, such as ordinary grass, sand or water, suppresses the
   foliage and obstacle layers in that cell, preserving a clear border against
   open ground. The open-ground layer still draws there, so the rim and walls of
@@ -272,6 +272,14 @@ A material opts in with a `decor` block:
 - Obstacle clusters stand in the middle of their cell, not on their corners,
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
+- Stone pillars and the Outcrops looks go further and keep clear of open-ground
+  masses (`"clear_of_masses"`, 0 or 1, object decor only; every built-in object
+  decor sets 1, so the corner-count rule above now matters only for custom
+  object decor). A cell draws none of that decor when a mass vertex lies
+  within that many vertices of its corners (0: its own corners), so spires and
+  pillars never crowd a cliff's rim, walls or terraces. One vertex is the
+  terrain a cell's fog check already covers. The cells still play as obstacles;
+  they show only their ground, and the mass's rim draws in the cells it touches.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
@@ -369,8 +377,8 @@ of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Cliffs draw in their own decor
-layer, so against hedge, thicket or crags they keep their walls and the
-neighbour keeps its own edge.
+layer, so against hedge, thicket or crags they keep their walls; hedge and
+thicket keep their own edge, while crags keep clear of the rim.
 
 Glacier is the same connected plateau rendered in ice by a second cliff style
 (`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed

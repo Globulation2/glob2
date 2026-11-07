@@ -1973,7 +1973,8 @@ TEST_SUITE("TerrainValidation")
 										 : x < 12 ? GRASS
 												  : WATER);
 			// Cliffs touching ridge rock, outcrop, hedge and grass: cells that
-			// draw a cliff edge and another obstacle in separate decor slots.
+			// draw a cliff edge and the hedge in separate decor slots. Crags
+			// beside the cliffs keep clear of them and draw nothing.
 			for (int y = 6; y <= 11; ++y)
 				for (int x = 3; x <= 9; ++x)
 					if (x <= 6 || y <= 7)
@@ -2054,12 +2055,13 @@ TEST_SUITE("TerrainValidation")
 				CHECK(draw(scene, true, zoom, viewport) == ordinary); // warmed geometry
 			}
 			// Changing corner membership can change the selected material/frame;
-			// the row cache must adopt that deterministic selection.
-			map.setVertexTerrain(5, 5, RIDGE_ROCK);
+			// the row cache must adopt that deterministic selection. The vertex
+			// is clear of the cliffs, so its crags draw (clear_of_masses).
+			map.setVertexTerrain(5, 2, RIDGE_ROCK);
 			glob2test::observeMap(map, scene);
 			const auto ordinary = draw(scene, false, 1, 0);
 			CHECK(draw(scene, true, 1, 0) == ordinary);
-			map.setVertexTerrain(5, 5, OUTCROP);
+			map.setVertexTerrain(5, 2, OUTCROP);
 			glob2test::observeMap(map, scene);
 		}
 		backendEvidence.flush();
@@ -2466,7 +2468,8 @@ TEST_SUITE("TerrainValidation")
 		for (int panel = 0; panel < 4; ++panel)
 		{
 			// The cell straddling the border's first row: cliffs on its left
-			// corners, the neighbour on its right ones. Both draw, each its own.
+			// corners, the neighbour on its right ones. Foliage draws its own
+			// edge there; crags keep clear of the cliffs (clear_of_masses).
 			const int x = (panel & 1) * 16 + 5, y = (panel >> 1) * 16 + 2;
 			const auto layers = compositor.decorLayers(scene, x, y);
 			const auto colours = TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed());
@@ -2477,16 +2480,85 @@ TEST_SUITE("TerrainValidation")
 			const auto cliffs = catalog.find("cliffs");
 			CHECK(layers[0].frame == (panel < 2 ? catalog.decorForeignFrame(cliffs, 5, 10, colours) :
 				  catalog.decorFrame(cliffs, x, y, true, scene.terrainSeed(), 5, colours)));
-			const unsigned slot = panel < 2 ? 2 : 3;
-			CHECK(layers[slot].frame ==
-				  catalog.decorFrame(neighbour, x, y, true, scene.terrainSeed(), 10, colours));
-			CHECK(layers[5 - slot].frame == -1);
+			CHECK(layers[2].frame == (panel < 2 ?
+				  catalog.decorFrame(neighbour, x, y, true, scene.terrainSeed(), 10, colours) : -1));
+			CHECK(layers[3].frame == -1);
+			// Away from the cliffs, beyond the spur and the pocket, the crags draw.
+			const int fx = (panel & 1) * 16 + 12, fy = (panel >> 1) * 16 + 11;
+			if (panel >= 2)
+				CHECK(onlyDecorFrame(compositor, scene, fx, fy) ==
+					  catalog.decorFrame(neighbour, fx, fy, false, scene.terrainSeed(), 15,
+										 TerrainVisual::cornerColours(fx, fy, 31, 31, scene.terrainSeed())));
 		}
 		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "cliffs-beside-obstacles.png").string().c_str()));
+	}
+
+	TEST_CASE("spires and pillars keep clear of mass rims [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		// Outcrop in the north half, stone pillars in the south, crossed by a
+		// cliff band three vertices wide (x 10..12), and a glacier column at
+		// x 31 and row at y 31, which the torus puts beside x 0 and y 0.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, x >= 10 && x <= 12 ? CLIFFS : x == 31 || y == 31 ? GLACIER :
+									 y < 16 ? OUTCROP : BOULDERS);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const auto colours = [&](int x, int y) { return TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed()); };
+		for (const auto [y, key] : {std::pair{6, "outcrop"}, std::pair{24, "boulders"}})
+		{
+			CAPTURE(key);
+			const auto id = catalog.find(key);
+			REQUIRE(catalog.materials[id].decor.clearOfMasses == 1);
+			const auto drawn = [&](int x)
+			{ return catalog.decorFrame(id, x, y, false, scene.terrainSeed(), 15, colours(x, y)); };
+			// Cell x spans vertices x..x+1; a mass vertex within one of them hides it.
+			for (const int x : {1, 3, 7, 14, 28})
+			{
+				CAPTURE(x);
+				CHECK(drawn(x) >= 0);
+				CHECK(onlyDecorFrame(compositor, scene, x, y) == drawn(x));
+			}
+			// x 0 sees the glacier across the wrap.
+			for (const int x : {0, 8, 13, 29})
+			{
+				CAPTURE(x);
+				CHECK(onlyDecorFrame(compositor, scene, x, y) == -1);
+			}
+			// Cells with mass corners still draw the mass's rim, alone.
+			for (const int x : {9, 12, 30})
+			{
+				CAPTURE(x);
+				const auto layers = compositor.decorLayers(scene, x, y);
+				CHECK(layers[0].frame >= 0);
+				CHECK(layers[1].frame == -1);
+				CHECK(layers[3].frame == -1);
+			}
+		}
+		// Across the vertical wrap: row 0 sees the glacier row, row 1 is clear.
+		const auto outcrop = catalog.find("outcrop");
+		CHECK(onlyDecorFrame(compositor, scene, 3, 0) == -1);
+		CHECK(onlyDecorFrame(compositor, scene, 3, 29) == -1);
+		CHECK(onlyDecorFrame(compositor, scene, 3, 1) ==
+			  catalog.decorFrame(outcrop, 3, 1, false, scene.terrainSeed(), 15, colours(3, 1)));
+
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "obstacles-clear-of-masses.png").string().c_str()));
 	}
 
 	TEST_CASE("icefall and other masses stand apart across valleys [display][artifacts]")

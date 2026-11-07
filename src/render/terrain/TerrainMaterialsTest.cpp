@@ -248,6 +248,50 @@ TEST_SUITE("TerrainMaterials")
 		CHECK_NOTHROW(TerrainVisual::Catalog::parse(document));
 	}
 
+	TEST_CASE("free-standing obstacles keep clear of open-ground masses")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto definitions = catalog();
+		for (const char *key : {"boulders", "ridge_rock", "outcrop", "penitentes", "termite_mounds",
+								"hoodoos", "petrified_stumps"})
+		{
+			CAPTURE(key);
+			CHECK(definitions.materials[definitions.find(key)].decor.clearOfMasses == 1);
+		}
+		// Masses and foliage never use it.
+		for (const char *key : {"cliffs", "icefall", "hedge", "thicket"})
+		{
+			CAPTURE(key);
+			CHECK(definitions.materials[definitions.find(key)].decor.clearOfMasses == -1);
+		}
+		auto document = nlohmann::json::parse(definitions.serialized);
+		for (auto &material : document["materials"])
+		{
+			if (material["key"] == "boulders")
+			{
+				for (const auto bad : {nlohmann::json(-1), nlohmann::json(TerrainVisual::MaxDecorClearOfMasses + 1),
+									   nlohmann::json(true), nlohmann::json("1"), nlohmann::json(1.0)})
+				{
+					material["decor"]["clear_of_masses"] = bad;
+					CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				}
+				material["decor"]["clear_of_masses"] = 0;
+				CHECK(TerrainVisual::Catalog::parse(document)
+						  .materials[definitions.find("boulders")].decor.clearOfMasses == 0);
+				material["decor"]["clear_of_masses"] = 1;
+			}
+			// Masses and connected foliage tile across cells, so skipping one
+			// would cut their surface.
+			if (material["key"] == "cliffs" || material["key"] == "hedge")
+			{
+				material["decor"]["clear_of_masses"] = 1;
+				CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				material["decor"].erase("clear_of_masses");
+			}
+		}
+		CHECK_NOTHROW(TerrainVisual::Catalog::parse(document));
+	}
+
 	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});

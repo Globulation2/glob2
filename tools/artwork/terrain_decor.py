@@ -1004,6 +1004,11 @@ CONNECTED = ("hedge", "thicket", "cliffs", "glacier") + MASS_SETS
 # Connected sets whose edges stand on open ground ("connected_open"): a cliff's
 # rim and walls belong on the grass beside it, where foliage keeps a clear border.
 OPEN_EDGED = ("cliffs", "glacier") + MASS_SETS
+# Free-standing obstacles that keep clear of open-edged masses ("clear_of_masses"):
+# no spire or pillar is drawn on a cell with a mass vertex within this many
+# vertices of its corners, so the mass's rim and terraces read cleanly.
+CLEAR_OF_MASSES = {name: 1 for name in ("boulders", "ridge_rock", "outcrop", "penitentes",
+                                         "termite_mounds", "hoodoos", "petrified_stumps")}
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell
 BAND = 20                     # vertex crowns centre this close to a cell edge
@@ -2380,6 +2385,8 @@ def write_catalog(root):
                 "full": list(range(first, first + FULL)),
                 "edge": list(range(first + FULL, first + FRAMES)),
             }
+            if material["key"] in CLEAR_OF_MASSES:
+                material["decor"]["clear_of_masses"] = CLEAR_OF_MASSES[material["key"]]
         if material["key"] in CONNECTED:
             start = connected_first(material["key"])
             material["decor"]["connected"] = list(range(start, start + 16 * CANOPY_VARIANTS))

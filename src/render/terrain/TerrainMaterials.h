@@ -152,7 +152,16 @@ struct Decor
 	// large patch the same corner frames are drawn again, lifted, as up to
 	// MaxDecorTiers terraces stepping up toward the middle (Compositor::decorTierFrame).
 	bool connectedTiers = false;
+	// Clearance from masses ("clear_of_masses", object decor only): the decor is
+	// not drawn on a cell when a vertex of a connected open-ground mass (cliffs,
+	// glacier...) lies within this many vertices of the cell's corners, so spires
+	// and pillars do not stand against a mass's rim and terraces. 0 checks the
+	// cell's own corners; -1 (absent) draws as usual.
+	int clearOfMasses = -1;
 };
+// Largest accepted clear_of_masses: one vertex past the corners, the terrain a
+// cell's discovery check already covers, so fog hides no mass the decor reveals.
+inline constexpr int MaxDecorClearOfMasses = 1;
 // Terraces of a tiered mass: at most this many above the base, each drawn
 // DecorTierRise native pixels above the one below.
 inline constexpr int MaxDecorTiers = 3;
