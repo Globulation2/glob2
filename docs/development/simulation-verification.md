@@ -8,7 +8,7 @@ Identify whether the change preserves behavior or intentionally changes gameplay
 
 ## Compare execution
 
-For a behavior-preserving change, run base and candidate optimized binaries with identical maps/saves, settings, seeds and orders. Compare per-tick state checksums; matching replay orders alone do not prove equivalent execution. Repeat serial and threaded execution and compare affected platforms. [Headless replays](headless-replays.md) describes traces and match-record verification.
+For a behavior-preserving change, run base and candidate binaries of the same tier (the dev build is enough; [build tiers](build-options.md#build-tiers)) with identical maps/saves, settings, seeds and orders. Compare per-tick state checksums; matching replay orders alone do not prove equivalent execution. Repeat serial and threaded execution and compare affected platforms. [Headless replays](headless-replays.md) describes traces and match-record verification.
 
 For a representation refactor, compare named state captures as well: cached
 effective values, inventories, reservations, list ordering, pending work and every

@@ -50,10 +50,29 @@ python3 tools/dev_build.py --cache-stats
 
 Fast builds use `-O0 -g1`: backtraces and basic symbols remain, but full variable
 inspection requires ordinary debug compilation. Fast/PCH/unity options reject
-release or profiling builds. Use release builds for shipping and performance
-measurements. Preserve numeric guards and compare simulation checksums when
-validating build configurations; do not bump the simulation revision to mask a
-build-induced mismatch.
+release, perf or profiling builds. Preserve numeric guards and compare simulation
+checksums when validating build configurations; do not bump the simulation
+revision to mask a build-induced mismatch.
+
+## Build tiers
+
+| Tier | Command | Evidence it may back |
+| --- | --- | --- |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`) | correctness, checksum and golden traces, save/replay continuity |
+| perf-screen | `scons perf=1` (`-O2 -g1`) | the direction and rough size of a performance change |
+| perf-confirm | `scons perf=1 opt=3` (`-O3 -g1`) | the number quoted in a performance PR; required when screening shows under 5% or mixed signs |
+| release | `scons release=1` and the platform packaging | shipping, package size and store QA only; never PR performance evidence |
+
+`perf=1` is a native client build in `build/<toolchain>/client/perf` (`perf/o3`
+with `opt=3`). It keeps the full client profile, lossless development assets and
+`-g1` symbols, and does not strip or use `-fwhole-program`, so a profiler can
+attribute samples and every performance claim is reproducible from one `scons`
+command. `tools/dev_build.py perf=1` runs it with the managed compiler cache.
+Rendering measurements that need shipped asset paths add
+`sprite_packing=video optimized_assets=1`. Simulation numeric sources keep their
+strict flags in every tier, so the dev and perf builds of one platform produce the
+same simulation checksums; a mismatch is a bug, not a reason to bump the
+simulation revision.
 
 `pch=1` precompiles stable standard headers separately for each compiler/flag
 configuration. Its C++ objects bypass ccache rather than weakening cache

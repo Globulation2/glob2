@@ -1,6 +1,6 @@
 # Rendering benchmarks
 
-Use release builds and retained scenarios to measure rendering changes. Timing evidence complements visual review.
+Use perf builds ([build tiers](build-options.md#build-tiers)) and retained scenarios to measure rendering changes. Add `sprite_packing=video optimized_assets=1` when the measurement needs the shipped asset paths. Timing evidence complements visual review.
 
 ## Renderer stress measurements
 
@@ -10,15 +10,15 @@ explorers and warriors in distinct visible cells at the camera's minimum zoom.
 Run from the repository root with an isolated profile:
 
 ```sh
-scons release=1 server=0 torus-render-benchmark
+scons perf=1 torus-render-benchmark
 mkdir -p artifacts/render-profile
 GLOB2_USER_DATA_DIR="$PWD/artifacts/render-profile/profile" \
 GLOB2_BENCH_FLAT=1 GLOB2_BENCH_SIZE=256x256 GLOB2_BENCH_UNITS=1000 \
 GLOB2_BENCH_FRAMES=300 GLOB2_BENCH_CAPTURE=artifacts/render-profile/frame.ppm \
-build/darwin/client/release/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
+build/darwin/client/perf/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
 ```
 
-Use the current host's release directory on Linux/Windows. `GLOB2_BENCH_MODE`
+Use the current host's perf directory on Linux/Windows. `GLOB2_BENCH_MODE`
 selects `2D no clouds` or `2D clouds`; otherwise both run. Run
 each mode in a separate fresh process with identical warmup and camera settings
 when comparing cloud cost: running both shares terrain and device caches, so the
@@ -193,7 +193,7 @@ See [skin rendering](skin-rendering.md) for production sprite export and skin pr
 
 ## CPU presentation batches
 
-Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.
+Build `software-render-benchmark` and `torus-render-benchmark` with `perf=1`.
 Use the same retained save, seed, animation, viewport, warmup and compute budget
 for `GLOB2_RENDER_EXECUTION=immediate`, `serial` and `parallel` in separate processes.
 Both standalone tools apply the launch `--compute-threads auto|N` budget to their
