@@ -217,10 +217,9 @@ struct Icon
 	float size;  //!< drawn width and height
 	float alpha;
 };
-//! The icons scatter outward from the unit in random directions, distances, sizes,
-//! curls and start times, then drift and fade. They avoid the sector above the
-//! unit, where level numbers rise: angles run from 45 degrees above the right,
-//! round through the bottom, to 45 degrees above the left.
+//! The icons shoot up from the unit in a narrow fan (within 40 degrees of
+//! straight up) with random distances, sizes, curls and start times, then drift
+//! and fade. They share the space above the unit with a trained unit's level number.
 template <class Visit>
 void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 {
@@ -231,11 +230,11 @@ void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 		// Draw every random number before any early exit so each icon keeps its identity.
 		const float slot = (k + 0.5f) / ServiceIcons, jitter = (random.next() - 0.5f) * 1.6f / ServiceIcons;
 		const float sweep = clamp01(lerp(slot, random.next(), 0.6f) + jitter);
-		const float angle = (-45 + 270 * sweep) * Pi / 180;
+		const float angle = (-90 + 80 * (sweep - 0.5f)) * Pi / 180;
 		const float reach = IconReach * (0.45f + random.next() * 0.9f);
 		const float delay = random.next() * IconDelayTicks, life = IconTicks * (0.65f + random.next() * 0.35f);
 		const float speed = 1.1f + random.next() * 1.6f, curl = (random.next() - 0.5f) * 14;
-		const float driftX = (random.next() - 0.5f) * 8, driftY = -2 - random.next() * 6;
+		const float driftX = (random.next() - 0.5f) * 8, driftY = -4 - random.next() * 8;
 		const float scale = 0.7f + random.next() * 0.6f, overshoot = 1.05f + random.next() * 0.3f;
 		const float t = (age - delay) / life;
 		if (t <= 0 || t >= 1)
@@ -245,7 +244,7 @@ void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 		// The sideways curl peaks mid-flight; afterwards each icon drifts on its own.
 		const float side = std::sin(out * Pi) * curl;
 		const float x = std::cos(angle) * radius - std::sin(angle) * side + driftX * t;
-		const float y = std::sin(angle) * radius * 0.8f + std::cos(angle) * side + driftY * t;
+		const float y = std::sin(angle) * radius + std::cos(angle) * side + driftY * t;
 		const float pop = t < 0.12f ? lerp(0.5f, overshoot, t / 0.12f)
 			: t < 0.25f ? lerp(overshoot, 1, (t - 0.12f) / 0.13f) : 1;
 		const float alpha = t < 0.45f ? 1 : 1 - easeOut((t - 0.45f) / 0.55f);

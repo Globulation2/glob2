@@ -113,7 +113,7 @@ TEST_SUITE("UnitEffect")
 		CHECK(UnitEffect::serviceSilhouette(UnitEffect::ServiceShimmerTicks) == 0);
 	}
 
-	TEST_CASE("Service icons scatter, keep clear of the level number and finish")
+	TEST_CASE("Service icons shoot upwards and finish")
 	{
 		int seen = 0;
 		for (std::uint32_t seed = 1; seed < 200; ++seed)
@@ -122,8 +122,9 @@ TEST_SUITE("UnitEffect")
 					++seen;
 					CHECK(icon.alpha >= 0);
 					CHECK(icon.alpha <= 1);
-					// Level numbers rise from 32 pixels above the tile centre, centred on it.
-					CHECK_FALSE((icon.y < -24 && std::fabs(icon.x) < 10));
+					// Once clear of the unit, every icon is above it.
+					if (std::hypot(icon.x, icon.y) > 8)
+						CHECK(icon.y < 0);
 				});
 		CHECK(seen > 0);
 		int late = 0;
