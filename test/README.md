@@ -27,9 +27,10 @@ update-only callbacks and capped drawing retain input and screen lifecycle behav
 ## Build and run
 
 ```sh
-python3 tools/dev_build.py --build=build/local-tests tests # or unit-tests / engine-tests
-export GLOB2_BUILD_DIR="$PWD/build/local-tests"
-python3 test/run_tests.py                   # everything this platform can run
+python3 tools/dev_build.py engine-tests unit-tests
+python3 test/run_tests.py                   # headless tier: no [display], no [slow]
+python3 test/run_tests.py --tier display    # adds [display] cases
+python3 test/run_tests.py --tier full       # everything this platform can run
 python3 test/run_tests.py --list --tag display
 python3 test/run_tests.py --fullscreen --tag display      # opt in to fullscreen transitions
 python3 test/run_tests.py --binary unit
@@ -74,8 +75,16 @@ shared artwork survives screen creation and teardown. Build the
 runtime assets. See [asset loading](../docs/development/package-size.md#release-asset-and-bundle-sizes)
 for worker controls, scratch accounting and measurement limits.
 
-`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
-(suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`
+Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native build:
+the `tools/dev_build.py` output or `build/<platform>/client/release`. The default
+tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
+about a quarter of the full inventory's time; `--tier display` adds display cases
+(`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs: they are three times longer for unoptimized
+(`-O0`) builds, and `GLOB2_TEST_TIMEOUT_SCALE` overrides the multiplier. `--filter` or `--tag`
+without `--tier` selects from the full inventory, so naming a case always runs it.
+
+`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--tier`, `--filter`
+(suite/name globs), `--tag`, `--exclude-tag` and `--shard K/N`
 (deterministic by sorted name), then runs each engine case in its own process with
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
