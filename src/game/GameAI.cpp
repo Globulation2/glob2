@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "gradient/MapRouting.h"
 #include "ChecksumSchedule.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
@@ -120,7 +121,7 @@ void Game::clearAI()
     if (turretTargetingPipeline)
         turretTargetingPipeline->drain();
     statsPipeline.reset();
-    map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+    map.routing().finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
     map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
     aiPipeline.reset();
 

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "SaveSnapshot.h"
 #include "LoadSaveDialog.h"
@@ -698,8 +699,8 @@ static void checkRandomContinuation(bool text, bool ai)
     // Idle matches no longer schedule periodic route work. Explicitly admit a
     // cold, otherwise unused movement class so malformed pending-job checks
     // always exercise a real saved destination and publication deadline.
-    REQUIRE(gui.game.map.lookupForbiddenGradient(0,MovementAccess::Water)==nullptr);
-    gui.game.map.getForbiddenGradient(0,MovementAccess::Water);
+    REQUIRE(gui.game.map.routing().lookupForbiddenGradient(0,MovementAccess::Water)==nullptr);
+    gui.game.map.routing().getForbiddenGradient(0,MovementAccess::Water);
     gui.game.observeCompletedWorld();
 	const auto savedRandom = gui.game.syncRandom;
 	auto *backend = new MemoryStreamBackend();

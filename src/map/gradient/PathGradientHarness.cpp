@@ -4,6 +4,7 @@
 #include <array>
 #include "GlobalContainer.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "BuildingGradientSearch.h"
 #include "BuildingGradientDepthPolicy.h"
 #include "GradientPipeline.h"
@@ -175,7 +176,7 @@ void check(int widthShift, int heightShift, const std::vector<Uint16>& seeds,
 	const auto expected = oracle(seeds, terrain, width, height, swimClass, cap);
 	PathMap map(widthShift, heightShift, terrain);
 	auto actual = seeds;
-	map.propagateGradient(actual.data(), swimClass, cap);
+	map.routing().propagateGradient(actual.data(), swimClass, cap);
 	for (size_t i = 0; i < actual.size(); ++i)
 	{
 		if (actual[i] != expected[i])
@@ -190,9 +191,9 @@ void check(int widthShift, int heightShift, const std::vector<Uint16>& seeds,
 	// capacity/deferred seeds must never leak logical state between calls.
 	std::vector<Uint16> otherTerrain(4, 256), otherSeeds{Goal, 1, 0, 65000};
 	PathMap other(1, 1, otherTerrain);
-	other.propagateGradient(otherSeeds.data(), (swimClass + 1) % 7, 43);
+	other.routing().propagateGradient(otherSeeds.data(), (swimClass + 1) % 7, 43);
 	actual = seeds;
-	map.propagateGradient(actual.data(), swimClass, cap);
+	map.routing().propagateGradient(actual.data(), swimClass, cap);
 	require(actual == expected, "repeat after different Map/class/cap diverged");
 	++cases; cellsChecked += actual.size();
 }
@@ -300,7 +301,7 @@ void parallelChecks()
 		{
 			std::array<std::vector<Uint16>, 7> actual;
 			for (auto &field : actual) field = seeds;
-			map.computeExecutor().run(7, [&](size_t swim) { map.propagateGradient(actual[swim].data(), swim); });
+			map.computeExecutor().run(7, [&](size_t swim) { map.routing().propagateGradient(actual[swim].data(), swim); });
 			for (int swim = 0; swim < 7; ++swim) require(actual[swim] == expected[swim], "parallel propagation differs from oracle");
 		}
 		// Concurrent independent lazy searches, including serial water initialization.
@@ -504,7 +505,7 @@ TEST_CASE("mixed terrain costs match heap oracle and immutable lazy searches [pa
         seeds[0]=Goal;
         const auto expected=oracle(seeds,oldTerrain,w,h,sw,CostLimit,&terrain);
         auto actual=seeds;
-        map.propagateGradient(actual.data(),sw);
+        map.routing().propagateGradient(actual.data(),sw);
         REQUIRE(actual==expected);
         actual=seeds;
         BuildingGradientSearch search;
@@ -850,7 +851,7 @@ TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathf
                 // Map dispatch and resumable searches are separate entry points;
                 // both must charge the goal's terrain in the reverse field.
                 auto actual = seeds;
-                map.propagateGradient(actual.data(), swim);
+                map.routing().propagateGradient(actual.data(), swim);
                 REQUIRE(actual == expected);
                 actual = seeds;
                 BuildingGradientSearch search;
@@ -981,7 +982,7 @@ TEST_CASE("air movement costs share eager and immutable lazy fields against the 
         seeds[0]=Goal;
         const auto expected=oracle(seeds,classic,1<<ws,1<<hs,AIR_MOVEMENT_CLASS,CostLimit,&terrain);
         auto actual=seeds;
-        map.propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
+        map.routing().propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
         REQUIRE(actual==expected);
         actual=seeds;
         BuildingGradientSearch search;
@@ -1031,7 +1032,7 @@ TEST_CASE("authored air speed and damage profiles agree across scalar SIMD and l
         if(!cpuVariantAvailable(selected))continue;
         setBackend(selected);
         auto actual=seeds;
-        map.propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
+        map.routing().propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
         REQUIRE(actual==expected);
         actual=seeds;
         BuildingGradientSearch search;

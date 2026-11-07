@@ -423,6 +423,7 @@ CLIENT_SOURCES = (
     'map/generator/shared/Terrain.cpp',
     'map/gradient/GradientRuntime.cpp',
     'map/gradient/BuildingGradientSearch.cpp',
+    'map/gradient/MapRouting.cpp',
     'map/gradient/MapGradientArea.cpp',
     'map/gradient/MapGradientBuilding.cpp',
     'map/gradient/MapGradientChamfer.cpp',

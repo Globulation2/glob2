@@ -3,6 +3,7 @@
 #include "Glob2Test.h"
 #include "GlobalContainer.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -79,9 +80,9 @@ void check(int widthShift, int heightShift, const std::vector<Uint8>& input)
 	REQUIRE(input.size() == static_cast<size_t>(map.getW()) * map.getH());
 	const auto expected = referenceGradient(input, map.getW(), map.getH());
 	auto actual = input;
-	map.updateGlobalGradient(actual.data());
+	map.routing().updateGlobalGradient(actual.data());
 	REQUIRE_MESSAGE(actual == expected, "global gradient differs on " << map.getW() << "x" << map.getH() << " grid");
-	map.updateGlobalGradient(actual.data());
+	map.routing().updateGlobalGradient(actual.data());
 	REQUIRE_MESSAGE(actual == expected, "global gradient is not idempotent");
 }
 

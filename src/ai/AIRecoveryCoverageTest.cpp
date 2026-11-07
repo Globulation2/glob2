@@ -1,4 +1,5 @@
 #include "CabinoObservationFixture.h"
+#include "gradient/MapRouting.h"
 #include "ai/engine/AIDecision.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
@@ -123,7 +124,7 @@ TEST_SUITE("AIRecoveryCoverage")
   REQUIRE(fixture.addBuilding("swarm",4,4));
   game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
-  glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
+  glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
   glob2test::materialPlanningTarget(game.map,0,materialIndex(MaterialId::Food),MovementAccess::Land,4,4,&x,&y,&distance);
   Cabino::AICabino full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "Unit.h"
 #include "Team.h"
@@ -182,7 +183,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
     // included); the published route then rejoins from wherever it got to.
     const auto gradientWhileWaiting = [&]() {
         int gx = 0, gy = 0; bool stopWork = false;
-        if (!pathfindMaterial(unit.entityRandom, unit.owner->teamNumber, unit.activeMaterialClaim->material, unit.movementAccess(),
+        if (!routing().pathfindMaterial(unit.entityRandom, unit.owner->teamNumber, unit.activeMaterialClaim->material, unit.movementAccess(),
                 unit.posX, unit.posY, &gx, &gy, &stopWork, nullptr, false) || (!gx && !gy)) return false;
         *dx = gx; *dy = gy; return true;
     };
@@ -402,7 +403,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
     if (versionMinor < FILE_FORMAT_VERSION_RESOURCE_CLAIMS) return;
     GAGCore::BinaryInputStream::CheckedReads checked(stream);
     stream->readEnterSection("activeMaterialClaims"); const auto enabled = stream->readUint8("enabled");
-    if (enabled > 1 || (enabled && !materialDestinationsEnabled()))
+    if (enabled > 1 || (enabled && !routing().materialDestinationsEnabled()))
         throw std::runtime_error("Invalid saved resource claim setting");
     resourceClaimsEnabled = enabled;
     stream->readEnterSection("sequence"); const auto sequence = read64(stream); stream->readLeaveSection();

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "ComputeExecutor.h"
 #include "GradientFixture.h"
@@ -71,25 +72,25 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     map.setMapDiscovered(index % map.getW(), index / map.getW(), Team::teamNumberToMask(0));
     REQUIRE(map.materialAmountAt(index, MaterialId::Gold) == 2);
     REQUIRE(map.materialAmountAt(index, MaterialId::Food) == 3);
-    map.getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land);
-    map.configureGradientPipeline(2, 3);
-    map.advanceGradientPipeline();
-    map.stagePeriodicGradientPreparation();
-    map.preparePendingGradient(source.game.snapshotStore().captureBoundary(source.game));
-    REQUIRE_FALSE(map.hasPendingGradientPreparation());
-    REQUIRE(map.gradientPipelineStatus().pending == 1);
+    map.routing().getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land);
+    map.routing().configureGradientPipeline(2, 3);
+    map.routing().advanceGradientPipeline();
+    map.routing().stagePeriodicGradientPreparation();
+    map.routing().preparePendingGradient(source.game.snapshotStore().captureBoundary(source.game));
+    REQUIRE_FALSE(map.routing().hasPendingGradientPreparation());
+    REQUIRE(map.routing().gradientPipelineStatus().pending == 1);
     definition["yields"]["gold"]["capacity"] = 1;
     definition["yields"]["gold"]["initial"] = 1;
     install();
-    CHECK_FALSE(map.hasPendingGradientPreparation());
+    CHECK_FALSE(map.routing().hasPendingGradientPreparation());
     CHECK(map.materialAmountAt(index, MaterialId::Gold) == 1);
     CHECK(map.materialAmountAt(index, MaterialId::Food) == 3);
     // Catalog replacement hard-invalidates old outputs. Retire them at their
     // original deadlines, then admit fresh demand against the new definition.
-    for (int tick = 0; tick < 3; ++tick) map.advanceGradientPipeline();
-    CHECK(map.getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land) == nullptr);
+    for (int tick = 0; tick < 3; ++tick) map.routing().advanceGradientPipeline();
+    CHECK(map.routing().getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land) == nullptr);
     const auto* field = glob2test::awaitGradient(source.game, [&] {
-        return map.getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land);
+        return map.routing().getMaterialGradient(0, MaterialId::Gold, MovementAccess::Land);
     });
     CHECK(field[index] == GRADIENT_AT_GOAL);
 }
@@ -104,27 +105,27 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
     map.configureCompute(4);
-    map.configureGradientPipeline(2, 3);
+    map.routing().configureGradientPipeline(2, 3);
     // Establish the first delayed generations before testing a warm batch.
     for (int r:{WHEAT,WOOD}) glob2test::awaitGradient(source.game,[&] {
-        return map.getMaterialGradientSlot(0,r,MovementAccess::Land);
+        return map.routing().getMaterialGradientSlot(0,r,MovementAccess::Land);
     });
-    map.resetGradientPipeline();
-    map.configureGradientPipeline(2,3);
+    map.routing().resetGradientPipeline();
+    map.routing().configureGradientPipeline(2,3);
     map.addClearArea(10,10,0);
-    map.getClearAreasGradient(0,MovementAccess::Land);
+    map.routing().getClearAreasGradient(0,MovementAccess::Land);
     source.game.stepCounter+=128;
     // Explicit recovery requests put both warm fields in the saved batch.
     // A movement query at an unreachable cell need not demand a warm field.
-    for (int r:{WHEAT,WOOD}) map.updateMaterialGradient(0,r,MovementAccess::Land);
+    for (int r:{WHEAT,WOOD}) map.routing().updateMaterialGradient(0,r,MovementAccess::Land);
     source.game.observeCompletedWorld();
-    REQUIRE_FALSE(map.hasPendingGradientPreparation());
-    REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
-    REQUIRE(map.gradientPipelineStatus().pending >= 3);
+    REQUIRE_FALSE(map.routing().hasPendingGradientPreparation());
+    REQUIRE(map.routing().gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
+    REQUIRE(map.routing().gradientPipelineStatus().pending >= 3);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
     source.save(&writer, "pending worker continuation");
-    CHECK_FALSE(map.hasPendingGradientPreparation());
+    CHECK_FALSE(map.routing().hasPendingGradientPreparation());
     const std::string checkpoint(storage->getBuffer(), storage->getPosition());
     const auto simulationState = [](Game &game) {
         std::vector<Uint32> state, buildings, units;
@@ -163,9 +164,9 @@ TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
     REQUIRE(direct.loadFromHeaders(mapHeader, header, true, true));
     REQUIRE(explicitPhases.loadFromHeaders(mapHeader, header, true, true));
     for (Game *game : {&direct.game, &explicitPhases.game}) {
-        game->map.getClearAreasGradient(0, MovementAccess::Land);
-        game->map.getMaterialGradient(0, MaterialId::Wood, MovementAccess::Land);
-        game->map.configureGradientPipeline(0, 8);
+        game->map.routing().getClearAreasGradient(0, MovementAccess::Land);
+        game->map.routing().getMaterialGradient(0, MaterialId::Wood, MovementAccess::Land);
+        game->map.routing().configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
         explicitPhases.game.map.configureCompute(threads);
@@ -179,14 +180,14 @@ TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
             CHECK(&game.observeCompletedWorld() == &world);
             game.advanceLiveSimulation(0);
             CHECK(game.snapshots().metrics.coreMaterializations == captures + 1);
-            CHECK_FALSE(game.map.hasPendingGradientPreparation());
+            CHECK_FALSE(game.map.routing().hasPendingGradientPreparation());
             CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == game.checkSum(nullptr, nullptr, nullptr, true));
         }
     }
     auto& game = explicitPhases.game;
     game.map.configureCompute(1);
-    game.map.setGradientWorkerCount(2);
-    CHECK_FALSE(game.map.hasPendingGradientPreparation());
+    game.map.routing().setGradientWorkerCount(2);
+    CHECK_FALSE(game.map.routing().hasPendingGradientPreparation());
     const auto waitingTick = game.stepCounter;
     game.anyPlayerWaited = true;
     game.step(0);
@@ -197,7 +198,7 @@ TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
     game.anyPlayerWaited = false;
     game.step(0);
     game.map.clear();
-    CHECK_FALSE(game.map.hasPendingGradientPreparation());
+    CHECK_FALSE(game.map.routing().hasPendingGradientPreparation());
 }
 }
 
@@ -211,9 +212,9 @@ TEST_CASE("no-AI completed ticks and saved continuation agree across diagnostic 
     header.getBasePlayer(0)=BasePlayer(0,"Test",0,BasePlayer::P_LOCAL);
     auto mapHeader=Engine::loadMapHeader("maps/balanced.map");
     REQUIRE(source.loadFromHeaders(mapHeader,header,true,true));
-    source.game.map.getMaterialGradient(0,MaterialId::Food,MovementAccess::Land);
-    source.game.map.getGuardAreasGradient(0,MovementAccess::Land);
-    source.game.map.getClearAreasGradient(0,MovementAccess::Land);
+    source.game.map.routing().getMaterialGradient(0,MaterialId::Food,MovementAccess::Land);
+    source.game.map.routing().getGuardAreasGradient(0,MovementAccess::Land);
+    source.game.map.routing().getClearAreasGradient(0,MovementAccess::Land);
     auto* storage=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
     source.save(&writer,"no-AI gradient fixture"); writer.flush();
@@ -236,8 +237,8 @@ TEST_CASE("no-AI completed ticks and saved continuation agree across diagnostic 
             REQUIRE(game.game.deliverAIOrders({},false).empty());
             actual.push_back(game.game.checkSum(nullptr,nullptr,nullptr));
         }
-        game.game.map.finishGradientPipeline();
-        REQUIRE(game.game.map.gradientPipelineStatus().published>0);
+        game.game.map.routing().finishGradientPipeline();
+        REQUIRE(game.game.map.routing().gradientPipelineStatus().published>0);
         if (expected.empty()) expected=actual; else CHECK(actual==expected);
         const auto tracePath=glob2test::artifactDir()/("compute-"+std::string(ComputeTelemetry::ModeNames[unsigned(mode)])+"-"+std::to_string(threads)+".trace");
         std::ofstream trace(tracePath);
@@ -339,8 +340,8 @@ TEST_CASE("AI and pending gradients share the standard boundary with presentatio
     delete game.players[1]->ai->aiImplementation;
     game.players[1]->ai->aiImplementation=secondObserver;
     game.map.configureCompute(2);
-    game.map.configureGradientPipeline(0,8);
-    game.map.getClearAreasGradient(0,MovementAccess::Land);
+    game.map.routing().configureGradientPipeline(0,8);
+    game.map.routing().getClearAreasGradient(0,MovementAccess::Land);
 
     constexpr std::array<unsigned,2> players{0,1};
     SceneRequest request;
@@ -353,7 +354,7 @@ TEST_CASE("AI and pending gradients share the standard boundary with presentatio
     REQUIRE(bootstrap.size()==2);
     for (const auto& [seat,order] : bootstrap) CHECK(order->getOrderType()==ORDER_NULL);
     game.drainAI();
-    CHECK_FALSE(game.map.hasPendingGradientPreparation());
+    CHECK_FALSE(game.map.routing().hasPendingGradientPreparation());
     REQUIRE(observer->observed.entities);
     REQUIRE(observer->observation);
     CHECK(secondObserver->observation==observer->observation);
@@ -379,8 +380,8 @@ TEST_CASE("real AI commands and presentation extensions materialize entities onc
     REQUIRE(first); REQUIRE(second);
     game.gameHeader.setAIOrderDelay(0); // Former zero-delay mode now bootstraps one boundary.
     game.map.configureCompute(4);
-    game.map.configureGradientPipeline(0,8);
-    game.map.getClearAreasGradient(0,MovementAccess::Land);
+    game.map.routing().configureGradientPipeline(0,8);
+    game.map.routing().getClearAreasGradient(0,MovementAccess::Land);
     for (unsigned seat : {0u,1u}) {
         game.players[seat]->makeItAI(AI::NUMBI);
         auto* ai = new BoundaryObserver;

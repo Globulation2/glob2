@@ -18,6 +18,7 @@
 // golden, so any change to the default path through this code shows up.
 
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "Brush.h"
@@ -119,7 +120,7 @@ namespace
 		{
 			if (options.resourceGradients)
 				for (int r = 0; r < MaterialCount; ++r)
-					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,MovementAccess::Land); });
+					glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(0,r,MovementAccess::Land); });
 			if (options.slowCadence)
 			{
 				// Two more teams with every resource field allocated: the round-robin
@@ -129,7 +130,7 @@ namespace
 				for (int t = 0; t < 3; ++t)
 					for (int r = 0; r < MaterialCount; ++r)
 						for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(t,r,movementAccessFromLegacy(c)); });
+							glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(t,r,movementAccessFromLegacy(c)); });
 			}
 		}
 
@@ -561,7 +562,7 @@ namespace
 		world.spawnWarriors(62, 40, 4);
 		world.spawnWarriors(30, 30, options.warriors);
 		std::vector<Uint16> crowd(map.getW() * map.getH());
-		REQUIRE(map.computeWarriorCrowding(0, crowd.data()));
+		REQUIRE(map.routing().computeWarriorCrowding(0, crowd.data()));
 		int mismatches = 0;
 		for (int y = 0; y < map.getH(); ++y)
 			for (int x = 0; x < map.getW(); ++x)
@@ -581,7 +582,7 @@ namespace
 		// A team without warriors reports so and leaves the buffer alone.
 		World empty(options);
 		std::vector<Uint16> untouched(map.getW() * map.getH(), 7);
-		CHECK(!empty.game.map.computeWarriorCrowding(0, untouched.data()));
+		CHECK(!empty.game.map.routing().computeWarriorCrowding(0, untouched.data()));
 		CHECK(untouched[0] == 7);
 	}
 
@@ -643,7 +644,7 @@ namespace
 			world.paint(b);
 			world.spawnWarriors(w / 4, w / 4, options.warriors);
 			std::vector<Uint16> crowd(w * w);
-			timeIt("crowding pass", w, options.warriors, [&] { world.game.map.computeWarriorCrowding(0, crowd.data()); });
+			timeIt("crowding pass", w, options.warriors, [&] { world.game.map.routing().computeWarriorCrowding(0, crowd.data()); });
 			timeGuardReference(world,"reference guard kernel",options.warriors);
 		}
 	}

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "AINumbi.h"
@@ -24,7 +25,7 @@ TEST_SUITE("NumbiObservation")
   std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
   NumbiObservation::Queries query(*world,0,cache,&enrollments);
   for(int resource:{WHEAT,WOOD,CHERRY}) for(int swim:{0,3,6}) {
-   glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,resource,movementAccessFromLegacy(swim)); });
+   glob2test::awaitGradient(game,[&] { return map.routing().getMaterialGradientSlot(0,resource,movementAccessFromLegacy(swim)); });
    for(int y=0;y<32;++y) for(int x=0;x<32;++x) {
     CAPTURE(resource);CAPTURE(swim);CAPTURE(x);CAPTURE(y);
     int snapshotX=-1,snapshotY=-1,snapshotDistance=-1,liveX=-1,liveY=-1,liveDistance=-1;
@@ -51,10 +52,10 @@ TEST_SUITE("NumbiObservation")
   glob2test::HeadlessGame fixture{glob2test::GameOptions{
    .wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true}};
   auto& game=fixture.game;auto& map=game.map;
-  map.setMaterialDestinationsEnabled(enabled);
+  map.routing().setMaterialDestinationsEnabled(enabled);
   map.setResourceByIndex(5,5,WHEAT,1);
   int initialX,initialY,initialDistance;
-  glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
+  glob2test::awaitGradient(game,[&] { return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
   REQUIRE(glob2test::materialPlanningTarget(map,0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&initialX,&initialY,&initialDistance));
   map.setNoResource(5,5,0);map.setResourceByIndex(24,24,WHEAT,1);
   auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
@@ -67,9 +68,9 @@ TEST_SUITE("NumbiObservation")
    int liveX=-1,liveY=-1,liveDistance=-1;
    REQUIRE(glob2test::materialPlanningTarget(map,0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&liveX,&liveY,&liveDistance));
    CHECK(x==liveX);CHECK(y==liveY);CHECK(distance==liveDistance);
-   if(map.materialDestinationsEnabled()) {
+   if(map.routing().materialDestinationsEnabled()) {
     Sint32 workerX=-1,workerY=-1;
-    CHECK_FALSE(map.projectMaterialDestination(map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land),0,WHEAT,MovementAccess::Land,8,8,&workerX,&workerY));
+    CHECK_FALSE(map.routing().projectMaterialDestination(map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land),0,WHEAT,MovementAccess::Land,8,8,&workerX,&workerY));
    }
   }
   CHECK(cache.empty());
@@ -82,7 +83,7 @@ TEST_SUITE("NumbiObservation")
   glob2test::HeadlessGame fixture{glob2test::GameOptions{
    .wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true}};
   auto& game=fixture.game;auto& map=game.map;
-  map.setMaterialDestinationsEnabled(true);
+  map.routing().setMaterialDestinationsEnabled(true);
   map.setResourceByIndex(8,8,WHEAT,1);map.setResourceByIndex(24,8,WHEAT,1);
   auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
   REQUIRE(world->resourceGradient(0,WHEAT,MovementAccess::Land).empty());
@@ -102,12 +103,12 @@ TEST_SUITE("NumbiObservation")
   glob2test::HeadlessGame fixture{glob2test::GameOptions{
    .wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true}};
   auto& game=fixture.game;auto& map=game.map;
-  map.setMaterialDestinationsEnabled(true);
+  map.routing().setMaterialDestinationsEnabled(true);
   map.setResourceByIndex(8,8,WHEAT,1);map.setResourceByIndex(24,8,WHEAT,1);
   map.paintCell(16,12,WATER);map.paintCell(16,13,ICE);map.paintCell(16,14,TRAIL);
   for(int swim:{0,3,6}) {
-   const auto* values=glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(swim));});
-   const auto destinations=map.materialGradientDestinations(values);REQUIRE(destinations);
+   const auto* values=glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(swim));});
+   const auto destinations=map.routing().materialGradientDestinations(values);REQUIRE(destinations);
    auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
    NumbiObservation::ResourceInitializations cache;NumbiObservation::Queries query(*world,0,cache);
    for(int y=0;y<32;++y)for(int x=0;x<32;++x) {

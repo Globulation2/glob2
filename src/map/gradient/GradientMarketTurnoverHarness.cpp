@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientRuntime.h"
 #include "BuildingType.h"
@@ -21,8 +22,8 @@ void marketCatalog(Game& game,bool overlay=false,bool shared=false)
 }
 GradientFieldKey marketKey() {return {GradientFieldFamily::Markets,0,0,WHEAT};}
 std::uint64_t footprint(const Building& building) {return building.type->width*building.type->height;}
-void initialize(Map& map) {map.gradientRuntime->adaptive.enroll(marketKey());map.ensureGradientMarketTargets(0,WHEAT);}
-auto counts(Map& map) {return map.gradientRuntime->adaptive.currentTargets(marketKey());}
+void initialize(Map& map) {map.routing().gradientRuntime->adaptive.enroll(marketKey());map.routing().ensureGradientMarketTargets(0,WHEAT);}
+auto counts(Map& map) {return map.routing().gradientRuntime->adaptive.currentTargets(marketKey());}
 }
 TEST_SUITE("GradientMarketTurnover") {
 TEST_CASE("real delivery updates zero to positive membership after stock mutation") {
@@ -30,7 +31,7 @@ TEST_CASE("real delivery updates zero to positive membership after stock mutatio
     marketCatalog(world.game);auto* supplier=world.addBuilding("inn",8,8);supplier->setMaterial(WHEAT,0);initialize(world.game.map);
     CHECK(counts(world.game.map).added==0);const auto delivery=supplier->deliverMaterialPacket(WHEAT,{});(void)delivery;
     REQUIRE(supplier->availableMaterial(WHEAT)>0);CHECK(counts(world.game.map).added==footprint(*supplier));
-    world.game.map.dirtyMarketGradientsSlot(0,WHEAT);CHECK(counts(world.game.map).added==footprint(*supplier));
+    world.game.map.routing().dirtyMarketGradientsSlot(0,WHEAT);CHECK(counts(world.game.map).added==footprint(*supplier));
     supplier->launchDelete();CHECK(counts(world.game.map).removed==footprint(*supplier));
     supplier->cancelDelete();CHECK(counts(world.game.map).added==2*footprint(*supplier));
 }
@@ -51,6 +52,6 @@ TEST_CASE("shared pool transition updates every eligible footprint and stock reg
     // this same capability-list operation, after earlier pointer/type changes.
     world.team->removeFromAbilitiesLists(second);CHECK(counts(world.game.map).removed==footprint(*second));
     world.team->addToStaticAbilitiesLists(second);CHECK(counts(world.game.map).added==both+footprint(*second));
-    world.game.map.dirtyMarketGradientsSlot(0,WHEAT);CHECK(counts(world.game.map).added==both+footprint(*second));
+    world.game.map.routing().dirtyMarketGradientsSlot(0,WHEAT);CHECK(counts(world.game.map).added==both+footprint(*second));
 }
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Generate the bundled colony and exercise the real simulation/presentation.
 #include "GlobalContainer.h"
+#include "gradient/MapRouting.h"
 #include <Environment.h>
 #include "FrontendTheme.h"
 #include "ui/ThemeCatalog.h"
@@ -215,7 +216,7 @@ void generate(const char *path)
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
-	game.map.getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
+	game.map.routing().getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
 	game.teams[0]->color = Color(73, 191, 184);
 	for (int i = 0; i < 12000; ++i)
 	{
@@ -675,7 +676,7 @@ int main(int argc, char **argv)
 			require(gui.game.load(&in), "load real-game fixture");
 			std::istringstream state(in.readText("rng") + " ");
 			state >> gui.game.syncRandom;
-			gui.game.map.getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
+			gui.game.map.routing().getMaterialGradient(0, MaterialId::Food, MovementAccess::Land);
 			gui.localTeamNo = 0;
 			gui.localPlayer = 0;
 			gui.adjustLocalTeam();

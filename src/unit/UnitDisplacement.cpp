@@ -9,6 +9,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GameHeader.h"
 #include "AreaEffects.h"
 
@@ -47,7 +48,7 @@ struct GuardCostEligibility {
         return !unit.isDead && unit.displacement!=Unit::DIS_INSIDE && unit.hasCapability(UnitRuntimeTraits::GuardIdle);
     }
     explicit GuardCostEligibility(Unit& value):unit(value),before(eligible(value)) {}
-    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->gradientGuardCostsChanged(unit.owner->teamNumber);}
+    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->routing().gradientGuardCostsChanged(unit.owner->teamNumber);}
 };
 }
 
@@ -99,7 +100,7 @@ void Unit::handleDisplacement(void)
 				{
 					// The gradient led here to a stocked market of ours: take the
 					// resource at its door and carry it home.
-					if (Building *market = owner->map->touchedStockedMarketSlot(this, destinationPurpose))
+					if (Building *market = owner->map->routing().touchedStockedMarketSlot(this, destinationPurpose))
 					{
 						if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) { stopAttachedForBuilding(false); break; }
 						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
@@ -275,7 +276,7 @@ void Unit::handleDisplacement(void)
 								int distance;
 								const auto route=performance[FLY]
 									? queryMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding)
-									: map->queryMaterialDistance(teamNumber,r,movementAccess(),posX,posY,&distance,false,attachedBuilding);
+									: map->routing().queryMaterialDistance(teamNumber,r,movementAccess(),posX,posY,&distance,false,attachedBuilding);
 								if (route==RouteResult::Pending) { if (pendingResource<0) pendingResource=r; continue; }
 								if (route!=RouteResult::Reachable || (distance<<1)>=timeLeft) continue;
 

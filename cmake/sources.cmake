@@ -425,6 +425,7 @@ set(GLOB2_CLIENT_SOURCES
     src/map/generator/shared/Terrain.cpp
     src/map/gradient/GradientRuntime.cpp
     src/map/gradient/BuildingGradientSearch.cpp
+    src/map/gradient/MapRouting.cpp
     src/map/gradient/MapGradientArea.cpp
     src/map/gradient/MapGradientBuilding.cpp
     src/map/gradient/MapGradientChamfer.cpp

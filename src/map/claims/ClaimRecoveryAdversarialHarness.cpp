@@ -2,6 +2,7 @@
 // Live claim recovery: real route failures (no synthetic results), the job
 // release that follows them, and exact save continuation of recovery state.
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "GradientFixture.h"
@@ -58,7 +59,7 @@ struct Islands {
         hire(2);
         REQUIRE(worker->attachedBuilding==consumer);REQUIRE(holder->attachedBuilding==consumer);
         REQUIRE(holder->acquireMaterialClaimAt(nearest));
-        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
         game.invalidateObservation();game.observeCompletedWorld();
     }
     void hire(unsigned count) {

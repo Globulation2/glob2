@@ -471,6 +471,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/generator/shared/Noise.cpp',
     '#src/map/gradient/BuildingGradientSearch.cpp',
     '#src/map/gradient/GradientRuntime.cpp',
+    '#src/map/gradient/MapRouting.cpp',
     '#src/map/gradient/MapGradientDirection.cpp',
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',

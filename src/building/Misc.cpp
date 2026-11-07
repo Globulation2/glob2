@@ -17,6 +17,7 @@
 #include "sim/SimServices.h"
 #include "Utilities.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "UnitCargo.h"
@@ -114,7 +115,7 @@ void Building::kill(int diagnosticRemoval)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 		owner->dirtyGlobalGradient();
-		owner->map->updateTeamAreaGradients(owner->teamNumber);
+		owner->map->routing().updateTeamAreaGradients(owner->teamNumber);
 		if (unfundedNewSite)
 			owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
 
@@ -140,11 +141,11 @@ void Building::kill(int diagnosticRemoval)
 	owner->ctx.areaEffects->changed(gid);
 	owner->stockSuppliers.remove(this);
 	owner->directStockSuppliers.remove(this);
-	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->routing().invalidateSupplierLocations();
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MaterialSlotCount; r++)
 			if (material(r)>0)
-				owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+				owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 	
 	updateUnitsHarvesting();
 	
@@ -220,7 +221,7 @@ void Building::updateMaterialsPointer()
     // Membership is measured after switching the pool, not against the retired
     // pointer. Other suppliers sharing the team pool are diffed at the same time.
     if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
-        for(int r=0;r<MaterialCount;++r)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+        for(int r=0;r<MaterialCount;++r)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,r);
     }
 }
 
@@ -252,7 +253,7 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 	}
     // Construction may immediately reserve delivery. Observe its final
     // availability so an unavailable transient packet is not a fake goal.
-    if(sourceWasEmpty)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resourceType);
+    if(sourceWasEmpty)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resourceType);
 	owner->stats.events().delivered[resourceType] += accepted;
 	if (type->canExchange)
 		owner->stats.events().transferredIn[resourceType] += accepted;
@@ -317,7 +318,7 @@ MaterialPacket Building::withdrawMaterialPacket(int resourceType)
 	if (type->canExchange)
 		owner->stats.events().transferredOut[resourceType] += before - material(resourceType);
 	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
-		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
+		owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
 	updateCallLists();
 	const Uint32 amount=before-material(resourceType), denomination=type->materialMultiplier[resourceType];
 	const Uint32 divisor=std::gcd(amount,denomination);
@@ -501,7 +502,7 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 		{
 			changeMaterial(resId, -1);
 			if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableMaterial(resId)==0)
-				owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resId);
+				owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resId);
 			++owner->stats.events().consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;

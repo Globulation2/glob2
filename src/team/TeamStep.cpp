@@ -9,6 +9,7 @@
 #include "AreaEffects.h"
 #include "sim/SimServices.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Building.h"
 #include "Team.h"
 #include "Unit.h"
@@ -205,11 +206,11 @@ namespace
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedMaterial >= 0)
-			return u->hasCarriedMaterial(resource) && map->buildingAvailable(b, movementAccessFromLegacy(swimClass), u->posX, u->posY, cost, BuildingRoute::Footprint);
+			return u->hasCarriedMaterial(resource) && map->routing().buildingAvailable(b, movementAccessFromLegacy(swimClass), u->posX, u->posY, cost, BuildingRoute::Footprint);
 		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
-		if (!map->buildingAvailable(b, movementAccessFromLegacy(swimClass), u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
-			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, movementAccessFromLegacy(swimClass), u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
+		if (!map->routing().buildingAvailable(b, movementAccessFromLegacy(swimClass), u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
+			|| !map->routing().materialAvailableSlot(b->owner->teamNumber, resource, movementAccessFromLegacy(swimClass), u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -231,7 +232,7 @@ namespace
             *cost=1+Sint32(std::sqrt(map->warpDistSquare(u->posX,u->posY,b->posX,b->posY)));
             return true;
         }
-		return map->buildingAvailable(b, u->movementAccess(), u->posX, u->posY, cost, BuildingRoute::Footprint);
+		return map->routing().buildingAvailable(b, u->movementAccess(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.
@@ -436,7 +437,7 @@ void Team::syncStep(void)
 	if (isDirtyGlobalGradient)
 	{
 		dirtyGlobalGradient();
-		map->updateTeamAreaGradients(teamNumber);
+		map->routing().updateTeamAreaGradients(teamNumber);
 	}
 
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)

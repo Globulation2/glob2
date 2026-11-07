@@ -3,6 +3,7 @@
 // material gradients published by a real GPU backend and by the CPU. Never
 // substitutes a fake device.
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "GradientRuntime.h"
@@ -56,10 +57,10 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
         REQUIRE(fixture.gui.load(&stream,true));
         REQUIRE(game.mapHeader.getNumberOfTeams()==2);
         REQUIRE(map.cellCount()==4096);
-        REQUIRE(map.materialDestinationsEnabled());
+        REQUIRE(map.routing().materialDestinationsEnabled());
         REQUIRE(map.activeClaimsEnabled());
         REQUIRE_FALSE(game.gameHeader.isResourceGrowthDisabled());
-        auto& rt=*map.gradientRuntime;
+        auto& rt=*map.routing().gradientRuntime;
         struct Counts {
             std::mutex mutex;
             // Retain the exact published label allocation, so allocator reuse cannot impersonate a device commit.
@@ -68,7 +69,7 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
         };
         auto counts=std::make_shared<Counts>();
         if(mode!=Backend::CPU) {
-            map.finishGradientPipeline();
+            map.routing().finishGradientPipeline();
             rt.deviceService=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
                 [mode]{return initializeGradientAccelerator(mode);},
                 [counts](std::span<const BackendRequest> requests,Plan plan) {
@@ -125,7 +126,7 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
             for(const auto* values:{&row.world,&row.buildings,&row.units}) {output<<'\t';for(auto value:*values) output<<value<<',';}
             output<<'\n'; trace.push_back(std::move(row));
         }
-        map.finishGradientPipeline();
+        map.routing().finishGradientPipeline();
         REQUIRE(output.good());
         CHECK(claimedTicks>0);
         CHECK(stockHash()!=initialStock);

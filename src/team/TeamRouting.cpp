@@ -10,6 +10,7 @@
 #include "GameHeader.h"
 #include "MapHeader.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Building.h"
 #include "Team.h"
 #include "Unit.h"
@@ -67,7 +68,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
+			if (map->routing().buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -120,7 +121,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+					if (!directAir && !map->routing().buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -157,7 +158,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 				continue;
 
-			if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+			if (!directAir && !map->routing().buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -203,7 +204,7 @@ Building *Team::findBestUpgrade(Unit *unit)
             if(routeAir || (!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK])))
             {
                 int distance=0;
-                if(!map->buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
+                if(!map->routing().buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             const auto capacity=b->maxUnitInside-b->unitsInside.size();

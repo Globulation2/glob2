@@ -4,6 +4,7 @@
 #include "Unit.h"
 #include "Team.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 
 #include "Building.h"
 
@@ -31,7 +32,7 @@ void Unit::wrapPosition()
 	posX=(posX+dx)&(owner->map->getMaskW());
 	posY=(posY+dy)&(owner->map->getMaskH());
     if((posX!=oldX || posY!=oldY) && !isDead && displacement!=DIS_INSIDE && hasCapability(UnitRuntimeTraits::GuardIdle))
-        owner->map->gradientGuardCostsChanged(owner->teamNumber);
+        owner->map->routing().gradientGuardCostsChanged(owner->teamNumber);
 }
 
 void Unit::clearOccupiedMapSlot()
@@ -64,7 +65,7 @@ void Unit::handleActionRandomGround()
 		speed=std::max(1,int(performance[STOP_WALK])); return;
 	}
 	clearOccupiedMapSlot();
-	owner->map->pathfindRandom(this);
+	owner->map->routing().pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
 	speed=unitTerrainMovementSpeed(performance[action], action == FLY
@@ -78,7 +79,7 @@ void Unit::handleActionRandomFly()
 	assert(performance[FLY]);
 	clearOccupiedMapSlot();
 	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0)
-		owner->map->pathfindTerrainSafety(this);
+		owner->map->routing().pathfindTerrainSafety(this);
 	else
 	{
 		for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
@@ -109,7 +110,7 @@ void Unit::handleActionGoingTarget()
     if (performance[FLY] && !owner->map->hasAirRoutingConstraints())
         flyToTarget();
     else
-        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementAccess(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
+        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->routing().pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementAccess(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
 	directionFromDxDy();
 	wrapPosition();
 

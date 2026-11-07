@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SharedBuildingGradient.h"
+#include "gradient/MapRouting.h"
 #include "GradientExecutionAudit.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -528,7 +529,7 @@ TEST_SUITE("HiringGradientPreparation")
 				else
 				{
 					REQUIRE(b->globalGradient[slot]);
-                    CHECK(w.game.map.publishedCostClass(b->globalGradient[slot])==6);
+                    CHECK(w.game.map.routing().publishedCostClass(b->globalGradient[slot])==6);
 					REQUIRE(b->globalGradientSearch[slot]);
 					CHECK(b->globalGradientSearch[slot]->resolved(
 						w.game.map.coordToIndex(u->posX, u->posY)));
@@ -547,8 +548,8 @@ TEST_SUITE("HiringGradientPreparation")
 		auto *b = innWithWorker(w);
 		auto *u = w.game.teams[0]->myUnits[0];
 		const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
-		b->globalGradient[slot] = w.game.map.acquireBuildingGradientBuffer();
-		w.game.map.updateGlobalGradient(b, u->movementAccess(), BuildingRoute::Footprint);
+		b->globalGradient[slot] = w.game.map.routing().acquireBuildingGradientBuffer();
+		w.game.map.routing().updateGlobalGradient(b, u->movementAccess(), BuildingRoute::Footprint);
 		auto *data = b->globalGradient[slot];
 		auto *search = b->globalGradientSearch[slot].get();
 		b->dirtyGradient[slot] = true;
@@ -572,7 +573,7 @@ TEST_SUITE("HiringGradientPreparation")
 		auto *b = innWithWorker(w);
 		auto *u = w.game.teams[0]->myUnits[0];
 		const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
-		b->globalGradient[slot] = w.game.map.acquireBuildingGradientBuffer();
+		b->globalGradient[slot] = w.game.map.routing().acquireBuildingGradientBuffer();
 		std::fill_n(b->globalGradient[slot], std::size_t(w.game.map.getW()) * w.game.map.getH(),
 					GRADIENT_FORBIDDEN);
 		b->dirtyGradient[slot] = true;
@@ -850,9 +851,9 @@ TEST_SUITE("BuildingGradientInitialization")
 			pipeline.requestInitialization(*b);
 			pipeline.observe(w.game, observation(w));
 			CHECK(pipeline.preparing(*b, slot));
-			CHECK(w.game.map.requestBuildingField(b, u->movementAccess(), BuildingRoute::Footprint) ==
+			CHECK(w.game.map.routing().requestBuildingField(b, u->movementAccess(), BuildingRoute::Footprint) ==
 				  FieldReadiness::Pending);
-			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
+			CHECK(w.game.map.routing().buildingGradientPipelineStatus().queued == 0);
 			pipeline.drain();
 			CHECK(!b->globalGradient[slot]);
 			CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner +
@@ -880,7 +881,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			w.game.hiringPipeline->drain();
 			CHECK(!w.game.hiringPipeline->preparing(*b, slot));
 			CHECK(!b->globalGradient[slot]);
-			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
+			CHECK(w.game.map.routing().buildingGradientPipelineStatus().queued == 0);
 		};
 		checkLazy();
 		REQUIRE(b->launchConstruction(1, 1));
@@ -890,9 +891,9 @@ TEST_SUITE("BuildingGradientInitialization")
 		b->cancelConstruction(0);
 		w.game.stepCounter = 3;
 		checkLazy();
-		CHECK(w.game.map.requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.routing().requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
-		CHECK(w.game.map.buildingGradientPipelineStatus().queued == 1);
+		CHECK(w.game.map.routing().buildingGradientPipelineStatus().queued == 1);
 	}
 	TEST_CASE("legacy preparation and primary hiring seed one shared route")
 	{
@@ -901,7 +902,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 		w.game.stepCounter = 4;
 		auto *b = innWithWorker(w);
-		CHECK(w.game.map.requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.routing().requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		GradientExecutionAudit audit;
 		w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());
@@ -914,7 +915,7 @@ TEST_SUITE("BuildingGradientInitialization")
 				  audit.counts(GradientExecutionAudit::Kind::Seed).other ==
 			  1);
 		w.game.map.submitWorldWork(world);
-		CHECK(w.game.map.buildingGradientPipelineStatus().jobs == 0);
+		CHECK(w.game.map.routing().buildingGradientPipelineStatus().jobs == 0);
 		pipeline.publishDue(5);
 		REQUIRE(pipeline.suggestions(*b));
 	}

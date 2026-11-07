@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GameFixtures.h"
+#include "gradient/MapRouting.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
 
 namespace glob2test
@@ -9,9 +10,9 @@ namespace glob2test
 // neither creates an owner observation nor admits growth, hiring or statistics.
 inline void prepareGradientBoundary(Game& game)
 {
-    if (!game.map.hasPendingGradientPreparation()) return;
+    if (!game.map.routing().hasPendingGradientPreparation()) return;
     game.snapshotStore().invalidateBoundary();
-    game.map.preparePendingGradient(game.snapshotStore().captureBoundary(game));
+    game.map.routing().preparePendingGradient(game.snapshotStore().captureBoundary(game));
 }
 
 // Build custom terrain before match entities exist. The editor authoring API
@@ -43,8 +44,8 @@ template<class Read> auto awaitGradient(Game& game, Read read)
     for (unsigned boundary=0; !field && boundary<4096; ++boundary)
     {
         ++game.stepCounter;
-        game.map.advanceGradientPipeline();
-        game.map.stagePeriodicGradientPreparation();
+        game.map.routing().advanceGradientPipeline();
+        game.map.routing().stagePeriodicGradientPreparation();
         prepareGradientBoundary(game);
         field=read();
     }
@@ -56,8 +57,8 @@ inline const Uint16* awaitBuildingGradient(Game& game, Building* building, int s
     BuildingRoute route=BuildingRoute::Automatic)
 {
     return awaitGradient(game,[&] {
-        game.map.requestBuildingField(building,movementAccessFromLegacy(swim),route);
-        return game.map.lookupBuildingField(building,movementAccessFromLegacy(swim),route);
+        game.map.routing().requestBuildingField(building,movementAccessFromLegacy(swim),route);
+        return game.map.routing().lookupBuildingField(building,movementAccessFromLegacy(swim),route);
     });
 }
 
@@ -69,14 +70,14 @@ inline const Uint16* awaitBuildingGradient(Game& game, Building* building, int s
 inline bool materialPlanningTarget(Map& map,int team,int material,MovementAccess access,int x,int y,
     Sint32* targetX,Sint32* targetY,int* distance=nullptr,bool markets=false,const Building* consumer=nullptr)
 {
-    if (map.queryMaterialDistance(team,material,access,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
-    const auto* field=map.getMaterialGradientSlot(team,material,access,markets,consumer);
-    if (const auto destinations=map.materialGradientDestinations(field)) {
+    if (map.routing().queryMaterialDistance(team,material,access,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
+    const auto* field=map.routing().getMaterialGradientSlot(team,material,access,markets,consumer);
+    if (const auto destinations=map.routing().materialGradientDestinations(field)) {
         const auto index=map.coordToIndex(x,y);
         *targetX=destinations->x[index]; *targetY=destinations->y[index];
         return true;
     }
-    map.getGlobalGradientDestination(field,x,y,targetX,targetY);
+    map.routing().getGlobalGradientDestination(field,x,y,targetX,targetY);
     return true;
 }
 // No neighbour of (x,y) holds a strictly higher gradient value.

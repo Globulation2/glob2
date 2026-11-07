@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "AI.h"
 #include "AIImplementation.h"
@@ -202,7 +203,7 @@ TEST_CASE("saving before the first observation initializes AI without admitting 
     const auto expectUnobserved=[](Game& candidate) {
         CHECK_THROWS_AS(candidate.observation(),std::logic_error);
         CHECK(candidate.snapshots().metrics.coreMaterializations==0);
-        CHECK(candidate.map.gradientPipelineStatus().jobs==0);
+        CHECK(candidate.map.routing().gradientPipelineStatus().jobs==0);
         CHECK(candidate.map.resourceGrowthMetrics().submitted==0);
         for(const auto& [name,value]:candidate.aiMetrics())
             if(name=="submitted" || name=="delivered" || name=="stats_submitted" || name=="hiring_submitted") {

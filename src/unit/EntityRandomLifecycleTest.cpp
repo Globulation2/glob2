@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "EntityRandomIO.h"
 #include "Version.h"
@@ -147,7 +148,7 @@ TEST_SUITE("EntityRandomLifecycle")
         const auto otherBefore = otherTeam->entityRandom;
         const auto buildingBefore = building->entityRandom;
         const auto flyerBefore = flyer->entityRandom;
-        world.game.map.pathfindRandom(worker);
+        world.game.map.routing().pathfindRandom(worker);
         CHECK(worker->entityRandom != workerBefore);
         CHECK(flyer->entityRandom == flyerBefore);
         // Force the random-fly action, without running ecology or another unit.
@@ -187,7 +188,7 @@ TEST_SUITE("EntityRandomLifecycle")
         expected.nextU32();
         std::vector<Uint16> gradient(world.game.map.getW() * world.game.map.getH(), 100);
         int dx = 0, dy = 0;
-        REQUIRE(world.game.map.directionByGradient(worker->entityRandom,
+        REQUIRE(world.game.map.routing().directionByGradient(worker->entityRandom,
             worker->owner->me, worker->movementAccess(), worker->posX, worker->posY,
             gradient.data(), &dx, &dy, false));
         CHECK(worker->entityRandom == expected);
@@ -403,7 +404,7 @@ TEST_SUITE("EntityRandomLifecycle")
         // Format 187 retired MapHeader's experiment requirements. Format 150
         // still needs the empty section even though this fixture enables none.
         addLegacyFlags({"Game","MapHeader"},"experiments\n{\ncount = 0;\n}\n");
-        REQUIRE_FALSE(world.game.map.marketsV2Enabled());
+        REQUIRE_FALSE(world.game.map.routing().marketsV2Enabled());
         for (int team=0; team<world.game.teamsCount(); ++team)
             for (int swim=0; swim<LEGACY_SWIM_CLASS_COUNT; ++swim) {
                 const std::vector<std::string> base={"Game","mapRuntime","teams",

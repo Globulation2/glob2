@@ -669,7 +669,7 @@ checksum adapter remains available for diagnostic fixtures.
   to 16 bits for the larger per-team horizon; older byte counts remain readable.
   Maps without an active pipeline retain the
   synchronous fallback.
-  `Map::predictBuildingDepth` reads the production
+  `MapRouting::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
   reader demand (its serving search's required cost and `settledCostHint`). It only moves
   search work between worker and owner. Experimental depth overrides are retired.

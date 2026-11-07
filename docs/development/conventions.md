@@ -44,6 +44,20 @@ read costs the same as the `game` read it replaces. Code that owns a game-wide
 pipeline (hiring, turret targeting, team statistics, area effects) still takes a
 `Game&`.
 
+Map routing lives in `MapRouting` (`src/map/gradient/MapRouting.h`), owned by the
+map and reached through `map->routing()`: pathfinding (`pathfindBuilding`,
+`pathfindMaterial`, `pathfindArea`, point-to-point A*), building and material field
+requests and queries (`requestBuildingField`, `queryMaterialDistance`,
+`getMaterialGradient`, `materialAvailable`), the per-team material, market,
+forbidden, guard and clear gradients with their stale flags, the material routing
+cache, building gradient leases and the gradient pipeline. `Map.h` only
+forward-declares it, so cell-only code does not rebuild when routing changes;
+include `gradient/MapRouting.h` where a file routes. The routing implementation
+files still include `Map.h` and read cells through its inline accessors, so a
+query pays one pointer load to reach `MapRouting`, never one per cell. Static
+movement helpers (`Map::swimClass`, `Map::SWIM_CLASS_EVEN`,
+`Map::GRADIENT_COST_LIMIT`) and `topologyGeneration` stay on `Map`.
+
 `python3 test/check_header_layering.py` enforces this from the static include
 graph in a few seconds: layer ranks in `test/header_layers.json`, no version
 defaults in headers, no new directory-level include cycles, and fan-in budgets (with

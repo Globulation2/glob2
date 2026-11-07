@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "ChecksumSidecar.h"
 #include "Engine.h"
@@ -57,7 +58,7 @@ Records records(const std::string &bytes)
 }
 void save(Engine &engine, const std::filesystem::path &path)
 {
-	engine.gui.game.map.finishGradientPipeline();
+	engine.gui.game.map.routing().finishGradientPipeline();
 	GAGCore::BinaryOutputStream output(
 		GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path.string()));
 	REQUIRE(output.isValid());

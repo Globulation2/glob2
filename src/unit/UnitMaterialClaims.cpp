@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Unit.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Building.h"
 #include "map/claims/ClaimPattern.h"
@@ -92,7 +93,7 @@ bool Unit::activeMaterialClaimValid()
     if(c.source>=map.cellCount() || c.access>=map.cellCount())return false;
     if(map.getResource(c.source).type!=c.resource || !map.materialAmountAtSlot(c.source,c.material)
         || !map.materialAmountAtSlot(c.access,c.material))return false;
-    if(!map.materialDestinationValidSlot(owner->teamNumber,c.material,movementAccess(),
+    if(!map.routing().materialDestinationValidSlot(owner->teamNumber,c.material,movementAccess(),
             int(c.access%map.getW()),int(c.access/map.getW()),false,nullptr))return false;
     const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(c.resource))[c.material];
     return yield.consumption==ResourceConsumption::Infinite || map.materialAmountAtSlot(c.source,c.material)>c.reserve;
@@ -130,7 +131,7 @@ std::optional<ResolvedClaim> resolveClaimFor(const Map& map,const Unit& unit,Uin
     if(!map.activeClaimsEnabled() || access>=map.cellCount() || !validMaterial(material)
         || !canFulfillClaimWithoutTravel(map,unit,access,building)
         || !map.materialAmountAtSlot(access,material)
-        || !map.materialDestinationValidSlot(owner->teamNumber,material,unit.movementAccess(),
+        || !map.routing().materialDestinationValidSlot(owner->teamNumber,material,unit.movementAccess(),
             int(access%map.getW()),int(access/map.getW()),false,nullptr))return std::nullopt;
     const auto identity=ResourceClaims::unitOwner(unit.gid,unit.scriptIdentity);
     auto source=access;
@@ -192,7 +193,7 @@ bool Unit::acquireMaterialClaimAt(Uint32 access)
 bool Unit::selectActiveMaterialClaim(const Uint16* field)
 {
     auto& map=*owner->map;
-    const auto destinations=map.materialGradientDestinations(field);
+    const auto destinations=map.routing().materialGradientDestinations(field);
     if(!destinations)return false;
     // One owner-thread scratch plane, reused across units. Repeated probes of
     // the same destination must not repeat claim checks or pooled farm floods.
@@ -292,8 +293,8 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
     if(!target) {
         // Not in this phase's pass (a building that joined the call lists
         // during the phase, or a direct caller): search on the owner.
-        if(const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),false,nullptr))
-            if(const auto destinations=map.materialGradientDestinations(field)) {
+        if(const auto* field=map.routing().getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),false,nullptr))
+            if(const auto destinations=map.routing().materialGradientDestinations(field)) {
                 const auto components=map.claimTerrainComponents(accessClass(movementAccess()));
                 local=searchHireClaimTarget(map,material,*destinations,components.get());
             }
@@ -310,9 +311,9 @@ bool Unit::materialClaimHireAllowed(const Building& building,int material)
 bool Unit::projectsSupplierFetch(const Building& building,int material)
 {
     auto& map=*owner->map;
-    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),building.fetchesFromMarkets(),&building);
+    const auto* field=map.routing().getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),building.fetchesFromMarkets(),&building);
     Sint32 x=0,y=0;
-    return field && map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,&x,&y,
+    return field && map.routing().projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,&x,&y,
         building.fetchesFromMarkets(),&building) && !map.materialAmountAtSlot(map.coordToIndex(x,y),material);
 }
 
@@ -384,11 +385,11 @@ void Unit::handleActiveMaterialMovement()
         && cadence.decisionOrdinal-cadence.lastGoalAttempt>=ResourceClaims::Policy::DestinationRefreshDecisions;
     if(!activeMaterialClaim || refresh) {
         std::optional<GradientFieldKey> key;
-        const auto* field=map.getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementAccess(),false,nullptr,&key);
+        const auto* field=map.routing().getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementAccess(),false,nullptr,&key);
         // Claims consume the material field even when selection finds only
         // fully reserved stock. Keep adaptive refresh demand alive while these
         // workers wait for growth or a different available destination.
-        if(key)map.gradientMovementDemand(*key);
+        if(key)map.routing().gradientMovementDemand(*key);
         cadence.lastGoalAttempt=cadence.decisionOrdinal;
         // A failed refresh leaves the old valid reservation and route untouched.
         if(field)selectActiveMaterialClaim(field);

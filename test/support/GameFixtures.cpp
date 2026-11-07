@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameFixtures.h"
+#include "gradient/MapRouting.h"
 #include "GradientFixture.h"
 #include "HiringPipeline.h"
 
@@ -60,7 +61,7 @@ class HiringPipelineHarness
 				{
 					for (int material=0; material<MaterialCount; ++material)
 						if (building->materialDeliveryNeed(material)>0)
-							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(record.team,material,movementAccessFromLegacy(swim),false,building); });
+							glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(record.team,material,movementAccessFromLegacy(swim),false,building); });
 				}
 			const auto& type = setup.catalogs->buildings->at(record.typeNum).resolvedType;
 			const bool footprint = std::any_of(std::begin(type.maxMaterial),std::begin(type.maxMaterial)+MaterialCount,[](int value){return value>0;}) ||
@@ -74,8 +75,8 @@ class HiringPipelineHarness
 							(route==BuildingRoute::Clearing && !type.attractsRole(0)) ||
 							(route==BuildingRoute::Combat && !type.attractsRole(1) && !type.attractsRole(2))) continue;
 						glob2test::awaitGradient(game,[&] {
-							game.map.requestBuildingField(building,movementAccessFromLegacy(swim),route);
-							return game.map.lookupBuildingField(building,movementAccessFromLegacy(swim),route);
+							game.map.routing().requestBuildingField(building,movementAccessFromLegacy(swim),route);
+							return game.map.routing().lookupBuildingField(building,movementAccessFromLegacy(swim),route);
 						});
 					}
 				}
