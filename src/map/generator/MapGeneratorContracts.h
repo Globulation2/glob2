@@ -2216,14 +2216,214 @@ inline void eatenMapContracts()
 		 "rejection, envelope");
 }
 
+// Portage Lakes 2.0: rock knobs with fair quarry faces, deep cores behind shallows, trails as paths,
+// look-only shields, pinned variants across sizes and colony counts.
+inline void portageLakesTwoContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("portage-lakes"));
+	GenerationService service;
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what, bool telemetry = false)
+	{
+		const auto result = service.generate(g, r, telemetry);
+		if (!result)
+			std::fprintf(stderr, "Portage Lakes %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
+						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Portage Lakes %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key, int subject = -1)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && record.subject == subject)
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	const auto group = [](const Map &map, int x, int y)
+	{ return terrainGroup(TerrainType(map.vertexTerrainAt(x, y))); };
+	// The terrain promises every 2.0 map keeps: rock blocks, deep water sits behind a shallow margin
+	// at least two steps wide, trails exist and are paths, and every quarry face holds stone.
+	const auto terrainPromises = [&](const Game &g, bool deepWanted)
+	{
+		const Map &map = g.map;
+		const int w = map.getW(), h = map.getH();
+		int deep = 0, trail = 0, rock = 0;
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const auto kind = group(map, x, y);
+				trail += kind == TerrainGroup::Paths;
+				rock += kind == TerrainGroup::Ridges;
+				if (kind != TerrainGroup::DeepWater)
+					continue;
+				++deep;
+				for (int dy = -2; dy <= 2; ++dy)
+					for (int dx = -2; dx <= 2; ++dx)
+						if (std::abs(dx) + std::abs(dy) <= 2)
+						{
+							const auto next = group(map, (x + dx + w) % w, (y + dy + h) % h);
+							assert(next == TerrainGroup::Water || next == TerrainGroup::DeepWater);
+						}
+			}
+		assert(trail > 0 && rock > 0);
+		assert(deepWanted ? deep > 0 : deep == 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const auto &rules = map.terrainPropertiesAt(x, y);
+				// Every cell with two or more rock corners blocks walking: the rock seals what it draws.
+				int corners = 0;
+				for (int c = 0; c < 4; ++c)
+					corners += group(map, (x + (c & 1)) % w, (y + (c >> 1)) % h) == TerrainGroup::Ridges;
+				assert(corners < 2 || !rules.walkable);
+			}
+	};
+	// Pinned variants at every size and several colony counts, both shields, deep and shallow lakes.
+	const char *shieldNames[] = {"granite", "greenstone"};
+	int pinned = 0;
+	for (auto [dimension, teams, seed] : {std::tuple{7, 2, 5u}, std::tuple{8, 4, 9u}, std::tuple{8, 8, 13u},
+										  std::tuple{9, 6, 17u}, std::tuple{6, 2, 21u}, std::tuple{8, 12, 25u}})
+	{
+		D r = make(dimension, dimension, teams, seed);
+		const int shield = 1 + pinned % 2;
+		const bool deep = pinned % 3 != 2;
+		r.options["shield"] = shield;
+		r.options["deep-lakes"] = deep;
+		++pinned;
+		Game g(nullptr);
+		const auto result = build(g, r, "pinned variant", true);
+		assert(choice(result, "portage-lakes.shield") == shieldNames[shield - 1]);
+		terrainPromises(g, deep);
+		// Every home's knob holds the same quarry stone, at least five, within a short walk.
+		assert(measure(result, "portage-lakes.quarries.home-stone") >= 5);
+		for (int k = 0; k < teams; ++k)
+		{
+			const int walk = measure(result, "portage-lakes.quarries.walk-own", k);
+			assert(walk >= 0 && walk <= 24);
+		}
+	}
+	// Both shields come up at random.
+	std::set<std::string> shields;
+	for (std::uint32_t seed = 1; seed <= 6 && shields.size() < 2; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(6, 6, 2, seed), true);
+		assert(result);
+		shields.insert(choice(result, "portage-lakes.shield"));
+	}
+	assert(shields.size() == 2);
+	{
+		// The shield is only a look: granite and greenstone have the same rules and resources on every
+		// tile of the same request.
+		D granite = make(7, 7, 4, 29), greenstone = make(7, 7, 4, 29);
+		granite.options["shield"] = 1;
+		greenstone.options["shield"] = 2;
+		Game a(nullptr), b(nullptr);
+		build(a, granite, "granite");
+		build(b, greenstone, "greenstone");
+		int differentLooks = 0;
+		for (int y = 0; y < 128; ++y)
+			for (int x = 0; x < 128; ++x)
+			{
+				const auto &p = a.map.terrainPropertiesAt(x, y), &q = b.map.terrainPropertiesAt(x, y);
+				assert(p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
+					   p.resourcesGrow == q.resourcesGrow && p.inhibitionQ8 == q.inhibitionQ8 &&
+					   p.fertilityQ8 == q.fertilityQ8 && p.groundSpeedQ8 == q.groundSpeedQ8);
+				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
+			}
+		assert(differentLooks > 100);
+	}
+	{
+		// Damage is refused: a quarry stone taken away, a piece of rock turned to grass.
+		D r = make(7, 7, 2, 33);
+		GenerationContext check(r);
+		Game quarried(nullptr), breached(nullptr);
+		build(quarried, r, "quarry damage");
+		assert(service.generate(breached, r));
+		bool removed = false, opened = false;
+		for (int i = 0; i < 128 * 128 && !removed; ++i)
+			if (quarried.map.isResource(i % 128, i / 128) && quarried.map.getResource(i % 128, i / 128).type == STONE)
+			{
+				bool inKnot = false;
+				for (int dy = -2; dy <= 3; ++dy)
+					for (int dx = -2; dx <= 3; ++dx)
+						inKnot |= group(quarried.map, (i % 128 + dx + 128) % 128, (i / 128 + dy + 128) % 128) ==
+								  TerrainGroup::Ridges;
+				if (!inKnot)
+					continue;
+				quarried.map.replaceResource(i % 128, i / 128, Resource{});
+				removed = true;
+			}
+		assert(removed && !definition.validateWorld(quarried, check).empty());
+		for (int i = 0; i < 128 * 128 && !opened; ++i)
+			if (group(breached.map, i % 128, i / 128) == TerrainGroup::Ridges)
+			{
+				breached.map.setVertexTerrain(i % 128, i / 128, GRASS);
+				opened = true;
+			}
+		assert(opened && !definition.validateWorld(breached, check).empty());
+	}
+	{
+		// Ambient quarry faces on the forest knots follow stone-amount; the homes' faces do not.
+		D few = make(8, 8, 4, 41), many = make(8, 8, 4, 41), none = make(8, 8, 4, 41);
+		many.options["stone-amount"] = 300;
+		none.options["stone-amount"] = 0;
+		Game a(nullptr), b(nullptr), z(nullptr);
+		const auto normal = build(a, few, "default stone", true), more = build(b, many, "abundant stone", true),
+				   zero = build(z, none, "no stone", true);
+		assert(measure(zero, "portage-lakes.quarries.ambient") == 0);
+		assert(measure(more, "portage-lakes.quarries.ambient") > measure(normal, "portage-lakes.quarries.ambient"));
+		assert(measure(zero, "portage-lakes.quarries.home-stone") == measure(more, "portage-lakes.quarries.home-stone"));
+		// Growth with nobody harvesting keeps every promise: quarries keep their stone, trails stay bare,
+		// timber stays in its plots, the portages stay dry and every colony still reaches every other.
+		setSyncRandSeed(4211);
+		for (int tick = 0; tick < 4096; ++tick)
+			b.map.growResources();
+		GenerationContext check(many);
+		const std::string error = definition.validateWorld(b, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Portage Lakes 2.0 growth: %s\n", error.c_str());
+		assert(error.empty());
+		terrainPromises(b, true);
+	}
+	puts("PASS Portage Lakes 2.0: pinned shields and depths at 64-512, looks keep the rules, rock seals, "
+		 "deep cores behind shallows, trails are paths, home quarries equal and near, damage refused, "
+		 "ambient quarries scale, growth keeps the promises");
+}
+
 inline void portageLakesContracts()
 {
 	const auto &registry = GeneratorRegistry::builtins();
 	const int method = registry.idOf("portage-lakes");
 	const auto &definition = registry.at(method);
+	assert(definition.legacyId == 65 && definition.revision == 8);
 	GenerationService service;
 	D r;
 	r.setMethodDefaults(method);
+	assert(r.option("deep-lakes") == 1 && r.option("shield") == 0);
 	r.wDec = r.hDec = 8;
 	r.nbTeams = 4;
 	r.seed = 1;
@@ -2390,6 +2590,7 @@ inline void portageLakesContracts()
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 		assert(result);
 	}
+	portageLakesTwoContracts();
 	puts("PASS Portage Lakes: compact/full, repeatability, open wheat growth, missing portage, "
 		 "abundance extremes");
 }

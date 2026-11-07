@@ -1722,9 +1722,12 @@ TEST_SUITE("MapGeneratorDefaults")
 			const MapGeneration::Torus t(world.map);
 			std::vector<unsigned char> grass(t.size());
 			int sand = 0;
+			// Revision 8 paints looks (lush and dry grass) and loam bay farms: ground wheat can spread
+			// onto is read from the rules, not the exact grass type.
 			for (int i = 0; i < t.size(); ++i)
 			{
-				grass[i] = world.map.isGrass(t.remainderX(i), i / t.w);
+				const auto &rules = world.map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+				grass[i] = rules.walkable && rules.resourcesGrow && (rules.allowedResources & (1u << WHEAT));
 				sand += world.map.isSand(t.remainderX(i), i / t.w);
 			}
 			const auto groups = MapGeneration::connectedRegions(grass, t.w, t.h, true, MapGeneration::GridNeighbors::Eight);
