@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TidalFlatsGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Geometry.h"
@@ -332,7 +332,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 // Every home's kit, identical and unscaled: wheat and wood beside the pond on the side away from
 // the swarm, a quarry on the island's rim towards the centre of the map; then its own scaled
 // ambient farmland and outcrops.
-void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o)
+void furnishHomes(GenerationMap &map, const Layout &L, GenerationContext &context,
+				  const TidalFlatsOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -386,7 +387,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 // Every neutral island is an oasis, its pond ringed by wheat to its shores, with one prize inside,
 // a fruit grove or a stone deposit in turn; the central island carries the orchard of all three
 // fruits round its pond, with a quarry.
-void stockIslands(Map &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o)
+void stockIslands(GenerationMap &map, const Layout &L, GenerationContext &context,
+				  const TidalFlatsOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -470,11 +472,11 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "flats layout";
 	const TidalFlatsOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(SAND);
 	for (int i = 0; i < teams; ++i)
@@ -546,11 +548,11 @@ std::string validateRequest(const GenerationRequest &r)
 // Checked on the finished world: every home island still carries its pond, and colony 0 can walk
 // to every other colony and onto the central island, with water, buildings and every resource
 // blocking; the flats themselves hold nothing, so that walk is always the open one.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "flats"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

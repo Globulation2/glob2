@@ -1,6 +1,6 @@
 # Map generator framework
 
-A generator is a pure function, `bool generate(Game &, GenerationContext &)`, registered
+A generator is a pure function, `bool generate(GenerationWorld &, GenerationContext &)`, registered
 alongside its metadata in a `GeneratorDefinition` (id, stable legacy numeric id, display name,
 revision, its `GeneratorControl`s, and optional `validateRequest`/`validateWorld` callbacks).
 `GeneratorRegistry::builtins()` holds the fixed list; `GenerationService` drives the actual
@@ -10,6 +10,32 @@ generator is a function that calls the shared stages below in whatever order its
 a designed generator's body is a short sequence of them. What a generator keeps to itself is its
 design — the layout as a pure function of the request — and the few routines that only make sense
 for its map.
+
+## The generation world
+
+Generators, their shared stages and their validators never include `Map.h` or `Game.h`. They
+reach the map and the game through `core/GenerationWorld.h`, so editing a simulation header does
+not rebuild every generator:
+
+- `GenerationMap` (`world.map`) mirrors the part of `Map` generators use under the same names:
+  size and wrap (`getW`, `normalizeX`, `coordToIndex`), terrain (`vertexTerrainAt`,
+  `terrainPropertiesAt`, `setVertexTerrain`, `paintVertexSquare`, `layBeaches`), deposits
+  (`getResource`, `setResourceByIndex`, `terrainSupportsResourceAtByIndex`, `isResourceAllowed`)
+  and occupancy. Per-cell reads are inline over the cell arrays the map keeps in its live
+  `MapState::View`; writes and the heavier queries forward to the `Map` member of the same name
+  in one translation unit (`GenerationService.cpp`). Keep it that way: a per-cell read used in a
+  generation loop belongs inline in the header, not behind a call.
+- `GenerationWorld` is the game side, in descriptors rather than entities: `addTeam`,
+  `teamStart`/`setTeamStart`, `startingBuildingType` and `buildingType` (a
+  `GenerationBuildingType` with the footprint and limits generators read), `checkRoomForBuilding`,
+  `addBuilding` (a `GenerationBuilding`), `addWorker`, `finishTeam` and `teamBuildings`.
+  `GenerationScratchWorld` owns a fresh world for trial placements and previews.
+- Random draws come from the context's named streams, never from the world.
+
+`TEAM_MAX_COUNT` comes from `TeamCapacity.h`. A caller that holds a real `Game` or `Map` (the
+service, tools, tests) converts it implicitly where a helper takes a `const` view, and writes
+`GenerationWorld(game).ref()` where it takes a mutable one. The JavaScript toolkit's binding
+still holds the `Game` and keeps a `GenerationWorld` beside it for the native helpers.
 
 ## The designed generator
 

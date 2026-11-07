@@ -9,8 +9,8 @@
 #include "Settlements.h"
 #include <string>
 #include <vector>
-class Game;
-class Map;
+class GenerationWorld;
+class GenerationMap;
 namespace MapGeneration
 {
 // Designed maps above this density use the full 512-square envelope. This is
@@ -104,20 +104,21 @@ int resolveDesignChoice(const GenerationRequest &r, const char *key, int randomV
 
 /// The ground a colony's swarm and workers may stand on: its own tiles of `homeOf` that are pure
 /// grass on the written map (a beach, a road or a plot's ring has spoiled the rest).
-std::vector<unsigned char> homeGrassMask(const Map &, const Torus &, const std::vector<int> &homeOf,
-										 int team);
+std::vector<unsigned char> homeGrassMask(const GenerationMap &, const Torus &,
+										 const std::vector<int> &homeOf, int team);
 
 /// A validator's check that no colony's home pond was lost to the map's furnishing: water within two
 /// tiles of every kit's centre (`kits`, one per colony). Returns "" or "Colony k's <place> has lost
 /// its <water>." for the first colony without.
-std::string homePondMissing(const Map &, const Torus &, const std::vector<ShapePoint> &kits,
-							int teams, const char *place, const char *water);
+std::string homePondMissing(const GenerationMap &, const Torus &,
+							const std::vector<ShapePoint> &kits, int teams, const char *place,
+							const char *water);
 
 /// A swarm and its workers for every colony, each inside its own home mask and as near as the
 /// mask allows to its anchor. Fails the candidate on the first colony that does not fit.
 template <typename HomeMask, typename Anchor>
-bool settleColonies(Game &game, GenerationContext &context, const char *stream, HomeMask homeMask,
-					Anchor anchor)
+bool settleColonies(GenerationWorld &game, GenerationContext &context, const char *stream,
+					HomeMask homeMask, Anchor anchor)
 {
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
@@ -134,7 +135,7 @@ bool settleColonies(Game &game, GenerationContext &context, const char *stream, 
 /// cleared and never looked past. `allowedTopup` is an independent row-major mask for where new
 /// emergency crops may go; it clips the entire clump to a designed farm belt. Keeping these
 /// roles separate lets a map protect both structural deposits and crop-free town ground.
-void secureStartingCrops(Game &, GenerationContext &, const Torus &, int wheatRange = 24,
+void secureStartingCrops(GenerationWorld &, GenerationContext &, const Torus &, int wheatRange = 24,
 						 int woodRange = 32, int clearRadius = 0,
 						 const std::vector<unsigned char> *keep = nullptr,
 						 const std::vector<unsigned char> *allowedTopup = nullptr);
@@ -155,7 +156,7 @@ struct ResourceAmounts
 /// ever takes away a wall. Whatever the resource amounts are: a landscape that never budgets a
 /// colony's room can bury one at the defaults too, which is what a 512-tile fjord continent with
 /// four colonies did to two of them until 2026-09-16.
-void openStartsBuriedByResources(Game &, GenerationContext &, int wheatRange = 24,
+void openStartsBuriedByResources(GenerationWorld &, GenerationContext &, int wheatRange = 24,
 								 int woodRange = 32, int clearRadius = 0,
 								 const std::vector<unsigned char> *protectedWalls = nullptr);
 
@@ -164,20 +165,20 @@ void openStartsBuriedByResources(Game &, GenerationContext &, int wheatRange = 2
 /// (a colony buried in wheat has wheat at its feet). At the defaults nothing happens, and it
 /// returns whether anything ran. A landscape that wants the relief unconditionally — the legacy
 /// core does — calls openStartsBuriedByResources instead.
-bool reopenCrampedStarts(Game &, GenerationContext &, const ResourceAmounts &, int wheatRange = 24,
-						 int woodRange = 32, int clearRadius = 0,
+bool reopenCrampedStarts(GenerationWorld &, GenerationContext &, const ResourceAmounts &,
+						 int wheatRange = 24, int woodRange = 32, int clearRadius = 0,
 						 const std::vector<unsigned char> *protectedWalls = nullptr);
 
 /// settleColonies for round homes (stampRoundHomes): every colony on its own grass (homeGrassMask),
 /// its swarm where homeSwarmSite puts it in a home of `radius` facing out from the middle.
-bool settleRoundColonies(Game &, GenerationContext &, const char *stream,
+bool settleRoundColonies(GenerationWorld &, GenerationContext &, const char *stream,
 						 const std::vector<int> &homeOf, const std::vector<ShapePoint> &homes,
 						 double radius);
 
 /// validateWorld's first check on a design rebuilt from the request: it rebuilt, and it is the
 /// map's size. `L` needs a `failure` string and a `t` torus.
 template <typename Layout>
-std::string designMismatch(const Layout &L, const Map &map, const char *name);
+std::string designMismatch(const Layout &L, const GenerationMap &map, const char *name);
 
 /// A finished colony must be able to harvest `material` within `range` walking steps. `name` is
 /// used in failure diagnostics. The last step means gathering from a neighboring walkable tile,
@@ -195,8 +196,9 @@ struct MaterialAccessRule
 /// options, not disjoint buildings. Returns the first unmet rule with colony and observed distance
 /// or site count. No mutation, RNG draws or silent weakening of requirements. Invalid budgets or
 /// material rules throw GenerationFailure; no worker for a colony is an explicit failure.
-std::string startingAccessFailure(const Map &, int teams, const std::vector<MaterialAccessRule> &,
-								  int minimumSites = 16, int buildingRange = 24);
+std::string startingAccessFailure(const GenerationMap &, int teams,
+								  const std::vector<MaterialAccessRule> &, int minimumSites = 16,
+								  int buildingRange = 24);
 
 /// Farther than any walk on the largest supported map, so a rule given this range asks only that
 /// the resource is reachable at all. For a landscape whose wood is deliberately a voyage away
@@ -207,7 +209,8 @@ constexpr int kReachableAnywhere = 1024;
 /// within 24 steps that reopenCrampedStarts opens up for. The landscapes on the legacy core
 /// (shared/legacy) use it as their whole validateWorld; a landscape that designs its own
 /// economy calls startingAccessFailure with its own rules instead.
-std::string startingFloorFailure(const Map &, int teams, int wheatRange = 24, int woodRange = 32);
+std::string startingFloorFailure(const GenerationMap &, int teams, int wheatRange = 24,
+								 int woodRange = 32);
 
 /// Every colony's walk from colony 0's workers, with water, buildings and every resource
 /// blocking (units don't, since they move): the check every validator makes.
@@ -220,11 +223,11 @@ struct ColonyWalk
 /// The opposite promise, for a map of islands: no colony's units can walk to any other colony's on
 /// the engine's own ground rule (groundUnitTiles: no swimming, deposits and buildings block). "" when
 /// every colony is cut off from every other, else "Colony a can walk to colony b <route>."
-std::string coloniesApart(const Map &, int teams, const std::string &route);
+std::string coloniesApart(const GenerationMap &, int teams, const std::string &route);
 
 /// `ground` names what the workers walk ("the flats"); `route` finishes the cut-off message
 /// ("over the flats", or empty).
-ColonyWalk walkFromFirstColony(const Map &, int teams, const std::string &ground,
+ColonyWalk walkFromFirstColony(const GenerationMap &, int teams, const std::string &ground,
 							   const std::string &route);
 
 /// Which crops a walk stands beside: whether any food source, and any wood source, has a tile
@@ -237,12 +240,13 @@ struct CropsInReach
 	/// "" when both are in reach, else which is not: "cannot walk to food."
 	std::string missing() const;
 };
-CropsInReach cropsBesideReach(const Map &, const std::vector<int> &reach);
+CropsInReach cropsBesideReach(const GenerationMap &, const std::vector<int> &reach);
 } // namespace MapGeneration
 
-#include "Map.h"
+#include "GenerationWorld.h"
 template <typename Layout>
-std::string MapGeneration::designMismatch(const Layout &L, const Map &map, const char *name)
+std::string MapGeneration::designMismatch(const Layout &L, const GenerationMap &map,
+										  const char *name)
 {
 	if (!L.failure.empty())
 		return std::string("The ") + name + " design could not be rebuilt: " + L.failure;

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CraterLakesGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Pipeline.h"
 #include "StartingPositions.h"
@@ -23,7 +23,7 @@ using namespace MapGeneration;
 // Game rules: lakes are local obstacles, not barriers between colonies, so this plays as an open
 // land map where water shapes the paths; farmland rings each lake, since wheat and wood regrow only
 // near water.
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const CraterLakesOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
@@ -52,7 +52,7 @@ static bool generate(Game &game, GenerationContext &context)
 // the best spots it left. So the only promise this landscape can make is the floor every colony
 // needs — wheat and wood it can walk to, and room for a first base — and the service rolls
 // another seed when a field does not leave one.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

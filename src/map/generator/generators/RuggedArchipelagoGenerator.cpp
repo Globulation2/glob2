@@ -4,12 +4,11 @@
 #include "PowerOfTwo.h"
 #include "RuggedArchipelagoGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Pipeline.h"
 #include "Regions.h"
 #include "Resources.h"
@@ -55,7 +54,7 @@ static const int kGrowthDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
 // Seed one grass patch per colony, each at least a colony's share of the map from the others,
 // halving that spacing if a placement keeps failing. Returns how many growth passes the islands
 // get, from the map size and the island size control.
-static int plantBootstraps(Map &map, GenerationContext &context,
+static int plantBootstraps(GenerationMap &map, GenerationContext &context,
 						   const RuggedArchipelagoOptions &options, std::mt19937 &rng)
 {
 	const int w = map.getW(), h = map.getH();
@@ -135,7 +134,7 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 // Tiles are visited on
 // the two halves of a checkerboard in turn so a tile that has just turned grass does not feed its
 // neighbour in the same sweep, which would let growth race along rows in scan order.
-static void expandIslands(Map &map, std::mt19937 &rng, int passes)
+static void expandIslands(GenerationMap &map, std::mt19937 &rng, int passes)
 {
 	const int w = map.getW(), h = map.getH();
 	for (int s = 0; s < passes; s++)
@@ -158,7 +157,7 @@ static void expandIslands(Map &map, std::mt19937 &rng, int passes)
 // Close single-tile gaps: a tile between two grass tiles, in any of the four directions, becomes
 // grass, twice over. Accretion leaves pinholes and one-tile inlets; left in, each would become a
 // sand pit (grass may not touch water) that wastes building room in the middle of an island.
-static void smoothGrass(Map &map)
+static void smoothGrass(GenerationMap &map)
 {
 	const int w = map.getW(), h = map.getH();
 	for (int s = 0; s < 2; s++)
@@ -184,7 +183,7 @@ static void smoothGrass(Map &map)
 // between two sands fills gaps in it. Visiting one tile in sixteen per sweep (sixteen offsets in
 // turn) keeps growth from racing in scan order. `beach-size` (0 to 4, default 1) is the pass count:
 // every pass costs grass (room to build) and adds walkable sand round the island.
-static void spreadBeaches(Map &map, std::mt19937 &rng, int passes)
+static void spreadBeaches(GenerationMap &map, std::mt19937 &rng, int passes)
 {
 	const int w = map.getW(), h = map.getH();
 	for (int s = 0; s < passes; s++)
@@ -206,9 +205,10 @@ static void spreadBeaches(Map &map, std::mt19937 &rng, int passes)
 					}
 }
 
-static bool terrain(Game &game, GenerationContext &context, const RuggedArchipelagoOptions &options)
+static bool terrain(GenerationWorld &game, GenerationContext &context,
+					const RuggedArchipelagoOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	// Every draw below names the "terrain" stream; one lookup serves all of them.
 	std::mt19937 &rng = context.stream("terrain");
 
@@ -224,10 +224,10 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 	return true;
 }
 
-static void resources(Game &game, GenerationContext &context,
+static void resources(GenerationWorld &game, GenerationContext &context,
 					  const RuggedArchipelagoOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 
 	int *bootX = context.bootX.data();
@@ -328,7 +328,7 @@ static void resources(Game &game, GenerationContext &context,
 	map.smoothResources(smoothResources * 2);
 }
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const RuggedArchipelagoOptions options(context.request);
 	if (!terrain(game, context, options))
@@ -353,7 +353,7 @@ static bool generate(Game &game, GenerationContext &context)
 // Islands grown by accretion can come out as a sliver, and the compass-oriented kits are laid on
 // whatever grass survived the smoothing. The floor checks what those kits are for: crops within
 // reach of the colony that owns them, and room for a first base beside them.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

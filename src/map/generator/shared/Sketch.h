@@ -10,7 +10,7 @@
 #include <queue>
 #include <utility>
 #include <vector>
-class Map;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -26,11 +26,11 @@ using TerrainSketch = std::vector<unsigned char>;
 void layBeaches(TerrainSketch &, const Torus &);
 
 /// Writes the sketch to the map's vertices, re-deriving every tile from its corners.
-void writeVertices(Map &, const TerrainSketch &);
+void writeVertices(GenerationMap &, const TerrainSketch &);
 
 /// Every corner vertex of tile (x, y) takes `type`, with no beach laid: the tile becomes pure
 /// `type`, and the eight tiles sharing those corners mix it with their own.
-void paintTile(Map &, int x, int y, TerrainType type);
+void paintTile(GenerationMap &, int x, int y, TerrainType type);
 
 int countTiles(const TerrainSketch &, TerrainType);
 
@@ -50,7 +50,7 @@ std::vector<unsigned char> walkableTiles(const TerrainSketch &, const Torus &);
 
 /// The same pure-terrain mask from a finished map's corner-derived tiles. Use after all terrain repairs
 /// when validating a growth or shoreline promise; mixed beach tiles belong to none of the masks.
-std::vector<unsigned char> pureTiles(const Map &, TerrainType);
+std::vector<unsigned char> pureTiles(const GenerationMap &, TerrainType);
 
 /// Decorative patches of sand inside the land, away from any shore: of the grass tiles `eligible`
 /// allows that lie at least `inland` steps from water, the `share` (0 to 1) with the highest

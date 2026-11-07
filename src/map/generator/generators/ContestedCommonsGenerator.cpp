@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ContestedCommonsGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "GlobalContainer.h"
@@ -48,8 +48,8 @@ using namespace MapGeneration;
 // are random, so it is fair statistically; the lobby keeps the best-scoring of several seeds.
 namespace
 {
-void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
-						int x, int y, int radius, double roughness)
+void createJaggedIsland(GenerationMap &map, GenerationContext &context, std::vector<int> &grid,
+						int area, int x, int y, int radius, double roughness)
 {
 	stampRoughDisc(grid, map.getW(), map.getH(), area, x, y, radius, roughness, context, "coast");
 }
@@ -64,11 +64,11 @@ struct Layout
 	MapGeneratorPoint commonsCenter{0, 0};
 	int homeRadius = 0, commonsRadius = 0, moatWidth = 0;
 	int commonsAreaNumber = 0, bridgeAreaNumber = 0;
-	explicit Layout(const Map &map) : grid(size_t(map.getW()) * map.getH(), 0) {}
+	explicit Layout(const GenerationMap &map) : grid(size_t(map.getW()) * map.getH(), 0) {}
 };
 
 // Spread the colony seeds and the commons seed jointly, then tell them apart.
-static bool disperseSeeds(Game &game, GenerationContext &context, Layout &L)
+static bool disperseSeeds(GenerationWorld &game, GenerationContext &context, Layout &L)
 {
 	// Spread the team seeds AND the commons seed jointly, as one dispersion problem, instead
 	// of placing the teams first and hunting for a leftover gap afterward: the commons is an
@@ -116,7 +116,7 @@ static bool disperseSeeds(Game &game, GenerationContext &context, Layout &L)
 
 // Size the home islands and the commons off the room the dispersion bought, draw them into the
 // grid and lay the bridge strips across the moat.
-static void sizeIslands(Game &game, GenerationContext &context,
+static void sizeIslands(GenerationWorld &game, GenerationContext &context,
 						const ContestedCommonsOptions &options, Layout &L)
 {
 	const int W = game.map.getW();
@@ -230,7 +230,7 @@ static void sizeIslands(Game &game, GenerationContext &context,
 }
 
 // Turn the grid into terrain: noise, islands raised to land, the moat forced back to water.
-static void paintTerrain(Game &game, GenerationContext &context,
+static void paintTerrain(GenerationWorld &game, GenerationContext &context,
 						 const ContestedCommonsOptions &options, const Layout &L)
 {
 	const int W = game.map.getW();
@@ -298,7 +298,7 @@ static void paintTerrain(Game &game, GenerationContext &context,
 }
 
 // Split the commons into zones and give each a role: wood, wheat, the quarry, fruit, or open.
-static void stockCommons(Game &game, GenerationContext &context,
+static void stockCommons(GenerationWorld &game, GenerationContext &context,
 						 const ContestedCommonsOptions &options, Layout &L)
 {
 	const int W = game.map.getW();
@@ -455,7 +455,7 @@ static void stockCommons(Game &game, GenerationContext &context,
 }
 
 // Each colony's starter kit, swarm and workers on its own island.
-static bool settleHomes(Game &game, GenerationContext &context,
+static bool settleHomes(GenerationWorld &game, GenerationContext &context,
 						const ContestedCommonsOptions &options, Layout &L)
 {
 	const int W = game.map.getW();
@@ -537,7 +537,7 @@ static bool settleHomes(Game &game, GenerationContext &context,
 	return true;
 }
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "layout";
 	const ContestedCommonsOptions options(context.request);
@@ -574,7 +574,7 @@ ContestedCommonsOptions::ContestedCommonsOptions(const GenerationRequest &r)
 // The home islands are sized against a worst-case shape, not measured after the coast is rough
 // and the moat is cut, so a colony can end up with its wheat across the water or its island
 // filled by its own fields. The floor is what the home island exists to provide.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

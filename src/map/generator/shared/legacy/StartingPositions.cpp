@@ -5,16 +5,13 @@
 #include "StartingPositions.h"
 #include "StartingLayout.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
-#include "GlobalContainer.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Regions.h"
 #include "Resources.h"
 #include "Terrain.h"
-#include "Unit.h"
 #include <algorithm>
 #include <cmath>
 #include <utility>
@@ -40,14 +37,19 @@ namespace MapGeneration
 //   steps from the water, give or take the noise: a coastal band with a soft inner edge, never the
 //   whole zone on a large island. The swarm goes on a free 4x4 footprint 1 or 2 steps from where
 //   the default wheat field lies, so the first workers reach food at once.
-bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int> &grid,
+bool divideUpPlayerLands(GenerationWorld &game, GenerationContext &context, std::vector<int> &grid,
 						 std::vector<int> &teamAreaNumbers, int &areaNumber,
 						 const PlayerLandResources &resources)
 {
 	context.stage = "resources and starts";
-	int typeNum = game.buildingsTypes.getStartingBuildingTypeNum();
-	BuildingType *swarm = typeNum>=0 ? game.buildingsTypes.get(typeNum) : nullptr;
-	if (!swarm || !swarm->runtimeAvailable) { context.detail="Catalog has no available starting building"; return false; }
+	const GenerationBuildingType swarmType = game.startingBuildingType();
+	const int typeNum = swarmType.typeNum;
+	BuildingType *swarm = swarmType.handle;
+	if (!swarm || !swarmType.runtimeAvailable)
+	{
+		context.detail = "Catalog has no available starting building";
+		return false;
+	}
 
 	// Compute the distances from water
 	std::vector<MapGeneratorPoint> sources;
@@ -192,10 +194,10 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 				{
 					::MapGeneration::generationCheckpoint();
 					int minValue = 100000;
-					for (int x = 0; x < swarm->width; ++x)
+					for (int x = 0; x < swarmType.width; ++x)
 					{
 						::MapGeneration::generationCheckpoint();
-						for (int y = 0; y < swarm->height; ++y)
+						for (int y = 0; y < swarmType.height; ++y)
 						{
 							::MapGeneration::generationCheckpoint();
 							int nx = game.map.normalizeX(baseLocations.at(j).x + x);
@@ -234,25 +236,23 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 				return false;
 			}
 			int chosen = context.stream("regions")() % startingLocations.size();
-			Building *b =
+			const GenerationBuilding b =
 				game.addBuilding(startingLocations.at(chosen).x, startingLocations.at(chosen).y,
-								 typeNum, i, swarm->maxUnitWorking ? 1 : 0, 0);
-			if (b == NULL)
+								 typeNum, i, swarmType.maxUnitWorking ? 1 : 0, 0);
+			if (!b)
 			{
 				return false;
 			}
 
 			// Set the initial viewport location
-			game.teams[i]->startPosX = b->posX;
-			game.teams[i]->startPosY = b->posY;
-			game.teams[i]->startPosSet = Team::START_POS_FROM_SWARM;
-			context.bootX[i] = b->posX;
-			context.bootY[i] = b->posY;
+			game.setTeamStart(i, b.posX, b.posY, GenerationTeamStart::FromSwarm);
+			context.bootX[i] = b.posX;
+			context.bootY[i] = b.posY;
 
 			// Place units around the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;
 			chooseFreeForGroundUnits(game.map, unitLocations, i);
-			chooseTouchingBuilding(game.map, unitLocations, b);
+			chooseTouchingBuilding(game.map, unitLocations, b.handle);
 			chooseRandomPoints(game.map, context, unitLocations, context.request.nbWorkers);
 			if (unitLocations.size() != static_cast<size_t>(context.request.nbWorkers))
 			{
@@ -262,8 +262,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			for (unsigned int n = 0; n < unitLocations.size(); ++n)
 			{
 				::MapGeneration::generationCheckpoint();
-				if (!game.addUnit(unitLocations.at(n).x, unitLocations.at(n).y, i, WORKER, 0, 0, 0,
-								  0))
+				if (!game.addWorker(unitLocations.at(n).x, unitLocations.at(n).y, i))
 				{
 					context.detail = "Worker placement failed";
 					return false;
@@ -278,14 +277,14 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 	return true;
 }
 
-void chooseFreeForBuildingSquares(Game &game, std::vector<MapGeneratorPoint> &points,
+void chooseFreeForBuildingSquares(GenerationWorld &game, std::vector<MapGeneratorPoint> &points,
 								  BuildingType *type, int team)
 {
 	std::vector<MapGeneratorPoint> newPoints;
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (game.checkRoomForBuilding(points.at(n).x, points.at(n).y, type, team, false))
+		if (game.checkRoomForBuilding(points.at(n).x, points.at(n).y, type, team))
 		{
 			newPoints.push_back(MapGeneratorPoint(points.at(n).x, points.at(n).y));
 		}
@@ -293,14 +292,13 @@ void chooseFreeForBuildingSquares(Game &game, std::vector<MapGeneratorPoint> &po
 	points = newPoints;
 }
 
-void chooseFreeForGroundUnits(Map &map, std::vector<MapGeneratorPoint> &points, int team)
+void chooseFreeForGroundUnits(GenerationMap &map, std::vector<MapGeneratorPoint> &points, int team)
 {
 	std::vector<MapGeneratorPoint> newPoints;
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (map.isFreeForGroundUnit(points.at(n).x, points.at(n).y, false,
-									Team::teamNumberToMask(team)))
+		if (map.isFreeForGroundUnit(points.at(n).x, points.at(n).y, false, teamNumberToMask(team)))
 		{
 			newPoints.push_back(MapGeneratorPoint(points.at(n).x, points.at(n).y));
 		}
@@ -308,14 +306,16 @@ void chooseFreeForGroundUnits(Map &map, std::vector<MapGeneratorPoint> &points, 
 	points = newPoints;
 }
 
-void chooseTouchingBuilding(Map &map, std::vector<MapGeneratorPoint> &points, Building *building)
+void chooseTouchingBuilding(GenerationMap &map, std::vector<MapGeneratorPoint> &points,
+							Building *building)
 {
+	const GenerationBuilding placed = GenerationWorld::describe(building);
 	std::vector<MapGeneratorPoint> newPoints;
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (touchesStartingFootprint(points.at(n).x, points.at(n).y, building->posX, building->posY,
-									 building->type->width, building->type->height, map.getMaskW(),
+		if (touchesStartingFootprint(points.at(n).x, points.at(n).y, placed.posX, placed.posY,
+									 placed.type.width, placed.type.height, map.getMaskW(),
 									 map.getMaskH()))
 		{
 			newPoints.push_back(MapGeneratorPoint(points.at(n).x, points.at(n).y));
@@ -324,23 +324,22 @@ void chooseTouchingBuilding(Map &map, std::vector<MapGeneratorPoint> &points, Bu
 	points = newPoints;
 }
 
-Building *addBuilding(Game &game, int x, int y, int team, int type, int level,
+Building *addBuilding(GenerationWorld &game, int x, int y, int team, int type, int level,
 					  bool underConstruction)
 {
-	std::string name = IntBuildingType::typeFromShortNumber(type);
-	int typeNum = game.buildingsTypes.getTypeNum(name, level - 1, underConstruction);
-	BuildingType *bt = typeNum>=0 ? game.buildingsTypes.get(typeNum) : nullptr;
-	if (bt == NULL)
+	const GenerationBuildingType bt = game.legacyBuildingType(type, level - 1, underConstruction);
+	const int typeNum = bt.typeNum;
+	if (!bt)
 	{
 		return NULL;
 	}
 
-	if (game.checkRoomForBuilding(x, y, bt, team, false))
+	if (game.checkRoomForBuilding(x, y, bt, team))
 	{
-		if (bt->maxUnitWorking)
-			return game.addBuilding(x, y, typeNum, team, 1, 0);
+		if (bt.maxUnitWorking)
+			return game.addBuilding(x, y, typeNum, team, 1, 0).handle;
 		else
-			return game.addBuilding(x, y, typeNum, team, 0, 0);
+			return game.addBuilding(x, y, typeNum, team, 0, 0).handle;
 	}
 	return NULL;
 }
@@ -354,7 +353,7 @@ namespace MapGeneration
 // of four above the swarm. Its closing Map::smoothResources runs islandSize / 10 rounds of
 // deposit fraying before the island's own deposits exist, so it only touches what is already on
 // the map; Old islands frays its deposits again after placing them.
-bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSize)
+bool placeArchipelagoStarts(GenerationWorld &game, GenerationContext &context, int islandSize)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
 	{
@@ -363,38 +362,40 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 		// Buildings wrap those coordinates, and start metadata must wrap too.
 		context.bootX[s] = game.map.normalizeX(context.bootX[s]);
 		context.bootY[s] = game.map.normalizeY(context.bootY[s]);
-		if (game.mapHeader.getNumberOfTeams() <= s)
+		if (game.teamsCount() <= s)
 			game.addTeam();
-		const int typeNum = game.buildingsTypes.getStartingBuildingTypeNum();
+		const GenerationBuildingType startingType = game.startingBuildingType();
+		const int typeNum = startingType.typeNum;
 		if (!game.isBuildingTypeAvailable(typeNum)) { context.detail="No available starting building"; return false; }
-		const auto* type=game.buildingsTypes.get(typeNum);
+		const auto *type = &startingType;
 		const StartingLayout layout(type->width,type->height,context.request.nbWorkers);
 		const int squareSize = std::max({5 + islandSize / 10,layout.width+1,layout.height+1,2*layout.workerRows+1});
 		game.map.paintVertexSquare(context.bootX[s] + layout.width/2, context.bootY[s], GRASS, squareSize);
 		game.map.paintVertexSquare(context.bootX[s] + layout.width/2, context.bootY[s] + layout.height/2, GRASS, squareSize);
 
-		if (!game.isBuildingTypeAvailable(typeNum) || !game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
-									   game.buildingsTypes.get(typeNum), s, false))
+		if (!game.isBuildingTypeAvailable(typeNum) ||
+			!game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
+									   game.buildingType(typeNum), s))
 		{
 			context.detail = "No room for a colony's swarm";
 			return false;
 		}
-		game.teams[s]->startPosX = context.bootX[s];
-		game.teams[s]->startPosY = context.bootY[s];
-		Building *b = game.addBuilding(context.bootX[s], context.bootY[s], typeNum, s);
+		game.setTeamStart(s, context.bootX[s], context.bootY[s]);
+		const GenerationBuilding b =
+			game.addBuilding(context.bootX[s], context.bootY[s], typeNum, s);
 		if (!b)
 			return false;
 		for (int i = 0; i < context.request.nbWorkers; i++)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (game.addUnit(context.bootX[s] + layout.workerX(i),
-							 context.bootY[s] + layout.workerY(i), s, WORKER, 0, 0, 0, 0) == NULL)
+			if (!game.addWorker(context.bootX[s] + layout.workerX(i),
+								context.bootY[s] + layout.workerY(i), s))
 			{
 				context.detail = "No room for a colony's starting workers";
 				return false;
 			}
 		}
-		game.teams[s]->createLists();
+		game.finishTeam(s);
 	}
 	game.map.smoothResources(islandSize / 10);
 	return true;
@@ -402,7 +403,7 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 
 // Builds each colony's swarm and workers on its boot tile for Old random and the height-field
 // generators, clearing the configured footprint and worker rows above it.
-bool placeStarts(Game &game, GenerationContext &context)
+bool placeStarts(GenerationWorld &game, GenerationContext &context)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
 	{
@@ -411,13 +412,14 @@ bool placeStarts(Game &game, GenerationContext &context)
 		// Buildings wrap those coordinates, and start metadata must wrap too.
 		context.bootX[s] = game.map.normalizeX(context.bootX[s]);
 		context.bootY[s] = game.map.normalizeY(context.bootY[s]);
-		assert(game.mapHeader.getNumberOfTeams() == s);
-		if (game.mapHeader.getNumberOfTeams() <= s)
+		assert(game.teamsCount() == s);
+		if (game.teamsCount() <= s)
 			game.addTeam();
 
-		const int typeNum = game.buildingsTypes.getStartingBuildingTypeNum();
+		const GenerationBuildingType startingType = game.startingBuildingType();
+		const int typeNum = startingType.typeNum;
 		if (!game.isBuildingTypeAvailable(typeNum)) { context.detail="No available starting building"; return false; }
-		const auto* type=game.buildingsTypes.get(typeNum);
+		const auto *type = &startingType;
 		const StartingLayout layout(type->width,type->height,context.request.nbWorkers);
 		if (layout.width>=game.map.getW() || layout.height+layout.workerRows>=game.map.getH())
 		{ context.detail="Starting building and workers do not fit on the map"; return false; }
@@ -437,28 +439,29 @@ bool placeStarts(Game &game, GenerationContext &context)
 			}
 		}
 
-		if (!game.isBuildingTypeAvailable(typeNum) || !game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
-									   game.buildingsTypes.get(typeNum), s, false))
+		if (!game.isBuildingTypeAvailable(typeNum) ||
+			!game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
+									   game.buildingType(typeNum), s))
 		{
 			context.detail = "No room for a colony's swarm";
 			return false;
 		}
-		game.teams[s]->startPosX = context.bootX[s];
-		game.teams[s]->startPosY = context.bootY[s];
-		Building *b = game.addBuilding(context.bootX[s], context.bootY[s], typeNum, s);
+		game.setTeamStart(s, context.bootX[s], context.bootY[s]);
+		const GenerationBuilding b =
+			game.addBuilding(context.bootX[s], context.bootY[s], typeNum, s);
 		if (!b)
 			return false;
 		for (int i = 0; i < context.request.nbWorkers; i++)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (game.addUnit(context.bootX[s] + layout.workerX(i),
-							 context.bootY[s] + layout.workerY(i), s, WORKER, 0, 0, 0, 0) == NULL)
+			if (!game.addWorker(context.bootX[s] + layout.workerX(i),
+								context.bootY[s] + layout.workerY(i), s))
 			{
 				context.detail = "No room for a colony's starting workers";
 				return false;
 			}
 		}
-		game.teams[s]->createLists();
+		game.finishTeam(s);
 	}
 	return true;
 }

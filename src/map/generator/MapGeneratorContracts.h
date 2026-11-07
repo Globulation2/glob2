@@ -15,6 +15,7 @@
 #include "Contact.h"
 #include "FertilityField.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "LastTreelineChecks.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -318,7 +319,7 @@ inline void breachableHighlandsContracts()
 		terrain[i] = value == SAND ? GRASS : value;
 	}
 	MapGeneration::layBeaches(terrain, farmTorus);
-	MapGeneration::writeVertices(uncontained.map, terrain);
+	MapGeneration::writeVertices(GenerationMap(uncontained.map).ref(), terrain);
 	assert(definition.validateWorld(uncontained, context).find("farm access lane") !=
 		   std::string::npos);
 	// Abundance changes the farms, never the stone or saddle geometry. Both extremes
@@ -593,14 +594,14 @@ inline void locustFoodChecks()
 	// The stock cap never refills a deposit or consumes RNG, even with a larger second cap. Cap to
 	// one harvest here so the regrowth check below can harvest every other tile out in one step.
 	const auto beforeCap = syncRandEngine();
-	const auto capped = MapGeneration::capResourceStock(map, WHEAT, 1);
-	const auto unchanged = MapGeneration::capResourceStock(map, WHEAT, 3);
+	const auto capped = MapGeneration::capResourceStock(GenerationMap(map).ref(), WHEAT, 1);
+	const auto unchanged = MapGeneration::capResourceStock(GenerationMap(map).ref(), WHEAT, 3);
 	assert(capped.tiles > 96 && capped.amount == capped.tiles);
 	assert(unchanged.amount == capped.amount && syncRandEngine() == beforeCap);
 	bool rejected = false;
 	try
 	{
-		MapGeneration::capResourceStock(map, WHEAT, 0);
+		MapGeneration::capResourceStock(GenerationMap(map).ref(), WHEAT, 0);
 	}
 	catch (const GenerationFailure &)
 	{
@@ -2216,7 +2217,7 @@ inline void bastionKeysContracts()
 		const int corner = bridged.map.vertexTerrainAt(i % t.w, i / t.w);
 		landBridge[i] = corner == WATER ? SAND : corner;
 	}
-	writeVertices(bridged.map, landBridge);
+	writeVertices(GenerationMap(bridged.map).ref(), landBridge);
 	GenerationContext check(request);
 	assert(definition.validateWorld(bridged, check).find("walking connection") !=
 		   std::string::npos);

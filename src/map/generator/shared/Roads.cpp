@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Roads.h"
 #include "GenerationContext.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Morphology.h"
 #include <climits>
 #include <deque>
@@ -158,7 +158,7 @@ std::vector<int> cheapestRoute(const Torus &t, const std::vector<int> &sources,
 	return route;
 }
 
-bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
+bool openRoad(GenerationMap &map, const Torus &t, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal, const std::vector<unsigned char> *alsoBlocked)
 {
 	const int n = t.w * t.h;
@@ -182,7 +182,7 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 	}
 	return true;
 }
-int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoBlocked,
+int connectColonies(GenerationMap &map, int teams, const std::vector<unsigned char> *alsoBlocked,
 					std::string &detail)
 {
 	const Torus t(map);
@@ -209,7 +209,7 @@ int connectColonies(Map &map, int teams, const std::vector<unsigned char> *alsoB
 	}
 	return opened;
 }
-int clearRoute(Map &map, const Torus &t, const std::vector<int> &route, int radius,
+int clearRoute(GenerationMap &map, const Torus &t, const std::vector<int> &route, int radius,
 			   const std::vector<unsigned char> *keep)
 {
 	int cleared = 0;
@@ -233,7 +233,7 @@ int clearRoute(Map &map, const Torus &t, const std::vector<int> &route, int radi
 	return cleared;
 }
 
-bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t,
+bool openColonyRoutes(GenerationMap &map, const GenerationContext &context, const Torus &t,
 					  const StepCosts &costs, int radius, const std::vector<unsigned char> *keep)
 {
 	const int n = t.w * t.h, teams = context.request.nbTeams;
@@ -378,7 +378,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 	return changed;
 }
 
-bool openTrail(Map &map, const Torus &t, const std::vector<int> &sources,
+bool openTrail(GenerationMap &map, const Torus &t, const std::vector<int> &sources,
 			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
 			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend,
 			   int radius)

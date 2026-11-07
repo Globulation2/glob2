@@ -3,7 +3,7 @@
 #include "Drawing.h"
 #include "Farmland.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Homes.h"
@@ -366,7 +366,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "rice terraces layout";
 	const RiceTerracesOptions o(context.request);
@@ -378,7 +378,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	const Torus &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
@@ -531,13 +531,13 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
 	if (const std::string mismatch = designMismatch(L, game.map, "rice terraces"); !mismatch.empty())
 		return mismatch;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const auto open = walkableTiles(map);
 	const auto sand = pureTiles(L.terrain, t, SAND);

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationWork.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 
 namespace MapGeneration
 {
 // Future-connectivity checks may ignore removable obstructions, but must not
 // assume that every permanent barrier has the historical stone identity.
-inline bool permanentResourceBarrier(const Map& map, size_t index, bool forBuilding=false)
+inline bool permanentResourceBarrier(const GenerationMap &map, size_t index,
+									 bool forBuilding = false)
 {
     if (forBuilding ? !map.resourceBlocksBuilding(index) : !map.resourceBlocksGround(index)) return false;
     const auto id=static_cast<ResourceId>(map.getResource(index).type);

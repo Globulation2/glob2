@@ -3,13 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "Orbits.h"
-#include "Building.h"
-#include "BuildingType.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "HeightMap.h"
-#include "Map.h"
-#include "Unit.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -382,7 +378,7 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
 	return mask;
 }
 
-bool equaliseDeposits(Map &map, const Symmetry &s, std::string &detail)
+bool equaliseDeposits(GenerationMap &map, const Symmetry &s, std::string &detail)
 {
 	const int w = s.width, h = s.height;
 	for (int y = 0; y < h; ++y)
@@ -409,10 +405,10 @@ bool equaliseDeposits(Map &map, const Symmetry &s, std::string &detail)
 	return true;
 }
 
-std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
+std::string orbitMismatch(const GenerationWorld &game, const Symmetry &s, int teams,
 						  std::vector<std::vector<int>> *permutations)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	if (s.order() != teams)
 		return "No symmetry gives " + std::to_string(teams) + " colonies the same ground.";
@@ -456,20 +452,16 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 				const Uint16 ba = map.getBuilding(x, y), bb = map.getBuilding(qx, qy);
 				if ((ba == NOGBID) != (bb == NOGBID))
 					return "Building" + at(x, y) + under;
-				if (ba != NOGBID && (!relate(Building::GIDtoTeam(ba), Building::GIDtoTeam(bb)) ||
-									 game.teams[Building::GIDtoTeam(ba)]
-											 ->myBuildings[Building::GIDtoID(ba)]
-											 ->type != game.teams[Building::GIDtoTeam(bb)]
-														   ->myBuildings[Building::GIDtoID(bb)]
-														   ->type))
+				if (ba != NOGBID && (!relate(GenerationWorld::buildingTeamOf(ba),
+											 GenerationWorld::buildingTeamOf(bb)) ||
+									 game.buildingTypeNumAt(ba) != game.buildingTypeNumAt(bb)))
 					return "Building" + at(x, y) + under;
 				const Uint16 ua = map.getGroundUnit(x, y), ub = map.getGroundUnit(qx, qy);
 				if ((ua == NOGUID) != (ub == NOGUID))
 					return "Unit" + at(x, y) + under;
 				if (ua != NOGUID &&
-					(!relate(Unit::GIDtoTeam(ua), Unit::GIDtoTeam(ub)) ||
-					 game.teams[Unit::GIDtoTeam(ua)]->myUnits[Unit::GIDtoID(ua)]->typeNum !=
-						 game.teams[Unit::GIDtoTeam(ub)]->myUnits[Unit::GIDtoID(ub)]->typeNum))
+					(!relate(GenerationWorld::unitTeamOf(ua), GenerationWorld::unitTeamOf(ub)) ||
+					 game.unitTypeNumAt(ua) != game.unitTypeNumAt(ub)))
 					return "Unit" + at(x, y) + under;
 			}
 		}

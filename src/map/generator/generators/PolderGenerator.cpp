@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PolderGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Farmland.h"
 #include "Geometry.h"
@@ -287,7 +287,7 @@ void expandGround(TerrainSketch &terrain, const Layout &L)
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "polder layout";
 	const PolderOptions o(context.request);
@@ -298,7 +298,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -367,11 +367,11 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "polder"); !mismatch.empty())
 		return mismatch;
 	return walkFromFirstColony(map, context.request.nbTeams, "the polder", "along the dykes").error;

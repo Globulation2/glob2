@@ -2,7 +2,7 @@
 #include "PowerOfTwo.h"
 #include "MazeGenerator.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
 #include "Grid.h"
@@ -238,7 +238,8 @@ CellFrame frameFor(const Tessellation &g, int cell, int exitEdge)
 
 // Places the first `count` tiles of a region in the order `before` ranks them.
 template <typename Order>
-void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resourceType, Order before)
+void fillInOrder(GenerationMap &map, std::vector<CellTile> region, int count, int resourceType,
+				 Order before)
 {
 	std::stable_sort(region.begin(), region.end(), before);
 	for (int i = 0; i < count && i < int(region.size()); ++i)
@@ -248,8 +249,9 @@ void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resource
 // A cell's free resource habitat in row order, measured in its exit's frame.
 // Starter kits share one pool for wheat, wood and stone; treasures need only
 // their specific fruit. No deposit may already occupy a candidate.
-std::vector<CellTile> resourceTilesOfCell(const Map &map, const Torus &t, const MazeDesign &d,
-	int cell, const CellFrame &frame, int &back, int &side, int resourceType = -1)
+std::vector<CellTile> resourceTilesOfCell(const GenerationMap &map, const Torus &t,
+										  const MazeDesign &d, int cell, const CellFrame &frame,
+										  int &back, int &side, int resourceType = -1)
 {
 	std::vector<CellTile> tiles;
 	back = side = 0;
@@ -272,7 +274,7 @@ std::vector<CellTile> resourceTilesOfCell(const Map &map, const Torus &t, const 
 
 // Geometric depth from the wet channel or its shoreline, excluding the designed
 // road down the middle of a passage. Resource placement checks habitat separately.
-std::vector<int> shoreDepth(const Map &map, const std::vector<unsigned char> &onRoad)
+std::vector<int> shoreDepth(const GenerationMap &map, const std::vector<unsigned char> &onRoad)
 {
 	const Torus t(map);
 	std::vector<unsigned char> shore(size_t(t.size()), 0);
@@ -291,8 +293,8 @@ std::vector<int> shoreDepth(const Map &map, const std::vector<unsigned char> &on
 // passage stays clear whatever the cell's shape, and so does a square around the swarm, so workers
 // always walk straight out. The back wall is the shore behind the centre: its three rows of tiles,
 // less the side shores at their ends.
-void furnishHome(Map &map, const Torus &t, const MazeDesign &d, const std::vector<int> &depth,
-				 int cell)
+void furnishHome(GenerationMap &map, const Torus &t, const MazeDesign &d,
+				 const std::vector<int> &depth, int cell)
 {
 	const CellFrame frame = frameFor(d.layout.g, cell, d.exitEdge[cell]);
 	int back, side;
@@ -340,7 +342,8 @@ void furnishHome(Map &map, const Torus &t, const MazeDesign &d, const std::vecto
 // A treasure: a compact patch of one fruit at the far end of a dead end, so colonies have to
 // go and take it rather than passing it on the way somewhere else. It sits a few tiles back
 // from the end wall, so its front always faces the passage's clear lane.
-void placeTreasure(Map &map, const Torus &t, const MazeDesign &d, int cell, int size, int fruitType)
+void placeTreasure(GenerationMap &map, const Torus &t, const MazeDesign &d, int cell, int size,
+				   int fruitType)
 {
 	const CellFrame frame = frameFor(d.layout.g, cell, d.exitEdge[cell]);
 	int back, side;
@@ -363,7 +366,7 @@ void placeTreasure(Map &map, const Torus &t, const MazeDesign &d, int cell, int 
 // grown over free shore tiles. Only tiles within kShoreBand of a shore are eligible, which is
 // what keeps each passage's middle clear. Densities are per 256 shore tiles; fruitTiles of fruit,
 // when the dead ends hold no treasure, follow in small clumps of each kind in turn.
-void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &d,
+void scatterThroughMaze(GenerationMap &map, GenerationContext &context, const MazeDesign &d,
 						const std::vector<unsigned char> &onRoad, const MazeOptions &o,
 						int fruitTiles)
 {
@@ -446,7 +449,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 // Algae is seeded along the channels. They are only a tile or two wide, so any water tile can
 // seed a clump: channel water borders a passage's shore, where the algae stays harvestable, and
 // algae on water never blocks anyone on foot.
-void seedAlgae(Map &map, GenerationContext &context, int algae)
+void seedAlgae(GenerationMap &map, GenerationContext &context, int algae)
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<MapGeneratorPoint> water;
@@ -533,11 +536,11 @@ std::vector<unsigned char> layRoads(TerrainSketch &sketch, const Torus &t, const
 	return onRoad;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "maze layout";
 	const MazeOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
@@ -654,7 +657,7 @@ std::vector<unsigned char> joinedCells(const MazeDesign &d)
 // colony can walk to every other one, and the walls hold - no ground a colony can reach joins two
 // cells except through the passages the maze opened. Water, buildings and every resource
 // (including the wall spines) block the walk; units don't, since they move.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	const ColonyWalk walk =
 		walkFromFirstColony(game.map, context.request.nbTeams, "the maze", "through the maze");

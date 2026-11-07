@@ -6,8 +6,8 @@
 // as MapGeneratorPoint, and in-out vector arguments. New generators should design on the tile
 // masks and Torus of shared/Grid.h instead; nothing here composes with them without conversion.
 #include <vector>
-class Game;
-class Map;
+class GenerationWorld;
+class GenerationMap;
 class Building;
 struct BuildingType;
 struct GenerationContext;
@@ -32,28 +32,30 @@ class MapGeneratorPoint
 
 namespace MapGeneration
 {
-bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+bool divideUpArea(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<int> &weights, std::vector<int> &areaNumbers);
-void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int width, int height);
+void createOval(GenerationMap &map, std::vector<int> &grid, int areaN, int x, int y, int width,
+				int height);
 enum class PointSearch
 {
 	Local,
 	WholeRegion
 };
 // Weights travel with points. WholeRegion is bounded best-response, not an optimum guarantee.
-int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+int splitUpPoints(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				  PointSearch search = PointSearch::Local, int maxPasses = 200);
-void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+void splitUpArea(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				 std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				 std::vector<int> &areaNumbers, bool buildableOnly = false);
-void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
+void getAllPoints(GenerationMap &map, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points);
-void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
+void getAllOtherPoints(GenerationMap &map, std::vector<int> &grid, int areaN,
 					   std::vector<MapGeneratorPoint> &points);
-void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
+void getAllPointsLine(GenerationMap &map, int x1, int y1, int x2, int y2,
 					  std::vector<MapGeneratorPoint> &points);
-void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGeneratorPoint> &points);
-void chooseRandomPoints(Map &map, GenerationContext &context,
+void findBorderPoints(GenerationMap &map, std::vector<int> &grid,
+					  std::vector<MapGeneratorPoint> &points);
+void chooseRandomPoints(GenerationMap &map, GenerationContext &context,
 						std::vector<MapGeneratorPoint> &points, int n);
 } // namespace MapGeneration

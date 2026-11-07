@@ -476,7 +476,7 @@ e.overload(object,"cropSeedsIn",[&e](JSValueConst self,int n,JSValueConst*a){ret
   if(n<1 || n>1) throw TypeMismatch("Wrong argument count");
   if(!e.game || e.inspecting) throw TypeMismatch("World access unavailable in this callback");
   Argument<const std::vector<unsigned char> &> arg1(e,a[0]);
-  return e.write(MapGeneration::cropSeedsIn(e.game->map, arg1.get()));
+  return e.write(MapGeneration::cropSeedsIn(e.world->map, arg1.get()));
 })(e,self,n,a);});
 e.overload(object,"cropSpreadEnvelope",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<0 || n>1) throw TypeMismatch("Wrong argument count");
@@ -485,14 +485,14 @@ e.overload(object,"cropSpreadEnvelope",[&e](JSValueConst self,int n,JSValueConst
   Script::JSValueOwner fallback1(e.ctx, (n>0 && !JS_IsUndefined(a[0]))?JS_UNDEFINED:JS_NULL);
   Argument<const Fertility::Field *> arg1(e,(n>0 && !JS_IsUndefined(a[0]))?a[0]:fallback1.get());
   if(arg1.get()) prepareFertilityRead(*arg1.get());
-  return e.write(MapGeneration::cropSpreadEnvelope(e.game->map, arg1.get()));
+  return e.write(MapGeneration::cropSpreadEnvelope(e.world->map, arg1.get()));
 })(e,self,n,a);});
 e.overload(object,"fertileCropEnvelope",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<1 || n>1) throw TypeMismatch("Wrong argument count");
   if(!e.game || e.inspecting) throw TypeMismatch("World access unavailable in this callback");
   Argument<const Fertility::Field &> arg1(e,a[0]);
   prepareFertilityRead(arg1.get());
-  return e.write(MapGeneration::fertileCropEnvelope(e.game->map, arg1.get()));
+  return e.write(MapGeneration::fertileCropEnvelope(e.world->map, arg1.get()));
 })(e,self,n,a);});
 e.overload(object,"cropGrowthField",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
@@ -601,7 +601,7 @@ e.overload(object,"divideUpPlayerLands",[&e](JSValueConst self,int n,JSValueCons
   MapGeneration::PlayerLandResources default5 = { };
   Script::JSValueOwner fallback5(e.ctx, (n>3 && !JS_IsUndefined(a[3]))?JS_UNDEFINED:e.write(default5));
   Argument<const MapGeneration::PlayerLandResources &> arg5(e,(n>3 && !JS_IsUndefined(a[3]))?a[3]:fallback5.get());
-  auto nativeResult=MapGeneration::divideUpPlayerLands((*e.game), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get());
+  auto nativeResult=MapGeneration::divideUpPlayerLands((*e.world), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get());
   Script::JSValueOwner result(e.ctx,JS_NewObject(e.ctx));e.check(result.get());
   if(JS_SetPropertyStr(e.ctx,result.get(),"result",e.write(nativeResult))<0)e.fail();
   if(JS_SetPropertyStr(e.ctx,result.get(),"areaNumber",e.write(arg4.get()))<0)e.fail();
@@ -614,7 +614,7 @@ e.overload(object,"chooseFreeForBuildingSquares",[&e](JSValueConst self,int n,JS
   Argument<BuildingType *> arg2(e,a[1]);
   Argument<int> arg3(e,a[2]);
   e.preflight("team",arg3.get());
-  MapGeneration::chooseFreeForBuildingSquares((*e.game), arg1.get(), arg2.get(), arg3.get()); return JS_UNDEFINED;
+  MapGeneration::chooseFreeForBuildingSquares((*e.world), arg1.get(), arg2.get(), arg3.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"chooseFreeForGroundUnits",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
@@ -622,14 +622,14 @@ e.overload(object,"chooseFreeForGroundUnits",[&e](JSValueConst self,int n,JSValu
   Argument<std::vector<MapGeneratorPoint> &> arg1(e,a[0]);
   Argument<int> arg2(e,a[1]);
   e.preflight("team",arg2.get());
-  MapGeneration::chooseFreeForGroundUnits(e.game->map, arg1.get(), arg2.get()); return JS_UNDEFINED;
+  MapGeneration::chooseFreeForGroundUnits(e.world->map, arg1.get(), arg2.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"chooseTouchingBuilding",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
   if(!e.game || e.inspecting || e.readonly) throw TypeMismatch("World access unavailable in this callback");
   Argument<std::vector<MapGeneratorPoint> &> arg1(e,a[0]);
   Argument<Building *> arg2(e,a[1]);
-  MapGeneration::chooseTouchingBuilding(e.game->map, arg1.get(), arg2.get()); return JS_UNDEFINED;
+  MapGeneration::chooseTouchingBuilding(e.world->map, arg1.get(), arg2.get()); return JS_UNDEFINED;
 })(e,self,n,a);});
 e.overload(object,"addBuilding",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<6 || n>6) throw TypeMismatch("Wrong argument count");
@@ -645,13 +645,13 @@ e.overload(object,"addBuilding",[&e](JSValueConst self,int n,JSValueConst*a){ret
   Argument<int> arg5(e,a[4]);
   e.preflight("level",arg5.get());
   Argument<bool> arg6(e,a[5]);
-  return e.write(MapGeneration::addBuilding((*e.game), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()));
+  return e.write(MapGeneration::addBuilding((*e.world), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get()));
 })(e,self,n,a);});
 e.overload(object,"placeStarts",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<0 || n>0) throw TypeMismatch("Wrong argument count");
   if(!e.game || e.inspecting || e.readonly) throw TypeMismatch("World access unavailable in this callback");
   if(!e.generation || e.inspecting) throw TypeMismatch("Generation context unavailable");
-  return e.write(MapGeneration::placeStarts((*e.game), (*e.generation)));
+  return e.write(MapGeneration::placeStarts((*e.world), (*e.generation)));
 })(e,self,n,a);});
 e.overload(object,"placeArchipelagoStarts",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<1 || n>1) throw TypeMismatch("Wrong argument count");
@@ -659,7 +659,7 @@ e.overload(object,"placeArchipelagoStarts",[&e](JSValueConst self,int n,JSValueC
   if(!e.generation || e.inspecting) throw TypeMismatch("Generation context unavailable");
   Argument<int> arg2(e,a[0]);
   e.preflight("islandSize",arg2.get());
-  return e.write(MapGeneration::placeArchipelagoStarts((*e.game), (*e.generation), arg2.get()));
+  return e.write(MapGeneration::placeArchipelagoStarts((*e.world), (*e.generation), arg2.get()));
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,root,"LegacyStartingPositions",objectOwner.release())<0)e.fail(); }
  { Script::JSValueOwner objectOwner(e.ctx,JS_NewObject(e.ctx));auto object=objectOwner.get();e.check(object);
@@ -713,7 +713,7 @@ e.overload(object,"chooseScoredSettlements",[&e](JSValueConst self,int n,JSValue
   if(n<3 || n>3) throw TypeMismatch("Wrong argument count");
   if(!e.generation || e.inspecting) throw TypeMismatch("Generation context unavailable");
   Argument<const std::vector<std::vector<int>> &> arg1(e,a[0]);
-  Argument<const std::function<bool (Game &, GenerationContext &, const std::vector<int> &)> &> arg2(e,a[1]);
+  Argument<const std::function<bool (GenerationWorld &, GenerationContext &, const std::vector<int> &)> &> arg2(e,a[1]);
   Argument<const std::function<std::string (const MapGeneration::StartQualityReport &)> &> arg3(e,a[2]);
   return e.write(MapGeneration::chooseScoredSettlements((*e.generation), arg1.get(), arg2.get(), arg3.get()));
 })(e,self,n,a);});

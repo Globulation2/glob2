@@ -12,6 +12,7 @@
 #include "Drawing.h"
 #include "Farmland.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
 #include "Grid.h"
@@ -122,9 +123,9 @@ inline void orbitChecks()
 		game.map.setResourceByIndex(i % 64, i / 64, WOOD, 1);
 	}
 	std::string detail;
-	assert(equaliseDeposits(game.map, lattice, detail) && detail.empty());
+	assert(equaliseDeposits(GenerationMap(game.map).ref(), lattice, detail) && detail.empty());
 	game.map.setResourceByIndex(40, 40, WHEAT, 1);
-	assert(!equaliseDeposits(game.map, lattice, detail) && !detail.empty());
+	assert(!equaliseDeposits(GenerationMap(game.map).ref(), lattice, detail) && !detail.empty());
 	game.map.setNoResource(40, 40, 1);
 	game.map.setResourceByIndex(40, 40, STONE, 1);
 	assert(orbitMismatch(game, lattice, 4).find("Deposit") == 0);
@@ -191,9 +192,11 @@ inline void patchBudgetChecks()
 	for (int x : {4, 5, 8, 9, 10})
 		allowed[t.at(x, 4)] = 1;
 	const auto eligible = [&](int i) { return allowed[i]; };
-	const auto planted = growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible);
+	const auto planted =
+		growPatchesNear(GenerationMap(game.map).ref(), t, 4, 4, 8, WHEAT, 5, eligible);
 	assert(planted.tiles == 5 && planted.patches == 2);
-	assert(growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible).tiles == 0);
+	assert(growPatchesNear(GenerationMap(game.map).ref(), t, 4, 4, 8, WHEAT, 5, eligible).tiles ==
+		   0);
 }
 
 inline void growthChecks()
@@ -207,7 +210,7 @@ inline void growthChecks()
 	// The finished-map overload must agree with sketch corner arithmetic, including beaches.
 	Game written(nullptr);
 	landscapeGrass(written, 6, 6);
-	writeVertices(written.map, sketch);
+	writeVertices(GenerationMap(written.map).ref(), sketch);
 	for (const auto type : {GRASS, SAND, WATER})
 		assert(pureTiles(written.map, type) == pureTiles(sketch, t, type));
 	Fertility::Field field = cropGrowthField(sketch, t);
@@ -236,7 +239,7 @@ inline void growthChecks()
 		for (int x = 20; x <= 40; ++x)
 			if (x <= 22 || x >= 38 || y <= 22 || y >= 38)
 				enclosed[t.at(x, y)] = SAND;
-	writeVertices(game.map, enclosed);
+	writeVertices(GenerationMap(game.map).ref(), enclosed);
 	game.map.setResourceByIndex(5, 5, STONE, 1);
 	assert(cropSpreadEnvelope(game.map).visited.empty());
 	game.map.setResourceByIndex(0, 0, WHEAT, 1);
@@ -287,7 +290,7 @@ inline void contactChecks()
 			if ((x >= 20 && x < 26) || (x >= 52 && x < 58))
 				sketch[s.at(x, y)] = WATER;
 	layBeaches(sketch, s);
-	writeVertices(strait.map, sketch);
+	writeVertices(GenerationMap(strait.map).ref(), sketch);
 	GenerationRequest request;
 	request.nbTeams = 2;
 	GenerationContext context(request);
@@ -295,11 +298,13 @@ inline void contactChecks()
 	context.bootY[0] = 12;
 	context.bootX[1] = 38;
 	context.bootY[1] = 12;
-	assert(openColonyRoutes(strait.map, context, s, StepCosts{1, 3, 8, 25, -1}));
+	assert(
+		openColonyRoutes(GenerationMap(strait.map).ref(), context, s, StepCosts{1, 3, 8, 25, -1}));
 	const std::vector<int> after =
 		stepsFrom(s, tileMask(s, {s.at(7, 11)}), walkableTiles(strait.map));
 	assert(after[s.at(42, 12)] >= 0);
-	assert(!openColonyRoutes(strait.map, context, s, StepCosts{1, 3, 8, 25, -1}));
+	assert(
+		!openColonyRoutes(GenerationMap(strait.map).ref(), context, s, StepCosts{1, 3, 8, 25, -1}));
 }
 
 // Points: darts keep their spacing; unwarped labels are the brute-force nearest site; relaxation keeps
@@ -570,8 +575,9 @@ inline void biomeChecks()
 		for (int i = 0; i < t.size(); ++i)
 			assert(!terrain.wall[i] || !doors[i]);
 		layBeaches(sketch, t);
-		writeVertices(game.map, sketch);
-		furnishBiome(game.map, t, context, region, terrain, kit, keep, "biome");
+		writeVertices(GenerationMap(game.map).ref(), sketch);
+		furnishBiome(GenerationMap(game.map).ref(), t, context, region, terrain, kit, keep,
+					 "biome");
 		int stone = 0, wood = 0, fruit = 0, outside = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{
@@ -856,11 +862,11 @@ inline void lavaPrimitiveChecks()
 	int attempts = 0;
 	const auto rejected = chooseScoredSettlements(
 		context, {{}, {1}, {2}},
-		[&](Game &world, GenerationContext &probe, const std::vector<int> &)
+		[&](GenerationWorld &world, GenerationContext &probe, const std::vector<int> &)
 		{
 			assert(probe.bounded("builder", 10000) == expectedDraw);
 			assert(syncRandEngine() == engine);
-			world.privateRandom(RandomDomain::ResourcePlacement).nextU32();
+			world.target().map.privateRandom(RandomDomain::ResourcePlacement).nextU32();
 			++attempts;
 			probe.detail = "retained rejection";
 			return false;
@@ -872,9 +878,9 @@ inline void lavaPrimitiveChecks()
 	{
 		chooseScoredSettlements(
 			context, {{1}},
-			[](Game &world, GenerationContext &, const std::vector<int> &) -> bool
+			[](GenerationWorld &world, GenerationContext &, const std::vector<int> &) -> bool
 			{
-				world.privateRandom(RandomDomain::ResourcePlacement).nextU32();
+				world.target().map.privateRandom(RandomDomain::ResourcePlacement).nextU32();
 				throw std::runtime_error("builder failed");
 			},
 			[](const StartQualityReport &) { return std::string{}; });
@@ -884,7 +890,8 @@ inline void lavaPrimitiveChecks()
 	{
 	}
 	assert(syncRandEngine() == engine);
-	const auto build = [](Game &world, GenerationContext &c, const std::vector<int> &proposal)
+	const auto build =
+		[](GenerationWorld &world, GenerationContext &c, const std::vector<int> &proposal)
 	{
 		world.map.fillTerrain(GRASS);
 		world.addTeam();
@@ -902,8 +909,8 @@ inline void lavaPrimitiveChecks()
 	Game finalWorld(nullptr);
 	finalWorld.map.setSize(request.wDec, request.hDec);
 	finalWorld.map.setGame(&finalWorld);
-	assert(build(finalWorld, context, selected.sites));
-	const auto finalQuality = scoreStarts(finalWorld, 1);
+	assert(build(GenerationWorld(finalWorld).ref(), context, selected.sites));
+	const auto finalQuality = scoreStarts(GenerationWorld(finalWorld).ref(), 1);
 	assert(finalQuality.score == selected.quality.score);
 }
 
@@ -932,7 +939,7 @@ inline void sketchMovementChecks()
 	{
 		for (auto &corner : terrain)
 			corner = types[random() % std::size(types)];
-		writeVertices(game.map, terrain);
+		writeVertices(GenerationMap(game.map).ref(), terrain);
 		assert(walkableTiles(terrain, t) == walkableTiles(game.map));
 	}
 }

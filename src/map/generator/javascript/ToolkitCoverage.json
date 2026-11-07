@@ -268,7 +268,7 @@
   {
     "header": "Grid",
     "symbol": "MapGeneration::Torus::Torus",
-    "signature": "void (const Map &)",
+    "signature": "void (const GenerationMap &)",
     "kind": "constructor",
     "binding": "Torus"
   },
@@ -2060,25 +2060,25 @@
   {
     "header": "Grid",
     "symbol": "MapGeneration::unitTilesByTeam",
-    "signature": "std::vector<std::vector<int>> (const Map &, int)",
+    "signature": "std::vector<std::vector<int>> (const GenerationMap &, int)",
     "binding": "unitTilesByTeam"
   },
   {
     "header": "Grid",
     "symbol": "MapGeneration::walkableTiles",
-    "signature": "std::vector<unsigned char> (const Map &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &)",
     "binding": "walkableTiles"
   },
   {
     "header": "Grid",
     "symbol": "MapGeneration::groundUnitTiles",
-    "signature": "std::vector<unsigned char> (const Map &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &)",
     "binding": "groundUnitTiles"
   },
   {
     "header": "Grid",
     "symbol": "MapGeneration::groundUnitTiles",
-    "signature": "std::vector<unsigned char> (const Map &, bool)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, bool)",
     "binding": "groundUnitTiles"
   },
   {
@@ -2096,7 +2096,7 @@
   {
     "header": "BalancedStarts",
     "symbol": "MapGeneration::chooseBalancedStarts",
-    "signature": "bool (Game &, GenerationContext &, int)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, int)",
     "binding": "chooseBalancedStarts"
   },
   {
@@ -2108,13 +2108,13 @@
   {
     "header": "Sketch",
     "symbol": "MapGeneration::writeVertices",
-    "signature": "void (Map &, const TerrainSketch &)",
+    "signature": "void (GenerationMap &, const TerrainSketch &)",
     "binding": "writeVertices"
   },
   {
     "header": "Sketch",
     "symbol": "MapGeneration::paintTile",
-    "signature": "void (Map &, int, int, TerrainType)",
+    "signature": "void (GenerationMap &, int, int, TerrainType)",
     "binding": "paintTile"
   },
   {
@@ -2138,7 +2138,7 @@
   {
     "header": "Sketch",
     "symbol": "MapGeneration::pureTiles",
-    "signature": "std::vector<unsigned char> (const Map &, TerrainType)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, TerrainType)",
     "binding": "pureTiles"
   },
   {
@@ -2246,7 +2246,7 @@
   {
     "header": "Biomes",
     "symbol": "MapGeneration::furnishBiome",
-    "signature": "void (Map &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, const BiomeTerrain &, const BiomeKit &, const std::vector<unsigned char> &, const std::string &, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, const BiomeTerrain &, const BiomeKit &, const std::vector<unsigned char> &, const std::string &, const std::vector<unsigned char> *)",
     "binding": "furnishBiome"
   },
   {
@@ -2486,7 +2486,7 @@
   {
     "header": "Channels",
     "symbol": "MapGeneration::beachTiles",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &)",
     "binding": "beachTiles"
   },
   {
@@ -2528,13 +2528,13 @@
   {
     "header": "Channels",
     "symbol": "MapGeneration::fordWalkabilityFault",
-    "signature": "std::string (const Map &, const Torus &, const SandFord &)",
+    "signature": "std::string (const GenerationMap &, const Torus &, const SandFord &)",
     "binding": "fordWalkabilityFault"
   },
   {
     "header": "Channels",
     "symbol": "MapGeneration::fordLandingWalkable",
-    "signature": "bool (const Map &, const Torus &, const SandFord &, int)",
+    "signature": "bool (const GenerationMap &, const Torus &, const SandFord &, int)",
     "binding": "fordLandingWalkable"
   },
   {
@@ -2612,25 +2612,25 @@
   {
     "header": "Contact",
     "symbol": "MapGeneration::stepCost",
-    "signature": "int (const Map &, int, int, const StepCosts &)",
+    "signature": "int (const GenerationMap &, int, int, const StepCosts &)",
     "binding": "stepCost"
   },
   {
     "header": "Contact",
     "symbol": "MapGeneration::costsFrom",
-    "signature": "std::vector<int> (const Map &, const Torus &, const std::vector<int> &, const StepCosts &, GridNeighbors)",
+    "signature": "std::vector<int> (const GenerationMap &, const Torus &, const std::vector<int> &, const StepCosts &, GridNeighbors)",
     "binding": "costsFrom"
   },
   {
     "header": "Contact",
     "symbol": "MapGeneration::contactMatrix",
-    "signature": "ContactReport (const Map &, int, const StepCosts &)",
+    "signature": "ContactReport (const GenerationMap &, int, const StepCosts &)",
     "binding": "contactMatrix"
   },
   {
     "header": "Contact",
     "symbol": "MapGeneration::costsToTarget",
-    "signature": "std::vector<int> (const Map &, int, const std::vector<unsigned char> &, const StepCosts &)",
+    "signature": "std::vector<int> (const GenerationMap &, int, const std::vector<unsigned char> &, const StepCosts &)",
     "binding": "costsToTarget"
   },
   {
@@ -2672,7 +2672,7 @@
   {
     "header": "StartQuality",
     "symbol": "MapGeneration::scoreStarts",
-    "signature": "StartQualityReport (Game &, int, const StartQualityScale &)",
+    "signature": "StartQualityReport (GenerationWorld &, int, const StartQualityScale &)",
     "binding": "scoreStarts"
   },
   {
@@ -2708,7 +2708,7 @@
   {
     "header": "Farmland",
     "symbol": "MapGeneration::plantShoreFields",
-    "signature": "int (Map &, const Torus &, const std::vector<ShoreField> &, const Fertility::Field &, int)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<ShoreField> &, const Fertility::Field &, int)",
     "binding": "plantShoreFields"
   },
   {
@@ -2720,13 +2720,13 @@
   {
     "header": "Farmland",
     "symbol": "MapGeneration::plantContainedPlot",
-    "signature": "int (Map &, const Torus &, const std::vector<int> &, const Fertility::Field &, int, int, bool)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<int> &, const Fertility::Field &, int, int, bool)",
     "binding": "plantContainedPlot"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::containedPlotsMismatch",
-    "signature": "std::string (const Map &, const Torus &, const std::vector<int> &, const Fertility::Field *, const std::vector<unsigned char> *)",
+    "signature": "std::string (const GenerationMap &, const Torus &, const std::vector<int> &, const Fertility::Field *, const std::vector<unsigned char> *)",
     "binding": "containedPlotsMismatch"
   },
   {
@@ -2786,19 +2786,19 @@
   {
     "header": "Farmland",
     "symbol": "MapGeneration::farmReachable",
-    "signature": "double (const Map &, const Torus &, const Farm &, const std::vector<int> &)",
+    "signature": "double (const GenerationMap &, const Torus &, const Farm &, const std::vector<int> &)",
     "binding": "farmReachable"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::clearFarmPlots",
-    "signature": "void (Map &, const Torus &, const std::vector<Farm> &)",
+    "signature": "void (GenerationMap &, const Torus &, const std::vector<Farm> &)",
     "binding": "clearFarmPlots"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::plantFarm",
-    "signature": "int (Map &, const Torus &, const Farm &, int, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, const Farm &, int, int, Eligible)",
     "binding": "plantFarm"
   },
   {
@@ -2810,79 +2810,79 @@
   {
     "header": "Farmland",
     "symbol": "MapGeneration::plantSealedGarden",
-    "signature": "std::pair<int, int> (Map &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, int, int, const std::string &, const std::string &)",
+    "signature": "std::pair<int, int> (GenerationMap &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, int, int, const std::string &, const std::string &)",
     "binding": "plantSealedGarden"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::trimFieldsBeyondWater",
-    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, const Fertility::Field &, int, int, const std::vector<int> &)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<unsigned char> &, const Fertility::Field &, int, int, const std::vector<int> &)",
     "binding": "trimFieldsBeyondWater"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::frayFieldEdges",
-    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, int, const std::vector<int> &)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<unsigned char> &, int, const std::vector<int> &)",
     "binding": "frayFieldEdges"
   },
   {
     "header": "Farmland",
     "symbol": "MapGeneration::removeCropSlivers",
-    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<unsigned char> &)",
     "binding": "removeCropSlivers"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::divideUpArea",
-    "signature": "bool (Map &, GenerationContext &, std::vector<int> &, int, std::vector<int> &, std::vector<int> &)",
+    "signature": "bool (GenerationMap &, GenerationContext &, std::vector<int> &, int, std::vector<int> &, std::vector<int> &)",
     "binding": "divideUpArea"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::createOval",
-    "signature": "void (Map &, std::vector<int> &, int, int, int, int, int)",
+    "signature": "void (GenerationMap &, std::vector<int> &, int, int, int, int, int)",
     "binding": "createOval"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::splitUpPoints",
-    "signature": "int (Map &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, PointSearch, int)",
+    "signature": "int (GenerationMap &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, PointSearch, int)",
     "binding": "splitUpPoints"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::splitUpArea",
-    "signature": "void (Map &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, std::vector<int> &, bool)",
+    "signature": "void (GenerationMap &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, std::vector<int> &, bool)",
     "binding": "splitUpArea"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::getAllPoints",
-    "signature": "void (Map &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
+    "signature": "void (GenerationMap &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
     "binding": "getAllPoints"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::getAllOtherPoints",
-    "signature": "void (Map &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
+    "signature": "void (GenerationMap &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
     "binding": "getAllOtherPoints"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::getAllPointsLine",
-    "signature": "void (Map &, int, int, int, int, std::vector<MapGeneratorPoint> &)",
+    "signature": "void (GenerationMap &, int, int, int, int, std::vector<MapGeneratorPoint> &)",
     "binding": "getAllPointsLine"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::findBorderPoints",
-    "signature": "void (Map &, std::vector<int> &, std::vector<MapGeneratorPoint> &)",
+    "signature": "void (GenerationMap &, std::vector<int> &, std::vector<MapGeneratorPoint> &)",
     "binding": "findBorderPoints"
   },
   {
     "header": "LegacyRegions",
     "symbol": "MapGeneration::chooseRandomPoints",
-    "signature": "void (Map &, GenerationContext &, std::vector<MapGeneratorPoint> &, int)",
+    "signature": "void (GenerationMap &, GenerationContext &, std::vector<MapGeneratorPoint> &, int)",
     "binding": "chooseRandomPoints"
   },
   {
@@ -2906,55 +2906,55 @@
   {
     "header": "Resources",
     "symbol": "MapGeneration::fillInResource",
-    "signature": "void (Map &, GenerationContext &, std::vector<MapGeneratorPoint> &, int, int)",
+    "signature": "void (GenerationMap &, GenerationContext &, std::vector<MapGeneratorPoint> &, int, int)",
     "binding": "fillInResource"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::placeResourceClump",
-    "signature": "int (Map &, GenerationContext &, MapGeneratorPoint, int, int, const std::vector<unsigned char> *)",
+    "signature": "int (GenerationMap &, GenerationContext &, MapGeneratorPoint, int, int, const std::vector<unsigned char> *)",
     "binding": "placeResourceClump"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::placeResourceClumpInArea",
-    "signature": "int (Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &, int, int, const std::vector<unsigned char> *)",
+    "signature": "int (GenerationMap &, GenerationContext &, const std::vector<MapGeneratorPoint> &, int, int, const std::vector<unsigned char> *)",
     "binding": "placeResourceClumpInArea"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::setScaledResource",
-    "signature": "void (Map &, int, int, int, int, int)",
+    "signature": "void (GenerationMap &, int, int, int, int, int)",
     "binding": "setScaledResource"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::scatterResources",
-    "signature": "void (Game &, GenerationContext &, const ResourceDensities &)",
+    "signature": "void (GenerationWorld &, GenerationContext &, const ResourceDensities &)",
     "binding": "scatterResources"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::guaranteeStartingResources",
-    "signature": "void (Game &, GenerationContext &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationWorld &, GenerationContext &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
     "binding": "guaranteeStartingResources"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::openCrampedStarts",
-    "signature": "void (Game &, GenerationContext &, int, int, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationWorld &, GenerationContext &, int, int, const std::vector<unsigned char> *)",
     "binding": "openCrampedStarts"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::resourceFrontages",
-    "signature": "std::map<int, ResourceFrontage> (const Map &, const Flood &, int, const Fertility::Field *)",
+    "signature": "std::map<int, ResourceFrontage> (const GenerationMap &, const Flood &, int, const Fertility::Field *)",
     "binding": "resourceFrontages"
   },
   {
     "header": "Resources",
     "symbol": "MapGeneration::materialFrontages",
-    "signature": "std::map<MaterialId, ResourceFrontage> (const Map &, const Flood &, int, bool)",
+    "signature": "std::map<MaterialId, ResourceFrontage> (const GenerationMap &, const Flood &, int, bool)",
     "binding": "materialFrontages"
   },
   {
@@ -3260,19 +3260,19 @@
   {
     "header": "Growth",
     "symbol": "MapGeneration::cropSeedsIn",
-    "signature": "int (const Map &, const std::vector<unsigned char> &)",
+    "signature": "int (const GenerationMap &, const std::vector<unsigned char> &)",
     "binding": "cropSeedsIn"
   },
   {
     "header": "Growth",
     "symbol": "MapGeneration::cropSpreadEnvelope",
-    "signature": "Flood (const Map &, const Fertility::Field *)",
+    "signature": "Flood (const GenerationMap &, const Fertility::Field *)",
     "binding": "cropSpreadEnvelope"
   },
   {
     "header": "Growth",
     "symbol": "MapGeneration::fertileCropEnvelope",
-    "signature": "std::vector<unsigned char> (const Map &, const Fertility::Field &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Fertility::Field &)",
     "binding": "fertileCropEnvelope"
   },
   {
@@ -3392,25 +3392,25 @@
   {
     "header": "Planting",
     "symbol": "MapGeneration::clearGround",
-    "signature": "bool (const Map &, int, int)",
+    "signature": "bool (const GenerationMap &, int, int)",
     "binding": "clearGround"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::capResourceStock",
-    "signature": "ResourceStock (Map &, int, int)",
+    "signature": "ResourceStock (GenerationMap &, int, int)",
     "binding": "capResourceStock"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantFieldInteriors",
-    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, int)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<int> &, int, int)",
     "binding": "plantFieldInteriors"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::growPatch",
-    "signature": "int (Map &, const Torus &, int, int, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, int, int, int, Eligible)",
     "binding": "growPatch"
   },
   {
@@ -3422,7 +3422,7 @@
   {
     "header": "Planting",
     "symbol": "MapGeneration::growPatchesNear",
-    "signature": "PatchBudgetResult (Map &, const Torus &, int, int, int, int, int, Eligible)",
+    "signature": "PatchBudgetResult (GenerationMap &, const Torus &, int, int, int, int, int, Eligible)",
     "binding": "growPatchesNear"
   },
   {
@@ -3434,49 +3434,49 @@
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantPatchNear",
-    "signature": "int (Map &, const Torus &, const KitSeed &, int, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, const KitSeed &, int, int, Eligible)",
     "binding": "plantPatchNear"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantKit",
-    "signature": "void (Map &, const Torus &, GenerationContext &, const Kit &, Eligible)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, const Kit &, Eligible)",
     "binding": "plantKit"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantSplitKit",
-    "signature": "void (Map &, const Torus &, GenerationContext &, const Kit &, CropsEligible, StoneEligible)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, const Kit &, CropsEligible, StoneEligible)",
     "binding": "plantSplitKit"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantFields",
-    "signature": "void (Map &, const Torus &, std::vector<int>, int, int, SplitKey)",
+    "signature": "void (GenerationMap &, const Torus &, std::vector<int>, int, int, SplitKey)",
     "binding": "plantFields"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantCover",
-    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<unsigned char> &, int, Eligible)",
     "binding": "plantCover"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantCoverShare",
-    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, int, LevelAt)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<int> &, int, int, LevelAt)",
     "binding": "plantCoverShare"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantRound",
-    "signature": "int (Map &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, int, int, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, int, int, int, Eligible)",
     "binding": "plantRound"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::plantOrchard",
-    "signature": "int (Map &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, double, int, int, Eligible)",
+    "signature": "int (GenerationMap &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, double, int, int, Eligible)",
     "binding": "plantOrchard"
   },
   {
@@ -3494,37 +3494,37 @@
   {
     "header": "Planting",
     "symbol": "MapGeneration::clearAroundSwarms",
-    "signature": "void (Map &, const GenerationContext &, const Torus &, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationMap &, const GenerationContext &, const Torus &, const std::vector<unsigned char> *)",
     "binding": "clearAroundSwarms"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::clearDeposits",
-    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
     "binding": "clearDeposits"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::algaeGrowthChance",
-    "signature": "std::vector<double> (const Map &, const Torus &)",
+    "signature": "std::vector<double> (const GenerationMap &, const Torus &)",
     "binding": "algaeGrowthChance"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::seedAlgae",
-    "signature": "void (Map &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const WedgeFrame *)",
+    "signature": "void (GenerationMap &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const WedgeFrame *)",
     "binding": "seedAlgae"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::seedAlgae",
-    "signature": "void (Map &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const std::vector<int> &, int)",
+    "signature": "void (GenerationMap &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const std::vector<int> &, int)",
     "binding": "seedAlgae"
   },
   {
     "header": "Planting",
     "symbol": "MapGeneration::stockIslands",
-    "signature": "void (Map &, GenerationContext &, const std::vector<Island> &, const char *)",
+    "signature": "void (GenerationMap &, GenerationContext &, const std::vector<Island> &, const char *)",
     "binding": "stockIslands"
   },
   {
@@ -3704,7 +3704,7 @@
   {
     "header": "Homes",
     "symbol": "MapGeneration::plantHomeKit",
-    "signature": "void (Map &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, Eligible)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, Eligible)",
     "binding": "plantHomeKit"
   },
   {
@@ -3716,7 +3716,7 @@
   {
     "header": "Homes",
     "symbol": "MapGeneration::plantOpenHomeKit",
-    "signature": "void (Map &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, int, Eligible)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, int, Eligible)",
     "binding": "plantOpenHomeKit"
   },
   {
@@ -3746,13 +3746,13 @@
   {
     "header": "Homes",
     "symbol": "MapGeneration::furnishGround",
-    "signature": "void (Map &, const Torus &, GenerationContext &, const Fertility::Field &, Eligible, PatchAt, SplitAt, AmountsFor, const char *, const char *, ClumpsAllowed)",
+    "signature": "void (GenerationMap &, const Torus &, GenerationContext &, const Fertility::Field &, Eligible, PatchAt, SplitAt, AmountsFor, const char *, const char *, ClumpsAllowed)",
     "binding": "furnishGround"
   },
   {
     "header": "Homes",
     "symbol": "MapGeneration::topUpWheatNearby",
-    "signature": "WheatTopUp (Map &, const Torus &, int, int, int, const std::vector<unsigned char> &, Room)",
+    "signature": "WheatTopUp (GenerationMap &, const Torus &, int, int, int, const std::vector<unsigned char> &, Room)",
     "binding": "topUpWheatNearby"
   },
   {
@@ -3836,13 +3836,13 @@
   {
     "header": "Orbits",
     "symbol": "MapGeneration::equaliseDeposits",
-    "signature": "bool (Map &, const Symmetry &, std::string &)",
+    "signature": "bool (GenerationMap &, const Symmetry &, std::string &)",
     "binding": "equaliseDeposits"
   },
   {
     "header": "Orbits",
     "symbol": "MapGeneration::orbitMismatch",
-    "signature": "std::string (const Game &, const Symmetry &, int, std::vector<std::vector<int>> *)",
+    "signature": "std::string (const GenerationWorld &, const Symmetry &, int, std::vector<std::vector<int>> *)",
     "binding": "orbitMismatch"
   },
   {
@@ -3932,31 +3932,31 @@
   {
     "header": "Settlements",
     "symbol": "MapGeneration::placeSettlement",
-    "signature": "bool (Game &, GenerationContext &, int, const std::vector<unsigned char> &, MapGeneratorPoint, const std::string &)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, int, const std::vector<unsigned char> &, MapGeneratorPoint, const std::string &)",
     "binding": "placeSettlement"
   },
   {
     "header": "Settlements",
     "symbol": "MapGeneration::placeBuilding",
-    "signature": "int (Game &, int, const char *, int, double, double, int, const std::vector<unsigned char> &)",
+    "signature": "int (GenerationWorld &, int, const char *, int, double, double, int, const std::vector<unsigned char> &)",
     "binding": "placeBuilding"
   },
   {
     "header": "Settlements",
     "symbol": "MapGeneration::countBuildings",
-    "signature": "int (const Game &, int, const char *)",
+    "signature": "int (const GenerationWorld &, int, const char *)",
     "binding": "countBuildings"
   },
   {
     "header": "Settlements",
     "symbol": "MapGeneration::placeTower",
-    "signature": "int (Game &, int, int, double, double, int, const std::vector<unsigned char> &, bool, const std::vector<MapGeneratorPoint> &, bool)",
+    "signature": "int (GenerationWorld &, int, int, double, double, int, const std::vector<unsigned char> &, bool, const std::vector<MapGeneratorPoint> &, bool)",
     "binding": "placeTower"
   },
   {
     "header": "Settlements",
     "symbol": "MapGeneration::placeStartingBuilding",
-    "signature": "int (Game &, int, const char *, int, double, double, int, const std::vector<unsigned char> &, const std::vector<int> &)",
+    "signature": "int (GenerationWorld &, int, const char *, int, double, double, int, const std::vector<unsigned char> &, const std::vector<int> &)",
     "binding": "placeStartingBuilding"
   },
   {
@@ -3986,79 +3986,79 @@
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::homeGrassMask",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<int> &, int)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<int> &, int)",
     "binding": "homeGrassMask"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::homePondMissing",
-    "signature": "std::string (const Map &, const Torus &, const std::vector<ShapePoint> &, int, const char *, const char *)",
+    "signature": "std::string (const GenerationMap &, const Torus &, const std::vector<ShapePoint> &, int, const char *, const char *)",
     "binding": "homePondMissing"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::settleColonies",
-    "signature": "bool (Game &, GenerationContext &, const char *, HomeMask, Anchor)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, const char *, HomeMask, Anchor)",
     "binding": "settleColonies"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::secureStartingCrops",
-    "signature": "void (Game &, GenerationContext &, const Torus &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationWorld &, GenerationContext &, const Torus &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
     "binding": "secureStartingCrops"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::openStartsBuriedByResources",
-    "signature": "void (Game &, GenerationContext &, int, int, int, const std::vector<unsigned char> *)",
+    "signature": "void (GenerationWorld &, GenerationContext &, int, int, int, const std::vector<unsigned char> *)",
     "binding": "openStartsBuriedByResources"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::reopenCrampedStarts",
-    "signature": "bool (Game &, GenerationContext &, const ResourceAmounts &, int, int, int, const std::vector<unsigned char> *)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, const ResourceAmounts &, int, int, int, const std::vector<unsigned char> *)",
     "binding": "reopenCrampedStarts"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::settleRoundColonies",
-    "signature": "bool (Game &, GenerationContext &, const char *, const std::vector<int> &, const std::vector<ShapePoint> &, double)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, const char *, const std::vector<int> &, const std::vector<ShapePoint> &, double)",
     "binding": "settleRoundColonies"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::designMismatch",
-    "signature": "std::string (const Layout &, const Map &, const char *)",
+    "signature": "std::string (const Layout &, const GenerationMap &, const char *)",
     "equivalent": "validateWorld compares its script layout against finished-world queries"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::startingAccessFailure",
-    "signature": "std::string (const Map &, int, const std::vector<MaterialAccessRule> &, int, int)",
+    "signature": "std::string (const GenerationMap &, int, const std::vector<MaterialAccessRule> &, int, int)",
     "binding": "startingAccessFailure"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::startingFloorFailure",
-    "signature": "std::string (const Map &, int, int, int)",
+    "signature": "std::string (const GenerationMap &, int, int, int)",
     "binding": "startingFloorFailure"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::coloniesApart",
-    "signature": "std::string (const Map &, int, const std::string &)",
+    "signature": "std::string (const GenerationMap &, int, const std::string &)",
     "binding": "coloniesApart"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::walkFromFirstColony",
-    "signature": "ColonyWalk (const Map &, int, const std::string &, const std::string &)",
+    "signature": "ColonyWalk (const GenerationMap &, int, const std::string &, const std::string &)",
     "binding": "walkFromFirstColony"
   },
   {
     "header": "Pipeline",
     "symbol": "MapGeneration::cropsBesideReach",
-    "signature": "CropsInReach (const Map &, const std::vector<int> &)",
+    "signature": "CropsInReach (const GenerationMap &, const std::vector<int> &)",
     "binding": "cropsBesideReach"
   },
   {
@@ -4088,7 +4088,7 @@
   {
     "header": "ResourceSemantics",
     "symbol": "MapGeneration::permanentResourceBarrier",
-    "signature": "bool (const Map &, size_t, bool)",
+    "signature": "bool (const GenerationMap &, size_t, bool)",
     "binding": "permanentResourceBarrier"
   },
   {
@@ -4202,37 +4202,37 @@
   {
     "header": "Roads",
     "symbol": "MapGeneration::openRoad",
-    "signature": "bool (Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
+    "signature": "bool (GenerationMap &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
     "binding": "openRoad"
   },
   {
     "header": "Roads",
     "symbol": "MapGeneration::connectColonies",
-    "signature": "int (Map &, int, const std::vector<unsigned char> *, std::string &)",
+    "signature": "int (GenerationMap &, int, const std::vector<unsigned char> *, std::string &)",
     "binding": "connectColonies"
   },
   {
     "header": "Roads",
     "symbol": "MapGeneration::clearRoute",
-    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, const std::vector<unsigned char> *)",
+    "signature": "int (GenerationMap &, const Torus &, const std::vector<int> &, int, const std::vector<unsigned char> *)",
     "binding": "clearRoute"
   },
   {
     "header": "Roads",
     "symbol": "MapGeneration::openColonyRoutes",
-    "signature": "bool (Map &, const GenerationContext &, const Torus &, const StepCosts &, int, const std::vector<unsigned char> *)",
+    "signature": "bool (GenerationMap &, const GenerationContext &, const Torus &, const StepCosts &, int, const std::vector<unsigned char> *)",
     "binding": "openColonyRoutes"
   },
   {
     "header": "Roads",
     "symbol": "MapGeneration::openTrail",
-    "signature": "bool (Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<int> *, int, int)",
+    "signature": "bool (GenerationMap &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<int> *, int, int)",
     "binding": "openTrail"
   },
   {
     "header": "Room",
     "symbol": "MapGeneration::buildableTiles",
-    "signature": "std::vector<unsigned char> (const Map &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &)",
     "binding": "buildableTiles"
   },
   {
@@ -4256,7 +4256,7 @@
   {
     "header": "Room",
     "symbol": "MapGeneration::potentialBuildingTiles",
-    "signature": "std::vector<unsigned char> (const Map &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &)",
     "binding": "potentialBuildingTiles"
   },
   {
@@ -4310,13 +4310,13 @@
   {
     "header": "StartDiagnostics",
     "symbol": "MapGeneration::diagnoseStarts",
-    "signature": "StartDiagnosticsReport (Game &, int, const StartQualityScale &)",
+    "signature": "StartDiagnosticsReport (GenerationWorld &, int, const StartQualityScale &)",
     "binding": "diagnoseStarts"
   },
   {
     "header": "StartDiagnostics",
     "symbol": "MapGeneration::removeResourceNear",
-    "signature": "int (Game &, int, int, int)",
+    "signature": "int (GenerationWorld &, int, int, int)",
     "binding": "removeResourceNear"
   },
   {
@@ -4346,31 +4346,31 @@
   {
     "header": "Terrain",
     "symbol": "MapGeneration::paintHeightFieldTerrain",
-    "signature": "void (Map &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &)",
+    "signature": "void (GenerationMap &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &)",
     "binding": "paintHeightFieldTerrain"
   },
   {
     "header": "Terrain",
     "symbol": "MapGeneration::paintHeightFieldResources",
-    "signature": "void (Map &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &, const HeightFieldOptions &)",
+    "signature": "void (GenerationMap &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &, const HeightFieldOptions &)",
     "binding": "paintHeightFieldResources"
   },
   {
     "header": "Terrain",
     "symbol": "MapGeneration::chooseHeightFieldStarts",
-    "signature": "bool (Game &, GenerationContext &)",
+    "signature": "bool (GenerationWorld &, GenerationContext &)",
     "binding": "chooseHeightFieldStarts"
   },
   {
     "header": "Terrain",
     "symbol": "MapGeneration::plantHeightFieldGroves",
-    "signature": "bool (Map &, GenerationContext &, const HeightFieldTiling &, int)",
+    "signature": "bool (GenerationMap &, GenerationContext &, const HeightFieldTiling &, int)",
     "binding": "plantHeightFieldGroves"
   },
   {
     "header": "Terrain",
     "symbol": "MapGeneration::generateHeightField",
-    "signature": "bool (Game &, GenerationContext &, const HeightFieldOptions &, const HeightFieldBuilder &)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, const HeightFieldOptions &, const HeightFieldBuilder &)",
     "binding": "generateHeightField"
   },
   {
@@ -4406,13 +4406,13 @@
   {
     "header": "Towers",
     "symbol": "MapGeneration::settleStartingTowers",
-    "signature": "bool (Game &, GenerationContext &, TowerPlan &, int, bool, const std::vector<unsigned char> *)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, TowerPlan &, int, bool, const std::vector<unsigned char> *)",
     "binding": "settleStartingTowers"
   },
   {
     "header": "Towers",
     "symbol": "MapGeneration::raiseTowers",
-    "signature": "bool (Game &, const TowerPlan &, int)",
+    "signature": "bool (GenerationWorld &, const TowerPlan &, int)",
     "binding": "raiseTowers"
   },
   {
@@ -4436,37 +4436,37 @@
   {
     "header": "Walls",
     "symbol": "MapGeneration::seaMargin",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "seaMargin"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::seaVertices",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &)",
     "binding": "seaVertices"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::seaEntry",
-    "signature": "int (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "int (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "seaEntry"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::sealCoasts",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "sealCoasts"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::islandSeaMargin",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "islandSeaMargin"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::sealedIslandStone",
-    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<unsigned char> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "sealedIslandStone"
   },
   {
@@ -4490,19 +4490,19 @@
   {
     "header": "Walls",
     "symbol": "MapGeneration::designedStone",
-    "signature": "DesignedStone (const Map &, const Torus &, const std::vector<unsigned char> &)",
+    "signature": "DesignedStone (const GenerationMap &, const Torus &, const std::vector<unsigned char> &)",
     "binding": "designedStone"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::reachesWithShut",
-    "signature": "std::vector<int> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "signature": "std::vector<int> (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
     "binding": "reachesWithShut"
   },
   {
     "header": "Walls",
     "symbol": "MapGeneration::pieceLeak",
-    "signature": "int (const Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "signature": "int (const GenerationMap &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &)",
     "binding": "pieceLeak"
   },
   {
@@ -4514,7 +4514,7 @@
   {
     "header": "Walls",
     "symbol": "MapGeneration::colonyLeak",
-    "signature": "std::array<int, 2> (const Map &, const Torus &, int, const std::vector<unsigned char> &)",
+    "signature": "std::array<int, 2> (const GenerationMap &, const Torus &, int, const std::vector<unsigned char> &)",
     "binding": "colonyLeak"
   },
   {
@@ -4526,7 +4526,7 @@
   {
     "header": "Walls",
     "symbol": "MapGeneration::walkSpread",
-    "signature": "WalkSpread (const Map &, const Torus &, const std::vector<std::vector<int>> &, const std::vector<int> &)",
+    "signature": "WalkSpread (const GenerationMap &, const Torus &, const std::vector<std::vector<int>> &, const std::vector<int> &)",
     "binding": "walkSpread"
   },
   {
@@ -4538,7 +4538,7 @@
   {
     "header": "Walls",
     "symbol": "MapGeneration::wallStanding",
-    "signature": "std::string (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const char *)",
+    "signature": "std::string (const GenerationMap &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const char *)",
     "binding": "wallStanding"
   },
   {
@@ -4574,67 +4574,67 @@
   {
     "header": "LegacyDistances",
     "symbol": "MapGeneration::adjustHeightmapFromPoints",
-    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, std::vector<int> &, int)",
+    "signature": "void (GenerationMap &, std::vector<MapGeneratorPoint> &, std::vector<int> &, int)",
     "binding": "adjustHeightmapFromPoints"
   },
   {
     "header": "LegacyDistances",
     "symbol": "MapGeneration::adjustHeightmapFromPerlinNoise",
-    "signature": "void (Map &, GenerationContext &, std::vector<int> &, int)",
+    "signature": "void (GenerationMap &, GenerationContext &, std::vector<int> &, int)",
     "binding": "adjustHeightmapFromPerlinNoise"
   },
   {
     "header": "LegacyDistances",
     "symbol": "MapGeneration::computeDistances",
-    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, std::vector<MapGeneratorPoint> &, std::vector<int> &)",
+    "signature": "void (GenerationMap &, std::vector<MapGeneratorPoint> &, std::vector<MapGeneratorPoint> &, std::vector<int> &)",
     "binding": "computeDistances"
   },
   {
     "header": "LegacyDistances",
     "symbol": "MapGeneration::computeAverageDistance",
-    "signature": "int (Map &, std::vector<int> &, int, const std::vector<int> &)",
+    "signature": "int (GenerationMap &, std::vector<int> &, int, const std::vector<int> &)",
     "binding": "computeAverageDistance"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::divideUpPlayerLands",
-    "signature": "bool (Game &, GenerationContext &, std::vector<int> &, std::vector<int> &, int &, const PlayerLandResources &)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, std::vector<int> &, std::vector<int> &, int &, const PlayerLandResources &)",
     "binding": "divideUpPlayerLands"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::chooseFreeForBuildingSquares",
-    "signature": "void (Game &, std::vector<MapGeneratorPoint> &, BuildingType *, int)",
+    "signature": "void (GenerationWorld &, std::vector<MapGeneratorPoint> &, BuildingType *, int)",
     "binding": "chooseFreeForBuildingSquares"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::chooseFreeForGroundUnits",
-    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, int)",
+    "signature": "void (GenerationMap &, std::vector<MapGeneratorPoint> &, int)",
     "binding": "chooseFreeForGroundUnits"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::chooseTouchingBuilding",
-    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, Building *)",
+    "signature": "void (GenerationMap &, std::vector<MapGeneratorPoint> &, Building *)",
     "binding": "chooseTouchingBuilding"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::addBuilding",
-    "signature": "Building *(Game &, int, int, int, int, int, bool)",
+    "signature": "Building *(GenerationWorld &, int, int, int, int, int, bool)",
     "binding": "addBuilding"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::placeStarts",
-    "signature": "bool (Game &, GenerationContext &)",
+    "signature": "bool (GenerationWorld &, GenerationContext &)",
     "binding": "placeStarts"
   },
   {
     "header": "LegacyStartingPositions",
     "symbol": "MapGeneration::placeArchipelagoStarts",
-    "signature": "bool (Game &, GenerationContext &, int)",
+    "signature": "bool (GenerationWorld &, GenerationContext &, int)",
     "binding": "placeArchipelagoStarts"
   },
   {

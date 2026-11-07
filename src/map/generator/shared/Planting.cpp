@@ -13,7 +13,7 @@
 #include <cstdlib>
 namespace MapGeneration
 {
-ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
+ResourceStock capResourceStock(GenerationMap &map, int type, int maximumAmount)
 {
 	if (type < 0 || type >= MaterialSlotCount || maximumAmount <= 0)
 		throw GenerationFailure("Resource stock cap requires a valid type and a positive amount");
@@ -31,7 +31,7 @@ ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
 	return stock;
 }
 
-bool clearGround(const Map &map, int x, int y)
+bool clearGround(const GenerationMap &map, int x, int y)
 {
 	const auto& terrain=map.terrainPropertiesAt(x,y);
 	return terrain.walkable && (terrain.resourcesGrow || terrain.nonGrowingResources) &&
@@ -39,7 +39,7 @@ bool clearGround(const Map &map, int x, int y)
 		   map.getGroundUnit(x, y) == NOGUID;
 }
 
-int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles, int type,
+int plantFieldInteriors(GenerationMap &map, const Torus &t, const std::vector<int> &tiles, int type,
 						int wanted)
 {
 	if (wanted <= 0)
@@ -88,7 +88,7 @@ std::vector<unsigned char> swarmSurroundings(const Torus &t, const GenerationCon
 	return reserved;
 }
 
-void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &t,
+void clearAroundSwarms(GenerationMap &map, const GenerationContext &context, const Torus &t,
 					   const std::vector<unsigned char> *keep)
 {
 	for (int team = 0; team < context.request.nbTeams; ++team)
@@ -108,7 +108,7 @@ void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &
 	}
 }
 
-int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &region,
+int clearDeposits(GenerationMap &map, const Torus &t, const std::vector<unsigned char> &region,
 				  const std::vector<unsigned char> *keep)
 {
 	int cleared = 0;
@@ -132,23 +132,23 @@ namespace
 // stable while a planting pass changes resources without changing terrain.
 class AlgaeGrowth
 {
-static MapState::View checkedView(const Map& map)
-{
-	generationFertilityMapWork(map);
-	return map.stateView();
-}
-public:
-	AlgaeGrowth(const Map& map, const Torus&) : view(checkedView(map)) {}
-	double at(int i) const
+	static MapState::View checkedView(const GenerationMap &map)
 	{
-		return double(MapState::resourceGrowthRate(view,i,ALGA))/Fertility::kRateScale;
+		generationFertilityMapWork(map);
+		return map.stateView();
 	}
+public:
+  AlgaeGrowth(const GenerationMap &map, const Torus &) : view(checkedView(map)) {}
+  double at(int i) const
+  {
+	  return double(MapState::resourceGrowthRate(view, i, ALGA)) / Fertility::kRateScale;
+  }
 private:
 	const MapState::View view;
 };
 } // namespace
 
-std::vector<double> algaeGrowthChance(const Map &map, const Torus &t)
+std::vector<double> algaeGrowthChance(const GenerationMap &map, const Torus &t)
 {
 	const AlgaeGrowth growth(map, t);
 	std::vector<double> chance(t.size(), 0.0);
@@ -165,7 +165,7 @@ namespace
 // seedAlgae's work, with the clumps shared out between `groups` groups of water (one group when
 // `groupAt` is null); a tile whose group is negative takes no clump.
 template <typename GroupAt>
-void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+void seedAlgaeIn(GenerationMap &map, GenerationContext &context, const Torus &t, const char *stream,
 				 int algaePercent, const AlgaeBand &band, int groups, const GroupAt *groupAt)
 {
 	const int n = t.w * t.h;
@@ -245,7 +245,7 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 }
 } // namespace
 
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+void seedAlgae(GenerationMap &map, GenerationContext &context, const Torus &t, const char *stream,
 			   int algaePercent, const AlgaeBand &band, const WedgeFrame *wedges)
 {
 	if (!wedges)
@@ -259,15 +259,15 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 	seedAlgaeIn(map, context, t, stream, algaePercent, band, wedges->teams, &wedgeOf);
 }
 
-void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
+void seedAlgae(GenerationMap &map, GenerationContext &context, const Torus &t, const char *stream,
 			   int algaePercent, const AlgaeBand &band, const std::vector<int> &groupOf, int groups)
 {
 	const auto groupAt = [&](int x, int y) { return groupOf.at(y * t.w + x); };
 	seedAlgaeIn(map, context, t, stream, algaePercent, band, std::max(1, groups), &groupAt);
 }
 
-void stockIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands,
-				  const char *stream)
+void stockIslands(GenerationMap &map, GenerationContext &context,
+				  const std::vector<Island> &islands, const char *stream)
 {
 	const int width = map.getW();
 	// The stock lottery may choose any of these deposits after the center.

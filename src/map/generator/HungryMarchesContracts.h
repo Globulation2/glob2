@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWorld.h"
 #include "MapGeneratorContracts.h"
 #include <algorithm>
 #include <utility>

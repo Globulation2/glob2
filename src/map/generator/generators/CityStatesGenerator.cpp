@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CityStatesGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Drawing.h"
@@ -1055,7 +1055,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 // The ground every causeway leads to, by the kind of heart: the island, the inside of the crag,
 // or the central lake's shore.
-std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
+std::vector<unsigned char> heartTiles(const GenerationMap &map, const Layout &L)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -1071,7 +1071,7 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 // The ground a unit landing from the sea can reach without crossing solid grass (seaMargin): the
 // sea is every water vertex outside the homes' lakes and the commons' own water, and a sand road is
 // not a beach, so it must not carry the margin inland.
-std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
+std::vector<unsigned char> seaMargin(const GenerationMap &map, const Layout &L)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -1086,7 +1086,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 // outside its road, the ridges and the crag, and round every home a wall on the solid-grass tiles
 // that touch the sea's margin (sealCoasts). Every step off the beach lands on the wall, so a home
 // is sealed but for its road. Rebuilt the same way by validateWorld.
-std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
+std::vector<unsigned char> stoneTiles(const GenerationMap &map, const Layout &L)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -1182,7 +1182,8 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 // Every home's kit, identical and unscaled: wheat and wood patches beside its lake, where the lake
 // keeps them growing, and a stone deposit further off; then its own scaled ambient farmland,
 // outcrops and a grove, as a self-sufficient base needs.
-void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const CityStatesOptions &o)
+void furnishHomes(GenerationMap &map, const Layout &L, GenerationContext &context,
+				  const CityStatesOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -1249,7 +1250,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 // The commons: farmland on its fertile ground, richer towards the centre as the frontier control
 // says; stone outcrops and fruit groves sampled by the same weight; and the orchard of all three
 // fruits round the central lake, the heart every causeway leads to.
-void stockCommons(Map &map, const Layout &L, GenerationContext &context, const CityStatesOptions &o)
+void stockCommons(GenerationMap &map, const Layout &L, GenerationContext &context,
+				  const CityStatesOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -1369,7 +1371,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 
 // Wheat covers every plantable islet tile outside the sand-bordered building plot.
 // This guaranteed cover is independent of the ambient resource amount controls.
-void stockIslets(Map &map, const Layout &L, const Farm &plots)
+void stockIslets(GenerationMap &map, const Layout &L, const Farm &plots)
 {
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
@@ -1379,7 +1381,7 @@ void stockIslets(Map &map, const Layout &L, const Farm &plots)
 }
 
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
-void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line)
+void clearRoads(GenerationMap &map, const Layout &L, const std::vector<unsigned char> &line)
 {
 	const Torus &t = L.t;
 	for (int i = 0; i < t.w * t.h; ++i)
@@ -1390,7 +1392,7 @@ void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &lin
 // Deposits may land anywhere, and a band of them could close a home's swarm off from its causeway
 // or a landing off from the heart. Keep both walks open, clearing only what stands on the cheapest
 // one. Almost always nothing is in the way.
-bool openRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line,
+bool openRoads(GenerationMap &map, const Layout &L, const std::vector<unsigned char> &line,
 			   GenerationContext &context)
 {
 	const Torus &t = L.t;
@@ -1415,11 +1417,11 @@ bool openRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line
 	return true;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "city layout";
 	const CityStatesOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
@@ -1517,11 +1519,11 @@ std::string validateRequest(const GenerationRequest &r)
 // causeways shut no home reaches another home or the commons at all; and no colony's walk to its
 // landing is much longer than another's. Water, buildings and every resource tile block the
 // walks; units don't, since they move.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "city"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

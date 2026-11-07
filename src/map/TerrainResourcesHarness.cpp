@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Map.h"
+#include "GenerationWorld.h"
 #include "generator/shared/ResourceSemantics.h"
 #include "generator/shared/BalancedStarts.h"
 #include "generator/shared/Pipeline.h"
@@ -612,15 +613,15 @@ TEST_CASE("shared starting supply checks accept material sources above resource 
     }
     GenerationRequest request; request.nbTeams=2; request.nbWorkers=4;
     GenerationContext builtinContext(request), customContext(request);
-    REQUIRE(MapGeneration::chooseBalancedStarts(game,builtinContext,64));
-    for(int y : {8,24}) for(int x : {8,24})
+	REQUIRE(MapGeneration::chooseBalancedStarts(GenerationWorld(game).ref(), builtinContext, 64));
+	for(int y : {8,24}) for(int x : {8,24})
     {
         map.replaceResource(x,y,Resource{}); map.replaceResource(x+2,y,Resource{});
         REQUIRE(map.incResource(x,y,foodId,0));
         REQUIRE(map.incResource(x+2,y,woodId,0));
     }
-    REQUIRE(MapGeneration::chooseBalancedStarts(game,customContext,64));
-    CHECK(customContext.bootX==builtinContext.bootX);
+	REQUIRE(MapGeneration::chooseBalancedStarts(GenerationWorld(game).ref(), customContext, 64));
+	CHECK(customContext.bootX==builtinContext.bootX);
     CHECK(customContext.bootY==builtinContext.bootY);
     fixture.addUnit(WORKER,7,8);
     const std::vector<MapGeneration::MaterialAccessRule> rules={{MaterialId::Food,4,"food"},{MaterialId::Wood,4,"wood"}};
@@ -655,8 +656,9 @@ TEST_CASE("starting crop guarantees and adjacent supply use live material yields
     GenerationRequest request; request.nbTeams=1;
     GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
     const auto before=map.materialStocksAt(at);
-    MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0);
-    CHECK(context.namedStreams().empty());
+	MapGeneration::guaranteeStartingResources(GenerationWorld(fixture.game).ref(), context, 12, 12,
+											  0);
+	CHECK(context.namedStreams().empty());
     CHECK(map.materialStocksAt(at)==before);
     // A retained deposit and another positive yield must not disguise exhausted food.
     map.setMaterialAmount(at,MaterialId::Food,0);
@@ -664,8 +666,9 @@ TEST_CASE("starting crop guarantees and adjacent supply use live material yields
     CHECK_FALSE(crops.food); CHECK(crops.wood);
     CHECK(crops.missing()=="cannot walk to food.");
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Food));
-    MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0);
-    CHECK(map.hasMaterialSource(MaterialId::Food));
+	MapGeneration::guaranteeStartingResources(GenerationWorld(fixture.game).ref(), context, 12, 12,
+											  0);
+	CHECK(map.hasMaterialSource(MaterialId::Food));
     CHECK(map.getResource(at).type==resourceIndex(id));
     CHECK(map.materialAmountAt(at,MaterialId::Wood)==before[materialIndex(MaterialId::Wood)]);
 }
@@ -689,8 +692,9 @@ TEST_CASE("bounded starter crop replacement uses surplus materials and respects 
         GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
         std::vector<unsigned char> allowed(size_t(map.getW())*map.getH(),0);
         allowed[map.coordToIndex(9,8)]=1;
-        MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0,nullptr,&allowed);
-        CHECK(map.hasMaterialSource(MaterialId::Food)==clearable);
+		MapGeneration::guaranteeStartingResources(GenerationWorld(fixture.game).ref(), context, 12,
+												  12, 0, nullptr, &allowed);
+		CHECK(map.hasMaterialSource(MaterialId::Food)==clearable);
         CHECK((map.getResource(9,8).type==resourceIndex(id))==!clearable);
     }
 }
@@ -752,12 +756,14 @@ TEST_CASE("start diagnostics distinguish configured renewal from spreading press
     custom["yields"]={{"food",{{"capacity",4},{"initial",4},{"growthRate",0},{"consumption","one"}}},
                       {"wood",{{"capacity",4},{"initial",2},{"growthRate",0},{"consumption","one"}}}};
     const auto install=[&] { map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump()); };
-    const auto diagnose=[&] {
-        auto report=MapGeneration::diagnoseStarts(fixture.game,1);
-        REQUIRE(report.measured); REQUIRE(report.colonies.size()==1);
+	const auto diagnose = [&]
+	{
+		auto report = MapGeneration::diagnoseStarts(GenerationWorld(fixture.game).ref(), 1);
+		REQUIRE(report.measured);
+		REQUIRE(report.colonies.size() == 1);
         return report.colonies.front();
-    };
-    install();
+	};
+	install();
     const auto id=*map.resourceRegistry().find("test:diagnostic-supply");
     map.setResource(10,8,id,1);
     auto metrics=diagnose();

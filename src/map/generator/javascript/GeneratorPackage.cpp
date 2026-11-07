@@ -3,6 +3,7 @@
 #include "GeneratorRegistry.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
+#include "GenerationWorld.h"
 #include "Sha256.h"
 #include <nlohmann/json.hpp>
 #include <filesystem>
@@ -237,9 +238,10 @@ GeneratorDefinition Package::definition(int handle) const
 						  revision,
 						  editorOnly,
 						  controls,
-						  [p](Game &game, GenerationContext &context)
+						  [p](GenerationWorld &world, GenerationContext &context)
 						  {
-							  auto error = invoke(*p, "generate", context.request, &game, &context);
+							  auto error = invoke(*p, "generate", context.request, &world.target(),
+												  &context);
 							  if (!error.empty())
 								  throw GenerationFailure(error);
 							  return true;
@@ -250,10 +252,10 @@ GeneratorDefinition Package::definition(int handle) const
 		GenerationContext c(r);
 		return invoke(*p, "validateRequest", r, nullptr, &c, true);
 	};
-	d.validateWorld = [p](const Game &g, const GenerationContext &c)
+	d.validateWorld = [p](const GenerationWorld &world, const GenerationContext &c)
 	{
 		GenerationContext probe(c.request, c.telemetry.enabled());
-		return invoke(*p, "validateWorld", c.request, const_cast<Game *>(&g), &probe, true);
+		return invoke(*p, "validateWorld", c.request, &world.target(), &probe, true);
 	};
 	d.translate = [p](std::string_view language, std::string_view text)
 	{

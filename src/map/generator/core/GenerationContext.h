@@ -7,7 +7,7 @@
 #include <map>
 #include <random>
 #include <utility>
-class Game;
+class GenerationWorld;
 struct GenerationContext
 {
 	const GenerationRequest &request;

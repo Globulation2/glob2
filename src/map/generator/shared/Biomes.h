@@ -5,7 +5,7 @@
 #include "Sketch.h"
 #include <string>
 #include <vector>
-class Map;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -89,7 +89,7 @@ BiomeTerrain sketchBiome(TerrainSketch &, const Torus &, const std::vector<unsig
 /// swarm's clearing, a road), and the cover alone also keeps off `noCover` when given: a clearing
 /// round a home in a forest or on a range, where fields may still lie but the wood or scree may
 /// not, so a colony has room to build before it cuts. Draws from streams named after `stream`.
-void furnishBiome(Map &, const Torus &, GenerationContext &,
+void furnishBiome(GenerationMap &, const Torus &, GenerationContext &,
 				  const std::vector<unsigned char> &region, const BiomeTerrain &, const BiomeKit &,
 				  const std::vector<unsigned char> &keepClear, const std::string &stream,
 				  const std::vector<unsigned char> *noCover = nullptr);

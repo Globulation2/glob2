@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "Growth.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Morphology.h"
-#include "Map.h"
 #include <stdexcept>
 #include "TerrainType.h"
 #include "TerrainProperties.h"
@@ -13,7 +12,7 @@ namespace MapGeneration
 {
 namespace
 {
-bool spreadingCrop(const Map& map, int type)
+bool spreadingCrop(const GenerationMap &map, int type)
 {
     if (type==NO_RES_TYPE) return false;
     const auto& properties=map.resourcePropertiesByIndex(type);
@@ -22,7 +21,7 @@ bool spreadingCrop(const Map& map, int type)
 }
 }
 
-int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
+int cropSeedsIn(const GenerationMap &map, const std::vector<unsigned char> &region)
 {
 	const Torus t(map);
 	if (region.size() != size_t(t.size()))
@@ -40,7 +39,7 @@ int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 	return seeds;
 }
 
-Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
+Flood cropSpreadEnvelope(const GenerationMap &map, const Fertility::Field *fertility)
 {
 	const Torus t(map);
 	std::vector<unsigned char> seeds(t.size(), 0), grass(t.size(), 0);
@@ -71,7 +70,8 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 	return result;
 }
 
-std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::Field &fertility)
+std::vector<unsigned char> fertileCropEnvelope(const GenerationMap &map,
+											   const Fertility::Field &fertility)
 {
 	const Torus t(map);
 	std::vector<unsigned char> reached(t.size(), 0);

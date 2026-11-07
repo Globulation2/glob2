@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Game.h"
+#include "GenerationWorld.h"
 #include <vector>
 #include <string>
 #include <limits>
@@ -85,7 +86,7 @@ inline void dispersionChecks()
 			points.assign(count, MapGeneratorPoint(0, 0));
 			weights.assign(count, 2);
 			weights.back() = 1;
-			return splitUpPoints(map, context, grid, 0, points, weights,
+			return splitUpPoints(GenerationMap(map).ref(), context, grid, 0, points, weights,
 								 whole ? PointSearch::WholeRegion : PointSearch::Local);
 		};
 		std::vector<MapGeneratorPoint> points, again;
@@ -147,7 +148,7 @@ inline void distanceChecks()
 	const int w = map.getW(), h = map.getH();
 	std::vector<MapGeneratorPoint> sources{{3, 3}, {30, 12}}, none, wall;
 	std::vector<int> heights;
-	computeDistances(map, sources, none, heights);
+	computeDistances(GenerationMap(map).ref(), sources, none, heights);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
@@ -166,7 +167,7 @@ inline void distanceChecks()
 		for (int dy = -1; dy <= 1; ++dy)
 			if (dx || dy)
 				wall.push_back({3 + dx, 3 + dy});
-	computeDistances(map, one, wall, heights);
+	computeDistances(GenerationMap(map).ref(), one, wall, heights);
 	assert(heights[3 * w + 3] == 1);
 	for (const auto &o : wall)
 		assert(heights[o.y * w + o.x] == -1);
@@ -174,8 +175,8 @@ inline void distanceChecks()
 	// Repeated sources are tolerated and change nothing.
 	std::vector<MapGeneratorPoint> twice{{3, 3}, {3, 3}, {30, 12}};
 	std::vector<int> repeated;
-	computeDistances(map, twice, none, repeated);
-	computeDistances(map, sources, none, heights);
+	computeDistances(GenerationMap(map).ref(), twice, none, repeated);
+	computeDistances(GenerationMap(map).ref(), sources, none, heights);
 	assert(repeated == heights);
 }
 
@@ -273,7 +274,7 @@ inline void frameworkChecks()
 		1,
 		false,
 		{cells, GeneratorControl{"room", "Room", 4, 8, 1, 6}.withSearchRange(6, 8)},
-		[](Game &game, GenerationContext &ctx)
+		[](GenerationWorld &game, GenerationContext &ctx)
 		{
 			game.map.fillTerrain(GRASS);
 			for (int i = 0; i < ctx.request.nbTeams; ++i)
@@ -289,7 +290,7 @@ inline void frameworkChecks()
 		true,
 		[](const GenerationRequest &r) -> std::string
 		{ return r.option("room") > r.option("cell") ? "Room must fit inside cell" : ""; },
-		[](const Game &, const GenerationContext &ctx) -> std::string
+		[](const GenerationWorld &, const GenerationContext &ctx) -> std::string
 		{ return ctx.request.seed == 999 ? "Synthetic topology failure" : ""; }};
 	definition.tags = {"terrain:novelty"}; // every playable registration needs catalog tags (#333)
 	GeneratorRegistry registry({definition});
@@ -344,8 +345,8 @@ inline void frameworkChecks()
 	std::vector<MapGeneratorPoint> points(3, {0, 0});
 	std::vector<int> weights{1, 2, 2};
 	GenerationContext dispersion(request);
-	assert(splitUpPoints(game.map, dispersion, grid, 0, points, weights, PointSearch::WholeRegion) >
-		   0);
+	assert(splitUpPoints(GenerationMap(game.map).ref(), dispersion, grid, 0, points, weights,
+						 PointSearch::WholeRegion) > 0);
 	assert(std::count(weights.begin(), weights.end(), 1) == 1);
 	for (size_t i = 0; i < points.size(); ++i)
 		for (size_t j = i + 1; j < points.size(); ++j)
@@ -376,7 +377,7 @@ inline void frameworkChecks()
 	rejected = false;
 	try
 	{
-		splitUpPoints(game.map, dispersion, grid, 0, points, weights);
+		splitUpPoints(GenerationMap(game.map).ref(), dispersion, grid, 0, points, weights);
 	}
 	catch (const GenerationFailure &)
 	{

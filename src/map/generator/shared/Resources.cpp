@@ -7,12 +7,11 @@
 #include "Resources.h"
 #include "Distances.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
 #include "Grid.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Regions.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
@@ -28,7 +27,7 @@ using namespace MapGeneration;
 
 namespace MapGeneration
 {
-int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint center,
+int placeResourceClump(GenerationMap &map, GenerationContext &context, MapGeneratorPoint center,
 					   int resourceType, int radius, const std::vector<unsigned char> *allowed)
 {
 	// Validate before the first deposit, including for callers that use this
@@ -64,7 +63,7 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 	return placed;
 }
 
-void setScaledResource(Map &map, int x, int y, int resourceType, int size, int percent)
+void setScaledResource(GenerationMap &map, int x, int y, int resourceType, int size, int percent)
 {
 	if (percent == 100)
 	{
@@ -112,7 +111,7 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 	}
 }
 
-int placeResourceClumpInArea(Map &map, GenerationContext &context,
+int placeResourceClumpInArea(GenerationMap &map, GenerationContext &context,
 							 const std::vector<MapGeneratorPoint> &points, int resourceType,
 							 int radius, const std::vector<unsigned char> *allowed)
 {
@@ -171,7 +170,7 @@ namespace
 // water into separate bodies (a lake apart from the sea). Algae only places on water, so an algae
 // band has to be shared out between water bodies the same way a stone band is shared out between
 // landmasses; drawn over land components it would never find a single candidate.
-std::vector<int> computeComponents(const Map &map, bool water, int &numComponents)
+std::vector<int> computeComponents(const GenerationMap &map, bool water, int &numComponents)
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<unsigned char> kind(size_t(w) * h);
@@ -195,7 +194,7 @@ std::vector<int> computeComponents(const Map &map, bool water, int &numComponent
 	return component;
 }
 
-void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
+void scatterBand(GenerationMap &map, HeightMap &noise, int resourceType, int targetTiles,
 				 const std::vector<int> &component, int numComponents)
 {
 	if (targetTiles <= 0 || numComponents <= 0)
@@ -273,7 +272,7 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 // farmable ground instead of a razor-thin ring at the very highest values - and then an
 // unrelated noise field splits that region into wheat and wood, so which crop lands where varies
 // along the coast rather than with distance from it.
-void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &splitNoise,
+void scatterFarmland(GenerationMap &map, const Fertility::Field &fertility, HeightMap &splitNoise,
 					 int wheatTarget, int woodTarget, const std::vector<int> &landComponent,
 					 int numComponents)
 {
@@ -395,9 +394,10 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 }
 } // namespace
 
-void scatterResources(Game &game, GenerationContext &context, const ResourceDensities &density)
+void scatterResources(GenerationWorld &game, GenerationContext &context,
+					  const ResourceDensities &density)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int width = map.getW(), height = map.getH(), area = width * height;
 	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
@@ -463,8 +463,8 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 		context.telemetry.fallback("resources.scatter.fruit_shortfall", "clump search exhausted");
 }
 
-void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
-					int resourceType, int maxFillSize)
+void fillInResource(GenerationMap &map, GenerationContext &context,
+					std::vector<MapGeneratorPoint> &points, int resourceType, int maxFillSize)
 {
 	if (maxFillSize < 1 || maxFillSize >= std::min(map.getW(), map.getH()))
 		throw GenerationFailure("Invalid resource patch size");
@@ -489,7 +489,7 @@ struct ReachResult
 	std::vector<MapGeneratorPoint> closeGrass, farGrass;
 	std::vector<int> dist;
 };
-ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int closeRange,
+ReachResult floodReach(GenerationMap &map, int bootX, int bootY, int exploreLimit, int closeRange,
 					   int clearRadius)
 {
 	const Torus t(map);
@@ -529,7 +529,7 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 // here, not reachable there, adjacent to what is. Clearing only those tiles (rather than an
 // entire neighborhood) opens the way while disturbing nothing else nearby. Protected walls are
 // part of the terrain, so they block this flood as well.
-std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
+std::vector<int> terrainOnlyReach(GenerationMap &map, int bootX, int bootY, int limit,
 								  const std::vector<unsigned char> *protectedWalls)
 {
 	const Torus t(map);
@@ -550,7 +550,7 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
 // ignored) clears nothing, since there is no better tile on the other side to find. Iterated a
 // few times by the caller in case a wall is thicker still. A protected wall tile is never
 // cleared.
-bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
+bool clearResourceWall(GenerationMap &map, const std::vector<int> &boxedDist,
 					   const std::vector<int> &openDist, int minGain,
 					   const std::vector<unsigned char> *protectedWalls)
 {
@@ -610,9 +610,9 @@ struct CropReplant
 // general guarantee but erase a generator's protected layout. Trade a small
 // accessible patch of the surplus crop instead. The ordinary guarantee keeps
 // its historical behavior because this runs only with `allowedTopup`.
-CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const ReachResult &reach,
-								  int resourceType, MaterialId desired, int range,
-								  const std::vector<unsigned char> &allowedTopup,
+CropReplant replantAccessibleCrop(GenerationMap &map, GenerationContext &context,
+								  const ReachResult &reach, int resourceType, MaterialId desired,
+								  int range, const std::vector<unsigned char> &allowedTopup,
 								  const std::vector<unsigned char> *protectedWalls)
 {
 	const Torus t(map);
@@ -693,12 +693,12 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const Re
 }
 } // namespace
 
-void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
+void guaranteeStartingResources(GenerationWorld &game, GenerationContext &context, int wheatRange,
 								int woodRange, int clearRadius,
 								const std::vector<unsigned char> *protectedWalls,
 								const std::vector<unsigned char> *allowedTopup)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	if (protectedWalls && protectedWalls->size() != size_t(map.getW()) * map.getH())
 		throw GenerationFailure("Protected wall mask does not match the map size");
 	if (allowedTopup && allowedTopup->size() != size_t(map.getW()) * map.getH())
@@ -830,7 +830,7 @@ struct WorkerReach
 	std::vector<int> dist;
 	int sites = 0;
 };
-WorkerReach reachFromWorkers(Map &map, int team, int range)
+WorkerReach reachFromWorkers(GenerationMap &map, int team, int range)
 {
 	const Torus t(map);
 	const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, team + 1).at(team)),
@@ -847,10 +847,10 @@ WorkerReach reachFromWorkers(Map &map, int team, int range)
 }
 } // namespace
 
-void openCrampedStarts(Game &game, GenerationContext &context, int sites, int range,
+void openCrampedStarts(GenerationWorld &game, GenerationContext &context, int sites, int range,
 					   const std::vector<unsigned char> *protectedWalls)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	if (protectedWalls && protectedWalls->size() != size_t(w) * h)
 		throw GenerationFailure("Protected wall mask does not match the map size");
@@ -911,7 +911,7 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 
 namespace
 {
-bool renewableMaterialAt(const Map &map, size_t index, MaterialId material)
+bool renewableMaterialAt(const GenerationMap &map, size_t index, MaterialId material)
 {
 	if (!map.materialAmountAt(index, material))
 		return false;
@@ -923,8 +923,8 @@ bool renewableMaterialAt(const Map &map, size_t index, MaterialId material)
 }
 } // namespace
 
-std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &map, const Flood &access,
-														 int maximumSteps, bool renewal)
+std::map<MaterialId, ResourceFrontage>
+materialFrontages(const GenerationMap &map, const Flood &access, int maximumSteps, bool renewal)
 {
 	const Torus t(map);
 	std::map<MaterialId, ResourceFrontage> result;
@@ -952,7 +952,7 @@ std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &map, const F
 	return result;
 }
 
-std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &access,
+std::map<int, ResourceFrontage> resourceFrontages(const GenerationMap &map, const Flood &access,
 												  int maximumSteps,
 												  const Fertility::Field *fertility)
 {

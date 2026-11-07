@@ -4,7 +4,7 @@
 #include "FractalMapSupport.h"
 #include "Drawing.h"
 #include "BalancedStarts.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "Growth.h"
 #include "Morphology.h"
 #include "Pipeline.h"
@@ -796,10 +796,10 @@ void stampCrossings(Layout &L, const CrossingSelection &selection, GenerationCon
 	context.telemetry.measure("fractal.crossings.major-shortfall", selection.majorShortfall);
 }
 
-bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
+bool furnishAndSettle(GenerationWorld &game, GenerationContext &context, const Layout &L)
 {
 	const auto &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	context.stage = "fractal terrain and contained farms";
 	writeVertices(map, L.terrain);
 
@@ -1116,11 +1116,11 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	}
 	return true;
 }
-std::string validate(const Game &game, const GenerationContext &context, const Layout &L)
+std::string validate(const GenerationWorld &game, const GenerationContext &context, const Layout &L)
 {
 	if (const auto error = designMismatch(L, game.map, "fractal map"); !error.empty())
 		return error;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const auto &t = L.t;
 	const auto walk = walkFromFirstColony(map, context.request.nbTeams, "fractal land",
 										  "over the designed routes");

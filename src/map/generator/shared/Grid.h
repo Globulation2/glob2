@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-class Map;
+class GenerationMap;
 namespace MapGeneration
 {
 /// A width by height torus addressed row-major by tile index: the wrap arithmetic every
@@ -17,7 +17,7 @@ struct Torus
 {
 	int w, h;
 	Torus(int width, int height) : w(width), h(height) {}
-	explicit Torus(const Map &);
+	explicit Torus(const GenerationMap &);
 	int size() const { return w * h; }
 	// Keep the two-integer layout: script memory budgets include sizeof(Torus).
 	// Map dimensions use masks; standalone grids retain general wrapping.
@@ -144,16 +144,16 @@ std::vector<int> stepsFrom(const Torus &, const std::vector<unsigned char> &sour
 std::vector<unsigned char> tileMask(const Torus &, const std::vector<int> &tiles);
 /// Where each of the first `teams` teams' ground units stand, as tile indices in row-major
 /// order.
-std::vector<std::vector<int>> unitTilesByTeam(const Map &, int teams);
+std::vector<std::vector<int>> unitTilesByTeam(const GenerationMap &, int teams);
 /// The tiles a ground unit can stand on and walk through: land carrying no building and no deposit
 /// that blocks ground units (tall grass and scrub are walked through).
-std::vector<unsigned char> walkableTiles(const Map &);
+std::vector<unsigned char> walkableTiles(const GenerationMap &);
 /// The same question put to the engine's own rule, Map::isHardSpaceForGroundUnit, for a unit
 /// that cannot swim and belongs to no team.
-std::vector<unsigned char> groundUnitTiles(const Map &);
+std::vector<unsigned char> groundUnitTiles(const GenerationMap &);
 /// Explicit movement mode, using the same engine predicate and team mask as the
 /// walking overload. Keep swimming and walking fields separate in route comparisons.
-std::vector<unsigned char> groundUnitTiles(const Map &, bool canSwim);
+std::vector<unsigned char> groundUnitTiles(const GenerationMap &, bool canSwim);
 /// The lowest colony from `first` on none of whose units the flood reached, or -1 when every
 /// one was: the check every validator makes that colonies can walk to colony 0.
 int firstColonyCutOff(const std::vector<int> &steps, const std::vector<std::vector<int>> &units,

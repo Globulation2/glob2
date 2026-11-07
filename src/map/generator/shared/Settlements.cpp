@@ -4,17 +4,14 @@
 #include "PowerOfTwo.h"
 #include "Settlements.h"
 #include "StartingLayout.h"
-#include "Building.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
-#include "GlobalContainer.h"
 #include "Grid.h"
-#include "Unit.h"
 #include <cmath>
 #include <limits>
 namespace MapGeneration
 {
-bool placeSettlement(Game &game, GenerationContext &context, int team,
+bool placeSettlement(GenerationWorld &game, GenerationContext &context, int team,
 					 const std::vector<unsigned char> &home, MapGeneratorPoint anchor,
 					 const std::string &stream)
 {
@@ -26,11 +23,11 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		return false;
 	};
 	const int w = game.map.getW(), h = game.map.getH();
-	if (team < 0 || team >= game.teamsCount() || !game.teams[team] ||
-		home.size() != size_t(w) * h || context.request.nbWorkers < 1)
+	if (!game.hasTeam(team) || home.size() != size_t(w) * h || context.request.nbWorkers < 1)
 		return fail("invalid home region or colony");
-	int type = game.buildingsTypes.getStartingBuildingTypeNum();
-	const auto *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	const GenerationBuildingType startingType = game.startingBuildingType();
+	const int type = startingType.typeNum;
+	const auto *buildingType = startingType ? &startingType : nullptr;
 	if (!buildingType || !buildingType->runtimeAvailable)
 		return fail("catalog has no available starting building");
 	auto inside = [&](int x, int y)
@@ -44,7 +41,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		for (int x = 0; x < w; ++x)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (!inside(x, y) || !game.checkRoomForBuilding(x, y, buildingType, team, false))
+			if (!inside(x, y) || !game.checkRoomForBuilding(x, y, *buildingType, team))
 				continue;
 			bool fits = true;
 			for (int dy = 0; dy < buildingType->height && fits; ++dy)
@@ -134,7 +131,8 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 									  team);
 		}
 	}
-	Building *building = game.addBuilding(p.x, p.y, type, team, std::min(1,buildingType->semantics.assignmentLimit), 0);
+	const GenerationBuilding building =
+		game.addBuilding(p.x, p.y, type, team, std::min(1, buildingType->assignmentLimit), 0);
 	if (!building)
 		return fail("swarm placement failed");
 	std::vector<MapGeneratorPoint> workers;
@@ -145,7 +143,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		{
 			::MapGeneration::generationCheckpoint();
 			if (inside(x, y) && game.map.isFreeForGroundUnit(x, y, false, 1u << team) &&
-				touchesStartingFootprint(x, y, building->posX, building->posY, buildingType->width,
+				touchesStartingFootprint(x, y, building.posX, building.posY, buildingType->width,
 										 buildingType->height, game.map.getMaskW(),
 										 game.map.getMaskH()))
 				workers.emplace_back(x, y);
@@ -160,15 +158,13 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		::MapGeneration::generationCheckpoint();
 		size_t selected = i + context.bounded(stream, workers.size() - i);
 		std::swap(workers.at(i), workers.at(selected));
-		if (!game.addUnit(workers.at(i).x, workers.at(i).y, team, WORKER, 0, 0, 0, 0))
+		if (!game.addWorker(workers.at(i).x, workers.at(i).y, team))
 			return fail("worker placement failed");
 	}
-	game.teams[team]->startPosX = building->posX;
-	game.teams[team]->startPosY = building->posY;
-	game.teams[team]->startPosSet = Team::START_POS_FROM_SWARM;
-	context.bootX[team] = building->posX;
-	context.bootY[team] = building->posY;
-	game.teams[team]->createLists();
+	game.setTeamStart(team, building.posX, building.posY, GenerationTeamStart::FromSwarm);
+	context.bootX[team] = building.posX;
+	context.bootY[team] = building.posY;
+	game.finishTeam(team);
 	context.telemetry.measure("settlement.placed_workers", context.request.nbWorkers, team);
 	return true;
 }
@@ -178,14 +174,15 @@ namespace
 // Shared nearest-footprint search for optional starting buildings. Keep the
 // historic tower traversal and tie order: existing maps must not change merely
 // because an inn now uses the same search. Coverage is an optional tower filter.
-int startingBuildingSite(Game &game, int team, const BuildingType *buildingType, double x, double y,
-						 int within, const std::vector<unsigned char> &allowed,
+int startingBuildingSite(GenerationWorld &game, int team,
+						 const GenerationBuildingType *buildingType, double x, double y, int within,
+						 const std::vector<unsigned char> &allowed,
 						 const std::vector<MapGeneratorPoint> &cover = {})
 {
-	if (!buildingType || team < 0 || team >= game.teamsCount() || !game.teams[team] ||
+	if (!buildingType || !game.hasTeam(team) ||
 		allowed.size() != size_t(game.map.getW()) * game.map.getH())
 		return -1;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus torus(map);
 	const int w = map.getW(), h = map.getH();
 	const int cx = int(::MapGeneration::Numeric::lround(x)),
@@ -228,7 +225,7 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 				}
 				fits = fits && reach <= buildingType->shootingRange;
 			}
-			if (!fits || !game.checkRoomForBuilding(px, py, buildingType, team, false))
+			if (!fits || !game.checkRoomForBuilding(px, py, *buildingType, team))
 				continue;
 			const double mx = cx + dx + buildingType->width / 2.0 - x,
 						 my = cy + dy + buildingType->height / 2.0 - y;
@@ -247,69 +244,77 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 }
 } // namespace
 
-int placeBuilding(Game &game, int team, const char *typeName, int level, double x, double y,
-				  int within, const std::vector<unsigned char> &allowed)
+int placeBuilding(GenerationWorld &game, int team, const char *typeName, int level, double x,
+				  double y, int within, const std::vector<unsigned char> &allowed)
 {
-	const int type = game.buildingsTypes.getTypeNum(typeName, level, false);
-	const BuildingType *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	const GenerationBuildingType found = game.buildingType(typeName, level, false);
+	const int type = found.typeNum;
+	const GenerationBuildingType *buildingType = found ? &found : nullptr;
 	const int best = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	const GenerationBuilding building =
+		game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team,
+						 std::min(1, game.buildingType(type).assignmentLimit), 0);
 	if (!building)
 		return -1;
-	game.teams[team]->addToStaticAbilitiesLists(building);
+	game.registerBuilding(team, building);
 	return best;
 }
 
-int countBuildings(const Game &game, int team, const char *typeName)
+int countBuildings(const GenerationWorld &game, int team, const char *typeName)
 {
-	if (team < 0 || team >= game.teamsCount() || !game.teams[team])
+	if (!game.hasTeam(team))
 		return 0;
 	int count = 0;
-	for (const Building *b : game.teams[team]->liveBuildings.entries())
+	for (const GenerationBuilding &b : game.teamBuildings(team))
 	{
 		::MapGeneration::generationCheckpoint();
-			if (b->type && b->type->type == typeName && !b->type->isBuildingSite)
-				++count;
+		if (b.type && b.type.type == typeName && !b.type.isBuildingSite)
+			++count;
 	}
 	return count;
 }
 
-int placeTower(Game &game, int team, int level, double x, double y, int within,
+int placeTower(GenerationWorld &game, int team, int level, double x, double y, int within,
 			   const std::vector<unsigned char> &allowed, bool stocked,
 			   const std::vector<MapGeneratorPoint> &cover, bool supplyStone)
 {
 	// Authored map kits explicitly request the historical tower definition.
-	const int type = game.buildingsTypes.getTypeNum("defencetower", level, false);
-	const BuildingType *tower = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	const GenerationBuildingType found = game.buildingType("defencetower", level, false);
+	const int type = found.typeNum;
+	const GenerationBuildingType *tower = found ? &found : nullptr;
 	const int best = startingBuildingSite(game, team, tower, x, y, within, allowed, cover);
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	const GenerationBuilding building =
+		game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team,
+						 std::min(1, game.buildingType(type).assignmentLimit), 0);
 	if (!building)
 		return -1;
-	building->bullets = stocked ? tower->maxBullets : 0;
+	game.setBuildingBullets(building, stocked ? tower->maxBullets : 0);
 	if (supplyStone)
 	{
 		// Reserve stone and loaded bullets are separate stores. Supplying both
 		// avoids an immediate delivery job, but combat consumes them normally and
 		// later replenishment still needs miners. Refresh the call lists now so
 		// the initial save does not retain the empty store's worker request.
-			building->setMaterial(materialIndex(MaterialId::Stone), tower->maxMaterial[materialIndex(MaterialId::Stone)]);
-		building->updateCallLists();
+		game.setBuildingMaterial(building, materialIndex(MaterialId::Stone),
+								 tower->maxMaterial[materialIndex(MaterialId::Stone)]);
+		game.updateBuildingCallLists(building);
 	}
-	game.teams[team]->addToStaticAbilitiesLists(building);
+	game.registerBuilding(team, building);
 	return best;
 }
-int placeStartingBuilding(Game &game, int team, const char *name, int level, double x, double y,
-						  int within, const std::vector<unsigned char> &allowed,
+int placeStartingBuilding(GenerationWorld &game, int team, const char *name, int level, double x,
+						  double y, int within, const std::vector<unsigned char> &allowed,
 						  const std::vector<int> &supplies)
 {
-	const int type = game.buildingsTypes.getTypeNum(name, level, false);
-	const BuildingType *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	const GenerationBuildingType found = game.buildingType(name, level, false);
+	const int type = found.typeNum;
+	const GenerationBuildingType *buildingType = found ? &found : nullptr;
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
@@ -322,18 +327,20 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	if (site < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(powerOfTwoRemainder(site, w), site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
+	const GenerationBuilding building =
+		game.addBuilding(powerOfTwoRemainder(site, w), site / w, type, team,
+						 std::min(1, buildingType->assignmentLimit), 0);
 	if (!building)
 		return -1;
 	for (int resource : supplies)
 	{
 		::MapGeneration::generationCheckpoint();
-		building->setMaterial(resource, buildingType->maxMaterial[resource]);
+		game.setBuildingMaterial(building, resource, buildingType->maxMaterial[resource]);
 	}
-	game.teams[team]->addToStaticAbilitiesLists(building);
+	game.registerBuilding(team, building);
 	// Register this building's feeding/work services, leaving existing task
 	// order alone. Normal tick logic resumes deliveries as supplies run out.
-	building->update();
+	game.updateBuilding(building);
 	return site;
 }
 } // namespace MapGeneration

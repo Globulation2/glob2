@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <utility>
 #include <vector>
-class Map;
+class GenerationMap;
 namespace MapGeneration
 {
 // Building room as something a design decides, not only something the start scorer finds afterwards.
@@ -19,7 +19,7 @@ namespace MapGeneration
 constexpr int kBuildFootprint = 4;
 
 /// Every tile a building can stand on today: pure grass, no deposit, no building, no unit.
-std::vector<unsigned char> buildableTiles(const Map &);
+std::vector<unsigned char> buildableTiles(const GenerationMap &);
 
 /// The top-left tiles of every `size` x `size` footprint lying wholly on `buildable`, across the wrap.
 std::vector<unsigned char> buildAnchors(const Torus &, const std::vector<unsigned char> &buildable,
@@ -41,7 +41,7 @@ int growUntilSites(const Torus &t, std::vector<unsigned char> &region,
 
 /// Tiles usable after mobile units leave: pure grass with no resource or building.
 /// Unlike buildableTiles, this is a planning mask, not permission to build right now.
-std::vector<unsigned char> potentialBuildingTiles(const Map &);
+std::vector<unsigned char> potentialBuildingTiles(const GenerationMap &);
 struct BuildingGrid
 {
 	RegionBounds bounds;
