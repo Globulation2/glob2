@@ -33,7 +33,7 @@ revision 3's for the same seed; the deposits differ a little where hammocks now 
 - **Fords are boardwalks.** When the sloughs box a colony in, `openRoutes` opens the cheapest way
   through, clearing deposits and fording water. Revision 3 forded with sand, which looked like an odd
   spit across a pool; the ford is now boardwalk (Paths: fast, buildable, holds nothing). Fords are
-  rare at the defaults (none in the default sweep); dense, big sloughs bring them.
+  rare at the defaults (none on the default maps checked); dense, big sloughs bring them.
 - **Stone is where it was.** The swamp's scattered stone outcrops and every home's quarry are placed
   as in revision 3; hammocks replace none of them. Each colony walks 10–18 steps to its nearest stone
   on seeds 1–3, as on revision 3 (14–18).
