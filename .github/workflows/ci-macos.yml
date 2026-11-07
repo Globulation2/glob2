@@ -62,6 +62,8 @@ jobs:
         with:
           cc: clang
           cxx: clang++
+      - name: Check the stencil vectorizer
+        run: python3 tools/compiler/check_stencil_vectorizer.py --cxx clang++
       - name: Compile unsigned game and tests
         id: build
         run: |

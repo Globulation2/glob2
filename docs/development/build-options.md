@@ -15,6 +15,18 @@ translation unit (`BOOST_ASIO_HAS_PTHREADS=1`). Keep this build-wide: header-ord
 detection can otherwise mix POSIX and Win32 Asio thread layouts, corrupting
 network teardown. The pthread runtime is already required by the Windows build.
 
+## Compiler checks
+
+`python3 tools/compiler/check_stencil_vectorizer.py [--cxx COMPILER]` compiles a
+torus 3x3 smoothing stencil shaped like the map generators' kernels at `-O0`,
+`-O2` and `-O2` without the vectorizers, under AddressSanitizer, and requires one
+checksum from every build and run. It runs on macOS CI and the Linux Clang job,
+because an analysis on Apple clang 21 saw `-O2` turn this loop shape into an ASan
+heap overflow with run-to-run-varying sums. If it ever fails, check whether the
+real stencils in `src/map/generator/shared/` are affected; if they are, add
+`-fno-vectorize -fno-slp-vectorize` to the strict numeric sources in
+`src/SConscript` for Clang and refresh that platform's generator rows.
+
 ## Fast development builds
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
