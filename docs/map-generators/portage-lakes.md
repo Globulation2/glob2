@@ -77,7 +77,7 @@ vertex, looks included.
 | Deep lakes | on | Deep water in the lake centres (slower swimming, no algae). Off gives revision 7's shallow lakes. |
 | Bedrock (`shield`) | Random, Granite, Greenstone | Looks only: rock (ridge rock or outcrop), deep water (deep or dark water) and shore mud (mud or mudflat). Plays identically. |
 | Wheat, wood, algae, fruit amount | 0–300% (100) | As revision 7; starter supplies are guaranteed. |
-| Stone amount | 0–300% (100) | Ambient quarry faces on the forest knots and the country stone clumps; every home's knob quarry is guaranteed. |
+| Stone amount | 0–300% (100) | Ambient quarry faces on the forest knots and the country stone clumps; every home's knob quarry (or, without knobs, its stone patch) is guaranteed. |
 
 Sides are powers of two from 64 through 512, including rectangles. A 64-tile side selects compact
 construction. The colony cap is `min(12, max(2, width * height / 4096))` on smaller shapes, and
@@ -136,6 +136,10 @@ Seeds 101 and 103 fell back to stone patches, so only seed 102's games include h
   beach is sand, as on revision 7.
 - Scree aprons round the forest knots are rare: the knots sit inside the forest, and scree is laid
   only on open ground so no tree loses its ground. The home knobs' skirts carry most of the scree.
+- Generation is slower: a 512×512, 8-colony map took 161 s and 386 s on a -O0 development build
+  against 24 s for an unchanged generator there (13× its release time), roughly 12–29 s release
+  equivalent beside revision 7's 11–22 s release on the same seeds; a map that falls back to plain
+  beaches furnishes its layout twice. Not measured on a release build.
 - One calibration set of 12 games on three seeds is a calibration, not a tournament; the AIs' use
   of the trails and portages was not measured directly.
 
