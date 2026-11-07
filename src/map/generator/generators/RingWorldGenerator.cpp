@@ -61,7 +61,7 @@ using namespace MapGeneration;
 // muddy bays, and green fertile rings round the lakes. Revision 3's stamp (the belt, lakes,
 // islands, beaches) and its colony sites are unchanged for the same seed; over them:
 // - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
-//   SAND, WATER, DEEP_WATER, LOAM, MUDFLAT, SCREE, SHALE, TRAIL, BOULDERS, RIDGE_ROCK) that every
+//   SAND, WATER, DEEP_WATER, LOAM, MUDFLAT, SCREE, TRAIL, BOULDERS, RIDGE_ROCK) that every
 //   shared helper and check reads, and paints looks over it with composeLooks (Sketch.h) at the very
 //   end, after every resource stage, so looks never change a rule or what a helper saw. The 2.0
 //   features are planned from the stamp and the swarms alone, so validateWorld plans them again.
@@ -87,8 +87,8 @@ using namespace MapGeneration;
 //   kCoastKeep of a home. Every lake's beach is loam (Fertile: buildable crop land that waters its
 //   surroundings), since sand there only held growth back, and outside the home gardens a frayed ring
 //   of loam about kLoamDeep vertices deep surrounds it; the gardens keep plain grass.
-// - Islands themed: a stone island is volcanic (ash on its bare ground, pumice on its beach, the
-//   stone on grass at its middle); fruit and grain islands stay green.
+// - Islands themed: a stone island is volcanic (a pumice beach, Rough, round grass carrying its stone);
+//   fruit and grain islands are lush green.
 // - A climate, looks only (`climate`: temperate, steppe, tropical): grass graded by distance from
 //   water, the beach, deep water, loam, rock, road, mud and headland looks. Every choice is in
 //   telemetry.
@@ -153,9 +153,10 @@ constexpr int kTorOpen = 3;
 constexpr int kTorWalkLeast = 8, kTorWalkMost = 32;
 constexpr int kTorFace = 5; // stone tiles in every face
 // The road keeps off ground fewer than kRoadWet steps from water (each step nearer costs
-// kRoadWetCost) and kRoadHomeClear tiles round another colony's ground (kRoadHomeCost), and its
-// doorstep is two tiles outside its own colony's ground, so it never touches it.
-constexpr int kRoadWet = 10, kRoadWetCost = 3, kRoadHomeClear = 5, kRoadHomeCost = 40;
+// kRoadWetCost) and kRoadHomeClear tiles round a colony's ground (kRoadHomeCost), and its doorstep
+// is kRoadDoorstep tiles outside its own colony's ground: a road two tiles out split one colony's
+// building room in a V and its AI stalled (calibration seed 101).
+constexpr int kRoadWet = 10, kRoadWetCost = 3, kRoadHomeClear = 8, kRoadHomeCost = 40, kRoadDoorstep = 5;
 // Coasts: a shore vertex is a headland when more than kHeadland of the disc of kCoastProbe tiles
 // round it is ocean, a bay below kBay; a noise picks kHeadlandShare / kBayShare of them. Nothing
 // within kCoastKeep tiles of a swarm's middle, which is home ground.
@@ -165,8 +166,6 @@ constexpr double kHeadland = 0.56, kBay = 0.42, kHeadlandGate = 0.5, kBayGate = 
 // gardens (kGardenRadius tiles round a swarm's middle, frayed by kGardenFray).
 constexpr int kLoamDeep = 5;
 constexpr double kGardenRadius = 12, kGardenFray = 3;
-// Volcanic islands: ground beyond kIsleCore tiles of the island's middle is ash.
-constexpr double kIsleCore = 3.6;
 
 // The look-only climates. lush and green are the steps from water within which the grass is lush and
 // still green; beyond green it is dry.
@@ -504,7 +503,7 @@ struct Features
 	std::vector<int> owner;            // the colony each quarry tile belongs to, -1 elsewhere
 	std::vector<unsigned char> keep;   // vertices round every tor that stay plain grass
 	TerrainSketch mechanics;           // the finished mechanic sketch
-	std::vector<unsigned char> volcanic; // vertices of volcanic islands' ash and pumice
+	std::vector<unsigned char> volcanic; // vertices of volcanic islands. pumice beaches
 	std::vector<int> isleTheme;        // per island: 0 stone (volcanic), 1 fruit, 2 wheat
 	int roadTiles = 0, segments = 0, spineTiles = 0, tors = 0, dropped = 0, torBand = -1, torMiss = -1;
 	int mud = 0, headlands = 0, loam = 0, scree = 0, ash = 0;
@@ -546,7 +545,7 @@ void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
 {
 	const int n = t.size(), length = axes.length();
 	const std::vector<unsigned char> dry = tilesAll(stamp.terrain, t, [](unsigned char v) { return !wetType(v); });
-	const std::vector<unsigned char> ground = homeGround(t, homes, 1), near = homeGround(t, homes, kRoadHomeClear);
+	const std::vector<unsigned char> ground = homeGround(t, homes, kRoadDoorstep - 1), near = homeGround(t, homes, kRoadHomeClear);
 	const std::vector<int> relief = fractalNoise(t.w, t.h, 16, 3, context.stream(kRoadStream));
 	// Never within two tiles of a tor's rock or face: a road corner there would spoil the face's grass.
 	std::vector<unsigned char> torAll(size_t(n), 0);
@@ -554,15 +553,16 @@ void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
 		torAll[i] = f.tor[i] || f.quarry[i];
 	const std::vector<unsigned char> torNear = dilate(t, torAll, 2);
 	const auto open = [&](int i) { return dry[i] && !ground[i] && !torNear[i]; };
-	// Doorsteps: the tile two outside the colony's ground furthest from water.
+	// Doorsteps: the tile kRoadDoorstep outside the colony's ground furthest from water, so the road
+	// leaves the building room round the swarm whole.
 	std::vector<std::pair<double, int>> stops;
 	for (const Home &home : homes)
 	{
 		int best = -1;
-		for (int dy = -5; dy <= 8; ++dy)
-			for (int dx = -5; dx <= 8; ++dx)
+		for (int dy = -3 - kRoadDoorstep; dy <= 6 + kRoadDoorstep; ++dy)
+			for (int dx = -3 - kRoadDoorstep; dx <= 6 + kRoadDoorstep; ++dx)
 			{
-				if (std::max(std::abs(dx - 1.5), std::abs(dy - 1.5)) < 6.5)
+				if (std::max(std::abs(dx - 1.5), std::abs(dy - 1.5)) < 4.5 + kRoadDoorstep)
 					continue;
 				const int i = t.at(home.x + dx, home.y + dy);
 				if (open(i) && (best < 0 || fromWater[i] > fromWater[best]))
@@ -964,7 +964,9 @@ void paintMechanics(Features &f, const Stamp &stamp, const Torus &t, const std::
 			++f.mud;
 		}
 	}
-	// Islands: the stone islands are volcanic.
+	// Islands: the stone islands are volcanic, a pumice beach (Rough) round their grass. An ash ring
+	// (Barren) on their ground was tried and cost 12% of the map's growth potential with no lakes: barren
+	// ground inhibits like sand, and an island is all shore.
 	f.volcanic.assign(size_t(n), 0);
 	for (size_t k = 0; k < stamp.islands.size(); ++k)
 	{
@@ -981,16 +983,9 @@ void paintMechanics(Features &f, const Stamp &stamp, const Torus &t, const std::
 		vertices.erase(std::unique(vertices.begin(), vertices.end()), vertices.end());
 		for (int i : vertices)
 		{
-			const int dx = t.offsetX(isle.x, t.remainderX(i)), dy = t.offsetY(isle.y, i / t.w);
 			if (mech[i] == SAND)
 			{
 				mech[i] = SCREE;
-				f.volcanic[i] = 1;
-				++f.ash;
-			}
-			else if (mech[i] == GRASS && std::hypot(double(dx), double(dy)) > kIsleCore)
-			{
-				mech[i] = SHALE;
 				f.volcanic[i] = 1;
 				++f.ash;
 			}
@@ -1158,9 +1153,6 @@ TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, 
 			break;
 		case TRAIL:
 			looks[i] = climate.road;
-			break;
-		case SHALE:
-			looks[i] = VOLCANIC_ASH;
 			break;
 		case SCREE:
 			looks[i] = f.volcanic[i] ? PUMICE : SCREE;
