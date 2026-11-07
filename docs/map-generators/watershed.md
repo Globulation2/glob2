@@ -51,14 +51,15 @@ constants record why each choice was made.
 | Stamp | Revision 3's terrain: grass, channels and sea, the dry uplands as sand beyond the `dryness` reach (never within 11 tiles of water), the beach rule applied and fords laid. It is written, and `Map::layBeaches()` must change nothing. Every ford and channel is checked on it. |
 | Starts | Floodplain sites spread across banks, as in revision 3. |
 | Outcrops | Knot centres on crest tiles of the distance-from-water field (no neighbour further from water), 20 steps or more from water, 24 tiles apart, one per 3,500 tiles at most; each a wavering lens 9 to 15 tiles long and 4 to 6 thick along the crest, every tile 17 steps from water. Quarry faces (the downhill rim within two tiles of the middle) on 60% of the knots at 100% stone; the rock left two tiles thick drawn with `rockVertices`; a flood drops any knot whose rock and stone part the walkable ground round it. Planned from the request alone. |
-| Mechanic layers | On a copy of the stamp: pavement (`SHALE`) on upland sand 22 to 25 steps (frayed) from water, grass round every quarry face, frayed scree, rock vertices; the deep sea core (four steps from land, opened) and a deep thread three vertices narrower than each big channel's radius (`deepCore`); mudflat river beaches within 7 tiles of the delta's channels and 9 of a junction, clear of fords, gardens and the sea; levees (`LOAM`) on grass two to five (six where a noise peaks) vertices from water, outside the gardens. |
+| Mechanic layers | On a copy of the stamp: pavement (`SHALE`) on upland sand 22 to 25 steps (frayed) from water, grass on the corners of every quarry tile and the ring before it and nowhere else (a disc 2.5 tiles round each face drew olive dry-grass patches across the pavement), frayed scree, rock vertices; the deep sea core (four steps from land, opened) and a deep thread three vertices narrower than each big channel's radius (`deepCore`), tapering in and out over 8 tiles of the channel instead of ending in round caps, with any thread the sea's core does not join under 30 vertices dropped (short runs read as dark pills); mudflat river beaches within 7 tiles of the delta's channels and 9 of a junction, clear of fords, gardens and the sea; levees (`LOAM`) on grass two to five (six where a noise peaks) vertices from water, outside the gardens. |
 | Looks | `composeLooks` over the mechanics by climate: levees, lush grass within 7 to 11 steps of water, dry grass beyond 10 to 18, beach and dune sand, two pavement looks, deep water, mud and rock. The finished terrain must again be a fixed point of `layBeaches()`. |
 | Resources | As in revision 3, on crop land that now includes the levees: every colony's kit, farmland ribbons along the rivers at 2:1 wheat to wood, stone outcrops at the upland edge, fruit at confluences, algae at the mouths and in the sea's shallows; quarry stone on the faces, protected from every clearing and route. |
 
 `validateWorld` plans the layout and the outcrops again from the request and requires: every ford
 interrupting a real channel, open across its width with walkable land at both ends, and every channel
 keeping its core outside its fords, on tiles of water corners, deep or plain; every quarry face
-holding its stone (`quarryFault`); no knot of rock parting the walkable ground round it; every colony
+holding its stone (`quarryFault`); no knot of rock parting the walkable ground round it, its quarry
+stone counted as blocking, since a quarry never runs out (as the planner counts it); every colony
 walking to colony 0 and standing beside wheat and wood.
 
 ## Controls
@@ -133,9 +134,12 @@ country, not a measured improvement.
   floodplain may see crops creep closer along the banks.
 - The edge row between a levee and grass is not buildable, so a bank loses one row of building room
   at the levee's inner edge.
-- Generation takes about 10% longer than revision 3: a 512x512 map with eight colonies in about
-  0.75 s of release-build time against 0.68 s, scaled from a development build by an unchanged
-  generator's slowdown (an estimate, not a release measurement).
+- Generation takes roughly 10–17% longer than revision 3, an estimate rather than a release
+  measurement: a 512x512 map with eight colonies took 3.2 s of wall time (best of seeds 1–3, the
+  whole command) on the revision 3 release build and 51 s on a revision 4 development build, which
+  scales to 3.5–3.7 s by the development-to-release ratio of two generators unchanged since revision
+  3 shipped (Hedgerow country 13.7, Stone highlands 14.6), on a machine shared with other builds.
+  (An earlier figure was scaled by Braided river, which this branch rebuilt.)
 - No rotation tournament or human playtest has been recorded for revision 4.
 
 ## Verification

@@ -147,6 +147,10 @@ constexpr const char *kMudStream = "watershed-mud";
 // so no lone dark vertex reads as a hole.
 constexpr int kDeepSeaSteps = 4, kDeepChannelSteps = 3, kDeepFordClear = 3, kDeepOpen = 1, kDeepLeast = 12;
 constexpr double kDeepChannelGain = 1.5;
+// A channel's deep thread tapers in and out over this many tiles, and a thread the sea's core does not
+// join keeps at least kDeepThreadLeast vertices.
+constexpr double kDeepTaper = 8;
+constexpr int kDeepThreadLeast = 30;
 // Pavement: old upland sand at least kPaveReach eight-neighbour steps from water, frayed outwards by up
 // to kPaveFray more. Barren pavement inhibits crop growth as sand does, and growth probes reach far, so
 // it never stands where the river's crops could grow; laid on sand only, it changes no growth at all.
@@ -2235,8 +2239,13 @@ void paintPlanLayers(std::vector<unsigned char> &mech, const Layout &layout, con
 	const std::vector<int> fromWater = stepsFrom(t, waterVertex);
 	std::mt19937 &random = context.stream(kLookStream);
 	const std::vector<int> fray = periodicNoise(w, h, 7, random);
-	// Before every quarry face the ground is grass, so the face and its approach have grass corners.
-	const std::vector<unsigned char> halo = tileCorners(t, dilateRound(t, knots.quarry, 2.5));
+	// Before every quarry face the ground is grass, so the face and its approach have grass corners:
+	// exactly those corners and no more, since grass in the pavement shows as dry grass (a disc of 2.5
+	// tiles round every face drew olive patches across the grey uplands).
+	std::vector<unsigned char> approached = quarryApproach(t, knots.quarry);
+	for (int i = 0; i < n; ++i)
+		approached[i] = approached[i] || knots.quarry[i];
+	const std::vector<unsigned char> halo = tileCorners(t, approached);
 	for (int i = 0; i < n; ++i)
 	{
 		if (mech[i] != SAND || halo[i] || fromWater[i] < 0)
@@ -2282,14 +2291,28 @@ void paintPlanLayers(std::vector<unsigned char> &mech, const Layout &layout, con
 	{
 		const Reach &reach = layout.reaches[r];
 		const bool big = reach.distributary || r == layout.trunk;
-		for (size_t i = 0; i < reach.points.size(); ++i)
+		const size_t count = reach.points.size();
+		// The points where the thread runs, and how far each lies along the run from its nearer end, so
+		// the thread tapers in and out over kDeepTaper tiles rather than starting and stopping in round
+		// caps (short runs read as dark pills in the channel).
+		std::vector<unsigned char> runs(count, 0);
+		for (size_t i = 0; i < count; ++i)
+			runs[i] = (big || reach.radius[i] >= springRadius + kDeepChannelGain) &&
+					  reach.radius[i] - kDeepChannelSteps >= 0.75;
+		std::vector<int> fromEnd(count, 0);
+		for (size_t i = 0, run = 0; i < count; ++i)
+			fromEnd[i] = int(run = runs[i] ? run + 1 : 0);
+		for (size_t i = count, run = 0; i-- > 0;)
+			fromEnd[i] = std::min(fromEnd[i], int(run = runs[i] ? run + 1 : 0));
+		for (size_t i = 0; i < count; ++i)
 		{
-			if (!big && reach.radius[i] < springRadius + kDeepChannelGain)
+			if (!runs[i])
 				continue;
 			const Vec c = reach.points[i];
 			// The thread down the middle of the channel: its radius less the shallow margin, so the deep
 			// water follows the river's bends smoothly rather than in boxes an opening leaves.
-			const double radius = reach.radius[i] - kDeepChannelSteps;
+			const double radius = std::min(reach.radius[i] - kDeepChannelSteps,
+										   0.25 + (fromEnd[i] - 1) * kSpacing * (reach.radius[i] - kDeepChannelSteps) / kDeepTaper);
 			if (radius < 0.75)
 				continue;
 			for (int y = int(std::floor(c.y - radius)); y <= int(std::ceil(c.y + radius)); ++y)
@@ -2308,6 +2331,26 @@ void paintPlanLayers(std::vector<unsigned char> &mech, const Layout &layout, con
 	for (int i = 0; i < n; ++i)
 		core[i] = (core[i] && grown[i]) || (!fords[i] && !sea[i] && wide[i] && channelCore[i]);
 	core = dropSmallRegions(t, core, kDeepLeast);
+	{
+		// A body of the channels' deep water that the sea's core does not join must be a thread, not a
+		// speck: kDeepThreadLeast vertices or more.
+		const std::vector<int> body = connectedRegions(core, w, h, true, GridNeighbors::Cardinal);
+		std::vector<int> size, seaward;
+		for (int i = 0; i < n; ++i)
+			if (body[i] >= 0)
+			{
+				if (body[i] >= int(size.size()))
+				{
+					size.resize(size_t(body[i]) + 1, 0);
+					seaward.resize(size_t(body[i]) + 1, 0);
+				}
+				++size[size_t(body[i])];
+				seaward[size_t(body[i])] |= sea[i];
+			}
+		for (int i = 0; i < n; ++i)
+			if (body[i] >= 0 && !seaward[size_t(body[i])] && size[size_t(body[i])] < kDeepThreadLeast)
+				core[i] = 0;
+	}
 	for (int i = 0; i < n; ++i)
 		if (core[i])
 		{
@@ -2692,8 +2735,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Knots knots = planKnots(layout, stamp, o, replay);
 	if (const std::string fault = quarryFault(map, t, knots.quarry, knots.owner, teams, 0); !fault.empty())
 		return fault;
-	// No knot of rock (blocked tiles with a ridges corner, terrain only) parts the walkable ground round
-	// it into more than one piece.
+	// No knot of rock (blocked tiles with a ridges corner) parts the walkable ground round it into more
+	// than one piece. A quarry tile's stone never runs out, so it blocks as the rock does, as planKnots
+	// counted it.
 	std::vector<unsigned char> walkable(size_t(w) * h, 0), rock(size_t(w) * h, 0);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -2705,6 +2749,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				for (int dx = 0; dx <= 1; ++dx)
 					ridges = ridges || terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy))) == TerrainGroup::Ridges;
 			rock[i] = ridges && !walkable[i] && !map.terrainPropertiesAt(x, y).swimmable;
+			if (knots.quarry[i] && permanentResourceBarrier(map, size_t(i)))
+			{
+				rock[i] = 1;
+				walkable[i] = 0;
+			}
 		}
 	std::vector<int> label;
 	if (const int parting = partingGroup(t, walkable, rock, label); parting >= 0)
