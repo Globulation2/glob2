@@ -8,8 +8,10 @@ struct BraidedRiverOptions
 	int channels;     // channel threads across the belt (clamped so bars stay bar-sized)
 	int barSize;      // a bar's length along the river, in tiles
 	int extraRiffles; // percentage of the spare bar-to-bar crossings opened beyond the tree
-	bool moraine;     // a broken line of stone hummocks along each terrace edge
-	int dryPatches;   // percentage of the terraces' inland grass turned to sand patches
+	bool moraine;     // a broken line of rock hummocks along each terrace edge, stone on their flanks
+	int dryPatches;   // percentage of the terrace beyond the water's reach laid as pavement
+	bool deepPools;   // deep water in the widest stretches of channel
+	int season;       // 0 random, 1 meltwater, 2 late summer (looks only)
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit BraidedRiverOptions(const GenerationRequest &r);
 };

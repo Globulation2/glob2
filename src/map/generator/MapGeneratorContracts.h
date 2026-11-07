@@ -1218,6 +1218,218 @@ inline void bajadaContracts()
 		 "towns under growth, crops refused in towns, pan, cienegas and quarries");
 }
 
+// Braided River 2.0: rock bluffs sealed round the seam with a quarry face for every colony, moraine
+// knots with stone flanks, pavement beyond the water's reach, deep pools and a look-only season.
+inline void braidedRiverContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-river"));
+	assert(definition.legacyId == 42 && definition.revision == 5);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("braid-width") == 40 && request.option("channels") == 6 &&
+		   request.option("dry-patches") == 35 && request.option("deep-pools") == 1 &&
+		   request.option("season") == 0 && request.option("moraine") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto records = [&](const D &r, Game &g)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Braided river (%d x %d, %d colonies, seed %u): %s\n", 1 << r.wDec,
+						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		return result.telemetry.records();
+	};
+	const auto measure = [](const auto &recs, const char *key)
+	{
+		long long total = 0;
+		bool found = false;
+		for (const auto &record : recs)
+			if (record.key == key && std::holds_alternative<std::int64_t>(record.value))
+			{
+				total += std::get<std::int64_t>(record.value);
+				found = true;
+			}
+		return found ? total : -1LL;
+	};
+	// The envelope: every size and colony count the request check accepts, each with a season and
+	// deep pools pinned in turn.
+	int pinned = 0;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8},
+							std::pair{9, 8}, std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (!definition.validateRequest(r).empty())
+				continue;
+			r.options["season"] = 1 + pinned % 2;
+			r.options["deep-pools"] = (pinned / 2) % 2;
+			++pinned;
+			// A seed whose braid fails (a riffle without a walkable bank: revision 4 refused the same
+			// seeds) is the service's to roll again; one of the next few must hold.
+			for (int roll = 0; roll < 6; ++roll)
+			{
+				Game probe(nullptr);
+				if (service.generate(probe, r))
+					break;
+				++r.seed;
+			}
+			Game g(nullptr);
+			const auto recs = records(r, g);
+			// Every colony's own quarry face holds the same ten stone, and more stand along the bluffs.
+			assert(measure(recs, "braided-river.quarry.bluff-stone") >= 10 * teams);
+			GenerationContext check(r);
+			assert(definition.validateWorld(g, check).empty());
+		}
+	assert(pinned >= 24);
+	assert(!definition.validateRequest(make(6, 8, 2, 7)).empty());
+	// Both seasons come up at random; each variant pinned holds at 128, 256 and 512.
+	std::set<std::string> seasons;
+	for (unsigned seed = 1; seed <= 10; ++seed)
+	{
+		Game g(nullptr);
+		for (const auto &record : records(make(8, 8, 4, seed), g))
+			if (record.key == "braided-river.season")
+				seasons.insert(std::get<std::string>(record.value));
+	}
+	assert(seasons.size() == 2);
+	for (int season = 1; season <= 2; ++season)
+		for (int deep = 0; deep <= 1; ++deep)
+			for (auto [dimension, teams] : {std::pair{7, 4}, std::pair{8, 4}, std::pair{9, 8}})
+			{
+				D r = make(dimension, dimension, teams, 11);
+				r.options["season"] = season;
+				r.options["deep-pools"] = deep;
+				Game g(nullptr);
+				const auto recs = records(r, g);
+				assert((measure(recs, "braided-river.deep.vertices") > 0) == (deep == 1));
+			}
+	// The season is looks only: the same seed plays identically in both.
+	{
+		D melt = make(8, 8, 4, 13), late = make(8, 8, 4, 13);
+		melt.options["season"] = 1;
+		late.options["season"] = 2;
+		Game a(nullptr), b(nullptr);
+		assert(service.generate(a, melt) && service.generate(b, late));
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				const auto &ra = a.map.terrainPropertiesAt(x, y), &rb = b.map.terrainPropertiesAt(x, y);
+				assert(ra.walkable == rb.walkable && ra.buildable == rb.buildable &&
+					   ra.swimmable == rb.swimmable && ra.inhibitionQ8 == rb.inhibitionQ8);
+				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
+				assert(a.map.isResource(x, y) == b.map.isResource(x, y));
+			}
+		assert(differentLooks > 1000);
+	}
+	// The bluffs are a seal: cutting a gap through the rock across the seam is refused. A 512 x 256
+	// map runs its river along x, so its seam is the band round y = 0.
+	{
+		const D r = make(9, 8, 4, 17);
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(g, check).empty());
+		int cut = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 200; x < 204; ++x)
+				if ((y < 24 || y > 232) && g.map.vertexTerrainAt(x, y) == RIDGE_ROCK)
+				{
+					g.map.setVertexTerrain(x, y, GRASS);
+					++cut;
+				}
+		const std::string fault = definition.validateWorld(g, check);
+		assert(cut > 0 && fault.find("bluffs") != std::string::npos);
+	}
+	{
+		// Every quarry face keeps its stone: taking the stone away is refused.
+		const D r = make(8, 8, 4, 19);
+		Game g(nullptr);
+		assert(service.generate(g, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(g, check).empty());
+		for (int i = 0; i < 256 * 256; ++i)
+			if (g.map.isResource(i % 256, i / 256) && g.map.getResource(i % 256, i / 256).type == STONE)
+				g.map.replaceResource(i % 256, i / 256, Resource{});
+		assert(definition.validateWorld(g, check).find("quarry") != std::string::npos);
+	}
+	// The moraine: knots and stocked flanks with it, none without; flanks and ambient faces follow the
+	// stone amount while every colony's own face stays.
+	{
+		D on = make(8, 8, 4, 23), off = make(8, 8, 4, 23), bare = make(8, 8, 4, 23), rich = make(8, 8, 4, 23);
+		off.options["moraine"] = 0;
+		bare.options["stone-amount"] = 0;
+		rich.options["stone-amount"] = 200;
+		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
+		const auto withKnots = records(on, a), without = records(off, b), noStone = records(bare, c),
+				   moreStone = records(rich, d);
+		assert(measure(withKnots, "braided-river.moraine.designed") > 100);
+		assert(measure(withKnots, "braided-river.moraine.quarry-tiles") > 0);
+		assert(measure(without, "braided-river.moraine.designed") == 0 &&
+			   measure(without, "braided-river.moraine.quarry-tiles") == 0);
+		assert(measure(noStone, "braided-river.moraine.quarry-tiles") == 0 &&
+			   measure(noStone, "braided-river.bluffs.ambient-quarries") == 0);
+		assert(measure(noStone, "braided-river.quarry.bluff-stone") == 40);
+		assert(measure(moreStone, "braided-river.moraine.quarry-tiles") >
+			   measure(withKnots, "braided-river.moraine.quarry-tiles"));
+		assert(measure(moreStone, "braided-river.bluffs.ambient-quarries") >
+			   measure(withKnots, "braided-river.bluffs.ambient-quarries"));
+		// Pavement only where asked for.
+		D flat = make(8, 8, 4, 23);
+		flat.options["dry-patches"] = 0;
+		Game e(nullptr);
+		assert(measure(records(flat, e), "braided-river.pavement.tiles") == 0);
+		assert(measure(withKnots, "braided-river.pavement.tiles") > 1000);
+	}
+	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings the
+	// map validates after a few thousand ticks of growth with nobody harvesting, and the crops grew.
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		assert(service.generate(zero, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(zero, check).empty());
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	assert(service.generate(abundant, r));
+	GenerationContext context(r);
+	assert(definition.validateWorld(abundant, context).empty());
+	const auto wheat = [&]()
+	{
+		int count = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			count += abundant.map.isResource(i % 256, i / 256) &&
+					 abundant.map.getResource(i % 256, i / 256).type == WHEAT;
+		return count;
+	};
+	const int before = wheat();
+	setSyncRandSeed(4211);
+	for (int tick = 0; tick < 3072; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Braided river growth: %s\n", growthError.c_str());
+	assert(growthError.empty() && wheat() > before);
+	puts("PASS Braided river: envelope with pinned seasons and deep pools, looks-only season, sealed "
+		 "bluffs, quarry faces, moraine flanks and pavement, resource extremes, growth");
+}
+
 inline void evenGroundContracts()
 {
 	const auto &definition =
@@ -2314,5 +2526,6 @@ inline void generatorContracts()
 	run("honeycomb-isle", honeycombIsleContracts);
 	run("karst-towers", karstTowersContracts);
 	run("bajada", bajadaContracts);
+	run("braided-river", braidedRiverContracts);
 }
 } // namespace GeneratorContracts

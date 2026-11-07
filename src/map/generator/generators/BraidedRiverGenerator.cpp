@@ -15,12 +15,15 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
 #include "Roads.h"
+#include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Topology.h"
 #include "Walls.h"
 #include <algorithm>
+#include <array>
 #include <climits>
 #include <cmath>
 #include <cstdint>
@@ -76,6 +79,42 @@ using namespace MapGeneration;
 // up the bank. A 128 map gets 3 threads and 4 to 6 bars, a 512 map 7 threads and about 55 bars.
 // Every map of the pull request's 2,072-run matrix (all controls at their ends, 128 to 512 tiles,
 // rectangles, 1 to 12 colonies) generated, in under a second at 256 and under 10 at 512.
+//
+// BRAIDED RIVER 2.0 (revision 5): the same braid, drawn with the engine's full terrain palette. The
+// design brief: a photograph of an outwash plain shows (1) a wide pale bed of gravel with milky
+// channels splitting and rejoining across it, darker where they scour pools at the confluences;
+// (2) green lenses of willow and grass on the bars, greener than anything else in view; (3) dry,
+// stony terraces either side, heath and frost-cracked gravel above the reach of the floods; and
+// (4) a bluff of bedrock closing the view, with the glacier's moraine hummocked along the terrace
+// edge. Contrast is what makes it read: lush bars against dry terraces, pale gravel against water.
+// So, keeping every mechanism of revision 4 and its play:
+// - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
+//   SAND, WATER, DEEP_WATER, SHALE, SCREE, RIDGE_ROCK) that every shared helper and check reads;
+//   generate paints looks over it with composeLooks (Sketch.h), so looks never change a rule. Home
+//   gardens stay plain GRASS, where the starting-crop guarantee looks for it.
+// - The bluffs are rock, not a line of stone. The sealed spine (traceSealedLap) and a tile either side
+//   of it are the wall's core, rock vertices only where all four tiles are rock (rockVertices, Rock.h),
+//   so the blocked region is exactly the core and the spine is wholly rock: the seal no longer depends
+//   on a resource. The core swells into a relief of up to kBluffRelief more tiles away from homes, and
+//   buttresses stand out of it with a quarry face of stone (quarry tiles left out of the rock,
+//   kQuarryRows deep): one guaranteed for every colony on its own terrace as near its column as fits,
+//   the same ten stone each (quarryFault), and ambient ones along both faces scaled by `stone-amount`.
+//   Scree aprons (talusApron) skirt the rock. validateWorld floods the band round the seam over
+//   walkable terrain, ignoring every resource, and refuses a map whose bluffs a unit could cross.
+// - The moraine hummocks are knots of rock two rows thick on the contour they stood on, with stone on
+//   their flanks as quarries (one flank per knot at the default `stone-amount`, none at 0, both from
+//   200%); the gaps between knots are still the doors to hold, one at every riffle landing.
+// - Bars are lush grass and their beaches and the riffles pale gravel (looks only: the sand is the
+//   sand revision 4 laid). Where a channel is widest, mostly at confluences, its core two steps from
+//   any land is deep water (deepCore, `deep-pools`): swimmable but slower, no algae, and it still waters
+//   the bars. Riffles keep plain water round them, and the channel and ford checks read swimmable
+//   ground, so deep water changes no route on foot. It does make swimming the braid slower: a feel change.
+// - The dry terraces. Revision 4 broke the terrace with sand patches from eight steps from the water,
+//   which inhibit crop growth on the bank strip. Pavement (Barren: buildable, holds no deposit, inhibits
+//   growth exactly as sand does) now takes `dry-patches` percent of the terrace only beyond kPaveReach
+//   steps from water, where nothing grows anyway, and the rest of the terrace is dry grass by look.
+// - A season, looks only: Meltwater (lush bars, blue pools, tundra pavement) or Late summer (bars
+//   drying back from the water, dark pools, heath). Every choice is in telemetry.
 namespace
 {
 
@@ -199,25 +238,83 @@ constexpr int kWallMargin = 7;
 //
 // Hummocks stand on the contour this many steps up from the water: step 3 is the first pure-grass
 // tile past a beach, so 4 leaves a walkable lane of one to two tiles between beach and stone.
-// Along the bank they come in runs of 4 to 7 tiles with gaps of 3 to 5 (runsAndGaps, Patterns.h:
-// about a third of the line open), so the line is cover with doors, not a wall, and every riffle
-// landing on a terrace gets a door of its own: no hummock within kMoraineDoor tiles of one.
+// Along the bank they come in runs of 3 to 6 tiles with gaps of 4 to 7 (runsAndGaps, Patterns.h:
+// about half the line open), so the line is cover with doors, not a wall, and every riffle
+// landing on a terrace gets a door of its own: no hummock within kMoraineDoor tiles of one, and
+// none within kMoraineHomeClear of a home's 8x8. Revision 4's runs of 4 to 7 with gaps of 3 to 5 were
+// one tile of stone deep; the 2.0 knots are two tiles of rock deep, and at the old runs they took a
+// sixth of the bank farmland within 24 steps of a home, so the knots are shorter and keep further
+// from the homes.
 constexpr int kMoraineSteps = 4;
-constexpr int kMoraineRunLow = 4, kMoraineRunHigh = 7, kMoraineGapLow = 3, kMoraineGapHigh = 5;
-constexpr int kMoraineDoor = 5;
+constexpr int kMoraineRunLow = 3, kMoraineRunHigh = 6, kMoraineGapLow = 4, kMoraineGapHigh = 7;
+constexpr int kMoraineDoor = 5, kMoraineHomeClear = 4;
 
-// --- The dry terrace's patches --------------------------------------------------------------------
+// The moraine's knots of rock take the contour one step further up as well (two rows, so rock
+// vertices stand between them and the knot blocks its tiles and nothing round it), and stone stands on
+// a knot's flank where its run starts or ends: one flank per run for every 100% of `stone-amount`, up
+// to both. Drawn from their own stream, so the runs and gaps are revision 4's.
+constexpr const char *kMoraineQuarryStream = "braided-river-moraine-quarries";
+
+// --- The bluffs (2.0) -----------------------------------------------------------------------------
 //
-// The terrace behind the moraine is a plain of grass with nothing on it but woodlots and outcrops,
-// and a maintainer's first look found it bland. Patches of sand now break it, `dry-patches` (0 to
-// 30, 12) percent of the terrace's inland grass, chosen where a periodic noise of period
-// kDryPatchPeriod peaks (sprinkleSand: rounded patches rather than speckle), kDryPatchInland
-// steps from water so the bank strip and the moraine's contour keep their grass, and clear of
-// every home's town room by kDryPatchTownClear so the sand never takes a colony's building ground.
-// Sand grows nothing and holds no building: the patches are the look of a dry plain, not a
-// resource, and they never touch the bars.
-constexpr int kDryPatchPeriod = 18, kDryPatchInland = 8, kDryPatchTownClear = 14;
-constexpr const char *kDryPatchStream = "braided-river-dry-patches";
+// The core is the sealed spine and a tile either side; its outermost tile per column on each face is
+// where the relief and the buttresses grow from. The relief adds 0 to kBluffRelief rows along each
+// face in two harmonics of the lap, so the bluff line swells and narrows; a buttress is a half
+// ellipse kButtressHalf columns either side of its middle and kButtressDepth rows out, whose outer
+// kQuarryRows rows over the middle kQuarryHalf columns either side are its quarry face: ten stone
+// tiles, the same on every buttress. Rock grows only where it keeps kBluffHomeClear tiles clear of a
+// home's settling box and kBluffWaterClear steps from the water, so no home loses room and the bank
+// strip none of its farmland. One ambient buttress per kBluffQuarryPitch tiles of each face at 100%.
+constexpr int kBluffRelief = 3, kBluffEdgeScan = 12;
+constexpr int kButtressHalf = 4, kButtressDepth = 4, kQuarryHalf = 2, kQuarryRows = 2;
+constexpr int kHomeQuarryStone = (2 * kQuarryHalf + 1) * kQuarryRows;
+constexpr int kBluffHomeClear = 3, kBluffWaterClear = 12;
+constexpr double kBluffQuarryPitch = 64;
+// Scree: a skirt one tile deep at the foot of the bluffs, frayed out to three where a noise of period
+// kTalusPeriod passes its median; never within kTalusWater steps of the water or beside a quarry.
+constexpr int kTalusInner = 1, kTalusOuter = 3, kTalusPeriod = 7, kTalusWater = 15;
+constexpr const char *kBluffStream = "braided-river-bluffs";
+
+// --- The dry terrace (2.0) ------------------------------------------------------------------------
+//
+// Revision 4 broke the terrace with sand patches from eight steps from the water; sand inhibits crop
+// growth on the bank strip in front. Pavement (a Barren mechanic, heath or tundra by look: buildable,
+// holds nothing, inhibits growth exactly as sand does) now takes `dry-patches` percent of the terrace
+// beyond kPaveReach steps from the water, where no crop grows anyway, chosen where a noise of period
+// kPavePeriod (with a detail of kPaveDetailPeriod, so the edges fray) peaks, and keeps kPaveHomeClear
+// tiles, give or take kPaveHomeFray, from every home's middle (its kit and town stay grass; a box
+// here drew straight edges across the patches) and a tile off every quarry. The rest of the terrace
+// is dry grass by look.
+constexpr int kPaveReach = 22, kPavePeriod = 20, kPaveDetailPeriod = 6;
+constexpr double kPaveHomeClear = 20, kPaveHomeFray = 4;
+constexpr const char *kPaveStream = "braided-river-pavement";
+
+// --- Deep pools and looks (2.0) -------------------------------------------------------------------
+//
+// Water vertices at least kDeepSteps four-connected steps from any land (deepCore) are deep, except
+// within kDeepFordClear tiles of a riffle and its landings, and only where that core is at least
+// 2 * kDeepOpen + 1 vertices across (an opening) in a pool of kDeepLeast or more. A channel is 4.4 to 7
+// vertices wide, so only its widest stretches and the confluences hold any: the bare core drew a dark
+// thread down nearly every channel, and three steps left single vertices that read as holes.
+constexpr int kDeepSteps = 2, kDeepFordClear = 2, kDeepOpen = 1, kDeepLeast = 10;
+// Looks: the terrace is green within kGreenReach steps of the water in each season and dry grass
+// beyond, except round every home, within kGardenRadius (give or take kGardenFray) of its middle, kept
+// plain grass for the starting crops. Bars are lush within kLushReach steps of water (every bar tile in
+// Meltwater). The pavement takes its second look where a noise passes kPaveSecondShare.
+constexpr int kGreenReach[2] = {14, 9};
+constexpr int kLushReach = 3;
+constexpr double kGardenRadius = 11, kGardenFray = 3, kPaveSecondShare = 0.65;
+constexpr const char *kLookStream = "braided-river-looks";
+constexpr const char *kSeasonStream = "braided-river-season";
+struct Season
+{
+	const char *name;
+	TerrainType pavement, pavementSecond, deep;
+	bool lushBars; // every bar tile lush, not only by the water
+	int green;     // index into kGreenReach
+};
+constexpr Season kSeasons[2] = {{"meltwater", TUNDRA, HEATH, DEEP_WATER, true, 0},
+								{"late-summer", HEATH, DIRT, DARK_WATER, false, 1}};
 
 // --- Resources ------------------------------------------------------------------------------------
 //
@@ -335,9 +432,19 @@ struct Layout
 	int channels = 0;
 	std::vector<Thread> threads;
 	std::vector<ThreadLine> lines;
-	TerrainSketch terrain;                 // corners: water, beaches and riffles laid
-	std::vector<unsigned char> wall;       // the sealed line of bluffs at the seam
-	std::vector<unsigned char> hummocks;   // the moraine's stone
+	TerrainSketch terrain;                 // the mechanic sketch: water, beaches, riffles, rock, scree...
+	std::vector<unsigned char> spine;      // the sealed line traced round the seam
+	std::vector<unsigned char> wall;       // the bluffs' core: the spine and a tile either side
+	std::array<std::vector<int>, 2> wallEdge; // per u, the core's outermost offset on the +v / -v face
+	std::vector<unsigned char> bluff;      // every bluff tile: core, relief and buttresses
+	std::vector<unsigned char> hummocks;   // the moraine's knots (tiles), flanks included
+	std::vector<unsigned char> quarry;     // quarry faces: stone on grass, left out of the rock
+	std::vector<int> quarryOf;             // the colony whose guaranteed face a quarry tile is, or -1
+	std::vector<unsigned char> talus, pave; // scree tiles at the bluffs' foot; pavement tiles
+	std::vector<unsigned char> keep;       // every home's settling box: no rock, scree or pavement
+	std::vector<int> waterSteps;           // steps from pure water, before the deep pools
+	int season = 0;
+	int homeQuarryShift = 0;               // the furthest a home's quarry stands off its column
 	std::vector<int> comp;                 // land component per tile before riffles; -1 water
 	std::vector<int> compTiles, compGrass; // per component
 	std::vector<double> compV;             // per component: mean v, the bar's depth in the belt
@@ -454,13 +561,195 @@ void planWall(Layout &L, GenerationContext &context)
 	const int c1 = 2 + int(context.bounded(kThreadStream, 2));
 	const int c2 = 5 + int(context.bounded(kThreadStream, 3));
 	const int length = L.axes.length();
-	L.wall.assign(size_t(L.t.size()), 0);
-	traceSealedLap(L.wall, L.t, L.axes.alongX, kWallStep,
+	L.spine.assign(size_t(L.t.size()), 0);
+	traceSealedLap(L.spine, L.t, L.axes.alongX, kWallStep,
 				   [&](int u)
 				   {
 					   const double lap = 2 * kPi * u / length;
 					   return a1 * std::sin(c1 * lap + p1) + a2 * std::sin(c2 * lap + p2);
 				   });
+	// The core: the spine and every tile touching it, so every vertex of a spine tile is rock and the
+	// spine, a sealed line, is wholly blocked whatever grows beside the core.
+	L.wall = dilate(L.t, L.spine, 1);
+	for (int side = 0; side < 2; ++side)
+		L.wallEdge[side].assign(size_t(length), 0);
+	for (int u = 0; u < length; ++u)
+	{
+		int lo = kBluffEdgeScan, hi = -kBluffEdgeScan;
+		for (int o = -kBluffEdgeScan; o <= kBluffEdgeScan; ++o)
+			if (L.wall[L.axes.at(u, o)])
+			{
+				lo = std::min(lo, o);
+				hi = std::max(hi, o);
+			}
+		L.wallEdge[0][u] = hi;
+		L.wallEdge[1][u] = lo;
+	}
+}
+
+// The tile `k` rows out from the core's face on `side` (0 the +v face, towards the north terrace; 1
+// the -v face) at column u.
+int beyondWall(const Layout &L, int u, int side, int k)
+{
+	const int wu = wrapIndex(u, L.axes.length());
+	return L.axes.at(wu, L.wallEdge[side][wu] + (side == 0 ? k : -k));
+}
+
+// A buttress at column u0 on `side`: its rock tiles and its quarry face, or nothing when any of its
+// tiles, or the ground before its face, is not `room`. The face is kQuarryRows deep over the middle
+// 2 * kQuarryHalf + 1 columns, so every buttress holds the same stone.
+struct Buttress
+{
+	std::vector<int> rock, face;
+};
+template <typename Room> Buttress buttressAt(const Layout &L, int u0, int side, Room room)
+{
+	Buttress b;
+	for (int du = -kButtressHalf; du <= kButtressHalf; ++du)
+	{
+		const double share = du / (kButtressHalf + 0.5);
+		const int depth = int(std::lround(kButtressDepth * std::sqrt(1 - share * share)));
+		for (int k = 1; k <= depth; ++k)
+		{
+			const int i = beyondWall(L, u0 + du, side, k);
+			if (!room(i) || L.wall[i])
+				return {};
+			(std::abs(du) <= kQuarryHalf && k > depth - kQuarryRows ? b.face : b.rock).push_back(i);
+		}
+		// The ground before the face must be open terrace, or the stone could not be reached.
+		if (std::abs(du) <= kQuarryHalf && !room(beyondWall(L, u0 + du, side, depth + 1)))
+			return {};
+	}
+	return b;
+}
+
+// The bluffs' relief, buttresses, quarries and talus, once the homes are placed: rock grows from the
+// core only where it keeps clear of every home and of the water. Every colony gets a buttress on its own
+// terrace as near its column as fits; ambient buttresses follow along both faces by `stone-amount`.
+bool planBluffs(Layout &L, GenerationContext &context, int stone)
+{
+	const Axes &axes = L.axes;
+	const Torus &t = L.t;
+	const int n = t.size(), length = axes.length();
+	std::mt19937 &random = context.stream(kBluffStream);
+	const auto draw = [&](double lo, double hi)
+	{ return lo + (hi - lo) * (random() % (1u << 20)) / double(1u << 20); };
+	L.bluff = L.wall;
+	L.quarry.assign(size_t(n), 0);
+	L.quarryOf.assign(size_t(n), -1);
+	std::vector<unsigned char> taken(size_t(n), 0); // buttresses and the ground they keep clear
+	const auto room = [&](int i)
+	{
+		return !L.keep[i] && !taken[i] && L.waterSteps[i] >= kBluffWaterClear &&
+			   (L.wall[i] || L.isTerrace(L.comp[i]));
+	};
+	int ambient = 0;
+	const auto raise = [&](const Buttress &b, int owner)
+	{
+		for (int i : b.rock)
+			L.bluff[i] = 1;
+		for (int i : b.face)
+		{
+			L.bluff[i] = 1;
+			L.quarry[i] = 1;
+			L.quarryOf[i] = owner;
+		}
+		for (const std::vector<int> *tiles : {&b.rock, &b.face})
+			for (int i : *tiles)
+				for (int dy = -3; dy <= 3; ++dy)
+					for (int dx = -3; dx <= 3; ++dx)
+						taken[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
+	};
+	// Every colony's own buttress, nearest its column first.
+	for (size_t k = 0; k < L.homes.size(); ++k)
+	{
+		const Home &home = L.homes[k];
+		const int centre = home.u + 2;
+		const int reach = length / 2;
+		bool placed = false;
+		for (int offset = 0; offset <= reach && !placed; ++offset)
+			for (int sign : {1, -1})
+			{
+				if (offset == 0 && sign < 0)
+					continue;
+				const Buttress b = buttressAt(L, centre + sign * offset, home.bank, room);
+				if (b.face.empty())
+					continue;
+				raise(b, int(k));
+				L.homeQuarryShift = std::max(L.homeQuarryShift, offset);
+				context.telemetry.measure("braided-river.quarry.home-shift", offset, int(k));
+				placed = true;
+				break;
+			}
+		if (!placed)
+		{
+			L.failure = "The terraces have no room for a home; use a bigger map, a narrower braid "
+						"or fewer colonies.";
+			return false;
+		}
+	}
+	// Ambient buttresses along both faces.
+	const int perFace = int(scaledCount(std::max(1, int(std::lround(length / kBluffQuarryPitch))), stone));
+	for (int side = 0; side < 2; ++side)
+	{
+		const double start = draw(0, length), pitch = double(length) / std::max(1, perFace);
+		for (int q = 0; q < perFace; ++q)
+		{
+			const int u = int(std::floor(start + q * pitch + draw(-0.3, 0.3) * pitch));
+			const Buttress b = buttressAt(L, u, side, room);
+			if (b.face.empty())
+				continue;
+			raise(b, -1);
+			++ambient;
+		}
+	}
+	// The relief: the core swells by 0 to kBluffRelief rows along each face, in two harmonics of the lap,
+	// wherever the rock keeps clear of the homes and the water and does not bury a quarry face.
+	const std::vector<unsigned char> faces = dilate(t, L.quarry, 1);
+	for (int side = 0; side < 2; ++side)
+	{
+		const int c1 = 3 + int(random() % 4), c2 = 9 + int(random() % 7);
+		const double p1 = draw(0, 2 * kPi), p2 = draw(0, 2 * kPi);
+		for (int u = 0; u < length; ++u)
+		{
+			const double lap = 2 * kPi * u / length;
+			const double wave = 0.5 + 0.3 * std::sin(c1 * lap + p1) + 0.2 * std::sin(c2 * lap + p2);
+			const int rows = int(std::floor(wave * (kBluffRelief + 1)));
+			for (int k = 1; k <= std::min(rows, kBluffRelief); ++k)
+			{
+				const int i = beyondWall(L, u, side, k);
+				if (L.bluff[i])
+					continue;
+				if (L.keep[i] || faces[i] || L.waterSteps[i] < kBluffWaterClear || !L.isTerrace(L.comp[i]))
+					break;
+				L.bluff[i] = 1;
+			}
+		}
+	}
+	// Talus at the foot of the rock.
+	{
+		std::vector<unsigned char> rock(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			rock[i] = L.bluff[i] && !L.quarry[i];
+		const std::vector<unsigned char> nearFace = dilate(t, L.quarry, 2);
+		std::vector<unsigned char> eligible(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			eligible[i] = L.isTerrace(L.comp[i]) && !L.bluff[i] && !L.keep[i] && !nearFace[i] &&
+						  L.waterSteps[i] >= kTalusWater;
+		const std::vector<int> fray = periodicNoise(t.w, t.h, kTalusPeriod, random);
+		L.talus = talusApron(t, rock, eligible, fray, kTalusInner, kTalusOuter, 32768);
+	}
+	int bluffTiles = 0, talusTiles = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		bluffTiles += L.bluff[i];
+		talusTiles += L.talus[i];
+	}
+	context.telemetry.measure("braided-river.bluffs.tiles", bluffTiles);
+	context.telemetry.measure("braided-river.bluffs.ambient-quarries", ambient);
+	context.telemetry.measure("braided-river.bluffs.talus", talusTiles);
+	context.telemetry.measure("braided-river.quarry.home-shift-max", L.homeQuarryShift);
+	return true;
 }
 
 // The land parted by the channels: every walkable tile not occupied by a wall, in
@@ -823,18 +1112,169 @@ void planMoraine(Layout &L, GenerationContext &context)
 		for (int dv = -2; dv <= 5; ++dv)
 			for (int du = -2; du <= 5; ++du)
 				homeSquares[axes.at(home.u + du, home.v + dv)] = 1;
-	homeSquares = dilate(L.t, homeSquares, 2);
+	homeSquares = dilate(L.t, homeSquares, kMoraineHomeClear);
+	std::array<std::vector<unsigned char>, 2> runs;
 	for (int bank = 0; bank < 2; ++bank)
 	{
-		const std::vector<unsigned char> on =
-			runsAndGaps(axes.length(), kMoraineRunLow, kMoraineRunHigh, kMoraineGapLow,
-						kMoraineGapHigh, context, kMoraineStream);
+		runs[bank] = runsAndGaps(axes.length(), kMoraineRunLow, kMoraineRunHigh, kMoraineGapLow,
+								 kMoraineGapHigh, context, kMoraineStream);
+		const std::vector<unsigned char> &on = runs[bank];
 		const int terrace = bank == 0 ? L.terraceNorth : L.terraceSouth;
 		for (int i = 0; i < n; ++i)
 			if (L.comp[i] == terrace && waterSteps[i] == kMoraineSteps && on[axes.uOf(i)] &&
 				!doors[i] && !homeSquares[i])
 				L.hummocks[i] = 1;
 	}
+	// 2.0: each knot takes the contour one step further up beside it, two rows of rock.
+	std::vector<unsigned char> second(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		if (waterSteps[i] != kMoraineSteps + 1 || !L.isTerrace(L.comp[i]) || doors[i] || homeSquares[i] ||
+			!runs[L.comp[i] == L.terraceNorth ? 0 : 1][axes.uOf(i)])
+			continue;
+		const int x = L.t.remainderX(i), y = i / L.t.w;
+		for (int dy = -1; dy <= 1 && !second[i]; ++dy)
+			for (int dx = -1; dx <= 1 && !second[i]; ++dx)
+				second[i] = L.hummocks[L.t.at(x + dx, y + dy)];
+	}
+	for (int i = 0; i < n; ++i)
+		L.hummocks[i] |= second[i];
+}
+
+// Stone on the moraine's flanks: where a run of hummocks starts or ends, the knot's end column is a
+// quarry face, on one flank per run for every 100% of `stone-amount` (both from 200%, none at 0).
+int stockMoraine(Layout &L, GenerationContext &context, int stone)
+{
+	const Axes &axes = L.axes;
+	const int n = L.t.size(), length = axes.length();
+	std::mt19937 &random = context.stream(kMoraineQuarryStream);
+	// The knot tiles per bank and column.
+	std::array<std::vector<std::vector<int>>, 2> columns;
+	for (int bank = 0; bank < 2; ++bank)
+		columns[bank].assign(size_t(length), {});
+	for (int i = 0; i < n; ++i)
+		if (L.hummocks[i])
+			columns[L.comp[i] == L.terraceNorth ? 0 : 1][axes.uOf(i)].push_back(i);
+	int stocked = 0;
+	for (int bank = 0; bank < 2; ++bank)
+	{
+		const auto knot = [&](int u) { return !columns[bank][wrapIndex(u, length)].empty(); };
+		for (int u = 0; u < length; ++u)
+		{
+			if (!knot(u) || knot(u - 1))
+				continue;
+			int end = u;
+			while (knot(end + 1) && end - u < length)
+				++end;
+			const double expected = stone / 100.0;
+			int flanks = std::min(2, int(expected) + ((random() % 1000) < (expected - int(expected)) * 1000));
+			const bool first = random() % 2 == 0;
+			if (end - u < 2)
+				flanks = 0; // a knot of one or two columns would be all quarry
+			for (int f = 0; f < flanks; ++f)
+				for (int i : columns[bank][wrapIndex((f == 0) == first ? u : end, length)])
+				{
+					L.quarry[i] = 1;
+					++stocked;
+				}
+		}
+	}
+	return stocked;
+}
+
+// Pavement on the terraces beyond kPaveReach steps from the water: the `share` (0 to 1) of that ground
+// where a smooth noise peaks, off the bluffs, the talus, the moraine, every quarry and its approach,
+// and every home's settling box.
+void planPavement(Layout &L, GenerationContext &context, double share)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	L.pave.assign(size_t(n), 0);
+	const std::vector<unsigned char> faces = dilate(t, L.quarry, 1);
+	const std::vector<unsigned char> knots = dilate(t, L.hummocks, 1);
+	std::mt19937 &random = context.stream(kPaveStream);
+	// Fractal, not a single octave: smoothstep value noise alone drew patches with straight sides.
+	const std::vector<int> broad = fractalNoise(t.w, t.h, kPavePeriod, 3, random);
+	const std::vector<int> detail = periodicNoise(t.w, t.h, kPaveDetailPeriod, random);
+	std::vector<std::pair<int, int>> middles;
+	for (const Home &home : L.homes)
+	{
+		const int i = L.axes.at(home.u + 2, home.v + 2);
+		middles.push_back({t.remainderX(i), i / t.w});
+	}
+	const auto nearHome = [&](int i)
+	{
+		const double r = kPaveHomeClear + kPaveHomeFray * (detail[i] - 32768) / 32768.0;
+		for (const auto &m : middles)
+			if (t.dist2(t.remainderX(i), i / t.w, m.first, m.second) <= r * r)
+				return true;
+		return false;
+	};
+	std::vector<std::pair<int, int>> ranked;
+	for (int i = 0; i < n; ++i)
+		if (L.isTerrace(L.comp[i]) && L.waterSteps[i] >= kPaveReach && !L.bluff[i] && !L.talus[i] &&
+			!L.keep[i] && !faces[i] && !knots[i] && !nearHome(i))
+			ranked.push_back({-(broad[i] + detail[i] / 3), i});
+	std::stable_sort(ranked.begin(), ranked.end());
+	const size_t take = size_t(std::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
+	for (size_t k = 0; k < take; ++k)
+		L.pave[ranked[k].second] = 1;
+	context.telemetry.measure("braided-river.pavement.eligible", ranked.size());
+	context.telemetry.measure("braided-river.pavement.tiles", take);
+}
+
+// The mechanic sketch's last layers: rock vertices where all four tiles are bluff or knot rock (quarry
+// faces left out, so each keeps four grass corners), scree and pavement on their tiles' top-left
+// vertices, never on a quarry's corners, and the deep pools when `deep`.
+void paintMechanics(Layout &L, GenerationContext &context, bool deep)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	std::vector<unsigned char> rockTiles(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		rockTiles[i] = (L.bluff[i] || L.hummocks[i]) && !L.quarry[i];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTiles);
+	int rockVerticesLaid = 0, deepVertices = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.terrain[i] != GRASS)
+			continue;
+		if (rock[i])
+		{
+			L.terrain[i] = RIDGE_ROCK;
+			++rockVerticesLaid;
+		}
+		else if (L.talus[i])
+			L.terrain[i] = SCREE;
+		else if (L.pave[i])
+			L.terrain[i] = SHALE;
+	}
+	if (deep)
+	{
+		std::vector<unsigned char> water(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			water[i] = L.terrain[i] == WATER;
+		std::vector<unsigned char> core = deepCore(t, water, kDeepSteps);
+		const std::vector<unsigned char> fords = dilate(t, L.riffleTiles, kDeepFordClear);
+		for (int i = 0; i < n; ++i)
+			core[i] = core[i] && !fords[i];
+		{
+			// An opening, eroding by a square and growing back by a cross, so the pools keep rounded
+			// ends: the square both ways drew them as boxes.
+			const std::vector<unsigned char> grown = dilateRound(t, erode(t, core, kDeepOpen), kDeepOpen);
+			for (int i = 0; i < n; ++i)
+				core[i] = core[i] && grown[i];
+			core = dropSmallRegions(t, core, kDeepLeast);
+		}
+		for (int i = 0; i < n; ++i)
+			if (core[i])
+			{
+				L.terrain[i] = DEEP_WATER;
+				++deepVertices;
+			}
+	}
+	context.telemetry.measure("braided-river.rock.vertices", rockVerticesLaid);
+	context.telemetry.measure("braided-river.deep.vertices", deepVertices);
 }
 
 // Every channel keeps its core except at its own riffles (channelCoreFault), and every riffle is
@@ -943,6 +1383,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.failure = checkBraid(L, [&](int x, int y) { return pureWater[size_t(y) * t.w + x] != 0; });
 	if (!L.failure.empty())
 		return L;
+	// 2.0: the ground every later layer keeps clear of, each home's settling box (placeSettlement's
+	// 16x16 round the site) and kBluffHomeClear tiles more.
+	L.keep.assign(size_t(t.size()), 0);
+	for (const Home &home : L.homes)
+		for (int dv = -6 - kBluffHomeClear; dv <= 9 + kBluffHomeClear; ++dv)
+			for (int du = -6 - kBluffHomeClear; du <= 9 + kBluffHomeClear; ++du)
+				L.keep[axes.at(home.u + du, home.v + dv)] = 1;
+	L.waterSteps = stepsFrom(t, pureWater);
 	if (o.moraine)
 		planMoraine(L, context);
 	else
@@ -952,35 +1400,85 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		hummocks += h;
 	context.telemetry.measure("braided-river.moraine.designed", hummocks);
 	context.telemetry.measure("braided-river.homes.actual", L.homes.size());
-	// The dry patches, last, on the terraces only: off the moraine, off the wall, off every town's
-	// room and off the riffles' landings, and never nearer the water than the bank strip.
-	{
-		std::vector<unsigned char> keep(size_t(t.size()), 0);
-		for (const Home &home : L.homes)
-			for (int dv = -kDryPatchTownClear; dv <= kDryPatchTownClear + 3; ++dv)
-				for (int du = -kDryPatchTownClear; du <= kDryPatchTownClear + 3; ++du)
-					keep[axes.at(home.u + du, home.v + dv)] = 1;
-		const std::vector<unsigned char> landings = dilate(t, L.riffleTiles, kMoraineDoor);
-		// A sand corner spoils the four tiles round it, and stone stands on pure grass only, so
-		// the wall and the moraine keep two tiles of grass on every side.
-		const std::vector<unsigned char> stone = dilate(t, L.wall, 2), moraine = dilate(t, L.hummocks, 2);
-		std::vector<unsigned char> eligible(size_t(t.size()), 0);
-		for (int i = 0; i < t.size(); ++i)
-			eligible[i] = L.isTerrace(L.comp[i]) && !keep[i] && !stone[i] && !moraine[i] &&
-						  !landings[i];
-		const std::vector<int> noise =
-			periodicNoise(t.w, t.h, kDryPatchPeriod, context.stream(kDryPatchStream));
-		int before = 0;
-		for (int i = 0; i < t.size(); ++i)
-			before += L.terrain[i] == SAND;
-		sprinkleSand(L.terrain, t, eligible, o.dryPatches / 100.0, kDryPatchInland,
-					 [&](int i) { return noise[i]; });
-		int after = 0;
-		for (int i = 0; i < t.size(); ++i)
-			after += L.terrain[i] == SAND;
-		context.telemetry.measure("braided-river.dry-patches.corners", after - before);
-	}
+	if (!planBluffs(L, context, o.stone))
+		return L;
+	context.telemetry.measure("braided-river.moraine.quarry-tiles", stockMoraine(L, context, o.stone));
+	planPavement(L, context, o.dryPatches / 100.0);
+	paintMechanics(L, context, o.deepPools);
+	// The season: looks only, drawn from its own stream so it moves nothing else.
+	L.season = o.season > 0 ? o.season - 1 : int(context.bounded(kSeasonStream, 2));
+	context.telemetry.choice("braided-river.season", kSeasons[L.season].name);
+	context.telemetry.choice("braided-river.deep-pools", o.deepPools ? "on" : "off");
 	return L;
+}
+
+// The looks over the mechanic sketch (composeLooks keeps each inside its rule group): bars lush and
+// their beaches and the riffles pale gravel, the terrace green by the water and dry beyond except
+// round the homes, pavement heath or tundra, pools by season, the moraine's knots outcrops.
+TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
+{
+	const Torus &t = L.t;
+	const Axes &axes = L.axes;
+	const int n = t.size();
+	const Season &season = kSeasons[L.season];
+	std::vector<unsigned char> wet(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
+	const std::vector<int> nearWater = stepsFrom(t, wet);
+	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, context.stream(kLookStream));
+	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, context.stream(kLookStream));
+	std::vector<std::pair<int, int>> middles;
+	for (const Home &home : L.homes)
+	{
+		const int i = axes.at(home.u + 2, home.v + 2);
+		middles.push_back({t.remainderX(i), i / t.w});
+	}
+	const auto garden = [&](int i)
+	{
+		const double r = kGardenRadius + kGardenFray * (fray[i] - 32768) / 32768.0;
+		for (const auto &m : middles)
+			if (t.dist2(t.remainderX(i), i / t.w, m.first, m.second) <= r * r)
+				return true;
+		return false;
+	};
+	const auto barTile = [&](int i) { return L.comp[i] >= 0 && !L.isTerrace(L.comp[i]); };
+	const auto touchesBar = [&](int i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		return barTile(i) || barTile(t.at(x - 1, y)) || barTile(t.at(x, y - 1)) || barTile(t.at(x - 1, y - 1));
+	};
+	TerrainSketch looks(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		switch (L.terrain[i])
+		{
+		case GRASS:
+			if (garden(i))
+				break;
+			if (touchesBar(i))
+				looks[i] = season.lushBars || nearWater[i] <= kLushReach ? LUSH_GRASS : GRASS;
+			else if (nearWater[i] > kGreenReach[season.green] + kGardenFray * (fray[i] - 32768) / 32768.0)
+				looks[i] = DRY_GRASS;
+			break;
+		case SAND:
+			// Every sand vertex is the river's: bar heads, beaches and riffles, all pale gravel.
+			looks[i] = PALE_SAND;
+			break;
+		case SHALE:
+			looks[i] = split[i] < kPaveSecondShare * 65536 ? season.pavement : season.pavementSecond;
+			break;
+		case DEEP_WATER:
+			looks[i] = season.deep;
+			break;
+		case RIDGE_ROCK:
+			if (L.hummocks[i])
+				looks[i] = OUTCROP;
+			break;
+		default:
+			break;
+		}
+	}
+	return looks;
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -1002,36 +1500,22 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "braided river terrain";
-	writeVertices(map, L.terrain);
+	writeVertices(map, composeLooks(L.terrain, lookSketch(L, context)));
 
-	// The wall and the moraine go down before the colonies, so a settlement never lands on
-	// stone; both are the map's structure and stay whatever the stone amount says.
+	// The quarry faces go down before the colonies, so a settlement never lands on stone. The rock is
+	// the map's structure and stays whatever the stone amount says; the faces are counted by it.
 	context.stage = "braided river bluffs";
-	const DesignedStone bluffs = designedStone(map, t, L.wall);
-	if (bluffs.gaps > 0)
-	{
-		context.detail = "The bluffs have a gap at (" + std::to_string(t.remainderX(bluffs.firstGap)) +
-						 ", " + std::to_string(bluffs.firstGap / t.w) + ").";
-		return false;
-	}
 	std::vector<unsigned char> protectedStone(size_t(n), 0);
-	int wallTiles = 0, hummocks = 0;
+	int bluffStone = 0, moraineStone = 0;
 	for (int i = 0; i < n; ++i)
-		if (bluffs.stone[i])
+		if (L.quarry[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
 		{
 			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			protectedStone[i] = 1;
-			++wallTiles;
+			++(L.hummocks[i] ? moraineStone : bluffStone);
 		}
-	for (int i = 0; i < n; ++i)
-		if (L.hummocks[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) && !map.isResource(t.remainderX(i), i / t.w))
-		{
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
-			protectedStone[i] = 1;
-			++hummocks;
-		}
-	context.telemetry.measure("braided-river.wall.tiles", wallTiles);
-	context.telemetry.measure("braided-river.moraine.placed", hummocks);
+	context.telemetry.measure("braided-river.quarry.bluff-stone", bluffStone);
+	context.telemetry.measure("braided-river.quarry.moraine-stone", moraineStone);
 
 	context.stage = "braided river colonies";
 	const auto homeMask = [&](int team)
@@ -1187,8 +1671,14 @@ bool generate(Game &game, GenerationContext &context)
 		if (L.isTerrace(L.comp[i]) && open(i) && !townRoom[i] && grassDepth[i] >= 2 &&
 			fertile(i) == 0)
 			dry.push_back(i);
-	const int woodlots = int(scaledCount(int(dry.size()) / kDryTilesPerWoodlot, o.wood));
-	const int outcrops = int(scaledCount(int(dry.size()) / kDryTilesPerOutcrop, o.stone));
+	// Counted over the dry grass and the pavement both, so laying pavement leaves the woodlots and
+	// outcrops as many as revision 4 had, on the grass between its patches.
+	int paved = 0;
+	for (int i = 0; i < n; ++i)
+		paved += L.pave[i] && !townRoom[i];
+	const int dryGround = int(dry.size()) + paved;
+	const int woodlots = int(scaledCount(dryGround / kDryTilesPerWoodlot, o.wood));
+	const int outcrops = int(scaledCount(dryGround / kDryTilesPerOutcrop, o.stone));
 	const int woodlotsPlaced =
 		scatterClumps(context, t, dry, woodlots, kResourceStream, open,
 					  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, WOOD, 1); });
@@ -1256,6 +1746,43 @@ bool generate(Game &game, GenerationContext &context)
 		opened += more;
 	}
 	context.telemetry.measure("braided-river.routes.opened", opened);
+	if (context.telemetry.enabled())
+	{
+		// How far each colony walks to its own quarry face, and to the nearest face of any kind: the
+		// fairness of stone, measured on the finished map.
+		const std::vector<unsigned char> walkable = walkableTiles(map);
+		int least = INT_MAX, most = 0;
+		for (int team = 0; team < teams; ++team)
+		{
+			std::vector<unsigned char> swarm(size_t(n), 0);
+			for (int dy = 0; dy < 4; ++dy)
+				for (int dx = 0; dx < 4; ++dx)
+					swarm[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+			const std::vector<int> steps = stepsFrom(t, swarm, walkable);
+			int own = INT_MAX, any = INT_MAX;
+			for (int i = 0; i < n; ++i)
+			{
+				if (!L.quarry[i])
+					continue;
+				const int x = t.remainderX(i), y = i / t.w;
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						const int s = steps[t.at(x + dx, y + dy)];
+						if (s < 0)
+							continue;
+						any = std::min(any, s + 1);
+						if (L.quarryOf[i] == team)
+							own = std::min(own, s + 1);
+					}
+			}
+			context.telemetry.measure("braided-river.quarry.home-walk", own == INT_MAX ? -1 : own, team);
+			context.telemetry.measure("braided-river.quarry.nearest-walk", any == INT_MAX ? -1 : any, team);
+			least = std::min(least, own);
+			most = std::max(most, own == INT_MAX ? -1 : own);
+		}
+		context.telemetry.measure("braided-river.quarry.home-walk-spread", most - least);
+	}
 	return true;
 }
 
@@ -1271,12 +1798,43 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string mismatch = designMismatch(L, map, "braided river"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
-	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
-			return "The bluffs have a gap at (" + std::to_string(t.remainderX(i)) + ", " +
-				   std::to_string(i / t.w) + ").";
-	if (const std::string fault = checkBraid(L, [&](int x, int y) { return map.isWater(x, y); });
+	const Axes &axes = L.axes;
+	// The bluffs are a seal: flooding the band round the seam over walkable terrain from one face,
+	// every deposit counted as open ground (so the rock alone must hold), never reaches the other.
+	{
+		const int band = int(kWallWave) + 2 + std::max(kButtressDepth, kBluffRelief) + 2;
+		const int breadth = axes.breadth();
+		std::vector<unsigned char> open(size_t(t.size()), 0), from(size_t(t.size()), 0);
+		std::vector<int> offset(size_t(t.size()), INT_MAX);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int v = axes.vOf(i), o = v <= breadth / 2 ? v : v - breadth;
+			if (std::abs(o) > band)
+				continue;
+			offset[i] = o;
+			open[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
+			from[i] = o == -band && open[i];
+		}
+		for (int i : floodFrom(t, from, open).visited)
+			if (offset[i] == band)
+				return "The bluffs have a gap at (" + std::to_string(t.remainderX(i)) + ", " +
+					   std::to_string(i / t.w) + ").";
+	}
+	// Every quarry face holds its stone, and every colony's own face the same ten.
+	if (const std::string fault = quarryFault(map, t, L.quarry, L.quarryOf, context.request.nbTeams,
+											  kHomeQuarryStone);
 		!fault.empty())
+		return fault;
+	// Water here is a tile of water corners only, deep or plain, as revision 4's pure water was: a
+	// beach tile of two water corners is swimmable too, but it is the bank a ford lands on.
+	const auto wet = [&](int x, int y)
+	{
+		const TerrainType v = map.vertexTerrainAt(t.x(x), t.y(y));
+		return v == WATER || v == DEEP_WATER || v == DARK_WATER;
+	};
+	const auto water = [&](int x, int y)
+	{ return wet(x, y) && wet(x + 1, y) && wet(x, y + 1) && wet(x + 1, y + 1); };
+	if (const std::string fault = checkBraid(L, water); !fault.empty())
 		return fault;
 	for (const Riffle &r : L.riffles)
 		if (const auto fault = fordWalkabilityFault(map, t, r.ford); !fault.empty())
@@ -1311,6 +1869,7 @@ BraidedRiverOptions::BraidedRiverOptions(const GenerationRequest &r)
 	: braidWidth(r.option("braid-width")), channels(r.option("channels")),
 	  barSize(r.option("bar-size")), extraRiffles(r.option("extra-riffles")),
 	  moraine(r.option("moraine") != 0), dryPatches(r.option("dry-patches")),
+	  deepPools(r.option("deep-pools") != 0), season(r.option("season")),
 	  wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
@@ -1322,7 +1881,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			4,
+			5,
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no
@@ -1342,17 +1901,30 @@ GeneratorDefinition braidedRiverDefinition()
 			 // too: at 0 the way across is a tree, at 100 every stretch long enough is open.
 			 GeneratorControl{"extra-riffles", "Extra riffles", 0, 100, 5, 25, ControlGroup::Layout}
 				 .withSearchRange(15, 60),
-			 // Sand patches on the dry terrace, a share of its inland grass: the look of a plain
-			 // that is dry, not another resource.
-			 GeneratorControl{"dry-patches", "Dry patches", 0, 30, 1, 12, ControlGroup::Terrain}
-				 .withSearchRange(4, 18),
+			 // Pavement (heath or tundra by look; buildable, holds nothing, and grows nothing near
+			 // it) on this share of the terrace beyond the water's reach, where nothing grows anyway:
+			 // the stony dry terrace and building room no crop ever takes. Revision 4 laid sand
+			 // patches nearer the water instead, which slowed the bank strip's crops.
+			 GeneratorControl{"dry-patches", "Dry patches", 0, 60, 5, 35, ControlGroup::Terrain}
+				 .withSearchRange(20, 50),
 			 // Off, the terrace edges are open bank; on, a broken line of stone hummocks four
 			 // tiles up each bank, with a gap at every riffle landing.
 			 GeneratorControl::toggle("moraine", "Moraine hummocks", true, ControlGroup::Layout)
 				 .withSearchValues({0, 1}),
+			 // On, the widest stretches of channel, mostly the confluences, have a core of deep water
+			 // two steps from any land: swimming across is slower and no algae grows there. Routes on
+			 // foot are the same either way.
+			 GeneratorControl::toggle("deep-pools", "Deep pools", true, ControlGroup::Terrain)
+				 .withSearchValues({0, 1}),
+			 // Looks only: Meltwater (lush bars, blue pools, frost-cracked tundra) or Late summer
+			 // (bars drying back from the water, dark pools, heath). Both play identically.
+			 GeneratorControl::choice("season", "Season", {"Random", "Meltwater", "Late summer"}, 0,
+									  ControlGroup::Terrain)
+				 .withSearchValues({1, 2}),
 			 // The bars' and bank strips' farmland, the dry terrace's woodlots and outcrops, the
-			 // deep bars' fruit and the channels' algae. Every home's kit, every promised bar's
-			 // wheat and wood, the bluffs and the moraine stay as they are.
+			 // deep bars' fruit, the channels' algae, and the quarry faces on the bluffs and the
+			 // moraine's flanks. Every home's kit, every promised bar's wheat and wood, every colony's
+			 // own quarry face and all the rock stay as they are.
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
