@@ -3,6 +3,7 @@
 
 #pragma once
 #include "CortexSnapshotQueries.h"
+#include "MersenneTwister.h"
 class Player;
 
 #include "CortexTypes.h"

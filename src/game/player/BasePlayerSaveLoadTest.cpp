@@ -16,6 +16,7 @@
 // rejected, and an exhausted stream fails at entry instead of zero-filling.
 // Links libgag_server.a for BinaryStream + MemoryStreamBackend.
 
+#include "AI.h"
 #include "Glob2Test.h"
 #include <cstdio>
 #include <memory>

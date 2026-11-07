@@ -32,7 +32,6 @@ src/game/Game.h -> src/scripting/sgsl/SGSL.h
 src/game/GameHints.h -> src/scripting/map/ScriptNumber.h
 src/game/GameObjectives.h -> src/scripting/map/ScriptNumber.h
 src/game/orders/Order.h -> src/net/NetConsts.h
-src/game/player/BasePlayer.h -> src/ai/AI.h
 src/game/player/Player.h -> src/ai/AI.h
 src/game/rules/CustomGamePreferences.h -> src/app/Settings.h
 src/game/rules/CustomGamePreferences.h -> src/map/generator/compatibility/LegacyGenerationDescriptor.h
