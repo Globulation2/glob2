@@ -74,7 +74,30 @@ strict flags in every tier, so the dev and perf builds of one platform produce t
 same simulation checksums; a mismatch is a bug, not a reason to bump the
 simulation revision.
 
-`pch=1` precompiles stable standard headers separately for each compiler/flag
+`pch=1` precompiles
+### Comparing against master
+
+`python3 tools/dev_baseline.py build` builds the dev and perf tiers of
+origin/master in a detached worktree under the development store; with the shared
+compiler cache, a baseline one merge newer than the last is mostly cache hits.
+`tools/perf_ab.py` then measures a candidate build against it in alternating
+pairs and prints the table for the pull request:
+
+```sh
+python3 tools/dev_build.py perf=1 engine-tests
+python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf --name terrain-hazard \
+  -- '{build}/test/glob2-engine-tests' -ts=TerrainHazardBenchmark '-tc=*idle decisions*'
+```
+
+`--baseline master` resolves the baseline of the branch's merge base
+(`dev_baseline.py path --merge-base HEAD`); any build directory works too. The
+metric is wall time unless `--metric REGEX` picks a number the benchmark prints.
+Screening uses three pairs; quoted numbers use `perf=1 opt=3` and seven pairs
+(`--pin` adds the Linux benchmark cpuset). `dev_baseline.py gc --keep 3` removes
+older baselines that no comparison is using, and `dev_baseline.py seed WORKTREE`
+copies a baseline's dev build into a fresh worktree so its first build recompiles
+only what differs.
+ stable standard headers separately for each compiler/flag
 configuration. Its C++ objects bypass ccache rather than weakening cache
 correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
 checked-in allowlist in deterministic groups of at most four files, preserves
