@@ -764,7 +764,10 @@ def _export_assets(
         terrain_document = None
 
     if cache is None:
-        cache = root / "build/asset-cache"
+        # One encoded-image cache per machine, shared by every checkout (development store).
+        sys.path.insert(0, str(ROOT / "scons"))
+        from dev_store import cache as store_cache
+        cache = store_cache(root, "asset-cache")
     cache = Path(cache).resolve()
     if (
         cache == output

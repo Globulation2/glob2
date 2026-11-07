@@ -110,7 +110,7 @@ jobs:
       - name: Restore the encoded asset cache
         uses: actions/cache/restore@v4
         with:
-          path: build/asset-cache
+          path: build/mobile-tools/asset-cache
           key: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-${{ github.sha }}
           restore-keys: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-
       # The perf tier (-O2): with a warm cache compiling costs the same as the -O0
@@ -137,7 +137,7 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' && github.event_name == 'push' }}
         uses: actions/cache/save@v4
         with:
-          path: build/asset-cache
+          path: build/mobile-tools/asset-cache
           key: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-${{ github.sha }}
       - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
