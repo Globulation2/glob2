@@ -213,6 +213,26 @@ class TerrainTileset(unittest.TestCase):
         del boulders["decor"]["connected_open"]
         validate(self.document)
 
+    def test_clear_of_masses_is_a_small_object_decor_distance(self):
+        boulders = next(m for m in self.document["materials"] if m["key"] == "boulders")
+        self.assertEqual(boulders["decor"]["clear_of_masses"], 1)
+        for value in (0, 1):
+            boulders["decor"]["clear_of_masses"] = value
+            validate(self.document)
+        for value in (-1, 2, True, "1", 1.0):
+            boulders["decor"]["clear_of_masses"] = value
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        boulders["decor"]["clear_of_masses"] = 1
+        # Connected frames (masses and foliage) tile across cells.
+        for key in ("cliffs", "hedge"):
+            material = next(m for m in self.document["materials"] if m["key"] == key)
+            material["decor"]["clear_of_masses"] = 1
+            with self.assertRaises(ValueError):
+                validate(self.document)
+            del material["decor"]["clear_of_masses"]
+        validate(self.document)
+
     def test_invalid_catalogs(self):
         mutations = [
             lambda d: d.update(version=9),

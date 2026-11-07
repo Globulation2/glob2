@@ -109,6 +109,17 @@ def args(**overrides):
 
 
 class ListingTest(unittest.TestCase):
+    def test_source_names_are_repository_paths_in_both_build_systems(self):
+        # SCons passes root-relative paths; CMake absolute ones, which CCACHE_BASEDIR
+        # rewrites relative to build/cmake/dev.
+        for name in ('src/map/MapQueryTest.cpp', '../../../src/map/MapQueryTest.cpp',
+                     './src/map/MapQueryTest.cpp', str(run_tests.ROOT / 'src/map/MapQueryTest.cpp')):
+            self.assertEqual(run_tests.source_name(name), 'src/map/MapQueryTest.cpp')
+        self.assertEqual(run_tests.source_name('/usr/include/doctest.h'), '/usr/include/doctest.h')
+        listing = LISTING.replace('filename="', 'filename="../../../')
+        self.assertEqual([case.file for case in run_tests.parse_listing(listing, 'engine')],
+                         [case.file for case in run_tests.parse_listing(LISTING, 'engine')])
+
     def test_parses_names_suites_and_tags(self):
         cases = run_tests.parse_listing(LISTING, 'engine')
         self.assertEqual([case.label for case in cases][:2],
@@ -136,6 +147,80 @@ class SelectionTest(unittest.TestCase):
         kept, skipped = run_tests.select(self.cases, args(quick=True, no_display=True))
         self.assertEqual(sorted(case.suite for case in kept), ['HungryDefeat', 'NetConnection'])
         self.assertEqual([case.suite for case in skipped], ['PointBar'])
+
+    def test_tiers(self):
+        def suites(**overrides):
+            kept, skipped = run_tests.select(self.cases, args(**overrides))
+            return sorted(case.suite for case in kept + skipped)
+        everything = suites(tier='full')
+        self.assertIn('PointBar', everything)
+        self.assertNotIn('PointBar', suites(tier='headless'))
+        self.assertTrue(all(not case.display and not case.has('slow')
+                            for case in run_tests.select(self.cases, args(tier='headless'))[0]))
+        self.assertEqual(suites(tier='display'), suites(quick=True))
+        self.assertEqual(suites(), everything)  # programmatic callers keep the full inventory
+
+    def test_unoptimized_builds_get_longer_timeouts(self):
+        import json, tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory)
+            self.assertEqual(run_tests.timeout_scale(build), 1)
+            (build / 'identity.json').write_text(json.dumps({'mode': 'debug', 'dev_fast': True}))
+            self.assertEqual(run_tests.timeout_scale(build), 3)
+            (build / 'identity.json').write_text(json.dumps({'mode': 'perf'}))
+            self.assertEqual(run_tests.timeout_scale(build), 1)
+
+    def test_command_line_tier_defaults(self):
+        resolve = lambda **o: run_tests.resolve_tier(args(tier=None, **o))
+        self.assertEqual(resolve(), 'headless')
+        self.assertEqual(resolve(quick=True), 'display')
+        self.assertEqual(resolve(filter=['PointBar/*']), 'full')
+        self.assertEqual(resolve(tag=['display']), 'full')
+        self.assertEqual(run_tests.resolve_tier(args(tier='headless', tag=['display'])), 'headless')
+
+
+class ModuleBinaryTest(unittest.TestCase):
+    def test_module_cases_keep_their_family_policy_and_labels(self):
+        sim = run_tests.parse_listing(LISTING, 'sim')
+        self.assertEqual({(case.binary, case.program) for case in sim}, {('engine', 'sim')})
+        jobs = run_tests.make_jobs(sim, args())
+        self.assertTrue(all(not job.whole and job.program == 'sim' for job in jobs))
+        mapped = run_tests.parse_listing(LISTING, 'map')
+        jobs = run_tests.make_jobs(mapped, args(), mapped)
+        self.assertEqual([(job.whole, job.program) for job in jobs], [(False, 'map'), (True, 'map')])
+        self.assertEqual(jobs[1].label, 'glob2-map-tests (3 cases)')
+        both = run_tests.make_jobs(run_tests.parse_listing(LISTING, 'unit') + mapped, args())
+        self.assertEqual(sorted({job.program for job in both if job.whole}), ['map', 'unit'])
+        self.assertEqual(run_tests.SELECTIONS['engine'], ('engine', 'sim'))
+        self.assertEqual(run_tests.SELECTIONS['unit'], ('unit', 'map'))
+
+    def test_case_contract_catches_lost_and_misplaced_cases(self):
+        cases = run_tests.parse_listing(LISTING, 'sim')
+        harness = 'src/unit/HungryDefeatHarness.cpp'
+        assigned = {'sim': {harness}, 'map': set()}
+        self.assertEqual(run_tests.case_contract(cases, ['sim'], assigned, {harness: 1}), [])
+        lost = run_tests.case_contract(cases, ['sim'], assigned, {harness: 2})
+        self.assertEqual(len(lost), 1)
+        self.assertIn('lists 1 cases from src/unit/HungryDefeatHarness.cpp', lost[0])
+        # An unlisted module binary is not checked: run_tests fails earlier when it is required.
+        self.assertEqual(run_tests.case_contract([], [], assigned, {harness: 2}), [])
+        engine = run_tests.parse_listing(LISTING, 'engine')
+        misplaced = run_tests.case_contract(engine, ['engine'], assigned, {harness: 1})
+        self.assertEqual(len(misplaced), 1)
+        self.assertIn('which test/tests.py assigns to glob2-sim-tests', misplaced[0])
+        stale = run_tests.case_contract([], [], assigned, {'src/gone/OldTest.cpp': 1})
+        self.assertIn('no module binary registers', stale[0])
+
+    def test_registry_floors_cover_the_module_tests_exactly(self):
+        assigned, floors = run_tests.module_registry()
+        self.assertEqual(set(floors), assigned['map'] | assigned['sim'])
+        self.assertFalse(assigned['map'] & assigned['sim'])
+        self.assertTrue(all(count > 0 for count in floors.values()))
+        core, core_floors = run_tests.module_registry('core')
+        cortex = 'src/ai/cortex/CortexPolicyCoverageTest.cpp'
+        self.assertIn(cortex, assigned['sim'])
+        self.assertNotIn(cortex, core['sim'])
+        self.assertEqual(set(core_floors), core['map'] | core['sim'])
 
 
 class ShardTest(unittest.TestCase):
@@ -316,7 +401,7 @@ class EndToEndTest(unittest.TestCase):
                     if override:
                         environment['GLOB2_TEST_SHADER_DIRECTORY'] = override
                     result = subprocess.run(
-                        [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                        [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                          '--build-dir', str(build), '--filter', 'HungryDefeat/*',
                          '--junit', str(Path(directory) / 'junit.xml')],
                         capture_output=True, text=True, env=environment)
@@ -336,7 +421,7 @@ class EndToEndTest(unittest.TestCase):
             for in_process in (False, True):
                 for fullscreen in (False, True):
                     with self.subTest(in_process=in_process, fullscreen=fullscreen):
-                        command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                        command = [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                                    '--build-dir', str(build), '--filter', 'HungryDefeat/*',
                                    '--junit', str(Path(directory) / 'junit.xml')]
                         if in_process:
@@ -364,7 +449,7 @@ class EndToEndTest(unittest.TestCase):
             for fullscreen, inherited, expected in ((False, None, default), (False, '0', '0'),
                                                     (True, None, '0'), (True, '1', '0')):
                 with self.subTest(fullscreen=fullscreen, inherited=inherited):
-                    command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                    command = [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                                '--build-dir', str(build), '--filter', 'PointBar/*',
                                '--junit', str(Path(directory) / 'junit.xml')]
                     if fullscreen:
@@ -399,7 +484,7 @@ class EndToEndTest(unittest.TestCase):
                 f'raise SystemExit({exit_code})\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                                         '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                         '--artifacts', str(Path(directory) / 'artifacts'), *extra],
                                        capture_output=True, text=True)
@@ -462,7 +547,7 @@ class EndToEndTest(unittest.TestCase):
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                                      '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                      '--artifacts', str(Path(directory) / 'artifacts'), '-j', '2'],
                                     capture_output=True, text=True, env=dict(os.environ, GITHUB_ACTIONS='1'))
@@ -491,7 +576,7 @@ class EndToEndTest(unittest.TestCase):
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine', '--allow-missing-modules',
                                      '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                      '--artifacts', str(Path(directory) / 'artifacts'), '-j', '2', '--timeout', '2'],
                                     capture_output=True, text=True)

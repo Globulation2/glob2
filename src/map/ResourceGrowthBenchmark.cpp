@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "ProfileNeeds.h"
+#include "HeadlessGame.h"
 #include "ResourceGrowth.h"
 #include "gradient/GradientRuntime.h"
 #include <nlohmann/json.hpp>
@@ -176,14 +179,14 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						sample["pipeline"] = {{"published", metrics.published},
 							{"accepted", metrics.accepted}, {"rejected", metrics.rejected},
 							{"clamped", metrics.clamped}, {"proposals", metrics.proposals},
-							{"pending_batches", map.gradientRuntime->growth.count()},
+							{"pending_batches", map.routing().gradientRuntime->growth.count()},
 							{"pending_proposals", metrics.proposals - metrics.publishedProposals}};
 						// Diagnostic only: release all remaining batches in order without
 						// calculating further growth. Normal endpoint stocks above remain
 						// unchanged; this separates the final queue tail from lasting effects.
-						map.gradientRuntime->growth.publish(map, world.game.stepCounter + delay);
+						map.routing().gradientRuntime->growth.publish(map, world.game.stepCounter + delay);
 						sample["terminal_flush"] = scan();
-						REQUIRE(map.gradientRuntime->growth.count() == 0);
+						REQUIRE(map.routing().gradientRuntime->growth.count() == 0);
 					}
 				}
 			}
@@ -196,7 +199,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 	}
 
 
-	TEST_CASE("generated landscapes preserve player-free growth accounting")
+	TEST_CASE("generated landscapes preserve player-free growth accounting" * glob2test::needs({"generators"}))
 	{
 		glob2test::HeadlessGlobals globals;
 		const char *output = std::getenv("GLOB2_GROWTH_GENERATED_OUTPUT");
@@ -481,7 +484,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						sample["pipeline"] = {{"proposals", m.proposals}, {"accepted", m.accepted},
 							{"rejected", m.rejected}, {"clamped", m.clamped}, {"stock_added", m.stockAdded},
 							{"tiles_added", m.tilesAdded}, {"pending", m.proposals - m.publishedProposals}};
-						map.gradientRuntime->growth.publish(map, game.stepCounter + delay);
+						map.routing().gradientRuntime->growth.publish(map, game.stepCounter + delay);
 						sample["terminal_flush"] = scan();
 						// Reconcile the diagnostic tail too; it is never folded into normal checkpoints.
 						const auto flushed = scan();
@@ -489,7 +492,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						for (unsigned material = 0; material < MaterialCount; ++material)
 							REQUIRE(flushed[0][material] + after.growthGlobal[2][material] - baseline.growthGlobal[2][material] ==
 								initial[0][material] + after.growthGlobal[1][material] - baseline.growthGlobal[1][material]);
-						REQUIRE(map.gradientRuntime->growth.count() == 0);
+						REQUIRE(map.routing().gradientRuntime->growth.count() == 0);
 					}
 					report["samples"].push_back(sample);
 					persist();
@@ -627,7 +630,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							if (sharedCapture)
 							{
 								if (variant > 1)
-									map.gradientRuntime->growth.publish(map, tick);
+									map.routing().gradientRuntime->growth.publish(map, tick);
 								world.game.snapshotStore().invalidateBoundary();
 								existing = world.game.snapshotStore().captureBoundary(world.game, SimulationSnapshot::CaptureOptions{.presentation=true});
 							}
@@ -652,13 +655,13 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							else if (variant > 1)
 							{
 								if (!sharedCapture)
-									map.gradientRuntime->growth.publish(map, tick);
+									map.routing().gradientRuntime->growth.publish(map, tick);
 								map.stageResourceGrowth();
 								if (sharedCapture)
-									map.gradientRuntime->growth.prepare(existing, map.computeExecutor());
+									map.routing().gradientRuntime->growth.prepare(existing, map.computeExecutor());
 								else {
                                     world.game.snapshotStore().invalidateBoundary();
-									map.gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
+									map.routing().gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
                                 }
 							}
 						}
@@ -742,10 +745,10 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							map.growResources();
 						else
 						{
-							map.gradientRuntime->growth.publish(map, tick);
+							map.routing().gradientRuntime->growth.publish(map, tick);
 							map.stageResourceGrowth();
                             world.game.snapshotStore().invalidateBoundary();
-							map.gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
+							map.routing().gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
 						}
 					}
 					map.finishResourceGrowth();

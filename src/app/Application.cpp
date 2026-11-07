@@ -25,7 +25,9 @@
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
-#include "EditorMainMenu.h"
+#include "CompileProfile.h"
+#include <iostream>
+#include "EditorEntry.h"
 #include "LANMenuScreen.h"
 #include "OnlineHubScreen.h"
 #include "InviteLink.h"
@@ -251,7 +253,9 @@ void Application::choose(int choice)
 		screens.push(std::make_unique<CreditScreen>());
 		break;
 	case MainMenuScreen::EDITOR:
-		screens.push(std::make_unique<EditorMainMenu>(screens));
+		// A compile_profile=core build has no editor; the button then only explains why.
+		if (!EditorEntry::open(screens))
+			std::cerr << CompileProfile::missing("The map editor") << std::endl;
 		break;
 	case MainMenuScreen::MULTIPLAYERS_LAN:
 		screens.push(std::make_unique<LANMenuScreen>(screens));

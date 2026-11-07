@@ -7,8 +7,11 @@
 
 #include "BuildingType.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "MapHeader.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
+#include "Building.h"
 #include "Team.h"
 #include "Unit.h"
 #include "field/TerrainMovementCosts.h"
@@ -65,7 +68,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
+			if (map->routing().buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -80,12 +83,12 @@ Building *Team::findNearestHeal(Unit *unit)
 
 Building *Team::findNearestFood(Unit *unit)
 {
-	MapHeader& header=game->mapHeader;
+	const MapHeader& header=*ctx.mapHeader;
 	const bool directAir=unit->performance[FLY] && !map->hasAirRoutingConstraints();
 
 	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
 	for (int ti= 0; ti < header.getNumberOfTeams(); ti++)
-		if (ti != teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
+		if (ti != teamNumber && (ctx.teams[ti]->sharedVisionFood & me) && !(ctx.teams[ti]->allies & me))
 		{
 			concurency = true;
 			break;
@@ -105,7 +108,7 @@ Building *Team::findNearestFood(Unit *unit)
 			{
 				if (ti == teamNumber)
 					continue;
-				Team *team = game->teams[ti];
+				Team *team = ctx.teams[ti];
 				if (!(team->sharedVisionFood & me) || (team->allies & me))
 					continue;
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
@@ -118,7 +121,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+					if (!directAir && !map->routing().buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -155,7 +158,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 				continue;
 
-			if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+			if (!directAir && !map->routing().buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -175,7 +178,7 @@ Building *Team::findNearestFood(Unit *unit)
 Building *Team::findBestUpgrade(Unit *unit)
 {
 	// No upgrades must not waste idle units on training visits with no benefit.
-	if (game->gameHeader.isUnitUpgradesDisabled()) return nullptr;
+	if (ctx.gameHeader->isUnitUpgradesDisabled()) return nullptr;
 	Building *choosen=NULL;
 	Sint32 score=Team::UPGRADE_SCORE_NONE;
 	int x=unit->posX;
@@ -201,7 +204,7 @@ Building *Team::findBestUpgrade(Unit *unit)
             if(routeAir || (!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK])))
             {
                 int distance=0;
-                if(!map->buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
+                if(!map->routing().buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             const auto capacity=b->maxUnitInside-b->unitsInside.size();
@@ -242,7 +245,7 @@ int Team::maxBuildLevel(void)
 
 void Team::updateRoutingRatio()
 {
-    const unsigned now = game->stepCounter;
+    const unsigned now = ctx.tick();
     // Read authoritative units at fixed simulation boundaries, before snapshot
     // capture. Presentation statistics can arrive asynchronously and cannot select costs.
     if (routingRatio.known && (now % RoutingRatioState::SelectionInterval != 0 || routingRatio.tick == now)) return;

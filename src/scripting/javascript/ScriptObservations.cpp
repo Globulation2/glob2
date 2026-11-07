@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Version.h"
 #include <type_traits>
 #include "PowerOfTwo.h"
 #include "ScriptObservations.h"
@@ -753,6 +754,8 @@ void Observations::save(GAGCore::OutputStream *s) const
 	}
 	s->writeLeaveSection();
 }
+void Observations::load(GAGCore::InputStream *s) { load(s, VERSION_MINOR); }
+
 void Observations::load(GAGCore::InputStream *s, int version)
 {
 	auto observation = captureObservation();

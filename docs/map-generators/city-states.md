@@ -15,7 +15,7 @@ changes field area and fertility. Keeping a circle preserves comparable home geo
 
 ## Ground
 
-Revision 13 (City states 2.0) builds every barrier and road from the terrain catalogue; earlier
+Revision 14 (City states 2.0) builds every barrier and road from the terrain catalogue; earlier
 revisions, written when the engine had only grass, sand and water, used the stone resource for walls
 and sand for roads. The design is drawn with one terrain per rule (TerrainGroup.h), then a last
 pass paints the climate's looks, which share those rules.
@@ -133,7 +133,7 @@ The control ids are those of earlier revisions, so saved requests and the online
 
 ## Evidence
 
-Revision 13 was compared with revision 12 in paired 30,000-tick games (the same ten map seeds,
+Revision 14 was compared with revision 12 in paired 30,000-tick games (the same ten map seeds,
 Nicowar, Cortex, Cabino and Maxima in fixed seats, 256×256): no colony starved out or lost its
 economy, and the differences between AIs moved by more between two game seeds of the same maps than
 between the revisions. Paving the towns and roads in place of sand raised the wheat harvest at the

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "AreaEffects.h"
 #include "BuildingType.h"
 #include "ResourceGrowth.h"
@@ -601,7 +603,7 @@ TEST_SUITE("BuildingAreaEffects")
 		const int id = Building::GIDtoID(previous);
 		old->removeFromAbilitiesLists(b);
 		old->detachBuilding(id);
-		b->owner = next;
+		b->setOwner(next);
 		b->gid = Building::GIDfrom(id, 1);
 		next->attachBuilding(id, b);
 		next->addToStaticAbilitiesLists(b);

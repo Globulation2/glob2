@@ -38,7 +38,7 @@
 #include <ui/TextLayout.h>
 #include <InterfacePresentation.h>
 #include <MapZoomControls.h>
-#include <glob2/TestBuildProvenance.h>
+#include "BuildProvenance.h"
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -253,7 +253,7 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
     Json result = {{"locale", pilotLocale(pilot)}, {"source_revision", nullptr},
         {"source_revision_origin", "Frozen translation kit; executable and code hashes identify the actual dirty build."},
         {"executable", executablePath.string()}, {"executable_sha256", sha256(executablePath)},
-        {"producer", Json::parse(GLOB2_TEST_PROVENANCE_JSON)},
+        {"producer", Json::parse(glob2test::buildProvenanceJson(executablePath.string().c_str()))},
         {"source_sha256", Json::object()}, {"catalog_sha256", Json::object()},
         {"runtime_fonts", Json::array()}, {"runtime_search_paths", Json::array()}};
     const auto kitRoot = pilot.parent_path().parent_path();

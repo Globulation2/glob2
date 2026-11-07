@@ -8,7 +8,7 @@ the same.
 
 ## Reader demand
 
-`Map::predictBuildingDepth` uses two observations from the same field:
+`MapRouting::predictBuildingDepth` uses two observations from the same field:
 
 - `serving`: the current search's `requiredCost()`, or -1 when unknown.
 - `previous`: the replaced search's final reader demand, retained in

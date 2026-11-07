@@ -7,8 +7,9 @@ namespace MapGeneration
 // The home mask constrains the whole building footprint and worker positions, not
 // just the building anchor. Resources remain a generator-owned step before or after this.
 // Mutates only the disposable candidate; any failure requires discarding it.
-bool placeSettlement(Game &, GenerationContext &, int team, const std::vector<unsigned char> &home,
-					 MapGeneratorPoint preferredAnchor, const std::string &stream = "settlements");
+bool placeSettlement(GenerationWorld &, GenerationContext &, int team,
+					 const std::vector<unsigned char> &home, MapGeneratorPoint preferredAnchor,
+					 const std::string &stream = "settlements");
 
 /// A completed building a colony starts with: the finished building of `typeName` ("swimmingpool",
 /// "inn", "defencetower"...) and `level` (0 to 2) whose footprint lies wholly on `allowed` ground the
@@ -18,12 +19,12 @@ bool placeSettlement(Game &, GenerationContext &, int team, const std::vector<un
 /// unit's worth of work set; it joins the colony's call lists (an inn's feeding, a pool's training)
 /// through its own update, the way a building a player completes does. Returns the footprint's
 /// top-left tile, or -1 when no footprint fits. placeTower is this plus a tower's bullets.
-int placeBuilding(Game &, int team, const char *typeName, int level, double x, double y, int within,
-				  const std::vector<unsigned char> &allowed);
+int placeBuilding(GenerationWorld &, int team, const char *typeName, int level, double x, double y,
+				  int within, const std::vector<unsigned char> &allowed);
 
 /// How many completed buildings of `typeName` (any level) colony `team` has: a validator's proof that
 /// a colony kept the building its map granted it.
-int countBuildings(const Game &, int team, const char *typeName);
+int countBuildings(const GenerationWorld &, int team, const char *typeName);
 
 /// A defence tower a colony starts with: the completed tower of `level` (0 to 2, shooting 5, 7 or 9
 /// tiles) whose 2x2 footprint lies wholly on `allowed` ground the tower can stand on, nearest the
@@ -39,7 +40,7 @@ int countBuildings(const Game &, int team, const char *typeName);
 /// maps with several starting towers can opt in to avoid consuming their opening
 /// workforce before an inn is stocked. The default retains existing maps' economy.
 /// Returns the footprint's top-left tile, or -1 when no footprint fits.
-int placeTower(Game &, int team, int level, double x, double y, int within,
+int placeTower(GenerationWorld &, int team, int level, double x, double y, int within,
 			   const std::vector<unsigned char> &allowed, bool stocked = true,
 			   const std::vector<MapGeneratorPoint> &cover = {}, bool supplyStone = false);
 /// Place a completed starting building using the same bounded footprint search as
@@ -48,7 +49,7 @@ int placeTower(Game &, int team, int level, double x, double y, int within,
 /// Registers the colony's service lists immediately; stock is finite, with no
 /// special refill rule. Returns its top-left tile, or -1 without placement if it
 /// cannot fit. Intended for a new-world setup, before units have active tasks.
-int placeStartingBuilding(Game &, int team, const char *name, int level, double x, double y,
-						  int within, const std::vector<unsigned char> &allowed,
+int placeStartingBuilding(GenerationWorld &, int team, const char *name, int level, double x,
+						  double y, int within, const std::vector<unsigned char> &allowed,
 						  const std::vector<int> &supplies = {});
 } // namespace MapGeneration

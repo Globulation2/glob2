@@ -7,7 +7,7 @@
 #include "GenerationContext.h"
 #include "Homes.h"
 #include "LatticeNoise.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
@@ -284,7 +284,7 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 	return terrain;
 }
 
-void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
+void furnishBiome(GenerationMap &map, const Torus &t, GenerationContext &context,
 				  const std::vector<unsigned char> &region, const BiomeTerrain &terrain,
 				  const BiomeKit &kit, const std::vector<unsigned char> &keepClear,
 				  const std::string &stream, const std::vector<unsigned char> *noCover)

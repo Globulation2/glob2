@@ -13,6 +13,7 @@ CLIENT_SOURCES = (
     'ai/castor/Placement.cpp',
     'ai/castor/Projects.cpp',
     'ai/castor/State.cpp',
+    'ai/castor/Telemetry.cpp',
     'ai/maxima/AIMaxima.cpp',
     'ai/maxima/AIMaximaPrestige.cpp',
     'ai/maxima/AIMaximaState.cpp',
@@ -28,6 +29,7 @@ CLIENT_SOURCES = (
     'ai/maxima/AIMaximaStrategy.cpp',
     'ai/maxima/AIMaximaTactics.cpp',
     'ai/AI.cpp',
+    'ai/AIRegistry.cpp',
     'ai/observation/AIWorldCapture.cpp',
     'engine/sim/snapshot/WorldCapture.cpp',
     'engine/sim/snapshot/WorldSnapshot.cpp',
@@ -35,6 +37,8 @@ CLIENT_SOURCES = (
     'engine/sim/snapshot/SnapshotStore.cpp',
     'engine/sim/snapshot/SnapshotStorage.cpp',
     'ai/observation/AIQueries.cpp',
+    'ai/observation/OrderSelection.cpp',
+    'ai/observation/ResourceInitializationCache.cpp',
     'ai/engine/AIOrderScheduler.cpp',
     'ai/engine/AIPipeline.cpp',
     'ai/BuildingCapabilities.cpp',
@@ -83,6 +87,7 @@ CLIENT_SOURCES = (
     'ai/numbi/AINumbiPlacement.cpp',
     'ai/warrush/AIWarrush.cpp',
     'ai/simple/AICabino.cpp',
+    'ai/simple/AICabinoTelemetry.cpp',
     'ai/cortex/CortexSnapshotQueries.cpp',
     'ai/cortex/CortexObservation.cpp',
     'ai/cortex/CortexObservationObserve.cpp',
@@ -101,6 +106,8 @@ CLIENT_SOURCES = (
     'ai/cortex/AICortexFlags.cpp',
     'ai/cortex/AICortexTranslate.cpp',
     'ai/cortex/AICortexDebug.cpp',
+    'ai/cortex/CortexWheatDump.cpp',
+    'ai/cortex/CortexTelemetry.cpp',
     'game/player/BasePlayer.cpp',
     'team/BaseTeam.cpp',
     'common/BitArray.cpp',
@@ -149,6 +156,7 @@ CLIENT_SOURCES = (
     'engine/EngineLoaders.cpp',
     'engine/EngineRun.cpp',
     'engine/EngineTurnTelemetry.cpp',
+    'app/SaveLoadProfile.cpp',
     'app/cli/CommandLine.cpp',
     'app/cli/Headless.cpp',
     'app/cli/RenderSkin.cpp',
@@ -245,7 +253,7 @@ CLIENT_SOURCES = (
     'hud/GameGUIToolManager.cpp',
     'hud/TeamDisplay.cpp',
     'unit/UnitDisplayNames.cpp',
-    'game/ExperimentalFeatures.cpp',
+    'common/ExperimentalFeatures.cpp',
     'game/GameHeader.cpp',
     'game/GameHints.cpp',
     'game/GameObjectives.cpp',
@@ -289,6 +297,7 @@ CLIENT_SOURCES = (
     'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
+    'map/TerrainCatalog.cpp',
     'map/CellRules.cpp',
     'map/MapAssetBundle.cpp',
     'map/MapSetImport.cpp',
@@ -417,7 +426,9 @@ CLIENT_SOURCES = (
     'map/generator/shared/StartDiagnostics.cpp',
     'map/generator/shared/StartQuality.cpp',
     'map/generator/shared/Terrain.cpp',
+    'map/gradient/GradientRuntime.cpp',
     'map/gradient/BuildingGradientSearch.cpp',
+    'map/gradient/MapRouting.cpp',
     'map/gradient/MapGradientArea.cpp',
     'map/gradient/MapGradientBuilding.cpp',
     'map/gradient/MapGradientChamfer.cpp',
@@ -556,7 +567,7 @@ CLIENT_SOURCES = (
     'resource/ResourceRegistry.cpp',
     'render/ResourceSprites.cpp',
     'scripting/map/ScriptEditorScreen.cpp',
-    'game/Sector.cpp',
+    'map/Sector.cpp',
     'app/Settings.cpp',
     'app/SystemLanguage.cpp',
     'render/torus/TorusView.cpp',
@@ -667,7 +678,114 @@ CLIENT_SOURCES = (
     'online/ReplayAppearance.cpp',
     'online/SimVersion.cpp',
     'online/UserDirectoryStorage.cpp',
+    'app/CompileProfile.cpp',
 )
+
+
+# Compile profiles (scons compile_profile=core|full). CLIENT_SOURCES above stays the one
+# ordered list every consumer builds by default; the groups below are filters over it,
+# so each keeps the manifest's order, and test/test_sources_manifest.py checks that they
+# cover it exactly. compile_profile=core leaves out the optional groups for focused
+# development; CI and releases always build the full profile.
+
+# Generators the core profile keeps: the default lobby landscape
+# (GeneratorRegistry::defaultMethod), the editor's blank map, one natural landscape, and
+# the two whose blueprints the JavaScript toolkit binds (ToolkitBinding.cpp); even-ground
+# is also the first default online room landscape.
+CORE_GENERATORS = ('lava-shield', 'uniform', 'hills', 'forts', 'even-ground')
+_CORE_GENERATOR_SOURCES = ('map/generator/generators/LavaShieldGenerator.cpp',
+                           'map/generator/generators/UniformGenerator.cpp',
+                           'map/generator/generators/HillsGenerator.cpp',
+                           'map/generator/generators/FortsGenerator.cpp',
+                           'map/generator/generators/EvenGroundGenerator.cpp')
+GENERATOR_SOURCES = tuple(source for source in CLIENT_SOURCES
+                          if source.startswith('map/generator/generators/')
+                          and source not in _CORE_GENERATOR_SOURCES)
+
+# AIs the core profile leaves out, by the ids AINames uses. Nicowar, Econo, Warrush (the
+# golden match and the shared runtime), Maxima, JavaScript and AINull always stay, and so
+# does Numbi: it is the custom-game default (CustomGameSetup::Colony) and the online room
+# fallback, so most game-starting tests and the default lobby need it.
+_AI_PREFIXES = {
+    'castor': ('ai/castor/',),
+    'cortex': ('ai/cortex/',),
+    'cabino': ('ai/simple/AICabino',),
+}
+AI_SOURCES = {ai: tuple(source for source in CLIENT_SOURCES if source.startswith(prefixes))
+              for ai, prefixes in _AI_PREFIXES.items()}
+
+# The map editor. Its keyboard shortcut table stays (the settings screen edits it), and so
+# do the brush swatches `glob2 map` renders.
+_CORE_EDITOR_SOURCES = ('map/editor/MapEditKeyActions.cpp', 'map/editor/BrushSwatches.cpp')
+EDITOR_SOURCES = tuple(source for source in CLIENT_SOURCES
+                       if source.startswith('map/editor/') and source not in _CORE_EDITOR_SOURCES)
+
+# Optional groups by the name test/tests.py 'require' uses for them.
+OPTIONAL_SOURCES = {'generators': GENERATOR_SOURCES, 'editor': EDITOR_SOURCES,
+                    **{'ai:' + ai: sources for ai, sources in AI_SOURCES.items()}}
+CORE_SOURCES = tuple(source for source in CLIENT_SOURCES
+                     if not any(source in group for group in OPTIONAL_SOURCES.values()))
+COMPILE_PROFILES = {'full': tuple(OPTIONAL_SOURCES), 'core': ()}
+
+
+def profile_features(profile):
+    """The optional groups a compile profile builds."""
+    if profile not in COMPILE_PROFILES:
+        raise ValueError('compile_profile must be ' + ' or '.join(sorted(COMPILE_PROFILES)))
+    return frozenset(COMPILE_PROFILES[profile])
+
+
+def profile_header(profile):
+    """glob2/CompileProfile.h: read only by src/app/CompileProfile.cpp and the AI and
+    generator registries, so every other object is identical in both profiles."""
+    features = profile_features(profile)
+    lines = ['#pragma once', '// Generated by SCons from compile_profile (scons/sources.py).',
+             '#define GLOB2_COMPILE_PROFILE "%s"' % profile]
+    for name in OPTIONAL_SOURCES:
+        macro = 'GLOB2_PROFILE_HAS_' + name.replace('ai:', 'AI_').upper()
+        lines.append('#define %s %d' % (macro, int(name in features)))
+    return '\n'.join(lines) + '\n'
+
+
+def profile_sources(profile):
+    """CLIENT_SOURCES restricted to a compile profile, in manifest order."""
+    features = profile_features(profile)
+    excluded = {source for name, group in OPTIONAL_SOURCES.items() if name not in features
+                for source in group}
+    return tuple(source for source in CLIENT_SOURCES if source not in excluded)
+
+
+# Module libraries (libglob2_map.a, libglob2_sim.a) and the module test binaries that
+# link them (glob2-map-tests, glob2-sim-tests; test/tests.py). Each group is a filter
+# over CLIENT_SOURCES, so manifest order and every other consumer stay as they are;
+# the game itself still links the loose objects. Dependency direction: sim uses map.
+# Map's remaining references into sim (Game hooks, unit geometry, building routes,
+# Sector combat) are welds the map test binary stubs (test/tests.py MAP_STUBS);
+# `python3 tools/link_graph.py --within map closure map/Map.o --external` lists them.
+#
+# MAP_SOURCES: terrain, cells, resources, fields, gradients, routing, pathfinding and
+# claims, the map file format, and the shared utilities and snapshot views they read.
+# Editor, previews, tools and generators stay out (they build on a Game).
+_MAP_PREFIXES = ('map/', 'field/', 'resource/', 'common/')
+_MAP_EXCLUDED = ('map/editor/', 'map/preview/', 'map/tools/', 'map/generator/')
+# src/map files that belong to the simulation: Sector holds bullets and combat damage;
+# MapTiling and MapSetImport build a Game around a map.
+_SIM_MAP_FILES = ('map/Sector.cpp', 'map/MapTiling.cpp', 'map/MapSetImport.cpp')
+# Map reads and writes snapshot views (WorldSnapshot.h) and owns their storage.
+_MAP_EXTRA = ('engine/sim/snapshot/WorldSnapshot.cpp',)
+MAP_SOURCES = tuple(source for source in CLIENT_SOURCES
+                    if (source.startswith(_MAP_PREFIXES) and not source.startswith(_MAP_EXCLUDED)
+                        and source not in _SIM_MAP_FILES) or source in _MAP_EXTRA)
+# SIM_SOURCES: what a headless Game needs to load, step, save and verify: game rules
+# and orders, units, buildings, teams, the simulation thread and snapshots, replays,
+# map scripts and every AI (Game::load and the AI pipeline reach AIRegistry).
+_SIM_PREFIXES = ('game/', 'unit/', 'building/', 'team/', 'engine/sim/', 'replay/', 'scripting/', 'ai/')
+_SIM_EXCLUDED = ('game/screens/', 'unit/render/', 'building/hud/', 'team/stats/TeamStatChart.cpp',
+                 'scripting/map/ScriptEditorScreen.cpp')
+SIM_SOURCES = tuple(source for source in CLIENT_SOURCES
+                    if ((source.startswith(_SIM_PREFIXES) and not source.startswith(_SIM_EXCLUDED))
+                        or source in _SIM_MAP_FILES) and source not in MAP_SOURCES)
+MODULE_SOURCES = {'map': MAP_SOURCES, 'sim': SIM_SOURCES}
 
 
 # glob2-relay (role=relay): the match relay links only the turn core, the stream

@@ -732,10 +732,10 @@ TEST_SUITE("SDLGPUDevice")
             }
             if (id==3 || id==18) { auto fur=render(false,id,8); CHECK(difference(body.get(),fur.get())>100); }
         }
-        auto near=render(false,0); auto occluded=render(true,1,0,0,.8f,true); CHECK(difference(near.get(),occluded.get())==0);
+        auto nearer=render(false,0); auto occluded=render(true,1,0,0,.8f,true); CHECK(difference(nearer.get(),occluded.get())==0);
         auto right=render(false,5,0,0,0,false,1);
         CaptureRequest leftRequest; leftRequest.identity=999; leftRequest.target=target; leftRequest.pixelRegion=SDL_Rect{0,0,128,128};
-        Surface preserved(gpu->captureSynchronously(leftRequest),SDL_DestroySurface); REQUIRE(preserved); CHECK(difference(near.get(),preserved.get())==0);
+        Surface preserved(gpu->captureSynchronously(leftRequest),SDL_DestroySurface); REQUIRE(preserved); CHECK(difference(nearer.get(),preserved.get())==0);
         REQUIRE(gpu->capture(leftRequest)); auto async=waitCapture(*gpu); CHECK(async.request.width==128); CHECK(async.request.pixelRegion->x==0); CHECK(difference(preserved.get(),async.pixels.get())==0);
         leftRequest.pixelRegion=SDL_Rect{250,0,128,128}; CHECK_FALSE(gpu->capture(leftRequest)); CHECK_THROWS_AS(gpu->captureSynchronously(leftRequest),std::invalid_argument);
     }

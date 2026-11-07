@@ -3,7 +3,9 @@
 
 #include "BuildingType.h"
 #include "FileFormatVersions.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "Building.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -41,7 +43,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	// Bind immutable definitions before any entity takes a descriptor pointer.
 	// Older formats already bound their saved Race while reading BaseTeam.
 	if (versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
-		race.setCatalog(game->gameHeader.getUnitCatalog());
+		race.setCatalog(ctx.gameHeader->getUnitCatalog());
 	stats.configureUnits(race.unitTypeCount());
 
 	// Current saves enumerate exact append order. Legacy formats encode the
@@ -146,7 +148,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	for(int i=0; i<GESize; ++i)
 		eventCooldownTimers[i]=0;
 
-	if (!stats.load(stream, versionMinor,game->mapHeader.privateAdaptive174))
+	if (!stats.load(stream, versionMinor,ctx.mapHeader->privateAdaptive174))
 	{
 		stream->readLeaveSection();
 		co_return false;

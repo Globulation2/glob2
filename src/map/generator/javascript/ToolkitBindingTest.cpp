@@ -2,7 +2,8 @@
 #include "ToolkitBinding.h"
 #include "ToolkitRecords.h"
 #include "GenerationWork.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "Unit.h"
 #include <nlohmann/json.hpp>
 

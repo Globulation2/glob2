@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real worker movement under resource claims, GUI save envelopes taken while a
 // route is pending and after it is published, and exported cross-platform inputs.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "map/claims/ActiveRouteRuntime.h"
 #include <BinaryStream.h>

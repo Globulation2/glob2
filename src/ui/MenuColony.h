@@ -6,6 +6,7 @@
 #include <string>
 
 class ScenePreparation;
+struct ViewState;
 // A local decorative game. Never owns input, audio, networking or replay sinks.
 class MenuColony
 {
@@ -21,7 +22,7 @@ public:
 	Uint32 checksum() const;
 private:
 	std::unique_ptr<Game> game;
-	Game::ViewState view;
+	std::unique_ptr<ViewState> view; // held by pointer so this header stays free of render headers
 	std::unique_ptr<ScenePreparation> presentation;
 	std::unique_ptr<PresentationFrame> initialScene;
 	Uint64 worldTickTime = 0;

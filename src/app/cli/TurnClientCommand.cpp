@@ -8,6 +8,8 @@
 // bot that queues ordinary orders, or by nobody; AI seats run locally as on every
 // client. Used for end-to-end tests of a deployed instance (docs/hosting/README.md).
 
+#include "CompileProfile.h"
+#include "ComputeExecutor.h"
 #include <SDL3/SDL.h>
 
 #include <chrono>
@@ -312,6 +314,8 @@ int runTurnClient(const Cli::Request &request)
 	fs::path output;
 	try
 	{
+		// Agents play real assignments, whose results other players and verifiers rely on.
+		CompileProfile::requireFull("The online agent (online turn-client)");
         Options options;
         options.assignment = request.positionals.at(0);
         options.map = request.get("--map-file");

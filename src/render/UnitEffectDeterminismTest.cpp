@@ -4,7 +4,9 @@
 // not change what the simulation computes. Two identical AI games run side by
 // side, one recording effects as a displayed game does, and their full
 // checksums must agree on every tick.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "AI.h"
 #include "Player.h"
 #include "render/GameAnimations.h"
@@ -51,8 +53,8 @@ struct World
             world.game.map.setResourceByIndex(x+team*32,y+team*32,WOOD,5);
         world.game.map.setMapDiscovered();
         if (recordEffects)
-            world.game.animations=std::make_unique<GameAnimations>(true,
-                world.game.map.getSectorW()*world.game.map.getSectorH());
+            world.game.setAnimations(std::make_unique<GameAnimations>(true,
+                world.game.map.getSectorW()*world.game.map.getSectorH()));
     }
 };
 

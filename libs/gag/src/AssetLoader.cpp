@@ -688,12 +688,16 @@ void AssetLoader::poll(std::chrono::milliseconds budget) {
         if (!impl->execute(std::move(job))) break;
     } while (Clock::now() - start < budget);
     impl->ready->notify_all();
-    for (size_t count = impl->finalizers.size(); count && !impl->finalizers.empty() && Clock::now() - start < budget; --count) {
+    // Like jobs above, publication always progresses: at least one ready
+    // finalizer runs per poll even when jobs spent the budget, so a steady
+    // stream of loads cannot starve owners waiting for results.
+    bool ran = false;
+    for (size_t count = impl->finalizers.size(); count && !impl->finalizers.empty() && (!ran || Clock::now() - start < budget); --count) {
         auto finalizer = std::move(impl->finalizers.front()); impl->finalizers.pop_front();
         if (finalizer.lifetime.expired()) continue;
         if (finalizer.dependency.state() == State::Pending) impl->finalizers.push_back(std::move(finalizer));
-        else if (finalizer.dependency.state() != State::Cancelled) finalizer.run();
-        if (Clock::now() - start >= budget) break;
+        else if (finalizer.dependency.state() != State::Cancelled) { finalizer.run(); ran = true; }
+        if (ran && Clock::now() - start >= budget) break;
     }
 }
 void AssetLoader::yieldWhileWaiting() {

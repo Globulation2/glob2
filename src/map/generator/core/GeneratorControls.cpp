@@ -151,7 +151,7 @@ const std::vector<GeneratorControl> &sharedGeneratorControls()
 			7, 9),
 		GeneratorControl{"height", "Height", 6, 9, 1, 8, ControlGroup::Shared, true}
 			.withSearchRange(7, 9),
-		GeneratorControl{"teams", "Colonies", 1, Team::MAX_COUNT, 1, 4, ControlGroup::Shared}
+		GeneratorControl{"teams", "Colonies", 1, TEAM_MAX_COUNT, 1, 4, ControlGroup::Shared}
 			.withSearchRange(2, 8),
 		GeneratorControl{"workers", "Starting workers", 1, 8, 1, 4, ControlGroup::Shared}
 			.withSearchRange(3, 6)};

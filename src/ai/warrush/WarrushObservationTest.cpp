@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "AIWarrush.h"
 #include "ai/observation/WorldQueries.h"
@@ -17,7 +19,7 @@ TEST_SUITE("WarrushObservation")
   REQUIRE(fixture.addBuilding("swarm",4,4));
   game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
-  glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
+  glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
   glob2test::materialPlanningTarget(game.map,0,materialIndex(MaterialId::Food),MovementAccess::Land,4,4,&x,&y,&distance);
   AIWarrush full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);
@@ -52,11 +54,11 @@ TEST_SUITE("WarrushObservation")
   std::vector<Uint8> live(32*32,1),captured;
   for(int y=2;y<30;++y) if(y!=9 && y!=24) live[y*32+14]=0;
   live[3*32+1]=255;live[24*32+30]=210;live[16*32+16]=64;
-  captured=live;game.map.updateGlobalGradient(live.data());query.updateGlobalGradient(captured.data());
+  captured=live;game.map.routing().updateGlobalGradient(live.data());query.updateGlobalGradient(captured.data());
   REQUIRE(live==captured);
   for(int y=0;y<32;++y) for(int x=0;x<32;++x) {
    Sint32 liveX,liveY,viewX,viewY;
-   CHECK(game.map.getGlobalGradientDestination(live.data(),x,y,&liveX,&liveY)==query.getGlobalGradientDestination(captured.data(),x,y,&viewX,&viewY));
+   CHECK(game.map.routing().getGlobalGradientDestination(live.data(),x,y,&liveX,&liveY)==query.getGlobalGradientDestination(captured.data(),x,y,&viewX,&viewY));
    CHECK(liveX==viewX);CHECK(liveY==viewY);
   }
  }

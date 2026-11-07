@@ -59,7 +59,7 @@ Handle Handle::project(Requirements requested) const
 	if ((requested & requirements) != requested) throw std::invalid_argument("snapshot component was not captured");
 	Handle result;
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
-	result.observationRevision = observationRevision;
+	result.observationRevision = observationRevision; result.boundarySerial = boundarySerial;
     result.activeClaimRuntimeChecksum = activeClaimRuntimeChecksum;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
 	if (needs(requested, Component::Session)) result.session = session;

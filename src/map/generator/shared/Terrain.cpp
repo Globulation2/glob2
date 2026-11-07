@@ -5,11 +5,10 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "Terrain.h"
 #include "BalancedStarts.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Pipeline.h"
 #include "Resources.h"
 #include <algorithm>
@@ -188,7 +187,7 @@ HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &ti
 	return levels;
 }
 
-void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &tiling,
+void paintHeightFieldTerrain(GenerationMap &map, HeightMap &hm, const HeightFieldTiling &tiling,
 							 const HeightFieldLevels &levels)
 {
 	const int w = map.getW();
@@ -226,7 +225,7 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 	map.layBeaches();
 }
 
-void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling &tiling,
+void paintHeightFieldResources(GenerationMap &map, HeightMap &hm, const HeightFieldTiling &tiling,
 							   const HeightFieldLevels &levels, const HeightFieldOptions &options)
 {
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
@@ -287,9 +286,9 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 	}
 }
 
-bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
+bool chooseHeightFieldStarts(GenerationWorld &game, GenerationContext &context)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	// Choosing where the colonies go *after* the resources exist is what makes a fair choice
 	// possible at all: the search scores a site by how far its workers must actually walk to wood
@@ -401,8 +400,8 @@ bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
 // TODO below). Groves land anywhere, near a colony or not, so which colony can stock all three
 // fruits in its inns (and so convert hungry enemy units) is luck of the draw on these maps, unless
 // repeat gives each colony its own patch.
-bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFieldTiling &tiling,
-							int count)
+bool plantHeightFieldGroves(GenerationMap &map, GenerationContext &context,
+							const HeightFieldTiling &tiling, int count)
 {
 	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	context.telemetry.measure("terrain.groves.requested", count);
@@ -486,10 +485,10 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 	return true;
 }
 
-bool generateHeightField(Game &game, GenerationContext &context, const HeightFieldOptions &options,
-						 const HeightFieldBuilder &build)
+bool generateHeightField(GenerationWorld &game, GenerationContext &context,
+						 const HeightFieldOptions &options, const HeightFieldBuilder &build)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	/// to influence the roughness
 	// The noise's feature size in tiles: 15 at smoothing 1 up to 36 at smoothing 8 (the defaults, 4
 	// or 6, give 24 or 30). The +4 keeps even the roughest setting's features several swarms wide,

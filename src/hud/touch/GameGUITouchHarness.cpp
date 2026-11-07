@@ -2,7 +2,8 @@
 #include "InGameStatistics.h"
 #include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>
@@ -2260,7 +2261,7 @@ class GameGUITouchHarness
 		{
 			globalContainer->replayWriter = std::make_unique<ReplayWriter>();
 			auto &writer = *globalContainer->replayWriter;
-			writer.init("", gui);
+			gui.startReplay(writer, "");
 			require(writer.write("replays/touch-empty.replay"),
 					"An unfinished in-memory replay can be exported");
 			{

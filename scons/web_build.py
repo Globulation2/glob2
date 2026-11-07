@@ -3,6 +3,7 @@ from client_features import header as client_feature_header
 from pathlib import Path
 import json
 import os
+import sys
 import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
@@ -65,6 +66,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
                       ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(Path(__file__).resolve().parents[1], output, sys.argv)
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
     env.Append(LINKFLAGS=['--js-library', 'platforms/web/canvas-size.js', '--js-library', 'platforms/web/webgpu-device.js', '--js-library', 'platforms/web/gradient-compute.js'])
@@ -85,12 +89,13 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 #define PACKAGE_NAME "Globulation 2"
 #define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "/"
-#define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"
 ''' + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     import renderer_shaders
     shaders = renderer_shaders.configure(env, root, output, browser=True)
+    import checkout_paths
+    checkout_paths.write(output, PACKAGE_SOURCE_DIR='/', GLOB2_RENDER_SHADER_DIR='/shaders')
     env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgl2') + '@/shaders/webgl2'])
     if (shaders / 'webgpu').is_dir():
         env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgpu') + '@/shaders/webgpu',
@@ -128,14 +133,25 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_stamp = asset_root.with_suffix('.json')
         from runtime_assets import sprite_packing_profile
         packing = sprite_packing_profile(arguments.get('sprite_packing', 'auto'), identity['mode'] == 'release')
-        def prepare_assets(target, source, env):
-            export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release',
-                          jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
-                          packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
-            return 0
         asset_inputs = list(source_files(root, 'web'))
-        exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], packing, [str(p) for p in asset_inputs]])],
+        asset_tools = ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/shared_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json']
+        def prepare_assets(target, source, env):
+            # Name the sibling by path, as scons/runtime_assets.py does: the
+            # action can run where SConstruct's scons/ entry is not on sys.path.
+            if str(Path(__file__).resolve().parent) not in sys.path:
+                sys.path.insert(0, str(Path(__file__).resolve().parent))
+            import shared_assets
+            def produce(output):
+                export_assets(root, output, platform='web', optimized=True, lossy=identity['mode']=='release',
+                              jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
+                              packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
+            # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+            key = shared_assets.content_key(root, asset_inputs + [root / path for path in asset_tools],
+                                            ['runtime-assets-v1', 'web', identity['mode'] == 'release', packing])
+            shared_assets.export(root, asset_root, key, produce)
+            return 0
+        exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] + asset_tools +
+            [Value([identity['mode'], packing, [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
@@ -206,10 +222,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     program = record(env, env.Program(str(output / 'index.js'), objects), "link")
     env.Depends(program, assets)
     if 'web-tests' in COMMAND_LINE_TARGETS:
-        import sys
         sys.path.insert(0, str(root / 'test'))
         import tests as registry
         tests = env.Clone()
+        # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+        tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
         # The harness page has no asset packages beside it: preload the exported data.
         flags, kept = list(tests['LINKFLAGS']), []
         for index, flag in enumerate(flags):

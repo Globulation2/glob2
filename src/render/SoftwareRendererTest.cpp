@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "render/SoftwareTerrainCache.h"
 #include "scene/SceneMap.h"
 #include <RenderBackend.h>
@@ -455,7 +457,7 @@ TEST_SUITE("SoftwareRenderer")
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 2, .discovered = true});
 		auto &game = fixture.game;
 		// The view owns the cache and animation phase; the cache follows map replacement.
-		Game::ViewState view;
+		ViewState view;
 		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map.identity()); };
 		SceneMap extracted;
 		const auto sceneOf = [&](const Map &map) -> const SceneMap & { glob2test::observeMap(map,extracted); return extracted; };

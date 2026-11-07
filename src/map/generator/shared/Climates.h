@@ -3,7 +3,7 @@
 #include "Grid.h"
 #include "Sketch.h"
 #include "TerrainGroup.h"
-#include "TerrainTypeTable.h"
+#include "TerrainGroupTable.h"
 #include <functional>
 #include <vector>
 struct GenerationContext;

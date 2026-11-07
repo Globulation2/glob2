@@ -25,7 +25,7 @@ guard area then means what a player expects it to mean.
 ## Mechanism
 
 The rules live in `src/map/gradient/MapGradientArea.cpp`
-(`Map::seedGuardAreaCrowding`), `src/map/pathfind/MapPathfindArea.cpp`,
+(`MapRouting::seedGuardAreaCrowding`), `src/map/pathfind/MapPathfindArea.cpp`,
 `src/map/pathfind/MapPathfindMaterial.cpp` and `src/unit/UnitMovement.cpp`; the
 constants in `src/map/MapInternal.h`. Every one of them reads
 `game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing)` first.

@@ -3,7 +3,7 @@
 #include "Contact.h"
 #include "Drawing.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "LatticeNoise.h"
@@ -368,7 +368,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	c.telemetry.measure("orchard.valley.vertical", vertical);
 	return L;
 }
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "orchard layout";
 	const Layout L = design(c.request, c);
@@ -639,13 +639,13 @@ bool generate(Game &game, GenerationContext &c)
 								fruitWalk[f][t.at(anchors[k].x + 1, anchors[k].y + 1)], k * 3 + f);
 	return true;
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const Layout L = design(c.request, replay);
 	if (const auto e = designMismatch(L, game.map, "Orchard Commons"); !e.empty())
 		return e;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const auto walk =
 		walkFromFirstColony(map, c.request.nbTeams, "the orchard valley", "without swimming");
@@ -720,7 +720,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		// Access belongs to a colony's usable swarm exits, not the random subset occupied
 		// by its requested starting workers. A one-worker roll must not redefine fairness.
 		std::vector<int> exits;
-		const int sx = game.teams[k]->startPosX, sy = game.teams[k]->startPosY;
+		const int sx = game.teamStart(k).x, sy = game.teamStart(k).y;
 		for (int dy = -1; dy <= 4; ++dy)
 			for (int dx = -1; dx <= 4; ++dx)
 			{

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "ComputeExecutor.h"
 #include <atomic>
 #include "Map.h"
 #include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/MapRouting.h"
 #include "claims/ActiveRouteRuntime.h"
 #include "gradient/GradientTargetCell.h"
 #include "gradient/GradientExecutionAudit.h"
@@ -46,7 +48,7 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
+Map::Map() : computeOwner(std::make_unique<ComputeExecutor>()), compute(*computeOwner), routing_(std::make_unique<MapRouting>(*this)), assetBundleValue(MapAssetBundle::empty())
 {
     rebuildTerrainCounts();
 	topologyGeneration=1;
@@ -54,21 +56,6 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 
 	arraysBuilt=false;
 	
-	aStarPoints = NULL;
-	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MaterialSlotCount; r++)
-			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-			{
-				materialGradients[t][r][s] = NULL;
-				marketMaterialGradients[t][r][s] = NULL;
-			}
-	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-		{
-			forbiddenGradient[t][s] = NULL;
-			guardAreasGradient[t][s] = NULL;
-			clearAreasGradient[t][s] = NULL;
-		}
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
 	
@@ -329,8 +316,8 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 {
 	const auto old = cellRules[index];
 	if (old == rule) return;
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	if (--cellRuleCounts[old] == 0)
 		adjustTerrainFeatures(old, false);
 	if (cellRuleCounts[rule]++ == 0)
@@ -357,7 +344,7 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 		before.airSpeedQ8 != after.airSpeedQ8 ||
 		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::writeVertex(size_t index, TerrainType type)
@@ -432,7 +419,7 @@ void Map::finishTerrainEdit()
                 // Repeated painting must not starve all visible generations.
                 // Escape fields use the same delayed refresh contract, including
                 // cost-only terrain changes such as grass becoming trail.
-				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, movementAccessFromLegacy(swim));
+				if (routing().forbiddenGradient[team][swim]) routing().updateForbiddenGradient(team, movementAccessFromLegacy(swim));
 			}
 	}
 	terrainEditChanged = terrainRoutesChanged = false;
@@ -448,23 +435,23 @@ void Map::paintCell(size_t index, TerrainType type)
 			setVertexTerrain(x + dx, y + dy, type);
 }
 
-Uint16 *Map::acquireBuildingGradientBuffer()
+Uint16 *MapRouting::acquireBuildingGradientBuffer()
 {
 	{
 		std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
 		if (idleGradientBufferCount)
 			return idleGradientBuffers[--idleGradientBufferCount];
 	}
-	return new Uint16[size];
+	return new Uint16[map.size];
 }
 
-void Map::recycleBuildingGradientBuffer(Uint16 *buffer)
+void MapRouting::recycleBuildingGradientBuffer(Uint16 *buffer)
 {
 	if (!buffer) return;
 	{
 		std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
-		const std::size_t byBytes = size && size <= GRADIENT_BUFFER_POOL_BYTES / sizeof(Uint16)
-			? GRADIENT_BUFFER_POOL_BYTES / (size * sizeof(Uint16)) : 0;
+		const std::size_t byBytes = map.size && map.size <= GRADIENT_BUFFER_POOL_BYTES / sizeof(Uint16)
+			? GRADIENT_BUFFER_POOL_BYTES / (map.size * sizeof(Uint16)) : 0;
 		const std::size_t limit = std::min(GRADIENT_BUFFER_POOL_SLOTS, byBytes);
 		if (idleGradientBufferCount < limit)
 		{
@@ -475,14 +462,14 @@ void Map::recycleBuildingGradientBuffer(Uint16 *buffer)
 	delete[] buffer;
 }
 
-void Map::clearGradientBufferPool()
+void MapRouting::clearGradientBufferPool()
 {
 	std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
 	while (idleGradientBufferCount)
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
-std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
+std::vector<std::pair<std::string,Uint64>> MapRouting::gradientExecutionMetrics() const
 {
     std::vector<std::pair<std::string,Uint64>> result;
     if (gradientRuntime->materialDestinationsEnabled) {
@@ -502,11 +489,11 @@ std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
     return result;
 }
 
-void Map::configureGradientExecution()
+void MapRouting::configureGradientExecution()
 {
     auto& rt=*gradientRuntime;
     const auto selected=gradient_kernel::configuration();
-    const bool gpu=gradient_kernel::isGPU(selected.backend) && compute.threadCount()>1;
+    const bool gpu=gradient_kernel::isGPU(selected.backend) && map.compute.threadCount()>1;
     // No worker-only GPU predicate is registered on the simulation executor.
     if (gpu) {
         if (globalContainer) globalContainer->gradientDeviceShutdown = &gradient_kernel::shutdownGradientDeviceCoordinator;
@@ -514,7 +501,7 @@ void Map::configureGradientExecution()
         rt.backendSession->failed=false;
         rt.backendSession->invalidateConfiguration();
         if (!rt.deviceService) rt.deviceService=std::make_shared<gradient_kernel::GradientDeviceService>();
-        rt.deviceService->configure(compute.threadCount(),selected.backend);
+        rt.deviceService->configure(map.compute.threadCount(),selected.backend);
     } else {
         rt.deviceService.reset(); rt.backendSession.reset();
     }
@@ -523,12 +510,12 @@ void Map::configureGradientExecution()
     rt.pipeline.setExecutionBackend(selected);
 }
 
-void Map::applyGradientBackendRequest()
+void MapRouting::applyGradientBackendRequest()
 {
     const auto requested=gradient_kernel::requestedBackendConfiguration();
     if(requested==gradient_kernel::configuration())return;
     // Finish privately, preserving the pending queue and original publication ticks.
-    if(game)game->drainHiring();
+    if(map.drainGameWork)map.drainGameWork(false);
     finishGradientPipeline();
     gradient_kernel::applyBackendConfiguration(requested);
     configureGradientExecution();
@@ -536,16 +523,16 @@ void Map::applyGradientBackendRequest()
 
 void Map::configureCompute(unsigned threads)
 {
-    if(game){game->drainTeamStats();game->drainHiring();}
+    if(drainGameWork)drainGameWork(true);
     // Retire our executor handles without publishing their future results.
     if (materialClaimRoutes) (void)materialClaimRoutes->pipeline.exportPending();
-	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
+	routing().finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);
-	gradientRuntime->pipeline.resizeWorkspaces();
-	gradientRuntime->workspaces.resize(compute.threadCount());
-	gradientRuntime->shareBackendSession();
-    configureGradientExecution();
+	routing().gradientRuntime->pipeline.resizeWorkspaces();
+	routing().gradientRuntime->workspaces.resize(compute.threadCount());
+	routing().gradientRuntime->shareBackendSession();
+    routing().configureGradientExecution();
 }
 
 void Map::clear()
@@ -559,34 +546,34 @@ void Map::clear()
 	loadedHistoricalGrowthVersion = 0;
 	loadedLegacyGrowth144 = false;
 	loadedLegacyGrowth145 = false;
-	gradientRuntime->growth.reset();
+	routing().gradientRuntime->growth.reset();
 	markAllChanges();
-	clearPlaneRegistry();
+	routing().clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
-    gradientRuntime->preparations.clear();
-    gradientRuntime->adaptive={};
-    gradientRuntime->marketTargets={};
-    if (auto& probe=gradientRuntime->qualityProbe) {
+    routing().gradientRuntime->preparations.clear();
+    routing().gradientRuntime->adaptive={};
+    routing().gradientRuntime->marketTargets={};
+    if (auto& probe=routing().gradientRuntime->qualityProbe) {
         probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;probe->resetMovement();
     }
-    gradientRuntime->fieldRequests.clear();
-	gradientRuntime->pipeline.reset();
-    gradientRuntime->materialDestinationsEnabled = false;
+    routing().gradientRuntime->fieldRequests.clear();
+	routing().gradientRuntime->pipeline.reset();
+    routing().gradientRuntime->materialDestinationsEnabled = false;
 	// Retires into the buffer pool, so before the pool is cleared below.
-	resetBuildingGradientPipeline();
-	gradientRuntime->resetBackendSession();
-    configureGradientExecution();
-	gradientRuntime->buildingSynchronous=0;
-	gradientRuntime->synchronousByReason={};
-	gradientRuntime->overlaySupplierLocations.clear();
-	gradientRuntime->supplierLocationsDirty=true;
-	gradientRuntime->resourceSeeds.reset();
-	gradientRuntime->safety.reset();
-    gradientRuntime->directFlight = {};
-	clearGradientBufferPool();
+	routing().resetBuildingGradientPipeline();
+	routing().gradientRuntime->resetBackendSession();
+    routing().configureGradientExecution();
+	routing().gradientRuntime->buildingSynchronous=0;
+	routing().gradientRuntime->synchronousByReason={};
+	routing().gradientRuntime->overlaySupplierLocations.clear();
+	routing().gradientRuntime->supplierLocationsDirty=true;
+	routing().gradientRuntime->resourceSeeds.reset();
+	routing().gradientRuntime->safety.reset();
+    routing().gradientRuntime->directFlight = {};
+	routing().clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
@@ -618,12 +605,12 @@ void Map::clear()
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();
 	growthCoverageValid = false;
-	gradientRuntime->materialFields.clear();
-	gradientRuntime->fieldCosts.clear();
-	gradientRuntime->materialLru.clear();
-	gradientRuntime->stockRevision={};
-	gradientRuntime->materialCacheClock=0;
-	gradientRuntime->materialCacheBudget=64ull*1024*1024;
+	routing().gradientRuntime->materialFields.clear();
+	routing().gradientRuntime->fieldCosts.clear();
+	routing().gradientRuntime->materialLru.clear();
+	routing().gradientRuntime->stockRevision={};
+	routing().gradientRuntime->materialCacheClock=0;
+	routing().gradientRuntime->materialCacheBudget=64ull*1024*1024;
 	topologyGeneration=1;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
@@ -631,24 +618,24 @@ void Map::clear()
 		for (int r=0; r<MaterialCount; ++r)
 			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 			{
-				delete[] materialGradients[t][r][swim];
-				materialGradientStale[t][r][swim]=false;
-				materialGradients[t][r][swim] = NULL;
-				delete[] marketMaterialGradients[t][r][swim];
-				marketMaterialGradientStale[t][r][swim]=false;
-				marketMaterialGradients[t][r][swim] = NULL;
+				delete[] routing().materialGradients[t][r][swim];
+				routing().materialGradientStale[t][r][swim]=false;
+				routing().materialGradients[t][r][swim] = NULL;
+				delete[] routing().marketMaterialGradients[t][r][swim];
+				routing().marketMaterialGradientStale[t][r][swim]=false;
+				routing().marketMaterialGradients[t][r][swim] = NULL;
 			}
 		for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 		{
-			delete[] forbiddenGradient[t][swim];
-			forbiddenGradientStale[t][swim]=false;
-			forbiddenGradient[t][swim] = NULL;
-			delete[] guardAreasGradient[t][swim];
-			guardGradientStale[t][swim]=false;
-			guardAreasGradient[t][swim] = NULL;
-			delete[] clearAreasGradient[t][swim];
-			clearGradientStale[t][swim]=false;
-			clearAreasGradient[t][swim] = NULL;
+			delete[] routing().forbiddenGradient[t][swim];
+			routing().forbiddenGradientStale[t][swim]=false;
+			routing().forbiddenGradient[t][swim] = NULL;
+			delete[] routing().guardAreasGradient[t][swim];
+			routing().guardGradientStale[t][swim]=false;
+			routing().guardAreasGradient[t][swim] = NULL;
+			delete[] routing().clearAreasGradient[t][swim];
+			routing().clearGradientStale[t][swim]=false;
+			routing().clearAreasGradient[t][swim] = NULL;
 		}
 		delete[] exploredArea[t];
 		exploredArea[t] = NULL;
@@ -659,8 +646,8 @@ void Map::clear()
 	sectors = NULL;
 	delete[] listedAddr;
 	listedAddr = NULL;
-	delete[] aStarPoints;
-	aStarPoints = NULL;
+	delete[] routing().aStarPoints;
+	routing().aStarPoints = NULL;
 
 	arraysBuilt = false;
 
@@ -731,7 +718,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
-	aStarPoints=new AStarAlgorithmPoint[w*h];
+	routing().aStarPoints=new MapRouting::AStarAlgorithmPoint[w*h];
 
 
 

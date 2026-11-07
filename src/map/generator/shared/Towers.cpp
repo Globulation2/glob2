@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Towers.h"
 #include "Morphology.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Settlements.h"
 #include "Walls.h"
@@ -267,10 +267,11 @@ std::vector<unsigned char> roomyGround(const Torus &t, const std::vector<unsigne
 	return erode(t, open, room - 1);
 }
 
-bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &plan, int level,
-						  bool everyColonyNeedsOne, const std::vector<unsigned char> *goal)
+bool settleStartingTowers(GenerationWorld &game, GenerationContext &context, TowerPlan &plan,
+						  int level, bool everyColonyNeedsOne,
+						  const std::vector<unsigned char> *goal)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus t(map);
 	if (context.telemetry.enabled())
 		for (size_t k = 0; k < plan.towers.size(); ++k)
@@ -347,7 +348,7 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 	return true;
 }
 
-bool raiseTowers(Game &game, const TowerPlan &plan, int level)
+bool raiseTowers(GenerationWorld &game, const TowerPlan &plan, int level)
 {
 	const Torus t(game.map);
 	for (size_t k = 0; k < plan.towers.size(); ++k)

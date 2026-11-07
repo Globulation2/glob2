@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include <PerformanceTelemetry.h>
 #include <vector>
 #include <cmath>
@@ -1477,7 +1480,7 @@ TEST_SUITE("TeamStatsSave")
         CHECK(components(repeated->game)==components(world.game));
     }
 
-	TEST_CASE("32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]")
+	TEST_CASE("32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" * glob2test::needs({"ai:castor"}))
 	{
 		glob2test::HeadlessGlobals globals;
 		    GameGUI gui;

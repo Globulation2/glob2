@@ -3,13 +3,9 @@
 #include <PerformanceTelemetry.h>
 #include "GenerationValidation.h"
 #include <string>
-#include "Building.h"
-#include "BuildingType.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationRequest.h"
 #include "GeneratorDefinition.h"
-#include "IntBuildingType.h"
-#include "Unit.h"
 std::string validateGenerationRequest(const GenerationRequest &r, const GeneratorDefinition &d)
 {
 	// A request is valid at any size either screen offers: the editor's range includes the lobby's.
@@ -43,13 +39,13 @@ std::string validateGenerationRequest(const GenerationRequest &r, const Generato
 	try { return d.validateRequest ? d.validateRequest(r) : std::string{}; }
     catch(const ScriptGenerationFailure &error) { return error.what(); }
 }
-std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
+std::string validateGeneratedWorld(const GenerationWorld &g, const GenerationRequest &r,
 								   const GeneratorDefinition &d)
 {
 	PERF_SCOPE_TIME(Validation);
 	if (g.map.getW() != (1 << r.wDec) || g.map.getH() != (1 << r.hDec))
 		return "Incorrect map dimensions";
-	if (g.mapHeader.getNumberOfTeams() != (d.hasStartingColonies ? r.nbTeams : 1))
+	if (g.teamsCount() != (d.hasStartingColonies ? r.nbTeams : 1))
 		return "Incorrect colony count";
 	// No generated map may disable resource growth. The engine's saved canResourcesGrow flag
 	// is for hand-made scenarios such as the tutorial; a generated map contains its crops with
@@ -57,26 +53,26 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 	// canResourcesGrow(), which also includes the terrain's natural growth permission.
 	for (int y = 0; y < g.map.getH(); ++y)
 		for (int x = 0; x < g.map.getW(); ++x)
-			if (!g.map.getTile(x, y).canResourcesGrow)
+			if (!g.map.resourceState()[g.map.coordToIndex(x, y)].mayGrow)
 				return "Generated maps may not disable resource growth (no-growth zone at " +
 					   std::to_string(x) + "," + std::to_string(y) + ")";
 	// Normally the shared worker count is per colony; detached settlements may grant it per swarm.
 	if (d.hasStartingColonies)
 		for (int i = 0; i < r.nbTeams; ++i)
 		{
-			const Team *team = g.teams[i];
-			if (!team)
+			if (!g.hasTeam(i))
 				return "Missing colony";
-			if (team->startPosX < 0 || team->startPosX >= g.map.getW() || team->startPosY < 0 ||
-				team->startPosY >= g.map.getH())
+			const GenerationTeamStart start = g.teamStart(i);
+			if (start.x < 0 || start.x >= g.map.getW() || start.y < 0 || start.y >= g.map.getH())
 				return "Starting position outside map bounds";
 			int workers = 0;
 			int swarms = 0;
-			for (const auto *unit : team->liveUnits.entries())
-			if (unit && unit->typeNum == WORKER)
+			for (const GenerationUnit &unit : g.teamUnits(i))
+				if (unit.typeNum == GenerationUnit::Worker)
 					++workers;
-			for (const auto *building : team->liveBuildings.entries())
-			if (building && building->typeNum == g.buildingsTypes.getStartingBuildingTypeNum())
+			const int startingType = g.startingBuildingType().typeNum;
+			for (const GenerationBuilding &building : g.teamBuildings(i))
+				if (building.typeNum == startingType)
 					++swarms;
 			const int expectedWorkers = r.nbWorkers * (d.workersPerStartingSwarm ? swarms : 1);
 			if (workers != expectedWorkers || !swarms)

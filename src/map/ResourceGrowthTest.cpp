@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "Engine.h"
 #include "ResourceGrowth.h"
 #include "Version.h"
@@ -389,7 +391,7 @@ TEST_SUITE("ResourceGrowth")
 		auto &map = world.game.map;
 		seed(map, crop(map));
 		map.configureCompute(1); // No worker threads.
-		auto &pipeline = map.gradientRuntime->growth;
+		auto &pipeline = map.routing().gradientRuntime->growth;
 		pipeline.stage(0, 48);
 		map.setResourceGrowthDelay(8);
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
@@ -479,13 +481,13 @@ TEST_SUITE("ResourceGrowth")
 		m.configureCompute(1);
 		m.setResourceGrowthDelay(8);
 		world.step();
-		REQUIRE(m.gradientRuntime->growth.count() == 1);
+		REQUIRE(m.routing().gradientRuntime->growth.count() == 1);
 		m.checkSum(false);
 		m.finishResourceGrowth();
 		CHECK(m.resourceGrowthMetrics().sampled > 0);
 		CHECK(m.resourceGrowthMetrics().published == 0);
 		m.setSize(5, 5, GRASS);
-		CHECK(m.gradientRuntime->growth.count() == 0);
+		CHECK(m.routing().gradientRuntime->growth.count() == 0);
 	}
 
 	TEST_CASE("publication accounts for proposals rejected by a different world")
@@ -612,20 +614,20 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
             glob2test::inflated(std::string("resources/growth-save-layout/") + name))));
         REQUIRE(original.game.load(&input));
         const bool growth = std::string_view(name).starts_with("growth");
-        CHECK((original.game.map.gradientRuntime->growth.count() != 0) == growth);
+        CHECK((original.game.map.routing().gradientRuntime->growth.count() != 0) == growth);
         CHECK(original.game.map.frozenAssetBundle()->isEmpty() == (std::string_view(name) != "artwork144.game.gz"));
         CHECK(bool(original.game.gameHeader.getBuildingArtwork()) == (std::string_view(name) == "building145.game.gz"));
         const auto artwork = original.game.gameHeader.getBuildingArtwork() ? original.game.gameHeader.getBuildingArtwork()->bytes() : std::string{};
-        const auto pending = original.game.map.gradientRuntime->growth.count();
+        const auto pending = original.game.map.routing().gradientRuntime->growth.count();
         auto *bytes = new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(bytes);
         original.game.save(&output, false, "layout continuation");
         output.flush();
-        CHECK(original.game.map.gradientRuntime->growth.count() == pending);
+        CHECK(original.game.map.routing().gradientRuntime->growth.count() == pending);
         glob2test::HeadlessGame restored({.loadDefaultRace = true, .header = true});
         GAGCore::BinaryInputStream saved(new GAGCore::MemoryStreamBackend(bytes->takeContents()));
         REQUIRE(restored.game.load(&saved));
-        CHECK(restored.game.map.gradientRuntime->growth.count() == pending);
+        CHECK(restored.game.map.routing().gradientRuntime->growth.count() == pending);
         CHECK((restored.game.gameHeader.getBuildingArtwork() ? restored.game.gameHeader.getBuildingArtwork()->bytes() : std::string{}) == artwork);
         CHECK(restored.game.map.frozenAssetBundle()->serialize() == original.game.map.frozenAssetBundle()->serialize());
         const auto components=[](Game& game) {
@@ -823,13 +825,13 @@ TEST_CASE("finishing admitted world work does not publish early" * doctest::test
     auto &map = world.game.map;
     map.setResourceGrowthDelay(8);
     world.game.step(-1);
-    REQUIRE_FALSE(map.gradientRuntime->growth.needsPreparation());
+    REQUIRE_FALSE(map.routing().gradientRuntime->growth.needsPreparation());
     const auto published = map.resourceGrowthMetrics().published;
     map.finishResourceGrowth();
-    CHECK_FALSE(map.gradientRuntime->growth.needsPreparation());
+    CHECK_FALSE(map.routing().gradientRuntime->growth.needsPreparation());
     CHECK(map.resourceGrowthMetrics().submitted == 1);
     CHECK(map.resourceGrowthMetrics().published == published);
-    CHECK(map.gradientRuntime->growth.count() == 1);
+    CHECK(map.routing().gradientRuntime->growth.count() == 1);
 }
 
 TEST_CASE("historical growth payloads retain pending work after header preflight" * doctest::test_suite("ResourceGrowth"))
@@ -846,7 +848,7 @@ TEST_CASE("historical growth payloads retain pending work after header preflight
         const bool growth = std::string_view(name).starts_with("growth");
         // Header inspection must leave the original payload available, including
         // computed growth outputs that must not be regenerated from live state.
-        CHECK((engine.gui.game.map.gradientRuntime->growth.count() != 0) == growth);
+        CHECK((engine.gui.game.map.routing().gradientRuntime->growth.count() != 0) == growth);
         CHECK(engine.gui.game.mapHeader.getNumberOfTeams() == header.getNumberOfTeams());
     }
 }

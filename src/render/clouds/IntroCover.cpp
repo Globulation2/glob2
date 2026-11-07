@@ -28,7 +28,7 @@ float ease(float t)
 //! Room for a player's team-colour dot before their name.
 int dotSpace(Font *font) { return font->getStringHeight("Ag") * 3 / 4; }
 
-unsigned char byte(float v) { return static_cast<unsigned char>(std::lround(std::clamp(v, 0.f, 1.f) * 255)); }
+unsigned char unitToByte(float v) { return static_cast<unsigned char>(std::lround(std::clamp(v, 0.f, 1.f) * 255)); }
 
 //! A texture sampled smoothly when stretched, like generated HD terrain pages.
 class SmoothSurface : public DrawableSurface
@@ -200,9 +200,9 @@ void IntroCover::computeLayers(int w, int h, double seconds, float part, Layers 
 			const float tone = std::clamp(.5f + .3f * hc + 1.2f * slope + .25f * smoothstep(th, th + .5f, u) - .1f,
 			                              0.f, 1.f);
 			const size_t at = size_t(j) * out.w + i;
-			out.shadow[at] = byte(.35f * shadow);
-			out.body[at] = byte(a);
-			out.light[at] = byte(a * tone);
+			out.shadow[at] = unitToByte(.35f * shadow);
+			out.body[at] = unitToByte(a);
+			out.light[at] = unitToByte(a * tone);
 		}
 }
 
@@ -259,13 +259,13 @@ void IntroCover::draw(DrawableSurface &gfx, int w, int h, Uint64 now, Font *titl
 	{
 		const double seconds = double(now - start) / 1000;
 		computeLayers(w, h, seconds, p, layers);
-		Depth far;
-		far.zoom = .25f;
-		far.lead = 1;
-		far.wind = .55f;
-		far.size = .7f;
-		far.seed = 7;
-		computeLayers(w, h, seconds, p, farLayers, far);
+		Depth distant;
+		distant.zoom = .25f;
+		distant.lead = 1;
+		distant.wind = .55f;
+		distant.size = .7f;
+		distant.seed = 7;
+		computeLayers(w, h, seconds, p, farLayers, distant);
 		if (!surface || surface->getW() != layers.w || surface->getH() != layers.h)
 		{
 			surface = std::make_unique<SmoothSurface>(layers.w, layers.h);
@@ -323,7 +323,7 @@ void IntroCover::draw(DrawableSurface &gfx, int w, int h, Uint64 now, Font *titl
 					over(.32f * titleAlpha * smoothstep(1.2f, .2f, std::hypot((x - hcx) / hx, (y - hcy) / hy)), 52, 64, 88);
 				}
 				const float inv = a > 0 ? 1 / a : 0;
-				row[i] = Uint32(byte(a)) << 24 | Uint32(std::lround(std::min(255.f, r * inv))) << 16 |
+				row[i] = Uint32(unitToByte(a)) << 24 | Uint32(std::lround(std::min(255.f, r * inv))) << 16 |
 				         Uint32(std::lround(std::min(255.f, g * inv))) << 8 | Uint32(std::lround(std::min(255.f, b * inv)));
 			}
 		}

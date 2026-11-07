@@ -7,7 +7,8 @@
 // builds a two-team game, so "own" and "foreign" are both available; player i plays
 // team i.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 
 #include <memory>
 #include <map>

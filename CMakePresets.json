@@ -1,0 +1,20 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Native Linux fast development (experimental; SCons dev_fast=1 equivalent)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/cmake/dev",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-O0 -g1 -fdebug-prefix-map=${sourceDir}=.",
+        "CMAKE_CXX_FLAGS": "-O0 -g1 -fdebug-prefix-map=${sourceDir}=.",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {"name": "dev", "configurePreset": "dev"}
+  ]
+}

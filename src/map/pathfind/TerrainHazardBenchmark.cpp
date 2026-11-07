@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in measurements: no wall-clock performance assertions.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "StreamBackend.h"
@@ -95,13 +97,13 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
             map.setVertexTerrain(x,y,original);
             const auto cpu=std::clock();
             const auto wall=std::chrono::steady_clock::now();
-            map.pathfindRandom(unit);
+            map.routing().pathfindRandom(unit);
             const double cpuNs=double(std::clock()-cpu)*1e9/CLOCKS_PER_SEC;
             const double wallNs=std::chrono::duration<double>(std::chrono::steady_clock::now()-wall).count()*1e9;
             std::printf("hazard_bench,idle-cold,%s,%d,%d,1,%.3f,%.3f\n",
                 layout.c_str(),map.getW(),repeat,cpuNs,wallNs);
         }
-        measure("idle",layout.c_str(),map.getW(),[&]{map.pathfindRandom(unit);});
+        measure("idle",layout.c_str(),map.getW(),[&]{map.routing().pathfindRandom(unit);});
     }
 }
 
@@ -140,7 +142,7 @@ TEST_CASE("shared terrain fields across ice coverage and custom profiles [benchm
         measure("field",layout.c_str(),map.getW(),[&]{
             std::fill(cells.begin(),cells.end(),GRADIENT_UNREACHABLE);
             cells[0]=GRADIENT_AT_GOAL;
-            map.propagateGradient(cells.data(),0);
+            map.routing().propagateGradient(cells.data(),0);
         });
         REQUIRE(cells.back()>GRADIENT_UNREACHABLE);
     }

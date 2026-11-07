@@ -2,16 +2,16 @@
 #pragma once
 #include "GenerationRequest.h"
 #include "GenerationTelemetry.h"
-#include "Team.h"
+#include "TeamCapacity.h"
 #include <array>
 #include <map>
 #include <random>
 #include <utility>
-class Game;
+class GenerationWorld;
 struct GenerationContext
 {
 	const GenerationRequest &request;
-	std::array<int, Team::MAX_COUNT> bootX{}, bootY{};
+	std::array<int, TEAM_MAX_COUNT> bootX{}, bootY{};
 	std::string stage = "terrain";
 	std::string detail;
 	GenerationTelemetry telemetry;

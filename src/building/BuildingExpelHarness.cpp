@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Units survive their building being destroyed (issue #185).
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -232,7 +233,7 @@ static void stepsWithoutAnyGradient()
 {
 	World world;
 	world.step(3);
-	world.game.map.getMaterialGradientSlot(0, WOOD, MovementAccess::Land);
+	world.game.map.routing().getMaterialGradientSlot(0, WOOD, MovementAccess::Land);
 	world.step(3);
 	std::puts("PASS a world without gradients keeps stepping");
 }

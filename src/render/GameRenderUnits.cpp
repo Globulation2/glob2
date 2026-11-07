@@ -7,7 +7,6 @@
 #include "MapCopies.h"
 #include <iostream>
 
-#include "AICastor.h"
 
 #include <assert.h>
 #include <string.h>
@@ -21,6 +20,7 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -49,7 +49,7 @@
 // Unit rendering. Split from Game_render.cpp.
 
 
-void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
 	MapRenderState* drawnRender = globalContainer->settings.adaptiveZoomDetail ? &view.render : nullptr;
 	const SceneEntities &entities = scene.entities;
@@ -72,7 +72,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// linear in the fade level, unlike the shade's darkness, so the unit is gone
 	// exactly when its tile is fully fogged.
 	Uint8 fogAlpha = Color::ALPHA_OPAQUE;
-	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
+	if ((drawOptions & Game::DRAW_WHOLE_MAP) == 0)
 	{
 		const FogFade &fade = view.render.fogFade;
 		if (fade.active())
@@ -281,10 +281,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 	}
 
-	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
+	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & Game::DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
 		view.mouseUnit=UnitRef{unit->gid, unit->scriptIdentity};
 
-	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
+	if ((drawOptions & Game::DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
 		// A hungry or hurt unit keeps a status pip once every bar has faded.
 		const int food=int((Sint64(unit->hungry)*10)/definition.runtime.foodCapacity);
@@ -308,7 +308,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 	}
 
-	if (drawOptions & DRAW_ACCESSIBILITY)
+	if (drawOptions & Game::DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
 		oss << entities.owner(*unit).number;
@@ -327,7 +327,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 }
 
 
-void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
 	PERF_SCOPE_TIME(GroundUnits);
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
@@ -344,7 +344,7 @@ void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int
 }
 
 
-void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
 	PERF_SCOPE_TIME(AirUnits);
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
@@ -358,10 +358,10 @@ void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh
 }
 
 
-void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
 	const SceneEntities &entities = scene.entities;
-	if ((drawOptions & DRAW_PATH_LINE) != 0)
+	if ((drawOptions & Game::DRAW_PATH_LINE) != 0)
 	{
 		// Units are extracted team by team in slot order, as the old loop visited them.
 		for (const SnapshotUnit &unit : entities.units)
@@ -377,7 +377,7 @@ void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int 
 
 
 
-void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SnapshotUnit& sceneUnit, const PresentationFrame& scene, float unitMotion)
+void MapDrawer::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SnapshotUnit& sceneUnit, const PresentationFrame& scene, float unitMotion)
 {
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
 	const SnapshotUnit *unit = &sceneUnit;
@@ -415,7 +415,7 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 
 
 
-void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& sceneUnit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion)
+void MapDrawer::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& sceneUnit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion)
 {
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
 	const SnapshotUnit *unit = &sceneUnit;

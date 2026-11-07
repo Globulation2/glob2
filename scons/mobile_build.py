@@ -3,6 +3,7 @@ from client_features import header as client_feature_header
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
@@ -61,6 +62,9 @@ def build_mobile(directory, identity, arguments):
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
         ENV=environment, CC=command_path(toolchain['cc']), CXX=command_path(toolchain['cxx']), LINK=command_path(toolchain['cxx']), AR=command_path(toolchain['ar']))
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(Path(__file__).resolve().parents[1], output, sys.argv)
     env['BUILDDIR'] = str(output)
     if ccache.enabled():
         ccache.enable(env)
@@ -70,7 +74,6 @@ def build_mobile(directory, identity, arguments):
 #define PACKAGE_NAME "Globulation 2"
 #define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "."
-#define PACKAGE_SOURCE_DIR "."
 #define PRIMARY_FONT "sans.ttf"
 #define GLOB2_MOBILE 1
 #define GLOB2_NATIVE_WSS 1
@@ -80,7 +83,9 @@ def build_mobile(directory, identity, arguments):
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     import renderer_shaders
-    renderer_shaders.configure(env, Path(__file__).resolve().parents[1], output)
+    shader_directory = renderer_shaders.configure(env, Path(__file__).resolve().parents[1], output)
+    import checkout_paths
+    checkout_paths.write(output, PACKAGE_SOURCE_DIR='.', GLOB2_RENDER_SHADER_DIR=str(shader_directory.resolve()))
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/opus'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
@@ -140,10 +145,11 @@ def build_mobile(directory, identity, arguments):
             # executables for adb shell (platforms/mobile/android_device_tests.py). They reuse the
             # same game objects; test/support/TestMain.cpp is the entry point and
             # platforms/mobile/NativeTestMain.cpp interposes the platform bridges.
-            import sys
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             # The engine registry exceeds Linux's per-argument shell limit when
             # expanded into one link command. Clang accepts SCons response files.
             tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
@@ -193,10 +199,10 @@ def build_mobile(directory, identity, arguments):
 
             bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'platforms/mobile/NativeTestMain.cpp')
             engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
-                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.portable_engine_tests(), 'engine-')
                                    + bridge + client_objects)
             unit = tests.Program(str(output / 'tests' / 'glob2-unit-tests'),
-                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.portable_unit_tests(), 'unit-')
                                  + production_objects(registry.UNIT_PRODUCTION_SOURCES) + bridge + library_objects)
             env.Alias('android-tests', engine + unit)
     else:
@@ -212,10 +218,11 @@ def build_mobile(directory, identity, arguments):
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
         program = record(env, env.StaticLibrary(str(output / 'lib/glob2'), objects), 'link')
         if 'ios-tests' in COMMAND_LINE_TARGETS:
-            import sys
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
             for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp']:

@@ -5,8 +5,11 @@
 #pragma once
 
 #include <SDL3_net/SDL_net.h>
-#include "AI.h"
-#include "Team.h"
+#include "AIImplementationId.h"
+#include "TeamCapacity.h"
+#include <cassert>
+class Team;
+namespace GAGCore { class InputStream; class OutputStream; }
 #include <string>
 /**
  * Player holds the player's state like name, type, id etc.
@@ -31,7 +34,7 @@ public:
 	 *     enum PlayerKind { None, LostDropping, LostFinal, Network, Local, AI }
 	 *     struct BasePlayer {
 	 *         kind: PlayerKind,
-	 *         ai_type: Option<AI::ImplementationID>,  // Some iff kind == AI
+	 *         ai_type: Option<AIImplementationIds::ImplementationID>,  // Some iff kind == AI
 	 *         ...
 	 *     }
 	 * Saves get re-versioned in the port anyway, so this is the right
@@ -55,13 +58,13 @@ public:
 		P_AI=5
 	};
 	//TODO: Explain
-	static AI::ImplementationID implementationIdFromPlayerType(PlayerType type)
+	static AIImplementationIds::ImplementationID implementationIdFromPlayerType(PlayerType type)
 	{
 		assert(type>=P_AI);
-		return (AI::ImplementationID)((int)type-(int)P_AI);
+		return (AIImplementationIds::ImplementationID)((int)type-(int)P_AI);
 	}
 	//TODO: Explain
-	static PlayerType playerTypeFromImplementationID(AI::ImplementationID iid)
+	static PlayerType playerTypeFromImplementationID(AIImplementationIds::ImplementationID iid)
 	{
 		return (PlayerType)((int)iid+(int)P_AI);
 	}
@@ -71,7 +74,7 @@ public:
 	};
 
 	PlayerType type;
-	/// Player slot index. Valid range: [0, Team::MAX_COUNT). Used to index
+	/// Player slot index. Valid range: [0, TEAM_MAX_COUNT). Used to index
 	/// Game::players[] and as the bit position in numberMask.
 	Sint32 number;
 	/// Cached 1 << number. Kept in sync via setNumber().
@@ -79,7 +82,7 @@ public:
 	std::string name;
 	/// Index of the Team this player controls. Valid range:
 	/// [0, mapHeader.getNumberOfTeams()) — must point at a live Team slot.
-	/// BasePlayer::load enforces the wider [0, Team::MAX_COUNT) bound; the
+	/// BasePlayer::load enforces the wider [0, TEAM_MAX_COUNT) bound; the
 	/// tighter map-aware bound is checked at the Game::setGameHeader call
 	/// site, where mapHeader is available.
 	Sint32 teamNumber;
@@ -116,19 +119,19 @@ public:
 	void setTeamNumber(Sint32 teamNumber);
 	/// True iff a raw serialized type value is a valid PlayerType. Because of
 	/// the P_AI+n encoding (see the PlayerType comment above), the valid range
-	/// is [P_NONE, P_AI + AI::SIZE): the base kinds 0..P_AI-1 plus one slot per
+	/// is [P_NONE, P_AI + AIImplementationIds::SIZE): the base kinds 0..P_AI-1 plus one slot per
 	/// AI implementation. Anything else came from a corrupt or hostile stream —
 	/// using it would index AI dispatch tables out of range.
 	static bool isValidSerializedType(Uint32 rawType)
 	{
-		return rawType < Uint32(P_AI) + Uint32(AI::SIZE);
+		return rawType < Uint32(P_AI) + Uint32(AIImplementationIds::SIZE);
 	}
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream) const;
 
 	Uint32 checkSum();
 
-	virtual void makeItAI(AI::ImplementationID aiType);
+	virtual void makeItAI(AIImplementationIds::ImplementationID aiType);
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };

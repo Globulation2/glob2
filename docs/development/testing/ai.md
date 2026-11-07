@@ -16,7 +16,7 @@ dead buildings, empty colonies, and footprints or distance limits spanning the m
 
 ## AI helper gradient regression
 
-`Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
+`MapRouting::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
 Run its independent byte-for-byte oracle from the repository root:
 
 ```sh

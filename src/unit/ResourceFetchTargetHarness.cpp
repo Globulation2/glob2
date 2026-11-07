@@ -2,7 +2,10 @@
 // Real-engine regression: a resource-fetch target must track the gradient
 // a walking unit actually follows, not a one-time snapshot from task
 // assignment.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
@@ -109,16 +112,16 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedCost, int swi
 	require(Map::swimClass(unit->performance[WALK], unit->performance[SWIM]) == expectedCost,
 		"exercise the requested physical movement cost");
 	team->updateRoutingRatio();
-	require(game.map.preparationCostClass(teamNumber, accessClass(access)) == expectedCost,
+	require(game.map.routing().preparationCostClass(teamNumber, accessClass(access)) == expectedCost,
 		"team preparation costs preserve restricted access and select the sole amphibious unit's ratio");
 
-	const auto* initial = glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,access); });
-	require(game.map.publishedCostClass(initial) == expectedCost,
+	const auto* initial = glob2test::awaitGradient(game, [&] { return game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access); });
+	require(game.map.routing().publishedCostClass(initial) == expectedCost,
 		"the shared field retains its selected preparation cost");
 	// The planning target at task assignment.
 	glob2test::materialPlanningTarget(game.map,teamNumber, WHEAT, access, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
 	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer wheat tile");
-	require(game.map.getGradient(teamNumber, WHEAT, access, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+	require(game.map.routing().getGradient(teamNumber, WHEAT, access, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"initial target is the gradient's goal");
 
 	// One action of walking: the target must not move while it is still valid.
@@ -129,20 +132,20 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedCost, int swi
 	// layer directly, the same way Map::decResource does; the cached
 	// gradient is untouched until something rebuilds it.
 	game.map.replaceResource(nearX, nearY, Resource{});
-	require(game.map.getGradient(teamNumber, WHEAT, access, nearX, nearY) == GRADIENT_AT_GOAL,
+	require(game.map.routing().getGradient(teamNumber, WHEAT, access, nearX, nearY) == GRADIENT_AT_GOAL,
 		"the cached gradient does not notice the depletion by itself");
 
 	// Request an ordinary refresh; field identity remains stable while its
 	// replacement is prepared and published at the fixed boundary.
-	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,access);
-	game.map.updateMaterialGradient(teamNumber, WHEAT, access);
+	const auto* previous=game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access);
+	game.map.routing().updateMaterialGradient(teamNumber, WHEAT, access);
 	// Stale guidance remains visible until the fixed publication boundary.
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,access)==previous,"refresh keeps the published generation");
+	require(game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access)==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
-		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,access);
+		const auto* field=game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access);
 		return field && field[game.map.coordToIndex(nearX,nearY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
-	require(game.map.getGradient(teamNumber, WHEAT, access, nearX, nearY) != GRADIENT_AT_GOAL,
+	require(game.map.routing().getGradient(teamNumber, WHEAT, access, nearX, nearY) != GRADIENT_AT_GOAL,
 		"the rebuilt gradient no longer marks the depleted tile as the goal");
 
 	// The unit takes its next action. pathfindResource reads the fresh
@@ -151,7 +154,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedCost, int swi
 	unit->stepGoingToResource();
 	require(unit->targetX == farX && unit->targetY == farY,
 		"target is refreshed to the far wheat tile once the near one is gone");
-	require(game.map.getGradient(teamNumber, WHEAT, access, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+	require(game.map.routing().getGradient(teamNumber, WHEAT, access, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"refreshed target is the rebuilt gradient's goal");
 
 	std::puts("PASS resource-fetch target is refreshed when the gradient it was ascended from is rebuilt");
@@ -182,7 +185,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(innType >= 0, "inn type exists");
 	Building* inn = game.addBuilding(5, 5, innType, 0);
 	require(inn != nullptr, "inn placed");
-	require(game.map.materialSupplyModesSlot(inn, WHEAT) == 0, "stock permission without a supplier uses natural routing");
+	require(game.map.routing().materialSupplyModesSlot(inn, WHEAT) == 0, "stock permission without a supplier uses natural routing");
 	game.map.setBuilding(5, 5, inn->type->width, inn->type->height, inn->gid);
 
 	const int unitX = 16, unitY = 16;
@@ -203,8 +206,8 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	unit->setValidTarget(true);
 	const auto access = unit->movementAccess();
 
-	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,access); });
-	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradientSlot(teamNumber, WHEAT, access), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
+	glob2test::awaitGradient(game, [&] { return game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access); });
+	require(game.map.routing().getGlobalGradientDestination(game.map.routing().getMaterialGradientSlot(teamNumber, WHEAT, access), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
 		"sanity: ascending the plain gradient reaches an exact goal");
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"sanity: the plain gradient's nearest tile is the one close to the unit, not the building");
@@ -222,12 +225,12 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	// The near-unit tile gets fully harvested by someone else. The resource
 	// gradient does not notice by itself.
 	game.map.replaceResource(nearUnitX, nearUnitY, Resource{});
-	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,access);
-	game.map.updateMaterialGradient(teamNumber, WHEAT, access);
+	const auto* previous=game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access);
+	game.map.routing().updateMaterialGradient(teamNumber, WHEAT, access);
 	// Stale guidance remains visible until the fixed publication boundary.
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,access)==previous,"refresh keeps the published generation");
+	require(game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access)==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
-		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,access);
+		const auto* field=game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access);
 		return field && field[game.map.coordToIndex(nearUnitX,nearUnitY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
 
@@ -237,17 +240,17 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(unit->targetX == nearBuildingX && unit->targetY == nearBuildingY,
 		"target is refreshed to the only remaining wheat tile");
 
-	require(game.map.materialRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
-	const auto* natural=game.map.getMaterialGradientSlot(teamNumber,WHEAT,access);
+	require(game.map.routing().materialRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
+	const auto* natural=game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access);
 	const int marketType=game.buildingsTypes.getTypeNum("market",0,false);
 	auto* market=game.addBuilding(24,24,marketType,0);
 	require(market!=nullptr, "fruit-only market placed");
 	market->setMaterial(CHERRY, 1);
 	require(!team->directStockSuppliers.empty(), "fruit-only market is a direct supplier");
-	require(game.map.materialSupplyModesSlot(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,access,true,inn)==natural,
+	require(game.map.routing().materialSupplyModesSlot(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
+	require(game.map.routing().getMaterialGradientSlot(teamNumber,WHEAT,access,true,inn)==natural,
 		"fruit-only supplier retains the original natural wheat field");
-	require(game.map.materialRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
+	require(game.map.routing().materialRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
 	std::puts("PASS resource-fetch target tracks the nearest resource and refreshes when its gradient is rebuilt");
 }
 }
@@ -268,15 +271,15 @@ TEST_SUITE("ResourceFetchTarget")
         unit->destinationPurpose=WHEAT; unit->activity=Unit::ACT_FILLING;
         unit->displacement=Unit::DIS_GOING_TO_RESOURCE; unit->setValidTarget(true);
         const auto movement=unit->movementAccess();
-        glob2test::awaitGradient(game,[&]{ return map.getMaterialGradientSlot(0,WHEAT,movement); });
+        glob2test::awaitGradient(game,[&]{ return map.routing().getMaterialGradientSlot(0,WHEAT,movement); });
         unit->targetX=20; unit->targetY=16;
         REQUIRE(map.incResourceByIndex(16,18,WHEAT,0));
-        map.updateMaterialGradient(0,WHEAT,movement);
+        map.routing().updateMaterialGradient(0,WHEAT,movement);
         glob2test::awaitGradient(game,[&] {
-            const auto* field=map.getMaterialGradientSlot(0,WHEAT,movement);
+            const auto* field=map.routing().getMaterialGradientSlot(0,WHEAT,movement);
             return field && field[map.coordToIndex(16,18)]==GRADIENT_AT_GOAL ? field : nullptr;
         });
-        REQUIRE(glob2test::isGradientPeak(map,map.getMaterialGradientSlot(0,WHEAT,movement),20,16));
+        REQUIRE(glob2test::isGradientPeak(map,map.routing().getMaterialGradientSlot(0,WHEAT,movement),20,16));
         const auto before=unit->entityRandom;
         unit->stepGoingToResource();
         CHECK(unit->targetX==16); CHECK(unit->targetY==18); CHECK(unit->validTarget());
@@ -300,17 +303,17 @@ TEST_SUITE("ResourceFetchTarget")
         std::vector<Uint16> field(map.getW()*map.getH(),GRADIENT_UNREACHABLE);
         field[map.coordToIndex(8,8)]=64000;
         field[map.coordToIndex(9,8)]=65000;
-        const int extra=map.stepCost(-1,-1,map.coordToIndex(7,7),0)-map.stepCost(1,0,map.coordToIndex(9,8),0);
+        const int extra=map.routing().stepCost(-1,-1,map.coordToIndex(7,7),0)-map.routing().stepCost(1,0,map.coordToIndex(9,8),0);
         REQUIRE(extra>1);
         field[map.coordToIndex(7,7)]=65000+extra-1;
         Sint32 x=-1,y=-1;
-        CHECK_FALSE(map.getGlobalGradientDestination(field.data(),8,8,&x,&y));
+        CHECK_FALSE(map.routing().getGlobalGradientDestination(field.data(),8,8,&x,&y));
         CHECK(x==7); CHECK(y==7); // Raw ascent picks the more expensive diagonal.
-        REQUIRE(map.projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,8,8,&x,&y));
+        REQUIRE(map.routing().projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,8,8,&x,&y));
         CHECK(x==9); CHECK(y==8);
         map.replaceResource(9,8,Resource{});
-        CHECK_FALSE(map.projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,8,8,&x,&y));
-        CHECK_FALSE(map.projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,0,0,&x,&y));
+        CHECK_FALSE(map.routing().projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,8,8,&x,&y));
+        CHECK_FALSE(map.routing().projectMaterialDestination(field.data(),0,WHEAT,MovementAccess::Land,0,0,&x,&y));
     }
 
     TEST_CASE("material step projection follows its accepted first step without extra randomness")
@@ -322,17 +325,17 @@ TEST_SUITE("ResourceFetchTarget")
         for (int y=0;y<map.getH();++y) for (int x=0;x<map.getW();++x) map.clearImmobileUnit(x,y);
         REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));
         REQUIRE(map.incResourceByIndex(4,8,WHEAT,0));
-        const auto* field=glob2test::awaitGradient(game,[&]{ return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
+        const auto* field=glob2test::awaitGradient(game,[&]{ return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
         // Occupy the eastward choices; the selected step may switch basins.
         for (int y=7;y<=9;++y) map.markImmobileUnit(9,y,0);
         EntityRandom reference, observed;
         int rx=0,ry=0,dx=0,dy=0; bool stop=false,otherStop=false,valid=false;
-        const auto expected=map.queryMaterialStep(reference,0,WHEAT,MovementAccess::Land,8,8,&rx,&ry,&stop,nullptr);
+        const auto expected=map.routing().queryMaterialStep(reference,0,WHEAT,MovementAccess::Land,8,8,&rx,&ry,&stop,nullptr);
         Sint32 x=-1,y=-1,ex=-1,ey=-1;
-        const auto actual=map.queryMaterialStep(observed,0,WHEAT,MovementAccess::Land,8,8,&dx,&dy,&otherStop,nullptr,false,&x,&y,&valid);
+        const auto actual=map.routing().queryMaterialStep(observed,0,WHEAT,MovementAccess::Land,8,8,&dx,&dy,&otherStop,nullptr,false,&x,&y,&valid);
         REQUIRE(actual==StepResult::Step); CHECK(actual==expected);
         CHECK(dx==rx); CHECK(dy==ry); CHECK(stop==otherStop); CHECK(observed==reference);
-        REQUIRE(map.projectMaterialDestination(field,0,WHEAT,MovementAccess::Land,8+dx,8+dy,&ex,&ey));
+        REQUIRE(map.routing().projectMaterialDestination(field,0,WHEAT,MovementAccess::Land,8+dx,8+dy,&ex,&ey));
         REQUIRE(valid); CHECK(x==ex); CHECK(y==ey);
     }
 
@@ -389,12 +392,12 @@ TEST_CASE("flying resource pursuit crosses paint but chooses the farther legal p
         unit->attachedBuilding=inn; unit->activity=Unit::ACT_FILLING;
         unit->displacement=Unit::DIS_GOING_TO_RESOURCE; unit->destinationPurpose=WHEAT;
         unit->targetX=10; unit->targetY=8; unit->setValidTarget(false);
-        const auto* field=glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air);});
+        const auto* field=glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Air);});
         CHECK(field[map.coordToIndex(10,8)]>GRADIENT_UNREACHABLE);
         CHECK(field[map.coordToIndex(10,8)]<GRADIENT_AT_GOAL);
         CHECK(field[map.coordToIndex(14,8)]==GRADIENT_AT_GOAL);
         CHECK(map.isFreeForMovement(9,8,AIR_MOVEMENT_CLASS,team->me));
-        CHECK_FALSE(map.gradientGoalValid({GradientFieldFamily::Materials,0,AIR_MOVEMENT_CLASS,WHEAT},10,8));
+        CHECK_FALSE(map.routing().gradientGoalValid({GradientFieldFamily::Materials,0,AIR_MOVEMENT_CLASS,WHEAT},10,8));
         unit->stepGoingToResource();
         CHECK(unit->validTarget()); CHECK(unit->targetX==14); CHECK(unit->targetY==8);
         if(constrained) { CHECK(unit->dx==1); CHECK(unit->dy==0); }
@@ -682,11 +685,11 @@ TEST_CASE("a claim worker that finds no claimable stock records demand and gives
     const auto held=holder->activeMaterialClaim;
     const GradientFieldKey demandKey{GradientFieldFamily::Materials,0,Uint8(seeker->movementAccess()),WHEAT};
     const auto queryBucket=f.game.stepCounter&127;
-    const auto beforeQueries=map.gradientRuntime->adaptive.enroll(demandKey).queries[queryBucket];
+    const auto beforeQueries=map.routing().gradientRuntime->adaptive.enroll(demandKey).queries[queryBucket];
     seeker->handleActiveMaterialMovement();
     // Selection reads are real demand even when every available unit of
     // stock is reserved.
-    CHECK(map.gradientRuntime->adaptive.fields.at(demandKey).queries[queryBucket]==beforeQueries+1);
+    CHECK(map.routing().gradientRuntime->adaptive.fields.at(demandKey).queries[queryBucket]==beforeQueries+1);
     CHECK(seeker->materialClaimPolicyState.decisionOrdinal==1);
     CHECK_FALSE(seeker->activeMaterialClaim);
     // The worker is freed for work it can do rather than waiting.
@@ -702,12 +705,12 @@ TEST_CASE("destination refresh keeps the claim when it finds nothing better and 
     auto* a=f.addBuilding("inn",20,20);auto* b=f.addBuilding("inn",24,20);REQUIRE(a);REQUIRE(b);
     auto* seeker=f.addUnit(WORKER,8,8);auto* holder=f.addUnit(WORKER,8,10);REQUIRE(seeker);REQUIRE(holder);
     REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));REQUIRE(map.incResourceByIndex(14,12,WHEAT,0));
-    const auto near=Uint32(map.coordToIndex(9,8)),far=Uint32(map.coordToIndex(14,12));
-    map.setMaterialAmountSlot(near,WHEAT,1);map.setMaterialAmountSlot(far,WHEAT,1);
+    const auto nearCell=Uint32(map.coordToIndex(9,8)),farCell=Uint32(map.coordToIndex(14,12));
+    map.setMaterialAmountSlot(nearCell,WHEAT,1);map.setMaterialAmountSlot(farCell,WHEAT,1);
     // Publish the field first: waiting for it runs whole game ticks.
-    REQUIRE(glob2test::awaitGradient(f.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+    REQUIRE(glob2test::awaitGradient(f.game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
     hireClaimWorker(*seeker,*a);hireClaimWorker(*holder,*b);
-    REQUIRE(seeker->acquireMaterialClaimAt(far));REQUIRE(holder->acquireMaterialClaimAt(near));
+    REQUIRE(seeker->acquireMaterialClaimAt(farCell));REQUIRE(holder->acquireMaterialClaimAt(nearCell));
     const auto oldClaim=seeker->activeMaterialClaim;const auto oldTask=seeker->materialClaimTask;
     f.game.invalidateObservation();f.game.observeCompletedWorld(); // Route submission reads the last completed world.
     auto& cadence=seeker->materialClaimPolicyState;
@@ -723,8 +726,8 @@ TEST_CASE("destination refresh keeps the claim when it finds nothing better and 
     holder->releaseActiveMaterialClaim();
     seeker->handleActiveMaterialMovement();CHECK(seeker->activeMaterialClaim==oldClaim);
     cadence.decisionOrdinal=cadence.lastGoalAttempt+DestinationRefreshDecisions-1;
-    seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==near);
-    CHECK(map.materialClaimLedger().materialCount(far,WHEAT)==0);
+    seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==nearCell);
+    CHECK(map.materialClaimLedger().materialCount(farCell,WHEAT)==0);
     const auto sameTask=seeker->materialClaimTask;
     seeker->handleActiveMaterialMovement();seeker->handleActiveMaterialMovement();
     CHECK(seeker->materialClaimTask==sameTask);
@@ -802,7 +805,7 @@ TEST_CASE("farm selection memo preserves pooled source and resets between decisi
         const auto holder=ResourceClaims::unitOwner(300,at+1);holders.push_back(holder);
         REQUIRE(map.acquireMaterialClaim(holder,ResourceClaims::Claim{at,at,Uint8(WHEAT),WHEAT,false,1},1,false));
     }
-    const auto* field=glob2test::awaitGradient(f.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);});
+    const auto* field=glob2test::awaitGradient(f.game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);});
     REQUIRE(field);
     const auto flooded=map.farmFloodGeneration;
     CHECK_FALSE(unit->selectActiveMaterialClaim(field));
@@ -903,10 +906,10 @@ TEST_CASE("claim gradient demand records pursuit evidence on the natural materia
         unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
         map.setResourceByIndex(14,8,WHEAT,1);map.setMaterialAmountSlot(Uint32(map.coordToIndex(14,8)),WHEAT,3);
         REQUIRE(unit->acquireMaterialClaimAt(Uint32(map.coordToIndex(14,8))));
-        REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+        REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
         game.invalidateObservation();game.observeCompletedWorld();
         const GradientFieldKey key{GradientFieldFamily::Materials,0,Uint8(accessClass(MovementAccess::Land)),Uint8(WHEAT)};
-        auto& fields=map.gradientRuntime->adaptive.fields;
+        auto& fields=map.routing().gradientRuntime->adaptive.fields;
         const auto evidence=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.total[2]);};
         const auto queries=[&]()->Uint64{const auto found=fields.find(key);return found==fields.end()?0:Uint64(found->second.count128);};
         const auto queried=queries();
@@ -944,7 +947,7 @@ ContentionRun runContentionFixture(bool claims,unsigned participants,int workers
     map.computeExecutor().configure(participants);
     game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
     // Both arms keep destination planes, so they differ only in claims.
-    if(claims)map.enableResourceClaims();else map.setMaterialDestinationsEnabled(true);
+    if(claims)map.enableResourceClaims();else map.routing().setMaterialDestinationsEnabled(true);
     CHECK(map.activeClaimsEnabled()==claims);
     std::vector<Building*> buildings;
     for(int i=0;i<inns;++i) {
@@ -1036,7 +1039,7 @@ TEST_CASE("contention decisions count same-material fetch targets on the torus a
     // Self targets column 0. A different material on the same cell and the
     // same material ContentionRadius+1 tiles away never count.
     auto* self=fetcher(4,4,0,8);
-    auto* wood=fetcher(7,4,0,8,WOOD);auto* far=fetcher(8,4,4,8);(void)wood;(void)far;
+    auto* wood=fetcher(7,4,0,8,WOOD);auto* distant=fetcher(8,4,4,8);(void)wood;(void)distant;
     map.prepareClaimContention(0);
     CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
     CHECK(map.claimContentionOthers(*self,WOOD,0,8)==1);
@@ -1185,7 +1188,7 @@ TEST_CASE("claims can be turned off at setup, also on a map exported mid-match, 
         game.stepCounter=start; // An exported map keeps the tick it was saved at.
         map.enableResourceClaims();
         REQUIRE_NOTHROW(map.disableResourceClaims());
-        CHECK_FALSE(map.activeClaimsEnabled());CHECK_FALSE(map.materialDestinationsEnabled());
+        CHECK_FALSE(map.activeClaimsEnabled());CHECK_FALSE(map.routing().materialDestinationsEnabled());
         map.enableResourceClaims();
         f.step();
         CHECK_THROWS_AS(map.disableResourceClaims(),std::logic_error);
@@ -1202,7 +1205,7 @@ TEST_CASE("the hire check rejects reserved stock and cargo-blocked workers and a
     auto* holder=f.addUnit(WORKER,8,8);auto* u=f.addUnit(WORKER,4,6);REQUIRE(holder);REQUIRE(u);
     const auto stock=Uint32(map.coordToIndex(12,8));
     REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));map.setMaterialAmountSlot(stock,WHEAT,1);
-    REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
+    REQUIRE(glob2test::awaitGradient(game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
     u->medical=Unit::MED_FREE;u->activity=Unit::ACT_RANDOM;
     // No hiring pass ran this tick, so the check searches on the owner.
     REQUIRE_FALSE(map.claimHireTargetIndex().current(0,game.stepCounter));

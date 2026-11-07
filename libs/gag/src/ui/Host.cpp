@@ -191,6 +191,12 @@ void Host::layoutIfNeeded()
 		if (!tree)
 			tree = empty();
 		restoreStates();
+		// Persisted state holds only the clamped offset. Content rebuilt while
+		// it is stretched (a panel refreshing mid-bounce) takes the live stretch
+		// back from the axis, or it would paint unstretched until the next step.
+		if (scrolling && scrolling->axis.overscroll() != 0)
+			if (auto *node = find(scrolling->key); node && node->scrollOffset() == scrolling->lastWritten)
+				node->setOverscroll(int(std::lround(scrolling->axis.overscroll())), *this);
 		dirty = false;
 		built = true;
 		needsLayout = true;

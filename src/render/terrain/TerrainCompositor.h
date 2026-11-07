@@ -109,10 +109,12 @@ class Compositor
 		std::vector<std::uint8_t> depth;
 	};
 	std::shared_ptr<const TierField> tierField(const SceneMap &) const;
-	// A cell's raised decor, one frame per slot, drawn in slot order: up to two
+	// A cell's raised decor, one frame per slot, drawn in slot order: the
 	// connected masses that stand on open ground (cliffs, icefall, glacier...),
 	// connected foliage (hedge and thicket, which join one another), every other
-	// obstacle, then the terraces of tiered masses. Each slot draws only from
+	// obstacle, then the terraces of tiered masses. Masses take slots 0 and 1,
+	// and a third and fourth the slots after them; foliage beside three masses
+	// moves to slot 3, where no obstacle draws. Each slot draws only from
 	// its own corners, so masses keep their walls against foliage and crags.
 	// Where an open-edged mass meets another connected material it stands back
 	// from it (connected_foreign), so the two show their own rims and walls
@@ -249,6 +251,9 @@ class Compositor
 	std::shared_ptr<const StoneMaps> stoneMaps;
 	std::uint64_t instance = 0; // Distinguishes compositors in shared presentation caches.
     unsigned decorSlot(MaterialId) const;
+	// Whether a connected open-ground mass vertex lies within `reach` vertices
+	// of cell (x,y)'s corners (Decor::clearOfMasses).
+	bool massWithin(const SceneMap &, int x, int y, int reach) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;

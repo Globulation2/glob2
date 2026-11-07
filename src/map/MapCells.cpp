@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/GradientTargetCell.h"
 #include <bit>
@@ -37,21 +38,21 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
         owners.insert(owners.end(),access.begin(),access.end());
         revalidateMaterialClaimOwners(std::move(owners),false);
     }
-	gradientRuntime->resourceSeeds.changed(index, flags);
+	routing().gradientRuntime->resourceSeeds.changed(index, flags);
     if (flags & ResourceSeedCache::Terrain)
-        gradientRuntime->directFlight.valid = false;
+        routing().gradientRuntime->directFlight.valid = false;
 	// Material availability is not a movement obstacle. Resource replacements
     // invalidate below only when their blocking properties actually change.
-    gradientRuntime->safety.invalidate(
+    routing().gradientRuntime->safety.invalidate(
         flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Building | ResourceSeedCache::Forbidden),
         flags & ResourceSeedCache::Terrain);
 }
 
 void Map::invalidateResourceSeeds()
 {
-	gradientRuntime->resourceSeeds.invalidate();
-    gradientRuntime->directFlight.valid = false;
-	gradientRuntime->safety.invalidate(true, true);
+	routing().gradientRuntime->resourceSeeds.invalidate();
+    routing().gradientRuntime->directFlight.valid = false;
+	routing().gradientRuntime->safety.invalidate(true, true);
 }
 
 void Map::replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks)
@@ -62,8 +63,8 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
         claimOwners.insert(claimOwners.end(),source.begin(),source.end());
         claimOwners.insert(claimOwners.end(),access.begin(),access.end());
     }
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	const bool blockedGround = resourceBlocksGround(index);
 	const bool blockedAir = resourceBlocksAir(index);
 	const auto before = resourceMaterialMaskAt(index);
@@ -73,10 +74,10 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	markResource(index);
 	initializeResourceStock(index, stocks);
 	materialStockChanged(index, before, beforeAvailable, false);
-    if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
-	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
+    if (blockedAir != resourceBlocksAir(index)) routing().gradientRuntime->directFlight.valid = false;
+	routing().gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
     revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
@@ -89,8 +90,8 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	if (old.resource.type!=tile.resource.type || old.resource.amount!=tile.resource.amount)
 		replaceResource(index,tile.resource);
 	// Resource replacement above already accounts for its own membership delta.
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	Resource resolved = resourceCells[index].resource;
 	if (resolved.type!=NO_RES_TYPE)
 	{
@@ -112,7 +113,7 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	scriptAreaCells[index] = tile.scriptAreas;
 	markTerrain(index); markResource(index); markOccupancy(index); markArea(index);
 	if (changes) resourceSeedChanged(index, changes);
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
     revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
@@ -126,15 +127,15 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 	auto &stored = areaCells[index].*storedField;
 	if (stored == value) return;
     auto claimOwners=field==&Tile::farmArea && (stored&~value) ? farmMaterialClaimOwners(index,stored&~value) : std::vector<ResourceClaims::Owner>{};
-	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-		: std::optional{captureGradientTargetCell(index)};
+	const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{routing().captureGradientTargetCell(index)};
 	const auto kind=field==&Tile::forbidden ? ForbiddenArea : field==&Tile::guardArea ? GuardArea
 		: field==&Tile::clearArea ? ClearingArea : FarmArea;
 	paintedAreaMaskChanged(kind,stored,value);
 	stored = value;
 	markArea(index);
 	if (field == &Tile::forbidden) resourceSeedChanged(index, ResourceSeedCache::Forbidden);
-	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+	if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
     revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
@@ -164,12 +165,12 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 			const size_t index = coordToIndex(xi, yi);
 			if (occupancyCells[index].building != building)
 			{
-				const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
-					: std::optional{captureGradientTargetCell(index)};
+				const auto targetBefore=routing().gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+					: std::optional{routing().captureGradientTargetCell(index)};
 				occupancyCells[index].building = building;
 				markOccupancy(index);
 				resourceSeedChanged(index, ResourceSeedCache::Building);
-				if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+				if(targetBefore) routing().gradientTargetCellChanged(index,*targetBefore);
 			}
 		}
 	// Preserve the previous unconditional generation bump, including empty edits.
@@ -181,7 +182,7 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 bool Map::hasAirRoutingConstraints() const
 {
     if (hasAirTerrainConstraints()) return true;
-    auto& cached = gradientRuntime->directFlight;
+    auto& cached = routing().gradientRuntime->directFlight;
     if (!cached.valid) {
         cached.resourceBlockers = false;
         for (size_t i = 0; i < size; ++i) {

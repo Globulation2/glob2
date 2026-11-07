@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Run from the repository root with "gl" or "software". Uses its own profile.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <SDL3/SDL.h>
@@ -28,12 +29,12 @@ public:
         REQUIRE(bool(globals->gfx->getOptionFlags() & GraphicContext::USEGPU) == gpu);
         if (SDL_GL_GetCurrentWindow()) SDL_HideWindow(SDL_GL_GetCurrentWindow());
         Game game(nullptr);
-        auto pixels = [&](Game::BarOrientation orientation, int capacity, int current, int pending)
+        auto pixels = [&](MapDrawer::BarOrientation orientation, int capacity, int current, int pending)
         {
             auto gfx = globals->gfx;
             gfx->setClipRect();
             gfx->drawFilledRect(0, 0, 128, 128, 17, 23, 31);
-            game.drawPointBar(8, 8, orientation, capacity, current, pending,
+            MapDrawer::drawPointBar(8, 8, orientation, capacity, current, pending,
                               255, 255, 255, 255, 64, 0);
             std::vector<unsigned char> result(128 * 128 * 4);
 #ifdef HAVE_OPENGL
@@ -60,7 +61,7 @@ public:
             }
             return result;
         };
-        for (auto direction : {Game::LEFT_TO_RIGHT, Game::RIGHT_TO_LEFT, Game::TOP_TO_BOTTOM, Game::BOTTOM_TO_TOP})
+        for (auto direction : {MapDrawer::LEFT_TO_RIGHT, MapDrawer::RIGHT_TO_LEFT, MapDrawer::TOP_TO_BOTTOM, MapDrawer::BOTTOM_TO_TOP})
         {
             // Verify that the readback really distinguishes filled and empty bars.
             REQUIRE(pixels(direction, 5, 5, 0) != pixels(direction, 5, 0, 0));

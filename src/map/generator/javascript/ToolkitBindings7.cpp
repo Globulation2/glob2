@@ -419,7 +419,7 @@ e.overload(object,"placeSettlement",[&e](JSValueConst self,int n,JSValueConst*a)
   std::string default5 = "settlements";
   Script::JSValueOwner fallback5(e.ctx, (n>3 && !JS_IsUndefined(a[3]))?JS_UNDEFINED:e.write(default5));
   Argument<const std::string &> arg5(e,(n>3 && !JS_IsUndefined(a[3]))?a[3]:fallback5.get());
-  return e.write(MapGeneration::placeSettlement((*e.game), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
+  return e.write(MapGeneration::placeSettlement((*e.world), (*e.generation), arg2.get(), arg3.get(), arg4.get(), arg5.get()));
 })(e,self,n,a);});
 e.overload(object,"placeBuilding",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<7 || n>7) throw TypeMismatch("Wrong argument count");
@@ -436,7 +436,7 @@ e.overload(object,"placeBuilding",[&e](JSValueConst self,int n,JSValueConst*a){r
   Argument<int> arg6(e,a[5]);
   e.preflight("within",arg6.get());
   Argument<const std::vector<unsigned char> &> arg7(e,a[6]);
-  return e.write(MapGeneration::placeBuilding((*e.game), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get()));
+  return e.write(MapGeneration::placeBuilding((*e.world), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get()));
 })(e,self,n,a);});
 e.overload(object,"countBuildings",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<2 || n>2) throw TypeMismatch("Wrong argument count");
@@ -444,7 +444,7 @@ e.overload(object,"countBuildings",[&e](JSValueConst self,int n,JSValueConst*a){
   Argument<int> arg1(e,a[0]);
   e.preflight("team",arg1.get());
   Argument<const char *> arg2(e,a[1]);
-  return e.write(MapGeneration::countBuildings((*e.game), arg1.get(), arg2.get()));
+  return e.write(MapGeneration::countBuildings((*e.world), arg1.get(), arg2.get()));
 })(e,self,n,a);});
 e.overload(object,"placeTower",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<6 || n>9) throw TypeMismatch("Wrong argument count");
@@ -469,7 +469,7 @@ e.overload(object,"placeTower",[&e](JSValueConst self,int n,JSValueConst*a){retu
   bool default9 = false;
   Script::JSValueOwner fallback9(e.ctx, (n>8 && !JS_IsUndefined(a[8]))?JS_UNDEFINED:e.write(default9));
   Argument<bool> arg9(e,(n>8 && !JS_IsUndefined(a[8]))?a[8]:fallback9.get());
-  return e.write(MapGeneration::placeTower((*e.game), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get()));
+  return e.write(MapGeneration::placeTower((*e.world), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get(), arg9.get()));
 })(e,self,n,a);});
 e.overload(object,"placeStartingBuilding",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<7 || n>8) throw TypeMismatch("Wrong argument count");
@@ -489,7 +489,7 @@ e.overload(object,"placeStartingBuilding",[&e](JSValueConst self,int n,JSValueCo
   std::vector<int> default8 = { };
   Script::JSValueOwner fallback8(e.ctx, (n>7 && !JS_IsUndefined(a[7]))?JS_UNDEFINED:e.write(default8));
   Argument<const std::vector<int> &> arg8(e,(n>7 && !JS_IsUndefined(a[7]))?a[7]:fallback8.get());
-  return e.write(MapGeneration::placeStartingBuilding((*e.game), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()));
+  return e.write(MapGeneration::placeStartingBuilding((*e.world), arg1.get(), arg2.get(), arg3.get(), arg4.get(), arg5.get(), arg6.get(), arg7.get(), arg8.get()));
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,root,"Settlements",objectOwner.release())<0)e.fail(); }
  { Script::JSValueOwner objectOwner(e.ctx,JS_NewObject(e.ctx));auto object=objectOwner.get();e.check(object);

@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 #include <vector>
-class Game;
+class GenerationWorld;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -20,7 +20,7 @@ struct ScoredSettlementChoice
 	std::string failure;
 };
 using SettlementBuilder =
-	std::function<bool(Game &, GenerationContext &, const std::vector<int> &)>;
+	std::function<bool(GenerationWorld &, GenerationContext &, const std::vector<int> &)>;
 using SettlementCheck = std::function<std::string(const StartQualityReport &)>;
 
 /// Build each complete proposal in a fresh Game, starting with a COPY of context's

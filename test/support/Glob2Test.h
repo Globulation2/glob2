@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // The one header every test includes: doctest with the project configuration, plus
-// helpers that need neither the engine nor a GlobalContainer. Engine tests include
-// EngineFixtures.h instead, which includes this.
+// helpers that need neither the engine nor a GlobalContainer. The engine fixtures
+// (HeadlessGlobals.h, HeadlessGame.h, GameFixtures.h, DrawFixtures.h) include this.
 #pragma once
 
 #define DOCTEST_CONFIG_SUPER_FAST_ASSERTS
@@ -38,7 +38,7 @@ namespace glob2test
 
 namespace glob2test
 {
-	// Repository root: PACKAGE_SOURCE_DIR from the generated BuildConfig.h, or
+	// Repository root: PACKAGE_SOURCE_DIR from the generated BuildPaths.h, or
 	// GLOB2_TEST_SOURCE_ROOT when the binary runs on another machine.
 	std::filesystem::path sourceRoot();
 

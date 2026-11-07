@@ -70,4 +70,29 @@ TEST_SUITE("RenderFramePacer")
         CHECK(pacer.begin(1020000000));
         CHECK(pacer.waitMilliseconds(1020000000) == 0);
     }
+
+    TEST_CASE("paced screens wait for the next frame, wake for input and do not spin while idle")
+    {
+        using GAGCore::InputWakeMilliseconds;
+        using GAGCore::pacedScreenWait;
+        constexpr std::uint64_t ms = 1000000;
+        GAGCore::RenderFramePacer pacer;
+        pacer.configure(60);
+        CHECK(pacer.capped());
+        REQUIRE(pacer.begin(1000 * ms));
+        // Early in a fast frame: input still wakes the screen within 8 ms.
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1001 * ms)) == InputWakeMilliseconds);
+        // Close to the next frame: wake exactly when it is due.
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1012 * ms)) == 5);
+        // A frame slower than the period is followed at once, idle or not:
+        // capped idle frames still keep animation at the target rate.
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1020 * ms)) == 0);
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1020 * ms), false, true) == 0);
+        // Unlimited: no wait with work, the input wake while idle.
+        pacer.configure(0);
+        CHECK_FALSE(pacer.capped());
+        REQUIRE(pacer.begin(1020 * ms));
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1020 * ms), true, false) == 0);
+        CHECK(pacedScreenWait(pacer.waitMilliseconds(1020 * ms), true, true) == InputWakeMilliseconds);
+    }
 }

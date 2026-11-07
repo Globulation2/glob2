@@ -1,3 +1,4 @@
+#include "Team.h"
 #include "AIMaximaStrategy.h"
 
 #include "BasePlayer.h"

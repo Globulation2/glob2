@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import shutil
 
-DEVELOPMENT_KEYS = ('dev_fast', 'pch', 'unity', 'linker', 'web_variant')
+DEVELOPMENT_KEYS = ('dev_fast', 'pch', 'unity', 'linker', 'web_variant', 'compile_profile')
 
 
 def development_identity(arguments, target, release=False, profile=False):
@@ -28,6 +28,15 @@ def development_identity(arguments, target, release=False, profile=False):
         if target != 'web' or release:
             raise ValueError('single web_variant requires a browser development build')
         result['web_variant'] = variant
+    # compile_profile=core leaves optional sources out (scons/sources.py); the full
+    # profile records nothing, so its identity and build directory stay unchanged.
+    compile_profile = arguments.get('compile_profile', 'full')
+    if compile_profile not in ('full', 'core'):
+        raise ValueError('compile_profile must be full or core')
+    if compile_profile != 'full':
+        if target != 'native' or release or profile:
+            raise ValueError('compile_profile=core is a native development build; release, profile, web and mobile builds use the full profile')
+        result['compile_profile'] = compile_profile
     jobs = str(arguments.get('dependency_jobs', '1'))
     if not jobs.isdecimal() or int(jobs) < 1:
         raise ValueError('dependency_jobs must be a positive integer')
@@ -67,9 +76,18 @@ def configure(env, identity):
         env.Append(LINKFLAGS=['-fuse-ld=lld'])
 
 
+SHIPPING_TARGETS = ('bundle', 'package', 'install', 'retain_symbols')
+
+
 def cache_flags(env):
-    """Map debug paths only: __FILE__ and configured runtime paths retain meaning."""
-    if not env.get('DEV_IDENTITY', {}).get('dev_fast'):
+    """Make objects relocatable so every checkout shares compiler-cache entries.
+
+    Only debug paths are mapped: __FILE__ and the configured runtime paths in
+    glob2/BuildPaths.h keep their meaning. Shipping invocations keep absolute
+    debug paths so packaged symbols resolve without a source map.
+    """
+    from SCons.Script import COMMAND_LINE_TARGETS
+    if 'DEV_IDENTITY' not in env or any(str(target) in SHIPPING_TARGETS for target in COMMAND_LINE_TARGETS):
         return
     root = Path(env.Dir('#').abspath)
     env.Append(CCFLAGS=['-fdebug-prefix-map=' + str(root) + '=.'])

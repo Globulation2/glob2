@@ -84,7 +84,7 @@ struct Layout { Torus t{1, 1}; std::vector<unsigned char> water; std::vector<int
                 std::string failure; };
 Layout design(const GenerationRequest &r, GenerationContext &c);   // pure: request and streams only
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
     const Layout L = design(context.request, context);
     if (!L.failure.empty()) { context.detail = L.failure; return false; }
@@ -104,7 +104,7 @@ bool generate(Game &game, GenerationContext &context)
     return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
     GenerationContext replay(context.request);
     const Layout L = design(context.request, replay);

@@ -4,7 +4,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // PresentationFrame extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "OverlayAreas.h"
 #include "SceneExtract.h"
 #include "SceneBuffer.h"
@@ -463,7 +465,7 @@ TEST_SUITE("SceneExtract")
                     const int index=buildingSpriteFrame(*frame.entities.type(b),b.hp,b.maxHp,frame.entities.connections(b));
                     REQUIRE(index>=0);REQUIRE(index<frame.entities.type(b)->gameSpritePtr->getFrameCount());
                 }
-                Game::ViewState view;view.scene=&frame;
+                ViewState view;view.scene=&frame;
                 auto* gfx=globals->gfx;
                 gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
                 gfx->drawFilledRect(0,0,1024,1024,GAGCore::Color(20,30,20));

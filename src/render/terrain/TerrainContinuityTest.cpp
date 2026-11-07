@@ -2,11 +2,13 @@
 // Boundary continuity: whatever terrains meet, the coverage a cell computes on
 // its edge must equal what its neighbour computes on the same line. Every
 // material in the catalogue takes part, so a new terrain inherits the check.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainStones.h"
-#include "map/TerrainTypeTable.h"
+#include "map/TerrainGroupTable.h"
 #include "render/scene/SceneMap.h"
 #include <algorithm>
 #include <fstream>

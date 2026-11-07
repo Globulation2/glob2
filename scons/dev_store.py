@@ -289,6 +289,29 @@ def android_java_command(sdk, tool, env):
     ]
 
 
+def _managed_cache_limit():
+    from ccache import MANAGED_CONFIG
+    return MANAGED_CONFIG["max_size"]
+
+
+def require_free_space(path, what="this build"):
+    """Stop before filling the disk: GLOB2_MIN_FREE_GIB (default 10, 0 disables)."""
+    import shutil
+    minimum = float(os.environ.get("GLOB2_MIN_FREE_GIB", "10"))
+    if minimum <= 0:
+        return
+    probe = Path(path)
+    while not probe.exists() and probe != probe.parent:
+        probe = probe.parent
+    free = shutil.disk_usage(probe).free / 2**30
+    if free < minimum:
+        raise SystemExit(
+            f"Only {free:.1f} GiB free on the disk holding {path}; {what} needs at least {minimum:g} GiB. "
+            "See python3 tools/dev_environment.py disk, worktrees --finished and builds --gc; "
+            "GLOB2_MIN_FREE_GIB=0 overrides."
+        )
+
+
 def paths(root):
     tools = mobile_tools(root, False)
     lock = json.loads((Path(root) / "platforms/mobile/android-tools.json").read_text())
@@ -304,7 +327,7 @@ def paths(root):
         "gradle": str(tools / lock["gradle"]["directory"] / "bin/gradle"),
         "browser_sdk": str(browser_sdk(root, lease=False)),
         "budget_bytes": budget(),
-        "compiler_cache_limit": os.environ.get("CCACHE_MAXSIZE", "4G"),
+        "compiler_cache_limit": os.environ.get("CCACHE_MAXSIZE", _managed_cache_limit()),
     }
 
 

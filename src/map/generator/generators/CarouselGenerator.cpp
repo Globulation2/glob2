@@ -4,7 +4,7 @@
 #include "Drawing.h"
 #include "Farmland.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -793,7 +793,7 @@ TerrainSketch sketchTerrain(const Layout &L)
 }
 
 // The tiles a terrain wall blocks: no unit walks or swims them.
-std::vector<unsigned char> blockedTiles(const Map &map, const Torus &t)
+std::vector<unsigned char> blockedTiles(const GenerationMap &map, const Torus &t)
 {
 	std::vector<unsigned char> blocked(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -806,8 +806,8 @@ std::vector<unsigned char> blockedTiles(const Map &map, const Torus &t)
 
 // The resources: every home's scattered farmland (no kit: see the header), a fruit grove in every
 // court, the plaza's orchard (fruit only, so nothing smothers it), and the farms' wheat and woodlots.
-void furnish(Map &map, const Layout &L, GenerationContext &context, const CarouselOptions &o,
-			 const std::vector<unsigned char> &pads)
+void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
+			 const CarouselOptions &o, const std::vector<unsigned char> &pads)
 {
 	const Torus &t = L.t;
 	const Geometry &g = L.g;
@@ -909,7 +909,7 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Carous
 // against stone and within kSiegeLine steps of a wall, chosen for how much of the previous colony's elbow
 // - its court and lanes within kElbowReach - they cover across the wall. Nothing scores for covering the
 // colony's own lanes: the design is attack, not defence.
-TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &context,
+TowerPlan planTowers(const GenerationMap &map, const Layout &L, const GenerationContext &context,
 					 const CarouselOptions &o, const std::vector<unsigned char> &stone)
 {
 	const Torus &t = L.t;
@@ -943,11 +943,11 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 							request);
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "carousel layout";
 	const CarouselOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
@@ -1054,11 +1054,11 @@ std::string validateRequest(const GenerationRequest &r)
 //    counting crops and buildings as passable, since they go in time);
 //  - from every home, a level-1 tower reaches the previous colony's court across the wall (the siege);
 //  - and the colonies' walks to the plaza are even.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "carousel"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

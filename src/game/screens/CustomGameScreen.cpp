@@ -12,6 +12,7 @@
 #include <ui/PositionedControls.h>
 #include "ChooseMapScreen.h"
 #include "AINames.h"
+#include "AIRegistry.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
 #include "Game.h"
@@ -132,6 +133,21 @@ Element CustomGameChoiceScreen::build(const Presentation &p)
 
 // Lobby ------------------------------------------------------------------------------
 
+namespace
+{
+// A compile_profile=core build leaves some AIs out; its lobby replaces a saved choice
+// of one with Nicowar rather than offer a colony it cannot start.
+void useAvailableAIs(CustomGameSetup &setup)
+{
+	for (auto &colony : setup.colonies)
+		if (!AIRegistry::available(colony.ai))
+		{
+			colony.ai = AI::NICOWAR;
+			colony.aiLibraryId.clear();
+		}
+}
+}
+
 CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(screens)
 {
 	GAGCore::ApplicationHost::customGameReady(false);
@@ -167,6 +183,7 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 		source.clear();
 		invalidatePreview();
 	}
+	useAvailableAIs(setup);
 }
 
 void CustomGameScreen::selectTab(int tab)
@@ -203,6 +220,7 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 			colony.ai = AI::NUMBI;
 			colony.aiLibraryId.clear();
 		}
+	useAvailableAIs(setup);
 	// The editor opens on the room's generated map. A premade or own map chosen here
 	// is uploaded by the room (PlatformRoom::usePremadeMap); a random one is generated
 	// by the platform for everyone.

@@ -3,7 +3,7 @@
 #include "Contact.h"
 #include "Drawing.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "LatticeNoise.h"
@@ -286,7 +286,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	c.telemetry.measure("treeline.form", form);
 	return L;
 }
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "treeline landscape";
 	const Layout L = design(c.request, c);
@@ -328,13 +328,13 @@ bool generate(Game &game, GenerationContext &c)
 		int nearby = 0;
 		if (homeFarm)
 		{
-			const Team *home = game.teams[k - c.request.nbTeams];
+			const GenerationTeamStart home = game.teamStart(k - c.request.nbTeams);
 			const auto eligible = [&](int i)
 			{
 				return L.plotOf[i] == int(k) && fertility.at(t.remainderX(i), i / t.w) > 0 &&
 					   clearGround(game.map, t.remainderX(i), i / t.w);
 			};
-			const int seed = seedNear(t, home->startPosX + 2, home->startPosY + 2, 18, eligible);
+			const int seed = seedNear(t, home.x + 2, home.y + 2, 18, eligible);
 			if (seed >= 0)
 				nearby = growPatch(game.map, t, seed, WHEAT, 48, eligible);
 		}
@@ -345,20 +345,19 @@ bool generate(Game &game, GenerationContext &c)
 			std::vector<std::pair<int, int>> neighbours;
 			for (int home = 0; home < c.request.nbTeams; ++home)
 				neighbours.push_back(
-					{t.dist2(game.teams[home]->startPosX + 2, game.teams[home]->startPosY + 2,
+					{t.dist2(game.teamStart(home).x + 2, game.teamStart(home).y + 2,
 							 int(p.centre.x), int(p.centre.y)),
 					 home});
 			std::sort(neighbours.begin(), neighbours.end());
 			for (int side = 0; side < 2; ++side)
 			{
-				const Team *home = game.teams[neighbours[side].second];
+				const GenerationTeamStart home = game.teamStart(neighbours[side].second);
 				const auto eligible = [&](int i)
 				{
 					return L.plotOf[i] == int(k) && fertility.at(t.remainderX(i), i / t.w) > 0 &&
 						   clearGround(game.map, t.remainderX(i), i / t.w);
 				};
-				const int seed =
-					seedNear(t, home->startPosX + 2, home->startPosY + 2, 72, eligible);
+				const int seed = seedNear(t, home.x + 2, home.y + 2, 72, eligible);
 				if (seed >= 0)
 					nearby += growPatch(game.map, t, seed, WOOD, 8, eligible);
 			}
@@ -386,7 +385,7 @@ bool generate(Game &game, GenerationContext &c)
 	// nongranular and each collection clears its tile. No ambient timber elsewhere.
 	for (int k = 0; k < c.request.nbTeams; ++k)
 	{
-		const int sx = game.teams[k]->startPosX + 2, sy = game.teams[k]->startPosY + 2;
+		const int sx = game.teamStart(k).x + 2, sy = game.teamStart(k).y + 2;
 		std::vector<std::pair<int, int>> dry, quarry;
 		for (int dy = -30; dy <= 30; ++dy)
 			for (int dx = -30; dx <= 30; ++dx)
@@ -470,13 +469,13 @@ bool generate(Game &game, GenerationContext &c)
 	seedAlgae(game.map, c, t, "treeline-algae", o.algae, AlgaeBand::anyWater(25));
 	return true;
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const Layout L = design(c.request, replay);
 	if (auto e = designMismatch(L, game.map, "The Last Treeline"); !e.empty())
 		return e;
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	// Read the FINISHED terrain, so a late edit cannot silently irrigate home wood.
 	TerrainSketch actual(t.size());
@@ -570,7 +569,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<int> first;
 	for (int k = 0; k < c.request.nbTeams; ++k)
 	{
-		const int sx = game.teams[k]->startPosX, sy = game.teams[k]->startPosY;
+		const int sx = game.teamStart(k).x, sy = game.teamStart(k).y;
 		std::vector<unsigned char> sources(t.size(), 0);
 		for (int dy = -1; dy <= 4; ++dy)
 			for (int dx = -1; dx <= 4; ++dx)

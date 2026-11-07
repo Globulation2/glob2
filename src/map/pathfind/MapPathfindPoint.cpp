@@ -2,6 +2,7 @@
 // Point-to-point movement searches share Map scratch but require no area fields.
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "gradient/GradientRuntime.h"
 #include <bit>
@@ -11,11 +12,11 @@
 #include <queue>
 #include <tuple>
 
-bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, MovementAccess movementAccessValue, Uint32 teamMask, int maximumLength)
+bool MapRouting::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, MovementAccess movementAccessValue, Uint32 teamMask, int maximumLength)
 {
     int swimClass=accessClass(movementAccessValue);
     const int physical=swimClass;
-    const int readerTeam=game && std::has_single_bit(teamMask)?int(std::countr_zero(teamMask)):-1;
+    const int readerTeam=map.game && std::has_single_bit(teamMask)?int(std::countr_zero(teamMask)):-1;
     if(readerTeam>=0) {
         swimClass=preparationCostClass(readerTeam,physical);
     }
@@ -26,17 +27,17 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//Instead, each node holds the direction that you left from the initial node that lead to it, so you
 	//can't trace backwards to find the path, but you can instantly find the direction you need to go from
 	//the initial node, a small optimization since we don't need the whole path
-	targetX = (targetX + w) & wMask;
-	targetY = (targetY + h) & hMask;
+	targetX = (targetX + map.w) & map.wMask;
+	targetY = (targetY + map.h) & map.hMask;
 	// Step costs and the heuristic are in gradient units (see MapInternal.h).
-    const int heuristicStep=hasMovementCostModifiers(swimClass) ? minStepCost(swimClass)
+    const int heuristicStep=map.hasMovementCostModifiers(swimClass) ? minStepCost(swimClass)
         : (gradient_kernel::weightedClass(swimClass) ? std::min(GRADIENT_STEP,gradient_kernel::WATER_STEP[swimClass]) : GRADIENT_STEP);
     if(maximumLength<0) return false;
-    const int maximumCost=int(std::min<std::int64_t>(GRADIENT_COST_LIMIT,std::int64_t(maximumLength)*GRADIENT_STEP));
+    const int maximumCost=int(std::min<std::int64_t>(Map::GRADIENT_COST_LIMIT,std::int64_t(maximumLength)*GRADIENT_STEP));
     const bool air=swimClass==AIR_MOVEMENT_CLASS;
     const auto blockedAirGoal=[&] {
-        const auto i=coordToIndex(targetX,targetY);
-        return !terrainPropertiesAt(i).flyable || resourceBlocksAir(i) || getAirUnit(targetX,targetY)!=NOGUID;
+        const auto i=map.coordToIndex(targetX,targetY);
+        return !map.terrainPropertiesAt(i).flyable || map.resourceBlocksAir(i) || map.getAirUnit(targetX,targetY)!=NOGUID;
     };
     const bool approach=air && blockedAirGoal();
     AStarAlgorithmPoint reached;
@@ -45,14 +46,14 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> openList;
-	openList.emplace(0, (x << hDec) + y, 0);
-	aStarPoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
+	openList.emplace(0, (x << map.hDec) + y, 0);
+	aStarPoints[(x << map.hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
 
 	//These are all the examined points, so that these positions on aStarPoints
 	//Can be reset later. Why not reset or re-allocate the whole thing every
 	//call? Its slow! Use reserve to avoid doing this multiple times
-	aStarExaminedPoints.reserve(std::min(size,std::size_t(maximumCost)*2+6));
-	aStarExaminedPoints.push_back((x << hDec) + y);
+	aStarExaminedPoints.reserve(std::min(map.size,std::size_t(maximumCost)*2+6));
+	aStarExaminedPoints.push_back((x << map.hDec) + y);
 
 	while(!openList.empty())
 	{
@@ -64,7 +65,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
         if (pos.isClosed || pos.moveCost != queuedCost) continue;
 		pos.isClosed = true;
 
-		if((pos.x == targetX && pos.y == targetY) || (approach && warpDistMax(pos.x,pos.y,targetX,targetY)<=1))
+		if((pos.x == targetX && pos.y == targetY) || (approach && map.warpDistMax(pos.x,pos.y,targetX,targetY)<=1))
 		{
 			reached=pos;
 			break;
@@ -74,9 +75,9 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		{
 			for(int ly=-1; ly<=1; ++ly)
 			{
-				int nx = (pos.x + lx + w) & wMask;
-				int ny = (pos.y + ly + h) & hMask;
-				int n = (nx << hDec) + ny;
+				int nx = (pos.x + lx + map.w) & map.wMask;
+				int ny = (pos.y + ly + map.h) & map.hMask;
+				int n = (nx << map.hDec) + ny;
 				AStarAlgorithmPoint& npos = aStarPoints[n];
 				if(npos.isClosed)
 				{
@@ -84,15 +85,15 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				}
 				else
 				{
-					int moveCost = pos.moveCost + stepCost(lx, ly, coordToIndex(nx, ny), swimClass);
+					int moveCost = pos.moveCost + stepCost(lx, ly, map.coordToIndex(nx, ny), swimClass);
 					if (moveCost > maximumCost) continue;
-					int totalCost = moveCost + heuristicStep * warpDistMax(targetX, targetY, nx, ny);
+					int totalCost = moveCost + heuristicStep * map.warpDistMax(targetX, targetY, nx, ny);
 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
-                        if(isFreeForMovement(nx,ny,swimClass,teamMask) ||
-                            (!air && nx==targetX && ny==targetY && gradient_kernel::terrainAllowsGround(terrainPropertiesAt(nx,ny),swimClass)))
+                        if(map.isFreeForMovement(nx,ny,swimClass,teamMask) ||
+                            (!air && nx==targetX && ny==targetY && gradient_kernel::terrainAllowsGround(map.terrainPropertiesAt(nx,ny),swimClass)))
 						{
 							//If the parent cell is the starting cell, add in the starting direction
 							if(pos.dx == 0 && pos.dy == 0)
@@ -144,7 +145,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 }
 
 // Compatibility entry point for existing callers. All movement uses the same A*.
-bool Map::pathfindAirPointToPoint(int x,int y,int targetX,int targetY,int* dx,int* dy)
+bool MapRouting::pathfindAirPointToPoint(int x,int y,int targetX,int targetY,int* dx,int* dy)
 {
-    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,MovementAccess::Air,0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
+    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,MovementAccess::Air,0,Map::GRADIENT_COST_LIMIT/GRADIENT_STEP);
 }

@@ -9,9 +9,11 @@
 // comparison draws one swim frame with and without the fade on a black
 // background.
 #include "scene/SceneMap.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "Unit.h"
 #include "GraphicContext.h"
 #include <RenderStateScope.h>
@@ -87,17 +89,17 @@ namespace
 class SwimmingUnitDrawHarness
 {
 	//! Water, then swimmers, as the map renderer layers them.
-	static void capture(Game &game, Game::ViewState &view, const std::string &name)
+	static void capture(Game &game, ViewState &view, const std::string &name)
 	{
 		auto *gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{
 			SceneMap layers;
 			glob2test::observeMap(game.map, layers);
-			game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers,
+			MapDrawer::drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers,
 				view.render.animationTime);
 		}
-		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
+		MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 			0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		save(grab(), name);
 	}
@@ -168,7 +170,7 @@ public:
 			u->action = HARVEST;
 			u->direction = direction;
 		}
-		Game::ViewState view;
+		ViewState view;
 		if (std::getenv("GLOB2_SKIN_PREVIEW_DIR"))
 		{
 			REQUIRE(view.render.skinPreview().ready);
@@ -229,7 +231,7 @@ public:
 			swimmers.push_back(unit);
 		}
 
-		Game::ViewState view;
+		ViewState view;
 		// Through one stroke: arms forward, a new ring as they sweep back, the ring
 		// spreading through the pull and fading out before the kick.
 		for (int delta : {200, 232, 16, 80})

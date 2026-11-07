@@ -871,11 +871,16 @@ void checkOverscrollSpringsBack()
 	f.advance(60);
 	f.finger(SDL_EVENT_FINGER_UP, {50, 10});
 	require(f.host.animating(), "released stretched content springs back");
-	// A rebuild mid-bounce persists only the clamped offset.
+	// A rebuild mid-bounce persists only the clamped offset, but the rebuilt
+	// node keeps the live stretch, so no frame paints it unstretched.
+	f.advance(16);
+	const int bouncing = f.host.find("list")->overscroll();
+	require(bouncing > 0, "the bounce is under way");
 	f.host.invalidate();
 	f.host.layoutIfNeeded();
 	require(f.host.state("list").scroll == end, "persisted state never includes the stretch");
-	require(f.host.find("list")->overscroll() == 0, "a rebuilt node starts unstretched");
+	require(f.host.find("list")->overscroll() == bouncing, "a node rebuilt mid-bounce keeps its stretch");
+	require(f.host.find("b0")->bounds.y == listTop - end - bouncing, "its children stay shifted by the stretch");
 	f.advance(16);
 	require(f.host.find("list")->overscroll() > 0, "the bounce continues on the rebuilt node");
 	const auto path = f.settle("list");

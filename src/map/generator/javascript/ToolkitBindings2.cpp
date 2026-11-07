@@ -369,7 +369,7 @@ e.overload(object,"diagnoseStarts",[&e](JSValueConst self,int n,JSValueConst*a){
   MapGeneration::StartQualityScale default2 = { };
   Script::JSValueOwner fallback2(e.ctx, (n>1 && !JS_IsUndefined(a[1]))?JS_UNDEFINED:e.write(default2));
   Argument<const MapGeneration::StartQualityScale &> arg2(e,(n>1 && !JS_IsUndefined(a[1]))?a[1]:fallback2.get());
-  return e.write(MapGeneration::diagnoseStarts((*e.game), arg1.get(), arg2.get()));
+  return e.write(MapGeneration::diagnoseStarts((*e.world), arg1.get(), arg2.get()));
 })(e,self,n,a);});
 e.overload(object,"removeResourceNear",[&e](JSValueConst self,int n,JSValueConst*a){return ([](Binding &e, JSValueConst self, int n, JSValueConst *a)->JSValue {
   if(n<3 || n>3) throw TypeMismatch("Wrong argument count");
@@ -380,7 +380,7 @@ e.overload(object,"removeResourceNear",[&e](JSValueConst self,int n,JSValueConst
   e.preflight("resource",arg2.get());
   Argument<int> arg3(e,a[2]);
   e.preflight("radius",arg3.get());
-  return e.write(MapGeneration::removeResourceNear((*e.game), arg1.get(), arg2.get(), arg3.get()));
+  return e.write(MapGeneration::removeResourceNear((*e.world), arg1.get(), arg2.get(), arg3.get()));
 })(e,self,n,a);});
 if(JS_SetPropertyStr(e.ctx,root,"StartDiagnostics",objectOwner.release())<0)e.fail(); }
  { Script::JSValueOwner objectOwner(e.ctx,JS_NewObject(e.ctx));auto object=objectOwner.get();e.check(object);

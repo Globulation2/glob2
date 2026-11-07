@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "Version.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "AI.h"
 #include "AICastor.h"
 #include "ai/engine/AIDecision.h"

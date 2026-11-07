@@ -74,6 +74,7 @@ class TerrainDecor(unittest.TestCase):
             self.assertEqual(block["sprite"], decor.SPRITE)
             self.assertEqual(block["full"], list(range(first, first + decor.FULL)))
             self.assertEqual(block["edge"], list(range(first + decor.FULL, first + decor.FRAMES)))
+            self.assertEqual(block.get("clear_of_masses"), decor.CLEAR_OF_MASSES.get(name))
             if name in decor.CONNECTED:
                 material = next(m for m in catalog["materials"] if m["key"] == name)
                 # Cover is the strongest class, so canopy draws all its contacts.

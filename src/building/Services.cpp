@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Building.h"
 #include "BuildingType.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include <bit>
@@ -27,7 +29,7 @@ bool Building::reserveMaterials(const BuildingMaterialCost& cost)
 	if (!restoreMaterialsReservation(cost)) return false;
 	if (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MaterialSlotCount; ++r)
-			if (cost[r] && availableMaterial(r)==0) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+			if (cost[r] && availableMaterial(r)==0) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 	return true;
 }
 
@@ -44,7 +46,7 @@ void Building::releaseMaterials(const BuildingMaterialCost& cost)
 			owner->reservedTeamMaterials[r] -= cost[r];
 		}
 		if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
-			owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+			owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,r);
 	}
 }
 
@@ -105,7 +107,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 	else
 	{
 		if (purpose < 0 || purpose >= NB_ABILITY || !spec.training[purpose].enabled
-			|| owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+			|| owner->ctx.gameHeader->isUnitUpgradesDisabled()) return false;
 		allowed = unit ? (interaction->trainingMask&(1u<<purpose))!=0 : true;
 		if (unit && !unit->needsTraining(spec.training[purpose], purpose)) return false;
 		if (unit && !unit->trainingVisitSafe(*this,purpose)) return false;

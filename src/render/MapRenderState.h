@@ -25,7 +25,7 @@ class ResourceRowCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
 //! cloud field, the terrain page cache and scratch buffers. Owned by the
-//! viewer (Game::ViewState), never by Game or Map, so the simulation neither
+//! viewer (ViewState), never by Game or Map, so the simulation neither
 //! reads nor writes it and each view animates independently.
 struct MapRenderState
 {
@@ -42,12 +42,12 @@ struct MapRenderState
 	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
 	float unitMotion = 0;
 	//! How far each tile has faded into the fog of war, with the smooth fog
-	//! setting. Game::drawMap updates it each frame, and resets it while the fade is
+	//! setting. MapDrawer::drawMap updates it each frame, and resets it while the fade is
 	//! not drawn, so it is active() exactly when this frame draws the fog faded.
 	FogFade fogFade;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
-	//! How this frame's zoom draws each map element; set by Game::drawMap.
+	//! How this frame's zoom draws each map element; set by MapDrawer::drawMap.
 	ZoomDetail detail;
 	//! The terrain overview's sampled palette image, kept between frames.
 	std::unique_ptr<GAGCore::DrawableSurface> overview;
@@ -63,7 +63,7 @@ struct MapRenderState
 	PresentationFrame ownScene;
 	//! Unit effects this frame draws (UnitEffects.h): the record of each unit a
 	//! building has just produced or serviced by its gid, and each producing
-	//! swarm's glow opacity by its gid. Set by Game::drawMap; empty when the
+	//! swarm's glow opacity by its gid. Set by MapDrawer::drawMap; empty when the
 	//! renderer or the detail setting does not draw them.
 	std::unordered_map<Uint16, SceneUnitEffect> unitEffects;
 	std::unordered_map<Uint16, float> swarmGlows;

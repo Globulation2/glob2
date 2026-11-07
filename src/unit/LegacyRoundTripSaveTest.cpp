@@ -3,7 +3,8 @@
 // round trip loads, discards the saved round-trip fields, and plays on
 // deterministically with greedy fetching, across a further save and load.
 #include "Material.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "MapInternal.h"
 #include "Version.h"
 #include "FileFormatVersions.h"

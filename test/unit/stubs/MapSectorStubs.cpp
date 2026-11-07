@@ -29,27 +29,28 @@ void GameAnimations::resize(int) {}
 // Lightweight Map fixtures never allocate forbidden fields. Fail loudly if a
 // future test reaches this engine-only refresh; those tests belong in engine.
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include <cstdlib>
-void Map::updateForbiddenGradient(int, MovementAccess movementAccessValue) { std::abort(); }
+void MapRouting::updateForbiddenGradient(int, MovementAccess movementAccessValue) { std::abort(); }
 
 #include "Building.h"
 // Real automatic building routes belong to engine fixtures. Diagnostic calls
 // in the lightweight map harness only use already-concrete route slots.
 BuildingRoute Building::resolveRoute(BuildingRoute) const { std::abort(); }
 
-unsigned Map::materialSupplyModesSlot(const Building*, int) const { std::abort(); }
-bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsigned) const { std::abort(); }
+unsigned MapRouting::materialSupplyModesSlot(const Building*, int) const { std::abort(); }
+bool MapRouting::stockSupplierEligibleSlot(const Building*, const Building*, int, unsigned) const { std::abort(); }
 
 // Unit Map fixtures have no Game tick or deferred preparation. Preserve real
 // completed-job draining for terrain import, and fail if an engine reservation
 // reaches this test double; that lifecycle is covered by engine harnesses.
 #include "gradient/GradientRuntime.h"
-void Map::finishGradientPipeline(JoinContext) {
+void MapRouting::finishGradientPipeline(JoinContext) {
     if (!gradientRuntime->preparations.empty()) std::abort();
     gradientRuntime->pipeline.finish();
 }
 // Unit fixtures never schedule building fields; clearing only drops storage.
-void Map::resetBuildingGradientPipeline() noexcept {
+void MapRouting::resetBuildingGradientPipeline() noexcept {
     gradientRuntime->stagedBuildings.clear();
     gradientRuntime->buildingRequests.clear();
     gradientRuntime->buildings.reset();
@@ -59,7 +60,7 @@ void Map::resetBuildingGradientPipeline() noexcept {
 // Growth scheduling belongs to engine fixtures. Lightweight maps never submit
 // jobs; reject accidental use rather than silently simulating a fake pipeline.
 void Map::finishResourceGrowth(JoinContext) {
-    if (gradientRuntime->growth.count() || gradientRuntime->growth.needsPreparation()) std::abort();
+    if (routing().gradientRuntime->growth.count() || routing().gradientRuntime->growth.needsPreparation()) std::abort();
 }
 void ResourceGrowth::Pipeline::reset() noexcept {
     if (!pending.empty() || reservation) std::abort();

@@ -46,6 +46,17 @@ class DevelopmentBuildTests(unittest.TestCase):
             with self.subTest(args=args), self.assertRaises(ValueError):
                 build_identity(args)
 
+    def test_perf_tier_is_a_native_optimized_identity(self):
+        screen, confirm = build_identity({'perf': 1}, host='linux'), build_identity({'perf': 1, 'opt': 3}, host='linux')
+        self.assertEqual((screen['mode'], screen['opt'], confirm['opt']), ('perf', 2, 3))
+        self.assertEqual(str(default_directory(screen)), 'build/linux/client/perf')
+        self.assertEqual(str(default_directory(confirm)), 'build/linux/client/perf/o3')
+        self.assertEqual(screen['client_profile'], build_identity({}, host='linux')['client_profile'])
+        for args in ({'perf': 1, 'release': 1}, {'perf': 1, 'dev_fast': 1}, {'perf': 1, 'profile': 1},
+                     {'perf': 1, 'target': 'web'}, {'opt': 3}, {'perf': 1, 'opt': 1}):
+            with self.subTest(args=args), self.assertRaises(ValueError):
+                build_identity(args, host='linux')
+
     def test_dependency_configuration_skips_query_only_targets(self):
         script = types.ModuleType('SCons.Script')
         script.GetOption = lambda name: False
@@ -70,6 +81,9 @@ class DevelopmentBuildTests(unittest.TestCase):
         self.assertNotIn('dev_fast=1', result)
         self.assertNotIn('linker=auto', result)
         self.assertEqual(result.count('-j3'), 1)
+        result = command.command(['perf=1', 'opt=3'])
+        self.assertNotIn('dev_fast=1', result)
+        self.assertNotIn('linker=auto', result)
 
     def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
         spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')

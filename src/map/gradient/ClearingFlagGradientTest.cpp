@@ -1,10 +1,11 @@
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include <nlohmann/json.hpp>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
 #include "Game.h"
 #include "../src/team/Team.h"
 #include "../src/map/Map.h"
+#include "gradient/MapRouting.h"
 #include "../src/map/MapInternal.h"
 #include "../src/building/Building.h"
 #include "BuildingType.h"
@@ -39,7 +40,7 @@ namespace {
 void ensureClearingReferenceStorage(Map& map, Building* flag, int swim)
 {
     auto& field=flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)];
-    if (!field) field=map.acquireBuildingGradientBuffer();
+    if (!field) field=map.routing().acquireBuildingGradientBuffer();
 }
 void clearingUsesMaterialSwitchesAndResourceProperties() {
     Fixture f;
@@ -65,8 +66,8 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
                 for(unsigned material=0;material<MaterialCount;++material) for(bool enabled:{false,true}) {
                     flag->clearingMaterialMask=0;
                     flag->setClearsMaterial(material,enabled);
-                    f.game.map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
-                    f.game.map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+                    f.game.map.routing().updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+                    f.game.map.routing().finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
                     const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourcePropertiesByIndex(type).clearable
                         && (f.game.map.resourcePropertiesByIndex(type).materialMask & materialBit(static_cast<MaterialId>(material)));
                     REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
@@ -115,8 +116,8 @@ TEST_CASE("passable clearing sources respect forbidden paint buildings and immob
     {
         const auto verify=[&](Uint16 expected) {
             ensureClearingReferenceStorage(map,flag,swim);
-            map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
-            map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.routing().updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.routing().finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==expected);
         };
         verify(GRADIENT_AT_GOAL);
@@ -169,8 +170,8 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         for(int swim:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
         {
             ensureClearingReferenceStorage(map,flag,swim);
-            map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
-            map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.routing().updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.routing().finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==GRADIENT_AT_GOAL);
         }
         auto* worker=f.game.addUnit(20,21,0,WORKER,0,0,0,0);

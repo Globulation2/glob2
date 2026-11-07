@@ -59,7 +59,7 @@ const FAIR_GENERATORS: readonly {
   // repeated wedge
   { id: 'amphitheatre', revision: 6, fourColonies: true },
   { id: 'carousel', revision: 5, fourColonies: true },
-  { id: 'city-states', revision: 13, fourColonies: true },
+  { id: 'city-states', revision: 14, fourColonies: true },
   { id: 'coral', revision: 4, fourColonies: true },
   { id: 'fjord-continent', revision: 15, fourColonies: true },
   { id: 'lava-shield', revision: 9, fourColonies: false },

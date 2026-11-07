@@ -6,6 +6,7 @@
 // and compares every checksum the clients reported with the verifier's own.
 
 #include "VerifyMatch.h"
+#include "CompileProfile.h"
 
 #include <algorithm>
 #include <chrono>
@@ -160,7 +161,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	const std::string replay = (output / "match.replay").string();
 	globals.headlessReplay = true;
 	globals.replayWriter = std::make_unique<ReplayWriter>();
-	globals.replayWriter->init(replay, engine.gui);
+	engine.gui.startReplay(*globals.replayWriter, replay);
 
 	Turn::TurnLockstepSession& lockstep = *engine.turnLockstep();
 	lockstep.onChecksum = [&checksums](std::uint32_t tick, Uint32 checksum) { checksums.emplace(tick, checksum); };
@@ -415,6 +416,8 @@ int runVerifyMatch(const Cli::Request &request)
         const auto computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
 		output = fs::absolute(out);
 		fs::create_directories(output / "profile");
+		// Verdicts decide ratings; only the full simulation may give one.
+		CompileProfile::requireFull("Match verification");
 		// Both profile variables, as the other headless commands set them (#554).
 		const std::string profileDir = (output / "profile").string();
 		GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ComputeExecutor.h"
 #include "CommandLine.h"
 // Opt-in loaded-game CPU benchmark. PROFILE_* overrides are local diagnostics.
 #include "GlobalContainer.h"
@@ -35,6 +36,7 @@
 #endif
 #include <time.h>
 #include "PerformanceTelemetry.h"
+#include "MapDrawer.h"
 GlobalContainer *globalContainer = nullptr;
 static bool instrumentedTiming()
 {
@@ -415,7 +417,7 @@ static void interactiveBenchmark()
 				{
 					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
-					Game::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
+					MapDrawer::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
 									 gui.viewportY, 0, gui.view, Game::DRAW_AREA |
                                          (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0),
                                          nullptr, nullptr, gui.gamePaused);

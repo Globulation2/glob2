@@ -12,6 +12,7 @@
 #include <bitset>
 #endif
 #include <algorithm>
+#include <cassert>
 #include <stdexcept>
 #include <cstring>
 
@@ -57,6 +58,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			}
 		if (!m.decor.sprite.empty())
 		{
+			GAGCore::Sprite::deferHighResolution(m.decor.sprite);
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
@@ -427,6 +429,16 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
                 if (animated)
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
+        // Decor (spires, masses, terraces) streams per material in view too:
+        // the shared sheet is far larger than any one map needs.
+        if (count && decorSprites[id])
+        {
+            auto &decorWindow = windows[decorSprites[id]];
+            for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
+                                       m.decor.connectedForeign})
+                for (int frame : frames)
+                    if (frame >= 0) decorWindow.push_back(unsigned(frame));
+        }
         if (!animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
         constexpr std::size_t frameBytes = 128 * 128 * 4; // A 32-pixel cell at HD scale 4.
         const unsigned extra = unsigned(std::min<std::size_t>(m.animationFrames - 2,
@@ -589,6 +601,15 @@ unsigned Compositor::decorSlot(MaterialId id) const
 		return 2;
 	return decor.connectedOpen ? 0 : 1;
 }
+bool Compositor::massWithin(const SceneMap &map, int x, int y, int reach) const
+{
+	// The cell's corners span (x,y)..(x+1,y+1); vertexTerrainAt wraps the torus.
+	for (int dy = -reach; dy <= 1 + reach; ++dy)
+		for (int dx = -reach; dx <= 1 + reach; ++dx)
+			if (decorSlot(materialFor(map, map.vertexTerrainAt(x + dx, y + dy))) == 0)
+				return true;
+	return false;
+}
 std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y,
 	const TierField *tiers) const
 {
@@ -628,7 +649,10 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		const auto ra = rank(a), rb = rank(b);
 		return ra != rb ? ra > rb : a < b;
 	});
-	for (unsigned m = 0; m < std::min(distinct, 2u); ++m)
+	// Every mass draws, mass m in slot m, or its corner would be an empty notch
+	// cut square along the neighbouring cells, which draw it up to the shared
+	// edge. Three or four masses reach into the foliage and obstacle slots.
+	for (unsigned m = 0; m < distinct; ++m)
 	{
 		const auto id = masses[m];
 		unsigned own = 0, foreign = 0, count = 0;
@@ -661,6 +685,11 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 			continue;
 		const auto chosen = materials[k];
 		const auto &decor = definitions.materials[chosen].decor;
+		// Spires and pillars keep clear of a mass's rim and terraces. The check
+		// follows the hashed pick, so the slot stays empty even if another
+		// obstacle corner of the cell would not need clearance.
+		if (decor.clearOfMasses >= 0 && massWithin(map, x, y, decor.clearOfMasses))
+			continue;
 		unsigned mask = 0, count = 0;
 		for (unsigned c = 0; c < 4; ++c)
 		{
@@ -671,8 +700,14 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 				mask |= 1u << c;
 		}
 		const int frame = definitions.decorFrame(chosen, x, y, count < 4, map.terrainSeed(), mask, colours);
+		// Beside three masses foliage draws one slot later, after them all; no
+		// obstacle draws there, since the masses hold most of the cell.
+		unsigned slot = kind + 1;
+		if (layers[slot].sprite)
+			++slot;
+		assert(slot < TierSlot && !layers[slot].sprite);
 		if (frame >= 0)
-			layers[kind + 1] = {decorSprites[chosen], frame};
+			layers[slot] = {decorSprites[chosen], frame};
 	}
 	// Terraces: nested, so the first missing one ends the stack.
 	if (tiers && distinct)

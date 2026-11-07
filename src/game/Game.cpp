@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Team.h"
+#include "gradient/MapRouting.h"
 #include <algorithm>
 #include <bit>
 #include <iostream>
 
-#include "AICastor.h"
 #include "AIMaxima.h"
-#include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>
@@ -16,6 +16,7 @@
 #include <stdexcept>
 
 #include <FileManager.h>
+#include <Toolkit.h>
 
 #include "DatasetWriter.h"
 #include "Game.h"
@@ -32,7 +33,6 @@
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
 
-#include "MapEdit.h"
 
 #include "Brush.h"
 #include "Bullet.h"
@@ -52,7 +52,33 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	scriptClient(gui),
 	mapscript(this, gui ? &scriptClient : nullptr)
 {
+	map.drainGameWork = [this](bool teamStatistics) { if (teamStatistics) drainTeamStats(); drainHiring(); };
 	init(gui, edit);
+}
+
+SimContext Game::simContext()
+{
+	SimContext ctx;
+	ctx.gameHeader = &gameHeader;
+	ctx.mapHeader = &mapHeader;
+	ctx.map = &map;
+	ctx.buildingsTypes = &buildingsTypes;
+	ctx.unitCargo = &unitCargo;
+	ctx.areaEffects = &areaEffects;
+	ctx.animations = animations.get();
+	ctx.stepCounter = &stepCounter;
+	ctx.teams = teams;
+	ctx.players = players;
+	ctx.services = this;
+	return ctx;
+}
+
+void Game::setAnimations(std::unique_ptr<GameAnimations> replacement)
+{
+	animations = std::move(replacement);
+	for (Team *team : teams)
+		if (team)
+			team->ctx.animations = animations.get();
 }
 
 Game::~Game()
@@ -191,7 +217,7 @@ void Game::configureBuildingCatalog()
 	areaEffects.configure(*this);
 	bool routingChanged=false;
 	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
-	if (routingChanged) map.invalidateSupplierLocations();
+	if (routingChanged) map.routing().invalidateSupplierLocations();
 	for (Team* team : teams)
 		if (team)
 		{
@@ -206,7 +232,7 @@ void Game::configureBuildingCatalog()
 			if (routingChanged)
 			{
 				team->dirtyGlobalGradient();
-				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
+				for (int resource=0; resource<MaterialCount; ++resource) map.routing().dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
 }
@@ -254,7 +280,7 @@ void Game::clearGame()
 {
     unitCargo.clear();
     turretTargetingPipeline.reset();
-	map.resetGradientPipeline(true); // Drain callbacks and discard old-world caches before team destruction.
+	map.routing().resetGradientPipeline(true); // Drain callbacks and discard old-world caches before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
     map.computeExecutor().resetTelemetry();
@@ -311,7 +337,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 			throw std::logic_error("A saved match cannot change its AI delay");
 		// Pending building fields carry deadlines from the old delay. Without
 		// any, the next tick reconfigures the pipeline from the new header.
-		const auto buildings=map.buildingGradientPipelineStatus();
+		const auto buildings=map.routing().buildingGradientPipelineStatus();
 		if ((buildings.pending || buildings.queued)
 			&& gameHeader.getBuildingGradientDelay()!=newGameHeader.getBuildingGradientDelay())
 			throw std::logic_error("A saved match cannot change its building gradient delay with pending fields");

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Dense reference formulas stay independent of the optimized production calculation.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "BuildingType.h"
 #include "BuildingGradientSearch.h"
 #include <algorithm>

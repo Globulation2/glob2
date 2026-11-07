@@ -3,7 +3,7 @@
 #include "Contact.h"
 #include "Drawing.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "Landmass.h"
@@ -66,9 +66,11 @@ std::string validateRequest(const GenerationRequest &r)
 		return error;
 	if (r.wDec < 6 || r.hDec < 6 || r.wDec > 9 || r.hDec > 9)
 		return "Portage Lakes needs sides between 64 and 512 tiles.";
-	if (r.nbTeams > std::min(r.wDec == DENSE_COLONY_MAP_EXPONENT && r.hDec == DENSE_COLONY_MAP_EXPONENT
-		? Team::MAX_COUNT : DENSE_COLONY_BASE_LIMIT,
-		std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
+	if (r.nbTeams >
+		std::min(r.wDec == DENSE_COLONY_MAP_EXPONENT && r.hDec == DENSE_COLONY_MAP_EXPONENT
+					 ? TEAM_MAX_COUNT
+					 : DENSE_COLONY_BASE_LIMIT,
+				 std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	return "";
 }
@@ -1107,8 +1109,8 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	return L;
 }
 
-std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningAccess = false,
-							 GenerationContext *record = nullptr)
+std::string mechanismFailure(const GenerationMap &map, const Layout &L,
+							 bool checkOpeningAccess = false, GenerationContext *record = nullptr)
 {
 	const auto &t = L.t;
 	auto walking = groundUnitTiles(map);
@@ -1206,7 +1208,7 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 }
 // Both checkerboard harvest policies retain a usable inn location beside every
 // starter field. This checks planted wheat, not merely fertility or distant room.
-int farmServiceSites(const Map &map, const Torus &t, const Plot &plot)
+int farmServiceSites(const GenerationMap &map, const Torus &t, const Plot &plot)
 {
 	if (plot.court < 0)
 		return 0;
@@ -1236,7 +1238,8 @@ int farmServiceSites(const Map &map, const Torus &t, const Plot &plot)
 
 // Wheat is intentionally free to spread through neighboring meadows. Renewable timber
 // remains contained, keeping the faster-growing wood off the open fields and trails.
-std::string timberPlotsMismatch(const Map &map, const Layout &L, const Fertility::Field &growth)
+std::string timberPlotsMismatch(const GenerationMap &map, const Layout &L,
+								const Fertility::Field &growth)
 {
 	const auto &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
@@ -1261,7 +1264,7 @@ std::string timberPlotsMismatch(const Map &map, const Layout &L, const Fertility
 	return "";
 }
 
-bool materialize(Game &game, GenerationContext &c, const Layout &L)
+bool materialize(GenerationWorld &game, GenerationContext &c, const Layout &L)
 {
 	if (!L.failure.empty())
 	{
@@ -1439,7 +1442,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 // Keep the four-way settlement comparison, with bounded alternative landscapes when
 // none of the complete proposals passes. Failed attempts never touch the target game.
 constexpr int landscapeAttempts = 24;
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	for (int attempt = 0; attempt < landscapeAttempts; ++attempt)
 	{
@@ -1453,7 +1456,8 @@ bool generate(Game &game, GenerationContext &c)
 		// Furnishing has its own named streams. Each proposal starts from the same stream
 		// state; only the winning complete world is materialized into the caller's game.
 		c.stage = "portage lakes settlements";
-		auto builder = [&](Game &trial, GenerationContext &probe, const std::vector<int> &sites)
+		auto builder =
+			[&](GenerationWorld &trial, GenerationContext &probe, const std::vector<int> &sites)
 		{ return materialize(trial, probe, furnish(base, sites, probe)); };
 		auto check = [](const StartQualityReport &q)
 		{
@@ -1476,13 +1480,13 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	return false;
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	std::vector<int> homes;
 	const Torus actual(game.map);
 	for (int k = 0; k < c.request.nbTeams; ++k)
-		homes.push_back(actual.at(game.teams[k]->startPosX + 2, game.teams[k]->startPosY + 2));
+		homes.push_back(actual.at(game.teamStart(k).x + 2, game.teamStart(k).y + 2));
 	Layout L;
 	bool matched = false;
 	for (int attempt = 0; attempt < landscapeAttempts && !matched; ++attempt)

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainMaterials.h"
+#include "map/TerrainGroupTable.h"
 #include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -363,6 +364,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				require(d.at("connected_tiers").is_boolean(), "connected_tiers must be a boolean");
 				v.decor.connectedTiers = d.at("connected_tiers").get<bool>();
 				require(!v.decor.connectedTiers || v.decor.connectedOpen, "connected_tiers needs connected_open");
+			}
+			if (d.contains("clear_of_masses"))
+			{
+				v.decor.clearOfMasses = integerInRange(d.at("clear_of_masses"), 0, MaxDecorClearOfMasses);
+				// Connected frames expect their neighbours to continue the surface.
+				require(v.decor.connected.empty(), "clear_of_masses is for object decor");
 			}
 			require(v.decor.connectedForeign.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedOpen && v.decor.connectedForeign.size() == ForeignCodes * 16),

@@ -96,8 +96,9 @@ inline MapGeneratorPoint homeSwarmSite(ShapePoint centre, double axis, double ra
 /// patch on either side, towards the swarm, where a pond's water would regrow them. No stone: these
 /// homes are walled in stone already, so a clump would only take room.
 template <typename Eligible>
-void plantHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint kitCentre,
-				  double axis, double homeRadius, int wheat, int wood, Eligible eligible)
+void plantHomeKit(GenerationMap &map, const Torus &t, GenerationContext &context,
+				  ShapePoint kitCentre, double axis, double homeRadius, int wheat, int wood,
+				  Eligible eligible)
 {
 	const KitFrame frame{int(::MapGeneration::Numeric::lround(kitCentre.x)),
 						 int(::MapGeneration::Numeric::lround(kitCentre.y)), axis};
@@ -135,9 +136,9 @@ inline std::vector<ShapePoint> stampRoundHomes(const Torus &t, const std::vector
 /// either side of `kitCentre` as plantHomeKit lays them, and a stone clump of `quarry` radius beyond
 /// the pond on the far side from the swarm.
 template <typename Eligible>
-void plantOpenHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint kitCentre,
-					  double axis, double homeRadius, int wheat, int wood, int quarry,
-					  Eligible eligible)
+void plantOpenHomeKit(GenerationMap &map, const Torus &t, GenerationContext &context,
+					  ShapePoint kitCentre, double axis, double homeRadius, int wheat, int wood,
+					  int quarry, Eligible eligible)
 {
 	const KitFrame frame{int(::MapGeneration::Numeric::lround(kitCentre.x)),
 						 int(::MapGeneration::Numeric::lround(kitCentre.y)), axis};
@@ -306,9 +307,9 @@ struct GroundAmounts
 template <typename Eligible, typename PatchAt, typename SplitAt, typename AmountsFor,
 		  typename ClumpsAllowed = bool (*)(int)>
 void furnishGround(
-	Map &map, const Torus &t, GenerationContext &context, const Fertility::Field &fertility,
-	Eligible eligible, PatchAt patchAt, SplitAt splitAt, AmountsFor amountsFor,
-	const char *stoneStream, const char *fruitStream,
+	GenerationMap &map, const Torus &t, GenerationContext &context,
+	const Fertility::Field &fertility, Eligible eligible, PatchAt patchAt, SplitAt splitAt,
+	AmountsFor amountsFor, const char *stoneStream, const char *fruitStream,
 	ClumpsAllowed clumpsAllowed = [](int) { return true; })
 {
 	const int n = t.w * t.h;
@@ -368,7 +369,7 @@ struct WheatTopUp
 /// the `ambient` deposits nearest the site make way, never wheat or stone and never the kit's own
 /// (which `ambient` leaves out). Central Quarry's and Hidden Oasis' found starts.
 template <typename Room>
-WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int wanted,
+WheatTopUp topUpWheatNearby(GenerationMap &map, const Torus &t, int site, int reach, int wanted,
 							const std::vector<unsigned char> &ambient, Room room)
 {
 	const int sx = t.remainderX(site), sy = site / t.w;

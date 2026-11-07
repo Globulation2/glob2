@@ -3,7 +3,7 @@
 #include "Channels.h"
 #include "DesignCache.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GenerationNumeric.h"
 #include "Geometry.h"
@@ -19,7 +19,7 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Topology.h"
-#include "TerrainTypeTable.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -904,7 +904,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return cachedDesign(request, context, designAfresh);
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "braided delta layout";
 	const BraidedDeltaOptions o(context.request);
@@ -915,7 +915,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	const Torus &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	writeVertices(map, L.paint);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
@@ -1013,7 +1013,7 @@ bool generate(Game &game, GenerationContext &context)
 // In each stretch between two cuts, a unit without swimming cannot reach the
 // other bank inside the river band. Trained swimmers may cross either depth.
 // A tile's bank is the side of the river's middle it lies on.
-std::string riverWallFault(const Layout &L, const Map &map)
+std::string riverWallFault(const Layout &L, const GenerationMap &map)
 {
 	const Torus &t = L.t;
 	const RiverPlan &river = L.river;
@@ -1080,7 +1080,8 @@ std::string riverWallFault(const Layout &L, const Map &map)
 
 // Every sizeable stretch of ground can be walked to from the first colony: a channel no ford
 // crosses would strand it.
-std::string strandedGroundFault(const Layout &L, const Map &map, const std::vector<int> &steps)
+std::string strandedGroundFault(const Layout &L, const GenerationMap &map,
+								const std::vector<int> &steps)
 {
 	const Torus &t = L.t;
 	std::vector<unsigned char> ground(t.size(), 0);
@@ -1103,7 +1104,7 @@ std::string strandedGroundFault(const Layout &L, const Map &map, const std::vect
 	return "";
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);

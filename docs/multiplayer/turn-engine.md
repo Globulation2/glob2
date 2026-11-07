@@ -250,8 +250,12 @@ pathfinding, AI code and parameters, order validation, map loading, random numbe
 scripting. Without a bump, builds that simulate differently share rooms, queues, AI
 ratings and verifiers, and their matches desync or fail verification. The revision
 only ever increases. A bump also needs a fresh golden record
-(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version) and
-its trace: `python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`.
+(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version), its
+trace and the other revision-keyed fixtures; `python3 tools/refresh_sim_fixtures.py`
+regenerates them all in the same change (the match record and trace, every `[golden]`
+doctest fixture, this platform's map generator rows, the telemetry traces and the
+Maxima continuation baseline), then runs `test/check_sim_revision.py`. After master CI
+has run, `--from-run <run id>` merges the other platforms' generator rows.
 
 CI enforces what it can detect:
 

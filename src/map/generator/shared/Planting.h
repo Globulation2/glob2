@@ -5,7 +5,7 @@
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Resources.h"
 #include "Sketch.h"
 #include <algorithm>
@@ -26,7 +26,7 @@ struct WedgeFrame;
 constexpr int kSwarmClearance = 2;
 
 /// Grass with nothing on it: no deposit, no building, no unit.
-bool clearGround(const Map &, int x, int y);
+bool clearGround(const GenerationMap &, int x, int y);
 
 /// The remaining stock after applying a resource cap, counted during the same mutation pass.
 struct ResourceStock
@@ -39,17 +39,18 @@ struct ResourceStock
 /// tile; larger caps allow reserve scenarios. This controls stock, NOT growth: the caller must
 /// separately prove that any crop promised to be finite has zero fertility. A nonpositive cap
 /// or invalid resource type is a programming error reported as GenerationFailure.
-ResourceStock capResourceStock(Map &, int type, int maximumAmount);
+ResourceStock capResourceStock(GenerationMap &, int type, int maximumAmount);
 
 /// Fill the interiors of existing field sections before their edges, without
 /// random holes or per-tile speckling. The supplied habitat and exact tile budget
 /// remain the caller's; this adds no terrain, water, or containment margins.
-int plantFieldInteriors(Map &, const Torus &, const std::vector<int> &tiles, int type, int wanted);
+int plantFieldInteriors(GenerationMap &, const Torus &, const std::vector<int> &tiles, int type,
+						int wanted);
 
 /// Grows a compact patch of one resource outward from a seed tile, breadth-first over the four
 /// cardinal neighbours, onto tiles the predicate allows. Returns how many tiles it placed.
 template <typename Eligible>
-int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible eligible)
+int growPatch(GenerationMap &map, const Torus &t, int seed, int type, int count, Eligible eligible)
 {
 	std::vector<unsigned char> queued(size_t(t.w) * t.h, 0);
 	std::vector<int> frontier{seed};
@@ -116,8 +117,8 @@ struct PatchBudgetResult
 /// makes shortfall explicit. Every seed stays within `within`; each patch can grow beyond that
 /// box if eligibility permits it. Final worker access still requires a separate path check.
 template <typename Eligible>
-PatchBudgetResult growPatchesNear(Map &map, const Torus &t, int ax, int ay, int within, int type,
-								  int count, Eligible eligible)
+PatchBudgetResult growPatchesNear(GenerationMap &map, const Torus &t, int ax, int ay, int within,
+								  int type, int count, Eligible eligible)
 {
 	const auto vacant = [&](int i)
 	{
@@ -202,7 +203,7 @@ struct KitSeed
 /// This deliberately makes no random draws: equal translated entrances get the
 /// same bounded search and cardinal growth order.
 template <typename Eligible>
-int plantPatchNear(Map &map, const Torus &t, const KitSeed &at, int type, int count,
+int plantPatchNear(GenerationMap &map, const Torus &t, const KitSeed &at, int type, int count,
 				   Eligible eligible)
 {
 	const int seed = seedNear(t, at.x, at.y, at.within, eligible);
@@ -218,7 +219,7 @@ struct Kit
 /// eligible tile to its seed, in that order. A deposit whose seed finds no eligible tile is left
 /// out, since the guarantee that follows tops a colony up.
 template <typename Eligible>
-void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &kit,
+void plantKit(GenerationMap &map, const Torus &t, GenerationContext &context, const Kit &kit,
 			  Eligible eligible)
 {
 	plantPatchNear(map, t, kit.wheat, WHEAT, kit.wheatTiles, eligible);
@@ -235,7 +236,7 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 /// `cropsEligible` allows and the stone clump on tiles `stoneEligible` allows (a farm tail and a
 /// town head, a watered chamber and a dry one), each from the nearest such tile to its seed.
 template <typename CropsEligible, typename StoneEligible>
-void plantSplitKit(Map &map, const Torus &t, GenerationContext &context, const Kit &kit,
+void plantSplitKit(GenerationMap &map, const Torus &t, GenerationContext &context, const Kit &kit,
 				   CropsEligible cropsEligible, StoneEligible stoneEligible)
 {
 	Kit crops = kit;
@@ -273,7 +274,7 @@ struct KitFrame
 /// wheat first, in proportion. Splitting by a field unrelated to the preference makes the two
 /// crops form separate patches rather than rings sorted by fertility.
 template <typename SplitKey>
-void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, int wood,
+void plantFields(GenerationMap &map, const Torus &t, std::vector<int> tiles, int wheat, int wood,
 				 SplitKey splitKey)
 {
 	const int total = std::min(int(tiles.size()), wheat + wood);
@@ -297,8 +298,8 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 /// deposit is a clearable wall until workers cut it, so a map built on cover should say what keeps
 /// its colonies connected (openColonyRoutes, Roads.h). Returns how many tiles it planted.
 template <typename Eligible>
-int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &region, int type,
-			   Eligible eligible)
+int plantCover(GenerationMap &map, const Torus &t, const std::vector<unsigned char> &region,
+			   int type, Eligible eligible)
 {
 	int planted = 0;
 	for (int i = 0; i < t.w * t.h; ++i)
@@ -320,8 +321,8 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 /// is the level at the (100 - share)th percentile of the candidates' levels (LatticeNoise.h's
 /// percentile), so the share holds tile for tile whatever the field's range. Returns how many it planted.
 template <typename LevelAt>
-int plantCoverShare(Map &map, const Torus &t, const std::vector<int> &candidates, int type,
-					int sharePercent, LevelAt levelAt)
+int plantCoverShare(GenerationMap &map, const Torus &t, const std::vector<int> &candidates,
+					int type, int sharePercent, LevelAt levelAt)
 {
 	if (candidates.empty())
 		return 0;
@@ -354,7 +355,7 @@ int plantCoverShare(Map &map, const Torus &t, const std::vector<int> &candidates
 /// `radius`, searched within `within` tiles. A prize or an outcrop designed once per colony lands the
 /// same way at every colony's angle. Returns how many were placed.
 template <typename Eligible>
-int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, double cy,
+int plantRound(GenerationMap &map, const Torus &t, GenerationContext &context, double cx, double cy,
 			   double radius, const std::vector<double> &angles, int type, int clumpRadius,
 			   int within, Eligible eligible)
 {
@@ -382,9 +383,9 @@ int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, 
 /// colony finds the same three fruits at its own angle, which is how a shared prize stays fair.
 /// Returns how many groves were planted.
 template <typename Eligible>
-int plantOrchard(Map &map, const Torus &t, GenerationContext &context, double cx, double cy,
-				 double radius, const std::vector<double> &angles, double spacing, int within,
-				 int clumpRadius, Eligible eligible)
+int plantOrchard(GenerationMap &map, const Torus &t, GenerationContext &context, double cx,
+				 double cy, double radius, const std::vector<double> &angles, double spacing,
+				 int within, int clumpRadius, Eligible eligible)
 {
 	int planted = 0;
 	for (const double angle : angles)
@@ -434,13 +435,13 @@ std::vector<unsigned char> swarmSurroundings(const Torus &, const GenerationCont
 
 /// Clears every deposit within kSwarmClearance of a swarm's footprint, except tiles of `keep`
 /// (a designed wall beside it, say).
-void clearAroundSwarms(Map &, const GenerationContext &, const Torus &,
+void clearAroundSwarms(GenerationMap &, const GenerationContext &, const Torus &,
 					   const std::vector<unsigned char> *keep = nullptr);
 
 /// Clears every deposit on the land tiles of `region`, except tiles of `keep` (a designed wall):
 /// the ground a design promised to leave open (a ford's landings, a lane past a swarm), whatever a
 /// later layer dropped there. Algae on water is left alone. Returns how many tiles were cleared.
-int clearDeposits(Map &, const Torus &, const std::vector<unsigned char> &region,
+int clearDeposits(GenerationMap &, const Torus &, const std::vector<unsigned char> &region,
 				  const std::vector<unsigned char> *keep = nullptr);
 
 /// The chance, per water tile, that algae there passes Map::growResources' test to grow or spread
@@ -448,7 +449,7 @@ int clearDeposits(Map &, const Torus &, const std::vector<unsigned char> &region
 /// of two draws of 0 to 15) and grows the algae only if the tile at that offset is water and the
 /// tile at the offset turned a quarter and doubled is sand. So algae thrives in water near beaches
 /// and sand, and algae with no sand within 30 tiles never grows at all. Land tiles get 0.
-std::vector<double> algaeGrowthChance(const Map &, const Torus &);
+std::vector<double> algaeGrowthChance(const GenerationMap &, const Torus &);
 
 /// Where algae goes: any water, or only water this many steps offshore.
 struct AlgaeBand
@@ -478,24 +479,25 @@ struct AlgaeBand
 /// equally between the colonies' wedges, each wedge's placed on its own best-growing water: the
 /// engine's growth test is not symmetric under rotation (it turns its offset by reflecting it), so
 /// one best share taken over the whole map would favour some wedges' water over others'.
-void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, int algaePercent,
-			   const AlgaeBand &, const WedgeFrame *wedges = nullptr);
+void seedAlgae(GenerationMap &, GenerationContext &, const Torus &, const char *stream,
+			   int algaePercent, const AlgaeBand &, const WedgeFrame *wedges = nullptr);
 /// The same, with the clumps shared out equally between labelled groups of water that are not wedges
 /// (every colony's own bay, say): `groupOf` gives each tile's group, 0 to `groups` - 1, or -1 for
 /// water that belongs to none and takes no clump.
-void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, int algaePercent,
-			   const AlgaeBand &, const std::vector<int> &groupOf, int groups);
+void seedAlgae(GenerationMap &, GenerationContext &, const Torus &, const char *stream,
+			   int algaePercent, const AlgaeBand &, const std::vector<int> &groupOf, int groups);
 
 /// Each island carries one themed prize at its middle: stone, a fruit or wheat, so finding one
 /// feels like a distinct find rather than an interchangeable resource dump.
-void stockIslands(Map &, GenerationContext &, const std::vector<Island> &, const char *stream);
+void stockIslands(GenerationMap &, GenerationContext &, const std::vector<Island> &,
+				  const char *stream);
 
 /// Quarry faces: stone along the foot of a terrain wall (any tile that neither walks nor swims,
 /// such as cliffs), where a deposit blocks no way through. Each seed grows one face of `tiles`
 /// stone on `eligible` tiles touching such a wall, diagonals included. For walled homes whose walls
 /// were their stone when walls were the stone resource. Returns the stone tiles placed.
 template <typename Eligible>
-int plantQuarryFaces(Map &map, const Torus &t, const std::vector<KitSeed> &seeds, int tiles,
+int plantQuarryFaces(GenerationMap &map, const Torus &t, const std::vector<KitSeed> &seeds, int tiles,
 					 Eligible eligible)
 {
 	const auto wallFoot = [&](int i)

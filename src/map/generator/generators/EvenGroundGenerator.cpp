@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EvenGroundGenerator.h"
 #include "Contact.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
@@ -1103,7 +1103,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "even ground solve";
 	const EvenGroundOptions o(context.request);
@@ -1113,7 +1113,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -1187,7 +1187,7 @@ bool generate(Game &game, GenerationContext &context)
 /// the promises here are about the world the solver produced - everyone joined, everyone fed,
 /// everyone with room - and all three are measurable directly, where re-running the solve would
 /// cost as much as generating the map again and prove only that it is deterministic.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	const int teams = context.request.nbTeams;
 	if (const std::string cut = walkFromFirstColony(game.map, teams, "the land", "").error;

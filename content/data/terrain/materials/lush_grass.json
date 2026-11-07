@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-lush_grass",
   "profile": "turf",
   "class": "solid",
-  "preview": [26, 100, 50],
+  "preview": [39, 101, 46],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [26, 100, 50],
+  "minimap": [39, 101, 46],
   "seam": {
     "height": 2,
     "cast_q8": 48,
