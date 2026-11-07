@@ -45,7 +45,7 @@ even when claims are disabled, and from this format demanded adaptive gradients
 refresh after 256 ticks instead of 1,024. It also extends authoritative snapshot
 checksums to cover claim routes and bounded recovery, so the replay floor is 213.
 Earlier saves remain loadable and adopt the corrected simulation, still without
-claims. New games start with claims (the `contention-v1` policy); a replay's
+claims. New games start with claims (the `contention-v2` policy); a replay's
 header is the saved starting state, so playback restores them. `game run
 --resource-claims off` is a baseline setup that cannot record a replay; see
 [resource claims](../tools/tournaments.md#resource-claims).

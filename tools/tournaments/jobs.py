@@ -6,10 +6,6 @@ from pathlib import Path
 from .common import read_json
 
 _TYPES = {}
-# Research-era claim setups the engine no longer accepts. Reject them by name
-# so an old manifest fails clearly instead of as an unknown field.
-REMOVED_CLAIM_FIELDS = ('material_destinations', 'resource_claims_active', 'resource_claims_policy',
-                         'resource_claims_probe', 'resource_claims_movement_only')
 _UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
 DEFAULT_GAME_TICKS = 90000
 DEFAULT_WIN_PROBABILITY_PERMILLE = 950
@@ -120,9 +116,6 @@ class EngineJob:
         generation = {'generator', 'params', 'candidates'}
         allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
-        if self.kind == 'game' and set(config) & set(REMOVED_CLAIM_FIELDS):
-            raise ValueError('removed resource-claim research fields: ' + ', '.join(sorted(set(config) & set(REMOVED_CLAIM_FIELDS)))
-                             + '; use resource_claims default or off')
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
@@ -135,7 +128,7 @@ class EngineJob:
             raise ValueError('invalid gradient_backend')
         if self.kind == 'game' and 'resource_claims' in config:
             # Without this key a new game uses its pinned engine's default:
-            # claims off before the shipped default, contention-v1 after it.
+            # claims off before the shipped default, contention-v2 after it.
             if config['resource_claims'] not in ('default', 'off'):
                 raise ValueError('resource_claims must be default or off')
             if config['resource_claims'] == 'off' and job['outputs'].get('replay'):

@@ -682,7 +682,7 @@ ignored `artifacts/` workspace or in pull-request attachments.
 
 Every new game (single player, LAN, online, campaign, replay playback and
 `game run`) starts with material destination planes and resource claims, using
-the `contention-v1` policy described in
+the `contention-v2` policy described in
 [resource claims](../architecture/units.md#resource-claims). Saved games keep what
 they stored: saves from before format 213 have no claims and continue without
 them, and later saves continue with their claim state. Loading a save rejects
@@ -700,9 +700,7 @@ bundles built before claims, claims on after. Set `resource_claims: "off"` for a
 claims-off baseline (forwarded only to bundles that advertise the switch) or
 `resource_claims: "default"` to require a bundle with claims. Claims-off jobs
 cannot record replays, and collectors reject results whose attested mode differs
-from the request. The research keys of earlier development bundles
-(`material_destinations`, `resource_claims_active`, `resource_claims_policy`,
-`resource_claims_probe`, `resource_claims_movement_only`) are rejected.
+from the request.
 
 Compare claims on and off with paired seeds and seat rotations, using the ordinary
 delivery and labour measurements (`log_mode: "gameplay"` with `team-timeline`

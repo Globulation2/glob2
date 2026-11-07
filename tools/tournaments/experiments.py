@@ -10,7 +10,7 @@ from .analysis import POLICIES, reanalyze
 from .bundles import inspect_bundle
 from .common import atomic_json, digest, read_json
 from .coordinator import Coordinator
-from .jobs import DEFAULT_GAME_TICKS, REMOVED_CLAIM_FIELDS, win_probability_threshold
+from .jobs import DEFAULT_GAME_TICKS, win_probability_threshold
 from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
 
 
@@ -28,10 +28,6 @@ class Planner:
         self.jobs, self.maps = [], {}
         if config.get('parameter_domain', 'search') not in ('search', 'legal'):
             raise ValueError('parameter_domain must be search or legal')
-        removed = set(config) & set(REMOVED_CLAIM_FIELDS)
-        if removed:
-            raise ValueError('removed resource-claim research fields: ' + ', '.join(sorted(removed))
-                             + '; use resource_claims default or off')
         if config.get('resource_claims', 'default') not in ('default', 'off'):
             raise ValueError('resource_claims must be default or off')
         if config.get('resource_claims') == 'default' and any('resource_claims_default' not in self.bundles[build]['capabilities'] for build in self.builds):

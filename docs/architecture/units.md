@@ -270,7 +270,7 @@ gradient to the nearest stock, so a late-game crowd converges on one farm tile
 and most of it arrives to find the stock already taken. New games use material
 claims instead: a claim reserves one unit of natural stock (a resource cell or a pooled
 farm tile) for one worker and routes that worker to it, so a crowd
-spreads over the stock that is actually there. The policy, `contention-v1`, is
+spreads over the stock that is actually there. The policy, `contention-v2`, is
 fixed in `src/map/claims/ClaimPolicy.h`; changing it changes the simulation.
 
 - **Contention trigger.** A worker without a claim moves exactly as with claims
@@ -287,8 +287,9 @@ fixed in `src/map/claims/ClaimPolicy.h`; changing it changes the simulation.
   tick; meanwhile the worker takes the ordinary gradient step. On a route blocked
   by traffic it sidesteps along the route, and after eight waits it replans
   around the units it sees. Pursuit keeps adaptive gradient refresh demand alive.
-  A claimed worker re-runs selection every 24 decisions and switches to the better
-  candidate it finds. Adjacent claimable stock can replace a distant claim.
+  A claimed worker re-runs selection every 24 decisions and takes the first
+  claimable entry in pattern order, which may be the claim it already holds.
+  Adjacent claimable stock can replace a distant claim.
 - **Nothing to claim.** A crowded worker that finds nothing to claim gives up its
   job, as an idle worker would, and is free to be hired elsewhere. Failed routes
   go through bounded recovery: four remembered unreachable accesses, at most four
@@ -298,6 +299,11 @@ fixed in `src/map/claims/ClaimPolicy.h`; changing it changes the simulation.
   frozen state (in parallel for large passes). Hiring skips a worker with nothing
   claimable, or one carrying another material, since it would only be released
   again.
+
+Claims bind claimers only. The ledger is shared by all teams, so one team's
+claims block another team's claimers. An unclaimed worker of any team can still
+harvest claimed stock; the stock drop then evicts the claims it no longer covers,
+highest owner ID first.
 
 Saved games store whether they use claims, together with the ledger, routes,
 selection cadence and recovery state, and continue as they were. Saves from
