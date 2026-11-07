@@ -307,6 +307,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-min-ms -r
 complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-from-tick -r
 complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-gate -r
 complete -c glob2 -n "__glob2_at 'game run'" -l gradient-work-stats -r
+complete -c glob2 -n "__glob2_at 'game run'" -l resource-claims -r -f -a 'default off'
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-probe
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-exploration -r
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-exploration-seed -r
