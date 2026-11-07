@@ -2287,7 +2287,7 @@ inline void portageLakesTwoContracts()
 							assert(next == TerrainGroup::Water || next == TerrainGroup::DeepWater);
 						}
 			}
-		assert(trail > 0 && rock > 0);
+		assert(trail > 0 && (rock > 0 || std::min(w, h) == 64));
 		assert(deepWanted ? deep > 0 : deep == 0);
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
@@ -2316,7 +2316,13 @@ inline void portageLakesTwoContracts()
 		const auto result = build(g, r, "pinned variant", true);
 		assert(choice(result, "portage-lakes.shield") == shieldNames[shield - 1]);
 		terrainPromises(g, deep);
-		// Every home's knob holds the same quarry stone, at least five, within a short walk.
+		// Every home's knob holds the same quarry stone, at least five, within a short walk. Only a
+		// compact map may fall back to revision 7's stone patches (every home alike).
+		if (choice(result, "portage-lakes.knob.stencil") == "none: stone patches")
+		{
+			assert(dimension == 6);
+			continue;
+		}
 		assert(measure(result, "portage-lakes.quarries.home-stone") >= 5);
 		for (int k = 0; k < teams; ++k)
 		{

@@ -77,6 +77,7 @@ constexpr std::array<Shield, 2> kShields{{
 }};
 // Deep cores lie at least this many steps from any land vertex.
 constexpr int kDeepSteps = 3;
+const char *const kNoSwim = "Portage Lakes cannot fit a useful swimming shortcut on this seed.";
 // Home knobs: their quarry face is this far (Chebyshev) from the home, nearest first.
 constexpr int kKnobNear = 9, kKnobFar = 16;
 struct Plot
@@ -1202,7 +1203,7 @@ void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o
 	c.telemetry.measure("portage-lakes.shore.final-mud-vertices", mud);
 }
 
-Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationContext &c)
+Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationContext &c, bool wetShores = true)
 {
 	Layout L = base;
 	const auto &t = L.t;
@@ -1296,7 +1297,10 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		disc(homeBuffer, t, h, L.compact ? 12 : (t.size() / int(homes.size()) < 8192 ? 18 : 24));
 	// Wet shore margins: stretches of lake beach far from every home turn to mud, slow and holding
 	// nothing like the beach, but inhibiting no crops. Never beside the algae pools, whose growth
-	// needs the beach's shore support, nor in a home's buffer, where people walk and build.
+	// needs the beach's shore support, nor in a home's buffer, where people walk and build. Mud waters
+	// the shore meadows, so the forest there thins; when that costs the swim its shortcut the layout is
+	// furnished again with plain beaches (furnishLakes).
+	if (wetShores)
 	{
 		const auto mud = periodicNoise(t.w, t.h, L.compact ? 10 : 14, c.stream("portage-shore-mud"));
 		std::vector<unsigned char> margin(t.size(), 0);
@@ -1535,7 +1539,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	if (L.swim.a >= 0 && (!expansion(L, L.swim.a) || !expansion(L, L.swim.b)))
 		best = 0;
 	if (best < (L.compact ? 4 : 8))
-		L.failure = "Portage Lakes cannot fit a useful swimming shortcut on this seed.";
+		L.failure = kNoSwim;
 	c.telemetry.measure("portage-lakes.swim.walk-before", L.swim.before);
 	c.telemetry.measure("portage-lakes.swim.walk-after", L.swim.after);
 	c.telemetry.measure("portage-lakes.bays.neutral", neutral);
@@ -1558,11 +1562,10 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		if (!grass[i] || L.plotOf[i] >= 0)
 			L.forest[i] = 0;
 	// Every home's granite knob and its quarry face, on open meadow near the town.
+	// When even the small stencil cannot fit beside every home, every home keeps revision 7's stone
+	// patch instead (one rule for every colony), so the knobs never refuse a map revision 7 made.
 	if (!placeKnobs(L, c))
-	{
-		L.failure = "Portage Lakes cannot fit a quarry beside every settlement.";
-		return L;
-	}
+		c.telemetry.choice("portage-lakes.knob.stencil", "none: stone patches");
 
 	// Break up the largest empty lawns with small fruit copses and rocky outcrops.
 	// Keep broad aisles around every clump and stay away from all promised routes,
@@ -1598,6 +1601,32 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	}
 	c.telemetry.measure("portage-lakes.country.clumps", L.countryClumps.size());
 	finishTerrain(L, c, o, homeBuffer);
+	return L;
+}
+
+// Furnish with wet shores, or, when the mud's watering costs the swim its shortcut, with revision 7's
+// plain beaches from the same stream state. Generation and validation both come through here.
+Layout furnishLakes(const Layout &base, const std::vector<int> &homes, GenerationContext &c)
+{
+	GenerationContext before(c);
+	Layout L = furnish(base, homes, c, true);
+	if (L.failure != kNoSwim)
+	{
+		c.telemetry.choice("portage-lakes.shore.margins", "mud");
+		return L;
+	}
+	// Rewind every stream the first attempt drew from, and drop its telemetry.
+	for (const auto &[name, state] : c.namedStreams())
+	{
+		const auto saved = before.namedStreams().find(name);
+		const std::mt19937 rewound =
+			saved != before.namedStreams().end() ? saved->second
+												 : std::mt19937(GenerationContext::deriveSeed(c.request.seed, name));
+		c.stream(name) = rewound;
+	}
+	c.telemetry = before.telemetry;
+	L = furnish(base, homes, c, false);
+	c.telemetry.choice("portage-lakes.shore.margins", "plain beaches for the swim shortcut");
 	return L;
 }
 
@@ -1936,6 +1965,20 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		};
 		growPatch(game.map, t, pool, ALGA, 8 + scaledCount(8, o.algae), waterEligible);
 	}
+	// Without knobs, every home's stone is revision 7's patch near the town.
+	if (!L.knobFace)
+		for (int h : L.homes)
+		{
+			auto eligible = [&](int i)
+			{
+				return !L.reserved[i] && L.plotOf[i] < 0 && !L.forest[i] && !L.rock[i] && !L.roads[i] &&
+					   t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) >= 64 &&
+					   clearGround(game.map, t.remainderX(i), i / t.w);
+			};
+			int q = seedNear(t, t.remainderX(h), h / t.w, 16, eligible);
+			if (q >= 0)
+				growPatch(game.map, t, q, STONE, 4 + scaledCount(3, o.stone), eligible);
+		}
 	// Every home's stone is its own knob's quarry face (unscaled, the same for every colony). Record
 	// the walk from each home to its own face and to the nearest face of any kind.
 	if (c.telemetry.enabled())
@@ -2030,7 +2073,7 @@ bool generate(Game &game, GenerationContext &c)
 		// state; only the winning complete world is materialized into the caller's game.
 		c.stage = "portage lakes settlements";
 		auto builder = [&](Game &trial, GenerationContext &probe, const std::vector<int> &sites)
-		{ return materialize(trial, probe, furnish(base, sites, probe)); };
+		{ return materialize(trial, probe, furnishLakes(base, sites, probe)); };
 		auto check = [](const StartQualityReport &q)
 		{
 			for (const auto &s : q.colonies)
@@ -2067,7 +2110,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		if (std::find(base.proposals.begin(), base.proposals.end(), homes) == base.proposals.end())
 			continue;
 		GenerationContext probe(replay);
-		auto candidate = furnish(base, homes, probe);
+		auto candidate = furnishLakes(base, homes, probe);
 		if (!candidate.failure.empty())
 			continue;
 		matched = true;
@@ -2086,7 +2129,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	if (auto e = timberPlotsMismatch(map, L, growth); !e.empty())
 		return e;
 	// Every quarry face holds its stone, and every home's knob the same stone.
-	if (auto e = quarryFault(map, t, L.quarry, L.quarryOf, c.request.nbTeams, 5); !e.empty())
+	if (auto e = quarryFault(map, t, L.quarry, L.quarryOf, L.knobFace ? c.request.nbTeams : 0, 5); !e.empty())
 		return e;
 	// Trails are paths: nothing ever stands on a tile one of their corners touches.
 	for (int i = 0; i < t.size(); ++i)
