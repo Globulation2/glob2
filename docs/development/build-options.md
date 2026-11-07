@@ -191,6 +191,57 @@ GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
 
+### Experimental CMake build
+
+A CMake + Ninja build of the native Linux fast-development client runs beside
+SCons while the two are compared object for object. SCons remains the default
+and the only build for every other target, for tests and harnesses, and for
+anything installed or shipped. It needs CMake 3.25 or later, Ninja and
+`pkg-config`; if the host lacks CMake or Ninja, `pip install cmake ninja` into a
+development virtual environment provides both.
+
+```sh
+python3 tools/dev_build.py --generator=cmake            # configure if needed, build glob2
+python3 tools/dev_build.py --generator=cmake usl gag -j8
+cmake --preset dev && cmake --build --preset dev        # the same, directly
+python3 tools/compare_build_systems.py                  # parity report
+```
+
+The `dev` preset (`CMakePresets.json`) builds into `build/cmake/dev` with
+`-O0 -g1 -fdebug-prefix-map=<checkout>=.` and writes `compile_commands.json`.
+When ccache is installed it is the compiler launcher, with the managed cache
+directory and settings SCons uses. Ninja does not draw from the SCons
+[token pool](#parallel-lanes); the wrapper passes `-j8` unless given `-jN`.
+
+What it builds: `libusl.a`, `libgag.a`, `libGlob2JavaScript.a` (QuickJS and
+openlibm with the strict numeric flags of `scons/javascript.py`, applied per
+source), every client object, as the object library `glob2_client`, and the
+`glob2` executable, with the numeric symbol guard run after linking. Source
+lists, include directories and the strict-numeric source sets come from
+`cmake/sources.cmake`, which `python3 scons/export_cmake_sources.py` writes from
+`scons/sources.py` and `scons/javascript.py`. Commit the regenerated file with any
+manifest change; `test/build_system/test_cmake_sources.py` fails while it is
+stale. `BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `SkinMaterials.h`, the
+renderer shaders, the Hive contract, the online error catalog and
+`SkinRenderRecipe.h` come from the SCons generators, through
+`scons/cmake_generate.py`.
+
+What it does not do yet: export runtime assets (`BuildPaths.h` points the
+CMake `glob2` at the SCons dev build's `runtime-assets`, so run
+`tools/dev_build.py` once before starting it), build the pinned recording
+libraries (it uses `GLOB2_SDL3_PREFIX`'s `recording/` or the SCons build's
+prefix), tests and harnesses, the relay, installation and packaging, PCH or
+unity variants, or any browser, mobile, macOS or Windows target.
+
+`tools/compare_build_systems.py` builds `glob2` with both systems into
+`build/parity/scons` and `build/parity/cmake`, both with an extra
+`-ffile-prefix-map=<checkout>/=`, then compares each source's compile command
+(the `-I` search order and the multiset of all other flags, with paths
+normalised) and the sha256 of each pair of objects, raw and with debug sections
+stripped. `--no-build` reuses existing parity builds, `--time-noop` also times a
+no-change rebuild of both ordinary dev builds, and `--json` writes the full
+report. It exits 1 on any flag or source-set difference.
+
 ### Shared renderer shader assets
 
 The build generates shader layouts and GLSL variants from

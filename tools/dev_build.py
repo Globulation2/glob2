@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build the full-featured fast development client; remaining arguments go to SCons."""
+"""Build the full-featured fast development client; remaining arguments go to SCons.
+
+--generator=cmake instead runs the experimental CMake dev preset (native Linux
+only): it configures build/cmake/dev when needed, then builds the remaining
+arguments as CMake targets (default: glob2). SCons stays the default.
+"""
 import argparse
 import os
 from pathlib import Path
@@ -26,9 +31,33 @@ def command(arguments):
     return ['scons', *defaults, *arguments]
 
 
+CMAKE_DIRECTORY = ROOT / 'build/cmake/dev'
+
+
+def cmake_commands(arguments):
+    """Configure (only when the build directory has no build files) and build."""
+    jobs = [word for word in arguments if word.startswith('-j')]
+    targets = [word for word in arguments if not word.startswith('-')]
+    unknown = [word for word in arguments if word.startswith('-') and not word.startswith('-j')]
+    if unknown:
+        raise SystemExit('--generator=cmake accepts only targets and -jN, not ' + ' '.join(unknown))
+    commands = []
+    if not (CMAKE_DIRECTORY / 'build.ninja').exists():
+        commands.append(['cmake', '--preset', 'dev'])
+    # Ninja does not draw from the SCons CPU token pool (scons/jobserver.py);
+    # default to a share of the machine rather than all of it.
+    build = ['cmake', '--build', '--preset', 'dev']
+    if targets:
+        build += ['--target', *targets]
+    commands.append(build + ['--', jobs[-1] if jobs else '-j8'])
+    return commands
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache-stats', action='store_true', help='show managed compiler-cache statistics and exit')
+    parser.add_argument('--generator', choices=('scons', 'cmake'), default='scons',
+                        help='build system (cmake: experimental native Linux dev preset)')
     args, remaining = parser.parse_known_args()
     sys.path.insert(0, str(ROOT / 'scons'))
     import dev_store
@@ -41,6 +70,12 @@ def main():
             ccache.configure_managed(managed)
             environment['CCACHE_DIR'] = str(managed)
         raise SystemExit(subprocess.call(['ccache', '--show-stats'], env=environment))
+    if args.generator == 'cmake':
+        for step in cmake_commands(remaining):
+            status = subprocess.call(step, cwd=ROOT, env=environment)
+            if status:
+                raise SystemExit(status)
+        raise SystemExit(0)
     raise SystemExit(subprocess.call(command(remaining), cwd=ROOT, env=environment))
 
 

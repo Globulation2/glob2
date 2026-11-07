@@ -50,8 +50,8 @@ source_files += [node.abspath for node in js_library]
 
 # Host numeric conversion must use the same strict boundary as the interpreter.
 strict = local.Clone()
-strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
-from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source
+from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source, STRICT_CXXFLAGS
+strict.Append(CXXFLAGS=list(STRICT_CXXFLAGS))
 strict_sources = [source for source in source_files
                   if isinstance(source, str) and strict_numeric_source(source)]
 from dev_compile import objects as development_objects, unique
