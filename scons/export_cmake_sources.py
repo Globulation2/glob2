@@ -1,25 +1,34 @@
 #!/usr/bin/env python3
-"""Write cmake/sources.cmake from the SCons source manifests.
+"""Write cmake/sources.cmake and cmake/tests.cmake from the SCons manifests.
 
 The experimental CMake build (CMakeLists.txt) reads its source lists, include
-directories and the QuickJS/openlibm strict-numeric contract from the generated
-file, so the two build systems cannot drift: test/build_system/test_cmake_sources.py
-fails while the committed file differs from what this script writes.
+directories, the QuickJS/openlibm strict-numeric contract, the test registry
+(test/tests.py) and the harness programs (scons/harness_programs.py) from the
+generated files, so the two build systems cannot drift:
+test/build_system/test_cmake_sources.py fails while a committed file differs
+from what this script writes.
 
-    python3 scons/export_cmake_sources.py          # rewrite cmake/sources.cmake
-    python3 scons/export_cmake_sources.py --check  # exit 1 when it is stale
+    python3 scons/export_cmake_sources.py          # rewrite cmake/*.cmake
+    python3 scons/export_cmake_sources.py --check  # exit 1 when one is stale
 """
 import argparse
+import importlib.util
 from pathlib import Path
 import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-OUTPUT = ROOT / 'cmake/sources.cmake'
+DIRECTORY = ROOT / 'cmake'
 sys.path.insert(0, str(HERE))
 
+import harness_programs  # noqa: E402
 import javascript  # noqa: E402
 import sources  # noqa: E402
+
+# test/tests.py, loaded by path so test/'s other modules cannot shadow ours.
+_spec = importlib.util.spec_from_file_location('glob2_test_registry', ROOT / 'test/tests.py')
+registry = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(registry)
 
 # src/SConscript adds these native-only sources to CLIENT_SOURCES.
 NATIVE_CLIENT_SOURCES = ('mcp/Tools.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp')
@@ -74,22 +83,113 @@ def content():
             + '\n'.join(blocks))
 
 
+def _entries(entries):
+    """(repository path, options) of test/tests.py registry entries."""
+    for entry in entries:
+        source, options = (entry, {}) if isinstance(entry, str) else entry
+        yield registry.source_path(source), options
+
+
+def _groups(name, entries, comment):
+    """Entries compiled alike (same cxxflags, defines and requirements) share a group."""
+    groups = {}
+    for path, options in entries:
+        key = (tuple(options.get('cxxflags', ())), tuple(options.get('defines', ())),
+               tuple(sorted(options.get('require', ()))))
+        groups.setdefault(key, []).append(path)
+    blocks = ['# ' + comment + '\nset(' + name + '_GROUPS ' + ' '.join(str(i) for i in range(len(groups))) + ')\n']
+    for index, ((cxxflags, defines, require), paths) in enumerate(groups.items()):
+        prefix = f'{name}_{index}'
+        blocks.append(_list(prefix + '_SOURCES', paths, f'Group {index}.'))
+        blocks.append(_list(prefix + '_CXXFLAGS', cxxflags, 'Extra compile flags of the group.'))
+        blocks.append(_list(prefix + '_DEFINES', defines, 'Extra definitions of the group.'))
+        blocks.append(_list(prefix + '_REQUIRE', require,
+                            "Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw')."))
+    return blocks
+
+
+def tests_content():
+    client = {name for name in (*sources.CLIENT_SOURCES, *NATIVE_CLIENT_SOURCES)
+              if name != ENTRY_POINT and name.endswith('.cpp')}
+    # test/SConscript production_objects: plain client sources reuse the client
+    # object; the rest compile again with the test flags.
+    reused, compiled = [], []
+    for path, options in _entries(registry.UNIT_PRODUCTION_SOURCES):
+        key = path[len('src/'):] if path.startswith('src/') else None
+        if key in client and not options.get('defines') and not options.get('cxxflags'):
+            if options.get('require'):
+                raise SystemExit(f'{path}: a reused client object cannot carry requirements')
+            reused.append(path)
+        else:
+            compiled.append((path, options))
+    engine = list(_entries(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS))
+    unit = list(_entries(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS)) + compiled
+    blocks = _groups('GLOB2_ENGINE_TESTS', engine,
+                     'glob2-engine-tests: SUPPORT, ENGINE_SUPPORT and ENGINE_TESTS, plus every client object.')
+    blocks += _groups('GLOB2_UNIT_TESTS', unit,
+                      'glob2-unit-tests: SUPPORT, UNIT_STUBS, UNIT_TESTS and the UNIT_PRODUCTION_SOURCES '
+                      'compiled again.')
+    blocks.append(_list('GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES', reused,
+                        'UNIT_PRODUCTION_SOURCES whose client objects glob2-unit-tests links.'))
+    blocks.append(_list('GLOB2_TEST_PROGRAMS', [target for target, *_ in registry.PROGRAMS],
+                        'test/tests.py PROGRAMS: compiled with the test flags, linked with every client object.'))
+    for target, source, alias, group in registry.PROGRAMS:
+        blocks.append(f'set(GLOB2_TEST_PROGRAM_{target}_SOURCE {registry.source_path(source)})\n'
+                      f'set(GLOB2_TEST_PROGRAM_{target}_ALIAS {alias})\n'
+                      f'set(GLOB2_TEST_PROGRAM_{target}_GROUP {group})\n')
+    blocks.append(_list('GLOB2_TEST_PROGRAM_SIDECARS',
+                        [target for target, source, *_ in registry.PROGRAMS
+                         if source.endswith('TranslationPreviewHarness.cpp')],
+                        'Programs that get a <binary>.provenance.json sidecar, as in test/SConscript.'))
+    blocks.append(_list('GLOB2_TEST_LEGACY_ALIASES',
+                        [f'{old}={new}' for old, new in registry.LEGACY_ALIASES.items()],
+                        'test/tests.py LEGACY_ALIASES as alias=binary.'))
+    blocks.append(_list('GLOB2_HARNESS_PROGRAMS', [program.target for program in harness_programs.HARNESS_PROGRAMS],
+                        'scons/harness_programs.py HARNESS_PROGRAMS: compiled with the client flags.'))
+    for program in harness_programs.HARNESS_PROGRAMS:
+        prefix = 'GLOB2_HARNESS_' + program.target
+        kind = program.link if isinstance(program.link, str) else 'sources'
+        blocks.append(f'set({prefix}_SOURCE {program.source.lstrip("#")})\n'
+                      f'set({prefix}_ALIAS {program.alias})\n'
+                      f'set({prefix}_LINK {kind})\n'
+                      f'set({prefix}_CXXFLAGS {" ".join(program.cxxflags)})\n'
+                      f'set({prefix}_SHARED {" ".join(program.shared)})\n'
+                      f'set({prefix}_REQUIRE {program.require or ""})\n')
+        if kind == 'sources':
+            blocks.append(_list(prefix + '_LINK_SOURCES', ['src/' + name for name in program.link],
+                                'Client sources whose objects the program links.'))
+    blocks.append(_list('GLOB2_HARNESS_SHARED_OBJECTS', list(harness_programs.SHARED_OBJECTS),
+                        'scons/harness_programs.py SHARED_OBJECTS.'))
+    for name, (_, source) in harness_programs.SHARED_OBJECTS.items():
+        blocks.append(f'set(GLOB2_HARNESS_SHARED_{name}_SOURCE {source.lstrip("#")})\n')
+    return ('# Generated by scons/export_cmake_sources.py from test/tests.py and\n'
+            '# scons/harness_programs.py; do not edit. Regenerate after changing either.\n\n'
+            + '\n'.join(blocks))
+
+
+def outputs(directory=DIRECTORY):
+    directory = Path(directory)
+    return {directory / 'sources.cmake': content(), directory / 'tests.cmake': tests_content()}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--check', action='store_true', help='exit 1 when the committed file is stale')
-    parser.add_argument('--output', type=Path, default=OUTPUT)
+    parser.add_argument('--check', action='store_true', help='exit 1 when a committed file is stale')
+    parser.add_argument('--directory', type=Path, default=DIRECTORY,
+                        help='where to write or check the files (default: cmake/)')
     args = parser.parse_args(argv)
-    text = content()
-    current = args.output.read_text() if args.output.exists() else None
-    if args.check:
-        if current != text:
-            print(f'{args.output} is stale; run python3 scons/export_cmake_sources.py', file=sys.stderr)
-            return 1
-        return 0
-    if current != text:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(text)
-    return 0
+    stale = []
+    for path, text in outputs(args.directory).items():
+        if (path.read_text() if path.exists() else None) == text:
+            continue
+        if args.check:
+            stale.append(path)
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    for path in stale:
+        print(f'{path} is stale; run python3 scons/export_cmake_sources.py', file=sys.stderr)
+    return 1 if stale else 0
 
 
 if __name__ == '__main__':

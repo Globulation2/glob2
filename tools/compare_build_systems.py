@@ -1,26 +1,34 @@
 #!/usr/bin/env python3
 """Compare the SCons and experimental CMake native Linux development builds.
 
-Builds glob2 with both build systems into separate parity directories (SCons
-through tools/dev_build.py, CMake through the dev preset), each with the same
-extra -ffile-prefix-map so objects do not embed the checkout path, then reports:
+Builds glob2, both test binaries, the test/tests.py programs and the
+scons/harness_programs.py harnesses with both build systems into separate
+parity directories (SCons through tools/dev_build.py, CMake through the dev
+preset), each with the same extra -ffile-prefix-map so objects do not embed the
+checkout path, then reports:
 
-1. per source, the compile flags of both compile_commands.json files: the -I
-   search order (first occurrence of each directory) and the multiset of every
-   other flag, after normalising the checkout, build directories, compiler path,
-   output and dependency-file arguments;
-2. per source compiled by both, whether the object files are byte-identical,
-   and whether they are identical once debug sections are stripped.
+1. per compilation, the compile flags of both compile_commands.json files: the
+   -I search order (first occurrence of each directory) and the multiset of
+   every other flag, after normalising the checkout, build directories,
+   compiler path, output and dependency-file arguments. A source compiled more
+   than once (test support in both test binaries, a production source compiled
+   again with test defines) must have the same multiset of compilations in both;
+2. per pair of matching compilations, whether the object files are
+   byte-identical, and whether they are identical once debug sections are
+   stripped.
 
     python3 tools/compare_build_systems.py               # build both, then compare
     python3 tools/compare_build_systems.py --no-build    # compare existing parity builds
-    python3 tools/compare_build_systems.py --json report.json
+    python3 tools/compare_build_systems.py --glob2-only  # only glob2 (the stage 1-2 scope)
+    python3 tools/compare_build_systems.py --json report.json --summary summary.md
 
-The script never hides differences; it exits 1 when any flag set differs.
+The script never hides differences; it exits 1 when any flag set or the set of
+compiled sources differs. Object hash differences are reported, not failed on.
 """
 import argparse
 import collections
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -43,29 +51,52 @@ OUTPUT_OPTIONS = {'-o', '-MF', '-MT', '-MQ'}
 DEPENDENCY_FLAGS = {'-MD', '-MMD', '-c'}
 
 
+def _load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def programs():
+    """(SCons aliases, CMake targets) of every test binary, test program and harness."""
+    sys.path.insert(0, str(ROOT / 'scons'))
+    registry = _load('glob2_test_registry', ROOT / 'test/tests.py')
+    harnesses = _load('glob2_harness_programs', ROOT / 'scons/harness_programs.py').HARNESS_PROGRAMS
+    aliases = ['tests'] + [alias for _, _, alias, _ in registry.PROGRAMS] + [program.alias for program in harnesses]
+    targets = (['glob2-engine-tests', 'glob2-unit-tests'] + [target for target, *_ in registry.PROGRAMS]
+               + [program.target for program in harnesses])
+    return list(dict.fromkeys(aliases)), targets
+
+
 def run(command, **kwargs):
     print('+ ' + shlex.join(str(word) for word in command), flush=True)
     subprocess.run(command, check=True, cwd=ROOT, **kwargs)
 
 
-def build_scons(jobs):
+def build_scons(jobs, everything):
     # CC/CXX carry the extra flag so it reaches C and C++ objects alike; SCons'
     # ccache wrapping and every other flag stay as tools/dev_build.py sets them.
     command = [sys.executable, 'tools/dev_build.py', '--build=' + str(SCONS_DIRECTORY.relative_to(ROOT)),
-               'CC=gcc ' + PREFIX_MAP, 'CXX=g++ ' + PREFIX_MAP]
+               'CC=' + os.environ.get('CC', 'gcc') + ' ' + PREFIX_MAP,
+               'CXX=' + os.environ.get('CXX', 'g++') + ' ' + PREFIX_MAP]
     if jobs:
         command.append('-j' + str(jobs))
-    run(command + [str(SCONS_DIRECTORY.relative_to(ROOT) / 'src/glob2'),
-                   str(SCONS_DIRECTORY.relative_to(ROOT) / 'compile_commands.json')])
+    targets = [str(SCONS_DIRECTORY.relative_to(ROOT) / 'src/glob2')]
+    if everything:
+        targets += programs()[0]
+    run(command + targets + [str(SCONS_DIRECTORY.relative_to(ROOT) / 'compile_commands.json')])
 
 
-def build_cmake(jobs):
-    # Without ccache: its CCACHE_BASEDIR rewrites CMake's absolute source paths
-    # relative to the build directory (__FILE__ becomes "../../../src/..."),
-    # which no prefix map can match to SCons' root-relative paths.
-    run(['cmake', '--preset', 'dev', '-B', str(CMAKE_DIRECTORY), '-DGLOB2_CCACHE=OFF',
+def build_cmake(jobs, everything):
+    # ccache without CCACHE_BASEDIR: the base directory rewrites CMake's absolute
+    # source paths relative to the build directory (__FILE__ becomes
+    # "../../../src/..."), which no prefix map can match to SCons' root-relative
+    # paths. Without it, hits need the same checkout path, as on CI runners.
+    run(['cmake', '--preset', 'dev', '-B', str(CMAKE_DIRECTORY), '-DGLOB2_CCACHE_BASEDIR=',
          '-DGLOB2_EXTRA_COMPILE_FLAGS=' + PREFIX_MAP])
-    run(['cmake', '--build', str(CMAKE_DIRECTORY), '--target', 'glob2', '--', '-j' + str(jobs or 8)])
+    targets = ['glob2'] + (programs()[1] if everything else [])
+    run(['cmake', '--build', str(CMAKE_DIRECTORY), '--target', *targets, '--', '-j' + str(jobs or 8)])
 
 
 class Normaliser:
@@ -90,7 +121,8 @@ class Normaliser:
         words = entry['arguments'] if 'arguments' in entry else shlex.split(entry['command'])
         directory = entry['directory']
         source = os.path.normpath(os.path.join(directory, entry['file']))
-        while words and Path(words[0]).name in ('ccache', 'env'):
+        while words and (Path(words[0]).name in ('ccache', 'env', 'cmake') or words[0] in ('-E', 'env')
+                         or words[0].startswith(('--unset=', 'CCACHE_'))):
             words = words[1:]
         compiler = os.path.realpath(shutil.which(words[0]) or words[0])
         includes, flags = [], []
@@ -114,12 +146,18 @@ class Normaliser:
             flags.append(self.text(word))
         return compiler, includes, collections.Counter(flags)
 
+    def variant(self, entry):
+        """A hashable key: two compilations with the same key compile alike."""
+        compiler, includes, flags = self.entry(entry)
+        return compiler, tuple(includes), tuple(sorted(flags.elements()))
+
 
 def database(directory):
+    """source -> [(entry, object path)] of the compilations whose object exists."""
     path = Path(directory) / 'compile_commands.json'
     if not path.exists():
         raise SystemExit(f'{path} is missing; build first or drop --no-build')
-    candidates = collections.defaultdict(list)
+    compilations = collections.defaultdict(list)
     for entry in json.loads(path.read_text()):
         source = Path(os.path.normpath(os.path.join(entry['directory'], entry['file'])))
         if Path(directory).resolve() in source.parents:
@@ -127,13 +165,11 @@ def database(directory):
         output = entry.get('output')
         if output:
             output = Path(os.path.normpath(os.path.join(entry['directory'], output)))
-        candidates[source.relative_to(ROOT).as_posix()].append((entry, output))
-    # SCons registers a source again for each test program that compiles it
-    # separately; prefer the built object, then the one outside test/.
-    test = Path(directory).resolve() / 'test'
-    return {source: sorted(entries, key=lambda item: (not (item[1] and item[1].exists()),
-                                                      bool(item[1] and test in item[1].parents)))[0]
-            for source, entries in candidates.items()}
+        # The SCons database registers every program's objects; CMake's every
+        # target's. Compare what each parity build actually compiled.
+        if output and output.exists():
+            compilations[source.relative_to(ROOT).as_posix()].append((entry, output))
+    return compilations
 
 
 def digest(path, strip=False):
@@ -145,49 +181,60 @@ def digest(path, strip=False):
         return hashlib.sha256(stripped.read_bytes()).hexdigest()
 
 
+def _flag_difference(source, a, b, scons_normal, cmake_normal):
+    a_compiler, a_includes, a_flags = scons_normal.entry(a)
+    b_compiler, b_includes, b_flags = cmake_normal.entry(b)
+    difference = {'source': source}
+    if a_compiler != b_compiler:
+        difference['compiler'] = [a_compiler, b_compiler]
+    if a_includes != b_includes:
+        difference['includes'] = {'scons': a_includes, 'cmake': b_includes}
+    if a_flags != b_flags:
+        difference['flags_only_scons'] = sorted((a_flags - b_flags).elements())
+        difference['flags_only_cmake'] = sorted((b_flags - a_flags).elements())
+    return difference
+
+
 def compare():
     scons, cmake = database(SCONS_DIRECTORY), database(CMAKE_DIRECTORY)
-    # The SCons database also registers tests and tools that the parity build
-    # does not compile; compare the sources whose objects it actually built.
-    scons = {source: value for source, value in scons.items() if value[1] and value[1].exists()}
     scons_normal, cmake_normal = Normaliser(SCONS_DIRECTORY), Normaliser(CMAKE_DIRECTORY)
     report = {'only_scons': sorted(set(scons) - set(cmake)), 'only_cmake': sorted(set(cmake) - set(scons)),
               'flag_differences': [], 'compilers': set(), 'objects': collections.Counter(),
-              'object_differences': []}
+              'object_differences': [], 'compilations': 0}
     for source in sorted(set(scons) & set(cmake)):
-        a_compiler, a_includes, a_flags = scons_normal.entry(scons[source][0])
-        b_compiler, b_includes, b_flags = cmake_normal.entry(cmake[source][0])
-        report['compilers'].add((a_compiler, b_compiler))
-        difference = {}
-        if a_compiler != b_compiler:
-            difference['compiler'] = [a_compiler, b_compiler]
-        if a_includes != b_includes:
-            difference['includes'] = {'scons': a_includes, 'cmake': b_includes}
-        if a_flags != b_flags:
-            difference['flags_only_scons'] = sorted((a_flags - b_flags).elements())
-            difference['flags_only_cmake'] = sorted((b_flags - a_flags).elements())
-        if difference:
-            report['flag_differences'].append({'source': source, **difference})
-        a_object, b_object = scons[source][1], cmake[source][1]
-        if not (a_object and b_object and a_object.exists() and b_object.exists()):
-            report['objects']['missing'] += 1
-            continue
-        if digest(a_object) == digest(b_object):
-            report['objects']['identical'] += 1
-        elif digest(a_object, True) == digest(b_object, True):
-            report['objects']['identical_without_debug'] += 1
-            report['object_differences'].append({'source': source, 'kind': 'debug sections only'})
-        else:
-            report['objects']['different'] += 1
-            report['object_differences'].append({'source': source, 'kind': 'code or data'})
+        groups = collections.defaultdict(lambda: ([], []))
+        for side, (entries, normal) in enumerate(((scons[source], scons_normal), (cmake[source], cmake_normal))):
+            for entry, output in entries:
+                groups[normal.variant(entry)][side].append((entry, output))
+        for variant, (a, b) in groups.items():
+            report['compilers'].add(variant[0])
+            report['compilations'] += max(len(a), len(b))
+        unmatched = {variant: sides for variant, sides in groups.items() if len(sides[0]) != len(sides[1])}
+        if unmatched:
+            a = [entry for sides in unmatched.values() for entry, _ in sides[0]]
+            b = [entry for sides in unmatched.values() for entry, _ in sides[1]]
+            if len(a) == 1 and len(b) == 1:
+                report['flag_differences'].append(_flag_difference(source, a[0], b[0], scons_normal, cmake_normal))
+            else:
+                report['flag_differences'].append({'source': source, 'compilations': [len(a), len(b)],
+                                                   'note': 'differing compilations of a source built more than once'})
+        for variant, (a, b) in groups.items():
+            for (_, a_object), (_, b_object) in zip(a, b):
+                if digest(a_object) == digest(b_object):
+                    report['objects']['identical'] += 1
+                elif digest(a_object, True) == digest(b_object, True):
+                    report['objects']['identical_without_debug'] += 1
+                    report['object_differences'].append({'source': source, 'kind': 'debug sections only'})
+                else:
+                    report['objects']['different'] += 1
+                    report['object_differences'].append({'source': source, 'kind': 'code or data'})
     report['compilers'] = sorted(report['compilers'])
     report['objects'] = dict(report['objects'])
     return report
 
 
 def summary(report):
-    compared = sum(report['objects'].values())
-    lines = [f"Sources compiled by both builds: {compared}",
+    lines = [f"Compilations compared: {report['compilations']}",
              f"Sources only SCons compiled: {len(report['only_scons'])}",
              f"Sources only CMake compiled: {len(report['only_cmake'])}",
              f"Sources with differing compile flags: {len(report['flag_differences'])}",
@@ -201,8 +248,34 @@ def summary(report):
         lines.append(f"  ... {len(report['flag_differences']) - 20} more flag differences")
     kinds = collections.Counter(item['kind'] for item in report['object_differences'])
     for kind, count in sorted(kinds.items()):
-        examples = [item['source'] for item in report['object_differences'] if item['kind'] == kind][:5]
-        lines.append(f'  objects differing in {kind}: {count} (e.g. {", ".join(examples)})')
+        examples = sorted({item['source'] for item in report['object_differences'] if item['kind'] == kind})
+        lines.append(f'  objects differing in {kind}: {count} (e.g. {", ".join(examples[:5])})')
+    return '\n'.join(lines)
+
+
+def markdown(report):
+    """A GitHub step summary: failures first, object parity as information."""
+    failed = report['flag_differences'] or report['only_scons'] or report['only_cmake']
+    objects = report['objects']
+    lines = ['## Build-system equivalence (SCons vs CMake)', '',
+             ('**Failed:** compile commands differ.' if failed else 'Compile commands match.'), '',
+             '| Check | Result |', '| --- | --- |',
+             f"| Compilations compared | {report['compilations']} |",
+             f"| Sources only SCons compiled | {len(report['only_scons'])} |",
+             f"| Sources only CMake compiled | {len(report['only_cmake'])} |",
+             f"| Sources with differing flags | {len(report['flag_differences'])} |",
+             f"| Identical objects | {objects.get('identical', 0)} |",
+             f"| Objects identical without debug sections | {objects.get('identical_without_debug', 0)} |",
+             f"| Objects differing in code or data | {objects.get('different', 0)} |", '']
+    if report['object_differences']:
+        lines += ['Object differences are reported, not failed on, until parity is exact:', '']
+        for item in report['object_differences'][:50]:
+            lines.append(f"- `{item['source']}`: {item['kind']}")
+        if len(report['object_differences']) > 50:
+            lines.append(f"- ... {len(report['object_differences']) - 50} more")
+        lines.append('')
+    if failed:
+        lines += ['```', summary(report), '```', '']
     return '\n'.join(lines)
 
 
@@ -224,14 +297,17 @@ def time_noop(jobs):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--no-build', action='store_true', help='compare the existing parity builds')
+    parser.add_argument('--glob2-only', action='store_true',
+                        help='build only glob2, not the test binaries, test programs and harnesses')
     parser.add_argument('--jobs', type=int, default=8, help='parallel compile jobs for each build')
     parser.add_argument('--json', type=Path, help='also write the full report here')
+    parser.add_argument('--summary', type=Path, help='also append a Markdown summary here (e.g. $GITHUB_STEP_SUMMARY)')
     parser.add_argument('--time-noop', action='store_true',
                         help='also time a no-change rebuild of both ordinary development builds')
     args = parser.parse_args()
     if not args.no_build:
-        build_scons(args.jobs)
-        build_cmake(args.jobs)
+        build_scons(args.jobs, not args.glob2_only)
+        build_cmake(args.jobs, not args.glob2_only)
     report = compare()
     if args.time_noop:
         report['noop_seconds'] = time_noop(args.jobs)
@@ -239,7 +315,11 @@ def main():
     if 'noop_seconds' in report:
         print('No-op build seconds: ' + ', '.join(f'{k} {v}' for k, v in report['noop_seconds'].items()))
     if args.json:
+        args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps(report, indent=2, default=list) + '\n')
+    if args.summary:
+        with args.summary.open('a') as output:
+            output.write(markdown(report) + '\n')
     return 1 if report['flag_differences'] or report['only_scons'] or report['only_cmake'] else 0
 
 

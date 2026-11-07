@@ -25,6 +25,7 @@ CI_WORKFLOWS = {
     '.github/workflows/ci-fast.yml',
     '.github/workflows/ci-full-label.yml',
     '.github/workflows/build.yml',
+    '.github/workflows/build-system-equivalence.yml',
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
     '.github/workflows/steam-windows-package.yml',

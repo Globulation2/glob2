@@ -122,7 +122,61 @@ def ccache_directory(args):
 
 def scons_dev_directory(args):
     """The SCons fast-development build directory (tools/dev_build.py defaults)."""
-    print((ROOT / default_directory(build_identity({'dev_fast': 1, 'linker': 'auto'}))).as_posix())
+    print((ROOT / default_directory(build_identity(DEV_IDENTITY))).as_posix())
+
+
+DEV_IDENTITY = {'dev_fast': 1, 'linker': 'auto'}
+
+
+def identity(args):
+    """identity.json as SCons writes it for the dev tier, marked as a CMake build.
+
+    test/run_tests.py reads the mode from it; the extra key keeps SCons from
+    adopting the directory (build_layout.prepare_directory refuses a mismatch)."""
+    content = dict(build_identity(DEV_IDENTITY), generator='cmake')
+    write_if_changed(Path(args.builddir) / 'identity.json', json.dumps(content, sort_keys=True, indent=2) + '\n')
+
+
+def test_provenance(args):
+    """<binary>.provenance.json, through the code test/SConscript's sidecar runs."""
+    import test_provenance
+    configuration = json.loads(Path(args.configuration).read_text())
+    test_provenance.write_sidecar(ROOT, args.binary, args.binary + '.provenance.json', configuration)
+
+
+def provenance_configuration(args):
+    """The compiler and flags a CMake provenance sidecar records, in test_provenance's shape."""
+    configuration = dict(buildSystem='cmake', compiler=args.compiler, flags={
+        'CCFLAGS': args.ccflags, 'CXXFLAGS': ' '.join(args.cxxflags.split()),
+        'CPPDEFINES': ' '.join(args.define), 'LINKFLAGS': ' '.join(args.linkflag)})
+    write_if_changed(args.output, json.dumps(configuration, sort_keys=True, indent=2) + '\n')
+
+
+def _depfile_path(path):
+    return str(path).replace(' ', '\\ ').replace('#', '\\#').replace('$', '$$')
+
+
+def runtime_assets(args):
+    """Export the runtime assets as SCons' dev tier does, then write a Ninja depfile.
+
+    The export (runtime_assets.export_tree) clones a finished tree from the
+    development store when one with the same content key exists. The depfile
+    lists every input and the directories holding them, so Ninja re-runs the
+    export when an input changes or a directory gains or loses a file."""
+    import runtime_assets
+    builddir = Path(args.builddir).resolve()
+    platform = runtime_assets.host_platform()
+    inputs = runtime_assets.export_inputs(ROOT, platform)
+    # SCons' dev tier: release=0, optimized_assets=auto, sprite_packing=auto, h264 recording.
+    lossy = runtime_assets.optimized_install_enabled(False, 'auto')
+    packing = runtime_assets.sprite_packing_profile('auto', False, True)
+    runtime_assets.export_tree(ROOT, builddir / 'runtime-assets', platform, inputs, lossy, packing,
+                               packing == 'video', args.jobs)
+    files = [Path(path).resolve() for path in inputs] + [ROOT / path for path in runtime_assets.EXPORT_TOOLS]
+    directories = sorted({path.parent for path in files})
+    names = [_depfile_path(path) for path in [*files, *directories]]
+    write_if_changed(args.depfile, _depfile_path(builddir / 'runtime-assets.json') + ': '
+                     + ' \\\n  '.join(names) + '\n')
 
 
 def main(argv=None):
@@ -157,6 +211,20 @@ def main(argv=None):
     sub.add_argument('--prefix', required=True)
     command('ccache-directory', ccache_directory, builddir=False)
     command('scons-dev-directory', scons_dev_directory, builddir=False)
+    command('identity', identity)
+    sub = command('test-provenance', test_provenance, builddir=False)
+    sub.add_argument('--binary', required=True)
+    sub.add_argument('--configuration', required=True)
+    sub = command('provenance-configuration', provenance_configuration, builddir=False)
+    sub.add_argument('--output', required=True)
+    sub.add_argument('--compiler', required=True)
+    sub.add_argument('--ccflags', default='')
+    sub.add_argument('--cxxflags', default='')
+    sub.add_argument('--define', action='append', default=[])
+    sub.add_argument('--linkflag', action='append', default=[])
+    sub = command('runtime-assets', runtime_assets)
+    sub.add_argument('--depfile', required=True)
+    sub.add_argument('--jobs', type=int, default=8)
     args = parser.parse_args(argv)
     args.function(args)
 

@@ -84,24 +84,73 @@ def install_export(exported, destination):
     )
 
 
-def prepare_assets(env):
-    from SCons.Script import Action, Value, GetOption
+# Export tools whose content is part of the shared export key (and SCons' inputs).
+EXPORT_TOOLS = (
+    "tools/package_assets.py",
+    "tools/packed_sprite_assets.py",
+    "scons/recording_dependencies.py",
+    "scons/recording-versions.json",
+    "tools/terrain_tileset.py",
+    "tools/terrain_catalog.py",
+    "tools/asset-requirements.txt",
+    "tools/image_encoding.json",
+    "scons/runtime_assets.py",
+    "scons/shared_assets.py",
+)
 
-    if env.get("RUNTIME_ASSET_STAMP") is not None:
-        return env["RUNTIME_ASSET_STAMP"]
-    root = Path.cwd()
-    sys.path.insert(0, str(root))
-    from tools.package_assets import export_assets, source_files
 
-    platform = (
+def host_platform():
+    return (
         "macos"
         if sys.platform == "darwin"
         else "windows"
         if sys.platform == "win32"
         else "linux"
     )
+
+
+def export_inputs(root, platform):
+    """The asset source files the export reads."""
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from tools.package_assets import source_files
+
+    return [str(p) for p in source_files(root, platform)]
+
+
+def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
+    """Fill `exported` (and its sibling audit JSON), from the shared store when possible.
+
+    SCons (prepare_assets) and the experimental CMake build
+    (scons/cmake_generate.py runtime-assets) both export through here."""
+    # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
+    if str(Path(__file__).resolve().parent) not in sys.path:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import shared_assets
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from tools.package_assets import export_assets
+
+    def produce(output):
+        export_assets(root, output, platform=platform, lossy=lossy, jobs=jobs,
+                      terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
+                      video_sprites=video)
+
+    # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+    key = shared_assets.content_key(root, inputs + [root / path for path in EXPORT_TOOLS],
+                                    ["runtime-assets-v1", platform, lossy, packing, video, sys.version_info[:2]])
+    shared_assets.export(root, exported, key, produce)
+
+
+def prepare_assets(env):
+    from SCons.Script import Action, Value, GetOption
+
+    if env.get("RUNTIME_ASSET_STAMP") is not None:
+        return env["RUNTIME_ASSET_STAMP"]
+    root = Path.cwd()
+    platform = host_platform()
     exported = Path(env["BUILDDIR"]).resolve() / "runtime-assets"
-    inputs = [str(p) for p in source_files(root, platform)]
+    inputs = export_inputs(root, platform)
 
     lossy = optimized_install_enabled(env.get("release", True), env.get("optimized_assets", "auto"))
 
@@ -109,34 +158,10 @@ def prepare_assets(env):
                                      "GLOB2_H264_ASSETS" in env.get("CPPDEFINES", []))
     video = packing == "video"
 
-    tools = [
-        "tools/package_assets.py",
-        "tools/packed_sprite_assets.py",
-        "scons/recording_dependencies.py",
-        "scons/recording-versions.json",
-        "tools/terrain_tileset.py",
-        "tools/terrain_catalog.py",
-        "tools/asset-requirements.txt",
-        "tools/image_encoding.json",
-        "scons/runtime_assets.py",
-        "scons/shared_assets.py",
-    ]
+    tools = list(EXPORT_TOOLS)
 
     def export(target, source, env):
-        # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
-        if str(Path(__file__).resolve().parent) not in sys.path:
-            sys.path.insert(0, str(Path(__file__).resolve().parent))
-        import shared_assets
-
-        def produce(output):
-            export_assets(root, output, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"),
-                          terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
-                          video_sprites=video)
-
-        # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
-        key = shared_assets.content_key(root, inputs + [root / path for path in tools],
-                                        ["runtime-assets-v1", platform, lossy, packing, video, sys.version_info[:2]])
-        shared_assets.export(root, exported, key, produce)
+        export_tree(root, exported, platform, inputs, lossy, packing, video, GetOption("num_jobs"))
         return 0
 
     stamp = env.Command(

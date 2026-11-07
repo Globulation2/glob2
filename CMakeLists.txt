@@ -9,9 +9,11 @@
 #   cmake --preset dev && cmake --build --preset dev
 #   python3 tools/dev_build.py --generator=cmake
 #
-# Source lists come from cmake/sources.cmake, generated from scons/sources.py by
-# scons/export_cmake_sources.py. Generated headers come from the same Python
-# generators SCons uses, through scons/cmake_generate.py.
+# Source lists come from cmake/sources.cmake and cmake/tests.cmake, generated
+# from scons/sources.py, test/tests.py and scons/harness_programs.py by
+# scons/export_cmake_sources.py. Generated headers, runtime assets and test
+# provenance come from the same Python code SCons uses, through
+# scons/cmake_generate.py.
 cmake_minimum_required(VERSION 3.25)
 project(glob2 LANGUAGES C CXX)
 
@@ -29,6 +31,7 @@ set(GLOB2_ROOT "${CMAKE_SOURCE_DIR}")
 set(GLOB2_OUT "${CMAKE_BINARY_DIR}")
 set(GLOB2_BRIDGE "${GLOB2_ROOT}/scons/cmake_generate.py")
 include("${GLOB2_ROOT}/cmake/sources.cmake")
+include("${GLOB2_ROOT}/cmake/tests.cmake")
 # The bridge and the generators it imports decide configure-time results.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/build_config.py" "${GLOB2_ROOT}/scons/checkout_paths.py"
@@ -90,7 +93,16 @@ if(GLOB2_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
     else()
       set(compiler_check content)
     endif()
-    set(launcher "${CMAKE_COMMAND}" -E env "CCACHE_DIR=${cache_directory}" "CCACHE_BASEDIR=${GLOB2_ROOT}"
+    # CCACHE_BASEDIR shares hits between checkouts but rewrites CMake's absolute
+    # source paths relative to the build directory, which changes __FILE__;
+    # parity builds (tools/compare_build_systems.py) set it empty to keep them.
+    set(GLOB2_CCACHE_BASEDIR "${GLOB2_ROOT}" CACHE STRING "CCACHE_BASEDIR for compiles (empty: none)")
+    if(GLOB2_CCACHE_BASEDIR)
+      set(basedir "CCACHE_BASEDIR=${GLOB2_CCACHE_BASEDIR}")
+    else()
+      set(basedir --unset=CCACHE_BASEDIR)
+    endif()
+    set(launcher "${CMAKE_COMMAND}" -E env ${basedir} "CCACHE_DIR=${cache_directory}"
                  "CCACHE_COMPILERCHECK=${compiler_check}" "${GLOB2_CCACHE_PROGRAM}")
     set(CMAKE_C_COMPILER_LAUNCHER "${launcher}")
     set(CMAKE_CXX_COMPILER_LAUNCHER "${launcher}")
@@ -158,8 +170,15 @@ if(GLOB2_FRIBIDI_LIBRARY AND GLOB2_HAVE_FRIBIDI_H)
 endif()
 
 # ---- Generated headers: the SCons generators, called through the bridge ----
-set(GLOB2_RUNTIME_ASSET_DIR "${scons_directory}/runtime-assets" CACHE PATH
-    "Runtime assets the CMake glob2 loads; CMake does not export them yet, so this defaults to the SCons dev build's")
+option(GLOB2_EXPORT_RUNTIME_ASSETS "Export the runtime assets into the build directory, as the SCons dev tier does" ON)
+if(GLOB2_EXPORT_RUNTIME_ASSETS)
+  set(GLOB2_RUNTIME_ASSET_DIR "${GLOB2_OUT}/runtime-assets")
+else()
+  set(GLOB2_RUNTIME_ASSET_DIR "${scons_directory}/runtime-assets" CACHE PATH
+      "Runtime assets the CMake glob2 loads when it does not export its own (default: the SCons dev build's)")
+endif()
+# The SCons dev-tier identity, marked as a CMake build; test/run_tests.py reads its mode.
+glob2_bridge(unused identity --builddir "${GLOB2_OUT}")
 glob2_bridge(unused build-config --builddir "${GLOB2_OUT}" ${build_config_options})
 glob2_bridge(unused build-paths --builddir "${GLOB2_OUT}" --runtime-assets "${GLOB2_RUNTIME_ASSET_DIR}")
 glob2_bridge(unused build-stamp --builddir "${GLOB2_OUT}")
@@ -209,6 +228,22 @@ add_custom_command(OUTPUT "${stamps}/skin-render"
 add_custom_target(glob2_generated DEPENDS
   "${stamps}/skin-materials" "${stamps}/shaders" "${stamps}/hive-api" "${stamps}/skin-render"
   "${GLOB2_OUT}/include/generated/OnlineErrorCatalog.h")
+# ---- Runtime assets: scons/runtime_assets.py's export, shared through the store ----
+# The bridge writes a depfile naming every asset input and the directories that
+# hold them, so the export runs again only when one of them changes.
+set(GLOB2_ASSET_JOBS 8 CACHE STRING "Parallel jobs for a runtime-asset export that misses the shared store")
+add_custom_target(glob2_runtime_assets)
+if(GLOB2_EXPORT_RUNTIME_ASSETS)
+  add_custom_command(OUTPUT "${GLOB2_OUT}/runtime-assets.json"
+    COMMAND ${bridge} runtime-assets --builddir "${GLOB2_OUT}" --depfile "${GLOB2_OUT}/runtime-assets.d"
+            --jobs "${GLOB2_ASSET_JOBS}"
+    DEPFILE "${GLOB2_OUT}/runtime-assets.d"
+    DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/runtime_assets.py" "${GLOB2_ROOT}/scons/shared_assets.py"
+    WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Exporting verified runtime assets" VERBATIM)
+  add_custom_target(glob2_runtime_asset_export DEPENDS "${GLOB2_OUT}/runtime-assets.json")
+  add_dependencies(glob2_runtime_assets glob2_runtime_asset_export)
+endif()
+
 # SCons refreshes the revision on every invocation; so does this (it rewrites
 # the header only when the revision changed).
 add_custom_target(glob2_build_stamp
@@ -294,9 +329,18 @@ target_link_libraries(glob2_client PRIVATE glob2_client_settings)
 add_dependencies(glob2_client glob2_generated glob2_build_stamp)
 set_source_files_properties(${GLOB2_STRICT_NUMERIC_SOURCES} PROPERTIES COMPILE_OPTIONS "${GLOB2_STRICT_CXXFLAGS}")
 
-add_executable(glob2 "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
-set_target_properties(glob2 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
-add_dependencies(glob2 glob2_generated glob2_build_stamp)
+
+# A generator expression selecting the objects of `target` compiled from
+# `paths` (repository-relative), as SCons reuses client objects by source.
+function(glob2_objects_of output target)
+  set(pattern)
+  foreach(path IN LISTS ARGN)
+    string(REGEX REPLACE "([.+])" "\\\\\\1" path "${path}")
+    list(APPEND pattern "/${path}\\.o$")
+  endforeach()
+  list(JOIN pattern "|" pattern)
+  set(${output} "$<FILTER:$<TARGET_OBJECTS:${target}>,INCLUDE,${pattern}>" PARENT_SCOPE)
+endfunction()
 
 # Link inputs in SConstruct's LIBS order; like SCons' unique merge, a library
 # named again later moves to its last position.
@@ -305,23 +349,196 @@ set(libraries z pthread ssl crypto ${opengl_libraries} ${fribidi_libraries} ${re
 list(REVERSE libraries)
 list(REMOVE_DUPLICATES libraries)
 list(REVERSE libraries)
-target_link_libraries(glob2 PRIVATE glob2_client_settings glob2_client Glob2JavaScript gag usl ${libraries})
 list(REMOVE_DUPLICATES sdl_directories)
-target_link_directories(glob2 PRIVATE ${sdl_directories} ${sdl3_directories} ${webp_directories})
 set(link_options ${sdl_link_options} -Wall ${sdl3_link_options} ${webp_link_options})
 if(GLOB2_SDL3_PREFIX)
   list(APPEND link_options "-Wl,-rpath=${sdl_prefix}/lib")
 endif()
-target_link_options(glob2 PRIVATE ${link_options})
 
-list(TRANSFORM GLOB2_GUARDED_NUMERIC_SOURCES PREPEND "${GLOB2_ROOT}/")
-set(guarded_pattern)
-foreach(source IN LISTS GLOB2_GUARDED_NUMERIC_SOURCES)
-  file(RELATIVE_PATH relative "${GLOB2_ROOT}" "${source}")
-  string(REGEX REPLACE "([.+])" "\\\\\\1" relative "${relative}")
-  list(APPEND guarded_pattern "/${relative}\\.o$")
+# Every program links `ARGN` (object libraries and archives) before SConstruct's
+# LIBS, with its library directories and LINKFLAGS.
+function(glob2_link target)
+  target_link_libraries(${target} PRIVATE ${ARGN} ${libraries})
+  target_link_directories(${target} PRIVATE ${sdl_directories} ${sdl3_directories} ${webp_directories})
+  target_link_options(${target} PRIVATE ${link_options})
+  add_dependencies(${target} glob2_generated glob2_build_stamp)
+endfunction()
+
+# The numeric guard (tools/javascript/check-math-symbols.py) SCons runs after
+# each script-reachable client object; here once they are compiled, before any
+# program links them.
+glob2_objects_of(guarded_objects glob2_client ${GLOB2_GUARDED_NUMERIC_SOURCES})
+add_custom_command(OUTPUT "${stamps}/numeric-guard"
+  COMMAND ${numeric_guard} "${guarded_objects}"
+  COMMAND "${CMAKE_COMMAND}" -E touch "${stamps}/numeric-guard"
+  DEPENDS "${guarded_objects}" "${GLOB2_ROOT}/tools/javascript/check-math-symbols.py"
+  COMMENT "Checking script-reachable client objects for host math symbols" COMMAND_EXPAND_LISTS VERBATIM)
+add_custom_target(glob2_numeric_guard DEPENDS "${stamps}/numeric-guard")
+add_dependencies(glob2_numeric_guard glob2_client)
+
+add_executable(glob2 "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
+set_target_properties(glob2 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
+target_link_libraries(glob2 PRIVATE glob2_client_settings)
+glob2_link(glob2 glob2_client Glob2JavaScript gag usl)
+# As SCons' RUNTIME_ASSET_STAMP dependency: glob2, the test binaries and test programs.
+add_dependencies(glob2 glob2_runtime_assets glob2_numeric_guard)
+
+# ---- Stage 3: test binaries, test programs and harnesses (test/SConscript, src/SConscript) ----
+# None is part of the default build, as in SCons; aliases match the SCons ones
+# (engine-tests, unit-tests, tests, transport-test, map-generator-golden-test, ...).
+set(alias_names)
+function(glob2_alias alias)
+  if(NOT TARGET ${alias} OR alias IN_LIST alias_names)
+    set_property(GLOBAL APPEND PROPERTY "GLOB2_ALIAS_${alias}" ${ARGN})
+    set(names ${alias_names} ${alias})
+    list(REMOVE_DUPLICATES names)
+    set(alias_names ${names} PARENT_SCOPE)
+  endif()
+endfunction()
+
+# test/SConscript's test environment: the shared flags without the client's
+# SkinRenderRecipe.h directory, plus these include directories and SDL_MAIN_HANDLED.
+add_library(glob2_test_settings INTERFACE)
+target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "${GLOB2_ROOT}/test/support"
+                           "${GLOB2_ROOT}/libs/gag/src" "${GLOB2_ROOT}/third_party/quickjs-ng")
+target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
+
+# test/SConscript available(): native Linux builds have the WSS transport, are never MinGW
+# and build the full compile profile, so every scons/sources.py optional group is present.
+function(glob2_available output)
+  set(ok TRUE)
+  foreach(feature IN LISTS ARGN)
+    if(feature STREQUAL "mac" OR (feature STREQUAL "opengl" AND NOT opengl_libraries))
+      set(ok FALSE)
+    endif()
+  endforeach()
+  set(${output} ${ok} PARENT_SCOPE)
+endfunction()
+
+# One object library per group of registry entries compiled alike; returns their objects.
+function(glob2_test_objects output registry prefix)
+  set(objects)
+  foreach(group IN LISTS GLOB2_${registry}_GROUPS)
+    glob2_available(ok ${GLOB2_${registry}_${group}_REQUIRE})
+    if(NOT ok)
+      continue()
+    endif()
+    set(sources ${GLOB2_${registry}_${group}_SOURCES})
+    list(TRANSFORM sources PREPEND "${GLOB2_ROOT}/")
+    add_library(${prefix}_${group} OBJECT EXCLUDE_FROM_ALL ${sources})
+    target_link_libraries(${prefix}_${group} PRIVATE glob2_test_settings)
+    target_compile_options(${prefix}_${group} PRIVATE ${GLOB2_${registry}_${group}_CXXFLAGS})
+    target_compile_definitions(${prefix}_${group} PRIVATE ${GLOB2_${registry}_${group}_DEFINES})
+    add_dependencies(${prefix}_${group} glob2_generated glob2_build_stamp)
+    list(APPEND objects "$<TARGET_OBJECTS:${prefix}_${group}>")
+  endforeach()
+  set(${output} ${objects} PARENT_SCOPE)
+endfunction()
+
+# The configuration a provenance sidecar records, as test_provenance._configuration does for SCons.
+get_directory_property(provenance_defines COMPILE_DEFINITIONS)
+set(provenance_arguments "--compiler=${CMAKE_CXX_COMPILER}" "--ccflags=${CMAKE_CXX_FLAGS}"
+    "--cxxflags=-std=gnu++20 -Wall -fPIC ${GLOB2_EXTRA_COMPILE_FLAGS}")
+foreach(define IN LISTS provenance_defines ITEMS SDL_MAIN_HANDLED)
+  list(APPEND provenance_arguments "--define=${define}")
 endforeach()
-list(JOIN guarded_pattern "|" guarded_pattern)
-add_custom_command(TARGET glob2 POST_BUILD
-  COMMAND ${numeric_guard} "$<FILTER:$<TARGET_OBJECTS:glob2_client>,INCLUDE,${guarded_pattern}>"
-  COMMAND_EXPAND_LISTS VERBATIM)
+foreach(option IN LISTS link_options)
+  list(APPEND provenance_arguments "--linkflag=${option}")
+endforeach()
+set(provenance_configuration "${GLOB2_OUT}/test-provenance-configuration.json")
+glob2_bridge(unused provenance-configuration --output "${provenance_configuration}" ${provenance_arguments})
+
+# <binary>.provenance.json after every build of the alias, like SCons' AlwaysBuild sidecar.
+function(glob2_provenance target)
+  add_custom_target(${target}-provenance
+    COMMAND ${bridge} test-provenance --binary "$<TARGET_FILE:${target}>" --configuration "${provenance_configuration}"
+    WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Recording $<TARGET_FILE:${target}>.provenance.json" VERBATIM)
+  add_dependencies(${target}-provenance ${target})
+endfunction()
+
+function(glob2_test_binary target)
+  set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/test")
+endfunction()
+
+glob2_test_objects(engine_objects ENGINE_TESTS glob2_engine_tests)
+add_executable(glob2-engine-tests EXCLUDE_FROM_ALL ${engine_objects})
+glob2_link(glob2-engine-tests glob2_client Glob2JavaScript gag usl)
+
+glob2_test_objects(unit_objects UNIT_TESTS glob2_unit_tests)
+glob2_objects_of(reused_objects glob2_client ${GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES})
+add_executable(glob2-unit-tests EXCLUDE_FROM_ALL ${unit_objects} "${reused_objects}")
+add_dependencies(glob2-unit-tests glob2_client)
+glob2_link(glob2-unit-tests Glob2JavaScript gag usl)
+
+foreach(binary glob2-engine-tests glob2-unit-tests)
+  glob2_test_binary(${binary})
+  add_dependencies(${binary} glob2_runtime_assets glob2_numeric_guard)
+  glob2_provenance(${binary})
+  string(REPLACE "glob2-" "" alias "${binary}")
+  glob2_alias(${alias} ${binary} ${binary}-provenance)
+  glob2_alias(tests ${binary} ${binary}-provenance)
+endforeach()
+foreach(entry IN LISTS GLOB2_TEST_LEGACY_ALIASES)
+  string(REPLACE "=" ";" entry "${entry}")
+  list(GET entry 0 alias)
+  list(GET entry 1 binary)
+  glob2_alias(${alias} ${binary})
+endforeach()
+
+# test/tests.py PROGRAMS: the test flags, every client object.
+foreach(program IN LISTS GLOB2_TEST_PROGRAMS)
+  add_executable(${program} EXCLUDE_FROM_ALL "${GLOB2_ROOT}/${GLOB2_TEST_PROGRAM_${program}_SOURCE}")
+  target_link_libraries(${program} PRIVATE glob2_test_settings)
+  glob2_link(${program} glob2_client Glob2JavaScript gag usl)
+  add_dependencies(${program} glob2_runtime_assets glob2_numeric_guard)
+  glob2_test_binary(${program})
+  set(outputs ${program})
+  if(program IN_LIST GLOB2_TEST_PROGRAM_SIDECARS)
+    glob2_provenance(${program})
+    list(APPEND outputs ${program}-provenance)
+  endif()
+  glob2_alias(${GLOB2_TEST_PROGRAM_${program}_ALIAS} ${outputs})
+  if(GLOB2_TEST_PROGRAM_${program}_GROUP STREQUAL "tools")
+    glob2_alias(glob2-tools ${outputs})
+  endif()
+endforeach()
+
+# scons/harness_programs.py: the client flags; objects as each program's link kind says.
+foreach(name IN LISTS GLOB2_HARNESS_SHARED_OBJECTS)
+  add_library(glob2_harness_${name} OBJECT EXCLUDE_FROM_ALL "${GLOB2_ROOT}/${GLOB2_HARNESS_SHARED_${name}_SOURCE}")
+  target_link_libraries(glob2_harness_${name} PRIVATE glob2_client_settings)
+  add_dependencies(glob2_harness_${name} glob2_generated glob2_build_stamp)
+endforeach()
+foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
+  set(prefix GLOB2_HARNESS_${program})
+  # Native Linux builds always have the WSS transport, the only requirement used.
+  set(sources "${GLOB2_ROOT}/${${prefix}_SOURCE}")
+  set(inputs)
+  foreach(name IN LISTS ${prefix}_SHARED)
+    list(APPEND inputs glob2_harness_${name})
+  endforeach()
+  if(${prefix}_LINK STREQUAL "client" OR ${prefix}_LINK STREQUAL "client-objects")
+    list(APPEND inputs glob2_client Glob2JavaScript gag usl)
+  elseif(${prefix}_LINK STREQUAL "libraries")
+    list(APPEND inputs gag usl)
+  else()
+    glob2_objects_of(linked glob2_client ${${prefix}_LINK_SOURCES})
+    list(APPEND sources "${linked}")
+  endif()
+  add_executable(${program} EXCLUDE_FROM_ALL ${sources})
+  set_target_properties(${program} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
+  target_link_libraries(${program} PRIVATE glob2_client_settings)
+  target_compile_options(${program} PRIVATE ${${prefix}_CXXFLAGS})
+  if(NOT ${prefix}_LINK STREQUAL "libraries")
+    add_dependencies(${program} glob2_client glob2_numeric_guard)
+  endif()
+  glob2_link(${program} ${inputs})
+  glob2_alias(${${prefix}_ALIAS} ${program})
+endforeach()
+
+foreach(alias IN LISTS alias_names)
+  get_property(members GLOBAL PROPERTY "GLOB2_ALIAS_${alias}")
+  list(REMOVE_DUPLICATES members)
+  add_custom_target(${alias})
+  add_dependencies(${alias} ${members})
+endforeach()
