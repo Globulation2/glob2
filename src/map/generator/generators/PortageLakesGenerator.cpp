@@ -42,10 +42,15 @@ using namespace MapGeneration;
 // is that the engine's terrain palette now carries the picture and the play:
 // - Rock knots, the stone-resource blobs in the deepest forest, are Ridges-group rock (rockVertices;
 //   impassable, towers shoot over). Parts too thin to make rock stay wooded, so the forest keeps
-//   its walls. Every home gets a granite knob of its own 9 to 16 tiles away, one stencil turned by
-//   quarter turns to face the town, with a quarry face of the same stone for every colony (a
-//   smaller stencil for every colony when one cannot fit). Forest knots get ambient quarry faces
-//   by `stone-amount` and a frayed scree apron where open ground meets them.
+//   its walls. Every home gets a granite knob of its own, its quarry face 9 to 22 tiles away
+//   (nearest first; it may stand in the edge of the woods, never with trees before its face), one
+//   stencil turned by quarter turns to face the town, with a quarry face of the same stone for every
+//   colony and a scree skirt behind. A smaller stencil serves every colony when one cannot fit the
+//   large one, and when even that fails every home keeps revision 7's stone patch instead, so the
+//   knobs never refuse a map revision 7 made. Forest knots get ambient quarry faces by
+//   `stone-amount` and a frayed scree apron where open ground meets them.
+// - Mud makes the shore meadows grow, which thins the forest by the lakes; when that costs the swim
+//   its shortcut, the layout is furnished again with revision 7's plain beaches.
 // - Trails and portage approaches are Paths (TRAIL; boardwalk where they meet wet ground): twice
 //   the walking speed, buildable, nothing grows on them and, unlike the old sand, they inhibit no
 //   crops, so the opening network pays and the portage cut's payoff is measured in walking time.
@@ -79,7 +84,7 @@ constexpr std::array<Shield, 2> kShields{{
 constexpr int kDeepSteps = 3;
 const char *const kNoSwim = "Portage Lakes cannot fit a useful swimming shortcut on this seed.";
 // Home knobs: their quarry face is this far (Chebyshev) from the home, nearest first.
-constexpr int kKnobNear = 9, kKnobFar = 16;
+constexpr int kKnobNear = 9, kKnobFar = 22;
 struct Plot
 {
 	std::vector<int> tiles;
@@ -110,7 +115,8 @@ struct Layout
 	// 2.0: the looks painted over the mechanics, the quarry faces (tiles) and who owns each (-1 for
 	// ambient faces), the home knobs' tiles, the shield, and counts kept for telemetry.
 	TerrainSketch looks;
-	std::vector<unsigned char> quarry, knob;
+	// keep: expansion clearings and their paths, which no later stage may block.
+	std::vector<unsigned char> quarry, knob, keep;
 	std::vector<int> quarryOf, knobDistance;
 	int shield = 0, knobFace = 0, ambientFaces = 0, ambientWanted = 0, rockKnots = 0;
 };
@@ -692,6 +698,7 @@ bool expansion(Layout &L, int endpoint)
 	{
 		L.forest[i] = L.rock[i] = 0;
 		L.reserved[i] = 1;
+		disc(L.keep, t, i, 1);
 	}
 	for (int y = -radius; y <= radius; ++y)
 		for (int x = -radius; x <= radius; ++x)
@@ -700,6 +707,7 @@ bool expansion(Layout &L, int endpoint)
 			L.forest[i] = L.rock[i] = 0;
 			L.reserved[i] = 1;
 		}
+	disc(L.keep, t, best, radius + 2);
 	L.expansions.push_back(best);
 	return true;
 }
@@ -849,10 +857,32 @@ bool placeKnobs(Layout &L, GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 		wet[i] = L.terrain[i] == WATER || L.terrain[i] == MUD;
 	const auto fromWater = stepsFrom(t, wet);
+	// Room for a knob: open meadow, not the general reservation (which also holds every field's wide
+	// margin) but what must stay free: the home clearings, two tiles round every plot, the trails,
+	// the portage plugs and their margins, the landings, clearings and their paths, the algae pools.
+	std::vector<unsigned char> taboo(t.size(), 0);
+	for (int h : L.homes)
+		disc(taboo, t, h, 7);
+	for (const auto &plot : L.plots)
+		for (int i : plot.tiles)
+			disc(taboo, t, i, 1);
+	for (const auto &crossing : L.portages)
+	{
+		for (int i : crossing.cut)
+			disc(taboo, t, i, 3);
+		for (int i : {crossing.a, crossing.b})
+			if (i >= 0)
+				disc(taboo, t, i, 3);
+	}
+	for (int i : {L.swim.a, L.swim.b})
+		if (i >= 0)
+			disc(taboo, t, i, 3);
+	for (int p : L.algaePools)
+		disc(taboo, t, p, 6);
 	std::vector<unsigned char> clear(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		clear[i] = grass[i] && !L.reserved[i] && !L.roads[i] && L.plotOf[i] < 0 && !L.forest[i] && !L.rock[i] &&
-				   fromWater[i] >= 4;
+		clear[i] = grass[i] && !taboo[i] && !L.keep[i] && !L.roads[i] && L.plotOf[i] < 0 && !L.rock[i] &&
+				   fromWater[i] >= 3;
 	for (bool small : {false, true})
 	{
 		const auto stencil = knobStencil(small);
@@ -885,8 +915,10 @@ bool placeKnobs(Layout &L, GenerationContext &c)
 							for (int my = -1; my <= 1 && fits; ++my)
 								for (int mx = -1; mx <= 1 && fits; ++mx)
 								{
+									// Woods may stand where the knob goes (it becomes rock) and round
+									// it, but the ground before the quarry face must be open.
 									const int q = t.at(x + mx, y + my);
-									fits = clear[q] && !taken[q];
+									fits = clear[q] && !taken[q] && (!k.face || (mx == 0 && my == 0) || !L.forest[q]);
 								}
 							if (!fits)
 								break;
@@ -924,6 +956,7 @@ bool placeKnobs(Layout &L, GenerationContext &c)
 			for (const auto &[tile, face] : knobs[k])
 			{
 				(face ? L.quarry : L.knob)[tile] = 1;
+				L.forest[tile] = 0;
 				if (face)
 				{
 					L.quarryOf[tile] = int(k);
@@ -1211,6 +1244,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	L.homes = homes;
 	L.quarry.assign(t.size(), 0);
 	L.knob.assign(t.size(), 0);
+	L.keep.assign(t.size(), 0);
 	L.quarryOf.assign(t.size(), -1);
 	for (int h : homes)
 		disc(L.reserved, t, h, 6);
