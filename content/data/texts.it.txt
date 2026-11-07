@@ -1994,6 +1994,18 @@ Spessore delle creste
 Distanza tra i passi
 [Lee width]
 Larghezza del sottovento
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Foresta primaria
 [Canals]

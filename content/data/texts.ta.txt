@@ -1962,6 +1962,18 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கணவாய் இடைவெளி
 [Lee width]
 காற்று மறைவுப் பகுதி அகலம்
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 முதிர்ந்த காடு
 [Canals]

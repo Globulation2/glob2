@@ -1962,6 +1962,18 @@ Globulation 2 کا کرسر دکھائیں۔
 دروں کا درمیانی فاصلہ
 [Lee width]
 ہوا سے اوٹ والے حصے کی چوڑائی
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 قدیم جنگل
 [Canals]

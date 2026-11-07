@@ -1994,6 +1994,18 @@ Globulation 2 커서를 표시합니다.
 고갯길 간격
 [Lee width]
 바람그늘 너비
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 원시림
 [Canals]

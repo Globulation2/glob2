@@ -1962,6 +1962,18 @@ Globulation 2 कर्सर दाखवा.
 खिंडींमधील अंतर
 [Lee width]
 वाऱ्याच्या आडच्या भागाची रुंदी
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 जुने दाट जंगल
 [Canals]

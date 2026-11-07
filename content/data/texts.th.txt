@@ -1962,6 +1962,18 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ระยะห่าง​ช่องเขา
 [Lee width]
 ความ​กว้าง​ด้าน​อับลม
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 ป่า​ดั้งเดิม
 [Canals]

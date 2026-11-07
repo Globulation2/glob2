@@ -1962,6 +1962,18 @@ Globulation 2 का कर्सर दिखाएँ।
 दर्रों की दूरी
 [Lee width]
 ओट की चौड़ाई
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 पुराना वन
 [Canals]
