@@ -38,7 +38,7 @@ namespace glob2test
 		return orders;
 	}
 
-	const PresentationFrame &sceneOf(const Game &game, const Game::ViewState &view, int localTeam, PresentationFrame *into)
+	const PresentationFrame &sceneOf(const Game &game, const ViewState &view, int localTeam, PresentationFrame *into)
 	{
 		static PresentationFrame shared;
 		PresentationFrame &scene = into ? *into : shared;
@@ -53,7 +53,7 @@ namespace glob2test
 
 	const PresentationFrame &sceneOf(const Game &game)
 	{
-		static const Game::ViewState none;
+		static const ViewState none;
 		return sceneOf(game, none);
 	}
 

@@ -359,14 +359,14 @@ void layeredCache(bool gpu, bool hd = false)
 		const auto drawBoth = [&]
 		{
 			clear();
-			game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
+			MapDrawer::drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
 			cache.prepare(scene, *globals->terrain, 0, 0, 19, 14, 29, 30, fixture.team->me, true);
 		};
 		drawBoth();
 		GAGCore::Sprite::finishHighResolution();
 		drawBoth();
 		clear();
-		game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
 		const auto expected = terrainPixels(gpu);
 		clear();
 		const auto gpuBefore = GAGCore::DrawableSurface::allocatedTextureBytes();
@@ -683,7 +683,7 @@ TEST_SUITE("TerrainPresentation")
 		render.detail.terrainOverview = .5f;
 		map.setResourceByIndex(9, 9, WHEAT, 1);
 		glob2test::observeMap(map,scene);
-		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
+		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
 		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
@@ -711,14 +711,14 @@ TEST_SUITE("TerrainPresentation")
 		const auto evidence = glob2test::artifactDir() / "overview-alignment";
 		std::filesystem::create_directories(evidence);
 		CHECK(IMG_SavePNG(enlarged.getSDLSurface(), (evidence / "overview.png").string().c_str()));
-		Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		if (globals->gfx->renderer)
 			globals->gfx->renderer->flush();
 		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(),
 						  (evidence / "detailed.png").string().c_str()));
-		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
+		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		if (globals->gfx->renderer)
 			globals->gfx->renderer->flush();
@@ -913,7 +913,7 @@ TEST_SUITE("TerrainPresentation")
 					const auto expected = terrainPixels(gpu);
 					const auto gpuBefore = GAGCore::DrawableSurface::allocatedTextureBytes();
 					begin();
-					fixture.game.drawMapTerrain(0, 0, 7, 7, vx, vy, 0, Game::DRAW_WHOLE_MAP, scene);
+					MapDrawer::drawMapTerrain(0, 0, 7, 7, vx, vy, 0, Game::DRAW_WHOLE_MAP, scene);
 					globals->gfx->endMapTransform();
 					CHECK(terrainPixels(gpu) == expected);
 					CHECK(GAGCore::DrawableSurface::allocatedTextureBytes() == gpuBefore);
@@ -1948,6 +1948,7 @@ TEST_SUITE("TerrainPresentation")
 }
 #include <fstream>
 #include <chrono>
+#include "MapDrawer.h"
 TEST_SUITE("TerrainValidation")
 {
 	GLOB2_TEST_CASE("decorated borders match cached and ordinary rendering",
@@ -2002,9 +2003,9 @@ TEST_SUITE("TerrainValidation")
 			gfx.setClipRect();
 			gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
 			gfx.beginMapTransform(float(zoom), 0, 0, 0, 0, 512, 512);
-			fixture.game.drawMapTerrain(0, 0, 15, 15, viewport, viewport, 0, Game::DRAW_WHOLE_MAP,
+			MapDrawer::drawMapTerrain(0, 0, 15, 15, viewport, viewport, 0, Game::DRAW_WHOLE_MAP,
 										scene);
-			fixture.game.drawMapResources(0, 0, 15, 15, viewport, viewport, 0,
+			MapDrawer::drawMapResources(0, 0, 15, 15, viewport, viewport, 0,
 										  whole ? Game::DRAW_WHOLE_MAP : 0, scene);
 			GAGCore::Sprite::flushBatches(&gfx);
 			gfx.endMapTransform();
@@ -2246,11 +2247,11 @@ TEST_SUITE("TerrainValidation")
 			   border == catalog.decorFrame(catalog.find("thicket"), 15, 27, true,
 											scene.terrainSeed(), 15, colours)));
 
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "connected-foliage-ground.png").string().c_str()));
 
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "connected-foliage.png").string().c_str()));
@@ -2318,13 +2319,13 @@ TEST_SUITE("TerrainValidation")
 		MapRenderState render;
 		const auto draw = [&]
 		{
-			// Rows are cached only inside a frame's draw batch, as Game::drawMap opens one.
+			// Rows are cached only inside a frame's draw batch, as MapDrawer::drawMap opens one.
 			GAGCore::FrameDrawBatch frameBatch(&gfx);
 			REQUIRE(gfx.getRenderBatch());
 			gfx.setClipRect();
 			gfx.beginMapTransform(1, 0, 0, 0, 0, 512, 512);
-			Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render.animationTime);
-			Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, &render);
+			MapDrawer::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render.animationTime);
+			MapDrawer::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, &render);
 			GAGCore::Sprite::flushBatches(&gfx);
 			gfx.endMapTransform();
 			if (gfx.renderer)
@@ -2444,8 +2445,8 @@ TEST_SUITE("TerrainValidation")
 		REQUIRE(inside >= 0);
 		CHECK(compositor.decorLayers(scene, 18, 3)[0].sprite->getH(inside) == 68);
 
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "raised-cliffs.png").string().c_str()));
@@ -2490,8 +2491,8 @@ TEST_SUITE("TerrainValidation")
 					  catalog.decorFrame(neighbour, fx, fy, false, scene.terrainSeed(), 15,
 										 TerrainVisual::cornerColours(fx, fy, 31, 31, scene.terrainSeed())));
 		}
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "cliffs-beside-obstacles.png").string().c_str()));
@@ -2676,8 +2677,8 @@ TEST_SUITE("TerrainValidation")
 		CHECK(joined[0].frame == -1);
 		CHECK(joined[1].frame == -1);
 
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "raised-icefall.png").string().c_str()));
@@ -2739,8 +2740,8 @@ TEST_SUITE("TerrainValidation")
 		REQUIRE(hedgeField);
 		CHECK(compositor.decorTierFrame(hedged, *hedgeField, 10, 28, 1) == -1);
 
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terraced-masses.png").string().c_str()));
@@ -2791,8 +2792,8 @@ TEST_SUITE("TerrainValidation")
 				GAGCore::FrameDrawBatch frameBatch(&gfx);
 				gfx.setClipRect();
 				gfx.beginMapTransform(4, 0, 0, 0, 0, 1024, 1024);
-				Game::drawMapTerrain(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, 0);
-				Game::drawMapResources(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, &render);
+				MapDrawer::drawMapTerrain(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, 0);
+				MapDrawer::drawMapResources(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, &render);
 				GAGCore::Sprite::flushBatches(&gfx);
 				gfx.endMapTransform();
 			}
@@ -2899,7 +2900,7 @@ TEST_SUITE("TerrainValidation")
 		constexpr int frames = 24;
 		for (int frame = 0; frame < frames; ++frame)
 		{
-			fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene,
+			MapDrawer::drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene,
 										frame * period / frames);
 			char name[32];
 			std::snprintf(name, sizeof name, "surf-%02d.png", frame);
@@ -2997,9 +2998,9 @@ TEST_SUITE("TerrainValidation")
 			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
 		glob2test::observeMap(map,scene);
-		fixture.game.drawMapTerrain(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		// Raised obstacle decor is drawn with the resources, row by row.
-		fixture.game.drawMapResources(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 47, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
@@ -3161,7 +3162,7 @@ TEST_SUITE("TerrainValidation")
 		SceneMap scene;
 		glob2test::observeMap(map,scene);
 		auto *gfx = globals->gfx;
-		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(gfx->getSDLSurface(),
 							(glob2test::artifactDir() / "terrain-gallery.png").string().c_str()));
 		SoftwareTerrainCache cache;

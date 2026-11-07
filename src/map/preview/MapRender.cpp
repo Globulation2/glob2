@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapRender.h"
 #include "Game.h"
+#include "render/MapDrawer.h"
 #include "BuildingType.h"
 #include "GlobalContainer.h"
 #include "render/scene/Scene.h"
@@ -79,9 +80,9 @@ void toPng(const PresentationFrame& scene, const std::string& path, int maximumP
 		rendered.buildingTypes=std::move(types);
 	}
 	globalContainer->gfx->drawToSurface(canvas.get(), float(std::min(extent, maximumPixels))/extent, [&] {
-		Game::ViewState view;
+		ViewState view;
 		view.scene = &rendered;
-		Game::drawSceneMap(rendered, 0, 0, fullW, fullH, 0, 0, 0, 0, 0, view,
+		MapDrawer::drawSceneMap(rendered, 0, 0, fullW, fullH, 0, 0, 0, 0, 0, view,
 			Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_BUILDING_RECT,
 			nullptr, nullptr, true, 64);
 		if (field)

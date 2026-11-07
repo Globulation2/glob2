@@ -21,6 +21,7 @@
 #include "building/hud/BuildingPresentation.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -50,7 +51,7 @@ struct BuildingPosComp
 };
 
 
-void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view)
+void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -114,7 +115,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	}
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
-	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
+	if ((drawOptions & Game::DRAW_BUILDING_RECT) != 0)
 	{
 		int rectW=(type->width )<<5;
 		int rectH=(type->height)<<5;
@@ -132,7 +133,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (team->otherVision & visibleTeams))
+	if (((drawOptions & Game::DRAW_HEALTH_FOOD_BAR) != 0) && (team->otherVision & visibleTeams))
 	{
 		// TODO : find better color for this
 		if (type->hpMax)
@@ -185,7 +186,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			drawStatusPip(x+type->width*32-4, y+4, 255, 176, 0, drawnRender);
 	}
 
-	if (drawOptions & DRAW_ACCESSIBILITY)
+	if (drawOptions & Game::DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
 		oss << team->number;
@@ -205,7 +206,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view)
+void MapDrawer::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const PresentationFrame& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	PERF_SCOPE_TIME(GroundBuildings);
 	const SceneEntities &entities = scene.entities;
@@ -233,7 +234,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 				const auto copy = std::make_tuple(gid, originX, originY);
 				if(drawnCopies.find(copy) == drawnCopies.end())
 				{
-					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
+					if (((drawOptions & Game::DRAW_WHOLE_MAP) != 0)
 						|| Building::GIDtoTeam(gid)==localTeam
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))

@@ -8,6 +8,7 @@
 #include "../../render/MapCopies.h"
 #include <FormatableString.h>
 #include "Game.h"
+#include "render/MapDrawer.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "EditorSceneCache.h"
@@ -86,7 +87,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 	}
 
     preparePresentation();
-	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions, nullptr, nullptr, false,
+	MapDrawer::drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions, nullptr, nullptr, false,
         DynamicClouds::gridLimitForZoom(view.scene->map.getW(), view.scene->map.getH(),
             globalContainer->settings.cloudPatchSize, camera.zoom));
 

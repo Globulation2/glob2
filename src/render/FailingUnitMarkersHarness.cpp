@@ -7,6 +7,7 @@
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GameGUI.h"
 #include "Unit.h"
 #include "Team.h"
@@ -245,18 +246,18 @@ public:
 		gui.updateCamera();
 		auto* gfx = globalContainer->gfx;
 		std::set<Uint16> visible;
-		Game::ViewState view;
+		ViewState view;
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
+		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); MapDrawer::drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		MapDrawer::drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
+		MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
-		Game::ViewState none;
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
+		{ SceneMap layers; glob2test::observeMap(gui.game.map,layers); MapDrawer::drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		MapDrawer::drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
+		ViewState none;
+		MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
 		Frame baseline = grab();
 		for (int i = 0; i < LOW_COUNT; ++i)
 		{
@@ -296,18 +297,18 @@ public:
 	// hold red pixels of their own), then with the inn selected: the markers
 	// are the red pixels the selection adds.
 	auto* gfx = globalContainer->gfx;
-	auto render = [&](Game::ViewState& view) {
+	auto render = [&](ViewState& view) {
 		std::set<Uint16> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		{ SceneMap layers; glob2test::observeMap(game.map,layers); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
-		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
+		{ SceneMap layers; glob2test::observeMap(game.map,layers); MapDrawer::drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		MapDrawer::drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
+		MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	};
-	Game::ViewState none;
+	ViewState none;
 	Frame baseline = render(none);
 	save(baseline, "scene-unselected");
-	Game::ViewState view;
+	ViewState view;
 	view.selectedBuilding = inn;
 	Frame frame = render(view);
 	save(frame, "scene-inn-selected");

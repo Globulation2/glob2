@@ -100,7 +100,7 @@ namespace
 	{
 		auto* gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		Game::ViewState view;
+		ViewState view;
 		glob2test::drawMap(game, 0, 0, SCREEN_W, SCREEN_H, 0, 0, 0, 0, 0, view,
 			Game::DRAW_WHOLE_MAP | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true);
 		return grab();

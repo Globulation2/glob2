@@ -50,6 +50,7 @@
 #include <OpenGL/gl.h>
 #else
 #include <epoxy/gl.h>
+#include "render/MapDrawer.h"
 #endif
 #endif
 
@@ -627,7 +628,7 @@ static int run(int argc, char **argv)
                         -(pan ? cameraFrame % 16 * 2.f : fraction)*zoom, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
                     if (pausePresentation) gui.view.render.animationTime = 22;
-                    Game::drawMap(0, 0, drawW, drawH, 0, 0,
+                    MapDrawer::drawMap(0, 0, drawW, drawH, 0, 0,
                         panX, panY, 0, gui.view, frameOptions, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
                     globalContainer->gfx->endMapTransform();
@@ -683,7 +684,7 @@ static int run(int argc, char **argv)
                             gui.view.render.animationTime = 22;
                             glFinish();
                             const auto cpuStart = std::clock();
-                            Game::drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,
+                            MapDrawer::drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,
                                 gui.view, options, nullptr, nullptr, true, detailForZoom(gui.game, zoom));
                             gfx->endMapTransform();
                             glFinish();
@@ -756,7 +757,7 @@ static int run(int argc, char **argv)
             measure(clouds ? "2D clouds" : "2D no clouds", [&](int) {
                 globalContainer->gfx->setClipRect();
                 if(pausePresentation)gui.view.render.animationTime=22;
-                Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP,
+                MapDrawer::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP,
                     nullptr,nullptr,pausePresentation);
             });
             view.reset();
