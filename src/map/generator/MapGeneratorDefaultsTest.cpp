@@ -1154,12 +1154,12 @@ TEST_SUITE("MapGeneratorDefaults")
 		};
 		// Keep historical comparisons only for designs whose topology is unchanged.
 		// Honeycomb revision4 removed the stone outlines; corner voting changes
-		// Canals and Fingerprint placement. Their current worlds are covered by
-		// generator contracts and the platform golden matrix. Do not overwrite
-		// archived resource-epoch references with these intentional new layouts.
-		for (const auto original :
-			 {Original{"maze", "cell-shape", 0, 6132248727033081699ULL},
-			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL}})
+		// Canals and Fingerprint placement; Caravanserai revision 5 (2.0) turned
+		// its mesas into rock with quarry faces and its routes into roads. Their
+		// current worlds are covered by generator contracts and the platform
+		// golden matrix. Do not overwrite archived resource-epoch references with
+		// these intentional new layouts.
+		for (const auto original : {Original{"maze", "cell-shape", 0, 6132248727033081699ULL}})
 		{
 			D request;
 			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(original.id));

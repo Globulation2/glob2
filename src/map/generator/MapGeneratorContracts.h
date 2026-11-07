@@ -687,8 +687,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Current versions of the rebuilt landscapes.
-		assert(definition.revision == (std::string(id) == "allotments" ? 3 : std::string(id) == "glacis" ? 5 : 4));
+		// Current versions of the rebuilt landscapes (The Glacis 5, Caravanserai 2.0 is 5 as well).
+		assert(definition.revision == (std::string(id) == "allotments" ? 3 : 5));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -1428,6 +1428,180 @@ inline void braidedRiverContracts()
 	assert(growthError.empty() && wheat() > before);
 	puts("PASS Braided river: envelope with pinned seasons and deep pools, looks-only season, sealed "
 		 "bluffs, quarry faces, moraine flanks and pavement, resource extremes, growth");
+}
+
+// Caravanserai 2.0 (revision 5): every desert country pinned over the envelope the old revision
+// accepted, homes identical by rules, mesas sealed rock whose only stone is on quarry faces, roads
+// of path that hold nothing, resource extremes and growth, and damage the validator must notice.
+inline void caravanseraiContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("caravanserai"));
+	assert(definition.legacyId == 41 && definition.revision == 5);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed, int desert)
+	{
+		D r;
+		r.setMethodDefaults(definition.legacyId);
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		r.options["desert"] = desert;
+		return r;
+	};
+	const auto measured = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto group = [](const Map &map, int x, int y)
+	{
+		int ridges = 0;
+		for (const auto &[vx, vy] : {std::pair{x, y}, std::pair{x + 1, y}, std::pair{x, y + 1}, std::pair{x + 1, y + 1}})
+			ridges += terrainGroup(map.vertexTerrainAt(vx, vy)) == TerrainGroup::Ridges;
+		return ridges;
+	};
+	// The finished map's promises, whatever the country: rock is sealed and bare, every road tile
+	// is path that holds nothing, and stone stands only on grass.
+	const auto inspect = [&](const Game &game, int &rockTiles, int &roadTiles)
+	{
+		const Map &map = game.map;
+		rockTiles = roadTiles = 0;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+			{
+				const TerrainProperties &rules = map.terrainPropertiesAt(x, y);
+				if (group(map, x, y) >= 2)
+				{
+					assert(!rules.walkable && !map.isResource(x, y));
+					rockTiles += group(map, x, y) == 4;
+				}
+				if (rules.walkable && rules.buildable && rules.groundSpeedQ8 == 512)
+				{
+					assert(!map.isResource(x, y) && !rules.resourcesGrow);
+					++roadTiles;
+				}
+				if (map.isResource(x, y) && map.getResource(x, y).type == STONE)
+					assert(rules.buildable && rules.resourcesGrow);
+			}
+	};
+	// Every country over the envelope: 128, 256 and 512 tiles, one colony to a crowd.
+	for (int desert = 0; desert <= 2; ++desert)
+		for (const auto &[w, h, teams] :
+			 {std::tuple{7, 7, 1}, std::tuple{7, 7, 2}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
+			  std::tuple{8, 9, 8}, std::tuple{9, 9, 8}})
+		{
+			const D r = make(w, h, teams, 11, desert);
+			Game game(nullptr);
+			const auto result = service.generate(game, r, true);
+			if (!result)
+				std::fprintf(stderr, "Caravanserai contract (desert %d, %d x %d, %d colonies): %s\n", desert, 1 << w,
+							 1 << h, teams, result.diagnostic().c_str());
+			assert(result);
+			GenerationContext check(r);
+			assert(definition.validateWorld(game, check).empty());
+			int rock = 0, roads = 0;
+			inspect(game, rock, roads);
+			// Open erg has no rock; the other countries do on every map big enough for a mesa.
+			assert(desert == 0 ? rock == 0 && measured(result, "caravanserai.quarries") == 0 : w < 8 || rock > 0);
+			assert(desert == 0 || w < 8 || measured(result, "caravanserai.quarries") > 0);
+			// Wherever there is a caravanserai there are roads to it.
+			assert(measured(result, "caravanserai.serais") <= 0 || roads > 0);
+			assert(desert != 2 || w < 8 || measured(result, "caravanserai.floor.corners") > 0);
+			assert(desert == 2 || measured(result, "caravanserai.floor.corners") == 0);
+		}
+	{
+		// Random draws every country.
+		std::set<std::string> countries;
+		for (std::uint32_t seed = 1; seed <= 24; ++seed)
+		{
+			Game game(nullptr);
+			const auto result = service.generate(game, make(8, 8, 4, seed, 3), true);
+			assert(result);
+			for (const auto &record : result.telemetry.records())
+				if (record.key == "caravanserai.desert")
+					countries.insert(std::get<std::string>(record.value));
+		}
+		assert(countries.size() == 3);
+	}
+	{
+		// Quarry faces follow the stone amount, and a quarry robbed of its stone is refused.
+		const D standard = make(8, 8, 4, 17, 1);
+		D none = standard, many = standard;
+		none.options["stone-amount"] = 0;
+		many.options["stone-amount"] = 300;
+		Game a(nullptr), b(nullptr), c(nullptr);
+		const auto zero = service.generate(a, none, true), normal = service.generate(b, standard, true),
+				   rich = service.generate(c, many, true);
+		assert(zero && normal && rich);
+		assert(measured(zero, "caravanserai.quarries") == 0);
+		assert(measured(rich, "caravanserai.quarries") > measured(normal, "caravanserai.quarries"));
+		// GenerationContext keeps a reference to its request.
+		GenerationContext check(standard);
+		assert(definition.validateWorld(b, check).empty());
+		bool robbed = false;
+		for (int y = 0; y < 256 && !robbed; ++y)
+			for (int x = 0; x < 256 && !robbed; ++x)
+			{
+				if (!b.map.isResource(x, y) || b.map.getResource(x, y).type != STONE)
+					continue;
+				bool face = false;
+				for (int dy = -2; dy <= 2; ++dy)
+					for (int dx = -2; dx <= 2; ++dx)
+						face = face || group(b.map, (x + dx + 256) % 256, (y + dy + 256) % 256) > 0;
+				if (face)
+				{
+					b.map.setNoResource(x, y, 1);
+					robbed = true;
+				}
+			}
+		assert(robbed);
+		const std::string error = definition.validateWorld(b, check);
+		assert(error.find("quarry") != std::string::npos);
+	}
+	{
+		// Homes are identical by their tiles' rules: a home tile turned to sand is refused.
+		const D r = make(8, 8, 4, 19, 2);
+		Game game(nullptr);
+		assert(service.generate(game, r));
+		GenerationContext check(r);
+		assert(definition.validateWorld(game, check).empty());
+		const Team *team = game.teams[1];
+		const int x = (team->startPosX + 8) % 256, y = (team->startPosY + 8) % 256;
+		game.map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, SAND, false);
+		const std::string error = definition.validateWorld(game, check);
+		assert(!error.empty());
+	}
+	{
+		// Resource extremes in every country with rock, then unattended growth on the abundant map:
+		// nothing may grow onto a road, a quarry or the rock, and the homes' fields stay sealed.
+		for (int desert = 1; desert <= 2; ++desert)
+			for (int amount : {0, 300})
+			{
+				D r = make(7, 7, 2, 23, desert);
+				for (const char *key : {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
+					r.options[key] = amount;
+				Game game(nullptr);
+				assert(service.generate(game, r));
+				if (amount == 0)
+					continue;
+				setSyncRandSeed(4409);
+				for (int tick = 0; tick < 2048; ++tick)
+					game.map.growResources();
+				GenerationContext check(r);
+				const std::string grown = definition.validateWorld(game, check);
+				if (!grown.empty())
+					std::fprintf(stderr, "Caravanserai growth (desert %d): %s\n", desert, grown.c_str());
+				assert(grown.empty());
+				int rock = 0, roads = 0;
+				inspect(game, rock, roads);
+			}
+	}
+	puts("PASS Caravanserai: every country over the envelope, random countries, homes identical by rules, "
+		 "sealed bare rock, quarry faces by stone amount, roads of path, resource extremes and growth");
 }
 
 inline void evenGroundContracts()
@@ -2527,5 +2701,6 @@ inline void generatorContracts()
 	run("karst-towers", karstTowersContracts);
 	run("bajada", bajadaContracts);
 	run("braided-river", braidedRiverContracts);
+	run("caravanserai", caravanseraiContracts);
 }
 } // namespace GeneratorContracts

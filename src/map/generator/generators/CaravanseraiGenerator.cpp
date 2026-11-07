@@ -16,10 +16,12 @@
 #include "Planting.h"
 #include "Resources.h"
 #include "Roads.h"
+#include "Rock.h"
 #include "Room.h"
 #include "Routes.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "TerrainPropertiesLayout.h"
 #include "Walls.h"
 #include <algorithm>
 #include <array>
@@ -32,31 +34,50 @@ using namespace MapGeneration;
 
 // Caravanserai: oasis towns on a desert trade route.
 //
-// WHAT IT LOOKS LIKE. A desert seen from the air: bare sand dunes in long parallel bands with
-// sparse scrub in the hollows between them, flat-topped rock mesas standing out of the sand, and
-// scattered oases, each an irregular pool ringed with green, date palms and a patch of grain. Every
+// WHAT IT LOOKS LIKE. A desert seen from the air: dunes in long parallel bands, wind-rippled on
+// their crests and pale in the hollows between them, sparse dry scrub in the hollows, flat-topped
+// rock mesas standing out of the sand on skirts of scree, and scattered oases, each an irregular
+// pool ringed with spring meadow, lush grass and date palms drying out towards the sand. Every
 // colony's home is a large oasis town round its own lake, its shore a ring of fields and a palm
-// grove behind a sand path, the town beyond. Half way between neighbouring towns, on the caravan
-// route, stands a caravanserai: a square walled courtyard with a gate at either end and a well in
-// the middle, in an oasis of its own with orchards and a quarry. The routes between towns are
-// clear lines of sand through the scrub. (The first version was flat sand with perfect circles in
-// straight rows, 28 water tiles and 80 of wood on the whole map: nothing read as a desert and no
-// colony could build its way along the chain.)
+// grove behind a sand path, the town beyond. Half way between neighbouring towns stands a
+// caravanserai: a square walled courtyard, paved, with a gate at either end and a well in the
+// middle, in an oasis of its own with orchards and a quarry. The caravan routes are roads: packed
+// trails or sandstone flags from every town's edge to the caravanserais' gates. (The first version
+// was flat sand with perfect circles in straight rows, 28 water tiles and 80 of wood on the whole
+// map: nothing read as a desert and no colony could build its way along the chain.)
 //
 // HOW IT PLAYS. Sand holds no building and no crop, so the desert can be crossed but never
-// settled: every forward inn, tower or barracks stands on an oasis, and the oases are what a colony
-// expands along. Home is rich - a lake, wheat and palms on its shore, a town's worth of building
-// room - and everything else is out in the sand: the stone and fruit are at the caravanserais,
-// which every pair of neighbours shares at equal distance, and in the rock of the mesas; the oases
-// between add forward ground, a little grain and palms. Mesas are walls of stone the routes must go
-// round, so the way to a caravanserai is not always the straight one.
+// settled: every forward inn, tower or barracks stands on an oasis or beside a road, and the oases
+// are what a colony expands along. Home is rich - a lake, wheat and palms on its shore, a town's
+// worth of building room - and everything else is out in the sand: the stone and fruit are at the
+// caravanserais, which every pair of neighbours shares at equal distance, and in the quarry faces
+// cut into the mesas; the oases between add forward ground, grain and palms. The roads are the
+// map's logistics (revision 5): path ground, twice walking speed, buildable and never overgrown,
+// so a colony's carriers and armies move along the trade route far faster than across the dunes,
+// and an inn or tower built on the road holds it. Mesas are walls of rock (towers shoot over them)
+// the routes go round; their stone is quarried only from faces cut into their flanks.
 //
-// FAIRNESS. The towns stand on a lattice and are one stencil stamped by quarter turns, so every
-// home oasis, lake, field ring and palm grove is identical. Each caravanserai is the midpoint of two
+// THE DESERT CONTROL is the country: an open erg of dunes with no rock and earth trails; dunes and
+// mesas, sandstone hoodoos on scree with flagstone roads; or canyon country, twice the rock in
+// grey ridges rimmed with hoodoos, standing on slow hardpan floors that only the roads cross
+// quickly. Every look is drawn inside its mechanic's rule group (composeLooks), so dune sand plays
+// as sand, and the homes, the kit areas and every tile a shared helper reads stay their canonical
+// types: plain grass, sand and water.
+//
+// FAIRNESS. The towns stand on a lattice and are one stencil stamped by one quarter turn drawn per
+// map, so every home oasis, lake, field ring and palm grove is identical, and the validator proves
+// it by comparing every home tile's rules with colony 0's. Each caravanserai is the midpoint of two
 // neighbours, and the oases on the way to it are placed along each colony's straight route at the
-// same spacing; the scattered oases, mesas and dunes are noise, and the lobby's best-of-five start
+// same spacing; every colony's road to a caravanserai it shares is its own cheapest walk to its own
+// gate. The scattered oases, mesas, quarries and dunes are noise, and the lobby's best-of-five start
 // scoring covers what they leave uneven. The validator proves every colony's walk to its nearest
 // caravanserai is within a tolerance of every other's.
+//
+// WHAT THE PALETTE MUST NOT DO (Bajada 2.0's lessons). Barren ground inhibits growth like sand and
+// would be buildable desert, so there is none. Rough ground (scree, hardpan) holds nothing and does
+// not inhibit, so it replaces sand only where nothing should grow anyway. Fertile meadow is only on
+// oasis shores. Quarry faces and the ring before them stay plain grass, as do the homes and the
+// caravanserai walls' corners, so every stone stands where it was put.
 namespace
 {
 // The home oasis, in its own frame: an outline of `oasis-size` tiles radius, a lake at the back of
@@ -95,6 +116,40 @@ constexpr int kLeastHomeDistance = 16;
 // Lattices that are not exact (six colonies on a rectangle) leave neighbours at unequal distances,
 // which the caravanserai walk inherits; 32 steps is a quarter of a 256 map's colony spacing.
 constexpr int kWalkTolerance = 32;
+// Quarry faces on the mesas' flanks: one per kEdgePerQuarry tiles of mesa edge at the default
+// stone-amount, at least kQuarryGap apart (closer above 100%, never under kLeastQuarryGap), each
+// the edge tiles within kQuarryHalf of its centre, where the mesa is at least three tiles thick,
+// nearest the routes and oases first.
+constexpr int kEdgePerQuarry = 32, kQuarryGap = 12, kQuarryHalf = 2, kLeastQuarryGap = 6;
+// Talus: scree one corner out from the rock, two where the fray noise passes, never nearer than
+// kRoughClearance to anything a colony needs.
+constexpr int kTalusInner = 1, kTalusOuter = 2, kTalusCut = 36000, kTalusCell = 6;
+constexpr int kRoughClearance = 3;
+// Canyon floors: hardpan on the next share of the relief below the mesas, by the Desert control.
+constexpr int kFloorPercent[3] = {0, 0, 12};
+// The floors fade out beyond kFloorReach corners from a mesa and within kFloorHomeClearance of a home,
+// the relief falling kFloorFalloff a corner (twice that towards a home).
+constexpr int kFloorReach = 3, kFloorHomeClearance = 18, kFloorFalloff = 1200;
+// Oasis shores: spring meadow on the corners two and three steps from an oasis pond (one step is
+// its beach), lush grass out to kLushReach.
+constexpr int kMeadowNear = 2, kMeadowFar = 3, kLushReach = 4;
+// Dune looks: the middle of each band's crest share is wind-rippled.
+constexpr int kCrestLow = 55, kCrestHigh = 85;
+// The outer corners of every home's town look dry this far in.
+constexpr int kTownRim = 2;
+
+// What each Desert country looks like: only looks, each inside its mechanic's rule group. Mesa rock
+// (cores and rims), its talus, the roads, the caravanserais' courtyards.
+struct Country
+{
+	const char *name;
+	TerrainType rock, rim, talus, road, court;
+};
+constexpr std::array<Country, 3> kCountries{{
+	{"Open erg", OUTCROP, OUTCROP, SCREE, TRAIL, SANDSTONE},
+	{"Dunes and mesas", HOODOOS, HOODOOS, SCREE, SANDSTONE, BRICK_PATH},
+	{"Canyon country", RIDGE_ROCK, HOODOOS, SCREE, TRAIL, SANDSTONE},
+}};
 
 enum HomeKind : signed char
 {
@@ -268,16 +323,21 @@ struct Layout
 	std::vector<int> courtyardOf;  // caravanserai of every courtyard tile, else -1
 	std::vector<int> oasisOf;      // scattered or route oasis of every tile, else -1
 	std::vector<unsigned char> wall, gate, mesa, route;
+	// The mechanic sketch's extra masks: home vertices (kept plain), the road and courtyard
+	// vertices, quarry face tiles, the rock tiles, corners that must stay plain grass (walls,
+	// quarries), and every vertex owned by a home, oasis or caravanserai.
+	std::vector<unsigned char> homeVertex, road, court, quarry, rockTile, plain, feature;
+	std::vector<int> dunePhase; // 0 to 65535 across one dune band, crests in the upper part
+	int desert = 1;
 	std::string failure;
 };
 
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const CaravanseraiOptions o(request);
-	context.telemetry.choice("caravanserai.desert", o.desert == 0   ? "Open erg"
-													: o.desert == 1 ? "Dunes and mesas"
-																	: "Canyon country");
 	Layout L;
+	L.desert = std::clamp(o.desert, 0, 2);
+	context.telemetry.choice("caravanserai.desert", kCountries[L.desert].name);
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
@@ -339,6 +399,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.gate.assign(n, 0);
 	L.mesa.assign(n, 0);
 	L.route.assign(n, 0);
+	L.homeVertex.assign(n, 0);
+	L.road.assign(n, 0);
+	L.court.assign(n, 0);
+	L.quarry.assign(n, 0);
+	L.rockTile.assign(n, 0);
+	L.plain.assign(n, 0);
 	std::vector<unsigned char> feature(n, 0); // corners any oasis, home or courtyard owns
 	for (int k = 0; k < teams; ++k)
 	{
@@ -360,6 +426,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				{
 					L.sketch[v] = TerrainType(s.vertex[at]);
 					feature[v] = 1;
+					L.homeVertex[v] = 1;
 				}
 			}
 	}
@@ -412,10 +479,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						(door ? L.gate : L.wall)[i] = 1;
 					}
 				}
-			// The well, in the middle of the courtyard.
+			// The courtyard is paved on every corner no wall tile touches, the well in the middle.
+			for (int dy = 1 - kSeraiWall + 1; dy < kSeraiWall; ++dy)
+				for (int dx = 1 - kSeraiWall + 1; dx < kSeraiWall; ++dx)
+				{
+					L.sketch[t.at(cx + dx, cy + dy)] = TRAIL;
+					L.court[t.at(cx + dx, cy + dy)] = 1;
+				}
 			for (int dy = 0; dy < kWellCorners; ++dy)
 				for (int dx = 0; dx < kWellCorners; ++dx)
+				{
 					L.sketch[t.at(cx + dx, cy + dy)] = WATER;
+					L.court[t.at(cx + dx, cy + dy)] = 0;
+				}
 			// The pond, to one side of the route outside the wall.
 			const double px = alongX ? cx : cx + serai.pondSide * kSeraiPondOut;
 			const double py = alongX ? cy + serai.pondSide * kSeraiPondOut : cy;
@@ -501,56 +577,222 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("caravanserai.oases.route", routeOases);
 	context.telemetry.measure("caravanserai.oases.scattered", scattered);
 
-	// The caravan routes: from every home to each caravanserai it shares, round the features.
+	// The caravan routes: from every home to the gate facing it of each caravanserai it shares,
+	// round the features and never through a courtyard or its walls.
+	std::vector<unsigned char> featureTile(n, 0), wallTile(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		featureTile[i] = L.homeOf[i] >= 0 || L.seraiOf[i] >= 0 || L.oasisOf[i] >= 0 || L.courtyardOf[i] >= 0 ||
+						 L.wall[i] || L.gate[i];
+		wallTile[i] = L.courtyardOf[i] >= 0 || L.wall[i] || L.gate[i];
+	}
+	// Every corner of a feature's tiles is the feature's: nothing drawn round it may touch them.
+	{
+		const std::vector<unsigned char> corners = tileCorners(t, featureTile);
+		for (int i = 0; i < n; ++i)
+			feature[i] = feature[i] || corners[i];
+	}
+	const std::vector<unsigned char> wallCorner = tileCorners(t, wallTile);
 	const std::vector<int> fromFeature = stepsFrom(t, feature);
 	const std::vector<int> relief = fractalNoise(t.w, t.h, 48, 3, context.stream("caravanserai-mesas"));
 	for (const Serai &serai : L.serais)
 		for (const int k : {serai.a, serai.b})
 		{
+			const int cx = int(serai.centre.x), cy = int(serai.centre.y);
+			const bool alongX = serai.facing % 2 == 0;
+			const int offset = alongX ? t.offsetX(cx, int(L.homes[k].x)) : t.offsetY(cy, int(L.homes[k].y));
+			const int side = offset > 0 || (offset == 0 && k == serai.b) ? 1 : -1;
+			const int gate = alongX ? t.at(cx + side * (kSeraiWall + 1), cy) : t.at(cx, cy + side * (kSeraiWall + 1));
 			const std::vector<int> path = cheapestWalk(
-				t, GridNeighbors::Eight, {t.at(int(L.homes[k].x), int(L.homes[k].y))},
-				tileMask(t, {t.at(int(serai.centre.x), int(serai.centre.y))}),
+				t, GridNeighbors::Eight, {t.at(int(L.homes[k].x), int(L.homes[k].y))}, tileMask(t, {gate}),
 				[&](int, int to, int dx, int dy)
-				{ return (dx && dy ? 14 : 10) + (L.oasisOf[to] >= 0 ? 0 : 4) + relief[to] / 8192; });
+				{
+					return (dx && dy ? 14 : 10) + (L.oasisOf[to] >= 0 ? 0 : 4) + relief[to] / 8192 +
+						   (wallTile[to] ? 100000 : 0);
+				});
+			// The road: the desert part of the walk, and its way across the caravanserai's oasis.
 			for (int i : path)
-				if (!feature[i])
+				if (!featureTile[i] || (L.seraiOf[i] >= 0 && !wallTile[i]))
 					L.route[i] = 1;
 		}
+	{
+		// A road tile takes path on all four corners, except corners a home, an oasis or a wall
+		// owns, and the caravanserai's oasis, which the road crosses to its gate.
+		const std::vector<unsigned char> corners = tileCorners(t, L.route);
+		for (int i = 0; i < n; ++i)
+			if (corners[i] && L.sketch[i] != WATER && !wallCorner[i] && (!feature[i] || L.seraiOf[i] >= 0) &&
+				!L.homeVertex[i])
+			{
+				L.road[i] = 1;
+				L.sketch[i] = TRAIL;
+			}
+		// Through every gate into the courtyard: the two corners down the middle of a gate touch no
+		// wall tile, so the road runs on into the paving.
+		for (const Serai &serai : L.serais)
+		{
+			const int cx = int(serai.centre.x), cy = int(serai.centre.y);
+			const bool alongX = serai.facing % 2 == 0;
+			for (int along = -(kSeraiWall + 1); along <= kSeraiWall + 2; ++along)
+				for (int across = 0; across <= 1; ++across)
+				{
+					const int i = alongX ? t.at(cx + along, cy + across) : t.at(cx + across, cy + along);
+					if (L.sketch[i] != WATER && !L.court[i])
+					{
+						L.road[i] = 1;
+						L.sketch[i] = TRAIL;
+					}
+				}
+		}
+	}
 	std::vector<unsigned char> keepClear = feature;
 	for (int i = 0; i < n; ++i)
-		keepClear[i] = keepClear[i] || L.route[i];
+		keepClear[i] = keepClear[i] || L.route[i] || L.road[i];
 	const std::vector<int> fromKept = stepsFrom(t, keepClear);
 
 	// Mesas on the high ground of the relief, clear of everything a colony needs.
-	const int desertChoice = std::clamp(o.desert, 0, 2);
-	if (kMesaPercent[desertChoice] > 0)
+	std::vector<unsigned char> raised(n, 0);
+	std::vector<int> samples;
+	for (int i = 0; i < n; ++i)
+		if (fromKept[i] >= kMesaClearance)
+			samples.push_back(relief[i]);
+	const auto cutFor = [&](int percent)
 	{
-		std::vector<int> samples;
+		// The share of the whole map, taken from the eligible desert.
+		const int share = std::min(100, int(std::int64_t(percent) * n / std::int64_t(std::max<size_t>(1, samples.size()))));
+		return percentile(samples, 100 - share);
+	};
+	if (kMesaPercent[L.desert] > 0 && !samples.empty())
+	{
+		const int cut = cutFor(kMesaPercent[L.desert]);
 		for (int i = 0; i < n; ++i)
-			if (fromKept[i] >= kMesaClearance)
-				samples.push_back(relief[i]);
-		if (!samples.empty())
-		{
-			// The share of the whole map, taken from the eligible desert.
-			const int share = std::min(100, int(std::int64_t(kMesaPercent[desertChoice]) * n / samples.size()));
-			const int cut = percentile(samples, 100 - share);
-			for (int i = 0; i < n; ++i)
-				if (fromKept[i] >= kMesaClearance && relief[i] >= cut)
-					L.sketch[i] = GRASS;
-		}
+			raised[i] = fromKept[i] >= kMesaClearance && relief[i] >= cut;
 	}
-	// A mesa's stone stands on the tiles whose four corners it raised.
+	// A mesa is the tiles whose four corners it raised.
 	int mesaTiles = 0;
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		bool rock = fromKept[i] >= kMesaClearance;
+		bool rock = true;
 		for (const int j : {i, t.at(x + 1, y), t.at(x, y + 1), t.at(x + 1, y + 1)})
-			rock = rock && L.sketch[j] == GRASS && !feature[j] && fromKept[j] >= kMesaClearance;
+			rock = rock && raised[j];
 		L.mesa[i] = rock;
 		mesaTiles += rock;
 	}
 	context.telemetry.measure("caravanserai.mesa.tiles", mesaTiles);
+
+	// Quarry faces cut into the mesas' flanks, the stone of the desert: edge tiles where the mesa is
+	// thick enough to stay a wall behind them, nearest the roads and oases first, spaced apart.
+	std::vector<unsigned char> offMesa(n, 0);
+	for (int i = 0; i < n; ++i)
+		offMesa[i] = !L.mesa[i];
+	const std::vector<int> fromOff = stepsFrom(t, offMesa);
+	std::vector<std::pair<int, int>> faces;
+	int edge = 0;
+	for (int i = 0; i < n; ++i)
+		if (L.mesa[i] && fromOff[i] == 1)
+		{
+			++edge;
+			faces.push_back({fromKept[i] * 16 + int(context.bounded("caravanserai-quarries", 16)), i});
+		}
+	std::stable_sort(faces.begin(), faces.end());
+	const int wantedQuarries = int(scaledCount(edge / kEdgePerQuarry, o.stone));
+	const int quarryGap = std::max(kLeastQuarryGap, kQuarryGap * 100 / std::max(100, o.stone));
+	std::vector<int> quarrySites;
+	int quarryTiles = 0;
+	for (const auto &[rank, i] : faces)
+	{
+		if (int(quarrySites.size()) >= wantedQuarries)
+			break;
+		const int x = t.remainderX(i), y = i / t.w;
+		bool spaced = true;
+		for (const int site : quarrySites)
+			spaced = spaced && t.chebyshev(x, y, t.remainderX(site), site / t.w) >= quarryGap;
+		bool thick = false;
+		for (int dy = -3; dy <= 3 && !thick; ++dy)
+			for (int dx = -3; dx <= 3 && !thick; ++dx)
+				thick = fromOff[t.at(x + dx, y + dy)] >= 3;
+		if (!spaced || !thick)
+			continue;
+		quarrySites.push_back(i);
+		// quarryNear(t, L.mesa, offMesa, i, kQuarryHalf, 1), with the steps already taken.
+		for (int dy = -kQuarryHalf; dy <= kQuarryHalf; ++dy)
+			for (int dx = -kQuarryHalf; dx <= kQuarryHalf; ++dx)
+			{
+				const int q = t.at(x + dx, y + dy);
+				if (L.mesa[q] && fromOff[q] == 1 && !L.quarry[q])
+				{
+					L.quarry[q] = 1;
+					++quarryTiles;
+				}
+			}
+	}
+	context.telemetry.measure("caravanserai.quarries", int(quarrySites.size()));
+	context.telemetry.measure("caravanserai.quarry.tiles", quarryTiles);
+	// The rock: mesa tiles that are not quarry faces. Raised corners that are not rock (a mesa's
+	// convex corners, a sliver too thin to stand) are scree, and talus skirts the rock.
+	for (int i = 0; i < n; ++i)
+		L.rockTile[i] = L.mesa[i] && !L.quarry[i];
+	const std::vector<unsigned char> rock = rockVertices(t, L.rockTile);
+	std::vector<unsigned char> eligible(n, 0);
+	for (int i = 0; i < n; ++i)
+		eligible[i] = !raised[i] && fromKept[i] >= kRoughClearance && L.sketch[i] == SAND;
+	const std::vector<unsigned char> talus =
+		talusApron(t, rock, eligible, periodicNoise(t.w, t.h, kTalusCell, context.stream("caravanserai-talus")),
+				   kTalusInner, kTalusOuter, kTalusCut);
+	int rockCorners = 0, scree = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (rock[i])
+		{
+			L.sketch[i] = RIDGE_ROCK;
+			++rockCorners;
+		}
+		else if (raised[i] || talus[i])
+		{
+			L.sketch[i] = SCREE;
+			++scree;
+		}
+	}
+	// Every quarry tile keeps four plain grass corners, and the ring before it is grass too (its
+	// corners beyond the quarry's may look dry).
+	{
+		const std::vector<unsigned char> approach = quarryApproach(t, L.quarry), corners = tileCorners(t, L.quarry);
+		for (int i = 0; i < n; ++i)
+			if ((L.quarry[i] || approach[i]) && !rock[i])
+			{
+				L.sketch[i] = GRASS;
+				L.plain[i] = corners[i];
+			}
+	}
+	for (int i = 0; i < n; ++i)
+		if (wallCorner[i] && L.sketch[i] == GRASS)
+			L.plain[i] = 1;
+	context.telemetry.measure("caravanserai.mesa.rock-corners", rockCorners);
+	context.telemetry.measure("caravanserai.talus.corners", scree);
+	// Canyon floors: slow hardpan on the next band of the relief below the mesas.
+	int hardpan = 0;
+	if (kFloorPercent[L.desert] > 0 && !samples.empty())
+	{
+		// The floors lie between and round the mesas, never in a home's dooryard, where they would
+		// slow one colony's opening and not another's.
+		const int cut = cutFor(kMesaPercent[L.desert] + kFloorPercent[L.desert]);
+		const std::vector<int> fromRaised = stepsFrom(t, raised), fromHome = stepsFrom(t, L.homeVertex);
+		// The relief sinks away from the mesas and towards the homes, so the floors' edges follow
+		// its contours rather than a distance's squares.
+		const auto floorRelief = [&](int i)
+		{
+			const int away = fromRaised[i] < 0 ? 1000 : std::max(0, fromRaised[i] - kFloorReach);
+			const int near = fromHome[i] < 0 ? 0 : std::max(0, kFloorHomeClearance - fromHome[i]);
+			return relief[i] - away * kFloorFalloff - near * kFloorFalloff * 2;
+		};
+		for (int i = 0; i < n; ++i)
+			if (L.sketch[i] == SAND && fromKept[i] >= kRoughClearance && floorRelief(i) >= cut)
+			{
+				L.sketch[i] = HARDPAN;
+				++hardpan;
+			}
+	}
+	context.telemetry.measure("caravanserai.floor.corners", hardpan);
 
 	// Dunes: scrub in the hollows between the bands, a single corner at a time.
 	StripeStyle dunes;
@@ -561,11 +803,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<int> phase = stripePhase(t, dunes, duneStream);
 	// Many dune bands to one stripe of the field: a whole number, so the bands still wrap.
 	const int bands = std::max(1, int(std::lround(stripeSpacing(t, dunes) / kDuneSpacing)));
+	L.dunePhase.assign(n, 0);
 	int scrub = 0;
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		const bool hollow = (phase[i] * bands) % 65536 < 65536 * kHollowPercent / 100;
+		L.dunePhase[i] = int((std::int64_t(phase[i]) * bands) % 65536);
+		const bool hollow = L.dunePhase[i] < 65536 * kHollowPercent / 100;
 		if (L.sketch[i] != SAND || fromKept[i] < 2)
 			continue;
 		// Round every oasis the scrub thickens into a halo, wherever the dunes lie.
@@ -586,6 +830,29 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	context.telemetry.measure("caravanserai.dunes.scrub", scrub);
 
+	// Oasis shores: spring meadow two and three corners from a pond, in the scattered and route
+	// oases and the caravanserais' (never in a courtyard, by a wall or in a home).
+	int meadow = 0;
+	{
+		std::vector<unsigned char> water(n, 0);
+		for (int i = 0; i < n; ++i)
+			water[i] = L.sketch[i] == WATER;
+		const std::vector<int> fromWater = stepsFrom(t, water);
+		for (int i = 0; i < n; ++i)
+			if (L.sketch[i] == GRASS && !L.homeVertex[i] && !wallCorner[i] && L.courtyardOf[i] < 0 &&
+				(L.oasisOf[i] >= 0 || L.seraiOf[i] >= 0) && fromWater[i] >= kMeadowNear &&
+				fromWater[i] <= kMeadowFar)
+			{
+				L.sketch[i] = SPRING_MEADOW;
+				++meadow;
+			}
+	}
+	int roadCorners = 0;
+	for (int i = 0; i < n; ++i)
+		roadCorners += L.road[i];
+	context.telemetry.measure("caravanserai.meadow.corners", meadow);
+	context.telemetry.measure("caravanserai.road.corners", roadCorners);
+	L.feature = feature;
 	// The design's invariants on the sketch as the game will see it: courtyard walls on pure grass.
 	TerrainSketch beached = L.sketch;
 	layBeaches(beached, t);
@@ -619,20 +886,76 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "caravanserai terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeVertices(map, terrain);
+	{
+		// The looks, each inside its vertex's rule group so nothing plays differently: oasis grass
+		// lush by the water and dry at the sand's edge, scrub dry, dunes rippled on their crests and
+		// pale in the hollows, the country's rock with its rims, talus and roads, the courtyards
+		// paved. The homes, the quarries and the walls' corners stay plain, as do the beaches.
+		const Country &country = kCountries[L.desert];
+		std::vector<unsigned char> wet(n, 0), open(n, 0), desert(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			wet[i] = terrain[i] == WATER;
+			open[i] = terrain[i] != RIDGE_ROCK;
+			desert[i] = !L.feature[i];
+		}
+		const std::vector<int> nearWater = stepsFrom(t, wet), inRock = stepsFrom(t, open),
+							   inOasis = stepsFrom(t, desert);
+		TerrainSketch looks(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			// A home is plain grass but for the dry outer rim of its town, the same on every home.
+			if (L.homeVertex[i] && terrain[i] == GRASS && L.homeKind[i] == kTown && inOasis[i] <= kTownRim)
+				looks[i] = DRY_GRASS;
+			if (L.homeVertex[i] || L.plain[i])
+				continue;
+			switch (terrain[i])
+			{
+			case GRASS:
+				if (!L.feature[i])
+					looks[i] = DRY_GRASS;
+				else if (nearWater[i] >= 0 && nearWater[i] <= kLushReach)
+					looks[i] = LUSH_GRASS;
+				else if (inOasis[i] <= 1)
+					looks[i] = DRY_GRASS;
+				break;
+			case SAND:
+				if (L.feature[i] || (nearWater[i] >= 0 && nearWater[i] <= 1))
+					break;
+				looks[i] = L.dunePhase[i] < 65536 * kHollowPercent / 100 ? PALE_SAND
+						   : L.dunePhase[i] >= 65536 * kCrestLow / 100 && L.dunePhase[i] < 65536 * kCrestHigh / 100
+							   ? WINDY_SAND_DUNE
+							   : DUNE_SAND;
+				break;
+			case RIDGE_ROCK:
+				looks[i] = inRock[i] <= 1 ? country.rim : country.rock;
+				break;
+			case SCREE:
+				looks[i] = country.talus;
+				break;
+			case TRAIL:
+				looks[i] = L.court[i] ? country.court : country.road;
+				break;
+			default:
+				break;
+			}
+		}
+		writeVertices(map, composeLooks(terrain, looks));
+	}
 	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{
 		context.detail = "a caravanserai wall has a gap";
 		return false;
 	}
+	// The walls are the caravanserais' stone; the mesas' is on their quarry faces.
 	std::vector<unsigned char> structural = walls.stone;
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
 		if (walls.stone[i])
 			map.setResourceByIndex(x, y, STONE, 1);
-		else if (L.mesa[i] && map.terrainSupportsResourceAtByIndex(x, y, STONE))
+		else if (L.quarry[i] && map.isResourceAllowed(x, y, STONE))
 		{
 			map.setResourceByIndex(x, y, STONE, 1);
 			structural[i] = 1;
@@ -782,6 +1105,41 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string broken = wallStanding(map, t, L.wall, L.gate, "caravanserai wall");
 		!broken.empty())
 		return broken;
+	// Every quarry face cut into a mesa still holds its stone.
+	if (const std::string fault = quarryFault(map, t, L.quarry, std::vector<int>(n, -1), teams, 0); !fault.empty())
+		return fault;
+	const auto at = [&](int i) { return std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w); };
+	// Every home is colony 0's, tile for tile, by the rules each tile plays by (the looks round it
+	// may differ; its rules may not). One facing makes every home a translation of the first.
+	for (int k = 1; k < teams; ++k)
+	{
+		const int dx = int(L.homes[k].x) - int(L.homes[0].x), dy = int(L.homes[k].y) - int(L.homes[0].y);
+		for (int i = 0; i < n; ++i)
+		{
+			if (L.homeOf[i] != 0)
+				continue;
+			const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+			if (L.homeOf[j] != k || L.homeKind[j] != L.homeKind[i] ||
+				!sameTerrainProperties(map.terrainPropertiesAt(t.remainderX(i), i / t.w),
+									   map.terrainPropertiesAt(t.remainderX(j), j / t.w)))
+				return "Colony " + std::to_string(k) + "'s home oasis differs from colony 0's at (" + at(j) + ").";
+		}
+	}
+	// The caravan roads are path: every tile all of whose corners the design paved plays as path,
+	// and nothing stands on the mesas' rock.
+	TerrainSketch beached = L.sketch;
+	layBeaches(beached, t);
+	const std::vector<unsigned char> roadTiles = pureTiles(beached, t, TRAIL);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		const TerrainProperties &rules = map.terrainPropertiesAt(x, y);
+		if (roadTiles[i] && L.court[i] == 0 && L.road[i] &&
+			!(rules.walkable && rules.buildable && rules.groundSpeedQ8 == 512 && !rules.resourcesGrow))
+			return "A caravan road is not a road at (" + at(i) + ").";
+		if (L.rockTile[i] && map.isResource(x, y))
+			return "Something stands on a mesa's rock at (" + at(i) + ").";
+	}
 	if (!L.serais.empty())
 	{
 		std::vector<int> pieces(n, -1);
@@ -839,7 +1197,9 @@ GeneratorDefinition caravanseraiDefinition()
 	return {"caravanserai",
 			41,
 			"Caravanserai",
-			4,
+			// Revision 5 (2.0): mesas of rock with quarry faces, roads of path, paved courtyards,
+			// meadow shores, dune and country looks.
+			5,
 			false,
 			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
 			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest
