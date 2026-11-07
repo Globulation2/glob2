@@ -37,6 +37,7 @@ namespace Tutorial { class Guidance; }
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "render/scene/SceneExtract.h"
+#include "render/ViewState.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
@@ -80,6 +81,7 @@ class Client;
 class Dialog;
 class LocalCommander;
 } // namespace Hive
+class ReplayWriter;
 class GameGUITouch;
 class HudUnitConversionIcon;
 class ConnectionOverlay;
@@ -314,6 +316,8 @@ public:
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the explicitly prepared local frame.
 	Game *replayTelemetryGame();
+	//! Starts recording to writer at path (an empty path records to memory), with this GUI's game header.
+	void startReplay(ReplayWriter &writer, const std::string &path);
 	const PresentationFrame& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: use the explicitly prepared local frame).
 	void setPublishedScene(const PresentationFrame* scene)
@@ -958,8 +962,8 @@ private:
 	std::queue<std::pair<Uint64, std::shared_ptr<Order>>> pendingBuildingReconciliations;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
-	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
-	Game::ViewState view;
+	///ViewState. Owned here (not on Game) and passed into MapDrawer::drawMap.
+	ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	PresentationFrame frameScene;
 	Uint64 lastTickTime = 0;

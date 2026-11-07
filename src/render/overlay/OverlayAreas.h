@@ -7,7 +7,7 @@
 #include <span>
 #include <limits>
 #include "Types.h"
-#include <GraphicContext.h>
+#include <GAGColor.h>
 
 namespace SimulationSnapshot { struct Handle; }
 

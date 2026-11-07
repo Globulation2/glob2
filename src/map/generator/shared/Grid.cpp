@@ -1,12 +1,11 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Grid.h"
-#include "Map.h"
-#include "Unit.h"
+#include "GenerationWorld.h"
 #include <algorithm>
 namespace MapGeneration
 {
-Torus::Torus(const Map &map) : w(map.getW()), h(map.getH()) {}
+Torus::Torus(const GenerationMap &map) : w(map.getW()), h(map.getH()) {}
 
 Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vector<unsigned char> &open,
 				int limit)
@@ -151,7 +150,7 @@ std::vector<unsigned char> tileMask(const Torus &t, const std::vector<int> &tile
 	return mask;
 }
 
-std::vector<std::vector<int>> unitTilesByTeam(const Map &map, int teams)
+std::vector<std::vector<int>> unitTilesByTeam(const GenerationMap &map, int teams)
 {
 	std::vector<std::vector<int>> units(size_t(std::max(teams, 0)));
 	for (int y = 0; y < map.getH(); ++y)
@@ -163,7 +162,7 @@ std::vector<std::vector<int>> unitTilesByTeam(const Map &map, int teams)
 			const Uint16 gid = map.getGroundUnit(x, y);
 			if (gid == NOGUID)
 				continue;
-			const int team = Unit::GIDtoTeam(gid);
+			const int team = GenerationWorld::unitTeamOf(gid);
 			if (team >= 0 && team < teams)
 				units.at(team).push_back(y * map.getW() + x);
 		}
@@ -171,7 +170,7 @@ std::vector<std::vector<int>> unitTilesByTeam(const Map &map, int teams)
 	return units;
 }
 
-std::vector<unsigned char> walkableTiles(const Map &map)
+std::vector<unsigned char> walkableTiles(const GenerationMap &map)
 {
 	std::vector<unsigned char> open(size_t(map.getW()) * map.getH(), 0);
 	for (int y = 0; y < map.getH(); ++y)
@@ -190,11 +189,11 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 	return open;
 }
 
-std::vector<unsigned char> groundUnitTiles(const Map &map)
+std::vector<unsigned char> groundUnitTiles(const GenerationMap &map)
 {
 	return groundUnitTiles(map, false);
 }
-std::vector<unsigned char> groundUnitTiles(const Map &map, bool canSwim)
+std::vector<unsigned char> groundUnitTiles(const GenerationMap &map, bool canSwim)
 {
 	std::vector<unsigned char> hard(size_t(map.getW()) * map.getH(), 0);
 	for (int y = 0; y < map.getH(); ++y)

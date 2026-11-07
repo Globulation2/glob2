@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "ComputeExecutor.h"
+#include "gradient/MapRouting.h"
 #include <PerformanceTelemetry.h>
-#include "AICastor.h"
 
 #include <assert.h>
 #include <string.h>
@@ -64,7 +65,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 					if (teamNumber == localTeam)
 						map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 				}
-			map.updateForbiddenGradient(teamNumber);
+			map.routing().updateForbiddenGradient(teamNumber);
 			std::list<BuildProject>::iterator to_erase=bpi;
 			bpi++;
 			buildProjects.erase(to_erase);
@@ -84,7 +85,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 						if (teamNumber == localTeam)
 							map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 					}
-				map.updateForbiddenGradient(teamNumber);
+				map.routing().updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);
 				b->update();
 				std::list<BuildProject>::iterator to_erase=bpi;
@@ -226,7 +227,7 @@ void Game::prestigeSyncStep()
 
 void Game::advanceLiveSimulation(Sint32 localTeam)
 {
-	map.applyGradientBackendRequest();
+	map.routing().applyGradientBackendRequest();
     assert(completedObservation && completedObservation->tick == stepCounter);
 	applyClientRequests();
 	if (!anyPlayerWaited)

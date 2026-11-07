@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EvergladesGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -16,7 +16,7 @@
 #include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -775,7 +775,7 @@ TerrainSketch lookSketch(const Layout &L, int seasonIndex, GenerationContext &co
 
 // Every home's kit, identical and unscaled: wheat and wood beside the pond on the sides, a quarry
 // on the near side towards the map's centre. The rest of the clearing starts clear.
-void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
+void furnishHomes(GenerationMap &map, const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
 	const std::vector<unsigned char> reserved =
@@ -801,7 +801,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 
 // The swamp: standing wood and wheat in patches over the grass off the clearings, stone outcrops
 // that never grow, and a few fruit groves. Everything will grow from here.
-void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const EvergladesOptions &o)
+void stockSwamp(GenerationMap &map, const Layout &L, GenerationContext &context, const EvergladesOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -858,9 +858,9 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 // on it becomes a ford. openColonyRoutes lays its fords as sand; 2.0 lays every vertex it forded as
 // boardwalk instead, so the crossing reads as a walkway over the slough. Returns the boardwalk
 // vertices laid.
-int openRoutes(Game &game, const Layout &L, GenerationContext &context)
+int openRoutes(GenerationWorld &game, const Layout &L, GenerationContext &context)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size();
 	std::vector<unsigned char> swimming(size_t(n), 0);
@@ -880,7 +880,7 @@ int openRoutes(Game &game, const Layout &L, GenerationContext &context)
 
 // How far each colony walks from its swarm to the nearest stone over the ground (deposits that can
 // be cleared do not block; stone, fruit, water and thicket do): telemetry only.
-void measureStone(const Map &map, const Layout &L, GenerationContext &context)
+void measureStone(const GenerationMap &map, const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
 	const int n = t.size();
@@ -916,11 +916,11 @@ void measureStone(const Map &map, const Layout &L, GenerationContext &context)
 	context.telemetry.measure("everglades.stone.walk-spread", most - least);
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "glades layout";
 	const EvergladesOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
@@ -1005,11 +1005,11 @@ bool waterGroup(TerrainType v)
 // (or beside a boardwalk ford); every hammock tile is blocked and no hammock parts the ground round
 // it; and colony 0 can walk to every other colony, with water, buildings and every resource blocking
 // (openRoutes has already opened any way needed).
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "glades"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

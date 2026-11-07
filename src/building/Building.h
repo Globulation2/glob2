@@ -12,6 +12,7 @@
 #include <memory>
 #include <vector>
 
+#include "BuildingRoute.h"
 #include "BuildingUtils.h"
 #include "BuildingState.h"
 #include "MapInternal.h"
@@ -20,7 +21,6 @@
 #include "UnitConsts.h"
 #include "BuildingCatalog.h"
 #include "BuildingType.h"
-#include "Team.h"
 
 namespace GAGCore
 {
@@ -32,6 +32,7 @@ namespace GAGCore
 struct WideMaterialPacket;
 struct WideMaterialDeliveryResult;
 class Unit;
+class Team;
 class Map;
 class BuildingGradientSearch;
 struct SharedBuildingGradient;
@@ -61,8 +62,6 @@ static constexpr int SWIM_VARIANT_COUNT = 4;
 /// once the can-swim path is reachable).
 static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
-enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automatic };
-inline constexpr int BUILDING_ROUTE_COUNT = 3;
 inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * MOVEMENT_CLASS_COUNT;
 inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
 static_assert(BUILDING_ACCESS_COUNT == BuildingStateRecord::LockCount);
@@ -262,7 +261,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	// Keep stock and demand queries header-defined for the per-material hot loops.
 	Sint32 availableMaterial(int resource) const
 	{
-		const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
+		const auto reserved = type->useTeamMaterials ? ownerReservedTeamMaterials[resource] : reservedMaterials[resource];
 		return std::max(0, material(resource) - reserved);
 	}
 	bool reserveMaterials(const BuildingMaterialCost& cost);
@@ -337,7 +336,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 		{
 			// Construction can use unreserved stock already here. Repairs consume
 			// new deliveries directly, so existing inventory cannot satisfy them.
-			const int reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[r] : reservedMaterials[r];
+			const int reserved = type->useTeamMaterials ? ownerReservedTeamMaterials[r] : reservedMaterials[r];
 			const int uncommitted = constructionResultState == REPAIR ? 0 : std::max(0, stock-reserved);
 			return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
 		}
@@ -589,6 +588,11 @@ public:
 	// Pointer-free authoritative values are inherited from BuildingStateRecord.
 	BuildingType *type;
 	Team *owner;
+	// owner->reservedTeamMaterials, cached so the inline material accessors need no
+	// Team definition and one load fewer. setOwner() keeps it in step with owner.
+	// Teams outlive their buildings; it is neither saved nor checksummed.
+	const Sint32 *ownerReservedTeamMaterials = nullptr;
+	void setOwner(Team *team);
 	/// Borrowed shared pool, or null when the compact private stock is active.
 	/// Changing the binding does not overwrite inactive private inventory.
 	Sint32* sharedMaterials = nullptr;

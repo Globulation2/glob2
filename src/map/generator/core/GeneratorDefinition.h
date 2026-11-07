@@ -6,7 +6,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
-class Game;
+class GenerationWorld;
 struct GenerationContext;
 struct GeneratorDefinition
 {
@@ -16,11 +16,11 @@ struct GeneratorDefinition
 	unsigned revision;
 	bool editorOnly;
 	std::vector<GeneratorControl> controls;
-	std::function<bool(Game &, GenerationContext &)> generate;
+	std::function<bool(GenerationWorld &, GenerationContext &)> generate;
 	bool hasStartingColonies = true;
 	// Optional pure checks for relationships between controls and generator-specific topology.
 	std::function<std::string(const GenerationRequest &)> validateRequest;
-	std::function<std::string(const Game &, const GenerationContext &)> validateWorld;
+	std::function<std::string(const GenerationWorld &, const GenerationContext &)> validateWorld;
 	// Catalog facets for browsing (the landscape picker's tag filters), each "category:value"
 	// (e.g. "terrain:natural", "feature:river", "style:wide-open"): what a player scanning a
 	// shelf of landscapes would use to narrow the list. Set by each generator's own

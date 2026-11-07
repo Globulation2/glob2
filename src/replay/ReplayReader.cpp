@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2010 Michiel De Muynck
 
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <Toolkit.h>
+#include <FileManager.h>
+#include "Game.h"
 #include "ReplayReader.h"
 
 #include "BinaryStream.h"
 #include "Order.h"
 #include "OrderMessages.h"
-#include "GameGUI.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
 #include "Toolkit.h"
@@ -25,6 +29,12 @@ ReplayReader::ReplayReader()
 	stepsUntilNextOrder = -1;
 	versionMinor = VERSION_MINOR;
 	checksum = 0;
+}
+
+std::function<bool(GAGCore::InputStream *)> &ReplayReader::headerSkipper()
+{
+	static std::function<bool(GAGCore::InputStream *)> skipper;
+	return skipper;
 }
 
 ReplayReader::~ReplayReader()
@@ -66,8 +76,8 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 		numOrders = 0;
 		if (skipToOrders)
 		{
-			GameGUI tempGui;
-			if (!tempGui.load(stream)) throw std::ios_base::failure("Invalid replay game header");
+			if (!headerSkipper()) throw std::ios_base::failure("Cannot skip a replay header: no game header reader is linked");
+			if (!headerSkipper()(stream)) throw std::ios_base::failure("Invalid replay game header");
 		}
 		const Uint16 major = stream->readUint16("versionMajor");
 		const Uint16 minor = stream->readUint16("versionMinor");

@@ -11,7 +11,6 @@
 -r tools/artwork/requirements.txt
 -r tools/music/requirements.txt
 -r tools/docs/requirements.txt
--r .github/scripts/requirements-ci-model.txt
 #
 # Kept out on purpose:
 # - platforms/mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.
@@ -20,10 +19,11 @@
 # - bpy, bmesh, mathutils (Blender), gimpfu (GIMP) and gi (PyGObject) come from the
 #   host application or system packages, not pip.
 
-# Data analysis and plotting. NumPy/SciPy come from the included music and CI
-# training sets; keep their exact pins synchronized. Scikit-learn is training-only
-# in the CI set; PR prediction uses the Python standard library.
+# Data analysis and plotting. NumPy/SciPy come from the included music and artwork
+# sets; keep their exact pins synchronized. Scikit-learn serves the model-fitting
+# tools (for example tools/resource_gradient_model.py).
 pandas==3.0.6
+scikit-learn==1.9.1
 matplotlib==3.11.2
 
 # Build, web asset and deployment helpers

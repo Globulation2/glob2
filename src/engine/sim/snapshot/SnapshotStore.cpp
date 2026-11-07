@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ComputeExecutor.h"
 #include "SnapshotStore.h"
 #include "Game.h"
 #include <algorithm>
+#include <atomic>
 namespace SimulationSnapshot
 {
+namespace
+{
+// Shared by every store, so serials never repeat across resets, worlds or games.
+std::atomic<Uint64> nextBoundarySerial{1};
+}
 Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 {
 	auto required = captureRequirements(options);
@@ -28,6 +35,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 	metrics.entityBytesCopied += storage.entityBytesCopied - entityBefore;
 	metrics.entitySidecarBytesCopied += storage.entitySidecarBytesCopied - sidecarBefore;
 	next.observationRevision = observationRevision;
+	next.boundarySerial = nextBoundarySerial.fetch_add(1, std::memory_order_relaxed);
 	metrics.mapBytesCopied += storage.bytesCopied - copiedBefore;
 	if (detailedMetrics || game.map.computeExecutor().telemetryEnabled()) {
 		const Handle empty;

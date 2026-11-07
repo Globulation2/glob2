@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "gradient/GradientRuntime.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "Team.h"
 #include <Stream.h>
@@ -555,43 +556,43 @@ Uint32 Pipeline::checksum(bool heavy)
 void Map::publishWorldResultsDue()
 {
     const auto tick = game->stepCounter;
-    if (gradientRuntime->worldResultsPublishedTick == tick) return;
+    if (routing().gradientRuntime->worldResultsPublishedTick == tick) return;
     checkActiveClaimRules();
     publishClaimRoutes();
-    if (!gradientPipelineEnabled()) configureGradientPipeline(2, 8);
-    advanceGradientPipeline();
-    gradientRuntime->growth.publish(*this, tick);
-    gradientRuntime->worldResultsPublishedTick = tick;
+    if (!routing().gradientPipelineEnabled()) routing().configureGradientPipeline(2, 8);
+    routing().advanceGradientPipeline();
+    routing().gradientRuntime->growth.publish(*this, tick);
+    routing().gradientRuntime->worldResultsPublishedTick = tick;
 }
 void Map::submitWorldWork(const SimulationSnapshot::Handle &snapshot)
 {
     if (snapshot.tick != game->stepCounter || snapshot.worldIdentity != identity())
         throw std::invalid_argument("World work requires the current observation");
-    if (gradientRuntime->worldWorkSubmittedTick == snapshot.tick) return;
-    stagePeriodicGradientPreparation();
+    if (routing().gradientRuntime->worldWorkSubmittedTick == snapshot.tick) return;
+    routing().stagePeriodicGradientPreparation();
     stageResourceGrowth();
-    preparePendingGradient(snapshot);
-    gradientRuntime->growth.prepare(snapshot, compute);
-    gradientRuntime->worldWorkSubmittedTick = snapshot.tick;
+    routing().preparePendingGradient(snapshot);
+    routing().gradientRuntime->growth.prepare(snapshot, compute);
+    routing().gradientRuntime->worldWorkSubmittedTick = snapshot.tick;
 }
 void Map::stageResourceGrowth()
 {
 	if (!game->gameHeader.isResourceGrowthDisabled())
-		gradientRuntime->growth.stage(game->stepCounter, privateRandom(RandomDomain::GrowthJobs).nextU32());
+		routing().gradientRuntime->growth.stage(game->stepCounter, privateRandom(RandomDomain::GrowthJobs).nextU32());
 }
 void Map::finishResourceGrowth(JoinContext context)
 {
-	gradientRuntime->growth.finish(context);
+	routing().gradientRuntime->growth.finish(context);
 }
 void Map::setResourceGrowthDelay(unsigned delay)
 {
-	gradientRuntime->growth.setDelay(delay);
+	routing().gradientRuntime->growth.setDelay(delay);
 }
 unsigned Map::resourceGrowthDelay() const
 {
-	return gradientRuntime->growth.delay;
+	return routing().gradientRuntime->growth.delay;
 }
 const ResourceGrowth::Metrics &Map::resourceGrowthMetrics() const
 {
-	return gradientRuntime->growth.metrics;
+	return routing().gradientRuntime->growth.metrics;
 }

@@ -7,7 +7,7 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include <span>
 
-#include <SDLGraphicContext.h>
+#include <GAGColor.h>
 
 #include <array>
 #include <string>

@@ -10,7 +10,11 @@ test('browser replay fixture stays within the engine replay acceptance boundary'
   const version = bytes.readUInt32BE(20);
   const reader = fs.readFileSync(path.join(root, 'src/replay/ReplayReader.h'), 'utf8');
   const versions = fs.readFileSync(path.join(root, 'src/app/Version.h'), 'utf8');
-  const minimum = Number(reader.match(/REPLAY_MINIMUM_VERSION_MINOR\s*=\s*(\d+)/)[1]);
+  // The floor is a number or a named format constant from FileFormatVersions.h.
+  const floor = reader.match(/REPLAY_MINIMUM_VERSION_MINOR\s*=\s*(\w+)/)[1];
+  const formats = fs.readFileSync(path.join(root, 'src/app/FileFormatVersions.h'), 'utf8');
+  const minimum = /^\d+$/.test(floor) ? Number(floor)
+    : Number(formats.match(new RegExp(`\\b${floor}\\s*=\\s*(\\d+)`))[1]);
   const current = Number(versions.match(/#define VERSION_MINOR\s+(\d+)/)[1]);
   assert.ok(version >= minimum && version <= current,
     `Replay fixture ${version} is outside ${minimum}..${current}; re-record it using fixtures/README.md`);

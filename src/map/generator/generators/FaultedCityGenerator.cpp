@@ -2,7 +2,7 @@
 #include "FaultedCityGenerator.h"
 #include "Contact.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "LatticeNoise.h"
@@ -365,7 +365,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 
 // A surviving avenue mouth is a broad passage, and occupied neighbourhoods must
 // reach two mouths through their own streets before entering a fault corridor.
-std::string colonyRoutes(const Map &map, const Layout &L, int teams)
+std::string colonyRoutes(const GenerationMap &map, const Layout &L, int teams)
 {
 	const auto walking = walkableTiles(map);
 	for (int gate : L.gates)
@@ -388,7 +388,7 @@ std::string colonyRoutes(const Map &map, const Layout &L, int teams)
 }
 
 // Prove actual non-overlapping construction room, not just many overlapping anchors.
-std::string colonyRoom(const Map &map, const Layout &L, int teams)
+std::string colonyRoom(const GenerationMap &map, const Layout &L, int teams)
 {
 	const Torus t(map);
 	const auto walking = walkableTiles(map);
@@ -417,7 +417,8 @@ std::string colonyRoom(const Map &map, const Layout &L, int teams)
 	return {};
 }
 
-std::string colonyFood(const Map &map, const Layout &L, int teams, const std::vector<int> *sites = nullptr)
+std::string colonyFood(const GenerationMap &map, const Layout &L, int teams,
+					   const std::vector<int> *sites = nullptr)
 {
 	const auto open = walkableTiles(map);
 	const auto units = unitTilesByTeam(map, teams);
@@ -458,11 +459,12 @@ std::string colonyFood(const Map &map, const Layout &L, int teams, const std::ve
 	return {};
 }
 
-bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vector<int> &sites)
+bool populate(GenerationWorld &game, GenerationContext &c, const Layout &L,
+			  const std::vector<int> &sites)
 {
 	const FaultedCityOptions o(c.request);
 	const Torus &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	writeVertices(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k) game.addTeam();
 	for (int i = 0; i < t.size(); ++i)
@@ -565,7 +567,7 @@ GenerationRequest layoutRequest(const GenerationRequest &request, int attempt)
 	return r;
 }
 
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	// Search whole, unmodified city layouts when fractures leave too few healthy
 	// neighbourhoods. Never patch a failed site into a prefabricated home compound.
@@ -593,7 +595,8 @@ bool generate(Game &game, GenerationContext &c)
 		}
 		trial.telemetry.measure("faulted-city.starts.viable-candidates", candidates.size());
 		c.stage = "faulted city settlements";
-		const auto build = [&](Game &g, GenerationContext &probe, const std::vector<int> &sites)
+		const auto build =
+			[&](GenerationWorld &g, GenerationContext &probe, const std::vector<int> &sites)
 		{ return populate(g, probe, L, sites); };
 		const auto choice = chooseScoredSettlements(trial, proposals, build, qualityFailure);
 		if (choice.selected < 0)
@@ -621,12 +624,13 @@ std::string validateRequest(const GenerationRequest &r)
 {
 	if (const auto error = denseColonySizeFailure(r); !error.empty())
 		return error;
-	if (r.wDec < 8 || r.hDec < 8 || r.wDec > 9 || r.hDec > 9 || r.nbTeams < 1 || r.nbTeams > Team::MAX_COUNT)
+	if (r.wDec < 8 || r.hDec < 8 || r.wDec > 9 || r.hDec > 9 || r.nbTeams < 1 ||
+		r.nbTeams > TEAM_MAX_COUNT)
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	return {};
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	Layout L;
 	bool matched = false;

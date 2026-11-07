@@ -14,7 +14,10 @@
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
+#include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
@@ -114,7 +117,7 @@ void Building::transferMaterialsPointer(bool wasShared)
 			assert(Sint64(owner->teamMaterials[r])+localMaterials[r]<=std::numeric_limits<Sint32>::max());
 			owner->teamMaterials[r] += localMaterials[r];
 			localMaterials[r] = 0;
-			owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+			owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,r);
 		}
 	updateMaterialsPointer();
 }
@@ -202,9 +205,9 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 	{
 		const int target = hp < getEffectiveMaxHp() ? type->prevLevel : type->nextLevel;
 		if (target < 0) return false;
-		const BuildingType* site = owner->game->buildingsTypes.get(target);
+		const BuildingType* site = owner->ctx.buildingsTypes->get(target);
 		const BuildingType* completed = hp < getEffectiveMaxHp() ? type
-			: site->isBuildingSite ? owner->game->buildingsTypes.get(site->nextLevel) : site;
+			: site->isBuildingSite ? owner->ctx.buildingsTypes->get(site->nextLevel) : site;
 		if (unitWorking < 0 || unitWorking > site->semantics.assignmentLimit || unitWorkingFuture < 0
 			|| unitWorkingFuture > completed->semantics.assignmentLimit) return false;
 		if (hp<getEffectiveMaxHp())
@@ -218,7 +221,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			// Enforce the rule here as well as in order validation: local callers
 			// may reach this boundary directly. The damaged-building branch above
 			// remains a repair, which does not grant an unavailable building level.
-			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+			if (owner->ctx.gameHeader->isUnitUpgradesDisabled()) return false;
 			if (!isUpgradeAvailable() || !isHardSpaceForBuildingSite(UPGRADE))
 				return false;
 			constructionResultState=UPGRADE;
@@ -254,9 +257,9 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -290,7 +293,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		if (targetLevelTypeNum!=BUILDING_LEVEL_NONE)
 		{
 			recoverTypeNum=targetLevelTypeNum;
-			recoverType=owner->game->buildingsTypes.get(targetLevelTypeNum);
+			recoverType=owner->ctx.buildingsTypes->get(targetLevelTypeNum);
 			if (!canTransferMaterialsTo(recoverType)) return;
 		}
 		else
@@ -303,12 +306,12 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION)
 	{
 		buildingState=ALIVE;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 	}
 	else
 	{
@@ -354,7 +357,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
     // Recovery may shift an overlay footprint after capability registration.
     if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
-        for(int material=0;material<MaterialCount;++material)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,material);
+        for(int material=0;material<MaterialCount;++material)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,material);
     }
 
 	maxUnitWorking=maxUnitWorkingPrevious;
@@ -378,12 +381,12 @@ void Building::launchDelete(void)
 	{
 		cancelProduction();
 		buildingState=WAITING_FOR_DESTRUCTION;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 		owner->stockSuppliers.remove(this);
 		owner->directStockSuppliers.remove(this);
-		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->routing().invalidateSupplierLocations();
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitInside=0;
@@ -399,10 +402,10 @@ void Building::cancelDelete(void)
 {
 	if (buildingState!=WAITING_FOR_DESTRUCTION) return;
 	buildingState=ALIVE;
-	owner->game->areaEffects.changed(gid);
+	owner->ctx.areaEffects->changed(gid);
 	owner->addToStaticAbilitiesLists(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resource);
+		for (int resource=0; resource<MaterialCount; ++resource) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resource);
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
@@ -571,7 +574,7 @@ void Building::updateConstructionState(void)
 			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
-				owner->game->areaEffects.changed(gid);
+				owner->ctx.areaEffects->changed(gid);
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
 				if(constructionResultState == UPGRADE)
 					addForbiddenZoneToUpgradeArea();

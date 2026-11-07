@@ -9,7 +9,7 @@
 #include "GenerationContext.h"
 #include "GenerationResult.h"
 #include "HeightMap.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Resources.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
@@ -74,7 +74,7 @@ void collectPointsColumnOrder(int w, int h, Pred pred, std::vector<MapGeneratorP
 // (splitUpPoints, all at equal weight), then grows the parts from them at the given weights
 // (splitUpArea), relabelling the area's tiles with areaNumbers. Fails when the area has fewer tiles
 // than parts. divideUpPlayerLands uses it to cut a colony's land into twelve equal zones.
-bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+bool divideUpArea(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<int> &weights, std::vector<int> &areaNumbers)
 {
 	std::vector<MapGeneratorPoint> points;
@@ -96,7 +96,8 @@ bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, 
 // Labels every tile inside the axis-aligned ellipse of the given width and height centred on
 // (x, y) with areaN, through the wrap. The test is x^2 * h^2 + y^2 * w^2 < w^2 * h^2 in integers
 // (on half-axes), so it has no rounding drift across platforms.
-void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int width, int height)
+void createOval(GenerationMap &map, std::vector<int> &grid, int areaN, int x, int y, int width,
+				int height)
 {
 	std::int64_t h2 = std::int64_t(height / 2) * (height / 2);
 	std::int64_t w2 = std::int64_t(width / 2) * (width / 2);
@@ -138,7 +139,7 @@ void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int w
 //
 // Last, the points (and weights with them) are shuffled, so which colony lands on which point is
 // random rather than decided by the order the sampling happened to find them in.
-int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+int splitUpPoints(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				  PointSearch search, int maxPasses)
 {
@@ -210,12 +211,12 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	// The values are the same minimums, so a pass makes the same moves as that loop did.
 	struct NearestTwo
 	{
-		Map &map;
+		GenerationMap &map;
 		const std::vector<MapGeneratorPoint> &points;
 		const std::vector<int> &weights;
 		std::vector<std::int64_t> first, second;
 		std::vector<int> firstId, secondId;
-		NearestTwo(Map &map, const std::vector<MapGeneratorPoint> &points,
+		NearestTwo(GenerationMap &map, const std::vector<MapGeneratorPoint> &points,
 				   const std::vector<int> &weights)
 			: map(map), points(points), weights(weights), first(map.getW() * map.getH()),
 			  second(first.size()), firstId(first.size()), secondId(first.size())
@@ -459,15 +460,15 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 // random position, so growth picks its next tile at random from the frontier: regions come out as
 // organic blobs rather than the diamonds a breadth-first flood makes. Claims go 8-way. With
 // buildableOnly, regions only claim terrain that permits buildings.
-void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
+void splitUpArea(GenerationMap &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				 std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
 				 std::vector<int> &areaNumbers, bool buildableOnly)
 {
 	std::vector<int> gradient(map.getW() * map.getH(), 0);
 
-	Uint32 wDec = map.wDec;
-	Uint32 hMask = map.hMask;
-	Uint32 wMask = map.wMask;
+	Uint32 wDec = map.getShiftW();
+	Uint32 hMask = map.getMaskH();
+	Uint32 wMask = map.getMaskW();
 
 	// Frontier cells are inserted at a random position (not just pushed/popped from one end) so
 	// the flood grows into an organic, non-directional shape rather than a stack's snake or a
@@ -568,7 +569,7 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 	}
 }
 
-void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
+void getAllPoints(GenerationMap &map, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
@@ -576,7 +577,7 @@ void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
 		w, map.getH(), [&](int x, int y) { return grid.at(y * w + x) == areaN; }, points);
 }
 
-void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
+void getAllOtherPoints(GenerationMap &map, std::vector<int> &grid, int areaN,
 					   std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
@@ -587,7 +588,7 @@ void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
 // The tiles of a straight line from (x1, y1) towards (x2, y2), the short way round the torus, as a
 // 4-connected staircase (a diagonal step adds both tiles of the corner), so a stroke along it has
 // no diagonal gaps a unit could not walk across. The end tile itself is not included.
-void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
+void getAllPointsLine(GenerationMap &map, int x1, int y1, int x2, int y2,
 					  std::vector<MapGeneratorPoint> &points)
 {
 	int startX = x1;
@@ -653,7 +654,8 @@ void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 
 // Every tile with a differently labelled tile among its eight neighbours: the boundaries between
 // areas, which Concrete islands digs its channels along.
-void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGeneratorPoint> &points)
+void findBorderPoints(GenerationMap &map, std::vector<int> &grid,
+					  std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
 	collectPointsColumnOrder(
@@ -678,7 +680,7 @@ void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGenerator
 
 // Keeps a random n of the points (all of them when there are fewer), by a partial Fisher-Yates
 // shuffle drawing from the "regions" stream.
-void chooseRandomPoints(Map &map, GenerationContext &context,
+void chooseRandomPoints(GenerationMap &map, GenerationContext &context,
 						std::vector<MapGeneratorPoint> &points, int n)
 {
 	n = std::min(int(points.size()), n);

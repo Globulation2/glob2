@@ -4,7 +4,7 @@
 #include "Topology.h"
 #include <string>
 #include <vector>
-class Map;
+class GenerationMap;
 namespace MapGeneration
 {
 // How far colonies are from each other and from what a map promises them, by what it costs to get
@@ -35,11 +35,11 @@ struct StepCosts
 };
 
 /// The cost of stepping onto tile (x, y) of a finished map, -1 when it cannot be entered.
-int stepCost(const Map &, int x, int y, const StepCosts &);
+int stepCost(const GenerationMap &, int x, int y, const StepCosts &);
 
 /// The cheapest cost from any source tile to every tile (0 at a source, -1 where nothing reaches),
 /// eight-connected on the torus unless told otherwise. A source is reached whatever stands on it.
-std::vector<int> costsFrom(const Map &, const Torus &, const std::vector<int> &sources,
+std::vector<int> costsFrom(const GenerationMap &, const Torus &, const std::vector<int> &sources,
 						   const StepCosts &, GridNeighbors = GridNeighbors::Eight);
 
 /// Every colony's cost to reach every other colony's units (row = from, column = to; 0 on the
@@ -52,11 +52,11 @@ struct ContactReport
 	/// The largest minus the smallest nearest-rival cost; -1 when some colony reaches no rival.
 	int spread() const;
 };
-ContactReport contactMatrix(const Map &, int teams, const StepCosts &);
+ContactReport contactMatrix(const GenerationMap &, int teams, const StepCosts &);
 
 /// Every colony's cost, from its units, to the nearest tile of `targets` (-1 when none is reached).
-std::vector<int> costsToTarget(const Map &, int teams, const std::vector<unsigned char> &targets,
-							   const StepCosts &);
+std::vector<int> costsToTarget(const GenerationMap &, int teams,
+							   const std::vector<unsigned char> &targets, const StepCosts &);
 
 /// The largest minus the smallest of a list of costs, -1 when any is -1 (unreachable), 0 when empty.
 int costSpread(const std::vector<int> &costs);

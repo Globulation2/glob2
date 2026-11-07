@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PresentationWork.h>
+#include "gradient/MapRouting.h"
 #include "OwnerTickProfile.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -47,6 +48,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
+#include <cstring>
 #include <chrono>
 #include "Version.h"
 #include "sim/SimulationRunner.h"
@@ -1014,7 +1016,7 @@ void Engine::teardownSession()
 	executor.cancelPresentationAndWait();
 	if (executor.telemetryMode() == ComputeTelemetryMode::Trace)
 	{
-		gui.game.map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+		gui.game.map.routing().finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
 		gui.game.map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
 	}
 	executor.joinAll({JoinReason::Teardown, ComputeTelemetry::NoTick});
@@ -1121,7 +1123,7 @@ void Engine::reloadTurnInitialState()
         auto writer = std::make_unique<ReplayWriter>();
         writer->setSaveObserver(globalContainer->replayWriter->getSaveObserver());
         globalContainer->replayWriter = std::move(writer);
-		globalContainer->replayWriter->init(state.replayPath, gui);
+		gui.startReplay(*globalContainer->replayWriter, state.replayPath);
 	}
 	if (checksumSidecar)
 	{
@@ -1656,7 +1658,11 @@ bool Engine::finishSession()
 
 void Engine::beginIntroCover()
 {
-    if (!globalContainer->runNoX) gui.beginIntroCover(SDL_GetTicks());
+    // GLOB2_INTRO_COVER=0 opens games without the cover. The browser shell sets it
+    // under automation, whose scripted input would otherwise only skip the cover.
+    const char *cover = std::getenv("GLOB2_INTRO_COVER");
+    if (!globalContainer->runNoX && !(cover && std::strcmp(cover, "0") == 0))
+        gui.beginIntroCover(SDL_GetTicks());
 }
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)
@@ -1690,7 +1696,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             else
             {
                 if (globalContainer->gfx->beginRenderFrame()) drawSession();
-                GAGCore::ApplicationHost::wait(std::min(Uint32(8), globalContainer->gfx->renderFrameWait()));
+                GAGCore::ApplicationHost::wait(GAGCore::pacedScreenWait(globalContainer->gfx->renderFrameWait()));
             }
         }
         doRunOnceAgain = finishSession();

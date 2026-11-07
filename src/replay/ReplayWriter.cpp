@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2010 Michiel De Muynck
 
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <Toolkit.h>
+#include <FileManager.h>
+#include "Game.h"
 #include "ReplayWriter.h"
 
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Order.h"
 #include "OrderMessages.h"
-#include "GameGUI.h"
 #include "Version.h"
 #include "Toolkit.h"
 #include "FileManager.h"
@@ -49,12 +53,12 @@ ReplayWriter::~ReplayWriter()
 	delete buffer;
 }
 
-void ReplayWriter::init(const std::string &backend, GameGUI &gui)
+void ReplayWriter::init(const std::string &backend, Game *telemetryGame, const std::function<void(GAGCore::OutputStream *)> &writeHeader)
 {
 	recordingPath = backend;
 	// Avoid trouble
 	checksum = 0;
-	game = gui.replayTelemetryGame();
+	game = telemetryGame;
 	telemetry = {};
 	telemetryStep = 0;
 	finished = false;
@@ -87,7 +91,7 @@ void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 	assert(buffer->isValid());
 
 	// Write the game's header to the buffer
-	gui.save(buffer, "replayHeader");
+	writeHeader(buffer);
 
 	// Write the current glob2 version number to the buffer
 	buffer->writeUint16(VERSION_MAJOR, "versionMajor");

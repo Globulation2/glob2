@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CraterLakesGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
-#include "Map.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
@@ -13,7 +12,7 @@
 #include "Sketch.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -288,7 +287,7 @@ struct Rims
 	int bodies = 0, arcs = 0, dropped = 0, wanted = 0, faces = 0, faceTiles = 0;
 };
 
-Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const CraterType &type,
+Rims planRims(const GenerationMap &map, const Torus &t, GenerationContext &context, const CraterType &type,
 			  const std::vector<int> &body, const std::vector<int> &bodySize, const std::vector<int> &fromWater,
 			  const std::vector<int> &rimReach, const TerrainSketch &mech, const HomeDistance &home, int stone)
 {
@@ -631,9 +630,9 @@ struct LayerCounts
 };
 
 // The crater pass: deep cores, rims, talus, loam, uplands and looks over the finished revision-5 map.
-bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions &o)
+bool craterPass(GenerationWorld &game, GenerationContext &context, const CraterLakesOptions &o)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const int n = t.size();
 	TerrainSketch mech(static_cast<size_t>(n));
@@ -988,7 +987,7 @@ bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions
 }
 } // namespace
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const CraterLakesOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
@@ -1023,9 +1022,9 @@ static bool generate(Game &game, GenerationContext &context)
 // finished terrain by rule group: every deep vertex keeps kDeepSteps - 1 steps of water round it
 // (the shallows), no rock, fertile or rough ground near a colony, and no rim parts the walkable
 // ground round it.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	if (std::string floor = startingFloorFailure(map, teams); !floor.empty())
 		return floor;

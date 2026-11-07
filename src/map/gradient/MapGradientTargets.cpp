@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "GradientFieldIdentity.h"
 #include "GradientTargetCell.h"
 #include "GradientRuntime.h"
@@ -14,11 +15,11 @@
 // seed preparation. A positive weighted market/guard seed is a destination too;
 // comparing its value with GRADIENT_AT_GOAL would incorrectly reject arrival.
 // This never requests a field, updates policy state, or consumes selector RNG.
-bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
+bool MapRouting::gradientGoalValid(GradientFieldKey key,int x,int y) const
 {
-    if (!game || !key.valid(game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount)) return false;
-    const auto index=coordToIndex(x,y);
-    const auto view=cellView();
+    if (!map.game || !key.valid(map.game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount)) return false;
+    const auto index=map.coordToIndex(x,y);
+    const auto view=map.cellView();
     const auto& area=view.areas[index];
     const auto& occupancy=view.occupancy[index];
     const auto& resource=view.resources[index].resource;
@@ -32,8 +33,8 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
     case GradientFieldFamily::Materials:
     case GradientFieldFamily::Markets: {
         if (forbidden || !mobile) return false;
-        const bool natural=!(area.forbidden&teamMask) && (materialMaskAt(index)&(1u<<key.material))
-            && (!properties || !properties->visibleToHarvest || (fogOfWar[index]&teamMask));
+        const bool natural=!(area.forbidden&teamMask) && (map.materialMaskAt(index)&(1u<<key.material))
+            && (!properties || !properties->visibleToHarvest || (map.fogOfWar[index]&teamMask));
         // Natural sources precede resource/building/terrain obstacles in both
         // seed builders. Do not impose movement-blocker precedence on goals.
         if (natural) return true;
@@ -51,7 +52,7 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
             return (team->second.overlay&bit) || (!resourceBlocked && occupancy.building!=NOGBID
                 && Building::GIDtoTeam(occupancy.building)==key.team && (team->second.occupying&bit));
         }
-        const auto* team=game->teams[key.team];
+        const auto* team=map.game->teams[key.team];
         if (!resourceBlocked && occupancy.building!=NOGBID
             && Building::GIDtoTeam(occupancy.building)==key.team) {
             const auto* supplier=team->myBuildings[Building::GIDtoID(occupancy.building)];
@@ -59,59 +60,59 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
         }
         // Overlay suppliers have no occupancy tile. Reuse the existing supplier
         // membership list only for an arrival validation; never scan map cells.
-        if (game->buildingsTypes.usesOverlaySuppliers())
+        if (map.game->buildingsTypes.usesOverlaySuppliers())
             for (const Building* supplier:team->stockSuppliers) {
                 if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround)
                     || !stockSupplierEligibleSlot(supplier,nullptr,key.material,1)) continue;
-                if (((x-supplier->posX)&wMask)<supplier->type->width
-                    && ((y-supplier->posY)&hMask)<supplier->type->height) return true;
+                if (((x-supplier->posX)&map.wMask)<supplier->type->width
+                    && ((y-supplier->posY)&map.hMask)<supplier->type->height) return true;
             }
         return false;
     }
     case GradientFieldFamily::Guard:
         return !forbidden && mobile && !resourceBlocked && (area.guard&teamMask)
             && (air || occupancy.building==NOGBID
-                || !(game->teams[key.team]->allies&(Uint32(1)<<Building::GIDtoTeam(occupancy.building))))
-            && gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(index),key.swim);
+                || !(map.game->teams[key.team]->allies&(Uint32(1)<<Building::GIDtoTeam(occupancy.building))))
+            && gradient_kernel::terrainAllowsMovement(map.terrainPropertiesAt(index),key.swim);
     case GradientFieldFamily::Clear: {
         const auto flags=properties ? view.resourceRegistry->gradientPreparation()[resource.type] : 0;
         return gradient_preparation::rules::clearSeed(forbidden,mobile,resourceBlocked,
             !air && occupancy.building!=NOGBID,GRADIENT_UNREACHABLE,
             flags&(1u<<18),flags&(1u<<19),area.clear&teamMask,area.farm&teamMask,
-            farmAreasEnabled())==GRADIENT_AT_GOAL;
+            map.farmAreasEnabled())==GRADIENT_AT_GOAL;
     }
     case GradientFieldFamily::Forbidden:
         // Outside free tiles are the actual goal set; the existing border pass
         // derives interior propagation seeds from it. No extra neighbor scan.
         return !forbidden && mobile && !resourceBlocked
             && (air || occupancy.building==NOGBID)
-            && gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(index),key.swim);
+            && gradient_kernel::terrainAllowsMovement(map.terrainPropertiesAt(index),key.swim);
     }
     return false;
 }
 
-GradientTargetCell Map::captureGradientTargetCell(size_t index) const
+GradientTargetCell MapRouting::captureGradientTargetCell(size_t index) const
 {
     GradientTargetCell cell;
-    const auto view=cellView();
+    const auto view=map.cellView();
     const auto& area=view.areas[index];
     const auto& occupancy=view.occupancy[index];
     const auto& resource=view.resources[index].resource;
     const auto* properties=resource.type==NO_RES_TYPE ? nullptr : &view.resourceProperties(resource.type);
-    cell.materials=materialMaskAt(index);
-    cell.visibleTeams=properties && properties->visibleToHarvest ? (fogOfWar ? fogOfWar[index] : 0) : UINT32_MAX;
+    cell.materials=map.materialMaskAt(index);
+    cell.visibleTeams=properties && properties->visibleToHarvest ? (map.fogOfWar ? map.fogOfWar[index] : 0) : UINT32_MAX;
     cell.forbidden=area.forbidden;cell.guard=area.guard;cell.clear=area.clear;cell.farm=area.farm;
     cell.immobile=occupancy.immobileUnit!=IMMOBILE_UNIT_NONE;
     cell.groundBlocked=properties && properties->blocksGround;
     cell.airBlocked=properties && properties->blocksAir;
     if(occupancy.building!=NOGBID) cell.buildingTeam=Building::GIDtoTeam(occupancy.building);
-    if(game && cell.buildingTeam!=255)
-        for(int team=0;team<game->teamsCount();++team)
-            if(game->teams[team]->allies&(Uint32(1)<<cell.buildingTeam))
+    if(map.game && cell.buildingTeam!=255)
+        for(int team=0;team<map.game->teamsCount();++team)
+            if(map.game->teams[team]->allies&(Uint32(1)<<cell.buildingTeam))
                 cell.guardBuildingBlockedTeams|=Uint32(1)<<team;
     const auto flags=properties ? view.resourceRegistry->gradientPreparation()[resource.type] : 0;
-    cell.clearable=flags&(1u<<18);cell.farmable=flags&(1u<<19);cell.farming=farmAreasEnabled();
-    const auto& terrain=terrainPropertiesAt(index);
+    cell.clearable=flags&(1u<<18);cell.farmable=flags&(1u<<19);cell.farming=map.farmAreasEnabled();
+    const auto& terrain=map.terrainPropertiesAt(index);
     for(unsigned movement=0;movement<MOVEMENT_CLASS_COUNT;++movement)
         if(gradient_kernel::terrainAllowsMovement(terrain,movement)) cell.openClasses|=std::uint16_t(1)<<movement;
     cell.terrainCosts={std::uint32_t(terrain.groundSpeedQ8),std::uint32_t(terrain.airSpeedQ8),
@@ -120,9 +121,9 @@ GradientTargetCell Map::captureGradientTargetCell(size_t index) const
     return cell;
 }
 
-void Map::gradientTargetCellChanged(size_t index,const GradientTargetCell& before)
+void MapRouting::gradientTargetCellChanged(size_t index,const GradientTargetCell& before)
 {
-    if(!game) return;
+    if(!map.game) return;
     const auto after=captureGradientTargetCell(index);
     auto& state=gradientRuntime->adaptive;
     if(!before.sameRoutes(after)) state.routesChanged();
@@ -149,7 +150,7 @@ void Map::gradientTargetCellChanged(size_t index,const GradientTargetCell& befor
         const auto scope=GradientTargetKey::of(key);
         if(state.targets.find(scope)!=state.targets.end()) state.targetChanged(scope,now);
     };
-    for(unsigned team=0;team<unsigned(game->teamsCount());++team) {
+    for(unsigned team=0;team<unsigned(map.game->teamsCount());++team) {
         const auto t=std::uint8_t(team);
         bool guardMembershipChanged=false;
         for(const auto movement:{std::uint8_t(0),std::uint8_t(AIR_MOVEMENT_CLASS)}) {
@@ -181,28 +182,28 @@ void Map::gradientTargetCellChanged(size_t index,const GradientTargetCell& befor
     }
 }
 
-void Map::gradientGuardCostsChanged(int team)
+void MapRouting::gradientGuardCostsChanged(int team)
 {
     if(team>=0 && team<TEAM_MAX_COUNT) gradientRuntime->adaptive.guardCostsChanged(team);
 }
 
-void Map::gradientAlliancesChanged(unsigned team,Uint32 previousAllies)
+void MapRouting::gradientAlliancesChanged(unsigned team,Uint32 previousAllies)
 {
-    if(!game || team>=unsigned(game->teamsCount()) || gradientRuntime->adaptive.fields.empty()) return;
-    const auto allies=game->teams[team]->allies;
+    if(!map.game || team>=unsigned(map.game->teamsCount()) || gradientRuntime->adaptive.fields.empty()) return;
+    const auto allies=map.game->teams[team]->allies;
     // Only occupied footprints of teams whose alliance bit changed can alter
     // guard eligibility. This rare order visits existing building slots, never
     // map cells outside those footprints or the enrolled field collection.
     for(auto changed=previousAllies^allies;changed;changed&=changed-1) {
         const auto owner=std::countr_zero(changed);
-        if(owner>=unsigned(game->teamsCount())) continue;
+        if(owner>=unsigned(map.game->teamsCount())) continue;
         for(unsigned id=0;id<Building::MAX_COUNT;++id) {
-            const Building* building=game->teams[owner]->myBuildings[id];
+            const Building* building=map.game->teams[owner]->myBuildings[id];
             if(!building) continue;
             for(int y=0;y<building->type->height;++y)
                 for(int x=0;x<building->type->width;++x) {
-                    const auto index=coordToIndex(building->posX+x,building->posY+y);
-                    if(getBuilding(building->posX+x,building->posY+y)!=building->gid) continue;
+                    const auto index=map.coordToIndex(building->posX+x,building->posY+y);
+                    if(map.getBuilding(building->posX+x,building->posY+y)!=building->gid) continue;
                     auto before=captureGradientTargetCell(index);
                     if(previousAllies&(Uint32(1)<<owner)) before.guardBuildingBlockedTeams|=Uint32(1)<<team;
                     else before.guardBuildingBlockedTeams&=~(Uint32(1)<<team);

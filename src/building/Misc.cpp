@@ -12,7 +12,12 @@
 #include "Building.h"
 #include <stdexcept>
 #include "BuildingType.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
+#include "sim/SimServices.h"
+#include "Utilities.h"
+#include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "UnitCargo.h"
@@ -28,18 +33,18 @@
 int Building::getEffectiveMaxHp(void) const
 {
 	const BuildingRuntimeTraits* healthType = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
-		? owner->game->buildingsTypes.getRuntime(constructionOriginTypeNum) : runtime;
-	return healthType->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
+		? owner->ctx.buildingsTypes->getRuntime(constructionOriginTypeNum) : runtime;
+	return healthType->hpMax * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 int Building::getEffectiveInitHp(void) const
 {
-	return type->hpInit * owner->game->gameHeader.getBuildingHpMultiplier();
+	return type->hpInit * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 int Building::getEffectiveHpInc(void) const
 {
-	return type->hpInc * owner->game->gameHeader.getBuildingHpMultiplier();
+	return type->hpInc * owner->ctx.gameHeader->getBuildingHpMultiplier();
 }
 
 void Building::releaseAllWorkers()
@@ -64,7 +69,7 @@ void Building::kill(int diagnosticRemoval)
 	if (!type->isVirtual)
 	{
 		auto& measurements=owner->stats.events();
-		measurements.variants.resize(owner->game->buildingsTypes.size());
+		measurements.variants.resize(owner->ctx.buildingsTypes->size());
 		++measurements.variants[typeNum].removed[diagnosticRemoval];
 		if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && getLongLevel()<NB_BUILDING_LONG_LEVELS)
 			++measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
@@ -110,7 +115,7 @@ void Building::kill(int diagnosticRemoval)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 		owner->dirtyGlobalGradient();
-		owner->map->updateTeamAreaGradients(owner->teamNumber);
+		owner->map->routing().updateTeamAreaGradients(owner->teamNumber);
 		if (unfundedNewSite)
 			owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
 
@@ -133,14 +138,14 @@ void Building::kill(int diagnosticRemoval)
 
 	buildingState=DEAD;
 	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1;
-	owner->game->areaEffects.changed(gid);
+	owner->ctx.areaEffects->changed(gid);
 	owner->stockSuppliers.remove(this);
 	owner->directStockSuppliers.remove(this);
-	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->routing().invalidateSupplierLocations();
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MaterialSlotCount; r++)
 			if (material(r)>0)
-				owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
+				owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, r);
 	
 	updateUnitsHarvesting();
 	
@@ -157,7 +162,7 @@ bool Building::fetchesFromMarkets() const
 
 bool Building::isUpgradeAvailable() const
 {
-	return owner->game->isBuildingTypeAvailable(type->nextLevel);
+	return owner->ctx.services->isBuildingTypeAvailable(type->nextLevel);
 }
 
 bool Building::canUnitWorkHere(Unit* unit,bool attraction,int role)
@@ -216,7 +221,7 @@ void Building::updateMaterialsPointer()
     // Membership is measured after switching the pool, not against the retired
     // pointer. Other suppliers sharing the team pool are diffed at the same time.
     if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
-        for(int r=0;r<MaterialCount;++r)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+        for(int r=0;r<MaterialCount;++r)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,r);
     }
 }
 
@@ -248,7 +253,7 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 	}
     // Construction may immediately reserve delivery. Observe its final
     // availability so an unavailable transient packet is not a fake goal.
-    if(sourceWasEmpty)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resourceType);
+    if(sourceWasEmpty)owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resourceType);
 	owner->stats.events().delivered[resourceType] += accepted;
 	if (type->canExchange)
 		owner->stats.events().transferredIn[resourceType] += accepted;
@@ -313,7 +318,7 @@ MaterialPacket Building::withdrawMaterialPacket(int resourceType)
 	if (type->canExchange)
 		owner->stats.events().transferredOut[resourceType] += before - material(resourceType);
 	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
-		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
+		owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
 	updateCallLists();
 	const Uint32 amount=before-material(resourceType), denomination=type->materialMultiplier[resourceType];
 	const Uint32 divisor=std::gcd(amount,denomination);
@@ -497,7 +502,7 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 		{
 			changeMaterial(resId, -1);
 			if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableMaterial(resId)==0)
-				owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resId);
+				owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber,resId);
 			++owner->stats.events().consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;
@@ -715,23 +720,23 @@ Uint32 Building::checkSum(std::vector<Uint32> *fields, bool legacy152)
 
 int Building::getEffectiveArmor() const
 {
-	if (!type->armor || !owner->game->areaEffects.enabled())
+	if (!type->armor || !owner->ctx.areaEffects->enabled())
 		return type->armor;
 	const auto *base = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
-						   ? owner->game->buildingsTypes.get(constructionOriginTypeNum)
+						   ? owner->ctx.buildingsTypes->get(constructionOriginTypeNum)
 						   : type;
 	const int x = posX - type->decLeft + base->decLeft + (base->width - 1) / 2;
 	const int y = posY - type->decTop + base->decTop + (base->height - 1) / 2;
-	const auto factor = owner->game->areaEffects.at(
+	const auto factor = owner->ctx.areaEffects->at(
 		BuildingAreaEffects::BuildingArmor, owner->teamNumber, owner->map->coordToIndex(x, y));
 	return factor == BuildingAreaEffects::Neutral ? type->armor
 												  : BuildingAreaEffects::scale(type->armor, factor);
 }
 int Building::applyAreaAttack(int value) const
 {
-	if (!value || !owner->game->areaEffects.enabled())
+	if (!value || !owner->ctx.areaEffects->enabled())
 		return value;
-	const auto factor = owner->game->areaEffects.at(
+	const auto factor = owner->ctx.areaEffects->at(
 		BuildingAreaEffects::BuildingAttack, owner->teamNumber,
 		owner->map->coordToIndex(posX + (type->width - 1) / 2, posY + (type->height - 1) / 2));
 	return factor == BuildingAreaEffects::Neutral ? value

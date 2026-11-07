@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GraphicContext.h>
 #include "TouchDial.h"
 #include "GlobalContainer.h"
 #include <algorithm>

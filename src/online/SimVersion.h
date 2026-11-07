@@ -8,7 +8,6 @@
 // games from the same MatchSetup and orders; rooms, queues, AI ratings and verifiers
 // are partitioned by it. The JSON shape is SimVersion in services/online/packages/protocol.
 
-#include "SimRevision.h"
 
 #include <nlohmann/json_fwd.hpp>
 
@@ -80,7 +79,10 @@ namespace Online
 	/// The pseudo-file that puts SIM_REVISION into the hash, hashed first: path
 	/// "#sim-revision" (sorts before every data/ path), content the revision in
 	/// decimal ASCII.
-	SimDataFile simRevisionEntry(int revision = SIM_REVISION);
+	SimDataFile simRevisionEntry(int revision);
+	/// The entry for this build's SIM_REVISION (defined in SimVersion.cpp so this
+	/// header does not recompile its includers on every revision bump).
+	SimDataFile simRevisionEntry();
 
 	/// This build's SimVersion.
 	SimVersion currentSimVersion();

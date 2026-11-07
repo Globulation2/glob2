@@ -16,15 +16,15 @@ import {
 describe('built-in terrain presets', () => {
   it('follow the engine terrain table in ID order', () => {
     const table = readFileSync(
-      new URL('../../../../../src/map/TerrainTypeTable.h', import.meta.url),
+      new URL('../../../../../src/map/TerrainCatalog.cpp', import.meta.url),
       'utf8',
     );
-    const names = [...table.matchAll(/^\s*(?:authored\(|\{)[A-Z_]+, G::\w+, "([a-z_]+)"/gm)].map(
-      (m) => normalizeTerrainPreset(m[1] ?? ''),
+    const names = [...table.matchAll(/^\s*(?:authored\(|\{)[A-Z_]+, "([a-z_]+)"/gm)].map((m) =>
+      normalizeTerrainPreset(m[1] ?? ''),
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-22)).toEqual([
+    expect(TERRAIN_PRESETS.slice(-31)).toEqual([
       'sandstone',
       'pumice',
       'frozen_lake',

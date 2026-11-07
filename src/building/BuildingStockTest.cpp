@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "LegacyPopulationOutput.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -554,18 +556,18 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         supplier->setMaterial(WHEAT,10);
         const Uint16* field=nullptr;
         for(unsigned tick=0;!field && tick<32;++tick) {
-            field=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false,consumer);
+            field=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false,consumer);
             if(!field) game.step(0);
         }
-        REQUIRE(field); REQUIRE(map.gradientRuntime->materialFields.size()==1);
+        REQUIRE(field); REQUIRE(map.routing().gradientRuntime->materialFields.size()==1);
         REQUIRE(field[map.coordToIndex(12,12)]>GRADIENT_UNREACHABLE);
         const std::vector<Uint16> expected(field,field+map.getW()*map.getH());
-        const auto key=map.gradientRuntime->materialFields.begin()->first;
-        auto& entry=map.gradientRuntime->materialFields.begin()->second;
+        const auto key=map.routing().gradientRuntime->materialFields.begin()->first;
+        auto& entry=map.routing().gradientRuntime->materialFields.begin()->second;
         REQUIRE(entry.consumer==consumer->gid); REQUIRE(entry.excludesShared==shared);
         bool inFlight=false;
-        for(const auto& queued:map.gradientRuntime->fieldRequests) if(queued.slot==&entry.published) inFlight=true;
-        map.gradientRuntime->pipeline.visitLogical([&](auto* slot,unsigned,bool) {
+        for(const auto& queued:map.routing().gradientRuntime->fieldRequests) if(queued.slot==&entry.published) inFlight=true;
+        map.routing().gradientRuntime->pipeline.visitLogical([&](auto* slot,unsigned,bool) {
             if(slot==&entry.published) inFlight=true;
         });
         REQUIRE_FALSE(inFlight);
@@ -581,7 +583,7 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
             }
         };
         auto* memory=new GAGCore::MemoryStreamBackend;
-        Cache167Output oldCache(memory); map.saveMaterialRoutingCache(&oldCache); oldCache.flush();
+        Cache167Output oldCache(memory); map.routing().saveMaterialRoutingCache(&oldCache); oldCache.flush();
         const auto cacheBytes=memory->takeContents();
         // New hold metadata did not exist in167. Pin its defined migration
         // defaults in the expected world before comparing complete continuation.
@@ -590,9 +592,9 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         REQUIRE(loadGame(migrated.game,saveGame(game)));
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(cacheBytes.data(),cacheBytes.size()));
         input.seekFromStart(0);
-        migrated.game.map.loadMaterialRoutingCache(&input,true,167);
-        REQUIRE(migrated.game.map.gradientRuntime->materialFields.size()==1);
-        const auto& restored=migrated.game.map.gradientRuntime->materialFields.at(key);
+        migrated.game.map.routing().loadMaterialRoutingCache(&input,true,167);
+        REQUIRE(migrated.game.map.routing().gradientRuntime->materialFields.size()==1);
+        const auto& restored=migrated.game.map.routing().gradientRuntime->materialFields.at(key);
         CHECK(restored.consumer==entry.consumer); CHECK(restored.identity==entry.identity);
         CHECK(restored.type==entry.type); CHECK(restored.x==entry.x); CHECK(restored.y==entry.y);
         CHECK(restored.sourceRevision==entry.sourceRevision); CHECK(restored.topology==entry.topology);
@@ -604,7 +606,7 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         REQUIRE(restored.published); CHECK(restored.cells.get()==restored.published);
         CHECK(std::equal(expected.begin(),expected.end(),restored.published));
         auto* copiedConsumer=migrated.game.resolveBuilding(Game::refOf(consumer)); REQUIRE(copiedConsumer);
-        CHECK(migrated.game.map.lookupMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false,copiedConsumer)==restored.published);
+        CHECK(migrated.game.map.routing().lookupMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false,copiedConsumer)==restored.published);
         CHECK(continuationComponents(migrated.game)==continuationComponents(game));
         const auto upgradedBytes=saveGame(migrated.game);
         glob2test::HeadlessGame upgraded({.header=true}); REQUIRE(loadGame(upgraded.game,upgradedBytes));

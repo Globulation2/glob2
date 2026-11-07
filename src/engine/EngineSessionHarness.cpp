@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
 #include <string>
@@ -25,6 +28,7 @@
 #include "sim/presentation/SceneInputs.h"
 #include "sim/presentation/ScenePreparation.h"
 #include "MenuColony.h"
+#include "render/ViewState.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
 #include "Unit.h"
@@ -760,9 +764,9 @@ TEST_SUITE("EngineSession")
         do {
             colony.draw(800, 600);
             SDL_Delay(1);
-        } while (!colony.view.scene && SDL_GetTicks() < readyBy);
-        REQUIRE(colony.view.scene);
-        CHECK(colony.view.scene->tick == initialTick);
+        } while (!colony.view->scene && SDL_GetTicks() < readyBy);
+        REQUIRE(colony.view->scene);
+        CHECK(colony.view->scene->tick == initialTick);
         CHECK(colony.game->snapshots().metrics.captures == captures);
         colony.update(1000);
         colony.update(1040);
@@ -770,7 +774,7 @@ TEST_SUITE("EngineSession")
         const auto afterStep = colony.game->snapshots().metrics.captures;
         colony.draw(800, 600);
         CHECK(colony.game->snapshots().metrics.captures == afterStep);
-        CHECK(colony.view.scene->tick == initialTick);
+        CHECK(colony.view->scene->tick == initialTick);
         colony.pause();
 		// FrontendTheme retains this serial colony during a foreground match.
 		// Budget both executors, all four possible foreground banks, collectors,
@@ -1330,21 +1334,21 @@ TEST_SUITE("EngineSession")
 		                    }
 		            }
 		            auto regular = seed;
-		            map.updateGlobalGradient(regular.data());
+		            map.routing().updateGlobalGradient(regular.data());
 		            require(regular == expected, "Synchronous gradient differs from queue oracle");
 		            auto scheduled = seed;
-		            auto task = map.updateGlobalGradientTask(scheduled.data());
+		            auto task = map.routing().updateGlobalGradientTask(scheduled.data());
 		            unsigned slices = 0;
 		            while (!task.advance()) require(++slices < 1000, "Gradient did not converge");
 		            require(task.result() && (!fixture || slices >= 8) && scheduled == expected,
 		                    "Scheduled gradient must yield and match the queue oracle");
 		            auto cancelled = seed;
 		            {
-		                auto partial = map.updateGlobalGradientTask(cancelled.data());
+		                auto partial = map.routing().updateGlobalGradientTask(cancelled.data());
 		                if (fixture) require(!partial.advance() && !partial.advance(), "Gradient cancellation must precede completion");
 		            }
 		            // Monotonic relaxation can resume from an interrupted sweep.
-		            map.updateGlobalGradient(cancelled.data());
+		            map.routing().updateGlobalGradient(cancelled.data());
 		            require(cancelled == expected, "Interrupted gradient could not converge on restart");
 		        }
 		    }
@@ -1405,7 +1409,7 @@ TEST_SUITE("EngineSession")
 		            require(replayGui.load(&header), "Could not load replay header for the memory recording");
 		        }
 		        ReplayWriter memory;
-		        memory.init("", replayGui);
+		        replayGui.startReplay(memory, "");
 		        for (ReplayWriter* recording : {&writer, &memory}) {
 		            recording->setCheckSum(0xa1b2c3d4);
 		            recording->pushOrder(std::make_shared<PauseGameOrder>(true));

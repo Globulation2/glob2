@@ -1,16 +1,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Periodic open-water waves shared by water and deep water.
+"""Periodic open-water waves shared by water, deep water and dark water.
 
 Water is opaque animated tiles in the colour of the retired scrolling ocean
 backdrop (content/data/gfx/water0.png averaged about (69, 52, 200), luma 74).
-Water and deep water are cells of one 4x4-cell periodic block (`variant_grid`),
+The waters are cells of one 4x4-cell periodic block (`variant_grid`),
 so a wave field four cells across continues over every cell edge. The field is
 a sum of plane waves with whole wave numbers on that block, each advancing a
 whole number of cycles per loop: every cell animates locally and all cells
 share the clock, so crests roll across open water in one direction. A swell
 toward the lower right sets the bands; finer cross chop breaks their crests
 into moving glints. Deep water reads the same field (same seed and wind), so
-crests carry on across the shallow/deep blend. Statistics only, no pixels read."""
+crests carry on across the shallow/deep blend; so does dark water. Statistics
+only, no pixels read."""
 import math
 import random
 
@@ -114,16 +115,21 @@ def wave_cell(ctx, values):
     return out
 
 
-def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
-    """Swell bands lit on their leading face, with glints where chop crests
-    ride swell crests."""
+def wave_layers(ctx):
+    """The swell, chop and swell-front fields of the cell or block `ctx` shows."""
     common = wave_fields(ctx.phase, ctx.phases)
     if ctx.size == WAVE_SIZE and ctx.variant:
         own = wave_fields(ctx.phase, ctx.phases, ctx.variant)
         fields = tuple(blend_fields(a, b, ctx.interior_mask) for a, b in zip(common, own))
     else:
         fields = common
-    s, c, f = (wave_cell(ctx, values) for values in fields)
+    return tuple(wave_cell(ctx, values) for values in fields)
+
+
+def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
+    """Swell bands lit on their leading face, with glints where chop crests
+    ride swell crests."""
+    s, c, f = wave_layers(ctx)
     t = [0.5 + swell_weight * a + chop_weight * b for a, b in zip(s, c)]
     rgb = ramp([smoothstep(0.05, 0.5, v) for v in t], [(0.0, palette["deep"]), (1.0, palette["base"])])
     rgb = mix(rgb, palette["light"], [0.8 * smoothstep(0.45, 0.85, v) + front * smoothstep(0, 1, d)

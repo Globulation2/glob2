@@ -13,7 +13,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | --- | --- |
 | Simulation and orders | `src/game/` (`Game_sync.cpp`, orders in `orders/`, rules in `rules/`), `src/engine/EngineRun.cpp`; simulation thread and client channels in `src/engine/sim/`; replays in `src/replay/` |
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` (statistics in `team/stats/`), `src/resource/`; each holds its type tables in `types/` and its drawing or HUD code in `render/` or `hud/` |
-| Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/`; generators in `generator/`, the editor in `editor/` |
+| Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` (routing API: `gradient/MapRouting.h`, reached as `map->routing()`); generators in `generator/`, the editor in `editor/` |
 | AI implementations | `src/ai/`, one directory per AI, behind `AIImplementation` |
 | Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libs/gag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
@@ -33,103 +33,95 @@ Use these pointers to find the current implementation, rather than treating this
 guide as a substitute for reading it. Update affected documentation in the same PR
 when changing described behavior, commands, paths or policies.
 
-## Documentation and temporary evidence
+## Documentation and evidence
 
-Curate committed documentation deliberately. A file being written in the working
-tree, useful during development, or referenced in a pull request is not by itself
-a reason to commit it. Add a document only when it has a clear long-term audience,
-belongs in a category listed in `docs/README.md`, and will be maintained with the
-behavior it describes. Prefer updating an existing guide over adding a new report.
+Commit documentation only when it has a long-term audience, a category in
+`docs/README.md`, and will be maintained with the behavior it describes. Prefer
+updating an existing guide over adding a new report. Never commit development
+artifacts: screenshots, dumps, dated benchmark reports, working notes or PR
+narratives. Generated files go under the ignored `artifacts/`, notes and draft PR
+text under `docs/.work/`; the legacy `artifacts/`, `evidence/`, `validation/` and
+`.work/` directories anywhere under `docs/` are ignored too.
 
-Do not commit development artifacts, validation dumps, dated benchmark reports,
-working notes or PR narratives. Use these ignored local directories instead:
+Evidence for a pull request lives in its description: the commands run, result
+counts, checksums, a short before/after table and at most a few screenshots.
+Anything that does not fit there is not kept; there are no evidence branches,
+artifact repositories or committed dumps. Summarize durable conclusions in the
+relevant guide instead.
 
-- `artifacts/` for generated screenshots, maps, saves, replays, logs, datasets,
-  profiles, archives and other review evidence;
-- `docs/.work/` for temporary Markdown notes, validation narratives and draft PR
-  material.
-
-Broad AI experiments must use the storage controls in `tools.tournaments` (see
+Broad AI experiments use the storage controls in `tools.tournaments` (see
 [experiment storage](docs/tools/tournaments.md#experiment-storage)); standalone
 runners must enforce equivalent per-attempt, campaign and free-space limits.
-Default to results, seeds, frozen inputs and compact telemetry. Select a bounded
-set of games for replays/saves, and use exhaustive per-object checksum dumps only
-for focused diagnostics with explicit byte allowances. Compress logs while
-capturing them; do not accumulate raw output until the end of each match. Never
-silently truncate a measurement or count storage failures as successful games.
-
-Before committing a documentation file, remove transient command output, local
-paths, dated status reports and redundant screenshots. Attach evidence needed for
-review to the pull request or keep it on a dedicated evidence branch. Summarize
-durable conclusions in the relevant guide. The legacy
-`artifacts/`, `evidence/`, `validation/` and `.work/` directories anywhere under
-`docs/` are also ignored to prevent accidental recommits; do not use them for
-permanent docs.
+Default to results, seeds, frozen inputs and compact telemetry, compress logs while
+capturing them, and never silently truncate a measurement or count storage
+failures as successful games.
 
 ## Compatibility reminders
 
-- Preserve engine compatibility and identical simulation execution across supported
-  platforms. For changes that can affect simulation results or portability, run the
-  same initial state, seed and orders on affected platforms and compare per-tick
-  simulation checksums; they must match. See [replay verification](docs/development/headless-replays.md).
-  CI builds and matching replay orders alone do not establish equivalent execution;
-  report any platform coverage that could not be verified.
-- Save-state backward compatibility is deliberately durable and has broken for real
-  before: `MINIMUM_VERSION_MINOR` in `src/app/Version.h` is the floor of save formats the
-  loader must still read, and it moves far more rarely than `VERSION_MINOR` itself. A
-  save-format change needs version-gated loading that keeps existing save files
-  working, not just a version bump; check save/load continuity whenever simulation
-  state, caches or scheduling change, since a derived cache is not always safe to
-  discard on load. Dropping support for existing saves is a compatibility break
-  that needs an explicit, called-out decision, never a side effect of an unrelated
-  change.
-- Replay and network compatibility are a separate question from saves, and reset far
+- **Simulation path.** Code under `src/game/`, `src/unit/`, `src/building/`,
+  `src/team/`, `src/resource/`, `src/map/` (including `gradient/`, `pathfind/` and
+  `generator/`), `src/field/`, `src/ai/`, `src/engine/sim/`, `src/replay/`,
+  `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
+  simulation data files listed by `deploy/sim_version.py`, and the strict numeric
+  flags in `src/SConscript` (`-fno-fast-math -ffp-contract=off`) is the simulation
+  path. A change that can alter what it computes needs matching per-tick checksums
+  for the same state, seed and orders on Linux and one other platform you can run
+  (macOS or a browser build), using the dev build; see
+  [simulation verification](docs/development/simulation-verification.md). A change
+  to optimization flags or compilers needs a same-platform `-O0` against `-O3`
+  checksum match instead. Changes outside the path need no cross-platform run; say
+  so in the PR.
+- **Sim version.** `SIM_REVISION` in `src/game/SimRevision.h` is the only thing that
+  ties online rooms, ratings and verifiers to simulation behavior. Bump it in every
+  change that can alter what the simulation computes from the same setup and
+  orders (rules, units, AI, order validation, map loading, random number use,
+  scripting), even when saves and replays stay compatible, and run
+  `python3 tools/refresh_sim_fixtures.py` in the same change: it regenerates every
+  revision-keyed fixture, and CI fails when the committed `match verify` trace moves
+  without a new sim version ([Simulation version](docs/multiplayer/turn-engine.md#simulation-version)).
+- **Saves** are durably compatible: `MINIMUM_VERSION_MINOR` in `src/app/Version.h` is
+  the floor of save formats the loader must still read, and it moves far more
+  rarely than `VERSION_MINOR`. A save-format change needs version-gated loading that
+  keeps existing files working, not just a version bump; check save/load continuity
+  whenever simulation state, caches or scheduling change, since a derived cache is
+  not always safe to discard on load. Dropping save support is an explicit,
+  called-out decision, never a side effect of an unrelated change.
+- **Replays and network** compatibility is a separate question from saves and resets
   more readily: a simulation change can invalidate replays and mixed-client games
-  without changing a single saved byte. Check `src/replay/ReplayReader.h`, `src/app/Version.h`
-  and `src/online/SimVersion.cpp` for replay acceptance and network/sim version
-  gates, and test the affected acceptance boundaries directly.
-- Online play groups players, AI ratings and match verifiers by sim version, and only
-  `SIM_REVISION` in `src/game/SimRevision.h` ties that version to simulation code. Bump it
-  in every change that can alter what the simulation computes from the same setup and
-  orders (rules, units, AI, order validation, map loading, random number use), even
-  when saves and replays stay compatible, and regenerate the golden match record in the
-  same change. CI fails when the committed `match verify` trace moves without a new
-  sim version; see [Simulation version](docs/multiplayer/turn-engine.md#simulation-version).
+  without changing a saved byte. Check `src/replay/ReplayReader.h`,
+  `src/app/Version.h` and `src/online/SimVersion.cpp` and test the acceptance
+  boundaries you move.
+- **Headers.** Keep version constants out of headers and simulation headers free of
+  rendering, HUD, UI and the full SDL umbrella; `test/check_header_layering.py`
+  enforces layering, fan-in budgets and cycles
+  ([header dependencies](docs/development/conventions.md#header-dependencies)).
 
-## Development and release builds
+## Build tiers
 
-Use `python3 tools/dev_build.py` for routine editing and smoke checks. It builds
-all features supported by the selected platform, enables compiler caching, and
-selects a separate fast-development output directory (`dev_fast=1`, `-O0 -g1`).
-Basic symbols support backtraces but provide limited variable inspection. Pass
-SCons options and targets directly, for example `target=web`, `target=android
-arch=arm64-v8a`, `target=ios environment=simulator`, or `engine-tests`.
+| Tier | Command | Use it for |
+| --- | --- | --- |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features) | editing, tests, checksum and golden traces, save/replay checks |
+| perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols) | the first measurement of a performance change |
+| perf-confirm | `python3 tools/dev_build.py perf=1 opt=3` | the number you quote in a performance PR |
+| release | `scons release=1` and the platform packaging workflow | shipping and package verification only |
 
-Use ordinary `scons` (or `tools/dev_build.py dev_fast=0 linker=default`) for full
-debug information and detailed debugger variable inspection. `pch=1` and
-`unity=1` are opt-in development experiments, usable separately or together;
-verify their result against ordinary compilation. They are not release options.
-PCH consumers compile directly because the repository forbids the ccache
-sloppiness settings required for PCH caching. Other objects remain cacheable.
+Never ship a dev or perf build, and never quote release measurements as PR
+evidence: perf builds exist so that every performance claim is reproducible from
+one command. Compare against the prebuilt master baseline
+(`tools/dev_baseline.py`, `tools/perf_ab.py --baseline master`) rather than a second
+worktree. Plain `scons` gives full debug information; `pch=1` and `unity=1` are
+development experiments. `compile_profile=core` leaves most generators, three AIs
+and the editor out of focused dev builds ([core profile](docs/development/build-options.md#core-compile-profile));
+final PR verification always uses the default full profile. Simulation checksums must match between the dev and perf
+builds of one platform; do not bump the sim version to mask a build-induced
+mismatch. Fast-build success alone does not establish release readiness.
 
-Browser development defaults to `web_variant=threaded`; use `web_variant=serial`
-when the browser cannot provide cross-origin isolation and worker rendering.
-Normal browser builds and `web-package` use both variants. Single-variant builds
-retain recording, music, scripting, Hive and other supported browser features.
-
-Use `scons release=1` and the platform's existing packaging workflow for shipping,
-package verification, and representative performance measurements. Never ship a
-fast/PCH/unity development build or compare its runtime performance to release.
-Fast-build success alone does not establish release readiness or waive simulation
-determinism, save/load continuity, replay/network acceptance, numeric guards, or
-platform checks. Keep incomplete platform coverage explicit in review evidence.
-
-The development command uses a 12 GiB compiler-cache ceiling; `CCACHE_MAXSIZE`
-overrides it. Shared cache/dependency pruning defaults to 32 GiB, configurable
-with `GLOB2_DEV_BUDGET_GIB`. Builds never prune the managed store automatically;
-inspect `tools/dev_environment.py status` and explicitly run its `prune` command.
-See [Build options](docs/development/build-options.md#fast-development-builds)
-for configuration, dependency reuse, profiling and validation details.
+Every checkout shares one compiler cache, runtime-asset export and CPU token pool,
+so parallel lanes cost little more than one; see
+[build options](docs/development/build-options.md) for cache and lane details.
+`python3 tools/dev_environment.py disk`, `worktrees` and `builds --gc` report and
+reclaim space, and builds stop before the disk fills
+([development storage](docs/development/development-storage.md#reclaiming-space)).
 
 ## Dependencies
 
@@ -189,89 +181,37 @@ map distributions comparable. Retain actual outcomes and completion times as
 checks against improving a model score without improving play. See
 [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
 
-## Review and merge ownership
+## Review and merge
 
-The author prepares and revises the PR and may merge their own changes, including
-core game behavior and policy changes. Approval from a second maintainer is not
-required. Independent review is optional.
+The author prepares, verifies and merges their own PR, including core behavior and
+policy changes; independent review is optional. The PR description states the
+intended result, the commands run with their results, what was not covered and
+why. Visual or feel changes include a screenshot or a sentence on how it plays; a
+maintainer playing the result is part of review. Performance changes include the
+table from `tools/perf_ab.py`. Address review feedback when provided.
 
-The compatibility reminders and expectations for preserving the game's feel above
-still apply. Back validation claims with artifacts a reviewer can actually check:
-save files, replays and checksums; screenshots or video for visual/UX changes;
-before/after performance tables with the seeds and commands behind them. A
-described-but-unattached test is not evidence.
+## Validation and CI
 
-Address review feedback when provided, and give a concise account of the intended
-result, verification and limits in the PR.
+Merging waits for the **fast gate** (`.github/workflows/ci-fast.yml`, target under
+15 minutes): cheap contracts, the sim-version check, header layering, a Linux build
+and the headless test tier. Everything else (full Linux matrix, Windows, macOS,
+Android, browsers, coverage) runs on master every four hours and is not a merge
+prerequisite. Add the `ci:full` label to run the full matrix on a PR whose
+change touches build inputs, shared headers, platform shells or test
+infrastructure. Keep unfinished PRs in draft.
 
-## Validation and CI feedback
+**Master red rule.** When the newest full master run has been failing for more
+than 24 hours, the next merge must be the repair or a revert; the gate's
+`master-health` job enforces this and is satisfied by the `ci:repair` label. Keep
+repair PRs focused, retain failure evidence and confirm recovery with the next
+full master run. Before landing, rebase on current master; never merge a branch
+whose rebase stopped on a conflict.
 
-Keep unfinished PRs in draft. Draft and ready PRs run cheap contracts and, for
-ordinary engine changes, a predictive subset of hosted checks. The default ranking
-budget is 12% of eligible logical checks, rounded up. New checks with no history
-and required build prerequisites are added. This is a check-count budget, not a runner-time or error
-recall guarantee. Documentation and other cheap-only changes remain cheap.
-Becoming ready re-evaluates the same policy. Relevant local or VM testing remains
-the standard merge verification path, and maintainers may accept their own evidence.
-A successful `Relevant checks passed` result verifies the selected inventory; it
-does not establish that unselected checks passed or accept local evidence.
-
-`ci:run` requests affected hosted verification, including the complete primary
-GCC 13 suite when native checks apply. `ci:full` requests the full development
-matrix, even in draft. `ci:windows`, `ci:android` and `ci:browsers` expand selected
-engine verification; they do not start engine checks on cheap-only changes.
-CI/build/test infrastructure changes and an unavailable PR diff select full
-verification. The selector retains explicit prerequisites and rejects missing,
-failed, cancelled or unexpectedly skipped selected jobs.
-
-Repository variables control ordinary PR prediction: `CI_PR_CHECK_BUDGET` is a
-fraction in `(0, 1]` and defaults to `0.12`; `CI_PR_FULL_AUDIT_PERCENT` is a sampling
-percentage in `[0, 100]` and defaults to `0`; `CI_PREDICTIVE_ENABLED=false` selects
-full PR coverage. Every retained master push still runs the full development
-matrix. See [PR verification and CI](docs/development/verification.md) for the
-trusted model/history artifact, retraining guard, fallbacks and timing evidence.
-
-Choose focused local checks from the change's actual risks and explain coverage
-and omissions. Record tested revision/base, environment, commands, results,
-coverage rationale and accessible evidence in the PR using the
-[evidence template](docs/development/verification.md#local-and-vm-pr-verification).
-Refresh evidence when later edits affect tested behavior or integration. Preserve
-all affected simulation determinism, save/load, replay/network, platform and
-simulation-version requirements; focused or predictive coverage does not waive
-those boundaries.
-
-Full master CI detects regressions asynchronously after merges. Every retained
-master push runs the full development matrix, irrespective of tier-reduction
-settings. Active master runs finish, with only the newest pending push retained;
-never cancel a running master run to clear a merge burst. Nightly is a fallback:
-it skips expensive jobs only when available successful full hosted evidence covers
-the exact master SHA under the current coverage policy. Manual and release
-verification remain separate. Local PR evidence never becomes a hosted checkpoint.
-
-Use focused checks while editing, then verify the final PR revision with justified
-relevant coverage and record the evidence. Keep every affected platform and
-compatibility boundary covered; changing shared headers, build inputs or test
-infrastructure can require broader checks than the apparent feature area.
-When an API changes, update its test doubles and build the affected harnesses. Fixtures that change process-wide SDL drivers or other global
-state must restore it or run in an isolated process through the engine test registry.
-
-Fetch current master before final validation and resolve actual conflicts. Do not
-merge or rebase merely because unrelated commits advanced master: hosted PR
-verification, when requested, tests the merge result against its recorded base. If newer base changes affect the same
-components, dependencies or CI configuration, refresh integration validation.
-Respect remaining branch protections. Hosted checks may be pending or unavailable
-at merge; known failures introduced by the PR still require resolution. Existing
-master regressions impose no merge restriction: PRs can continue merging while
-maintainers diagnose and repair them asynchronously. Retain failure evidence and
-prioritize repair; record verification in repair PRs and use subsequent full master
-results to confirm recovery. Master need not become green before other PRs merge.
-
-For CI speed changes, record queue delay, execution time, runner minutes and time
-to result separately. Preserve the selected-case inventory and compare ten
-successful runs with matching event and coverage before claiming savings. Keep
-projections distinct from measurements. Preserve the full master inventory when
-changing predictive PR selection; partial PR success is not a full checkpoint.
-Reuse artifacts only when source revision, compiler, flags and dependency inputs
-match. Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
-concurrency or rebuilding the same inputs. Keep repair PRs focused so unrelated
-feature work does not hold up a validated fix.
+Locally, `python3 test/run_tests.py` runs the headless tier; `--tier full` adds
+display and slow cases; `--affected` runs only the cases whose recorded coverage
+intersects your change. Choose focused checks from the change's actual risks, keep
+every affected compatibility boundary covered, and fetch current master before
+final validation without rebasing merely because master advanced. When an API
+changes, update its test doubles and build the affected harnesses; fixtures that
+change process-wide SDL drivers or other global state must restore it or run in
+an isolated process. See [PR verification and CI](docs/development/verification.md).

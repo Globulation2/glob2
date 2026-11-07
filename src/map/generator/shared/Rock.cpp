@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Rock.h"
 #include "GenerationWork.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "Morphology.h"
 #include "ResourceSemantics.h"
 #include <algorithm>
@@ -76,7 +76,7 @@ std::vector<unsigned char> deepCore(const Torus &t, const std::vector<unsigned c
 	return core;
 }
 
-std::string quarryFault(const Map &map, const Torus &t, const std::vector<unsigned char> &quarry,
+std::string quarryFault(const GenerationMap &map, const Torus &t, const std::vector<unsigned char> &quarry,
 						const std::vector<int> &owner, int colonies, int least)
 {
 	std::vector<int> stone(std::max(0, colonies), 0);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorPackage.h"
 #include "ToolkitBinding.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include <nlohmann/json.hpp>
 
 namespace

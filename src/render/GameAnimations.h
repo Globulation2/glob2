@@ -57,7 +57,7 @@ struct UnitEffectAnimation
 //!
 //! Storage is per-sector (one list per Map sector) to preserve the existing
 //! per-sector flush pattern of GraphicContext::finishDrawingSprite in
-//! Game::drawMapBulletsExplosionsDeathAnimations.
+//! MapDrawer::drawMapBulletsExplosionsDeathAnimations.
 class GameAnimations
 {
 public:

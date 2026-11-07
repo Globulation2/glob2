@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "AI.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
+#include "DrawFixtures.h"
 #include "GameGUIDialog.h"
 #include "UIRecordingCanvas.h"
 #include "ScopedEnvironment.h"

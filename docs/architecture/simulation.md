@@ -247,13 +247,17 @@ checksum adapter remains available for diagnostic fixtures.
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
   changes must not change saved state or simulation RNG use.
 - Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
-  gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
-  name, string-table label and semantic colours, and the `TerrainProperties.h` and
-  `TerrainPresentation.h` tables derive from it. Members of a group are byte-identical
+  gameplay group; `TerrainGroupTable.h` gives every `TerrainType` its group as a
+  constexpr table, from which `TerrainProperties.h` derives the inline per-cell
+  profiles; `TerrainCatalog.cpp` holds each type's external name, string-table label
+  and semantic colours behind `TerrainCatalog.h` (`terrainTypeDefinition`,
+  `terrainTypeByName`) and defines `TerrainPresentations`. Editing a name or colour
+  therefore recompiles one file. Members of a group are byte-identical
   profiles, so the registry deduplicates them into one property index; use
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
-  Adding a type is one enumerator, one row, one label and one material binding;
-  adding a group is one profile and, when gated, one `ExperimentId`.
+  Adding a type is one enumerator, one group row, one catalogue row, one label and one
+  material binding, plus the format gate below; adding a group is one profile and,
+  when gated, one `ExperimentId`.
 - Format 141 raised the built-in count from 7 to 31; format 146 retired the two
   shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 191
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
@@ -276,7 +280,7 @@ checksum adapter remains available for diagnostic fixtures.
   Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
-  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
+  (from `src/map/io/TerrainFormatHistory.h`: `TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
   `TERRAIN_COUNT_BEFORE_GROUND_LOOKS`, `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE`,
   `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW`, `TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE`,
   `TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE`, `TERRAIN_COUNT_BEFORE_HARDPAN`,
@@ -665,7 +669,7 @@ checksum adapter remains available for diagnostic fixtures.
   to 16 bits for the larger per-team horizon; older byte counts remain readable.
   Maps without an active pipeline retain the
   synchronous fallback.
-  `Map::predictBuildingDepth` reads the production
+  `MapRouting::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
   reader demand (its serving search's required cost and `settledCostHint`). It only moves
   search work between worker and owner. Experimental depth overrides are retired.

@@ -62,6 +62,30 @@ Saves, replays and online sim-data hashes use the virtual paths, so the layout o
 the repository does not affect them. `debian/`, `snap/` and `fastlane/` stay at the
 root because dpkg, snapcraft and F-Droid look for them there.
 
+## Module libraries
+
+`scons/sources.py` groups the client objects into two link layers, each built as a
+static library that only the module test binaries link (the game keeps linking the
+loose objects):
+
+| Library | Group | Holds |
+| --- | --- | --- |
+| `libglob2_map.a` | `MAP_SOURCES` | `src/map` (cells, terrain, resources, gradients, routing, pathfinding, claims, map I/O), `src/field`, `src/resource`, `src/common` and the snapshot views map reads (`engine/sim/snapshot/WorldSnapshot.cpp`) |
+| `libglob2_sim.a` | `SIM_SOURCES` | `src/game` without screens, `src/unit` and `src/building` without render and HUD code, `src/team`, `src/engine/sim`, `src/replay`, `src/scripting`, every AI, and the simulation files under `src/map` (`Sector`, `MapTiling`, `MapSetImport`) |
+
+Dependency direction is presentation and application, then sim, then map, then
+libgag and libusl. The direction is not yet strict at link time: map still calls
+into sim through `Game` hooks, unit geometry and claims, building routes and
+`Sector`, and sim still reaches a few presentation and application objects
+(`GameAnimations`, the scene extractor behind game diagnostics, `TeamDisplay`, the
+order codecs in `src/net/message`, `SimVersion`, and `GlobalContainer` for building
+types, replay writers and settings). `test/tests.py` lists each of these welds as
+the stubs or production objects its module test binary adds, and
+`python3 tools/link_graph.py` (nm-based closures, strongly connected components and
+reference chains) shows them for a built tree. A change that removes a weld also
+removes its stub or production entry; a new one shows up as an undefined symbol
+when a module test binary links an object that references it.
+
 ## Changing a boundary
 
 Extend the owning domain, update capture/query contracts and test doubles, and build affected harnesses. Verify determinism, continuation and admission boundaries through [simulation verification](../development/simulation-verification.md). Keep presentation caches and diagnostics bounded; never rely on thread scheduling, pointer order or unspecified collection iteration for game outcomes.

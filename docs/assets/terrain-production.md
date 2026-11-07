@@ -18,8 +18,8 @@ one material changes only that material's record. To add a material, add a
 module there; the package registers every module it contains. Static materials have four
 interchangeable 8×8 layouts (256 variants), and so do lava, ember field and molten lava pool, so
 their glow no longer repeats on the 8×8 grid (1,024 frames each over four
-phases); water and deep water have one 4×4 layout, keeping their animated
-banks at 256 frames each. Frames are stored as
+phases); water, deep water and dark water have one 4×4 layout, keeping their
+animated banks at 256 frames each. Frames are stored as
 `content/data/gfx/terrain-<name>N.png` at 32×32 RGBA and
 `content/data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
 in `content-src/gfx/<name>/provenance.json`. The shared tile code in
@@ -254,14 +254,17 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws up to seven decor layers, in order: up to two connected masses
-  that stand on open ground (`"connected_open": true`: cliffs, glacier and the
-  other Barriers masses), connected foliage (hedge and thicket), every other
-  obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
-  masses. Each layer draws only from its own corners, so cliffs show their walls where they
-  meet foliage or crags, and the foliage or rocks keep their own edge on the
-  other side. Eligibility follows rendered material bindings, including custom
-  materials.
+- A cell draws up to seven decor layers, in order: the connected masses that
+  stand on open ground (`"connected_open": true`: cliffs, glacier and the other
+  Barriers masses), connected foliage (hedge and thicket), every other obstacle
+  (stone pillars and the Outcrops looks), then the terraces of tiered masses.
+  Every mass at a cell draws, so none ends in a square notch along the cell
+  grid: masses fill the first layers in rank order (more north corners, then
+  more corners, then the lower id), and foliage beside three masses draws after
+  them. Each layer draws only from its own corners, so cliffs show their walls
+  where they meet foliage or crags, and the foliage keeps its own edge on the
+  other side (crags keep clear of the rim, below). Eligibility follows rendered
+  material bindings, including custom materials.
 - An undecorated corner, such as ordinary grass, sand or water, suppresses the
   foliage and obstacle layers in that cell, preserving a clear border against
   open ground. The open-ground layer still draws there, so the rim and walls of
@@ -269,6 +272,14 @@ A material opts in with a `decor` block:
 - Obstacle clusters stand in the middle of their cell, not on their corners,
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
+- Stone pillars and the Outcrops looks go further and keep clear of open-ground
+  masses (`"clear_of_masses"`, 0 or 1, object decor only; every built-in object
+  decor sets 1, so the corner-count rule above now matters only for custom
+  object decor). A cell draws none of that decor when a mass vertex lies
+  within that many vertices of its corners (0: its own corners), so spires and
+  pillars never crowd a cliff's rim, walls or terraces. One vertex is the
+  terrain a cell's fog check already covers. The cells still play as obstacles;
+  they show only their ground, and the mass's rim draws in the cells it touches.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
@@ -366,8 +377,8 @@ of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Cliffs draw in their own decor
-layer, so against hedge, thicket or crags they keep their walls and the
-neighbour keeps its own edge.
+layer, so against hedge, thicket or crags they keep their walls; hedge and
+thicket keep their own edge, while crags keep clear of the rim.
 
 Glacier is the same connected plateau rendered in ice by a second cliff style
 (`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed
@@ -419,8 +430,9 @@ Sandstone benches are a pale caprock split by joints over thick beds that step b
 at their feet. Obsidian ridge is a heap of flat glassy shards, each turned its own
 way to the sky with an occasional glint and bright crests where they meet. Granite
 tors are rounded blocks broken by sheeting joints, with moss in the shaded gaps.
-Travertine terraces are matte calcite steps holding shallow milky pools, each
-spilling over a rounded drape.
+Travertine terraces show only the stone, since the renderer stacks the tiers: ivory
+to beige calcite in soft horizontal beds, with porous beds of pinholes and a few long
+lenses between denser, almost clean ones, on fluted pale flowstone walls.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
@@ -571,27 +583,30 @@ judge repetition in mixed-block previews.
 
 Regular water (`terrain_synth.py` recipe `water`, sprite `content/data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
-Water and deep water use one 4×4 layout with sixteen phases
+Water, deep water and dark water use one 4×4 layout with sixteen phases
 (`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
 periodic fields from plane waves whose wave numbers and animation cycles are
 integers (`WAVE_GRID` sets the block size; wave numbers scale with it).
 Every cell animates locally on the shared clock, so swell crests roll toward the
 lower right and finer cross chop breaks them into moving glints. Deep water
-reads the same geometry with its darker palette and less chop.
+reads the same geometry with its darker palette and less chop. Dark water reads
+it again as an inky, heavier swell with little chop and faint cold glints, and
+shades the lee of every swell crest so its troughs read deeper; the shadow comes
+from the moving swell front, so it travels with the waves.
 
-Both depths read the same wave geometry and timing on the same position grid,
-so crests continue across the shallow/deep blend. Every layout multiplies by the
+All three read the same wave geometry and timing on the same position grid,
+so crests continue across the shallow/deep and deep/dark blends. Every layout multiplies by the
 phase count, so the bank size decides whether an animated material can take
 several layouts. Four 8×8 layouts at four phases (lava, ember field) are 1024
 frames and fit: the renderer keeps every phase of the visible variants resident
 (see [Visible material preparation](#visible-material-preparation)) and
 `animation_blend_steps` limits how often their pages recompose. Four layouts at
 sixteen phases would be 4096 frames per water, which doubled frame time and kept
-HD fallback visible in measurement, so water and deep water stay on one layout.
+HD fallback visible in measurement, so the waters stay on one layout.
 Give a multi-layout animated material `animation_blend_steps` (4 for an
 8-tick phase) and compare its frame time and HD fallback with the single-layout
 material in a release build before committing it. `"variant_block_group"`
-remains available for materials that share block selection. Dark water remains static. All three waters are opaque and use
+remains available for materials that share block selection. All three waters are opaque and use
 the ordinary material composition path.
 
 Each sixteen-phase water has 256 native and 256 HD frames, indexed as

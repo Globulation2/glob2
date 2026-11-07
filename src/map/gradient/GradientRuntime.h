@@ -4,7 +4,6 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
-#include "FileFormatVersions.h"
 #include "BuildingGradientJob.h"
 #include "ResourceGrowth.h"
 #include "BuildingGradientDepthPolicy.h"
@@ -28,6 +27,7 @@
 #include <deque>
 #include <utility>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 
 struct GradientRuntime
 {
@@ -35,7 +35,7 @@ struct GradientRuntime
     // not change direction scoring or lazy expansion of an existing field.
     // Publication/retirement own entry lifetime; checksums iterate logical slots.
     std::map<const Uint16*, int> fieldCosts;
-    int loadingGradientVersion=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY;
+    int loadingGradientVersion; // current routing-ratio format until a load sets it
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
     AdaptiveGradientState adaptive;
     std::unique_ptr<GradientWorkStats> workStats;
@@ -104,12 +104,12 @@ struct GradientRuntime
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;
 	// Explicit synchronous/editor field builds, split by diagnostic reason.
 	Uint64 buildingSynchronous = 0;
-	std::array<Uint64, std::size_t(Map::BuildingSyncReason::Count)> synchronousByReason{};
-	Map::BuildingSyncReason syncReason = Map::BuildingSyncReason::Other;
+	std::array<Uint64, std::size_t(MapRouting::BuildingSyncReason::Count)> synchronousByReason{};
+	MapRouting::BuildingSyncReason syncReason = MapRouting::BuildingSyncReason::Other;
 	void countSynchronous()
 	{
 		++buildingSynchronous;
-		++synchronousByReason[std::size_t(std::exchange(syncReason, Map::BuildingSyncReason::Other))];
+		++synchronousByReason[std::size_t(std::exchange(syncReason, MapRouting::BuildingSyncReason::Other))];
 	}
     ResourceGrowth::Pipeline growth;
 	// Owner reservations, consumed together at the immutable observation boundary.
@@ -139,16 +139,6 @@ struct GradientRuntime
         if (backendSession) backendSession = std::make_shared<gradient_kernel::BackendSession>();
         shareBackendSession();
     }
-    GradientRuntime() {
-        pipeline.onSuperseded=[this](GradientPipeline::Job& job) {
-            if(job.adaptiveKey) {
-                const auto found=adaptive.fields.find(*job.adaptiveKey);
-                if(found!=adaptive.fields.end())found->second.inflight=false;
-            }
-        };
-        shareBackendSession();
-        if (const char* path=std::getenv("GLOB2_RESOURCE_GRADIENT_PROBE"))
-            if (*path) qualityProbe=std::make_unique<ResourceGradientProbe>(path);
-    }
+    GradientRuntime(); // GradientRuntime.cpp
 
 };

@@ -719,6 +719,7 @@ Platform: all.
 | `--ai-profile-from-tick` | integer; default 0; 0..2147483647 | First observed tick to profile. |
 | `--ai-profile-gate` | player:observed-tick | Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only. |
 | `--gradient-work-stats` | file | Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection. |
+| `--resource-claims` | default, off; default default | New-game resource claims: default (the contention-v2 policy) or off (no claims or material destinations); off excludes replay recording. |
 | `--resource-gradient-probe` | flag; default false | Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias). |
 | `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training. |
 | `--resource-gradient-exploration-seed` | integer; 0..4294967295 | Seed for deterministic per-field collection assignment. |

@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "TerrainStones.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
 #include "render/scene/SceneMap.h"
 #include <SDL3_image/SDL_image.h>
+#include <FileManager.h>
 #include <Toolkit.h>
 #include <filesystem>
 #include <map>
@@ -36,12 +39,12 @@ std::vector<std::uint8_t> twoStones()
 			const int beyond = x >= 64 ? x - 64 : 63 - x;
 			u[2] = std::uint8_t(128 + (2 * beyond - 3) * 4);
 			const int own = x >= 64, distance = own ? x - 64 : 63 - x; // Texels beyond the joint.
-			const bool near = distance < 16;
+			const bool nearJoint = distance < 16;
 			t[0] = std::uint8_t(own);
 			t[1] = std::uint8_t(4 << 4 | 4); // Both stones centred in this cell.
-			t[2] = std::uint8_t(near ? 1 - own : own);
+			t[2] = std::uint8_t(nearJoint ? 1 - own : own);
 			// Native pixels x 32, joint halfway between texels: (distance + 0.5) / 4.
-			t[3] = near ? std::uint8_t((2 * distance + 1) * 4) : 255;
+			t[3] = nearJoint ? std::uint8_t((2 * distance + 1) * 4) : 255;
 		}
 	return rgba;
 }
@@ -71,6 +74,26 @@ TEST_SUITE("TerrainStones")
 		bad[0] = 64;
 		CHECK_THROWS_AS(TerrainVisual::StoneMap(bad.data(), 128, 1024), std::runtime_error);
 		CHECK_THROWS_AS(TerrainVisual::StoneMap(rgba.data(), 64, 1024), std::runtime_error);
+	}
+
+	TEST_CASE("packaged builds find a catalog's PNG stone map as WebP [artifacts]")
+	{
+		// Packages re-encode every PNG as WebP beside the same stem while the
+		// catalog keeps naming the authored file; a missing map stops startup.
+		glob2test::HeadlessGlobals globals;
+		const auto root = glob2test::artifactDir() / "packaged-stones";
+		std::filesystem::create_directories(root / "data/terrain/stones");
+		std::filesystem::copy_file(glob2test::sourceRoot() / "content/data/terrain/stones/brick_path.png",
+								   root / "data/terrain/stones/packaged_probe.webp",
+								   std::filesystem::copy_options::overwrite_existing);
+		globals->fileManager->addDir(root.string());
+		TerrainVisual::Catalog catalog;
+		catalog.materials.resize(2);
+		catalog.materials[1].stones = "data/terrain/stones/packaged_probe.png";
+		const TerrainVisual::StoneMaps maps(catalog);
+		CHECK(maps.get(1));
+		catalog.materials[1].stones = "data/terrain/stones/absent_probe.png";
+		CHECK_THROWS(TerrainVisual::StoneMaps{catalog});
 	}
 
 	TEST_CASE("applied stones keep or drop whole stones and feather their joint")

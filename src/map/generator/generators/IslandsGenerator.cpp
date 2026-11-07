@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "IslandsGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Pipeline.h"
 #include "StartingPositions.h"
@@ -20,7 +20,7 @@ using namespace MapGeneration;
 // Game rules: water blocks ground units until a colony trains swimmers, so the channels are a
 // timer on first contact rather than a wall (docs/map-generators/game-rules-for-map-design.md).
 // Wheat and wood lie on the grass just above the shore, where they can regrow.
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const IslandsOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
@@ -52,7 +52,7 @@ static bool generate(Game &game, GenerationContext &context)
 // the best spots it left. So the only promise this landscape can make is the floor every colony
 // needs — wheat and wood it can walk to, and room for a first base — and the service rolls
 // another seed when a field does not leave one.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

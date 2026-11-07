@@ -44,7 +44,7 @@ building catalog, unless the map is a saved game. The local-preference entry poi
 header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
-(`src/game/ExperimentalFeatures.h`), written after the custom-game rules and gated on
+(`src/common/ExperimentalFeatures.h`), written after the custom-game rules and gated on
 save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
@@ -99,7 +99,7 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | `markets-v2` | Markets V2 | Workers fetch shared market stock; upgrades add wheat and wood, then all resources. [Markets V2](markets-v2.md). |
 
 Each terrain group is one `TerrainProperties` profile in `src/map/TerrainGroup.h`;
-`src/map/TerrainTypeTable.h` lists its members and
+`src/map/TerrainGroupTable.h` lists its members and
 [terrain materials](../assets/terrain-materials.md) covers their artwork.
 
 Trail retains terrain ID `4` and
@@ -132,9 +132,9 @@ availability, missing local definitions, and saved continuation for new gates.
 
 For a built-in engine experiment:
 
-1. Append an `ExperimentId` before `Count` in `src/game/ExperimentalFeatures.h` and add
+1. Append an `ExperimentId` before `Count` in `src/common/ExperimentalFeatures.h` and add
    its definition (stable key, English label and help) to the table in
-   `src/game/ExperimentalFeatures.cpp`. Keys are lowercase letters, digits and hyphens.
+   `src/common/ExperimentalFeatures.cpp`. Keys are lowercase letters, digits and hyphens.
 2. Gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
    unit, `owner->game->gameHeader`). The path with the experiment off must stay
    byte-identical to the game before your change: existing replays and the

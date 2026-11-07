@@ -4,7 +4,7 @@
 #include "Channels.h"
 #include "Drawing.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -1487,7 +1487,7 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 	return looks;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "braided river layout";
 	const BraidedRiverOptions o(context.request);
@@ -1498,7 +1498,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const Axes &axes = L.axes;
 	const int n = t.size(), teams = context.request.nbTeams;
@@ -1799,11 +1799,11 @@ bool generate(Game &game, GenerationContext &context)
 // request, and the bluffs must stand complete, every channel keep its core outside its riffles,
 // every riffle be open with land at both ends, every colony walk to colony 0, and every colony
 // walk onto its promised bar and stand beside wheat and wood.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "braided river"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

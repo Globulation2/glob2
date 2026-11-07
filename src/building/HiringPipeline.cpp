@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Version.h"
+#include "gradient/MapRouting.h"
 #include "HiringPipeline.h"
 #include "Game.h"
 #include "Team.h"
@@ -289,13 +291,13 @@ struct HiringPlanner::PreparedRoute
 			return;
 		const int slot = job.slot;
 		auto guard = SharedBuildingGradient::lock(live->sharedGradient[slot]);
-		game.map.recordFieldCost(live->globalGradient[slot],-1);
+		game.map.routing().recordFieldCost(live->globalGradient[slot],-1);
         live->retireSharedGradient(slot);
-		game.map.recycleBuildingGradientBuffer(live->globalGradient[slot]);
+		game.map.routing().recycleBuildingGradientBuffer(live->globalGradient[slot]);
 		recycleBuildingGradientSearch(std::move(live->globalGradientSearch[slot]));
 		live->supersedeGradient(slot);
 		live->globalGradient[slot] = job.data.release();
-        game.map.recordFieldCost(live->globalGradient[slot],job.swim);
+        game.map.routing().recordFieldCost(live->globalGradient[slot],job.swim);
 		live->globalGradientSearch[slot] = std::move(job.search);
 		live->sharedGradient[slot] = field;
 		live->dirtyGradient[slot] = false;
@@ -602,6 +604,8 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 	s->writeLeaveSection();
 	s->writeLeaveSection();
 }
+void HiringPipeline::load(Game &game, GAGCore::InputStream *s) { load(game, s, VERSION_MINOR); }
+
 void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 {
 	this->game = &game;
@@ -822,7 +826,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						(route == BuildingRoute::Combat && !combat))
 						continue;
 					const int slot = live->routeSlot(c, route);
-					auto field = game.map.leaseBuildingRoute(live, movementAccessFromLegacy(c), route);
+					auto field = game.map.routing().leaseBuildingRoute(live, movementAccessFromLegacy(c), route);
 					const bool estimate = !field;
 					// Stale fields keep the optimistic ranking fallback. A stale
 					// unreachable result must not hide candidates whose live
@@ -837,7 +841,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						prepared->proactive = initialize;
 						auto &job = prepared->job;
 						job.slot = slot;
-						job.swim = game.map.preparationCostClass(b.team,c);
+						job.swim = game.map.routing().preparationCostClass(b.team,c);
 						job.route = route;
 						if (initialize)
 							live->supersedeGradient(slot); // Cancel an older queued cold request.

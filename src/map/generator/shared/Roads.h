@@ -10,7 +10,7 @@
 #include <queue>
 #include <utility>
 #include <vector>
-class Map;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -123,7 +123,7 @@ std::vector<int> reserveSandRoute(TerrainSketch &, const Torus &, const std::vec
 /// (deposits cost one, open ground nothing; water, buildings and `alsoBlocked` are impassable),
 /// with only the deposits on it cleared. Almost always nothing is in the way and nothing is
 /// cleared. False when no walk exists at all.
-bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
+bool openRoad(GenerationMap &, const Torus &, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal,
 			  const std::vector<unsigned char> *alsoBlocked = nullptr);
 /// Every colony must be able to walk to colony 0 at the start, and the deposits are the last thing
@@ -133,13 +133,13 @@ bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
 /// Returns how many walks were opened, or -1 with `detail` set when a colony has no land route
 /// at all, which a design that keeps its ground joined should never allow. Watershed's and
 /// Braided river's last word on their deposits.
-int connectColonies(Map &, int teams, const std::vector<unsigned char> *alsoBlocked,
+int connectColonies(GenerationMap &, int teams, const std::vector<unsigned char> *alsoBlocked,
 					std::string &detail);
 /// Clears every deposit within `radius` Chebyshev steps of the tiles of `route`, except tiles of
 /// `keep` (a designed wall). A route one tile wide is a path a unit can follow but a column cannot,
 /// and a single regrown crop closes it; radius 1 makes a three-wide lane. Returns how many deposits
 /// it cleared.
-int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
+int clearRoute(GenerationMap &, const Torus &, const std::vector<int> &route, int radius,
 			   const std::vector<unsigned char> *keep = nullptr);
 
 /// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
@@ -155,8 +155,9 @@ int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
 /// close on the first regrowth. Tiles of `keep` are never entered, cleared or touched by ford
 /// painting: a designed wall the route must go round, whatever `costs` says a deposit costs.
 /// Ford painting also leaves every existing building and its terrain footprint untouched.
-bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs,
-					  int radius = 0, const std::vector<unsigned char> *keep = nullptr);
+bool openColonyRoutes(GenerationMap &, const GenerationContext &, const Torus &,
+					  const StepCosts &costs, int radius = 0,
+					  const std::vector<unsigned char> *keep = nullptr);
 
 /// A colony's trail to a shared objective: a cheap walk over land from `sources` to `goal` that bends
 /// with the lie of the land (`lie`, a noise field scaled by `bend`) and prefers the gaps between
@@ -166,7 +167,7 @@ bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const Ste
 /// Without `lie` it is the shortest walk over land, cutting straight through whatever deposits stand
 /// in the way. False when no walk exists. Central Quarry's trails to the isle, Hidden Oasis' to the
 /// gorge.
-bool openTrail(Map &, const Torus &, const std::vector<int> &sources,
+bool openTrail(GenerationMap &, const Torus &, const std::vector<int> &sources,
 			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
 			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend,
 			   int radius);

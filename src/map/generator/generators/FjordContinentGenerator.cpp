@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FjordContinentGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "GlobalContainer.h"
@@ -43,14 +43,14 @@ double randomAngle(GenerationContext &context)
 {
 	return context.bounded("layout", 3600) / 3600.0 * 2 * kPi;
 }
-void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
-						int x, int y, int radius, double roughness)
+void createJaggedIsland(GenerationMap &map, GenerationContext &context, std::vector<int> &grid,
+						int area, int x, int y, int radius, double roughness)
 {
 	stampRoughDisc(grid, map.getW(), map.getH(), area, x, y, radius, roughness, context,
 				   "outliers");
 }
 
-bool placeBankClump(Map &map, GenerationContext &context,
+bool placeBankClump(GenerationMap &map, GenerationContext &context,
 					const std::vector<MapGeneratorPoint> &centerline, double progress, int side,
 					int resourceType)
 {
@@ -117,7 +117,7 @@ struct FjordLayout
 	ShapePoint toMap(ShapePoint q) const { return fill.apply(W / 2.0, H / 2.0, xf.toMap(q)); }
 };
 
-FjordLayout computeLayout(Game &game, GenerationContext &context,
+FjordLayout computeLayout(GenerationWorld &game, GenerationContext &context,
 						  const FjordContinentOptions &options, int nbTeams)
 {
 	const int W = game.map.getW();
@@ -197,7 +197,7 @@ FjordLayout computeLayout(Game &game, GenerationContext &context,
 }
 
 // 1) Stamp the continent.
-void stampContinent(Game &game, const FjordLayout &layout)
+void stampContinent(GenerationWorld &game, const FjordLayout &layout)
 {
 	for (int y = 0; y < layout.H; ++y)
 	{
@@ -220,7 +220,8 @@ void stampContinent(Game &game, const FjordLayout &layout)
 // peninsula "finger" hangs off. Lateral wiggle is enveloped to zero at both
 // ends so the mouth stays aligned with the sector boundary and the tip stays
 // on the radial line.
-std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationContext &context,
+std::vector<std::vector<MapGeneratorPoint>> carveFjords(GenerationWorld &game,
+														GenerationContext &context,
 														const FjordLayout &layout,
 														const FjordContinentOptions &options)
 {
@@ -315,7 +316,7 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 // well inside lakeR (fjordInnerR, computed in computeLayout), so this carve is what actually
 // opens each fjord into the lake - the fjords' own tapered tips would otherwise be too narrow
 // to reliably merge with it.
-void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
+void carveLake(GenerationWorld &game, const FjordLayout &layout, bool sandyShore)
 {
 	if (!layout.hasLake)
 		return;
@@ -357,9 +358,9 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 // 4) A couple of small, unconnected resource islands out in the open sea --
 // purely a bonus for whoever explores, never touching the mainland or each
 // other.
-void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayout &layout,
-						 const FjordContinentOptions &options, std::vector<int> &grid,
-						 int &areaNumber)
+void placeOutlierIslands(GenerationWorld &game, GenerationContext &context,
+						 const FjordLayout &layout, const FjordContinentOptions &options,
+						 std::vector<int> &grid, int &areaNumber)
 {
 	// A single global "mainland reach" bound has to stay safe in whichever single direction
 	// roughness and elongation happen to push the coastline furthest, and that alone can exceed
@@ -461,7 +462,7 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 // out to be water (a sharp jaggedness dip, or a fjord belly that swung wider
 // than expected) -- the same "compute where we want to be, then confirm the
 // grid agrees" shape as chooseFreeForBuildingSquares.
-std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout)
+std::vector<MapGeneratorPoint> anchorTeams(GenerationWorld &game, const FjordLayout &layout)
 {
 	std::vector<MapGeneratorPoint> teamPts;
 	teamPts.reserve(layout.nbTeams);
@@ -519,7 +520,7 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 // only runs in the default, disconnected mode. Each peninsula's own viability is still
 // verified locally further down (placeStarterKits fails outright if a team's home area comes
 // up empty).
-bool verifyConnectivity(Game &game, const FjordLayout &layout,
+bool verifyConnectivity(GenerationWorld &game, const FjordLayout &layout,
 						const std::vector<MapGeneratorPoint> &teamPts)
 {
 	if (layout.lakeConnected)
@@ -559,9 +560,9 @@ bool verifyConnectivity(Game &game, const FjordLayout &layout,
 // middle of the map instead of staying home. Several stone clumps rather than one, and every
 // fruit type instead of a single random pick, so finding this area feels like a genuinely rich
 // destination and not a single repeated deposit.
-void placeCoreResources(Game &game, GenerationContext &context, const FjordLayout &layout,
-						const FjordContinentOptions &options, std::vector<int> &grid,
-						int &areaNumber)
+void placeCoreResources(GenerationWorld &game, GenerationContext &context,
+						const FjordLayout &layout, const FjordContinentOptions &options,
+						std::vector<int> &grid, int &areaNumber)
 {
 	int coreArea = areaNumber++;
 	std::vector<MapGeneratorPoint> corePts;
@@ -639,7 +640,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 // 8) Algae out in the open sea: any water tile clearly beyond the coastline
 // (not a fjord, not the moat-ish water right against the shore) gets an
 // occasional patch.
-void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout &layout,
+void placeOpenSeaAlgae(GenerationWorld &game, GenerationContext &context, const FjordLayout &layout,
 					   int algaePercent)
 {
 	std::vector<MapGeneratorPoint> algaeWater;
@@ -675,7 +676,7 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 // fjord banks before they can build anything; the banks and the core are the
 // map's real economy. The kit is a small clump of wheat, a small clump of wood and one stone, on
 // land within 10 steps of the swarm (walking round water, not across it).
-bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout &layout,
+bool placeStarterKits(GenerationWorld &game, GenerationContext &context, const FjordLayout &layout,
 					  const std::vector<MapGeneratorPoint> &teamPts)
 {
 	std::vector<MapGeneratorPoint> allWater;
@@ -724,7 +725,8 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 // wheat a third of the way in, nearer the colony at its peninsula's outer end, and wood two thirds
 // in, toward the core. Each peninsula is flanked by two fjords, so every colony gets two wheat and
 // two wood deposits on its own banks.
-bool placeBankResources(Game &game, GenerationContext &context, const FjordLayout &layout,
+bool placeBankResources(GenerationWorld &game, GenerationContext &context,
+						const FjordLayout &layout,
 						const std::vector<std::vector<MapGeneratorPoint>> &fjordCenterlines,
 						const FjordContinentOptions &options)
 {
@@ -777,7 +779,7 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
 	return true;
 }
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "continent";
 	const FjordContinentOptions options(context.request);
@@ -875,7 +877,7 @@ FjordContinentOptions::FjordContinentOptions(const GenerationRequest &r)
 // Starts are searched toward the fjord tips, where a sector can narrow to a ledge with nowhere to
 // build. Nothing downstream measures that, so the floor does: crops within reach and room for a
 // first base. It bites hardest on large maps with few colonies, where the tips are longest.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams);
 }

@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, stat, statfs, access } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   type AI_CHECKS,
@@ -102,8 +102,19 @@ export async function createAiValidator(
       /* optional ABI library directory */
     }
   }
-  const libraryPath = process.env['ENGINE_AI_LIBRARY_PATH'];
+  // The engine runs as /engine, so its $ORIGIN/../lib/glob2 runpath no longer
+  // finds the libraries bundled beside it; name that directory explicitly.
+  let libraryPath = process.env['ENGINE_AI_LIBRARY_PATH'];
   if (libraryPath) await access(libraryPath);
+  else {
+    const bundled = join(dirname(dirname(resolve(options.binary))), 'lib', 'glob2');
+    try {
+      await access(bundled);
+      libraryPath = bundled;
+    } catch {
+      /* system-linked binary */
+    }
+  }
   const base = [
     ...system,
     '--unshare-all',

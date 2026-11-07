@@ -193,8 +193,13 @@ export async function createSetValidator(
       JSON.parse(await readFile(join(dir, 'probe-report.json'), 'utf8')),
       'probe report',
     );
-    if (!report.valid || (await stat(join(dir, 'probe.png'))).size > 4 * 1024 * 1024)
-      throw Error('Isolated set rendering probe failed');
+    const previewBytes = (await stat(join(dir, 'probe.png'))).size;
+    if (!report.valid || previewBytes > 4 * 1024 * 1024)
+      throw Error(
+        'Isolated set rendering probe failed: ' +
+          JSON.stringify(report).slice(0, 1500) +
+          ` (preview ${previewBytes} bytes)`,
+      );
   });
   return (bytes, signal) =>
     withScratchDir(options.scratchRoot, async (dir) => {

@@ -253,7 +253,7 @@ void forEachServiceIcon(std::uint32_t seed, float age, Visit visit)
 }
 
 //! A trained unit's level number: map pixels above the unit's top and opacity at
-//! `age`, as the combat level-up number moves (Game::drawUnit).
+//! `age`, as the combat level-up number moves (MapDrawer::drawUnit).
 struct LevelNumber { float rise, alpha; };
 inline LevelNumber levelNumber(float age)
 {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise Econo and Nicowar's shared farming scan through the real area-order executors.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Building.h"

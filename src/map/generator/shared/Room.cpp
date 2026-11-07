@@ -1,10 +1,10 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Room.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 namespace MapGeneration
 {
-std::vector<unsigned char> buildableTiles(const Map &map)
+std::vector<unsigned char> buildableTiles(const GenerationMap &map)
 {
 	const Torus t(map);
 	std::vector<unsigned char> open(size_t(t.size()), 0);
@@ -80,7 +80,7 @@ int buildSites(const Torus &t, const std::vector<unsigned char> &buildable,
 	return count;
 }
 
-std::vector<unsigned char> potentialBuildingTiles(const Map &map)
+std::vector<unsigned char> potentialBuildingTiles(const GenerationMap &map)
 {
 	const Torus t(map);
 	std::vector<unsigned char> open(t.size(), 0);

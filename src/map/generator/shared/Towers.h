@@ -2,7 +2,7 @@
 #pragma once
 #include "Grid.h"
 #include <vector>
-class Game;
+class GenerationWorld;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -82,13 +82,13 @@ std::vector<unsigned char> roomyGround(const Torus &, const std::vector<unsigned
 /// water, stone and buildings); evens the plan so every colony has as many sites as the fewest got
 /// (evenTowerPlan); and raises the towers (a plan at level 0 has none). False, with `context.detail` set,
 /// when a site no longer fits or, with `everyColonyNeedsOne`, when some colony was left without a tower.
-bool settleStartingTowers(Game &, GenerationContext &, TowerPlan &, int level,
+bool settleStartingTowers(GenerationWorld &, GenerationContext &, TowerPlan &, int level,
 						  bool everyColonyNeedsOne, const std::vector<unsigned char> *goal);
 
 /// Builds a plan's towers: every colony's tower sites get a completed tower of `level` (placeTower),
 /// stocked where the plan says. Pads stay open. False, and nothing more built, at the first site that no longer
 /// fits.
-bool raiseTowers(Game &, const TowerPlan &, int level);
+bool raiseTowers(GenerationWorld &, const TowerPlan &, int level);
 
 /// The tiles of every footprint in a plan (towers and pads): the ground a generator keeps clear of
 /// deposits and roads so the sites stay buildable.

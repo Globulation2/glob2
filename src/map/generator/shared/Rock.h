@@ -4,7 +4,7 @@
 #include "Sketch.h"
 #include <string>
 #include <vector>
-class Map;
+class GenerationMap;
 namespace MapGeneration
 {
 /// Rock terrain for walls a design draws as tiles (ranges, bluffs, mesas, crater rims): a vertex is
@@ -42,6 +42,6 @@ std::vector<unsigned char> deepCore(const Torus &, const std::vector<unsigned ch
 /// A finished map's quarries: every tile of `quarry` that supports stone holds a permanent stone
 /// deposit, and the faces owned by colonies (`owner` >= 0) hold the same stone each, at least
 /// `least`. Returns the first fault, or "".
-std::string quarryFault(const Map &, const Torus &, const std::vector<unsigned char> &quarry,
+std::string quarryFault(const GenerationMap &, const Torus &, const std::vector<unsigned char> &quarry,
 						const std::vector<int> &owner, int colonies, int least);
 } // namespace MapGeneration

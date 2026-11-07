@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "LegacyPopulationOutput.h"
 #include "Version.h"
 #include "gradient/GradientRuntime.h"
@@ -166,24 +168,24 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         for (auto* building:team->liveBuildings) {
             const auto slot=building->routeSlot(0,BuildingRoute::Automatic);
             REQUIRE(!building->globalGradient[slot]);
-            building->globalGradient[slot]=game.map.acquireBuildingGradientBuffer();
-            game.map.updateGlobalGradient(building,MovementAccess::Land);
+            building->globalGradient[slot]=game.map.routing().acquireBuildingGradientBuffer();
+            game.map.routing().updateGlobalGradient(building,MovementAccess::Land);
         }
         game.map.setResourceByIndex(20,20,WHEAT,1);
         glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);
         game.map.configureCompute(1);
-        game.map.configureGradientPipeline(0,3);
+        game.map.routing().configureGradientPipeline(0,3);
         game.observeCompletedWorld();
         // Reconstruct a historical completed warm output directly. Format166
         // submitted periodic work at T0; the current 32-tick admission minimum
         // deliberately cannot produce that historical queue from a warm read.
-        auto** materialSlot=&game.map.materialGradients[0][WHEAT][0];
+        auto** materialSlot=&game.map.routing().materialGradients[0][WHEAT][0];
         auto historicalField=std::make_unique<Uint16[]>(game.map.size);
         std::copy_n(*materialSlot,game.map.size,historicalField.get());
-        game.map.gradientRuntime->pipeline.restoreCompleted({materialSlot,0,3,false,std::move(historicalField)});
+        game.map.routing().gradientRuntime->pipeline.restoreCompleted({materialSlot,0,3,false,std::move(historicalField)});
         REQUIRE(game.stepCounter==0);
-        pendingFields=game.map.gradientPipelineStatus().pending;
-        pendingGrowth=game.map.gradientRuntime->growth.count();
+        pendingFields=game.map.routing().gradientPipelineStatus().pending;
+        pendingGrowth=game.map.routing().gradientRuntime->growth.count();
         REQUIRE(pendingFields>0); REQUIRE(pendingGrowth==1);
         struct HistoricalOutput : glob2test::LegacyPopulationOutput {
             HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game)
@@ -205,8 +207,8 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         CHECK(populationOrder(direct.game.teams[0]->liveUnits)==expectedUnits);
         CHECK(populationOrder(direct.game.teams[0]->liveBuildings)==expectedBuildings);
         CHECK(direct.game.teams[0]->taskSwapNext==expectedNext);
-        CHECK(direct.game.map.gradientPipelineStatus().pending==pendingFields);
-        CHECK(direct.game.map.gradientRuntime->growth.count()==pendingGrowth);
+        CHECK(direct.game.map.routing().gradientPipelineStatus().pending==pendingFields);
+        CHECK(direct.game.map.routing().gradientRuntime->growth.count()==pendingGrowth);
         // Save the migration before any observation can publish old jobs. The
         // current format must retain submitted-without-published phase state.
         CHECK_THROWS_AS(direct.game.observation(),std::logic_error);
@@ -217,15 +219,15 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         direct.game.map.configureCompute(1);
         upgraded.game.map.configureCompute(workers);
         for (Game* game : {&direct.game,&upgraded.game}) {
-            CHECK(game->map.gradientPipelineStatus().pending==pendingFields);
-            CHECK(game->map.gradientRuntime->growth.count()==pendingGrowth);
+            CHECK(game->map.routing().gradientPipelineStatus().pending==pendingFields);
+            CHECK(game->map.routing().gradientRuntime->growth.count()==pendingGrowth);
             game->setWaitingOnMask(0);
             game->observeCompletedWorld();
             // Restored T0 jobs retain their original inputs. Bootstrap must not
             // admit a replacement growth batch or material-field job at T0.
             CHECK(game->map.resourceGrowthMetrics().submitted==0);
-            CHECK(game->map.gradientPipelineStatus().jobs==0);
-            CHECK(game->map.gradientRuntime->growth.count()==pendingGrowth);
+            CHECK(game->map.routing().gradientPipelineStatus().jobs==0);
+            CHECK(game->map.routing().gradientRuntime->growth.count()==pendingGrowth);
         }
         CHECK(populationState(upgraded.game)==populationState(direct.game));
         for (unsigned tick=0;tick<16;++tick) {

@@ -3,6 +3,7 @@
 #include "GeneratorPackage.h"
 #include "GenerationContext.h"
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "Grid.h"
 #include "scripting/javascript/QuickJSOwnership.h"
 #include <cmath>
@@ -114,6 +115,9 @@ class Binding
 	const Package &package;
 	const GenerationRequest &request;
 	Game *game;
+	// The generation view of `game`, through which toolkit helpers are called.
+	GenerationWorld *world;
+	std::optional<GenerationWorld> ownedWorld;
 	GenerationContext *generation;
 	bool readonly, inspecting;
 	JSRuntime *runtime = nullptr;
@@ -216,6 +220,7 @@ class Binding
 	{
 		Binding &e;
 		Game *previousGame;
+		GenerationWorld *previousWorld;
 		GenerationContext *previousGeneration;
 		bool previousReadonly;
 		std::shared_ptr<bool> previousGenerationLease;
@@ -226,9 +231,10 @@ class Binding
 		~CallbackScope();
 		template <class T> void bindHost(T &value)
 		{
-			if constexpr (std::is_same_v<std::remove_cv_t<T>, Game>)
+			if constexpr (std::is_same_v<std::remove_cv_t<T>, GenerationWorld>)
 			{
-				e.game = const_cast<Game *>(&value);
+				e.world = const_cast<GenerationWorld *>(&value);
+				e.game = &value.target();
 				e.readonly = e.readonly || std::is_const_v<T>;
 			}
 			if constexpr (std::is_same_v<std::remove_cv_t<T>, GenerationContext>)

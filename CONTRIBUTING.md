@@ -39,9 +39,9 @@ review-accessible logs and applicable saves, replays, checksums, or screenshots.
 Local-only files do not constitute attached review evidence.
 
 The author may merge their own changes; a second maintainer's approval is optional.
-Hosted verification is requested with `ci:run` or `ci:full`; cheap checks alone do
-not establish engine verification. Follow the complete
-[verification and merge policy](AGENTS.md#validation-and-ci-feedback).
+Pull requests run the fast gate; label one `ci:full` to run the full development
+matrix on it. The fast gate alone does not establish platform coverage. Follow the complete
+[verification and merge policy](AGENTS.md#validation-and-ci).
 
 ## Find help
 

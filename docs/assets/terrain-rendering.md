@@ -451,10 +451,10 @@ profile, a low-roughness contour, so the waterline is a gentle curve the wash ca
 follow instead of a row of teeth. A material with surf counts as
 animated: its pages re-blend whenever the wash advances, also without texture
 animation. The optional `ticks` (default 1, at most `period`) advances the wash
-only once per that many animation ticks; dark water uses 6, so its otherwise
-still pages re-blend about ten times a second instead of every frame. Water's
-pages already re-blend every frame for its texture crossfade, so it keeps
-`ticks` 1 for the smoothest wash. Surf is presentation only and never touches the
+only once per that many animation ticks, so a material with still artwork can
+re-blend its pages about ten times a second (`ticks` 6) instead of every frame.
+The shipped waters all animate and re-blend every frame for their texture
+crossfade, so they keep `ticks` 1 for the smoothest wash. Surf is presentation only and never touches the
 simulation. `TerrainVisual::applySurf` is the integer reference that the
 `terrain-compose` shader mirrors exactly.
 

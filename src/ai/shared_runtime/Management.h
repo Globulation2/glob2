@@ -2,6 +2,11 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+
+// windows.h renames SendMessage; keep the order class's own name (see GAGSys.h).
+#ifdef SendMessage
+#undef SendMessage
+#endif
 #include "Ressource.h"
 
 #include "shared_runtime/Position.h"

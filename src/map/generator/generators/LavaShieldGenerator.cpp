@@ -4,7 +4,7 @@
 #include "FertilityField.h"
 #include "Farmland.h"
 #include "ScoredSettlements.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -627,7 +627,7 @@ Town townPlan(GenerationContext &context)
 
 // Rank terrain candidates after beaches and the flows, before their margins. The completed
 // colony score below is the deciding measurement; this shortlist only bounds its cost.
-std::vector<RankedSite> candidateSites(const Layout &L, Map &map, const Town &town)
+std::vector<RankedSite> candidateSites(const Layout &L, GenerationMap &map, const Town &town)
 {
 	const Torus &t = L.t;
 	// Pure grass, or the rim's loam, which a town turns back to grass (populate).
@@ -769,7 +769,7 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 // Materialize a candidate and the winning world through exactly the same stages.
 // The caller restores engine RNG before each trial, so rejected worlds cannot alter
 // resource amounts/varieties in the chosen world. All other streams are local contexts.
-bool populate(Game &game, GenerationContext &context, const Layout &L, const Town &town,
+bool populate(GenerationWorld &game, GenerationContext &context, const Layout &L, const Town &town,
 			  const std::vector<int> &homes)
 {
 	const Torus &t = L.t;
@@ -897,7 +897,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	for (int i = 0; i < t.size(); ++i)
 		rock[i] = rock[i] && !reserve[i];
 	writeVertices(game.map, terrain);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
 		if (rock[i])
 			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
@@ -1095,7 +1095,7 @@ std::string qualityFailure(const StartQualityReport &report)
 	return {};
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "lava layout";
 	const Layout L = design(context.request, context);
@@ -1111,7 +1111,8 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<std::vector<int>> proposals;
 	for (int deal = 0; deal < kDeals; ++deal)
 		proposals.push_back(chooseSites(L, sites, context, deal, town));
-	const auto build = [&](Game &world, GenerationContext &c, const std::vector<int> &homes)
+	const auto build =
+		[&](GenerationWorld &world, GenerationContext &c, const std::vector<int> &homes)
 	{ return populate(world, c, L, town, homes); };
 	const auto selected = chooseScoredSettlements(context, proposals, build, qualityFailure);
 	if (selected.selected < 0)
@@ -1124,7 +1125,7 @@ bool generate(Game &game, GenerationContext &context)
 	return build(game, context, selected.sites);
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);

@@ -24,7 +24,8 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GenerationValidation.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
@@ -307,7 +308,7 @@ class MapGeneratorDefaultsTest
 				  .withSearchValues({0, 1}),
 			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)
 				  .withSearchValues({1})},
-			 [](Game &game, GenerationContext &context)
+			 [](GenerationWorld &game, GenerationContext &context)
 			 {
 				 const int elevation = context.request.option("test-elevation");
 				 REQUIRE(elevation == 8);
@@ -332,7 +333,8 @@ class MapGeneratorDefaultsTest
 											   1,
 											   false,
 											   {std::move(control)},
-											   [](Game &, GenerationContext &) { return false; }};
+											   [](GenerationWorld &, GenerationContext &)
+											   { return false; }};
 				// Tagged, so a rejection can only come from the control under test.
 				definition.tags = {"terrain:novelty"};
 				try
@@ -540,7 +542,7 @@ class MapGeneratorDefaultsTest
 		D request;
 		request.seed = 7;
 		GenerationContext context(request);
-		MapGeneration::scatterResources(game, context, {0, 0, 0, 50, 0});
+		MapGeneration::scatterResources(GenerationWorld(game).ref(), context, {0, 0, 0, 50, 0});
 		int sea = 0, lake = 0;
 		for (int y = 0; y < game.map.getH(); ++y)
 			for (int x = 0; x < game.map.getW(); ++x)
@@ -696,8 +698,8 @@ TEST_SUITE("MapGeneratorDefaults")
             game.buildingsTypes.loadSnapshotJson(snapshot.dump()); game.configureBuildingCatalog();
             GenerationRequest request; request.nbTeams=1; request.nbWorkers=6;
             GenerationContext context(request); context.bootX[0]=61; context.bootY[0]=2;
-            REQUIRE(MapGeneration::placeStarts(game,context));
-            CHECK(game.teams[0]->myBuildings[0]->typeNum==id);
+			REQUIRE(MapGeneration::placeStarts(GenerationWorld(game).ref(), context));
+			CHECK(game.teams[0]->myBuildings[0]->typeNum==id);
             const MapGeneration::StartingLayout layout(dimensions.first,dimensions.second,request.nbWorkers);
             for (int i=0; i<request.nbWorkers; ++i)
             {
@@ -728,7 +730,7 @@ TEST_SUITE("MapGeneratorDefaults")
 								  1,
 								  false,
 								  {std::move(c)},
-								  [](Game &, GenerationContext &) { return false; }};
+								  [](GenerationWorld &, GenerationContext &) { return false; }};
 			d.tags = {"terrain:novelty"};
 			try
 			{
@@ -872,9 +874,9 @@ TEST_SUITE("MapGeneratorDefaults")
 		glob2test::HeadlessGame world;
 		auto& map = world.game.map;
 		// Tiles two apart share no corners, so each keeps its own terrain.
-		MapGeneration::paintTile(map, 8, 8, TRAIL);
-		MapGeneration::paintTile(map, 10, 8, ICE);
-		MapGeneration::paintTile(map, 12, 8, WATER);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 8, 8, TRAIL);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 10, 8, ICE);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 12, 8, WATER);
 		CHECK(map.terrainPropertiesAt(8, 8).buildable);
 		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(8, 8, WHEAT));
 		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(10, 8, STONE));
@@ -902,11 +904,11 @@ TEST_SUITE("MapGeneratorDefaults")
         auto& map = world.game.map;
         const MapGeneration::Torus torus(map);
         // Tiles two apart share no corners, so each keeps its own terrain.
-        MapGeneration::paintTile(map,8,8,TRAIL);
-        MapGeneration::paintTile(map,10,8,ICE);
-        MapGeneration::paintTile(map,12,8,WATER);
-        MapGeneration::paintTile(map,14,8,SAND);
-        const auto open = MapGeneration::walkableTiles(map);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 8, 8, TRAIL);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 10, 8, ICE);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 12, 8, WATER);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 14, 8, SAND);
+		const auto open = MapGeneration::walkableTiles(map);
         const auto beach = MapGeneration::beachTiles(map,torus);
         CHECK(open[torus.at(8,8)]);
         CHECK(open[torus.at(10,8)]);
@@ -927,10 +929,10 @@ TEST_SUITE("MapGeneratorDefaults")
         CHECK_FALSE(stone.stone[torus.at(10,8)]);
         CHECK_EQ(stone.gaps,2);
 		const MapGeneration::SandFord ford{20, 20, 0, 1, 1, 0, 3, 1};
-		MapGeneration::paintTile(map, 20, 20, ICE);
-		MapGeneration::paintTile(map, 21, 20, TRAIL);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 20, 20, ICE);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 21, 20, TRAIL);
 		CHECK(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
-		MapGeneration::paintTile(map, 20, 20, WATER);
+		MapGeneration::paintTile(GenerationMap(map).ref(), 20, 20, WATER);
 		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
     }
     TEST_CASE("colony route repairs cross mixed water and protect adjacent walls")
@@ -962,8 +964,8 @@ TEST_SUITE("MapGeneratorDefaults")
                     sketch[torus.at(x,y)] = GRASS;
                     sketch[torus.at(x+18,y)] = GRASS;
                 }
-            MapGeneration::writeVertices(map, sketch);
-            GenerationRequest request;
+			MapGeneration::writeVertices(GenerationMap(map).ref(), sketch);
+			GenerationRequest request;
             request.nbTeams = 2;
             GenerationContext context(request);
             context.bootX[0] = 4; context.bootY[0] = 12;
@@ -985,12 +987,15 @@ TEST_SUITE("MapGeneratorDefaults")
                 // A one-cell gap cannot hold a ford without touching its neighbours.
                 keep[torus.at(14,13)] = keep[torus.at(30,13)] = 0;
                 const auto before = vertices();
-                CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
-                CHECK(vertices() == before);
-                REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs));
-                CHECK(reachable());
-                CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs));
-                continue;
+				CHECK_FALSE(MapGeneration::openColonyRoutes(GenerationMap(map).ref(), context,
+															torus, costs, 0, &keep));
+				CHECK(vertices() == before);
+				REQUIRE(MapGeneration::openColonyRoutes(GenerationMap(map).ref(), context, torus,
+														costs));
+				CHECK(reachable());
+				CHECK_FALSE(MapGeneration::openColonyRoutes(GenerationMap(map).ref(), context,
+															torus, costs));
+				continue;
             }
             if (scenario == Scenario::AdjacentBuilding || scenario == Scenario::UntouchedResource)
             {
@@ -1015,8 +1020,9 @@ TEST_SUITE("MapGeneratorDefaults")
                 }
                 else
                     map.replaceResource(15,12,{CHERRY,0,3,0});
-                REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
-                CHECK(reachable());
+				REQUIRE(MapGeneration::openColonyRoutes(GenerationMap(map).ref(), context, torus,
+														costs, 0, &keep));
+				CHECK(reachable());
                 CHECK(map.vertexTerrainAt(15,13) == GRASS);
                 if (building)
                 {
@@ -1052,8 +1058,9 @@ TEST_SUITE("MapGeneratorDefaults")
             REQUIRE(map.isFreeForBuilding(15,9,4,4));
             REQUIRE(game.addBuilding(15,9,swarm,0));
             const auto before = vertices();
-            CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
-            CHECK(vertices() == before);
+			CHECK_FALSE(MapGeneration::openColonyRoutes(GenerationMap(map).ref(), context, torus,
+														costs, 0, &keep));
+			CHECK(vertices() == before);
         }
     }
 
@@ -1983,8 +1990,8 @@ TEST_CASE("contact costs follow custom deposit obstruction and removal propertie
         for (auto terrain : {GRASS,WATER})
         {
             map.replaceResource(12,12,Resource{});
-            MapGeneration::paintTile(map,12,12,terrain);
-            map.setResource(12,12,id,0);
+			MapGeneration::paintTile(GenerationMap(map).ref(), 12, 12, terrain);
+			map.setResource(12,12,id,0);
             REQUIRE(map.getResource(12,12).type==resourceIndex(id));
             const int open=terrain==GRASS ? costs.open : costs.water;
             const int expected=!blocking ? open : !clearable && infinite ? costs.eternal : costs.clearable;

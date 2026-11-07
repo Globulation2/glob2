@@ -20,7 +20,8 @@
 // synchronized RNG stream, swapped in while it runs (as MenuColony does), and none
 // writes replays; everything else an Engine touches is its own.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
 #include "GeneratorPackage.h"
 #include <ThreadSupport.h>
 #include "GenerationService.h"
@@ -1185,8 +1186,8 @@ TEST_SUITE("TurnEngineHarness")
 		MESSAGE(summary(m, end));
 	}
 
-	GLOB2_TEST_CASE("a client that executes a tampered order is repaired by an in-place reload and named by the verifier",
-	                "[network-sim][artifacts]")
+	TEST_CASE("a client that executes a tampered order is repaired by an in-place reload and named by the verifier "
+	          "[network-sim][artifacts]" * glob2test::needs({"ai:castor"}))
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
         globals->computeThreads = 2;

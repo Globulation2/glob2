@@ -22,7 +22,10 @@ from urllib.parse import quote
 # Workflows whose push/pull_request runs are disposable verification. Anything
 # not listed here (release, publish, deploy, metrics) is never cancelled.
 CI_WORKFLOWS = {
+    '.github/workflows/ci-fast.yml',
+    '.github/workflows/ci-full-label.yml',
     '.github/workflows/build.yml',
+    '.github/workflows/build-system-equivalence.yml',
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
     '.github/workflows/steam-windows-package.yml',

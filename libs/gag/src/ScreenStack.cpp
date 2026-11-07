@@ -287,14 +287,21 @@ void ScreenStack::draw()
 Uint32 ScreenStack::delay(Uint32 now, Uint32 fallback)
 {
 	if (backgrounded) return 100;
-    const auto delay = screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
     // Native hosts draw on update turns, so wake for whichever deadline comes
     // first. Browser painting has its own animation-frame chain and does not
     // change timer-driven update deadlines. Zero wait must not spin idle screens.
 #ifndef __EMSCRIPTEN__
-    if (delay != GAGCore::ApplicationHost::AnimationFrameDelay)
-        if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface))
-            if (const auto renderWait = context->renderFrameWait()) return std::min(delay, renderWait);
+    auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface);
+    if (context && !screens.empty() && screens.back().screen->followsRenderPacer())
+    {
+        const auto &screen = *screens.back().screen;
+        return GAGCore::pacedScreenWait(context->renderFrameWait(), !context->renderFrameCapped(), screen.executionIdle());
+    }
+#endif
+    const auto delay = screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+#ifndef __EMSCRIPTEN__
+    if (delay != GAGCore::ApplicationHost::AnimationFrameDelay && context)
+        if (const auto renderWait = context->renderFrameWait()) return std::min(delay, renderWait);
 #endif
     return delay;
 }

@@ -1,10 +1,10 @@
 #include <utility>
+#include "gradient/MapRouting.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 
-#include "AICastor.h"
 
 #include <assert.h>
 #include <string.h>
@@ -91,7 +91,7 @@ GAGCore::CooperativeTask Game::addTeamTask(int pos)
 	assert(mapHeader.getNumberOfTeams()<Team::MAX_COUNT);
 	if(pos==TEAM_POS_END)
 		pos=mapHeader.getNumberOfTeams();
-	teams[pos]=new Team(this);
+	teams[pos]=new Team(this, simContext());
 	teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
 	teams[pos]->race.setCatalog(gameHeader.getUnitCatalog());
 	teams[pos]->setCorrectMasks();
@@ -280,8 +280,8 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	if (b->type->runtimeSuppliesStock)
 	{
 		team->stockSuppliers.push_front(b);
-		map.invalidateSupplierLocations();
-		for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(teamNumber,resource);
+		map.routing().invalidateSupplierLocations();
+		for (int resource=0; resource<MaterialCount; ++resource) map.routing().dirtyMarketGradientsSlot(teamNumber,resource);
 	}
 	if (b->type->isVirtual)
 		team->virtualBuildings.push_front(b);

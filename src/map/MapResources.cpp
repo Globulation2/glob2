@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
 #include "Utilities.h"
@@ -316,18 +317,18 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-RouteResult Map::queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
+RouteResult MapRouting::queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
 {
 	const auto* field=getMaterialGradientSlot(team,material,movementAccessValue,markets,consumer);
 	if (!field) return RouteResult::Pending;
-	const auto value=field[coordToIndex(x,y)];
+	const auto value=field[map.coordToIndex(x,y)];
     const auto key=materialGradientFieldKey(team,material,movementAccessValue,field);
-    if(key && gradientRuntime->qualityProbe && game && !compute.insideJob())
-        gradientRuntime->qualityProbe->observePlanning(*this,*key,x,y,field);
+    if(key && gradientRuntime->qualityProbe && map.game && !map.compute.insideJob())
+        gradientRuntime->qualityProbe->observePlanning(map,*key,x,y,field);
     if(value<=GRADIENT_UNREACHABLE) {
         // Failed recruitment needs a recovery path even without a moving unit.
         // Successful planning reads and both outcomes' movement counters stay idle.
-        if(key && game && !compute.insideJob())gradientRuntime->adaptive.enroll(*key).demand=true;
+        if(key && map.game && !map.compute.insideJob())gradientRuntime->adaptive.enroll(*key).demand=true;
         return RouteResult::Unreachable;
     }
 
@@ -335,53 +336,53 @@ RouteResult Map::queryMaterialDistance(int team, int material, MovementAccess mo
 	return RouteResult::Reachable;
 }
 
-bool Map::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer)
+bool MapRouting::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer)
 {
 	return queryMaterialDistance(team,material,movementAccessValue,x,y,nullptr,markets,consumer)==RouteResult::Reachable;
 }
 
-bool Map::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
+bool MapRouting::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
 {
 	return queryMaterialDistance(team,material,movementAccessValue,x,y,distance,markets,consumer)==RouteResult::Reachable;
 }
 
-bool Map::materialDestinationValidSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer) const
+bool MapRouting::materialDestinationValidSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer) const
 {
     const int movement=accessClass(movementAccessValue);
-    if (movement!=AIR_MOVEMENT_CLASS && isForbidden(x,y,Team::teamNumberToMask(team))) return false;
-    if (isMaterialTakeableSlot(x,y,material) && !isForbidden(x,y,Team::teamNumberToMask(team))) {
-        const auto index=coordToIndex(x,y);
-        const auto& properties=resourcePropertiesByIndex(getResource(index).type);
-        if(!properties.visibleToHarvest || (fogOfWar[index]&Team::teamNumberToMask(team)))return true;
+    if (movement!=AIR_MOVEMENT_CLASS && map.isForbidden(x,y,Team::teamNumberToMask(team))) return false;
+    if (map.isMaterialTakeableSlot(x,y,material) && !map.isForbidden(x,y,Team::teamNumberToMask(team))) {
+        const auto index=map.coordToIndex(x,y);
+        const auto& properties=map.resourcePropertiesByIndex(map.getResource(index).type);
+        if(!properties.visibleToHarvest || (map.fogOfWar[index]&Team::teamNumberToMask(team)))return true;
     }
-    if (!game) return false;
+    if (!map.game) return false;
     const unsigned modes=consumer ? materialSupplyModesSlot(consumer,material) : (markets && marketsV2Enabled() ? 1u : 0u);
     if (!modes) return false;
-    const Team& owner=*game->teams[team];
+    const Team& owner=*map.game->teams[team];
     const auto eligible=[&](const Building* b) { return stockSupplierEligibleSlot(b,consumer,material,modes); };
-    const Uint16 id=getBuilding(x,y);
+    const Uint16 id=map.getBuilding(x,y);
     if (id!=NOGBID && Building::GIDtoTeam(id)==team && eligible(owner.myBuildings[Building::GIDtoID(id)])) return true;
     const auto overlay=[&](const Building* b) {
-        return !b->type->semantics.occupiesGround && ((x-b->posX)&wMask)<b->type->width
-            && ((y-b->posY)&hMask)<b->type->height && eligible(b);
+        return !b->type->semantics.occupiesGround && ((x-b->posX)&map.wMask)<b->type->width
+            && ((y-b->posY)&map.hMask)<b->type->height && eligible(b);
     };
     if (modes&1) for (const Building* b:owner.stockSuppliers) if (overlay(b)) return true;
     if (modes&2) for (const Building* b:owner.directStockSuppliers) if (overlay(b)) return true;
     return false;
 }
 
-bool Map::projectMaterialDestination(const Uint16* field, int team, int material, MovementAccess movementAccessValue, int x, int y,
+bool MapRouting::projectMaterialDestination(const Uint16* field, int team, int material, MovementAccess movementAccessValue, int x, int y,
     Sint32* targetX, Sint32* targetY, bool markets, const Building* consumer) const
 {
     const int movement=accessClass(movementAccessValue);
     if (!field) return false;
-    x&=wMask; y&=hMask;
-    Uint16 here=field[coordToIndex(x,y)];
+    x&=map.wMask; y&=map.hMask;
+    Uint16 here=field[map.coordToIndex(x,y)];
     if (here<=GRADIENT_UNREACHABLE) return false;
     if (const auto destinations=materialGradientDestinations(field)) {
-        const size_t index=coordToIndex(x,y);
+        const size_t index=map.coordToIndex(x,y);
         const unsigned dx=destinations->x[index],dy=destinations->y[index];
-        if (dx>=unsigned(w) || dy>=unsigned(h) || !materialDestinationValidSlot(team,material,movementAccessValue,dx,dy,markets,consumer)) return false;
+        if (dx>=unsigned(map.w) || dy>=unsigned(map.h) || !materialDestinationValidSlot(team,material,movementAccessValue,dx,dy,markets,consumer)) return false;
         *targetX=dx; *targetY=dy;
         return true;
     }
@@ -392,15 +393,15 @@ bool Map::projectMaterialDestination(const Uint16* field, int team, int material
         int best=-1, direction=-1;
         for (int d=0;d<8;++d) {
             const int dx=tabClose[d][0], dy=tabClose[d][1];
-            const size_t next=coordToIndex(x+dx,y+dy);
+            const size_t next=map.coordToIndex(x+dx,y+dy);
             if (field[next]<=here) continue;
             const int score=field[next]-stepCost(dx,dy,next,movement);
             if (score>best) { best=score; direction=d; }
         }
         if (direction<0) break;
-        x=(x+tabClose[direction][0])&wMask;
-        y=(y+tabClose[direction][1])&hMask;
-        here=field[coordToIndex(x,y)];
+        x=(x+tabClose[direction][0])&map.wMask;
+        y=(y+tabClose[direction][1])&map.hMask;
+        here=field[map.coordToIndex(x,y)];
     }
     if (!materialDestinationValidSlot(team,material,movementAccessValue,x,y,markets,consumer)) return false;
     *targetX=x; *targetY=y;
@@ -408,14 +409,14 @@ bool Map::projectMaterialDestination(const Uint16* field, int team, int material
 }
 
 template<typename T>
-bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const
+bool MapRouting::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const
 {
 	const T atGoal = std::numeric_limits<T>::max();
 	// we start from our current position
-	int vx = x & wMask;
-	int vy = y & hMask;
+	int vx = x & map.wMask;
+	int vy = y & map.hMask;
 	// max is initialized to gradient value of current position
-	T max = gradient[coordToIndex(vx, vy)];
+	T max = gradient[map.coordToIndex(vx, vy)];
 	
 	bool result = false;
 	// we follow the gradient uphill; every step strictly increases max, so this ends
@@ -430,7 +431,7 @@ bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *
 		{
 			int ddx = deltaOne[d][0];
 			int ddy = deltaOne[d][1];
-			T g = gradient[coordToIndex(vx + ddx, vy + ddy)];
+			T g = gradient[map.coordToIndex(vx + ddx, vy + ddy)];
 			if (g>max)
 			{
 				max = g;
@@ -441,8 +442,8 @@ bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *
 		}
 		
 		// change position
-		vx = (vx+vddx) & wMask;
-		vy = (vy+vddy) & hMask;
+		vx = (vx+vddx) & map.wMask;
+		vy = (vy+vddy) & map.hMask;
 		
 		// if we have reached destination break
 		if (max == atGoal)
@@ -461,8 +462,8 @@ bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *
 	return result;
 }
 
-template bool Map::getGlobalGradientDestination<Uint8>(const Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
-template bool Map::getGlobalGradientDestination<Uint16>(const Uint16 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
+template bool MapRouting::getGlobalGradientDestination<Uint8>(const Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
+template bool MapRouting::getGlobalGradientDestination<Uint16>(const Uint16 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 
 
 
@@ -501,7 +502,7 @@ void Map::enableResourceClaims()
 {
     // A map exported from a running match keeps its tick but carries no claim
     // or route state, so loading it is still new-game setup.
-    setMaterialDestinationsEnabled(true);
+    routing().setMaterialDestinationsEnabled(true);
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
@@ -523,7 +524,7 @@ void Map::disableResourceClaims()
     materialClaimRoutes.reset();activeClaimRules.reset();
     resourceClaimsEnabled=false;claimSetupTick.reset();
     materialClaims.reset(cellCount());
-    setMaterialDestinationsEnabled(false);
+    routing().setMaterialDestinationsEnabled(false);
     if(game)game->invalidateObservation();
 }
 

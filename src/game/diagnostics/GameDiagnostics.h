@@ -3,6 +3,7 @@
 #include "MapRender.h"
 #include "sim/snapshot/Requirements.h"
 #include <array>
+#include <functional>
 #include <atomic>
 #include <cstdint>
 #include <memory>
@@ -18,6 +19,10 @@ namespace SimulationSnapshot { struct Handle; }
 namespace AIMaximaPlacement { struct WorldState; }
 namespace GameDiagnostics
 {
+// Writes a field-capture PNG. MapRender.cpp registers MapRender::toPng here, so
+// diagnostics do not link the offscreen renderer; unset, captures throw.
+std::function<void(const PresentationFrame&, const std::string&, int, const MapRender::Field*)>& fieldImageRenderer();
+
 inline constexpr size_t CaptureBudget = 128 * 1024 * 1024;
 // One controller owns each sink; AI workers never share mutable sink storage.
 struct FieldSink

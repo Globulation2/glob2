@@ -3,7 +3,7 @@
 #include "PowerOfTwo.h"
 #include "WatershedGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "Channels.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
@@ -1612,10 +1612,10 @@ class Reservations
 
 // Every colony gets the same kit on its own floodplain: wheat and wood where the ground is most
 // fertile, on different sides of the swarm, and a little stone on the drier side.
-void placeStarterKits(Game &game, GenerationContext &context, int teams, const Tiles &t,
+void placeStarterKits(GenerationWorld &game, GenerationContext &context, int teams, const Tiles &t,
 					  const Fertility::Field &fertility, Reservations &reservations)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 0; team < teams; ++team)
@@ -1699,11 +1699,11 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 
 // Farmland in ribbons along the rivers: clumps seeded on the most fertile free ground, 2:1 wheat
 // to wood, with the crop chosen by a coarse field so stretches of bank favour one or the other.
-void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
+void placeFarmland(GenerationWorld &game, GenerationContext &context, const Tiles &t,
 				   const Fertility::Field &fertility, const std::vector<unsigned char> &keepClear,
 				   Reservations &reservations, const WatershedOptions &o)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
 	std::mt19937 &random = context.stream("watershed-farmland");
 	// patch (6-tile features) breaks the ribbons into clumps with bare bank between them; crop
@@ -1765,11 +1765,11 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 }
 
 // Stone outcrops at the edge of the dry uplands, well away from the rivers.
-void placeStone(Game &game, GenerationContext &context, const Tiles &t,
+void placeStone(GenerationWorld &game, GenerationContext &context, const Tiles &t,
 				const std::vector<unsigned char> &keepClear, Reservations &reservations,
 				int stonePercent)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
 	std::vector<int> candidates;
 	for (int y = 0; y < h; ++y)
@@ -1811,11 +1811,11 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
 }
 
 // Fruit is rare: a small grove in the fertile wedge where two rivers meet, one kind at a time.
-void placeFruit(Game &game, GenerationContext &context, const Layout &layout, const Tiles &t,
+void placeFruit(GenerationWorld &game, GenerationContext &context, const Layout &layout, const Tiles &t,
 				const Fertility::Field &fertility, const std::vector<unsigned char> &keepClear,
 				Reservations &reservations, int fruitPercent)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
 	std::vector<Vec> junctions = layout.junctions;
 	context.shuffle(junctions.begin(), junctions.end(), "resources");
@@ -1854,10 +1854,10 @@ void placeFruit(Game &game, GenerationContext &context, const Layout &layout, co
 
 // Algae off every mouth and in the sea's shallows, where there is sand near enough for it to
 // grow back.
-void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, const Tiles &t,
+void placeAlgae(GenerationWorld &game, GenerationContext &context, const Layout &layout, const Tiles &t,
 				int algaePercent)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
 	for (Vec mouth : layout.mouths)
 	{
@@ -2482,11 +2482,11 @@ TerrainSketch lookSketch(const std::vector<unsigned char> &mech, int w, int h, c
 	return looks;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "watershed layout";
 	const WatershedOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
 	const Layout layout = planLayout(w, h, o, context);
 
@@ -2679,9 +2679,9 @@ std::string validate(const GenerationRequest &r)
 // walkable land at both ends, and every channel must keep its core of open water everywhere else.
 // Water there is a tile of water corners, deep or plain. The outcrops are planned again too: every
 // quarry face holds its stone, and no knot of rock parts the walkable ground round it.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
 	const Torus t(map);
 	const auto workers = unitTilesByTeam(map, teams);

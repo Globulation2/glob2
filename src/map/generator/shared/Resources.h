@@ -41,22 +41,23 @@ struct ResourceDensities
 {
 	int wheat, wood, stone, algae, fruit;
 };
-void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
-					int resourceType, int maxFillSize);
+void fillInResource(GenerationMap &map, GenerationContext &context,
+					std::vector<MapGeneratorPoint> &points, int resourceType, int maxFillSize);
 // `allowed` is an optional row-major tile mask for a bounded *new* deposit. It
 // filters every tile of the clump, not just its centre: a radius-two rescue next
 // to a town boundary must not spill one corner into protected building ground.
 // Null preserves the historical placement and random-draw order for every
 // existing generator. The caller owns the mask and must match the map size.
-int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center, int resourceType,
-						 int radius, const std::vector<unsigned char> *allowed = nullptr);
-int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &,
-							  int resourceType, int radius,
-							  const std::vector<unsigned char> *allowed = nullptr);
+int placeResourceClump(GenerationMap &, GenerationContext &, MapGeneratorPoint center,
+					   int resourceType, int radius,
+					   const std::vector<unsigned char> *allowed = nullptr);
+int placeResourceClumpInArea(GenerationMap &, GenerationContext &,
+							 const std::vector<MapGeneratorPoint> &, int resourceType, int radius,
+							 const std::vector<unsigned char> *allowed = nullptr);
 // Map::setResourceByIndex(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
-void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
-void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
+void setScaledResource(GenerationMap &, int x, int y, int resourceType, int size, int percent);
+void scatterResources(GenerationWorld &, GenerationContext &, const ResourceDensities &);
 // Ensures every team has wheat within wheatRange and wood within woodRange of its boot tile,
 // walking through the same reachable-space flood used to measure that distance (so anything
 // placed is actually reachable, not just straight-line nearby). Teams already served within
@@ -70,7 +71,7 @@ void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
 // Keeping it separate matters: a stone wall is protected from clearing, whereas a dry town
 // or a sand stair excludes crops even though it is not a resource wall. Null retains the
 // original rescue policy. A clump is clipped tile-by-tile to this mask.
-void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
+void guaranteeStartingResources(GenerationWorld &game, GenerationContext &context, int wheatRange,
 								int woodRange, int clearRadius = 0,
 								const std::vector<unsigned char> *protectedWalls = nullptr,
 								const std::vector<unsigned char> *allowedTopup = nullptr);
@@ -85,8 +86,8 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 // ever takes away a wall that a non-default amount built. Protected walls are never cleared.
 // Call guaranteeStartingResources again afterwards: the clearing can take away the nearest wheat
 // or wood along with the wall.
-void openCrampedStarts(Game &game, GenerationContext &context, int sites = 16, int range = 24,
-					   const std::vector<unsigned char> *protectedWalls = nullptr);
+void openCrampedStarts(GenerationWorld &game, GenerationContext &context, int sites = 16,
+					   int range = 24, const std::vector<unsigned char> *protectedWalls = nullptr);
 
 struct ResourceFrontage
 {
@@ -99,10 +100,11 @@ struct ResourceFrontage
 /// An optional matching fertility field identifies edges bordering renewable crops.
 /// This read-only operation shares the caller's flood/field and makes no extra scans
 /// outside the visited catchment. Absent resource types have no entry.
-std::map<int, ResourceFrontage> resourceFrontages(const Map &, const Flood &, int maximumSteps,
+std::map<int, ResourceFrontage> resourceFrontages(const GenerationMap &, const Flood &,
+												  int maximumSteps,
 												  const Fertility::Field *fertility = nullptr);
 /// Harvesting frontage grouped by positive material stock, including secondary yields.
 /// With renewal enabled, saturated renewable and inexhaustible sources still count.
-std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &, const Flood &,
-                                                       int maximumSteps, bool renewal = false);
+std::map<MaterialId, ResourceFrontage> materialFrontages(const GenerationMap &, const Flood &,
+														 int maximumSteps, bool renewal = false);
 } // namespace MapGeneration

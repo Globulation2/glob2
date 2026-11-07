@@ -2,7 +2,6 @@
 import argparse
 from contextlib import redirect_stdout
 import io
-import math
 import json
 import os
 from pathlib import Path
@@ -22,17 +21,6 @@ import ci_dependency_cache as dependencies
 import ci_compare_evidence as evidence
 import ci_run_metrics as metrics
 import ci_check_inventory as checks
-
-
-def prediction_inputs():
-    """Known frozen histories and a constant forest keep policy tests offline."""
-    rows = [dict(name=check["name"], branch="topic", event="pull_request", sha="a" * 40,
-                 run_id=index + 1, attempt=1, created_at=0, end=1, seconds=1, failed=0, paths=[])
-            for index, check in enumerate(checks.inventory())]
-    model = dict(schema=1, feature_schema="history54-v1", model_id="policy-fixture",
-                 feature_names=["last_failed"], scales=[1.0],
-                 trees=[dict(left=[-1], right=[-1], feature=[-2], threshold=[-2.0], probability=[.1])])
-    return {"schema": 1, "updated_at": 1, "records": rows}, model, []
 
 
 class PolicyTest(unittest.TestCase):
@@ -63,7 +51,7 @@ class PolicyTest(unittest.TestCase):
     def test_tests_beside_code_select_as_tests(self):
         sys.path.insert(0, str(ROOT / 'test'))
         import tests as registry
-        entries = registry.ENGINE_TESTS + registry.UNIT_TESTS + [program[1] for program in registry.PROGRAMS]
+        entries = registry.portable_engine_tests() + registry.portable_unit_tests() + [program[1] for program in registry.PROGRAMS]
         for entry in entries:
             path = registry.source_path(entry if isinstance(entry, str) else entry[0])
             if path.startswith(('test/', 'tools/')):
@@ -105,18 +93,15 @@ class PolicyTest(unittest.TestCase):
         assets = self.select(['content/data/zik/woodland/a1.ogg', 'content/data/zik/woodland/LICENSE.txt'])
         self.assertEqual({flag for flag, on in assets.items() if on}, {'native', 'browser'})
         self.assertEqual(self.select(['content/data/zik/SConscript']), policy.full())
-        # Music-only PRs stay cheap; mixing engine code also runs the predictive budget.
+        # Music-only changes stay cheap; mixing engine code selects affected checks too.
         report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py'])
         self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
         self.assertEqual(report['verification_mode'], 'cheap-contracts')
         report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py', 'src/game/Game_sync.cpp'])
-        self.assertTrue(report['selection']['music'])
-        self.assertEqual(report['verification_mode'], 'predictive')
-        self.assertGreater(report['execution_plan']['ranked_count'], 0)
+        self.assertTrue(report['selection']['music'] and report['selection']['native'])
+        self.assertEqual(report['verification_mode'], 'affected')
         report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'])
-        self.assertEqual(report['verification_mode'], 'predictive')
-        self.assertTrue(any(report['selection'].values()))
-        report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'], labels=['ci:run'])
+        self.assertEqual(report['verification_mode'], 'affected')
         self.assertTrue(report['selection']['native'] and report['selection']['browser'])
         self.assertFalse(report['selection']['music'])
         report, _ = self.exercise('schedule', [], reused_run=123)
@@ -215,7 +200,7 @@ class PolicyTest(unittest.TestCase):
             old=Path.cwd()
             try:
                 os.chdir(directory)
-                with patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_EVENT_PATH':str(payload),'GITHUB_REPOSITORY':'o/r','GH_TOKEN':'token','GITHUB_STEP_SUMMARY':str(Path(directory)/'summary'), **(extra_env or {})},clear=True),patch.object(sys,'argv',['selector','--base','pr-base']),patch.object(selector,'changed_paths',return_value=paths) as diff,patch.object(selector,'_prediction_inputs',side_effect=prediction_inputs),patch.object(baseline,'activated',return_value=enabled),patch.object(baseline,'successful_full_run',return_value=reused_run),patch.object(selector.subprocess,'check_output',return_value='candidate-sha\n'),redirect_stdout(io.StringIO()):
+                with patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_EVENT_PATH':str(payload),'GITHUB_REPOSITORY':'o/r','GH_TOKEN':'token','GITHUB_STEP_SUMMARY':str(Path(directory)/'summary'), **(extra_env or {})},clear=True),patch.object(sys,'argv',['selector','--base','pr-base']),patch.object(selector,'changed_paths',return_value=paths) as diff,patch.object(baseline,'activated',return_value=enabled),patch.object(baseline,'successful_full_run',return_value=reused_run),patch.object(selector.subprocess,'check_output',return_value='candidate-sha\n'),redirect_stdout(io.StringIO()):
                     selector.main()
                 report = json.loads(Path('artifacts/ci-selection.json').read_text())
                 summary = Path('summary').read_text()
@@ -226,53 +211,50 @@ class PolicyTest(unittest.TestCase):
             finally:
                 os.chdir(old)
 
-    def test_pr_requests_and_label_removal(self):
+    def test_ci_full_label_and_label_removal(self):
         for draft in (False, True):
-            for labels in ([], ['ci:windows'], ['ci:android', 'ci:browsers']):
-                report,_ = self.exercise('pull_request', ['src/game/Game_sync.cpp'], draft=draft, labels=labels)
-                self.assertEqual(report['verification_mode'], 'predictive')
-                self.assertTrue(report['predictive_enabled'])
-                self.assertFalse(report['tiers_enabled'])
-                plan = report['execution_plan']
-                predictor = plan['predictor']
-                candidates = [check for check in checks.inventory() if not check.get('full_only')]
-                self.assertEqual(predictor['selected_count'], math.ceil(.12 * len(candidates)))
-                self.assertEqual(predictor['unknown_ids'], [])
-                self.assertEqual(predictor['model_id'], 'policy-fixture')
-                self.assertGreaterEqual(plan['executed_count'], plan['ranked_count'])
-                self.assertEqual(report['draft'], draft)
-                self.assertFalse(report['checkpoint_eligible'])
-                if 'ci:windows' in labels:self.assertTrue(report['selection']['windows'])
-                if 'ci:android' in labels:self.assertTrue(report['selection']['android'])
-                if 'ci:browsers' in labels:
-                    browser_ids = {check['id'] for check in checks.inventory() if check['job'] == 'web-test'}
-                    self.assertTrue(browser_ids <= set(plan['executed_ids']))
-            report,_ = self.exercise('pull_request', ['src/game/Game_sync.cpp'], draft=draft, labels=['ci:run'])
-            self.assertTrue(report['selection']['native'])
+            # Without ci:full a pull-request event selects path-affected checks.
+            report,_ = self.exercise('pull_request', ['src/game/Game_sync.cpp'], draft=draft)
             self.assertEqual(report['verification_mode'], 'affected')
+            self.assertTrue(report['selection']['native'] and report['selection']['windows'])
+            self.assertFalse(report['full_matrix'])
             self.assertEqual(report['draft'], draft)
+            self.assertFalse(report['checkpoint_eligible'])
+            plan = report['execution_plan']
+            self.assertEqual(plan['executed_ids'], checks.dependency_closure(plan['ranked_ids']))
+            for retired in ('predictor', 'ranked_count', 'requested_budget'):
+                self.assertNotIn(retired, plan)
+            for retired in ('predictive_enabled', 'prediction_time', 'tiers_enabled'):
+                self.assertNotIn(retired, report)
             report,_ = self.exercise('pull_request', ['README.md'], draft=draft, labels=['ci:full'])
             self.assertEqual(report['selection'], policy.full())
             self.assertEqual(report['verification_mode'], 'full')
-            expanded,_ = self.exercise('pull_request', ['src/map/gradient/PathGradientHarness.cpp'], draft=draft,
-                                       labels=['ci:run', 'ci:windows', 'ci:android', 'ci:browsers'])
-            for flag in ('native', 'windows', 'android', 'browser'):
-                self.assertTrue(expanded['selection'][flag])
-        removed,_ = self.exercise('pull_request', ['src/game/Game_sync.cpp'])
-        windows,_ = self.exercise('pull_request', ['src/game/Game_sync.cpp'], labels=['ci:windows'])
-        self.assertEqual(removed['verification_mode'], 'predictive')
-        self.assertNotIn('windows', removed['execution_plan']['executed_ids'])
-        self.assertIn('windows', windows['execution_plan']['executed_ids'])
+            self.assertTrue(report['full_matrix'])
+            # A ci:full run called for a PR head is full but never a master checkpoint.
+            report,_ = self.exercise('pull_request', ['README.md'], draft=draft, labels=['ci:full'],
+                                     extra_env={'CI_CALLED_FULL': 'true'})
+            self.assertTrue(report['full_matrix'])
+            self.assertFalse(report['checkpoint_eligible'])
+            self.assertEqual(report['sha'], 'candidate-sha')
+        # Retired platform labels no longer add work.
+        for label in ('ci:run', 'ci:windows', 'ci:android', 'ci:browsers'):
+            with self.subTest(label=label):
+                plain,_ = self.exercise('pull_request', ['src/map/gradient/PathGradientHarness.cpp'])
+                labelled,_ = self.exercise('pull_request', ['src/map/gradient/PathGradientHarness.cpp'], labels=[label])
+                self.assertEqual(plain['selection'], labelled['selection'])
+                self.assertEqual(plain['execution_plan']['executed_ids'], labelled['execution_plan']['executed_ids'])
+                self.assertFalse(labelled['selection']['windows'])
+        self.assertEqual(policy.LABELS, {'ci:full'})
 
     def test_ci_build_and_selector_changes_force_full_verification(self):
-        for path in ('.github/workflows/build.yml', '.github/scripts/ci_predictive.py',
+        for path in ('.github/workflows/build.yml', '.github/scripts/ci_changed_paths.py',
                      'test/build_system/test_ci_policy.py', 'SConstruct'):
             with self.subTest(path=path):
                 report,_ = self.exercise('pull_request', [path])
                 self.assertEqual(report['verification_mode'], 'full')
                 self.assertEqual(report['selection'], policy.full())
                 self.assertTrue(report['full_matrix'])
-                self.assertIsNone(report['execution_plan']['predictor'])
+                self.assertIn('CI/build inventory changed', report['execution_plan']['exceptions'])
                 self.assertFalse(report['checkpoint_eligible'])
 
     def test_timing_inventory_does_not_change_for_equivalent_policy_implementation(self):

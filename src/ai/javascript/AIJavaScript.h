@@ -37,5 +37,7 @@ class AIJavaScript : public AIImplementation
 	const std::string &diagnostic() const { return error; }
 	// Ordered worker-stream observation for boundaries without an AI poll.
 	void observe(const AIEngine::AIWorldView&);
+	bool observesWhenIdle() const override { return true; }
+	void observeIdle(const AIEngine::AIWorldView& world) override { observe(world); }
 	void captureTelemetry() override;
 };

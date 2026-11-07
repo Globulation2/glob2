@@ -9,6 +9,7 @@
 #include "TerrainPresentation.h"
 #include "Game.h"
 #include "GenerationService.h"
+#include "GenerationWorld.h"
 #include "StartDiagnostics.h"
 #include "FairnessModel.h"
 #include "GeneratorRegistry.h"
@@ -102,9 +103,10 @@ std::string metricTimingJson(Game &game, const GenerationRequest &descriptor,
 		generateOnly.push_back(milliseconds(start));
 	});
 	const double withTelemetry = timed([&] { Game fresh(nullptr); GenerationService().generate(fresh, descriptor, true); });
-	const double score = timed([&] { MapGeneration::scoreStarts(game, teams); });
+	GenerationWorld world(game);
+	const double score = timed([&] { MapGeneration::scoreStarts(world, teams); });
 	// The fitted model alone takes microseconds; evaluate it many times and divide.
-	const auto quality = MapGeneration::scoreStarts(game, teams);
+	const auto quality = MapGeneration::scoreStarts(world, teams);
 	constexpr int kModelLoops = 2000;
 	const double model = timed([&]
 	{
@@ -116,7 +118,7 @@ std::string metricTimingJson(Game &game, const GenerationRequest &descriptor,
 			MapGeneration::mapFairness(MapGeneration::winProbabilities(fitness));
 		}
 	}) / kModelLoops;
-	const double diagnostics = timed([&] { MapGeneration::diagnoseStarts(game, teams); });
+	const double diagnostics = timed([&] { MapGeneration::diagnoseStarts(world, teams); });
 	std::vector<MapReportTimings> reports(kRepeats);
 	std::vector<double> totals;
 	for (auto &report : reports)
@@ -154,7 +156,8 @@ std::string diagnosticsJson(Game &game, int nbTeams, bool wanted)
 {
 	if (!wanted)
 		return "";
-	const auto report = MapGeneration::diagnoseStarts(game, nbTeams);
+	GenerationWorld world(game);
+	const auto report = MapGeneration::diagnoseStarts(world, nbTeams);
 	std::ostringstream out;
 	out << "\"start_diagnostics\":{\"measured\":" << (report.measured ? "true" : "false")
 		<< ",\"colonies\":[";
@@ -1030,7 +1033,8 @@ int runMapStudy(int argc, char **argv)
 		// The service already scored this map. Scoring it again times what that costs, which
 		// is what a sampling caller pays per candidate on top of generating it.
 		const auto scoreStart = std::chrono::steady_clock::now();
-		MapGeneration::scoreStarts(game, descriptor.nbTeams);
+		GenerationWorld world(game);
+		MapGeneration::scoreStarts(world, descriptor.nbTeams);
 		const double scoreSeconds =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - scoreStart).count();
 		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score,
@@ -1193,7 +1197,8 @@ int runMapStudy(int argc, char **argv)
                          kind.c_str(),resourceKey);
             return 2;
         }
-		const int removed = MapGeneration::removeResourceNear(game, team, resourceIndex(*resource), radius);
+		GenerationWorld world(game);
+		const int removed = MapGeneration::removeResourceNear(world, team, resourceIndex(*resource), radius);
 		std::printf("PERTURB,%s,%d,%d,%d\n", kind.c_str(), team, radius, removed);
 		perturbed += std::string(perturbed.empty() ? "" : ",") + "{\"kind\":" + Headless::quote(kind) +
 					 ",\"team\":" + std::to_string(team) + ",\"radius\":" + std::to_string(radius) +

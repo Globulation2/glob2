@@ -4,8 +4,7 @@
 #include "Contact.h"
 #include "Drawing.h"
 #include "FertilityField.h"
-#include "BuildingType.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -876,7 +875,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "glacis layout";
 	const GlacisOptions o(context.request);
@@ -887,7 +886,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const FortStencil &s = L.stencil;
 	const int n = t.size(), teams = context.request.nbTeams;
@@ -990,7 +989,7 @@ bool generate(Game &game, GenerationContext &context)
 				// rectangle from the nearest wheat) running into the cistern's water in two of the
 				// four facings, and those forts' colonies stalled at 15 in a Numbi tournament
 				// while the other two facings reached 60 (2026-09-16).
-				const int sx = game.teams[k]->startPosX + 2, sy = game.teams[k]->startPosY + 2;
+				const int sx = game.teamStart(k).x + 2, sy = game.teamStart(k).y + 2;
 				std::vector<std::pair<int, int>> garden;
 				for (int i = 0; i < n; ++i)
 					if (eligible(i))
@@ -1127,7 +1126,8 @@ bool generate(Game &game, GenerationContext &context)
 }
 
 // Every pure-grass tile a crop on `from` could ever spread to, eight-connected, never onto stone.
-std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<unsigned char> &from)
+std::vector<int> grassReach(const GenerationMap &map, const Torus &t,
+							const std::vector<unsigned char> &from)
 {
 	const int n = t.size();
 	std::vector<unsigned char> open(n, 0);
@@ -1144,12 +1144,12 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	return stepsFrom(t, source, open);
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
 	const GlacisOptions o(context.request);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "glacis"); !mismatch.empty())
@@ -1209,8 +1209,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		int towers = 0;
-		for (const Building *b : game.teams[k]->liveBuildings.entries())
-			if (b && b->type->shootingRange && !b->type->isBuildingSite)
+		for (const GenerationBuilding &b : game.teamBuildings(k))
+			if (b.type.shootingRange && !b.type.isBuildingSite)
 				++towers;
 		fewest = std::min(fewest, towers);
 		most = std::max(most, towers);

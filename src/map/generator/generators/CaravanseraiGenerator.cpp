@@ -4,7 +4,7 @@
 #include "BuildingType.h"
 #include "Contact.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -876,7 +876,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "caravanserai layout";
 	const CaravanseraiOptions o(context.request);
@@ -887,7 +887,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -1089,7 +1089,8 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<unsigned char> &from)
+std::vector<int> grassReach(const GenerationMap &map, const Torus &t,
+							const std::vector<unsigned char> &from)
 {
 	const int n = t.size();
 	std::vector<unsigned char> open(n, 0), source(n, 0);
@@ -1103,11 +1104,11 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	return stepsFrom(t, source, open);
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "caravanserai"); !mismatch.empty())

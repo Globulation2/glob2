@@ -3,13 +3,12 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "ShatteredCoastGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "LatticeNoise.h"
-#include "Map.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
@@ -20,7 +19,7 @@
 #include "Sketch.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -291,7 +290,7 @@ struct TerrainMix
 	double water, sand, grass;
 };
 
-static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &grassCount)
+static void countTerrain(const GenerationMap &map, int &waterCount, int &sandCount, int &grassCount)
 {
 	waterCount = sandCount = grassCount = 0;
 	for (int y = 0; y < map.getH(); y++)
@@ -440,7 +439,7 @@ static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &ba
 
 // Every tile draws its terrain independently, in the fitted shares: pure white noise, which the
 // smoothing passes then grow into blobs.
-static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
+static void paintPatchwork(GenerationMap &map, std::mt19937 &rng, const TerrainMix &mix)
 {
 	int totalRatio = 0x7FFF;
 	int waterRatio = (int)(((double)mix.water) * ((double)totalRatio));
@@ -498,7 +497,7 @@ static const int kSmoothingDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
 // shores. That fragmentation is the "shattered" look; at 8 passes the difference mostly disappears,
 // since by then the blobs are large anyway. The first pass has no brake (allowed is zeroed), so the
 // initial noise always gets one free round of clumping before the shares are policed.
-static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const TerrainMix &base)
+static void smoothPatchwork(GenerationMap &map, std::mt19937 &rng, int smooth, const TerrainMix &base)
 {
 	const int w = map.getW(), h = map.getH();
 	for (int i = 0; i < smooth; i++)
@@ -560,7 +559,7 @@ static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const Terra
 // of the grass, used as a squared distance, so colonies sit about the side of a square of that much
 // grass apart - further apart on grassy maps and with few colonies, closer on watery or crowded
 // ones.
-static bool placeColonies(Map &map, GenerationContext &context,
+static bool placeColonies(GenerationMap &map, GenerationContext &context,
 						  const ShatteredCoastOptions &options, int grassCount, double totalCount)
 {
 	const int w = map.getW(), h = map.getH();
@@ -683,9 +682,9 @@ static bool placeColonies(Map &map, GenerationContext &context,
 	return true;
 }
 
-static bool terrain(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static bool terrain(GenerationWorld &game, GenerationContext &context, const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	// Each vertex write re-derives its four tiles at once; the batch holds the map-wide follow-up
 	// (terrain generation, route invalidation) until the terrain is finished.
 	auto batch = map.editTerrain();
@@ -717,9 +716,9 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	return true;
 }
 
-static void resources(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static void resources(GenerationWorld &game, GenerationContext &context, const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 
 	int *bootX = context.bootX.data();
@@ -932,9 +931,9 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 
 // A second, independent furnishing pass gives the coast destinations beyond the home deposits.
 // Run after all opening repairs: no new deposit or RNG draw can change the established starts.
-static void expansionResources(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+static void expansionResources(GenerationWorld &game, GenerationContext &context, const ShatteredCoastOptions &options)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const auto protectedHome = swarmSurroundings(t, context, 32);
 	const auto vacant = [&](int i)
@@ -1136,7 +1135,7 @@ struct Outcrops
 	int wanted = 0, knots = 0, faces = 0, faceTiles = 0, stacks = 0, stackVertices = 0, dropped = 0;
 };
 
-Outcrops planOutcrops(const Map &map, const Torus &t, GenerationContext &context, const ShatteredCoastOptions &o)
+Outcrops planOutcrops(const GenerationMap &map, const Torus &t, GenerationContext &context, const ShatteredCoastOptions &o)
 {
 	const int n = t.size(), teams = context.request.nbTeams;
 	Outcrops out;
@@ -1489,9 +1488,9 @@ TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climat
 }
 
 // The coast pass: rock, deep cores, mudflats and looks over the finished revision-8 map.
-bool coastPass(Game &game, GenerationContext &context, const ShatteredCoastOptions &o)
+bool coastPass(GenerationWorld &game, GenerationContext &context, const ShatteredCoastOptions &o)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const int n = t.size();
 	TerrainSketch mech(static_cast<size_t>(n));
@@ -1663,7 +1662,7 @@ bool coastPass(Game &game, GenerationContext &context, const ShatteredCoastOptio
 }
 } // namespace
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const ShatteredCoastOptions options(context.request);
 	if (!terrain(game, context, options))
@@ -1697,9 +1696,9 @@ static bool generate(Game &game, GenerationContext &context)
 // 2.0 adds the pass's own promises, read from the finished terrain by rule group: every deep vertex
 // keeps kDeepSteps - 1 steps of water round it (the shallows), no rock stands near a colony, and no
 // group of rock parts the walkable ground round it.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	if (std::string floor = startingFloorFailure(map, teams); !floor.empty())
 		return floor;

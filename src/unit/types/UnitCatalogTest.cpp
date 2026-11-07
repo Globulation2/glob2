@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "UnitCatalog.h"
 #include "GameHeader.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "Race.h"
 #include <nlohmann/json.hpp>
 #include "BinaryStream.h"

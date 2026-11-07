@@ -1,4 +1,5 @@
 const {test, expect} = require('@playwright/test');
+const { languageLabel } = require('./language-label');
 const {readFileSync} = require('node:fs');
 const {gameURL, waitForMainMenu, clickMainMenu, clickControl, clickByLabel,
   clickSettingsDone} = require('./main-menu');
@@ -60,7 +61,7 @@ test.describe('explicit Bulgarian language selection', () => {
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain('SettingsScreen');
     await clickControl(page, 'nav.5'); // Language & player.
     await clickControl(page, 'player.language');
-    await clickByLabel(page, /^popup\//, 'Български');
+    await clickByLabel(page, /^popup\//, languageLabel('bg'));
     await clickSettingsDone(page); // Uses the real durable settings save path.
     await waitForMainMenu(page);
     expect(await page.evaluate(() => (glob2Diagnostics.snapshot().controls['menu/6'] || glob2Diagnostics.snapshot().controls['menu/settings'])?.label)).toBe('Настройки');
@@ -72,6 +73,6 @@ test.describe('explicit Bulgarian language selection', () => {
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain('SettingsScreen');
     await clickControl(page, 'nav.5');
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['player.language']?.label))
-      .toBe('Български');
+      .toBe(languageLabel('bg'));
   });
 });

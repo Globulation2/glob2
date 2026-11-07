@@ -1,7 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Contact.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "ResourceSemantics.h"
 #include <algorithm>
 #include <climits>
@@ -11,7 +11,7 @@
 #include <utility>
 namespace MapGeneration
 {
-int stepCost(const Map &map, int x, int y, const StepCosts &costs)
+int stepCost(const GenerationMap &map, int x, int y, const StepCosts &costs)
 {
     const auto index=map.coordToIndex(x,y);
     const auto& terrain=map.terrainPropertiesAt(index);
@@ -23,8 +23,9 @@ int stepCost(const Map &map, int x, int y, const StepCosts &costs)
     return open;
 }
 
-std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int> &sources,
-						   const StepCosts &costs, GridNeighbors neighbours)
+std::vector<int> costsFrom(const GenerationMap &map, const Torus &t,
+						   const std::vector<int> &sources, const StepCosts &costs,
+						   GridNeighbors neighbours)
 {
 	const int n = t.w * t.h;
 	std::vector<int> step(n), cost(n, INT_MAX);
@@ -99,7 +100,7 @@ int ContactReport::spread() const
 	return costSpread(nearestRival());
 }
 
-ContactReport contactMatrix(const Map &map, int teams, const StepCosts &costs)
+ContactReport contactMatrix(const GenerationMap &map, int teams, const StepCosts &costs)
 {
 	const Torus t(map);
 	const auto units = unitTilesByTeam(map, teams);
@@ -126,8 +127,8 @@ ContactReport contactMatrix(const Map &map, int teams, const StepCosts &costs)
 	return report;
 }
 
-std::vector<int> costsToTarget(const Map &map, int teams, const std::vector<unsigned char> &targets,
-							   const StepCosts &costs)
+std::vector<int> costsToTarget(const GenerationMap &map, int teams,
+							   const std::vector<unsigned char> &targets, const StepCosts &costs)
 {
 	const Torus t(map);
 	const auto units = unitTilesByTeam(map, teams);

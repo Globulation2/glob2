@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SwampGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GenerationWork.h"
 #include "HeightFieldLooks.h"
 #include "LatticeNoise.h"
-#include "Map.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
@@ -13,7 +12,7 @@
 #include "Sketch.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
@@ -250,7 +249,7 @@ struct Hammocks
 	int wanted = 0, placed = 0, dropped = 0;
 };
 
-Hammocks planHammocks(const Map &map, const Torus &t, GenerationContext &context, const SwampOptions &o,
+Hammocks planHammocks(const GenerationMap &map, const Torus &t, GenerationContext &context, const SwampOptions &o,
 					  const TerrainSketch &mech, const Relief &relief)
 {
 	const int n = t.size();
@@ -384,7 +383,7 @@ struct Causeway
 
 // The causeways over the mechanic sketch (deep cores, mud and moss already in it): at most one per
 // colony, each the straight crossing that saves the longest walk round from ground near its swarm.
-std::vector<Causeway> planCauseways(const Map &map, const Torus &t, GenerationContext &context,
+std::vector<Causeway> planCauseways(const GenerationMap &map, const Torus &t, GenerationContext &context,
 									TerrainSketch &mech, const std::vector<unsigned char> &held)
 {
 	const int n = t.size(), teams = context.request.nbTeams;
@@ -582,10 +581,10 @@ TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climat
 
 // The bog pass: hammocks, deep cores, mud, moss, causeways and looks over the finished revision-5
 // map.
-void bogPass(Game &game, GenerationContext &context, const SwampOptions &o, const std::vector<float> &field,
+void bogPass(GenerationWorld &game, GenerationContext &context, const SwampOptions &o, const std::vector<float> &field,
 			 const HeightFieldTiling &tiling)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const int n = t.size(), teams = context.request.nbTeams;
 	TerrainSketch mech(static_cast<size_t>(n));
@@ -762,7 +761,7 @@ void bogPass(Game &game, GenerationContext &context, const SwampOptions &o, cons
 }
 } // namespace
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const SwampOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, true);
@@ -802,9 +801,9 @@ static bool generate(Game &game, GenerationContext &context)
 // vertex keeps kDeepSteps - 1 steps of water round it (the shallows), no mud, moss or thicket stands
 // near a colony, no thicket parts the walkable ground round it, and every deposit stands on ground
 // that holds it.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	if (std::string floor = startingFloorFailure(map, teams); !floor.empty())
 		return floor;

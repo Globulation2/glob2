@@ -21,6 +21,7 @@
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
 #  include <glob2/BuildConfig.h>
+#  include <glob2/BuildPaths.h>
 #else
 #	ifdef WIN32
 #		define PACKAGE_DATA_DIR ".."

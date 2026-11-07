@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "RingWorldGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Geometry.h"
@@ -1166,7 +1166,7 @@ TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, 
 
 // Each island carries one themed prize at its middle, as stockIslands lays it, with the theme the
 // design already drew (and painted the island for).
-void stockThemedIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands,
+void stockThemedIslands(GenerationMap &map, GenerationContext &context, const std::vector<Island> &islands,
 						const std::vector<int> &themes)
 {
 	const int width = map.getW();
@@ -1207,7 +1207,7 @@ void stockThemedIslands(Map &map, GenerationContext &context, const std::vector<
 
 // A swarm anchored at (x, y) needs pure grass under its 4x4 footprint and dry, unoccupied ground in
 // the ring around it where its workers will stand.
-bool siteFits(const Map &map, int x, int y)
+bool siteFits(const GenerationMap &map, int x, int y)
 {
 	for (int dy = -1; dy <= 4; ++dy)
 		for (int dx = -1; dx <= 4; ++dx)
@@ -1226,9 +1226,9 @@ bool siteFits(const Map &map, int x, int y)
 // little jitter, and alternate between the belt's two coasts (or all take one). Within its slot a
 // colony takes the site whose nearest water is closest to kHomeShore tiles away, so every start
 // has the same shore.
-bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, bool bothCoasts)
+bool placeColonies(GenerationWorld &game, GenerationContext &context, const Belt &belt, bool bothCoasts)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Axes &axes = belt.axes;
 	const int width = axes.width, height = axes.height, length = axes.length();
 	const int teams = context.request.nbTeams;
@@ -1333,9 +1333,9 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 
 // Every home's starter kit: a wheat and a wood patch on the most fertile ground a short walk from
 // the swarm, and a little stone further inland, never on `keepOpen` (the ground round the quarry tors).
-void furnishHomes(Game &game, GenerationContext &context, const std::vector<unsigned char> &keepOpen)
+void furnishHomes(GenerationWorld &game, GenerationContext &context, const std::vector<unsigned char> &keepOpen)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
 	const Torus t{width, height};
 	const size_t area = size_t(width) * height;
@@ -1398,10 +1398,10 @@ void furnishHomes(Game &game, GenerationContext &context, const std::vector<unsi
 // last walk crosses the seam back to the first colony, so together they close one loop all the way
 // around the map. Almost always nothing is in the way and nothing is cleared. Tiles of `keep` (the
 // quarry faces) are never walked over or cleared.
-bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes,
+bool openBeltRoad(GenerationWorld &game, GenerationContext &context, const Axes &axes,
 				  const std::vector<unsigned char> &keep)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int width = map.getW(), height = map.getH(), length = axes.length();
 	const int teams = context.request.nbTeams;
 	const int area = width * height;
@@ -1501,7 +1501,7 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes,
 
 // From each colony's swarm to the ground before its own face: the cheapest walk where a step costs ten
 // (fourteen diagonally) and stepping onto a deposit forty more; the deposits on it are cleared.
-void openQuarryWalks(Map &map, const Torus &t, const Features &features, const std::vector<Home> &homes)
+void openQuarryWalks(GenerationMap &map, const Torus &t, const Features &features, const std::vector<Home> &homes)
 {
 	const int n = t.size();
 	const std::vector<unsigned char> approach = quarryApproach(t, features.quarry);
@@ -1538,11 +1538,11 @@ void openQuarryWalks(Map &map, const Torus &t, const Features &features, const s
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "ring layout";
 	const RingWorldOptions options(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
@@ -1715,7 +1715,7 @@ std::string validate(const GenerationRequest &r)
 // exactly what it means for the flooded region to wrap. `winding` is shared between floods of
 // disjoint regions so each tile is labelled once; `reached` receives this flood's tiles.
 template <typename Open>
-bool floodAround(const Map &map, const Axes &axes, const std::vector<int> &sources, Open open,
+bool floodAround(const GenerationMap &map, const Axes &axes, const std::vector<int> &sources, Open open,
 				 std::vector<int> &winding, std::vector<int> &reached)
 {
 	const int width = map.getW(), length = axes.length();
@@ -1766,9 +1766,9 @@ bool floodAround(const Map &map, const Axes &axes, const std::vector<int> &sourc
 // move) must reach every other colony and must close a loop around the map along the belt. And the
 // seas on either side of the belt must be one ocean: some body of water wraps around the map
 // beside it, so the belt can't have swallowed the ocean anywhere.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
 	const Axes axes = axesFor(width, height);
 	const size_t area = size_t(width) * height;
@@ -1862,7 +1862,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Stamp stamp = stampRing(axes, replay, options);
 	std::vector<Home> homes;
 	for (int team = 0; team < teams; ++team)
-		homes.push_back({game.teams[team]->startPosX, game.teams[team]->startPosY});
+		homes.push_back({game.teamStart(team).x, game.teamStart(team).y});
 	const Features features = planFeatures(stamp, t, axes, homes, options, replay);
 	if (const std::string fault =
 			quarryFault(map, t, features.quarry, features.owner, teams, features.tors > 0 ? kTorFace : 0);

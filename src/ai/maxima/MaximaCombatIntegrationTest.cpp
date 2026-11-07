@@ -1,6 +1,8 @@
 #include "MaximaObservationFixture.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "ScopedEnvironment.h"
 #include <algorithm>
@@ -13,6 +15,7 @@
 #include "../../src/team/Team.h"
 #include "../../src/ai/AIImplementation.h"
 #include "../../src/map/Map.h"
+#include "gradient/MapRouting.h"
 #include "Order.h"
 #include "../../src/ai/maxima/AIMaximaContinuation.h"
 #include "Player.h"
@@ -287,9 +290,9 @@ static void forbiddenDefenseZones()
             REQUIRE(!f.game.map.isForbidden(i%64,i/64,f.player.team->me));
             f.game.map.addGuardArea(i%64,i/64,0);
         }
-        glob2test::awaitGradient(f.game,[&] { return f.game.map.getGuardAreasGradient(0,movementAccessFromLegacy(amphibious)); });
-        f.game.map.updateGuardAreasGradient(0,movementAccessFromLegacy(amphibious));
-        REQUIRE(f.game.map.getGuardAreasGradient(0,movementAccessFromLegacy(amphibious))[22*64+8]>1);
+        glob2test::awaitGradient(f.game,[&] { return f.game.map.routing().getGuardAreasGradient(0,movementAccessFromLegacy(amphibious)); });
+        f.game.map.routing().updateGuardAreasGradient(0,movementAccessFromLegacy(amphibious));
+        REQUIRE(f.game.map.routing().getGuardAreasGradient(0,movementAccessFromLegacy(amphibious))[22*64+8]>1);
     }
 }
 
@@ -463,7 +466,7 @@ static void rallyAssemblesByMovement()
     for(int shift:{0,52}) {
         setSyncRandSeed(5489);
         Fixture f;
-        f.game.map.configureGradientPipeline(0,8);
+        f.game.map.routing().configureGradientPipeline(0,8);
         const auto wrap=[&](int v){return (v+shift)%64;};
         f.game.gameHeader.setHungerDisabled(true);
         f.building(wrap(10),wrap(10),0);

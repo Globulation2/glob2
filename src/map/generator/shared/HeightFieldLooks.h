@@ -6,7 +6,7 @@
 #include "TerrainType.h"
 #include <string>
 #include <vector>
-class Map;
+class GenerationMap;
 struct GenerationContext;
 struct GenerationRequest;
 namespace MapGeneration
@@ -30,7 +30,7 @@ TerrainSketch heightFieldSketch(const GenerationRequest &, GenerationContext &, 
 								const HeightFieldBuilder &build, std::vector<int> *deposits = nullptr);
 
 /// The current vertex terrain of a map, as a sketch.
-TerrainSketch mapSketch(const Map &);
+TerrainSketch mapSketch(const GenerationMap &);
 
 /// Vertices of the Water or DeepWater group: what "water" means to a check once deep cores exist
 /// (Map::isWater and a sketch's == WATER see only plain water).
@@ -115,11 +115,11 @@ struct DisplacedResources
 };
 /// Writes composeLooks(mechanics, looks) to the map's vertices and clears every deposit its tile no
 /// longer allows (rock holds nothing, deep water no algae, rough and barren ground nothing).
-DisplacedResources writeLayeredTerrain(Map &, const TerrainSketch &mechanics, const TerrainSketch &looks);
+DisplacedResources writeLayeredTerrain(GenerationMap &, const TerrainSketch &mechanics, const TerrainSketch &looks);
 
 /// The first group of blocking terrain (tiles that neither walk nor swim, eight-connected) on the
 /// finished map that parts the walkable ground round it, so that the walkable tiles beside it fall in
 /// more than one walkable component: a knot of rock that walled ground off. Returns a tile of that
 /// group, or -1 when none does.
-int partingBarrier(const Map &);
+int partingBarrier(const GenerationMap &);
 } // namespace MapGeneration

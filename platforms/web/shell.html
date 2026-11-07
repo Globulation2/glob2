@@ -369,6 +369,10 @@ var Module = {
     const graphicsQuery = new URLSearchParams(location.search);
     if (graphicsQuery.get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
+    // Automated browsers skip the opening cloud cover: its first key press only
+    // parts the clouds, so scripted gameplay input would be swallowed.
+    if (navigator.webdriver || graphicsQuery.get('intro') === '0')
+      ENV.GLOB2_INTRO_COVER = '0';
     FS.mkdirTree('/home/web_user');
     if (globalThis.glob2Studio || globalThis.glob2SetPreview) {
       applyOnlineLanguage();

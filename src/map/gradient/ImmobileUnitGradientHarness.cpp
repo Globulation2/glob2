@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for immobile bookkeeping and weighted building routes.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -63,9 +64,9 @@ struct World
         // These field tests inspect the replacement after fixed publication,
         // without moving units or changing occupancy during the wait.
         glob2test::awaitGradient(game,[&]() -> const Uint16* {
-            game.map.requestBuildingField(inn,movementAccessFromLegacy(swimClass),BuildingRoute::Footprint);
+            game.map.routing().requestBuildingField(inn,movementAccessFromLegacy(swimClass),BuildingRoute::Footprint);
             return inn->dirtyGradient[swimClass] || inn->refreshRequested.test(swimClass)
-                ? nullptr : game.map.lookupBuildingField(inn,movementAccessFromLegacy(swimClass),BuildingRoute::Footprint);
+                ? nullptr : game.map.routing().lookupBuildingField(inn,movementAccessFromLegacy(swimClass),BuildingRoute::Footprint);
         });
 	}
 
@@ -73,8 +74,8 @@ struct World
 	{
         settle(swimClass);
         int distance=0;
-        game.map.buildingAvailable(inn,movementAccessFromLegacy(swimClass),x,y,&distance); // Settle the queried cell of the lazy field.
-		const Uint16* gradient = game.map.buildingGradient(inn, movementAccessFromLegacy(swimClass));
+        game.map.routing().buildingAvailable(inn,movementAccessFromLegacy(swimClass),x,y,&distance); // Settle the queried cell of the lazy field.
+		const Uint16* gradient = game.map.routing().buildingGradient(inn, movementAccessFromLegacy(swimClass));
 		require(gradient != nullptr, "inn has an accessible entrance");
 		return gradient[game.map.coordToIndex(x, y)];
 	}
@@ -161,21 +162,21 @@ static void paintingForbiddenAreaRefreshesGradients()
 	{
         if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
         world.settle(c);
-		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "near route uses the gap");
-		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "distant route uses the gap");
-		require(world.game.map.pathfindBuilding(random, world.inn, movementAccessFromLegacy(c), 40, 45, &dx, &dy), "distant unit can advance");
+		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "near route uses the gap");
+		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "distant route uses the gap");
+		require(world.game.map.routing().pathfindBuilding(random, world.inn, movementAccessFromLegacy(c), 40, 45, &dx, &dy), "distant unit can advance");
 	}
 	forbidRow(world, 23, -1);
 	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
         if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "painting invalidates or dirties every cached swim class immediately");
-		if (world.game.map.pathfindBuilding(random,world.inn,movementAccessFromLegacy(c),20,24,&dx,&dy))
+		if (world.game.map.routing().pathfindBuilding(random,world.inn,movementAccessFromLegacy(c),20,24,&dx,&dy))
 			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "building guidance cannot step onto freshly forbidden paint");
         world.settle(c);
-		require(!world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "closing the gap cuts off the near route");
-		require(!world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "closing the gap cuts off the distant route");
-		require(!world.game.map.pathfindBuilding(random, world.inn, movementAccessFromLegacy(c), 40, 45, &dx, &dy), "distant unit has no route left");
+		require(!world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "closing the gap cuts off the near route");
+		require(!world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "closing the gap cuts off the distant route");
+		require(!world.game.map.routing().pathfindBuilding(random, world.inn, movementAccessFromLegacy(c), 40, 45, &dx, &dy), "distant unit has no route left");
 	}
 	BrushAccumulator gap;
 	gap.applyBrush(BrushApplication(20, 23, 0), &world.game.map);
@@ -185,8 +186,8 @@ static void paintingForbiddenAreaRefreshesGradients()
         if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "erasing invalidates or dirties every cached swim class immediately");
         world.settle(c);
-		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "erasing restores the near route");
-		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "erasing restores the distant route");
+		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "erasing restores the near route");
+		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "erasing restores the distant route");
 	}
 	std::puts("PASS painting and erasing refresh all weighted building routes");
     }

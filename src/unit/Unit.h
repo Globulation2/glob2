@@ -21,7 +21,7 @@ namespace ResourceClaims { struct TerrainComponentLabels; }
 #include <string.h>
 
 #include "UnitUtils.h"
-#include <GAGSys.h>
+#include <SDL3/SDL_stdinc.h>
 #include "UnitConsts.h"
 #include "Ressource.h"
 

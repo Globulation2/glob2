@@ -1,6 +1,9 @@
 #include <Environment.h>
+#include "gradient/MapRouting.h"
+#include "ProfileNeeds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameGUI.h"
 #include "FileFormatVersions.h"
 #include "ScopedEnvironment.h"
 #include "OrderMessages.h"
@@ -169,7 +172,7 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	}
 }
 
-TEST_CASE("JavaScript pass assigns valid identities to released saves" *
+TEST_CASE("JavaScript pass assigns valid identities to released saves" * glob2test::needs({"ai:castor"}) *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::HeadlessGlobals globals;
@@ -208,7 +211,7 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 	}
 }
 
-TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continuation" *
+TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continuation" * glob2test::needs({"ai:castor"}) *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::HeadlessGlobals globals;
@@ -245,7 +248,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 		CHECK(buildings > 0);
 	};
 	checkIdentities(legacy.game);
-	legacy.game.map.finishGradientPipeline();
+	legacy.game.map.routing().finishGradientPipeline();
 	auto *storage = new GAGCore::MemoryStreamBackend;
 	GAGCore::BinaryOutputStream output(storage);
 	legacy.game.save(&output, false, "Master124 upgraded");

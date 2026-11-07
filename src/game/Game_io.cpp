@@ -9,9 +9,8 @@
 #include <set>
 #include <charconv>
 
-#include "AICastor.h"
-#include "AINicowar.h"
 #include "AIMaximaStrategy.h"
+#include "Player.h"
 
 #include <assert.h>
 #include <string.h>
@@ -240,7 +239,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 	{
 		stream->readEnterSection(i);
         co_await GAGCore::CooperativeTask::checkpoint("[Loading teams]");
-		teams[i]=new Team(this);
+		teams[i]=new Team(this, simContext());
         if (!(co_await teams[i]->loadTask(stream, &buildingsTypes, versionMinor)))
             co_return false;
 		if (teams[i]->teamNumber != i) co_return false;

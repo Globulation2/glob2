@@ -1,4 +1,4 @@
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include <string>
 #include "Version.h"
 #include <vector>

@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeightFieldLooks.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GenerationWork.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Morphology.h"
 #include "Rock.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include <algorithm>
 #include <cmath>
@@ -25,10 +24,11 @@ TerrainSketch heightFieldSketch(const GenerationRequest &request, GenerationCont
 	HeightMap hm(tiling.w, tiling.h, context.stream("heightmap"));
 	build(hm, tiling.w, tiling.h, smoothingFactor);
 	const HeightFieldLevels levels = classifyHeightField(hm, tiling, options);
-	Game game(nullptr);
-	Map &scratch = game.map;
+	GenerationScratchWorld storage;
+	GenerationWorld &world = storage.world();
+	GenerationMap &scratch = world.map;
 	scratch.setSize(request.wDec, request.hDec);
-	scratch.setGame(&game);
+	world.attachMap();
 	paintHeightFieldTerrain(scratch, hm, tiling, levels);
 	if (deposits)
 	{
@@ -44,7 +44,7 @@ TerrainSketch heightFieldSketch(const GenerationRequest &request, GenerationCont
 	return mapSketch(scratch);
 }
 
-TerrainSketch mapSketch(const Map &map)
+TerrainSketch mapSketch(const GenerationMap &map)
 {
 	const auto state = map.vertexTerrainState();
 	TerrainSketch sketch(state.size());
@@ -292,7 +292,7 @@ std::vector<unsigned char> homeGardens(const Torus &t, const std::vector<int> &b
 	return garden;
 }
 
-DisplacedResources writeLayeredTerrain(Map &map, const TerrainSketch &mechanics, const TerrainSketch &looks)
+DisplacedResources writeLayeredTerrain(GenerationMap &map, const TerrainSketch &mechanics, const TerrainSketch &looks)
 {
 	writeVertices(map, composeLooks(mechanics, looks));
 	DisplacedResources lost;
@@ -333,7 +333,7 @@ DisplacedResources writeLayeredTerrain(Map &map, const TerrainSketch &mechanics,
 	return lost;
 }
 
-int partingBarrier(const Map &map)
+int partingBarrier(const GenerationMap &map)
 {
 	const Torus t(map);
 	const int n = t.size();

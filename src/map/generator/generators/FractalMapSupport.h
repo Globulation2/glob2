@@ -4,7 +4,7 @@
 #include "HierarchicalCrossings.h"
 #include "RecursiveGeometry.h"
 #include "Sketch.h"
-class Game;
+class GenerationWorld;
 namespace FractalMaps
 {
 using namespace MapGeneration;
@@ -75,7 +75,7 @@ void stampCrossings(Layout &, const CrossingSelection &, GenerationContext &);
 /// so a path can meet a feature but never cross one. Call after the last feature is laid and
 /// before the final shoreline pass. Returns the number of features left unjoined.
 int gardenPaths(Layout &, GenerationContext &);
-bool furnishAndSettle(Game &, GenerationContext &, const Layout &);
-std::string validate(const Game &, const GenerationContext &, const Layout &);
+bool furnishAndSettle(GenerationWorld &, GenerationContext &, const Layout &);
+std::string validate(const GenerationWorld &, const GenerationContext &, const Layout &);
 std::vector<GeneratorControl> resourceControls();
 } // namespace FractalMaps

@@ -28,14 +28,14 @@ painterly beside them.
 Ground materials render periodic grid blocks, sliced into 128x128 positional
 tiles (`variant_grid`) and box-downsampled to 32x32. Static materials use
 8x8 blocks with four seeded interiors and common boundaries, as do lava and
-ember field (crossfading in four steps per phase); water and deep water use
-one 4x4 block, to keep their animated frame banks small. Feature
+ember field (crossfading in four steps per phase); water, deep water and dark
+water use one 4x4 block, to keep their animated frame banks small. Feature
 counts and noise frequencies scale with canvas size to keep their native density.
 The interchangeable blocks preserve shared edge geometry while varying their
 interiors. Frames are phase-major, block-major, then
 row-major cell: `cell + cells * block + (cells * blocks) * phase`, where
 `cells = grid * grid`. Animated materials
-render four phases (sixteen for water and deep water).
+render four phases (sixteen for the waters).
 Outputs are `content/data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
 tiles were downsampled from (`content/data/highres/v1/terrain-<name>N.png`, registered in
 the pack through tools/artwork/highres_pack.py) and `content-src/gfx/<name>/provenance.json`.

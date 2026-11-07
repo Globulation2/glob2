@@ -2,6 +2,7 @@
 // Copyright (C) 2006-2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "AI.h"
 #include "MapEditDialog.h"
 #include "AINames.h"
 #include "AllyTeamWidgetIndex.h"

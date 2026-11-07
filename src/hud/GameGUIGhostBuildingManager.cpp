@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
+#include <GraphicContext.h>
 #include "../render/MapCopies.h"
 #include "GameGUIViewport.h"
 #include "GameGUIGhostBuildingManager.h"

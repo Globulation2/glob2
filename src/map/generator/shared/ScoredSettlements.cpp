@@ -1,7 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScoredSettlements.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include <memory>
 namespace MapGeneration
@@ -25,13 +25,12 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 		}
 		// Preview workers have smaller stacks than the main thread. Keep the
 		// candidate simulation on the heap, as with the final generated game.
-		auto trialStorage = std::make_unique<Game>(nullptr);
-		Game &trial = *trialStorage;
+		GenerationScratchWorld trialStorage;
+		GenerationWorld &trial = trialStorage.world();
 		trial.map.setSize(context.request.wDec, context.request.hDec);
-		trial.map.setGame(&trial);
+		trial.attachMap();
 		GenerationContext probe(initial);
-		trial.gameHeader.setRandomSeed(context.request.seed);
-		trial.map.worldRandom.initialize(context.request.seed);
+		trial.seedRandom(context.request.seed);
 		if (!build(trial, probe, proposals.at(k)))
 		{
 			result.failure =

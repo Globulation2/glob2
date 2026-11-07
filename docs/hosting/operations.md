@@ -69,7 +69,7 @@ with the real binary, applied by the worker and stored as a blob. It then remove
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
 leaves the stack running. Hosted verification selects this coverage when
 requested for affected deployment boundaries or full runs; routine PR checks
-remain lightweight. See [verification policy](../../AGENTS.md#validation-and-ci-feedback).
+remain lightweight. See [verification policy](../../AGENTS.md#validation-and-ci).
 `--match-e2e` also plays a rated quick match through the stack; see
 [End-to-end test of the stack](operations.md#end-to-end-test-of-the-stack).
 

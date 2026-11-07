@@ -7,7 +7,7 @@
 #include "Morphology.h"
 #include "Growth.h"
 #include "Room.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "ResourceSemantics.h"
 #include "Resources.h"
 #include "Planting.h"
@@ -265,7 +265,7 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 	return accepted;
 }
 
-int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fields,
+int plantShoreFields(GenerationMap &map, const Torus &t, const std::vector<ShoreField> &fields,
 					 const Fertility::Field &fertility, int percent)
 {
 	int planted = 0;
@@ -295,7 +295,7 @@ int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fi
 	return planted;
 }
 
-int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
+int plantContainedPlot(GenerationMap &map, const Torus &t, const std::vector<int> &tiles,
 					   const Fertility::Field &fertility, int resource, int wanted, bool renewable)
 {
 	std::vector<std::pair<int, int>> ranked;
@@ -317,8 +317,8 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 	return count;
 }
 
-std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::vector<int> &plotOf,
-								   const Fertility::Field *dry,
+std::string containedPlotsMismatch(const GenerationMap &map, const Torus &t,
+								   const std::vector<int> &plotOf, const Fertility::Field *dry,
 								   const std::vector<unsigned char> *finiteWheat)
 {
 	if (int(plotOf.size()) != t.size() || (finiteWheat && int(finiteWheat->size()) != t.size()))
@@ -881,7 +881,7 @@ growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
 	return labels;
 }
 
-double farmReachable(const Map &map, const Torus &t, const Farm &farm,
+double farmReachable(const GenerationMap &map, const Torus &t, const Farm &farm,
 					 const std::vector<int> &sources)
 {
 	const int n = t.size();
@@ -910,7 +910,7 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 	return land ? double(reached) / land : 0;
 }
 
-void clearFarmPlots(Map &map, const Torus &t, const std::vector<Farm> &farms)
+void clearFarmPlots(GenerationMap &map, const Torus &t, const std::vector<Farm> &farms)
 {
 	for (const Farm &farm : farms)
 	{
@@ -958,9 +958,11 @@ std::vector<unsigned char> stampSealedOval(TerrainSketch &terrain, const Torus &
 	return garden;
 }
 
-std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContext &context,
+std::pair<int, int> plantSealedGarden(GenerationMap &map, const Torus &t,
+									  GenerationContext &context,
 									  const std::vector<unsigned char> &garden, int wheat, int wood,
-									  const std::string &cropsStream, const std::string &splitStream)
+									  const std::string &cropsStream,
+									  const std::string &splitStream)
 {
 	const int n = t.size();
 	const auto plot = [&](int i) { return garden.at(i) && clearGround(map, t.remainderX(i), i / t.w); };
@@ -992,9 +994,9 @@ std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContex
 	return standing;
 }
 
-int trimFieldsBeyondWater(Map &map, const Torus &t, const std::vector<unsigned char> &keep,
-						  const Fertility::Field &watered, int leastReach, int reachSpread,
-						  const std::vector<int> &noise)
+int trimFieldsBeyondWater(GenerationMap &map, const Torus &t,
+						  const std::vector<unsigned char> &keep, const Fertility::Field &watered,
+						  int leastReach, int reachSpread, const std::vector<int> &noise)
 {
 	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, pureTiles(map, WATER));
 	int trimmed = 0;
@@ -1015,8 +1017,8 @@ int trimFieldsBeyondWater(Map &map, const Torus &t, const std::vector<unsigned c
 	return trimmed;
 }
 
-int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &keep, int depth,
-				   const std::vector<int> &noise)
+int frayFieldEdges(GenerationMap &map, const Torus &t, const std::vector<unsigned char> &keep,
+				   int depth, const std::vector<int> &noise)
 {
 	const int n = t.size();
 	std::vector<unsigned char> unplanted(n, 0);
@@ -1043,7 +1045,7 @@ int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &k
 	return frayed;
 }
 
-int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char> &protect)
+int removeCropSlivers(GenerationMap &map, const Torus &t, const std::vector<unsigned char> &protect)
 {
 	int slivers = 0;
 	for (int pass = 0; pass < 2; ++pass)

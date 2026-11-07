@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "RiverGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "HeightFieldLooks.h"
 #include "LatticeNoise.h"
-#include "Map.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Rock.h"
@@ -12,7 +11,7 @@
 #include "StartingPositions.h"
 #include "Team.h"
 #include "Terrain.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include <algorithm>
 #include <climits>
@@ -486,10 +485,10 @@ struct LayerCounts
 
 // The post-pass: the mechanic layers over the height field's terrain, then the looks.
 // The grass looks come back in `grassLooks`, to be laid after the starts (layGrassLooks).
-void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const Banks &banks,
+void redraw(GenerationWorld &game, GenerationContext &context, const RiverOptions &o, const Banks &banks,
 			const Bluffs &bluffs, LayerCounts &counts, TerrainSketch &grassLooks)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus t(map);
 	const int n = t.size(), teams = context.request.nbTeams;
 	TerrainSketch mech = mapSketch(map);
@@ -755,7 +754,7 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	context.telemetry.measure("river.algae.reseated", reseated);
 }
 
-void layGrassLooks(Map &map, const TerrainSketch &grassLooks)
+void layGrassLooks(GenerationMap &map, const TerrainSketch &grassLooks)
 {
 	TerrainSketch sketch = mapSketch(map);
 	for (size_t i = 0; i < sketch.size(); ++i)
@@ -770,7 +769,7 @@ const Banks &chooseBanks(const RiverOptions &o, GenerationContext &context)
 	return kBanks[index];
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const RiverOptions options(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
@@ -815,34 +814,34 @@ bool generate(Game &game, GenerationContext &context)
 // the request and the colonies' starts: every quarry face holds its stone, and no rock parts any
 // walkable ground.
 // The colonies' swarm corners on a finished map, wrapped; empty when a colony is missing.
-bool finishedStarts(const Game &game, int teams, std::vector<int> &bootX, std::vector<int> &bootY)
+bool finishedStarts(const GenerationWorld &game, int teams, std::vector<int> &bootX, std::vector<int> &bootY)
 {
 	const Torus t(game.map);
 	bootX.assign(static_cast<size_t>(teams), 0);
 	bootY.assign(static_cast<size_t>(teams), 0);
 	for (int k = 0; k < teams; ++k)
 	{
-		if (!game.teams[k])
+		if (!game.hasTeam(k))
 			return false;
-		bootX[size_t(k)] = t.x(game.teams[k]->startPosX);
-		bootY[size_t(k)] = t.y(game.teams[k]->startPosY);
+		bootX[size_t(k)] = t.x(game.teamStart(k).x);
+		bootY[size_t(k)] = t.y(game.teamStart(k).y);
 	}
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	if (std::string floor = startingFloorFailure(game.map, context.request.nbTeams); !floor.empty())
 		return floor;
 	const RiverOptions options(context.request);
 	if (!options.bluffs)
 		return "";
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const Torus t(map);
 	const int teams = context.request.nbTeams;
 	std::vector<int> bootX, bootY;
 	for (int k = 0; k < teams; ++k)
-		if (!game.teams[k])
+		if (!game.hasTeam(k))
 			return "Colony " + std::to_string(k) + " is missing.";
 	finishedStarts(game, teams, bootX, bootY);
 	const Bluffs bluffs = replanBluffs(context.request, bootX, bootY, teams);
@@ -855,7 +854,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 }
 } // namespace
 
-RiverBluffCount riverReplannedBluffs(const Game &game, const GenerationRequest &request)
+RiverBluffCount riverReplannedBluffs(const GenerationWorld &game, const GenerationRequest &request)
 {
 	RiverBluffCount count;
 	std::vector<int> bootX, bootY;

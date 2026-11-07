@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TidalFlatsGenerator.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Geometry.h"
@@ -14,7 +14,7 @@
 #include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
-#include "TerrainTypeTable.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
 #include "Wedge.h"
@@ -784,7 +784,7 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 // Every home's kit, identical and unscaled: wheat and wood beside the pond on the side away from
 // the swarm, a quarry on the island's rim towards the centre of the map; then its own scaled
 // ambient farmland and outcrops.
-void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o)
+void furnishHomes(GenerationMap &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
@@ -838,7 +838,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 // Every neutral island is an oasis, its pond ringed by wheat to its shores, with one prize inside,
 // a fruit grove or a stone deposit in turn; the central island carries the orchard of all three
 // fruits round its tor, whose quarry faces are stocked before the colonies settle.
-void stockIslands(Map &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o,
+void stockIslands(GenerationMap &map, const Layout &L, GenerationContext &context, const TidalFlatsOptions &o,
 				  const std::vector<unsigned char> &approach)
 {
 	const Torus &t = L.t;
@@ -919,11 +919,11 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 	}
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "flats layout";
 	const TidalFlatsOptions o(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int teams = context.request.nbTeams;
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
@@ -1048,11 +1048,11 @@ bool waterGroup(TerrainType v)
 // can be built on; every deep vertex lies inside a shallow margin; the tor's quarry faces hold
 // their stone; colony 0 can walk to every other colony, onto the central island and to the shore
 // of every island, with water, buildings and every resource blocking.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "flats"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

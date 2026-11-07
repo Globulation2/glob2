@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
+#include "AI.h"
+#include <GraphicContext.h>
 #include "GlobalContainer.h"
 #include "CommandLine.h"
 #include "ComputeThreads.h"

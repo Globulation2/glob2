@@ -1,42 +1,35 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The dark water terrain material."""
-from terrain_core import (
-    N,
-    RECIPES,
-    Style,
-    blend_fields,
-    fbm,
-    flat,
-    mix,
-    normalize_like,
-    recipe,
-    stamp_disc,
-)
+"""The dark water terrain material.
+
+Dark water rolls on the same periodic wave field as water and deep water (same
+seed, wind, grid and clock), so crests carry on across the deep/dark blend. Its
+own character: a heavy, inky swell with little chop and faint cold glints, and
+an ink-dark shadow on the back face of every swell crest that travels with it,
+so the troughs read deeper than deep water's."""
+from terrain_core import RECIPES, Style, mix, recipe, smoothstep
+from ._waves import WAVE_GRID, WAVE_PHASES, WAVE_SIZE, render_waves, wave_layers
 
 
 @recipe(name="dark_water", group="deep_water", label="Dark water", profile="still", border_class="pool",
         seam={"height": 7, "cast_q8": 80, "cast_width_q8": 704},
-        palette={"tint": (40, 30, 104), "murk": (32, 24, 84), "speck": (20, 15, 52)},
-        style=Style(luma=38, std=4, grain_max=5, match=0.5), periodic=True, grid=8, blocks=4,
-        preview=(32, 26, 76), minimap=(16, 12, 52))
+        palette={"deep": (25, 18, 72), "base": (38, 28, 98), "light": (47, 37, 114), "glint": (80, 88, 160),
+                 "shadow": (16, 11, 48)},
+        style=Style(luma=38, std=5, grain_max=6, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
+        periodic=True, grid=WAVE_GRID, preview=(32, 26, 76), minimap=(16, 12, 52))
 def render_dark_water(ctx):
     p = RECIPES["dark_water"].palette
-    common, common_specks = dark_water_fields(ctx.shared_rng, ctx.size)
-    own, own_specks = dark_water_fields(ctx.rng, ctx.size)
-    murk = normalize_like(blend_fields(common, own, ctx.interior_mask), common)
-    rgb = mix(flat(p["tint"], size=ctx.size), p["murk"], murk, 0.6)
-    specks = blend_fields(common_specks, own_specks, ctx.interior_mask)
-    rgb = mix(rgb, p["speck"], specks, 0.6)
-    return rgb, None
+    rgb = render_waves(ctx, p, 0.5, 0.09, 0.3, 0.12)
+    swell, _, front = wave_layers(ctx)
+    # The lee of each crest, deepest where the swell falls into its trough.
+    lee = [smoothstep(0.0, 1.0, -d) * smoothstep(0.25, -0.35, v) for v, d in zip(swell, front)]
+    return mix(rgb, p["shadow"], soften(lee, ctx.size), 0.7), None
 
 
-def dark_water_fields(rng, size):
-    """Static periodic murk and sparse soft specks at the native feature scale."""
-    murk = fbm(rng, 3, 2, size=size)
-    specks = [0.0] * (size * size)
-    for _ in range(8 * (size // N) ** 2):
-        x, y = rng.random() * size, rng.random() * size
-        radius = rng.uniform(3.0, 4.5)
-        rng.random()  # The original scatter's per-speck choice draw.
-        stamp_disc(specks, x, y, radius, softness=0.75)
-    return murk, specks
+def soften(values, size):
+    """A wrapping box blur: the swell front steps with the warp's whole-pixel
+    offsets, which would otherwise show as fine ridges in the shadow."""
+    import numpy as np
+    from scipy.ndimage import uniform_filter
+
+    field = np.asarray(values).reshape(size, size)
+    return uniform_filter(field, size=9 * size // WAVE_SIZE + 1, mode="wrap").ravel().tolist()

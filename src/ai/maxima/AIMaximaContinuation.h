@@ -248,7 +248,8 @@ class Reader
         return size;
     }
 public:
-    explicit Reader(GAGCore::InputStream* stream,bool compact=false,int version=VERSION_MINOR):stream(stream),version_(version),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
+    explicit Reader(GAGCore::InputStream* stream,bool compact=false):Reader(stream,compact,VERSION_MINOR) {}
+    Reader(GAGCore::InputStream* stream,bool compact,int version):stream(stream),version_(version),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
     int version() const { return version_; }
     bool compact() const { return compact_; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type

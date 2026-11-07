@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "sim/snapshot/TeamRecords.h"
 #include "WorldSnapshot.h"
@@ -25,6 +27,35 @@ constexpr SimulationSnapshot::CaptureOptions allOptions{
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("boundary serials identify a capture and never repeat after a store reset")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .clearImmobile=true, .loadDefaultRace=true}};
+        SimulationSnapshot::Store store;
+        const auto first = store.captureBoundary(fixture.game, {.presentation=true});
+        REQUIRE(first.boundarySerial != 0);
+        // A reused boundary and its projections keep the serial.
+        CHECK(store.captureBoundary(fixture.game, {.presentation=true}).boundarySerial == first.boundarySerial);
+        CHECK(store.captureBoundary(fixture.game).boundarySerial == first.boundarySerial);
+        CHECK(first.presentationView({.presentation=true}).boundarySerial == first.boundarySerial);
+        CHECK(first.simulationView().boundarySerial == first.boundarySerial);
+        // An owner edit and a tracked map change each capture a new boundary.
+        store.invalidateBoundary();
+        const auto edited = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(edited.boundarySerial > first.boundarySerial);
+        fixture.game.map.markTerrain(0);
+        const auto painted = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(painted.boundarySerial > edited.boundarySerial);
+        // A reset returns the revisions to their start; the serial still moves on.
+        store.reset();
+        const auto restarted = store.captureBoundary(fixture.game, {.presentation=true});
+        CHECK(restarted.observationRevision == first.observationRevision);
+        CHECK(restarted.boundarySerial > painted.boundarySerial);
+        // Separate stores never share a serial.
+        SimulationSnapshot::Store other;
+        CHECK(other.captureBoundary(fixture.game, {.presentation=true}).boundarySerial > restarted.boundarySerial);
+    }
+
     TEST_CASE("material source coordinates stay immutable with their captured publication")
     {
         using Frozen = const gradient_kernel::OwnedDestinations&;
@@ -33,11 +64,11 @@ TEST_SUITE("WorldSnapshot")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
         auto& map = fixture.game.map;
-        map.configureGradientPipeline(0, 1);
-        map.setMaterialDestinationsEnabled(true);
+        map.routing().configureGradientPipeline(0, 1);
+        map.routing().setMaterialDestinationsEnabled(true);
         map.setResourceByIndex(12, 12, WHEAT, 1);
-        const auto* live = glob2test::awaitGradient(fixture.game, [&] { return map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Land); });
-        REQUIRE(map.materialGradientDestinations(live));
+        const auto* live = glob2test::awaitGradient(fixture.game, [&] { return map.routing().getMaterialGradientSlot(0, WHEAT, MovementAccess::Land); });
+        REQUIRE(map.routing().materialGradientDestinations(live));
         SimulationSnapshot::Store store;
         const auto before = store.captureBoundary(fixture.game);
         const auto key = MapState::planeKey(0, WHEAT, 0, false);
@@ -47,7 +78,7 @@ TEST_SUITE("WorldSnapshot")
         CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
         CHECK(field->destinationGeneration > 0);
         // Dropping the live metadata must not revoke or mutate an older lease.
-        map.setMaterialDestinationsEnabled(false);
+        map.routing().setMaterialDestinationsEnabled(false);
         store.invalidateBoundary(); // This fixture's private store is outside Game's invalidation hook.
         const auto after = store.captureBoundary(fixture.game);
         const auto* replaced = after.resourceFields->find(key);
@@ -698,7 +729,7 @@ TEST_SUITE("WorldSnapshot")
 		REQUIRE(building); REQUIRE(worker);
 		building->unitsWorking.push_back(worker);
 		game.map.setResourceByIndex(20, 20,WHEAT, 1);
-		glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), MovementAccess::Land); });
+		glob2test::awaitGradient(game,[&] { return game.map.routing().getMaterialGradientSlot(0, materialIndex(MaterialId::Food), MovementAccess::Land); });
 		SimulationSnapshot::Store store;
 		auto mutateAndCapture = [&] {
 			++game.stepCounter;
@@ -706,7 +737,7 @@ TEST_SUITE("WorldSnapshot")
 			game.map.setGroundUnit(25, 25, NOGUID);
 			game.map.addGuardArea(20, 20, 0);
 			game.map.setMapDiscovered(20, 20, game.teams[0]->me);
-			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), MovementAccess::Land);
+			game.map.routing().updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), MovementAccess::Land);
 			building->priority = int(game.stepCounter);
 			return store.captureBoundary(game, allOptions);
 		};

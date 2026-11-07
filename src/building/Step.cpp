@@ -16,7 +16,9 @@
 #include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "sim/SimServices.h"
+#include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Order.h"
@@ -30,7 +32,7 @@ void Building::step(void)
 		// for this operation, before the later production and worker updates.
 		const auto demand = materialDemand();
 		computeWishedMaterials(wishedMaterials, demand);
-		if (((owner->game->stepCounter + gid) & 255) == 0)
+		if (((owner->ctx.tick() + gid) & 255) == 0)
 			freeIdleGradients();
 		updateCallLists(demand);
 	}
@@ -103,7 +105,7 @@ bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding
         *distBuilding=airDistance>=0 ? airDistance : map->warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
         accessible=*distBuilding!=INT_MAX;
     } else {
-        const auto route=map->queryBuildingDistance(&building,unit->movementAccess(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
+        const auto route=map->routing().queryBuildingDistance(&building,unit->movementAccess(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
         if (route==RouteResult::Pending) return false;
         accessible=route==RouteResult::Reachable;
     }
@@ -280,7 +282,7 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
 // front; temporary unavailability never permanently consumes a candidate.
 bool Building::hireMaterialUnit(const int *targets, const int *served)
 {
-	const auto *lists = owner->game->hiringCandidates(*this);
+	const auto *lists = owner->ctx.services->hiringCandidates(*this);
 	if (!lists)
 		return false;
 
@@ -292,7 +294,7 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 			if (list.key == Hiring::Key{job, material})
 				for (const auto &suggestion : list.candidates)
 				{
-					auto *u = owner->game->resolveUnit(suggestion.unit);
+					auto *u = owner->ctx.services->resolveUnit(suggestion.unit);
 					if (!u || u->isDead || u->owner != owner ||
 						!u->hasCapability(UnitRuntimeTraits::Transport) || !u->performance[BUILD] ||
 						u->activity != Unit::ACT_RANDOM || u->medical != Unit::MED_FREE)
@@ -359,7 +361,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
     if (!unit->performance[FLY] || owner->map->hasAirRoutingConstraints())
     {
         int distance=0;
-        const auto route=owner->map->queryBuildingDistance(this,unit->movementAccess(),unit->posX,unit->posY,&distance,BuildingRoute::Combat);
+        const auto route=owner->map->routing().queryBuildingDistance(this,unit->movementAccess(),unit->posX,unit->posY,&distance,BuildingRoute::Combat);
         if (route==RouteResult::Pending) return false;
         if (route!=RouteResult::Reachable) {
             noteUnitFailing(unit,UnitCantAccessBuilding);return false;
@@ -417,7 +419,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	// check in subscribeToBringMaterialsStep uses the same pairing.
 	int timeLeft = remainingFoodTime(*unit);
 	bool canSwim = unit->performance[SWIM];
-	const auto route=owner->map->queryBuildingDistance(this, unit->movementAccess(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Clearing);
+	const auto route=owner->map->routing().queryBuildingDistance(this, unit->movementAccess(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Clearing);
 	if (route==RouteResult::Pending) return false;
 	if (route!=RouteResult::Reachable)
 	{
@@ -462,7 +464,7 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 	int timeLeft = remainingFoodTime(*unit);
 	if (unit->performance[FLY] && !owner->map->hasAirRoutingConstraints()) distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
     else {
-        const auto route=owner->map->queryBuildingDistance(this,unit->movementAccess(),unit->posX,unit->posY,&distBuilding,BuildingRoute::Combat);
+        const auto route=owner->map->routing().queryBuildingDistance(this,unit->movementAccess(),unit->posX,unit->posY,&distBuilding,BuildingRoute::Combat);
         if (route==RouteResult::Pending) return false;
         if (route!=RouteResult::Reachable) { noteUnitFailing(unit,UnitCantAccessBuilding); return false; }
     }
@@ -513,7 +515,7 @@ bool Building::subscribeForFlagingStep()
 
 bool Building::hireFlagUnits()
 {
-	const auto *lists = owner->game->hiringCandidates(*this);
+	const auto *lists = owner->ctx.services->hiringCandidates(*this);
 	if (!lists)
 		return false;
 
@@ -544,7 +546,7 @@ bool Building::hireFlagUnits()
 					if (list.key.job == Hiring::Job(unsigned(Hiring::Job::Clear) + role))
 						for (const auto &entry : list.candidates)
 						{
-							auto *u = owner->game->resolveUnit(entry.unit);
+							auto *u = owner->ctx.services->resolveUnit(entry.unit);
 							if (!u || u->isDead || u->owner != owner || u->attachedBuilding == this)
 								continue;
 							int travel = -1, distance = 0;

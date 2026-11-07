@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
+#include "HeadlessGame.h"
 #include "SGSL.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -1057,7 +1059,7 @@ TEST_SUITE("LegacyScriptCoverage")
         w.world.gui.setIsSpaceSet(true);
         w.step(); CHECK(w.script.hasTeamLost(1)); CHECK_FALSE(w.world.gui.isSpaceSet());
     }
-    TEST_CASE("resetAI changes only the chosen player and rejects unsafe indices")
+    TEST_CASE("resetAI changes only the chosen player and rejects unsafe indices" * glob2test::needs({"ai:castor"}))
     {
         glob2test::HeadlessGlobals globals;
         World w;

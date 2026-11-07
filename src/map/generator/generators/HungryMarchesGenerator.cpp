@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HungryMarchesGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "DesignCache.h"
 #include "Growth.h"
@@ -52,11 +52,11 @@ std::string validateRequest(const GenerationRequest &r)
 {
 	if (const auto error = denseColonySizeFailure(r); !error.empty())
 		return error;
-	if (r.nbTeams < 2 || r.nbTeams > Team::MAX_COUNT)
+	if (r.nbTeams < 2 || r.nbTeams > TEAM_MAX_COUNT)
 		return "Invalid colony count.";
 	if (r.wDec < 7 || r.hDec < 7 || r.wDec > 9 || r.hDec > 9)
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
-	if (r.nbTeams > ((1 << std::min(r.wDec, r.hDec)) == 128 ? 4 : Team::MAX_COUNT))
+	if (r.nbTeams > ((1 << std::min(r.wDec, r.hDec)) == 128 ? 4 : TEAM_MAX_COUNT))
 		return "This narrow floodplain needs fewer colonies or a wider map.";
 	return {};
 }
@@ -357,7 +357,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 {
 	return cachedDesign<Layout>(r, c, designAfresh);
 }
-std::string foodAccess(const Game &game, const Layout &L, int teams, bool future,
+std::string foodAccess(const GenerationWorld &game, const Layout &L, int teams, bool future,
 					   GenerationTelemetry *telemetry = nullptr)
 {
 	const auto &t = L.t;
@@ -464,7 +464,7 @@ std::string foodAccess(const Game &game, const Layout &L, int teams, bool future
 	return {};
 }
 
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "hungry marches landscape";
 	const auto L = design(c.request, c);
@@ -616,7 +616,7 @@ bool generate(Game &game, GenerationContext &c)
 	return c.detail.empty();
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const auto L = design(c.request, replay);

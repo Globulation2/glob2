@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in timings of the actual simulation preparation kernels. This source also
 // compiles unchanged against the pre-catalog engine for paired measurements.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "BuildingType.h"
 #include "BuildingGradientSearch.h"
 #include "Version.h"
@@ -40,10 +42,10 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
         for(int swim : {0,3}) for(int kind=0;kind<5;++kind)
         {
             auto* building=kind==0 ? inn : kind==1 ? clear : combat;
-            if(kind<3) REQUIRE(map.buildingGradient(building,movementAccessFromLegacy(swim)));
+            if(kind<3) REQUIRE(map.routing().buildingGradient(building,movementAccessFromLegacy(swim)));
             const auto prepare=[&] {
-                if(kind<3) map.updateGlobalGradient(building,movementAccessFromLegacy(swim));
-                else map.seedMaterialGradient(0,WHEAT,swim,resource.data(),kind==4);
+                if(kind<3) map.routing().updateGlobalGradient(building,movementAccessFromLegacy(swim));
+                else map.routing().seedMaterialGradient(0,WHEAT,swim,resource.data(),kind==4);
             };
             prepare();
             for(int repeat=0;repeat<11;++repeat)
@@ -52,7 +54,7 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
                 for(int iteration=0;iteration<iterations;++iteration) prepare();
                 const auto ns=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-started).count();
                 // Read outside the timed region so a compiler cannot discard work.
-                const Uint16* field=kind<3 ? map.buildingGradient(building,movementAccessFromLegacy(swim)) : resource.data();
+                const Uint16* field=kind<3 ? map.routing().buildingGradient(building,movementAccessFromLegacy(swim)) : resource.data();
                 std::uint64_t digest=1469598103934665603ULL;
                 for(int i=0;i<size;++i) digest=(digest^field[i])*1099511628211ULL;
                 std::printf("building_kernel,%d,%d,%d,%d,%d,%lld,%llu\n",width,kind,swim,repeat,
@@ -157,13 +159,13 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
         const int iterations=std::max(8,1048576/size);
         for(int swim : {0,3})
         {
-            REQUIRE(map.buildingGradient(inn,movementAccessFromLegacy(swim)));
+            REQUIRE(map.routing().buildingGradient(inn,movementAccessFromLegacy(swim)));
             Uint16* gradient=inn->globalGradient[swim];
             const Uint16 gid=inn->gid;
             const Uint32 teamMask=inn->owner->me;
             BuildingGradientSearch search;
             const auto seed=[&] {
-                map.initializeGradientCells([&](size_t begin,size_t end) {
+                map.routing().initializeGradientCells([&](size_t begin,size_t end) {
                     for(size_t i=begin;i<end;++i) {
                         const auto& tile=map.getTile(i);
                         if(tile.building!=NOGBID)
@@ -179,10 +181,10 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
             for(int phase=0;phase<4;++phase) {
                 seed();
                 const auto prepare=[&] {
-                    if(phase==0) map.updateGlobalGradient(inn,movementAccessFromLegacy(swim));
+                    if(phase==0) map.routing().updateGlobalGradient(inn,movementAccessFromLegacy(swim));
                     else if(phase==1) {
 #if VERSION_MINOR >= 137
-                        map.updateGlobalGradient(inn,movementAccessFromLegacy(swim),BuildingRoute::Footprint);
+                        map.routing().updateGlobalGradient(inn,movementAccessFromLegacy(swim),BuildingRoute::Footprint);
 #else
                         map.updateGlobalGradient(inn,movementAccessFromLegacy(swim));
 #endif

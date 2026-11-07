@@ -121,4 +121,7 @@ namespace Cortex
 
 namespace Cortex {
 FoodSourceReconcile reconcileWheatForbidden(::Player*,int,bool,bool liftAll=false,bool farmPaint=false);
+	//! `glob2 dev dump-wheat`: print the plan the scan would paint for one team of a
+	//! map, swept over open margins 0..2 (src/ai/cortex/CortexWheatDump.cpp).
+	int dumpWheatPlan(const std::string& mapName, int team);
 }

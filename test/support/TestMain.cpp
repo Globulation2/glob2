@@ -12,7 +12,7 @@
 #include "Glob2Test.h"
 #include "field/GradientDeviceService.h"
 #include "field/GradientAccelerators.h"
-#include <glob2/TestBuildProvenance.h>
+#include "BuildProvenance.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -120,12 +120,13 @@ int main(int argc, char **argv)
 				 "unknown",
 #endif
 				 SDL_GetPlatform(), sizeof(void *) * 8);
-	std::fprintf(stderr, "GLOB2_TEST_PROVENANCE %s\n", GLOB2_TEST_PROVENANCE_JSON);
+	const std::string provenance = glob2test::buildProvenanceJson(argc > 0 ? argv[0] : nullptr);
+	std::fprintf(stderr, "GLOB2_TEST_PROVENANCE %s\n", provenance.c_str());
 	if (const char *artifacts = SDL_getenv_unsafe("GLOB2_TEST_ARTIFACTS_ROOT"))
 	{
 		std::filesystem::create_directories(artifacts);
 		std::ofstream proof(std::filesystem::path(artifacts) / "build-provenance.json");
-		proof << GLOB2_TEST_PROVENANCE_JSON << '\n';
+		proof << provenance << '\n';
 		proof.close();
 		if (!proof)
 		{

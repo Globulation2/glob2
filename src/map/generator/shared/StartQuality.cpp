@@ -7,9 +7,8 @@
 #include "Material.h"
 #include "FairnessModel.h"
 #include "FertilityField.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "Grid.h"
-#include "Map.h"
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
@@ -21,7 +20,7 @@ namespace
 {
 /// Distance in walking steps from a colony's starting workers to every tile it can reach.
 /// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
-std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
+std::vector<int> walkFromWorkers(const GenerationMap &map, const std::vector<int> &workers)
 {
 	const Torus t(map);
 	return stepsFrom(t, tileMask(t, workers), groundUnitTiles(map));
@@ -76,10 +75,11 @@ double mapFairness(const std::vector<double> &probability)
 	return 1.0 - std::min(1.0, std::max(0.0, gini));
 }
 
-StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualityScale &scale)
+StartQualityReport scoreStarts(GenerationWorld &game, int requestedTeams,
+							   const StartQualityScale &scale)
 {
 	StartQualityReport report;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const int nbTeams = std::min(game.teamsCount(), requestedTeams);
 	if (nbTeams <= 0)
@@ -104,21 +104,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	// generation - so without this, every custom or lobby game starts with an all-zero fertility
 	// overlay regardless of how the field itself is computed. Same clamp FertilityCalculator
 	// uses: kScale's own ceiling (an all-water neighbourhood) is one past what a Uint16 holds.
-	constexpr std::uint32_t kFertilityCeiling = std::numeric_limits<Uint16>::max();
-	Uint16 fertilityMax = 0;
-	for (int y = 0; y < h; ++y)
-	{
-		::MapGeneration::generationCheckpoint();
-		for (int x = 0; x < w; ++x)
-		{
-			::MapGeneration::generationCheckpoint();
-			const Uint16 value =
-				static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
-			map.setFertility(x, y, value);
-			fertilityMax = std::max(fertilityMax, value);
-		}
-	}
-	map.fertilityMaximum = fertilityMax;
+	map.storeFertility(fertility);
 
 	report.colonies.resize(nbTeams);
 	std::vector<std::vector<int>> walkingFields;

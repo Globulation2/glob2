@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GraphicContext.h"
+#include "GAGColor.h"
 
 namespace GAGCore
 {

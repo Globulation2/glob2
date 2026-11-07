@@ -14,6 +14,7 @@
 //   4. stale ally numbers from a previous layout are fully reset
 // Links libgag_server.a for the Stream surface GameHeader.cpp pulls in.
 
+#include "Team.h"
 #include "Glob2Test.h"
 #include <optional>
 #include <initializer_list>
