@@ -5,7 +5,7 @@
 #pragma once
 
 #include <assert.h>
-#include <GAGSys.h>
+#include <SDL3/SDL_stdinc.h>
 
 enum Abilities
 {

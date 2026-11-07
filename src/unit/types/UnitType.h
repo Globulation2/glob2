@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <GAGSys.h>
+#include <SDL3/SDL_stdinc.h>
 #include "UnitConsts.h"
 
 namespace GAGCore

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GraphicContext.h>
 #include "MapRender.h"
 #include "Game.h"
 #include "render/MapDrawer.h"

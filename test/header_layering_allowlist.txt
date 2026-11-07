@@ -9,7 +9,6 @@ src/building/HiringJobs.h -> src/engine/sim/EntityRef.h
 src/building/HiringPlanner.h -> src/engine/sim/snapshot/WorldSnapshot.h
 src/building/TurretTargeting.h -> src/engine/sim/EntityRef.h
 src/building/TurretTargeting.h -> src/engine/sim/snapshot/WorldSnapshot.h
-src/building/types/BuildingType.h -> libs/gag/include/GAGSys.h
 src/engine/sim/SimulationRunner.h -> src/render/scene/Scene.h
 src/engine/sim/SimulationRunner.h -> src/render/scene/SceneBuffer.h
 src/engine/sim/SimulationRunner.h -> src/render/scene/SceneExtract.h
@@ -73,7 +72,6 @@ src/render/clouds/DynamicClouds.h -> src/app/Settings.h
 src/render/overlay/MapZoomControls.h -> src/app/GlobalContainer.h
 src/replay/ReplayReader.h -> src/app/FileFormatVersions.h
 src/resource/ResourceRegistry.h -> src/game/ExperimentalFeatures.h
-src/resource/Ressource.h -> <SDL3/SDL.h>
 src/scripting/javascript/ScriptCommand.h -> src/app/cli/CommandLine.h
 src/scripting/map/ScriptEditorScreen.h -> src/ui/DiagnosticText.h
 src/scripting/map/ScriptEditorScreen.h -> src/ui/FrontendUI.h
@@ -85,8 +83,5 @@ src/team/stats/TeamStatsPipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
 src/ui/ScrollTuning.h -> src/app/Settings.h
 src/ui/screens/IntroductionOfferScreen.h -> src/app/GlobalContainer.h
 src/ui/settings/SettingsScreen.h -> src/app/Settings.h
-src/unit/Unit.h -> libs/gag/include/GAGSys.h
-src/unit/UnitConsts.h -> libs/gag/include/GAGSys.h
 src/unit/types/UnitCatalog.h -> src/game/ExperimentalFeatures.h
-src/unit/types/UnitType.h -> libs/gag/include/GAGSys.h
 src/unit/types/UnitType.h -> src/unit/UnitConsts.h
