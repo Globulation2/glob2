@@ -77,6 +77,21 @@ StoneMap::Texel StoneMap::at(int tx, int ty, int px, int py) const
 			(int(u >> 16 & 255) - 128) * 8};
 }
 
+namespace
+{
+// Catalogs name the authored PNG; packaged builds (browser, mobile, release
+// bundles) ship it re-encoded losslessly as WebP beside the same stem.
+SDL_IOStream *openStoneMap(const std::string &path)
+{
+	auto *files = GAGCore::Toolkit::getFileManager();
+	if (auto *stream = files->openImage(path))
+		return stream;
+	if (path.size() > 4 && path.compare(path.size() - 4, 4, ".png") == 0)
+		return files->openImage(path.substr(0, path.size() - 4) + ".webp");
+	return nullptr;
+}
+}
+
 StoneMaps::StoneMaps(const Catalog &c)
 {
 	slots.resize(c.materials.size());
@@ -87,7 +102,7 @@ StoneMaps::StoneMaps(const Catalog &c)
 			continue;
 		// Missing data is a packaging fault: report it while loading the catalog,
 		// not in the middle of a frame.
-		auto *stream = GAGCore::Toolkit::getFileManager()->openImage(path.c_str());
+		auto *stream = openStoneMap(path);
 		if (!stream)
 			throw std::runtime_error("Missing terrain stone map: " + path);
 		SDL_CloseIO(stream);
@@ -103,7 +118,7 @@ const StoneMap *StoneMaps::get(MaterialId id) const
 	auto &slot = *slots[id];
 	std::call_once(slot.once, [&]
 	{
-		auto *stream = GAGCore::Toolkit::getFileManager()->openImage(slot.path.c_str());
+		auto *stream = openStoneMap(slot.path);
 		if (!stream)
 			throw std::runtime_error("Missing terrain stone map: " + slot.path);
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> loaded(IMG_Load_IO(stream, true),
