@@ -1928,6 +1928,8 @@ Insula centrală
 
 [Tidal flats need at least one colony.]
 Câmpiile de maree au nevoie de cel puțin o colonie.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Insulele natale nu încap pe această hartă; folosiți o hartă mai mare, mai puține colonii sau insule mai mici.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

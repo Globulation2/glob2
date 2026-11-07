@@ -1896,6 +1896,8 @@ Globulation 2-এর কার্সার দেখান।
 
 [Tidal flats need at least one colony.]
 জোয়ারভাটার সমতলভূমিতে অন্তত একটি কলোনি থাকা প্রয়োজন।
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 মূল দ্বীপগুলো এই মানচিত্রে ধরছে না; একটি বড় মানচিত্র, কম উপনিবেশ অথবা আরও ছোট দ্বীপ ব্যবহার করুন।
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

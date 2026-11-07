@@ -1920,6 +1920,8 @@ Gitnang isla
 
 [Tidal flats need at least one colony.]
 Ang mga tidal flat ay nangangailangan ng kahit isang kolonya.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hindi kasya sa mapang ito ang mga pulo na pinagmulan; gumamit ng mas malaking mapa, mas kaunting kolonya o mas maliliit na pulo.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

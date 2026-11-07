@@ -1896,6 +1896,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 
 [Tidal flats need at least one colony.]
 ஓதச் சமவெளிகளுக்குக் குறைந்தது ஒரு குடியிருப்பு தேவை.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 தொடக்கத் தீவுகள் இந்த வரைபடத்தில் பொருந்தவில்லை; பெரிய வரைபடத்தையோ, குறைவான குடியிருப்புகளையோ அல்லது சிறிய தீவுகளையோ பயன்படுத்துங்கள்.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

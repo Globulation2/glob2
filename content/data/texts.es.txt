@@ -1928,6 +1928,8 @@ Isla central
 
 [Tidal flats need at least one colony.]
 Las marismas necesitan al menos una colonia.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Las islas natales no caben en este mapa; usa un mapa más grande, menos colonias o islas más pequeñas.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

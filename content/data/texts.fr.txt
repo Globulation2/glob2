@@ -1928,6 +1928,8 @@ Lagunes
 
 [Tidal flats need at least one colony.]
 L'estran a besoin d'au moins une colonie.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Les îles natales ne tiennent pas sur cette carte ; utilisez une carte plus grande, moins de colonies ou des îles plus petites.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

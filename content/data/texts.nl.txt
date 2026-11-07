@@ -1928,6 +1928,8 @@ Centraal eiland
 
 [Tidal flats need at least one colony.]
 De wadden hebben minstens één kolonie nodig.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 De thuiseilanden passen niet op deze kaart; gebruik een grotere kaart, minder kolonies of kleinere eilanden.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

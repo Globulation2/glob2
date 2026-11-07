@@ -1928,6 +1928,8 @@ AI 策略與對抗
 
 [Tidal flats need at least one colony.]
 潮間帶至少需要一個殖民地。
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母島無法容納在這張地圖上；請使用更大的地圖、更少的殖民地或更小的島嶼。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

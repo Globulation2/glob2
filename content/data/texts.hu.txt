@@ -1928,6 +1928,8 @@ Középső sziget
 
 [Tidal flats need at least one colony.]
 Az árapálysíksághoz legalább egy kolónia kell.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Az otthoni szigetek nem férnek el ezen a térképen; használj nagyobb térképet, kevesebb kolóniát vagy kisebb szigeteket.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

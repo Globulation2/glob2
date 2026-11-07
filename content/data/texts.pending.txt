@@ -107,3 +107,4 @@
 [Volcanic maars]
 [Glacial kettles]
 [Moss]
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]

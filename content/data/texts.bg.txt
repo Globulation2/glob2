@@ -1896,6 +1896,8 @@ OpenGL не е наличен в тази компилация.
 
 [Tidal flats need at least one colony.]
 Приливните плитчини се нуждаят от поне една колония.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Домашните острови не се побират на тази карта; използвайте по-голяма карта, по-малко колонии или по-малки острови.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

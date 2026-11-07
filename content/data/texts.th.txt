@@ -1896,6 +1896,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 
 [Tidal flats need at least one colony.]
 พื้นที่ราบ​น้ำขึ้น​น้ำลง​จำเป็นต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 หมู่เกาะ​หลัก​ไม่​พอดี​กับ​แผนที่​นี้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า จำนวน​อาณานิคม​น้อยลง หรือ​เกาะ​ขนาดเล็ก​กว่า
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]

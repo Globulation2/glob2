@@ -1928,6 +1928,8 @@ OpenGL 在此版本中不可用。
 
 [Tidal flats need at least one colony.]
 潮间带至少需要一个殖民地。
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母岛无法容纳在这张地图上；请使用更大的地图、更少的殖民地或更小的岛屿。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
