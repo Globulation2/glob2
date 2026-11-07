@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include <utility>
 #include "GameFixtures.h"
 #include "AI.h"
 #include "Version.h"
@@ -972,6 +973,32 @@ TEST_CASE("historical farming reserves only propagating finite material donors")
         CHECK_FALSE(map.isClearArea(41,41,game.teams[0]->me));
         CHECK(map.materialAmountAt(map.coordToIndex(41,41),MaterialId::Food)>0);
     }
+}
+
+TEST_CASE("Warrush farming treats Fertile ground as farmland, not water")
+{
+    glob2test::HeadlessGlobals globals;
+    CatalogWorld fixture(AI::WARRUSH);auto& game=fixture.world.game;auto& map=game.map;
+    for(int y=0;y<map.h;++y) for(int x=0;x<map.w;++x) map.setNoResource(x,y,0);
+    for(int y=0;y<map.h;++y) map.paintCell(0,y,WATER);
+    for(int y=34;y<47;++y) for(int x=34;x<47;++x) map.paintVertexSquare(x,y,LOAM,1);
+    // Wheat on Warrush's checkerboard (x%2==y%2): on loam, on grass two tiles
+    // off the loam, and beside real water.
+    map.setResourceByIndex(40,40,WHEAT,0);
+    map.setResourceByIndex(48,40,WHEAT,0);
+    map.setResourceByIndex(2,20,WHEAT,0);
+    map.setMapDiscovered();
+    for(auto [x,y]:{std::pair{40,40},std::pair{48,40},std::pair{2,20}})
+        REQUIRE(map.materialExpansionRateAt(map.coordToIndex(x,y),MaterialId::Food)>0);
+    auto& ai=*dynamic_cast<AIWarrush*>(game.players[0]->ai->aiImplementation);
+    for(int step=0;step<8;++step) {
+        auto order=withWarrushObservation(ai,game,[&]{return ai.farm();});
+        if(order) {order->sender=0;game.executeOrder(order,0);}
+    }
+    const Uint32 me=game.teams[0]->me;
+    CHECK(map.isForbidden(40,40,me));       // Fertile ground is farmable land
+    CHECK_FALSE(map.isForbidden(48,40,me)); // ...but it is not water
+    CHECK(map.isForbidden(2,20,me));        // real water still farms its shore
 }
 
 TEST_CASE("keyed worker courses retain qualification grants and exclude unrelated recipients")
