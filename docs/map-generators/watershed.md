@@ -89,7 +89,7 @@ worst colony in brackets.
 | Variant | Total | Within 24 of swarm | Within 48 |
 | --- | --- | --- | --- |
 | Revision 3 | 2,004 | 87.2 (41) | 228.8 (87) |
-| Revision 4, defaults | 2,162 | 91.9 (43) | 248.0 (89) |
+| Revision 4, defaults | 2,161 | 91.9 (43) | 248.1 (88) |
 | Each climate pinned | 2,162 | 91.9 (43) | 248.0 (89) |
 | Deep channels off | 2,162 | 91.8 (43) | 247.9 (89) |
 | Divide outcrops off | 2,156 | 91.7 (43) | 247.3 (89) |
@@ -110,7 +110,8 @@ gained 52%, too large a change in feel. Climates are looks only and deep water w
 plain water does, so neither moves the numbers; pavement lies only on old sand beyond the water's
 reach, and the outcrops stand further out still. Mudflat patches up the bank as well as on the beach
 cost 3% and were left out. The one colony below revision 3 is the weakest at dryness 0 within 24
-steps (38 against 39).
+steps (38 against 39). The defaults row was measured again after the quarry grass and the deep
+threads were tightened (2026-11-07); the other revision 4 rows predate that by a figure or so.
 
 A four-AI calibration game (`map study watershed --seed 101`, 256x256, Nicowar, Cortex, Cabino and
 Maxima, game seed 1, 20,000 ticks, both maps played by the same development game binary) harvested

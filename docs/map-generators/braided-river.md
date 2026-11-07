@@ -93,7 +93,7 @@ counted none of them, which made every 2.0 map look a third poorer than it plays
 | Variant | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
 | Revision 4 | 1,725 | 59.7 (41) | 174.8 (95) |
-| Revision 5, defaults | 1,740 | 60.2 (43) | 177.6 (97) |
+| Revision 5, defaults | 1,741 | 60.2 (43) | 177.8 (98) |
 | Meltwater, Late summer (each pinned) | 1,740 | 60.2 (43) | 177.6 (97) |
 | Deep pools off | 1,740 | 60.2 (43) | 177.6 (97) |
 | Dry patches 0 | 1,744 | 60.2 (43) | 178.6 (99) |
@@ -106,7 +106,8 @@ numbers. Pavement lies beyond the water's reach and costs almost nothing even at
 the one cost: knots two tiles of rock deep at revision 4's runs took 9.6 of the 66 within 24 steps
 (revision 4's line of stone took 6.1), so the runs are shorter (3 to 6 with gaps of 4 to 7) and keep
 4 tiles off every home's 8x8. Removing revision 4's sand patches, which inhibited the bank strip,
-gains a little everywhere.
+gains a little everywhere. Keeping stone off knots shorter than five columns (2026-11-07) moved the
+defaults by a few tenths (the row above; the variant rows predate it) and left moraine-off unchanged.
 
 A four-AI calibration game (`map study braided-river --seed 101`, 256×256, Nicowar, Cortex, Cabino
 and Maxima, game seed 1, 20,000 ticks, both maps played by the same game binary) harvested 1,346 wheat
