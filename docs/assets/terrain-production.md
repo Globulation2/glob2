@@ -254,14 +254,17 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws up to seven decor layers, in order: up to two connected masses
-  that stand on open ground (`"connected_open": true`: cliffs, glacier and the
-  other Barriers masses), connected foliage (hedge and thicket), every other
-  obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
-  masses. Each layer draws only from its own corners, so cliffs show their walls where they
-  meet foliage or crags, and the foliage keeps its own edge on the other side
-  (crags keep clear of the rim, below). Eligibility follows rendered material bindings, including custom
-  materials.
+- A cell draws up to seven decor layers, in order: the connected masses that
+  stand on open ground (`"connected_open": true`: cliffs, glacier and the other
+  Barriers masses), connected foliage (hedge and thicket), every other obstacle
+  (stone pillars and the Outcrops looks), then the terraces of tiered masses.
+  Every mass at a cell draws, so none ends in a square notch along the cell
+  grid: masses fill the first layers in rank order (more north corners, then
+  more corners, then the lower id), and foliage beside three masses draws after
+  them. Each layer draws only from its own corners, so cliffs show their walls
+  where they meet foliage or crags, and the foliage keeps its own edge on the
+  other side (crags keep clear of the rim, below). Eligibility follows rendered
+  material bindings, including custom materials.
 - An undecorated corner, such as ordinary grass, sand or water, suppresses the
   foliage and obstacle layers in that cell, preserving a clear border against
   open ground. The open-ground layer still draws there, so the rim and walls of

@@ -647,7 +647,11 @@ def encoding_executor(jobs):
     # scons/runtime_assets.py added, so put it back before any worker starts.
     if __name__ != "__main__" and str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
-    return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"))
+    # Each worker holds one machine-wide CPU token for its lifetime (scons/jobserver.py).
+    sys.path.insert(0, str(ROOT / "scons"))
+    import jobserver
+    return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"),
+                               initializer=jobserver.hold_for_process_lifetime)
 
 
 def encode_sheet(sheet, root, cache, lossy, relative):
@@ -760,7 +764,10 @@ def _export_assets(
         terrain_document = None
 
     if cache is None:
-        cache = root / "build/asset-cache"
+        # One encoded-image cache per machine, shared by every checkout (development store).
+        sys.path.insert(0, str(ROOT / "scons"))
+        from dev_store import cache as store_cache
+        cache = store_cache(root, "asset-cache")
     cache = Path(cache).resolve()
     if (
         cache == output
@@ -1177,7 +1184,9 @@ def export_assets(
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
                               sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
     sys.path.insert(0, str(ROOT / "scons"))
-    from dev_store import Lease
+    from dev_store import Lease, require_free_space
+    if not worker:
+        require_free_space(output, "the runtime asset export")
 
     with Lease(Path(output).resolve(), exclusive=True, track_use=False):
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,

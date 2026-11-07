@@ -4,11 +4,9 @@ Focused regression scenarios and commands. Start with the [native test guide](..
 
 ## CI coverage ownership
 
-Full master verification runs the complete native suite on its selected Linux
-platforms. Ordinary PRs rank a subset of logical checks, which can include
-individual native shards or generator groups. `ci:run` requests affected coverage
-and retains the complete primary GCC 13 suite when native verification applies;
-`ci:full` requests the full development matrix. Selected shards keep their original
+Full verification (master pushes, nightly and pull requests labelled `ci:full`)
+runs the complete native suite on its selected Linux platforms. Ordinary pull
+requests run the fast gate's headless tier instead. Native shards keep their
 four-way case assignment. Map-generator contracts run in their dedicated jobs.
 
 `--write-inventory PATH` retains exact eligible and assigned cases, excluded cases,
@@ -21,9 +19,9 @@ when introducing save, replay, scheduling, scripting or platform boundaries.
 Intentional repeats across platforms, renderers and thread counts need a named
 compatibility purpose.
 
-The [development reference](../verification.md#predictive-pull-request-checks)
-records the ranking budget, prerequisites, draft behavior, expansion labels,
-trusted model refresh, fallbacks and exact selected-check completion gate.
+The [development reference](../verification.md#hosted-verification-and-regression-detection)
+records which events run the fast gate and the full matrix, how `ci:full` is
+requested, and the selected-check completion gate.
 
 ## Native coverage workflow
 

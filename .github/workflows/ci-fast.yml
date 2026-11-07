@@ -1,0 +1,166 @@
+name: fast gate
+
+# The required merge gate: cheap contracts, a Linux perf-tier build and the
+# headless test tier, plus the master-health rule. Target: under 15 minutes with a
+# warm compiler cache. The full matrix (build.yml) runs on master pushes, nightly and
+# on pull requests labelled ci:full. See "Fast gate" in docs/development/verification.md.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: fast-gate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+
+permissions:
+  contents: read
+
+env:
+  GLOB2_DEV_MODE: isolated
+
+jobs:
+  contracts:
+    name: contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - name: Test shared build-system contracts
+        run: |
+          encoder_python="$(python3 tools/package_assets.py --encoder-python)"
+          "$encoder_python" -m venv artifacts/build-contract-venv
+          artifacts/build-contract-venv/bin/python -m pip install -r test/build_system/requirements.txt
+          artifacts/build-contract-venv/bin/python -m unittest discover -s test/build_system
+      - name: Test runners and tooling contracts
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py' \
+            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py' \
+            --check 'header layering contracts' 'python3 -m unittest discover -s test -p test_check_header_layering.py' \
+            --check 'fixture refresh contracts' 'python3 -m unittest discover -s test -p test_refresh_sim_fixtures.py' \
+            --check 'sim version contracts' 'python3 -m unittest discover -s test -p test_check_sim_revision.py'
+      - name: Check that the sim version follows the simulation
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python3 test/check_sim_revision.py --base "$BASE_SHA"
+      - name: Check private RNG ownership
+        run: python3 test/check_entity_random.py
+      - name: Check header layering and fan-in budgets
+        run: python3 test/check_header_layering.py
+      - name: Check documentation links and navigation
+        run: |
+          python3 -m venv artifacts/docs-venv
+          artifacts/docs-venv/bin/python -m pip install -r tools/docs/requirements.txt
+          artifacts/docs-venv/bin/python tools/check_docs.py
+      - name: Verify pinned scripting vendors
+        run: python3 tools/javascript/verify-vendor.py
+
+  linux-fast:
+    name: linux-fast
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 3G
+    steps:
+      - name: Install dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources /etc/apt/apt-mirrors*.txt; do
+            if [ -f "$source" ]; then
+              sudo sed -Ei 's|https?://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
+            fi
+          done
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev ccache \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+            libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: gcc-13
+          cxx: g++-13
+      - uses: ./.github/actions/renderer-shader-tools
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-fast-ubuntu-24.04-gcc13-${{ github.sha }}
+          restore-keys: ccache-fast-ubuntu-24.04-gcc13-
+      - name: Restore the encoded asset cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/mobile-tools/asset-cache
+          key: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-${{ github.sha }}
+          restore-keys: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-
+      # The perf tier (-O2): with a warm cache compiling costs the same as the -O0
+      # dev tier, and the tests, which dominate this job, run several times faster.
+      - name: Build the test binaries
+        id: build
+        run: |
+          ccache -z
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py perf=1 CC=gcc-13 CXX=g++-13 -j4 engine-tests unit-tests
+          ccache -s
+      - name: Run the headless test tier
+        run: |
+          export LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          python3 test/run_tests.py --tier headless --binary all -j4 --build-dir build/linux/client/perf \
+            --timing-profile test/ci-timings/ubuntu-24.04.json --junit artifacts/tests/junit.xml
+      - name: Save the compiler cache
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && github.event_name == 'push' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-fast-ubuntu-24.04-gcc13-${{ github.sha }}
+      - name: Save the encoded asset cache
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && github.event_name == 'push' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/mobile-tools/asset-cache
+          key: asset-cache-fast-${{ hashFiles('tools/package_assets.py', 'tools/image_encoding.json') }}-${{ github.sha }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: fast-gate-test-results
+          path: artifacts/tests/
+          retention-days: 7
+
+  master-health:
+    name: master-health
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+      - name: Check the master-red rule
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: python3 .github/scripts/ci_master_health.py

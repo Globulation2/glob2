@@ -26,6 +26,15 @@ Setup verifies downloaded archives and publishes tools
 atomically. Dependency bundles include compiler fingerprints and verified
 libraries, plus pinned SDL Java sources for Android packaging.
 
+Native and browser builds also share their runtime-asset export. The store keeps
+one finished export per input key in `caches/runtime-assets/<key>/` (the key
+covers the exported files' Git blob ids or content hashes, the export tools and
+the export options), and a build whose key is present copies it into its build
+directory instead of re-encoding: copy-on-write on APFS, XFS and Btrfs, a plain
+copy elsewhere, never hard links, so builds cannot alter a stored tree. The
+encoded-image cache that exports reuse between different inputs lives in
+`caches/asset-cache/`. Both are ordinary prunable cache entries.
+
 Use `GLOB2_DEV_MODE=isolated` for checkout-local installations and caches with
 vcpkg binary caching disabled. CI release verification selects this mode
 explicitly. Run shared-store pruning and migration in shared mode; those commands
@@ -79,6 +88,33 @@ never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
 
+
+## Reclaiming space
+
+Checkouts, not the managed store, hold most development disk: build directories,
+`artifacts/` and finished worktrees. These commands report and reclaim them:
+
+```sh
+python3 tools/dev_environment.py disk                  # largest consumers first, and free space
+python3 tools/dev_environment.py worktrees             # size, idle days, branch, PR state
+python3 tools/dev_environment.py worktrees --finished  # merged or closed, clean and unlocked
+python3 tools/dev_environment.py worktrees --remove PATH...
+python3 tools/dev_environment.py builds --gc --idle 14 --dry-run
+python3 tools/check_artifacts.py [--fix]               # raw images, copied build trees, large logs
+```
+
+`worktrees` reads pull request state through `gh`, so squash-merged branches,
+which `git branch --merged` cannot see, still count as merged. `--remove` refuses
+the main checkout, locked trees, trees a process or build is using, and trees with
+uncommitted changes unless `--discard`; it asks before each removal unless `--yes`.
+Every build touches `.last-use` in its build directory, and `builds --gc` deletes
+directories idle for longer than `--idle` days that no build holds. `tools/check_artifacts.py
+--fix` gzips logs over 1 MiB and converts `.ppm`/`.bmp` captures to PNG; it never
+deletes copied build trees.
+
+Builds, test runs and asset exports stop before filling the disk: they fail when
+less than `GLOB2_MIN_FREE_GIB` (default 10) GiB is free, naming these commands.
+`GLOB2_MIN_FREE_GIB=0` disables the check.
 
 ## Experiment output
 

@@ -178,7 +178,13 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   Shift-click diagnostic dumps select the displayed generation and serialize it
   only if that same entity still exists at the explicit owner boundary.
 - The editor and standalone tools explicitly obtain an owner-boundary snapshot before
-  preparing a frame. Offline map images and diagnostic PNGs use the same drawing
+  preparing a frame. The editor keeps one `SceneExtractor` and its current scene
+  (`EditorSceneCache`) and prepares again only when the boundary's
+  `boundarySerial` or the scene request changes. Every capture by a snapshot
+  store takes a new process-unique serial, kept by reuse and projection and never
+  repeated after `Store::reset()`. Map and owner edits therefore rebuild the scene,
+  as do selection, overlay, active team and zoom; panning and idle frames redraw it.
+  Offline map images and diagnostic PNGs use the same drawing
   passes and graphics-thread asset ownership. Diagnostic preparation consumes the
   published boundary rather than recapturing from the live game. A bounded diagnostic
   batch owns its fields and snapshot independently; PNG preparation and export do
@@ -225,6 +231,13 @@ discards the backlog. Foreground resume and graphics recreation
 reset pacing. Display refresh, rendering cost and existing slower screen cadences
 can keep the actual rate below the selected ceiling. Unlimited removes this
 limiter, without overriding display synchronization or screen update scheduling.
+Threaded games and the native map editor wait `GAGCore::pacedScreenWait`: until
+the pacer's next frame and at most `InputWakeMilliseconds` (8 ms) for input, so
+a frame slower than the target period is followed at once. Screens opt in with
+`Screen::followsRenderPacer()`. With Unlimited, a game redraws continuously; the
+editor does so while it has input or a new scene, and otherwise waits the input
+wake (`Screen::executionIdle()`), so an idle editor draws at most about 125 FPS rather
+than spinning.
 
 Simulation speed, save/replay formats and network contracts are independent of
 this preference. Headless runs, offline image exports and renderer benchmarks do

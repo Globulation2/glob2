@@ -12,6 +12,7 @@
 #include <bitset>
 #endif
 #include <algorithm>
+#include <cassert>
 #include <stdexcept>
 #include <cstring>
 
@@ -637,7 +638,10 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		const auto ra = rank(a), rb = rank(b);
 		return ra != rb ? ra > rb : a < b;
 	});
-	for (unsigned m = 0; m < std::min(distinct, 2u); ++m)
+	// Every mass draws, mass m in slot m, or its corner would be an empty notch
+	// cut square along the neighbouring cells, which draw it up to the shared
+	// edge. Three or four masses reach into the foliage and obstacle slots.
+	for (unsigned m = 0; m < distinct; ++m)
 	{
 		const auto id = masses[m];
 		unsigned own = 0, foreign = 0, count = 0;
@@ -685,8 +689,14 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 				mask |= 1u << c;
 		}
 		const int frame = definitions.decorFrame(chosen, x, y, count < 4, map.terrainSeed(), mask, colours);
+		// Beside three masses foliage draws one slot later, after them all; no
+		// obstacle draws there, since the masses hold most of the cell.
+		unsigned slot = kind + 1;
+		if (layers[slot].sprite)
+			++slot;
+		assert(slot < TierSlot && !layers[slot].sprite);
 		if (frame >= 0)
-			layers[kind + 1] = {decorSprites[chosen], frame};
+			layers[slot] = {decorSprites[chosen], frame};
 	}
 	// Terraces: nested, so the first missing one ends the stack.
 	if (tiers && distinct)

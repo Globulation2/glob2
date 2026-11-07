@@ -38,6 +38,8 @@ def establish_options(env):
     opts.Add("recording_codec", "Recording codec: h264, vp9, av1 (WebM: native Linux only)", "h264")
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("perf", "Optimized full-featured build for performance measurement (not for shipping)", 0))
+    opts.Add("opt", "Optimization level of a perf=1 build: 2 (screening) or 3 (confirmation)", "2")
     opts.Add(BoolVariable("retain_symbols", "Keep native release symbols for distro debug packages", 0))
     opts.Add("client_profile", "Client product profile: full or free", "free" if ARGUMENTS.get("release") == "1" else "full")
     opts.Add("distribution", "Distribution channel", "direct")
@@ -315,6 +317,14 @@ def main():
     import tempfile
     tempfile.tempdir = temporary
     SConsignFile(str(Path(bdir) / '.sconsign'))
+    # Rehash a file only when its timestamp moved: a no-change build otherwise
+    # rereads every source and header.
+    Decider('content-timestamp')
+    # Development and measurement builds also reuse scanned #include lists until
+    # a file changes. After adding a header that shadows another on the include
+    # path, run once with --implicit-deps-changed. Release builds always rescan.
+    if identity['mode'] != 'release':
+        SetOption('implicit_cache', 1)
     if identity['target'] == 'web':
         from web_build import build_web
         build_web(bdir, identity, ARGUMENTS)
@@ -341,6 +351,14 @@ def main():
             env['ENV'][name] = os.environ[name]
     # Compiler discovery also needs the selected SDK, not just compilation.
     env.Tool('default')
+    # Share the machine's CPUs with every other build lane (scons/jobserver.py).
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(env.Dir('#').abspath, bdir, sys.argv)
+    from dev_store import require_free_space
+    require_free_space(bdir)
+    # Build-directory GC (dev_environment.py builds --gc) reads this stamp.
+    Path(bdir, '.last-use').touch()
     env['BUILDDIR'] = bdir
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
@@ -507,6 +525,13 @@ def main():
     if not server_only:
         env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
+    if env['perf']:
+        # Measurement builds: shipping optimization without stripping, lossy assets
+        # or the free client profile; -g1 keeps symbols for profilers.
+        level = '-O' + str(identity['opt'])
+        for flags in ('CXXFLAGS', 'LINKFLAGS'):
+            env[flags] = [flag for flag in env.Split(env[flags]) if not str(flag).startswith(('-g', '-O'))]
+        env.Append(CXXFLAGS=[level, '-g1'], LINKFLAGS=[level])
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
         env.Append(LINKFLAGS=["-O3"])

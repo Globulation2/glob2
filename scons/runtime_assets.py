@@ -109,28 +109,39 @@ def prepare_assets(env):
                                      "GLOB2_H264_ASSETS" in env.get("CPPDEFINES", []))
     video = packing == "video"
 
+    tools = [
+        "tools/package_assets.py",
+        "tools/packed_sprite_assets.py",
+        "scons/recording_dependencies.py",
+        "scons/recording-versions.json",
+        "tools/terrain_tileset.py",
+        "tools/terrain_catalog.py",
+        "tools/asset-requirements.txt",
+        "tools/image_encoding.json",
+        "scons/runtime_assets.py",
+        "scons/shared_assets.py",
+    ]
+
     def export(target, source, env):
-        export_assets(root, exported, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"),
-                      terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
-                      video_sprites=video)
+        # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
+        if str(Path(__file__).resolve().parent) not in sys.path:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import shared_assets
+
+        def produce(output):
+            export_assets(root, output, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"),
+                          terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
+                          video_sprites=video)
+
+        # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+        key = shared_assets.content_key(root, inputs + [root / path for path in tools],
+                                        ["runtime-assets-v1", platform, lossy, packing, video, sys.version_info[:2]])
+        shared_assets.export(root, exported, key, produce)
         return 0
 
     stamp = env.Command(
         str(exported.with_suffix(".json")),
-        inputs
-        + [
-            "tools/package_assets.py",
-            "tools/packed_sprite_assets.py",
-            "scons/recording_dependencies.py",
-            "scons/recording-versions.json",
-            "tools/terrain_tileset.py",
-            "tools/terrain_catalog.py",
-            "tools/asset-requirements.txt",
-            "tools/image_encoding.json",
-            "scons/runtime_assets.py",
-            Value(inputs),
-            Value([lossy, packing, video]),
-        ],
+        inputs + tools + [Value(inputs), Value([lossy, packing, video])],
         Action(export, "Exporting verified runtime assets"),
     )
     env.Precious(stamp)  # SCons must not unlink the previous ownership audit.

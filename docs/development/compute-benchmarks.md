@@ -402,7 +402,7 @@ must check availability rather than treating null as zero. The gradient pipeline
 accepts `--compute-telemetry off|waits|trace`, defaulting to off; timing and tracing variants
 must be compared separately. See [the telemetry contract](performance-telemetry.md#optional-compute-executor-diagnostics).
 
-For overhead validation, use release compilation, retained games and paired repetitions
+For overhead validation, use perf compilation (`perf=1 opt=3`), retained games and paired repetitions
 with an instrumentation-free control built with the same compiler and flags. Include empty
 batches, tiny and substantial callbacks. Rotate execution order and retain every sample,
 wall time, process CPU, memory, tick latency, and lost-event counts. Inspect optimized disabled

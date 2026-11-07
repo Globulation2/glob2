@@ -27,9 +27,10 @@ update-only callbacks and capped drawing retain input and screen lifecycle behav
 ## Build and run
 
 ```sh
-python3 tools/dev_build.py --build=build/local-tests tests # or unit-tests / engine-tests
-export GLOB2_BUILD_DIR="$PWD/build/local-tests"
-python3 test/run_tests.py                   # everything this platform can run
+python3 tools/dev_build.py engine-tests unit-tests
+python3 test/run_tests.py                   # headless tier: no [display], no [slow]
+python3 test/run_tests.py --tier display    # adds [display] cases
+python3 test/run_tests.py --tier full       # everything this platform can run
 python3 test/run_tests.py --list --tag display
 python3 test/run_tests.py --fullscreen --tag display      # opt in to fullscreen transitions
 python3 test/run_tests.py --binary unit
@@ -74,8 +75,26 @@ shared artwork survives screen creation and teardown. Build the
 runtime assets. See [asset loading](../docs/development/package-size.md#release-asset-and-bundle-sizes)
 for worker controls, scratch accounting and measurement limits.
 
-`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
-(suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`
+Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native build:
+the `tools/dev_build.py` output or `build/<platform>/client/release`. The default
+tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
+about a quarter of the full inventory's time; `--tier display` adds display cases
+(`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs: they are three times longer for unoptimized
+(`-O0`) builds, and `GLOB2_TEST_TIMEOUT_SCALE` overrides the multiplier. `--filter` or `--tag`
+without `--tier` selects from the full inventory, so naming a case always runs it.
+
+`--affected` narrows the selection to the cases a change can reach, using the
+per-case coverage map that master's Clang coverage job records
+(`python3 test/select_affected.py --fetch` downloads it to
+`artifacts/coverage-map.json.gz`). A case runs when the files it executed
+intersect the change, when it has no record yet, or when it is on the always-run
+list (golden simulation, save formats, replays); a change to a header, the build
+system, `test/`, `content/` or CI configuration, or a map older than seven days or
+not from an ancestor, runs the whole tier. `test/select_affected.py --list` shows
+the choice without running anything.
+
+`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--tier`, `--filter`
+(suite/name globs), `--tag`, `--exclude-tag` and `--shard K/N`
 (deterministic by sorted name), then runs each engine case in its own process with
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
@@ -88,6 +107,11 @@ X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
+Each test executable prints a `GLOB2_TEST_PROVENANCE` line naming the source tree,
+compiler and flags that produced it. Native builds write that identity to
+`<binary>.provenance.json` after linking (`scons/test_provenance.py`), so a commit or
+stray untracked file that changes no compiled input recompiles and relinks nothing;
+browser and mobile test executables embed it instead.
 The runner escapes commas and backslashes in selected names and checks that JUnit
 records every selected case; a successful exit with missing tests is an error.
 Sanitizer diagnostics fail the run even when the process exits successfully.

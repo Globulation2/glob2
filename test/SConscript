@@ -37,8 +37,7 @@ test_env['CPPDEFINES'] = [d for d in ([defines] if isinstance(defines, str) else
 for var in ('CCFLAGS', 'CXXFLAGS', 'CPPFLAGS'):
     test_env[var] = [flag for flag in test_env.Split(test_env.get(var, [])) if flag != '-Dmain=SDL_main']
 test_env.Append(CPPDEFINES=['SDL_MAIN_HANDLED'])
-from test_provenance import register_test_provenance
-provenance_header = register_test_provenance(test_env, env['BUILDDIR'])
+from test_provenance import attach_sidecar
 
 
 def available(options):
@@ -73,8 +72,6 @@ def objects(entries, prefix):
         name = source.lstrip('#').replace('/', '_').rsplit('.', 1)[0]
         targets = compile_env.Object(prefix + name + '.o', source_node(source))
         bind_online_error_consumer(compile_env, targets, source, online_error_catalog)
-        if source.endswith(('TestMain.cpp', 'TranslationPreviewHarness.cpp')):
-            compile_env.Depends(targets, provenance_header)
         out += targets
     return out
 
@@ -110,15 +107,19 @@ unit = test_env.Program('glob2-unit-tests',
     + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
 if env.get('RUNTIME_ASSET_STAMP'):
     test_env.Depends([engine, unit], env['RUNTIME_ASSET_STAMP'])
-test_env.Alias('engine-tests', engine)
-test_env.Alias('unit-tests', unit)
-test_env.Alias('tests', [engine, unit])
+engine_provenance = attach_sidecar(test_env, engine)
+unit_provenance = attach_sidecar(test_env, unit)
+test_env.Alias('engine-tests', [engine, engine_provenance])
+test_env.Alias('unit-tests', [unit, unit_provenance])
+test_env.Alias('tests', [engine, unit, engine_provenance, unit_provenance])
 
 tools = []
 for target, source, alias, group in registry.PROGRAMS:
     program = test_env.Program(target, objects([source], 'program-') + client_objects + client_libs)
     if env.get('RUNTIME_ASSET_STAMP'):
         test_env.Depends(program, env['RUNTIME_ASSET_STAMP'])
+    if source.endswith('TranslationPreviewHarness.cpp'):
+        program += attach_sidecar(test_env, program)
     test_env.Alias(alias, program)
     if group == 'tools':
         tools += program

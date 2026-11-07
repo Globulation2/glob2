@@ -102,8 +102,8 @@ jobs:
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           python3 test/ci_run_commands.py \
-            --check 'macOS regression cases' 'python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
-            --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
+            --check 'macOS regression cases' 'python3 test/run_tests.py --tier full --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
+            --check 'unit tests' 'python3 test/run_tests.py --tier full --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
             --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
       - name: Retain native simulation and scripting evidence
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
@@ -121,6 +121,19 @@ jobs:
             --check 'accepted generator fingerprints' 'build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-check-profile --require-rows' \
             --check 'generator fingerprints' 'python3 test/collect_generator_evidence.py collect build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-evidence --platform macos-arm64' \
             --check 'resource design fingerprints' "python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --in-process --no-display --filter 'MapGeneratorDefaults/Explicit designs preserve topology*' --artifacts artifacts/generator-evidence/designs --junit artifacts/generator-evidence/designs-junit.xml"
+      # tools/refresh_sim_fixtures.py --from-run merges these rows after a recipe revision bump.
+      - name: Print this platform's golden rows
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          mkdir -p artifacts/golden-rows
+          build/darwin/client/release/src/MapGeneratorGoldenTest artifacts/generator-check-profile --print > artifacts/golden-rows/rows.txt
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        with:
+          name: golden-rows-macos-arm64
+          path: artifacts/golden-rows/
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:

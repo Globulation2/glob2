@@ -3,6 +3,7 @@ from client_features import header as client_feature_header
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
@@ -61,6 +62,9 @@ def build_mobile(directory, identity, arguments):
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
         ENV=environment, CC=command_path(toolchain['cc']), CXX=command_path(toolchain['cxx']), LINK=command_path(toolchain['cxx']), AR=command_path(toolchain['ar']))
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(Path(__file__).resolve().parents[1], output, sys.argv)
     env['BUILDDIR'] = str(output)
     if ccache.enabled():
         ccache.enable(env)
@@ -145,6 +149,8 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             # The engine registry exceeds Linux's per-argument shell limit when
             # expanded into one link command. Clang accepts SCons response files.
             tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
@@ -217,6 +223,8 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
             for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp']:

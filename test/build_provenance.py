@@ -38,12 +38,6 @@ def source_identity(root=ROOT):
         else:
             identity = b'<missing>'
         entries[relative] = b'worktree ' + identity
-    for relative in git('ls-files', '--others', '--exclude-standard', '-z').split(b'\0'):
-        if not relative:
-            continue
-        path = root / relative.decode('utf-8')
-        data = str(path.readlink()).encode('utf-8') if path.is_symlink() else path.read_bytes()
-        entries[relative] = b'untracked ' + hashlib.sha256(data).hexdigest().encode()
     digest = hashlib.sha256()
     for relative, identity in sorted(entries.items()):
         digest.update(relative + b'\0' + identity + b'\0')

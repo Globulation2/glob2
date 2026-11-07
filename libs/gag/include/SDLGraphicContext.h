@@ -432,6 +432,7 @@ namespace GAGCore
 		void resetRenderPacing() { renderPacer.reset(); }
         bool beginRenderFrame();
 		Uint32 renderFrameWait() const { return renderPacer.waitMilliseconds(SDL_GetTicksNS()); }
+		bool renderFrameCapped() const { return renderPacer.capped(); }
 
 		//! The cursor manager, public to be able to set custom cursors
 		CursorManager cursorManager;

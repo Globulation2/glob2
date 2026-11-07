@@ -160,6 +160,11 @@ struct Handle
 {
 	Uint32 tick = 0;
 	Uint64 observationRevision = 0;
+	//! Process-unique number of the Store capture this handle came from, kept by
+	//! every projection. Equal nonzero serials hold the same world, so a consumer
+	//! can keep what it derived from one. Unlike the revisions, it never repeats
+	//! after Store::reset(). Zero: not captured by a Store, never treat as equal.
+	Uint64 boundarySerial = 0;
 	int width = 0, height = 0;
 	Requirements requirements = 0;
 	std::shared_ptr<const Session> session;

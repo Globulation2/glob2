@@ -32,7 +32,6 @@ RELEASE = {
 EXEMPT = {
     'thread-sanitizer.yml': 'callable validation inherits build cancellation',
     'ci-metrics.yml': 'each run measures a distinct, completed build run',
-    'ci-model.yml': 'serialized master model publisher must complete its trusted bundle',
     'cancel-superseded.yml': 'the canceller; cancels its own older runs unconditionally',
 }
 
@@ -98,11 +97,15 @@ class WorkflowConcurrencyTest(unittest.TestCase):
                 elif declared is not None:
                     self.assertFalse(declared[0].startswith('${{'), 'group needs a literal workflow prefix')
 
-    def test_model_publication_is_serialized_without_cancelling_in_progress(self):
-        text = workflows()['ci-model.yml']
-        self.assertEqual(concurrency(text), ('ci-selection-model', 'false'))
-        self.assertEqual(triggers(text), {'workflow_run', 'schedule', 'workflow_dispatch'})
-        self.assertNotIn('.github/workflows/ci-model.yml', cancel.CI_WORKFLOWS)
+    def test_label_requested_full_matrix_never_cancels_itself_from_idle_runs(self):
+        # Adding an unrelated label to a ci:full PR must not cancel its full run.
+        text = workflows()['ci-full-label.yml']
+        group, cancel_expression = concurrency(text)
+        self.assertTrue(group.startswith('ci-full-${{ github.ref }}'))
+        self.assertIn("format('-idle-{0}', github.run_id)", group)
+        self.assertEqual(cancel_expression, STANDARD_CANCEL)
+        self.assertEqual(triggers(text), {'pull_request'})
+        self.assertIn('.github/workflows/ci-full-label.yml', cancel.CI_WORKFLOWS)
 
     def test_release_workflows_never_cancel_in_progress(self):
         for name in RELEASE:
