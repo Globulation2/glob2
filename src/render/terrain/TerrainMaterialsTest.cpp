@@ -258,7 +258,7 @@ TEST_SUITE("TerrainMaterials")
 			CAPTURE(key);
 			CHECK(definitions.materials[definitions.find(key)].decor.clearOfMasses == 1);
 		}
-		// Masses and foliage draw as before.
+		// Masses and foliage never use it.
 		for (const char *key : {"cliffs", "icefall", "hedge", "thicket"})
 		{
 			CAPTURE(key);
@@ -269,8 +269,8 @@ TEST_SUITE("TerrainMaterials")
 		{
 			if (material["key"] == "boulders")
 			{
-				for (const auto bad : {nlohmann::json(-1), nlohmann::json(TerrainVisual::MaxDecorClearance + 1),
-									   nlohmann::json(true), nlohmann::json("1")})
+				for (const auto bad : {nlohmann::json(-1), nlohmann::json(TerrainVisual::MaxDecorClearOfMasses + 1),
+									   nlohmann::json(true), nlohmann::json("1"), nlohmann::json(1.0)})
 				{
 					material["decor"]["clear_of_masses"] = bad;
 					CHECK_THROWS(TerrainVisual::Catalog::parse(document));
@@ -280,9 +280,10 @@ TEST_SUITE("TerrainMaterials")
 						  .materials[definitions.find("boulders")].decor.clearOfMasses == 0);
 				material["decor"]["clear_of_masses"] = 1;
 			}
-			if (material["key"] == "cliffs")
+			// Masses and connected foliage tile across cells, so skipping one
+			// would cut their surface.
+			if (material["key"] == "cliffs" || material["key"] == "hedge")
 			{
-				// A mass's rim is what the obstacles keep clear of.
 				material["decor"]["clear_of_masses"] = 1;
 				CHECK_THROWS(TerrainVisual::Catalog::parse(document));
 				material["decor"].erase("clear_of_masses");

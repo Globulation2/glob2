@@ -366,8 +366,9 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			}
 			if (d.contains("clear_of_masses"))
 			{
-				v.decor.clearOfMasses = integerInRange(d.at("clear_of_masses"), 0, MaxDecorClearance);
-				require(!v.decor.connectedOpen, "clear_of_masses is for obstacles and foliage, not masses");
+				v.decor.clearOfMasses = integerInRange(d.at("clear_of_masses"), 0, MaxDecorClearOfMasses);
+				// Connected frames expect their neighbours to continue the surface.
+				require(v.decor.connected.empty(), "clear_of_masses is for object decor");
 			}
 			require(v.decor.connectedForeign.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedOpen && v.decor.connectedForeign.size() == ForeignCodes * 16),

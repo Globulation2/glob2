@@ -21,6 +21,7 @@
       ],
       "connected": [],
       "connected_interior": [],
+      "connected_foreign": [],
       "native_size": 128,
       "runtime_sha256": {
         "content/data/gfx/terrain-decor0.png": "4d55f977e2c75c90a74c863c13ff17e47f1f3d1bbbeae0424d18cf97c0133ca5",
@@ -27617,7 +27618,7 @@
   },
   "generator": "tools/artwork/terrain_decor.py",
   "method": "procedural",
-  "generator_sha256": "171d95a875a40863663e58af4bca3c4585b193c1102d8a75ce44620a3b9cc3eb",
+  "generator_sha256": "78e2cbd07192fba3b28d3617f215032d1911a7cc331c0a0dcf837d17e6f8ba2b",
   "native_size": 64,
   "render_size": 256,
   "pillow": "12.2.0",

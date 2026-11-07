@@ -670,7 +670,9 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 			continue;
 		const auto chosen = materials[k];
 		const auto &decor = definitions.materials[chosen].decor;
-		// Spires and pillars keep clear of a mass's rim and terraces.
+		// Spires and pillars keep clear of a mass's rim and terraces. The check
+		// follows the hashed pick, so the slot stays empty even if another
+		// obstacle corner of the cell would not need clearance.
 		if (decor.clearOfMasses >= 0 && massWithin(map, x, y, decor.clearOfMasses))
 			continue;
 		unsigned mask = 0, count = 0;

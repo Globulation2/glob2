@@ -1973,7 +1973,8 @@ TEST_SUITE("TerrainValidation")
 										 : x < 12 ? GRASS
 												  : WATER);
 			// Cliffs touching ridge rock, outcrop, hedge and grass: cells that
-			// draw a cliff edge and another obstacle in separate decor slots.
+			// draw a cliff edge and the hedge in separate decor slots. Crags
+			// beside the cliffs keep clear of them and draw nothing.
 			for (int y = 6; y <= 11; ++y)
 				for (int x = 3; x <= 9; ++x)
 					if (x <= 6 || y <= 7)
@@ -2505,11 +2506,11 @@ TEST_SUITE("TerrainValidation")
 			.loadDefaultRace = true, .header = true, .seed = 7331});
 		auto &map = fixture.game.map;
 		// Outcrop in the north half, stone pillars in the south, crossed by a
-		// cliff band three vertices wide (x 10..12) and a glacier column at
-		// x 31, which the torus puts beside x 0.
+		// cliff band three vertices wide (x 10..12), and a glacier column at
+		// x 31 and row at y 31, which the torus puts beside x 0 and y 0.
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
-				map.setVertexTerrain(x, y, x >= 10 && x <= 12 ? CLIFFS : x == 31 ? GLACIER :
+				map.setVertexTerrain(x, y, x >= 10 && x <= 12 ? CLIFFS : x == 31 || y == 31 ? GLACIER :
 									 y < 16 ? OUTCROP : BOULDERS);
 		SceneMap scene;
 		glob2test::observeMap(map, scene);
@@ -2542,9 +2543,16 @@ TEST_SUITE("TerrainValidation")
 				CAPTURE(x);
 				const auto layers = compositor.decorLayers(scene, x, y);
 				CHECK(layers[0].frame >= 0);
+				CHECK(layers[1].frame == -1);
 				CHECK(layers[3].frame == -1);
 			}
 		}
+		// Across the vertical wrap: row 0 sees the glacier row, row 1 is clear.
+		const auto outcrop = catalog.find("outcrop");
+		CHECK(onlyDecorFrame(compositor, scene, 3, 0) == -1);
+		CHECK(onlyDecorFrame(compositor, scene, 3, 29) == -1);
+		CHECK(onlyDecorFrame(compositor, scene, 3, 1) ==
+			  catalog.decorFrame(outcrop, 3, 1, false, scene.terrainSeed(), 15, colours(3, 1)));
 
 		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
