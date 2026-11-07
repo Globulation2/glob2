@@ -103,7 +103,7 @@ class TerrainTileset(unittest.TestCase):
         # animated materials have four 8x8 layouts like the static ones.
         blocked = [m for m in self.document["materials"] if "variant_blocks" in m]
         self.assertEqual({m["key"] for m in self.document["materials"] if "variant_blocks" not in m},
-                         {"water", "deep_water"})
+                         {"water", "deep_water", "dark_water"})
         for material in blocked:
             self.assertEqual(material["variant_blocks"], 4)
             self.assertEqual(material["variant_grid"], 8)
