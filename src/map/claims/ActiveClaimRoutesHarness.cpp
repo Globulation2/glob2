@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
+#include "ComputeExecutor.h"
 #include "ActiveMaterialClaims.h"
 #include "Version.h"
 #include "ClaimPolicy.h"

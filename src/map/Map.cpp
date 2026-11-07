@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "ComputeExecutor.h"
 #include <atomic>
 #include "Map.h"
 #include "MapAssetBundle.h"
@@ -46,7 +47,7 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
+Map::Map() : computeOwner(std::make_unique<ComputeExecutor>()), compute(*computeOwner), gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
 {
     rebuildTerrainCounts();
 	topologyGeneration=1;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "ComputeExecutor.h"
 #include "GradientFixture.h"
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
