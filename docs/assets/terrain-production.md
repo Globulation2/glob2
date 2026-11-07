@@ -223,10 +223,13 @@ a brick, a cobble, a sand ripple or a crack in the ice should be the size it
 would be beside a glob standing on it, and nothing but broad tone should span
 several tiles. The cracks of glacier ice, the drifts of wind-swept snow, the
 ripples of windy sand, the pavers of brick path, the stones of scree and the
-blocks of pumice and mud were all brought down to that scale. The grass and sand
-looks keep the grain of the classic tile they stand in for and change only its
-colour: lush and dry grass are soft like grass, dune and pale sand speckled like
-sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
+blocks of pumice and mud were all brought down to that scale. Lush and dry grass
+share the sunlit turf of grass (`turf` in the `_grass` family module) and each
+make it their own: lush grass is a deep-green clover sward with low rounded leaf
+cushions lit from the top left, and dry grass is ripe amber prairie grass with
+long combed blades, bowing in broad curved bands of bright crest and dark trough.
+The sand looks keep the grain of the classic tile and change only its colour:
+dune and pale sand are speckled like sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
 quarter of a tile apart
 (`ripple_light`): long lit windward slopes, a bright crest and a short shaded lee,
 with crests square to the water's main swell (`RIPPLE_WIND` matches `WAVE_SWELL`)

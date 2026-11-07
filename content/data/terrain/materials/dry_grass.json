@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-dry_grass",
   "profile": "turf",
   "class": "solid",
-  "preview": [120, 123, 52],
+  "preview": [152, 122, 60],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [120, 123, 52],
+  "minimap": [152, 122, 60],
   "seam": {
     "height": 2,
     "cast_q8": 48,
