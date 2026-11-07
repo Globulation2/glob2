@@ -1,0 +1,7 @@
+{
+  "_doc": "globalContainer references in non-test simulation files, per directory. check_header_layering.py --write lowers these; never raise them.",
+  "src/building": 1,
+  "src/game": 17,
+  "src/map": 27,
+  "src/team": 23
+}
