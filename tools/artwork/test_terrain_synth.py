@@ -333,7 +333,7 @@ class TerrainSynth(unittest.TestCase):
         for kx, ky, cycles, _ in waves.WAVE_SWELL + waves.WAVE_CHOP:
             self.assertLessEqual(cycles / waves.WAVE_PHASES, 0.25, (kx, ky))
         self.assertEqual(waves.WAVE_SIZE % waves.WAVE_PHASES, 0)
-        for name in ("water", "deep_water"):
+        for name in ("water", "deep_water", "dark_water"):
             recipe = synth.RECIPES[name]
             self.assertEqual(recipe.phases, waves.WAVE_PHASES)
             for layout in range(recipe.blocks):

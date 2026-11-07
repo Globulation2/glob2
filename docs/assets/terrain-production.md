@@ -18,8 +18,8 @@ one material changes only that material's record. To add a material, add a
 module there; the package registers every module it contains. Static materials have four
 interchangeable 8×8 layouts (256 variants), and so do lava, ember field and molten lava pool, so
 their glow no longer repeats on the 8×8 grid (1,024 frames each over four
-phases); water and deep water have one 4×4 layout, keeping their animated
-banks at 256 frames each. Frames are stored as
+phases); water, deep water and dark water have one 4×4 layout, keeping their
+animated banks at 256 frames each. Frames are stored as
 `content/data/gfx/terrain-<name>N.png` at 32×32 RGBA and
 `content/data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
 in `content-src/gfx/<name>/provenance.json`. The shared tile code in
@@ -583,27 +583,30 @@ judge repetition in mixed-block previews.
 
 Regular water (`terrain_synth.py` recipe `water`, sprite `content/data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
-Water and deep water use one 4×4 layout with sixteen phases
+Water, deep water and dark water use one 4×4 layout with sixteen phases
 (`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
 periodic fields from plane waves whose wave numbers and animation cycles are
 integers (`WAVE_GRID` sets the block size; wave numbers scale with it).
 Every cell animates locally on the shared clock, so swell crests roll toward the
 lower right and finer cross chop breaks them into moving glints. Deep water
-reads the same geometry with its darker palette and less chop.
+reads the same geometry with its darker palette and less chop. Dark water reads
+it again as an inky, heavier swell with little chop and faint cold glints, and
+shades the lee of every swell crest so its troughs read deeper; the shadow comes
+from the moving swell front, so it travels with the waves.
 
-Both depths read the same wave geometry and timing on the same position grid,
-so crests continue across the shallow/deep blend. Every layout multiplies by the
+All three read the same wave geometry and timing on the same position grid,
+so crests continue across the shallow/deep and deep/dark blends. Every layout multiplies by the
 phase count, so the bank size decides whether an animated material can take
 several layouts. Four 8×8 layouts at four phases (lava, ember field) are 1024
 frames and fit: the renderer keeps every phase of the visible variants resident
 (see [Visible material preparation](#visible-material-preparation)) and
 `animation_blend_steps` limits how often their pages recompose. Four layouts at
 sixteen phases would be 4096 frames per water, which doubled frame time and kept
-HD fallback visible in measurement, so water and deep water stay on one layout.
+HD fallback visible in measurement, so the waters stay on one layout.
 Give a multi-layout animated material `animation_blend_steps` (4 for an
 8-tick phase) and compare its frame time and HD fallback with the single-layout
 material in a release build before committing it. `"variant_block_group"`
-remains available for materials that share block selection. Dark water remains static. All three waters are opaque and use
+remains available for materials that share block selection. All three waters are opaque and use
 the ordinary material composition path.
 
 Each sixteen-phase water has 256 native and 256 HD frames, indexed as

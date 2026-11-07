@@ -55,6 +55,19 @@ TerrainVisual::Recipe contextualRecipe(int x, int y, int size, Field field)
 	r.corners = {r.neighborhood[5], r.neighborhood[6], r.neighborhood[9], r.neighborhood[10]};
 	return r;
 }
+// Dark water with its waves held on phase 0 and its wash advanced in six-tick
+// steps: the shipped waters all animate, so this stands in for a still,
+// surfed material. Synthetic animation has no compiled artifact.
+TerrainVisual::MaterialId stillSteppedWater(TerrainVisual::Catalog &definitions)
+{
+	definitions.compiledPack.clear();
+	const auto id = definitions.find("dark_water");
+	auto &material = definitions.materials[id];
+	material.animationFrames = material.animationTicks = 1;
+	material.animationStride = 0;
+	material.surf.ticks = 6;
+	return id;
+}
 std::array<unsigned, 64> materialWeights(const TerrainVisual::Coverage &coverage)
 {
 	std::array<unsigned, 64> weights{};
@@ -998,6 +1011,9 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("surf steps rebuild shoreline pages but keep static open water resident [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		const auto still = stillSteppedWater(definitions);
+		globals->terrainCompositor_ = std::make_unique<TerrainVisual::Compositor>(std::move(definitions));
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = DARK_WATER, .discovered = true});
 		for (int y = 0; y < 32; ++y)
 			for (int x = 40; x < 48; ++x)
@@ -1010,7 +1026,7 @@ TEST_SUITE("TerrainMaterials")
 			                      fixture.team->me, true, time));
 		};
 		auto &compositor = globals->terrainCompositor(scene.frozenAssetBundle());
-		const int step = compositor.catalog().materials[compositor.catalog().find("dark_water")].surf.ticks;
+		const int step = compositor.catalog().materials[still].surf.ticks;
 		prepare(0, 0);
 		prepare(32, 0);
 		const auto before = cache.cacheRebuilds();
@@ -1322,23 +1338,24 @@ TEST_SUITE("TerrainMaterials")
 		const int cycle = std::lcm(surf.period, textured.animationFrames * textured.animationTicks);
 		CHECK(render(surfCompositor, cycle + surf.period / 8) == frames[1]);
 		// Surf time advances independently of static source artwork.
-		const auto dark = definitions.find("dark_water");
-		REQUIRE(definitions.materials[dark].animationFrames == 1);
-		REQUIRE(definitions.materials[dark].surf.period > 0);
-		CHECK(surfCompositor.animated(dark));
-		// Dark water keeps its artwork revision even when a surf step advances.
-		const auto &darkSurf = definitions.materials[dark].surf;
+		auto stilled = definitions;
+		const auto dark = stillSteppedWater(stilled);
+		TerrainVisual::Compositor stillSurfCompositor(stilled);
+		REQUIRE(stilled.materials[dark].surf.period > 0);
+		CHECK(stillSurfCompositor.animated(dark));
+		// Still water keeps its artwork revision even when a surf step advances.
+		const auto &darkSurf = stilled.materials[dark].surf;
 		REQUIRE(darkSurf.ticks > 1);
 		const int step = 7 * darkSurf.ticks;
-		surfCompositor.prepare(false, step);
-		const auto revision = surfCompositor.textureRevision(dark);
-		surfCompositor.prepare(false, step);
-		CHECK(surfCompositor.textureRevision(dark) == revision);
-		surfCompositor.prepare(false, step + darkSurf.ticks - 1);
-		CHECK(surfCompositor.textureRevision(dark) == revision);
-		surfCompositor.prepare(false, step + darkSurf.ticks);
-		CHECK(surfCompositor.textureRevision(dark) == revision);
-		CHECK(surfCompositor.surfTime() == unsigned(step + darkSurf.ticks));
+		stillSurfCompositor.prepare(false, step);
+		const auto revision = stillSurfCompositor.textureRevision(dark);
+		stillSurfCompositor.prepare(false, step);
+		CHECK(stillSurfCompositor.textureRevision(dark) == revision);
+		stillSurfCompositor.prepare(false, step + darkSurf.ticks - 1);
+		CHECK(stillSurfCompositor.textureRevision(dark) == revision);
+		stillSurfCompositor.prepare(false, step + darkSurf.ticks);
+		CHECK(stillSurfCompositor.textureRevision(dark) == revision);
+		CHECK(stillSurfCompositor.surfTime() == unsigned(step + darkSurf.ticks));
 		// Within one step the composed wash is identical.
 		const auto washed = [&](int time)
 		{
@@ -1427,13 +1444,19 @@ TEST_SUITE("TerrainMaterials")
 		definitions.compiledPack.clear();
 		TerrainVisual::Compositor compositor(definitions);
 		const auto &materials = compositor.catalog().materials;
-		const auto water = definitions.find("water"), deep = definitions.find("deep_water");
+		const auto water = definitions.find("water"), deep = definitions.find("deep_water"),
+				   dark = definitions.find("dark_water");
 		CHECK(materials[water].shoreCalm);
 		CHECK(materials[deep].shoreCalm);
-		CHECK_FALSE(materials[definitions.find("dark_water")].shoreCalm); // Its surface is still.
+		CHECK(materials[dark].shoreCalm);
 		CHECK_FALSE(materials[definitions.find("sand")].shoreCalm);
+		{
+			auto stilled = definitions;
+			const auto still = stillSteppedWater(stilled);
+			CHECK_FALSE(TerrainVisual::Compositor(stilled).catalog().materials[still].shoreCalm); // A still surface.
+		}
 		// Calm keeps the colour and cuts the wave contrast, at every phase.
-		for (const auto id : {water, deep})
+		for (const auto id : {water, deep, dark})
 			for (int time : {0, 37, 211})
 			{
 				CAPTURE(time);
@@ -2082,11 +2105,12 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(seen.size() == 4);
 			CHECK(changed > 600);
 		}
-		CHECK(single == std::set<std::string>{"water", "deep_water"});
+		CHECK(single == std::set<std::string>{"water", "deep_water", "dark_water"});
 		for (unsigned seed : {0u, 1u, 42u})
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)
-					CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find("deep_water"), x, y, seed));
+					for (const char *depth : {"deep_water", "dark_water"})
+						CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find(depth), x, y, seed));
 		const auto document = shippedCatalog();
 		std::size_t index = 0;
 		while (document["materials"][index]["key"] != "scree") ++index;
