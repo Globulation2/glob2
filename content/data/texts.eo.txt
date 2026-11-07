@@ -1788,6 +1788,12 @@ Urboŝtatoj bezonas almenaŭ unu kolonion.
 Ŝtonaj muroj
 [Sand patches]
 Sablaj makuloj
+[Cliff walls]
+Klifaj muroj
+[Paved roads]
+Pavimitaj vojoj
+[Scrub patches]
+Aridaj makuloj
 [Tidal flats]
 Tajdaj ebenaĵoj
 [Everglades]

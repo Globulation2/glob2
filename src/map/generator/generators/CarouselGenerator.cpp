@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CarouselGenerator.h"
+#include "Climates.h"
 #include "Drawing.h"
 #include "Farmland.h"
 #include "FertilityField.h"
@@ -148,6 +149,17 @@ constexpr int kLaneMargin = 5;
 constexpr int kRoadSeaGap = 5;
 // Deposits keep this many steps from every corridor and spoke, so no field ever grows a door shut.
 constexpr int kDoorClearance = 6;
+// THE GROUND (revision 5). The plaza is paved from this far beyond its pond out to its shore: a
+// promenade round the orchard where the spokes come in. Every home has two quarry faces of this
+// many stone at the foot of its walls, away from the siege line (furnish): the walls were the
+// colonies' stone when they were built of it. Open sea this many vertices from land is deep.
+constexpr double kPromenadeIn = 9;
+// A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
+// vertices wide, where its quarry faces stand (barren ground holds no stone).
+constexpr double kCore = 7;
+constexpr int kVerge = 4;
+constexpr int kQuarryFace = 12;
+constexpr int kDeepFrom = 5;
 
 // THE TOWERS. Open 2x2 pads per colony beside its `tower-count` towers, and the least distance between
 // sites, kept small so the siege line packs against its wall.
@@ -234,6 +246,7 @@ struct Layout
 	Torus t{1, 1};
 	Geometry g;
 	double phase = 0, cx = 0, cy = 0, sweep = 0;
+	int climate = 0;
 	std::vector<double> axis;              // every colony's home axis angle
 	std::vector<ShapePoint> homes, courts; // their centres
 	std::vector<ShapePoint> heartOf;       // where each colony's spoke comes into the plaza
@@ -643,6 +656,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.cx = L.t.w / 2;
 	L.cy = L.t.h / 2;
 	L.phase = context.bounded("carousel-phase", 3600) / 3600.0 * 2 * kPi;
+	L.climate = drawClimate(context, "carousel-climate");
+	context.telemetry.choice("carousel.climate", kClimateLooks[L.climate].name);
 	L.homeOf.assign(n, -1);
 	L.courtOf.assign(n, -1);
 	L.pathOf.assign(n, -1);
@@ -697,24 +712,96 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// The sea's margin: the land a swimmer can stand on. Neither a road's sand nor a farm's is beach, so
-// neither carries the margin inland.
-std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
+// THE GROUND, as the finished world must hold it: a pure function of the design, so validateWorld
+// rebuilds it and compares every vertex. Revision 5 draws every wall from the terrain catalogue
+// (TerrainGroup.h) where earlier revisions stood stone on grass:
+//  - a wall touching a lane or a court - the court wall and the corridor's walls - is rock that
+//    towers shoot over (Ridges), so the siege works across it as it did across stone;
+//  - every other wall, the lanes' bands along the lagoon and every coast of the open sea are cliffs
+//    (Obstacles): no beach to land on, and no tower shoots through a border;
+//  - the lanes and courts are paved (Paths) with the sand road down their middle, so they stay as
+//    unbuildable as the sand made them and are quicker to walk; the plaza's rim is a paved promenade;
+//  - walls lean away from the lanes (wallVertices), so a lane keeps every tile it was drawn with.
+// The climate (Climates.h) paints the looks last.
+TerrainSketch sketchTerrain(const Layout &L)
 {
-	return islandSeaMargin(map, L.t, L.pond, L.roadTile, L.farmSand);
+	const Torus &t = L.t;
+	const int n = t.size();
+	TerrainSketch terrain(n, WATER);
+	std::vector<unsigned char> lane(n, 0), open(n, 0), promenade(n, 0), paved(n, 0), none(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.land[i])
+			terrain[i] = GRASS;
+		if (L.pond[i])
+			// The plaza's pond is a lava pool in the volcanic climate.
+			terrain[i] = L.plaza[i] && L.climate == kVolcanicClimate ? LAVA : WATER;
+		lane[i] = L.land[i] && !L.wall[i] && !L.pond[i] && !L.laneBand[i] &&
+				  (L.pathOf[i] >= 0 || L.courtOf[i] >= 0);
+		open[i] = lane[i] || (L.plaza[i] && !L.wall[i]);
+		promenade[i] = L.plaza[i] && !L.wall[i] && !L.pond[i] &&
+					   std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) >=
+						   L.g.plazaPondR + kPromenadeIn;
+	}
+	// The farms' crossings are road and their caps and plot rings barren ground (dressFarmSand).
+	for (const Farm &farm : L.farms)
+		dressFarmSand(terrain, farm);
+	paveTiles(terrain, t, lane, none, paved);
+	paveTiles(terrain, t, promenade, none, paved);
+	// The road down every lane is rough ground: nothing can be built in a lane, as the siege needs.
+	for (int i = 0; i < n; ++i)
+		if (L.road[i] && terrain[i] != WATER && terrain[i] != LAVA)
+			terrain[i] = MUD;
+	// A wall is the siege's when any of it is near a lane: every tile of it within the court wall's
+	// thickness of a lane or court is rock, so no layer of cliff stops a tower's shot across it.
+	std::vector<unsigned char> ridge(n, 0), cliff(n, 0);
+	const std::vector<int> fromLane = stepsFrom(t, lane);
+	for (int i = 0; i < n; ++i)
+	{
+		if (!L.wall[i] && !L.laneBand[i])
+			continue;
+		const bool siege = L.wall[i] && fromLane[i] >= 0 && fromLane[i] <= L.g.wall + 1;
+		(siege ? ridge : cliff)[i] = 1;
+	}
+	const std::vector<unsigned char> cliffs = wallVertices(t, cliff, &open),
+									 ridges = wallVertices(t, ridge, &open);
+	for (int i = 0; i < n; ++i)
+		if (terrain[i] != WATER && (cliffs[i] || ridges[i]))
+			terrain[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	cliffCoast(
+		terrain, t,
+		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, lane, i); },
+		[&](int i) { return terrain[i] == WATER && !L.land[i]; }, 2);
+	// Every home is barren ground, its food growing on its farms, with a paved square round its swarm
+	// and a grass verge at the foot of its walls where its quarry stands.
+	barrenBase(
+		terrain, t, [&](int i) { return L.homeOf[i] >= 0 && !L.wall[i]; }, nullptr, kVerge);
+	for (int k = 0; k < L.g.teams; ++k)
+	{
+		const MapGeneratorPoint swarm = homeSwarmSite(L.homes[k], L.axis[k], L.g.homeR);
+		paveCore(terrain, t, swarm.x + 2, swarm.y + 2, kCore, [&](int i) { return L.homeOf[i] == k; });
+	}
+	const std::vector<unsigned char> deep =
+		deepSea(terrain, t, [&](int i) { return !L.land[i]; }, kDeepFrom);
+	LookRoles roles;
+	roles.deep = [&](int i) { return deep[i] != 0; };
+	roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
+	roles.farm = [&](int i) { return L.farmOf[i] >= 0; };
+	roles.path = [&](int i) { return L.plaza[i] ? PathLook::Town : PathLook::Street; };
+	paintClimate(terrain, t, kClimateLooks[L.climate], roles);
+	return terrain;
 }
 
-// The design's stone, once the terrain is laid: every coast of the remaining sea sealed, every wall, and
-// every grass tile of a lane's band (fillAndWall), so a lane on the lagoon keeps its drawn width and its
-// coast is sealed however it runs.
-std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
+// The tiles a terrain wall blocks: no unit walks or swims them.
+std::vector<unsigned char> blockedTiles(const Map &map, const Torus &t)
 {
-	std::vector<unsigned char> stone =
-		sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
-	for (int i = 0; i < L.t.size(); ++i)
-		if (L.laneBand[i] && map.terrainSupportsResourceAtByIndex(L.t.remainderX(i), i / L.t.w, STONE))
-			stone[i] = 1;
-	return stone;
+	std::vector<unsigned char> blocked(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const TerrainProperties &p = map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		blocked[i] = !p.walkable && !p.swimmable;
+	}
+	return blocked;
 }
 
 // The resources: every home's scattered farmland (no kit: see the header), a fruit grove in every
@@ -741,9 +828,48 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Carous
 		return !L.road[i] && !L.roadTile[i] && !reserved[i] && !pads[i] &&
 			   fromPaths[i] > kDoorClearance && clearGround(map, t.remainderX(i), i / t.w);
 	};
+	int faceTiles = 0;
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
+		// The quarry faces first, at the foot of the home's walls, as far as the walls go from the
+		// siege line - the previous colony's court, which this home's towers cover - and from each
+		// other. A home's outer side opens onto its own farms, so the faces stand where it has walls.
+		{
+			const ShapePoint siege = L.courts[(k + g.teams - 1) % g.teams];
+			std::vector<int> foot;
+			for (int i = 0; i < n; ++i)
+			{
+				if (!eligible(i))
+					continue;
+				bool walled = false;
+				for (int dy = -1; dy <= 1 && !walled; ++dy)
+					for (int dx = -1; dx <= 1 && !walled; ++dx)
+					{
+						const TerrainProperties &p =
+							map.terrainPropertiesAt(t.x(t.remainderX(i) + dx), t.y(i / t.w + dy));
+						walled = !p.walkable && !p.swimmable;
+					}
+				if (walled)
+					foot.push_back(i);
+			}
+			const auto from = [&](int i, double x, double y)
+			{ return std::hypot(t.offsetX(int(std::lround(x)), t.remainderX(i)), t.offsetY(int(std::lround(y)), i / t.w)); };
+			int first = -1, second = -1;
+			for (int i : foot)
+				if (first < 0 || from(i, siege.x, siege.y) > from(first, siege.x, siege.y))
+					first = i;
+			const auto spread = [&](int i)
+			{ return std::min(from(i, siege.x, siege.y), from(i, t.remainderX(first), first / t.w)); };
+			for (int i : foot)
+				if (first >= 0 && (second < 0 || spread(i) > spread(second)))
+					second = i;
+			std::vector<KitSeed> seeds;
+			for (const int seed : {first, second})
+				if (seed >= 0)
+					seeds.push_back({t.remainderX(seed), seed / t.w, 3});
+			faceTiles += plantQuarryFaces(map, t, seeds, kQuarryFace, eligible);
+		}
 		furnishGround(
 			map, t, context, fertility, eligible, patch, split,
 			[&](int area)
@@ -753,6 +879,7 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Carous
 			},
 			"carousel-home-stone", "carousel-home-fruit");
 	}
+	context.telemetry.measure("carousel.quarry-faces.tiles", faceTiles);
 	const int courtFruit = CHERRY + int(context.bounded("carousel-court", 3));
 	if (scaledCount(1, o.fruit) > 0)
 		for (int k = 0; k < g.teams; ++k)
@@ -835,20 +962,9 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.size();
 
 	context.stage = "carousel terrain";
-	TerrainSketch terrain(n, WATER);
-	for (int i = 0; i < n; ++i)
-	{
-		if (L.land[i])
-			terrain[i] = L.road[i] || L.farmSand[i] ? SAND : GRASS;
-		if (L.pond[i])
-			terrain[i] = WATER;
-	}
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
-	const std::vector<unsigned char> stone = stoneTiles(map, L);
-	for (int i = 0; i < n; ++i)
-		if (stone[i])
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	writeVertices(map, sketchTerrain(L));
+	// The walls are terrain: the towers stand against them, and no repair below can clear one.
+	const std::vector<unsigned char> stone = blockedTiles(map, t), none(n, 0);
 
 	context.stage = "carousel colonies";
 	const auto home = [&](int team)
@@ -881,9 +997,9 @@ bool generate(Game &game, GenerationContext &context)
 	furnish(map, L, context, o, pads);
 	const WedgeFrame algaeWedges(t, L.phase - L.g.wedge / 2, L.g.teams);
 	seedAlgae(map, context, t, "carousel-algae", o.algae, AlgaeBand::shallows(1, 4), &algaeWedges);
-	secureStartingCrops(game, context, t, 24, 32, 0, &stone);
+	secureStartingCrops(game, context, t, 24, 32, 0, &none);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
-						&stone);
+						&none);
 	clearFarmPlots(map, t, L.farms);
 
 	// Keep every colony's walk open, clearing only deposits on it: from home to its court, and from the
@@ -906,8 +1022,8 @@ bool generate(Game &game, GenerationContext &context)
 				court[i] = 1;
 				courtTiles.push_back(i);
 			}
-		if (!openRoad(map, t, workers[team], court, &stone) ||
-			!openRoad(map, t, courtTiles, heart, &stone))
+		if (!openRoad(map, t, workers[team], court, &none) ||
+			!openRoad(map, t, courtTiles, heart, &none))
 		{
 			context.detail =
 				"colony " + std::to_string(team) + " has no walk to its court and the plaza";
@@ -949,17 +1065,30 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	const auto where = [&](int i)
 	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
-	const std::vector<unsigned char> stone = stoneTiles(map, L);
+	// Every wall, coast and road stands as designed, vertex for vertex.
+	const TerrainSketch designed = sketchTerrain(L);
 	for (int i = 0; i < n; ++i)
-		if (stone[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
-			return "The stone at " + where(i) + " is missing.";
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != designed[i])
+			return "The ground at " + where(i) + " is not as designed.";
+	const std::vector<unsigned char> stone = blockedTiles(map, t);
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the carousel", "");
 	if (!walk.error.empty())
 		return walk.error;
 
 	const std::vector<unsigned char> open = walkableTiles(map);
-	const std::vector<unsigned char> margin = seaMargin(map, L);
-	if (const int entry = seaEntry(map, t, margin, L.land); entry >= 0)
+	// Nothing in the sea can land: from every tile of open sea, swimming, no walkable land is reached.
+	const std::vector<unsigned char> margin(n, 0);
+	std::vector<int> sea;
+	for (int i = 0; i < n; ++i)
+		if (!L.land[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).swimmable)
+			sea.push_back(i);
+	if (const int entry = leakWithShut(map, t, sea, margin, true,
+									   [&](int i)
+									   {
+										   return !L.land[i] ||
+												  !map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
+									   });
+		entry >= 0)
 		return "Land at " + where(entry) + " can be reached from the sea.";
 
 	for (size_t f = 0; f < L.farms.size(); ++f)
@@ -985,7 +1114,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				}
 		}
 
-	// A piece is its ground off the sea's margin (the sand lane outside a sealed coast, checked above).
+	// A piece is its ground (with no beaches, the margin is empty).
 	std::vector<int> piece(n, -1);
 	std::vector<unsigned char> paths(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -1056,7 +1185,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		4,
+		5,
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as
@@ -1093,7 +1222,7 @@ GeneratorDefinition carouselDefinition()
 		 // both on by default so workers cross the rows rather than walking round them.
 		 waterCrossingsControl(), cropCrossingsControl(),
 		 // Every home's scattered fields, the farms' wheat and woodlots, the courts' and the orchard's
-		 // fruit, and the algae; the walls' stone and the towers are unscaled.
+		 // fruit, and the algae; the homes' quarry faces and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

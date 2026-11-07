@@ -1788,6 +1788,12 @@ OpenGL در این نسخه موجود نیست.
 دیوارهای سنگی
 [Sand patches]
 لکه‌های شنی
+[Cliff walls]
+دیوارهای صخره‌ای
+[Paved roads]
+جاده‌های سنگفرش
+[Scrub patches]
+لکه‌های بایر
 [Tidal flats]
 پهنه‌های جزر و مدی
 [Everglades]

@@ -1071,4 +1071,11 @@ int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char>
 	}
 	return slivers;
 }
+
+void dressFarmSand(TerrainSketch &terrain, const Farm &farm)
+{
+	for (size_t i = 0; i < terrain.size() && i < farm.sand.size(); ++i)
+		if (farm.sand[i])
+			terrain[i] = farm.row.size() > i && farm.row[i] >= 0 ? TRAIL : DIRT;
+}
 } // namespace MapGeneration

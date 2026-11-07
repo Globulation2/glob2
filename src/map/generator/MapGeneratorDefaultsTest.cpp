@@ -483,8 +483,15 @@ class MapGeneratorDefaultsTest
 					const int type = world.map.getResource(x, y).type;
 					// Retain cherries and prunes: total fruit alone cannot prove
 					// that a court supplies all three upgrade ingredients.
-					if ((corruption == 0 && type == STONE) ||
-						(corruption == 1 && type == ORANGE))
+					// Corruption 0 opens every wall: rock and cliff become grass.
+					const TerrainGroup group = terrainGroup(world.map.vertexTerrainAt(x, y));
+					if (corruption == 0 &&
+						(group == TerrainGroup::Ridges || group == TerrainGroup::Obstacles))
+					{
+						world.map.setVertexTerrain(x, y, GRASS);
+						++changed;
+					}
+					if (corruption == 1 && type == ORANGE)
 					{
 						world.map.setNoResource(x, y, 1);
 						++changed;

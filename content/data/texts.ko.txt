@@ -1788,6 +1788,12 @@ Globulation 2 커서를 표시합니다.
 돌 성벽
 [Sand patches]
 모래밭
+[Cliff walls]
+절벽 성벽
+[Paved roads]
+포장도로
+[Scrub patches]
+황무지
 [Tidal flats]
 갯벌
 [Everglades]

@@ -1788,6 +1788,12 @@ Mestské štáty potrebujú aspoň jednu kolóniu.
 Kamenné hradby
 [Sand patches]
 Piesčiny
+[Cliff walls]
+Útesové hradby
+[Paved roads]
+Dláždené cesty
+[Scrub patches]
+Neúrodné plochy
 [Tidal flats]
 Prílivové pláne
 [Everglades]

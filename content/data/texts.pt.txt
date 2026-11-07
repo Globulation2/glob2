@@ -1788,6 +1788,12 @@ As cidades-estado precisam de pelo menos uma colónia.
 Muralhas de pedra
 [Sand patches]
 Manchas de areia
+[Cliff walls]
+Muralhas de falésia
+[Paved roads]
+Estradas calcetadas
+[Scrub patches]
+Manchas áridas
 [Tidal flats]
 Planícies de maré
 [Everglades]

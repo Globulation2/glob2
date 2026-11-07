@@ -1752,6 +1752,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கல் சுவர்கள்
 [Sand patches]
 மணல் திட்டுகள்
+[Cliff walls]
+பாறைச் சுவர்கள்
+[Paved roads]
+கல் பதித்த சாலைகள்
+[Scrub patches]
+தரிசுத் திட்டுகள்
 [Tidal flats]
 ஓதச் சமவெளிகள்
 [Everglades]

@@ -1788,6 +1788,12 @@ Městské státy potřebují alespoň jednu kolonii.
 Kamenné hradby
 [Sand patches]
 Písčiny
+[Cliff walls]
+Útesové hradby
+[Paved roads]
+Dlážděné cesty
+[Scrub patches]
+Neúrodné plochy
 [Tidal flats]
 Přílivové pláně
 [Everglades]

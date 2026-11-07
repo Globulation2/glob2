@@ -1788,6 +1788,12 @@ Les cités-États ont besoin d'au moins une colonie.
 Murs de pierre
 [Sand patches]
 Zones de sable
+[Cliff walls]
+Remparts de falaises
+[Paved roads]
+Chemins pavés
+[Scrub patches]
+Zones arides
 [Tidal flats]
 Estran
 [Everglades]

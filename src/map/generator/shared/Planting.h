@@ -489,4 +489,32 @@ void seedAlgae(Map &, GenerationContext &, const Torus &, const char *stream, in
 /// Each island carries one themed prize at its middle: stone, a fruit or wheat, so finding one
 /// feels like a distinct find rather than an interchangeable resource dump.
 void stockIslands(Map &, GenerationContext &, const std::vector<Island> &, const char *stream);
+
+/// Quarry faces: stone along the foot of a terrain wall (any tile that neither walks nor swims,
+/// such as cliffs), where a deposit blocks no way through. Each seed grows one face of `tiles`
+/// stone on `eligible` tiles touching such a wall, diagonals included. For walled homes whose walls
+/// were their stone when walls were the stone resource. Returns the stone tiles placed.
+template <typename Eligible>
+int plantQuarryFaces(Map &map, const Torus &t, const std::vector<KitSeed> &seeds, int tiles,
+					 Eligible eligible)
+{
+	const auto wallFoot = [&](int i)
+	{
+		if (!eligible(i))
+			return false;
+		const int x = t.remainderX(i), y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const TerrainProperties &p = map.terrainPropertiesAt(t.x(x + dx), t.y(y + dy));
+				if (!p.walkable && !p.swimmable)
+					return true;
+			}
+		return false;
+	};
+	int placed = 0;
+	for (const KitSeed &at : seeds)
+		placed += growPatchesNear(map, t, at.x, at.y, at.within, STONE, tiles, wallFoot).tiles;
+	return placed;
+}
 } // namespace MapGeneration

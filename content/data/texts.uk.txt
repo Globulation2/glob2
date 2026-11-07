@@ -1788,6 +1788,12 @@ OpenGL недоступний у цій збірці.
 Кам’яні стіни
 [Sand patches]
 Піщані ділянки
+[Cliff walls]
+Скельні стіни
+[Paved roads]
+Бруковані дороги
+[Scrub patches]
+Безплідні ділянки
 [Tidal flats]
 Припливні мілини
 [Everglades]

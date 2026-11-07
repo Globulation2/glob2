@@ -475,4 +475,160 @@ std::string wallStanding(const Map &map, const Torus &t, const std::vector<unsig
 	}
 	return "";
 }
+
+int cliffCoast(TerrainSketch &terrain, const Torus &t, const std::function<bool(int)> &wallable,
+			   const std::function<bool(int)> &sea, int reach, TerrainType cliff)
+{
+	const int n = t.w * t.h;
+	std::vector<unsigned char> seaMask(n, 0);
+	for (int i = 0; i < n; ++i)
+		seaMask[i] = sea(i);
+	const std::vector<int> fromSea = stepsFrom(t, seaMask);
+	int cliffs = 0;
+	for (int i = 0; i < n; ++i)
+		if (fromSea[i] >= 0 && fromSea[i] <= reach && wallable(i))
+		{
+			terrain[i] = cliff;
+			++cliffs;
+		}
+	return cliffs;
+}
+
+bool cornerOf(const Torus &t, const std::vector<unsigned char> &tiles, int i)
+{
+	const int x = t.remainderX(i), y = i / t.w;
+	return tiles[i] || tiles[t.at(x - 1, y)] || tiles[t.at(x, y - 1)] || tiles[t.at(x - 1, y - 1)];
+}
+
+std::vector<unsigned char> wallVertices(const Torus &t, const std::vector<unsigned char> &tiles,
+										const std::vector<unsigned char> *keepOpen,
+										const std::vector<unsigned char> *strict)
+{
+	const int n = t.w * t.h;
+	std::vector<unsigned char> v(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		if (!tiles[i])
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		bool beside = false;
+		for (int dy = -1; dy <= 1 && keepOpen && !beside; ++dy)
+			for (int dx = -1; dx <= 1 && !beside; ++dx)
+				beside = (*keepOpen)[t.at(x + dx, y + dy)] && !tiles[t.at(x + dx, y + dy)];
+		if (beside)
+		{
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+				{
+					const int c = t.at(x + dx, y + dy);
+					if (!cornerOf(t, *keepOpen, c))
+						v[c] = 1;
+				}
+			continue;
+		}
+		v[i] = 1;
+		// A wall tile touching another only at its lower corners: close the diagonal between them.
+		if (tiles[t.at(x + 1, y + 1)] && !tiles[t.at(x + 1, y)] && !tiles[t.at(x, y + 1)])
+			v[t.at(x + 1, y)] = 1;
+		if (tiles[t.at(x - 1, y + 1)] && !tiles[t.at(x - 1, y)] && !tiles[t.at(x, y + 1)])
+			v[t.at(x, y + 1)] = 1;
+	}
+	if (!keepOpen)
+		return v;
+	// Where a wall turns round a lane, leaning away can leave a wall tile one blocked corner, which
+	// does not block it: give it back corners until it has two, choosing each time the corner that
+	// blocks the fewest open tiles (an open tile is blocked once two of its corners are), and never
+	// one that would block a `strict` tile.
+	const auto blockedCorners = [&](int tile)
+	{
+		const int x = t.remainderX(tile), y = tile / t.w;
+		return int(v[tile]) + v[t.at(x + 1, y)] + v[t.at(x, y + 1)] + v[t.at(x + 1, y + 1)];
+	};
+	for (int i = 0; i < n; ++i)
+	{
+		if (!tiles[i])
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		while (blockedCorners(i) < 2)
+		{
+			int best = -1, bestCost = INT_MAX;
+			for (int c = 0; c < 4; ++c)
+			{
+				const int corner = t.at(x + c % 2, y + c / 2);
+				if (v[corner])
+					continue;
+				const int cx = t.remainderX(corner), cy = corner / t.w;
+				int cost = 0;
+				for (int dy = -1; dy <= 0; ++dy)
+					for (int dx = -1; dx <= 0; ++dx)
+					{
+						const int q = t.at(cx + dx, cy + dy);
+						if (tiles[q] || !(*keepOpen)[q])
+							continue;
+						const bool closes = blockedCorners(q) >= 1;
+						if (closes && strict && (*strict)[q])
+							cost += 1000;
+						cost += closes ? 10 : 1;
+					}
+				if (cost < bestCost)
+				{
+					bestCost = cost;
+					best = corner;
+				}
+			}
+			if (best < 0)
+				break;
+			v[best] = 1;
+		}
+	}
+	return v;
+}
+
+int paveTiles(TerrainSketch &terrain, const Torus &t, const std::vector<unsigned char> &tiles,
+			  const std::vector<unsigned char> &throat, std::vector<unsigned char> &paved,
+			  TerrainType throatTerrain)
+{
+	int count = 0;
+	for (int i = 0; i < t.w * t.h; ++i)
+		if (tiles[i])
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+				{
+					const int v = t.at(t.remainderX(i) + dx, i / t.w + dy);
+					if (terrain[v] == WATER)
+						continue;
+					terrain[v] = throat[i] || terrain[v] == throatTerrain ? throatTerrain : TRAIL;
+					count += !paved[v];
+					paved[v] = 1;
+				}
+	return count;
+}
+
+int leakWithShut(const Map &map, const Torus &t, const std::vector<int> &units,
+				 const std::vector<unsigned char> &shut, bool swim,
+				 const std::function<bool(int)> &inside)
+{
+	const int n = t.w * t.h;
+	std::vector<unsigned char> open(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const TerrainProperties &p = map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		open[i] = !shut[i] && (p.walkable || (swim && p.swimmable));
+	}
+	const std::vector<int> steps = stepsFrom(t, tileMask(t, units), open);
+	int first = -1;
+	for (int i = 0; i < n; ++i)
+		if (steps[i] >= 0 && !inside(i) && (first < 0 || steps[i] < steps[first]))
+			first = i;
+	return first;
+}
+
+int wallTerrainMismatch(const Map &map, const Torus &t, const std::vector<unsigned char> &vertices,
+						TerrainGroup group)
+{
+	for (int i = 0; i < t.w * t.h; ++i)
+		if (vertices[i] && terrainGroup(map.vertexTerrainAt(t.remainderX(i), i / t.w)) != group)
+			return i;
+	return -1;
+}
 } // namespace MapGeneration

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CityStatesGenerator.h"
+#include "Climates.h"
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -31,22 +32,33 @@
 using namespace MapGeneration;
 
 // City states: a large shared commons in the middle of the map, ringed by a strait, and round it
-// one big home for every colony - a wedge of the outer land with its own lake, fields and quarry,
-// cut off from its neighbours by water channels and from the commons by the strait. The only way
-// off a home on foot is its causeway: a road across the strait, lined with stone, that lands on
-// the commons at the home's own angle - and a wall of stone runs round every home's coast, one
-// tile in from the beach, so a swimmer can land on the beach but never leave it. The commons is
-// where the game is fought - richer towards its centre, where an orchard of all three fruits
-// stands - and once swimming pools let armies cross water anywhere, the causeways stop being the
-// only way in.
+// one big home for every colony - a wedge of the outer land with its own lake, fields, quarry and
+// paved town, cut off from its neighbours by water channels and from the commons by the strait.
+// Every home's sea coast is a band of cliffs at the waterline, with no beach to land on, so the
+// only way in or out of a home - on foot or swimming - is its causeway: a paved deck across the
+// strait between rock parapets that the gate's towers can shoot over, landing on the commons at
+// the home's own angle. The commons is where the game is fought - richer towards its centre, where
+// an orchard of all three fruits stands - and swimming opens its shores, the channels and the
+// archipelago at the wrap, never a home.
+//
+// REVISION 13 (CITY STATES 2.0, 2026-11-07). The first revisions were written when the engine had
+// only grass, sand and water, so every wall was the stone resource and every road sand. Every
+// barrier is now terrain of the kind it is: sea cliffs (Obstacles) round the homes, parapets and
+// the crag of rock towers shoot over (Ridges), cliff ridges in Highland homes, a cliff-walled
+// citadel heart; the causeways, towns, streets and bridges are paved (Paths: faster, buildable,
+// nothing grows on them and, unlike sand, they hold back no field beside them); scrub patches are
+// barren ground with rough cores on the commons; the open sea is deep water. The stone the old
+// walls put beside every town is now two quarry faces at the foot of each home's cliffs. One of
+// four climates (temperate, arid, highland, volcanic) is drawn per map and only paints looks of
+// the same rules (kClimateLooks), except the volcanic citadel's lava moat.
 //
 // Every roll differs: the coasts have bays and headlands, the channels bend, the homes take one of
-// several layouts (a lake, a creek with a ford, stone ridges with passes, a marsh) and the heart of
-// the commons one of several (a lake, a stone crag, an island, a river delta, a forest), and sand
-// lies in patches over the ground. Everything a home is made of is designed in the wedge's own
-// frame - arc across it and radius out from the centre - and stamped into every home alike, so
-// however a roll comes out, every colony gets the same home turned round the centre, and the layout
-// is fair for any colony count.
+// several layouts (a lake, a creek with a bridge, cliff ridges with passes, a marsh) and the heart
+// of the commons one of several (a lake, a rock crag, an island, a river delta, a forest, a
+// citadel), and scrub lies in patches over the ground. Everything a home is made of is designed in
+// the wedge's own frame - arc across it and radius out from the centre - and stamped into every
+// home alike, so however a roll comes out, every colony gets the same home turned round the
+// centre, and the layout is fair for any colony count.
 //
 // THE ARCHIPELAGO (FEEDBACK 2026-09-14: "WAY more islands out filling the no mans land where there
 // is currently only ocean. it should be like a mini archipelago dotting the landscape. Additionally
@@ -76,9 +88,9 @@ using namespace MapGeneration;
 // finished world. Terrain is written straight to the map's vertices with an order-independent
 // beach pass, as Ring world does.
 //
-// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be
-// cleared, so a stone wall is permanent, which is what makes the causeway the only door; water
-// stops ground units until they swim, which makes the strait a timer rather than a wall forever;
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): cliffs block walkers and
+// swimmers alike and can never be cleared, which is what makes the causeway the only door; water
+// stops ground units until they swim, which makes the strait a timer for the commons;
 // wheat and wood regrow only near water, which is why every home has its lake and its fields
 // beside it; and fruit lets an inn pull hungry enemy units across, which makes the commons'
 // orchard the prize worth leaving home for. The commons' frontier richness (60% by default)
@@ -107,11 +119,10 @@ constexpr double kInnerBayShare = 0.36;
 constexpr double kOuterBayShare = 0.5;
 // The channels between homes bow sideways by up to this many tiles, all the same way.
 constexpr double kChannelBend = 9.0;
-// Land outside a causeway's road, on each side: stone stands on every solid-grass tile of it, and
-// the beach pass turns the outermost vertex to sand, which leaves a sand lane a unit can walk along
-// beside the stone (grass may never touch water, so no wall can stand right at the water's edge).
+// Land outside a causeway's road, on each side: its parapets, rock towers shoot over (dressWalls).
 constexpr double kShoulder = 3.5;
-// The causeway as a barrier includes those sand lanes, for keeping deposits off and for checking.
+// The causeway as a barrier reaches this far beyond its parapets, for keeping deposits off and for
+// shutting it in the checks.
 constexpr double kLane = 1.5;
 // How far each causeway's approaches are kept clear of deposits, on both shores.
 constexpr int kLanding = 10;
@@ -157,6 +168,25 @@ constexpr int kRoadWidth = 2;
 // 9.5 at the roughest), and the water kept between an islet and any coast or other islet.
 constexpr double kIsletRadius = 11.0, kIsletRoughness = 0.05;
 constexpr int kIsletMoat = 3;
+// A home's sea cliffs: home land this many vertices from the sea, so two rings of cliff vertices
+// stand between the water and the home's grass.
+constexpr int kCliffReach = 2;
+// The home quarry's clump radius, behind the lake.
+constexpr int kQuarryRadius = 2;
+// Quarry faces: stone along the inland foot of a home's sea cliffs, one face either side of the
+// town, this many tiles each, seeded this far in from the gate and this share of the home's half
+// arc out to each side. The stone walls of revision 12 put stone a few steps from every part of a
+// home, and the tower-building AIs mined 30-55% less without it (paired games, 2026-11-07).
+constexpr int kQuarryFace = 12;
+// The causeway's deck is paved, but sand (which nothing can be built on) runs this far along it
+// from each end, so no colony can put a building across its own gate or a rival's landing.
+constexpr double kThroat = 4.0;
+// The town district round each swarm: paved ground (buildable, crops never grow onto it, and
+// unlike barren ground it does not hold back the fields beside it; one profile with the streets,
+// so no street leaves an unbuildable seam through the town) from
+// this far inside the gate to this far beyond the swarm, out to the side streets plus this margin.
+constexpr double kTownFromGate = 2.0, kTownBeyondSwarm = 4.0, kTownSideMargin = 2.0;
+constexpr double kQuarryFaceIn = 6.0, kQuarryFaceAcross = 0.45;
 
 // What a home is made of, and what the heart of the commons is. One of each per map.
 enum HomeKind
@@ -174,8 +204,22 @@ enum HeartKind
 	IslandHeart,
 	Delta,
 	ForestHeart,
+	Citadel,
 	kHeartKinds
 };
+
+// Open sea at least this many vertices from any land is deep water: slower to swim, and no algae,
+// which grows only in the shallows (AlgaeBand::shallows reaches 4 from the sand).
+constexpr int kDeepFrom = 5;
+// How far inside a commons scrub patch its rough core begins.
+constexpr int kRoughInset = 2;
+// A home stays grass this many steps round its own water, where its fields grow, and its cliffs keep
+// a grass verge this many vertices wide where its quarry faces stand; the rest is barren ground.
+constexpr int kGrassReach = 10;
+constexpr int kVerge = 2;
+// The citadel heart: its plateau's radius as a share of the commons', the cliff ring's thickness,
+// each ramp's width, and the lava band outside the cliffs in the volcanic climate.
+constexpr double kCitadelShare = 0.28, kCitadelWall = 4.0, kCitadelRamp = 7.0, kCitadelLava = 4.0;
 
 // A smooth random curve round a ring, periodic in u over [0, 1): a few harmonics with random
 // phases, scaled so its peak is one.
@@ -306,7 +350,7 @@ struct Layout
 	Geometry g{};
 	int cx = 0, cy = 0;
 	double phase = 0;
-	int homeKind = Lakeland, heartKind = LakeHeart;
+	int homeKind = Lakeland, heartKind = LakeHeart, climate = 0;
 	double creekSide = 0; // Riverside: which flank the creek runs to, -1 or 1
 	double lakeR = 0, islandR = 0, ringR = 0, forestR = 0; // the heart's radii
 	std::vector<Home> homes;
@@ -314,8 +358,13 @@ struct Layout
 	std::vector<signed char> region;
 	std::vector<int> homeOf; // HomeLand tiles: which home, else -1
 	std::vector<unsigned char> lake, river, ford, sand, ridge, strip, causeway, road, clear;
-	// The sand roads: terrain vertices turned to sand, and the tiles with a corner on one.
+	// The citadel heart's cliff ring, and the lava round it in the volcanic climate.
+	std::vector<unsigned char> citadelWall, lava;
+	// The streets: terrain vertices paved, and the tiles with a corner on one.
 	std::vector<unsigned char> sandRoad, roadTile;
+	// Vertices: the causeway's sand throats at both ends of its deck, and every home's town
+	// district (see planTown).
+	std::vector<unsigned char> throat, town;
 	std::vector<double> radius, angle;
 	// The islets' middles, where their 10x4 building plots are stamped.
 	struct IsletSite
@@ -428,14 +477,17 @@ static Features rollFeatures(const GenerationRequest &request, GenerationContext
 	const double wedge = c.wedge, inner = c.inner, depth = c.depth;
 	// The heart of the commons.
 	// The heart's shapes as shares of the commons' radius: a lake 22% (15 tiles at the defaults); a
-	// crag a small 6% tarn inside a ring of stone at 22%; an island heart a 30% lake round a 12%
+	// crag a small 6% tarn inside a ring of rock at 22%; an island heart a 30% lake round a 12%
 	// island; a forest reaching 4 tiles plus 9% beyond the lake. Each is small enough to leave the
 	// commons most of its land.
 	L.lakeR = std::max(3.0, kHeartShare * g.commonsRadius);
 	L.ringR = std::max(8.0, kHeartShare * g.commonsRadius);
 	L.islandR = 0;
-	if (L.heartKind == Crag)
+	if (L.heartKind == Crag || L.heartKind == Citadel)
 		L.lakeR = std::max(2.5, 0.06 * g.commonsRadius);
+	// A citadel's plateau is wider than a crag, room for the orchard and a fort on top.
+	if (L.heartKind == Citadel)
+		L.ringR = std::max(10.0, kCitadelShare * g.commonsRadius);
 	if (L.heartKind == IslandHeart)
 	{
 		L.lakeR = std::max(6.0, 0.3 * g.commonsRadius);
@@ -567,7 +619,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	L.region.assign(n, Sea);
 	L.homeOf.assign(n, -1);
 	for (auto *mask :
-		 {&L.lake, &L.river, &L.ford, &L.sand, &L.ridge, &L.strip, &L.causeway, &L.road, &L.clear})
+		 {&L.lake, &L.river, &L.ford, &L.sand, &L.ridge, &L.strip, &L.causeway, &L.road, &L.clear,
+		  &L.throat, &L.citadelWall, &L.lava})
 		mask->assign(n, 0);
 	L.radius.assign(n, 0.0);
 	L.angle.assign(n, 0.0);
@@ -622,7 +675,12 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 					L.homeOf[i] = k;
 				}
 				if (across <= roadHalf)
+				{
 					L.road[i] = 1;
+					// Sand at both ends of the deck: nothing can be built in a gate.
+					if (along < h.coast - 3 + kThroat || along > h.coast + g.strait + 3 - kThroat)
+						L.throat[i] = 1;
+				}
 				if (along > landingAlong[k] && L.road[i])
 				{
 					landingAlong[k] = along;
@@ -681,7 +739,7 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 					for (double ur : f.ridgeU)
 					{
 						const double sr = (ur - 0.5) * wedge * d;
-						// A ridge is stone 2.5 tiles across; its pass is 5 tiles along the ridge,
+						// A ridge is cliff 2.5 tiles across; its pass is 5 tiles along the ridge,
 						// with 3.5 and 4.5 tiles of clear ground round it so the pass stays
 						// walkable after deposits.
 						if (std::abs(s - sr) < 1.25)
@@ -725,11 +783,25 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 				}
 				if (L.heartKind == Crag)
 				{
-					// The crag is a ring of stone 1.5 tiles thick, broken by a 5-tile gap on each
+					// The crag is a ring of rock 1.5 tiles thick, broken by a 5-tile gap on each
 					// causeway's line.
 					if (d >= L.ringR && d < L.ringR + 1.5 && toLanding >= 2.5)
 						L.ridge[i] = 1;
 					if (d >= L.ringR - 2 && d < L.ringR + 3.5 && toLanding < 4)
+						L.clear[i] = 1;
+				}
+				if (L.heartKind == Citadel)
+				{
+					// The citadel: a cliff ring kCitadelWall thick, which stops arrows as well as
+					// feet, with a ramp kCitadelRamp wide on each causeway's line; in the volcanic
+					// climate a band of lava outside the cliffs, broken at the same ramps.
+					const double lavaR = L.climate == kVolcanicClimate ? kCitadelLava : 0.0;
+					const double outer = L.ringR + kCitadelWall;
+					if (d >= L.ringR && d < outer && toLanding >= kCitadelRamp / 2)
+						L.citadelWall[i] = 1;
+					if (d >= outer && d < outer + lavaR && toLanding >= kCitadelRamp / 2)
+						L.lava[i] = 1;
+					if (d >= L.ringR - 2 && d < outer + lavaR + 2 && toLanding < kCitadelRamp / 2 + 1.5)
 						L.clear[i] = 1;
 				}
 				if (L.heartKind == Delta && teams >= 2 && d >= L.lakeR - 1 && d <= c + 1)
@@ -805,6 +877,13 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 			for (const auto &[x, y] : points)
 				if (!fits(x, y))
 					return;
+			// Images of one candidate can lie closer to each other than to anything already
+			// raised (on a rectangle the wrap brings them together), so they keep the pitch too.
+			for (size_t a = 0; a < points.size(); ++a)
+				for (size_t b = a + 1; b < points.size(); ++b)
+					if (std::hypot(t.offsetX(points[a].first, points[b].first),
+								   t.offsetY(points[a].second, points[b].second)) < pitch)
+						return;
 			for (const auto &[x, y] : points)
 				raise(x, y);
 		};
@@ -846,10 +925,10 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	}
 }
 
-// The sand roads: a line of sand two vertices thick (tracePath, widened) that no deposit can grow over and
-// nothing can be built on, like a real road that growth closes in on from both sides. It makes
-// the causeways and the commons' main routes stay walkable however the fields spread, while the
-// fields right beside a road turn it into a chokepoint.
+// The streets: a paved line two vertices thick (tracePath, widened) that no deposit can grow over,
+// like a real road that growth closes in on from both sides. It makes the causeways and the
+// commons' main routes stay walkable however the fields spread, and hauling along it is quick.
+// (Revisions to 12 drew these in sand; the names sandRoad and the `sand-roads` control remain.)
 //
 // Every home gets the same road, drawn in its own frame (along its axis from the map's centre,
 // and across it): from the heart of the commons out along the axis, over the causeway, to a fork
@@ -860,10 +939,9 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 // a river delta at the heart it runs at the delta's fords instead, so it crosses the rivers where
 // they can be walked.
 //
-// A vertex is only turned to sand where that cannot break the design: on land, off every ridge
-// and causeway shoulder (stone stands only on grass, so sand there would open a gap in a wall),
-// at least kRoadSeaGap from any water inside a home (off the coast wall) and kRoadWaterGap from
-// water in the commons, and clear of the swarm's square. Where a road meets water or a wall it simply
+// A vertex is only paved where that cannot break the design: on land, off every ridge and
+// causeway shoulder, at least kRoadSeaGap from any water inside a home (off the coast cliffs) and
+// kRoadWaterGap from water in the commons, and clear of the swarm's square. Where a road meets water or a wall it simply
 // breaks off, as a road stops at a lake shore.
 void planSandRoads(Layout &L, const Features &f)
 {
@@ -933,6 +1011,8 @@ void planSandRoads(Layout &L, const Features &f)
 	{
 		const double heartEdge = L.heartKind == IslandHeart   ? L.lakeR * 1.3
 								 : L.heartKind == Crag        ? L.ringR + 2
+								 : L.heartKind == Citadel
+									 ? L.ringR + kCitadelWall + (L.climate == kVolcanicClimate ? kCitadelLava : 0) + 2
 								 : L.heartKind == ForestHeart ? std::max(L.forestR, L.lakeR * 1.3)
 															  : L.lakeR * 1.3 + kOrchardReach + 2;
 		double ring = L.heartKind == Delta ? f.deltaFordR : kRingShare * g.commonsRadius;
@@ -972,7 +1052,7 @@ void planSandRoads(Layout &L, const Features &f)
 		if (L.homeOf[i] >= 0 && !L.strip[i] &&
 			(fromWater[i] < kRoadSeaGap || (fromSand[i] >= 0 && fromSand[i] < kRoadSandGap)))
 			continue;
-		// The four tiles sharing this corner: none may be stone-bearing design.
+		// The four tiles sharing this corner: none may be a ridge or a parapet.
 		bool clear = true;
 		for (int dy = -1; dy <= 0 && clear; ++dy)
 			for (int dx = -1; dx <= 0; ++dx)
@@ -993,6 +1073,38 @@ void planSandRoads(Layout &L, const Features &f)
 	L.roadTile = roadTiles(t, L.sandRoad);
 }
 
+// Every home's town district: paved ground round the swarm, from just inside the gate to a few
+// tiles beyond the swarm and out to the side streets, so the town can be built on but crops never
+// grow into it. Kept off water by the roads' distance (so off the coast cliffs and the quarry faces
+// at their foot), off sand patches, ridges and the causeway; it paves the gate's clear approach. Drawn in the
+// home's own frame, so every home gets the same district turned round the centre.
+void planTown(Layout &L)
+{
+	const Torus &t = L.t;
+	const Geometry &g = L.g;
+	const int n = t.w * t.h;
+	L.town.assign(n, 0);
+	std::vector<unsigned char> water(n, 0);
+	for (int i = 0; i < n; ++i)
+		water[i] = L.region[i] == Sea || L.region[i] == Islet || L.lake[i] || L.river[i];
+	const std::vector<int> fromWater = stepsFrom(t, water), fromSand = stepsFrom(t, L.sand);
+	const double side = std::clamp(0.35 * g.arcHalf(g.innerRadius()), 6.0, 11.0) + kTownSideMargin;
+	for (int i = 0; i < n; ++i)
+	{
+		const int k = L.homeOf[i];
+		if (k < 0 || L.strip[i] || L.ridge[i] || L.sand[i] || water[i] ||
+			fromWater[i] < kRoadSeaGap || (fromSand[i] >= 0 && fromSand[i] < kRoadSandGap))
+			continue;
+		const Home &h = L.homes[k];
+		const double along = L.radius[i] * std::cos(L.angle[i] - h.angle),
+					 across = std::abs(L.radius[i] * std::sin(L.angle[i] - h.angle));
+		const double gate = h.coast + g.strait;
+		if (along >= gate + kTownFromGate && along <= swarmRadius(g, h.coast) + kTownBeyondSwarm &&
+			across <= side)
+			L.town[i] = 1;
+	}
+}
+
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	Layout L;
@@ -1011,6 +1123,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// What this map is made of.
 	L.homeKind = int(context.bounded("city-kind", kHomeKinds));
 	L.heartKind = int(context.bounded("city-kind", kHeartKinds));
+	L.climate = drawClimate(context, "city-climate");
 	if (L.heartKind == Delta && teams < 2)
 	{
 		context.telemetry.fallback("city-states.heart.delta-to-lake",
@@ -1024,9 +1137,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.homeKind = Lakeland;
 	}
 	const char *homeKinds[] = {"lakeland", "riverside", "highland", "marsh"};
-	const char *heartKinds[] = {"lake", "crag", "island", "delta", "forest"};
+	const char *heartKinds[] = {"lake", "crag", "island", "delta", "forest", "citadel"};
 	context.telemetry.choice("city-states.home.kind", homeKinds[L.homeKind]);
 	context.telemetry.choice("city-states.heart.kind", heartKinds[L.heartKind]);
+	context.telemetry.choice("city-states.climate", kClimateLooks[L.climate].name);
 	context.telemetry.measure("city-states.home.depth", depth);
 	context.telemetry.measure("city-states.strait.width-fitted", g.strait);
 
@@ -1046,6 +1160,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.sandRoad.assign(size_t(t.w) * t.h, 0);
 		L.roadTile.assign(size_t(t.w) * t.h, 0);
 	}
+	if (L.failure.empty())
+		planTown(L);
+	else
+		L.town.assign(size_t(t.w) * t.h, 0);
 	context.telemetry.measure("city-states.islets.actual", L.plots.size());
 	context.telemetry.measure("city-states.home-lakes.actual", f.lakes.size());
 	context.telemetry.measure("city-states.home-sand.actual", f.sandBlobs.size());
@@ -1061,47 +1179,111 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 	const int n = t.w * t.h;
 	std::vector<unsigned char> heart(n, 0);
 	const double reach = L.heartKind == IslandHeart ? L.islandR
-						 : L.heartKind == Crag      ? L.ringR - 1
+						 : L.heartKind == Crag || L.heartKind == Citadel ? L.ringR - 1
 													: L.lakeR + kOrchardReach + 3;
 	for (int i = 0; i < n; ++i)
 		heart[i] = L.region[i] == Commons && L.radius[i] < reach && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 	return heart;
 }
 
-// The ground a unit landing from the sea can reach without crossing solid grass (seaMargin): the
-// sea is every water vertex outside the homes' lakes and the commons' own water, and a sand road is
-// not a beach, so it must not carry the margin inland.
-std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
+// A parapet vertex: on the causeway's strip and a corner of no road tile, so every tile of the
+// deck keeps all four corners walkable.
+bool parapetVertex(const Layout &L, int i)
 {
 	const Torus &t = L.t;
-	const int n = t.w * t.h;
-	std::vector<unsigned char> sea(n, 0);
-	for (int i = 0; i < n; ++i)
-		sea[i] =
-			map.vertexTerrainAt(t.remainderX(i), i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
-	return MapGeneration::seaMargin(map, t, sea, L.roadTile);
+	if (!L.strip[i] || L.road[i])
+		return false;
+	const int x = t.remainderX(i), y = i / t.w;
+	for (int dy = -1; dy <= 0; ++dy)
+		for (int dx = -1; dx <= 0; ++dx)
+			if (L.road[t.at(x + dx, y + dy)])
+				return false;
+	return true;
 }
 
-// The design's stone, once the terrain is laid: every solid-grass tile of a causeway's shoulders
-// outside its road, the ridges and the crag, and round every home a wall on the solid-grass tiles
-// that touch the sea's margin (sealCoasts). Every step off the beach lands on the wall, so a home
-// is sealed but for its road. Rebuilt the same way by validateWorld.
-std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
+// The walls, drawn in terrain once the beach pass has run (it sands every land vertex beside
+// water, whatever terrain it holds, so anything laid before it would be lost on the shore):
+// - the causeway's parapets: every strip vertex outside its road is rock that towers shoot over
+//   (Ridges), so the gate's towers cover the deck;
+// - every home's sea coast: home land within kCliffReach vertices of the sea becomes cliff
+//   (Obstacles), at the waterline, with no beach. A tile is blocked once two of its corners are,
+//   so two rings of cliff vertices leave no tile a swimmer can land on or a colony walk out from.
+// The causeway's deck is the only way into a home, and out of it, even after swimming.
+// The Highland ridges are cliff and the crag's ring is rock towers shoot over, whatever the
+// walls control says: they are the home's and the heart's features, not its defences.
+// Returns how many vertices became cliff and parapet, for telemetry.
+std::pair<int, int> dressWalls(TerrainSketch &terrain, const Layout &L, bool walls)
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	std::vector<unsigned char> stone(n, 0);
-	if (!L.g.walls)
-		return stone;
-	std::vector<unsigned char> wallable(n, 0);
+	int cliffs = 0, parapets = 0;
+	const TerrainSketch beached(terrain);
+	const auto sea = [&](int i) { return beached[i] == WATER && L.region[i] == Sea; };
 	for (int i = 0; i < n; ++i)
-		wallable[i] = L.homeOf[i] >= 0 && !L.road[i];
-	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
-	for (int i = 0; i < n; ++i)
-		if ((L.strip[i] || L.ridge[i]) && !L.road[i] &&
-			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
-			stone[i] = 1;
-	return stone;
+	{
+		// A home's own water (a creek's mouth where a bay brings the sea near) is walled off from
+		// the sea like its land; every other water stays water.
+		if (beached[i] == WATER && !(walls && L.homeOf[i] >= 0 && !L.strip[i]))
+			continue;
+		if (L.citadelWall[i])
+		{
+			terrain[i] = CLIFFS;
+			continue;
+		}
+		if (L.lava[i])
+		{
+			terrain[i] = LAVA;
+			continue;
+		}
+		if (L.ridge[i])
+		{
+			terrain[i] = L.homeOf[i] >= 0 ? CLIFFS : RIDGE_ROCK;
+			continue;
+		}
+		if (!walls)
+			continue;
+		if (L.strip[i])
+		{
+			if (parapetVertex(L, i))
+			{
+				terrain[i] = RIDGE_ROCK;
+				++parapets;
+			}
+			continue;
+		}
+	}
+	if (walls)
+		cliffs = cliffCoast(
+			terrain, t,
+			[&](int i)
+			{ return L.homeOf[i] >= 0 && !L.strip[i] && !L.ridge[i] && !L.citadelWall[i] && !L.lava[i]; },
+			sea, kCliffReach);
+	return {cliffs, parapets};
+}
+
+// The last pass. First the open sea's deep water, the one change of rules here: sea at least
+// kDeepFrom vertices from any land swims slower and grows no algae, so the strait is a longer
+// crossing in its middle than at its shores. Then the climate's looks, each of the same group as
+// the terrain it replaces, so nothing else in the world changes: grass lush in the homes, the
+// beaches, the cliffs and rocks, the town paved apart from its streets, the commons' roads, the
+// causeway's deck, bridges, and the scrub mottled with a second barren look.
+void paintLooks(TerrainSketch &terrain, const Layout &L, const std::vector<unsigned char> &ford,
+				const std::vector<unsigned char> &deck)
+{
+	const std::vector<unsigned char> deep =
+		deepSea(terrain, L.t, [&](int i) { return L.region[i] == Sea; }, kDeepFrom);
+	LookRoles roles;
+	roles.deep = [&](int i) { return deep[i] != 0; };
+	roles.tended = [&](int i) { return L.homeOf[i] >= 0 || L.region[i] == Islet; };
+	roles.path = [&](int i)
+	{
+		return ford[i]                     ? PathLook::Bridge
+			   : deck[i]                   ? PathLook::Deck
+			   : L.town[i] && !L.sandRoad[i] ? PathLook::Town
+			   : L.homeOf[i] >= 0           ? PathLook::Street
+											: PathLook::Road;
+	};
+	paintClimate(terrain, L.t, kClimateLooks[L.climate], roles);
 }
 
 // Extra lakes in the commons for fertility, likelier towards the centre; each keeps kLakeShore
@@ -1199,6 +1381,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 	split.makePlain(6);
 	HeightMap patch(t.w, t.h, context.stream("city-home-patch"));
 	patch.makePlain(12);
+	int faceTiles = 0;
 	for (int team = 0; team < L.g.teams; ++team)
 	{
 		const Home &h = L.homes[team];
@@ -1220,13 +1403,25 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 											   frame.at(reach + 8, 0, 12),
 											   kHomeWheat,
 											   kHomeWood,
-											   2}
+											   kQuarryRadius}
 										 : Kit{frame.at(-0.5 * reach, flank * reach, 14),
 											   frame.at(0.6 * reach, flank * (reach + 1), 14),
 											   frame.at(reach + 8, 0, 12),
 											   kHomeWheat,
 											   kHomeWood,
-											   2};
+											   kQuarryRadius};
+		// The quarry faces go first, at the cliffs' foot, where stone blocks no way through.
+		if (L.g.walls)
+		{
+			const double gate = h.coast + L.g.strait;
+			const KitFrame gateFrame{t.x(L.cx + int(std::lround(gate * std::cos(h.angle)))),
+									 t.y(L.cy + int(std::lround(gate * std::sin(h.angle)))), h.angle};
+			const double across = kQuarryFaceAcross * L.g.arcHalf(gate);
+			faceTiles += plantQuarryFaces(map, t,
+										  {gateFrame.at(kQuarryFaceIn, -across, 12),
+										   gateFrame.at(kQuarryFaceIn, across, 12)},
+										  kQuarryFace, eligible);
+		}
 		plantKit(map, t, context, kit, eligible);
 		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove: 4% of
 		// its ground ambient wheat and 2% wood on top of the kit, one outcrop per 2500 tiles and a
@@ -1244,6 +1439,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 			},
 			"city-home-stone", "city-home-fruit");
 	}
+	context.telemetry.measure("city-states.quarry-faces.tiles", faceTiles);
 }
 
 // The commons: farmland on its fertile ground, richer towards the centre as the frontier control
@@ -1333,7 +1529,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	if (scaledCount(1, o.fruit) > 0)
 	{
 		const double rho = L.heartKind == IslandHeart   ? std::max(1.5, 0.45 * L.islandR)
-						   : L.heartKind == Crag        ? 0.6 * L.ringR
+						   : L.heartKind == Crag || L.heartKind == Citadel ? 0.6 * L.ringR
 						   : L.heartKind == ForestHeart ? L.lakeR + 3
 														: L.lakeR + kOrchardReach;
 		const double spin = context.bounded("city-fruit", 3600) / 3600.0 * 2 * kPi;
@@ -1378,7 +1574,7 @@ void stockIslets(Map &map, const Layout &L, const Farm &plots)
 			map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 }
 
-// Causeways and their approaches hold nothing but the causeways' own stone lines.
+// Causeways and their approaches hold no deposits.
 void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &line)
 {
 	const Torus &t = L.t;
@@ -1438,16 +1634,53 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.region[i] == Sea || L.lake[i] || L.river[i])
-			terrain[i] = WATER;
-		if (L.ford[i])
-			terrain[i] = SAND;
-		if ((L.sand[i] || L.sandRoad[i]) && terrain[i] == GRASS)
-			terrain[i] = SAND;
+			// The commons' heart - its central lake, the island's moat, the crag's tarn, the delta's
+			// rivers - is lava in the volcanic climate.
+			terrain[i] = L.region[i] == Commons && L.climate == kVolcanicClimate ? LAVA : WATER;
+		// Scrub patches: barren ground, which holds crops back as sand did but can be built on.
+		if (L.sand[i] && terrain[i] == GRASS)
+			terrain[i] = DIRT;
+		// The town and the streets are paved alike.
+		if ((L.town[i] || L.sandRoad[i]) && terrain[i] == GRASS)
+			terrain[i] = TRAIL;
 	}
+	// The causeway's deck: every corner of every road tile paved, rough ground in its throats so
+	// nothing can be built in a gate.
+	std::vector<unsigned char> deckVertex(n, 0);
+	paveTiles(terrain, t, L.road, L.throat, deckVertex, MUD);
+	const int townVertices = int(std::count(L.town.begin(), L.town.end(), 1));
+	context.telemetry.measure("city-states.town.vertices", townVertices);
+	// The commons' scrub patches have rough cores: ground two steps inside a patch's edge is slow to
+	// cross and cannot be built on, so the no-man's-land has going worth choosing a way round. The
+	// homes' patches stay barren to the edge, so every home's building room is as it was.
+	{
+		std::vector<unsigned char> notScrub(n, 0);
+		for (int i = 0; i < n; ++i)
+			notScrub[i] = terrain[i] != DIRT || L.town[i];
+		const std::vector<int> inPatch = stepsFrom(t, notScrub);
+		int rough = 0;
+		for (int i = 0; i < n; ++i)
+			if (L.region[i] == Commons && terrain[i] == DIRT && inPatch[i] >= kRoughInset)
+			{
+				terrain[i] = MUD;
+				++rough;
+			}
+		context.telemetry.measure("city-states.commons.rough-vertices", rough);
+	}
+	// A ford is land on all four corners of every ford tile, so every tile of it can be walked.
+	std::vector<unsigned char> fordVertex(n, 0);
+	for (int i = 0; i < n; ++i)
+		if (L.ford[i])
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+					fordVertex[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
+	for (int i = 0; i < n; ++i)
+		if (fordVertex[i])
+			terrain[i] = SAND;
 	carveValleys(terrain, L, context, o.valleys);
 	// The islets' building plots (stampFarmPlot, as the farms lay theirs): a 10x4 clearing of grass
-	// in a two-vertex ring of sand at every islet's middle, which nothing is planted on and the beach
-	// pass leaves alone, so a colony that swims out finds a spot to build on at once.
+	// in a two-vertex ring of barren ground at every islet's middle (dressFarmSand), which nothing is
+	// planted on, so a colony that swims out finds a spot to build on at once.
 	Farm isletPlots;
 	isletPlots.water.assign(n, 0);
 	isletPlots.sand.assign(n, 0);
@@ -1457,12 +1690,31 @@ bool generate(Game &game, GenerationContext &context)
 	for (const Layout::IsletSite &site : L.plots)
 		stampFarmPlot(terrain, t, isletPlots, site.x - plot.width / 2, site.y - plot.height / 2,
 					  plot);
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
-	const std::vector<unsigned char> line = stoneTiles(map, L);
+	dressFarmSand(terrain, isletPlots);
+	// Fords are bridges: a deck of road over the water. There are no beaches: grass meets the water.
 	for (int i = 0; i < n; ++i)
-		if (line[i])
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+		if (fordVertex[i])
+			terrain[i] = TRAIL;
+	const auto [cliffs, parapets] = dressWalls(terrain, L, o.stoneWalls);
+	context.telemetry.measure("city-states.walls.cliff-vertices", cliffs);
+	context.telemetry.measure("city-states.walls.parapet-vertices", parapets);
+	// Every home is barren ground but round its own water, where its fields grow, with a grass verge
+	// at the foot of its cliffs where its quarry faces stand.
+	{
+		std::vector<unsigned char> homeWater(n, 0);
+		for (int i = 0; i < n; ++i)
+			homeWater[i] = L.homeOf[i] >= 0 && terrain[i] == WATER;
+		const std::vector<int> fromWater = stepsFrom(t, homeWater);
+		context.telemetry.measure(
+			"city-states.home.barren-vertices",
+			barrenBase(
+				terrain, t, [&](int i) { return L.homeOf[i] >= 0 && !L.strip[i]; },
+				[&](int i) { return fromWater[i] >= 0 && fromWater[i] <= kGrassReach; }, kVerge));
+	}
+	paintLooks(terrain, L, fordVertex, deckVertex);
+	writeVertices(map, terrain);
+	// Every wall is terrain now; no deposit is designed, so nothing is protected from the repairs.
+	const std::vector<unsigned char> line(n, 0);
 
 	context.stage = "city colonies";
 	const auto home = [&](int team)
@@ -1491,8 +1743,7 @@ bool generate(Game &game, GenerationContext &context)
 	stockCommons(map, L, context, o);
 	stockIslets(map, L, isletPlots);
 	seedAlgae(map, context, t, "city-algae", o.algae, AlgaeBand::shallows(2, 4));
-	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop,
-	// and the walls and the causeways' stone are designed and must never be cleared.
+	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop.
 	secureStartingCrops(game, context, t, 24, 32, 0, &line);
 	clearRoads(map, L, line);
 	clearFarmPlots(map, t, {isletPlots});
@@ -1512,9 +1763,10 @@ std::string validateRequest(const GenerationRequest &r)
 	return "";
 }
 
-// Checked on the finished world against the rebuilt design: every causeway is open and carries its
-// stone lines; every colony can walk to every other and to the heart of the commons; with the
-// causeways shut no home reaches another home or the commons at all; and no colony's walk to its
+// Checked on the finished world against the rebuilt design: every causeway is open between its
+// parapets; every colony can walk to every other and to the heart of the commons; with the
+// causeways shut no home reaches another home, the commons or (with the walls) the sea, walking or
+// swimming; and no colony's walk to its
 // landing is much longer than another's. Water, buildings and every resource tile block the
 // walks; units don't, since they move.
 std::string validateWorld(const Game &game, const GenerationContext &context)
@@ -1533,15 +1785,22 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const int x = t.remainderX(i), y = i / t.w;
 		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	};
-	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 	{
-		if (line[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
-			return "The stone at " + where(i) + " is missing.";
+		// Every parapet vertex is rock towers shoot over (the deck between them is checked below).
+		if (L.g.walls && parapetVertex(L, i) &&
+			map.vertexTerrainAt(t.remainderX(i), i / t.w) != WATER &&
+			terrainGroup(map.vertexTerrainAt(t.remainderX(i), i / t.w)) != TerrainGroup::Ridges)
+			return "The causeway parapet at " + where(i) + " is missing.";
 		if (L.road[i] && !walkable(i))
 			return "The causeway at " + where(i) + " is blocked.";
 		if (L.ford[i] && !walkable(i))
-			return "The ford at " + where(i) + " is blocked.";
+		{
+			const auto c = map.cellCorners(t.remainderX(i), i / t.w);
+			return "The ford at " + where(i) + " is blocked. corners " + std::to_string(c[0]) + " " +
+				   std::to_string(c[1]) + " " + std::to_string(c[2]) + " " + std::to_string(c[3]) +
+				   " res " + std::to_string(map.getResource(t.remainderX(i), i / t.w).type);
+		}
 	}
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the map", "");
 	if (!walk.error.empty())
@@ -1564,8 +1823,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				const int x = t.x(site.x - 5 + dx), y = t.y(site.y - 2 + dy);
 				isletPlot[t.at(x, y)] = 1;
 				if (!map.terrainPropertiesAt(x, y).buildable || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
+				{
+					const auto c = map.cellCorners(x, y);
 					return "The islet plot at " + where(t.at(site.x, site.y)) +
-						   " is not buildable.";
+						   " is not buildable at " + where(t.at(x, y)) + " corners " +
+						   std::to_string(c[0]) + " " + std::to_string(c[1]) + " " +
+						   std::to_string(c[2]) + " " + std::to_string(c[3]) + " res " +
+						   std::to_string(map.getResource(x, y).type) + " bld " +
+						   std::to_string(map.getBuilding(x, y));
+				}
 			}
 		if (fromFirst[t.at(site.x, site.y)] >= 0)
 			return "The islet at " + where(t.at(site.x, site.y)) + " can be walked to.";
@@ -1576,30 +1842,29 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			map.getResource(t.remainderX(i), i / t.w).type != WHEAT)
 			return "The islet grass at " + where(i) + " is not covered with wheat.";
 
-	// Shut every causeway road: with the walls up, nothing landing from the sea may get in.
-	if (L.g.walls)
+	// Shut every causeway: no home may reach the commons or another home any other way. With the
+	// walls up that holds even for swimmers: the terrain a ground unit can walk or swim through
+	// (deposits and buildings counted as cleared, since they can be) must keep every home to
+	// itself, so no swimmer can land on a home's coast nor a colony swim out from it.
+	std::vector<unsigned char> open(n, 0);
+	for (int i = 0; i < n; ++i)
 	{
-		const std::vector<unsigned char> margin = seaMargin(map, L);
-		std::vector<unsigned char> beach(n, 0);
-		for (int i = 0; i < n; ++i)
-			beach[i] = walkable(i) && !L.road[i] && margin[i];
-		const std::vector<int> landed = reachesWithShut(map, t, beach, L.road);
-		for (int team = 0; team < teams; ++team)
-			for (int i : workers[team])
-				if (landed[i] >= 0)
-					return "Colony " + std::to_string(team) +
-						   "'s home can be entered from the sea.";
+		const TerrainProperties &p = map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		open[i] = !L.causeway[i] && (p.walkable || (L.g.walls && p.swimmable));
 	}
-	// Shut every causeway: no home may reach the commons or another home any other way.
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> inside =
-			reachesWithShut(map, t, tileMask(t, workers[team]), L.causeway);
+		const std::vector<int> inside = stepsFrom(t, tileMask(t, workers[team]), open);
+		// Name the first tile outside the home the flood reaches: where the home leaks.
+		int first = -1;
 		for (int i = 0; i < n; ++i)
-			if (inside[i] >= 0 &&
-				(L.region[i] == Commons || (L.homeOf[i] >= 0 && L.homeOf[i] != team)))
-				return "Colony " + std::to_string(team) +
-					   " can leave its home without its causeway, at " + where(i) + ".";
+			if (inside[i] >= 0 && L.homeOf[i] != team && (L.g.walls || L.region[i] != Sea) &&
+				(first < 0 || inside[i] < inside[first]))
+				first = i;
+		if (first >= 0)
+			return "Colony " + std::to_string(team) +
+				   (L.g.walls ? " can walk or swim" : " can walk") +
+				   " out of its home without its causeway, at " + where(first) + ".";
 	}
 	// And every colony's walk to its landing on the commons, over its own causeway.
 	std::vector<int> landings;
@@ -1632,7 +1897,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		12,
+		13,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
@@ -1649,8 +1914,9 @@ GeneratorDefinition cityStatesDefinition()
 			 .withSearchRange(20, 70),
 		 GeneratorControl{"valleys", "Valleys", 0, 8, 1, 3, ControlGroup::Terrain}.withSearchRange(
 			 2, 5),
-		 // Patches of sand over the homes and the commons, per 64x128 tiles of land.
-		 GeneratorControl{"sand", "Sand patches", 0, 8, 1, 3, ControlGroup::Terrain}
+		 // Patches of barren scrub over the homes and the commons, per 64x128 tiles of land; on
+		 // the commons their cores are rough ground.
+		 GeneratorControl{"sand", "Scrub patches", 0, 8, 1, 3, ControlGroup::Terrain}
 			 .withSearchRange(1, 4),
 		 // Extra rings crowd the islets' building plots against the wrap on small maps.
 		 GeneratorControl{"islands", "Islands", 0, 4, 1, 2, ControlGroup::Terrain}.withSearchRange(
@@ -1659,15 +1925,15 @@ GeneratorDefinition cityStatesDefinition()
 		 GeneratorControl{"frontier-richness", "Frontier richness", 0, 100, 10, 60,
 						  ControlGroup::Resources}
 			 .withSearchRange(40, 80),
-		 // Off, no stone: the causeways are plain roads and the homes' coasts are open.
-		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout)
+		 // Off: no sea cliffs or parapets; the homes' coasts are open beaches.
+		 GeneratorControl::toggle("stone-walls", "Cliff walls", true, ControlGroup::Layout)
 			 .withSearchValues({0, 1}),
-		 // Off, no sand roads: the causeways and the commons are grass from shore to shore.
-		 // Search keeps roads open as adjacent crops and trees regrow.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+		 // Off, no streets: the homes and the commons have no paved roads (the towns and the
+		 // causeways' decks stay paved). Search keeps them, since crops never grow over a road.
+		 GeneratorControl::toggle("sand-roads", "Paved roads", true, ControlGroup::Layout)
 			 .withSearchValues({1}),
 		 // Every home's ambient fields, outcrops and grove, and the commons;
-		 // every home's kit, the islets' wheat and the causeways' stone stay as they are.
+		 // every home's kit, its quarry faces and the islets' wheat stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
@@ -1677,8 +1943,9 @@ GeneratorDefinition cityStatesDefinition()
 		true,
 		validateRequest,
 		validateWorld,
-		// The wedge dividers are stone roads/walls, not blue canals, and the city is one landmass
-		// (small ring islands in the surrounding ocean are decoration, not a mapped feature).
+		// The homes are walled by sea cliffs (stone-walls is the catalog's tag for walled
+		// homes, whatever the walls are made of); the islets are forward posts, not a mapped
+		// feature of their own.
 		{"terrain:urban", "feature:stone-walls", "style:tight-building", "style:contested-center",
 		 "fairness:repeated-wedge"}};
 }

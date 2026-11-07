@@ -1788,6 +1788,12 @@ Bystater kræver mindst én koloni.
 Stenmure
 [Sand patches]
 Sandpletter
+[Cliff walls]
+Klippevolde
+[Paved roads]
+Brolagte veje
+[Scrub patches]
+Golde pletter
 [Tidal flats]
 Vadehav
 [Everglades]

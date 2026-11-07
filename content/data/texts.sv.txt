@@ -1788,6 +1788,12 @@ Stadsstater kräver minst en koloni.
 Stenmurar
 [Sand patches]
 Sandfläckar
+[Cliff walls]
+Klippvallar
+[Paved roads]
+Stenlagda vägar
+[Scrub patches]
+Karga fläckar
 [Tidal flats]
 Tidvattenslätter
 [Everglades]

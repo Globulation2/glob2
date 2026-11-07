@@ -1752,6 +1752,12 @@ Bystater trenger minst én koloni.
 Steinmurer
 [Sand patches]
 Sandflekker
+[Cliff walls]
+Klippevoller
+[Paved roads]
+Brolagte veier
+[Scrub patches]
+Golde flekker
 [Tidal flats]
 Tidevannsflater
 [Everglades]

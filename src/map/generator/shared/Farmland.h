@@ -113,6 +113,13 @@ struct Farm
 	int plotX = -1, plotY = -1;
 };
 
+/// The terrain catalogue's version of a farm's sand (for designs that no longer use sand as a
+/// stand-in): every sand vertex the farm laid on its rows - a bridge over a water row or a crossing
+/// through the crops - becomes road (TRAIL), and every other - the cap ring and the plot's ring -
+/// barren ground (DIRT), which holds crops back as sand did and can be built on. Sketch vertices
+/// that are not the farm's sand are left alone.
+void dressFarmSand(TerrainSketch &, const Farm &);
+
 /// A low-harmonic wobble of one hill's contours: at each heading the bands shift in or out by up
 /// to `amplitude` tiles, the same shift for every band so their widths hold, ramped in past the
 /// summit's cap so the summit and its cap stay round. Three harmonics (two, three and five waves
