@@ -2676,6 +2676,8 @@ Zwillingsquellen
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Länglichkeit der Seen
 Dicke der Waldpassage
 [Extra trails]
 Zusätzliche Pfade
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Die Seiten dieser Karte müssen zwischen 64 und 512 Feldern lang sein.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

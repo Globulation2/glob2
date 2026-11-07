@@ -2676,6 +2676,8 @@ Bliźniacze źródła
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Wydłużenie jezior
 Grubość leśnego przejścia
 [Extra trails]
 Dodatkowe ścieżki
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Boki tej mapy muszą mieć od 64 do 512 pól.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

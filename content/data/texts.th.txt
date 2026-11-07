@@ -2654,6 +2654,8 @@ HP ≤25/50/75%
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤25/50/75%
 ความลึก​แนว​ป่า​ที่​ต้อง​ถาง
 [Extra trails]
 เส้นทาง​เพิ่มเติม
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 ทะเลสาบ​พอร์เทจ​ต้อง​ใช้​แผนที่​ที่​แต่ละ​ด้าน​ยาว 64 ถึง 512 ช่อง
 [Portage Lakes cannot fit shoreline settlements on this seed.]

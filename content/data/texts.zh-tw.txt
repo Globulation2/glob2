@@ -2676,6 +2676,8 @@ Emoji
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Emoji
 通道伐木厚度
 [Extra trails]
 額外小徑
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 此地圖的邊長必須為 64 至 512 格。
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -2676,6 +2676,8 @@ Globulation 2のカーソルを表示します。
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Globulation 2のカーソルを表示します。
 伐採する森の厚さ
 [Extra trails]
 追加の小道
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 このマップの各辺は64～512マスである必要があります。
 [Portage Lakes cannot fit shoreline settlements on this seed.]

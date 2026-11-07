@@ -2676,6 +2676,8 @@ OpenGL 在此版本中不可用。
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ OpenGL 在此版本中不可用。
 通道伐木厚度
 [Extra trails]
 额外小径
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 此地图的边长必须为 64 至 512 格。
 [Portage Lakes cannot fit shoreline settlements on this seed.]

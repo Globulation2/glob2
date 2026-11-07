@@ -2654,6 +2654,8 @@ HP ≤ 25/50/75 %
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤ 25/50/75 %
 పోర్టేజ్ లోతు
 [Extra trails]
 అదనపు ట్రయల్స్
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 పోర్టేజ్ సరస్సులకు ఒక్కో వైపు 64 నుంచి 512 టైల్స్ మధ్య పొడవు అవసరం.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

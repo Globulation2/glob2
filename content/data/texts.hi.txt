@@ -2654,6 +2654,8 @@ Globulation 2 का कर्सर दिखाएँ।
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ Globulation 2 का कर्सर दिखाएँ।
 काटे जाने वाले वन की मोटाई
 [Extra trails]
 अतिरिक्त पगडंडियाँ
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 झीलों के बीच ज़मीनी रास्तों वाले नक्शे की भुजाएँ 64 से 512 टाइल के बीच होनी चाहिए।
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -2654,6 +2654,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 தரைவழிக் கடப்பு ஆழம்
 [Extra trails]
 கூடுதல் பாதைகள்
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 தரைவழிக் கடப்பு ஏரிகளுக்கு 64 முதல் 512 கட்டங்கள் நீளமுள்ள பக்கங்கள் தேவை.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

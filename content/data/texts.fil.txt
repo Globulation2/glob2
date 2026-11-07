@@ -2678,6 +2678,8 @@ Kambal na bukal
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2834,6 +2836,10 @@ Paghaba ng lawa
 Lalim ng portage
 [Extra trails]
 Mga karagdagang daanan
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Kailangan ng Mga Lawa ng Portage ng 64 hanggang 512 tile sa bawat gilid.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

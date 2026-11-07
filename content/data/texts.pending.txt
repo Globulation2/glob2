@@ -97,3 +97,6 @@
 [Ring road]
 [Deep water]
 [Rock outcrops]
+[Deep lakes]
+[Bedrock]
+[Greenstone]

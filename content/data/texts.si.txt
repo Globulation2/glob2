@@ -2676,6 +2676,8 @@ Dva izvira
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Podolgovatost jezer
 Debelina gozdnega prehoda
 [Extra trails]
 Dodatne poti
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Stranice tega zemljevida morajo meriti od 64 do 512 polj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

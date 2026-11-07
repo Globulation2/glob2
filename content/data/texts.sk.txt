@@ -2676,6 +2676,8 @@ Dvojité pramene
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Pretiahnutosť jazier
 Hrúbka lesného priechodu
 [Extra trails]
 Ďalšie chodníky
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Strany tejto mapy musia merať 64 až 512 polí.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

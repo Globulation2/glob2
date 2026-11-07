@@ -2676,6 +2676,8 @@ Tweelingbronnen
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Langgerektheid meren
 Dikte van bospassage
 [Extra trails]
 Extra paden
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 De zijden van deze kaart moeten 64 tot 512 vakjes lang zijn.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

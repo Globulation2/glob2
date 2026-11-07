@@ -2676,6 +2676,8 @@ Ikerforrások
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Tavak nyújtottsága
 Erdei átjáró vastagsága
 [Extra trails]
 További ösvények
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 A térkép oldalainak 64 és 512 mező közé kell esniük.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

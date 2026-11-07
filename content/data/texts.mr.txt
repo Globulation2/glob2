@@ -2654,6 +2654,8 @@ HP ≤25/50/75%
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤25/50/75%
 पोर्टेजची खोली
 [Extra trails]
 अतिरिक्त पायवाटा
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 पोर्टेज लेक्सला ६४ ते ५१२ टाइल्सच्या दरम्यानच्या बाजूंची आवश्यकता आहे.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

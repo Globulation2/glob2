@@ -2654,6 +2654,8 @@ HP ≤25/50/75%
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤25/50/75%
 স্থল পারাপারের গভীরতা
 [Extra trails]
 অতিরিক্ত পথ
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 পোর্টেজ লেকস-এর প্রতিটি বাহু ৬৪ থেকে ৫১২ টাইল হতে হবে।
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -2676,6 +2676,8 @@ Izvoare gemene
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Alungirea lacurilor
 Grosimea trecerii
 [Extra trails]
 Poteci suplimentare
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Laturile acestei hărți trebuie să aibă între 64 și 512 pătrate.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

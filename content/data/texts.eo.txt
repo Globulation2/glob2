@@ -2676,6 +2676,8 @@ Longa ventumilo
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Laga longformeco
 Dikeco de arbara pasejo
 [Extra trails]
 Pliaj padoj
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 La flankoj de ĉi tiu mapo devas longi inter 64 kaj 512 kaheloj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

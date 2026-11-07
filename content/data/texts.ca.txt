@@ -2676,6 +2676,8 @@ Fonts bessones
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Allargament dels llacs
 Gruix del pas boscós
 [Extra trails]
 Corriols addicionals
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Els costats d'aquest mapa han de fer entre 64 i 512 caselles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

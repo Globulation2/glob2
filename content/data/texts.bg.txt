@@ -2654,6 +2654,8 @@ HP ≤25/50/75%
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤25/50/75%
 Дълбочина на сухопътния пренос
 [Extra trails]
 Допълнителни пътеки
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 „Езера с преноси“ изисква страни между 64 и 512 полета.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

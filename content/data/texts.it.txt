@@ -2676,6 +2676,8 @@ Sorgenti gemelle
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Allungamento dei laghi
 Spessore del bosco
 [Extra trails]
 Sentieri aggiuntivi
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 I lati di questa mappa devono misurare da 64 a 512 caselle.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

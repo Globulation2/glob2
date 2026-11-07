@@ -2654,6 +2654,8 @@ Tvillingkilder
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ Innsjøforlengelse
 Portasjedybde
 [Extra trails]
 Ekstra løyper
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Sjøer og bærestier krever sider på mellom 64 og 512 ruter.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

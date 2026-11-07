@@ -2676,6 +2676,8 @@ Globulation 2 커서를 표시합니다.
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Globulation 2 커서를 표시합니다.
 벌목할 숲의 두께
 [Extra trails]
 추가 오솔길
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 이 지도의 각 변은 64~512칸이어야 합니다.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -2654,6 +2654,8 @@ HP ≤25/50/75%
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ HP ≤25/50/75%
 کاٹے جانے والے جنگل کی موٹائی
 [Extra trails]
 اضافی پگڈنڈیاں
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 پورٹیج جھیلوں کے لیے ہر سمت 64 سے 512 خانے چاہیے۔
 [Portage Lakes cannot fit shoreline settlements on this seed.]

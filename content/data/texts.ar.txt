@@ -2676,6 +2676,8 @@ OpenGL غير متوفر في هذا الإصدار.
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ OpenGL غير متوفر في هذا الإصدار.
 سماكة الغابة في الممر
 [Extra trails]
 دروب إضافية
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 يجب أن يتراوح طول ضلعي هذه الخريطة بين 64 و512 خانة.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -2676,6 +2676,8 @@ Emoji
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Emoji
 Πάχος δασικού περάσματος
 [Extra trails]
 Πρόσθετα μονοπάτια
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Οι πλευρές αυτού του χάρτη πρέπει να έχουν 64 έως 512 πλακίδια.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

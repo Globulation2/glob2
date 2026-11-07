@@ -2676,6 +2676,8 @@ Suối đôi
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Hồ và lối xuyên rừng
 Độ dày rừng cần chặt
 [Extra trails]
 Đường mòn bổ sung
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Các cạnh bản đồ này phải dài từ 64 đến 512 ô.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

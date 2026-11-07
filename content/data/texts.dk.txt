@@ -2676,6 +2676,8 @@ Tvillingekilder
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Søernes langstrakthed
 Skovpassagens tykkelse
 [Extra trails]
 Flere stier
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Denne korttypes sider skal være mellem 64 og 512 felter.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

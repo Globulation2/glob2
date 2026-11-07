@@ -2676,6 +2676,8 @@ Iturburu bikiak
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Aintziren luzapena
 Basoko pasabidearen lodiera
 [Extra trails]
 Bidezidor gehigarriak
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Mapa honen aldeek 64 eta 512 lauki arteko luzera izan behar dute.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

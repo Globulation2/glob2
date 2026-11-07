@@ -2678,6 +2678,8 @@ Mata air berkembar
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2834,6 +2836,10 @@ Pemanjangan tasik
 Ketebalan lintasan hutan
 [Extra trails]
 Laluan tambahan
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Tasik Portage memerlukan panjang sisi antara 64 dan 512 petak.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

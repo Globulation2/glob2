@@ -2676,6 +2676,8 @@ Nascentes gémeas
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Alongamento dos lagos
 Espessura da floresta
 [Extra trails]
 Trilhos adicionais
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Os lados deste mapa devem medir entre 64 e 512 casas.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

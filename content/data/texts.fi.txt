@@ -2676,6 +2676,8 @@ Kaksoislähteet
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Järvien pitkänomaisuus
 Raivaussyvyys
 [Extra trails]
 Lisäpolut
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Kartan sivujen on oltava 64–512 ruudun pituisia.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

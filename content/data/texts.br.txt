@@ -2676,6 +2676,8 @@ Nascentes gêmeas
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Alongamento dos lagos
 Profundidade das trilhas
 [Extra trails]
 Trilhas extras
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Lagos e trilhas precisa de lados entre 64 e 512 casas.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

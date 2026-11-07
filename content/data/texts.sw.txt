@@ -2654,6 +2654,8 @@ Chemchemi mbili
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2810,6 +2812,10 @@ Urefushaji wa ziwa
 Unene wa msitu wa kukatwa
 [Extra trails]
 Vijia vya ziada
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Maziwa ya vivuko yanahitaji pande zenye vigae kati ya 64 na 512.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

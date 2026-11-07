@@ -2676,6 +2676,8 @@ OpenGL недоступний у цій збірці.
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ OpenGL недоступний у цій збірці.
 Товщина лісового проходу
 [Extra trails]
 Додаткові стежки
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Сторони цієї карти мають бути від 64 до 512 клітинок.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

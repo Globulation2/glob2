@@ -2676,6 +2676,8 @@ Manantiales gemelos
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Alargamiento de lagos
 Grosor del paso boscoso
 [Extra trails]
 Senderos adicionales
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Los lados de este mapa deben medir entre 64 y 512 casillas.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

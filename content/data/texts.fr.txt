@@ -2676,6 +2676,8 @@ Sources jumelles
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Allongement des lacs
 Épaisseur à déboiser
 [Extra trails]
 Sentiers supplémentaires
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Les côtés de cette carte doivent mesurer entre 64 et 512 cases.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

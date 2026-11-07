@@ -2676,6 +2676,8 @@ Tvillingkällor
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Sjöarnas långsträckthet
 Skogspassagens tjocklek
 [Extra trails]
 Fler stigar
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Denna kartas sidor måste vara mellan 64 och 512 rutor.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

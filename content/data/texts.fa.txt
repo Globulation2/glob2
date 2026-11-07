@@ -2676,6 +2676,8 @@ Emoji
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Emoji
 ضخامت جنگل در گذرگاه
 [Extra trails]
 کوره‌راه‌های بیشتر
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 طول ضلع‌های این نقشه باید بین 64 و 512 خانه باشد.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

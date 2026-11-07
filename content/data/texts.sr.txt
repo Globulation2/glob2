@@ -2676,6 +2676,8 @@ OpenGL није доступан у овој верзији.
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ OpenGL није доступан у овој верзији.
 Дебљина шумског пролаза
 [Extra trails]
 Додатне стазе
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Странице ове мапе морају имати од 64 до 512 поља.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

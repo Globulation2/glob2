@@ -2676,6 +2676,8 @@ Uzun yelpaze
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Göl uzunluk oranı
 Orman geçidi kalınlığı
 [Extra trails]
 Ek patikalar
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Bu haritanın kenarları 64 ile 512 kare arasında olmalıdır.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

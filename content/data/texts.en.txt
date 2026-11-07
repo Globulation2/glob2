@@ -2654,6 +2654,8 @@ Cienegas
 Rock
 [Granite]
 Granite
+[Greenstone]
+Greenstone
 [Sandstone]
 Sandstone
 [Volcanic]
@@ -2810,6 +2812,10 @@ Lake elongation
 Portage depth
 [Extra trails]
 Extra trails
+[Deep lakes]
+Deep lakes
+[Bedrock]
+Bedrock
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Portage Lakes needs sides between 64 and 512 tiles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

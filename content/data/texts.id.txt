@@ -2676,6 +2676,8 @@ Mata air kembar
 
 [Granite]
 
+[Greenstone]
+
 [Sandstone]
 
 [Volcanic]
@@ -2832,6 +2834,10 @@ Kelonjongan danau
 Ketebalan lintasan hutan
 [Extra trails]
 Jalur tambahan
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Sisi peta ini harus berukuran 64 hingga 512 petak.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
