@@ -7,9 +7,7 @@
 #include <bit>
 #include <iostream>
 
-#include "AICastor.h"
 #include "AIMaxima.h"
-#include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>
@@ -18,6 +16,7 @@
 #include <stdexcept>
 
 #include <FileManager.h>
+#include <Toolkit.h>
 
 #include "DatasetWriter.h"
 #include "Game.h"
@@ -34,7 +33,6 @@
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
 
-#include "MapEdit.h"
 
 #include "Brush.h"
 #include "Bullet.h"

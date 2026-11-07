@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real terrain edits and resource clearing without a window.
 #include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
@@ -1441,7 +1442,7 @@ TEST_CASE("custom ground and air obstruction independently govern routes across 
 }
 
 
-TEST_CASE("released terrain-seed format 138 retains legacy resource and material continuation" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("released terrain-seed format 138 retains legacy resource and material continuation" * glob2test::needs({"ai:cortex"}) * doctest::test_suite("RuntimeResources"))
 {
     glob2test::HeadlessGlobals globals;
     const auto manifest = nlohmann::json::parse(glob2test::readFile(
@@ -1520,7 +1521,7 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
     CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
 }
 
-TEST_CASE("released observation format 139 imports legacy stocks and preserves current save continuation" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("released observation format 139 imports legacy stocks and preserves current save continuation" * glob2test::needs({"ai:cortex"}) * doctest::test_suite("RuntimeResources"))
 {
     glob2test::HeadlessGlobals globals;
     const auto bytes=glob2test::readFile(glob2test::inflated("resources/observation139.game.gz"));

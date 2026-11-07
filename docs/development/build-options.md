@@ -54,6 +54,63 @@ release, perf or profiling builds. Preserve numeric guards and compare simulatio
 checksums when validating build configurations; do not bump the simulation
 revision to mask a build-induced mismatch.
 
+## Core compile profile
+
+`compile_profile=core` is an opt-in native development build that leaves out code
+most edits never touch, so a change to a core header recompiles fewer files:
+
+```sh
+python3 tools/dev_build.py compile_profile=core engine-tests unit-tests
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto-compile_profile-core
+```
+
+It leaves out the optional groups `scons/sources.py` defines as filters over
+`CLIENT_SOURCES`:
+
+- `generators`: the map generators in `src/map/generator/generators/`, except
+  the default lobby landscape (`lava-shield`), `uniform`, `hills`, and `forts`
+  and `even-ground`, whose blueprints the JavaScript toolkit binds. Generator
+  core, shared, compatibility and JavaScript code stay.
+- `ai:castor`, `ai:cortex`, `ai:cabino`. Nicowar, Econo and Warrush (the golden
+  match and the shared runtime), Maxima, JavaScript and AINull stay, and so does
+  Numbi, the custom-game default AI that most game-starting tests use.
+- `editor`: the map editor in `src/map/editor/`, apart from its keyboard
+  shortcut table, which the settings screen edits, and the brush swatches that
+  `glob2 map` renders. `Game_editor.cpp` stays: it holds `Game`'s own placement
+  and script queries. The menu's editor button then only prints why it does
+  nothing.
+
+The registries keep every id and catalog position, and drop only the entries
+that are not built. Creating or loading an AI that was left out fails with
+"… is not compiled into this build (compile_profile=core); rebuild with
+compile_profile=full". Saves, replays and scripts keep the same ids. Lobby
+pickers offer only the AIs and generators that were built, and the custom-game
+lobby replaces a saved AI that was left out with Nicowar. A LAN or online player who drops
+is handed to Castor, so in a core build that also stops with the same error.
+Rated play, `match verify` and `online turn-client` refuse to run outside the
+full profile. `glob2 info version` reports `compile_profile`, and the build
+directory's `profile.json` records it.
+
+Core builds go in their own directory (`…-compile_profile-core`), so full and
+core objects never mix. Only `src/app/CompileProfile.cpp` and the AI and
+generator registries include the generated `glob2/CompileProfile.h`. No compile
+line gains a define, so the other objects match the full build's. The first
+core build still recompiles about half of them: a source that includes a header
+generated in the build directory (such as `glob2/BuildConfig.h`) carries that
+directory's path in its preprocessed text, so it misses the compiler-cache entry
+the full build made. Later core builds are incremental as usual. Editing
+`src/game/Game.h` recompiles about 32% fewer client sources in the core profile
+(254 instead of 373). Test registry
+entries name the groups they need with `require={'generators'}`, `'editor'` or
+`'ai:castor'`, and core test binaries leave those entries out. A single case
+that needs one takes `* glob2test::needs({"ai:castor"})` (`test/support/ProfileNeeds.h`)
+and is not listed in a core build; loops over several AIs skip the ones
+`AIRegistry::available` rejects.
+
+The full profile is the default. CI, releases and every perf build use it, and
+final PR verification must use it too: a passing core build covers only the
+code it compiled.
+
 ## Build tiers
 
 | Tier | Command | Evidence it may back |

@@ -184,6 +184,8 @@ void Player::makeItAI(AI::ImplementationID aiType)
 	BasePlayer::makeItAI(aiType);
 	if(ai)
 		delete ai;
+	// AI's constructor throws for an id this build left out (compile_profile=core).
+	ai=nullptr;
 	ai=new AI(aiType, this);
 }
 

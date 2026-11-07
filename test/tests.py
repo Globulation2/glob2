@@ -8,7 +8,9 @@ Placement rule: a test joins UNIT_TESTS if it needs neither GlobalContainer nor 
 client object; otherwise it joins ENGINE_TESTS. Entry options:
   cxxflags  extra compiler flags for that translation unit only
   defines   extra preprocessor defines for that translation unit only
-  require   build features the entry needs: 'wss', 'not-mingw', 'opengl'
+  require   build features the entry needs: 'wss', 'not-mingw', 'opengl', and the
+            optional source groups of scons/sources.py ('generators', 'editor',
+            'ai:castor', ...) that compile_profile=core leaves out
 """
 
 # Linked into both test binaries.
@@ -57,11 +59,12 @@ ENGINE_TESTS = [
     '#src/ai/engine/AIPipelineTest.cpp',
     '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
     ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/LegacyAIStateTest.cpp', dict(require={'ai:cabino', 'ai:cortex'}, cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
+    '#src/ai/AIRegistryProfileTest.cpp',
     '#src/ai/BuildingCapabilitiesTest.cpp',
     '#src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp',
-    ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/AICustomCatalogTest.cpp', dict(require={'ai:cabino', 'ai:castor', 'ai:cortex'}, cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
     ('#src/building/BuildingStockTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -83,33 +86,33 @@ ENGINE_TESTS = [
     '#libs/gag/src/ScreenExecutionHarness.cpp',
     ('#libs/gag/src/MacScrollMonitorTest.mm', dict(require={'mac'})),
     ('#libs/gag/src/MacScrollVisualHarness.cpp', dict(require={'mac'})),
-    ('#src/ai/AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/AIRecoveryCoverageTest.cpp', dict(require={'ai:cabino', 'ai:castor', 'ai:cortex'}, cxxflags=['-fno-access-control'])),
 
     ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/hud/GUIInteractionCoverageTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
     ('#src/hud/GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/BrushCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/EditorTerrainPaintTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/EditorFlowsTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/EditorDockLayoutTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/map/editor/EditorPresentationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorActionCoverageTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/BrushCatalogTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorTerrainPaintTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorFlowsTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorDockLayoutTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/editor/EditorPresentationTest.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
     '#src/scripting/sgsl/LegacyAreaWaitTest.cpp',
     ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIDecisionCoverageTest.cpp',
-    ('#src/ai/AIRulesTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/AIRulesTest.cpp', dict(require={'ai:cabino', 'ai:cortex'}, cxxflags=['-fno-access-control'])),
     # Calls Cortex's and Numbi's private helpers to drive single offense decisions.
-    ('#src/ai/telemetry/AITargetTelemetryTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/ai/castor/CastorContinuationTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/ai/cortex/CortexNetCoverageTest.cpp',
-    ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('#src/ai/cortex/CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/telemetry/AITargetTelemetryTest.cpp', dict(require={'ai:cortex'}, cxxflags=['-fno-access-control'])),
+    ('#src/ai/castor/CastorContinuationTest.cpp', dict(require={'ai:castor'}, cxxflags=['-fno-access-control'])),
+    ('#src/ai/cortex/CortexNetCoverageTest.cpp', dict(require={'ai:cortex'})),
+    ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(require={'ai:cortex'}, cxxflags=['-fno-access-control'])),
+    ('#src/ai/cortex/CortexPolicyCoverageTest.cpp', dict(require={'ai:cortex'}, cxxflags=['-fno-access-control'])),
     ('#src/scripting/javascript/ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/scripting/javascript/ScriptIntegrationTest.cpp',
+    ('#src/scripting/javascript/ScriptIntegrationTest.cpp', dict(require={'editor'})),
     '#src/ai/telemetry/AITelemetryDialogTest.cpp',
     '#src/hive/HiveIntegrationTest.cpp',
     '#src/scripting/javascript/ScriptPresentationTest.cpp',
-    '#src/scripting/map/ScriptEditorTest.cpp',
+    ('#src/scripting/map/ScriptEditorTest.cpp', dict(require={'editor'})),
     '#src/scripting/javascript/ScriptRealisticTest.cpp',
     ('#src/scripting/javascript/ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/scripting/javascript/ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -152,11 +155,11 @@ ENGINE_TESTS = [
     ('#src/net/turn/TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/net/LanIdentityTest.cpp', dict(require={'wss'})),
     ('#src/net/lan/LanMatchHarness.cpp', dict(require={'wss'}, cxxflags=['-fno-access-control'])),
-    ('#src/ai/AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/AISavePortabilityHarness.cpp', dict(require={'ai:castor'}, cxxflags=['-fno-access-control'])),
     '#src/building/BuildingFootprintHarness.cpp',
     '#src/map/MapTilingHarness.cpp',
     ('#src/map/gradient/ClearingFlagGradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/ai/cortex/CortexGeometryHarness.cpp',
+    ('#src/ai/cortex/CortexGeometryHarness.cpp', dict(require={'ai:cortex'})),
     '#src/unit/EnteringUnitSaveHarness.cpp',
     ('#src/map/gradient/MapGradientInvalidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -167,17 +170,17 @@ ENGINE_TESTS = [
     '#src/unit/TrappedUnitLifecycleTest.cpp',
     '#src/unit/UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
-    ('UntrustedFilesTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('TournamentCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('UntrustedFilesTest.cpp', dict(require={'ai:cabino'}, cxxflags=['-fno-access-control'])),
+    ('TournamentCompatibilityTest.cpp', dict(require={'ai:cortex'}, cxxflags=['-fno-access-control'])),
     ('#src/ai/maxima/MaximaRelocationIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/map/generator/CombGeneratorTest.cpp',
-    '#src/map/generator/OrchardCommonsConversionTest.cpp',
+    ('#src/map/generator/CombGeneratorTest.cpp', dict(require={'generators'})),
+    ('#src/map/generator/OrchardCommonsConversionTest.cpp', dict(require={'generators'})),
     'PortableGameHarness.cpp',
     ('#src/team/stats/TeamStatsPipelineTest.cpp', {}),
     '#src/team/RoutingRatioPolicyTest.cpp',
     ('#src/team/stats/TeamStatsSaveHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/team/stats/TeamLabourStatsTest.cpp',
-    ('#src/engine/EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/engine/EngineSessionHarness.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
     '#src/net/turn/TurnNetConnectionTest.cpp',
     '#src/online/RelayTransportTest.cpp',
     '#src/online/OnlineResultTest.cpp',
@@ -185,7 +188,7 @@ ENGINE_TESTS = [
     '#src/online/PlatformRoomTest.cpp',
     '#src/online/OnlineServicesTest.cpp',
     ('#src/net/WssBackpressureTest.cpp', dict(require={'wss'})),
-    ('#src/render/MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/render/MapRenderResizeHarness.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
     ('#src/render/PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/maxima/MaximaDiagnosticsTest.cpp',
@@ -205,7 +208,7 @@ ENGINE_TESTS = [
     ('#src/render/FailingUnitMarkersHarness.cpp', dict(require={'opengl'})),
     ('#src/render/SwimmingUnitDrawHarness.cpp', dict(require={'opengl'}, cxxflags=['-fno-access-control'])),
     '#libs/gag/src/FullscreenAspectHarness.cpp',
-    ('#src/render/HighResolutionIntegrationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/render/HighResolutionIntegrationHarness.cpp', dict(require={'editor'}, cxxflags=['-fno-access-control'])),
     '#libs/gag/src/PortableRendererHarness.cpp',
     '#src/render/SoftwareRendererTest.cpp',
     '#src/render/terrain/TerrainMaterialsTest.cpp',
@@ -230,16 +233,16 @@ ENGINE_TESTS = [
     '#src/game/orders/GuardAreaBalanceTest.cpp',
     ('#src/game/orders/FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/game/GameSpeedTest.cpp',
-    '#src/ui/UIPresentationHarness.cpp',
+    ('#src/ui/UIPresentationHarness.cpp', dict(require={'editor'})),
     '#src/ui/UIIconsTest.cpp',
-    '#src/hud/touch/GameGUITouchHarness.cpp',
+    ('#src/hud/touch/GameGUITouchHarness.cpp', dict(require={'editor'})),
     # Command-line harnesses whose modes became cases.
     '#src/game/screens/CustomGameSetupHarness.cpp',
     '#src/team/TeamLimitTest.cpp',
     '#src/team/IntrusiveEntityListTest.cpp',
     ('#src/team/IntrusivePopulationSaveTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/map/preview/MapPreviewHarness.cpp',
-    ('#src/map/generator/MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/generator/MapGeneratorDefaultsTest.cpp', dict(require={'editor', 'generators'}, cxxflags=['-fno-access-control'])),
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
@@ -571,6 +574,12 @@ PROGRAMS = [
     ('SoftwareRenderBenchmark', '#src/render/SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', '#src/render/torus/TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
 ]
+
+# The 'require' option of PROGRAMS entries, by target.
+PROGRAM_REQUIRES = {
+    'MenuColonyHarness': {'editor'},
+    'TranslationPreviewHarness': {'editor'},
+}
 
 # Old per-harness alias -> test binary. Kept for one release so documented commands and
 # shell history keep working; delete after that.

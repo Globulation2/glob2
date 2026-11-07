@@ -66,6 +66,7 @@ jobs:
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py' \
             --check 'header layering contracts' 'python3 -m unittest discover -s test -p test_check_header_layering.py' \
+            --check 'source manifest profiles' 'python3 -m unittest discover -s test -p test_sources_manifest.py' \
             --check 'fixture refresh contracts' 'python3 -m unittest discover -s test -p test_refresh_sim_fixtures.py' \
             --check 'sim version contracts' 'python3 -m unittest discover -s test -p test_check_sim_revision.py'
       - name: Check that the sim version follows the simulation

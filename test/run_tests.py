@@ -171,6 +171,17 @@ def parse_listing(xml_text, kind):
     return cases
 
 
+def note_compile_profile(build_dir):
+    """Say when the binaries come from a reduced compile profile (scons/sources.py)."""
+    try:
+        profile = json.loads((Path(build_dir) / 'profile.json').read_text()).get('compile_profile', 'full')
+    except (OSError, ValueError, AttributeError):
+        return
+    if profile != 'full':
+        print(f'[run_tests] compile_profile={profile}: cases needing the code it leaves out are not built '
+              'or not listed; verify final changes with the full profile', flush=True)
+
+
 TIERS = ('headless', 'display', 'full')
 
 
@@ -733,6 +744,7 @@ def main(argv=None):
                 continue
             raise SystemExit(f'{binary} is not built; run: scons release=1 server=0 {kind}-tests')
         cases += list_cases(binary, kind)
+    note_compile_profile(build_dir)
     if args.coverage_profile == 'compatibility':
         args.compatibility_filters = json.loads((ROOT / 'test/ci-compatibility.json').read_text())
     kept, skipped = select(cases, args)

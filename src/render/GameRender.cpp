@@ -4,8 +4,6 @@
 #include "MapCopies.h"
 #include "unit/render/ColonySkinPreview.h"
 
-#include "AICastor.h"
-#include "AINicowar.h"
 
 #include <algorithm>
 #include <assert.h>

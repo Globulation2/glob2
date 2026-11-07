@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "AI.h"
@@ -162,12 +163,12 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint, bool m
 
 TEST_SUITE("AIStateContinuation")
 {
-    TEST_CASE("Cortex economy and food shortage survive save-load")
+    TEST_CASE("Cortex economy and food shortage survive save-load" * glob2test::needs({"ai:cortex"}))
     {
         glob2test::HeadlessGlobals globals;
         for (bool depleted : {false,true}) continuation(AI::CORTEX,depleted,256);
     }
-    TEST_CASE("Cabino specialist modules survive save-load")
+    TEST_CASE("Cabino specialist modules survive save-load" * glob2test::needs({"ai:cabino"}))
     {
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {0,1,49,50,51,127,256,512,1024,2048})

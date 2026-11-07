@@ -6,6 +6,7 @@
 // and compares every checksum the clients reported with the verifier's own.
 
 #include "VerifyMatch.h"
+#include "CompileProfile.h"
 
 #include <algorithm>
 #include <chrono>
@@ -415,6 +416,8 @@ int runVerifyMatch(const Cli::Request &request)
         const auto computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
 		output = fs::absolute(out);
 		fs::create_directories(output / "profile");
+		// Verdicts decide ratings; only the full simulation may give one.
+		CompileProfile::requireFull("Match verification");
 		// Both profile variables, as the other headless commands set them (#554).
 		const std::string profileDir = (output / "profile").string();
 		GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);

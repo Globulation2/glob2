@@ -36,6 +36,7 @@ def establish_options(env):
     opts.Add(BoolVariable("pch", "Experimental development precompiled headers", 0))
     opts.Add(BoolVariable("unity", "Experimental selective development unity compilation", 0))
     opts.Add("linker", "Development linker: default, auto, lld", "default")
+    opts.Add("compile_profile", "Development source profile: full (default, CI and releases) or core", "full")
     opts.Add("recording_codec", "Recording codec: h264, vp9, av1 (WebM: native Linux only)", "h264")
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
@@ -258,6 +259,14 @@ def configure(env, server_only, relay=False):
         Exit(1)
        
     configfile.finish()
+    # Only the files that name optional sources include this header (scons/sources.py).
+    from sources import profile_header
+    profile_content = profile_header(env['compile_profile'])
+    def write_profile(target, source, env):
+        write_if_changed(str(target[0]), profile_content)
+        return 0
+    env.Command(str(Path(env["BUILDDIR"]) / "include/glob2/CompileProfile.h"), Value(profile_content),
+                Action(write_profile, 'Generating $TARGET'))
     import skin_materials
     skin_materials.register(env)
     import renderer_shaders
@@ -344,6 +353,7 @@ def main():
     # Build-directory GC (dev_environment.py builds --gc) reads this stamp.
     Path(bdir, '.last-use').touch()
     env['BUILDDIR'] = bdir
+    env['compile_profile'] = identity.get('compile_profile', 'full')
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
     env["VERSION"] = PACKAGE_VERSION

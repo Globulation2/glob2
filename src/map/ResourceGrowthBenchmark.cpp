@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "ResourceGrowth.h"
 #include "gradient/GradientRuntime.h"
@@ -198,7 +199,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 	}
 
 
-	TEST_CASE("generated landscapes preserve player-free growth accounting")
+	TEST_CASE("generated landscapes preserve player-free growth accounting" * glob2test::needs({"generators"}))
 	{
 		glob2test::HeadlessGlobals globals;
 		const char *output = std::getenv("GLOB2_GROWTH_GENERATED_OUTPUT");

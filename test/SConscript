@@ -40,8 +40,14 @@ test_env.Append(CPPDEFINES=['SDL_MAIN_HANDLED'])
 from test_provenance import attach_sidecar
 
 
+from sources import OPTIONAL_SOURCES, profile_features
+profile_groups = profile_features(env.get('compile_profile', 'full'))
+
+
 def available(options):
     required = options.get('require', ())
+    if any(name in OPTIONAL_SOURCES and name not in profile_groups for name in required):
+        return False
     if 'mac' in required and (env['PLATFORM'] != 'darwin' or env.get('mingw') or env.get('mingwcross')):
         return False
     if 'wss' in required and not env.get('wss', True):
@@ -115,6 +121,8 @@ test_env.Alias('tests', [engine, unit, engine_provenance, unit_provenance])
 
 tools = []
 for target, source, alias, group in registry.PROGRAMS:
+    if not available({'require': registry.PROGRAM_REQUIRES.get(target, ())}):
+        continue
     program = test_env.Program(target, objects([source], 'program-') + client_objects + client_libs)
     if env.get('RUNTIME_ASSET_STAMP'):
         test_env.Depends(program, env['RUNTIME_ASSET_STAMP'])

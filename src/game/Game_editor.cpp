@@ -5,7 +5,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 
-#include "AICastor.h"
 
 #include <assert.h>
 #include <string.h>

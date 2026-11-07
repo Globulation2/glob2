@@ -1,6 +1,6 @@
-from sources import CLIENT_SOURCES
-source_files = list(CLIENT_SOURCES)
 Import('env')
+from sources import profile_sources
+source_files = list(profile_sources(env.get('compile_profile', 'full')))
 if env.get('role') == 'relay':
     # The relay role builds glob2-relay and its tests only.
     from sources import RELAY_SOURCES, RELAY_GAG_SOURCES
@@ -111,8 +111,10 @@ twelve_team_benchmark = development_program('twelve-team-benchmark',
     + ['../libs/gag/src/libgag.a', '../libs/usl/src/libusl.a'])
 local.Alias('twelve-team-benchmark', twelve_team_benchmark)
 
+from sources import profile_features
+profile_groups = profile_features(env.get('compile_profile', 'full'))
 # Map analysis tools and the golden test use production generators and widgets.
-for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
+for alias, target in [] if 'generators' not in profile_groups else [('map-generator-study', 'MapGeneratorStudy'),
                       ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
                       ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
     sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
@@ -174,9 +176,11 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
 
 # Offline production-screen capture for the mobile design review gallery.
-gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
-gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
-local.Alias('mobile-gallery', development_program('mobile-gallery', gallery_sources))
+# It drives the map editor, which compile_profile=core leaves out.
+if 'editor' in profile_groups:
+    gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+    gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
+    local.Alias('mobile-gallery', development_program('mobile-gallery', gallery_sources))
 
 # Original-derived skin comparison and full game render diagnostics.
 skin_preview = development_program('skin-preview',
