@@ -25,6 +25,8 @@ Choose a barrier by its consequences:
 | Stone deposit | Permanent ground obstruction | Unbuildable | Permanent quarry and boundary, including against swimmers |
 | Fruit deposit | Persistent ground obstruction | Unbuildable | Regrows in place; also a strategic food/happiness asset |
 
+The catalog terrain groups add permanent versions of these: rock that blocks walking but not fire, obstacles that block both, pavement that builds but inhibits like sand, mud that slows without inhibiting, paths that double speed and never grow over, fertile ground that waters itself, and deep water that swims slowly and holds no algae. Their construction rules are in [the terrain palette](terrain-palette.md).
+
 These are ground-unit rules; flying explorers do not respect the same barriers. A map has toroidal topology, so an apparent outside edge is another route unless the generated geometry seals it.
 
 ## Build an economy that does not eat its own town

@@ -27,9 +27,10 @@ grass, sand and water.
   plug now joins two fast trail approaches, so the cut's payoff is measured in walking time as
   well as steps (telemetry `portage-lakes.portage.*`).
 - **Bay farms stay grass.** Loam bay farms (Fertile: crop land that waters its surroundings at
-  48/256 of water) were built and measured, and dropped: growth potential rose, but in
-  seat-rotated four-AI games the same maps without the loam bred a quarter more workers, and the
-  loam's watering shrank the dry forest until a compact map lost its portage (see Food).
+  48/256 of water) were built, measured and dropped because the loam's watering shrank the dry
+  forest until a compact map lost its portage. Growth potential rose; seat-rotated four-AI games
+  bred fewer workers, which matches the AIs' reading of Fertile ground as water, an AI defect to
+  fix in the AI rather than a reason to keep loam off a map (see Food).
 - **Wet shores.** Stretches of lake beach far from every home are mud (Rough: slow, holds nothing,
   like the beach it replaces, but inhibits no crops), so the shore meadows there grow better. Mud
   never lies in a home's buffer or beside the algae pools. Mud thins the forest by the lakes; when
@@ -105,8 +106,8 @@ in seat-rotated four-AI games (Nicowar, Cortex, Cabino, Maxima; 20,000 ticks; se
 four rotations each, both maps played by the same release binary) the maps with loam bred 152
 workers a game against 190 for the same design without it and 194 on revision 7, and one Cortex
 seat stalled at 7 units. The cause was not pinned down: the field's edge tiles are transitions that
-cannot be farm-painted, and Maxima's farm planner treats fertility sources like water. So the farms
-stay grass.
+cannot be farm-painted, and Maxima's farm planner treats fertility sources like water. The farms
+stay grass for the portage's sake; the births drop is not on its own a reason to drop loam.
 
 Calibration, the final design: 12 games (seeds 101–103, four seat rotations each) per revision.
 
