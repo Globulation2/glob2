@@ -6,6 +6,7 @@
 // 0/1/0xFFFF sentinels and the stored value = 0xFFFF - cheapest cost rule.
 #include "GradientBucket.h"
 #include "GradientConstants.h"
+#include "EntrySteps.h"
 #include <iterator>
 
 namespace gradient_kernel
@@ -26,18 +27,6 @@ namespace gradient_kernel
 	// including the longest edge from the last expandable cost layer.
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
 
-	// Costs of entering a cell by a cardinal and by a diagonal step.
-	struct EntrySteps
-	{
-		unsigned cardinal, diagonal;
-	};
-
-	constexpr EntrySteps entrySteps(int step)
-	{
-		return { unsigned(step), unsigned(step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP) };
-	}
-
-	constexpr EntrySteps LAND_STEPS = entrySteps(GRADIENT_STEP);
 
 	// Classes 0 and EVEN pay the land rate everywhere; the others are weighted.
 	constexpr bool weightedClass(int swimClass)

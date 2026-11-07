@@ -298,6 +298,7 @@ set(GLOB2_CLIENT_SOURCES
     src/ui/screens/AudioPreferenceScreen.cpp
     src/ui/DiscordCommunity.cpp
     src/map/Map.cpp
+    src/map/TerrainProperties.cpp
     src/map/TerrainRegistry.cpp
     src/map/TerrainCatalog.cpp
     src/map/CellRules.cpp
@@ -988,6 +989,7 @@ set(GLOB2_MAP_SOURCES
     src/common/ExperimentalFeatures.cpp
     src/common/ComputeThreads.cpp
     src/map/Map.cpp
+    src/map/TerrainProperties.cpp
     src/map/TerrainRegistry.cpp
     src/map/TerrainCatalog.cpp
     src/map/CellRules.cpp

@@ -41,7 +41,6 @@ src/engine/sim -> src/map/claims
 src/engine/sim -> src/render/scene
 src/engine/sim -> src/team/stats
 src/field -> src/map
-src/field -> src/unit
 src/game -> src/ai
 src/game -> src/app
 src/game -> src/building

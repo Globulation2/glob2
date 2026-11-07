@@ -2,6 +2,7 @@
 // Terrain stored per vertex: the corner combine rule, the per-map cell rule
 // table, vertex edits and the conversion of files written before format 146.
 #include "HeadlessGlobals.h"
+#include "field/TerrainMovementCosts.h"
 #include "HeadlessGame.h"
 #include "BinaryStream.h"
 #include "TextStream.h"

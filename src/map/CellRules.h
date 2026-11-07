@@ -4,7 +4,7 @@
 #include "TerrainRegistry.h"
 #include "ResourceRegistry.h"
 #include "Ressource.h"
-#include "field/TerrainMovementCosts.h"
+#include "field/EntrySteps.h"
 #include <array>
 #include <cstdint>
 #include <map>

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Team.h"
+#include "field/PreparedTerrainCosts.h"
 #include "SnapshotGradient.h"
 #include "GradientExecutionAudit.h"
 #include "ComputeExecutor.h"
@@ -570,7 +571,7 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
         if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
             std::copy(movement.profiles.begin(),movement.profiles.end(),view->storage.begin());
             view->profiles={view->storage.data(),movement.profiles.size()};
-            view->prepared=movement.prepared;
+            if(movement.prepared) view->prepared=*movement.prepared;
         }
         if(plane) {
             view->cells=std::make_unique<std::uint8_t[]>(count);

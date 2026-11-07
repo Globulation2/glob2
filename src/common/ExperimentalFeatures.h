@@ -17,7 +17,7 @@
 // an experiment never re-interprets an old file: an unknown key is dropped on
 // load.
 
-#include "Types.h"
+#include <SDL3/SDL_stdinc.h>
 
 #include <bitset>
 #include <cstddef>

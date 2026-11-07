@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
+#include "field/TerrainMovementCosts.h"
 #include "Map.h"
 #include "gradient/MapRouting.h"
 #include "MapInternal.h"

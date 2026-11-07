@@ -182,7 +182,7 @@ TEST_CASE("classic propagation preserves deferred seeds weighted costs and scrat
             if(weightedClass(swim))movement.profiles.push_back(entrySteps(WATER_STEP[swim]));
             std::array<EntrySteps,8> entries;entries.fill(LAND_STEPS);
             if(weightedClass(swim))entries[1]=movement.profiles[1];
-            movement.prepared=PreparedTerrainCosts<8>(entries);
+            movement.prepared=std::make_shared<const TerrainRegistry::Movement::Prepared>(std::in_place_type<PreparedTerrainCosts<8>>, entries);
             auto modified=seeds;GradientWorkspace general;
             runtime_terrain::propagate<BUCKETS,true,false>(modified.data(),cap,{w,h},general,
                 [&](std::size_t i){return weightedClass(swim)?unsigned(water[i]):0u;},movement);

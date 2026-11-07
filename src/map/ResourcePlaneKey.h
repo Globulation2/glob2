@@ -2,7 +2,7 @@
 #pragma once
 #include "Material.h"
 #include "TeamCapacity.h"
-#include "UnitConsts.h"
+#include "MovementClass.h"
 #include <cstdint>
 
 // Published material planes (per team, material slot, swim class, natural or

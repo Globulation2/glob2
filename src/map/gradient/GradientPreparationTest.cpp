@@ -1,4 +1,6 @@
 #include "field/OpenCLGradient.h"
+#include "field/TerrainMovementCosts.h"
+#include "field/PreparedTerrainCosts.h"
 #include "gradient/MapRouting.h"
 #include "field/GradientDeviceService.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -1624,7 +1626,7 @@ TEST_CASE("movement profile rejection rolls back previously appended swim classe
 			CHECK(actual.profileIds == expected.profileIds);
 			CHECK(actual.steps == expected.steps);
 			CHECK(actual.minimum == expected.minimum);
-			REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
+			REQUIRE(bool(actual.prepared) == bool(expected.prepared));
 			if (actual.prepared)
 				std::visit(
 					[&](const auto &profile)

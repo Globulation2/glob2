@@ -41,7 +41,7 @@ class ComputeExecutor;
 #include "TerrainType.h"
 #include "FertilityField.h"
 #include "ExperimentalFeatures.h"
-#include "TerrainProperties.h"
+#include "TerrainPropertiesLayout.h"
 #include "TerrainRegistry.h"
 class MapAssetBundle;
 #include "BitArray.h"
@@ -212,7 +212,7 @@ class Map
 	unsigned terrainBucketCount = 64;
 	std::array<std::array<unsigned, 182>, MOVEMENT_CLASS_COUNT> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, MOVEMENT_CLASS_COUNT> terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
+	std::array<unsigned, MOVEMENT_CLASS_COUNT> terrainMinimumGround{}; // set in the constructor, from field/TerrainMovementCosts.h
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
