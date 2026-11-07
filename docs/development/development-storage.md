@@ -101,6 +101,7 @@ python3 tools/dev_environment.py worktrees --finished  # merged or closed, clean
 python3 tools/dev_environment.py worktrees --remove PATH...
 python3 tools/dev_environment.py builds --gc --idle 14 --dry-run
 python3 tools/check_artifacts.py [--fix]               # raw images, copied build trees, large logs
+python3 tools/dev_environment.py prune --toolchains --dry-run  # toolchains no checkout selects
 ```
 
 `worktrees` reads pull request state through `gh`, so squash-merged branches,
@@ -119,6 +120,11 @@ reports them and the space only they hold; `--apply` deletes them locally, expir
 reflogs and repacks, and `--apply --remote` also deletes them on origin. The remote
 deletion is irreversible and breaks links to those refs: the maintainer decided to
 accept that, and runs it.
+
+`prune --toolchains` removes mobile and Emscripten toolchain installations whose
+key no registered checkout's manifests produce (installations for older pins) and
+shared archive components no kept toolchain links to; installations in use are
+skipped.
 
 Builds, test runs and asset exports stop before filling the disk: they fail when
 less than `GLOB2_MIN_FREE_GIB` (default 10) GiB is free, naming these commands.
