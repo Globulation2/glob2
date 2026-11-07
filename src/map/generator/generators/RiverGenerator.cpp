@@ -54,10 +54,10 @@ using namespace MapGeneration;
 // - Two sketches: the mechanic sketch holds each vertex's canonical rule-group type (GRASS, SAND,
 //   WATER, DEEP_WATER, LOAM, SHALE, MUDFLAT, HARDPAN, SCREE, RIDGE_ROCK) and every rule below reads
 //   it; looks are painted over it with composeLooks, which can never change a rule. Every home's
-//   garden (kGardenRadius tiles round the swarm's middle, frayed) keeps GRASS mechanics, and its core
-//   (kCoreRadius, frayed) plain GRASS looks too, so placeStarts, the starting-crop guarantee and
-//   openStartsBuriedByResources meet the ground they always did; the rest of the garden takes the
-//   graded grass looks, since a plain disc to the garden's rim read as a round lawn.
+//   garden (kGardenRadius tiles round the swarm's middle, frayed) keeps GRASS mechanics, and the grass
+//   looks (lush, dry) go on only after placeStarts and openStartsBuriedByResources, so the starts and
+//   the starting-crop guarantee meet plain GRASS everywhere, as they always did, and no home reads as
+//   a round lawn.
 // - Deep channel (`deep-channel`): plain water far enough from land is deep water (deepenWater):
 //   at least kDeepSteps steps, more until the core holds at most kDeepShare of the water
 //   (deepStepsForShare), so at least three whole tiles of shallows line every bank and the shallows widen
@@ -108,9 +108,6 @@ constexpr const char *kMudStream = "river-mud";
 constexpr int kDeepSteps = 5, kDeepLeast = 16, kDeepShare = 500;
 // Home gardens: plain grass within kGardenRadius (frayed by kGardenFray) of every swarm's middle.
 constexpr double kGardenRadius = 12, kGardenFray = 5;
-// Within kCoreRadius of a swarm's middle even the look stays plain GRASS (the starting-crop guarantee
-// plants only on exact GRASS); the rest of a garden takes the graded looks, so no home reads as a lawn.
-constexpr double kCoreRadius = 6, kCoreFray = 3;
 // Levee: grass kLeveeNear to kLeveeFar vertices from water, one more where a noise passes kLeveeWide.
 constexpr int kLeveeNear = 2, kLeveeFar = 7, kLeveeWide = 40000;
 // No Fertile ground within kFertileHomeClear tiles of a swarm's middle: Maxima's placement treats every
@@ -143,9 +140,12 @@ constexpr int kLush = 5, kGreen = 20, kRibbon = 9, kPaveReach = 28, kPaveFray = 
 // Pans only where the growth probe (15 tiles each way) never finds water, so they take no farmland that
 // grows: from 16 steps. Between the ribbon and there the desert is dry grass.
 constexpr int kPanReach = 16;
+// Both edges are measured as straight lines from water, floored in eight-connected steps: pavement
+// never within kPaveFloor steps, pans never within kPanFloor.
+constexpr int kPaveFloor = 22, kPanFloor = 15;
 // No hardpan within kPanHomeClear tiles of a swarm's middle: it is unbuildable, and a colony needs its
-// 16 building sites within 24 steps.
-constexpr double kPanHomeClear = 24;
+// 16 building sites within 24 steps, which reach 34 tiles out along a diagonal.
+constexpr double kPanHomeClear = 34;
 
 // The banks' variants. paveShare is the percentage of the ground beyond kPaveReach that is paved:
 // heath patches in dry grass on the temperate banks, all of it in the desert.
@@ -257,8 +257,12 @@ bool ringHolds(const Torus &t, const std::vector<int> &knot, const std::vector<u
 	return !ring.empty() && reached == ring.size();
 }
 
-Bluffs planBluffs(const TerrainSketch &stamp, const Torus &t, const std::vector<int> &bootX,
-				  const std::vector<int> &bootY, int teams, const RiverOptions &o, GenerationContext &context)
+// `stone` marks the field's own stone band, which a bluff stands behind rather than on: the band lies
+// just above the beach, right where a cutbank's rock goes, and six bluffs drawn over it took 380 stone
+// for 17 in their faces.
+Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &stone, const Torus &t,
+				  const std::vector<int> &bootX, const std::vector<int> &bootY, int teams, const RiverOptions &o,
+				  GenerationContext &context)
 {
 	const int n = t.size();
 	Bluffs b;
@@ -333,7 +337,8 @@ Bluffs planBluffs(const TerrainSketch &stamp, const Torus &t, const std::vector<
 			for (int dx = -r; dx <= r; ++dx)
 			{
 				const int i = t.at(cx + dx, cy + dy);
-				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= far && walkable[i])
+				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= far && walkable[i] &&
+					!stone[i])
 				{
 					lens[i] = 1;
 					lensTiles.push_back(i);
@@ -443,8 +448,9 @@ struct LayerCounts
 };
 
 // The post-pass: the mechanic layers over the height field's terrain, then the looks.
+// The grass looks come back in `grassLooks`, to be laid after the starts (layGrassLooks).
 void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const Banks &banks,
-			const Bluffs &bluffs, LayerCounts &counts)
+			const Bluffs &bluffs, LayerCounts &counts, TerrainSketch &grassLooks)
 {
 	Map &map = game.map;
 	const Torus t(map);
@@ -463,6 +469,15 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 		holding[i] = map.isResource(t.remainderX(i), i / t.w);
 	holding = tileCorners(t, holding);
 	const std::vector<int> fromStamp = stepsFromWet(t, mech);
+	// The far ground's edges follow the straight-line distance from water, so they round off rather than
+	// draw squares round the ponds, but never come nearer than the step floors the growth rules need.
+	const std::vector<int> round = distanceFromWet(t, mech);
+	std::vector<int> farField(static_cast<size_t>(n), 0), panField(static_cast<size_t>(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		farField[i] = fromStamp[i] >= kPaveFloor ? round[i] : fromStamp[i];
+		panField[i] = fromStamp[i] >= kPanFloor ? round[i] : fromStamp[i];
+	}
 
 	if (o.deepChannel)
 		{
@@ -485,7 +500,7 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 			eligible[i] = !bluffs.body[i] && !nearFace[i] && !garden[i];
 		const std::vector<unsigned char> talus = talusApron(t, bluffs.rock, eligible, fray, 0, kTalusOuter, 30000);
 		for (int i = 0; i < n; ++i)
-			if (talus[i] && fromStamp[i] >= 2 && !halo[i] && (mech[i] == GRASS || mech[i] == SAND))
+			if (talus[i] && fromStamp[i] >= 2 && !halo[i] && !holding[i] && (mech[i] == GRASS || mech[i] == SAND))
 			{
 				mech[i] = SCREE;
 				++counts.scree;
@@ -551,20 +566,20 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 			// Patches of the far ground, not all of it: heath in the dry grass.
 			std::vector<unsigned char> far(size_t(n), 0);
 			for (int i = 0; i < n; ++i)
-				far[i] = eligible[i] && fromStamp[i] >= kPaveReach;
+				far[i] = eligible[i] && farField[i] >= kPaveReach;
 			const std::vector<unsigned char> patches =
 				noisyShare(far, fractalNoise(t.w, t.h, 20, 3, looks), banks.paveShare);
 			for (int i = 0; i < n; ++i)
 				eligible[i] = eligible[i] && patches[i];
 		}
-		counts.pave = paveBeyondWater(mech, fromStamp, eligible, fray, kPaveReach, kPaveFray, SAND, SHALE) +
-					  paveBeyondWater(mech, fromStamp, eligible, fray, kPaveReach, kPaveFray, GRASS, SHALE);
+		counts.pave = paveBeyondWater(mech, farField, eligible, fray, kPaveReach, kPaveFray, SAND, SHALE) +
+					  paveBeyondWater(mech, farField, eligible, fray, kPaveReach, kPaveFray, GRASS, SHALE);
 		if (banks.desert)
 		{
 			std::vector<unsigned char> bare(size_t(n), 0);
 			const std::vector<unsigned char> homes = homeGardens(t, bootX, bootY, teams, kPanHomeClear, {}, 0);
 			for (int i = 0; i < n; ++i)
-				bare[i] = eligible[i] && !homes[i] && mech[i] == GRASS && fromStamp[i] >= kPanReach;
+				bare[i] = eligible[i] && !homes[i] && mech[i] == GRASS && panField[i] >= kPanReach;
 			const std::vector<int> panNoise = fractalNoise(t.w, t.h, 24, 3, looks);
 			const std::vector<unsigned char> pan = noisyShare(bare, panNoise, kPanShare);
 			for (int i = 0; i < n; ++i)
@@ -578,11 +593,12 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 
 	// The looks.
 	TerrainSketch paint(size_t(n), 0);
-	const std::vector<int> fromWet = stepsFromWet(t, mech);
+	const std::vector<int> fromWet = distanceFromWet(t, mech);
 	const std::vector<int> jitter = periodicNoise(t.w, t.h, 9, looks);
 	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, looks);
-	const std::vector<unsigned char> core = homeGardens(t, bootX, bootY, teams, kCoreRadius, jitter, kCoreFray);
-	gradeGrassLooks(paint, mech, fromWet, core, jitter, banks.lush, banks.green, 3);
+	grassLooks.assign(size_t(n), 0);
+	gradeGrassLooks(grassLooks, mech, fromWet, std::vector<unsigned char>(size_t(n), 0), jitter, banks.lush,
+					banks.green, 3);
 	for (int i = 0; i < n; ++i)
 	{
 		const bool second = split[i] > 0.62 * 65536;
@@ -681,6 +697,15 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	context.telemetry.measure("river.algae.reseated", reseated);
 }
 
+void layGrassLooks(Map &map, const TerrainSketch &grassLooks)
+{
+	TerrainSketch sketch = mapSketch(map);
+	for (size_t i = 0; i < sketch.size(); ++i)
+		if (sketch[i] == GRASS && grassLooks[i] && terrainGroup(TerrainType(grassLooks[i])) == TerrainGroup::Grass)
+			sketch[i] = grassLooks[i];
+	writeVertices(map, sketch);
+}
+
 const Banks &chooseBanks(const RiverOptions &o, GenerationContext &context)
 {
 	const int index = o.banks > 0 ? std::clamp(o.banks, 1, 2) - 1 : int(context.bounded(kBanksStream, 2));
@@ -704,9 +729,13 @@ bool generate(Game &game, GenerationContext &context)
 		bootY[size_t(k)] = t.y(context.bootY[k]);
 	}
 	const Banks &banks = chooseBanks(options, context);
-	const Bluffs bluffs = planBluffs(mapSketch(game.map), t, bootX, bootY, teams, options, context);
+	std::vector<unsigned char> stone(size_t(t.size()), 0);
+	for (int i = 0; i < t.size(); ++i)
+		stone[i] = game.map.getResource(t.remainderX(i), i / t.w).type == STONE;
+	const Bluffs bluffs = planBluffs(mapSketch(game.map), stone, t, bootX, bootY, teams, options, context);
 	LayerCounts counts;
-	redraw(game, context, options, banks, bluffs, counts);
+	TerrainSketch grassLooks;
+	redraw(game, context, options, banks, bluffs, counts, grassLooks);
 	context.stage = "starts";
 	if (!placeStarts(game, context))
 		return false;
@@ -716,6 +745,11 @@ bool generate(Game &game, GenerationContext &context)
 	// rectangle by now, so nothing needs to be kept clear for it. The quarry faces are walls the
 	// relief never clears.
 	openStartsBuriedByResources(game, context, 24, 32, 0, &bluffs.quarry);
+	// Last, the grass looks: until now every grass vertex was plain GRASS, which is all the
+	// starting-crop guarantee will plant on (a top-up that found plain grass only beside the swarm
+	// filled a desert home's building room with wheat). Looks inside the grass group change no rule
+	// and no deposit, so they go on now, over whatever plain grass the starts left.
+	layGrassLooks(game.map, grassLooks);
 	return true;
 }
 
@@ -745,10 +779,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 	GenerationContext replay(context.request);
 	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
-	const TerrainSketch stamp = heightFieldSketch(context.request, replay, terrain, riverBuilder(options, replay));
+	std::vector<int> deposits;
+	const TerrainSketch stamp =
+		heightFieldSketch(context.request, replay, terrain, riverBuilder(options, replay), &deposits);
+	std::vector<unsigned char> stone(deposits.size(), 0);
+	for (size_t i = 0; i < deposits.size(); ++i)
+		stone[i] = deposits[i] == STONE;
 	// The banks' draw comes before the bluffs' in generate; the streams are separate, so it need not
 	// be repeated here.
-	const Bluffs bluffs = planBluffs(stamp, t, bootX, bootY, teams, options, replay);
+	const Bluffs bluffs = planBluffs(stamp, stone, t, bootX, bootY, teams, options, replay);
 	if (const std::string fault = quarryFault(map, t, bluffs.quarry, bluffs.owner, teams, 0); !fault.empty())
 		return fault;
 	if (const int parting = partingBarrier(map); parting >= 0)

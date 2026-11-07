@@ -1394,6 +1394,12 @@ inline void heightFieldLooksChecks()
 			   !wet[size_t(t.at(8, 8))]);
 		const std::vector<int> steps = stepsFromWet(t, s);
 		assert(steps[size_t(t.at(5, 5))] == 0 && steps[size_t(t.at(8, 5))] == 1 && steps[size_t(t.at(10, 10))] == 3);
+		// Straight-line distance: round contours, never under the steps.
+		const std::vector<int> round = distanceFromWet(t, s);
+		assert(round[size_t(t.at(10, 10))] == 4 && round[size_t(t.at(8, 5))] == 1 && round[size_t(t.at(5, 5))] == 0);
+		for (int i = 0; i < t.size(); ++i)
+			assert(round[size_t(i)] >= steps[size_t(i)]);
+		assert(distanceFromWet(t, TerrainSketch(size_t(t.size()), GRASS))[0] == -1);
 		const std::vector<int> dry = stepsFromWet(t, TerrainSketch(size_t(t.size()), GRASS));
 		assert(std::all_of(dry.begin(), dry.end(), [](int v) { return v == -1; }));
 	}

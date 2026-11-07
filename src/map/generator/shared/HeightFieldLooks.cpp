@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeightFieldLooks.h"
+#include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationWork.h"
 #include "HeightMap.h"
@@ -10,10 +11,12 @@
 #include "Topology.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 namespace MapGeneration
 {
 TerrainSketch heightFieldSketch(const GenerationRequest &request, GenerationContext &context,
-								const HeightFieldOptions &options, const HeightFieldBuilder &build)
+								const HeightFieldOptions &options, const HeightFieldBuilder &build,
+								std::vector<int> *deposits)
 {
 	// The same steps, in the same order, as generateHeightField up to its terrain (Terrain.cpp).
 	const int w = 1 << request.wDec, h = 1 << request.hDec;
@@ -22,9 +25,22 @@ TerrainSketch heightFieldSketch(const GenerationRequest &request, GenerationCont
 	HeightMap hm(tiling.w, tiling.h, context.stream("heightmap"));
 	build(hm, tiling.w, tiling.h, smoothingFactor);
 	const HeightFieldLevels levels = classifyHeightField(hm, tiling, options);
-	Map scratch;
+	Game game(nullptr);
+	Map &scratch = game.map;
 	scratch.setSize(request.wDec, request.hDec);
+	scratch.setGame(&game);
 	paintHeightFieldTerrain(scratch, hm, tiling, levels);
+	if (deposits)
+	{
+		paintHeightFieldResources(scratch, hm, tiling, levels, options);
+		deposits->assign(size_t(w) * h, NO_RES_TYPE);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				::MapGeneration::generationCheckpoint();
+				(*deposits)[size_t(y) * w + x] = scratch.getResource(x, y).type;
+			}
+	}
 	return mapSketch(scratch);
 }
 
@@ -58,6 +74,27 @@ std::vector<int> stepsFromWet(const Torus &t, const TerrainSketch &sketch)
 	if (std::find(wet.begin(), wet.end(), 1) == wet.end())
 		return std::vector<int>(sketch.size(), -1);
 	return stepsFrom(t, wet);
+}
+
+std::vector<int> distanceFromWet(const Torus &t, const TerrainSketch &sketch)
+{
+	const std::vector<unsigned char> wet = wetVertices(sketch);
+	if (std::find(wet.begin(), wet.end(), 1) == wet.end())
+		return std::vector<int>(sketch.size(), -1);
+	const std::vector<std::int64_t> d2 = distanceSquaredTo(t, wet);
+	std::vector<int> distance(sketch.size(), 0);
+	for (size_t i = 0; i < sketch.size(); ++i)
+	{
+		::MapGeneration::generationCheckpoint();
+		// Integer square root, then rounded: d2 - r^2 > r means sqrt(d2) is past r + 1/2.
+		std::int64_t r = std::int64_t(std::sqrt(double(d2[i])));
+		while ((r + 1) * (r + 1) <= d2[i])
+			++r;
+		while (r * r > d2[i])
+			--r;
+		distance[i] = int(d2[i] - r * r > r ? r + 1 : r);
+	}
+	return distance;
 }
 
 int deepenWater(TerrainSketch &sketch, const Torus &t, int steps, int least, TerrainType deep,

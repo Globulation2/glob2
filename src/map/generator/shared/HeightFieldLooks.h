@@ -23,9 +23,11 @@ namespace MapGeneration
 /// The vertex terrain generateHeightField paints for this request (water, beach, grass and desert,
 /// with Map::layBeaches applied), rebuilt from the "heightmap" stream of a fresh context with no
 /// resources and no starts: what a validator replans a post-pass from. `context` must not have drawn
-/// from "heightmap" yet; `build` is the generator's own field builder.
+/// from "heightmap" yet; `build` is the generator's own field builder. Given `deposits`, it also
+/// receives every tile's resource type from the field's own bands (paintHeightFieldResources: algae,
+/// stone, wheat and wood; NO_RES_TYPE elsewhere), before any start, kit or grove.
 TerrainSketch heightFieldSketch(const GenerationRequest &, GenerationContext &, const HeightFieldOptions &,
-								const HeightFieldBuilder &build);
+								const HeightFieldBuilder &build, std::vector<int> *deposits = nullptr);
 
 /// The current vertex terrain of a map, as a sketch.
 TerrainSketch mapSketch(const Map &);
@@ -39,6 +41,12 @@ std::vector<unsigned char> wetVertices(const TerrainSketch &);
 /// growth probe reaches 15 tiles on each axis, so ground 16 steps out is never watered, and a
 /// mirrored probe reaches about 30, so an inhibitor 22 or more steps out costs a crop almost nothing.
 std::vector<int> stepsFromWet(const Torus &, const TerrainSketch &);
+
+/// The distance from the nearest wet vertex as a straight line, rounded to whole tiles (-1 everywhere
+/// when there is none): round contours for looks and far-ground edges, where stepsFromWet's
+/// eight-connected steps draw squares round every pond. Never less than stepsFromWet, so a rule that
+/// must hold in steps (the growth probe's square reach) still needs stepsFromWet as its floor.
+std::vector<int> distanceFromWet(const Torus &, const TerrainSketch &);
 
 /// Deep water with a shallow margin: plain WATER vertices at least `steps` four-connected steps from
 /// any non-water vertex (deepCore, Rock.h; at least 2) and, where given, allowed by `eligible`, in
