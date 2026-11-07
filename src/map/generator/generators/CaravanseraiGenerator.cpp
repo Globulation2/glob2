@@ -681,18 +681,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("caravanserai.mesa.tiles", mesaTiles);
 
 	// Quarry faces cut into the mesas' flanks, the stone of the desert: edge tiles where the mesa is
-	// thick enough to stay a wall behind them, nearest the roads and oases first, spaced apart.
+	// thick enough to stay a wall behind them, the faces nearest a home first (half weight on the
+	// nearest road or oasis), spaced apart, so every colony's nearest mesa is quarried on its side.
 	std::vector<unsigned char> offMesa(n, 0);
 	for (int i = 0; i < n; ++i)
 		offMesa[i] = !L.mesa[i];
-	const std::vector<int> fromOff = stepsFrom(t, offMesa);
+	const std::vector<int> fromOff = stepsFrom(t, offMesa), fromHomes = stepsFrom(t, L.homeVertex);
 	std::vector<std::pair<int, int>> faces;
 	int edge = 0;
 	for (int i = 0; i < n; ++i)
 		if (L.mesa[i] && fromOff[i] == 1)
 		{
 			++edge;
-			faces.push_back({fromKept[i] * 16 + int(context.bounded("caravanserai-quarries", 16)), i});
+			faces.push_back(
+				{(2 * fromHomes[i] + fromKept[i]) * 16 + int(context.bounded("caravanserai-quarries", 16)), i});
 		}
 	std::stable_sort(faces.begin(), faces.end());
 	const int wantedQuarries = int(scaledCount(edge / kEdgePerQuarry, o.stone));
