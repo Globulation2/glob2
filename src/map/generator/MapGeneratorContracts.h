@@ -3424,7 +3424,6 @@ inline void watershedContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
-			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "watershed.climate") == names[climate - 1]);
@@ -3461,7 +3460,6 @@ inline void watershedContracts()
 	{
 		// Deep water off: no deep vertex anywhere, and the same routes on foot: every tile walks alike.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
-		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep water");
@@ -4036,7 +4034,6 @@ inline void ringWorldContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
-			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "ring-world.climate") == names[climate - 1]);
@@ -4070,7 +4067,6 @@ inline void ringWorldContracts()
 	{
 		// Deep ocean off: no deep vertex, and every tile walks alike.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
-		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep ocean");
@@ -4345,7 +4341,6 @@ inline void shatteredCoastContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
-			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "shattered-coast.climate") == names[climate - 1]);
@@ -4385,7 +4380,6 @@ inline void shatteredCoastContracts()
 		// The pass never moves a deposit: with every layer off the same seed holds the same deposits
 		// and the same starts, and with every layer on the only new deposits are the quarries' stone.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
-		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		off.options["mudflats"] = 0;
 		off.options["outcrops"] = 0;
