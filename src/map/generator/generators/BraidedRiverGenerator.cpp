@@ -1234,6 +1234,7 @@ void paintMechanics(Layout &L, GenerationContext &context, bool deep)
 	for (int i = 0; i < n; ++i)
 		rockTiles[i] = (L.bluff[i] || L.hummocks[i]) && !L.quarry[i];
 	const std::vector<unsigned char> rock = rockVertices(t, rockTiles);
+	const std::vector<unsigned char> nearQuarry = dilate(t, L.quarry, 1);
 	int rockVerticesLaid = 0, deepVertices = 0;
 	for (int i = 0; i < n; ++i)
 	{
@@ -1244,7 +1245,9 @@ void paintMechanics(Layout &L, GenerationContext &context, bool deep)
 			L.terrain[i] = RIDGE_ROCK;
 			++rockVerticesLaid;
 		}
-		else if (L.talus[i])
+		// The bluffs' rim tiles keep a corner or two off the rock: scree there too, or a thread of
+		// grass ran between the rock and its apron.
+		else if (L.talus[i] || (L.bluff[i] && !nearQuarry[i]))
 			L.terrain[i] = SCREE;
 		else if (L.pave[i])
 			L.terrain[i] = SHALE;
