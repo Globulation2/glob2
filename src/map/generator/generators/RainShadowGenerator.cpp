@@ -191,8 +191,9 @@ constexpr std::array<Lithology, 3> kLithologies{{
 	{"volcanic", OUTCROP, PUMICE},
 }};
 // The garden round every home that keeps plain grass (the starting-crop guarantee looks for it), as
-// tiles beyond the home clearing, frayed by up to kGardenFray so it never reads as a circle.
-constexpr double kGarden = 6, kGardenFray = 5;
+// tiles beyond the home clearing, frayed by up to kGardenFray more so it never reads as a lawn cut
+// round a compass point (a fray of 5 still read as a round green lawn on dry steppe).
+constexpr double kGarden = 2, kGardenFray = 12;
 
 struct Layout
 {
@@ -938,7 +939,7 @@ bool generate(Game &game, GenerationContext &context)
 		const std::vector<int> dry = fractalNoise(t.w, t.h, 32, 3, context.stream("rain-dry"));
 		const int dryCut = percentile(dry, L.climate.dryPercent);
 		const std::vector<int> crests = periodicNoise(t.w, t.h, 4, context.stream("rain-dunes"));
-		const std::vector<int> fray = periodicNoise(t.w, t.h, 8, context.stream("rain-garden"));
+		const std::vector<int> fray = fractalNoise(t.w, t.h, 16, 3, context.stream("rain-garden"));
 		const auto garden = [&](int i)
 		{
 			const double reach = L.homeRadius + kHomeMargin + kGarden + kGardenFray * fray[i] / 65536.0;
