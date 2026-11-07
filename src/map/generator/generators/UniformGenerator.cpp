@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "UniformGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
@@ -11,7 +11,7 @@ using namespace MapGeneration;
 // with no swarm, so a designer starts from nothing. It is editor-only (the definition's true below)
 // and has no starting colonies (the final false), so it is offered only in the editor, and
 // validation and the golden test expect exactly one team from it instead of one per colony.
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	game.map.fillTerrain(context.request.terrainType);
 	game.addTeam();

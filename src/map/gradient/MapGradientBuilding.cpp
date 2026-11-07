@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "BuildingType.h"
 #include "Game.h"
 #include "Unit.h"
@@ -18,7 +19,7 @@
 
 
 
-void Map::finishBuildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route) const
+void MapRouting::finishBuildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route) const
 {
     int swimClass=accessClass(movementAccessValue);
 	const int slot=building->routeSlot(swimClass,route);
@@ -29,7 +30,7 @@ void Map::finishBuildingGradient(Building *building, MovementAccess movementAcce
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
 // flag's zone or, for a clearing flag, the clearable resources in its range.
 
-void Map::updateGlobalGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route)
+void MapRouting::updateGlobalGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route)
 {
     int swimClass=accessClass(movementAccessValue);
 	PERF_SCOPE_TIME(BuildingGradient);
@@ -50,9 +51,9 @@ void Map::updateGlobalGradient(Building *building, MovementAccess movementAccess
         const auto key=GradientWorkStats::buildingKey(building->owner->teamNumber,swimClass,Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(route));
         const auto why=gradientRuntime->syncReason;
         const bool cold=why>=BuildingSyncReason::ColdNew && why<=BuildingSyncReason::ColdArea;
-        stats->request(key,game->stepCounter,unsigned(cold?AdaptiveGradientState::Reason::Cold:AdaptiveGradientState::Reason::Reactive),false);
-        const auto reason=stats->admitted(key,game->stepCounter,size);
-        stats->published(key,game->stepCounter,reason,size);
+        stats->request(key,map.game->stepCounter,unsigned(cold?AdaptiveGradientState::Reason::Cold:AdaptiveGradientState::Reason::Reactive),false);
+        const auto reason=stats->admitted(key,map.game->stepCounter,map.size);
+        stats->published(key,map.game->stepCounter,reason,map.size);
     }
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
@@ -66,16 +67,16 @@ void Map::updateGlobalGradient(Building *building, MovementAccess movementAccess
     // A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
-	building->lastGlobalGradientUpdateStepCounter[slot]=game->stepCounter;
-	building->gradientGeneration[slot]=topologyGeneration;
+	building->lastGlobalGradientUpdateStepCounter[slot]=map.game->stepCounter;
+	building->gradientGeneration[slot]=map.topologyGeneration;
 
     recordFieldCost(gradient,costClass);
     const auto seed=gradient_preparation::captureBuildingSeed(*building,costClass,route);
-    const auto seeded=gradient_preparation::buildingCells(stateView(),seed,gradient,
+    const auto seeded=gradient_preparation::buildingCells(map.stateView(),seed,gradient,
         [&](auto fn) { initializeGradientCells(fn); });
     if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 
-	auto routeInputs = BuildingGradientSearch::Inputs::of(*this, costClass);
+	auto routeInputs = BuildingGradientSearch::Inputs::of(map, costClass);
 
 	if (route == BuildingRoute::Footprint)
 	{
@@ -92,5 +93,5 @@ void Map::updateGlobalGradient(Building *building, MovementAccess movementAccess
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
-	search->begin(routeInputs, gradient, costClass, w, h);
+	search->begin(routeInputs, gradient, costClass, map.w, map.h);
 }

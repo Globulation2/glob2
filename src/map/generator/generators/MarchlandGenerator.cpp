@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MarchlandGenerator.h"
 #include "Contact.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Homes.h"
@@ -826,7 +826,7 @@ Rope levelRope(const std::vector<int> &candidates, const std::vector<std::vector
 }
 
 /// Every colony's cost to walk anywhere on the finished map, under the map's one cost model.
-std::vector<std::vector<int>> colonyCosts(const Map &map, const Torus &t, int teams)
+std::vector<std::vector<int>> colonyCosts(const GenerationMap &map, const Torus &t, int teams)
 {
 	std::vector<std::vector<int>> cost;
 	for (const auto &units : unitTilesByTeam(map, teams))
@@ -834,7 +834,7 @@ std::vector<std::vector<int>> colonyCosts(const Map &map, const Torus &t, int te
 	return cost;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "marchland country";
 	const MarchlandOptions o(context.request);
@@ -844,7 +844,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -1129,7 +1129,7 @@ std::string requestFailure(const GenerationRequest &request)
 /// each colony can contest must differ by at most kFrontTolerance. This is
 /// the same measurement the search minimised, taken again on the finished world with the prizes
 /// themselves now standing in the way, which is why it is a tolerance and not an equality.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	const int teams = context.request.nbTeams;
 	const Torus t(game.map);

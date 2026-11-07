@@ -7,7 +7,6 @@
 #include "MapCopies.h"
 #include <iostream>
 
-#include "AICastor.h"
 
 #include <assert.h>
 #include <string.h>

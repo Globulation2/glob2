@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "MapInternal.h"
 #include "Unit.h"
 #include "gradient/GradientRuntime.h"
@@ -144,20 +145,20 @@ bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const Safety
 }
 }
 
-bool Map::pathfindTerrainSafety(Unit* unit)
+bool MapRouting::pathfindTerrainSafety(Unit* unit)
 {
     unit->dx = unit->dy = 0;
     unit->direction = 8;
     const bool air = unit->performance[FLY] > 0;
     const int access=accessClass(unit->movementAccess());
     const EscapeProfile profile{air, preparationCostClass(unit->owner->teamNumber,access), unit->owner->me,
-        !air && bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
+        !air && bool(map.getForbidden(unit->posX, unit->posY) & unit->owner->me)};
 
     // Avoid allocating a field on wholly hazardous maps. Counts are maintained
     // by map edits, so this scans terrain definitions rather than map cells.
     bool hasSafeTerrain = false;
-    for (size_t t = 0; t < terrainCounts.size(); ++t)
-        if (terrainCounts[t] && profile.safe(terrainRegistry().properties(TerrainType(t))))
+    for (size_t t = 0; t < map.terrainCounts.size(); ++t)
+        if (map.terrainCounts[t] && profile.safe(map.terrainRegistry().properties(TerrainType(t))))
         {
             hasSafeTerrain = true;
             break;
@@ -168,14 +169,14 @@ bool Map::pathfindTerrainSafety(Unit* unit)
     // paint and share across teams; occupancy is checked only at descent.
     const unsigned key = 1 + ((air ? 0 : unit->owner->teamNumber) * MOVEMENT_CLASS_COUNT + access) * 2 + profile.escapeForbidden;
     auto& cache = gradientRuntime->safety;
-    auto& field = cache.acquire(key, size);
+    auto& field = cache.acquire(key, map.size);
     const Uint64 generation = air ? cache.airGeneration : cache.groundGeneration;
-    if (field.costs.size() != size || field.generation != generation || field.preparationCost != profile.swim)
+    if (field.costs.size() != map.size || field.generation != generation || field.preparationCost != profile.swim)
     {
-        buildEscapeField(*this, profile, field);
+        buildEscapeField(map, profile, field);
         field.generation = generation;
         field.preparationCost = profile.swim;
         ++cache.builds;
     }
-    return chooseEscapeStep(*this, profile, field, *unit);
+    return chooseEscapeStep(map, profile, field, *unit);
 }

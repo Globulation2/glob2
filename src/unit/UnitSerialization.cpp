@@ -10,7 +10,10 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "UnitCargo.h"
+#include "sim/SimServices.h"
 
 #include "Building.h"
 #include "Integrity.h"
@@ -49,12 +52,12 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	gid = stream->readUint16("gid");
 	if (gid >= MAX_COUNT * Team::MAX_COUNT || GIDtoTeam(gid) != owner->teamNumber)
 		throw std::runtime_error("Invalid unit identity");
-	scriptIdentity=versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(false,gid);
+	scriptIdentity=versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->ctx.services->allocateScriptIdentity(false,gid);
 	this->owner = owner;
 	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
 		loadEntityRandom(stream, entityRandom);
 	else
-		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
+		entityRandom.initialize(owner->ctx.gameHeader->getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
 	isDead = stream->readSint32("isDead");
 	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
 	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
@@ -205,7 +208,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		previousClearingAreaDistance = stream->readUint32("clearingClaimDistance");
 	}
 
-	owner->game->unitCargo.erase(gid);
+	owner->ctx.unitCargo->erase(gid);
 	if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) {
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		const unsigned purpose=stream->readUint8("jobPurpose");
@@ -235,7 +238,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 			const bool primary=widePrimaryCargo() && i==0;
 			if (material<0 || material>=int(MaterialCount) || !packet.numerator || !packet.denominator || packet.numerator>packet.denominator || (!primary && !canCarryMaterial(material)) || (primary && material!=carriedMaterial))
 				throw std::runtime_error("Invalid unit cargo packet");
-			owner->game->unitCargo.overflow(gid).push_back({material,packet});
+			owner->ctx.unitCargo->overflow(gid).push_back({material,packet});
 		}
 	} else if (activity==ACT_FILLING) jobPurpose=UnitJobPurpose::Transport;
 	else if (activity==ACT_FLAG) jobPurpose=hasCapability(UnitRuntimeTraits::Clear)?UnitJobPurpose::Clear:
@@ -373,7 +376,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeUint8(Uint8(jobPurpose),"jobPurpose");
 	stream->writeUint8(regenerationRemainder,"regenerationRemainder");
 	stream->writeUint32(widePrimaryCargo(),"widePrimaryCargo");
-	const auto* extra=owner->game->unitCargo.find(gid);
+	const auto* extra=owner->ctx.unitCargo->find(gid);
 	stream->writeUint32(extra?extra->size():0,"cargoOverflowCount");
 	if (extra) for (unsigned i=0;i<extra->size();++i) {
 		stream->writeEnterSection(i);
@@ -386,7 +389,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 
     // Map export deliberately omits active policy/runtime. Project transient
     // ownership out of the bytes without changing the continuing live match.
-    const bool persistClaims=owner->game->mapHeader.getIsSavedGame();
+    const bool persistClaims=owner->ctx.mapHeader->getIsSavedGame();
     stream->writeEnterSection("activeMaterialClaim");
     stream->writeUint8(persistClaims && activeMaterialClaim.has_value(),"has");
     stream->writeUint32(persistClaims?materialClaimTask>>32:0,"taskHigh");stream->writeUint32(persistClaims?materialClaimTask:0,"taskLow");
@@ -638,7 +641,7 @@ Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
             append(materialClaimPolicyState.lastGoalAttempt>>32);append(materialClaimPolicyState.lastGoalAttempt);
         }
 		if (hasCapability(UnitRuntimeTraits::ExtendedCargo) || widePrimaryCargo()) {
-			const auto* extra=owner->game->unitCargo.find(gid); append(extra?extra->size():0);
+			const auto* extra=owner->ctx.unitCargo->find(gid); append(extra?extra->size():0);
 			if (extra) for (const auto& entry:*extra) {
 				append(entry.material); append(entry.packet.numerator>>32); append(entry.packet.numerator);
 				append(entry.packet.denominator>>32); append(entry.packet.denominator);

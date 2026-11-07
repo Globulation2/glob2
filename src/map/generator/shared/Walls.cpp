@@ -1,7 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Walls.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "ResourceSemantics.h"
 #include "Sketch.h"
 #include "TerrainType.h"
@@ -10,7 +10,7 @@
 #include <stdexcept>
 namespace MapGeneration
 {
-std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
+std::vector<unsigned char> seaMargin(const GenerationMap &map, const Torus &t,
 									 const std::vector<unsigned char> &sea,
 									 const std::vector<unsigned char> &notBeach)
 {
@@ -49,7 +49,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
 	return margin;
 }
 
-std::vector<unsigned char> seaVertices(const Map &map, const Torus &t,
+std::vector<unsigned char> seaVertices(const GenerationMap &map, const Torus &t,
 									   const std::vector<unsigned char> &lakes)
 {
 	std::vector<unsigned char> sea(t.size(), 0);
@@ -61,7 +61,7 @@ std::vector<unsigned char> seaVertices(const Map &map, const Torus &t,
 	return sea;
 }
 
-int seaEntry(const Map &map, const Torus &t, const std::vector<unsigned char> &margin,
+int seaEntry(const GenerationMap &map, const Torus &t, const std::vector<unsigned char> &margin,
 			 const std::vector<unsigned char> &inside)
 {
 	const std::vector<unsigned char> open = walkableTiles(map);
@@ -81,7 +81,7 @@ int seaEntry(const Map &map, const Torus &t, const std::vector<unsigned char> &m
 	return -1;
 }
 
-std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
+std::vector<unsigned char> sealCoasts(const GenerationMap &map, const Torus &t,
 									  const std::vector<unsigned char> &margin,
 									  const std::vector<unsigned char> &wallable)
 {
@@ -182,7 +182,8 @@ std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &
 	return wall;
 }
 
-DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<unsigned char> &wall)
+DesignedStone designedStone(const GenerationMap &map, const Torus &t,
+							const std::vector<unsigned char> &wall)
 {
 	const int n = t.w * t.h;
 	DesignedStone result;
@@ -200,7 +201,7 @@ DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<un
 	return result;
 }
 
-std::vector<int> reachesWithShut(const Map &map, const Torus &t,
+std::vector<int> reachesWithShut(const GenerationMap &map, const Torus &t,
 								 const std::vector<unsigned char> &from,
 								 const std::vector<unsigned char> &shut)
 {
@@ -214,7 +215,7 @@ std::vector<int> reachesWithShut(const Map &map, const Torus &t,
 	return stepsFrom(t, from, open);
 }
 
-std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
+std::array<int, 2> colonyLeak(const GenerationMap &map, const Torus &t, int teams,
 							  const std::vector<unsigned char> &shut)
 {
 	const int n = t.w * t.h;
@@ -245,7 +246,7 @@ std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
 	return {-1, -1};
 }
 
-int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
+int pieceLeak(const GenerationMap &map, const Torus &t, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut)
 {
 	const int n = t.w * t.h;
@@ -406,8 +407,8 @@ int towerReach(const Torus &t, const std::vector<unsigned char> &buildable,
 	return best;
 }
 
-WalkSpread walkSpread(const Map &map, const Torus &t, const std::vector<std::vector<int>> &workers,
-					  const std::vector<int> &targets)
+WalkSpread walkSpread(const GenerationMap &map, const Torus &t,
+					  const std::vector<std::vector<int>> &workers, const std::vector<int> &targets)
 {
 	WalkSpread spread;
 	const std::vector<unsigned char> open = walkableTiles(map);
@@ -428,7 +429,7 @@ WalkSpread walkSpread(const Map &map, const Torus &t, const std::vector<std::vec
 	}
 	return spread;
 }
-std::vector<unsigned char> islandSeaMargin(const Map &map, const Torus &t,
+std::vector<unsigned char> islandSeaMargin(const GenerationMap &map, const Torus &t,
 										   const std::vector<unsigned char> &ponds,
 										   const std::vector<unsigned char> &roadTile,
 										   const std::vector<unsigned char> &otherSand)
@@ -443,7 +444,7 @@ std::vector<unsigned char> islandSeaMargin(const Map &map, const Torus &t,
 	return seaMargin(map, t, seaVertices(map, t, ponds), notBeach);
 }
 
-std::vector<unsigned char> sealedIslandStone(const Map &map, const Torus &t,
+std::vector<unsigned char> sealedIslandStone(const GenerationMap &map, const Torus &t,
 											 const std::vector<unsigned char> &margin,
 											 const std::vector<unsigned char> &land,
 											 const std::vector<unsigned char> &designed)
@@ -458,7 +459,8 @@ std::vector<unsigned char> sealedIslandStone(const Map &map, const Torus &t,
 	}
 	return stone;
 }
-std::string wallStanding(const Map &map, const Torus &t, const std::vector<unsigned char> &wall,
+std::string wallStanding(const GenerationMap &map, const Torus &t,
+						 const std::vector<unsigned char> &wall,
 						 const std::vector<unsigned char> &doors, const char *what)
 {
 	for (int i = 0; i < t.size(); ++i)

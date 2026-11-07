@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 
+#include <GraphicContext.h>
 #include "GameAnimations.h"
 
 #include "GlobalContainer.h"

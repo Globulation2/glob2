@@ -12,7 +12,9 @@
 // save made with the experiment would carry it into a game without it, and
 // check that nothing reads it.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"
 #include "Order.h"

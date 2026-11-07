@@ -26,6 +26,18 @@
 namespace fs = std::filesystem;
 namespace GameDiagnostics
 {
+std::function<void(const PresentationFrame&, const std::string&, int, const MapRender::Field*)>& fieldImageRenderer()
+{
+	static std::function<void(const PresentationFrame&, const std::string&, int, const MapRender::Field*)> renderer;
+	return renderer;
+}
+
+static void renderFieldImage(const PresentationFrame& scene, const std::string& path, int pixels, const MapRender::Field* field)
+{
+	if (!fieldImageRenderer()) throw std::runtime_error("offscreen renderer unavailable");
+	fieldImageRenderer()(scene, path, pixels, field);
+}
+
 namespace
 {
 struct Named { const char* name; const char* units; int r,g,b; };
@@ -332,7 +344,7 @@ void Session::drain() noexcept
 				for (size_t i=0; i<field.values.size(); ++i) out << field.values[i] << (dimensionRemainder((i+1), field.width) ? ' ' : '\n');
 				out.flush(); out.close(); if (!out) throw std::runtime_error("Field write failed");
 				metadata["fields"][named.name]={{"units",named.units},{"colour",{named.r,named.g,named.b}}};
-				if (png) { field.red=named.r; field.green=named.g; field.blue=named.b; MapRender::toPng(*scene,(staging/(std::string(named.name)+".png")).string(),2048,&field); }
+				if (png) { field.red=named.r; field.green=named.g; field.blue=named.b; renderFieldImage(*scene,(staging/(std::string(named.name)+".png")).string(),2048,&field); }
 			}
 			if (scene) metadata["scene_tick"]=scene->tick;
 			metadata["complete"]=true;

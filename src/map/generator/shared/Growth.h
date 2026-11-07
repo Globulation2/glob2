@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
-class Map;
+class GenerationMap;
 namespace MapGeneration
 {
 // Where wheat and wood can spread: sketch fertility and finished-map containment.
@@ -23,7 +23,7 @@ namespace MapGeneration
 
 /// Existing wheat/wood seeds inside a tile mask (one entry per map tile). Use this after
 /// resource guarantees and repairs to check that reserved building ground stayed seed-free.
-int cropSeedsIn(const Map &, const std::vector<unsigned char> &region);
+int cropSeedsIn(const GenerationMap &, const std::vector<unsigned char> &region);
 
 /// Conservative future crop footprint on a finished map: flood from all wheat/wood through
 /// eight-connected pure grass, wrapping at map edges. Ignores fertility, buildings and other
@@ -32,12 +32,12 @@ int cropSeedsIn(const Map &, const std::vector<unsigned char> &region);
 /// Neither operation mutates the map or consumes random numbers.
 /// With fertility supplied, zero-growth seeds are included but do not initiate a
 /// spread flood. The envelope from renewable seeds still conservatively ignores fertility.
-Flood cropSpreadEnvelope(const Map &, const Fertility::Field *fertility = nullptr);
+Flood cropSpreadEnvelope(const GenerationMap &, const Fertility::Field *fertility = nullptr);
 
 /// Future crop occupancy using exact source fertility. A fertile crop may seed
 /// any grass neighbour, including one final dry tile; dry tiles cannot spread
 /// again. Ignores buildings and other resources for a conservative upper bound.
-std::vector<unsigned char> fertileCropEnvelope(const Map &, const Fertility::Field &);
+std::vector<unsigned char> fertileCropEnvelope(const GenerationMap &, const Fertility::Field &);
 
 /// How far, on each axis, the engine's crop growth probe reaches for water.
 constexpr int kCropProbeReach = 15;

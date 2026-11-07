@@ -5,7 +5,7 @@
 #pragma once
 
 #include "GraphicContext.h"
-#include "Game.h"
+struct PresentationFrame;
 #include <ui/Geometry.h>
 
 
@@ -102,7 +102,7 @@ private:
 	const PresentationFrame* scene = nullptr; //!< valid only while draw() runs
 	int mapW = 0, mapH = 0;       //!< size of the shown map, in tiles
 
-	DrawableSurface *surface;
+	GAGCore::DrawableSurface *surface;
 };
 
 

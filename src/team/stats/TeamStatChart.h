@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "stats/MetricCatalog.h"
-#include <GraphicContext.h>
+#include <GAGColor.h>
+namespace GAGCore { class DrawableSurface; }
 #include <string>
 #include <vector>
 

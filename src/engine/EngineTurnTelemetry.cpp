@@ -5,6 +5,7 @@
 // Reads TurnSession's counters only: nothing here feeds back into the game, its
 // orders, checksums, replays or saves.
 
+#include "ComputeExecutor.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>

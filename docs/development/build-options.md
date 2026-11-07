@@ -54,6 +54,63 @@ release, perf or profiling builds. Preserve numeric guards and compare simulatio
 checksums when validating build configurations; do not bump the simulation
 revision to mask a build-induced mismatch.
 
+## Core compile profile
+
+`compile_profile=core` is an opt-in native development build that leaves out code
+most edits never touch, so a change to a core header recompiles fewer files:
+
+```sh
+python3 tools/dev_build.py compile_profile=core engine-tests unit-tests
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto-compile_profile-core
+```
+
+It leaves out the optional groups `scons/sources.py` defines as filters over
+`CLIENT_SOURCES`:
+
+- `generators`: the map generators in `src/map/generator/generators/`, except
+  the default lobby landscape (`lava-shield`), `uniform`, `hills`, and `forts`
+  and `even-ground`, whose blueprints the JavaScript toolkit binds. Generator
+  core, shared, compatibility and JavaScript code stay.
+- `ai:castor`, `ai:cortex`, `ai:cabino`. Nicowar, Econo and Warrush (the golden
+  match and the shared runtime), Maxima, JavaScript and AINull stay, and so does
+  Numbi, the custom-game default AI that most game-starting tests use.
+- `editor`: the map editor in `src/map/editor/`, apart from its keyboard
+  shortcut table, which the settings screen edits, and the brush swatches that
+  `glob2 map` renders. `Game_editor.cpp` stays: it holds `Game`'s own placement
+  and script queries. The menu's editor button then only prints why it does
+  nothing.
+
+The registries keep every id and catalog position, and drop only the entries
+that are not built. Creating or loading an AI that was left out fails with
+"… is not compiled into this build (compile_profile=core); rebuild with
+compile_profile=full". Saves, replays and scripts keep the same ids. Lobby
+pickers offer only the AIs and generators that were built, and the custom-game
+lobby replaces a saved AI that was left out with Nicowar, as does loading a saved
+network game, whose remote players normally become Castor.
+Rated play, `match verify` and `online turn-client` refuse to run outside the
+full profile. `glob2 info version` reports `compile_profile`, and the build
+directory's `profile.json` records it.
+
+Core builds go in their own directory (`…-compile_profile-core`), so full and
+core objects never mix. Only `src/app/CompileProfile.cpp` and the AI and
+generator registries include the generated `glob2/CompileProfile.h`. No compile
+line gains a define, so the other objects match the full build's. The first
+core build still recompiles about half of them: a source that includes a header
+generated in the build directory (such as `glob2/BuildConfig.h`) carries that
+directory's path in its preprocessed text, so it misses the compiler-cache entry
+the full build made. Later core builds are incremental as usual. Editing
+`src/game/Game.h` recompiles about 20% fewer client sources in the core profile
+(219 instead of 274), and `src/unit/Unit.h` about 22% fewer. Test registry
+entries name the groups they need with `require={'generators'}`, `'editor'` or
+`'ai:castor'`, and core test binaries leave those entries out. A single case
+that needs one takes `* glob2test::needs({"ai:castor"})` (`test/support/ProfileNeeds.h`)
+and is not listed in a core build; loops over several AIs skip the ones
+`AIRegistry::available` rejects.
+
+The full profile is the default. CI, releases and every perf build use it, and
+final PR verification must use it too: a passing core build covers only the
+code it compiled.
+
 ## Build tiers
 
 | Tier | Command | Evidence it may back |
@@ -102,7 +159,13 @@ configuration. Its C++ objects bypass ccache rather than weakening cache
 correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
 checked-in allowlist in deterministic groups of at most four files, preserves
 ordinary source commands for IDEs, and reuses production objects in harnesses.
-Both experiments default off; their speed benefit must be measured.
+Both experiments default off; their speed benefit must be measured. Precompiling
+a wider standard set (adding `chrono`, `functional`, `iostream`, `filesystem`,
+`format`, `nlohmann/json.hpp` and `SDL3/SDL.h`) cut `-O0` compile CPU only to 0.93×
+on a random 16-file sample on Linux GCC 15, and made small files slower to compile
+than without it; PCH is worth making a default only below about 0.75×, so it stays
+opt-in. Most remaining compile time is the project's own headers, which the
+[header dependency rules](conventions.md#header-dependencies) address instead.
 
 `linker=auto` uses installed LLD for native Linux ELF builds and otherwise keeps
 the platform linker. `linker=lld` fails on unsupported targets or missing tools.
@@ -184,6 +247,60 @@ Compile/link work totals sum command durations; they are not parallel wall times
 GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
+
+### Experimental CMake build
+
+A CMake + Ninja build of the native Linux fast-development client runs beside
+SCons while the two are compared object for object. SCons remains the default
+and the only build for every other target, for tests and harnesses, and for
+anything installed or shipped. It needs CMake 3.25 or later, Ninja and
+`pkg-config`; if the host lacks CMake or Ninja, `pip install cmake ninja` into a
+development virtual environment provides both.
+
+```sh
+python3 tools/dev_build.py --generator=cmake            # configure if needed, build glob2
+python3 tools/dev_build.py --generator=cmake usl gag -j8
+cmake --preset dev && cmake --build --preset dev        # the same, directly
+python3 tools/compare_build_systems.py                  # parity report
+```
+
+The `dev` preset (`CMakePresets.json`) builds into `build/cmake/dev` with
+`-O0 -g1 -fdebug-prefix-map=<checkout>=.` and writes `compile_commands.json`.
+When ccache is installed it is the compiler launcher, with the managed cache
+directory and settings SCons uses. Ninja does not draw from the SCons
+[token pool](#parallel-lanes); the wrapper passes `-j8` unless given `-jN`.
+
+What it builds: `libusl.a`, `libgag.a`, `libGlob2JavaScript.a` (QuickJS and
+openlibm with the strict numeric flags of `scons/javascript.py`, applied per
+source), every client object, as the object library `glob2_client`, and the
+`glob2` executable, with the numeric symbol guard run after linking. Source
+lists, include directories and the strict-numeric source sets come from
+`cmake/sources.cmake`, which `python3 scons/export_cmake_sources.py` writes from
+`scons/sources.py` and `scons/javascript.py`. Commit the regenerated file with any
+manifest change; `test/build_system/test_cmake_sources.py` fails while it is
+stale. `BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `SkinMaterials.h`, the
+renderer shaders, the Hive contract, the online error catalog and
+`SkinRenderRecipe.h` come from the SCons generators, through
+`scons/cmake_generate.py`.
+
+What it does not do yet: export runtime assets (`BuildPaths.h` points the
+CMake `glob2` at the SCons dev build's `runtime-assets`, so run
+`tools/dev_build.py` once before starting it), build the pinned recording
+libraries (it uses `GLOB2_SDL3_PREFIX`'s `recording/` or the SCons build's
+prefix), tests and harnesses, the relay, installation and packaging, PCH or
+unity variants, or any browser, mobile, macOS or Windows target.
+
+`tools/compare_build_systems.py` builds `glob2` with both systems into
+`build/parity/scons` and `build/parity/cmake`, both with an extra
+`-ffile-prefix-map=<checkout>/=`, then compares each source's compile command
+(the `-I` search order and the multiset of all other flags, with paths
+normalised) and the sha256 of each pair of objects, raw and with debug sections
+stripped. The CMake parity build runs without ccache: `CCACHE_BASEDIR` rewrites
+CMake's absolute source paths relative to its build directory, so in the
+ordinary preset `__FILE__` reads `../../../src/...` where SCons has `src/...`,
+and objects that use it differ in that string. `--no-build` reuses existing parity builds, `--time-noop` also times a
+no-change rebuild of both ordinary dev builds, and `--json` writes the full
+report. It exits 1 on any flag or source-set difference.
 
 ### Shared renderer shader assets
 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Version.h"
-#include "EngineFixtures.h"
+#include "ProfileNeeds.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "AI.h"
 #include "shared_runtime/Runtime.h"
 #include "ExperimentalFeatures.h"
@@ -196,6 +198,7 @@ TEST_SUITE("AIDecisionCoverage")
         };
         for(auto id : {AI::ECONO,AI::NICOWAR,AI::CORTEX,AI::CABINO,AI::MAXIMA,AI::WARRUSH})
         {
+            if (!AIRegistry::available(id)) continue; // left out of compile_profile=core
             CAPTURE(id);
             const auto forbidden=placement(id,false);
             const auto farms=placement(id,true);
@@ -217,7 +220,8 @@ TEST_SUITE("AIDecisionCoverage")
             };
         };
         for (auto id : {AI::ECONO,AI::NICOWAR,AI::CORTEX,AI::CABINO,AI::MAXIMA})
-            continuation(id,false,768,256,true,farmed(id));
+            if (AIRegistry::available(id)) // left out of compile_profile=core
+                continuation(id,false,768,256,true,farmed(id));
         // Warrush saves none of its state (AIWarrush::save), so its area timers
         // restart after a load and a busy farm() cannot resume identically; it is
         // checked without the save-load half.
@@ -225,12 +229,12 @@ TEST_SUITE("AIDecisionCoverage")
         for (int i=0; i<1024; ++i) tick(warrush.world.game);
         farmed(AI::WARRUSH)(warrush.world.game);
     }
-    TEST_CASE("Cortex economy and food shortage survive save-load")
+    TEST_CASE("Cortex economy and food shortage survive save-load" * glob2test::needs({"ai:cortex"}))
     {
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::CORTEX,depleted,checkpoint);
     }
-    TEST_CASE("Cabino specialist modules survive save-load")
+    TEST_CASE("Cabino specialist modules survive save-load" * glob2test::needs({"ai:cabino"}))
     {
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::CABINO,depleted,checkpoint);
@@ -383,7 +387,7 @@ TEST_SUITE("AIDecisionCoverage")
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::ECONO,depleted,checkpoint);
     }
-    TEST_CASE("Castor and Maxima growth and shortage resume at early and active checkpoints")
+    TEST_CASE("Castor and Maxima growth and shortage resume at early and active checkpoints" * glob2test::needs({"ai:castor"}))
     {
         glob2test::HeadlessGlobals globals;
         for (auto id : {AI::CASTOR,AI::MAXIMA})

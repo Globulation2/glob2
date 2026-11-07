@@ -37,8 +37,30 @@
     "src/map/editor": 7,
     "src/map/preview": 7,
     "src/map/tools": 7,
-    "src/app": 8
+    "src/app": 8,
+    "src/team/TeamCapacity.h": 1,
+    "src/building/BuildingRoute.h": 1,
+    "src/team/stats/CoverageBuilding.h": 1,
+    "src/engine/sim/SimContext.h": 1
   },
-  "simulation": ["src/map", "src/unit", "src/building", "src/team", "src/game", "src/engine/sim", "src/resource", "src/field"],
-  "presentation": ["src/render", "src/hud", "src/ui", "src/unit/render", "src/building/hud", "src/game/screens", "src/map/editor", "src/map/preview"]
+  "simulation": [
+    "src/map",
+    "src/unit",
+    "src/building",
+    "src/team",
+    "src/game",
+    "src/engine/sim",
+    "src/resource",
+    "src/field"
+  ],
+  "presentation": [
+    "src/render",
+    "src/hud",
+    "src/ui",
+    "src/unit/render",
+    "src/building/hud",
+    "src/game/screens",
+    "src/map/editor",
+    "src/map/preview"
+  ]
 }

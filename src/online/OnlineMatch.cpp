@@ -5,6 +5,7 @@
 #include "PlatformApi.h"
 #include "SkinDownloads.h"
 
+#include "CompileProfile.h"
 #include "Engine.h"
 #include "MapCache.h"
 #include "MatchSetup.h"
@@ -255,6 +256,10 @@ OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &
 {
 	makeTransport = [](const std::string &url) { return std::make_shared<RelayTransport>(url); };
 	parseAssignment();
+	// A rated result must come from the simulation every other client and the verifier run.
+	if (ctx.rated && !CompileProfile::isFull())
+		fail(std::string("rated play needs the full simulation; this build uses compile_profile=") +
+			 CompileProfile::name() + ", rebuild with compile_profile=full");
 	const auto &account = client.account();
 	outcome = std::make_shared<OnlineMatchResult>(client.origin(), id, account ? account->id : std::string());
 	outcome->label = ctx.label;

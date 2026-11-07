@@ -2,7 +2,7 @@
 #pragma once
 #include "StartQuality.h"
 #include <vector>
-class Game;
+class GenerationWorld;
 
 namespace MapGeneration
 {
@@ -54,7 +54,8 @@ struct StartDiagnosticsReport
 };
 
 /// Requires the same finished map scoreStarts does. Reads the map and changes nothing.
-StartDiagnosticsReport diagnoseStarts(Game &game, int nbTeams, const StartQualityScale &scale = {});
+StartDiagnosticsReport diagnoseStarts(GenerationWorld &game, int nbTeams,
+									  const StartQualityScale &scale = {});
 
 /// A controlled edit to one colony's start, for counterfactual experiments rather than for any
 /// map a player sees: play the same map from the same game seed with and without it, and the
@@ -63,5 +64,5 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int nbTeams, const StartQualit
 /// steps of `team`'s starting workers. Clears tiles in place and draws no random number, so the
 /// rest of the world is exactly the unedited map. Returns deposits removed, or -1 when the team
 /// does not exist.
-int removeResourceNear(Game &game, int team, int resource, int radius);
+int removeResourceNear(GenerationWorld &game, int team, int resource, int radius);
 } // namespace MapGeneration

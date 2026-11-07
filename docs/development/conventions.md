@@ -34,11 +34,39 @@ keep simulation headers (`src/map`, `src/unit`, `src/building`, `src/team`,
 UI and the full SDL umbrella. Hot per-cell accessors stay inline in their headers
 because release builds do not use LTO.
 
+Team, building and unit code reaches its game through `Team::ctx`
+(`src/engine/sim/SimContext.h`): plain pointers to the game header, map header,
+map, building types, unit cargo, area effects, animations, step counter, teams and
+players, plus `ctx.services` (`sim/SimServices.h`, implemented by `Game`) for the
+few calls such as `allocateScriptIdentity` or `resolveUnit`. Use `owner->ctx.x` and
+the specific header of `x` rather than `owner->game->x` and `Game.h`; the pointer
+read costs the same as the `game` read it replaces. Code that owns a game-wide
+pipeline (hiring, turret targeting, team statistics, area effects) still takes a
+`Game&`.
+
+Map routing lives in `MapRouting` (`src/map/gradient/MapRouting.h`), owned by the
+map and reached through `map->routing()`: pathfinding (`pathfindBuilding`,
+`pathfindMaterial`, `pathfindArea`, point-to-point A*), building and material field
+requests and queries (`requestBuildingField`, `queryMaterialDistance`,
+`getMaterialGradient`, `materialAvailable`), the per-team material, market,
+forbidden, guard and clear gradients with their stale flags, the material routing
+cache, building gradient leases and the gradient pipeline. `Map.h` only
+forward-declares it, so cell-only code does not rebuild when routing changes;
+include `gradient/MapRouting.h` where a file routes. The routing implementation
+files still include `Map.h` and read cells through its inline accessors, so a
+query pays one pointer load to reach `MapRouting`, never one per cell. Static
+movement helpers (`Map::swimClass`, `Map::SWIM_CLASS_EVEN`,
+`Map::GRADIENT_COST_LIMIT`) and `topologyGeneration` stay on `Map`.
+
 `python3 test/check_header_layering.py` enforces this from the static include
 graph in a few seconds: layer ranks in `test/header_layers.json`, no version
-defaults in headers, no new directory-level include cycles, and fan-in budgets in
+defaults in headers, no new directory-level include cycles, and fan-in budgets (with
+2% slack, so new source files do not trip them) in
 `test/header_fanin_budget.json`. Existing violations are listed in
 `test/header_layering_allowlist.txt` and `test/header_cycles_allowlist.txt`; after
 removing some, run it with `--write` to drop their lines and lower the budgets.
+It also caps `globalContainer` references in non-test simulation code per directory
+(`test/global_container_budget.json`): simulation code reads the game's own
+registries, so that tests can build a game without the application globals.
 `python3 tools/include_graph.py top|fanin|why` reports which translation units a
 header reaches and through which includers.

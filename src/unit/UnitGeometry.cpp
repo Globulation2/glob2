@@ -4,6 +4,7 @@
 #include "Unit.h"
 #include "Team.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 
 #include "Building.h"
 
@@ -58,8 +59,8 @@ void Unit::flyToTarget()
     directionFromDxDy();
     if(directGradientDecision) {
         const auto key=*directGradientDecision;directGradientDecision.reset();
-        const auto* cells=*owner->map->gradientFieldDestination(key);
-        owner->map->directGradientMovement(key,posX,posY,entityRandom,cells,dx||dy,true,false);
+        const auto* cells=*owner->map->routing().gradientFieldDestination(key);
+        owner->map->routing().directGradientMovement(key,posX,posY,entityRandom,cells,dx||dy,true,false);
     }
 
 }

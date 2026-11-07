@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "GraphicContext.h"
+#include "GAGColor.h"
 
 class Game;
 

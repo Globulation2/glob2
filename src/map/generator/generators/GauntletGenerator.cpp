@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GauntletGenerator.h"
 #include "ResourceSemantics.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Growth.h"
@@ -65,8 +65,9 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.home = g.outer + 18;
 	// Keep both fronts within a compact defended frontage, including sparse large arenas.
 	g.frontAngle = std::min(g.wedge * .25, 22. / g.outer);
-	if (g.half < 128 || g.teams < 2 || g.teams > Team::MAX_COUNT || g.outer * g.wedge < kOuterCourtWidth ||
-		g.inner * g.wedge < kInnerCourtWidth || g.rim - g.home < kHomeFarmDepth)
+	if (g.half < 128 || g.teams < 2 || g.teams > TEAM_MAX_COUNT ||
+		g.outer * g.wedge < kOuterCourtWidth || g.inner * g.wedge < kInnerCourtWidth ||
+		g.rim - g.home < kHomeFarmDepth)
 		g.failure =
 			"The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.";
 	if (const auto error = denseColonySizeFailure(r); !error.empty())
@@ -200,7 +201,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "gauntlet layout";
 	const GauntletOptions o(c.request);
@@ -213,7 +214,7 @@ bool generate(Game &game, GenerationContext &c)
 	const auto &t = L.t;
 	const auto &g = L.g;
 	const int n = t.size();
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	for (int k = 0; k < g.teams; ++k)
 		game.addTeam();
 	TerrainSketch terrain(n, GRASS);
@@ -390,7 +391,7 @@ std::string validateRequest(const GenerationRequest &r)
 {
 	return geometryFor(r).failure;
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const auto L = design(c.request, replay);

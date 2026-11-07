@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GraphicContext.h>
 #include <PerformanceTelemetry.h>
 #include <sstream>
 #include <iostream>
@@ -19,8 +20,11 @@
 #include <type_traits>
 #include <limits>
 
-#include "Game.h"
+#include "MapHeader.h"
+#include "BuildingType.h"
+#include "UnitCargo.h"
 #include "GlobalContainer.h"
+#include "Building.h"
 #include "Team.h"
 #include "TeamStat.h"
 #include "SaveLoadProfile.h"
@@ -477,21 +481,21 @@ const GameplayMeasurements& TeamStats::measurements() const
 
 void TeamStats::step(Team *team, bool reloaded)
 {
-    sourceTick=publishedTick=team->game->stepCounter;
+    sourceTick=publishedTick=team->ctx.tick();
     configureUnits(team->race.unitTypeCount());
 	PERF_SCOPE_TIME(Stats);
 	if (!reloaded && needsMeasurementInitialization)
-		initializeMeasurements(team->game->stepCounter);
+		initializeMeasurements(team->ctx.tick());
 	if (reloaded) rebuildMeasurementCountReset();
 	beginMeasurementSnapshot(team);
 	// handle end of game stat step
-	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
+	if (((team->ctx.tick() & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
 	{
 		historySnapshot.reset();
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
 
-		printEconomy(team, team->game->stepCounter);
+		printEconomy(team, team->ctx.tick());
 	}
 	
 	// handle in game stat step
@@ -570,7 +574,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	TeamStat &stat=stats[statsIndex];
 
 	stat.reset();
-	stat.buildingCountByVariant.resize(team->game->buildingsTypes.size(),0);
+	stat.buildingCountByVariant.resize(team->ctx.buildingsTypes->size(),0);
     auto& eligible=samplingEligibility;
     eligible.clear();
 
@@ -1457,8 +1461,8 @@ void TeamStats::beginMeasurementSnapshot(Team *team)
     configureUnits(team->race.unitTypeCount());
     editMeasurements().movementClassesKnown=true;
     editMeasurements().groundUnitsByMovementClass.fill(0);
-	editMeasurements().tick = team->game->stepCounter;
-	editMeasurements().variants.resize(team->game->buildingsTypes.size());
+	editMeasurements().tick = team->ctx.tick();
+	editMeasurements().variants.resize(team->ctx.buildingsTypes->size());
 	if (measurementCountCatalogSize != editMeasurements().variants.size())
 		rebuildMeasurementCountReset();
 	for (const auto id : measurementCountTouched) editMeasurements().variants[id].count=0;
@@ -1481,7 +1485,7 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++editMeasurements().carried[u->carriedMaterial];
         if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo())
-            if (const auto* cargo=u->owner->game->unitCargo.find(u->gid))
+            if (const auto* cargo=u->owner->ctx.unitCargo->find(u->gid))
                 for (const auto& packet:*cargo) ++editMeasurements().carried[packet.material];
 		if (u->isUnitHungry())
 		{
@@ -1620,7 +1624,7 @@ void TeamStats::recordCombatDeath(Unit *u)
 void TeamStats::sampleDefence(Team *team)
 {
 	auto &m = editMeasurements();
-	m.defenceTick = team->game->stepCounter;
+	m.defenceTick = team->ctx.tick();
 	team->map->rebuildGrowthCoverage();
 	std::fill(std::begin(m.warriors), std::end(m.warriors), 0);
 	std::fill(std::begin(m.warriorLevels), std::end(m.warriorLevels), 0);
@@ -1638,9 +1642,9 @@ void TeamStats::sampleDefence(Team *team)
 			u->activity == Unit::ACT_FLAG && u->jobPurpose==UnitJobPurpose::Defend;
 		m.warriorsInside += u->displacement == Unit::DIS_INSIDE;
 	}
-	for (int t = 0; t < team->game->teamsCount(); ++t)
+	for (int t = 0; t < team->ctx.mapHeader->getNumberOfTeams(); ++t)
 	{
-		const Team *other = team->game->teams[t];
+		const Team *other = team->ctx.teams[t];
 		if (!other || !(team->enemies & other->me))
 			continue;
 		for (const Unit *u : other->liveUnits.entries())
@@ -1671,8 +1675,8 @@ void TeamStats::refreshMeasurements(Team *team)
 void TeamStats::sampleTraps(Team *team)
 {
 	auto &m = editMeasurements();
-	m.trappedTick = team->game->stepCounter;
-	m.variants.resize(team->game->buildingsTypes.size());
+	m.trappedTick = team->ctx.tick();
+	m.variants.resize(team->ctx.buildingsTypes->size());
 	for (auto& variant : m.variants) for (auto& row : variant.trapped) std::fill(std::begin(row),std::end(row),0);
 	for (auto &row : m.trappedUnits) std::fill(std::begin(row), std::end(row), 0);
 	for (auto &row : m.trappedBuildings)
@@ -2195,8 +2199,8 @@ void TeamStats::printEconomy(const Team *team, Uint32 tick) const
 		const int count = s.buildingCountByVariant[id];
 		if (!count)
 			continue;
-		const auto &type = ModelBuildingProjection::completed(team->game->buildingsTypes,
-															  *team->game->buildingsTypes.get(id));
+		const auto &type = ModelBuildingProjection::completed(*team->ctx.buildingsTypes,
+															  *team->ctx.buildingsTypes->get(id));
 		const auto &spec = type.semantics;
 		auto trains = [&](int ability)
 		{ return type.maxUnitInside > 0 && (type.runtimeTrainingAbilities & (1u << ability)); };

@@ -97,7 +97,7 @@ forked with `--fork-rule buildingGradientDelay=N` (delays 1/4/8, workers 0/1/2/4
 save/resume at every phase, full/table/lazy depth, rejected delays 0 and 9).
 
 To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
-from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
+from `MapRouting::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
 fail. `ring-before` passes either way by construction — nothing is cached before
 the ring exists — which is why it is not on its own sufficient.
 

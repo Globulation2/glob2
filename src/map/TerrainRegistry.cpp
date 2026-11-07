@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
 #include "FileFormatVersions.h"
+#include "TerrainCatalog.h"
+#include "io/TerrainFormatHistory.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -37,8 +39,8 @@ TerrainType preset(const std::string &name)
 {
 	// Every paintable built-in is a preset, also under a legacy name; legacy corner
 	// shores are not.
-	if (const auto type = terrainTypeByName(name); type < TERRAIN_COUNT && terrainPaintable(type))
-		return type;
+	if (const auto type = terrainTypeByName(name); type && terrainPaintable(*type))
+		return *type;
 	throw std::invalid_argument("Unknown built-in terrain preset: " + name);
 }
 void validKey(const std::string &key)
@@ -560,7 +562,5 @@ std::optional<TerrainType> TerrainRegistry::find(std::string_view key) const
 			return TerrainType(i);
 	// Built-ins renamed since a file or script was written. Custom keys carry a
 	// namespace, so they can never be one of these.
-	if (const auto type = terrainTypeByName(key); type < TERRAIN_COUNT)
-		return type;
-	return std::nullopt;
+	return terrainTypeByName(key);
 }

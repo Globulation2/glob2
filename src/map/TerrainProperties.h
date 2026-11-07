@@ -2,7 +2,7 @@
 #pragma once
 
 #include "TerrainPropertiesLayout.h"
-#include "TerrainTypeTable.h"
+#include "TerrainGroupTable.h"
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -12,7 +12,7 @@
 inline constexpr auto TERRAIN_PROPERTIES = [] {
 	std::array<TerrainProperties, TERRAIN_COUNT> definitions{};
 	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
-		definitions[i] = TERRAIN_GROUPS[unsigned(TERRAIN_TYPES[i].group)].properties;
+		definitions[i] = TERRAIN_GROUPS[unsigned(TERRAIN_TYPE_GROUPS[i].group)].properties;
 	return definitions;
 }();
 

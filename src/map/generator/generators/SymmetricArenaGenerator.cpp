@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "SymmetricArenaGenerator.h"
-#include "Building.h"
-#include "BuildingType.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -386,7 +384,7 @@ std::vector<std::vector<int>> groupsOf(const std::vector<unsigned char> &mask, i
 	return groups;
 }
 
-bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const Layout &l,
+bool buildTerrain(GenerationMap &map, GenerationContext &context, const Arena &a, const Layout &l,
 				  const SymmetricArenaOptions &o, Terrain &t)
 {
 	// A lake of fewer corners than this is a patch of shoreline with no open water in it.
@@ -484,27 +482,29 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
 // its footprint centred on its home corner (the image of a footprint needs its own top-left
 // anchor, since a turn or mirror moves which corner is top-left), and a random choice of the
 // free tiles touching it.
-bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const Layout &l)
+bool placeColonies(GenerationWorld &game, GenerationContext &context, const Arena &a,
+				   const Layout &l)
 {
 	context.stage = "settlement";
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Symmetry &s = a.symmetry;
 	const int w = a.width, h = a.height;
-	const int type = game.buildingsTypes.getStartingBuildingTypeNum();
-	const BuildingType *swarm = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	const GenerationBuildingType startingType = game.startingBuildingType();
+	const int type = startingType.typeNum;
+	const GenerationBuildingType *swarm = startingType ? &startingType : nullptr;
 	if (!swarm || !swarm->runtimeAvailable)
 	{
 		context.detail = "catalog has no available starting building";
 		return false;
 	}
 	const int x0 = l.homeU - swarm->width / 2, y0 = l.homeV - swarm->height / 2;
-	std::vector<Building *> buildings;
+	std::vector<GenerationBuilding> buildings;
 	for (int team = 0; team < a.teams; ++team)
 	{
 		const auto [x, y] = s.anchor(team, x0, y0, swarm->width, swarm->height);
-		Building *building = game.checkRoomForBuilding(x, y, swarm, team, false)
-								 ? game.addBuilding(x, y, type, team, 1, 0)
-								 : nullptr;
+		const GenerationBuilding building = game.checkRoomForBuilding(x, y, *swarm, team)
+												? game.addBuilding(x, y, type, team, 1, 0)
+												: GenerationBuilding{};
 		if (!building)
 		{
 			context.detail = "Colony " + std::to_string(team) + ": the swarm does not fit its home";
@@ -519,7 +519,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const
 			if (dx >= 0 && dx < swarm->width && dy >= 0 && dy < swarm->height)
 				continue;
 			const int x = wrap(x0 + dx, w), y = wrap(y0 + dy, h);
-			if (map.isFreeForGroundUnit(x, y, false, Team::teamNumberToMask(0)))
+			if (map.isFreeForGroundUnit(x, y, false, teamNumberToMask(0)))
 				ring.emplace_back(x, y);
 		}
 	const int workers = context.request.nbWorkers;
@@ -536,28 +536,26 @@ bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const
 		for (int i = 0; i < workers; ++i)
 		{
 			const int tile = s.tile(team, ring[size_t(i)].first, ring[size_t(i)].second);
-			if (!game.addUnit(powerOfTwoRemainder(tile, w), tile / w, team, WORKER, 0, 0, 0, 0))
+			if (!game.addWorker(powerOfTwoRemainder(tile, w), tile / w, team))
 			{
 				context.detail = "Colony " + std::to_string(team) + ": worker placement failed";
 				return false;
 			}
 		}
-		Team *colony = game.teams[team];
-		colony->startPosX = buildings[size_t(team)]->posX;
-		colony->startPosY = buildings[size_t(team)]->posY;
-		colony->startPosSet = Team::START_POS_FROM_SWARM;
-		context.bootX[team] = colony->startPosX;
-		context.bootY[team] = colony->startPosY;
-		colony->createLists();
+		game.setTeamStart(team, buildings[size_t(team)].posX, buildings[size_t(team)].posY,
+						  GenerationTeamStart::FromSwarm);
+		context.bootX[team] = game.teamStart(team).x;
+		context.bootY[team] = game.teamStart(team).y;
+		game.finishTeam(team);
 	}
 	return true;
 }
 
-bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layout &l,
+bool furnish(GenerationWorld &game, GenerationContext &context, const Arena &a, const Layout &l,
 			 const SymmetricArenaOptions &o, const Terrain &t)
 {
 	context.stage = "arena resources";
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Symmetry &s = a.symmetry;
 	const int w = a.width, h = a.height;
 	const size_t n = size_t(w) * h;
@@ -850,12 +848,12 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 	return true;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "arena layout";
 	const SymmetricArenaOptions o(context.request);
 	const Arena a = arenaFor(context.request);
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	map.fillTerrain(WATER);
 	for (int i = 0; i < a.teams; ++i)
 		game.addTeam();
@@ -902,9 +900,9 @@ bool generate(Game &game, GenerationContext &context)
 // colony onto any other; and every colony walks to wheat, wood, each fruit and open ground in
 // the orchard, all in the same number of steps. Water, buildings and every resource block the
 // walk; units don't, since they move.
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
 	const Arena a = arenaFor(context.request);
 	const Symmetry &s = a.symmetry;

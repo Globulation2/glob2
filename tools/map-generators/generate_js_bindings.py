@@ -196,8 +196,8 @@ def parameters(v):
     if error:
         return None, error
     implicit = {
-        "Game": "(*e.game)",
-        "Map": "e.game->map",
+        "GenerationWorld": "(*e.world)",
+        "GenerationMap": "e.world->map",
         "GenerationContext": "(*e.generation)",
         "GenerationRequest": "e.request",
         "GenerationTelemetry": "e.generation->telemetry",
@@ -392,7 +392,7 @@ def main():
             t = plan.cpp_type
             raw = t.replace("const ", "").strip(" &")
             if plan.implicit:
-                if raw in ("Game", "Map"):
+                if raw in ("GenerationWorld", "GenerationMap"):
                     lines.append(
                         "if(!e.game || e.inspecting"
                         + (" || e.readonly" if not t.startswith("const ") else "")

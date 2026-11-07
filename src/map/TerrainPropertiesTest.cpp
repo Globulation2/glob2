@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
@@ -113,28 +115,28 @@ TEST_CASE("terrain edits refresh escape costs after captured routes publish at t
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     auto& map = world.game.map;
     for (int y=6;y<11;++y) for (int x=6;x<11;++x) map.addForbidden(x,y,0);
-    auto* escape = glob2test::awaitGradient(world.game,[&] { return map.getForbiddenGradient(0,MovementAccess::Land); });
+    auto* escape = glob2test::awaitGradient(world.game,[&] { return map.routing().getForbiddenGradient(0,MovementAccess::Land); });
     const auto old = escape[map.coordToIndex(8,8)];
     {
         auto batch = map.editTerrain();
         for (int x=8;x<12;++x) map.paintCell(x,8,TRAIL);
     }
     CHECK(escape[map.coordToIndex(8,8)] == old); // Guidance remains stale until publication.
-    map.updateForbiddenGradient(0,MovementAccess::Land);
+    map.routing().updateForbiddenGradient(0,MovementAccess::Land);
     auto* refreshed=glob2test::awaitGradient(world.game,[&] {
-        auto* field=map.getForbiddenGradient(0,MovementAccess::Land);
+        auto* field=map.routing().getForbiddenGradient(0,MovementAccess::Land);
         return field!=escape ? field : nullptr;
     });
     CHECK(refreshed[map.coordToIndex(8,8)] > old);
-    map.resetGradientPipeline();
-    map.configureGradientPipeline(0,2);
+    map.routing().resetGradientPipeline();
+    map.routing().configureGradientPipeline(0,2);
     map.setResourceByIndex(15,15,WHEAT,1);
-    map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
-    map.advanceGradientPipeline();
-    auto& pipeline = map.gradientRuntime->pipeline;
-    map.stagePeriodicGradientPreparation();
+    map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
+    map.routing().advanceGradientPipeline();
+    auto& pipeline = map.routing().gradientRuntime->pipeline;
+    map.routing().stagePeriodicGradientPreparation();
     map.game->snapshotStore().invalidateBoundary();
-    map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
+    map.routing().preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
     std::vector<Uint16> captured;
     pipeline.visitPendingSnapshots([&](const auto& pending) {
         captured.assign(pending.data,pending.data+map.cellCount());
@@ -143,22 +145,22 @@ TEST_CASE("terrain edits refresh escape costs after captured routes publish at t
     // Edit passable cells near the material source: the earlier escape fixture's
     // forbidden pocket masks terrain costs and cannot distinguish generations.
     map.paintCell(14,15,ICE);
-    map.advanceGradientPipeline();
-    CHECK(map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)==nullptr);
+    map.routing().advanceGradientPipeline();
+    CHECK(map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)==nullptr);
     // Another soft edit before the very next advance cannot move the deadline.
     map.paintCell(13,15,TRAIL);
     std::vector<Uint16> replacement(map.cellCount());
-    map.seedMaterialGradient(0,WHEAT,0,replacement.data());
-    map.propagateGradient(replacement.data(),0);
+    map.routing().seedMaterialGradient(0,WHEAT,0,replacement.data());
+    map.routing().propagateGradient(replacement.data(),0);
     REQUIRE(replacement!=captured);
-    map.advanceGradientPipeline();
-    REQUIRE(map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)!=nullptr);
-    CHECK(std::equal(captured.begin(),captured.end(),map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)));
+    map.routing().advanceGradientPipeline();
+    REQUIRE(map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)!=nullptr);
+    CHECK(std::equal(captured.begin(),captured.end(),map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)));
     CHECK_EQ(pipeline.metrics.discarded,0);
     CHECK_EQ(pipeline.metrics.published,1);
-    map.updateMaterialGradient(0,WHEAT,MovementAccess::Land);
+    map.routing().updateMaterialGradient(0,WHEAT,MovementAccess::Land);
     const auto* refreshedMaterial=glob2test::awaitGradient(world.game,[&] {
-        auto* field=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
+        auto* field=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
         return field && std::equal(replacement.begin(),replacement.end(),field) ? field : nullptr;
     });
     CHECK(std::equal(replacement.begin(),replacement.end(),refreshedMaterial));
@@ -355,7 +357,7 @@ TEST_CASE("constrained explorer flag eligibility applies route accessibility and
     int routeDistance=0,distance=0;
     // This case compares settled route distance with the hunger threshold.
     glob2test::awaitBuildingGradient(world.game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
-    REQUIRE(world.game.map.buildingAvailable(flag,MovementAccess::Air,8,8,&routeDistance,BuildingRoute::Combat));
+    REQUIRE(world.game.map.routing().buildingAvailable(flag,MovementAccess::Air,8,8,&routeDistance,BuildingRoute::Combat));
     REQUIRE(routeDistance>0);
     explorer->hungriness=1;
     explorer->hungry=explorer->trigHungry+routeDistance-1;
@@ -364,7 +366,7 @@ TEST_CASE("constrained explorer flag eligibility applies route accessibility and
     CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
     CHECK_EQ(distance,routeDistance*routeDistance);
     world.game.map.addForbidden(12,12,0);
-    world.game.map.updateGlobalGradient(flag,MovementAccess::Air,BuildingRoute::Combat);
+    world.game.map.routing().updateGlobalGradient(flag,MovementAccess::Air,BuildingRoute::Combat);
     CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,0));
     CHECK_EQ(distance,routeDistance*routeDistance);
 }
@@ -416,7 +418,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(first.frozenTerrainRegistry() == previous);
 		CHECK(first.terrainGeneration() == generation);
 		CHECK(first.terrainQueueBuckets() == 64);
-		CHECK(first.minStepCost(6) == second.minStepCost(6));
+		CHECK(first.routing().minStepCost(6) == second.routing().minStepCost(6));
 		CHECK_FALSE(first.hasTerrainHealthEffects());
 		CHECK_FALSE(first.hasAirTerrainConstraints());
 		const auto bog = *first.terrainRegistry().find("test:bog");
@@ -437,8 +439,8 @@ TEST_SUITE("TerrainRuntime")
 		std::vector<Uint16> expected(1024, 1), actual;
 		expected[first.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
 		actual = expected;
-		first.propagateGradient(actual.data(), 6);
-		second.propagateGradient(expected.data(), 6);
+		first.routing().propagateGradient(actual.data(), 6);
+		second.routing().propagateGradient(expected.data(), 6);
 		CHECK(actual == expected);
 		CHECK(first.resourceGrowthField().landField().values() ==
 			  second.resourceGrowthField().landField().values());
@@ -467,8 +469,8 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(map.growthCache.validFor(map));
 		CHECK(map.growthCache.landField().at(8, 8) > 0);
 		CHECK(map.resourceGrowthRateAt(map.coordToIndex(8, 8), WHEAT) > 0);
-		CHECK(map.stepCost(1, 0, map.coordToIndex(8, 8), 0) == 29);
-		CHECK(map.stepCost(1, 1, map.coordToIndex(8, 8), 0) == 40);
+		CHECK(map.routing().stepCost(1, 0, map.coordToIndex(8, 8), 0) == 29);
+		CHECK(map.routing().stepCost(1, 1, map.coordToIndex(8, 8), 0) == 40);
 		auto *worker = world.addUnit(WORKER, 8, 8);
 		REQUIRE(worker);
 		const int hp = worker->hp;
@@ -484,7 +486,7 @@ TEST_SUITE("TerrainRuntime")
 		map.paintCell(2, 2, GRASS);
 		map.paintCell(12, 12, GRASS);
 		int dx = 0, dy = 0;
-		CHECK_FALSE(map.pathfindAirPointToPoint(2, 2, 12, 12, &dx, &dy));
+		CHECK_FALSE(map.routing().pathfindAirPointToPoint(2, 2, 12, 12, &dx, &dy));
 	}
 	TEST_CASE("eager resumed and worker gradients agree on custom slow swimming")
 	{
@@ -506,7 +508,7 @@ TEST_SUITE("TerrainRuntime")
 			eager[0] = GRADIENT_AT_GOAL;
 			lazy = eager;
 			pipelined = eager;
-			map.propagateGradient(eager.data(), swim);
+			map.routing().propagateGradient(eager.data(), swim);
 			BuildingGradientSearch search;
 			search.begin(map, lazy.data(), swim);
 			for (unsigned cell : {97, 501, 1023})
@@ -582,21 +584,21 @@ TEST_SUITE("TerrainRuntime")
 				}
 				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
 				map.setResourceByIndex(20, 20, WHEAT, 1);
-				map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+				map.routing().getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
 				std::vector<Uint16> expected(1024);
-				map.seedMaterialGradient(0, WHEAT, 6, expected.data());
-				map.propagateGradient(expected.data(), 6);
+				map.routing().seedMaterialGradient(0, WHEAT, 6, expected.data());
+				map.routing().propagateGradient(expected.data(), 6);
 
 				// Exercise Map's actual dispatch and worker callback: neutral-speed
 				// custom water captures a binary plane, while slow water captures
 				// compact movement profiles and selects the larger queue.
-				map.configureGradientPipeline(workers, 2);
-				map.advanceGradientPipeline();
+				map.routing().configureGradientPipeline(workers, 2);
+				map.routing().advanceGradientPipeline();
 				map.syncStep(0);
-				map.stagePeriodicGradientPreparation();
-				map.preparePendingGradient(world.game.snapshotStore().captureBoundary(world.game));
-				REQUIRE(map.gradientRuntime->pipeline.pendingCount() == 1);
-				map.gradientRuntime->pipeline.visitPendingSnapshots(
+				map.routing().stagePeriodicGradientPreparation();
+				map.routing().preparePendingGradient(world.game.snapshotStore().captureBoundary(world.game));
+				REQUIRE(map.routing().gradientRuntime->pipeline.pendingCount() == 1);
+				map.routing().gradientRuntime->pipeline.visitPendingSnapshots(
 					[&](const auto &pending)
 					{
 						CHECK_FALSE(pending.superseded);
@@ -606,24 +608,24 @@ TEST_SUITE("TerrainRuntime")
 
 				importBeforeMatch(world.game, definitions(speed == 256 ? 64 : 256));
 				CHECK(map.terrainRegistry().find("test:water") == water);
-				map.gradientRuntime->pipeline.visitPendingSnapshots([&](const auto &pending)
+				map.routing().gradientRuntime->pipeline.visitPendingSnapshots([&](const auto &pending)
 																	{ CHECK(pending.superseded); });
 				std::vector<Uint16> replacement(1024);
-				map.seedMaterialGradient(0, WHEAT, 6, replacement.data());
-				map.propagateGradient(replacement.data(), 6);
+				map.routing().seedMaterialGradient(0, WHEAT, 6, replacement.data());
+				map.routing().propagateGradient(replacement.data(), 6);
 				REQUIRE(replacement != expected);
-				map.updateMaterialGradient(0, WHEAT, MovementAccess::Amphibious);
-				map.advanceGradientPipeline();
-				map.advanceGradientPipeline();
-				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
-				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
-				CHECK(map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious) == nullptr);
+				map.routing().updateMaterialGradient(0, WHEAT, MovementAccess::Amphibious);
+				map.routing().advanceGradientPipeline();
+				map.routing().advanceGradientPipeline();
+				CHECK(map.routing().gradientRuntime->pipeline.metrics.discarded == 1);
+				CHECK(map.routing().gradientRuntime->pipeline.pendingCount() == 0);
+				CHECK(map.routing().lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious) == nullptr);
 				// The replacement is queued, not synchronously built by update. Admit
 				// it at a completed-world boundary and await its own fixed deadline.
-				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious); });
-				CHECK(map.gradientRuntime->pipeline.metrics.published==1);
-				CHECK(map.publishedCostClass(published) == 6);
-				CHECK(map.materialGradients[0][WHEAT][6] == nullptr);
+				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious); });
+				CHECK(map.routing().gradientRuntime->pipeline.metrics.published==1);
+				CHECK(map.routing().publishedCostClass(published) == 6);
+				CHECK(map.routing().materialGradients[0][WHEAT][6] == nullptr);
 				CHECK(std::equal(replacement.begin(),replacement.end(),published));
 			}
 	}
@@ -635,7 +637,7 @@ TEST_SUITE("TerrainRuntime")
 		map.paintCell(8, 8, ICE);
 		std::vector<Uint16> expected(1024, 1);
 		expected[0] = GRADIENT_AT_GOAL;
-		map.propagateGradient(expected.data(), 6);
+		map.routing().propagateGradient(expected.data(), 6);
 		const auto baseline = map.frozenTerrainMovementSnapshot(6);
 		// The square patch contains grass plus quarter-, half- and full-ice
 		// cells, each with a distinct cardinal and diagonal entry cost.
@@ -657,7 +659,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(map.terrainQueueBuckets() == 64);
 		std::vector<Uint16> actual(1024, 1);
 		actual[0] = GRADIENT_AT_GOAL;
-		map.propagateGradient(actual.data(), 6);
+		map.routing().propagateGradient(actual.data(), 6);
 		CHECK(actual == expected);
 		BuildingGradientSearch search;
 		actual.assign(1024, 1);
@@ -719,11 +721,11 @@ TEST_SUITE("TerrainRuntime")
 		for (int i = 0; i < 7; ++i)
 			worker->applyTerrainHealth();
 		map.setResourceByIndex(15, 15, WHEAT, 1);
-		map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
-		map.configureGradientPipeline(1, 2);
-		map.advanceGradientPipeline();
-		map.stagePeriodicGradientPreparation();
-		map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
+		map.routing().getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+		map.routing().configureGradientPipeline(1, 2);
+		map.routing().advanceGradientPipeline();
+		map.routing().stagePeriodicGradientPreparation();
+		map.game->snapshotStore().invalidateBoundary(); map.routing().preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(bytes);
 		world.game.save(&output, false, "custom-continuation");
@@ -734,24 +736,24 @@ TEST_SUITE("TerrainRuntime")
 		REQUIRE(resumed.game.load(&input));
 		CHECK(resumed.game.map.terrainRegistry().digest() == map.terrainRegistry().digest());
 		CHECK(resumed.game.map.terrainQueueBuckets() == 256);
-		CHECK(resumed.game.map.gradientRuntime->pipeline.pendingCount() == 1);
+		CHECK(resumed.game.map.routing().gradientRuntime->pipeline.pendingCount() == 1);
 		CHECK(resumed.game.map.terrainTypeAt(8, 8) == map.terrainTypeAt(8, 8));
 		auto *loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(worker->gid)];
 		REQUIRE(loaded);
 		CHECK(loaded->terrainHealthRemainder == worker->terrainHealthRemainder);
 		for (int i = 0; i < 2; ++i)
 		{
-			map.advanceGradientPipeline();
-			resumed.game.map.advanceGradientPipeline();
+			map.routing().advanceGradientPipeline();
+			resumed.game.map.routing().advanceGradientPipeline();
 		}
-		const auto* sourceField = map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
-		const auto* restoredField = resumed.game.map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+		const auto* sourceField = map.routing().lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+		const auto* restoredField = resumed.game.map.routing().lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
 		REQUIRE(sourceField);
 		REQUIRE(restoredField);
 		CHECK(std::equal(sourceField, sourceField + map.getW() * map.getH(), restoredField));
-		CHECK(map.publishedCostClass(sourceField) == resumed.game.map.publishedCostClass(restoredField));
-		CHECK(map.materialGradients[0][WHEAT][6] == nullptr);
-		CHECK(resumed.game.map.materialGradients[0][WHEAT][6] == nullptr);
+		CHECK(map.routing().publishedCostClass(sourceField) == resumed.game.map.routing().publishedCostClass(restoredField));
+		CHECK(map.routing().materialGradients[0][WHEAT][6] == nullptr);
+		CHECK(resumed.game.map.routing().materialGradients[0][WHEAT][6] == nullptr);
 		for (int i = 0; i < 100; ++i)
 		{
 			world.game.step(0);
@@ -1359,18 +1361,18 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     const auto fast=map.terrainRegistry().find("test:fast-water");
     REQUIRE(fast.has_value());
     map.fillTerrain(WATER);
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
+    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10);
     map.paintCell(3,3,*fast);
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==5);
+    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==5);
     map.paintCell(3,3,WATER); // Removing the last fast cell must remove its histogram contribution.
     map.paintCell(25,25,TRAIL);
     CHECK(map.hasTerrainMovementModifiers());
     CHECK_FALSE(map.terrainPropertiesAt(25,25).swimmable); // The pure trail is walking-only.
     CHECK(map.terrainPropertiesAt(24,24).swimmable);
     CHECK(map.terrainPropertiesAt(24,24).groundSpeedQ8==320); // (3*256+512)/4.
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==8); // Swimming shores inherit a quarter of trail speed.
+    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==8); // Swimming shores inherit a quarter of trail speed.
     map.paintCell(25,25,WATER);
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Removing the last fast shore restores the minimum.
+    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10); // Removing the last fast shore restores the minimum.
 
     map.fillTerrain(*fast);
     // This fixed layout makes an overestimated water-only heuristic choose
@@ -1378,7 +1380,7 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     // actual swimming obstacles under corner voting; a lone grass vertex does not.
     for (const auto [x,y]:{std::pair{16,17}, {13,12}, {14,18}, {16,15}, {16,13}, {10,16}, {14,16}, {14,12}, {15,18}})
         paintVertices(map,x,y,x+1,y+1,GRASS);
-    REQUIRE(map.minStepCost(WATER_ONLY_CLASS)==5);
+    REQUIRE(map.routing().minStepCost(WATER_ONLY_CLASS)==5);
     constexpr int startX=8,startY=16,targetX=20,targetY=16;
     // Independent reverse Dijkstra. Price each destination from its four raw
     // corner identities: pure fast water has speed512, while a three-water/one-
@@ -1430,7 +1432,7 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     for (int step=0;step<64 && (x!=targetX || y!=targetY);++step)
     {
         int dx=0,dy=0;
-        REQUIRE(map.pathfindPointToPoint(x,y,targetX,targetY,&dx,&dy,MovementAccess::Water,world.game.teams[0]->me,100));
+        REQUIRE(map.routing().pathfindPointToPoint(x,y,targetX,targetY,&dx,&dy,MovementAccess::Water,world.game.teams[0]->me,100));
         REQUIRE((dx!=0 || dy!=0));
         const auto next=map.coordToIndex(x+dx,y+dy);
         const int edge=edgeCost(next,dx && dy);
@@ -1440,7 +1442,7 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     }
     CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==77);
     map.fillTerrain(WATER);
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
+    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10);
 }
 
 TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")
@@ -1454,32 +1456,32 @@ TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")
     CHECK(map.terrainPropertiesAt(9,8).groundHealthQ8==-2);
     // Round travel 10/0.875 to 11, then include 20 recovery ticks per HP:
     // round(11*(256+20*2)/256)=13; diagonal cost is floor(13*1.4)=18.
-    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==13);
-    CHECK(map.stepCost(1,1,map.coordToIndex(9,8),0)==18);
-    CHECK(map.stepCost(1,0,map.coordToIndex(9,7),0)==10);
+    CHECK(map.routing().stepCost(1,0,map.coordToIndex(9,8),0)==13);
+    CHECK(map.routing().stepCost(1,1,map.coordToIndex(9,8),0)==18);
+    CHECK(map.routing().stepCost(1,0,map.coordToIndex(9,7),0)==10);
     int dx=0,dy=0;
-    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
+    REQUIRE(map.routing().pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
     CHECK(dx==1); CHECK(dy==0); // The diluted icy row costs 36; the safe detour 38.
     // Two ice corners per cell make the direct strip expensive enough to avoid.
     paintVertices(map,9,9,11,9,ICE);
-    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==17);
-    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
+    CHECK(map.routing().stepCost(1,0,map.coordToIndex(9,8),0)==17);
+    REQUIRE(map.routing().pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
     CHECK(dy==-1); // The detour costs 42, including its one-corner icy landing; straight costs 47.
     // A corridor offers no safe alternative but must remain routable. Grass
     // vertices along row 8 make the cells of rows 7 and 8 walkable.
     map.fillTerrain(WATER);
     paintVertices(map,7,8,13,8,GRASS);
     map.setVertexTerrain(10,8,ICE);
-    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
+    REQUIRE(map.routing().pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
     CHECK(dx==1); CHECK(dy==0);
     dx=dy=1;
-    CHECK_FALSE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,2));
+    CHECK_FALSE(map.routing().pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,2));
     CHECK(dx==0); CHECK(dy==0);
     // A safe loop exists, but it costs more than the icy route.
     paintVertices(map,7,9,7,14,GRASS);
     paintVertices(map,13,9,13,14,GRASS);
     paintVertices(map,7,14,13,14,GRASS);
-    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
+    REQUIRE(map.routing().pathfindPointToPoint(8,8,11,8,&dx,&dy,MovementAccess::Land,world.game.teams[0]->me,100));
     CHECK(dx==1); CHECK(dy==0);
 }
 
@@ -1495,16 +1497,16 @@ TEST_CASE("idle ground units avoid entering ice and escape a multi-cell patch")
     paintVertices(map,7,7,10,10,ICE);
     paintVertices(map,8,8,9,9,GRASS);
     CHECK(map.terrainPropertiesAt(8,8).groundHealthQ8==0);
-    for(int n=0;n<32;++n) { map.pathfindRandom(unit); CHECK(unit->dx==0); CHECK(unit->dy==0); }
+    for(int n=0;n<32;++n) { map.routing().pathfindRandom(unit); CHECK(unit->dx==0); CHECK(unit->dy==0); }
     paintVertices(map,8,8,9,9,ICE);
-    REQUIRE(map.pathfindTerrainSafety(unit));
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));
     CHECK((unit->dx!=0 || unit->dy!=0));
     CHECK(map.terrainPropertiesAt(8+unit->dx,8+unit->dy).groundHealthQ8<0);
     for(int n=0;n<8 && map.terrainPropertiesAt(unit->posX,unit->posY).groundHealthQ8<0;++n)
         unit->handleActionRandomGround();
     CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).groundHealthQ8==0);
     map.fillTerrain(ICE);
-    CHECK_FALSE(map.pathfindTerrainSafety(unit));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(unit));
     CHECK(unit->dx==0); CHECK(unit->dy==0);
 }
 
@@ -1521,7 +1523,7 @@ TEST_CASE("custom air damage routes flyers and idle flyers escape it")
     map.setVertexTerrain(10,9,*hazard);
     CHECK(map.hasAirTerrainConstraints());
     int dx=0,dy=0;
-    REQUIRE(map.pathfindAirPointToPoint(8,8,11,8,&dx,&dy));
+    REQUIRE(map.routing().pathfindAirPointToPoint(8,8,11,8,&dx,&dy));
     CHECK(dy!=0);
     auto* unit=world.addUnit(EXPLORER,8,8);
     REQUIRE(unit);
@@ -1545,13 +1547,13 @@ TEST_CASE("extreme authored hazards saturate and shared fields agree with point 
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:extreme","name":"Extreme","base":"grass","properties":{"groundHealthQ8":-32768,"airHealthQ8":-32768},"appearance":"ice"}]})");
     const auto extreme=*map.terrainRegistry().find("test:extreme");
     map.paintCell(8,8,extreme);
-    CHECK(map.stepCost(1,0,map.coordToIndex(8,8),0)==181);
-    CHECK(map.stepCost(1,1,map.coordToIndex(8,8),0)==253);
+    CHECK(map.routing().stepCost(1,0,map.coordToIndex(8,8),0)==181);
+    CHECK(map.routing().stepCost(1,1,map.coordToIndex(8,8),0)==253);
     CHECK(map.terrainRegistry().airRouteCost(extreme)==181);
     CHECK(map.terrainQueueBuckets()==256);
     std::vector<Uint16> field(map.getW()*map.getH(),GRADIENT_UNREACHABLE);
     field[map.coordToIndex(8,8)]=GRADIENT_AT_GOAL;
-    map.propagateGradient(field.data(),0);
+    map.routing().propagateGradient(field.data(),0);
     CHECK(field[map.coordToIndex(7,8)]==GRADIENT_AT_GOAL-181);
     // The hazard's transition cells cost as much, so the diagonal is cheapest.
     CHECK(field[map.coordToIndex(7,7)]==GRADIENT_AT_GOAL-253);
@@ -1570,10 +1572,10 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     // Wheat clear of the ice's transition cells, where nothing grows.
     map.setResourceByIndex(12,8,WHEAT,1);
     REQUIRE(map.getResource(12,8).type==WHEAT);
-    const auto* field=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
+    const auto* field=glob2test::awaitGradient(world.game,[&] { return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
     REQUIRE(field);
     std::vector<Uint16> expected(field,field+map.getW()*map.getH());
-    map.configureGradientPipeline(0,2);
+    map.routing().configureGradientPipeline(0,2);
     auto* bytes=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
     map.saveRuntimeState(&output);
@@ -1582,15 +1584,15 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     {
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(saved)));
         map.loadRuntimeState(&input,VERSION_MINOR);
-        REQUIRE(map.materialGradients[0][WHEAT][0]);
-        CHECK(std::equal(expected.begin(),expected.end(),map.materialGradients[0][WHEAT][0]));
+        REQUIRE(map.routing().materialGradients[0][WHEAT][0]);
+        CHECK(std::equal(expected.begin(),expected.end(),map.routing().materialGradients[0][WHEAT][0]));
     }
     {
         // Write the actual format141 grammar for this restricted world. The
         // current writer has eight swim classes and newer pipeline sections;
         // labelling its bytes as141 would test a malformed stream instead.
         REQUIRE(world.team->liveBuildings.entries().empty());
-        REQUIRE(map.gradientRuntime->pipeline.pendingCount()==0);
+        REQUIRE(map.routing().gradientRuntime->pipeline.pendingCount()==0);
         auto* historicalBytes=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream historical(historicalBytes);
         const auto gradient=[&](const Uint16* field) {
@@ -1622,24 +1624,24 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
                 historical.writeEnterSection("resources");
                 for(int material=0;material<MaterialSlotCount;++material) {
                     historical.writeEnterSection(material);
-                    gradient(map.materialGradients[team][material][swim]);
+                    gradient(map.routing().materialGradients[team][material][swim]);
                     historical.writeUint8(0,"updated");
                     historical.writeEnterSection("markets");
-                    gradient(map.marketMaterialGradients[team][material][swim]);
+                    gradient(map.routing().marketMaterialGradients[team][material][swim]);
                     historical.writeUint8(0 /* legacy visitation byte */,"dirty");
                     historical.writeUint8(0 /* legacy visitation byte */,"updated");
                     historical.writeLeaveSection(2);
                 }
                 historical.writeLeaveSection();
                 historical.writeEnterSection("forbidden");
-                gradient(map.forbiddenGradient[team][swim]);
+                gradient(map.routing().forbiddenGradient[team][swim]);
                 historical.writeLeaveSection();
                 historical.writeEnterSection("guard");
-                gradient(map.guardAreasGradient[team][swim]);
+                gradient(map.routing().guardAreasGradient[team][swim]);
                 historical.writeUint8(0 /* legacy visitation byte */,"updated");
                 historical.writeLeaveSection();
                 historical.writeEnterSection("clear");
-                gradient(map.clearAreasGradient[team][swim]);
+                gradient(map.routing().clearAreasGradient[team][swim]);
                 historical.writeUint8(0 /* legacy visitation byte */,"updated");
                 historical.writeLeaveSection(2);
             }
@@ -1649,18 +1651,18 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
         }
         historical.writeLeaveSection();
         historical.writeEnterSection("gradientPipeline");
-        historical.writeUint8(map.gradientRuntime->pipeline.delayTicks(),"delay");
+        historical.writeUint8(map.routing().gradientRuntime->pipeline.delayTicks(),"delay");
         historical.writeUint8(0,"count");
         historical.writeLeaveSection();
-        map.saveMaterialRoutingCache(&historical);
+        map.routing().saveMaterialRoutingCache(&historical);
         historical.writeLeaveSection();
         historical.flush();
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(historicalBytes->takeContents()));
         map.loadRuntimeState(&input,141);
         CHECK(input.isEndOfStream());
-        CHECK(map.materialGradients[0][WHEAT][0]==nullptr);
-        CHECK(map.gradientRuntime->pipeline.delayTicks()==2);
-        const auto* rebuilt=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
+        CHECK(map.routing().materialGradients[0][WHEAT][0]==nullptr);
+        CHECK(map.routing().gradientRuntime->pipeline.delayTicks()==2);
+        const auto* rebuilt=glob2test::awaitGradient(world.game,[&] { return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
         REQUIRE(rebuilt);
         CHECK(std::equal(expected.begin(),expected.end(),rebuilt));
     }
@@ -1681,41 +1683,41 @@ TEST_CASE("workers and warriors reuse escape fields and moving units do not inva
     auto* warrior=world.addUnit(WARRIOR,10,8);
     REQUIRE(worker); REQUIRE(warrior);
     REQUIRE(accessClass(worker->movementAccess())==accessClass(warrior->movementAccess()));
-    auto& cache=map.gradientRuntime->safety;
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    auto& cache=map.routing().gradientRuntime->safety;
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
     CHECK(cache.builds==1);
-    REQUIRE(map.pathfindTerrainSafety(warrior));
+    REQUIRE(map.routing().pathfindTerrainSafety(warrior));
     CHECK(cache.builds==1); CHECK(cache.fields.size()==1);
     // Units around the worker hold it in place without invalidating the field.
     const int around[8][2]={{7,7},{8,7},{9,7},{7,8},{9,8},{7,9},{8,9},{9,9}};
     for(const auto& cell:around) map.setGroundUnit(cell[0],cell[1],warrior->gid);
-    CHECK_FALSE(map.pathfindTerrainSafety(worker));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(worker));
     CHECK(cache.builds==1);
     for(const auto& cell:around) map.setGroundUnit(cell[0],cell[1],NOGUID);
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
     CHECK(cache.builds==1);
     const int dx=worker->dx,dy=worker->dy;
     cache.fields.clear(); // eviction/load must reproduce the same next step
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
     CHECK(worker->dx==dx); CHECK(worker->dy==dy);
     CHECK(cache.builds==2);
 
     map.setResourceByIndex(14,8,WOOD,1); // block the only safe cell
-    CHECK_FALSE(map.pathfindTerrainSafety(worker));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(worker));
     const auto negativeBuild=cache.builds;
-    for(int n=0;n<20;++n) CHECK_FALSE(map.pathfindTerrainSafety(worker));
+    for(int n=0;n<20;++n) CHECK_FALSE(map.routing().pathfindTerrainSafety(worker));
     CHECK(cache.builds==negativeBuild);
     map.setNoResource(14,8,1);
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
     CHECK(cache.builds==negativeBuild+1);
     map.setBuilding(14,8,1,1,0);
-    CHECK_FALSE(map.pathfindTerrainSafety(worker));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(worker));
     map.setBuilding(14,8,1,1,NOGUID);
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
     paintVertices(map,14,8,15,9,WATER);
-    CHECK_FALSE(map.pathfindTerrainSafety(worker));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(worker));
     paintVertices(map,14,8,15,9,GRASS);
-    REQUIRE(map.pathfindTerrainSafety(worker));
+    REQUIRE(map.routing().pathfindTerrainSafety(worker));
 }
 TEST_CASE("escape fields separate team permissions swimming and forbidden-area escape")
 {
@@ -1729,17 +1731,17 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     auto* other=world.addUnit(WORKER,10,8,1);
     REQUIRE(first); REQUIRE(other);
     map.addForbidden(14,8,0);
-    CHECK_FALSE(map.pathfindTerrainSafety(first));
-    REQUIRE(map.pathfindTerrainSafety(other));
-    CHECK(map.gradientRuntime->safety.fields.size()==2);
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(first));
+    REQUIRE(map.routing().pathfindTerrainSafety(other));
+    CHECK(map.routing().gradientRuntime->safety.fields.size()==2);
     map.removeForbidden(14,8,0);
-    REQUIRE(map.pathfindTerrainSafety(first));
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
     const int permittedDx=first->dx,permittedDy=first->dy;
     // A unit already on forbidden ice can leave through further forbidden cells.
     // Paint only the hazardous approach, leaving its safe goal unchanged; the
     // best direction must match the unpainted route, including cheaper mixed edges.
     for(int y=6;y<=10;++y) for(int x=6;x<=13;++x) map.addForbidden(x,y,0);
-    REQUIRE(map.pathfindTerrainSafety(first));
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
     CHECK(first->dx==permittedDx); CHECK(first->dy==permittedDy);
     const int nextX=first->posX+first->dx,nextY=first->posY+first->dy;
     CHECK((first->dx!=0 || first->dy!=0));
@@ -1748,7 +1750,7 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     CHECK(map.isFreeForGroundUnitNoForbidden(nextX,nextY,false));
     // Swimming exposes the surrounding safe water as additional escape goals.
     first->setPerformance(SWIM,first->performance[WALK]);
-    REQUIRE(map.pathfindTerrainSafety(first));
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
     CHECK(first->dy!=0);
 }
 TEST_CASE("flyers share safety across teams and ignore forbidden paint and ground blockers")
@@ -1764,19 +1766,19 @@ TEST_CASE("flyers share safety across teams and ignore forbidden paint and groun
     auto* first=world.addUnit(EXPLORER,8,8,0);
     auto* other=world.addUnit(EXPLORER,9,8,1);
     REQUIRE(first); REQUIRE(other);
-    REQUIRE(map.pathfindTerrainSafety(first));
-    REQUIRE(map.pathfindTerrainSafety(other));
-    CHECK(map.gradientRuntime->safety.builds==1);
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
+    REQUIRE(map.routing().pathfindTerrainSafety(other));
+    CHECK(map.routing().gradientRuntime->safety.builds==1);
     map.setResourceByIndex(15,15,WOOD,1);
     map.setBuilding(15,16,1,1,0);
-    REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==1);
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
+    CHECK(map.routing().gradientRuntime->safety.builds==1);
     map.addForbidden(8,8,0);
-    REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==1);
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
+    CHECK(map.routing().gradientRuntime->safety.builds==1);
     map.paintCell(8,9,GRASS);
-    REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==2);
+    REQUIRE(map.routing().pathfindTerrainSafety(first));
+    CHECK(map.routing().gradientRuntime->safety.builds==2);
     CHECK(first->dx==0); CHECK(first->dy==1);
 }
 }
@@ -1797,20 +1799,20 @@ TEST_CASE("escape fields respect runtime resource blocking and ignore stock-only
     auto* ground=world.addUnit(WORKER,12,8);
     auto* air=world.addUnit(EXPLORER,12,8);
     REQUIRE(ground); REQUIRE(air);
-    REQUIRE(map.pathfindTerrainSafety(ground));
-    REQUIRE(map.pathfindTerrainSafety(air));
-    auto& cache=map.gradientRuntime->safety;
+    REQUIRE(map.routing().pathfindTerrainSafety(ground));
+    REQUIRE(map.routing().pathfindTerrainSafety(air));
+    auto& cache=map.routing().gradientRuntime->safety;
     CHECK(cache.builds==2);
     map.setResource(13,8,*map.resourceRegistry().find("test:canopy"),1);
-    REQUIRE(map.pathfindTerrainSafety(ground));
+    REQUIRE(map.routing().pathfindTerrainSafety(ground));
     CHECK(cache.builds==2); // A walk-through deposit does not invalidate ground routes.
-    CHECK_FALSE(map.pathfindTerrainSafety(air));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(air));
     CHECK(cache.builds==3);
     map.setResourceAmount(map.coordToIndex(13,8),0);
-    CHECK_FALSE(map.pathfindTerrainSafety(air));
+    CHECK_FALSE(map.routing().pathfindTerrainSafety(air));
     CHECK(cache.builds==3); // Empty persistent deposits retain their blocking properties.
     map.setNoResource(13,8,1);
-    REQUIRE(map.pathfindTerrainSafety(air));
+    REQUIRE(map.routing().pathfindTerrainSafety(air));
     CHECK(cache.builds==4);
 }
 
@@ -1836,12 +1838,12 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     CHECK(map.terrainPropertiesAt(8,7).groundSpeedQ8==176);
     CHECK(map.terrainPropertiesAt(8,7).groundHealthQ8==-2);
     CHECK(map.terrainPropertiesAt(8,6).groundHealthQ8==0); // (-1-1+0+0)/4 truncates toward zero.
-    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==40);
+    CHECK(map.routing().stepCost(1,0,map.coordToIndex(9,8),0)==40);
     auto* unit=world.addUnit(WORKER,8,8);
     REQUIRE(unit);
-    REQUIRE(map.pathfindTerrainSafety(unit));
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));
     CHECK(unit->dx==0); CHECK(unit->dy==-1);
-    const auto& costs=map.gradientRuntime->safety.fields.begin()->second.costs;
+    const auto& costs=map.routing().gradientRuntime->safety.fields.begin()->second.costs;
     // Enter the mixed northern cell (round(15*(256+20*2)/256)=17),
     // then the safe northern cell (10); entering the eastern slow goal costs 40.
     CHECK(costs[map.coordToIndex(8,8)]==27);
@@ -1880,16 +1882,16 @@ TEST_CASE("hazard escape shares the team ratio and remains independent of cache 
     auto* unit=world.addUnit(WORKER,8,8);REQUIRE(unit);
     unit->performance[FLY]=0;unit->performance[WALK]=30;unit->performance[SWIM]=10;
     world.team->updateRoutingRatio();REQUIRE(world.team->routingRatio.selected==6);
-    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
-    auto& cache=map.gradientRuntime->safety;
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
+    auto& cache=map.routing().gradientRuntime->safety;
     REQUIRE(cache.fields.size()==1);CHECK(cache.builds==1);
     unit->performance[WALK]=10;unit->performance[SWIM]=30;
-    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
     CHECK(cache.fields.size()==1);CHECK(cache.builds==1);
     world.game.stepCounter=512;world.team->updateRoutingRatio();REQUIRE(world.team->routingRatio.selected==1);
-    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
     CHECK(cache.fields.size()==1);CHECK(cache.builds==2);
     cache.reset();
-    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
+    REQUIRE(map.routing().pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
     CHECK(cache.fields.size()==1);CHECK(cache.builds==1);
 }

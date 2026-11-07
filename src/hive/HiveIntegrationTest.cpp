@@ -8,7 +8,9 @@
 #include <thread>
 #include <chrono>
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "hive/HiveObservation.h"
 #include "hive/LocalCommander.h"
 #include "scripting/javascript/ScriptObservations.h"

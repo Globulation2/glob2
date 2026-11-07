@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "TeamCapacity.h"
 #include "ResourceSeedCache.h"
 #include "Map.h"
 #include "MapInternal.h"
@@ -37,7 +38,7 @@ struct ResourceSeedCache::Storage
 	std::array<std::vector<Uint16>, 3> base;
 	std::array<Bits, MaterialCount> resources, airResources;
 	Bits buildings;
-	std::array<Bits, Team::MAX_COUNT> forbidden;
+	std::array<Bits, TEAM_MAX_COUNT> forbidden;
 	// Effective natural goal type: occupied resource cells have no goal bit.
 	std::vector<MaterialMask> materialMasks, airMaterialMasks;
 	std::vector<Uint8> dirty;
@@ -160,8 +161,8 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 		for (auto changed = s.forbiddenMasks[index] ^ map.areaCells[index].forbidden; changed; changed &= changed - 1)
 		{
 			const unsigned team = std::countr_zero(changed);
-			if (team < Team::MAX_COUNT)
-				setBit(s.forbidden[team], index, map.areaCells[index].forbidden & Team::teamNumberToMask(team));
+			if (team < TEAM_MAX_COUNT)
+				setBit(s.forbidden[team], index, map.areaCells[index].forbidden & teamNumberToMask(team));
 		}
 		s.forbiddenMasks[index] = map.areaCells[index].forbidden;
 	}
@@ -232,7 +233,7 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	auto &s = *storage;
 	s.queue.clear();
 	std::memcpy(output, s.base[swim==AIR_MOVEMENT_CLASS?2:swim > 0].data(), cells * sizeof(*output));
-	const Uint32 mask = Team::teamNumberToMask(team);
+	const Uint32 mask = teamNumberToMask(team);
 	// Ground goals still respect immobile units and forbidden paint.
 	// Fog, market stock and resource policy are live overlays, never cached.
 

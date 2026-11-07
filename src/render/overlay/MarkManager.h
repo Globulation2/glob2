@@ -4,7 +4,8 @@
 #pragma once
 
 #include "EngineTiming.h"
-#include "GraphicContext.h"
+#include "GAGColor.h"
+#include <vector>
 
 struct PresentationFrame;
 class MapCamera;

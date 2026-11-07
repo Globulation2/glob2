@@ -2,7 +2,9 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include <Environment.h>
 #include "ScopedEnvironment.h"
 #include <optional>

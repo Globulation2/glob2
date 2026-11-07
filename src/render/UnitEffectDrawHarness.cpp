@@ -4,7 +4,8 @@
 // effects (UnitEffects.h), saving each frame for review.
 // The effect must change the picture while it plays and leave exactly the
 // ordinary picture once its record has expired.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"

@@ -7,6 +7,7 @@
 #include "UnitCatalog.h"
 #include <nlohmann/json.hpp>
 #include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
 #include "GeneratorRegistry.h"
@@ -381,7 +382,8 @@ StartQualityReport canonicalQuality(Game &game)
 			map.fertilityMaximum = maximum;
 		}
 	} restore(game.map);
-	return scoreStarts(game, game.teamsCount());
+	GenerationWorld world(game);
+	return scoreStarts(world, game.teamsCount());
 }
 J telemetryJson(const GenerationTelemetry &telemetry)
 {

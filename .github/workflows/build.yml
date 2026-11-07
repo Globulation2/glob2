@@ -1,10 +1,12 @@
 name: build
 
-# The full development matrix. Pull requests run the fast gate (ci-fast.yml) instead;
-# a pull request labelled ci:full calls this workflow through ci-full-label.yml.
+# The full development matrix. Pull requests and master pushes run the fast gate
+# (ci-fast.yml); this matrix runs on master every four hours (a run whose revision
+# already has a successful full run skips the expensive jobs), on demand, for
+# releases, and for pull requests labelled ci:full through ci-full-label.yml.
+# Running it on every master push kept the hosted runners busy for hours and
+# starved the fast gate.
 on:
-  push:
-    branches: [master]
   workflow_call:
     inputs:
       revision:
@@ -12,7 +14,7 @@ on:
         required: true
         type: string
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 */4 * * *'
   workflow_dispatch:
     inputs:
       desktop_localization:

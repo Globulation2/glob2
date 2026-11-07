@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "MapInternal.h"
 #include "TerrainType.h"
 
@@ -202,7 +203,7 @@ void GradientTest::testOpenGridIsOctileOnTorus()
 	std::vector<Uint16> g = blank(map);
 	const int gx = 1, gy = 2;
 	g[map.coordToIndex(gx, gy)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	for (int y = 0; y < 8; y++)
 		for (int x = 0; x < 8; x++)
 			CHECK_EQ(octile(wrapDist(x, gx, 8), wrapDist(y, gy, 8)), cost(g, map, x, y));
@@ -217,7 +218,7 @@ void GradientTest::testObstaclesForcePathAround()
 	for (int y = 0; y < 7; y++)
 		g[map.coordToIndex(4, y)] = GRADIENT_FORBIDDEN;
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	// (3,0): two cardinal steps west.
 	CHECK_EQ(30, cost(g, map, 3, 0));
 	// (5,0): wrap east is 3 cardinal steps (5->6->7->0).
@@ -239,7 +240,7 @@ void GradientTest::testWaterCostsBySwimClass()
 	}
 	std::vector<Uint16> g = blank(map);
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 5); // water costs 20
+	map.routing().propagateGradient(g.data(), 5); // water costs 20
 	// (3,0) -> (2,0) water 20 -> (1,0) water 20 -> (0,0) land 10 = 50; around the torus is 5 land steps = 50 too.
 	CHECK_EQ(50, cost(g, map, 3, 0));
 	// (2,0): enter (1,0) = 20, then (0,0) = 10.
@@ -249,7 +250,7 @@ void GradientTest::testWaterCostsBySwimClass()
 	// A class that swims as fast as it walks pays the land rate.
 	std::vector<Uint16> even = blank(map);
 	even[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(even.data(), Map::SWIM_CLASS_EVEN);
+	map.routing().propagateGradient(even.data(), Map::SWIM_CLASS_EVEN);
 	CHECK_EQ(30, cost(even, map, 3, 0));
 
 	// Non-swimmer: the caller marks water as an obstacle, so (3,0) must go around.
@@ -260,7 +261,7 @@ void GradientTest::testWaterCostsBySwimClass()
 		walker[map.coordToIndex(2, y)] = GRADIENT_FORBIDDEN;
 	}
 	walker[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(walker.data(), 0);
+	map.routing().propagateGradient(walker.data(), 0);
 	CHECK_EQ(50, cost(walker, map, 3, 0));
 	CHECK_EQ(40, cost(walker, map, 4, 0));
 }
@@ -275,7 +276,7 @@ void GradientTest::testUnreachableCellsStayUnreachable()
 			if (dx || dy)
 				g[map.coordToIndex(6 + dx, 6 + dy)] = GRADIENT_FORBIDDEN;
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	CHECK_EQ((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(6, 6)]);
 	CHECK_EQ((int)GRADIENT_AT_GOAL, (int)g[map.coordToIndex(0, 0)]);
 	CHECK_EQ(2, gradientTiles(g[map.coordToIndex(2, 0)]));
@@ -289,7 +290,7 @@ void GradientTest::testSeedBelowGoalPropagates()
 	// A forbidden-zone border cell seeded one step below the goal, as the
 	// forbidden gradient does, spreads from its own cost.
 	g[map.coordToIndex(4, 4)] = GRADIENT_FORBIDDEN_BORDER;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	CHECK_EQ(GRADIENT_STEP, cost(g, map, 4, 4));
 	CHECK_EQ(2 * GRADIENT_STEP, cost(g, map, 5, 4));
 	CHECK_EQ(GRADIENT_STEP + GRADIENT_DIAGONAL_STEP, cost(g, map, 5, 5));
@@ -310,7 +311,7 @@ void GradientTest::testSeedsBeyondBucketWindow()
 	}
 	g[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
 	g[map.coordToIndex(1, 1)] = GRADIENT_AT_GOAL - 60;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	CHECK_EQ(0, cost(g, map, 3, 3));
 	CHECK_EQ(60, cost(g, map, 1, 1));
 	// (0,0) and (1,0): 70 through the seed, 70 and 80 from the goal.
@@ -326,7 +327,7 @@ void GradientTest::testMaxCostStopsPropagation()
 	GrassMap map;
 	std::vector<Uint16> g = blank(map);
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0, 20);
+	map.routing().propagateGradient(g.data(), 0, 20);
 	CHECK_EQ(20, cost(g, map, 2, 0));
 	CHECK_EQ(14, cost(g, map, 1, 1));
 	CHECK_EQ((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(3, 0)]);
@@ -340,18 +341,18 @@ void GradientTest::testDirectionPrefersCheapestTotal()
 	GrassMap map;
 	std::vector<Uint16> g = blank(map);
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	int dx = 9, dy = 9;
 	// From (3,3) the cheapest neighbour is the diagonal (2,2).
-	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(map.routing().directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
 	CHECK_EQ(-1, dx);
 	CHECK_EQ(-1, dy);
 	// From (3,0) it is straight west.
-	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 0, g.data(), &dx, &dy, true));
+	CHECK(map.routing().directionByGradient(random, 1, MovementAccess::Land, 3, 0, g.data(), &dx, &dy, true));
 	CHECK_EQ(-1, dx);
 	CHECK_EQ(0, dy);
 	// At the goal: stay.
-	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 0, 0, g.data(), &dx, &dy, true));
+	CHECK(map.routing().directionByGradient(random, 1, MovementAccess::Land, 0, 0, g.data(), &dx, &dy, true));
 	CHECK_EQ(0, dx);
 	CHECK_EQ(0, dy);
 
@@ -363,10 +364,10 @@ void GradientTest::testDirectionPrefersCheapestTotal()
 	water.putWater(2, 0);
 	std::vector<Uint16> f = blank(water);
 	f[water.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	water.propagateGradient(f.data(), 5);
+	water.routing().propagateGradient(f.data(), 5);
 	CHECK_EQ(28, cost(f, water, 2, 0));
 	CHECK_EQ(24, cost(f, water, 2, 1));
-	CHECK(water.directionByGradient(random, 1, movementAccessFromLegacy(5), 3, 0, f.data(), &dx, &dy, true));
+	CHECK(water.routing().directionByGradient(random, 1, movementAccessFromLegacy(5), 3, 0, f.data(), &dx, &dy, true));
 	CHECK_EQ(-1, dx);
 	CHECK(dy != 0); // never straight into the water
 }
@@ -378,20 +379,20 @@ void GradientTest::testDirectionBlockedNeighbour()
 	GrassMap map;
 	std::vector<Uint16> g = blank(map);
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.propagateGradient(g.data(), 0);
+	map.routing().propagateGradient(g.data(), 0);
 	// Another unit stands on (2,2): from (3,3) the strict move must still make
 	// progress through (2,3) or (3,2), never the occupied diagonal.
 	map.putGroundUnit(2, 2);
 	int dx = 9, dy = 9;
-	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(map.routing().directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
 	CHECK(((dx == -1 && dy == 0) || (dx == 0 && dy == -1)));
 	// Fully surrounded by units: strict fails, and so does the sidestep (no free cell).
 	for (int ddy = -1; ddy <= 1; ddy++)
 		for (int ddx = -1; ddx <= 1; ddx++)
 			if (ddx || ddy)
 				map.putGroundUnit(3 + ddx, 3 + ddy);
-	CHECK(!map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
-	CHECK(!map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, false));
+	CHECK(!map.routing().directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(!map.routing().directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, false));
 }
 
 void GradientTest::testSwimClassFromSpeeds()
@@ -464,7 +465,7 @@ void GradientTest::testRandomFieldsAgainstReference()
 					}
 				}
 		}
-		map.propagateGradient(input.data(), swimClass);
+		map.routing().propagateGradient(input.data(), swimClass);
 		CHECK(input == expected);
 	}
 }
@@ -504,7 +505,7 @@ void GradientTest::testMatchesLegacyKernelOnLargeMaps()
 
 				auto expected = input;
 				map.legacyPropagateGradient(expected.data(), swimClass, maxCost);
-				map.propagateGradient(input.data(), swimClass, maxCost);
+				map.routing().propagateGradient(input.data(), swimClass, maxCost);
 				CHECK_MESSAGE(input == expected, ("trial " + std::to_string(trial)));
 			}
 }

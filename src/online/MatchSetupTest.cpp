@@ -11,7 +11,8 @@
 
 #include "SimRevision.h"
 #include "EngineTiming.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "Engine.h"
 #include "UnitCatalog.h"
 #include "FileFormatVersions.h"

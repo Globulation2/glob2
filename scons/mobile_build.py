@@ -145,7 +145,6 @@ def build_mobile(directory, identity, arguments):
             # executables for adb shell (platforms/mobile/android_device_tests.py). They reuse the
             # same game objects; test/support/TestMain.cpp is the entry point and
             # platforms/mobile/NativeTestMain.cpp interposes the platform bridges.
-            import sys
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
@@ -200,10 +199,10 @@ def build_mobile(directory, identity, arguments):
 
             bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'platforms/mobile/NativeTestMain.cpp')
             engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
-                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.portable_engine_tests(), 'engine-')
                                    + bridge + client_objects)
             unit = tests.Program(str(output / 'tests' / 'glob2-unit-tests'),
-                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.portable_unit_tests(), 'unit-')
                                  + production_objects(registry.UNIT_PRODUCTION_SOURCES) + bridge + library_objects)
             env.Alias('android-tests', engine + unit)
     else:
@@ -219,7 +218,6 @@ def build_mobile(directory, identity, arguments):
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
         program = record(env, env.StaticLibrary(str(output / 'lib/glob2'), objects), 'link')
         if 'ios-tests' in COMMAND_LINE_TARGETS:
-            import sys
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()

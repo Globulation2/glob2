@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ComputeExecutor.h"
 #include "ClaimHireTargets.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
@@ -70,8 +72,8 @@ void Map::prepareClaimHireTargets(int teamNumber)
         const int movement=accessClass(u->movementAccess());
         auto [at,inserted]=inputs.try_emplace({int(index.requests[i].material),movement});
         if(inserted) {
-            if(const auto* field=getMaterialGradientSlot(teamNumber,index.requests[i].material,u->movementAccess(),false,nullptr))
-                at->second.destinations=materialGradientDestinations(field);
+            if(const auto* field=routing().getMaterialGradientSlot(teamNumber,index.requests[i].material,u->movementAccess(),false,nullptr))
+                at->second.destinations=routing().materialGradientDestinations(field);
             at->second.components=claimTerrainComponents(movement);
         }
         perRequest[i]=&at->second;

@@ -14,8 +14,9 @@
 #include "EngineTiming.h"
 #include "render/GameAnimations.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "sim/SimServices.h"
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Team.h"
 #include "Unit.h"
 #include "UnitTiming.h"
@@ -136,9 +137,9 @@ void Building::swarmStep(void)
 	const bool exitFound = canFly ? findAirExit(&x, &y, &dx, &dy)
 		: findGroundExit(&x, &y, &dx, &dy, canSwim, canWalk || (!canWalk && !canSwim));
 	if (!exitFound) return;
-	Unit* u = owner->game->addUnit(x, y, owner->teamNumber, chosen, 0, 0, dx, dy);
+	Unit* u = owner->ctx.services->addUnit(x, y, owner->teamNumber, chosen, 0, 0, dx, dy);
 	if (!u) return;
-	owner->game->animations->onUnitSpawn(*owner->map, x, y, owner, u->gid, gid, dx, dy);
+	owner->ctx.animations->onUnitSpawn(*owner->map, x, y, owner, u->gid, gid, dx, dy);
 	const auto& recipe = production.recipes[chosen];
 	if (!committed)
 	{
@@ -182,7 +183,7 @@ void Building::convertStoneToBullet()
 		changeMaterial(resource, -(cost));
 		owner->stats.events().consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
+		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->routing().dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }
@@ -211,7 +212,7 @@ void Building::turretStep(Uint32 stepCounter)
 
 	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
-    const auto chosen=TurretTargeting::firstValid(*this,owner->game->turretTargeting()->entries(*this));
+    const auto chosen=TurretTargeting::firstValid(*this,owner->ctx.services->turretTargeting()->entries(*this));
     TurretTarget target;
     if (chosen.found()) {
         target.type=chosen.entry.kind==TurretTargeting::Kind::Building ? TARGETTYPE_BUILDING : TARGETTYPE_GENERAL;

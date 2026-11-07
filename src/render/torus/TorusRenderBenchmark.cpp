@@ -1,3 +1,4 @@
+#include "ComputeExecutor.h"
 #include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PresentationWork.h>

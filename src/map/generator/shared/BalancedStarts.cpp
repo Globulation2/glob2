@@ -3,11 +3,10 @@
 #include "PowerOfTwo.h"
 #include "BalancedStarts.h"
 #include "StartingLayout.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GlobalContainer.h"
 #include "Grid.h"
-#include "Map.h"
 #include <algorithm>
 #include <cstdint>
 #include <utility>
@@ -74,7 +73,7 @@ namespace
 // the answer never changes across the two distanceToMaterial() floods and the up-to-900 calls
 // to scoreAsBuilt() below; computing it once into a flat byte per tile turns what used to be a
 // branchy, multi-array accessor call at every visited tile into a single sequential array read.
-std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
+std::vector<std::uint8_t> buildHardSpaceGrid(GenerationMap &map)
 {
 	return groundUnitTiles(map);
 }
@@ -85,8 +84,8 @@ std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
 // is what makes scoring a few hundred candidate sites cheap enough to do exhaustively. Distances
 // on any map this engine supports fit comfortably in 16 bits, halving the footprint of an array
 // every scoreAsBuilt call after it touches over and over.
-std::vector<std::int16_t> distanceToMaterial(Map &map, const std::vector<std::uint8_t> &hard,
-											 MaterialId material)
+std::vector<std::int16_t>
+distanceToMaterial(GenerationMap &map, const std::vector<std::uint8_t> &hard, MaterialId material)
 {
 	const Torus t(map);
 	std::vector<unsigned char> beside(size_t(t.size()), 0);
@@ -122,9 +121,9 @@ std::vector<std::int16_t> distanceToMaterial(Map &map, const std::vector<std::ui
 }
 } // namespace
 
-bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSquare)
+bool chooseBalancedStarts(GenerationWorld &game, GenerationContext &context, int minDistSquare)
 {
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const int nbTeams = context.request.nbTeams;
 	context.telemetry.measure("starts.balanced.min_distance_squared", minDistSquare);
@@ -135,8 +134,9 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	};
 	if (nbTeams <= 0 || minDistSquare <= 0)
 		return fail("invalid search parameters");
-	const int typeNum = game.buildingsTypes.getStartingBuildingTypeNum();
-	const BuildingType *swarm = typeNum>=0 ? game.buildingsTypes.get(typeNum) : nullptr;
+	const GenerationBuildingType startingType = game.startingBuildingType();
+	const int typeNum = startingType.typeNum;
+	const GenerationBuildingType *swarm = startingType ? &startingType : nullptr;
 	if (!swarm || !swarm->runtimeAvailable)
 		return fail("catalog has no available starting building");
 
@@ -180,7 +180,8 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 				ox -= w;
 			if (oy >= h / 2)
 				oy -= h;
-			return swarm->semantics.occupiesGround && ox >= 0 && ox < swarm->width && oy >= 0 && oy < swarm->height;
+			return swarm->occupiesGround && ox >= 0 && ox < swarm->width && oy >= 0 &&
+				   oy < swarm->height;
 		};
 		++visitStamp;
 		size_t qHead = 0, qTail = 0;

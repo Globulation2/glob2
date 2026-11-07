@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
 #include "MaximaObservationFixture.h"
 #include "AIMaximaFarmGeometry.h"
 #include "ExperimentalFeatures.h"
@@ -10,6 +11,7 @@
 #include "../../src/team/Team.h"
 #include "../../src/ai/AIImplementation.h"
 #include "../../src/map/Map.h"
+#include "gradient/MapRouting.h"
 #include "Order.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -181,7 +183,7 @@ void initialFlagStaffing()
         {
             Unit* worker=f.game.addUnit(21,20,0,WORKER,0,0,0,0);REQUIRE(worker);
             setYoungResource(f.game.map,22,20,WHEAT);
-            f.game.map.buildingGradient(flag,MovementAccess::Land);
+            f.game.map.routing().buildingGradient(flag,MovementAccess::Land);
             // Even if discovery/management is delayed past a recruitment cycle,
             // the default broad resource selector cannot recruit a worker.
             for(int tick=0;tick<70;++tick)REQUIRE(!(glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()));

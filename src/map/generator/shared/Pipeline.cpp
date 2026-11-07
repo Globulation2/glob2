@@ -1,7 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Pipeline.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
 #include "Homes.h"
@@ -17,11 +17,11 @@ std::string denseColonySizeFailure(const GenerationRequest &request)
 	return {};
 }
 
-std::string startingAccessFailure(const Map &map, int teams,
+std::string startingAccessFailure(const GenerationMap &map, int teams,
 								  const std::vector<MaterialAccessRule> &rules, int minimumSites,
 								  int buildingRange)
 {
-	if (teams < 1 || teams > Team::MAX_COUNT || minimumSites < 0 || buildingRange < 0)
+	if (teams < 1 || teams > TEAM_MAX_COUNT || minimumSites < 0 || buildingRange < 0)
 		throw GenerationFailure("Invalid starting-access colony or building budget");
 	int range = buildingRange;
 	for (const auto &rule : rules)
@@ -87,15 +87,15 @@ std::string startingAccessFailure(const Map &map, int teams,
 	return "";
 }
 
-std::string startingFloorFailure(const Map &map, int teams, int wheatRange, int woodRange)
+std::string startingFloorFailure(const GenerationMap &map, int teams, int wheatRange, int woodRange)
 {
 	return startingAccessFailure(map, teams,
 								 {{MaterialId::Food, wheatRange, "food"}, {MaterialId::Wood, woodRange, "wood"}});
 }
 
-bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceAmounts &amounts,
-						 int wheatRange, int woodRange, int clearRadius,
-						 const std::vector<unsigned char> *protectedWalls)
+bool reopenCrampedStarts(GenerationWorld &game, GenerationContext &context,
+						 const ResourceAmounts &amounts, int wheatRange, int woodRange,
+						 int clearRadius, const std::vector<unsigned char> *protectedWalls)
 {
 	context.telemetry.measure("pipeline.cramped_relief.enabled", amounts.scaled());
 	if (!amounts.scaled())
@@ -104,7 +104,7 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 	return true;
 }
 
-void openStartsBuriedByResources(Game &game, GenerationContext &context, int wheatRange,
+void openStartsBuriedByResources(GenerationWorld &game, GenerationContext &context, int wheatRange,
 								 int woodRange, int clearRadius,
 								 const std::vector<unsigned char> *protectedWalls)
 {
@@ -114,8 +114,9 @@ void openStartsBuriedByResources(Game &game, GenerationContext &context, int whe
 	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, protectedWalls);
 }
 
-void secureStartingCrops(Game &game, GenerationContext &context, const Torus &t, int wheatRange,
-						 int woodRange, int clearRadius, const std::vector<unsigned char> *keep,
+void secureStartingCrops(GenerationWorld &game, GenerationContext &context, const Torus &t,
+						 int wheatRange, int woodRange, int clearRadius,
+						 const std::vector<unsigned char> *keep,
 						 const std::vector<unsigned char> *allowedTopup)
 {
 	clearAroundSwarms(game.map, context, t, keep);
@@ -124,7 +125,7 @@ void secureStartingCrops(Game &game, GenerationContext &context, const Torus &t,
 	clearAroundSwarms(game.map, context, t, keep);
 }
 
-ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &ground,
+ColonyWalk walkFromFirstColony(const GenerationMap &map, int teams, const std::string &ground,
 							   const std::string &route)
 {
 	ColonyWalk walk;
@@ -149,7 +150,7 @@ std::string CropsInReach::missing() const
 	return std::string("cannot walk to ") + (food ? "wood." : "food.");
 }
 
-CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
+CropsInReach cropsBesideReach(const GenerationMap &map, const std::vector<int> &reach)
 {
 	CropsInReach crops;
 	const int w = map.getW(), h = map.getH();
@@ -182,7 +183,7 @@ CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 	return crops;
 }
 
-std::string coloniesApart(const Map &map, int teams, const std::string &route)
+std::string coloniesApart(const GenerationMap &map, int teams, const std::string &route)
 {
 	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
 	const Torus t(map);
@@ -209,7 +210,7 @@ std::string coloniesApart(const Map &map, int teams, const std::string &route)
 	return "";
 }
 
-std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
+std::vector<unsigned char> homeGrassMask(const GenerationMap &map, const Torus &t,
 										 const std::vector<int> &homeOf, int team)
 {
 	std::vector<unsigned char> ground(size_t(t.size()), 0);
@@ -221,7 +222,7 @@ std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
 	return ground;
 }
 
-bool settleRoundColonies(Game &game, GenerationContext &context, const char *stream,
+bool settleRoundColonies(GenerationWorld &game, GenerationContext &context, const char *stream,
 						 const std::vector<int> &homeOf, const std::vector<ShapePoint> &homes,
 						 double radius)
 {
@@ -231,8 +232,9 @@ bool settleRoundColonies(Game &game, GenerationContext &context, const char *str
 		[&](int team) { return homeSwarmSite(homes.at(team), 0.0, radius); });
 }
 
-std::string homePondMissing(const Map &map, const Torus &t, const std::vector<ShapePoint> &kits,
-							int teams, const char *place, const char *water)
+std::string homePondMissing(const GenerationMap &map, const Torus &t,
+							const std::vector<ShapePoint> &kits, int teams, const char *place,
+							const char *water)
 {
 	for (int k = 0; k < teams; ++k)
 	{

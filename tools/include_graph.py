@@ -15,6 +15,7 @@ Typical use:
     python3 tools/include_graph.py fanin src/app/Version.h src/map/Map.h
     python3 tools/include_graph.py why src/app/Version.h   # direct includers, by reach
     python3 tools/include_graph.py median         # median repo headers reached per TU
+    python3 tools/include_graph.py blast --since origin/master~200   # rebuild share of recent commits
 
 `check_header_layering.py` imports this module for its fan-in budget.
 """
@@ -142,6 +143,37 @@ class IncludeGraph:
         return result
 
 
+def report_blast(graph: IncludeGraph, units: list[str], since: str, until: str) -> int:
+    """Fraction of TUs each commit's changes reach, on today's include graph.
+
+    An approximation of the historical rebuild cost: it uses the current graph,
+    so it measures how expensive those edits would be now."""
+    import subprocess
+    reaching: dict[str, set[str]] = {}
+    for unit in units:
+        for header in graph.reach(unit) | {unit}:
+            reaching.setdefault(header, set()).add(unit)
+    log = subprocess.check_output(['git', '-C', str(graph.root), 'log', '--first-parent', '--format=%H', f'{since}..{until}'],
+                                  text=True).split()
+    shares = []
+    for sha in log:
+        changed = subprocess.check_output(['git', '-C', str(graph.root), 'diff-tree', '--no-commit-id', '--name-only', '-r', sha],
+                                          text=True).split()
+        hit = set().union(*(reaching.get(path, set()) for path in changed)) if changed else set()
+        if any(Path(path).suffix in SOURCE_SUFFIXES | HEADER_SUFFIXES for path in changed):
+            shares.append(len(hit) / len(units))
+    if not shares:
+        print('no code commits in range')
+        return 0
+    shares.sort()
+    def pct(q):
+        return 100 * shares[min(len(shares) - 1, int(q * len(shares)))]
+    print(f'{len(shares)} code commits; rebuild share median {pct(0.5):.1f}%, p75 {pct(0.75):.1f}%, p90 {pct(0.9):.1f}%; '
+          f'over 50%: {100 * sum(s > 0.5 for s in shares) / len(shares):.1f}% of commits; '
+          f'mean {100 * sum(shares) / len(shares):.1f}%')
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--all-units', action='store_true', help='count every source under src/, libs/, test/ instead of client TUs')
@@ -156,6 +188,9 @@ def main(argv: list[str] | None = None) -> int:
     why.add_argument('header')
     why.add_argument('-n', type=int, default=20)
     sub.add_parser('median', help='median repository headers reached per TU')
+    blast = sub.add_parser('blast', help='share of client TUs each recent first-parent commit would recompile')
+    blast.add_argument('--since', required=True, help='revision to start after (e.g. origin/master~200)')
+    blast.add_argument('--until', default='HEAD')
     args = parser.parse_args(argv)
 
     graph = IncludeGraph(args.root.resolve())
@@ -168,6 +203,8 @@ def main(argv: list[str] | None = None) -> int:
               f"{payload['units']} TUs; median repo headers reached {payload['median']}; "
               f"headers reaching >=50% of TUs: {payload['headers_reaching_half']}")
         return 0
+    if args.command == 'blast':
+        return report_blast(graph, units, args.since, args.until)
     if args.command == 'why':
         rows = sorted(graph.includers(os.path.normpath(args.header), units).items(), key=lambda r: -r[1])[:args.n]
         for name, count in rows:

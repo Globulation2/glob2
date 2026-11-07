@@ -4,7 +4,8 @@
 #include <thread>
 #include <chrono>
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
 #include <algorithm>

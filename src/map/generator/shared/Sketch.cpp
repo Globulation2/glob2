@@ -4,13 +4,13 @@
 #include "Sketch.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
-#include "Map.h"
+#include "GenerationWorld.h"
 #include "TerrainProperties.h"
 #include <algorithm>
 #include <cmath>
 namespace MapGeneration
 {
-std::vector<unsigned char> pureTiles(const Map &map, TerrainType type)
+std::vector<unsigned char> pureTiles(const GenerationMap &map, TerrainType type)
 {
 	const Torus t(map);
 	std::vector<unsigned char> result(t.size(), 0);
@@ -50,14 +50,14 @@ void layBeaches(TerrainSketch &terrain, const Torus &t)
 	}
 }
 
-void writeVertices(Map &map, const TerrainSketch &terrain)
+void writeVertices(GenerationMap &map, const TerrainSketch &terrain)
 {
 	std::vector<TerrainType> vertices(terrain.size());
 	std::transform(terrain.begin(), terrain.end(), vertices.begin(), [](unsigned char t) { return TerrainType(t); });
 	map.assignVertexTerrain(vertices);
 }
 
-void paintTile(Map &map, int x, int y, TerrainType type)
+void paintTile(GenerationMap &map, int x, int y, TerrainType type)
 {
 	map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, type, false);
 }

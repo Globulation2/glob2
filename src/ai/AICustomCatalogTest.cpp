@@ -1,6 +1,9 @@
 #include "CabinoObservationFixture.h"
+#include "gradient/MapRouting.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "AI.h"
 #include "Version.h"
 #include "AINumbi.h"
@@ -857,13 +860,13 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
         // Synthetic complete publication for the conversion-only fixture.
         // Drain and discard tickets before replacing storage; readers never
         // mutate an existing published generation.
-        game.map.resetGradientPipeline();
+        game.map.routing().resetGradientPipeline();
         auto gradient=std::make_unique<Uint16[]>(copied.size());
         for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
-        auto& slot=game.map.materialGradients[0][WHEAT][swimming ? Map::SWIM_CLASS_EVEN : 0];
+        auto& slot=game.map.routing().materialGradients[0][WHEAT][swimming ? Map::SWIM_CLASS_EVEN : 0];
         delete[] slot;
         slot=gradient.release(); // The map owns and eventually frees this array.
-        game.map.publishPlane(&slot);
+        game.map.routing().publishPlane(&slot);
         game.snapshotStore().invalidateBoundary();
         withCastorObservation(ai,game,[&] {
             ai.copyWheatGradient(copied.data());

@@ -3,7 +3,8 @@
 // A unit a building heals, feeds or trains records one render-only effect
 // (render/UnitEffects.h) when it comes out, and none when it leaves without the
 // whole service: expelled mid-stay, or a trainee while upgrades are disabled.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "BuildingType.h"
 #include "render/GameAnimations.h"
 #include "render/UnitEffects.h"
@@ -15,7 +16,7 @@ namespace
 //! Headless games do not record animations; give this one a container that does.
 void recordAnimations(Game& game)
 {
-    game.animations = std::make_unique<GameAnimations>(true, game.map.getSectorW() * game.map.getSectorH());
+    game.setAnimations(std::make_unique<GameAnimations>(true, game.map.getSectorW() * game.map.getSectorH()));
 }
 
 std::vector<UnitEffectAnimation> effects(const Game& game)

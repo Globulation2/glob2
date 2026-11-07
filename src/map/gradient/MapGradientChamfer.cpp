@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "MapInternal.h"
 #include "field/Influence.h"
 
@@ -33,27 +34,27 @@
 // theoretical ceiling: any chain longer than that violates monotonicity, so
 // the cap acts as a tripwire for that invariant rather than a real-workload
 // throttle. On correct code the loop exits in a handful of passes.
-void Map::updateGlobalGradient(Uint8 *gradient)
+void MapRouting::updateGlobalGradient(Uint8 *gradient)
 {
 	PERF_SCOPE_TIME(Propagation);
     updateGlobalGradientTask(gradient).run();
 }
 
-GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
+GAGCore::CooperativeTask MapRouting::updateGlobalGradientTask(Uint8 *gradient)
 {
-	if(size==0)co_return true;
-	field::ConvergentInfluence influence(gradient,{w,h});
+	if(map.size==0)co_return true;
+	field::ConvergentInfluence influence(gradient,{map.w,map.h});
 	if (!influence.hasSources()) co_return true;
 	int passes=0;
 	do
 	{
 		influence.beginPass();
-		for (size_t y=0;y<(size_t)h;++y)
+		for (size_t y=0;y<(size_t)map.h;++y)
 		{
 			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
 			influence.forwardRow(int(y));
 		}
-		for (size_t y=(size_t)h;y-- > 0;)
+		for (size_t y=(size_t)map.h;y-- > 0;)
 		{
 			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
 			influence.reverseRow(int(y));
@@ -61,7 +62,7 @@ GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
 		if (++passes >= 256)
 		{
 			fprintf(stderr, "[chamfer] passes >= 256 - monotonicity violated. w=%d h=%d size=%zu\n",
-				(int)w, (int)h, size);
+				(int)map.w, (int)map.h, map.size);
 			abort();
 		}
 	} while (influence.passChanged());

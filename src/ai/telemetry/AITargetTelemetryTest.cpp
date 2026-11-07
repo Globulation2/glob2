@@ -2,7 +2,8 @@
 // Offense target-team telemetry (docs/ai/telemetry.md, "Offense target team"):
 // the fields name the enemy actually targeted, survive saves, and never change
 // what the simulation computes.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "AI.h"
 #include "AITelemetryFields.h"
 #include "Order.h"

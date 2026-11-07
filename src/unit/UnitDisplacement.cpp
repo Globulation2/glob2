@@ -9,7 +9,9 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
+#include "gradient/MapRouting.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
 
 #include "Building.h"
 
@@ -46,7 +48,7 @@ struct GuardCostEligibility {
         return !unit.isDead && unit.displacement!=Unit::DIS_INSIDE && unit.hasCapability(UnitRuntimeTraits::GuardIdle);
     }
     explicit GuardCostEligibility(Unit& value):unit(value),before(eligible(value)) {}
-    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->gradientGuardCostsChanged(unit.owner->teamNumber);}
+    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->routing().gradientGuardCostsChanged(unit.owner->teamNumber);}
 };
 }
 
@@ -98,7 +100,7 @@ void Unit::handleDisplacement(void)
 				{
 					// The gradient led here to a stocked market of ours: take the
 					// resource at its door and carry it home.
-					if (Building *market = owner->map->touchedStockedMarketSlot(this, destinationPurpose))
+					if (Building *market = owner->map->routing().touchedStockedMarketSlot(this, destinationPurpose))
 					{
 						if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) { stopAttachedForBuilding(false); break; }
 						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
@@ -274,7 +276,7 @@ void Unit::handleDisplacement(void)
 								int distance;
 								const auto route=performance[FLY]
 									? queryMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding)
-									: map->queryMaterialDistance(teamNumber,r,movementAccess(),posX,posY,&distance,false,attachedBuilding);
+									: map->routing().queryMaterialDistance(teamNumber,r,movementAccess(),posX,posY,&distance,false,attachedBuilding);
 								if (route==RouteResult::Pending) { if (pendingResource<0) pendingResource=r; continue; }
 								if (route!=RouteResult::Reachable || (distance<<1)>=timeLeft) continue;
 
@@ -431,7 +433,7 @@ void Unit::handleDisplacement(void)
 				// Feed and heal visits share this displacement state with training.
 				// A saved trainee must use the normal exit path to release its room,
 				// without waiting for an upgrade timer or recording a training gain.
-				if (insideTimeout>=0 || (owner->game->gameHeader.isUnitUpgradesDisabled()
+				if (insideTimeout>=0 || (owner->ctx.gameHeader->isUnitUpgradesDisabled()
 					&& destinationPurpose!=FEED && destinationPurpose!=HEAL))
 				{
 					displacement=DIS_EXITING_BUILDING;
@@ -440,18 +442,18 @@ void Unit::handleDisplacement(void)
 					// course. Release its original reservation before changing any
 					// levels, then exit using the existing movement clocks.
 					const bool trainingVisit=destinationPurpose!=FEED && destinationPurpose!=HEAL;
-					const auto courses=trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled()
+					const auto courses=trainingVisit && !owner->ctx.gameHeader->isUnitUpgradesDisabled()
 						? trainingVisitCourses(*attachedBuilding,destinationPurpose) : std::optional<Uint32>{};
-					if (trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled() && courses)
+					if (trainingVisit && !owner->ctx.gameHeader->isUnitUpgradesDisabled() && courses)
 						++owner->stats.events().trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
 					{
 						hungry=foodCapacity();
-						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
+						if (owner->ctx.areaEffects->enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						setNeedToRecheckMedical(true);
-						owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Feed),
+						owner->ctx.animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Feed),
 							attachedBuilding->gid, attachedBuilding->typeNum, 0);
 					}
 					else if (destinationPurpose==HEAL)
@@ -461,14 +463,14 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->owner->stats.events().hpRestored +=
 							std::max<Sint64>(0, Sint64(performance[HP]) - hp);
 						hp=performance[HP];
-						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
+						if (owner->ctx.areaEffects->enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 						setNeedToRecheckMedical(true);
-						owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Heal),
+						owner->ctx.animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Heal),
 							attachedBuilding->gid, attachedBuilding->typeNum, 0);
 					}
 					// Restored units already inside exit safely without gaining a level.
 					// New training visits are rejected by Team::findBestUpgrade.
-					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
+					else if (!owner->ctx.gameHeader->isUnitUpgradesDisabled())
 					{
 						if(!courses) { attachedBuilding->releaseService(this); setNeedToRecheckMedical(true); break; }
 						attachedBuilding->settleService(this);
@@ -499,7 +501,7 @@ void Unit::handleDisplacement(void)
 								shownLevel = std::max(shownLevel, a == SWIM ? level[a] : 1 + level[a]);
 						}
 						if (shownLevel)
-							owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Train),
+							owner->ctx.animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Train),
 								attachedBuilding->gid, attachedBuilding->typeNum, Uint8(std::min(shownLevel, 255)));
 					}
 				}
@@ -585,7 +587,7 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 	//TODO: totally fix this totally hacky implementation.
 	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
-		Team *t = owner->game->teams[i];
+		Team *t = owner->ctx.teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
 			// The live index contains every occupied slot in the original slot order.
@@ -619,7 +621,7 @@ void Unit::applyPartialInsideBenefit()
 	{
 		if (attachedBuilding->type->semantics.feeding.partial == BuildingPartialService::None) return;
 		hungry=int(Sint64(hungry)+((Sint64(foodCapacity())-hungry)*elapsed)/total);
-		if (hungry>=foodCapacity() && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
+		if (hungry>=foodCapacity() && owner->ctx.areaEffects->enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 	}
 	else
@@ -629,7 +631,7 @@ void Unit::applyPartialInsideBenefit()
 		const Sint64 restored = ((Sint64(performance[HP]) - hp) * elapsed) / total;
 		attachedBuilding->owner->stats.events().hpRestored += std::max<Sint64>(0, restored);
 		hp=int(Sint64(hp)+restored);
-		if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
+		if (hp>=performance[HP] && owner->ctx.areaEffects->enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	}
 }
 
@@ -649,8 +651,8 @@ void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 	delta=0;
 	movement=MOV_EXITING_BUILDING;
 	if (served)
-		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner, UnitEffect::emergeTicks(speed));
+		owner->ctx.animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner, UnitEffect::emergeTicks(speed));
 	else
-		owner->game->animations->onUnitGone(gid);
+		owner->ctx.animations->onUnitGone(gid);
 	handleActionExitingBuilding();
 }

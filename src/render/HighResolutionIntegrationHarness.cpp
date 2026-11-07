@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <string>
 #include <set>
@@ -310,7 +311,7 @@ public:
             // historical replays after simulation/pathfinding changes.
             Engine fixture;REQUIRE(fixture.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             ReplayWriter writer;
-            writer.init((glob2test::artifactDir() / "replay-fixture/replays/current.replay").string(),fixture.gui);
+            fixture.gui.startReplay(writer, (glob2test::artifactDir() / "replay-fixture/replays/current.replay").string());
             writer.advanceStep();
         }
         {

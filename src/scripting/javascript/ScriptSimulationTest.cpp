@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "ChecksumSidecar.h"
 #include "Engine.h"
 #include "ReplayWriter.h"
@@ -56,7 +58,7 @@ Records records(const std::string &bytes)
 }
 void save(Engine &engine, const std::filesystem::path &path)
 {
-	engine.gui.game.map.finishGradientPipeline();
+	engine.gui.game.map.routing().finishGradientPipeline();
 	GAGCore::BinaryOutputStream output(
 		GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path.string()));
 	REQUIRE(output.isValid());
@@ -130,7 +132,7 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 		if (!playback)
 		{
 			globals->replayWriter = std::make_unique<ReplayWriter>();
-			globals->replayWriter->init((directory / "game.replay").string(), engine.gui);
+			engine.gui.startReplay(*globals->replayWriter, (directory / "game.replay").string());
 			REQUIRE(globals->replayWriter->isValid());
 		}
 		engine.checksumSidecar = std::make_unique<ChecksumSidecarWriter>();

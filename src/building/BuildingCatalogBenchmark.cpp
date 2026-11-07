@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "HeadlessGame.h"
 #include "BuildingType.h"
 #include <nlohmann/json.hpp>
 #include <chrono>
@@ -87,7 +89,7 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
         const int budgetFields=shift==9 ? 128 : 32;
         const int fields=budgetFields*multiple/2;
         const Uint64 fieldBytes=Uint64(map.getW())*map.getH()*sizeof(Uint16);
-        map.setMaterialRoutingCacheBudget(fieldBytes*budgetFields);
+        map.routing().setMaterialRoutingCacheBudget(fieldBytes*budgetFields);
         std::vector<Building*> consumers;
         for (int n=0;n<fields;++n)
         {
@@ -99,18 +101,18 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
         {
             // A revision models depletion/replenishment. Warm passes use the
             // same tick so age expiry does not obscure working-set effects.
-            if(phase==0 || phase==2) map.dirtyMarketGradientsSlot(0,WOOD);
+            if(phase==0 || phase==2) map.routing().dirtyMarketGradientsSlot(0,WOOD);
             if(phase==2) consumers.front()->setMaterial(WOOD, 0);
             Uint64 digest=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
-                const auto* field=map.getMaterialGradientSlot(0,WOOD,MovementAccess::Land,false,consumer);
+                const auto* field=map.routing().getMaterialGradientSlot(0,WOOD,MovementAccess::Land,false,consumer);
                 digest+=field[map.coordToIndex(consumer->posX,consumer->posY)];
             }
             const auto duration=elapsed(start);
-            CHECK(map.materialRoutingCacheBytes()<=fieldBytes*budgetFields);
+            CHECK(map.routing().materialRoutingCacheBytes()<=fieldBytes*budgetFields);
             std::printf("catalog_routes,%d,%d,%d,%d,%d,%lld,%llu,%llu\n",map.getW(),budgetFields,fields,repeat,phase,duration,
-                static_cast<unsigned long long>(map.materialRoutingCacheBytes()),static_cast<unsigned long long>(digest));
+                static_cast<unsigned long long>(map.routing().materialRoutingCacheBytes()),static_cast<unsigned long long>(digest));
             if(phase==2) consumers.front()->setMaterial(WOOD, 10);
         }
     }

@@ -56,6 +56,26 @@ class DevDiskTest(unittest.TestCase):
         with patch.dict(os.environ, {'GLOB2_MIN_FREE_GIB': '0'}):
             dev_store.require_free_space(ROOT)
 
+    def test_toolchains_no_checkout_selects_are_stale(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            checkout = base / 'checkout'
+            for name, text in (('platforms/web/toolchain.json', 'web-v2'), ('platforms/mobile/toolchain.json', 'm'),
+                               ('platforms/mobile/android-tools.json', 'a'), ('platforms/mobile/emulator.json', 'e')):
+                (checkout / name).parent.mkdir(parents=True, exist_ok=True)
+                (checkout / name).write_text(text)
+            home = base / 'home'
+            current = dev_store.key(checkout, ['platforms/web/toolchain.json'])
+            (home / 'toolchains/emscripten' / current).mkdir(parents=True)
+            (home / 'toolchains/emscripten/Linux-x86_64-old').mkdir(parents=True)
+            used = home / 'toolchains/artifacts/used'
+            unused = home / 'toolchains/artifacts/unused'
+            used.mkdir(parents=True)
+            unused.mkdir(parents=True)
+            (home / 'toolchains/emscripten' / current / 'link').symlink_to(used)
+            stale = {path.name for path in dev_disk.stale_toolchains([checkout], home)}
+            self.assertEqual(stale, {'Linux-x86_64-old', 'unused'})
+
     def test_artifact_scan(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "TutorialModel.h"
 #include "scripting/javascript/ScriptValue.h"
 #include "scripting/javascript/ScriptOrders.h"
@@ -495,7 +496,7 @@ TEST_CASE("zone observations and scenario orders preserve map callback validatio
     glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
     setup(w,"fortifications");
     globalContainer->replayWriter=std::make_unique<ReplayWriter>();
-    globalContainer->replayWriter->init("",w.gui);
+    w.gui.startReplay(*globalContainer->replayWriter, "");
     struct RecordingScope { ~RecordingScope(){globalContainer->replayWriter.reset();} } recordingScope;
     const auto recordedBefore=globalContainer->replayWriter->getOrderCount();
     const std::string spawn="const t=ctx.game.buildingTypes().find(t=>t.name==='warflag'&&!t.site&&t.level===0);const e={type:'scenarioOrder',team:1,order:{type:'create',buildingType:t.id,x:97,y:98,workers:1,futureWorkers:1,range:3}};";

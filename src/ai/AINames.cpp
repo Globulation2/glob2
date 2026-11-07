@@ -6,6 +6,7 @@
 
 #include "AI.h"
 #include "AINames.h"
+#include "AIRegistry.h"
 #include "Toolkit.h"
 #include "StringTable.h"
 
@@ -49,7 +50,15 @@ namespace AINames
 	{
 		// Weakest first, by measured strength rather than by guess, so the list
 		// a player scrolls reads as a ladder.
-		static const std::vector<int> order = {AI::NUMBI, AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE};
+		// AIs a compile_profile=core build leaves out are not offered.
+		static const std::vector<int> order = []
+		{
+			std::vector<int> available;
+			for (int id : {AI::NUMBI, AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE})
+				if (AIRegistry::available(id))
+					available.push_back(id);
+			return available;
+		}();
 		return order;
 	}
 	int selectionIndex(int id)
@@ -135,7 +144,7 @@ namespace AINames
 		std::string list;
 		for (const auto& entry : aiTable)
 		{
-			if (!entry.cliName)
+			if (!entry.cliName || !AIRegistry::available(entry.id))
 				continue;
 			if (!list.empty())
 				list += ", ";

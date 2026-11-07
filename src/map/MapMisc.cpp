@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/MapRouting.h"
 #include "Game.h"
 #include "gradient/GradientRuntime.h"
 #include "Bullet.h"
@@ -25,10 +26,10 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
     // This scheduling state belongs in every current checksum tier; the explicit
     // legacy checksum projection keeps its historical field layout.
     const Uint32 worldPhase = !legacy152 && game
-        ? (gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
-          | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
+        ? (routing().gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
+          | (routing().gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
         : 0u;
-    Uint32 cs = (legacy152 ? 0 : gradientRuntime->adaptive.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    Uint32 cs = (legacy152 ? 0 : routing().gradientRuntime->adaptive.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ routing().gradientRuntime->growth.checksum(heavy && includePending);
     if (!legacy152 && activeClaimsEnabled()) cs ^= activeClaimRouteChecksum(heavy && includePending);
 	if (heavy)
 	{
@@ -63,46 +64,46 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
     // Iterate logical slots, never the address-keyed metadata registry.
     if(!legacy152 && game) {
         const auto field=[&](const Uint16* cells,int access) {
-            cs=rotl1(cs)^Uint32(cells?publishedCostClass(cells,access)+1:0);
+            cs=rotl1(cs)^Uint32(cells?routing().publishedCostClass(cells,access)+1:0);
         };
         for(int team=0;team<game->teamsCount();++team) {
             for(int access:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS,AIR_MOVEMENT_CLASS}) {
                 for(int material=0;material<MaterialSlotCount;++material) {
-                    field(materialGradients[team][material][access],access);
-                    field(marketMaterialGradients[team][material][access],access);
+                    field(routing().materialGradients[team][material][access],access);
+                    field(routing().marketMaterialGradients[team][material][access],access);
                 }
-                field(forbiddenGradient[team][access],access);
-                field(guardAreasGradient[team][access],access);field(clearAreasGradient[team][access],access);
+                field(routing().forbiddenGradient[team][access],access);
+                field(routing().guardAreasGradient[team][access],access);field(routing().clearAreasGradient[team][access],access);
             }
             for(const auto* building:game->teams[team]->liveBuildings.entries())
                 for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)
                     field(building->globalGradient[slot],slot%MOVEMENT_CLASS_COUNT);
         }
-        if(includePending)gradientRuntime->pipeline.visitPreparationCosts([&](int cost){cs=rotl1(cs)^Uint32(cost);});
+        if(includePending)routing().gradientRuntime->pipeline.visitPreparationCosts([&](int cost){cs=rotl1(cs)^Uint32(cost);});
     }
 	// Cache age and eviction order affect subsequent routes and are simulation state.
 	const auto mix64=[&](Uint64 value) { cs=rotl1(cs)^Uint32(value)^Uint32(value>>32); };
-	mix64(std::max<Uint64>(gradientRuntime->materialCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(gradientRuntime->materialCacheClock);
-	for (const auto& team : gradientRuntime->stockRevision) for (Uint64 revision : team) mix64(revision);
-	for (Uint64 key : gradientRuntime->materialLru)
+	mix64(std::max<Uint64>(routing().gradientRuntime->materialCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(routing().gradientRuntime->materialCacheClock);
+	for (const auto& team : routing().gradientRuntime->stockRevision) for (Uint64 revision : team) mix64(revision);
+	for (Uint64 key : routing().gradientRuntime->materialLru)
 	{
-		const auto& entry=gradientRuntime->materialFields.at(key);
+		const auto& entry=routing().gradientRuntime->materialFields.at(key);
 		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
         if (!legacy152) {
             cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1)^Uint32(entry.excludesShared<<2);
             cs=rotl1(cs)^entry.publishedStep;
-            if(entry.published)cs=rotl1(cs)^publishedCostClass(entry.published,entry.swim);
+            if(entry.published)cs=rotl1(cs)^routing().publishedCostClass(entry.published,entry.swim);
         }
         if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];
 	}
 
-    if (!legacy152 && gradientRuntime->materialDestinationsEnabled) {
+    if (!legacy152 && routing().gradientRuntime->materialDestinationsEnabled) {
         mix64(0x4d4154455249414cULL);
-        mix64(gradientRuntime->pipeline.destinationPublicationSequence());
+        mix64(routing().gradientRuntime->pipeline.destinationPublicationSequence());
         std::vector<std::tuple<unsigned,std::shared_ptr<const gradient_kernel::OwnedDestinations>,Uint64>> outputs;
-        gradientRuntime->pipeline.visitPublishedDestinations([&](auto* slot,auto planes,auto generation) {
-            outputs.emplace_back(gradientDestination(slot),std::move(planes),generation);
+        routing().gradientRuntime->pipeline.visitPublishedDestinations([&](auto* slot,auto planes,auto generation) {
+            outputs.emplace_back(routing().gradientDestination(slot),std::move(planes),generation);
         });
         std::sort(outputs.begin(),outputs.end(),[](const auto& a,const auto& b){return std::get<0>(a)<std::get<0>(b);});
         for (const auto& [id,planes,generation]:outputs) {
@@ -114,31 +115,31 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
     // The explicit historical representation predates delayed publication.
     // Keep its checksum layout stable even when the new queues are empty.
     if (!legacy152) {
-        cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
-        for (const auto& queued:gradientRuntime->fieldRequests) {
+        cs=rotl1(cs)^Uint32(routing().gradientRuntime->fieldRequests.size());
+        for (const auto& queued:routing().gradientRuntime->fieldRequests) {
             const auto& request=queued.request;
             // Hash stored request metadata without reverse-looking up its slot
             // in the destination registry on every tick.
             cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
             cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared)^Uint32(request.destinations<<1);
         }
-        if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
-            cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
+        if (includePending) routing().gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
+            cs=rotl1(cs)^routing().gradientDestination(slot)^remaining^Uint32(superseded);
         });
         const auto mix=[&](Uint32 value) { cs=rotl1(cs)^value; };
-        mix(gradientRuntime->buildingRequests.size());
-        for (const auto& r:gradientRuntime->buildingRequests) {
-            const auto* b=buildingGradientDestination(r.team,r.building,r.identity);
+        mix(routing().gradientRuntime->buildingRequests.size());
+        for (const auto& r:routing().gradientRuntime->buildingRequests) {
+            const auto* b=routing().buildingGradientDestination(r.team,r.building,r.identity);
             mix(r.team); mix(r.building); mix(r.identity); mix(r.slot);
             mix(r.stale || !b || b->refreshEpoch[r.slot]!=r.epoch);
         }
-        gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
-            const auto* b=buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
+        routing().gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
+            const auto* b=routing().buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
             mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);mix(p.swim);
             mix(p.captureTick); mix(p.generation); mix(remaining);
             mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
         });
-        if (includePending) gradientRuntime->pipeline.visitAdaptiveCaptures([&](auto key,bool,const auto& capture,bool legacy) {
+        if (includePending) routing().gradientRuntime->pipeline.visitAdaptiveCaptures([&](auto key,bool,const auto& capture,bool legacy) {
             mix64(key.packed());mix64(legacy);mix64(capture.tick);
             // goalCount is derived worker output and is installed only after
             // joining. Hash owner-captured metadata, never partially-built data.
@@ -151,11 +152,11 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
     // Suspended freshness changes the next explicit query, so it is simulation state.
     for (int t=0; !legacy152 && game && t<game->teamsCount(); ++t)
         for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
-            Uint32 stale=Uint32(forbiddenGradientStale[t][sw])
-                | (Uint32(guardGradientStale[t][sw])<<1) | (Uint32(clearGradientStale[t][sw])<<2);
+            Uint32 stale=Uint32(routing().forbiddenGradientStale[t][sw])
+                | (Uint32(routing().guardGradientStale[t][sw])<<1) | (Uint32(routing().clearGradientStale[t][sw])<<2);
             for (int r=0; r<MaterialCount; ++r) {
-                stale |= Uint32(materialGradientStale[t][r][sw]) << (3+r);
-                stale |= Uint32(marketMaterialGradientStale[t][r][sw]) << (3+MaterialCount+r);
+                stale |= Uint32(routing().materialGradientStale[t][r][sw]) << (3+r);
+                stale |= Uint32(routing().marketMaterialGradientStale[t][r][sw]) << (3+MaterialCount+r);
             }
             if (stale) mix64((Uint64(t*SWIM_CLASS_COUNT+sw)<<32)|stale);
         }

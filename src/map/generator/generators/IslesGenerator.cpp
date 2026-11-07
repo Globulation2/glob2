@@ -3,12 +3,11 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "IslesGenerator.h"
 #include "Distances.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
-#include "Map.h"
 #include "Pipeline.h"
 #include "Regions.h"
 #include "Resources.h"
@@ -60,7 +59,7 @@ struct Layout
 	std::vector<int> heightmap, distances;
 	std::vector<MapGeneratorPoint> connectorPoints;
 	int connectorArea = 0;
-	explicit Layout(const Map &map)
+	explicit Layout(const GenerationMap &map)
 		: grid(size_t(map.getW()) * map.getH(), 0), heightmap(size_t(map.getW()) * map.getH(), 50)
 	{
 	}
@@ -74,8 +73,8 @@ struct Layout
 // between two islands before the noise raises their coasts. The control's range (45 to 65) keeps it
 // an islands map: the coast noise pushes shores out by several tiles, so much above 65 neighbouring
 // islands start to touch, and much below 45 an island is too small for a colony's fields and base.
-static void layoutIslands(Game &game, GenerationContext &context, const IslesOptions &options,
-						  Layout &L)
+static void layoutIslands(GenerationWorld &game, GenerationContext &context,
+						  const IslesOptions &options, Layout &L)
 {
 	const int islandSize = options.island_size;
 	// Do the starting locations of the teams
@@ -105,7 +104,7 @@ static void layoutIslands(Game &game, GenerationContext &context, const IslesOpt
 // island sits on a sloping shelf. A shelf tile d steps out stands at 50 + (11 - d) * 10 and is land
 // when the noise lifts it to 90, which the noise (-45 to +44) can do from 2 steps out to 11: the
 // coast wanders over that whole shelf, which is what makes the ovals read as natural islands.
-static void raiseIslands(Game &game, Layout &L)
+static void raiseIslands(GenerationWorld &game, Layout &L)
 {
 	// Construct a L.heightmap
 	std::vector<MapGeneratorPoint> teamAreaPoints;
@@ -136,8 +135,8 @@ static void raiseIslands(Game &game, Layout &L)
 // more than bridgeWidth + 1 steps from any island, so the bridge does not widen the islands'
 // shores. Random endpoints make bridges leave islands at varied angles rather than centre to
 // centre.
-static void buildBridges(Game &game, GenerationContext &context, const IslesOptions &options,
-						 Layout &L)
+static void buildBridges(GenerationWorld &game, GenerationContext &context,
+						 const IslesOptions &options, Layout &L)
 {
 	const int bridgeWidth = options.bridge_width, bridgeRadius = bridgeWidth - 2;
 	// Connect each teams area to each other players area
@@ -213,8 +212,8 @@ static void buildBridges(Game &game, GenerationContext &context, const IslesOpti
 }
 
 // Raise the bridges, add noise, and turn the height field into water, sand and grass.
-static void paintTerrain(Game &game, GenerationContext &context, const IslesOptions &options,
-						 Layout &L)
+static void paintTerrain(GenerationWorld &game, GenerationContext &context,
+						 const IslesOptions &options, Layout &L)
 {
 	const int bridgeWidth = options.bridge_width;
 	// Stamp out the connectors: the bridge's centre line (distance 1) rises by 100 like an island,
@@ -265,8 +264,8 @@ static void paintTerrain(Game &game, GenerationContext &context, const IslesOpti
 // from that ground: out past the beach in open water, near enough that the sand is within the
 // 30-tile reach algae needs to regrow, and, with bridges, kept more than a bridge width from any
 // bridge so it can never grow over the route.
-static bool placeAlgae(Game &game, GenerationContext &context, const IslesOptions &options,
-					   Layout &L)
+static bool placeAlgae(GenerationWorld &game, GenerationContext &context,
+					   const IslesOptions &options, Layout &L)
 {
 	const int bridgeWidth = options.bridge_width;
 	// Reset the L.grid, and recompute within the boundaries of the various islands
@@ -314,7 +313,7 @@ static bool placeAlgae(Game &game, GenerationContext &context, const IslesOption
 	return true;
 }
 
-static bool generate(Game &game, GenerationContext &context)
+static bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "layout";
 	const IslesOptions options(context.request);
@@ -345,7 +344,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// Initialize final team info
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
-		game.teams[i]->createLists();
+		game.finishTeam(i);
 	}
 	return true;
 }
@@ -354,7 +353,7 @@ static bool generate(Game &game, GenerationContext &context)
 // room to build on it. Wood only has to be reachable at all: on a crowded archipelago the nearest
 // stand can be a long walk round the channels (see the review of 2026-09-16), which is a question
 // about this landscape's economy rather than a world the service should throw away.
-static std::string validateWorld(const Game &game, const GenerationContext &context)
+static std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	return startingFloorFailure(game.map, context.request.nbTeams, 24, kReachableAnywhere);
 }

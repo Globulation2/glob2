@@ -6,7 +6,10 @@
 
 #include <SDL3_net/SDL_net.h>
 #include "AIImplementationId.h"
-#include "Team.h"
+#include "TeamCapacity.h"
+#include <cassert>
+class Team;
+namespace GAGCore { class InputStream; class OutputStream; }
 #include <string>
 /**
  * Player holds the player's state like name, type, id etc.
@@ -71,7 +74,7 @@ public:
 	};
 
 	PlayerType type;
-	/// Player slot index. Valid range: [0, Team::MAX_COUNT). Used to index
+	/// Player slot index. Valid range: [0, TEAM_MAX_COUNT). Used to index
 	/// Game::players[] and as the bit position in numberMask.
 	Sint32 number;
 	/// Cached 1 << number. Kept in sync via setNumber().
@@ -79,7 +82,7 @@ public:
 	std::string name;
 	/// Index of the Team this player controls. Valid range:
 	/// [0, mapHeader.getNumberOfTeams()) — must point at a live Team slot.
-	/// BasePlayer::load enforces the wider [0, Team::MAX_COUNT) bound; the
+	/// BasePlayer::load enforces the wider [0, TEAM_MAX_COUNT) bound; the
 	/// tighter map-aware bound is checked at the Game::setGameHeader call
 	/// site, where mapHeader is available.
 	Sint32 teamNumber;

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "TeamCapacity.h"
 #include <assert.h>
 #include <vector>
 
@@ -29,14 +30,14 @@ class Player:public BasePlayer
 {
 public:
 	Player();
-	Player(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
+	Player(GAGCore::InputStream *stream, Team *teams[TEAM_MAX_COUNT], Sint32 versionMinor);
 	Player(Sint32 number, const std::string& name, Team *team, PlayerType type);
 	virtual ~Player(void);
 
 	void setTeam(Team *team);
-	void setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUNT]);
+	void setBasePlayer(const BasePlayer *initial, Team *teams[TEAM_MAX_COUNT]);
 
-	bool load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Team *teams[TEAM_MAX_COUNT], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);
 
 	void makeItAI(AI::ImplementationID aiType);

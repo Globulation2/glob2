@@ -1,6 +1,6 @@
-from sources import CLIENT_SOURCES
-source_files = list(CLIENT_SOURCES)
 Import('env')
+from sources import profile_sources
+source_files = list(profile_sources(env.get('compile_profile', 'full')))
 if env.get('role') == 'relay':
     # The relay role builds glob2-relay and its tests only.
     from sources import RELAY_SOURCES, RELAY_GAG_SOURCES
@@ -50,8 +50,8 @@ source_files += [node.abspath for node in js_library]
 
 # Host numeric conversion must use the same strict boundary as the interpreter.
 strict = local.Clone()
-strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
-from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source
+from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source, STRICT_CXXFLAGS
+strict.Append(CXXFLAGS=list(STRICT_CXXFLAGS))
 strict_sources = [source for source in source_files
                   if isinstance(source, str) and strict_numeric_source(source)]
 from dev_compile import objects as development_objects, unique
@@ -92,7 +92,13 @@ client_object_by_source = dict(zip(client_cpp_sources, client_objects))
 client_objects = unique(client_objects)
 client_objects += platform_trust_sources
 client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
-Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog')
+# Module libraries over the same objects (scons/sources.py MODULE_SOURCES). Only the
+# module test binaries link them; the game keeps linking the loose objects above.
+from sources import MODULE_SOURCES
+module_libraries = {name: local.StaticLibrary('glob2_' + name, unique(
+                        [client_object_by_source[source] for source in group if source in client_object_by_source]))
+                    for name, group in MODULE_SOURCES.items()}
+Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog', 'module_libraries')
 
 
 lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
@@ -111,8 +117,10 @@ twelve_team_benchmark = development_program('twelve-team-benchmark',
     + ['../libs/gag/src/libgag.a', '../libs/usl/src/libusl.a'])
 local.Alias('twelve-team-benchmark', twelve_team_benchmark)
 
+from sources import profile_features
+profile_groups = profile_features(env.get('compile_profile', 'full'))
 # Map analysis tools and the golden test use production generators and widgets.
-for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
+for alias, target in [] if 'generators' not in profile_groups else [('map-generator-study', 'MapGeneratorStudy'),
                       ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
                       ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
     sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
@@ -174,9 +182,11 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
 
 # Offline production-screen capture for the mobile design review gallery.
-gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
-gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
-local.Alias('mobile-gallery', development_program('mobile-gallery', gallery_sources))
+# It drives the map editor, which compile_profile=core leaves out.
+if 'editor' in profile_groups:
+    gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+    gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
+    local.Alias('mobile-gallery', development_program('mobile-gallery', gallery_sources))
 
 # Original-derived skin comparison and full game render diagnostics.
 skin_preview = development_program('skin-preview',

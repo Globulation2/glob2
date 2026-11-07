@@ -19,7 +19,13 @@ this runs in seconds without a build):
    that sit on a cycle are listed in test/header_cycles_allowlist.txt; a new
    cycle edge fails.
 5. Fan-in budget. test/header_fanin_budget.json caps how many client
-   translation units may reach each listed header.
+   translation units may reach each listed header, with a slack of 2% of the
+   client TUs so that adding source files does not trip it.
+
+6. globalContainer in the simulation. test/global_container_budget.json caps
+   the `globalContainer` references in non-test simulation files per directory;
+   simulation code reads the game's own registries instead (see the
+   SimContext work in docs/development/conventions.md#header-dependencies).
 
 Allowlists and budgets only ratchet down: after a PR removes violations or
 lowers fan-in, run with --write to delete the stale allowlist lines and lower
@@ -43,6 +49,9 @@ LAYERS = TEST / 'header_layers.json'
 LAYER_ALLOWLIST = TEST / 'header_layering_allowlist.txt'
 CYCLE_ALLOWLIST = TEST / 'header_cycles_allowlist.txt'
 BUDGET = TEST / 'header_fanin_budget.json'
+GLOBAL_BUDGET = TEST / 'global_container_budget.json'
+GLOBAL_CONTAINER = re.compile(r'\bglobalContainer\b')
+TEST_SOURCE = re.compile(r'(Test|Tests|Harness|Benchmark|Fixtures?)\.(cpp|h)$')
 
 VERSION_DEFAULT = re.compile(
     r'(?<![=!<>])=\s*(VERSION_[A-Z_]+|SIM_REVISION|MINIMUM_VERSION_MINOR|REPLAY_MINIMUM_VERSION_MINOR|'
@@ -206,6 +215,18 @@ def strongly_connected(adjacency: dict[str, set[str]]) -> dict[str, int]:
     return component
 
 
+def global_container_uses(graph: IncludeGraph, layers: Layers) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for path in graph.all_units() + graph.all_headers():
+        if not path.startswith('src/') or TEST_SOURCE.search(path) or not layers.is_simulation(path):
+            continue
+        uses = len(GLOBAL_CONTAINER.findall((graph.root / path).read_text(errors='replace')))
+        if uses:
+            directory = '/'.join(path.split('/')[:2])
+            counts[directory] = counts.get(directory, 0) + uses
+    return counts
+
+
 def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[str]:
     graph = IncludeGraph(root)
     layers = Layers(json.loads(LAYERS.read_text()))
@@ -235,16 +256,37 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
             errors.append(f'{len(stale)} {name} allowlist entries no longer occur; run '
                           f'python3 test/check_header_layering.py --write to drop them')
 
+    uses = global_container_uses(graph, layers)
+    allowed = json.loads(GLOBAL_BUDGET.read_text()) if GLOBAL_BUDGET.exists() else {}
+    if seed and not allowed:
+        allowed = {'_doc': 'globalContainer references in non-test simulation files, per directory. '
+                           'check_header_layering.py --write lowers these; never raise them.', **uses}
+        GLOBAL_BUDGET.write_text(json.dumps(allowed, indent=2) + '\n')
+    lowered = False
+    for directory, count in sorted(uses.items()):
+        if count > allowed.get(directory, 0):
+            errors.append(f'{directory} uses globalContainer {count} times (budget {allowed.get(directory, 0)}); '
+                          'read the game\'s own registries instead')
+    for directory, limit in list(allowed.items()):
+        if not directory.startswith('_') and uses.get(directory, 0) < limit and (write or seed):
+            allowed[directory] = uses.get(directory, 0)
+            lowered = True
+    if lowered:
+        GLOBAL_BUDGET.write_text(json.dumps(allowed, indent=2) + '\n')
+
     budget = json.loads(BUDGET.read_text()) if BUDGET.exists() else {}
     if budget:
         counts = graph.fanin()
         changed = False
+        # A budget catches a header that starts reaching many more translation
+        # units (a new wide include), not the one or two a new source file adds.
+        slack = max(2, len(graph.client_units) // 50)
         for header, limit in budget.items():
             if header.startswith('_'):
                 continue
             count = counts.get(header, 0)
-            if count > limit:
-                errors.append(f'{header} reaches {count} client translation units, budget {limit}; '
+            if count > limit + slack:
+                errors.append(f'{header} reaches {count} client translation units, budget {limit} (+{slack} slack); '
                               f'run python3 tools/include_graph.py why {header}')
             elif (write or seed) and count < limit:
                 budget[header] = count

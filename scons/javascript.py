@@ -4,26 +4,37 @@ import shlex
 import shutil
 import subprocess
 import sys
-from SCons.Script import Action, Flatten
+
+
+# The interpreter's exact compilation contract, also exported to CMake by
+# scons/export_cmake_sources.py. Paths are relative to the checkout.
+INCLUDE_DIRECTORIES = ('third_party/quickjs-ng', 'third_party/openlibm/include',
+                       'third_party/openlibm/src')
+STRICT_CFLAGS = ('-std=c11', '-fno-fast-math', '-ffp-contract=off', '-fno-strict-aliasing', '-fno-builtin')
+DEFINES = ('_GNU_SOURCE', 'QUICKJS_NG_BUILD', '__BSD_VISIBLE')
+QUICKJS_SOURCES = ('quickjs.c', 'dtoa.c', 'libregexp.c', 'libunicode.c')
+# Host C++ that converts script numbers uses the same strict boundary.
+STRICT_CXXFLAGS = ('-fno-fast-math', '-ffp-contract=off')
+
+
+def openlibm_sources(root):
+    return sorted(Path(root, 'third_party/openlibm/src').glob('*.c'))
 
 
 def javascript_objects(env, directory, release, shared=False):
     local = env.Clone()
-    local.Append(CPPPATH=['#third_party/quickjs-ng', '#third_party/openlibm/include',
-                         '#third_party/openlibm/src'])
-    local.Append(CFLAGS=['-O2' if release else '-O0', '-std=c11', '-fno-fast-math',
-                        '-ffp-contract=off', '-fno-strict-aliasing', '-fno-builtin'])
+    local.Append(CPPPATH=['#' + path for path in INCLUDE_DIRECTORIES])
+    local.Append(CFLAGS=['-O2' if release else '-O0', *STRICT_CFLAGS])
     if env.get('size_optimization') == 'size':
         local.Append(CFLAGS=['-Os'])
-    local.Append(CPPDEFINES=['_GNU_SOURCE', 'QUICKJS_NG_BUILD', '__BSD_VISIBLE'])
+    local.Append(CPPDEFINES=list(DEFINES))
     local['CCFLAGS'] = [flag for flag in local.Split(local.get('CCFLAGS', []))
                         if flag != '-Werror']
     object_builder = local.SharedObject if shared else local.Object
     output = Path(directory)
-    quick = ['quickjs.c', 'dtoa.c', 'libregexp.c', 'libunicode.c']
     objects = [object_builder(str(output / 'quickjs-ng' / name.replace('.c', '.o')),
-                            '#third_party/quickjs-ng/' + name) for name in quick]
-    math = sorted(Path(env.Dir('#third_party/openlibm/src').abspath).glob('*.c'))
+                            '#third_party/quickjs-ng/' + name) for name in QUICKJS_SOURCES]
+    math = openlibm_sources(env.Dir('#').abspath)
     objects += [object_builder(str(output / 'openlibm' / (p.stem + '.o')),
                              '#third_party/openlibm/src/' + p.name) for p in math]
     from build_timing import record
@@ -43,6 +54,9 @@ def verify_symbols(target, source, env):
 
 def numeric_guard(local, objects):
     """Check all script-reachable native numeric code, including host conversion."""
+    # Imported here so the source classifiers below load without SCons
+    # (scons/export_cmake_sources.py).
+    from SCons.Script import Action, Flatten
     guard = Path(local.Dir('#tools/javascript').abspath) / 'check-math-symbols.py'
     compiler = Path(shutil.which(shlex.split(str(local['CC']))[-1]) or str(local['CC']))
     # emsdk's emnm shell wrapper does not quote dirname($0), so a managed SDK

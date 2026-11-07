@@ -51,7 +51,7 @@ class PolicyTest(unittest.TestCase):
     def test_tests_beside_code_select_as_tests(self):
         sys.path.insert(0, str(ROOT / 'test'))
         import tests as registry
-        entries = registry.ENGINE_TESTS + registry.UNIT_TESTS + [program[1] for program in registry.PROGRAMS]
+        entries = registry.portable_engine_tests() + registry.portable_unit_tests() + [program[1] for program in registry.PROGRAMS]
         for entry in entries:
             path = registry.source_path(entry if isinstance(entry, str) else entry[0])
             if path.startswith(('test/', 'tools/')):

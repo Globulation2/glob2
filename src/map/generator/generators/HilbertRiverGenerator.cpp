@@ -2,7 +2,7 @@
 #include "HilbertRiverGenerator.h"
 #include "FractalMapSupport.h"
 #include "Drawing.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include <algorithm>
 #include <cmath>
 using namespace FractalMaps;
@@ -200,7 +200,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	context.telemetry.measure("hilbert.crossings.major-requested", o.major);
 	return L;
 }
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "Hilbert River design";
 	const Layout L = design(context.request, context);
@@ -216,7 +216,7 @@ std::string validateRequest(const GenerationRequest &r)
 	GenerationContext context(r);
 	return design(r, context).failure;
 }
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	return validate(game, context, design(context.request, replay));

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WhoAteTheMapGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -377,7 +377,7 @@ std::vector<int> chooseSites(const Layout &L, GenerationContext &context)
 	return sites;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "bitten island";
 	const auto L = design(context.request, context);
@@ -394,7 +394,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = "The surviving island has too few spacious fertile starts.";
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	writeVertices(map, L.terrain);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	for (int k = 0; k < context.request.nbTeams; ++k)
@@ -487,7 +487,7 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const auto L = design(context.request, replay);

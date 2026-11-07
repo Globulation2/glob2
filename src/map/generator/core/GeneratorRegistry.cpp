@@ -1,6 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
 #include <mutex>
+#include "CompileProfile.h"
+// compile_profile=core keeps only the generators scons/sources.py names in CORE_GENERATORS.
+#if __has_include(<glob2/CompileProfile.h>)
+#include <glob2/CompileProfile.h>
+#else
+#define GLOB2_PROFILE_HAS_GENERATORS 1
+#endif
+#include "EvenGroundGenerator.h"
+#include "FortsGenerator.h"
+#include "HillsGenerator.h"
+#include "LavaShieldGenerator.h"
+#include "UniformGenerator.h"
+#if GLOB2_PROFILE_HAS_GENERATORS
 #include "BastionKeysGenerator.h"
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
@@ -24,7 +37,6 @@
 #include "SwampGenerator.h"
 #include "SymmetricArenaGenerator.h"
 #include "TidalFlatsGenerator.h"
-#include "UniformGenerator.h"
 #include "WatershedGenerator.h"
 #include "FingerprintGenerator.h"
 #include "RainShadowGenerator.h"
@@ -35,7 +47,6 @@
 #include "AnthillGenerator.h"
 #include "EmojiGenerator.h"
 #include "BraidedRiverGenerator.h"
-#include "FortsGenerator.h"
 #include "BraidedDeltaGenerator.h"
 #include "BreachableHighlandsGenerator.h"
 #include "HedgerowCountryGenerator.h"
@@ -45,13 +56,11 @@
 #include "DrumlinFieldGenerator.h"
 #include "ContinentsGenerator.h"
 #include "SavannahGenerator.h"
-#include "HillsGenerator.h"
 #include "RiceTerracesGenerator.h"
 #include "LocustGenerator.h"
 #include "PlantationsGenerator.h"
 #include "SierpinskiGardensGenerator.h"
 #include "HilbertRiverGenerator.h"
-#include "LavaShieldGenerator.h"
 #include "HoneycombIsleGenerator.h"
 #include "KarstTowersGenerator.h"
 #include "BajadaGenerator.h"
@@ -60,7 +69,6 @@
 #include "DrownedForestGenerator.h"
 #include "PortageLakesGenerator.h"
 #include "FaultedCityGenerator.h"
-#include "EvenGroundGenerator.h"
 #include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
 #include "LastTreelineGenerator.h"
@@ -69,6 +77,7 @@
 #include "EncircledKingdomGenerator.h"
 #include "WhoAteTheMapGenerator.h"
 #include "HungryMarchesGenerator.h"
+#endif
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -133,6 +142,8 @@ const GeneratorDefinition &GeneratorRegistry::at(int id) const
 {
 	if (auto *d = find(id))
 		return *d;
+	if (!CompileProfile::hasGenerators())
+		throw std::invalid_argument(CompileProfile::missing("Generator ID " + std::to_string(id)));
 	throw std::invalid_argument("Unknown generator ID");
 }
 int GeneratorRegistry::idOf(const std::string &id) const
@@ -140,6 +151,8 @@ int GeneratorRegistry::idOf(const std::string &id) const
 	for (const auto &d : definitions)
 		if (id == d.id)
 			return d.legacyId;
+	if (!CompileProfile::hasGenerators())
+		throw std::invalid_argument(CompileProfile::missing("Generator " + id));
 	throw std::invalid_argument("Unknown generator: " + id);
 }
 std::vector<int> GeneratorRegistry::methods(bool editor) const
@@ -173,62 +186,70 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 	// then stood), so browsing the lobby favours no landscape over another; Uniform, editor-only,
 	// stays last. Numeric IDs remain stable compatibility identifiers and do not determine
 	// presentation order. Add a new landscape wherever you like; do not reorder the rest.
-	static const GeneratorRegistry registry({fingerprintDefinition(),
-											 oldTownDefinition(),
-											 symmetricArenaDefinition(),
-											 swampDefinition(),
-											 tidalFlatsDefinition(),
-											 riverDefinition(),
-											 islesDefinition(),
-											 ringWorldDefinition(),
-											 amphitheatreDefinition(),
-											 shatteredCoastDefinition(),
-											 craterLakesDefinition(),
-											 fjordContinentDefinition(),
-											 spiderWebDefinition(),
-											 concreteIslandsDefinition(),
-											 watershedDefinition(),
-											 mazeDefinition(),
-											 islandsDefinition(),
-											 stoneHighlandsDefinition(),
-											 switchbacksDefinition(),
-											 cityStatesDefinition(),
-											 canalsDefinition(),
-											 sierpinskiGardensDefinition(),
-											 hilbertRiverDefinition(),
+	// The core compile profile drops the optional entries in place, so the order of the
+	// rest is the same in both profiles.
+#if GLOB2_PROFILE_HAS_GENERATORS
+#define OPTIONAL_GENERATOR(definition) definition,
+#else
+#define OPTIONAL_GENERATOR(definition)
+#endif
+	static const GeneratorRegistry registry({OPTIONAL_GENERATOR(fingerprintDefinition())
+											 OPTIONAL_GENERATOR(oldTownDefinition())
+											 OPTIONAL_GENERATOR(symmetricArenaDefinition())
+											 OPTIONAL_GENERATOR(swampDefinition())
+											 OPTIONAL_GENERATOR(tidalFlatsDefinition())
+											 OPTIONAL_GENERATOR(riverDefinition())
+											 OPTIONAL_GENERATOR(islesDefinition())
+											 OPTIONAL_GENERATOR(ringWorldDefinition())
+											 OPTIONAL_GENERATOR(amphitheatreDefinition())
+											 OPTIONAL_GENERATOR(shatteredCoastDefinition())
+											 OPTIONAL_GENERATOR(craterLakesDefinition())
+											 OPTIONAL_GENERATOR(fjordContinentDefinition())
+											 OPTIONAL_GENERATOR(spiderWebDefinition())
+											 OPTIONAL_GENERATOR(concreteIslandsDefinition())
+											 OPTIONAL_GENERATOR(watershedDefinition())
+											 OPTIONAL_GENERATOR(mazeDefinition())
+											 OPTIONAL_GENERATOR(islandsDefinition())
+											 OPTIONAL_GENERATOR(stoneHighlandsDefinition())
+											 OPTIONAL_GENERATOR(switchbacksDefinition())
+											 OPTIONAL_GENERATOR(cityStatesDefinition())
+											 OPTIONAL_GENERATOR(canalsDefinition())
+											 OPTIONAL_GENERATOR(sierpinskiGardensDefinition())
+											 OPTIONAL_GENERATOR(hilbertRiverDefinition())
 											 lavaShieldDefinition(),
-											 honeycombIsleDefinition(),
-											 karstTowersDefinition(), bajadaDefinition(),
-											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
-											 orchardCommonsDefinition(), lastTreelineDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
-											 evenGroundDefinition(), marchlandDefinition(),
-											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
-											 hungryMarchesDefinition(),
-											 contestedCommonsDefinition(),
-											 rainShadowDefinition(),
-											 evergladesDefinition(),
-											 polderDefinition(),
-											 carouselDefinition(),
-											 oldGrowthDefinition(),
-											 anthillDefinition(),
-											 coralDefinition(),
-											 emojiDefinition(),
+											 OPTIONAL_GENERATOR(honeycombIsleDefinition())
+											 OPTIONAL_GENERATOR(karstTowersDefinition()) OPTIONAL_GENERATOR(bajadaDefinition())
+											 OPTIONAL_GENERATOR(centralQuarryDefinition()) OPTIONAL_GENERATOR(hiddenOasisDefinition()) OPTIONAL_GENERATOR(drownedForestDefinition()) OPTIONAL_GENERATOR(portageLakesDefinition())
+											 OPTIONAL_GENERATOR(orchardCommonsDefinition()) OPTIONAL_GENERATOR(lastTreelineDefinition()) OPTIONAL_GENERATOR(gauntletDefinition()) OPTIONAL_GENERATOR(faultedCityDefinition()) OPTIONAL_GENERATOR(combDefinition()) OPTIONAL_GENERATOR(encircledKingdomDefinition()) OPTIONAL_GENERATOR(bastionKeysDefinition())
+											 evenGroundDefinition(), OPTIONAL_GENERATOR(marchlandDefinition())
+											 OPTIONAL_GENERATOR(whoAteTheMapDefinition()) OPTIONAL_GENERATOR(ruggedArchipelagoDefinition())
+											 OPTIONAL_GENERATOR(hungryMarchesDefinition())
+											 OPTIONAL_GENERATOR(contestedCommonsDefinition())
+											 OPTIONAL_GENERATOR(rainShadowDefinition())
+											 OPTIONAL_GENERATOR(evergladesDefinition())
+											 OPTIONAL_GENERATOR(polderDefinition())
+											 OPTIONAL_GENERATOR(carouselDefinition())
+											 OPTIONAL_GENERATOR(oldGrowthDefinition())
+											 OPTIONAL_GENERATOR(anthillDefinition())
+											 OPTIONAL_GENERATOR(coralDefinition())
+											 OPTIONAL_GENERATOR(emojiDefinition())
 											 fortsDefinition(),
-											 braidedDeltaDefinition(),
-											 breachableHighlandsDefinition(),
-											 hedgerowCountryDefinition(),
-											 glacisDefinition(),
-											 allotmentsDefinition(),
-											 caravanseraiDefinition(),
-											 braidedRiverDefinition(),
-											 drumlinFieldDefinition(),
-											 continentsDefinition(),
-											 savannahDefinition(),
+											 OPTIONAL_GENERATOR(braidedDeltaDefinition())
+											 OPTIONAL_GENERATOR(breachableHighlandsDefinition())
+											 OPTIONAL_GENERATOR(hedgerowCountryDefinition())
+											 OPTIONAL_GENERATOR(glacisDefinition())
+											 OPTIONAL_GENERATOR(allotmentsDefinition())
+											 OPTIONAL_GENERATOR(caravanseraiDefinition())
+											 OPTIONAL_GENERATOR(braidedRiverDefinition())
+											 OPTIONAL_GENERATOR(drumlinFieldDefinition())
+											 OPTIONAL_GENERATOR(continentsDefinition())
+											 OPTIONAL_GENERATOR(savannahDefinition())
 											 hillsDefinition(),
-											 riceTerracesDefinition(),
-											 locustDefinition(),
-											 plantationsDefinition(),
+											 OPTIONAL_GENERATOR(riceTerracesDefinition())
+											 OPTIONAL_GENERATOR(locustDefinition())
+											 OPTIONAL_GENERATOR(plantationsDefinition())
 											 uniformDefinition()});
+#undef OPTIONAL_GENERATOR
 	return registry;
 }
 

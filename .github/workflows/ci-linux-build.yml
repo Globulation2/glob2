@@ -217,6 +217,8 @@ jobs:
             find build/linux/client/release/shaders -type f -print0
             find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0
             find build/linux/client/release/runtime-assets -type f -print0
+            # Test programs read their build identity from <binary>.provenance.json.
+            find build/linux/client/release -path '*/configure' -prune -o -type f -name '*.provenance.json' -print0
             printf '%s\0' build/linux/client/release/runtime-assets.json
           } | tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4

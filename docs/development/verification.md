@@ -6,11 +6,12 @@ Select checks from the actual risks, publish reviewable evidence, and distinguis
 
 Pull requests cancel superseded revisions and run the [fast gate](#fast-gate); the
 full development matrix runs on them only when labelled `ci:full`.
-Master finishes active full verification and keeps the newest pending push; all
-retained master pushes select the full development matrix. Nightly fallback runs
-at 06:00 UTC in a separate concurrency group without publication operations, and
-skips expensive jobs only with matching available successful full evidence for
-its exact revision and policy.
+Master pushes run the fast gate, which also saves the compiler and asset caches
+pull requests restore. The full development matrix runs on master every four
+hours in its own concurrency group without publication operations, and skips
+expensive jobs when a successful full run already covers its exact revision and
+policy. Running it on every master push kept the hosted runners busy for hours and
+left fast-gate runs queued.
 Release packaging first runs the full development matrix on the exact candidate
 revision through `build.yml`'s `revision` workflow-call input.
 
@@ -238,7 +239,7 @@ runs before claiming a change made it faster.
 ## Hosted verification and regression detection
 
 Pull requests, draft or ready, run the [fast gate](#fast-gate). The full
-development matrix in `build.yml` runs on every retained master push, nightly,
+development matrix in `build.yml` runs on master every four hours,
 release candidates (through its `revision` workflow-call input) and manual
 dispatches. It does not run on ordinary pull requests: every check in it builds
 the game, so a cheaper subset still pays for the builds that dominate its cost.
@@ -269,8 +270,7 @@ one completed successful job. Missing, ambiguous, failed, cancelled or
 unexpectedly skipped checks fail the gate, and unselected workflow jobs must be
 skipped. Native runners retain their eligible and assigned engine-case inventories.
 
-Every retained master push runs the full development matrix. Active runs finish
-and only the newest pending push remains. Full master CI detects regressions
+The scheduled full matrix covers master's newest revision every four hours. Full master CI detects regressions
 asynchronously; the fast gate's `master-health` job applies the master-red rule
 described above. Retain failure artifacts, prioritize diagnosis and repair,
 document verification in repair PRs and confirm recovery with subsequent full

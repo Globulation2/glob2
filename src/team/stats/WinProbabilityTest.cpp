@@ -1,7 +1,8 @@
 #include "Version.h"
 #include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "ScopedEnvironment.h"
 #include <iostream>
 #include "TeamStat.h"

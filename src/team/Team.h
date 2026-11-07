@@ -23,6 +23,7 @@
 
 #include "BaseTeam.h"
 #include "WinningConditions.h"
+#include "sim/SimContext.h"
 
 class Building;
 class BuildingsTypes;
@@ -67,7 +68,8 @@ public:
 		START_POS_FROM_SWARM = 3,
 	};
 
-	Team(Game *game);
+	//! ctx comes from game->simContext().
+	Team(Game *game, const SimContext &ctx);
 
 	virtual ~Team(void);
 
@@ -106,9 +108,8 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
-	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Tile::forbidden, ...).
-	/// Masks have MAX_COUNT_ON_DISK bits; `1<<31` on a signed int would be UB.
-	inline static Uint32 teamNumberToMask(int team) { return Uint32(1)<<team; }
+	/// Bit for `team` in team-mask bitfields (see ::teamNumberToMask in TeamCapacity.h).
+	inline static Uint32 teamNumberToMask(int team) { return ::teamNumberToMask(team); }
 
 	void update();
 	//! Whether any other team shares its market vision with us.
@@ -155,6 +156,8 @@ private:
 
 public:
 	Game *game;
+	//! The game state entity code reads per tick; see sim/SimContext.h.
+	SimContext ctx;
 	Map *map;
 
 	Unit **myUnits;

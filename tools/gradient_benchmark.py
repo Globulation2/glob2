@@ -209,6 +209,13 @@ def copy_sources(args):
             shutil.copyfile(header, snapshot / directory / header.name)
     if (args.candidate_dir / 'map/TerrainRegistry.h').exists():
         shutil.copyfile(args.candidate_dir / 'map/TerrainRegistry.cpp', snapshot / 'map/TerrainRegistry.cpp')
+        # Revisions with an out-of-line terrain catalogue also need its rows and
+        # the loaders' format history.
+        if (args.candidate_dir / 'map/TerrainCatalog.cpp').exists():
+            shutil.copyfile(args.candidate_dir / 'map/TerrainCatalog.cpp', snapshot / 'map/TerrainCatalog.cpp')
+            (snapshot / 'map/io').mkdir(exist_ok=True)
+            shutil.copyfile(args.candidate_dir / 'map/io/TerrainFormatHistory.h',
+                            snapshot / 'map/io/TerrainFormatHistory.h')
         (snapshot / 'app').mkdir(exist_ok=True)
         shutil.copyfile(args.candidate_dir / 'app/FileFormatVersions.h', snapshot / 'app/FileFormatVersions.h')
         (snapshot / 'online').mkdir(exist_ok=True)
@@ -234,6 +241,8 @@ def build_benchmark(args, snapshot):
         str(snapshot / 'gradient_benchmark.cpp'), '-o', str(binary),
     ]
     if (snapshot / 'map/TerrainRegistry.cpp').exists():
+        if (snapshot / 'map/TerrainCatalog.cpp').exists():
+            command.append(str(snapshot / 'map/TerrainCatalog.cpp'))
         command.extend([str(snapshot / 'map/TerrainRegistry.cpp'), str(snapshot / 'online/Sha256.cpp'),
                         '-I' + str(snapshot / 'app'), '-I' + str(snapshot / 'map'),
                         '-I' + str(ROOT / 'third_party/nlohmann-json/include')])

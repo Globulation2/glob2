@@ -4,8 +4,8 @@
 #include "HeightMap.h"
 #include <functional>
 #include <vector>
-class Game;
-class Map;
+class GenerationWorld;
+class GenerationMap;
 struct GenerationContext;
 namespace MapGeneration
 {
@@ -51,24 +51,24 @@ HeightFieldLevels classifyHeightField(HeightMap &, const HeightFieldTiling &,
 									  const HeightFieldOptions &);
 
 /// Writes the field's terrain to the map's vertices, tiled, and lays the engine's beaches.
-void paintHeightFieldTerrain(Map &, HeightMap &, const HeightFieldTiling &,
+void paintHeightFieldTerrain(GenerationMap &, HeightMap &, const HeightFieldTiling &,
 							 const HeightFieldLevels &);
 /// Paints algae, stone, wheat and wood as bands of the field; wheat and wood alternate along the
 /// field's own slope so the two come out in smooth areas rather than rings.
-void paintHeightFieldResources(Map &, HeightMap &, const HeightFieldTiling &,
+void paintHeightFieldResources(GenerationMap &, HeightMap &, const HeightFieldTiling &,
 							   const HeightFieldLevels &, const HeightFieldOptions &);
 /// Every colony's boot tile: chooseBalancedStarts on the finished resources, falling back to
 /// the oldest search (the widest grass patch each) where no balanced set exists. False when
 /// the map has no room at all.
-bool chooseHeightFieldStarts(Game &, GenerationContext &);
+bool chooseHeightFieldStarts(GenerationWorld &, GenerationContext &);
 /// `count` fruit groves of a random kind each, grown tile by tile over free grass; false with a
 /// diagnostic when no grass is free.
-bool plantHeightFieldGroves(Map &, GenerationContext &, const HeightFieldTiling &, int count);
-
+bool plantHeightFieldGroves(GenerationMap &, GenerationContext &, const HeightFieldTiling &,
+							int count);
 
 using HeightFieldBuilder = std::function<void(HeightMap &, unsigned, unsigned, float)>;
 /// The whole pipeline: build the field, classify and paint its terrain and resources, choose
 /// the starts, guarantee their crops and plant the groves. The caller then places the colonies.
-bool generateHeightField(Game &, GenerationContext &, const HeightFieldOptions &,
+bool generateHeightField(GenerationWorld &, GenerationContext &, const HeightFieldOptions &,
 						 const HeightFieldBuilder &);
 } // namespace MapGeneration

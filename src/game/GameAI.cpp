@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "gradient/MapRouting.h"
 #include "ChecksumSchedule.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
@@ -8,7 +9,7 @@
 #include "Team.h"
 #include "GameDiagnostics.h"
 #include "ai/engine/AIPipeline.h"
-#include "AIJavaScript.h"
+#include "AIImplementation.h"
 #include "Player.h"
 SimulationSnapshot::Handle Game::captureReadBoundary(SimulationSnapshot::CaptureOptions options) const
 {
@@ -120,7 +121,7 @@ void Game::clearAI()
     if (turretTargetingPipeline)
         turretTargetingPipeline->drain();
     statsPipeline.reset();
-    map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+    map.routing().finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
     map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
     aiPipeline.reset();
 
@@ -161,12 +162,13 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
 }
 void Game::observeUnpolledAI(const SimulationSnapshot::Handle& captured)
 {
-    std::vector<AIJavaScript*> idle;
+    std::vector<AIImplementation*> idle;
     for (unsigned p = 0; p < unsigned(gameHeader.getNumberOfPlayers()); ++p)
     {
-        if (players[p] && players[p]->ai && players[p]->ai->implementationID == AI::JAVASCRIPT
+        if (players[p] && players[p]->ai && players[p]->ai->aiImplementation
+            && players[p]->ai->aiImplementation->observesWhenIdle()
             && (!aiPipeline || !aiPipeline->wasPolled(p, stepCounter)))
-            idle.push_back(static_cast<AIJavaScript*>(players[p]->ai->aiImplementation));
+            idle.push_back(players[p]->ai->aiImplementation);
     }
     if (idle.empty())
         return;
@@ -176,7 +178,7 @@ void Game::observeUnpolledAI(const SimulationSnapshot::Handle& captured)
     drainAI();
     const AIEngine::AIWorldView world(captured.simulationView());
     for (auto* controller : idle)
-        controller->observe(world);
+        controller->observeIdle(world);
 }
 
 void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin)

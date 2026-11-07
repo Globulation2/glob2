@@ -3,7 +3,7 @@
 #include "Drawing.h"
 #include "DesignCache.h"
 #include "Farmland.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Growth.h"
 #include "LatticeNoise.h"
@@ -55,7 +55,7 @@ std::string validateRequest(const GenerationRequest &r)
 	if (const auto error = denseColonySizeFailure(r); !error.empty())
 		return error;
 	const int w = 1 << r.wDec, h = 1 << r.hDec;
-	if (r.nbTeams < 3 || r.nbTeams > Team::MAX_COUNT)
+	if (r.nbTeams < 3 || r.nbTeams > TEAM_MAX_COUNT)
 		return "Invalid colony count.";
 	if (std::min(w, h) < 256 || std::max(w, h) > 2 * std::min(w, h))
 		return "Encircled Kingdom needs sides of at least 256 tiles and an aspect ratio at most "
@@ -577,7 +577,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	return cachedDesign(r, c, buildDesign);
 }
 // Finished-map economics and approaches, shared by generation telemetry and final validation.
-std::string assess(const Game &game, const Layout &L, GenerationContext &c)
+std::string assess(const GenerationWorld &game, const Layout &L, GenerationContext &c)
 {
 	const Torus &t = L.t;
 	const int teams = c.request.nbTeams, attackers = teams - 1, fronts = int(L.fronts.size());
@@ -703,7 +703,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 	return "";
 }
 
-bool generate(Game &game, GenerationContext &c)
+bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "kingdom design";
 	const Layout L = design(c.request, c);
@@ -806,7 +806,7 @@ bool generate(Game &game, GenerationContext &c)
 	c.detail = assess(game, L, c);
 	return c.detail.empty();
 }
-std::string validateWorld(const Game &game, const GenerationContext &c)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &c)
 {
 	GenerationContext replay(c.request);
 	const Layout L = design(c.request, replay);
@@ -892,8 +892,8 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			if (garden.owner == k && garden.starter && garden.resource == WOOD)
 				for (int i : garden.tiles)
 					if (game.map.getResource(i).type == WOOD &&
-						t.dist2(t.remainderX(i), i / t.w, game.teams[k]->startPosX,
-								game.teams[k]->startPosY) <= 400)
+						t.dist2(t.remainderX(i), i / t.w, game.teamStart(k).x,
+								game.teamStart(k).y) <= 400)
 						++closeWood;
 		if (closeWood < 16)
 			return "A town lacks timber in its immediate working territory.";

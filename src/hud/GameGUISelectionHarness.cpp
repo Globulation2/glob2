@@ -2,7 +2,8 @@
 // Link the real GameGUI and entities. No window is needed to exercise how a
 // selection reacts to entity destruction, gid reuse and conversion between
 // simulation ticks and the next GUI draw.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "GameGUIKeyActions.h"

@@ -2,7 +2,9 @@
 // Real-engine regression: a building that wants several resources at once must
 // spread its fetchers across them, instead of sending everyone to whichever
 // resource happens to be nearest and leaving the others with nobody.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "gradient/MapRouting.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include <list>
 #include "GlobalContainer.h"
@@ -89,13 +91,13 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 	// Confirm the layout really is lopsided, so a pass here means the
 	// apportionment did the work and not an accidentally even map.
-	game.map.buildingGradient(site,MovementAccess::Land);
-	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,MovementAccess::Land); });
+	game.map.routing().buildingGradient(site,MovementAccess::Land);
+	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.routing().getMaterialGradientSlot(0,material,MovementAccess::Land); });
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
-	require(game.map.materialAvailableSlot(0, WOOD, probe->movementAccess(), probe->posX, probe->posY, &woodDistance),
+	require(game.map.routing().materialAvailableSlot(0, WOOD, probe->movementAccess(), probe->posX, probe->posY, &woodDistance),
 		"the wood is reachable");
-	require(game.map.materialAvailableSlot(0, STONE, probe->movementAccess(), probe->posX, probe->posY, &stoneDistance),
+	require(game.map.routing().materialAvailableSlot(0, STONE, probe->movementAccess(), probe->posX, probe->posY, &stoneDistance),
 		"the stone is reachable");
 	std::printf("probe distances: wood=%d stone=%d\n", woodDistance, stoneDistance);
 	require(stoneDistance > 3 * woodDistance, "the stone is far enough to tempt the old scorer");
@@ -165,15 +167,15 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = accessClass(team->myUnits[0]->movementAccess());
-	game.map.buildingGradient(site,movementAccessFromLegacy(swimClass));
-	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,STONE,movementAccessFromLegacy(swimClass)); });
+	game.map.routing().buildingGradient(site,movementAccessFromLegacy(swimClass));
+	glob2test::awaitGradient(game, [&] { return game.map.routing().getMaterialGradientSlot(0,STONE,movementAccessFromLegacy(swimClass)); });
 	for (int n = 0; n < 2; ++n)
 	{
 		Unit* unit = team->myUnits[n];
 		int distBuilding = 0, distResource = 0;
-		require(game.map.buildingAvailable(site, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distBuilding),
+		require(game.map.routing().buildingAvailable(site, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distBuilding),
 			"the site is reachable from the candidate");
-		require(game.map.materialAvailableSlot(0, STONE, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distResource),
+		require(game.map.routing().materialAvailableSlot(0, STONE, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distResource),
 			"the stone is reachable from the candidate");
 		*(n == 0 ? emptyCost : loadedCost) = distBuilding + distResource;
 	}

@@ -27,6 +27,7 @@
 #include <deque>
 #include <utility>
 #include "Map.h"
+#include "gradient/MapRouting.h"
 
 struct GradientRuntime
 {
@@ -103,12 +104,12 @@ struct GradientRuntime
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;
 	// Explicit synchronous/editor field builds, split by diagnostic reason.
 	Uint64 buildingSynchronous = 0;
-	std::array<Uint64, std::size_t(Map::BuildingSyncReason::Count)> synchronousByReason{};
-	Map::BuildingSyncReason syncReason = Map::BuildingSyncReason::Other;
+	std::array<Uint64, std::size_t(MapRouting::BuildingSyncReason::Count)> synchronousByReason{};
+	MapRouting::BuildingSyncReason syncReason = MapRouting::BuildingSyncReason::Other;
 	void countSynchronous()
 	{
 		++buildingSynchronous;
-		++synchronousByReason[std::size_t(std::exchange(syncReason, Map::BuildingSyncReason::Other))];
+		++synchronousByReason[std::size_t(std::exchange(syncReason, MapRouting::BuildingSyncReason::Other))];
 	}
     ResourceGrowth::Pipeline growth;
 	// Owner reservations, consumed together at the immutable observation boundary.

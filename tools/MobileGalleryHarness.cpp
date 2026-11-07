@@ -707,7 +707,7 @@ class MobileGalleryGameplay
 		// Real simulation history avoids misleading empty chart captures. Each
 		// viewport starts from the same bundled map and executes the same ticks.
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
-		globalContainer->replayWriter->init("", gui);
+		gui.startReplay(*globalContainer->replayWriter, "");
 		for (int tick = 0; tick < 4096; ++tick)
 		{
 			gui.game.step(0);

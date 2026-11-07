@@ -2,7 +2,7 @@
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FortsGenerator.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Growth.h"
@@ -670,7 +670,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "forts layout";
 	const FortsOptions o(context.request);
@@ -681,7 +681,7 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	const Torus &t = L.t;
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	context.stage = "forts terrain";
 	writeVertices(map, L.terrain);
 	const auto stone = designedStone(map, t, L.wall);
@@ -860,7 +860,7 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);

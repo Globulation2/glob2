@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "render/SoftwareTerrainCache.h"
 #include "scene/SceneMap.h"
 #include <RenderBackend.h>

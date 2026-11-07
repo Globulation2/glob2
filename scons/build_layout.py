@@ -93,9 +93,11 @@ def build_identity(arguments, host=None):
     if level != '2' and not perf:
         raise ValueError('opt selects the optimization level of a perf=1 build')
     if perf:
-        if mode != 'debug' or any(development.get(key) for key in ('dev_fast', 'pch', 'unity')) or target != 'native':
-            raise ValueError('perf=1 is a native measurement build; it excludes release, profile, dev_fast, pch and unity')
+        if mode != 'debug' or any(development.get(key) for key in ('dev_fast', 'pch', 'unity', 'compile_profile')) or target != 'native':
+            raise ValueError('perf=1 is a native measurement build; it excludes release, profile, dev_fast, pch, unity and compile_profile=core')
         mode = 'perf'
+    if development.get('compile_profile') and role != 'client':
+        raise ValueError('compile_profile=core applies to the client role only')
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
@@ -195,6 +197,9 @@ def prepare_directory(path, identity):
     except FileExistsError:
         if marker.read_text() != content:
             raise ValueError(f'{path} belongs to another build configuration; choose a different --build directory')
+    # Tools and people read which sources a directory holds without parsing identity.json.
+    write_if_changed(path / 'profile.json', json.dumps(
+        {'compile_profile': identity.get('compile_profile', 'full')}, sort_keys=True, indent=2) + '\n')
     return path
 
 

@@ -3,7 +3,7 @@
 #include "KarstTowersGenerator.h"
 #include "Channels.h"
 #include "DesignCache.h"
-#include "Game.h"
+#include "GenerationWorld.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
@@ -1044,7 +1044,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 // Wheat on every open tile of `L`'s paddies that `sown` (by paddy id) and `keep` (by tile) allow.
 template <typename Sown, typename Keep>
-void sowPaddies(Map &map, const Layout &L, Sown sown, Keep keep)
+void sowPaddies(GenerationMap &map, const Layout &L, Sown sown, Keep keep)
 {
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
@@ -1052,7 +1052,7 @@ void sowPaddies(Map &map, const Layout &L, Sown sown, Keep keep)
 			map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 }
 
-bool generate(Game &game, GenerationContext &context)
+bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "karst layout";
 	const KarstTowersOptions o(context.request);
@@ -1062,7 +1062,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = L.failure;
 		return false;
 	}
-	Map &map = game.map;
+	GenerationMap &map = game.map;
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
@@ -1158,11 +1158,11 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-std::string validateWorld(const Game &game, const GenerationContext &context)
+std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	GenerationContext replay(context.request);
 	const Layout L = design(context.request, replay);
-	const Map &map = game.map;
+	const GenerationMap &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "karst towers"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;

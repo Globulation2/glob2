@@ -1,14 +1,23 @@
 # Native tests
 
-Native tests are doctest cases compiled into two binaries by the main build, from
+Native tests are doctest cases compiled into four binaries by the main build, from
 the same objects as the game:
 
 | Binary | Links | How it runs |
 | --- | --- | --- |
 | `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | headless cases share a process; display cases run in separate processes |
+| `glob2-map-tests` | `libglob2_map.a`, libgag, libusl, the production objects in `MAP_PRODUCTION_SOURCES` and the stubs in `test/map/stubs/` | as `glob2-unit-tests` |
+| `glob2-sim-tests` | `libglob2_sim.a`, `libglob2_map.a`, libgag, libusl, a headless `GlobalContainer`, `SIM_PRODUCTION_SOURCES` and `test/sim/stubs/`; no `GameGUI` | as `glob2-engine-tests` |
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
-Both are listed in `test/tests.py`, built by `test/SConscript` and land in
+The module libraries are archives of the client objects in `MAP_SOURCES` and
+`SIM_SOURCES` (`scons/sources.py`), so the linker takes only the members a test
+reaches: a map change relinks a few hundred objects instead of the whole client.
+`engine-tests` also builds `glob2-sim-tests` and `unit-tests` also builds
+`glob2-map-tests` (`map-tests` and `sim-tests` build one alone), because the module
+binaries hold cases moved out of those two.
+
+All are listed in `test/tests.py`, built by `test/SConscript` and land in
 `build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
 and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
 programs that remain come from the `PROGRAMS` table in the same file
@@ -33,7 +42,9 @@ python3 test/run_tests.py --tier display    # adds [display] cases
 python3 test/run_tests.py --tier full       # everything this platform can run
 python3 test/run_tests.py --list --tag display
 python3 test/run_tests.py --fullscreen --tag display      # opt in to fullscreen transitions
-python3 test/run_tests.py --binary unit
+python3 test/run_tests.py --binary unit          # glob2-unit-tests and glob2-map-tests
+python3 test/run_tests.py --binary map           # one module binary
+python3 tools/dev_build.py map-tests && python3 test/run_tests.py --binary map   # map edit loop
 python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
 python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
 python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
@@ -167,7 +178,7 @@ and selects the dummy drivers when the environment does not, so
 
 ## Writing a test
 
-Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use
+Include `Glob2Test.h` (unit tests) or the engine fixtures a test uses (below) and use
 doctest's `TEST_SUITE`, `TEST_CASE`, `SUBCASE`, `CHECK`, `REQUIRE`, `CHECK_EQ` and
 `REQUIRE_MESSAGE`. Suites are named after the area (`HungryDefeat`, `MapQuery`,
 `Maxima.Combat`); case names are descriptive sentences. Conditions that doctest
@@ -193,11 +204,35 @@ production code (`is_test_source` in `.github/scripts/ci_policy.py`). Tests that
 domains, shared support, stubs and fixtures stay in `test/`. Registry entries outside
 `test/` are written from the repository root, as `'#src/unit/UnitTimingTest.cpp'`.
 
-Which binary a test joins: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
-client object, otherwise `glob2-engine-tests`. Add the translation unit to
-`UNIT_TESTS` or `ENGINE_TESTS` in `test/tests.py` (with `cxxflags`, `defines` or
-`require={'wss','not-mingw','opengl'}` when needed); CI picks the new cases up on
-the next run. Keep helpers and fixtures inside an anonymous namespace: every test
+Which binary a test joins, smallest first:
+
+- `glob2-unit-tests` (`UNIT_TESTS`) if it needs neither `GlobalContainer` nor any
+  client object beyond `UNIT_PRODUCTION_SOURCES`;
+- `glob2-map-tests` (`MAP_TESTS`) if it needs only the map layer: terrain, cells,
+  resources, fields, gradients, routing, pathfinding, claims and map I/O, with no
+  `Game`, team, building or unit attached to the map;
+- `glob2-sim-tests` (`SIM_TESTS`) if it builds a `Game(nullptr)` (or teams, units,
+  buildings, AIs, orders, replays) under `HeadlessGlobals` and steps it itself, with
+  no `GameGUI`, `HeadlessGame`, window, menu, renderer or `GlobalContainer::load()`
+  (`loadStrings` or `display` options);
+- otherwise `glob2-engine-tests` (`ENGINE_TESTS`).
+
+Add the translation unit to that list in `test/tests.py` (with `cxxflags`, `defines`
+or `require={'wss','not-mingw','opengl'}` when needed); CI picks the new cases up on
+the next run. A module entry also needs a `MODULE_CASE_FLOORS` count: `run_tests.py`
+refuses to run when a module test file lists fewer cases than its floor, or when a
+binary lists cases from a file registered to another one, so a case moved out of
+engine or unit cannot silently disappear. Raise the floor with new cases. If a
+module binary fails to link, the missing symbol names the layer the test really
+needs: `python3 tools/link_graph.py --within map closure map/Map.o --external`
+(or `--within map+sim`) lists what each module still takes from outside it, and
+`path A.o B.o` shows the reference chain. Move such a test to the next binary
+rather than adding a stub, unless the stub only replaces an unreachable weld; the
+stubs in `test/map/stubs/` and `test/sim/stubs/` abort, so a test that reaches one
+fails loudly. Moved cases keep their runner policy and coverage labels:
+`run_tests.py --binary engine` includes `glob2-sim-tests` and `--binary unit`
+includes `glob2-map-tests`, and the mobile and browser builds fold them back into
+their engine and unit binaries (`portable_engine_tests()`, `portable_unit_tests()`). Keep helpers and fixtures inside an anonymous namespace: every test
 file in a binary is one link, so two global `struct World`s collide.
 
 `test/support/Glob2Test.h` provides, in `namespace glob2test`:
@@ -208,18 +243,28 @@ file in a binary is one link, so two global `struct World`s collide.
   `readFile`, `writeFile`, `updatingFixtures()`;
 - `ToolkitScope` for tests that need a `FileManager` without an engine.
 
-`test/support/EngineFixtures.h` adds `HeadlessGlobals` (the RAII `GlobalContainer`
-every headless harness used to bootstrap by hand: `runNoX`, building types, races,
-key actions, the repository on the data path, a seeded simulation RNG; `Options`
-select a real display, string loading, screen size and seed) and `HeadlessGame`
-(a one-colony game on a small grass torus with `addBuilding`, `addUnit`, `step`
-and `checksum`). Unit tests that exercise `Map` without the game reuse the
-`GrassMap` subclass in `src/map/MapQueryTest.cpp`, which sizes the tile array
-directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
-`GameGUI`, `Race` and SHA-1 symbols such tests reach are supplied once by
-`test/unit/stubs/`, so every unit test shares one link surface. A test that needs a
-stub replacing a symbol another unit test links for real belongs in the engine
-binary instead.
+Engine tests include only the fixture headers they use, so a test that needs no
+game or GUI does not compile against them:
+
+- `HeadlessGlobals.h`: `HeadlessGlobals`, the RAII `GlobalContainer` every headless
+  harness used to bootstrap by hand (`runNoX`, building types, races, key actions,
+  the repository on the data path, a seeded simulation RNG; `Options` select a real
+  display, string loading, screen size and seed);
+- `HeadlessGame.h`: `HeadlessGame`, a one-colony game on a small grass torus owned
+  by its `GameGUI`, with `addBuilding`, `addUnit`, `step` and `checksum`;
+- `GameFixtures.h`: helpers that drive any `Game` and need no GUI: `BoundGameRandom`,
+  `stepAI`, `publishCurrentHiringSuggestions`, `discardPrematureHiringSuggestions`
+  and `prepareTurretTargets`;
+- `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes.
+
+Map and unit tests that exercise `Map` without the game use the `GrassMap` pattern
+of `src/map/MapQueryTest.cpp`, which sizes the tile array directly instead of
+calling `Map::setSize`. In `glob2-map-tests` the whole map layer is real and only
+the simulation symbols it references are stubbed (`test/map/stubs/`). In
+`glob2-unit-tests` the `Sector`, `MapHeader`, `Order`, `GameGUI`, `Race` and SHA-1
+symbols such tests reach are supplied once by `test/unit/stubs/`, so every unit
+test shares one link surface; a unit test that needs a stub replacing a symbol
+another unit test links for real belongs in the map, sim or engine binary instead.
 
 Time in input tests is injected, never read from `SDL_GetTicks`. Event
 timestamps (`event.tfinger.timestamp`, `event.common.timestamp`) and the frame
