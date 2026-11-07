@@ -251,9 +251,10 @@ constexpr int kMoraineDoor = 5, kMoraineHomeClear = 4;
 
 // The moraine's knots of rock take the contour one step further up as well (two rows, so rock
 // vertices stand between them and the knot blocks its tiles and nothing round it), and stone stands on
-// a knot's flank where its run starts or ends: one flank per run for every 100% of `stone-amount`, up
-// to both. Drawn from their own stream, so the runs and gaps are revision 4's.
+// a knot's flank where its run starts or ends, on runs of kMoraineQuarryRun columns or more: one flank
+// per run for every 100% of `stone-amount`, up to both. Drawn from their own stream, so the runs and gaps are revision 4's.
 constexpr const char *kMoraineQuarryStream = "braided-river-moraine-quarries";
+constexpr int kMoraineQuarryRun = 5;
 
 // --- The bluffs (2.0) -----------------------------------------------------------------------------
 //
@@ -1169,8 +1170,10 @@ int stockMoraine(Layout &L, GenerationContext &context, int stone)
 			const double expected = stone / 100.0;
 			int flanks = std::min(2, int(expected) + ((random() % 1000) < (expected - int(expected)) * 1000));
 			const bool first = random() % 2 == 0;
-			if (end - u < 2)
-				flanks = 0; // a knot of one or two columns would be all quarry
+			// A knot of fewer than kMoraineQuarryRun columns keeps its rock: with a stone flank or two
+			// it read as a speck of quarry, not a hummock (3 and 4 column runs were two thirds stone).
+			if (end - u + 1 < kMoraineQuarryRun)
+				flanks = 0;
 			for (int f = 0; f < flanks; ++f)
 				for (int i : columns[bank][wrapIndex((f == 0) == first ? u : end, length)])
 				{
@@ -1755,6 +1758,7 @@ bool generate(Game &game, GenerationContext &context)
 		// fairness of stone, measured on the finished map.
 		const std::vector<unsigned char> walkable = walkableTiles(map);
 		int least = INT_MAX, most = 0;
+		bool unreachable = false;
 		for (int team = 0; team < teams; ++team)
 		{
 			std::vector<unsigned char> swarm(size_t(n), 0);
@@ -1781,10 +1785,12 @@ bool generate(Game &game, GenerationContext &context)
 			}
 			context.telemetry.measure("braided-river.quarry.home-walk", own == INT_MAX ? -1 : own, team);
 			context.telemetry.measure("braided-river.quarry.nearest-walk", any == INT_MAX ? -1 : any, team);
+			unreachable = unreachable || own == INT_MAX;
 			least = std::min(least, own);
-			most = std::max(most, own == INT_MAX ? -1 : own);
+			most = std::max(most, own == INT_MAX ? 0 : own);
 		}
-		context.telemetry.measure("braided-river.quarry.home-walk-spread", most - least);
+		// -1 when some colony cannot walk to its own face at all: no spread is fair then.
+		context.telemetry.measure("braided-river.quarry.home-walk-spread", unreachable ? -1 : most - least);
 	}
 	return true;
 }

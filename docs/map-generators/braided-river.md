@@ -27,7 +27,8 @@ laid exactly as revision 4 laid them for the same seed.
   does and changes no route on foot. Swimming across the braid is slower than in revision 4.
 - **The moraine is cover with doors.** Knots of rock two tiles deep stand four steps up each bank,
   with a gap at every riffle landing and none against a home. Towers shoot over them; units walk round.
-  Stone stands on a knot's flank where a run of hummocks starts or ends.
+  Stone stands on a knot's flank where a run of hummocks five columns or longer starts or ends;
+  shorter knots stay rock, since with a stone flank they read as specks of quarry.
 - **The bluffs are a wall with quarries.** The seam is a sealed line of rock: nothing walks round the
   back of the torus, so the braid stays the only way across. Buttresses stand out of it with a quarry
   face of stone: one on every colony's own terrace, as near its column as fits and the same ten stone
@@ -52,7 +53,7 @@ change a rule.
 | Bluffs' core | A sealed line (`traceSealedLap`) waving round the seam, and every tile touching it: rock vertices stand where all four tiles are rock (`rockVertices`, `shared/Rock.h`), so the whole spine is rock. |
 | Bars and riffles | The bars are the land components the rasterized water leaves. `channelCrossings` finds every stretch two bars face each other across; riffles (`SandFord`) are tried on the sketch (`stampFord`, `fordFault`): one forced per colony to the nearest bar with room for wheat and wood, a spanning tree, then loops. |
 | Homes | 8 to 13 steps up the bank, one slot per colony along the lap alternating banks, dealt at random. |
-| Moraine | Hummocks on the contour four steps up, in runs of 3 to 6 with gaps of 4 to 7, doors at riffle landings and 4 tiles clear of every home; each knot takes the next contour too (two rows, so it holds rock vertices); stone on a flank per run per 100% of `stone-amount`. |
+| Moraine | Hummocks on the contour four steps up, in runs of 3 to 6 with gaps of 4 to 7, doors at riffle landings and 4 tiles clear of every home; each knot takes the next contour too (two rows, so it holds rock vertices); stone on a flank per run of five columns or more per 100% of `stone-amount` (about 54 moraine stone tiles at 256 with four colonies, seeds 1–3, against 110 when three- and four-column knots took flanks too). |
 | Buttresses and relief | Every colony's buttress (a half ellipse four tiles out, its outer two rows over five columns a quarry face) as near its column as fits on its own terrace; ambient buttresses one per 64 tiles of each face at 100% stone; a relief of up to three rows along each face; scree aprons (`talusApron`). Rock keeps 3 tiles clear of every home's settling box and 12 steps from water. |
 | Pavement | `dry-patches` percent of the terrace beyond 22 steps from water, where a fractal noise peaks, 20 tiles (frayed) from every home's middle and off every quarry. |
 | Deep pools | Water two steps from any land (`deepCore`), opened so only cores three vertices across survive, in pools of ten or more, clear of every riffle. |
@@ -110,14 +111,18 @@ gains a little everywhere.
 A four-AI calibration game (`map study braided-river --seed 101`, 256×256, Nicowar, Cortex, Cabino
 and Maxima, game seed 1, 20,000 ticks, both maps played by the same game binary) harvested 1,346 wheat
 and 347 wood with 84 worker births and 54 buildings on revision 5, against 1,118 wheat, 301 wood, 77
-births and 45 buildings on revision 4; the weakest colony (Cabino) harvested 288 wheat against 194.
+births and 45 buildings on revision 4; the weakest colony harvested 267 wheat (team 3, Maxima) against
+194 (team 2, Cabino) on revision 4. The game predates the change that keeps stone off moraine knots
+shorter than five columns, which leaves the homes, the bluffs and the farmland as they were.
 One game varies by up to 40%: this shows no opening stall on the dry terraces, not an improvement.
 
 ## Limits
 
-- Every colony's own quarry face is a walk across its terrace (about 65 steps at 256 by default, the
-  same within a few steps for every colony); the nearest stone is the kit's clump behind the swarm and the
-  moraine's flanks a few steps away.
+- Every colony's own quarry face is a walk across its terrace: 61 to 79 steps at 256 with four colonies
+  (seeds 1–3), and not the same for every colony. The face is placed in the columns straight behind
+  each home, not by walk, and the moraine, the channels' bends and the riffles route each walk
+  differently: the spread between colonies (`braided-river.quarry.home-walk-spread`) was 2, 18 and 5
+  steps on seeds 1–3. The nearest stone is the kit's clump behind the swarm and the moraine's flanks.
 - The season and the pavement's look are looks only: a map plays the same in both seasons.
 - Deep pools make swimming the braid slower than revision 4; no AI game has measured swimmers.
 - Some seeds at 128 tiles with one colony are refused for a riffle without a walkable bank, as in
