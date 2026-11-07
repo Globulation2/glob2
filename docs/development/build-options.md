@@ -102,7 +102,13 @@ configuration. Its C++ objects bypass ccache rather than weakening cache
 correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
 checked-in allowlist in deterministic groups of at most four files, preserves
 ordinary source commands for IDEs, and reuses production objects in harnesses.
-Both experiments default off; their speed benefit must be measured.
+Both experiments default off; their speed benefit must be measured. Precompiling
+a wider standard set (adding `chrono`, `functional`, `iostream`, `filesystem`,
+`format`, `nlohmann/json.hpp` and `SDL3/SDL.h`) cut `-O0` compile CPU only to 0.93×
+on a random 16-file sample on Linux GCC 15, and made small files slower to compile
+than without it; PCH is worth making a default only below about 0.75×, so it stays
+opt-in. Most remaining compile time is the project's own headers, which the
+[header dependency rules](conventions.md#header-dependencies) address instead.
 
 `linker=auto` uses installed LLD for native Linux ELF builds and otherwise keeps
 the platform linker. `linker=lld` fails on unsupported targets or missing tools.
