@@ -160,7 +160,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	const std::string replay = (output / "match.replay").string();
 	globals.headlessReplay = true;
 	globals.replayWriter = std::make_unique<ReplayWriter>();
-	globals.replayWriter->init(replay, engine.gui);
+	engine.gui.startReplay(*globals.replayWriter, replay);
 
 	Turn::TurnLockstepSession& lockstep = *engine.turnLockstep();
 	lockstep.onChecksum = [&checksums](std::uint32_t tick, Uint32 checksum) { checksums.emplace(tick, checksum); };

@@ -1408,7 +1408,7 @@ TEST_SUITE("EngineSession")
 		            require(replayGui.load(&header), "Could not load replay header for the memory recording");
 		        }
 		        ReplayWriter memory;
-		        memory.init("", replayGui);
+		        replayGui.startReplay(memory, "");
 		        for (ReplayWriter* recording : {&writer, &memory}) {
 		            recording->setCheckSum(0xa1b2c3d4);
 		            recording->pushOrder(std::make_shared<PauseGameOrder>(true));

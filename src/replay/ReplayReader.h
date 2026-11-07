@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include "ReplayTelemetry.h"
 #include "ChecksumSample.h"
@@ -50,6 +51,10 @@ public:
 	/// Returns true if successful.
 	///  ! IMPORTANT: It owns the stream afterwards. It will delete the stream when it's no longer used.
 	bool loadReplay(GAGCore::InputStream *stream, bool skipToOrders);
+
+	/// Reads and discards a replay's game header. GameGUI registers it (GameGUI.cpp),
+	/// so the replay reader does not link the GUI itself.
+	static std::function<bool(GAGCore::InputStream *)> &headerSkipper();
 
 	/// Loads the replay with the given filename. Returns true if successful.
 	bool loadReplay(const std::string &filename);

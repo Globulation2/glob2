@@ -81,6 +81,7 @@ class Client;
 class Dialog;
 class LocalCommander;
 } // namespace Hive
+class ReplayWriter;
 class GameGUITouch;
 class HudUnitConversionIcon;
 class ConnectionOverlay;
@@ -315,6 +316,8 @@ public:
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the explicitly prepared local frame.
 	Game *replayTelemetryGame();
+	//! Starts recording to writer at path (an empty path records to memory), with this GUI's game header.
+	void startReplay(ReplayWriter &writer, const std::string &path);
 	const PresentationFrame& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: use the explicitly prepared local frame).
 	void setPublishedScene(const PresentationFrame* scene)

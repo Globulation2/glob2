@@ -1121,7 +1121,7 @@ void Engine::reloadTurnInitialState()
         auto writer = std::make_unique<ReplayWriter>();
         writer->setSaveObserver(globalContainer->replayWriter->getSaveObserver());
         globalContainer->replayWriter = std::move(writer);
-		globalContainer->replayWriter->init(state.replayPath, gui);
+		gui.startReplay(*globalContainer->replayWriter, state.replayPath);
 	}
 	if (checksumSidecar)
 	{

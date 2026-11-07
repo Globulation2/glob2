@@ -556,7 +556,7 @@ void Engine::finishGameInit()
 	{
 		assert(globalContainer->replayWriter == nullptr);
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
-		globalContainer->replayWriter->init(replayPath, gui);
+		gui.startReplay(*globalContainer->replayWriter, replayPath);
 	}
 
 	// Initialise checksum sidecar writer if requested

@@ -474,3 +474,17 @@ void GameGUI::beginIntroCover(Uint64 now)
 	}
 	introCover.begin(now, std::move(title));
 }
+
+void GameGUI::startReplay(ReplayWriter &writer, const std::string &path)
+{
+	writer.init(path, replayTelemetryGame(), [this](GAGCore::OutputStream *stream) { save(stream, "replayHeader"); });
+}
+
+namespace
+{
+// ReplayReader skips a recording's game header through this reader.
+const bool replayHeaderSkipperRegistered = [] {
+	ReplayReader::headerSkipper() = [](GAGCore::InputStream *stream) { GameGUI header; return header.load(stream); };
+	return true;
+}();
+}

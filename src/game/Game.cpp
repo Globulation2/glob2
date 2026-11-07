@@ -53,6 +53,7 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	scriptClient(gui),
 	mapscript(this, gui ? &scriptClient : nullptr)
 {
+	map.drainGameWork = [this](bool teamStatistics) { if (teamStatistics) drainTeamStats(); drainHiring(); };
 	init(gui, edit);
 }
 
