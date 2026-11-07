@@ -3985,6 +3985,318 @@ inline void ringWorldContracts()
 		 "a road right round the world that holds no crop; damage refused; resource extremes; growth");
 }
 
+// Shattered Coast 2.0 (revision 9): the coast pass over revision 8's patchwork, pinned over the
+// envelope revision 8 accepted. Deep cores that leave shallows, a beach fixed point, mudflats kept
+// off the homes, rock that never cuts ground off and never stands near a colony, stocked quarry
+// faces that follow stone-amount, the climate changing looks only, the pass never moving a deposit,
+// resource extremes, and growth.
+inline void shatteredCoastContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("shattered-coast"));
+	assert(definition.legacyId == 7 && definition.revision == 9);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("deep-water") == 1 && request.option("mudflats") == 1 && request.option("outcrops") == 1 &&
+		   request.option("climate") == 0 && request.option("smoothing") == 3);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Shattered Coast %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
+						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Shattered Coast %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && record.subject < 0 && std::holds_alternative<std::int64_t>(record.value))
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	// Every deep vertex has three steps of water round it (two tiles of plain shallows), no vertex of
+	// the grass group touches plain water (the finished terrain is a fixed point of layBeaches, as
+	// revision 8's was), and no mudflat lies within 12 tiles of a colony's workers.
+	const auto checkTerrain = [&](const Game &g, int teams)
+	{
+		const Map &map = g.map;
+		const int w = map.getW(), h = map.getH();
+		const Torus t(map);
+		std::vector<unsigned char> land(size_t(w) * h, 0), workers(size_t(w) * h, 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
+				land[size_t(t.at(x, y))] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater;
+			}
+		for (const auto &tiles : unitTilesByTeam(map, teams))
+			for (int i : tiles)
+				workers[size_t(i)] = 1;
+		const std::vector<int> fromLand = stepsFrom(t, land), fromWorkers = stepsFrom(t, workers);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const int i = t.at(x, y);
+				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
+				if (group == TerrainGroup::DeepWater)
+					assert(fromLand[size_t(i)] >= 3);
+				if (group == TerrainGroup::Rough)
+					assert(fromWorkers[size_t(i)] > 12);
+				if (group == TerrainGroup::Grass)
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+			}
+	};
+	// The envelope: every size and colony count, each with a climate and the three layers pinned in
+	// turn. A seed the service refuses (revision 8 refused the same seeds: a colony walled into a
+	// cove) is rolled again, as the lobby does.
+	int pinned = 0;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 8},
+							std::pair{8, 9}, std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (definition.validateRequest && !definition.validateRequest(r).empty())
+				continue;
+			if (dimensions.first + dimensions.second >= 17 && teams != 4 && teams != 12)
+				continue; // the large maps only twice, for time
+			r.options["climate"] = 1 + pinned % 3;
+			r.options["deep-water"] = pinned % 4 != 1;
+			r.options["mudflats"] = pinned % 4 != 2;
+			r.options["outcrops"] = pinned % 4 != 3;
+			++pinned;
+			bool generated = false;
+			for (int roll = 0; roll < 6 && !generated; ++roll)
+			{
+				Game probe(nullptr);
+				generated = bool(service.generate(probe, r));
+				if (!generated)
+					++r.seed;
+			}
+			if (!generated)
+				continue; // revision 8 refuses this size and colony count on these seeds too
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			if (r.option("deep-water") == 0)
+				assert(measure(result, "shattered-coast.deep.vertices") == 0);
+			if (r.option("mudflats") == 0)
+				assert(measure(result, "shattered-coast.mudflat.vertices") == 0);
+			if (r.option("outcrops") == 0)
+				assert(measure(result, "shattered-coast.rock.vertices") == 0);
+			checkTerrain(g, teams);
+		}
+	assert(pinned >= 20);
+	// Every climate comes up at random, and each pinned holds at 128, 256 and 512.
+	std::set<std::string> climates;
+	for (std::uint32_t seed = 1; seed <= 12; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		if (result)
+			climates.insert(choice(result, "shattered-coast.climate"));
+	}
+	assert(climates.size() == 3);
+	const char *names[] = {"temperate", "steppe", "tropical"};
+	int stacks = 0;
+	for (int climate = 1; climate <= 3; ++climate)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 6}})
+		{
+			D r = make(dimension, dimension, teams, 11);
+			r.options["climate"] = climate;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned climate");
+			assert(choice(result, "shattered-coast.climate") == names[climate - 1]);
+			assert(measure(result, "shattered-coast.deep.vertices") > 0 &&
+				   measure(result, "shattered-coast.mudflat.vertices") > 0 &&
+				   measure(result, "shattered-coast.looks.lush-vertices") > 0);
+			if (dimension >= 8)
+				assert(measure(result, "shattered-coast.knots.placed") > 0 &&
+					   measure(result, "shattered-coast.quarry.stone") > 0);
+			stacks += measure(result, "shattered-coast.stacks.placed");
+			checkTerrain(g, teams);
+		}
+	// Sea stacks need the smallest islands, which not every map has; across these maps some do.
+	assert(stacks > 0);
+	{
+		// The climate is looks only: the same seed plays identically in all three.
+		Game a(nullptr), b(nullptr), c(nullptr);
+		D temperate = make(8, 8, 4, 13), steppe = make(8, 8, 4, 13), tropical = make(8, 8, 4, 13);
+		temperate.options["climate"] = 1;
+		steppe.options["climate"] = 2;
+		tropical.options["climate"] = 3;
+		build(a, temperate, "temperate");
+		build(b, steppe, "steppe");
+		build(c, tropical, "tropical");
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				for (const Game *other : {&b, &c})
+				{
+					assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
+					assert(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
+					differentLooks += a.map.vertexTerrainAt(x, y) != other->map.vertexTerrainAt(x, y);
+				}
+		assert(differentLooks > 2000);
+	}
+	{
+		// The pass never moves a deposit: with every layer off the same seed holds the same deposits
+		// and the same starts, and with every layer on the only new deposits are the quarries' stone.
+		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		off.options["deep-water"] = 0;
+		off.options["mudflats"] = 0;
+		off.options["outcrops"] = 0;
+		Game a(nullptr), b(nullptr);
+		const auto withPass = build(a, on, "every layer");
+		const auto without = build(b, off, "no layers");
+		assert(measure(without, "shattered-coast.deep.vertices") == 0 &&
+			   measure(without, "shattered-coast.mudflat.vertices") == 0 &&
+			   measure(without, "shattered-coast.rock.vertices") == 0);
+		int added = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				const auto p = a.map.getResource(x, y), q = b.map.getResource(x, y);
+				if (q.type != NO_RES_TYPE)
+					assert(p.type == q.type);
+				else if (p.type != NO_RES_TYPE)
+				{
+					assert(p.type == STONE);
+					++added;
+				}
+				const TerrainGroup group = terrainGroup(b.map.vertexTerrainAt(x, y));
+				assert(group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass);
+				// Deep water and mud change speeds, never where one can walk or swim.
+				if (terrainGroup(a.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges &&
+					!a.map.isResource(x, y))
+				{
+					bool rockCorner = false;
+					for (int dy = 0; dy <= 1; ++dy)
+						for (int dx = 0; dx <= 1; ++dx)
+							rockCorner = rockCorner ||
+										 terrainGroup(a.map.vertexTerrainAt((x + dx) & 255, (y + dy) & 255)) ==
+											 TerrainGroup::Ridges;
+					if (!rockCorner)
+						assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+				}
+			}
+		assert(added == measure(withPass, "shattered-coast.quarry.stone"));
+		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
+	}
+	{
+		// Outcrops: knots, stacks and stocked faces with them, no ridges vertex without; faces follow
+		// the stone amount, none at 0; every face tile holds its stone.
+		D on = make(8, 8, 4, 23), off = make(8, 8, 4, 23), bare = make(8, 8, 4, 23), rich = make(8, 8, 4, 23);
+		off.options["outcrops"] = 0;
+		bare.options["stone-amount"] = 0;
+		rich.options["stone-amount"] = 300;
+		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
+		const auto withRock = build(a, on, "outcrops"), without = build(b, off, "no outcrops"),
+				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
+		assert(measure(withRock, "shattered-coast.knots.placed") > 2 && measure(withRock, "shattered-coast.knots.faces") > 0);
+		assert(measure(withRock, "shattered-coast.stacks.placed") > 0);
+		assert(measure(withRock, "shattered-coast.quarry.stone") == measure(withRock, "shattered-coast.quarry.tiles"));
+		assert(measure(without, "shattered-coast.knots.placed") == 0 && measure(without, "shattered-coast.rock.vertices") == 0);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
+		assert(measure(noStone, "shattered-coast.knots.faces") == 0 && measure(noStone, "shattered-coast.quarry.stone") == 0);
+		assert(measure(moreStone, "shattered-coast.knots.faces") >= measure(withRock, "shattered-coast.knots.faces"));
+		// A ring of rock drawn round a patch of open grass cuts it off, and is refused; so is rock beside
+		// a colony.
+		GenerationContext check(on);
+		Game ringed(nullptr);
+		build(ringed, on, "outcrops again");
+		bool drawn = false;
+		const auto workers = unitTilesByTeam(ringed.map, 4);
+		for (int cy = 8; cy < 248 && !drawn; cy += 4)
+			for (int cx = 8; cx < 248 && !drawn; cx += 4)
+			{
+				bool open = true;
+				for (int dy = -6; dy <= 6 && open; ++dy)
+					for (int dx = -6; dx <= 6 && open; ++dx)
+						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
+							   !ringed.map.isResource(cx + dx, cy + dy) &&
+							   terrainGroup(ringed.map.vertexTerrainAt(cx + dx, cy + dy)) != TerrainGroup::Ridges;
+				for (const auto &tiles : workers)
+					for (int i : tiles)
+						open = open && Torus(ringed.map).chebyshev(cx, cy, i % 256, i / 256) > 30;
+				if (!open)
+					continue;
+				for (int dy = -5; dy <= 5; ++dy)
+					for (int dx = -5; dx <= 5; ++dx)
+						if (std::max(std::abs(dx), std::abs(dy)) >= 4)
+							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
+				drawn = true;
+			}
+		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		Game crowded(nullptr);
+		build(crowded, on, "outcrops once more");
+		const int home = unitTilesByTeam(crowded.map, 4)[1].front();
+		crowded.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, OUTCROP);
+		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		build(zero, r, "no resources");
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	build(abundant, r, "abundant resources");
+	GenerationContext context(r);
+	const auto crops = [&]()
+	{
+		int count = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			count += abundant.map.isResource(i % 256, i / 256) &&
+					 (abundant.map.getResource(i % 256, i / 256).type == WHEAT ||
+					  abundant.map.getResource(i % 256, i / 256).type == WOOD);
+		return count;
+	};
+	const int before = crops();
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the crops spread, but every colony still reaches its
+	// crops and no rock comes to part the ground.
+	for (int tick = 0; tick < 3072; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Shattered Coast growth: %s\n", growthError.c_str());
+	assert(growthError.empty() && crops() > before);
+	puts("PASS Shattered Coast: envelope with pinned climates and layers, shallows round every deep core, "
+		 "beach fixed point, mud off the homes, looks keep the rules, the pass moves no deposit, rock that never "
+		 "cuts ground off or crowds a colony, stocked quarries following stone, resource extremes, growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -4023,5 +4335,6 @@ inline void generatorContracts()
 	run("watershed", watershedContracts);
 	run("everglades", evergladesContracts);
 	run("ring-world", ringWorldContracts);
+	run("shattered-coast", shatteredCoastContracts);
 }
 } // namespace GeneratorContracts

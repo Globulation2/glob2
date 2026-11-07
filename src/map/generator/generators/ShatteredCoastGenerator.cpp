@@ -8,17 +8,24 @@
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
+#include "LatticeNoise.h"
 #include "Map.h"
+#include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Growth.h"
 #include "Regions.h"
 #include "Resources.h"
+#include "Rock.h"
+#include "Sketch.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
+#include "TerrainTypeTable.h"
+#include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
 #include <cfloat>
+#include <climits>
 #include <cmath>
 #include <tuple>
 using namespace MapGeneration;
@@ -55,6 +62,41 @@ using namespace MapGeneration;
 // so a seed reproduces the map.
 // Several odd-looking details (the scratch map's offsets, the algae search's comparison) are
 // original behaviour kept on purpose: changing them changes every map this generator makes.
+//
+// SHATTERED COAST 2.0 (revision 9): the same patchwork, drawn with the engine's full terrain palette.
+// The design brief: a photograph of a shattered coast shows (1) dark water in the middle of the
+// bigger bays and lakes with a pale band of shallows along every shore; (2) mud in the sheltered
+// coves and small ponds, pale sand on the open shores and dunes on the dry patches inland; (3) lush
+// meadows in the broad stretches of grass and parched grass on the thin necks between waters; (4)
+// rock: sea stacks where the sea has eaten a headland down to its last speck, and knots of bedrock
+// standing out of the wider grass, quarried on the side the nearest colony comes from. Its patchwork
+// character is the point, so this is a post-pass, not a redesign:
+// - Revision 8 runs unchanged first: the fitted mix, painting, smoothing, beaches, starts, home
+//   deposits, opening repairs and expansion clumps are identical for the same seed (every new draw
+//   uses streams of its own). The pass then repaints only ground nobody stands on: no tile holding
+//   a deposit, building or unit changes its rules, so every resource lies where it lay and stays
+//   legal, and nothing that ran before it has to know about the new terrain.
+// - Two sketches. The pass keeps a mechanic sketch of canonical types (WATER, DEEP_WATER, SAND,
+//   GRASS, MUDFLAT, RIDGE_ROCK) that every check reads, and paints looks over it with composeLooks
+//   (Sketch.h), so looks never change a rule.
+// - Deep water (`deep-water`): water vertices kDeepSteps steps from land (deepCore, Rock.h), opened
+//   and with specks dropped, so only the bigger bays and lakes have a core and every shore keeps two
+//   tiles of plain shallows: algae, beaches and swimming access work as before. No corner of a tile
+//   holding algae turns deep. Deep water waters the land like water but is slower to swim and holds
+//   no algae: crossing a big bay takes longer than in revision 8 (a feel change).
+// - Mudflats (`mudflats`): beach sand of the small, sheltered waters (bodies of at most kMudBody
+//   vertices) turns to mud where a noise field passes, never within kMudHome tiles of a swarm, where
+//   the sand is the containment between a home and its overgrowth. Mudflat (Rough: slow, unbuildable,
+//   holds nothing) does not inhibit growth as sand does, so crops come a little closer to those
+//   ponds; it gives algae no shore support either, so the open shores, where algae live, stay sand.
+// - Rock (`outcrops`): sea stacks, islands of at most kStackMost land vertices with nothing on them,
+//   turned whole to rock (Ridges: impassable, towers shoot over); and knots of bedrock, lenses at
+//   least two tiles thick (rockVertices) on wide vacant grass, kKnotHome tiles or more from every
+//   swarm. Stone-amount sets how many knots carry a quarry face on the side facing the nearest swarm
+//   (stone on grass, tiles left out of the rock). A knot or stack whose rock parts the walkable
+//   ground round it is dropped, so the rock never cuts anything off; validateWorld checks it again.
+// - A climate, looks only (Temperate, Steppe, Tropical): beach, dune, mud, deep water and rock looks
+//   and how much of the grass is lush or parched. Every layer and choice is in telemetry.
 
 // A dry run of the paint-and-smooth process on a small scratch map, used only to learn what shares
 // of water, sand and grass a painting ends up with after `smooth` passes (fitTerrainMix below).
@@ -907,9 +949,12 @@ static void expansionResources(Game &game, GenerationContext &context, const Sha
 		generationCheckpoint();
 		if (protectedHome[i] || !vacant(i))
 			continue;
-		if (map.isGrass(t.remainderX(i), i / t.w))
+		// By rule group, not exact type: pure grass or pure water whatever its look. The pass that
+		// paints looks runs after this one, so these are the tiles revision 8 chose.
+		const TerrainProperties &rules = map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		if (sameTerrainProperties(rules, terrainGroupDefinition(TerrainGroup::Grass).properties))
 			land.push_back(i);
-		else if (map.isWater(t.remainderX(i), i / t.w))
+		else if (sameTerrainProperties(rules, terrainGroupDefinition(TerrainGroup::Water).properties))
 			water.push_back(i);
 	}
 	std::vector<int> centres;
@@ -961,6 +1006,649 @@ static void expansionResources(Game &game, GenerationContext &context, const Sha
 	}
 }
 
+// ===== 2.0: the coast pass ======================================================================
+namespace
+{
+// Streams of their own, so every draw revision 8 made is the draw it made.
+constexpr const char *kKnotStream = "shattered-coast-knots";
+constexpr const char *kStackStream = "shattered-coast-stacks";
+constexpr const char *kLookStream = "shattered-coast-looks";
+constexpr const char *kClimateStream = "shattered-coast-climate";
+// Deep water: water vertices at least kDeepSteps eight-connected steps from land, opened by
+// kDeepOpen and kept only in bodies of kDeepLeast vertices or more, so no lone dark vertex reads as
+// a hole. Four steps leave two tiles of pure shallow water along every shore.
+constexpr int kDeepSteps = 4, kDeepOpen = 1, kDeepLeast = 12;
+// Mudflats: the beach of a water body of at most kMudBody vertices (a cove, a pond, a lagoon), where
+// a noise field passes kMudCut (of 65535), never within kMudHome tiles of a swarm's footprint.
+constexpr int kMudBody = 500, kMudCut = 24000, kMudHome = 16;
+// Sea stacks: islands of at most kStackMost land vertices with nothing on them, kStackHome tiles or
+// more from every swarm, kStackShare percent of them.
+constexpr int kStackMost = 10, kStackHome = 18, kStackShare = 60;
+// Knots: one wanted per kTilesPerKnot tiles of map; centres on vacant pure grass at least
+// kKnotHome tiles from every swarm's footprint and kKnotSpacing from each other. A knot is a lens
+// up to kKnotHalfLength + 2 tiles each way along its axis and 2 to 2.8 tiles thick each way at its
+// middle, and keeps kKnotMargin tiles of vacant grass round it (the quarry's approach and a
+// walk round the rock). Faces go on kFaceShare of the knots at the default stone-amount: the rim
+// tiles within kFaceHalf of the middle on the side facing the nearest swarm, at least kFaceLeast.
+constexpr int kTilesPerKnot = 8192, kKnotHome = 24, kKnotSpacing = 26, kKnotHalfLength = 3, kKnotMargin = 2;
+constexpr int kFaceHalf = 2, kFaceLeast = 4;
+constexpr double kFaceShare = 0.75;
+// Ground within this many tiles of a colony's workers never holds a ridges vertex (validateWorld).
+constexpr int kRockHomeCheck = 16;
+
+// The look-only climates. lush is the grass clearance (steps to the nearest non-grass vertex) from
+// which grass is lush; sliver the widest clearance a thin neck of grass may reach and still be dry;
+// dryRims whether the rim of every patch dries out too.
+struct Climate
+{
+	const char *name;
+	TerrainType beach, beachSecond, dune, duneSecond, deep, mud, rock;
+	int lush, sliver;
+	bool dryRims;
+};
+constexpr Climate kClimates[3] = {
+	{"temperate", PALE_SAND, SAND, DUNE_SAND, PALE_SAND, DEEP_WATER, MUDFLAT, OUTCROP, 5, 2, false},
+	{"steppe", SAND, PALE_SAND, WINDY_SAND_DUNE, DUNE_SAND, DEEP_WATER, HARDPAN, HOODOOS, 8, 3, true},
+	{"tropical", PALE_SAND, PALE_SAND, DUNE_SAND, SAND, DARK_WATER, MUD, OUTCROP, 3, 1, false}};
+
+double sq(double v)
+{
+	return v * v;
+}
+
+// Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
+std::vector<unsigned char> blocksOfTwo(const Torus &t, const std::vector<unsigned char> &mask)
+{
+	std::vector<unsigned char> out(mask.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			generationCheckpoint();
+			if (mask[t.at(x, y)] && mask[t.at(x + 1, y)] && mask[t.at(x, y + 1)] && mask[t.at(x + 1, y + 1)])
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+						out[t.at(x + dx, y + dy)] = 1;
+		}
+	return out;
+}
+
+// The tiles with two or more corners in `vertices`: what the engine blocks for rock corners.
+std::vector<unsigned char> blockedByCorners(const Torus &t, const std::vector<unsigned char> &vertices)
+{
+	std::vector<unsigned char> blocked(vertices.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			blocked[t.at(x, y)] =
+				vertices[t.at(x, y)] + vertices[t.at(x + 1, y)] + vertices[t.at(x, y + 1)] + vertices[t.at(x + 1, y + 1)] >= 2;
+	return blocked;
+}
+
+// Whether some blocked group of `blocked` (8-connected) parts the ground round it: the open tiles
+// beside it fall in more than one walkable component, so the group cut some ground off (or stands
+// between two grounds that were apart, which is refused too). Returns the first such group's label,
+// or -1; `label` receives the groups. (The same check as Watershed's, Everglades' and Ring World's.)
+int partingGroup(const Torus &t, const std::vector<unsigned char> &walkable,
+				 const std::vector<unsigned char> &blocked, std::vector<int> &label)
+{
+	const int n = t.size();
+	std::vector<unsigned char> open(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		open[i] = walkable[i] && !blocked[i];
+	const std::vector<int> component = connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight);
+	label = connectedRegions(blocked, t.w, t.h, true, GridNeighbors::Eight);
+	int groups = 0;
+	for (int l : label)
+		groups = std::max(groups, l + 1);
+	std::vector<int> seen(size_t(groups), -1);
+	for (int i = 0; i < n; ++i)
+	{
+		generationCheckpoint();
+		if (label[i] < 0)
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (!open[j])
+					continue;
+				if (seen[label[i]] < 0)
+					seen[label[i]] = component[j];
+				else if (seen[label[i]] != component[j])
+					return label[i];
+			}
+	}
+	return -1;
+}
+
+// The rock of the pass, planned on the finished revision-8 map. Knot masks are tiles; rock is
+// vertices.
+struct Outcrops
+{
+	std::vector<unsigned char> knotRock; // knot tiles drawn as rock (rockVertices)
+	std::vector<unsigned char> quarry;   // quarry faces: stone on grass, left out of the rock
+	std::vector<unsigned char> rock;     // every rock vertex, knots and stacks
+	int wanted = 0, knots = 0, faces = 0, faceTiles = 0, stacks = 0, stackVertices = 0, dropped = 0;
+};
+
+Outcrops planOutcrops(const Map &map, const Torus &t, GenerationContext &context, const ShatteredCoastOptions &o)
+{
+	const int n = t.size(), teams = context.request.nbTeams;
+	Outcrops out;
+	out.knotRock.assign(size_t(n), 0);
+	out.quarry.assign(size_t(n), 0);
+	out.rock.assign(size_t(n), 0);
+	if (!o.outcrops)
+		return out;
+	const auto vacant = [&](int i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		return !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID && map.getGroundUnit(x, y) == NOGUID;
+	};
+	std::vector<unsigned char> vacantGrass(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		generationCheckpoint();
+		const int x = t.remainderX(i), y = i / t.w;
+		vacantGrass[i] = vacant(i) && map.vertexTerrainAt(x, y) == GRASS && map.vertexTerrainAt(t.x(x + 1), y) == GRASS &&
+						 map.vertexTerrainAt(x, t.y(y + 1)) == GRASS && map.vertexTerrainAt(t.x(x + 1), t.y(y + 1)) == GRASS;
+	}
+	const std::vector<int> room = clearance(t, vacantGrass);
+	const std::vector<unsigned char> homes = swarmSurroundings(t, context, kKnotHome);
+	const auto nearestSwarm = [&](int x, int y)
+	{
+		int best = INT_MAX, bx = x, by = y;
+		for (int k = 0; k < teams; ++k)
+		{
+			const int d = t.dist2(x, y, context.bootX[k] + 2, context.bootY[k] + 2);
+			if (d < best)
+			{
+				best = d;
+				bx = context.bootX[k] + 2;
+				by = context.bootY[k] + 2;
+			}
+		}
+		return std::pair{double(t.offsetX(x, bx)), double(t.offsetY(y, by))};
+	};
+
+	// Knots.
+	std::vector<int> candidates;
+	for (int i = 0; i < n; ++i)
+		if (vacantGrass[i] && !homes[i] && room[i] >= 2 + kKnotMargin + 1)
+			candidates.push_back(i);
+	context.shuffle(candidates.begin(), candidates.end(), kKnotStream);
+	out.wanted = std::max(1, n / kTilesPerKnot);
+	struct Placed
+	{
+		int centre;
+		std::vector<int> tiles;
+		double faceX, faceY; // unit vector from the centre towards the face side
+	};
+	std::vector<Placed> placed;
+	for (int c : candidates)
+	{
+		if (int(placed.size()) >= out.wanted)
+			break;
+		const int cx = t.remainderX(c), cy = c / t.w;
+		bool apart = true;
+		for (const Placed &p : placed)
+			apart = apart && t.dist2(cx, cy, t.remainderX(p.centre), p.centre / t.w) >= kKnotSpacing * kKnotSpacing;
+		if (!apart)
+			continue;
+		const double heading = context.bounded(kKnotStream, 8) * 3.14159265358979 / 8;
+		const double ax = std::cos(heading), ay = std::sin(heading), bx = -ay, by = ax;
+		const double half =
+			std::min<double>(kKnotHalfLength + context.bounded(kKnotStream, 3), room[c] - kKnotMargin - 1);
+		const double thick = 2.0 + context.bounded(kKnotStream, 9) / 10.0;
+		const double phase = context.bounded(kKnotStream, 628) / 100.0;
+		std::vector<unsigned char> local(size_t(n), 0);
+		std::vector<int> tiles;
+		bool fits = true;
+		const int box = int(half) + 3;
+		for (int dy = -box; dy <= box && fits; ++dy)
+			for (int dx = -box; dx <= box && fits; ++dx)
+			{
+				const double a = dx * ax + dy * ay, b = dx * bx + dy * by;
+				if (std::abs(a) > half + 0.5)
+					continue;
+				const double reach = thick * std::sqrt(std::max(0.0, 1 - sq(a / (half + 1)))) +
+									 0.35 * std::sin(0.9 * a + phase) * (b > 0 ? 1 : -1) + 0.35;
+				if (std::abs(b) > reach)
+					continue;
+				const int i = t.at(cx + dx, cy + dy);
+				// Every knot tile has kKnotMargin tiles of vacant grass round it, away from the homes.
+				if (room[i] <= kKnotMargin || homes[i])
+					fits = false;
+				local[i] = 1;
+				tiles.push_back(i);
+			}
+		if (!fits)
+			continue;
+		std::vector<int> kept;
+		{
+			const std::vector<unsigned char> blocks = blocksOfTwo(t, local);
+			for (int i : tiles)
+				if (blocks[i])
+					kept.push_back(i);
+		}
+		if (kept.size() < 8)
+			continue;
+		const auto [fx, fy] = nearestSwarm(cx, cy);
+		// The face looks across the lens, on the side the nearest swarm lies.
+		const double side = fx * bx + fy * by;
+		placed.push_back({c, kept, side >= 0 ? bx : -bx, side >= 0 ? by : -by});
+	}
+
+	// Quarry faces on the first share of the knots by stone-amount.
+	const int faceQuota = int(std::min<std::int64_t>(
+		std::int64_t(placed.size()), scaledCount(int(std::lround(placed.size() * kFaceShare)), o.stone)));
+	std::vector<std::vector<int>> faces(placed.size());
+	for (size_t q = 0; q < placed.size() && int(q) < faceQuota; ++q)
+	{
+		const Placed &p = placed[q];
+		std::vector<unsigned char> local(size_t(n), 0);
+		for (int i : p.tiles)
+			local[i] = 1;
+		const int cx = t.remainderX(p.centre), cy = p.centre / t.w;
+		const double ax = -p.faceY, ay = p.faceX;
+		std::vector<int> face;
+		for (int i : p.tiles)
+		{
+			const double dx = t.offsetX(cx, t.remainderX(i)), dy = t.offsetY(cy, i / t.w);
+			if (dx * p.faceX + dy * p.faceY < 0.5 || std::abs(dx * ax + dy * ay) > kFaceHalf + 0.5)
+				continue;
+			bool rim = false;
+			for (const auto &step : kCardinalSteps)
+				rim = rim || !local[t.at(t.remainderX(i) + step[0], i / t.w + step[1])];
+			if (rim)
+				face.push_back(i);
+		}
+		// The rock behind the face must still stand two tiles thick.
+		for (int i : face)
+			local[i] = 0;
+		const std::vector<unsigned char> blocks = blocksOfTwo(t, local);
+		int rockLeft = 0;
+		for (int i : p.tiles)
+			rockLeft += blocks[i];
+		if (int(face.size()) >= kFaceLeast && rockLeft >= 6)
+			faces[q] = face;
+	}
+
+	// Sea stacks: the smallest islands, whole.
+	std::vector<std::vector<int>> stacks;
+	{
+		std::vector<unsigned char> land(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			land[i] = map.vertexTerrainAt(t.remainderX(i), i / t.w) != WATER;
+		const std::vector<int> island = connectedRegions(land, t.w, t.h, true, GridNeighbors::Eight);
+		int islands = 0;
+		for (int l : island)
+			islands = std::max(islands, l + 1);
+		std::vector<int> size(size_t(islands), 0);
+		for (int l : island)
+			if (l >= 0)
+				++size[l];
+		std::vector<int> slot(size_t(islands), -1);
+		std::vector<std::vector<int>> members;
+		for (int i = 0; i < n; ++i)
+		{
+			const int l = island[i];
+			if (l < 0 || size[l] > kStackMost)
+				continue;
+			if (slot[l] < 0)
+			{
+				slot[l] = int(members.size());
+				members.emplace_back();
+			}
+			members[slot[l]].push_back(i);
+		}
+		const std::vector<unsigned char> near = swarmSurroundings(t, context, kStackHome);
+		for (const auto &vertices : members)
+		{
+			bool free = true;
+			for (int v : vertices)
+				for (int dy = -1; dy <= 0 && free; ++dy)
+					for (int dx = -1; dx <= 0 && free; ++dx)
+					{
+						const int i = t.at(t.remainderX(v) + dx, v / t.w + dy);
+						free = vacant(i) && !near[i];
+					}
+			// One draw per small island in scan order, whether or not it qualifies, so a deposit
+			// on one island does not move which of the others become stacks.
+			const bool chosen = int(context.bounded(kStackStream, 100)) < kStackShare;
+			if (free && chosen)
+				stacks.push_back(vertices);
+		}
+	}
+
+	// Rock, then the parting check: a knot or stack whose rock (and stone) parts the ground round it is
+	// dropped, and the check runs again.
+	const std::vector<unsigned char> walk = walkableTiles(map);
+	std::vector<unsigned char> aliveKnot(placed.size(), 1), aliveStack(stacks.size(), 1);
+	std::vector<int> owner(size_t(n), -1);
+	for (int round = 0; round <= int(placed.size() + stacks.size()); ++round)
+	{
+		std::fill(out.knotRock.begin(), out.knotRock.end(), 0);
+		std::fill(out.quarry.begin(), out.quarry.end(), 0);
+		std::fill(owner.begin(), owner.end(), -1);
+		for (size_t q = 0; q < placed.size(); ++q)
+		{
+			if (!aliveKnot[q])
+				continue;
+			std::vector<unsigned char> local(size_t(n), 0);
+			for (int i : placed[q].tiles)
+				local[i] = 1;
+			for (int i : faces[q])
+				local[i] = 0;
+			const std::vector<unsigned char> blocks = blocksOfTwo(t, local);
+			for (int i : placed[q].tiles)
+				if (blocks[i])
+				{
+					out.knotRock[i] = 1;
+					owner[i] = int(q);
+				}
+			for (int i : faces[q])
+			{
+				out.quarry[i] = 1;
+				owner[i] = int(q);
+			}
+		}
+		out.rock = rockVertices(t, out.knotRock);
+		for (size_t s = 0; s < stacks.size(); ++s)
+			if (aliveStack[s])
+				for (int v : stacks[s])
+				{
+					out.rock[v] = 1;
+					// The four tiles round a stack vertex belong to the stack.
+					for (int dy = -1; dy <= 0; ++dy)
+						for (int dx = -1; dx <= 0; ++dx)
+							owner[t.at(t.remainderX(v) + dx, v / t.w + dy)] = int(placed.size() + s);
+				}
+		std::vector<unsigned char> blocked = blockedByCorners(t, out.rock);
+		for (int i = 0; i < n; ++i)
+			blocked[i] = blocked[i] || out.quarry[i];
+		std::vector<int> label;
+		const int parting = partingGroup(t, walk, blocked, label);
+		if (parting < 0)
+			break;
+		bool any = false;
+		for (int i = 0; i < n; ++i)
+			if (label[i] == parting && owner[i] >= 0)
+			{
+				const size_t id = size_t(owner[i]);
+				if (id < placed.size())
+					aliveKnot[id] = 0;
+				else
+					aliveStack[id - placed.size()] = 0;
+				any = true;
+			}
+		++out.dropped;
+		if (!any)
+			break; // cannot happen: every blocked tile belongs to some knot or stack
+	}
+	for (size_t q = 0; q < placed.size(); ++q)
+		if (aliveKnot[q])
+		{
+			++out.knots;
+			out.faces += !faces[q].empty();
+		}
+	for (size_t s = 0; s < stacks.size(); ++s)
+		if (aliveStack[s])
+		{
+			++out.stacks;
+			out.stackVertices += int(stacks[s].size());
+		}
+	for (int i = 0; i < n; ++i)
+		out.faceTiles += out.quarry[i];
+	return out;
+}
+
+// How many vertices each layer took.
+struct LayerCounts
+{
+	int deep = 0, mud = 0, rock = 0, lush = 0, dry = 0, paleBeach = 0, dunes = 0;
+};
+
+// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
+TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climate &climate, GenerationContext &context,
+						 LayerCounts &counts)
+{
+	const int n = t.size();
+	std::vector<unsigned char> wet(size_t(n), 0), grass(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		wet[i] = mech[i] == WATER || mech[i] == DEEP_WATER;
+		grass[i] = mech[i] == GRASS;
+	}
+	const std::vector<int> fromWet = stepsFrom(t, wet);
+	const std::vector<int> depth = clearance(t, grass);
+	// The widest a grass vertex's neighbourhood gets: a thin neck stays thin all along.
+	std::vector<int> negated(static_cast<size_t>(n));
+	for (int i = 0; i < n; ++i)
+		negated[i] = -depth[i];
+	const std::vector<int> widest = windowMinimum(t, negated, 2);
+	std::mt19937 &random = context.stream(kLookStream);
+	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, random);
+	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
+	TerrainSketch looks(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		generationCheckpoint();
+		const int shift = (fray[i] - 32768) * 2 / 32768; // -2 to 1
+		const bool second = split[i] > int(0.62 * 65536);
+		switch (mech[i])
+		{
+		case GRASS:
+			if (depth[i] >= climate.lush + shift)
+			{
+				looks[i] = LUSH_GRASS;
+				++counts.lush;
+			}
+			else if (-widest[i] <= climate.sliver || (climate.dryRims && depth[i] == 1 && fray[i] > 30000))
+			{
+				looks[i] = DRY_GRASS;
+				++counts.dry;
+			}
+			break;
+		case SAND:
+			if (fromWet[i] <= 2) // a beach is up to two vertices wide (layBeaches turns both sides)
+			{
+				looks[i] = second ? climate.beachSecond : climate.beach;
+				counts.paleBeach += looks[i] == PALE_SAND;
+			}
+			else
+			{
+				looks[i] = second ? climate.duneSecond : climate.dune;
+				++counts.dunes;
+			}
+			break;
+		case DEEP_WATER:
+			looks[i] = climate.deep;
+			break;
+		case MUDFLAT:
+			looks[i] = climate.mud;
+			break;
+		case RIDGE_ROCK:
+			looks[i] = climate.rock;
+			break;
+		default:
+			break;
+		}
+	}
+	return looks;
+}
+
+// The coast pass: rock, deep cores, mudflats and looks over the finished revision-8 map.
+bool coastPass(Game &game, GenerationContext &context, const ShatteredCoastOptions &o)
+{
+	Map &map = game.map;
+	const Torus t(map);
+	const int n = t.size();
+	TerrainSketch mech(static_cast<size_t>(n));
+	for (int i = 0; i < n; ++i)
+		mech[i] = map.vertexTerrainAt(t.remainderX(i), i / t.w);
+	LayerCounts counts;
+	// Every swarm's corner (revision 8 records no start positions in the map report; these are the
+	// same in both revisions for the same seed).
+	for (int team = 0; team < context.request.nbTeams; ++team)
+	{
+		context.telemetry.measure("shattered-coast.starts.swarm-x", context.bootX[team], team);
+		context.telemetry.measure("shattered-coast.starts.swarm-y", context.bootY[team], team);
+	}
+
+	// The rock first: it reads the revision-8 terrain and deposits.
+	const Outcrops rock = planOutcrops(map, t, context, o);
+	for (int i = 0; i < n; ++i)
+		if (rock.rock[i])
+		{
+			mech[i] = RIDGE_ROCK;
+			++counts.rock;
+		}
+
+	// Corners of tiles holding a deposit (algae, in the water), a building or a unit keep their terrain.
+	std::vector<unsigned char> held(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		if (map.isResource(x, y) || map.getBuilding(x, y) != NOGBID || map.getGroundUnit(x, y) != NOGUID)
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+					held[t.at(x + dx, y + dy)] = 1;
+	}
+
+	std::vector<unsigned char> water(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		water[i] = mech[i] == WATER;
+	if (o.deepWater)
+	{
+		std::vector<unsigned char> core = deepCore(t, water, kDeepSteps);
+		for (int i = 0; i < n; ++i)
+			core[i] = core[i] && !held[i];
+		const std::vector<unsigned char> grown = dilateRound(t, erode(t, core, kDeepOpen), kDeepOpen);
+		for (int i = 0; i < n; ++i)
+			core[i] = core[i] && grown[i];
+		core = dropSmallRegions(t, core, kDeepLeast);
+		for (int i = 0; i < n; ++i)
+			if (core[i])
+			{
+				mech[i] = DEEP_WATER;
+				++counts.deep;
+			}
+	}
+
+	if (o.mudflats)
+	{
+		const std::vector<int> body = connectedRegions(water, t.w, t.h, true, GridNeighbors::Eight);
+		int bodies = 0;
+		for (int l : body)
+			bodies = std::max(bodies, l + 1);
+		std::vector<int> size(size_t(bodies), 0);
+		for (int l : body)
+			if (l >= 0)
+				++size[l];
+		const std::vector<unsigned char> homes = swarmSurroundings(t, context, kMudHome);
+		const std::vector<int> mud = periodicNoise(t.w, t.h, 7, context.stream(kLookStream));
+		for (int i = 0; i < n; ++i)
+		{
+			generationCheckpoint();
+			if (mech[i] != SAND || homes[i] || held[i] || mud[i] < kMudCut)
+				continue;
+			const int x = t.remainderX(i), y = i / t.w;
+			bool sheltered = false, shore = false;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int j = t.at(x + dx, y + dy);
+					if (body[j] < 0)
+						continue;
+					shore = true;
+					sheltered = sheltered || size[body[j]] <= kMudBody;
+				}
+			if (shore && sheltered)
+			{
+				mech[i] = MUDFLAT;
+				++counts.mud;
+			}
+		}
+	}
+
+	const int climateIndex =
+		o.climate > 0 ? std::clamp(o.climate, 1, 3) - 1 : int(context.bounded(kClimateStream, 3));
+	const Climate &climate = kClimates[climateIndex];
+	const TerrainSketch finished = composeLooks(mech, lookSketch(mech, t, climate, context, counts));
+	writeVertices(map, finished);
+
+	// The quarry faces' stone: one permanent deposit on every face tile.
+	int quarryStone = 0;
+	for (int i = 0; i < n; ++i)
+		if (rock.quarry[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+		{
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+			++quarryStone;
+		}
+	const std::vector<int> noOwner(size_t(n), -1);
+	if (const std::string fault = quarryFault(map, t, rock.quarry, noOwner, 0, 0); !fault.empty())
+	{
+		context.detail = fault;
+		return false;
+	}
+
+	context.telemetry.choice("shattered-coast.climate", climate.name);
+	context.telemetry.choice("shattered-coast.deep-water", o.deepWater ? "on" : "off");
+	context.telemetry.measure("shattered-coast.deep.vertices", counts.deep);
+	context.telemetry.measure("shattered-coast.mudflat.vertices", counts.mud);
+	context.telemetry.measure("shattered-coast.rock.vertices", counts.rock);
+	context.telemetry.measure("shattered-coast.looks.lush-vertices", counts.lush);
+	context.telemetry.measure("shattered-coast.looks.dry-vertices", counts.dry);
+	context.telemetry.measure("shattered-coast.looks.pale-beach-vertices", counts.paleBeach);
+	context.telemetry.measure("shattered-coast.looks.dune-vertices", counts.dunes);
+	context.telemetry.measure("shattered-coast.knots.wanted", rock.wanted);
+	context.telemetry.measure("shattered-coast.knots.placed", rock.knots);
+	context.telemetry.measure("shattered-coast.knots.faces", rock.faces);
+	context.telemetry.measure("shattered-coast.knots.dropped", rock.dropped);
+	context.telemetry.measure("shattered-coast.stacks.placed", rock.stacks);
+	context.telemetry.measure("shattered-coast.stacks.vertices", rock.stackVertices);
+	context.telemetry.measure("shattered-coast.quarry.tiles", rock.faceTiles);
+	context.telemetry.measure("shattered-coast.quarry.stone", quarryStone);
+	if (o.outcrops && rock.knots < rock.wanted)
+		context.telemetry.fallback("shattered-coast.knots.shortfall", "Not enough wide vacant grass away from the homes");
+	if (context.telemetry.enabled() && rock.faces > 0)
+	{
+		// How far each colony walks to the nearest quarry face (-1 when none can be reached): the
+		// fairness of the knots' stone, measured on the finished map.
+		const std::vector<unsigned char> walkable = walkableTiles(map);
+		int least = INT_MAX, most = -1;
+		for (int team = 0; team < context.request.nbTeams; ++team)
+		{
+			std::vector<unsigned char> swarm(size_t(n), 0);
+			for (int dy = 0; dy < 4; ++dy)
+				for (int dx = 0; dx < 4; ++dx)
+					swarm[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+			const std::vector<int> steps = stepsFrom(t, swarm, walkable);
+			int nearest = INT_MAX;
+			for (int i = 0; i < n; ++i)
+			{
+				if (!rock.quarry[i])
+					continue;
+				for (const auto &step : kCardinalSteps)
+				{
+					const int s = steps[t.at(t.remainderX(i) + step[0], i / t.w + step[1])];
+					if (s >= 0)
+						nearest = std::min(nearest, s + 1);
+				}
+			}
+			const int walk = nearest == INT_MAX ? -1 : nearest;
+			context.telemetry.measure("shattered-coast.quarry.nearest-walk", walk, team);
+			least = std::min(least, walk);
+			most = std::max(most, walk);
+		}
+		if (least >= 0)
+			context.telemetry.measure("shattered-coast.quarry.nearest-walk-spread", most - least);
+	}
+	return true;
+}
+} // namespace
+
 static bool generate(Game &game, GenerationContext &context)
 {
 	const ShatteredCoastOptions options(context.request);
@@ -983,15 +1671,64 @@ static bool generate(Game &game, GenerationContext &context)
 	openStartsBuriedByResources(game, context);
 	context.stage = "expansion resources";
 	expansionResources(game, context, options);
-	return true;
+	// 2.0: everything above is revision 8, draw for draw; the coast pass repaints the ground nobody
+	// stands on.
+	context.stage = "coast";
+	return coastPass(game, context, options);
 }
 
 // The terrain is texture rather than design, and the colony search takes the widest grass it
 // finds, so this is the one promise worth making: a colony that can reach its crops and has
 // somewhere to put its first buildings. A seed that leaves one walled into a cove is rerolled.
+// 2.0 adds the pass's own promises, read from the finished terrain by rule group: every deep vertex
+// keeps kDeepSteps - 1 steps of water round it (the shallows), no rock stands near a colony, and no
+// group of rock parts the walkable ground round it.
 static std::string validateWorld(const Game &game, const GenerationContext &context)
 {
-	return startingFloorFailure(game.map, context.request.nbTeams);
+	const Map &map = game.map;
+	const int teams = context.request.nbTeams;
+	if (std::string floor = startingFloorFailure(map, teams); !floor.empty())
+		return floor;
+	const Torus t(map);
+	const int n = t.size();
+	const auto at = [&](int i) { return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
+	std::vector<unsigned char> land(size_t(n), 0), ridges(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const TerrainGroup group = terrainGroup(map.vertexTerrainAt(t.remainderX(i), i / t.w));
+		land[i] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater;
+		ridges[i] = group == TerrainGroup::Ridges;
+	}
+	const std::vector<int> fromLand = stepsFrom(t, land);
+	for (int i = 0; i < n; ++i)
+		if (terrainGroup(map.vertexTerrainAt(t.remainderX(i), i / t.w)) == TerrainGroup::DeepWater &&
+			fromLand[i] < kDeepSteps - 1)
+			return "Deep water at " + at(i) + " has no shallows between it and the shore.";
+	const auto workers = unitTilesByTeam(map, teams);
+	std::vector<unsigned char> homes(size_t(n), 0);
+	for (const auto &tiles : workers)
+		for (int i : tiles)
+			homes[i] = 1;
+	homes = dilate(t, homes, kRockHomeCheck);
+	std::vector<unsigned char> walkable(size_t(n), 0), rock(size_t(n), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const int i = t.at(x, y);
+			const TerrainProperties &rules = map.terrainPropertiesAt(x, y);
+			walkable[i] = rules.walkable;
+			const bool corner =
+				ridges[i] || ridges[t.at(x + 1, y)] || ridges[t.at(x, y + 1)] || ridges[t.at(x + 1, y + 1)];
+			if (corner && homes[i])
+				return "Rock at " + at(i) + " stands too near a colony.";
+			rock[i] = corner && !rules.walkable && !rules.swimmable;
+		}
+	std::vector<int> label;
+	if (const int parting = partingGroup(t, walkable, rock, label); parting >= 0)
+		for (int i = 0; i < n; ++i)
+			if (label[i] == parting)
+				return "Rock at " + at(i) + " cuts ground off.";
+	return "";
 }
 
 GeneratorDefinition shatteredCoastDefinition()
@@ -1000,7 +1737,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		8,
+		9,
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
@@ -1018,7 +1755,26 @@ GeneratorDefinition shatteredCoastDefinition()
 		 // Off, colonies start in the shattered terrain rather than in a cleared meadow.
 		 GeneratorControl::toggle("colony-meadows", "Colony meadows", true, ControlGroup::Terrain)
 			 .withSearchValues({1}),
-		 // Home deposit area and the number of additional expansion clumps.
+		 // On, the bigger bays and lakes have a core of deep water: slower to swim, no algae, a
+		 // band of shallows along every shore. Routes on foot are the same either way.
+		 GeneratorControl::toggle("deep-water", "Deep water", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // On, the beaches of small ponds and coves are partly mudflat: slow, unbuildable, and
+		 // unlike sand they let crops grow up to the shore. Sand stays round the homes.
+		 GeneratorControl::toggle("mudflats", "Mudflats", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // On, the smallest islands are sea stacks and knots of rock stand in the wider grass,
+		 // away from the homes, some with a quarry face of stone (how many follows the stone
+		 // amount). No rock ever cuts ground off.
+		 GeneratorControl::toggle("outcrops", "Rock outcrops", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
+		 // Looks only: Temperate (pale sand, lush meadows), Steppe (dry grass, dunes, hoodoos)
+		 // or Tropical (lush grass, dark water, mud). All play alike.
+		 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
+								  ControlGroup::Terrain)
+			 .withSearchValues({1, 2, 3}),
+		 // Home deposit area and the number of additional expansion clumps; stone also sets how
+		 // many rock knots carry a quarry face.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
