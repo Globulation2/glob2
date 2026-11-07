@@ -110,6 +110,9 @@ every grass/moss edge tile as no farmland; that is why it is off by default.
   Nicowar's fell to 120: Nicowar and Maxima read Fertile ground as water and keep their buildings
   away from it, a known AI bug being fixed in the AIs, so the map does not keep moss away from homes
   for it. No rotation tournament or human playtest has been recorded for revision 6.
+- Revision 6 refuses nothing revision 5 accepted: every shape (128 to 512, square and 4:1) and colony
+  count (1 to 12), two seeds each, generates at the defaults and at each variant value of the new
+  controls.
 - The pass costs about a third of the generation time in the same build (512×512, 8 colonies:
   5.5–5.8 s against 4.2 s with every layer off, unoptimised development build); revision 5 takes
   about 0.3 s in a release build.
