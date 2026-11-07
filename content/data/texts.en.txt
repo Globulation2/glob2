@@ -1654,6 +1654,14 @@ Channel width
 Land bridge width
 [Lake size]
 Lake size
+[Crater type]
+Crater type
+[Crater rims]
+Crater rims
+[Volcanic maars]
+Volcanic maars
+[Glacial kettles]
+Glacial kettles
 [Contested commons]
 Contested commons
 [Maze]

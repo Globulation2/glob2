@@ -1686,6 +1686,14 @@ Kanal genişliği
 Kara köprüsü genişliği
 [Lake size]
 Göl boyutu
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Çekişmeli ortak alan
 [Maze]

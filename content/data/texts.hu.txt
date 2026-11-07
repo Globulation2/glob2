@@ -1686,6 +1686,14 @@ Csatorna szélessége
 Földhíd szélessége
 [Lake size]
 Tó mérete
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Vitatott közös terület
 [Maze]

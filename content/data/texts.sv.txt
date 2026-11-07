@@ -1686,6 +1686,14 @@ Kanalbredd
 Landbrons bredd
 [Lake size]
 Sjöstorlek
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Omtvistad allmänning
 [Maze]

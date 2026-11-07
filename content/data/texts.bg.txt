@@ -1654,6 +1654,14 @@ OpenGL не е наличен в тази компилация.
 Ширина на сухопътния мост
 [Lake size]
 Размер на езерото
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Оспорвани общи земи
 [Maze]

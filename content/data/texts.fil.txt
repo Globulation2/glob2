@@ -1678,6 +1678,14 @@ Lapad ng kanal
 Lapad ng tulay sa lupa
 [Lake size]
 Laki ng lawa
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Pinag-aagawang lupain
 [Maze]

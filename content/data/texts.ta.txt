@@ -1654,6 +1654,14 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நிலப் பாலத்தின் அகலம்
 [Lake size]
 ஏரியின் அளவு
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 போட்டிக்குரிய பொது நிலம்
 [Maze]

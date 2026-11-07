@@ -1686,6 +1686,14 @@ Lățimea canalului
 Lățimea punții de uscat
 [Lake size]
 Mărimea lacului
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Teritoriu comun disputat
 [Maze]

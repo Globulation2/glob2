@@ -1678,6 +1678,14 @@ Lebar saluran
 Lebar jambatan darat
 [Lake size]
 Saiz tasik
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Kawasan bersama yang direbut
 [Maze]

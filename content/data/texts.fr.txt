@@ -1686,6 +1686,14 @@ Largeur du chenal
 Largeur du pont terrestre
 [Lake size]
 Taille des lacs
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Terres communes disputées
 [Maze]

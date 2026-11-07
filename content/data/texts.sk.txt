@@ -1686,6 +1686,14 @@ Automaticky ukladať hru približne každých 10 sekúnd.
 Šírka pevninského mosta
 [Lake size]
 Veľkosť jazera
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Sporné spoločné územie
 [Maze]

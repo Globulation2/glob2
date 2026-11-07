@@ -1686,6 +1686,14 @@ AI 策略與對抗
 陸橋寬度
 [Lake size]
 湖泊大小
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 爭奪公地
 [Maze]

@@ -1686,6 +1686,14 @@ Samodejno shrani igro približno vsakih 10 sekund.
 Širina kopenskega mostu
 [Lake size]
 Velikost jezera
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Sporno skupno ozemlje
 [Maze]

@@ -1686,6 +1686,14 @@ OpenGL није доступан у овој верзији.
 Ширина копненог моста
 [Lake size]
 Величина језера
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Спорно заједничко подручје
 [Maze]

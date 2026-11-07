@@ -102,3 +102,7 @@
 [Greenstone]
 [Banks]
 [River bluffs]
+[Crater type]
+[Crater rims]
+[Volcanic maars]
+[Glacial kettles]

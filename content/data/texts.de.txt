@@ -1686,6 +1686,14 @@ Kanalbreite
 Breite der Landbrücke
 [Lake size]
 Seegröße
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Umkämpftes Gemeinschaftsland
 [Maze]

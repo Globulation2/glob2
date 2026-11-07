@@ -1686,6 +1686,14 @@ Tự động lưu trò chơi khoảng mỗi 10 giây.
 Độ rộng cầu đất
 [Lake size]
 Kích thước hồ
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Vùng đất chung tranh chấp
 [Maze]

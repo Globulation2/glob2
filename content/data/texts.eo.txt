@@ -1686,6 +1686,14 @@ Larĝo de kanalo
 Larĝo de terponto
 [Lake size]
 Grandeco de lago
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Pridisputata komunareo
 [Maze]

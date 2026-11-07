@@ -1654,6 +1654,14 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความ​กว้าง​ของ​สะพาน​แผ่นดิน
 [Lake size]
 ขนาด​ทะเลสาบ
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 พื้นที่​ส่วนกลาง​ที่​ต้อง​แย่งชิง
 [Maze]

@@ -1686,6 +1686,14 @@ Kanaalbreedte
 Breedte van de landbrug
 [Lake size]
 Meergrootte
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Betwist gemeenschappelijk gebied
 [Maze]

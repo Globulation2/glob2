@@ -1654,6 +1654,14 @@ Kanalbredde
 Bredde på landbroen
 [Lake size]
 Størrelse på innsjøen
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Omstridte allmenninger
 [Maze]

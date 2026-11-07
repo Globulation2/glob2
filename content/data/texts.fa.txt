@@ -1686,6 +1686,14 @@ OpenGL در این نسخه موجود نیست.
 پهنای پل خشکی
 [Lake size]
 اندازهٔ دریاچه
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 سرزمین مشترک مورد مناقشه
 [Maze]

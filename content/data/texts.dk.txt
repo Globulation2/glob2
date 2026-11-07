@@ -1686,6 +1686,14 @@ Kanalbredde
 Landbroens bredde
 [Lake size]
 Søstørrelse
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Omstridt fællesområde
 [Maze]

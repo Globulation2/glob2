@@ -1686,6 +1686,14 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الجسر البري
 [Lake size]
 حجم البحيرة
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 الأراضي المشاع المتنازع عليها
 [Maze]

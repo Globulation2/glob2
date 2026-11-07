@@ -1686,6 +1686,14 @@ Szerokość kanału
 Szerokość mostu lądowego
 [Lake size]
 Wielkość jeziora
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Sporny teren wspólny
 [Maze]

@@ -1654,6 +1654,14 @@ Upana wa mfereji
 Upana wa daraja la ardhi
 [Lake size]
 Ukubwa wa ziwa
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Eneo la pamoja linalogombaniwa
 [Maze]

@@ -1686,6 +1686,14 @@ OpenGL 在此版本中不可用。
 陆桥宽度
 [Lake size]
 湖泊大小
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 争夺公地
 [Maze]

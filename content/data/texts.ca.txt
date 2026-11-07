@@ -1686,6 +1686,14 @@ Amplada del canal
 Amplada del pont de terra
 [Lake size]
 Mida del llac
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Terres comunals disputades
 [Maze]

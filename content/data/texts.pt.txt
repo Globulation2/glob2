@@ -1686,6 +1686,14 @@ Largura do canal
 Largura da ponte terrestre
 [Lake size]
 Tamanho do lago
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Terras comuns disputadas
 [Maze]

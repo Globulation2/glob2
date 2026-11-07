@@ -1686,6 +1686,14 @@ Kanalaren zabalera
 Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Lur komun lehiatuak
 [Maze]

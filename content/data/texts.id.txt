@@ -1686,6 +1686,14 @@ Lebar kanal
 Lebar jembatan darat
 [Lake size]
 Ukuran danau
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Tanah bersama yang diperebutkan
 [Maze]
