@@ -23,6 +23,7 @@ from urllib.parse import quote
 # not listed here (release, publish, deploy, metrics) is never cancelled.
 CI_WORKFLOWS = {
     '.github/workflows/ci-fast.yml',
+    '.github/workflows/ci-full-label.yml',
     '.github/workflows/build.yml',
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
