@@ -62,8 +62,9 @@ using namespace MapGeneration;
 //   rough knot at least two tiles thick drawn as tiles (rockVertices), on the swamp's grass at least
 //   kHammockShore tiles from any bank and kHammockHomeClear from any clearing, so they never stand on
 //   a lane. A hammock whose blocked tiles would part the ground round it is dropped, and the
-//   validator checks the same on the finished map. They replace nothing: the swamp's stone outcrops
-//   are scattered as before, so stone access is unchanged.
+//   validator checks the same on the finished map. The swamp's stone outcrops keep revision 3's
+//   number and are scattered over the open ground the hammocks leave, so with hammocks on they lie in
+//   different places than on revision 3 (the walk to the nearest stone is measured, docs).
 // - Moss in the wet reaches: swamp grass where the wetness field passes kMossWet, beyond a tile past
 //   each clearing's levee clearance, is moss (Fertile: crop land that waters its neighbours at
 //   48/256), so the wet country farms better. It covers most of the swamp's grass at the defaults; the
@@ -134,9 +135,11 @@ constexpr int kMudHomeClear = 6;
 // after its two-thick trim is not laid.
 // A knot is drawn no bigger than its centre's room allows (its steps from the bank less
 // kHammockShore, over 1.2 for the rough outline), so the big ones stand in the broad dry reaches.
-// One tile of grass between a hammock and a bank's mixed tiles keeps the lane beside it.
+// kHammockShore 2: shore steps are counted from the tiles that are not pure grass (a bank's mixed
+// tiles among them), so a hammock tile two steps out leaves one tile of pure grass between the knot and
+// the bank's mixed tiles, which keeps the lane beside it.
 constexpr double kHammockLow = 2.8, kHammockHigh = 5.0, kHammockRoughness = 0.3;
-constexpr int kHammockShore = 1, kHammockHomeClear = 6, kHammockSpacing = 16, kHammockLeast = 10;
+constexpr int kHammockShore = 2, kHammockHomeClear = 6, kHammockSpacing = 16, kHammockLeast = 10;
 constexpr int kHammockTries = 12; // candidate draws per hammock wanted
 // Moss: the swamp's grass where the wetness field passes this, beyond kMossHomeClear tiles past a
 // clearing's levee clearance.
@@ -538,10 +541,7 @@ void sketchTerrain(Layout &L, const EvergladesOptions &o, GenerationContext &con
 	// Moss in the wettest reaches of the swamp's grass, off the homes.
 	for (int i = 0; i < n; ++i)
 		if (T[i] == GRASS && !mossClear[i] && L.clearingOf[i] < 0 && L.wetness[i] >= kMossWet)
-		{
 			T[i] = MOSS;
-			++L.mossVertices;
-		}
 	// The hammocks' thicket, drawn as tiles.
 	const std::vector<unsigned char> thicket = rockVertices(t, L.hammock);
 	for (int i = 0; i < n; ++i)
@@ -550,6 +550,8 @@ void sketchTerrain(Layout &L, const EvergladesOptions &o, GenerationContext &con
 			T[i] = THICKET;
 			++L.thicketVertices;
 		}
+	// The moss left once the thicket has taken its vertices (a hammock may stand in the wet reaches).
+	L.mossVertices = int(std::count(T.begin(), T.end(), MOSS));
 	// The sloughs' deep beds: pool water (not a clearing's pond) well inside its bank.
 	std::vector<unsigned char> pool(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
@@ -1003,7 +1005,8 @@ bool waterGroup(TerrainType v)
 // Checked on the finished world: every clearing keeps its pond; no levee tile carries a deposit
 // (nothing grows on sand, so nothing may start there); every deep vertex lies inside a shallow margin
 // (or beside a boardwalk ford); every hammock tile is blocked and no hammock parts the ground round
-// it; and colony 0 can walk to every other colony, with water, buildings and every resource blocking
+// it; every vertex is the design's (mechanics and looks, boardwalk allowed on forded water); and
+// colony 0 can walk to every other colony, with water, buildings and every resource blocking
 // (openRoutes has already opened any way needed).
 std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
@@ -1055,6 +1058,20 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 			if (label[i] == parting)
 				return "A hammock cuts ground off at (" + std::to_string(t.remainderX(i)) + ", " +
 					   std::to_string(i / t.w) + ").";
+	// Last, after the checks with specific diagnostics: the drawn map is exactly the design, mechanics
+	// and looks, except where openRoutes forded water with boardwalk.
+	{
+		const EvergladesOptions o(context.request);
+		const TerrainSketch drawn = composeLooks(L.terrain, lookSketch(L, seasonOf(o), replay));
+		for (int i = 0; i < n; ++i)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			const TerrainType v = map.vertexTerrainAt(x, y);
+			if (v != TerrainType(drawn[i]) && !(v == BOARDWALK && waterGroup(TerrainType(drawn[i]))))
+				return "The glades terrain no longer matches its design at (" + std::to_string(x) + ", " +
+					   std::to_string(y) + ").";
+		}
+	}
 	return walkFromFirstColony(map, teams, "the glades", "through the glades").error;
 }
 } // namespace

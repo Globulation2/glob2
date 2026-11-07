@@ -2268,8 +2268,9 @@ inline void portageLakesTwoContracts()
 	};
 	const auto group = [](const Map &map, int x, int y)
 	{ return terrainGroup(TerrainType(map.vertexTerrainAt(x, y))); };
-	// The terrain promises every 2.0 map keeps: rock blocks, deep water sits behind a shallow margin
-	// at least two steps wide, trails exist and are paths, and every quarry face holds stone.
+	// The terrain promises every 2.0 map keeps: deep water sits behind a shallow margin at least two
+	// four-connected steps wide, trails exist (Paths), rock exists (except on compact maps) and every
+	// cell with two or more rock corners blocks walking. Quarry stone is validateWorld's (quarryFault).
 	const auto terrainPromises = [&](const Game &g, bool deepWanted)
 	{
 		const Map &map = g.map;
@@ -3823,6 +3824,17 @@ inline void evergladesContracts()
 				if (terrainGroup(g.map.vertexTerrainAt(x, y)) == TerrainGroup::Obstacles)
 					g.map.setVertexTerrain(x, y, GRASS);
 		assert(definition.validateWorld(g, check).find("hammock") != std::string::npos);
+		// A look changed inside its rule group (plain grass to lush) plays alike but is not the design.
+		Game repainted(nullptr);
+		build(repainted, r, "repainted");
+		bool changed = false;
+		for (int i = 0; i < 256 * 256 && !changed; ++i)
+			if (repainted.map.vertexTerrainAt(i % 256, i / 256) == GRASS)
+			{
+				repainted.map.setVertexTerrain(i % 256, i / 256, LUSH_GRASS);
+				changed = true;
+			}
+		assert(changed && definition.validateWorld(repainted, check).find("design") != std::string::npos);
 	}
 	// Boardwalk fords: a drowned map of big, close sloughs boxes colonies in, and openRoutes fords them
 	// with boardwalk (Paths: walkable and fast) rather than sand.
@@ -3931,8 +3943,8 @@ inline void ringWorldContracts()
 	};
 	const auto groupAt = [](const Map &map, int x, int y)
 	{ return terrainGroup(map.vertexTerrainAt(map.normalizeX(x), map.normalizeY(y))); };
-	// The deep cores leave shallows: every deep vertex is at least six steps from any vertex that is not
-	// water. No deposit stands on a tile with a road corner, and the road (when on) has a tile in every
+	// The deep cores leave shallows: every deep vertex is at least six tiles in a straight line from any
+	// vertex that is not water. No deposit stands on a tile with a road corner, and the road (when on) has a tile in every
 	// column along the belt, so it runs right round the world. Quarry faces: five stone per colony.
 	const auto checkWorld = [&](const Game &g, const auto &result, const D &r)
 	{
@@ -3946,7 +3958,7 @@ inline void ringWorldContracts()
 				const TerrainGroup group = groupAt(map, x, y);
 				land[size_t(t.at(x, y))] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater;
 			}
-		const std::vector<int> fromLand = stepsFrom(t, land);
+		const std::vector<std::int64_t> fromLand = distanceSquaredTo(t, land);
 		int deep = 0, paths = 0, ridges = 0;
 		const bool alongX = w >= h;
 		std::vector<unsigned char> roadAt(size_t(alongX ? w : h), 0);
@@ -3957,7 +3969,7 @@ inline void ringWorldContracts()
 				if (group == TerrainGroup::DeepWater)
 				{
 					++deep;
-					assert(fromLand[size_t(t.at(x, y))] >= 6);
+					assert(fromLand[size_t(t.at(x, y))] >= 36); // six tiles from land in a straight line
 				}
 				ridges += group == TerrainGroup::Ridges;
 				if (group == TerrainGroup::Paths)
@@ -3989,7 +4001,7 @@ inline void ringWorldContracts()
 	// The envelope: every size and colony count the request check accepts, with the climate, deep
 	// ocean, spine and road pinned in turn. A seed the service refuses (revision 3 refused the same
 	// seeds) is rolled again, as the lobby does.
-	int pinned = 0, torsPlaced = 0, roads = 0;
+	int pinned = 0, torsPlaced = 0, roads = 0, spines = 0, roadsWanted = 0;
 	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 8},
 							std::pair{8, 9}, std::pair{9, 9}})
 		for (int teams : {1, 2, 3, 4, 5, 8, 12, 16})
@@ -4019,8 +4031,14 @@ inline void ringWorldContracts()
 			checkWorld(g, result, r);
 			torsPlaced += measure(result, "ring-world.tors.placed") == teams;
 			roads += measure(result, "ring-world.road.tiles") > 0;
+			spines += r.option("rock-spine") == 1;
+			roadsWanted += r.option("ring-road") == 1;
 		}
-	assert(pinned >= 20 && torsPlaced >= pinned / 2 && roads >= pinned / 2);
+	std::fprintf(stderr, "Ring world envelope: %d pinned, tors on %d of %d spine maps, roads on %d of %d\n", pinned,
+				 torsPlaced, spines, roads, roadsWanted);
+	// Every envelope map with the spine on has its tors, and every one with the road on its road
+	// (29 maps: 24 with the spine, 25 with the road, all placed).
+	assert(pinned >= 20 && spines > 0 && torsPlaced == spines && roadsWanted > 0 && roads == roadsWanted);
 	assert(!definition.validateRequest(make(7, 7, 6, 7)).empty());
 	// Every climate comes up at random, and each pinned holds at 128, 256 and 512 with every feature.
 	std::set<std::string> climates;

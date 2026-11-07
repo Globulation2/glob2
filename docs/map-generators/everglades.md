@@ -8,7 +8,8 @@ levee with gaps the swamp creeps through; what lies beyond is held only while it
 
 Revision 4 (Everglades 2.0) redrew the swamp with the engine's full terrain palette; revision 3 drew
 it with grass, sand and water alone. The pools, clearings, levees, starts and kits are the same as
-revision 3's for the same seed; the deposits differ a little where hammocks now stand.
+revision 3's for the same seed. The swamp's deposits are scattered over the ground the hammocks
+leave, so with hammocks on they lie in different places from revision 3's.
 
 ## How it plays
 
@@ -34,9 +35,10 @@ revision 3's for the same seed; the deposits differ a little where hammocks now 
   through, clearing deposits and fording water. Revision 3 forded with sand, which looked like an odd
   spit across a pool; the ford is now boardwalk (Paths: fast, buildable, holds nothing). Fords are
   rare at the defaults (none on the default maps checked); dense, big sloughs bring them.
-- **Stone is where it was.** The swamp's scattered stone outcrops and every home's quarry are placed
-  as in revision 3; hammocks replace none of them. Each colony walks 10–18 steps to its nearest stone
-  on seeds 1–3, as on revision 3 (14–18).
+- **Stone is as near as it was.** Every home's quarry is placed as in revision 3, and the swamp has
+  revision 3's number of stone outcrops, but they are scattered over the open ground the hammocks
+  leave, so with hammocks on they lie elsewhere. Each colony walks 11–14 steps to its nearest stone on
+  seeds 1–3 (256x256, 4 colonies; spread 1–3 steps), against 14–18 on revision 3.
 
 ## How it is built
 
@@ -57,8 +59,9 @@ revision 3's for the same seed; the deposits differ a little where hammocks now 
    four or more vertex steps from any bank (`deepCore`, cores under six vertices dropped).
 3. **Hammocks.** Candidate centres are pure grass tiles at least four steps from anything else and
    six tiles beyond a clearing's levee clearance, shuffled and then taken broadest first; each knot is
-   a rough disc 2.8–5 tiles across its radius, capped by its centre's room, every tile at least one
-   step from any bank, trimmed to tiles in a two-by-two block (so every tile has a thicket vertex),
+   a rough disc 2.8–5 tiles across its radius, capped by its centre's room, every tile at least two
+   steps from any tile that is not pure grass (so one tile of pure grass stands between the knot and
+   a bank's mixed tiles), trimmed to tiles in a two-by-two block (so every tile has a thicket vertex),
    kept at ten tiles or more and 16 tiles from the next. A hammock whose blocked tiles would leave the
    ground round it in two pieces is dropped and the check runs again. `hammocks` per 128x128 tiles
    are wanted; telemetry reports how many fitted.
@@ -73,7 +76,8 @@ revision 3's for the same seed; the deposits differ a little where hammocks now 
    walk to; every vertex it forded is then painted boardwalk.
 7. **Checked, not assumed.** `validateWorld` rebuilds the design and requires every clearing's pond
    (any swimmable corner), no deposit on a levee, deep water only inside shallows (or beside a
-   boardwalk ford), every hammock tile still blocked and no hammock cutting ground off, and every
+   boardwalk ford), every hammock tile still blocked and no hammock cutting ground off, every vertex the design's
+   (mechanics and looks; boardwalk allowed where a ford crossed water), and every
    colony reachable on foot from colony 0 with water, buildings and every resource blocking.
 
 ## Controls
@@ -102,20 +106,20 @@ tool scores as nothing (its row below shows that undercount, not less food).
 | Variant | Total | Within 24 of swarm | Within 48 |
 | --- | --- | --- | --- |
 | Revision 3 | 2,188 | 66.6 (40) | 229.0 (115) |
-| Revision 4, defaults (season wet) | 2,342 | 68.0 (41) | 244.3 (116) |
-| Mudflats 0 | 2,338 | 68.0 (41) | 243.8 (116) |
-| Mudflats 100 | 2,346 | 68.1 (41) | 244.4 (116) |
+| Revision 4, defaults (season wet) | 2,352 | 67.8 (41) | 242.4 (106) |
+| Mudflats 0 | 2,348 | 67.8 (41) | 242.1 (106) |
+| Mudflats 100 | 2,356 | 67.8 (41) | 242.7 (107) |
 | Hammocks 0 | 2,387 | 68.3 (41) | 249.6 (119) |
-| Hammocks 8 | 2,285 | 68.4 (41) | 242.6 (118) |
-| Season dry, as the tool scores it | 2,183 | 66.4 (41) | 226.9 (112) |
-| Random season, as the tool scores it | 2,239 | 66.7 (41) | 234.7 (112) |
+| Hammocks 8 | 2,311 | 68.1 (41) | 243.8 (118) |
+| Season dry, as the tool scores it | 2,192 | 66.4 (41) | 224.8 (104) |
+| Random season, as the tool scores it | 2,249 | 66.7 (41) | 232.7 (104) |
 
 Moss is the difference. The tool scores a tile where grass meets moss as nothing (it grows crops in
 the game but is not buildable), so a little moss measured worse than none: the wettest reaches alone
 (wetness 0.62) cost 5%, and 0.45 still 4%; at 0.30 the moss covers most of the swamp and gains 7%
 overall. The mud banks barely move the tool's number, because it counts only pure sand tiles as
 inhibitors and a bank is one vertex wide; in the game every sand corner inhibits a share of its tile,
-so the mud's gain is real but unmeasured here. Hammocks take swamp ground, about 2% at the most.
+so the mud's gain is real but unmeasured here. Hammocks take swamp ground, about 3% at the most. The worst colony's 48-step yield is 106 at the defaults against 119 with no hammocks; it was 116 before hammocks kept a clear tile off the banks, which moved them.
 
 A four-AI calibration game (`map study everglades --seed 101`, 256x256, Nicowar, Cortex, Cabino and
 Maxima, 20,000 ticks; revision 3 played by the master release binary, revision 4 by the development
@@ -132,10 +136,38 @@ build, which plays revision 3's map identically) is summarised below over game s
 Births are level, wheat 6% lower, buildings 7% lower and wood harvested 21% lower. Revision 4 with
 the deep beds two steps in harvested about half revision 3's wood; moving them to four steps (algae
 back to about 70%) recovered most of that, and with mud, moss or hammocks turned off one at a time
-the wood came back by about a tenth each over two games, within the noise of single games. The swamp
-regrows harder and the mud lanes are slower; the AIs build a little less. No home was choked by wood
-at the end of game 1 (`calibration_final_old_new.png` in the evidence): every clearing held, the
-swamp beyond was wood on both revisions.
+the wood came back by about a tenth each over two games, within the noise of single games.
+The swamp regrows harder and the mud lanes are slower; the AIs build a little less. No home was
+choked by wood at the end of game 1 (`calibration_final_old_new.png` in the evidence): every clearing
+held, the swamp beyond was wood on both revisions. (These games predate the hammock shore fix.)
+
+**Colony 2 on seed 101.** In the table's games Cabino, in seat 2, harvested 25, 22, 25 and 22 wood
+against revision 3's 77, 85, 83 and 53. A seat rotation (game seed 1, each AI in each seat once,
+master release binary) separates the seat from the AI. Per seat, summed over the four rotations
+(births / wheat / wood / units at 20,000 / buildings):
+
+| Seat | Revision 3 | Revision 4 before the hammock fix | Revision 4 |
+| --- | --- | --- | --- |
+| 0 | 81 / 1,146 / 237 / 121 / 40 | 97 / 1,247 / 272 / 135 / 37 | 90 / 1,224 / 244 / 123 / 39 |
+| 1 | 108 / 1,353 / 280 / 181 / 48 | 110 / 1,401 / 337 / 187 / 47 | 107 / 1,218 / 246 / 137 / 42 |
+| 2 | 74 / 898 / 224 / 122 / 39 | 74 / 902 / 160 / 80 / 33 | 67 / 931 / 241 / 135 / 41 |
+| 3 | 96 / 1,235 / 315 / 128 / 47 | 98 / 1,164 / 306 / 162 / 40 | 97 / 1,231 / 260 / 149 / 43 |
+| All | 359 / 4,632 / 1,056 / 552 / 174 | 379 / 4,714 / 1,075 / 564 / 157 | 361 / 4,604 / 991 / 544 / 165 |
+
+Per AI over the same games (wood): Cabino 239 / 171 / 190, Cortex 197 / 264 / 246, Maxima
+350 / 329 / 310, Nicowar 270 / 311 / 245. Seat 2 is the weakest seat on both revisions in births
+(74 against 81–110), whoever sits there. Before the fix it lost wood and units with most occupants
+(Cabino 77 to 25 wood, Maxima 62 to 50, Nicowar 50 to 31; only Cortex, the weakest occupant, rose).
+Its surroundings measure as revision 3's: the same clearing, the nearest wood 9 steps from the swarm
+(5 for the other colonies, on both revisions), the 50th wood tile 13 steps out like every colony's,
+and the same shares of grass, banks, water and wood within 12, 20 and 28 tiles. What differs is a
+slough with a dark bed 10 to 20 tiles west of it. Turning the mud off changed nothing at that seat
+(160 wood); turning the hammocks off brought it back to 198, but that also moves every stone outcrop
+(they are scattered over the ground the hammocks leave). Deep water has no control and was not
+ablated. With hammocks a clear tile off every bank (How it is built, step 3; made because this page promised it),
+seat 2 harvests 241 wood and keeps 135 units, back to revision 3's level; the map's total wood is 6%
+under revision 3 and births are level. Nothing found is a flaw a human player in that seat would
+suffer: the wood is as near and as plentiful as on revision 3, and single games vary by up to 40%.
 
 ## Limits
 
@@ -153,7 +185,7 @@ swamp beyond was wood on both revisions.
   against 6.0 s on the same development build, so about 0.7 s of release-build time against 0.56 s):
   the hammock plan, mud ranking, moss and deep cores are whole-map passes, and the validator rebuilds
   the design.
-- No rotation tournament or human playtest has been recorded for revision 4.
+- One seat rotation on one map and game seed is recorded for revision 4 (above), not a tournament; no human playtest.
 
 ## Verification
 
