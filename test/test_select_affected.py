@@ -35,7 +35,7 @@ class SelectionTest(unittest.TestCase):
         self.assertEqual(choose(['docs/README.md']).cases, {'engine:New/case', 'engine:TurnEngineHarness/the committed match'})
 
     def test_unattributable_changes_and_stale_maps_run_everything(self):
-        for change in ('src/map/Map.h', 'SConstruct', 'test/support/EngineFixtures.cpp', 'content/data/x.json',
+        for change in ('src/map/Map.h', 'SConstruct', 'test/support/HeadlessGame.cpp', 'content/data/x.json',
                        '.github/workflows/build.yml', 'src/SConscript', 'scons/sources.py', 'src/data.txt'):
             with self.subTest(change=change):
                 self.assertIsNone(choose([change]).cases)

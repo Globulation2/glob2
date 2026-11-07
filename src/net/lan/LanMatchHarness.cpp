@@ -23,7 +23,8 @@
 #include <unistd.h>
 #endif
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "Environment.h"
 #include "ScopedEnvironment.h"
 

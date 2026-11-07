@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
 #include "MaximaObservationFixture.h"
 #include "AIMaximaFarmGeometry.h"
 #include "ExperimentalFeatures.h"

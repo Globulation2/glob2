@@ -167,7 +167,7 @@ and selects the dummy drivers when the environment does not, so
 
 ## Writing a test
 
-Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use
+Include `Glob2Test.h` (unit tests) or the engine fixtures a test uses (below) and use
 doctest's `TEST_SUITE`, `TEST_CASE`, `SUBCASE`, `CHECK`, `REQUIRE`, `CHECK_EQ` and
 `REQUIRE_MESSAGE`. Suites are named after the area (`HungryDefeat`, `MapQuery`,
 `Maxima.Combat`); case names are descriptive sentences. Conditions that doctest
@@ -208,12 +208,21 @@ file in a binary is one link, so two global `struct World`s collide.
   `readFile`, `writeFile`, `updatingFixtures()`;
 - `ToolkitScope` for tests that need a `FileManager` without an engine.
 
-`test/support/EngineFixtures.h` adds `HeadlessGlobals` (the RAII `GlobalContainer`
-every headless harness used to bootstrap by hand: `runNoX`, building types, races,
-key actions, the repository on the data path, a seeded simulation RNG; `Options`
-select a real display, string loading, screen size and seed) and `HeadlessGame`
-(a one-colony game on a small grass torus with `addBuilding`, `addUnit`, `step`
-and `checksum`). Unit tests that exercise `Map` without the game reuse the
+Engine tests include only the fixture headers they use, so a test that needs no
+game or GUI does not compile against them:
+
+- `HeadlessGlobals.h`: `HeadlessGlobals`, the RAII `GlobalContainer` every headless
+  harness used to bootstrap by hand (`runNoX`, building types, races, key actions,
+  the repository on the data path, a seeded simulation RNG; `Options` select a real
+  display, string loading, screen size and seed);
+- `HeadlessGame.h`: `HeadlessGame`, a one-colony game on a small grass torus owned
+  by its `GameGUI`, with `addBuilding`, `addUnit`, `step` and `checksum`;
+- `GameFixtures.h`: helpers that drive any `Game` and need no GUI: `BoundGameRandom`,
+  `stepAI`, `publishCurrentHiringSuggestions`, `discardPrematureHiringSuggestions`
+  and `prepareTurretTargets`;
+- `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes.
+
+Unit tests that exercise `Map` without the game reuse the
 `GrassMap` subclass in `src/map/MapQueryTest.cpp`, which sizes the tile array
 directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
 `GameGUI`, `Race` and SHA-1 symbols such tests reach are supplied once by

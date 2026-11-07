@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "GradientFixture.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"

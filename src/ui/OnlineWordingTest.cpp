@@ -3,7 +3,7 @@
 // queue ids, no ratings in unrated queues, positive rules, no seeds, no raw pairing
 // strings and plurals that agree ("1 player"). UX review round 2: H-2, H-3, H-6, P-5,
 // R-8, X-4, X-7, L-1.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
 #include "PlatformRoom.h"

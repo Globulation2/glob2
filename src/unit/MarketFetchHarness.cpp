@@ -3,7 +3,9 @@
 // stocked markets as goals, so a worker hired for a resource no tile holds is
 // led to a market, takes the resource at its door and carries it home; a
 // nearer tile still wins; a market that runs dry stops being a goal.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"

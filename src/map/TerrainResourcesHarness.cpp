@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real terrain edits and resource clearing without a window.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
 #include "Building.h"

@@ -26,7 +26,9 @@
 #include <set>
 #include "Engine.h"
 #include "FrontendTheme.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "TeamStat.h"
 #include <SDL3_image/SDL_image.h>
 #include <cmath>

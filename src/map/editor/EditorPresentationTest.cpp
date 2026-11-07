@@ -5,7 +5,7 @@
 // switches between them without committing unfinished strokes or losing the
 // brush; a mouse wheel over the tray scrolls it and over the map zooms.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "MapEdit.h"
 #include "MapEditPresentation.h"
 #include "PhoneEditor.h"

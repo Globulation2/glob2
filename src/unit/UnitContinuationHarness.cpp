@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"

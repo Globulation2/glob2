@@ -14,7 +14,7 @@
 #include <FileManager.h>
 #include <memory>
 #include "LobbyMapPreview.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BinaryStream.h"

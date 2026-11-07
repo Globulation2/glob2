@@ -1,4 +1,4 @@
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include <nlohmann/json.hpp>
 #include "GlobalContainer.h"
 #include "GameGUI.h"

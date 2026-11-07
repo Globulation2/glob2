@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Terrain stored per vertex: the corner combine rule, the per-map cell rule
 // table, vertex edits and the conversion of files written before format 146.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "BinaryStream.h"
 #include "TextStream.h"
 #include "StreamBackend.h"

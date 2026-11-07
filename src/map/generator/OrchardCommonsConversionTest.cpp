@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Controlled mechanism test on unmodified generated terrain, not an AI balance test.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GradientFixture.h"
 #include <utility>
 #include "GlobalContainer.h"

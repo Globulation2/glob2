@@ -2,7 +2,8 @@
 // Real-engine regression: a building that wants several resources at once must
 // spread its fetchers across them, instead of sending everyone to whichever
 // resource happens to be nearest and leaving the others with nobody.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include <list>
 #include "GlobalContainer.h"

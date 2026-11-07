@@ -3,7 +3,9 @@
 // measurements (docs/ai/gameplay-statistics.md): each worker-tick lands in one
 // bucket, places agree with a brute-force reference, and nothing touches the
 // simulation checksum.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "TeamStat.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>

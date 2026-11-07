@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "Glob2Test.h"
 #include "AIOrderScheduler.h"
 #include "Order.h"
 #include "GameDiagnostics.h"

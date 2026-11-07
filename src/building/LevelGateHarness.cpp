@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for Building::canUnitWorkHere: the schooling gate
 // reads the independent construction qualification, not work-speed training.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
 #include <algorithm>
 #include "GlobalContainer.h"
 #include "FileManager.h"

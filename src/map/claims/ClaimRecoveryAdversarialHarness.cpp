@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Live claim recovery: real route failures (no synthetic results), the job
 // release that follows them, and exact save continuation of recovery state.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "ActiveRouteRuntime.h"
 #include "Building.h"

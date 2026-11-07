@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ScopedEnvironment.h"
 #include "MusicLibraryScreen.h"
 #include "MusicImportScreen.h"

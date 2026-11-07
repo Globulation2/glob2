@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientRuntime.h"
 #include "MapInternal.h"
 #include <BinaryStream.h>

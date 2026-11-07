@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Access relaxation is confined to this test translation unit by SCons.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include <string>
 #include <memory>
 #include <iostream>

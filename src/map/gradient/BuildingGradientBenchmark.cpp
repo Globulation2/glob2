@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in timings of the actual simulation preparation kernels. This source also
 // compiles unchanged against the pre-catalog engine for paired measurements.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "BuildingType.h"
 #include "BuildingGradientSearch.h"
 #include "Version.h"

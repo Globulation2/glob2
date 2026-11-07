@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // The editor brush catalogue (BrushCatalog.h), its MapEdit cache, experiment gate,
 // action round trips and the composed swatches (BrushSwatches.h).
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "MapEditDialog.h"

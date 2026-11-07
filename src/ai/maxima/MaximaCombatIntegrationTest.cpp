@@ -1,6 +1,8 @@
 #include "MaximaObservationFixture.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "ScopedEnvironment.h"
 #include <algorithm>

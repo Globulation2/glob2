@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Run from the repository root with "gl" or "software". Uses its own profile.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "Game.h"
 #include "MapDrawer.h"
 #include "GlobalContainer.h"

@@ -3,7 +3,7 @@
 // platform gutters and text scales, checking the framework invariants and saving
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "UIRecordingCanvas.h"
 #include <InterfacePresentation.h>
 #include <vector>

@@ -20,7 +20,7 @@
 // synchronized RNG stream, swapped in while it runs (as MenuColony does), and none
 // writes replays; everything else an Engine touches is its own.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GeneratorPackage.h"
 #include <ThreadSupport.h>
 #include "GenerationService.h"

@@ -17,7 +17,8 @@
 // and compares the default game's per-100-tick checksums against a checked-in
 // golden, so any change to the default path through this code shows up.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"

@@ -9,7 +9,7 @@
 
 #include "BrushCoverage.h"
 #include "BuildingType.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "Race.h"

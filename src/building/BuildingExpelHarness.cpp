@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Units survive their building being destroyed (issue #185).
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"

@@ -20,7 +20,10 @@ SUPPORT = [
 
 # Linked into glob2-engine-tests only.
 ENGINE_SUPPORT = [
-    'support/EngineFixtures.cpp',
+    'support/HeadlessGlobals.cpp',
+    'support/HeadlessGame.cpp',
+    'support/GameFixtures.cpp',
+    'support/DrawFixtures.cpp',
     'support/LegacyResourceTypes.cpp',
 ]
 

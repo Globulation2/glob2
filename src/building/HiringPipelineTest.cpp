@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SharedBuildingGradient.h"
 #include "GradientExecutionAudit.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "HiringPipeline.h"
 #include "FileFormatVersions.h"
 #include "LegacyPopulationOutput.h"

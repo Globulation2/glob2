@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GradientFixture.h"
 #include <nlohmann/json.hpp>
 #include <BinaryStream.h>

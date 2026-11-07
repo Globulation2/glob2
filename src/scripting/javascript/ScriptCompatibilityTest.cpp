@@ -1,6 +1,7 @@
 #include <Environment.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameGUI.h"
 #include "FileFormatVersions.h"
 #include "ScopedEnvironment.h"
 #include "OrderMessages.h"

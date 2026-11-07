@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Hungry units swap inns when that shortens both walks: a unit that booked the
 // last place in the inn near a team mate, from farther away, hands it over.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"

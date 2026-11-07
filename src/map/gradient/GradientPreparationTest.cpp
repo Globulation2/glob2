@@ -2,7 +2,8 @@
 #include "field/GradientDeviceService.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "LegacyPopulationOutput.h"
 #include "MapInternal.h"

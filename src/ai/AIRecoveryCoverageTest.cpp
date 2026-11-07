@@ -1,7 +1,8 @@
 #include "CabinoObservationFixture.h"
 #include "ai/engine/AIDecision.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
