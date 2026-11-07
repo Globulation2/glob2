@@ -1437,11 +1437,14 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 
 	context.stage = "city terrain";
 	TerrainSketch terrain(n, GRASS);
+	// The sketch holds vertices, and a ford tile is walked as the cell whose top-left corner it
+	// is: lay sand on all four corners, or the ford's far edge is a cell of mostly water.
+	const std::vector<unsigned char> fordCorners = tileCorners(t, L.ford);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.region[i] == Sea || L.lake[i] || L.river[i])
 			terrain[i] = WATER;
-		if (L.ford[i])
+		if (fordCorners[i])
 			terrain[i] = SAND;
 		if ((L.sand[i] || L.sandRoad[i]) && terrain[i] == GRASS)
 			terrain[i] = SAND;
@@ -1634,7 +1637,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		12,
+		13,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
