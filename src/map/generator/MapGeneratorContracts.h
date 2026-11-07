@@ -3365,6 +3365,306 @@ inline void watershedContracts()
 		 "ground off, stocked quarries, resource extremes, growth");
 }
 
+// Everglades 2.0 (revision 4): every season, mud share and hammock count pinned over the envelope
+// revision 3 accepted, deep slough beds that leave shallows, boardwalk fords that are paths, hammocks
+// that never cut ground off, mud banks that keep the lanes open, the season changing looks only, stone
+// in reach of every colony, resource extremes, and growth.
+inline void evergladesContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("everglades"));
+	assert(definition.legacyId == 19 && definition.revision == 4);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("mudflats") == 50 && request.option("hammocks") == 3 && request.option("season") == 0 &&
+		   request.option("levee") == 70 && request.option("clearing-size") == 13);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Everglades %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
+						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Everglades %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && std::holds_alternative<std::int64_t>(record.value))
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto measures = [](const auto &result, const char *key)
+	{
+		std::vector<int> values;
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && std::holds_alternative<std::int64_t>(record.value))
+				values.push_back(int(std::get<std::int64_t>(record.value)));
+		return values;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	const auto count = [](const Game &g, int type)
+	{
+		int total = 0;
+		for (int y = 0; y < g.map.getH(); ++y)
+			for (int x = 0; x < g.map.getW(); ++x)
+				total += g.map.isResource(x, y) && g.map.getResource(x, y).type == type;
+		return total;
+	};
+	const auto vertices = [](const Game &g, TerrainGroup group)
+	{
+		int total = 0;
+		for (int y = 0; y < g.map.getH(); ++y)
+			for (int x = 0; x < g.map.getW(); ++x)
+				total += terrainGroup(g.map.vertexTerrainAt(x, y)) == group;
+		return total;
+	};
+	// Deep water only inside a shallow margin of plain water (or a boardwalk ford); boardwalk only
+	// where a ford was laid; no deposit on a tile with a mud corner (the lanes stay open).
+	const auto checkTerrain = [&](const Game &g, int boardwalks)
+	{
+		const Map &map = g.map;
+		const Torus t(map);
+		int paths = 0;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+			{
+				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
+				if (group == TerrainGroup::DeepWater)
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+						{
+							const TerrainGroup near = terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)));
+							assert(near == TerrainGroup::Water || near == TerrainGroup::DeepWater ||
+								   near == TerrainGroup::Paths);
+						}
+				if (group == TerrainGroup::Paths)
+				{
+					assert(map.vertexTerrainAt(x, y) == BOARDWALK);
+					++paths;
+				}
+				bool mud = false;
+				for (TerrainType corner : map.cellCorners(x, y))
+					mud = mud || terrainGroup(corner) == TerrainGroup::Rough;
+				if (mud)
+					assert(!map.isResource(x, y));
+			}
+		assert(paths == boardwalks);
+	};
+	// The envelope: every size and colony count the request check accepts, a season, a mud share and a
+	// hammock count pinned in turn.
+	int pinned = 0;
+	const char *seasons[] = {"wet", "dry"};
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 8},
+							std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (!definition.validateRequest(r).empty())
+				continue;
+			if (dimensions.first + dimensions.second >= 17 && teams != 4 && teams != 12)
+				continue; // the large maps only twice, for time
+			r.options["season"] = 1 + pinned % 2;
+			r.options["mudflats"] = (pinned / 2) % 3 * 50;
+			r.options["hammocks"] = (pinned / 3) % 3 * 4;
+			++pinned;
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			assert(choice(result, "everglades.season") == seasons[r.option("season") - 1]);
+			checkTerrain(g, measure(result, "everglades.routes.boardwalk-vertices"));
+			assert(count(g, STONE) > 0);
+			assert((vertices(g, TerrainGroup::Rough) > 0) == (r.option("mudflats") > 0));
+			assert(measure(result, "everglades.hammocks.placed") <= measure(result, "everglades.hammocks.wanted"));
+			if (r.option("hammocks") > 0 && dimensions.first + dimensions.second >= 16)
+				assert(measure(result, "everglades.hammocks.placed") > 0 && vertices(g, TerrainGroup::Obstacles) > 0);
+			if (r.option("hammocks") == 0)
+				assert(vertices(g, TerrainGroup::Obstacles) == 0);
+			if (dimensions.first + dimensions.second >= 16)
+				assert(measure(result, "everglades.deep.vertices") > 0 && vertices(g, TerrainGroup::DeepWater) > 0);
+			for (int walk : measures(result, "everglades.stone.walk"))
+				assert(walk > 0);
+		}
+	assert(pinned >= 20);
+	// Revision 3 accepted every colony count up to 12 at 128 (the clearings shrink and the ring widens).
+	assert(definition.validateRequest(make(7, 7, 12, 7)).empty());
+	// Both seasons come up at random, and each pinned holds at 128, 256 and 512 with the variants at
+	// their extremes.
+	std::set<std::string> drawn;
+	for (std::uint32_t seed = 1; seed <= 20 && drawn.size() < 2; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		assert(result);
+		drawn.insert(choice(result, "everglades.season"));
+	}
+	assert(drawn.size() == 2);
+	for (int season = 1; season <= 2; ++season)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 6}, std::pair{9, 8}})
+		{
+			D r = make(dimension, dimension, teams, 11);
+			r.options["season"] = season;
+			r.options["mudflats"] = season == 1 ? 100 : 0;
+			r.options["hammocks"] = season == 1 ? 8 : 1;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned season");
+			checkTerrain(g, measure(result, "everglades.routes.boardwalk-vertices"));
+		}
+	// The season changes looks only: the same seed wet and dry has the same rules on every tile and the
+	// same deposits.
+	{
+		Game wet(nullptr), dry(nullptr);
+		D a = make(8, 8, 4, 13), b = a;
+		a.options["season"] = 1;
+		b.options["season"] = 2;
+		build(wet, a, "wet");
+		build(dry, b, "dry");
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				const auto &rw = wet.map.terrainPropertiesAt(x, y), &rd = dry.map.terrainPropertiesAt(x, y);
+				assert(rw.walkable == rd.walkable && rw.swimmable == rd.swimmable && rw.buildable == rd.buildable &&
+					   rw.resourcesGrow == rd.resourcesGrow && rw.groundSpeedQ8 == rd.groundSpeedQ8 &&
+					   rw.inhibitionQ8 == rd.inhibitionQ8 && rw.fertilityQ8 == rd.fertilityQ8);
+				assert(wet.map.isResource(x, y) == dry.map.isResource(x, y));
+				differentLooks += wet.map.vertexTerrainAt(x, y) != dry.map.vertexTerrainAt(x, y);
+			}
+		assert(differentLooks > 1000);
+	}
+	// Hammocks cut nothing off: the same seed with none and with the most has the same pools, and every
+	// tile walkable in both that colony 0 could reach over the ground without hammocks it still reaches
+	// with them.
+	{
+		Game none(nullptr), most(nullptr);
+		D a = make(8, 8, 4, 17), b = a;
+		a.options["hammocks"] = 0;
+		b.options["hammocks"] = 8;
+		build(none, a, "no hammocks");
+		const auto result = build(most, b, "most hammocks");
+		assert(measure(result, "everglades.hammocks.placed") >= 20);
+		const Torus t(none.map);
+		std::vector<unsigned char> openNone(256 * 256), openMost(256 * 256), swarm(256 * 256, 0);
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			openNone[i] = none.map.terrainPropertiesAt(i % 256, i / 256).walkable;
+			openMost[i] = most.map.terrainPropertiesAt(i % 256, i / 256).walkable;
+		}
+		for (int dy = 0; dy < 4; ++dy)
+			for (int dx = 0; dx < 4; ++dx)
+				swarm[t.at(none.teams[0]->startPosX - 2 + dx, none.teams[0]->startPosY - 2 + dy)] = 1;
+		const std::vector<int> reachNone = stepsFrom(t, swarm, openNone), reachMost = stepsFrom(t, swarm, openMost);
+		int lost = 0, blocked = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+		{
+			lost += reachNone[i] >= 0 && openMost[i] && reachMost[i] < 0;
+			blocked += openNone[i] && !openMost[i];
+		}
+		assert(lost == 0 && blocked > 100);
+	}
+	// Damage the validator must notice: deep water against a bank, and a hammock opened.
+	{
+		const D r = make(8, 8, 4, 19);
+		Game g(nullptr);
+		build(g, r, "damage");
+		GenerationContext check(r);
+		bool deepened = false;
+		for (int y = 1; y < 255 && !deepened; ++y)
+			for (int x = 1; x < 255 && !deepened; ++x)
+				if (g.map.vertexTerrainAt(x, y) == WATER &&
+					terrainGroup(g.map.vertexTerrainAt(x + 1, y)) == TerrainGroup::Sand)
+				{
+					Game damaged(nullptr);
+					build(damaged, r, "deep copy");
+					damaged.map.setVertexTerrain(x, y, DEEP_WATER);
+					assert(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
+					deepened = true;
+				}
+		assert(deepened);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				if (terrainGroup(g.map.vertexTerrainAt(x, y)) == TerrainGroup::Obstacles)
+					g.map.setVertexTerrain(x, y, GRASS);
+		assert(definition.validateWorld(g, check).find("hammock") != std::string::npos);
+	}
+	// Boardwalk fords: a drowned map of big, close sloughs boxes colonies in, and openRoutes fords them
+	// with boardwalk (Paths: walkable and fast) rather than sand.
+	{
+		int fords = 0;
+		for (std::uint32_t seed = 1; seed <= 24 && fords == 0; ++seed)
+		{
+			D r = make(7, 7, 4, seed);
+			r.options["pool-spacing"] = 8;
+			r.options["pool-size"] = 7;
+			r.options["sloughs"] = 50;
+			Game g(nullptr);
+			const auto result = service.generate(g, r, true);
+			if (!result)
+				continue;
+			GenerationContext check(r);
+			assert(definition.validateWorld(g, check).empty());
+			fords = measure(result, "everglades.routes.boardwalk-vertices");
+			checkTerrain(g, fords);
+		}
+		assert(fords > 0);
+	}
+	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings, after a
+	// few thousand ticks of growth with nobody harvesting, the crops and algae grew, no deposit stands on
+	// a mud bank or a levee, the deep beds and hammocks hold, and the only fault the validator may find
+	// is a colony walled in by the swamp: it is meant to grow shut where nobody cuts it (revision 3
+	// promised no more), and its walk check comes last, after every other.
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		build(zero, r, "zero resources");
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	const auto abundantResult = build(abundant, r, "abundant");
+	GenerationContext context(r);
+	const int wheatBefore = count(abundant, WHEAT), woodBefore = count(abundant, WOOD),
+			  algaeBefore = count(abundant, ALGA);
+	setSyncRandSeed(4211);
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Everglades growth: %s\n", growthError.c_str());
+	std::fprintf(stderr, "Everglades growth over 4096 ticks: wheat %d -> %d, wood %d -> %d, algae %d -> %d\n",
+				 wheatBefore, count(abundant, WHEAT), woodBefore, count(abundant, WOOD), algaeBefore,
+				 count(abundant, ALGA));
+	assert(growthError.empty() || growthError.find("cannot walk") != std::string::npos);
+	assert(count(abundant, WHEAT) > wheatBefore && count(abundant, ALGA) > algaeBefore);
+	checkTerrain(abundant, measure(abundantResult, "everglades.routes.boardwalk-vertices"));
+	puts("PASS Everglades: envelope with pinned seasons, mud and hammocks, random seasons, season moves only "
+		 "looks, deep beds in shallows, boardwalk fords, hammocks cut nothing off, damage refused, resource "
+		 "extremes, growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -3401,5 +3701,6 @@ inline void generatorContracts()
 	run("rain-shadow", rainShadowContracts);
 	run("tidal-flats", tidalFlatsContracts);
 	run("watershed", watershedContracts);
+	run("everglades", evergladesContracts);
 }
 } // namespace GeneratorContracts
