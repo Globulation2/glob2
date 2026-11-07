@@ -742,7 +742,7 @@ struct HeadlessRunner
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
 			globals.replayWriter=std::make_unique<ReplayWriter>();
-			globals.replayWriter->init(replay, engine.gui);
+			engine.gui.startReplay(*globals.replayWriter, replay);
 		}
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
 		for (int i = 0; i < engine.gui.game.gameHeader.getNumberOfPlayers(); ++i)

@@ -131,7 +131,7 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 		if (!playback)
 		{
 			globals->replayWriter = std::make_unique<ReplayWriter>();
-			globals->replayWriter->init((directory / "game.replay").string(), engine.gui);
+			engine.gui.startReplay(*globals->replayWriter, (directory / "game.replay").string());
 			REQUIRE(globals->replayWriter->isValid());
 		}
 		engine.checksumSidecar = std::make_unique<ChecksumSidecarWriter>();

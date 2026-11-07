@@ -36,7 +36,9 @@ public:
 	/// Initialise the writer with the given Map- and GameHeader.
 	/// The first argument is the backend that will be used.
 	/// If it is "", the buffer will be in memory, otherwise it's a file with the given filename.
-	void init(const std::string &backend, GameGUI &gui);
+	/// Starts a recording. writeHeader writes the game header (GameGUI::save with
+	/// "replayHeader"); telemetryGame, when set, is sampled for replay telemetry.
+	void init(const std::string &backend, Game *telemetryGame, const std::function<void(GAGCore::OutputStream *)> &writeHeader);
 
 	/// Returns false if the writer isn't initialised or if the data does not make sense
 	bool isValid() const;

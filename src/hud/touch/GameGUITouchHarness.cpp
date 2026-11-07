@@ -2261,7 +2261,7 @@ class GameGUITouchHarness
 		{
 			globalContainer->replayWriter = std::make_unique<ReplayWriter>();
 			auto &writer = *globalContainer->replayWriter;
-			writer.init("", gui);
+			gui.startReplay(writer, "");
 			require(writer.write("replays/touch-empty.replay"),
 					"An unfinished in-memory replay can be exported");
 			{

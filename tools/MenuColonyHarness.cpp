@@ -680,7 +680,7 @@ int main(int argc, char **argv)
 			gui.localPlayer = 0;
 			gui.adjustLocalTeam();
 			globals.replayWriter = std::make_unique<ReplayWriter>();
-			globals.replayWriter->init("", gui);
+			gui.startReplay(*globals.replayWriter, "");
 			for (int i = 0; i < 300; ++i)
 			{
 				if (background)

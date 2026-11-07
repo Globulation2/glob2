@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GraphicContext.h>
 #include "MapRender.h"
+#include "GameDiagnostics.h"
 #include "Game.h"
 #include "render/MapDrawer.h"
 #include "BuildingType.h"
@@ -122,4 +123,13 @@ void toPng(const PresentationFrame& scene, const std::string& path, int maximumP
 	std::filesystem::rename(temporary, destination);
 #endif
 }
+}
+
+namespace
+{
+const bool diagnosticsRendererRegistered = [] {
+	GameDiagnostics::fieldImageRenderer() = [](const PresentationFrame& scene, const std::string& path, int pixels,
+		const MapRender::Field* field) { MapRender::toPng(scene, path, pixels, field); };
+	return true;
+}();
 }

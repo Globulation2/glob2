@@ -888,7 +888,7 @@ static void checkReplayImports(GameGUI& gui, const fs::path& directory)
     for (bool finished : {false, true}) {
         const auto recording = directory / (finished ? "finished.replay" : "live.replay");
         ReplayWriter writer;
-        writer.init(recording.string(), gui);
+        gui.startReplay(writer, recording.string());
         REQUIRE(writer.isValid());
         writer.advanceStep();
         if (finished) writer.finish();

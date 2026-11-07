@@ -23,6 +23,7 @@ class ComputeExecutor;
 #include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
@@ -425,6 +426,9 @@ public:
 	void tile(int rx, int ry);
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
+	//! Set by the game: finishes its hiring (and with true, team statistics) work
+	//! before the map reconfigures compute, without the map linking Game.
+	std::function<void(bool teamStatistics)> drainGameWork;
 	//! Load a map from a stream and relink with associated game
 	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
     GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game);

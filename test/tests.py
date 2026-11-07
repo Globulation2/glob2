@@ -552,7 +552,6 @@ UNIT_STUBS = [
     'unit/stubs/SnapshotGradientStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
-    'unit/stubs/GameGUIStubs.cpp',
     'unit/stubs/RaceStubs.cpp',
 ]
 

@@ -16,7 +16,7 @@
 //   3. the replay header version, not VERSION_MINOR, is what orders are
 //      decoded against
 //
-// GameGUI and the Order hierarchy are stubbed (same trick as
+// The Order hierarchy is stubbed (same trick as
 // NetSendOrderDecodeTest.cpp) so only ReplayWriter/ReplayReader plus
 // OrderMessages.cpp are under test; libgag_server.a provides BinaryStream and
 // the stream backends.
@@ -24,7 +24,6 @@
 #include "Glob2Test.h"
 #include <algorithm>
 #include "unit/stubs/OrderStubs.h"
-#include "unit/stubs/GameGUIStubs.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -70,9 +69,8 @@ void testWideRoundTrip()
 	std::string path = (glob2test::profileDir() / "replay-stepcounter-test.replay").string();
 
 	{
-		GameGUI stubGui;
 		ReplayWriter writer;
-		writer.init(path, stubGui);
+		writer.init(path, nullptr, [](GAGCore::OutputStream *) {});
 		check(writer.isValid(), "roundTrip: writer initialised on file backend");
 
 		for (Uint32 i = 0; i < QUIET_STEPS; i++)
@@ -268,8 +266,7 @@ TEST_SUITE("ReplayStepCounter")
     }
     TEST_CASE("paused turns retain the first snapshot for their shared simulation tick") {
         const auto path=(glob2test::profileDir()/"paused-deferred.replay").string();
-        GameGUI gui;
-        ReplayWriter writer; writer.init(path,gui); writer.enableDeferredChecksums([]{});
+        ReplayWriter writer; writer.init(path, nullptr, [](GAGCore::OutputStream *) {}); writer.enableDeferredChecksums([]{});
         writer.pushOrder(std::make_shared<StepTestOrder>());
         writer.publishChecksum({0,111});
         writer.publishChecksum({0,222}); // A later paused network turn changed its world.

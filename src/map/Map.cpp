@@ -529,7 +529,7 @@ void Map::applyGradientBackendRequest()
     const auto requested=gradient_kernel::requestedBackendConfiguration();
     if(requested==gradient_kernel::configuration())return;
     // Finish privately, preserving the pending queue and original publication ticks.
-    if(game)game->drainHiring();
+    if(drainGameWork)drainGameWork(false);
     finishGradientPipeline();
     gradient_kernel::applyBackendConfiguration(requested);
     configureGradientExecution();
@@ -537,7 +537,7 @@ void Map::applyGradientBackendRequest()
 
 void Map::configureCompute(unsigned threads)
 {
-    if(game){game->drainTeamStats();game->drainHiring();}
+    if(drainGameWork)drainGameWork(true);
     // Retire our executor handles without publishing their future results.
     if (materialClaimRoutes) (void)materialClaimRoutes->pipeline.exportPending();
 	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
