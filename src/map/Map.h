@@ -17,7 +17,8 @@ struct GradientTargetCell;
 #include "gradient/GradientQueryContext.h"
 #include "gradient/ResourceGradientContradictions.h"
 #include <CooperativeTask.h>
-#include "ComputeExecutor.h"
+#include "ComputeTelemetry.h"
+class ComputeExecutor;
 #include <array>
 #include <bit>
 #include <cstddef>
@@ -125,7 +126,10 @@ class Map
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
 	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
-	mutable ComputeExecutor compute;
+	// Owned out of line so ComputeExecutor.h (1,500 inline lines) stays out of Map.h;
+	// `compute` is used per job and dispatch, never per cell.
+	std::unique_ptr<ComputeExecutor> computeOwner;
+	ComputeExecutor &compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	// Scheduled building gradients (MapGradientScheduling.cpp).
 	void stageBuildingGradientPreparation();

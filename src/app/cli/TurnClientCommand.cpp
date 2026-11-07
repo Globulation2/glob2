@@ -8,6 +8,7 @@
 // bot that queues ordinary orders, or by nobody; AI seats run locally as on every
 // client. Used for end-to-end tests of a deployed instance (docs/hosting/README.md).
 
+#include "ComputeExecutor.h"
 #include <SDL3/SDL.h>
 
 #include <chrono>

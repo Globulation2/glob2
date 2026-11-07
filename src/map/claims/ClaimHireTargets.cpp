@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ComputeExecutor.h"
 #include "ClaimHireTargets.h"
 #include "Map.h"
 #include "Game.h"

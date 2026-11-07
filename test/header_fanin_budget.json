@@ -12,7 +12,7 @@
   "src/map/TerrainTypeTable.h": 451,
   "third_party/nlohmann-json/include/nlohmann/json.hpp": 174,
   "src/ai/AI.h": 123,
-  "src/common/ComputeExecutor.h": 422,
+  "src/common/ComputeExecutor.h": 117,
   "src/building/Building.h": 386,
   "src/map/Map.h": 410,
   "src/render/scene/Scene.h": 120,
