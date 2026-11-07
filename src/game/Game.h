@@ -239,6 +239,9 @@ public:
 		DRAW_NO_CLOUD_LAYER = 0x200,
 		// All tiles of a torus atlas share one whole-map terrain sampling density.
 		DRAW_TILED_CAPTURE = 0x400,
+		// Finish the visible terrain (tables, border masks, HD artwork) before
+		// drawing, as the editor and captures do; it may stall this frame.
+		DRAW_COMPLETE_TERRAIN = 0x800,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,

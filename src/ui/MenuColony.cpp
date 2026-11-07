@@ -76,6 +76,7 @@ bool MenuColony::load(const std::string& path)
 		centerY = loaded->teams[0]->startPosY;
 
 		game = std::move(loaded);
+		terrainCompleted = false;
 		worldTickTime = SDL_GetTicks();
 		if (!globalContainer->runNoX)
 		{
@@ -166,8 +167,12 @@ void MenuColony::draw(int width, int height, bool showStatus)
 	// Place the starting settlement to the right of the front-page panel.
 	const int x = (centerX - width * 2 / 3 / 32) & view.scene->map.getMaskW();
 	const int y = (centerY - height / 2 / 32) & view.scene->map.getMaskH();
+	// The first frame waits for finished terrain, so the menu never shows the
+	// overview or unbordered cells while the terrain builds.
 	Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, view,
-		Game::DRAW_WHOLE_MAP | (showStatus ? Game::DRAW_HEALTH_FOOD_BAR : 0));
+		Game::DRAW_WHOLE_MAP | (showStatus ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
+		(terrainCompleted ? 0 : Game::DRAW_COMPLETE_TERRAIN));
+	terrainCompleted = true;
 }
 
 Uint32 MenuColony::checksum() const

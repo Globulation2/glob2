@@ -326,12 +326,12 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	if (legacy && !overviewOnly)
 	{
 		// Legacy GL draws terrain in one direct pass at every zoom, in games,
-		// the editor and captures. The editor and captures complete their view
-		// before drawing; elsewhere cells whose masks are still building draw
+		// the editor and captures. The editor, captures and the menu colony's
+		// first frame complete their view before drawing; elsewhere cells whose masks are still building draw
 		// their first material, and the overview shows until the map's tables
 		// are ready.
 		PERF_SCOPE_TIME(Terrain);
-		const bool complete = scene.editor || (frame.options & DRAW_TILED_CAPTURE);
+		const bool complete = scene.editor || (frame.options & (DRAW_TILED_CAPTURE | DRAW_COMPLETE_TERRAIN));
 		try
 		{
 			auto &terrain = view.render.directTerrain();
