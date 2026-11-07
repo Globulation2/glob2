@@ -6,6 +6,7 @@
 #include "ui/ThemeCatalog.h"
 #include <Environment.h>
 #include "GlobalContainer.h"
+#include "Game.h"
 #include <cmath>
 #include <algorithm>
 #include "MainMenuScreen.h"
