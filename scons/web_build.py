@@ -3,6 +3,7 @@ from client_features import header as client_feature_header
 from pathlib import Path
 import json
 import os
+import sys
 import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
@@ -65,6 +66,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
                       ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(Path(__file__).resolve().parents[1], output, sys.argv)
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
     env.Append(LINKFLAGS=['--js-library', 'platforms/web/canvas-size.js', '--js-library', 'platforms/web/webgpu-device.js', '--js-library', 'platforms/web/gradient-compute.js'])

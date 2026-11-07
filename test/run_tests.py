@@ -54,6 +54,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from build_paths import native_build_directory  # noqa: E402
+sys.path.insert(0, str(ROOT / 'scons'))
+import jobserver  # noqa: E402
 
 BINARIES = {'engine': 'glob2-engine-tests', 'unit': 'glob2-unit-tests'}
 DEFAULT_TIMEOUT = 120
@@ -424,6 +426,7 @@ def run_job(job, args, build_dir):
         else:
             case = job.cases[0]
             env['GLOB2_TEST_ARTIFACTS'] = str(artifacts / sanitized(case.suite or 'no-suite') / sanitized(case.name))
+    env[jobserver.HELD] = '1'  # the test process runs under this job's token
     command = xvfb_prefix(job) + [str(binary), '-r=junit', f'-o={junit}', '--no-breaks=true'] + doctest_filter(job)
     if args.verbose and job.whole:
         command += ['-s']
@@ -746,13 +749,15 @@ def main(argv=None):
     display_slots = threading.Semaphore(args.display_jobs or min(4, args.jobs))
 
     def run(job):
+        # One machine-wide CPU token per running test process (scons/jobserver.py).
         if job.has('network'):
-            with network_lock:
+            with network_lock, jobserver.slot():
                 return run_job(job, args, build_dir)
         if job.display:
-            with display_slots:
+            with display_slots, jobserver.slot():
                 return run_job(job, args, build_dir)
-        return run_job(job, args, build_dir)
+        with jobserver.slot():
+            return run_job(job, args, build_dir)
 
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:

@@ -30,8 +30,8 @@ real stencils in `src/map/generator/shared/` are affected; if they are, add
 ## Fast development builds
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
-directory, forwarding SCons targets and options. It defaults to at most eight
-jobs and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
+directory, forwarding SCons targets and options. It defaults to one job per CPU
+(the [token pool](#parallel-lanes) shares them between concurrent builds) and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
 Install ccache before using the development command. Native dependencies still
 come from the existing package-manager or `GLOB2_SDL3_PREFIX` configuration;
 mobile dependencies and SDKs still require their existing setup steps.
@@ -127,6 +127,19 @@ written by every build: a 20 GiB `max_size`, `compiler_check = content` and
 compression. Builds and `tools/dev_build.py --cache-stats` read the same limit;
 `CCACHE_MAXSIZE` or other `CCACHE_*` variables still override it for one run, and
 an explicit `CCACHE_DIR` uses that directory's own configuration.
+
+### Parallel lanes
+
+Every build, test run and asset export on one machine shares a pool of `ncpu + 1`
+CPU tokens (`scons/jobserver.py`): each compiler or linker process SCons spawns,
+each running test process and each asset-encoding worker holds one token, so
+several checkouts building at once share the CPUs instead of multiplying the
+process count. `-j` keeps its meaning as a lane's maximum. Tokens are `flock`ed
+files under the development store's `state/jobserver/`, released by the kernel
+when a process exits, so a killed build leaks nothing. Children of a token holder
+acquire nothing. `GLOB2_JOBSERVER=0` disables the pool and `GLOB2_JOBSERVER_TOKENS`
+resizes it; Windows builds run without it. `python3 tools/dev_environment.py
+lanes` lists the builds running now.
 
 `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
 the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction
