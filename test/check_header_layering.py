@@ -19,7 +19,8 @@ this runs in seconds without a build):
    that sit on a cycle are listed in test/header_cycles_allowlist.txt; a new
    cycle edge fails.
 5. Fan-in budget. test/header_fanin_budget.json caps how many client
-   translation units may reach each listed header.
+   translation units may reach each listed header, with a slack of 2% of the
+   client TUs so that adding source files does not trip it.
 
 Allowlists and budgets only ratchet down: after a PR removes violations or
 lowers fan-in, run with --write to delete the stale allowlist lines and lower
@@ -239,12 +240,15 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
     if budget:
         counts = graph.fanin()
         changed = False
+        # A budget catches a header that starts reaching many more translation
+        # units (a new wide include), not the one or two a new source file adds.
+        slack = max(2, len(graph.client_units) // 50)
         for header, limit in budget.items():
             if header.startswith('_'):
                 continue
             count = counts.get(header, 0)
-            if count > limit:
-                errors.append(f'{header} reaches {count} client translation units, budget {limit}; '
+            if count > limit + slack:
+                errors.append(f'{header} reaches {count} client translation units, budget {limit} (+{slack} slack); '
                               f'run python3 tools/include_graph.py why {header}')
             elif (write or seed) and count < limit:
                 budget[header] = count
