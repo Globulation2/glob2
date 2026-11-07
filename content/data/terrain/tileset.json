@@ -5,15 +5,25 @@
     {
       "key": "cover"
     },
-    {"key": "cut", "cuts_stones": true},
+    {
+      "key": "cut",
+      "cuts_stones": true
+    },
     {
       "key": "built"
     },
-    {"key": "flow", "cuts_stones": true},
+    {
+      "key": "flow",
+      "cuts_stones": true
+    },
     {
       "key": "solid"
     },
-    {"key": "pool", "shoreline": true, "cuts_stones": true}
+    {
+      "key": "pool",
+      "shoreline": true,
+      "cuts_stones": true
+    }
   ],
   "bundle_profiles": {
     "canopy": {
