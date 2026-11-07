@@ -5,7 +5,7 @@
 // round trip as comma-separated keys, and a key this build no longer knows is
 // dropped rather than failing the load.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ExperimentalFeatures.h"
 #include "Settings.h"
 #include <FileManager.h>

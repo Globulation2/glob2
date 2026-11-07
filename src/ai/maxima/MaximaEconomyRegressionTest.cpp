@@ -1,5 +1,7 @@
 #include "MaximaObservationFixture.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "AI.h"
 #include <algorithm>
 #include "Version.h"

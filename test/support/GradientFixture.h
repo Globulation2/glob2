@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "EngineFixtures.h"
+#include "GameFixtures.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
 
 namespace glob2test

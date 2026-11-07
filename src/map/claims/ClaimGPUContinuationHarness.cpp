@@ -2,7 +2,9 @@
 // Opt-in whole-game device check: a frozen claims save runs identically with
 // material gradients published by a real GPU backend and by the CPU. Never
 // substitutes a fake device.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientRuntime.h"
 #include "field/GradientAccelerators.h"
 #include <BinaryStream.h>

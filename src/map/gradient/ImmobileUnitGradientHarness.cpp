@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for immobile bookkeeping and weighted building routes.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"

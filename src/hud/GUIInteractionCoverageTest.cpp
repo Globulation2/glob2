@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
 #include "stats/TeamStatChart.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "GameGUIViewport.h"
 #include "MapZoomControls.h"
 #include "GameGUIInternal.h"

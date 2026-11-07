@@ -3,7 +3,8 @@
 // A unit a building heals, feeds or trains records one render-only effect
 // (render/UnitEffects.h) when it comes out, and none when it leaves without the
 // whole service: expelled mid-stay, or a trainee while upgrades are disabled.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "BuildingType.h"
 #include "render/GameAnimations.h"
 #include "render/UnitEffects.h"

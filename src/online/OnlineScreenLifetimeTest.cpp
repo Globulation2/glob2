@@ -10,7 +10,7 @@
 // Built with -fno-access-control (test/tests.py) to start the settings
 // screen's calls without a display.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "OnlineFakes.h"
 #include "OnlineHubScreen.h"

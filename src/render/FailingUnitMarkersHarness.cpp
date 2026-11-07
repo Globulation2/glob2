@@ -4,7 +4,9 @@
 // reason's shape over exactly those units. Needs a display; writes the scene to
 // scene.png in the case's artifact directory for reviewers.
 #include "scene/SceneMap.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
+#include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "MapDrawer.h"

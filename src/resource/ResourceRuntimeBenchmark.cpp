@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in bounded component stress measurements, not a before/after gameplay gate.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "ResourceRegistry.h"
 #include "GradientRuntime.h"

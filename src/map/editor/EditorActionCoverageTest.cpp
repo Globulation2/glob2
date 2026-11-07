@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "Race.h"

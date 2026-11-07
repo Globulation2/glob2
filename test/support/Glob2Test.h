@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // The one header every test includes: doctest with the project configuration, plus
-// helpers that need neither the engine nor a GlobalContainer. Engine tests include
-// EngineFixtures.h instead, which includes this.
+// helpers that need neither the engine nor a GlobalContainer. The engine fixtures
+// (HeadlessGlobals.h, HeadlessGame.h, GameFixtures.h, DrawFixtures.h) include this.
 #pragma once
 
 #define DOCTEST_CONFIG_SUPER_FAST_ASSERTS

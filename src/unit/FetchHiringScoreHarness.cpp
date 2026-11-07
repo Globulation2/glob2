@@ -3,7 +3,8 @@
 // Real-engine regression for hiring a fetcher: the hunger check that decides
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"

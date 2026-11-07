@@ -7,7 +7,7 @@
 // listed and told why Ready is unavailable.
 
 #include "Glob2Test.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "InstanceConfig.h"
 #include "MapCache.h"
 #include "OnlineFakes.h"

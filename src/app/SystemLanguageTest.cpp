@@ -4,7 +4,7 @@
 // A profile without a language follows the system's preferred languages, mapped
 // to the game's catalog codes, several of which are not ISO 639 codes.
 
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "GlobalContainer.h"
 #include "SystemLanguage.h"
 #include <SDL3/SDL_hints.h>

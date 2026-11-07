@@ -9,7 +9,8 @@
 #include "UIService.h"
 #include <ScreenStack.h>
 #include <ui/Controls.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GlobalContainer.h"
 #include "hive/LocalCommander.h"
 #include "hive/HiveWorker.h"

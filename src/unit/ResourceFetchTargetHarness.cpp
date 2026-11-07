@@ -2,7 +2,9 @@
 // Real-engine regression: a resource-fetch target must track the gradient
 // a walking unit actually follows, not a one-time snapshot from task
 // assignment.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"

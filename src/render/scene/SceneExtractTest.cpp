@@ -4,7 +4,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // PresentationFrame extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "OverlayAreas.h"
 #include "SceneExtract.h"
 #include "SceneBuffer.h"

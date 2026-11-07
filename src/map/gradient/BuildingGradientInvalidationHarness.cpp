@@ -7,7 +7,8 @@
 // ring is incomplete. The last two pin the cases a proximity walk over the changed
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "LegacyPopulationOutput.h"
 

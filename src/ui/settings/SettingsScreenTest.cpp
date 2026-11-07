@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "app/ClientFeatures.h"
 #include "ui/ThemeCatalog.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ScopedEnvironment.h"
 #include <algorithm>
 #include <vector>

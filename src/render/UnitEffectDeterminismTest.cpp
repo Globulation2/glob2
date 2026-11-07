@@ -4,7 +4,9 @@
 // not change what the simulation computes. Two identical AI games run side by
 // side, one recording effects as a displayed game does, and their full
 // checksums must agree on every tick.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "GameFixtures.h"
 #include "AI.h"
 #include "Player.h"
 #include "render/GameAnimations.h"

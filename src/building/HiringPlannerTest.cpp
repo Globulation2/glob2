@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiringPipeline.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "HiringPlanner.h"
 #include <sstream>

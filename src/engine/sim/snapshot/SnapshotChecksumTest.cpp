@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "SnapshotChecksum.h"
 #include "AI.h"
 #include "Unit.h"

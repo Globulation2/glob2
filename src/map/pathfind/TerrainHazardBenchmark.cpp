@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in measurements: no wall-clock performance assertions.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "StreamBackend.h"

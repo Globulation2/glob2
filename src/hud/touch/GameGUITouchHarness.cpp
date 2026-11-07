@@ -2,7 +2,8 @@
 #include "InGameStatistics.h"
 #include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>

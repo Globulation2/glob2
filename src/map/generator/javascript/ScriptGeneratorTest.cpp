@@ -2,7 +2,7 @@
 #include "GeneratorPackage.h"
 #include "ToolkitBinding.h"
 #include "GenerationService.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "MapGeneratorFrameworkChecks.h"
 #include "CustomGamePreferences.h"
 #include "CustomGameRules.h"

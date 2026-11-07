@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression: each building gets a hiring attempt before retries,
 // even when subscription reorders the live bucket.
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "GameFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>

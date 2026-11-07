@@ -3,7 +3,7 @@
 // event routing at its edge, live catalogue updates, locked experiments, palette
 // navigation and the object inspector.
 #include "EditorDock.h"
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "MapEditInspector.h"

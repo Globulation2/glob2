@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
-#include "EngineFixtures.h"
+#include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
 #include <string>
