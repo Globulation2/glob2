@@ -647,7 +647,11 @@ def encoding_executor(jobs):
     # scons/runtime_assets.py added, so put it back before any worker starts.
     if __name__ != "__main__" and str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
-    return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"))
+    # Each worker holds one machine-wide CPU token for its lifetime (scons/jobserver.py).
+    sys.path.insert(0, str(ROOT / "scons"))
+    import jobserver
+    return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"),
+                               initializer=jobserver.hold_for_process_lifetime)
 
 
 def encode_sheet(sheet, root, cache, lossy, relative):

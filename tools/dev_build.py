@@ -20,7 +20,9 @@ def command(arguments):
     if options.get('target') == 'web' and 'web_variant' not in options:
         defaults.append('web_variant=threaded')
     if not any(word == '-j' or word.startswith('-j') or word.startswith('--jobs') for word in arguments):
-        defaults.append('-j' + str(min(os.cpu_count() or 1, 8)))
+        # The machine-wide token pool (scons/jobserver.py) shares the CPUs between
+        # concurrent builds, so each lane may ask for all of them.
+        defaults.append('-j' + str(os.cpu_count() or 1))
     return ['scons', *defaults, *arguments]
 
 

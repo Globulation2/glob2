@@ -440,6 +440,7 @@ def main():
     paths.add_argument("--json", action="store_true")
     paths.add_argument("--field")
     commands.add_parser("status")
+    commands.add_parser("lanes", help="builds running on this machine and the CPU token pool")
     sdkmanager = commands.add_parser("sdkmanager")
     sdkmanager.add_argument("arguments", nargs=argparse.REMAINDER)
     prune = commands.add_parser("prune")
@@ -494,6 +495,14 @@ def main():
                 for name in ("avd", "ios-simulators")
             ),
             "external_storage": external_storage(),
+        }
+    elif args.command == "lanes":
+        import jobserver
+
+        result = {
+            "token_pool": {"enabled": jobserver.enabled(), "tokens": jobserver.token_count(),
+                           "directory": str(jobserver.directory())},
+            "lanes": jobserver.live_lanes(),
         }
     elif args.command == "prune":
         result = store.prune(args.dry_run)

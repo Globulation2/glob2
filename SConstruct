@@ -343,6 +343,10 @@ def main():
             env['ENV'][name] = os.environ[name]
     # Compiler discovery also needs the selected SDK, not just compilation.
     env.Tool('default')
+    # Share the machine's CPUs with every other build lane (scons/jobserver.py).
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(env.Dir('#').abspath, bdir, sys.argv)
     env['BUILDDIR'] = bdir
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)

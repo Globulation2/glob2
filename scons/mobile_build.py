@@ -3,6 +3,7 @@ from client_features import header as client_feature_header
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
@@ -61,6 +62,9 @@ def build_mobile(directory, identity, arguments):
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
         ENV=environment, CC=command_path(toolchain['cc']), CXX=command_path(toolchain['cxx']), LINK=command_path(toolchain['cxx']), AR=command_path(toolchain['ar']))
+    import jobserver
+    env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
+    jobserver.register_lane(Path(__file__).resolve().parents[1], output, sys.argv)
     env['BUILDDIR'] = str(output)
     if ccache.enabled():
         ccache.enable(env)
