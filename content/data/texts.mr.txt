@@ -2594,6 +2594,24 @@ HP ≤25/50/75%
 लांब पंखाकार प्रदेश
 [Twin springs]
 जोड झरे
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 तळांसाठी बाजाडा खूप अरुंद आहेत; मोठा नकाशा, डोंगररांगांमध्ये अधिक अंतर, अरुंद डोंगररांगा किंवा लहान प्लाया वापरा.
 [Central Quarry]

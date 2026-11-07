@@ -2616,6 +2616,24 @@ OpenGL недоступен в этой сборке.
 Длинный конус
 [Twin springs]
 Родники-близнецы
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Склоны с конусами выноса слишком узки для баз; используйте карту побольше, большее расстояние между хребтами, более узкие гребни или солёные озёра поменьше.
 [Central Quarry]

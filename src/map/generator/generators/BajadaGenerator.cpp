@@ -145,6 +145,8 @@ constexpr double kSpurBaseLow = 3, kSpurBaseHigh = 5.5;
 // kPassFanClear of a pass mouth.
 constexpr double kPassHalfWidth = 1.6, kPassStoneClear = 3.0, kPassOverrun = 1, kPassSkew = 8;
 constexpr double kPassShoulder = 4, kPassShoulderReach = 12, kPassFanClear = 12;
+// A pass's mouth this many columns from a home's quarry face cannot reach it, however it skews.
+constexpr double kPassQuarryClear = kPassHalfWidth + kPassStoneClear + kPassSkew + 1;
 // The playa: its lakes are at most this share of the basin wide at a `playa` of 100 (the smaller of
 // the requested spacing and the one the map holds), their shores wobbling out to kLakeLobe times
 // that; laid along the basin with lengths of kLakeLengthLow to kLakeLengthHigh times kLakePitch and
@@ -277,8 +279,8 @@ HomeDesign homeDesign(int design, bool flip)
 		// before it splits, with a short arm out across the fan, and the town tucks in under the
 		// range. (A trunk drawn closer to the town met its rough outline on some maps and the home grew
 		// no streams at all.)
-		d = {"canyon mouth", {{6, 5, 4}}, {-16, 14}, 11, {-10, 14},
-			 {{6, 9.5, 0.0, 14, 1.9, 4}, {8, 9.5, 0.5, 8, 1.4, 2}}, {-2, 15}, {-3, 27}};
+		d = {"canyon mouth", {{6, 5, 4}}, {-15, 14}, 11, {-9, 14},
+			 {{6, 9.5, 0.0, 11, 1.9, 4}, {8, 9.5, 0.25, 6, 1.4, 2}}, {-1, 15}, {-2, 27}};
 	else if (design == 4)
 	{
 		// Cienega: a big spring in a meadow of spring grass that waters itself, its two short streams
@@ -1017,28 +1019,42 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::mt19937 &random = context.stream("bajada-passes");
 		for (int r = 0; r < L.ranges; ++r)
 		{
-			const double pitch = double(t.w) / o.passes;
-			int bestPhase = 0;
-			double bestScore = -1;
-			for (int p = 0; p < int(pitch); ++p)
+			// Clear of every home's apex and of its town, whose quarry is in the range above it. A range
+			// whose passes cannot all keep clear of the homes' quarries on a crowded map gives up a pass
+			// at a time (never its last), rather than cut into one home's quarry and not the others'.
+			int passes = o.passes, bestPhase = 0;
+			double pitch = double(t.w) / passes;
+			for (; passes >= 1; --passes)
 			{
-				double score = 1e18;
-				for (int k = 0; k < o.passes; ++k)
+				pitch = double(t.w) / passes;
+				bestPhase = 0;
+				double bestScore = -1, bestQuarry = -1;
+				for (int p = 0; p < int(pitch); ++p)
 				{
-					const int x = t.x(int(p + k * pitch));
-					// Clear of every home's apex and of its town, whose quarry is in the range above it.
-					for (size_t k = 0; k < L.fans.size(); ++k)
-						if (L.fans[k].ridge == r)
-							score = std::min({score, double(std::abs(t.offsetX(L.fans[k].x, x))),
-											  std::abs(t.offsetX(int(towns[k].x), x)) - double(kQuarryHalf)});
+					double score = 1e18, quarry = 1e18;
+					for (int k = 0; k < passes; ++k)
+					{
+						const int x = t.x(int(p + k * pitch));
+						for (size_t h = 0; h < L.fans.size(); ++h)
+							if (L.fans[h].ridge == r)
+							{
+								const double fromQuarry = std::abs(t.offsetX(int(towns[h].x), x)) - double(kQuarryHalf);
+								quarry = std::min(quarry, fromQuarry);
+								score = std::min({score, double(std::abs(t.offsetX(L.fans[h].x, x))), fromQuarry});
+							}
+					}
+					if (score > bestScore)
+					{
+						bestScore = score;
+						bestQuarry = quarry;
+						bestPhase = p;
+					}
 				}
-				if (score > bestScore)
-				{
-					bestScore = score;
-					bestPhase = p;
-				}
+				if (bestQuarry >= kPassQuarryClear || passes == 1)
+					break;
+				context.telemetry.fallback("bajada.passes.dropped", "A pass was dropped to keep clear of the homes' quarries");
 			}
-			for (int k = 0; k < o.passes; ++k)
+			for (int k = 0; k < passes; ++k)
 			{
 				const int x = t.x(int(bestPhase + k * pitch));
 				const double skew = (2 * unit(random) - 1) * kPassSkew;
@@ -1438,7 +1454,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			for (int k = 0; k < teams; ++k)
 				if (faces[k] != faces[0] || faces[k] < kHomeQuarryStone)
 				{
-					L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
+					L.failure = "The passes cut into the homes' quarries; use fewer passes, fewer colonies or a "
+								"bigger map.";
 					return L;
 				}
 		}

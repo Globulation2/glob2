@@ -2594,6 +2594,24 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நீண்ட வண்டல் விசிறி
 [Twin springs]
 இரட்டை நீரூற்றுகள்
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 மலையடிவாரப் படிவப் பரப்புகள் தொடக்கப் பகுதிகளுக்கு மிகவும் குறுகியவை; பெரிய வரைபடம், அதிக மலைத்தொடர் இடைவெளி, குறுகிய முகடுகள் அல்லது சிறிய வறண்ட ஏரிப்படுகையைப் பயன்படுத்தவும்.
 [Central Quarry]

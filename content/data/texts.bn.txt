@@ -2594,6 +2594,24 @@ HP ≤25/50/75%
 দীর্ঘ পললপাখা
 [Twin springs]
 জোড়া ঝরনা
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 নিজ এলাকার জন্য বাজাদা খুব সরু; বড় মানচিত্র, পর্বতশ্রেণির বেশি ব্যবধান, সরু শৈলশিরা অথবা ছোট প্লায়া ব্যবহার করুন।
 [Central Quarry]

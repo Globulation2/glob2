@@ -2616,6 +2616,24 @@ Cône large
 Cône allongé
 [Twin springs]
 Sources jumelles
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Les piémonts alluviaux sont trop étroits pour les bases ; utilisez une carte plus grande, un plus grand espacement des chaînes, des crêtes plus étroites ou des lacs salés plus petits.
 [Central Quarry]

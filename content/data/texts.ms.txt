@@ -2618,6 +2618,24 @@ Kipas aluvium lebar
 Kipas aluvium panjang
 [Twin springs]
 Mata air berkembar
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Bajada terlalu sempit untuk pangkalan; gunakan peta yang lebih besar, jarak banjaran yang lebih luas, permatang yang lebih sempit atau playa yang lebih kecil.
 [Central Quarry]
