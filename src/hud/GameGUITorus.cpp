@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "render/UnitMotion.h"
 #include "Unit.h"
+#include "render/MapDrawer.h"
 
 // Adapt the rendered surface to the normal tool coordinate system, retaining
 // sub-tile precision for even-sized buildings and wrapping at the map seams.
@@ -76,7 +77,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
 
 void GameGUI::drawTorusMap(int originX, int originY, int width, int height, int team, unsigned options, int cloudGridLimit, bool advancePreviews)
 {
-    Game::drawMap(0, 0, width, height, 0, 0,
+    MapDrawer::drawMap(0, 0, width, height, 0, 0,
                  originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused, cloudGridLimit, true);
     drawTorusOverlays(drawnScene(), originX, originY, width, height, advancePreviews);
 }

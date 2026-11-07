@@ -29,6 +29,7 @@
 #include <vector>
 #include <chrono>
 #include <filesystem>
+#include "MapDrawer.h"
 class SettingsPaintHarness:public SettingsScreen
 {
 public:
@@ -134,22 +135,22 @@ class HighResolutionIntegrationHarness
         {
             auto begin=[&](){gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);gfx->beginMapTransform(zoom,100,100,100,100,512*zoom,512*zoom);};
             begin();
-            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
+            MapDrawer::drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
             gfx->endMapTransform();auto actual=pixels();REQUIRE(visible.size()==1);
             for(int y:{100,int(100+448*zoom)})for(int x:{100,int(100+448*zoom)})REQUIRE(coloredRegion(x,y,64*zoom,64*zoom));
             begin();
-            {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
+            {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})MapDrawer::drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
             gfx->endMapTransform();REQUIRE(actual==pixels());
         }
         // More than one complete period must repeat geometry without duplicating
         // the visible-building identity used to emit particles.
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
+        MapDrawer::drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
         gfx->endMapTransform();auto repeated=pixels();REQUIRE(visible.size()==1);
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
+        {const PresentationFrame &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})MapDrawer::drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
         gfx->endMapTransform();REQUIRE(repeated==pixels());
         int advances=0;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
@@ -166,7 +167,7 @@ class HighResolutionIntegrationHarness
         unit->action=WALK;unit->dx=unit->dy=1;unit->delta=128;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,256,256);
-        units.drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view, glob2test::sceneOf(units, editor.view));
+        MapDrawer::drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view, glob2test::sceneOf(units, editor.view));
         gfx->endMapTransform();
         for(int y:{100,340})for(int x:{100,340})REQUIRE(coloredRegion(x,y,16,16));
         editor.camera.setZoom(.5,200,200);editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
@@ -463,6 +464,6 @@ TEST_SUITE("HighResolutionIntegration")
 {
 	TEST_CASE("HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]") { highResolution(true); }
 #ifdef HAVE_OPENGL
-	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]") { highResolution(false); }
+	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences][slow]") { highResolution(false); }
 #endif
 }

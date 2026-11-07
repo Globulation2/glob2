@@ -7,6 +7,7 @@
 
 #include "Building.h"
 #include "Game.h"
+#include "render/MapDrawer.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "Map.h"
@@ -33,10 +34,10 @@ namespace glob2test
 	// then apply in player order and advance one tick. Returns type+wire payload
 	// per AI so paired continuations can compare decisions as well as state.
 	std::vector<std::string> stepAI(Game &game);
-	// Extract the scene a draw pass reads, as Game::drawMap does for callers without a
+	// Extract the scene a draw pass reads, as MapDrawer::drawMap does for callers without a
 	// published scene. Without `into`, the result lives in shared storage that the next
 	// call overwrites; use it within the statement.
-	const PresentationFrame &sceneOf(const Game &game, const Game::ViewState &view, int localTeam = 0, PresentationFrame *into = nullptr);
+	const PresentationFrame &sceneOf(const Game &game, const ViewState &view, int localTeam = 0, PresentationFrame *into = nullptr);
 	const PresentationFrame &sceneOf(const Game &game);
     void observeMap(const Map& map,SceneMap& view);
     void drawGUI(GameGUI& gui,int team);
@@ -51,9 +52,9 @@ namespace glob2test
             sceneOf(game,view,std::get<8>(arguments),&frame);
             view.scene=&frame;
         }
-        struct Restore { Game::ViewState& view;const PresentationFrame* previous;
+        struct Restore { ViewState& view;const PresentationFrame* previous;
             ~Restore(){view.scene=previous;} } restore{view,previous};
-        Game::drawMap(std::forward<Args>(args)...);
+        MapDrawer::drawMap(std::forward<Args>(args)...);
     }
 
 	// Binds a game's synchronized stream on this thread, as the engine does around

@@ -12,7 +12,7 @@ namespace GAGCore { class GraphicContext; class Sprite; }
 // single transform change instead of one each.
 struct MapOverlayQueue
 {
-	//! A point bar: the pips of Game::drawPointBar, laid out from an anchor.
+	//! A point bar: the pips of MapDrawer::drawPointBar, laid out from an anchor.
 	struct Bar
 	{
 		float screenX, screenY;      //!< the anchor, in logical screen units

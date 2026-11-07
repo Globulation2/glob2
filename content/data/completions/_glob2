@@ -279,6 +279,7 @@ _glob2() {
       '--ai-profile-from-tick[ai-profile-from-tick]:value:' \
       '--ai-profile-gate[ai-profile-gate]:value:' \
       '--gradient-work-stats[gradient-work-stats]:value:_files' \
+      '--resource-claims[resource-claims]:value:(default off)' \
       '--resource-gradient-probe[resource-gradient-probe]' \
       '--resource-gradient-exploration[resource-gradient-exploration]:value:' \
       '--resource-gradient-exploration-seed[resource-gradient-exploration-seed]:value:' \

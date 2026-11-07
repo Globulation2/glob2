@@ -1,17 +1,16 @@
 name: build
 
+# The full development matrix. Pull requests run the fast gate (ci-fast.yml) instead;
+# a pull request labelled ci:full calls this workflow through ci-full-label.yml.
 on:
   push:
     branches: [master]
   workflow_call:
     inputs:
       revision:
-        description: Exact release candidate revision
+        description: Exact revision to verify (a release candidate or a ci:full pull request head)
         required: true
         type: string
-  pull_request:
-    # PRs run cheap contracts plus a 12% ranked check budget; ci:full runs everything.
-    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
@@ -128,6 +127,10 @@ jobs:
           python3 test/check_sim_revision.py --base "$BASE_SHA"
       - name: Check private RNG ownership
         run: python3 test/check_entity_random.py
+      - name: Check header layering and fan-in budgets
+        run: |
+          python3 -m unittest discover -s test -p test_check_header_layering.py -v
+          python3 test/check_header_layering.py
       - name: Check documentation links and navigation
         run: |
           python3 -m venv artifacts/docs-venv
@@ -143,9 +146,6 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
           DRAFT: ${{ github.event.pull_request.draft }}
           CI_CALLED_FULL: ${{ inputs.revision != '' }}
-          CI_PREDICTIVE_ENABLED: ${{ vars.CI_PREDICTIVE_ENABLED || 'true' }}
-          CI_PR_CHECK_BUDGET: ${{ vars.CI_PR_CHECK_BUDGET || '0.12' }}
-          CI_PR_FULL_AUDIT_PERCENT: ${{ vars.CI_PR_FULL_AUDIT_PERCENT || '0' }}
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
@@ -219,7 +219,17 @@ jobs:
             --debug-info line-tables-only --profile-pool-size 4 \
             --discard-merged-profiles --stream-logs \
             --cc clang-18 --cxx clang++-18 \
-            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
+            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18 \
+            --coverage-map artifacts/coverage-map/coverage-map.json.gz
+      # test/run_tests.py --affected reads this (python3 test/select_affected.py --fetch).
+      - name: Retain the per-case coverage map
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-map
+          path: artifacts/coverage-map/coverage-map.json.gz
+          if-no-files-found: warn
+          retention-days: 30
       - name: Retain coverage and failing test evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -697,12 +707,12 @@ jobs:
       - name: Run the unit tests
         id: run_the_unit_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/mingw/client/release --junit artifacts/tests/unit-junit.xml
+        run: python3 test/run_tests.py --tier full --binary unit --build-dir build/mingw/client/release --junit artifacts/tests/unit-junit.xml
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
         # The [map-generators] contract stays on Linux, as before this runner existed.
-        run: python3 test/run_tests.py --binary engine --coverage-profile ${{ needs.changes.outputs.secondary_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+        run: python3 test/run_tests.py --tier full --binary engine --coverage-profile ${{ needs.changes.outputs.secondary_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
       - name: Capture Windows native crash backtraces
         if: ${{ !cancelled() && steps.run_the_engine_tests.outcome == 'failure' }}
         continue-on-error: true
@@ -1385,8 +1395,8 @@ jobs:
           # that needs a new sim version (test/check_sim_revision.py checks the bump).
           assert committed.replace(b'\r\n', b'\n') == reference, (
               'Every platform agrees, but not with the committed trace: the simulation changed. '
-              'Bump SIM_REVISION in src/game/SimRevision.h and regenerate test/fixtures/multiplayer with '
-              "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
+              'Bump SIM_REVISION in src/game/SimRevision.h and regenerate the fixtures with '
+              'python3 tools/refresh_sim_fixtures.py')
           print(f'All {expected} selected match verify traces match')
           PY
 

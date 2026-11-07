@@ -165,6 +165,10 @@ jobs:
           rm -f build/linux/client/release/src/GlobalContainerArgs.o
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
+      - name: Check the stencil vectorizer
+        if: ${{ inputs.compiler == 'clang-18' }}
+        run: python3 tools/compiler/check_stencil_vectorizer.py --cxx clang++-18
+
       - name: Test compiler cache integration
         if: ${{ inputs.compiler == 'g++-13' && !inputs.generator_only }}
         id: test_compiler_cache_integration
@@ -471,14 +475,14 @@ jobs:
         if: ${{ steps.shard_plan.outputs.run_the_unit_tests == format('{0}', matrix.shard) }}
         id: run_the_unit_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
+        run: python3 test/run_tests.py --tier full --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --coverage-profile ${{ inputs.coverage_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
+        run: python3 test/run_tests.py --tier full --binary engine --coverage-profile ${{ inputs.coverage_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -676,7 +680,7 @@ jobs:
   audit:
     name: Audit native shard coverage (${{ inputs.runner }})
     needs: tests
-    # A partial prediction retains its inventories but cannot attest full coverage.
+    # A partial shard selection retains its inventories but cannot attest full coverage.
     if: ${{ !cancelled() && inputs.run_tests && join(fromJSON(inputs.test_shards), ',') == '1,2,3,4' }}
     runs-on: ${{ inputs.runner }}
     steps:
@@ -732,6 +736,19 @@ jobs:
       - name: Check secondary-platform golden rows
         if: ${{ matrix.suite == 'golden' }}
         run: timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-golden-rows --require-rows
+
+      # tools/refresh_sim_fixtures.py --from-run merges these rows after a recipe revision bump.
+      - name: Print this platform's golden rows
+        if: ${{ !cancelled() && matrix.suite == 'golden' }}
+        run: |
+          mkdir -p artifacts/golden-rows
+          timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-golden-rows --print > artifacts/golden-rows/rows.txt
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && matrix.suite == 'golden' }}
+        with:
+          name: golden-rows-linux-x86_64-${{ inputs.runner }}
+          path: artifacts/golden-rows/
+          retention-days: 14
 
       - name: Check golden maps and sweep colony counts
         id: check_golden_maps_and_sweep_colony_counts

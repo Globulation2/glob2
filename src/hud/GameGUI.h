@@ -37,6 +37,7 @@ namespace Tutorial { class Guidance; }
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "render/scene/SceneExtract.h"
+#include "render/ViewState.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
@@ -958,8 +959,8 @@ private:
 	std::queue<std::pair<Uint64, std::shared_ptr<Order>>> pendingBuildingReconciliations;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
-	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
-	Game::ViewState view;
+	///ViewState. Owned here (not on Game) and passed into MapDrawer::drawMap.
+	ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	PresentationFrame frameScene;
 	Uint64 lastTickTime = 0;

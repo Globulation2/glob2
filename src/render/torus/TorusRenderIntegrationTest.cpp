@@ -46,6 +46,7 @@
 #include <optional>
 #include "render/terrain/TerrainCompositor.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/MapDrawer.h"
 
 class TorusRenderIntegrationTest
 {
@@ -114,7 +115,7 @@ static void tiledCapture(bool hd = false)
     glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();
     glUseProgram(0); glDisable(GL_DEPTH_TEST); glDisable(GL_SCISSOR_TEST);
     globalContainer->gfx->setRenderTargetScale(1);
-    Game::ViewState baseline;
+    ViewState baseline;
     baseline.render.animationTime = view.standaloneRender.animationTime;
     baseline.render.areaAnimationTick = 0;
     // A fresh view draws the overview until its terrain tables are ready, and
@@ -378,7 +379,7 @@ static void devicePhaseFallback(GAGCore::RendererBackend backend)
     probe->phaseFault={};
     REQUIRE(gui.view.render.animationTime==animationBefore);
     REQUIRE(gui.view.render.areaAnimationTick==areaBefore);
-    Game::drawSceneMap(gui.drawnScene(),0,0,640,480,0,0,vx,vy,0,gui.view,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA);
+    MapDrawer::drawSceneMap(gui.drawnScene(),0,0,640,480,0,0,vx,vy,0,gui.view,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA);
     REQUIRE(gui.view.render.animationTime==animationBefore+1);
     REQUIRE(gui.view.render.areaAnimationTick==areaBefore+1);
     REQUIRE(gui.game.checkSum()==checksum);
@@ -685,7 +686,7 @@ static void run(bool gpu, int width, int height)
                 gui.view.mouseX = x * 32;
                 gui.view.mouseY = y * 32;
                 gui.view.mouseUnit = UnitRef();
-                gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
+                MapDrawer::drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
                     0, Game::DRAW_WHOLE_MAP, gui.view, glob2test::sceneOf(gui.game, gui.view));
                 REQUIRE(gui.game.resolveUnit(gui.view.mouseUnit) == explorer);

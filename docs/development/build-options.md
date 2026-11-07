@@ -15,11 +15,23 @@ translation unit (`BOOST_ASIO_HAS_PTHREADS=1`). Keep this build-wide: header-ord
 detection can otherwise mix POSIX and Win32 Asio thread layouts, corrupting
 network teardown. The pthread runtime is already required by the Windows build.
 
+## Compiler checks
+
+`python3 tools/compiler/check_stencil_vectorizer.py [--cxx COMPILER]` compiles a
+torus 3x3 smoothing stencil shaped like the map generators' kernels at `-O0`,
+`-O2` and `-O2` without the vectorizers, under AddressSanitizer, and requires one
+checksum from every build and run. It runs on macOS CI and the Linux Clang job,
+because an analysis on Apple clang 21 saw `-O2` turn this loop shape into an ASan
+heap overflow with run-to-run-varying sums. If it ever fails, check whether the
+real stencils in `src/map/generator/shared/` are affected; if they are, add
+`-fno-vectorize -fno-slp-vectorize` to the strict numeric sources in
+`src/SConscript` for Clang and refresh that platform's generator rows.
+
 ## Fast development builds
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
-directory, forwarding SCons targets and options. It defaults to at most eight
-jobs and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
+directory, forwarding SCons targets and options. It defaults to one job per CPU
+(the [token pool](#parallel-lanes) shares them between concurrent builds) and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
 Install ccache before using the development command. Native dependencies still
 come from the existing package-manager or `GLOB2_SDL3_PREFIX` configuration;
 mobile dependencies and SDKs still require their existing setup steps.
@@ -38,12 +50,54 @@ python3 tools/dev_build.py --cache-stats
 
 Fast builds use `-O0 -g1`: backtraces and basic symbols remain, but full variable
 inspection requires ordinary debug compilation. Fast/PCH/unity options reject
-release or profiling builds. Use release builds for shipping and performance
-measurements. Preserve numeric guards and compare simulation checksums when
-validating build configurations; do not bump the simulation revision to mask a
-build-induced mismatch.
+release, perf or profiling builds. Preserve numeric guards and compare simulation
+checksums when validating build configurations; do not bump the simulation
+revision to mask a build-induced mismatch.
 
-`pch=1` precompiles stable standard headers separately for each compiler/flag
+## Build tiers
+
+| Tier | Command | Evidence it may back |
+| --- | --- | --- |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`) | correctness, checksum and golden traces, save/replay continuity |
+| perf-screen | `scons perf=1` (`-O2 -g1`) | the direction and rough size of a performance change |
+| perf-confirm | `scons perf=1 opt=3` (`-O3 -g1`) | the number quoted in a performance PR; required when screening shows under 5% or mixed signs |
+| release | `scons release=1` and the platform packaging | shipping, package size and store QA only; never PR performance evidence |
+
+`perf=1` is a native client build in `build/<toolchain>/client/perf` (`perf/o3`
+with `opt=3`). It keeps the full client profile, lossless development assets and
+`-g1` symbols, and does not strip or use `-fwhole-program`, so a profiler can
+attribute samples and every performance claim is reproducible from one `scons`
+command. `tools/dev_build.py perf=1` runs it with the managed compiler cache.
+Rendering measurements that need shipped asset paths add
+`sprite_packing=video optimized_assets=1`. Simulation numeric sources keep their
+strict flags in every tier, so the dev and perf builds of one platform produce the
+same simulation checksums; a mismatch is a bug, not a reason to bump the
+simulation revision.
+
+`pch=1` precompiles
+### Comparing against master
+
+`python3 tools/dev_baseline.py build` builds the dev and perf tiers of
+origin/master in a detached worktree under the development store; with the shared
+compiler cache, a baseline one merge newer than the last is mostly cache hits.
+`tools/perf_ab.py` then measures a candidate build against it in alternating
+pairs and prints the table for the pull request:
+
+```sh
+python3 tools/dev_build.py perf=1 engine-tests
+python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf --name terrain-hazard \
+  -- '{build}/test/glob2-engine-tests' -ts=TerrainHazardBenchmark '-tc=*idle decisions*'
+```
+
+`--baseline master` resolves the baseline of the branch's merge base
+(`dev_baseline.py path --merge-base HEAD`); any build directory works too. The
+metric is wall time unless `--metric REGEX` picks a number the benchmark prints.
+Screening uses three pairs; quoted numbers use `perf=1 opt=3` and seven pairs
+(`--pin` adds the Linux benchmark cpuset). `dev_baseline.py gc --keep 3` removes
+older baselines that no comparison is using, and `dev_baseline.py seed WORKTREE`
+copies a baseline's dev build into a fresh worktree so its first build recompiles
+only what differs.
+ stable standard headers separately for each compiler/flag
 configuration. Its C++ objects bypass ccache rather than weakening cache
 correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
 checked-in allowlist in deterministic groups of at most four files, preserves
@@ -72,9 +126,51 @@ Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.
 A cold native dry-run can still require an existing SCons configure directory.
-Debug prefix mapping in fast builds uses `.`; run the debugger from the checkout
-or set its source substitution directory when debugging elsewhere. Runtime paths
-and `__FILE__` semantics are preserved.
+
+### Sharing the compiler cache between checkouts
+
+Every checkout of the same commit produces the same compiler-cache keys, so a new
+worktree compiles mostly from direct cache hits. Nothing checkout-specific reaches
+a compile command line or a widely included header: the absolute source, runtime
+asset and renderer shader directories live in the generated
+`glob2/BuildPaths.h`, which only the four files that use them include, and the
+version banner reports the source revision from `glob2/BuildStamp.h` instead of
+`__DATE__`/`__TIME__`. Add a new checkout-specific value to
+`scons/checkout_paths.py`, never to `BuildConfig.h` or a `-D` flag.
+
+Builds other than shipping invocations (`bundle`, `package`, `install`,
+`retain_symbols`) set `CCACHE_BASEDIR` to the checkout and map debug paths to
+`.`; run the debugger from the checkout or set its source substitution directory
+when debugging elsewhere (`settings set target.source-map . <checkout>` in LLDB,
+`set substitute-path . <checkout>` in GDB). Runtime paths and `__FILE__` semantics
+are preserved. Shipping invocations keep absolute debug paths.
+
+The managed cache has one configuration file, `ccache.conf` in its directory,
+written by every build: a 20 GiB `max_size`, `compiler_check = content` and
+compression. Builds and `tools/dev_build.py --cache-stats` read the same limit;
+`CCACHE_MAXSIZE` or other `CCACHE_*` variables still override it for one run, and
+an explicit `CCACHE_DIR` uses that directory's own configuration.
+
+### Parallel lanes
+
+Every build, test run and asset export on one machine shares a pool of `ncpu + 1`
+CPU tokens (`scons/jobserver.py`): each compiler or linker process SCons spawns,
+each running test process and each asset-encoding worker holds one token, so
+several checkouts building at once share the CPUs instead of multiplying the
+process count. `-j` keeps its meaning as a lane's maximum. Tokens are `flock`ed
+files under the development store's `state/jobserver/`, released by the kernel
+when a process exits, so a killed build leaks nothing. Children of a token holder
+acquire nothing. `GLOB2_JOBSERVER=0` disables the pool and `GLOB2_JOBSERVER_TOKENS`
+resizes it; Windows builds run without it. `python3 tools/dev_environment.py
+lanes` lists the builds running now.
+### Up-to-date checks
+
+SCons rehashes a file only when its timestamp changed (`Decider('content-timestamp')`),
+and every build except `release=1` keeps the scanned `#include` list of each file
+until that file changes (`implicit_cache`). Together they take a no-change
+`tools/dev_build.py . engine-tests unit-tests` from about 68 s to about 27 s on a
+32-core Linux host. After adding a header that shadows another one on the include
+path, or moving include directories, run one build with `--implicit-deps-changed`.
 
 `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
 the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction

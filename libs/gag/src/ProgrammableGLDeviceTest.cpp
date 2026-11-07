@@ -6,6 +6,7 @@
 #include <SpriteRenderAtlas.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
+#include <glob2/BuildPaths.h>
 #endif
 #if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL) || defined(__EMSCRIPTEN__)
 #include <SDL3/SDL_opengl.h>

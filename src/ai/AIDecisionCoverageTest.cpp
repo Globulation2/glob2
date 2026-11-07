@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Version.h"
 #include "EngineFixtures.h"
 #include "AI.h"
 #include "shared_runtime/Runtime.h"

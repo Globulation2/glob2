@@ -21,3 +21,24 @@ binding declaration, and the error points at the syntax rather than at the macro
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
 relay and affected tests, then verify behavior-preserving simulation changes as above.
+
+## Header dependencies
+
+Most rebuild time is spent parsing headers, so a header's includes are part of its
+interface. Keep version constants (`VERSION_MINOR`, `SIM_REVISION`,
+`FILE_FORMAT_VERSION_*`) out of headers: give a function an overload whose
+current-format form is defined in the `.cpp`, and move version-gated bodies there.
+Prefer a forward declaration or a small leaf header over including a wide one, and
+keep simulation headers (`src/map`, `src/unit`, `src/building`, `src/team`,
+`src/game`, `src/engine/sim`, `src/resource`, `src/field`) free of rendering, HUD,
+UI and the full SDL umbrella. Hot per-cell accessors stay inline in their headers
+because release builds do not use LTO.
+
+`python3 test/check_header_layering.py` enforces this from the static include
+graph in a few seconds: layer ranks in `test/header_layers.json`, no version
+defaults in headers, no new directory-level include cycles, and fan-in budgets in
+`test/header_fanin_budget.json`. Existing violations are listed in
+`test/header_layering_allowlist.txt` and `test/header_cycles_allowlist.txt`; after
+removing some, run it with `--write` to drop their lines and lower the budgets.
+`python3 tools/include_graph.py top|fanin|why` reports which translation units a
+header reaches and through which includers.

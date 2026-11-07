@@ -13,6 +13,9 @@
 #include <cmath>
 #include <limits>
 #include <stdexcept>
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildPaths.h>
+#endif
 
 namespace GAGCore
 {

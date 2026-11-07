@@ -1690,7 +1690,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             else
             {
                 if (globalContainer->gfx->beginRenderFrame()) drawSession();
-                GAGCore::ApplicationHost::wait(std::min(Uint32(8), globalContainer->gfx->renderFrameWait()));
+                GAGCore::ApplicationHost::wait(GAGCore::pacedScreenWait(globalContainer->gfx->renderFrameWait()));
             }
         }
         doRunOnceAgain = finishSession();

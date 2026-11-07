@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select predictive PR checks, explicit overrides and full master verification."""
+"""Select full verification for master, nightly and ci:full, and path-affected checks otherwise."""
 
 import argparse
 import json
@@ -202,13 +202,6 @@ def choose_checks(
     event,
     labels=(),
     *,
-    branch='',
-    history=None,
-    model=None,
-    budget=0.12,
-    prediction_time=None,
-    disabled=False,
-    audit=False,
     browser_only=False,
     called_full=False,
     reused=False,
@@ -222,9 +215,9 @@ def choose_checks(
         from_flags,
         critical_change,
     )
-    from ci_predictive import select_checks
 
     checks = inventory()
+    arches = ['arm64-v8a', 'armeabi-v7a', 'x86_64']
     desired, reasons = select(paths, labels, known)
     complete = (
         event in ('push', 'schedule', 'workflow_dispatch')
@@ -235,114 +228,47 @@ def choose_checks(
         desired = full()
     if browser_only:
         desired = {flag: flag in ('browser', 'deployment') for flag in desired}
-    report = None
     exceptions = []
-    mode = 'affected'
     selected_ids = []
-    # Resolve mandatory/full modes before prediction so it cannot weaken them.
     if reused:
         mode = 'nightly-reused'
-    elif event == 'pull_request' and (
-        not known or critical_change(paths) or disabled or audit
-    ):
-        selected_ids = [c['id'] for c in checks]
-        mode = 'full'
-        if not known:
-            reason = 'diff unavailable'
-        elif critical_change(paths):
-            reason = 'CI/build inventory changed'
-        elif disabled:
-            reason = 'predictive reduction disabled'
-        else:
-            reason = 'full PR audit'
-        exceptions = [reason]
     elif complete:
         mode = 'affected' if browser_only else 'full'
         entries = browser_matrix(desired, paths, True)
-        selected_ids = from_flags(
-            desired, entries, ['arm64-v8a', 'armeabi-v7a', 'x86_64'], 'full', checks
-        )
-    elif event == 'pull_request' and 'ci:run' not in labels:
-        engine = any(v for k, v in desired.items() if k not in CHEAP_FLAGS)
-        if engine:
-            mode = 'predictive'
-            candidates = [c for c in checks if not c.get('full_only')]
-            report = select_checks(
-                candidates,
-                paths if known else None,
-                history,
-                model,
-                budget=budget,
-                event=event,
-                branch=branch,
-                prediction_time=prediction_time,
-            )
-            # The quota counts ranked leaves; prerequisites are added below.
-            selected_ids = list(report['selected_ids'])
-            # New checks need one observed result; never infer a pass for them.
-            selected_ids += report['unknown_ids']
-            if report['unknown_ids']:
-                exceptions.append('new checks: ' + ', '.join(report['unknown_ids']))
-            if 'ci:windows' in labels:
-                selected_ids.append('windows')
-            if 'ci:android' in labels:
-                selected_ids += [c['id'] for c in checks if c['job'] == 'android']
-            if 'ci:browsers' in labels:
-                selected_ids += [c['id'] for c in checks if c['job'] == 'web-test']
-        else:
-            mode = 'cheap-contracts'
+        selected_ids = from_flags(desired, entries, arches, 'full', checks)
+    elif not known or critical_change(paths):
+        # Without a trustworthy diff, or when CI/build machinery itself changed,
+        # the path policy cannot be trusted to narrow anything.
+        selected_ids = [c['id'] for c in checks]
+        mode = 'full'
+        exceptions = ['diff unavailable' if not known else 'CI/build inventory changed']
+    elif any(v for k, v in desired.items() if k not in CHEAP_FLAGS):
+        # Path-based affected verification; primary GCC13 stays complete.
+        mode = 'affected'
+        entries = browser_matrix(desired, paths, desired['coverage'])
+        selected_ids = from_flags(desired, entries, arches, 'full', checks)
+    else:
+        mode = 'cheap-contracts'
         for flag in CHEAP_FLAGS:
             if desired.get(flag) and any(
                 p.startswith(CHEAP_PATHS[flag]) for p in paths
             ):
                 selected_ids.append(flag)
-    else:
-        # Explicit ci:run retains affected verification; primary GCC13 stays complete.
-        entries = browser_matrix(
-            desired, paths, desired['coverage'] or 'ci:browsers' in labels
-        )
-        selected_ids = from_flags(
-            desired, entries, ['arm64-v8a', 'armeabi-v7a', 'x86_64'], 'full', checks
-        )
     selected_ids = sorted(set(selected_ids))
     plan = execution_plan(selected_ids, checks)
     plan.update(
         mode=mode,
-        requested_budget=budget,
-        predictor=report,
         exceptions=exceptions,
         inventory_count=len(checks),
-        ranked_count=report['selected_count'] if report else len(selected_ids),
         executed_count=len(plan['executed_ids']),
     )
-    # A prediction does not imply the compound full-matrix comparison ran.
-    full_matrix = set(plan['executed_ids']) == {c['id'] for c in checks}
-    plan['full_matrix'] = full_matrix
+    plan['full_matrix'] = set(plan['executed_ids']) == {c['id'] for c in checks}
     return flags_from_plan(plan), plan, dict(desired, reasons=reasons)
-
-
-def _prediction_inputs():
-    """Latest trusted master bundle, with the committed inert seed as fallback."""
-    from ci_history import fetch_latest_bundle, load_history
-    directory=Path(__file__).resolve().parents[2]/'.github/ci';reasons=[]
-    repo=os.environ.get('GITHUB_REPOSITORY')
-    if repo and os.environ.get('GH_TOKEN'):
-        try:
-            target=Path('artifacts/ci-predictor')
-            if fetch_latest_bundle(repo,target,token=os.environ['GH_TOKEN']):directory=target
-            else:reasons.append('no trusted refreshed bundle; using committed seed')
-        except (OSError,ValueError,KeyError,RuntimeError) as error:
-            reasons.append('bundle unavailable; using committed seed: '+str(error))
-    try:history=load_history(directory/'history.json.gz')
-    except (OSError,ValueError,KeyError,EOFError) as error:
-        history={'schema':1,'records':[]};reasons.append('history unavailable: '+str(error))
-    return history,directory/'model.json.gz',reasons
 
 
 def main():
     import hashlib
-    import time
-    from ci_policy import CHEAP_FLAGS, fingerprint, select
+    from ci_policy import CHEAP_FLAGS, fingerprint
     from ci_coverage_baseline import successful_full_run
     from ci_check_inventory import fingerprint as inventory_fingerprint
     parser=argparse.ArgumentParser()
@@ -359,39 +285,21 @@ def main():
     if base and event in ('pull_request','push'):
         try:paths=changed_paths(base);known=True
         except (OSError,subprocess.CalledProcessError) as error:print('Diff unavailable; selecting full coverage:',error,file=sys.stderr)
-    prediction_time=time.time()
-    budget=float(os.environ.get('CI_PR_CHECK_BUDGET') or '.12')
-    if not 0 < budget <= 1:raise ValueError('CI_PR_CHECK_BUDGET must be in (0, 1]')
-    percent=float(os.environ.get('CI_PR_FULL_AUDIT_PERCENT') or '0')
-    if not 0 <= percent <= 100:raise ValueError('CI_PR_FULL_AUDIT_PERCENT must be in [0, 100]')
-    sample=f'{os.environ.get("GITHUB_REPOSITORY","")}:{os.environ.get("GITHUB_SHA","")}:{os.environ.get("GITHUB_RUN_ID","")}'
-    audit=int(hashlib.sha256(sample.encode()).hexdigest()[:16],16)/2**64 < percent/100
-    history=model=None;input_reasons=[]
-    # Full and explicit affected runs need neither the model nor a network restore.
-    if event=='pull_request' and not ({'ci:run','ci:full'} & set(labels)):
-        from ci_check_inventory import critical_change
-        desired_flags,_=select(paths,labels,known)
-        engine=any(value for flag,value in desired_flags.items() if flag not in CHEAP_FLAGS)
-        if (known and engine and not critical_change(paths) and not audit
-                and os.environ.get('CI_PREDICTIVE_ENABLED','true')!='false'):
-            history,model,input_reasons=_prediction_inputs()
     reused_run=None
     if event=='schedule':reused_run=successful_full_run(os.environ.get('GITHUB_REPOSITORY',''),os.environ.get('GITHUB_SHA',''),os.environ.get('GH_TOKEN',''))
-    selected,plan,desired=choose_checks(paths,known,event,labels,branch=branch,history=history,model=model,
-        budget=budget,prediction_time=prediction_time,disabled=os.environ.get('CI_PREDICTIVE_ENABLED','true')=='false',
-        audit=audit,browser_only=event=='workflow_dispatch' and os.environ.get('BROWSER_ONLY')=='true',
+    selected,plan,desired=choose_checks(paths,known,event,labels,
+        browser_only=event=='workflow_dispatch' and os.environ.get('BROWSER_ONLY')=='true',
         called_full=os.environ.get('CI_CALLED_FULL')=='true',reused=reused_run is not None)
-    if plan['predictor']:plan['predictor']['fallback_reasons'] += input_reasons
     options=plan['options'];entries=options['browser_matrix']['include'];arches=options['android_arches']
     policy=fingerprint()
     inventory_hash=hashlib.sha256(json.dumps(
         {'catalog':inventory_fingerprint(),'checks':plan['executed_ids'],'options':options},
         sort_keys=True,separators=(',',':')).encode()).hexdigest()
     sha=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() if os.environ.get('CI_CALLED_FULL')=='true' else os.environ.get('GITHUB_SHA')
-    observation=dict(schema=4,verification_mode=plan['mode'],reused_run_id=reused_run,selection=selected,event=event,
-        sha=sha,branch=branch,prediction_time=prediction_time,base_sha=base,full_matrix=plan['full_matrix'],desired=desired,
+    observation=dict(schema=5,verification_mode=plan['mode'],reused_run_id=reused_run,selection=selected,event=event,
+        sha=sha,branch=branch,base_sha=base,full_matrix=plan['full_matrix'],desired=desired,
         effective=dict(selected,browsers_all=bool(entries and {e['browsers'] for e in entries}=={'chromium','firefox','webkit'}),android_arches=arches),
-        tiers_enabled=False,predictive_enabled=plan['mode']=='predictive',draft=draft,paths=paths,checkpoint=None,policy_fingerprint=policy,
+        draft=draft,paths=paths,checkpoint=None,policy_fingerprint=policy,
         inventory={'checks':plan['executed_ids'],'jobs':selected,'browsers':entries,'android_arches':arches},
         inventory_fingerprint=inventory_hash,execution_plan=plan,
         checkpoint_eligible=plan['full_matrix'] and event in ('push','schedule','workflow_dispatch') and os.environ.get('CI_CALLED_FULL')!='true')
@@ -413,20 +321,13 @@ def main():
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
             f.write('## Selected development checks\n\n'+f'Verification mode: **{plan["mode"]}**.\n\n')
-            if plan['predictor']:
-                eligible=plan['predictor']['inventory_count']
-                f.write(f'Ranked budget: {budget:.0%}; {plan["ranked_count"]} of {eligible} eligible checks. ')
-            f.write(f'{plan["executed_count"]} of {plan["inventory_count"]} checks execute after prerequisites and policy additions.\n\n')
-            if plan['predictor']:f.write('Model: `'+plan['predictor']['model_id']+'`.\n\n')
-            for reason in plan['exceptions']+input_reasons:f.write('- '+reason+'\n')
+            f.write(f'{plan["executed_count"]} of {plan["inventory_count"]} checks execute, prerequisites included.\n\n')
+            for reason in plan['exceptions']:f.write('- '+reason+'\n')
             f.write('\n| Check | Decision |\n|---|---|\n')
             from ci_check_inventory import inventory
             for check in inventory():
                 cid=check['id']
-                ranked=plan['predictor']['selected_ids'] if plan['predictor'] else ()
-                decision=('ranked' if cid in ranked else
-                          'policy addition' if plan['predictor'] and cid in plan['ranked_ids'] else
-                          'selected' if cid in plan['ranked_ids'] else
+                decision=('selected' if cid in plan['ranked_ids'] else
                           'prerequisite' if cid in plan['executed_ids'] else 'not selected')
                 f.write(f'| {check["name"]} | {decision} |\n')
             if not any(v for k,v in selected.items() if k not in CHEAP_FLAGS):f.write('\nCheap-only success does not establish engine verification or acceptance of PR evidence.\n')

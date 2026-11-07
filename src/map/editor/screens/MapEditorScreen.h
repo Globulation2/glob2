@@ -24,6 +24,9 @@ class MapEditorScreen : public GAGGUI::Screen
 	void drawExecution() override;
 	std::vector<GAGGUI::ui::Host *> inspectionHosts() override;
 	Uint32 executionDelay(Uint32 now, Uint32) override;
+	// Native stacks pace the editor like a running game (GAGCore::pacedScreenWait).
+	bool followsRenderPacer() const override { return true; }
+	bool executionIdle() const override { return idle; }
 
 	// Follows the editor's live presentation; ScreenStack re-reads it each frame.
     bool usesResponsiveViewport() const override;
@@ -40,5 +43,7 @@ class MapEditorScreen : public GAGGUI::Screen
 	std::size_t receiptFirst = 0, receiptCount = 0;
 	void completeInputReceipt(std::size_t processed);
 	bool started = false;
-	Uint32 lastFrame = 0;
+	Uint32 lastFrame = 0; // browser update cadence only
+	// The last frame had no input and kept its scene (see executionIdle).
+	bool idle = false, hadInput = false;
 };

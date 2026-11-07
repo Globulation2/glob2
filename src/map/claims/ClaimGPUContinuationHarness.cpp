@@ -36,7 +36,12 @@ TEST_CASE("actual device material publications preserve whole game execution" * 
         Uint32 sum;
         std::vector<Uint32> world,buildings,units;
         std::vector<std::string> orders;
-        bool operator==(const Tick&) const = default;
+        // Spelled out: GCC 11 with -fwhole-program drops the vector comparisons a
+        // defaulted operator== on a local class instantiates, failing the link.
+        bool operator==(const Tick& o) const
+        {
+            return sum==o.sum && world==o.world && buildings==o.buildings && units==o.units && orders==o.orders;
+        }
     };
     const auto run=[&](Backend mode) {
         applyBackendConfiguration({mode,mode==Backend::CPU?Algorithm::Buckets:Algorithm::Frozen8});

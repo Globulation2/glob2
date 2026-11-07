@@ -7,16 +7,29 @@ leave CCACHE unset when regenerating it for tools/remove-unused-includes.py.
 """
 
 import os
+from pathlib import Path
 import shutil
 import shlex
 
 # ccache settings forwarded into the environment scons scrubs for build
 # commands. Deliberately absent: CCACHE_SLOPPINESS. Marking include_file_mtime
-# or include_file_ctime sloppy makes ccache trust timestamps over content, and
-# time_macros would let it cache the __DATE__/__TIME__ build banner in
-# GlobalContainerArgs.cpp. Both trade correctness for hit rate.
+# or include_file_ctime sloppy makes ccache trust timestamps over content.
+# Sources use no __DATE__/__TIME__ (Glob2.cpp reports glob2/BuildStamp.h),
+# so time_macros is unnecessary too.
 _FORWARDED = ('CCACHE_COMPILERCHECK', 'CCACHE_MAXSIZE',
               'CCACHE_DISABLE', 'CCACHE_LOGFILE', 'CCACHE_DEBUG', 'CCACHE_DEBUGDIR', 'HOME')
+
+
+# The managed cache's one configuration. Every builder (SCons, tools/dev_build.py,
+# a bare `ccache -s`) reads it from the cache directory, so limits never disagree.
+# CCACHE_MAXSIZE and other CCACHE_* variables in the environment still override.
+MANAGED_CONFIG = {'max_size': '20G', 'compiler_check': 'content', 'compression': 'true'}
+
+
+def configure_managed(directory):
+    from build_layout import write_if_changed
+    text = ''.join(f'{key} = {value}\n' for key, value in MANAGED_CONFIG.items())
+    write_if_changed(Path(directory) / 'ccache.conf', text)
 
 
 def enabled():
@@ -33,8 +46,12 @@ def enable(env):
     if str(Path(__file__).resolve().parent) not in sys.path:
         sys.path.append(str(Path(__file__).resolve().parent))
     from dev_store import cache, adopt
-    env['ENV']['CCACHE_DIR'] = str(adopt(os.environ['CCACHE_DIR'])) if os.environ.get('CCACHE_DIR') else str(cache(Path.cwd(), 'ccache'))
-    env['ENV']['CCACHE_MAXSIZE'] = os.environ.get('CCACHE_MAXSIZE', '4G')
+    if os.environ.get('CCACHE_DIR'):
+        env['ENV']['CCACHE_DIR'] = str(adopt(os.environ['CCACHE_DIR']))
+    else:
+        managed = cache(Path.cwd(), 'ccache')
+        configure_managed(managed)
+        env['ENV']['CCACHE_DIR'] = str(managed)
     # Wrap compilation commands, not CC/CXX: SMARTLINK and configure link
     # probes must keep the original compiler driver without a ccache process.
     # Respect callers who already supplied a ccache-prefixed compiler.

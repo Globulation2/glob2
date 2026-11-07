@@ -18,7 +18,7 @@ import ci_verify_selection as gate
 
 def plan_and_needs(selected):
     plan = inventory.execution_plan(selected)
-    plan.update(verification_mode="predictive", run_attempt=2)
+    plan.update(verification_mode="affected", run_attempt=2)
     needs = {job: {"result": "success" if take else "skipped"} for job, take in plan["jobs"].items()}
     needs["changes"] = {"result": "success"}
     return plan, needs

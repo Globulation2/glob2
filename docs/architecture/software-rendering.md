@@ -52,7 +52,7 @@ content revision. Code that edits pixels through `getSDLSurface()` must call
 `GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
 existing game rendering entry point. Presentation state a view keeps between frames —
 animation phases, the cloud field, the overlay scratch buffer and the software terrain
-cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
+cache — lives in `MapRenderState`, owned by `ViewState`, never on `Game` or `Map`;
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a

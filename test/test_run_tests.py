@@ -137,6 +137,36 @@ class SelectionTest(unittest.TestCase):
         self.assertEqual(sorted(case.suite for case in kept), ['HungryDefeat', 'NetConnection'])
         self.assertEqual([case.suite for case in skipped], ['PointBar'])
 
+    def test_tiers(self):
+        def suites(**overrides):
+            kept, skipped = run_tests.select(self.cases, args(**overrides))
+            return sorted(case.suite for case in kept + skipped)
+        everything = suites(tier='full')
+        self.assertIn('PointBar', everything)
+        self.assertNotIn('PointBar', suites(tier='headless'))
+        self.assertTrue(all(not case.display and not case.has('slow')
+                            for case in run_tests.select(self.cases, args(tier='headless'))[0]))
+        self.assertEqual(suites(tier='display'), suites(quick=True))
+        self.assertEqual(suites(), everything)  # programmatic callers keep the full inventory
+
+    def test_unoptimized_builds_get_longer_timeouts(self):
+        import json, tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory)
+            self.assertEqual(run_tests.timeout_scale(build), 1)
+            (build / 'identity.json').write_text(json.dumps({'mode': 'debug', 'dev_fast': True}))
+            self.assertEqual(run_tests.timeout_scale(build), 3)
+            (build / 'identity.json').write_text(json.dumps({'mode': 'perf'}))
+            self.assertEqual(run_tests.timeout_scale(build), 1)
+
+    def test_command_line_tier_defaults(self):
+        resolve = lambda **o: run_tests.resolve_tier(args(tier=None, **o))
+        self.assertEqual(resolve(), 'headless')
+        self.assertEqual(resolve(quick=True), 'display')
+        self.assertEqual(resolve(filter=['PointBar/*']), 'full')
+        self.assertEqual(resolve(tag=['display']), 'full')
+        self.assertEqual(run_tests.resolve_tier(args(tier='headless', tag=['display'])), 'headless')
+
 
 class ShardTest(unittest.TestCase):
     def test_shards_are_deterministic_and_complete(self):
@@ -316,7 +346,7 @@ class EndToEndTest(unittest.TestCase):
                     if override:
                         environment['GLOB2_TEST_SHADER_DIRECTORY'] = override
                     result = subprocess.run(
-                        [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                        [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                          '--build-dir', str(build), '--filter', 'HungryDefeat/*',
                          '--junit', str(Path(directory) / 'junit.xml')],
                         capture_output=True, text=True, env=environment)
@@ -336,7 +366,7 @@ class EndToEndTest(unittest.TestCase):
             for in_process in (False, True):
                 for fullscreen in (False, True):
                     with self.subTest(in_process=in_process, fullscreen=fullscreen):
-                        command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                        command = [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                                    '--build-dir', str(build), '--filter', 'HungryDefeat/*',
                                    '--junit', str(Path(directory) / 'junit.xml')]
                         if in_process:
@@ -364,7 +394,7 @@ class EndToEndTest(unittest.TestCase):
             for fullscreen, inherited, expected in ((False, None, default), (False, '0', '0'),
                                                     (True, None, '0'), (True, '1', '0')):
                 with self.subTest(fullscreen=fullscreen, inherited=inherited):
-                    command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                    command = [sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                                '--build-dir', str(build), '--filter', 'PointBar/*',
                                '--junit', str(Path(directory) / 'junit.xml')]
                     if fullscreen:
@@ -399,7 +429,7 @@ class EndToEndTest(unittest.TestCase):
                 f'raise SystemExit({exit_code})\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                                         '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                         '--artifacts', str(Path(directory) / 'artifacts'), *extra],
                                        capture_output=True, text=True)
@@ -462,7 +492,7 @@ class EndToEndTest(unittest.TestCase):
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                                      '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                      '--artifacts', str(Path(directory) / 'artifacts'), '-j', '2'],
                                     capture_output=True, text=True, env=dict(os.environ, GITHUB_ACTIONS='1'))
@@ -491,7 +521,7 @@ class EndToEndTest(unittest.TestCase):
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
-            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--tier', 'full', '--binary', 'engine',
                                      '--build-dir', str(build), '--no-display', '--junit', str(junit),
                                      '--artifacts', str(Path(directory) / 'artifacts'), '-j', '2', '--timeout', '2'],
                                     capture_output=True, text=True)

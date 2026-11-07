@@ -1,4 +1,4 @@
-"""Development coverage policy. Labels only add work; unknown inputs stay full."""
+"""Development coverage policy. ci:full only adds work; unknown inputs stay full."""
 import hashlib
 import json
 import re
@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
          'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform',
          'platform_stack', 'music')
-# Cheap jobs that run on pull requests without `ci:run`, like the selector's own
+# Cheap jobs that run without engine verification, like the selector's own
 # contracts: they do not build the game and gate no engine verification.
 # Music tooling has inexpensive unit tests; deployed processor and shared WASM
 # inputs also select their affected runtime coverage when requested.
@@ -17,7 +17,7 @@ MUSIC_SHARED_PATHS = ('tools/music/web/', 'tools/music/build_web.py')
 MUSIC_PROCESSOR_PATHS = ('tools/music/glob2music/studio/','tools/music/glob2music/community.py', 'tools/encode_music.py')
 CHEAP_PATHS = {'music': MUSIC_TOOL_PATHS}
 CHEAP_FLAGS = tuple(CHEAP_PATHS)
-LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
+LABELS = {'ci:full'}
 SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
@@ -213,17 +213,9 @@ def select(paths, labels=(), known=False):
     for path in paths:
         if path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) and not is_test_source(path):
             add(path, 'platform_stack')
-    labels = set(labels) & LABELS
-    if 'ci:full' in labels:
+    if 'ci:full' in set(labels) & LABELS:
         result = full()
-    if 'ci:windows' in labels:
-        result.update(native=True, windows=True)
-    if 'ci:android' in labels:
-        result['android'] = True
-    if 'ci:browsers' in labels:
-        result['browser'] = True
-    for label in sorted(labels - {'ci:run'}):
-        reasons.append({'label': label, 'reason': 'explicit expansion'})
+        reasons.append({'label': 'ci:full', 'reason': 'explicit expansion'})
     return result, reasons
 
 

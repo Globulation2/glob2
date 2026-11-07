@@ -9,6 +9,7 @@
 // platform workspace is on this branch; once it is, the tests read the source and
 // also check that the copy has not drifted from it.
 
+#include "SimRevision.h"
 #include "EngineTiming.h"
 #include "EngineFixtures.h"
 #include "Engine.h"

@@ -1,8 +1,8 @@
 """Stable executable CI check identities and their build prerequisites.
 
-The budget applies to ranked checks; prerequisite closure is reported separately.
+Directly selected checks and their prerequisite closure are reported separately.
 Cross-platform comparison is a compound full-matrix audit, never a free-standing
-12%-budget check. Its complete producer set is retained for full/affected runs.
+check. Its complete producer set is retained for full/affected runs.
 """
 import hashlib
 import json
@@ -118,8 +118,8 @@ def from_flags(flags, entries, arches, profile='full', checks=None):
 def execution_plan(selected, checks=None):
     """Translate direct requests into executable jobs and matrix prerequisites.
 
-    ``ranked_ids`` includes policy additions such as labels and unknown checks;
-    the predictor report separately retains the IDs chosen within its budget.
+    ``ranked_ids`` keeps its historical name: it lists the directly selected
+    checks, and ``dependency_ids`` the prerequisites added to run them.
     """
     checks=checks or inventory();by_id={r['id']:r for r in checks}
     executed=dependency_closure(selected,checks)
@@ -160,7 +160,7 @@ def fingerprint(checks=None):
 
 
 def critical_change(paths):
-    """New CI/build/test machinery gets a full validation before ranking it."""
+    """New CI/build/test machinery gets a full validation, not a path-narrowed one."""
     from ci_policy import cheap_path
     # Documentation does not change executable CI machinery. Release packaging
     # and mirror-only deployment have their own workflows.

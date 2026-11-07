@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include "render/MapDrawer.h"
 
 namespace
 {
@@ -44,7 +45,7 @@ struct ColonyContext
 };
 }
 
-MenuColony::MenuColony() = default;
+MenuColony::MenuColony() : view(std::make_unique<ViewState>()) {}
 MenuColony::~MenuColony() = default;
 
 bool MenuColony::load(const std::string& path)
@@ -52,7 +53,7 @@ bool MenuColony::load(const std::string& path)
 	ColonyContext context;
 	pause();
 	presentation.reset();
-	view = Game::ViewState();
+	*view = ViewState();
 	initialScene.reset();
 	game.reset();
 	try
@@ -95,7 +96,7 @@ bool MenuColony::load(const std::string& path)
 	catch (const std::exception& error)
 	{
 		presentation.reset();
-		view = Game::ViewState();
+		*view = ViewState();
 		initialScene.reset();
 		game.reset();
 		std::cerr << "Menu colony unavailable: " << error.what() << '\n';
@@ -140,12 +141,12 @@ void MenuColony::update(Uint64 now, bool visible)
 void MenuColony::draw(int width, int height, bool showStatus)
 {
 	if (!presentation) return;
-	view.scene = presentation->acquire();
-	if (view.scene)
+	view->scene = presentation->acquire();
+	if (view->scene)
 		initialScene.reset();
 	else
-		view.scene = initialScene.get();
-	if (!view.scene) return;
+		view->scene = initialScene.get();
+	if (!view->scene) return;
 	ColonyContext context;
 	struct ViewContext
 	{
@@ -165,11 +166,11 @@ void MenuColony::draw(int width, int height, bool showStatus)
 		}
 	} viewContext;
 	// Place the starting settlement to the right of the front-page panel.
-	const int x = (centerX - width * 2 / 3 / 32) & view.scene->map.getMaskW();
-	const int y = (centerY - height / 2 / 32) & view.scene->map.getMaskH();
+	const int x = (centerX - width * 2 / 3 / 32) & view->scene->map.getMaskW();
+	const int y = (centerY - height / 2 / 32) & view->scene->map.getMaskH();
 	// The first frame waits for finished terrain, so the menu never shows the
 	// overview or unbordered cells while the terrain builds.
-	Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, view,
+	MapDrawer::drawMap(0, 0, width, height, 0, 0, x, y, 0, *view,
 		Game::DRAW_WHOLE_MAP | (showStatus ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 		(terrainCompleted ? 0 : Game::DRAW_COMPLETE_TERRAIN));
 	terrainCompleted = true;

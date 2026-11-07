@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "AIImplementationId.h"
 #include "CustomGameSetup.h"
 #include "LegacyGenerationDescriptor.h"
 #include "RulesetCatalog.h"
@@ -232,10 +233,10 @@ struct CustomGamePreferences
 		for (int i = 0; i < colonyCount; ++i) {
 			auto &c = s.colonies[i];
 			int controller, ai;
-			if (!number(controller, 0, CustomGameSetup::Closed) || !number(ai, 0, AI::SIZE - 1) ||
+			if (!number(controller, 0, CustomGameSetup::Closed) || !number(ai, 0, AIImplementationIds::SIZE - 1) ||
 				!number(c.alliance, 0, Team::MAX_COUNT - 1)) return false;
 			c.controller = CustomGameSetup::Controller(controller);
-			c.ai = AI::ImplementationID(ai);
+			c.ai = AIImplementationIds::ImplementationID(ai);
 			if (version >= 5 && (!(in >> std::quoted(c.aiLibraryId)) || c.aiLibraryId.size() > 128))
 				return false;
 			humans += controller == CustomGameSetup::Human || controller == CustomGameSetup::Shared;

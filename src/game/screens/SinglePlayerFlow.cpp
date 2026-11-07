@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "AI.h"
 #include "SinglePlayerFlow.h"
 #include "GeneratorStudioScreen.h"
 #include "Engine.h"

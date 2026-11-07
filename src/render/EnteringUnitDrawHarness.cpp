@@ -5,13 +5,14 @@
 // A unit entering a building keeps its map slot on the tile it is leaving
 // (Unit::handleActionEnteringBuilding) while posX/posY already name the
 // building tile, so the draw loop visits it one square behind itself. Nothing
-// in Game::drawUnit reads `displacement`: at equal delta the two states are the
+// in MapDrawer::drawUnit reads `displacement`: at equal delta the two states are the
 // same picture, and any difference means the sprite is anchored on the wrong
 // tile — the "entering a building jumps back one square" regression.
 #include "scene/SceneMap.h"
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "Unit.h"
 #include "Building.h"
 #include "IntBuildingType.h"
@@ -109,12 +110,12 @@ namespace
 
 class EnteringUnitDrawHarness
 {
-	//! Game::drawMapGroundUnits is private; this class is a friend of Game.
-	static Frame render(Game& game, Game::ViewState& view)
+	//! Draws the ground units alone, as MapDrawer::drawMap's ground-unit pass does.
+	static Frame render(Game& game, ViewState& view)
 	{
 		auto* gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
+		MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 			0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	}
@@ -122,7 +123,7 @@ class EnteringUnitDrawHarness
 	//! Terrain, unit and building together, purely so a human can look at the
 	//! animation. The comparison below stays on the unit-only render, which has
 	//! no animated water or clouds to make frames differ by themselves.
-	static void capturePresentation(Game& game, Unit* unit, Game::ViewState& view)
+	static void capturePresentation(Game& game, Unit* unit, ViewState& view)
 	{
 		auto* gfx = globalContainer->gfx;
 		std::set<Uint16> visible;
@@ -130,10 +131,10 @@ class EnteringUnitDrawHarness
 		{
 			unit->delta = delta;
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-			{ SceneMap layers; glob2test::observeMap(game.map,layers); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
+			{ SceneMap layers; glob2test::observeMap(game.map,layers); MapDrawer::drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+			MapDrawer::drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 				0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
-			game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
+			MapDrawer::drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 				0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
 			save(grab(), "scene-delta" + std::to_string(delta));
 		}
@@ -150,7 +151,7 @@ public:
 			globalContainer->buildingsTypes.getFinishedTypeNum("inn"), 0) != nullptr,
 			"place the inn the worker walks into");
 
-		Game::ViewState view;
+		ViewState view;
 		Unit* unit = game.addUnit(FROM_X, FROM_Y, 0, WORKER, 0, 0, 1, 0);
 		require(unit != nullptr, "create the worker");
 		unit->action = WALK;

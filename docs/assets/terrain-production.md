@@ -223,10 +223,13 @@ a brick, a cobble, a sand ripple or a crack in the ice should be the size it
 would be beside a glob standing on it, and nothing but broad tone should span
 several tiles. The cracks of glacier ice, the drifts of wind-swept snow, the
 ripples of windy sand, the pavers of brick path, the stones of scree and the
-blocks of pumice and mud were all brought down to that scale. The grass and sand
-looks keep the grain of the classic tile they stand in for and change only its
-colour: lush and dry grass are soft like grass, dune and pale sand speckled like
-sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
+blocks of pumice and mud were all brought down to that scale. Lush and dry grass
+share the sunlit turf of grass (`turf` in the `_grass` family module) and each
+make it their own: lush grass is a deep-green clover sward with low rounded leaf
+cushions lit from the top left, and dry grass is ripe amber prairie grass with
+long combed blades, bowing in broad curved bands of bright crest and dark trough.
+The sand looks keep the grain of the classic tile and change only its colour:
+dune and pale sand are speckled like sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
 quarter of a tile apart
 (`ripple_light`): long lit windward slopes, a bright crest and a short shaded lee,
 with crests square to the water's main swell (`RIPPLE_WIND` matches `WAVE_SWELL`)
@@ -251,14 +254,17 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws up to seven decor layers, in order: up to two connected masses
-  that stand on open ground (`"connected_open": true`: cliffs, glacier and the
-  other Barriers masses), connected foliage (hedge and thicket), every other
-  obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
-  masses. Each layer draws only from its own corners, so cliffs show their walls where they
-  meet foliage or crags, and the foliage or rocks keep their own edge on the
-  other side. Eligibility follows rendered material bindings, including custom
-  materials.
+- A cell draws up to seven decor layers, in order: the connected masses that
+  stand on open ground (`"connected_open": true`: cliffs, glacier and the other
+  Barriers masses), connected foliage (hedge and thicket), every other obstacle
+  (stone pillars and the Outcrops looks), then the terraces of tiered masses.
+  Every mass at a cell draws, so none ends in a square notch along the cell
+  grid: masses fill the first layers in rank order (more north corners, then
+  more corners, then the lower id), and foliage beside three masses draws after
+  them. Each layer draws only from its own corners, so cliffs show their walls
+  where they meet foliage or crags, and the foliage keeps its own edge on the
+  other side (crags keep clear of the rim, below). Eligibility follows rendered
+  material bindings, including custom materials.
 - An undecorated corner, such as ordinary grass, sand or water, suppresses the
   foliage and obstacle layers in that cell, preserving a clear border against
   open ground. The open-ground layer still draws there, so the rim and walls of
@@ -266,6 +272,14 @@ A material opts in with a `decor` block:
 - Obstacle clusters stand in the middle of their cell, not on their corners,
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
+- Stone pillars and the Outcrops looks go further and keep clear of open-ground
+  masses (`"clear_of_masses"`, 0 or 1, object decor only; every built-in object
+  decor sets 1, so the corner-count rule above now matters only for custom
+  object decor). A cell draws none of that decor when a mass vertex lies
+  within that many vertices of its corners (0: its own corners), so spires and
+  pillars never crowd a cliff's rim, walls or terraces. One vertex is the
+  terrain a cell's fog check already covers. The cells still play as obstacles;
+  they show only their ground, and the mass's rim draws in the cells it touches.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
@@ -363,8 +377,8 @@ of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Cliffs draw in their own decor
-layer, so against hedge, thicket or crags they keep their walls and the
-neighbour keeps its own edge.
+layer, so against hedge, thicket or crags they keep their walls; hedge and
+thicket keep their own edge, while crags keep clear of the rim.
 
 Glacier is the same connected plateau rendered in ice by a second cliff style
 (`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed
@@ -416,8 +430,9 @@ Sandstone benches are a pale caprock split by joints over thick beds that step b
 at their feet. Obsidian ridge is a heap of flat glassy shards, each turned its own
 way to the sky with an occasional glint and bright crests where they meet. Granite
 tors are rounded blocks broken by sheeting joints, with moss in the shaded gaps.
-Travertine terraces are matte calcite steps holding shallow milky pools, each
-spilling over a rounded drape.
+Travertine terraces show only the stone, since the renderer stacks the tiers: ivory
+to beige calcite in soft horizontal beds, with porous beds of pinholes and a few long
+lenses between denser, almost clean ones, on fluted pale flowstone walls.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at

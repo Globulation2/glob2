@@ -5,6 +5,7 @@
 #include "TerrainCatalogIO.h"
 #include "render/scene/SceneMap.h"
 #include <SDL3_image/SDL_image.h>
+#include <FileManager.h>
 #include <Toolkit.h>
 #include <filesystem>
 #include <map>
@@ -71,6 +72,26 @@ TEST_SUITE("TerrainStones")
 		bad[0] = 64;
 		CHECK_THROWS_AS(TerrainVisual::StoneMap(bad.data(), 128, 1024), std::runtime_error);
 		CHECK_THROWS_AS(TerrainVisual::StoneMap(rgba.data(), 64, 1024), std::runtime_error);
+	}
+
+	TEST_CASE("packaged builds find a catalog's PNG stone map as WebP [artifacts]")
+	{
+		// Packages re-encode every PNG as WebP beside the same stem while the
+		// catalog keeps naming the authored file; a missing map stops startup.
+		glob2test::HeadlessGlobals globals;
+		const auto root = glob2test::artifactDir() / "packaged-stones";
+		std::filesystem::create_directories(root / "data/terrain/stones");
+		std::filesystem::copy_file(glob2test::sourceRoot() / "content/data/terrain/stones/brick_path.png",
+								   root / "data/terrain/stones/packaged_probe.webp",
+								   std::filesystem::copy_options::overwrite_existing);
+		globals->fileManager->addDir(root.string());
+		TerrainVisual::Catalog catalog;
+		catalog.materials.resize(2);
+		catalog.materials[1].stones = "data/terrain/stones/packaged_probe.png";
+		const TerrainVisual::StoneMaps maps(catalog);
+		CHECK(maps.get(1));
+		catalog.materials[1].stones = "data/terrain/stones/absent_probe.png";
+		CHECK_THROWS(TerrainVisual::StoneMaps{catalog});
 	}
 
 	TEST_CASE("applied stones keep or drop whole stones and feather their joint")

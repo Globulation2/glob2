@@ -18,6 +18,7 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -43,7 +44,7 @@
 // Bullets/explosions/death animations, fog of war, and overlay maps. Split from Game_render.cpp.
 
 
-void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene)
+void MapDrawer::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -134,7 +135,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	}
 }
 
-void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
 	// drawMap indexes effects only for renderers and settings that draw them.
 	if (view.render.unitEffects.empty())
@@ -160,7 +161,7 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 			const auto kind = UnitEffect::Kind(effect.kind);
 			const bool spawn = kind == UnitEffect::Kind::Spawn;
 			if (age >= (spawn ? UnitEffect::DustTicks : UnitEffect::IconDelayTicks + UnitEffect::IconTicks) ||
-				(!(drawOptions & DRAW_WHOLE_MAP) && !map.isFOWDiscovered(effect.x, effect.y, visibleTeams)))
+				(!(drawOptions & Game::DRAW_WHOLE_MAP) && !map.isFOWDiscovered(effect.x, effect.y, visibleTeams)))
 				continue;
 			int glyph = -1;
 			if (!spawn)
@@ -214,7 +215,7 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 				});
 		}
 	// Over each unit: a spawn's twinkles, and a trained unit's new level rising like
-	// a combat level-up (Game::drawUnit).
+	// a combat level-up (MapDrawer::drawUnit).
 	for (const auto &unit : view.render.unitOverlays)
 	{
 		if (UnitEffect::Kind(unit.kind) == UnitEffect::Kind::Spawn)
@@ -273,11 +274,11 @@ void drawFogShadeSquare(int x, int y, const unsigned corner[4], unsigned lowest,
 }
 }
 
-void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const PresentationFrame& scene)
+void MapDrawer::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const PresentationFrame& scene)
 {
 	const SceneMap &sceneMap = scene.map;
 	PERF_SCOPE_TIME(RenderFog);
-	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
+	if ((drawOptions & Game::DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unaligned lookup
 		Uint32 visibleTeams = scene.entities.teams[localTeam].mask;
@@ -363,12 +364,12 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 	}
 }
 
-void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
+void MapDrawer::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	const SceneMap& map = view.drawnScene().map;
 	std::valarray<unsigned char> &overlayAlphas = view.render.overlayAlphas;
 	PERF_SCOPE_TIME(Overlay);
-	if(drawOptions & DRAW_OVERLAY)
+	if(drawOptions & Game::DRAW_OVERLAY)
 	{
 		const OverlayArea* overlays = view.drawnScene().overlay.get();
 

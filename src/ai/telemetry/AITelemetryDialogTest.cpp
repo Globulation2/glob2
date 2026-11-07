@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "AI.h"
 #include "EngineFixtures.h"
 #include "GameGUIDialog.h"
 #include "UIRecordingCanvas.h"

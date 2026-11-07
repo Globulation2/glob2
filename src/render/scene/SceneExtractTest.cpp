@@ -463,7 +463,7 @@ TEST_SUITE("SceneExtract")
                     const int index=buildingSpriteFrame(*frame.entities.type(b),b.hp,b.maxHp,frame.entities.connections(b));
                     REQUIRE(index>=0);REQUIRE(index<frame.entities.type(b)->gameSpritePtr->getFrameCount());
                 }
-                Game::ViewState view;view.scene=&frame;
+                ViewState view;view.scene=&frame;
                 auto* gfx=globals->gfx;
                 gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
                 gfx->drawFilledRect(0,0,1024,1024,GAGCore::Color(20,30,20));

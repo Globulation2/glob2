@@ -6,6 +6,7 @@
 #include <cstdio>
 
 #include <glob2/BuildConfig.h>
+#include <glob2/BuildPaths.h>
 #include <Toolkit.h>
 #include <zlib.h>
 
