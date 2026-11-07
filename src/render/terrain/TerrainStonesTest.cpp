@@ -39,12 +39,12 @@ std::vector<std::uint8_t> twoStones()
 			const int beyond = x >= 64 ? x - 64 : 63 - x;
 			u[2] = std::uint8_t(128 + (2 * beyond - 3) * 4);
 			const int own = x >= 64, distance = own ? x - 64 : 63 - x; // Texels beyond the joint.
-			const bool near = distance < 16;
+			const bool nearJoint = distance < 16;
 			t[0] = std::uint8_t(own);
 			t[1] = std::uint8_t(4 << 4 | 4); // Both stones centred in this cell.
-			t[2] = std::uint8_t(near ? 1 - own : own);
+			t[2] = std::uint8_t(nearJoint ? 1 - own : own);
 			// Native pixels x 32, joint halfway between texels: (distance + 0.5) / 4.
-			t[3] = near ? std::uint8_t((2 * distance + 1) * 4) : 255;
+			t[3] = nearJoint ? std::uint8_t((2 * distance + 1) * 4) : 255;
 		}
 	return rgba;
 }

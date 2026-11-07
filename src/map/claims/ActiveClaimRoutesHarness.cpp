@@ -96,9 +96,9 @@ TEST_SUITE("ActiveClaimRoutes")
         map.setResourceByIndex(7,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(7,8),WHEAT,1);
         CHECK_FALSE(unit->prepareActiveMaterialPickup(7,8));CHECK(unit->materialClaimTask==task);
         CHECK(unit->prepareActiveMaterialPickup(9,8));
-        assign(*unit,*consumer,map,14,8);const auto far=*unit->activeMaterialClaim;
+        assign(*unit,*consumer,map,14,8);const auto farClaim=*unit->activeMaterialClaim;
         map.setResourceByIndex(15,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(15,8),WHEAT,1);
-        CHECK_FALSE(unit->prepareActiveMaterialPickup(15,8));CHECK(unit->activeMaterialClaim==far);
+        CHECK_FALSE(unit->prepareActiveMaterialPickup(15,8));CHECK(unit->activeMaterialClaim==farClaim);
     }
     TEST_CASE("denied adjacent pickup exchange preserves the outstanding route and its publication deadline")
     {
