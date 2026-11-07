@@ -91,7 +91,7 @@ GAGCore::CooperativeTask Game::addTeamTask(int pos)
 	assert(mapHeader.getNumberOfTeams()<Team::MAX_COUNT);
 	if(pos==TEAM_POS_END)
 		pos=mapHeader.getNumberOfTeams();
-	teams[pos]=new Team(this);
+	teams[pos]=new Team(this, simContext());
 	teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
 	teams[pos]->race.setCatalog(gameHeader.getUnitCatalog());
 	teams[pos]->setCorrectMasks();

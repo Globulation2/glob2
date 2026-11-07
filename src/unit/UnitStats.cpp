@@ -5,7 +5,8 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
 
 #include "Building.h"
 
@@ -23,13 +24,13 @@ int Unit::getRealArmor(bool isMagic) const
 		// Custom-game "glass cannon" rule: armor is reduced by the same
 		// factor attack strength is scaled up, below. Only the armor itself
 		// shrinks; the fruit penalty stays whole.
-		int armor = performance[ARMOR] / owner->game->gameHeader.getGlassCannonScale();
-		if (armor && owner->game->areaEffects.enabled() && insideTimeout >= 0 &&
+		int armor = performance[ARMOR] / owner->ctx.gameHeader->getGlassCannonScale();
+		if (armor && owner->ctx.areaEffects->enabled() && insideTimeout >= 0 &&
 			displacement != DIS_INSIDE && displacement != DIS_ENTERING_BUILDING &&
 			!(displacement == DIS_EXITING_BUILDING && attachedBuilding))
 		{
 			const auto factor =
-				owner->game->areaEffects.at(BuildingAreaEffects::UnitArmor, owner->teamNumber,
+				owner->ctx.areaEffects->at(BuildingAreaEffects::UnitArmor, owner->teamNumber,
 											owner->map->coordToIndex(posX, posY));
 			if (factor != BuildingAreaEffects::Neutral)
 				armor = BuildingAreaEffects::scale(armor, factor);
@@ -41,7 +42,7 @@ int Unit::getRealArmor(bool isMagic) const
 //! Return the real attack strength, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
-	return applyAreaAttack(int(std::clamp<Sint64>((Sint64(performance[ATTACK_STRENGTH]) + experienceLevel) * owner->game->gameHeader.getGlassCannonScale(),0,INT_MAX)));
+	return applyAreaAttack(int(std::clamp<Sint64>((Sint64(performance[ATTACK_STRENGTH]) + experienceLevel) * owner->ctx.gameHeader->getGlassCannonScale(),0,INT_MAX)));
 }
 
 //! Return the amount of experience to level-up
@@ -89,11 +90,11 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 
 int Unit::applyAreaAttack(int value) const
 {
-	if (!value || !owner->game->areaEffects.enabled() || insideTimeout < 0 ||
+	if (!value || !owner->ctx.areaEffects->enabled() || insideTimeout < 0 ||
 		displacement == DIS_INSIDE || displacement == DIS_ENTERING_BUILDING ||
 		(displacement == DIS_EXITING_BUILDING && attachedBuilding))
 		return value;
-	const auto factor = owner->game->areaEffects.at(
+	const auto factor = owner->ctx.areaEffects->at(
 		BuildingAreaEffects::UnitAttack, owner->teamNumber, owner->map->coordToIndex(posX, posY));
 	return factor == BuildingAreaEffects::Neutral ? value
 												  : BuildingAreaEffects::scale(value, factor);

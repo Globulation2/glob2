@@ -14,7 +14,9 @@
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
-#include "Game.h"
+#include "GameHeader.h"
+#include "AreaEffects.h"
+#include "Map.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
@@ -202,9 +204,9 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 	{
 		const int target = hp < getEffectiveMaxHp() ? type->prevLevel : type->nextLevel;
 		if (target < 0) return false;
-		const BuildingType* site = owner->game->buildingsTypes.get(target);
+		const BuildingType* site = owner->ctx.buildingsTypes->get(target);
 		const BuildingType* completed = hp < getEffectiveMaxHp() ? type
-			: site->isBuildingSite ? owner->game->buildingsTypes.get(site->nextLevel) : site;
+			: site->isBuildingSite ? owner->ctx.buildingsTypes->get(site->nextLevel) : site;
 		if (unitWorking < 0 || unitWorking > site->semantics.assignmentLimit || unitWorkingFuture < 0
 			|| unitWorkingFuture > completed->semantics.assignmentLimit) return false;
 		if (hp<getEffectiveMaxHp())
@@ -218,7 +220,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			// Enforce the rule here as well as in order validation: local callers
 			// may reach this boundary directly. The damaged-building branch above
 			// remains a repair, which does not grant an unavailable building level.
-			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+			if (owner->ctx.gameHeader->isUnitUpgradesDisabled()) return false;
 			if (!isUpgradeAvailable() || !isHardSpaceForBuildingSite(UPGRADE))
 				return false;
 			constructionResultState=UPGRADE;
@@ -254,7 +256,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorking=0;
@@ -290,7 +292,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		if (targetLevelTypeNum!=BUILDING_LEVEL_NONE)
 		{
 			recoverTypeNum=targetLevelTypeNum;
-			recoverType=owner->game->buildingsTypes.get(targetLevelTypeNum);
+			recoverType=owner->ctx.buildingsTypes->get(targetLevelTypeNum);
 			if (!canTransferMaterialsTo(recoverType)) return;
 		}
 		else
@@ -303,12 +305,12 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION)
 	{
 		buildingState=ALIVE;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 	}
 	else
 	{
@@ -378,7 +380,7 @@ void Building::launchDelete(void)
 	{
 		cancelProduction();
 		buildingState=WAITING_FOR_DESTRUCTION;
-		owner->game->areaEffects.changed(gid);
+		owner->ctx.areaEffects->changed(gid);
 		owner->stockSuppliers.remove(this);
 		owner->directStockSuppliers.remove(this);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
@@ -399,7 +401,7 @@ void Building::cancelDelete(void)
 {
 	if (buildingState!=WAITING_FOR_DESTRUCTION) return;
 	buildingState=ALIVE;
-	owner->game->areaEffects.changed(gid);
+	owner->ctx.areaEffects->changed(gid);
 	owner->addToStaticAbilitiesLists(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resource);
@@ -571,7 +573,7 @@ void Building::updateConstructionState(void)
 			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
-				owner->game->areaEffects.changed(gid);
+				owner->ctx.areaEffects->changed(gid);
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
 				if(constructionResultState == UPGRADE)
 					addForbiddenZoneToUpgradeArea();
