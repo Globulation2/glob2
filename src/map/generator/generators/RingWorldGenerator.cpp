@@ -6,13 +6,20 @@
 #include "Grid.h"
 #include "Geometry.h"
 #include "LatticeNoise.h"
+#include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
+#include "ResourceSemantics.h"
 #include "Resources.h"
+#include "Roads.h"
+#include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "TerrainGroup.h"
+#include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
+#include <array>
 #include <climits>
 #include <cmath>
 #include <cstdint>
@@ -45,6 +52,43 @@ using namespace MapGeneration;
 // THE SIZES AT THE DEFAULTS (256x256, belt 45%, roughness 50): the belt averages 115 tiles across,
 // its centre line winds up to 28 tiles either way, its width swings up to 13 tiles and its coast
 // wanders up to 26 more; the ocean between the coasts is at least 31 tiles.
+//
+// RING WORLD 2.0 (revision 4): the same belt, drawn with the engine's full terrain palette. The
+// design brief: seen from the air, a continent that wraps the world reads by (1) a dark open ocean
+// on both sides, paler along every coast; (2) a broken mountain spine down the middle of the land,
+// the divide between its two coasts, crossed by passes; (3) a road that runs right round the world
+// from town to town, crossing the spine at the passes; (4) coasts with character: rocky headlands,
+// muddy bays, and green fertile rings round the lakes. Revision 3's stamp (the belt, lakes,
+// islands, beaches) and its colony sites are unchanged for the same seed; over them:
+// - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
+//   SAND, WATER, DEEP_WATER, LOAM, MUDFLAT, SCREE, SHALE, TRAIL, BOULDERS, RIDGE_ROCK) that every
+//   shared helper and check reads, and paints looks over it with composeLooks (Sketch.h) at the very
+//   end, after every resource stage, so looks never change a rule or what a helper saw.
+// - Deep ocean (`deep-water`): ocean vertices kDeepSteps or more from any land are deep water
+//   (deepCore): swimmable but slower, no algae, still waters the land. The coastal shallows keep the
+//   beaches and the algae band; swimming across the ocean to the other coast or an island is slower.
+// - The rock spine (`rock-spine`): a broken band of rock (Ridges: impassable, towers shoot over it)
+//   along the belt's dry centre line, cut into segments of 16 to 30 tiles with passes of 5 to 8, and
+//   cut again wherever the ring road crosses it and round every home. Every core is at least two
+//   tiles thick (rockVertices) and stands kSpineDry steps from any water, so it never meets a lake or
+//   a coast and can never part the belt; a light scree apron skirts it far from water.
+// - A quarry tor per colony: one small outcrop of the spine's rock, stamped from one stencil turned
+//   by quarter turns to face its colony, with a five-tile quarry face (stone on grass, left out of the
+//   rock, a ring of grass before it) kTorWalk steps' walk from the swarm. Every colony's face holds
+//   the same stone at the same walk (telemetry: ring-world.quarry.nearest-walk); if any colony's tor
+//   fits nowhere, no colony gets one.
+// - The ring road (`ring-road`): trail (Paths: twice the walking speed, buildable, holds nothing, so
+//   no crop ever grows on it or across it) from each colony's doorstep to the next all the way round
+//   the world: the cheapest walk that keeps off the wet farmland, laid before any deposit.
+// - Coasts: low shores in the bays are mudflat (Rough: slow, unbuildable, holds nothing, and unlike
+//   sand it does not inhibit growth) and the tips of headlands are boulders (Obstacles), never within
+//   kCoastKeep of a home. Lakes away from the homes are ringed with loam (Fertile: buildable crop land
+//   that waters its surroundings), their beaches included, since sand there only held growth back.
+// - Islands themed: a stone island is volcanic (ash on its bare ground, pumice on its beach, the
+//   stone on grass at its middle); fruit and grain islands stay green.
+// - A climate, looks only (`climate`: temperate, steppe, tropical): grass graded by distance from
+//   water, the beach, deep water, loam, rock, road, mud and headland looks. Every choice is in
+//   telemetry.
 namespace
 {
 
@@ -73,6 +117,66 @@ constexpr int kHomeWood = 16;
 constexpr int kHomeStone = 10;
 
 constexpr int kUnreached = INT_MIN;
+
+// --- 2.0 ----------------------------------------------------------------------------------------
+//
+// Streams of their own, so every draw revision 3 made is still the draw it made.
+constexpr const char *kSpineStream = "ring-world-spine";
+constexpr const char *kRoadStream = "ring-world-road";
+constexpr const char *kCoastStream = "ring-world-coast";
+constexpr const char *kLookStream = "ring-world-looks";
+constexpr const char *kClimateStream = "ring-world-climate";
+constexpr const char *kIsleStream = "ring-world-isles";
+// Deep ocean: ocean vertices at least kDeepSteps eight-neighbour steps from land, opened by kDeepOpen
+// and only in bodies of kDeepLeast vertices or more, so no lone dark vertex reads as a hole.
+constexpr int kDeepSteps = 6, kDeepOpen = 1, kDeepLeast = 12;
+// The spine: rock runs of kSpineRunLeast plus up to kSpineRunExtra tiles along the belt, passes of
+// kSpinePassLeast plus up to kSpinePassExtra between them; half a tile to a tile thicker than
+// kSpineHalfThick each side of a centre line wandering kSpineWander tiles off the belt's own. No rock
+// within kSpineDry steps of water, within kSpineHomeClear tiles of a swarm, or within kSpineRoadClear
+// of the road or a tor. Scree skirts it up to kTalusOuter tiles out, never within kTalusDry of water.
+constexpr int kSpineRunLeast = 16, kSpineRunExtra = 15, kSpinePassLeast = 5, kSpinePassExtra = 4;
+constexpr double kSpineHalfThick = 1.8, kSpineThickSwing = 1.0, kSpineWander = 3.0;
+constexpr int kSpineDry = 8, kSpineRoadClear = 3, kSpineLeast = 10, kTalusOuter = 2, kTalusDry = 12;
+constexpr double kSpineHomeClear = 16;
+// The quarry tors: the face's front row kTorWalk steps' walk from the swarm, or the nearest walk
+// between kTorWalkLeast and kTorWalkMost every colony can have; every tile of the stencil and
+// kTorClear round it on plain grass, at least kTorDry steps from water and kTorRoadClear from the
+// road and any home's ground.
+constexpr int kTorWalk = 16, kTorClear = 1, kTorDry = 3, kTorRoadClear = 2;
+constexpr double kTorSpineClear = 10;
+// Nothing planted within kTorOpen tiles of a tor, and the scatter cleared that far before its face.
+constexpr int kTorOpen = 3;
+constexpr int kTorWalkLeast = 8, kTorWalkMost = 32;
+constexpr int kTorFace = 5; // stone tiles in every face
+// The road keeps off ground fewer than kRoadWet steps from water (each step nearer costs
+// kRoadWetCost) and kRoadHomeClear tiles round another colony's ground (kRoadHomeCost), and its
+// doorstep is two tiles outside its own colony's ground, so it never touches it.
+constexpr int kRoadWet = 10, kRoadWetCost = 3, kRoadHomeClear = 5, kRoadHomeCost = 40;
+// Coasts: a shore vertex is a headland when more than kHeadland of the disc of kCoastProbe tiles
+// round it is ocean, a bay below kBay; a noise picks kHeadlandShare / kBayShare of them. Nothing
+// within kCoastKeep tiles of a swarm's middle, which is home ground.
+constexpr int kCoastProbe = 6;
+constexpr double kHeadland = 0.56, kBay = 0.42, kHeadlandGate = 0.5, kBayGate = 0.5, kCoastKeep = 18;
+// Lakes: grass and beach vertices within kLoamDeep steps of a lake are loam, outside the home
+// gardens (kGardenRadius tiles round a swarm's middle, frayed by kGardenFray).
+constexpr int kLoamDeep = 5;
+constexpr double kGardenRadius = 12, kGardenFray = 3;
+// Volcanic islands: ground beyond kIsleCore tiles of the island's middle is ash.
+constexpr double kIsleCore = 3.6;
+
+// The look-only climates. lush and green are the steps from water within which the grass is lush and
+// still green; beyond green it is dry.
+struct Climate
+{
+	const char *name;
+	TerrainType beach, deep, loam, loamSecond, rock, road, mud, headland;
+	int lush, green;
+};
+constexpr Climate kClimates[3] = {
+	{"temperate", PALE_SAND, DEEP_WATER, SPRING_MEADOW, MOSS, RIDGE_ROCK, TRAIL, MUDFLAT, GRANITE_TORS, 8, 26},
+	{"steppe", SAND, DEEP_WATER, LOAM, SPRING_MEADOW, HOODOOS, SANDSTONE, HARDPAN, SANDSTONE_BENCHES, 5, 14},
+	{"tropical", SAND, DARK_WATER, MOSS, LOAM, OUTCROP, OVERGROWN_ROAD, MUD, BOULDERS, 14, 48}};
 
 double unitDraw(std::mt19937 &rng)
 {
@@ -252,6 +356,853 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 								   "Candidate budget or clearance limited inland lakes.");
 }
 
+// Revision 3's terrain, planned from the request alone so validateWorld can plan it again: the belt,
+// its lakes and islands with their beaches, and (2.0) the deep ocean core.
+struct Stamp
+{
+	Belt belt;
+	TerrainSketch terrain;
+	std::vector<unsigned char> ocean, lake; // water vertices of the ocean and of the lakes
+	std::vector<Island> islands;
+	int wantedIslands = 0, deep = 0;
+};
+
+Stamp stampRing(const Axes &axes, GenerationContext &context, const RingWorldOptions &options)
+{
+	const int width = axes.width, height = axes.height;
+	const Torus t{width, height};
+	const size_t area = size_t(width) * height;
+	Stamp stamp{shapeBelt(axes, context, options), TerrainSketch(area, WATER), {}, {}, {}, 0, 0};
+	TerrainSketch &terrain = stamp.terrain;
+	for (int y = 0; y < height; ++y)
+		for (int x = 0; x < width; ++x)
+			if (stamp.belt.land(x, y))
+				terrain[size_t(y) * width + x] = GRASS;
+	std::vector<unsigned char> sea(area);
+	for (size_t i = 0; i < area; ++i)
+		sea[i] = terrain[i] == WATER;
+	carveLakes(terrain, stamp.belt, context, options.lakeDensity);
+	// The control counts islands per 128x128 of map, never fewer than one when it is on at all.
+	stamp.wantedIslands =
+		options.resourceIslands > 0
+			? std::max(1, int(std::lround(options.resourceIslands * double(t.size()) / 16384.0)))
+			: 0;
+	// 40 candidate draws per island; each keeps 7 tiles of open water from every coast, too wide
+	// for any beach to bridge, so islands are reached only by swimming.
+	stamp.islands = raiseIslands(terrain, t, context, {"islands", stamp.wantedIslands, 40, kIslandMoat});
+	layBeaches(terrain, t);
+	stamp.ocean.assign(area, 0);
+	stamp.lake.assign(area, 0);
+	for (size_t i = 0; i < area; ++i)
+	{
+		stamp.ocean[i] = terrain[i] == WATER && sea[i];
+		stamp.lake[i] = terrain[i] == WATER && !sea[i];
+	}
+	if (options.deepWater)
+	{
+		std::vector<unsigned char> core = deepCore(t, stamp.ocean, kDeepSteps);
+		const std::vector<unsigned char> grown = dilateRound(t, erode(t, core, kDeepOpen), kDeepOpen);
+		for (size_t i = 0; i < area; ++i)
+			core[i] = core[i] && grown[i];
+		core = dropSmallRegions(t, core, kDeepLeast);
+		for (size_t i = 0; i < area; ++i)
+			if (core[i])
+			{
+				terrain[i] = DEEP_WATER;
+				++stamp.deep;
+			}
+	}
+	return stamp;
+}
+
+// The tiles whose four corner vertices all pass `test`, and those with at least one that does.
+template <typename Test>
+std::vector<unsigned char> tilesAll(const TerrainSketch &v, const Torus &t, Test test)
+{
+	std::vector<unsigned char> out(v.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			out[size_t(t.at(x, y))] = test(v[t.at(x, y)]) && test(v[t.at(x + 1, y)]) &&
+									  test(v[t.at(x, y + 1)]) && test(v[t.at(x + 1, y + 1)]);
+	return out;
+}
+template <typename Test>
+std::vector<unsigned char> tilesAny(const TerrainSketch &v, const Torus &t, Test test)
+{
+	std::vector<unsigned char> out(v.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			out[size_t(t.at(x, y))] = test(v[t.at(x, y)]) || test(v[t.at(x + 1, y)]) ||
+									  test(v[t.at(x, y + 1)]) || test(v[t.at(x + 1, y + 1)]);
+	return out;
+}
+bool wetType(unsigned char v)
+{
+	return v == WATER || v == DEEP_WATER;
+}
+
+// Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
+std::vector<unsigned char> blocksOfTwo(const Torus &t, const std::vector<unsigned char> &mask)
+{
+	std::vector<unsigned char> out(mask.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			if (mask[t.at(x, y)] && mask[t.at(x + 1, y)] && mask[t.at(x, y + 1)] && mask[t.at(x + 1, y + 1)])
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+						out[t.at(x + dx, y + dy)] = 1;
+	return out;
+}
+
+// Whether some blocked group of `blocked` (8-connected) parts the ground round it: the open tiles
+// beside it fall in more than one walkable component. Returns the first such group's label, or -1;
+// `label` receives the groups.
+int partingGroup(const Torus &t, const std::vector<unsigned char> &walkable,
+				 const std::vector<unsigned char> &blocked, std::vector<int> &label)
+{
+	const int n = t.size();
+	std::vector<unsigned char> open(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		open[i] = walkable[i] && !blocked[i];
+	const std::vector<int> component = connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight);
+	label = connectedRegions(blocked, t.w, t.h, true, GridNeighbors::Eight);
+	int groups = 0;
+	for (int l : label)
+		groups = std::max(groups, l + 1);
+	std::vector<int> seen(size_t(groups), -1);
+	for (int i = 0; i < n; ++i)
+	{
+		if (label[i] < 0)
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (!open[j])
+					continue;
+				if (seen[label[i]] < 0)
+					seen[label[i]] = component[j];
+				else if (seen[label[i]] != component[j])
+					return label[i];
+			}
+	}
+	return -1;
+}
+
+// The 2.0 features, planned from the stamp and the colonies' swarms alone, so validateWorld can plan
+// them again from the finished map's start positions. Tile masks unless named vertices.
+struct Features
+{
+	std::vector<unsigned char> route;  // the ring road's walk
+	std::vector<unsigned char> spine;  // the spine's rock tiles
+	std::vector<unsigned char> tor;    // the tors' rock tiles
+	std::vector<unsigned char> quarry; // the tors' quarry faces: stone on grass
+	std::vector<int> owner;            // the colony each quarry tile belongs to, -1 elsewhere
+	std::vector<unsigned char> keep;   // vertices round every tor that stay plain grass
+	TerrainSketch mechanics;           // the finished mechanic sketch
+	std::vector<unsigned char> volcanic; // vertices of volcanic islands' ash and pumice
+	std::vector<int> isleTheme;        // per island: 0 stone (volcanic), 1 fruit, 2 wheat
+	int roadTiles = 0, segments = 0, spineTiles = 0, tors = 0, dropped = 0, torBand = -1, torMiss = -1;
+	int mud = 0, headlands = 0, loam = 0, scree = 0, ash = 0;
+	bool roadOmitted = false, torsOmitted = false;
+};
+
+// The swarms' corners and the ground each colony's settlement stands on (the 10x10 square round its
+// 4x4 swarm), as revision 3 drew it.
+struct Home
+{
+	int x, y; // the swarm's top-left tile
+	double cx() const { return x + 2.0; }
+	double cy() const { return y + 2.0; }
+};
+std::vector<unsigned char> homeGround(const Torus &t, const std::vector<Home> &homes, int margin)
+{
+	std::vector<unsigned char> ground(size_t(t.size()), 0);
+	for (const Home &home : homes)
+		for (int dy = -3 - margin; dy <= 6 + margin; ++dy)
+			for (int dx = -3 - margin; dx <= 6 + margin; ++dx)
+				ground[t.at(home.x + dx, home.y + dy)] = 1;
+	return ground;
+}
+double nearestHome(const Torus &t, const std::vector<Home> &homes, int x, int y)
+{
+	double best = 1e9;
+	for (const Home &home : homes)
+	{
+		const double dx = t.offsetX(int(home.cx()), x), dy = t.offsetY(int(home.cy()), y);
+		best = std::min(best, std::sqrt(dx * dx + dy * dy));
+	}
+	return best;
+}
+
+// The ring road: from each colony's doorstep to the next one's along the belt, round the world.
+// Waypoints between colonies more than a quarter of the ring apart keep every walk going forwards.
+void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
+			  const std::vector<Home> &homes, const std::vector<int> &fromWater, GenerationContext &context)
+{
+	const int n = t.size(), length = axes.length();
+	const std::vector<unsigned char> dry = tilesAll(stamp.terrain, t, [](unsigned char v) { return !wetType(v); });
+	const std::vector<unsigned char> ground = homeGround(t, homes, 1), near = homeGround(t, homes, kRoadHomeClear);
+	const std::vector<int> relief = fractalNoise(t.w, t.h, 16, 3, context.stream(kRoadStream));
+	// Never within two tiles of a tor's rock or face: a road corner there would spoil the face's grass.
+	std::vector<unsigned char> torAll(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		torAll[i] = f.tor[i] || f.quarry[i];
+	const std::vector<unsigned char> torNear = dilate(t, torAll, 2);
+	const auto open = [&](int i) { return dry[i] && !ground[i] && !torNear[i]; };
+	// Doorsteps: the tile two outside the colony's ground furthest from water.
+	std::vector<std::pair<double, int>> stops;
+	for (const Home &home : homes)
+	{
+		int best = -1;
+		for (int dy = -5; dy <= 8; ++dy)
+			for (int dx = -5; dx <= 8; ++dx)
+			{
+				if (std::max(std::abs(dx - 1.5), std::abs(dy - 1.5)) < 6.5)
+					continue;
+				const int i = t.at(home.x + dx, home.y + dy);
+				if (open(i) && (best < 0 || fromWater[i] > fromWater[best]))
+					best = i;
+			}
+		if (best < 0)
+		{
+			f.roadOmitted = true;
+			return;
+		}
+		stops.emplace_back(std::fmod(axes.uOf(best) + 0.0, double(length)), best);
+	}
+	std::sort(stops.begin(), stops.end());
+	// Waypoints: no two consecutive points more than a quarter of the ring apart.
+	std::vector<int> points;
+	const int count = int(stops.size());
+	for (int k = 0; k < count; ++k)
+	{
+		const int a = stops[k].second, b = stops[(k + 1) % count].second;
+		points.push_back(a);
+		double gap = std::fmod(stops[(k + 1) % count].first - stops[k].first + length, double(length));
+		if (gap <= 0)
+			gap = length;
+		const int between = int(std::ceil(gap / (length / 4.0))) - 1;
+		const double acrossA = stamp.belt.across(t.remainderX(a), a / t.w);
+		const double acrossB = stamp.belt.across(t.remainderX(b), b / t.w);
+		for (int j = 1; j <= between; ++j)
+		{
+			const double share = double(j) / (between + 1);
+			const int u = int(std::lround(stops[k].first + gap * share)) % length;
+			const double v = stamp.belt.centre[size_t(u)] + acrossA + (acrossB - acrossA) * share;
+			const int target = axes.at(u, int(std::lround(v)));
+			int best = -1;
+			for (int r = 0; r <= 30 && best < 0; ++r)
+				for (int dy = -r; dy <= r; ++dy)
+					for (int dx = -r; dx <= r; ++dx)
+					{
+						if (std::max(std::abs(dx), std::abs(dy)) != r)
+							continue;
+						const int i = t.at(t.remainderX(target) + dx, target / t.w + dy);
+						if (open(i) && fromWater[i] >= 3 && !near[i] && (best < 0 || i < best))
+							best = i;
+					}
+			if (best < 0)
+			{
+				f.roadOmitted = true;
+				return;
+			}
+			points.push_back(best);
+		}
+	}
+	f.route.assign(size_t(n), 0);
+	for (size_t k = 0; k < points.size(); ++k)
+	{
+		const int from = points[k], to = points[(k + 1) % points.size()];
+		const std::vector<int> walk = cheapestWalk(
+			t, GridNeighbors::Eight, {from}, tileMask(t, {to}),
+			[&](int, int next, int dx, int dy)
+			{
+				if (!open(next))
+					return -1;
+				return (dx && dy ? 14 : 10) + std::max(0, kRoadWet - fromWater[next]) * kRoadWetCost +
+					   relief[next] / 4096 + (near[next] ? kRoadHomeCost : 0);
+			});
+		if (walk.empty())
+		{
+			f.roadOmitted = true;
+			f.route.assign(size_t(n), 0);
+			return;
+		}
+		for (int i : walk)
+			f.route[i] = 1;
+	}
+	f.roadTiles = int(std::count(f.route.begin(), f.route.end(), 1));
+}
+
+// One quarry tor, in its stencil's frame: b points at the colony, a runs across. Rock rows b = -4 to
+// 0 and the face (b = 0, |a| <= 2) left out of it; the face's front row is b = 1.
+struct TorCell
+{
+	int a, b;
+	bool face;
+};
+std::vector<TorCell> torStencil()
+{
+	std::vector<TorCell> cells;
+	const int halfWidth[5] = {2, 4, 5, 5, 5}; // rows b = -4 .. 0
+	for (int b = -4; b <= 0; ++b)
+		for (int a = -halfWidth[b + 4]; a <= halfWidth[b + 4]; ++a)
+			cells.push_back({a, b, b == 0 && std::abs(a) <= 2});
+	return cells;
+}
+// The map offset of stencil cell (a, b) turned to face `facing` (0 +y, 1 -y, 2 +x, 3 -x).
+std::pair<int, int> torOffset(int a, int b, int facing)
+{
+	switch (facing)
+	{
+	case 0:
+		return {a, b};
+	case 1:
+		return {-a, -b};
+	case 2:
+		return {b, -a};
+	default:
+		return {-b, a};
+	}
+}
+
+// One tor per colony, all or none, each face's front row the same walk from its colony's swarm: every
+// colony's fitting candidates are listed with that walk, the walk chosen that every colony comes
+// nearest to (nearest kTorWalk on a tie), and each colony in turn takes its candidate nearest that
+// walk, then the one furthest inland, clear of the tors already placed.
+void planTors(Features &f, const Stamp &stamp, const Torus &t, const std::vector<Home> &homes,
+			  const std::vector<int> &fromWater, GenerationContext &context)
+{
+	const int n = t.size();
+	f.tor.assign(size_t(n), 0);
+	f.quarry.assign(size_t(n), 0);
+	f.owner.assign(size_t(n), -1);
+	const std::vector<unsigned char> walk = walkableTiles(stamp.terrain, t);
+	const std::vector<unsigned char> plain = tilesAll(stamp.terrain, t, [](unsigned char v) { return v == GRASS; });
+	const std::vector<unsigned char> ground = homeGround(t, homes, kTorRoadClear);
+	std::vector<unsigned char> island(size_t(n), 0);
+	for (const Island &isle : stamp.islands)
+		for (int i : isle.tiles)
+			island[i] = 1;
+	// Rock may stand on any dry land; the face, the rock behind it and the ground before it need plain
+	// grass, so the quarry tiles and their approach keep four grass corners.
+	std::vector<unsigned char> land(size_t(n), 0), ok(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		land[i] = walk[i] && !ground[i] && !island[i] && fromWater[i] >= kTorDry;
+		ok[i] = land[i] && plain[i];
+	}
+	const std::vector<int> tie = periodicNoise(t.w, t.h, 16, context.stream(kSpineStream));
+	const std::vector<TorCell> stencil = torStencil();
+	const int lowest = kTorWalkLeast, highest = kTorWalkMost;
+	struct Candidate
+	{
+		int centre, facing, front;
+		long inland; // lower is further inland, then the tie noise
+	};
+	std::vector<std::vector<Candidate>> candidates(homes.size());
+	for (size_t k = 0; k < homes.size(); ++k)
+	{
+		const Home &home = homes[k];
+		std::vector<int> swarm;
+		for (int dy = 0; dy < 4; ++dy)
+			for (int dx = 0; dx < 4; ++dx)
+				swarm.push_back(t.at(home.x + dx, home.y + dy));
+		const Reach reach = reachFrom(t, swarm, walk, highest + 8);
+		const double homeAcross = stamp.belt.across(t.x(home.x + 2), t.y(home.y + 2));
+		std::vector<int> steps(size_t(n), -1);
+		for (size_t r = 0; r < reach.tiles.size(); ++r)
+			steps[reach.tiles[r]] = reach.steps[r];
+		for (size_t r = 0; r < reach.tiles.size(); ++r)
+		{
+			const int c = reach.tiles[r];
+			if (reach.steps[r] < lowest + 1 || !land[c])
+				continue;
+			const int cx = t.remainderX(c), cy = c / t.w;
+			// On the colony's own side of the spine, clear of it.
+			const double across = stamp.belt.across(cx, cy);
+			if (across * homeAcross < 0 || std::abs(across) < kTorSpineClear)
+				continue;
+			const int hx = t.offsetX(cx, int(home.cx())), hy = t.offsetY(cy, int(home.cy()));
+			const int toward = std::abs(hy) >= std::abs(hx) ? (hy > 0 ? 0 : 1) : (hx > 0 ? 2 : 3);
+			for (int facing = 0; facing < 4; ++facing)
+			{
+				// Every tile of the stencil and kTorClear round it on allowed ground.
+				bool fits = true;
+				for (int b = -4 - kTorClear; b <= 1 + kTorClear && fits; ++b)
+					for (int a = -5 - kTorClear; a <= 5 + kTorClear && fits; ++a)
+					{
+						const auto [dx, dy] = torOffset(a, b, facing);
+						const int i = t.at(cx + dx, cy + dy);
+						fits = b >= -1 && std::abs(a) <= 3 ? ok[i] : land[i];
+					}
+				if (!fits)
+					continue;
+				int front = INT_MAX;
+				for (int a = -2; a <= 2; ++a)
+				{
+					const auto [dx, dy] = torOffset(a, 1, facing);
+					const int s = steps[t.at(cx + dx, cy + dy)];
+					if (s >= 0)
+						front = std::min(front, s);
+				}
+				if (front < lowest || front > highest)
+					continue;
+				// Facing the colony, then furthest inland, then the noise.
+				candidates[k].push_back({c, facing, front,
+										 (facing == toward ? 0 : 1000) - long(std::min(fromWater[c], 40)) * 16 +
+											 tie[c] / 4097});
+			}
+		}
+		if (candidates[k].empty())
+		{
+			f.torsOmitted = true;
+			return;
+		}
+	}
+	// The common walk: the one that keeps every colony nearest it and itself nearest kTorWalk (each step
+	// the worst colony misses it by costs three steps of distance from kTorWalk).
+	int target = kTorWalk, worst = INT_MAX, cost = INT_MAX;
+	for (int w = lowest; w <= highest; ++w)
+	{
+		int miss = 0;
+		for (const auto &list : candidates)
+		{
+			int nearest = INT_MAX;
+			for (const Candidate &c : list)
+				nearest = std::min(nearest, std::abs(c.front - w));
+			miss = std::max(miss, nearest);
+		}
+		const int here = 3 * miss + std::abs(w - kTorWalk);
+		if (here < cost || (here == cost && std::abs(w - kTorWalk) < std::abs(target - kTorWalk)))
+		{
+			cost = here;
+			worst = miss;
+			target = w;
+		}
+	}
+	f.torBand = target;
+	f.torMiss = worst;
+	std::vector<unsigned char> taken(size_t(n), 0);
+	for (size_t k = 0; k < homes.size(); ++k)
+	{
+		const Candidate *best = nullptr;
+		for (const Candidate &c : candidates[k])
+		{
+			const int cx = t.remainderX(c.centre), cy = c.centre / t.w;
+			bool clear = true;
+			for (int b = -4 - kTorClear; b <= 1 + kTorClear && clear; ++b)
+				for (int a = -5 - kTorClear; a <= 5 + kTorClear && clear; ++a)
+				{
+					const auto [dx, dy] = torOffset(a, b, c.facing);
+					clear = !taken[t.at(cx + dx, cy + dy)];
+				}
+			if (!clear)
+				continue;
+			if (!best || std::abs(c.front - target) < std::abs(best->front - target) ||
+				(std::abs(c.front - target) == std::abs(best->front - target) && c.inland < best->inland))
+				best = &c;
+		}
+		if (!best)
+		{
+			std::fill(f.tor.begin(), f.tor.end(), 0);
+			std::fill(f.quarry.begin(), f.quarry.end(), 0);
+			std::fill(f.owner.begin(), f.owner.end(), -1);
+			f.torsOmitted = true;
+			return;
+		}
+		const int cx = t.remainderX(best->centre), cy = best->centre / t.w;
+		for (const TorCell &cell : stencil)
+		{
+			const auto [dx, dy] = torOffset(cell.a, cell.b, best->facing);
+			const int i = t.at(cx + dx, cy + dy);
+			if (cell.face)
+			{
+				f.quarry[i] = 1;
+				f.owner[i] = int(k);
+			}
+			else
+				f.tor[i] = 1;
+		}
+		// Tors keep their clearance apart.
+		for (int b = -4 - 2 * kTorClear - 1; b <= 1 + 2 * kTorClear + 1; ++b)
+			for (int a = -5 - 2 * kTorClear - 1; a <= 5 + 2 * kTorClear + 1; ++a)
+			{
+				const auto [dx, dy] = torOffset(a, b, best->facing);
+				taken[t.at(cx + dx, cy + dy)] = 1;
+			}
+	}
+	f.tors = int(homes.size());
+}
+
+// The broken spine along the belt's centre line, clear of water, the homes, the road and the tors.
+void planSpine(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes, const std::vector<Home> &homes,
+			   const std::vector<int> &fromWater, GenerationContext &context)
+{
+	const int n = t.size(), length = axes.length();
+	f.spine.assign(size_t(n), 0);
+	std::mt19937 &rng = context.stream(kSpineStream);
+	double slope = 0;
+	const std::vector<double> wander = closedCurve(length, 1.4, rng, slope);
+	const std::vector<double> thickness = closedCurve(length, 1.0, rng, slope);
+	// Runs of rock and passes round the ring from a random start; the last run stops a pass short
+	// of the first.
+	std::vector<double> run(size_t(length), 0.0);
+	const int start = int(context.bounded(kSpineStream, unsigned(length)));
+	for (int at = 0; at < length;)
+	{
+		int rock = kSpineRunLeast + int(context.bounded(kSpineStream, kSpineRunExtra));
+		rock = std::min(rock, length - kSpinePassLeast - at);
+		for (int k = 0; k < rock; ++k)
+		{
+			// Thinner towards a run's ends, so every segment tapers.
+			const int end = std::min(k, rock - 1 - k);
+			run[size_t((start + at + k) % length)] = std::min(1.0, 0.55 + 0.15 * end);
+		}
+		at += std::max(rock, 0) + kSpinePassLeast + int(context.bounded(kSpineStream, kSpinePassExtra));
+	}
+	std::vector<unsigned char> clear(size_t(n), 0);
+	{
+		std::vector<unsigned char> obstacle(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			obstacle[i] = (!f.route.empty() && f.route[i]) || (!f.tor.empty() && (f.tor[i] || f.quarry[i]));
+		clear = dilate(t, obstacle, kSpineRoadClear);
+	}
+	std::vector<unsigned char> rock(size_t(n), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const int i = t.at(x, y), u = axes.u(x, y);
+			if (run[size_t(u)] <= 0 || fromWater[i] < kSpineDry || clear[i])
+				continue;
+			const double half = (kSpineHalfThick + kSpineThickSwing * (thickness[size_t(u)] + 1) / 2) * run[size_t(u)];
+			if (std::abs(stamp.belt.across(x, y) - kSpineWander * wander[size_t(u)]) > half)
+				continue;
+			if (nearestHome(t, homes, x, y) < kSpineHomeClear)
+				continue;
+			rock[i] = 1;
+		}
+	f.spine = dropSmallRegions(t, blocksOfTwo(t, rock), kSpineLeast);
+}
+
+// The mechanic sketch: the stamp with every 2.0 layer over it.
+void paintMechanics(Features &f, const Stamp &stamp, const Torus &t, const std::vector<Home> &homes,
+					const std::vector<int> &oceanSteps, const std::vector<int> &fray, const std::vector<int> &gate,
+					const std::vector<unsigned char> &dropBoulders)
+{
+	const int n = t.size();
+	TerrainSketch &mech = f.mechanics;
+	mech = stamp.terrain;
+	f.mud = f.headlands = f.loam = f.scree = f.ash = 0;
+	// Plain grass round every tor's face and rock, so its quarry tiles keep four grass corners.
+	std::vector<unsigned char> torAll(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		torAll[i] = f.tor[i] || f.quarry[i];
+	f.keep = tileCorners(t, dilate(t, torAll, kTorClear));
+	const std::vector<unsigned char> roadCorners =
+		f.route.empty() ? std::vector<unsigned char>(size_t(n), 0) : tileCorners(t, f.route);
+	const std::vector<unsigned char> roadNear = dilate(t, roadCorners, 2);
+	std::vector<unsigned char> islandVertex(size_t(n), 0);
+	for (const Island &isle : stamp.islands)
+		for (int i : isle.tiles)
+			islandVertex[i] = 1;
+	islandVertex = dilate(t, islandVertex, 1);
+	// Lakes: loam rings outside the gardens.
+	const std::vector<int> fromLake = stepsFrom(t, stamp.lake);
+	for (int i = 0; i < n; ++i)
+	{
+		if ((mech[i] != GRASS && mech[i] != SAND) || f.keep[i] || fromLake[i] < 1 ||
+			fromLake[i] > kLoamDeep + 2 * (gate[i] - 32768) / 32768)
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		// The beach itself turns to loam everywhere (sand there only held growth back, and no grass is
+		// lost); the ring beyond it stays out of the home gardens, which keep plain grass.
+		const bool beach = mech[i] == SAND && fromLake[i] == 1;
+		if (!beach && nearestHome(t, homes, x, y) < kGardenRadius + kGardenFray * (fray[i] - 32768) / 32768.0)
+			continue;
+		mech[i] = LOAM;
+		++f.loam;
+	}
+	// Coasts: bays of mud, headlands of boulders, by the share of ocean round each beach vertex.
+	const int probe = kCoastProbe, disc = [&]
+	{
+		int cells = 0;
+		for (int dy = -probe; dy <= probe; ++dy)
+			for (int dx = -probe; dx <= probe; ++dx)
+				cells += dx * dx + dy * dy <= probe * probe;
+		return cells;
+	}();
+	for (int i = 0; i < n; ++i)
+	{
+		if (mech[i] != SAND || oceanSteps[i] != 1 || islandVertex[i] || f.keep[i] || roadNear[i])
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		if (nearestHome(t, homes, x, y) < kCoastKeep)
+			continue;
+		int sea = 0;
+		for (int dy = -probe; dy <= probe; ++dy)
+			for (int dx = -probe; dx <= probe; ++dx)
+				if (dx * dx + dy * dy <= probe * probe)
+					sea += stamp.ocean[t.at(x + dx, y + dy)];
+		const double share = double(sea) / disc;
+		if (share > kHeadland && gate[i] > (1 - kHeadlandGate) * 65535 && !dropBoulders[i])
+		{
+			mech[i] = BOULDERS;
+			++f.headlands;
+		}
+		else if (share < kBay && gate[i] < kBayGate * 65535)
+		{
+			mech[i] = MUDFLAT;
+			++f.mud;
+		}
+	}
+	// Islands: the stone islands are volcanic.
+	f.volcanic.assign(size_t(n), 0);
+	for (size_t k = 0; k < stamp.islands.size(); ++k)
+	{
+		if (f.isleTheme[k] != 0)
+			continue;
+		// The island's tiles and the vertices one beyond them: its ground and its beach.
+		const Island &isle = stamp.islands[k];
+		std::vector<int> vertices;
+		for (int tile : isle.tiles)
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					vertices.push_back(t.at(t.remainderX(tile) + dx, tile / t.w + dy));
+		std::sort(vertices.begin(), vertices.end());
+		vertices.erase(std::unique(vertices.begin(), vertices.end()), vertices.end());
+		for (int i : vertices)
+		{
+			const int dx = t.offsetX(isle.x, t.remainderX(i)), dy = t.offsetY(isle.y, i / t.w);
+			if (mech[i] == SAND)
+			{
+				mech[i] = SCREE;
+				f.volcanic[i] = 1;
+				++f.ash;
+			}
+			else if (mech[i] == GRASS && std::hypot(double(dx), double(dy)) > kIsleCore)
+			{
+				mech[i] = SHALE;
+				f.volcanic[i] = 1;
+				++f.ash;
+			}
+		}
+	}
+	// Scree round the spine, far from water.
+	if (!f.spine.empty())
+	{
+		std::vector<unsigned char> eligible(size_t(n), 0);
+		const std::vector<int> fromWet = stepsFrom(t, tilesAny(stamp.terrain, t, wetType));
+		for (int i = 0; i < n; ++i)
+			eligible[i] = !f.keep[i] && !roadNear[i] && fromWet[i] >= kTalusDry;
+		const std::vector<unsigned char> talus = talusApron(t, f.spine, eligible, fray, 0, kTalusOuter, 30000);
+		for (int i = 0; i < n; ++i)
+			if (talus[i] && mech[i] == GRASS)
+			{
+				mech[i] = SCREE;
+				++f.scree;
+			}
+	}
+	// The road.
+	for (int i = 0; i < n; ++i)
+		if (roadCorners[i] && !wetType(mech[i]))
+			mech[i] = TRAIL;
+	// The rock.
+	std::vector<unsigned char> rockTiles(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		rockTiles[i] = f.spine[i] || f.tor[i];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTiles);
+	for (int i = 0; i < n; ++i)
+		if (rock[i])
+			mech[i] = RIDGE_ROCK;
+}
+
+Features planFeatures(const Stamp &stamp, const Torus &t, const Axes &axes, const std::vector<Home> &homes,
+					  const RingWorldOptions &options, GenerationContext &context)
+{
+	const int n = t.size();
+	Features f;
+	const std::vector<unsigned char> wetTiles = tilesAny(stamp.terrain, t, wetType);
+	const std::vector<int> fromWater = stepsFrom(t, wetTiles);
+	// Island themes, drawn first: 0 stone (volcanic), 1 fruit, 2 wheat, one in three each.
+	for (size_t k = 0; k < stamp.islands.size(); ++k)
+		f.isleTheme.push_back(int(context.bounded(kIsleStream, 3)));
+	// The tors first (they need the most particular ground), then the road round them, then the spine
+	// clear of both.
+	f.tor.assign(size_t(n), 0);
+	f.quarry.assign(size_t(n), 0);
+	f.owner.assign(size_t(n), -1);
+	f.spine.assign(size_t(n), 0);
+	f.route.assign(size_t(n), 0);
+	if (options.rockSpine)
+		planTors(f, stamp, t, homes, fromWater, context);
+	if (options.ringRoad)
+		planRoad(f, stamp, t, axes, homes, fromWater, context);
+	if (f.roadOmitted || !options.ringRoad)
+		f.route.assign(size_t(n), 0);
+	if (options.rockSpine)
+		planSpine(f, stamp, t, axes, homes, fromWater, context);
+	const std::vector<int> oceanSteps = stepsFrom(t, stamp.ocean);
+	std::mt19937 &looks = context.stream(kCoastStream);
+	const std::vector<int> fray = periodicNoise(t.w, t.h, 16, looks);
+	const std::vector<int> gate = fractalNoise(t.w, t.h, 32, 2, looks);
+	// Paint, then drop any boulders or spine that part the ground round them (the stamp's own
+	// walkable ground, with the quarry faces' stone counted as blocking), and paint again.
+	const std::vector<unsigned char> before = walkableTiles(stamp.terrain, t);
+	std::vector<unsigned char> dropBoulders(size_t(n), 0);
+	for (int round = 0; round < 24; ++round)
+	{
+		paintMechanics(f, stamp, t, homes, oceanSteps, fray, gate, dropBoulders);
+		const std::vector<unsigned char> after = walkableTiles(f.mechanics, t);
+		std::vector<unsigned char> blocked(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			blocked[i] = (before[i] && !after[i]) || f.quarry[i];
+		std::vector<int> label;
+		const int parting = partingGroup(t, before, blocked, label);
+		if (parting < 0)
+			break;
+		++f.dropped;
+		std::vector<unsigned char> group(size_t(n), 0);
+		bool torInGroup = false;
+		for (int i = 0; i < n; ++i)
+			if (label[i] == parting)
+			{
+				group[i] = 1;
+				f.spine[i] = 0;
+				torInGroup = torInGroup || f.tor[i] || f.quarry[i];
+			}
+		const std::vector<unsigned char> corners = tileCorners(t, dilate(t, group, 1));
+		for (int i = 0; i < n; ++i)
+			dropBoulders[i] = dropBoulders[i] || corners[i];
+		if (torInGroup)
+		{
+			f.torsOmitted = true;
+			f.tors = 0;
+			std::fill(f.tor.begin(), f.tor.end(), 0);
+			std::fill(f.quarry.begin(), f.quarry.end(), 0);
+			std::fill(f.owner.begin(), f.owner.end(), -1);
+		}
+		f.spine = dropSmallRegions(t, blocksOfTwo(t, f.spine), kSpineLeast);
+	}
+	f.spineTiles = int(std::count(f.spine.begin(), f.spine.end(), 1));
+	{
+		const std::vector<int> parts = connectedRegions(f.spine, t.w, t.h, true, GridNeighbors::Eight);
+		int most = 0;
+		for (int p : parts)
+			most = std::max(most, p + 1);
+		f.segments = most;
+	}
+	return f;
+}
+
+// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
+TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, const Climate &climate,
+						 GenerationContext &context)
+{
+	const int n = t.size();
+	const TerrainSketch &mech = f.mechanics;
+	std::vector<unsigned char> wet(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		wet[i] = wetType(mech[i]);
+	const std::vector<int> fromWet = stepsFrom(t, wet);
+	std::mt19937 &random = context.stream(kLookStream);
+	const std::vector<int> fray = fractalNoise(t.w, t.h, 32, 3, random);
+	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
+	std::vector<unsigned char> green(size_t(n), 0);
+	for (size_t k = 0; k < stamp.islands.size(); ++k)
+		if (f.isleTheme[k] != 0)
+			for (int i : stamp.islands[k].tiles)
+				green[i] = 1;
+	TerrainSketch looks(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const double shift = 7.0 * (fray[i] - 32768) / 32768.0;
+		const bool second = split[i] > 0.6 * 65536;
+		switch (mech[i])
+		{
+		case GRASS:
+			if (green[i] || fromWet[i] <= climate.lush + shift)
+				looks[i] = LUSH_GRASS;
+			else if (fromWet[i] > climate.green + shift)
+				looks[i] = DRY_GRASS;
+			break;
+		case LOAM:
+			looks[i] = second ? climate.loamSecond : climate.loam;
+			break;
+		case SAND:
+			looks[i] = climate.beach;
+			break;
+		case DEEP_WATER:
+			looks[i] = climate.deep;
+			break;
+		case MUDFLAT:
+			looks[i] = climate.mud;
+			break;
+		case BOULDERS:
+			looks[i] = climate.headland;
+			break;
+		case RIDGE_ROCK:
+			looks[i] = climate.rock;
+			break;
+		case TRAIL:
+			looks[i] = climate.road;
+			break;
+		case SHALE:
+			looks[i] = VOLCANIC_ASH;
+			break;
+		case SCREE:
+			looks[i] = f.volcanic[i] ? PUMICE : SCREE;
+			break;
+		default:
+			break;
+		}
+	}
+	return looks;
+}
+
+// Each island carries one themed prize at its middle, as stockIslands lays it, with the theme the
+// design already drew (and painted the island for).
+void stockThemedIslands(Map &map, GenerationContext &context, const std::vector<Island> &islands,
+						const std::vector<int> &themes)
+{
+	const int width = map.getW();
+	constexpr int stockTypes[] = {STONE, WHEAT, CHERRY, ORANGE, PRUNE};
+	const auto acceptsStock = [&](int x, int y)
+	{
+		for (int resource : stockTypes)
+			if (!map.terrainSupportsResourceAtByIndex(x, y, resource))
+				return false;
+		return true;
+	};
+	for (size_t k = 0; k < islands.size(); ++k)
+	{
+		const Island &island = islands[k];
+		std::vector<MapGeneratorPoint> grass;
+		for (int i : island.tiles)
+			if (acceptsStock(powerOfTwoRemainder(i, width), i / width))
+				grass.emplace_back(powerOfTwoRemainder(i, width), i / width);
+		if (grass.empty())
+			continue;
+		MapGeneratorPoint centre(island.x, island.y);
+		if (!acceptsStock(centre.x, centre.y))
+			centre = grass.at(context.bounded(kIsleStream, grass.size()));
+		switch (themes[k])
+		{
+		case 0:
+			placeResourceClump(map, context, centre, STONE, 2);
+			break;
+		case 1:
+			placeResourceClump(map, context, centre, CHERRY + int(context.bounded(kIsleStream, 3)), 2);
+			break;
+		default:
+			placeResourceClump(map, context, centre, WHEAT, 2);
+			break;
+		}
+	}
+}
+
 // A swarm anchored at (x, y) needs pure grass under its 4x4 footprint and dry, unoccupied ground in
 // the ring around it where its workers will stand.
 bool siteFits(const Map &map, int x, int y)
@@ -379,8 +1330,8 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 }
 
 // Every home's starter kit: a wheat and a wood patch on the most fertile ground a short walk from
-// the swarm, and a little stone further inland.
-void furnishHomes(Game &game, GenerationContext &context)
+// the swarm, and a little stone further inland, never on `keepOpen` (the ground round the quarry tors).
+void furnishHomes(Game &game, GenerationContext &context, const std::vector<unsigned char> &keepOpen)
 {
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
@@ -396,7 +1347,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const std::vector<int> shore = stepsFrom(t, water, dry);
 	const auto eligible = [&](int i)
-	{ return !reserved[i] && clearGround(map, powerOfTwoRemainder(i, width), i / width); };
+	{ return !reserved[i] && !keepOpen[i] && clearGround(map, powerOfTwoRemainder(i, width), i / width); };
 	for (int team = 0; team < teams; ++team)
 	{
 		std::vector<unsigned char> footprint(area, 0);
@@ -443,8 +1394,10 @@ void furnishHomes(Game &game, GenerationContext &context)
 // walk forward to the next (resources cost one, open ground nothing; water and buildings are
 // impassable) is found in the belt's unrolled cover, and only the deposits on it are cleared. The
 // last walk crosses the seam back to the first colony, so together they close one loop all the way
-// around the map. Almost always nothing is in the way and nothing is cleared.
-bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
+// around the map. Almost always nothing is in the way and nothing is cleared. Tiles of `keep` (the
+// quarry faces) are never walked over or cleared.
+bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes,
+				  const std::vector<unsigned char> &keep)
 {
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), length = axes.length();
@@ -508,7 +1461,8 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 					if (!dx && !dy)
 						continue;
 					const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-					if (!map.terrainPropertiesAt(nx, ny).walkable || map.getBuilding(nx, ny) != NOGBID)
+					if (!map.terrainPropertiesAt(nx, ny).walkable || map.getBuilding(nx, ny) != NOGBID ||
+						keep[size_t(ny) * width + nx])
 						continue;
 					const int step = axes.u(x, y) + axes.stepU(dx, dy);
 					const int nw = w + (step < 0 ? -1 : step >= length ? 1 : 0);
@@ -543,6 +1497,45 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 	return true;
 }
 
+// From each colony's swarm to the ground before its own face: the cheapest walk where a step costs ten
+// (fourteen diagonally) and stepping onto a deposit forty more; the deposits on it are cleared.
+void openQuarryWalks(Map &map, const Torus &t, const Features &features, const std::vector<Home> &homes)
+{
+	const int n = t.size();
+	const std::vector<unsigned char> approach = quarryApproach(t, features.quarry);
+	for (size_t k = 0; k < homes.size(); ++k)
+	{
+		std::vector<int> swarm;
+		for (int dy = 0; dy < 4; ++dy)
+			for (int dx = 0; dx < 4; ++dx)
+				swarm.push_back(t.at(homes[k].x + dx, homes[k].y + dy));
+		std::vector<unsigned char> goal(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			if (approach[i] && !features.tor[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable)
+			{
+				// The ground before colony k's face: beside one of its quarry tiles.
+				bool own = false;
+				for (int dy = -1; dy <= 1 && !own; ++dy)
+					for (int dx = -1; dx <= 1 && !own; ++dx)
+						own = features.owner[t.at(t.remainderX(i) + dx, i / t.w + dy)] == int(k);
+				goal[i] = own;
+			}
+		const std::vector<int> walk = cheapestWalk(
+			t, GridNeighbors::Eight, swarm, goal,
+			[&](int, int next, int dx, int dy)
+			{
+				const int x = t.remainderX(next), y = next / t.w;
+				if (!map.terrainPropertiesAt(x, y).walkable || features.quarry[next] ||
+					(map.getBuilding(x, y) != NOGBID && !std::count(swarm.begin(), swarm.end(), next)))
+					return -1;
+				return (dx && dy ? 14 : 10) + (map.isResource(x, y) ? 40 : 0);
+			});
+		for (int i : walk)
+			if (!features.quarry[i] && map.isResource(t.remainderX(i), i / t.w))
+				map.setNoResource(t.remainderX(i), i / t.w, 1);
+	}
+}
+
 bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "ring layout";
@@ -561,37 +1554,77 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "ring terrain";
 	const Torus t{width, height};
-	const Belt belt = shapeBelt(axes, context, options);
-	TerrainSketch terrain(size_t(width) * height, WATER);
-	for (int y = 0; y < height; ++y)
-		for (int x = 0; x < width; ++x)
-			if (belt.land(x, y))
-				terrain[size_t(y) * width + x] = GRASS;
-	carveLakes(terrain, belt, context, options.lakeDensity);
-	// The control counts islands per 128x128 of map, never fewer than one when it is on at all.
-	const int wantedIslands =
-		options.resourceIslands > 0
-			? std::max(1, int(std::lround(options.resourceIslands * double(t.size()) / 16384.0)))
-			: 0;
-	// 40 candidate draws per island; each keeps 7 tiles of open water from every coast, too wide
-	// for any beach to bridge, so islands are reached only by swimming.
-	const std::vector<Island> islands =
-		raiseIslands(terrain, t, context, {"islands", wantedIslands, 40, kIslandMoat});
-	context.telemetry.measure("ring-world.islands.target", wantedIslands);
-	context.telemetry.measure("ring-world.islands.actual", islands.size());
-	if (int(islands.size()) < wantedIslands)
+	const int n = t.size();
+	const Stamp stamp = stampRing(axes, context, options);
+	context.telemetry.measure("ring-world.islands.target", stamp.wantedIslands);
+	context.telemetry.measure("ring-world.islands.actual", stamp.islands.size());
+	if (int(stamp.islands.size()) < stamp.wantedIslands)
 		context.telemetry.fallback("ring-world.islands.omitted",
 								   "Candidate budget or water clearance limited islands.");
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
+	writeVertices(map, stamp.terrain);
 
 	context.stage = "ring colonies";
-	if (!placeColonies(game, context, belt, options.bothCoasts))
+	if (!placeColonies(game, context, stamp.belt, options.bothCoasts))
 		return false;
 
+	// 2.0: the road, the tors and the spine, the coasts, lakes and islands, planned from the stamp and
+	// the swarms alone and written as the mechanic sketch before any deposit.
+	context.stage = "ring 2.0 terrain";
+	std::vector<Home> homes;
+	for (int team = 0; team < teams; ++team)
+		homes.push_back({context.bootX[team], context.bootY[team]});
+	const Features features = planFeatures(stamp, t, axes, homes, options, context);
+	writeVertices(map, features.mechanics);
+	const int climateIndex =
+		options.climate > 0 ? std::clamp(options.climate, 1, 3) - 1 : int(context.bounded(kClimateStream, 3));
+	const Climate &climate = kClimates[climateIndex];
+	context.telemetry.choice("ring-world.climate", climate.name);
+	context.telemetry.choice("ring-world.deep-water", options.deepWater ? "on" : "off");
+	context.telemetry.choice("ring-world.rock-spine", options.rockSpine ? "on" : "off");
+	context.telemetry.choice("ring-world.ring-road", options.ringRoad ? "on" : "off");
+	context.telemetry.measure("ring-world.deep.vertices", stamp.deep);
+	context.telemetry.measure("ring-world.road.tiles", features.roadTiles);
+	context.telemetry.measure("ring-world.spine.tiles", features.spineTiles);
+	context.telemetry.measure("ring-world.spine.segments", features.segments);
+	context.telemetry.measure("ring-world.spine.dropped", features.dropped);
+	context.telemetry.measure("ring-world.tors.placed", features.tors);
+	context.telemetry.measure("ring-world.tors.target-walk", features.torBand);
+	context.telemetry.measure("ring-world.tors.walk-miss", features.torMiss);
+	context.telemetry.measure("ring-world.mudflat.vertices", features.mud);
+	context.telemetry.measure("ring-world.headland.vertices", features.headlands);
+	context.telemetry.measure("ring-world.loam.vertices", features.loam);
+	context.telemetry.measure("ring-world.scree.vertices", features.scree);
+	context.telemetry.measure("ring-world.volcanic.vertices", features.ash);
+	int volcanic = 0;
+	for (int theme : features.isleTheme)
+		volcanic += theme == 0;
+	context.telemetry.measure("ring-world.islands.volcanic", volcanic);
+	if (features.roadOmitted)
+		context.telemetry.fallback("ring-world.road.omitted", "No doorstep or no walk for the ring road.");
+	if (features.torsOmitted)
+		context.telemetry.fallback("ring-world.tors.omitted", "Some colony's quarry tor fitted nowhere.");
+	else if (features.torBand != kTorWalk || features.torMiss > 0)
+		context.telemetry.fallback("ring-world.tors.walk-moved", "Not every colony's tor fitted the target walk.");
+
+	// The quarry faces go down before any other deposit, so nothing lands on their stone.
+	int quarryStone = 0;
+	for (int i = 0; i < n; ++i)
+		if (features.quarry[i] && map.isResourceAllowed(t.remainderX(i), i / width, STONE))
+		{
+			map.setResourceByIndex(t.remainderX(i), i / width, STONE, 1);
+			++quarryStone;
+		}
+	context.telemetry.measure("ring-world.quarry.stone", quarryStone);
+
 	context.stage = "ring resources";
-	furnishHomes(game, context);
-	stockIslands(map, context, islands, "islands");
+	// Nothing is planted within kTorOpen tiles of a tor, and the ground before every face is cleared
+	// again after the scatter, so each face is reached as its walk was planned.
+	std::vector<unsigned char> torAll(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		torAll[i] = features.tor[i] || features.quarry[i];
+	const std::vector<unsigned char> torOpen = dilate(t, torAll, kTorOpen);
+	furnishHomes(game, context, torOpen);
+	stockThemedIslands(map, context, stamp.islands, features.isleTheme);
 	// The same ambient layer as Fjord continent: wheat:wood 2:1, some stone, rare fruit. Algae is
 	// seeded along the shallows below instead, since the shared band only scatters over land.
 	scatterResources(game, context,
@@ -602,18 +1635,69 @@ bool generate(Game &game, GenerationContext &context)
 	// Algae 2 to 5 tiles off the shore, one clump per 90 tiles of that band: beside the beaches it
 	// needs in order to regrow.
 	seedAlgae(map, context, t, "resources", options.algae, AlgaeBand::shallows(2, 5));
+	// The ground before every quarry face stays open.
+	{
+		const std::vector<unsigned char> front = dilate(t, features.quarry, kTorOpen);
+		std::vector<unsigned char> open(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			open[i] = front[i] && !features.tor[i] && !features.quarry[i];
+		clearDeposits(map, t, open, &features.quarry);
+	}
 	// The branch-wide start promises: wheat within 24 steps and wood within 32 of every swarm, with
 	// 6 tiles clear round it.
-	secureStartingCrops(game, context, t, 24, 32, 6);
+	secureStartingCrops(game, context, t, 24, 32, 6, &features.quarry);
 	// The scatter above is sized by the resource amounts, and at the top of their range it can wall
 	// a colony into its own clearing with nowhere to build; the reopened colony is cleared again.
 	if (reopenCrampedStarts(
 			game, context,
-			{options.wheat, options.wood, options.stone, options.algae, options.fruit}, 24, 32, 6))
-		clearAroundSwarms(map, context, t);
+			{options.wheat, options.wood, options.stone, options.algae, options.fruit}, 24, 32, 6,
+			&features.quarry))
+		clearAroundSwarms(map, context, t, &features.quarry);
+
+	// Every colony's walk to its face as planned: the walk where a deposit costs four steps, with the
+	// deposits on it cleared, so no scattered field stands between a colony and its quarry.
+	if (features.tors > 0)
+		openQuarryWalks(map, t, features, homes);
 
 	context.stage = "ring road";
-	return openBeltRoad(game, context, axes);
+	if (!openBeltRoad(game, context, axes, features.quarry))
+		return false;
+
+	// The looks, last: they change no rule, so nothing any stage above saw or placed changes.
+	writeVertices(map, composeLooks(features.mechanics, lookSketch(features, stamp, t, climate, context)));
+	if (context.telemetry.enabled())
+	{
+		// How far each colony walks to its nearest quarry face, on the finished map (-1 when none).
+		const std::vector<unsigned char> walkable = walkableTiles(map);
+		int least = INT_MAX, most = -1;
+		for (int team = 0; team < teams; ++team)
+		{
+			std::vector<unsigned char> swarm(size_t(n), 0);
+			for (int dy = 0; dy < 4; ++dy)
+				for (int dx = 0; dx < 4; ++dx)
+					swarm[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+			const std::vector<int> steps = stepsFrom(t, swarm, walkable);
+			int nearest = INT_MAX;
+			for (int i = 0; i < n; ++i)
+			{
+				if (!features.quarry[i])
+					continue;
+				for (const auto &step : kCardinalSteps)
+				{
+					const int s = steps[t.at(t.remainderX(i) + step[0], i / width + step[1])];
+					if (s >= 0)
+						nearest = std::min(nearest, s + 1);
+				}
+			}
+			const int walk = nearest == INT_MAX ? -1 : nearest;
+			context.telemetry.measure("ring-world.quarry.nearest-walk", walk, team);
+			least = std::min(least, walk);
+			most = std::max(most, walk);
+		}
+		if (least >= 0 && features.tors > 0)
+			context.telemetry.measure("ring-world.quarry.nearest-walk-spread", most - least);
+	}
+	return true;
 }
 
 std::string validate(const GenerationRequest &r)
@@ -710,12 +1794,85 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::fill(winding.begin(), winding.end(), kUnreached);
 	bool oceanWraps = false;
 	for (int i = 0; i < int(area) && !oceanWraps; ++i)
-		if (winding[i] == kUnreached && map.isWater(powerOfTwoRemainder(i, width), i / width))
+		if (winding[i] == kUnreached && map.terrainPropertiesAt(powerOfTwoRemainder(i, width), i / width).swimmable)
 			oceanWraps = floodAround(
-				map, axes, {i}, [&map](int x, int y) { return map.isWater(x, y); }, winding,
-				reached);
+				map, axes, {i}, [&map](int x, int y) { return map.terrainPropertiesAt(x, y).swimmable; },
+				winding, reached);
 	if (!oceanWraps)
 		return "The seas beside the belt do not meet around the map.";
+
+	const Torus t(map);
+	const int n = t.size();
+	const auto at = [&](int i)
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / width) + ")"; };
+	// Deep water keeps its shallows: every vertex round a deep one is water.
+	for (int i = 0; i < n; ++i)
+	{
+		if (terrainGroup(map.vertexTerrainAt(t.remainderX(i), i / width)) != TerrainGroup::DeepWater)
+			continue;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const TerrainGroup g =
+					terrainGroup(map.vertexTerrainAt(t.x(t.remainderX(i) + dx), t.y(i / width + dy)));
+				if (g != TerrainGroup::Water && g != TerrainGroup::DeepWater)
+					return "Deep water touches land at " + at(i) + ".";
+			}
+	}
+	// No deposit on a tile with a road corner (the engine refuses one there, but a check is cheap).
+	for (int y = 0; y < height; ++y)
+		for (int x = 0; x < width; ++x)
+		{
+			if (!map.isResource(x, y))
+				continue;
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+					if (terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy))) == TerrainGroup::Paths)
+						return "A deposit stands on the road at " + at(t.at(x, y)) + ".";
+		}
+	// No body of rock or boulders (blocked tiles with such a corner, terrain only) parts the walkable
+	// ground round it.
+	std::vector<unsigned char> walkable(size_t(n), 0), rock(size_t(n), 0);
+	for (int y = 0; y < height; ++y)
+		for (int x = 0; x < width; ++x)
+		{
+			const int i = t.at(x, y);
+			walkable[i] = map.terrainPropertiesAt(x, y).walkable;
+			bool hard = false;
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+				{
+					const TerrainGroup g = terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)));
+					hard = hard || g == TerrainGroup::Ridges || g == TerrainGroup::Obstacles;
+				}
+			rock[i] = hard && !walkable[i] && !map.terrainPropertiesAt(x, y).swimmable;
+		}
+	std::vector<int> label;
+	if (const int parting = partingGroup(t, walkable, rock, label); parting >= 0)
+		for (int i = 0; i < n; ++i)
+			if (label[i] == parting)
+				return "Rock at " + at(i) + " cuts ground off.";
+	// The plan again, from the request and the start positions: the quarry faces and the road.
+	const RingWorldOptions options(context.request);
+	if (!options.rockSpine && !options.ringRoad)
+		return "";
+	GenerationContext replay(context.request);
+	const Stamp stamp = stampRing(axes, replay, options);
+	std::vector<Home> homes;
+	for (int team = 0; team < teams; ++team)
+		homes.push_back({game.teams[team]->startPosX, game.teams[team]->startPosY});
+	const Features features = planFeatures(stamp, t, axes, homes, options, replay);
+	if (const std::string fault =
+			quarryFault(map, t, features.quarry, features.owner, teams, features.tors > 0 ? kTorFace : 0);
+		!fault.empty())
+		return fault;
+	for (int i = 0; i < n; ++i)
+		if (features.route[i])
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+					if (terrainGroup(map.vertexTerrainAt(t.x(t.remainderX(i) + dx), t.y(i / width + dy))) !=
+						TerrainGroup::Paths)
+						return "The ring road is not road at " + at(i) + ".";
 	return "";
 }
 } // namespace
@@ -724,6 +1881,8 @@ RingWorldOptions::RingWorldOptions(const GenerationRequest &r)
 	: beltWidth(r.option("belt-width")), coastRoughness(r.option("coast-roughness")),
 	  lakeDensity(r.option("lake-density")), resourceIslands(r.option("resource-islands")),
 	  windingBelt(r.option("winding-belt") != 0), bothCoasts(r.option("both-coasts") != 0),
+	  deepWater(r.option("deep-water") != 0), rockSpine(r.option("rock-spine") != 0),
+	  ringRoad(r.option("ring-road") != 0), climate(r.option("climate")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -735,29 +1894,46 @@ GeneratorDefinition ringWorldDefinition()
 	return {"ring-world",
 			16,
 			"Ring world",
-			3,
+			4,
 			false,
 			// Belt width is the share of the map's breadth the belt covers on average; lake density
 			// is lakes per 4096 tiles of belt; resource islands are counted per 128x128 of map.
 			{GeneratorControl{"belt-width", "Belt width", 30, 70, 5, 45, ControlGroup::Terrain}
 				 .withSearchRange(40, 60),
-			 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 5, 50,
-							  ControlGroup::Terrain}
+			 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain}
 				 .withSearchRange(20, 75),
 			 GeneratorControl{"lake-density", "Lake density", 0, 8, 1, 2, ControlGroup::Terrain}
 				 .withSearchRange(1, 4),
-			 GeneratorControl{"resource-islands", "Resource islands", 0, 10, 1, 2,
-							  ControlGroup::Resources}
+			 GeneratorControl{"resource-islands", "Resource islands", 0, 10, 1, 2, ControlGroup::Resources}
 				 .withSearchRange(1, 5),
 			 // Off, the belt's centre line runs straight round the map.
 			 GeneratorControl::toggle("winding-belt", "Winding belt", true, ControlGroup::Terrain)
 				 .withSearchValues({0, 1}),
 			 // Off, every colony starts on the same coast of the belt.
-			 GeneratorControl::toggle("both-coasts", "Colonies on both coasts", true,
-									  ControlGroup::Layout)
+			 GeneratorControl::toggle("both-coasts", "Colonies on both coasts", true, ControlGroup::Layout)
 				 .withSearchValues({0, 1}),
+			 // On, the open ocean six or more tiles from any land is deep water: swimming across to
+			 // the other coast or an island is slower and no algae grows there. The coastal shallows
+			 // and every route on foot are the same either way.
+			 GeneratorControl::toggle("deep-water", "Deep ocean", true, ControlGroup::Terrain)
+				 .withSearchValues({0, 1}),
+			 // On, a broken spine of rock runs down the middle of the belt, crossed by frequent
+			 // passes, and every colony has a small rock tor with a quarry face of stone the same walk
+			 // from its swarm. Off, no rock and no quarries.
+			 GeneratorControl::toggle("rock-spine", "Rock spine", true, ControlGroup::Layout)
+				 .withSearchValues({0, 1}),
+			 // On, a road (twice the walking speed, buildable, nothing grows on it) runs from colony
+			 // to colony all the way round the world.
+			 GeneratorControl::toggle("ring-road", "Ring road", true, ControlGroup::Layout)
+				 .withSearchValues({0, 1}),
+			 // Looks only: Temperate (spring meadows, grey rock, granite headlands), Steppe (dry
+			 // grass, hoodoos, sandstone roads) or Tropical (lush grass, dark water, mossy banks).
+			 // All play alike.
+			 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
+									  ControlGroup::Terrain)
+				 .withSearchValues({1, 2, 3}),
 			 // The ambient scatter's wheat, wood, stone and fruit and the shallows' algae. Every
-			 // home's starter patches and each island's prize stay as they are.
+			 // home's starter patches, each island's prize and the quarry faces stay as they are.
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
@@ -769,6 +1945,6 @@ GeneratorDefinition ringWorldDefinition()
 			validateWorld,
 			// The belt's start-bearing stretches are periodic along its length, not arranged around
 			// one shared centre, so this is a stamped lattice rather than a repeated wedge.
-			{"terrain:natural", "feature:ocean", "feature:lakes", "style:wide-open",
+			{"terrain:natural", "feature:ocean", "feature:lakes", "feature:mountains", "style:wide-open",
 			 "fairness:stamped-lattice"}};
 }
