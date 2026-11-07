@@ -163,9 +163,12 @@ constexpr int kRoadWet = 10, kRoadWetCost = 3, kRoadHomeClear = 8, kRoadHomeCost
 constexpr int kCoastProbe = 6;
 constexpr double kHeadland = 0.56, kBay = 0.42, kHeadlandGate = 0.5, kBayGate = 0.5, kCoastKeep = 18;
 // Lakes: grass and beach vertices within kLoamDeep steps of a lake are loam, outside the home
-// gardens (kGardenRadius tiles round a swarm's middle, frayed by kGardenFray).
+// gardens (kGardenRadius tiles round a swarm's middle, frayed by kGardenFray). Maxima keeps its
+// buildings five or six steps from any tile that waters the land, loam included, so loam near a
+// home takes its building room: with 12-tile gardens it stalled on calibration seed 101 (17 births
+// against 73 on revision 3); 20-tile gardens gave it back (47) at no cost in growth potential.
 constexpr int kLoamDeep = 5;
-constexpr double kGardenRadius = 12, kGardenFray = 3;
+constexpr double kGardenRadius = 20, kGardenFray = 3;
 
 // The look-only climates. lush and green are the steps from water within which the grass is lush and
 // still green; beyond green it is dry.
