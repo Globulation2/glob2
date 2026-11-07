@@ -211,6 +211,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         sys.path.insert(0, str(root / 'test'))
         import tests as registry
         tests = env.Clone()
+        # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+        tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
         # The harness page has no asset packages beside it: preload the exported data.
         flags, kept = list(tests['LINKFLAGS']), []
         for index, flag in enumerate(flags):

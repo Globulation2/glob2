@@ -97,6 +97,11 @@ X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
+Each test executable prints a `GLOB2_TEST_PROVENANCE` line naming the source tree,
+compiler and flags that produced it. Native builds write that identity to
+`<binary>.provenance.json` after linking (`scons/test_provenance.py`), so a commit or
+stray untracked file that changes no compiled input recompiles and relinks nothing;
+browser and mobile test executables embed it instead.
 The runner escapes commas and backslashes in selected names and checks that JUnit
 records every selected case; a successful exit with missing tests is an error.
 Sanitizer diagnostics fail the run even when the process exits successfully.
