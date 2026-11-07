@@ -79,18 +79,20 @@ revision 4 against revision 3:
 
 | Design | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
-| Broad fan (r3) | 539 | 36.1 (33.7) | 103 (79) |
-| Broad fan | 588 | 34.8 (31.9) | 107 (80) |
-| Long fan (r3) | 562 | 40.7 (38.2) | 105 (82) |
-| Long fan | 612 | 38.6 (36.0) | 111 (83) |
-| Twin springs (r3) | 568 | 35.7 (27.8) | 105 (73) |
-| Twin springs | 629 | 34.0 (26.3) | 111 (78) |
-| Canyon mouth | 570 | 34.7 (32.8) | 102 (76) |
-| Cienega | 595 | 37.5 (35.0) | 108 (84) |
-| Coalescing pair | 620 | 39.7 (36.3) | 115 (90) |
+| Broad fan (r3) | 481 | 26.0 (24) | 69.8 (48) |
+| Broad fan | 518 | 25.5 (23) | 69.7 (47) |
+| Long fan (r3) | 503 | 28.5 (26) | 72.5 (59) |
+| Long fan | 541 | 27.2 (24) | 73.8 (58) |
+| Twin springs (r3) | 511 | 31.1 (24) | 77.0 (64) |
+| Twin springs | 558 | 29.6 (23) | 76.4 (63) |
+| Canyon mouth | 504 | 25.3 (23) | 65.5 (52) |
+| Cienega | 532 | 35.2 (32) | 76.3 (64) |
+| Coalescing pair | 543 | 26.7 (24) | 77.8 (59) |
 
-Within 24 steps the original designs lost about 4% to pavement inhibition; total food rose about 10%
-with the cienegas. Forts on the same seeds: 1,787 total, 59.5 within 24.
+Within 24 steps the original designs lost 2–5% to pavement inhibition and kept their food within 48;
+total food rose 7–9% with the cienegas. Canyon mouth is the leanest design within 48 steps. The
+terrain dump counts a tile between two looks of one rule group as that group (`map study`), so
+these figures supersede the first revision 4 measurements, which undercounted every such tile.
 
 ## Limits
 
