@@ -259,13 +259,13 @@ void IntroCover::draw(DrawableSurface &gfx, int w, int h, Uint64 now, Font *titl
 	{
 		const double seconds = double(now - start) / 1000;
 		computeLayers(w, h, seconds, p, layers);
-		Depth far;
-		far.zoom = .25f;
-		far.lead = 1;
-		far.wind = .55f;
-		far.size = .7f;
-		far.seed = 7;
-		computeLayers(w, h, seconds, p, farLayers, far);
+		Depth distant;
+		distant.zoom = .25f;
+		distant.lead = 1;
+		distant.wind = .55f;
+		distant.size = .7f;
+		distant.seed = 7;
+		computeLayers(w, h, seconds, p, farLayers, distant);
 		if (!surface || surface->getW() != layers.w || surface->getH() != layers.h)
 		{
 			surface = std::make_unique<SmoothSurface>(layers.w, layers.h);
