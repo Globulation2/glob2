@@ -31,11 +31,17 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	load(stream, types, owner, versionMinor);
 }
 
+void Building::setOwner(Team *team)
+{
+	owner = team;
+	ownerReservedTeamMaterials = team ? team->reservedTeamMaterials : nullptr;
+}
+
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	// identity
 	this->gid=gid;
-	owner=team;
+	setOwner(team);
 	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
 	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
@@ -271,7 +277,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (gid >= MAX_COUNT * Team::MAX_COUNT || GIDtoTeam(gid) != owner->teamNumber)
 		throw std::runtime_error("Invalid building identity");
 	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
-	this->owner = owner;
+	setOwner(owner);
 	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
 		loadEntityRandom(stream, entityRandom);
 	else

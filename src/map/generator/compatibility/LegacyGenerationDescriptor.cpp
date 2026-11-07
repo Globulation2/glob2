@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <cassert>
 #include "LegacyGenerationDescriptor.h"
 #include "GenerationContext.h"
 #include "GeneratorRegistry.h"

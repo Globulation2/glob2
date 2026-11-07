@@ -9,6 +9,7 @@
 // globalContainer is linked. Links libgag_server.a for BinaryStream +
 // MemoryStreamBackend.
 
+#include "Team.h"
 #include "Glob2Test.h"
 #include <cstdio>
 #include <cstring>

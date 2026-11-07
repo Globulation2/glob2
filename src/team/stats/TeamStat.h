@@ -4,6 +4,7 @@
 #pragma once
 
 #include "UnitConsts.h"
+#include "CoverageBuilding.h"
 #include "UnitStatistics.h"
 #include <array>
 #include <span>
@@ -34,9 +35,6 @@ static constexpr int MAX_BUILDING_LONG_LEVEL = NB_BUILDING_LONG_LEVELS - 1;
 //! width is independent of Team::MAX_COUNT.
 static constexpr int END_OF_GAME_STAT_INTERVAL_MASK = 0x1FF;
 
-// Wire-locked growth-distance bands: keep order and count stable for old saves.
-inline constexpr int GROWTH_COVERAGE_RADII[] = {8, 16, 32};
-inline constexpr int GROWTH_COVERAGE_BANDS = sizeof(GROWTH_COVERAGE_RADII) / sizeof(GROWTH_COVERAGE_RADII[0]);
 
 struct TeamStat
 {
@@ -381,7 +379,7 @@ public:
     std::size_t unitTypeCount=NB_UNIT_TYPE;
     void configureUnits(std::size_t count);
 
-  struct CoverageBuilding { int x, y, width, height; bool operator==(const CoverageBuilding &) const = default; };
+  using CoverageBuilding = ::CoverageBuilding;
   std::vector<CoverageBuilding> coverageBuildings;
   Uint32 coverageBuildingTick = 0;
   Uint32 coverageBuildingGeneration = 0;

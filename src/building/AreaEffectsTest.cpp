@@ -601,7 +601,7 @@ TEST_SUITE("BuildingAreaEffects")
 		const int id = Building::GIDtoID(previous);
 		old->removeFromAbilitiesLists(b);
 		old->detachBuilding(id);
-		b->owner = next;
+		b->setOwner(next);
 		b->gid = Building::GIDfrom(id, 1);
 		next->attachBuilding(id, b);
 		next->addToStaticAbilitiesLists(b);

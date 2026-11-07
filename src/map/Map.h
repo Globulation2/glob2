@@ -32,7 +32,9 @@ struct GradientTargetCell;
 #include <vector>
 #include <assert.h>
 
-#include "Building.h"
+#include "BuildingRoute.h"
+#include "CoverageBuilding.h"
+#include "TeamCapacity.h"
 #include "Ressource.h"
 #include "MapState.h"
 #include "ResourceRegistry.h"
@@ -41,7 +43,6 @@ struct GradientTargetCell;
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
 #include "Sector.h"
-#include "Team.h"
 #include "TerrainType.h"
 #include "FertilityField.h"
 #include "ExperimentalFeatures.h"
@@ -54,6 +55,8 @@ namespace SimulationSnapshot { struct Handle; }
 namespace gradient_kernel { enum class Family; }
 
 class Unit;
+class Team;
+class Building;
 
 //! No global unit identifier. This value means there is no unit. Used at Tile::groundUnit or Tile::airUnit.
 #define NOGUID 0xFFFF
@@ -140,7 +143,7 @@ class Map
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
 	Uint64 discoveryRevisionValue = 1;
 	// Derived from painted masks, independent of reachable gradient goals.
-	std::array<std::array<Uint32, Team::MAX_COUNT>, 4> paintedAreaCounts{};
+	std::array<std::array<Uint32, TEAM_MAX_COUNT>, 4> paintedAreaCounts{};
 	void paintedAreaMaskChanged(AreaType kind, Uint32 before, Uint32 after);
 	void rebuildPaintedAreaCounts();
 	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
@@ -446,8 +449,8 @@ public:
 	//! rebuildGrowthCoverage() first; it repaints only what changed since.
 	Uint32 teamsWithBuildingsNear(int x, int y, int band) const
 	{
-		return Uint32(growthCoverage[coordToIndex(x, y)] >> (band * Team::MAX_COUNT)) &
-			((Uint32(1) << Team::MAX_COUNT) - 1);
+		return Uint32(growthCoverage[coordToIndex(x, y)] >> (band * TEAM_MAX_COUNT)) &
+			((Uint32(1) << TEAM_MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
 	// Applies live map mutations only. The Game observation boundary publishes
@@ -497,10 +500,10 @@ public:
 	void setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision);
 
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT]);
+	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[TEAM_MAX_COUNT]);
 
 	//! Make the building at rect (x, y, w, h) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[Team::MAX_COUNT]);
+	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[TEAM_MAX_COUNT]);
 	
 	//! Make the map at rect (x, y, w, h) explored by unit, i.e. to 255
 	void setMapExploredByUnit(int x, int y, int w, int h, int team);
@@ -918,7 +921,7 @@ public:
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
 	Uint32 paintedAreaTileCount(AreaType kind, int team) const
 	{
-		assert(unsigned(kind)<paintedAreaCounts.size() && unsigned(team)<Team::MAX_COUNT);
+		assert(unsigned(kind)<paintedAreaCounts.size() && unsigned(team)<TEAM_MAX_COUNT);
 		return paintedAreaCounts[kind][team];
 	}
 	bool hasClearingArea(int team) const
@@ -945,17 +948,17 @@ public:
 
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::clearArea, areaCells[coordToIndex(x,y)].clear | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::clearArea, areaCells[coordToIndex(x,y)].clear | teamNumberToMask(teamNum));
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::guardArea, areaCells[coordToIndex(x,y)].guard | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::guardArea, areaCells[coordToIndex(x,y)].guard | teamNumberToMask(teamNum));
 	}
 
 	void addFarmArea(int x, int y, Uint32 teamNum)
 	{
-		setAreaMask(coordToIndex(x,y), &Tile::farmArea, areaCells[coordToIndex(x,y)].farm | Team::teamNumberToMask(teamNum));
+		setAreaMask(coordToIndex(x,y), &Tile::farmArea, areaCells[coordToIndex(x,y)].farm | teamNumberToMask(teamNum));
 	}
 
 	
@@ -1426,8 +1429,8 @@ public:
 	// cache line rather than three separately allocated band planes.
 	std::vector<Uint64> growthCoverage;
 	std::vector<Uint16> growthCoverageCounts[GROWTH_COVERAGE_BANDS];
-	std::vector<TeamStats::CoverageBuilding> growthCoverageBuildings[Team::MAX_COUNT];
-	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
+	std::vector<CoverageBuilding> growthCoverageBuildings[TEAM_MAX_COUNT];
+	Uint32 growthCoverageGeneration[TEAM_MAX_COUNT]{};
 	bool growthCoverageValid = false;
 private:
 	std::vector<MapState::ResourceCell> resourceCells;
@@ -1485,17 +1488,17 @@ protected:
     // publication occurs at deterministic completed-world boundaries.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
-	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
+	Uint16 *materialGradients[TEAM_MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
     // Suspended ground fields keep their storage; renewed demand queues a refresh.
-    bool materialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
-    bool marketMaterialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
-    bool forbiddenGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
-    bool guardGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
-    bool clearGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool materialGradientStale[TEAM_MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool marketMaterialGradientStale[TEAM_MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool forbiddenGradientStale[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool guardGradientStale[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool clearGradientStale[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
 
 	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
-	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
+	Uint16 *marketMaterialGradients[TEAM_MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
 	// Dense registry of the published planes in both arrays above, maintained
 	// by every publication site so a capture visits only live planes. Plane
 	// generations are kept per key and survive republication, so a consumer
@@ -1513,10 +1516,10 @@ protected:
 	void rebuildPlaneRegistry();
 	
 	// Used to go out of forbidden areas
-	Uint16 *forbiddenGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
+	Uint16 *forbiddenGradient[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	
 	// Used to attract idle warriors into guard areas
-	Uint16 *guardAreasGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
+	Uint16 *guardAreasGradient[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	//! Guard-area balancing: replace the zero cost of every painted seed in
 	//! gradient with its crowding cost (MapInternal.h).
 	void seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const;
@@ -1526,7 +1529,7 @@ protected:
 	
 	// Used to attract idle workers into clearing
 	// areas that aren't clear
-	Uint16 *clearAreasGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
+	Uint16 *clearAreasGradient[TEAM_MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	
 public:
 	//! Live published material planes in publication order; every plane has size cells.
@@ -1534,12 +1537,12 @@ public:
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
-	Uint8 *exploredArea[Team::MAX_COUNT];
+	Uint8 *exploredArea[TEAM_MAX_COUNT];
 	
 	/// This shows how many "claims" there are on a particular resource square
 	/// This is so that not all 150 free units go after one piece of wood
 	/// Each square is the gid of the claiming unit
-	Uint16 *clearingAreaClaims[Team::MAX_COUNT];
+	Uint16 *clearingAreaClaims[TEAM_MAX_COUNT];
 	
 	/// These are integers that tell whether an immobile unit is standing on the
 	/// square, and if so, what team number it is. In terms of the engine, these

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "TeamCapacity.h"
 #include "BasePlayer.h"
 #include "ExperimentalFeatures.h"
 #include "Stream.h"
@@ -79,14 +80,14 @@ public:
 	///Provides access to the base player. n must be between 0 and 31.
 	inline BasePlayer& getBasePlayer(const int n)
 	{
-		assert(n<Team::MAX_COUNT && n>=0);
+		assert(n<TEAM_MAX_COUNT && n>=0);
 		return players[n];
 	}
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	inline const BasePlayer& getBasePlayer(const int n) const
 	{
-		assert(n<Team::MAX_COUNT && n>=0);
+		assert(n<TEAM_MAX_COUNT && n>=0);
 		return players[n];
 	}
 
@@ -106,7 +107,7 @@ public:
 	///i+1); 0 only appears in a malformed or hand-edited header.
 	inline Uint8 getAllyTeamNumber(int teamNumber) const
 	{
-		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		assert(teamNumber >= 0 && teamNumber < TEAM_MAX_COUNT);
 		return allyTeamNumbers[teamNumber];
 	}
 
@@ -115,7 +116,7 @@ public:
 	///here would silently corrupt shared state -- hence the assert.
 	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam)
 	{
-		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		assert(teamNumber >= 0 && teamNumber < TEAM_MAX_COUNT);
 		allyTeamNumbers[teamNumber]=allyTeam;
 	}
 
@@ -126,7 +127,7 @@ public:
 	///human's color shares its team -- alliances are per-team -- so it stays
 	///on the human's ally group. With no human selection (humanColor empty)
 	///the free-for-all layout is kept: a human-vs-AI split is meaningless
-	///without a human. Colors are team indices, [0, Team::MAX_COUNT).
+	///without a human. Colors are team indices, [0, TEAM_MAX_COUNT).
 	void setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors);
 	
 	///Returns whether allying and de-allying are allowed mid-game
@@ -152,8 +153,8 @@ public:
 	///Sets whether the map is discovered at game start
 	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered;  ++observationRevisionValue; }
 	/// Canonical resolved runtime values; empty means legacy/default resolution.
-	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < Team::MAX_COUNT); return aiConfig[player]; }
-	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values;  ++observationRevisionValue; }
+	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < TEAM_MAX_COUNT); return aiConfig[player]; }
+	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < TEAM_MAX_COUNT); aiConfig[player] = values;  ++observationRevisionValue; }
 
 	///Returns whether resources are allowed to grow/spread over time (custom-game rule)
 	inline bool isResourceGrowthDisabled() const { return resourceGrowthDisabled; }
@@ -278,7 +279,7 @@ private:
 	std::shared_ptr<const BuildingArtwork> buildingArtwork;
 	std::vector<std::string> buildingCatalogExperimentKeys;
 	std::vector<CatalogExperimentDefinition> resourceCatalogExperiments;
-	std::string aiConfig[Team::MAX_COUNT];
+	std::string aiConfig[TEAM_MAX_COUNT];
 	bool loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void saveAIConfig(GAGCore::OutputStream *stream) const;
 	///The number of players in the game
@@ -295,10 +296,10 @@ private:
 	Uint8 orderRate;
 
 	///Represents the basic player information in the game
-	BasePlayer players[Team::MAX_COUNT];
+	BasePlayer players[TEAM_MAX_COUNT];
 	
 	///Represents the ally team numbers
-	Uint8 allyTeamNumbers[Team::MAX_COUNT];
+	Uint8 allyTeamNumbers[TEAM_MAX_COUNT];
 	
 	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
 	bool allyTeamsFixed;

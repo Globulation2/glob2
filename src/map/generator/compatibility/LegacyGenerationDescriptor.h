@@ -6,7 +6,7 @@
 #include "GenerationRequest.h"
 #include "GeneratorControls.h"
 #include "Ressource.h"
-#include "Team.h"
+#include "TeamCapacity.h"
 #include "TerrainType.h"
 #include <array>
 #include <vector>
@@ -74,8 +74,8 @@ class MapGenerationDescriptor
 
   public:
 	// Those may not be in data
-	Sint32 bootX[Team::MAX_COUNT]{};
-	Sint32 bootY[Team::MAX_COUNT]{};
+	Sint32 bootX[TEAM_MAX_COUNT]{};
+	Sint32 bootY[TEAM_MAX_COUNT]{};
 
   public:
 	enum
