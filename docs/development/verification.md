@@ -217,6 +217,26 @@ replay/network, platform compatibility or simulation-version requirements in
 checks may be pending or unavailable when merging; known failures introduced by
 the PR still require resolution.
 
+## Fast gate
+
+`.github/workflows/ci-fast.yml` runs on every pull request and master push. It is the
+check meant to gate merges, with a 15-minute target on a warm compiler cache:
+
+- `contracts`: build-system, runner and tooling contracts, the sim-version check,
+  private RNG ownership, header layering, documentation links and vendor
+  verification;
+- `linux-fast`: a GCC 13 `tools/dev_build.py perf=1` build of both test binaries (with
+  a warm cache it costs the same as the dev tier, and the tests run several times faster) and the
+  headless test tier (`test/run_tests.py --tier headless`); master pushes save the compiler and encoded-asset caches that pull
+  requests restore;
+- `master-health`: the master-red rule. When the newest decided full master run
+  (`build.yml`) failed and master has had no successful full run for more than 24
+  hours, a pull request fails this job unless it carries the `ci:repair` label: the
+  next merge repairs or reverts the breakage.
+
+Its duration and cache hit rates are tracked like any other CI metric; compare ten
+runs before claiming a change made it faster.
+
 ## Hosted verification and regression detection
 
 Draft and ready PRs run cheap contracts and, for ordinary engine changes, a
