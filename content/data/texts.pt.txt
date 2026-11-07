@@ -1782,6 +1782,8 @@ Mundo em anel
 Largura da faixa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 A faixa é demasiado curta para tantas colónias; use um mapa mais longo ou menos colónias.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Cidades-estado
 [Strait width]

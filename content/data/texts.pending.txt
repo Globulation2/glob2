@@ -108,3 +108,4 @@
 [Glacial kettles]
 [Moss]
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]

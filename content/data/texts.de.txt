@@ -1782,6 +1782,8 @@ Ringwelt
 Gürtelbreite
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Der Gürtel ist zu kurz für so viele Kolonien; verwenden Sie eine längere Karte oder weniger Kolonien.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Stadtstaaten
 [Strait width]

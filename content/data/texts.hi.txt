@@ -1746,6 +1746,8 @@ Globulation 2 का कर्सर दिखाएँ।
 पट्टी की चौड़ाई
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 इतनी बस्तियों के लिए पट्टी बहुत छोटी है; लंबा नक्शा या कम बस्तियाँ चुनें।
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 नगर-राज्य
 [Strait width]

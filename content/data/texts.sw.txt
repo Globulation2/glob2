@@ -1746,6 +1746,8 @@ Ulimwengu wa pete
 Upana wa ukanda
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Ukanda ni mfupi mno kwa makazi haya mengi; tumia ramani ndefu au makazi machache zaidi.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Miji huru
 [Strait width]

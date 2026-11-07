@@ -1746,6 +1746,8 @@ Globulation 2 कर्सर दाखवा.
 पट्ट्याची रुंदी
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 एवढ्या वसाहतींसाठी हा पट्टा खूपच लहान आहे; अधिक मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 नगरराज्ये
 [Strait width]

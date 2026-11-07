@@ -1782,6 +1782,8 @@ Globulation 2のカーソルを表示します。
 帯の幅
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 都市国家
 [Strait width]

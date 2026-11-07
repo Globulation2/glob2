@@ -1770,6 +1770,8 @@ Mundong singsing
 Lapad ng sinturon
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Masyadong maikli ang sinturon para sa ganito karaming kolonya; gumamit ng mas mahabang mapa o mas kaunting kolonya.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Mga lungsod-estado
 [Strait width]

@@ -1782,6 +1782,8 @@ AI 策略與對抗
 環帶寬度
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 環帶太短，容納不下這麼多殖民地；請使用更長的地圖或減少殖民地數量。
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 城邦
 [Strait width]

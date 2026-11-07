@@ -1770,6 +1770,8 @@ Dunia cincin
 Lebar jalur
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Jalur ini terlalu pendek untuk koloni sebanyak ini; gunakan peta yang lebih panjang atau koloni yang lebih sedikit.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Negara kota
 [Strait width]

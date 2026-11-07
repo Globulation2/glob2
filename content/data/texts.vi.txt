@@ -1782,6 +1782,8 @@ Thế giới hình vòng
 Độ rộng vành đai
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Thành bang
 [Strait width]

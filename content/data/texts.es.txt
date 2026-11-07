@@ -1782,6 +1782,8 @@ Mundo anillo
 Anchura del cinturón
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 El cinturón es demasiado corto para tantas colonias; usa un mapa más largo o menos colonias.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Ciudades estado
 [Strait width]

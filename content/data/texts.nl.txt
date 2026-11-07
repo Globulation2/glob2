@@ -1782,6 +1782,8 @@ Ringwereld
 Gordelbreedte
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Stadstaten
 [Strait width]

@@ -1746,6 +1746,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 பட்டை அகலம்
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 இத்தனை குடியிருப்புகளுக்கு இந்தப் பட்டை மிகவும் குட்டையாக உள்ளது; நீளமான வரைபடத்தையோ அல்லது குறைவான குடியிருப்புகளையோ பயன்படுத்துங்கள்.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 நகர அரசுகள்
 [Strait width]

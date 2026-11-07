@@ -1782,6 +1782,8 @@ Ringvärld
 Bältets bredd
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Stadsstater
 [Strait width]

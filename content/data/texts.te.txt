@@ -1746,6 +1746,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 బెల్ట్ వెడల్పు
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 ఇన్ని కాలనీలకు ఈ బెల్ట్ చాలా చిన్నదిగా ఉంది; పొడవైన మ్యాప్‌ను లేదా తక్కువ కాలనీలను ఉపయోగించండి.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 నగర రాష్ట్రాలు
 [Strait width]

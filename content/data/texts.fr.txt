@@ -1782,6 +1782,8 @@ Monde-anneau
 Largeur de la ceinture
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La ceinture est trop courte pour autant de colonies ; utilisez une carte plus longue ou moins de colonies.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Cités-États
 [Strait width]

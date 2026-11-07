@@ -1782,6 +1782,8 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الحزام
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 دول المدن
 [Strait width]

@@ -1782,6 +1782,8 @@ Halka dünya
 Kuşak genişliği
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Şehir devletleri
 [Strait width]
