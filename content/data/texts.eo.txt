@@ -1800,6 +1800,10 @@ Grandeco de flakoj
 Grandeco de maldensejo
 [Levee]
 Digo
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Marĉkanaloj
 [Everglades need at least one colony.]

@@ -1788,6 +1788,10 @@ Laki ng maliit na lawa
 Laki ng bakanteng lugar
 [Levee]
 Dike
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Mahahabang lawang-latian
 [Everglades need at least one colony.]

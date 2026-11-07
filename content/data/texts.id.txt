@@ -1800,6 +1800,10 @@ Ukuran kolam
 Ukuran tanah lapang
 [Levee]
 Tanggul
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Rawa-rawa
 [Everglades need at least one colony.]

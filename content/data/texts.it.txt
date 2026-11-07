@@ -1800,6 +1800,10 @@ Dimensione delle pozze
 Dimensione della radura
 [Levee]
 Argine
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Lanche
 [Everglades need at least one colony.]

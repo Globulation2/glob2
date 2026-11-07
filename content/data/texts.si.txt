@@ -1800,6 +1800,10 @@ Velikost mlak
 Velikost jase
 [Levee]
 Nasip
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Mrtvice
 [Everglades need at least one colony.]

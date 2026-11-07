@@ -1800,6 +1800,10 @@ Veľkosť mlák
 Veľkosť čistiny
 [Levee]
 Hrádza
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Mŕtve ramená
 [Everglades need at least one colony.]

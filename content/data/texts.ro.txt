@@ -1800,6 +1800,10 @@ Mărimea bălților
 Mărimea poienii
 [Levee]
 Dig
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Canale mlăștinoase
 [Everglades need at least one colony.]

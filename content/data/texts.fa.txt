@@ -1800,6 +1800,10 @@ OpenGL در این نسخه موجود نیست.
 اندازهٔ محوطهٔ باز
 [Levee]
 خاکریز
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 مرداب‌ها
 [Everglades need at least one colony.]

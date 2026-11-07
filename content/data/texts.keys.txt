@@ -881,6 +881,8 @@
 [Pool size]
 [Clearing size]
 [Levee]
+[Mudflats]
+[Hammocks]
 [Sloughs]
 [Everglades need at least one colony.]
 [Too many colonies for this map; use a bigger map or fewer colonies.]

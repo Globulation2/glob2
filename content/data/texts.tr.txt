@@ -1800,6 +1800,10 @@ Gölcük boyutu
 Açıklık boyutu
 [Levee]
 Set
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Bataklıklar
 [Everglades need at least one colony.]

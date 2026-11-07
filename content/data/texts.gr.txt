@@ -1800,6 +1800,10 @@ Cortex
 Μέγεθος ξέφωτου
 [Levee]
 Ανάχωμα
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Βαλτόνερα
 [Everglades need at least one colony.]

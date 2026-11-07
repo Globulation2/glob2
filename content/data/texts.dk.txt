@@ -1800,6 +1800,10 @@ Pølestørrelse
 Lysningens størrelse
 [Levee]
 Dige
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]

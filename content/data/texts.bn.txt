@@ -1764,6 +1764,10 @@ Globulation 2-এর কার্সার দেখান।
 ফাঁকা জায়গার আকার
 [Levee]
 বাঁধ
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 জলাভূমি
 [Everglades need at least one colony.]

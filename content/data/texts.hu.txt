@@ -1800,6 +1800,10 @@ Tavacskák mérete
 Tisztás mérete
 [Levee]
 Gát
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Holtágak
 [Everglades need at least one colony.]

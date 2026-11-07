@@ -1764,6 +1764,10 @@ Pool size
 Clearing size
 [Levee]
 Levee
+[Mudflats]
+Mudflats
+[Hammocks]
+Hammocks
 [Sloughs]
 Sloughs
 [Everglades need at least one colony.]

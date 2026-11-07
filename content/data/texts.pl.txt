@@ -1800,6 +1800,10 @@ Rozmiar rozlewisk
 Rozmiar polany
 [Levee]
 Grobla
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Starorzecza
 [Everglades need at least one colony.]

@@ -1800,6 +1800,10 @@ AI 策略與對抗
 空地大小
 [Levee]
 堤壩
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 沼澤水道
 [Everglades need at least one colony.]

@@ -1800,6 +1800,10 @@ OpenGL није доступан у овој верзији.
 Величина чистине
 [Levee]
 Насип
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Мртваје
 [Everglades need at least one colony.]

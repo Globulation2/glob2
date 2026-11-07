@@ -1800,6 +1800,10 @@ Tamanho das poças
 Tamanho da clareira
 [Levee]
 Dique
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Charcos
 [Everglades need at least one colony.]

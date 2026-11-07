@@ -1764,6 +1764,10 @@ Globulation 2 کا کرسر دکھائیں۔
 کھلی جگہ کا سائز
 [Levee]
 کنارے کا بند
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 دلدلی نالے
 [Everglades need at least one colony.]

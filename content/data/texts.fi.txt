@@ -1800,6 +1800,10 @@ Lammikoiden koko
 Aukion koko
 [Levee]
 Pato
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Rimmet
 [Everglades need at least one colony.]

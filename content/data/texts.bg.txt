@@ -1764,6 +1764,10 @@ OpenGL не е наличен в тази компилация.
 Размер на поляната
 [Levee]
 Дига
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Блатни канали
 [Everglades need at least one colony.]

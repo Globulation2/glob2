@@ -1800,6 +1800,10 @@ Taille des mares
 Taille de la clairière
 [Levee]
 Digue
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Marigots
 [Everglades need at least one colony.]

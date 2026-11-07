@@ -1800,6 +1800,10 @@ OpenGL 在此版本中不可用。
 空地大小
 [Levee]
 堤坝
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 沼泽水道
 [Everglades need at least one colony.]

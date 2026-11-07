@@ -1800,6 +1800,10 @@ Pölarnas storlek
 Gläntans storlek
 [Levee]
 Vall
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]

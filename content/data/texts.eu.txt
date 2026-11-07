@@ -1800,6 +1800,10 @@ Putzuen tamaina
 Soilgunearen tamaina
 [Levee]
 Dikea
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Ur-geldiak
 [Everglades need at least one colony.]

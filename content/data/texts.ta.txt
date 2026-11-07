@@ -1764,6 +1764,10 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 திறந்தவெளி அளவு
 [Levee]
 வெள்ளத் தடுப்புக் கரை
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 சேற்றுப் பள்ளங்கள்
 [Everglades need at least one colony.]

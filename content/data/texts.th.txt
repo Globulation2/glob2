@@ -1764,6 +1764,10 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ขนาด​พื้นที่ว่าง
 [Levee]
 คัน​กั้น​น้ำ
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 บึง
 [Everglades need at least one colony.]

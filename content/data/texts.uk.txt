@@ -1800,6 +1800,10 @@ OpenGL недоступний у цій збірці.
 Розмір галявини
 [Levee]
 Дамба
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Стариці
 [Everglades need at least one colony.]

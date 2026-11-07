@@ -1800,6 +1800,10 @@ Globulation 2のカーソルを表示します。
 空き地の大きさ
 [Levee]
 堤防
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 沼沢
 [Everglades need at least one colony.]

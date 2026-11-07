@@ -1800,6 +1800,10 @@ Tamaño de las charcas
 Tamaño del claro
 [Levee]
 Dique
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Ciénagas
 [Everglades need at least one colony.]

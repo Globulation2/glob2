@@ -1764,6 +1764,10 @@ Bassengstørrelse
 Lysningsstørrelse
 [Levee]
 Elvevoll
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]

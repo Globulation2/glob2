@@ -1800,6 +1800,10 @@ Kích thước ao
 Kích thước khoảng trống
 [Levee]
 Đê
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Lạch lầy
 [Everglades need at least one colony.]

@@ -1800,6 +1800,10 @@ OpenGL недоступен в этой сборке.
 Размер поляны
 [Levee]
 Дамба
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Старицы
 [Everglades need at least one colony.]

@@ -1764,6 +1764,10 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 ఖాళీ ప్రదేశం పరిమాణం
 [Levee]
 వరద కట్ట
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 చిత్తడి కాలువలు
 [Everglades need at least one colony.]

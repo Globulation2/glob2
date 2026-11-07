@@ -1800,6 +1800,10 @@ OpenGL غير متوفر في هذا الإصدار.
 حجم الفسحة
 [Levee]
 السد الترابي
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 المستنقعات
 [Everglades need at least one colony.]

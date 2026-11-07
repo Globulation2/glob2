@@ -1764,6 +1764,10 @@ Globulation 2 का कर्सर दिखाएँ।
 खुली जगह का आकार
 [Levee]
 तटबंध
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 दलदली जलमार्ग
 [Everglades need at least one colony.]

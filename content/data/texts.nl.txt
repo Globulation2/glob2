@@ -1800,6 +1800,10 @@ Grootte van de poelen
 Grootte van de open plek
 [Levee]
 Dijk
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Moerassloten
 [Everglades need at least one colony.]

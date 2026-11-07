@@ -1800,6 +1800,10 @@ Mida de les basses
 Mida de la clariana
 [Levee]
 Dic
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Braços morts
 [Everglades need at least one colony.]

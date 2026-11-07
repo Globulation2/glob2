@@ -1800,6 +1800,10 @@ Velikost tůní
 Velikost mýtiny
 [Levee]
 Hráz
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Slepá ramena
 [Everglades need at least one colony.]

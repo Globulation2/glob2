@@ -1800,6 +1800,10 @@ Größe der Tümpel
 Größe der Lichtung
 [Levee]
 Deich
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Altwasser
 [Everglades need at least one colony.]

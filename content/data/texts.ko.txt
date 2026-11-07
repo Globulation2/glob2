@@ -1800,6 +1800,10 @@ Globulation 2 커서를 표시합니다.
 공터 크기
 [Levee]
 제방
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 늪지
 [Everglades need at least one colony.]

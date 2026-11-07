@@ -1788,6 +1788,10 @@ Saiz kolam
 Saiz kawasan lapang
 [Levee]
 Benteng sungai
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Alur paya
 [Everglades need at least one colony.]

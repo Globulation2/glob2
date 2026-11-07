@@ -1764,6 +1764,10 @@ Ukubwa wa kidimbwi
 Ukubwa wa eneo wazi
 [Levee]
 Tuta la kuzuia maji
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 Mikondo ya vinamasi
 [Everglades need at least one colony.]

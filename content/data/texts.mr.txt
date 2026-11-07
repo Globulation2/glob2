@@ -1764,6 +1764,10 @@ Globulation 2 कर्सर दाखवा.
 मोकळ्या जागेचा आकार
 [Levee]
 बांध
+[Mudflats]
+
+[Hammocks]
+
 [Sloughs]
 दलदली
 [Everglades need at least one colony.]
