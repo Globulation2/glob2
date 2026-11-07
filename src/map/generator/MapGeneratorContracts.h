@@ -3665,6 +3665,326 @@ inline void evergladesContracts()
 		 "extremes, growth");
 }
 
+inline void ringWorldContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("ring-world"));
+	assert(definition.legacyId == 16 && definition.revision == 4);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&
+		   request.option("climate") == 0 && request.option("belt-width") == 45);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Ring world %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
+						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Ring world %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key, int subject = -1)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && record.subject == subject && std::holds_alternative<std::int64_t>(record.value))
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	const auto groupAt = [](const Map &map, int x, int y)
+	{ return terrainGroup(map.vertexTerrainAt(map.normalizeX(x), map.normalizeY(y))); };
+	// The deep cores leave shallows: every deep vertex is at least six steps from any vertex that is not
+	// water. No deposit stands on a tile with a road corner, and the road (when on) has a tile in every
+	// column along the belt, so it runs right round the world. Quarry faces: five stone per colony.
+	const auto checkWorld = [&](const Game &g, const auto &result, const D &r)
+	{
+		const Map &map = g.map;
+		const int w = map.getW(), h = map.getH();
+		const Torus t(map);
+		std::vector<unsigned char> land(size_t(w) * h, 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const TerrainGroup group = groupAt(map, x, y);
+				land[size_t(t.at(x, y))] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater;
+			}
+		const std::vector<int> fromLand = stepsFrom(t, land);
+		int deep = 0, paths = 0, ridges = 0;
+		const bool alongX = w >= h;
+		std::vector<unsigned char> roadAt(size_t(alongX ? w : h), 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const TerrainGroup group = groupAt(map, x, y);
+				if (group == TerrainGroup::DeepWater)
+				{
+					++deep;
+					assert(fromLand[size_t(t.at(x, y))] >= 6);
+				}
+				ridges += group == TerrainGroup::Ridges;
+				if (group == TerrainGroup::Paths)
+				{
+					++paths;
+					roadAt[size_t(alongX ? x : y)] = 1;
+				}
+				bool roadCorner = false;
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+						roadCorner = roadCorner || groupAt(map, x + dx, y + dy) == TerrainGroup::Paths;
+				assert(!(roadCorner && map.isResource(x, y)));
+			}
+		assert((deep > 0) == (r.option("deep-water") == 1) || (r.option("deep-water") == 1 && w == 128 && h == 128));
+		assert((measure(result, "ring-world.deep.vertices") == deep));
+		if (r.option("ring-road") == 1 && measure(result, "ring-world.road.tiles") > 0)
+			assert(std::count(roadAt.begin(), roadAt.end(), 1) == int(roadAt.size()));
+		if (r.option("ring-road") == 0)
+			assert(paths == 0);
+		if (r.option("rock-spine") == 0)
+			assert(ridges == 0 && measure(result, "ring-world.quarry.stone") == 0);
+		else if (measure(result, "ring-world.tors.placed") > 0)
+		{
+			assert(measure(result, "ring-world.tors.placed") == r.nbTeams);
+			assert(measure(result, "ring-world.quarry.stone") == 5 * r.nbTeams);
+			assert(ridges > 0);
+		}
+	};
+	// The envelope: every size and colony count the request check accepts, with the climate, deep
+	// ocean, spine and road pinned in turn. A seed the service refuses (revision 3 refused the same
+	// seeds) is rolled again, as the lobby does.
+	int pinned = 0, torsPlaced = 0, roads = 0;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 8},
+							std::pair{8, 9}, std::pair{9, 9}})
+		for (int teams : {1, 2, 3, 4, 5, 8, 12, 16})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (!definition.validateRequest(r).empty())
+				continue;
+			if (dimensions.first + dimensions.second >= 17 && teams != 4 && teams != 12)
+				continue; // the large maps only twice, for time
+			r.options["climate"] = 1 + pinned % 3;
+			r.options["deep-water"] = pinned % 4 != 3;
+			r.options["rock-spine"] = pinned % 5 != 4;
+			r.options["ring-road"] = pinned % 6 != 5;
+			++pinned;
+			bool generated = false;
+			for (int roll = 0; roll < 6 && !generated; ++roll)
+			{
+				Game probe(nullptr);
+				generated = bool(service.generate(probe, r));
+				if (!generated)
+					++r.seed;
+			}
+			if (!generated)
+				continue; // revision 3 refuses this size and colony count on these seeds too
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			checkWorld(g, result, r);
+			torsPlaced += measure(result, "ring-world.tors.placed") == teams;
+			roads += measure(result, "ring-world.road.tiles") > 0;
+		}
+	assert(pinned >= 20 && torsPlaced >= pinned / 2 && roads >= pinned / 2);
+	assert(!definition.validateRequest(make(7, 7, 6, 7)).empty());
+	// Every climate comes up at random, and each pinned holds at 128, 256 and 512 with every feature.
+	std::set<std::string> climates;
+	for (std::uint32_t seed = 1; seed <= 12; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		if (result)
+			climates.insert(choice(result, "ring-world.climate"));
+	}
+	assert(climates.size() == 3);
+	const char *names[] = {"temperate", "steppe", "tropical"};
+	for (int climate = 1; climate <= 3; ++climate)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
+		{
+			D r = make(dimension, dimension, teams, 11);
+			r.options["climate"] = climate;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned climate");
+			assert(choice(result, "ring-world.climate") == names[climate - 1]);
+			checkWorld(g, result, r);
+			assert(measure(result, "ring-world.road.tiles") > 0 && measure(result, "ring-world.loam.vertices") > 0);
+			if (dimension >= 8)
+				assert(measure(result, "ring-world.deep.vertices") > 0 && measure(result, "ring-world.spine.tiles") > 0 &&
+					   measure(result, "ring-world.tors.placed") == teams);
+		}
+	{
+		// The climate is looks only: the same seed plays identically in all three.
+		Game a(nullptr), b(nullptr), c(nullptr);
+		D temperate = make(8, 8, 4, 13), steppe = make(8, 8, 4, 13), tropical = make(8, 8, 4, 13);
+		temperate.options["climate"] = 1;
+		steppe.options["climate"] = 2;
+		tropical.options["climate"] = 3;
+		build(a, temperate, "temperate");
+		build(b, steppe, "steppe");
+		build(c, tropical, "tropical");
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+				for (const Game *other : {&b, &c})
+				{
+					assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
+					assert(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
+					differentLooks += a.map.vertexTerrainAt(x, y) != other->map.vertexTerrainAt(x, y);
+				}
+		assert(differentLooks > 2000);
+	}
+	{
+		// Deep ocean off: no deep vertex, and every tile walks alike.
+		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		off.options["deep-water"] = 0;
+		Game a(nullptr), b(nullptr);
+		build(a, on, "deep ocean");
+		const auto result = build(b, off, "no deep ocean");
+		assert(measure(result, "ring-world.deep.vertices") == 0);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				assert(groupAt(b.map, x, y) != TerrainGroup::DeepWater);
+				assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+			}
+	}
+	{
+		// The spine and the tors: every colony's face holds five stone and is the same walk from its
+		// swarm, give or take a few steps; off, no rock at all and no quarry. The colony sites are the
+		// same either way.
+		for (std::uint32_t seed : {23u, 24u, 25u, 26u})
+		{
+			D on = make(8, 8, 4, seed), off = make(8, 8, 4, seed);
+			off.options["rock-spine"] = 0;
+			Game a(nullptr), b(nullptr);
+			const auto with = build(a, on, "spine"), without = build(b, off, "no spine");
+			assert(measure(with, "ring-world.spine.segments") >= 3 && measure(with, "ring-world.tors.placed") == 4);
+			int least = INT_MAX, most = 0;
+			for (int team = 0; team < 4; ++team)
+			{
+				const int walk = measure(with, "ring-world.quarry.nearest-walk", team);
+				assert(walk > 0);
+				least = std::min(least, walk);
+				most = std::max(most, walk);
+				assert(a.teams[team]->startPosX == b.teams[team]->startPosX &&
+					   a.teams[team]->startPosY == b.teams[team]->startPosY);
+			}
+			assert(most - least <= 6);
+			assert(measure(without, "ring-world.quarry.stone") == 0 && measure(without, "ring-world.spine.tiles") == 0);
+		}
+		// Damage is refused: a quarry face robbed of its stone, rock drawn round open ground, a road vertex
+		// grassed over.
+		D on = make(8, 8, 4, 23);
+		GenerationContext check(on);
+		Game robbed(nullptr), ringed(nullptr), broken(nullptr);
+		build(robbed, on, "spine again");
+		bool removed = false;
+		for (int i = 0; i < 256 * 256 && !removed; ++i)
+		{
+			const int x = i % 256, y = i / 256;
+			if (!robbed.map.isResource(x, y) || robbed.map.getResource(x, y).type != STONE)
+				continue;
+			bool besideRock = false;
+			for (int dy = -1; dy <= 2 && !besideRock; ++dy)
+				for (int dx = -1; dx <= 2 && !besideRock; ++dx)
+					besideRock = groupAt(robbed.map, x + dx, y + dy) == TerrainGroup::Ridges;
+			if (besideRock)
+			{
+				robbed.map.replaceResource(x, y, Resource{});
+				removed = true;
+			}
+		}
+		assert(removed && definition.validateWorld(robbed, check).find("quarry") != std::string::npos);
+		build(ringed, on, "spine again");
+		bool drawn = false;
+		for (int cy = 8; cy < 248 && !drawn; cy += 4)
+			for (int cx = 8; cx < 248 && !drawn; cx += 4)
+			{
+				bool open = true;
+				for (int dy = -6; dy <= 6 && open; ++dy)
+					for (int dx = -6; dx <= 6 && open; ++dx)
+						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
+							   !ringed.map.isResource(cx + dx, cy + dy) &&
+							   ringed.map.getBuilding(cx + dx, cy + dy) == NOGBID &&
+							   groupAt(ringed.map, cx + dx, cy + dy) == TerrainGroup::Grass;
+				if (!open)
+					continue;
+				for (int dy = -5; dy <= 5; ++dy)
+					for (int dx = -5; dx <= 5; ++dx)
+						if (std::max(std::abs(dx), std::abs(dy)) >= 4)
+							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
+				drawn = true;
+			}
+		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		build(broken, on, "road again");
+		bool grassed = false;
+		for (int i = 0; i < 256 * 256 && !grassed; ++i)
+			if (groupAt(broken.map, i % 256, i / 256) == TerrainGroup::Paths)
+			{
+				broken.map.setVertexTerrain(i % 256, i / 256, GRASS);
+				grassed = true;
+			}
+		assert(grassed && definition.validateWorld(broken, check).find("road") != std::string::npos);
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		const auto result = build(zero, r, "no resources");
+		checkWorld(zero, result, r);
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	{
+		const auto result = build(abundant, r, "abundant resources");
+		checkWorld(abundant, result, r);
+	}
+	GenerationContext context(r);
+	const auto crops = [&]()
+	{
+		int count = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			count += abundant.map.isResource(i % 256, i / 256) &&
+					 (abundant.map.getResource(i % 256, i / 256).type == WHEAT ||
+					  abundant.map.getResource(i % 256, i / 256).type == WOOD);
+		return count;
+	};
+	const int before = crops();
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the crops spread, but none onto the road, every colony can
+	// still walk to colony 0 and round the world, and every quarry keeps its stone.
+	for (int tick = 0; tick < 3072; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Ring world growth: %s\n", growthError.c_str());
+	assert(growthError.empty() && crops() > before);
+	puts("PASS Ring world: envelope with pinned climates, deep ocean, spine and road; shallows round every deep "
+		 "core; looks keep the rules; a quarry tor per colony at an equal walk; rock that never cuts ground off; "
+		 "a road right round the world that holds no crop; damage refused; resource extremes; growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -3702,5 +4022,6 @@ inline void generatorContracts()
 	run("tidal-flats", tidalFlatsContracts);
 	run("watershed", watershedContracts);
 	run("everglades", evergladesContracts);
+	run("ring-world", ringWorldContracts);
 }
 } // namespace GeneratorContracts
