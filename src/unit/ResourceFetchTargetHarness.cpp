@@ -705,12 +705,12 @@ TEST_CASE("destination refresh keeps the claim when it finds nothing better and 
     auto* a=f.addBuilding("inn",20,20);auto* b=f.addBuilding("inn",24,20);REQUIRE(a);REQUIRE(b);
     auto* seeker=f.addUnit(WORKER,8,8);auto* holder=f.addUnit(WORKER,8,10);REQUIRE(seeker);REQUIRE(holder);
     REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));REQUIRE(map.incResourceByIndex(14,12,WHEAT,0));
-    const auto near=Uint32(map.coordToIndex(9,8)),far=Uint32(map.coordToIndex(14,12));
-    map.setMaterialAmountSlot(near,WHEAT,1);map.setMaterialAmountSlot(far,WHEAT,1);
+    const auto nearCell=Uint32(map.coordToIndex(9,8)),farCell=Uint32(map.coordToIndex(14,12));
+    map.setMaterialAmountSlot(nearCell,WHEAT,1);map.setMaterialAmountSlot(farCell,WHEAT,1);
     // Publish the field first: waiting for it runs whole game ticks.
     REQUIRE(glob2test::awaitGradient(f.game,[&]{return map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);}));
     hireClaimWorker(*seeker,*a);hireClaimWorker(*holder,*b);
-    REQUIRE(seeker->acquireMaterialClaimAt(far));REQUIRE(holder->acquireMaterialClaimAt(near));
+    REQUIRE(seeker->acquireMaterialClaimAt(farCell));REQUIRE(holder->acquireMaterialClaimAt(nearCell));
     const auto oldClaim=seeker->activeMaterialClaim;const auto oldTask=seeker->materialClaimTask;
     f.game.invalidateObservation();f.game.observeCompletedWorld(); // Route submission reads the last completed world.
     auto& cadence=seeker->materialClaimPolicyState;
@@ -726,8 +726,8 @@ TEST_CASE("destination refresh keeps the claim when it finds nothing better and 
     holder->releaseActiveMaterialClaim();
     seeker->handleActiveMaterialMovement();CHECK(seeker->activeMaterialClaim==oldClaim);
     cadence.decisionOrdinal=cadence.lastGoalAttempt+DestinationRefreshDecisions-1;
-    seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==near);
-    CHECK(map.materialClaimLedger().materialCount(far,WHEAT)==0);
+    seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==nearCell);
+    CHECK(map.materialClaimLedger().materialCount(farCell,WHEAT)==0);
     const auto sameTask=seeker->materialClaimTask;
     seeker->handleActiveMaterialMovement();seeker->handleActiveMaterialMovement();
     CHECK(seeker->materialClaimTask==sameTask);
@@ -1039,7 +1039,7 @@ TEST_CASE("contention decisions count same-material fetch targets on the torus a
     // Self targets column 0. A different material on the same cell and the
     // same material ContentionRadius+1 tiles away never count.
     auto* self=fetcher(4,4,0,8);
-    auto* wood=fetcher(7,4,0,8,WOOD);auto* far=fetcher(8,4,4,8);(void)wood;(void)far;
+    auto* wood=fetcher(7,4,0,8,WOOD);auto* distant=fetcher(8,4,4,8);(void)wood;(void)distant;
     map.prepareClaimContention(0);
     CHECK(map.claimContentionOthers(*self,WHEAT,0,8)==0);
     CHECK(map.claimContentionOthers(*self,WOOD,0,8)==1);
