@@ -199,10 +199,10 @@ def build_mobile(directory, identity, arguments):
 
             bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'platforms/mobile/NativeTestMain.cpp')
             engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
-                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.portable_engine_tests(), 'engine-')
                                    + bridge + client_objects)
             unit = tests.Program(str(output / 'tests' / 'glob2-unit-tests'),
-                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.portable_unit_tests(), 'unit-')
                                  + production_objects(registry.UNIT_PRODUCTION_SOURCES) + bridge + library_objects)
             env.Alias('android-tests', engine + unit)
     else:

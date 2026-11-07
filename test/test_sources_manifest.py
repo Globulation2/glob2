@@ -68,6 +68,55 @@ class SourcesManifestTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_identity({'compile_profile': 'tiny'}, 'linux')
 
+    def test_module_groups_are_disjoint_ordered_subsets(self):
+        position = {source: index for index, source in enumerate(sources.CLIENT_SOURCES)}
+        self.assertEqual(set(sources.MODULE_SOURCES), {'map', 'sim'})
+        for name, group in sources.MODULE_SOURCES.items():
+            self.assertTrue(group, name)
+            self.assertEqual(len(set(group)), len(group), name)
+            self.assertTrue(set(group) <= set(position), name + ' names a source outside CLIENT_SOURCES')
+            self.assertEqual(list(group), sorted(group, key=position.__getitem__), name + ' leaves manifest order')
+        self.assertFalse(set(sources.MAP_SOURCES) & set(sources.SIM_SOURCES))
+
+    def test_module_groups_cover_their_directories_exactly(self):
+        """Every client source under a module directory is in exactly one group, unless
+        it is presentation or application glue named here; nothing else joins a group
+        without being listed."""
+        modules = set(sources.MAP_SOURCES) | set(sources.SIM_SOURCES)
+        directories = ('map/', 'field/', 'resource/', 'common/', 'game/', 'unit/', 'building/', 'team/',
+                       'engine/sim/', 'replay/', 'scripting/', 'ai/')
+        presentation = ('map/editor/', 'map/preview/', 'map/tools/', 'map/generator/', 'game/screens/',
+                        'unit/render/', 'building/hud/', 'team/stats/TeamStatChart.cpp',
+                        'scripting/map/ScriptEditorScreen.cpp')
+        for source in sources.CLIENT_SOURCES:
+            if source.startswith(directories):
+                self.assertEqual(source in modules, not source.startswith(presentation), source)
+            else:
+                self.assertNotIn(source, modules, source)
+        # Files whose directory says one layer and whose link closure says the other.
+        for source in ('map/Sector.cpp', 'map/MapTiling.cpp', 'map/MapSetImport.cpp'):
+            self.assertIn(source, sources.SIM_SOURCES)
+        self.assertIn('engine/sim/snapshot/WorldSnapshot.cpp', sources.MAP_SOURCES)
+        self.assertIn('map/Map.cpp', sources.MAP_SOURCES)
+        self.assertIn('game/Game.cpp', sources.SIM_SOURCES)
+
+    def test_module_tests_are_registered_once(self):
+        sys.path.insert(0, str(ROOT / 'test'))
+        import tests
+        def paths(entries):
+            return [entry if isinstance(entry, str) else entry[0] for entry in entries]
+        lists = {'engine': paths(tests.ENGINE_TESTS), 'unit': paths(tests.UNIT_TESTS),
+                 'map': paths(tests.MAP_TESTS), 'sim': paths(tests.SIM_TESTS)}
+        seen = {}
+        for name, entries in lists.items():
+            for entry in entries:
+                self.assertNotIn(entry, seen, f'{entry} is in {seen.get(entry)} and {name}')
+                seen[entry] = name
+        self.assertEqual(set(tests.MODULE_CASE_FLOORS),
+                         {tests.source_path(entry) for entry in lists['map'] + lists['sim']})
+        self.assertEqual(paths(tests.portable_engine_tests()), lists['engine'] + lists['sim'])
+        self.assertEqual(paths(tests.portable_unit_tests()), lists['unit'] + lists['map'])
+
     def test_header_names_every_optional_group(self):
         header = sources.profile_header('core')
         self.assertIn('#define GLOB2_COMPILE_PROFILE "core"', header)
