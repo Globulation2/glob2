@@ -17,6 +17,7 @@
 #include "Resources.h"
 #include "ResourceSemantics.h"
 #include "Roads.h"
+#include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Walls.h"
@@ -132,7 +133,7 @@ constexpr double kRidgeCore = 3.5;
 // Quarry faces: the outer kQuarryDepth tiles of a range stay stone, kQuarryHalf tiles either side of
 // a home's town and two or three either side of the ambient quarries, one for every kQuarryPitch
 // tiles of every face at the default `stone-amount`.
-constexpr int kQuarryDepth = 2, kQuarryHalf = 4, kHomeQuarryStone = 12, kQuarrySearch = 12;
+constexpr int kQuarryDepth = 2, kQuarryHalf = 4, kHomeQuarryStone = 8, kQuarrySearch = 12;
 constexpr double kQuarryPitch = 48;
 // Spurs off the ridges' faces: one every kSpurGapLow to kSpurGapHigh tiles, kSpurLow to kSpurHigh
 // long and kSpurBaseLow to kSpurBaseHigh tiles half wide at the root.
@@ -1435,7 +1436,16 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					{
 						const auto [qx, qy] = turnStencilTile(L.facing[k], column + dx, dy - d);
 						const int q = t.at(fan.x + qx, fan.y + qy);
-						if (L.stone[q])
+						// Stone stands on pure grass: a tile whose corners a pass floor or a beach
+						// (laid a vertex out from any water) could reach would never hold it.
+						bool wet = false;
+						for (int ny = -2; ny <= 2; ++ny)
+							for (int nx = -2; nx <= 2; ++nx)
+							{
+								const int j = t.at(fan.x + qx + nx, fan.y + qy + ny);
+								wet |= L.water[j] || ((std::abs(nx) <= 1 && std::abs(ny) <= 1) && (L.sand[j] || L.pass[j]));
+							}
+						if (L.stone[q] && !wet)
 						{
 							L.quarry[q] = 1;
 							L.quarryOf[q] = k;
@@ -1558,16 +1568,12 @@ bool generate(Game &game, GenerationContext &context)
 		if (openDesert(i))
 			desertValues.push_back(dunes[i]);
 	const int duneCut = percentile(desertValues, 100 - kDunePercent);
-	// The rock of the ranges: every vertex whose four tiles are all rock (range stone that is not a
-	// quarry face), so a tile is blocked exactly where the design put rock (two rock corners block)
-	// and every quarry tile keeps four open corners, the pure grass stone stands on.
-	std::vector<unsigned char> rockTile(n, 0), rock(n, 0);
+	// The rock of the ranges: range stone that is not a quarry face (rockVertices keeps the blocked
+	// region exactly the drawn one and every quarry tile four open corners).
+	std::vector<unsigned char> rockTile(n, 0);
 	for (int i = 0; i < n; ++i)
 		rockTile[i] = L.stone[i] && !L.quarry[i];
-	for (int y = 0; y < t.h; ++y)
-		for (int x = 0; x < t.w; ++x)
-			rock[y * t.w + x] = rockTile[t.at(x, y)] && rockTile[t.at(x - 1, y)] && rockTile[t.at(x, y - 1)] &&
-								rockTile[t.at(x - 1, y - 1)];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTile);
 	// Beyond the reach of any water's growth probe the open desert is mostly pavement, gravel no crop
 	// can stand on, with patches of dry grass that hold the scrub and the outcrops and never grow
 	// anything; within the reach it is grass the fans' crops can spread onto, as before.
@@ -1579,7 +1585,7 @@ bool generate(Game &game, GenerationContext &context)
 		fromWater = stepsFrom(t, wet);
 	}
 	const std::vector<int> pave = periodicNoise(t.w, t.h, kPaveCell, context.stream("bajada-pavement"));
-	const std::vector<unsigned char> beforeQuarry = dilate(t, L.quarry, 1);
+	const std::vector<unsigned char> beforeQuarry = quarryApproach(t, L.quarry);
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 	{
@@ -1587,7 +1593,7 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 		else if (rock[i])
 			terrain[i] = RIDGE_ROCK;
-		else if (beforeQuarry[i])
+		else if (beforeQuarry[i] || L.quarry[i])
 			continue; // grass, so every quarry tile has four grass corners and holds its stone
 		else if (L.sand[i] || (openDesert(i) && dunes[i] >= duneCut))
 			terrain[i] = SAND;
@@ -1800,20 +1806,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return lost;
 	// Every quarry face holds its stone, and every home's quarry is whole: the same stone on every
 	// home, a short walk above its town.
-	std::vector<int> homeStone(teams, 0);
-	for (int i = 0; i < t.size(); ++i)
-		if (L.quarry[i])
-		{
-			const bool stone = permanentResourceBarrier(map, i);
-			if (!stone && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
-				return "A range has lost its stone at (" + at(i) + ").";
-			if (L.quarryOf[i] >= 0)
-				homeStone[L.quarryOf[i]] += stone;
-		}
-	for (int k = 0; k < teams; ++k)
-		if (homeStone[k] != homeStone[0] || homeStone[k] < kHomeQuarryStone)
-			return "Colony " + std::to_string(k) + "'s quarry holds " + std::to_string(homeStone[k]) +
-				   " stone, colony 0's " + std::to_string(homeStone[0]) + ".";
+	if (const std::string fault = quarryFault(map, t, L.quarry, L.quarryOf, teams, kHomeQuarryStone);
+		!fault.empty())
+		return fault;
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
 	// two homes' footprints overlap on a crowded map (their fans merge there).
 	std::vector<unsigned char> covers(t.size(), 0);

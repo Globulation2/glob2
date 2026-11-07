@@ -24,6 +24,9 @@
 // 20 tiles of the swarm), other sealed plots and open ground. "Sealed" means an eight-connected
 // component of farmland smaller than 1,500 tiles, which bunded plots are and open country is not.
 // Walking passes grass, sand, beaches, wheat and buildings; water, stone, wood and fruit block it.
+// Rule groups count as the engine counts them: deep water waters like water, loam, moss and spring
+// meadow water at 48/256 and are farmland, barren ground (dirt, shale, clay...) inhibits like sand,
+// and rough, path and barren ground walk while obstacles, ridges, lava and voids do not.
 // Tile codes are render_terrain.py's: 0 grass, 1 sand, 2 water, 3 mixed, 4 wheat, 5 wood, 6 stone,
 // 7 building, 8 fruit, 9 algae. A dump records a resource rather than the ground under it, so a probe
 // landing on a resource other than algae counts as neither water nor sand.
@@ -40,11 +43,40 @@ static int wrapIndex(int x, int y)
 {
 	return ((y % height + height) % height) * width + ((x % width + width) % width);
 }
-static int isWater(int code) { return code == WATER || code == ALGAE; }
-static int isFarmland(int code) { return code == GRASS || code == WHEAT; }
+// Codes 10 and up are 10 + the terrain type (src/map/TerrainType.h) of a pure tile outside the
+// grass, sand and water groups; the rule groups below follow src/map/TerrainGroup.h.
+static int inList(int code, const int *list, int count)
+{
+	for (int k = 0; k < count; k++)
+		if (list[k] == code)
+			return 1;
+	return 0;
+}
+// Deep and dark water: a full water source, though algae never grows there.
+static const int deepWater[] = {35, 36};
+// Loam, moss and spring meadow: crop land that waters its surroundings at 48/256 of water.
+static const int fertileGround[] = {32, 33, 34};
+// Barren ground (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite,
+// arctic tundra): buildable, but it inhibits growth exactly like sand.
+static const int barrenGround[] = {20, 21, 22, 23, 47, 50, 51, 54, 63};
+// Obstacles, ridges, lava and voids: nothing walks there.
+static const int blockedGround[] = {15, 16, 17, 18, 19, 30, 31, 37, 38, 55, 56, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73};
+#define COUNT(list) (int)(sizeof(list) / sizeof(list[0]))
+static int isWater(int code) { return code == WATER || code == ALGAE || inList(code, deepWater, COUNT(deepWater)); }
+// A probe's watering, in 256ths of open water.
+static unsigned sourceStrength(int code)
+{
+	return isWater(code) ? 256 : inList(code, fertileGround, COUNT(fertileGround)) ? 48 : 0;
+}
+static int inhibits(int code) { return code == SAND || inList(code, barrenGround, COUNT(barrenGround)); }
+static int isFarmland(int code)
+{
+	return code == GRASS || code == WHEAT || inList(code, fertileGround, COUNT(fertileGround));
+}
 static int isWalkable(int code)
 {
-	return code == GRASS || code == SAND || code == MIXED || code == WHEAT || code == BUILDING;
+	return code == GRASS || code == SAND || code == MIXED || code == WHEAT || code == BUILDING ||
+		   (code >= 10 && !isWater(code) && !inList(code, blockedGround, COUNT(blockedGround)));
 }
 
 int main(int argc, char **argv)
@@ -81,12 +113,15 @@ int main(int argc, char **argv)
 		{
 			if (!isFarmland(tiles[y * width + x]))
 				continue;
-			unsigned sum = 0;
+			unsigned long sum = 0;
 			for (int dy = -PROBE; dy <= PROBE; dy++)
 				for (int dx = -PROBE; dx <= PROBE; dx++)
-					if (isWater(tiles[wrapIndex(x + dx, y + dy)]) && tiles[wrapIndex(x - dx, y - dy)] != SAND)
-						sum += (16 - abs(dy)) * (16 - abs(dx));
-			chance[y * width + x] = sum;
+				{
+					const unsigned strength = sourceStrength(tiles[wrapIndex(x + dx, y + dy)]);
+					if (strength && !inhibits(tiles[wrapIndex(x - dx, y - dy)]))
+						sum += (unsigned long)(16 - abs(dy)) * (16 - abs(dx)) * strength;
+				}
+			chance[y * width + x] = (unsigned)(sum / 256);
 		}
 
 	// Farmland components, eight-connected across the wrap, to tell sealed plots from open country.

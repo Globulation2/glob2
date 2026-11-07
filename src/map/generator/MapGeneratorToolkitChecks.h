@@ -21,6 +21,7 @@
 #include <StreamBackend.h>
 #include "HierarchicalCrossings.h"
 #include "Drawing.h"
+#include "Rock.h"
 #include "GenerationValidation.h"
 #include "GeneratorDefinition.h"
 #include "IntBuildingType.h"
@@ -1276,6 +1277,93 @@ inline void wallChecks()
 
 // growTerritories: equal areas to the tile on an open torus, each territory in one piece, the same
 // result grown twice, and a boxed-in territory that stops while the rest share out the remainder.
+// Rock walls (shared/Rock): a wall drawn as tiles blocks exactly those tiles once its vertices are
+// rock, a quarry face left out of it keeps four grass corners and holds stone, talus skirts the rock
+// and deep cores keep a shallow margin.
+inline void rockChecks()
+{
+	Game game(nullptr);
+	grassMap(game, 5, 5);
+	Map &map = game.map;
+	const Torus t(map);
+	std::vector<unsigned char> wall(t.size(), 0), quarry(t.size(), 0), open(t.size(), 0);
+	for (int y = 10; y < 16; ++y)
+		for (int x = 0; x < t.w; ++x)
+			wall[t.at(x, y)] = 1;
+	for (int i = 0; i < t.size(); ++i)
+		open[i] = !wall[i];
+	const std::vector<int> face = quarryNear(t, wall, open, t.at(16, 15), 2, 2);
+	assert(face.size() == 10); // five columns, two rows deep, on the wall's lower face
+	for (int i : face)
+	{
+		assert(wall[i] && (i / t.w == 14 || i / t.w == 15));
+		quarry[i] = 1;
+	}
+	std::vector<unsigned char> rockTiles(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		rockTiles[i] = wall[i] && !quarry[i];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTiles);
+	TerrainSketch sketch(t.size(), GRASS);
+	for (int i = 0; i < t.size(); ++i)
+		if (rock[i])
+			sketch[i] = RIDGE_ROCK;
+	const std::vector<unsigned char> approach = quarryApproach(t, quarry);
+	for (int i = 0; i < t.size(); ++i)
+		assert(!(approach[i] && quarry[i]) && !(approach[i] && rock[i] && !wall[i]));
+	writeVertices(map, sketch);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const int i = t.at(x, y);
+			const bool walkable = map.terrainPropertiesAt(x, y).walkable;
+			// Open ground stays open and the wall's inner rows are blocked; only the outer rows beside
+			// the quarry's ends, convex corners of the rock, keep a single rock corner.
+			if (!wall[i])
+				assert(walkable);
+			else if (!quarry[i] && y > 10 && y < 15)
+				assert(!walkable);
+		}
+	for (int i : face)
+	{
+		assert(map.isResourceAllowed(t.remainderX(i), i / t.w, STONE));
+		map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	}
+	{
+		// With its quarry stocked, nothing walks through the wall.
+		std::vector<unsigned char> passable(t.size(), 0), north(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			// Rows 24 and 25 are shut too, so the torus cannot carry a walk round the back.
+			passable[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable &&
+						  !map.isResource(t.remainderX(i), i / t.w) && i / t.w != 24 && i / t.w != 25;
+			north[i] = i / t.w == 5;
+		}
+		const Flood flood = floodFrom(t, north, passable);
+		for (int i : flood.visited)
+			assert(i / t.w != 20);
+	}
+	std::vector<int> owner(t.size(), -1);
+	for (int i : face)
+		owner[i] = 0;
+	assert(quarryFault(map, t, quarry, owner, 1, 10).empty());
+	assert(!quarryFault(map, t, quarry, owner, 1, 11).empty());
+	map.replaceResource(t.remainderX(face[0]), face[0] / t.w, Resource{});
+	assert(!quarryFault(map, t, quarry, owner, 1, 1).empty());
+	// Talus: one tile always, never on the wall or where not eligible.
+	std::vector<unsigned char> eligible(t.size(), 1);
+	eligible[t.at(8, 9)] = 0;
+	const std::vector<int> calm(t.size(), 0);
+	const std::vector<unsigned char> apron = talusApron(t, rockTiles, eligible, calm, 1, 3, 30000);
+	assert(apron[t.at(10, 9)] && !apron[t.at(8, 9)] && !apron[t.at(10, 7)] && !apron[t.at(10, 12)]);
+	// Deep cores leave at least two steps of shallow water.
+	std::vector<unsigned char> water(t.size(), 0);
+	for (int y = 2; y < 12; ++y)
+		for (int x = 2; x < 12; ++x)
+			water[t.at(x, y)] = 1;
+	const std::vector<unsigned char> core = deepCore(t, water, 1);
+	assert(core[t.at(6, 6)] && !core[t.at(2, 6)] && core[t.at(3, 6)] && !core[t.at(20, 20)]);
+}
+
 inline void territoryChecks()
 {
 	const Torus t(30, 30);
@@ -3019,6 +3107,7 @@ inline void toolkitChecks()
 	dressingChecks();
 	layerChecks();
 	wallChecks();
+	rockChecks();
 	territoryChecks();
 	arenaChecks();
 	farmAndTowerChecks();

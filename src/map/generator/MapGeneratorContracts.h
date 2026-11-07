@@ -2285,26 +2285,34 @@ inline void bastionKeysContracts()
 
 inline void generatorContracts()
 {
-	bastionKeysContracts();
-	drownedForestContracts();
-	portageLakesContracts();
-	faultedCityContracts();
-	encircledKingdomContracts();
-	combContracts();
-	evenGroundContracts();
-	marchlandContracts();
-	eatenMapContracts();
-	rebuiltLandscapeContracts();
-	savannahContracts();
-	locustFoodChecks();
-	LastTreelineChecks::run();
-	hedgerowContracts();
-	breachableHighlandsContracts();
-	braidedDeltaChecks();
-	fortsContracts();
-	emojiContracts();
-	honeycombIsleContracts();
-	karstTowersContracts();
-	bajadaContracts();
+	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
+	// below), so one generator's contracts can be checked in minutes; unset runs them all.
+	const char *only = std::getenv("GLOB2_CONTRACTS");
+	const auto run = [&](const char *name, void (*contracts)())
+	{
+		if (!only || (std::string(",") + only + ",").find(std::string(",") + name + ",") != std::string::npos)
+			contracts();
+	};
+	run("bastion-keys", bastionKeysContracts);
+	run("drowned-forest", drownedForestContracts);
+	run("portage-lakes", portageLakesContracts);
+	run("faulted-city", faultedCityContracts);
+	run("encircled-kingdom", encircledKingdomContracts);
+	run("comb", combContracts);
+	run("even-ground", evenGroundContracts);
+	run("marchland", marchlandContracts);
+	run("who-ate-the-map", eatenMapContracts);
+	run("rebuilt-landscapes", rebuiltLandscapeContracts);
+	run("savannah", savannahContracts);
+	run("locust", locustFoodChecks);
+	run("last-treeline", LastTreelineChecks::run);
+	run("hedgerow-country", hedgerowContracts);
+	run("breachable-highlands", breachableHighlandsContracts);
+	run("braided-delta", braidedDeltaChecks);
+	run("forts", fortsContracts);
+	run("emoji", emojiContracts);
+	run("honeycomb-isle", honeycombIsleContracts);
+	run("karst-towers", karstTowersContracts);
+	run("bajada", bajadaContracts);
 }
 } // namespace GeneratorContracts
