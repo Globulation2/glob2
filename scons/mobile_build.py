@@ -145,7 +145,6 @@ def build_mobile(directory, identity, arguments):
             # executables for adb shell (platforms/mobile/android_device_tests.py). They reuse the
             # same game objects; test/support/TestMain.cpp is the entry point and
             # platforms/mobile/NativeTestMain.cpp interposes the platform bridges.
-            import sys
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
@@ -219,7 +218,6 @@ def build_mobile(directory, identity, arguments):
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
         program = record(env, env.StaticLibrary(str(output / 'lib/glob2'), objects), 'link')
         if 'ios-tests' in COMMAND_LINE_TARGETS:
-            import sys
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
