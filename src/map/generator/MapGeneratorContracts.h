@@ -4538,20 +4538,6 @@ inline void riverContracts()
 		r.seed = seed;
 		return r;
 	};
-	const auto build = [&](Game &g, const D &r, const char *what)
-	{
-		const auto result = service.generate(g, r, true);
-		if (!result)
-			std::fprintf(stderr, "River %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
-						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
-		GenerationContext check(r);
-		const std::string error = definition.validateWorld(g, check);
-		if (!error.empty())
-			std::fprintf(stderr, "River %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
-		return result;
-	};
 	const auto measure = [](const auto &result, const char *key)
 	{
 		for (const auto &record : result.telemetry.records())
@@ -4565,6 +4551,31 @@ inline void riverContracts()
 			if (record.key == key)
 				return std::get<std::string>(record.value);
 		return std::string();
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "River %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
+						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "River %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		// The validator replans the very bluffs generate drew (both from the rebuilt height field), and
+		// every quarry face tile holds its stone.
+		const RiverBluffCount replanned = riverReplannedBluffs(g, r);
+		if (replanned.placed != measure(result, "river.bluffs.placed") ||
+			replanned.faces != measure(result, "river.bluffs.faces"))
+			std::fprintf(stderr, "River %s: replanned %d bluffs and %d faces, generated %d and %d\n", what,
+						 replanned.placed, replanned.faces, measure(result, "river.bluffs.placed"),
+						 measure(result, "river.bluffs.faces"));
+		assert(replanned.placed == measure(result, "river.bluffs.placed") &&
+			   replanned.faces == measure(result, "river.bluffs.faces"));
+		assert(measure(result, "river.quarry.stone") == measure(result, "river.quarry.tiles"));
+		return result;
 	};
 	// The terrain promises on a finished map: the water is the height field's (the course is
 	// unchanged); deep water stands at least three steps from any land, so two whole tiles of shallows
@@ -4739,7 +4750,13 @@ inline void riverContracts()
 		for (int cy = 8; cy < 248 && !drawn; cy += 4)
 			for (int cx = 8; cx < 248 && !drawn; cx += 4)
 			{
+				// Away from every colony, so the floor check (which runs first) cannot be what refuses it.
 				bool open = true;
+				for (int k = 0; k < on.nbTeams && open; ++k)
+				{
+					const int dx = std::abs(cx - ringed.teams[k]->startPosX), dy = std::abs(cy - ringed.teams[k]->startPosY);
+					open = std::hypot(std::min(dx, 256 - dx), std::min(dy, 256 - dy)) >= 48;
+				}
 				for (int dy = -6; dy <= 6 && open; ++dy)
 					for (int dx = -6; dx <= 6 && open; ++dx)
 						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
@@ -4754,7 +4771,7 @@ inline void riverContracts()
 				drawn = true;
 			}
 		const std::string ringError = definition.validateWorld(ringed, check);
-		assert(drawn && (ringError.find("cuts ground off") != std::string::npos || ringError.find("Colony") != std::string::npos));
+		assert(drawn && ringError.find("cuts ground off") != std::string::npos);
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)

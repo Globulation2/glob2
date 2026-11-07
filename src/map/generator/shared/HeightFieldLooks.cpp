@@ -97,16 +97,39 @@ std::vector<int> distanceFromWet(const Torus &t, const TerrainSketch &sketch)
 	return distance;
 }
 
-int deepenWater(TerrainSketch &sketch, const Torus &t, int steps, int least, TerrainType deep,
-				const std::vector<unsigned char> *eligible)
+namespace
 {
-	std::vector<unsigned char> water(sketch.size(), 0);
+// The squared straight-line distance from every vertex to the nearest vertex that is not plain WATER
+// (-1 everywhere when there is none), and the plain water count.
+std::vector<std::int64_t> waterReachSquared(const TerrainSketch &sketch, const Torus &t, long long &water)
+{
+	std::vector<unsigned char> land(sketch.size(), 0);
+	water = 0;
 	for (size_t i = 0; i < sketch.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		water[i] = sketch[i] == WATER;
+		land[i] = sketch[i] != WATER;
+		water += sketch[i] == WATER;
 	}
-	std::vector<unsigned char> core = deepCore(t, water, steps);
+	if (water == (long long)sketch.size())
+		return std::vector<std::int64_t>(sketch.size(), -1);
+	return distanceSquaredTo(t, land);
+}
+} // namespace
+
+int deepenWater(TerrainSketch &sketch, const Torus &t, int reach, int least, TerrainType deep,
+				const std::vector<unsigned char> *eligible)
+{
+	long long water = 0;
+	const std::vector<std::int64_t> d2 = waterReachSquared(sketch, t, water);
+	const std::int64_t floor = std::max(2, reach);
+	std::vector<unsigned char> core(sketch.size(), 0);
+	for (size_t i = 0; i < sketch.size(); ++i)
+	{
+		::MapGeneration::generationCheckpoint();
+		// With no land at all every water vertex is as far from it as can be.
+		core[i] = sketch[i] == WATER && (d2[i] < 0 || d2[i] >= floor * floor);
+	}
 	if (eligible)
 		for (size_t i = 0; i < core.size(); ++i)
 		{
@@ -127,38 +150,36 @@ int deepenWater(TerrainSketch &sketch, const Torus &t, int steps, int least, Ter
 	return deepened;
 }
 
-int deepStepsForShare(const TerrainSketch &sketch, const Torus &t, int least, int permille)
+int deepReachForShare(const TerrainSketch &sketch, const Torus &t, int least, int permille)
 {
-	std::vector<unsigned char> land(sketch.size(), 0);
 	long long water = 0;
-	for (size_t i = 0; i < sketch.size(); ++i)
-	{
-		::MapGeneration::generationCheckpoint();
-		land[i] = sketch[i] != WATER;
-		water += sketch[i] == WATER;
-	}
+	const std::vector<std::int64_t> d2 = waterReachSquared(sketch, t, water);
 	const int floor = std::max(2, least);
 	if (water == 0 || water == (long long)sketch.size())
 		return floor;
-	const std::vector<int> fromLand = stepsFrom(t, land);
+	// atLeast[r]: the plain water whose whole-tile reach (the floor of the straight-line distance) is r.
 	std::vector<long long> atLeast;
 	for (size_t i = 0; i < sketch.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (!land[i])
-		{
-			if (int(atLeast.size()) <= fromLand[i])
-				atLeast.resize(size_t(fromLand[i]) + 1, 0);
-			++atLeast[size_t(fromLand[i])];
-		}
+		if (sketch[i] != WATER)
+			continue;
+		std::int64_t r = std::int64_t(std::sqrt(double(d2[i])));
+		while ((r + 1) * (r + 1) <= d2[i])
+			++r;
+		while (r * r > d2[i])
+			--r;
+		if (std::int64_t(atLeast.size()) <= r)
+			atLeast.resize(size_t(r) + 1, 0);
+		++atLeast[size_t(r)];
 	}
-	// Running from the deepest step down, the count at or beyond each step.
+	// Running from the farthest reach down, the count at or beyond each reach.
 	for (int s = int(atLeast.size()) - 2; s >= 0; --s)
 		atLeast[size_t(s)] += atLeast[size_t(s) + 1];
-	int steps = floor;
-	while (steps < int(atLeast.size()) && atLeast[size_t(steps)] * 1000 > water * permille)
-		++steps;
-	return steps;
+	int reach = floor;
+	while (reach < int(atLeast.size()) && atLeast[size_t(reach)] * 1000 > water * permille)
+		++reach;
+	return reach;
 }
 
 std::vector<int> wetShare(const Torus &t, const std::vector<unsigned char> &wet, int radius)
@@ -238,7 +259,7 @@ int paveBeyondWater(TerrainSketch &sketch, const std::vector<int> &fromWet, cons
 
 void gradeGrassLooks(TerrainSketch &looks, const TerrainSketch &mechanics, const std::vector<int> &fromWet,
 					 const std::vector<unsigned char> &plain, const std::vector<int> &jitter, int lush, int green,
-					 int shift)
+					 int shift, const std::vector<unsigned char> *noDry)
 {
 	for (size_t i = 0; i < mechanics.size(); ++i)
 	{
@@ -248,7 +269,7 @@ void gradeGrassLooks(TerrainSketch &looks, const TerrainSketch &mechanics, const
 		const double move = jitter.empty() ? 0.0 : shift * (jitter[i] - 32768) / 32768.0;
 		if (fromWet[i] <= lush + move)
 			looks[i] = LUSH_GRASS;
-		else if (fromWet[i] > green + move)
+		else if (fromWet[i] > green + move && !(noDry && noDry->at(i)))
 			looks[i] = DRY_GRASS;
 	}
 }

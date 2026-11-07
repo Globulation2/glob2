@@ -59,13 +59,15 @@ using namespace MapGeneration;
 //   the starting-crop guarantee meet plain GRASS everywhere, as they always did, and no home reads as
 //   a round lawn.
 // - Deep channel (`deep-channel`): plain water far enough from land is deep water (deepenWater):
-//   at least kDeepSteps steps, more until the core holds at most kDeepShare of the water
-//   (deepStepsForShare), so at least three whole tiles of shallows line every bank and the shallows widen
-//   with the river; only bodies of kDeepLeast vertices or more. At the defaults the 90-tile bed keeps
-//   a core about half its width: a fixed five steps swallowed 80% of the water and two thirds of the
-//   algae (the lowest sixth of the field's water, right where the core goes). Deep water swims at 192/256 of the speed and holds no algae, so crossing the
-//   river by swimming is slower than in revision 5 (a feel change). The algae it displaces are seated
-//   again on the nearest free shallows, so the map keeps its algae.
+//   at least kDeepReach tiles in a straight line, so the core's outline is round, more until the core
+//   holds at most kDeepShare of the water (deepReachForShare), so at least three whole tiles of
+//   shallows line every bank and the shallows widen with the river; only bodies of kDeepLeast vertices
+//   or more. At the defaults the 90-tile bed keeps a core about half its width: a fixed five steps
+//   swallowed 80% of the water and two thirds of the algae (the lowest sixth of the field's water,
+//   right where the core goes). Deep water swims at 192/256 of the speed and holds no algae, so
+//   crossing the river by swimming is slower than in revision 5 (a feel change). The algae it displaces
+//   are seated again on the nearest free shallows (straight-line distance with a noise wobble), so the
+//   map keeps its algae.
 // - Floodplain levee: grass kLeveeNear to kLeveeFar vertices from water (one more where a noise
 //   peaks) is loam (Fertile): buildable crop land that waters the ground round it at 48/256; never in a
 //   garden or before a quarry face. Five deep (behind the sand band, really two or three) lost 4% of
@@ -74,8 +76,9 @@ using namespace MapGeneration;
 // - Point bars: on the inside of the river's bends (readBends: wetShare over a window a quarter of the
 //   bed's diameter, the river alone, not the ponds, in the banks' top kBarPercentile percent and above
 //   kBarShare; a fixed 17-tile window found no bends on a 90-tile river), the beach and the sand
-//   behind it, and grass one row further up on the sharpest bends, are mudflat (Rough: slow, unbuildable, holds nothing, and unlike
-//   sand it does not slow the crops behind it).
+//   behind it, and grass one row further up on the sharpest bends, are mudflat (Rough: slow,
+//   unbuildable, holds nothing, and unlike sand it does not slow the crops behind it), never on a
+//   vertex touching a deposit.
 // - Cutbank bluffs (`bluffs`): on the outside of the bends (the bottom kBluffPercentile percent, at
 //   most kBluffShare), knots of
 //   rock (Ridges: impassable, towers shoot over) stand kBluffNear to kBluffFar tiles back from the
@@ -84,9 +87,12 @@ using namespace MapGeneration;
 //   flank (tiles left out of the rock, a ring of plain grass before them), with scree skirting the
 //   rest. A knot whose ring of ground falls apart (a pond behind it) is dropped, so the strip between
 //   the rock and the water always walks through, and validateWorld proves no rock parts any ground.
-//   Bluffs are planned from the height field and the starts alone, so validateWorld plans them again
-//   and checks every quarry holds its stone.
-// - Far ground: grass graded lush near water and dry beyond kGreen steps; beyond kPaveReach steps of
+//   Bluffs are planned from the height field rebuilt from the request (heightFieldSketch: its terrain
+//   and stone band before the starting-crop top-up) and the starts alone, in generate and in
+//   validateWorld alike, so the validator plans exactly the bluffs generate drew and checks every
+//   quarry holds its stone.
+// - Far ground: grass graded lush near water and dry beyond kGreen tiles, on the temperate banks
+//   only on dryShare of that ground in patches, never in a home's garden; beyond kPaveReach steps of
 //   any water (where the growth probe never finds water, and a mirrored probe almost never reaches a
 //   crop) old desert sand and bare grass are pavement (Barren: buildable, holds nothing, inhibits
 //   growth like sand), never on a vertex touching a deposit.
@@ -101,11 +107,19 @@ constexpr const char *kLookStream = "river-looks";
 constexpr const char *kGardenStream = "river-gardens";
 constexpr const char *kBluffStream = "river-bluffs";
 constexpr const char *kMudStream = "river-mud";
+constexpr const char *kAlgaeStream = "river-algae";
+constexpr const char *kDryStream = "river-dry";
 
-// Deep water: plain water kDeepSteps steps from land, in bodies of kDeepLeast vertices or more.
-// The steps rise above kDeepSteps until the core holds at most kDeepShare thousandths of the water, so a
-// wide river keeps shallows in proportion and its displaced algae find room there.
-constexpr int kDeepSteps = 5, kDeepLeast = 16, kDeepShare = 500;
+// Deep water: plain water kDeepReach tiles from land in a straight line (so the core's outline is round,
+// not a staircase of squares), in bodies of kDeepLeast vertices or more. The reach rises above kDeepReach
+// until the core holds at most kDeepShare thousandths of the water, so a wide river keeps shallows in
+// proportion and its displaced algae find room there. Five tiles in a straight line is never under four
+// eight-connected steps, so three whole tiles of shallows line every bank.
+constexpr int kDeepReach = 5, kDeepLeast = 16, kDeepShare = 500;
+// The algae the deep core displaces are seated again on the free shallows nearest them, by straight-line
+// distance plus up to kAlgaeWobble tiles of noise, so the reseated beds have ragged edges rather than the
+// wedges a flood's visiting order drew.
+constexpr double kAlgaeWobble = 4;
 // Home gardens: plain grass within kGardenRadius (frayed by kGardenFray) of every swarm's middle.
 constexpr double kGardenRadius = 12, kGardenFray = 5;
 // Levee: grass kLeveeNear to kLeveeFar vertices from water, one more where a noise passes kLeveeWide.
@@ -127,12 +141,15 @@ constexpr int kSidePerBluff = 80, kTalusOuter = 1;
 constexpr double kBluffReach = 10.0;
 // A bluff on a bank smaller than this many walkable tiles (an island in the river) is not drawn.
 constexpr int kBluffLandLeast = 1500;
-// Far ground: grass dry beyond kGreen steps (kRibbon on the desert banks); pavement from kPaveReach
+// Far ground: grass dry beyond kGreen tiles (kRibbon on the desert banks); pavement from kPaveReach
 // steps (frayed up to kPaveFray further) of any water, hardpan pans on the desert's bare grass beyond
 // the ribbon on kPanShare percent of it. A crop up to 15 steps from water can have its mirrored probe
 // land 30 steps out, so pavement from 22 steps still cost a low-water map (water weight 30) 8% of its
 // food; from 28 it costs about 2%.
-constexpr int kLush = 5, kGreen = 20, kRibbon = 9, kPaveReach = 28, kPaveFray = 3, kPanShare = 55;
+// The temperate banks stay green to kGreen, beyond the heath's kPaveReach: dry from 20 tiles turned most
+// of a default map (whose ground lies mostly over 20 tiles from water) brown, and with the heath and
+// the old desert sand the temperate banks read as a desert. The desert's ribbon is a third as wide.
+constexpr int kLush = 5, kGreen = 34, kRibbon = 9, kPaveReach = 28, kPaveFray = 3, kPanShare = 55;
 // Pans only where the growth probe (15 tiles each way) never finds water, so they take no farmland that
 // grows: from 16 steps. Between the ribbon and there the desert is dry grass.
 constexpr int kPanReach = 16;
@@ -144,19 +161,21 @@ constexpr int kPaveFloor = 22, kPanFloor = 15;
 constexpr double kPanHomeClear = 34;
 
 // The banks' variants. paveShare is the percentage of the ground beyond kPaveReach that is paved:
-// heath patches in dry grass on the temperate banks, all of it in the desert.
+// heath patches in dry grass on the temperate banks, all of it in the desert. dryShare is the
+// percentage of the grass beyond `green` that looks dry, in patches: a mosaic of meadow and dry grass on
+// the temperate uplands, all of it in the desert.
 struct Banks
 {
 	const char *name;
 	TerrainType levee, leveeSecond, pave, paveSecond, dune, duneSecond, deep, mud, pan, rock;
-	int lush, green, paveShare;
+	int lush, green, paveShare, dryShare;
 	bool desert;
 };
 constexpr Banks kBanks[2] = {
 	{"temperate", LOAM, SPRING_MEADOW, HEATH, SHALE, PALE_SAND, DUNE_SAND, DEEP_WATER, MUDFLAT, HARDPAN, OUTCROP,
-	 kLush, kGreen, 40, false},
+	 kLush, kGreen, 40, 45, false},
 	{"desert", LOAM, LOAM, WEATHERED_SANDSTONE, DIRT, DUNE_SAND, WINDY_SAND_DUNE, DEEP_WATER, MUDFLAT, HARDPAN,
-	 HOODOOS, 3, kRibbon, 100, true}};
+	 HOODOOS, 3, kRibbon, 100, 100, true}};
 
 // The river's bends: the share of its own water round every vertex, and the cuts that make a bank
 // vertex a point bar, a sharp one, or a cutbank, from the banks' own distribution.
@@ -324,16 +343,16 @@ Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &
 			continue;
 		// Each knot draws its reach and depth from its own stream, in the order knots are tried.
 		const double reach = kBluffReach - 1 + context.bounded(kBluffStream, 3);
-		const int far = kBluffFar - 1 + int(context.bounded(kBluffStream, 2));
+		const int deepest = kBluffFar - 1 + int(context.bounded(kBluffStream, 2));
 		const int r = int(std::ceil(reach));
-		// The lens: walkable tiles kBluffNear to `far` steps from water within `reach` of the cutbank
+		// The lens: walkable tiles kBluffNear to `deepest` steps from water within `reach` of the cutbank
 		// vertex, kept only where they lie in a 2x2 block of it, so every tile has a rock vertex.
 		std::vector<int> lensTiles;
 		for (int dy = -r; dy <= r; ++dy)
 			for (int dx = -r; dx <= r; ++dx)
 			{
 				const int i = t.at(cx + dx, cy + dy);
-				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= far && walkable[i] &&
+				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= deepest && walkable[i] &&
 					!stone[i])
 				{
 					lens[i] = 1;
@@ -438,9 +457,31 @@ Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &
 	return b;
 }
 
+// The bluffs from the request and the colonies' starts alone, as generate and validateWorld both plan
+// them: the height field's own terrain and stone band rebuilt in a fresh context (heightFieldSketch),
+// before the starting-crop top-up, whose wall clearing can take stone away, and before any start. Both
+// read the same input, so the validator replans exactly the bluffs generate drew.
+Bluffs replanBluffs(const GenerationRequest &request, const std::vector<int> &bootX, const std::vector<int> &bootY,
+					int teams)
+{
+	const RiverOptions options(request);
+	GenerationContext replay(request);
+	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(request, false);
+	std::vector<int> deposits;
+	const TerrainSketch stamp =
+		heightFieldSketch(request, replay, terrain, riverBuilder(options, replay), &deposits);
+	std::vector<unsigned char> stone(deposits.size(), 0);
+	for (size_t i = 0; i < deposits.size(); ++i)
+		stone[i] = deposits[i] == STONE;
+	const Torus t(1 << request.wDec, 1 << request.hDec);
+	// The banks' draw comes before the bluffs' in generate; the streams are separate, so it need not
+	// be repeated here.
+	return planBluffs(stamp, stone, t, bootX, bootY, teams, options, replay);
+}
+
 struct LayerCounts
 {
-	int deep = 0, levee = 0, mud = 0, pave = 0, pan = 0, scree = 0, rock = 0, garden = 0, barCut = 0, bluffCut = 0, deepSteps = 0;
+	int deep = 0, levee = 0, mud = 0, pave = 0, pan = 0, scree = 0, rock = 0, garden = 0, barCut = 0, bluffCut = 0, deepReach = 0;
 };
 
 // The post-pass: the mechanic layers over the height field's terrain, then the looks.
@@ -476,9 +517,9 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	}
 
 	if (o.deepChannel)
-		{
-		counts.deepSteps = deepStepsForShare(mech, t, kDeepSteps, kDeepShare);
-		counts.deep = deepenWater(mech, t, counts.deepSteps, kDeepLeast, DEEP_WATER);
+	{
+		counts.deepReach = deepReachForShare(mech, t, kDeepReach, kDeepShare);
+		counts.deep = deepenWater(mech, t, counts.deepReach, kDeepLeast, DEEP_WATER);
 	}
 
 	// Bluffs: plain grass before every quarry face (never the beach), rock, then scree.
@@ -528,7 +569,9 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 		const std::vector<int> mudFray = periodicNoise(t.w, t.h, 6, context.stream(kMudStream));
 		for (int i = 0; i < n; ++i)
 		{
-			if (garden[i] || halo[i] || !bar[i] || fromRiver[i] < 1 || fromRiver[i] > 3)
+			// Mud holds nothing, so it never goes on a vertex touching a deposit (unguarded, the bars took
+			// dozens of stone off the banks).
+			if (garden[i] || halo[i] || holding[i] || !bar[i] || fromRiver[i] < 1 || fromRiver[i] > 3)
 				continue;
 			const bool sandBar = mech[i] == SAND;
 			const bool upBank = sharp[i] && mech[i] == GRASS && fromRiver[i] == 2 && fromStamp[i] == 2 &&
@@ -559,11 +602,11 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 		if (banks.paveShare < 100)
 		{
 			// Patches of the far ground, not all of it: heath in the dry grass.
-			std::vector<unsigned char> far(size_t(n), 0);
+			std::vector<unsigned char> farGround(size_t(n), 0);
 			for (int i = 0; i < n; ++i)
-				far[i] = eligible[i] && farField[i] >= kPaveReach;
+				farGround[i] = eligible[i] && farField[i] >= kPaveReach;
 			const std::vector<unsigned char> patches =
-				noisyShare(far, fractalNoise(t.w, t.h, 20, 3, looks), banks.paveShare);
+				noisyShare(farGround,fractalNoise(t.w, t.h, 20, 3, looks), banks.paveShare);
 			for (int i = 0; i < n; ++i)
 				eligible[i] = eligible[i] && patches[i];
 		}
@@ -593,7 +636,19 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, looks);
 	grassLooks.assign(size_t(n), 0);
 	gradeGrassLooks(grassLooks, mech, fromWet, std::vector<unsigned char>(size_t(n), 0), jitter, banks.lush,
-					banks.green, 3);
+					banks.green, 3, &garden);
+	if (banks.dryShare < 100)
+	{
+		// Only patches of the dry ground look dry; the rest stays green (looks only).
+		std::vector<unsigned char> dry(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			dry[i] = grassLooks[i] == DRY_GRASS;
+		const std::vector<unsigned char> keep =
+			noisyShare(dry, fractalNoise(t.w, t.h, 24, 3, context.stream(kDryStream)), banks.dryShare);
+		for (int i = 0; i < n; ++i)
+			if (dry[i] && !keep[i])
+				grassLooks[i] = 0;
+	}
 	for (int i = 0; i < n; ++i)
 	{
 		const bool second = split[i] > 0.62 * 65536;
@@ -628,24 +683,30 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	const DisplacedResources lost = writeLayeredTerrain(map, mech, paint);
 
 	// The algae deep water displaced, seated again on the nearest free shallows (the river's own first,
-	// then the nearest ponds'), so the map keeps its algae.
+	// then the nearest ponds'), so the map keeps its algae: nearest by straight-line distance with a
+	// wobble of noise, so a reseated bed's edge is ragged (a flood's visiting order drew wedges).
 	int reseated = 0;
 	if (!lost.algaeTiles.empty())
 	{
 		std::vector<unsigned char> source(size_t(n), 0);
 		for (int i : lost.algaeTiles)
 			source[i] = 1;
-		const Flood flood = floodFrom(t, source, std::vector<unsigned char>(size_t(n), 1));
-		for (int i : flood.visited)
+		const std::vector<std::int64_t> d2 = distanceSquaredTo(t, source);
+		const std::vector<int> wobble = periodicNoise(t.w, t.h, 7, context.stream(kAlgaeStream));
+		std::vector<std::pair<double, int>> shallows;
+		for (int i = 0; i < n; ++i)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			if (d2[i] >= 0 && !map.isResource(x, y) && map.terrainSupportsResourceAtByIndex(x, y, ALGA))
+				shallows.push_back({std::sqrt(double(d2[i])) + kAlgaeWobble * wobble[i] / 65536.0, i});
+		}
+		std::sort(shallows.begin(), shallows.end());
+		for (const auto &shallow : shallows)
 		{
 			if (reseated >= int(lost.algaeTiles.size()))
 				break;
-			const int x = t.remainderX(i), y = i / t.w;
-			if (!map.isResource(x, y) && map.terrainSupportsResourceAtByIndex(x, y, ALGA))
-			{
-				map.setResourceByIndex(x, y, ALGA, 1);
-				++reseated;
-			}
+			map.setResourceByIndex(t.remainderX(shallow.second), shallow.second / t.w, ALGA, 1);
+			++reseated;
 		}
 	}
 
@@ -669,7 +730,7 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	context.telemetry.choice("river.deep-channel", o.deepChannel ? "on" : "off");
 	context.telemetry.choice("river.bluffs", o.bluffs ? "on" : "off");
 	context.telemetry.measure("river.deep.vertices", counts.deep);
-	context.telemetry.measure("river.deep.steps", counts.deepSteps);
+	context.telemetry.measure("river.deep.reach", counts.deepReach);
 	context.telemetry.measure("river.levee.vertices", counts.levee);
 	context.telemetry.measure("river.mudflat.vertices", counts.mud);
 	context.telemetry.measure("river.pavement.vertices", counts.pave);
@@ -684,6 +745,8 @@ void redraw(Game &game, GenerationContext &context, const RiverOptions &o, const
 	context.telemetry.measure("river.bluffs.dropped", bluffs.dropped);
 	context.telemetry.measure("river.bluffs.faces", bluffs.faces);
 	context.telemetry.measure("river.quarry.stone", quarryStone);
+	context.telemetry.measure("river.quarry.tiles",
+							  int(std::count(bluffs.quarry.begin(), bluffs.quarry.end(), (unsigned char)1)));
 	context.telemetry.measure("river.displaced.wheat", lost.wheat);
 	context.telemetry.measure("river.displaced.wood", lost.wood);
 	context.telemetry.measure("river.displaced.stone", lost.stone);
@@ -724,10 +787,7 @@ bool generate(Game &game, GenerationContext &context)
 		bootY[size_t(k)] = t.y(context.bootY[k]);
 	}
 	const Banks &banks = chooseBanks(options, context);
-	std::vector<unsigned char> stone(size_t(t.size()), 0);
-	for (int i = 0; i < t.size(); ++i)
-		stone[i] = game.map.getResource(t.remainderX(i), i / t.w).type == STONE;
-	const Bluffs bluffs = planBluffs(mapSketch(game.map), stone, t, bootX, bootY, teams, options, context);
+	const Bluffs bluffs = replanBluffs(context.request, bootX, bootY, teams);
 	LayerCounts counts;
 	TerrainSketch grassLooks;
 	redraw(game, context, options, banks, bluffs, counts, grassLooks);
@@ -754,6 +814,22 @@ bool generate(Game &game, GenerationContext &context)
 // another seed when a field does not leave one. 2.0 adds the bluffs' promises, planned again from
 // the request and the colonies' starts: every quarry face holds its stone, and no rock parts any
 // walkable ground.
+// The colonies' swarm corners on a finished map, wrapped; empty when a colony is missing.
+bool finishedStarts(const Game &game, int teams, std::vector<int> &bootX, std::vector<int> &bootY)
+{
+	const Torus t(game.map);
+	bootX.assign(static_cast<size_t>(teams), 0);
+	bootY.assign(static_cast<size_t>(teams), 0);
+	for (int k = 0; k < teams; ++k)
+	{
+		if (!game.teams[k])
+			return false;
+		bootX[size_t(k)] = t.x(game.teams[k]->startPosX);
+		bootY[size_t(k)] = t.y(game.teams[k]->startPosY);
+	}
+	return true;
+}
+
 std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	if (std::string floor = startingFloorFailure(game.map, context.request.nbTeams); !floor.empty())
@@ -764,25 +840,12 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Map &map = game.map;
 	const Torus t(map);
 	const int teams = context.request.nbTeams;
-	std::vector<int> bootX(static_cast<size_t>(teams), 0), bootY(static_cast<size_t>(teams), 0);
+	std::vector<int> bootX, bootY;
 	for (int k = 0; k < teams; ++k)
-	{
 		if (!game.teams[k])
 			return "Colony " + std::to_string(k) + " is missing.";
-		bootX[size_t(k)] = t.x(game.teams[k]->startPosX);
-		bootY[size_t(k)] = t.y(game.teams[k]->startPosY);
-	}
-	GenerationContext replay(context.request);
-	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
-	std::vector<int> deposits;
-	const TerrainSketch stamp =
-		heightFieldSketch(context.request, replay, terrain, riverBuilder(options, replay), &deposits);
-	std::vector<unsigned char> stone(deposits.size(), 0);
-	for (size_t i = 0; i < deposits.size(); ++i)
-		stone[i] = deposits[i] == STONE;
-	// The banks' draw comes before the bluffs' in generate; the streams are separate, so it need not
-	// be repeated here.
-	const Bluffs bluffs = planBluffs(stamp, stone, t, bootX, bootY, teams, options, replay);
+	finishedStarts(game, teams, bootX, bootY);
+	const Bluffs bluffs = replanBluffs(context.request, bootX, bootY, teams);
 	if (const std::string fault = quarryFault(map, t, bluffs.quarry, bluffs.owner, teams, 0); !fault.empty())
 		return fault;
 	if (const int parting = partingBarrier(map); parting >= 0)
@@ -791,6 +854,18 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	return "";
 }
 } // namespace
+
+RiverBluffCount riverReplannedBluffs(const Game &game, const GenerationRequest &request)
+{
+	RiverBluffCount count;
+	std::vector<int> bootX, bootY;
+	if (!finishedStarts(game, request.nbTeams, bootX, bootY))
+		return count;
+	const Bluffs bluffs = replanBluffs(request, bootX, bootY, request.nbTeams);
+	count.placed = bluffs.placed;
+	count.faces = bluffs.faces;
+	return count;
+}
 
 GeneratorDefinition riverDefinition()
 {
@@ -817,7 +892,7 @@ GeneratorDefinition riverDefinition()
 		GeneratorControl::choice("banks", "Banks", {"Random", "Temperate", "Desert"}, 0, ControlGroup::Terrain)
 			.withSearchValues({1, 2}),
 		// On, the wide water has a core of deep water: swimming across is slower and no algae grows
-		// there. Two tiles of shallows stay along every bank.
+		// there. At least three tiles of shallows stay along every bank.
 		GeneratorControl::toggle("deep-channel", "Deep channels", true, ControlGroup::Terrain)
 			.withSearchValues({0, 1}),
 		// On, rock bluffs stand on the outside of the river's bends, some with a quarry face of stone

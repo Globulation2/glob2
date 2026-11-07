@@ -1368,8 +1368,8 @@ inline void rockChecks()
 }
 
 // The height-field post-pass helpers (HeightFieldLooks.h), on small hand-built sketches and maps:
-// wet means either water group, deep cores keep their shallows and take only big enough bodies, the
-// deep steps grow with a body's width, bends read high inside and low outside, the major body drops
+// wet means either water group, deep cores keep their shallows, take only big enough bodies and round
+// off in a straight line, the deep reach grows with a body's width, bends read high inside and low outside, the major body drops
 // the ponds, levees and pavement keep their distances, grass grades by distance, gardens are round,
 // writing a post-pass clears exactly the deposits the new terrain refuses, a ring of rock is seen to
 // part the ground and a lone knot is not, and the rebuilt height-field terrain is the stages' own.
@@ -1424,14 +1424,23 @@ inline void heightFieldLooksChecks()
 		TerrainSketch b = s;
 		deepenWater(b, t, 3, 4, DARK_WATER, &left);
 		assert(b[size_t(t.at(8, 10))] == DARK_WATER && b[size_t(t.at(13, 10))] == WATER);
-		// The steps for a share: of the 221 water vertices, 101 lie 3 steps from land (the big pond's
-		// 10x10 and the small one's middle) and 64 lie 4 steps out, so a 500 permille cap is met at the
-		// floor and a 300 permille cap needs one step more.
-		assert(deepStepsForShare(s, t, 3, 500) == 3);
-		const int tight = deepStepsForShare(s, t, 3, 300);
+		// The reach for a share: of the 221 water vertices, 101 lie 3 tiles or more from land (the big
+		// pond's 10x10 and the small one's middle; square ponds are as far from land in a straight line as
+		// in steps) and 64 lie 4 out, so a 500 permille cap is met at the floor and a 300 permille cap
+		// needs one tile more.
+		assert(deepReachForShare(s, t, 3, 500) == 3);
+		const int tight = deepReachForShare(s, t, 3, 300);
 		assert(tight == 4);
 		TerrainSketch c = s;
 		assert(deepenWater(c, t, tight, 1) * 1000 <= (196 + 25) * 300);
+		// The reach is a straight line, so the core rounds off round a point of land: a vertex
+		// diagonally three steps from it is 4.2 tiles away and deep at a reach of 4, one three tiles
+		// straight out is not, one four out is.
+		TerrainSketch d = s;
+		d[size_t(t.at(11, 11))] = SAND;
+		deepenWater(d, t, 4, 1);
+		assert(d[size_t(t.at(14, 14))] == DEEP_WATER && d[size_t(t.at(14, 11))] == WATER &&
+			   d[size_t(t.at(7, 11))] == DEEP_WATER);
 	}
 	{
 		// Bends: inside a convex corner of land the share is high, inside a bay low, 500 on a straight

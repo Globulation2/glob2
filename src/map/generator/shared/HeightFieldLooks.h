@@ -48,19 +48,21 @@ std::vector<int> stepsFromWet(const Torus &, const TerrainSketch &);
 /// must hold in steps (the growth probe's square reach) still needs stepsFromWet as its floor.
 std::vector<int> distanceFromWet(const Torus &, const TerrainSketch &);
 
-/// Deep water with a shallow margin: plain WATER vertices at least `steps` four-connected steps from
-/// any non-water vertex (deepCore, Rock.h; at least 2) and, where given, allowed by `eligible`, in
+/// Deep water with a shallow margin: plain WATER vertices whose straight-line distance to the nearest
+/// non-water vertex is at least `reach` tiles (at least 2) and, where given, allowed by `eligible`, in
 /// connected bodies of at least `least` vertices so no lone dark vertex reads as a hole, become
-/// `deep` (DEEP_WATER or DARK_WATER). Steps of 4 leave two whole tiles of shallows along every
-/// bank, so beaches, algae and swimming access keep working. Returns the vertices deepened.
-int deepenWater(TerrainSketch &, const Torus &, int steps, int least, TerrainType deep = DEEP_WATER,
+/// `deep` (DEEP_WATER or DARK_WATER). The straight line rounds the core's outline (eight-connected
+/// steps drew it as a staircase of squares), and it is never nearer land in steps than reach / sqrt(2):
+/// a reach of 4 leaves two whole tiles of shallows along every bank, so beaches, algae and swimming
+/// access keep working. Returns the vertices deepened.
+int deepenWater(TerrainSketch &, const Torus &, int reach, int least, TerrainType deep = DEEP_WATER,
 				const std::vector<unsigned char> *eligible = nullptr);
 
-/// The least `steps` of at least `least` for which deepenWater's core (plain WATER vertices that many
-/// steps from land) holds no more than `permille` thousandths of the plain water: a wide river keeps a
-/// shallow margin in proportion to its width, so its algae (the lowest sixth of a height field's water,
-/// on the very ground a deep core takes) can be seated again in the shallows.
-int deepStepsForShare(const TerrainSketch &, const Torus &, int least, int permille);
+/// The least `reach` of at least `least` for which deepenWater's core (plain WATER vertices that many
+/// tiles from land in a straight line) holds no more than `permille` thousandths of the plain water: a
+/// wide river keeps a shallow margin in proportion to its width, so its algae (the lowest sixth of a
+/// height field's water, on the very ground a deep core takes) can be seated again in the shallows.
+int deepReachForShare(const TerrainSketch &, const Torus &, int least, int permille);
 
 /// The share of wet vertices, in thousandths, in the (2 * radius + 1) square round every vertex
 /// (windowCount, Morphology.h): 500 on a straight bank, above it where the land juts into water (the
@@ -90,11 +92,12 @@ int paveBeyondWater(TerrainSketch &, const std::vector<int> &stepsFromWet, const
 
 /// Looks for the grass group graded by distance from water: LUSH_GRASS within `lush` steps, DRY_GRASS
 /// beyond `green`, each edge moved up to `shift` steps either way by `jitter` (0 to 65535), on GRASS
-/// mechanics that `plain` does not mark (home gardens stay plain GRASS). Writes only those vertices
-/// of `looks`.
+/// mechanics that `plain` does not mark (home gardens stay plain GRASS). Given `noDry`, vertices it
+/// marks may be lush but never dry (a home's garden keeps its green). Writes only those vertices of
+/// `looks`.
 void gradeGrassLooks(TerrainSketch &looks, const TerrainSketch &mechanics, const std::vector<int> &stepsFromWet,
 					 const std::vector<unsigned char> &plain, const std::vector<int> &jitter, int lush, int green,
-					 int shift);
+					 int shift, const std::vector<unsigned char> *noDry = nullptr);
 
 /// Every vertex within `radius` tiles (plus or minus `fray` where `jitter`, 0 to 65535, rises or
 /// falls) of a swarm's middle (boot + 2 on each axis): home ground a post-pass leaves plain GRASS, so

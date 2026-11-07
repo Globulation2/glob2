@@ -20,4 +20,13 @@ struct RiverOptions
 	{
 	}
 };
+class Game;
+/// River's bluffs planned again from the request and a finished map's colony starts, exactly as
+/// validateWorld plans them: for a contract that the plan it checks is the plan generate drew (the
+/// counts equal the river.bluffs.placed and river.bluffs.faces telemetry).
+struct RiverBluffCount
+{
+	int placed = 0, faces = 0;
+};
+RiverBluffCount riverReplannedBluffs(const Game &, const GenerationRequest &);
 GeneratorDefinition riverDefinition();
