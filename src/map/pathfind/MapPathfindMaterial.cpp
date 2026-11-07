@@ -168,16 +168,43 @@ void Map::pathfindRandom(Unit *unit)
 	}
 }
 
-StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, MovementAccess movementAccessValue, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
+StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, MovementAccess movementAccessValue, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets, Sint32* projectedX, Sint32* projectedY, bool* projectedValid)
 {
     int swim=accessClass(movementAccessValue);
-
+    if (projectedValid) *projectedValid=false;
     std::optional<GradientFieldKey> key;
     const auto* field=getMaterialGradientSlot(team,material,movementAccessFromLegacy(swim),markets,target,&key);
     if (!field) {if(key)gradientMovementDemand(*key);*stopWork=false;return StepResult::Pending;}
     if (field[coordToIndex(x,y)]==GRADIENT_FORBIDDEN && !getForbiddenGradient(team,movementAccessFromLegacy(swim))) { *stopWork=false; return StepResult::Pending; }
     const bool atGoal=field[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
     const bool stepped=pathfindMaterial(random,team,material,movementAccessFromLegacy(swim),x,y,dx,dy,stopWork,target,markets);
+    if (projectedX && projectedY && projectedValid)
+        *projectedValid=projectMaterialDestination(field,team,material,movementAccessValue,
+            x+(stepped?*dx:0),y+(stepped?*dy:0),projectedX,projectedY,markets,target);
     if (atGoal) return StepResult::AtGoal;
     return stepped ? StepResult::Step : StepResult::Blocked;
+}
+
+void Map::claimPursuitGradientSignal(Unit& unit,bool recordOutcome,bool moved)
+{
+    if(!activeClaimsEnabled() || !unit.activeMaterialClaim || !game || !cellCount())return;
+    const int team=unit.owner->teamNumber;const auto material=unit.activeMaterialClaim->material;
+    const int swim=accessClass(unit.movementAccess());
+    std::optional<GradientFieldKey> key;
+    const auto* field=getMaterialGradientSlot(team,material,unit.movementAccess(),false,nullptr,&key);
+    if(!key)return;
+    gradientMovementDemand(*key);
+    if(!recordOutcome || !field)return;
+    const int x=unit.posX,y=unit.posY;
+    const Uint16 here=field[coordToIndex(x,y)];
+    // Same classification as pathfindMaterial: no evidence on forbidden cells,
+    // an invalid goal is empty-goal evidence and requests the field refresh.
+    if(here==GRADIENT_FORBIDDEN)return;
+    GradientQueryResult outcome;outcome.moved=moved;
+    if(here==GRADIENT_AT_GOAL) {
+        outcome.atGoal=true;outcome.goalValid=gradientGoalValid(*key,x,y);outcome.travelRequired=!outcome.goalValid;
+        if(!outcome.goalValid && !compute.insideJob() && field==materialGradients[team][material][swim])
+            requestGradientField(&materialGradients[team][material][swim],int(gradient_preparation::Kind::Materials),team,material,movementAccessFromLegacy(swim));
+    }
+    gradientMovementOutcome(GradientQueryContext{*key,x,y,unit.entityRandom},field,outcome);
 }

@@ -44,7 +44,7 @@ void materialCellsForMovement(const MapState::View& view, const Uint32* fog, int
                                 if(Air&&value==GRADIENT_FORBIDDEN)value=terrainAt(i);
                             }
                         }
-                        if(p&&(p->materialMask&requested)) {
+                        if(p&&(p->materialMask&requested)&&(!Air || !(view.areas[i].forbidden&mask))) {
                             const bool stocked=std::has_single_bit(p->materialMask)?deposit.amount!=0:MapState::materialAmountAt(view,i,material)>0;
                             if(stocked&&(!p->visibleToHarvest||(fog[i]&mask)))value=GRADIENT_AT_GOAL;
                         }

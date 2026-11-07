@@ -39,6 +39,17 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
+Format 213 adds resource claims and corrects worker material-target projection
+and harvest eligibility. These corrections can change ordinary worker movement
+even when claims are disabled, and from this format demanded adaptive gradients
+refresh after 256 ticks instead of 1,024. It also extends authoritative snapshot
+checksums to cover claim routes and bounded recovery, so the replay floor is 213.
+Earlier saves remain loadable and adopt the corrected simulation, still without
+claims. New games start with claims (the `contention-v2` policy); a replay's
+header is the saved starting state, so playback restores them. `game run
+--resource-claims off` is a baseline setup that cannot record a replay; see
+[resource claims](../tools/tournaments.md#resource-claims).
+
 Unit format 153 embeds resolved unit definitions, assigned job purposes and
 extended cargo before dependent state. It uses network protocol 69 and simulation
 revision 47 when introduced. New recordings checksum the catalog and extended state. Legacy saves
@@ -296,7 +307,7 @@ For work counts without quality collection, `--gradient-work-stats PATH` enables
 raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`
 outputs. It is independently opt-in and defaults off. Result metadata records
 the separate model and collector contracts, whether a generic model is trained,
-the 24,000 milli-unit threshold, 32-tick warm admission minimum, 1,024-tick
+the 24,000 milli-unit threshold, 32-tick warm admission minimum, 256-tick
 demanded-field safety cap and explicit fixed-interval research overrides.
 The cap permits admission at that age; it does not bypass capacity or the
 eight-tick publication delay. An untrained
@@ -558,7 +569,7 @@ binary `.checksums` sidecar's total is the deep hash (header flag bit 0). Deep a
 routine hashes use different algorithms and observation boundaries and must not
 be compared directly.
 `game run` result fields `initialChecksum` and `finalChecksum` use the routine
-snapshot schema, identified by `checksum_algorithm: "snapshot-v3"`. They do not
+snapshot schema, identified by `checksum_algorithm: "snapshot-v4"`. They do not
 trigger deep verification. `match verify`'s `checksums.txt` always contains routine
 source-turn hashes, including the terminal samples.
 

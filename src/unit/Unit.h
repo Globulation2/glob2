@@ -4,6 +4,12 @@
 #pragma once
 
 #include "UnitState.h"
+#include "ResourceClaims.h"
+#include "map/claims/ClaimPolicy.h"
+#include "map/claims/ClaimHireTargets.h"
+namespace gradient_kernel { struct OwnedDestinations; }
+class Map;
+namespace ResourceClaims { struct TerrainComponentLabels; }
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
@@ -42,6 +48,47 @@ class Unit : public UnitUtils, public UnitState
 	friend struct UnitActivityAccess;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
+    std::optional<ResourceClaims::Claim> activeMaterialClaim;
+    Uint64 materialClaimTask=0;
+    ResourceClaims::MaterialClaimPolicyState materialClaimPolicyState;
+    bool acquireMaterialClaimAt(Uint32 access);
+    void releaseActiveMaterialClaim();
+    // Whether the held claim is still one this worker can finish: its job,
+    // stance, the stock above the claim's reserve and the access tile.
+    bool activeMaterialClaimValid();
+    void releaseInvalidActiveMaterialClaim()
+    { if (activeMaterialClaim && !activeMaterialClaimValid()) releaseActiveMaterialClaim(); }
+    bool takeActiveMaterialClaim();
+    bool selectActiveMaterialClaim(const Uint16* field);
+    // Hire-time claim check: whether hiring this free unit to fetch material
+    // for building may proceed. A worker that would find nothing to claim, or
+    // that carries another material and so can never claim this one, would
+    // only be released again when it finds nothing to claim; hiring tries the
+    // next candidate instead. True whenever claims are off or the search cannot
+    // judge the worker (no published field or destination planes).
+    bool materialClaimHireAllowed(const Building& building,int material);
+    // The claim target search behind that check: the same pattern walk as
+    // selectActiveMaterialClaim for a worker without a claim, stopping at the
+    // first available target instead of committing it. A pure read of the
+    // frozen map that borrows the published destinations and terrain labels,
+    // with per-thread scratch, so concurrent searches never share state.
+    ResourceClaims::HireTarget searchHireClaimTarget(const Map& map,int material,const gradient_kernel::OwnedDestinations& destinations,
+        const ResourceClaims::TerrainComponentLabels* components) const;
+    // Whether this unit's current projected destination for material, on
+    // building's field, holds no natural stock: it is a supplier (market or
+    // stock building), fetched by ordinary movement, so claims are bypassed.
+    bool projectsSupplierFetch(const Building& building,int material);
+    bool prepareActiveMaterialPickup(int x,int y);
+    void handleActiveMaterialMovement();
+    // The claims-off natural/market material movement for one decision.
+    void handleClassicMaterialMovement();
+    // With claims enabled: whether this resource decision uses claim movement.
+    // A worker holding a claim stays in claim mode; one without a claim uses
+    // ordinary movement unless its ordinary target is contended.
+    bool materialClaimDecision();
+    // Whether pickup and harvest use the claim ledger: claims enabled and the
+    // worker holds a claim.
+    bool usesMaterialClaimPickup() const;
 	// Owner-thread hooks; excluded from immutable state record copies.
 	Unit* populationPrevious=nullptr;
 	Unit* populationNext=nullptr;
@@ -84,6 +131,16 @@ public:
 
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
+    // Releases an active claim that is no longer valid (no-op without claims).
+    // The step phases (activity, displacement, ordinary movement) each end
+    // with this guard as well as syncStep: a claim invalidated in one phase
+    // must be gone before the next, e.g. so harvesting falls back to the
+    // ordinary pickup instead of failing on the stale claim.
+    void reconcileMaterialClaim();
+    struct MaterialClaimObservation {
+        Unit& unit;
+        ~MaterialClaimObservation() { unit.reconcileMaterialClaim(); }
+    };
 	void syncStep(void);
 	
 	void directionFromDxDy(void);

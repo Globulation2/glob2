@@ -423,15 +423,15 @@ TEST_SUITE("TerrainRegistry")
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeArcticTundra.dump(), TERRAIN_COUNT_BEFORE_ICE_PATHS));
 
 		// Format 210 numbers its definitions from 54, before glacier.
-		auto beforeGlacier = Json::parse(registry->serialize());
-		for (auto &item : beforeGlacier["terrains"])
+		auto beforeGlacierWall = Json::parse(registry->serialize());
+		for (auto &item : beforeGlacierWall["terrains"])
 			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_GLACIER;
-		const auto glacierless = TerrainRegistry::deserialize(beforeGlacier.dump(), TERRAIN_COUNT_BEFORE_GLACIER);
+		const auto glacierless = TerrainRegistry::deserialize(beforeGlacierWall.dump(), TERRAIN_COUNT_BEFORE_GLACIER);
 		CHECK(glacierless->serialize() == registry->serialize());
 		CHECK(glacierless->digest() == registry->digest());
 		CHECK(glacierless->find("test:a") == TerrainType(TERRAIN_COUNT));
-		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump()));
-		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump(), TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacierWall.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacierWall.dump(), TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA));
 
 		// Format 211 numbers its definitions from 55, before the Barriers and Outcrops looks.
 		auto beforeIcefall = Json::parse(registry->serialize());

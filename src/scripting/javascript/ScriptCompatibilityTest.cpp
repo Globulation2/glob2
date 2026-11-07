@@ -135,9 +135,9 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Shared amphibious routing changes require the shared-routing replay floor.
+	// Resource-claim checksum coverage requires the claims-format replay floor.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_RESOURCE_CLAIMS);
 	REQUIRE(REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR);
 	REQUIRE(VERSION_MINOR < std::numeric_limits<Uint16>::max());
 

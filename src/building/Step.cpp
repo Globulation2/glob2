@@ -315,6 +315,10 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 						if (u->queryMaterialDestination(material, &x, &y, nullptr,
                                                         fetchesFromMarkets(), this)!=RouteResult::Reachable)
 							continue;
+						// With resource claims, skip a worker that would find
+						// nothing to claim and only be released again.
+						if (!u->materialClaimHireAllowed(*this, material))
+							continue;
 					}
 					u->destinationPurpose = material;
 					return u;

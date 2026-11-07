@@ -19,6 +19,27 @@ Uint32 referenceChecksum(const SimulationSnapshot::Handle& world) {
 }
 }
 TEST_SUITE("SnapshotChecksum") {
+    TEST_CASE("claim state and retry history survive checksum projection and retained captures") {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        auto* unit=fixture.addUnit(WORKER,12,12,0);REQUIRE(unit);
+        unit->destinationPurpose=WHEAT;
+        auto& map=fixture.game.map;map.enableResourceClaims();
+        const auto before=captured(fixture);const auto beforeHash=referenceChecksum(before);
+        // Starting claim selection creates the worker's recovery record.
+        map.beginClaimRecoverySelection(*unit);
+        const auto changed=captured(fixture);
+        CHECK(referenceChecksum(changed)!=beforeHash);
+        CHECK(changed.checksumView(true).activeClaimRuntimeChecksum==changed.activeClaimRuntimeChecksum);
+        auto withoutChange=changed;withoutChange.activeClaimRuntimeChecksum=before.activeClaimRuntimeChecksum;
+        CHECK(referenceChecksum(withoutChange)==beforeHash);
+        REQUIRE(map.recordClaimFailure(*unit,ResourceClaims::ClaimFailureKind::NoResource)==1);
+        const auto failed=captured(fixture);
+        CHECK(referenceChecksum(failed)!=referenceChecksum(changed));
+        auto withoutFailure=failed;withoutFailure.activeClaimRuntimeChecksum=changed.activeClaimRuntimeChecksum;
+        CHECK(referenceChecksum(withoutFailure)==referenceChecksum(changed));
+        CHECK(referenceChecksum(before)==beforeHash);
+    }
     TEST_CASE("map coverage follows recorded players independently of transport") {
         GameHeader players;
         players.setNumberOfPlayers(2);

@@ -582,6 +582,34 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(j['config']['params']['height'], 8)
             self.assertEqual(j['labels']['format'], 'ffa')
 
+    def test_sampled_large_ffa_and_replacement_seats(self):
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': n+1, 'name': f'ai{n}'} for n in range(20)],
+            'generators': [{'method': 15, 'editorOnly': False}]}}
+        config = {'id': 'claims', 'sample_games': 40, 'sample_seed': 7,
+                  'formats': ['ffa'], 'ffa_colonies': [8, 16],
+                  'seat_sampling': 'with_replacement', 'win_probability_permille': 0}
+        games = Planner('ai_comparison', config, [bundle]).plan()['jobs']
+        self.assertEqual({len(g['config']['players']) for g in games}, {8, 16})
+        self.assertTrue(any(len(set(g['config']['players'])) < len(g['config']['players']) for g in games))
+        for game in games:
+            self.assertEqual(game['config']['params']['teams'], len(game['config']['players']))
+            self.assertEqual(game['config']['win_probability_permille'], 0)
+        self.assertEqual(games, Planner('ai_comparison', config, [bundle]).plan()['jobs'])
+        distinct = Planner('ai_comparison', dict(config, seat_sampling='distinct'), [bundle]).plan()['jobs']
+        self.assertTrue(all(len(set(g['config']['players'])) == len(g['config']['players']) for g in distinct))
+        for counts in ([], [True], [1], [17], '8', [8.0]):
+            with self.assertRaisesRegex(ValueError, 'ffa_colonies'):
+                Planner('ai_comparison', dict(config, ffa_colonies=counts), [bundle]).plan()
+        for overrides in ({'formats': ['1v1']}, {'balanced_duels': True}, {'seat_sampling': 'random'}):
+            with self.assertRaises(ValueError):
+                Planner('ai_comparison', dict(config, **overrides), [bundle]).plan()
+        exhaustive = dict(config)
+        del exhaustive['sample_games']
+        with self.assertRaisesRegex(ValueError, 'require sample_games'):
+            Planner('ai_comparison', exhaustive, [bundle]).plan()
+
     def test_sampled_pairs_keep_parameter_sampling_and_explicit_rules(self):
         from tools.tournaments.experiments import Planner
         bundle = {'id': 'a'*64, 'capabilities': {

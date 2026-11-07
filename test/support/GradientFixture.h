@@ -60,4 +60,31 @@ inline const Uint16* awaitBuildingGradient(Game& game, Building* building, int s
         return game.map.lookupBuildingField(building,movementAccessFromLegacy(swim),route);
     });
 }
+
+// AI planning semantics for a material target, the oracle that AI observation
+// adapters mirror: reachable by the published field, then the destination the
+// published plane records at (x,y) (deliberately the published field's age,
+// with no current-stock validation), else the legacy gradient ascent. Workers
+// instead use Map::projectMaterialDestination.
+inline bool materialPlanningTarget(Map& map,int team,int material,MovementAccess access,int x,int y,
+    Sint32* targetX,Sint32* targetY,int* distance=nullptr,bool markets=false,const Building* consumer=nullptr)
+{
+    if (map.queryMaterialDistance(team,material,access,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
+    const auto* field=map.getMaterialGradientSlot(team,material,access,markets,consumer);
+    if (const auto destinations=map.materialGradientDestinations(field)) {
+        const auto index=map.coordToIndex(x,y);
+        *targetX=destinations->x[index]; *targetY=destinations->y[index];
+        return true;
+    }
+    map.getGlobalGradientDestination(field,x,y,targetX,targetY);
+    return true;
+}
+// No neighbour of (x,y) holds a strictly higher gradient value.
+inline bool isGradientPeak(const Map& map,const Uint16* gradient,int x,int y)
+{
+    const auto here=gradient[map.coordToIndex(x,y)];
+    for (int dy=-1;dy<=1;++dy) for (int dx=-1;dx<=1;++dx)
+        if ((dx || dy) && gradient[map.coordToIndex(x+dx,y+dy)]>here) return false;
+    return true;
+}
 }

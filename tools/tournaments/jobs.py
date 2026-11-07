@@ -1,5 +1,6 @@
 """Job-type adapters; scheduling and transport have no experiment-specific logic."""
 import csv
+import gzip
 import re
 from pathlib import Path
 from .common import read_json
@@ -113,12 +114,25 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
+        if 'benchmark_warmup_ticks' in config:
+            warmup=config['benchmark_warmup_ticks'];limit=config.get('ticks',DEFAULT_GAME_TICKS)
+            if type(limit) is not int or type(warmup) is not int or not 0<=warmup<=2147483647 or warmup>=limit:
+                raise ValueError('benchmark_warmup_ticks must leave a positive measured window')
+        if 'gradient_backend' in config and config['gradient_backend'] not in ('cpu','scalar','sse2','neon','opencl','vulkan','webgpu'):
+            raise ValueError('invalid gradient_backend')
+        if self.kind == 'game' and 'resource_claims' in config:
+            # Without this key a new game uses its pinned engine's default:
+            # claims off before the shipped default, contention-v2 after it.
+            if config['resource_claims'] not in ('default', 'off'):
+                raise ValueError('resource_claims must be default or off')
+            if config['resource_claims'] == 'off' and job['outputs'].get('replay'):
+                raise ValueError('resource_claims off cannot record replay output')
         if self.kind == 'game' and 'resource_gradient_collection' in config:
             collection = config['resource_gradient_collection']
             _validate_resource_gradient_collection(collection)
@@ -148,8 +162,13 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'win_probability_permille')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'resource_claims', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
+            experiments = config.get('experiments', [])
+            if (not isinstance(experiments, list) or len(experiments) > 64 or
+                    any(not isinstance(key, str) or not key or len(key) > 128 for key in experiments) or
+                    len(experiments) != len(set(experiments))):
+                raise ValueError('experiments must be a unique list of at most 64 nonempty experiment keys')
             if not isinstance(config.get('rules', {}), dict) or any(
                     not isinstance(k, str) or type(v) is not int for k, v in config.get('rules', {}).items()):
                 raise ValueError('rules must map names to integer values')
@@ -162,12 +181,22 @@ class EngineJob:
             raise ValueError('generation requires map seed and generator ID')
         if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result', 'log_mode'}:
             raise ValueError('unknown requested output')
-        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'telemetry'):
-            raise ValueError('log_mode must be full, telemetry or win-probability')
+        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'gameplay', 'telemetry'):
+            raise ValueError('log_mode must be full, telemetry, gameplay or win-probability')
         if job['outputs'].get('log_mode') == 'telemetry' and not job['outputs'].get('telemetry'):
             raise ValueError('telemetry log mode requires requested telemetry')
         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
             raise ValueError('win-probability logs require game team-timeline telemetry')
+        if job['outputs'].get('log_mode') == 'gameplay' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
+            raise ValueError('gameplay logs require game team-timeline telemetry')
+        if 'require_gameplay_telemetry' in job.get('labels', {}):
+            required = job['labels']['require_gameplay_telemetry']
+            if type(required) is not bool:
+                raise ValueError('require_gameplay_telemetry must be a boolean')
+            if required and (self.kind != 'game' or
+                    'team-timeline' not in job['outputs'].get('telemetry', []) or
+                    job['outputs'].get('log_mode', 'full') not in ('full', 'gameplay')):
+                raise ValueError('required gameplay telemetry needs game team-timeline and full or gameplay logs')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
@@ -199,6 +228,10 @@ class EngineJob:
             if 'game' in job['seeds']:
                 add('--game-seed', job['seeds']['game'])
             add('--ticks', config.get('ticks', DEFAULT_GAME_TICKS))
+            if 'benchmark_warmup_ticks' in config:
+                add('--benchmark-warmup',config['benchmark_warmup_ticks'])
+            if 'gradient_backend' in config:
+                add('--gradient-backend',config['gradient_backend'])
             for player in config.get('players', []):
                 add('--player', player)
             for player, params in sorted(config.get('ai_params', {}).items()):
@@ -210,6 +243,18 @@ class EngineJob:
                 add('--win-condition', condition)
             for name, value in sorted(config.get('rules', {}).items()):
                 add('--rule', f'{name}={value}')
+            capabilities = bundle.get('capabilities', {})
+            if 'save' not in inputs:
+                if config.get('resource_claims') == 'default' and 'resource_claims_default' not in capabilities:
+                    raise ValueError('bundle has no default resource-claim policy')
+                # Claims off must be explicit on engines whose new games default
+                # to claims; engines before the switch have no claims to disable.
+                if config.get('resource_claims') == 'off' and capabilities.get('resource_claims_switch_version') == 1:
+                    if outputs.get('replay', False):
+                        raise ValueError('claims-off games cannot record replay output')
+                    add('--resource-claims', 'off')
+            for experiment in config.get('experiments', []):
+                add('--experiment', experiment)
             # Planners freeze the threshold in the job. Low-level requests keep
             # CLI defaults (95% on new games); an explicit zero disables it.
             if 'win_probability_permille' in config:
@@ -253,6 +298,39 @@ class EngineJob:
             raise ValueError('unsupported engine result schema')
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
+        if result.get('status') == 'completed':
+            if job.get('labels', {}).get('require_gameplay_telemetry'):
+                from .game_telemetry import parse
+                from .storage import DEFAULT_LOG_BYTES
+                retained = 0
+                found_final = False
+                with gzip.open(Path(attempt_dir) / 'stdout.log.gz', 'rb') as stream:
+                    while True:
+                        line = stream.readline(1024**2 + 1)
+                        if not line:
+                            break
+                        retained += len(line)
+                        if len(line) > 1024**2 or retained > job['limits'].get('log_bytes', DEFAULT_LOG_BYTES):
+                            raise ValueError('gameplay log exceeds collection allowance')
+                        if line.startswith(b'GLOB2_MEASURE '):
+                            _, fields = parse(line.decode('utf-8'))
+                            if fields.get('final') == 1 and type(fields.get('tick')) is int:
+                                found_final = True
+                if not found_final:
+                    raise ValueError('engine did not retain final gameplay telemetry')
+            if 'gradient_backend' in job['config'] and result.get('gradient_backend')!=job['config']['gradient_backend']:
+                raise ValueError('engine gradient backend differs from frozen request')
+            if 'benchmark_warmup_ticks' in job['config']:
+                fields=('benchmark_setup_cpu_ns','benchmark_run_cpu_ns','benchmark_save_cpu_ns','benchmark_measured_ticks','ticks')
+                if (any(type(result.get(k)) is not int or result[k]<0 for k in fields) or
+                    not result['benchmark_run_cpu_ns'] or not 0<result['benchmark_measured_ticks']<=result['ticks']-job['config']['benchmark_warmup_ticks']):
+                    raise ValueError('engine did not attest a measured CPU window')
+            resolved = result.get('resolved', {})
+            if job['config'].get('resource_claims') == 'default' and resolved.get('resource_claims') != 'default':
+                raise ValueError('engine did not attest its default resource-claim policy')
+            # Engines before the claims switch attest nothing and have no claims.
+            if job['config'].get('resource_claims') == 'off' and resolved.get('resource_claims', 'off') != 'off':
+                raise ValueError('engine resource-claim mode differs from frozen claims-off request')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
             collection=job['config']['resource_gradient_collection']
             if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:

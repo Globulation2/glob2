@@ -1815,7 +1815,7 @@ TEST_CASE("unreleased routing draft formats are rejected before reading runtime 
     }
 }
 
-TEST_CASE("forbidden paint is ground-only for air material service guard and clearing queries" * doctest::test_suite("GradientPreparation"))
+TEST_CASE("forbidden paint permits air traversal and services but denies natural harvesting" * doctest::test_suite("GradientPreparation"))
 {
     glob2test::HeadlessGlobals globals;
     for(bool constrained:{false,true}) {
@@ -1846,7 +1846,7 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         // ground; availability/seed assertions require actual publication.
         glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air,false);});
         glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false);});
-        CHECK(map.materialAvailable(0,MaterialId::Food,MovementAccess::Air,8,8));
+        CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,MovementAccess::Air,8,8));
         CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,MovementAccess::Land,8,8));
         CHECK(glob2test::awaitGradient(game,[&]{return map.getClearAreasGradient(0,MovementAccess::Air);})[map.coordToIndex(18,20)]==GRADIENT_AT_GOAL);
         CHECK(glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,MovementAccess::Land); })[map.coordToIndex(18,20)]==GRADIENT_FORBIDDEN);
@@ -1860,14 +1860,14 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         gradient_preparation::MaterialSeedCache cache;
         std::vector<Uint16> output(map.size);
         REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,output.data(),nullptr));
-        CHECK(output[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+        CHECK(output[map.coordToIndex(18,12)]==GRADIENT_UNREACHABLE);
         map.removeForbidden(18,12,0);
         snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
         REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,output.data(),nullptr));
         CHECK(output[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
         map.addForbidden(18,12,0);
         map.updateMaterialGradient(0,WHEAT,MovementAccess::Air,false);
-        CHECK(map.materialAvailable(0,MaterialId::Food,MovementAccess::Air,8,8));
+        CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,MovementAccess::Air,8,8));
     }
 }
 
@@ -2009,7 +2009,18 @@ TEST_CASE("ground refreshes preserve warm air material seeds across edits" * doc
     const auto run=[](auto fn) { fn(0,size_t(128*128)); };
     gradient_preparation::materialCells(map.stateView(),map.fogOfWar,0,WHEAT,AIR_MOVEMENT_CLASS,reference.data(),nullptr,run);
     CHECK(cached==reference);
+    CHECK(cached[map.coordToIndex(18,12)]==GRADIENT_UNREACHABLE);
+    // Device submissions consume this same prepared seed plane. The owner
+    // optimization must agree too, including warm forbidden-only updates.
+    for(int repeat=0;repeat<32;++repeat) map.seedMaterialGradient(0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),false);
+    REQUIRE(map.gradientRuntime->resourceSeeds.valid);
+    CHECK(cached==reference);
+    map.removeForbidden(18,12,0);
+    REQUIRE(map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
     CHECK(cached[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+    map.addForbidden(18,12,0);
+    REQUIRE(map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+    CHECK(cached==reference);
     // Reusing the cache for another world must discard the old air template.
     glob2test::HeadlessGame other({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
     auto next=SimulationSnapshot::capture(other.game,SimulationSnapshot::captureCatalog(other.game),SimulationSnapshot::Simulation);
@@ -2444,7 +2455,7 @@ TEST_CASE("weighted AIR market oracle follows live pickup and uses AIR cost buck
     const auto* live=glob2test::awaitGradient(game,[&](){return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air,true);});REQUIRE(live);
     CHECK(*std::max_element(live,live+map.size)<GRADIENT_AT_GOAL);
     Sint32 tx=0,ty=0;int distance=0;
-    REQUIRE(map.materialAvailableUpdateSlot(0,WHEAT,MovementAccess::Air,8,8,&tx,&ty,&distance,true,nullptr));
+    REQUIRE(glob2test::materialPlanningTarget(map,0,WHEAT,MovementAccess::Air,8,8,&tx,&ty,&distance,true,nullptr));
     Sint32 px=0,py=0;CHECK_FALSE(map.getGlobalGradientDestination(live,8,8,&px,&py));CHECK(px==tx);CHECK(py==ty);
     const GradientFieldKey key{GradientFieldFamily::Markets,0,AIR_MOVEMENT_CLASS,WHEAT};EntityRandom random;random.seed(42,54);
     GradientQueryContext context{key,8,8,random};context.mode=GradientQueryContext::Mode::DirectFlight;

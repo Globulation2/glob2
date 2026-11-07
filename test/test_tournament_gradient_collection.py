@@ -13,6 +13,36 @@ from tools.tournaments.model import job, validate_job
 
 
 class GradientCollectionJobs(unittest.TestCase):
+    def test_saved_window_can_explicitly_measure_cpu_after_warmup_on_a_fixed_backend(self):
+        item=job('game','a'*64,inputs={'save':{'sha256':'b'*64}},
+                 config={'ticks':72288,'benchmark_warmup_ticks':4096,'gradient_backend':'cpu'})
+        adapter=EngineJob('game');adapter.validate(item)
+        args=adapter.command(item,{'directory':'/bundle','executable':'glob2'},'/attempt',{'save':'/source.game.gz'})
+        self.assertEqual(args[args.index('--benchmark-warmup')+1],'4096')
+        self.assertEqual(args[args.index('--gradient-backend')+1],'cpu')
+        self.assertEqual(args[args.index('--load-game')+1],'/source.game.gz')
+        for warmup in (-1,True,1.5,72288,2147483648):
+            with self.subTest(warmup=warmup),self.assertRaises(ValueError):
+                adapter.validate(item|{'config':item['config']|{'benchmark_warmup_ticks':warmup}})
+        for backend in (None,True,[], 'unknown'):
+            with self.subTest(backend=backend),self.assertRaises(ValueError):
+                adapter.validate(item|{'config':item['config']|{'gradient_backend':backend}})
+
+    def test_requested_cpu_window_requires_measured_counters_and_backend_attestation(self):
+        item=job('game','a'*64,inputs={'save':{'sha256':'b'*64}},
+                 config={'ticks':64,'benchmark_warmup_ticks':16,'gradient_backend':'cpu'})
+        result={'schema_version':1,'status':'completed','ticks':64,'gradient_backend':'cpu',
+                'benchmark_setup_cpu_ns':0,'benchmark_run_cpu_ns':1000,
+                'benchmark_save_cpu_ns':0,'benchmark_measured_ticks':48}
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'output';output.mkdir();path=output/'result.json'
+            path.write_text(json.dumps(result));self.assertEqual(EngineJob('game').collect(item,directory),result)
+            for patch in ({'gradient_backend':'vulkan'},{'benchmark_measured_ticks':0},
+                          {'benchmark_measured_ticks':49},{'benchmark_run_cpu_ns':0},
+                          {'benchmark_setup_cpu_ns':True},{'benchmark_run_cpu_ns':None}):
+                path.write_text(json.dumps(result|patch))
+                with self.subTest(patch=patch),self.assertRaises(ValueError):EngineJob('game').collect(item,directory)
+
     def request(self, collection=None):
         collection = {} if collection is None else collection
         return job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}}, seeds={'game': 91},

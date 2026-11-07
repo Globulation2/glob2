@@ -155,12 +155,17 @@ bool seedCachedMaterials(MaterialSeedCache& cache, const SimulationSnapshot::Han
         }
     });
     const Uint32 mask=Uint32(1)<<team;
-    visitSeedBits((Air && swim==AIR_MOVEMENT_CLASS)?cache.airGoals[material]:cache.goals[material],[&](size_t i) {
-        if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask)) {
-            if(goalCount)*goalCount+=output[i]<=GRADIENT_UNREACHABLE;
-            output[i]=GRADIENT_AT_GOAL;
-        }
-    });
+    const auto overlayGoals=[&]<bool RespectHarvestPaint>(const MaterialSeedCache::Bits& goals) {
+        visitSeedBits(goals,[&](size_t i) {
+            if constexpr (RespectHarvestPaint) if(view.areas[i].forbidden&mask) return;
+            if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask)) {
+                if(goalCount)*goalCount+=output[i]<=GRADIENT_UNREACHABLE;
+                output[i]=GRADIENT_AT_GOAL;
+            }
+        });
+    };
+    if (Air && swim==AIR_MOVEMENT_CLASS) overlayGoals.template operator()<true>(cache.airGoals[material]);
+    else overlayGoals.template operator()<false>(cache.goals[material]);
     if (!Air || swim!=AIR_MOVEMENT_CLASS)
         visitSeedBits(cache.forbidden[team],[&](size_t i) { if(goalCount)*goalCount-=output[i]>GRADIENT_UNREACHABLE;output[i]=GRADIENT_FORBIDDEN; });
     return true;
@@ -358,6 +363,8 @@ gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const
 
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, GradientWorkspace& scratch)
 {
+    if (request.destinations)
+        throw std::invalid_argument("Destination gradient requires destination output planes");
     scratch.family = backendFamily(request.kind);
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
@@ -432,6 +439,8 @@ void validatePropagation(const PropagationField& field)
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
 {
+    if (request.destinations)
+        throw std::invalid_argument("Destination gradient requires destination output planes");
     GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
     const PropagationField field{request,&snapshot,output,&scratch};
     validatePropagation(field);
@@ -439,6 +448,30 @@ void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snaps
     // constructing an accelerator request or rereading its configuration.
     if (!gradient_kernel::alreadyFixedGradient({output, std::size_t(snapshot.width)*snapshot.height}))
         batchCPU(field,output);
+}
+
+void propagateCPU(const Request& request, const SimulationSnapshot::Handle& snapshot,
+    Uint16* output, GradientWorkspace& scratch, gradient_kernel::DestinationPlanes destinations)
+{
+    using namespace gradient_kernel;
+    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+    const PropagationField field{request, &snapshot, output, &scratch};
+    validatePropagation(field);
+    const field::Grid grid(snapshot.width, snapshot.height);
+    const auto& terrain = *snapshot.terrain;
+    if (!(request.swim == AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
+        propagateFieldCPU(output, destinations, request.swim, COST_LIMIT, grid, scratch,
+            [&](std::size_t i) { return terrain.rules->swimming(terrain.cellRules[i]); });
+        return;
+    }
+    const auto& movement = terrain.rules->movement(request.swim);
+    const auto costs = [&](std::size_t i) { return movement.profiles[movement.profileIds[terrain.cellRules[i]]]; };
+    if (request.terrainBuckets == 64)
+        propagateDestinationFieldCPU<64>(output, destinations, COST_LIMIT, grid, scratch, costs);
+    else if (request.terrainBuckets == 128)
+        propagateDestinationFieldCPU<128>(output, destinations, COST_LIMIT, grid, scratch, costs);
+    else
+        propagateDestinationFieldCPU<256>(output, destinations, COST_LIMIT, grid, scratch, costs);
 }
 
 namespace {
@@ -562,11 +595,12 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
     }catch(const std::bad_alloc&){return decline(MinimalDecline::Allocation);}
     catch(...){return decline(MinimalDecline::Representation);}
 }
-std::shared_ptr<gradient_kernel::OwnedGradientField> minimalHolder(std::size_t count,MinimalDecline& reason) noexcept {
+std::shared_ptr<gradient_kernel::OwnedGradientField> minimalHolder(std::size_t count,MinimalDecline& reason,bool destinations=false) noexcept {
     using namespace gradient_kernel;
     constexpr auto fixed=sizeof(OwnedGradientField)+256;
-    if(count>(OpenCLHostBudget-fixed)/sizeof(Uint16))return {};
-    const auto bytes=fixed+count*sizeof(Uint16);
+    const std::size_t perCell=sizeof(Uint16)*(destinations?3:1);
+    if(count>(OpenCLHostBudget-fixed)/perCell)return {};
+    const auto bytes=fixed+count*perCell+(destinations?sizeof(OwnedDestinations)+256:0);
     if(!reserveOpenCLHostBytes(bytes))return {};
     // Cover holder/control and original output ownership before allocation or
     // transfer. The deleter releases only after members and object are gone.
@@ -586,9 +620,13 @@ MinimalCostViewMetrics minimalCostViewMetrics() noexcept {
 }
 std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     const Request& request,const SimulationSnapshot::Handle& snapshot,std::unique_ptr<Uint16[]>& data,
-    std::shared_ptr<gradient_kernel::BackendSession> session,gradient_kernel::PlanDecision decision,std::uint64_t due)
+    std::shared_ptr<gradient_kernel::BackendSession> session,gradient_kernel::PlanDecision decision,std::uint64_t due,
+    std::shared_ptr<gradient_kernel::OwnedDestinations> destinations)
 {
     using namespace gradient_kernel;
+    if (request.destinations != bool(destinations) ||
+        (destinations && destinations->cells != std::size_t(snapshot.width)*snapshot.height))
+        throw std::invalid_argument("Destination propagation output does not match its request");
     runtime_terrain::validateQueueSize(request.terrainBuckets);
     const auto& terrain=*snapshot.terrain;
     if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
@@ -604,12 +642,13 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     ++minimalAttempted;
     const auto view=minimalView(request,snapshot);if(!view)return {};
     auto reason=MinimalDecline::Budget;
-    auto owned=minimalHolder(std::size_t(snapshot.width)*snapshot.height,reason);
+    auto owned=minimalHolder(std::size_t(snapshot.width)*snapshot.height,reason,bool(destinations));
     if(!owned){noteMinimalDecline(reason);return {};}
     if(!owned->requiredControl){noteMinimalDecline(MinimalDecline::Budget);return {};}
     owned->inputs=view;owned->session=std::move(session);owned->grid={snapshot.width,snapshot.height};
     owned->family=backendFamily(request.kind);owned->cpuBuckets=request.terrainBuckets;
     owned->decision=decision;owned->due=due;
+    owned->destinations=std::move(destinations);
     // Reuse the bounded validity/uniform proof, but replace its graph owner
     // and retained byte estimate before anything escapes to the backend.
     owned->identity=snapshotCostIdentity(request,snapshot);
@@ -618,6 +657,13 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     owned->cpu=[](OwnedGradientField& field) {
         const auto& costs=*static_cast<const MinimalCosts*>(field.inputs.get());
         GradientWorkspace workspace;workspace.backendSession=field.session;
+        if(field.destinations) {
+            const auto at=[&](std::size_t i){return costs.at(i);};
+            if(field.cpuBuckets==64)propagateDestinationFieldCPU<64>(field.data.get(),field.destinations->planes(),COST_LIMIT,field.grid,workspace,at);
+            else if(field.cpuBuckets==128)propagateDestinationFieldCPU<128>(field.data.get(),field.destinations->planes(),COST_LIMIT,field.grid,workspace,at);
+            else propagateDestinationFieldCPU<256>(field.data.get(),field.destinations->planes(),COST_LIMIT,field.grid,workspace,at);
+            return;
+        }
         if(!costs.modified) {
             propagateFieldCPU(field.data.get(),costs.swim,COST_LIMIT,field.grid,workspace,
                 [&](std::size_t i){return costs.cells&&costs.cells[i];});

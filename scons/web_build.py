@@ -226,6 +226,14 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                                '--preload-file', 'content/games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp', '#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
+                ('#src/unit/ResourceFetchTargetHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/unit/ClaimContinuationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/map/claims/ClaimRecoveryAdversarialHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+                '#src/map/claims/ClaimRecoveryAdversarialTest.cpp',
+                '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
+                '#src/map/claims/ActiveClaimRoutesHarness.cpp',
+                '#src/map/claims/ClaimRoutePipelineTest.cpp',
+                '#src/map/claims/ClaimInvalidationHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
                 ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/map/gradient/InitialBuildingGradientHarness.cpp',

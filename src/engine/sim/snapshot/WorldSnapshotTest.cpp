@@ -25,6 +25,58 @@ constexpr SimulationSnapshot::CaptureOptions allOptions{
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("material source coordinates stay immutable with their captured publication")
+    {
+        using Frozen = const gradient_kernel::OwnedDestinations&;
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x[0]), const Uint16&>);
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x.get()), const Uint16*>);
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto& map = fixture.game.map;
+        map.configureGradientPipeline(0, 1);
+        map.setMaterialDestinationsEnabled(true);
+        map.setResourceByIndex(12, 12, WHEAT, 1);
+        const auto* live = glob2test::awaitGradient(fixture.game, [&] { return map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Land); });
+        REQUIRE(map.materialGradientDestinations(live));
+        SimulationSnapshot::Store store;
+        const auto before = store.captureBoundary(fixture.game);
+        const auto key = MapState::planeKey(0, WHEAT, 0, false);
+        const auto* field = before.resourceFields->find(key);
+        REQUIRE(field); REQUIRE(field->destinations);
+        const auto index = map.coordToIndex(4, 4);
+        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+        CHECK(field->destinationGeneration > 0);
+        // Dropping the live metadata must not revoke or mutate an older lease.
+        map.setMaterialDestinationsEnabled(false);
+        store.invalidateBoundary(); // This fixture's private store is outside Game's invalidation hook.
+        const auto after = store.captureBoundary(fixture.game);
+        const auto* replaced = after.resourceFields->find(key);
+        REQUIRE(replaced); CHECK_FALSE(replaced->destinations);
+        CHECK(replaced->destinationGeneration == 0);
+        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+    }
+
+    TEST_CASE("resource claims are not snapshot state and leave captured stock shared")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        auto& map = fixture.game.map;
+        SimulationSnapshot::Store store;
+        store.setVerification(true);
+        const auto before = store.captureBoundary(fixture.game);
+        const auto index = map.coordToIndex(4, 4);
+        // Claims reserve stock in the ledger only; no snapshot consumer reads
+        // them, so recording and releasing one copies no resource arrays.
+        const auto copied = store.metrics.mapBytesCopied;
+        REQUIRE(map.recordMaterialClaim(10, {Uint32(index), Uint32(index), 0, 0}));
+        const auto after = store.captureBoundary(fixture.game);
+        CHECK(after.resources == before.resources);
+        REQUIRE(map.releaseMaterialClaim(10));
+        const auto released = store.captureBoundary(fixture.game);
+        CHECK(released.resources == before.resources);
+        CHECK(store.metrics.mapBytesCopied == copied);
+    }
+
     TEST_CASE("named views retain only their standard inputs")
     {
         glob2test::HeadlessGlobals globals;

@@ -16,7 +16,7 @@ inline constexpr char ContractId[]="unified-gradient-h128-v2";
 inline constexpr bool Trained=true;
 inline constexpr I ThresholdMilli=24000;
 // Current engine deployment cap; historical fit metrics remain unchanged.
-inline constexpr unsigned DemandedAgeCapTicks=1024;
+inline constexpr unsigned DemandedAgeCapTicks=256;
 inline constexpr unsigned MinimumIntervalTicks=32;
 inline constexpr unsigned CounterCount=3;
 inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={0,4,5};

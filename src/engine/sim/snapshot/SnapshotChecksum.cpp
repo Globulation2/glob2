@@ -37,6 +37,15 @@ Uint32 unitChecksum(const SimulationSnapshot::UnitView& u,const SimulationSnapsh
     h.add(u.carriedPacket.numerator); h.add(u.carriedPacket.denominator);
     h.add(Uint8(u.jobPurpose)|(Uint32(u.regenerationRemainder)<<8)|(Uint32(u.widePrimaryCargo())<<16));
     h.add(u.configuredFoodCapacity); h.add(u.capabilityFlags);
+    if(u.activeClaimsEnabled) {
+        h.add(u.activeMaterialClaim.has_value());h.add(u.materialClaimTask>>32);h.add(u.materialClaimTask);
+        if(u.activeMaterialClaim) {
+            const auto& c=*u.activeMaterialClaim;
+            h.add(c.source);h.add(c.access);h.add(c.material);h.add(c.resource);h.add(c.exclusive);h.add(c.reserve);
+        }
+        h.add(u.materialClaimPolicyState.decisionOrdinal>>32);h.add(u.materialClaimPolicyState.decisionOrdinal);
+        h.add(u.materialClaimPolicyState.lastGoalAttempt>>32);h.add(u.materialClaimPolicyState.lastGoalAttempt);
+    }
     // Additional cargo is sparse. Empty allocation nodes are not state.
     if ((u.capabilityFlags & UnitRuntimeTraits::ExtendedCargo) || u.widePrimaryCargo()) {
         const auto* cargo=entities.unitCargo.find(u.gid);
@@ -94,7 +103,7 @@ Uint32 mapChecksum(const SimulationSnapshot::Handle& w)
 Uint32 hashState(const SimulationSnapshot::Handle& w)
 {
     Checksum h;
-    h.add(0x534e4103u); h.add(w.width); h.add(w.height);
+    h.add(0x534e4104u); h.add(w.width); h.add(w.height); h.add(w.activeClaimRuntimeChecksum);
     h.add(w.catalogs->units->checksum()); h.add(w.catalogs->resources->checksum());
     h.add(w.terrain->registry->checksum());
     for (const auto& team:w.teams->values) {

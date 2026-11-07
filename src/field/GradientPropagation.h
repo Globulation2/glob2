@@ -9,6 +9,7 @@
 #include "GradientRelaxation.h"
 #include "GradientWorkspace.h"
 #include "GradientBackend.h"
+#include "GradientDestinations.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -18,6 +19,21 @@
 
 namespace gradient_kernel
 {
+// Destination-enabled callers select this overload before entering the sweep.
+// Keep the original cost-only scalar/SIMD sweeps independent of metadata.
+template<class IsWater>
+void propagateFieldCPU(std::uint16_t* gradient, DestinationPlanes destinations,
+    int swimClass, int maxCost, field::Grid grid, GradientWorkspace& workspace, IsWater isWater)
+{
+    if (!weightedClass(swimClass))
+        propagateDestinationFieldCPU(gradient, destinations, maxCost, grid, workspace,
+            [](std::size_t) { return LAND_STEPS; });
+    else {
+        const auto waterSteps = entrySteps(WATER_STEP[swimClass]);
+        propagateDestinationFieldCPU(gradient, destinations, maxCost, grid, workspace,
+            [&](std::size_t i) { return isWater(i) ? waterSteps : LAND_STEPS; });
+    }
+}
 // Seeds are already encoded as GRADIENT_AT_GOAL - starting cost. Values 0 and 1
 // are forbidden and unreachable cells, respectively. The caller reseeds before
 // every run; a completed field cannot be reused as its own seed buffer.

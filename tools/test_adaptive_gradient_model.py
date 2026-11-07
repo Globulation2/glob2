@@ -99,14 +99,14 @@ class UnifiedDatasetTests(unittest.TestCase):
   validate(model)
   from tools.adaptive_gradient_codegen import render
   header = render(model)
-  self.assertIn('DemandedAgeCapTicks=1024', header)
+  self.assertIn('DemandedAgeCapTicks=256', header)
   self.assertIn('MinimumIntervalTicks=32', header)
   compiler = shutil.which('clang++') or shutil.which('g++')
   if compiler:
    with tempfile.TemporaryDirectory() as tmp:
     root = pathlib.Path(tmp)
     (root/'model.h').write_text(header)
-    (root/'main.cpp').write_text('#include "model.h"\nstatic_assert(AdaptiveGradientModel::DemandedAgeCapTicks == 1024);\nstatic_assert(AdaptiveGradientModel::MinimumIntervalTicks == 32);\nstatic_assert(!AdaptiveGradientModel::Trained);\nint main() {}\n')
+    (root/'main.cpp').write_text('#include "model.h"\nstatic_assert(AdaptiveGradientModel::DemandedAgeCapTicks == 256);\nstatic_assert(AdaptiveGradientModel::MinimumIntervalTicks == 32);\nstatic_assert(!AdaptiveGradientModel::Trained);\nint main() {}\n')
     subprocess.run([compiler, '-std=c++20', str(root/'main.cpp'), '-o', str(root/'run')], check=True, capture_output=True)
   with self.assertRaisesRegex(ValueError,'No unified model'):predict(model,[0]*7,[0]*3)
   for invalid_cap in (None, True, 0, 7, 2**32):
@@ -156,7 +156,7 @@ class UnifiedTournamentTests(unittest.TestCase):
   from tools.adaptive_gradient_tournament import plan,ADAPTIVE_POLICY
   from tools.test_resource_gradient_tournament import catalog
   from collections import Counter
-  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],32);self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],24000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
+  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],32);self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],256);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],24000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
   a=plan(catalog(),181101);self.assertEqual(a,plan(catalog(),181101));slots=a['unified']['slots']
   self.assertEqual(len(slots),256);self.assertEqual(Counter(r['role'] for r in slots),{'exploration':128,'candidate':128})
   for role in ['exploration','candidate']:self.assertEqual(set(Counter(r['spec']['format'] for r in slots if r['role']==role).values()),{16})
@@ -333,7 +333,7 @@ class SelectedBase7Tests(unittest.TestCase):
 class FamilyExpertDeploymentTests(unittest.TestCase):
  def model(self):
   value=shared_model();value.update(schema=5,features=list(d.FEATURES),transforms=list(d.TRANSFORMS),trained=True)
-  value['deployment']=dict(threshold_milli=value['threshold'],strategy='family-experts-with-combined-fallback',demanded_age_cap_ticks=1024)
+  value['deployment']=dict(threshold_milli=value['threshold'],strategy='family-experts-with-combined-fallback',demanded_age_cap_ticks=256)
   value['family_experts']={}
   for identifier in (0,2,3,4):
    heads={name:dict(coef=[0]*12,bias=0,shift=28) for name in ('positive_probability','negative_probability','positive_mean','negative_mean')}
@@ -407,7 +407,7 @@ class FamilyExpertDeploymentTests(unittest.TestCase):
    p=pathlib.Path(tmp);source=p/'research.json';source.write_text(json.dumps(model));before=file_hash(source)
    emit(SimpleNamespace(model=str(source),contract=d.CONTRACT_ID,threshold_milli=16000,compact=True,output=str(p/'model.json'),header=str(p/'model.h')))
    actual=json.loads((p/'model.json').read_text());validate(actual)
-   self.assertEqual(actual['family_experts'],model['family_experts']);self.assertEqual(actual['deployment']['demanded_age_cap_ticks'],1024);self.assertIsNone(actual['deployment']['source_fit_age_cap_ticks']);self.assertNotIn('holdout',actual['provenance']);self.assertEqual(file_hash(source),before);self.assertEqual((p/'model.h').read_text(),render(actual));self.assertLess(len(json.dumps(actual)),24000)
+   self.assertEqual(actual['family_experts'],model['family_experts']);self.assertEqual(actual['deployment']['demanded_age_cap_ticks'],256);self.assertIsNone(actual['deployment']['source_fit_age_cap_ticks']);self.assertNotIn('holdout',actual['provenance']);self.assertEqual(file_hash(source),before);self.assertEqual((p/'model.h').read_text(),render(actual));self.assertLess(len(json.dumps(actual)),24000)
  def test_fit_experts_preserves_global_weights_and_omits_unmeasured_families(self):
   try:import numpy as np
   except ImportError:self.skipTest('numpy unavailable')

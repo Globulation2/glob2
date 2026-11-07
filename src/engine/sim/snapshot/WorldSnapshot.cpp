@@ -60,6 +60,7 @@ Handle Handle::project(Requirements requested) const
 	Handle result;
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
 	result.observationRevision = observationRevision;
+    result.activeClaimRuntimeChecksum = activeClaimRuntimeChecksum;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
 	if (needs(requested, Component::Session)) result.session = session;
 	if (needs(requested, Component::Effects)) result.effects = effects;

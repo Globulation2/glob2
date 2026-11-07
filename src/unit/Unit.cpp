@@ -38,6 +38,8 @@ Unit::~Unit()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
+        owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -68,6 +70,7 @@ void Unit::refreshEffectiveAbilities()
 
 void Unit::rebindDefinitionForSetup()
 {
+    const MaterialClaimObservation claimObservation{*this};
 	// Parallel training derives its reservation from the original learnability.
 	// Capture that amount before replacing flags and cached abilities.
 	const auto oldServiceCost=serviceResourcesReserved() && attachedBuilding
@@ -153,6 +156,7 @@ void Unit::rebindDefinitionForSetup()
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
+    materialClaimPolicyState={};
 	// unit specification
 	this->typeNum = typeNum;
 
@@ -271,6 +275,12 @@ void Unit::setTargetBuilding(Building * b)
 
 void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
 {
+    if(owner->map->activeClaimsEnabled()) {
+        releaseActiveMaterialClaim();
+        // A new job starts its refresh cadence afresh.
+        materialClaimPolicyState.lastGoalAttempt=0;
+    }
+    const MaterialClaimObservation claimObservation{*this};
 	Building* b=building;
 	if (attraction && !inside) {
 		jobPurpose=purpose;
@@ -455,6 +465,7 @@ void Unit::applyAreaServices()
 
 void Unit::syncStep(void)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	if (owner->map->hasTerrainHealthEffects()) applyTerrainHealth();
 	if (isDead) return;
 	//warrior attacks?
@@ -560,6 +571,7 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
+    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -567,6 +579,7 @@ void Unit::resetAtLevel(Sint32 newLevel)
 
 void Unit::setWorkerLevel(Sint32 newLevel)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	constructionLevel = newLevel;
 	for (int ability : {(int)BUILD, (int)HARVEST})
 	{
@@ -619,6 +632,7 @@ bool Unit::applyTraining(const BuildingTrainingSpec& training,int ability)
 
 void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int ability)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	if (level[ability] < training.targetLevel)
 	{
 		level[ability] = training.targetLevel;
@@ -631,8 +645,14 @@ void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int abil
 
 void Unit::recordLethalDamage(int damage, int cause)
 {
-	if (hp >= UNIT_HP_DEATH_THRESHOLD && Sint64(hp) - damage < UNIT_HP_DEATH_THRESHOLD)
+	if (hp >= UNIT_HP_DEATH_THRESHOLD && Sint64(hp) - damage < UNIT_HP_DEATH_THRESHOLD) {
 		diagnosticDeathCause = cause;
+        // Other units and projectiles can hit this unit after its own tick.
+        // Release before the damage write so an end-of-tick save cannot retain
+        // ownership for a worker already unable to finish the pickup.
+        if(owner->map->activeClaimsEnabled())
+            releaseActiveMaterialClaim();
+    }
 }
 
 unsigned Unit::carriedPacketCount() const
@@ -777,9 +797,10 @@ bool Unit::continueExtendedCargoCollection()
 bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
 {
 	Map& map=*owner->map;
-    if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer)
-        : map.materialAvailableSlot(owner->teamNumber,material,movementAccess(),posX,posY,withMarkets,consumer);
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementAccess(),posX,posY,x,y,distance,withMarkets,consumer);
+    if (map.queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer)!=RouteResult::Reachable) return false;
+    if (!x || !y) return true;
+    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
+    return map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer);
 
 }
 
@@ -789,6 +810,14 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
     if (performance[FLY]) return findMaterialDestination(material,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
     const auto result=map.queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer);
     if (result!=RouteResult::Reachable || !x || !y) return result;
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementAccess(),posX,posY,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
+    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementAccess(),withMarkets,consumer);
+    return map.projectMaterialDestination(field,owner->teamNumber,material,movementAccess(),posX,posY,x,y,withMarkets,consumer)
+        ? RouteResult::Reachable : RouteResult::Unreachable;
 
+}
+
+void Unit::reconcileMaterialClaim()
+{
+    if(owner && owner->map && owner->map->activeClaimsEnabled())
+        releaseInvalidActiveMaterialClaim();
 }

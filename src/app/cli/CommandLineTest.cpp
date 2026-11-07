@@ -259,3 +259,20 @@ TEST_CASE("interval exploration requires explicit headless collection") {
             "--resource-gradient-exploration",invalid}));
 }
 }
+
+TEST_CASE("resource claims switch selects the default or a claims-off new game" * doctest::test_suite("CommandLine"))
+{
+    const std::vector<std::string> base={"game","run","--output-dir","artifacts/claims-switch-cli","--map-file","test.map","--game-seed","42","--player","castor"};
+    auto with=[&](std::initializer_list<std::string> extra){auto args=base;args.insert(args.end(),extra);return args;};
+    CHECK_NOTHROW(Cli::parse(base));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default"})));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","default","--write-replay"})));
+    CHECK_NOTHROW(Cli::parse(with({"--resource-claims","off"})));
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","on"})));
+    // A replay restores claims on playback, so a claims-off game cannot record one.
+    CHECK_THROWS(Cli::parse(with({"--resource-claims","off","--write-replay"})));
+    // A saved game keeps the claim setting it was started with.
+    for(const auto* value:{"default","off"})
+        CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game","--resource-claims",value}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/claims-switch-cli","--load-game","test.game"}));
+}

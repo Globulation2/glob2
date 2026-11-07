@@ -24,7 +24,9 @@ template<bool Air,class Terrain> struct NaturalMaterialSeed {
         if((view.areas[i].forbidden&forbiddenMask) || (!Air&&cell.immobileUnit!=IMMOBILE_UNIT_NONE))return GRADIENT_FORBIDDEN;
         const auto& deposit=view.resources[i].resource;
         const auto* p=deposit.type==NO_RES_TYPE?nullptr:&properties[deposit.type];
-        const bool stocked=p&&(p->materialMask&requested)&&
+        // Flight can cross painted cells, but harvesting the natural source
+        // still requires permission at the pickup tile.
+        const bool stocked=p&&(p->materialMask&requested)&&(!Air || !(view.areas[i].forbidden&teamMask))&&
             (std::has_single_bit(p->materialMask)?deposit.amount!=0:MapState::materialAmountAt(view,i,material)>0);
         const bool visible=!p||!p->visibleToHarvest||(fog[i]&teamMask);
         const bool resourceBlocked=p&&(Air?p->blocksAir:p->blocksGround);

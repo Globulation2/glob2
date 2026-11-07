@@ -10,6 +10,9 @@ GIB = 1024**3
 DEFAULT_ATTEMPT_BYTES = 512 * MIB
 DEFAULT_LOG_BYTES = 64 * MIB
 PROBABILITY_PREFIXES = (b'GLOB2_WINPROB ',)
+GAMEPLAY_PREFIXES = PROBABILITY_PREFIXES + (b'GLOB2_TL ', b'GLOB2_ECON ',
+    b'GLOB2_TIMELINE ', b'GLOB2_MEASURE ', b'GLOB2_MEASURE_HISTORY ')
+# Keep tactical capture bounded independently of gameplay and AI histories.
 TELEMETRY_PREFIXES = PROBABILITY_PREFIXES + (b'MAXIMA_TELEMETRY\t', b'GLOB2_TL ',
     b'GLOB2_ECON ', b'GLOB2_TIMELINE ')
 
@@ -35,10 +38,11 @@ class CompressedLog:
     draining, and the supervisor reports storage_limit rather than success.
     """
     def __init__(self, source, path, limit, mode='full'):
-        if mode not in ('full', 'win-probability', 'telemetry'):
+        if mode not in ('full', 'win-probability', 'gameplay', 'telemetry'):
             raise ValueError('invalid log mode')
         self.source, self.path, self.limit, self.mode = source, Path(path), limit, mode
-        self.prefixes = PROBABILITY_PREFIXES if mode == 'win-probability' else TELEMETRY_PREFIXES
+        self.prefixes = {'win-probability': PROBABILITY_PREFIXES,
+                         'gameplay': GAMEPLAY_PREFIXES}.get(mode, TELEMETRY_PREFIXES)
         self.error = None
         self.raw_bytes = self.received_bytes = 0
         self.digest = hashlib.sha256()

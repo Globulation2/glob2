@@ -231,15 +231,18 @@ execute on the device; an unavailable adapter or CPU fallback cannot qualify GPU
 coverage. Set `GLOB2_REQUIRE_VULKAN=1` when requiring the native Vulkan cases.
 Set `GLOB2_REQUIRE_OPENCL=1` to require OpenCL device execution. Run browser
 WebGPU cases separately.
-`platforms/web/tests/gradient-compute.spec.js` compares 66 fields, including all five
-retained NVIDIA inputs on both algorithms with repeated buffer reuse. Set
+`platforms/web/tests/gradient-compute.spec.js` compares 66 cost-only fields and 94 fields with canonical source labels,
+including all five retained NVIDIA inputs on both algorithms, weighted and uniform
+costs, narrow tori, deferred sources, ties, caps and canceled output preservation.
+The cost-only retained cases also exercise repeated buffer reuse. Set
 `GLOB2_WEBGPU_EXPECT_DEVICE=NVIDIA` (or another device-name pattern) to require a
 matching hardware adapter; software substitution fails the test. Without this
 option the test uses SwiftShader for portable browser coverage. With the compiled
 threaded test runtime served, `GLOB2_WEBGPU_CPP=1` also exercises the C++ owned
 request, device coordinator, JavaScript bridge and executor recovery. That case
-requires fifteen actual commits across the retained inputs and five canceled
-admissions recovered on their submitting worker.
+requires thirty actual commits across the retained inputs with and without
+source labels, ten canceled admissions recovered on their submitting worker,
+and atomic rollback when an earlier batch member is canceled during later work.
 
 Production checks input bounds, convergence and driver completion. Cancellation,
 unknown retirement and device loss must preserve original CPU seeds and retain

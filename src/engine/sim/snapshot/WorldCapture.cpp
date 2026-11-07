@@ -82,6 +82,7 @@ Handle capture(const Game& game,
 	result->configurationRevision = game.gameHeader.observationRevision();
 	result->worldIdentity = game.map.identity();
 	result->mapGenerations = game.map.snapshotGenerations();
+    result->activeClaimRuntimeChecksum = game.map.activeClaimsEnabled() ? game.map.activeClaimSnapshotChecksum() : 0;
 	if (previous && previous->worldIdentity == result->worldIdentity)
 	{
 		auto reuse = [&](Component component, auto& destination, const auto& source, bool unchanged) {
@@ -427,6 +428,9 @@ Handle capture(const Game& game,
 			auto& v = entities->units[unitRecordCount++];
 			std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 			if (storage) storage->entityBytesCopied += sizeof(UnitState);
+            v.activeClaimsEnabled=game.map.activeClaimsEnabled();
+            v.activeMaterialClaim=u->activeMaterialClaim;v.materialClaimTask=u->materialClaimTask;
+            v.materialClaimPolicyState=u->materialClaimPolicyState;
 			v.identity = Game::refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
                 if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<accessClass(movementAccessForSpeeds(v.performance[WALK],v.performance[SWIM],v.performance[FLY])));
@@ -585,11 +589,13 @@ Handle capture(const Game& game,
 		for (const auto &plane : game.map.publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
-			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
+            const auto destinations=game.map.materialGradientDestinations(*plane.slot);
+            const auto destinationGeneration=game.map.materialGradientDestinationGeneration(plane.slot);
+			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
 			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
-			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
+			fields->add(ResourceField{plane.key, plane.generation, std::move(values),destinations,destinationGeneration});
 		}
 		result->resourceFields = std::move(fields);
 	}
@@ -701,6 +707,8 @@ void verifyCapture(const Game& game, const Handle& handle)
                 const auto& unit = entities.units[unitIndex++];
                 if (unit.identity != Game::refOf(live) || unit.team != t)
                     throw std::logic_error("snapshot verification: unit identity or order differs from the game");
+                if(unit.activeClaimsEnabled!=game.map.activeClaimsEnabled() || unit.activeMaterialClaim!=live->activeMaterialClaim
+                    || unit.materialClaimTask!=live->materialClaimTask || unit.materialClaimPolicyState!=live->materialClaimPolicyState)throw std::logic_error("active material claim snapshot mismatch");
                 if (static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*live))
                     throw std::logic_error("snapshot verification: unit state differs from the game");
                 if (unit.realAttackStrength != live->getRealAttackStrength())

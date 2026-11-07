@@ -16,6 +16,7 @@
 #include "MapAssetBundle.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
+#include "field/GradientDestinationPlanes.h"
 #include "MapChangeTracking.h"
 #include <span>
 #include <stdexcept>
@@ -138,6 +139,8 @@ struct ResourceField
 	Uint16 key = 0;
 	Uint64 generation = 0;
 	std::shared_ptr<const std::vector<Uint16>> values;
+    std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
+    Uint64 destinationGeneration = 0;
 };
 // The live planes at capture, in the map's publication order, with a dense
 // key index so consumers look a plane up without hashing.
@@ -180,6 +183,7 @@ struct Handle
 	std::shared_ptr<const Fertility::GrowthCache> growth;
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
+    Uint32 activeClaimRuntimeChecksum = 0;
 	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;

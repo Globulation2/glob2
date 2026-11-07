@@ -44,6 +44,137 @@ public:
 
 TEST_SUITE("GradientPipeline")
 {
+TEST_CASE("destination planes publish with their cost generation and survive pending restoration")
+{
+    using namespace gradient_kernel;
+    for (unsigned workers : {0u,1u,3u}) {
+        TestGradientPipeline pipeline;
+        const auto work = [](auto& job, auto& scratch) {
+            if (job.destinations)
+                propagateFieldCPU(job.data.get(), job.destinations->planes(), 0, COST_LIMIT,
+                    {8,8}, scratch, [](std::size_t) { return false; });
+            else
+                propagateFieldCPU(job.data.get(), 0, COST_LIMIT,
+                    {8,8}, scratch, [](std::size_t) { return false; });
+        };
+        pipeline.configure(workers,2,64,work);
+        auto* published = new std::uint16_t[64]{};
+        auto* job = pipeline.reserve(&published,0);
+        job->request.destinations = true;
+        pipeline.prepare(job, [](auto& job) {
+            std::fill_n(job.data.get(),64,GRADIENT_UNREACHABLE);
+            job.data[3] = GRADIENT_AT_GOAL;
+        });
+        CHECK(pipeline.destinationMemory().pendingReservedBytes == 256);
+        CHECK_FALSE(pipeline.destinationField(&published));
+        pipeline.finish();
+        CHECK_FALSE(pipeline.destinationField(&published));
+
+        TestGradientPipeline restored;
+        restored.configure(workers,2,64,work);
+        auto* resumed = new std::uint16_t[64]{};
+        pipeline.visitPendingSnapshots([&](const auto& snapshot) {
+            REQUIRE(snapshot.destinations);
+            CHECK(snapshot.destinations->x[0] == 3);
+            GradientPipeline::RestoredSnapshot saved{&resumed,0,snapshot.remaining,snapshot.superseded,
+                std::make_unique<std::uint16_t[]>(64)};
+            std::copy_n(snapshot.data,64,saved.data.get());
+            saved.destinations = std::make_shared<OwnedDestinations>(64);
+            std::copy_n(snapshot.destinations->x.get(),64,saved.destinations->x.get());
+            std::copy_n(snapshot.destinations->y.get(),64,saved.destinations->y.get());
+            restored.restoreCompleted(std::move(saved));
+        });
+        pipeline.advance(); restored.advance();
+        CHECK_FALSE(pipeline.destinationField(&published));
+        pipeline.advance(); restored.advance();
+        const auto lease = pipeline.destinationField(&published);
+        REQUIRE(lease);
+        REQUIRE(restored.destinationField(&resumed));
+        CHECK(lease->x[0] == 3); CHECK(lease->y[0] == 0);
+        CHECK(pipeline.destinationMemory().publishedBytes == 256);
+        CHECK(pipeline.destinationMemory().pendingReservedBytes == 0);
+        CHECK(std::equal(published,published+64,resumed));
+        CHECK(std::equal(lease->x.get(),lease->x.get()+64,restored.destinationField(&resumed)->x.get()));
+
+        // Reusing the cost buffer for a cost-only generation removes metadata.
+        pipeline.submit(&published,0,[](auto& job) {
+            std::fill_n(job.data.get(),64,GRADIENT_UNREACHABLE);
+            job.data[9] = GRADIENT_AT_GOAL;
+        });
+        pipeline.advance(); pipeline.advance();
+        CHECK_FALSE(pipeline.destinationField(&published));
+        CHECK(lease->x[0] == 3); // A borrowed old generation stays immutable.
+        CHECK(pipeline.destinationMemory().publishedBytes == 0);
+        restored.invalidate(&resumed);
+        CHECK_FALSE(restored.destinationField(&resumed));
+        pipeline.reset(); restored.reset();
+        delete[] published; delete[] resumed;
+    }
+}
+
+TEST_CASE("destination planes survive device transport and worker recovery")
+{
+    using namespace gradient_kernel;
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    struct Restore {
+        Backend mode=backend(); unsigned mask=readyPlans.load();
+        ~Restore(){setBackend(mode);readyPlans=mask;}
+    } restore;
+    readyPlans=1u<<unsigned(Plan::Frozen8);setBackend(Backend::OpenCL);
+    for (bool success : {false,true}) {
+        auto attempted=std::make_shared<std::atomic<bool>>(false);
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+            []{return true;}, [success,attempted](std::span<const BackendRequest> requests,Plan) {
+                for (const auto& request:requests) {
+                    REQUIRE(request.destinations);
+                    if (success) {
+                        GradientWorkspace scratch;
+                        propagateDestinationFieldCPU(request.gradient,request.destinations,request.limit,
+                            request.grid,scratch,[](std::size_t){return LAND_STEPS;});
+                        if(request.executedOnDevice)*request.executedOnDevice=true;
+                    }
+                }
+                *attempted=true;
+                return success;
+            }});
+        service->configure(2,Backend::OpenCL);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);
+        TestGradientPipeline pipeline;
+        pipeline.configure(1,2,64,[](auto&,auto&){FAIL("device destination job lost owned continuation");});
+        pipeline.setDeviceService(service);
+        pipeline.setAsyncWork([](auto& job,PlanDecision decision) {
+            auto owned=std::make_shared<OwnedGradientField>();
+            owned->session=job.owner->session();owned->decision=decision;owned->grid={8,8};
+            owned->data=std::move(job.data);owned->destinations=job.destinations;
+            owned->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+            owned->cpu=[](auto& field) {
+                REQUIRE(ComputeExecutor::workerSlot()!=0);
+                GradientWorkspace scratch;
+                propagateDestinationFieldCPU(field.data.get(),field.destinations->planes(),field.limit,
+                    field.grid,scratch,[](std::size_t){return LAND_STEPS;});
+            };
+            return owned;
+        });
+        auto* published=new std::uint16_t[64]{};
+        auto* job=pipeline.reserve(&published,0);job->request.destinations=true;
+        pipeline.prepare(job,[](auto& job) {
+            std::fill_n(job.data.get(),64,GRADIENT_UNREACHABLE);job.data[9]=GRADIENT_AT_GOAL;
+        });
+        while(!*attempted && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(*attempted);
+        pipeline.finish();CHECK_FALSE(pipeline.destinationField(&published));
+        pipeline.advance();pipeline.advance();
+        const auto result=pipeline.destinationField(&published);REQUIRE(result);
+        CHECK(result->x[0]==1);CHECK(result->y[0]==1);
+        CHECK(published[0]==GRADIENT_AT_GOAL-LAND_STEPS.diagonal);
+        CHECK(service->metrics().executed==unsigned(success));
+        CHECK(service->metrics().fallbacks==unsigned(!success));
+        pipeline.reset();service->stop();delete[] published;
+    }
+}
+
 TEST_CASE("kernel audit can retire safely before observation workers drain")
 {
     if constexpr (!GAGCore::ThreadSupport::available) return;

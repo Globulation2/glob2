@@ -159,6 +159,22 @@ void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientW
 } // namespace gradient_kernel::runtime_terrain
 namespace gradient_kernel
 {
+// CPU destination output for the same compact profiles used by snapshots.
+// This overload is explicit: device publication must support all three planes
+// before a destination-enabled job may be routed through an accelerator.
+inline void propagateTerrainProfilesCPU(std::uint16_t* gradient, DestinationPlanes destinations,
+    int maxCost, field::Grid grid, GradientWorkspace& workspace, const std::uint8_t* profiles,
+    const TerrainRegistry::Movement& movement, unsigned buckets)
+{
+    runtime_terrain::validateQueueSize(buckets);
+    const auto at = [&](std::size_t i) { return movement.profiles[profiles[i]]; };
+    if (buckets == 64)
+        propagateDestinationFieldCPU<64>(gradient, destinations, maxCost, grid, workspace, at);
+    else if (buckets == 128)
+        propagateDestinationFieldCPU<128>(gradient, destinations, maxCost, grid, workspace, at);
+    else
+        propagateDestinationFieldCPU<256>(gradient, destinations, maxCost, grid, workspace, at);
+}
 inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxCost,
 									 field::Grid grid, GradientWorkspace &workspace,
 									 const std::uint8_t *profiles,

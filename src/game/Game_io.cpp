@@ -483,6 +483,11 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 
 	}
 	gameSection.commit();
+    // Every game started from a map uses resource claims; saved games restore
+    // their own setting (none before format 213). Conversions keep the map as is.
+    if (!mapHeader.getIsSavedGame() && initialization==MapLoadInitialization::Normal)
+        map.enableResourceClaims();
+    map.rebuildActiveMaterialClaims();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
 	///compute it now

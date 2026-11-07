@@ -146,8 +146,11 @@ Game options:
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script; probability early victory is appended unless explicitly disabled |
 | `--win-probability PERMILLE` | New games default to 950 (95%); 0 disables, otherwise 501–1000; saved games retain their conditions |
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
+| `--resource-claims default\|off` | New-game [resource claims](#resource-claims); `off` is a claims-off baseline that cannot record a replay; forbidden when loading a save. Tournament game configuration: `resource_claims` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
+| `--benchmark-warmup N` | Opt in to in-engine CPU counters, excluding the first N simulated ticks; tournament game configuration: `benchmark_warmup_ticks`. Loading a save keeps the absolute `ticks` limit; warmup must leave measured ticks. Whole-process resource usage also includes startup/loading. |
+| `--gradient-backend NAME` | Explicit gradient backend (`cpu`, `scalar`, `sse2`, `neon`, `opencl`, `vulkan`, `webgpu`); tournament game configuration: `gradient_backend`. Record the actual backend from the result when comparing compute costs. |
 | `--compute-threads auto\|N` | Shared executor participants including the owner; native `auto` prefers eligible physical cores, falling back to logical CPUs then one; browser auto uses logical CPUs capped at eight; explicit N is a positive unsigned integer |
 | `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
@@ -228,7 +231,7 @@ Every job has these fields:
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
-| `outputs` | replay false; saves/telemetry/reports empty lists; log_mode `full` (or `telemetry`, or `win-probability` with game team-timeline telemetry); map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
+| `outputs` | replay false; saves/telemetry/reports empty lists; log_mode `full` (or `telemetry`, or `gameplay`/`win-probability` with game team-timeline telemetry); map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
 
@@ -286,7 +289,17 @@ For tactical studies that also need Maxima flags and placement decisions, use
 `log_mode: "telemetry"` with the requested `maxima`/`team-timeline` telemetry.
 It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON` and
 `GLOB2_TIMELINE` records, while omitting unrelated console/performance chatter.
-Other telemetry families require full capture. Requested CSV outputs are unaffected.
+For delivery and labour studies, `log_mode: "gameplay"` keeps `GLOB2_MEASURE`,
+`GLOB2_MEASURE_HISTORY`, win-probability and team-state records, omitting AI,
+performance and Maxima records. This avoids retaining high-volume AI samples and histories
+when they are outside the study. Saved games may still emit substantial gameplay
+history; calibrate allowances over a full measurement window before dispatch.
+Probability-only capture omits delivery and labour measurements. Jobs that need
+those measurements can set `labels.require_gameplay_telemetry: true`; validation
+requires game `team-timeline` telemetry with full or gameplay capture, and
+collection rejects a completed game without a retained final measurement record.
+Endpoint analysis must still verify team coverage and observation boundaries.
+Requested CSV outputs are unaffected.
 
 `log_mode` controls stdout retention only; stderr remains diagnostic. The engine
 still emits its ordinary timeline internally. Both console streams are compressed
@@ -546,6 +559,22 @@ unsupported combinations remain reported failures rather than being filtered out
   failed generator with another one. A single-generator cohort is a specialized experiment and must not
   be presented as general AI strength.
 
+  Sampled studies can set `ffa_colonies: [4, 8, 16]` to draw the FFA colony
+  count independently (integers 2–16; the default remains four). Duels and 2v2
+  retain two and four colonies. Set `seat_sampling: "with_replacement"` for
+  independent AI draws, allowing repeated AI implementations even when the pool
+  contains enough distinct entries. The default `"distinct"` samples without
+  replacement when possible and falls back to replacement for smaller pools.
+  In 2v2, the two team AIs are sampled, preserving homogeneous pairs. These two
+  controls require `sample_games` and cannot be combined with `balanced_duels`.
+  Explicit `ffa_colonies` requires an `ffa` entry in `formats`. Counts above four
+  need the same generator/size preflight as any other nonstandard cohort.
+
+  New-game designs may provide `experiments: ["farm-areas"]`; each requested
+  key must exist in every pinned build's `experiments` catalog. The job adapter
+  forwards one `--experiment KEY` per entry. Saved games retain their embedded
+  experiment set and reject overrides, including an explicit empty list.
+
   Set `balanced_duels: true` for a balanced 1v1 sample: `sample_games` must be
   even, with one map size and at least two AIs. Each block plays the same map and
   game seed twice, swapping the AI starting sides. Generator quotas differ by at
@@ -648,6 +677,34 @@ Engine compatibility requires actual identical initial states/seeds/orders and
 per-tick checksums across platforms; passing transport tests or builds is insufficient.
 Keep measured coverage, command output and other run-specific evidence in the
 ignored `artifacts/` workspace or in pull-request attachments.
+
+## Resource claims
+
+Every new game (single player, LAN, online, campaign, replay playback and
+`game run`) starts with material destination planes and resource claims, using
+the `contention-v2` policy described in
+[resource claims](../architecture/units.md#resource-claims). Saved games keep what
+they stored: saves from before format 213 have no claims and continue without
+them, and later saves continue with their claim state. Loading a save rejects
+`--resource-claims`.
+
+`game run --resource-claims off` starts a new game without claims or destination
+planes, as a baseline for measuring the feature; it cannot record a replay.
+`result.json` reports `resolved.resource_claims` (`default` or `off`) and, for
+`default`, `resolved.resource_claims_policy_name`. Bundles advertise the
+capabilities `resource_claims_default` (the policy name) and
+`resource_claims_switch_version: 1` (the `--resource-claims` switch).
+
+A game job without claim keys uses its pinned engine's default: claims off for
+bundles built before claims, claims on after. Set `resource_claims: "off"` for a
+claims-off baseline (forwarded only to bundles that advertise the switch) or
+`resource_claims: "default"` to require a bundle with claims. Claims-off jobs
+cannot record replays, and collectors reject results whose attested mode differs
+from the request.
+
+Compare claims on and off with paired seeds and seat rotations, using the ordinary
+delivery and labour measurements (`log_mode: "gameplay"` with `team-timeline`
+telemetry) alongside outcomes and CPU.
 
 ## Map-generation telemetry
 

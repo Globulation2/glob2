@@ -12,6 +12,7 @@
 
 void Unit::handleActivity(void)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	// A pre-rule save may still have a unit walking to training. Cancel its
 	// subscription before entering; feeding and healing use the same activity.
 	if (owner->game->gameHeader.isUnitUpgradesDisabled() && activity==ACT_UPGRADING
@@ -83,6 +84,7 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical())
 	{
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 		// disconnect from building
 		if (attachedBuilding)
 		{
@@ -157,6 +159,8 @@ void Unit::handleActivity(void)
 						// A client selection follows the unit across the conversion.
 						owner->game->publishClientEvent(ClientEvent::UnitConverted{
 							UnitRef{gid, scriptIdentity}, UnitRef{targetGID, identity}});
+                        owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
+                        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
 						scriptIdentity = identity;
 						owner->game->unitCargo.transfer(gid,targetGID);
 						gid=targetGID;

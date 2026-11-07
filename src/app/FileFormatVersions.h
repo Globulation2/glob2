@@ -429,3 +429,7 @@ static constexpr int FILE_FORMAT_VERSION_GLACIER = 211;
 //! (Outcrops): TERRAIN_COUNT grew from 55 to 64, so earlier files carry custom terrain
 //! IDs starting at 55 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_ICEFALL = 212;
+
+//! Resource claims: material destination planes on gradient fields, active claims, pending
+//! unit routes, claim policy cadence and bounded claim recovery are saved.
+static constexpr int FILE_FORMAT_VERSION_RESOURCE_CLAIMS = 213;

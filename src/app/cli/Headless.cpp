@@ -40,6 +40,7 @@
 #include "ReplayWriter.h"
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
+#include "map/claims/ClaimPolicy.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "GameGUI.h"
@@ -556,7 +557,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--resource-claims"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -676,6 +677,14 @@ struct HeadlessRunner
 			for(size_t p=0;p<players.size();++p)if(BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)==AI::JAVASCRIPT && !scriptedPlayers.count(p))throw std::invalid_argument("JavaScript player requires --ai-script");
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
+            // initGame enabled resource claims. A claims-off baseline replaces
+            // that before the first tick and never records a replay.
+            if(one(options,"--resource-claims","default")=="off") {
+                if(recordReplay)throw std::invalid_argument("--resource-claims off cannot record a replay");
+                // Fresh map initialization has not admitted simulation field
+                // requests; the setter enforces that drained boundary.
+                engine.gui.game.map.disableResourceClaims();
+            }
 		}
 		if(options.count("--map-script"))
 		{
@@ -848,7 +857,7 @@ struct HeadlessRunner
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << engine.latestChecksum->value
-            << ",\"checksum_algorithm\":\"snapshot-v3\""
+            << ",\"checksum_algorithm\":\"snapshot-v4\""
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
@@ -982,6 +991,9 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
+        result << ",\"resource_claims\":" << quote(engine.gui.game.map.activeClaimsEnabled()?"default":"off");
+        if(engine.gui.game.map.activeClaimsEnabled())
+            result << ",\"resource_claims_policy_name\":" << quote(std::string(ResourceClaims::Policy::Name));
         if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
                 << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
@@ -1112,7 +1124,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_default\":\"" << ResourceClaims::Policy::Name << "\",\"resource_claims_switch_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
@@ -1124,6 +1136,12 @@ int runHeadlessCommand(const Cli::Request &request)
 				else if(ai==AI::MAXIMA)std::cout<<AIMaxima::StrategyResolver::schemaJson();
 				else std::cout<<"[]";
 				std::cout<<'}';
+			}
+			std::cout << "],\"experiments\":[";
+			comma=false;
+			for(const auto& definition:registeredExperimentDefinitions()) {
+				if(comma)std::cout<<',';
+				comma=true;std::cout<<quote(definition.key);
 			}
 			std::cout << "],\"generators\":" << std::flush;
 			char a[]="study",b[]="--catalog";char *args[]={a,b};runMapStudy(2,args);

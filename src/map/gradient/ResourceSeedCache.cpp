@@ -247,10 +247,16 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
                     output[index] = supplierSeeds[localId];
 		});
 	}
-	visit(swim==AIR_MOVEMENT_CLASS?s.airResources[resource]:s.resources[resource], [&](std::size_t index) {
-		if (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index] & mask))
-			output[index] = GRADIENT_AT_GOAL;
-	});
+    if (swim==AIR_MOVEMENT_CLASS) {
+        visit(s.airResources[resource], [&](std::size_t index) {
+            if (!(map.areaCells[index].forbidden&mask) && (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index]&mask)))
+                output[index]=GRADIENT_AT_GOAL;
+        });
+    } else {
+        visit(s.resources[resource], [&](std::size_t index) {
+            if (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index]&mask)) output[index]=GRADIENT_AT_GOAL;
+        });
+    }
 	if (swim!=AIR_MOVEMENT_CLASS)
         visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
 	return true;

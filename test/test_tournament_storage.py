@@ -77,6 +77,33 @@ class StreamTests(unittest.TestCase):
             self.assertEqual(len(lines),4)
             self.assertTrue(lines[0].startswith(b'MAXIMA_TELEMETRY'))
 
+    def test_gameplay_filter_retains_complete_long_records(self):
+        records=(b'GLOB2_MEASURE team=0 tick=512 final=1 data='+b'x'*150000+b'\n'
+                 b'GLOB2_MEASURE_HISTORY team=0 tick=0 final=0\n'
+                 b'GLOB2_AI_CORTEX tick=512\nGLOB2_PERF_WORKER time=123\n')
+        text=b'ignored\n'+records+b'GLOB2_WINPROB tick=512 permille=600\n'
+        with tempfile.TemporaryDirectory() as folder:
+            for mode, expected in [('gameplay',records.split(b'GLOB2_AI_')[0]+b'GLOB2_WINPROB tick=512 permille=600\n'),
+                                   ('telemetry',b'GLOB2_WINPROB tick=512 permille=600\n'),
+                                   ('win-probability',b'GLOB2_WINPROB tick=512 permille=600\n')]:
+                path=Path(folder)/(mode+'.gz')
+                capture=CompressedLog(io.BytesIO(text),path,len(text),mode)
+                self.assertIsNone(capture.finish()['error'])
+                self.assertEqual(gzip.decompress(path.read_bytes()),expected)
+
+    def test_gameplay_mode_omits_high_volume_ai_and_performance(self):
+        wanted=(b'GLOB2_MEASURE team=0 tick=512 final=1\n'
+                b'GLOB2_MEASURE_HISTORY team=0 tick=0 final=0\n'
+                b'GLOB2_WINPROB tick=512 permille=600\n'
+                b'GLOB2_TL team=0 tick=512\nGLOB2_ECON team=0 units=10\n'
+                b'GLOB2_TIMELINE team=0 samples=1\n')
+        text=wanted+b'GLOB2_AI_SAMPLE data='+b'x'*150000+b'\nGLOB2_PERF_SAMPLE tick=512\n'
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'gameplay.gz'
+            capture=CompressedLog(io.BytesIO(text),path,len(wanted),'gameplay')
+            self.assertIsNone(capture.finish()['error'])
+            self.assertEqual(gzip.decompress(path.read_bytes()),wanted)
+
     def test_overflow_drains_and_closes_valid_bounded_gzip(self):
         source=io.BytesIO(b'x'*1000000)
         with tempfile.TemporaryDirectory() as folder:
@@ -110,6 +137,33 @@ class SchemaTests(unittest.TestCase):
             for value in [True,0,-1,1.5]:
                 with self.subTest(key=key,value=value),self.assertRaises(ValueError):
                     validate_job(self.request(limits={key:value}))
+
+    def test_required_gameplay_contract_rejects_probability_only_capture(self):
+        request=self.request(labels={'require_gameplay_telemetry':True},
+                             outputs={'telemetry':['team-timeline'],'log_mode':'gameplay'})
+        validate_job(request)
+        request['outputs']['log_mode']='win-probability'
+        with self.assertRaisesRegex(ValueError,'required gameplay'):
+            validate_job(request)
+        request['outputs']['log_mode']='gameplay'
+        validate_job(request)
+        request['outputs']['telemetry']=[]
+        with self.assertRaisesRegex(ValueError,'gameplay logs'):
+            validate_job(request)
+
+    def test_required_gameplay_collection_fails_closed(self):
+        request=self.request(labels={'require_gameplay_telemetry':True},
+                             outputs={'telemetry':['team-timeline'],'log_mode':'gameplay'})
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'output').mkdir()
+            atomic_json(root/'output/result.json',{'schema_version':1,'status':'completed'})
+            for text in (b'GLOB2_WINPROB tick=512 permille=600\n',
+                         b'GLOB2_MEASURE team=0 tick=512 final=0\n'):
+                (root/'stdout.log.gz').write_bytes(gzip.compress(text))
+                with self.assertRaisesRegex(ValueError,'final gameplay'):
+                    EngineJob('game').collect(request,root)
+            (root/'stdout.log.gz').write_bytes(gzip.compress(b'GLOB2_MEASURE team=0 tick=512 final=1\n'))
+            self.assertEqual(EngineJob('game').collect(request,root)['status'],'completed')
 
 
 class QuotaTests(unittest.TestCase):

@@ -553,10 +553,10 @@ TEST_SUITE("UnitCustomization")
             Unit* loaded=nullptr;
             if(text) {
                 GAGCore::MemoryStreamBackend backend(bytes.data(),bytes.size()); backend.seekFromStart(0);
-                GAGCore::TextInputStream input(&backend); loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+                GAGCore::TextInputStream input(&backend); loaded=new Unit(&input,restored.team,VERSION_MINOR);
             } else {
                 GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
-                loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+                loaded=new Unit(&input,restored.team,VERSION_MINOR);
                 REQUIRE(input.getPosition()==bytes.size());
             }
             restored.team->attachUnit(0, loaded);
@@ -2671,8 +2671,10 @@ TEST_SUITE("UnitCustomization")
         static_assert(offsetof(UnitState,configuredVisionRadius)==offsetof(UnitState,underAttackTimer)+1);
         static_assert(offsetof(UnitState,hp)%alignof(Sint32)==0);
         // Native layout budgets; the vision cache must not enlarge compact storage.
+        // Units also carry their resource-claim selection cadence (decision ordinals).
         static_assert(sizeof(void*)!=8 || sizeof(UnitState)<=264);
-        static_assert(sizeof(void*)!=8 || sizeof(Unit)<=344);
+        static_assert(sizeof(ResourceClaims::MaterialClaimPolicyState)<=24);
+        static_assert(sizeof(void*)!=8 || sizeof(Unit)<=344+sizeof(ResourceClaims::MaterialClaimPolicyState));
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
         auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());

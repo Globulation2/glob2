@@ -16,7 +16,7 @@ from tools.tournaments.common import store_artifact
 from tools.tournaments.bundles import inspect_bundle
 from tools.tournaments.common import atomic_json
 
-ADAPTIVE_POLICY=dict(minimum_interval=d.DEFAULT_MINIMUM_INTERVAL_TICKS,forced_age_cap=1024,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=d.DEFAULT_THRESHOLD_MILLI,horizon_ticks=128)
+ADAPTIVE_POLICY=dict(minimum_interval=d.DEFAULT_MINIMUM_INTERVAL_TICKS,forced_age_cap=256,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=d.DEFAULT_THRESHOLD_MILLI,horizon_ticks=128)
 
 def policy_from_bundles(bundles):
  """Use the actual compiled model's qualified behavior, not a stale tool default.

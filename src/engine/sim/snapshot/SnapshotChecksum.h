@@ -12,7 +12,7 @@ namespace SimulationChecksum
 // AI-only turn sessions and their replays must use the same policy.
 bool mapChecksumsFor(const GameHeader& players);
 
-// Schema 3: original-style field mixing over existing captured simulation facts.
+// Schema 4 includes owner-captured authoritative claim route/recovery state.
 Uint32 snapshotChecksum(const SimulationSnapshot::Handle& world, bool mapChecksums = false);
 class Pipeline
 {

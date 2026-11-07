@@ -68,6 +68,51 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> out, field::Grid gr
 } // namespace
 TEST_SUITE("OpenCLGradient")
 {
+    TEST_CASE("destination fields preserve canonical source ties and cost-only buffer reuse")
+    {
+        initializeForTest();
+        onWorker([&] {
+            using namespace gradient_kernel;
+            const bool supported=(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0;
+            if (!supported) { MESSAGE("OpenCL unavailable; destination device parity was not exercised"); return; }
+            std::mt19937 random(90271);
+            for (const auto [w,h] : {std::pair{1,17},std::pair{17,1},std::pair{7,13},std::pair{32,32}})
+                for (int cap : {0,60,COST_LIMIT}) for (unsigned trial=0;trial<3;++trial) {
+                const field::Grid grid(w,h);
+                std::vector<std::uint16_t> seeds(grid.cells(),GRADIENT_UNREACHABLE);
+                std::vector<EntrySteps> costs(grid.cells());
+                for (std::size_t i=0;i<grid.cells();++i) {
+                    costs[i]=trial ? entrySteps(1+unsigned(random()%30)) : LAND_STEPS;
+                    if (random()%7==0) seeds[i]=GRADIENT_FORBIDDEN;
+                    else if (random()%17==0) seeds[i]=GRADIENT_AT_GOAL-(trial?random()%300:0);
+                }
+                seeds[0]=seeds.back()=GRADIENT_AT_GOAL;
+                auto expected=seeds, actual=seeds;
+                OwnedDestinations reference(grid.cells()), output(grid.cells());
+                GradientWorkspace scratch;
+                propagateDestinationFieldCPU(expected.data(),reference.planes(),cap,grid,scratch,
+                    [&](std::size_t i){return costs[i];});
+                BackendSession session;
+                BackendRequest request{actual.data(),cap,grid,session,&costs,
+                    [](void* value,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(value))[i];},
+                    [](void*,std::uint16_t*){FAIL("destination device test cannot recover on CPU");}};
+                request.destinations=output.planes();
+                bool executed=false;
+                request.executedOnDevice=&executed;
+                REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+                if (!alreadyFixedGradient(seeds)) CHECK(executed);
+                CHECK(actual==expected);
+                CHECK(std::equal(output.x.get(),output.x.get()+grid.cells(),reference.x.get()));
+                CHECK(std::equal(output.y.get(),output.y.get()+grid.cells(),reference.y.get()));
+                // Same lane switches element widths without reusing incorrectly
+                // sized device buffers or incorrectly interpreting staging.
+                actual=seeds;request.gradient=actual.data();request.destinations={};
+                REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+                CHECK(actual==expected);
+            }
+        });
+    }
+
     TEST_CASE("full fields agree with heap oracle across costs caps seeds and wrapping")
     {
         initializeForTest();

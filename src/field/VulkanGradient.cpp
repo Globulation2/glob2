@@ -139,7 +139,7 @@ struct Work
 	VkCommandPool commands = VK_NULL_HANDLE;
 	VkCommandBuffer command = VK_NULL_HANDLE;
 	VkFence fence = VK_NULL_HANDLE;
-	bool submitted = false, reusable = false;
+	bool submitted = false, reusable = false, destinations = false;
 	std::size_t cellsCapacity = 0, tilesCapacity = 0, hostCharged = 0;
 	std::array<VkDescriptorSet, 2> sets{};
 	explicit Work(Runtime *r) : runtime(r)
@@ -172,7 +172,7 @@ struct Runtime
 	VkPhysicalDeviceMemoryProperties memory{};
 	VkDescriptorSetLayout descriptors = VK_NULL_HANDLE;
 	VkPipelineLayout layout = VK_NULL_HANDLE;
-	std::array<VkPipeline, 2> pipelines{};
+	std::array<VkPipeline, 4> pipelines{};
 	unsigned queueFamily = 0;
 	std::vector<std::unique_ptr<Work>> quarantine;
 	// One serial adapter work set. Only successful fence retirement admits reuse.
@@ -323,7 +323,7 @@ struct Runtime
 				GetPhysicalDeviceProperties(candidate, &p);
 				if (p.limits.maxComputeWorkGroupInvocations < 128 ||
 					p.limits.maxComputeWorkGroupSize[0] < 128 ||
-					p.limits.maxComputeSharedMemorySize < 2600 ||
+					p.limits.maxComputeSharedMemorySize < 5200 ||
 					p.limits.maxPerStageDescriptorStorageBuffers < 7 ||
 					p.limits.maxDescriptorSetStorageBuffers < 7)
 					continue;
@@ -380,8 +380,9 @@ struct Runtime
 			pl.setLayoutCount = 1;
 			pl.pSetLayouts = &descriptors;
 			check(CreatePipelineLayout(device, &pl, nullptr, &layout));
-			const std::array<std::span<const std::uint32_t>, 2> binaries{
-				gradient_shaders::frozen8, gradient_shaders::jacobi};
+			const std::array<std::span<const std::uint32_t>, 4> binaries{
+				gradient_shaders::frozen8, gradient_shaders::jacobi,
+                gradient_shaders::frozen8_destinations, gradient_shaders::jacobi_destinations};
 			for (unsigned i = 0; i < binaries.size(); ++i)
 			{
 				VkShaderModule module = VK_NULL_HANDLE;
@@ -473,11 +474,11 @@ struct Runtime
 				runtime.idle = std::move(work);
 		}
 	};
-	std::unique_ptr<Work> acquireWork(std::size_t cells, std::size_t tiles)
+	std::unique_ptr<Work> acquireWork(std::size_t cells, std::size_t tiles, bool destinations)
 	{
 
 		std::unique_ptr<Work> work;
-		if (idle && idle->cellsCapacity >= cells && idle->tilesCapacity >= tiles)
+		if (idle && idle->cellsCapacity >= cells && idle->tilesCapacity >= tiles && idle->destinations == destinations)
 		{
 			work = std::move(idle);
 
@@ -487,9 +488,10 @@ struct Runtime
 			idle.reset();
 			work = std::make_unique<Work>(this);
 		}
-		const std::array<std::size_t, BufferCount> sizes{
-			cells * 4, cells * 4, cells * 4, 4,
-			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16)};
+		const std::size_t fieldBytes = cells * (destinations ? 8 : 4);
+        const std::array<std::size_t, BufferCount> sizes{
+            fieldBytes, fieldBytes, cells * 4, 4,
+            16, tiles * 4, tiles * 4, std::max<std::size_t>(fieldBytes, 16)};
 		if (!work->fence)
 		{
 			for (unsigned i = 0; i < BufferCount; ++i)
@@ -508,7 +510,7 @@ struct Runtime
 			VkFenceCreateInfo fc{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 			check(CreateFence(device, &fc, nullptr, &work->fence));
 
-			work->cellsCapacity = cells;
+			work->cellsCapacity = cells; work->destinations = destinations;
 			work->tilesCapacity = tiles;
 		}
 		auto &sets = work->sets;
@@ -557,12 +559,14 @@ struct Runtime
 	{
 
 		const bool frozen = plan == Plan::VulkanFrozen8;
+        const bool destinations = bool(request.destinations);
+        const unsigned stride = destinations ? 2 : 1;
 		const auto cells = request.grid.cells();
 		const auto w = unsigned(request.grid.width()), h = unsigned(request.grid.height()),
 				   pitch = (w + 15) / 16, rows = (h + 15) / 16;
 		const auto tiles = std::size_t(pitch) * rows;
 
-		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
+		if (!cells || cells > properties.limits.maxStorageBufferRange / (stride * 4) || cells > UINT32_MAX ||
 			request.limit < 0)
 			return false;
 		if ((frozen && (pitch > properties.limits.maxComputeWorkGroupCount[0] ||
@@ -572,7 +576,7 @@ struct Runtime
 		if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
 			return false;
 
-		auto work = acquireWork(cells, tiles);
+		auto work = acquireWork(cells, tiles, destinations);
 		ReturnRetired returnRetired{*this, work};
 		const auto &sets = work->sets;
 
@@ -607,9 +611,13 @@ struct Runtime
 
 			return true;
 		};
-		for (std::size_t i = 0; i < cells; ++i)
-			staging[i] = request.gradient[i];
-		if (!copyInput(InputA, cells * 4))
+		if (destinations) {
+            for (std::size_t i = 0; i < cells; ++i) {
+                staging[2*i] = request.gradient[i];
+                staging[2*i+1] = request.gradient[i] > GRADIENT_UNREACHABLE ? std::uint32_t(i) : UINT32_MAX;
+            }
+        } else for (std::size_t i = 0; i < cells; ++i) staging[i] = request.gradient[i];
+		if (!copyInput(InputA, cells * 4 * stride))
 			return false;
 		for (std::size_t i = 0; i < cells; ++i)
 		{
@@ -659,7 +667,7 @@ struct Runtime
 				VK_PIPELINE_STAGE_TRANSFER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
 			CmdBindPipeline(work->command, VK_PIPELINE_BIND_POINT_COMPUTE,
-							pipelines[frozen ? 0 : 1]);
+							pipelines[(destinations ? 2 : 0) + (frozen ? 0 : 1)]);
 			CmdBindDescriptorSets(work->command, VK_PIPELINE_BIND_POINT_COMPUTE, layout, 0, 1,
 								  &sets[current], 0, nullptr);
 			CmdDispatch(work->command, frozen ? pitch : unsigned((cells + 127) / 128),
@@ -687,7 +695,7 @@ struct Runtime
 					CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 									   VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr,
 									   0, nullptr);
-					VkBufferCopy copy{0, 0, cells * 4};
+					VkBufferCopy copy{0, 0, cells * 4 * stride};
 					CmdCopyBuffer(work->command, work->buffers[current].buffer,
 								  work->buffers[Transfer].buffer, 1, &copy);
 					barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -706,8 +714,16 @@ struct Runtime
 				const auto *out =
 					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
 
-				for (std::size_t i = 0; i < cells; ++i)
-					request.gradient[i] = std::uint16_t(out[i]);
+				if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+					return false;
+				if (destinations) {
+                    for (std::size_t i = 0; i < cells; ++i) {
+                        request.gradient[i] = std::uint16_t(out[2*i]);
+                        const auto source = out[2*i+1];
+                        request.destinations.x[i] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % w);
+                        request.destinations.y[i] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / w);
+                    }
+                } else for (std::size_t i = 0; i < cells; ++i) request.gradient[i] = std::uint16_t(out[i]);
 				if (request.executedOnDevice)
 					*request.executedOnDevice = true;
 				// The readback fence has retired every command and transfer using this set.
@@ -868,6 +884,8 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		return false;
 	for (const auto &request : requests)
 		if (!request.gradient || !request.costAt || request.limit < 0 ||
+            bool(request.destinations.x) != bool(request.destinations.y) ||
+            (request.destinations && (request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)) ||
 			request.operation != Operation::CompleteField)
 			return false;
 	// Multi-field direct callers remain atomic. The production singleton needs no clone.
@@ -876,9 +894,10 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 	for (const auto &q : requests)
 	{
         if (singleton) break;
-		if (q.grid.cells() > (OpenCLHostBudget - bytes) / 2)
+		const auto perCell = q.destinations ? 6u : 2u;
+        if (q.grid.cells() > (OpenCLHostBudget - bytes) / perCell)
 			return false;
-		bytes += q.grid.cells() * 2;
+		bytes += q.grid.cells() * perCell;
 	}
 	if (bytes && !reserveOpenCLHostBytes(bytes))
 	{
@@ -893,8 +912,11 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 	} lease{bytes};
 
 	std::vector<std::vector<std::uint16_t>> seeds;
-	if (!singleton) for (const auto &q : requests)
-		seeds.emplace_back(q.gradient, q.gradient + q.grid.cells());
+    std::vector<std::unique_ptr<OwnedDestinations>> outputs;
+    if (!singleton) for (const auto &q : requests) {
+        seeds.emplace_back(q.gradient, q.gradient + q.grid.cells());
+        outputs.push_back(q.destinations ? std::make_unique<OwnedDestinations>(q.grid.cells()) : nullptr);
+    }
 
 	try
 	{
@@ -902,7 +924,10 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		for (std::size_t i = 0; i < requests.size(); ++i)
 		{
 			auto request = requests[i];
-			if (!singleton) request.gradient = seeds[i].data();
+			if (!singleton) {
+                request.gradient = seeds[i].data();
+                if (outputs[i]) request.destinations = outputs[i]->planes();
+            }
 			// A completed private field is execution evidence, but publication
 			// belongs to the whole batch. A later decline must not report a commit.
 			request.executedOnDevice = nullptr;
@@ -912,12 +937,24 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 				break;
 			}
 		}
+		// Earlier fields may be canceled while a later field executes.
+		// Singleton output already crossed its commit boundary inside execute.
+		if (success && !singleton)
+			for (const auto& request : requests)
+				if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+					success = false;
 		if (success)
 		{
 
 			for (std::size_t i = 0; i < requests.size(); ++i)
 			{
-				if (!singleton) std::copy(seeds[i].begin(), seeds[i].end(), requests[i].gradient);
+				if (!singleton) {
+                    std::copy(seeds[i].begin(), seeds[i].end(), requests[i].gradient);
+                    if (outputs[i]) {
+                        std::copy_n(outputs[i]->x.get(), outputs[i]->cells, requests[i].destinations.x);
+                        std::copy_n(outputs[i]->y.get(), outputs[i]->cells, requests[i].destinations.y);
+                    }
+                }
 				if (requests[i].executedOnDevice)
 					*requests[i].executedOnDevice = true;
 			}

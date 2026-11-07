@@ -370,6 +370,17 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        // New games use resource claims. Turning them off is a baseline setup
+        // for a new game and records no replay (playback would restore claims).
+        if(r.has("--resource-claims")) {
+            const auto claims=r.get("--resource-claims");
+            if(claims!="default" && claims!="off")
+                throw std::invalid_argument("--resource-claims must be default or off");
+            if(r.has("--load-game"))
+                throw std::invalid_argument("--resource-claims cannot override a saved game");
+            if(claims=="off" && r.has("--write-replay"))
+                throw std::invalid_argument("--resource-claims off cannot record a replay");
+        }
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
             if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
@@ -563,6 +574,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             choice("--resource-claims", "New-game resource claims: default (the contention-v2 policy) or off (no claims or material destinations); off excludes replay recording", {"default", "off"}, "default"),
              flag("--resource-gradient-probe", "Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias)"),
              value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training"),
              integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),

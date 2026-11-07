@@ -243,6 +243,7 @@ namespace
 
 	void assignTask(Unit *u, Building *b, int resource)
 	{
+        if(u->owner->map->activeClaimsEnabled())u->releaseActiveMaterialClaim();
 		u->attachedBuilding->removeUnitFromWorking(u);
 		u->attachedBuilding = b;
 		u->destinationPurpose = resource;
@@ -252,14 +253,15 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
+            u->setValidTarget(true);
 		}
 		else
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->movementAccess(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+            u->setValidTarget(u->queryMaterialDestination(resource,&u->targetX,&u->targetY,nullptr,
+                b->fetchesFromMarkets(),b)==RouteResult::Reachable);
 		}
-		u->setValidTarget(true);
 	}
 }
 
@@ -355,6 +357,9 @@ void Team::syncStep(void)
 	int nbUsefulUnitsAlone = 0;
 	bool hasHealthyOrRecoveringUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
+	// Contention-triggered claims compare against where this team's workers
+	// were heading as its unit step begins (a no-op without claims).
+	map->prepareClaimContention(teamNumber);
 	// Select once per team. The usual loop has no aura branch per unit;
 	// pulse services still run immediately before that unit's normal update.
 	const auto stepUnits = [&]<bool areaPulse>() {
@@ -466,6 +471,8 @@ void Team::syncStep(void)
 			++it;
 	}
 
+	// Hire-time claim targets for this team, from the state hiring starts at.
+	map->prepareClaimHireTargets(teamNumber);
 	updateAllBuildingTasks();
 	// Round robin visits at most four existing units, independent of empty IDs.
 	const auto candidates=std::min<std::size_t>(SWAP_CHECKS_PER_TICK,liveUnits.size());
