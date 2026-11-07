@@ -2430,6 +2430,8 @@ Grindbankgrootte
 Extra doorwaadplaatsen
 [Moraine hummocks]
 Moreneheuvels
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 De vlechting laat te weinig terras over voor de thuisbases; gebruik een grotere kaart of een smallere vlechting.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savanne
 Drinkplaatsen
 [Dry patches]
 Droge plekken
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Weinig
 [Normal]

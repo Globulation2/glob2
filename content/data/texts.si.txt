@@ -2430,6 +2430,8 @@ Velikost prodišč
 Dodatni brodi
 [Moraine hummocks]
 Morenski grički
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Preplet pušča domovom premalo terase; uporabite večji zemljevid ali ožji preplet.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savana
 Napajališča
 [Dry patches]
 Suha območja
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Malo
 [Normal]

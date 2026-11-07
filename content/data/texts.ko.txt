@@ -2430,6 +2430,8 @@ Globulation 2 커서를 표시합니다.
 추가 여울
 [Moraine hummocks]
 빙퇴석 둔덕
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Globulation 2 커서를 표시합니다.
 물웅덩이
 [Dry patches]
 건조 지대
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 적음
 [Normal]

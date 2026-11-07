@@ -2430,6 +2430,8 @@ Tamaño de las barras
 Vados extra
 [Moraine hummocks]
 Montículos de morrena
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 El trenzado deja muy poca terraza para las bases; usa un mapa más grande o un trenzado más estrecho.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Sabana
 Abrevaderos
 [Dry patches]
 Zonas secas
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Escasos
 [Normal]

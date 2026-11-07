@@ -2408,6 +2408,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கூடுதல் ஆழமற்ற நீரோட்டங்கள்
 [Moraine hummocks]
 பனியாற்றுக் கற்குவியல் மேடுகள்
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 பின்னல் ஆற்றின் ஓரங்களில் தொடக்கப் பகுதிகளுக்குப் போதிய படிநிலை இடமில்லை; பெரிய வரைபடம் அல்லது குறுகிய பின்னலைப் பயன்படுத்தவும்.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நீர்நிலைகள்
 [Dry patches]
 வறண்ட திட்டுகள்
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 அடர்த்தி குறைவு
 [Normal]

@@ -2430,6 +2430,8 @@ OpenGL није доступан у овој верзији.
 Додатни газови
 [Moraine hummocks]
 Моренски брежуљци
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разгранање оставља премало терасе за базе; користите већу мапу или уже разгранање.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ OpenGL није доступан у овој верзији.
 Појила
 [Dry patches]
 Суве површине
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Мало
 [Normal]

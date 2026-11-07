@@ -2432,6 +2432,8 @@ Laki ng buhanginan
 Mga dagdag na mababaw na agos
 [Moraine hummocks]
 Maliliit na bunton ng moraine
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Napakaliit ng natitirang terasa para sa mga panimulang lugar dahil sa nagtitirintas na ilog; gumamit ng mas malaking mapa o mas makitid na ilog.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2490,6 +2492,12 @@ Savannah
 Mga likas na inuman ng tubig
 [Dry patches]
 Mga tuyong patse
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Kalat-kalat
 [Normal]

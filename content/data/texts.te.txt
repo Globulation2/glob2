@@ -2408,6 +2408,8 @@ HP ≤ 25/50/75 %
 అదనపు లోతు తక్కువ ప్రవాహాలు
 [Moraine hummocks]
 మోరైన్ గుట్టలు
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 ఈ అల్లిక ఇళ్లకు చాలా తక్కువ చదును స్థలాన్ని వదిలివేస్తుంది; పెద్ద పటాన్ని లేదా సన్నని అల్లికను ఉపయోగించండి.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ HP ≤ 25/50/75 %
 నీటి గుంటలు
 [Dry patches]
 పొడి మచ్చలు
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 విరళంగా
 [Normal]

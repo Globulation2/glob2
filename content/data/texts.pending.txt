@@ -73,3 +73,7 @@
 [Sandstone]
 [Volcanic]
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+[Deep pools]
+[Season]
+[Meltwater]
+[Late summer]

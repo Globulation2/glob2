@@ -2430,6 +2430,8 @@ Grusbankestørrelse
 Ekstra vadesteder
 [Moraine hummocks]
 Morænebakker
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Fletningen efterlader for lidt terrasse til hjemmene; brug et større kort eller en smallere fletning.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savanne
 Vandhuller
 [Dry patches]
 Tørre områder
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Få
 [Normal]

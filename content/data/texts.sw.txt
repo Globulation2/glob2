@@ -2408,6 +2408,8 @@ Ukubwa wa fungu la mchanga
 Mikondo ya ziada ya kasi yenye maji mafupi
 [Moraine hummocks]
 Vilima vya vifusi vilivyoachwa na barafu
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Mikondo inaacha maeneo machache mno ya ardhi tambarare iliyoinuka kwa makazi; tumia ramani kubwa au mikondo myembamba zaidi.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ Savanna
 Vidimbwi vya kunywea
 [Dry patches]
 Mabaka makavu
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Vichache
 [Normal]

@@ -2430,6 +2430,8 @@ Taille des bancs
 Gués supplémentaires
 [Moraine hummocks]
 Buttes morainiques
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La tresse laisse trop peu de terrasse pour les bases ; utilisez une carte plus grande ou une tresse plus étroite.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savane
 Points d’eau
 [Dry patches]
 Zones sèches
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Rares
 [Normal]

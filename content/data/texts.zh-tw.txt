@@ -2430,6 +2430,8 @@ Emoji
 額外淺灘
 [Moraine hummocks]
 冰磧小丘
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 辮狀帶留給基地的階地太少；請使用更大的地圖或更窄的辮狀帶。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Emoji
 水塘
 [Dry patches]
 乾燥地帶
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 稀少
 [Normal]

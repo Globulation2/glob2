@@ -2430,6 +2430,8 @@ Grando de gruzbenkoj
 Pliaj travadejoj
 [Moraine hummocks]
 Morenaj montetoj
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savano
 Trinkejoj
 [Dry patches]
 Sekaj areoj
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Malmultaj
 [Normal]

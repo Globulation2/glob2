@@ -2430,6 +2430,8 @@ Särkkien koko
 Lisäkahlaamot
 [Moraine hummocks]
 Moreenikumpareet
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Palmikko jättää kotialueille liian vähän terassia; käytä suurempaa karttaa tai kapeampaa palmikkoa.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savanni
 Juomapaikat
 [Dry patches]
 Kuivat alueet
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Harvassa
 [Normal]

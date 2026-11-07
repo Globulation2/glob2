@@ -2430,6 +2430,8 @@ Yurt vahası çok küçük; yurt vahası boyutunu artırın.
 Ek sığ geçitler
 [Moraine hummocks]
 Moren tümsekleri
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Örgü, üsler için çok az teras bırakıyor; daha büyük bir harita veya daha dar bir örgü kullanın.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savan
 Su birikintileri
 [Dry patches]
 Kurak alanlar
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Az
 [Normal]

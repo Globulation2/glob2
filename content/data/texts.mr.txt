@@ -2408,6 +2408,8 @@ HP ≤25/50/75%
 अतिरिक्त उथळ खळखळते प्रवाह
 [Moraine hummocks]
 मोरेन टेकड्या
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 गुंफलेल्या नदीमुळे तळांसाठी खूप कमी सपाट जागा उरते; मोठा नकाशा किंवा अरुंद नदी वापरा.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ HP ≤25/50/75%
 पाणवठे
 [Dry patches]
 कोरडे ठिपके
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 विरळ
 [Normal]

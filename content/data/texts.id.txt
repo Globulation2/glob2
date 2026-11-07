@@ -2430,6 +2430,8 @@ Ukuran gosong
 Penyeberangan dangkal tambahan
 [Moraine hummocks]
 Gundukan morena
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Anyaman menyisakan terlalu sedikit teras untuk markas; gunakan peta lebih besar atau anyaman lebih sempit.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Sabana
 Kubangan air
 [Dry patches]
 Area kering
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Sedikit
 [Normal]

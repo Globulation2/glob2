@@ -2408,6 +2408,8 @@ HP ≤25/50/75%
 অতিরিক্ত অগভীর স্রোত
 [Moraine hummocks]
 মোরাইন টিলা
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 নিজ এলাকাগুলোর জন্য বহুশাখা নদী খুব কম সোপানভূমি রেখেছে; বড় মানচিত্র অথবা সরু বহুশাখা নদী ব্যবহার করুন।
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ HP ≤25/50/75%
 পানের জলাশয়
 [Dry patches]
 শুষ্ক অংশ
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 বিরল
 [Normal]

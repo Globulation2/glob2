@@ -2430,6 +2430,8 @@ Emoji
 Επιπλέον ρηχά περάσματα
 [Moraine hummocks]
 Μοραινικοί λοφίσκοι
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Το πλέγμα αφήνει πολύ λίγη αναβαθμίδα για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερο πλέγμα.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Emoji
 Νερόλακκοι
 [Dry patches]
 Ξηρές περιοχές
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Λίγοι
 [Normal]

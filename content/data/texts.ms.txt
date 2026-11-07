@@ -2432,6 +2432,8 @@ Saiz beting
 Lintasan jeram tambahan
 [Moraine hummocks]
 Busut morain
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Jalinan sungai meninggalkan terlalu sedikit teres untuk pangkalan; gunakan peta yang lebih besar atau jalinan yang lebih sempit.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2490,6 +2492,12 @@ Savana
 Takungan air
 [Dry patches]
 Tompok kering
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Jarang
 [Normal]

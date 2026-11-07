@@ -2430,6 +2430,8 @@ Legar-barren tamaina
 Ibi gehigarriak
 [Moraine hummocks]
 Morrena-muinoak
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Txirikordak terraza gutxiegi uzten die etxeei; erabili mapa handiagoa edo txirikorda estuagoa.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Sabana
 Ur-putzuak
 [Dry patches]
 Eremu lehorrak
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Bakan
 [Normal]

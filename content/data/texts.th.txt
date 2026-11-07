@@ -2408,6 +2408,8 @@ HP ≤25/50/75%
 แก่ง​ตื้น​เพิ่มเติม
 [Moraine hummocks]
 เนิน​ตะกอน​ธารน้ำแข็ง
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 แม่น้ำ​หลาย​สาย​ทำให้​เหลือ​ลาน​ตะพัก​สำหรับ​ฐาน​น้อย​เกินไป ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​ความ​กว้าง​แนว​แม่น้ำ
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ HP ≤25/50/75%
 แหล่งน้ำ
 [Dry patches]
 บริเวณ​แห้งแล้ง
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 เบาบาง
 [Normal]

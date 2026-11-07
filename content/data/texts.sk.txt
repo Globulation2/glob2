@@ -2430,6 +2430,8 @@ Veľkosť lavíc
 Ďalšie brody
 [Moraine hummocks]
 Morénové pahorky
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Divočiaca rieka necháva domovom príliš málo terasy; použite väčšiu mapu alebo užšiu rieku.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savana
 Napájadlá
 [Dry patches]
 Suché oblasti
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Málo
 [Normal]

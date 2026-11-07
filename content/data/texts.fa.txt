@@ -2430,6 +2430,8 @@ Emoji
 گدارهای اضافی
 [Moraine hummocks]
 تپه‌های یخرفتی
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 نوار شریانی برای پایگاه‌ها تراس بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر یا نوار شریانی باریک‌تری استفاده کنید.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Emoji
 آبشخورها
 [Dry patches]
 نواحی خشک
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 کم
 [Normal]

@@ -2430,6 +2430,8 @@ Tamanho das barras
 Vaus adicionais
 [Moraine hummocks]
 Montículos de moreia
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 O entrançado deixa pouco terraço para as bases; use um mapa maior ou um entrançado mais estreito.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Savana
 Pontos de água
 [Dry patches]
 Áreas secas
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Poucos
 [Normal]

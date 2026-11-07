@@ -2408,6 +2408,8 @@ HP ≤25/50/75%
 Допълнителни речни прагове
 [Moraine hummocks]
 Моренови хълмове
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разклонената река оставя твърде малко тераси за базите; използвайте по-голяма карта или по-тясна река.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ HP ≤25/50/75%
 Водопои
 [Dry patches]
 Сухи петна
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Рядък
 [Normal]

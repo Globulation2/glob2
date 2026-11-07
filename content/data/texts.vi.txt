@@ -2430,6 +2430,8 @@ Kích thước cồn sỏi
 Bãi cạn bổ sung
 [Moraine hummocks]
 Gò băng tích
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Dải bện để lại quá ít thềm cho các căn cứ; hãy dùng bản đồ lớn hơn hoặc dải bện hẹp hơn.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Xa van
 Hố nước
 [Dry patches]
 Vùng khô
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Ít
 [Normal]

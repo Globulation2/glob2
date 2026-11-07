@@ -2430,6 +2430,8 @@ OpenGL недоступен в этой сборке.
 Дополнительные броды
 [Moraine hummocks]
 Моренные холмы
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разветвление оставляет базам слишком мало террасы; используйте карту побольше или более узкое разветвление.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ OpenGL недоступен в этой сборке.
 Водопои
 [Dry patches]
 Сухие участки
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Мало
 [Normal]

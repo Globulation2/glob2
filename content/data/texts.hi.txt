@@ -2408,6 +2408,8 @@ Globulation 2 का कर्सर दिखाएँ।
 अतिरिक्त उथले तेज़ बहाव
 [Moraine hummocks]
 हिमोढ़ के छोटे टीले
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 नदी की धाराओं के बीच शुरुआती बस्तियों के लिए ऊँची समतल ज़मीन कम बचती है; बड़ा नक्शा या सँकरी नदी चुनें।
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2468,12 @@ Globulation 2 का कर्सर दिखाएँ।
 पानी पीने के कुंड
 [Dry patches]
 सूखे हिस्से
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 विरल
 [Normal]

@@ -2430,6 +2430,8 @@ Globulation 2のカーソルを表示します。
 追加の浅瀬
 [Moraine hummocks]
 モレーンの小丘
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 網状帯が本拠地に残す段丘が少なすぎます。より大きなマップを使うか、網状帯を狭くしてください。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ Globulation 2のカーソルを表示します。
 水場
 [Dry patches]
 乾燥地
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 少ない
 [Normal]

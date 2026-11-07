@@ -2430,6 +2430,8 @@ OpenGL 在此版本中不可用。
 额外浅滩
 [Moraine hummocks]
 冰碛小丘
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 辫状带留给基地的阶地太少；请使用更大的地图或更窄的辫状带。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2490,12 @@ OpenGL 在此版本中不可用。
 水塘
 [Dry patches]
 干燥地带
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 稀少
 [Normal]
