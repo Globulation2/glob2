@@ -25,6 +25,7 @@
 #include <optional>
 #include <set>
 #include "render/Minimap.h"
+#include "render/ViewState.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include "EditorDialogs.h"
@@ -525,9 +526,9 @@ public:
 	Game game;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
-	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
+	///ViewState. Owned here (not on Game) and passed into MapDrawer::drawMap.
 	///The editor only ever uses selectedUnit.
-	Game::ViewState view;
+	ViewState view;
 
 	// --- WS-A brush catalogue ---
 	// One brush model for every presentation; see BrushCatalog.h for entry ids

@@ -294,13 +294,13 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 	market->launchConstruction(1,1);
 	CHECK(market->typeNum==50);
 	CHECK(market->constructionResultState==Building::NO_CONSTRUCTION);
-	const auto &scene=glob2test::sceneOf(g, Game::ViewState{.selectedBuilding=market});
+	const auto &scene=glob2test::sceneOf(g, ViewState{.selectedBuilding=market});
 	CHECK_FALSE(scene.panels.building.hardSpaceForUpgrade);
     CHECK(scene.panels.building.showLevel);
     // Presentation is explicit even when upgrades are experiment-gated.
     market->type->presentation.showLevel=false;
     g.snapshots().invalidateCatalog(); // The fixture edits the type table directly.
-    CHECK_FALSE(glob2test::sceneOf(g,Game::ViewState{.selectedBuilding=market}).panels.building.showLevel);
+    CHECK_FALSE(glob2test::sceneOf(g,ViewState{.selectedBuilding=market}).panels.building.showLevel);
 }
 
 TEST_CASE("each market level accepts only its resources across all swim classes")

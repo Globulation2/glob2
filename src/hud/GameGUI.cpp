@@ -139,7 +139,7 @@ void GameGUI::init()
 	// Reset the per-client view scratch (selection, mouse and map render state)
 	// the render path reads. Formerly cleared by Game::clearGame when these fields lived on
 	// Game; now front-end-owned, so reset it here. See CS-661.
-	view = Game::ViewState{};
+	view = ViewState{};
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;

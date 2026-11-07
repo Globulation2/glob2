@@ -14,6 +14,7 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "MapDrawer.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -284,7 +285,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
 
-void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
+void MapDrawer::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
 {
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
@@ -292,12 +293,12 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 
 	SoftwareTerrainCache::drawUncached(sceneMap, *globalContainer->terrain, left, top, right, bot,
 									   viewportX, viewportY, visibleTeams,
-									   drawOptions & DRAW_WHOLE_MAP, animationTime,
+									   drawOptions & Game::DRAW_WHOLE_MAP, animationTime,
 									   SoftwareTerrainCache::FallbackMode::StreamPages,
-									   drawOptions & DRAW_TILED_CAPTURE);
+									   drawOptions & Game::DRAW_TILED_CAPTURE);
 }
 
-void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render)
+void MapDrawer::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render)
 {
 	PERF_SCOPE_TIME(Resources);
     if (render) render->resourceRowMetrics = {};
@@ -314,10 +315,10 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
         left -= (reach.side + 31) >> 5;
         right += (reach.side + 31) >> 5;
     }
-    if (render && (drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
+    if (render && (drawOptions & Game::DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY, *render)) return;
     auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
-    const bool capture = (drawOptions & DRAW_TILED_CAPTURE) != 0;
+    const bool capture = (drawOptions & Game::DRAW_TILED_CAPTURE) != 0;
     const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
     const auto tierField = compositor.tierField(sceneMap);
     Sprite* pendingSprite = nullptr;
@@ -328,7 +329,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 	const auto visible = [&](int x, int y)
 	{
-		return (drawOptions & DRAW_WHOLE_MAP) != 0 ||
+		return (drawOptions & Game::DRAW_WHOLE_MAP) != 0 ||
 			   sceneMap.isMapPartiallyDiscovered(x + viewportX - 1, y + viewportY - 1,
 												 x + viewportX + 1, y + viewportY + 1,
 												 visibleTeams);
@@ -420,7 +421,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 	flush();
 }
 
-void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
+void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
 {
 	const Uint8 alpha = Uint8(std::clamp(render.detail.terrainOverview, 0.f, 1.f) * 255);
 	if (!alpha)
@@ -437,11 +438,11 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	if (!render.overviewCache)
 		render.overviewCache = std::make_unique<OverviewTerrainCache>();
 	render.overviewCache->update(sceneMap, left, top, right, bot, viewportX, viewportY,
-								 visibleTeams, drawOptions & DRAW_WHOLE_MAP, *render.overview);
+								 visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP, *render.overview);
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
-void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)
+void MapDrawer::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)
 {
 	// A wash strong enough to read over the terrain colours, inside a solid
 	// border: the edge of a colour shows where a faint tint of it does not.
@@ -467,7 +468,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 			const int teamNumber = building->team;
 			if (!entities.type(*building) || entities.type(*building)->isVirtual)
 				continue;
-			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].mask & visibleTeams)
+			if (!(drawOptions & Game::DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].mask & visibleTeams)
 				&& !(building->seenByMask & visibleTeams))
 				continue;
 			const int centerX = (building->posX + entities.type(*building)->width/2)/Cell;
@@ -557,7 +558,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	}
 }
 
-void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
+void MapDrawer::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	const PresentationFrame& scene = view.drawnScene();
 	const SceneMap& map = scene.map;
@@ -579,12 +580,12 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 /**
  * Draws the visible (viewport) part of the given map
  */
-void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap, bool advanceAnimation)
+void MapDrawer::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap, bool advanceAnimation)
 {
 	PERF_SCOPE_TIME(Overlay);
 	int &areaAnimationTick = view.render.areaAnimationTick;
 
-	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
+	if ((drawOptions & Game::DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[0] : nullptr);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render, view.displayedAreas ? &(*view.displayedAreas)[1] : nullptr);
@@ -593,7 +594,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if((drawOptions & DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
+				if((drawOptions & Game::DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
 				{
 					if(!sceneMap.canResourcesGrow(x+viewportX, y+viewportY))
 					{
@@ -620,7 +621,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 /**
  * Draws the visible (viewport) part of the given map
  */
-void Game::drawMapArea(int left, int top, int right, int bot, int sw,
+void MapDrawer::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
 		Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick,
 		AreaType areaType, const MapRenderState& render, const Utilities::BitArray* preview)
@@ -684,7 +685,7 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 	globalContainer->gfx->finishDrawingSprite(sprite, patternAlpha);
 }
 
-void Game::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map)
+void MapDrawer::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map)
 {
 	for (int y=top; y<bot; y++)
 		for (int x=left; x<right; x++)

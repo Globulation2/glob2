@@ -53,7 +53,6 @@ src/game -> src/hud
 src/game -> src/map
 src/game -> src/net
 src/game -> src/online
-src/game -> src/render
 src/game -> src/resource
 src/game -> src/scripting
 src/game -> src/team

@@ -22,6 +22,7 @@
 #include <Toolkit.h>
 
 #include "Game.h"
+#include "render/MapDrawer.h"
 #include "GameGUI.h"
 #include "IntBuildingType.h"
 #include "TeamStatChart.h"
@@ -813,7 +814,7 @@ void GameGUI::drawAll(int team)
 			globalContainer->gfx->isLegacyGLScreen() && camera.zoom * globalContainer->gfx->getRasterScale() > 1;
 		const double fringeX = stableHDView ? 32.0 : camera.fractionX();
 		const double fringeY = stableHDView ? 32.0 : camera.fractionY();
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW() + fringeX)), int(std::ceil(camera.visibleH() + fringeY)), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
+		MapDrawer::drawMap(0, 0, int(std::ceil(camera.visibleW() + fringeX)), int(std::ceil(camera.visibleH() + fringeY)), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
 			globalContainer->settings.buildingParticles ? &visibleBuildings : nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
 		if (globalContainer->settings.buildingParticles)
 		{

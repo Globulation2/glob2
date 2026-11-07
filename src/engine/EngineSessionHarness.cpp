@@ -25,6 +25,7 @@
 #include "sim/presentation/SceneInputs.h"
 #include "sim/presentation/ScenePreparation.h"
 #include "MenuColony.h"
+#include "render/ViewState.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
 #include "Unit.h"
@@ -760,9 +761,9 @@ TEST_SUITE("EngineSession")
         do {
             colony.draw(800, 600);
             SDL_Delay(1);
-        } while (!colony.view.scene && SDL_GetTicks() < readyBy);
-        REQUIRE(colony.view.scene);
-        CHECK(colony.view.scene->tick == initialTick);
+        } while (!colony.view->scene && SDL_GetTicks() < readyBy);
+        REQUIRE(colony.view->scene);
+        CHECK(colony.view->scene->tick == initialTick);
         CHECK(colony.game->snapshots().metrics.captures == captures);
         colony.update(1000);
         colony.update(1040);
@@ -770,7 +771,7 @@ TEST_SUITE("EngineSession")
         const auto afterStep = colony.game->snapshots().metrics.captures;
         colony.draw(800, 600);
         CHECK(colony.game->snapshots().metrics.captures == afterStep);
-        CHECK(colony.view.scene->tick == initialTick);
+        CHECK(colony.view->scene->tick == initialTick);
         colony.pause();
 		// FrontendTheme retains this serial colony during a foreground match.
 		// Budget both executors, all four possible foreground banks, collectors,

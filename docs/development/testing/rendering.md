@@ -100,8 +100,8 @@ Run `python3 test/run_tests.py --filter 'EnteringUnitDraw/*'`; the case is tagge
 
 A unit on its final step into a building keeps its map slot on the tile it is
 leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
-the building tile, so `Game::drawMapGroundUnits` visits it one square behind
-itself. Nothing in `Game::drawUnit` reads `displacement`, so at equal `delta`
+the building tile, so `MapDrawer::drawMapGroundUnits` visits it one square behind
+itself. Nothing in `MapDrawer::drawUnit` reads `displacement`, so at equal `delta`
 that state must render pixel-for-pixel like the same step expressed as an
 ordinary walk onto the destination tile. The harness renders both and compares
 framebuffers over five points of one step; a mismatch is reported in pixels

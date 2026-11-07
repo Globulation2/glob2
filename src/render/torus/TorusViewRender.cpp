@@ -4,6 +4,7 @@
 #include "TorusView.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Game.h"
+#include "render/MapDrawer.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "Team.h"
@@ -589,12 +590,12 @@ bool TorusView::drawLegacy(const PresentationFrame& frame,GameGUI* gui, int team
         GLint oldFramebuffer;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        Game::ViewState mapView;
+        ViewState mapView;
         if (!gui) mapView.render = std::move(standaloneRender);
-        Game::ViewState &captureView = gui ? gui->view : mapView;
+        ViewState &captureView = gui ? gui->view : mapView;
         const PresentationFrame *previousScene = captureView.scene;
         const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_TILED_CAPTURE;
-        Game::prepareSceneMapFrame(frame,team,captureView,captureOptions,gui && gui->gamePaused);
+        MapDrawer::prepareSceneMapFrame(frame,team,captureView,captureOptions,gui && gui->gamePaused);
         captureView.scene = &frame;
         if (gui) gui->toolManager.setDrawnScene(captureView.scene);
         bool advancePreviews = true;
@@ -621,12 +622,12 @@ bool TorusView::drawLegacy(const PresentationFrame& frame,GameGUI* gui, int team
             if (gui)
                 gui->drawTorusMap(tx, ty, tile.w + 64, tile.h + 64, team, captureOptions, cloudGridLimit, advancePreviews);
             else
-                Game::drawSceneMap(frame,0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team,
+                MapDrawer::drawSceneMap(frame,0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team,
                              captureView, captureOptions, nullptr, nullptr, false, cloudGridLimit, true);
             Sprite::flushBatches(gfx);
             advancePreviews = false;
         }
-        Game::finishMapCapture(captureView, captureOptions, gui && gui->gamePaused);
+        MapDrawer::finishMapCapture(captureView, captureOptions, gui && gui->gamePaused);
         captureView.scene = previousScene;
         if (!gui) standaloneRender = std::move(mapView.render);
         gfx->setRenderTargetScale(0);
