@@ -1046,11 +1046,12 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	assert(definition.legacyId == 55 && definition.revision == 3);
+	assert(definition.legacyId == 55 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
-		   request.option("playa") == 80 && request.option("home-design") == 0);
+		   request.option("playa") == 80 && request.option("home-design") == 0 &&
+		   request.option("cienegas") == 50);
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1080,8 +1081,8 @@ inline void bajadaContracts()
 		assert(g.teamsCount() == 0);
 	}
 	// Every home design comes up at random, and each can be pinned.
-	std::set<std::string> designs;
-	for (unsigned seed = 1; seed <= 16; ++seed)
+	std::set<std::string> designs, lithologies;
+	for (unsigned seed = 1; seed <= 40; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(8, 8, 4, seed), true);
@@ -1089,12 +1090,45 @@ inline void bajadaContracts()
 		for (const auto &record : result.telemetry.records())
 			if (record.key == "bajada.home.design")
 				designs.insert(std::get<std::string>(record.value));
+			else if (record.key == "bajada.lithology")
+				lithologies.insert(std::get<std::string>(record.value));
 	}
-	assert(designs.size() == 3);
-	for (int design = 1; design <= 3; ++design)
+	assert(designs.size() == 6 && lithologies.size() == 3);
+	// Every design pinned, on every size and colony count the envelope promises it.
+	for (int design = 1; design <= 6; ++design)
+		for (auto [dimension, teams] : {std::pair{8, 4}, std::pair{7, 4}, std::pair{8, 8}, std::pair{9, 8}})
+		{
+			D pinned = make(dimension, dimension, teams, 11);
+			pinned.options["home-design"] = design;
+			Game g(nullptr);
+			const auto result = service.generate(g, pinned);
+			if (!result)
+				std::fprintf(stderr, "Bajada design %d (%d, %d colonies): %s\n", design, 1 << dimension, teams,
+							 result.diagnostic().c_str());
+			assert(result);
+		}
+	// Every design grows a real stream tree on every seed tried: a home whose trunk met its town grew
+	// none and halved its food.
+	for (int design = 1; design <= 6; ++design)
+		for (std::uint32_t seed = 1; seed <= 8; ++seed)
+		{
+			D pinned = make(8, 8, 4, seed);
+			pinned.options["home-design"] = design;
+			Game g(nullptr);
+			const auto result = service.generate(g, pinned, true);
+			assert(result);
+			for (const auto &record : result.telemetry.records())
+				if (record.key == "bajada.home.branches" && std::get<std::int64_t>(record.value) < 3)
+				{
+					std::fprintf(stderr, "Bajada design %d seed %u grew %d branches\n", design, unsigned(seed),
+								 int(std::get<std::int64_t>(record.value)));
+					assert(false);
+				}
+		}
+	for (int lithology = 1; lithology <= 3; ++lithology)
 	{
 		D pinned = make(8, 8, 4, 11);
-		pinned.options["home-design"] = design;
+		pinned.options["lithology"] = lithology;
 		Game g(nullptr);
 		assert(service.generate(g, pinned));
 	}
@@ -1156,8 +1190,32 @@ inline void bajadaContracts()
 			}
 		assert(sown && !definition.validateWorld(game, check).empty());
 	}
+	{
+		// The playa's pan, the cienegas and the quarries: a dry lake bed still has its hardpan, no
+		// cienegas means none, and every count is in the telemetry.
+		const auto measure = [&](D r, const char *key)
+		{
+			Game g(nullptr);
+			const auto result = service.generate(g, r, true);
+			assert(result);
+			for (const auto &record : result.telemetry.records())
+				if (record.key == key)
+					return int(std::get<std::int64_t>(record.value));
+			return -1;
+		};
+		D dry = make(8, 8, 4, 53);
+		dry.options["playa"] = 0;
+		assert(measure(dry, "bajada.lakes") <= 0);
+		D none = make(8, 8, 4, 53);
+		none.options["cienegas"] = 0;
+		assert(measure(none, "bajada.cienegas") == 0);
+		D many = make(8, 8, 4, 53);
+		many.options["cienegas"] = 100;
+		assert(measure(many, "bajada.cienegas") > measure(make(8, 8, 4, 53), "bajada.cienegas"));
+		assert(measure(make(8, 8, 4, 53), "bajada.quarries") > 4);
+	}
 	puts("PASS Bajada: envelope and refusal, home designs, resource extremes, designed stone, sealed "
-		 "towns under growth, crops refused in towns");
+		 "towns under growth, crops refused in towns, pan, cienegas and quarries");
 }
 
 inline void evenGroundContracts()

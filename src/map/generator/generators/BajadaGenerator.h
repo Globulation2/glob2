@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct BajadaOptions
 {
-	int rangeSpacing, ridgeWidth, passes, fans, streamReach, playa, homeDesign;
+	int rangeSpacing, ridgeWidth, passes, fans, streamReach, playa, cienegas, homeDesign, lithology;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit BajadaOptions(const GenerationRequest &r);
 };
