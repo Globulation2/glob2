@@ -16,6 +16,7 @@ Typical use:
     python3 tools/include_graph.py why src/app/Version.h   # direct includers, by reach
     python3 tools/include_graph.py median         # median repo headers reached per TU
     python3 tools/include_graph.py blast --since origin/master~200   # rebuild share of recent commits
+    python3 tools/include_graph.py cost --days 60   # headers ranked by edits x fan-in, with the edges to cut
 
 `check_header_layering.py` imports this module for its fan-in budget.
 """
@@ -174,6 +175,50 @@ def report_blast(graph: IncludeGraph, units: list[str], since: str, until: str) 
     return 0
 
 
+def header_edits(graph: IncludeGraph, since: str, until: str = 'HEAD') -> tuple[int, dict[str, int]]:
+    """First-parent commits in `since..until` (a revision or `@{N days ago}` date) and edits per header."""
+    import subprocess
+    selector = [f'--since={since}', until] if ' ' in since or since.endswith('ago') else [f'{since}..{until}']
+    log = subprocess.check_output(['git', '-C', str(graph.root), 'log', '--first-parent', '-m', '--no-renames', '--name-only',
+                                   '--format=format:\x1e', *selector], text=True)
+    commits, edits = 0, {}
+    for block in log.split('\x1e'):
+        names = {name for name in block.split() if Path(name).suffix in HEADER_SUFFIXES}
+        if block.strip():
+            commits += 1
+        for name in names:
+            edits[name] = edits.get(name, 0) + 1
+    return commits, edits
+
+
+def report_cost(graph: IncludeGraph, units: list[str], since: str, until: str, count: int, attribute: int,
+                as_json: bool) -> int:
+    """Rank headers by edits x fan-in: the translation-unit rebuilds their edits caused, on today's graph.
+
+    Raw fan-in treats a header nobody edits like one edited every day; this weights
+    it by churn. `attribute` lists, for the costliest headers, the direct includers
+    that bring them to the most translation units: the edges worth cutting."""
+    commits, edits = header_edits(graph, since, until)
+    fan = graph.fanin(units)
+    rows = sorted(((edits[h] * fan[h], edits[h], fan[h], h) for h in edits if fan.get(h)), reverse=True)
+    total = sum(row[0] for row in rows)
+    if as_json:
+        print(json.dumps({'commits': commits, 'units': len(units), 'total': total,
+                          'headers': [{'header': h, 'edits': e, 'fanin': f, 'cost': c} for c, e, f, h in rows[:count]]},
+                         indent=1))
+        return 0
+    print(f'{commits} commits, {len(units)} TUs; header edits caused {total} TU rebuilds '
+          f'({total / max(1, commits):.0f} per commit, {100 * total / max(1, commits * len(units)):.1f}% of TUs)')
+    running = 0
+    for position, (cost, edit_count, fanin, header) in enumerate(rows[:count]):
+        running += cost
+        print(f'{cost:8d} {edit_count:4d} x {fanin:4d}  {100 * cost / max(1, total):4.1f}%  cum {100 * running / max(1, total):4.1f}%  {header}')
+        if position < attribute:
+            for name, reached in sorted(graph.includers(header, units).items(), key=lambda r: -r[1])[:3]:
+                print(f'{"":28}via {reached:4d}  {name}')
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--all-units', action='store_true', help='count every source under src/, libs/, test/ instead of client TUs')
@@ -191,6 +236,14 @@ def main(argv: list[str] | None = None) -> int:
     blast = sub.add_parser('blast', help='share of client TUs each recent first-parent commit would recompile')
     blast.add_argument('--since', required=True, help='revision to start after (e.g. origin/master~200)')
     blast.add_argument('--until', default='HEAD')
+    cost = sub.add_parser('cost', help='headers ranked by edits x fan-in (the rebuilds their edits caused)')
+    window = cost.add_mutually_exclusive_group()
+    window.add_argument('--days', type=int, default=60, help='window of first-parent history (default 60 days)')
+    window.add_argument('--since', help='revision to start after instead of --days')
+    cost.add_argument('--until', default='HEAD')
+    cost.add_argument('-n', type=int, default=30)
+    cost.add_argument('--attribute', type=int, default=0, metavar='N',
+                      help='for the N costliest headers, show the includers that bring them to the most TUs')
     args = parser.parse_args(argv)
 
     graph = IncludeGraph(args.root.resolve())
@@ -205,6 +258,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == 'blast':
         return report_blast(graph, units, args.since, args.until)
+    if args.command == 'cost':
+        since = args.since or f'{args.days} days ago'
+        return report_cost(graph, units, since, args.until, args.n, args.attribute, args.json)
     if args.command == 'why':
         rows = sorted(graph.includers(os.path.normpath(args.header), units).items(), key=lambda r: -r[1])[:args.n]
         for name, count in rows:

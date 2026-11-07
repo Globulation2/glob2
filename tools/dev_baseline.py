@@ -10,7 +10,8 @@
 Each baseline is a detached worktree of one master revision under the development
 store (`<dev home>/baselines/<host>/<sha>`) with its own builds, so its binaries
 run in place and find their runtime assets. `build` makes the dev tier (engine
-and unit tests and the game) and the perf tier; the shared compiler cache makes a
+and unit tests and the game) and the perf tier, and the perf-confirm tier
+(`perf=1 opt=3`) with `--variants perf-o3`; the shared compiler cache makes a
 baseline one commit newer than the last mostly cache hits. Run it after merges,
 from a scheduled job or by hand: `build` with no revision builds origin/master.
 
@@ -44,6 +45,8 @@ from build_layout import build_identity, default_directory  # noqa: E402
 VARIANTS = {
     'dev': {'arguments': {'dev_fast': '1', 'linker': 'auto'}, 'command': []},
     'perf': {'arguments': {'perf': '1'}, 'command': ['perf=1']},
+    # perf-confirm tier: quoted performance numbers and tools/inline_guard.py.
+    'perf-o3': {'arguments': {'perf': '1', 'opt': '3'}, 'command': ['perf=1', 'opt=3']},
 }
 TARGETS = ['engine-tests', 'unit-tests']
 

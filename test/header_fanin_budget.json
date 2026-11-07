@@ -26,5 +26,12 @@
   "src/team/BaseTeam.h": 322,
   "src/unit/Unit.h": 319,
   "src/app/SaveLoadProfile.h": 289,
-  "src/online/SimVersion.h": 109
+  "src/online/SimVersion.h": 109,
+  "src/map/TerrainGroupTable.h": 457,
+  "src/map/TerrainProperties.h": 455,
+  "src/field/TerrainMovementCosts.h": 446,
+  "src/unit/UnitConsts.h": 525,
+  "src/engine/sim/snapshot/SnapshotStore.h": 274,
+  "src/engine/sim/snapshot/WorldSnapshot.h": 306,
+  "src/map/gradient/MapRouting.h": 56
 }
