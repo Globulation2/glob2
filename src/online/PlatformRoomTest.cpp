@@ -7,6 +7,7 @@
 // listed and told why Ready is unavailable.
 
 #include "Glob2Test.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGlobals.h"
 #include "InstanceConfig.h"
 #include "MapCache.h"
@@ -327,7 +328,7 @@ TEST_SUITE("PlatformRoom")
 		CHECK(f.chat(*r).empty());
 	}
 
-	TEST_CASE("a map change is announced once; a status change is not")
+	TEST_CASE("a map change is announced once; a status change is not" * glob2test::needs({"generators"}))
 	{
 		Fixture f;
 		Json state = room(3, ME, Json::array({seat(0, ME, "Guest-1234"), seat(1, "", "")}),

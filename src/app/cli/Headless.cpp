@@ -28,7 +28,7 @@
 #include "field/OpenCLGradient.h"
 #include "field/GradientAccelerators.h"
 #include "AIMaximaStrategy.h"
-#include "ai/cortex/CortexTuning.h"
+#include "AIRegistry.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
@@ -648,12 +648,8 @@ struct HeadlessRunner
 			{
 				const int ai=BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type);
 				std::string error;
-				if(ai==AI::CORTEX)
-				{
-					Cortex::CortexTuning values;
-					if(!Cortex::applyTuning(values,overrides[p],error)) throw std::invalid_argument(error);
-					header.setAIConfig(p,Cortex::tuningValues(values));
-				}
+				if(std::string config;AIRegistry::applyTuning(ai,overrides[p],config))
+					header.setAIConfig(p,config);
 				else if(ai==AI::MAXIMA)
 				{
 					AIMaxima::StrategyConfigOptions config;
@@ -1133,7 +1129,7 @@ int runHeadlessCommand(const Cli::Request &request)
 				if(ai==AI::NONE)continue;if(comma)std::cout<<',';comma=true;
 				std::string name=AINames::getCLIName(ai);std::transform(name.begin(),name.end(),name.begin(),[](unsigned char c){return std::tolower(c);});
 				std::cout << "{\"id\":" << ai << ",\"name\":" << quote(name) << ",\"parameters\":";
-				if(ai==AI::CORTEX)std::cout<<Cortex::tuningSchemaJson();
+				if(const std::string schema=AIRegistry::tuningSchemaJson(ai);!schema.empty())std::cout<<schema;
 				else if(ai==AI::MAXIMA)std::cout<<AIMaxima::StrategyResolver::schemaJson();
 				else std::cout<<"[]";
 				std::cout<<'}';

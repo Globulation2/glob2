@@ -7,7 +7,6 @@
 #include <PerformanceTelemetry.h>
 #include "MapCopies.h"
 
-#include "AICastor.h"
 
 #include <assert.h>
 
@@ -27,7 +26,6 @@
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
 
-#include "MapEdit.h"
 
 #include "Brush.h"
 #include "Bullet.h"

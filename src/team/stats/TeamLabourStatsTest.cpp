@@ -4,6 +4,7 @@
 // bucket, places agree with a brute-force reference, and nothing touches the
 // simulation checksum.
 #include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "TeamStat.h"
@@ -381,7 +382,7 @@ TEST_SUITE("TeamStatsSave")
 						 &stats.measurements().filling[0][0]));
 	}
 
-	TEST_CASE("older saves load with labour coverage starting at the loaded tick [save-format]")
+	TEST_CASE("older saves load with labour coverage starting at the loaded tick [save-format]" * glob2test::needs({"ai:cortex"}))
 	{
 		glob2test::HeadlessGlobals globals;
 		const std::string bytes = glob2test::readFile(glob2test::inflated("team-stats/version129-muka-1100.game.gz"));

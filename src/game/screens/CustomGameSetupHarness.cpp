@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "ProfileNeeds.h"
 #include "GeneratorRegistry.h"
 #include <vector>
 #include <string>
@@ -2744,7 +2745,7 @@ TEST_SUITE("CustomGameSetup")
 		glob2test::HeadlessGlobals globals(setupOptions(true));
 		CustomGameSetupHarness::landscapeAlphabeticalOrder(true);
 	}
-	TEST_CASE("landscape alphabetical order and retired sorting preferences")
+	TEST_CASE("landscape alphabetical order and retired sorting preferences" * glob2test::needs({"generators"}))
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		CustomGameSetupHarness::preferencesModel();
@@ -2808,7 +2809,7 @@ TEST_SUITE("CustomGameSetup")
         CustomGameSetupHarness::catalogLaunch();
     }
 
-	TEST_CASE("custom AI library identities and released preferences round trip")
+	TEST_CASE("custom AI library identities and released preferences round trip" * glob2test::needs({"generators"}))
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		CustomGameSetupHarness::preferencesModel();
@@ -2986,7 +2987,7 @@ TEST_SUITE("CustomGameSetup")
 		std::cout << "PASS preview restart joins superseded workers safely\n";
 	}
 #if defined(__APPLE__) || defined(__linux__)
-	TEST_CASE("Comb preview fits a 512 KiB worker stack")
+	TEST_CASE("Comb preview fits a 512 KiB worker stack" * glob2test::needs({"generators"}))
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		struct Work

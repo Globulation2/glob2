@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
@@ -130,7 +131,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         glob2test::expectGolden("building-catalog/composition/seed-" + std::to_string(seed) + ".trace", golden.str());
     }
 }
-TEST_CASE("format136 terrain snapshot imports frozen buildings and continues after resave")
+TEST_CASE("format136 terrain snapshot imports frozen buildings and continues after resave" * glob2test::needs({"ai:castor"}))
 {
     glob2test::HeadlessGlobals globals;
     const auto bytes=glob2test::readFile(glob2test::inflated("building-catalog/terrain136.game.gz"));

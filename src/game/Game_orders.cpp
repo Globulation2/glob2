@@ -5,9 +5,7 @@
 // Game class implementation.
 
 
-#include "AICastor.h"
 #include "gradient/MapRouting.h"
-#include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>

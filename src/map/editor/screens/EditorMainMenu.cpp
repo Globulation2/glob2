@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "EditorMainMenu.h"
+#include "EditorEntry.h"
 #include "CampaignEditor.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
@@ -18,6 +19,12 @@
 using namespace Glob2UI;
 
 EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack &screens) : screens(screens) {}
+
+bool EditorEntry::open(GAGGUI::ScreenStack &screens)
+{
+	screens.push(std::make_unique<EditorMainMenu>(screens));
+	return true;
+}
 
 Element EditorMainMenu::build(const Presentation &p)
 {

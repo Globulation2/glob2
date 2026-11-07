@@ -15,6 +15,7 @@ set(GLOB2_CLIENT_SOURCES
     src/ai/castor/Placement.cpp
     src/ai/castor/Projects.cpp
     src/ai/castor/State.cpp
+    src/ai/castor/Telemetry.cpp
     src/ai/maxima/AIMaxima.cpp
     src/ai/maxima/AIMaximaPrestige.cpp
     src/ai/maxima/AIMaximaState.cpp
@@ -88,6 +89,7 @@ set(GLOB2_CLIENT_SOURCES
     src/ai/numbi/AINumbiPlacement.cpp
     src/ai/warrush/AIWarrush.cpp
     src/ai/simple/AICabino.cpp
+    src/ai/simple/AICabinoTelemetry.cpp
     src/ai/cortex/CortexSnapshotQueries.cpp
     src/ai/cortex/CortexObservation.cpp
     src/ai/cortex/CortexObservationObserve.cpp
@@ -106,6 +108,8 @@ set(GLOB2_CLIENT_SOURCES
     src/ai/cortex/AICortexFlags.cpp
     src/ai/cortex/AICortexTranslate.cpp
     src/ai/cortex/AICortexDebug.cpp
+    src/ai/cortex/CortexWheatDump.cpp
+    src/ai/cortex/CortexTelemetry.cpp
     src/game/player/BasePlayer.cpp
     src/team/BaseTeam.cpp
     src/common/BitArray.cpp
@@ -677,6 +681,7 @@ set(GLOB2_CLIENT_SOURCES
     src/online/ReplayAppearance.cpp
     src/online/SimVersion.cpp
     src/online/UserDirectoryStorage.cpp
+    src/app/CompileProfile.cpp
     src/mcp/Tools.cpp
     src/mcp/Protocol.cpp
     src/mcp/HttpServer.cpp

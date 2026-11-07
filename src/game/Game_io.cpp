@@ -9,9 +9,8 @@
 #include <set>
 #include <charconv>
 
-#include "AICastor.h"
-#include "AINicowar.h"
 #include "AIMaximaStrategy.h"
+#include "Player.h"
 
 #include <assert.h>
 #include <string.h>

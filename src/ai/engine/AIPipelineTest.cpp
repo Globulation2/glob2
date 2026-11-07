@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
+#include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "AI.h"
 #include "AIImplementation.h"
@@ -137,7 +138,7 @@ void load(Game& game, const std::string& bytes, unsigned threads)
 
 TEST_SUITE("AIPipeline")
 {
-TEST_CASE("every shipped controller preserves orders and state across worker counts and all delays")
+TEST_CASE("every shipped controller preserves orders and state across worker counts and all delays" * glob2test::needs({"ai:castor", "ai:cortex", "ai:cabino"}))
 {
     glob2test::HeadlessGlobals globals;
     for (unsigned delay=0; delay<=8; ++delay) {
@@ -159,7 +160,7 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
         }
     }
 }
-TEST_CASE("save continuation retains controller caches receipts and future commands at pipeline boundaries")
+TEST_CASE("save continuation retains controller caches receipts and future commands at pipeline boundaries" * glob2test::needs({"ai:castor", "ai:cortex", "ai:cabino"}))
 {
     glob2test::HeadlessGlobals globals;
     for (unsigned delay=0; delay<=8; ++delay) for (unsigned threads : {1u,2u,4u,8u}) {
