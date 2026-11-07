@@ -1007,13 +1007,33 @@ void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o
 					return true;
 			return false;
 		};
-		std::vector<int> candidates;
+		// A face in the woods (trees before it, to be cut) is the second choice: most knots sit deep in
+		// the forest, and without them the faces could not follow stone-amount.
+		const auto woodsBeside = [&](int i)
+		{
+			for (auto step : kCardinalSteps)
+			{
+				const int q = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
+				if (L.forest[q] && !L.rock[q])
+					return true;
+			}
+			return false;
+		};
+		std::vector<int> candidates, wooded;
 		for (int i = 0; i < n; ++i)
-			if (L.rock[i] && sizes[knots[i]] >= 6 && openBeside(i))
-				candidates.push_back(i);
+			if (L.rock[i] && sizes[knots[i]] >= 6)
+			{
+				if (openBeside(i))
+					candidates.push_back(i);
+				else if (woodsBeside(i))
+					wooded.push_back(i);
+			}
 		c.shuffle(candidates.begin(), candidates.end(), "portage-quarry-faces");
+		c.shuffle(wooded.begin(), wooded.end(), "portage-quarry-faces");
+		const size_t openCandidates = candidates.size();
+		candidates.insert(candidates.end(), wooded.begin(), wooded.end());
 		L.rockKnots = int(std::count_if(sizes.begin(), sizes.end(), [](int s) { return s >= 6; }));
-		L.ambientWanted = int(std::min<std::int64_t>(L.rockKnots, scaledCount((L.rockKnots + 1) / 2, o.stone)));
+		L.ambientWanted = int(std::min<std::int64_t>(L.rockKnots, scaledCount((L.rockKnots + 3) / 4, o.stone)));
 		std::vector<unsigned char> faced(sizes.size(), 0);
 		const auto plainCorners = [&](int i)
 		{
@@ -1022,8 +1042,10 @@ void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o
 					return false;
 			return true;
 		};
-		for (int centre : candidates)
+		for (size_t k = 0; k < candidates.size(); ++k)
 		{
+			const int centre = candidates[k];
+			const bool inWoods = k >= openCandidates;
 			if (L.ambientFaces >= L.ambientWanted)
 				break;
 			if (faced[knots[centre]])
@@ -1033,7 +1055,7 @@ void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const int q = t.at(t.remainderX(centre) + dx, centre / t.w + dy);
-					if (L.rock[q] && knots[q] == knots[centre] && openBeside(q))
+					if (L.rock[q] && knots[q] == knots[centre] && (inWoods ? woodsBeside(q) : openBeside(q)))
 						face.push_back(q);
 				}
 			bool fits = true;

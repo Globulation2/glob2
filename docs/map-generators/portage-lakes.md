@@ -64,7 +64,7 @@ vertex, looks included.
 | Trails | The settlement network and the optional extra trails are routed and reserved as sand, then every corner they painted becomes trail. Portage approaches are drawn as trail directly, never touching the plug. |
 | Portages, swim, shore fields | As revision 7. |
 | Home knobs | One stencil (7×5 tiles, face of 7 on the town side; small 5×4 with a face of 5) turned by quarter turns to face each home, its face 9 to 22 tiles away on open ground at least 3 from water, clear of the home clearing, a tile round every plot, trails, plugs, landings, clearings and their paths and the algae pools (woods may stand under and round the knob, not before its face), nearest and squarest first; every home takes the small stencil when any cannot fit the large one, and every home keeps revision 7's stone patch when even that cannot. A one-corner scree skirt round the back and sides. |
-| Rock | Ambient quarry faces (up to 3 tiles, `stone-amount` × half the knots) on the open side of forest knots; rock vertices only where all four tiles are rock (`rockVertices`); a knot tile the rock cannot block keeps its wood. |
+| Rock | Ambient quarry faces (up to 3 tiles, `stone-amount` × a quarter of the knots) on the open side of forest knots, then in the woods; rock vertices only where all four tiles are rock (`rockVertices`); a knot tile the rock cannot block keeps its wood. |
 | Scree, deep water, looks | `talusApron` round the forest knots on open ground only; `deepCore` three steps into every lake (pools left shallow); then the looks. |
 
 ## Controls
