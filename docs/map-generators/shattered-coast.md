@@ -24,8 +24,10 @@ grass, sand and water.
 - **Coves are muddy.** Part of the beach round small, sheltered waters (ponds, coves, lagoons of at
   most 500 vertices) is mudflat: slow, unbuildable, holds nothing, and unlike sand it does not hold
   crops back, so the fields beside those ponds grow a little better. Mudflat gives algae no shore
-  support, so the open shores, where algae live, stay sand, and so does every beach within 16 tiles
-  of a home, where the sand is the containment between the home and its overgrowth.
+  support, so the open shores, where algae live, stay sand, and so does every beach within 28 tiles
+  of a home: the sand there is the containment between a home and its overgrowth, and mud is slow
+  to walk, so it is kept beyond a colony's working range (at 16 tiles the calibration games lost 6%
+  of their births, Cabino's seat 19%; at 28 they matched revision 8).
 - **Rock.** The smallest islands (at most ten land vertices, nothing on them) become sea stacks,
   and knots of rock stand in the wider grass at least 24 tiles from every home. Rock is impassable
   and permanent; towers shoot over it. Some knots carry a **quarry face** on the side facing the
@@ -48,7 +50,7 @@ comments record why. Revision 8's stages run unchanged, then the coast pass:
 | Expansion clumps | Spaced wheat, wood, stone and algae clumps outside a 32-tile home buffer, chosen by rule group. |
 | Rock | Knots: lenses at least two tiles thick on vacant grass with two tiles of vacant grass round them, at most one per 8,192 tiles, 26 apart; quarry faces on 75% of them at the default stone amount; sea stacks on 60% of the qualifying islands; a parting check drops any knot or stack that cuts ground off. |
 | Deep cores | `deepCore` at four steps, opened, specks under 12 vertices dropped, never at a corner of a tile holding algae. |
-| Mudflats | Beach vertices of bodies of at most 500 water vertices where a noise field passes, outside 16 tiles of every swarm. |
+| Mudflats | Beach vertices of bodies of at most 500 water vertices where a noise field passes, outside 28 tiles of every swarm. |
 | Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, by climate; quarry stone stocked and checked with `quarryFault`. |
 
 ## Controls
@@ -74,13 +76,13 @@ against revision 8 on the same seeds (the starts are identical):
 | Variant | Total | Within 24 of swarm (worst) | Within 48 (worst) |
 | --- | --- | --- | --- |
 | Revision 8 | 1470 | 41.5 (29) | 186.3 (144) |
-| Revision 9, defaults | 1576 | 42.8 (29) | 199.3 (151) |
-| No deep water | 1576 | 42.8 (29) | 199.3 (151) |
+| Revision 9, defaults | 1559 | 41.7 (29) | 195.3 (148) |
+| No deep water | 1559 | 41.7 (29) | 195.3 (148) |
 | No mudflats | 1466 | 41.5 (29) | 185.7 (143) |
-| No outcrops | 1580 | 42.8 (29) | 200.0 (152) |
-| Each climate | 1576 | 42.8 (29) | 199.3 (151) |
+| No outcrops | 1564 | 41.7 (29) | 196.0 (149) |
+| Each climate | 1559 | 41.7 (29) | 195.3 (148) |
 
-Mudflats carry the gain: total food +7%, +3% within 24 steps and +7% within 48. Without them
+Mudflats carry the gain: total food +6%, +5% within 48 steps; within 24 steps food is unchanged, since no mud lies within 28 tiles of a home. Without them
 revision 9 matches revision 8 to within 0.5% (the rock knots and stacks take a few tiles of
 grass). Deep water and the climate change no food at all.
 
@@ -99,9 +101,9 @@ grass). Deep water and the climate change no food at all.
 - Knots need wide vacant grass away from the homes; crowded or resource-rich maps place fewer than
   wanted (telemetry `shattered-coast.knots.shortfall`). Quarry faces are ambient: no colony is
   promised one, and the walk to the nearest varies by tens of tiles between colonies.
-- One calibration map (seed 101, 4 AIs, three game seeds) showed Nicowar, Cortex and Maxima within
-  single-game noise and Cabino's seat a little poorer in all three games; no rotation tournament or
-  human playtest has been recorded for revision 9.
+- One calibration map (seed 101, 4 AIs, three game seeds): total worker births 178 against
+  revision 8's 177, every seat within single-game noise. No rotation tournament or human playtest
+  has been recorded for revision 9.
 - The optional baseline check in the Shattered Coast expansion test
   (`GLOB2_SHATTERED_BASELINE_MAP`) compares exact terrain with a revision-7 map and so no longer
   holds; deposits and starts still match.

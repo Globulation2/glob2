@@ -1019,8 +1019,11 @@ constexpr const char *kClimateStream = "shattered-coast-climate";
 // a hole. Four steps leave two tiles of pure shallow water along every shore.
 constexpr int kDeepSteps = 4, kDeepOpen = 1, kDeepLeast = 12;
 // Mudflats: the beach of a water body of at most kMudBody vertices (a cove, a pond, a lagoon), where
-// a noise field passes kMudCut (of 65535), never within kMudHome tiles of a swarm's footprint.
-constexpr int kMudBody = 500, kMudCut = 24000, kMudHome = 16;
+// a noise field passes kMudCut (of 65535), never within kMudHome tiles of a swarm's footprint. Mud
+// is slow to walk, and the beaches are a shattered coast's footpaths: with mud from 16 tiles out,
+// three calibration games (seed 101) lost 6% of their worker births (one seat 19%) despite the
+// growth gain; from 28 tiles out they matched revision 8.
+constexpr int kMudBody = 500, kMudCut = 24000, kMudHome = 28;
 // Sea stacks: islands of at most kStackMost land vertices with nothing on them, kStackHome tiles or
 // more from every swarm, kStackShare percent of them.
 constexpr int kStackMost = 10, kStackHome = 18, kStackShare = 60;
