@@ -1,3 +1,4 @@
+#include "AIRegistry.h"
 #include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -120,7 +121,9 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
     auto stream = openGameInput(filename, map, players);
     if (!stream) co_return false;
     for (int p = 0; p < players.getNumberOfPlayers(); ++p)
-        if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
+        if (players.getBasePlayer(p).type == BasePlayer::P_IP)
+            // compile_profile=core may leave the usual stand-in out; Nicowar is always built.
+            players.getBasePlayer(p).makeItAI(AIRegistry::available(AI::toggleAI) ? AI::toggleAI : AI::NICOWAR);
     applyLocalExperiments(players, map);
     if (players.getNumberOfPlayers() == 0) co_return false;
     co_return co_await initGameFromStreamTask(map, players, std::move(stream), true);

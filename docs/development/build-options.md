@@ -85,8 +85,8 @@ that are not built. Creating or loading an AI that was left out fails with
 "… is not compiled into this build (compile_profile=core); rebuild with
 compile_profile=full". Saves, replays and scripts keep the same ids. Lobby
 pickers offer only the AIs and generators that were built, and the custom-game
-lobby replaces a saved AI that was left out with Nicowar. A LAN or online player who drops
-is handed to Castor, so in a core build that also stops with the same error.
+lobby replaces a saved AI that was left out with Nicowar, as does loading a saved
+network game, whose remote players normally become Castor.
 Rated play, `match verify` and `online turn-client` refuse to run outside the
 full profile. `glob2 info version` reports `compile_profile`, and the build
 directory's `profile.json` records it.
