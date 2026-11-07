@@ -463,6 +463,6 @@ TEST_SUITE("HighResolutionIntegration")
 {
 	TEST_CASE("HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]") { highResolution(true); }
 #ifdef HAVE_OPENGL
-	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]") { highResolution(false); }
+	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences][slow]") { highResolution(false); }
 #endif
 }

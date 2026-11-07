@@ -201,7 +201,7 @@ def main():
             raw.mkdir(parents=True)
             env = os.environ.copy()
             env['LLVM_PROFILE_FILE'] = str(raw / profile_pattern(args.profile_pool_size))
-            command = [sys.executable, str(ROOT / 'test/run_tests.py'), '--build-dir', str(build),
+            command = [sys.executable, str(ROOT / 'test/run_tests.py'), '--tier', 'display' if args.quick else 'full', '--build-dir', str(build),
                        '--binary', kind, '-j', str(args.jobs), '--display-jobs', '1',
                        '--exclude-tag', 'network', '--junit', str(directory / 'junit.xml'),
                        '--artifacts', str(directory / 'evidence')]
@@ -211,7 +211,7 @@ def main():
                 command += ['--filter', selection]
             for tag in args.exclude_tag:
                 command += ['--exclude-tag', tag]
-            for option in ('quick', 'no_display', 'fullscreen'):
+            for option in ('no_display', 'fullscreen'):
                 if getattr(args, option):
                     command.append('--' + option.replace('_', '-'))
             if kind == 'client':

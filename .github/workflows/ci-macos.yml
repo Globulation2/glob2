@@ -102,8 +102,8 @@ jobs:
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
           python3 test/ci_run_commands.py \
-            --check 'macOS regression cases' 'python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
-            --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
+            --check 'macOS regression cases' 'python3 test/run_tests.py --tier full --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
+            --check 'unit tests' 'python3 test/run_tests.py --tier full --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
             --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
       - name: Retain native simulation and scripting evidence
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}

@@ -475,14 +475,14 @@ jobs:
         if: ${{ steps.shard_plan.outputs.run_the_unit_tests == format('{0}', matrix.shard) }}
         id: run_the_unit_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
+        run: python3 test/run_tests.py --tier full --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --coverage-profile ${{ inputs.coverage_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
+        run: python3 test/run_tests.py --tier full --binary engine --coverage-profile ${{ inputs.coverage_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

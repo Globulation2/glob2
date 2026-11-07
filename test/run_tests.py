@@ -10,15 +10,20 @@ Fullscreen checks within display cases run only with --fullscreen.
 Tags are bracketed words at the end of a test-case name:
   [display]        needs a real window; xvfb on Linux, skipped on Windows and --no-display
   [display:WxH]    same, with a specific virtual screen size
-  [slow]           timeout 600 s; excluded by --quick
+  [slow]           timeout 600 s; only in --tier full
   [network]        binds loopback sockets; never runs in parallel with another [network]
   [artifacts]      writes files for review under --artifacts
   [golden]         compares against checked-in text; --update-fixtures rewrites it
   [writes-preferences]  legitimately saves settings (the preferences check is skipped)
   other tags ([maxima], [save-format], ...) only select.
 
+Tiers: --tier headless (the default) runs every case that is neither [display] nor
+[slow]; --tier display adds [display] cases; --tier full runs everything the platform
+can. --filter/--tag without --tier select from the full inventory.
+
 Examples:
-  python3 test/run_tests.py                       # everything the platform can run
+  python3 test/run_tests.py                       # the headless tier
+  python3 test/run_tests.py --tier full           # everything the platform can run
   python3 test/run_tests.py --list --tag display
   python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
   python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
@@ -115,15 +120,18 @@ class Job:
     def has(self, tag):
         return any(case.has(tag) for case in self.cases)
 
+    # Unoptimized builds run several times slower; see timeout_scale().
+    scale = 1
+
     @property
     def timeout(self):
         if self.whole:
-            return SLOW_TIMEOUT * 2
+            return SLOW_TIMEOUT * 2 * self.scale
         if self.has('slow'):
-            return SLOW_TIMEOUT
+            return SLOW_TIMEOUT * self.scale
         if self.display:
-            return DISPLAY_TIMEOUT
-        return DEFAULT_TIMEOUT
+            return DISPLAY_TIMEOUT * self.scale
+        return DEFAULT_TIMEOUT * self.scale
 
 
 @dataclass
@@ -161,9 +169,26 @@ def parse_listing(xml_text, kind):
     return cases
 
 
+TIERS = ('headless', 'display', 'full')
+
+
+def resolve_tier(args):
+    """--tier wins; --quick means display; an explicit --filter/--tag selects from everything."""
+    if getattr(args, 'tier', None):
+        return args.tier
+    if getattr(args, 'quick', False):
+        return 'display'
+    if getattr(args, 'filter', None) or getattr(args, 'tag', None):
+        return 'full'
+    return 'headless'
+
+
 def select(cases, args):
-    """Apply --filter/--tag/--exclude-tag/--quick/--no-display; returns (kept, skipped)."""
+    """Apply --tier/--filter/--tag/--exclude-tag/--no-display; returns (kept, skipped).
+
+    Programmatic callers that set no tier get the full inventory."""
     kept, skipped = [], []
+    tier = getattr(args, 'tier', None) or ('display' if getattr(args, 'quick', False) else 'full')
     display_ok = not args.no_display and not (os.name == 'nt')
     for case in cases:
         compatibility = getattr(args, 'compatibility_filters', None)
@@ -175,7 +200,9 @@ def select(cases, args):
             continue
         if any(case.has(tag) for tag in args.exclude_tag):
             continue
-        if args.quick and case.has('slow'):
+        if tier != 'full' and case.has('slow'):
+            continue
+        if tier == 'headless' and case.display:
             continue
         if case.has('benchmark') and 'benchmark' not in args.tag:
             continue
@@ -184,6 +211,21 @@ def select(cases, args):
             continue
         kept.append(case)
     return kept, skipped
+
+
+def timeout_scale(build_dir):
+    """Timeout multiplier: GLOB2_TEST_TIMEOUT_SCALE, else 3 for unoptimized builds.
+
+    Timeouts catch hangs, not slowness: an -O0 development build (identity.json
+    mode "debug") takes several times longer than the optimized builds the
+    timeouts were sized on."""
+    if os.environ.get('GLOB2_TEST_TIMEOUT_SCALE'):
+        return max(1, int(os.environ['GLOB2_TEST_TIMEOUT_SCALE']))
+    try:
+        identity = json.loads((build_dir / 'identity.json').read_text())
+    except (OSError, ValueError):
+        return 1
+    return 3 if identity.get('mode') == 'debug' else 1
 
 
 def load_timings(path):
@@ -631,7 +673,7 @@ def report(results, skipped, args):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--build-dir', type=Path, default=None, help='native build directory (default: GLOB2_BUILD_DIR or build/<platform>/client/release)')
+    parser.add_argument('--build-dir', type=Path, default=None, help='native build directory (default: GLOB2_BUILD_DIR, else the newest of the dev_build.py and release outputs)')
     parser.add_argument('--binary', choices=['engine', 'unit', 'all'], default='all')
     parser.add_argument('--coverage-profile', choices=['full', 'compatibility'], default='full', help='secondary native compatibility inventory; primary Linux remains full')
     parser.add_argument('--write-inventory', type=Path, help='retain eligible and assigned native cases for coverage auditing')
@@ -649,7 +691,10 @@ def main(argv=None):
     parser.add_argument('--in-process', action='store_true', help='run the engine binary as one process')
     parser.add_argument('--no-display', action='store_true', help='skip [display] cases')
     parser.add_argument('--fullscreen', action='store_true', help='enable fullscreen checks within [display] cases (takes over the desktop; prefer a virtual display)')
-    parser.add_argument('--quick', action='store_true', help='skip [slow] cases')
+    parser.add_argument('--tier', choices=TIERS, default=None,
+                        help='headless: no [display] or [slow] cases (the default); display: adds [display] cases; '
+                             'full: everything. An explicit --filter or --tag selects from the full inventory unless --tier is given')
+    parser.add_argument('--quick', action='store_true', help='same as --tier display (skip [slow] cases)')
     parser.add_argument('--update-fixtures', action='store_true', help='rewrite [golden] fixtures instead of checking them')
     parser.add_argument('--junit', type=Path, default=ROOT / 'artifacts' / 'tests' / 'junit.xml')
     parser.add_argument('--artifacts', type=Path, default=ROOT / 'artifacts' / 'tests')
@@ -657,6 +702,7 @@ def main(argv=None):
     parser.add_argument('--tail', type=int, default=200, help='lines of output shown for a failure')
     parser.add_argument('--verbose', action='store_true', help='show successful assertions for in-process runs')
     args = parser.parse_args(argv)
+    args.tier = resolve_tier(args)
 
     build_dir = (args.build_dir or native_build_directory()).resolve()
     kinds = ['engine', 'unit'] if args.binary == 'all' else [args.binary]
@@ -693,6 +739,7 @@ def main(argv=None):
         inventory['fingerprint'] = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
         args.write_inventory.parent.mkdir(parents=True, exist_ok=True)
         args.write_inventory.write_text(json.dumps(inventory, indent=2) + '\n')
+    Job.scale = timeout_scale(build_dir)
     if args.timeout:
         Job.timeout = property(lambda self, t=args.timeout: t)
     network_lock = threading.Lock()
