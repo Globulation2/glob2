@@ -8,9 +8,6 @@
 #include "AITerrainPredicates.h"
 #include "Game.h"
 #include "Building.h"
-#include "FertilityField.h"
-
-#include <cstdint>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -22,17 +19,8 @@ namespace
 // Water-gradient steps: the outer wheat band is kept free of spreading wood.
 constexpr int WoodWaterDistance = 6;
 constexpr int WheatWaterDistance = 10;
-// Fertile ground (loam, moss, spring meadow) is crop land that waters its
-// surroundings weakly, so a distance to it says little. It counts as farm zone
-// where the engine's land fertility at least matches what the water rule
-// grants at its edge: a long straight shore at distance d leaves the offsets
-// d..15 of the 16-weight triangular kernel, (16-d)(17-d)/2 of 256 per axis.
-constexpr std::uint32_t shoreFertilityAt(int distance)
-{
-	return std::uint32_t((16-distance)*(17-distance)/2)*(Fertility::kScale/256);
-}
-static_assert(shoreFertilityAt(WheatWaterDistance)==21u*256u);
-static_assert(shoreFertilityAt(WoodWaterDistance)==55u*256u);
+// Fertile ground (loam, moss, spring meadow) is farmable land in its own right,
+// so its tiles join both zones; it is not water, so no zone reaches out from it.
 // Permanent donors at (1,1); temporary expansion donors at (0,1) and (1,0).
 constexpr int PatternStride = 2;
 }
@@ -57,17 +45,12 @@ void AISharedRuntime::updateFarmingAreas(Runtime& runtime)
 	gi_water.add_source(new Entities::Water);
 	Gradient& water_gradient=runtime.get_gradient_manager().get_gradient(gi_water);
 	const AIEngine::AIWorldView& world=runtime.observation();
-	const std::vector<std::uint32_t>* landFertility=world.growth ? &world.growth->landField().values() : nullptr;
-	if(landFertility && landFertility->size()!=std::size_t(world.width)*std::size_t(world.height)) landFertility=nullptr;
 	// Water and DeepWater use the historical distance rule unchanged; maps
 	// without Fertile ground therefore keep exactly their previous farm zones.
 	const auto inZone=[&](int x,int y,int distance)
 	{
-		if(water_gradient.within_dist(x, y, distance)) return true;
-		if(!landFertility) return false;
-		const auto index=world.tileIndex(x,y);
-		return terrainIsFertileGround(world.terrainPropertiesAt(index))
-			&& (*landFertility)[index]>=shoreFertilityAt(distance);
+		return water_gradient.within_dist(x, y, distance)
+			|| terrainIsFertileGround(world.terrainPropertiesAt(world.tileIndex(x,y)));
 	};
 
 	for(int x=0; x<mi.get_width(); ++x)

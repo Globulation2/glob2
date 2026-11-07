@@ -43,11 +43,12 @@ Econo and Nicowar share the farming scan in
 resources on a checkerboard and temporarily protects edge donors to expand fields.
 Wood is reserved within six water-gradient steps and wheat within ten. The
 gradient starts from irrigating water only (swimmable fertility sources, see
-`terrainIsIrrigatingWater`). Fertile ground (Loam, Moss, Spring meadow) also
-joins a zone where the engine's land fertility there reaches what a long straight
-shore gives at that zone's edge, so its weaker contribution counts at its real
-strength. Nicowar's building orders keep their minimum distances from irrigating
-water only; Fertile ground is ordinary building land for them. Spreading
+`terrainIsIrrigatingWater`). Fertile ground (Loam, Moss, Spring meadow) is
+farmable land: its own tiles join both zones, but no zone reaches out from it.
+Nicowar's building orders keep their minimum distances from irrigating water only;
+Fertile ground is ordinary building land for them. Cabino's and Warrush's farm
+scans use the same split, and Castor weighs its hydration estimate by each
+source's engine fertility strength. Spreading
 wood beside wheat (including diagonals) or in the outer wheat band is cleared;
 obsolete clearing paint is released unless needed beside a friendly building.
 The farm-areas experiment uses farm paint for eligible wheat and forbidden paint

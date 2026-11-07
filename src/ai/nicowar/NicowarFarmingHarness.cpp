@@ -185,41 +185,26 @@ TEST_SUITE("NicowarFarming")
 			require(!map.isFarmArea(9,11,me), "an emptied field releases its farm");
 		}
 	}
-	TEST_CASE("Fertile ground counts as farm zone at its real strength, never as water")
+	TEST_CASE("Fertile ground is farmland but not water")
 	{
 		glob2test::HeadlessGlobals globals;
 		for (bool econo : {false, true})
 		{
 			CAPTURE(econo);
-			const Uint32 me=0;
-			{
-				// A small loam patch: its weak fertility is below what a shore gives
-				// at the wheat zone's edge, so it is ordinary land for farming.
-				Fixture f(false, econo);
-				auto& map=f.game.map;
-				for (int y=26; y<38; ++y) for (int x=26; x<38; ++x) map.paintVertexSquare(x, y, LOAM, 1);
-				map.setResourceByIndex(31,31,WHEAT,0);
-				require(map.materialExpansionRateAt(map.coordToIndex(31,31),MaterialId::Food)>0,
-					"loam grows wheat without water");
-				f.update();
-				require(!map.isForbidden(31,31,f.game.teams[me]->me), "a small Fertile patch is not water");
-			}
-			{
-				// Fertile ground everywhere: its fertility reaches the wheat zone's
-				// edge strength but never the wood band's.
-				Fixture f(false, econo);
-				auto& map=f.game.map;
-				for (int y=0; y<64; ++y) for (int x=0; x<64; ++x) map.paintVertexSquare(x, y, LOAM, 1);
-				map.setResourceByIndex(31,31,WHEAT,0);
-				map.setResourceByIndex(37,37,WOOD,0);
-				require(map.materialExpansionRateAt(map.coordToIndex(37,37),MaterialId::Wood)>0,
-					"loam grows wood without water");
-				f.update();
-				const Uint32 mask=f.game.teams[me]->me;
-				require(map.isForbidden(31,31,mask), "wheat in a Fertile field is farmed");
-				require(!map.isForbidden(37,37,mask), "Fertile ground does not reserve wood");
-				require(f.clearing(37,37), "spreading wood in the Fertile wheat zone is cleared");
-			}
+			Fixture f(false, econo);
+			auto& map=f.game.map;
+			const Uint32 me=f.game.teams[0]->me;
+			// A loam patch with no water anywhere on the map.
+			for (int y=26; y<38; ++y) for (int x=26; x<38; ++x) map.paintVertexSquare(x, y, LOAM, 1);
+			map.setResourceByIndex(31,31,WHEAT,0);   // on Fertile ground
+			map.setResourceByIndex(33,33,WOOD,0);    // on Fertile ground
+			map.setResourceByIndex(41,31,WHEAT,0);   // grass, four tiles off the loam
+			for (auto [x,y,m] : {std::tuple{31,31,MaterialId::Food},std::tuple{33,33,MaterialId::Wood},std::tuple{41,31,MaterialId::Food}})
+				require(map.materialExpansionRateAt(map.coordToIndex(x,y),m)>0, "loam waters the fixture");
+			f.update();
+			require(map.isForbidden(31,31,me), "wheat seed on Fertile ground is farmed");
+			require(map.isForbidden(33,33,me), "wood seed on Fertile ground is farmed");
+			require(!map.isForbidden(41,31,me), "Fertile ground is not water: no zone reaches out from it");
 		}
 	}
 	TEST_CASE("edge donors expand fields and are released after growth")
