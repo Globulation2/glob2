@@ -1974,6 +1974,12 @@ Roccia nel frutteto
 Colonie su entrambe le coste
 [Winding belt]
 Fascia sinuosa
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma delle celle
 [Squares]

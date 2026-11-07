@@ -1942,6 +1942,12 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 రెండు తీరాల్లోని కాలనీలు
 [Winding belt]
 వైండింగ్ బెల్ట్
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 కణ ఆకారం
 [Squares]

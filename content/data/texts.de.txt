@@ -1974,6 +1974,12 @@ Stein im Obstgarten
 Kolonien an beiden Küsten
 [Winding belt]
 Gewundener Gürtel
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Zellenform
 [Squares]

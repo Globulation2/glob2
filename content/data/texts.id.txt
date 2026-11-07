@@ -1974,6 +1974,12 @@ Batu di kebun buah
 Koloni di kedua pantai
 [Winding belt]
 Sabuk berkelok
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Bentuk sel
 [Squares]

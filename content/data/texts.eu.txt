@@ -1974,6 +1974,12 @@ Harria fruta-baratzean
 Koloniak bi kostaldeetan
 [Winding belt]
 Gerriko bihurgunetsua
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Gelaxken forma
 [Squares]

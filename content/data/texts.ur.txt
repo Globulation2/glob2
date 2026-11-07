@@ -1942,6 +1942,12 @@ Globulation 2 کا کرسر دکھائیں۔
 دونوں ساحلوں پر بستیاں
 [Winding belt]
 بل کھاتی پٹی
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 خانے کی شکل
 [Squares]

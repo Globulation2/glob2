@@ -1974,6 +1974,12 @@ OpenGL در این نسخه موجود نیست.
 مستعمره‌ها در هر دو ساحل
 [Winding belt]
 کمربند پرپیچ‌وخم
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 شکل خانه‌ها
 [Squares]

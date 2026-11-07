@@ -1974,6 +1974,12 @@ Pierre dans le verger
 Colonies sur les deux côtes
 [Winding belt]
 Ceinture sinueuse
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forme des cellules
 [Squares]

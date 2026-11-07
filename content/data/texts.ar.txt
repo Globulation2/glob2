@@ -1974,6 +1974,12 @@ OpenGL غير متوفر في هذا الإصدار.
 مستعمرات على الساحلين
 [Winding belt]
 حزام متعرج
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 شكل الخلايا
 [Squares]

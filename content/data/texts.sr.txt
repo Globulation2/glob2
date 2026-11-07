@@ -1974,6 +1974,12 @@ OpenGL није доступан у овој верзији.
 Колоније на обе обале
 [Winding belt]
 Кривудав појас
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Облик ћелија
 [Squares]

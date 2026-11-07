@@ -1942,6 +1942,12 @@ OpenGL не е наличен в тази компилация.
 Колонии по двата бряга
 [Winding belt]
 Криволичещ пояс
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Форма на клетката
 [Squares]

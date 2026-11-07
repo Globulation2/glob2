@@ -1974,6 +1974,12 @@ Kamień w sadzie
 Kolonie na obu wybrzeżach
 [Winding belt]
 Kręty pas
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Kształt komórek
 [Squares]

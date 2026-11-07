@@ -1974,6 +1974,12 @@ OpenGL 在此版本中不可用。
 两岸都有殖民地
 [Winding belt]
 蜿蜒的环带
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 格子形状
 [Squares]

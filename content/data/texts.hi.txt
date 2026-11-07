@@ -1942,6 +1942,12 @@ Globulation 2 का कर्सर दिखाएँ।
 दोनों तटों पर बस्तियाँ
 [Winding belt]
 घुमावदार पट्टी
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 खाने की आकृति
 [Squares]

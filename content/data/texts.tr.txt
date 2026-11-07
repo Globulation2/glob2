@@ -1974,6 +1974,12 @@ Meyve bahçesinde taş
 Her iki kıyıda koloniler
 [Winding belt]
 Kıvrımlı kuşak
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Hücre şekli
 [Squares]

@@ -1974,6 +1974,12 @@ Kő a gyümölcsösben
 Kolóniák mindkét parton
 [Winding belt]
 Kanyargó öv
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Cellák alakja
 [Squares]

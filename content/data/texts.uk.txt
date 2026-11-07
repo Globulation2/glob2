@@ -1974,6 +1974,12 @@ OpenGL недоступний у цій збірці.
 Колонії на обох узбережжях
 [Winding belt]
 Звивистий пояс
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Форма клітинок
 [Squares]

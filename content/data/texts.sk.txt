@@ -1974,6 +1974,12 @@ Kameň v sade
 Kolónie na oboch pobrežiach
 [Winding belt]
 Zvlnený pás
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Tvar buniek
 [Squares]

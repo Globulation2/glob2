@@ -1974,6 +1974,12 @@ Steen in de boomgaard
 Kolonies aan beide kusten
 [Winding belt]
 Kronkelende gordel
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Celvorm
 [Squares]

@@ -1974,6 +1974,12 @@ Kamenje v sadovnjaku
 Kolonije na obeh obalah
 [Winding belt]
 Vijugast pas
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Oblika celic
 [Squares]

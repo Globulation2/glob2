@@ -1942,6 +1942,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 இரு கரைகளிலும் குடியிருப்புகள்
 [Winding belt]
 வளைந்து செல்லும் பட்டை
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 கட்ட வடிவம்
 [Squares]

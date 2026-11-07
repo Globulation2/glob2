@@ -92,3 +92,6 @@
 [Tropical]
 [Mudflats]
 [Hammocks]
+[Deep ocean]
+[Rock spine]
+[Ring road]

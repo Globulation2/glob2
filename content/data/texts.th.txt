@@ -1942,6 +1942,12 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 อาณานิคม​บน​ชายฝั่ง​ทั้งสอง​ฝั่ง
 [Winding belt]
 แถบ​แผ่นดิน​คดเคี้ยว
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 รูปร่าง​เซลล์
 [Squares]

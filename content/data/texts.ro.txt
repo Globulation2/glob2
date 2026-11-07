@@ -1974,6 +1974,12 @@ Piatră în livadă
 Colonii pe ambele coaste
 [Winding belt]
 Centură șerpuită
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma celulelor
 [Squares]

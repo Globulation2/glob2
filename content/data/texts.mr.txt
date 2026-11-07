@@ -1942,6 +1942,12 @@ Globulation 2 कर्सर दाखवा.
 दोन्ही किनाऱ्यांवरील वसाहती
 [Winding belt]
 वळणावळणाचा पट्टा
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 कप्प्यांचा आकार
 [Squares]

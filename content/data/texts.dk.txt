@@ -1974,6 +1974,12 @@ Sten i frugtplantagen
 Kolonier på begge kyster
 [Winding belt]
 Bugtet bælte
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Celleform
 [Squares]

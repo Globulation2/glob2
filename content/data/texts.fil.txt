@@ -1966,6 +1966,12 @@ Bato sa taniman ng prutas
 Mga kolonya sa magkabilang baybayin
 [Winding belt]
 Paikot-ikot na sinturon
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Hugis ng selula
 [Squares]

@@ -1942,6 +1942,12 @@ Stein i frukthagen
 Kolonier på begge kyster
 [Winding belt]
 Slyngende belte
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Celleform
 [Squares]

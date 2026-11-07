@@ -1942,6 +1942,12 @@ Globulation 2-এর কার্সার দেখান।
 উভয় উপকূলের উপনিবেশগুলি
 [Winding belt]
 আঁকাবাঁকা ভূবলয়
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 ঘরের আকৃতি
 [Squares]

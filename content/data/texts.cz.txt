@@ -1974,6 +1974,12 @@ Kamení v sadu
 Kolonie na obou pobřežích
 [Winding belt]
 Zvlněný pás
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Tvar buněk
 [Squares]

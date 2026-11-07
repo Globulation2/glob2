@@ -1974,6 +1974,12 @@ Piedra en el huerto
 Colonias en ambas costas
 [Winding belt]
 Cinturón sinuoso
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma de las celdas
 [Squares]

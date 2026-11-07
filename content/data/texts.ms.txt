@@ -1966,6 +1966,12 @@ Batu di dusun
 Koloni di kedua-dua pantai
 [Winding belt]
 Jalur berliku
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Bentuk sel
 [Squares]

@@ -1974,6 +1974,12 @@ Pedra a l'hort
 Colònies a les dues costes
 [Winding belt]
 Cinturó sinuós
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma de les cel·les
 [Squares]

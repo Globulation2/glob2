@@ -1942,6 +1942,12 @@ Stone in the orchard
 Colonies on both coasts
 [Winding belt]
 Winding belt
+[Deep ocean]
+Deep ocean
+[Rock spine]
+Rock spine
+[Ring road]
+Ring road
 [Cell shape]
 Cell shape
 [Squares]

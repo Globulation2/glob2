@@ -1942,6 +1942,12 @@ Mawe katika bustani ya matunda
 Makazi katika pwani zote mbili
 [Winding belt]
 Ukanda unaopinda
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Umbo la seli
 [Squares]

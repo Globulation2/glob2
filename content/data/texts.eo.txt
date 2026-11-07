@@ -1974,6 +1974,12 @@ Fosaĵo
 Kolonioj ĉe ambaŭ marbordoj
 [Winding belt]
 Serpentuma zono
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Formo de ĉeloj
 [Squares]

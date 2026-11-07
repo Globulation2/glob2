@@ -1974,6 +1974,12 @@ Hào nước
 Thuộc địa ở cả hai bờ
 [Winding belt]
 Vành đai uốn lượn
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Hình dạng ô
 [Squares]

@@ -1974,6 +1974,12 @@ Pedra no pomar
 Colônias em ambas as costas
 [Winding belt]
 Faixa sinuosa
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma das células
 [Squares]

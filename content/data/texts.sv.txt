@@ -1974,6 +1974,12 @@ Sten i fruktträdgården
 Kolonier på båda kusterna
 [Winding belt]
 Slingrande bälte
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Cellform
 [Squares]

@@ -1974,6 +1974,12 @@ Globulation 2 커서를 표시합니다.
 양쪽 해안의 식민지
 [Winding belt]
 구불구불한 띠
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 칸 모양
 [Squares]

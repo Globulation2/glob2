@@ -1974,6 +1974,12 @@ Kiveä hedelmätarhassa
 Siirtokuntia molemmilla rannikoilla
 [Winding belt]
 Mutkitteleva vyöhyke
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Solujen muoto
 [Squares]
