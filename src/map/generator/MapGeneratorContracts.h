@@ -2851,6 +2851,231 @@ inline void rainShadowContracts()
 		 "keeps the passes and quarries");
 }
 
+// Tidal Flats 2.0 (revision 9): every tide pinned over the envelope revision 8 accepted, the tide
+// moving only the water on the flats, flats nothing can be built on, deep lagoon beds inside shallow
+// margins, every island reachable on foot, the tor's quarry faces stocked, resource extremes, and
+// growth over a few thousand ticks that keeps every colony and island reachable.
+inline void tidalFlatsContracts()
+{
+	const auto &definition =
+		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tidal-flats"));
+	assert(definition.legacyId == 18 && definition.revision == 9);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("tide") == 0 && request.option("lagoons") == 3 &&
+		   request.option("central-island") == 1);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Tidal flats %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
+						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Tidal flats %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key)
+	{
+		long long total = 0;
+		bool found = false;
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && std::holds_alternative<std::int64_t>(record.value))
+			{
+				total += std::get<std::int64_t>(record.value);
+				found = true;
+			}
+		return found ? total : -1LL;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	const auto group = [](const Game &g, int x, int y)
+	{ return terrainTypeDefinition(g.map.vertexTerrainAt(x, y)).group; };
+	// The envelope: every size and colony count the request check accepts, each tide pinned in turn.
+	// The flats are mud and sand: nothing between the islands is buildable (validateWorld), and the
+	// mud really is there.
+	int pinned = 0;
+	const char *tideNames[] = {"neap", "mean", "spring"};
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8},
+							std::pair{9, 8}, std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (!definition.validateRequest(r).empty())
+				continue;
+			const int tide = 1 + pinned % 3;
+			r.options["tide"] = tide;
+			++pinned;
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			assert(choice(result, "tidal-flats.tide") == tideNames[tide - 1]);
+			assert(measure(result, "tidal-flats.channels.vertices") > 0);
+			assert(measure(result, "tidal-flats.tor.stone") > 0);
+			assert(measure(result, "tidal-flats.tor.stone") == measure(result, "tidal-flats.tor.quarry-tiles"));
+			int mud = 0;
+			for (int y = 0; y < g.map.getH(); ++y)
+				for (int x = 0; x < g.map.getW(); ++x)
+					mud += group(g, x, y) == TerrainGroup::Rough;
+			assert(mud > g.map.getW() * g.map.getH() / 4);
+		}
+	assert(pinned >= 20);
+	assert(!definition.validateRequest(make(7, 7, 12, 7)).empty());
+	// Every tide comes up at random.
+	std::set<std::string> tides;
+	for (std::uint32_t seed = 1; seed <= 12; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		assert(result);
+		tides.insert(choice(result, "tidal-flats.tide"));
+	}
+	assert(tides.size() == 3);
+	// Each tide pinned holds at 128, 256 and 512, and the lagoons get deep beds at 256 and 512.
+	for (int tide = 1; tide <= 3; ++tide)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
+		{
+			D r = make(dimension, dimension, teams, 11);
+			r.options["tide"] = tide;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned tide");
+			if (dimension >= 8)
+				assert(measure(result, "tidal-flats.deep.vertices") > 0);
+		}
+	// The tide moves only the water on the flats: the same seed at neap, mean and spring has the same
+	// buildable ground and the same islands, and more water the higher the tide.
+	{
+		Game neap(nullptr), mean(nullptr), spring(nullptr);
+		D a = make(8, 8, 4, 13), b = a, c = a;
+		a.options["tide"] = 1;
+		b.options["tide"] = 2;
+		c.options["tide"] = 3;
+		build(neap, a, "neap");
+		build(mean, b, "mean");
+		build(spring, c, "spring");
+		int water[3] = {0, 0, 0};
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				const auto &rn = neap.map.terrainPropertiesAt(x, y), &rm = mean.map.terrainPropertiesAt(x, y),
+						   &rs = spring.map.terrainPropertiesAt(x, y);
+				assert(rn.buildable == rm.buildable && rm.buildable == rs.buildable);
+				water[0] += rn.swimmable;
+				water[1] += rm.swimmable;
+				water[2] += rs.swimmable;
+			}
+		assert(water[0] < water[1] && water[1] < water[2]);
+	}
+	// Damage the validator must notice: grass laid on the flats, deep water against a shore, and the
+	// tor's stone taken away.
+	{
+		const D r = make(8, 8, 4, 19);
+		Game g(nullptr);
+		build(g, r, "damage");
+		GenerationContext check(r);
+		// A 3x3 block of grass corners well out on the mud, away from every island.
+		bool laid = false;
+		for (int y = 2; y < 254 && !laid; y += 3)
+			for (int x = 2; x < 254 && !laid; x += 3)
+			{
+				bool mud = true;
+				for (int dy = -2; dy <= 3 && mud; ++dy)
+					for (int dx = -2; dx <= 3 && mud; ++dx)
+						mud = group(g, x + dx, y + dy) == TerrainGroup::Rough;
+				if (!mud)
+					continue;
+				Game damaged(nullptr);
+				build(damaged, r, "damage copy");
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+						damaged.map.setVertexTerrain(x + dx, y + dy, GRASS);
+				const std::string fault = definition.validateWorld(damaged, check);
+				assert(fault.find("built on") != std::string::npos);
+				laid = true;
+			}
+		assert(laid);
+		// Deep water on a beach's edge.
+		bool deepened = false;
+		for (int y = 1; y < 255 && !deepened; ++y)
+			for (int x = 1; x < 255 && !deepened; ++x)
+				if (g.map.vertexTerrainAt(x, y) == WATER && g.map.vertexTerrainAt(x + 1, y) == SAND)
+				{
+					Game damaged(nullptr);
+					build(damaged, r, "deep copy");
+					damaged.map.setVertexTerrain(x, y, DEEP_WATER);
+					assert(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
+					deepened = true;
+				}
+		assert(deepened);
+		for (int i = 0; i < 256 * 256; ++i)
+			if (g.map.isResource(i % 256, i / 256) && g.map.getResource(i % 256, i / 256).type == STONE)
+				g.map.replaceResource(i % 256, i / 256, Resource{});
+		assert(definition.validateWorld(g, check).find("quarry") != std::string::npos);
+	}
+	// Without the central island there is no tor and the map still validates.
+	{
+		D r = make(8, 8, 4, 29);
+		r.options["central-island"] = 0;
+		Game g(nullptr);
+		const auto result = build(g, r, "no central island");
+		assert(measure(result, "tidal-flats.tor.quarry-tiles") == 0);
+	}
+	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings the
+	// map validates after a few thousand ticks of growth with nobody harvesting (every colony and
+	// every island still reachable), and the crops grew.
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		build(zero, r, "zero resources");
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	build(abundant, r, "abundant");
+	GenerationContext context(r);
+	const auto count = [&](int type)
+	{
+		int total = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			total += abundant.map.isResource(i % 256, i / 256) &&
+					 abundant.map.getResource(i % 256, i / 256).type == type;
+		return total;
+	};
+	const int wheatBefore = count(WHEAT), woodBefore = count(WOOD), algaeBefore = count(ALGA);
+	setSyncRandSeed(4211);
+	for (int tick = 0; tick < 4096; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Tidal flats growth: %s\n", growthError.c_str());
+	std::fprintf(stderr, "Tidal flats growth over 4096 ticks: wheat %d -> %d, wood %d -> %d, algae %d -> %d\n",
+				 wheatBefore, count(WHEAT), woodBefore, count(WOOD), algaeBefore, count(ALGA));
+	assert(growthError.empty() && count(WHEAT) > wheatBefore && count(ALGA) > algaeBefore);
+	puts("PASS Tidal flats: envelope with pinned tides, random tides, tide moves only water, flats "
+		 "unbuildable, deep beds in shallows, tor quarries, damage refused, resource extremes, growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -2885,5 +3110,6 @@ inline void generatorContracts()
 	run("braided-river", braidedRiverContracts);
 	run("caravanserai", caravanseraiContracts);
 	run("rain-shadow", rainShadowContracts);
+	run("tidal-flats", tidalFlatsContracts);
 }
 } // namespace GeneratorContracts
