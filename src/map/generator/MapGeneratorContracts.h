@@ -5072,6 +5072,356 @@ inline void craterLakesContracts()
 		 "off or crowd a colony, quarries following stone, resource extremes, growth");
 }
 
+inline void swampContracts()
+{
+	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("swamp"));
+	assert(definition.legacyId == 1 && definition.revision == 6);
+	D request;
+	request.setMethodDefaults(definition.legacyId);
+	assert(request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 1 &&
+		   request.option("hammocks") == 3 && request.option("causeways") == 1 && request.option("climate") == 0 &&
+		   request.option("smoothing") == 6);
+	GenerationService service;
+	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
+	{
+		D r = request;
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = teams;
+		r.seed = seed;
+		return r;
+	};
+	const auto build = [&](Game &g, const D &r, const char *what)
+	{
+		const auto result = service.generate(g, r, true);
+		if (!result)
+			std::fprintf(stderr, "Swamp %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
+						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
+		assert(result);
+		GenerationContext check(r);
+		const std::string error = definition.validateWorld(g, check);
+		if (!error.empty())
+			std::fprintf(stderr, "Swamp %s validation: %s\n", what, error.c_str());
+		assert(error.empty());
+		return result;
+	};
+	const auto measure = [](const auto &result, const char *key, int subject = -1)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key && record.subject == subject && std::holds_alternative<std::int64_t>(record.value))
+				return int(std::get<std::int64_t>(record.value));
+		return -1;
+	};
+	const auto choice = [](const auto &result, const char *key)
+	{
+		for (const auto &record : result.telemetry.records())
+			if (record.key == key)
+				return std::get<std::string>(record.value);
+		return std::string();
+	};
+	// Every deep vertex has three steps of water round it (two tiles of plain shallows), no vertex of
+	// the grass group touches plain water (the beaches stay a fixed point of layBeaches), no mud lies
+	// within 20 tiles of a colony's workers, no moss within 24 and no thicket within 12, and every colony walks
+	// to stone (the swamp's quarries are the stone band above its beaches) unless stone is off.
+	const auto checkTerrain = [&](const Game &g, int teams, const auto &result, bool stone)
+	{
+		const Map &map = g.map;
+		const int w = map.getW(), h = map.getH();
+		const Torus t(map);
+		std::vector<unsigned char> land(size_t(w) * h, 0), workers(size_t(w) * h, 0);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
+				land[size_t(t.at(x, y))] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater;
+			}
+		for (const auto &tiles : unitTilesByTeam(map, teams))
+			for (int i : tiles)
+				workers[size_t(i)] = 1;
+		const std::vector<int> fromLand = stepsFrom(t, land);
+		const std::vector<unsigned char> near20 = dilate(t, workers, 20), near12 = dilate(t, workers, 12),
+										 near24 = dilate(t, workers, 24);
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const int i = t.at(x, y);
+				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
+				if (group == TerrainGroup::DeepWater)
+					assert(fromLand[size_t(i)] >= 3);
+				if (group == TerrainGroup::Rough)
+					assert(!near20[size_t(i)]);
+				if (group == TerrainGroup::Fertile)
+					assert(!near24[size_t(i)]);
+				if (group == TerrainGroup::Obstacles)
+					assert(!near12[size_t(i)]);
+				if (group == TerrainGroup::Grass)
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+			}
+		if (stone)
+			for (int team = 0; team < teams; ++team)
+				assert(measure(result, "swamp.stone.nearest-walk", team) > 0);
+	};
+	// The envelope: every size and colony count, each with a climate and the layers pinned in turn. A
+	// seed the service refuses (revision 5 refused the same seeds) is rolled again, as the lobby does.
+	int pinned = 0;
+	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{9, 8},
+							std::pair{8, 9}, std::pair{9, 9}})
+		for (int teams : {1, 2, 4, 6, 8, 12})
+		{
+			D r = make(dimensions.first, dimensions.second, teams, 7);
+			if (definition.validateRequest && !definition.validateRequest(r).empty())
+				continue;
+			if (dimensions.first + dimensions.second >= 17 && teams != 4 && teams != 12)
+				continue; // the large maps only twice, for time
+			r.options["climate"] = 1 + pinned % 2;
+			r.options["deep-water"] = pinned % 5 != 1;
+			r.options["mudflats"] = pinned % 5 == 2 ? 0 : 40 + 20 * (pinned % 3);
+			r.options["moss"] = pinned % 5 != 3;
+			r.options["hammocks"] = pinned % 5 == 4 ? 0 : 1 + pinned % 6;
+			r.options["causeways"] = pinned % 7 != 5;
+			++pinned;
+			bool generated = false;
+			for (int roll = 0; roll < 6 && !generated; ++roll)
+			{
+				Game probe(nullptr);
+				generated = bool(service.generate(probe, r));
+				if (!generated)
+					++r.seed;
+			}
+			if (!generated)
+				continue; // revision 5 refuses this size and colony count on these seeds too
+			Game g(nullptr);
+			const auto result = build(g, r, "envelope");
+			if (r.option("deep-water") == 0)
+				assert(measure(result, "swamp.deep.vertices") == 0);
+			if (r.option("mudflats") == 0)
+				assert(measure(result, "swamp.mud.vertices") == 0);
+			if (r.option("moss") == 0)
+				assert(measure(result, "swamp.moss.vertices") == 0);
+			if (r.option("hammocks") == 0)
+				assert(measure(result, "swamp.hammocks.thicket-vertices") == 0);
+			if (r.option("causeways") == 0)
+				assert(measure(result, "swamp.causeways.laid") == 0);
+			checkTerrain(g, teams, result, true);
+		}
+	assert(pinned >= 20);
+	// Both climates come up at random, and each pinned holds at 128, 256 and 512 with every layer.
+	std::set<std::string> climates;
+	for (std::uint32_t seed = 1; seed <= 10; ++seed)
+	{
+		Game g(nullptr);
+		const auto result = service.generate(g, make(7, 7, 2, seed), true);
+		if (result)
+			climates.insert(choice(result, "swamp.climate"));
+	}
+	assert(climates.size() == 2);
+	const char *names[] = {"temperate", "tropical"};
+	for (int climate = 1; climate <= 2; ++climate)
+		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 6}})
+		{
+			D r = make(dimension, dimension, teams, 11);
+			r.options["climate"] = climate;
+			Game g(nullptr);
+			const auto result = build(g, r, "pinned climate");
+			assert(choice(result, "swamp.climate") == names[climate - 1]);
+			assert(measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0 &&
+				   measure(result, "swamp.looks.lush-vertices") > 0 && measure(result, "swamp.looks.dry-vertices") > 0);
+			if (dimension >= 8)
+				assert(measure(result, "swamp.moss.vertices") > 0 && measure(result, "swamp.hammocks.placed") > 0);
+			checkTerrain(g, teams, result, true);
+		}
+	{
+		// The climate is looks only: the same seed plays identically in both.
+		Game a(nullptr), b(nullptr);
+		D temperate = make(8, 8, 4, 13), tropical = make(8, 8, 4, 13);
+		temperate.options["climate"] = 1;
+		tropical.options["climate"] = 2;
+		build(a, temperate, "temperate");
+		build(b, tropical, "tropical");
+		int differentLooks = 0;
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), b.map.terrainPropertiesAt(x, y)));
+				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
+			}
+		assert(differentLooks > 2000);
+	}
+	{
+		// The pass never moves a deposit or a start: with every layer off the same seed holds the same
+		// deposits, units and rule groups (water, sand and grass alone), and with every layer on the
+		// deposits are identical too. Walking changes only at thicket (blocked) and causeways (opened).
+		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		off.options["deep-water"] = 0;
+		off.options["mudflats"] = 0;
+		off.options["moss"] = 0;
+		off.options["hammocks"] = 0;
+		off.options["causeways"] = 0;
+		Game a(nullptr), b(nullptr);
+		build(a, on, "every layer");
+		const auto without = build(b, off, "no layers");
+		assert(measure(without, "swamp.deep.vertices") == 0 && measure(without, "swamp.mud.vertices") == 0 &&
+			   measure(without, "swamp.moss.vertices") == 0 && measure(without, "swamp.hammocks.thicket-vertices") == 0 &&
+			   measure(without, "swamp.causeways.laid") == 0);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 0; x < 256; ++x)
+			{
+				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				const TerrainGroup group = terrainGroup(b.map.vertexTerrainAt(x, y));
+				assert(group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass);
+				bool changed = false;
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+					{
+						const TerrainGroup g = terrainGroup(a.map.vertexTerrainAt((x + dx) & 255, (y + dy) & 255));
+						changed = changed || g == TerrainGroup::Obstacles || g == TerrainGroup::Paths;
+					}
+				if (!changed)
+					assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+			}
+		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
+	}
+	{
+		// Hammocks: more with a higher control, none at 0; a ring of thicket drawn round a patch of open
+		// grass cuts it off and is refused; so is thicket or mud beside a colony, and a deep vertex on
+		// the shore.
+		D on = make(8, 8, 4, 23), none = make(8, 8, 4, 23), many = make(8, 8, 4, 23);
+		none.options["hammocks"] = 0;
+		many.options["hammocks"] = 8;
+		Game a(nullptr), b(nullptr), c(nullptr);
+		const auto some = build(a, on, "hammocks"), without = build(b, none, "no hammocks"),
+				   more = build(c, many, "many hammocks");
+		assert(measure(some, "swamp.hammocks.placed") > 0);
+		assert(measure(without, "swamp.hammocks.thicket-vertices") == 0);
+		assert(measure(more, "swamp.hammocks.placed") >= measure(some, "swamp.hammocks.placed"));
+		GenerationContext check(on);
+		const auto workers = unitTilesByTeam(a.map, 4);
+		Game ringed(nullptr);
+		build(ringed, on, "hammocks again");
+		bool drawn = false;
+		for (int cy = 8; cy < 248 && !drawn; cy += 4)
+			for (int cx = 8; cx < 248 && !drawn; cx += 4)
+			{
+				bool open = true;
+				for (int dy = -6; dy <= 6 && open; ++dy)
+					for (int dx = -6; dx <= 6 && open; ++dx)
+						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
+							   terrainGroup(ringed.map.vertexTerrainAt(cx + dx, cy + dy)) == TerrainGroup::Grass;
+				for (const auto &tiles : workers)
+					for (int i : tiles)
+						open = open && Torus(ringed.map).chebyshev(cx, cy, i % 256, i / 256) > 30;
+				if (!open)
+					continue;
+				for (int dy = -5; dy <= 5; ++dy)
+					for (int dx = -5; dx <= 5; ++dx)
+						if (std::max(std::abs(dx), std::abs(dy)) >= 4)
+							ringed.map.setVertexTerrain(cx + dx, cy + dy, THICKET);
+				drawn = true;
+			}
+		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		const int home = workers[1].front();
+		Game crowded(nullptr);
+		build(crowded, on, "hammocks once more");
+		crowded.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, THICKET);
+		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
+		Game muddy(nullptr);
+		build(muddy, on, "mud near home");
+		muddy.map.setVertexTerrain((home % 256 + 10) & 255, home / 256, MUD);
+		assert(definition.validateWorld(muddy, check).find("too near a colony") != std::string::npos);
+		Game shore(nullptr);
+		build(shore, on, "deep on the shore");
+		bool placedDeep = false;
+		for (int y = 0; y < 256 && !placedDeep; ++y)
+			for (int x = 0; x < 256 && !placedDeep; ++x)
+				if (shore.map.vertexTerrainAt(x, y) == WATER &&
+					terrainGroup(shore.map.vertexTerrainAt((x + 1) & 255, y)) == TerrainGroup::Sand)
+				{
+					shore.map.setVertexTerrain(x, y, DEEP_WATER);
+					placedDeep = true;
+				}
+		assert(placedDeep && definition.validateWorld(shore, check).find("no shallows") != std::string::npos);
+	}
+	{
+		// Causeways: rare, but some maps have them, each saves at least the walk it was planned to,
+		// and turning them off lays none (the envelope).
+		int laid = 0;
+		for (std::uint32_t seed = 1; seed <= 8; ++seed)
+		{
+			D r = make(8, 8, 4, seed);
+			Game g(nullptr);
+			const auto result = service.generate(g, r, true);
+			if (!result)
+				continue;
+			laid += measure(result, "swamp.causeways.laid");
+			for (int team = 0; team < 4; ++team)
+				if (measure(result, "swamp.causeways.planned-saving", team) >= 0)
+					assert(measure(result, "swamp.causeways.planned-saving", team) >= 30 &&
+						   measure(result, "swamp.causeways.mean-saving-hundredths", team) > 0);
+		}
+		assert(laid > 0);
+	}
+	D r = make(8, 8, 4, 37);
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = 0;
+	{
+		Game zero(nullptr);
+		const auto result = build(zero, r, "no resources");
+		checkTerrain(zero, 4, result, false);
+	}
+	for (const auto &control : definition.controls)
+		if (control.group == ControlGroup::Resources)
+			r.options[control.id] = control.maximum;
+	Game abundant(nullptr);
+	{
+		const auto result = build(abundant, r, "abundant resources");
+		checkTerrain(abundant, 4, result, true);
+	}
+	GenerationContext context(r);
+	const auto crops = [&]()
+	{
+		int count = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			count += abundant.map.isResource(i % 256, i / 256) &&
+					 (abundant.map.getResource(i % 256, i / 256).type == WHEAT ||
+					  abundant.map.getResource(i % 256, i / 256).type == WOOD);
+		return count;
+	};
+	const int before = crops();
+	setSyncRandSeed(4211);
+	// Full-map growth with nobody harvesting: the crops spread (onto the moss too), but every deposit
+	// stands on ground that holds it and no hammock parts the ground. At the maximum amounts revision
+	// 5's crops already overgrow some homes' building room (the pass changes nothing within 28 tiles
+	// of a home but causeways, which only add room), so that floor is the one failure allowed here;
+	// at the default amounts the whole validator must still pass.
+	for (int tick = 0; tick < 3072; ++tick)
+		abundant.map.growResources();
+	const std::string growthError = definition.validateWorld(abundant, context);
+	if (!growthError.empty())
+		std::fprintf(stderr, "Swamp growth (abundant): %s\n", growthError.c_str());
+	assert((growthError.empty() || growthError == startingFloorFailure(abundant.map, 4)) && crops() > before);
+	{
+		D usual = make(8, 8, 4, 37);
+		Game grown(nullptr);
+		build(grown, usual, "default resources");
+		GenerationContext usualContext(usual);
+		setSyncRandSeed(4211);
+		for (int tick = 0; tick < 3072; ++tick)
+			grown.map.growResources();
+		const std::string error = definition.validateWorld(grown, usualContext);
+		if (!error.empty())
+			std::fprintf(stderr, "Swamp growth: %s\n", error.c_str());
+		assert(error.empty());
+	}
+	puts("PASS Swamp: envelope with pinned climates and layers, shallows round every deep core, beach fixed "
+		 "point, mud, moss and thicket off the homes, stone in reach, looks keep the rules, the pass moves no "
+		 "deposit or start, hammocks that never cut ground off, causeways that save their walk, resource "
+		 "extremes, growth");
+}
+
 inline void generatorContracts()
 {
 	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
@@ -5113,5 +5463,6 @@ inline void generatorContracts()
 	run("shattered-coast", shatteredCoastContracts);
 	run("river", riverContracts);
 	run("crater-lakes", craterLakesContracts);
+	run("swamp", swampContracts);
 }
 } // namespace GeneratorContracts
