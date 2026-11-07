@@ -49,20 +49,26 @@ using namespace MapGeneration;
 // lattice, the clearings and the kits (the same pools, clearings and starts for the same seed):
 // - The sloughs run dark: pool water at least kDeepSteps vertex steps from any bank is deep
 //   (deepCore, DARK_WATER: swimmable at 192/256, no algae, still waters land), so every pool keeps a
-//   shallow margin for algae, beaches and the fords. The clearings' ponds stay shallow.
+//   shallow margin two tiles wide for algae, beaches and the fords, and only the big pools and sloughs
+//   have a dark bed. The clearings' ponds stay shallow.
 // - Mud banks (`mudflats`): that share of the swamp's pool banks is mudflat instead of sand (Rough:
 //   walkable at 160/256, unbuildable, holds nothing). The lanes stay open, but mud does not inhibit
 //   growth as sand does, so the grass beside them regrows harder: the swamp pushes back. Banks within
-//   kMudHomeClear tiles of a clearing's levee stay sand, so the home keeps its room; some sand stays by
-//   every reach of water so algae (which needs a sandy shore within reach) still regrows.
+//   kMudHomeClear tiles of a clearing's levee stay sand, so the home keeps its room; the mud lies in
+//   long stretches chosen by smooth noise, so sand stays by most reaches of water and algae (which
+//   needs a sandy shore within reach) still regrows. Mud walks slower than sand, so travel along the
+//   lanes is slower too.
 // - Hammocks (`hammocks`): tree islands of thicket (Obstacles: impassable, block arrows), each a
 //   rough knot at least two tiles thick drawn as tiles (rockVertices), on the swamp's grass at least
 //   kHammockShore tiles from any bank and kHammockHomeClear from any clearing, so they never stand on
 //   a lane. A hammock whose blocked tiles would part the ground round it is dropped, and the
 //   validator checks the same on the finished map. They replace nothing: the swamp's stone outcrops
 //   are scattered as before, so stone access is unchanged.
-// - Moss in the wettest reaches: swamp grass where the wetness field passes kMossWet is moss
-//   (Fertile: crop land that waters its neighbours at 48/256), so the wet country farms better.
+// - Moss in the wet reaches: swamp grass where the wetness field passes kMossWet, beyond a tile past
+//   each clearing's levee clearance, is moss (Fertile: crop land that waters its neighbours at
+//   48/256), so the wet country farms better. It covers most of the swamp's grass at the defaults; the
+//   rest, the dry reaches, is sawgrass. The growth tool scores a grass/moss boundary tile as nothing,
+//   so a little moss measured worse than none; this much measured better than revision 3 (docs).
 // - Fords are boardwalks: where openRoutes has to ford a slough to join a boxed-in colony, the ford
 //   is boardwalk (Paths: fast, buildable, holds nothing) rather than revision 3's odd sand spit.
 // - A season (`season`), looks only: wet (lush sawgrass, wet mud banks, moss) or dry (sawgrass gone
@@ -114,8 +120,12 @@ constexpr double kMaximumCoverage = 0.6;
 constexpr int kStepOpen = 1, kStepDeposit = 3, kStepEternal = 8, kStepFord = 25;
 
 // 2.0. Deep water: pool water at least kDeepSteps vertex steps from the bank, in cores of at least
-// kDeepLeast vertices, so a deep patch reads as a slough's bed, not a speck.
-constexpr int kDeepSteps = 2, kDeepLeast = 6;
+// kDeepLeast vertices, so a deep patch reads as a slough's bed, not a speck. Two steps (the least
+// deepCore allows) left no pure shallow tile in most pools: algae, which grows only on pure shallow
+// water, fell from about 1,750 tiles to 7 at the defaults, and the AIs' wood harvest in the
+// calibration game halved. Four steps leaves a shallow band two tiles wide (about 1,260 tiles of
+// algae) and lays deep water only in the big pools' and sloughs' middles.
+constexpr int kDeepSteps = 4, kDeepLeast = 6;
 // Mud banks keep this many tiles beyond a clearing's levee clearance as sand.
 constexpr int kMudHomeClear = 6;
 // Hammocks: per 128x128 tiles at the control's value; a rough knot kHammockLow to kHammockHigh tiles
