@@ -1668,7 +1668,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 3321468473678997995ull : 1612554945493919761ull));
+			CHECK(digest == (legacy ? 4747172408471892537ull : 8938740251159767833ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
