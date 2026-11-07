@@ -2555,8 +2555,8 @@ TEST_SUITE("TerrainValidation")
 		CHECK(onlyDecorFrame(compositor, scene, 3, 1) ==
 			  catalog.decorFrame(outcrop, 3, 1, false, scene.terrainSeed(), 15, colours(3, 1)));
 
-		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "obstacles-clear-of-masses.png").string().c_str()));
