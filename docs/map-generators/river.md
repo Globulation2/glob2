@@ -17,10 +17,9 @@ their kits are exactly revision 5's for the same seed.
   shallows line every bank, more on the wide river (the core holds at most half the water), so beaches,
   algae and swimming access work as before. Crossing by swimming is slower than in revision 5.
 - **The banks are the richest ground.** A band of loam (Fertile: buildable crop land that waters the
-  ground round it at 48/256 of water) runs two to seven vertices back from every shore, except within
-  32 tiles of a swarm, where the AIs would read it as water and refuse to build near it. The open banks
-  are richer than revision 5's and the homes' own ground is as it was (see the food table); the row
-  where loam meets grass grows crops but takes no building.
+  ground round it at 48/256 of water) runs two to seven vertices back from every shore outside the
+  homes' own gardens. The banks are richer than revision 5's (see the food table); the row where loam
+  meets grass grows crops but takes no building.
 - **Point bars and bluffs.** On the inside of the river's bends the beach and the sand behind it are
   mudflat (slow, unbuildable, holding nothing, and unlike sand it does not slow the crops behind it).
   On the outside of the bends low rock bluffs stand four to nine tiles back from the water, behind the
@@ -48,7 +47,7 @@ change a rule.
 | --- | --- |
 | Height field | `generateHeightField` unchanged: `makeRiver` stamps the bed, the lobby's weights become water, beach, grass and desert, resources are bands of the field, `chooseBalancedStarts` picks the starts, the starting-crop guarantee and groves run. |
 | Bluffs | Planned from that terrain, its stone band and the starts alone: cutbank beach vertices of the river (`majorWater`) whose water share over a window a quarter of the bed's diameter (`wetShare`) is in the banks' bottom 20% and below 470 thousandths, strongest first; a crescent lens of walkable tiles 4 to 9 steps from water within about 10 tiles, never on the field's stone, kept in 2x2 blocks; centres 30 apart, 22 from every swarm, one per 80 tiles of width and height; dropped on islands under 1,500 tiles or where the walkable ring round it falls apart. A face of tiles left out of the rock on a flank (60% of bluffs at 100% stone, two flanks from 150%). |
-| Mechanic layers | Deep core (`deepStepsForShare`, `deepenWater`): at least 5 steps from land, more until it holds half the water, bodies of 16 vertices or more. Plain grass round every quarry face, rock (`rockVertices`), scree one tile out where a noise peaks, never touching a deposit. Mudflat on beach and sand within three steps of the river at point bars (the banks' top 20% of share, above 530), and on grass one row up at the sharpest (top 8%). Loam two to seven vertices from water (`layLevee`), never in a garden, before a quarry or within 32 tiles of a swarm. Pavement (`paveBeyondWater`) on old desert sand and bare grass from 28 tiles in a straight line and 22 steps (`distanceFromWet`, frayed), never touching a deposit: 40% of it in fractal patches on the temperate banks, all of it in the desert, plus hardpan pans on 55% of the desert's bare grass from 16 tiles (15 steps) and 34 tiles from homes. |
+| Mechanic layers | Deep core (`deepStepsForShare`, `deepenWater`): at least 5 steps from land, more until it holds half the water, bodies of 16 vertices or more. Plain grass round every quarry face, rock (`rockVertices`), scree one tile out where a noise peaks, never touching a deposit. Mudflat on beach and sand within three steps of the river at point bars (the banks' top 20% of share, above 530), and on grass one row up at the sharpest (top 8%). Loam two to seven vertices from water (`layLevee`), never in a garden or before a quarry. Pavement (`paveBeyondWater`) on old desert sand and bare grass from 28 tiles in a straight line and 22 steps (`distanceFromWet`, frayed), never touching a deposit: 40% of it in fractal patches on the temperate banks, all of it in the desert, plus hardpan pans on 55% of the desert's bare grass from 16 tiles (15 steps) and 34 tiles from homes. |
 | Looks | Loam and spring meadow, pale and dune sand, heath and shale (weathered sandstone and dirt), outcrop (hoodoo) rock; `writeLayeredTerrain` writes them and clears every deposit the new ground refuses. The grass looks, lush within 5 tiles of water (3 in the desert) and dry beyond 20 (9) (`gradeGrassLooks`), go on last, after the starts, so placeStarts and the starting-crop guarantee meet plain grass everywhere. |
 | Algae and quarries | The algae the deep core displaced are seated again on the nearest free shallows; quarry faces get stone and the ground before them is cleared. |
 | Starts | `placeStarts` and `openStartsBuriedByResources` as in revision 5, with the quarry faces protected from its clearing; then the grass looks. |
@@ -86,8 +85,8 @@ read from the dump's building tiles.
 | Variant | Total | Within 24 of swarm | Within 48 |
 | --- | --- | --- | --- |
 | Revision 5 | 630 | 26.8 (0) | 81.5 (4) |
-| Revision 6, Temperate | 634 | 26.8 (0) | 82.3 (5) |
-| Revision 6, Desert | 656 | 26.8 (0) | 82.8 (5) |
+| Revision 6, Temperate | 655 | 28.8 (0) | 88.1 (6) |
+| Revision 6, Desert | 687 | 30.0 (0) | 91.6 (6) |
 | Temperate, deep channels off | 634 | 26.8 (0) | 82.3 (5) |
 | Temperate, bluffs off | 698 | 27.2 (0) | 88.0 (5) |
 | Desert, bluffs off | 725 | 27.2 (0) | 88.5 (5) |
@@ -102,9 +101,8 @@ read from the dump's building tiles.
 
 The levees are the gain: seven vertices deep they water the land round them, and they pay for the bank
 farmland the bluffs take (about 9% of the total; one bluff per 56 tiles of side cost 11%, so there is one
-per 80). They keep 32 tiles off every home, so the food near the homes is revision 5's and the gain lies
-along the open banks; levees right up to the homes gave about 7% more within 24 steps but left Nicowar no
-place for its first inn (below). Two or three deep (behind the sand band) they lost 4%. Deep water
+per 80). With levees right up to the homes' gardens the defaults gain 7–12% within 24 and 48 steps; the other
+rows were measured with levees kept 32 tiles off the homes, so they understate the levees' gain. Two or three deep (behind the sand band) they lost 4%. Deep water
 waters the land as plain water does. Pavement from 22 steps cost a low-water map 8%; from 28 it costs
 about 5% of the total at water 30 and nothing near the homes. Hardpan lies only where no crop grows.
 The one shortfall: at water 55 the worst colony's ground within 48 steps holds 48 against 57, a bluff
@@ -115,9 +113,10 @@ game seed 1, 20,000 ticks, both maps played by the same development game binary;
 Desert banks) harvested 2,162 wheat and 371 wood with 164 worker births and 61 buildings on revision 6,
 against 2,007 wheat, 306 wood, 165 births and 64 buildings on revision 5; Maxima had 48 births against
 62, Cabino 55 against 31. The same seed with Temperate banks pinned: 2,142 wheat, 360 wood, 176 births,
-52 buildings (Maxima 76). With the levees right up to 20 tiles of the homes Nicowar (team 0, beside the
-river) built nothing but its swarm in all three games tried (11 to 16 births); with no levee at all it
-had 35, and from 32 tiles 36. One game varies widely: this shows no stalled opening, not a measured
+52 buildings (Maxima 76). Those games had levees kept 32 tiles off the homes. With levees near the homes Nicowar (team 0, beside
+the river) built nothing but its swarm in all three games tried (11 to 16 births; 35 with no levee):
+Nicowar and Maxima treat loam like water when placing buildings, an AI defect being fixed in the AI
+rather than by keeping loam off the homes. One game varies widely: this shows no stalled opening, not a measured
 improvement.
 
 ## Limits

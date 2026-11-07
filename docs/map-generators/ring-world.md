@@ -38,7 +38,7 @@ revision 3 laid them for the same seed.
   (impassable, blocks arrows). Neither comes within 18 tiles of a home, so every home's shore is as
   in revision 3.
 - **Green lakes.** Every lake's beach is loam (buildable crop land that waters its surroundings a
-  little), and outside the home gardens (20 tiles round a home's middle) a frayed ring of loam about
+  little), and outside the home gardens (12 tiles round a home's middle) a frayed ring of loam about
   five vertices deep surrounds it. The lakes are the belt's richest farmland; the home gardens stay
   plain grass, so every home starts as it did.
 - **Themed islands.** Islands out at sea carry one prize each: stone islands are volcanic (a pumice
@@ -122,13 +122,12 @@ all shore); they keep their grass.
 - **Calibration.** A four-AI game (`map study ring-world --seed 101`, 256x256, Nicowar, Cortex,
   Cabino and Maxima, game seed 1, 20,000 ticks, both maps played by the master release binary)
   harvested 2,499 wheat and 433 wood with 186 worker births and 82 buildings on revision 4, against
-  3,228 wheat, 452 wood, 254 births and 88 buildings on revision 3. With the first gardens (12 tiles)
-  Maxima (team 3) stalled near 20 units on this seed (17, 7 and 23 births over game seeds 1 to 3,
-  against 73, 73 and 35 on revision 3). The cause: Maxima keeps its buildings five or six cardinal
-  steps from any tile that waters the land, and loam does, so loam rings near a home took its
-  building room; the layer switched off restored it, the road, spine and deep ocean did not. With
-  20-tile gardens it reached 47, 33 and 37 births, at no cost in growth potential; the rest of the
-  gap to revision 3 follows the road and spine near its start (all 2.0 layers off: 62, 68, 38). Over
+  3,228 wheat, 452 wood, 254 births and 88 buildings on revision 3 (those figures are from 20-tile
+  gardens; the gardens are 12 tiles now). Maxima (team 3) stalls near 20 units on this seed (17, 7
+  and 23 births over game seeds 1 to 3, against 73, 73 and 35 on revision 3) because its building
+  placement treats loam, like water, as ground to keep five or six tiles clear of; the loam rings
+  near its home take its building room. That is an AI defect, being fixed in the AI rather than by
+  keeping loam off the homes (wider gardens restored 47, 33 and 37 births). Over
   three map seeds (101 to 103) and three game seeds each, revision 4 harvested 6% more wheat (23,981
   against 22,718) with 6% more births, 12% more buildings and the weakest colony's wheat 63% higher
   (3,237 against 1,984 summed over the games). Single games vary widely.
