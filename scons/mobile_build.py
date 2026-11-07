@@ -70,7 +70,6 @@ def build_mobile(directory, identity, arguments):
 #define PACKAGE_NAME "Globulation 2"
 #define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "."
-#define PACKAGE_SOURCE_DIR "."
 #define PRIMARY_FONT "sans.ttf"
 #define GLOB2_MOBILE 1
 #define GLOB2_NATIVE_WSS 1
@@ -80,7 +79,9 @@ def build_mobile(directory, identity, arguments):
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     import renderer_shaders
-    renderer_shaders.configure(env, Path(__file__).resolve().parents[1], output)
+    shader_directory = renderer_shaders.configure(env, Path(__file__).resolve().parents[1], output)
+    import checkout_paths
+    checkout_paths.write(output, PACKAGE_SOURCE_DIR='.', GLOB2_RENDER_SHADER_DIR=str(shader_directory.resolve()))
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/opus'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])

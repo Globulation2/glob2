@@ -72,9 +72,30 @@ Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.
 A cold native dry-run can still require an existing SCons configure directory.
-Debug prefix mapping in fast builds uses `.`; run the debugger from the checkout
-or set its source substitution directory when debugging elsewhere. Runtime paths
-and `__FILE__` semantics are preserved.
+
+### Sharing the compiler cache between checkouts
+
+Every checkout of the same commit produces the same compiler-cache keys, so a new
+worktree compiles mostly from direct cache hits. Nothing checkout-specific reaches
+a compile command line or a widely included header: the absolute source, runtime
+asset and renderer shader directories live in the generated
+`glob2/BuildPaths.h`, which only the four files that use them include, and the
+version banner reports the source revision from `glob2/BuildStamp.h` instead of
+`__DATE__`/`__TIME__`. Add a new checkout-specific value to
+`scons/checkout_paths.py`, never to `BuildConfig.h` or a `-D` flag.
+
+Builds other than shipping invocations (`bundle`, `package`, `install`,
+`retain_symbols`) set `CCACHE_BASEDIR` to the checkout and map debug paths to
+`.`; run the debugger from the checkout or set its source substitution directory
+when debugging elsewhere (`settings set target.source-map . <checkout>` in LLDB,
+`set substitute-path . <checkout>` in GDB). Runtime paths and `__FILE__` semantics
+are preserved. Shipping invocations keep absolute debug paths.
+
+The managed cache has one configuration file, `ccache.conf` in its directory,
+written by every build: a 20 GiB `max_size`, `compiler_check = content` and
+compression. Builds and `tools/dev_build.py --cache-stats` read the same limit;
+`CCACHE_MAXSIZE` or other `CCACHE_*` variables still override it for one run, and
+an explicit `CCACHE_DIR` uses that directory's own configuration.
 
 `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
 the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction

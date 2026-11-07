@@ -67,9 +67,18 @@ def configure(env, identity):
         env.Append(LINKFLAGS=['-fuse-ld=lld'])
 
 
+SHIPPING_TARGETS = ('bundle', 'package', 'install', 'retain_symbols')
+
+
 def cache_flags(env):
-    """Map debug paths only: __FILE__ and configured runtime paths retain meaning."""
-    if not env.get('DEV_IDENTITY', {}).get('dev_fast'):
+    """Make objects relocatable so every checkout shares compiler-cache entries.
+
+    Only debug paths are mapped: __FILE__ and the configured runtime paths in
+    glob2/BuildPaths.h keep their meaning. Shipping invocations keep absolute
+    debug paths so packaged symbols resolve without a source map.
+    """
+    from SCons.Script import COMMAND_LINE_TARGETS
+    if 'DEV_IDENTITY' not in env or any(str(target) in SHIPPING_TARGETS for target in COMMAND_LINE_TARGETS):
         return
     root = Path(env.Dir('#').abspath)
     env.Append(CCFLAGS=['-fdebug-prefix-map=' + str(root) + '=.'])

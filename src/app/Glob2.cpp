@@ -4,6 +4,13 @@
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
+// Native SCons builds generate the revision stamp; other toolchains report "unknown".
+#if __has_include(<glob2/BuildStamp.h>)
+#include <glob2/BuildStamp.h>
+#endif
+#ifndef GLOB2_BUILD_REVISION
+#define GLOB2_BUILD_REVISION "unknown"
+#endif
 #endif
 #include <GameplayRecording.h>
 
@@ -700,7 +707,7 @@ int main(int argc, char *argv[])
 			const nlohmann::json version = {
 				{"cli_version", Cli::Version},
 				{"version", PACKAGE_VERSION},
-				{"compiled", std::string(__DATE__) + " " + __TIME__},
+				{"revision", GLOB2_BUILD_REVISION},
 				{"sdl", std::to_string(SDL_VERSIONNUM_MAJOR(sdl)) + "." +
 							std::to_string(SDL_VERSIONNUM_MINOR(sdl)) + "." +
 							std::to_string(SDL_VERSIONNUM_MICRO(sdl))},

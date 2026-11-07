@@ -289,6 +289,11 @@ def android_java_command(sdk, tool, env):
     ]
 
 
+def _managed_cache_limit():
+    from ccache import MANAGED_CONFIG
+    return MANAGED_CONFIG["max_size"]
+
+
 def paths(root):
     tools = mobile_tools(root, False)
     lock = json.loads((Path(root) / "platforms/mobile/android-tools.json").read_text())
@@ -304,7 +309,7 @@ def paths(root):
         "gradle": str(tools / lock["gradle"]["directory"] / "bin/gradle"),
         "browser_sdk": str(browser_sdk(root, lease=False)),
         "budget_bytes": budget(),
-        "compiler_cache_limit": os.environ.get("CCACHE_MAXSIZE", "4G"),
+        "compiler_cache_limit": os.environ.get("CCACHE_MAXSIZE", _managed_cache_limit()),
     }
 
 

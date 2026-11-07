@@ -29,9 +29,12 @@ def main():
     import dev_store
     environment = dict(os.environ)
     environment.setdefault('CCACHE', '1')
-    environment.setdefault('CCACHE_MAXSIZE', '12G')
     if args.cache_stats:
-        environment['CCACHE_DIR'] = environment.get('CCACHE_DIR', str(dev_store.cache(ROOT, 'ccache', lease=False)))
+        if 'CCACHE_DIR' not in environment:
+            import ccache
+            managed = dev_store.cache(ROOT, 'ccache', lease=False)
+            ccache.configure_managed(managed)
+            environment['CCACHE_DIR'] = str(managed)
         raise SystemExit(subprocess.call(['ccache', '--show-stats'], env=environment))
     raise SystemExit(subprocess.call(command(remaining), cwd=ROOT, env=environment))
 

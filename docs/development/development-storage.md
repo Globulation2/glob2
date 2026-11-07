@@ -49,9 +49,9 @@ managed store entries automatically. The default ceiling is 32 GiB for regenerab
 caches and completed dependency bundles, configurable with a positive integer
 `GLOB2_DEV_BUDGET_GIB`. Cleanup evicts least-recently-used idle entries;
 active entries are protected by OS-held leases. Gradle uses its native seven-day
-unused-resource cleanup, and opted-in ccache builds default to a 4 GiB ceiling.
-The development command requests a 12 GiB compiler-cache ceiling unless
-`CCACHE_MAXSIZE` is set. If active resources prevent meeting the aggregate budget,
+unused-resource cleanup. The managed compiler cache keeps a 20 GiB ceiling in its
+own `ccache.conf` ([build options](build-options.md#sharing-the-compiler-cache-between-checkouts));
+`CCACHE_MAXSIZE` overrides it. If active resources prevent meeting the aggregate budget,
 cleanup reports the remaining pressure; repeat explicit pruning when idle. Installed toolchains, external
 override caches, checkout build outputs, simulator data, and `artifacts/` are
 outside managed pruning. Status reports their sizes separately.

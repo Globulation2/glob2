@@ -85,12 +85,13 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 #define PACKAGE_NAME "Globulation 2"
 #define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "/"
-#define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"
 ''' + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     import renderer_shaders
     shaders = renderer_shaders.configure(env, root, output, browser=True)
+    import checkout_paths
+    checkout_paths.write(output, PACKAGE_SOURCE_DIR='/', GLOB2_RENDER_SHADER_DIR='/shaders')
     env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgl2') + '@/shaders/webgl2'])
     if (shaders / 'webgpu').is_dir():
         env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgpu') + '@/shaders/webgpu',
