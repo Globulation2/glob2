@@ -317,6 +317,14 @@ def main():
     import tempfile
     tempfile.tempdir = temporary
     SConsignFile(str(Path(bdir) / '.sconsign'))
+    # Rehash a file only when its timestamp moved: a no-change build otherwise
+    # rereads every source and header.
+    Decider('content-timestamp')
+    # Development and measurement builds also reuse scanned #include lists until
+    # a file changes. After adding a header that shadows another on the include
+    # path, run once with --implicit-deps-changed. Release builds always rescan.
+    if identity['mode'] != 'release':
+        SetOption('implicit_cache', 1)
     if identity['target'] == 'web':
         from web_build import build_web
         build_web(bdir, identity, ARGUMENTS)
