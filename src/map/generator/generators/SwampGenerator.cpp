@@ -57,16 +57,19 @@ using namespace MapGeneration;
 //   in revision 5 (a feel change).
 // - Mud (`mudflats`): that share of the beach sand of the far shores, chosen by smooth noise so it
 //   lies in long stretches, is mud (Rough: slow, unbuildable, holds nothing, and unlike sand it does
-//   not inhibit growth). Never within kMudHome tiles of a swarm (Shattered Coast measured mud 16
-//   tiles from homes cutting births 6%; at 28 it was noise) and never within kMudAlgae tiles of
-//   algae, whose regrowth wants sand on its shore.
-// - Moss (`moss`): grass in the hollows, the lowest kMossLow of the land by the field, where a
+//   not inhibit growth). Never within kMudHome tiles of a swarm, so a home's own shores, the
+//   footpaths and building ring its first workers use every trip, stay firm sand (slow mud there is
+//   a real cost to any player), and never within kMudAlgae tiles of algae, whose regrowth wants
+//   sand on its shore.
+// - Moss (`moss`, off by default): grass in the hollows, the lowest kMossLow of the land by the field, where a
 //   patch field passes, is moss (Fertile: buildable crop land that waters its neighbours at
 //   48/256), so the low ground round some ponds farms a little better. Never within kMossHome tiles
-//   of a swarm: Maxima and Nicowar both treat Fertile ground as water and will not build within five
-//   or six tiles of it; Ring World's and Portage Lakes' calibrations showed fertile ground near homes
-//   costing Maxima births, and the River calibration had Nicowar build only its swarm with loam 20
-//   tiles out and recover at 32. Moss under a deposit keeps it legal (Fertile holds what grass holds).
+//   of a swarm, which keeps the home garden plain (the edge between grass and moss is not
+//   buildable). Moss under a deposit keeps it legal (Fertile holds what grass holds). The map is
+//   not shaped round AI quirks: Maxima and Nicowar reading Fertile ground as water is an AI bug
+//   being fixed in the AIs. Off by default because the growth tool scores every grass/moss edge
+//   tile as no farmland and so loses about a tenth of the map's food to moss (6% within 24 steps
+//   of a home).
 // - Thicket hammocks (`hammocks`): rough knots of thicket (Obstacles: impassable, block arrows) on
 //   the hummocks, the highest land by the field, drawn as tiles at least two thick (rockVertices),
 //   on vacant grass kHammockShore steps from water and kHammockHome tiles from every swarm. A
@@ -94,12 +97,12 @@ constexpr const char *kClimateStream = "swamp-climate";
 constexpr int kDeepSteps = 4, kDeepOpen = 1, kDeepLeast = 12;
 // Mud: beach sand within kMudBeach vertex steps of water, kMudHome tiles or more from every swarm's
 // footprint and kMudAlgae tiles or more from every algae tile.
-constexpr int kMudBeach = 2, kMudHome = 28, kMudAlgae = 6;
+constexpr int kMudBeach = 2, kMudHome = 12, kMudAlgae = 6;
 // Moss: grass below the kMossLow quantile of the land's field values, where the patch field passes
 // kMossPatch (of 65535), kMossHome tiles or more from every swarm, in patches of kMossLeast
 // vertices or more.
 constexpr double kMossLow = 0.36;
-constexpr int kMossPatch = 26000, kMossHome = 32, kMossLeast = 24;
+constexpr int kMossPatch = 26000, kMossHome = 12, kMossLeast = 24;
 // Hammocks: seeds on land above the kHammockHigh quantile, local maxima kHammockSpacing apart; a
 // rough knot kHammockLow to kHammockHigh tiles in radius, on vacant pure grass kHammockShore vertex
 // steps from water and kHammockHome tiles from every swarm; fewer than kHammockLeast tiles left
@@ -114,10 +117,12 @@ constexpr int kCauseNear = 40, kCauseSpan = 6, kCauseSave = 30, kCauseApart = 16
 constexpr double kHomePlain = 11, kHomeFray = 5;
 // Deep water keeps this far from algae, so an algae bed is a rounded shoal in the dark water.
 constexpr double kDeepAlgae = 2.5;
+// No dry-grass look within this many tiles of a swarm's footprint.
+constexpr int kDryHome = 18;
 // What validateWorld checks, from every colony's workers (who stand a few tiles from the swarm's
 // footprint): no Rough within kRoughCheck, no Fertile within kFertileCheck, no Obstacles within
 // kHomeCheck.
-constexpr int kRoughCheck = 20, kFertileCheck = 24, kHomeCheck = 12;
+constexpr int kRoughCheck = 6, kFertileCheck = 6, kHomeCheck = 12;
 
 // The look-only climates: artwork per mechanic, and the land quantiles below which grass is lush
 // and above which it is dry.
@@ -514,6 +519,8 @@ TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climat
 	std::mt19937 &random = context.stream(kLookStream);
 	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, random);
 	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
+	// Dry tussock renders as bare brown ground, which beside a swarm reads as a scar, not a hummock.
+	const std::vector<unsigned char> noDry = swarmSurroundings(t, context, kDryHome);
 	std::vector<unsigned char> plain(size_t(n), 0);
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
@@ -546,7 +553,7 @@ TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climat
 				looks[i] = LUSH_GRASS;
 				++counts.lush;
 			}
-			else if (relief.at[i] > relief.quantile(climate.dry + shift))
+			else if (!noDry[i] && relief.at[i] > relief.quantile(climate.dry + shift))
 			{
 				looks[i] = DRY_GRASS;
 				++counts.dry;
@@ -872,12 +879,13 @@ GeneratorDefinition swampDefinition()
 		// 2.0. On, the bigger ponds have a core of deep water: slower to swim, no algae, a band of
 		// shallows along every shore. Routes on foot are the same either way.
 		GeneratorControl::toggle("deep-water", "Deep water", true, ControlGroup::Terrain).withSearchValues({0, 1}),
-		// The share of the far beaches (28 tiles or more from every home, away from algae) that is
-		// mud: slow, unbuildable, and unlike sand it lets crops grow up to the shore.
+		// The share of the beaches (12 tiles or more from every home, away from algae) that is mud:
+		// slow, unbuildable, and unlike sand it lets crops grow up to the shore.
 		GeneratorControl{"mudflats", "Mudflats", 0, 100, 10, 40, ControlGroup::Terrain}.withSearchRange(20, 60),
-		// On, the low ground round some ponds, 20 tiles or more from every home, is moss: crop land
-		// that waters its neighbours a little.
-		GeneratorControl::toggle("moss", "Moss", true, ControlGroup::Terrain).withSearchValues({0, 1}),
+		// On, the low ground round some ponds, beyond each home's garden, is moss: crop land that
+		// waters its neighbours a little. Off by default: the growth tool loses food to the
+		// grass/moss edges (not farmland in its count), 10% of the map's and 6% within 24 steps.
+		GeneratorControl::toggle("moss", "Moss", false, ControlGroup::Terrain).withSearchValues({0, 1}),
 		// Thicket hammocks (impassable tree islands on the highest ground) per 128x128 tiles of map,
 		// 20 tiles or more from every home; none ever cuts ground off.
 		GeneratorControl{"hammocks", "Hammocks", 0, 8, 1, 3, ControlGroup::Layout}.withSearchRange(1, 5),

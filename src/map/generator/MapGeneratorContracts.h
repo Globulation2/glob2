@@ -3424,6 +3424,7 @@ inline void watershedContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
+			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "watershed.climate") == names[climate - 1]);
@@ -3460,6 +3461,7 @@ inline void watershedContracts()
 	{
 		// Deep water off: no deep vertex anywhere, and the same routes on foot: every tile walks alike.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep water");
@@ -4034,6 +4036,7 @@ inline void ringWorldContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
+			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "ring-world.climate") == names[climate - 1]);
@@ -4067,6 +4070,7 @@ inline void ringWorldContracts()
 	{
 		// Deep ocean off: no deep vertex, and every tile walks alike.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep ocean");
@@ -4341,6 +4345,7 @@ inline void shatteredCoastContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
+			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "shattered-coast.climate") == names[climate - 1]);
@@ -4380,6 +4385,7 @@ inline void shatteredCoastContracts()
 		// The pass never moves a deposit: with every layer off the same seed holds the same deposits
 		// and the same starts, and with every layer on the only new deposits are the quarries' stone.
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		off.options["mudflats"] = 0;
 		off.options["outcrops"] = 0;
@@ -5078,7 +5084,7 @@ inline void swampContracts()
 	assert(definition.legacyId == 1 && definition.revision == 6);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 1 &&
+	assert(request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 0 &&
 		   request.option("hammocks") == 3 && request.option("causeways") == 1 && request.option("climate") == 0 &&
 		   request.option("smoothing") == 6);
 	GenerationService service;
@@ -5121,7 +5127,7 @@ inline void swampContracts()
 	};
 	// Every deep vertex has three steps of water round it (two tiles of plain shallows), no vertex of
 	// the grass group touches plain water (the beaches stay a fixed point of layBeaches), no mud lies
-	// within 20 tiles of a colony's workers, no moss within 24 and no thicket within 12, and every colony walks
+	// (nor moss) within 6 tiles of a colony's workers, no thicket within 12, and every colony walks
 	// to stone (the swamp's quarries are the stone band above its beaches) unless stone is off.
 	const auto checkTerrain = [&](const Game &g, int teams, const auto &result, bool stone)
 	{
@@ -5139,8 +5145,7 @@ inline void swampContracts()
 			for (int i : tiles)
 				workers[size_t(i)] = 1;
 		const std::vector<int> fromLand = stepsFrom(t, land);
-		const std::vector<unsigned char> near20 = dilate(t, workers, 20), near12 = dilate(t, workers, 12),
-										 near24 = dilate(t, workers, 24);
+		const std::vector<unsigned char> near6 = dilate(t, workers, 6), near12 = dilate(t, workers, 12);
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
 			{
@@ -5149,9 +5154,9 @@ inline void swampContracts()
 				if (group == TerrainGroup::DeepWater)
 					assert(fromLand[size_t(i)] >= 3);
 				if (group == TerrainGroup::Rough)
-					assert(!near20[size_t(i)]);
+					assert(!near6[size_t(i)]);
 				if (group == TerrainGroup::Fertile)
-					assert(!near24[size_t(i)]);
+					assert(!near6[size_t(i)]);
 				if (group == TerrainGroup::Obstacles)
 					assert(!near12[size_t(i)]);
 				if (group == TerrainGroup::Grass)
@@ -5223,6 +5228,7 @@ inline void swampContracts()
 		{
 			D r = make(dimension, dimension, teams, 11);
 			r.options["climate"] = climate;
+			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			assert(choice(result, "swamp.climate") == names[climate - 1]);
@@ -5255,6 +5261,7 @@ inline void swampContracts()
 		// deposits, units and rule groups (water, sand and grass alone), and with every layer on the
 		// deposits are identical too. Walking changes only at thicket (blocked) and causeways (opened).
 		D on = make(8, 8, 4, 17), off = make(8, 8, 4, 17);
+		on.options["moss"] = 1;
 		off.options["deep-water"] = 0;
 		off.options["mudflats"] = 0;
 		off.options["moss"] = 0;
@@ -5309,6 +5316,7 @@ inline void swampContracts()
 				for (int dy = -6; dy <= 6 && open; ++dy)
 					for (int dx = -6; dx <= 6 && open; ++dx)
 						open = ringed.map.terrainPropertiesAt(cx + dx, cy + dy).walkable &&
+							   !ringed.map.isResource(cx + dx, cy + dy) &&
 							   terrainGroup(ringed.map.vertexTerrainAt(cx + dx, cy + dy)) == TerrainGroup::Grass;
 				for (const auto &tiles : workers)
 					for (int i : tiles)
@@ -5321,7 +5329,10 @@ inline void swampContracts()
 							ringed.map.setVertexTerrain(cx + dx, cy + dy, THICKET);
 				drawn = true;
 			}
-		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		const std::string ringError = definition.validateWorld(ringed, check);
+		if (ringError.find("cuts ground off") == std::string::npos)
+			std::fprintf(stderr, "Swamp ring of thicket (drawn %d): %s\n", int(drawn), ringError.c_str());
+		assert(drawn && ringError.find("cuts ground off") != std::string::npos);
 		const int home = workers[1].front();
 		Game crowded(nullptr);
 		build(crowded, on, "hammocks once more");
@@ -5329,7 +5340,7 @@ inline void swampContracts()
 		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
 		Game muddy(nullptr);
 		build(muddy, on, "mud near home");
-		muddy.map.setVertexTerrain((home % 256 + 10) & 255, home / 256, MUD);
+		muddy.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, MUD);
 		assert(definition.validateWorld(muddy, check).find("too near a colony") != std::string::npos);
 		Game shore(nullptr);
 		build(shore, on, "deep on the shore");
