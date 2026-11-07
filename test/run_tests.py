@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-"""Run the native doctest binaries: glob2-engine-tests and glob2-unit-tests.
+"""Run the native doctest binaries: glob2-engine-tests, glob2-unit-tests and the module
+binaries carved out of them, glob2-sim-tests and glob2-map-tests.
 
 Every engine test case runs in its own process with a disposable profile, dummy SDL
 drivers unless it is tagged [display], a timeout and captured output shown only on
 failure. Headless unit cases share a process; display unit cases run separately. Results are merged into one JUnit file
 and, under GitHub Actions, into the step summary with per-failure annotations.
 Fullscreen checks within display cases run only with --fullscreen.
+
+Binaries: --binary engine runs glob2-engine-tests and glob2-sim-tests (cases moved
+out of the engine binary keep its one-process-per-case policy and its coverage
+labels); --binary unit runs glob2-unit-tests and glob2-map-tests; --binary sim or
+map runs one module binary alone; all (the default) runs every built binary. Each
+module test file must list at least the cases test/tests.py MODULE_CASE_FLOORS
+records for it, so a case moved out of engine or unit cannot silently disappear.
 
 Tags are bracketed words at the end of a test-case name:
   [display]        needs a real window; xvfb on Linux, skipped on Windows and --no-display
@@ -57,7 +65,14 @@ from build_paths import native_build_directory  # noqa: E402
 sys.path.insert(0, str(ROOT / 'scons'))
 import jobserver  # noqa: E402
 
-BINARIES = {'engine': 'glob2-engine-tests', 'unit': 'glob2-unit-tests'}
+BINARIES = {'engine': 'glob2-engine-tests', 'unit': 'glob2-unit-tests',
+            'sim': 'glob2-sim-tests', 'map': 'glob2-map-tests'}
+# Runner policy, compatibility filters and coverage labels follow the binary a
+# module's cases came from.
+FAMILY = {'engine': 'engine', 'sim': 'engine', 'unit': 'unit', 'map': 'unit'}
+SELECTIONS = {'engine': ('engine', 'sim'), 'unit': ('unit', 'map'), 'sim': ('sim',), 'map': ('map',),
+              'all': ('engine', 'sim', 'unit', 'map')}
+MODULE_PROGRAMS = ('sim', 'map')
 DEFAULT_TIMEOUT = 120
 DISPLAY_TIMEOUT = 300
 SLOW_TIMEOUT = 600
@@ -68,12 +83,16 @@ PREFERENCES_MARKER = 'rememberUnit=1\n'
 
 @dataclass
 class Case:
-    binary: str
+    binary: str          # the runner family: engine or unit
     suite: str
     name: str
     file: str = ''
     line: int = 0
     tags: list = field(default_factory=list)
+    program: str = ''    # the executable that holds the case (BINARIES); defaults to binary
+
+    def __post_init__(self):
+        self.program = self.program or self.binary
 
     @property
     def label(self):
@@ -105,11 +124,15 @@ class Job:
     without_benchmarks: bool = False  # a whole-binary job that skips only the [benchmark] cases
 
     @property
+    def program(self):
+        return self.cases[0].program if self.cases else self.binary
+
+    @property
     def label(self):
         if not self.whole:
             return self.cases[0].label
         suite = f' {self.cases[0].suite}' if self.subset and self.cases[0].suite else ''
-        return f'{BINARIES[self.binary]}{suite} ({len(self.cases)} cases)'
+        return f'{BINARIES[self.program]}{suite} ({len(self.cases)} cases)'
 
     @property
     def display(self):
@@ -166,9 +189,40 @@ def parse_listing(xml_text, kind):
     cases = []
     for element in ET.fromstring(xml_text).iter('TestCase'):
         name = element.get('name', '')
-        cases.append(Case(kind, element.get('testsuite', ''), name, element.get('filename', ''),
-                          int(element.get('line', '0') or 0), parse_tags(name)))
+        cases.append(Case(FAMILY[kind], element.get('testsuite', ''), name, element.get('filename', ''),
+                          int(element.get('line', '0') or 0), parse_tags(name), program=kind))
     return cases
+
+
+def module_registry():
+    """{program: registered test files} and the case floors from test/tests.py."""
+    sys.path.insert(0, str(ROOT / 'test'))
+    import tests
+    assigned = {kind: {tests.source_path(entry if isinstance(entry, str) else entry[0]) for entry in entries}
+                for kind, entries in (('map', tests.MAP_TESTS), ('sim', tests.SIM_TESTS))}
+    return assigned, tests.MODULE_CASE_FLOORS
+
+
+def case_contract(cases, listed, assigned, floors):
+    """Problems with the module inventory: a registered module test file that a listed
+    module binary reports with fewer cases than its floor, a file listed by a binary it
+    is not registered to (it would run twice), or a floor no module registers."""
+    counts = Counter((case.program, Path(case.file).as_posix()) for case in cases)
+    problems = []
+    for kind in listed:
+        for path in sorted(assigned.get(kind, ())):
+            count, floor = counts[(kind, path)], floors.get(path, 0)
+            if count < floor:
+                problems.append(f'{BINARIES[kind]} lists {count} cases from {path}; '
+                                f'MODULE_CASE_FLOORS records {floor}')
+    owners = {path: kind for kind, paths in assigned.items() for path in paths}
+    for (program, path), count in sorted(counts.items()):
+        if path in owners and owners[path] != program:
+            problems.append(f'{BINARIES[program]} lists {count} cases from {path}, '
+                            f'which test/tests.py assigns to {BINARIES[owners[path]]}')
+    problems += [f'MODULE_CASE_FLOORS names {path}, which no module binary registers'
+                 for path in sorted(set(floors) - set(owners))]
+    return problems
 
 
 def note_compile_profile(build_dir):
@@ -283,8 +337,9 @@ def shard(items, spec, timings=None, auxiliary=()):
 def make_jobs(cases, args, all_cases=None):
     """all_cases: the full listing, so a whole-binary job knows when a filter applied."""
     jobs = []
-    for kind in ('unit', 'engine'):
-        mine = [case for case in cases if case.binary == kind]
+    for program in ('unit', 'map', 'engine', 'sim'):
+        kind = FAMILY[program]
+        mine = [case for case in cases if case.program == program]
         if not mine:
             continue
         if kind == 'unit':
@@ -295,7 +350,7 @@ def make_jobs(cases, args, all_cases=None):
             if not mine:
                 continue
         if kind == 'unit' or args.in_process:
-            everything = [case for case in (all_cases or []) if case.binary == kind]
+            everything = [case for case in (all_cases or []) if case.program == program]
             if kind == 'unit':
                 everything = [case for case in everything if not case.display]
             left_out = [case for case in everything if case not in mine]
@@ -389,7 +444,7 @@ def xvfb_prefix(job):
 
 
 def run_job(job, args, build_dir):
-    binary = binary_path(build_dir, job.binary)
+    binary = binary_path(build_dir, job.program)
     keep = args.keep_profiles
     root = Path(tempfile.mkdtemp(prefix='glob2-test-'))
     profile, work, home = root / 'profile', root / 'work', root / 'home'
@@ -690,7 +745,11 @@ def report(results, skipped, args):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--build-dir', type=Path, default=None, help='native build directory (default: GLOB2_BUILD_DIR, else the newest of the dev_build.py and release outputs)')
-    parser.add_argument('--binary', choices=['engine', 'unit', 'all'], default='all')
+    parser.add_argument('--binary', choices=list(SELECTIONS), default='all',
+                        help='engine: the engine and sim binaries; unit: the unit and map binaries; '
+                             'sim, map: one module binary; all: every built binary (default)')
+    parser.add_argument('--allow-missing-modules', action='store_true',
+                        help='with --binary engine or unit, skip an unbuilt sim or map binary instead of failing')
     parser.add_argument('--coverage-profile', choices=['full', 'compatibility'], default='full', help='secondary native compatibility inventory; primary Linux remains full')
     parser.add_argument('--write-inventory', type=Path, help='retain eligible and assigned native cases for coverage auditing')
     parser.add_argument('--list', action='store_true', help='print the selected cases and exit')
@@ -734,17 +793,21 @@ def main(argv=None):
     build_dir = (args.build_dir or native_build_directory()).resolve()
     from dev_store import require_free_space
     require_free_space(args.artifacts, 'the test run')
-    kinds = ['engine', 'unit'] if args.binary == 'all' else [args.binary]
-    cases = []
-    for kind in kinds:
+    cases, listed = [], []
+    for kind in SELECTIONS[args.binary]:
         binary = binary_path(build_dir, kind)
         if not binary.exists():
-            if args.binary == 'all':
+            if args.binary == 'all' or (kind in MODULE_PROGRAMS and args.allow_missing_modules):
                 print(f'[run_tests] {binary} is not built; skipping', flush=True)
                 continue
-            raise SystemExit(f'{binary} is not built; run: scons release=1 server=0 {kind}-tests')
+            moved = f' (it holds cases moved out of {BINARIES[FAMILY[kind]]})' if kind in MODULE_PROGRAMS else ''
+            raise SystemExit(f'{binary} is not built; run: scons release=1 server=0 {FAMILY[kind]}-tests{moved}')
         cases += list_cases(binary, kind)
+        listed.append(kind)
     note_compile_profile(build_dir)
+    problems = case_contract(cases, listed, *module_registry())
+    if problems:
+        raise SystemExit('[run_tests] module case contract failed:\n  ' + '\n  '.join(problems))
     if args.coverage_profile == 'compatibility':
         args.compatibility_filters = json.loads((ROOT / 'test/ci-compatibility.json').read_text())
     kept, skipped = select(cases, args)
@@ -828,7 +891,7 @@ def main(argv=None):
             'seconds': {r.job.label: max(0.001, r.seconds) for r in results if r.status == 'pass'}}, indent=2) + '\n')
     if args.write_coverage_map:
         import case_coverage
-        binaries = sorted({binary_path(build_dir, job.binary) for job in jobs})
+        binaries = sorted({binary_path(build_dir, job.program) for job in jobs})
         count = case_coverage.write_map(args.profile_per_job, binaries, args.write_coverage_map,
                                         args.llvm_profdata, args.llvm_cov)
         print(f'[run_tests] coverage map: {args.write_coverage_map} ({count} cases)', flush=True)

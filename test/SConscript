@@ -111,13 +111,38 @@ engine = test_env.Program('glob2-engine-tests',
 unit = test_env.Program('glob2-unit-tests',
     objects(native_support + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
     + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
+# Module test binaries: archives instead of every client object, so the linker pulls
+# only the members a test reaches. Map and sim still reference each other, so GNU ld
+# resolves the archives as one group; ld64 and lld rescan archives on their own.
+Import('module_libraries')
+module_env = test_env.Clone()
+if env['PLATFORM'] != 'darwin' and '$SOURCES' in module_env['LINKCOM']:
+    module_env['LINKCOM'] = module_env['LINKCOM'].replace('$SOURCES', '-Wl,--start-group $SOURCES -Wl,--end-group', 1)
+
+
+def module_program(target, entries, prefix, production, libraries):
+    return module_env.Program(target, objects(entries, prefix) + production_objects(production)
+                              + [module_libraries[name] for name in libraries] + client_libs)
+
+
+map_tests = module_program('glob2-map-tests', native_support + registry.MAP_STUBS + registry.MAP_TESTS, 'map-',
+                           registry.MAP_PRODUCTION_SOURCES, ['map'])
+sim_tests = module_program('glob2-sim-tests', native_support + registry.SIM_SUPPORT + registry.SIM_STUBS
+                           + registry.SIM_TESTS, 'sim-', registry.SIM_PRODUCTION_SOURCES, ['sim', 'map'])
 if env.get('RUNTIME_ASSET_STAMP'):
-    test_env.Depends([engine, unit], env['RUNTIME_ASSET_STAMP'])
+    test_env.Depends([engine, unit, map_tests, sim_tests], env['RUNTIME_ASSET_STAMP'])
 engine_provenance = attach_sidecar(test_env, engine)
 unit_provenance = attach_sidecar(test_env, unit)
-test_env.Alias('engine-tests', [engine, engine_provenance])
-test_env.Alias('unit-tests', [unit, unit_provenance])
-test_env.Alias('tests', [engine, unit, engine_provenance, unit_provenance])
+map_provenance = attach_sidecar(test_env, map_tests)
+sim_provenance = attach_sidecar(test_env, sim_tests)
+test_env.Alias('map-tests', [map_tests, map_provenance])
+test_env.Alias('sim-tests', [sim_tests, sim_provenance])
+# The module binaries hold cases moved out of these two, so building either keeps the
+# complete inventory that `run_tests.py --binary engine|unit` runs.
+test_env.Alias('engine-tests', [engine, engine_provenance, sim_tests, sim_provenance])
+test_env.Alias('unit-tests', [unit, unit_provenance, map_tests, map_provenance])
+test_env.Alias('tests', [engine, unit, map_tests, sim_tests,
+                         engine_provenance, unit_provenance, map_provenance, sim_provenance])
 
 tools = []
 for target, source, alias, group in registry.PROGRAMS:
@@ -133,6 +158,7 @@ for target, source, alias, group in registry.PROGRAMS:
         tools += program
 test_env.Alias('glob2-tools', tools)
 
-binaries = {'glob2-engine-tests': engine, 'glob2-unit-tests': unit}
+binaries = {'glob2-engine-tests': engine, 'glob2-unit-tests': unit, 'glob2-map-tests': map_tests,
+            'glob2-sim-tests': sim_tests}
 for old, new in registry.LEGACY_ALIASES.items():
     test_env.Alias(old, binaries[new])

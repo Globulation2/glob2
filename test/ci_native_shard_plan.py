@@ -27,7 +27,9 @@ def main():
     args=SimpleNamespace(in_process=False,no_display=False,quick=False,filter=[],tag=[],exclude_tag=['map-generators'])
     if a.coverage_profile == 'compatibility':
         args.compatibility_filters=json.loads((run_tests.ROOT/'test/ci-compatibility.json').read_text())
-    cases=run_tests.list_cases(run_tests.binary_path(a.build_dir,'engine'),'engine')
+    # The engine shards run glob2-engine-tests and the glob2-sim-tests cases moved out of it.
+    cases=[case for kind in run_tests.SELECTIONS['engine']
+           for case in run_tests.list_cases(run_tests.binary_path(a.build_dir,kind),kind)]
     kept,_=run_tests.select(cases,args)
     result=plan(run_tests.make_jobs(kept,args,cases),json.loads(a.auxiliary_jobs.read_text()),a.count,run_tests.load_timings(a.timing_profile))
     output=''.join(f'{key}={value}\n' for key,value in result.items())

@@ -92,7 +92,13 @@ client_object_by_source = dict(zip(client_cpp_sources, client_objects))
 client_objects = unique(client_objects)
 client_objects += platform_trust_sources
 client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
-Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog')
+# Module libraries over the same objects (scons/sources.py MODULE_SOURCES). Only the
+# module test binaries link them; the game keeps linking the loose objects above.
+from sources import MODULE_SOURCES
+module_libraries = {name: local.StaticLibrary('glob2_' + name, unique(
+                        [client_object_by_source[source] for source in group if source in client_object_by_source]))
+                    for name, group in MODULE_SOURCES.items()}
+Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog', 'module_libraries')
 
 
 lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
