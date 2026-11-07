@@ -102,6 +102,9 @@ constexpr int kGroveTiles = 5, kQuarryRadius = 2, kSeraiWheat = 18, kSeraiPalms 
 // and scattered oases one per so many desert tiles by the Oases control; radii 4 to 8, a pond at
 // a third of the radius, off centre; palms and grain in proportion.
 constexpr int kWaySpacing = 32, kLeastOasis = 4, kMostOasis = 10, kOasisGap = 8;
+// Caravan roads bend round heavy going: noise kRoadSwayCell tiles across adds up to kRoadSway to a
+// desert step's cost (see the routes in design).
+constexpr int kRoadSwayCell = 40, kRoadSway = 24;
 constexpr int kDesertTilesPerOasis[3] = {3200, 1800, 1100};
 // Mesas: the noise field's top share of the open desert by the Desert control, kept this far from
 // every oasis, town and route.
@@ -595,6 +598,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<unsigned char> wallCorner = tileCorners(t, wallTile);
 	const std::vector<int> fromFeature = stepsFrom(t, feature);
 	const std::vector<int> relief = fractalNoise(t.w, t.h, 48, 3, context.stream("caravanserai-mesas"));
+	// The going: broad swells of noise kRoadSwayCell tiles across, up to kRoadSway on a step that
+	// costs 14 in the open, so a caravan route bends round the heavy going as a track across real
+	// sand does (the relief alone, at most 7, drew roads ruler-straight). Its own stream, so the mesas
+	// and dunes draw exactly as before.
+	const std::vector<int> going = fractalNoise(t.w, t.h, kRoadSwayCell, 2, context.stream("caravanserai-going"));
 	for (const Serai &serai : L.serais)
 		for (const int k : {serai.a, serai.b})
 		{
@@ -608,7 +616,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				[&](int, int to, int dx, int dy)
 				{
 					return (dx && dy ? 14 : 10) + (L.oasisOf[to] >= 0 ? 0 : 4) + relief[to] / 8192 +
-						   (wallTile[to] ? 100000 : 0);
+						   (L.oasisOf[to] >= 0 ? 0 : going[to] * kRoadSway / 65536) + (wallTile[to] ? 100000 : 0);
 				});
 			// The road: the desert part of the walk, and its way across the caravanserai's oasis.
 			for (int i : path)
@@ -1110,6 +1118,13 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// Every quarry face cut into a mesa still holds its stone.
 	if (const std::string fault = quarryFault(map, t, L.quarry, std::vector<int>(n, -1), teams, 0); !fault.empty())
 		return fault;
+	// quarryFault passes a tile that cannot hold stone; here every face tile must, since the design keeps
+	// its corners and the ring before it grass (a spoiled one would be a hole in the mesa, not a quarry).
+	for (int i = 0; i < n; ++i)
+		if (L.quarry[i] && !(map.isResource(t.remainderX(i), i / t.w) &&
+							 map.getResource(t.remainderX(i), i / t.w).type == STONE))
+			return "A quarry face at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
+				   ") holds no stone.";
 	const auto at = [&](int i) { return std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w); };
 	// Every home is colony 0's, tile for tile, by the rules each tile plays by (the looks round it
 	// may differ; its rules may not). One facing makes every home a translation of the first.
