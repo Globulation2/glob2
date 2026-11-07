@@ -109,6 +109,9 @@ against 288. No home island was overgrown with wood at the end. One game varies 
   `lagoons` to 0 for revision 8's sandbar count.
 - Swimming through the deep lagoon beds is slower than revision 8's shallow water; no AI game has
   measured swimmers.
+- Generation takes about a third longer than revision 8 (a 512x512 map with eight colonies in 9.2 s
+  against 6.9 s on the same development build, so about 1.8 s of release-build time against 1.3 s):
+  the channels, banks and deep cores are whole-map passes, and the validator rebuilds the design.
 - No rotation tournament or human playtest has been recorded for revision 9.
 
 ## Verification
