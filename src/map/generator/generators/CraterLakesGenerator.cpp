@@ -63,8 +63,8 @@ using namespace MapGeneration;
 //   water, the lake middles: the algae there move to the nearest free shallows of the same lake, as
 //   many as were taken, so the algae amount holds and the algae sit where a shore is in reach. Deep
 //   water waters the land like water but is slower to swim (a feel change).
-// - Crater rims (`crater-rims`): a band of tiles kRimInner to kRimInner + thickness vertex steps
-//   from the water of every lake of kRimBody vertices or more, outside the farmland at the shore,
+// - Crater rims (`crater-rims`): a band of tiles kRimInner to kRimInner + thickness tiles in a
+//   straight line (so the band follows a round lake round, not as a square) from the water of every lake of kRimBody vertices or more, outside the farmland at the shore,
 //   cut by angle round the lake into sectors and drawn as runs of rock sectors parted by runs of
 //   open ones (the crater type sets the run lengths), so a rim is never a closed ring. The rock is
 //   Ridges (impassable, towers shoot over), never on a tile holding fruit, a building or a unit,
@@ -77,8 +77,9 @@ using namespace MapGeneration;
 //   scree: slow, unbuildable, does not inhibit growth). The rock keeps kRimHome tiles off the homes
 //   because closer in it took farmland within a colony's first 24 steps (growth potential there
 //   fell 4%, the worst colony's 10%); from 24 tiles it is unchanged.
-// - Outer rings: grass on the outer flank, kLoamDeep vertices beyond the rim band, is loam (Fertile:
-//   buildable crop land that waters the land itself), in patches where a noise field allows.
+// - Outer rings: grass on the outer flank, from the rim band's outer row to kLoamDeep tiles
+//   (straight-line) beyond it, is loam (Fertile: buildable crop land that waters the land itself), in
+//   patches where a noise field allows.
 // - Every layer leaves the home garden, kPlainHome tiles round a swarm, plain grass: the kits and
 //   the starting-crop guarantee are laid on plain grass, and the garden reads as a clearing.
 // - Uplands: grass kUplandWater or more steps from any water is barren heath or tundra where a
@@ -101,7 +102,7 @@ constexpr const char *kTypeStream = "crater-lakes-type";
 constexpr double kDeepReach = 4.5, kDeepFray = 1.5;
 constexpr int kDeepSteps = 4, kDeepLeast = 12;
 // Rims: lakes of kRimBody water vertices or more; rock tiles have every corner kRimInner to
-// kRimInner + thickness steps from water; a sector is about kSectorLength tiles of rim; no rim
+// kRimInner + thickness tiles from water in a straight line; a sector is about kSectorLength tiles of rim; no rim
 // within kNeckReach steps of a second lake's water.
 constexpr int kRimBody = 80, kRimInner = 6, kSectorLength = 7, kNeckReach = 12;
 // Straight-line distances kept from a swarm's footprint (each frayed outward by up to kHomeFray):
@@ -111,8 +112,11 @@ constexpr double kRimHome = 24, kQuarryHome = 24, kCropKeep = 34, kPlainHome = 1
 // Quarry faces: one wanted per colony plus one per kTilesPerFace tiles of map at the default stone
 // amount; a face is the outer-flank tiles within kFaceHalf of its middle, at least kFaceLeast.
 constexpr int kTilesPerFace = 32768, kFaceHalf = 2, kFaceLeast = 3;
-// Loam reaches kLoamDeep vertices beyond the rim band (frayed by two either way), where a noise field
-// stays under kLoamGate, so the outer ring comes in patches rather than as a drawn band.
+// Loam lies from the rim band's outer row (one tile inside its edge, where the step band used to end) to
+// kLoamDeep tiles (straight-line) beyond the band (frayed by two either way), where a noise field stays
+// under kLoamGate, so the outer ring comes in patches rather than as a drawn band. Started at the band's
+// edge, the narrower straight-line ring cost a tenth of the map's food (seeds 1-6: 2,271 against 2,538);
+// from its outer row the total is 2,395.
 constexpr int kLoamDeep = 3, kLoamGate = 40000;
 // Upland pavement: grass kUplandWater steps or more from water, where noise passes kUplandCut.
 constexpr int kUplandWater = 24, kUplandCut = 30000;
@@ -120,18 +124,21 @@ constexpr int kUplandWater = 24, kUplandCut = 30000;
 // ground lies (the pass keeps further: workers stand a few tiles off the swarm's footprint).
 constexpr double kRockHomeCheck = 20, kGardenCheck = 8;
 
+// The band is measured in straight-line tiles, a tile deeper than it was in eight-connected steps:
+// along a diagonal a band of steps is 1.4 times as wide, and at the same depth in tiles the rims kept
+// about half their rock.
 struct CraterType
 {
 	const char *name;
 	int onMost, offLeast, offSpan; // a rock run is 1..onMost sectors, an open run offLeast..offLeast+offSpan-1
-	int thickness;                 // the rim band's vertex rows beyond kRimInner
+	int thickness;                 // how far the rim band reaches beyond kRimInner, in straight-line tiles
 	TerrainType deep, rock, rough, loam, upland, uplandSecond, beach, dune, duneSecond;
 	int lush, dry; // grass lush within `lush` steps of water, dry from `dry` steps
 };
 constexpr CraterType kTypes[2] = {
-	{"maar", 3, 1, 2, 3, DEEP_WATER, RIDGE_ROCK, PUMICE, LOAM, HEATH, VOLCANIC_ASH, SAND, DUNE_SAND,
+	{"maar", 3, 1, 2, 4, DEEP_WATER, RIDGE_ROCK, PUMICE, LOAM, HEATH, VOLCANIC_ASH, SAND, DUNE_SAND,
 	 WINDY_SAND_DUNE, 6, 20},
-	{"kettle", 2, 2, 3, 2, DARK_WATER, OUTCROP, SCREE, MOSS, TUNDRA, HEATH, PALE_SAND, PALE_SAND, DUNE_SAND, 9,
+	{"kettle", 2, 2, 3, 3, DARK_WATER, OUTCROP, SCREE, MOSS, TUNDRA, HEATH, PALE_SAND, PALE_SAND, DUNE_SAND, 9,
 	 24}};
 
 // Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
@@ -283,7 +290,7 @@ struct Rims
 
 Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const CraterType &type,
 			  const std::vector<int> &body, const std::vector<int> &bodySize, const std::vector<int> &fromWater,
-			  const TerrainSketch &mech, const HomeDistance &home, int stone)
+			  const std::vector<int> &rimReach, const TerrainSketch &mech, const HomeDistance &home, int stone)
 {
 	const int n = t.size(), teams = context.request.nbTeams;
 	Rims out;
@@ -303,7 +310,9 @@ Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const 
 		const int kind = map.getResource(x, y).type;
 		return kind == STONE || ((kind == WHEAT || kind == WOOD) && home.clear(i, kCropKeep));
 	};
-	// The rim band: tiles whose every corner lies kRimInner..outer steps from water, nearest one lake.
+	// The rim band: tiles whose every corner lies kRimInner..outer tiles from water in a straight line
+	// (eight-connected steps drew the band, and so the rock, as squares round round lakes), nearest one
+	// lake.
 	std::vector<int> rimBody(size_t(n), -1);
 	std::vector<int> rimCount(static_cast<size_t>(bodies), 0);
 	for (int i = 0; i < n; ++i)
@@ -318,7 +327,7 @@ Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const 
 		forCorners(t, i,
 				   [&](int v)
 				   {
-					   inBand = inBand && fromWater[v] >= kRimInner && fromWater[v] <= outer && !neck[v] &&
+					   inBand = inBand && rimReach[v] >= kRimInner && rimReach[v] <= outer && !neck[v] &&
 								mech[v] != WATER && reach.body[v] >= 0;
 					   if (owner == -2)
 						   owner = reach.body[v];
@@ -428,7 +437,7 @@ Rims planRims(const Map &map, const Torus &t, GenerationContext &context, const 
 		if (arcMask[i] || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
 			continue;
 		bool grass = true;
-		forCorners(t, i, [&](int v) { grass = grass && mech[v] == GRASS && fromWater[v] >= outer; });
+		forCorners(t, i, [&](int v) { grass = grass && mech[v] == GRASS && rimReach[v] >= outer; });
 		open[i] = grass;
 	}
 	const std::vector<int> fromOpen = stepsFrom(t, open);
@@ -669,12 +678,18 @@ bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions
 		if (l >= 0)
 			++bodySize[l];
 	const std::vector<int> fromWater = stepsFrom(t, water);
-	// The straight-line distance too, for the looks and the uplands: step contours are squares.
+	// The straight-line distance too, for the rims, the talus, the loam, the looks and the uplands:
+	// step contours are squares. rimReach is it rounded to whole tiles; wetReach is frayed by noise.
 	std::vector<double> wetReach(size_t(n), 0);
+	std::vector<int> rimReach(size_t(n), INT_MAX);
 	{
 		const std::vector<std::int64_t> d2 = distanceSquaredTo(t, water);
 		for (int i = 0; i < n; ++i)
+		{
 			wetReach[i] = d2[i] < 0 ? 1e9 : std::sqrt(double(d2[i])) + 4.0 * (fray[i] - 32768) / 32768;
+			if (d2[i] >= 0)
+				rimReach[i] = int(std::lround(std::sqrt(double(d2[i]))));
+		}
 	}
 
 	// Corners of tiles holding a building, a unit or a deposit other than wheat, wood and stone keep
@@ -695,7 +710,7 @@ bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions
 	rims.quarry.assign(size_t(n), 0);
 	rims.rock.assign(size_t(n), 0);
 	if (o.crater_rims)
-		rims = planRims(map, t, context, type, body, bodySize, fromWater, mech, home, o.stone);
+		rims = planRims(map, t, context, type, body, bodySize, fromWater, rimReach, mech, home, o.stone);
 	for (int i = 0; i < n; ++i)
 		if (rims.rock[i])
 		{
@@ -753,13 +768,13 @@ bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions
 			continue;
 		const bool free = !kept[i];
 		if (nearRock[i] && free && (mech[i] == GRASS || mech[i] == SAND) && fromWater[i] >= 2 &&
-			fromWater[i] <= kRimInner && home.clear(i, kPlainHome))
+			rimReach[i] <= kRimInner && home.clear(i, kPlainHome))
 		{
 			mech[i] = SCREE;
 			++counts.talus;
 		}
-		else if (mech[i] == GRASS && fromWater[i] >= outer && moor[i] < kLoamGate &&
-				 fromWater[i] <= outer + kLoamDeep + (fray[i] - 32768) * 2 / 32768 && reach.body[i] >= 0 &&
+		else if (mech[i] == GRASS && rimReach[i] >= outer - 1 && moor[i] < kLoamGate &&
+				 rimReach[i] <= outer + kLoamDeep + (fray[i] - 32768) * 2 / 32768 && reach.body[i] >= 0 &&
 				 bodySize[reach.body[i]] >= kRimBody && home.clear(i, kPlainHome))
 		{
 			// The outer ring of dark soil. Crops on it stay legal (Fertile holds the grass deposits).
@@ -899,12 +914,16 @@ bool craterPass(Game &game, GenerationContext &context, const CraterLakesOptions
 				++quarryStone;
 			}
 		}
-	const std::vector<int> noOwner(size_t(n), -1);
-	if (const std::string fault = quarryFault(map, t, rims.quarry, noOwner, 0, 0); !fault.empty())
-	{
-		context.detail = fault;
-		return false;
-	}
+	// Every face tile must hold its stone: a face is on pure grass by construction, so one that cannot is
+	// a defect, refused rather than drawn as a face with nothing in it.
+	for (int i = 0; i < n; ++i)
+		if (rims.quarry[i] && (!map.isResource(t.remainderX(i), i / t.w) ||
+							   map.getResource(t.remainderX(i), i / t.w).type != STONE))
+		{
+			context.detail = "A quarry face at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
+							 ") holds no stone.";
+			return false;
+		}
 
 	context.telemetry.choice("crater-lakes.type", type.name);
 	context.telemetry.choice("crater-lakes.deep-water", o.deep_water ? "on" : "off");
