@@ -5,7 +5,6 @@
 #include "ScriptValue.h"
 #include "ScriptQueryStorage.h"
 #include "TerrainType.h"
-#include "Version.h"
 #include "ai/observation/AIWorldView.h"
 #include <array>
 #include <memory>
@@ -110,6 +109,7 @@ class Observations
 	Value query(const std::string &name, const std::vector<Value> &args,
 				const QueryBudget &budget = {}) const;
 	void save(GAGCore::OutputStream *stream) const;
-	void load(GAGCore::InputStream *stream, int version = VERSION_MINOR);
+	void load(GAGCore::InputStream *stream); // current format
+	void load(GAGCore::InputStream *stream, int version);
 };
 } // namespace Script

@@ -7,7 +7,6 @@
 #include "UnitStatistics.h"
 #include <array>
 #include <span>
-#include "Version.h"
 #include "IntBuildingType.h"
 #include "Ressource.h"
 
@@ -431,7 +430,9 @@ public:
   static Uint32 measurementChecksum(const GameplayMeasurements&);
   void printEconomy(const Team*, Uint32 tick) const;
   static void saveSample(GAGCore::OutputStream*, const TeamStatsSample&);
-  static TeamStatsSample loadSample(GAGCore::InputStream*, int versionMinor = VERSION_MINOR,bool privateAdaptive174=false);
+  // Current-format load; defined in TeamStat.cpp so this header needs no version constants.
+  static TeamStatsSample loadSample(GAGCore::InputStream*);
+  static TeamStatsSample loadSample(GAGCore::InputStream*, int versionMinor, bool privateAdaptive174=false);
 
 
   std::shared_ptr<const TeamStats> frozenDisplay() const;

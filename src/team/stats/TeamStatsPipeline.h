@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ComputeExecutor.h"
-#include "Version.h"
 #include "TeamStat.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include <deque>
@@ -50,7 +49,8 @@ class TeamStatsPipeline
 	void prepareBoundary(Game &, const SimulationSnapshot::Handle &);
 	void drain(JoinReason reason = JoinReason::Teardown);
 	void save(GAGCore::OutputStream *);
-	void load(Game &, GAGCore::InputStream *, int versionMinor = VERSION_MINOR);
+	void load(Game &, GAGCore::InputStream *); // current format
+	void load(Game &, GAGCore::InputStream *, int versionMinor);
 	// Full verification joins computation without advancing publication.
 	Uint32 checkSum(bool heavy = false);
 };
