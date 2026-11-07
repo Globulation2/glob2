@@ -8,7 +8,7 @@
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainStones.h"
-#include "map/TerrainTypeTable.h"
+#include "map/TerrainGroupTable.h"
 #include "render/scene/SceneMap.h"
 #include <algorithm>
 #include <fstream>

@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # definitions, but no simulation object headers.
 TERRAIN_HEADERS = (
     'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'CellRules.h', 'TerrainRegistry.h',
-    'TerrainTypeTable.h', 'TerrainGroup.h', 'TerrainPropertiesLayout.h',
+    'TerrainGroupTable.h', 'TerrainGroup.h', 'TerrainPropertiesLayout.h',
 )
 
 FIELD_HEADERS = ('TerrainMovementCosts.h', 'PreparedTerrainCosts.h', 'GradientCosts.h', 'TerrainHazardCost.h', 'GradientBucket.h', 'GradientConstants.h')

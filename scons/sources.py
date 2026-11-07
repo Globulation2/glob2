@@ -292,6 +292,7 @@ CLIENT_SOURCES = (
     'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
+    'map/TerrainCatalog.cpp',
     'map/CellRules.cpp',
     'map/MapAssetBundle.cpp',
     'map/MapSetImport.cpp',

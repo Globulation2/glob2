@@ -242,7 +242,7 @@ to vertices used one pixel per whole tile for these types; they import as
 vertices, so a lone such pixel makes four mixed tiles rather than one whole tile.
 
 The terrain catalogue types export with the `image` colour of their row in
-`src/map/TerrainTypeTable.h` (boulders `#585A5C`, hedge `#264E28`, thicket `#364222`,
+`src/map/TerrainCatalog.cpp` (boulders `#585A5C`, hedge `#264E28`, thicket `#364222`,
 ridge `#626870`, outcrop `#6E706C`, dirt `#80684A`, clay `#9E7054`, shale `#8A8276`,
 heath `#3C7E30`, mud `#604C38`, mudflat `#4A604E`, deep snow `#DEE4EC`, scree
 `#767A80`, brick path `#AA8E68`, boardwalk `#A48054`, lava `#BE501E`, ember field

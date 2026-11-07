@@ -9,6 +9,7 @@
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "CellRules.h"
+#include "io/TerrainFormatHistory.h"
 #include "LegacyTerrainFrames.h"
 #include <algorithm>
 #include <memory>
