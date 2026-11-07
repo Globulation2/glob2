@@ -4634,7 +4634,8 @@ inline void riverContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
 			assert(choice(result, "river.banks") == (r.option("banks") == 1 ? "temperate" : "desert"));
-			assert(measure(result, "river.deep.vertices") > 0 && measure(result, "river.levee.vertices") > 0);
+			// Levees keep 32 tiles off every home, so a small crowded map may have none.
+			assert(measure(result, "river.deep.vertices") > 0 && (r.nbTeams > 2 || measure(result, "river.levee.vertices") > 0));
 			// Every alga the deep water displaced found a shallow.
 			assert(measure(result, "river.algae.reseated") == measure(result, "river.displaced.algae"));
 			checkTerrain(g, r);
@@ -4660,7 +4661,8 @@ inline void riverContracts()
 			if (b == 2 && dimension >= 8)
 				assert(measure(result, "river.hardpan.vertices") > 0 && measure(result, "river.pavement.vertices") > 0);
 			if (dimension >= 8)
-				assert(measure(result, "river.bluffs.placed") > 0 && measure(result, "river.quarry.stone") > 0);
+				assert(measure(result, "river.bluffs.placed") > 0 && measure(result, "river.quarry.stone") > 0 &&
+					   measure(result, "river.levee.vertices") > 0);
 			checkTerrain(g, r);
 		}
 	{

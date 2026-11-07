@@ -68,9 +68,11 @@ using namespace MapGeneration;
 //   again on the nearest free shallows, so the map keeps its algae.
 // - Floodplain levee: grass kLeveeNear to kLeveeFar vertices from water (one more where a noise
 //   peaks) is loam (Fertile): buildable crop land that waters the ground round it at 48/256; never in a
-//   garden or before a quarry face. Five deep (behind the sand band, really two or three) lost 4% of
+//   garden, before a quarry face or within kFertileHomeClear tiles of a swarm (the AIs read loam as
+//   water when they place buildings). Five deep (behind the sand band, really two or three) lost 4% of
 //   the growth potential to the grass/loam edge row, nine gained 40%; seven gains about 5% and pays
-//   for the farmland the bluffs take (see the docs' food table).
+//   for the farmland the bluffs take (see the docs' food table); kept off the homes, the food near
+//   them is revision 5's and the gain lies along the open banks.
 // - Point bars: on the inside of the river's bends (readBends: wetShare over a window a quarter of the
 //   bed's diameter, the river alone, not the ponds, in the banks' top kBarPercentile percent and above
 //   kBarShare; a fixed 17-tile window found no bends on a 90-tile river), the beach and the sand
@@ -110,10 +112,13 @@ constexpr int kDeepSteps = 5, kDeepLeast = 16, kDeepShare = 500;
 constexpr double kGardenRadius = 12, kGardenFray = 5;
 // Levee: grass kLeveeNear to kLeveeFar vertices from water, one more where a noise passes kLeveeWide.
 constexpr int kLeveeNear = 2, kLeveeFar = 7, kLeveeWide = 40000;
-// No Fertile ground within kFertileHomeClear tiles of a swarm's middle: Maxima's placement treats every
-// fertility source (loam as much as water) as water and will not build within five or six tiles of it,
-// so loam rings round Ring world's homes cost it most of its building room (births 73 to 17).
-constexpr double kFertileHomeClear = 20;
+// No Fertile ground within kFertileHomeClear tiles of a swarm's middle: Maxima's and Nicowar's placement
+// treat every fertility source (loam as much as water) as water and will not build within five or six
+// tiles of it, while Nicowar wants its inns 8 to 10 tiles from wheat. Loam rings round Ring world's
+// homes cost Maxima most of its building room (births 73 to 17); here a levee kept 20 tiles off still
+// left Nicowar's first inn nowhere to go on the calibration map (one building in 20,000 ticks, 36
+// births with no levee at all, as in revision 5); from 32 it builds and breeds as before.
+constexpr double kFertileHomeClear = 32;
 // Bends are read over a square of the river's own water a quarter of the bed's diameter in radius
 // (kBendRadiusLeast to kBendRadiusMost): a meander's curve is as broad as its bed. Point bars stand
 // where the share is in the river banks' top kBarPercentile percent and at least kBarShare thousandths,

@@ -65,7 +65,7 @@ guide is warranted.
 | [Rain shadow](rain-shadow.md) | `rain-shadow` | 27 |
 | [Rice terraces](rice-terraces.md) | `rice-terraces` | 52 |
 | [Ring world](ring-world.md) | `ring-world` | 16 |
-| [River](../../src/map/generator/generators/RiverGenerator.cpp) | `river` | 2 |
+| [River](river.md) | `river` | 2 |
 | [Savannah](savannah.md) | `savannah` | 45 |
 | [Sierpiński Gardens](fractal-maps.md) | `sierpinski-gardens` | 49 |
 | [Spider web](spider-web.md) | `spider-web` | 20 |
