@@ -145,6 +145,8 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             # The engine registry exceeds Linux's per-argument shell limit when
             # expanded into one link command. Clang accepts SCons response files.
             tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
@@ -217,6 +219,8 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
+            # Off-host test executables carry their build identity (test/support/BuildProvenance.h).
+            tests.Append(CPPDEFINES=['GLOB2_TEST_PROVENANCE_EMBEDDED'])
             tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
             for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp']:
