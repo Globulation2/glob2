@@ -71,11 +71,45 @@ reads) and paints looks over it with `composeLooks` (`shared/Sketch.h`), so look
 
 ## Food
 
-FOOD_TABLE
+Growth potential (`.agents/skills/glob2-map-design/scripts/growth_potential.c`: the engine's crop
+growth chance summed over farmland, by rule group), 256×256, 4 colonies, seeds 1–3, revision 7
+against revision 6. Climate and rock are looks only and every one measures the same.
+
+| Revision | Total | Within 24 of swarm (worst) | Within 48 (worst) |
+| --- | --- | --- | --- |
+| 6 | 930 | 37.2 (22) | 101.4 (73) |
+| 7, any climate and rock | 942 | 38.2 (27) | 123.5 (104) |
+
+Spring seeps are counted as farmland only where a tile is wholly seep, and their own watering
+(48/256) is counted, so the seep strip is if anything undercounted. The terrain dump of `map study`
+counts a tile whose corners are different looks of one rule group as that group (before
+2026-11-07 it counted them as mixed ground, which read about a sixth less food on maps with looks).
+Scree on the windward foot was tried and dropped: a frayed one-tile skirt there cost 6% of the
+map's growth potential; on the lee side, in front of the sand, scree costs nothing.
+
+One calibration game (seed 101, 256×256, Nicowar, Cortex, Cabino and Maxima, 20,000 ticks) gave
+165 worker births, 2,245 wheat and 384 wood harvested and 64 buildings against revision 6's 113,
+1,457, 276 and 49; on revision 6's map Cortex stalled at 8 units, on revision 7's every colony grew
+past 44. One game on different terrain is a calibration, not a measurement.
 
 ## Limits
 
-LIMITS
+- The ridges are straight across every home's valley (the sway fades out there), so on maps with
+  many colonies much of the ridge length runs straight.
+- The rock blocks about a third of a tile more than `ridge-thickness` says (more where the sealing
+  check thickened it, on steep stretches of thin ridges), so a level-1 tower's reach across a
+  ridge is a little shorter than on revision 6.
+- Stone is much scarcer than on revision 6, where every ridge was stone: each home has one quarry
+  face (at least 8 stone; 18 at the defaults), and the ambient faces and outcrops scale with
+  `stone-amount`.
+- A pass that cannot be shifted clear of a home's quarry is closed (telemetry
+  `rain-shadow.passes.closed`); with one pass per turn that could cut a ridge off, which
+  `validateWorld` refuses, but no seed tried did it.
+- Hardpan pans in the far lee were left out: hardpan does not inhibit growth, so it would change
+  what the lee band is for.
+- Homes are identical in their clearing, their distance to both ridges and their quarry; what lies
+  along the valley (lakes, rivers, sand patches, the nearest pass) is where it fell, as on
+  revision 6.
 
 ## Implementation source
 
