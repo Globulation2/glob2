@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test, expect} = require('@playwright/test');
+const { languageLabel } = require('./language-label');
 const fs = require('node:fs');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
@@ -112,7 +113,7 @@ for (const device of [
     await page.screenshot({path: path.join(evidence, 'main.png')});
 
     await playerCategory(page, 'mr');
-    await expect.poll(() => label(page, 'player.language')).toBe('मराठी');
+    await expect.poll(() => label(page, 'player.language')).toBe(languageLabel('mr'));
     const languageBox = await controlBox(page, 'player.language', {fullyVisible: true});
     // Exclude the button border; verify actual canvas ink in the selected name.
     expect(await hasDarkText(page, {x: languageBox.x + 8, y: languageBox.y + 5,
@@ -178,7 +179,7 @@ for (const device of [
       await expect.poll(() => label(page, 'menu/1')).toBe('Tutorial');
       records.savedEnglishBeatsMarathiCookie = await snapshot(page);
       await playerCategory(page, 'en');
-      await chooseLanguage(page, 'मराठी');
+      await chooseLanguage(page, languageLabel('mr'));
       await context.addCookies([{name: 'glob2_locale', value: 'en', url: baseURL}]);
       await page.reload();
       await initialMenu(page);
