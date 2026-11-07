@@ -48,6 +48,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
+#include <cstring>
 #include <chrono>
 #include "Version.h"
 #include "sim/SimulationRunner.h"
@@ -1657,7 +1658,11 @@ bool Engine::finishSession()
 
 void Engine::beginIntroCover()
 {
-    if (!globalContainer->runNoX) gui.beginIntroCover(SDL_GetTicks());
+    // GLOB2_INTRO_COVER=0 opens games without the cover. The browser shell sets it
+    // under automation, whose scripted input would otherwise only skip the cover.
+    const char *cover = std::getenv("GLOB2_INTRO_COVER");
+    if (!globalContainer->runNoX && !(cover && std::strcmp(cover, "0") == 0))
+        gui.beginIntroCover(SDL_GetTicks());
 }
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)
