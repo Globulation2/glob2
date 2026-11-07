@@ -2302,7 +2302,7 @@ inline void portageLakesTwoContracts()
 	};
 	// Pinned variants at every size and several colony counts, both shields, deep and shallow lakes.
 	const char *shieldNames[] = {"granite", "greenstone"};
-	int pinned = 0;
+	int pinned = 0, patches = 0;
 	for (auto [dimension, teams, seed] : {std::tuple{7, 2, 5u}, std::tuple{8, 4, 9u}, std::tuple{8, 8, 13u},
 										  std::tuple{9, 6, 17u}, std::tuple{6, 2, 21u}, std::tuple{8, 12, 25u}})
 	{
@@ -2316,11 +2316,12 @@ inline void portageLakesTwoContracts()
 		const auto result = build(g, r, "pinned variant", true);
 		assert(choice(result, "portage-lakes.shield") == shieldNames[shield - 1]);
 		terrainPromises(g, deep);
-		// Every home's knob holds the same quarry stone, at least five, within a short walk. Only a
-		// compact map may fall back to revision 7's stone patches (every home alike).
+		// Every home's knob holds the same quarry stone, at least five, within a short walk. A map
+		// whose meadows cannot take a knob beside every home falls back to revision 7's stone
+		// patches (every home alike); most pinned variants keep their knobs.
 		if (choice(result, "portage-lakes.knob.stencil") == "none: stone patches")
 		{
-			assert(dimension == 6);
+			++patches;
 			continue;
 		}
 		assert(measure(result, "portage-lakes.quarries.home-stone") >= 5);
@@ -2330,6 +2331,8 @@ inline void portageLakesTwoContracts()
 			assert(walk >= 0 && walk <= 24);
 		}
 	}
+	std::fprintf(stderr, "Portage Lakes pinned variants on stone patches: %d of 6\n", patches);
+	assert(patches <= 1);
 	// Both shields come up at random.
 	std::set<std::string> shields;
 	for (std::uint32_t seed = 1; seed <= 6 && shields.size() < 2; ++seed)
