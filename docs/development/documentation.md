@@ -79,6 +79,6 @@ policy paths embedded in the game.
 Extract useful guarantees, limitations, and reproduction procedures before deleting
 obsolete plans or reports. Git history is the historical record. Put temporary
 migration ledgers and review drafts in ignored `docs/.work/`; put logs, maps, saves,
-replays, screenshots, and other evidence in ignored root `artifacts/`. Publish
-review evidence through accessible PR attachments or an evidence branch, and retain
-only durable conclusions in the maintained guide.
+replays, screenshots, and other evidence in ignored root `artifacts/`. Put
+review evidence in the pull request description, and retain only durable
+conclusions in the maintained guide.

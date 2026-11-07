@@ -41,6 +41,6 @@ Follow the [documentation maintenance guide](development/documentation.md).
 [Support](../SUPPORT.md) explains how to report a problem.
 
 Keep temporary notes and draft narratives in ignored `docs/.work/`; keep generated
-review evidence in ignored root `artifacts/`. Attach evidence needed for review to
-the pull request or an accessible evidence branch. Git history preserves retired
+review evidence in ignored root `artifacts/`. Evidence needed for review lives in the
+pull request description; nothing else is kept. Git history preserves retired
 designs and reports; current guides describe maintained behavior.
