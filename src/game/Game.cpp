@@ -74,6 +74,14 @@ SimContext Game::simContext()
 	return ctx;
 }
 
+void Game::setAnimations(std::unique_ptr<GameAnimations> replacement)
+{
+	animations = std::move(replacement);
+	for (Team *team : teams)
+		if (team)
+			team->ctx.animations = animations.get();
+}
+
 Game::~Game()
 {
 	clearGame();

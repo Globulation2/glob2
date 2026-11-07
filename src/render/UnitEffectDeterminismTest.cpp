@@ -53,8 +53,8 @@ struct World
             world.game.map.setResourceByIndex(x+team*32,y+team*32,WOOD,5);
         world.game.map.setMapDiscovered();
         if (recordEffects)
-            world.game.animations=std::make_unique<GameAnimations>(true,
-                world.game.map.getSectorW()*world.game.map.getSectorH());
+            world.game.setAnimations(std::make_unique<GameAnimations>(true,
+                world.game.map.getSectorW()*world.game.map.getSectorH()));
     }
 };
 

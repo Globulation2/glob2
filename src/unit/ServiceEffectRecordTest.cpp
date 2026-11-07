@@ -16,7 +16,7 @@ namespace
 //! Headless games do not record animations; give this one a container that does.
 void recordAnimations(Game& game)
 {
-    game.animations = std::make_unique<GameAnimations>(true, game.map.getSectorW() * game.map.getSectorH());
+    game.setAnimations(std::make_unique<GameAnimations>(true, game.map.getSectorW() * game.map.getSectorH()));
 }
 
 std::vector<UnitEffectAnimation> effects(const Game& game)

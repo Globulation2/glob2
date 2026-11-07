@@ -523,6 +523,9 @@ public:
 	//! gate is internal to GameAnimations. See
 	//! src/render/GameAnimations.h.
 	std::unique_ptr<GameAnimations> animations;
+	//! Replace `animations` (tests that record effects); keeps every Team::ctx in step.
+	//! Assigning the member directly would leave the teams on the old container.
+	void setAnimations(std::unique_ptr<GameAnimations> replacement);
 	std::list<BuildProject> buildProjects;
 
 public:
