@@ -27,5 +27,6 @@ private:
 	Uint64 worldTickTime = 0;
 	Uint64 lastTime = 0, pending = 0; // pending is accumulated nanoseconds
 	bool clockStarted = false;
+	bool terrainCompleted = false; // the first frame finishes its terrain before showing
 	int centerX = 0, centerY = 0;
 };
