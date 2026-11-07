@@ -2220,7 +2220,7 @@ GeneratorDefinition portageLakesDefinition()
 			 GeneratorControl::toggle("deep-lakes", "Deep lakes", true, ControlGroup::Terrain)
 				 .withSearchValues({0, 1}),
 			 // Looks only: granite and greenstone play exactly alike.
-			 GeneratorControl::choice("shield", "Shield", {"Random", "Granite", "Greenstone"}, 0,
+			 GeneratorControl::choice("shield", "Bedrock", {"Random", "Granite", "Greenstone"}, 0,
 									  ControlGroup::Terrain)
 				 .withSearchValues({1, 2}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

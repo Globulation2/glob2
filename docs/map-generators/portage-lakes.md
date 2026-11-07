@@ -75,7 +75,7 @@ vertex, looks included.
 | Portage depth | 2–8 (4) | Tree rows in each portage plug. |
 | Extra trails | 0–100% (25) | Additional open trails beyond the settlement network; on one/two-colony maps, trails to neutral bays. |
 | Deep lakes | on | Deep water in the lake centres (slower swimming, no algae). Off gives revision 7's shallow lakes. |
-| Shield | Random, Granite, Greenstone | Looks only: rock (ridge rock or outcrop), deep water (deep or dark water) and shore mud (mud or mudflat). Plays identically. |
+| Bedrock (`shield`) | Random, Granite, Greenstone | Looks only: rock (ridge rock or outcrop), deep water (deep or dark water) and shore mud (mud or mudflat). Plays identically. |
 | Wheat, wood, algae, fruit amount | 0–300% (100) | As revision 7; starter supplies are guaranteed. |
 | Stone amount | 0–300% (100) | Ambient quarry faces on the forest knots and the country stone clumps; every home's knob quarry is guaranteed. |
 
