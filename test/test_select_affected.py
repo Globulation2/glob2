@@ -67,7 +67,11 @@ class RecordingTest(unittest.TestCase):
             env = {'LLVM_PROFILE_FILE': case_coverage.job_environment(profiles, 0)}
             subprocess.run([str(binary)], env=env, check=False)
             case_coverage.finish_job(profiles, 0, ['engine:Probe/f'], 'llvm-profdata-18')
-            mapping = case_coverage.function_files([binary], profiles / 'job-00000.profdata', 'llvm-cov-18', root=work)
+            # Job profiles are kept per writing binary, named by its build ID when it has one.
+            written = sorted(profiles.glob('job-00000*.profdata'))
+            self.assertEqual(len(written), 1)
+            self.assertEqual(written[0].stem.partition('.')[2], case_coverage.binary_id_of_file(binary))
+            mapping = case_coverage.function_files([binary], written[0], 'llvm-cov-18', root=work)
             self.assertEqual(mapping['_Z1fi'], ['probe.cpp'])
 
 

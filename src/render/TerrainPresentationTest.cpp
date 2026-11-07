@@ -489,7 +489,7 @@ TEST_SUITE("TerrainPresentation")
         glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.discovered=true});auto &map=fixture.game.map;
         for(int y=0;y<32;++y)for(int x=0;x<32;++x)
             map.setVertexTerrain(x,y,((x+y)%5==0)?WATER:((x*3+y)%7==0)?SAND:GRASS);
-        // Dark water's surf advances in steps; times 19 and 25 fall inside one.
+        // A dark water pool: its waves and its wash against the shore, on both paths.
         for(int y=10;y<14;++y)for(int x=20;x<24;++x)map.setVertexTerrain(x,y,DARK_WATER);
         SceneMap scene;glob2test::observeMap(map,scene);
         SoftwareTerrainCache retained;
