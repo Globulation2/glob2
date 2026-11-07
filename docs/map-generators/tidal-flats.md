@@ -20,19 +20,23 @@ oases); the lagoons, sandbars and pools are placed again because the lagoons now
 - **The channels are the routes.** Sand walks at full speed, so the mud is slow ground with fast ways
   through it: a wavy ring channel through every home island (the way to the neighbours), a spoke
   through each from the centre to the outer flats (the way to the middle), an inner ring between the
-  spokes when there is room, and short creeks off the ring. Every wedge has the same channels.
+  spokes when there is room, and short creeks off the ring. Every wedge has the same channels, and a
+  narrow wedge has fewer of them, so a small map crowded with colonies keeps its mud.
 - **Islands regrow faster.** Unlike sand, mud does not inhibit growth, so a home island's fields round
   its pond regrow much faster than on revision 8 (see the food table). Wood did not overrun any home in
   the calibration game; no sand rim is kept round the islands.
 - **Lagoons are deep in the middle.** A lagoon is a long tidal channel of water whose bed is deep
   water (`deepCore`): swimmable but slower, no algae; its shallow margin keeps algae and its beach.
-  Shell banks (sand, pale look) ring every pool and lagoon on the flats, which is also what lets algae
-  regrow there: algae needs solid sand within reach of its growth probe.
+  Shell banks (sand, pale look) lie round every pool and lagoon on the flats, swelling and thinning
+  round each rim, which is also what lets algae regrow there: algae needs solid sand within reach of
+  its growth probe.
 - **The tor is the central quarry.** The central island's pond is now a knot of rock (Ridges, outcrop
   look: impassable, towers shoot over it) with a quarry face turned to every colony, stone on plain
   grass tiles left out of the rock. Every colony walks within a step or two of the same distance to its
-  nearest face (`tidal-flats.tor.quarry-walk`); with many colonies on a small tor neighbouring faces
-  share tiles. The orchard's three groves stand four tiles past the tor, off every face's approach.
+  nearest face (`tidal-flats.tor.quarry-walk`); where the tor's rim gives each colony fewer than six
+  tiles (a 128 map with six colonies) the faces
+  take a single rim tile each, so the tor keeps its rock. The orchard's three groves stand four tiles
+  past the tor, off every face's approach.
 - **The tide changes the water.** A neap tide shrinks every pool and lagoon on the flats to 0.8 of its
   radius and bares wider shell banks and more dried hardpan; a spring tide swells them to 1.25, kept
   four tiles off every island, with wet mud further from the water. The islands, channels, homes and
@@ -49,11 +53,11 @@ MUDFLAT, RIDGE_ROCK) that every shared helper and check reads, and `generate` pa
 | Stage | What happens |
 | --- | --- |
 | Layout | Home islands on a ring at 58% of the half side, one per colony from a random phase, radius `home-island-size` percent of the half side or what the ring, the wrap and the central island leave. In one wedge's frame: `extra-islands` oases, `lagoons` (3.5 to 5.5 tiles, stretched 1.2 to 2 times, 3 tiles from other features and 6 from a home), `sandbars`, and `tide-pools` per 128x128 of flats, stamped into every wedge. Revision 8 drew lagoons 8 to 14 tiles, which fitted no wedge at the defaults, and placed them after the sandbars. |
-| Channels | From their own stream: the ring (a long wave of one or two per wedge plus a ripple about every 30 tiles of arc, 3.4 tiles across), the spoke (two waves, 3 across), the inner ring (when the gap between the central island and the homes is 12 tiles or more) and three creeks per wedge tapering to their tips, every one kept inside its wedge. |
+| Channels | From their own stream: the ring (a long wave of one or two per wedge plus a ripple about every 30 tiles of arc, 3.4 tiles across), the spoke (two waves, 3 across), the inner ring (when the gap between the central island and the homes is 12 tiles or more and each wedge's stretch of it 24 tiles or more) and one creek per 24 tiles of the ring's arc across a wedge, at most three, tapering to their tips, every one kept inside its wedge. A 128 map with six colonies has one creek a wedge and no inner ring: three creeks and the inner ring left almost no mud between the sand there. |
 | Tide | `tide` scales pools and lagoons; spring water beyond the mean's only where it keeps 4 tiles from every island. |
-| Sketch | Mud, then channels as sand, islands as grass, water; shell banks within 2 (neap 3) tiles of the water on the flats, their width swaying by up to 1.2 tiles on noise sampled in the wedge frame; beaches (`layBeaches`); the tor's rock (`rockVertices`); deep cores of the lagoons two vertex steps from any other ground, specks under four vertices left shallow. |
-| Tor | A rough disc 35% of the central island's radius (2.5 to 7 tiles); each colony's quarry face is the rock within a tile of the rim point facing its home (`quarryNear`), stocked with stone before the colonies settle; `quarryApproach` keeps the orchard off it. |
-| Looks | Wet mud (MUD) in blotches beyond the shell banks, hardpan on 5 to 34% of the flats far from water by tide, shell banks and patches of the channels pale sand, sandbars and oases lush grass, neap lagoon beds dark water, the tor outcrop. Home islands and the central island stay plain grass, which the starting-crop guarantee reads. |
+| Sketch | Mud, then channels as sand, islands as grass, water; shell banks within 2 (neap 3) tiles of the water on the flats, their width swaying by up to 2.2 tiles on noise 5 tiles across sampled in the wedge frame, its contrast stretched, never under 1 tile, so a pool has a wide drift of shells on one side and a thin rim on another (a 7-tile cell and 1.2 tiles of sway drew even rings, bull's-eyes); beaches (`layBeaches`); the tor's rock (`rockVertices`); deep cores of the lagoons two vertex steps from any other ground, specks under four vertices left shallow. |
+| Tor | A rough disc 35% of the central island's radius (3.5 to 7 tiles); each colony's quarry face is the rock within a tile of the rim point facing its home (`quarryNear`), or that rim tile alone when the rim gives each colony fewer than six tiles, stocked with stone before the colonies settle; `quarryApproach` keeps the orchard off it. A tor left with fewer than nine rock vertices refuses the map (revision 9's first draw left two at 128 with six colonies). |
+| Looks | Wet mud (MUD) in seeps beyond the shell banks, on noise 6 tiles across with its contrast stretched so it runs out in tongues on some sides of a pool and stops at the bank on others, hardpan on 5 to 34% of the flats far from water by tide, shell banks and patches of the channels pale sand, sandbars and oases lush grass, neap lagoon beds dark water, the tor outcrop. Home islands and the central island stay plain grass, which the starting-crop guarantee reads. |
 | Resources | Every home's kit (40 wheat and 30 wood beside the pond, a quarry towards the centre), unscaled, then 4% wheat and 2% wood of the island on its most fertile ground and an outcrop, scaled; every oasis under wheat with a fruit or stone prize; the orchard; algae; the starting-crop guarantee. |
 
 `validateWorld` rebuilds the design and requires: every home's pond; no buildable tile on the flats;
@@ -84,15 +88,16 @@ sand and barren ground as inhibitors), 256x256, 4 colonies, seeds 1–3, revisio
 | --- | --- | --- | --- |
 | Revision 8 | 109 | 22.1 (21) | 24.4 (23) |
 | Revision 9, defaults (random tide) | 204 | 30.7 (30) | 44.3 (41) |
-| Neap tide | 194 | 30.6 (30) | 42.7 (40) |
+| Neap tide | 193 | 30.6 (30) | 42.8 (40) |
 | Mean tide | 199 | 30.6 (30) | 43.5 (41) |
-| Spring tide | 207 | 30.7 (30) | 44.6 (42) |
+| Spring tide | 206 | 30.7 (30) | 44.6 (42) |
 | Revision 8, central island off | 102 | 22.1 (21) | 24.1 (23) |
-| Revision 9, central island off | 206 | 30.5 (29) | 42.0 (39) |
+| Revision 9, central island off | 206 | 30.3 (29) | 42.0 (39) |
 
 Nothing round an island inhibits growth any longer: revision 8's sand flats refused a share of every
 growth roll whose mirrored probe landed off the island. The lagoons, which now exist, add water within
-reach of some islands. The tide moves the total by about 6%; the weakest variant (neap) is still 38%
+reach of some islands. Fraying the shell banks (2026-11-07) moved no figure by more than one. The
+tide moves the total by about 6%; the weakest variant (neap) is still 38%
 above revision 8 within 24 steps.
 
 A four-AI calibration game (`map study tidal-flats --seed 101`, 256x256, Nicowar, Cortex, Cabino and
@@ -104,8 +109,11 @@ against 288. No home island was overgrown with wood at the end. One game varies 
 ## Limits
 
 - The tor's faces are fair by construction only up to rasterization and a rough outline: the walk to
-  the nearest face differed by one step between colonies in the default map. With many colonies on a
-  small map, faces share tiles and are not owned.
+  the nearest face differed by one step between colonies in the default map. Neither is the stone: a
+  face is the rock within a tile of a rim point, and a rough rim gives one face more tiles than
+  another; where two faces would share a tile the colony dealt first keeps it. Telemetry records the
+  walks (`tidal-flats.tor.quarry-walk`, `own-face-walk`; the spread is -1 when a colony reaches no
+  face).
 - Algae regrowth relies on the shell banks; no algae haul has been measured in a game.
 - Lagoons are placed before the sandbars, so a crowded wedge drops sandbars before lagoons; set
   `lagoons` to 0 for revision 8's sandbar count.

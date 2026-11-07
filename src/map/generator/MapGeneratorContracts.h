@@ -3144,6 +3144,9 @@ inline void tidalFlatsContracts()
 			assert(measure(result, "tidal-flats.channels.vertices") > 0);
 			assert(measure(result, "tidal-flats.tor.stone") > 0);
 			assert(measure(result, "tidal-flats.tor.stone") == measure(result, "tidal-flats.tor.quarry-tiles"));
+			// The faces never eat the tor: at least nine rock vertices on every shape (a 128 map with six
+			// colonies once left two).
+			assert(measure(result, "tidal-flats.tor.rock-vertices") >= 9);
 			int mud = 0;
 			for (int y = 0; y < g.map.getH(); ++y)
 				for (int x = 0; x < g.map.getW(); ++x)

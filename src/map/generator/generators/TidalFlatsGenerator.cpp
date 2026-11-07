@@ -70,8 +70,9 @@ using namespace MapGeneration;
 // it and radius out from the centre - and stamped into every wedge alike, so whatever the roll,
 // every colony gets the same neighbourhood turned round the centre, and the layout is fair for any
 // colony count. The whole design is a pure function of the request, so validateWorld rebuilds it
-// and checks the finished world. The islands are placed exactly as revision 8 placed them for the
-// same seed.
+// and checks the finished world. The home and neutral islands are placed exactly as revision 8
+// placed them for the same seed; revision 9's lagoons fit a wedge (revision 8's never did) and are
+// placed before the sandbars and tide pools, so those land elsewhere when a lagoon takes their spot.
 //
 // GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): buildings need pure
 // grass, so the islands are the only building ground; deposits stand only on grass, so the flats
@@ -141,7 +142,15 @@ struct TideSpec
 constexpr std::array<TideSpec, 3> kTides{{{"neap", 0.8, 3, 2, 0.34},
 										  {"mean", 1.0, 2, 3, 0.16},
 										  {"spring", 1.25, 2, 5, 0.05}}};
-constexpr double kBankFray = 1.2;
+// A bank's width sways kBankFray tiles either way on noise kBankCell tiles across, its contrast
+// stretched by kBankContrast (smooth noise stays near its middle), never below kBankLeast: a pool
+// a few tiles across sees a wide drift of shells on one side and a thin rim on another, not a ring
+// (a 7-tile cell and 1.2 tiles of sway drew nearly even rings round every pool, bull's-eyes with
+// the wet mud beyond them).
+constexpr double kBankFray = 2.2, kBankLeast = 1.0, kBankCell = 5, kBankContrast = 2.2;
+// Wet mud (looks): see lookSketch.
+constexpr int kSeepCell = 6;
+constexpr double kSeepContrast = 2.2;
 // Spring water keeps this many tiles from every island, so a swollen pool never eats a coast.
 constexpr int kSpringClear = 4;
 
@@ -149,12 +158,20 @@ constexpr int kSpringClear = 4;
 // sand down its middle) and the creeks' taper to their tips.
 constexpr double kRingHalf = 1.7, kSpokeHalf = 1.5, kInnerHalf = 1.4, kCreekHalf = 1.4;
 constexpr double kCreekTaper = 0.55;
+// Creeks per wedge: one for every kCreekArc tiles of the ring's arc across it, at most
+// kCreeksPerWedge, so a small map crowded with colonies is not all channel (three creeks in a 39-tile
+// wedge at 128x128 with six colonies left almost no mud between the sand).
 constexpr int kCreeksPerWedge = 3;
+constexpr double kCreekArc = 24, kInnerArc = 24;
 
 // The tor: a knot of rock at the central island's middle, this share of the island's radius,
-// between 2.5 and 6 tiles, a little rough; each colony's quarry face is the rock within one tile
-// of the rim point facing its home.
-constexpr double kTorShare = 0.35, kTorLeast = 2.5, kTorMost = 7.0, kTorRoughness = 0.15;
+// between 3.5 and 7 tiles, a little rough; each colony's quarry face is the rock within one tile of
+// the rim point facing its home, or that rim tile alone where the rim gives each colony fewer than
+// kTorFaceRim tiles: on a 128 map with six colonies three-tile faces took the whole rim and left a
+// tor of 2 rock vertices, a speck. Fewer than kTorRockLeast rock vertices refuses the map.
+constexpr double kTorShare = 0.35, kTorLeast = 3.5, kTorMost = 7.0, kTorRoughness = 0.15;
+constexpr double kTorFaceRim = 6;
+constexpr int kTorRockLeast = 9;
 
 struct Geometry
 {
@@ -207,7 +224,7 @@ struct Feature : Blob
 {
 	Kind kind;
 	double reach; // the blob's fullest extent, stretched
-	int prize;    // neutral islands: 0 fruit, 1 stone, 2 wheat
+	int prize;    // neutral islands: 0 fruit, 1 stone (every other island in turn)
 };
 
 // A creek off the ring channel, in the wedge's frame: from (s0, d0) along `heading` (radians from
@@ -301,16 +318,19 @@ Channels drawChannels(const Geometry &g, double arcHalfAt, GenerationContext &co
 	c.spokeRippleWave = 11 + unit(1000) * 8;
 	c.spokeRipplePhase = unit(3600) * 2 * kPi;
 	// The inner ring runs midway between the central island and the home islands' inner coasts,
-	// when that leaves room for it.
+	// when that leaves room for it, and only where each wedge's stretch of it is kInnerArc tiles or
+	// more: with six colonies on a 128 map its short arcs and the spokes drew a web of sand round
+	// the central island.
 	const double inside = g.centralRadius > 0 ? g.centralRadius * 1.3 : 6.0;
 	const double outside = g.homeRing - g.homeRadius * (1 + g.amplitude);
-	c.inner = outside - inside >= 12;
 	c.innerRadius = (inside + outside) / 2;
+	c.inner = outside - inside >= 12 && 2 * arcHalfAt * c.innerRadius >= kInnerArc;
 	c.innerAmplitude = std::min(0.25 * (outside - inside) - 1, 1.5 + unit(1000) * 3);
 	c.innerWaves = 1 + int(context.bounded(stream, 3));
 	c.innerPhase = unit(3600) * 2 * kPi;
 	// Creeks leave the ring away from the home island, out or in, and stay inside their wedge.
-	for (int k = 0, attempts = 0; k < kCreeksPerWedge && attempts < 60; ++attempts)
+	const int creeks = std::clamp(int(arc / kCreekArc), 0, kCreeksPerWedge);
+	for (int k = 0, attempts = 0; k < creeks && attempts < 60; ++attempts)
 	{
 		const double side = context.bounded(stream, 2) ? 1 : -1;
 		const double u = 0.5 + side * (0.15 + unit(1000) * 0.3);
@@ -485,7 +505,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const RadialShape torShape(std::max(1.0, L.torRadius), kTorRoughness, context, "flats-tor");
 	// The shell banks' width sways by up to kBankFray tiles either way on noise sampled in the
 	// wedge's frame, so every wedge has the same banks and none is a ring drawn with compasses.
-	const PeriodicNoise bankNoise(512, 512, 7, context.stream("flats-banks"));
+	const PeriodicNoise bankNoise(512, 512, kBankCell, context.stream("flats-banks"));
 	std::vector<float> bankFray(n, 0.5f);
 
 	L.grass.assign(n, 0);
@@ -604,13 +624,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<unsigned char> open(n, 0);
 		for (int i = 0; i < n; ++i)
 			open[i] = !L.tor[i];
+		const int faceHalf = 2 * kPi * L.torRadius / teams >= kTorFaceRim ? 1 : 0;
+		context.telemetry.measure("tidal-flats.tor.face-half", faceHalf);
 		for (int k = 0; k < teams; ++k)
 		{
 			const double a = L.phase + wedge * (k + 0.5);
 			const double r = torShape.radiusAt(a) - 0.5;
 			const int x = t.x(L.cx + int(std::lround(r * std::cos(a) * L.stretch.sx)));
 			const int y = t.y(L.cy + int(std::lround(r * std::sin(a) * L.stretch.sy)));
-			for (int q : quarryNear(t, L.tor, open, t.at(x, y), 1, 1))
+			for (int q : quarryNear(t, L.tor, open, t.at(x, y), faceHalf, 1))
 				if (!L.quarry[q])
 				{
 					L.quarry[q] = 1;
@@ -645,7 +667,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.bank.assign(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			const double reach = tide.bank + 0.5 + kBankFray * (2 * bankFray[i] - 1);
+			const double fray = std::clamp(0.5 + kBankContrast * (bankFray[i] - 0.5), 0.0, 1.0);
+			const double reach = std::max(kBankLeast, tide.bank + 0.5 + kBankFray * (2 * fray - 1));
 			if (T[i] == MUDFLAT && fromWater[i] > 0 && double(fromWater[i]) <= reach * reach)
 			{
 				T[i] = SAND;
@@ -686,6 +709,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("tidal-flats.deep.vertices", deepLaid);
 	context.telemetry.measure("tidal-flats.tor.radius", L.torRadius);
 	context.telemetry.measure("tidal-flats.tor.rock-vertices", rockLaid);
+	if (L.torRadius > 0 && rockLaid < kTorRockLeast)
+		L.failure = "The central tor has no room for its rock beside the quarry faces; use a bigger map or "
+					"fewer colonies.";
 	context.telemetry.measure("tidal-flats.tor.quarry-tiles", quarryTiles);
 	return L;
 }
@@ -704,7 +730,10 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
 	const std::vector<int> nearWater = stepsFrom(t, wet);
 	const std::vector<std::int64_t> wetDistance = distanceSquaredTo(t, wet);
-	const std::vector<int> fray = fractalNoise(t.w, t.h, 12, 2, context.stream("flats-looks"));
+	// Seeps: noise kSeepCell tiles across, a few swells round the rim of even a small pool, its
+	// contrast stretched so the wet mud runs out in tongues on some sides and stops at the bank on
+	// others (a 12-tile cell, about a pool's size, drew an even ring round each: a bull's-eye).
+	const std::vector<int> fray = fractalNoise(t.w, t.h, kSeepCell, 2, context.stream("flats-looks"));
 	const std::vector<int> split = fractalNoise(t.w, t.h, 32, 3, context.stream("flats-looks"));
 	const std::vector<int> shells = fractalNoise(t.w, t.h, 8, 2, context.stream("flats-looks"));
 	TerrainSketch looks(size_t(n), 0);
@@ -715,7 +744,8 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 		{
 		case MUDFLAT:
 			// Wet mud beyond the shell banks in blotches, so it reads as seeps, not a ring.
-			if (const double reach = tide.bank + tide.wet * (2.4 * fray[i] / 65536.0 - 0.7);
+			if (const double seep = std::clamp(0.5 + kSeepContrast * (fray[i] / 65536.0 - 0.5), 0.0, 1.0),
+				reach = tide.bank + tide.wet * (3.0 * seep - 1.0);
 				reach > 0 && double(wetDistance[i]) <= reach * reach)
 			{
 				looks[i] = MUD;
@@ -857,7 +887,7 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 				placeResourceClump(map, context, centre, STONE, 2);
 			}
 		}
-		// The oasis: every other tile of the island under wheat, unscaled, so it has to be cleared.
+		// The oasis: every free tile of the island under wheat, unscaled, so it has to be cleared.
 		for (int i : tiles)
 			if (eligible(i) && map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
 				map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
@@ -958,6 +988,7 @@ bool generate(Game &game, GenerationContext &context)
 		// facing it: the fairness of the central stone, measured on the finished map.
 		const std::vector<unsigned char> walkable = walkableTiles(map);
 		int least = INT_MAX, most = 0;
+		bool unreachable = false;
 		for (int team = 0; team < teams; ++team)
 		{
 			std::vector<unsigned char> swarm(size_t(n), 0);
@@ -985,10 +1016,12 @@ bool generate(Game &game, GenerationContext &context)
 			context.telemetry.measure("tidal-flats.tor.quarry-walk", any == INT_MAX ? -1 : any, team);
 			context.telemetry.measure("tidal-flats.tor.own-face-walk", own == INT_MAX ? -1 : own,
 									  team);
+			unreachable = unreachable || any == INT_MAX;
 			least = std::min(least, any);
-			most = std::max(most, any == INT_MAX ? -1 : any);
+			most = std::max(most, any == INT_MAX ? 0 : any);
 		}
-		context.telemetry.measure("tidal-flats.tor.quarry-walk-spread", most - least);
+		// -1 when some colony reaches no face at all: no spread is fair then.
+		context.telemetry.measure("tidal-flats.tor.quarry-walk-spread", unreachable ? -1 : most - least);
 	}
 	return true;
 }
