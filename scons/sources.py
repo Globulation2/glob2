@@ -384,6 +384,7 @@ CLIENT_SOURCES = (
     'map/generator/shared/WalkBandStarts.cpp',
     'map/generator/shared/Walls.cpp',
     'map/generator/shared/Rock.cpp',
+    'map/generator/shared/HeightFieldLooks.cpp',
     'map/generator/shared/Farmland.cpp',
     'map/generator/shared/Towers.cpp',
     'map/generator/shared/WorldAtlas.cpp',

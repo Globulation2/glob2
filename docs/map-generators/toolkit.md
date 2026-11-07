@@ -45,6 +45,7 @@
 - [BalancedStarts](#balancedstarts)
 - [Pipeline](#pipeline)
 - [Terrain](#terrain)
+- [HeightFieldLooks](#heightfieldlooks)
 - [StartQuality](#startquality)
 - [GenerationContext](#generationcontext)
 - [legacy/Regions, legacy/Distances, legacy/StartingPositions](#legacyregions-legacydistances-legacystartingpositions)
@@ -220,6 +221,10 @@ The stages round the others: `dealStarts` (the design's start sites dealt to the
 ## Terrain
 
 The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField`
+
+## HeightFieldLooks
+
+Terrain post-passes for the height-field generators, over the finished field, its resources and its chosen starts, keeping a mechanic sketch (each vertex's canonical rule-group type) and painting looks with `composeLooks`: `heightFieldSketch` (the vertex terrain `generateHeightField` paints, rebuilt from a fresh context so a validator can replan from it), `mapSketch`; `wetVertices` and `stepsFromWet` (water of either group, and eight-connected steps from it: the field every "near the water" and "beyond its reach" rule reads); `deepenWater` (deep water with a shallow margin, `deepCore` in bodies big enough not to read as holes) and `deepStepsForShare` (the steps at which a core holds no more than a share of the water, so a wide river keeps shallows in proportion and its displaced algae fit there); `wetShare` (the water share round every vertex, high inside a bend and low outside it) and `majorWater` (a river without its ponds); `layLevee` (a Fertile band at a distance from water); `paveBeyondWater` (Barren pavement never closer than a reach, 22 steps or more where it must not inhibit crops); `gradeGrassLooks` (lush near water, dry far from it, plain where a mask says); `homeGardens` (frayed discs round the swarms that a pass leaves plain grass); `writeLayeredTerrain` (writes mechanics with looks and clears, counts and lists every deposit the new terrain refuses); `partingBarrier` (the first blocking group on a finished map that parts the walkable ground round it). River uses all of them.
 
 ## StartQuality
 
