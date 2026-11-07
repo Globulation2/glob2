@@ -17,7 +17,8 @@ drew everything from grass, sand and water.
   beaches, resource bands, starts, starting crops, fruit groves and opening repairs exactly as
   revision 5 did. The 2.0 pass then repaints only ground nobody stands on, so every deposit and
   start is where it was and stays legal.
-- **Ponds have deep middles.** Water at least four steps from any shore is deep: swimmable but
+- **Ponds have deep middles.** Water at least four tiles in a straight line from any shore is deep
+  (so a core's outline is round, not a rectangle): swimmable but
   slower, holds no algae, and waters the land like water. Every shore keeps two tiles of plain
   shallows, and deep water keeps 2.5 tiles off every algae bed, so the algae in a pond's middle
   reads as a shoal. Crossing a big pond takes longer than in revision 5: a change of feel.
@@ -38,8 +39,8 @@ drew everything from grass, sand and water.
 - **Moss (off by default).** With `moss` on, grass in the lowest third of the land, in patches and
   beyond each home's 12-tile garden, is moss: crop land that waters its neighbours a little. It is
   off by default because the growth tool loses food to it (see Food).
-- **Looks only.** Lush grass on low ground, dry tussocks on the hummock tops (never within 18
-  tiles of a home), pale and yellow beach sand, and the climate's artwork change nothing in play.
+- **Looks only.** Lush grass on low ground, dry tussocks on the hummock tops (never within a
+  frayed disc about 20 tiles round a home's middle), pale and yellow beach sand, and the climate's artwork change nothing in play.
   Every swarm keeps a frayed disc of plain grass about 11 tiles in radius.
 
 ## How it is built
@@ -53,7 +54,7 @@ again), then the bog pass over a mechanic sketch of canonical types:
 | Height field | `makeSwamp` noise; water is `water / (1 + water + grass)` of the map, the rest grass; `layBeaches` rings every pond. |
 | Resources and starts | Algae, stone, wheat and wood as bands of the field; balanced starts, the starting-crop guarantee, fruit groves, `placeStarts`, `openStartsBuriedByResources`. |
 | Hammocks | Seeds at the field's local maxima above the 78th percentile of the land, 16 tiles apart; a lobed disc of 3 to 5.5 tiles on vacant pure grass, trimmed to blocks two thick and drawn with `rockVertices`; any hammock whose blocked tiles part the walkable ground is dropped (`partingGroup`). |
-| Deep cores | `deepCore` at four steps, never at a corner of a tile holding a deposit or within 2.5 tiles of algae, opened, specks under 12 vertices dropped. |
+| Deep cores | Water at least four tiles from land in a straight line (`distanceSquaredTo`), never at a corner of a tile holding a deposit or within 2.5 tiles of algae, opened, specks under 12 vertices dropped. |
 | Mud | Beach sand within two steps of water, outside 12 tiles of every swarm and 6 of algae, ranked by smooth noise; the `mudflats` share of it. |
 | Moss | Grass below the land's 36th percentile, where a patch field passes, outside 12 tiles of every swarm, in patches of 24 vertices or more (only with `moss` on). |
 | Causeways | Per colony, the best straight crossing found by a walking flood from its swarm; two rows of boardwalk vertices, so the crossing tiles are pure boardwalk; causeways 16 tiles apart. |
@@ -74,7 +75,7 @@ again), then the bog pass over a mechanic sketch of canonical types:
 | Climate | Random, Temperate, Tropical | Looks only: Temperate is a bog (black water, mud, moss, brown thicket, pale beaches); Tropical a mangrove swamp (blue deep water, mudflats, loam, dark hedge canopy, more lush grass). Plays identically. |
 | Wheat, wood, stone, algae amount | 0–300% (100) | The resource bands of the field. |
 | Stone on hilltops | on/off (off) | Stone on the highest grass rather than above the beaches. |
-| Repeat landscape | 0–5 (0) | Tile the field so colonies can share one patch. |
+| Repeat landscape | 0–5 (0) | Tile the field so colonies can share one patch. The bog pass runs once over the whole map, so the repeated patches no longer match exactly in hammocks, deep cores, mud, causeways and looks. |
 
 ## Food
 

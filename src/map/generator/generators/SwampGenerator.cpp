@@ -1,8 +1,9 @@
-#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SwampGenerator.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "GenerationWork.h"
+#include "HeightFieldLooks.h"
 #include "LatticeNoise.h"
 #include "Map.h"
 #include "Morphology.h"
@@ -18,6 +19,7 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstdint>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
@@ -50,8 +52,8 @@ using namespace MapGeneration;
 // - Two sketches. The pass keeps a mechanic sketch of canonical types (WATER, DEEP_WATER, SAND,
 //   GRASS, MUDFLAT, MOSS, THICKET, BOARDWALK) that every check reads, and paints looks over it with
 //   composeLooks (Sketch.h), so looks never change a rule.
-// - Deep pond cores (`deep-water`): water vertices kDeepSteps steps from land (deepCore, Rock.h),
-//   opened and with specks dropped, never at an algae tile's corner, so only the bigger ponds have
+// - Deep pond cores (`deep-water`): water vertices kDeepReach tiles from land in a straight line, so
+//   a core's outline is round, opened and with specks dropped, never at an algae tile's corner, so only the bigger ponds have
 //   a core and every shore keeps two tiles of plain shallows for algae, beaches and swimming access.
 //   Deep water waters land like water but is slower to swim: crossing a big pond takes longer than
 //   in revision 5 (a feel change).
@@ -92,9 +94,11 @@ constexpr const char *kMudStream = "swamp-mud";
 constexpr const char *kMossStream = "swamp-moss";
 constexpr const char *kLookStream = "swamp-looks";
 constexpr const char *kClimateStream = "swamp-climate";
-// Deep water: water vertices at least kDeepSteps steps from land, opened by kDeepOpen and kept only
-// in bodies of kDeepLeast vertices or more. Four steps leave two tiles of pure shallows.
-constexpr int kDeepSteps = 4, kDeepOpen = 1, kDeepLeast = 12;
+// Deep water: water vertices at least kDeepReach tiles from land in a straight line (eight-connected
+// steps drew every core as a rectangle), opened by kDeepOpen and kept only in bodies of kDeepLeast
+// vertices or more. Four tiles in a straight line are never under three steps (kDeepSteps - 1, what
+// validateWorld checks), which leaves two tiles of pure shallows.
+constexpr int kDeepReach = 4, kDeepSteps = 4, kDeepOpen = 1, kDeepLeast = 12;
 // Mud: beach sand within kMudBeach vertex steps of water, kMudHome tiles or more from every swarm's
 // footprint and kMudAlgae tiles or more from every algae tile.
 constexpr int kMudBeach = 2, kMudHome = 12, kMudAlgae = 6;
@@ -117,8 +121,10 @@ constexpr int kCauseNear = 40, kCauseSpan = 6, kCauseSave = 30, kCauseApart = 16
 constexpr double kHomePlain = 11, kHomeFray = 5;
 // Deep water keeps this far from algae, so an algae bed is a rounded shoal in the dark water.
 constexpr double kDeepAlgae = 2.5;
-// No dry-grass look within this many tiles of a swarm's footprint.
+// No dry-grass look within this many tiles of a swarm's footprint (straight-line from its middle, two
+// tiles more, frayed by up to kDryFray either way).
 constexpr int kDryHome = 18;
+constexpr double kDryFray = 3;
 // What validateWorld checks, from every colony's workers (who stand a few tiles from the swarm's
 // footprint): no Rough within kRoughCheck, no Fertile within kFertileCheck, no Obstacles within
 // kHomeCheck.
@@ -512,29 +518,18 @@ TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climat
 						 GenerationContext &context, LayerCounts &counts)
 {
 	const int n = t.size();
-	std::vector<unsigned char> water(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		water[i] = wet(mech[i]);
-	const std::vector<int> fromWet = stepsFrom(t, water);
+	const std::vector<int> fromWet = stepsFromWet(t, mech);
 	std::mt19937 &random = context.stream(kLookStream);
 	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, random);
 	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
-	// Dry tussock renders as bare brown ground, which beside a swarm reads as a scar, not a hummock.
-	const std::vector<unsigned char> noDry = swarmSurroundings(t, context, kDryHome);
-	std::vector<unsigned char> plain(size_t(n), 0);
-	for (int team = 0; team < context.request.nbTeams; ++team)
-	{
-		const int cx = context.bootX[team] + 2, cy = context.bootY[team] + 2;
-		const int box = int(kHomePlain + kHomeFray) + 1;
-		for (int dy = -box; dy <= box; ++dy)
-			for (int dx = -box; dx <= box; ++dx)
-			{
-				const int i = t.at(cx + dx, cy + dy);
-				const double reach = kHomePlain + kHomeFray * (split[i] - 32768) / 32768.0;
-				if (dx * dx + dy * dy <= reach * reach)
-					plain[i] = 1;
-			}
-	}
+	const int teams = context.request.nbTeams;
+	const std::vector<int> bootX(context.bootX.begin(), context.bootX.begin() + teams),
+		bootY(context.bootY.begin(), context.bootY.begin() + teams);
+	// Dry tussock renders as bare brown ground, which beside a swarm reads as a scar, not a hummock. The
+	// clearing is a frayed disc: a square one (eight-connected steps from the footprint) cut the dry
+	// patches near a home into triangles with ruler-straight edges.
+	const std::vector<unsigned char> noDry = homeGardens(t, bootX, bootY, teams, kDryHome + 2, fray, kDryFray);
+	const std::vector<unsigned char> plain = homeGardens(t, bootX, bootY, teams, kHomePlain, split, kHomeFray);
 	// The fray moves each quantile by up to this much either way, so lush and dry ground have
 	// ragged edges rather than the field's contour lines.
 	constexpr double kFray = 0.15;
@@ -641,7 +636,13 @@ void bogPass(Game &game, GenerationContext &context, const SwampOptions &o, cons
 		water[i] = mech[i] == WATER;
 	if (o.deepWater)
 	{
-		std::vector<unsigned char> core = deepCore(t, water, kDeepSteps);
+		std::vector<unsigned char> land(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			land[i] = !water[i];
+		const std::vector<std::int64_t> fromLand = distanceSquaredTo(t, land);
+		std::vector<unsigned char> core(size_t(n), 0);
+		for (int i = 0; i < n; ++i)
+			core[i] = water[i] && (fromLand[i] < 0 || fromLand[i] >= std::int64_t(kDeepReach) * kDeepReach);
 		const std::vector<unsigned char> shoal = dilateRound(t, algae, kDeepAlgae);
 		for (int i = 0; i < n; ++i)
 			core[i] = core[i] && !held[i] && !shoal[i];
