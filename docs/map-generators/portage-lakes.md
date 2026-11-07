@@ -113,21 +113,22 @@ Calibration, the final design: 12 games (seeds 101–103, four seat rotations ea
 | Revision | Births a game | Wheat | Wood | Buildings | Units at 20,000 | Colony under 12 units |
 | --- | --- | --- | --- | --- | --- | --- |
 | 7 | 205 | 2,740 | 423 | 73 | 267 | 0 of 48 |
-| 8 | 224 | 2,957 | 447 | 78 | 278 | 0 of 48 |
+| 8 | 232 | 3,043 | 455 | 80 | 297 | 0 of 48 |
 
 The single game the brief asks for (seed 101, Nicowar, Cortex, Cabino, Maxima in that order) gave
-177 births, 2,238 wheat, 370 wood and 67 buildings against revision 7's 178, 2,446, 396 and 76.
-Seed 103's map fell back to stone patches, so its games say nothing about the knobs.
+219 births, 3,150 wheat, 449 wood and 84 buildings against revision 7's 178, 2,446, 396 and 76.
+Seeds 101 and 103 fell back to stone patches, so only seed 102's games include home knobs.
 
 ## Limits
 
-- Stone is a place now: about a fifth of revision 7's stone tiles at the defaults (192 against
-  920 on seeds 1–3), because the forest knots are rock with a face here and there. Each home's
+- Stone is a place now: about a seventh of revision 7's stone tiles at the defaults (97–178
+  against 832–907 on seeds 101–103), because the forest knots are rock with a face here and there. Each home's
   knob face holds 7 stone; ambient faces and the country clumps scale with `stone-amount`.
 - The home knobs are equal in stone, not in distance: they are placed nearest first, and where
   the meadow round a town is full of fields and lake the knob lands as far as 22 tiles away (walks
-  of 5 to 20 steps to the face on seeds 1–3 and 101–102). On roughly one map in six at 256×256 no
-  stencil fits beside every home and every home keeps revision 7's stone patch instead.
+  of 5 to 21 steps to the face). On 6 of 16 sampled maps (128 to 512, 2 to 8 colonies) no
+  stencil fits beside every home and every home keeps revision 7's stone patch instead; placing
+  the knobs before the fields, rather than after, is the obvious next step.
 - Swimming is slower across the deep cores, so the swim shortcut saves less time than steps (one
   seed: 61 steps saved, 62 plain-tile time units; another 54 steps, 21 time units). The validator
   checks steps, as revision 7 did, not time.
