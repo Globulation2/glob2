@@ -218,7 +218,6 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     program = record(env, env.Program(str(output / 'index.js'), objects), "link")
     env.Depends(program, assets)
     if 'web-tests' in COMMAND_LINE_TARGETS:
-        import sys
         sys.path.insert(0, str(root / 'test'))
         import tests as registry
         tests = env.Clone()
