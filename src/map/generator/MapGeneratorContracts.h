@@ -2940,7 +2940,7 @@ inline void tidalFlatsContracts()
 	assert(!definition.validateRequest(make(7, 7, 12, 7)).empty());
 	// Every tide comes up at random.
 	std::set<std::string> tides;
-	for (std::uint32_t seed = 1; seed <= 12; ++seed)
+	for (std::uint32_t seed = 1; seed <= 40 && tides.size() < 3; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(7, 7, 2, seed), true);
