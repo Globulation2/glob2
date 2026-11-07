@@ -28,6 +28,7 @@ CLIENT_SOURCES = (
     'ai/maxima/AIMaximaStrategy.cpp',
     'ai/maxima/AIMaximaTactics.cpp',
     'ai/AI.cpp',
+    'ai/AIRegistry.cpp',
     'ai/observation/AIWorldCapture.cpp',
     'engine/sim/snapshot/WorldCapture.cpp',
     'engine/sim/snapshot/WorldSnapshot.cpp',

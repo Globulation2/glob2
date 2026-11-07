@@ -18,7 +18,7 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 #include <optional>
 #include <stdexcept>
 
-namespace AIEngine { struct DecisionContext; }
+namespace AIEngine { struct DecisionContext; class AIWorldView; }
 
 namespace GAGCore
 {
@@ -84,6 +84,11 @@ public:
 	// to owned observation inputs. The default cannot accidentally call the
 	// legacy live-world implementation on a background thread.
 	virtual bool supportsObservation() const { return false; }
+	// Controllers that must see every observation boundary, even ticks on which
+	// the pipeline did not poll them (scripted AIs), return true and receive
+	// observeIdle() on those ticks.
+	virtual bool observesWhenIdle() const { return false; }
+	virtual void observeIdle(const AIEngine::AIWorldView&) {}
 	// Sampled only by the controller's own lane after a decision. Empty means
 	// this controller has not supplied retained vector-capacity accounting.
 	virtual std::optional<Uint64> retainedQueryVectorBytes() const { return std::nullopt; }
