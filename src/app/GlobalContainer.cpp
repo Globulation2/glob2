@@ -396,7 +396,12 @@ void GlobalContainer::requestGameGraphics()
 		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
 		Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
+		{
+			// The shared decor sheet holds every material's decor, thousands of
+			// HD frames; the compositor streams those of the materials in view.
+			Sprite::deferHighResolution(material.decor.sprite);
 			Toolkit::requestSprite(material.decor.sprite);
+		}
 		if (!material.overlay.sprite.empty())
 			Toolkit::requestSprite(material.overlay.sprite);
 	}

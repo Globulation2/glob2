@@ -58,6 +58,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			}
 		if (!m.decor.sprite.empty())
 		{
+			GAGCore::Sprite::deferHighResolution(m.decor.sprite);
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
@@ -428,6 +429,16 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
                 if (animated)
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
+        // Decor (spires, masses, terraces) streams per material in view too:
+        // the shared sheet is far larger than any one map needs.
+        if (count && decorSprites[id])
+        {
+            auto &decorWindow = windows[decorSprites[id]];
+            for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
+                                       m.decor.connectedForeign})
+                for (int frame : frames)
+                    if (frame >= 0) decorWindow.push_back(unsigned(frame));
+        }
         if (!animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
         constexpr std::size_t frameBytes = 128 * 128 * 4; // A 32-pixel cell at HD scale 4.
         const unsigned extra = unsigned(std::min<std::size_t>(m.animationFrames - 2,
