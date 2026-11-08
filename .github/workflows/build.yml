@@ -189,7 +189,9 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_native_coverage == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    # An instrumented -O0 build takes ~50 min cold, unit coverage ~6 and the
+    # 2,233 display-tier engine cases ~3 h on a 4-core runner.
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
         with:
