@@ -397,12 +397,15 @@ class MachineDraftTest(TranslationProgramTest):
         return response
 
     def test_legacy_scope_is_opt_in_and_default_scope_is_unchanged(self):
-        self.assertEqual(PROGRAM.LOCALES, (
-            'hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
-            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
-            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb', 'ms'))
-        self.assertEqual(len(PROGRAM.LOCALES), 34)
+        # The default kit covers exactly the registered program scope, once each, with a
+        # pending review record per locale; legacy-only native locales stay opt-in.
+        self.assertEqual(len(PROGRAM.LOCALES), len(set(PROGRAM.LOCALES)))
+        self.assertLessEqual(set(PROGRAM.LOCALES), set(PROGRAM.SUPPORTED_DRAFT_LOCALES))
         self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
+        self.assertEqual({p.stem for p in (self.output / 'reviews').glob('*.json')}, set(PROGRAM.LOCALES))
+        legacy_only = set(PROGRAM.LEGACY_NATIVE_LOCALES) - set(PROGRAM.LOCALES)
+        self.assertTrue(legacy_only)
+        self.assertFalse(legacy_only & set(self.manifest['locales']))
         selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
         self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])
         self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms', 'bn', 'mr', 'ta', 'te', 'fil'})

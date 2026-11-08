@@ -2,6 +2,7 @@
 import ast
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -91,8 +92,18 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
 
     def test_script_fonts_are_available_before_optional_downloads(self):
-        fonts = sorted((ROOT / 'content/data/fonts/scripts').glob('*.ttf'))
-        self.assertEqual(len(fonts), 13, 'All approved shaping fonts must ship')
+        folder = ROOT / 'content/data/fonts/scripts'
+        fonts = sorted(folder.glob('*.ttf'))
+        # The approved shaping fonts are the pinned manifest, and every script the
+        # renderer can switch to (TrueTypeFont::setScriptLanguage) needs one of them.
+        approved = {font['name'] + '-Regular.ttf'
+                    for font in json.loads((folder / 'manifest.json').read_text())['fonts']}
+        self.assertEqual({font.name for font in fonts}, approved, 'All approved shaping fonts must ship')
+        renderer = (ROOT / 'libs/gag/src/TrueTypeFont.cpp').read_text()
+        scripts = set(re.findall(r'wanted = "([A-Za-z]+)"', renderer))
+        self.assertTrue(scripts, 'script table not found in TrueTypeFont.cpp')
+        missing = {'NotoSans%s-Regular.ttf' % script for script in scripts} - approved
+        self.assertFalse(missing, 'renderer scripts without an approved font')
         for font in fonts:
             path = font.relative_to(ROOT / 'content').as_posix()
             self.assertEqual(self.owner.get(path), 'core', path)

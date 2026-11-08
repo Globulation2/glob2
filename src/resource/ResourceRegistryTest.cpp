@@ -4,6 +4,8 @@
 #include <nlohmann/json.hpp>
 #include <random>
 #include <algorithm>
+#include <filesystem>
+#include <fstream>
 #include <type_traits>
 
 static_assert(!std::is_copy_constructible_v<ResourceRegistry>);
@@ -26,9 +28,13 @@ std::string source(Json definitions)
 {
     return Json{{"schemaVersion", 1}, {"resources", std::move(definitions)}}.dump();
 }
+std::filesystem::path stockPath()
+{
+    return glob2test::contentRoot() / "data/resources/registry.json";
+}
 std::shared_ptr<const ResourceRegistry> stock()
 {
-    return ResourceRegistry::loadFile((glob2test::contentRoot() / "data/resources/registry.json").string());
+    return ResourceRegistry::loadFile(stockPath().string());
 }
 }
 
@@ -37,7 +43,12 @@ TEST_SUITE("ResourceRegistry")
     TEST_CASE("stock catalog separates map identities from the twelve fixed materials")
     {
         const auto registry = stock();
-        REQUIRE(registry->size() == 24);
+        // Every definition in the shipped file loads, in file order, so IDs follow the file.
+        std::ifstream file(stockPath());
+        const auto declared = Json::parse(file).at("resources");
+        REQUIRE(registry->size() == declared.size());
+        for (unsigned i = 0; i < declared.size(); ++i)
+            CHECK(registry->key(static_cast<ResourceId>(i)) == declared[i].at("key").get<std::string>());
         CHECK(registry->key(static_cast<ResourceId>(0)) == "trees");
         CHECK(registry->key(static_cast<ResourceId>(1)) == "wheat");
         CHECK(registry->key(static_cast<ResourceId>(6)) == "orange-tree");
@@ -253,7 +264,7 @@ TEST_SUITE("ResourceRegistry")
         const auto backward = original->importJson(source(additions));
         CHECK(forward->serialize() == backward->serialize());
         CHECK(forward->size() == original->size() + 300);
-        CHECK(original->size() == 24);
+        REQUIRE(forward->size() > 256);
         for (unsigned i = 0; i < original->size(); ++i)
             CHECK(forward->find(original->key(static_cast<ResourceId>(i))) == static_cast<ResourceId>(i));
         CHECK(forward->valid(300));

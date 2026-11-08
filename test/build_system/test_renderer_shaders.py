@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import tarfile
 import tempfile
@@ -14,6 +15,39 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('renderer_shaders', ROOT / 'tools/shaders/generate.py')
 shader = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(shader)
+
+
+def std140_layout(source):
+    """Offsets and size of the one std140 `uniform Parameters` block declared in GLSL source.
+
+    Written from the GLSL std140 rules independently of tools/shaders/generate.py:
+    scalars align to 4, vec2 to 8, vec3/vec4 to 16; a matCxR is C column vectors of 16
+    bytes; array elements round up to a 16-byte stride; the block size rounds up to 16.
+    """
+    blocks = re.findall(r'layout\(std140[^)]*\)\s*uniform\s+Parameters\s*\{(.*?)\}\s*;', source, re.S)
+    if len(blocks) != 1:
+        raise ValueError('expected one std140 Parameters block, found %d' % len(blocks))
+    offset, members = 0, []
+    for kind, name, count in re.findall(r'(\w+)\s+(\w+)\s*(?:\[(\d+)\])?\s*;', blocks[0]):
+        scalar = re.fullmatch(r'(?:float|int|uint|bool)', kind)
+        vector = re.fullmatch(r'[iub]?vec([234])', kind)
+        matrix = re.fullmatch(r'mat([234])(?:x([234]))?', kind)
+        if scalar:
+            alignment = size = 4
+        elif vector:
+            components = int(vector.group(1))
+            size, alignment = 4 * components, 8 if components == 2 else 16
+        elif matrix:
+            alignment, size = 16, 16 * int(matrix.group(1))
+        else:
+            raise ValueError('unsupported uniform type ' + kind)
+        if count:
+            alignment = max(alignment, 16)
+            size = -(-size // 16) * 16 * int(count)
+        offset = -(-offset // alignment) * alignment
+        members.append((name, offset))
+        offset += size
+    return {'members': members, 'size': -(-offset // 16) * 16}
 
 
 class RendererShaderTest(unittest.TestCase):
@@ -165,8 +199,12 @@ class RendererShaderTest(unittest.TestCase):
     def test_integer_terrain_contracts(self):
         meta = shader.metadata()
         compose = meta['uniformBlocks']['terrain-compose-fragment']
-        self.assertEqual(compose['size'], 368)
-        self.assertEqual([m['offset'] for m in compose['members']], [0, 16, 80, 144, 160, 224, 288, 352])
+        # Lay the block out again from the declaration the Vulkan fragment shader actually
+        # carries, rather than pinning the numbers the generator computed.
+        declared = std140_layout(shader.sources(ROOT, meta, 'vulkan', 'terrain-compose')['frag'])
+        self.assertEqual([m['name'] for m in compose['members']], [name for name, _ in declared['members']])
+        self.assertEqual([m['offset'] for m in compose['members']], [offset for _, offset in declared['members']])
+        self.assertEqual(compose['size'], declared['size'])
         self.assertEqual(meta['uniformBlocks']['terrain-reduce-fragment']['size'], 16)
         self.assertEqual([t['binding'] for t in meta['terrainComposeTextures']], list(range(6)))
         self.assertEqual([t['webgpuImageBinding'] for t in meta['terrainComposeTextures']], list(range(0, 12, 2)))
@@ -181,7 +219,7 @@ class RendererShaderTest(unittest.TestCase):
         translated = shader.webgpu_sources(ROOT, meta, 'terrain-compose')['frag']
         self.assertIn('uniform utexture2D coverageWeightsTexture', translated)
         self.assertIn('texelFetch(usampler2D(coverageWeightsTexture,coverageWeightsSampler)', translated)
-        self.assertIn('terrain_compose_fragment_size = 368', shader.layout_header(meta))
+        self.assertIn('terrain_compose_fragment_size = %d;' % declared['size'], shader.layout_header(meta))
 
     def test_rejects_overlapping_vertex_attributes(self):
         with tempfile.TemporaryDirectory() as directory:

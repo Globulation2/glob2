@@ -13,6 +13,7 @@
 #include <cstdint>
 #include "AIImplementation.h"
 #include "AINames.h"
+#include "AIRegistry.h"
 #include "CustomGameScreen.h"
 #include "OnlineServices.h"
 #include "InstanceConfig.h"
@@ -2337,7 +2338,24 @@ struct CustomGameSetupHarness
 		REQUIRE(parsed);
 		REQUIRE_MESSAGE(errors.empty(), (errors.empty() ? std::string() : errors.front()));
 		const auto &catalog = RulesetCatalog::shipped();
-		REQUIRE((catalog.rulesets.size() == parsed->rulesets.size() && catalog.rulesets.size() == 13));
+		REQUIRE(catalog.rulesets.size() == parsed->rulesets.size());
+		// Every ruleset the file declares loads, once, so none is silently dropped.
+		{
+			std::string text;
+			GAGCore::InputLineStream lines(Toolkit::getFileManager()->openInputStreamBackend(RulesetCatalog::filename));
+			while (!lines.isEndOfStream())
+				text += lines.readLine() + "\n";
+			const auto declared = nlohmann::json::parse(text).at("rulesets");
+			REQUIRE(catalog.rulesets.size() == declared.size());
+			std::set<std::string> ids;
+			for (const auto &entry : declared)
+			{
+				const std::string id = entry.at("id").get<std::string>();
+				INFO(id);
+				REQUIRE(ids.insert(id).second);
+				REQUIRE(catalog.find(id));
+			}
+		}
 		REQUIRE((catalog.standard().id == "standard" && catalog.standard().values.empty()));
 		std::set<const Rule *> used;
 		for (const auto &ruleset : catalog.rulesets)
@@ -2498,7 +2516,19 @@ struct CustomGameSetupHarness
 		REQUIRE((s.controllerCount() == Team::MAX_COUNT && !s.humanColony()));
 		// Only watching: one against all leaves the first colony alone, and every equal split
 		// of the sixteen colonies is offered.
-		REQUIRE(TeamLayout::offered(s.activeColonies()).size() == 11);
+		{
+			const int n = s.activeColonies();
+			std::vector<TeamLayout::Layout> expected{TeamLayout::Layout{TeamLayout::Layout::FreeForAll, {}, -1}};
+			for (int small = n / 2; small >= 1; --small)
+				expected.push_back(TeamLayout::Layout{TeamLayout::Layout::Split, {small, n - small}, -1});
+			for (int size = 2; size * 3 <= n; ++size)
+				if (n % size == 0)
+					expected.push_back(TeamLayout::Layout{TeamLayout::Layout::Split, std::vector<int>(std::size_t(n / size), size), -1});
+			const auto offered = TeamLayout::offered(n);
+			REQUIRE(offered.size() == expected.size());
+			for (const auto &layout : expected)
+				REQUIRE(std::count(offered.begin(), offered.end(), layout) == 1);
+		}
 		REQUIRE(s.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::Split, {1, 15}, -1}));
 		REQUIRE((s.teamLayout().oneVsAll() && s.loneColony(s.teamLayout()) == 0));
 		REQUIRE(std::string(s.legacyFormat()) == "Custom teams");
@@ -2843,10 +2873,17 @@ TEST_SUITE("CustomGameSetup")
 	CustomGameSetupHarness::rulesets();
 	const auto &selection = AINames::selectionOrder();
 	REQUIRE(selection.back() == AI::NONE);
-	REQUIRE((std::set<int>(selection.begin(), selection.end()) ==
-		std::set<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX,
-			AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
-	REQUIRE(selection.size() == 9);
+	// Every built-in AI this build registers is offered exactly once, and nothing else.
+	// Scripted AIs are chosen from the AI library instead.
+	std::size_t builtins = 0;
+	for (int id = 0; id < AI::SIZE; ++id)
+	{
+		INFO(id);
+		const bool builtin = id != AI::JAVASCRIPT && AIRegistry::available(id);
+		REQUIRE(std::count(selection.begin(), selection.end(), id) == (builtin ? 1 : 0));
+		builtins += builtin;
+	}
+	REQUIRE(selection.size() == builtins);
 	for (size_t i = 1; i + 1 < selection.size(); ++i)
 		REQUIRE(AINames::getAIStrength(selection[i-1]) <= AINames::getAIStrength(selection[i]));
 	for (int id : selection)
