@@ -67,6 +67,9 @@ Use contracts, map inspection and populated games for different questions: legal
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
+  `--sweep K/N --quick` leaves out the 512 cells, the costliest; pull requests with the full
+  matrix run it, and the scheduled master runs sweep every cell. The sweep steps have no shell
+  time limit of their own; the job's `timeout-minutes` only catches a hang.
 - `src/map/generator/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
   <profile-dir> <seed> <rounds> [generator-id...]`, a load generator for external sampling profilers
   (macOS `sample`, Linux `perf record`): it round-robins every registered generator (or only the ids

@@ -15,6 +15,8 @@
 //                                                      repeat observations, and print timings
 //   MapGeneratorGoldenTest <profile-dir> --sweep K/N    only every Nth landscape from the Kth,
 //                                                      so N processes can share the sweep
+//   MapGeneratorGoldenTest <profile-dir> --sweep K/N --quick
+//                                                      without the 512 cells, for PRs
 //
 // The table (test/map-generator-golden.txt) records, per platform, the fingerprint of the map
 // each generator produces for a few seeds, sizes and colony counts, keyed by the generator's
@@ -328,8 +330,10 @@ int update(const std::string &path, bool toStdout, bool force, const std::set<in
 // its 256 default every playable landscape must seat every colony count it accepts on at
 // least one of five seeds; the small and large sizes are checked at the counts a player is
 // likely to ask for. The per-cell rates are printed so a landscape that only just scrapes by
-// is visible before it starts failing.
-int sweep(int shard, int shards)
+// is visible before it starts failing. The quick sweep that pull requests run keeps every
+// 128 and 256 cell with all its seeds, so it fails only where the full sweep would, and
+// leaves the costly 512 cells to the scheduled run.
+int sweep(int shard, int shards, bool quick)
 {
 	struct Cell
 	{
@@ -344,6 +348,8 @@ int sweep(int shard, int shards)
 	};
 	int failures = 0;
 	const auto methods = GeneratorRegistry::builtins().methods(false);
+	if (quick)
+		std::printf("quick sweep: no %dx%d cells\n", 1 << 9, 1 << 9);
 	for (std::size_t index = 0; index < methods.size(); ++index)
 	{
 		if (int(index % shards) != shard)
@@ -353,6 +359,8 @@ int sweep(int shard, int shards)
 		std::string line;
 		for (const auto &cell : cells)
 		{
+			if (quick && cell.wDec > 8)
+				continue;
 			int ok = 0;
 			bool invalid = false;
 			for (auto seed : cell.seeds)
@@ -564,7 +572,7 @@ int main(int argc, char **argv)
 	{
 		std::fprintf(stderr,
 					 "usage: %s <profile-dir> [--require-rows|--inventory|--update [--force|--only=id,...]|--print [--only=id,...]|--sweep "
-					 "[K/N]|--telemetry]\n",
+					 "[K/N [--quick]]|--telemetry]\n",
 					 argv[0]);
 		return 2;
 	}
@@ -579,13 +587,19 @@ int main(int argc, char **argv)
 	if (mode == "--sweep")
 	{
 		int shard = 0, shards = 1;
+		const bool quick = argc > 4 && std::strcmp(argv[4], "--quick") == 0;
+		if (argc > 4 && !quick)
+		{
+			std::fprintf(stderr, "--sweep K/N takes only --quick after it, not %s\n", argv[4]);
+			return 2;
+		}
 		if (argc > 3 && (std::sscanf(argv[3], "%d/%d", &shard, &shards) != 2 || shards < 1 ||
 						 shard < 0 || shard >= shards))
 		{
 			std::fprintf(stderr, "--sweep takes K/N with 0 <= K < N, not %s\n", argv[3]);
 			return 2;
 		}
-		return sweep(shard, shards);
+		return sweep(shard, shards, quick);
 	}
 	if (mode == "--inventory")
 	{
