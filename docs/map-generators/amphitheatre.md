@@ -38,9 +38,7 @@ stay unbuildable is rough ground.
 - **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
   of the way to the shallowest territory's far end; the wheat and wood kit faces the nearest sea, and
   two quarry faces of 12 stone each stand at the foot of the territory's side borders, as deep from
-  the ramp as the swarm; since revision 7 every starting tower also has a face of 6 stone at the foot
-  of the wall it stands against by the ramp, kept two steps from the ramp; scattered fields by
-  `furnishGround`.
+  the ramp as the swarm; scattered fields by `furnishGround`.
 - **Inland seas.** `bay-size` percent of the smallest territory, split into two seas, one either side
   of the home (`growLakeBeside`), each wholly on its side of the line from the ramp through the home
   and ten tiles clear of it, seven from any wall. Where any territory lacks the room, every territory

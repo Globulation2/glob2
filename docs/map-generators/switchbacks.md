@@ -30,10 +30,7 @@ stay unbuildable is rough ground.
 | Lava | Lava | The plateau's pond, in the volcanic climate | Volcanic maps show lava at their centre |
 
 Every home has two quarry faces of 12 stone each at the mountain's foot either side of its trail's
-mouth: the mountains were its stone when they were built of it. Since revision 7's towers stand up the
-trail, 16 to 47 steps from those faces, revision 8 gives every starting tower a face of 6 stone at the
-foot of the wall it stands against, within four tiles of it and off the trail's walkway, in a grass
-niche opened in the paving (paving holds no stone). Both are unscaled.
+mouth: the mountains were its stone when they were built of it. They are unscaled.
 
 
 - **Geometry.** Designed in every colony's `AxisFrame` and turned round the centre; round on a

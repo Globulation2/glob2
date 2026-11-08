@@ -51,11 +51,6 @@ constexpr double kHomeFarmDepth = 22;
 // stood; the quarry face's size; open water this many vertices from land is deep.
 constexpr double kCoastBand = 6;
 constexpr int kQuarryFace = 16;
-// Every door's tower also has a face of this much stone at the foot of the outer wall, seeded within
-// this many tiles of the tower and kept this many steps from the door (plantTowerStone).
-constexpr int kTowerStone = 6;
-constexpr int kTowerStoneReach = 10;
-constexpr int kTowerStoneDoorGap = 3;
 constexpr int kDeepFrom = 5;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry face stands (barren ground holds no stone).
@@ -400,7 +395,6 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 			}))
 		return false;
 	c.stage = "gauntlet towers";
-	std::vector<std::vector<int>> towerTiles(g.teams);
 	for (int k = 0; k < g.teams; ++k)
 		for (int side = 0; side < 2; ++side)
 		{
@@ -417,10 +411,8 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 					  a + (side == 0 ? -1 : 1) * std::max(0., (o.gateWidth - 5) / 2.) / g.outer);
 			const int team =
 				int(std::find(L.teamSlot.begin(), L.teamSlot.end(), k) - L.teamSlot.begin());
-			const int tower = placeTower(game, team, o.towers - 1, p.x, p.y, 6, allowed, true,
-										 {{int(std::lround(door.x)), int(std::lround(door.y))}}, true);
-			towerTiles[k].push_back(tower);
-			if (tower < 0)
+			if (placeTower(game, team, o.towers - 1, p.x, p.y, 6, allowed, true,
+						   {{int(std::lround(door.x)), int(std::lround(door.y))}}, true) < 0)
 			{
 				c.detail = "A guarded entrance has no supplied tower site: " + std::to_string(k) +
 						   ":" + std::to_string(side);
@@ -448,18 +440,6 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 				});
 		}
 		c.telemetry.measure("gauntlet.quarry-faces.tiles", faceTiles);
-		// Each door's tower also gets a face at the foot of the outer wall beside it: the towers stand
-		// back from the wall by their doors, a long walk from the face between the doors.
-		int towerStone = 0;
-		for (int k = 0; k < g.teams; ++k)
-			towerStone += plantTowerStone(
-				map, t, towerTiles[k], kTowerStone, kTowerStoneReach,
-				[&](int i)
-				{
-					return L.homeOf[i] == k && !L.road[i] && !L.farmRegion[i] && !reserved[i] &&
-						   fromDoor[i] > kTowerStoneDoorGap && clearGround(map, t.remainderX(i), i / t.w);
-				});
-		c.telemetry.measure("gauntlet.tower-stone.tiles", towerStone);
 	}
 	const auto fertility = Fertility::forMap(map, false);
 	for (int k = 0; k < g.teams; ++k)
@@ -740,7 +720,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			6,
+			5,
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

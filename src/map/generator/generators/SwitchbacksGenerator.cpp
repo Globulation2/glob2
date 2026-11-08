@@ -156,10 +156,6 @@ constexpr int kCoverTower = 1;
 // this many vertices from land is deep.
 constexpr int kQuarryFace = 12;
 constexpr double kQuarryIn = 0.7, kQuarryAcross = 0.6;
-// Every starting tower also has a face of this much stone at the foot of its wall, seeded within this
-// many tiles of it (plantTowerStone): towers stand up the trail, a long walk from the home's faces.
-constexpr int kTowerStone = 6;
-constexpr int kTowerStoneReach = 4;
 constexpr int kDeepFrom = 5;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry faces and towers stand (barren ground holds no stone, and a tile
@@ -677,10 +673,8 @@ std::vector<unsigned char> blockedTiles(const GenerationMap &map, const Torus &t
 	return blocked;
 }
 
-std::vector<int> stepsFromWalkway(const Layout &L);
-
 void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
-			 const SwitchbacksOptions &o, const TowerPlan &towers, const std::vector<unsigned char> &pads)
+			 const SwitchbacksOptions &o, const std::vector<unsigned char> &pads)
 {
 	const Torus &t = L.t;
 	const Geometry &g = L.g;
@@ -700,29 +694,10 @@ void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
 		return !L.roadTile[i] && !reserved[i] && !pads[i] && fromTrails[i] > kTrailClearance &&
 			   clearGround(map, t.remainderX(i), i / t.w);
 	};
-	// The towers' ammunition: on the colony's own trail or home, off the walkway, at the foot of the
-	// wall each tower stands against.
-	const std::vector<int> fromWalkway = stepsFromWalkway(L);
-	int faceTiles = 0, towerTiles = 0, nicheTiles = 0;
+	int faceTiles = 0;
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
-		const auto nicheGround = [&](int i)
-		{
-			return (L.trailOf[i] == k || L.homeOf[i] == k) && !L.roadTile[i] && !reserved[i] && !pads[i] &&
-				   (fromWalkway[i] < 0 || fromWalkway[i] > kWalkway);
-		};
-		const auto towerGround = [&](int i)
-		{ return nicheGround(i) && clearGround(map, t.remainderX(i), i / t.w); };
-		if (k < int(towers.towers.size()))
-		{
-			// The trail is paved and paving holds no stone: the wall's foot beside each tower is a
-			// grass niche first.
-			nicheTiles += openTowerNiches(map, t, towers.towers[k], kTowerStone, kTowerStoneReach,
-										  kClimateLooks[L.climate].homeGrass, nicheGround,
-										  [&](int i) { return pads[i] != 0; });
-			towerTiles += plantTowerStone(map, t, towers.towers[k], kTowerStone, kTowerStoneReach, towerGround);
-		}
 		// The quarry faces first, at the mountain's foot on either side of the trail's mouth.
 		const KitFrame frame{int(std::lround(L.homes[k].x)), int(std::lround(L.homes[k].y)), L.axis[k]};
 		faceTiles += plantQuarryFaces(map, t,
@@ -740,8 +715,6 @@ void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
 			"switchbacks-home-stone", "switchbacks-home-fruit");
 	}
 	context.telemetry.measure("switchbacks.quarry-faces.tiles", faceTiles);
-	context.telemetry.measure("switchbacks.tower-stone.tiles", towerTiles);
-	context.telemetry.measure("switchbacks.tower-niches.tiles", nicheTiles);
 	// The plateau: only fruit, so nothing overgrows its groves - in every wedge the orchard's three groves
 	// on the pond's shore, halfway between one trail's summit and the next.
 	const auto plateauFree = [&](int i) { return L.plateau[i] && free(i); };
@@ -767,20 +740,6 @@ void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
 	}
 }
 
-// Steps from the trails' centre lines: the walkway is the centre line and kWalkway tiles either side,
-// which no tower, pad or tower stone may take.
-std::vector<int> stepsFromWalkway(const Layout &L)
-{
-	const Torus &t = L.t;
-	std::vector<unsigned char> centre(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		centre[i] = L.road[i];
-	if (!L.g.roads)
-		for (int k = 0; k < L.g.teams; ++k)
-			tracePath(centre, t, L.trails[k]);
-	return stepsFrom(t, centre);
-}
-
 // The towers every colony starts with and the open pads beside them (chooseTowerSites), all built into
 // its switchback: on the trail, against the inner side of each wall - the wall between the tower and the
 // middle of the map - so each tower shoots across the stone at the next leg up, where attackers coming
@@ -791,7 +750,14 @@ TowerPlan planTowers(const GenerationMap &map, const Layout &L, const Generation
 {
 	const Torus &t = L.t;
 	const int n = t.size();
-	const std::vector<int> fromCentre = stepsFromWalkway(L);
+	// The walkway: the trail's centre line and a tile either side, which no tower may take.
+	std::vector<unsigned char> centre(n, 0);
+	for (int i = 0; i < n; ++i)
+		centre[i] = L.road[i];
+	if (!L.g.roads)
+		for (int k = 0; k < L.g.teams; ++k)
+			tracePath(centre, t, L.trails[k]);
+	const std::vector<int> fromCentre = stepsFrom(t, centre);
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	// Against a wall on the side towards the middle of the map: rock within a couple of tiles that way.
 	const auto facesInwardWall = [&](int i)
@@ -874,7 +840,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const std::vector<unsigned char> pads = towerFootprints(t, towers);
 
 	context.stage = "switchbacks resources";
-	furnish(map, L, context, o, towers, pads);
+	furnish(map, L, context, o, pads);
 	const WedgeFrame algaeWedges(t, L.phase - L.g.wedge / 2, L.g.teams);
 	seedAlgae(map, context, t, "switchbacks-algae", o.algae, AlgaeBand::shallows(1, 4),
 			  &algaeWedges);
@@ -928,21 +894,11 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const int n = t.size(), teams = context.request.nbTeams;
 	const auto where = [&](int i)
 	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
-	// Every mountain, wall, coast and trail stands as designed, vertex for vertex, except the towers'
-	// grass niches in the paving (openTowerNiches), which only ever replace paving on a trail.
+	// Every mountain, wall, coast and trail stands as designed, vertex for vertex.
 	const TerrainSketch designed = sketchTerrain(L);
-	const TerrainType niche = kClimateLooks[L.climate].homeGrass;
 	for (int i = 0; i < n; ++i)
-	{
-		const TerrainType actual = map.vertexTerrainAt(t.remainderX(i), i / t.w);
-		if (actual == designed[i])
-			continue;
-		const bool trailVertex = L.trailOf[i] >= 0 || L.trailOf[t.at(t.remainderX(i) - 1, i / t.w)] >= 0 ||
-								 L.trailOf[t.at(t.remainderX(i), i / t.w - 1)] >= 0 ||
-								 L.trailOf[t.at(t.remainderX(i) - 1, i / t.w - 1)] >= 0;
-		if (actual != niche || !trailVertex || TERRAIN_TYPE_GROUPS[designed[i]].group != TerrainGroup::Paths)
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != designed[i])
 			return "The ground at " + where(i) + " is not as designed.";
-	}
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the switchbacks", "");
 	if (!walk.error.empty())
 		return walk.error;
@@ -1039,7 +995,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		8,
+		7,
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
