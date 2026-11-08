@@ -4,7 +4,7 @@ The first generators were written when the engine had grass, sand and water only
 whatever behaved closest to the idea. A wall was the stone resource, a road or a no-build marker
 was sand, and a coast was a beach with stone behind it. The terrain catalogue
 ([TerrainGroup.h](../../../../src/map/TerrainGroup.h),
-[TerrainTypeTable.h](../../../../src/map/TerrainTypeTable.h)) now has real terrain for each of
+[TerrainGroupTable.h](../../../../src/map/TerrainGroupTable.h)) now has real terrain for each of
 those ideas. This guide records what the City states 2.0 rebuild and the arena family's (Carousel,
 Switchbacks, Gauntlet, Amphitheatre) taught. Use it when you upgrade an older generator or design a
 new one with the full palette. Its lessons are grounded in those five generators' code and in the
