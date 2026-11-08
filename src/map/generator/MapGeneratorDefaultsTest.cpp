@@ -1949,6 +1949,84 @@ TEST_SUITE("MapGeneratorRegistry")
         MapGeneratorDefaultsTest::globalsInit();
         GeneratorContracts::generatorContracts();
     }
+    TEST_CASE("catalog generation contracts: portage-lakes [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("portage-lakes");
+    }
+    TEST_CASE("catalog generation contracts: bajada [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("bajada");
+    }
+    TEST_CASE("catalog generation contracts: braided-river [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("braided-river");
+    }
+    TEST_CASE("catalog generation contracts: caravanserai [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("caravanserai");
+    }
+    TEST_CASE("catalog generation contracts: rain-shadow [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("rain-shadow");
+    }
+    TEST_CASE("catalog generation contracts: tidal-flats [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("tidal-flats");
+    }
+    TEST_CASE("catalog generation contracts: watershed [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("watershed");
+    }
+    TEST_CASE("catalog generation contracts: everglades [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("everglades");
+    }
+    TEST_CASE("catalog generation contracts: ring-world [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("ring-world");
+    }
+    TEST_CASE("catalog generation contracts: shattered-coast [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("shattered-coast");
+    }
+    TEST_CASE("catalog generation contracts: river [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("river");
+    }
+    TEST_CASE("catalog generation contracts: crater-lakes [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("crater-lakes");
+    }
+    TEST_CASE("catalog generation contracts: swamp [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("swamp");
+    }
     TEST_CASE("framework contracts [slow][map-generators]")
     {
         DefaultsFixture fixture;

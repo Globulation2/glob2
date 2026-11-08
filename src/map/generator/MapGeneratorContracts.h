@@ -3007,6 +3007,19 @@ inline void rainShadowContracts()
 		Game g(nullptr);
 		build(g, r, "ridge variant");
 	}
+	// Straight ridges alternate their passes from one ridge to the next, flipping in mid-valley: when the
+	// flip fell on the ridges themselves (two ridges on 128 tiles put them on its lines), every pass
+	// was split into two halves half a spacing apart, and these seeds could not be crossed.
+	for (std::uint32_t seed : {1u, 2u, 3u, 4u})
+	{
+		D r = make(7, 7, 2, seed);
+		r.options["ridges"] = 4;
+		r.options["ridge-thickness"] = 4;
+		r.options["slant"] = 0;
+		r.options["pass-spacing"] = 32;
+		Game g(nullptr);
+		build(g, r, "straight ridges on their stagger lines");
+	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
@@ -5487,47 +5500,85 @@ inline void swampContracts()
 		 "extremes, growth");
 }
 
+struct NamedContracts
+{
+	const char *name;
+	void (*run)();
+};
+
+// Every generator's contracts, by the kebab-case names GLOB2_CONTRACTS takes.
+inline const std::vector<NamedContracts> &catalogContracts()
+{
+	static const std::vector<NamedContracts> all = {
+		{"bastion-keys", bastionKeysContracts},
+		{"drowned-forest", drownedForestContracts},
+		{"portage-lakes", portageLakesContracts},
+		{"faulted-city", faultedCityContracts},
+		{"encircled-kingdom", encircledKingdomContracts},
+		{"comb", combContracts},
+		{"even-ground", evenGroundContracts},
+		{"marchland", marchlandContracts},
+		{"who-ate-the-map", eatenMapContracts},
+		{"rebuilt-landscapes", rebuiltLandscapeContracts},
+		{"savannah", savannahContracts},
+		{"locust", locustFoodChecks},
+		{"last-treeline", LastTreelineChecks::run},
+		{"hedgerow-country", hedgerowContracts},
+		{"breachable-highlands", breachableHighlandsContracts},
+		{"braided-delta", braidedDeltaChecks},
+		{"forts", fortsContracts},
+		{"emoji", emojiContracts},
+		{"honeycomb-isle", honeycombIsleContracts},
+		{"karst-towers", karstTowersContracts},
+		{"bajada", bajadaContracts},
+		{"braided-river", braidedRiverContracts},
+		{"caravanserai", caravanseraiContracts},
+		{"rain-shadow", rainShadowContracts},
+		{"tidal-flats", tidalFlatsContracts},
+		{"watershed", watershedContracts},
+		{"everglades", evergladesContracts},
+		{"ring-world", ringWorldContracts},
+		{"shattered-coast", shatteredCoastContracts},
+		{"river", riverContracts},
+		{"crater-lakes", craterLakesContracts},
+		{"swamp", swampContracts},
+	};
+	return all;
+}
+
+// Generators whose contracts are heavy enough to run as their own test case, each with the slow
+// budget ("catalog generation contracts: <name>"); the catalog case runs every other generator.
+inline const std::vector<std::string> &separateContracts()
+{
+	static const std::vector<std::string> names = {"portage-lakes", "bajada", "braided-river", "caravanserai", "rain-shadow", "tidal-flats", "watershed", "everglades", "ring-world", "shattered-coast", "river", "crater-lakes", "swamp"};
+	return names;
+}
+
+// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
+// above), so one generator's contracts can be checked in minutes; unset runs them all.
+inline bool contractsSelected(const std::string &name)
+{
+	const char *only = std::getenv("GLOB2_CONTRACTS");
+	return !only || (std::string(",") + only + ",").find("," + name + ",") != std::string::npos;
+}
+
+// The catalog case: every generator not listed in separateContracts().
 inline void generatorContracts()
 {
-	// GLOB2_CONTRACTS=bajada,forts runs only those generators' contracts (a comma list of the names
-	// below), so one generator's contracts can be checked in minutes; unset runs them all.
-	const char *only = std::getenv("GLOB2_CONTRACTS");
-	const auto run = [&](const char *name, void (*contracts)())
-	{
-		if (!only || (std::string(",") + only + ",").find(std::string(",") + name + ",") != std::string::npos)
-			contracts();
-	};
-	run("bastion-keys", bastionKeysContracts);
-	run("drowned-forest", drownedForestContracts);
-	run("portage-lakes", portageLakesContracts);
-	run("faulted-city", faultedCityContracts);
-	run("encircled-kingdom", encircledKingdomContracts);
-	run("comb", combContracts);
-	run("even-ground", evenGroundContracts);
-	run("marchland", marchlandContracts);
-	run("who-ate-the-map", eatenMapContracts);
-	run("rebuilt-landscapes", rebuiltLandscapeContracts);
-	run("savannah", savannahContracts);
-	run("locust", locustFoodChecks);
-	run("last-treeline", LastTreelineChecks::run);
-	run("hedgerow-country", hedgerowContracts);
-	run("breachable-highlands", breachableHighlandsContracts);
-	run("braided-delta", braidedDeltaChecks);
-	run("forts", fortsContracts);
-	run("emoji", emojiContracts);
-	run("honeycomb-isle", honeycombIsleContracts);
-	run("karst-towers", karstTowersContracts);
-	run("bajada", bajadaContracts);
-	run("braided-river", braidedRiverContracts);
-	run("caravanserai", caravanseraiContracts);
-	run("rain-shadow", rainShadowContracts);
-	run("tidal-flats", tidalFlatsContracts);
-	run("watershed", watershedContracts);
-	run("everglades", evergladesContracts);
-	run("ring-world", ringWorldContracts);
-	run("shattered-coast", shatteredCoastContracts);
-	run("river", riverContracts);
-	run("crater-lakes", craterLakesContracts);
-	run("swamp", swampContracts);
+	const auto &separate = separateContracts();
+	for (const auto &entry : catalogContracts())
+		if (std::find(separate.begin(), separate.end(), entry.name) == separate.end() && contractsSelected(entry.name))
+			entry.run();
+}
+
+// One separately run generator's contracts.
+inline void generatorContracts(const std::string &name)
+{
+	if (!contractsSelected(name))
+		return;
+	for (const auto &entry : catalogContracts())
+		if (entry.name == name)
+			return entry.run();
+	assert(!"no contracts registered under this name");
 }
 } // namespace GeneratorContracts
