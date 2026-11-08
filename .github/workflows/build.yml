@@ -44,6 +44,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     outputs:
       native: ${{ steps.select.outputs.native }}
@@ -297,6 +298,7 @@ jobs:
   linux-build:
     needs: [changes, linux-gcc11, linux-gcc13-producer, linux-gcc13]
     if: ${{ !cancelled() && needs.changes.outputs.run_linux_build == 'true' }}
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - name: Require every selected Linux producer and check
@@ -335,6 +337,7 @@ jobs:
     name: linux (${{ matrix.image }})
     needs: [changes, linux-build, linux-clang]
     if: ${{ !cancelled() && needs.changes.outputs.run_linux == 'true' }}
+    timeout-minutes: 60
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -362,6 +365,7 @@ jobs:
     name: linux variants (${{ matrix.image }})
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_linux_variants == 'true' }}
+    timeout-minutes: 150
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -514,6 +518,7 @@ jobs:
   linux-map-generators:
     needs: [changes, linux-gcc11, linux-gcc13, linux-map-generators-standalone]
     if: ${{ !cancelled() && needs.changes.outputs.run_linux_map_generators == 'true' }}
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - name: Require every selected Linux producer and check
@@ -537,6 +542,7 @@ jobs:
     name: windows (mingw-w64)
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_windows == 'true' }}
+    timeout-minutes: 330
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -1361,6 +1367,7 @@ jobs:
       COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
     needs: [changes, linux, windows, web-test, macos]
     if: ${{ !cancelled() && needs.changes.outputs.run_browser_determinism == 'true' }}
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -1595,6 +1602,7 @@ jobs:
       actions: read
     needs: [changes, android, macos, tsan, native-coverage, linux-gcc11, linux-gcc13-producer, linux-gcc13, linux-build, linux-clang, linux, linux-variants, linux-map-generators-standalone, linux-map-generators, windows, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack, music]
     if: ${{ always() }}
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

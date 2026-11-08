@@ -32,6 +32,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - name: Reject malformed inputs before obtaining publication credentials
@@ -52,6 +53,7 @@ jobs:
   promote:
     needs: context
     environment: github-release
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

@@ -41,6 +41,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     outputs:
       revision: ${{ steps.source.outputs.revision }}
@@ -65,6 +66,7 @@ jobs:
 
   windows-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: windows-signing
     steps:
@@ -86,6 +88,7 @@ jobs:
 
   macos-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: macos-developer-id
     steps:
@@ -107,6 +110,7 @@ jobs:
 
   android-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: android-sideload
     steps:
@@ -127,6 +131,7 @@ jobs:
 
   publication-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: github-release
     steps:
@@ -143,6 +148,7 @@ jobs:
 
   play-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: google-play-internal
     steps:
@@ -163,6 +169,7 @@ jobs:
 
   ios-preflight:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: ios-testflight
     steps:
@@ -220,6 +227,7 @@ jobs:
   windows-sign:
     needs: [context, packages]
     environment: windows-signing
+    timeout-minutes: 180
     runs-on: windows-latest
     permissions:
       contents: read
@@ -330,6 +338,7 @@ jobs:
             architecture: arm64
           - runner: macos-15-intel
             architecture: x86_64
+    timeout-minutes: 180
     runs-on: ${{ matrix.runner }}
     env:
       VERSION: ${{ needs.context.outputs.version }}
@@ -389,6 +398,7 @@ jobs:
   android-sign:
     needs: [context, android-packages]
     environment: android-sideload
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -469,6 +479,7 @@ jobs:
 
   draft:
     needs: [context, packages, windows-sign, macos-sign, android-sign, play-candidate, ios-candidate]
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: github-release
     steps:

@@ -29,6 +29,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     outputs:
       source_commit: ${{ steps.source.outputs.source_commit }}
@@ -76,6 +77,7 @@ jobs:
             architecture: arm64
           - runner: macos-15-intel
             architecture: x86_64
+    timeout-minutes: 180
     runs-on: ${{ matrix.runner }}
     env:
       VERSION: ${{ needs.preflight.outputs.version }}
