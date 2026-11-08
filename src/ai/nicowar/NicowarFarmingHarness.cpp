@@ -186,6 +186,28 @@ TEST_SUITE("NicowarFarming")
 			require(!map.isFarmArea(9,11,me), "an emptied field releases its farm");
 		}
 	}
+	TEST_CASE("Fertile ground is farmland but not water")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool econo : {false, true})
+		{
+			CAPTURE(econo);
+			Fixture f(false, econo);
+			auto& map=f.game.map;
+			const Uint32 me=f.game.teams[0]->me;
+			// A loam patch with no water anywhere on the map.
+			for (int y=26; y<38; ++y) for (int x=26; x<38; ++x) map.paintVertexSquare(x, y, LOAM, 1);
+			map.setResourceByIndex(31,31,WHEAT,0);   // on Fertile ground
+			map.setResourceByIndex(33,33,WOOD,0);    // on Fertile ground
+			map.setResourceByIndex(41,31,WHEAT,0);   // grass, four tiles off the loam
+			for (auto [x,y,m] : {std::tuple{31,31,MaterialId::Food},std::tuple{33,33,MaterialId::Wood},std::tuple{41,31,MaterialId::Food}})
+				require(map.materialExpansionRateAt(map.coordToIndex(x,y),m)>0, "loam waters the fixture");
+			f.update();
+			require(map.isForbidden(31,31,me), "wheat seed on Fertile ground is farmed");
+			require(map.isForbidden(33,33,me), "wood seed on Fertile ground is farmed");
+			require(!map.isForbidden(41,31,me), "Fertile ground is not water: no zone reaches out from it");
+		}
+	}
 	TEST_CASE("edge donors expand fields and are released after growth")
 	{
 		glob2test::HeadlessGlobals globals;

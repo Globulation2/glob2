@@ -1,4 +1,5 @@
 #include "AIResourcePolicy.h"
+#include "AITerrainPredicates.h"
 #include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -698,7 +699,8 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<observation->height;y++)
 		{	
-			if (terrainProvidesFertility(queries->terrainPropertiesAt(x,y)))
+			// Real water only; Fertile ground is farmable land (see nearGrowth).
+			if (terrainIsIrrigatingWater(queries->terrainPropertiesAt(x,y)))
 			{
 				water_gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
@@ -728,7 +730,8 @@ std::shared_ptr<Order> AIWarrush::farm()
 			const bool reserveFood=AIResourcePolicy::needsSeedReserve(observation->state(),observation->tileIndex(x,y),MaterialId::Food);
 			const bool reserveWood=AIResourcePolicy::needsSeedReserve(observation->state(),observation->tileIndex(x,y),MaterialId::Wood);
 			const bool nearGrowth=properties.ecology!=ResourceEcology::Land
-				|| water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+				|| water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET)
+				|| terrainIsFertileGround(queries->terrainPropertiesAt(x,y));
 			const bool wheat_spot = x%2==y%2 && reserveFood
 				&& queries->isMapDiscovered(x, y, observedTeam->mask)
 				&& nearGrowth;

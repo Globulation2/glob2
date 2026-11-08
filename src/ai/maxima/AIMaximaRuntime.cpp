@@ -1,4 +1,5 @@
 #include "PowerOfTwo.h"
+#include "AITerrainPredicates.h"
 #include "Material.h"
 #include "AIStateSerialization.h"
 #include "field/UniformTraversal.h"
@@ -172,7 +173,7 @@ bool AnyResource::equals(const Entity& other) const
 void AnyResource::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
 
 bool Water::matches(const AIEngine::AIWorldView& world,unsigned observerTeam,int x,int y) const
-{ return terrainProvidesFertility(AIEngine::ObservationQueries::terrain(world,x,y)); }
+{ return terrainIsIrrigatingWater(AIEngine::ObservationQueries::terrain(world,x,y)); }
 bool Water::equals(const Entity& other) const
 { return other.type()==EWater; }
 void Water::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}

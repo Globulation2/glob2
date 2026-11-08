@@ -4,6 +4,7 @@
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "AIResourcePolicy.h"
+#include "AITerrainPredicates.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
@@ -68,7 +69,7 @@ namespace
 		queue.reserve(w*h);
 		for(int y=0; y<h; ++y)
 			for(int x=0; x<w; ++x)
-				if(terrainProvidesFertility(AIEngine::ObservationQueries::terrain((*map),x, y)))
+				if(terrainIsIrrigatingWater(AIEngine::ObservationQueries::terrain((*map),x, y)))
 				{
 					backing[y*w+x]=1;
 					queue.push_back(y*w+x);

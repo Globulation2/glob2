@@ -3,6 +3,7 @@
 
 #include "shared_runtime/Runtime.h"
 #include "ai/observation/AIWorldView.h"
+#include "AITerrainPredicates.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -14,7 +15,8 @@ Entities::Water::Water()
 
 bool Entities::Water::is_entity(Map* map, int posx, int posy)
 {
-	return terrainProvidesFertility(map->terrainPropertiesAt(posx,posy));
+	// Fertile ground is buildable crop land, not water; see terrainIsIrrigatingWater.
+	return terrainIsIrrigatingWater(map->terrainPropertiesAt(posx,posy));
 }
 
 bool Entities::Water::operator==(const Entity& rhs) const
@@ -136,7 +138,7 @@ bool Entities::Unwalkable::operator==(const Entity& rhs) const
 { return typeid(rhs)==typeid(Entities::Unwalkable); }
 
 bool Entities::Water::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return terrainProvidesFertility(world.terrainPropertiesAt(world.tileIndex(x,y))); }
+{ return terrainIsIrrigatingWater(world.terrainPropertiesAt(world.tileIndex(x,y))); }
 bool Entities::Position::is_entity(const AIEngine::AIWorldView&,int posx,int posy)
 { return x==posx && y==posy; }
 bool Entities::Sand::is_entity(const AIEngine::AIWorldView& world,int x,int y)

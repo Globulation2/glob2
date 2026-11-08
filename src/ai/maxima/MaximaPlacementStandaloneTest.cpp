@@ -1702,3 +1702,92 @@ TEST_CASE("forward support never delays viable ordinary construction or maintena
     }
 }
 }
+
+namespace
+{
+// A 16x16 strip whose discovered land lies within four tiles of column 0.
+// Column 0 is either Fertile ground (walkable, buildable crop land that is a
+// weak fertility source) or real water (swimmable and unbuildable).
+WorldState fertileStripWorld(bool water)
+{
+	WorldState world;world.reset(16,16);world.profiles=makeProfiles();
+	for(int y=0;y<16;++y)for(int x=0;x<16;++x)
+	{
+		WorldTile& tile=world.tile(x,y);
+		tile.discovered=x<=4;tile.buildable=true;tile.walkable=true;
+		tile.swimmable=false;tile.fertilitySource=false;tile.protectedness=60;
+		if(x==0)
+		{
+			tile.fertilitySource=true;
+			if(water){tile.swimmable=true;tile.walkable=false;tile.buildable=false;}
+		}
+	}
+	return world;
+}
+
+bool selectSmall(Planner& planner,const WorldState& world,DevelopmentAction& action)
+{
+	DevelopmentIntent small;small.buildingType=2;small.unmetCount=1;
+	small.priority=80;small.workers=2;
+	DevelopmentLimits quota;quota.newConstruction=2;
+	return planner.selectAction(world,{small},quota,action);
+}
+}
+
+TEST_CASE("Fertile ground beside a site does not block Maxima placement; real water still does" *
+	doctest::test_suite("Maxima.Placement"))
+{
+	{
+		const WorldState fertile=fertileStripWorld(false);
+		CHECK(fertile.tile(0,5).fertilitySource);
+		CHECK_FALSE(fertile.tile(0,5).irrigatingWater());
+		Planner planner;planner.configure(makeProfiles(),1,2,6,5,7);
+		DevelopmentAction action;
+		REQUIRE(selectSmall(planner,fertile,action));
+		// Fertile ground is not water, so the strict clearance tier applies.
+		CHECK_FALSE(action.fallbackWaterTier);
+		CHECK(planner.diagnostics().rejected[RejectedWaterTier]==0);
+	}
+	{
+		const WorldState water=fertileStripWorld(true);
+		CHECK(water.tile(0,5).irrigatingWater());
+		Planner planner;planner.configure(makeProfiles(),1,2,6,5,7);
+		DevelopmentAction action;
+		// Every discovered parcel is within four tiles of the water, inside
+		// even the five-tile fallback clearance.
+		CHECK_FALSE(selectSmall(planner,water,action));
+		CHECK(planner.diagnostics().rejected[RejectedWaterTier]>0);
+	}
+}
+
+TEST_CASE("A restored water-distance cache that counted Fertile ground as water is re-derived [save-format]" *
+	doctest::test_suite("Maxima.Placement"))
+{
+	// Older continuations stored the water mask built from every fertility
+	// source. Emulate one: build the planner's cache while column 0 counts as
+	// water, save and restore it, then plan on the true Fertile-ground world.
+	const WorldState fertile=fertileStripWorld(false);
+	WorldState stale=fertile;
+	for(int y=0;y<16;++y)stale.tile(0,y).swimmable=true;
+	Planner original;original.configure(makeProfiles(),1,2,6,5,7);
+	DevelopmentAction ignored;
+	CHECK_FALSE(selectSmall(original,stale,ignored));
+	auto backend=new GAGCore::MemoryStreamBackend;
+	auto output=new GAGCore::BinaryOutputStream(backend);
+	original.save(output);original.saveExecutionState(output);
+	backend->seekFromStart(0);
+	auto copy=new GAGCore::MemoryStreamBackend(*backend);
+	delete output;
+	GAGCore::BinaryInputStream input(copy);
+	Planner restored;restored.configure(makeProfiles(),1,2,6,5,7);
+	REQUIRE(restored.load(&input,VERSION_MINOR));
+	restored.loadExecutionState(&input,VERSION_MINOR);
+	Planner fresh;fresh.configure(makeProfiles(),1,2,6,5,7);
+	DevelopmentAction expected,actual;
+	REQUIRE(selectSmall(fresh,fertile,expected));
+	REQUIRE(selectSmall(restored,fertile,actual));
+	CHECK_FALSE(actual.fallbackWaterTier);
+	CHECK((actual.centerX==expected.centerX&&actual.centerY==expected.centerY));
+	CHECK(actual.parcelTiles==expected.parcelTiles);
+	CHECK(actual.utility.total==expected.utility.total);
+}

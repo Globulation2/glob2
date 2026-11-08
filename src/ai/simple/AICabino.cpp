@@ -2,6 +2,7 @@
 // Copyright (C) 2005-2007 Bradley Arsenault
 
 #include "Material.h"
+#include "AITerrainPredicates.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
@@ -1175,7 +1176,8 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		if(building!=NOGBID && getBuildingFromGid(map, building)->team==team->number)
 			return true;
 	}
-	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(index)))
+	// Real water only: Fertile ground is farmable land, handled by the Farmer.
+	if(sources&Water && terrainIsIrrigatingWater(map->terrainPropertiesAt(index)))
 		return true;
 	return false;
 }
@@ -4872,6 +4874,13 @@ bool Farmer::updateFarm()
 	// With the farm-areas experiment, wheat near water is farmed with a farm
 	// area on the same pattern; forbidden paint continues to protect wood.
 	const bool farms=ai.map->farmAreasEnabled;
+	// Farm zone: near real water, or on Fertile ground, which is farmable land
+	// in its own right. Maps without Fertile ground keep the water rule alone.
+	const auto inFarmZone=[&](unsigned x,unsigned y)
+	{
+		return water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2)
+			|| terrainIsFertileGround(ai.map->terrainPropertiesAt(ai.map->tileIndex(x,y)));
+	};
 	BrushAccumulator farm_del_acc;
 	BrushAccumulator farm_add_acc;
 	for(unsigned int x=0; static_cast<int>(x)<ai.map->width; ++x)
@@ -4887,7 +4896,7 @@ bool Farmer::updateFarm()
 				const bool wheat_farm=farm_spot && MapState::hasMaterial(ai.map->state(),ai.map->tileIndex(x,y),MaterialId::Food)
 					&& !((ai.map->areasAt(ai.map->tileIndex(x,y)).clear&(ai.team->mask))!=0)
 					&& ai.map->canPaintFarmAt(ai.map->tileIndex(x,y))
-					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
+					&& inFarmZone(x, y);
 				const bool farmed=((ai.map->areasAt(ai.map->tileIndex(x,y)).farm&(ai.team->mask))!=0);
 				if(wheat_farm && !farmed)
 					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
@@ -4910,7 +4919,7 @@ bool Farmer::updateFarm()
 				}
 				else
 				{
-					if(resources.find(point(x, y))==resources.end() && ((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0) && water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2))
+					if(resources.find(point(x, y))==resources.end() && ((ai.map->visibilityAt(ai.map->tileIndex(x,y)).discovered&(ai.team->mask))!=0) && inFarmZone(x, y))
 					{
 						add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->width, ai.map->height);
 						resources.insert(point(x, y));

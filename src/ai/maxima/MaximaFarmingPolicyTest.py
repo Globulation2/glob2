@@ -167,7 +167,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         helper = self.policy[self.policy.index("std::vector<Uint8> shoreline_backing"):]
         helper = helper[:helper.index("bool is_empty_growth_cell")]
         self.assertIn("AIEngine::ObservationQueries::terrain((*map),nx,ny).shoreline", helper)
-        self.assertIn("terrainProvidesFertility(AIEngine::ObservationQueries::terrain((*map),x, y))", helper)
+        self.assertIn("terrainIsIrrigatingWater(AIEngine::ObservationQueries::terrain((*map),x, y))", helper)
         self.assertNotIn("ressource", helper)
         self.assertNotIn("mi.is_sand(x+dx, y+dy)", farming)
 

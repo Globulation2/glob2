@@ -500,4 +500,28 @@ TEST_CASE("shared runtime reload replaces queues and registrations in binary and
     }
 }
 
+TEST_CASE("Cabino farming treats Fertile ground as farmland, not water")
+{
+    using namespace Cabino;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world{glob2test::GameOptions{.wDec=6,.hDec=6,.header=true}};
+    auto& game=world.game;
+    game.map.setMapDiscovered();
+    for(int y=0;y<64;++y) game.map.paintCell(0,y,WATER);
+    for(int y=28;y<37;++y) for(int x=28;x<37;++x) game.map.paintVertexSquare(x,y,LOAM,1);
+    // Wood seeds on Cabino's cross-spacing pattern (odd, odd), far from the water.
+    game.map.setResourceByIndex(31,31,WOOD,1);   // on Fertile ground
+    game.map.setResourceByIndex(31,51,WOOD,1);   // on grass, nowhere near water
+    game.map.setResourceByIndex(3,21,WOOD,1);    // beside real water
+    AICabino ai(game.players[0]);
+    auto* farmer=dynamic_cast<Farmer*>(ai.getOtherModule("Farmer")); REQUIRE(farmer);
+    glob2test::withCabinoObservation(ai,game,[&]{ return farmer->updateFarm(); });
+    REQUIRE(farmer->is_water_gradient_computed);
+    CHECK(farmer->water_gradient.getHeight(0,10)==1);
+    CHECK(farmer->water_gradient.getHeight(31,31)>int(MAX_DISTANCE_FROM_WATER+2));
+    CHECK(farmer->resources.count(Farmer::point(31,31))==1);
+    CHECK(farmer->resources.count(Farmer::point(31,51))==0);
+    CHECK(farmer->resources.count(Farmer::point(3,21))==1);
+}
+
 }
