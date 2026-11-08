@@ -55,7 +55,7 @@ Resource amounts are planting requests: wheat can saturate its finite beds at th
 highest settings. Even 0% retains opening grain and 30 wood tiles per home; fruit
 and algae have no minimum guarantee.
 
-Stone has no abundance slider: every home has one quarry face of 16 stone at the inside foot of its outer wall, between its doors, and since revision 6 every door's tower has a face of 6 stone at the foot of the outer wall beside it, at least three steps from the door, so a tower restocks within a few steps rather than across the home. Farm crossings remain
+Stone has no abundance slider: every home has one quarry face of 16 stone at the inside foot of its outer wall, between its doors, the towers' only supply beyond their reserve. Farm crossings remain
 open by construction; allowing them to disappear would undermine this arena's
 circulation contract. Towers begin with ammunition and reserve stone. Players
 still need the ordinary economy and training to maintain and upgrade them. A
