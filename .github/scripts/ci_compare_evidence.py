@@ -9,6 +9,46 @@ BROWSER_TRACE_VARIANTS = (('serial', 1), ('threaded', 1), ('threaded', 2),
                           ('threaded', 4), ('threaded', 8), ('threaded', 'auto'))
 
 
+# The job whose success means each platform's evidence was produced.
+PRODUCERS = {'ubuntu-24.04': 'linux', 'ubuntu-22.04': 'linux', 'windows': 'windows',
+             'macos': 'macos', 'browsers': 'web-test'}
+
+
+def succeeded(upstream, job):
+    """Whether the producing job succeeded; an absent entry (local runs) counts."""
+    return (upstream.get(job) or {}).get('result', 'success') == 'success'
+
+
+def present(upstream, platforms):
+    """Platforms whose producer succeeded, with a notice for each one left out."""
+    kept = []
+    for platform in platforms:
+        job = PRODUCERS.get(platform, platform)
+        if succeeded(upstream, job):
+            kept.append(platform)
+        else:
+            result = (upstream.get(job) or {}).get('result')
+            print(f'::notice::{platform} evidence is not compared: upstream job {job} {result}')
+    return kept
+
+
+def compare_verify_traces(root, expected=None):
+    """Every present match verify trace agrees; `expected` pins the count when all producers ran."""
+    traces = sorted(Path(root).rglob('verify-match.checksums.txt'))
+    if expected is not None and len(traces) != expected:
+        raise ValueError(f'Expected {expected} selected native/browser traces, got {traces}')
+    if len(traces) < 2:
+        print('::notice::fewer than two match verify traces are present; nothing to compare')
+        return traces, None
+    reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
+    if reference.count(b'\n') <= 600:
+        raise ValueError(f'Incomplete match verify trace: {traces[0]}')
+    for trace in traces[1:]:
+        if trace.read_bytes().replace(b'\r\n', b'\n') != reference:
+            raise ValueError(f'Verification differs: {trace}')
+    return traces, reference
+
+
 def validate_traces(root, native, browsers):
     reference = None
     for platform in native:
@@ -33,7 +73,8 @@ def validate_traces(root, native, browsers):
             raise ValueError(f'Unexpected simulation scenario: {path}')
         trace = (path.parent / 'wasm.replay.checksums').read_bytes()
         import hashlib
-        if hashlib.sha256(trace).hexdigest() != manifest['trace_sha256'] or trace != reference:
+        if hashlib.sha256(trace).hexdigest() != manifest['trace_sha256'] or (
+                reference is not None and trace != reference):
             raise ValueError(f'Browser simulation differs: {identity}')
         found.add(identity)
     if found != expected:
@@ -98,7 +139,10 @@ def main():
     parser.add_argument('--compatibility', choices=['true','false'], required=True)
     parser.add_argument('--variants', choices=['true','false'], required=True)
     parser.add_argument('--macos', choices=['true','false'], default='false')
+    parser.add_argument('--upstream', default='{}',
+                        help="the workflow's needs context as JSON; failed producers are left out")
     args = parser.parse_args()
+    upstream = json.loads(args.upstream or '{}')
     native = ['ubuntu-24.04', 'windows']
     profiles = ['javascript-profile-linux-g++-13', 'javascript-profile-mingw']
     if args.compatibility == 'true':
@@ -109,7 +153,14 @@ def main():
     if args.macos == 'true':
         native.append('macos')
         profiles.append('javascript-profile-macos')
-    browsers = {'chromium', 'firefox', 'webkit'}
+    native = present(upstream, native)
+    profiles = [profile for profile in profiles
+                if succeeded(upstream, 'windows' if profile.endswith('mingw') else
+                             'macos' if profile.endswith('macos') else 'linux')]
+    browsers = {'chromium', 'firefox', 'webkit'} if present(upstream, ['browsers']) else set()
+    if len(native) + bool(browsers) < 2 or not native:
+        print('::notice::fewer than two platforms produced evidence; nothing to compare')
+        return
     print(f'{validate_traces(args.traces, native, browsers)} exact native/browser traces match')
     resource_count = validate_resource_compositions(args.traces, native, browsers,
         Path('test/fixtures/resources/seeded-compositions-units.trace'))
@@ -127,11 +178,14 @@ def main():
         if not (path / 'manifest.json').is_file():
             raise ValueError(f'Missing native scripting evidence: {profile}')
         corpora.append(path)
-    browser_corpora = [path.parent for path in args.traces.glob('*/script-corpus*/*/manifest.json')]
+    browser_corpora = [path.parent for path in args.traces.glob('*/script-corpus*/*/manifest.json')] if browsers else []
     expected = {(variant, browser) for variant in ('script-corpus','script-corpus-threaded') for browser in browsers}
     actual = [(path.parent.name, path.name) for path in browser_corpora]
     if len(actual) != len(expected) or set(actual) != expected:
         raise ValueError(f'Expected exact serial/threaded browser scripting corpus: {actual}')
+    if not corpora:
+        print('::notice::no native scripting evidence is present; nothing to compare')
+        return
     for index, candidate in enumerate(corpora[1:] + browser_corpora):
         subprocess.run(['python3', 'test/check_javascript_evidence.py', str(corpora[0]), str(candidate),
                         '--output', f'artifacts/javascript-ci/comparison-{index}.json'], check=True)

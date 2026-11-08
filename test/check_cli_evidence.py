@@ -10,10 +10,14 @@ def compare(root, required=()):
     # upload-artifact may preserve the cli-smoke/ prefix when multiple paths are uploaded.
     reports+=sorted(root.glob('*/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums'))
     reports=list(dict.fromkeys(reports))
-    if len(reports)<2: raise ValueError('at least two platform traces are required')
     for platform in required:
         if not any(platform in str(path.relative_to(root)) for path in reports):
             raise ValueError('missing required platform: '+platform)
+    if len(reports)<2:
+        # Only platforms whose producing job succeeded are required; with fewer
+        # than two there is nothing to compare, and the failed job is the signal.
+        print('::notice::fewer than two platform traces are present; nothing to compare')
+        return reports
     expected=complete_ticks(reports[0].read_bytes())
     if len(expected)!=64: raise ValueError('reference must contain 64 ticks')
     for path in reports[1:]:
