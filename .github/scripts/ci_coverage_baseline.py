@@ -7,9 +7,9 @@ import zipfile
 from ci_run_metrics import api, run_artifacts
 
 
-def selection_evidence(repo, run, token, read=api):
+def selection_evidence(repo, run, token, read=api, conclusions=('success',)):
     if (run.get('name') != 'build' or run.get('head_branch') != 'master' or
-            run.get('conclusion') != 'success' or
+            run.get('conclusion') not in conclusions or
             run.get('event') not in ('push', 'schedule', 'workflow_dispatch')):
         return None
     prefix = f'repos/{repo}/actions/runs/{run["id"]}'
@@ -43,6 +43,10 @@ def validated_baseline(repo, run_id, token, read=api):
 
 def recent_successes(repo, token, read=api):
     return read(f'repos/{repo}/actions/workflows/build.yml/runs?branch=master&status=success&per_page=100', token)['workflow_runs']
+
+
+def recent_completed(repo, token, read=api):
+    return read(f'repos/{repo}/actions/workflows/build.yml/runs?branch=master&status=completed&per_page=100', token)['workflow_runs']
 
 
 def activated():
@@ -93,6 +97,30 @@ def successful_full_run(repo, sha, token, read=api):
             if run.get('head_sha') != sha:
                 continue
             observed = selection_evidence(repo, run, token, read)
+            if (observed and observed.get('full_matrix') is True and
+                    observed.get('policy_fingerprint') == policy and
+                    all(observed.get('selection', {}).get(flag) is True for flag in FLAGS)):
+                return run['id']
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, EOFError, zipfile.BadZipFile):
+        pass
+    return None
+
+
+def decided_full_run(repo, sha, token, read=api):
+    """A full master run of this exact revision and policy that passed or failed.
+
+    Scheduled runs skip a revision that already has one: repeating it on the
+    same code would only queue behind and starve other work. Cancelled runs
+    decide nothing, so their revision is verified again."""
+    if not repo or not sha or not token:
+        return None
+    try:
+        from ci_policy import FLAGS, fingerprint
+        policy = fingerprint()
+        for run in recent_completed(repo, token, read):
+            if run.get('head_sha') != sha or run.get('conclusion') not in ('success', 'failure'):
+                continue
+            observed = selection_evidence(repo, run, token, read, ('success', 'failure'))
             if (observed and observed.get('full_matrix') is True and
                     observed.get('policy_fingerprint') == policy and
                     all(observed.get('selection', {}).get(flag) is True for flag in FLAGS)):

@@ -244,8 +244,32 @@ runs before claiming a change made it faster.
 
 ## Hosted verification and regression detection
 
+### CI run cancellation
+
+Workflow `concurrency` groups decide which runs replace or cancel others:
+
+- A newer push to a pull request or a non-default branch cancels that branch's
+  in-progress fast gate and full-matrix runs.
+- Master pushes, scheduled runs (group `nightly`), manual dispatches (group
+  `manual`) and release candidates are never cancelled once started. Within each
+  group the newest pending run replaces older pending ones, so not every master
+  revision gets a full run.
+- `.github/workflows/cancel-superseded.yml` covers what concurrency cannot: runs
+  of other CI workflows for a superseded pull request head, and every CI run of a
+  closed or merged pull request. It only touches the CI workflows listed in
+  `.github/scripts/ci_cancel_superseded.py`, never release, publication or
+  deployment runs, and leaves the default branch alone unless a manual dispatch
+  asks for it (keeping the newest run of each workflow).
+- A scheduled run whose revision already has a decided full run, one that passed
+  or failed with complete selection evidence, runs in `nightly-reused` mode and
+  skips the expensive jobs. Running the same code again would only queue behind
+  other work; cancelled runs decide nothing, so their revision is run again.
+  Dispatch `build.yml` manually to repeat a revision on purpose.
+- Every job has a `timeout-minutes`, so a hung job ends instead of holding a runner
+  until GitHub cancels it.
+
 Pull requests, draft or ready, run the [fast gate](#fast-gate). The full
-development matrix in `build.yml` runs on master every four hours,
+development matrix in `build.yml` runs on master every six hours,
 release candidates (through its `revision` workflow-call input) and manual
 dispatches. It does not run on ordinary pull requests: every check in it builds
 the game, so a cheaper subset still pays for the builds that dominate its cost.
@@ -276,7 +300,7 @@ one completed successful job. Missing, ambiguous, failed, cancelled or
 unexpectedly skipped checks fail the gate, and unselected workflow jobs must be
 skipped. Native runners retain their eligible and assigned engine-case inventories.
 
-The scheduled full matrix covers master's newest revision every four hours. Full master CI detects regressions
+The scheduled full matrix covers master's newest revision every six hours. Full master CI detects regressions
 asynchronously; the fast gate's `master-health` job applies the master-red rule
 described above. Retain failure artifacts, prioritize diagnosis and repair,
 document verification in repair PRs and confirm recovery with subsequent full

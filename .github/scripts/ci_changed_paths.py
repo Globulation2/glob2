@@ -269,7 +269,7 @@ def choose_checks(
 def main():
     import hashlib
     from ci_policy import CHEAP_FLAGS, fingerprint
-    from ci_coverage_baseline import successful_full_run
+    from ci_coverage_baseline import successful_full_run, decided_full_run
     from ci_check_inventory import fingerprint as inventory_fingerprint
     parser=argparse.ArgumentParser()
     parser.add_argument('--base',help='PR base revision; master still runs full coverage')
@@ -286,7 +286,10 @@ def main():
         try:paths=changed_paths(base);known=True
         except (OSError,subprocess.CalledProcessError) as error:print('Diff unavailable; selecting full coverage:',error,file=sys.stderr)
     reused_run=None
-    if event=='schedule':reused_run=successful_full_run(os.environ.get('GITHUB_REPOSITORY',''),os.environ.get('GITHUB_SHA',''),os.environ.get('GH_TOKEN',''))
+    if event=='schedule':
+        # A revision with a decided full run (passed or failed) is not run again on a schedule.
+        identity=(os.environ.get('GITHUB_REPOSITORY',''),os.environ.get('GITHUB_SHA',''),os.environ.get('GH_TOKEN',''))
+        reused_run=successful_full_run(*identity) or decided_full_run(*identity)
     selected,plan,desired=choose_checks(paths,known,event,labels,
         browser_only=event=='workflow_dispatch' and os.environ.get('BROWSER_ONLY')=='true',
         called_full=os.environ.get('CI_CALLED_FULL')=='true',reused=reused_run is not None)
