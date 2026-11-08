@@ -13,7 +13,8 @@ async function resize(page,width,height,backingScale=1) {
 }
 test.beforeEach(async ({page}) => {
   await page.goto(gameURL());
-  await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
+  // Startup gets the same budget as waitForMainMenu.
+  await expect.poll(async () => (await snapshot(page)).screen, {timeout:60000}).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
   if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
     await clickControl(page,'audio.silence');
     await screen(page,'HandPreferenceScreen');

@@ -1762,6 +1762,12 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 రాతి గోడలు
 [Sand patches]
 ఇసుక మచ్చలు
+[Cliff walls]
+కొండచరియల గోడలు
+[Paved roads]
+రాళ్లు పరచిన రోడ్లు
+[Scrub patches]
+బీడు మచ్చలు
 [Tidal flats]
 టైడల్ ఫ్లాట్స్
 [Everglades]

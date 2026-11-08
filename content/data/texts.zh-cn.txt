@@ -1798,6 +1798,12 @@ OpenGL 在此版本中不可用。
 石墙
 [Sand patches]
 沙地
+[Cliff walls]
+悬崖城墙
+[Paved roads]
+铺石路
+[Scrub patches]
+荒地
 [Tidal flats]
 潮间带
 [Everglades]

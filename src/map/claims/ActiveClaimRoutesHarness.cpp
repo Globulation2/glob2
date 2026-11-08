@@ -15,6 +15,8 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <memory>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

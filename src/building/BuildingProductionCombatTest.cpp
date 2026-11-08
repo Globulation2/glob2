@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <memory>
 #include <sstream>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TurretTargeting.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "Building.h"
 #include "Game.h"
 #include "Map.h"
@@ -10,6 +11,7 @@
 #include <map>
 #include <tuple>
 #include <stdexcept>
+#include "sim/EntityRefOf.h"
 
 namespace TurretTargeting
 {
@@ -331,7 +333,7 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
 
 Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage)
 {
-    Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
+    Source s{refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
         b.runtime->shootingRange,b.runtime->shootSpeed,
         b.owner->attackableTeams() & ~b.owner->sharedVisionExchange,
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};
@@ -373,7 +375,7 @@ Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin
 Target firstValid(const Building& b,const std::vector<Entry>& entries)
 {
     if (b.runtime->shootSpeed<256) return {};
-    const Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
+    const Source s{refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
         b.runtime->shootingRange,b.runtime->shootSpeed,
         b.owner->attackableTeams() & ~b.owner->sharedVisionExchange,
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};

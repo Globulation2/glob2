@@ -7,7 +7,6 @@
 #include "AINumbi.h"
 #include "NumbiQueries.h"
 #include "ai/engine/AIDecision.h"
-#include "Game.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"

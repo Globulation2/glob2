@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GauntletGenerator.h"
+#include "Climates.h"
 #include "ResourceSemantics.h"
 #include "GenerationWorld.h"
 #include "GenerationContext.h"
@@ -27,8 +28,18 @@ using namespace MapGeneration;
 // The courts form a circuit round a sealed lake, independently of the homes. Thin partitions
 // separate neighbouring courts: towers shoot over them, armies use their offset gates. There
 // is no capture mechanic. Holding a court means feeding and defending an army there.
-// Home farms are capped irrigated rows; sandy circulation and garden caps contain growth.
+// Home farms are capped irrigated rows; paved circulation and barren caps contain growth.
 // The repeated angular design is measured, not claimed to be exact integer-tile symmetry.
+//
+// THE GROUND (revision 5). Every wall is terrain from the catalogue (TerrainGroup.h) where earlier
+// revisions stood stone on grass: the partitions between courts are rock towers shoot over
+// (Ridges), as stone was; the outer arena ring, the borders between homes and both coasts are
+// cliffs (Obstacles), which no tower shoots through. A coast is a band of cliff from the water's edge
+// to where the old sealing ring stood, so there is no beach to land on and no lane behind it. The
+// promenade and the approaches are paved (Paths), with rough ground in every door so no building
+// closes it.
+// Every home has a quarry face of fixed size at the inside foot of its outer wall, between its two
+// doors: the towers' only stone. The climate (Climates.h) paints the looks last.
 namespace
 {
 constexpr double kTau = 2 * kPi;
@@ -36,6 +47,15 @@ constexpr double kInnerCourtWidth = 27;
 constexpr double kOuterCourtWidth = 48;
 constexpr double kLakeCourtGap = 7;
 constexpr double kHomeFarmDepth = 22;
+// A coast's cliff band reaches this far inland from the water, where the sealing ring's inner edge
+// stood; the quarry face's size; open water this many vertices from land is deep.
+constexpr double kCoastBand = 6;
+constexpr int kQuarryFace = 16;
+constexpr int kDeepFrom = 5;
+// A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
+// vertices wide, where its quarry face stands (barren ground holds no stone).
+constexpr double kCore = 7;
+constexpr int kVerge = 4;
 struct Geometry
 {
 	int width, height, teams;
@@ -79,10 +99,12 @@ struct Layout
 	Torus t{1, 1};
 	Geometry g;
 	double phase = 0, gateRadius = 0;
-	int kind = 0;
+	int kind = 0, climate = 0;
 	std::vector<double> radius, angle;
 	std::vector<int> homeOf, courtOf, anchor, frontOf, teamSlot;
 	std::vector<unsigned char> wall, road, farmRegion;
+	// The walls towers shoot over (the partitions), and the coasts' cliff band.
+	std::vector<unsigned char> partition, coast;
 	std::string failure;
 };
 ShapePoint point(const Layout &L, double r, double a)
@@ -103,6 +125,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	const GauntletOptions o(r);
 	L.phase = c.bounded("gauntlet-phase", 3600) * kTau / 3600.;
 	L.kind = c.bounded("gauntlet-court-kind", 3);
+	L.climate = drawClimate(c, "gauntlet-climate");
+	c.telemetry.choice("gauntlet.climate", kClimateLooks[L.climate].name);
 	c.telemetry.measure("gauntlet.court.requested-design", L.kind);
 	if (L.kind == 2 && g.inner * g.wedge < 45)
 	{
@@ -121,6 +145,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	L.wall.assign(n, 0);
 	L.road.assign(n, 0);
 	L.farmRegion.assign(n, 0);
+	L.partition.assign(n, 0);
+	L.coast.assign(n, 0);
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto a = point(L, g.home, g.wedge * k);
@@ -144,8 +170,10 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			L.homeOf[i] = home;
 		if (rad >= g.inner && rad <= g.outer)
 			L.courtOf[i] = court;
-		// The coastal walls stand entirely inland of their beaches.
-		L.wall[i] = (std::abs(rad - (g.lake + 4.5)) < 1.5 || std::abs(rad - (g.rim - 4.5)) < 1.5);
+		// The coasts: cliff from the water's edge to kCoastBand inland, no beach in front of them.
+		L.coast[i] = (rad >= g.lake && rad < g.lake + kCoastBand) ||
+					 (rad <= g.rim && rad > g.rim - kCoastBand);
+		L.wall[i] = L.coast[i];
 		if (std::abs(rad - g.outer) <= 1.2)
 			L.wall[i] = 1;
 		// Each separator follows one of three court families: straight, bent or paired gardens.
@@ -155,7 +183,10 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		if (rad >= g.inner - 3 && rad <= g.outer + 2 &&
 			std::abs(separator) < o.partitionWall * .5 + .4 &&
 			std::abs(rad - L.gateRadius) > o.gateWidth * .5)
+		{
 			L.wall[i] = 1;
+			L.partition[i] = 1;
+		}
 		// A protected winding promenade, with its gate crossings all at the same radius.
 		const double promenade =
 			L.gateRadius + (L.kind == 0 ? 2. : 4.) * std::sin(a / g.wedge * kTau);
@@ -172,6 +203,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 				if (std::abs(rad - g.outer) < 3)
 				{
 					L.wall[i] = 0;
+					L.partition[i] = 0;
 					L.frontOf[i] = 2 * home + (side > 0);
 				}
 			}
@@ -201,6 +233,39 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	return L;
 }
 
+// The walls' vertices, a pure function of the design (so validateWorld rebuilds them): the
+// partitions' are rock towers shoot over, every other wall's cliff, each leaning away from the open
+// ground beside it (wallVertices) so no court, home or road loses a tile to it. Water vertices are
+// left out: the cliff band meets the water with no beach between.
+struct WallMasks
+{
+	std::vector<unsigned char> ridge, cliff;
+};
+WallMasks wallMasks(const Layout &L)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	std::vector<unsigned char> ridge(n, 0), cliff(n, 0), open(n, 0), door(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const bool water = L.radius[i] < L.g.lake || L.radius[i] > L.g.rim;
+		door[i] = L.frontOf[i] >= 0;
+		ridge[i] = L.partition[i] && !water;
+		cliff[i] = L.wall[i] && !L.partition[i] && !water;
+		open[i] = !L.wall[i] && !water;
+	}
+	WallMasks m{wallVertices(t, ridge, &open, &door), wallVertices(t, cliff, &open, &door)};
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.radius[i] < L.g.lake || L.radius[i] > L.g.rim)
+			m.ridge[i] = m.cliff[i] = 0;
+		// Where a partition meets the ring, the vertex is the partition's: towers shoot over it.
+		if (m.ridge[i])
+			m.cliff[i] = 0;
+	}
+	return m;
+}
+
 bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "gauntlet layout";
@@ -220,7 +285,8 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 		if (L.radius[i] < g.lake || L.radius[i] > g.rim)
-			terrain[i] = WATER;
+			// The central lake is a lava lake in the volcanic climate.
+			terrain[i] = L.radius[i] < g.lake && L.climate == kVolcanicClimate ? LAVA : WATER;
 	const auto fromWall = stepsFrom(t, L.wall);
 	std::vector<Farm> farms;
 	std::vector<int> cropHome(n, -1), cropCourt(n, -1);
@@ -272,20 +338,46 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 			}
 		orchards.push_back(tiles);
 	}
-	// Farms and the promenade never paint a wall's four grass corners.
+	// The farms' and gardens' crossings are road and their caps barren ground (dressFarmSand); the
+	// promenade and approaches paved, rough ground in the doors so nothing can be built in one; then
+	// the walls (wallMasks), meeting the water with no beach.
+	for (const Farm &farm : farms)
+		dressFarmSand(terrain, farm);
+	for (const Farm &garden : gardens)
+		dressFarmSand(terrain, garden);
+	{
+		std::vector<unsigned char> road(n, 0), door(n, 0), paved(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			road[i] = L.road[i] && !L.wall[i];
+			door[i] = L.frontOf[i] >= 0;
+		}
+		paveTiles(terrain, t, road, door, paved, MUD);
+	}
+	const WallMasks walls = wallMasks(L);
 	for (int i = 0; i < n; ++i)
-		if (L.road[i] && !L.wall[i])
-			terrain[i] = SAND;
-	for (int i = 0; i < n; ++i)
-		if (L.wall[i])
-			for (int dy = -1; dy <= 2; ++dy)
-				for (int dx = -1; dx <= 2; ++dx)
-					terrain[t.at(t.remainderX(i) + dx, i / t.w + dy)] = GRASS;
-	layBeaches(terrain, t);
+		if (terrain[i] != WATER && (walls.ridge[i] || walls.cliff[i]))
+			terrain[i] = walls.ridge[i] ? RIDGE_ROCK : CLIFFS;
+	{
+		const std::vector<unsigned char> deep = deepSea(
+			terrain, t, [&](int i) { return L.radius[i] < g.lake || L.radius[i] > g.rim; }, kDeepFrom);
+		LookRoles roles;
+		roles.deep = [&](int i) { return deep[i] != 0; };
+		roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
+		roles.farm = [&](int i) { return L.farmRegion[i] || cropCourt[i] >= 0 || cropHome[i] >= 0; };
+		roles.path = [&](int) { return PathLook::Road; };
+		// Every home is barren ground outside its farm, with a paved square round its swarm and a grass
+		// verge at the foot of its walls where its quarry stands.
+		barrenBase(
+			terrain, t,
+			[&](int i) { return L.homeOf[i] >= 0 && !L.farmRegion[i] && !L.wall[i] && !L.road[i]; },
+			nullptr, kVerge);
+		for (int k = 0; k < g.teams; ++k)
+			paveCore(terrain, t, t.remainderX(L.anchor[k]), L.anchor[k] / t.w, kCore,
+					 [&](int i) { return L.homeOf[i] == k && !L.farmRegion[i]; });
+		paintClimate(terrain, t, kClimateLooks[L.climate], roles);
+	}
 	writeVertices(map, terrain);
-	for (int i = 0; i < n; ++i)
-		if (L.wall[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	c.stage = "gauntlet colonies";
 	const auto home = [&](int k)
 	{
@@ -329,6 +421,26 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 		}
 	c.stage = "gauntlet resources";
 	const auto reserved = swarmSurroundings(t, c);
+	// Every home's quarry face, at the inside foot of its outer wall between its two doors.
+	{
+		std::vector<unsigned char> doors(n, 0);
+		for (int i = 0; i < n; ++i)
+			doors[i] = L.frontOf[i] >= 0;
+		const auto fromDoor = stepsFrom(t, doors);
+		int faceTiles = 0;
+		for (int k = 0; k < g.teams; ++k)
+		{
+			const auto at = point(L, g.outer + 3, g.wedge * k);
+			faceTiles += plantQuarryFaces(
+				map, t, {KitSeed{int(std::lround(at.x)), int(std::lround(at.y)), 10}}, kQuarryFace,
+				[&](int i)
+				{
+					return L.homeOf[i] == k && !L.road[i] && !L.farmRegion[i] && !reserved[i] &&
+						   fromDoor[i] > 6 && clearGround(map, t.remainderX(i), i / t.w);
+				});
+		}
+		c.telemetry.measure("gauntlet.quarry-faces.tiles", faceTiles);
+	}
 	const auto fertility = Fertility::forMap(map, false);
 	for (int k = 0; k < g.teams; ++k)
 	{
@@ -400,6 +512,23 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const auto &t = L.t;
 	const auto &map = game.map;
 	const auto open = walkableTiles(map);
+	// A wall is terrain no unit walks or swims, or a permanent deposit.
+	const auto barrier = [&](int i)
+	{
+		const TerrainProperties &p = map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		return (!p.walkable && !p.swimmable) || permanentResourceBarrier(map, i);
+	};
+	{
+		const WallMasks walls = wallMasks(L);
+		const int ridge = wallTerrainMismatch(map, t, walls.ridge, TerrainGroup::Ridges);
+		const int cliff = wallTerrainMismatch(map, t, walls.cliff, TerrainGroup::Obstacles);
+		if (ridge >= 0 || cliff >= 0)
+		{
+			const int at = ridge >= 0 ? ridge : cliff;
+			return "A Gauntlet wall is missing at " + std::to_string(t.remainderX(at)) + ":" +
+				   std::to_string(at / t.w);
+		}
+	}
 	// Structural stone is eternal: unlike the conservative generic growth envelope,
 	// it is a real barrier here. Ignore buildings and fertility, which can change in play.
 	std::vector<unsigned char> cropSeeds(t.size(), 0), cropGround(t.size(), 0);
@@ -418,11 +547,9 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const auto sites = buildAnchors(t, permanentBuilding);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.wall[i] && !permanentResourceBarrier(map, i))
-			return "A Gauntlet wall is missing at " + std::to_string(t.remainderX(i)) + ":" +
-				   std::to_string(i / t.w);
 		if (L.frontOf[i] >= 0 && (!open[i] || growth.steps[i] >= 0))
-			return "A Gauntlet entrance is blocked.";
+			return "A Gauntlet entrance is blocked at " + std::to_string(t.remainderX(i)) + ":" +
+				   std::to_string(i / t.w) + (open[i] ? " (crops can grow into it)." : ".");
 	}
 	const auto walk = walkFromFirstColony(map, L.g.teams, "the gauntlet", "");
 	if (!walk.error.empty())
@@ -491,7 +618,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	for (int i = 0; i < t.size(); ++i)
 	{
 		// Include water: swimmers must not bypass the sealed lake or outside coast.
-		permanent[i] = !permanentResourceBarrier(map, i) && growth.steps[i] < 0;
+		permanent[i] = !barrier(i) && growth.steps[i] < 0;
 		if (L.homeOf[i] >= 0 && L.radius[i] < L.g.rim - 9)
 			labels[i] = L.homeOf[i];
 		else if (L.courtOf[i] >= 0)
@@ -504,7 +631,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	}
 	auto possible = permanent;
 	for (int i = 0; i < t.size(); ++i)
-		possible[i] = !permanentResourceBarrier(map, i);
+		possible[i] = !barrier(i);
 	const auto possibleGraph = checkGatePartition(t, possible, labels, gates);
 	if (possibleGraph.leakTile >= 0)
 		return "A removable obstruction hides an unintended arena route.";
@@ -593,7 +720,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			4,
+			5,
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

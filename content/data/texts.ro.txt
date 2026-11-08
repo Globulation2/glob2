@@ -1798,6 +1798,12 @@ Orașele-stat au nevoie de cel puțin o colonie.
 Ziduri de piatră
 [Sand patches]
 Petice de nisip
+[Cliff walls]
+Ziduri de stânci
+[Paved roads]
+Drumuri pavate
+[Scrub patches]
+Petice aride
 [Tidal flats]
 Câmpii de maree
 [Everglades]

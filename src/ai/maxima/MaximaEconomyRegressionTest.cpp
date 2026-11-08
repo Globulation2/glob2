@@ -54,6 +54,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include "Unit.h"
+#include "Building.h"
 
 using namespace AIMaximaRuntime;
 

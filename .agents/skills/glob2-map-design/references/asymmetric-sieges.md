@@ -40,10 +40,14 @@ waterfront, as well as their union. On the finished world:
 - Reopen one gate at a time and verify its promised connection with the other
   crossings closed.
 - Test each swimming approach separately, including both landing areas and access
-  through any stone perimeter; specify which other approaches are closed.
+  through any stone perimeter; specify which other approaches are closed. A perimeter
+  drawn in terrain can do this in one flood: `leakWithShut` floods what units walk or
+  swim with the gates shut and names the first tile it reaches outside
+  ([validate the terrain](terrain-catalogue.md#validate-the-terrain-you-designed)).
 
 Protect water as well as walls when drawing later roads. A route repair that paints
-sand across a moat outside a designated gate changes the tactical contract.
+sand (or, on the terrain catalogue, a Paths road or a bridge) across a moat outside a
+designated gate changes the tactical contract.
 Measure routes again after resources and settlements are placed. If a search for a
 nearby walkable source returns no tile, handle that failure before indexing a grid;
 concave outlines and rectangular maps expose assumptions hidden by square previews.
@@ -80,7 +84,9 @@ by blocking the measurement's flood. Keep both metrics when they answer differen
 questions, and check unchanged farmland at several planting amounts.
 
 A sand-contained expansion plot with zero seeds may never become productive:
-containment also prevents immigration from another plot. If expansion agriculture
+containment also prevents immigration from another plot. A plot contained by Barren
+ground or a paved street instead of sand (as `dressFarmSand` leaves farm caps and
+plot rings) is sealed the same way. If expansion agriculture
 is promised at zero abundance, give each plot an explicit seed floor or another
 verified colonization mechanism. Document that floor separately from surplus.
 

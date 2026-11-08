@@ -14,6 +14,7 @@
 #include <Toolkit.h>
 #include <SDL3/SDL.h>
 #include <sstream>
+#include "Game.h"
 
 namespace
 {

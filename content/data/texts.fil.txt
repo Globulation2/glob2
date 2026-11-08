@@ -1786,6 +1786,12 @@ Ang mga lungsod-estado ay nangangailangan ng kahit isang kolonya.
 Mga pader na bato
 [Sand patches]
 Mga patse ng buhangin
+[Cliff walls]
+Mga pader na bangin
+[Paved roads]
+Mga sementadong kalsada
+[Scrub patches]
+Mga patse ng tigang na lupa
 [Tidal flats]
 Mga kapatagan ng pagtaas at pagbaba ng tubig
 [Everglades]

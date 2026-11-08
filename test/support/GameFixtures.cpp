@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameFixtures.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "GradientFixture.h"
 #include "HiringPipeline.h"
+#include "Building.h"
+#include "Unit.h"
 
 #include "AI.h"
 #include "Player.h"

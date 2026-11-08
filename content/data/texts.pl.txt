@@ -1798,6 +1798,12 @@ Miasta-państwa potrzebują co najmniej jednej kolonii.
 Kamienne mury
 [Sand patches]
 Płaty piasku
+[Cliff walls]
+Klifowe mury
+[Paved roads]
+Brukowane drogi
+[Scrub patches]
+Jałowe płaty
 [Tidal flats]
 Równiny pływowe
 [Everglades]

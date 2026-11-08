@@ -1786,6 +1786,12 @@ Negara kota memerlukan sekurang-kurangnya satu koloni.
 Tembok batu
 [Sand patches]
 Tompok pasir
+[Cliff walls]
+Tembok tebing
+[Paved roads]
+Jalan berturap
+[Scrub patches]
+Tompok tandus
 [Tidal flats]
 Dataran pasang surut
 [Everglades]

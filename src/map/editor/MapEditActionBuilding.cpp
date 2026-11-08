@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include "GlobalContainer.h"
 #include <algorithm>
+#include "Building.h"
 
 namespace
 {

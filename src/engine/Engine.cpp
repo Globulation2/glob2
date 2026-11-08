@@ -27,6 +27,7 @@
 #include "SoundMixer.h"
 
 #include <iostream>
+#include "Game.h"
 
 Engine::Engine()
 {

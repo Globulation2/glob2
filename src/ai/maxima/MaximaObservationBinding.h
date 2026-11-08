@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ai/observation/ObservationQueries.h"
-#include "Player.h"
-#include "Game.h"
+class Player;
 
 namespace AIMaximaRuntime
 {

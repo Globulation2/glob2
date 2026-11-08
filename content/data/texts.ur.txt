@@ -1762,6 +1762,12 @@ Globulation 2 کا کرسر دکھائیں۔
 پتھر کی دیواریں
 [Sand patches]
 ریت کے قطعے
+[Cliff walls]
+چٹانی دیواریں
+[Paved roads]
+پختہ راستے
+[Scrub patches]
+بنجر قطعے
 [Tidal flats]
 مدوجزر کے ہموار علاقے
 [Everglades]

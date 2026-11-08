@@ -2,6 +2,10 @@
 #pragma once
 #include "GenerationWork.h"
 #include "Grid.h"
+#include "Sketch.h"
+#include "TerrainGroup.h"
+#include "TerrainGroupTable.h"
+#include <functional>
 #include <array>
 #include <climits>
 #include <string>
@@ -242,4 +246,51 @@ RegionLeak firstRegionLeak(const Torus &t, const std::vector<unsigned char> &rea
 std::string wallStanding(const GenerationMap &, const Torus &,
 						 const std::vector<unsigned char> &wall,
 						 const std::vector<unsigned char> &doors, const char *what);
+
+// Terrain walls. The stone walls above were the only permanent barrier when the engine had grass,
+// sand and water alone; the terrain catalogue now has walls of their own (TerrainGroup.h):
+// Obstacles stop units and arrows, Ridges stop units while towers shoot over. They are drawn on a
+// TerrainSketch, on vertices, and a tile is blocked once two of its corners are.
+
+/// Seals a coast in cliffs: every `wallable` vertex within `reach` vertices (Chebyshev, on the
+/// torus) of a `sea` vertex becomes `cliff`, water included, so there is no beach to land on and no
+/// shore to swim from. Two vertices of reach leave no walkable tile between the sea and the land
+/// behind. `sea` must not mark a wallable vertex. Returns the vertices turned to cliff.
+int cliffCoast(TerrainSketch &, const Torus &, const std::function<bool(int)> &wallable,
+			   const std::function<bool(int)> &sea, int reach, TerrainType cliff = CLIFFS);
+
+/// The vertices that wall off a tile mask (a labelBorders wall, a ring): the top-left corner of
+/// every wall tile, which blocks it and the tile above or to its left (two corners each), plus
+/// one more corner wherever two wall tiles touch only diagonally, so the wall has no diagonal gap.
+/// With `keepOpen`, a wall tile touching a keepOpen tile (a lane the wall must not narrow) is walled
+/// on every corner it does not share with one, so the wall leans away from the lane.
+/// A wall tile left with fewer than two blocked corners gets back the corners the fewest open tiles
+/// share, but never a corner of a `strict` tile (a door, which must keep every tile): a wall's end
+/// beside a door is then left open, which only widens the door.
+std::vector<unsigned char> wallVertices(const Torus &, const std::vector<unsigned char> &tiles,
+										const std::vector<unsigned char> *keepOpen = nullptr,
+										const std::vector<unsigned char> *strict = nullptr);
+/// Whether vertex i is a corner of some `tiles` tile.
+bool cornerOf(const Torus &, const std::vector<unsigned char> &tiles, int i);
+
+/// Paves the four corners of every `tiles` tile that is not water: `throatTerrain` where `throat`
+/// marks the tile or the corner already holds it (sand, or rough ground, where nothing can be built
+/// in a gate), TRAIL elsewhere. Marks every paved corner in `paved` (which must be the sketch's
+/// size). Returns the corners paved.
+int paveTiles(TerrainSketch &, const Torus &, const std::vector<unsigned char> &tiles,
+			  const std::vector<unsigned char> &throat, std::vector<unsigned char> &paved,
+			  TerrainType throatTerrain = SAND);
+
+/// The flood a sealed world is checked with: from `units`' tiles over the terrain a ground unit
+/// can walk (and, with `swim`, swim), deposits and buildings counted as cleared since they can be,
+/// with the `shut` tiles closed. The tile outside `inside` the flood reaches first, -1 when it
+/// reaches none: where the seal leaks.
+int leakWithShut(const GenerationMap &, const Torus &, const std::vector<int> &units,
+				 const std::vector<unsigned char> &shut, bool swim,
+				 const std::function<bool(int)> &inside);
+
+/// The first vertex of `vertices` whose terrain is not of `group`, or -1: a designed terrain wall
+/// checked on the finished world.
+int wallTerrainMismatch(const GenerationMap &, const Torus &, const std::vector<unsigned char> &vertices,
+						TerrainGroup group);
 } // namespace MapGeneration

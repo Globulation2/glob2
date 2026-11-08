@@ -1798,6 +1798,12 @@ Kaupunkivaltiot tarvitsevat vähintään yhden siirtokunnan.
 Kivimuurit
 [Sand patches]
 Hiekkaläikät
+[Cliff walls]
+Jyrkännemuurit
+[Paved roads]
+Kivetyt tiet
+[Scrub patches]
+Karut läikät
 [Tidal flats]
 Vuorovesitasangot
 [Everglades]

@@ -1798,6 +1798,12 @@ Negara kota membutuhkan setidaknya satu koloni.
 Tembok batu
 [Sand patches]
 Petak pasir
+[Cliff walls]
+Tembok tebing
+[Paved roads]
+Jalan berlapis batu
+[Scrub patches]
+Petak tandus
 [Tidal flats]
 Dataran pasang surut
 [Everglades]

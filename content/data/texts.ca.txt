@@ -1798,6 +1798,12 @@ Les ciutats estat necessiten almenys una colònia.
 Murs de pedra
 [Sand patches]
 Clapes de sorra
+[Cliff walls]
+Muralles de penya-segats
+[Paved roads]
+Camins empedrats
+[Scrub patches]
+Clapes ermes
 [Tidal flats]
 Planes de marea
 [Everglades]

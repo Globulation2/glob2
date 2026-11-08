@@ -1798,6 +1798,12 @@ AI 策略與對抗
 石牆
 [Sand patches]
 沙地
+[Cliff walls]
+懸崖城牆
+[Paved roads]
+鋪石路
+[Scrub patches]
+荒地
 [Tidal flats]
 潮間帶
 [Everglades]

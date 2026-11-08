@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 #include "FileFormatVersions.h"
-#include "Game.h"
 #include "Marshaling.h"
 #include "Order.h"
+#include "Game.h"
 
 // OrderCreate's code
 

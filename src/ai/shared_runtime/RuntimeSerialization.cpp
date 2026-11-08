@@ -7,6 +7,7 @@
 #include "FileFormatVersions.h"
 #include "AIStateSerialization.h"
 #include <tuple>
+#include "Team.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;

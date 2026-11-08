@@ -4,12 +4,15 @@
 // (render/UnitEffects.h) when it comes out, and none when it leaves without the
 // whole service: expelled mid-stay, or a trainee while upgrades are disabled.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "BuildingType.h"
 #include "render/GameAnimations.h"
 #include "render/UnitEffects.h"
 #include <nlohmann/json.hpp>
 #include <vector>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

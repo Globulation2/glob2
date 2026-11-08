@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
@@ -46,6 +47,7 @@
 #include <cstdlib>
 #include <memory>
 #include <nlohmann/json.hpp>
+#include "Building.h"
 
 static void require(bool ok, const char* message)
 {

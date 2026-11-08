@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -23,6 +24,7 @@
 #include <SDL3/SDL.h>
 #include "GameGUITouch.h"
 #include <sstream>
+#include "Unit.h"
 
 namespace
 {

@@ -1798,6 +1798,12 @@ OpenGL није доступан у овој верзији.
 Камени зидови
 [Sand patches]
 Пешчане површине
+[Cliff walls]
+Зидови од литица
+[Paved roads]
+Поплочани путеви
+[Scrub patches]
+Јалове површине
 [Tidal flats]
 Плимске равнице
 [Everglades]

@@ -1762,6 +1762,12 @@ City states need at least one colony.
 Stone walls
 [Sand patches]
 Sand patches
+[Cliff walls]
+Cliff walls
+[Paved roads]
+Paved roads
+[Scrub patches]
+Scrub patches
 [Tidal flats]
 Tidal flats
 [Everglades]

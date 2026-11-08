@@ -1798,6 +1798,12 @@ Stadstaten hebben minstens één kolonie nodig.
 Stenen muren
 [Sand patches]
 Zandvlakken
+[Cliff walls]
+Klifwallen
+[Paved roads]
+Geplaveide wegen
+[Scrub patches]
+Dorre vlakken
 [Tidal flats]
 Wadden
 [Everglades]

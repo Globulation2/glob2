@@ -4,7 +4,6 @@
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "Utilities.h"
-#include "Game.h"
 #include "Unit.h"
 
 using namespace AISharedRuntime;

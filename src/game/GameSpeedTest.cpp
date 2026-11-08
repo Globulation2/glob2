@@ -22,8 +22,18 @@
 #include <iostream>
 #include <regex>
 #include <set>
+#include "Game.h"
 
 using namespace GAGGUI;
+
+// A paused 50-tick session resumes after 240 ms and then has to finish. An
+// unoptimized coverage build draws and simulates several times slower, so
+// it gets a wider window for the same check.
+#if defined(__OPTIMIZE__)
+static constexpr Uint64 PauseDeadline=3000;
+#else
+static constexpr Uint64 PauseDeadline=10000;
+#endif
 
 namespace
 {
@@ -414,7 +424,7 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             TimerScope timer{SDL_AddTimer(240,resumeGame,&shortcut)};
             REQUIRE(timer.id);
             bool running=true;
-            while(running && SDL_GetTicks()-start<3000) {
+            while(running && SDL_GetTicks()-start<PauseDeadline) {
                 std::vector<SDL_Event> events;
                 SDL_Event event;
                 while(SDL_PollEvent(&event)) events.push_back(event);
@@ -429,7 +439,7 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             engine.restoreCursor();
             const Uint64 elapsed=SDL_GetTicks()-start;
             std::cout<<"Pause key="<<key<<" elapsed="<<elapsed<<"ms"<<std::endl;
-            REQUIRE_MESSAGE((elapsed>=200 && elapsed<3000),
+            REQUIRE_MESSAGE((elapsed>=200 && elapsed<PauseDeadline),
                 "pause key=" << key << " elapsed=" << elapsed << "ms");
         }
         std::cout<<"PASS: pause and hard pause accept resume input at Maximum\n";

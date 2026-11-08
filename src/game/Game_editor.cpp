@@ -1,4 +1,5 @@
 #include <utility>
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
@@ -26,6 +27,7 @@
 
 
 #include "Brush.h"
+#include "Building.h"
 
 
 #define BULLET_IMGID 0

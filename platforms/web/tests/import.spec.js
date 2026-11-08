@@ -117,6 +117,7 @@ test(`imports a complete replay and rejects a truncated command stream (${mode})
 }
 
 test('failed import persistence offers export and retry without overwriting a save', async ({page,context},info) => {
+  test.setTimeout(240000);
   const bytes=await exportedSave(page);
   await page.evaluate(() => {
     window.importQuota = false;
@@ -134,7 +135,9 @@ test('failed import persistence offers export and retry without overwriting a sa
   const download=page.waitForEvent('download'); await clickControl(page,'export');
   expect(digest(await fs.readFile(await (await download).path()))).toEqual(digest(bytes));
   const restored=await context.newPage();
-  await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
+  // A second game instance starts beside the first, which keeps running; on
+  // shared CI runners that startup can exceed the default menu wait.
+  await restored.goto(gameURL()); await waitForMainMenu(restored, {timeout:150000});
   expect(await restored.evaluate(() => glob2Diagnostics.saveDigest('Original.game.gz'))).toEqual(digest(bytes));
   expect(await restored.evaluate(() => glob2Diagnostics.saveDigest('Original_(1).game.gz'))).toBeNull();
   await restored.close();

@@ -1798,6 +1798,12 @@ Sınır bölgesinin zenginliği
 Taş duvarlar
 [Sand patches]
 Kum lekeleri
+[Cliff walls]
+Uçurum surları
+[Paved roads]
+Taş döşeli yollar
+[Scrub patches]
+Çorak lekeler
 [Tidal flats]
 Gelgit düzlükleri
 [Everglades]

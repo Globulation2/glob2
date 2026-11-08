@@ -4,6 +4,8 @@
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "BuildingType.h"
+#include "Building.h"
+#include "Unit.h"
 #include "BuildingGradientSearch.h"
 #include <algorithm>
 #include <array>

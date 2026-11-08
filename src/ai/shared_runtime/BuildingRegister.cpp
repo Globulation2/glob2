@@ -8,6 +8,7 @@
 #include "shared_runtime/BuildingDemands.h"
 #include <tuple>
 #include "FileFormatVersions.h"
+#include "Team.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;

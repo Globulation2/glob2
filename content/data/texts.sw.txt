@@ -1762,6 +1762,12 @@ Miji huru inahitaji angalau makazi moja.
 Kuta za mawe
 [Sand patches]
 Mabaka ya mchanga
+[Cliff walls]
+Kuta za majabali
+[Paved roads]
+Barabara za mawe
+[Scrub patches]
+Mabaka kame
 [Tidal flats]
 Tambarare za mawimbi
 [Everglades]

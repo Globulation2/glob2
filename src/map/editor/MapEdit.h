@@ -17,7 +17,8 @@
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
 #include <memory>
-#include "Game.h"
+#include "TeamCapacity.h"
+class Game;
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
 #include "WidgetRectangle.h"
@@ -116,7 +117,7 @@ public:
 	// columns fit the desktop sidebar and keep all sixteen teams in two rows.
 	static constexpr int SWATCH_SIZE = 16;
 	static constexpr int COLUMNS = (RIGHT_MENU_WIDTH - 2 * RIGHT_MENU_OFFSET) / SWATCH_SIZE;
-	static constexpr int ROWS = (Team::MAX_COUNT + COLUMNS - 1) / COLUMNS;
+	static constexpr int ROWS = (TEAM_MAX_COUNT + COLUMNS - 1) / COLUMNS;
 	static constexpr int WIDTH = COLUMNS * SWATCH_SIZE;
 	static constexpr int HEIGHT = ROWS * SWATCH_SIZE;
 	TeamColorSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
@@ -523,7 +524,10 @@ public:
 	///This function regenerates a game header for use in campaigns
 	void regenerateGameHeader();
 
-	Game game;
+	/// Held through a pointer so that MapEdit.h need not include Game.h; `game`
+	/// is the same object, bound once at construction.
+	std::unique_ptr<Game> gameOwner;
+	Game& game;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
 	///ViewState. Owned here (not on Game) and passed into MapDrawer::drawMap.

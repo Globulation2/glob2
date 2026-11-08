@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "TurretTargeting.h"
@@ -18,6 +20,7 @@
 #include <BinaryStream.h>
 #include "Version.h"
 #include <StreamBackend.h>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -148,7 +151,7 @@ TEST_SUITE("TurretTargeting")
                     const auto visit=[&](int x,int y) {
                         const auto gid=world.game.map.getGroundUnit(x,y);
                         if (gid==NOGUID || Unit::GIDtoTeam(gid)!=1 || !seen.insert(gid).second) return;
-                        const auto* unit=world.game.resolveUnit(Game::refOf(world.game.teams[1]->myUnits[Unit::GIDtoID(gid)]));
+                        const auto* unit=world.game.resolveUnit(refOf(world.game.teams[1]->myUnits[Unit::GIDtoID(gid)]));
                         REQUIRE(unit); expected.push_back({Kind::Unit,gid,unit->scriptIdentity});
                     };
                     // Test-only geometry oracle: all stationary equal-HP workers

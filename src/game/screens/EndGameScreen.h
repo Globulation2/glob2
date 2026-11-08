@@ -4,7 +4,9 @@
 
 #pragma once
 
-#include "GameGUI.h"
+class GameGUI;
+class Game;
+class Team;
 #include "ui/FrontendUI.h"
 #include "TeamStatChart.h"
 #include "hud/EnginePerformancePanel.h"

@@ -1798,6 +1798,12 @@ Stadtstaaten brauchen mindestens eine Kolonie.
 Steinmauern
 [Sand patches]
 Sandflächen
+[Cliff walls]
+Klippenwälle
+[Paved roads]
+Pflasterwege
+[Scrub patches]
+Ödlandflächen
 [Tidal flats]
 Wattenmeer
 [Everglades]

@@ -55,6 +55,8 @@
 #include "sim/presentation/ScenePreparation.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <stdexcept>
+#include "Unit.h"
+#include "Building.h"
 #ifdef __EMSCRIPTEN__
 #include "AIJavaScript.h"
 #endif

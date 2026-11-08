@@ -102,8 +102,12 @@ namespace
 		auto* gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		ViewState view;
+		// Compared frames must hold the same terrain. Without DRAW_COMPLETE_TERRAIN
+		// a slow build captures cells whose borders are still building in one
+		// frame and finished in the next, changing the whole picture.
 		glob2test::drawMap(game, 0, 0, SCREEN_W, SCREEN_H, 0, 0, 0, 0, 0, view,
-			Game::DRAW_WHOLE_MAP | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true);
+			Game::DRAW_WHOLE_MAP | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_COMPLETE_TERRAIN,
+			nullptr, nullptr, true);
 		return grab();
 	}
 

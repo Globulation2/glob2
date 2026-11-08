@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "OrderValidation.h"
+#include "Map.h"
 
 #include "Brush.h"
 #include "Building.h"

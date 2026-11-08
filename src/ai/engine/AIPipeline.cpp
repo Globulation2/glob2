@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AIPipeline.h"
+#include "Map.h"
 #include "AIReceiptSerialization.h"
 #include "AI.h"
 #include "Game.h"
@@ -10,6 +11,7 @@
 #include "GameDiagnostics.h"
 #include <algorithm>
 #include <limits>
+#include "Team.h"
 namespace AIEngine
 {
 namespace {

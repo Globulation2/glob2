@@ -1798,6 +1798,12 @@ OpenGL недоступен в этой сборке.
 Каменные стены
 [Sand patches]
 Песчаные участки
+[Cliff walls]
+Скальные стены
+[Paved roads]
+Мощёные дороги
+[Scrub patches]
+Бесплодные участки
 [Tidal flats]
 Приливные отмели
 [Everglades]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Version.h"
+#include "Map.h"
 #include "TeamStatsPipeline.h"
 #include "Game.h"
 #include "Team.h"

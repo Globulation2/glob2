@@ -1762,6 +1762,12 @@ Globulation 2 कर्सर दाखवा.
 दगडी भिंती
 [Sand patches]
 वाळूचे ठिपके
+[Cliff walls]
+कड्यांच्या भिंती
+[Paved roads]
+फरसबंदी रस्ते
+[Scrub patches]
+ओसाड ठिपके
 [Tidal flats]
 भरती-ओहोटीचे सपाट प्रदेश
 [Everglades]

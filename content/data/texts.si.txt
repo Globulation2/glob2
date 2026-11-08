@@ -1798,6 +1798,12 @@ Mestne države potrebujejo vsaj eno kolonijo.
 Kamniti zidovi
 [Sand patches]
 Peščene zaplate
+[Cliff walls]
+Zidovi iz pečin
+[Paved roads]
+Tlakovane poti
+[Scrub patches]
+Puste zaplate
 [Tidal flats]
 Plimske ravnice
 [Everglades]

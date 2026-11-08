@@ -1798,6 +1798,12 @@ OpenGL غير متوفر في هذا الإصدار.
 أسوار حجرية
 [Sand patches]
 بقع رملية
+[Cliff walls]
+أسوار من الجروف
+[Paved roads]
+طرق معبّدة
+[Scrub patches]
+بقع قاحلة
 [Tidal flats]
 السهول المدّية
 [Everglades]

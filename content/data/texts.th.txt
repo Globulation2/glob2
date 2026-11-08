@@ -1762,6 +1762,12 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 กำแพง​หิน
 [Sand patches]
 ผืน​ทราย
+[Cliff walls]
+กำแพง​หน้าผา
+[Paved roads]
+ถนน​ปู​หิน
+[Scrub patches]
+ผืน​ดิน​แห้ง​แล้ง
 [Tidal flats]
 ที่ราบ​น้ำขึ้น​น้ำลง
 [Everglades]

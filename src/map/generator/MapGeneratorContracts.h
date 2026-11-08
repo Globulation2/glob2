@@ -5,6 +5,7 @@
 // MapGeneratorLandscapeChecks.h; a check here is about one landscape's own contract.
 #pragma once
 #include "BraidedDeltaGenerator.h"
+#include "Map.h"
 #include <array>
 #include <algorithm>
 #include <utility>

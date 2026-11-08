@@ -1762,6 +1762,12 @@ Globulation 2 का कर्सर दिखाएँ।
 पत्थर की दीवारें
 [Sand patches]
 रेत के हिस्से
+[Cliff walls]
+चट्टानी दीवारें
+[Paved roads]
+पक्की सड़कें
+[Scrub patches]
+बंजर हिस्से
 [Tidal flats]
 ज्वारीय समतल
 [Everglades]

@@ -8,6 +8,8 @@
 #include <ctime>
 #include <iostream>
 #include <utility>
+#include "Unit.h"
+#include "Building.h"
 
 using namespace AIMaximaFoodLedger;
 

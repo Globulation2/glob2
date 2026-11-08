@@ -1798,6 +1798,12 @@ A városállamokhoz legalább egy kolónia kell.
 Kőfalak
 [Sand patches]
 Homokfoltok
+[Cliff walls]
+Parti sziklafalak
+[Paved roads]
+Kövezett utak
+[Scrub patches]
+Kopár foltok
 [Tidal flats]
 Árapálysíkság
 [Everglades]

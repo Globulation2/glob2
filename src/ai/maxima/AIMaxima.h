@@ -561,7 +561,7 @@ private:
 	EnvironmentModel environment;
 	StrategicDemands demands;
 	PolicyBid policy_bids[PolicyCount];
-	OpponentAssessment opponents[Team::MAX_COUNT];
+	OpponentAssessment opponents[TEAM_MAX_COUNT];
 	Recon::Program reconnaissance;
 	std::map<int, ForceModel::State> force_beliefs;
 	void apply_force_beliefs();

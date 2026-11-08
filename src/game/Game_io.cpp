@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "Map.h"
 #include <iostream>
 #include <sstream>
 #include <locale>
@@ -49,6 +50,8 @@
 #include "FertilityCalculator.h"
 
 #include "ReplayWriter.h"
+#include "Team.h"
+#include "Building.h"
 
 #define BULLET_IMGID 0
 

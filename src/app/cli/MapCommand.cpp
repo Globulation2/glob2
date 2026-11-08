@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "Map.h"
 #include "MapCommand.h"
 #include "MapAssetBundle.h"
 #include "BrushSwatches.h"
@@ -41,6 +42,7 @@
 #include <limits>
 #include <map>
 #include <stdexcept>
+#include "Team.h"
 
 namespace
 {

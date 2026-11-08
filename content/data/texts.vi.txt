@@ -1798,6 +1798,12 @@ Thành bang cần ít nhất một thuộc địa.
 Tường đá
 [Sand patches]
 Bãi cát
+[Cliff walls]
+Tường vách đá
+[Paved roads]
+Đường lát đá
+[Scrub patches]
+Bãi đất cằn
 [Tidal flats]
 Bãi triều
 [Everglades]

@@ -6,6 +6,7 @@
 #include "BuildingType.h"
 #include "shared_runtime/BuildingDemands.h"
 #include "FileFormatVersions.h"
+#include "Game.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;

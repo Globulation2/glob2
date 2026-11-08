@@ -1762,6 +1762,12 @@ Globulation 2-এর কার্সার দেখান।
 পাথরের দেয়াল
 [Sand patches]
 বালির খণ্ড
+[Cliff walls]
+খাড়া পাহাড়ের দেয়াল
+[Paved roads]
+পাকা রাস্তা
+[Scrub patches]
+অনুর্বর খণ্ড
 [Tidal flats]
 জোয়ারের সমতলভূমি
 [Everglades]

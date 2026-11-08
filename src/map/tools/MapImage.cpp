@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "field/Grid.h"
+#include "Map.h"
 #include "PowerOfTwo.h"
 #include "MapImage.h"
 #include "TerrainCornerPresentation.h"
@@ -24,6 +25,7 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+#include "Team.h"
 
 namespace
 {
