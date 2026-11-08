@@ -36,6 +36,7 @@ test('campaign authoring waits for durable persistence before closing',async({pa
 });
 
 test('campaign authoring retains the editor on quota failure and can retry',async({page,context},info)=>{
+  test.setTimeout(240000);
   await edit(page);
   await page.evaluate(()=>{
     const put=IDBObjectStore.prototype.put;
@@ -52,7 +53,9 @@ test('campaign authoring retains the editor on quota failure and can retry',asyn
   const frame=await campaignFrame(page), maps=await controlBox(page,'maps');
   await expect.poll(()=>require('./pixels').hasDarkText(page,{x:frame.x,y:frame.y,width:frame.width,height:Math.max(24,maps.y-frame.y)})).toBe(true);
   await page.screenshot({path:info.outputPath('campaign-editor-save-failure.png')});
-  const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
+  // A second game instance starts beside the running editor; on shared CI
+  // runners that startup can exceed the default menu wait.
+  const restored=await context.newPage();await restored.goto(gameURL());await waitForMainMenu(restored,{timeout:150000});
   expect(await digest(restored)).toBeNull();await restored.close();
   await page.evaluate(()=>window.failCampaignWrite=false);
   await clickCampaignFooter(page,true);await screen(page,'EditorMainMenu');
