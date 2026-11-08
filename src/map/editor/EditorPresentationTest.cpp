@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include "Game.h"
+#include "Building.h"
 
 namespace
 {

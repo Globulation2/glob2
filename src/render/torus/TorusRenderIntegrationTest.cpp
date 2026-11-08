@@ -2,6 +2,7 @@
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
 #include <thread>
+#include "sim/snapshot/SnapshotStore.h"
 #include <chrono>
 #include <Environment.h>
 #include "HeadlessGlobals.h"
@@ -48,6 +49,7 @@
 #include "render/terrain/TerrainCompositor.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/MapDrawer.h"
+#include "sim/EntityRefOf.h"
 
 class TorusRenderIntegrationTest
 {
@@ -913,7 +915,7 @@ static void run(bool gpu, int width, int height)
                 REQUIRE(selected);
                 gui.showUnitWorkingToBuilding = true;
                 gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
-                REQUIRE(std::get<BuildingRef>(gui.selection) == Game::refOf(selected));
+                REQUIRE(std::get<BuildingRef>(gui.selection) == refOf(selected));
                 REQUIRE(gui.view.selectedBuilding == nullptr);
                 const int worldW = gui.game.map.getW() * 32, worldH = gui.game.map.getH() * 32;
                 std::vector<std::vector<unsigned char>> atlas;

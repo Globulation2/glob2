@@ -1,4 +1,5 @@
 #include <set>
+#include "Map.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "ScriptSpatial.h"
@@ -13,6 +14,7 @@
 #include <array>
 #include <limits>
 #include <stdexcept>
+#include "Team.h"
 
 namespace Script
 {

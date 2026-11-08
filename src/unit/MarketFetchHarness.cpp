@@ -27,6 +27,7 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <memory>
+#include "Building.h"
 
 namespace
 {

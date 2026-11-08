@@ -6,6 +6,7 @@
 // orders, checksums, replays or saves.
 
 #include "ComputeExecutor.h"
+#include "Map.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>

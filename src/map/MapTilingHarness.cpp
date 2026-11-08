@@ -3,6 +3,7 @@
 // lands on the team MapTiling deals it to, with its buildings, units, painted forbidden, guard
 // and clearing areas and its clearing flags' resource choices.
 #include "GlobalContainer.h"
+#include "Map.h"
 #include "BinaryStream.h"
 #include "Building.h"
 #include "BuildingType.h"

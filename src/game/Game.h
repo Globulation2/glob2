@@ -7,15 +7,14 @@
 #include <CooperativeTask.h>
 
 #include <memory>
+#include <optional>
 #include <span>
 
-#include "Map.h"
-#include "Team.h"
-#include "Building.h"
-#include "Unit.h"
-#include "UnitCatalog.h"
+class Map;
+#include "TeamCapacity.h"
+#include "BuildingUtils.h"
 #include "UnitCargo.h"
-#include "sim/snapshot/SnapshotStore.h"
+#include "sim/snapshot/Requirements.h"
 #include "Utilities.h"
 #include "OwnerRandom.h"
 #include "SGSL.h"
@@ -25,7 +24,6 @@
 #include "GameObjectives.h"
 #include "GameHints.h"
 #include "MapScript.h"
-#include "BuildingGuiState.h"
 #include "AreaEffects.h"
 #include "BuildingType.h"
 #include "sim/ClientEvents.h"
@@ -42,7 +40,7 @@ namespace GAGCore
 	class ChunkedBuffer;
 }
 using namespace GAGCore;
-namespace SimulationSnapshot { class Store; }
+namespace SimulationSnapshot { class Store; struct Handle; struct UnitView; }
 namespace TurretTargeting { class Pipeline; }
 class TeamStatsPipeline;
 class Player;
@@ -121,10 +119,10 @@ static constexpr int WORLD_LOGIC_TICK_MASK  = 31;
 static constexpr int WORLD_LOGIC_TICK_PHASE = 0;
 
 //! Upper bound of the (team * Building::MAX_COUNT + buildingId) global id
-//! space, equal to Team::MAX_COUNT * Building::MAX_COUNT.
+//! space, equal to TEAM_MAX_COUNT * Building::MAX_COUNT.
 //! Asserted in OrderBuilding.cpp:78, 109, 141, 179, 214; OrderModify.cpp:29;
 //! UnitSerialization.cpp:235.
-static constexpr int BUILDING_GID_MAX = Team::MAX_COUNT * Building::MAX_COUNT;
+static constexpr int BUILDING_GID_MAX = TEAM_MAX_COUNT * BuildingUtils::MAX_COUNT;
 
 //! Number of distinct levels a building can reach (0..MAX_BUILDING_LEVELS-1).
 //! Used by Game_editor.cpp:91. Distinct from NB_UNIT_LEVELS.
@@ -168,7 +166,7 @@ public:
 	BuildingsTypes buildingsTypes;
 	UnitCargoStore unitCargo;
 	const UnitCatalog& unitCatalog() const { return *gameHeader.getUnitCatalog(); }
-	std::size_t unitTypeCount() const { return unitCatalog().size(); }
+	std::size_t unitTypeCount() const;
 	bool isUnitTypeAvailable(int type) const;
 	void configureUnitCatalog();
 	bool hasWaterOnlyUnits() const { return waterOnlyUnits; }
@@ -180,9 +178,7 @@ public:
 	// Retained only for reading/writing historical continuation records and test
 	// diagnostics. Production decisions never draw from this obsolete stream.
 	MersenneTwister syncRandom;
-	EntityRandom& privateRandom(RandomDomain domain) {
-		return map.privateRandom(domain);
-	}
+	EntityRandom& privateRandom(RandomDomain domain);
 	//! Legacy test diagnostics only; production consumers are forbidden.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 friend class HiringPipelineHarness;
@@ -295,8 +291,12 @@ public:
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
-	mutable SimulationSnapshot::Store worldSnapshots;
-	std::optional<SimulationSnapshot::Handle> completedObservation;
+	// Owned through pointers so that Game.h need not include the snapshot
+	// headers; the references are bound once at construction.
+	std::unique_ptr<SimulationSnapshot::Store> worldSnapshotsOwner;
+	SimulationSnapshot::Store& worldSnapshots;
+	std::unique_ptr<std::optional<SimulationSnapshot::Handle>> completedObservationOwner;
+	std::optional<SimulationSnapshot::Handle>& completedObservation;
 	std::optional<Uint32> submittedObservation;
 	bool orderEditedWorld = false;
 	mutable std::unique_ptr<TurretTargeting::Pipeline> turretTargetingPipeline;
@@ -369,27 +369,7 @@ public:
 	Unit* getUnit(int guid);
 	///Client handles (see sim/EntityRef.h). resolve* returns null when the
 	///entity is gone or its slot now holds a different entity.
-	// Keep these factories visible to snapshot loops in builds without LTO.
-	static BuildingRef refOf(const Building *b)
-	{
-		BuildingRef ref;
-		if (b)
-		{
-			ref.gid = b->gid;
-			ref.generation = b->scriptIdentity;
-		}
-		return ref;
-	}
-	static UnitRef refOf(const Unit *u)
-	{
-		UnitRef ref;
-		if (u)
-		{
-			ref.gid = u->gid;
-			ref.generation = u->scriptIdentity;
-		}
-		return ref;
-	}
+	// Entity handle factories: refOf() in sim/EntityRefOf.h.
 	Building *resolveBuilding(BuildingRef ref) const final;
 	Unit *resolveUnit(UnitRef ref) const final;
 
@@ -484,9 +464,12 @@ public:
 	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
 	GameHeader gameHeader;
 
-	Team * teams[Team::MAX_COUNT];
-	Player * players[Team::MAX_COUNT];
-	Map map;
+	Team * teams[TEAM_MAX_COUNT];
+	Player * players[TEAM_MAX_COUNT];
+	/// Owned through a pointer so that Game.h need not include Map.h; `map`
+	/// is the same object, bound once at construction.
+	std::unique_ptr<Map> mapOwner;
+	Map& map;
 	MapScriptSGSL sgslScript; ///< SGSL script
 	ScriptClientChannel scriptClient; ///< stable simulation-owned script endpoint
 	MapScript mapscript; ///< new script, currently USL
@@ -540,9 +523,9 @@ public:
 	static constexpr int SCRIPT_ENTITY_KINDS = 2;
 	static constexpr unsigned scriptGenerationIndex(bool building, int team, int slot)
 	{
-		return ((building ? Team::MAX_COUNT : 0) + team) * SCRIPT_ENTITY_SLOTS_PER_TEAM + slot;
+		return ((building ? TEAM_MAX_COUNT : 0) + team) * SCRIPT_ENTITY_SLOTS_PER_TEAM + slot;
 	}
-	std::array<Uint32, SCRIPT_ENTITY_KINDS * Team::MAX_COUNT * SCRIPT_ENTITY_SLOTS_PER_TEAM> scriptGenerations{};
+	std::array<Uint32, SCRIPT_ENTITY_KINDS * TEAM_MAX_COUNT * SCRIPT_ENTITY_SLOTS_PER_TEAM> scriptGenerations{};
 	Uint32 allocateScriptIdentity(bool building, Uint16 gid) final;
 	int totalPrestige;
 	int prestigeToReach;

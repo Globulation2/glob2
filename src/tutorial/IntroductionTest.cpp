@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "TutorialModel.h"
 #include "scripting/javascript/ScriptValue.h"
@@ -19,6 +20,8 @@
 #include <sstream>
 #include <iomanip>
 #include <zlib.h>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

@@ -15,6 +15,7 @@
 #include <memory>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include "sim/EntityRefOf.h"
 
 namespace {
 // Emit historical wide stock without bypassing the bounded runtime setters.
@@ -605,7 +606,7 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         CHECK_FALSE(restored.awaitingFirstRead); CHECK(restored.publishedStep==0);
         REQUIRE(restored.published); CHECK(restored.cells.get()==restored.published);
         CHECK(std::equal(expected.begin(),expected.end(),restored.published));
-        auto* copiedConsumer=migrated.game.resolveBuilding(Game::refOf(consumer)); REQUIRE(copiedConsumer);
+        auto* copiedConsumer=migrated.game.resolveBuilding(refOf(consumer)); REQUIRE(copiedConsumer);
         CHECK(migrated.game.map.routing().lookupMaterialGradientSlot(0,WHEAT,MovementAccess::Land,false,copiedConsumer)==restored.published);
         CHECK(continuationComponents(migrated.game)==continuationComponents(game));
         const auto upgradedBytes=saveGame(migrated.game);

@@ -10,6 +10,8 @@
 #include <StreamBackend.h>
 #include <fstream>
 #include <memory>
+#include "Unit.h"
+#include "Building.h"
 
 TEST_CASE("claim fetch preserves GUI continuations and execution across participants" * doctest::test_suite("ClaimContinuation"))
 {

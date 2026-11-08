@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <limits>
 #include "Building.h"
+#include "Unit.h"
 
 using namespace GAGGUI::ui;
 namespace

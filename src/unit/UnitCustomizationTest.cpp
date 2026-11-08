@@ -22,6 +22,8 @@
 #include <climits>
 #include <cstddef>
 #include <functional>
+#include "Unit.h"
+#include "Building.h"
 
 namespace {
 Uint32 trace(Game& game)

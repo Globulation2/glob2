@@ -6,6 +6,7 @@
 // and compares every checksum the clients reported with the verifier's own.
 
 #include "VerifyMatch.h"
+#include "Map.h"
 #include "CompileProfile.h"
 
 #include <algorithm>

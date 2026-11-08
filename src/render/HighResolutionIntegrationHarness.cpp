@@ -32,6 +32,7 @@
 #include <filesystem>
 #include "MapDrawer.h"
 #include "Game.h"
+#include "Building.h"
 class SettingsPaintHarness:public SettingsScreen
 {
 public:

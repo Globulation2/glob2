@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LandscapePreviewer.h"
+#include "Map.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -7,6 +8,7 @@
 #include <iostream>
 #include <memory>
 #include <ThreadSupport.h>
+#include "Team.h"
 
 LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, int threads,
 									   bool deferred)

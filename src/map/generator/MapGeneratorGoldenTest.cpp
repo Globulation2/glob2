@@ -1,4 +1,5 @@
 #include <SDL3/SDL_main.h>
+#include "Team.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Golden maps and a colony-count sweep for every registered generator.
 //

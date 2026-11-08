@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -77,6 +78,7 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -728,7 +730,7 @@ TEST_SUITE("EngineSession")
         REQUIRE(materializations==1);
 
         engine.gui.gamePaused=true;
-        request.selectedBuilding=Game::refOf(building);
+        request.selectedBuilding=refOf(building);
         request.includePanels=true;
         request.includeHistory=true;
         request.includeTelemetry=true;
@@ -740,7 +742,7 @@ TEST_SUITE("EngineSession")
         const auto* frame=engine.runner->acquireScene(); REQUIRE(frame);
         REQUIRE(engine.retainedPresentation);
         const auto& retained=engine.retainedPresentation->world;
-        CHECK(engine.retainedPresentation->request.selectedBuilding==Game::refOf(building));
+        CHECK(engine.retainedPresentation->request.selectedBuilding==refOf(building));
         CHECK(retained.tick==world.tick);
         CHECK(retained.observationRevision==world.observationRevision);
         CHECK(retained.entities==world.entities);

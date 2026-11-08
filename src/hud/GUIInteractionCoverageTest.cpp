@@ -1,4 +1,5 @@
 #include <PerformanceTelemetry.h>
+#include "sim/snapshot/SnapshotStore.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
 #include "stats/TeamStatChart.h"
@@ -35,6 +36,8 @@
 #include <algorithm>
 #include <cmath>
 #include <set>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

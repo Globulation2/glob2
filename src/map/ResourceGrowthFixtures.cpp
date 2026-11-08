@@ -2,6 +2,7 @@
 // Deliberately uses pre-pipeline APIs: compile this harness against the baseline
 // to emit starting saves that both baseline and candidate executables can load.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "Engine.h"
 #include <BinaryStream.h>
 #include <FileManager.h>

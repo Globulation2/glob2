@@ -8,6 +8,7 @@
 #include <array>
 #include <cstdlib>
 #include <cstdio>
+#include "Building.h"
 
 namespace {
 using Clock = std::chrono::steady_clock;

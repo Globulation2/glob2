@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
+#include "Map.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -9,6 +10,8 @@
 #include <StreamBackend.h>
 #include <sstream>
 #include <nlohmann/json.hpp>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

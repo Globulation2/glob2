@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GameFixtures.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
+#include "Team.h"
 
 namespace glob2test
 {

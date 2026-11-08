@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TurretTargeting.h"
+#include "Map.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
 #include "Team.h"
@@ -13,6 +14,7 @@
 #include <mutex>
 #include <optional>
 #include <tuple>
+#include "sim/EntityRefOf.h"
 
 namespace TurretTargeting
 {
@@ -127,7 +129,7 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
             selected.push_back(turret);
         }
         if (selected.empty()) continue;
-        std::sort(selected.begin(),selected.end(),[](const auto* a,const auto* b){return IdentityLess{}(Game::refOf(a),Game::refOf(b));});
+        std::sort(selected.begin(),selected.end(),[](const auto* a,const auto* b){return IdentityLess{}(refOf(a),refOf(b));});
         auto job=std::make_unique<State::Job>();
         job->capacity=s.rules.capacity; job->margin=s.rules.margin;
         job->sources.reserve(selected.size());
@@ -193,7 +195,7 @@ void Pipeline::drain() { for (auto& generation:state->pending) state->complete(*
 const std::vector<Entry>& Pipeline::entries(const Building& turret)
 {
     auto& s=*state;
-    const auto identity=Game::refOf(&turret);
+    const auto identity=refOf(&turret);
     const auto it=s.findPublished(identity);
     if (it!=s.published.end() && it->identity==identity) return it->entries;
     static const std::vector<Entry> empty;

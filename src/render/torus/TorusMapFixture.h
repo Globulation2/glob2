@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Game.h"
+#include "Map.h"
 #include <cassert>
 
 // A real map with a regular terrain pattern for aspect-ratio visual checks.

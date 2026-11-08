@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AreaEffects.h"
+#include "Map.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Game.h"

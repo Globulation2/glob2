@@ -2,6 +2,7 @@
 // Real-engine regression for Building::canUnitWorkHere: the schooling gate
 // reads the independent construction qualification, not work-speed training.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "GameFixtures.h"
 #include <algorithm>
 #include "GlobalContainer.h"
@@ -18,6 +19,7 @@
 #include "IntBuildingType.h"
 #include <cstdio>
 #include <cstdlib>
+#include "Building.h"
 
 namespace
 {

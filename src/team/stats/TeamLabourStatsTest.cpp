@@ -4,6 +4,7 @@
 // bucket, places agree with a brute-force reference, and nothing touches the
 // simulation checksum.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
@@ -16,6 +17,8 @@
 #include <numeric>
 #include <random>
 #include <nlohmann/json.hpp>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

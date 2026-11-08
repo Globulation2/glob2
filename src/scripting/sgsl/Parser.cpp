@@ -14,6 +14,7 @@
 #include "AI.h"
 #include "SGSL.h"
 #include "SGSLParseContext.h"
+#include "Team.h"
 
 using std::cerr;
 using std::endl;

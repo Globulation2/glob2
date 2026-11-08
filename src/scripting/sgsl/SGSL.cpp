@@ -8,6 +8,7 @@
 */
 
 #include <iostream>
+#include "Map.h"
 #include <optional>
 #include <string>
 #include <utility>
@@ -23,6 +24,7 @@
 #include "EntityRandomIO.h"
 #include "FileFormatVersions.h"
 #include <limits>
+#include "Team.h"
 
 std::optional<int> mapAreaNumber(const Game *game, const std::string &name)
 {

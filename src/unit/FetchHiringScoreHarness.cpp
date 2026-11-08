@@ -1,4 +1,5 @@
 #include "HiringPipeline.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for hiring a fetcher: the hunger check that decides
@@ -27,6 +28,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
+#include "sim/EntityRefOf.h"
 
 // Named in a friend declaration, so it stays outside the anonymous namespace.
 class FetchHiringScoreHarness
@@ -53,7 +55,7 @@ public:
         auto& game=*building->owner->game;game.snapshotStore().invalidateBoundary();
         HiringPlanner::Planner cache;
         const auto output=cache.rank(HiringPipeline::bindRoutes(game,game.captureReadBoundary()),building->owner->teamNumber,8);
-        for(const auto& b:output.buildings)if(b.building==Game::refOf(building))
+        for(const auto& b:output.buildings)if(b.building==refOf(building))
             for(const auto& list:b.jobs)if(list.key.job==Hiring::Job::Delivery && !list.candidates.empty())return game.resolveUnit(list.candidates.front().unit);
         return nullptr;
     }
