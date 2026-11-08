@@ -107,7 +107,9 @@ test('live colony meshes render through WebGL2 and survive context restoration',
     if (errors.length) throw new Error(errors.join('\n'));
     return page.evaluate(() => glob2Diagnostics.snapshot());
   };
-  await waitForMainMenu(page);
+  // The WebGL tracking above queries state on every draw; on software GL CI
+  // runners startup under it can exceed the default menu wait.
+  await waitForMainMenu(page, {timeout:150000});
   expect((await state()).renderer).toBe('webgl2');
   expect(await page.evaluate(() => Module.executionMode)).toBe(executionMode);
   await clickMainMenu(page, 'custom');
