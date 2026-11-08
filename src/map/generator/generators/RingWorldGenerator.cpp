@@ -556,7 +556,7 @@ void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
 {
 	const int n = t.size(), length = axes.length();
 	const std::vector<unsigned char> dry = tilesAll(stamp.terrain, t, [](unsigned char v) { return !wetType(v); });
-	const std::vector<unsigned char> ground = homeGround(t, homes, kRoadDoorstep - 1), near = homeGround(t, homes, kRoadHomeClear);
+	const std::vector<unsigned char> ground = homeGround(t, homes, kRoadDoorstep - 1), nearby = homeGround(t, homes, kRoadHomeClear);
 	const std::vector<int> relief = fractalNoise(t.w, t.h, 16, 3, context.stream(kRoadStream));
 	// Never within two tiles of a tor's rock or face: a road corner there would spoil the face's grass.
 	std::vector<unsigned char> torAll(size_t(n), 0);
@@ -614,7 +614,7 @@ void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
 						if (std::max(std::abs(dx), std::abs(dy)) != r)
 							continue;
 						const int i = t.at(t.remainderX(target) + dx, target / t.w + dy);
-						if (open(i) && fromWater[i] >= 3 && !near[i] && (best < 0 || i < best))
+						if (open(i) && fromWater[i] >= 3 && !nearby[i] && (best < 0 || i < best))
 							best = i;
 					}
 			if (best < 0)
@@ -636,7 +636,7 @@ void planRoad(Features &f, const Stamp &stamp, const Torus &t, const Axes &axes,
 				if (!open(next))
 					return -1;
 				return (dx && dy ? 14 : 10) + std::max(0, kRoadWet - fromWater[next]) * kRoadWetCost +
-					   relief[next] / 4096 + (near[next] ? kRoadHomeCost : 0);
+					   relief[next] / 4096 + (nearby[next] ? kRoadHomeCost : 0);
 			});
 		if (walk.empty())
 		{

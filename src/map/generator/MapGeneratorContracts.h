@@ -3674,9 +3674,9 @@ inline void evergladesContracts()
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
 						{
-							const TerrainGroup near = terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)));
-							assert(near == TerrainGroup::Water || near == TerrainGroup::DeepWater ||
-								   near == TerrainGroup::Paths);
+							const TerrainGroup nearby = terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)));
+							assert(nearby == TerrainGroup::Water || nearby == TerrainGroup::DeepWater ||
+								   nearby == TerrainGroup::Paths);
 						}
 				if (group == TerrainGroup::Paths)
 				{

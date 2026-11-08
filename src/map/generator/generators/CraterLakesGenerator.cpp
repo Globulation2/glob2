@@ -1049,12 +1049,12 @@ static std::string validateWorld(const GenerationWorld &game, const GenerationCo
 			workers[i] = 1;
 	// Straight-line distance from the nearest worker (-1 everywhere when there are none).
 	const std::vector<std::int64_t> fromWorkers = distanceSquaredTo(t, workers);
-	const auto near = [&](int i, double reach) { return fromWorkers[i] >= 0 && double(fromWorkers[i]) < reach * reach; };
+	const auto nearby = [&](int i, double reach) { return fromWorkers[i] >= 0 && double(fromWorkers[i]) < reach * reach; };
 	for (int i = 0; i < n; ++i)
 	{
-		if (group[i] == TerrainGroup::Fertile && near(i, kGardenCheck))
+		if (group[i] == TerrainGroup::Fertile && nearby(i, kGardenCheck))
 			return "Fertile ground at " + at(i) + " lies too near a colony.";
-		if (group[i] == TerrainGroup::Rough && near(i, kGardenCheck))
+		if (group[i] == TerrainGroup::Rough && nearby(i, kGardenCheck))
 			return "Rough ground at " + at(i) + " lies too near a colony.";
 	}
 	std::vector<unsigned char> walkable(size_t(n), 0), rock(size_t(n), 0);
@@ -1065,7 +1065,7 @@ static std::string validateWorld(const GenerationWorld &game, const GenerationCo
 			const TerrainProperties &rules = map.terrainPropertiesAt(x, y);
 			walkable[i] = rules.walkable;
 			const bool corner = ridges[i] || ridges[t.at(x + 1, y)] || ridges[t.at(x, y + 1)] || ridges[t.at(x + 1, y + 1)];
-			if (corner && near(i, kRockHomeCheck))
+			if (corner && nearby(i, kRockHomeCheck))
 				return "Rock at " + at(i) + " stands too near a colony.";
 			rock[i] = corner && !rules.walkable && !rules.swimmable;
 		}

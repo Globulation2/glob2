@@ -831,10 +831,10 @@ struct KnobTile
 	int u, v;
 	bool face;
 };
-std::vector<KnobTile> knobStencil(bool small)
+std::vector<KnobTile> knobStencil(bool smallStencil)
 {
 	std::vector<KnobTile> tiles;
-	const int half = small ? 2 : 3, deep = small ? 3 : 4;
+	const int half = smallStencil ? 2 : 3, deep = smallStencil ? 3 : 4;
 	for (int v = 0; v <= deep; ++v)
 		for (int u = -half; u <= half; ++u)
 		{
@@ -882,9 +882,9 @@ bool placeKnobs(Layout &L, GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 		clear[i] = grass[i] && !taboo[i] && !L.keep[i] && !L.roads[i] && L.plotOf[i] < 0 && !L.rock[i] &&
 				   fromWater[i] >= 3;
-	for (bool small : {false, true})
+	for (bool smallStencil : {false, true})
 	{
-		const auto stencil = knobStencil(small);
+		const auto stencil = knobStencil(smallStencil);
 		std::vector<unsigned char> taken(t.size(), 0);
 		std::vector<std::vector<std::pair<int, bool>>> knobs;
 		std::vector<int> distances;
@@ -967,7 +967,7 @@ bool placeKnobs(Layout &L, GenerationContext &c)
 			c.telemetry.measure("portage-lakes.knob.distance", distances[k], int(k));
 		}
 		L.knobDistance = distances;
-		c.telemetry.choice("portage-lakes.knob.stencil", small ? "small" : "large");
+		c.telemetry.choice("portage-lakes.knob.stencil", smallStencil ? "small" : "large");
 		c.telemetry.measure("portage-lakes.knob.face-tiles", L.knobFace);
 		return true;
 	}

@@ -51,12 +51,12 @@ std::vector<unsigned char> talusApron(const Torus &t, const std::vector<unsigned
 									  const std::vector<unsigned char> &eligible,
 									  const std::vector<int> &fray, int inner, int outer, int cut)
 {
-	const std::vector<unsigned char> near = dilate(t, rock, inner), far = dilate(t, rock, std::max(inner, outer));
+	const std::vector<unsigned char> nearby = dilate(t, rock, inner), distant = dilate(t, rock, std::max(inner, outer));
 	std::vector<unsigned char> apron(rock.size(), 0);
 	for (size_t i = 0; i < apron.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		apron[i] = !rock[i] && eligible[i] && (near[i] || (far[i] && fray.at(i) > cut));
+		apron[i] = !rock[i] && eligible[i] && (nearby[i] || (distant[i] && fray.at(i) > cut));
 	}
 	return apron;
 }

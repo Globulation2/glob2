@@ -792,8 +792,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const auto floorRelief = [&](int i)
 		{
 			const int away = fromRaised[i] < 0 ? 1000 : std::max(0, fromRaised[i] - kFloorReach);
-			const int near = fromHome[i] < 0 ? 0 : std::max(0, kFloorHomeClearance - fromHome[i]);
-			return relief[i] - away * kFloorFalloff - near * kFloorFalloff * 2;
+			const int nearby = fromHome[i] < 0 ? 0 : std::max(0, kFloorHomeClearance - fromHome[i]);
+			return relief[i] - away * kFloorFalloff - nearby * kFloorFalloff * 2;
 		};
 		for (int i = 0; i < n; ++i)
 			if (L.sketch[i] == SAND && fromKept[i] >= kRoughClearance && floorRelief(i) >= cut)

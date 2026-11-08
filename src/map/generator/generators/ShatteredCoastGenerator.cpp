@@ -1311,7 +1311,7 @@ Outcrops planOutcrops(const GenerationMap &map, const Torus &t, GenerationContex
 			}
 			members[slot[l]].push_back(i);
 		}
-		const std::vector<unsigned char> near = swarmSurroundings(t, context, kStackHome);
+		const std::vector<unsigned char> nearby = swarmSurroundings(t, context, kStackHome);
 		for (const auto &vertices : members)
 		{
 			bool free = true;
@@ -1320,7 +1320,7 @@ Outcrops planOutcrops(const GenerationMap &map, const Torus &t, GenerationContex
 					for (int dx = -1; dx <= 0 && free; ++dx)
 					{
 						const int i = t.at(t.remainderX(v) + dx, v / t.w + dy);
-						free = vacant(i) && !near[i];
+						free = vacant(i) && !nearby[i];
 					}
 			// One draw per small island in scan order, whether or not it qualifies, so a deposit
 			// on one island does not move which of the others become stacks.

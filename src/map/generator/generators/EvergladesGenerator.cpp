@@ -367,7 +367,7 @@ int seasonOf(const EvergladesOptions &o)
 std::vector<unsigned char> homeDiscs(const Layout &L, double extra)
 {
 	const Torus &t = L.t;
-	std::vector<unsigned char> near(size_t(t.size()), 0);
+	std::vector<unsigned char> nearby(size_t(t.size()), 0);
 	for (int k = 0; k < L.g.teams; ++k)
 	{
 		const Home &h = L.homes[k];
@@ -376,9 +376,9 @@ std::vector<unsigned char> homeDiscs(const Layout &L, double extra)
 		for (int dy = -box; dy <= box; ++dy)
 			for (int dx = -box; dx <= box; ++dx)
 				if (dx * dx + dy * dy <= r * r)
-					near[t.at(h.x + dx, h.y + dy)] = 1;
+					nearby[t.at(h.x + dx, h.y + dy)] = 1;
 	}
-	return near;
+	return nearby;
 }
 
 // The hammocks: rough knots of thicket on the swamp's grass, well off every bank and every

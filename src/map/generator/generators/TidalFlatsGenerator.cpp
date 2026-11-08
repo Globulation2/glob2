@@ -1094,7 +1094,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		reached[i] = walk.steps[i] >= 0;
 		isle[i] = L.grass[i] && !L.water[i] && !L.tor[i];
 	}
-	const std::vector<unsigned char> near = dilate(t, reached, 1);
+	const std::vector<unsigned char> nearby = dilate(t, reached, 1);
 	const std::vector<int> label = connectedRegions(isle, t.w, t.h, true, GridNeighbors::Eight);
 	std::vector<char> arrived;
 	for (int i = 0; i < n; ++i)
@@ -1102,7 +1102,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		{
 			if (label[i] >= int(arrived.size()))
 				arrived.resize(label[i] + 1, 0);
-			arrived[label[i]] |= near[i];
+			arrived[label[i]] |= nearby[i];
 		}
 	for (int i = 0; i < n; ++i)
 		if (label[i] >= 0 && !arrived[label[i]])
