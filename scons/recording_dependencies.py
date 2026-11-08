@@ -97,6 +97,33 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
                 hashlib.sha256(p.read_bytes()).hexdigest() == installed.get('archives', {}).get(p.name)
                 for p in archives):
             return prefix
+    if platform.system() != 'Windows' and any(char.isspace() for char in str(prefix) + str(work)):
+        # Upstream install rules (notably x264's) do not quote PREFIX, FFmpeg
+        # refuses out-of-tree builds from a source path with whitespace, and the
+        # macOS development home lives under "Application Support". Build in a
+        # space-free directory, then publish the result at the requested prefix;
+        # the manifest identifies an installation by content, not path.
+        from shared_dependencies import relocate
+        with tempfile.TemporaryDirectory(prefix='glob2-recording-', dir='/tmp') as temporary:
+            staged_work = Path(temporary) / 'sources'
+            staged_work.mkdir()
+            for spec in versions.values():
+                if (work / spec['archive']).is_file():
+                    shutil.copy2(work / spec['archive'], staged_work / spec['archive'])
+            staged = build(Path(temporary) / 'prefix', staged_work, cc=cc, cxx=cxx, ar=ar, ranlib=ranlib,
+                           target=target, arch=arch, cflags=cflags, ldflags=ldflags, environment=environment,
+                           jobs=jobs, sdk_identity=sdk_identity, video_codec=video_codec,
+                           opus_configuration=opus_configuration, sprite_tool=sprite_tool)
+            work.mkdir(parents=True, exist_ok=True)
+            for spec in versions.values():
+                if not (work / spec['archive']).is_file():
+                    shutil.copy2(staged_work / spec['archive'], work / spec['archive'])
+            relocate(staged, prefix)
+            if prefix.exists():
+                shutil.rmtree(prefix)
+            prefix.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(staged, prefix, symlinks=True)
+        return prefix
     work.mkdir(parents=True, exist_ok=True)
     prefix.mkdir(parents=True, exist_ok=True)
     vendored = Path(env.get('GLOB2_RECORDING_ARCHIVES', str(LOCK.parent.parent / 'third_party/recording-sources')))
