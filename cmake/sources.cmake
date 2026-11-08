@@ -394,6 +394,8 @@ set(GLOB2_CLIENT_SOURCES
     src/map/generator/shared/Grid.cpp
     src/map/generator/shared/WalkBandStarts.cpp
     src/map/generator/shared/Walls.cpp
+    src/map/generator/shared/Rock.cpp
+    src/map/generator/shared/HeightFieldLooks.cpp
     src/map/generator/shared/Farmland.cpp
     src/map/generator/shared/Towers.cpp
     src/map/generator/shared/WorldAtlas.cpp
@@ -779,6 +781,8 @@ set(GLOB2_STRICT_NUMERIC_SOURCES
     src/map/generator/shared/Grid.cpp
     src/map/generator/shared/WalkBandStarts.cpp
     src/map/generator/shared/Walls.cpp
+    src/map/generator/shared/Rock.cpp
+    src/map/generator/shared/HeightFieldLooks.cpp
     src/map/generator/shared/Farmland.cpp
     src/map/generator/shared/Towers.cpp
     src/map/generator/shared/WorldAtlas.cpp
