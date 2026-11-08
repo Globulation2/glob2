@@ -9,6 +9,7 @@
 // client. Used for end-to-end tests of a deployed instance (docs/hosting/README.md).
 
 #include "CompileProfile.h"
+#include "Map.h"
 #include "ComputeExecutor.h"
 #include <SDL3/SDL.h>
 

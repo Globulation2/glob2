@@ -2,6 +2,7 @@
 // Real-engine regression: each building gets a hiring attempt before retries,
 // even when subscription reorders the live bucket.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "GameFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
@@ -17,6 +18,7 @@
 #include "IntBuildingType.h"
 #include <cstdio>
 #include <cstdlib>
+#include "Building.h"
 
 namespace
 {

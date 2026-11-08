@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
+#include "Team.h"
+#include "Map.h"
 #include "MapImage.h"
 #include <string>
 #include <cstdio>

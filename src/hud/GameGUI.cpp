@@ -1,4 +1,5 @@
 #include "tutorial/TutorialGuidance.h"
+#include "Map.h"
 #include <ui/TextLayout.h>
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"

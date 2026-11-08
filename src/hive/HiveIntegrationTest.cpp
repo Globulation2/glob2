@@ -18,6 +18,7 @@
 #include "Order.h"
 #include <fstream>
 #include <cstdlib>
+#include "Building.h"
 using Hive::Json;
 TEST_CASE("Hive Mind copies the engine fog boundary and validates ownership" *
 		  doctest::test_suite("HiveMindIntegration"))

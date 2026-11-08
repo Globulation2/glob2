@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
+#include "Map.h"
 #include "GenerationService.h"
 #include "Building.h"
 #include "BuildingType.h"

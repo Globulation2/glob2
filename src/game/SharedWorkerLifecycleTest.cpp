@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "ComputeExecutor.h"
@@ -18,6 +19,7 @@
 #include "Brush.h"
 #include "EntityRandom.h"
 #include <algorithm>
+#include "sim/EntityRefOf.h"
 
 TEST_SUITE("SharedWorkerLifecycle") {
 TEST_CASE("background saves finish on a worker and remain readable after teardown") {
@@ -267,7 +269,7 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true});
     auto& game=fixture.game;
     auto* unit=fixture.addUnit(WORKER,10,10);
-    const auto identity=Game::refOf(unit);
+    const auto identity=refOf(unit);
     SceneRequest request;
     request.selectedUnit=identity;
     const auto required=SceneExtractor::captureOptions(request);
@@ -450,7 +452,7 @@ TEST_CASE("placement demolition and map edits first appear in the next completed
     auto& game=fixture.game;
     auto* oldFlag=fixture.addBuilding("warflag",4,4); REQUIRE(oldFlag);
     fixture.addUnit(WORKER,12,12);
-    const auto removed=Game::refOf(oldFlag);
+    const auto removed=refOf(oldFlag);
     const SimulationSnapshot::CaptureOptions options{.presentation=true,.history=true,
         .telemetry=true,.entityDiagnostics=true,.annotations=true};
     const auto before=game.observeCompletedWorld(options);

@@ -13,6 +13,8 @@
 #include <Toolkit.h>
 #include <map>
 #include <zlib.h>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

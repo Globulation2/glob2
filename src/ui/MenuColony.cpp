@@ -16,6 +16,7 @@
 #include <array>
 #include <iostream>
 #include "render/MapDrawer.h"
+#include "Team.h"
 
 namespace
 {

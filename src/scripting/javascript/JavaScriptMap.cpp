@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "JavaScriptMap.h"
+#include "Map.h"
 #include "tutorial/TutorialModel.h"
 #include "ScriptObservations.h"
 #include "ScriptOrders.h"

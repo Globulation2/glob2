@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Game.h"
+#include "Team.h"
+#include "Map.h"
 #include "GenerationWorld.h"
 #include <vector>
 #include <string>

@@ -5,6 +5,7 @@
 // here before it shows up as a changed golden fingerprint somewhere downstream. Needs the
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
+#include "Map.h"
 #include <array>
 #include <utility>
 #include <random>

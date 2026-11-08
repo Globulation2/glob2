@@ -21,6 +21,8 @@
 // writes replays; everything else an Engine touches is its own.
 
 #include "HeadlessGlobals.h"
+#include "Map.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "ProfileNeeds.h"
 #include "GeneratorPackage.h"
 #include <ThreadSupport.h>

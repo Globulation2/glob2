@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
 #include "HeadlessGlobals.h"
@@ -63,6 +64,7 @@
 #include <stdexcept>
 #include <source_location>
 #include "Game.h"
+#include "sim/EntityRefOf.h"
 
 static void require(bool condition, const char *message)
 {
@@ -5064,7 +5066,7 @@ class GameGUITouchHarness
 				const auto c = std::pair{gfx->getW()/2.,gfx->getH()/2.};
 				const double scale = gfx->logicalUnitsPerPoint();
 				require(gui.touch->unitAt({c.first+28*scale,c.second}).empty(), "Near tap misses exact sprite");
-				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == Game::refOf(worker), "30 point halo works at every zoom");
+				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == refOf(worker), "30 point halo works at every zoom");
 				require(gui.touch->unitAt({c.first+32*scale,c.second},30).empty(), "Outside unit halo stays empty");
 				globalContainer->replayShowFog = true; globalContainer->replayVisibleTeams = 0;
 				require(gui.touch->unitAt({c.first,c.second},30).empty(), "Fog-hidden unit cannot be picked");
@@ -5129,9 +5131,9 @@ class GameGUITouchHarness
 			gui.view.render.unitMotion = 1;
 			const double reachUnit = gfx->logicalUnitsPerPoint();
 			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
-			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == Game::refOf(worker),
+			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == refOf(worker),
 				"Exact touch follows the last rendered smooth-motion rectangle");
-			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == Game::refOf(worker),
+			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == refOf(worker),
 				"Unit halo follows the last rendered smooth-motion centre");
 			require(gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30).empty(),
 				"Smooth motion does not enlarge the 30-point halo");
@@ -5151,11 +5153,11 @@ class GameGUITouchHarness
 		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
 		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
 		glob2test::drawGUI(gui,0); // Newly created units must be presented before they can be picked.
-		require(gui.touch->unitAt(center,30) == Game::refOf(flyer), "Direct airborne sprite wins draw order over ground unit");
+		require(gui.touch->unitAt(center,30) == refOf(flyer), "Direct airborne sprite wins draw order over ground unit");
 		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
 		require(nearby, "Nearby worker exists");
 		glob2test::drawGUI(gui,0);
-		require(gui.touch->unitAt({center.x+64,center.y},30) == Game::refOf(nearby), "Exact unit beats neighbouring halo");
+		require(gui.touch->unitAt({center.x+64,center.y},30) == refOf(nearby), "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
 		map.setResourceByIndex(41, 40, WHEAT, 0);
 		map.setMapDiscovered(41, 40, gui.localTeam->me);

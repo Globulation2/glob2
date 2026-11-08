@@ -17,6 +17,7 @@
 #include <SDL3/SDL.h>
 #include <set>
 #include "Game.h"
+#include "Building.h"
 
 namespace
 {

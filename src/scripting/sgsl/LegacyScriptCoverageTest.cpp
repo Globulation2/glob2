@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "SGSL.h"
@@ -14,6 +15,8 @@
 #include "AI.h"
 #include "Player.h"
 #include <nlohmann/json.hpp>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <nlohmann/json.hpp>
+#include "Map.h"
 #include "HiveObservation.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include "Game.h"

@@ -10,6 +10,7 @@
 #include "Order.h"
 #include <algorithm>
 #include <stdexcept>
+#include "Team.h"
 
 namespace Script
 {

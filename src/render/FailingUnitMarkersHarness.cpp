@@ -4,6 +4,7 @@
 // reason's shape over exactly those units. Needs a display; writes the scene to
 // scene.png in the case's artifact directory for reviewers.
 #include "scene/SceneMap.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "HeadlessGlobals.h"
 #include "GameFixtures.h"
 #include "DrawFixtures.h"

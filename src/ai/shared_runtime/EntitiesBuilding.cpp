@@ -5,6 +5,7 @@
 #include "ai/observation/AIWorldView.h"
 #include "Building.h"
 #include "Game.h"
+#include "Team.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;

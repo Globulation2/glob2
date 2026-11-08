@@ -8,6 +8,7 @@
 */
 
 #include <algorithm>
+#include "Map.h"
 #include <iostream>
 #include <optional>
 #include <string>
@@ -18,6 +19,7 @@
 #include "GlobalContainer.h"
 #include "SGSL.h"
 #include "Utilities.h"
+#include "Team.h"
 
 Story::Story(MapScriptSGSL *mapscript)
 {

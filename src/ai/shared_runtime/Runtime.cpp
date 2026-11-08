@@ -14,6 +14,7 @@
 #include "AIRuleOrders.h"
 #include "Version.h"
 #include <tuple>
+#include "Team.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
