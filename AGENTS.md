@@ -93,7 +93,7 @@ failures as successful games.
   boundaries you move.
 - **Headers.** Keep version constants out of headers and simulation headers free of
   rendering, HUD, UI and the full SDL umbrella; `test/check_header_layering.py`
-  enforces layering, fan-in budgets and cycles
+  enforces layering and cycles and reports fan-in budgets
   ([header dependencies](docs/development/conventions.md#header-dependencies)).
 
 ## Build tiers

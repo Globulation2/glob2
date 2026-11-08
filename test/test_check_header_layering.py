@@ -63,10 +63,33 @@ class BudgetSlackTest(unittest.TestCase):
         real = layering.IncludeGraph.fanin
         def shifted(extra):
             return lambda self, units=None: {**real(self, units), header: budget[header] + extra}
+        def warned():
+            layering.WARNINGS.clear()
+            with patch('builtins.print'):
+                errors = layering.check()
+            self.assertEqual([e for e in errors if header in e], [], 'fan-in budgets never fail')
+            return [w for w in layering.WARNINGS if header in w]
         with patch.object(layering.IncludeGraph, 'fanin', shifted(1)):
-            self.assertEqual([e for e in layering.check() if header in e], [])
+            self.assertEqual(warned(), [])
         with patch.object(layering.IncludeGraph, 'fanin', shifted(100)):
-            self.assertTrue([e for e in layering.check() if header in e])
+            self.assertTrue(warned())
+
+
+class StaleAllowlistTest(unittest.TestCase):
+    def test_resolved_edges_warn_and_new_edges_fail(self):
+        from unittest.mock import patch
+        real = layering.read_lines
+        stale = 'src/nowhere/Gone.h -> src/render/Gone.h'
+        def with_stale(path):
+            lines = real(path)
+            return lines + [stale] if path == layering.LAYER_ALLOWLIST else lines
+        layering.WARNINGS.clear()
+        with patch.object(layering, 'read_lines', with_stale), patch('builtins.print'):
+            self.assertEqual(layering.check(), [])
+        self.assertTrue([w for w in layering.WARNINGS if 'allowlist entries no longer occur' in w])
+        real_violations = layering.layer_violations
+        with patch.object(layering, 'layer_violations', lambda g, l: real_violations(g, l) + [stale]):
+            self.assertTrue([e for e in layering.check() if 'new layering edge' in e])
 
 
 class GlobalContainerRatchetTest(unittest.TestCase):

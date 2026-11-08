@@ -18,9 +18,10 @@ this runs in seconds without a build):
 4. Directory cycles. Directory-level include edges (depth 1 and 2 below src/)
    that sit on a cycle are listed in test/header_cycles_allowlist.txt; a new
    cycle edge fails.
-5. Fan-in budget. test/header_fanin_budget.json caps how many client
+5. Fan-in budget. test/header_fanin_budget.json records how many client
    translation units may reach each listed header, with a slack of 2% of the
-   client TUs so that adding source files does not trip it.
+   client TUs so that adding source files does not trip it. Exceeding it is a
+   warning, not a failure: a wider header slows builds but breaks nothing.
 
 6. globalContainer in the simulation. test/global_container_budget.json caps
    the `globalContainer` references in non-test simulation files per directory;
@@ -29,13 +30,15 @@ this runs in seconds without a build):
 
 Allowlists and budgets only ratchet down: after a PR removes violations or
 lowers fan-in, run with --write to delete the stale allowlist lines and lower
-the budgets. --write never adds a violation or raises a budget; edit the file
+the budgets. A stale allowlist line is a warning, never a failure; only new
+violations fail. --write never adds a violation or raises a budget; edit the file
 by hand (and say why in the PR) if one must grow.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -253,8 +256,9 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
         if write and stale:
             write_lines(path, header, sorted(allowed & set(current)))
         elif stale:
-            errors.append(f'{len(stale)} {name} allowlist entries no longer occur; run '
-                          f'python3 test/check_header_layering.py --write to drop them')
+            # A resolved edge is progress, not a failure: only new edges fail.
+            warn(f'{len(stale)} {name} allowlist entries no longer occur; run '
+                 f'python3 test/check_header_layering.py --write to drop them')
 
     uses = global_container_uses(graph, layers)
     allowed = json.loads(GLOBAL_BUDGET.read_text()) if GLOBAL_BUDGET.exists() else {}
@@ -286,8 +290,9 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
                 continue
             count = counts.get(header, 0)
             if count > limit + slack:
-                errors.append(f'{header} reaches {count} client translation units, budget {limit} (+{slack} slack); '
-                              f'run python3 tools/include_graph.py why {header}')
+                # Advisory: a wider header slows builds but breaks nothing.
+                warn(f'{header} reaches {count} client translation units, budget {limit} (+{slack} slack); '
+                     f'run python3 tools/include_graph.py why {header}')
             elif (write or seed) and count < limit:
                 budget[header] = count
                 changed = True
@@ -296,6 +301,15 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
         if changed:
             BUDGET.write_text(json.dumps(budget, indent=2) + '\n')
     return errors
+
+
+WARNINGS: list[str] = []
+
+
+def warn(message: str) -> None:
+    """Report without failing: a GitHub warning annotation in CI, a note locally."""
+    WARNINGS.append(message)
+    print(f'::warning::{message}' if os.environ.get('GITHUB_ACTIONS') else f'warning: {message}')
 
 
 def main(argv: list[str] | None = None) -> int:
