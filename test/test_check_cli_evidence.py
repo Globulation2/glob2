@@ -37,6 +37,13 @@ class ExecutableParityTests(unittest.TestCase):
             self.fixture(root,'cli-linux-gcc',ticks=63)
             with self.assertRaisesRegex(ValueError,'per-tick simulation differs|64 ticks'): compare(root)
 
+    def test_one_present_platform_compares_nothing_unless_another_is_required(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            self.fixture(root,'cli-linux')
+            self.assertEqual(len(compare(root,('linux',))),1)
+            with self.assertRaisesRegex(ValueError,'missing required platform'): compare(root,('linux','windows'))
+
     def test_truncated_trace_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)

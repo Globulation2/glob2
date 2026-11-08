@@ -1376,22 +1376,40 @@ jobs:
         with:
           pattern: cli-*
           path: artifacts/cli-platforms
+      # Compare only the platforms whose producing job succeeded; a failed producer
+      # is reported once, by its own job, and noted here (UPSTREAM is the needs context).
       - name: Compare complete native CLI continuation checksums
+        env:
+          LINUX_RESULT: ${{ needs.linux.result }}
+          WINDOWS_RESULT: ${{ needs.windows.result }}
         run: |
-          python3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows
+          args=()
+          for platform in linux windows; do
+            result_var="${platform^^}_RESULT"
+            if [ "${!result_var}" = success ]; then args+=(--require-platform "$platform")
+            else echo "::notice::$platform CLI evidence is not compared: upstream job $platform ${!result_var}"; fi
+          done
+          python3 test/check_cli_evidence.py artifacts/cli-platforms "${args[@]}"
 
       - name: Compare every selected native and WebAssembly match verify trace
         id: compare_every_verify_match_trace
+        env:
+          UPSTREAM: ${{ toJSON(needs) }}
         run: |
           python3 - <<'PY'
+          import json, os, sys
           from pathlib import Path
-          traces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))
-          expected = 8 + int('${{ needs.changes.outputs.compatibility }}' == 'true') + int('${{ needs.changes.outputs.macos }}' == 'true')
-          assert len(traces) == expected, f'Expected {expected} selected native/browser traces, got {traces}'
-          reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
-          assert reference.count(b'\n') > 600
-          for trace in traces[1:]:
-              assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
+          sys.path.insert(0, '.github/scripts')
+          from ci_compare_evidence import compare_verify_traces, succeeded
+          upstream = json.loads(os.environ['UPSTREAM'])
+          producers = ['linux', 'windows', 'web-test'] + (['macos'] if '${{ needs.changes.outputs.macos }}' == 'true' else [])
+          complete = all(succeeded(upstream, job) for job in producers)
+          # With every producer present the count is exact; otherwise compare what is present.
+          expected = (8 + int('${{ needs.changes.outputs.compatibility }}' == 'true')
+                      + int('${{ needs.changes.outputs.macos }}' == 'true')) if complete else None
+          traces, reference = compare_verify_traces('artifacts/ci-traces', expected)
+          if reference is None:
+              sys.exit(0)
           committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
           # Every platform agreeing on a different trace means the simulation changed:
           # that needs a new sim version (test/check_sim_revision.py checks the bump).
@@ -1399,7 +1417,7 @@ jobs:
               'Every platform agrees, but not with the committed trace: the simulation changed. '
               'Bump SIM_REVISION in src/game/SimRevision.h and regenerate the fixtures with '
               'python3 tools/refresh_sim_fixtures.py')
-          print(f'All {expected} selected match verify traces match')
+          print(f'All {len(traces)} present match verify traces match')
           PY
 
       - uses: actions/download-artifact@v4
@@ -1407,8 +1425,10 @@ jobs:
           pattern: javascript-profile-*
           path: artifacts/ci-scripting
       - name: Compare selected native and browser evidence
+        env:
+          UPSTREAM: ${{ toJSON(needs) }}
         run: |
-          python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility '${{ needs.changes.outputs.compatibility }}'             --variants '${{ needs.changes.outputs.variants }}'             --macos '${{ needs.changes.outputs.macos }}'
+          python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility '${{ needs.changes.outputs.compatibility }}'             --variants '${{ needs.changes.outputs.variants }}'             --macos '${{ needs.changes.outputs.macos }}' --upstream "$UPSTREAM"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
