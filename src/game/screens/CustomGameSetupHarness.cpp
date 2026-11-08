@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "Map.h"
 #include "ProfileNeeds.h"
 #include "GeneratorRegistry.h"
 #include <vector>

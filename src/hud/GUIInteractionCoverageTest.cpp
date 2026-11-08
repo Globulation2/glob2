@@ -1,4 +1,5 @@
 #include <PerformanceTelemetry.h>
+#include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"

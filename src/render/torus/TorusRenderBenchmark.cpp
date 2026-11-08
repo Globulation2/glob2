@@ -1,5 +1,6 @@
 #include "ComputeExecutor.h"
 #include "sim/snapshot/SnapshotStore.h"
+#include "Map.h"
 #include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PresentationWork.h>

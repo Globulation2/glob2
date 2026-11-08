@@ -4,6 +4,7 @@
 // and dialogs that must not mark an unchanged map modified. Also the editor's
 // frame pacing and the scene it keeps between unchanged frames.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"

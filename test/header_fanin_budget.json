@@ -15,7 +15,7 @@
   "src/ai/AI.h": 123,
   "src/common/ComputeExecutor.h": 117,
   "src/building/Building.h": 191,
-  "src/map/Map.h": 220,
+  "src/map/Map.h": 157,
   "src/render/scene/Scene.h": 118,
   "src/render/MapRenderState.h": 110,
   "src/game/Game.h": 179,

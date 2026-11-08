@@ -19,6 +19,7 @@
 #include <memory>
 #include "TeamCapacity.h"
 class Game;
+struct Tile;
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
 #include "WidgetRectangle.h"

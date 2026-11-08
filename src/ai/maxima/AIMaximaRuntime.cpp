@@ -1,5 +1,6 @@
 #include "PowerOfTwo.h"
 #include "AITerrainPredicates.h"
+#include "Map.h"
 #include "Material.h"
 #include "AIStateSerialization.h"
 #include "field/UniformTraversal.h"

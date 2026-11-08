@@ -4,6 +4,7 @@
 // for the map; the Areas section carries the script-area number and name.
 
 #include "BuildingType.h"
+#include "Map.h"
 #include "EditorDock.h"
 #include "EditorDockInternal.h"
 #include "ExperimentalFeatures.h"

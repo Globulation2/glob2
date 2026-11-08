@@ -2,6 +2,7 @@
 // Inspect draft translations through the production font and menu renderer.
 // Draft overlays and evidence live outside the shipped language inventory.
 #include "GlobalContainer.h"
+#include "Map.h"
 #include "Engine.h"
 #include "InGameStatistics.h"
 #include "touch/GameGUITouch.h"

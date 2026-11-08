@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DrawFixtures.h"
+#include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 
 #include "Game.h"

@@ -2,6 +2,7 @@
 // Shared unit/building inspector rows; see MapEditInspector.h.
 
 #include "MapEditInspector.h"
+#include "MapTypes.h"
 #include "BuildingPresentation.h"
 #include "BuildingType.h"
 #include "EditorDockInternal.h"

@@ -1,6 +1,7 @@
 #include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SetLibraryDialog.h"
+#include "Map.h"
 #include "online/OnlineServices.h"
 #include "online/PlatformClient.h"
 #include "online/InstanceConfig.h"
@@ -181,3 +182,5 @@ void SetLibraryDialog::localEntries() {
     for(const auto& entry:resources.at("resources"))
         if(entry.at("key").get<std::string>().find(':')!=std::string::npos)localDefinitions.push_back(entry);
 }
+
+SetLibraryDialog::~SetLibraryDialog() = default;

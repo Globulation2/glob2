@@ -580,6 +580,8 @@ void Map::stageResourceGrowth()
 	if (!game->gameHeader.isResourceGrowthDisabled())
 		routing().gradientRuntime->growth.stage(game->stepCounter, privateRandom(RandomDomain::GrowthJobs).nextU32());
 }
+void Map::finishResourceGrowth() { finishResourceGrowth({JoinReason::Verification, ComputeTelemetry::NoTick}); }
+
 void Map::finishResourceGrowth(JoinContext context)
 {
 	routing().gradientRuntime->growth.finish(context);

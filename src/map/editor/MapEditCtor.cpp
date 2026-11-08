@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include <GAG.h>
+#include "Map.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
 #include "GlobalContainer.h"

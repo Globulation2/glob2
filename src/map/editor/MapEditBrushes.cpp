@@ -2,6 +2,7 @@
 // The editor's brush catalogue, experiment gate and active-brush identity
 // (BrushCatalog.h). Presentations read these instead of the side-panel widgets.
 #include "BuildingPresentation.h"
+#include "Map.h"
 #include "ExperimentalFeatures.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"

@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "Map.h"
 #include "ai/observation/AIWorldView.h"
 #include "Building.h"
 #include "Game.h"

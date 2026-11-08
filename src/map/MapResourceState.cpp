@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "ComputeTelemetry.h"
 #include "gradient/MapRouting.h"
 #include "MapAssetBundle.h"
 #include "gradient/ResourceSeedCache.h"

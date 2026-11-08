@@ -9,6 +9,7 @@
 // same picture, and any difference means the sprite is anchored on the wrong
 // tile — the "entering a building jumps back one square" regression.
 #include "scene/SceneMap.h"
+#include "Map.h"
 #include "HeadlessGlobals.h"
 #include "DrawFixtures.h"
 #include "GlobalContainer.h"

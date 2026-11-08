@@ -17,6 +17,7 @@
 // pointer load to reach MapRouting, never one per cell.
 
 #include "Map.h"
+#include "ComputeTelemetry.h"
 #include "BuildingRoute.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
