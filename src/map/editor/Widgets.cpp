@@ -3,7 +3,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
-#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"

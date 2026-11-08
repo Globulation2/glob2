@@ -14,7 +14,6 @@ static constexpr int AI_CABINO_SAVE_FORMAT_CONTINUATION = 132;
 
 #include "BuildingType.h"
 #include "Building.h"
-#include "Game.h"
 #include "Unit.h"
 #include "AIImplementation.h"
 #include <queue>
@@ -1506,9 +1505,9 @@ namespace Cabino
 	inline bool resourceTakeable(const Resource& resource,int type)
 	{ return resource.type==type && resource.amount>0; }
 	inline const AIEngine::BuildingView* getBuildingFromGid(const AIEngine::AIWorldView* world,int gid)
-	{ return gid>=0 && gid<Building::MAX_COUNT*Team::MAX_COUNT ? world->buildingAtSlot(gid) : nullptr; }
+	{ return gid>=0 && gid<Building::MAX_COUNT*TEAM_MAX_COUNT ? world->buildingAtSlot(gid) : nullptr; }
 	inline const AIEngine::UnitView* getUnitFromGid(const AIEngine::AIWorldView* world,int gid)
-	{ return gid>=0 && gid<Unit::MAX_COUNT*Team::MAX_COUNT ? world->unitAtSlot(gid) : nullptr; }
+	{ return gid>=0 && gid<Unit::MAX_COUNT*TEAM_MAX_COUNT ? world->unitAtSlot(gid) : nullptr; }
 
 	///Returns true if the given building hasn't been destroyed
 	bool buildingStillExists(const AIEngine::AIWorldView* team, const AIEngine::BuildingView* b);

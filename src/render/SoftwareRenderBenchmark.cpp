@@ -3,6 +3,7 @@
 #include "CommandLine.h"
 // Opt-in loaded-game CPU benchmark. PROFILE_* overrides are local diagnostics.
 #include "GlobalContainer.h"
+#include "Game.h"
 #include "GameGUI.h"
 #include "Engine.h"
 #include "ComputeThreads.h"

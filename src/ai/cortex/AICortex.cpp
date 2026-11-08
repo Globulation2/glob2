@@ -1215,3 +1215,11 @@ std::optional<Uint64> AICortex::retainedQueryVectorBytes() const
         for(const auto& command:*commands) bytes+=command.bytes.capacity()*sizeof(Uint8);
     return bytes;
 }
+
+namespace Cortex {
+AIPlanning::BuildingCandidate selectBuilding(::Game& game,::Team& team,int role,int productionClass,int qualification)
+{
+    const auto view=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    return selectBuilding(*view,view->teams[team.teamNumber],role,productionClass,qualification);
+}
+}

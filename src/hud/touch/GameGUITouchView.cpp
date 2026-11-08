@@ -28,6 +28,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <ui/TextLayout.h>
+#include "Building.h"
 using namespace GAGCore;
 
 void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected, double points)

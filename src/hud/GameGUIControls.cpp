@@ -18,6 +18,7 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <limits>
+#include "Building.h"
 
 using namespace GAGGUI::ui;
 namespace

@@ -9,7 +9,6 @@
 
 #include <Toolkit.h>
 
-#include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -17,6 +16,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
+#include "Building.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

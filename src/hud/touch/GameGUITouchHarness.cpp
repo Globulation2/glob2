@@ -62,6 +62,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <source_location>
+#include "Game.h"
 
 static void require(bool condition, const char *message)
 {

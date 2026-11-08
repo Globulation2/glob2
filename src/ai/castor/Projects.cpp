@@ -4,7 +4,6 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
-#include "Game.h"
 #include <algorithm>
 #include <span>
 #include "GlobalContainer.h"

@@ -3,7 +3,6 @@
 
 #include "Material.h"
 #include "AITelemetryFields.h"
-#include "Game.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>

@@ -21,6 +21,7 @@
 #include "OrderValidation.h"
 #include "ReplayWriter.h"
 #include "TurnLockstep.h"
+#include "Game.h"
 
 namespace
 {

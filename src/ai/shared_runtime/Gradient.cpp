@@ -7,7 +7,6 @@
 #include "Building.h"
 #include <queue>
 #include <algorithm>
-#include "Game.h"
 #include "Order.h"
 #include "Utilities.h"
 #include "Brush.h"

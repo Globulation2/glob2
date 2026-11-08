@@ -32,6 +32,8 @@ set(GLOB2_CLIENT_SOURCES
     src/ai/maxima/AIMaximaTactics.cpp
     src/ai/AI.cpp
     src/ai/AIRegistry.cpp
+    src/ai/AIRules.cpp
+    src/ai/AIStateSerialization.cpp
     src/ai/observation/AIWorldCapture.cpp
     src/engine/sim/snapshot/WorldCapture.cpp
     src/engine/sim/snapshot/WorldSnapshot.cpp
@@ -46,6 +48,7 @@ set(GLOB2_CLIENT_SOURCES
     src/ai/BuildingCapabilities.cpp
     src/ai/telemetry/AITelemetry.cpp
     src/ai/telemetry/AITelemetryAdapters.cpp
+    src/ai/shared_runtime/BuildingDemands.cpp
     src/ai/shared_runtime/BuildingOrder.cpp
     src/ai/shared_runtime/BuildingRegister.cpp
     src/ai/shared_runtime/Conditions.cpp
@@ -1063,6 +1066,8 @@ set(GLOB2_SIM_SOURCES
     src/ai/maxima/AIMaximaTactics.cpp
     src/ai/AI.cpp
     src/ai/AIRegistry.cpp
+    src/ai/AIRules.cpp
+    src/ai/AIStateSerialization.cpp
     src/ai/observation/AIWorldCapture.cpp
     src/engine/sim/snapshot/WorldCapture.cpp
     src/engine/sim/snapshot/SnapshotChecksum.cpp
@@ -1076,6 +1081,7 @@ set(GLOB2_SIM_SOURCES
     src/ai/BuildingCapabilities.cpp
     src/ai/telemetry/AITelemetry.cpp
     src/ai/telemetry/AITelemetryAdapters.cpp
+    src/ai/shared_runtime/BuildingDemands.cpp
     src/ai/shared_runtime/BuildingOrder.cpp
     src/ai/shared_runtime/BuildingRegister.cpp
     src/ai/shared_runtime/Conditions.cpp

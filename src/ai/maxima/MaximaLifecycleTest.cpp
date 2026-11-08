@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include "Game.h"
 
 namespace
 {

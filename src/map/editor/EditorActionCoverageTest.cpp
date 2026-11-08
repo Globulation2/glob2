@@ -16,6 +16,7 @@
 #include "BuildingType.h"
 #include "Unit.h"
 #include <nlohmann/json.hpp>
+#include "Game.h"
 
 namespace
 {

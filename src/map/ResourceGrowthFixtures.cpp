@@ -8,6 +8,7 @@
 #include <Toolkit.h>
 #include <nlohmann/json.hpp>
 #include <cstdlib>
+#include "Game.h"
 
 TEST_CASE("controlled full-engine growth fixtures [benchmark][resources]" *
 		  doctest::test_suite("ResourceGrowthFixtures"))
