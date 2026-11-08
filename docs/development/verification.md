@@ -53,7 +53,8 @@ reuse same-run artifacts with matching source/configuration provenance. Compiler
 build jobs publish programs before separate CLI/scripting regressions; native and
 browser consumers can start without waiting for those regressions. Golden-only
 changes build once per selected platform and distribute programs to sweep consumers.
-Full verification keeps complete primary and secondary generator sweeps. Narrower
+Full verification keeps complete primary and secondary generator sweeps; on pull
+requests the sweep leaves out the 512-tile cells, which scheduled master runs cover. Narrower
 selections (a manual browser-only dispatch, for example) preserve the original
 commands and four-way shard ownership. Full native inventory audits
 require every eligible engine case to belong to exactly one shard.
