@@ -242,6 +242,20 @@ check meant to gate merges, with a 15-minute target on a warm compiler cache:
 Its duration and cache hit rates are tracked like any other CI metric; compare ten
 runs before claiming a change made it faster.
 
+## Performance lane
+
+`.github/workflows/perf.yml` measures performance and never blocks a merge. Daily,
+on demand and on pull requests labelled `perf`, it builds the perf-confirm tier
+(`perf=1 opt=3`), runs the benchmark tooling contracts and every `[benchmark]`
+native case one at a time, and uploads their per-case durations as the
+`perf-trend-<run>` artifact (kept 90 days) for comparing runs over time. A labelled
+pull request also builds its merge base with `tools/dev_baseline.py` and adds a
+paired `tools/perf_ab.py` table for the benchmark set to the job summary. Quote a
+performance claim from a local `perf_ab.py` run of the benchmark that matters;
+the lane catches drift and gives evidence, not a merge verdict. Correctness tiers
+never run `[benchmark]` cases, and correctness tests assert no wall-clock or CPU
+times: a timing that matters is a `[benchmark]` case.
+
 ## Hosted verification and regression detection
 
 ### CI run cancellation

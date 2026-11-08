@@ -28,6 +28,7 @@ CI_WORKFLOWS = {
     '.github/workflows/build-system-equivalence.yml',
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
+    '.github/workflows/perf.yml',
     '.github/workflows/steam-windows-package.yml',
     '.github/workflows/thread-sanitizer.yml',
 }

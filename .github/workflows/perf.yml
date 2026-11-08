@@ -1,0 +1,103 @@
+name: perf
+
+# The performance lane: never a merge prerequisite. It measures the [benchmark]
+# native cases at the perf-confirm tier (-O3) and publishes their per-case
+# durations as a trend artifact; a pull request labelled `perf` also gets a
+# paired comparison against its merge base (tools/perf_ab.py). Correctness tiers
+# exclude [benchmark] cases (test/run_tests.py). See "Performance lane" in
+# docs/development/verification.md.
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize]
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+
+permissions:
+  contents: read
+
+env:
+  GLOB2_DEV_MODE: isolated
+
+jobs:
+  benchmarks:
+    name: benchmarks
+    if: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'perf') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 3G
+    steps:
+      - name: Install dependencies
+        timeout-minutes: 15
+        run: |
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'CONF'
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          CONF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev ccache \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+            libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth openbox
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: gcc-13
+          cxx: g++-13
+      - uses: ./.github/actions/renderer-shader-tools
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-fast-ubuntu-24.04-gcc13-${{ github.sha }}
+          restore-keys: ccache-fast-ubuntu-24.04-gcc13-
+      - name: Build the perf-confirm test binaries
+        run: |
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py perf=1 opt=3 CC=gcc-13 CXX=g++-13 -j4 engine-tests unit-tests
+      - name: Benchmark contracts
+        run: |
+          python3 tools/test_gradient_benchmark.py
+          python3 -m unittest discover -s test -p 'test_*benchmark*.py' -v
+      - name: Measure the benchmark cases
+        run: |
+          export LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          mkdir -p artifacts/perf
+          # One case at a time, so cases do not compete for the runner's cores.
+          python3 test/run_tests.py --tag benchmark --binary all -j1 --build-dir build/linux/client/perf \
+            --junit artifacts/perf/junit.xml --write-timings artifacts/perf/benchmarks.json
+          git rev-parse HEAD > artifacts/perf/revision.txt
+      - name: Compare with the merge base
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          export LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" CC=gcc-13 CXX=g++-13
+          base=$(git merge-base "$BASE_SHA" HEAD)
+          python3 tools/dev_baseline.py build --sha "$base" --variants perf-o3
+          python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf --pairs 3 \
+            --name benchmarks --json artifacts/perf/perf-ab.json \
+            -- python3 test/run_tests.py --tag benchmark --binary all -j1 --build-dir {build} \
+            | tee artifacts/perf/perf-ab.md
+          cat artifacts/perf/perf-ab.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: perf-trend-${{ github.run_id }}
+          path: artifacts/perf/
+          retention-days: 90
