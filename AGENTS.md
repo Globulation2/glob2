@@ -195,7 +195,7 @@ table from `tools/perf_ab.py`. Address review feedback when provided.
 Merging waits for the **fast gate** (`.github/workflows/ci-fast.yml`, target under
 15 minutes): cheap contracts, the sim-version check, header layering, a Linux build
 and the headless test tier. Everything else (full Linux matrix, Windows, macOS,
-Android, browsers, coverage) runs on master every four hours and is not a merge
+Android, browsers, coverage) runs on master every six hours and is not a merge
 prerequisite. Add the `ci:full` label to run the full matrix on a PR whose
 change touches build inputs, shared headers, platform shells or test
 infrastructure. Keep unfinished PRs in draft.

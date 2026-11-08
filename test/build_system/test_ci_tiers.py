@@ -163,6 +163,27 @@ class BaselineTest(unittest.TestCase):
                 self.assertIsNone(guard.successful_full_run('owner/repo', 'abc', 'token'))
         self.assertIsNone(guard.successful_full_run('owner/repo', '', 'token'))
 
+    def test_schedule_skips_a_revision_with_a_decided_full_run(self):
+        run = dict(id=2,name='build',head_branch='master',event='schedule',conclusion='failure',head_sha='abc')
+        observed = dict(full_matrix=True,sha='abc',selection=policy.full(),policy_fingerprint=policy.fingerprint())
+        def lookup(run=run, observed=observed):
+            artifact_read = self.read(run, observed)
+            def read(path, token, binary=False):
+                if 'workflows/build.yml/runs?' in path:
+                    self.assertIn('status=completed', path)
+                    return {'workflow_runs': [run]}
+                return artifact_read(path, token, binary)
+            return guard.decided_full_run('owner/repo', 'abc', 'token', read)
+        self.assertEqual(lookup(), 2)
+        self.assertEqual(lookup(run=dict(run, conclusion='success')), 2)
+        # Cancelled runs decide nothing; other revisions and partial runs never count.
+        for change in ({'conclusion':'cancelled'}, {'head_sha':'other'}, {'event':'pull_request'}):
+            self.assertIsNone(lookup(run=dict(run, **change)))
+        for change in ({'full_matrix':False}, {'policy_fingerprint':'old'}):
+            self.assertIsNone(lookup(observed=dict(observed, **change)))
+        with patch.object(guard, 'recent_completed', side_effect=OSError('API unavailable')):
+            self.assertIsNone(guard.decided_full_run('owner/repo', 'abc', 'token'))
+
 
 class AggregateGateTest(unittest.TestCase):
     def evidence(self, selected):

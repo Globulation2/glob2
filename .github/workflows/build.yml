@@ -1,8 +1,8 @@
 name: build
 
 # The full development matrix. Pull requests and master pushes run the fast gate
-# (ci-fast.yml); this matrix runs on master every four hours (a run whose revision
-# already has a successful full run skips the expensive jobs), on demand, for
+# (ci-fast.yml); this matrix runs on master every six hours (a run whose revision
+# already has a decided full run, passed or failed, skips the expensive jobs), on demand, for
 # releases, and for pull requests labelled ci:full through ci-full-label.yml.
 # Running it on every master push kept the hosted runners busy for hours and
 # starved the fast gate.
@@ -14,7 +14,7 @@ on:
         required: true
         type: string
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       desktop_localization:
