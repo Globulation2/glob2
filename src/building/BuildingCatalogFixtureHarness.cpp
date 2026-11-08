@@ -143,7 +143,11 @@ TEST_CASE("format136 terrain snapshot imports frozen buildings and continues aft
     oldInput.seekFromStart(0);
     REQUIRE(imported.game.load(&oldInput)); imported.game.setWaitingOnMask(0);
     CHECK(imported.game.mapHeader.getVersionMinor()==136);
-    CHECK(imported.game.buildingsTypes.size()==55);
+    // A pre-snapshot file gets the frozen legacy table, never the repository catalog,
+    // whatever buildings have been added since.
+    BuildingsTypes legacy; legacy.initLegacy();
+    CHECK(imported.game.buildingsTypes.size()==legacy.size());
+    CHECK(imported.game.buildingsTypes.fingerprint()==legacy.fingerprint());
     CHECK(imported.game.map.terrainRegistry().size()>=7);
     auto* memory=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(memory);

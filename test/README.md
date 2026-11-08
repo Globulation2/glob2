@@ -201,6 +201,13 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[map-generators]` | the full generator contract; CI runs it in the map-generators job, the shards use `--exclude-tag map-generators` |
 | `[maxima]`, `[save-format]` | selection only |
 
+Assert the property a count stands for, not the count. Check content against the
+catalog, manifest or file it comes from (every ruleset in `data/rulesets.json` loads,
+every script the renderer switches to has a shipped font), so adding an entry keeps
+the test green and dropping one fails it. Keep a literal only when it is a format
+contract, such as a wire or save layout, a frozen legacy table or a `static_assert`
+on struct layout, and say why next to it.
+
 Where a test file lives: beside the code it tests, in that code's directory under
 `src/`, `libs/gag/src/`, `libs/usl/test/`, `third_party/natsort/` or `platforms/mobile/`, named `*Test.cpp`,
 `*Harness.cpp`, `*Benchmark.cpp` or `*Fixture.cpp` so CI and coverage tell it from
