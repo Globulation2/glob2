@@ -29,6 +29,7 @@ CI_WORKFLOWS = {
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
     '.github/workflows/perf.yml',
+    '.github/workflows/sim-diff.yml',
     '.github/workflows/steam-windows-package.yml',
     '.github/workflows/thread-sanitizer.yml',
 }

@@ -447,4 +447,20 @@ class ReuseTest(unittest.TestCase):
                 evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed, units=True)
 
 
+
+
+class SimulationPathTest(unittest.TestCase):
+    def test_sim_diff_runs_for_simulation_sources_and_data_only(self):
+        import ci_policy
+        for path in ('src/unit/Unit.cpp', 'src/game/Game_sync.cpp', 'src/net/turn/TurnEngine.cpp',
+                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'src/SConscript',
+                     'third_party/quickjs-ng/quickjs.c'):
+            with self.subTest(path=path):
+                self.assertTrue(ci_policy.touches_simulation([path]))
+        for path in ('src/unit/UnitTest.cpp', 'src/game/GameSpeedTest.cpp', 'src/render/GameRender.cpp',
+                     'docs/README.md', 'tools/sim_diff.py', 'content/data/texts.en.txt'):
+            with self.subTest(path=path):
+                self.assertFalse(ci_policy.touches_simulation([path]))
+
+
 if __name__=='__main__':unittest.main()

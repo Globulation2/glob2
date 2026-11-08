@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Contracts for tools/sim_diff.py and the sidecar parser in tools/sim_fingerprint.py."""
+import gzip
+import json
+import struct
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sim_diff  # noqa: E402
+import sim_fingerprint  # noqa: E402
+
+
+def bundle(games=None, match=None, maps=None, ticks=600):
+    scenarios = {}
+    for name, rows in (games or {}).items():
+        scenarios[name] = {'kind': 'game', 'ticks': rows}
+    if match is not None:
+        scenarios['match/FourSquares1'] = {'kind': 'match', 'ticks': match}
+    if maps is not None:
+        scenarios['generators'] = {'kind': 'generators', 'maps': maps}
+    return {'schema': sim_fingerprint.SCHEMA, 'ticks': ticks, 'scenarios': scenarios}
+
+
+def game(team1=7, units='u', aggregate=100):
+    return [[0, 1, [[5, 'u', 'b'], [6, 'u', 'b']]],
+            [1, aggregate, [[5, 'u', 'b'], [team1, units, 'b']]]]
+
+
+class CompareTest(unittest.TestCase):
+    def test_identical_bundles_have_no_differences(self):
+        b = bundle({'game/a': game()}, [[1, 2]], {'g 8x8': 'ok 1'})
+        self.assertEqual(sim_diff.compare(b, json.loads(json.dumps(b))), [])
+
+    def test_first_difference_names_scenario_tick_and_component(self):
+        base = bundle({'game/a': game()})
+        self.assertEqual(sim_diff.compare(base, bundle({'game/a': game(team1=8)})),
+                         [{'scenario': 'game/a', 'tick': 1, 'component': 'team 1 team checksum'}])
+        self.assertEqual(sim_diff.compare(base, bundle({'game/a': game(units='v')}))[0]['component'],
+                         'team 1 units')
+        self.assertIn('aggregate only', sim_diff.compare(base, bundle({'game/a': game(aggregate=101)}))[0]['component'])
+
+    def test_match_and_generator_differences(self):
+        self.assertEqual(sim_diff.compare(bundle(match=[[1, 2], [2, 3]]), bundle(match=[[1, 2], [2, 4]])),
+                         [{'scenario': 'match/FourSquares1', 'tick': 2, 'component': 'state checksum'}])
+        found = sim_diff.compare(bundle(maps={'a': 'ok 1', 'b': 'ok 2'}), bundle(maps={'a': 'ok 1', 'b': 'ok 3'}))
+        self.assertIn('1 generator maps, first: b', found[0]['component'])
+
+    def test_missing_scenarios_and_mismatched_runs(self):
+        self.assertEqual(sim_diff.compare(bundle({'game/a': game()}), bundle())[0]['component'], 'only in base')
+        with self.assertRaisesRegex(ValueError, 'tick counts'):
+            sim_diff.compare(bundle(ticks=600), bundle(ticks=300))
+
+    def test_exit_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            paths = []
+            for name, content in (('a', bundle(match=[[1, 2]])), ('b', bundle(match=[[1, 3]]))):
+                path = Path(directory) / f'{name}.json.gz'
+                with gzip.open(path, 'wt') as stream:
+                    json.dump(content, stream)
+                paths.append(str(path))
+            with mock.patch('builtins.print'):
+                self.assertEqual(sim_diff.main([paths[0], paths[0]]), 0)
+                self.assertEqual(sim_diff.main(paths), 1)
+                self.assertEqual(sim_diff.main([paths[0], str(Path(directory) / 'missing.json.gz')]), 2)
+
+
+class SidecarTest(unittest.TestCase):
+    def test_parses_teams_units_and_buildings(self):
+        entity = struct.pack('<HHHI', 1, 0, 0, 1) + struct.pack('<I', 42)  # 10-byte header + one field
+        tick = struct.pack('<II', 3, 99) + struct.pack('<I', 7) + struct.pack('<I', 1) + entity + struct.pack('<I', 0)
+        data = b'GCS1' + struct.pack('<4I', 1, 1, 1, 0) + tick
+        [[number, total, teams]] = sim_fingerprint.parse_sidecar(data)
+        self.assertEqual((number, total, teams[0][0]), (3, 99, 7))
+        with self.assertRaisesRegex(ValueError, 'truncated'):
+            sim_fingerprint.parse_sidecar(data + b'x')
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -20,6 +20,34 @@ describe a checksum match as complete snapshot equality.
 
 For an intentional simulation change, test the new behavior, call out its effects on pacing/economy/difficulty, bump `SIM_REVISION` and regenerate the golden match record. Do not use a version bump to hide accidental build or portability differences.
 
+## Simulation diff
+
+`tools/sim_fingerprint.py <glob2>` records what one build simulates on fixed
+scenarios: each saved game in `content/games` run 600 ticks (per tick, the aggregate
+checksum and every team's checksum and unit and building records), the
+FourSquares1 match record replayed by `match verify` (its per-tick state checksums,
+even when the record names another sim version), and every generator's map
+fingerprint on the golden request set (`MapGeneratorGoldenTest --print`).
+`tools/sim_diff.py base.json.gz candidate.json.gz` reports, per scenario, the first
+tick and component that differ; it exits 0 when all match and 1 when output
+differs. Fingerprint two local builds of your own the same way, running each from
+its checkout (`--checkout`) so that it reads its own `content/data`:
+
+```sh
+python3 tools/sim_fingerprint.py <base>/build/linux/client/perf/src/glob2 --checkout <base> --out base.json.gz
+python3 tools/sim_fingerprint.py build/linux/client/perf/src/glob2 --out candidate.json.gz
+python3 tools/sim_diff.py base.json.gz candidate.json.gz
+```
+
+The `sim-diff` workflow does this for every pull request whose change reaches the
+simulation path (`touches_simulation` in `.github/scripts/ci_policy.py`): it builds
+the merge base and the pull request at the perf tier and reports the verdict beside
+the two `SIM_REVISION` values in the job summary. It is in shadow mode: a difference
+without a bump is a warning, not a failure, while its verdicts are compared with
+the sim version check. Equal output does not prove behaviour unchanged; the
+scenarios cover only what they run. A full fingerprint takes about twelve minutes,
+mostly the generator set; `--parts games,match` skips the generators.
+
 ## Check compatibility separately
 
 - **Saves:** load older supported saves and compare uninterrupted play against save/load continuation, including outstanding work and derived caches. Preserve version-gated loading; a cache can change future decisions.

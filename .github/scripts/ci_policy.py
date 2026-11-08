@@ -39,6 +39,23 @@ TOOLING_TESTS = ('test/build_system/', 'test/relay_service/', 'test/online_servi
 TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'platforms/mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
+# The simulation path as AGENTS.md defines it: a change here can alter what the
+# simulation computes, so the sim-diff job fingerprints the pull request and its
+# merge base (tools/sim_fingerprint.py). Tests beside the code do not count.
+SIM_DIFF_PREFIXES = ('src/game/', 'src/unit/', 'src/building/', 'src/team/', 'src/resource/', 'src/map/',
+                     'src/field/', 'src/ai/', 'src/engine/sim/', 'src/replay/', 'src/net/turn/',
+                     'src/scripting/', 'libs/usl/', 'third_party/quickjs-ng/', 'content/data/maxima/',
+                     'content/data/usl/', 'content/data/buildings/', 'content/data/resources/',
+                     'content/data/generators/', 'content/data/rulesets.json', 'content/data/nicowar')
+SIM_DIFF_FILES = {'src/SConscript', 'deploy/sim_version.py', 'src/app/Version.h'}
+
+
+def touches_simulation(paths):
+    """Whether a change reaches the simulation path (the sim-diff job's trigger)."""
+    return any((path.startswith(SIM_DIFF_PREFIXES) or path in SIM_DIFF_FILES)
+               and not TEST_SOURCE.search(path) for path in paths)
+
+
 THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
                 'libs/gag/src/PerformanceTelemetry.cpp', 'libs/gag/src/AssetLoader.cpp',
