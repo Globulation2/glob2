@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "Unit.h"
 #include "VoiceRecorder.h"
+#include "Building.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

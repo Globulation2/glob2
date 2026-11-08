@@ -1686,6 +1686,14 @@ OpenGL није доступан у овој верзији.
 Ширина копненог моста
 [Lake size]
 Величина језера
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Спорно заједничко подручје
 [Maze]
@@ -1774,6 +1782,8 @@ OpenGL није доступан у овој верзији.
 Ширина појаса
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Градови-државе
 [Strait width]
@@ -1788,6 +1798,12 @@ OpenGL није доступан у овој верзији.
 Камени зидови
 [Sand patches]
 Пешчане површине
+[Cliff walls]
+Зидови од литица
+[Paved roads]
+Поплочани путеви
+[Scrub patches]
+Јалове површине
 [Tidal flats]
 Плимске равнице
 [Everglades]
@@ -1800,6 +1816,12 @@ OpenGL није доступан у овој верзији.
 Величина чистине
 [Levee]
 Насип
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Мртваје
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ OpenGL није доступан у овој верзији.
 Лагуне
 [Central island]
 Средишње острво
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Плимским равницама треба бар једна колонија.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Матична острва не стају на ову мапу; користите већу мапу, мање колонија или мања острва.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ OpenGL није доступан у овој верзији.
 Делта реке
 [Meandering rivers]
 Меандрирајуће реке
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Воће у почетним долинама
 [Moat]
@@ -1958,6 +2002,12 @@ OpenGL није доступан у овој верзији.
 Колоније на обе обале
 [Winding belt]
 Кривудав појас
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Облик ћелија
 [Squares]
@@ -1994,6 +2044,20 @@ OpenGL није доступан у овој верзији.
 Размак превоја
 [Lee width]
 Ширина заветрине
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Прашума
 [Canals]
@@ -2430,6 +2494,8 @@ OpenGL није доступан у овој верзији.
 Додатни газови
 [Moraine hummocks]
 Моренски брежуљци
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разгранање оставља премало терасе за базе; користите већу мапу или уже разгранање.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ OpenGL није доступан у овој верзији.
 Појила
 [Dry patches]
 Суве површине
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Мало
 [Normal]
@@ -2616,6 +2688,26 @@ OpenGL није доступан у овој верзији.
 Дуга плавина
 [Twin springs]
 Извори близанци
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Падине са плавинама су преуске за базе; користите већу мапу, већи размак планинских венаца, уже гребене или мања слана језера.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ OpenGL није доступан у овој верзији.
 Дебљина шумског пролаза
 [Extra trails]
 Додатне стазе
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Странице ове мапе морају имати од 64 до 512 поља.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

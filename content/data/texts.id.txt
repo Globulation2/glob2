@@ -1686,6 +1686,14 @@ Lebar kanal
 Lebar jembatan darat
 [Lake size]
 Ukuran danau
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Tanah bersama yang diperebutkan
 [Maze]
@@ -1774,6 +1782,8 @@ Dunia cincin
 Lebar sabuk
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Sabuk terlalu pendek untuk koloni sebanyak ini; gunakan peta yang lebih panjang atau lebih sedikit koloni.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Negara kota
 [Strait width]
@@ -1788,6 +1798,12 @@ Negara kota membutuhkan setidaknya satu koloni.
 Tembok batu
 [Sand patches]
 Petak pasir
+[Cliff walls]
+Tembok tebing
+[Paved roads]
+Jalan berlapis batu
+[Scrub patches]
+Petak tandus
 [Tidal flats]
 Dataran pasang surut
 [Everglades]
@@ -1800,6 +1816,12 @@ Ukuran kolam
 Ukuran tanah lapang
 [Levee]
 Tanggul
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Rawa-rawa
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ Kolam pasang surut
 Laguna
 [Central island]
 Pulau tengah
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Dataran pasang surut membutuhkan setidaknya satu koloni.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Pulau-pulau asal tidak muat di peta ini; gunakan peta yang lebih besar, koloni lebih sedikit, atau pulau lebih kecil.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ Tepi danau berpasir
 Delta sungai
 [Meandering rivers]
 Sungai berliku-liku
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Buah di lembah awal
 [Moat]
@@ -1958,6 +2002,12 @@ Batu di kebun buah
 Koloni di kedua pantai
 [Winding belt]
 Sabuk berkelok
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Bentuk sel
 [Squares]
@@ -1994,6 +2044,20 @@ Ketebalan punggung bukit
 Jarak celah gunung
 [Lee width]
 Lebar sisi teduh
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Hutan purba
 [Canals]
@@ -2430,6 +2494,8 @@ Ukuran gosong
 Penyeberangan dangkal tambahan
 [Moraine hummocks]
 Gundukan morena
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Anyaman menyisakan terlalu sedikit teras untuk markas; gunakan peta lebih besar atau anyaman lebih sempit.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ Sabana
 Kubangan air
 [Dry patches]
 Area kering
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Sedikit
 [Normal]
@@ -2616,6 +2688,26 @@ Kipas lebar
 Kipas panjang
 [Twin springs]
 Mata air kembar
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Lereng kipas terlalu sempit untuk markas; gunakan peta yang lebih besar, jarak antarpegunungan yang lebih lebar, punggung gunung yang lebih sempit, atau danau garam yang lebih kecil.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ Kelonjongan danau
 Ketebalan lintasan hutan
 [Extra trails]
 Jalur tambahan
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Sisi peta ini harus berukuran 64 hingga 512 petak.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
@@ -22,6 +23,7 @@
 #include <fstream>
 #include <iterator>
 #include <queue>
+#include "Unit.h"
 
 TEST_SUITE("TerrainProperties")
 {

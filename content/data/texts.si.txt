@@ -1686,6 +1686,14 @@ Samodejno shrani igro približno vsakih 10 sekund.
 Širina kopenskega mostu
 [Lake size]
 Velikost jezera
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Sporno skupno ozemlje
 [Maze]
@@ -1774,6 +1782,8 @@ Obročasti svet
 Širina pasu
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Mestne države
 [Strait width]
@@ -1788,6 +1798,12 @@ Mestne države potrebujejo vsaj eno kolonijo.
 Kamniti zidovi
 [Sand patches]
 Peščene zaplate
+[Cliff walls]
+Zidovi iz pečin
+[Paved roads]
+Tlakovane poti
+[Scrub patches]
+Puste zaplate
 [Tidal flats]
 Plimske ravnice
 [Everglades]
@@ -1800,6 +1816,12 @@ Velikost mlak
 Velikost jase
 [Levee]
 Nasip
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Mrtvice
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ Plimski tolmuni
 Lagune
 [Central island]
 Osrednji otok
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Plimske ravnice potrebujejo vsaj eno kolonijo.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Domači otoki ne gredo na ta zemljevid; uporabite večji zemljevid, manj kolonij ali manjše otoke.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ Peščena obala jezera
 Rečna delta
 [Meandering rivers]
 Vijugaste reke
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Sadje v začetnih dolinah
 [Moat]
@@ -1958,6 +2002,12 @@ Kamenje v sadovnjaku
 Kolonije na obeh obalah
 [Winding belt]
 Vijugast pas
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Oblika celic
 [Squares]
@@ -1994,6 +2044,20 @@ Debelina grebenov
 Razmik prelazov
 [Lee width]
 Širina zavetrne strani
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Pragozd
 [Canals]
@@ -2430,6 +2494,8 @@ Velikost prodišč
 Dodatni brodi
 [Moraine hummocks]
 Morenski grički
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Preplet pušča domovom premalo terase; uporabite večji zemljevid ali ožji preplet.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ Savana
 Napajališča
 [Dry patches]
 Suha območja
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Malo
 [Normal]
@@ -2616,6 +2688,26 @@ Slana jezera
 Dolg vršaj
 [Twin springs]
 Dva izvira
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Pobočja z vršaji so preozka za domove; uporabite večji zemljevid, večji razmik gorovij, ožje grebene ali manjša slana jezera.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ Podolgovatost jezer
 Debelina gozdnega prehoda
 [Extra trails]
 Dodatne poti
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Stranice tega zemljevida morajo meriti od 64 do 512 polj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

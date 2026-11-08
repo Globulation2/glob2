@@ -13,6 +13,7 @@
 #include <atomic>
 #include <stdexcept>
 #include <limits>
+#include "Game.h"
 namespace Hive
 {
 namespace

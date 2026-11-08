@@ -6,7 +6,6 @@
 #include "Material.h"
 #include "AIResourcePolicy.h"
 #include "AITerrainPredicates.h"
-#include "Game.h"
 #include "Building.h"
 
 using namespace AISharedRuntime;

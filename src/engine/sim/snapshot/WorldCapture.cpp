@@ -26,6 +26,7 @@
 #include <cstring>
 #include <bit>
 #include <utility>
+#include "sim/EntityRefOf.h"
 
 namespace SimulationSnapshot
 {
@@ -375,8 +376,8 @@ Handle capture(const Game& game,
 		target.workerBalance = target.statistics.idleCarriers - target.statistics.totalNeeded;
 		target.starving = target.statistics.needFoodCritical;
 		std::copy_n(target.statistics.workersByConstructionLevel, NB_UNIT_LEVELS, target.workersLevel.begin());
-		for (auto* building : team->swarms) append(target.swarms, Game::refOf(building));
-		for (auto* building : team->virtualBuildings) append(target.virtualBuildings, Game::refOf(building));
+		for (auto* building : team->swarms) append(target.swarms, refOf(building));
+		for (auto* building : team->virtualBuildings) append(target.virtualBuildings, refOf(building));
 		std::copy_n(team->teamMaterials, MaterialSlotCount, target.materials.begin());
 		}
 		if (!needs(requirements, Component::Entities)) continue;
@@ -392,7 +393,7 @@ Handle capture(const Game& game,
 			auto& v = entities->buildings[buildingRecordCount++];
 			std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 			if (storage) storage->entityBytesCopied += sizeof(BuildingStateRecord);
-			v.identity = Game::refOf(b); v.team = t; v.fundingOffset = Entities::NoRecord;
+			v.identity = refOf(b); v.team = t; v.fundingOffset = Entities::NoRecord;
                 const auto nonzero = [](const auto &values) {
                     return std::any_of(values.begin(), values.end(), [](auto value) { return value != 0; });
                 };
@@ -415,9 +416,9 @@ Handle capture(const Game& game,
 				if (b->availableMaterial(material)>0) v.availableSupplyMask |= MaterialMask(1u<<material);
 			}
 			v.working = {Uint32(entities->relationships.size()), Uint32(b->unitsWorking.size())};
-			for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
+			for (const auto* u : b->unitsWorking) append(entities->relationships, refOf(u));
 			v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
-			for (const auto* u : b->unitsInside) append(entities->relationships, Game::refOf(u));
+			for (const auto* u : b->unitsInside) append(entities->relationships, refOf(u));
 			if (storage) storage->entitySidecarBytesCopied += sizeof(v.constructionOriginRatios)
                     + v.extraProductionCount * sizeof(ExtraProductionState)
                     + (v.working.count + v.inside.count) * sizeof(UnitRef);
@@ -432,11 +433,11 @@ Handle capture(const Game& game,
             v.activeClaimsEnabled=game.map.activeClaimsEnabled();
             v.activeMaterialClaim=u->activeMaterialClaim;v.materialClaimTask=u->materialClaimTask;
             v.materialClaimPolicyState=u->materialClaimPolicyState;
-			v.identity = Game::refOf(u); v.team = t;
+			v.identity = refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
                 if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<accessClass(movementAccessForSpeeds(v.performance[WALK],v.performance[SWIM],v.performance[FLY])));
-			v.attached = Game::refOf(u->attachedBuilding);
-			v.target = Game::refOf(u->targetBuilding);
+			v.attached = refOf(u->attachedBuilding);
+			v.target = refOf(u->targetBuilding);
 		}
 	}
 	if (needs(requirements, Component::Entities)) {
@@ -489,7 +490,7 @@ Handle capture(const Game& game,
         for (int t=0;t<game.teamsCount();++t) for (const auto* b:game.teams[t]->liveBuildings.entries()) {
             if (!b || (!b->verbose && !b->recordFailingUnits)) continue;
             EntityDiagnostics::Building value;
-            value.identity=Game::refOf(b); value.verbose=b->verbose; value.recordFailingUnits=b->recordFailingUnits;
+            value.identity=refOf(b); value.verbose=b->verbose; value.recordFailingUnits=b->recordFailingUnits;
             std::copy_n(b->unitsFailingRequirements,EntityDiagnostics::FailReasons,value.failingCounts.begin());
             for (unsigned r=0;r<EntityDiagnostics::FailReasons;++r) value.failingUnits[r]=b->unitsFailingByReason[r];
             if (b->verbose==1 || b->verbose==2) {
@@ -686,7 +687,7 @@ void verifyCapture(const Game& game, const Handle& handle)
                 || live.size() > entities.relationships.size() - relationshipIndex)
                 throw std::logic_error("snapshot verification: building relationship range differs from the game");
             for (const auto* unit : live)
-                if (entities.relationships[relationshipIndex++] != Game::refOf(unit))
+                if (entities.relationships[relationshipIndex++] != refOf(unit))
                     throw std::logic_error("snapshot verification: building relationship differs from the game");
         };
         for (int t = 0; t < teams; ++t) {
@@ -706,7 +707,7 @@ void verifyCapture(const Game& game, const Handle& handle)
                 if (unitIndex >= entities.units.size() || lookup != unitIndex)
                     throw std::logic_error("snapshot verification: unit count or lookup differs from the game");
                 const auto& unit = entities.units[unitIndex++];
-                if (unit.identity != Game::refOf(live) || unit.team != t)
+                if (unit.identity != refOf(live) || unit.team != t)
                     throw std::logic_error("snapshot verification: unit identity or order differs from the game");
                 if(unit.activeClaimsEnabled!=game.map.activeClaimsEnabled() || unit.activeMaterialClaim!=live->activeMaterialClaim
                     || unit.materialClaimTask!=live->materialClaimTask || unit.materialClaimPolicyState!=live->materialClaimPolicyState)throw std::logic_error("active material claim snapshot mismatch");
@@ -714,7 +715,7 @@ void verifyCapture(const Game& game, const Handle& handle)
                     throw std::logic_error("snapshot verification: unit state differs from the game");
                 if (unit.realAttackStrength != live->getRealAttackStrength())
                     throw std::logic_error("snapshot verification: unit attack strength differs from the game");
-                if (unit.attached != Game::refOf(live->attachedBuilding) || unit.target != Game::refOf(live->targetBuilding))
+                if (unit.attached != refOf(live->attachedBuilding) || unit.target != refOf(live->targetBuilding))
                     throw std::logic_error("snapshot verification: unit building references differ from the game");
             }
             // Deep diagnostic only: audit empty ID lookup entries too.
@@ -728,7 +729,7 @@ void verifyCapture(const Game& game, const Handle& handle)
                 if (buildingIndex >= entities.buildings.size() || lookup != buildingIndex)
                     throw std::logic_error("snapshot verification: building count or lookup differs from the game");
                 const auto& building = entities.buildings[buildingIndex++];
-                if (building.identity != Game::refOf(live) || building.team != t)
+                if (building.identity != refOf(live) || building.team != t)
                     throw std::logic_error("snapshot verification: building identity or order differs from the game");
                 if (static_cast<const BuildingStateRecord&>(building) != static_cast<const BuildingStateRecord&>(*live))
                     throw std::logic_error("snapshot verification: building state differs from the game");

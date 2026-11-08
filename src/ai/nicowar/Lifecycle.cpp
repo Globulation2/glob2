@@ -7,7 +7,6 @@
 #include "FormatableString.h"
 #include <string>
 #include "Utilities.h"
-#include "Game.h"
 #include "Unit.h"
 
 using namespace AISharedRuntime;

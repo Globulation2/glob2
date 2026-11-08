@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <set>
 #include <sstream>
+#include "Game.h"
 using namespace GAGCore;
 namespace
 {

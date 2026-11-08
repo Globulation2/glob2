@@ -1686,6 +1686,14 @@ Kanalaren zabalera
 Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Lur komun lehiatuak
 [Maze]
@@ -1774,6 +1782,8 @@ Eraztun-mundua
 Gerrikoaren zabalera
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Hiri-estatuak
 [Strait width]
@@ -1788,6 +1798,12 @@ Hiri-estatuek gutxienez kolonia bat behar dute.
 Harrizko hormak
 [Sand patches]
 Harea-guneak
+[Cliff walls]
+Labar-harresiak
+[Paved roads]
+Bide zolatuak
+[Scrub patches]
+Gune idorrak
 [Tidal flats]
 Marea-lautadak
 [Everglades]
@@ -1800,6 +1816,12 @@ Putzuen tamaina
 Soilgunearen tamaina
 [Levee]
 Dikea
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Ur-geldiak
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ Marea-putzuak
 Albuferak
 [Central island]
 Erdiko uhartea
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Marea-lautadek gutxienez kolonia bat behar dute.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Jatorrizko uharteak ez dira mapa honetan sartzen; erabili mapa handiagoa, kolonia gutxiago edo uharte txikiagoak.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ Aintziraren ertz hareatsua
 Ibai-delta
 [Meandering rivers]
 Ibai meandrodunak
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruta hasierako haranetan
 [Moat]
@@ -1958,6 +2002,12 @@ Harria fruta-baratzean
 Koloniak bi kostaldeetan
 [Winding belt]
 Gerriko bihurgunetsua
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Gelaxken forma
 [Squares]
@@ -1994,6 +2044,20 @@ Gailurren lodiera
 Mendateen arteko tartea
 [Lee width]
 Haizebearen zabalera
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Oihan zaharra
 [Canals]
@@ -2430,6 +2494,8 @@ Legar-barren tamaina
 Ibi gehigarriak
 [Moraine hummocks]
 Morrena-muinoak
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Txirikordak terraza gutxiegi uzten die etxeei; erabili mapa handiagoa edo txirikorda estuagoa.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ Sabana
 Ur-putzuak
 [Dry patches]
 Eremu lehorrak
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Bakan
 [Normal]
@@ -2616,6 +2688,26 @@ Kono zabala
 Kono luzea
 [Twin springs]
 Iturburu bikiak
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Konoen maldak estuegiak dira etxeentzat; erabili mapa handiagoa, mendilerroen arteko tarte handiagoa, gailur estuagoak edo aintzira gazi txikiagoak.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ Aintziren luzapena
 Basoko pasabidearen lodiera
 [Extra trails]
 Bidezidor gehigarriak
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Mapa honen aldeek 64 eta 512 lauki arteko luzera izan behar dute.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

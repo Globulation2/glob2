@@ -2,7 +2,9 @@
 #pragma once
 #include "GeneratorPackage.h"
 #include "GenerationContext.h"
-#include "Game.h"
+class Game;
+#include "Building.h"
+#include "Team.h"
 #include "GenerationWorld.h"
 #include "Grid.h"
 #include "scripting/javascript/QuickJSOwnership.h"

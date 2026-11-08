@@ -8,6 +8,7 @@
 // team i.
 
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 
 #include <memory>

@@ -32,7 +32,7 @@ guide is warranted.
 | [Continents](continents.md) | `continents` | 44 |
 | [Contested commons](../../src/map/generator/generators/ContestedCommonsGenerator.cpp) | `contested-commons` | 9 |
 | [Coral](coral.md) | `coral` | 21 |
-| [Crater lakes](../../src/map/generator/generators/CraterLakesGenerator.cpp) | `crater-lakes` | 4 |
+| [Crater lakes](crater-lakes.md) | `crater-lakes` | 4 |
 | [Drowned Forest](drowned-forest.md) | `drowned-forest` | 67 |
 | [Drumlin field](drumlin-field.md) | `drumlin-field` | 43 |
 | [Emoji](emoji/design.md) | `emoji` | 34 |
@@ -56,7 +56,7 @@ guide is warranted.
 | [Maze](maze.md) | `maze` | 11 |
 | [Old growth](old-growth.md) | `old-growth` | 28 |
 | [Old islands](../../src/map/generator/generators/RuggedArchipelagoGenerator.cpp) | `rugged-archipelago` | 8 |
-| [Old random](../../src/map/generator/generators/ShatteredCoastGenerator.cpp) | `shattered-coast` | 7 |
+| [Old random](shattered-coast.md) | `shattered-coast` | 7 |
 | [Old town](old-town.md) | `old-town` | 31 |
 | [Orchard Commons](orchard-commons.md) | `orchard-commons` | 58 |
 | [Plantations](plantations.md) | `plantations` | 48 |
@@ -65,12 +65,12 @@ guide is warranted.
 | [Rain shadow](rain-shadow.md) | `rain-shadow` | 27 |
 | [Rice terraces](rice-terraces.md) | `rice-terraces` | 52 |
 | [Ring world](ring-world.md) | `ring-world` | 16 |
-| [River](../../src/map/generator/generators/RiverGenerator.cpp) | `river` | 2 |
+| [River](river.md) | `river` | 2 |
 | [Savannah](savannah.md) | `savannah` | 45 |
 | [Sierpiński Gardens](fractal-maps.md) | `sierpinski-gardens` | 49 |
 | [Spider web](spider-web.md) | `spider-web` | 20 |
 | [Stone highlands](stone-highlands.md) | `stone-highlands` | 14 |
-| [Swamp](../../src/map/generator/generators/SwampGenerator.cpp) | `swamp` | 1 |
+| [Swamp](swamp.md) | `swamp` | 1 |
 | [Switchbacks](switchbacks.md) | `switchbacks` | 24 |
 | [Symmetric arena](symmetric-arena.md) | `symmetric-arena` | 15 |
 | [The Comb](comb.md) | `comb` | 62 |

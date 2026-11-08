@@ -12,6 +12,9 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
+#include "Rock.h"
+#include "Morphology.h"
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
@@ -19,8 +22,10 @@
 #include "Unit.h"
 #include <algorithm>
 #include <array>
+#include <climits>
 #include <cmath>
 #include <cstdint>
+#include <initializer_list>
 #include <limits>
 #include <random>
 #include <string>
@@ -56,6 +61,49 @@ using namespace MapGeneration;
 // tiles deep; about 41 tributaries joining a trunk, springs about 25 tiles apart; channels 3.6
 // tiles in radius at a spring, widening to about 6.6 on the trunk; a ford every 44 tiles of river;
 // uplands turning to sand from 12 to 24 tiles away from water.
+//
+// WATERSHED 2.0 (revision 4): the same river network, drawn with the engine's full terrain palette.
+// The design brief: an aerial photograph of a river basin shows (1) dark, deep water in the sea and down
+// the middle of the trunk and the delta, with paler shallows along every bank; (2) a ribbon of rich,
+// wet levee soil right against each channel, the greenest ground in view, fading through lush meadow
+// to ordinary grass and dry grass as the ground rises away from the water; (3) mudflats where the
+// delta splits and where rivers meet; (4) on the divides between the catchments, bare stony upland
+// beyond any river's reach, broken by knots of rock where the bedrock shows. Keeping every mechanism
+// of revision 3 and its play (the same rivers, fords, starts and kits for the same seed):
+// - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
+//   SAND, WATER, DEEP_WATER, LOAM, SHALE, MUDFLAT, SCREE, RIDGE_ROCK) that every shared helper and
+//   check reads, and paints looks over it with composeLooks (Sketch.h), so looks never change a rule.
+//   The stamp of revision 3 (grass, sand, water, fords) is written and Map::layBeaches must leave it
+//   unchanged, exactly as before; the 2.0 layers then go on top, and the finished terrain must again
+//   be a fixed point of layBeaches: no grass-group vertex ever touches plain water.
+// - Deep water (`deep-water`): the sea's core four steps from land and the wide channels' (the trunk,
+//   the delta and any reach well above a spring's width) three steps from land are deep (deepCore,
+//   Rock.h), opened so no single-vertex holes remain and kept clear of every ford. Swimmable but
+//   slower, no algae, and it waters the land as plain water does; the shallow margins keep the algae,
+//   the beaches and the fords. Swimming the trunk and the sea is slower than in revision 3.
+// - Levees: a band of fertile ground (Fertile, spring meadow, moss or loam by look: buildable crop land
+//   that waters the ground round it at 48/256 of water) from the beach out to kLeveeDeep vertices along
+//   every channel, outside the home gardens. Looks then grade the grass beyond by its distance from
+//   water: lush, grass, dry. The levees' own watering more than repays the row of farmland their edge
+//   costs (a tile between grass and loam corners grows crops but is not buildable): a band two or three
+//   deep lost a quarter of the map's growth potential, five deep gains about 8% (see the docs' food
+//   table), so the river country is a little richer than revision 3, never poorer.
+// - Mudflats where the delta splits and where rivers meet: the river beach there is mudflat (Rough:
+//   slow, unbuildable, holds nothing, and unlike sand it does not inhibit growth), clear of the fords
+//   and the home gardens. The sea's own beaches stay sand, since algae regrow only where sand supports
+//   the shore. (Frayed patches of mud up the bank as well cost 3% of the growth potential.)
+// - Pavement: revision 3's dry uplands were sand; sand stays where it was, but beyond kPaveReach
+//   steps from water, where nothing grows anyway, it is pavement (Barren: walkable and buildable,
+//   holds nothing, inhibits growth exactly as sand does), so the divides become building room and
+//   the food is unchanged.
+// - Outcrops (`outcrops`): knots of rock (Ridges: impassable, towers shoot over) on the crest of the
+//   divides, at least kKnotReach steps from water, broken (never two within kKnotSpacing), each core
+//   at least two tiles thick (rockVertices). Stone-amount sets how many carry a quarry face on their
+//   downhill side (stone on grass, tiles left out of the rock, a ring of grass before them), with
+//   scree skirting the rest. Knots are planned from the request alone, so validateWorld plans them
+//   again: every quarry holds its stone (quarryFault), and no knot parts the ground round it.
+// - A climate, looks only (Temperate, Steppe, Tropical): levee, pavement, sand, deep water, mudflat and
+//   rock looks and how far the grass stays green. Every choice is in telemetry.
 namespace
 {
 
@@ -84,6 +132,65 @@ constexpr int kFordSpacing[5] = {80, 60, 44, 34, 26};
 // Colonies start between these many steps from open water: on the floodplain, not its shore.
 constexpr int kColonyWaterNear = 5, kColonyWaterFar = 11;
 constexpr double kColonySpacing = 14;
+
+// --- 2.0 ----------------------------------------------------------------------------------------
+//
+// Streams of their own, so every draw revision 3 made is the draw it made.
+constexpr const char *kKnotStream = "watershed-knots";
+constexpr const char *kLookStream = "watershed-looks";
+constexpr const char *kClimateStream = "watershed-climate";
+constexpr const char *kMudStream = "watershed-mud";
+// Deep water: sea vertices kDeepSeaSteps four-connected steps from land (opened by kDeepOpen); in the
+// channels, a thread kDeepChannelSteps narrower than the channel's radius round its centre line, only in
+// reaches at least kDeepChannelGain wider than a spring (and the trunk and delta), and never beside
+// land; none within kDeepFordClear tiles of a ford, and only in bodies of kDeepLeast vertices or more,
+// so no lone dark vertex reads as a hole.
+constexpr int kDeepSeaSteps = 4, kDeepChannelSteps = 3, kDeepFordClear = 3, kDeepOpen = 1, kDeepLeast = 12;
+constexpr double kDeepChannelGain = 1.5;
+// A channel's deep thread tapers in and out over this many tiles, and a thread the sea's core does not
+// join keeps at least kDeepThreadLeast vertices.
+constexpr double kDeepTaper = 8;
+constexpr int kDeepThreadLeast = 30;
+// Pavement: old upland sand at least kPaveReach eight-neighbour steps from water, frayed outwards by up
+// to kPaveFray more. Barren pavement inhibits crop growth as sand does, and growth probes reach far, so
+// it never stands where the river's crops could grow; laid on sand only, it changes no growth at all.
+constexpr int kPaveReach = 22, kPaveFray = 3;
+// Levees: grass vertices two to kLeveeDeep (or one more where a noise passes kLeveeWide) steps from
+// water, outside every home garden (kGardenRadius tiles, frayed by kGardenFray, from a home's middle),
+// which stays plain grass for the starting-crop guarantee. Four deep cost 7% of the growth potential,
+// five gain 8% and nine 52% (levees water the land round them), so five keeps the food near revision 3.
+constexpr int kLeveeDeep = 5, kLeveeWide = 40000;
+constexpr double kGardenRadius = 12, kGardenFray = 3;
+// Mudflats: within kDeltaMud tiles of a distributary's banks and kConfluenceMud tiles of a junction,
+// the river beach; never within kMudFordClear tiles of a ford's span, nor in a garden, nor on the sea's
+// own beach (kMudSeaClear steps from the sea), where algae need sand.
+constexpr double kDeltaMud = 7, kConfluenceMud = 9;
+constexpr int kMudFordClear = 4, kMudSeaClear = 4;
+// Outcrops: knot centres on the crest of a divide (a tile no nearer water than any neighbour) at least
+// kKnotReach steps from water, kKnotSpacing apart, kKnotFordClear clear of a ford, one per kTilesPerKnot
+// of map at most. A knot is a wavering lens kKnotHalfLength (plus up to three more) tiles long each
+// way along the crest and four to six tiles thick at its middle; every tile of it must lie
+// kKnotReach - kKnotSlack steps from water. The quarry face is the knot's downhill rim within
+// kFaceHalf tiles of its middle (at least kFaceLeast tiles); faces go on kFaceShare of the knots at the
+// default stone-amount. Scree skirts the rock kTalusInner deep and kTalusOuter where a noise peaks.
+constexpr int kKnotReach = 20, kKnotSlack = 3, kKnotSpacing = 24, kKnotFordClear = 8, kTilesPerKnot = 3500;
+constexpr int kKnotHalfLength = 4, kFaceHalf = 2, kFaceLeast = 4, kTalusInner = 0, kTalusOuter = 2;
+constexpr double kFaceShare = 0.6;
+
+// The look-only climates. lush and green are the steps from water within which the grass is lush and
+// still green; beyond green it is dry.
+struct Climate
+{
+	const char *name;
+	TerrainType levee, leveeSecond, pave, paveSecond, beach, dune, duneSecond, deep, mud, rock;
+	int lush, green;
+};
+constexpr Climate kClimates[3] = {
+	{"temperate", SPRING_MEADOW, MOSS, HEATH, SHALE, PALE_SAND, DUNE_SAND, PALE_SAND, DEEP_WATER, MUDFLAT,
+	 OUTCROP, 9, 15},
+	{"steppe", LOAM, SPRING_MEADOW, WEATHERED_SANDSTONE, DIRT, SAND, DUNE_SAND, WINDY_SAND_DUNE, DEEP_WATER, HARDPAN,
+	 HOODOOS, 7, 10},
+	{"tropical", MOSS, LOAM, LATERITE, CLAY, SAND, DUNE_SAND, SAND, DARK_WATER, MUD, OUTCROP, 11, 18}};
 
 double sq(double v)
 {
@@ -1242,12 +1349,29 @@ std::vector<int> components(const std::vector<unsigned char> &open, int w, int h
 struct Tiles
 {
 	int w = 0, h = 0;
-	std::vector<unsigned char> water, grass, walkable;
-	std::vector<int> waterSteps; // 8-neighbour steps to the nearest water tile
-	std::vector<int> grassDepth; // 8-neighbour steps to the nearest tile that isn't pure grass
+	std::vector<unsigned char> water; // pure plain water: where algae stand
+	std::vector<unsigned char> grass; // crop land: every corner grass or loam (2.0 levees)
+	std::vector<unsigned char> walkable;
+	std::vector<int> waterSteps; // 8-neighbour steps to the nearest tile of water corners, deep or plain
+	std::vector<int> grassDepth; // 8-neighbour steps to the nearest tile that isn't crop land
 	std::vector<int> component;  // walkable component, -1 on impassable ground
 	int mainComponent = -1;
 };
+
+// The tiles whose four corners all hold one of `types` (a mechanic sketch: canonical types only).
+std::vector<unsigned char> tilesOf(const std::vector<unsigned char> &terrain, int w, int h,
+								   std::initializer_list<unsigned char> types)
+{
+	const Torus t{w, h};
+	std::vector<unsigned char> corner(terrain.size(), 0), tiles(terrain.size(), 0);
+	for (size_t i = 0; i < terrain.size(); ++i)
+		corner[i] = std::find(types.begin(), types.end(), terrain[i]) != types.end();
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			tiles[size_t(y) * w + x] = corner[t.at(x, y)] && corner[t.at(x + 1, y)] &&
+									   corner[t.at(x, y + 1)] && corner[t.at(x + 1, y + 1)];
+	return tiles;
+}
 
 Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 {
@@ -1256,9 +1380,9 @@ Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 	t.h = h;
 	const size_t n = size_t(w) * h;
 	t.water = pureTiles(terrain, Torus{w, h}, WATER);
-	t.grass = pureTiles(terrain, Torus{w, h}, GRASS);
+	t.grass = tilesOf(terrain, w, h, {GRASS, LOAM});
 	t.walkable = walkableTiles(terrain, Torus{w, h});
-	t.waterSteps = stepsFrom(Torus{w, h}, t.water);
+	t.waterSteps = stepsFrom(Torus{w, h}, tilesOf(terrain, w, h, {WATER, DEEP_WATER}));
 	std::vector<unsigned char> land(n), notGrass(n);
 	for (size_t i = 0; i < n; ++i)
 	{
@@ -1471,6 +1595,7 @@ class Reservations
 					return false;
 		return true;
 	}
+	void mark(size_t i) { taken[i] = 1; }
 	void reserve(int x, int y, int radius)
 	{
 		const int reach = radius + 1;
@@ -1686,10 +1811,9 @@ void placeStone(GenerationWorld &game, GenerationContext &context, const Tiles &
 }
 
 // Fruit is rare: a small grove in the fertile wedge where two rivers meet, one kind at a time.
-void placeFruit(GenerationWorld &game, GenerationContext &context, const Layout &layout,
-				const Tiles &t, const Fertility::Field &fertility,
-				const std::vector<unsigned char> &keepClear, Reservations &reservations,
-				int fruitPercent)
+void placeFruit(GenerationWorld &game, GenerationContext &context, const Layout &layout, const Tiles &t,
+				const Fertility::Field &fertility, const std::vector<unsigned char> &keepClear,
+				Reservations &reservations, int fruitPercent)
 {
 	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
@@ -1730,8 +1854,8 @@ void placeFruit(GenerationWorld &game, GenerationContext &context, const Layout 
 
 // Algae off every mouth and in the sea's shallows, where there is sand near enough for it to
 // grow back.
-void placeAlgae(GenerationWorld &game, GenerationContext &context, const Layout &layout,
-				const Tiles &t, int algaePercent)
+void placeAlgae(GenerationWorld &game, GenerationContext &context, const Layout &layout, const Tiles &t,
+				int algaePercent)
 {
 	GenerationMap &map = game.map;
 	const int w = t.w, h = t.h;
@@ -1779,6 +1903,585 @@ void placeAlgae(GenerationWorld &game, GenerationContext &context, const Layout 
 	}
 }
 
+
+// ===== 2.0 ======================================================================================
+
+// Tiles within `reach` tiles of any ford's span: the ground a ford's landings need left alone.
+std::vector<unsigned char> fordZone(const Layout &layout, int w, int h, double reach)
+{
+	std::vector<unsigned char> zone(size_t(w) * h, 0);
+	for (const Ford &f : layout.fords)
+	{
+		const int r = int(std::ceil(f.span + kFordHalfWidth + reach)) + 1;
+		const int cx = int(std::floor(f.center.x)), cy = int(std::floor(f.center.y));
+		for (int dy = -r; dy <= r; ++dy)
+			for (int dx = -r; dx <= r; ++dx)
+			{
+				const Vec d{cx + dx + 0.5 - f.center.x, cy + dy + 0.5 - f.center.y};
+				if (std::abs(dot(d, f.along)) <= kFordHalfWidth + reach &&
+					std::abs(dot(d, f.across)) <= f.span + reach)
+					zone[size_t(wrapIndex(cy + dy, h)) * w + wrapIndex(cx + dx, w)] = 1;
+			}
+	}
+	return zone;
+}
+
+// The vertices of the sea: outside both coast ripples in the canonical frame.
+std::vector<unsigned char> seaVertices(const Layout &layout)
+{
+	const Frame &frame = layout.frame;
+	const int w = frame.width, h = frame.height;
+	std::vector<unsigned char> sea(size_t(w) * h, 0);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const Vec c = frame.toCanonical({double(x), double(y)});
+			sea[size_t(y) * w + x] = c.y < layout.north.at(c.x) || c.y > layout.south.at(c.x);
+		}
+	return sea;
+}
+
+// The outcrops on the divides, planned from the stamped terrain and the request alone, so
+// validateWorld can plan them again. Tile masks.
+struct Knots
+{
+	std::vector<unsigned char> body;   // every knot tile: rock and quarry
+	std::vector<unsigned char> rock;   // the tiles drawn as rock (rockVertices)
+	std::vector<unsigned char> quarry; // quarry faces: stone on grass, left out of the rock
+	std::vector<int> owner;            // -1 everywhere: faces belong to no colony
+	std::vector<int> id;               // the knot a body tile belongs to, -1 elsewhere
+	int knots = 0, faces = 0, dropped = 0, wanted = 0;
+};
+
+// Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
+std::vector<unsigned char> blocksOfTwo(const Torus &t, const std::vector<unsigned char> &mask)
+{
+	std::vector<unsigned char> out(mask.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			if (mask[t.at(x, y)] && mask[t.at(x + 1, y)] && mask[t.at(x, y + 1)] && mask[t.at(x + 1, y + 1)])
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = 0; dx <= 1; ++dx)
+						out[t.at(x + dx, y + dy)] = 1;
+	return out;
+}
+
+// The tiles a body of rock tiles blocks: two or more rock corners, as the engine derives a tile.
+std::vector<unsigned char> rockBlocked(const Torus &t, const std::vector<unsigned char> &rockTiles)
+{
+	const std::vector<unsigned char> v = rockVertices(t, rockTiles);
+	std::vector<unsigned char> blocked(v.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			blocked[t.at(x, y)] = v[t.at(x, y)] + v[t.at(x + 1, y)] + v[t.at(x, y + 1)] + v[t.at(x + 1, y + 1)] >= 2;
+	return blocked;
+}
+
+// Whether some blocked group of `blocked` (8-connected) parts the ground round it: the open tiles
+// beside it fall in more than one walkable component, so the group cut some ground off. Returns the
+// first such group's label, or -1; `label` receives the groups.
+int partingGroup(const Torus &t, const std::vector<unsigned char> &walkable,
+				 const std::vector<unsigned char> &blocked, std::vector<int> &label)
+{
+	const int n = t.size();
+	std::vector<unsigned char> open(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		open[i] = walkable[i] && !blocked[i];
+	const std::vector<int> component = connectedRegions(open, t.w, t.h, true, GridNeighbors::Eight);
+	label = connectedRegions(blocked, t.w, t.h, true, GridNeighbors::Eight);
+	int groups = 0;
+	for (int l : label)
+		groups = std::max(groups, l + 1);
+	std::vector<int> seen(size_t(groups), -1);
+	for (int i = 0; i < n; ++i)
+	{
+		if (label[i] < 0)
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (!open[j])
+					continue;
+				if (seen[label[i]] < 0)
+					seen[label[i]] = component[j];
+				else if (seen[label[i]] != component[j])
+					return label[i];
+			}
+	}
+	return -1;
+}
+
+Knots planKnots(const Layout &layout, const std::vector<unsigned char> &stamp, const WatershedOptions &o,
+				GenerationContext &context)
+{
+	const int w = layout.frame.width, h = layout.frame.height, n = w * h;
+	const Torus t{w, h};
+	Knots k;
+	k.body.assign(size_t(n), 0);
+	k.rock.assign(size_t(n), 0);
+	k.quarry.assign(size_t(n), 0);
+	k.owner.assign(size_t(n), -1);
+	k.id.assign(size_t(n), -1);
+	if (!o.outcrops)
+		return k;
+	const std::vector<int> steps = stepsFrom(t, pureTiles(stamp, t, WATER));
+	const std::vector<unsigned char> walk = walkableTiles(stamp, t);
+	const std::vector<unsigned char> fords = fordZone(layout, w, h, kKnotFordClear);
+	std::vector<int> candidates;
+	for (int i = 0; i < n; ++i)
+	{
+		const int s = steps[i];
+		if (s < kKnotReach || !walk[i] || fords[i])
+			continue;
+		const int x = t.remainderX(i), y = i / w;
+		// On the crest: no neighbour further from water.
+		bool crest = true;
+		for (int dy = -1; dy <= 1 && crest; ++dy)
+			for (int dx = -1; dx <= 1 && crest; ++dx)
+				crest = steps[t.at(x + dx, y + dy)] <= s;
+		if (crest)
+			candidates.push_back(i);
+	}
+	context.shuffle(candidates.begin(), candidates.end(), kKnotStream);
+	k.wanted = std::max(1, n / kTilesPerKnot);
+	struct Placed
+	{
+		int centre;
+		std::vector<int> tiles;
+		Vec downhill;
+	};
+	std::vector<Placed> placed;
+	std::vector<unsigned char> taken(size_t(n), 0);
+	for (int c : candidates)
+	{
+		if (int(placed.size()) >= k.wanted)
+			break;
+		const int cx = t.remainderX(c), cy = c / w;
+		bool apart = true;
+		for (const Placed &p : placed)
+			apart = apart && t.dist2(cx, cy, t.remainderX(p.centre), p.centre / w) >= kKnotSpacing * kKnotSpacing;
+		if (!apart)
+			continue;
+		// Along the crest: of eight headings, the one whose line through the centre stays highest
+		// (furthest from water); downhill is the lower side across it, where the colonies come from.
+		const auto stepsAt = [&](Vec d) { return steps[t.at(cx + int(std::lround(d.x)), cy + int(std::lround(d.y)))]; };
+		Vec along{1, 0};
+		int best = -1;
+		const int turn = int(context.bounded(kKnotStream, 8));
+		for (int k8 = 0; k8 < 8; ++k8)
+		{
+			const double a = (k8 + turn) % 8 * kPi / 8;
+			const Vec dir{std::cos(a), std::sin(a)};
+			int sum = 0;
+			for (double r : {-6.0, -3.0, 3.0, 6.0})
+				sum += stepsAt(dir * r);
+			if (sum > best)
+			{
+				best = sum;
+				along = dir;
+			}
+		}
+		const Vec across{-along.y, along.x};
+		const int lower = stepsAt(across * 4.0) + stepsAt(across * 7.0) - stepsAt(across * -4.0) - stepsAt(across * -7.0);
+		const Vec downhill = lower < 0 || (lower == 0 && context.bounded(kKnotStream, 2)) ? across : across * -1.0;
+		// A lens kKnotHalfLength to kKnotHalfLength + 3 tiles each way along the crest, 2.2 to 3.2 tiles
+		// thick each way at its middle, its sides wavering by up to 0.7 of a tile.
+		const double half = kKnotHalfLength + context.bounded(kKnotStream, 4);
+		const double thick = 2.2 + context.bounded(kKnotStream, 11) / 10.0;
+		const double phase = context.bounded(kKnotStream, 628) / 100.0;
+		std::vector<unsigned char> local(size_t(n), 0);
+		std::vector<int> tiles;
+		bool fits = true;
+		const int box = int(half) + 3;
+		for (int dy = -box; dy <= box && fits; ++dy)
+			for (int dx = -box; dx <= box && fits; ++dx)
+			{
+				const Vec d{double(dx), double(dy)};
+				const double a = dot(d, along), b = dot(d, across);
+				if (std::abs(a) > half + 0.5)
+					continue;
+				const double reach = thick * std::sqrt(std::max(0.0, 1 - sq(a / (half + 1)))) +
+									 0.7 * std::sin(0.9 * a + phase) * (b > 0 ? 1 : -1) * 0.5 + 0.35;
+				if (std::abs(b) > reach)
+					continue;
+				const int i = t.at(cx + dx, cy + dy);
+				if (!walk[i] || steps[i] < kKnotReach - kKnotSlack || fords[i] || taken[i])
+					fits = false;
+				local[i] = 1;
+				tiles.push_back(i);
+			}
+		if (!fits)
+			continue;
+		std::vector<int> kept;
+		{
+			const std::vector<unsigned char> blocks = blocksOfTwo(t, local);
+			for (int i : tiles)
+				if (blocks[i])
+					kept.push_back(i);
+		}
+		if (kept.size() < 8)
+			continue;
+		for (int i : kept)
+			for (int dy = -4; dy <= 4; ++dy)
+				for (int dx = -4; dx <= 4; ++dx)
+					taken[t.at(t.remainderX(i) + dx, i / w + dy)] = 1;
+		placed.push_back({c, kept, downhill});
+	}
+	// Quarry faces on the first share of the knots by stone-amount, then rock, then a parting check:
+	// a knot whose rock (and stone) parts the ground round it is dropped, and the check runs again.
+	const int faceQuota = int(std::min<std::int64_t>(
+		std::int64_t(placed.size()), scaledCount(int(std::lround(placed.size() * kFaceShare)), o.stone)));
+	std::vector<unsigned char> alive(placed.size(), 1);
+	std::vector<std::vector<int>> faces(placed.size());
+	for (size_t q = 0; q < placed.size(); ++q)
+	{
+		if (int(q) >= faceQuota)
+			continue;
+		const Placed &p = placed[q];
+		std::vector<unsigned char> local(size_t(n), 0);
+		for (int i : p.tiles)
+			local[i] = 1;
+		const int cx = t.remainderX(p.centre), cy = p.centre / w;
+		const Vec along{p.downhill.y, -p.downhill.x};
+		std::vector<int> face;
+		for (int i : p.tiles)
+		{
+			const Vec d{double(t.offsetX(cx, t.remainderX(i))), double(t.offsetY(cy, i / w))};
+			if (dot(d, p.downhill) < 0.5 || std::abs(dot(d, along)) > kFaceHalf + 0.5)
+				continue;
+			// On the rim: a tile beside it is open ground.
+			bool rim = false;
+			for (const auto &step : kCardinalSteps)
+				rim = rim || !local[t.at(t.remainderX(i) + step[0], i / w + step[1])];
+			if (rim)
+				face.push_back(i);
+		}
+		// The rock behind the face must still stand two tiles thick.
+		std::vector<unsigned char> rest = local;
+		for (int i : face)
+			rest[i] = 0;
+		const std::vector<unsigned char> blocks = blocksOfTwo(t, rest);
+		int rockLeft = 0;
+		for (int i : p.tiles)
+			rockLeft += blocks[i];
+		if (int(face.size()) >= kFaceLeast && rockLeft >= 6)
+			faces[q] = face;
+	}
+	for (int round = 0; round < int(placed.size()) + 1; ++round)
+	{
+		std::fill(k.body.begin(), k.body.end(), 0);
+		std::fill(k.rock.begin(), k.rock.end(), 0);
+		std::fill(k.quarry.begin(), k.quarry.end(), 0);
+		std::fill(k.id.begin(), k.id.end(), -1);
+		for (size_t q = 0; q < placed.size(); ++q)
+		{
+			if (!alive[q])
+				continue;
+			std::vector<unsigned char> local(size_t(n), 0);
+			for (int i : placed[q].tiles)
+				local[i] = 1;
+			for (int i : faces[q])
+				local[i] = 0;
+			const std::vector<unsigned char> blocks = blocksOfTwo(t, local);
+			for (int i : placed[q].tiles)
+				if (blocks[i])
+				{
+					k.rock[i] = 1;
+					k.body[i] = 1;
+					k.id[i] = int(q);
+				}
+			for (int i : faces[q])
+			{
+				k.quarry[i] = 1;
+				k.body[i] = 1;
+				k.id[i] = int(q);
+			}
+		}
+		std::vector<unsigned char> blocked = rockBlocked(t, k.rock);
+		for (int i = 0; i < n; ++i)
+			blocked[i] = blocked[i] || k.quarry[i];
+		std::vector<int> label;
+		const int parting = partingGroup(t, walk, blocked, label);
+		if (parting < 0)
+			break;
+		for (int i = 0; i < n; ++i)
+			if (label[i] == parting && k.id[i] >= 0)
+				alive[size_t(k.id[i])] = 0;
+		++k.dropped;
+	}
+	for (size_t q = 0; q < placed.size(); ++q)
+		if (alive[q])
+		{
+			++k.knots;
+			k.faces += !faces[q].empty();
+		}
+	return k;
+}
+
+// How many vertices each 2.0 layer took.
+struct LayerCounts
+{
+	int pave = 0, rock = 0, scree = 0, deep = 0, deepSea = 0, levee = 0, mud = 0;
+};
+
+// The mechanic sketch's 2.0 layers that need nothing but the plan: pavement on the far uplands, the
+// knots' rock with grass round them and scree, and the deep cores.
+void paintPlanLayers(std::vector<unsigned char> &mech, const Layout &layout, const Knots &knots,
+					 const WatershedOptions &o, GenerationContext &context, LayerCounts &counts)
+{
+	const int w = layout.frame.width, h = layout.frame.height, n = w * h;
+	const Torus t{w, h};
+	std::vector<unsigned char> waterVertex(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		waterVertex[i] = mech[i] == WATER;
+	const std::vector<int> fromWater = stepsFrom(t, waterVertex);
+	std::mt19937 &random = context.stream(kLookStream);
+	const std::vector<int> fray = periodicNoise(w, h, 7, random);
+	// Before every quarry face the ground is grass, so the face and its approach have grass corners:
+	// exactly those corners and no more, since grass in the pavement shows as dry grass (a disc of 2.5
+	// tiles round every face drew olive patches across the grey uplands).
+	std::vector<unsigned char> approached = quarryApproach(t, knots.quarry);
+	for (int i = 0; i < n; ++i)
+		approached[i] = approached[i] || knots.quarry[i];
+	const std::vector<unsigned char> halo = tileCorners(t, approached);
+	for (int i = 0; i < n; ++i)
+	{
+		if (mech[i] != SAND || halo[i] || fromWater[i] < 0)
+			continue;
+		if (fromWater[i] >= kPaveReach + kPaveFray * (65535 - fray[i]) / 65536)
+		{
+			mech[i] = SHALE;
+			++counts.pave;
+		}
+	}
+	for (int i = 0; i < n; ++i)
+		if (halo[i] && mech[i] == SAND)
+			mech[i] = GRASS;
+	if (knots.knots > 0)
+	{
+		std::vector<unsigned char> eligible(size_t(n), 0);
+		const std::vector<unsigned char> nearFace = dilate(t, knots.quarry, 2);
+		for (int i = 0; i < n; ++i)
+			eligible[i] = !knots.body[i] && !nearFace[i];
+		const std::vector<unsigned char> talus =
+			talusApron(t, knots.rock, eligible, fray, kTalusInner, kTalusOuter, 30000);
+		for (int i = 0; i < n; ++i)
+			if (talus[i] && (mech[i] == GRASS || mech[i] == SAND || mech[i] == SHALE))
+			{
+				mech[i] = SCREE;
+				++counts.scree;
+			}
+		const std::vector<unsigned char> rock = rockVertices(t, knots.rock);
+		for (int i = 0; i < n; ++i)
+			if (rock[i])
+			{
+				mech[i] = RIDGE_ROCK;
+				++counts.rock;
+			}
+	}
+	if (!o.deepWater)
+		return;
+	// The sea's core, and the wide channels' core.
+	const std::vector<unsigned char> sea = seaVertices(layout);
+	std::vector<unsigned char> wide(size_t(n), 0);
+	const double springRadius = channelRadius(o.riverWidth);
+	for (int r = 0; r < int(layout.reaches.size()); ++r)
+	{
+		const Reach &reach = layout.reaches[r];
+		const bool big = reach.distributary || r == layout.trunk;
+		const size_t count = reach.points.size();
+		// The points where the thread runs, and how far each lies along the run from its nearer end, so
+		// the thread tapers in and out over kDeepTaper tiles rather than starting and stopping in round
+		// caps (short runs read as dark pills in the channel).
+		std::vector<unsigned char> runs(count, 0);
+		for (size_t i = 0; i < count; ++i)
+			runs[i] = (big || reach.radius[i] >= springRadius + kDeepChannelGain) &&
+					  reach.radius[i] - kDeepChannelSteps >= 0.75;
+		std::vector<int> fromEnd(count, 0);
+		for (size_t i = 0, run = 0; i < count; ++i)
+			fromEnd[i] = int(run = runs[i] ? run + 1 : 0);
+		for (size_t i = count, run = 0; i-- > 0;)
+			fromEnd[i] = std::min(fromEnd[i], int(run = runs[i] ? run + 1 : 0));
+		for (size_t i = 0; i < count; ++i)
+		{
+			if (!runs[i])
+				continue;
+			const Vec c = reach.points[i];
+			// The thread down the middle of the channel: its radius less the shallow margin, so the deep
+			// water follows the river's bends smoothly rather than in boxes an opening leaves.
+			const double radius = std::min(reach.radius[i] - kDeepChannelSteps,
+										   0.25 + (fromEnd[i] - 1) * kSpacing * (reach.radius[i] - kDeepChannelSteps) / kDeepTaper);
+			if (radius < 0.75)
+				continue;
+			for (int y = int(std::floor(c.y - radius)); y <= int(std::ceil(c.y + radius)); ++y)
+				for (int x = int(std::floor(c.x - radius)); x <= int(std::ceil(c.x + radius)); ++x)
+					if (sq(x - c.x) + sq(y - c.y) <= radius * radius)
+						wide[t.at(x, y)] = 1;
+		}
+	}
+	const std::vector<unsigned char> seaCore = deepCore(t, waterVertex, kDeepSeaSteps);
+	const std::vector<unsigned char> channelCore = deepCore(t, waterVertex, 2);
+	const std::vector<unsigned char> fords = fordZone(layout, w, h, kDeepFordClear);
+	std::vector<unsigned char> core(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		core[i] = !fords[i] && sea[i] && seaCore[i];
+	const std::vector<unsigned char> grown = dilateRound(t, erode(t, core, kDeepOpen), kDeepOpen);
+	for (int i = 0; i < n; ++i)
+		core[i] = (core[i] && grown[i]) || (!fords[i] && !sea[i] && wide[i] && channelCore[i]);
+	core = dropSmallRegions(t, core, kDeepLeast);
+	{
+		// A body of the channels' deep water that the sea's core does not join must be a thread, not a
+		// speck: kDeepThreadLeast vertices or more.
+		const std::vector<int> body = connectedRegions(core, w, h, true, GridNeighbors::Cardinal);
+		std::vector<int> size, seaward;
+		for (int i = 0; i < n; ++i)
+			if (body[i] >= 0)
+			{
+				if (body[i] >= int(size.size()))
+				{
+					size.resize(size_t(body[i]) + 1, 0);
+					seaward.resize(size_t(body[i]) + 1, 0);
+				}
+				++size[size_t(body[i])];
+				seaward[size_t(body[i])] |= sea[i];
+			}
+		for (int i = 0; i < n; ++i)
+			if (body[i] >= 0 && !seaward[size_t(body[i])] && size[size_t(body[i])] < kDeepThreadLeast)
+				core[i] = 0;
+	}
+	for (int i = 0; i < n; ++i)
+		if (core[i])
+		{
+			mech[i] = DEEP_WATER;
+			++counts.deep;
+			counts.deepSea += sea[i];
+		}
+}
+
+// The home gardens: within kGardenRadius (frayed) of a home's middle, plain grass for the starting crops.
+std::vector<unsigned char> gardens(const std::vector<MapGeneratorPoint> &sites, int w, int h,
+								   const std::vector<int> &fray)
+{
+	const Torus t{w, h};
+	std::vector<unsigned char> garden(size_t(w) * h, 0);
+	const int reach = int(kGardenRadius + kGardenFray) + 1;
+	for (const auto &site : sites)
+		for (int dy = -reach; dy <= reach; ++dy)
+			for (int dx = -reach; dx <= reach; ++dx)
+			{
+				const int i = t.at(site.x + 2 + dx, site.y + 2 + dy);
+				const double r = kGardenRadius + kGardenFray * (fray[i] - 32768) / 32768.0;
+				if (dx * dx + dy * dy <= r * r)
+					garden[i] = 1;
+			}
+	return garden;
+}
+
+// The layers that keep clear of the homes: mudflats where the delta splits and rivers meet, then the
+// levees along every channel.
+void paintBankLayers(std::vector<unsigned char> &mech, const Layout &layout,
+					 const std::vector<unsigned char> &garden, GenerationContext &context, LayerCounts &counts)
+{
+	const int w = layout.frame.width, h = layout.frame.height, n = w * h;
+	const Torus t{w, h};
+	std::vector<unsigned char> wet(size_t(n), 0), seaWater(size_t(n), 0);
+	const std::vector<unsigned char> sea = seaVertices(layout);
+	for (int i = 0; i < n; ++i)
+	{
+		wet[i] = mech[i] == WATER || mech[i] == DEEP_WATER;
+		seaWater[i] = wet[i] && sea[i];
+	}
+	const std::vector<int> fromWet = stepsFrom(t, wet), fromSea = stepsFrom(t, seaWater);
+	std::mt19937 &random = context.stream(kMudStream);
+	const std::vector<int> width = periodicNoise(w, h, 9, random);
+	const std::vector<unsigned char> fords = fordZone(layout, w, h, kMudFordClear);
+	// The mud zone: round the delta's channels and every junction.
+	std::vector<unsigned char> zone(size_t(n), 0);
+	const auto disc = [&](Vec c, double radius)
+	{
+		for (int y = int(std::floor(c.y - radius)); y <= int(std::ceil(c.y + radius)); ++y)
+			for (int x = int(std::floor(c.x - radius)); x <= int(std::ceil(c.x + radius)); ++x)
+				if (sq(x - c.x) + sq(y - c.y) <= radius * radius)
+					zone[t.at(x, y)] = 1;
+	};
+	for (const Reach &reach : layout.reaches)
+		if (reach.distributary)
+			for (size_t i = 0; i < reach.points.size(); i += 2)
+				disc(reach.points[i], reach.radius[i] + kDeltaMud);
+	for (Vec j : layout.junctions)
+		disc(j, kConfluenceMud);
+	for (int i = 0; i < n; ++i)
+	{
+		if (!zone[i] || garden[i] || fords[i] || mech[i] != SAND || fromWet[i] != 1 ||
+			(fromSea[i] >= 0 && fromSea[i] <= kMudSeaClear))
+			continue;
+		mech[i] = MUDFLAT;
+		++counts.mud;
+	}
+	for (int i = 0; i < n; ++i)
+		if (mech[i] == GRASS && !garden[i] && fromWet[i] >= 2 &&
+			fromWet[i] <= kLeveeDeep + (width[i] > kLeveeWide ? 1 : 0))
+		{
+			mech[i] = LOAM;
+			++counts.levee;
+		}
+}
+
+// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
+TerrainSketch lookSketch(const std::vector<unsigned char> &mech, int w, int h, const Climate &climate,
+						 const std::vector<unsigned char> &garden, GenerationContext &context)
+{
+	const int n = w * h;
+	const Torus t{w, h};
+	std::vector<unsigned char> wet(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+		wet[i] = mech[i] == WATER || mech[i] == DEEP_WATER;
+	const std::vector<int> fromWet = stepsFrom(t, wet);
+	std::mt19937 &random = context.stream(kLookStream);
+	const std::vector<int> fray = periodicNoise(w, h, 9, random);
+	const std::vector<int> split = fractalNoise(w, h, 16, 3, random);
+	TerrainSketch looks(size_t(n), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const double shift = 3.0 * (fray[i] - 32768) / 32768.0;
+		const bool second = split[i] > 0.62 * 65536;
+		switch (mech[i])
+		{
+		case GRASS:
+			if (garden[i])
+				break;
+			if (fromWet[i] <= climate.lush + shift)
+				looks[i] = LUSH_GRASS;
+			else if (fromWet[i] > climate.green + shift)
+				looks[i] = DRY_GRASS;
+			break;
+		case LOAM:
+			looks[i] = second ? climate.leveeSecond : climate.levee;
+			break;
+		case SAND:
+			looks[i] = fromWet[i] <= 2 ? climate.beach : second ? climate.duneSecond : climate.dune;
+			break;
+		case SHALE:
+			looks[i] = second ? climate.paveSecond : climate.pave;
+			break;
+		case DEEP_WATER:
+			looks[i] = climate.deep;
+			break;
+		case MUDFLAT:
+			looks[i] = climate.mud;
+			break;
+		case RIDGE_ROCK:
+			looks[i] = climate.rock;
+			break;
+		default:
+			break;
+		}
+	}
+	return looks;
+}
+
 bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "watershed layout";
@@ -1807,13 +2510,62 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			}
 
 	context.stage = "watershed colonies";
-	const Tiles tiles = tileView(terrain, w, h);
-	const std::vector<int> regions = bankRegions(layout, tiles);
-	const Fertility::Field fertility = Fertility::forMap(map, false);
+	const Tiles stampedView = tileView(terrain, w, h);
+	const std::vector<int> regions = bankRegions(layout, stampedView);
 	const std::vector<MapGeneratorPoint> sites =
-		chooseSites(layout, tiles, regions, fertility, teams, context, context.detail);
+		chooseSites(layout, stampedView, regions, Fertility::forMap(map, false), teams, context, context.detail);
 	if (int(sites.size()) != teams)
 		return false;
+
+	// 2.0: the mechanic sketch's new layers over the stamp, the looks over them, and the finished
+	// terrain a fixed point of Map::layBeaches as the stamp was.
+	context.stage = "watershed 2.0 terrain";
+	const Torus t{w, h};
+	const Knots knots = planKnots(layout, terrain, o, context);
+	std::vector<unsigned char> mech = terrain;
+	LayerCounts counts;
+	paintPlanLayers(mech, layout, knots, o, context, counts);
+	const std::vector<unsigned char> garden =
+		gardens(sites, w, h, periodicNoise(w, h, 9, context.stream(kLookStream)));
+	paintBankLayers(mech, layout, garden, context, counts);
+	const int climateIndex =
+		o.climate > 0 ? std::clamp(o.climate, 1, 3) - 1 : int(context.bounded(kClimateStream, 3));
+	const Climate &climate = kClimates[climateIndex];
+	const TerrainSketch finished = composeLooks(mech, lookSketch(mech, w, h, climate, garden, context));
+	writeVertices(map, finished);
+	map.layBeaches();
+	for (int i = 0; i < w * h; ++i)
+		if (map.vertexTerrainAt(t.remainderX(i), i / w) != finished[i])
+		{
+			context.detail = "Map::layBeaches changed the finished shoreline";
+			return false;
+		}
+	context.telemetry.choice("watershed.climate", climate.name);
+	context.telemetry.choice("watershed.deep-water", o.deepWater ? "on" : "off");
+	context.telemetry.measure("watershed.deep.vertices", counts.deep);
+	context.telemetry.measure("watershed.deep.sea-vertices", counts.deepSea);
+	context.telemetry.measure("watershed.pavement.vertices", counts.pave);
+	context.telemetry.measure("watershed.levee.vertices", counts.levee);
+	context.telemetry.measure("watershed.mudflat.vertices", counts.mud);
+	context.telemetry.measure("watershed.scree.vertices", counts.scree);
+	context.telemetry.measure("watershed.rock.vertices", counts.rock);
+	context.telemetry.measure("watershed.knots.wanted", knots.wanted);
+	context.telemetry.measure("watershed.knots.placed", knots.knots);
+	context.telemetry.measure("watershed.knots.faces", knots.faces);
+	context.telemetry.measure("watershed.knots.dropped", knots.dropped);
+
+	// The quarry faces go down before the colonies, so nothing lands on their stone.
+	int quarryStone = 0;
+	for (int i = 0; i < w * h; ++i)
+		if (knots.quarry[i] && map.isResourceAllowed(t.remainderX(i), i / w, STONE))
+		{
+			map.setResourceByIndex(t.remainderX(i), i / w, STONE, 1);
+			++quarryStone;
+		}
+	context.telemetry.measure("watershed.quarry.stone", quarryStone);
+
+	const Tiles tiles = tileView(mech, w, h);
+	const Fertility::Field fertility = Fertility::forMap(map, false);
 	for (int team = 0; team < teams; ++team)
 		game.addTeam();
 	const auto floodplain = [&](int team)
@@ -1848,22 +2600,67 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			for (int dx = -3; dx <= 6; ++dx)
 				keepClear[size_t(wrapIndex(context.bootY[team] + dy, h)) * w +
 						  wrapIndex(context.bootX[team] + dx, w)] = 1;
+	// The ground before every quarry face stays open.
+	const std::vector<unsigned char> approach = quarryApproach(t, knots.quarry);
+	for (int i = 0; i < w * h; ++i)
+		keepClear[i] = keepClear[i] || (approach[i] && !knots.body[i]);
 	Reservations reservations(w, h);
+	{
+		const std::vector<unsigned char> busy = dilate(t, knots.body, 1);
+		for (int i = 0; i < w * h; ++i)
+			if (busy[i] || approach[i])
+				reservations.mark(size_t(i));
+	}
 	placeStarterKits(game, context, teams, tiles, fertility, reservations);
 	placeFruit(game, context, layout, tiles, fertility, keepClear, reservations, o.fruit);
 	placeStone(game, context, tiles, keepClear, reservations, o.stone);
 	placeFarmland(game, context, tiles, fertility, keepClear, reservations, o);
 	placeAlgae(game, context, layout, tiles, o.algae);
-	clearDeposits(map, Torus{w, h}, keepClear);
+	clearDeposits(map, t, keepClear, &knots.quarry);
 	context.stage = "watershed connectivity";
-	if (connectColonies(map, teams, nullptr, context.detail) < 0)
+	if (connectColonies(map, teams, &knots.quarry, context.detail) < 0)
 		return false;
 	// Opening a route can clear part of a starter kit, so the kits are topped up afterwards - held
 	// to the kit's own distance rather than the shared defaults, so a colony whose kit could not be
 	// placed still gets wheat and wood as near as its rivals do - and the routes checked once more
 	// in case a top-up closed one.
-	guaranteeStartingResources(game, context, 16, 16);
-	return connectColonies(map, teams, nullptr, context.detail) >= 0;
+	guaranteeStartingResources(game, context, 16, 16, 0, &knots.quarry);
+	if (connectColonies(map, teams, &knots.quarry, context.detail) < 0)
+		return false;
+	if (context.telemetry.enabled())
+	{
+		// How far each colony walks to the nearest quarry face: the fairness of the outcrops' stone,
+		// measured on the finished map (-1 when none can be reached).
+		const std::vector<unsigned char> walkable = walkableTiles(map);
+		int least = INT_MAX, most = -1;
+		for (int team = 0; team < teams; ++team)
+		{
+			std::vector<unsigned char> swarm(size_t(w) * h, 0);
+			for (int dy = 0; dy < 4; ++dy)
+				for (int dx = 0; dx < 4; ++dx)
+					swarm[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+			const std::vector<int> steps = stepsFrom(t, swarm, walkable);
+			int nearest = INT_MAX;
+			for (int i = 0; i < w * h; ++i)
+			{
+				if (!knots.quarry[i])
+					continue;
+				for (const auto &step : kCardinalSteps)
+				{
+					const int s = steps[t.at(t.remainderX(i) + step[0], i / w + step[1])];
+					if (s >= 0)
+						nearest = std::min(nearest, s + 1);
+				}
+			}
+			const int walk = nearest == INT_MAX ? -1 : nearest;
+			context.telemetry.measure("watershed.quarry.nearest-walk", walk, team);
+			least = std::min(least, walk);
+			most = std::max(most, walk);
+		}
+		if (teams > 0 && least >= 0)
+			context.telemetry.measure("watershed.quarry.nearest-walk-spread", most - least);
+	}
+	return true;
 }
 
 std::string validate(const GenerationRequest &r)
@@ -1880,10 +2677,13 @@ std::string validate(const GenerationRequest &r)
 // stand beside wheat and wood that way. The layout is planned again from the request to find the
 // fords and channels: every ford must interrupt a real channel, be open from bank to bank and have
 // walkable land at both ends, and every channel must keep its core of open water everywhere else.
+// Water there is a tile of water corners, deep or plain. The outcrops are planned again too: every
+// quarry face holds its stone, and no knot of rock parts the walkable ground round it.
 std::string validateWorld(const GenerationWorld &game, const GenerationContext &context)
 {
 	const GenerationMap &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
+	const Torus t(map);
 	const auto workers = unitTilesByTeam(map, teams);
 	for (int team = 0; team < teams; ++team)
 		if (workers[team].empty())
@@ -1907,7 +2707,13 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const WatershedOptions o(context.request);
 	GenerationContext replay(context.request);
 	const Layout layout = planLayout(w, h, o, replay);
-	const auto water = [&](int x, int y) { return map.isWater(x, y); };
+	const auto wet = [&](int x, int y)
+	{
+		const TerrainType v = map.vertexTerrainAt(t.x(x), t.y(y));
+		return terrainGroup(v) == TerrainGroup::Water || terrainGroup(v) == TerrainGroup::DeepWater;
+	};
+	const auto water = [&](int x, int y)
+	{ return wet(x, y) && wet(x + 1, y) && wet(x, y + 1) && wet(x + 1, y + 1); };
 	std::string error = checkFords(layout, water);
 	if (!error.empty())
 		return error;
@@ -1920,14 +2726,50 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 				return "A ford at (" + std::to_string(map.normalizeX(int(f.center.x))) + ", " +
 					   std::to_string(map.normalizeY(int(f.center.y))) +
 					   ") has no walkable land on one bank.";
-	return checkChannels(layout, water);
+	error = checkChannels(layout, water);
+	if (!error.empty())
+		return error;
+
+	// The outcrops: every quarry face keeps its stone.
+	const std::vector<unsigned char> stamp = stampTerrain(layout, o, replay);
+	const Knots knots = planKnots(layout, stamp, o, replay);
+	if (const std::string fault = quarryFault(map, t, knots.quarry, knots.owner, teams, 0); !fault.empty())
+		return fault;
+	// No knot of rock (blocked tiles with a ridges corner) parts the walkable ground round it into more
+	// than one piece. A quarry tile's stone never runs out, so it blocks as the rock does, as planKnots
+	// counted it.
+	std::vector<unsigned char> walkable(size_t(w) * h, 0), rock(size_t(w) * h, 0);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const int i = t.at(x, y);
+			walkable[i] = map.terrainPropertiesAt(x, y).walkable;
+			bool ridges = false;
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+					ridges = ridges || terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy))) == TerrainGroup::Ridges;
+			rock[i] = ridges && !walkable[i] && !map.terrainPropertiesAt(x, y).swimmable;
+			if (knots.quarry[i] && permanentResourceBarrier(map, size_t(i)))
+			{
+				rock[i] = 1;
+				walkable[i] = 0;
+			}
+		}
+	std::vector<int> label;
+	if (const int parting = partingGroup(t, walkable, rock, label); parting >= 0)
+		for (int i = 0; i < w * h; ++i)
+			if (label[i] == parting)
+				return "A knot of rock at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / w) +
+					   ") cuts ground off.";
+	return "";
 }
 } // namespace
 
 WatershedOptions::WatershedOptions(const GenerationRequest &r)
 	: riverDensity(r.option("river-density")), riverWidth(r.option("river-width")),
 	  dryness(r.option("dryness")), fords(r.option("fords")), delta(r.option("river-delta") != 0),
-	  meanders(r.option("meanders") != 0), wheat(r.option("wheat-amount")),
+	  meanders(r.option("meanders") != 0), deepWater(r.option("deep-water") != 0),
+	  outcrops(r.option("outcrops") != 0), climate(r.option("climate")), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -1939,7 +2781,7 @@ GeneratorDefinition watershedDefinition()
 		"watershed",
 		13,
 		"Watershed",
-		3,
+		4,
 		false,
 		{// Springs per area of land; each one that finds its way to the network is a tributary.
 		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}
@@ -1950,6 +2792,7 @@ GeneratorDefinition watershedDefinition()
 			 .withSearchRange(2, 3),
 		 // How near to the rivers the uplands dry out to sand; 0 leaves them grass, and no
 		 // setting dries ground within 11 tiles of water, so every river keeps a floodplain.
+		 // Beyond 22 steps from water the dry ground is pavement (buildable, holds nothing).
 		 GeneratorControl{"dryness", "Dryness", 0, 10, 1, 5, ControlGroup::Terrain}.withSearchRange(
 			 2, 7),
 		 // How often a ford crosses a river: about one per 80 tiles of river at 1, one per 26
@@ -1961,9 +2804,23 @@ GeneratorDefinition watershedDefinition()
 		 // Off, rivers run without their meanders.
 		 GeneratorControl::toggle("meanders", "Meandering rivers", true, ControlGroup::Terrain)
 			 .withSearchValues({0, 1}),
-		 // The farmland along the rivers (wheat and wood each), stone outcrops, fruit groves at
-		 // the confluences and algae off the mouths and shallows. Every colony's starter kit
-		 // stays as it is.
+		 // On, the sea and the wide channels (the trunk, the delta, the big tributaries) have a
+		 // core of deep water: swimming across is slower and no algae grows there. The shallows
+		 // along every bank, and every route on foot, are the same either way.
+		 GeneratorControl::toggle("deep-water", "Deep channels", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // On, knots of rock stand on the crests of the divides, far from water, some with a
+		 // quarry face of stone (how many follows the stone amount) and scree round them.
+		 GeneratorControl::toggle("outcrops", "Divide outcrops", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
+		 // Looks only: Temperate (spring meadows, heath, blue water), Steppe (dry grass,
+		 // sandstone and hoodoos) or Tropical (lush banks, laterite, dark water). All play alike.
+		 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
+								  ControlGroup::Terrain)
+			 .withSearchValues({1, 2, 3}),
+		 // The farmland along the rivers (wheat and wood each), stone outcrops and quarry faces on
+		 // the divides' knots, fruit groves at the confluences and algae off the mouths and
+		 // shallows. Every colony's starter kit and all the rock stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

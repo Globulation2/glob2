@@ -2,7 +2,7 @@
 #pragma once
 #include "BuildingCapabilities.h"
 #include "BuildingType.h"
-#include "Game.h"
+class Game;
 #include "ai/observation/AIWorldView.h"
 
 namespace AISharedRuntime
@@ -38,12 +38,5 @@ inline int importLegacyBuildingDemand(int family)
   BuildingDemand::AttractWarriors,BuildingDemand::ClearResources,BuildingDemand::Count,BuildingDemand::ExchangeResources};
  return family>=0 && family<int(std::size(demands)) ? demands[family] : BuildingDemand::Count;
 }
-inline int importLegacyBuildingId(Game& game,int family,int level=0,bool site=false)
-{
- constexpr const char* names[]={"swarm","inn","hospital","racetrack","swimmingpool","barracks","school","defencetower","explorationflag","warflag","clearingflag","stonewall","market"};
- if(family<0 || family>=int(std::size(names))) return -1;
- int id=game.buildingsTypes.getTypeNum(names[family],level,site);
- if(id<0 && site) id=game.buildingsTypes.getTypeNum(names[family],level,false);
- return id;
-}
+int importLegacyBuildingId(Game& game,int family,int level=0,bool site=false);
 }

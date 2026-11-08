@@ -12,11 +12,16 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Points.h"
+#include "ResourceSemantics.h"
 #include "Roads.h"
+#include "Rock.h"
 #include "Room.h"
 #include "ScoredSettlements.h"
 #include "Sketch.h"
+#include "TerrainCatalog.h"
 #include "Topology.h"
+#include <climits>
+#include <functional>
 #include <algorithm>
 #include <array>
 #include <queue>
@@ -30,8 +35,53 @@ using namespace MapGeneration;
 // The landscape is asymmetric. Complete settlement proposals are compared, but the
 // start score is a heuristic, never a claim of exact fairness. Structural wood is
 // dry on the FINAL terrain; open wheat fields follow the shore, with contained timber plots.
+//
+// DESIGN 2.0 (revision 8, 2026-11-07, after Bajada, Braided River, Caravanserai and Rain Shadow
+// 2.0). The concept is unchanged: Boundary-Waters lake country, long glacial lakes in a forest of
+// dry ridges and granite knots, portage trails between the lakes, farms in the bays. What changes
+// is that the engine's terrain palette now carries the picture and the play:
+// - Rock knots, the stone-resource blobs in the deepest forest, are Ridges-group rock (rockVertices;
+//   impassable, towers shoot over). Parts too thin to make rock stay wooded, so the forest keeps
+//   its walls. Every home gets a granite knob of its own, its quarry face 9 to 22 tiles away
+//   (nearest first; it may stand in the edge of the woods, never with trees before its face), one
+//   stencil turned by quarter turns to face the town, with a quarry face of the same stone for every
+//   colony and a scree skirt behind. A smaller stencil serves every colony when one cannot fit the
+//   large one, and when even that fails every home keeps revision 7's stone patch instead, so the
+//   knobs never refuse a map revision 7 made. Forest knots get ambient quarry faces by
+//   `stone-amount` and a frayed scree apron where open ground meets them.
+// - Mud makes the shore meadows grow, which thins the forest by the lakes; when that costs the swim
+//   its shortcut, the layout is furnished again with revision 7's plain beaches.
+// - Trails and portage approaches are Paths (TRAIL; boardwalk where they meet wet ground): twice
+//   the walking speed, buildable, nothing grows on them and, unlike the old sand, they inhibit no
+//   crops, so the opening network pays and the portage cut's payoff is measured in walking time.
+// - Bay farms stay grass. Loam fields (Fertile, watering the land at 48/256) were built and dropped:
+//   the loam watered the dry forest round the bays (structural wood must stand on dry ground), and the
+//   forest shrank until a compact map lost its portage, the shortcut the map is about.
+// - Stretches of lake beach far from the homes are MUD (Rough: slow, holds nothing like the sand
+//   it replaces, but inhibits nothing), so shore meadows there grow better.
+// - Lake centres are DEEP_WATER (deepCore, three steps from land), keeping a shallow margin for
+//   beaches and algae; swimming across a lake is slower, which is a feel change (`deep-lakes`).
+// - Two sketches: the mechanics (canonical rule-group types every helper and check reads) and the
+//   looks joined by composeLooks: dry grass on the wooded ridges, lush grass by the water, plain
+//   grass in home gardens, kit plots and quarry approaches; a look-only `shield` (granite or
+//   greenstone) picks the rock, the deep water and the shore mud artwork.
 namespace
 {
+// The look-only bedrock of the Canadian Shield: everything plays alike.
+struct Shield
+{
+	const char *name;
+	TerrainType rock, talus, deep, margin;
+};
+constexpr std::array<Shield, 2> kShields{{
+	{"granite", RIDGE_ROCK, SCREE, DEEP_WATER, MUD},
+	{"greenstone", OUTCROP, SCREE, DARK_WATER, MUDFLAT},
+}};
+// Deep cores lie at least this many steps from any land vertex.
+constexpr int kDeepSteps = 3;
+const char *const kNoSwim = "Portage Lakes cannot fit a useful swimming shortcut on this seed.";
+// Home knobs: their quarry face is this far (Chebyshev) from the home, nearest first.
+constexpr int kKnobNear = 9, kKnobFar = 22;
 struct Plot
 {
 	std::vector<int> tiles;
@@ -59,6 +109,13 @@ struct Layout
 	std::vector<Crossing> portages;
 	bool compact = false;
 	std::string failure;
+	// 2.0: the looks painted over the mechanics, the quarry faces (tiles) and who owns each (-1 for
+	// ambient faces), the home knobs' tiles, the shield, and counts kept for telemetry.
+	TerrainSketch looks;
+	// keep: expansion clearings and their paths, which no later stage may block.
+	std::vector<unsigned char> quarry, knob, keep;
+	std::vector<int> quarryOf, knobDistance;
+	int shield = 0, knobFace = 0, ambientFaces = 0, ambientWanted = 0, rockKnots = 0;
 };
 std::string validateRequest(const GenerationRequest &r)
 {
@@ -66,11 +123,9 @@ std::string validateRequest(const GenerationRequest &r)
 		return error;
 	if (r.wDec < 6 || r.hDec < 6 || r.wDec > 9 || r.hDec > 9)
 		return "Portage Lakes needs sides between 64 and 512 tiles.";
-	if (r.nbTeams >
-		std::min(r.wDec == DENSE_COLONY_MAP_EXPONENT && r.hDec == DENSE_COLONY_MAP_EXPONENT
-					 ? TEAM_MAX_COUNT
-					 : DENSE_COLONY_BASE_LIMIT,
-				 std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
+	if (r.nbTeams > std::min(r.wDec == DENSE_COLONY_MAP_EXPONENT && r.hDec == DENSE_COLONY_MAP_EXPONENT
+		? TEAM_MAX_COUNT : DENSE_COLONY_BASE_LIMIT,
+		std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	return "";
 }
@@ -84,8 +139,10 @@ void disc(std::vector<unsigned char> &mask, const Torus &t, int p, int radius)
 std::vector<unsigned char> land(const Layout &L)
 {
 	auto walkable = walkableTiles(L.terrain, L.t);
+	// The home knobs (placed before the routes) are rock and quarry stone: nobody walks through them.
+	const bool knobs = !L.knob.empty();
 	for (int i = 0; i < L.t.size(); ++i)
-		walkable[i] = walkable[i] && !L.forest[i] && !L.rock[i];
+		walkable[i] = walkable[i] && !L.forest[i] && !L.rock[i] && !(knobs && (L.knob[i] || L.quarryOf[i] >= 0));
 	return walkable;
 }
 // Endpoint queries need only the first arrival, not a complete catchment. Keep
@@ -282,6 +339,10 @@ Layout landscape(const GenerationRequest &r, GenerationContext &c)
 		L.failure = "Portage Lakes cannot fit shoreline settlements on this seed.";
 	c.telemetry.measure("portage-lakes.lakes.placed", centres.size());
 	c.telemetry.choice("portage-lakes.layout", L.compact ? "compact" : "full");
+	// Looks only, from a stream of its own so no geometry moves.
+	L.shield = o.shield > 0 ? std::min<int>(o.shield, kShields.size()) - 1
+							: int(c.bounded("portage-shield", kShields.size()));
+	c.telemetry.choice("portage-lakes.shield", kShields[L.shield].name);
 	return L;
 }
 
@@ -636,6 +697,7 @@ bool expansion(Layout &L, int endpoint)
 	{
 		L.forest[i] = L.rock[i] = 0;
 		L.reserved[i] = 1;
+		disc(L.keep, t, i, 1);
 	}
 	for (int y = -radius; y <= radius; ++y)
 		for (int x = -radius; x <= radius; ++x)
@@ -644,6 +706,7 @@ bool expansion(Layout &L, int endpoint)
 			L.forest[i] = L.rock[i] = 0;
 			L.reserved[i] = 1;
 		}
+	disc(L.keep, t, best, radius + 2);
 	L.expansions.push_back(best);
 	return true;
 }
@@ -731,7 +794,8 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 					approach[q] = 1;
 				}
 			}
-		// Corner sand must not touch the plug's grass tiles.
+		// The approaches are trail (Paths: fast, never overgrown). A trail corner must not touch the
+		// plug's grass tiles, or the plug's wood would lose its ground.
 		auto protect = tileMask(t, L.portage.cut);
 		for (int i = 0; i < t.size(); ++i)
 			if (approach[i])
@@ -741,7 +805,7 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 					for (int dx = -1; dx <= 0; ++dx)
 						touches |= protect[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 				if (!touches)
-					L.terrain[i] = SAND;
+					L.terrain[i] = TRAIL;
 			}
 		if (!expansion(L, L.portage.a) || !expansion(L, L.portage.b))
 		{
@@ -759,12 +823,451 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 	}
 	return false;
 }
-Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationContext &c)
+// A home knob in its own frame: u across the face, v away from the home. Face tiles (stone on
+// grass) take the side towards the town; the rest is rock at least two tiles thick. One stencil,
+// turned by quarter turns, for every colony, so every home's quarry holds the same stone.
+struct KnobTile
+{
+	int u, v;
+	bool face;
+};
+std::vector<KnobTile> knobStencil(bool smallStencil)
+{
+	std::vector<KnobTile> tiles;
+	const int half = smallStencil ? 2 : 3, deep = smallStencil ? 3 : 4;
+	for (int v = 0; v <= deep; ++v)
+		for (int u = -half; u <= half; ++u)
+		{
+			const bool edgeRow = v == 0 || v == deep, corner = std::abs(u) == half;
+			if (edgeRow && corner)
+				continue;
+			tiles.push_back({u, v, v == 0 || (v == 1 && corner)});
+		}
+	return tiles;
+}
+// Every home's knob, nearest first by the face's Chebyshev distance from the home, then by how
+// squarely it faces the town. When any home cannot fit the large stencil, every home takes the
+// small one; false when even that cannot fit.
+bool placeKnobs(Layout &L, GenerationContext &c)
+{
+	const auto &t = L.t;
+	const auto grass = pureTiles(L.terrain, t, GRASS);
+	std::vector<unsigned char> wet(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		wet[i] = L.terrain[i] == WATER || L.terrain[i] == MUD;
+	const auto fromWater = stepsFrom(t, wet);
+	// Room for a knob: open meadow, not the general reservation (which also holds every field's wide
+	// margin) but what must stay free: the home clearings, two tiles round every plot, the trails,
+	// the portage plugs and their margins, the landings, clearings and their paths, the algae pools.
+	std::vector<unsigned char> taboo(t.size(), 0);
+	for (int h : L.homes)
+		disc(taboo, t, h, 7);
+	for (const auto &plot : L.plots)
+		for (int i : plot.tiles)
+			disc(taboo, t, i, 1);
+	for (const auto &crossing : L.portages)
+	{
+		for (int i : crossing.cut)
+			disc(taboo, t, i, 3);
+		for (int i : {crossing.a, crossing.b})
+			if (i >= 0)
+				disc(taboo, t, i, 3);
+	}
+	for (int i : {L.swim.a, L.swim.b})
+		if (i >= 0)
+			disc(taboo, t, i, 3);
+	for (int p : L.algaePools)
+		disc(taboo, t, p, 6);
+	std::vector<unsigned char> clear(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		clear[i] = grass[i] && !taboo[i] && !L.keep[i] && !L.roads[i] && L.plotOf[i] < 0 && !L.rock[i] &&
+				   fromWater[i] >= 3;
+	for (bool smallStencil : {false, true})
+	{
+		const auto stencil = knobStencil(smallStencil);
+		std::vector<unsigned char> taken(t.size(), 0);
+		std::vector<std::vector<std::pair<int, bool>>> knobs;
+		std::vector<int> distances;
+		bool all = true;
+		for (int home : L.homes)
+		{
+			const int hx = t.remainderX(home), hy = home / t.w;
+			int bestScore = INT_MAX, bestDistance = -1;
+			std::vector<std::pair<int, bool>> best;
+			for (int d = kKnobNear; d <= kKnobFar && best.empty(); ++d)
+				for (int dy = -d; dy <= d; ++dy)
+					for (int dx = -d; dx <= d; ++dx)
+					{
+						if (std::max(std::abs(dx), std::abs(dy)) != d)
+							continue;
+						const int score = std::min(std::abs(dx), std::abs(dy));
+						if (score >= bestScore)
+							continue;
+						const bool alongX = std::abs(dx) >= std::abs(dy);
+						const int sign = (alongX ? dx : dy) < 0 ? -1 : 1;
+						std::vector<std::pair<int, bool>> tiles;
+						bool fits = true;
+						for (const auto &k : stencil)
+						{
+							const int x = hx + dx + (alongX ? sign * k.v : k.u);
+							const int y = hy + dy + (alongX ? k.u : sign * k.v);
+							for (int my = -1; my <= 1 && fits; ++my)
+								for (int mx = -1; mx <= 1 && fits; ++mx)
+								{
+									// Woods may stand where the knob goes (it becomes rock) and round
+									// it, but the ground before the quarry face must be open.
+									const int q = t.at(x + mx, y + my);
+									fits = clear[q] && !taken[q] && (!k.face || (mx == 0 && my == 0) || !L.forest[q]);
+								}
+							if (!fits)
+								break;
+							tiles.push_back({t.at(x, y), k.face});
+						}
+						if (fits)
+						{
+							bestScore = score;
+							bestDistance = d;
+							best = std::move(tiles);
+						}
+					}
+			if (best.empty())
+			{
+				all = false;
+				break;
+			}
+			// Knobs keep two tiles apart, so no two homes' quarries share an approach.
+			std::vector<unsigned char> mine(t.size(), 0);
+			for (const auto &[tile, face] : best)
+				mine[tile] = 1;
+			for (int i = 0; i < t.size(); ++i)
+				if (mine[i])
+					for (int my = -2; my <= 2; ++my)
+						for (int mx = -2; mx <= 2; ++mx)
+							taken[t.at(t.remainderX(i) + mx, i / t.w + my)] = 1;
+			knobs.push_back(std::move(best));
+			distances.push_back(bestDistance);
+		}
+		if (!all)
+			continue;
+		for (size_t k = 0; k < knobs.size(); ++k)
+		{
+			int faces = 0;
+			for (const auto &[tile, face] : knobs[k])
+			{
+				(face ? L.quarry : L.knob)[tile] = 1;
+				L.forest[tile] = 0;
+				if (face)
+				{
+					L.quarryOf[tile] = int(k);
+					++faces;
+				}
+				disc(L.reserved, t, tile, 1);
+			}
+			L.knobFace = faces;
+			c.telemetry.measure("portage-lakes.knob.distance", distances[k], int(k));
+		}
+		L.knobDistance = distances;
+		c.telemetry.choice("portage-lakes.knob.stencil", smallStencil ? "small" : "large");
+		c.telemetry.measure("portage-lakes.knob.face-tiles", L.knobFace);
+		return true;
+	}
+	return false;
+}
+
+// The 2.0 terrain over the finished layout: forest knots and home knobs become rock with quarry
+// faces, scree aprons where open ground meets the forest knots, deep lake cores, and the looks.
+void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o,
+				   const std::vector<unsigned char> &homeBuffer)
+{
+	const auto &t = L.t;
+	const int n = t.size();
+	// Ambient quarry faces on the forest knots, by stone-amount: a face of up to three tiles on the
+	// side of a knot that open ground touches, never within two tiles of water, its tiles and the
+	// ring before it on plain grass.
+	{
+		const auto open = land(L);
+		std::vector<unsigned char> wet(n, 0);
+		for (int i = 0; i < n; ++i)
+			wet[i] = L.terrain[i] == WATER || L.terrain[i] == MUD;
+		const auto fromWater = stepsFrom(t, wet);
+		const auto knots = connectedRegions(L.rock, t.w, t.h, true, GridNeighbors::Eight);
+		std::vector<int> sizes;
+		for (int i = 0; i < n; ++i)
+			if (knots[i] >= 0)
+			{
+				if (int(sizes.size()) <= knots[i])
+					sizes.resize(knots[i] + 1);
+				++sizes[knots[i]];
+			}
+		const auto openBeside = [&](int i)
+		{
+			for (auto step : kCardinalSteps)
+				if (open[t.at(t.remainderX(i) + step[0], i / t.w + step[1])])
+					return true;
+			return false;
+		};
+		// A face in the woods (trees before it, to be cut) is the second choice: most knots sit deep in
+		// the forest, and without them the faces could not follow stone-amount.
+		const auto woodsBeside = [&](int i)
+		{
+			for (auto step : kCardinalSteps)
+			{
+				const int q = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
+				if (L.forest[q] && !L.rock[q])
+					return true;
+			}
+			return false;
+		};
+		std::vector<int> candidates, wooded;
+		for (int i = 0; i < n; ++i)
+			if (L.rock[i] && sizes[knots[i]] >= 6)
+			{
+				if (openBeside(i))
+					candidates.push_back(i);
+				else if (woodsBeside(i))
+					wooded.push_back(i);
+			}
+		c.shuffle(candidates.begin(), candidates.end(), "portage-quarry-faces");
+		c.shuffle(wooded.begin(), wooded.end(), "portage-quarry-faces");
+		const size_t openCandidates = candidates.size();
+		candidates.insert(candidates.end(), wooded.begin(), wooded.end());
+		L.rockKnots = int(std::count_if(sizes.begin(), sizes.end(), [](int s) { return s >= 6; }));
+		L.ambientWanted = int(std::min<std::int64_t>(L.rockKnots, scaledCount((L.rockKnots + 3) / 4, o.stone)));
+		std::vector<unsigned char> faced(sizes.size(), 0);
+		const auto plainCorners = [&](int i)
+		{
+			for (int corner = 0; corner < 4; ++corner)
+				if (L.terrain[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))] != GRASS)
+					return false;
+			return true;
+		};
+		for (size_t k = 0; k < candidates.size(); ++k)
+		{
+			const int centre = candidates[k];
+			const bool inWoods = k >= openCandidates;
+			if (L.ambientFaces >= L.ambientWanted)
+				break;
+			if (faced[knots[centre]])
+				continue;
+			std::vector<int> face;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int q = t.at(t.remainderX(centre) + dx, centre / t.w + dy);
+					if (L.rock[q] && knots[q] == knots[centre] && (inWoods ? woodsBeside(q) : openBeside(q)))
+						face.push_back(q);
+				}
+			bool fits = true;
+			for (int q : face)
+				for (int my = -1; my <= 1 && fits; ++my)
+					for (int mx = -1; mx <= 1 && fits; ++mx)
+					{
+						const int r = t.at(t.remainderX(q) + mx, q / t.w + my);
+						fits = plainCorners(r) && fromWater[r] >= 3 && L.plotOf[r] < 0 && !L.quarry[r];
+					}
+			if (!fits)
+				continue;
+			faced[knots[centre]] = 1;
+			for (int q : face)
+			{
+				L.quarry[q] = 1;
+				L.rock[q] = 0;
+			}
+			++L.ambientFaces;
+		}
+	}
+	// Rock: a vertex is rock where its four tiles are rock tiles. A forest-knot tile the rock cannot
+	// block (a sliver under two tiles thick) keeps its wood when it can, so the forest keeps its walls.
+	std::vector<unsigned char> rockTiles(n, 0);
+	for (int i = 0; i < n; ++i)
+		rockTiles[i] = (L.rock[i] || L.knob[i]) && !L.quarry[i];
+	const auto rock = rockVertices(t, rockTiles);
+	std::vector<unsigned char> blocked(n, 0);
+	int rockArea = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		int corners = 0;
+		for (int corner = 0; corner < 4; ++corner)
+			corners += rock[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))];
+		blocked[i] = corners >= 2;
+		rockArea += blocked[i];
+		if (L.rock[i] && !blocked[i])
+		{
+			L.rock[i] = 0;
+			L.forest[i] = corners == 0;
+		}
+	}
+	for (int i = 0; i < n; ++i)
+		if (rock[i])
+			L.terrain[i] = RIDGE_ROCK;
+	// Scree aprons round the forest knots, on open ground only: never a corner of a wooded tile (its
+	// wood would lose its ground), a field, a trail, a quarry or its approach, or a home's buffer.
+	int scree = 0;
+	{
+		std::vector<unsigned char> forestRock(n, 0), eligible(n, 0);
+		for (int i = 0; i < n; ++i)
+			forestRock[i] = blocked[i] && !L.knob[i];
+		const auto approach = dilate(t, L.quarry, 1);
+		for (int v = 0; v < n; ++v)
+		{
+			if (L.terrain[v] != GRASS || homeBuffer[v])
+				continue;
+			bool ok = true;
+			for (int touch = 0; touch < 4 && ok; ++touch)
+			{
+				const int q = t.at(t.remainderX(v) - (touch & 1), v / t.w - (touch >> 1));
+				ok = !L.forest[q] && L.plotOf[q] < 0 && !L.roads[q] && !approach[q] && !L.knob[q] &&
+					 !L.reserved[q];
+			}
+			eligible[v] = ok;
+		}
+		const auto fray = periodicNoise(t.w, t.h, 6, c.stream("portage-scree"));
+		const auto apron = talusApron(t, forestRock, eligible, fray, 1, 2, 36000);
+		for (int v = 0; v < n; ++v)
+			if (apron[v])
+			{
+				L.terrain[v] = SCREE;
+				++scree;
+			}
+		// The home knobs stand in open meadow: a skirt of scree one corner wide round their back and
+		// sides (never on the quarry's side), the same stencil's skirt for every home wherever the
+		// meadow allows it.
+		std::vector<unsigned char> knob(n, 0);
+		for (int i = 0; i < n; ++i)
+			knob[i] = L.knob[i] || L.quarryOf[i] >= 0;
+		const auto skirt = dilate(t, knob, 1);
+		for (int v = 0; v < n; ++v)
+		{
+			if (L.terrain[v] != GRASS)
+				continue;
+			bool ok = true;
+			for (int touch = 0; touch < 4 && ok; ++touch)
+			{
+				const int q = t.at(t.remainderX(v) - (touch & 1), v / t.w - (touch >> 1));
+				ok = skirt[q] && !approach[q] && !L.forest[q] && L.plotOf[q] < 0 && !L.roads[q];
+			}
+			if (ok)
+			{
+				L.terrain[v] = SCREE;
+				++scree;
+			}
+		}
+	}
+	// Deep lake cores, the algae pools left shallow.
+	int deep = 0;
+	if (o.deep)
+	{
+		std::vector<unsigned char> lake(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			lake[i] = L.terrain[i] == WATER;
+			for (int p : L.algaePools)
+				lake[i] = lake[i] && t.dist2(t.remainderX(p), p / t.w, t.remainderX(i), i / t.w) > 64;
+		}
+		const auto core = deepCore(t, lake, kDeepSteps);
+		for (int i = 0; i < n; ++i)
+			if (core[i])
+			{
+				L.terrain[i] = DEEP_WATER;
+				++deep;
+			}
+	}
+	// The looks, inside each vertex's rule group: dry grass on the wooded ridges and wherever nothing
+	// would grow, lush grass by the water and in the best meadows, plain grass in home gardens, the
+	// kit plots and every quarry's approach; the shield's rock, talus, deep water and mud; trail
+	// turned to boardwalk where it meets wet ground.
+	const Shield &shield = kShields[L.shield];
+	const auto growth = cropGrowthField(L.terrain, t);
+	std::vector<unsigned char> wet(n, 0), soggy(n, 0), plain(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
+		soggy[i] = wet[i] || L.terrain[i] == MUD;
+	}
+	const auto nearWater = stepsFrom(t, wet);
+	const auto nearSoggy = dilate(t, soggy, 2);
+	const auto approach = dilate(t, L.quarry, 1);
+	// A vertex is under the forest when any tile it is a corner of is wooded.
+	std::vector<unsigned char> underForest(n, 0);
+	for (int i = 0; i < n; ++i)
+		if (L.forest[i])
+			for (int corner = 0; corner < 4; ++corner)
+				underForest[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))] = 1;
+	const auto nearForest = dilate(t, underForest, 2);
+	for (int i = 0; i < n; ++i)
+	{
+		const int plot = L.plotOf[i];
+		if (approach[i] || (plot >= 0 && (L.plots[plot].kind == WOOD || L.plots[plot].serviceHome >= 0)))
+			for (int corner = 0; corner < 4; ++corner)
+				plain[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))] = 1;
+	}
+	const auto fray = periodicNoise(t.w, t.h, 8, c.stream("portage-looks"));
+	const auto garden = [&](int i)
+	{
+		const double reach = 8 + 6.0 * fray[i] / 65536;
+		for (int h : L.homes)
+			if (t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) <= reach * reach)
+				return true;
+		return false;
+	};
+	L.looks.assign(n, 0);
+	int mud = 0;
+	for (int i = 0; i < n; ++i)
+		switch (L.terrain[i])
+		{
+		case GRASS:
+		{
+			if (plain[i] || garden(i))
+				break;
+			// The forest floor of the dry ridges is dry grass; open dry ground only in patches, so a
+			// clearing still reads as meadow rather than steppe.
+			const auto g = growth.at(t.remainderX(i), i / t.w);
+			if (g == 0 && (underForest[i] || (nearForest[i] && fray[i] > 30000)))
+				L.looks[i] = DRY_GRASS;
+			else if (nearWater[i] <= 3 || g >= Fertility::kScale * 45 / 100)
+				L.looks[i] = LUSH_GRASS;
+			break;
+		}
+		case MUD:
+			L.looks[i] = shield.margin;
+			++mud;
+			break;
+		case RIDGE_ROCK:
+			L.looks[i] = shield.rock;
+			break;
+		case SCREE:
+			L.looks[i] = shield.talus;
+			break;
+		case DEEP_WATER:
+			L.looks[i] = shield.deep;
+			break;
+		case TRAIL:
+			if (nearSoggy[i])
+				L.looks[i] = BOARDWALK;
+			break;
+		default:
+			break;
+		}
+	c.telemetry.measure("portage-lakes.rock.knots", L.rockKnots);
+	c.telemetry.measure("portage-lakes.rock.blocked-tiles", rockArea);
+	c.telemetry.measure("portage-lakes.quarries.ambient-wanted", L.ambientWanted);
+	c.telemetry.measure("portage-lakes.quarries.ambient", L.ambientFaces);
+	c.telemetry.measure("portage-lakes.scree.vertices", scree);
+	c.telemetry.measure("portage-lakes.lakes.deep-vertices", deep);
+	c.telemetry.measure("portage-lakes.shore.final-mud-vertices", mud);
+}
+
+Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationContext &c, bool wetShores = true,
+			   bool knobsFirst = true)
 {
 	Layout L = base;
 	const auto &t = L.t;
 	const PortageLakesOptions o(c.request);
 	L.homes = homes;
+	L.quarry.assign(t.size(), 0);
+	L.knob.assign(t.size(), 0);
+	L.keep.assign(t.size(), 0);
+	L.quarryOf.assign(t.size(), -1);
 	for (int h : homes)
 		disc(L.reserved, t, h, 6);
 	for (int h : homes)
@@ -773,6 +1276,22 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 			L.failure = "Portage Lakes cannot fit renewable shore fields beside every settlement.";
 			return L;
 		}
+	// Every home's granite knob and its quarry face, on open meadow near the town, right after the home
+	// bays and before the algae pools, the lakes' extra shore fields, the neutral bays, the trails and the
+	// portages take the meadow: placed last, the knobs found no room beside every home on 6 of 16 maps.
+	// When even the small stencil cannot fit beside every home, every home keeps revision 7's stone
+	// patch instead (one rule for every colony), so the knobs never refuse a map revision 7 made. When the
+	// knobs placed first leave too little for the rest (furnishLakes), they are placed last instead.
+	const auto knobs = [&]
+	{
+		if (!placeKnobs(L, c))
+		{
+			c.telemetry.choice("portage-lakes.knob.stencil", "none: stone patches");
+			c.telemetry.fallback("portage-lakes.knob.stencil", "no knob stencil fits beside every home: stone patches");
+		}
+	};
+	if (knobsFirst)
+		knobs();
 	// Extra farming bays are found in the remaining landscape, never stamped towns.
 	// Separate algae pools never connect to the swimming lakes.
 	for (int h : homes)
@@ -845,12 +1364,48 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 			L = std::move(saved);
 	}
 	layBeaches(L.terrain, t);
+	std::vector<unsigned char> homeBuffer(t.size(), 0);
+	for (int h : homes)
+		disc(homeBuffer, t, h, L.compact ? 12 : (t.size() / int(homes.size()) < 8192 ? 18 : 24));
+	// Wet shore margins: stretches of lake beach far from every home turn to mud, slow and holding
+	// nothing like the beach, but inhibiting no crops. Never beside the algae pools, whose growth
+	// needs the beach's shore support, nor in a home's buffer, where people walk and build. Mud waters
+	// the shore meadows, so the forest there thins; when that costs the swim its shortcut the layout is
+	// furnished again with plain beaches (furnishLakes).
+	if (wetShores)
+	{
+		const auto mud = periodicNoise(t.w, t.h, L.compact ? 10 : 14, c.stream("portage-shore-mud"));
+		std::vector<unsigned char> margin(t.size(), 0);
+		// A knob stands 3 steps from water or mud (placeKnobs); no mud comes nearer than that.
+		std::vector<unsigned char> knob(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			knob[i] = L.knob[i] || L.quarryOf[i] >= 0;
+		const auto nearKnob = dilate(t, knob, 2);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (L.terrain[i] != SAND || homeBuffer[i] || mud[i] < 38000 || nearKnob[i])
+				continue;
+			bool lake = false, pool = false;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					lake |= L.terrain[t.at(t.remainderX(i) + dx, i / t.w + dy)] == WATER;
+			for (int p : L.algaePools)
+				pool |= t.dist2(t.remainderX(p), p / t.w, t.remainderX(i), i / t.w) <= 12 * 12;
+			margin[i] = lake && !pool;
+		}
+		int count = 0;
+		for (int i = 0; i < t.size(); ++i)
+			if (margin[i])
+			{
+				L.terrain[i] = MUD;
+				++count;
+			}
+		c.telemetry.measure("portage-lakes.shore.mud-vertices", count);
+	}
 	auto grass = pureTiles(L.terrain, t, GRASS);
 	auto growth = cropGrowthField(L.terrain, t);
 	auto noise = periodicNoise(t.w, t.h, L.compact ? 20 : 36, c.stream("portage-woodland"));
-	std::vector<unsigned char> dry(t.size(), 0), homeBuffer(t.size(), 0);
-	for (int h : homes)
-		disc(homeBuffer, t, h, L.compact ? 12 : (t.size() / int(homes.size()) < 8192 ? 18 : 24));
+	std::vector<unsigned char> dry(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		dry[i] = grass[i] && !L.reserved[i] && !homeBuffer[i] && growth.at(t.remainderX(i), i / t.w) == 0;
 	L.forest = noisyShare(dry, noise, 75);
@@ -866,6 +1421,15 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	auto protectedTiles = tileMask(t, {});
 	for (int i = 0; i < t.size(); ++i)
 		protectedTiles[i] = L.plotOf[i] >= 0 || L.rock[i];
+	{
+		// The home knobs and a tile round them (the ground before the quarry face) stay off the trails.
+		std::vector<unsigned char> knob(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			knob[i] = L.knob[i] || L.quarryOf[i] >= 0;
+		const auto round = dilate(t, knob, 1);
+		for (int i = 0; i < t.size(); ++i)
+			protectedTiles[i] = protectedTiles[i] || round[i];
+	}
 	for (int h : homes)
 		disc(protectedTiles, t, h, 5);
 	auto endpoints = homes;
@@ -893,6 +1457,8 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	std::stable_sort(edges.begin(), edges.end(), [](auto a, auto b) { return a.d < b.d; });
 	DisjointSets joins(int(endpoints.size()));
 	int trailCount = 0;
+	// The routes are found and reserved as sand, then every corner they painted becomes trail.
+	const TerrainSketch beforeTrails = L.terrain;
 	auto routeNoise = periodicNoise(t.w, t.h, 24, c.stream("portage-trail-bends"));
 	std::vector<int> costs(t.size());
 	for (int i = 0; i < t.size(); ++i)
@@ -970,6 +1536,16 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 			}
 	}
 	c.telemetry.measure("portage-lakes.trails.placed", trailCount);
+	{
+		int trail = 0;
+		for (int i = 0; i < t.size(); ++i)
+			if (L.terrain[i] == SAND && beforeTrails[i] != SAND)
+			{
+				L.terrain[i] = TRAIL;
+				++trail;
+			}
+		c.telemetry.measure("portage-lakes.trails.vertices", trail);
+	}
 	for (int i = 0; i < t.size(); ++i)
 		if (L.roads[i])
 		{
@@ -1049,7 +1625,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	if (L.swim.a >= 0 && (!expansion(L, L.swim.a) || !expansion(L, L.swim.b)))
 		best = 0;
 	if (best < (L.compact ? 4 : 8))
-		L.failure = "Portage Lakes cannot fit a useful swimming shortcut on this seed.";
+		L.failure = kNoSwim;
 	c.telemetry.measure("portage-lakes.swim.walk-before", L.swim.before);
 	c.telemetry.measure("portage-lakes.swim.walk-after", L.swim.after);
 	c.telemetry.measure("portage-lakes.bays.neutral", neutral);
@@ -1071,7 +1647,8 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	for (int i = 0; i < t.size(); ++i)
 		if (!grass[i] || L.plotOf[i] >= 0)
 			L.forest[i] = 0;
-
+	if (!knobsFirst)
+		knobs();
 	// Break up the largest empty lawns with small fruit copses and rocky outcrops.
 	// Keep broad aisles around every clump and stay away from all promised routes,
 	// lake landings, home room and working fields. These add no enclosing sand.
@@ -1105,12 +1682,100 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		if (used.size() >= size_t(t.size() / 1800)) break;
 	}
 	c.telemetry.measure("portage-lakes.country.clumps", L.countryClumps.size());
-
+	finishTerrain(L, c, o, homeBuffer);
 	return L;
 }
 
-std::string mechanismFailure(const GenerationMap &map, const Layout &L,
-							 bool checkOpeningAccess = false, GenerationContext *record = nullptr)
+// Rewind every stream drawn from since `before`, and drop the telemetry recorded since.
+void rewind(GenerationContext &c, const GenerationContext &before)
+{
+	for (const auto &[name, state] : c.namedStreams())
+	{
+		const auto saved = before.namedStreams().find(name);
+		const std::mt19937 rewound =
+			saved != before.namedStreams().end() ? saved->second
+												 : std::mt19937(GenerationContext::deriveSeed(c.request.seed, name));
+		c.stream(name) = rewound;
+	}
+	c.telemetry = before.telemetry;
+}
+
+// Furnish with wet shores, or, when the mud's watering costs the swim its shortcut, with revision 7's
+// plain beaches from the same stream state. With `knobsFirst` the home knobs go first, and when that
+// layout fails the whole furnishing is done again from the same stream state with the knobs placed last,
+// as first built; without it the knobs go last. Generation and validation both come through here.
+Layout furnishLakes(const Layout &base, const std::vector<int> &homes, GenerationContext &c, bool knobsFirst)
+{
+	const auto shores = [&](bool knobsFirst)
+	{
+		GenerationContext before(c);
+		Layout L = furnish(base, homes, c, true, knobsFirst);
+		if (L.failure != kNoSwim)
+		{
+			c.telemetry.choice("portage-lakes.shore.margins", "mud");
+			return L;
+		}
+		rewind(c, before);
+		L = furnish(base, homes, c, false, knobsFirst);
+		c.telemetry.choice("portage-lakes.shore.margins", "plain beaches for the swim shortcut");
+		return L;
+	};
+	GenerationContext start(c);
+	if (!knobsFirst)
+		return shores(false);
+	Layout L = shores(true);
+	if (L.failure.empty())
+		return L;
+	rewind(c, start);
+	L = shores(false);
+	c.telemetry.fallback("portage-lakes.knob.order", "the knobs placed first left no room: placed last");
+	return L;
+}
+
+// The quickest eight-neighbour walk from a to b over `open` tiles, each step costing its length over
+// the speed of the tile stepped onto (ground speed, 256 = plain), in plain tiles; -1 when b cannot be
+// reached. With a `limit`, the search stops once every remaining walk would cost at least that much
+// and returns the limit: enough to know a walk is that long, without flooding the rest of the map.
+double travelTime(const GenerationMap &map, const std::vector<unsigned char> &open, int a, int b, double limit = -1)
+{
+	const Torus t(map);
+	std::vector<double> best(t.size(), -1);
+	using Node = std::pair<double, int>;
+	std::priority_queue<Node, std::vector<Node>, std::greater<Node>> frontier;
+	frontier.push({0, a});
+	best[a] = 0;
+	while (!frontier.empty())
+	{
+		const auto [cost, i] = frontier.top();
+		frontier.pop();
+		if (i == b)
+			return cost;
+		if (limit >= 0 && cost >= limit)
+			return limit;
+		if (cost > best[i])
+			continue;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				if (!dx && !dy)
+					continue;
+				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
+				if (!open[q])
+					continue;
+				const int speed = std::max(1, int(map.terrainPropertiesAt(t.remainderX(q), q / t.w).groundSpeedQ8));
+				const double next = cost + (dx && dy ? 1.41421356 : 1.0) * 256.0 / speed;
+				if (best[q] < 0 || next < best[q])
+				{
+					best[q] = next;
+					frontier.push({next, q});
+				}
+			}
+	}
+	return -1;
+}
+
+std::string mechanismFailure(const GenerationMap &map, const Layout &L, bool checkOpeningAccess = false,
+							 GenerationContext *record = nullptr)
 {
 	const auto &t = L.t;
 	auto walking = groundUnitTiles(map);
@@ -1188,6 +1853,7 @@ std::string mechanismFailure(const GenerationMap &map, const Layout &L,
 									  before - after);
 	}
 	const int minimum = L.compact ? 4 : 8, divisor = L.compact ? 10 : 5;
+	const bool telemetry = record && record->telemetry.enabled();
 	for (int kind = 0; kind < 2; ++kind)
 	{
 		const auto &p = kind ? L.swim : L.portage;
@@ -1197,11 +1863,29 @@ std::string mechanismFailure(const GenerationMap &map, const Layout &L,
 			after = distance(t, kind ? swimming : cut, p.a, p.b);
 		if (before < 0 || after < 0 || before - after < std::max(minimum, before / divisor))
 			return "A Portage Lakes shortcut does not shorten its finished route.";
-		if (record)
-		{
+		if (telemetry)
 			record->telemetry.measure(kind ? "portage-lakes.swim.final-saving"
 										   : "portage-lakes.portage.final-saving",
 									  before - after);
+		// The same crossing in walking time (tiles at plain speed): trails are fast, deep water and mud
+		// slow, so this is what the cut or the swim actually saves a worker. The swim must save time by the
+		// same rule as steps: deep lake cores swim at 192/256 and the walk round may follow fast trails, so
+		// a swim that saves steps can save little time. The portage cut opens dry ground, never slower than
+		// the walk round it, so its time is telemetry only.
+		if (!kind && !telemetry)
+			continue;
+		const double fast = travelTime(map, kind ? swimming : cut, p.a, p.b);
+		if (fast < 0)
+			return "A Portage Lakes shortcut does not shorten its finished route.";
+		// Without telemetry the walk round need only be followed until it is long enough to pass.
+		const double enough = std::max(fast + minimum, fast * divisor / (divisor - 1.0));
+		const double slow = travelTime(map, walking, p.a, p.b, telemetry ? -1 : enough);
+		if (kind && (slow < 0 || slow - fast < std::max(double(minimum), slow / divisor)))
+			return "Portage Lakes swimming does not save its crossing any walking time.";
+		if (telemetry)
+		{
+			record->telemetry.measure(kind ? "portage-lakes.swim.time-before" : "portage-lakes.portage.time-before", slow);
+			record->telemetry.measure(kind ? "portage-lakes.swim.time-after" : "portage-lakes.portage.time-after", fast);
 		}
 	}
 	return "";
@@ -1238,8 +1922,13 @@ int farmServiceSites(const GenerationMap &map, const Torus &t, const Plot &plot)
 
 // Wheat is intentionally free to spread through neighboring meadows. Renewable timber
 // remains contained, keeping the faster-growing wood off the open fields and trails.
-std::string timberPlotsMismatch(const GenerationMap &map, const Layout &L,
-								const Fertility::Field &growth)
+// Ground wood can grow onto, by its rules rather than its look (lush, dry and plain grass alike).
+bool woodGround(const GenerationMap &map, int x, int y)
+{
+	const auto &rules = map.terrainPropertiesAt(x, y);
+	return rules.resourcesGrow && rules.walkable && (rules.allowedResources & (1u << WOOD));
+}
+std::string timberPlotsMismatch(const GenerationMap &map, const Layout &L, const Fertility::Field &growth)
 {
 	const auto &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
@@ -1251,13 +1940,13 @@ std::string timberPlotsMismatch(const GenerationMap &map, const Layout &L,
 			return "Renewable Portage Lakes timber has escaped its shore plot.";
 		if (!timber)
 			continue;
-		if (!map.isGrass(x, y))
+		if (!woodGround(map, x, y))
 			return "A Portage Lakes timber plot has lost its grass.";
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int next = t.at(x + dx, y + dy);
-				if (map.isGrass(t.remainderX(next), next / t.w) && L.plotOf[next] != plot)
+				if (woodGround(map, t.remainderX(next), next / t.w) && L.plotOf[next] != plot)
 					return "A Portage Lakes timber plot has a grass growth connection across its margin.";
 			}
 	}
@@ -1273,7 +1962,11 @@ bool materialize(GenerationWorld &game, GenerationContext &c, const Layout &L)
 	}
 	const auto &t = L.t;
 	const PortageLakesOptions o(c.request);
-	writeVertices(game.map, L.terrain);
+	writeVertices(game.map, composeLooks(L.terrain, L.looks));
+	// Every quarry face holds its stone before anything else is planted.
+	for (int i = 0; i < t.size(); ++i)
+		if (L.quarry[i] && game.map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			game.map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		game.addTeam();
 	for (size_t k = 0; k < L.homes.size(); ++k)
@@ -1374,8 +2067,8 @@ bool materialize(GenerationWorld &game, GenerationContext &c, const Layout &L)
 		}
 	}
 	for (int i = 0; i < t.size(); ++i)
-		if ((L.forest[i] || L.rock[i]) && clearGround(game.map, t.remainderX(i), i / t.w))
-			game.map.setResourceByIndex(t.remainderX(i), i / t.w, L.rock[i] ? STONE : WOOD, 1);
+		if (L.forest[i] && clearGround(game.map, t.remainderX(i), i / t.w))
+			game.map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 	for (size_t k = 0; k < L.countryClumps.size(); ++k)
 	{
 		const int kind = k % 3 == 0 ? STONE : CHERRY + int(k % 3);
@@ -1391,17 +2084,59 @@ bool materialize(GenerationWorld &game, GenerationContext &c, const Layout &L)
 		};
 		growPatch(game.map, t, pool, ALGA, 8 + scaledCount(8, o.algae), waterEligible);
 	}
-	for (int h : L.homes)
-	{
-		auto eligible = [&](int i)
+	// Without knobs, every home's stone is revision 7's patch near the town.
+	if (!L.knobFace)
+		for (int h : L.homes)
 		{
-			return !L.reserved[i] && L.plotOf[i] < 0 && !L.forest[i] && !L.rock[i] && !L.roads[i] &&
-				   t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) >= 64 &&
-				   clearGround(game.map, t.remainderX(i), i / t.w);
-		};
-		int q = seedNear(t, t.remainderX(h), h / t.w, 16, eligible);
-		if (q >= 0)
-			growPatch(game.map, t, q, STONE, 4 + scaledCount(3, o.stone), eligible);
+			auto eligible = [&](int i)
+			{
+				return !L.reserved[i] && L.plotOf[i] < 0 && !L.forest[i] && !L.rock[i] && !L.roads[i] &&
+					   t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) >= 64 &&
+					   clearGround(game.map, t.remainderX(i), i / t.w);
+			};
+			int q = seedNear(t, t.remainderX(h), h / t.w, 16, eligible);
+			if (q >= 0)
+				growPatch(game.map, t, q, STONE, 4 + scaledCount(3, o.stone), eligible);
+		}
+	// Every home's stone is its own knob's quarry face (unscaled, the same for every colony). Record
+	// the walk from each home to its own face and to the nearest face of any kind.
+	if (c.telemetry.enabled())
+	{
+		const auto walking = groundUnitTiles(game.map);
+		const auto workers = unitTilesByTeam(game.map, int(L.homes.size()));
+		std::vector<unsigned char> own(t.size(), 0), any(t.size(), 0);
+		for (size_t k = 0; k < L.homes.size(); ++k)
+		{
+			std::fill(own.begin(), own.end(), 0);
+			std::fill(any.begin(), any.end(), 0);
+			for (int i = 0; i < t.size(); ++i)
+				if (L.quarry[i])
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+						{
+							const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
+							if (!walking[q])
+								continue;
+							any[q] = 1;
+							own[q] |= L.quarryOf[i] == int(k);
+						}
+			const auto steps = floodFrom(t, tileMask(t, workers[k]), walking).steps;
+			int ownWalk = -1, anyWalk = -1;
+			for (int i = 0; i < t.size(); ++i)
+				if (steps[i] >= 0)
+				{
+					if (own[i] && (ownWalk < 0 || steps[i] < ownWalk))
+						ownWalk = steps[i];
+					if (any[i] && (anyWalk < 0 || steps[i] < anyWalk))
+						anyWalk = steps[i];
+				}
+			c.telemetry.measure("portage-lakes.quarries.walk-own", ownWalk, int(k));
+			c.telemetry.measure("portage-lakes.quarries.walk-nearest", anyWalk, int(k));
+		}
+		int homeStone = 0;
+		for (int i = 0; i < t.size(); ++i)
+			homeStone += L.quarryOf[i] == 0 && permanentResourceBarrier(game.map, size_t(i));
+		c.telemetry.measure("portage-lakes.quarries.home-stone", homeStone);
 	}
 	for (size_t k = 0; k < L.expansions.size(); ++k)
 	{
@@ -1456,9 +2191,9 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 		// Furnishing has its own named streams. Each proposal starts from the same stream
 		// state; only the winning complete world is materialized into the caller's game.
 		c.stage = "portage lakes settlements";
-		auto builder =
-			[&](GenerationWorld &trial, GenerationContext &probe, const std::vector<int> &sites)
-		{ return materialize(trial, probe, furnish(base, sites, probe)); };
+		bool knobsFirst = true;
+		auto builder = [&](GenerationWorld &trial, GenerationContext &probe, const std::vector<int> &sites)
+		{ return materialize(trial, probe, furnishLakes(base, sites, probe, knobsFirst)); };
 		auto check = [](const StartQualityReport &q)
 		{
 			for (const auto &s : q.colonies)
@@ -1470,6 +2205,17 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 			return std::string();
 		};
 		auto selected = chooseScoredSettlements(c, base.proposals, builder, check);
+		// When no proposal works with the knobs placed first (a finished map can still fail its checks
+		// after a furnishing that succeeded), every proposal is tried again with the knobs placed last, as
+		// first built, so the early knobs never refuse a landscape the late order accepted.
+		if (!selected.failure.empty())
+		{
+			knobsFirst = false;
+			selected = chooseScoredSettlements(c, base.proposals, builder, check);
+			if (selected.failure.empty())
+				c.telemetry.fallback("portage-lakes.knob.order",
+									 "no proposal worked with the knobs placed first: placed last");
+		}
 		if (!selected.failure.empty())
 		{
 			c.detail = selected.failure;
@@ -1494,15 +2240,22 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		auto base = landscape(c.request, replay);
 		if (std::find(base.proposals.begin(), base.proposals.end(), homes) == base.proposals.end())
 			continue;
-		GenerationContext probe(replay);
-		auto candidate = furnish(base, homes, probe);
-		if (!candidate.failure.empty())
-			continue;
-		matched = true;
-		for (int i = 0; i < actual.size(); ++i)
-			matched &= candidate.terrain[i] == game.map.vertexTerrainAt(actual.remainderX(i), i / actual.w);
-		if (matched)
-			L = std::move(candidate);
+		for (bool knobsFirst : {true, false})
+		{
+			if (matched)
+				break;
+			GenerationContext probe(replay);
+			auto candidate = furnishLakes(base, homes, probe, knobsFirst);
+			if (!candidate.failure.empty())
+				continue;
+			matched = true;
+			// The mechanics and the looks both: the drawn map is exactly the design.
+			const auto drawn = composeLooks(candidate.terrain, candidate.looks);
+			for (int i = 0; i < actual.size(); ++i)
+				matched &= drawn[i] == game.map.vertexTerrainAt(actual.remainderX(i), i / actual.w);
+			if (matched)
+				L = std::move(candidate);
+		}
 	}
 	if (!matched)
 		return "Portage Lakes terrain no longer matches its design.";
@@ -1511,6 +2264,19 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	auto growth = Fertility::forMap(map, false);
 	if (auto e = timberPlotsMismatch(map, L, growth); !e.empty())
 		return e;
+	// Every quarry face holds its stone, and every home's knob the same stone.
+	if (auto e = quarryFault(map, t, L.quarry, L.quarryOf, L.knobFace ? c.request.nbTeams : 0, 5); !e.empty())
+		return e;
+	// Trails are paths: nothing ever stands on a tile one of their corners touches.
+	for (int i = 0; i < t.size(); ++i)
+		if (terrainGroup(TerrainType(L.terrain[i])) == TerrainGroup::Paths)
+			for (int touch = 0; touch < 4; ++touch)
+			{
+				const int q = t.at(t.remainderX(i) - (touch & 1), i / t.w - (touch >> 1));
+				if (map.isResource(t.remainderX(q), q / t.w))
+					return "A Portage Lakes trail has something standing on it at (" +
+						   std::to_string(t.remainderX(q)) + ", " + std::to_string(q / t.w) + ").";
+			}
 
 	for (const auto &crossing : L.portages)
 		for (int i : crossing.cut)
@@ -1532,7 +2298,8 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 } // namespace
 PortageLakesOptions::PortageLakesOptions(const GenerationRequest &r)
 	: elongation(r.option("lake-elongation")), depth(r.option("portage-depth")),
-	  trails(r.option("extra-trails")), wheat(r.option("wheat-amount")),
+	  trails(r.option("extra-trails")), deep(r.option("deep-lakes")), shield(r.option("shield")),
+	  wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -1542,7 +2309,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			7,
+			8,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}
@@ -1551,6 +2318,13 @@ GeneratorDefinition portageLakesDefinition()
 				 .withSearchRange(2, 6),
 			 GeneratorControl{"extra-trails", "Extra trails", 0, 100, 25, 25, ControlGroup::Layout}
 				 .withSearchRange(25, 75),
+			 // 2.0: deep lake centres (slower swimming, no algae) behind a shallow margin.
+			 GeneratorControl::toggle("deep-lakes", "Deep lakes", true, ControlGroup::Terrain)
+				 .withSearchValues({0, 1}),
+			 // Looks only: granite and greenstone play exactly alike.
+			 GeneratorControl::choice("shield", "Bedrock", {"Random", "Granite", "Greenstone"}, 0,
+									  ControlGroup::Terrain)
+				 .withSearchValues({1, 2}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

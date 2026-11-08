@@ -19,6 +19,9 @@
 #include <limits>
 #include <sstream>
 #include <TextStream.h>
+#include "Game.h"
+#include "Unit.h"
+#include "Building.h"
 
 TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 		  doctest::test_suite("JavaScriptCompatibility"))

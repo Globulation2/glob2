@@ -24,6 +24,7 @@
 #endif
 
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "Environment.h"
 #include "ScopedEnvironment.h"
@@ -69,6 +70,7 @@
 #include "TurnLockstep.h"
 #include "Utilities.h"
 #include "VerifyMatch.h"
+#include "Building.h"
 
 namespace fs = std::filesystem;
 

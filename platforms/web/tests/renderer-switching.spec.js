@@ -228,6 +228,10 @@ for(const mode of ['serial','threaded']) {
   // per host frame. Serial switches need a larger total functional budget.
   const switchTimeout=mode==='serial'?720000:360000;
   const mediaTimeout=mode==='serial'?960000:480000;
+  // Three Programmable GL round trips redraw the live colony backdrop at about
+  // 3.7 s per serial frame on hosted runners (1.3 s locally under SwiftShader),
+  // so the repeated-switch case alone needs about 13 minutes there.
+  const repeatedSwitchTimeout=mode==='serial'?1200000:switchTimeout;
   test(`${mode}: saved Software starts when the launcher initially selects GPU`,async({page},info)=>{
     test.setTimeout(switchTimeout);
     await start(page,mode);
@@ -306,7 +310,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('automatic-noop-following-capture.png')});await verify();
   });
   test(`${mode}: repeated menu switches preserve Wasm lifetime and input`,async({page},info)=>{
-    test.setTimeout(switchTimeout);const verify=await start(page,mode);
+    test.setTimeout(repeatedSwitchTimeout);const verify=await start(page,mode);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     for(let cycle=0;cycle<3;++cycle) {
       await choose(page,'Programmable GL');

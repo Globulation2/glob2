@@ -1654,6 +1654,14 @@ Globulation 2 कर्सर दाखवा.
 भूसेतूची रुंदी
 [Lake size]
 तलावाचा आकार
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 वादग्रस्त सामायिक जागा
 [Maze]
@@ -1738,6 +1746,8 @@ Globulation 2 कर्सर दाखवा.
 पट्ट्याची रुंदी
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 एवढ्या वसाहतींसाठी हा पट्टा खूपच लहान आहे; अधिक मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 नगरराज्ये
 [Strait width]
@@ -1752,6 +1762,12 @@ Globulation 2 कर्सर दाखवा.
 दगडी भिंती
 [Sand patches]
 वाळूचे ठिपके
+[Cliff walls]
+कड्यांच्या भिंती
+[Paved roads]
+फरसबंदी रस्ते
+[Scrub patches]
+ओसाड ठिपके
 [Tidal flats]
 भरती-ओहोटीचे सपाट प्रदेश
 [Everglades]
@@ -1764,6 +1780,12 @@ Globulation 2 कर्सर दाखवा.
 मोकळ्या जागेचा आकार
 [Levee]
 बांध
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 दलदली
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ Globulation 2 कर्सर दाखवा.
 किनारी खाऱ्या पाण्याची सरोवरे
 [Central island]
 मध्यवर्ती बेट
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 भरती-ओहोटीच्या सपाट प्रदेशाला किमान एका वसाहतीची गरज असते.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 मुख्य बेटे या नकाशावर बसत नाहीत; मोठा नकाशा, कमी वसाहती किंवा लहान बेटे वापरा.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ Globulation 2 कर्सर दाखवा.
 नदीचा त्रिभुज प्रदेश
 [Meandering rivers]
 नागमोडी नद्या
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 सुरुवातीच्या दऱ्यांमधील फळे
 [Moat]
@@ -1926,6 +1970,12 @@ Globulation 2 कर्सर दाखवा.
 दोन्ही किनाऱ्यांवरील वसाहती
 [Winding belt]
 वळणावळणाचा पट्टा
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 कप्प्यांचा आकार
 [Squares]
@@ -1962,6 +2012,20 @@ Globulation 2 कर्सर दाखवा.
 खिंडींमधील अंतर
 [Lee width]
 वाऱ्याच्या आडच्या भागाची रुंदी
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 जुने दाट जंगल
 [Canals]
@@ -2408,6 +2472,8 @@ HP ≤25/50/75%
 अतिरिक्त उथळ खळखळते प्रवाह
 [Moraine hummocks]
 मोरेन टेकड्या
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 गुंफलेल्या नदीमुळे तळांसाठी खूप कमी सपाट जागा उरते; मोठा नकाशा किंवा अरुंद नदी वापरा.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ HP ≤25/50/75%
 पाणवठे
 [Dry patches]
 कोरडे ठिपके
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 विरळ
 [Normal]
@@ -2594,6 +2666,26 @@ HP ≤25/50/75%
 लांब पंखाकार प्रदेश
 [Twin springs]
 जोड झरे
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 तळांसाठी बाजाडा खूप अरुंद आहेत; मोठा नकाशा, डोंगररांगांमध्ये अधिक अंतर, अरुंद डोंगररांगा किंवा लहान प्लाया वापरा.
 [Central Quarry]
@@ -2744,6 +2836,10 @@ HP ≤25/50/75%
 पोर्टेजची खोली
 [Extra trails]
 अतिरिक्त पायवाटा
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 पोर्टेज लेक्सला ६४ ते ५१२ टाइल्सच्या दरम्यानच्या बाजूंची आवश्यकता आहे.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

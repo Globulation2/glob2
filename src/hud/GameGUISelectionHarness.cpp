@@ -3,6 +3,7 @@
 // selection reacts to entity destruction, gid reuse and conversion between
 // simulation ticks and the next GUI draw.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -12,6 +13,7 @@
 #include "Unit.h"
 
 #include <memory>
+#include "sim/EntityRefOf.h"
 
 
 class GameGUISelectionHarness
@@ -72,7 +74,7 @@ public:
         gui.prepareLocalPresentation(scene);
         gui.setPublishedScene(&scene);
         gui.simulationThreaded = threaded;
-        const auto original = Game::refOf(building);
+        const auto original = refOf(building);
         gui.checkSelection();
         REQUIRE(gui.inputBuildingPanel());
         CHECK(gui.view.selectedBuilding == nullptr);
@@ -151,7 +153,7 @@ public:
 		gui.localTeamNo = 0;
 
 		Building* first = world.addBuilding("swarm", 4, 4);
-		const BuildingRef firstRef = Game::refOf(first);
+		const BuildingRef firstRef = refOf(first);
 		gui.setSelection(GameGUI::BUILDING_SELECTION, first);
 		REQUIRE(gui.clientRequests.latest().observedBuilding == firstRef);
 		REQUIRE(!first->recordFailingUnits);
@@ -235,7 +237,7 @@ public:
 		glob2test::HeadlessGame world(options);
 		GameGUI& gui = world.gui;
 		Unit* unit = world.addUnit(WORKER, 10, 10, 0);
-		const UnitRef before = Game::refOf(unit);
+		const UnitRef before = refOf(unit);
 		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
 
 		// Replay what Unit::handleActivity does on conversion.

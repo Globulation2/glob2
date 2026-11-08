@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Bullet.h"
+#include "Map.h"
 #include "FileFormatVersions.h"
 #include <algorithm>
 #include <climits>
@@ -15,6 +16,8 @@
 #include <Stream.h>
 
 #include "render/GameAnimations.h"
+#include "Team.h"
+#include "Building.h"
 
 Sector::Sector(Game *game)
 {

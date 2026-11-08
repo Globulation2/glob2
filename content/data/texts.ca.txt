@@ -1686,6 +1686,14 @@ Amplada del canal
 Amplada del pont de terra
 [Lake size]
 Mida del llac
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Terres comunals disputades
 [Maze]
@@ -1774,6 +1782,8 @@ Món anell
 Amplada del cinturó
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 El cinturó és massa curt per a tantes colònies; fes servir un mapa més llarg o menys colònies.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Ciutats estat
 [Strait width]
@@ -1788,6 +1798,12 @@ Les ciutats estat necessiten almenys una colònia.
 Murs de pedra
 [Sand patches]
 Clapes de sorra
+[Cliff walls]
+Muralles de penya-segats
+[Paved roads]
+Camins empedrats
+[Scrub patches]
+Clapes ermes
 [Tidal flats]
 Planes de marea
 [Everglades]
@@ -1800,6 +1816,12 @@ Mida de les basses
 Mida de la clariana
 [Levee]
 Dic
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Braços morts
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ Basses de marea
 Llacunes
 [Central island]
 Illa central
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Les planes de marea necessiten almenys una colònia.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Les illes natals no caben en aquest mapa; fes servir un mapa més gran, menys colònies o illes més petites.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ Riba sorrenca del llac
 Delta del riu
 [Meandering rivers]
 Rius amb meandres
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruita a les valls inicials
 [Moat]
@@ -1958,6 +2002,12 @@ Pedra a l'hort
 Colònies a les dues costes
 [Winding belt]
 Cinturó sinuós
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forma de les cel·les
 [Squares]
@@ -1994,6 +2044,20 @@ Gruix de les crestes
 Separació dels passos
 [Lee width]
 Amplada del sotavent
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Bosc primari
 [Canals]
@@ -2430,6 +2494,8 @@ Mida de les barres
 Guals extra
 [Moraine hummocks]
 Monticles de morrena
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La trena deixa massa poca terrassa per a les bases; usa un mapa més gran o una trena més estreta.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ Sabana
 Abeuradors
 [Dry patches]
 Zones seques
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Pocs
 [Normal]
@@ -2616,6 +2688,26 @@ Ventall ample
 Ventall llarg
 [Twin springs]
 Fonts bessones
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Els ventalls al·luvials són massa estrets per a les bases; fes servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ Allargament dels llacs
 Gruix del pas boscós
 [Extra trails]
 Corriols addicionals
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Els costats d'aquest mapa han de fer entre 64 i 512 caselles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -1,4 +1,5 @@
 #include <nlohmann/json.hpp>
+#include "Map.h"
 #include "StartingLayout.h"
 #include "ClearingLandscape.h"
 #include "Homes.h"
@@ -485,8 +486,15 @@ class MapGeneratorDefaultsTest
 					const int type = world.map.getResource(x, y).type;
 					// Retain cherries and prunes: total fruit alone cannot prove
 					// that a court supplies all three upgrade ingredients.
-					if ((corruption == 0 && type == STONE) ||
-						(corruption == 1 && type == ORANGE))
+					// Corruption 0 opens every wall: rock and cliff become grass.
+					const TerrainGroup group = terrainGroup(world.map.vertexTerrainAt(x, y));
+					if (corruption == 0 &&
+						(group == TerrainGroup::Ridges || group == TerrainGroup::Obstacles))
+					{
+						world.map.setVertexTerrain(x, y, GRASS);
+						++changed;
+					}
+					if (corruption == 1 && type == ORANGE)
 					{
 						world.map.setNoResource(x, y, 1);
 						++changed;
@@ -495,7 +503,8 @@ class MapGeneratorDefaultsTest
 			if (corruption == 2)
 			{
 				// Close the circular home/court boundary, regardless of the seed's
-				// rotation. This plugs every door without removing any structural wall.
+				// rotation, with cliff terrain: the doors are rough ground, which holds no
+				// stone. This plugs every door without removing any structural wall.
 				double outer = -1;
 				for (const auto &record : result.telemetry.records())
 					if (record.key == "gauntlet.arena.outer-radius")
@@ -505,9 +514,10 @@ class MapGeneratorDefaultsTest
 					for (int x = 0; x < world.map.getW(); ++x)
 						if (std::abs(std::hypot(x - world.map.getW() / 2.,
 											   y - world.map.getH() / 2.) - outer) < 1.5 &&
-							world.map.getResource(x, y).type != STONE)
+							terrainGroup(world.map.vertexTerrainAt(x, y)) != TerrainGroup::Obstacles &&
+							terrainGroup(world.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges)
 						{
-							world.map.setResourceByIndex(x, y, STONE, 1);
+							world.map.setVertexTerrain(x, y, CLIFFS);
 							++changed;
 						}
 			}
@@ -1161,12 +1171,12 @@ TEST_SUITE("MapGeneratorDefaults")
 		};
 		// Keep historical comparisons only for designs whose topology is unchanged.
 		// Honeycomb revision4 removed the stone outlines; corner voting changes
-		// Canals and Fingerprint placement. Their current worlds are covered by
-		// generator contracts and the platform golden matrix. Do not overwrite
-		// archived resource-epoch references with these intentional new layouts.
-		for (const auto original :
-			 {Original{"maze", "cell-shape", 0, 6132248727033081699ULL},
-			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL}})
+		// Canals and Fingerprint placement; Caravanserai revision 5 (2.0) turned
+		// its mesas into rock with quarry faces and its routes into roads. Their
+		// current worlds are covered by generator contracts and the platform
+		// golden matrix. Do not overwrite archived resource-epoch references with
+		// these intentional new layouts.
+		for (const auto original : {Original{"maze", "cell-shape", 0, 6132248727033081699ULL}})
 		{
 			D request;
 			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(original.id));
@@ -1729,9 +1739,12 @@ TEST_SUITE("MapGeneratorDefaults")
 			const MapGeneration::Torus t(world.map);
 			std::vector<unsigned char> grass(t.size());
 			int sand = 0;
+			// Revision 8 paints looks (lush and dry grass) and loam bay farms: ground wheat can spread
+			// onto is read from the rules, not the exact grass type.
 			for (int i = 0; i < t.size(); ++i)
 			{
-				grass[i] = world.map.isGrass(t.remainderX(i), i / t.w);
+				const auto &rules = world.map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+				grass[i] = rules.walkable && rules.resourcesGrow && (rules.allowedResources & (1u << WHEAT));
 				sand += world.map.isSand(t.remainderX(i), i / t.w);
 			}
 			const auto groups = MapGeneration::connectedRegions(grass, t.w, t.h, true, MapGeneration::GridNeighbors::Eight);
@@ -1935,6 +1948,84 @@ TEST_SUITE("MapGeneratorRegistry")
         DefaultsFixture fixture;
         MapGeneratorDefaultsTest::globalsInit();
         GeneratorContracts::generatorContracts();
+    }
+    TEST_CASE("catalog generation contracts: portage-lakes [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("portage-lakes");
+    }
+    TEST_CASE("catalog generation contracts: bajada [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("bajada");
+    }
+    TEST_CASE("catalog generation contracts: braided-river [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("braided-river");
+    }
+    TEST_CASE("catalog generation contracts: caravanserai [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("caravanserai");
+    }
+    TEST_CASE("catalog generation contracts: rain-shadow [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("rain-shadow");
+    }
+    TEST_CASE("catalog generation contracts: tidal-flats [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("tidal-flats");
+    }
+    TEST_CASE("catalog generation contracts: watershed [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("watershed");
+    }
+    TEST_CASE("catalog generation contracts: everglades [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("everglades");
+    }
+    TEST_CASE("catalog generation contracts: ring-world [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("ring-world");
+    }
+    TEST_CASE("catalog generation contracts: shattered-coast [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("shattered-coast");
+    }
+    TEST_CASE("catalog generation contracts: river [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("river");
+    }
+    TEST_CASE("catalog generation contracts: crater-lakes [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("crater-lakes");
+    }
+    TEST_CASE("catalog generation contracts: swamp [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts("swamp");
     }
     TEST_CASE("framework contracts [slow][map-generators]")
     {

@@ -6,7 +6,6 @@
 #include "shared_runtime/Runtime.h"
 #include <algorithm>
 #include "shared_runtime/BuildingDemands.h"
-#include "Game.h"
 #include <iterator>
 #include "Utilities.h"
 

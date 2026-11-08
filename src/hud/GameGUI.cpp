@@ -1,4 +1,5 @@
 #include "tutorial/TutorialGuidance.h"
+#include "Map.h"
 #include <ui/TextLayout.h>
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
@@ -41,7 +42,7 @@ using std::shared_ptr;
 using std::static_pointer_cast;
 
 GameGUI::GameGUI(bool persistPreferences)
-	: keyboardManager(GameGUIShortcuts), game(this), defaultAssign(game), toolManager(game, brush, defaultAssign, ghostManager),
+	: keyboardManager(GameGUIShortcuts), gameOwner(std::make_unique<Game>(this)), game(*gameOwner), defaultAssign(game), toolManager(game, brush, defaultAssign, ghostManager),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
@@ -488,3 +489,14 @@ const bool replayHeaderSkipperRegistered = [] {
 	return true;
 }();
 }
+
+Team *GameGUI::getLocalTeam(void) { return game.teams[localTeamNo]; }
+
+void GameGUI::prepareLocalPresentation(PresentationFrame& scene)
+{
+	const auto request=sceneRequest();
+	sceneExtractor.prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,scene);
+}
+
+Building* GameGUI::selectionBuilding() const { return game.resolveBuilding(std::get<BuildingRef>(selection)); }
+Unit* GameGUI::selectionUnit() const { return game.resolveUnit(std::get<UnitRef>(selection)); }

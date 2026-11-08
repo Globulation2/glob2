@@ -1686,6 +1686,14 @@ OpenGL недоступен в этой сборке.
 Ширина перешейка
 [Lake size]
 Размер озера
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Спорные общие земли
 [Maze]
@@ -1774,6 +1782,8 @@ OpenGL недоступен в этой сборке.
 Ширина пояса
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Города-государства
 [Strait width]
@@ -1788,6 +1798,12 @@ OpenGL недоступен в этой сборке.
 Каменные стены
 [Sand patches]
 Песчаные участки
+[Cliff walls]
+Скальные стены
+[Paved roads]
+Мощёные дороги
+[Scrub patches]
+Бесплодные участки
 [Tidal flats]
 Приливные отмели
 [Everglades]
@@ -1800,6 +1816,12 @@ OpenGL недоступен в этой сборке.
 Размер поляны
 [Levee]
 Дамба
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Старицы
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ OpenGL недоступен в этой сборке.
 Лагуны
 [Central island]
 Центральный остров
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Приливным отмелям нужна хотя бы одна колония.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Родные острова не помещаются на этой карте; используйте карту побольше, меньше колоний или острова поменьше.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ OpenGL недоступен в этой сборке.
 Дельта реки
 [Meandering rivers]
 Петляющие реки
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Фрукты в стартовых долинах
 [Moat]
@@ -1958,6 +2002,12 @@ OpenGL недоступен в этой сборке.
 Колонии на обоих берегах
 [Winding belt]
 Извилистый пояс
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Форма ячеек
 [Squares]
@@ -1994,6 +2044,20 @@ OpenGL недоступен в этой сборке.
 Шаг перевалов
 [Lee width]
 Ширина подветренной полосы
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Старый лес
 [Canals]
@@ -2430,6 +2494,8 @@ OpenGL недоступен в этой сборке.
 Дополнительные броды
 [Moraine hummocks]
 Моренные холмы
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разветвление оставляет базам слишком мало террасы; используйте карту побольше или более узкое разветвление.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ OpenGL недоступен в этой сборке.
 Водопои
 [Dry patches]
 Сухие участки
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Мало
 [Normal]
@@ -2616,6 +2688,26 @@ OpenGL недоступен в этой сборке.
 Длинный конус
 [Twin springs]
 Родники-близнецы
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Склоны с конусами выноса слишком узки для баз; используйте карту побольше, большее расстояние между хребтами, более узкие гребни или солёные озёра поменьше.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ OpenGL недоступен в этой сборке.
 Толщина лесного прохода
 [Extra trails]
 Дополнительные тропы
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Стороны этой карты должны быть от 64 до 512 клеток.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

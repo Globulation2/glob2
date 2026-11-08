@@ -1654,6 +1654,14 @@ Globulation 2-এর কার্সার দেখান।
 স্থল সেতুর প্রস্থ
 [Lake size]
 হ্রদের আকার
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 প্রতিদ্বন্দ্বিতার যৌথ ভূমি
 [Maze]
@@ -1738,6 +1746,8 @@ Globulation 2-এর কার্সার দেখান।
 ভূবলয়ের প্রস্থ
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 এত উপনিবেশের জন্য ভূবলয় ছোট; লম্বা মানচিত্র অথবা কম উপনিবেশ ব্যবহার করুন।
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 নগর রাষ্ট্র
 [Strait width]
@@ -1752,6 +1762,12 @@ Globulation 2-এর কার্সার দেখান।
 পাথরের দেয়াল
 [Sand patches]
 বালির খণ্ড
+[Cliff walls]
+খাড়া পাহাড়ের দেয়াল
+[Paved roads]
+পাকা রাস্তা
+[Scrub patches]
+অনুর্বর খণ্ড
 [Tidal flats]
 জোয়ারের সমতলভূমি
 [Everglades]
@@ -1764,6 +1780,12 @@ Globulation 2-এর কার্সার দেখান।
 ফাঁকা জায়গার আকার
 [Levee]
 বাঁধ
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 জলাভূমি
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ Globulation 2-এর কার্সার দেখান।
 উপহ্রদ
 [Central island]
 কেন্দ্রীয় দ্বীপ
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 জোয়ারভাটার সমতলভূমিতে অন্তত একটি কলোনি থাকা প্রয়োজন।
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 মূল দ্বীপগুলো এই মানচিত্রে ধরছে না; একটি বড় মানচিত্র, কম উপনিবেশ অথবা আরও ছোট দ্বীপ ব্যবহার করুন।
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ Globulation 2-এর কার্সার দেখান।
 নদী বদ্বীপ
 [Meandering rivers]
 আঁকাবাঁকা নদী
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 নিজ উপত্যকায় ফল
 [Moat]
@@ -1926,6 +1970,12 @@ Globulation 2-এর কার্সার দেখান।
 উভয় উপকূলের উপনিবেশগুলি
 [Winding belt]
 আঁকাবাঁকা ভূবলয়
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 ঘরের আকৃতি
 [Squares]
@@ -1962,6 +2012,20 @@ Globulation 2-এর কার্সার দেখান।
 গিরিপথের ব্যবধান
 [Lee width]
 বাতাসের আড়ালের প্রস্থ
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 প্রাচীন বন
 [Canals]
@@ -2408,6 +2472,8 @@ HP ≤25/50/75%
 অতিরিক্ত অগভীর স্রোত
 [Moraine hummocks]
 মোরাইন টিলা
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 নিজ এলাকাগুলোর জন্য বহুশাখা নদী খুব কম সোপানভূমি রেখেছে; বড় মানচিত্র অথবা সরু বহুশাখা নদী ব্যবহার করুন।
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ HP ≤25/50/75%
 পানের জলাশয়
 [Dry patches]
 শুষ্ক অংশ
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 বিরল
 [Normal]
@@ -2594,6 +2666,26 @@ HP ≤25/50/75%
 দীর্ঘ পললপাখা
 [Twin springs]
 জোড়া ঝরনা
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 নিজ এলাকার জন্য বাজাদা খুব সরু; বড় মানচিত্র, পর্বতশ্রেণির বেশি ব্যবধান, সরু শৈলশিরা অথবা ছোট প্লায়া ব্যবহার করুন।
 [Central Quarry]
@@ -2744,6 +2836,10 @@ HP ≤25/50/75%
 স্থল পারাপারের গভীরতা
 [Extra trails]
 অতিরিক্ত পথ
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 পোর্টেজ লেকস-এর প্রতিটি বাহু ৬৪ থেকে ৫১২ টাইল হতে হবে।
 [Portage Lakes cannot fit shoreline settlements on this seed.]

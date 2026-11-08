@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ComputeExecutor.h"
+#include "Map.h"
 #include "SnapshotStore.h"
 #include "Game.h"
 #include <algorithm>

@@ -33,6 +33,7 @@
 #include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
+#include "Map.h"
 #if defined(SDL_PLATFORM_IOS)
 #include "platforms/mobile/ios/SafeArea.h"
 #endif

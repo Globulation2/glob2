@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
+#include "Map.h"
 #include <stdarg.h>
 #include <math.h>
 

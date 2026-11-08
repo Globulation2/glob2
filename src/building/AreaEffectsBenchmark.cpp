@@ -9,6 +9,8 @@
 #include <array>
 #include <algorithm>
 #include <string_view>
+#include "Unit.h"
+#include "Building.h"
 #ifndef WIN32
 #include <sys/resource.h>
 #endif

@@ -5,6 +5,7 @@
 // here before it shows up as a changed golden fingerprint somewhere downstream. Needs the
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
+#include "Map.h"
 #include <array>
 #include <utility>
 #include <random>
@@ -21,6 +22,10 @@
 #include <StreamBackend.h>
 #include "HierarchicalCrossings.h"
 #include "Drawing.h"
+#include "Rock.h"
+#include "HeightFieldLooks.h"
+#include "HeightMap.h"
+#include "Terrain.h"
 #include "GenerationValidation.h"
 #include "GeneratorDefinition.h"
 #include "IntBuildingType.h"
@@ -1285,6 +1290,297 @@ inline void wallChecks()
 
 // growTerritories: equal areas to the tile on an open torus, each territory in one piece, the same
 // result grown twice, and a boxed-in territory that stops while the rest share out the remainder.
+// Rock walls (shared/Rock): a wall drawn as tiles blocks exactly those tiles once its vertices are
+// rock, a quarry face left out of it keeps four grass corners and holds stone, talus skirts the rock
+// and deep cores keep a shallow margin.
+inline void rockChecks()
+{
+	Game game(nullptr);
+	grassMap(game, 5, 5);
+	Map &map = game.map;
+	const Torus t(map);
+	std::vector<unsigned char> wall(t.size(), 0), quarry(t.size(), 0), open(t.size(), 0);
+	for (int y = 10; y < 16; ++y)
+		for (int x = 0; x < t.w; ++x)
+			wall[t.at(x, y)] = 1;
+	for (int i = 0; i < t.size(); ++i)
+		open[i] = !wall[i];
+	const std::vector<int> face = quarryNear(t, wall, open, t.at(16, 15), 2, 2);
+	assert(face.size() == 10); // five columns, two rows deep, on the wall's lower face
+	for (int i : face)
+	{
+		assert(wall[i] && (i / t.w == 14 || i / t.w == 15));
+		quarry[i] = 1;
+	}
+	std::vector<unsigned char> rockTiles(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		rockTiles[i] = wall[i] && !quarry[i];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTiles);
+	TerrainSketch sketch(t.size(), GRASS);
+	for (int i = 0; i < t.size(); ++i)
+		if (rock[i])
+			sketch[i] = RIDGE_ROCK;
+	const std::vector<unsigned char> approach = quarryApproach(t, quarry);
+	for (int i = 0; i < t.size(); ++i)
+		assert(!(approach[i] && quarry[i]) && !(approach[i] && rock[i] && !wall[i]));
+	writeVertices(GenerationMap(map).ref(), sketch);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const int i = t.at(x, y);
+			const bool walkable = map.terrainPropertiesAt(x, y).walkable;
+			// Open ground stays open and the wall's inner rows are blocked; only the outer rows beside
+			// the quarry's ends, convex corners of the rock, keep a single rock corner.
+			if (!wall[i])
+				assert(walkable);
+			else if (!quarry[i] && y > 10 && y < 15)
+				assert(!walkable);
+		}
+	for (int i : face)
+	{
+		assert(map.isResourceAllowed(t.remainderX(i), i / t.w, STONE));
+		map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	}
+	{
+		// With its quarry stocked, nothing walks through the wall.
+		std::vector<unsigned char> passable(t.size(), 0), north(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			// Rows 24 and 25 are shut too, so the torus cannot carry a walk round the back.
+			passable[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable &&
+						  !map.isResource(t.remainderX(i), i / t.w) && i / t.w != 24 && i / t.w != 25;
+			north[i] = i / t.w == 5;
+		}
+		const Flood flood = floodFrom(t, north, passable);
+		for (int i : flood.visited)
+			assert(i / t.w != 20);
+	}
+	std::vector<int> owner(t.size(), -1);
+	for (int i : face)
+		owner[i] = 0;
+	assert(quarryFault(map, t, quarry, owner, 1, 10).empty());
+	assert(!quarryFault(map, t, quarry, owner, 1, 11).empty());
+	map.replaceResource(t.remainderX(face[0]), face[0] / t.w, Resource{});
+	assert(!quarryFault(map, t, quarry, owner, 1, 1).empty());
+	// Talus: one tile always, never on the wall or where not eligible.
+	std::vector<unsigned char> eligible(t.size(), 1);
+	eligible[t.at(8, 9)] = 0;
+	const std::vector<int> calm(t.size(), 0);
+	const std::vector<unsigned char> apron = talusApron(t, rockTiles, eligible, calm, 1, 3, 30000);
+	assert(apron[t.at(10, 9)] && !apron[t.at(8, 9)] && !apron[t.at(10, 7)] && !apron[t.at(10, 12)]);
+	// Deep cores leave at least two steps of shallow water.
+	std::vector<unsigned char> water(t.size(), 0);
+	for (int y = 2; y < 12; ++y)
+		for (int x = 2; x < 12; ++x)
+			water[t.at(x, y)] = 1;
+	const std::vector<unsigned char> core = deepCore(t, water, 1);
+	assert(core[t.at(6, 6)] && !core[t.at(2, 6)] && core[t.at(3, 6)] && !core[t.at(20, 20)]);
+}
+
+// The height-field post-pass helpers (HeightFieldLooks.h), on small hand-built sketches and maps:
+// wet means either water group, deep cores keep their shallows, take only big enough bodies and round
+// off in a straight line, the deep reach grows with a body's width, bends read high inside and low outside, the major body drops
+// the ponds, levees and pavement keep their distances, grass grades by distance, gardens are round,
+// writing a post-pass clears exactly the deposits the new terrain refuses, a ring of rock is seen to
+// part the ground and a lone knot is not, and the rebuilt height-field terrain is the stages' own.
+inline void heightFieldLooksChecks()
+{
+	const Torus t(32, 32);
+	const auto pond = [&](int x0, int y0, int x1, int y1)
+	{
+		TerrainSketch s(size_t(t.size()), GRASS);
+		for (int y = y0; y < y1; ++y)
+			for (int x = x0; x < x1; ++x)
+				s[size_t(t.at(x, y))] = WATER;
+		return s;
+	};
+	{
+		// Wet vertices and steps from them.
+		TerrainSketch s = pond(4, 4, 8, 8);
+		s[size_t(t.at(5, 5))] = DEEP_WATER;
+		s[size_t(t.at(20, 20))] = SAND;
+		const std::vector<unsigned char> wet = wetVertices(s);
+		assert(wet[size_t(t.at(5, 5))] && wet[size_t(t.at(4, 4))] && !wet[size_t(t.at(20, 20))] &&
+			   !wet[size_t(t.at(8, 8))]);
+		const std::vector<int> steps = stepsFromWet(t, s);
+		assert(steps[size_t(t.at(5, 5))] == 0 && steps[size_t(t.at(8, 5))] == 1 && steps[size_t(t.at(10, 10))] == 3);
+		// Straight-line distance: round contours, never under the steps.
+		const std::vector<int> round = distanceFromWet(t, s);
+		assert(round[size_t(t.at(10, 10))] == 4 && round[size_t(t.at(8, 5))] == 1 && round[size_t(t.at(5, 5))] == 0);
+		for (int i = 0; i < t.size(); ++i)
+			assert(round[size_t(i)] >= steps[size_t(i)]);
+		assert(distanceFromWet(t, TerrainSketch(size_t(t.size()), GRASS))[0] == -1);
+		const std::vector<int> dry = stepsFromWet(t, TerrainSketch(size_t(t.size()), GRASS));
+		assert(std::all_of(dry.begin(), dry.end(), [](int v) { return v == -1; }));
+	}
+	{
+		// Deep cores: shallows round them, small bodies skipped, eligibility respected.
+		TerrainSketch s = pond(4, 4, 18, 18);
+		for (int y = 24; y < 29; ++y)
+			for (int x = 24; x < 29; ++x)
+				s[size_t(t.at(x, y))] = WATER;
+		TerrainSketch a = s;
+		const int deep = deepenWater(a, t, 3, 4);
+		assert(deep > 0 && a[size_t(t.at(10, 10))] == DEEP_WATER && a[size_t(t.at(26, 26))] == WATER);
+		for (int i = 0; i < t.size(); ++i)
+			if (a[size_t(i)] == DEEP_WATER)
+				for (int dy = -2; dy <= 2; ++dy)
+					for (int dx = -2; dx <= 2; ++dx)
+						assert(terrainGroup(TerrainType(a[size_t(t.at(t.remainderX(i) + dx, i / t.w + dy))])) !=
+							   TerrainGroup::Grass);
+		std::vector<unsigned char> left(size_t(t.size()), 0);
+		for (int i = 0; i < t.size(); ++i)
+			left[size_t(i)] = t.remainderX(i) < 11;
+		TerrainSketch b = s;
+		deepenWater(b, t, 3, 4, DARK_WATER, &left);
+		assert(b[size_t(t.at(8, 10))] == DARK_WATER && b[size_t(t.at(13, 10))] == WATER);
+		// The reach for a share: of the 221 water vertices, 101 lie 3 tiles or more from land (the big
+		// pond's 10x10 and the small one's middle; square ponds are as far from land in a straight line as
+		// in steps) and 64 lie 4 out, so a 500 permille cap is met at the floor and a 300 permille cap
+		// needs one tile more.
+		assert(deepReachForShare(s, t, 3, 500) == 3);
+		const int tight = deepReachForShare(s, t, 3, 300);
+		assert(tight == 4);
+		TerrainSketch c = s;
+		assert(deepenWater(c, t, tight, 1) * 1000 <= (196 + 25) * 300);
+		// The reach is a straight line, so the core rounds off round a point of land: a vertex
+		// diagonally three steps from it is 4.2 tiles away and deep at a reach of 4, one three tiles
+		// straight out is not, one four out is.
+		TerrainSketch d = s;
+		d[size_t(t.at(11, 11))] = SAND;
+		deepenWater(d, t, 4, 1);
+		assert(d[size_t(t.at(14, 14))] == DEEP_WATER && d[size_t(t.at(14, 11))] == WATER &&
+			   d[size_t(t.at(7, 11))] == DEEP_WATER);
+	}
+	{
+		// Bends: inside a convex corner of land the share is high, inside a bay low, 500 on a straight
+		// bank; the major body leaves the small pond out.
+		TerrainSketch s(size_t(t.size()), GRASS);
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 16; ++x)
+				s[size_t(t.at(x, y))] = WATER;
+		const std::vector<int> straight = wetShare(t, wetVertices(s), 4);
+		assert(std::abs(straight[size_t(t.at(16, 10))] - 444) <= 1); // four of nine columns wet
+		assert(std::abs(straight[size_t(t.at(15, 10))] - 555) <= 1);
+		TerrainSketch big = pond(2, 2, 20, 20);
+		big[size_t(t.at(26, 26))] = WATER;
+		const std::vector<unsigned char> major = majorWater(t, wetVertices(big), 250);
+		assert(major[size_t(t.at(10, 10))] && !major[size_t(t.at(26, 26))]);
+		const std::vector<int> share = wetShare(t, wetVertices(big), 3);
+		assert(share[size_t(t.at(1, 1))] < 300 && share[size_t(t.at(20, 10))] > 300);
+	}
+	{
+		// Levees and pavement keep their distances; grass grades by distance; gardens stay plain.
+		TerrainSketch s = pond(0, 0, 4, 32);
+		const std::vector<int> steps = stepsFromWet(t, s);
+		std::vector<unsigned char> all(size_t(t.size()), 1), none(size_t(t.size()), 0);
+		TerrainSketch l = s;
+		const int laid = layLevee(l, steps, all, 2, 3, {}, 0);
+		// Two columns on each side of the strip of water (the torus wraps it round).
+		assert(laid == 4 * 32 && l[size_t(t.at(5, 3))] == LOAM && l[size_t(t.at(6, 3))] == LOAM &&
+			   l[size_t(t.at(30, 3))] == LOAM && l[size_t(t.at(4, 3))] == GRASS && l[size_t(t.at(7, 3))] == GRASS);
+		std::vector<int> wide(size_t(t.size()), 65535);
+		TerrainSketch lw = s;
+		assert(layLevee(lw, steps, all, 2, 3, wide, 40000) == 6 * 32 && layLevee(lw, steps, none, 2, 9, {}, 0) == 0);
+		TerrainSketch p = s;
+		const std::vector<int> calm(size_t(t.size()), 65535), rough(size_t(t.size()), 0);
+		paveBeyondWater(p, steps, all, calm, 10, 4, GRASS, SHALE);
+		TerrainSketch q = s;
+		paveBeyondWater(q, steps, all, rough, 10, 4, GRASS, SHALE);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			if (p[size_t(i)] == SHALE)
+				assert(steps[size_t(i)] >= 10);
+			if (q[size_t(i)] == SHALE)
+				assert(steps[size_t(i)] >= 13);
+		}
+		assert(p[size_t(t.at(14, 5))] == SHALE && q[size_t(t.at(14, 5))] == GRASS && q[size_t(t.at(17, 5))] == SHALE);
+		TerrainSketch looks(size_t(t.size()), 0);
+		std::vector<unsigned char> plain(size_t(t.size()), 0);
+		plain[size_t(t.at(5, 9))] = 1;
+		gradeGrassLooks(looks, s, steps, plain, {}, 2, 8, 0);
+		assert(looks[size_t(t.at(5, 3))] == LUSH_GRASS && looks[size_t(t.at(5, 9))] == 0 &&
+			   looks[size_t(t.at(9, 3))] == 0 && looks[size_t(t.at(15, 3))] == DRY_GRASS && looks[size_t(t.at(2, 3))] == 0);
+		const std::vector<unsigned char> garden = homeGardens(t, {10}, {10}, 1, 4.0, {}, 0);
+		assert(garden[size_t(t.at(12, 12))] && garden[size_t(t.at(16, 12))] && !garden[size_t(t.at(17, 12))] &&
+			   !garden[size_t(t.at(15, 15))]);
+	}
+	{
+		// Writing a post-pass: looks inside their groups, deposits the new terrain refuses cleared and
+		// counted, algae under deep water listed for reseating.
+		Game game(nullptr);
+		grassMap(game, 5, 5);
+		Map &map = game.map;
+		TerrainSketch mech = pond(20, 20, 28, 28);
+		writeVertices(GenerationMap(map).ref(), mech);
+		map.setResourceByIndex(5, 5, WHEAT, 1);
+		map.setResourceByIndex(10, 5, WOOD, 1);
+		map.setResourceByIndex(23, 23, ALGA, 1);
+		map.setResourceByIndex(20, 26, ALGA, 1);
+		assert(map.isResource(5, 5) && map.isResource(23, 23));
+		for (int y = 5; y <= 6; ++y)
+			for (int x = 5; x <= 6; ++x)
+				mech[size_t(t.at(x, y))] = SHALE;
+		for (int y = 22; y <= 25; ++y)
+			for (int x = 22; x <= 25; ++x)
+				mech[size_t(t.at(x, y))] = DEEP_WATER;
+		TerrainSketch looks(size_t(t.size()), 0);
+		looks[size_t(t.at(10, 5))] = DRY_GRASS;
+		looks[size_t(t.at(11, 5))] = HEATH; // not a grass look: ignored
+		const DisplacedResources lost = writeLayeredTerrain(GenerationMap(map).ref(), mech, looks);
+		assert(lost.wheat == 1 && lost.wood == 0 && lost.algae == 1 && lost.total() == 2);
+		assert(lost.algaeTiles.size() == 1 && lost.algaeTiles[0] == t.at(23, 23));
+		assert(!map.isResource(5, 5) && map.isResource(10, 5) && map.isResource(20, 26));
+		assert(map.vertexTerrainAt(10, 5) == DRY_GRASS && map.vertexTerrainAt(11, 5) == GRASS &&
+			   map.vertexTerrainAt(23, 23) == DEEP_WATER);
+		const TerrainSketch read = mapSketch(map);
+		assert(read[size_t(t.at(10, 5))] == DRY_GRASS && read[size_t(t.at(5, 5))] == SHALE);
+	}
+	{
+		// A ring of rock round a patch parts the ground; a lone knot in the open does not.
+		Game game(nullptr);
+		grassMap(game, 5, 5);
+		Map &map = game.map;
+		assert(partingBarrier(map) < 0);
+		TerrainSketch s(size_t(t.size()), GRASS);
+		for (int y = 3; y <= 6; ++y)
+			for (int x = 3; x <= 6; ++x)
+				s[size_t(t.at(x, y))] = RIDGE_ROCK;
+		writeVertices(GenerationMap(map).ref(), s);
+		assert(partingBarrier(map) < 0);
+		for (int y = 10; y <= 22; ++y)
+			for (int x = 10; x <= 22; ++x)
+				if (std::max(std::abs(x - 16), std::abs(y - 16)) >= 5)
+					s[size_t(t.at(x, y))] = RIDGE_ROCK;
+		writeVertices(GenerationMap(map).ref(), s);
+		const int parting = partingBarrier(map);
+		assert(parting >= 0 && std::max(std::abs(t.remainderX(parting) - 16), std::abs(parting / t.w - 16)) >= 4);
+	}
+	{
+		// The rebuilt terrain: the stages' own, and the same from every fresh context.
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("swamp"));
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 2;
+		request.seed = 5;
+		const HeightFieldOptions options = HeightFieldOptions::fromRequest(request, true);
+		const HeightFieldBuilder plain = [](HeightMap &hm, unsigned, unsigned, float smoothing)
+		{ hm.makeSwamp(smoothing); };
+		GenerationContext a(request), b(request), c(request);
+		const TerrainSketch first = heightFieldSketch(request, a, options, plain);
+		assert(first == heightFieldSketch(request, b, options, plain));
+		const HeightFieldTiling tiling = heightFieldTiling(64, 64, options.repeat);
+		HeightMap hm(tiling.w, tiling.h, c.stream("heightmap"));
+		plain(hm, tiling.w, tiling.h, (float)(options.smoothing + 4) * 3);
+		Game game(nullptr);
+		grassMap(game, 6, 6);
+		paintHeightFieldTerrain(GenerationMap(game.map).ref(), hm, tiling, classifyHeightField(hm, tiling, options));
+		assert(first == mapSketch(game.map));
+		assert(std::count(first.begin(), first.end(), (unsigned char)WATER) > 0 &&
+			   std::count(first.begin(), first.end(), (unsigned char)GRASS) > 0);
+	}
+}
+
 inline void territoryChecks()
 {
 	const Torus t(30, 30);
@@ -3035,6 +3331,8 @@ inline void toolkitChecks()
 	dressingChecks();
 	layerChecks();
 	wallChecks();
+	rockChecks();
+	heightFieldLooksChecks();
 	territoryChecks();
 	arenaChecks();
 	farmAndTowerChecks();

@@ -28,6 +28,13 @@ void layBeaches(TerrainSketch &, const Torus &);
 /// Writes the sketch to the map's vertices, re-deriving every tile from its corners.
 void writeVertices(GenerationMap &, const TerrainSketch &);
 
+/// The terrain to write when a design keeps two sketches: `mechanics`, the canonical type of every
+/// vertex's rule group (GRASS, SAND, SHALE, SCREE...) that every shared helper and check reads, and
+/// `looks`, the artwork chosen for it (LUSH_GRASS, DUNE_SAND, WEATHERED_SANDSTONE...), 0 where none
+/// was chosen. A look is taken only where it shares its mechanic's terrain group, so looks can never
+/// change a rule: anything else keeps its mechanic. WATER is type 0 and so is never a look.
+TerrainSketch composeLooks(const TerrainSketch &mechanics, const TerrainSketch &looks);
+
 /// Every corner vertex of tile (x, y) takes `type`, with no beach laid: the tile becomes pure
 /// `type`, and the eight tiles sharing those corners mix it with their own.
 void paintTile(GenerationMap &, int x, int y, TerrainType type);

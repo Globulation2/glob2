@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct PortageLakesOptions
 {
-	int elongation, depth, trails;
+	int elongation, depth, trails, deep, shield;
 	int wheat, wood, stone, algae, fruit;
 	explicit PortageLakesOptions(const GenerationRequest &);
 };

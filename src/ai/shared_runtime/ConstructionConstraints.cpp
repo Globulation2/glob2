@@ -3,7 +3,6 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
-#include "Game.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;

@@ -18,7 +18,7 @@
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), 
+  : gameOwner(std::make_unique<Game>(nullptr, this)), game(*gameOwner), keyboardManager(MapEditShortcuts), 
     minimap(globalContainer->runNoX,
             RIGHT_MENU_WIDTH, // menu width
             globalContainer->gfx->getW(), // game width

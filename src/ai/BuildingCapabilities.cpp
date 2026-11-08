@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BuildingCapabilities.h"
+#include "Map.h"
 
 #include "BuildingType.h"
 #include "GameHeader.h"
@@ -10,6 +11,7 @@
 #include <tuple>
 #include <algorithm>
 #include <stdexcept>
+#include "Team.h"
 
 namespace AIPlanning
 {

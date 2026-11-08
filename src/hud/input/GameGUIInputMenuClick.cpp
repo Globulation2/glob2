@@ -6,7 +6,6 @@
 
 #include <Toolkit.h>
 
-#include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"

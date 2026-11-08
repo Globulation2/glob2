@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Regression for wrapped footprints being erased by Game::load integrity repair.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"

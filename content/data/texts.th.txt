@@ -1654,6 +1654,14 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความ​กว้าง​ของ​สะพาน​แผ่นดิน
 [Lake size]
 ขนาด​ทะเลสาบ
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 พื้นที่​ส่วนกลาง​ที่​ต้อง​แย่งชิง
 [Maze]
@@ -1738,6 +1746,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความ​กว้าง​แถบ​แผ่นดิน
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 แถบ​แผนที่​สั้น​เกินไป​สำหรับ​อาณานิคม​จำนวนมาก​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ยาว​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 นครรัฐ
 [Strait width]
@@ -1752,6 +1762,12 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 กำแพง​หิน
 [Sand patches]
 ผืน​ทราย
+[Cliff walls]
+กำแพง​หน้าผา
+[Paved roads]
+ถนน​ปู​หิน
+[Scrub patches]
+ผืน​ดิน​แห้ง​แล้ง
 [Tidal flats]
 ที่ราบ​น้ำขึ้น​น้ำลง
 [Everglades]
@@ -1764,6 +1780,12 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ขนาด​พื้นที่ว่าง
 [Levee]
 คัน​กั้น​น้ำ
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 บึง
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ลากูน
 [Central island]
 เกาะ​กลาง
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 พื้นที่ราบ​น้ำขึ้น​น้ำลง​จำเป็นต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 หมู่เกาะ​หลัก​ไม่​พอดี​กับ​แผนที่​นี้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า จำนวน​อาณานิคม​น้อยลง หรือ​เกาะ​ขนาดเล็ก​กว่า
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 สามเหลี่ยม​ปากแม่น้ำ
 [Meandering rivers]
 แม่น้ำ​ที่​คดเคี้ยว
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 ผลไม้​ใน​หุบเขา​บ้านเกิด
 [Moat]
@@ -1926,6 +1970,12 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 อาณานิคม​บน​ชายฝั่ง​ทั้งสอง​ฝั่ง
 [Winding belt]
 แถบ​แผ่นดิน​คดเคี้ยว
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 รูปร่าง​เซลล์
 [Squares]
@@ -1962,6 +2012,20 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ระยะห่าง​ช่องเขา
 [Lee width]
 ความ​กว้าง​ด้าน​อับลม
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 ป่า​ดั้งเดิม
 [Canals]
@@ -2408,6 +2472,8 @@ HP ≤25/50/75%
 แก่ง​ตื้น​เพิ่มเติม
 [Moraine hummocks]
 เนิน​ตะกอน​ธารน้ำแข็ง
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 แม่น้ำ​หลาย​สาย​ทำให้​เหลือ​ลาน​ตะพัก​สำหรับ​ฐาน​น้อย​เกินไป ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​ความ​กว้าง​แนว​แม่น้ำ
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ HP ≤25/50/75%
 แหล่งน้ำ
 [Dry patches]
 บริเวณ​แห้งแล้ง
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 เบาบาง
 [Normal]
@@ -2594,6 +2666,26 @@ HP ≤25/50/75%
 พัด​ตะกอน​ยาว
 [Twin springs]
 ตาน้ำ​คู่
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 ที่ราบ​เชิงเขา​แคบ​เกิน​พื้นที่​เริ่มต้น ให้​ใช้​แผนที่​ใหญ่​ขึ้น เพิ่ม​ระยะห่าง​เทือกเขา ลด​ความ​กว้าง​สันเขา หรือ​ลด​ขนาด​แอ่ง​ทะเลสาบ​แห้ง
 [Central Quarry]
@@ -2744,6 +2836,10 @@ HP ≤25/50/75%
 ความลึก​แนว​ป่า​ที่​ต้อง​ถาง
 [Extra trails]
 เส้นทาง​เพิ่มเติม
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 ทะเลสาบ​พอร์เทจ​ต้อง​ใช้​แผนที่​ที่​แต่ละ​ด้าน​ยาว 64 ถึง 512 ช่อง
 [Portage Lakes cannot fit shoreline settlements on this seed.]

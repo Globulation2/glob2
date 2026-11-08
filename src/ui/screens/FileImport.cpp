@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cctype>
 #include <limits>
+#include "Game.h"
 
 using namespace GAGCore;
 namespace

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Save during an explorer's final step into a building; retain corruption checks.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "GlobalContainer.h"
 #include "Game.h"

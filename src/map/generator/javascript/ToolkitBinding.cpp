@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
+#include "Map.h"
 #include "Unit.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -15,6 +16,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
+#include "Game.h"
 
 namespace MapGeneration::JavaScript
 {

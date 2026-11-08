@@ -1686,6 +1686,14 @@ Globulation 2 커서를 표시합니다.
 육교 너비
 [Lake size]
 호수 크기
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 쟁탈 공유지
 [Maze]
@@ -1774,6 +1782,8 @@ Globulation 2 커서를 표시합니다.
 띠 너비
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 도시 국가
 [Strait width]
@@ -1788,6 +1798,12 @@ Globulation 2 커서를 표시합니다.
 돌 성벽
 [Sand patches]
 모래밭
+[Cliff walls]
+절벽 성벽
+[Paved roads]
+포장도로
+[Scrub patches]
+황무지
 [Tidal flats]
 갯벌
 [Everglades]
@@ -1800,6 +1816,12 @@ Globulation 2 커서를 표시합니다.
 공터 크기
 [Levee]
 제방
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 늪지
 [Everglades need at least one colony.]
@@ -1904,8 +1926,18 @@ Globulation 2 커서를 표시합니다.
 석호
 [Central island]
 중앙 섬
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 갯벌에는 최소 한 개의 식민지가 필요합니다.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1948,6 +1980,18 @@ Globulation 2 커서를 표시합니다.
 강 삼각주
 [Meandering rivers]
 굽이치는 강
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 시작 골짜기의 과일
 [Moat]
@@ -1958,6 +2002,12 @@ Globulation 2 커서를 표시합니다.
 양쪽 해안의 식민지
 [Winding belt]
 구불구불한 띠
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 칸 모양
 [Squares]
@@ -1994,6 +2044,20 @@ Globulation 2 커서를 표시합니다.
 고갯길 간격
 [Lee width]
 바람그늘 너비
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 원시림
 [Canals]
@@ -2430,6 +2494,8 @@ Globulation 2 커서를 표시합니다.
 추가 여울
 [Moraine hummocks]
 빙퇴석 둔덕
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2488,6 +2554,12 @@ Globulation 2 커서를 표시합니다.
 물웅덩이
 [Dry patches]
 건조 지대
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 적음
 [Normal]
@@ -2616,6 +2688,26 @@ Globulation 2 커서를 표시합니다.
 긴 선상지
 [Twin springs]
 쌍둥이 샘
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 선상지 비탈이 본거지를 두기에 너무 좁습니다. 더 큰 지도, 더 넓은 산맥 간격, 더 좁은 능선 또는 더 작은 염호를 사용하세요.
 [Central Quarry]
@@ -2766,6 +2858,10 @@ Globulation 2 커서를 표시합니다.
 벌목할 숲의 두께
 [Extra trails]
 추가 오솔길
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 이 지도의 각 변은 64~512칸이어야 합니다.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

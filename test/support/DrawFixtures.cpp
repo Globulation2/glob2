@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DrawFixtures.h"
+#include "sim/snapshot/SnapshotStore.h"
 
 #include "Game.h"
 #include "GameGUI.h"
 #include "render/scene/SceneExtract.h"
+#include "sim/EntityRefOf.h"
 
 namespace glob2test
 {
@@ -13,8 +15,8 @@ namespace glob2test
 		PresentationFrame &scene = into ? *into : shared;
         SceneRequest request=game.gui ? game.gui->sceneRequest() : SceneRequest{};
 		request.localTeam = localTeam;
-        if (view.selectedBuilding) request.selectedBuilding=Game::refOf(view.selectedBuilding);
-        if (view.selectedUnit) request.selectedUnit=Game::refOf(view.selectedUnit);
+        if (view.selectedBuilding) request.selectedBuilding=refOf(view.selectedBuilding);
+        if (view.selectedUnit) request.selectedUnit=refOf(view.selectedUnit);
 		game.snapshots().invalidateBoundary(); // Fixture helpers may directly edit public state.
 		SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,scene);
 		return scene;

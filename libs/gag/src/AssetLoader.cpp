@@ -319,6 +319,12 @@ struct AssetLoader::Impl {
     mutable std::mutex mutex;
     std::shared_ptr<std::condition_variable> ready = std::make_shared<std::condition_variable>();
     std::shared_ptr<std::condition_variable> cpuWake = std::make_shared<std::condition_variable>();
+    // Bumped whenever the queue, a job's state or the memory budget changes, so
+    // idle workers rescan only after something could have become runnable. The
+    // owner thread runs browser reads under the same mutex; constant rescans of
+    // a long queue starved it and stalled startup on slow machines.
+    std::shared_ptr<std::atomic<std::uint64_t>> changes = std::make_shared<std::atomic<std::uint64_t>>(0);
+    void changed() { ++*changes; }
     std::condition_variable ioWake;
     std::shared_ptr<std::atomic<size_t>> encodedBytes = std::make_shared<std::atomic<size_t>>(0);
     std::deque<std::unique_ptr<Job>> jobs;
@@ -340,6 +346,7 @@ struct AssetLoader::Impl {
             if (result->state != State::Failed && result->state != State::Cancelled && result->consumers) {
                 for (auto &job : jobs) if (job->result == result && priority < job->priority) job->priority = priority;
                 ++result->consumers;
+                changed();
                 (read ? ioWake : *cpuWake).notify_one();
                 return result;
             }
@@ -392,7 +399,9 @@ struct AssetLoader::Impl {
     }
     void releaseRead(size_t bytes) {
         { std::lock_guard lock(mutex); totals.workingBytes -= bytes; }
+        changed();
         ready->notify_all();
+        cpuWake->notify_one();
     }
     std::unique_ptr<Job> take(bool read) {
         auto best = jobs.end();
@@ -455,6 +464,7 @@ struct AssetLoader::Impl {
             totals.workingBytes -= job->reserved;
             --totals.activeReads;
             jobs.push_back(std::move(job));
+            changed();
             return false;
         } catch (const std::exception& error) {
             job->result->error = error.what();
@@ -473,6 +483,7 @@ struct AssetLoader::Impl {
             // been released. Owners can consume immediately after this store.
             job->result->state.store(succeeded ? State::Ready : State::Failed, std::memory_order_release);
         }
+        changed();
         ready->notify_all();
         cpuWake->notify_one();
         return true;
@@ -482,10 +493,16 @@ struct AssetLoader::Impl {
         auto &wake = read ? ioWake : *cpuWake;
         while (!stopping) {
             auto job = take(read);
-            if (!job) { wake.wait_for(lock, std::chrono::milliseconds(10)); continue; }
+            if (!job) {
+                // A fallback timeout covers budget changes made outside the lock.
+                const auto seen = changes->load();
+                wake.wait_for(lock, std::chrono::milliseconds(100), [&] { return stopping || changes->load() != seen; });
+                continue;
+            }
             // Wake another worker only when this pool has taken actual work.
             // Broadcasting every completion makes large pools contend on the
             // dependency queue even when most jobs are still waiting on reads.
+            changed();
             wake.notify_one();
             lock.unlock(); execute(std::move(job)); lock.lock();
         }
@@ -541,6 +558,7 @@ std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key,
     impl->jobs.push_back(std::make_unique<Impl::Job>(Impl::Job{result, std::move(dependencies),
         std::move(work), std::move(estimate), read, priority}));
     ++impl->totals.submitted;
+    impl->changed();
     (read ? impl->ioWake : *impl->cpuWake).notify_one();
     return result;
 }
@@ -625,8 +643,9 @@ AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std:
         } release{impl.get(), size_t(length), transient};
         auto *raw = new Bytes(size_t(length));
         release.transferred = true;
-        auto bytes = std::shared_ptr<Bytes>(raw, [account = impl->encodedBytes, ready = impl->ready, cpuWake = impl->cpuWake, length, transient](Bytes *value) {
-            delete value; if (transient) *account -= size_t(length); ready->notify_all(); cpuWake->notify_one();
+        auto bytes = std::shared_ptr<Bytes>(raw, [account = impl->encodedBytes, ready = impl->ready, cpuWake = impl->cpuWake,
+                                                  changes = impl->changes, length, transient](Bytes *value) {
+            delete value; if (transient) *account -= size_t(length); ++*changes; ready->notify_all(); cpuWake->notify_one();
         });
         if (SDL_ReadIO(stream, bytes->data(), bytes->size()) != bytes->size())
             throw std::runtime_error("Truncated asset: " + path);

@@ -18,6 +18,7 @@
 #include <FormatableString.h>
 #include <algorithm>
 #include <cctype>
+#include "Game.h"
 
 namespace fe = Glob2UI;
 using fe::Element;

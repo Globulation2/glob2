@@ -20,6 +20,7 @@
 #include "ExperimentalFeatures.h"
 #include <cstdio>
 #include <cstdlib>
+#include "Team.h"
 
 namespace
 {

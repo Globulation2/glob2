@@ -8,13 +8,13 @@
 #include <PerformanceTelemetry.h>
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
-#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "Map.h"
 
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2

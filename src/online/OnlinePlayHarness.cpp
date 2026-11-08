@@ -31,6 +31,7 @@
 // keys, as a player would click them. The host's results stage waits until the
 // platform has settled the result (Phase::Done) and reports how long that took.
 #include "CustomGameSetup.h"
+#include "Game.h"
 #include "render/ColonySkinPreview.h"
 #include <GraphicContext.h>
 #include "EndGameScreen.h"

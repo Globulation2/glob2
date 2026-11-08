@@ -1,4 +1,5 @@
 #include "MaximaObservationFixture.h"
+#include "sim/snapshot/SnapshotStore.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"

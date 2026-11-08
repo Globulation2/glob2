@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "Stream.h"
 #include "FileFormatVersions.h"
+#include "Team.h"
 
 namespace
 {

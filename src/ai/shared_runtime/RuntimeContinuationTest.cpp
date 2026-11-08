@@ -17,6 +17,7 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
+#include "sim/EntityRefOf.h"
 
 // SDL compiler flags may rename main even when SDL_MAIN_HANDLED is set.
 using namespace AISharedRuntime::Gradients;
@@ -348,7 +349,7 @@ public:
         auto* building=game.addBuilding(4,4,type,0);REQUIRE(building);
         auto& controller=runtime(game,0);
         controller.getOrder();
-        const auto identity=Game::refOf(building);
+        const auto identity=refOf(building);
         auto& registry=controller.get_building_register();
         registry.set_upgrading(0,true);
         OrderConstruction receipt(building->gid,1,1);

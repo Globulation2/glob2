@@ -4,6 +4,7 @@
 #include "Order.h"
 #include "BuildingGuiState.h"
 #include <memory>
+#include "Building.h"
 
 namespace {
 const SceneBuildingPanel& presentedBuilding(GameGUI& gui, const Building& building)

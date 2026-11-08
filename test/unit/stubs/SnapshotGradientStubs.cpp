@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "gradient/SnapshotGradient.h"
+#include "Map.h"
 #include "Game.h"
 #include "gradient/ResourceGradientProbe.h"
 

@@ -57,6 +57,19 @@ void writeVertices(GenerationMap &map, const TerrainSketch &terrain)
 	map.assignVertexTerrain(vertices);
 }
 
+TerrainSketch composeLooks(const TerrainSketch &mechanics, const TerrainSketch &looks)
+{
+	TerrainSketch paint(mechanics);
+	for (size_t i = 0; i < paint.size(); ++i)
+	{
+		::MapGeneration::generationCheckpoint();
+		const TerrainType mechanic = TerrainType(mechanics.at(i)), look = TerrainType(looks.at(i));
+		if (look != WATER && terrainGroup(look) == terrainGroup(mechanic))
+			paint.at(i) = look;
+	}
+	return paint;
+}
+
 void paintTile(GenerationMap &map, int x, int y, TerrainType type)
 {
 	map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, type, false);

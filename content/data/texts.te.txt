@@ -1654,6 +1654,14 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 భూ వంతెన వెడల్పు
 [Lake size]
 సరస్సు పరిమాణం
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 పోటీపడే ఉమ్మడి భూములు
 [Maze]
@@ -1738,6 +1746,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 బెల్ట్ వెడల్పు
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 ఇన్ని కాలనీలకు ఈ బెల్ట్ చాలా చిన్నదిగా ఉంది; పొడవైన మ్యాప్‌ను లేదా తక్కువ కాలనీలను ఉపయోగించండి.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 నగర రాష్ట్రాలు
 [Strait width]
@@ -1752,6 +1762,12 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 రాతి గోడలు
 [Sand patches]
 ఇసుక మచ్చలు
+[Cliff walls]
+కొండచరియల గోడలు
+[Paved roads]
+రాళ్లు పరచిన రోడ్లు
+[Scrub patches]
+బీడు మచ్చలు
 [Tidal flats]
 టైడల్ ఫ్లాట్స్
 [Everglades]
@@ -1764,6 +1780,12 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 ఖాళీ ప్రదేశం పరిమాణం
 [Levee]
 వరద కట్ట
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 చిత్తడి కాలువలు
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 తీర సరస్సులు
 [Central island]
 మధ్య ద్వీపం
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 అలల మైదానాలకు కనీసం ఒక కాలనీ అవసరం.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 స్వదేశీ దీవులు ఈ పటంలో సరిపోవు; పెద్ద పటాన్ని, తక్కువ కాలనీలను లేదా చిన్న దీవులను ఉపయోగించండి.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 నదీ డెల్టా
 [Meandering rivers]
 వంకర నదులు
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 ఇంటి లోయలలో పండ్లు
 [Moat]
@@ -1926,6 +1970,12 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 రెండు తీరాల్లోని కాలనీలు
 [Winding belt]
 వైండింగ్ బెల్ట్
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 కణ ఆకారం
 [Squares]
@@ -1962,6 +2012,20 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 కనుమల మధ్య దూరం
 [Lee width]
 గాలి మరుగున ఉన్న వైపు వెడల్పు
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 పురాతన అడవి
 [Canals]
@@ -2408,6 +2472,8 @@ HP ≤ 25/50/75 %
 అదనపు లోతు తక్కువ ప్రవాహాలు
 [Moraine hummocks]
 మోరైన్ గుట్టలు
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 ఈ అల్లిక ఇళ్లకు చాలా తక్కువ చదును స్థలాన్ని వదిలివేస్తుంది; పెద్ద పటాన్ని లేదా సన్నని అల్లికను ఉపయోగించండి.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ HP ≤ 25/50/75 %
 నీటి గుంటలు
 [Dry patches]
 పొడి మచ్చలు
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 విరళంగా
 [Normal]
@@ -2594,6 +2666,26 @@ HP ≤ 25/50/75 %
 పొడవైన నిక్షేపం
 [Twin springs]
 జంట ఊటలు
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 ప్రారంభ స్థలాలకు బజాడాలు చాలా ఇరుకుగా ఉన్నాయి; పెద్ద మ్యాప్, శ్రేణుల మధ్య ఎక్కువ దూరం, ఇరుకైన గట్లు లేదా చిన్న ప్లాయాను ఎంచుకోండి.
 [Central Quarry]
@@ -2744,6 +2836,10 @@ HP ≤ 25/50/75 %
 పోర్టేజ్ లోతు
 [Extra trails]
 అదనపు ట్రయల్స్
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 పోర్టేజ్ సరస్సులకు ఒక్కో వైపు 64 నుంచి 512 టైల్స్ మధ్య పొడవు అవసరం.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

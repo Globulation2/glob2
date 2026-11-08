@@ -1,4 +1,5 @@
 #include <utility>
+#include "Map.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2008 Stephane Magnenat
 // Copyright (C) 2001-2008 Luc-Olivier de Charrière
@@ -15,6 +16,7 @@
 #include "Game.h"
 #include "SGSL.h"
 #include "Unit.h"
+#include "Team.h"
 
 //get values from the game
 int Story::valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level)

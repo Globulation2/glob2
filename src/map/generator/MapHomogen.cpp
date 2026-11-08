@@ -7,7 +7,6 @@
 // (test/SConstruct).
 #include "GlobalContainer.h"
 #include "Map.h"
-#include "Game.h"
 #include "MapInternal.h"
 #include "Unit.h"
 #include "Utilities.h"

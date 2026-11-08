@@ -4,7 +4,6 @@
 #include "Material.h"
 #include "shared_runtime/Farming.h"
 #include "AITelemetryFields.h"
-#include "Game.h"
 #include "AINicowar.h"
 #include "Building.h"
 #include "Unit.h"

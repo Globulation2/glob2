@@ -1654,6 +1654,14 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நிலப் பாலத்தின் அகலம்
 [Lake size]
 ஏரியின் அளவு
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 போட்டிக்குரிய பொது நிலம்
 [Maze]
@@ -1738,6 +1746,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 பட்டை அகலம்
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 இத்தனை குடியிருப்புகளுக்கு இந்தப் பட்டை மிகவும் குட்டையாக உள்ளது; நீளமான வரைபடத்தையோ அல்லது குறைவான குடியிருப்புகளையோ பயன்படுத்துங்கள்.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 நகர அரசுகள்
 [Strait width]
@@ -1752,6 +1762,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கல் சுவர்கள்
 [Sand patches]
 மணல் திட்டுகள்
+[Cliff walls]
+பாறைச் சுவர்கள்
+[Paved roads]
+கல் பதித்த சாலைகள்
+[Scrub patches]
+தரிசுத் திட்டுகள்
 [Tidal flats]
 ஓதச் சமவெளிகள்
 [Everglades]
@@ -1764,6 +1780,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 திறந்தவெளி அளவு
 [Levee]
 வெள்ளத் தடுப்புக் கரை
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 சேற்றுப் பள்ளங்கள்
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கடற்கரைக் காயல்கள்
 [Central island]
 மத்திய தீவு
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 ஓதச் சமவெளிகளுக்குக் குறைந்தது ஒரு குடியிருப்பு தேவை.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 தொடக்கத் தீவுகள் இந்த வரைபடத்தில் பொருந்தவில்லை; பெரிய வரைபடத்தையோ, குறைவான குடியிருப்புகளையோ அல்லது சிறிய தீவுகளையோ பயன்படுத்துங்கள்.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 ஆற்றுக் கழிமுகம்
 [Meandering rivers]
 வளைந்து செல்லும் ஆறுகள்
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 தொடக்கப் பள்ளத்தாக்குகளில் பழங்கள்
 [Moat]
@@ -1926,6 +1970,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 இரு கரைகளிலும் குடியிருப்புகள்
 [Winding belt]
 வளைந்து செல்லும் பட்டை
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 கட்ட வடிவம்
 [Squares]
@@ -1962,6 +2012,20 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கணவாய் இடைவெளி
 [Lee width]
 காற்று மறைவுப் பகுதி அகலம்
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 முதிர்ந்த காடு
 [Canals]
@@ -2408,6 +2472,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கூடுதல் ஆழமற்ற நீரோட்டங்கள்
 [Moraine hummocks]
 பனியாற்றுக் கற்குவியல் மேடுகள்
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 பின்னல் ஆற்றின் ஓரங்களில் தொடக்கப் பகுதிகளுக்குப் போதிய படிநிலை இடமில்லை; பெரிய வரைபடம் அல்லது குறுகிய பின்னலைப் பயன்படுத்தவும்.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நீர்நிலைகள்
 [Dry patches]
 வறண்ட திட்டுகள்
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 அடர்த்தி குறைவு
 [Normal]
@@ -2594,6 +2666,26 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 நீண்ட வண்டல் விசிறி
 [Twin springs]
 இரட்டை நீரூற்றுகள்
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 மலையடிவாரப் படிவப் பரப்புகள் தொடக்கப் பகுதிகளுக்கு மிகவும் குறுகியவை; பெரிய வரைபடம், அதிக மலைத்தொடர் இடைவெளி, குறுகிய முகடுகள் அல்லது சிறிய வறண்ட ஏரிப்படுகையைப் பயன்படுத்தவும்.
 [Central Quarry]
@@ -2744,6 +2836,10 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 தரைவழிக் கடப்பு ஆழம்
 [Extra trails]
 கூடுதல் பாதைகள்
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 தரைவழிக் கடப்பு ஏரிகளுக்கு 64 முதல் 512 கட்டங்கள் நீளமுள்ள பக்கங்கள் தேவை.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

@@ -12,6 +12,7 @@
 #include <cmath>
 #include <cstring>
 #include <set>
+#include "Game.h"
 
 namespace
 {

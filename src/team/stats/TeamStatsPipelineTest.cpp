@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "HeadlessGame.h"
 #include <algorithm>
 #include "ScopedEnvironment.h"
@@ -23,6 +25,7 @@
 #include <tuple>
 #include <ChecksumStream.h>
 #include "StatsChecksum.h"
+#include "Unit.h"
 
 namespace
 {

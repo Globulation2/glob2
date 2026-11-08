@@ -5,6 +5,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

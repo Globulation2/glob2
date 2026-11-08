@@ -13,6 +13,7 @@
 #include <TextStream.h>
 #include <memory>
 #include <fstream>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -288,13 +289,13 @@ TEST_SUITE("EntityRandomLifecycle")
         unit->entityRandom.nextU32(); building->entityRandom.nextU32();
         const auto captured = SimulationSnapshot::capture(world.game, SimulationSnapshot::captureCatalog(world.game));
         AIEngine::AIWorldView frozen(captured);
-        REQUIRE(frozen.unit(Game::refOf(unit)));
-        REQUIRE(frozen.building(Game::refOf(building)));
+        REQUIRE(frozen.unit(refOf(unit)));
+        REQUIRE(frozen.building(refOf(building)));
         const auto unitBefore = unit->entityRandom;
         const auto buildingBefore = building->entityRandom;
         unit->entityRandom.nextU32(); building->entityRandom.nextU32();
-        CHECK(frozen.unit(Game::refOf(unit))->entityRandom == unitBefore);
-        CHECK(frozen.building(Game::refOf(building))->entityRandom == buildingBefore);
+        CHECK(frozen.unit(refOf(unit))->entityRandom == unitBefore);
+        CHECK(frozen.building(refOf(building))->entityRandom == buildingBefore);
     }
 
     TEST_CASE("binary and text saves preserve exact private state and subsequent draws")

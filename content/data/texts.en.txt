@@ -1654,6 +1654,14 @@ Channel width
 Land bridge width
 [Lake size]
 Lake size
+[Crater type]
+Crater type
+[Crater rims]
+Crater rims
+[Volcanic maars]
+Volcanic maars
+[Glacial kettles]
+Glacial kettles
 [Contested commons]
 Contested commons
 [Maze]
@@ -1738,6 +1746,8 @@ Ring world
 Belt width
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 The belt is too short for this many colonies; use a longer map or fewer colonies.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+Ring world cannot lay its rock and coasts without cutting ground off on this seed.
 [City states]
 City states
 [Strait width]
@@ -1752,6 +1762,12 @@ City states need at least one colony.
 Stone walls
 [Sand patches]
 Sand patches
+[Cliff walls]
+Cliff walls
+[Paved roads]
+Paved roads
+[Scrub patches]
+Scrub patches
 [Tidal flats]
 Tidal flats
 [Everglades]
@@ -1764,6 +1780,12 @@ Pool size
 Clearing size
 [Levee]
 Levee
+[Mudflats]
+Mudflats
+[Hammocks]
+Hammocks
+[Moss]
+Moss
 [Sloughs]
 Sloughs
 [Everglades need at least one colony.]
@@ -1872,8 +1894,18 @@ Tide pools
 Lagoons
 [Central island]
 Central island
+[Tide]
+Tide
+[Neap tide]
+Neap tide
+[Mean tide]
+Mean tide
+[Spring tide]
+Spring tide
 [Tidal flats need at least one colony.]
 Tidal flats need at least one colony.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1916,6 +1948,18 @@ Sandy lake shore
 River delta
 [Meandering rivers]
 Meandering rivers
+[Banks]
+Banks
+[Deep channels]
+Deep channels
+[River bluffs]
+River bluffs
+[Divide outcrops]
+Divide outcrops
+[Deep water]
+Deep water
+[Rock outcrops]
+Rock outcrops
 [Fruit in home valleys]
 Fruit in home valleys
 [Moat]
@@ -1926,6 +1970,12 @@ Stone in the orchard
 Colonies on both coasts
 [Winding belt]
 Winding belt
+[Deep ocean]
+Deep ocean
+[Rock spine]
+Rock spine
+[Ring road]
+Ring road
 [Cell shape]
 Cell shape
 [Squares]
@@ -1962,6 +2012,20 @@ Ridge thickness
 Pass spacing
 [Lee width]
 Lee width
+[Climate]
+Climate
+[Temperate]
+Temperate
+[Steppe]
+Steppe
+[Tropical]
+Tropical
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+No ridge stands behind the homes; use fewer ridges or a bigger map.
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.
+[The ridges could not be sealed; use thicker ridges.]
+The ridges could not be sealed; use thicker ridges.
 [Old growth]
 Old growth
 [Canals]
@@ -2408,6 +2472,8 @@ Bar size
 Extra riffles
 [Moraine hummocks]
 Moraine hummocks
+[Deep pools]
+Deep pools
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2466,6 +2532,12 @@ Savannah
 Watering holes
 [Dry patches]
 Dry patches
+[Season]
+Season
+[Meltwater]
+Meltwater
+[Late summer]
+Late summer
 [Sparse]
 Sparse
 [Normal]
@@ -2594,6 +2666,26 @@ Broad fan
 Long fan
 [Twin springs]
 Twin springs
+[Canyon mouth]
+Canyon mouth
+[Cienega]
+Cienega
+[Coalescing pair]
+Coalescing pair
+[Cienegas]
+Cienegas
+[Rock]
+Rock
+[Granite]
+Granite
+[Greenstone]
+Greenstone
+[Sandstone]
+Sandstone
+[Volcanic]
+Volcanic
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
 [Central Quarry]
@@ -2744,6 +2836,10 @@ Lake elongation
 Portage depth
 [Extra trails]
 Extra trails
+[Deep lakes]
+Deep lakes
+[Bedrock]
+Bedrock
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Portage Lakes needs sides between 64 and 512 tiles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

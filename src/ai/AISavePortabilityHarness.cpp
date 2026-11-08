@@ -24,6 +24,7 @@
 #include "AINicowar.h"
 #include <cstdio>
 #include <cstdlib>
+#include "Team.h"
 
 namespace
 {

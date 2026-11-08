@@ -7,6 +7,7 @@
 #include "Order.h"
 
 #include <stdexcept>
+#include "Team.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
