@@ -90,8 +90,12 @@ Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native bui
 the `tools/dev_build.py` output or `build/<platform>/client/release`. The default
 tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
 about a quarter of the full inventory's time; `--tier display` adds display cases
-(`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs: they are three times longer for unoptimized
-(`-O0`) builds, and `GLOB2_TEST_TIMEOUT_SCALE` overrides the multiplier. `--filter` or `--tag`
+(`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs, not
+slowness: a case recorded in the CI timing profiles (`test/ci-timings/*.json`, the slowest
+profile unless `--timing-profile` names one) gets ten times its recorded duration, at least
+60 s, and an unrecorded case gets 600 s. They are three times longer for unoptimized
+(`-O0`) builds, `GLOB2_TEST_TIMEOUT_SCALE` overrides the multiplier and `--timeout` replaces
+every timeout. `--filter` or `--tag`
 without `--tier` selects from the full inventory, so naming a case always runs it.
 
 `--affected` narrows the selection to the cases a change can reach, using the
@@ -108,7 +112,7 @@ the choice without running anything.
 (suite/name globs), `--tag`, `--exclude-tag` and `--shard K/N`
 (deterministic by sorted name), then runs each engine case in its own process with
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
-timeout by tag, output captured and shown only on failure, and a check that the
+hang-guard timeout from its recorded duration, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
 under `xvfb-run` on Linux without `DISPLAY`, with an isolated Openbox window
 manager to apply SDL3 fullscreen requests. Install `xvfb`, `xauth`, `openbox` and
@@ -187,8 +191,8 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 
 | Tag | Meaning |
 | --- | --- |
-| `[display]`, `[display:WxH]` | needs a real window (300 s timeout, xvfb on Linux) |
-| `[slow]` | over a minute (600 s timeout; skipped by `--quick`) |
+| `[display]`, `[display:WxH]` | needs a real window (xvfb on Linux) |
+| `[slow]` | over a minute (skipped by `--quick` and the headless tier) |
 | `[network]` | binds loopback sockets; never runs alongside another `[network]` case |
 | `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
 | `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it |

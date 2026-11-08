@@ -18,7 +18,7 @@ records for it, so a case moved out of engine or unit cannot silently disappear.
 Tags are bracketed words at the end of a test-case name:
   [display]        needs a real window; xvfb on Linux, skipped on Windows and --no-display
   [display:WxH]    same, with a specific virtual screen size
-  [slow]           timeout 600 s; only in --tier full
+  [slow]           only in --tier full
   [network]        binds loopback sockets; never runs in parallel with another [network]
   [artifacts]      writes files for review under --artifacts
   [golden]         compares against checked-in text; --update-fixtures rewrites it
@@ -73,9 +73,15 @@ FAMILY = {'engine': 'engine', 'sim': 'engine', 'unit': 'unit', 'map': 'unit'}
 SELECTIONS = {'engine': ('engine', 'sim'), 'unit': ('unit', 'map'), 'sim': ('sim',), 'map': ('map',),
               'all': ('engine', 'sim', 'unit', 'map')}
 MODULE_PROGRAMS = ('sim', 'map')
-DEFAULT_TIMEOUT = 120
-DISPLAY_TIMEOUT = 300
+# Timeouts catch hangs, not slowness. A case recorded in the CI timing profiles
+# (test/ci-timings) gets TIMEOUT_MARGIN times its recorded duration, at least
+# MIN_TIMEOUT; an unrecorded case gets UNKNOWN_TIMEOUT. Unoptimized builds multiply
+# both (timeout_scale), and --timeout or GLOB2_TEST_TIMEOUT_SCALE override them.
+MIN_TIMEOUT = 60
+TIMEOUT_MARGIN = 10
+UNKNOWN_TIMEOUT = 600
 SLOW_TIMEOUT = 600
+TIMING_PROFILES = ROOT / 'test' / 'ci-timings'
 DEFAULT_SCREEN = '1600x1400'
 TAG_PATTERN = re.compile(r'\[([^\]]+)\]')
 PREFERENCES_MARKER = 'rememberUnit=1\n'
@@ -147,16 +153,14 @@ class Job:
 
     # Unoptimized builds run several times slower; see timeout_scale().
     scale = 1
+    # Recorded case durations in seconds, by label (reference_timings()).
+    recorded = {}
 
     @property
     def timeout(self):
         if self.whole:
             return SLOW_TIMEOUT * 2 * self.scale
-        if self.has('slow'):
-            return SLOW_TIMEOUT * self.scale
-        if self.display:
-            return DISPLAY_TIMEOUT * self.scale
-        return DEFAULT_TIMEOUT * self.scale
+        return sum(case_timeout(case.label, self.recorded) for case in self.cases) * self.scale
 
 
 @dataclass
@@ -325,6 +329,25 @@ def timeout_scale(build_dir):
     except (OSError, ValueError):
         return 1
     return 3 if identity.get('mode') == 'debug' else 1
+
+
+def case_timeout(label, recorded):
+    """A hang guard for one case: generous against its recorded duration."""
+    seconds = recorded.get(label)
+    if seconds is None:
+        return UNKNOWN_TIMEOUT
+    return max(MIN_TIMEOUT, math.ceil(TIMEOUT_MARGIN * seconds))
+
+
+def reference_timings(path=None):
+    """Recorded case durations: the given profile, else the slowest of the committed ones."""
+    if path is not None:
+        return load_timings(path) or {}
+    recorded = {}
+    for profile in sorted(TIMING_PROFILES.glob('*.json')):
+        for label, seconds in (load_timings(profile) or {}).items():
+            recorded[label] = max(seconds, recorded.get(label, 0))
+    return recorded
 
 
 def load_timings(path):
@@ -873,6 +896,7 @@ def main(argv=None):
         args.write_inventory.parent.mkdir(parents=True, exist_ok=True)
         args.write_inventory.write_text(json.dumps(inventory, indent=2) + '\n')
     Job.scale = timeout_scale(build_dir)
+    Job.recorded = reference_timings(args.timing_profile)
     if args.timeout:
         Job.timeout = property(lambda self, t=args.timeout: t)
     network_lock = threading.Lock()

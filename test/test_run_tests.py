@@ -2,6 +2,7 @@
 """Unit tests for test/run_tests.py: listing, selection, sharding and JUnit merging."""
 import argparse
 import io
+import json
 from types import SimpleNamespace
 import os
 import stat
@@ -160,6 +161,26 @@ class SelectionTest(unittest.TestCase):
         self.assertEqual(suites(tier='display'), suites(quick=True))
         self.assertEqual(suites(), everything)  # programmatic callers keep the full inventory
 
+    def test_timeouts_scale_with_recorded_durations(self):
+        recorded = {'Suite/fast': 0.5, 'Suite/slow [display]': 40.0}
+        self.assertEqual(run_tests.case_timeout('Suite/fast', recorded), run_tests.MIN_TIMEOUT)
+        self.assertEqual(run_tests.case_timeout('Suite/slow [display]', recorded), 400)
+        self.assertEqual(run_tests.case_timeout('Suite/new', recorded), run_tests.UNKNOWN_TIMEOUT)
+        job = run_tests.Job('engine', [run_tests.Case('engine', 'Suite', 'slow [display]')])
+        with mock.patch.object(run_tests.Job, 'recorded', recorded), mock.patch.object(run_tests.Job, 'scale', 3):
+            self.assertEqual(job.timeout, 1200)
+
+    def test_reference_timings_take_the_slowest_committed_profile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name, seconds in (('a.json', {'S/x': 2.0, 'S/y': 9.0}), ('b.json', {'S/x': 5.0})):
+                (root / name).write_text(json.dumps({'schema': 1, 'seconds': seconds}))
+            with mock.patch.object(run_tests, 'TIMING_PROFILES', root):
+                self.assertEqual(run_tests.reference_timings(), {'S/x': 5.0, 'S/y': 9.0})
+            self.assertEqual(run_tests.reference_timings(root / 'a.json'), {'S/x': 2.0, 'S/y': 9.0})
+        # The committed profiles parse and cover real cases.
+        self.assertGreater(len(run_tests.reference_timings()), 1000)
+
     def test_unoptimized_builds_get_longer_timeouts(self):
         import json, tempfile
         with tempfile.TemporaryDirectory() as directory:
@@ -302,8 +323,10 @@ class ShardTest(unittest.TestCase):
         engine = run_tests.make_jobs(run_tests.parse_listing(LISTING, 'engine'), args())
         self.assertEqual(len(engine), 4)
         self.assertEqual(run_tests.doctest_filter(engine[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
-        self.assertEqual(engine[2].timeout, run_tests.SLOW_TIMEOUT)
-        self.assertEqual(engine[1].timeout, run_tests.DISPLAY_TIMEOUT)
+        # Cases without a recorded duration get the generous unknown-case timeout.
+        with mock.patch.object(run_tests.Job, 'recorded', {}):
+            self.assertEqual(engine[2].timeout, run_tests.UNKNOWN_TIMEOUT)
+            self.assertEqual(engine[1].timeout, run_tests.UNKNOWN_TIMEOUT)
 
     def test_filter_quotes_comma_and_backslash_in_names_and_suites(self):
         case = run_tests.Case('engine', r'Suite,with\path', r'cancel, globals\saved')
