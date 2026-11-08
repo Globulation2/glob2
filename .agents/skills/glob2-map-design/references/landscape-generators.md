@@ -14,6 +14,14 @@ result is fun.
 Each generator's options header sits beside its linked `.cpp` in
 `src/map/generator/generators/`.
 
+Most of these generators were written when the engine had only grass, sand and water, so
+their walls are the stone resource and their roads, fords, plot seals and coasts are sand or
+beach. The rows record what each one does; when borrowing an idea for new work or an upgrade,
+express it with the [terrain catalogue](terrain-catalogue.md#say-what-you-mean-with-terrain)
+instead (walls of Obstacles or Ridges, Paths for roads, Barren for seals, Rough for no-build
+ground), and use sand only where the subject is sand. Lava shield, Savannah and Braided Delta
+already use catalogue terrain for part of their ground.
+
 ## Coverage and where to borrow an idea
 
 | Generator, ID; source | Construction and intended play | Reusable lesson or caution |
@@ -42,8 +50,8 @@ Each generator's options header sits beside its linked `.cpp` in
 | [Braided river, 42](../../../../src/map/generator/generators/BraidedRiverGenerator.cpp) | Antiphase sinusoidal channel threads in lanes across a belt along the long axis make lens-shaped gravel bars; crossings are read off the rasterized water (`channelCrossings`) and riffles (shared `SandFord`s: `stampFord`, `fordFault`) laid on a random spanning tree plus loops and one forced crossing per colony; dry terraces either side, a sealed bluff line at the seam, an optional moraine. | Read the route graph back off the rasterized water rather than trusting the plan: try crossings on the sketch, not by centre-line distance, or inner threads get none. Split request-only checks (`validateRequest`) from seed-dependent design failures the service should roll again. Keep towns above the growth probe's reach so they never overgrow, and stock the promised bar so no start starves across water. Without the bluffs at the torus seam the walk round the back was shorter than the braid. |
 | [Braided Delta, 36](../../../../src/map/generator/generators/BraidedDeltaGenerator.cpp) | An inland delta (the Okavango): a gorge through a rock range, a deep panhandle river crossed on foot only at boardwalk bridges, an elliptical fan of forking, meandering arms (`growBranches`, a two-sine `meander`) that thin and die out as dry sandy beds; zones by fan radius reaching out along the channels in fingers (marsh swamp with islands and lagoons, loam floodplain, fringe, Kalahari desert); fords on a spanning set plus a cheapest-crossing repair; homes spread by walk round the swamp's rim before desert features are laid. Revision 6 replaced a ladder of identical islands. | A coastal trunk-to-sea delta read as Watershed: start from what only this landscape has. Mixed water depths remain swimmable. Validate bridge-only crossings for walkers; swimmers may cross the river directly. The validator counts tiles and a thin strip of land corners makes a piece of tens of tiles, so a repair counting corners needs a far lower threshold. The starting-crop guarantee plants only on plain grass: paint home clearings plain, not lush or dry. Lay desert decoration after choosing homes, outside their clearings, or it breaks the room a home needs. |
 | [Continents, 44](../../../../src/map/generator/generators/ContinentsGenerator.cpp) | A real continent from the compiled world atlas (`WorldAtlas`, `Raster`, `Landmass`): majority-resampled coast, lakes, deserts as sand, ranges as scree, great rivers with fords; climate classes furnished with biome kits; sites spread by walking distance (`farthestSites` over tiles), scored by fertile grass, walkable catchment and river clearance, recentred with an undo, ponds dug until a fertility floor; routes opened through scree and across rivers. | Fixed geography means fairness is measured, not constructed: spread sites by walk, give each colony a guaranteed square and what the geography left out (water, a kit), and let the lobby's best-of-rolls and the tournament judge. Fertile-grass windows see ground, not the way to it: add a catchment floor. Features whose footprint is fixed in tiles (a river's three-tile scar) must be omitted below the map size that can afford them. Invented islets round a real coast were the first thing a maintainer asked about; they are off by default now. A toy, not a tournament map, and honest about it. |
-| [Lava shield, 51](../../../../src/map/generator/generators/LavaShieldGenerator.cpp) | A volcanic island: crater lake in a stone summit with a reserved walking rim (the contested prize, renewable farmland and fruit), branching downhill lava tongues with correlated turns (`downhillPath`), unequal green wedges, towns in one of seven shapes per map with a frayed sand edge every town shares, chosen by scoring completed candidate settlements (`ScoredSettlements`, `spreadRankedSites`) with absolute room and access floors, a bounded starter-field retry that seeds the patch with frontage rather than the single most fertile tile (`seedForPatchCapacity`), swimming-prize islets on the seams (`raiseIslands`). | Legal stone cannot touch water, and the beach pass leaves walkable sand between them, so a lava tongue drawn into the sea never seals a coast: long tongues make narrow beach detours, short ones broad gaps. Design the map round that instead of writing illegal stone or filling the coast. Score whole finished candidates, not bare terrain, when the wedges are unequal by design. |
-| [Savannah](../../../../src/map/generator/generators/SavannahGenerator.cpp) | Open plains with jittered lattice homes (`jitterSites`), sealed sand-capped crop plots (`stampContainedPlot`) beside small home ponds, two opposed five-tile exits per home, neutral watering holes placed to be locally contested. | Enlarging plots for growth room is safe only if the plot edge facing town stays where it was: moving the wheat edge toward town made Numbi place no food inn. No generic repair: essential shortfalls fail, optional deposits saturate inside their plots. A plain reads as empty without its scenery: pools where nothing is planted and lone trees on growth-chance-zero ground add the look without touching the containment proof. |
+| [Lava shield, 51](../../../../src/map/generator/generators/LavaShieldGenerator.cpp) | A volcanic island: a crater lava lake with a reserved walking rim of loam (the contested prize, renewable farmland and fruit), branching downhill tongues of live lava with correlated turns (`downhillPath`), one scree ford on every long tongue, cooled side flows of scree and a stone crust along the flows as an inexhaustible quarry, unequal green wedges, towns in one of seven shapes per map with a frayed sand edge every town shares, chosen by scoring completed candidate settlements (`ScoredSettlements`, `spreadRankedSites`) with absolute room and access floors, a bounded starter-field retry that seeds the patch with frontage rather than the single most fertile tile (`seedForPatchCapacity`), swimming-prize islets on the seams (`raiseIslands`). | While the tongues were stone, legal stone could not touch water and the beach pass left walkable sand between them, so a tongue drawn into the sea never sealed a coast: long tongues made narrow beach detours, short ones broad gaps. Lava terrain (revision 5) runs into the sea with no beach and seals its two wedges, so each long tongue now keeps one scree ford: when a barrier moves from a resource to terrain, decide again every gap the old rules left for free, and validate the fords on the finished map. Score whole finished candidates, not bare terrain, when the wedges are unequal by design. |
+| [Savannah](../../../../src/map/generator/generators/SavannahGenerator.cpp) | Open plains with jittered lattice homes (`jitterSites`), crop plots sealed in barren red earth (`stampContainedPlot` with a dirt seal; sand before the terrain catalogue) beside small home ponds, ridge-rock kopjes with stone on their flanks, brick-path game trails, two opposed five-tile exits per home, neutral watering holes placed to be locally contested. | Earth seals exactly as sand did and can be built on, so the containment proof survived the change of terrain unchanged. Enlarging plots for growth room is safe only if the plot edge facing town stays where it was: moving the wheat edge toward town made Numbi place no food inn. No generic repair: essential shortfalls fail, optional deposits saturate inside their plots. A plain reads as empty without its scenery: pools where nothing is planted and lone trees on growth-chance-zero ground add the look without touching the containment proof. |
 | [Locust](../../../../src/map/generator/generators/LocustGenerator.cpp), Vultures until 2026-09-16 | Old Growth's clearings and lakes with finite dry wheat (zero growth probability, three to five harvests a tile set after every repair) instead of forest, wood only on shores, fixed dry rations and a quarry per home, `roomyLatticeSites` for prime colony counts, followed by bounded independent home jitter that preserves their radius and separation. | A finite-food concept must forbid renewable repairs and give fertility zero weight in the start scorer. Spend a starter budget across disconnected pockets (`growPatchesNear`) rather than failing on the first sliver. A probe that changes winners in both directions across paired seeds is not evidence for a default; a maintainer's reading of the concept (the fields are the obstacle, so fill them in) is, and the cover default went from 35% to 65% on it. |
 
 The four height-field generators share [Terrain](../../../../src/map/generator/shared/Terrain.h)
@@ -61,11 +69,16 @@ They look related but need different invariants. “Forest” can mean renewable
 For every geographic feature, write its player consequence:
 
 - A channel delays untrained ground units, but trained swimmers change the route network.
-- A stone ridge fixes an impassable ground boundary while allowing tower fire across it.
+- A stone ridge fixes an impassable ground boundary while allowing tower fire across it, and is
+  also the colonies' quarry. A terrain wall chooses its fire rule: Ridges let towers shoot
+  over, Obstacles stop arrows; neither yields stone, so plant quarry faces at its foot
+  ([a wall was also a quarry](terrain-catalogue.md#a-wall-was-also-a-quarry)).
 - A wood barrier costs worker time to cut and may return if watered.
 - A sand flat supports travel and denies buildings/resources; an embedded grass patch becomes
-  a strategic staging point.
-- A pond supplies potential growth as well as consuming building space and creating beaches.
+  a strategic staging point. Where the subject is not a desert, Rough ground (mudflat, scree)
+  denies buildings and crops the same way, slowly; Barren ground denies crops but not buildings.
+- A pond supplies potential growth as well as consuming building space and, where the map lays
+  beaches, creating them.
 - An orchard is strategically valuable through inns and conversion, not merely decoration.
 
 Then place a reward where the intended decision happens. Coral's fruit buds reward the longest
@@ -80,7 +93,10 @@ Use the engine-derived [Growth](../../../../src/map/generator/shared/Growth.h) a
 helpers, rather than assuming “near a pond” means uniformly fertile. The probe reaches up to
 15 tiles on each axis, requires pure water on one side, and rejects pure sand at the opposite
 sample. A strip of sand also prevents crops physically spreading onto the strip itself. These
-are distinct effects: a nearby sand tile is not a blanket zero-growth radius.
+are distinct effects: a nearby sand tile is not a blanket zero-growth radius. In the terrain
+catalogue Barren ground inhibits the probe exactly as sand does, while Paths and Rough ground
+inhibit nothing; crops spread onto none of them. A barren ring therefore contains as a sand
+ring did, and a paved road keeps crops off itself without slowing the fields beside it.
 
 Three useful patterns emerge:
 
@@ -88,11 +104,14 @@ Three useful patterns emerge:
    clearing ring use two vertex layers of sand to resist bridging through the terrain
    conversion. Polder removes home wheat/wood blocks because the external rows supply them and
    the interior needs building room. Old growth excludes home wood while seeding wheat around
-   several pools. Validate both the ring and harvest access across it.
+   several pools. Validate both the ring and harvest access across it. A new ring can be Barren
+   (`dressFarmSand` turns a farm's caps and plot rings to it), which can also be built on.
 2. **Permanent travel corridors through fertile terrain.** Coral traces sand down branches that
    carry through traffic, but keeps pads and dead-end buds free of that road to preserve their
    small grass area. Rain shadow extends sand through passes and connects it to stream beaches.
-   A route opened by clearing crops once can grow closed again; sand-based protection persists.
+   A route opened by clearing crops once can grow closed again; sand-based protection persists,
+   and so do Paths and Rough ground, on which nothing grows. A path can still be built on, so
+   use Rough where a building must not close the way either.
 3. **Dry clearable barriers.** Old growth keeps extra lakes away from homes and checks the
    finished fertility field beyond water reach. Cutting then changes the world permanently.
    A dry forest still demands enough accessible food and worker support to make clearing fun.
@@ -112,7 +131,10 @@ examples of tuning after play, not proof that their current defaults solve every
 
 Measure pure grass footprints on the final map, not disc radii or nominal land area. Terrain
 takes each tile's rules from its four corner vertices, so beaches consume more usable room than their painted
-outline suggests. A thin pond can become almost all beach; a narrow island can keep walkable
+outline suggests. The same holds for catalogue terrain: a tile whose corners mix two rule
+profiles is never buildable, so a wall drawn naively on vertices leaves an unbuildable seam
+beside it (`wallVertices` leans walls away from open ground;
+[walls on vertices](terrain-catalogue.md#walls-on-vertices)). A thin pond can become almost all beach; a narrow island can keep walkable
 sand but lose its building strip. Tidal flats sizes oasis ponds down with small oases; Coral
 keeps a minimum branch half-width of four so beaches plus a road leave some grass.
 
@@ -238,7 +260,10 @@ seed. Verify routes after deposits, guarantees and repair passes, since a top-up
 route and a route cut can remove a starter crop. Watershed explicitly reconnects, tops up and
 reconnects again. Use protected masks when repair must not clear structural stone.
 
-Prefer the shared components already used here: `TerrainSketch`/`pureTiles`/`layBeaches`,
+Prefer the shared components already used here: `TerrainSketch`/`pureTiles`/`layBeaches`
+(beaches are optional on catalogue terrain; run `layBeaches` before drawing any),
+the catalogue helpers (`wallVertices`, `cliffCoast`, `dressFarmSand`, `barrenBase`, `paveCore`,
+`plantQuarryFaces`, and `paintClimate` as the last step),
 `Torus`, morphology and distance fields, `RadialShape`, `WedgeFrame`, periodic noise,
 `growWater`, `growBranches`, settlement/kit helpers, `furnishGround`, fertility-aware algae,
 farm plots, cost-based roads and start guarantees. If a generator reveals a general defect in

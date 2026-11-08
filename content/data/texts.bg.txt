@@ -1752,6 +1752,12 @@ OpenGL не е наличен в тази компилация.
 Каменни стени
 [Sand patches]
 Пясъчни петна
+[Cliff walls]
+Скални стени
+[Paved roads]
+Павирани пътища
+[Scrub patches]
+Безплодни петна
 [Tidal flats]
 Приливни плитчини
 [Everglades]

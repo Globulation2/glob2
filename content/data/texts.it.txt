@@ -1788,6 +1788,12 @@ Le città-stato hanno bisogno di almeno una colonia.
 Mura di pietra
 [Sand patches]
 Chiazze di sabbia
+[Cliff walls]
+Mura di scogliera
+[Paved roads]
+Strade lastricate
+[Scrub patches]
+Chiazze aride
 [Tidal flats]
 Piane di marea
 [Everglades]

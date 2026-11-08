@@ -768,10 +768,11 @@ jobs:
             shards=(2 3)
           fi
           # Full colony-count sweeps can exceed ten minutes; keep the shorter
-          # budget for golden rows and allow every sweep case to finish.
+          # budget for golden rows and give every sweep shard 30 minutes, since the
+          # slowest GCC 13 shard runs close to 20.
           sweeps=()
           for shard in "${shards[@]}"; do
-            golden 1200s /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
+            golden 1800s /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
           done
           status=0
           if [ '${{ matrix.suite }}' = sweep-a ]; then

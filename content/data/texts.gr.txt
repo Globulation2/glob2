@@ -1788,6 +1788,12 @@ Cortex
 Πέτρινα τείχη
 [Sand patches]
 Αμμώδεις εκτάσεις
+[Cliff walls]
+Τείχη από γκρεμούς
+[Paved roads]
+Πλακόστρωτοι δρόμοι
+[Scrub patches]
+Άγονες εκτάσεις
 [Tidal flats]
 Παλιρροιακές πεδιάδες
 [Everglades]

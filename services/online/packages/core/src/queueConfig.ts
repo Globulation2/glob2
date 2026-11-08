@@ -57,14 +57,14 @@ const FAIR_GENERATORS: readonly {
   { id: 'even-ground', revision: 4, fourColonies: true },
   { id: 'marchland', revision: 4, fourColonies: true },
   // repeated wedge
-  { id: 'amphitheatre', revision: 5, fourColonies: true },
-  { id: 'carousel', revision: 4, fourColonies: true },
-  { id: 'city-states', revision: 12, fourColonies: true },
+  { id: 'amphitheatre', revision: 6, fourColonies: true },
+  { id: 'carousel', revision: 5, fourColonies: true },
+  { id: 'city-states', revision: 14, fourColonies: true },
   { id: 'coral', revision: 4, fourColonies: true },
   { id: 'fjord-continent', revision: 15, fourColonies: true },
   { id: 'lava-shield', revision: 9, fourColonies: false },
   { id: 'spider-web', revision: 4, fourColonies: true },
-  { id: 'switchbacks', revision: 6, fourColonies: true },
+  { id: 'switchbacks', revision: 7, fourColonies: true },
   { id: 'tidal-flats', revision: 8, fourColonies: true },
   // stamped lattice
   { id: 'allotments', revision: 3, fourColonies: true },

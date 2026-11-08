@@ -1788,6 +1788,12 @@ Hiri-estatuek gutxienez kolonia bat behar dute.
 Harrizko hormak
 [Sand patches]
 Harea-guneak
+[Cliff walls]
+Labar-harresiak
+[Paved roads]
+Bide zolatuak
+[Scrub patches]
+Gune idorrak
 [Tidal flats]
 Marea-lautadak
 [Everglades]

@@ -1788,6 +1788,12 @@ Globulation 2のカーソルを表示します。
 石の城壁
 [Sand patches]
 砂地
+[Cliff walls]
+断崖の城壁
+[Paved roads]
+石畳の道
+[Scrub patches]
+荒れ地
 [Tidal flats]
 干潟
 [Everglades]

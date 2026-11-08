@@ -1788,6 +1788,12 @@ Las ciudades estado necesitan al menos una colonia.
 Muros de piedra
 [Sand patches]
 Parches de arena
+[Cliff walls]
+Murallas de acantilados
+[Paved roads]
+Caminos empedrados
+[Scrub patches]
+Parches áridos
 [Tidal flats]
 Marismas
 [Everglades]
