@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CellRules.h"
+#include "field/PreparedTerrainCosts.h"
+#include "field/TerrainMovementCosts.h"
 #include <algorithm>
 #include <stdexcept>
 #include <type_traits>
@@ -88,7 +90,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 	{
 		std::size_t entries, profiles, ids, steps;
 		unsigned minimum;
-		std::optional<TerrainRegistry::Movement::Prepared> prepared;
+		std::shared_ptr<const TerrainRegistry::Movement::Prepared> prepared;
 		bool preparedChanged = false;
 	};
 	std::array<MovementCheckpoint, MOVEMENT_CLASS_COUNT> checkpoints;
@@ -144,11 +146,9 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 			{
 				auto &checkpoint = checkpoints[sw];
 				// Prepared metadata depends only on distinct cost profiles. Journal
-				// it only when changing, and copy its active alternative: copying
-				// the variant itself also copies storage for the 256-profile case.
-				if (m.prepared) std::visit([&](const auto &old) {
-					checkpoint.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
-				}, *m.prepared);
+				// it only when changing: prepare() replaces the immutable shared
+				// tables, so the checkpoint keeps the previous ones alive.
+				checkpoint.prepared = m.prepared;
 				checkpoint.preparedChanged = true;
 				m.prepare();
 			}
@@ -181,10 +181,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 			m.minimum = checkpoint.minimum;
 			if (checkpoint.preparedChanged)
 			{
-				if (checkpoint.prepared) std::visit([&](const auto &old) {
-					m.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
-				}, *checkpoint.prepared);
-				else m.prepared.reset();
+				m.prepared = std::move(checkpoint.prepared);
 			}
 		}
 		// compile() inserts at most one whitelist cache entry, as its last step.

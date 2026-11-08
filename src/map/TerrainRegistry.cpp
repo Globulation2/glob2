@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "field/TerrainMovementCosts.h"
+#include "field/PreparedTerrainCosts.h"
+#include "TerrainProperties.h"
 #include "FileFormatVersions.h"
 #include "TerrainCatalog.h"
 #include "io/TerrainFormatHistory.h"
@@ -471,7 +474,7 @@ void TerrainRegistry::Movement::prepare()
 		std::array<gradient_kernel::EntrySteps, N> costs;
 		costs.fill(profiles.front());
 		std::copy(profiles.begin(), profiles.end(), costs.begin());
-		prepared = gradient_kernel::PreparedTerrainCosts<N>(costs);
+		prepared = std::make_shared<const Prepared>(std::in_place_type<gradient_kernel::PreparedTerrainCosts<N>>, costs);
 	};
 	if (profiles.size() <= 8)
 		make.template operator()<8>();
@@ -564,3 +567,5 @@ std::optional<TerrainType> TerrainRegistry::find(std::string_view key) const
 	// namespace, so they can never be one of these.
 	return terrainTypeByName(key);
 }
+
+const TerrainProperties& builtinTerrainProperties(TerrainType type) { return terrainProperties(type); }

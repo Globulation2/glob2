@@ -77,6 +77,16 @@ window times today's fan-in, with the includers that bring the costliest headers
 to the most translation units. Raw fan-in treats a header nobody edits like one
 edited daily, so start decoupling work from the cost ranking.
 
+Terrain registries and cell rules (`TerrainRegistry.h`, `CellRules.h`) hold
+only layouts: `TerrainPropertiesLayout.h`, `TerrainPresentationLayout.h` and
+`field/EntrySteps.h`. The compile-time built-in tables (`TerrainProperties.h`,
+`TerrainGroupTable.h`, `field/TerrainMovementCosts.h`,
+`field/PreparedTerrainCosts.h`) are included only by code that evaluates them,
+such as the gradient kernels, so retuning a terrain does not rebuild every file
+that reads a cell. Their static checks run once, in `TerrainProperties.cpp`. Movement classes and
+`MovementAccess` live in `src/common/MovementClass.h`, so map and field headers do
+not include the unit tuning constants in `unit/UnitConsts.h`.
+
 Decoupling must not slow the simulation. Keep hot accessors (per-cell map reads,
 `MapStateView.h` queries, entity reference factories, the constexpr terrain cost
 tables) inline; a body may move to another header, never out of line. For a

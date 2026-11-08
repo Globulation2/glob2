@@ -210,7 +210,7 @@ struct Handle
 	Uint16 cellRuleAt(std::size_t index) const
 	{ checkTileIndex(index); return terrain ? terrain->cellRules.at(index) : Uint16(GRASS); }
 	const TerrainProperties& terrainPropertiesAt(std::size_t index) const
-	{ checkTileIndex(index); return terrain ? (*terrain->rules)[terrain->cellRules.at(index)].properties : terrainProperties(GRASS); }
+	{ checkTileIndex(index); return terrain ? (*terrain->rules)[terrain->cellRules.at(index)].properties : builtinTerrainProperties(GRASS); }
 	ResourceCell resourceAt(std::size_t index) const
 	{ checkTileIndex(index); return resources ? resources->cells.at(index) : ResourceCell{}; }
 	OccupancyCell occupancyAt(std::size_t index) const

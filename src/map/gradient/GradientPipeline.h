@@ -7,7 +7,7 @@
 #include "ComputeExecutor.h"
 #include "AdaptiveGradientState.h"
 #include "TeamCapacity.h"
-#include "UnitConsts.h"
+#include "MovementClass.h"
 #include <algorithm>
 #include <deque>
 #include <functional>

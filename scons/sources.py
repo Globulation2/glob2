@@ -299,6 +299,7 @@ CLIENT_SOURCES = (
     'ui/screens/AudioPreferenceScreen.cpp',
     'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
+    'map/TerrainProperties.cpp',
     'map/TerrainRegistry.cpp',
     'map/TerrainCatalog.cpp',
     'map/CellRules.cpp',

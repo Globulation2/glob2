@@ -21,7 +21,6 @@ src/field/GradientRecordRepresentation.h -> src/map/MapState.h
 src/field/RuntimeTerrainGradient.h -> src/map/CellRules.h
 src/field/RuntimeTerrainGradient.h -> src/map/TerrainRegistry.h
 src/field/TerrainMovementCosts.h -> src/map/TerrainProperties.h
-src/field/TerrainMovementCosts.h -> src/unit/UnitConsts.h
 src/field/TerrainTravel.h -> src/map/TerrainRegistry.h
 src/game/Bullet.h -> libs/gag/include/GAGSys.h
 src/game/Game.h -> src/scripting/map/MapScript.h
@@ -38,17 +37,12 @@ src/game/rules/CustomGameSetup.h -> src/map/generator/core/GenerationValidation.
 src/game/rules/CustomGameSetup.h -> src/map/generator/core/GeneratorRegistry.h
 src/hud/GameGUIInternal.h -> src/app/GlobalContainer.h
 src/map/ResourceGrowth.h -> src/engine/sim/snapshot/WorldSnapshot.h
-src/map/ResourcePlaneKey.h -> src/unit/UnitConsts.h
 src/map/claims/ClaimRoutePipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
-src/map/claims/ClaimTerrainComponents.h -> src/unit/UnitConsts.h
 src/map/editor/EditorDockInternal.h -> src/app/GlobalContainer.h
 src/map/generator/javascript/GeneratorPackage.h -> src/online/OnlineStorage.h
 src/map/gradient/BuildingGradientPipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
-src/map/gradient/GradientFieldIdentity.h -> src/unit/UnitConsts.h
 src/map/gradient/GradientPipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
-src/map/gradient/GradientPipeline.h -> src/unit/UnitConsts.h
 src/map/gradient/GradientRuntime.h -> src/team/Team.h
-src/map/gradient/GradientTargetCell.h -> src/unit/UnitConsts.h
 src/map/gradient/SeedCells.h -> src/building/Building.h
 src/map/gradient/SnapshotGradient.h -> src/building/Building.h
 src/map/gradient/SnapshotGradient.h -> src/engine/sim/snapshot/WorldSnapshot.h

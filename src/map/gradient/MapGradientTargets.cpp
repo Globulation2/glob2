@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
+#include "field/TerrainMovementCosts.h"
 #include "gradient/MapRouting.h"
 #include "GradientFieldIdentity.h"
 #include "GradientTargetCell.h"

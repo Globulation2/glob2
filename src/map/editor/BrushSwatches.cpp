@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BrushSwatches.h"
+#include "TerrainPresentation.h"
 #include "GlobalContainer.h"
 #include "GraphicContext.h"
 #include "map/TerrainRegistry.h"

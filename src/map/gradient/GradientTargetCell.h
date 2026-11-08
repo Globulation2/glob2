@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GradientFieldIdentity.h"
-#include "UnitConsts.h"
+#include "MovementClass.h"
 #include "TeamCapacity.h"
 #include <array>
 #include <cstdint>

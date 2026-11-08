@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include "TerrainProperties.h"
-#include "TerrainPresentation.h"
-#include "field/TerrainMovementCosts.h"
-#include "field/PreparedTerrainCosts.h"
+#include "TerrainPropertiesLayout.h"
+#include "TerrainPresentationLayout.h"
+#include "TerrainType.h"
+#include "field/EntrySteps.h"
+#include "MovementClass.h"
+#include <array>
+#include <cassert>
+#include <cstdint>
 #include <variant>
 #include <memory>
 #include <optional>
@@ -14,6 +18,13 @@
 
 // Immutable, map-owned definitions. Names and authoring metadata never enter a
 // tile query. A scene/search retains ownership once, then borrows these arrays.
+#include <cstddef>
+namespace gradient_kernel { template <std::size_t N> struct PreparedTerrainCosts; }
+
+// The built-in profile of `type` (TerrainProperties.h), for code that must not
+// include the compile-time tables; cold fallbacks only.
+const TerrainProperties& builtinTerrainProperties(TerrainType type);
+
 class TerrainRegistry
 {
   public:
@@ -29,7 +40,10 @@ class TerrainRegistry
 		std::vector<unsigned> steps;
 		using Prepared = std::variant<gradient_kernel::PreparedTerrainCosts<8>,
 									  gradient_kernel::PreparedTerrainCosts<256>>;
-		std::optional<Prepared> prepared;
+		// Shared and immutable once built: copies of a registry or checkpoint share
+		// it, and prepare() replaces it rather than editing it. Use
+		// field/PreparedTerrainCosts.h to read it.
+		std::shared_ptr<const Prepared> prepared;
 		void prepare();
 		unsigned minimum = GRADIENT_STEP;
 	};

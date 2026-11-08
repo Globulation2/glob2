@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ComputeExecutor.h"
+#include "field/TerrainMovementCosts.h"
 #include <atomic>
 #include "Map.h"
 #include "MapAssetBundle.h"
@@ -50,6 +51,7 @@ const int tabClose[8][2]={
 
 Map::Map() : computeOwner(std::make_unique<ComputeExecutor>()), compute(*computeOwner), routing_(std::make_unique<MapRouting>(*this)), assetBundleValue(MapAssetBundle::empty())
 {
+	terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
     rebuildTerrainCounts();
 	topologyGeneration=1;
 	game=NULL;

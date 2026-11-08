@@ -5,7 +5,7 @@
 #include <memory>
 #include <mutex>
 #include <vector>
-#include "UnitConsts.h"
+#include "MovementClass.h"
 
 class Map;
 namespace ResourceClaims

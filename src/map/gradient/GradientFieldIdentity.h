@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "UnitConsts.h"
+#include "MovementClass.h"
 #include <compare>
 #include <cstdint>
 
