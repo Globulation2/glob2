@@ -858,8 +858,11 @@ TEST_SUITE("TerrainPresentation")
 	{
 		layeredCache(true);
 	}
+	// Every version-4 border is drawn with the smooth field (#1466), so
+	// composing these HD pages takes two to three minutes in optimized builds:
+	// over the display timeout in the -O0 coverage build.
 	TEST_CASE("HD material pages and fractional zoom preserve cached pixels with missing optional "
-			  "atlas [display][artifacts]")
+			  "atlas [display][artifacts][slow]")
 	{
 		layeredCache(true, true);
 	}
