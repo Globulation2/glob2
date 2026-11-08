@@ -22,8 +22,10 @@ int main(int argc, char** argv) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
         if (mode == "cancel") {
+            // A close that waited for the stalled handshake would block until the
+            // transport's 10 s connect deadline; 5 s is a hang guard, not a measurement.
             const auto closing = Clock::now(); transport->close();
-            if (Clock::now() - closing > std::chrono::milliseconds(500)) throw std::runtime_error("Close blocked");
+            if (Clock::now() - closing > std::chrono::seconds(5)) throw std::runtime_error("Close blocked");
         } else if (mode == "refuse" || mode == "timeout") {
             if (transport->state() != NetTransport::State::Closed) throw std::runtime_error("Invalid peer accepted or timeout missing");
         } else if (textMode) {

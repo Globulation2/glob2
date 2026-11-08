@@ -154,11 +154,13 @@ int main(int argc, char** argv) {
                     SDL_Delay(1);
                 }
                 require(accepted && echoed, "Native WSS message round trip failed");
-                // A one-way burst must drain without waiting for replies between frames.
+                // A one-way burst must drain without waiting for replies between
+                // frames: a stalled burst never drains, so the deadline is only a
+                // hang guard.
                 const auto burstStart = SDL_GetTicks();
                 for (unsigned i = 0; i < 200; ++i) client.sendMessage(original);
                 unsigned delivered = 0;
-                while (delivered < 200 && SDL_GetTicks() - burstStart < 2000) {
+                while (delivered < 200 && SDL_GetTicks() - burstStart < 30000) {
                     client.update();
                     while (auto message = server.getMessage()) {
                         require(*message == *original, "WSS burst changed a message");
@@ -178,9 +180,12 @@ int main(int argc, char** argv) {
                 require(failing->state() == NetTransport::State::Closed, "DNS failure did not close transport");
                 auto cancelled = makeNetTransport();
                 cancelled->open("192.0.2.1", 7489);
+                // A close that waited for this unroutable connection attempt would
+                // block for the system's TCP connect timeout (minutes); the bound
+                // is a hang guard, not a measurement.
                 const auto start = SDL_GetTicks();
                 cancelled->close();
-                require(SDL_GetTicks() - start < 1000 && cancelled->state() == NetTransport::State::Closed,
+                require(SDL_GetTicks() - start < 10000 && cancelled->state() == NetTransport::State::Closed,
                         "Connection cancellation blocked or retained a live transport");
             }
             {

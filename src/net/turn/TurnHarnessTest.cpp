@@ -399,7 +399,8 @@ TEST_SUITE("TurnHarness")
 		CHECK(m.clients[0]->session->targetTicks() <= 3);
 		CHECK(m.clients[1]->session->targetTicks() >= 3);
 		CHECK(m.clients[1]->session->targetTicks() > m.clients[0]->session->targetTicks());
-		// Input delay follows each player's own connection.
+		// Input delay follows each player's own connection. Delays are on the
+		// simulated network clock (net.now), not the wall clock.
 		CHECK(m.clients[0]->meanInputDelayMs() < m.clients[3]->meanInputDelayMs());
 		CHECK(m.clients[3]->meanInputDelayMs() < m.clients[2]->meanInputDelayMs());
 		CHECK(m.clients[0]->meanInputDelayMs() < 100);

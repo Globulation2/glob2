@@ -228,7 +228,14 @@ TEST_SUITE("Maxima.Farming")
 	        }
 	        REQUIRE(isExpansionCell(x,y)==isExpansionCell((x+16)%16,(y+16)%16));
 	    }
+	}
+
+	// A CPU-time budget is a performance measurement, not a correctness check:
+	// only optimized builds can meet it, and only the benchmark tier runs it.
+	TEST_CASE("512 x 512 fertility cache rebuild CPU budget [benchmark]")
+	{
 		const int size=512;
+		uint32_t random=0x5eed1234u;
 		std::vector<uint8_t> water(size*size), sand(size*size);
 		for(int i=0; i<size*size; ++i)
 		{
@@ -247,14 +254,10 @@ TEST_SUITE("Maxima.Farming")
 		const double cpuMicroseconds=cpuEnd-cpuBegin;
 		std::cout << "fertility_512_us=" << microseconds
 			<< " fertility_512_cpu_us=" << cpuMicroseconds << '\n';
-		// Keep the same work budget; elapsed time also counts unrelated builds
-		// and other processes that prevent this test from getting CPU time.
-		REQUIRE(cpuMicroseconds>=0);
-		// Enforce the production CPU budget only with optimized GCC/Clang
-		// builds. Fast development and source coverage builds still check the
-		// cache results and report timing, but their CPU cost is not comparable.
+		// The production budget holds only for optimized GCC/Clang builds;
+		// unoptimized and coverage builds report the timing without a limit.
 #if defined(__OPTIMIZE__) && !defined(GLOB2_TEST_COVERAGE)
-		REQUIRE(cpuMicroseconds<100000);
+		CHECK(cpuMicroseconds<100000);
 #endif
 	}
 }

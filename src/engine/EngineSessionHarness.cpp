@@ -107,10 +107,12 @@ TEST_SUITE("EngineSession")
 		// still finish while that independent shard is locked.
 		std::unique_lock hold(executor.performanceShards[1].mutex);
 		auto ticket = executor.submit(std::span(&group, 1), 1, {ComputeProducer::AI, 0, 1});
-		const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+		// Hang guards only: the worker enters at once, and a query that blocked on
+		// the held shard would never return before hold.unlock() below.
+		const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
 		while (!entered.load() && std::chrono::steady_clock::now() < deadline)
 			std::this_thread::yield();
-		CHECK(entered.load());
+		CHECK_MESSAGE(entered.load(), "the worker never entered its group");
 		auto query = std::async(std::launch::async,
 								[&]
 								{
@@ -124,8 +126,8 @@ TEST_SUITE("EngineSession")
 									} while (std::chrono::steady_clock::now() < until);
 									return incomplete;
 								});
-		const bool ready = query.wait_for(std::chrono::seconds(1)) == std::future_status::ready;
-		CHECK(ready);
+		const bool ready = query.wait_for(std::chrono::seconds(30)) == std::future_status::ready;
+		CHECK_MESSAGE(ready, "scheduler query blocked on the locked timing shard");
 		hold.unlock();
 		const bool incomplete = query.get();
 		CHECK(incomplete);

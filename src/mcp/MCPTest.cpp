@@ -443,9 +443,13 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	const auto beforeAnonymous = service.renewed;
 	CHECK(execute("ui_inspect").error.empty());
 	CHECK(service.renewed == beforeAnonymous);
+	// Renewal is checked against a mark taken after backdating the lease, so
+	// the checks below never bound a wall-clock duration.
+	auto backdated = Clock::now();
 	CHECK(execute("ui_inspect", {{"token", lease}}).error.empty());
-	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
+	CHECK(service.renewed >= backdated);
 	service.renewed -= std::chrono::seconds(299);
+	backdated = Clock::now();
 	auto duringHumanInput = service.submit("ui_inspect", {{"token", lease}}, "test");
 	auto inspectedDuringInput = duringHumanInput->completion.get_future();
 	events.clear();
@@ -456,7 +460,7 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	events.push_back(humanMotion);
 	service.pump(events, true, false); // Buffered human frames do not admit remote actions.
 	CHECK(completed(inspectedDuringInput).error.empty());
-	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
+	CHECK(service.renewed >= backdated);
 	auto renewalDuringInput = service.submit("ui_renew_control", {{"token", lease}}, "test");
 	auto renewedDuringInput = renewalDuringInput->completion.get_future();
 	service.pump(events, true, false);
@@ -510,8 +514,9 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	service.humanKeys.clear();
 	lease = execute("ui_acquire_control").data["token"].get<std::string>();
 	service.renewed -= std::chrono::seconds(299);
+	const auto keyBackdated = Clock::now();
 	REQUIRE(execute("ui_key", {{"token", lease}, {"key", "A"}}).error.empty());
-	CHECK(Clock::now() - service.renewed < std::chrono::seconds(1));
+	CHECK(service.renewed >= keyBackdated);
 	service.renewed -= std::chrono::seconds(301);
 	CHECK_FALSE(execute("ui_key", {{"token", lease}, {"key", "A"}}).error.empty());
 	std::vector<std::future<Result>> queued;
@@ -827,13 +832,14 @@ TEST_CASE("MCP/held input and drag clocks begin at actual dispatch [network]")
 	// time before its receipt must not count toward the 250 ms gesture duration.
 	service.dragStart -= std::chrono::seconds(2);
 	service.buttons[SDL_BUTTON_LEFT] -= std::chrono::seconds(6);
+	const auto pressBackdated = Clock::now();
 	events.clear();
 	service.pump(events, true, false);
 	CHECK(events.empty());
 	CHECK(service.buttons.contains(SDL_BUTTON_LEFT));
 	service.afterDispatch();
-	CHECK(Clock::now() - service.dragStart < std::chrono::seconds(1));
-	CHECK(Clock::now() - service.buttons[SDL_BUTTON_LEFT] < std::chrono::seconds(1));
+	CHECK(service.dragStart >= pressBackdated);
+	CHECK(service.buttons[SDL_BUTTON_LEFT] >= pressBackdated);
 	service.dragStart -= std::chrono::milliseconds(100);
 	events.clear();
 	service.pump(events, true);
@@ -866,13 +872,14 @@ TEST_CASE("MCP/held input and drag clocks begin at actual dispatch [network]")
 	service.pump(events, true);
 	REQUIRE(events.size() == 1);
 	service.keys[SDL_SCANCODE_A] -= std::chrono::seconds(6);
+	const auto keyPressBackdated = Clock::now();
 	events.clear();
 	service.pump(events, true, false);
 	CHECK(events.empty());
 	CHECK(service.keys.contains(SDL_SCANCODE_A));
 	service.afterDispatch();
 	CHECK(completed(keyed).error.empty());
-	CHECK(Clock::now() - service.keys[SDL_SCANCODE_A] < std::chrono::seconds(1));
+	CHECK(service.keys[SDL_SCANCODE_A] >= keyPressBackdated);
 }
 
 TEST_CASE("MCP/pending coordinates cancel when viewport changes before consumption [network]")
