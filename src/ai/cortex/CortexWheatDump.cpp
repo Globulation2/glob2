@@ -2,6 +2,7 @@
 // `glob2 dev dump-wheat`, reached through AIRegistry::dumpWheatPlan so the entry
 // point does not name Cortex.
 #include "CortexFoodSources.h"
+#include "Map.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Game.h"

@@ -1,4 +1,5 @@
 #include <nlohmann/json.hpp>
+#include "sim/snapshot/SnapshotStore.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "Map.h"
 #include "BuildingType.h"
 #include "BuildingUnitInteractionPool.h"
 #include "BuildingLibrary.h"
@@ -25,6 +26,7 @@
 #include <stdexcept>
 #include <map>
 #include <array>
+#include "Building.h"
 
 TEST_SUITE("BuildingCatalog")
 {

@@ -6,7 +6,6 @@
 #include <map>
 #include "BuildingType.h"
 #include "shared_runtime/BuildingDemands.h"
-#include "Game.h"
 #include "Utilities.h"
 
 using namespace AISharedRuntime;

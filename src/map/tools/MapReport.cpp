@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
+#include "Map.h"
 #include "MapAssetBundle.h"
 #include "MapReport.h"
 #include "TerrainPresentation.h"
@@ -31,6 +32,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <type_traits>
+#include "Team.h"
 
 namespace
 {

@@ -4,6 +4,7 @@
 #include "Unit.h"
 #include <algorithm>
 #include <bit>
+#include "Team.h"
 
 namespace {
 unsigned ownerTeam(ResourceClaims::Owner owner) { return Unit::GIDtoTeam(Uint16(owner)); }

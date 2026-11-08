@@ -8,6 +8,7 @@
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "resource/ResourceRegistry.h"
+#include "Game.h"
 
 bool MapEdit::experimentEnabled(const std::string& key) const
 {

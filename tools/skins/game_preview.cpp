@@ -1,7 +1,9 @@
 #include "CommandLine.h"
+#include "Map.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Capture a saved game's real Scene renderer, with the preview env enabled or off.
 #include "GlobalContainer.h"
+#include "Game.h"
 #include "GameGUI.h"
 #include "Team.h"
 #include "Unit.h"

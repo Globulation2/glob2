@@ -2,7 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameUtilities.h"
+#include "Map.h"
 #include "Game.h"
+#include "Team.h"
 
 namespace GameUtilities
 {

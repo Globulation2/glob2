@@ -3,6 +3,7 @@
 // table, vertex edits and the conversion of files written before format 146.
 #include "HeadlessGlobals.h"
 #include "field/TerrainMovementCosts.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "BinaryStream.h"
 #include "TextStream.h"

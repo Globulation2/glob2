@@ -33,6 +33,7 @@
 #include "Brush.h"
 #include "UnitEffectArt.h"
 #include "IntBuildingType.h"
+#include "Building.h"
 
 
 // Building rendering. Split from Game_render.cpp.

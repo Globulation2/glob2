@@ -45,7 +45,8 @@ jobs:
   native:
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.ios_localization) }}
     runs-on: macos-26
-    timeout-minutes: ${{ inputs.desktop_localization && 180 || 120 }}
+    # Compiling takes 75-90 minutes and the checks about 30; leave headroom.
+    timeout-minutes: ${{ inputs.desktop_localization && 180 || 150 }}
     steps:
       - uses: actions/checkout@v4
         with:

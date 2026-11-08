@@ -14,6 +14,7 @@
 #include "ui/FrontendUI.h"
 #include <GraphicContext.h>
 #include <Toolkit.h>
+#include "Game.h"
 
 TEST_CASE("guidance releases keyboard focus when returning to gameplay [display]" * doctest::test_suite("IntroductionUI"))
 {

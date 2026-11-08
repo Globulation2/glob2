@@ -16,6 +16,7 @@
 #include "sim/ClientCommandSink.h"
 #include "Player.h"
 #include "SGSL.h"
+#include "Game.h"
 
 void Story::toto(StoryContext* gui)
 {

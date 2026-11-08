@@ -10,6 +10,7 @@
 // also check that the copy has not drifted from it.
 
 #include "SimRevision.h"
+#include "Map.h"
 #include "EngineTiming.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -39,6 +40,7 @@
 #include "SimVersion.h"
 #include "Version.h"
 #include "WinningConditions.h"
+#include "Unit.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;

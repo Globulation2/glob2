@@ -3,6 +3,7 @@
 // ClientEvents, script presentation through ClientCommandSink, and the SGSL
 // Space acknowledgement through ClientRequests.
 #include "HeadlessGlobals.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "HeadlessGame.h"
 #include "EngineTiming.h"
 #include "GameGUI.h"

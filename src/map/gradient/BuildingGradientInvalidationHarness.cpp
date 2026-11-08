@@ -8,6 +8,7 @@
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
 #include "HeadlessGlobals.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"

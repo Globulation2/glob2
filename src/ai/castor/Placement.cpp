@@ -8,7 +8,6 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
-#include "Game.h"
 #include <algorithm>
 #include "Order.h"
 #include "Player.h"

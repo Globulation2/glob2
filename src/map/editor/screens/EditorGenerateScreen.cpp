@@ -9,6 +9,7 @@
 #include <Toolkit.h>
 #include <AssetLoader.h>
 #include <CooperativeTask.h>
+#include "Game.h"
 namespace
 {
 GAGCore::CooperativeTask generate(MapEdit &editor, GenerationRequest descriptor, Uint32 seed)

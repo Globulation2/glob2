@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "ScriptCorpus.h"
 #include "ScriptRuntime.h"
@@ -8,6 +9,7 @@
 #include "MersenneTwister.h"
 #include "Order.h"
 #include "Player.h"
+#include "Building.h"
 
 TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 		  doctest::test_suite("JavaScriptRealistic"))

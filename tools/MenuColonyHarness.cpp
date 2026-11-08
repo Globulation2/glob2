@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Generate the bundled colony and exercise the real simulation/presentation.
 #include "GlobalContainer.h"
+#include "Building.h"
 #include "gradient/MapRouting.h"
 #include <Environment.h>
 #include "FrontendTheme.h"

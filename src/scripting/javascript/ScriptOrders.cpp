@@ -9,6 +9,7 @@
 #include "AIRuleOrders.h"
 #include "ai/observation/AIWorldView.h"
 #include <stdexcept>
+#include "Team.h"
 namespace Script
 {
 std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const Value &d)

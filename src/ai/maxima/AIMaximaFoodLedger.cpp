@@ -9,6 +9,8 @@
 #include <climits>
 
 #include <algorithm>
+#include "Unit.h"
+#include "Building.h"
 
 namespace AIMaximaFoodLedger
 {

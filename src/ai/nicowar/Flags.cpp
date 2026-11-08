@@ -6,7 +6,6 @@
 #include "AINicowar.h"
 #include <string>
 #include "Utilities.h"
-#include "Game.h"
 #include "Unit.h"
 #include <vector>
 

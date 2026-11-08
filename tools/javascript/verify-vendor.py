@@ -13,7 +13,28 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+import time
+import urllib.error
 import urllib.request
+
+
+def download(url, destination, attempts=4):
+    """Fetch an archive, retrying transient server and network failures.
+
+    GitHub's archive endpoint intermittently answers 502/503/504; the hash check
+    that follows still rejects any wrong content."""
+    for attempt in range(1, attempts + 1):
+        try:
+            urllib.request.urlretrieve(url, destination)
+            return
+        except urllib.error.HTTPError as error:
+            if error.code < 500 or attempt == attempts:
+                raise
+        except urllib.error.URLError:
+            if attempt == attempts:
+                raise
+        print(f'{url}: download attempt {attempt} failed; retrying', flush=True)
+        time.sleep(5 * attempt)
 
 
 def verify(archives=None):
@@ -28,7 +49,7 @@ def verify(archives=None):
             if archives:
                 shutil.copyfile(archives / archive.name, archive)
             else:
-                urllib.request.urlretrieve(dependency['url'], archive)
+                download(dependency['url'], archive)
             digest = hashlib.sha256(archive.read_bytes()).hexdigest()
             if digest != dependency['sha256']:
                 raise RuntimeError(f'{name}: archive hash differs: {digest}')

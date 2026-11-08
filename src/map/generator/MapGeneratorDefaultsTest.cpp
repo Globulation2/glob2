@@ -1,4 +1,5 @@
 #include <nlohmann/json.hpp>
+#include "Map.h"
 #include "StartingLayout.h"
 #include "ClearingLandscape.h"
 #include "Homes.h"

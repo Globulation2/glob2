@@ -8,7 +8,6 @@
 #include <string>
 #include <utility>
 #include "Utilities.h"
-#include "Game.h"
 #include "Unit.h"
 
 using namespace AISharedRuntime;

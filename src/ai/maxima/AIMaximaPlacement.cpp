@@ -20,6 +20,8 @@
 #include <sstream>
 #include <mutex>
 #include <type_traits>
+#include "Unit.h"
+#include "Building.h"
 
 namespace AIMaximaPlacement
 {

@@ -4,8 +4,11 @@
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "ui/ThemeCatalog.h"
+#include "sim/snapshot/SnapshotStore.h"
+#include "Building.h"
 #include <Environment.h>
 #include "GlobalContainer.h"
+#include "Game.h"
 #include <cmath>
 #include <algorithm>
 #include "MainMenuScreen.h"

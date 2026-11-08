@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/SimulationRunner.h"
+#include "Map.h"
 
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
@@ -7,6 +8,7 @@
 
 #include <chrono>
 #include <system_error>
+#include "Game.h"
 
 SimulationRunner::SimulationRunner(Engine &engine) : engine(engine) {}
 

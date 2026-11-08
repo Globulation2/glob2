@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiringPipeline.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
@@ -10,6 +11,7 @@
 #include <thread>
 #include <set>
 #include <nlohmann/json.hpp>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -260,10 +262,10 @@ TEST_SUITE("HiringPlanner")
 		}
 		const auto output=HiringPlanner::Planner{}.rank(input,0);
 		bool suggested=false;
-		for (const auto& building:output.buildings) if (building.building==Game::refOf(b))
+		for (const auto& building:output.buildings) if (building.building==refOf(b))
 			for (const auto& job:building.jobs)
 				if (job.key==Hiring::Key{Hiring::Job::Delivery,WHEAT})
-					for (const auto& candidate:job.candidates) suggested|=candidate.unit==Game::refOf(u);
+					for (const auto& candidate:job.candidates) suggested|=candidate.unit==refOf(u);
 		CHECK(suggested);
 		CHECK(b->globalGradient[slot] == nullptr);
 		int distance=-1;
@@ -574,13 +576,13 @@ TEST_SUITE("HiringPlanner")
 		CHECK(world.checksum() == checksum);
 		bool found = false;
 		for (const auto &b : result.buildings)
-			if (b.building == Game::refOf(inn))
+			if (b.building == refOf(inn))
 				for (const auto &job : b.jobs)
 					if (job.key == Hiring::Key{Hiring::Job::Delivery, WHEAT})
 					{
 						found = true;
 						CHECK(job.candidates.size() == 1);
-						CHECK(job.candidates.front().unit == Game::refOf(free));
+						CHECK(job.candidates.front().unit == refOf(free));
 					}
 		CHECK(found);
 		const auto repeated = cache.rank(inputs, 0, 8);
@@ -846,7 +848,7 @@ TEST_SUITE("HiringPlanner")
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto supplies = HiringPlanner::prepare(inputs, 0);
 		const auto supply = std::find_if(supplies.begin(), supplies.end(), [&](const auto &s)
-										 { return s.building == Game::refOf(inn); });
+										 { return s.building == refOf(inn); });
 		REQUIRE(supply != supplies.end());
 		CHECK(supply->modes[CHERRY] == world.game.map.routing().materialSupplyModesSlot(inn, CHERRY));
 		CHECK(supply->modes[CHERRY] != 0);
@@ -854,13 +856,13 @@ TEST_SUITE("HiringPlanner")
 		const auto output = cache.rank(inputs, 0, 8);
 		bool found = false;
 		for (const auto &building : output.buildings)
-			if (building.building == Game::refOf(inn))
+			if (building.building == refOf(inn))
 				for (const auto &list : building.jobs)
 					if (list.key == Hiring::Key{Hiring::Job::Fetch, CHERRY})
 					{
 						found = true;
 						REQUIRE(list.candidates.size() == 1);
-						CHECK(list.candidates[0].unit == Game::refOf(worker));
+						CHECK(list.candidates[0].unit == refOf(worker));
 					}
 		CHECK(found);
 		// Missing supplier planes use an optimistic estimate and remain recruitable.

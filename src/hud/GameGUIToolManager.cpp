@@ -13,6 +13,7 @@
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
 #include "Order.h"
+#include "Game.h"
 
 using namespace GAGGUI;
 using namespace GAGCore;

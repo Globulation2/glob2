@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "AIRules.h"
-#include "Game.h"
+#include "TeamCapacity.h"
+class Game;
 #include "Order.h"
 #include "Building.h"
 #include "ai/observation/AIWorldView.h"
@@ -10,67 +11,14 @@
 
 namespace AIRules
 {
-inline std::shared_ptr<Order> createOrder(const Game& game,int team,int x,int y,
-    int type,int workers,int futureWorkers)
-{
-    const auto* placement=game.buildingsTypes.get(type);
-    const auto* completed=placement->isBuildingSite ? game.buildingsTypes.get(placement->nextLevel) : placement;
-    return std::make_shared<OrderCreate>(team,x,y,type,
-        std::clamp(workers,0,placement->semantics.assignmentLimit),
-        std::clamp(futureWorkers,0,completed->semantics.assignmentLimit));
-}
-
-inline std::shared_ptr<Order> constructionOrder(const Game& game,const Building& building,
-    int workers,int futureWorkers)
-{
-    const bool repair=building.type->isBuildingSite ? building.constructionResultState==Building::REPAIR
-        : building.hp<building.getEffectiveMaxHp();
-    const int target=building.type->isBuildingSite ? building.typeNum
-        : repair ? building.type->prevLevel : building.type->nextLevel;
-    const auto* placement=target>=0 ? game.buildingsTypes.get(target) : building.type;
-    // Repair restores the origin even when its site is shared with another
-    // lineage whose normal forward completion is a different variant.
-    const int origin=building.type->isBuildingSite ? building.getConstructionOriginTypeNum() : building.typeNum;
-    const auto* completed=repair && origin>=0 ? game.buildingsTypes.get(origin)
-        : placement->isBuildingSite ? game.buildingsTypes.get(placement->nextLevel) : placement;
-    return std::make_shared<OrderConstruction>(building.gid,
-        std::clamp(workers,0,placement->semantics.assignmentLimit),
-        std::clamp(futureWorkers,0,completed->semantics.assignmentLimit));
-}
-
+std::shared_ptr<Order> createOrder(const Game& game,int team,int x,int y,
+    int type,int workers,int futureWorkers);
+std::shared_ptr<Order> constructionOrder(const Game& game,const Building& building,
+    int workers,int futureWorkers);
 // Planning gates prevent new unavailable work. This additional guard drains
 // orders restored from older saves, whose controllers did not have those gates.
 // It carries no saved state and leaves the standard queue untouched.
-inline bool permittedQueuedOrder(Game& game, Order& order)
-{
-    const auto& rules=game.gameHeader;
-    if(order.getOrderType()==ORDER_CREATE)
-    {
-        const auto& create=static_cast<const OrderCreate&>(order);
-        return usefulBuilding(game,create.typeNum);
-    }
-    if(rules.isUnitUpgradesDisabled() && order.getOrderType()==ORDER_CONSTRUCTION)
-    {
-        const auto gid=static_cast<const OrderConstruction&>(order).gid;
-        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
-        auto* team=game.teams[Building::GIDtoTeam(gid)];
-        auto* building=team ? team->myBuildings[Building::GIDtoID(gid)] : nullptr;
-        return building && (building->type->isBuildingSite
-            || (building->type->semantics.repairable && building->hp<building->getEffectiveMaxHp()));
-    }
-    if(rules.isPeacefulModeEnabled() && order.getOrderType()==ORDER_MODIFY_SWARM)
-        return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
-    if(rules.isPeacefulModeEnabled() && order.getOrderType()==ORDER_MOVE_FLAG)
-    {
-        const auto gid=static_cast<const OrderMoveFlag&>(order).gid;
-        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
-        auto* team=game.teams[Building::GIDtoTeam(gid)];
-        auto* building=team ? team->myBuildings[Building::GIDtoID(gid)] : nullptr;
-        return !building || !building->runtime->attractsRole(2)
-            || building->runtime->attractsRole(0) || building->runtime->attractsRole(1);
-    }
-    return true;
-}
+bool permittedQueuedOrder(Game& game, Order& order);
 // Selection-time qualification uses captured capabilities and entity values.
 // It deliberately mirrors the owner guard; no live rule/query fallback exists.
 inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& order)
@@ -83,7 +31,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
     }
     if(world.rules.upgradesDisabled && order.getOrderType()==ORDER_CONSTRUCTION) {
         const auto gid=static_cast<const OrderConstruction&>(order).gid;
-        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
+        if(gid>=Building::MAX_COUNT*TEAM_MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
         return building && (world.catalog->at(building->typeNum).site ||
             (world.catalog->at(building->typeNum).semantics.repairable && building->hp<building->maxHp));
@@ -92,7 +40,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
         return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
     if(world.rules.peaceful && order.getOrderType()==ORDER_MOVE_FLAG) {
         const auto gid=static_cast<const OrderMoveFlag&>(order).gid;
-        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
+        if(gid>=Building::MAX_COUNT*TEAM_MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
         if(!building) return true;
         const auto& kind=world.catalog->at(building->typeNum);

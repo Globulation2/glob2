@@ -3,7 +3,6 @@
 #include "AIMaximaBuildingRoles.h"
 #include "BuildingCapabilities.h"
 #include "BuildingType.h"
-#include "Game.h"
 #include "Team.h"
 #include "UnitConsts.h"
 #include "ai/observation/ObservationQueries.h"

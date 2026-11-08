@@ -9,6 +9,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <sstream>
+#include "Unit.h"
+#include "Building.h"
 
 namespace {
 Unit* swimmer(glob2test::HeadlessGame& world,int walk,int swim) {

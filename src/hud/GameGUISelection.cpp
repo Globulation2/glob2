@@ -11,6 +11,7 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "EngineTiming.h"
+#include "sim/EntityRefOf.h"
 
 void GameGUI::cleanOldSelection(void)
 {
@@ -63,11 +64,11 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 
 	if (selectionMode==BUILDING_SELECTION)
 	{
-		selection=Game::refOf(static_cast<Building*>(newSelection));
+		selection=refOf(static_cast<Building*>(newSelection));
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
-		selection=Game::refOf(static_cast<Unit*>(newSelection));
+		selection=refOf(static_cast<Unit*>(newSelection));
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{

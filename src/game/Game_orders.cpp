@@ -30,6 +30,7 @@
 #include "Brush.h"
 
 #include "ReplayWriter.h"
+#include "Building.h"
 
 namespace
 {

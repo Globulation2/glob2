@@ -22,6 +22,7 @@
 #include "Utilities.h"
 #include <SDL3/SDL.h>
 #include <algorithm>
+#include "sim/EntityRefOf.h"
 
 void MapEdit::draw(Uint64 frameTick)
 {
@@ -49,8 +50,8 @@ void MapEdit::preparePresentation()
     SceneRequest request;
     request.localTeam=team;request.includePanels=false;request.includeScriptAreas=true;
     request.view.overlay=isFertilityOn ? OverlayArea::Fertility : OverlayArea::None;
-    request.selectedBuilding=Game::refOf(view.selectedBuilding);
-    request.selectedUnit=Game::refOf(view.selectedUnit);
+    request.selectedBuilding=refOf(view.selectedBuilding);
+    request.selectedUnit=refOf(view.selectedUnit);
     request.view.displayW=int(camera.visibleW());request.view.displayH=int(camera.visibleH());
     // An unchanged world costs no capture: the store returns its latest boundary,
     // with the same serial. Preparing a scene does cost, so keep the current one.

@@ -2,6 +2,7 @@
 // Shared production map study operations and legacy argument adapter.
 #define SDL_MAIN_HANDLED
 #include "PowerOfTwo.h"
+#include "Map.h"
 #include <SDL3/SDL_main.h>
 #include "MapReport.h"
 #include "Material.h"
@@ -45,6 +46,8 @@
 #include <vector>
 
 #include "Headless.h"
+#include "Team.h"
+#include "Building.h"
 
 namespace
 {

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SharedBuildingGradient.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "GradientExecutionAudit.h"
 #include "HeadlessGlobals.h"
@@ -14,6 +15,7 @@
 #include <StreamBackend.h>
 #include <set>
 #include <nlohmann/json.hpp>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -464,7 +466,7 @@ TEST_SUITE("HiringPlanner")
 				if (list.key == Hiring::Key{Hiring::Job::Delivery, WHEAT})
 				{
 					REQUIRE(list.candidates.size() == 1);
-					CHECK(list.candidates[0].unit == Game::refOf(viable));
+					CHECK(list.candidates[0].unit == refOf(viable));
 					found = true;
 				}
 			CHECK(found);
@@ -521,7 +523,7 @@ TEST_SUITE("HiringGradientPreparation")
 				bool found = false;
 				for (const auto &list : lists->jobs)
 					for (const auto &candidate : list.candidates)
-						if (candidate.unit == Game::refOf(u))
+						if (candidate.unit == refOf(u))
 							found = true;
 				REQUIRE(found);
 				if (invalidate)
@@ -586,7 +588,7 @@ TEST_SUITE("HiringGradientPreparation")
 		bool found = false;
 		for (const auto &list : lists->jobs)
 			for (const auto &candidate : list.candidates)
-				if (candidate.unit == Game::refOf(u))
+				if (candidate.unit == refOf(u))
 					found = true;
 		CHECK(found);
 	}
@@ -632,7 +634,7 @@ TEST_SUITE("HiringGradientPreparation")
 				REQUIRE(delivery);
 				REQUIRE(delivery->candidates.size() == count);
 				CHECK(delivery->primaryCount == 1);
-				CHECK(delivery->candidates.front().unit == Game::refOf(units.front()));
+				CHECK(delivery->candidates.front().unit == refOf(units.front()));
 				const auto slot =
 					b->routeSlot(accessClass(units.front()->movementAccess()), BuildingRoute::Footprint);
 				REQUIRE(b->globalGradientSearch[slot]);
@@ -674,7 +676,7 @@ TEST_SUITE("HiringGradientPreparation")
 			u->medical = Unit::MED_FREE;
 			u->hungriness = 0;
 			u->carriedMaterial = WHEAT;
-			const auto ref = Game::refOf(b);
+			const auto ref = refOf(b);
 			const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 			original.game.observeCompletedWorld();
 			auto *storage = new GAGCore::MemoryStreamBackend;
@@ -937,7 +939,7 @@ TEST_SUITE("BuildingGradientInitialization")
 				original.game.hiringPipeline =
 					std::make_unique<HiringPipeline>(original.game.map.computeExecutor());
 				original.game.hiringPipeline->requestInitialization(*b);
-				const auto ref = Game::refOf(b);
+				const auto ref = refOf(b);
 				const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 				if (pending)
 					original.game.observeCompletedWorld();

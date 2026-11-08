@@ -3,7 +3,6 @@
 
 #include "Material.h"
 #include "AITelemetryFields.h"
-#include "Game.h"
 #include "shared_runtime/Farming.h"
 #include "shared_runtime/Runtime.h"
 #include "shared_runtime/BuildingDemands.h"

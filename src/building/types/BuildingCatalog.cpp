@@ -17,6 +17,8 @@
 #include <type_traits>
 #include <tuple>
 #include <regex>
+#include "Unit.h"
+#include "Building.h"
 
 namespace
 {

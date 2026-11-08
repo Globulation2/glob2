@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGame.h"
+#include "Map.h"
 
 #include "GlobalContainer.h"
 #include "Player.h"
+#include "Building.h"
 
 namespace glob2test
 {

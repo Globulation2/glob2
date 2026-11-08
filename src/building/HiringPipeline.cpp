@@ -18,6 +18,7 @@
 #include <limits>
 #include <algorithm>
 #include <set>
+#include "sim/EntityRefOf.h"
 
 namespace
 {
@@ -413,14 +414,14 @@ void HiringPipeline::compute(void *context, std::size_t)
 void HiringPipeline::requestInitialization(Building &building)
 {
 	game = building.owner->game;
-	initializationRequests[building.gid] = Game::refOf(&building);
+	initializationRequests[building.gid] = refOf(&building);
 }
 bool HiringPipeline::preparing(const Building &building, int slot) const
 {
 	return game && std::any_of(initializing.begin(), initializing.end(),
 							   [&](const auto &claim)
 							   {
-								   return claim.building == Game::refOf(&building) &&
+								   return claim.building == refOf(&building) &&
 										  claim.slot == slot &&
 										  claim.epoch == building.refreshEpoch[slot] &&
 										  claim.generation == game->map.topologyGeneration;
@@ -527,7 +528,7 @@ const HiringPlanner::BuildingLists *HiringPipeline::suggestions(const Building &
 	const auto &o = published[b.owner->teamNumber];
 	if (!o)
 		return nullptr;
-	const auto ref = Game::refOf(&b);
+	const auto ref = refOf(&b);
 	const auto it =
 		std::lower_bound(o->buildings.begin(), o->buildings.end(), ref.gid,
 						 [](const auto &lists, unsigned gid) { return lists.building.gid < gid; });

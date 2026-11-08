@@ -5,6 +5,7 @@
 // side, one recording effects as a displayed game does, and their full
 // checksums must agree on every tick.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "AI.h"
@@ -13,6 +14,7 @@
 #include "render/UnitEffects.h"
 #include <set>
 #include <vector>
+#include "Building.h"
 
 namespace
 {

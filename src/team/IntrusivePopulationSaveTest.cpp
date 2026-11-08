@@ -11,6 +11,8 @@
 #include <memory>
 #include <algorithm>
 #include <exception>
+#include "Unit.h"
+#include "Building.h"
 
 namespace {
 std::string savePopulation(Game& game,bool text) {

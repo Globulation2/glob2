@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ToolkitBinding.h"
+#include "Map.h"
 #include "ToolkitRecords.h"
 #include "GenerationWork.h"
 #include "HeadlessGlobals.h"

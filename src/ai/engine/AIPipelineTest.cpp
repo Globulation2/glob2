@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
@@ -14,6 +15,7 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <array>
+#include "Building.h"
 
 namespace
 {

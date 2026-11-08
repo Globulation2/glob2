@@ -17,6 +17,8 @@
 #include <ScreenStack.h>
 #include <Toolkit.h>
 #include <filesystem>
+#include "Game.h"
+#include "Unit.h"
 
 namespace
 {

@@ -15,6 +15,7 @@
 #include <memory>
 #include <fstream>
 #include <algorithm>
+#include "Unit.h"
 
 namespace {
 std::unique_ptr<glob2test::HeadlessGame> copyRecoveryGame(glob2test::HeadlessGame& source,unsigned participants,const std::string& exportName={})

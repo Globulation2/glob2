@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
+#include "Map.h"
 #include <stdarg.h>
 #include <math.h>
 
@@ -28,6 +29,7 @@
 #include <glob2/BuildConfig.h>
 #include "Order.h"
 #include "net/message/MessageRecipients.h"
+#include "sim/EntityRefOf.h"
 
 
 using std::shared_ptr;
@@ -354,7 +356,7 @@ void GameGUI::stampClientOrder(const std::shared_ptr<Order>& order, bool simulat
     {
         const unsigned team = Building::GIDtoTeam(*gid), slot = Building::GIDtoID(*gid);
         order->clientTarget = team < unsigned(game.teamsCount()) && game.teams[team]
-            ? Game::refOf(game.teams[team]->myBuildings[slot]) : BuildingRef{};
+            ? refOf(game.teams[team]->myBuildings[slot]) : BuildingRef{};
     }
 }
 

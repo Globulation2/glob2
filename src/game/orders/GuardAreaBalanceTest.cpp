@@ -38,6 +38,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "Unit.h"
+#include "Building.h"
 
 using namespace GAGCore;
 

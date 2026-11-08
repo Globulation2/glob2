@@ -7,11 +7,11 @@
 #include <stdlib.h>
 
 
-#include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIViewport.h"
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
+#include "Building.h"
 
 namespace
 {

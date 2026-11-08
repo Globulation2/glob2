@@ -23,7 +23,6 @@ src/field/RuntimeTerrainGradient.h -> src/map/TerrainRegistry.h
 src/field/TerrainMovementCosts.h -> src/map/TerrainProperties.h
 src/field/TerrainTravel.h -> src/map/TerrainRegistry.h
 src/game/Bullet.h -> libs/gag/include/GAGSys.h
-src/game/Game.h -> src/building/hud/BuildingGuiState.h
 src/game/Game.h -> src/scripting/map/MapScript.h
 src/game/Game.h -> src/scripting/sgsl/SGSL.h
 src/game/GameHints.h -> src/scripting/map/ScriptNumber.h

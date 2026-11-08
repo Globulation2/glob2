@@ -20,6 +20,9 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "UnitCatalog.h"
+#include "Map.h"
+#include "sim/snapshot/SnapshotStore.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
 #include "HiringPipeline.h"
@@ -49,6 +52,12 @@
 
 Game::Game(GameGUI *gui, MapEdit* edit):
 	buildingsTypes(globalContainer->buildingsTypes),
+	worldSnapshotsOwner(std::make_unique<SimulationSnapshot::Store>()),
+	worldSnapshots(*worldSnapshotsOwner),
+	completedObservationOwner(std::make_unique<std::optional<SimulationSnapshot::Handle>>()),
+	completedObservation(*completedObservationOwner),
+	mapOwner(std::make_unique<Map>()),
+	map(*mapOwner),
 	scriptClient(gui),
 	mapscript(this, gui ? &scriptClient : nullptr)
 {
@@ -631,3 +640,7 @@ Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)
  if(generation==0xffffffffu)throw std::runtime_error("JavaScript entity generation exhausted");
  return ++generation;
 }
+
+std::size_t Game::unitTypeCount() const { return unitCatalog().size(); }
+
+EntityRandom& Game::privateRandom(RandomDomain domain) { return map.privateRandom(domain); }

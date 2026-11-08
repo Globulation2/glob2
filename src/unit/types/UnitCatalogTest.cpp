@@ -13,6 +13,8 @@
 #include "Team.h"
 #include "FileManager.h"
 #include "render/UnitAnimation.h"
+#include "Unit.h"
+#include "Building.h"
 using Json = nlohmann::json;
 namespace {
 // The released pre-73 layout places flat Race records inside BaseTeam and

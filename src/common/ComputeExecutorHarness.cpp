@@ -17,6 +17,8 @@
 #include <string>
 #include <Environment.h>
 #include <future>
+#include "Unit.h"
+#include "Building.h"
 
 TEST_SUITE("ComputeExecutor")
 {
