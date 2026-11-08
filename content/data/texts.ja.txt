@@ -1686,6 +1686,14 @@ Globulation 2のカーソルを表示します。
 陸橋の幅
 [Lake size]
 湖の大きさ
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 争奪共有地
 [Maze]
@@ -1774,6 +1782,8 @@ Globulation 2のカーソルを表示します。
 帯の幅
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 都市国家
 [Strait width]
@@ -1806,6 +1816,12 @@ Globulation 2のカーソルを表示します。
 空き地の大きさ
 [Levee]
 堤防
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 沼沢
 [Everglades need at least one colony.]
@@ -1910,8 +1926,18 @@ Globulation 2のカーソルを表示します。
 潟湖
 [Central island]
 中央の島
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 干潟には少なくとも1つのコロニーが必要です。
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母島がこのマップに収まりません。より大きなマップ、より少ないコロニー、またはより小さな島を使ってください。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1954,6 +1980,18 @@ Globulation 2のカーソルを表示します。
 河口の三角州
 [Meandering rivers]
 蛇行する川筋
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 開始地点の谷の果物
 [Moat]
@@ -1964,6 +2002,12 @@ Globulation 2のカーソルを表示します。
 両岸のコロニー
 [Winding belt]
 曲がりくねった帯
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 セルの形
 [Squares]
@@ -2000,6 +2044,20 @@ Globulation 2のカーソルを表示します。
 峠の間隔
 [Lee width]
 風下側の幅
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 原生林
 [Canals]
@@ -2436,6 +2494,8 @@ Globulation 2のカーソルを表示します。
 追加の浅瀬
 [Moraine hummocks]
 モレーンの小丘
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 網状帯が本拠地に残す段丘が少なすぎます。より大きなマップを使うか、網状帯を狭くしてください。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2494,6 +2554,12 @@ Globulation 2のカーソルを表示します。
 水場
 [Dry patches]
 乾燥地
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 少ない
 [Normal]
@@ -2622,6 +2688,26 @@ Globulation 2のカーソルを表示します。
 長い扇状地
 [Twin springs]
 双子の泉
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 扇状地の斜面が狭すぎて本拠地が収まりません。より大きなマップ、より広い山脈の間隔、より狭い尾根、またはより小さな塩湖を使ってください。
 [Central Quarry]
@@ -2772,6 +2858,10 @@ Globulation 2のカーソルを表示します。
 伐採する森の厚さ
 [Extra trails]
 追加の小道
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 このマップの各辺は64～512マスである必要があります。
 [Portage Lakes cannot fit shoreline settlements on this seed.]

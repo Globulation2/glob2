@@ -34,6 +34,8 @@ Choose a barrier by its consequences:
 
 Tiles whose corners hold two different property profiles are never buildable, so every boundary between two kinds of ground costs a seam of building room; draw a town and its streets in one group (City states paves both).
 
+The catalog terrain groups add permanent versions of these: rock that blocks walking but not fire, obstacles that block both, pavement that builds but inhibits like sand, mud that slows without inhibiting, paths that double speed and never grow over, fertile ground that waters itself, and deep water that swims slowly and holds no algae. Their construction rules are in [the terrain palette](terrain-palette.md).
+
 These are ground-unit rules; flying explorers do not respect the same barriers. A map has toroidal topology, so an apparent outside edge is another route unless the generated geometry seals it.
 
 ## Build an economy that does not eat its own town

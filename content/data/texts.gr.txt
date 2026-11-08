@@ -1686,6 +1686,14 @@ Cortex
 Πλάτος χερσαίας γέφυρας
 [Lake size]
 Μέγεθος λίμνης
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Διεκδικούμενη κοινή γη
 [Maze]
@@ -1774,6 +1782,8 @@ Cortex
 Πλάτος ζώνης
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Η ζώνη είναι πολύ κοντή για τόσες αποικίες. Χρησιμοποιήστε μακρύτερο χάρτη ή λιγότερες αποικίες.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Πόλεις-κράτη
 [Strait width]
@@ -1806,6 +1816,12 @@ Cortex
 Μέγεθος ξέφωτου
 [Levee]
 Ανάχωμα
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Βαλτόνερα
 [Everglades need at least one colony.]
@@ -1910,8 +1926,18 @@ Cortex
 Λιμνοθάλασσες
 [Central island]
 Κεντρικό νησί
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Οι παλιρροιακές πεδιάδες χρειάζονται τουλάχιστον μία αποικία.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Τα νησιά-πατρίδες δεν χωρούν σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή μικρότερα νησιά.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1954,6 +1980,18 @@ Cortex
 Δέλτα ποταμού
 [Meandering rivers]
 Μαιανδρικοί ποταμοί
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Φρούτα στις αρχικές κοιλάδες
 [Moat]
@@ -1964,6 +2002,12 @@ Cortex
 Αποικίες και στις δύο ακτές
 [Winding belt]
 Ελικοειδής ζώνη
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Σχήμα κελιών
 [Squares]
@@ -2000,6 +2044,20 @@ Cortex
 Απόσταση διάσελων
 [Lee width]
 Πλάτος υπήνεμης πλευράς
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Πρωτογενές δάσος
 [Canals]
@@ -2436,6 +2494,8 @@ Emoji
 Επιπλέον ρηχά περάσματα
 [Moraine hummocks]
 Μοραινικοί λοφίσκοι
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Το πλέγμα αφήνει πολύ λίγη αναβαθμίδα για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερο πλέγμα.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2494,6 +2554,12 @@ Emoji
 Νερόλακκοι
 [Dry patches]
 Ξηρές περιοχές
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Λίγοι
 [Normal]
@@ -2622,6 +2688,26 @@ Emoji
 Μακρύ ριπίδιο
 [Twin springs]
 Δίδυμες πηγές
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Οι πλαγιές με ριπίδια είναι πολύ στενές για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη, μεγαλύτερη απόσταση οροσειρών, στενότερες κορυφογραμμές ή μικρότερες αλμυρές λίμνες.
 [Central Quarry]
@@ -2772,6 +2858,10 @@ Emoji
 Πάχος δασικού περάσματος
 [Extra trails]
 Πρόσθετα μονοπάτια
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Οι πλευρές αυτού του χάρτη πρέπει να έχουν 64 έως 512 πλακίδια.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

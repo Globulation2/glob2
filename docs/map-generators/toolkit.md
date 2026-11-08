@@ -8,6 +8,7 @@
 - [Drawing](#drawing)
 - [Wedge](#wedge)
 - [Sketch](#sketch)
+- [Rock](#rock)
 - [LatticeNoise](#latticenoise)
 - [RecursiveGeometry](#recursivegeometry)
 - [HierarchicalCrossings](#hierarchicalcrossings)
@@ -45,6 +46,7 @@
 - [BalancedStarts](#balancedstarts)
 - [Pipeline](#pipeline)
 - [Terrain](#terrain)
+- [HeightFieldLooks](#heightfieldlooks)
 - [StartQuality](#startquality)
 - [GenerationContext](#generationcontext)
 - [legacy/Regions, legacy/Distances, legacy/StartingPositions](#legacyregions-legacydistances-legacystartingpositions)
@@ -71,7 +73,11 @@ Drawing on the torus: `strokePath`, a thick path of points each with its own hal
 
 ## Sketch
 
-`TerrainSketch`, the map's vertex terrain designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeVertices`; `pureTiles`, the tiles whose four corners all hold one terrain (the sketch as the game will draw it; also available directly from a finished map), and `tileCorners`, the reverse; `walkableTiles(TerrainSketch, Torus)`, movement permission derived from the four corner profiles for route planning and connectivity (also available from a finished map), rather than a pure-terrain identity test; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil
+`TerrainSketch`, the map's vertex terrain designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeVertices`; `pureTiles`, the tiles whose four corners all hold one terrain (the sketch as the game will draw it; also available directly from a finished map), and `tileCorners`, the reverse; `walkableTiles(TerrainSketch, Torus)`, movement permission derived from the four corner profiles for route planning and connectivity (also available from a finished map), rather than a pure-terrain identity test; `composeLooks`, which joins a mechanic sketch (each vertex's canonical rule-group type, read by every helper and check) with a look sketch, taking a look only where it shares its mechanic's terrain group so a look never changes a rule; `paintTile`; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil
+
+## Rock
+
+Walls a design draws as tiles: `rockVertices` (a vertex is rock only where all four tiles touching it are rock, so the blocked region is the drawn tiles less their convex corners, and walls under two tiles thick leave none); `quarryNear` (the wall tiles of a quarry face, left out of the rock and stocked with stone) and `quarryApproach` (the ring of plain grass a face needs, since stone stands only on pure grass); `talusApron` (rough ground round rock); `deepCore` (water a number of eight-connected steps from land; `deepenWater` in [HeightFieldLooks](#heightfieldlooks) is the straight-line version with round outlines); `quarryFault` (every face tile that can hold stone holds it, and owned faces hold equal stone; it does not fault a face tile that cannot hold stone, so check that separately). See [the terrain palette](../../.agents/skills/glob2-map-design/references/terrain-palette.md) for how the rebuilt landscapes use them.
 
 ## LatticeNoise
 
@@ -221,6 +227,10 @@ The stages round the others: `dealStarts` (the design's start sites dealt to the
 ## Terrain
 
 The height-field pipeline as stages: `heightFieldTiling`, `classifyHeightField`, `paintHeightFieldTerrain`, `paintHeightFieldResources`, `chooseHeightFieldStarts`, `plantHeightFieldGroves`, composed by `generateHeightField`
+
+## HeightFieldLooks
+
+Terrain post-passes for the height-field generators, over the finished field, its resources and its chosen starts, keeping a mechanic sketch (each vertex's canonical rule-group type) and painting looks with `composeLooks`: `heightFieldSketch` (the vertex terrain `generateHeightField` paints, and optionally its resource bands, rebuilt from a fresh context so a validator can replan from it), `mapSketch`; `wetVertices` and `stepsFromWet` (water of either group, and eight-connected steps from it: the field every "near the water" and "beyond its reach" rule reads) and `distanceFromWet` (the straight-line distance, for round edges); `deepenWater` (deep water with a shallow margin: plain water a straight-line reach from land, in bodies big enough not to read as holes) and `deepReachForShare` (the least reach at which a core holds no more than a share of the water, so a wide river keeps shallows in proportion and its displaced algae fit there); `wetShare` (the water share round every vertex, high inside a bend and low outside it) and `majorWater` (a river without its ponds); `layLevee` (a Fertile band at a distance from water); `paveBeyondWater` (Barren pavement never closer than a reach, 22 steps or more where it must not inhibit crops); `gradeGrassLooks` (lush near water, dry far from it, plain where a mask says); `homeGardens` (frayed discs round the swarms that a pass leaves plain grass); `writeLayeredTerrain` (writes mechanics with looks and clears, counts and lists every deposit the new terrain refuses); `partingBarrier` (the first blocking group on a finished map that parts the walkable ground round it). River uses all of them.
 
 ## StartQuality
 

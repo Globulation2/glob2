@@ -1678,6 +1678,14 @@ Lapad ng kanal
 Lapad ng tulay sa lupa
 [Lake size]
 Laki ng lawa
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Pinag-aagawang lupain
 [Maze]
@@ -1762,6 +1770,8 @@ Mundong singsing
 Lapad ng sinturon
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Masyadong maikli ang sinturon para sa ganito karaming kolonya; gumamit ng mas mahabang mapa o mas kaunting kolonya.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Mga lungsod-estado
 [Strait width]
@@ -1794,6 +1804,12 @@ Laki ng maliit na lawa
 Laki ng bakanteng lugar
 [Levee]
 Dike
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Mahahabang lawang-latian
 [Everglades need at least one colony.]
@@ -1902,8 +1918,18 @@ Mga munting lawang-dagat
 Mga Lagoon
 [Central island]
 Gitnang isla
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Ang mga tidal flat ay nangangailangan ng kahit isang kolonya.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hindi kasya sa mapang ito ang mga pulo na pinagmulan; gumamit ng mas malaking mapa, mas kaunting kolonya o mas maliliit na pulo.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1946,6 +1972,18 @@ Mabuhanging baybayin ng lawa
 Delta ng ilog
 [Meandering rivers]
 Mga paliko-likong ilog
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Prutas sa mga panimulang lambak
 [Moat]
@@ -1956,6 +1994,12 @@ Bato sa taniman ng prutas
 Mga kolonya sa magkabilang baybayin
 [Winding belt]
 Paikot-ikot na sinturon
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Hugis ng selula
 [Squares]
@@ -1992,6 +2036,20 @@ Kapal ng tagaytay
 Agwat ng mga daanan sa bundok
 [Lee width]
 Lapad ng bahaging kubli sa hangin
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Matandang kagubatan
 [Canals]
@@ -2438,6 +2496,8 @@ Laki ng buhanginan
 Mga dagdag na mababaw na agos
 [Moraine hummocks]
 Maliliit na bunton ng moraine
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Napakaliit ng natitirang terasa para sa mga panimulang lugar dahil sa nagtitirintas na ilog; gumamit ng mas malaking mapa o mas makitid na ilog.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2496,6 +2556,12 @@ Savannah
 Mga likas na inuman ng tubig
 [Dry patches]
 Mga tuyong patse
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Kalat-kalat
 [Normal]
@@ -2624,6 +2690,26 @@ Malapad na alluvial fan
 Mahabang alluvial fan
 [Twin springs]
 Kambal na bukal
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Masyadong makitid ang mga bajada para sa mga panimulang lugar; gumamit ng mas malaking mapa, mas malawak na agwat ng mga kabundukan, mas makikitid na tagaytay, o mas maliit na playa.
 [Central Quarry]
@@ -2774,6 +2860,10 @@ Paghaba ng lawa
 Lalim ng portage
 [Extra trails]
 Mga karagdagang daanan
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Kailangan ng Mga Lawa ng Portage ng 64 hanggang 512 tile sa bawat gilid.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

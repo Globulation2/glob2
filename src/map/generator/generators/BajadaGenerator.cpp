@@ -17,6 +17,7 @@
 #include "Resources.h"
 #include "ResourceSemantics.h"
 #include "Roads.h"
+#include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Walls.h"
@@ -129,6 +130,11 @@ constexpr double kMassif = 0.4, kMassifCell = 36, kRidgeRough = 2.5, kRidgeRough
 // However thin a stretch of range, and whatever notch a spring cuts, stone stands within this many
 // tiles of its centre line except in a pass.
 constexpr double kRidgeCore = 3.5;
+// Quarry faces: the outer kQuarryDepth tiles of a range stay stone, kQuarryHalf tiles either side of
+// a home's town and two or three either side of the ambient quarries, one for every kQuarryPitch
+// tiles of every face at the default `stone-amount`.
+constexpr int kQuarryDepth = 2, kQuarryHalf = 4, kHomeQuarryStone = 8, kQuarrySearch = 12;
+constexpr double kQuarryPitch = 48;
 // Spurs off the ridges' faces: one every kSpurGapLow to kSpurGapHigh tiles, kSpurLow to kSpurHigh
 // long and kSpurBaseLow to kSpurBaseHigh tiles half wide at the root.
 constexpr double kSpurGapLow = 14, kSpurGapHigh = 40, kSpurLow = 5, kSpurHigh = 16;
@@ -140,6 +146,8 @@ constexpr double kSpurBaseLow = 3, kSpurBaseHigh = 5.5;
 // kPassFanClear of a pass mouth.
 constexpr double kPassHalfWidth = 1.6, kPassStoneClear = 3.0, kPassOverrun = 1, kPassSkew = 8;
 constexpr double kPassShoulder = 4, kPassShoulderReach = 12, kPassFanClear = 12;
+// A pass's mouth this many columns from a home's quarry face cannot reach it, however it skews.
+constexpr double kPassQuarryClear = kPassHalfWidth + kPassStoneClear + kPassSkew + 1;
 // The playa: its lakes are at most this share of the basin wide at a `playa` of 100 (the smaller of
 // the requested spacing and the one the map holds), their shores wobbling out to kLakeLobe times
 // that; laid along the basin with lengths of kLakeLengthLow to kLakeLengthHigh times kLakePitch and
@@ -153,6 +161,12 @@ constexpr double kShortestLake = 12, kLakeShift = 3, kLakeLobeCell = 10;
 constexpr double kLakeBasins = 0.3, kMeadowGap = 0.3;
 // A salt flat kSaltRim tiles wide, give or take kSaltLobe, rings every lake, and a meadow kMeadow
 // tiles wide lies beyond it; the playa's line sways by kPlayaSway in cells kPlayaSwayCell long.
+// The pan's edge wobbles by kPanWobble tiles; salt crust covers it where a noise field passes
+// kCrustCut (of 0 to 1). Cienegas: kCienegasPerEdge along each edge of every pan per 256 tiles at a
+// `cienegas` of 100, kCienega tiles across give or take a fifth, a seep kSeep tiles across, at least
+// kCienegaGap apart.
+constexpr double kPanWobble = 2, kCrustCut = 0.68, kCienegasPerEdge = 6, kCienega = 6, kSeep = 3;
+constexpr int kCienegaGap = 30;
 constexpr double kSaltRim = 4, kSaltLobe = 1.5, kMeadow = 5, kPlayaSway = 2, kPlayaSwayCell = 64;
 // A fan's toes stop this far short of the playa's reach.
 constexpr double kToeGap = 1;
@@ -183,6 +197,8 @@ constexpr double kGardenPond = 3.2, kGardenPondGap = 4, kGardenPondDrop = 1.3;
 constexpr double kRoomyGap = 96, kCrowdedTown = 0.72;
 // Home stream trees grown to choose the fullest from.
 constexpr int kHomeTreeAttempts = 4;
+// A home fan with fewer branches than this has lost its farm (the contracts hold every design to it).
+constexpr size_t kFewestHomeBranches = 3;
 // Neutral fans: this share of slots is left as open desert, this share of the rest is dry (washes of
 // sand, no spring), and their apexes jitter along the ridge by this share of the slot spacing. A fan
 // whose streams took fewer than kPondBranches branches has no spring pond.
@@ -197,6 +213,19 @@ constexpr double kWashLow = 6, kWashHigh = 14;
 // ranges and sand in the basin, where the finest grains settle. kDuneSlope weighs the slope.
 constexpr int kDuneCell = 24, kDuneSlope = 64000, kDuneWavelength = 16, kDuneStretch = 320;
 constexpr int kDunePercent = 48;
+// Looks: of the dune sand, this share (the highest) is drawn as wind-rippled crests; green ground is
+// lush within kLushReach steps of water and dry beyond kGreenReach; plain grass within kPlainGarden
+// tiles of every swarm.
+constexpr int kDuneCrestPercent = 30, kLushReach = 4, kGreenReach = 9, kPlainGarden = 16;
+// Pavement: the open desert beyond kDryReach steps of water (past the growth probe's reach, so few of
+// the farm's mirrored probes land on it) is
+// gravel where noise kPaveCell tiles across passes kPaveCut; the rest of the desert is dry grass. Within
+// the water's reach it stays grass: crops spread there and its probes are not refused, as they are on
+// pavement, which inhibits growth like sand.
+// Pavement past kClayShare of the way from a range to its playa is drawn as clay, and hardpan within
+// kMudflatReach steps of a lake as mudflat.
+constexpr int kDryReach = 22, kPaveCell = 14, kPaveCut = 20000, kMudflatReach = 2;
+constexpr double kGravelShare = 0.32, kClayShare = 0.66, kGrainBlend = 0.25;
 // Ambient farmland on the fans and meadows (share of fertile tiles) and desert features (one per
 // this many desert tiles), before the amounts scale them.
 constexpr int kFarmWheatPercent = 26, kFarmWoodPercent = 9;
@@ -227,6 +256,7 @@ struct HomeDesign
 	ShapePoint swarm; // the swarm's middle tile, on the fan's side of the town
 	std::vector<Root> roots;
 	ShapePoint wheat, wood;
+	double meadow = 0; // a ring of spring meadow this wide round the springs, beyond their beaches
 };
 
 // Every home is a fan with its town beside it, on the dry gravel of the fan's shoulder, in the frame
@@ -245,6 +275,32 @@ HomeDesign homeDesign(int design, bool flip)
 			 {{6, 9.5, 0.05, 9, 1.6, 4}, {10, 9.5, 0.7, 9, 1.5, 3}}, {0, 17}, {-1, 29}};
 	else if (design == 1)
 		d = {"long fan", {{7, 5.5, 4.5}}, {-15, 15}, 11, {-9, 15}, {{7, 10, 0.1, 11, 1.8, 5}}, {0, 16}, {0, 28}};
+	else if (design == 3)
+	{
+		// Canyon mouth: the spring sits in the range's notch and one strong trunk runs far down the fan
+		// before it splits, with an arm out across the fan and a short one towards the town, and the
+		// town tucks in under the range. (A trunk drawn closer to the town met its rough outline on
+		// some maps and the home grew no streams at all.) Its first draw (a spring of 4, one short arm
+		// of two forks) was the leanest design, 71.9 growth within 48 steps of the swarm (worst 58)
+		// against revision 3's 74.2 (61); the bigger spring, the longer arm and the town arm make it
+		// 77.8 (61), and 27.8 (25) within 24.
+		d = {"canyon mouth", {{6, 5, 4.5}}, {-15, 14}, 11, {-9, 14},
+			 {{6, 9.5, 0.0, 11, 1.9, 4}, {8, 9.5, 0.35, 8, 1.5, 3}, {4, 9.5, -0.45, 7, 1.4, 2}},
+			 {-1, 15}, {-2, 27}};
+	}
+	else if (design == 4)
+	{
+		// Cienega: a big spring in a meadow of spring grass that waters itself, its two short streams
+		// spreading sideways: a wide, short fan whose farm is round the spring.
+		d = {"cienega", {{6, 6.5, 5.5}}, {-16, 15}, 11, {-10, 15},
+			 {{2, 12, -0.55, 7, 1.4, 3}, {10, 12, 0.55, 7, 1.4, 3}}, {-1, 16}, {0, 27}};
+		d.meadow = 3.5;
+	}
+	else if (design == 5)
+		// Coalescing pair: the home fan and a smaller sister fan from a second spring further along the
+		// range, their streams growing into one another downhill.
+		d = {"coalescing pair", {{6, 5.5, 4}, {21, 6, 3}}, {-15, 16}, 11, {-9, 16},
+			 {{6, 9.5, 0.15, 10, 1.6, 4}, {21, 9, -0.35, 8, 1.3, 3}}, {0, 17}, {-1, 29}};
 	else
 		d = {"twin springs",
 			 {{1, 5, 3.5}, {13, 5, 3.5}},
@@ -268,7 +324,21 @@ HomeDesign homeDesign(int design, bool flip)
 	}
 	return d;
 }
-constexpr int kHomeDesigns = 3;
+constexpr int kHomeDesigns = 6;
+
+// What the ranges are made of, drawn once per map: only looks, every one inside the rule group of
+// what it draws, so a granite map and a volcanic one play exactly alike. Rock, its talus, then the
+// pavement down the bajada: coarse gravel at the foot, varnished pavement, clay towards the playa.
+struct Lithology
+{
+	const char *name;
+	TerrainType rock, talus, gravel, pavement, clay;
+};
+constexpr std::array<Lithology, 3> kLithologies{{
+	{"granite", RIDGE_ROCK, SCREE, SHALE, DIRT, CLAY},
+	{"sandstone", HOODOOS, SCREE, WEATHERED_SANDSTONE, LATERITE, CLAY},
+	{"volcanic", OUTCROP, PUMICE, VOLCANIC_ASH, DIRT, CLAY},
+}};
 
 struct Fan
 {
@@ -283,7 +353,7 @@ struct Fan
 struct StencilTile
 {
 	int dx, dy;
-	unsigned char water, sand, green, fringe, town, farm; // vertex masks, then tile masks
+	unsigned char water, sand, green, fringe, pad, marsh, town, farm; // vertex masks, then tile masks
 	unsigned char crop;                                    // 0 none, 1 wheat, 2 wood
 	unsigned char inner; // far enough inside the footprint that no neighbour's corner reaches it
 };
@@ -292,10 +362,11 @@ struct Layout
 {
 	Torus t{1, 1};
 	int ranges = 0;
-	double spacing = 0, halfRidge = 0, lakeHalf = 0, fanLength = 0, homeGap = 0, homeHalfWidth = 0;
+	double spacing = 0, halfRidge = 0, lakeHalf = 0, panHalf = 0, fanLength = 0, homeGap = 0, homeHalfWidth = 0;
 	int homeShift = 0; // tiles the stencil's frame moves across so the home is centred on its slot
 	int base = 0;
 	HomeDesign home;
+	Lithology lithology = kLithologies[0];
 	std::vector<std::vector<double>> ridgeCentre; // per range, per column
 	// Per face (0 the face above a range, 1 below), per range, per column: 0 round a home on that
 	// face, rising to 1 away from every home.
@@ -307,6 +378,12 @@ struct Layout
 	std::vector<int> facing;                                      // per colony
 	std::vector<int> townOf, farmOf, homeOf; // per tile: town, home farm, home footprint, or -1
 	std::vector<unsigned char> water, sand, green, meadow, stone, ridge, fringe, pass;
+	std::vector<unsigned char> salt; // the playa's salt flats, a part of `sand`
+	// Vertex masks of the new ground: town pads of desert pavement, the playa's hardpan, the cienegas'
+	// spring meadows; tile masks of the ranges' quarry faces and their scree skirts.
+	std::vector<unsigned char> pad, hardpan, cienega, quarry, scree;
+	std::vector<int> quarryOf; // per tile: the colony whose home quarry it is, or -1
+	int quarries = 0, cienegas = 0;
 	int passes = 0, lakes = 0, dryFans = 0, neutralFans = 0, emptyTrees = 0;
 	std::string failure;
 };
@@ -424,6 +501,7 @@ bool planHomes(const BajadaOptions &o, int teams, GenerationContext &context, La
 	if (widest < basin * kLakeShare)
 		context.telemetry.fallback("bajada.playa.narrowed", "The playa narrowed to leave the fans room");
 	L.lakeHalf = widest * o.playa / 100.0;
+	L.panHalf = widest * kLakeLobe + kSaltRim;
 	L.fanLength = std::min(kLongestFan, slope - widest * kLakeLobe - rimReach);
 	context.telemetry.measure("bajada.ranges", L.ranges);
 	context.telemetry.measure("bajada.fan-length", L.fanLength);
@@ -441,6 +519,9 @@ bool planHomes(const BajadaOptions &o, int teams, GenerationContext &context, La
 										: int(context.bounded("bajada-design", kHomeDesigns));
 	L.home = homeDesign(design, flip);
 	context.telemetry.choice("bajada.home.design", L.home.name);
+	L.lithology = kLithologies[o.lithology > 0 ? o.lithology - 1
+											  : int(context.bounded("bajada-lithology", kLithologies.size()))];
+	context.telemetry.choice("bajada.lithology", L.lithology.name);
 
 	// Fan slots: a row below each face of every range, `fans` for every 256 tiles of it; the rows on the
 	// two faces of a range are staggered by half a slot.
@@ -540,7 +621,7 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 	const double ox = kStencilHalf, oy = kStencilHalf;
 	const double reach = o.streamReach / 100.0;
 	std::vector<unsigned char> water(ln, 0), sand(ln, 0), green(ln, 0), town(ln, 0), ring(ln, 0),
-							   farmable(ln, 1);
+							   farmable(ln, 1), marsh(ln, 0);
 	// On a map whose homes stand close along their face the town shrinks towards the fan, so the fan
 	// keeps room to spread: its size, its distance from the springs and the garden all scale with the gap
 	// between homes, down to kCrowdedTown of their full size.
@@ -562,6 +643,12 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 		fillShape(water, local, ox + spring[0], oy + spring[1], pond);
 		const RadialShape halo(spring[2] + kGreenHead * reach, 0.0, context, "bajada-home-pond");
 		fillShape(green, local, ox + spring[0], oy + spring[1], halo);
+		// A cienega's meadow of spring grass round the spring, beyond the beach the pond will take.
+		if (d.meadow > 0)
+		{
+			const RadialShape meadow(spring[2] + 1 + d.meadow, 0.15, context, "bajada-home-pond");
+			fillShape(marsh, local, ox + spring[0], oy + spring[1], meadow);
+		}
 	}
 	// The town: a rough outline of open ground on the fan's shoulder, grass to kTownGreen beyond it,
 	// with no fringe on the gravel side.
@@ -642,6 +729,8 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 			tree.swap(grown);
 	}
 	context.telemetry.measure("bajada.home.branches", tree.size());
+	if (tree.size() < kFewestHomeBranches)
+		context.telemetry.fallback("bajada.home.few-streams", "The home fan grew few streams");
 	strokeTree(local, tree, length, reach, false, random, [&](const StrokePoint &p) { return p.y - oy; },
 			   water, sand, green);
 	// The ring: the town's outline, two corners of sand, all the way round. Crops could reach the open
@@ -656,10 +745,14 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 			circle.push_back({p.x, p.y, 1.0});
 		}
 		strokePath(ring, local, circle, 1, true);
-		for (int i = 0; i < ln; ++i)
-			if (ring[i])
-				sand[i] = 1;
 	}
+	// The town's ring is desert pavement: no crop can cross it, as none could cross the sand ring it
+	// replaced, and it slows the garden's regrowth no more than that sand did, but it is buildable, so
+	// the town loses no room to it. (A whole town of pavement held the fan's crops back too: its probes
+	// inhibit like sand, and near-home growth fell by a third.)
+	std::vector<unsigned char> pad(ln, 0);
+	for (int i = 0; i < ln; ++i)
+		pad[i] = ring[i];
 	// The range's stone stands on the rows above the apex, so nothing is sown there.
 	for (int i = 0; i < ln; ++i)
 		if (i / local.w < oy + 1)
@@ -682,7 +775,10 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 	// ridge runs straight round every home.
 	std::vector<unsigned char> drawn(ln, 0);
 	for (int i = 0; i < ln; ++i)
-		drawn[i] = water[i] || sand[i] || green[i] || fringe[i];
+	{
+		marsh[i] = marsh[i] && !water[i] && i / local.w >= oy - 2;
+		drawn[i] = water[i] || sand[i] || green[i] || fringe[i] || pad[i] || marsh[i];
+	}
 	const std::vector<unsigned char> footprint = dilate(local, drawn, kFootprintMargin);
 	const std::vector<unsigned char> inner = dilate(local, drawn, kFootprintMargin - 2);
 
@@ -691,7 +787,11 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 	// outside the footprint).
 	TerrainSketch sketch(ln, GRASS);
 	for (int i = 0; i < ln; ++i)
-		sketch[i] = water[i] ? WATER : (sand[i] || fringe[i]) ? SAND : GRASS;
+		sketch[i] = water[i]				 ? WATER
+					: sand[i]				 ? SAND
+					: (fringe[i] || pad[i]) ? SHALE
+					: marsh[i]				 ? SPRING_MEADOW
+											 : GRASS;
 	layBeaches(sketch, local);
 	const Fertility::Field fertility = cropGrowthField(sketch, local);
 	const std::vector<unsigned char> pureGrass = pureTiles(sketch, local, GRASS);
@@ -769,13 +869,13 @@ void designHome(const BajadaOptions &o, GenerationContext &context, Layout &L)
 			const int li = ly * local.w + lx;
 			if (footprint[li])
 				L.stencil.push_back({lx - kStencilHalf + L.homeShift, ly - kStencilHalf, water[li], sand[li], green[li],
-									 fringe[li], town[li], (unsigned char)(green[li] && !town[li] && !ring[li]),
+									 fringe[li], pad[li], marsh[li], town[li], (unsigned char)(green[li] && !town[li] && !ring[li]),
 									 crop[li], inner[li]});
 		}
+	// The range runs straight across the whole footprint, margin and all: its rock shows inside it.
 	L.homeHalfWidth = 0;
 	for (const StencilTile &st : L.stencil)
-		if (st.water || st.green || st.sand)
-			L.homeHalfWidth = std::max(L.homeHalfWidth, std::abs(st.dx + 0.5));
+		L.homeHalfWidth = std::max(L.homeHalfWidth, std::abs(st.dx + 0.5));
 	context.telemetry.measure("bajada.home.footprint", L.stencil.size());
 	context.telemetry.measure("bajada.home.half-width", L.homeHalfWidth);
 }
@@ -810,7 +910,8 @@ void stampHomes(int teams, Layout &L,
 		{
 			const auto [vx, vy] = turnStencilVertex(facing, s.dx, s.dy);
 			const int v = t.at(fan.x + vx, fan.y + vy);
-			L.water[v] = L.sand[v] = L.green[v] = L.fringe[v] = L.meadow[v] = 0;
+			L.water[v] = L.sand[v] = L.salt[v] = L.green[v] = L.fringe[v] = L.meadow[v] = L.pad[v] = 0;
+			L.hardpan[v] = L.cienega[v] = 0;
 			const MapGeneratorPoint p = placeTile(s.dx, s.dy);
 			L.homeOf[t.at(p.x, p.y)] = k;
 		}
@@ -843,6 +944,8 @@ void stampHomes(int teams, Layout &L,
 			L.sand[v] |= s.sand;
 			L.green[v] |= s.green;
 			L.fringe[v] |= s.fringe;
+			L.pad[v] |= s.pad;
+			L.cienega[v] |= s.marsh;
 			const auto [tx, ty] = turnStencilTile(L.facing[k], s.dx, s.dy);
 			const int i = t.at(L.fans[k].x + tx, L.fans[k].y + ty);
 			if (s.inner)
@@ -879,6 +982,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.farmOf.assign(n, -1);
 	L.homeOf.assign(n, -1);
 	L.pass.assign(n, 0);
+	L.salt.assign(n, 0);
+	L.pad.assign(n, 0);
+	L.hardpan.assign(n, 0);
+	L.cienega.assign(n, 0);
+	L.quarry.assign(n, 0);
+	L.quarryOf.assign(n, -1);
+	L.scree.assign(n, 0);
 	std::vector<unsigned char> canyon(n, 0);
 
 	designHome(o, context, L);
@@ -916,26 +1026,42 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::mt19937 &random = context.stream("bajada-passes");
 		for (int r = 0; r < L.ranges; ++r)
 		{
-			const double pitch = double(t.w) / o.passes;
-			int bestPhase = 0;
-			double bestScore = -1;
-			for (int p = 0; p < int(pitch); ++p)
+			// Clear of every home's apex and of its town, whose quarry is in the range above it. A range
+			// whose passes cannot all keep clear of the homes' quarries on a crowded map gives up a pass
+			// at a time (never its last), rather than cut into one home's quarry and not the others'.
+			int passes = o.passes, bestPhase = 0;
+			double pitch = double(t.w) / passes;
+			for (; passes >= 1; --passes)
 			{
-				double score = 1e18;
-				for (int k = 0; k < o.passes; ++k)
+				pitch = double(t.w) / passes;
+				bestPhase = 0;
+				double bestScore = -1, bestQuarry = -1;
+				for (int p = 0; p < int(pitch); ++p)
 				{
-					const int x = t.x(int(p + k * pitch));
-					for (const Fan &f : L.fans)
-						if (f.ridge == r)
-							score = std::min(score, double(std::abs(t.offsetX(f.x, x))));
+					double score = 1e18, quarry = 1e18;
+					for (int k = 0; k < passes; ++k)
+					{
+						const int x = t.x(int(p + k * pitch));
+						for (size_t h = 0; h < L.fans.size(); ++h)
+							if (L.fans[h].ridge == r)
+							{
+								const double fromQuarry = std::abs(t.offsetX(int(towns[h].x), x)) - double(kQuarryHalf);
+								quarry = std::min(quarry, fromQuarry);
+								score = std::min({score, double(std::abs(t.offsetX(L.fans[h].x, x))), fromQuarry});
+							}
+					}
+					if (score > bestScore)
+					{
+						bestScore = score;
+						bestQuarry = quarry;
+						bestPhase = p;
+					}
 				}
-				if (score > bestScore)
-				{
-					bestScore = score;
-					bestPhase = p;
-				}
+				if (bestQuarry >= kPassQuarryClear || passes == 1)
+					break;
+				context.telemetry.fallback("bajada.passes.dropped", "A pass was dropped to keep clear of the homes' quarries");
 			}
-			for (int k = 0; k < o.passes; ++k)
+			for (int k = 0; k < passes; ++k)
 			{
 				const int x = t.x(int(bestPhase + k * pitch));
 				const double skew = (2 * unit(random) - 1) * kPassSkew;
@@ -1111,13 +1237,82 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						if (half > 1 && off < half)
 							L.water[i] = 1;
 						else if (outside < saltEdge && !L.water[i])
-							L.sand[i] = 1;
+							L.sand[i] = L.salt[i] = 1;
 						else if (outside < saltEdge + kMeadow && meadowNoise.at(x, y) > kMeadowGap)
 							L.meadow[i] = 1;
 					}
 				}
 			}
 		}
+		// The pan: the whole floor of the playa, as far as its widest lakes could reach, is hardpan
+		// wherever no lake, salt flat or meadow lies: slow, open ground where nothing builds or grows,
+		// so `playa` 0 is a dry lake bed and every lake stands in its pan. Its edge wobbles, and patches
+		// of salt crust lie on it.
+		PeriodicNoise panEdge(t.w, t.h, kLakeLobeCell, random);
+		PeriodicNoise crust(t.w, t.h, kLakeLobeCell / 2, random);
+		for (int r = 0; r < L.ranges; ++r)
+			for (int x = 0; x < t.w; ++x)
+			{
+				const double centre =
+					L.ridgeCentre[r][x] + L.spacing / 2 + kPlayaSway * (2 * sway.at(x, r * L.spacing) - 1);
+				const int reach = int(L.panHalf) + 3;
+				for (int dy = -reach; dy <= reach; ++dy)
+				{
+					const int y = t.y(int(std::floor(centre)) + dy);
+					const int i = t.at(x, y);
+					const double off = std::abs(wrappedOffset(y + 0.5, centre, t.h));
+					if (off > L.panHalf + kPanWobble * (2 * panEdge.at(x, y) - 1) || L.water[i] || L.sand[i] ||
+						L.meadow[i])
+						continue;
+					if (crust.at(x, y) > kCrustCut)
+						L.sand[i] = L.salt[i] = 1;
+					else
+						L.hardpan[i] = 1;
+				}
+			}
+	}
+
+	// Cienegas: spring-fed marshes at the edge of the pan, each a seep pool in a meadow of spring grass
+	// that waters itself, with lush grass round it: contested farmland out in the basin, between the
+	// fans' toes and the hardpan, kNeutralTownClear tiles from every town. `cienegas` sets how many.
+	{
+		std::mt19937 &random = context.stream("bajada-cienegas");
+		const int perEdge = int(std::lround(kCienegasPerEdge * o.cienegas / 100.0 * t.w / 256.0));
+		std::vector<ShapePoint> placed;
+		for (int r = 0; r < L.ranges; ++r)
+			for (int side : {-1, 1})
+				for (int c = 0; c < perEdge; ++c)
+				{
+					const double x = unit(random) * t.w, wobble = unit(random), size = unit(random);
+					const int column = t.x(int(x));
+					const double y = L.ridgeCentre[r][column] + L.spacing / 2 +
+									 side * (L.panHalf + kCienega * (0.4 + 0.4 * wobble));
+					bool clear = true;
+					for (const ShapePoint &town : towns)
+						clear &= t.dist2(int(x), int(y), int(town.x), int(town.y)) >=
+								 (kNeutralTownClear + kCienega) * (kNeutralTownClear + kCienega);
+					for (const ShapePoint &other : placed)
+						clear &= t.dist2(int(x), int(y), int(other.x), int(other.y)) >= kCienegaGap * kCienegaGap;
+					if (!clear || homeClaim[t.at(int(x), int(y))])
+						continue;
+					placed.push_back({x, y});
+					const double radius = kCienega * (0.8 + 0.4 * size);
+					const RadialShape meadow(radius, 0.3, context, "bajada-cienegas");
+					const RadialShape halo(radius + 3, 0.3, context, "bajada-cienegas");
+					const RadialShape seep(kSeep, 0.2, context, "bajada-cienegas");
+					std::vector<unsigned char> marsh(n, 0), lush(n, 0);
+					fillShape(lush, t, x, y, halo);
+					fillShape(marsh, t, x, y, meadow);
+					fillShape(L.water, t, x, y, seep);
+					for (int i = 0; i < n; ++i)
+						if ((lush[i] || marsh[i]) && !homeClaim[i] && !L.water[i])
+						{
+							L.hardpan[i] = L.sand[i] = L.salt[i] = 0;
+							(marsh[i] ? L.cienega : L.meadow)[i] = 1;
+						}
+					++L.cienegas;
+				}
+		context.telemetry.measure("bajada.cienegas", L.cienegas);
 	}
 
 	// Ridges: stone where a tile lies within the ridge's half width of its centre (with its massifs,
@@ -1194,6 +1389,136 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	stampHomes(teams, L, context);
 	if (!L.failure.empty())
 		return L;
+
+	// Quarries: the ranges are rock, which nothing can mine, except on their quarry faces, the outer
+	// kQuarryDepth tiles of the range where it is stone. Every home has one straight above its town,
+	// where the range runs straight round every home, so every home's quarry is the same; and
+	// `stone-amount` sets how many more stand along the faces between the homes, never near a pass.
+	{
+		// Stone stands on pure grass: a tile whose corners a pass floor or a beach (laid a vertex out
+		// from any water) could reach would never hold it.
+		const auto dry = [&](int q)
+		{
+			const int qx = t.remainderX(q), qy = q / t.w;
+			for (int ny = -2; ny <= 2; ++ny)
+				for (int nx = -2; nx <= 2; ++nx)
+				{
+					const int j = t.at(qx + nx, qy + ny);
+					if (L.water[j] || (std::abs(nx) <= 1 && std::abs(ny) <= 1 && (L.sand[j] || L.pass[j])))
+						return false;
+				}
+			return true;
+		};
+		// Marks the face of the range `r` in column `x` on `side` (the face a fan below it hangs from),
+		// kQuarryDepth tiles deep, and says whether it found one.
+		const auto face = [&](int r, int x, int side, int owner)
+		{
+			const double outside = L.halfRidge * (1 + kMassif) + kRidgeRough + kPassShoulder + 3;
+			int y = int(std::floor(L.ridgeCentre[r][x] + side * outside));
+			for (int step = 0; step < int(outside) + 4; ++step, y -= side)
+			{
+				const int i = t.at(x, y);
+				if (L.pass[i] || L.water[i])
+					return false;
+				if (!L.stone[i])
+					continue;
+				// An ambient quarry never reaches into a home's footprint, whose range is the same on
+				// every home.
+				for (int d = 0; d < kQuarryDepth && owner < 0; ++d)
+					if (homeClaim[t.at(x, y - side * d)] || homeClaim[t.at(x, y + side)])
+						return false;
+				for (int d = 0; d < kQuarryDepth; ++d)
+				{
+					const int q = t.at(x, y - side * d);
+					if (L.stone[q] && dry(q))
+					{
+						L.quarry[q] = 1;
+						L.quarryOf[q] = owner;
+					}
+				}
+				return true;
+			}
+			return false;
+		};
+		// A home's quarry is found in the stencil's own columns, turned as its tiles are, so every home
+		// takes the same tiles of the same straight stretch of range.
+		for (int k = 0; k < teams; ++k)
+		{
+			const Fan &fan = L.fans[k];
+			const int column = int(std::floor(L.home.town.x)) + L.homeShift;
+			for (int dx = -kQuarryHalf; dx <= kQuarryHalf; ++dx)
+				for (int dy = 0; dy > -kQuarrySearch; --dy)
+				{
+					const auto [x, y] = turnStencilTile(L.facing[k], column + dx, dy);
+					if (!L.stone[t.at(fan.x + x, fan.y + y)])
+						continue;
+					for (int d = 0; d < kQuarryDepth; ++d)
+					{
+						const auto [qx, qy] = turnStencilTile(L.facing[k], column + dx, dy - d);
+						const int q = t.at(fan.x + qx, fan.y + qy);
+						if (L.stone[q] && dry(q))
+						{
+							L.quarry[q] = 1;
+							L.quarryOf[q] = k;
+						}
+					}
+					break;
+				}
+			++L.quarries;
+		}
+		// On a crowded map a pass can cut into a home's quarry; homes are only homes if they are alike.
+		{
+			std::vector<int> faces(teams, 0);
+			for (int i = 0; i < n; ++i)
+				if (L.quarryOf[i] >= 0)
+					++faces[L.quarryOf[i]];
+			for (int k = 0; k < teams; ++k)
+				if (faces[k] != faces[0] || faces[k] < kHomeQuarryStone)
+				{
+					L.failure = "The passes cut into the homes' quarries; use fewer passes, fewer colonies or a "
+								"bigger map.";
+					return L;
+				}
+		}
+		std::mt19937 &random = context.stream("bajada-quarries");
+		const int perFace = int(scaledCount(std::max(1, int(std::lround(t.w / kQuarryPitch))), o.stone));
+		for (int r = 0; r < L.ranges; ++r)
+			for (int side : {-1, 1})
+			{
+				const double start = unit(random) * t.w, pitch = double(t.w) / std::max(1, perFace);
+				for (int q = 0; q < perFace; ++q)
+				{
+					const int x = t.x(int(start + q * pitch + (2 * unit(random) - 1) * pitch * 0.3));
+					const int half = 2 + int(unit(random) * 2);
+					bool clear = L.ridgeWild[side > 0][r][x] >= 1;
+					for (int px : passColumns[r])
+						clear &= std::abs(t.offsetX(px, x)) >= kPassFanClear;
+					if (!clear)
+						continue;
+					bool any = false;
+					for (int dx = -half; dx <= half; ++dx)
+						any |= face(r, t.x(x + dx), side, -1);
+					L.quarries += any;
+				}
+			}
+		context.telemetry.measure("bajada.quarries", L.quarries);
+	}
+	// Talus: a skirt of scree, one to three tiles, at the foot of the rock wherever nothing else lies:
+	// slow ground, unbuildable, where nothing grows. Never in a home's footprint (the range runs
+	// straight round homes, which keep their own foot) or a fan, a pass or a spring's notch.
+	{
+		std::vector<unsigned char> rock(n, 0);
+		for (int i = 0; i < n; ++i)
+			rock[i] = L.stone[i] && !L.quarry[i];
+		const std::vector<unsigned char> nearQuarry = dilate(t, L.quarry, 1);
+		const std::vector<int> fray = periodicNoise(t.w, t.h, 5, context.stream("bajada-talus"));
+		std::vector<unsigned char> eligible(n, 0);
+		for (int i = 0; i < n; ++i)
+			eligible[i] = !L.stone[i] && !homeClaim[i] && L.homeOf[i] < 0 && !L.water[i] && !L.sand[i] &&
+						  !L.green[i] && !L.meadow[i] && !L.fringe[i] && !L.pass[i] && !canyon[i] &&
+						  !L.pad[i] && !nearQuarry[i];
+		L.scree = talusApron(t, rock, eligible, fray, 1, 3, 30000);
+	}
 	context.telemetry.measure("bajada.passes", L.passes);
 	context.telemetry.measure("bajada.lakes", L.lakes);
 	context.telemetry.measure("bajada.fans.neutral", L.neutralFans);
@@ -1247,23 +1572,135 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		}
 	std::vector<int> desertValues;
 	const auto openDesert = [&](int i)
-	{ return !L.green[i] && !L.meadow[i] && !L.ridge[i] && !L.fringe[i] && L.homeOf[i] < 0; };
+	{
+		return !L.green[i] && !L.meadow[i] && !L.ridge[i] && !L.fringe[i] && L.homeOf[i] < 0 && !L.scree[i] &&
+			   !L.hardpan[i] && !L.cienega[i] && !L.pad[i];
+	};
 	for (int i = 0; i < n; ++i)
 		if (openDesert(i))
 			desertValues.push_back(dunes[i]);
 	const int duneCut = percentile(desertValues, 100 - kDunePercent);
+	// The rock of the ranges: range stone that is not a quarry face (rockVertices keeps the blocked
+	// region exactly the drawn one and every quarry tile four open corners).
+	std::vector<unsigned char> rockTile(n, 0);
+	for (int i = 0; i < n; ++i)
+		rockTile[i] = L.stone[i] && !L.quarry[i];
+	const std::vector<unsigned char> rock = rockVertices(t, rockTile);
+	// Beyond the reach of any water's growth probe the open desert is mostly pavement, gravel no crop
+	// can stand on, with patches of dry grass that hold the scrub and the outcrops and never grow
+	// anything; within the reach it is grass the fans' crops can spread onto, as before.
+	std::vector<int> fromWater;
+	{
+		std::vector<unsigned char> wet(n, 0);
+		for (int i = 0; i < n; ++i)
+			wet[i] = L.water[i];
+		fromWater = stepsFrom(t, wet);
+	}
+	const std::vector<int> pave = periodicNoise(t.w, t.h, kPaveCell, context.stream("bajada-pavement"));
+	const std::vector<unsigned char> beforeQuarry = quarryApproach(t, L.quarry);
 	TerrainSketch terrain(n, GRASS);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.water[i])
 			terrain[i] = WATER;
-		else if (L.sand[i] || L.fringe[i] || (openDesert(i) && dunes[i] >= duneCut))
+		else if (rock[i])
+			terrain[i] = RIDGE_ROCK;
+		else if (beforeQuarry[i] || L.quarry[i])
+			continue; // grass, so every quarry tile has four grass corners and holds its stone
+		else if (L.sand[i] || (openDesert(i) && dunes[i] >= duneCut))
 			terrain[i] = SAND;
+		else if (L.fringe[i] || L.pad[i])
+			terrain[i] = SHALE;
+		else if (L.hardpan[i])
+			terrain[i] = HARDPAN;
+		else if (L.scree[i])
+			terrain[i] = SCREE;
+		else if (L.cienega[i])
+			terrain[i] = SPRING_MEADOW;
+		else if (openDesert(i) && !L.stone[i] && fromWater[i] > kDryReach && pave[i] > kPaveCut)
+			terrain[i] = SHALE;
 	}
 	layBeaches(terrain, t);
-	writeVertices(map, terrain);
+	// The looks, inside each vertex's rule group so nothing plays differently: green ground lush by
+	// the water and drying with distance from it, the dry desert grass, the pavement gravel near the
+	// ranges and clay towards the playa, dune crests wind-rippled, the washes, salt and the playa's
+	// beaches pale, mudflat round its lakes. The garden round every swarm stays plain grass, where the
+	// starting-crop guarantee looks for it.
+	{
+		std::vector<unsigned char> wet(n, 0);
+		for (int i = 0; i < n; ++i)
+			wet[i] = terrain[i] == WATER;
+		const std::vector<int> nearWater = stepsFrom(t, wet);
+		const int crestCut = percentile(desertValues, 100 - kDunePercent * kDuneCrestPercent / 100);
+		const auto garden = [&](int i)
+		{
+			const int k = L.homeOf[i];
+			if (k < 0)
+				return false;
+			const MapGeneratorPoint s = L.swarms[k];
+			return t.dist2(t.remainderX(i), i / t.w, s.x + 2, s.y + 2) < kPlainGarden * kPlainGarden;
+		};
+		const auto basinShare = [&](int i)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			double nearestRange = 1e9;
+			for (int r = 0; r < L.ranges; ++r)
+				nearestRange = std::min(nearestRange, std::abs(wrappedOffset(y + 0.5, L.ridgeCentre[r][x], t.h)));
+			return nearestRange / (L.spacing / 2);
+		};
+		TerrainSketch looks(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			switch (terrain[i])
+			{
+			case GRASS:
+				if (garden(i) || L.townOf[i] >= 0)
+					break;
+				if (L.green[i] || L.meadow[i])
+					looks[i] = nearWater[i] <= kLushReach ? LUSH_GRASS
+							   : nearWater[i] <= kGreenReach ? GRASS
+															 : DRY_GRASS;
+				else
+					looks[i] = DRY_GRASS;
+				break;
+			case SAND:
+				if (openDesert(i) && !L.sand[i] && dunes[i] >= duneCut)
+					looks[i] = dunes[i] >= crestCut ? WINDY_SAND_DUNE : DUNE_SAND;
+				else
+					looks[i] = PALE_SAND;
+				break;
+			case SHALE:
+				// Grain size sorts down the slope: coarse gravel at the foot of the ranges, varnished
+				// pavement over the middle of the bajada, clay towards the playa. Towns and fringes keep
+				// the pavement.
+				if (L.pad[i] || L.homeOf[i] >= 0 || L.fringe[i])
+					looks[i] = L.lithology.pavement;
+				else
+				{
+					const double share = basinShare(i) + (pave[i] - 32768) / 65536.0 * kGrainBlend;
+					looks[i] = share < kGravelShare ? L.lithology.gravel
+							   : share < kClayShare ? L.lithology.pavement
+													: L.lithology.clay;
+				}
+				break;
+			case RIDGE_ROCK:
+				looks[i] = L.lithology.rock;
+				break;
+			case SCREE:
+				looks[i] = L.lithology.talus;
+				break;
+			case HARDPAN:
+				if (nearWater[i] <= kMudflatReach)
+					looks[i] = MUDFLAT;
+				break;
+			default:
+				break;
+			}
+		}
+		writeVertices(map, composeLooks(terrain, looks));
+	}
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+		if (L.quarry[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
 			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "bajada colonies";
@@ -1379,10 +1816,11 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const auto at = [&](int i) { return std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w); };
 	if (const std::string lost = homePondMissing(map, t, L.kits, teams, "spring", "pond"); !lost.empty())
 		return lost;
-	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
-			!permanentResourceBarrier(map,i))
-			return "A range has lost its stone at (" + at(i) + ").";
+	// Every quarry face holds its stone, and every home's quarry is whole: the same stone on every
+	// home, a short walk above its town.
+	if (const std::string fault = quarryFault(map, t, L.quarry, L.quarryOf, teams, kHomeQuarryStone);
+		!fault.empty())
+		return fault;
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
 	// two homes' footprints overlap on a crowded map (their fans merge there).
 	std::vector<unsigned char> covers(t.size(), 0);
@@ -1393,6 +1831,8 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 			unsigned char &c = covers[t.at(L.fans[k].x + x, L.fans[k].y + y)];
 			c = std::min(2, c + 1);
 		}
+	// The range and the ground at its foot (the tile before a quarry, the rock's mixed edge).
+	const std::vector<unsigned char> behindHome = dilate(t, L.ridge, 2);
 	for (int k = 1; k < teams; ++k)
 		for (const StencilTile &s : L.stencil)
 		{
@@ -1405,13 +1845,25 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 			};
 			if (coverAt(k) > 1 || coverAt(0) > 1)
 				continue;
-			const auto kind = [&](int colony)
+			// The range behind a home is not stamped: it may stand back from one home a little further
+			// than from another (it bends away from homes, never into them). Its quarry is checked above.
+			const auto ridgeAt = [&](int colony)
 			{
 				const auto [x, y] = turnStencilTile(L.facing[colony], s.dx, s.dy);
-				const int px = t.x(L.fans[colony].x + x), py = t.y(L.fans[colony].y + y);
-				return map.isWater(px, py) ? 2 : map.isGrass(px, py) ? 0 : 1;
+				return behindHome[t.at(L.fans[colony].x + x, L.fans[colony].y + y)] != 0;
 			};
-			if (kind(k) != kind(0))
+			if (ridgeAt(k) || ridgeAt(0))
+				continue;
+			const auto rules = [&](int colony) -> const TerrainProperties &
+			{
+				const auto [x, y] = turnStencilTile(L.facing[colony], s.dx, s.dy);
+				return map.terrainPropertiesAt(t.x(L.fans[colony].x + x), t.y(L.fans[colony].y + y));
+			};
+			// What a tile is to play on, every rule of it (speed, growth, fertility, what it holds),
+			// not what it looks like: the looks follow the water, and a neighbour's water can reach a
+			// home's margin. Comparing only water, building ground and the rest let sand stand where
+			// colony 0 had pavement or scree.
+			if (!sameTerrainProperties(rules(k), rules(0)))
 			{
 				const auto [x, y] = turnStencilTile(L.facing[k], s.dx, s.dy);
 				return "Colony " + std::to_string(k) + "'s home differs from colony 0's at (" +
@@ -1497,8 +1949,8 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 BajadaOptions::BajadaOptions(const GenerationRequest &r)
 	: rangeSpacing(r.option("range-spacing")), ridgeWidth(r.option("ridge-width")),
 	  passes(r.option("passes")), fans(r.option("fans")),
-	  streamReach(r.option("stream-reach")), playa(r.option("playa")),
-	  homeDesign(r.option("home-design")), wheat(r.option("wheat-amount")),
+	  streamReach(r.option("stream-reach")), playa(r.option("playa")), cienegas(r.option("cienegas")),
+	  homeDesign(r.option("home-design")), lithology(r.option("lithology")), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -1510,7 +1962,7 @@ GeneratorDefinition bajadaDefinition()
 		"bajada",
 		55,
 		"Bajada",
-		3,
+		4,
 		false,
 		{GeneratorControl{"range-spacing", "Range spacing", 128, 256, 16, 128,
 						  ControlGroup::Terrain}
@@ -1525,9 +1977,15 @@ GeneratorDefinition bajadaDefinition()
 			 .withSearchRange(90, 130),
 		 GeneratorControl{"playa", "Playa", 0, 100, 10, 80, ControlGroup::Terrain}.withSearchRange(
 			 50, 90),
+		 GeneratorControl{"cienegas", "Cienegas", 0, 100, 10, 50, ControlGroup::Terrain}.withSearchRange(
+			 30, 70),
 		 GeneratorControl::choice("home-design", "Home design",
-								  {"Random", "Broad fan", "Long fan", "Twin springs"}, 0,
-								  ControlGroup::Layout)
+								  {"Random", "Broad fan", "Long fan", "Twin springs", "Canyon mouth",
+								   "Cienega", "Coalescing pair"},
+								  0, ControlGroup::Layout)
+			 .withSearchValues({1, 2, 3, 4, 5, 6}),
+		 GeneratorControl::choice("lithology", "Rock", {"Random", "Granite", "Sandstone", "Volcanic"}, 0,
+								  ControlGroup::Terrain)
 			 .withSearchValues({1, 2, 3}),
 		 // Above 200% every fan and meadow is already sown (a study of 510 maps: 3,360 wheat tiles at
 		 // 200%, 3,530 at 300%).

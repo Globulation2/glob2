@@ -395,6 +395,8 @@ CLIENT_SOURCES = (
     'map/generator/shared/Grid.cpp',
     'map/generator/shared/WalkBandStarts.cpp',
     'map/generator/shared/Walls.cpp',
+    'map/generator/shared/Rock.cpp',
+    'map/generator/shared/HeightFieldLooks.cpp',
     'map/generator/shared/Climates.cpp',
     'map/generator/shared/Farmland.cpp',
     'map/generator/shared/Towers.cpp',

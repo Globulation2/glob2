@@ -1686,6 +1686,14 @@ Largeur du chenal
 Largeur du pont terrestre
 [Lake size]
 Taille des lacs
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Terres communes disputées
 [Maze]
@@ -1774,6 +1782,8 @@ Monde-anneau
 Largeur de la ceinture
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La ceinture est trop courte pour autant de colonies ; utilisez une carte plus longue ou moins de colonies.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Cités-États
 [Strait width]
@@ -1806,6 +1816,12 @@ Taille des mares
 Taille de la clairière
 [Levee]
 Digue
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Marigots
 [Everglades need at least one colony.]
@@ -1910,8 +1926,18 @@ Mares de marée
 Lagunes
 [Central island]
 Île centrale
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 L'estran a besoin d'au moins une colonie.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Les îles natales ne tiennent pas sur cette carte ; utilisez une carte plus grande, moins de colonies ou des îles plus petites.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1954,6 +1980,18 @@ Rive sableuse du lac
 Delta de la rivière
 [Meandering rivers]
 Rivières à méandres
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruits dans les vallées de départ
 [Moat]
@@ -1964,6 +2002,12 @@ Pierre dans le verger
 Colonies sur les deux côtes
 [Winding belt]
 Ceinture sinueuse
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Forme des cellules
 [Squares]
@@ -2000,6 +2044,20 @@ Obliquité
 Espacement des cols
 [Lee width]
 Largeur sous le vent
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Forêt primaire
 [Canals]
@@ -2436,6 +2494,8 @@ Taille des bancs
 Gués supplémentaires
 [Moraine hummocks]
 Buttes morainiques
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La tresse laisse trop peu de terrasse pour les bases ; utilisez une carte plus grande ou une tresse plus étroite.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2494,6 +2554,12 @@ Savane
 Points d’eau
 [Dry patches]
 Zones sèches
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Rares
 [Normal]
@@ -2622,6 +2688,26 @@ Cône large
 Cône allongé
 [Twin springs]
 Sources jumelles
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Les piémonts alluviaux sont trop étroits pour les bases ; utilisez une carte plus grande, un plus grand espacement des chaînes, des crêtes plus étroites ou des lacs salés plus petits.
 [Central Quarry]
@@ -2772,6 +2858,10 @@ Allongement des lacs
 Épaisseur à déboiser
 [Extra trails]
 Sentiers supplémentaires
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Les côtés de cette carte doivent mesurer entre 64 et 512 cases.
 [Portage Lakes cannot fit shoreline settlements on this seed.]

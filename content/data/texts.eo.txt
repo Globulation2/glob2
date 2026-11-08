@@ -1686,6 +1686,14 @@ Larĝo de kanalo
 Larĝo de terponto
 [Lake size]
 Grandeco de lago
+[Crater type]
+
+[Crater rims]
+
+[Volcanic maars]
+
+[Glacial kettles]
+
 [Contested commons]
 Pridisputata komunareo
 [Maze]
@@ -1774,6 +1782,8 @@ Ringa mondo
 Larĝo de zono
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.
+[Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+
 [City states]
 Urboŝtatoj
 [Strait width]
@@ -1806,6 +1816,12 @@ Grandeco de flakoj
 Grandeco de maldensejo
 [Levee]
 Digo
+[Mudflats]
+
+[Hammocks]
+
+[Moss]
+
 [Sloughs]
 Marĉkanaloj
 [Everglades need at least one colony.]
@@ -1910,8 +1926,18 @@ Tajdaj flakoj
 Lagunoj
 [Central island]
 Centra insulo
+[Tide]
+
+[Neap tide]
+
+[Mean tide]
+
+[Spring tide]
+
 [Tidal flats need at least one colony.]
 Tajdaj ebenaĵoj bezonas almenaŭ unu kolonion.
+[The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
+
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 La hejmaj insuloj ne taŭgas en ĉi tiu mapo; uzu pli grandan mapon, malpli da kolonioj aŭ pli malgrandajn insulojn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1954,6 +1980,18 @@ Sabla lagbordo
 Riverdelto
 [Meandering rivers]
 Meandrantaj riveroj
+[Banks]
+
+[Deep channels]
+
+[River bluffs]
+
+[Divide outcrops]
+
+[Deep water]
+
+[Rock outcrops]
+
 [Fruit in home valleys]
 Fruktoj en hejmvaloj
 [Moat]
@@ -1964,6 +2002,12 @@ Fosaĵo
 Kolonioj ĉe ambaŭ marbordoj
 [Winding belt]
 Serpentuma zono
+[Deep ocean]
+
+[Rock spine]
+
+[Ring road]
+
 [Cell shape]
 Formo de ĉeloj
 [Squares]
@@ -2000,6 +2044,20 @@ Dikeco de krestoj
 Interspaco de montpasejoj
 [Lee width]
 Larĝo de la ŝirmflanko
+[Climate]
+
+[Temperate]
+
+[Steppe]
+
+[Tropical]
+
+[No ridge stands behind the homes; use fewer ridges or a bigger map.]
+
+[The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
+
+[The ridges could not be sealed; use thicker ridges.]
+
 [Old growth]
 Praarbaro
 [Canals]
@@ -2436,6 +2494,8 @@ Grando de gruzbenkoj
 Pliaj travadejoj
 [Moraine hummocks]
 Morenaj montetoj
+[Deep pools]
+
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2494,6 +2554,12 @@ Savano
 Trinkejoj
 [Dry patches]
 Sekaj areoj
+[Season]
+
+[Meltwater]
+
+[Late summer]
+
 [Sparse]
 Malmultaj
 [Normal]
@@ -2622,6 +2688,26 @@ Larĝa ventumilo
 Longa ventumilo
 [Twin springs]
 Ĝemelaj fontoj
+[Canyon mouth]
+
+[Cienega]
+
+[Coalescing pair]
+
+[Cienegas]
+
+[Rock]
+
+[Granite]
+
+[Greenstone]
+
+[Sandstone]
+
+[Volcanic]
+
+[The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
+
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 La ventumilaj deklivoj estas tro mallarĝaj por la hejmoj; uzu pli grandan mapon, pli grandan interspacon de montaroj, pli mallarĝajn krestojn aŭ pli malgrandajn salajn lagojn.
 [Central Quarry]
@@ -2772,6 +2858,10 @@ Laga longformeco
 Dikeco de arbara pasejo
 [Extra trails]
 Pliaj padoj
+[Deep lakes]
+
+[Bedrock]
+
 [Portage Lakes needs sides between 64 and 512 tiles.]
 La flankoj de ĉi tiu mapo devas longi inter 64 kaj 512 kaheloj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
