@@ -415,8 +415,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int passPeriod = 65536 / passes, passHalf = alongUnits(o.passWidth / 2.0);
 	const auto passOffsetAt = [&](int i, int shift)
 	{
+		// Straight ridges stand where ridges * y / h is a whole number, so the alternation flips in the
+		// middle of each valley, never across a ridge, where it would split every pass in two halves
+		// half a spacing apart and leave no way over.
 		const int y = i / t.w;
-		const int stagger = o.slant == 0 ? ((L.ridges * y / t.h) % 2) * passPeriod / 2 : 0;
+		const int ridgeIndex = (2 * L.ridges * y + t.h) / (2 * t.h);
+		const int stagger = o.slant == 0 ? (ridgeIndex % 2) * passPeriod / 2 : 0;
 		const int offset = ((L.alongPhase[i] + stagger + shift) % passPeriod + passPeriod) % passPeriod;
 		return std::min(offset, passPeriod - offset);
 	};
