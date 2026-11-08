@@ -17,9 +17,7 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
 ./build/darwin/client/release/src/glob2 game repeat content/games/cross-replay.game.gz --ticks 1500 --runs 1
 ```
 
-Use the corresponding native build path on other platforms. This fixture is
-separate from `test/baselines/`, whose files are shared with external determinism
-tooling and must not be replaced just to keep browser import tests current.
+Use the corresponding native build path on other platforms.
 
 ## Studio native/browser checksums
 

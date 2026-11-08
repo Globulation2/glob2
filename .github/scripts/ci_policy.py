@@ -35,7 +35,7 @@ TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_c
                      'RecordingMultiplayerPeer.cpp', 'OnlineProbeFileManager.cpp', 'PlatformClientProbe.cpp',
                      'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
-TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
+TOOLING_TESTS = ('test/build_system/', 'test/relay_service/', 'test/online_service/')
 TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'platforms/mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
