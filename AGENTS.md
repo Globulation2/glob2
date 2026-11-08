@@ -200,9 +200,11 @@ prerequisite. Add the `ci:full` label to run the full matrix on a PR whose
 change touches build inputs, shared headers, platform shells or test
 infrastructure. Keep unfinished PRs in draft.
 
-**Master red rule.** When the newest full master run has been failing for more
-than 24 hours, the next merge must be the repair or a revert; the gate's
-`master-health` job enforces this and is satisfied by the `ci:repair` label. Keep
+**Master red rule.** When the newest decided full master run has had a gating job
+failing for more than 24 hours, the next merge must be the repair or a revert,
+labelled `ci:repair`. The gate's `master-health` job judges runs only by their
+gating jobs (cancelled ones decide nothing) and only warns until master has stayed
+green for about two weeks, when its `ENFORCED` flag is turned back on. Keep
 repair PRs focused, retain failure evidence and confirm recovery with the next
 full master run. Before landing, rebase on current master; never merge a branch
 whose rebase stopped on a conflict.

@@ -228,10 +228,16 @@ check meant to gate merges, with a 15-minute target on a warm compiler cache:
   a warm cache it costs the same as the dev tier, and the tests run several times faster) and the
   headless test tier (`test/run_tests.py --tier headless`); master pushes save the compiler and encoded-asset caches that pull
   requests restore;
-- `master-health`: the master-red rule. When the newest decided full master run
-  (`build.yml`) failed and master has had no successful full run for more than 24
-  hours, a pull request fails this job unless it carries the `ci:repair` label: the
-  next merge repairs or reverts the breakage.
+- `master-health`: the master-red rule. A full master run (`build.yml`, push or
+  schedule) is judged only by its gating jobs, listed in `GATING_JOBS` in
+  `.github/scripts/ci_master_health.py`: the native build and test jobs on each
+  platform, Android and the browser build and tests. A failed or timed-out gating
+  job makes the run red; a cancelled or missing one leaves it undecided, and
+  coverage, sanitizer and evidence jobs never decide it. When the newest decided
+  run is red and master has had no green decided run for more than 24 hours, the
+  next merge repairs or reverts the breakage and carries the `ci:repair` label.
+  The rule is advisory (`ENFORCED = False`: a warning, never a failure) until
+  master has stayed green for about two weeks; enabling it is its own pull request.
 
 Its duration and cache hit rates are tracked like any other CI metric; compare ten
 runs before claiming a change made it faster.
