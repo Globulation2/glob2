@@ -136,12 +136,6 @@ constexpr int kWalkSpread = 12;
 // land is deep.
 constexpr double kArenaFloorShare = 0.75;
 constexpr int kQuarryFace = 12;
-// Every starting tower also has a face of this much stone at the foot of the wall it stands against,
-// seeded within this many tiles of it and kept this many steps from the ramp (plantTowerStone): the
-// faces above stand deep in the territory, a long walk from the towers by the ramp.
-constexpr int kTowerStone = 6;
-constexpr int kTowerStoneReach = 4;
-constexpr int kTowerStoneRampGap = 2;
 constexpr int kDeepFrom = 5;
 // A territory stays grass this many steps round its seas, where its crops grow; elsewhere it is
 // barren but for a paved square this far round its swarm and a grass verge this many vertices wide at
@@ -635,20 +629,10 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const PeriodicNoise patch(t.w, t.h, 12, context.stream("amphitheatre-patch"));
 	const PeriodicNoise split(t.w, t.h, 6, context.stream("amphitheatre-split"));
-	int faceTiles = 0, towerTiles = 0;
+	int faceTiles = 0;
 	for (int k = 0; k < teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.territory[i] == k && free(i); };
-		// The towers' ammunition first, at the foot of the arena wall beside the ramp they guard: the
-		// ramp's own clearance is kept only for its mouth here, where the towers stand.
-		if (k < int(towers.towers.size()))
-			towerTiles += plantTowerStone(
-				map, t, towers.towers[k], kTowerStone, kTowerStoneReach,
-				[&](int i)
-				{
-					return L.territory[i] == k && !reserved[i] && !pads[i] && fromRamps[i] > kTowerStoneRampGap &&
-						   clearGround(map, t.remainderX(i), i / t.w);
-				});
 		// The kit faces the nearest sea: wheat and wood between the swarm and its shore.
 		const int ax = t.remainderX(L.anchor[k]), ay = L.anchor[k] / t.w;
 		int bayTile = -1;
@@ -711,7 +695,6 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			"amphitheatre-home-stone", "amphitheatre-home-fruit");
 	}
 	context.telemetry.measure("amphitheatre.quarry-faces.tiles", faceTiles);
-	context.telemetry.measure("amphitheatre.tower-stone.tiles", towerTiles);
 	// The arena's prizes, the same in every wedge (plantOrchard, plantRound): groves of the three fruits
 	// on the innermost terrace and in the pit, a quarter-wedge round from the ramps, and a stone outcrop
 	// on every terrace.
@@ -901,7 +884,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		7,
+		6,
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest
