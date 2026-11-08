@@ -68,7 +68,8 @@ jobs:
             --check 'header layering contracts' 'python3 -m unittest discover -s test -p test_check_header_layering.py' \
             --check 'source manifest profiles' 'python3 -m unittest discover -s test -p test_sources_manifest.py' \
             --check 'fixture refresh contracts' 'python3 -m unittest discover -s test -p test_refresh_sim_fixtures.py' \
-            --check 'sim version contracts' 'python3 -m unittest discover -s test -p test_check_sim_revision.py'
+            --check 'sim version contracts' 'python3 -m unittest discover -s test -p test_check_sim_revision.py' \
+            --check 'sim-diff contracts' 'python3 tools/test_sim_diff.py'
       - name: Check that the sim version follows the simulation
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
