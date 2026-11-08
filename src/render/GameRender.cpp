@@ -301,7 +301,9 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 			}
 	// The overview fully replaces detailed terrain at the far end of zoom.
 	bool overviewOnly = view.render.detail.terrainOverview >= 1;
-	const bool legacy = frame.target.isLegacyGLScreen();
+	// Browser builds drive Legacy GL through the WebGL2 bridge, which has no
+	// direct pass: their views compose pages, native until HD artwork streams in.
+	const bool legacy = frame.target.isLegacyGLScreen() && DirectTerrain::legacyPassAvailable();
 	bool direct = false;
 	bool terrainBackdrop = false;
 	const bool hdArtwork = globalContainer->settings.highResolutionArtwork;
@@ -360,7 +362,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 		}
 		catch (const std::bad_alloc &) { /* Pages remain available. */ }
 	}
-	// Software and programmable-device renderers compose pages.
+	// Software, programmable-device and browser Legacy GL renderers compose pages.
 	SoftwareTerrainCache *pagesForView = nullptr;
 	if (!direct && !overviewOnly && !legacy)
 	{

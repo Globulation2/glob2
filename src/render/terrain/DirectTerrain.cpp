@@ -1473,6 +1473,15 @@ bool DirectTerrain::needsBackdrop(GAGCore::GraphicContext &gfx, const SceneMap &
 #endif
 }
 
+bool DirectTerrain::legacyPassAvailable()
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    return true;
+#else
+    return false;
+#endif
+}
+
 bool DirectTerrain::failed() const
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL

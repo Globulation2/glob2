@@ -130,13 +130,12 @@ Check partial redraws and discarded frames against the committed image.
 ### Direct terrain
 
 Direct terrain is the default for flat views with Original artwork
-(`highResolutionArtwork=0`) on legacy OpenGL, programmable OpenGL, WebGL2,
+(`highResolutionArtwork=0`) on desktop legacy OpenGL, programmable OpenGL,
 SDL GPU with the direct terrain shaders, and WebGPU with the WGSL assets.
 It uses the map's terrain variants, coverage, contact bands, surf, and
-discovery. With HD artwork enabled, Legacy OpenGL still uses the native atlas
-at or below one raster pixel per native terrain texel. Closer views use HD
-pages, and the atlas stays resident for the next zoom-out. Editor views, tiled
-captures, and backends without direct terrain support use composed pages.
+discovery. Desktop legacy OpenGL draws every view, HD artwork included, with
+the direct pass described below. On the other backends, HD artwork, editor views,
+tiled captures, and backends without direct terrain support use composed pages.
 
 The shader blends in floating point and uses linear atlas sampling. The page
 renderer can box-filter composed terrain when zoomed out. Compare captures
@@ -165,7 +164,10 @@ its whole-map base mask; `DIRECT_TERRAIN_BASE` reports when the base covers
 the map, and only cells without a base mask yet draw their first material. `FRAME_HD` reports the
 visible mixed cells still waiting. The editor and captures complete the view
 first: they build every visible mask in parallel and wait for streamed HD
-artwork. Pages serve only the software and programmable-device renderers.
+artwork. Pages serve the software and programmable-device renderers, and the
+browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,
+which the direct pass does not support. There pages draw native artwork until the
+view's `hd-terrain-*` families download, then HD.
 Direct terrain stops (`DIRECT_TERRAIN_FALLBACK`) only for device limits, such as
 a map wider than the maximum texture size; Legacy GL then shows the overview. On programmable GL, actual GPU uploads happen during frame submission,
 where device-wide memory pressure can defer the frame. Far zoom uses the shared overview. For a large-map admission check,

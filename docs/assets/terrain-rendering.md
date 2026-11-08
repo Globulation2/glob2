@@ -433,7 +433,7 @@ of each crest and vanish along its flanks. A sample counts only its own
 material's clasts: a neighbour's grain that stops short of the surface would
 otherwise ring the water with surf.
 
-In Legacy GL every visible mixed cell takes a coverage mask at the display
+In desktop Legacy GL every visible mixed cell takes a coverage mask at the display
 density (8 to 128 texels a side), built by background workers nearest the view
 centre first. Until a cell's mask lands it draws its mask from the previous
 density, if a zoom just changed it, or else its base mask: a low-density mask

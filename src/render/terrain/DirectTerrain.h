@@ -42,6 +42,10 @@ public:
     std::size_t pendingHdMasks() const;
     // Mixed cells of the whole map whose low-density base mask is still missing.
     std::size_t pendingBaseMasks() const;
+    // Whether this build has the Legacy GL pass. Browser builds drive Legacy
+    // GL through Emscripten's WebGL2 bridge, which it does not support; their
+    // Legacy GL views compose pages instead.
+    static bool legacyPassAvailable();
     // Nothing of this map can draw yet: show the overview.
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;
     std::size_t textureBytes() const;
