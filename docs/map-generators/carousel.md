@@ -34,7 +34,10 @@ stay unbuildable is rough ground.
 | Deep water | Deep water | Open sea five vertices or more from land | Slower swimming, no algae |
 
 Every home has two quarry faces of 12 stone each at the foot of its outer walls, away from the siege
-line: the walls were its stone when they were built of it. They are unscaled.
+line: the walls were its stone when they were built of it. Since revision 6 every starting tower also
+has a face of 6 stone at the foot of the wall it stands against, within four tiles of it, so its
+carriers restock in a few steps instead of a dozen or more; where that foot is barren or paved, a
+grass niche is opened for it first. Both are unscaled.
 
 
 - **Geometry** (`geometryFor`, `drawLanes`). Designed once in the wedge's frame and turned for every
