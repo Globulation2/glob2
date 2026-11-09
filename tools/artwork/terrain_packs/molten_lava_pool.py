@@ -79,7 +79,8 @@ def render_molten_lava_pool(ctx):
     rgb = shade(rgb, lumps.tolist(), 0.18, reference_height=common_lumps)
     rgb = mix(rgb, p["crack"], crack.tolist(), 0.8)
     # Animation: each plate's seams pulse on their own clock, with a faint
-    # periodic shimmer travelling along the channels.
+    # periodic shimmer travelling along the channels. With four phases each
+    # step is a quarter turn, so the swing stays narrow enough not to flash.
     time = (ctx.phase % ctx.phases) / ctx.phases
     offsets = np.array([ctx.shared_rng.random() for _ in range(ctx.area_scale)])
     pulse = np.array(blend_fields((0.5 + 0.5 * np.sin(TAU * (time + offsets[np.array(common_ids)]))).tolist(),
@@ -88,9 +89,9 @@ def render_molten_lava_pool(ctx):
     sa = np.array(layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size)))
     sb = np.array(layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size)))
     shimmer = math.cos(TAU * time) * (sa - 0.5) + math.sin(TAU * time) * (sb - 0.5)
-    hot = np.clip(0.1 + 0.65 * pulse + 0.7 * shimmer + 0.25 * rank, 0, 1)
+    hot = np.clip(0.15 + 0.55 * pulse + 0.7 * shimmer + 0.25 * rank, 0, 1)
     # The halo breathes with its channel, so plate rims flare and cool too.
-    rgb = mix(rgb, p["seep"], (np.clip(halo * 1.4 - 0.4, 0, 1) * (0.25 + 0.65 * pulse)).tolist(), 1.0)
+    rgb = mix(rgb, p["seep"], (np.clip(halo * 1.4 - 0.4, 0, 1) * (0.3 + 0.55 * pulse)).tolist(), 1.0)
     flow = ramp(hot.tolist(), [(0.0, p["seep"]), (0.5, p["flow"]), (1.0, p["flow_core"])])
     rgb = mix(rgb, flow, channel.tolist(), 1.0)
     rgb = mix(rgb, p["flow_white"], (core * hot * (0.3 + 0.7 * rank)).tolist(), 0.7)

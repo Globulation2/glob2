@@ -29,7 +29,7 @@ from .tundra import frost_polygons, tundra_stones
                  "stem": (164, 172, 204), "body": (208, 212, 234), "tip": (238, 240, 250),
                  "dead": (208, 212, 234), "deadtip": (238, 240, 250),
                  "sparkle": (252, 252, 255)},
-        style=Style(luma=136, std=44, grain_max=16, match=0.7), periodic=True, grid=8, blocks=4)
+        style=Style(luma=136, std=35, grain_max=16, match=1.0), periodic=True, grid=8, blocks=4)
 def render_arctic_tundra(ctx):
     """Tundra's frost-patterned ground under snow: the same polygons about two
     cells across, but snow lies in scalloped patches where the moss pads would

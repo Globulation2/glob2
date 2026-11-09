@@ -19,8 +19,10 @@ from terrain_core import (
 
 def ashlar_rectangles(size, rng):
     """Big carved blocks in uneven courses: longer and taller than road setts."""
-    stones, y = [], 0
-    for height in uneven_rows(size, rng, heights=(9, 10, 12, 13, 15)):
+    # Courses start a few native px into the block so no joint lies on the
+    # block's wrap row, where it would read as a tile seam.
+    stones, y = [], 3 * NATIVE_PX
+    for height in uneven_rows(size, rng, heights=(9, 10, 12, 13, 15), offset=y):
         start = rng.random() * size
         x = start
         while True:

@@ -126,10 +126,18 @@ def validate_resources(root, pack, manifest, frames):
 
 
 def topology(root):
-    source = (root / 'src/map/MapTerrain.cpp').read_text()
-    entries = re.findall(r'\{\s*(\d+),\s*(\d+)\s*\},?\s*// ([HSE]), ([HSE]), ([HSE]), ([HSE])', source)
+    """Classic frame -> corner letters (H grass, S sand, E water), from the
+    81-pattern LEGACY_CLASSIC_FRAMES table, indexed by (2 - type) per corner
+    in top-left, top-right, bottom-left, bottom-right order."""
+    source = (root / 'src/map/LegacyTerrainFrames.h').read_text()
+    table = source[source.index('LEGACY_CLASSIC_FRAMES'):]
+    table = table[table.index('{') + 1:table.index('};')]
+    entries = re.findall(r'\{\s*(\d+),\s*(\d+)\s*\}', table)
+    require(len(entries) == 81, 'Expected 81 legacy corner patterns')
+    letters = 'HSE'  # digit 0 is GRASS (type 2), 1 SAND, 2 WATER
     result = {}
-    for start, count, *corners in entries:
+    for pattern, (start, count) in enumerate(entries):
+        corners = [letters[pattern // 27], letters[pattern // 9 % 3], letters[pattern // 3 % 3], letters[pattern % 3]]
         if set(corners) in ({'H', 'S'}, {'S', 'E'}) or len(set(corners)) == 1:
             for i in range(int(start), int(start) + int(count)):
                 result[i] = corners

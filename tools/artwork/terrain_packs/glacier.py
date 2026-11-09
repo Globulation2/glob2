@@ -26,7 +26,7 @@ MORAINE_LAYERS = [dict(TALUS_LAYERS[0], keep=0.45), dict(TALUS_LAYERS[1], keep=0
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"void": (70, 88, 116), "snow": (204, 214, 232), "drift": (226, 232, 244),
                  "dark": (72, 76, 84), "mid": (106, 110, 118), "light": (140, 144, 150)},
-        style=Style(luma=166, std=41.5, grain_max=15, match=1.0), periodic=True, grid=8, blocks=4,
+        style=Style(luma=166, std=35, grain_max=15, match=1.0), periodic=True, grid=8, blocks=4,
         note="ground under the raised decor sprites (tools/artwork/terrain_decor.py)")
 def render_glacier(ctx):
     """Moraine at the foot of the ice walls: the chips and cobbles of the talus

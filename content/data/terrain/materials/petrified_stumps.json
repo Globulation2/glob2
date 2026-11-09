@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-petrified_stumps",
   "profile": "rock",
   "class": "solid",
-  "preview": [122, 111, 91],
+  "preview": [122, 115, 71],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [122, 111, 91],
+  "minimap": [122, 115, 71],
   "seam": {
     "height": 4,
     "cast_q8": 72,

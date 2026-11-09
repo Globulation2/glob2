@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-granite_tors",
   "profile": "canopy",
   "class": "cover",
-  "preview": [113, 116, 89],
+  "preview": [108, 120, 82],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [113, 116, 89],
+  "minimap": [108, 120, 82],
   "seam": {
     "height": 4,
     "cast_q8": 88,
