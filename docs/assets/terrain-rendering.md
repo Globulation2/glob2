@@ -439,8 +439,11 @@ centre first. Until a cell's mask lands it draws its mask from the previous
 density, if a zoom just changed it, or else its base mask: a low-density mask
 of every mixed cell on the map (8 texels a side, 4 or 2 on large maps), laid
 out like the map and built by the workers whenever visible cells leave them
-idle, nearest the first view first. Only a cell whose base mask is not built
-yet, just after a map loads, draws its first material. The previous atlas is
+idle, nearest the first view first. A cell whose base mask is not built yet,
+just after a map loads or an edit, or on a map too large for one, splits
+straight between its corners: each border crosses the cell's edges at their
+midpoints, a lone corner is cut off along the diagonal and diagonal corners keep
+their quadrants, without seams or surf. The previous atlas is
 released once the new density covers the view; its textures are reused by the
 next zoom.
 

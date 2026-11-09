@@ -166,7 +166,7 @@ struct DirectTerrain::State
         int tile = 0;              // Texels per cell side; 0 before the first prepare.
         // The atlas a density change or growth retired. A cell whose new mask
         // has not landed draws its old one, so a zoom never drops a cell back
-        // to its first material; the atlas goes once the view is complete.
+        // to its corner split; the atlas goes once the view is complete.
         struct Previous {
             GLuint index = 0, coverage = 0, edges = 0;
             int size = 0, tile = 0;   // tile is 0 when there is none; the textures stay as a spare.
@@ -283,7 +283,7 @@ struct DirectTerrain::State
             }
         }
     } hd;
-    std::vector<Uint16> cellMasks; // PendingMask for mixed cells, zero for uniform ones.
+    std::vector<Uint16> cellMasks; // PendingCorners code for mixed cells, zero for uniform ones.
 #endif
     int width = 0, height = 0;
     std::size_t bytes = 0, uploaded = 0;
@@ -520,7 +520,7 @@ struct DirectTerrain::State
                 if (!hd.previous.slotOf.empty() && hd.previous.slotOf[i])
                 {
                     hd.previous.slotOf[i] = 0;
-                    const Uint16 pending = DirectTerrainData::PendingMask;
+                    const Uint16 pending = mask;
                     glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 3);
                     glBindTexture(GL_TEXTURE_2D, hd.previous.index);
                     glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &pending);
@@ -535,7 +535,7 @@ struct DirectTerrain::State
 
     void setHdIndex(int cell, Uint16 value)
     {
-        hd.slotOf[cell] = value == DirectTerrainData::PendingMask ? 0 : value;
+        hd.slotOf[cell] = value >= DirectTerrainData::PendingCorners ? 0 : value;
         glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
         glBindTexture(GL_TEXTURE_2D, hd.index);
         glTexSubImage2D(GL_TEXTURE_2D, 0, cell % width, cell / width, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &value);
@@ -601,7 +601,7 @@ struct DirectTerrain::State
         bytes += hd.bytes;
         hd.tile = tile;
         hd.slotOf.assign(cellMasks.size(), 0);
-        const std::size_t slots = std::min<std::size_t>(65534, std::size_t(size / tile) * (size / tile));
+        const std::size_t slots = std::min<std::size_t>(DirectTerrainData::PendingCorners - 1, std::size_t(size / tile) * (size / tile));
         hd.cellOf.assign(slots, -1);
         hd.used.assign(slots, 0);
         // Results in flight were built for the old tiles. Recipes do not
@@ -1174,8 +1174,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         glUniform2f(hd.uniforms[0], float(width), float(height));
         glUniform2f(hd.uniforms[2], DirectTerrainData::AtlasWidth, 1.f); // Native masks are not used.
     }
-    // Back to pending: the cell draws its old mask, or else its first
-    // material, until a new mask lands.
+    // Back to pending: the cell draws its old mask, or else its base mask or
+    // corner split, until a new mask lands.
     const auto release = [&](int cell) { state->setHdIndex(cell, state->cellMasks[cell]); };
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.

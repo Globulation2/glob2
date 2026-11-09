@@ -161,7 +161,7 @@ workers build a coverage mask for each visible mixed cell into one atlas at the
 same density (8 to 128 texels a side), nearest the view centre first. Until its
 mask lands a mixed cell draws its previous-density mask after a zoom, or else
 its whole-map base mask; `DIRECT_TERRAIN_BASE` reports when the base covers
-the map, and only cells without a base mask yet draw their first material. `FRAME_HD` reports the
+the map, and only cells without a base mask yet draw a straight split between their corners. `FRAME_HD` reports the
 visible mixed cells still waiting. The editor and captures complete the view
 first: they build every visible mask in parallel and wait for streamed HD
 artwork. Pages serve the software and programmable-device renderers, and the

@@ -23,6 +23,11 @@ struct DirectTerrainData
     static constexpr int TilePixels = 32;
     static constexpr int MaskPixels = 16;
     static constexpr Uint16 PendingMask = 65535;
+    // Legacy GL: a mixed cell without a built mask holds PendingCorners plus
+    // the palette slot of each corner, two bits each (top-left in the low
+    // bits, then top-right, bottom-left, bottom-right), so the shader can draw
+    // a straight-edged split until the mask lands. Mask atlas slots stay below.
+    static constexpr Uint16 PendingCorners = 0xFF00;
     static constexpr int AtlasWidth = 2048;
     static constexpr int VariantWidth = 256;
     static constexpr unsigned VariantRecords = 8;
@@ -60,8 +65,8 @@ struct DirectTerrainData
         std::map<std::pair<TerrainVisual::MaterialId, unsigned>, Uint16> slots;
         Uint16 slot(const TerrainVisual::Catalog &, const TerrainVisual::Recipe &, TerrainVisual::MaterialId);
     };
-    // A cell's palette record, mixed-cell marker (PendingMask, or zero when
-    // uniform) and shore calm, from its recipe.
+    // A cell's palette record, mixed-cell marker (PendingCorners with its
+    // corner slots, or zero when uniform) and shore calm, from its recipe.
     static void describeCell(Palette &, const TerrainVisual::Catalog &, const TerrainVisual::Recipe &,
                              Record &cell, Uint16 &mask, Pixel &calm);
     static void appendRecords(std::vector<Record> &variants, const TerrainVisual::Material &, Uint16 firstArt);

@@ -187,6 +187,29 @@ vec4 material(float index, vec2 uv, float calm) {
     return color;
 }
 
+#ifdef DIRECT_TERRAIN_HD_MASKS
+// A mixed cell whose mask has not landed: marching squares on its corners, so
+// borders cross each cell edge at its midpoint in straight lines and meet the
+// neighbouring cells. The cell is four triangles around its centre; a
+// material's presence is linear in each, from its corners to the centre,
+// which only a material holding three corners claims. A lone corner is cut
+// off along the diagonal, a pair splits straight through the middle, and
+// diagonal corners keep their quadrants, as the built masks do.
+vec4 cornerSplit(float code, vec2 f, float pixel) {
+    vec4 slots = mod(floor(code / vec4(1.0, 4.0, 16.0, 64.0)), 4.0);
+    const vec4 lanes = vec4(0.0, 1.0, 2.0, 3.0);
+    vec4 tl = vec4(equal(vec4(slots.x), lanes)), tr = vec4(equal(vec4(slots.y), lanes));
+    vec4 bl = vec4(equal(vec4(slots.z), lanes)), br = vec4(equal(vec4(slots.w), lanes));
+    vec4 centre = vec4(greaterThan(tl + tr + bl + br, vec4(2.5)));
+    vec4 b = max(vec4(1.0 - f.x - f.y, f.x - f.y, f.y - f.x, f.x + f.y - 1.0), 0.0);
+    vec4 w = b.x * tl + b.y * tr + b.z * bl + b.w * br + (1.0 - dot(b, vec4(1.0))) * centre;
+    float top = max(max(w.x, w.y), max(w.z, w.w));
+    // Presence changes by up to two per cell across a border: blend over
+    // about a screen pixel.
+    return clamp((w - top) / max(2.0 * pixel, 0.0001) + 1.0, 0.0, 1.0);
+}
+#endif
+
 vec3 contact(vec4 indices, vec3 edge, vec3 color) {
     int dominant = int(edge.y);
     int neighbor = int(edge.z);
@@ -278,17 +301,20 @@ void main() {
     vec2 uv = clamp(fract(world) * 32.0, vec2(halfTexel), vec2(32.0 - halfTexel));
 #ifdef DIRECT_TERRAIN_HD_MASKS
     // Legacy GL: one mask atlas at the display density. Zero is a uniform cell;
-    // 65535 a mixed cell whose mask is still being built, drawn from the
-    // retired atlas if it has one, else from the whole-map base atlas, else
-    // from its first material, until it lands.
+    // 65280 and up a mixed cell whose mask is still being built, drawn from
+    // the retired atlas if it has one, else from the whole-map base atlas,
+    // else split straight between its corners, until it lands.
     float hd = readScalar(hdIndex, cell, mapSize);
-    bool mixed = hd > 0.0 && hd < 65535.0;
+    float pending = hd - 65280.0; // Corner slots, two bits each, when not negative.
+    // Cells per screen pixel, taken here in uniform control flow.
+    float pixel = max(fwidth(world.x), fwidth(world.y));
+    bool mixed = hd > 0.0 && pending < 0.0;
     vec2 atlasSize = hdCoverageSize;
     float atlasTile = hdTilePixels;
     bool retired = false;
-    if (hd >= 65535.0 && hdPreviousTile > 0.0) {
+    if (pending >= 0.0 && hdPreviousTile > 0.0) {
         float old = readScalar(hdPreviousIndex, cell, mapSize);
-        if (old > 0.0 && old < 65535.0) {
+        if (old > 0.0 && old < 65280.0) {
             hd = old;
             mixed = true;
             retired = true;
@@ -297,7 +323,7 @@ void main() {
         }
     }
     bool base = false;
-    if (hd >= 65535.0 && !retired && hdBaseTile > 0.0) {
+    if (pending >= 0.0 && !retired && hdBaseTile > 0.0) {
         hd = slot.y * mapSize.x + slot.x + 1.0;
         mixed = true;
         base = true;
@@ -320,8 +346,13 @@ void main() {
         weights = base ? DIRECT_TERRAIN_SAMPLE(hdBaseCoverage, maskUV)
                 : retired ? DIRECT_TERRAIN_SAMPLE(hdPreviousCoverage, maskUV)
                           : DIRECT_TERRAIN_SAMPLE(hdCoverage, maskUV);
-        // An unbuilt base tile is empty: the cell keeps its first material.
+        // An unbuilt base tile is empty: the cell falls through to its corners.
         mixed = dot(weights, vec4(1.0)) > 0.5;
+    }
+    bool split = !mixed && pending >= 0.0;
+    if (split) {
+        weights = cornerSplit(pending, uv / 32.0, pixel);
+        mixed = true;
     }
 #endif
     if (mixed) {
@@ -334,7 +365,8 @@ void main() {
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
-        vec3 edge = base ? hdEdgeAt(hdBaseEdges, hd - 1.0, uv, atlasSize, atlasTile)
+        // The split carries no edge: no contact shading or surf until the mask lands.
+        vec3 edge = split ? vec3(0.0) : base ? hdEdgeAt(hdBaseEdges, hd - 1.0, uv, atlasSize, atlasTile)
                   : retired ? hdEdgeAt(hdPreviousEdges, hd - 1.0, uv, atlasSize, atlasTile)
                             : hdEdgeAt(hdEdges, hd - 1.0, uv, atlasSize, atlasTile);
 #else

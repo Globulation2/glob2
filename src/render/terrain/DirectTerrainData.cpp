@@ -125,9 +125,13 @@ void DirectTerrainData::describeCell(Palette &palette, const TerrainVisual::Cata
     }
     // The record's slots follow the coverage palette: corners, then stones.
     std::array<TerrainVisual::MaterialId, 4> ids;
-    for (unsigned slot = 0, n = recipe.palette(ids); slot < n; ++slot)
+    const unsigned n = recipe.palette(ids);
+    for (unsigned slot = 0; slot < n; ++slot)
         cell[slot] = palette.slot(catalog, recipe, ids[slot]);
-    mask = PendingMask;
+    // Corners come first in the palette, so each finds its slot among them.
+    mask = PendingCorners;
+    for (unsigned corner = 0; corner < 4; ++corner)
+        mask |= Uint16(std::find(ids.begin(), ids.begin() + n, recipe.corners[corner]) - ids.begin()) << (2 * corner);
 }
 
 DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<TerrainVisual::Compositor> owner,
