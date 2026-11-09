@@ -1,0 +1,7 @@
+{
+  "source": "examples/javascript/studio-starter.js",
+  "map": "services/online/apps/engine-agent/fixtures/ais/two.map.gz",
+  "seed": 19,
+  "opponent": "numbi",
+  "ticks": 1024
+}

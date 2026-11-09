@@ -21,52 +21,30 @@ Use the corresponding native build path on other platforms.
 
 ## Studio native/browser checksums
 
-`studio-trace.json` pins the map, source, seed, opponent and tick count for the
-Studio determinism test. Its trace digest comes from native execution; both the
-serial and threaded browser runtime must match every byte of that checksum trace.
-Its engine/save and simulation revision fields are checked by the cheap Node
-contracts, so version advances require a reviewed native reference refresh.
-It is a compatibility assertion, not a browser-generated snapshot.
+`studio-scenario.json` and `generator-studio-scenario.json` name the inputs of the
+two Studio determinism scenarios and nothing else: no trace digests, engine
+versions or sim keys. `studio.spec.js` and `generator-studio.spec.js` run each
+scenario in both browser runtimes and in the native client of the same checkout
+(`tests/native-reference.js`), and require every byte of the browser checksum
+trace to equal the native one. A simulation change therefore moves both sides
+together and needs no fixture refresh.
 
-For an intentional source, fixture or simulation change, build the native engine
-and both browser runtimes from the same revision. From the repository root, use
-an isolated output directory and profile:
+- `studio-scenario.json`: the AI Studio starter controller against an opponent
+  on a map, by seed and tick count.
+- `generator-studio-scenario.json`: the single-module Swamp package, its settings,
+  the AI that plays every colony and the tick count. The spec traces the generated
+  game and the same game reloaded from its initial save, and checks the preview
+  report's package hash against `map inspect-package` and its sim version against
+  `info sim-version`. The frozen preview world has no native CLI counterpart, so
+  the serial and threaded runtimes must freeze the same world; the native trace of
+  the generated game covers generation itself.
 
-```sh
-GLOB2_USER_DATA_DIR="$PWD/artifacts/studio-reference/profile" \
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_CHECKSUM_SIDECAR=1 \
-./build/linux/client/release/src/glob2 game run \
-  --map-file "$PWD/platform/apps/engine-agent/fixtures/ais/two.map.gz" --game-seed 19 \
-  --player javascript --ai-script "0:$PWD/examples/javascript/studio-starter.js" \
-  --player numbi --ticks 1024 --write-replay --telemetry checksums \
-  --save initial --save final --output-dir "$PWD/artifacts/studio-reference/result"
-sha256sum examples/javascript/studio-starter.js \
-  services/online/apps/engine-agent/fixtures/ais/two.map.gz \
-  artifacts/studio-reference/result/game.replay.checksums
-wc -c artifacts/studio-reference/result/game.replay.checksums
-```
-
-Use the corresponding native build path on other platforms. Update the manifest
-only after reviewing why the native trace changed; apply the repository's
-simulation revision and golden-match requirements when simulation behavior
-changes. Then run `npx playwright test studio.spec.js` from `platforms/web/` against the
-rebuilt engine. All six platforms/web/runtime combinations must match the native digest.
-Keep the native trace and browser traces as review evidence.
-
-`generator-studio-trace.json` similarly pins the single-module Swamp package,
-initial preview snapshot fingerprint and checksum, and a 64-tick Nicowar trace.
-The native `MapPreview/generator Studio*` harness produces the frozen preview
-report, package and settings in `artifacts/generator-studio/`. Generate the trace
-with the native CLI using that package, seed 19, width/height 7 (128 tiles), four
-teams, four workers, one candidate and four Nicowar players; record both generation
-and loading the initial save. `generator-studio.spec.js` compares all browser
-variants against these native-derived references and separately exercises the
-interactive preview, Watch AI play, pause and host teardown. Report an interactive
-threaded fallback as unavailable coverage, even when headless threaded checks pass.
-
-The generator reference also records engine and simulation versions. Save-version
-advances can change the frozen snapshot bytes and generated-map checksum trace;
-refresh these fields from native execution before comparing browser builds.
+The native client is `build/linux/client/release/src/glob2`, which the browser CI
+jobs unpack from the `web-native` artifact; set `GLOB2_NATIVE_BINARY` to use
+another build. It runs from the repository root with a throwaway profile, and its
+outputs land in `artifacts/native-reference/`. Locally, build the native client
+and the browser runtimes from the same revision, then run
+`npx playwright test studio.spec.js generator-studio.spec.js` from `platforms/web/`.
 
 ## Presentation surface ownership
 
