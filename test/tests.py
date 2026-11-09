@@ -29,6 +29,7 @@ ENGINE_SUPPORT = [
     'support/HeadlessGlobals.cpp',
     'support/HeadlessGame.cpp',
     'support/GameFixtures.cpp',
+    'support/Continuation.cpp',
     'support/DrawFixtures.cpp',
     'support/LegacyResourceTypes.cpp',
 ]

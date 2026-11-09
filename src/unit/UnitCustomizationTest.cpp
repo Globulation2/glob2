@@ -3,6 +3,7 @@
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
+#include "Continuation.h"
 #include "LegacyPopulationOutput.h"
 #include "GradientFixture.h"
 
@@ -26,13 +27,11 @@
 #include "Building.h"
 
 namespace {
+// FNV-1a over the simulation components, without the saved map-header format.
 Uint32 trace(Game& game)
 {
-    std::vector<Uint32> gameFields,buildings,units;
-    game.checkSum(&gameFields,&buildings,&units,true);
-    if (!gameFields.empty()) gameFields.erase(gameFields.begin()); // format of the saved map header
     Uint32 result=2166136261u;
-    for (const auto& values:{gameFields,buildings,units}) for (Uint32 value:values) result=(result^value)*16777619u;
+    for (Uint32 value:glob2test::simulationComponents(game)) result=(result^value)*16777619u;
     return result;
 }
 void deposit(Map& map,int x,int y,int type,int amount)
@@ -90,14 +89,12 @@ void configureSteeringUnits(glob2test::HeadlessGame& world)
 // Compare the complete checksum vectors, serialized cached unit state, ordered
 // relationships and reservations. A digest alone would hide which continuation
 // contract failed, and catalog-derived values must not replace saved caches.
+// relationshipAudit holds everything beyond the simulation components, which
+// expectContinuation already compares at every tick.
 using ContinuationAudit = std::pair<std::vector<Uint32>,std::vector<std::string>>;
-ContinuationAudit continuationAudit(Game& game)
+ContinuationAudit relationshipAudit(Game& game)
 {
     ContinuationAudit result;
-    std::vector<Uint32> buildings,units;
-    game.checkSum(&result.first,&buildings,&units,true);
-    result.first.insert(result.first.end(),buildings.begin(),buildings.end());
-    result.first.insert(result.first.end(),units.begin(),units.end());
     const auto appendList=[&](const auto& list) {
         result.first.push_back(Uint32(list.size()));
         for(const auto* entry:list) result.first.push_back(entry->gid);
@@ -126,31 +123,33 @@ ContinuationAudit continuationAudit(Game& game)
     }
     return result;
 }
+ContinuationAudit continuationAudit(Game& game)
+{
+    auto result=relationshipAudit(game);
+    auto components=glob2test::simulationComponents(game,false,true);
+    result.first.insert(result.first.begin(),components.begin(),components.end());
+    return result;
+}
 void checkPhaseContinuation(Game& game,int ticks,const std::function<void()>& observe={})
 {
     if(observe) observe();
     glob2test::discardPrematureHiringSuggestions(game);
     const auto before=continuationAudit(game);
     const auto random=game.syncRandom;
-    auto* storage=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(storage);
-    game.save(&output,false,"custom unit phase continuation");
-    const std::string bytes(storage->getBuffer(),storage->getPosition());
-    GameGUI resumed;
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-    input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-    REQUIRE(resumed.game.unitCatalog().digest()==game.unitCatalog().digest());
-    REQUIRE(continuationAudit(resumed.game)==before);
-    REQUIRE(resumed.game.syncRandom==random);
-    REQUIRE(resumed.game.unitCargo.entries()==game.unitCargo.entries());
-    for(int tick=0;tick<ticks;++tick) {
-        CAPTURE(tick);
-        game.step(0); resumed.game.step(0);
-        if(observe) observe();
-        REQUIRE(continuationAudit(resumed.game)==continuationAudit(game));
-        REQUIRE(resumed.game.syncRandom==game.syncRandom);
-        REQUIRE(resumed.game.unitCargo.entries()==game.unitCargo.entries());
-    }
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
+        .name="custom unit phase continuation",
+        .afterLoad=[&](Game& original,Game& resumed) {
+            REQUIRE(resumed.unitCatalog().digest()==original.unitCatalog().digest());
+            REQUIRE(continuationAudit(resumed)==before);
+            REQUIRE(resumed.syncRandom==random);
+            REQUIRE(resumed.unitCargo.entries()==original.unitCargo.entries());
+        },
+        .each=[&](Game& original,Game& resumed,int tick) {
+            if(tick>=0 && observe) observe();
+            REQUIRE(relationshipAudit(resumed)==relationshipAudit(original));
+            REQUIRE(resumed.unitCargo.entries()==original.unitCargo.entries());
+        }});
+    REQUIRE(result.matched);
 }
 
 // Historical visibility depends on the live cached ability, not the type or
@@ -172,22 +171,17 @@ void checkVisionAction(Unit& unit,int radius)
 void checkVisionContinuation(Game& game,int ticks)
 {
     const auto before=continuationAudit(game);
-    auto* storage=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(storage);
-    game.save(&output,false,"legacy cached flight vision continuation");
-    const auto bytes=storage->takeContents();
-    GameGUI resumed;
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-    input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-    REQUIRE(continuationAudit(resumed.game)==before);
-    REQUIRE(resumed.game.map.mapDiscovered==game.map.mapDiscovered);
-    for(int tick=0;tick<ticks;++tick) {
-        CAPTURE(tick);
-        game.step(0); resumed.game.step(0);
-        REQUIRE(continuationAudit(resumed.game)==continuationAudit(game));
-        REQUIRE(resumed.game.map.mapDiscovered==game.map.mapDiscovered);
-        REQUIRE(resumed.game.syncRandom==game.syncRandom);
-    }
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
+        .name="legacy cached flight vision continuation",
+        .afterLoad=[&](Game& original,Game& resumed) {
+            REQUIRE(continuationAudit(resumed)==before);
+            REQUIRE(resumed.map.mapDiscovered==original.map.mapDiscovered);
+        },
+        .each=[](Game& original,Game& resumed,int) {
+            REQUIRE(relationshipAudit(resumed)==relationshipAudit(original));
+            REQUIRE(resumed.map.mapDiscovered==original.map.mapDiscovered);
+        }});
+    REQUIRE(result.matched);
 }
 }
 
@@ -1309,20 +1303,13 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(unit);
         unit->receiveCarriedMaterial(WOOD,{1,2}); unit->receiveCarriedMaterial(STONE,{});
         for (int tick=0;tick<17;++tick) world.game.step(0);
-        auto* storage=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(storage);
-        world.game.save(&output,false,"mixed unit continuation");
-        const std::string bytes(storage->getBuffer(),storage->getPosition());
-        std::vector<Uint32> expected;
-        for (int tick=0;tick<96;++tick) { world.game.step(0); expected.push_back(trace(world.game)); }
-        GameGUI resumed;
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-        input.seekFromStart(0);
-        REQUIRE(resumed.game.load(&input));
-        resumed.game.setWaitingOnMask(0);
-        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
-        REQUIRE(copy); CHECK(copy->carriedPacketCount()==2);
-        for (int tick=0;tick<96;++tick) { resumed.game.step(0); CHECK(trace(resumed.game)==expected[tick]); }
+        const auto gid=unit->gid;
+        const auto result=glob2test::expectContinuation(world.game,{.ticks=96,.name="mixed unit continuation",
+            .afterLoad=[gid](Game&,Game& resumed) {
+                auto* copy=resumed.teams[0]->myUnits[Unit::GIDtoID(gid)];
+                REQUIRE(copy); CHECK(copy->carriedPacketCount()==2);
+            }});
+        CHECK(result.matched);
     }
 
     TEST_CASE("passive healing and starvation damage are independent configured rates")
@@ -1706,24 +1693,20 @@ TEST_SUITE("UnitCustomization")
         std::vector<UnitJobPurpose> savedPurposes;
         for(Uint16 gid:gids) savedPurposes.push_back(world.team->myUnits[Unit::GIDtoID(gid)]->jobPurpose);
         REQUIRE(std::count(savedPurposes.begin(),savedPurposes.end(),UnitJobPurpose::Transport)>0);
-        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
-        world.game.save(&output,false,"high unit identity continuation");
-        const std::string bytes(storage->getBuffer(),storage->getPosition());
-        std::vector<Uint32> expected;
-        for (int tick=0;tick<96;++tick) { world.game.step(0); expected.push_back(trace(world.game)); }
-        GameGUI resumed;
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
-        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-        CHECK(resumed.game.unitTypeCount()==1024);
-        for (std::size_t index=0;index<gids.size();++index) {
-            auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gids[index])]; REQUIRE(unit);
-            // Route publication can change which carrier is still assigned at
-            // this checkpoint. Loading must preserve each exact saved purpose.
-            CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==savedPurposes[index]);
-            CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
-            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==0);
-        }
-        for (int tick=0;tick<96;++tick) { resumed.game.step(0); CHECK(trace(resumed.game)==expected[tick]); }
+        const auto result=glob2test::expectContinuation(world.game,{.ticks=96,.name="high unit identity continuation",
+            .afterLoad=[&](Game&,Game& resumed) {
+                CHECK(resumed.unitTypeCount()==1024);
+                for (std::size_t index=0;index<gids.size();++index) {
+                    auto* unit=resumed.teams[0]->myUnits[Unit::GIDtoID(gids[index])]; REQUIRE(unit);
+                    // Route publication can change which carrier is still assigned at
+                    // this checkpoint. Loading must preserve each exact saved purpose.
+                    CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==savedPurposes[index]);
+                    CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
+                    CHECK(resumed.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==0);
+                }
+            }});
+        CHECK(result.matched);
+        auto& resumed=*result.loaded;
         for (int id:{35,275,1023}) {
             CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
             CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[id]==1);
@@ -1772,15 +1755,15 @@ TEST_SUITE("UnitCustomization")
         CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
         CHECK(oldUnit->foodCapacity()==150000); CHECK(changedUnit->foodCapacity()==90000);
         for (int tick=0;tick<32;++tick) { first.game.step(0); second.game.step(0); }
-        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
-        first.game.save(&output,false,"independent catalog");
-        const std::string bytes(storage->getBuffer(),storage->getPosition());
-        std::vector<Uint32> expected;
-        for (int tick=0;tick<96;++tick) { first.game.step(0); second.game.step(0); expected.push_back(trace(first.game)); }
-        GameGUI resumed;
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
-        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-        for (int tick=0;tick<96;++tick) { resumed.game.step(0); second.game.step(0); CHECK(trace(resumed.game)==expected[tick]); }
+        // The game with the altered catalog keeps stepping beside both continuations.
+        const auto result=glob2test::expectContinuation(first.game,{.ticks=96,
+            .step=[&](Game& game) {
+                game.step(0);
+                { auto random=second.game.bindRandom(); second.game.step(0); }
+                return std::vector<std::string>{};
+            },
+            .name="independent catalog"});
+        CHECK(result.matched);
         CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
     }
 
@@ -2013,20 +1996,13 @@ TEST_SUITE("UnitCustomization")
         inn->unitsWorking.push_back(unit); inn->updateCallLists();
         inn->desiredMaxUnitWorking=inn->maxUnitWorking=inn->maxUnitWorkingPreferred=1;
         for (int tick=0;tick<3;++tick) world.game.step(0);
-        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
-        world.game.save(&output,false,"fractional delivery continuation");
-        const std::string bytes(storage->getBuffer(),storage->getPosition());
-        std::vector<Uint32> expected;
-        for (int tick=0;tick<192;++tick) { world.game.step(0); expected.push_back(trace(world.game)); }
+        const auto result=glob2test::expectContinuation(world.game,{.ticks=192,.name="fractional delivery continuation"});
+        CHECK(result.matched);
         CHECK(unit->activity==Unit::ACT_RANDOM); CHECK_FALSE(unit->attachedBuilding);
         CHECK(inn->unitsWorking.empty()); CHECK(inn->material(WHEAT)==0);
         CHECK(unit->carriedPacketCount()==1); CHECK(unit->carriedPacket==MaterialPacket{1,2});
         CHECK(world.team->stats.events().materialSpillageEvents==0);
-        GameGUI resumed;
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
-        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-        for (int tick=0;tick<192;++tick) { resumed.game.step(0); CHECK(trace(resumed.game)==expected[tick]); }
-        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(copy);
+        auto* copy=result.loaded->game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(copy);
         CHECK(copy->activity==Unit::ACT_RANDOM); CHECK(copy->carriedPacket==MaterialPacket{1,2});
     }
 

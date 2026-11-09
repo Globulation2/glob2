@@ -8,6 +8,7 @@
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
+#include "Property.h"
 #include "TeamStat.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -223,31 +224,35 @@ TEST_SUITE("TeamStatsSave")
 	TEST_CASE("place lookup agrees with a brute-force scan of every building tile")
 	{
 		glob2test::HeadlessGlobals globals;
-		ThreeTeams w;
-		std::mt19937 random(1234);
-		const char *types[] = {"swarm", "inn", "hospital", "defencetower"};
-		for (int placed = 0, attempts = 0; placed < 40 && attempts < 1000; ++attempts)
+		// Each seed builds its own three-team world; 1234 is the layout this case always used.
+		glob2test::forEachSeed(3, [&](std::uint32_t seed)
 		{
-			const int team = random() % 3;
-			const char *name = types[random() % 4];
-			const int type = globalContainer->buildingsTypes.getTypeNum(name, 0, false);
-			REQUIRE(type >= 0);
-			const auto *bt = globalContainer->buildingsTypes.get(type);
-			const int x = random() % 128, y = random() % 128;
-			if (!w.game().map.isFreeForBuilding(x, y, bt->width, bt->height))
-				continue;
-			w.world.addBuilding(name, x, y, 0, team);
-			++placed;
-		}
-		sampleAll(w.game());
-		for (int i = 0; i < 4000; ++i)
-		{
-			const int x = random() % 128, y = random() % 128, team = random() % 3;
-			CAPTURE(x);
-			CAPTURE(y);
-			CAPTURE(team);
-			REQUIRE(TeamStats::placeOf(w.team(team), x, y) == referencePlace(w.game(), w.team(team), x, y));
-		}
+			ThreeTeams w;
+			std::mt19937 random(seed);
+			const char *types[] = {"swarm", "inn", "hospital", "defencetower"};
+			for (int placed = 0, attempts = 0; placed < 40 && attempts < 1000; ++attempts)
+			{
+				const int team = random() % 3;
+				const char *name = types[random() % 4];
+				const int type = globalContainer->buildingsTypes.getTypeNum(name, 0, false);
+				REQUIRE(type >= 0);
+				const auto *bt = globalContainer->buildingsTypes.get(type);
+				const int x = random() % 128, y = random() % 128;
+				if (!w.game().map.isFreeForBuilding(x, y, bt->width, bt->height))
+					continue;
+				w.world.addBuilding(name, x, y, 0, team);
+				++placed;
+			}
+			sampleAll(w.game());
+			for (int i = 0; i < 4000; ++i)
+			{
+				const int x = random() % 128, y = random() % 128, team = random() % 3;
+				CAPTURE(x);
+				CAPTURE(y);
+				CAPTURE(team);
+				REQUIRE(TeamStats::placeOf(w.team(team), x, y) == referencePlace(w.game(), w.team(team), x, y));
+			}
+		}, 1234);
 	}
 
 	TEST_CASE("combat deaths are attributed by place and assignment")
@@ -416,59 +421,63 @@ TEST_SUITE("TeamStatsSave")
 	TEST_CASE("place lookup cost against a scan of every building slot [benchmark]")
 	{
 		glob2test::HeadlessGlobals globals;
-		// Eight teams at war with each other, about a thousand buildings on 512x512.
-		glob2test::HeadlessGame world(glob2test::GameOptions{
-			.wDec = 9, .hDec = 9, .teams = 8, .clearImmobile = true, .loadDefaultRace = true});
-		Game &game = world.game;
-		for (int t = 0; t < 8; ++t)
-			game.teams[t]->enemies = 0xFFu & ~game.teams[t]->me;
-		std::mt19937 random(99);
-		int placed = 0;
-		const int inn = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
-		const auto *bt = globalContainer->buildingsTypes.get(inn);
-		for (int attempts = 0; placed < 1000 && attempts < 20000; ++attempts)
+		// One timed layout; GLOB2_SEED measures another and GLOB2_PROPERTY_ITERS several.
+		glob2test::forEachSeed(1, [&](std::uint32_t seed)
 		{
-			const int team = random() % 8;
-			// Each team builds around its own colony centre.
-			const int cx = 64 + (team % 4) * 128, cy = 128 + (team / 4) * 256;
-			const int x = (cx + int(random() % 96) - 48) & 511, y = (cy + int(random() % 96) - 48) & 511;
-			if (!game.map.isFreeForBuilding(x, y, bt->width, bt->height))
-				continue;
-			world.addBuilding("inn", x, y, 0, team);
-			++placed;
-		}
-		REQUIRE(placed == 1000);
-		sampleAll(game);
-		// The original #343 attribution: wrapped distance to every building's centre.
-		auto slotScan = [&](const Team *team, int x, int y)
-		{
-			int own = 1 << 30, enemy = 1 << 30;
-			for (int t = 0; t < game.teamsCount(); ++t)
-				for (Building *b : game.teams[t]->liveBuildings.entries())
-				{
-					if (!b || b->type->isVirtual)
-						continue;
-					const int d = game.map.warpDistMax(x, y, b->getMidX(), b->getMidY());
-					(game.teams[t] == team ? own : enemy) = std::min(game.teams[t] == team ? own : enemy, d);
-				}
-			return own <= placeRadius ? M::HOME : enemy <= placeRadius ? M::AWAY : M::FIELD;
-		};
-		std::vector<std::pair<int, int>> points;
-		for (int i = 0; i < 20000; ++i)
-			points.emplace_back(random() % 512, random() % 512);
-		auto time = [&](auto &&lookup)
-		{
-			int sink = 0;
-			const auto start = std::chrono::steady_clock::now();
-			for (const auto &[x, y] : points)
-				sink += lookup(game.teams[0], x, y);
-			const auto ns = std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
-			CHECK(sink >= 0);
-			return ns / points.size();
-		};
-		const double ring = time([](const Team *t, int x, int y) { return TeamStats::placeOf(t, x, y); });
-		const double scan = time(slotScan);
-		MESSAGE("place lookup: coverage mask " << ring << " ns/call, slot scan " << scan << " ns/call");
+			// Eight teams at war with each other, about a thousand buildings on 512x512.
+			glob2test::HeadlessGame world(glob2test::GameOptions{
+				.wDec = 9, .hDec = 9, .teams = 8, .clearImmobile = true, .loadDefaultRace = true});
+			Game &game = world.game;
+			for (int t = 0; t < 8; ++t)
+				game.teams[t]->enemies = 0xFFu & ~game.teams[t]->me;
+			std::mt19937 random(seed);
+			int placed = 0;
+			const int inn = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+			const auto *bt = globalContainer->buildingsTypes.get(inn);
+			for (int attempts = 0; placed < 1000 && attempts < 20000; ++attempts)
+			{
+				const int team = random() % 8;
+				// Each team builds around its own colony centre.
+				const int cx = 64 + (team % 4) * 128, cy = 128 + (team / 4) * 256;
+				const int x = (cx + int(random() % 96) - 48) & 511, y = (cy + int(random() % 96) - 48) & 511;
+				if (!game.map.isFreeForBuilding(x, y, bt->width, bt->height))
+					continue;
+				world.addBuilding("inn", x, y, 0, team);
+				++placed;
+			}
+			REQUIRE(placed == 1000);
+			sampleAll(game);
+			// The original #343 attribution: wrapped distance to every building's centre.
+			auto slotScan = [&](const Team *team, int x, int y)
+			{
+				int own = 1 << 30, enemy = 1 << 30;
+				for (int t = 0; t < game.teamsCount(); ++t)
+					for (Building *b : game.teams[t]->liveBuildings.entries())
+					{
+						if (!b || b->type->isVirtual)
+							continue;
+						const int d = game.map.warpDistMax(x, y, b->getMidX(), b->getMidY());
+						(game.teams[t] == team ? own : enemy) = std::min(game.teams[t] == team ? own : enemy, d);
+					}
+				return own <= placeRadius ? M::HOME : enemy <= placeRadius ? M::AWAY : M::FIELD;
+			};
+			std::vector<std::pair<int, int>> points;
+			for (int i = 0; i < 20000; ++i)
+				points.emplace_back(random() % 512, random() % 512);
+			auto time = [&](auto &&lookup)
+			{
+				int sink = 0;
+				const auto start = std::chrono::steady_clock::now();
+				for (const auto &[x, y] : points)
+					sink += lookup(game.teams[0], x, y);
+				const auto ns = std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
+				CHECK(sink >= 0);
+				return ns / points.size();
+			};
+			const double ring = time([](const Team *t, int x, int y) { return TeamStats::placeOf(t, x, y); });
+			const double scan = time(slotScan);
+			MESSAGE("place lookup: coverage mask " << ring << " ns/call, slot scan " << scan << " ns/call");
+		}, 99);
 	}
 
     TEST_CASE("defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing")

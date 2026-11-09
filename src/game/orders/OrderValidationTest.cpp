@@ -10,6 +10,7 @@
 #include "HeadlessGlobals.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "Property.h"
 
 #include <memory>
 #include <map>
@@ -306,48 +307,53 @@ TEST_SUITE("OrderValidation")
 
 	GLOB2_TEST_CASE("every order type survives random payloads through decode, check and execution", "[orders]")
 	{
-		Fixture f;
-		std::mt19937 random(1234);
-		int decoded = 0, accepted = 0;
-		for (int round = 0; round < 8000; ++round)
+		// Each seed decodes, checks and executes its own random stream on a fresh game;
+		// 1234 is the stream this case always ran.
+		glob2test::forEachSeed(3, [](std::uint32_t seed)
 		{
-			std::vector<Uint8> bytes(1 + random() % 48);
-			for (auto& b : bytes)
-				b = static_cast<Uint8>(random());
-			// Mostly real order types, with the lengths they expect now and then.
-			static const Uint8 types[] = {ORDER_CREATE, ORDER_DELETE, ORDER_CANCEL_DELETE, ORDER_CONSTRUCTION,
-			                              ORDER_CANCEL_CONSTRUCTION, ORDER_MODIFY_BUILDING, ORDER_MODIFY_EXCHANGE,
-			                              ORDER_MODIFY_SWARM, ORDER_MODIFY_FLAG, ORDER_MODIFY_CLEARING_FLAG,
-			                              ORDER_MODIFY_MIN_LEVEL_TO_FLAG, ORDER_MOVE_FLAG, ORDER_CHANGE_PRIORITY,
-			                              ORDER_ALTER_FORBIDDEN, ORDER_ALTER_GUARD_AREA, ORDER_ALTER_CLEAR_AREA,
-			                              ORDER_ALTER_FARM_AREA,
-			                              ORDER_TEXT_MESSAGE, ORDER_VOICE_DATA, ORDER_SET_ALLIANCE, ORDER_MAP_MARK,
-			                              ORDER_PAUSE_GAME, ORDER_PLAYER_QUIT_GAME, ORDER_ADJUST_LATENCY};
-			if (random() % 64)
-				bytes[0] = types[random() % (sizeof types)];
-			static const int lengths[] = {28, 2, 2, 10, 6, 4, 10, 2 + 4 * NB_UNIT_TYPE, 6, 2 + MaterialCount, 4, 11, 6};
-			if (random() % 2)
-				bytes.resize(1 + lengths[random() % (sizeof lengths / sizeof *lengths)]);
-			// Small values in the team and id fields, so some land on real teams and buildings.
-			if (bytes.size() > 4 && random() % 2)
-				bytes[1] = bytes[2] = bytes[3] = 0, bytes[4] = static_cast<Uint8>(random() % 3);
-			auto order = Order::getOrder(bytes.data(), static_cast<int>(bytes.size()), VERSION_MINOR);
-			if (!order)
-				continue;
-			++decoded;
-			const int player = static_cast<int>(random() % 2);
-			const auto result = OrderValidation::validate(f.game.game, player, *order);
-			if (result.verdict != Verdict::Accepted)
-				continue;
-			++accepted;
-			order->sender = player;
-			f.game.gui.executeOrder(order);
-			if (round % 100 == 0)
-				f.game.step();
-		}
-		CHECK(decoded > 500);
-		CHECK(accepted > 50);
-		MESSAGE(decoded << " decoded, " << accepted << " accepted and executed");
+			Fixture f;
+			std::mt19937 random(seed);
+			int decoded = 0, accepted = 0;
+			for (int round = 0; round < 8000; ++round)
+			{
+				std::vector<Uint8> bytes(1 + random() % 48);
+				for (auto& b : bytes)
+					b = static_cast<Uint8>(random());
+				// Mostly real order types, with the lengths they expect now and then.
+				static const Uint8 types[] = {ORDER_CREATE, ORDER_DELETE, ORDER_CANCEL_DELETE, ORDER_CONSTRUCTION,
+				                              ORDER_CANCEL_CONSTRUCTION, ORDER_MODIFY_BUILDING, ORDER_MODIFY_EXCHANGE,
+				                              ORDER_MODIFY_SWARM, ORDER_MODIFY_FLAG, ORDER_MODIFY_CLEARING_FLAG,
+				                              ORDER_MODIFY_MIN_LEVEL_TO_FLAG, ORDER_MOVE_FLAG, ORDER_CHANGE_PRIORITY,
+				                              ORDER_ALTER_FORBIDDEN, ORDER_ALTER_GUARD_AREA, ORDER_ALTER_CLEAR_AREA,
+				                              ORDER_ALTER_FARM_AREA,
+				                              ORDER_TEXT_MESSAGE, ORDER_VOICE_DATA, ORDER_SET_ALLIANCE, ORDER_MAP_MARK,
+				                              ORDER_PAUSE_GAME, ORDER_PLAYER_QUIT_GAME, ORDER_ADJUST_LATENCY};
+				if (random() % 64)
+					bytes[0] = types[random() % (sizeof types)];
+				static const int lengths[] = {28, 2, 2, 10, 6, 4, 10, 2 + 4 * NB_UNIT_TYPE, 6, 2 + MaterialCount, 4, 11, 6};
+				if (random() % 2)
+					bytes.resize(1 + lengths[random() % (sizeof lengths / sizeof *lengths)]);
+				// Small values in the team and id fields, so some land on real teams and buildings.
+				if (bytes.size() > 4 && random() % 2)
+					bytes[1] = bytes[2] = bytes[3] = 0, bytes[4] = static_cast<Uint8>(random() % 3);
+				auto order = Order::getOrder(bytes.data(), static_cast<int>(bytes.size()), VERSION_MINOR);
+				if (!order)
+					continue;
+				++decoded;
+				const int player = static_cast<int>(random() % 2);
+				const auto result = OrderValidation::validate(f.game.game, player, *order);
+				if (result.verdict != Verdict::Accepted)
+					continue;
+				++accepted;
+				order->sender = player;
+				f.game.gui.executeOrder(order);
+				if (round % 100 == 0)
+					f.game.step();
+			}
+			CHECK(decoded > 500);
+			CHECK(accepted > 50);
+			MESSAGE(decoded << " decoded, " << accepted << " accepted and executed");
+		}, 1234);
 	}
 
 	GLOB2_TEST_CASE("hostile orders do not stop a game that executes them unchecked", "[orders]")

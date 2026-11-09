@@ -3,6 +3,7 @@
 #include "HeadlessGlobals.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
+#include "Continuation.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
 #include "Building.h"
@@ -368,26 +369,16 @@ TEST_CASE("resource identities above byte range preserve compound stocks through
     map.setMaterialAmount(at,MaterialId::Food,0);
     map.setMaterialAmount(at,MaterialId::Wood,4);
     CHECK(map.getResource(at).amount==4);
-    auto* bytes=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(bytes);
-    original.game.save(&output,false,"Compound resource continuation");
-    output.flush();
-    auto* copy=new GAGCore::MemoryStreamBackend(*bytes);
-    copy->seekFromStart(0);
-    GAGCore::BinaryInputStream input(copy);
-    glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
-    REQUIRE(restored.game.load(&input));
-    auto& loaded=restored.game.map;
-    CHECK(loaded.resourceRegistry().digest()==map.resourceRegistry().digest());
-    CHECK(loaded.getResource(at).type==resourceIndex(id));
-    CHECK(loaded.materialStocksAt(at)==map.materialStocksAt(at));
-    CHECK(loaded.checkSum(true)==map.checkSum(true));
-    for (int tick=0;tick<32;++tick)
-    {
-        { auto random=original.game.bindRandom(); original.game.step(0); }
-        { auto random=restored.game.bindRandom(); restored.game.step(0); }
-        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-    }
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
+        .name="Compound resource continuation",
+        .afterLoad=[&](Game&,Game& restored) {
+            auto& loaded=restored.map;
+            CHECK(loaded.resourceRegistry().digest()==map.resourceRegistry().digest());
+            CHECK(loaded.getResource(at).type==resourceIndex(id));
+            CHECK(loaded.materialStocksAt(at)==map.materialStocksAt(at));
+            CHECK(loaded.checkSum(true)==map.checkSum(true));
+        }});
+    CHECK(result.matched);
 }
 
 TEST_CASE("landscape scavenge sites start full, deplete per material and vanish when empty")
@@ -461,24 +452,14 @@ TEST_CASE("a half-harvested scavenge site survives save and continues identicall
     REQUIRE(map.takeHarvest(11,12,1,0,MaterialId::Wood,1));
     CHECK(map.materialAmountAt(at,MaterialId::Wood)==3);
     CHECK(map.materialAmountAt(at,MaterialId::Metal)==2);
-    auto* bytes=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(bytes);
-    original.game.save(&output,false,"Landscape scavenge continuation");
-    output.flush();
-    auto* copy=new GAGCore::MemoryStreamBackend(*bytes);
-    copy->seekFromStart(0);
-    GAGCore::BinaryInputStream input(copy);
-    glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
-    REQUIRE(restored.game.load(&input));
-    auto& loaded=restored.game.map;
-    CHECK(loaded.getResource(at).type==resourceIndex(*ruins));
-    CHECK(loaded.materialStocksAt(at)==map.materialStocksAt(at));
-    for (int tick=0;tick<32;++tick)
-    {
-        { auto random=original.game.bindRandom(); original.game.step(0); }
-        { auto random=restored.game.bindRandom(); restored.game.step(0); }
-        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-    }
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
+        .name="Landscape scavenge continuation",
+        .afterLoad=[&](Game&,Game& restored) {
+            CHECK(restored.map.getResource(at).type==resourceIndex(*ruins));
+            CHECK(restored.map.materialStocksAt(at)==map.materialStocksAt(at));
+        }});
+    CHECK(result.matched);
+    auto& loaded=result.loaded->game.map;
     REQUIRE(loaded.takeHarvest(11,12,1,0,MaterialId::Metal,1));
     CHECK(loaded.materialAmountAt(at,MaterialId::Metal)==1);
 }
@@ -1350,22 +1331,14 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         };
         record(seed,original.game);
         for(unsigned tick=0;tick<17;++tick) { advance(original.game,tick); record(seed,original.game); }
-        auto* memory=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(memory);
-        original.game.save(&output,false,"Frozen generated resource composition"); output.flush();
-        auto* copied=new GAGCore::MemoryStreamBackend(*memory); copied->seekFromStart(0);
-        GAGCore::BinaryInputStream input(copied);
-        glob2test::HeadlessGame restored(options);
-        REQUIRE(restored.game.load(&input));
-        CHECK(restored.game.map.resourceRegistry().digest()==map.resourceRegistry().digest());
-        for(unsigned tick=17;tick<49;++tick)
-        {
-            CAPTURE(tick);
-            advance(original.game,tick); advance(restored.game,tick);
-            REQUIRE(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-            CHECK(original.game.syncRandom==restored.game.syncRandom);
-            record(seed,original.game);
-        }
+        // Both games replay the same scripted harvests on continuation ticks 17..48.
+        unsigned originalTick=17,loadedTick=17;
+        const auto result=glob2test::expectContinuation(original.game,{.ticks=32,
+            .step=[&](Game& game) { advance(game,&game==&original.game ? originalTick++ : loadedTick++); return std::vector<std::string>{}; },
+            .includeMapHeader=true,.name="Frozen generated resource composition",
+            .afterLoad=[&](Game&,Game& loaded) { CHECK(loaded.map.resourceRegistry().digest()==map.resourceRegistry().digest()); },
+            .each=[&](Game& reference,Game&,int tick) { if(tick>=0) record(seed,reference); }});
+        REQUIRE(result.matched);
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.current-format.trace",currentFormatTrace.str());
@@ -1530,7 +1503,7 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
     REQUIRE(Online::Sha256::hex(bytes)==manifest["decompressed_sha256"].get<std::string>());
     GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     legacyInput.seekFromStart(0);
-    GameGUI original(false),restored(false);
+    GameGUI original(false);
     REQUIRE(original.game.load(&legacyInput));
     REQUIRE(original.game.mapHeader.getVersionMinor()==139);
     REQUIRE(original.game.stepCounter==8193);
@@ -1546,21 +1519,14 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
                     CHECK(building->material(material)==0);
     }
     REQUIRE(pendingHarvests>0);
-    auto* memory=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(memory);
-    original.game.save(&output,false,original.game.mapHeader.getMapName()); output.flush();
-    auto* copy=new GAGCore::MemoryStreamBackend(*memory); copy->seekFromStart(0);
-    GAGCore::BinaryInputStream currentInput(copy);
-    REQUIRE(restored.game.load(&currentInput));
-    REQUIRE(restored.game.mapHeader.getVersionMinor()==VERSION_MINOR);
-    // File-format versions contribute to checksums but are not simulation state.
-    // Verify the remaining header metadata before normalizing only that boundary.
-    REQUIRE(original.game.mapHeader==restored.game.mapHeader);
-    original.game.mapHeader=restored.game.mapHeader;
-    for(unsigned tick=0;tick<32;++tick)
-    {
-        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-        original.game.step(0); restored.game.step(0);
-    }
-    CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
+        .name=original.game.mapHeader.getMapName(),
+        .afterLoad=[](Game& original,Game& restored) {
+            REQUIRE(restored.mapHeader.getVersionMinor()==VERSION_MINOR);
+            // File-format versions contribute to checksums but are not simulation state.
+            // Verify the remaining header metadata before normalizing only that boundary.
+            REQUIRE(original.mapHeader==restored.mapHeader);
+            original.mapHeader=restored.mapHeader;
+        }});
+    CHECK(result.matched);
 }

@@ -19,6 +19,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     test/support/HeadlessGlobals.cpp
     test/support/HeadlessGame.cpp
     test/support/GameFixtures.cpp
+    test/support/Continuation.cpp
     test/support/DrawFixtures.cpp
     test/support/LegacyResourceTypes.cpp
     src/tutorial/IntroductionTest.cpp

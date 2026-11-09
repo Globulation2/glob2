@@ -4,6 +4,7 @@
 #include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "Continuation.h"
 #include "DrawFixtures.h"
 #include "GradientFixture.h"
 #include "MapInternal.h"
@@ -28,39 +29,12 @@
 
 namespace
 {
-std::vector<Uint32> simulation(Game &game, bool legacy152Representation=false)
-{
-	std::vector<Uint32> state, buildings, units;
-	game.checkSum(&state, &buildings, &units, true,legacy152Representation);
-	state.erase(state.begin()); // file version changes on save, not simulation
-	state.insert(state.end(), buildings.begin(), buildings.end());
-	state.insert(state.end(), units.begin(), units.end());
-	return state;
-}
+using glob2test::simulationComponents;
 // Historical goldens compare the accepted version152 representation. Current
 // save/resume checks below continue to use complete new simulation components.
-std::vector<Uint32> historicalGoldenState(Game& game) { return simulation(game,true); }
-
-std::string save(Game &game, bool text)
-{
-	auto *backend = new GAGCore::MemoryStreamBackend;
-	std::unique_ptr<GAGCore::OutputStream> out(text
-		? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(backend))
-		: static_cast<GAGCore::OutputStream *>(new GAGCore::BinaryOutputStream(backend)));
-	game.save(out.get(), false, "Markets V2 test"); out->flush();
-	return backend->takeContents();
-}
-bool load(Game &game, const std::string &bytes, bool text)
-{
-    auto backend=std::make_unique<GAGCore::MemoryStreamBackend>();
-    backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
-    // TextInputStream parses synchronously and does not own its backend;
-    // BinaryInputStream owns and deletes the backend handed to it.
-    if(text) {
-        GAGCore::TextInputStream input(backend.get()); return game.load(&input);
-    }
-    GAGCore::BinaryInputStream input(backend.release()); return game.load(&input);
-}
+std::vector<Uint32> historicalGoldenState(Game& game) { return simulationComponents(game,true); }
+// Binary saves, or text saves to exercise the text stream format.
+std::string save(Game &game, bool text) { return glob2test::saveGameBytes(game, "Markets V2 test", text); }
 }
 
 TEST_SUITE("MarketsV2")
@@ -120,9 +94,9 @@ std::string marketTrace(bool enabled, bool report=false)
 			trace << pipeline << ' ' << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
 			if (tick==749)
 			{
-				const auto state=simulation(g);
+				const auto state=simulationComponents(g);
                 const auto checkCheckpoint=[&](const std::string& phase) {
-                    const auto actual=simulation(g);
+                    const auto actual=simulationComponents(g);
                     CAPTURE(phase); CAPTURE(pipeline);
                     REQUIRE(actual.size()==state.size());
                     for (size_t component=0;component<state.size();++component) {
@@ -134,7 +108,7 @@ std::string marketTrace(bool enabled, bool report=false)
                 checkCheckpoint("save"); // Finishing private jobs cannot publish them.
 				if (!glob2test::artifactDir().empty()) glob2test::writeFile(glob2test::artifactDir()/(pipeline ? "midgame.txt" : "midgame.bin"),bytes);
 				const auto marketId=market->gid, secondId=second->gid, innId=inn->gid;
-				REQUIRE(load(g,bytes,pipeline));
+				REQUIRE(glob2test::loadGameBytes(g,bytes,pipeline));
                 checkCheckpoint("load");
 				world.team=g.teams[0];
 				market=world.team->myBuildings[Building::GIDtoID(marketId)];
@@ -169,7 +143,7 @@ TEST_CASE("legacy workers already travelling to markets continue after migration
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.header=true});
-	REQUIRE(load(world.game,glob2test::readFile(glob2test::fixture("markets-v2/legacy-133-market.bin")),false));
+	REQUIRE(glob2test::loadGameBytes(world.game,glob2test::readFile(glob2test::fixture("markets-v2/legacy-133-market.bin"))));
 	world.team=world.game.teams[0];
 	#if VERSION_MINOR >= 135
 	CHECK_FALSE(world.game.gameHeader.hasExperiment(ExperimentId::MarketsV2));
@@ -423,9 +397,9 @@ TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 		CHECK(market->type->level==1);
 		CHECK(world.team->teamMaterials[CHERRY]==100);
 		GameGUI resumed;
-		REQUIRE(load(resumed.game,save(g,text),text));
+		REQUIRE(glob2test::loadGameBytes(resumed.game,save(g,text),text));
 		CHECK(resumed.game.gameHeader.hasExperiment(ExperimentId::MarketsV2));
-		CHECK(simulation(resumed.game)==simulation(g));
+		CHECK(simulationComponents(resumed.game)==simulationComponents(g));
 		market->cancelConstruction(1);
 		CHECK(market->typeNum==50);
 		CHECK(market->material(CHERRY)==100);

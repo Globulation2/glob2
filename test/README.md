@@ -275,7 +275,40 @@ game or GUI does not compile against them:
 - `GameFixtures.h`: helpers that drive any `Game` and need no GUI: `BoundGameRandom`,
   `stepAI`, `publishCurrentHiringSuggestions`, `discardPrematureHiringSuggestions`
   and `prepareTurretTargets`;
-- `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes.
+- `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes;
+- `Continuation.h` (engine binary only): save/load continuation checks, below.
+
+### Seeded properties and save continuations
+
+Randomized tests use `test/support/Property.h` (header-only, any binary).
+`glob2test::forEachSeed(n, [&](std::uint32_t seed) { ... }, firstSeed)` calls the body
+for `n` consecutive seeds starting at `firstSeed` (default 1); the body seeds its own
+generator from `seed`. Every failing assertion inside it names the seed and the
+setting that replays it. Two environment variables steer a run:
+
+- `GLOB2_SEED=<n>` runs only seed `n`, any value, for every `forEachSeed` in the
+  process, so pair it with a case filter:
+  `GLOB2_SEED=1235 python3 test/run_tests.py --filter 'OrderValidation/*'`;
+- `GLOB2_PROPERTY_ITERS=<k>` multiplies every seed count by `k` for a longer soak.
+
+When converting a fixed-seed loop, pass its historical seed as `firstSeed` so the
+default run still checks the sequence the test always checked.
+
+`test/support/Continuation.h` checks that a saved game continues exactly like the
+game it was saved from. `simulationComponents(game)` is `Game::checkSum`'s full
+component vector (game fields, every building, every unit; the map-header word,
+which saving rewrites, only with `includeMapHeader`). `saveGameBytes`,
+`saveGUIBytes`, `loadGameBytes` and `loadGameGUI` move a game through memory.
+`expectContinuation(game, {.ticks = n, ...})` saves the game, loads it into a fresh
+`GameGUI` and steps both in lockstep, each with its own synchronized stream bound,
+comparing components, `syncRandom` and the orders the step returns after loading
+and after every tick. The first divergence fails the test with its tick and first
+differing component, and the result returns the loaded game for further checks.
+Options cover the rest: `step` (for example `glob2test::stepAI`, which also compares
+AI decisions, or `stepEngine`), `afterLoad` for what a real loader applies after
+`Game::load` or for checks of the loaded state, `each` for test-specific comparisons
+at every tick, `gui` to save and load through `GameGUI`, and `twoLoads` to compare
+two loads of one save when loading deliberately rebuilds unsaved state.
 
 Map and unit tests that exercise `Map` without the game use the `GrassMap` pattern
 of `src/map/MapQueryTest.cpp`, which sizes the tile array directly instead of
