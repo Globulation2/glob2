@@ -169,7 +169,7 @@ static bool generate(GenerationWorld &game, GenerationContext &context)
 	// At the default amount the cut-off is 10: only the boundary tiles of a width-5 channel (23
 	// before noise) reach it, and only where the noise dips by 13 or more, so algae is a broken
 	// thread down the channel's middle. Wider channels dig deeper and grow more of it. Algae needs
-	// sand within reach to regrow, which a channel a few tiles wide always has.
+	// a coast within reach to regrow, which a channel a few tiles wide always has.
 	const int algaeDepth = int(scaledCount(10, options.algae));
 	for (int x = 0; x < game.map.getW() && options.algae > 0; ++x)
 	{

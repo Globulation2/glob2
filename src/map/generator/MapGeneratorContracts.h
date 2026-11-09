@@ -1232,7 +1232,7 @@ inline void braidedRiverContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-river"));
-	REQUIRE((definition.legacyId == 42 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 42 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("braid-width") == 40 && request.option("channels") == 6 &&
@@ -1616,7 +1616,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	REQUIRE((definition.legacyId == 60 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 60 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -3913,7 +3913,7 @@ inline void evergladesContracts()
 inline void ringWorldContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("ring-world"));
-	REQUIRE((definition.legacyId == 16 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 16 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&

@@ -142,7 +142,6 @@ export const TERRAIN_PROPERTIES: Record<string, unknown> = {
   growthQ8: 256,
   fertilityQ8: 256,
   inhibitionQ8: 0,
-  shoreSupportQ8: 256,
   farmMaterial: null,
 };
 export function namespace(pack: SetPackage) {

@@ -1211,7 +1211,7 @@ GeneratorDefinition evenGroundDefinition()
 		"even-ground",
 		60,
 		"Even Ground",
-		4,
+		5, // 5: algae now regrows near any coast, so its best-growing water moved
 		false,
 		// The sliders are the targets the solver is given, not the terrain it draws. Water share
 		// and the resource amounts are budgets it may arrange but never change; balance and

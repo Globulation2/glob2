@@ -953,7 +953,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	context.stage = "coral resources";
 	furnishPads(map, L, context);
 	stockCoral(map, L, context, o);
-	// Algae only grows in water with solid sand within reach (see algaeGrowthChance), so it is
+	// Algae only grows in water with a coast within reach (see algaeGrowthChance), so it is
 	// counted over the shallows but seeded on each colony's best-growing water, the same number of
 	// clumps in every wedge.
 	// The deep ocean takes part of the band, so the band's tiles per clump shrink with it and the
@@ -1134,8 +1134,9 @@ GeneratorDefinition coralDefinition()
 		"Coral",
 		// Revision 3: sand-ringed, resource-free expansion courts along each fan. Revision 5: the
 		// tropical reef, drawn from the terrain catalogue (paved roads, reef-flat bridges, deep
-		// ocean, lush grass and pale sand looks, no sand patches).
-		5,
+		// ocean, lush grass and pale sand looks, no sand patches). Revision 6: algae regrows near
+		// any coast now, so its best-growing water moved.
+		6,
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the

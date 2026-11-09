@@ -58,7 +58,8 @@ TEST_CASE("classic transitions vote on movement and blend ecology")
 					CHECK_EQ(p.buildable, a == GRASS && b == GRASS && c == GRASS && d == GRASS);
 					CHECK_EQ(p.fertilityQ8, water * 64);
 					CHECK_EQ(p.inhibitionQ8, sand * 64);
-					CHECK_EQ(p.shoreSupportQ8, p.inhibitionQ8);
+					// Algae regrows by any coast, beach or bare bank; sand alone is none.
+					CHECK_EQ(p.coast, water > 0 && water < 4);
 				}
 }
 
@@ -122,14 +123,13 @@ TEST_CASE("all numeric modifiers use four-corner means in every arrangement")
 	constexpr std::uint16_t growth[] = {0, 0, 512, 1024};
 	constexpr std::int16_t fertility[] = {-1024, -127, 128, 1024};
 	constexpr std::uint16_t inhibition[] = {0, 128, 768, 1024};
-	constexpr std::uint16_t shore[] = {0, 0, 256, 256};
 	for (unsigned i = 0; i < corners.size(); ++i)
 	{
 		auto& p = corners[i];
 		p.groundSpeedQ8 = groundSpeed[i]; p.airSpeedQ8 = airSpeed[i];
 		p.groundHealthQ8 = groundHealth[i]; p.airHealthQ8 = airHealth[i];
 		p.growthQ8 = growth[i]; p.fertilityQ8 = fertility[i];
-		p.inhibitionQ8 = inhibition[i]; p.shoreSupportQ8 = shore[i];
+		p.inhibitionQ8 = inhibition[i];
 		REQUIRE(validTerrainProperties(p));
 	}
 	std::array<unsigned, 4> order{0, 1, 2, 3};
@@ -144,7 +144,6 @@ TEST_CASE("all numeric modifiers use four-corner means in every arrangement")
 		CHECK_EQ(p.growthQ8, 384);
 		CHECK_EQ(p.fertilityQ8, 0);
 		CHECK_EQ(p.inhibitionQ8, 480);
-		CHECK_EQ(p.shoreSupportQ8, 128);
 		CHECK(validTerrainProperties(p));
 	} while (std::next_permutation(order.begin(), order.end()));
 }
@@ -267,7 +266,7 @@ TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed one
 	CHECK(table[shore].properties.shoreline);
 	CHECK_FALSE(table[shore].properties.buildable);
 	CHECK_EQ(table[shore].properties.inhibitionQ8, 128);
-	CHECK_EQ(table[shore].properties.shoreSupportQ8, 128);
+	CHECK_FALSE(table[shore].properties.coast); // sand meeting grass, no water
 	// Costs come from the combined rules.
 	const auto mud = table.intern(MUD, MUD, GRASS, GRASS);
 	CHECK(table[mud].ground[0].cardinal == gradient_kernel::terrainEntrySteps(combine(MUD, MUD, GRASS, GRASS), 0).cardinal);

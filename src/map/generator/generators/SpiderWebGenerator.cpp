@@ -750,7 +750,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	context.stage = "web resources";
 	furnishPads(map, L, context);
 	stockWeb(map, L, context, o);
-	// Algae only grows in water with solid sand within reach (see algaeGrowthChance), so it is
+	// Algae only grows in water with a coast within reach (see algaeGrowthChance), so it is
 	// counted over the shallows but seeded on each colony's best-growing water, the same number of
 	// clumps in every wedge.
 	// The deep cores take part of the band, so the band's tiles per clump shrink with it and the
@@ -859,8 +859,9 @@ GeneratorDefinition spiderWebDefinition()
 		20,
 		"Spider web",
 		// Revision 5: the frosted web, drawn from the terrain catalogue (paved silk, dark deep cells,
-		// moss dew drops and a hub meadow, pale beaches, no sand patches).
-		5,
+		// moss dew drops and a hub meadow, pale beaches, no sand patches). Revision 6: algae regrows
+		// near any coast now, so its best-growing water moved.
+		6,
 		false,
 		// Spokes per colony (more on a web with few colonies); the spacing between capture threads
 		// and every thread's width in tiles; how far the capture threads sag and the share of them

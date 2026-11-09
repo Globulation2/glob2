@@ -1386,7 +1386,7 @@ GeneratorDefinition centralQuarryDefinition()
 		"central-quarry",
 		56,
 		"Central Quarry",
-		3,
+		4, // 4: algae now regrows near any coast, so its best-growing water moved
 		false,
 		{GeneratorControl{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain}
 			 .withSearchRange(20, 28),

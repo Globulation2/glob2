@@ -107,13 +107,14 @@ template <class T> void property(const Json &j, const char *key, T &value, bool 
 	X(growthQ8) \
 	X(fertilityQ8) \
 	X(inhibitionQ8) \
-	X(shoreSupportQ8) \
 	X(allowedResources)
 // clang-format on
 TerrainProperties readProperties(const Json &j, TerrainProperties p, bool complete = false)
 {
 #define NAME(f) #f,
-	fields(j, {TERRAIN_FIELDS(NAME) "farmMaterial", "farmCrop"});
+	// shoreSupportQ8 is retired: algae now regrows near any coast, a derived
+	// property. Saves and sets written before still carry it; it is ignored.
+	fields(j, {TERRAIN_FIELDS(NAME) "farmMaterial", "farmCrop", "shoreSupportQ8"});
 #undef NAME
 #define READ(f) property(j, #f, p.f, complete);
 	TERRAIN_FIELDS(READ)

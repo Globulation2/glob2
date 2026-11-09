@@ -433,7 +433,6 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 							.set("growthQ8", int(p.growthQ8))
 							.set("fertilityQ8", int(p.fertilityQ8))
 							.set("inhibitionQ8", int(p.inhibitionQ8))
-							.set("shoreSupportQ8", int(p.shoreSupportQ8))
 							.set("allowedResources", resources)
 							.set("farmMaterial", p.farmMaterial == 255 ? Value() : Value(std::string(materialKey(static_cast<MaterialId>(p.farmMaterial))))));
 				}

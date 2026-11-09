@@ -355,12 +355,12 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
         CHECK(cache.aquaticField()==aquatic);
         CHECK(map.resourceGrowthRateAt(index,WHEAT)==(type==GRASS ? wheat : 0));
     }
-    // One sand corner contributes a quarter of its inhibition and shore support,
-    // so the four surrounding cells now change the cached numeric ecology inputs.
+    // One sand corner contributes a quarter of its inhibition (sand alone is no
+    // coast), so the four surrounding cells change the cached ecology inputs.
     map.setVertexTerrain(7,8,SAND);
     CHECK_FALSE(cache.validFor(map));
     CHECK(map.terrainPropertiesAt(index).inhibitionQ8==64);
-    CHECK(map.terrainPropertiesAt(index).shoreSupportQ8==64);
+    CHECK_FALSE(map.terrainPropertiesAt(index).coast);
     CHECK(map.terrainPropertiesAt(index).walkable);
     CHECK_FALSE(map.terrainPropertiesAt(index).resourcesGrow);
     CHECK_FALSE(map.terrainPropertiesAt(index).buildable);
@@ -431,7 +431,7 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
         {
         case 0: changed.fertilitySource=true; changed.fertilityQ8=-128; break;
         case 1: changed.inhibitionQ8=128; break;
-        case 2: changed.shoreSupportQ8=128; break;
+        case 2: changed.coast=true; break;
         case 3: changed.growthQ8=0; break;
         case 4: changed.growthQ8=512; break;
         }

@@ -60,7 +60,8 @@ inline constexpr auto TERRAIN_GROUPS = []
 	{
 		auto &sand = define(TerrainGroup::Sand, "sand", "[terrain group sand]", true);
 		sand.walkable = sand.shoreline = true;
-		sand.inhibitionQ8 = sand.shoreSupportQ8 = 256;
+		// Sand stops crops; algae regrowth comes from coasts, not from sand itself.
+		sand.inhibitionQ8 = 256;
 	}
 	{
 		auto &grass = define(TerrainGroup::Grass, "grass", "[terrain group grass]", true);
