@@ -1261,6 +1261,61 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .05);
 	}
 
+	TEST_CASE("Legacy GL mixed cells split between their corners until any mask lands [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
+		const auto frame = [&]
+		{
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 0, 0, true, 0);
+			return terrainPixels(true);
+		};
+		// The first frame after the tables: no mask at any density yet, and
+		// the base atlas is still empty.
+		bool ready = false;
+		for (int attempt = 0; attempt < 2000 && !ready; ++attempt)
+			ready = atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
+		REQUIRE(ready);
+		const auto pending = atlas.pendingHdMasks();
+		REQUIRE(pending > 100);
+		const auto first = frame();
+		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		{
+			atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		const auto built = frame();
+		gfx.endMapTransform();
+		// The split differs from the built masks only near the contours. Mixed
+		// cells drawn whole in their top-left material differ in about 28% of
+		// the view here; the split in about 8%.
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < built.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(built[i + k]) - int(first[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(built.size() / 4);
+		CAPTURE(pending);
+		CAPTURE(share);
+		CHECK(share < .14);
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,

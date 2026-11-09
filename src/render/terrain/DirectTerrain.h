@@ -27,7 +27,7 @@ public:
     bool failed() const;
     // Legacy GL, at every zoom: artwork near the display density and a
     // coverage mask per visible mixed cell, built in the background (a mixed
-    // cell draws its first material until its mask lands). Returns false
+    // cell draws a straight split between its corners until its mask lands). Returns false
     // until the map's per-cell tables are ready. A complete prepare (editor,
     // captures) builds the tables and every visible mask now and waits for
     // streamed HD artwork.
