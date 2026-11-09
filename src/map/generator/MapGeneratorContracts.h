@@ -4848,11 +4848,22 @@ inline void riverContracts()
 			n += abundant.map.isResource(i % 256, i / 256) && abundant.map.getResource(i % 256, i / 256).type == type;
 		return n;
 	};
+	const auto stock = [&](int type)
+	{
+		std::uint64_t total = 0;
+		for (int i = 0; i < 256 * 256; ++i)
+			if (abundant.map.isResource(i % 256, i / 256) && abundant.map.getResource(i % 256, i / 256).type == type)
+				total += abundant.map.getResource(i % 256, i / 256).amount;
+		return total;
+	};
 	const int cropsBefore = count(WHEAT) + count(WOOD), stoneBefore = count(STONE);
+	const std::uint64_t cropStockBefore = stock(WHEAT) + stock(WOOD);
 	setSyncRandSeed(4211);
-	// Full-map growth with nobody harvesting: the crops spread along the levees, every quarry keeps its
-	// stone and no rock parts the ground. (A colony may lose its building room to the crops, which the
-	// floor check reports; revision 5 did the same.)
+	// Full-map growth with nobody harvesting: every crop keeps its cell and the crops' stock grows, every
+	// quarry keeps its stone and no rock parts the ground. At the maximum amounts the crops already hold
+	// nearly all the dry fertile ground and the stone band covers the levees, so crops have nowhere new to
+	// spread; growth shows in their stock, not their count. (A colony may lose its building room to the
+	// crops, which the floor check reports; revision 5 did the same.)
 	for (int tick = 0; tick < 3072; ++tick)
 		abundant.map.growResources();
 	GenerationContext context(r);
@@ -4860,8 +4871,13 @@ inline void riverContracts()
 	if (!growthError.empty())
 		std::fprintf(stderr, "River growth: %s\n", growthError.c_str());
 	REQUIRE((growthError.empty() || growthError.find("building origins") != std::string::npos));
-	std::fprintf(stderr, "River growth: crops %d -> %d, stone %d -> %d\n", cropsBefore, count(WHEAT) + count(WOOD), stoneBefore, count(STONE));
-	REQUIRE((count(WHEAT) + count(WOOD) > cropsBefore && count(STONE) >= stoneBefore && partingBarrier(abundant.map) < 0));
+	std::fprintf(stderr, "River growth: crops %d -> %d (stock %llu -> %llu), stone %d -> %d\n", cropsBefore,
+				 count(WHEAT) + count(WOOD), (unsigned long long)cropStockBefore,
+				 (unsigned long long)(stock(WHEAT) + stock(WOOD)), stoneBefore, count(STONE));
+	REQUIRE(count(WHEAT) + count(WOOD) >= cropsBefore);
+	REQUIRE(stock(WHEAT) + stock(WOOD) > cropStockBefore);
+	REQUIRE(count(STONE) >= stoneBefore);
+	REQUIRE(partingBarrier(abundant.map) < 0);
 	puts("PASS River: envelope with pinned banks, the river's water unchanged, shallows round every deep core, "
 		 "algae reseated, levees and rock off the beach, pavement beyond the water's reach, random banks, deep "
 		 "water and bluffs switching off, bluffs that never cut ground off, stocked quarries, damage refused, "
