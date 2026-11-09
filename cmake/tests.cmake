@@ -183,6 +183,7 @@ set(GLOB2_ENGINE_TESTS_1_SOURCES
     src/map/gradient/MapGradientInvalidationTest.cpp
     src/map/gradient/DelayedGradientPublicationHarness.cpp
     src/map/gradient/GradientPreparationTest.cpp
+    src/game/ChecksumSchemeTest.cpp
     src/team/stats/TeamStatsSaveHarness.cpp
     src/online/OnlineScreenLifetimeTest.cpp
     src/render/PointBarRenderTest.cpp

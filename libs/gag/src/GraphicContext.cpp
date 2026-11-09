@@ -859,7 +859,7 @@ int GraphicContext::maximumTextureSize() const
         deviceResources.reset();
         softwareTransform = false;
 #ifdef HAVE_OPENGL
-        if (context) { releaseSurfaceTextures(); destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
+        if (context) { releaseSurfaceTextures(); destroySkinRenderer(); destroyUnitShader(); destroyCloudCover(); releaseNativeMipmaps(context); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		context = nullptr;

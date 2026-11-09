@@ -860,6 +860,7 @@ GAG_SOURCES = (
     'GraphicContextDraw.cpp',
     'GraphicContextCompound.cpp',
     'GraphicContextUnitShader.cpp',
+    'GraphicContextCloudCover.cpp',
     'GraphicContextMipmaps.cpp',
     'GraphicContextSkinMesh.cpp',
     'SkinMesh.cpp',
