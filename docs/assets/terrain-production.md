@@ -226,8 +226,9 @@ ripples of windy sand, the pavers of brick path, the stones of scree and the
 blocks of pumice and mud were all brought down to that scale. Lush and dry grass
 share the sunlit turf of grass (`turf` in the `_grass` family module) and each
 make it their own: lush grass is a deep-green clover sward with low rounded leaf
-cushions lit from the top left, and dry grass is ripe amber prairie grass with
-long combed blades, bowing in broad curved bands of bright crest and dark trough.
+cushions lit from the top left, and dry grass is late-summer prairie grass, golden
+straw with green still showing at the roots, its long combed blades bowing in
+broad curved bands of pale crest and dark trough.
 The sand looks keep the grain of the classic tile and change only its colour:
 dune and pale sand are speckled like sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
 quarter of a tile apart
