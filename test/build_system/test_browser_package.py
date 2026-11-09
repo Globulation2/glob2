@@ -18,7 +18,7 @@ spec.loader.exec_module(module)
 
 
 class BrowserPackageTests(unittest.TestCase):
-    def test_ci_artifacts_publish_music_and_launcher_runtime_closures(self):
+    def test_ci_artifacts_publish_music_video_and_launcher_runtime_closures(self):
         workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
         steps = workflow.split("\n      - ")
         shell = (module.ROOT / "platforms/web/shell.html").read_text()
@@ -30,7 +30,7 @@ class BrowserPackageTests(unittest.TestCase):
             with self.subTest(artifact=artifact):
                 self.assertEqual(len(matches), 1)
                 paths = {line.strip() for line in matches[0].splitlines()}
-                for name in (*module.MUSIC_FILES, "generator-studio.html", "loader.js",
+                for name in (*module.MUSIC_FILES, *module.ASSET_VIDEO_FILES, "generator-studio.html", "loader.js",
                              "index.data", "threaded/index.data", "script-fonts.css", "fonts/", *relative_scripts):
                     self.assertIn("build/emscripten/client/release/" + name, paths)
 
