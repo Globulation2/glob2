@@ -4,6 +4,7 @@
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
+#include "Continuation.h"
 #include <PerformanceTelemetry.h>
 #include <vector>
 #include <cmath>
@@ -190,17 +191,10 @@ static void sample(Game& game, unsigned tick)
 
 static std::unique_ptr<GameGUI> roundTrip(Game& game)
 {
-    auto* bytes = new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream writer(bytes);
-    game.save(&writer, false, "team statistics regression");
-    auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
+    const auto bytes = glob2test::saveGameBytes(game, "team statistics regression");
     if (glob2test::currentTestSuite()=="JavaScriptLifecycle")
-        glob2test::writeFile(glob2test::artifactDir()/"lifecycle.game",bytes->takeContents());
-    copy->seekFromStart(0);
-    GAGCore::BinaryInputStream reader(copy);
-    auto loaded = std::make_unique<GameGUI>();
-    require(loaded->game.load(&reader), "binary game save loads");
-    return loaded;
+        glob2test::writeFile(glob2test::artifactDir()/"lifecycle.game",bytes);
+    return glob2test::loadGameGUI(bytes);
 }
 
 class LocatedOutput : public GAGCore::BinaryOutputStream
@@ -936,67 +930,39 @@ static void aiTelemetryContinuation(const char *path)
 	GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
 	GameGUI gui;
 	require(gui.game.load(&input), "all-AI initial state loads");
-	auto step = glob2test::stepAI;
-	auto checks = [](Game &g)
-	{
-		std::vector<Uint32> c, b, u;
-		g.checkSum(&c, &b, &u, true);
-		c.erase(c.begin());
-		c.insert(c.end(), b.begin(), b.end());
-		c.insert(c.end(), u.begin(), u.end());
-		return c;
-	};
 	for (int t = 0; t < 500; ++t)
-		step(gui.game);
-	auto loaded = roundTrip(gui.game);
+		glob2test::stepAI(gui.game);
 	// Legacy controllers deliberately rebuild/reset some unsaved internal state.
-    // Compare two continuations of the same saved state, not different AI states.
-    auto reference = roundTrip(gui.game);
-    // Each game restores its own saved stream; the continuations start equal.
-    REQUIRE(loaded->game.syncRandom == reference->game.syncRandom);
-	std::vector<std::vector<Uint32>> expected;
-	std::vector<std::vector<AITelemetry::Sample>> samples;
-	for (int t = 0; t < 700; ++t)
-	{
-		step(reference->game);
-		expected.push_back(checks(reference->game));
-		std::vector<AITelemetry::Sample> row;
-		for (int p = 0; p < reference->game.gameHeader.getNumberOfPlayers(); ++p)
-			if (reference->game.players[p]->ai)
-				row.push_back(reference->game.players[p]->ai->telemetrySeries->current);
-		samples.push_back(std::move(row));
-	}
-	for (int t = 0; t < 700; ++t)
-	{
-		step(loaded->game);
-		if (checks(loaded->game) != expected[t])
+	// Compare two continuations of the same saved state, not different AI states;
+	// each game restores its own saved stream, so the continuations start equal.
+	const auto continuation = glob2test::expectContinuation(gui.game, {.ticks = 700, .step = glob2test::stepAI,
+		.twoLoads = true, .name = "team statistics regression",
+		.each = [](Game &reference, Game &loaded, int)
 		{
-			std::fprintf(stderr, "AI continuation simulation differs at tick %u\n",
-						 loaded->game.stepCounter);
-			FAIL("fatal condition in a harness helper");
-		}
-		unsigned ai = 0;
-		for (int p = 0; p < loaded->game.gameHeader.getNumberOfPlayers(); ++p)
-			if (loaded->game.players[p]->ai)
-			{
-				const auto &actual = loaded->game.players[p]->ai->telemetrySeries->current;
-				const auto &want = samples[t][ai++];
-				if (actual != want)
+			for (int p = 0; p < loaded.gameHeader.getNumberOfPlayers(); ++p)
+				if (loaded.players[p]->ai)
 				{
-					const auto &series = *loaded->game.players[p]->ai->telemetrySeries;
-					for (unsigned f = 0; f < actual.values.size(); ++f)
-						if (actual.values[f] != want.values[f])
-							std::fprintf(stderr, "AI %d telemetry %s differs at tick %u\n",
-										 series.implementation, series.fields[f].name.c_str(),
-										 actual.tick);
-					FAIL("fatal condition in a harness helper");
+					const auto &actual = loaded.players[p]->ai->telemetrySeries->current;
+					const auto &want = reference.players[p]->ai->telemetrySeries->current;
+					if (actual != want)
+					{
+						const auto &series = *loaded.players[p]->ai->telemetrySeries;
+						for (unsigned f = 0; f < actual.values.size(); ++f)
+							if (actual.values[f] != want.values[f])
+								std::fprintf(stderr, "AI %d telemetry %s differs at tick %u\n",
+											 series.implementation, series.fields[f].name.c_str(),
+											 actual.tick);
+						FAIL("fatal condition in a harness helper");
+					}
 				}
-			}
-	}
-	for (int p = 0; p < reference->game.gameHeader.getNumberOfPlayers(); ++p)
-		if (reference->game.players[p]->ai)
-			require(reference->game.players[p]->ai->telemetrySeries->history ==
-						loaded->game.players[p]->ai->telemetrySeries->history,
+		}});
+	REQUIRE(continuation.matched);
+	auto &reference = *continuation.reference;
+	auto &loaded = *continuation.loaded;
+	for (int p = 0; p < reference.game.gameHeader.getNumberOfPlayers(); ++p)
+		if (reference.game.players[p]->ai)
+			require(reference.game.players[p]->ai->telemetrySeries->history ==
+						loaded.game.players[p]->ai->telemetrySeries->history,
 					"all-AI sampled history continues across saves");
 	std::puts("PASS all-AI repeated load continuation: 700 ticks of simulation components, current telemetry and "
 			  "retained history");
@@ -1442,41 +1408,39 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE(stats.aiTelemetry[0]->active);
         // Admit the initial completed boundary before counting subsequent ticks.
         world.game.observeCompletedWorld();
-        auto restored=roundTrip(world.game);
-        CHECK(stats.aiTelemetry.size()==1);
-        CHECK_FALSE(stats.aiTelemetry[0]->active);
-        for(const auto& row:stats.stats) CHECK(row.rangedUnits==row.numberUnitPerType[EXPLORER]);
-        // Game::save captures AI telemetry and marks the retained source AI
-        // inactive in this smaller continuation world. Compare the complete
-        // state after that real save lifecycle, including its telemetry field.
-        const auto migrated=wire(stats);
-        REQUIRE(wire(restored->game.teams[0]->stats)==migrated);
-        const auto components=[](Game& game) {
-            std::vector<Uint32> state,buildings,units;
-            game.checkSum(&state,&buildings,&units,true);
-            state.insert(state.end(),buildings.begin(),buildings.end());
-            state.insert(state.end(),units.begin(),units.end());
-            return state;
-        };
-        REQUIRE(components(restored->game)==components(world.game));
-        // Establish the initial completed boundary before counting future samples.
-        world.game.observeCompletedWorld();
-        restored->game.observeCompletedWorld();
-        REQUIRE(components(restored->game)==components(world.game));
-        const auto phase=stats.smoothedIndex;
-        const auto index=stats.statsIndex;
-        for(int tick=1;tick<=32;++tick) {
-            world.game.step(0); restored->game.step(0);
-            world.game.observeCompletedWorld(); restored->game.observeCompletedWorld();
-            CHECK(components(restored->game)==components(world.game));
-            CHECK(wire(restored->game.teams[0]->stats)==wire(stats));
-            CHECK(restored->game.syncRandom==world.game.syncRandom);
-            if(tick<32-phase) CHECK(stats.statsIndex==index);
-            if(tick==32-phase) {
-                CHECK(stats.statsIndex==(index+1)%TeamStats::STATS_SIZE);
-                CHECK(stats.getLatestStat()->rangedUnits==1);
-            }
-        }
+        const auto components=[](Game& game) { return glob2test::simulationComponents(game,false,true); };
+        decltype(stats.smoothedIndex) phase{};
+        decltype(stats.statsIndex) index{};
+        const auto continuation=glob2test::expectContinuation(world.game,{.ticks=32,
+            .step=[](Game& game) { game.step(0); game.observeCompletedWorld(); return std::vector<std::string>{}; },
+            .includeMapHeader=true,.name="team statistics regression",
+            .afterLoad=[&](Game& original,Game& restored) {
+                CHECK(stats.aiTelemetry.size()==1);
+                CHECK_FALSE(stats.aiTelemetry[0]->active);
+                for(const auto& row:stats.stats) CHECK(row.rangedUnits==row.numberUnitPerType[EXPLORER]);
+                // Game::save captures AI telemetry and marks the retained source AI
+                // inactive in this smaller continuation world. Compare the complete
+                // state after that real save lifecycle, including its telemetry field.
+                REQUIRE(wire(restored.teams[0]->stats)==wire(stats));
+                REQUIRE(components(restored)==components(original));
+                // Establish the initial completed boundary before counting future samples;
+                // the continuation compares both games again after this.
+                original.observeCompletedWorld();
+                restored.observeCompletedWorld();
+                phase=stats.smoothedIndex;
+                index=stats.statsIndex;
+            },
+            .each=[&](Game&,Game& restored,int step) {
+                if(step<0) return;
+                const int tick=step+1;
+                CHECK(wire(restored.teams[0]->stats)==wire(stats));
+                if(tick<32-phase) CHECK(stats.statsIndex==index);
+                if(tick==32-phase) {
+                    CHECK(stats.statsIndex==(index+1)%TeamStats::STATS_SIZE);
+                    CHECK(stats.getLatestStat()->rangedUnits==1);
+                }
+            }});
+        REQUIRE(continuation.matched);
         auto repeated=roundTrip(world.game);
         CHECK(wire(repeated->game.teams[0]->stats)==wire(stats));
         CHECK(components(repeated->game)==components(world.game));

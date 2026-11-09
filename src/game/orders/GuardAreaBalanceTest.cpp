@@ -20,6 +20,7 @@
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "Continuation.h"
 #include "GradientFixture.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"
@@ -27,8 +28,6 @@
 #include "Order.h"
 #include "UnitConsts.h"
 #include "map/gradient/SnapshotGradient.h"
-#include <BinaryStream.h>
-#include <StreamBackend.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
@@ -40,8 +39,6 @@
 #include <vector>
 #include "Unit.h"
 #include "Building.h"
-
-using namespace GAGCore;
 
 namespace
 {
@@ -63,17 +60,6 @@ namespace
 		int half;        // painted box is (2*half+1) square
 		int countRadius; // warriors within this many tiles count as "at" the zone
 	};
-
-	// Simulation checksum of everything that matters, for continuation checks.
-	std::vector<Uint32> simulationState(Game& game, bool legacy152=false)
-	{
-		std::vector<Uint32> result, buildings, units;
-		game.checkSum(&result, &buildings, &units, true, legacy152);
-		result.erase(result.begin()); // the save path upgrades the map format header
-		result.insert(result.end(), buildings.begin(), buildings.end());
-		result.insert(result.end(), units.begin(), units.end());
-		return result;
-	}
 
 	// Steps a game, keeping every warrior fed so the scenarios stay about
 	// guarding rather than eating. Optional movement counts are simulation data;
@@ -493,37 +479,16 @@ namespace
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(1500);
 
-		auto* backend = new MemoryStreamBackend();
-		BinaryOutputStream output(backend);
-		world.headless.gui.save(&output, "guard continuation");
-		const std::string bytes(backend->getBuffer(), backend->getPosition());
-
-		std::vector<std::vector<Uint32>> continuation;
-		for (int i = 0; i < 1000; ++i)
-		{
-			world.run(1);
-			continuation.push_back(simulationState(world.game));
-		}
-
-		GameGUI restored(false);
-		auto* source = new MemoryStreamBackend(bytes.data(), bytes.size());
-		source->seekFromStart(0);
-		BinaryInputStream input(source);
-		REQUIRE(restored.load(&input));
-		REQUIRE(restored.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
-		// Mirrors GameGUI::loadFromHeaders, which applies the player header after Game::load.
-		restored.game.setGameHeader(world.game.gameHeader, true);
-		Team* restoredTeam = restored.game.teams[0];
-		for (int i = 0; i < 1000; ++i)
-		{
-			stepGame(restored.game, restoredTeam, 1);
-			const auto actual = simulationState(restored.game);
-			if (actual != continuation[i])
-			{
-				std::fprintf(stderr, "continuation mismatch at step %d after loading (sizes %zu/%zu)\n", i, actual.size(), continuation[i].size());
-				REQUIRE_MESSAGE(false, "the loaded game continues identically");
-			}
-		}
+		// Saved and loaded through GameGUI, as a player's save is.
+		const auto result = glob2test::expectContinuation(world.game, {.ticks = 1000,
+			.step = [](Game& game) { stepGame(game, game.teams[0], 1); return std::vector<std::string>{}; },
+			.gui = &world.headless.gui, .name = "guard continuation",
+			.afterLoad = [](Game& original, Game& loaded) {
+				REQUIRE(loaded.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
+				// Mirrors GameGUI::loadFromHeaders, which applies the player header after Game::load.
+				loaded.setGameHeader(original.gameHeader, true);
+			}});
+		REQUIRE_MESSAGE(result.matched, "the loaded game continues identically");
 		std::printf("[saveload] near %d  far %d after 2500 ticks, 1000 of them after a load\n",
 			world.countNear(NEAR_AREA), world.countNear(FAR_AREA));
 	}
@@ -544,7 +509,7 @@ namespace
 			if (tick)
 				world.run(100);
 			Uint32 hash = 2166136261u; // FNV-1a over every checksum word
-			for (Uint32 word : simulationState(world.game, true))
+			for (Uint32 word : glob2test::simulationComponents(world.game, true))
 			{
 				hash ^= word;
 				hash *= 16777619u;

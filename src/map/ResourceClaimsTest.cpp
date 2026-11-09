@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "Property.h"
 #include "ResourceClaims.h"
 #include <map>
 #include <random>
@@ -31,29 +32,31 @@ TEST_SUITE("ResourceClaims")
     }
     TEST_CASE("reverse indexes match independent owner records through randomized mutations")
     {
-        ResourceClaims::Ledger ledger;ledger.reset(8);
-        std::map<ResourceClaims::Owner,ResourceClaims::Claim> expected;
-        std::mt19937 random(192771);
-        for (unsigned step=0;step<2000;++step) {
-            const ResourceClaims::Owner owner=random()%80;
-            if (random()%4==0) { ledger.release(owner);expected.erase(owner); }
-            else {
-                const ResourceClaims::Claim claim{std::uint32_t(random()%8),std::uint32_t(random()%8),std::uint8_t(random()%3),std::uint16_t(random()%12),bool(random()%2)};
-                if (random()%3==0) {
-                    if (ledger.acquire(owner,claim,3,false)) expected[owner]=claim;
-                } else { ledger.record(owner,claim);expected[owner]=claim; }
-            }
-            for (unsigned tile=0;tile<8;++tile) {
-                std::vector<ResourceClaims::Owner> sources,accesses;
-                for (const auto& [id,claim]:expected) {
-                    if (claim.source==tile)sources.push_back(id);
-                    if (claim.access==tile)accesses.push_back(id);
+        glob2test::forEachSeed(8, [](std::uint32_t seed) {
+            ResourceClaims::Ledger ledger;ledger.reset(8);
+            std::map<ResourceClaims::Owner,ResourceClaims::Claim> expected;
+            std::mt19937 random(seed);
+            for (unsigned step=0;step<2000;++step) {
+                const ResourceClaims::Owner owner=random()%80;
+                if (random()%4==0) { ledger.release(owner);expected.erase(owner); }
+                else {
+                    const ResourceClaims::Claim claim{std::uint32_t(random()%8),std::uint32_t(random()%8),std::uint8_t(random()%3),std::uint16_t(random()%12),bool(random()%2)};
+                    if (random()%3==0) {
+                        if (ledger.acquire(owner,claim,3,false)) expected[owner]=claim;
+                    } else { ledger.record(owner,claim);expected[owner]=claim; }
                 }
-                CHECK(ledger.ownersAtSource(tile)==sources);
-                CHECK(ledger.ownersAtAccess(tile)==accesses);
-                CHECK(ledger.ownersAtSource(tile).size()==sources.size());
+                for (unsigned tile=0;tile<8;++tile) {
+                    std::vector<ResourceClaims::Owner> sources,accesses;
+                    for (const auto& [id,claim]:expected) {
+                        if (claim.source==tile)sources.push_back(id);
+                        if (claim.access==tile)accesses.push_back(id);
+                    }
+                    CHECK(ledger.ownersAtSource(tile)==sources);
+                    CHECK(ledger.ownersAtAccess(tile)==accesses);
+                    CHECK(ledger.ownersAtSource(tile).size()==sources.size());
+                }
             }
-        }
+        }, 192771);
     }
 
     TEST_CASE("mixed farm reserves retain the maximum floor across owner transfers")
@@ -83,22 +86,24 @@ TEST_SUITE("ResourceClaims")
     }
     TEST_CASE("reserve availability agrees with independent remaining-owner capacity oracle")
     {
-        ResourceClaims::Ledger ledger;ledger.reset(4);
-        std::map<ResourceClaims::Owner,ResourceClaims::Claim> expected;std::mt19937 random(88117);
-        for(unsigned step=0;step<2500;++step) {
-            const ResourceClaims::Owner owner=random()%32;
-            if (random()%4==0) {ledger.release(owner);expected.erase(owner);continue;}
-            const ResourceClaims::Claim claim{std::uint32_t(random()%4),std::uint32_t(random()%4),std::uint8_t(random()%3),0,false,std::uint16_t(random()%5)};
-            const unsigned physical=random()%12,capacity=physical>claim.reserve?physical-claim.reserve:0;
-            unsigned count=0,floor=claim.reserve;
-            for (const auto& [other,held]:expected)if(other!=owner && held.source==claim.source && held.material==claim.material) {
-                ++count;floor=std::max(floor,unsigned(held.reserve));
+        glob2test::forEachSeed(8, [](std::uint32_t seed) {
+            ResourceClaims::Ledger ledger;ledger.reset(4);
+            std::map<ResourceClaims::Owner,ResourceClaims::Claim> expected;std::mt19937 random(seed);
+            for(unsigned step=0;step<2500;++step) {
+                const ResourceClaims::Owner owner=random()%32;
+                if (random()%4==0) {ledger.release(owner);expected.erase(owner);continue;}
+                const ResourceClaims::Claim claim{std::uint32_t(random()%4),std::uint32_t(random()%4),std::uint8_t(random()%3),0,false,std::uint16_t(random()%5)};
+                const unsigned physical=random()%12,capacity=physical>claim.reserve?physical-claim.reserve:0;
+                unsigned count=0,floor=claim.reserve;
+                for (const auto& [other,held]:expected)if(other!=owner && held.source==claim.source && held.material==claim.material) {
+                    ++count;floor=std::max(floor,unsigned(held.reserve));
+                }
+                const bool possible=physical>=floor && count+1<=physical-floor;
+                CHECK(ledger.available(owner,claim,capacity)==possible);
+                CHECK(ledger.acquire(owner,claim,capacity,false)==possible);
+                if(possible)expected[owner]=claim;
             }
-            const bool possible=physical>=floor && count+1<=physical-floor;
-            CHECK(ledger.available(owner,claim,capacity)==possible);
-            CHECK(ledger.acquire(owner,claim,capacity,false)==possible);
-            if(possible)expected[owner]=claim;
-        }
+        }, 88117);
     }
 
     TEST_CASE("owner keys distinguish equal generations in different slots and slot reuse")
