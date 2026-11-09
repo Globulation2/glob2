@@ -73,6 +73,8 @@ function __glob2_path
         set path 'map generate'
       case 'map|study'
         set path 'map study'
+      case 'map|study-worker'
+        set path 'map study-worker'
       case 'map|generators'
         set path 'map generators'
       case 'map|preview'
@@ -115,7 +117,7 @@ complete -c glob2 -n "__glob2_at 'assets'" -f -a 'compose-buildings render-skin 
 complete -c glob2 -n "__glob2_at 'dev'" -f -a 'random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker'
 complete -c glob2 -n "__glob2_at 'game'" -f -a 'migrate run repeat'
 complete -c glob2 -n "__glob2_at 'info'" -f -a 'version sim-version catalog paths'
-complete -c glob2 -n "__glob2_at 'map'" -f -a 'generate study generators preview render import-image export-image inspect-package validate-set'
+complete -c glob2 -n "__glob2_at 'map'" -f -a 'generate study study-worker generators preview render import-image export-image inspect-package validate-set'
 complete -c glob2 -n "__glob2_at 'match'" -f -a 'verify'
 complete -c glob2 -n "__glob2_at 'online'" -f -a 'join play-map host-map turn-client'
 complete -c glob2 -n "__glob2_at 'script'" -f -a 'check attach'
@@ -193,6 +195,7 @@ complete -c glob2 -n "__glob2_at 'map generate'" -l scenario -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l scenario-config -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l map-image -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l export-generator-package -r
+complete -c glob2 -n "__glob2_at 'map generate'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l help
 complete -c glob2 -n "__glob2_at 'map study'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map study'" -l profile -r
@@ -207,7 +210,12 @@ complete -c glob2 -n "__glob2_at 'map study'" -l write-map
 complete -c glob2 -n "__glob2_at 'map study'" -l report -r -f -a 'headroom diagnostics timing terrain'
 complete -c glob2 -n "__glob2_at 'map study'" -l perturb -r
 complete -c glob2 -n "__glob2_at 'map study'" -l building-artwork -r
+complete -c glob2 -n "__glob2_at 'map study'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'map study'" -l help
+complete -c glob2 -n "__glob2_at 'map study-worker'" -l data-dir -r -f -a '(__fish_complete_directories)'
+complete -c glob2 -n "__glob2_at 'map study-worker'" -l generator-package -r
+complete -c glob2 -n "__glob2_at 'map study-worker'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'map study-worker'" -l help
 complete -c glob2 -n "__glob2_at 'map generators'" -l format -r -f -a 'text json'
 complete -c glob2 -n "__glob2_at 'map generators'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map generators'" -l generator-package -r
@@ -219,6 +227,7 @@ complete -c glob2 -n "__glob2_at 'map preview'" -l report-file -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l preview -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l preview-size -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l preview-scale -r -f -a '2 4 8'
+complete -c glob2 -n "__glob2_at 'map preview'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l help
 complete -c glob2 -n "__glob2_at 'map render'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map render'" -l generator-package -r
@@ -226,6 +235,7 @@ complete -c glob2 -n "__glob2_at 'map render'" -l output -r
 complete -c glob2 -n "__glob2_at 'map render'" -l render-max-pixels -r
 complete -c glob2 -n "__glob2_at 'map render'" -l render-field -r
 complete -c glob2 -n "__glob2_at 'map render'" -l field-color -r
+complete -c glob2 -n "__glob2_at 'map render'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'map render'" -l help
 complete -c glob2 -n "__glob2_at 'map import-image'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l set -r

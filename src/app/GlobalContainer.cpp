@@ -500,7 +500,15 @@ void GlobalContainer::loadOffscreenGraphics()
 {
 	if (!gfx) gfx = Toolkit::initGraphic(640, 480, 0, "Glob2 export", "glob2");
 	if (!standardFont || !littleFont) loadGameFonts();
-	if (!gameGraphics) loadGameGraphics(false);
+	if (!gameGraphics)
+	{
+		// Queue every sprite before waiting on any, as ensureGameGraphics does, so the
+		// asset loader decodes them in parallel; loadGameGraphics then finds each ready.
+		requestGameGraphics();
+		while (!Toolkit::pollAssets(4))
+			SDL_Delay(1);
+		loadGameGraphics(false);
+	}
 }
 
 TerrainVisual::Compositor &GlobalContainer::terrainCompositor()

@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Room.h"
+#include <stdexcept>
 #include "GenerationWorld.h"
 namespace MapGeneration
 {
@@ -20,9 +21,66 @@ std::vector<unsigned char> buildableTiles(const GenerationMap &map)
 	return open;
 }
 
+namespace
+{
+// For a circular line of `n` cells, how many cells from each one onwards (wrapping, as often as
+// needed) satisfy `ok`, capped at `cap`: one backward pass from an unsatisfied cell, where the
+// count restarts at zero, instead of rescanning up to `cap` cells from every cell.
+template <class Ok, class Store>
+void cappedRuns(int n, int cap, Ok &&ok, Store &&store)
+{
+	int blocked = -1;
+	for (int i = n - 1; i >= 0 && blocked < 0; --i)
+		if (!ok(i))
+			blocked = i;
+	if (blocked < 0)
+	{
+		// Every cell satisfies it, so every run wraps round until it reaches the cap.
+		for (int i = 0; i < n; ++i)
+			store(i, cap);
+		return;
+	}
+	int run = 0;
+	for (int k = 0; k < n; ++k)
+	{
+		const int i = (blocked - k + n) % n;
+		run = ok(i) ? std::min(cap, run + 1) : 0;
+		store(i, run);
+	}
+}
+
+// buildAnchors for native generation (no work budget): the same anchors in linear time.
+std::vector<unsigned char> linearAnchors(const Torus &t, const std::vector<unsigned char> &buildable,
+										 int size)
+{
+	const int n = t.size();
+	if (buildable.size() < size_t(n))
+		throw std::out_of_range("building mask smaller than the map");
+	std::vector<int> run(size_t(n), 0);
+	for (int y = 0; y < t.h; ++y)
+	{
+		const size_t row = size_t(y) * t.w;
+		cappedRuns(t.w, std::max(size, 0), [&](int x) { return buildable[row + x] != 0; },
+				   [&](int x, int value) { run[row + x] = value; });
+	}
+	std::vector<unsigned char> anchors(size_t(n), 0);
+	if (size <= 0)
+	{
+		std::fill(anchors.begin(), anchors.end(), 1);
+		return anchors;
+	}
+	for (int x = 0; x < t.w; ++x)
+		cappedRuns(t.h, size, [&](int y) { return run[size_t(y) * t.w + x] >= size; },
+				   [&](int y, int value) { anchors[size_t(y) * t.w + x] = value >= size; });
+	return anchors;
+}
+} // namespace
+
 std::vector<unsigned char> buildAnchors(const Torus &t, const std::vector<unsigned char> &buildable,
 										int size)
 {
+	if (!generationWorkActive())
+		return linearAnchors(t, buildable, size);
 	// Rows first: how many buildable tiles run rightwards from each tile (capped at size), then
 	// whether `size` rows below each tile all run that far.
 	const int n = t.size();

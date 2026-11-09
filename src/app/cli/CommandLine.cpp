@@ -453,6 +453,7 @@ const std::vector<Command> &commands()
 					 value("--map-image", "file", "Export categorical terrain PNG"),
 					 value("--export-generator-package", "file",
 						   "Export selected custom generator package")});
+		gen.push_back(compute());
 		add("map generate", "Generate a map at one exact seed", {"GENERATOR"}, 1, gen,
 			"Requested .map.gz, overview PNG, categorical PNG and JSON report",
 			{"glob2 map generate river --seed 713 --width 128 --height 128 --teams 2 --output "
@@ -474,9 +475,18 @@ const std::vector<Command> &commands()
 							  {"headroom", "diagnostics", "timing", "terrain"}, "", true),
 					   value("--perturb", "string", "Study perturbation specification", "", true),
 					   value("--building-artwork", "file", "Building artwork bundle")});
+		study.push_back(compute());
 		add("map study", "Run a structured map-generation study", {"GENERATOR"}, 1, study,
 			"result.json, progress.json, artifacts.json; optional maps and reports",
 			{"glob2 map study river --seed 713 --write-map --output-dir artifacts/study"});
+		auto worker = assets();
+		worker.push_back(compute());
+		add("map study-worker", "Run map studies read from stdin in one process", {}, 0, worker,
+			"For each stdin line (a JSON array of map study arguments), that study's output "
+			"directory, then a line \"glob2-study-worker done CODE\"",
+			{"echo '[\"map\",\"study\",\"river\",\"--output-dir\",\"artifacts/s1\"]' | glob2 map study-worker"})
+			.constraints = {"Each line runs map study exactly as that command line would, in this process",
+							"Generator packages are loaded once, from the worker's own options"};
 		add("map generators", "List generators or inspect controls", {"GENERATOR"}, 0,
 			{format(), assets()[0], assets()[1]},
 			"Generator IDs, defaults and allowed control values", {"glob2 map generators river"});
@@ -484,6 +494,7 @@ const std::vector<Command> &commands()
 		append(image, {value("--output", "file", "PNG output"),
 					   value("--report-file", "file", "Map analysis JSON report")});
 		append(image, preview());
+		image.push_back(compute());
 		add("map preview", "Preview a map or save without stepping simulation", {"FILE"}, 1, image,
 			"Overview PNG and/or map report",
 			{"glob2 map preview maps/FourSquares1.map.gz --output artifacts/map.png"});
@@ -493,6 +504,7 @@ const std::vector<Command> &commands()
 								MapRender::MaximumPixels, std::to_string(MapRender::DefaultPixels)),
 						value("--render-field", "file", "Diagnostic field overlay"),
 						value("--field-color", "string", "Field color as r,g,b")});
+		render.push_back(compute());
 		add("map render", "Render the complete game view", {"FILE"}, 1, render,
 			"PNG; requires installed game graphics");
 		auto importing = mapSettings();

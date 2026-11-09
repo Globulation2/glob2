@@ -7,12 +7,14 @@ import argparse, sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
-from tools.map_generation_study import load_catalog, generator_definition, generate_map
+from tools.map_generation_study import (load_catalog, generator_definition, generate_map, default_binary,
+                                        default_jobs, child_threads)
 
 
 def run(job):
     result = generate_map(job['binary'], job['method'], job['seed'], job['w'], job['h'],
-                          job['teams'], {job['control']: job['value']}, job['timeout'])
+                          job['teams'], {job['control']: job['value']}, job['timeout'],
+                          compute_threads=job['threads'])
     row = dict(job, ok=result['category'] == 'completed', category=result['category'],
                detail=result['detail'])
     if row['ok']:
@@ -31,17 +33,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('gen'); ap.add_argument('control'); ap.add_argument('values')
     ap.add_argument('--seeds', type=int, default=40)
-    ap.add_argument('--binary', default='build/src/glob2')
-    ap.add_argument('--jobs', type=int, default=16)
+    ap.add_argument('--binary', help='native client (default: the newest build, perf builds included)')
+    ap.add_argument('--jobs', type=int, help='concurrent maps (default: one per logical CPU)')
     ap.add_argument('--w', type=int, default=256)
     ap.add_argument('--h', type=int, default=256)
     ap.add_argument('--teams', type=int, default=4)
     ap.add_argument('--timeout', type=float, default=120)
     a = ap.parse_args()
+    a.binary = a.binary or default_binary()
+    a.jobs = a.jobs or default_jobs()
     definition = generator_definition(load_catalog(a.binary), a.gen)
     values = [int(v) for v in a.values.split(',')]
     jobs = [dict(binary=a.binary, gen=a.gen, method=definition['method'], timeout=a.timeout, control=a.control, value=v, seed=s,
-                 w=a.w, h=a.h, teams=a.teams)
+                 w=a.w, h=a.h, teams=a.teams, threads=child_threads(a.jobs))
             for v in values for s in range(1, a.seeds + 1)]
     with ThreadPoolExecutor(a.jobs) as pool:
         rows = list(pool.map(run, jobs))

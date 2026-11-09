@@ -13,7 +13,8 @@ each control's extremes on a small, a large and a rectangular map. `random` roll
 shapes and the colony counts given by --teams. `report` prints, per control, the mean of every metric
 at every value, flags DEAD STEPS (adjacent values whose maps measure the same), groups refusals by
 message, and gives each control's correlation with every metric over the random rolls. About 1,000
-maps a minute on eight cores. Copy the binary first (`--binary`) if you will rebuild while it runs.
+maps a minute on eight cores with a perf build (`python3 tools/dev_build.py perf=1`), which it
+prefers when it is the newest build. Copy the binary first (`--binary`) if you will rebuild while it runs.
 
 The default --domain search samples registered playable search envelopes; --domain legal
 retains the full experimental domains for compatibility and extreme-value studies.
@@ -25,7 +26,8 @@ control a telemetry measure of what it places and the report shows whether it mo
 import argparse, collections, hashlib, json, math, os, random, re, statistics as st, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
-from tools.map_generation_study import load_catalog, generator_definition, generate_map, report_metrics
+from tools.map_generation_study import (load_catalog, generator_definition, generate_map, report_metrics,
+                                        default_binary, default_jobs, child_threads)
 from concurrent.futures import ThreadPoolExecutor
 
 def controls(binary, generator, catalog=None, domain="legal"):
@@ -36,7 +38,8 @@ def controls(binary, generator, catalog=None, domain="legal"):
 
 def run(job):
     result = generate_map(job['binary'], job['method'], job['seed'], job['w'], job['h'],
-                          job['teams'], job['set'], job.get('timeout', 120))
+                          job['teams'], job['set'], job.get('timeout', 120),
+                          compute_threads=job.get('threads'))
     row = {k: job[k] for k in ('study', 'control', 'value', 'seed', 'w', 'h', 'teams', 'set')}
     row.update(schema_version=2, generator=job['generator'], seconds=result['seconds'],
                ok=result['category'] == 'completed', category=result['category'],
@@ -55,13 +58,17 @@ def run(job):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('generator'); ap.add_argument('what', choices=['ablation', 'random', 'report'])
-    ap.add_argument('--out', required=True); ap.add_argument('--binary', default='build/src/glob2')
-    ap.add_argument('--jobs', type=int, default=8); ap.add_argument('--seeds', type=int, default=8)
+    ap.add_argument('--out', required=True)
+    ap.add_argument('--binary', help='native client (default: the newest build, perf builds included)')
+    ap.add_argument('--jobs', type=int, help='concurrent maps (default: one per logical CPU)')
+    ap.add_argument('--seeds', type=int, default=8)
     ap.add_argument('--domain', choices=['search', 'legal'], default='search',
                     help='Search envelopes for playable rolls; legal for experimental extremes')
     ap.add_argument('--timeout', type=float, default=120)
     ap.add_argument('--count', type=int, default=2000); ap.add_argument('--teams', default='2-8')
     a = ap.parse_args()
+    a.binary = a.binary or default_binary()
+    a.jobs = a.jobs or default_jobs()
     os.makedirs(a.out, exist_ok=True)
     catalog = load_catalog(a.binary)
     definition = generator_definition(catalog, a.generator)
@@ -71,7 +78,8 @@ def main():
     lo, hi = (int(x) for x in a.teams.split('-'))
     if a.count < 0 or a.seeds < 1 or a.jobs < 1 or a.timeout <= 0 or not 1 <= lo <= hi:
         ap.error('Use positive seeds/jobs/timeout, a nonnegative count, and an ordered colony range')
-    base = dict(binary=a.binary, generator=definition['id'], method=definition['method'], timeout=a.timeout)
+    base = dict(binary=a.binary, generator=definition['id'], method=definition['method'], timeout=a.timeout,
+                threads=child_threads(a.jobs))
     jobs = []
     if a.what == 'ablation':
         for seed in range(1, a.seeds + 1):
@@ -96,6 +104,8 @@ def main():
                     binary=str(Path(a.binary).resolve()),
                     binary_sha256=hashlib.sha256(Path(a.binary).read_bytes()).hexdigest())
     Path(a.out, a.what + '-metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
+    # Largest maps first, so the slowest generations do not trail at the end of the run.
+    jobs.sort(key=lambda job: -job['w'] * job['h'])
     start = time.monotonic()
     with ThreadPoolExecutor(a.jobs) as pool, open(os.path.join(a.out, a.what + '.jsonl'), 'w') as f:
         for row in pool.map(run, jobs):

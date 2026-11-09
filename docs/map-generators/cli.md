@@ -94,6 +94,24 @@ Seam repair is enabled by default. Use `--image-seam-width 0` when the decoded
 geography must remain unstitched; mandatory terrain legality and colony
 initialization still apply.
 
+## Use every core, and many maps in one process
+
+The `map` commands use the whole machine inside one request: `map study
+--candidates N` generates its candidates in parallel and chooses exactly as a
+serial search would, the JSON report measures its three movement models and each
+colony in parallel, and `map render` composes terrain on every core.
+`--compute-threads N` caps the threads one `map` command uses (`1` keeps it on its
+own core); a runner that already starts one process per CPU should pass each its
+share. Results never depend on the width.
+
+`map study-worker` runs many studies in one process: each stdin line is a JSON
+array of `map study` arguments (`["map","study","river","--seed","3",
+"--output-dir","out/3"]`), run exactly as that command line would be, followed by
+the line `glob2-study-worker done CODE` with its exit code. Generator packages are
+given to the worker itself, not to its lines. Study sweeps use it through
+`tools/map_generation_study.py`; `GLOB2_STUDY_WORKER=0` runs one process per map
+instead.
+
 ## Discover and configure generators
 
 ```sh
@@ -380,6 +398,9 @@ without upscaling. The final surface is allocated at that size and world geometr
 is scaled directly into it; no full-resolution map canvas is allocated. The
 maximum square output surface is 256 MiB, separate from assets and Scene storage.
 Output replaces the destination only after PNG encoding and close succeed.
+
+An export composes terrain pages on every logical CPU, since nothing else shares
+them; `--compute-threads N` caps that, and the output is the same at any width.
 
 A `.field` starts with positive `width height`, then exactly `width * height`
 row-major signed 64-bit integers. Dimensions must match the map; up to 16,777,216

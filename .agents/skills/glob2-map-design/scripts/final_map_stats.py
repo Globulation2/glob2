@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """Final-map statistics at default settings: what a player actually gets.
 
-  python3 final_map_stats.py --binary build/src/glob2 --generators even-ground,marchland,contested-commons
+  python3 final_map_stats.py --generators even-ground,marchland,contested-commons
 """
 import argparse, statistics as st, sys
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
-from tools.map_generation_study import load_catalog, generator_definition, generate_map
+from tools.map_generation_study import (load_catalog, generator_definition, generate_map, default_binary,
+                                        default_jobs, child_threads)
 
 
 def one(job):
     result = generate_map(job['binary'], job['method'], job['seed'], job['w'], job['h'],
-                          job['teams'], timeout=job['timeout'])
+                          job['teams'], timeout=job['timeout'], compute_threads=job['threads'])
     row = None
     if result['category'] == 'completed':
         d = result['native']['map_report']
@@ -35,19 +36,22 @@ def one(job):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--binary', default='build/src/glob2')
+    ap.add_argument('--binary', help='native client (default: the newest build, perf builds included)')
     ap.add_argument('--generators', required=True)
     ap.add_argument('--seeds', type=int, default=16)
     ap.add_argument('--w', type=int, default=256)
     ap.add_argument('--h', type=int, default=256)
     ap.add_argument('--teams', type=int, default=4)
-    ap.add_argument('--jobs', type=int, default=16)
+    ap.add_argument('--jobs', type=int, help='concurrent maps (default: one per logical CPU)')
     ap.add_argument('--timeout', type=float, default=120)
     a = ap.parse_args()
+    a.binary = a.binary or default_binary()
+    a.jobs = a.jobs or default_jobs()
     gens = a.generators.split(',')
     catalog = load_catalog(a.binary)
     methods = {g: generator_definition(catalog, g)['method'] for g in gens}
-    jobs = [dict(binary=a.binary, gen=g, method=methods[g], timeout=a.timeout, seed=s, w=a.w, h=a.h, teams=a.teams)
+    jobs = [dict(binary=a.binary, gen=g, method=methods[g], timeout=a.timeout, seed=s, w=a.w, h=a.h, teams=a.teams,
+                 threads=child_threads(a.jobs))
             for g in gens for s in range(1, a.seeds + 1)]
     with ThreadPoolExecutor(a.jobs) as pool:
         got = list(pool.map(one, jobs))

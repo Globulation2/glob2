@@ -29,9 +29,13 @@
 #ifdef GLOB2_MOBILE
 #include "platforms/mobile/MobilePaths.h"
 #include <exception>
+#include <iostream>
+#include <vector>
 #include <SDL3/SDL_log.h>
 #endif
 #include "Glob2.h"
+#include "ParallelFor.h"
+#include "ComputeThreads.h"
 #include "CommandLine.h"
 #include "Version.h"
 #include "InviteLink.h"
@@ -387,6 +391,46 @@ int Glob2::run(const Cli::Request &request)
 		const int skin = runRenderSkin(request);
 		if (skin >= 0)
 			return skin;
+		// Map tools fork/join on every core unless a runner of several processes
+		// narrows each one (--compute-threads 1 keeps a process on one core).
+		if (request.command.rfind("map ", 0) == 0 && request.has("--compute-threads"))
+			ParallelFor::setLimit(parseComputeThreadCount(request.get("--compute-threads")));
+		if (request.command == "map study-worker")
+		{
+			// Study runners pay process start and setup once per worker instead of
+			// once per map. Each line is a map study's own arguments, run as that
+			// command would be; the done line lets the runner frame its results.
+			for (std::string line; std::getline(std::cin, line);)
+			{
+				if (line.empty())
+					continue;
+				int code = 3;
+				try
+				{
+					const auto job = Cli::parse(nlohmann::json::parse(line).get<std::vector<std::string>>());
+					if (job.command != "map study" || job.has("--generator-package"))
+						throw std::invalid_argument("study-worker runs map study lines without generator packages");
+					ParallelFor::setLimit(job.has("--compute-threads")
+						? parseComputeThreadCount(job.get("--compute-threads"))
+						: request.has("--compute-threads") ? parseComputeThreadCount(request.get("--compute-threads")) : 0);
+					code = runHeadlessCommand(job);
+				}
+				catch (const std::invalid_argument &error)
+				{
+					std::cerr << "glob2: " << error.what() << std::endl;
+					code = 2;
+				}
+				catch (const std::exception &error)
+				{
+					std::cerr << "glob2: " << error.what() << std::endl;
+					code = 3;
+				}
+				std::cout << std::flush;
+				std::fflush(stdout);
+				std::cout << "glob2-study-worker done " << code << std::endl;
+			}
+			return 0;
+		}
 		if (request.command.rfind("map ", 0) == 0 && request.command != "map study")
 			return runMapCommand(request);
 		const int script = runScriptCommand(request);

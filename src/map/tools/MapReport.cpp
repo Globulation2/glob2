@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ParallelFor.h"
 #include "PowerOfTwo.h"
 #include "Map.h"
 #include "MapAssetBundle.h"
@@ -509,10 +510,14 @@ J movementReport(const Game &game, const StepCosts &costs,
 		passable[p] = clearing
 						  ? stepCost(map, t.remainderX(p), p / t.w, costs) >= 0
 						  : map.isHardSpaceForGroundUnit(t.remainderX(p), p / t.w, costs.water >= 0, 0);
-	std::vector<std::vector<int>> fields;
-	for (const auto &sources : units)
-		fields.push_back(clearing ? costsFrom(map, t, sources, costs)
-								  : stepsFrom(t, tileMask(t, sources), passable));
+	// One independent field per colony: build them in parallel, stored by team.
+	std::vector<std::vector<int>> fields(units.size());
+	ParallelFor::run(units.size(), [&](std::size_t team)
+	{
+		const auto &sources = units[team];
+		fields[team] = clearing ? costsFrom(map, t, sources, costs)
+								: stepsFrom(t, tileMask(t, sources), passable);
+	});
 	std::vector<J> rows, colonies;
 	ContactReport contact;
 	contact.cost.assign(teams, std::vector<int>(teams, -1));
@@ -792,12 +797,28 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	lap(&MapReportTimings::space);
 	const auto quality = canonicalQuality(game);
 	lap(&MapReportTimings::startQuality);
-	J walking = movementReport(game, StepCosts::walking(), anchors);
-	lap(&MapReportTimings::walking);
-	J swimming = movementReport(game, StepCosts::swimming(), anchors);
-	lap(&MapReportTimings::swimming);
-	J clearing = movementReport(game, StepCosts::chopping(), anchors);
-	lap(&MapReportTimings::clearing);
+	// The three movement models only read the finished map: measure them together.
+	// Their stage timings are then each model's own wall time, not a sequence.
+	J walking, swimming, clearing;
+	{
+		std::array<double, 3> seconds{};
+		ParallelFor::run(3, [&](std::size_t model)
+		{
+			const auto began = Clock::now();
+			J &out = model == 0 ? walking : model == 1 ? swimming : clearing;
+			out = movementReport(game,
+				model == 0 ? StepCosts::walking() : model == 1 ? StepCosts::swimming() : StepCosts::chopping(),
+				anchors);
+			seconds[model] = std::chrono::duration<double>(Clock::now() - began).count();
+		});
+		if (timings)
+		{
+			timings->walking += seconds[0];
+			timings->swimming += seconds[1];
+			timings->clearing += seconds[2];
+		}
+		mark = Clock::now();
+	}
 	std::vector<J> resourceExperiments, requiredResourceExperiments;
 	for (const auto& experiment : map.resourceRegistry().experiments())
 		resourceExperiments.push_back(J::object({{"key", experiment.key}, {"label", experiment.label}, {"help", experiment.help}}));

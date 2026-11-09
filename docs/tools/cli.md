@@ -399,6 +399,7 @@ Platform: all.
 | `--scenario-config` | file | Scenario name, briefing, objectives and hints JSON. |
 | `--map-image` | file | Export categorical terrain PNG. |
 | `--export-generator-package` | file | Export selected custom generator package. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 At least one output is required.
@@ -440,10 +441,38 @@ Platform: all.
 | `--report` | headroom, diagnostics, timing, terrain | Additional report. Repeatable. |
 | `--perturb` | string | Study perturbation specification. Repeatable. |
 | `--building-artwork` | file | Building artwork bundle. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
 glob2 map study river --seed 713 --write-map --output-dir artifacts/study
+```
+
+### `glob2 map study-worker`
+
+Run map studies read from stdin in one process.
+
+```text
+glob2 map study-worker [OPTIONS]
+```
+
+Outputs: For each stdin line (a JSON array of map study arguments), that study's output directory, then a line "glob2-study-worker done CODE".
+
+Platform: all.
+
+| Option | Value / default | Meaning |
+| --- | --- | --- |
+| `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
+| `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
+| `--help` | flag; default false | Show this command's help (also -h). |
+
+Each line runs map study exactly as that command line would, in this process.
+
+Generator packages are loaded once, from the worker's own options.
+
+```sh
+echo '["map","study","river","--output-dir","artifacts/s1"]' | glob2 map study-worker
 ```
 
 ### `glob2 map generators`
@@ -490,6 +519,7 @@ Platform: all.
 | `--preview` | file | Overview PNG output. |
 | `--preview-size` | integer; pixels; 128..4096 | Longest preview side in pixels. |
 | `--preview-scale` | 2, 4, 8; default 2 | Scale retained thumbnail pixels. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Choose at most one: `--output`, `--preview`.
@@ -520,6 +550,7 @@ Platform: all.
 | `--render-max-pixels` | integer; default 4096; pixels; 1..8192 | Maximum side in pixels. |
 | `--render-field` | file | Diagnostic field overlay. |
 | `--field-color` | string | Field color as r,g,b. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 `--field-color` requires `--render-field`.

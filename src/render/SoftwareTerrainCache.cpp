@@ -505,27 +505,42 @@ std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
     if (*first >> 24 == 0) return {false, allAlpha<0>(surface, rect)};
     return {false, false};
 }
+// A reduced page (downsample > 1) composes each cell at native size into a
+// job-local tile and box-filters it into the page, as the serial path does.
 void buildTerrainJob(std::span<TerrainCellResult> results,
                      const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
-                     int pitch, std::size_t cellsPerJob, std::size_t job)
+                     int downsample, int pitch, std::size_t cellsPerJob, std::size_t job)
 {
     TerrainVisual::Compositor::CpuScratch scratch;
+    std::vector<Uint32> native;
+    SDL_Surface nativeTile{};
+    if (downsample > 1)
+    {
+        native.resize(std::size_t(NativeTilePixels) * NativeTilePixels);
+        nativeTile.format = SDL_PIXELFORMAT_ARGB8888;
+        nativeTile.w = nativeTile.h = NativeTilePixels;
+        nativeTile.pitch = NativeTilePixels * 4;
+        nativeTile.pixels = native.data();
+    }
     for (std::size_t k = job * cellsPerJob; k < results.size() && k < (job + 1) * cellsPerJob; ++k)
     {
         auto &result = results[k];
         SDL_Surface output{};
         output.format = SDL_PIXELFORMAT_ARGB8888;
-        output.w = output.h = 32 * samplingScale;
+        output.w = output.h = 32 * samplingScale / downsample;
         output.pitch = pitch;
         output.pixels = result.pixels;
         if (result.input.discovered)
         {
             if (!result.reused && result.keepMask)
                 result.mask = materials.mask(result.input.recipe, samplingScale);
-            materials.compose(result.input.recipe, &output, samplingScale, scratch,
+            materials.compose(result.input.recipe, downsample > 1 ? &nativeTile : &output, samplingScale,
+                              scratch,
                               result.reused ? result.reused
                               : result.mask ? &*result.mask
                                             : nullptr);
+            if (downsample > 1)
+                reduceTile(&nativeTile, &output, 0, 0, downsample);
             std::tie(result.opaque, result.empty) =
                 classifyAlpha(output, {0, 0, output.w, output.h});
         }
@@ -600,9 +615,11 @@ bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
                                         TerrainVisual::Compositor &compositor, SDL_Surface *target,
-                                        bool wasValid, std::size_t budget)
+                                        bool wasValid, std::size_t budget, bool nativeAvailable)
 {
-    if (downsample != 1 || resolution > 4 ||
+    // Reduced pages compose native cells and filter them; a retained native
+    // page is already that input, so the serial path reduces it directly.
+    if ((downsample != 1 && (nativeAvailable || resolution != 1)) || resolution > 4 ||
         GAGCore::renderExecution() == GAGCore::RenderExecution::Immediate ||
         !GAGCore::PresentationWork::current) return false;
     const auto materialChanged = [&](TerrainVisual::MaterialId id)
@@ -647,7 +664,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         ~Unlock() { SDL_UnlockSurface(surface); }
     } unlock{target};
     auto *pixels = static_cast<Uint8 *>(target->pixels);
-    const int pitch = target->pitch, n = 32 * resolution;
+    const int pitch = target->pitch, n = 32 * resolution / downsample;
     // Planning is owner-only. Masks cannot be evicted or
     // replaced until the synchronous group finishes.
     for (std::size_t first = 0; first < changed.size();)
@@ -701,14 +718,20 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                           [&](auto id) { return compositor.animated(id); });
             results.push_back(std::move(result));
         }
-        const std::size_t cellsPerJob = std::max(std::size_t(1), 16384 / cellPixels);
+        // At most 16K sampled pixels per job, and at least two jobs per participant
+        // so a wide pool is not left idle by a group of a few large jobs.
+        const std::size_t participants = std::max<std::size_t>(1, GAGCore::renderConcurrency());
+        const std::size_t cellsPerJob = std::clamp(
+            (results.size() + 2 * participants - 1) / (2 * participants), std::size_t(1),
+            std::max(std::size_t(1), 16384 / cellPixels));
         const auto started = std::chrono::steady_clock::now();
         {
             PERF_SCOPE_TIME(TerrainBatch);
             GAGCore::executePresentationJobs(
                 (results.size() + cellsPerJob - 1) / cellsPerJob,
-                [&results, materials, samplingScale = resolution, pitch, cellsPerJob](std::size_t job)
-                { buildTerrainJob(results, *materials, samplingScale, pitch, cellsPerJob, job); });
+                [&results, materials, samplingScale = resolution, reduction = downsample, pitch,
+                 cellsPerJob](std::size_t job)
+                { buildTerrainJob(results, *materials, samplingScale, reduction, pitch, cellsPerJob, job); });
         }
         ++workMetrics.batches;
         workMetrics.jobs += (results.size() + cellsPerJob - 1) / cellsPerJob;
@@ -1109,7 +1132,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                             copies.clear();return false;
                         }
                     }
-                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget))
+                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget, native != nullptr))
                     {
                         ++workMetrics.serialPages;
                         PERF_SCOPE_TIME(TerrainBatch);

@@ -832,6 +832,7 @@ GAG_SOURCES = (
     'RecordingEncoder.cpp',
     'RecordingFiles.cpp',
     'RecordingSession.cpp',
+    'ParallelPresentationWork.cpp',
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'Sha1.cpp',

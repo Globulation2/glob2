@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ParallelFor.h"
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "GenerationService.h"
@@ -153,22 +154,31 @@ std::uint32_t GenerationService::bestSeed(const GenerationRequest &request, std:
 										  int candidates,
 										  std::vector<CandidateRoll> *rolls) const
 {
-	std::uint32_t chosen = GenerationContext::deriveSeed(rootSeed, "attempt/0");
-	double bestScore = -1.0;
-	for (int attempt = 0; attempt < std::max(1, candidates); ++attempt)
+	// Candidates are independent games: generate them in parallel, then choose
+	// exactly as a serial search would, the first highest score in attempt order.
+	const int count = std::max(1, candidates);
+	std::vector<CandidateRoll> rolled(count);
+	ParallelFor::run(std::size_t(count), [&](std::size_t attempt)
 	{
-		Game game(nullptr);
+		// A Game is too large for a worker's default stack on macOS.
+		auto game = std::make_unique<Game>(nullptr);
 		GenerationRequest roll = request;
 		roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
 		const auto start = std::chrono::steady_clock::now();
-		const auto result = generate(game, roll);
+		const auto result = generate(*game, roll);
 		const double seconds =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+		rolled[attempt] = {roll.seed, bool(result), result ? result.quality.score : 0.0, seconds};
+	});
+	std::uint32_t chosen = GenerationContext::deriveSeed(rootSeed, "attempt/0");
+	double bestScore = -1.0;
+	for (const auto &roll : rolled)
+	{
 		if (rolls)
-			rolls->push_back({roll.seed, bool(result), result ? result.quality.score : 0.0, seconds});
-		if (!result || result.quality.score <= bestScore)
+			rolls->push_back(roll);
+		if (!roll.generated || roll.score <= bestScore)
 			continue;
-		bestScore = result.quality.score;
+		bestScore = roll.score;
 		chosen = roll.seed;
 	}
 	return chosen;

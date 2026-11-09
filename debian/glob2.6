@@ -300,6 +300,9 @@ Export categorical terrain PNG Type: file.
 .B \-\-export\-generator\-package
 Export selected custom generator package Type: file.
 .TP
+.B \-\-compute\-threads
+Shared compute pool; auto prefers physical cores (logical CPU fallback) Default: auto. Type: compute.
+.TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
 .PP
@@ -362,6 +365,9 @@ Study perturbation specification Type: string. Repeatable.
 .B \-\-building\-artwork
 Building artwork bundle Type: file.
 .TP
+.B \-\-compute\-threads
+Shared compute pool; auto prefers physical cores (logical CPU fallback) Default: auto. Type: compute.
+.TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
 .PP
@@ -370,6 +376,34 @@ glob2 map study river \-\-seed 713 \-\-write\-map \-\-output\-dir artifacts/stud
 .fi
 .PP
 Outputs: result.json, progress.json, artifacts.json; optional maps and reports
+.PP
+Platform: all
+.SS "map study\-worker"
+Run map studies read from stdin in one process
+.PP
+Usage: glob2 map study\-worker [OPTIONS]
+.TP
+.B \-\-data\-dir
+Add an asset search directory (in order) Type: directory. Repeatable.
+.TP
+.B \-\-generator\-package
+Load a custom generator package or directory Type: file. Repeatable.
+.TP
+.B \-\-compute\-threads
+Shared compute pool; auto prefers physical cores (logical CPU fallback) Default: auto. Type: compute.
+.TP
+.B \-\-help
+Show this command's help (also \-h) Default: false.
+.PP
+Each line runs map study exactly as that command line would, in this process
+.PP
+Generator packages are loaded once, from the worker's own options
+.PP
+.nf
+echo '["map","study","river","\-\-output\-dir","artifacts/s1"]' | glob2 map study\-worker
+.fi
+.PP
+Outputs: For each stdin line (a JSON array of map study arguments), that study's output directory, then a line "glob2\-study\-worker done CODE"
 .PP
 Platform: all
 .SS "map generators"
@@ -422,6 +456,9 @@ Longest preview side in pixels Type: integer. Units: pixels. Range: 128..4096.
 .B \-\-preview\-scale
 Scale retained thumbnail pixels Default: 2. Allowed: 2, 4, 8. Type: enum.
 .TP
+.B \-\-compute\-threads
+Shared compute pool; auto prefers physical cores (logical CPU fallback) Default: auto. Type: compute.
+.TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
 .PP
@@ -458,6 +495,9 @@ Diagnostic field overlay Type: file.
 .TP
 .B \-\-field\-color
 Field color as r,g,b Type: string.
+.TP
+.B \-\-compute\-threads
+Shared compute pool; auto prefers physical cores (logical CPU fallback) Default: auto. Type: compute.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
