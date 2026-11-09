@@ -181,7 +181,7 @@ namespace
 	Uint32 simulationChecksum(Game& game)
 	{
 		std::vector<Uint32> parts, buildings, units;
-		game.checkSum(&parts, &buildings, &units, true, true);
+		game.checkSum(&parts, &buildings, &units, true, ChecksumScheme::Legacy152);
 		parts.erase(parts.begin());
 		parts.insert(parts.end(), buildings.begin(), buildings.end());
 		parts.insert(parts.end(), units.begin(), units.end());
@@ -310,7 +310,7 @@ namespace
 			OffPathTick state;
 			std::vector<Uint32> buildings, units;
 			state.components = glob2test::simulationComponents(world.game);
-			world.game.checkSum(nullptr, &buildings, &units, true, false);
+			world.game.checkSum(nullptr, &buildings, &units, true, ChecksumScheme::Current);
 			state.entities = buildings;
 			state.entities.insert(state.entities.end(), units.begin(), units.end());
 			for (std::size_t cell = 0; cell < map.cellCount(); ++cell)

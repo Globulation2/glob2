@@ -27,9 +27,9 @@ tagged `[sim-trace]`: `tools/sim_fingerprint.py` compares their traces between t
 merge base and a pull request. `python3 test/check_javascript.py
 /absolute/path/to/glob2 --output artifacts/js-check` makes the same checks through
 the command line, adding realistic continuations at 64, 96 and 224. Saved
-continuation checks adjust only the known MapHeader version contribution to the
-aggregate checksum; the final save payload comparison excludes only the
-history-dependent MapHeader SHA1.
+continuation checks compare complete tick records, aggregate checksum included;
+the final save payload comparison excludes only the history-dependent MapHeader
+SHA1.
 
 `numeric-corpus.js` covers all exposed Math methods, parsing/coercion/formatting,
 IEEE edge cases and fixed-seed vectors. Non-finite script results are returned as

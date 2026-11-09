@@ -27,8 +27,9 @@ namespace
 std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 {
 	std::vector<Uint32> state, buildings, units;
-	game.checkSum(&state, &buildings, &units, true, legacy152);
-	state.erase(state.begin()); // file version changes on save, not simulation
+	game.checkSum(&state, &buildings, &units, true, legacy152 ? ChecksumScheme::Legacy152 : ChecksumScheme::Current);
+	// Only the frozen layout's header word carries the file version saving rewrites.
+	if (legacy152) state.erase(state.begin());
 	state.insert(state.end(), buildings.begin(), buildings.end());
 	state.insert(state.end(), units.begin(), units.end());
 	return state;

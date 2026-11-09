@@ -464,8 +464,9 @@ bool Unit::integrity()
 }
 
 template<bool Diagnostic>
-Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
+Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme)
 {
+	const bool legacy152 = scheme == ChecksumScheme::Legacy152;
 	Uint32 cs=(serviceResourcesReserved() ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
 	if(areaLastPulseTick!=Uint32(-1)) cs ^= areaLastPulseTick ^ 0x70756c73u;
@@ -652,7 +653,7 @@ Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	return cs;
 }
 
-Uint32 Unit::checkSum(std::vector<Uint32> *fields, bool legacy152)
+Uint32 Unit::checkSum(std::vector<Uint32> *fields, ChecksumScheme scheme)
 {
-    return fields ? checkSumImpl<true>(fields, legacy152) : checkSumImpl<false>(nullptr, legacy152);
+    return fields ? checkSumImpl<true>(fields, scheme) : checkSumImpl<false>(nullptr, scheme);
 }

@@ -1408,12 +1408,12 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE(stats.aiTelemetry[0]->active);
         // Admit the initial completed boundary before counting subsequent ticks.
         world.game.observeCompletedWorld();
-        const auto components=[](Game& game) { return glob2test::simulationComponents(game,false,true); };
+        const auto components=[](Game& game) { return glob2test::simulationComponents(game); };
         decltype(stats.smoothedIndex) phase{};
         decltype(stats.statsIndex) index{};
         const auto continuation=glob2test::expectContinuation(world.game,{.ticks=32,
             .step=[](Game& game) { game.step(0); game.observeCompletedWorld(); return std::vector<std::string>{}; },
-            .includeMapHeader=true,.name="team statistics regression",
+            .name="team statistics regression",
             .afterLoad=[&](Game& original,Game& restored) {
                 CHECK(stats.aiTelemetry.size()==1);
                 CHECK_FALSE(stats.aiTelemetry[0]->active);

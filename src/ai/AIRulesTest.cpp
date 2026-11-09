@@ -79,7 +79,6 @@ void checkOrder(Game& g, Order& o)
 std::vector<Uint32> state(Game& g)
 {
     std::vector<Uint32> s,b,u; g.checkSum(&s,&b,&u,true);
-    s.erase(s.begin()); // loader records the save format
     s.insert(s.end(),b.begin(),b.end()); s.insert(s.end(),u.begin(),u.end());return s;
 }
 std::string tick(Game& g)

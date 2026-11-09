@@ -1,8 +1,8 @@
-"""Compare every team/entity record in a resumed run with uninterrupted execution.
+"""Compare every tick record in a resumed run with uninterrupted execution.
 
-The aggregate checksum includes the save format/header, so compare its detailed
-simulation records instead. Stream through memory maps to handle long games
-without copying gigabytes of records into Python dictionaries.
+Each record is the aggregate checksum and every team/entity record. Stream through
+memory maps to handle long games without copying gigabytes of records into Python
+dictionaries.
 """
 import argparse
 import mmap
@@ -23,8 +23,8 @@ def records(data):
         if previous is not None and tick != previous + 1:
             raise ValueError("nonconsecutive checksum ticks")
         previous = tick
+        start = position + 4  # the aggregate checksum, then team/entity records
         position += 8
-        start = position
         for _ in range(teams):
             position += 4
             for _ in range(2):
@@ -56,7 +56,7 @@ def compare(uninterrupted, resumed):
                 if current is None or current[0] != tick:
                     raise ValueError(f"baseline has no record for tick {tick}")
                 if current[1] != actual:
-                    raise ValueError(f"team/entity state diverges at tick {tick}")
+                    raise ValueError(f"state diverges at tick {tick}")
                 count += 1
             if count == 0:
                 raise ValueError("resumed trace has no ticks")

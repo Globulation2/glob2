@@ -77,9 +77,6 @@ std::vector<Uint32> state(Game& game)
 {
     std::vector<Uint32> result, buildings, units;
     game.checkSum(&result,&buildings,&units,true);
-    // Loading records the current save version in the map header; it is not
-    // simulated state. Compare every other game, building and unit checksum.
-    result.erase(result.begin());
     result.insert(result.end(),buildings.begin(),buildings.end());
     result.insert(result.end(),units.begin(),units.end());
     return result;

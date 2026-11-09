@@ -3,7 +3,7 @@ schedule, and check a mid-run save/reload against the uninterrupted run.
 
 Each legacy save runs to its stop tick with a complete checksum sidecar. The v108
 checkpoint continuation is saved at tick 1152 and resumed: every remaining tick's
-team and entity records must match the uninterrupted run. No committed trace is
+aggregate checksum and team and entity records must match the uninterrupted run. No committed trace is
 compared; tools/sim_fingerprint.py (part `saves`) runs the same saves for sim-diff.
 
 detailed_ticks and detailed_tick_hashes are shared sidecar parsers for other checks.
@@ -33,7 +33,7 @@ CHECKPOINT_STOP, CHECKPOINT_SAVE = 1280, 1152
 
 
 def detailed_ticks(data: bytes) -> dict[int, bytes]:
-    """Return team/entity records; aggregate checksum includes save version."""
+    """Return each tick's team/entity records, without the aggregate checksum."""
     if data[:4] != b"GCS1":
         raise ValueError("invalid checksum sidecar signature")
     teams, _, count, _ = struct.unpack_from("<4I", data, 4)
@@ -56,11 +56,24 @@ def detailed_ticks(data: bytes) -> dict[int, bytes]:
     return records
 
 
+def complete_ticks(data: bytes) -> dict[int, bytes]:
+    """Each tick's aggregate checksum (map, scripts, counters) and team/entity records."""
+    detailed = detailed_ticks(data)  # also validates all framing and lengths
+    position, records = 20, {}
+    for tick, fields in detailed.items():
+        stored_tick = struct.unpack_from("<I", data, position)[0]
+        assert stored_tick == tick
+        records[tick] = data[position:position + 8 + len(fields)]
+        position += 8 + len(fields)
+    assert position == len(data)
+    return records
+
+
 def detailed_tick_hashes(path: Path) -> dict[int, bytes]:
     """Hash every team/entity byte per tick without retaining large sidecars.
 
     Like detailed_ticks, exclude only the sidecar metadata and each tick's
-    aggregate checksum, which includes the save version. Read payloads in
+    aggregate checksum. Read payloads in
     bounded chunks so correctness checks do not inflate inherited runner RSS.
     """
     with path.open("rb") as stream:
@@ -178,7 +191,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -
         actual = run_game(binary, checkpoint, CHECKPOINT_STOP, output, compute, evidence, CHECKPOINT_SAVE)
         if actual is None:
             return 1
-        uninterrupted = detailed_ticks(actual)
+        uninterrupted = complete_ticks(actual)
         if set(uninterrupted) != set(range(1024, CHECKPOINT_STOP)):
             print("incomplete checkpoint trace", file=sys.stderr)
             return 1
@@ -189,11 +202,10 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -
         resumed_bytes = run_game(binary, saved[0], CHECKPOINT_STOP, Path(directory) / "resumed", compute, evidence)
         if resumed_bytes is None:
             return 1
-        resumed = detailed_ticks(resumed_bytes)
+        resumed = complete_ticks(resumed_bytes)
         if set(resumed) != set(range(CHECKPOINT_SAVE, CHECKPOINT_STOP)):
             print("incomplete resumed trace", file=sys.stderr)
             return 1
-        # Team and entity records exclude the aggregate, which includes the save version.
         diverged = [tick for tick in sorted(resumed) if resumed[tick] != uninterrupted[tick]]
         if diverged:
             print(f"v108 checkpoint: reload at {CHECKPOINT_SAVE} diverges from the uninterrupted run "

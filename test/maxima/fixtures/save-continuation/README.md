@@ -4,10 +4,8 @@
 30000 on a 128×128 symmetric arena (map seed 42, game seed 19). The checker
 continues it to tick 30512 with complete checksum records (tick, aggregate, and
 ordered team/entity fields), saves at tick 30256, reloads, and compares every
-remaining record against the uninterrupted continuation. Reload checks adjust only
-the MapHeader format-version contribution to the aggregate checksum, using the
-versions and team/player counts in both headers. All other aggregate bits and all
-team/entity fields must match. The original v115 checkpoint is retained to keep
+remaining record against the uninterrupted continuation: the aggregate checksum
+and every team/entity field must match exactly. The original v115 checkpoint is retained to keep
 testing older-save loading.
 
 No expected trajectory is committed. `tools/sim_fingerprint.py` (part `saves`)

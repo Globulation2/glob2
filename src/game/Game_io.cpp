@@ -893,14 +893,15 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	// isSavedGame on scope exit.
 }
 
-Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy, bool legacy152)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy, ChecksumScheme scheme)
 {
+    const bool legacy152 = scheme == ChecksumScheme::Legacy152;
     // Explicit verification may join future work. Network checksums retain
     // their full live-map coverage without shortening worker deadlines.
     const bool includePending = heavy;
 	Uint32 cs=0;
 
-	Uint32 headerCs=mapHeader.checkSum();
+	Uint32 headerCs=mapHeader.checkSum(scheme);
 	cs^=headerCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(headerCs);// [0]
@@ -910,7 +911,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 teamsCs=0;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits, legacy152);
+		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits, scheme);
 		teamsCs=rotr1(teamsCs);
 		cs=rotr1(cs);
 	}
@@ -943,7 +944,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 			break;
 		}
 	}
-	Uint32 mapCs=map.checkSum(heavy, includePending, legacy152);
+	Uint32 mapCs=map.checkSum(heavy, includePending, scheme);
 	cs^=mapCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]

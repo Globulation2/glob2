@@ -132,8 +132,6 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     const auto simulationState = [](Game &game) {
         std::vector<Uint32> state, buildings, units;
         game.checkSum(&state, &buildings, &units, true);
-        // Saving upgrades the map format header; compare all simulation state.
-        state.erase(state.begin());
         state.insert(state.end(), buildings.begin(), buildings.end());
         state.insert(state.end(), units.begin(), units.end());
         return state;

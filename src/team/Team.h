@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "ChecksumScheme.h"
 #include "IntrusiveEntityList.h"
 #include "TeamCapacity.h"
 #include <SDL3/SDL_iostream.h>
@@ -141,7 +142,7 @@ public:
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
 
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool legacy152=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, ChecksumScheme scheme=ChecksumScheme::Current);
 
 	//! Name of the first human/AI player on this team, or "" if none controls it.
 	//! Locale-agnostic; UI wanting the localized "[Uncontrolled]" placeholder

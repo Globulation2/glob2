@@ -581,8 +581,10 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		auto components = [](Game &g, bool legacy152Representation=false)
 		{
 			std::vector<Uint32> state, buildings, units;
-			g.checkSum(&state, &buildings, &units, true, legacy152Representation);
-			state.erase(state.begin());
+			g.checkSum(&state, &buildings, &units, true, legacy152Representation ? ChecksumScheme::Legacy152 : ChecksumScheme::Current);
+			// Only the frozen layout's header word carries the saved format version.
+			if (legacy152Representation)
+				state.erase(state.begin());
 			state.insert(state.end(), buildings.begin(), buildings.end());
 			state.insert(state.end(), units.begin(), units.end());
 			return state;

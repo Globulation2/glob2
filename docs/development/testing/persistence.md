@@ -107,9 +107,9 @@ python3 test/compare_save_continuation.py uninterrupted/game.replay.checksums \
   resumed/game.replay.checksums
 ```
 
-The comparator checks every consecutive team/entity record, reports the first
-mismatch, rejects missing/truncated records, and excludes the aggregate checksum
-because it includes the save header/version. Run the retained late-game regression
+The comparator checks every consecutive tick record, aggregate checksum and
+team/entity records alike, reports the first mismatch and rejects missing or
+truncated records. Run the retained late-game regression
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
 The retained Maxima format-115 checkpoint runs all 512 ticks from 30000 through

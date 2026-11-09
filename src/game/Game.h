@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include "ChecksumScheme.h"
 #include <array>
 #include <CooperativeTask.h>
 
@@ -448,7 +449,7 @@ private:
 	bool checkBuildingsDoNotOverlapAndHealMissing();
 public:
 	// Explicit live-world diagnostic/verification API. Routine engine checks use snapshot jobs.
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false, bool legacy152=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false, ChecksumScheme scheme=ChecksumScheme::Current);
 
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);

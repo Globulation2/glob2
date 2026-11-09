@@ -17,12 +17,11 @@
 namespace glob2test
 {
 	// Game::checkSum's per-component words: game fields (map header, teams, players,
-	// map, scripts, statistics, catalog), then every building, then every unit. The
-	// map-header word is dropped unless includeMapHeader, because saving rewrites its
-	// format version without changing the simulation. legacy152Representation selects
-	// the frozen trace layout historical goldens use.
-	std::vector<Uint32> simulationComponents(Game& game, bool legacy152Representation = false,
-		bool includeMapHeader = false);
+	// map, scripts, statistics, catalog), then every building, then every unit.
+	// legacy152Representation selects the frozen trace layout historical goldens use
+	// (ChecksumScheme::Legacy152) and drops its map-header word, which mixes in the
+	// format version saving rewrites.
+	std::vector<Uint32> simulationComponents(Game& game, bool legacy152Representation = false);
 
 	// Game::save into memory, binary unless text.
 	std::string saveGameBytes(Game& game, const std::string& name = "continuation", bool text = false);
@@ -46,8 +45,6 @@ namespace glob2test
 		// payloads), compared between the games. Runs with that game's synchronized
 		// stream bound. The default is Game::step(0) with no orders.
 		std::function<std::vector<std::string>(Game&)> step;
-		// Keep the map-header word in the compared components.
-		bool includeMapHeader = false;
 		// Compare the two games right after loading, before the first step.
 		bool compareLoaded = true;
 		// Compare two loads of the save with each other, instead of the original with a

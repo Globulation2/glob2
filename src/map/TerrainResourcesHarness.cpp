@@ -369,8 +369,7 @@ TEST_CASE("resource identities above byte range preserve compound stocks through
     map.setMaterialAmount(at,MaterialId::Food,0);
     map.setMaterialAmount(at,MaterialId::Wood,4);
     CHECK(map.getResource(at).amount==4);
-    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
-        .name="Compound resource continuation",
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.name="Compound resource continuation",
         .afterLoad=[&](Game&,Game& restored) {
             auto& loaded=restored.map;
             CHECK(loaded.resourceRegistry().digest()==map.resourceRegistry().digest());
@@ -452,8 +451,7 @@ TEST_CASE("a half-harvested scavenge site survives save and continues identicall
     REQUIRE(map.takeHarvest(11,12,1,0,MaterialId::Wood,1));
     CHECK(map.materialAmountAt(at,MaterialId::Wood)==3);
     CHECK(map.materialAmountAt(at,MaterialId::Metal)==2);
-    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
-        .name="Landscape scavenge continuation",
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.name="Landscape scavenge continuation",
         .afterLoad=[&](Game&,Game& restored) {
             CHECK(restored.map.getResource(at).type==resourceIndex(*ruins));
             CHECK(restored.map.materialStocksAt(at)==map.materialStocksAt(at));
@@ -1148,34 +1146,13 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
     constexpr std::array<Uint32,3> seeds={0x1875a203u,0x4bfa021du,0xb037a19fu};
     std::ostringstream trace;
     trace.imbue(std::locale::classic());
-    std::ostringstream currentFormatTrace;
-    currentFormatTrace.imbue(std::locale::classic());
     const auto record=[&](Uint32 seed,Game& game) {
-        // This golden was recorded at format 195. Keep that non-simulation
-        // header contribution stable, while retaining every other checksum bit.
-        // Empty header experiment keys make its version contribution a rotation;
-        // verify this assumption against the real header checksum before using it.
-        constexpr Uint32 goldenHeaderMinor=195;
-        const auto& header=game.mapHeader;
-        REQUIRE(header.getVersionMajor()==VERSION_MAJOR);
-        REQUIRE(header.getVersionMinor()==VERSION_MINOR);
-        REQUIRE(VERSION_MINOR>=goldenHeaderMinor);
-        REQUIRE(header.requiredResourceExperiments.empty());
-        const Uint32 headerInputs=Uint32(header.getVersionMajor())^
-            Uint32(header.getVersionMinor())^Uint32(header.getNumberOfTeams());
-        REQUIRE(header.checkSum()==std::rotr(headerInputs,1));
-        // MapHeader rotates once; Game adds teams + players + six rotations
-        // through the unit-catalog/statistics checksum protocol.
-        const auto versionDelta=std::rotr(Uint32(header.getVersionMinor())^goldenHeaderMinor,
-            header.getNumberOfTeams()+game.gameHeader.getNumberOfPlayers()+7);
         const auto checksum=game.checkSum(nullptr,nullptr,nullptr,true);
         std::ostringstream randomState;
         randomState.imbue(std::locale::classic());
         randomState << game.syncRandom;
         const auto randomDigest=Online::Sha256::hex(randomState.str());
         trace << seed << ' ' << game.stepCounter << ' '
-              << (checksum^versionDelta) << ' ' << randomDigest << '\n';
-        currentFormatTrace << seed << ' ' << game.stepCounter << ' '
               << checksum << ' ' << randomDigest << '\n';
     };
     for (const auto seed:seeds)
@@ -1335,13 +1312,12 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         unsigned originalTick=17,loadedTick=17;
         const auto result=glob2test::expectContinuation(original.game,{.ticks=32,
             .step=[&](Game& game) { advance(game,&game==&original.game ? originalTick++ : loadedTick++); return std::vector<std::string>{}; },
-            .includeMapHeader=true,.name="Frozen generated resource composition",
+            .name="Frozen generated resource composition",
             .afterLoad=[&](Game&,Game& loaded) { CHECK(loaded.map.resourceRegistry().digest()==map.resourceRegistry().digest()); },
             .each=[&](Game& reference,Game&,int tick) { if(tick>=0) record(seed,reference); }});
         REQUIRE(result.matched);
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
-    glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.current-format.trace",currentFormatTrace.str());
     glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 
@@ -1519,14 +1495,10 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
                     CHECK(building->material(material)==0);
     }
     REQUIRE(pendingHarvests>0);
-    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.includeMapHeader=true,
-        .name=original.game.mapHeader.getMapName(),
+    const auto result=glob2test::expectContinuation(original.game,{.ticks=32,.name=original.game.mapHeader.getMapName(),
         .afterLoad=[](Game& original,Game& restored) {
             REQUIRE(restored.mapHeader.getVersionMinor()==VERSION_MINOR);
-            // File-format versions contribute to checksums but are not simulation state.
-            // Verify the remaining header metadata before normalizing only that boundary.
             REQUIRE(original.mapHeader==restored.mapHeader);
-            original.mapHeader=restored.mapHeader;
         }});
     CHECK(result.matched);
 }
