@@ -239,6 +239,7 @@ ENGINE_TESTS = [
     ('#src/team/IntrusivePopulationSaveTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/map/preview/MapPreviewHarness.cpp',
     ('#src/map/generator/MapGeneratorDefaultsTest.cpp', dict(require={'editor', 'generators'}, cxxflags=['-fno-access-control'])),
+    ('#src/map/generator/MapGeneratorPropertyTest.cpp', dict(require={'generators'})),
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.

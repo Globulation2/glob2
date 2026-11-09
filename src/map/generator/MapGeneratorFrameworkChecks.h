@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// Checks report through doctest (REQUIRE), so only test code may include this header.
+#include "Glob2Test.h"
 #include "Game.h"
 #include "Team.h"
 #include "Map.h"
+#include "MapFingerprint.h"
 #include "GenerationWorld.h"
 #include <vector>
 #include <string>
@@ -14,7 +17,6 @@
 #include "GenerationService.h"
 #include "GenerationContext.h"
 #include "Utilities.h"
-#include <cassert>
 #include <algorithm>
 #include <cstdio>
 #include "GenerationValidation.h"
@@ -26,37 +28,6 @@
 #include <cmath>
 #include <cstdint>
 #include <set>
-
-/// Everything a generator decides that a player can see: terrain, resources and where each
-/// colony starts. Two maps with the same fingerprint are the same map for golden comparisons.
-inline std::uint64_t mapFingerprint(const Game &game)
-{
-	std::uint64_t hash = 14695981039346656037ull;
-	auto add = [&](unsigned v)
-	{
-		hash ^= v;
-		hash *= 1099511628211ull;
-	};
-	add(game.map.getW());
-	add(game.map.getH());
-	for (int y = 0; y < game.map.getH(); ++y)
-		for (int x = 0; x < game.map.getW(); ++x)
-		{
-			add(game.map.vertexTerrainAt(x, y));
-			// Keep the historical empty marker in geometry fingerprints; storage
-			// widening alone must not invalidate established generator worlds.
-			const auto resource=game.map.getResource(x,y).type;
-			add(resource==NO_RES_TYPE ? 255u : resource);
-			add(game.map.getResource(x, y).amount);
-		}
-	add(game.teamsCount());
-	for (int i = 0; i < game.teamsCount(); ++i)
-	{
-		add(game.teams[i]->startPosX);
-		add(game.teams[i]->startPosY);
-	}
-	return hash;
-}
 
 // The whole-region dispersion ends where no point can improve its own score, the smallest
 // weighted squared distance to any other point, by moving anywhere in the region; the local
@@ -95,10 +66,10 @@ inline void dispersionChecks()
 		std::vector<int> weights, weightsAgain;
 		const int spread = run(1234 + variant, points, weights);
 		run(1234 + variant, again, weightsAgain);
-		assert(spread > 0);
+		REQUIRE(spread > 0);
 		for (int i = 0; i < count; ++i)
-			assert(points[i].x == again[i].x && points[i].y == again[i].y &&
-				   weights[i] == weightsAgain[i]);
+			REQUIRE((points[i].x == again[i].x && points[i].y == again[i].y &&
+				   weights[i] == weightsAgain[i]));
 		auto score = [&](int i, int x, int y)
 		{
 			std::int64_t best = std::numeric_limits<int>::max();
@@ -112,8 +83,8 @@ inline void dispersionChecks()
 		std::set<std::pair<int, int>> occupied;
 		for (int i = 0; i < count; ++i)
 		{
-			assert(grid[points[i].y * w + points[i].x] == 0);
-			assert(occupied.insert({points[i].x, points[i].y}).second);
+			REQUIRE(grid[points[i].y * w + points[i].x] == 0);
+			REQUIRE(occupied.insert({points[i].x, points[i].y}).second);
 		}
 		for (int i = 0; i < count; ++i)
 		{
@@ -122,7 +93,7 @@ inline void dispersionChecks()
 			{
 				if (grid[y * w + x] != 0 || occupied.count({x, y}))
 					return;
-				assert(score(i, x, y) <= own);
+				REQUIRE(score(i, x, y) <= own);
 			};
 			if (whole)
 			{
@@ -161,7 +132,7 @@ inline void distanceChecks()
 				const int dy = std::min(std::abs(y - s.y), h - std::abs(y - s.y));
 				nearest = std::min(nearest, std::max(dx, dy));
 			}
-			assert(heights[y * w + x] == nearest + 1);
+			REQUIRE(heights[y * w + x] == nearest + 1);
 		}
 	// A ring of obstacles around the first source holds its flood; the second still spreads.
 	std::vector<MapGeneratorPoint> one{{3, 3}};
@@ -170,16 +141,16 @@ inline void distanceChecks()
 			if (dx || dy)
 				wall.push_back({3 + dx, 3 + dy});
 	computeDistances(GenerationMap(map).ref(), one, wall, heights);
-	assert(heights[3 * w + 3] == 1);
+	REQUIRE(heights[3 * w + 3] == 1);
 	for (const auto &o : wall)
-		assert(heights[o.y * w + o.x] == -1);
-	assert(heights[0] == 0 && heights[10 * w + 10] == 0);
+		REQUIRE(heights[o.y * w + o.x] == -1);
+	REQUIRE((heights[0] == 0 && heights[10 * w + 10] == 0));
 	// Repeated sources are tolerated and change nothing.
 	std::vector<MapGeneratorPoint> twice{{3, 3}, {3, 3}, {30, 12}};
 	std::vector<int> repeated;
 	computeDistances(GenerationMap(map).ref(), twice, none, repeated);
 	computeDistances(GenerationMap(map).ref(), sources, none, heights);
-	assert(repeated == heights);
+	REQUIRE(repeated == heights);
 }
 
 // Telemetry must be bounded and typed without rejecting otherwise valid generation.
@@ -191,26 +162,26 @@ inline void telemetryChecks()
 	t.measure("test.flag", true);
 	t.choice("test.variant", "quoted \"choice\"\n");
 	t.fallback("test.plot", "omitted", 3);
-	assert(std::get<std::int64_t>(t.records()[0].value) == 7);
-	assert(t.records()[0].subject == 2);
-	assert(std::get<double>(t.records()[1].value) == 0.25);
-	assert(std::get<bool>(t.records()[2].value));
-	assert(t.records()[4].kind == "fallback");
+	REQUIRE(std::get<std::int64_t>(t.records()[0].value) == 7);
+	REQUIRE(t.records()[0].subject == 2);
+	REQUIRE(std::get<double>(t.records()[1].value) == 0.25);
+	REQUIRE(std::get<bool>(t.records()[2].value));
+	REQUIRE(t.records()[4].kind == "fallback");
 	t.measure("test.nan", std::numeric_limits<double>::quiet_NaN());
 	t.measure("test.infinity", std::numeric_limits<double>::infinity());
 	t.measure("test.overflow", std::numeric_limits<std::uint64_t>::max());
-	assert(t.invalidValues() == 3 && t.records().size() == 5);
+	REQUIRE((t.invalidValues() == 3 && t.records().size() == 5));
 	t.choice("test.long", std::string(513, 'x'));
 	t.measure(std::string(129, 'x'), 1);
-	assert(t.droppedRecords() == 2);
+	REQUIRE(t.droppedRecords() == 2);
 	for (size_t i = 5; i < GenerationTelemetry::kMaxRecords; ++i)
 		t.measure("test.count", i);
 	t.measure("test.excess", 1);
-	assert(t.records().size() == GenerationTelemetry::kMaxRecords && t.droppedRecords() == 3);
+	REQUIRE((t.records().size() == GenerationTelemetry::kMaxRecords && t.droppedRecords() == 3));
 	GenerationTelemetry disabled(false);
 	disabled.measure("test.nan", std::numeric_limits<double>::quiet_NaN());
 	disabled.fallback("test.plot", "omitted");
-	assert(disabled.records().empty() && disabled.invalidValues() == 0);
+	REQUIRE((disabled.records().empty() && disabled.invalidValues() == 0));
 }
 
 inline void frameworkChecks()
@@ -222,40 +193,40 @@ inline void frameworkChecks()
 	GeneratorControl cells{"cell", "Cell", 4,         16, 1, 8, ControlGroup::Layout,
 						   false,  false,  {4, 8, 16}};
 	cells = cells.withSearchValues({8, 16});
-	assert(cells.normalize(6) == 8 && cells.normalize(11) == 8 && cells.normalize(12) == 16);
-	assert(cells.normalize(-100) == 4 && cells.normalize(100) == 16);
+	REQUIRE((cells.normalize(6) == 8 && cells.normalize(11) == 8 && cells.normalize(12) == 16));
+	REQUIRE((cells.normalize(-100) == 4 && cells.normalize(100) == 16));
 	for (int v : cells.values())
-		assert(cells.valueAt(cells.indexOf(v)) == v);
+		REQUIRE(cells.valueAt(cells.indexOf(v)) == v);
 	GenerationRequest request;
 	request.seed = 817;
 	GenerationContext context(request), repeat(request);
 	ShapeTransform transform({12, 23}, 0.72, 1.3);
 	const ShapePoint point{3, -7};
 	const auto back = transform.toShape(transform.toMap(point));
-	assert(std::abs(back.x - point.x) < 1e-10 && std::abs(back.y - point.y) < 1e-10);
+	REQUIRE((std::abs(back.x - point.x) < 1e-10 && std::abs(back.y - point.y) < 1e-10));
 	RadialShape shape(12, .7, context, "coast"), same(12, .7, repeat, "coast");
 	for (int i = 0; i < 720; ++i)
 	{
 		double r = shape.radiusAt(i * .01);
-		assert(r > 0 && r <= shape.maximumRadius() && r == same.radiusAt(i * .01));
+		REQUIRE((r > 0 && r <= shape.maximumRadius() && r == same.radiusAt(i * .01)));
 	}
 	RadialShape circle(3, 0, context, "circle");
 	std::vector<int> wrapped(64), clipped(64);
 	stampShape(wrapped, 8, 8, 7, ShapeTransform({0, 0}, 0), circle, true);
 	stampShape(clipped, 8, 8, 7, ShapeTransform({0, 0}, 0), circle, false);
-	assert(wrapped[7] == 7 && clipped[7] == 0);
+	REQUIRE((wrapped[7] == 7 && clipped[7] == 0));
 	std::vector<unsigned char> mask{1, 0, 1, 0, 0, 0, 0, 1, 0};
 	auto cardinal = connectedRegions(mask, 3, 3, false);
 	auto torus = connectedRegions(mask, 3, 3, true);
-	assert(cardinal[0] != cardinal[2] && torus[0] == torus[2] && cardinal[1] == -1);
+	REQUIRE((cardinal[0] != cardinal[2] && torus[0] == torus[2] && cardinal[1] == -1));
 	mask = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-	assert(connectedRegions(mask, 3, 3, false)[0] != connectedRegions(mask, 3, 3, false)[4]);
-	assert(connectedRegions(mask, 3, 3, false, GridNeighbors::Eight)[0] ==
+	REQUIRE(connectedRegions(mask, 3, 3, false)[0] != connectedRegions(mask, 3, 3, false)[4]);
+	REQUIRE(connectedRegions(mask, 3, 3, false, GridNeighbors::Eight)[0] ==
 		   connectedRegions(mask, 3, 3, false, GridNeighbors::Eight)[8]);
 	auto graph = regionAdjacency({10, 10, 30, 10, 99, 30}, 3, 2, {10, 30, 99, 400}, false);
 	auto distances = graphDistances(graph, {0});
-	assert(distances == std::vector<int>({0, 1, 1, -1}));
-	assert(graphDistances({}, {}).empty());
+	REQUIRE(distances == std::vector<int>({0, 1, 1, -1}));
+	REQUIRE(graphDistances({}, {}).empty());
 	bool rejected = false;
 	try
 	{
@@ -265,7 +236,7 @@ inline void frameworkChecks()
 	{
 		rejected = true;
 	}
-	assert(rejected);
+	REQUIRE(rejected);
 
 	// A synthetic region, not a playable generator, exercises exact settlement counts
 	// and callbacks without weakening the production structural validator.
@@ -303,43 +274,43 @@ inline void frameworkChecks()
 	{
 		Game game(nullptr);
 		const auto observed = service.generate(game, request, true);
-		assert(observed && !observed.telemetry.records().empty());
-		assert(std::count_if(observed.telemetry.records().begin(),
+		REQUIRE((observed && !observed.telemetry.records().empty()));
+		REQUIRE(std::count_if(observed.telemetry.records().begin(),
 							 observed.telemetry.records().end(),
 							 [](const auto &r) { return r.key == "test.home.tiles"; }) == 1);
 		Game quiet(nullptr);
 		const auto unobserved = service.generate(quiet, request, false);
-		assert(unobserved && unobserved.telemetry.records().empty());
-		assert(mapFingerprint(game) == mapFingerprint(quiet));
-		assert(game.teams[0]->startPosX >= 10 && game.teams[0]->startPosX <= 12);
+		REQUIRE((unobserved && unobserved.telemetry.records().empty()));
+		REQUIRE(mapFingerprint(game) == mapFingerprint(quiet));
+		REQUIRE((game.teams[0]->startPosX >= 10 && game.teams[0]->startPosX <= 12));
 	}
 	{
 		Game game(nullptr);
 		request.options["room"] = 4;
 		auto failure = service.generate(game, request, true);
-		assert(failure.error == GenerationError::PlacementFailed && failure.stage == "settlement");
-		assert(failure.detail.find("worker tiles") != std::string::npos);
-		assert(failure.telemetry.records().front().key == "test.home.tiles");
-		assert(failure.telemetry.records().back().kind == "error");
+		REQUIRE((failure.error == GenerationError::PlacementFailed && failure.stage == "settlement"));
+		REQUIRE(failure.detail.find("worker tiles") != std::string::npos);
+		REQUIRE(failure.telemetry.records().front().key == "test.home.tiles");
+		REQUIRE(failure.telemetry.records().back().kind == "error");
 	}
 	{
 		Game game(nullptr);
 		request.options["room"] = 6;
 		request.options["cell"] = 4;
 		auto failure = service.generate(game, request, true);
-		assert(failure.error == GenerationError::InvalidRequest && game.teamsCount() == 0);
+		REQUIRE((failure.error == GenerationError::InvalidRequest && game.teamsCount() == 0));
 	}
 	{
 		Game game(nullptr);
 		request.options["cell"] = 8;
 		request.seed = 999;
 		auto failure = service.generate(game, request, true);
-		assert(failure.error == GenerationError::InvalidWorld &&
-			   failure.stage == "generator validation");
-		assert(failure.telemetry.records().back().kind == "error");
-		assert(failure.telemetry.records().front().key == "test.home.tiles");
+		REQUIRE((failure.error == GenerationError::InvalidWorld &&
+			   failure.stage == "generator validation"));
+		REQUIRE(failure.telemetry.records().back().kind == "error");
+		REQUIRE(failure.telemetry.records().front().key == "test.home.tiles");
 	}
-	assert(syncRandEngine() == surrounding);
+	REQUIRE(syncRandEngine() == surrounding);
 	// Invalid weighted inputs fail explicitly; weighted metadata follows the shuffle.
 	Game game(nullptr);
 	game.map.setSize(6, 6);
@@ -347,12 +318,12 @@ inline void frameworkChecks()
 	std::vector<MapGeneratorPoint> points(3, {0, 0});
 	std::vector<int> weights{1, 2, 2};
 	GenerationContext dispersion(request);
-	assert(splitUpPoints(GenerationMap(game.map).ref(), dispersion, grid, 0, points, weights,
+	REQUIRE(splitUpPoints(GenerationMap(game.map).ref(), dispersion, grid, 0, points, weights,
 						 PointSearch::WholeRegion) > 0);
-	assert(std::count(weights.begin(), weights.end(), 1) == 1);
+	REQUIRE(std::count(weights.begin(), weights.end(), 1) == 1);
 	for (size_t i = 0; i < points.size(); ++i)
 		for (size_t j = i + 1; j < points.size(); ++j)
-			assert(points[i].x != points[j].x || points[i].y != points[j].y);
+			REQUIRE((points[i].x != points[j].x || points[i].y != points[j].y));
 	// A completed whole-region pass must remain a best response with the final
 	// point/weight pairing. This detects shuffling coordinates without their weights.
 	for (size_t i = 0; i < points.size(); ++i)
@@ -372,7 +343,7 @@ inline void frameworkChecks()
 						candidate = std::min(
 							candidate,
 							game.map.warpDistSquare(x, y, points[j].x, points[j].y) * weights[j]);
-				assert(candidate <= score);
+				REQUIRE(candidate <= score);
 			}
 	}
 	weights.clear();
@@ -385,7 +356,7 @@ inline void frameworkChecks()
 	{
 		rejected = true;
 	}
-	assert(rejected);
+	REQUIRE(rejected);
 	puts("PASS discrete domains, shape bounds, topology, home footprints, exact workers and custom "
 		 "validation");
 }

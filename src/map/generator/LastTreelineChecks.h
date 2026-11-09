@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// Checks report through doctest (REQUIRE), so only test code may include this header.
+#include "Glob2Test.h"
 #include "GenerationWorld.h"
 #include "Map.h"
 #include "MapGeneratorFrameworkChecks.h"
@@ -11,7 +13,6 @@
 #include "GeneratorRegistry.h"
 #include "Growth.h"
 #include "Sketch.h"
-#include <cassert>
 #include <chrono>
 #include <cstdio>
 #include <ctime>
@@ -46,32 +47,32 @@ inline void run()
 				const auto result = service.generate(game, shape);
 				if (!result)
 					std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-				assert(result);
+				REQUIRE(result);
 			}
 	for (int teams : {1, 9, 12})
 	{
 		auto bad = r;
 		bad.nbTeams = teams;
-		assert(!definition.validateRequest(bad).empty());
+		REQUIRE(!definition.validateRequest(bad).empty());
 	}
 	for (int side : {6, 7, 10})
 	{
 		auto bad = r;
 		bad.wDec = side;
-		assert(!definition.validateRequest(bad).empty());
+		REQUIRE(!definition.validateRequest(bad).empty());
 	}
 	Game plain(nullptr), traced(nullptr);
-	assert(service.generate(plain, r));
+	REQUIRE(service.generate(plain, r));
 	const auto trace = service.generate(traced, r, true);
-	assert(trace && mapFingerprint(plain) == mapFingerprint(traced));
+	REQUIRE((trace && mapFingerprint(plain) == mapFingerprint(traced)));
 	Game repeated(nullptr);
 	const auto again = service.generate(repeated, r, true);
-	assert(again && mapFingerprint(repeated) == mapFingerprint(traced));
-	assert(trace.telemetry.records().size() == again.telemetry.records().size());
+	REQUIRE((again && mapFingerprint(repeated) == mapFingerprint(traced)));
+	REQUIRE(trace.telemetry.records().size() == again.telemetry.records().size());
 	for (size_t k = 0; k < trace.telemetry.records().size(); ++k)
 	{
 		const auto &a = trace.telemetry.records()[k], &b = again.telemetry.records()[k];
-		assert(a.key == b.key && a.value == b.value && a.subject == b.subject);
+		REQUIRE((a.key == b.key && a.value == b.value && a.subject == b.subject));
 	}
 	for (int amount : {0, 300})
 		for (int depth : {12, 14, 16})
@@ -85,7 +86,7 @@ inline void run()
 			const auto result = service.generate(game, extreme);
 			if (!result)
 				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	// Containment is visible terrain: even after long unattended growth, crops cannot
 	// enter outside grass. Finite starter trees must be unchanged without harvesters.
@@ -111,21 +112,21 @@ inline void run()
 			finite.push_back(i);
 			finiteTypes[i] = plain.map.getResource(i % t.w, i / t.w).type;
 		}
-	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WOOD) >= 48 * 4);
-	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WHEAT) == 0);
+	REQUIRE(std::count(finiteTypes.begin(), finiteTypes.end(), WOOD) >= 48 * 4);
+	REQUIRE(std::count(finiteTypes.begin(), finiteTypes.end(), WHEAT) == 0);
 	for (int tick = 0; tick < 2048; ++tick)
 		plain.map.growResources();
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int type = plain.map.getResource(i % t.w, i / t.w).type;
 		if (type == WHEAT || type == WOOD)
-			assert(envelope.steps[i] >= 0 ||
-				   std::find(finite.begin(), finite.end(), i) != finite.end());
+			REQUIRE((envelope.steps[i] >= 0 ||
+				   std::find(finite.begin(), finite.end(), i) != finite.end()));
 	}
 	for (int i : finite)
-		assert(plain.map.getResource(i % t.w, i / t.w).type == finiteTypes[i]);
+		REQUIRE(plain.map.getResource(i % t.w, i / t.w).type == finiteTypes[i]);
 	GenerationContext context(r);
-	assert(definition.validateWorld(plain, context).empty());
+	REQUIRE(definition.validateWorld(plain, context).empty());
 	// Fault injection: introducing trees into a wheat plot must be rejected even
 	// when they are watered and the surrounding sand remains intact.
 	bool changed = false;
@@ -136,15 +137,15 @@ inline void run()
 			traced.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 			changed = true;
 		}
-	assert(changed && !definition.validateWorld(traced, context).empty());
+	REQUIRE((changed && !definition.validateWorld(traced, context).empty()));
 	Game cleared(nullptr), irrigated(nullptr);
-	assert(service.generate(cleared, r));
-	assert(service.generate(irrigated, r));
+	REQUIRE(service.generate(cleared, r));
+	REQUIRE(service.generate(irrigated, r));
 	for (int i = 0; i < t.size(); ++i)
 		if (cleared.map.getResource(i % t.w, i / t.w).type == WOOD &&
 			fertility.at(i % t.w, i / t.w) > 0)
 			cleared.map.setNoResource(i % t.w, i / t.w, 1);
-	assert(!definition.validateWorld(cleared, context).empty());
+	REQUIRE(!definition.validateWorld(cleared, context).empty());
 	int tx = -1, ty = -1, vx = 0, vy = 0;
 	for (int tree : finite)
 	{
@@ -169,7 +170,7 @@ inline void run()
 		if (tx >= 0)
 			break;
 	}
-	assert(tx >= 0);
+	REQUIRE(tx >= 0);
 	// Include an explicit sand rim: layBeaches erodes an unbuffered tiny pool.
 	{
 		auto batch = irrigated.map.editTerrain();
@@ -184,8 +185,8 @@ inline void run()
 	irrigated.map.layBeaches();
 	for (int i = 0; i < t.size(); ++i)
 		terrain[i] = irrigated.map.vertexTerrainAt(i % t.w, i / t.w);
-	assert(cropGrowthField(terrain, t).at(tx, ty) > 0);
-	assert(definition.validateWorld(irrigated, context) ==
+	REQUIRE(cropGrowthField(terrain, t).at(tx, ty) > 0);
+	REQUIRE(definition.validateWorld(irrigated, context) ==
 		   "A spreading crop was planted outside its contained plot.");
 	puts("PASS Last Treeline: shapes, colony counts, refusals, telemetry determinism, extremes, "
 		 "dry wood and crop separation");
@@ -209,7 +210,7 @@ inline void profile()
 				const auto result = service.generate(game, r, telemetry);
 				if (!result)
 					std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-				assert(result);
+				REQUIRE(result);
 			}
 			std::printf(
 				"PROFILE %s telemetry=%d mean_seconds=%.6f cpu_seconds=%.6f\n", id, telemetry,

@@ -35,7 +35,7 @@
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
-#include "MapGeneratorFrameworkChecks.h"
+#include "MapFingerprint.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <SDL3/SDL.h>
@@ -327,18 +327,25 @@ int update(const std::string &path, bool toStdout, bool force, const std::set<in
 }
 
 // The lobby offers 64 to 512 and 1 to Team::MAX_COUNT colonies and rolls five seeds, keeping the best. At
-// its 256 default every playable landscape must seat every colony count it accepts on at
-// least one of five seeds; the small and large sizes are checked at the counts a player is
-// likely to ask for. The per-cell rates are printed so a landscape that only just scrapes by
-// is visible before it starts failing. The quick sweep that pull requests run keeps every
-// 128 and 256 cell with all its seeds, so it fails only where the full sweep would, and
-// leaves the costly 512 cells to the scheduled run.
+// its 256 default every playable landscape must seat every colony count it accepts; the small
+// and large sizes are checked at the counts a player is likely to ask for. A cell fails below
+// its success floor: three of the five seeds at 128 and 256, one of the three at 512. The
+// floors come from the full sweep on master (linux-x86_64): no 128 or 256 cell generated fewer
+// than four of its five seeds (lava-shield 128/2, orchard-commons 256/6, central-quarry and
+// concrete-islands 256/12) and no 512 cell fewer than two of three (concrete-islands 512/12,
+// gauntlet 512/15, even-ground 512/15 and 512/16). Three of five leaves one seed of margin below the worst; at 512 the old
+// one-of-three floor stays, since three seeds leave no room for a margin. The per-cell rates
+// are printed so a landscape that only just scrapes by is visible before it starts failing.
+// The quick sweep that pull requests run keeps every 128 and 256 cell with all its seeds, so
+// it fails only where the full sweep would, and leaves the costly 512 cells to the scheduled
+// run.
 int sweep(int shard, int shards, bool quick)
 {
 	struct Cell
 	{
 		int wDec, teams;
 		std::vector<std::uint32_t> seeds;
+		std::size_t floor() const { return seeds.size() >= 5 ? 3 : 1; }
 	};
 	const std::vector<std::uint32_t> five{1, 2, 3, 4, 5}, three{1, 2, 3};
 	const std::vector<Cell> cells = {
@@ -378,11 +385,12 @@ int sweep(int shard, int shards, bool quick)
 				std::snprintf(cellText, sizeof cellText, " %d/%d:%d/%zu", 1 << cell.wDec,
 							  cell.teams, ok, cell.seeds.size());
 			line += cellText;
-			if (!invalid && ok == 0)
+			if (!invalid && std::size_t(ok) < cell.floor())
 			{
-				std::printf("FAIL %s (%d) at %dx%d with %d colonies: no seed of %zu generated\n",
-							definition.id, id, 1 << cell.wDec, 1 << cell.wDec, cell.teams,
-							cell.seeds.size());
+				std::printf("FAIL %s (%d) at %dx%d with %d colonies: %d of %zu seeds generated,"
+							" below the floor of %zu\n",
+							definition.id, id, 1 << cell.wDec, 1 << cell.wDec, cell.teams, ok,
+							cell.seeds.size(), cell.floor());
 				++failures;
 			}
 		}
