@@ -292,8 +292,9 @@ game or GUI does not compile against them:
   withdrawal) and returns each executed order with the `OrderValidation::validate`
   verdict taken just before it executed. `AIOrderValidity/*`
   (`src/ai/AIOrderValidityTest.cpp`) uses it to require that every registered AI
-  issues only Accepted or Stale orders across seeds, with a documented allowlist
-  for rejections already known on master;
+  issues only Accepted or Stale orders across seeds. Its allowlist of known
+  rejections is empty; an entry names one AI, order type and reason, and the run
+  fails once the entry is no longer hit;
 - `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes;
 - `Continuation.h` (engine binary only): save/load continuation checks, below;
 - `SimulationInvariants.h` (sim and engine binaries): `expectBuildingInvariants` and
