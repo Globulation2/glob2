@@ -4577,7 +4577,7 @@ inline void shatteredCoastContracts()
 inline void riverContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
-	REQUIRE((definition.legacyId == 2 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 2 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
@@ -4628,7 +4628,16 @@ inline void riverContracts()
 						 measure(result, "river.bluffs.faces"));
 		REQUIRE((replanned.placed == measure(result, "river.bluffs.placed") &&
 			   replanned.faces == measure(result, "river.bluffs.faces")));
-		REQUIRE(measure(result, "river.quarry.stone") == measure(result, "river.quarry.tiles"));
+		REQUIRE((measure(result, "river.quarry.stone") == measure(result, "river.quarry.tiles")));
+		// Every colony has its own home quarry, at walks within a few steps of each other, and every
+		// stone on the map stands in a quarry face (no band along the shore).
+		REQUIRE((measure(result, "river.quarry.home") == r.nbTeams));
+		REQUIRE((measure(result, "river.quarry.home-walk-most") - measure(result, "river.quarry.home-walk-least") <= 12));
+		int stoneTiles = 0;
+		for (int y = 0; y < (1 << r.hDec); ++y)
+			for (int x = 0; x < (1 << r.wDec); ++x)
+				stoneTiles += g.map.isResource(x, y) && g.map.getResource(x, y).type == STONE;
+		REQUIRE((stoneTiles == measure(result, "river.quarry.stone")));
 		return result;
 	};
 	// The terrain promises on a finished map: the water is the height field's (the course is
@@ -4761,8 +4770,8 @@ inline void riverContracts()
 			}
 	}
 	{
-		// Bluffs: rock and stocked faces with them, no ridges vertex without; faces follow the stone
-		// amount, none at 0.
+		// Bluffs: rock and stocked faces with them, only the home quarries' rock without; bluff faces
+		// follow the stone amount, none at 0, while every colony keeps its home quarry.
 		D on = make(8, 8, 4, 3), off = make(8, 8, 4, 3), bare = make(8, 8, 4, 3), rich = make(8, 8, 4, 3);
 		off.options["bluffs"] = 0;
 		bare.options["stone-amount"] = 0;
@@ -4771,14 +4780,15 @@ inline void riverContracts()
 		const auto withBluffs = build(a, on, "bluffs"), without = build(b, off, "no bluffs"),
 				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
 		REQUIRE((measure(withBluffs, "river.bluffs.placed") > 1 && measure(withBluffs, "river.bluffs.faces") > 0));
-		REQUIRE(measure(withBluffs, "river.rock.vertices") > 0);
-		REQUIRE((measure(without, "river.bluffs.placed") == 0 && measure(without, "river.rock.vertices") == 0));
-		for (int y = 0; y < 256; ++y)
-			for (int x = 0; x < 256; ++x)
-				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
-		REQUIRE((measure(noStone, "river.bluffs.faces") == 0 && measure(noStone, "river.quarry.stone") == 0));
-		REQUIRE(measure(moreStone, "river.quarry.stone") > measure(withBluffs, "river.quarry.stone"));
-		// Taking the quarry faces' stone away (every stone tile beside rock: the band's own stone may stand there too) is refused.
+		REQUIRE((measure(withBluffs, "river.rock.vertices") > 0));
+		REQUIRE((measure(without, "river.bluffs.placed") == 0 && measure(without, "river.rock.vertices") > 0));
+		REQUIRE((measure(without, "river.rock.vertices") < measure(withBluffs, "river.rock.vertices")));
+		REQUIRE((measure(without, "river.quarry.stone") == measure(without, "river.quarry.home-stone")));
+		REQUIRE((measure(noStone, "river.bluffs.faces") == 0 &&
+			   measure(noStone, "river.quarry.stone") == measure(noStone, "river.quarry.home-stone") &&
+			   measure(noStone, "river.quarry.home-stone") == 4 * 10));
+		REQUIRE((measure(moreStone, "river.quarry.stone") > measure(withBluffs, "river.quarry.stone")));
+		// Taking the quarry faces' stone away (every stone tile beside rock) is refused.
 		GenerationContext check(on);
 		int removed = 0;
 		for (int i = 0; i < 256 * 256; ++i)

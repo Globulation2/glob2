@@ -63,7 +63,7 @@ HeightFieldOptions HeightFieldOptions::fromRequest(const GenerationRequest &r, b
 	options.wood = r.option("wood-amount");
 	options.stone = r.option("stone-amount");
 	options.algae = r.option("algae-amount");
-	options.hilltopStone = r.option("hilltop-stone") != 0;
+	options.hilltopStone = r.options.count("hilltop-stone") && r.option("hilltop-stone") != 0;
 	return options;
 }
 
@@ -249,7 +249,7 @@ void paintHeightFieldResources(GenerationMap &map, HeightMap &hm, const HeightFi
 			}
 			else if (stoneBand && (options.stone > 0 || !options.hilltopStone))
 			{
-				if (options.stone > 0)
+				if (options.stone > 0 && options.paintStone)
 					tmpResource = STONE;
 			}
 			// patch to get smooth areas of wheat and wood:

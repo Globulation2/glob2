@@ -87,7 +87,7 @@ using namespace MapGeneration;
 //   rest. A knot whose ring of ground falls apart (a pond behind it) is dropped, so the strip between
 //   the rock and the water always walks through, and validateWorld proves no rock parts any ground.
 //   Bluffs are planned from the height field rebuilt from the request (heightFieldSketch: its terrain
-//   and stone band before the starting-crop top-up) and the starts alone, in generate and in
+//   before the starting-crop top-up) and the starts alone, in generate and in
 //   validateWorld alike, so the validator plans exactly the bluffs generate drew and checks every
 //   quarry holds its stone.
 // - Far ground: grass graded lush near water and dry beyond kGreen tiles, on the temperate banks
@@ -99,6 +99,13 @@ using namespace MapGeneration;
 //   Desert, a Nile: the same mechanics, plus baked hardpan pans (Rough, which does not inhibit) on the
 //   bare grass between the green ribbon (kRibbon steps) and the pavement, the pavement weathered
 //   sandstone, the desert sand dunes and the bluffs hoodoos. The gardens keep every home green.
+//
+// REVISION 7 (home quarries): no stone from the height field. Its stone band lies just above the beach,
+// which on a river is the whole shoreline, so on gentle banks it walled the shore in stone and the
+// algae off (FEEDBACK 2026-11-08: "it doesn't really make sense, either from gameplay or from a just
+// logical perspective"). The band is painted empty at its default width (riverField), so the crops lie
+// where they did, and every stone is a quarry face in rock: each colony's home quarry
+// (planHomeQuarries) and the bluffs' faces.
 namespace
 {
 constexpr const char *kBanksStream = "river-banks";
@@ -140,6 +147,14 @@ constexpr int kSidePerBluff = 80, kTalusOuter = 1;
 constexpr double kBluffReach = 10.0;
 // A bluff on a bank smaller than this many walkable tiles (an island in the river) is not drawn.
 constexpr int kBluffLandLeast = 1500;
+// Home quarries (revision 7): every colony's own outcrop, a disc of rock kHomeQuarryRadius tiles round
+// with a face of kHomeQuarryStone stone on the side towards its swarm, about kHomeQuarryWalk walking
+// steps from the swarm's middle (never nearer than kHomeQuarryClear in a straight line, past the home's
+// garden, nor further than kHomeQuarryWalkMost), on dry ground kHomeQuarryDry or more steps from water so
+// it takes no farmland. The same stone for every colony: quarryFault checks it.
+constexpr double kHomeQuarryRadius = 4.0;
+constexpr int kHomeQuarryStone = 10, kHomeQuarryWalk = 28, kHomeQuarryWalkMost = 48, kHomeQuarryDry = 6;
+constexpr double kHomeQuarryClear = 19;
 // Far ground: grass dry beyond kGreen tiles (kRibbon on the desert banks); pavement from kPaveReach
 // steps (frayed up to kPaveFray further) of any water, hardpan pans on the desert's bare grass beyond
 // the ribbon on kPanShare percent of it. A crop up to 15 steps from water can have its mirrored probe
@@ -221,8 +236,10 @@ struct Bluffs
 	std::vector<unsigned char> body;   // every knot tile: rock and quarry
 	std::vector<unsigned char> rock;   // the tiles drawn as rock (rockVertices)
 	std::vector<unsigned char> quarry; // quarry faces: stone on grass, left out of the rock
-	std::vector<int> owner;            // -1 everywhere: faces belong to no colony
+	std::vector<int> owner;            // the colony whose home quarry a face tile is, or -1 (a bluff's)
 	int wanted = 0, placed = 0, faces = 0, dropped = 0;
+	int homeQuarries = 0, homeWalkLeast = INT_MAX, homeWalkMost = 0;
+	std::string failure;               // a colony left without a home quarry
 };
 
 // Whether the walkable tiles of the ring round a knot (within `width` of it) still form one piece once
@@ -271,12 +288,110 @@ bool ringHolds(const Torus &t, const std::vector<int> &knot, const std::vector<u
 	return !ring.empty() && reached == ring.size();
 }
 
-// `stone` marks the field's own stone band, which a bluff stands behind rather than on: the band lies
-// just above the beach, right where a cutbank's rock goes, and six bluffs drawn over it took 380 stone
-// for 17 in their faces.
-Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &stone, const Torus &t,
-				  const std::vector<int> &bootX, const std::vector<int> &bootY, int teams, const RiverOptions &o,
-				  GenerationContext &context)
+// Every colony's home quarry (see kHomeQuarryRadius), planned into `b` before any bluff so the bluffs
+// keep clear of them. Sets b.failure when a colony's ground leaves no room for one.
+void planHomeQuarries(Bluffs &b, const Torus &t, const std::vector<unsigned char> &walkable,
+					  const std::vector<int> &land, const std::vector<int> &fromWet, const std::vector<int> &bootX,
+					  const std::vector<int> &bootY, int teams)
+{
+	const int n = t.size();
+	const int r = int(std::ceil(kHomeQuarryRadius));
+	std::vector<std::pair<int, int>> disc;
+	for (int dy = -r; dy <= r; ++dy)
+		for (int dx = -r; dx <= r; ++dx)
+			if (dx * dx + dy * dy <= kHomeQuarryRadius * kHomeQuarryRadius)
+				disc.push_back({dx, dy});
+	std::vector<unsigned char> inKnot(size_t(n), 0), ring(size_t(n), 0);
+	for (int k = 0; k < teams; ++k)
+	{
+		const int sx = t.x(bootX[size_t(k)] + 2), sy = t.y(bootY[size_t(k)] + 2);
+		const int home = t.at(sx, sy);
+		const std::vector<int> walk = stepsFrom(t, tileMask(t, {home}), walkable);
+		// Nearer its own swarm than any other colony's, by a margin, so it is plainly this home's.
+		const auto ownNearest = [&](int x, int y)
+		{
+			const int own = t.dist2(x, y, sx, sy);
+			for (int j = 0; j < teams; ++j)
+				if (j != k && t.dist2(x, y, t.x(bootX[size_t(j)] + 2), t.y(bootY[size_t(j)] + 2)) <
+								  own + 16 * int(std::sqrt(double(own))) + 64)
+					return false;
+			return true;
+		};
+		std::vector<std::pair<int, int>> candidates;
+		for (int i = 0; i < n; ++i)
+			if (walk[i] >= int(kHomeQuarryClear) && walk[i] <= kHomeQuarryWalkMost && fromWet[i] >= kHomeQuarryDry + r)
+				candidates.push_back({std::abs(walk[i] - kHomeQuarryWalk), i});
+		std::sort(candidates.begin(), candidates.end());
+		const std::vector<unsigned char> nearBody = dilate(t, b.body, 3);
+		bool seated = false;
+		for (const auto &candidate : candidates)
+		{
+			const int c = candidate.second;
+			const int cx = t.remainderX(c), cy = c / t.w;
+			if (!ownNearest(cx, cy))
+				continue;
+			std::vector<int> knot;
+			bool fits = true;
+			for (const auto &d : disc)
+			{
+				const int i = t.at(cx + d.first, cy + d.second);
+				if (!walkable[i] || land[i] != land[home] || fromWet[i] < kHomeQuarryDry || nearBody[i] ||
+					t.dist2(t.remainderX(i), i / t.w, sx, sy) < kHomeQuarryClear * kHomeQuarryClear)
+				{
+					fits = false;
+					break;
+				}
+				knot.push_back(i);
+			}
+			if (!fits)
+				continue;
+			for (int i : knot)
+				inKnot[i] = 1;
+			const bool holds = ringHolds(t, knot, inKnot, walkable, 3, ring);
+			if (!holds)
+			{
+				for (int i : knot)
+					inKnot[i] = 0;
+				continue;
+			}
+			// The face: the knot's edge tiles nearest the swarm.
+			std::vector<std::pair<int, int>> edge;
+			for (int i : knot)
+			{
+				bool exposed = false;
+				for (int dy = -1; dy <= 1 && !exposed; ++dy)
+					for (int dx = -1; dx <= 1 && !exposed; ++dx)
+						exposed = !inKnot[t.at(t.remainderX(i) + dx, i / t.w + dy)];
+				if (exposed)
+					edge.push_back({t.dist2(t.remainderX(i), i / t.w, sx, sy), i});
+			}
+			std::sort(edge.begin(), edge.end());
+			int faceWalk = INT_MAX;
+			for (size_t e = 0; e < edge.size() && e < size_t(kHomeQuarryStone); ++e)
+			{
+				b.quarry[edge[e].second] = 1;
+				b.owner[edge[e].second] = k;
+				faceWalk = std::min(faceWalk, walk[edge[e].second]);
+			}
+			for (int i : knot)
+			{
+				b.body[i] = 1;
+				inKnot[i] = 0;
+			}
+			++b.homeQuarries;
+			b.homeWalkLeast = std::min(b.homeWalkLeast, faceWalk);
+			b.homeWalkMost = std::max(b.homeWalkMost, faceWalk);
+			seated = true;
+			break;
+		}
+		if (!seated && b.failure.empty())
+			b.failure = "Colony " + std::to_string(k) + " has no room for its home quarry.";
+	}
+}
+
+// The rock: every colony's home quarry, then the bluffs on the outer bends.
+Bluffs planBluffs(const TerrainSketch &stamp, const Torus &t, const std::vector<int> &bootX,
+				  const std::vector<int> &bootY, int teams, const RiverOptions &o, GenerationContext &context)
 {
 	const int n = t.size();
 	Bluffs b;
@@ -284,18 +399,25 @@ Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &
 	b.rock.assign(size_t(n), 0);
 	b.quarry.assign(size_t(n), 0);
 	b.owner.assign(size_t(n), -1);
-	if (!o.bluffs)
-		return b;
 	const std::vector<unsigned char> wet = wetVertices(stamp);
 	const std::vector<int> fromWet = stepsFromWet(t, stamp);
 	if (fromWet.empty() || fromWet[0] < 0)
 		return b;
-	const Bends bends = readBends(t, wet, o);
-	const std::vector<unsigned char> &river = bends.river;
-	const std::vector<int> &share = bends.share;
 	const std::vector<unsigned char> walkable = walkableTiles(stamp, t);
 	// The walkable ground's pieces, so no bluff goes on an island in the river.
 	const std::vector<int> land = connectedRegions(walkable, t.w, t.h, true, GridNeighbors::Eight);
+	planHomeQuarries(b, t, walkable, land, fromWet, bootX, bootY, teams);
+	const auto finish = [&]()
+	{
+		for (int i = 0; i < n; ++i)
+			b.rock[i] = b.body[i] && !b.quarry[i];
+		return b;
+	};
+	if (!o.bluffs)
+		return finish();
+	const Bends bends = readBends(t, wet, o);
+	const std::vector<unsigned char> &river = bends.river;
+	const std::vector<int> &share = bends.share;
 	std::vector<int> landSize;
 	for (int l : land)
 		if (l >= 0)
@@ -351,8 +473,7 @@ Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &
 			for (int dx = -r; dx <= r; ++dx)
 			{
 				const int i = t.at(cx + dx, cy + dy);
-				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= deepest && walkable[i] &&
-					!stone[i])
+				if (dx * dx + dy * dy <= reach * reach && fromWet[i] >= kBluffNear && fromWet[i] <= deepest && walkable[i])
 				{
 					lens[i] = 1;
 					lensTiles.push_back(i);
@@ -451,31 +572,38 @@ Bluffs planBluffs(const TerrainSketch &stamp, const std::vector<unsigned char> &
 		for (int i : knot)
 			inKnot[i] = 0;
 	}
-	for (int i = 0; i < n; ++i)
-		b.rock[i] = b.body[i] && !b.quarry[i];
-	return b;
+	return finish();
 }
 
-// The bluffs from the request and the colonies' starts alone, as generate and validateWorld both plan
-// them: the height field's own terrain and stone band rebuilt in a fresh context (heightFieldSketch),
-// before the starting-crop top-up, whose wall clearing can take stone away, and before any start. Both
-// read the same input, so the validator replans exactly the bluffs generate drew.
+// The rock from the request and the colonies' starts alone, as generate and validateWorld both plan
+// it: the height field's own terrain rebuilt in a fresh context (heightFieldSketch), before the
+// starting-crop top-up and before any start. Both read the same input, so the validator replans
+// exactly the rock generate drew.
+// River's height field: the shared one with its stone band left empty. The band lies just above the
+// beach, so on gentle banks it walled the whole shore in stone, between the land and the algae; River's
+// stone is all quarry faces in rock instead (planBluffs). The band keeps its default width, whatever
+// the stone amount, so the wheat and wood lie where revision 6's did and the strip above the beach is
+// open floodplain the crops regrow into.
+HeightFieldOptions riverField(const GenerationRequest &request)
+{
+	HeightFieldOptions terrain = HeightFieldOptions::fromRequest(request, false);
+	terrain.stone = 100;
+	terrain.hilltopStone = false;
+	terrain.paintStone = false;
+	return terrain;
+}
+
 Bluffs replanBluffs(const GenerationRequest &request, const std::vector<int> &bootX, const std::vector<int> &bootY,
 					int teams)
 {
 	const RiverOptions options(request);
 	GenerationContext replay(request);
-	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(request, false);
-	std::vector<int> deposits;
-	const TerrainSketch stamp =
-		heightFieldSketch(request, replay, terrain, riverBuilder(options, replay), &deposits);
-	std::vector<unsigned char> stone(deposits.size(), 0);
-	for (size_t i = 0; i < deposits.size(); ++i)
-		stone[i] = deposits[i] == STONE;
+	const HeightFieldOptions terrain = riverField(request);
+	const TerrainSketch stamp = heightFieldSketch(request, replay, terrain, riverBuilder(options, replay));
 	const Torus t(1 << request.wDec, 1 << request.hDec);
 	// The banks' draw comes before the bluffs' in generate; the streams are separate, so it need not
 	// be repeated here.
-	return planBluffs(stamp, stone, t, bootX, bootY, teams, options, replay);
+	return planBluffs(stamp, t, bootX, bootY, teams, options, replay);
 }
 
 struct LayerCounts
@@ -528,7 +656,7 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 			mech[i] = GRASS;
 	std::mt19937 &looks = context.stream(kLookStream);
 	const std::vector<int> fray = periodicNoise(t.w, t.h, 7, looks);
-	if (bluffs.placed > 0)
+	if (std::find(bluffs.body.begin(), bluffs.body.end(), (unsigned char)1) != bluffs.body.end())
 	{
 		std::vector<unsigned char> eligible(size_t(n), 0);
 		const std::vector<unsigned char> nearFace = dilate(t, bluffs.quarry, 2);
@@ -716,7 +844,7 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		if (approach[i] && !bluffs.body[i] && map.isResource(x, y))
+		if ((approach[i] || bluffs.body[i]) && map.isResource(x, y))
 			map.replaceResource(x, y, Resource{});
 		if (bluffs.quarry[i] && map.terrainSupportsResourceAtByIndex(x, y, STONE))
 		{
@@ -744,6 +872,10 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 	context.telemetry.measure("river.bluffs.dropped", bluffs.dropped);
 	context.telemetry.measure("river.bluffs.faces", bluffs.faces);
 	context.telemetry.measure("river.quarry.stone", quarryStone);
+	context.telemetry.measure("river.quarry.home", bluffs.homeQuarries);
+	context.telemetry.measure("river.quarry.home-stone", bluffs.homeQuarries * kHomeQuarryStone);
+	context.telemetry.measure("river.quarry.home-walk-least", bluffs.homeQuarries ? bluffs.homeWalkLeast : 0);
+	context.telemetry.measure("river.quarry.home-walk-most", bluffs.homeWalkMost);
 	context.telemetry.measure("river.quarry.tiles",
 							  int(std::count(bluffs.quarry.begin(), bluffs.quarry.end(), (unsigned char)1)));
 	context.telemetry.measure("river.displaced.wheat", lost.wheat);
@@ -772,7 +904,7 @@ const Banks &chooseBanks(const RiverOptions &o, GenerationContext &context)
 bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	const RiverOptions options(context.request);
-	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, false);
+	const HeightFieldOptions terrain = riverField(context.request);
 	if (!generateHeightField(game, context, terrain, riverBuilder(options, context)))
 		return false;
 	// 2.0: the post-pass, on the finished field with its resources and chosen starts.
@@ -787,6 +919,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	}
 	const Banks &banks = chooseBanks(options, context);
 	const Bluffs bluffs = replanBluffs(context.request, bootX, bootY, teams);
+	if (!bluffs.failure.empty())
+	{
+		context.detail = bluffs.failure;
+		return false;
+	}
 	LayerCounts counts;
 	TerrainSketch grassLooks;
 	redraw(game, context, options, banks, bluffs, counts, grassLooks);
@@ -833,9 +970,6 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 {
 	if (std::string floor = startingFloorFailure(game.map, context.request.nbTeams); !floor.empty())
 		return floor;
-	const RiverOptions options(context.request);
-	if (!options.bluffs)
-		return "";
 	const GenerationMap &map = game.map;
 	const Torus t(map);
 	const int teams = context.request.nbTeams;
@@ -845,8 +979,17 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 			return "Colony " + std::to_string(k) + " is missing.";
 	finishedStarts(game, teams, bootX, bootY);
 	const Bluffs bluffs = replanBluffs(context.request, bootX, bootY, teams);
-	if (const std::string fault = quarryFault(map, t, bluffs.quarry, bluffs.owner, teams, 0); !fault.empty())
+	if (!bluffs.failure.empty())
+		return bluffs.failure;
+	if (const std::string fault = quarryFault(map, t, bluffs.quarry, bluffs.owner, teams, kHomeQuarryStone);
+		!fault.empty())
 		return fault;
+	// Stone stands only in the quarries: no band of it along the shore.
+	for (int i = 0; i < t.size(); ++i)
+		if (!bluffs.quarry[i] && map.isResource(t.remainderX(i), i / t.w) &&
+			map.getResource(t.remainderX(i), i / t.w).type == STONE)
+			return "Stone at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
+				   ") stands outside every quarry.";
 	if (const int parting = partingBarrier(map); parting >= 0)
 		return "A knot of rock at (" + std::to_string(t.remainderX(parting)) + ", " + std::to_string(parting / t.w) +
 			   ") cuts ground off.";
@@ -899,8 +1042,10 @@ GeneratorDefinition riverDefinition()
 		GeneratorControl::toggle("bluffs", "River bluffs", true, ControlGroup::Layout).withSearchValues({0, 1}),
 		GeneratorControl{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}
 			.withSearchRange(2, 8)};
+	// River's stone is all quarries in rock, so the field's stone band (and where it goes) is not used.
 	for (auto &c : heightFieldResourceControls())
-		controls.push_back(std::move(c));
+		if (c.id != "hilltop-stone")
+			controls.push_back(std::move(c));
 	controls.push_back(
 		GeneratorControl{"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true}
 			.withSearchRange(0, 1));
@@ -908,7 +1053,7 @@ GeneratorDefinition riverDefinition()
 			"river",
 			2,
 			"River",
-			6,
+			7,
 			false,
 			std::move(controls),
 			generate,
