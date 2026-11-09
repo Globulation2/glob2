@@ -11,6 +11,7 @@
 #include <any>
 #define private public
 #include "TorusView.h"
+#include "render/MapDrawer.h"
 #undef private
 #include "GameGUI.h"
 #include "Engine.h"
