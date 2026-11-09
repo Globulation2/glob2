@@ -135,8 +135,11 @@ def run_generators(binary_dir: Path, work: Path, checkout: Path) -> dict:
         # platform id revision wDec hDec teams seed status hash
         if len(fields) != 9 or line.startswith('#'):
             continue
-        _, generator, _, w, h, teams, seed, status, value = fields
-        rows[f'{generator} {w}x{h} teams={teams} seed={seed}'] = f'{status} {value}'
+        _, generator, revision, w, h, teams, seed, status, value = fields
+        # The generator revision is part of the name: a deliberate change to a
+        # generator's maps bumps its revision, which makes its rows new scenarios
+        # (noted, not differences) rather than a sim-diff failure.
+        rows[f'{generator}@{revision} {w}x{h} teams={teams} seed={seed}'] = f'{status} {value}'
     if not rows:
         raise RuntimeError('MapGeneratorGoldenTest --print produced no rows')
     return rows

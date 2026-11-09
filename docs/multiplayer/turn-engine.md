@@ -260,15 +260,17 @@ has run, `--from-run <run id>` merges the other platforms' generator rows.
 
 CI enforces what it can detect:
 
-- `test/check_sim_revision.py` (the change-selection job) fails when the committed
-  record names another sim version than the tree, and when the record or its
-  verification trace changed relative to the base revision while the sim version
-  did not.
+- `sim-diff` (see [simulation diff](../development/simulation-verification.md))
+  builds the merge base and the pull request, runs both on the same scenarios, and
+  fails when their output differs while the sim version key did not move. On master
+  pushes it audits each merge against its parent and opens an issue.
+- `test/check_sim_revision.py` (the change-selection job) checks that `SIM_REVISION`
+  is an integer that never goes down.
 - The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
   on a `match verify` trace that differs from the committed one: the simulation
   changed.
 
-The golden match covers only what one short Nicowar/Warrush game reaches, so a passing
-check does not prove the simulation is unchanged; bump whenever a change can matter.
+sim-diff's scenarios cover only what they run, so a passing check does not prove
+the simulation is unchanged; bump whenever a change can matter.
 
 [Multiplayer index](README.md) · [Documentation index](../README.md).

@@ -51,11 +51,25 @@ python3 tools/sim_diff.py base.json.gz candidate.json.gz
 
 The `sim-diff` workflow does this for every pull request whose change reaches the
 simulation path (`touches_simulation` in `.github/scripts/ci_policy.py`): it builds
-the merge base and the pull request at the perf tier and reports the verdict beside
-the two `SIM_REVISION` values in the job summary. It is in shadow mode: a difference
-without a bump is a warning, not a failure, while its verdicts are compared with
-the sim version check. Equal output does not prove behaviour unchanged; the
-scenarios cover only what they run. `--parts` picks a subset of `games`, `match`, `generators`, `saves` and
+the merge base and the pull request at the perf tier, prints the verdict beside the
+two sim version keys (`test/check_sim_revision.py --key-at <rev>`) in the job
+summary, and judges it:
+
+| Output | Sim version key | Result |
+| --- | --- | --- |
+| differs | unchanged | fails: bump `SIM_REVISION` |
+| differs | moved | passes |
+| equal | moved | passes with a warning |
+
+Equal output does not prove behaviour unchanged, since the scenarios cover only
+what they run, so it never forbids a bump. Generator rows are keyed by generator
+revision: a deliberate generator change that bumps its own revision shows up as new
+rows, noted rather than compared. A pull request that changes a `[sim-trace]`
+scenario's own setup together with simulation code changes that trace too; bump.
+On master pushes the workflow repeats the comparison against the parent commit as
+a post-merge audit, and opens an issue instead of failing. sim-diff is not a merge
+prerequisite (only the fast gate is), but a red verdict means the change is not
+ready. `--parts` picks a subset of `games`, `match`, `generators`, `saves` and
 `goldens`; the generator set is the slowest part.
 
 ## Check compatibility separately

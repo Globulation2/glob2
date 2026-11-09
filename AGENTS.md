@@ -77,8 +77,9 @@ failures as successful games.
   orders (rules, units, AI, order validation, map loading, random number use,
   scripting), even when saves and replays stay compatible, and run
   `python3 tools/refresh_sim_fixtures.py` in the same change: it regenerates every
-  revision-keyed fixture, and CI fails when the committed `match verify` trace moves
-  without a new sim version ([Simulation version](docs/multiplayer/turn-engine.md#simulation-version)).
+  revision-keyed fixture. The `sim-diff` check fails when the pull request simulates
+  differently from its merge base without a new sim version
+  ([Simulation version](docs/multiplayer/turn-engine.md#simulation-version)).
 - **Saves** are durably compatible: `MINIMUM_VERSION_MINOR` in `src/app/Version.h` is
   the floor of save formats the loader must still read, and it moves far more
   rarely than `VERSION_MINOR`. A save-format change needs version-gated loading that
