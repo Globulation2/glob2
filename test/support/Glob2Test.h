@@ -102,6 +102,9 @@ namespace glob2test
 
 	// Compares `actual` with test/fixtures/<relative>, line endings normalised, and
 	// reports the first differing line. Rewrites the fixture when updatingFixtures().
+	// With GLOB2_TEST_SIM_TRACE_DIR set it first writes `actual` to that directory
+	// under the same relative path, so tools/sim_fingerprint.py can compare two
+	// builds' traces whatever the committed fixture says.
 	void expectGolden(const std::string& relative, const std::string& actual);
 
 	// Decompresses test/fixtures/<relative>.gz (or any repository-relative .gz) into

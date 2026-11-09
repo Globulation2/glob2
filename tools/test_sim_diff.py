@@ -49,8 +49,20 @@ class CompareTest(unittest.TestCase):
         found = sim_diff.compare(bundle(maps={'a': 'ok 1', 'b': 'ok 2'}), bundle(maps={'a': 'ok 1', 'b': 'ok 3'}))
         self.assertIn('1 generator maps, first: b', found[0]['component'])
 
-    def test_missing_scenarios_and_mismatched_runs(self):
-        self.assertEqual(sim_diff.compare(bundle({'game/a': game()}), bundle())[0]['component'], 'only in base')
+    def test_golden_traces_report_the_first_differing_line(self):
+        trace = lambda lines: {'schema': sim_fingerprint.SCHEMA, 'ticks': 600,
+                               'scenarios': {'golden/x.txt': {'kind': 'trace', 'lines': lines}}}
+        self.assertEqual(sim_diff.compare(trace(['1 a', '2 b']), trace(['1 a', '2 b'])), [])
+        [found] = sim_diff.compare(trace(['1 a', '2 b']), trace(['1 a', '2 c']))
+        self.assertEqual((found['scenario'], found['component']), ('golden/x.txt', "line 2: '2 b' -> '2 c'"))
+        self.assertIn('line count 2 vs 3', sim_diff.compare(trace(['1', '2']), trace(['1', '2', '3']))[0]['component'])
+
+    def test_scenarios_only_one_build_has_are_noted_not_compared(self):
+        base, cand = bundle({'game/a': game(), 'game/b': game()}), bundle({'game/a': game()})
+        self.assertEqual(sim_diff.compare(base, cand), [])
+        self.assertEqual(sim_diff.unmatched(base, cand), ['game/b'])
+
+    def test_mismatched_runs(self):
         with self.assertRaisesRegex(ValueError, 'tick counts'):
             sim_diff.compare(bundle(ticks=600), bundle(ticks=300))
 

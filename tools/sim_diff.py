@@ -52,23 +52,35 @@ def first_trace_difference(base: list, cand: list) -> dict | None:
     return None
 
 
+def first_line_difference(base: list, cand: list) -> dict | None:
+    for line, (b, c) in enumerate(zip(base, cand), 1):
+        if b != c:
+            return {'tick': None, 'component': f'line {line}: {b[:60]!r} -> {c[:60]!r}'}
+    if len(base) != len(cand):
+        return {'tick': None, 'component': f'line count {len(base)} vs {len(cand)}'}
+    return None
+
+
+def unmatched(base: dict, cand: dict) -> list[str]:
+    """Scenarios only one build has: a test case added or removed, not a simulation change."""
+    return sorted(set(base['scenarios']) ^ set(cand['scenarios']))
+
+
 def compare(base: dict, cand: dict) -> list[dict]:
     if base.get('schema') != cand.get('schema'):
         raise ValueError(f'bundle schemas differ: {base.get("schema")} vs {cand.get("schema")}')
     if base.get('ticks') != cand.get('ticks'):
         raise ValueError(f'bundles ran different tick counts: {base.get("ticks")} vs {cand.get("ticks")}')
     differences = []
-    names = sorted(set(base['scenarios']) | set(cand['scenarios']))
+    names = sorted(set(base['scenarios']) & set(cand['scenarios']))
     for name in names:
-        b, c = base['scenarios'].get(name), cand['scenarios'].get(name)
-        if b is None or c is None:
-            differences.append({'scenario': name, 'tick': None,
-                                'component': 'only in ' + ('candidate' if b is None else 'base')})
-            continue
+        b, c = base['scenarios'][name], cand['scenarios'][name]
         if b['kind'] == 'game':
             found = first_game_difference(b['ticks'], c['ticks'])
         elif b['kind'] == 'match':
             found = first_trace_difference(b['ticks'], c['ticks'])
+        elif b['kind'] == 'trace':
+            found = first_line_difference(b['lines'], c['lines'])
         else:
             changed = sorted(key for key in set(b['maps']) | set(c['maps'])
                              if b['maps'].get(key) != c['maps'].get(key))
@@ -90,14 +102,18 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError, KeyError) as error:
         print(f'sim-diff: cannot compare: {error}', file=sys.stderr)
         return 2
-    verdict = {'equal': not differences, 'scenarios': len(set(base['scenarios']) | set(cand['scenarios'])),
-               'differences': differences}
+    alone = unmatched(base, cand)
+    verdict = {'equal': not differences, 'scenarios': len(set(base['scenarios']) & set(cand['scenarios'])),
+               'differences': differences, 'unmatched': alone}
     if args.json:
         args.json.write_text(json.dumps(verdict, indent=2) + '\n')
+    for name in alone:
+        side = 'candidate' if name in cand['scenarios'] else 'base'
+        print(f'sim-diff: note: {name} is only in the {side}; not compared')
     if not differences:
-        print(f'sim-diff: all {verdict["scenarios"]} scenarios match')
+        print(f'sim-diff: all {verdict["scenarios"]} shared scenarios match')
         return 0
-    print(f'sim-diff: simulation output differs in {len(differences)} of {verdict["scenarios"]} scenarios')
+    print(f'sim-diff: simulation output differs in {len(differences)} of {verdict["scenarios"]} shared scenarios')
     for d in differences:
         tick = f' at tick {d["tick"]}' if d['tick'] is not None else ''
         print(f'  {d["scenario"]}{tick}: {d["component"]}')

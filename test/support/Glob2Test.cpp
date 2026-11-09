@@ -188,6 +188,12 @@ namespace glob2test
 	{
 		const std::filesystem::path path = fixture(relative);
 		const std::string text = normalised(actual);
+		if (const char* traces = std::getenv("GLOB2_TEST_SIM_TRACE_DIR"); traces && *traces)
+		{
+			const std::filesystem::path trace = std::filesystem::path(traces) / relative;
+			std::filesystem::create_directories(trace.parent_path());
+			writeFile(trace, text);
+		}
 		if (updatingFixtures())
 		{
 			std::filesystem::create_directories(path.parent_path());
