@@ -210,7 +210,8 @@ record. `glob2 info sim-version --format json` prints the JSON.
   with path `#sim-revision` and the revision in decimal ASCII as its content. The data
   files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
   Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default resource
-  registry (`data/resources/registry.json`), the default building
+  registry (`data/resources/registry.json`), the language catalog list (`data/texts.list.txt`:
+  SGSL lexes each installed catalog's code as a language token), the default building
   manifest (`data/buildings/manifest.json`) and every definition it references, and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. Paths are the engine's virtual paths, relative to
   the runtime tree (`content/` in a checkout), not to the repository. For each file the hash

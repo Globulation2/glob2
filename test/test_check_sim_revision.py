@@ -90,6 +90,18 @@ class CheckSimRevisionTest(unittest.TestCase):
         self.assertEqual(len(problems), 1)
         self.assertIn('went down', problems[0])
 
+    def test_a_new_hashed_file_moves_the_key_without_a_bump(self):
+        # The base hashed one file fewer; its own deploy/sim_version.py computes its key.
+        source = (ROOT / 'deploy/sim_version.py').read_text()
+        self.assertIn("    'data/texts.list.txt',\n", source)
+        (self.root / 'deploy').mkdir()
+        (self.root / 'deploy/sim_version.py').write_text(source.replace("    'data/texts.list.txt',\n", ''))
+        self.commit('base without the language list')
+        self.base = self.git('rev-parse', 'HEAD').stdout.decode().strip()
+        (self.root / 'deploy/sim_version.py').write_text(source)
+        self.write_fixtures('0 bbbb\n')
+        self.assertEqual(self.problems(), [])
+
     def test_revision_feeds_the_key(self):
         before = sim_version.sim_version_key(self.root)
         self.set_revision(6)

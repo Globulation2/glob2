@@ -715,6 +715,8 @@ TEST_SUITE("MatchSetup")
 		onDisk.insert("data/nicowar.txt");
 		onDisk.insert("data/buildings/manifest.json");
         onDisk.insert("data/resources/registry.json");
+		// The installed catalogs decide which words SGSL lexes as language tokens.
+		onDisk.insert("data/texts.list.txt");
         onDisk.insert("data/units/registry.json");
 		const auto buildingManifest = json::parse(glob2test::readFile(root / "data/buildings/manifest.json"));
 		for (const auto& name : buildingManifest.at("files"))

@@ -40,6 +40,21 @@ def load_sim_version():
     return module
 
 
+def load_sim_version_at(root, revision, current):
+    """deploy/sim_version.py as it was at a revision, so a change to what the key
+    hashes moves the key; the current module when the revision has none."""
+    source = file_at(root, revision, 'deploy/sim_version.py')
+    if source is None:
+        return current
+    with tempfile.TemporaryDirectory() as scratch:
+        path = Path(scratch) / 'sim_version.py'
+        path.write_bytes(source)
+        spec = importlib.util.spec_from_file_location('sim_version_base', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    return module
+
+
 def record_sim_version(data):
     """The simVersion text of a G2MR record (docs/multiplayer/turn-protocol.md)."""
     if data[:4] != b'G2MR':
@@ -101,7 +116,7 @@ def check(root, base=None):
         moved = [path for path in (TRACE, RECORD)
                  if file_at(root, base, path) is not None and file_at(root, base, path) != (root / path).read_bytes()]
         if moved:
-            base_key = key_at(root, base, sim_version)
+            base_key = key_at(root, base, load_sim_version_at(root, base, sim_version))
             if base_key == key:
                 problems.append(f'{" and ".join(moved)} changed, so the simulation changed, but the sim version '
                                 f'is still {key}; {FIX}')

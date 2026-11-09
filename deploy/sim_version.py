@@ -31,6 +31,7 @@ SIM_DATA_FILES = (
     'data/maxima/ffa5plus.strategy',
     'data/nicowar.default.txt',
     'data/nicowar.txt',
+    'data/texts.list.txt',
     'data/usl/Glob2/Runtime/Game.usl',
     'data/usl/Language/Runtime/Classes.usl',
     'data/usl/Language/Runtime/Control.usl',
