@@ -38,6 +38,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/ai/engine/AIPipelineTest.cpp
     src/engine/sim/snapshot/SnapshotChecksumTest.cpp
     src/ai/AIStateContinuationTest.cpp
+    src/ai/AIOrderValidityTest.cpp
     src/ai/AIRegistryProfileTest.cpp
     src/ai/BuildingCapabilitiesTest.cpp
     src/building/types/BuildingCatalogTest.cpp

@@ -65,6 +65,7 @@ ENGINE_TESTS = [
     ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(require={'ai:cabino', 'ai:cortex'}, cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
+    '#src/ai/AIOrderValidityTest.cpp',
     '#src/ai/AIRegistryProfileTest.cpp',
     '#src/ai/BuildingCapabilitiesTest.cpp',
     ('#src/ai/AICustomCatalogTest.cpp', dict(require={'ai:cabino', 'ai:castor', 'ai:cortex'}, cxxflags=['-fno-access-control'])),

@@ -273,8 +273,15 @@ game or GUI does not compile against them:
 - `HeadlessGame.h`: `HeadlessGame`, a one-colony game on a small grass torus owned
   by its `GameGUI`, with `addBuilding`, `addUnit`, `step` and `checksum`;
 - `GameFixtures.h`: helpers that drive any `Game` and need no GUI: `BoundGameRandom`,
-  `stepAI`, `publishCurrentHiringSuggestions`, `discardPrematureHiringSuggestions`
-  and `prepareTurretTargets`;
+  `stepAI`, `stepAIValidated`, `publishCurrentHiringSuggestions`,
+  `discardPrematureHiringSuggestions` and `prepareTurretTargets`. `stepAI` polls the
+  AIs synchronously; `stepAIValidated` follows the engine's production AI path
+  (observation, admission, the AI order delay, the pipeline's stale-target
+  withdrawal) and returns each executed order with the `OrderValidation::validate`
+  verdict taken just before it executed. `AIOrderValidity/*`
+  (`src/ai/AIOrderValidityTest.cpp`) uses it to require that every registered AI
+  issues only Accepted or Stale orders across seeds, with a documented allowlist
+  for rejections already known on master;
 - `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes;
 - `Continuation.h` (engine binary only): save/load continuation checks, below.
 
