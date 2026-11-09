@@ -721,6 +721,11 @@ void ChangeAlliances::modify(Context& c)
     const auto* t=&c.observation().teams[team];
 	struct Bit { static void apply(Uint32& mask,Uint32 bit,OptionalBool value){if(value==KeepValue)return;if(value==SetValue)mask|=bit;else mask&=~bit;} };
 	Bit::apply(c.allies,t->mask,allied);Bit::apply(c.enemies,t->mask,enemy);Bit::apply(c.market_view,t->mask,market);Bit::apply(c.inn_view,t->mask,inn);Bit::apply(c.other_view,t->mask,other);
+	// Keep only bits for teams the map has: the observed enemy mask starts as ~allies
+	// (Team::setCorrectMasks), and the order validator rejects bits beyond the map's teams.
+	const std::size_t teamCount=c.observation().teams.size();
+	const Uint32 existing=teamCount>=32 ? ~Uint32(0) : (Uint32(1)<<teamCount)-1;
+	c.allies&=existing;c.enemies&=existing;c.market_view&=existing;c.inn_view&=existing;c.other_view&=existing;
 	c.push_order(shared_ptr<Order>(new SetAllianceOrder(c.teamNumber(),c.allies,c.enemies,c.market_view,c.inn_view,c.other_view)));
 }
 void ChangeAlliances::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(team,"team");s->writeSint32(allied,"allied");s->writeSint32(enemy,"enemy");s->writeSint32(market,"market");s->writeSint32(inn,"inn");s->writeSint32(other,"other");}
