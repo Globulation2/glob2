@@ -100,6 +100,13 @@ async function openMenu(page) {
   if (!(await state(page)).controls.return) await page.locator('#canvas').press('Escape',{delay:80});
   await expect.poll(async()=>Boolean((await state(page)).controls.return)).toBe(true);
 }
+// The menu closes on a later application frame than the one that consumed the
+// click. A threaded runtime can still publish the open menu afterwards, so wait
+// for it to close before a following openMenu decides whether to press Escape.
+async function closeMenu(page) {
+  await clickControl(page,'return');
+  await expect.poll(async()=>Boolean((await state(page)).controls.return),{timeout:120000}).toBe(false);
+}
 async function openOverlay(page) {
   await openMenu(page);
   await clickControl(page,'settings');await screen(page,'SettingsScreen');
@@ -112,7 +119,7 @@ async function resumeOverlay(page) {
   await expect.poll(async()=>(await state(page)).screenClass).not.toContain('SettingsScreen');
   const loop=(await state(page)).loop;
   await expect.poll(async()=>(await state(page)).loop,{timeout:120000}).toBeGreaterThan(loop+2);
-  if ((await state(page)).controls.return) await clickControl(page,'return');
+  if ((await state(page)).controls.return) await closeMenu(page);
 }
 async function presentationOwners(page) {
   const threaded=(await state(page)).executionMode==='threaded';
@@ -292,7 +299,7 @@ for(const mode of ['serial','threaded']) {
     await openMenu(page);
     await clickControl(page,'recording/toggle');
     await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
-    await clickControl(page,'return');const tick=(await state(page)).tick;
+    await closeMenu(page);const tick=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(tick+10);
     await openMenu(page);
     await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
@@ -320,7 +327,7 @@ for(const mode of ['serial','threaded']) {
     await clickSettingsDone(page);await screen(page,'MainMenuScreen');
     await match(page);await page.setViewportSize({width:1280,height:720});
     // A single physical key opens exactly one menu after repeated replacement.
-    await page.locator('#canvas').press('Escape',{delay:80});await clickControl(page,'return');
+    await page.locator('#canvas').press('Escape',{delay:80});await closeMenu(page);
     const tick=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(tick);
     await verify();
@@ -366,7 +373,7 @@ for(const mode of ['serial','threaded']) {
       await openMenu(page);
       await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls.settings?.surface),
         {timeout:120000}).toEqual({w:viewport.width,h:viewport.height});
-      await clickControl(page,'return');
+      await closeMenu(page);
       await page.screenshot({path:info.outputPath('editor-'+label+'.png')});
     }
     await openMenu(page);await clickControl(page,'quit');
@@ -381,7 +388,7 @@ for(const mode of ['serial','threaded']) {
     const existing=new Set(await completed());
     await openMenu(page);await clickControl(page,'recording/toggle');
     await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
-    await clickControl(page,'return');const started=(await state(page)).tick;
+    await closeMenu(page);const started=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(started+10);
     await openOverlay(page);
     if(await available(page,'WebGPU')) {
