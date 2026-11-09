@@ -48,8 +48,8 @@ using namespace MapGeneration;
 //   island (the way to the neighbours), a spoke through every home island from the centre to the
 //   design's rim (the way to the middle), an inner ring between the spokes when there is room, and
 //   short creeks off the ring. Sand walks at full speed, so the mud is slow ground with fast ways
-//   through it. Shell banks (sand, pale look) ring every pool and lagoon on the flats; they are
-//   also what lets algae regrow there, since algae needs solid sand within reach of its probe.
+//   through it. Shell banks (sand, pale look) ring every pool and lagoon on the flats; like any
+//   coast, they let algae regrow within reach of its probe.
 // - Lagoons are long tidal channels of water with a deep core (deepCore, DEEP_WATER: swimmable
 //   at 192/256, no algae, still waters land); their shallow margins keep algae and beaches.
 //   Revision 8's lagoons were too large to fit any wedge at the defaults; they are smaller now.

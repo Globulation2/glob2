@@ -121,7 +121,7 @@ constexpr int kTilesPerOutcrop = 2000, kTilesPerGrove = 1500;
 constexpr int kOrchardsPerTwoColonies = 1;
 constexpr double kOrchardRadius = 3.0, kOrchardSmallestHalfWidth = 5.5;
 // Algae: one clump per this many water tiles, on the half of the water where it regrows best
-// (Planting.h's algaeGrowthChance wants sand within 30 tiles, which every beach and esker gives).
+// (Planting.h's algaeGrowthChance wants a coast within 30 tiles, which every shore gives).
 constexpr int kWaterPerAlgae = 50;
 
 struct Drumlin
@@ -529,7 +529,7 @@ GeneratorDefinition drumlinFieldDefinition()
 		"drumlin-field",
 		43,
 		"Drumlin field",
-		3,
+		4, // 4: algae now regrows near any coast, so its best-growing water moved
 		false,
 		// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
 		// 256 map some fifty drumlins of about 16 by 40 tiles round four homes of 22 by 55, with

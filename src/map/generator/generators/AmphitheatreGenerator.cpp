@@ -911,7 +911,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		8,
+		9, // 9: grass meeting water is a shore, so crops start one tile in
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest

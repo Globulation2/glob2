@@ -20,7 +20,10 @@ loses a tile to a wall. Since revision 7 every Ridges wall is at least three ver
 (`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
 draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
 no longer speckled with a second.
-There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
+There are no beaches: grass meets the water, and a coast that must be sealed is cliff. A tile
+whose corners mix grass and water is a shoreline in the engine (`combineCornerRules`), so since
+revision 8 no wheat or wood is planted or regrows on the water's edge itself; the crops start one
+tile in, and `validateWorld` checks it. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
 

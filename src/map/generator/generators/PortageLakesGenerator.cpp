@@ -1880,7 +1880,9 @@ std::string mechanismFailure(const GenerationMap &map, const Layout &L, bool che
 		// Without telemetry the walk round need only be followed until it is long enough to pass.
 		const double enough = std::max(fast + minimum, fast * divisor / (divisor - 1.0));
 		const double slow = travelTime(map, walking, p.a, p.b, telemetry ? -1 : enough);
-		if (kind && (slow < 0 || slow - fast < std::max(double(minimum), slow / divisor)))
+		// slow - fast >= max(minimum, slow / divisor) is exactly slow >= enough. Compare with enough
+		// itself: the walk stops at that limit, and recomputing the margin from it can round under.
+		if (kind && (slow < 0 || slow < enough))
 			return "Portage Lakes swimming does not save its crossing any walking time.";
 		if (telemetry)
 		{

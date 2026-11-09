@@ -68,10 +68,10 @@ using namespace MapGeneration;
 //
 // GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be cleared, so
 // the walls are permanent; a defence tower scans square rings round its footprint with no line of sight
-// (BuildingUtils::turretScanTile), so a wall stops walking but not shooting; stone stands only on pure
-// grass and grass may never touch water, so a wall never runs along water; wheat and wood regrow only
-// near water and spread onto the grass round them, which is why the farms are rows of crops between
-// water, capped with sand; and fruit lets an inn pull hungry enemy units across, which makes the
+// (BuildingUtils::turretScanTile), so a wall stops walking but not shooting; a tile mixing grass and
+// water corners is a shore, where no wheat or wood grows; wheat and wood regrow only near water and
+// spread onto the grass round them, which is why the farms are rows of crops between water, capped
+// with sand; and fruit lets an inn pull hungry enemy units across, which makes the
 // plaza's orchard worth the walk.
 //
 // THE SIZES AT THE DEFAULTS (256x256, 4 colonies): homes 26 tiles in radius 94 tiles out from the
@@ -1078,6 +1078,7 @@ std::string validateRequest(const GenerationRequest &r)
 //  - every designed stone stands, and every colony walks to colony 0;
 //  - nothing landing from the sea gets onto any land (seaEntry);
 //  - 95% of every farm's crop land, and all of its plot, is a walk from its colony (farmReachable);
+//  - no wheat or wood stands on a tile with a water corner: grass straight against water is a shore;
 //  - every border the design walls is stone: no two sides meet on open ground except at a door or a
 //    spoke's way into the plaza;
 //  - with every corridor and spoke shut, no home, farm, court or the plaza reaches another (pieceLeak,
@@ -1120,6 +1121,17 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 									   });
 		entry >= 0)
 		return "Land at " + where(entry) + " can be reached from the sea.";
+
+	const auto water = [&](int x, int y)
+	{
+		const int v = t.at(x, y);
+		return !L.land[v] || L.pond[v];
+	};
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			if (map.isResource(x, y) && (map.getResource(x, y).type == WHEAT || map.getResource(x, y).type == WOOD) &&
+				(water(x, y) || water(x + 1, y) || water(x, y + 1) || water(x + 1, y + 1)))
+				return "A crop at " + where(y * t.w + x) + " stands at the water's edge.";
 
 	for (size_t f = 0; f < L.farms.size(); ++f)
 		if (farmReachable(map, t, L.farms[f], walk.workers[L.farmColony[f]]) < kFarmReach)
@@ -1215,7 +1227,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		7,
+		8, // 8: grass meeting water is a shore, so crops start one tile in
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

@@ -119,7 +119,8 @@ TEST_SUITE("NicowarFarming")
 				auto& map = f.game.map;
 				// This block tests adjacency of actual spreading threats. The old
 				// all-grass fixture had zero ecological growth everywhere.
-				for(int x:{18,38,48,61}) for(int y=0;y<64;++y)
+				// Each water column's east cell is its shore; the crops stand on pure grass beyond.
+				for(int x:{17,38,48,61}) for(int y=0;y<64;++y)
 					map.paintCell(x,y,WATER);
 				const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
 				for (int i=0; i<8; ++i)

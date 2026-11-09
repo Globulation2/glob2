@@ -30,7 +30,9 @@
   `terrainPropertiesAt`; `terrainTypeAt` answers `MIXED_TERRAIN` for a mixed tile.
 - **Beaches are a convention, not a rule.** Grass directly against water is legal: mixed tiles
   are unbuildable and walk with at least two grass corners, otherwise they swim. Sand/water
-  uses the same movement vote; grass/sand always walks. The shipped
+  uses the same movement vote; grass/sand always walks. Any tile mixing walking and swimming
+  corners is a shoreline, as a beach would be, so it takes shore and water resources but never
+  land crops: wheat, wood and fruit stop one tile short of water whether or not sand lies between. The shipped
   maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
   water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
   result does not depend on scan order; the designed generators apply the same rule to their
@@ -166,10 +168,13 @@ Property overrides use the existing fixed schema:
 | `walkable`, `swimmable`, `flyable`, `resourcesGrow`, `fertilitySource`, `nonGrowingResources`, `buildable`, `projectileBlocks`, `shoreline` | Booleans; walking and swimming cannot both be enabled |
 | `groundSpeedQ8`, `airSpeedQ8` | Integers 64–1024; 256 is normal speed |
 | `groundHealthQ8`, `airHealthQ8` | Signed 16-bit HP per tick divided by 256; negative damages, positive heals |
-| `growthQ8`, `inhibitionQ8`, `shoreSupportQ8` | Integers 0–1024; 256 is one |
+| `growthQ8`, `inhibitionQ8` | Integers 0–1024; 256 is one |
 | `fertilityQ8` | Integer −1024–1024; 256 is one |
 | `allowedResources` | Legacy import mask 0–255; prefer a top-level `allowedResourceKeys` list |
 | `farmMaterial` | Fixed material key such as `food` or `fabric`, or `null` for none |
+
+The retired `shoreSupportQ8` field is still accepted, so older sets and saves load, but it is
+ignored: algae regrowth now comes only from coasts, a derived property of each tile.
 
 Legacy resource bits are trees 0, wheat 1, papyrus 2, rocks 3, algae 4,
 cherry tree 5, orange tree 6 and prune tree 7. These import into a resource-key
@@ -203,7 +208,7 @@ when existing maps and saves load; embedded custom terrain keeps its authored va
 | Wheat (corn) | Swarms turn it into units; inns store it to feed units | Grass | Grows and spreads, one visit in three, only where a random probe finds water and the opposite probe finds no sand |
 | Wood | Every building site's construction; many upgrades | Grass | Grows and spreads under the same water/no-sand test as wheat |
 | Stone | Upgrades of inns, hospitals, towers, barracks, schools, racetracks and pools; stone walls | Grass | Never grows and never runs out (not shrinkable): a quarry is permanent. Cannot be cleared |
-| Algae | School and swimming pool upgrades, the top defence tower | Water | Grows and spreads only where a random probe (up to 15 tiles) finds water and the probe turned a quarter and doubled (up to 30 tiles) finds solid sand (`algaeGrowthChance`) |
+| Algae | School and swimming pool upgrades, the top defence tower | Water | Grows and spreads only where a random probe (up to 15 tiles) finds water and the probe turned a quarter and doubled (up to 30 tiles) finds a coast, any tile mixing walking and swimming corners, beach or bare bank alike (`algaeGrowthChance`) |
 | Fruit (cherry, orange, prune) | Stocked in inns. Each kind an inn holds raises its happiness level (`Building::availableHappynessLevel`), and a hungry unit that can see a happier enemy inn than any of its own walks there and is converted to that team (`Team::findNearestFood`); traded at markets. A unit that ate fruit also carries less armour for it (`armorReductionPerHappyness`) | Grass | Regrows in place wherever it stands; never spreads, never cleared |
 
 The growth test lives in `Map::growResources` (`src/map/MapStep.cpp`), the resource table in
@@ -252,7 +257,9 @@ Consequences a generator has to design around:
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.
 - **Stone is strategic, not consumable.** One quarry serves a colony forever, so stone placement
   decides *where* colonies go for upgrades rather than how long they last.
-- **Algae needs sand near its water.** Algae in open sea far from any beach never regrows.
+- **Algae needs a coast near its water.** A beach or grass straight against the water both
+  serve, and sand away from the water does not; algae in open sea far from any coast never
+  regrows.
 - **Every placed deposit draws from the gameplay RNG.** `Map::setResource` draws each tile's amount
   from the synchronised random stream in call order, so the order deposits are placed in is part of
   the map. Reordering placement changes the map even when the positions are the same.

@@ -797,7 +797,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			7,
+			8, // 8: grass meeting water is a shore, so crops start one tile in
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

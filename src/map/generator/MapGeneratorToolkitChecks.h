@@ -1093,8 +1093,8 @@ inline void stretchChecks()
 }
 
 // sprinkleSand turns only eligible inland grass, the noisiest share of it, and keeps a strip of
-// grass by the shore; algaeGrowthChance is zero on land and far from sand, higher near sand, and
-// matches the engine's offset weights exactly.
+// grass by the shore; algaeGrowthChance is zero on land and far from any coast, beach or bare
+// grass bank, higher near one, and matches the engine's offset weights exactly.
 inline void dressingChecks()
 {
 	const Torus t(32, 32);
@@ -1130,9 +1130,11 @@ inline void dressingChecks()
 	}
 	const std::vector<double> chance = algaeGrowthChance(map, m);
 	REQUIRE(chance[m.at(44, 10)] == 0);                   // sand, not water
-	REQUIRE(chance[m.at(36, 10)] > chance[m.at(20, 10)]); // nearer the sand grows faster
+	// The strip's coasts are its two sand/water edge columns, 39 and 47; the probe lands
+	// on shores an even number of tiles away.
+	REQUIRE(chance[m.at(35, 10)] > chance[m.at(19, 10)]); // nearer the coast grows faster
 	// A probability: the weights of all offsets sum to 1.
-	REQUIRE((chance[m.at(36, 10)] > 0 && chance[m.at(36, 10)] <= 1));
+	REQUIRE((chance[m.at(35, 10)] > 0 && chance[m.at(35, 10)] <= 1));
 	// Every tile of the sea sees the strip within 30 tiles, but no offset can reach sand from a
 	// map that has none.
 	{
@@ -1145,6 +1147,15 @@ inline void dressingChecks()
 	}
 	const std::vector<double> dry = algaeGrowthChance(map, m);
 	REQUIRE(std::count(dry.begin(), dry.end(), 0.0) == long(dry.size()));
+	// Bare grass straight against the water is a shore too: algae beside it regrows without sand.
+	{
+		auto batch = map.editTerrain();
+		for (int y = 8; y < 16; ++y)
+			for (int x = 40; x < 48; ++x)
+				map.setVertexTerrain(x, y, GRASS);
+	}
+	const std::vector<double> bank = algaeGrowthChance(map, m);
+	REQUIRE((bank[m.at(35, 11)] > 0 && bank[m.at(44, 12)] == 0));
 }
 
 // plantFields deals the preferred tiles, wheat first by the split key, in proportion; KitFrame

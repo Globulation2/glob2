@@ -315,7 +315,7 @@ void GrowthCache::terrainChanged(std::size_t index, const TerrainProperties& bef
 	if ((before.fertilitySource ? before.fertilityQ8 : 0) !=
 		(after.fertilitySource ? after.fertilityQ8 : 0) ||
 		std::min<unsigned>(before.inhibitionQ8, 256) != std::min<unsigned>(after.inhibitionQ8, 256) ||
-		before.shoreSupportQ8 != after.shoreSupportQ8 || before.growthQ8 != after.growthQ8)
+		before.coast != after.coast || before.growthQ8 != after.growthQ8)
 	{
 		invalidate();
 		return;
@@ -338,7 +338,7 @@ void GrowthCache::rebuild(const Map& map)
 		const auto& p=map.terrainPropertiesAt(i);
 		contribution[i]=p.fertilitySource ? p.fertilityQ8 : 0;
 		inhibition[i]=p.inhibitionQ8;
-		shore[i]=p.shoreSupportQ8;
+		shore[i]=p.coast ? 256 : 0;
 		localGrowth[i]=p.growthQ8;
 	}
 	land.rebuildWeighted(w,h,contribution,inhibition);
