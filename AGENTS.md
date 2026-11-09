@@ -64,21 +64,22 @@ failures as successful games.
   `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
   simulation data files listed by `deploy/sim_version.py`, and the strict numeric
   flags in `src/SConscript` (`-fno-fast-math -ffp-contract=off`) is the simulation
-  path. A change that can alter what it computes needs matching per-tick checksums
-  for the same state, seed and orders on Linux and one other platform you can run
-  (macOS or a browser build), using the dev build; see
+  path. A change that can alter what it computes is judged by the `sim-diff` verdict
+  against its merge base and by cross-platform agreement in the full matrix: add
+  `ci:full`, whose browser/native equivalence job requires Linux, Windows, macOS and
+  the browsers to verify the same match identically; see
   [simulation verification](docs/development/simulation-verification.md). A change
   to optimization flags or compilers needs a same-platform `-O0` against `-O3`
-  checksum match instead. Changes outside the path need no cross-platform run; say
-  so in the PR.
+  checksum match instead. Changes outside the path need neither; say so in the PR.
 - **Sim version.** `SIM_REVISION` in `src/game/SimRevision.h` is the only thing that
   ties online rooms, ratings and verifiers to simulation behavior. Bump it in every
   change that can alter what the simulation computes from the same setup and
   orders (rules, units, AI, order validation, map loading, random number use,
-  scripting), even when saves and replays stay compatible, and run
-  `python3 tools/refresh_sim_fixtures.py` in the same change: it regenerates every
-  revision-keyed fixture. The `sim-diff` check fails when the pull request simulates
-  differently from its merge base without a new sim version
+  scripting), even when saves and replays stay compatible, and re-record the
+  committed match record in the same change
+  (`python3 test/run_tests.py --update-fixtures --filter "TurnEngineHarness/the committed*"`).
+  The `sim-diff` check fails when the pull request simulates differently from its
+  merge base without a new sim version
   ([Simulation version](docs/multiplayer/turn-engine.md#simulation-version)).
 - **Saves** are durably compatible: `MINIMUM_VERSION_MINOR` in `src/app/Version.h` is
   the floor of save formats the loader must still read, and it moves far more

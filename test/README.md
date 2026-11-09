@@ -209,6 +209,17 @@ the test green and dropping one fails it. Keep a literal only when it is a forma
 contract, such as a wire or save layout, a frozen legacy table or a `static_assert`
 on struct layout, and say why next to it.
 
+Simulation tests detect bugs, not change. Assert the direct invariant the behaviour
+promises (a conserved material ledger, every AI order accepted, a winner declared at
+the decision tick), prefer a property across seeds (`Property.h`) to one hand-picked
+case, and check determinism relationally: the same input twice, save/reload against
+an uninterrupted run (`Continuation.h`), threaded against serial. Never commit a
+stored checksum or trace just to notice that output moved: tag the scenario
+`[sim-trace]` and call `recordSimTrace`, and sim-diff compares it between the merge
+base and the pull request, where a difference without a `SIM_REVISION` bump fails. A
+`[golden]` fixture is for compatibility only: bytes another program or an old file
+must keep matching.
+
 Correctness cases never assert on elapsed wall-clock or CPU time: CI runners and the
 `-O0` coverage build are slow and noisy. Assert a behavioural bound with an operation
 count (ticks, frames, wake-ups, messages, cache hits) or an injected clock, as
