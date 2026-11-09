@@ -318,8 +318,10 @@ default run still checks the sequence the test always checked.
 
 `test/support/Continuation.h` checks that a saved game continues exactly like the
 game it was saved from. `simulationComponents(game)` is `Game::checkSum`'s full
-component vector (game fields, every building, every unit; the map-header word,
-which saving rewrites, only with `includeMapHeader`). `saveGameBytes`,
+component vector (game fields including the map-header word, every building,
+every unit). With `legacy152Representation` it is the frozen historical layout,
+whose map-header word mixes in the format version saving rewrites, so that word is
+dropped. `saveGameBytes`,
 `saveGUIBytes`, `loadGameBytes` and `loadGameGUI` move a game through memory.
 `expectContinuation(game, {.ticks = n, ...})` saves the game, loads it into a fresh
 `GameGUI` and steps both in lockstep, each with its own synchronized stream bound,

@@ -46,7 +46,6 @@ std::vector<Uint32> components(Game &game)
 {
 	std::vector<Uint32> state, buildings, units;
 	game.checkSum(&state, &buildings, &units, true);
-	state.erase(state.begin());
 	state.insert(state.end(), buildings.begin(), buildings.end());
 	state.insert(state.end(), units.begin(), units.end());
 	return state;

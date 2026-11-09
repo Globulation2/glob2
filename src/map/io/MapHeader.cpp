@@ -278,15 +278,21 @@ void MapHeader::resetGameSHA1()
 
 
 
-Uint32 MapHeader::checkSum() const
+Uint32 MapHeader::checkSum(ChecksumScheme scheme) const
 {
 	// `cs` is signed `Sint32` so the open-coded `(cs<<31)|(cs>>1)` rotate
 	// uses arithmetic right-shift (sign-extending). See the matching note
 	// in Building::checkSum — do NOT replace with the unsigned `rotr1`
 	// helper or the network checksum diverges.
 	Sint32 cs = 0;
-	cs^=versionMajor;
-	cs^=versionMinor;
+	// The file format version is not simulation state: a loaded save carries the
+	// version it was written with, and every save-format bump would otherwise move
+	// every checksum. Only the frozen historical layout still mixes it in.
+	if (scheme == ChecksumScheme::Legacy152)
+	{
+		cs^=versionMajor;
+		cs^=versionMinor;
+	}
 	cs^=numberOfTeams;
 	for (const auto& key : requiredResourceExperiments.keys())
 		for (unsigned char c : key) cs = Sint32((Uint32(cs) ^ c) * 16777619u);

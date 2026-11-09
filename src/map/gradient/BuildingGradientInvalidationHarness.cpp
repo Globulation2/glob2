@@ -1580,12 +1580,12 @@ TEST_SUITE("BuildingGradientInvalidation")
             CAPTURE(heavy);
             World world;
             auto& map = world.game.map;
-            const auto current = map.checkSum(heavy,false,false);
-            const auto legacy = map.checkSum(heavy,false,true);
+            const auto current = map.checkSum(heavy,false,ChecksumScheme::Current);
+            const auto legacy = map.checkSum(heavy,false,ChecksumScheme::Legacy152);
             // This empty world's publication changes only the owner phase.
             map.publishWorldResultsDue();
-            CHECK(map.checkSum(heavy,false,false) != current);
-            CHECK(map.checkSum(heavy,false,true) == legacy);
+            CHECK(map.checkSum(heavy,false,ChecksumScheme::Current) != current);
+            CHECK(map.checkSum(heavy,false,ChecksumScheme::Legacy152) == legacy);
         }
     }
 

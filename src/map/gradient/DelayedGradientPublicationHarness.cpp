@@ -38,7 +38,6 @@ std::vector<Uint32> normalizedChecksums(Game& game)
 {
     std::vector<Uint32> state,buildings,units;
     game.checkSum(&state,&buildings,&units,true);
-    state.erase(state.begin()); // The loader records the saved format.
     state.insert(state.end(),buildings.begin(),buildings.end());
     state.insert(state.end(),units.begin(),units.end());
     return state;

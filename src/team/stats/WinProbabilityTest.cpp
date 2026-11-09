@@ -315,7 +315,7 @@ TEST_SUITE("WinProbability")
         {
             world.step();
             // Retain the published pre-unit-catalog golden representation.
-            trace << game.stepCounter << ' ' << game.checkSum(nullptr, nullptr, nullptr, false, true) << ' '
+            trace << game.stepCounter << ' ' << game.checkSum(nullptr, nullptr, nullptr, false, ChecksumScheme::Legacy152) << ' '
                   << game.teams[0]->hasWon << ' ' << game.teams[1]->hasLost << '\n';
             if (tick < 64)
                 CHECK_FALSE(game.isGameEnded);

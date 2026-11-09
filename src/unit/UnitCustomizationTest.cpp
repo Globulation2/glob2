@@ -27,7 +27,7 @@
 #include "Building.h"
 
 namespace {
-// FNV-1a over the simulation components, without the saved map-header format.
+// FNV-1a over the simulation components.
 Uint32 trace(Game& game)
 {
     Uint32 result=2166136261u;
@@ -126,7 +126,7 @@ ContinuationAudit relationshipAudit(Game& game)
 ContinuationAudit continuationAudit(Game& game)
 {
     auto result=relationshipAudit(game);
-    auto components=glob2test::simulationComponents(game,false,true);
+    auto components=glob2test::simulationComponents(game);
     result.first.insert(result.first.begin(),components.begin(),components.end());
     return result;
 }
@@ -136,8 +136,7 @@ void checkPhaseContinuation(Game& game,int ticks,const std::function<void()>& ob
     glob2test::discardPrematureHiringSuggestions(game);
     const auto before=continuationAudit(game);
     const auto random=game.syncRandom;
-    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
-        .name="custom unit phase continuation",
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.name="custom unit phase continuation",
         .afterLoad=[&](Game& original,Game& resumed) {
             REQUIRE(resumed.unitCatalog().digest()==original.unitCatalog().digest());
             REQUIRE(continuationAudit(resumed)==before);
@@ -171,8 +170,7 @@ void checkVisionAction(Unit& unit,int radius)
 void checkVisionContinuation(Game& game,int ticks)
 {
     const auto before=continuationAudit(game);
-    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
-        .name="legacy cached flight vision continuation",
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.name="legacy cached flight vision continuation",
         .afterLoad=[&](Game& original,Game& resumed) {
             REQUIRE(continuationAudit(resumed)==before);
             REQUIRE(resumed.map.mapDiscovered==original.map.mapDiscovered);

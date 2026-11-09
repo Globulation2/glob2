@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "ChecksumScheme.h"
 #include "UnitState.h"
 #include "ResourceClaims.h"
 #include "map/claims/ClaimPolicy.h"
@@ -334,9 +335,9 @@ public:
 
 public:
 	bool integrity();
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme=ChecksumScheme::Current);
 private:
-	template<bool Diagnostic> Uint32 checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152);
+	template<bool Diagnostic> Uint32 checkSumImpl(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme);
 public:
     void setTargetBuilding(Building * b);
 	bool verbose;

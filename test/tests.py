@@ -168,6 +168,7 @@ ENGINE_TESTS = [
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
     '#src/game/SharedWorkerLifecycleTest.cpp',
+    ('#src/game/ChecksumSchemeTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/TrappedUnitLifecycleTest.cpp',
     '#src/unit/UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',

@@ -562,10 +562,7 @@ void armyBirthsSimTrace()
     std::string trace;
     for(int tick=1;tick<=512;++tick) {
         f.game.step(0);REQUIRE(f.game.stepCounter==unsigned(tick));
-        // Normalize the header to 115 (one team, no players: rotated six times), so a
-        // save-format bump alone does not read as a simulation change.
-        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
-            ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);
+        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
         trace+=std::to_string(tick)+' '+std::to_string(checksum)+'\n';
     }
     glob2test::recordSimTrace("maxima/army-birth-checksums.txt",trace);

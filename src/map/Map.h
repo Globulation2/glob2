@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "ChecksumScheme.h"
 #include "ResourceClaims.h"
 #include "claims/ActiveMaterialClaims.h"
 #include "claims/ClaimRecovery.h"
@@ -1222,7 +1223,7 @@ protected:
 	
 
 public:
-	Uint32 checkSum(bool heavy, bool includePending = true, bool legacy152 = false);
+	Uint32 checkSum(bool heavy, bool includePending = true, ChecksumScheme scheme = ChecksumScheme::Current);
 	Sint32 warpDist1d(int p, int q, int l) const;///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy) const; //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy) const; //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.

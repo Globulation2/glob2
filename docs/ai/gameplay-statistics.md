@@ -291,8 +291,8 @@ arithmetic: rates, bands, percentages, coverage gaps and axes.
 1,024-tick four-AI and 2,048-tick 12-team games and a 2,048-tick Numbi/Castor
 scenario with complete checksum sidecars. It also continues a format-108 mid-run
 checkpoint to tick 1,280, saving at 1,152: the reload must reproduce every
-remaining team/entity record of the uninterrupted run. Aggregate checksums after
-save/load include `MapHeader::versionMinor`, so the comparison excludes them.
+remaining tick of the uninterrupted run, aggregate checksum and team/entity records
+alike (the aggregate's map-header word does not cover the save format version).
 `tools/sim_fingerprint.py` (part `saves`) compares these runs between builds; no
 trace is committed. CI runs the check on Linux and Windows (with `.exe` on Windows).
 Actual results and platform/performance coverage are recorded with the change's

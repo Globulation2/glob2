@@ -694,7 +694,6 @@ TEST_SUITE("TurretTargeting")
         const auto state=[](Game& game) {
             std::vector<Uint32> fields,buildings,units;
             game.checkSum(&fields,&buildings,&units,true);
-            fields.erase(fields.begin()); // Historical versus current header format.
             return std::tuple(fields,buildings,units);
         };
         for (int tick=0;tick<32;++tick) {

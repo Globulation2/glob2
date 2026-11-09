@@ -84,7 +84,7 @@ bool ChecksumSidecarWriter::open(const std::string& replayPath, const Game& game
 	return true;
 }
 
-void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& game, bool legacy152)
+void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& game, ChecksumScheme scheme)
 {
 	if (!file || !ok)
 		return;
@@ -116,7 +116,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 		assert(team);
 
 		// Team-level checksum
-		Uint32 teamCs = team->checkSum(NULL, NULL, NULL,legacy152);
+		Uint32 teamCs = team->checkSum(NULL, NULL, NULL,scheme);
 		writeU32(teamCs);
 
 		// Units
@@ -126,7 +126,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 		for (Unit* u : team->liveUnits.entries())
 		{
 			vec.clear();
-			Uint32 uCs = u->checkSum(&vec,legacy152);
+			Uint32 uCs = u->checkSum(&vec,scheme);
 			writeU16((Uint16)u->gid);
 			writeU32(uCs);
 			writeU32((Uint32)vec.size());
@@ -140,7 +140,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 		for (Building* b : team->liveBuildings.entries())
 		{
 			vec.clear();
-			Uint32 bCs = b->checkSum(&vec,legacy152);
+			Uint32 bCs = b->checkSum(&vec,scheme);
 			writeU16((Uint16)b->gid);
 			writeU32(bCs);
 			writeU32((Uint32)vec.size());

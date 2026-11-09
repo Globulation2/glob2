@@ -311,9 +311,7 @@ TEST_CASE("a repeated starting map plays on consistently and continues after a s
 	for (int tick = 0; tick < 128; ++tick)
 	{
 		game.step(0);
-		// Keep the legacy checksum representation here; dedicated unit-catalog
-		// traces cover its schema. Terrain-rule changes still refresh these ticks.
-		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true, true) << '\n';
+		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true) << '\n';
 		glob2test::expectBuildingInvariants(game);
 	}
 	for (int t = 0; t < 4; ++t)

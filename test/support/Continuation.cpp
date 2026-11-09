@@ -9,11 +9,13 @@
 
 namespace glob2test
 {
-	std::vector<Uint32> simulationComponents(Game& game, bool legacy152Representation, bool includeMapHeader)
+	std::vector<Uint32> simulationComponents(Game& game, bool legacy152Representation)
 	{
 		std::vector<Uint32> result, buildings, units;
-		game.checkSum(&result, &buildings, &units, true, legacy152Representation);
-		if (!includeMapHeader && !result.empty())
+		game.checkSum(&result, &buildings, &units, true, legacy152Representation ? ChecksumScheme::Legacy152 : ChecksumScheme::Current);
+		// Only the frozen layout's map-header word mixes in the format version
+		// saving rewrites; drop it there so historical traces stay comparable.
+		if (legacy152Representation && !result.empty())
 			result.erase(result.begin());
 		result.insert(result.end(), buildings.begin(), buildings.end());
 		result.insert(result.end(), units.begin(), units.end());
@@ -94,8 +96,8 @@ namespace glob2test
 		std::string difference(Game& reference, Game& loaded, const ContinuationOptions& options,
 			const std::vector<std::string>* referenceOrders, const std::vector<std::string>* loadedOrders)
 		{
-			const auto expected = simulationComponents(reference, false, options.includeMapHeader);
-			const auto actual = simulationComponents(loaded, false, options.includeMapHeader);
+			const auto expected = simulationComponents(reference);
+			const auto actual = simulationComponents(loaded);
 			if (expected != actual)
 				return describeComponents(expected, actual);
 			if (!(reference.syncRandom == loaded.syncRandom))
