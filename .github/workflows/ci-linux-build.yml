@@ -804,7 +804,7 @@ jobs:
           ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry > /tmp/map-telemetry.log 2>&1 & telemetry=$!
           defaults=
           if [ '${{ inputs.coverage_profile }}' = full ]; then
-            python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --tag map-generators --junit artifacts/tests/map-generators-junit.xml > /tmp/map-defaults.log 2>&1 & defaults=$!
+            python3 test/run_tests.py --tier full --binary engine --build-dir build/linux/client/release --tag map-generators --junit artifacts/tests/map-generators-junit.xml > /tmp/map-defaults.log 2>&1 & defaults=$!
           fi
           status=0
           wait "$telemetry" || status=1

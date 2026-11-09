@@ -198,7 +198,7 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it, and `GLOB2_TEST_SIM_TRACE_DIR=<dir>` also writes the actual text there for `tools/sim_fingerprint.py` |
 | `[writes-preferences]` | legitimately saves settings |
 | `[benchmark]` | timing evidence, not pass/fail; runs only with `--tag benchmark` |
-| `[map-generators]` | the full generator contract; CI runs it in the map-generators job, the shards use `--exclude-tag map-generators` |
+| `[map-generators]` | the full generator contract; CI runs it in the map-generators job with `--tier full` (the cases are also `[slow]`), the shards use `--exclude-tag map-generators` |
 | `[maxima]`, `[save-format]` | selection only |
 
 Assert the property a count stands for, not the count. Check content against the
