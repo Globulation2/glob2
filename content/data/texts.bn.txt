@@ -1674,8 +1674,6 @@ Globulation 2-এর কার্সার দেখান।
 চক্রপথের পরিমাণ
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 গোলকধাঁধাটির জন্য আড়াআড়ি ও লম্বালম্বিভাবে কমপক্ষে দুটি ঘর প্রয়োজন; একটি বড় মানচিত্র বা ছোট ছোট ঘর ব্যবহার করুন।
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-এত চওড়া চ্যানেলে প্রতিটি ঘরে খুব কম ঘাস থাকে; সরু চ্যানেল বা বড় ঘর ব্যবহার করুন।
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 এত উপনিবেশের জন্য গোলকধাঁধায় বন্ধ পথ কম; বড় মানচিত্র বা ছোট ঘর ব্যবহার করুন।
 [Home island size]
@@ -1684,6 +1682,14 @@ Globulation 2-এর কার্সার দেখান।
 যৌথ ভূমির আকার
 [Moat width]
 পরিখার প্রস্থ
+[Wall thickness]
+দেয়ালের পুরুত্ব
+[Gardens]
+বাগান
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+এত পুরু দেয়ালে দরজাগুলো খুব সরু থাকে; পাতলা দেয়াল বা বড় ঘর ব্যবহার করুন।
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+এত চওড়া পরিখায় প্রতিটি নিজ ঘাঁটির ভেতরে খুব কম জায়গা থাকে; সরু পরিখা, পাতলা দেয়াল বা বড় ঘর ব্যবহার করুন।
 [Bridge count]
 সেতুর সংখ্যা
 [Continent size]

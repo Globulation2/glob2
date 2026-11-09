@@ -1710,8 +1710,6 @@ Ekrarnas bredd
 Antal slingor
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labyrinten behöver minst två celler på bredden och på höjden; använd en större karta eller mindre celler.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Så breda kanaler lämnar för lite gräs i varje cell; använd smalare kanaler eller större celler.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labyrinten har för få återvändsgränder för så många kolonier; använd en större karta eller mindre celler.
 [Home island size]
@@ -1720,6 +1718,14 @@ Startöns storlek
 Allmänningens storlek
 [Moat width]
 Vallgravens bredd
+[Wall thickness]
+Murtjocklek
+[Gardens]
+Trädgårdar
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Så tjocka murar gör öppningarna för smala; använd tunnare murar eller större celler.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Så breda vallgravar lämnar för lite plats inne i varje hembas; använd en smalare vallgrav, tunnare murar eller större celler.
 [Bridge count]
 Antal broar
 [Continent size]

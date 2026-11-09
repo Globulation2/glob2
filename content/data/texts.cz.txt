@@ -1710,8 +1710,6 @@ Velikost buňky
 Propojenost
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Bludiště potřebuje alespoň dvě buňky na šířku i na výšku; použijte větší mapu nebo menší buňky.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Takto široké průlivy nechávají v každé buňce příliš málo trávy; použijte užší průlivy nebo větší buňky.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Bludiště má pro tolik kolonií příliš málo slepých uliček; použijte větší mapu nebo menší buňky.
 [Home island size]
@@ -1720,6 +1718,14 @@ Velikost domovského ostrova
 Velikost společného území
 [Moat width]
 Šířka příkopu
+[Wall thickness]
+Tloušťka zdí
+[Gardens]
+Zahrady
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Takto silné zdi nechávají průchody příliš úzké; použijte tenčí zdi nebo větší buňky.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Takto široké příkopy nechávají uvnitř každé domovské základny příliš málo místa; použijte užší příkop, tenčí zdi nebo větší buňky.
 [Bridge count]
 Počet mostů
 [Continent size]

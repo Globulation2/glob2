@@ -1710,8 +1710,6 @@ Lebar jari-jari
 Kepadatan jalur melingkar
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirin memerlukan setidaknya dua sel secara horizontal dan vertikal; gunakan peta yang lebih besar atau sel yang lebih kecil.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Kanal selebar ini menyisakan terlalu sedikit rumput di setiap sel; gunakan kanal yang lebih sempit atau sel yang lebih besar.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirin memiliki terlalu sedikit jalan buntu untuk koloni sebanyak ini; gunakan peta yang lebih besar atau sel yang lebih kecil.
 [Home island size]
@@ -1720,6 +1718,14 @@ Ukuran pulau awal
 Ukuran tanah bersama
 [Moat width]
 Lebar parit air
+[Wall thickness]
+Ketebalan tembok
+[Gardens]
+Kebun
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tembok setebal ini membuat celah pintu terlalu sempit; gunakan tembok yang lebih tipis atau sel yang lebih besar.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Parit air selebar ini menyisakan terlalu sedikit ruang di dalam setiap markas; gunakan parit yang lebih sempit, tembok yang lebih tipis, atau sel yang lebih besar.
 [Bridge count]
 Jumlah jembatan
 [Continent size]

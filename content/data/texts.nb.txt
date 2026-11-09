@@ -1674,8 +1674,6 @@ Cellestørrelse
 Antall sløyfer
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labyrinten trenger minst to celler på tvers og nedover; bruk et større kart eller mindre celler.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Så brede kanaler etterlater for lite gress i hver celle; bruk smalere kanaler eller større celler.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labyrinten har for få blindveier til så mange kolonier. Bruk et større kart eller mindre celler.
 [Home island size]
@@ -1684,6 +1682,14 @@ Størrelse på hjemmeøya
 Størrelse på fellesområder
 [Moat width]
 Bredde på vollgraven
+[Wall thickness]
+Murtykkelse
+[Gardens]
+Hager
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Så tykke murer gjør åpningene for smale; bruk tynnere murer eller større celler.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Så brede vollgraver gir for lite plass inne i hver hjemmebase; bruk en smalere vollgrav, tynnere murer eller større celler.
 [Bridge count]
 Antall broer
 [Continent size]

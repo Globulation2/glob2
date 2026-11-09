@@ -1674,8 +1674,6 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 வளையப் பாதைகளின் அளவு
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 புதிர்ப்பாதைக்குக் குறுக்கிலும் நீளவாக்கிலும் குறைந்தபட்சம் இரண்டு கட்டங்கள் தேவை; பெரிய வரைபடத்தையோ அல்லது சிறிய கட்டங்களையோ பயன்படுத்துங்கள்.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-இவ்வளவு அகலமான நீர்வழிகள் ஒவ்வொரு கட்டத்திலும் மிகக் குறைந்த புல்லையே விடுகின்றன; குறுகிய நீர்வழிகள் அல்லது பெரிய கட்டங்களைப் பயன்படுத்தவும்.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 இத்தனை குடியிருப்புகளுக்கு இந்தச் சிக்கலான பாதையில் முட்டுச் சாலைகள் போதுமானதாக இல்லை; ஒரு பெரிய வரைபடத்தையோ அல்லது சிறிய கட்டங்களையோ பயன்படுத்துங்கள்.
 [Home island size]
@@ -1684,6 +1682,14 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 பொது நில அளவு
 [Moat width]
 அகழியின் அகலம்
+[Wall thickness]
+சுவர் தடிமன்
+[Gardens]
+தோட்டங்கள்
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+இவ்வளவு தடிமனான சுவர்கள் வாயில்களை மிகக் குறுகலாக்குகின்றன; மெல்லிய சுவர்கள் அல்லது பெரிய கட்டங்களைப் பயன்படுத்தவும்.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+இவ்வளவு அகலமான அகழிகள் ஒவ்வொரு தொடக்கத் தளத்தின் உள்ளேயும் மிகக் குறைந்த இடத்தையே விடுகின்றன; குறுகிய அகழி, மெல்லிய சுவர்கள் அல்லது பெரிய கட்டங்களைப் பயன்படுத்தவும்.
 [Bridge count]
 பாலங்களின் எண்ணிக்கை
 [Continent size]

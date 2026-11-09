@@ -1674,8 +1674,6 @@ OpenGL не е наличен в тази компилация.
 Свързаност на обходните пътища
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Лабиринтът изисква поне две клетки по ширина и височина; използвайте по-голяма карта или по-малки клетки.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Каналите с такава ширина оставят твърде малко трева във всяка клетка; използвайте по-тесни канали или по-големи клетки.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Лабиринтът има твърде малко задънени улици за толкова много колонии; използвайте по-голяма карта или по-малки клетки.
 [Home island size]
@@ -1684,6 +1682,14 @@ OpenGL не е наличен в тази компилация.
 Размер на общите земи
 [Moat width]
 Ширина на рова
+[Wall thickness]
+Дебелина на стените
+[Gardens]
+Градини
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Стени с такава дебелина оставят проходите твърде тесни; използвайте по-тънки стени или по-големи клетки.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Ровове с такава ширина оставят твърде малко място във всяка домашна база; използвайте по-тесен ров, по-тънки стени или по-големи клетки.
 [Bridge count]
 Брой мостове
 [Continent size]

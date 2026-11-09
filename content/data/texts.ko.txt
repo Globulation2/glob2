@@ -1710,8 +1710,6 @@ Globulation 2 커서를 표시합니다.
 순환로 밀도
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 미로에는 가로와 세로로 각각 칸이 2개 이상 필요합니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-수로가 이렇게 넓으면 각 칸에 남는 초지가 너무 적습니다. 수로를 더 좁게 하거나 칸을 더 크게 하세요.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 이 식민지 수에 비해 미로의 막다른 길이 너무 적습니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
 [Home island size]
@@ -1720,6 +1718,14 @@ Globulation 2 커서를 표시합니다.
 공유지 크기
 [Moat width]
 해자 너비
+[Wall thickness]
+벽 두께
+[Gardens]
+텃밭
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+벽이 이렇게 두꺼우면 출입구가 너무 좁아집니다. 벽을 더 얇게 하거나 칸을 더 크게 하세요.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+해자가 이렇게 넓으면 각 본거지 안에 남는 공간이 너무 적습니다. 해자를 더 좁게 하거나, 벽을 더 얇게 하거나, 칸을 더 크게 하세요.
 [Bridge count]
 다리 수
 [Continent size]

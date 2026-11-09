@@ -1710,8 +1710,6 @@ Lățimea spițelor
 Densitatea buclelor
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirintul are nevoie de cel puțin două celule pe orizontală și pe verticală; folosiți o hartă mai mare sau celule mai mici.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Canalele atât de late lasă prea puțină iarbă în fiecare celulă; folosiți canale mai înguste sau celule mai mari.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirintul are prea puține fundături pentru atâtea colonii; folosiți o hartă mai mare sau celule mai mici.
 [Home island size]
@@ -1720,6 +1718,14 @@ Mărimea insulei de pornire
 Mărimea teritoriului comun
 [Moat width]
 Lățimea șanțului cu apă
+[Wall thickness]
+Grosimea zidurilor
+[Gardens]
+Grădini
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Zidurile atât de groase lasă trecerile prea înguste; folosiți ziduri mai subțiri sau celule mai mari.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Șanțurile cu apă atât de late lasă prea puțin loc în fiecare bază; folosiți un șanț mai îngust, ziduri mai subțiri sau celule mai mari.
 [Bridge count]
 Numărul de poduri
 [Continent size]

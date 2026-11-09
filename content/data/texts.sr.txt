@@ -1710,8 +1710,6 @@ OpenGL није доступан у овој верзији.
 Учесталост петљи
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Лавиринту су потребне најмање две ћелије по ширини и по висини; користите већу мапу или мање ћелије.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Овако широки канали остављају премало траве у свакој ћелији; користите уже канале или веће ћелије.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Лавиринт има премало ћорсокака за толико колонија; користите већу мапу или мање ћелије.
 [Home island size]
@@ -1720,6 +1718,14 @@ OpenGL није доступан у овој верзији.
 Величина заједничког подручја
 [Moat width]
 Ширина воденог рова
+[Wall thickness]
+Дебљина зидова
+[Gardens]
+Баште
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Овако дебели зидови остављају пролазе преуским; користите тање зидове или веће ћелије.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Овако широки водени ровови остављају премало места унутар сваке базе; користите ужи ров, тање зидове или веће ћелије.
 [Bridge count]
 Број мостова
 [Continent size]

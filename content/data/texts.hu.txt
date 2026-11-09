@@ -1710,8 +1710,6 @@ Küllők szélessége
 Huroksűrűség
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használj nagyobb térképet vagy kisebb cellákat.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használj keskenyebb csatornákat vagy nagyobb cellákat.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 A labirintusban túl kevés a zsákutca ennyi kolóniához; használj nagyobb térképet vagy kisebb cellákat.
 [Home island size]
@@ -1720,6 +1718,14 @@ Kezdősziget mérete
 Közös terület mérete
 [Moat width]
 Várárok szélessége
+[Wall thickness]
+Falvastagság
+[Gardens]
+Kertek
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Ilyen vastag falak mellett túl szűkek maradnak az átjárók; használj vékonyabb falakat vagy nagyobb cellákat.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Ilyen széles várárkok mellett minden bázisban túl kevés hely marad; használj keskenyebb várárkot, vékonyabb falakat vagy nagyobb cellákat.
 [Bridge count]
 Hidak száma
 [Continent size]

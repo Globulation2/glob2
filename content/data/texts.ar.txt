@@ -1710,8 +1710,6 @@ OpenGL غير متوفر في هذا الإصدار.
 كثافة الحلقات
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 تحتاج المتاهة إلى خليتين على الأقل أفقيًا ورأسيًا؛ استخدم خريطة أكبر أو خلايا أصغر.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-القنوات بهذا العرض تترك عشبًا قليلًا جدًا في كل خلية؛ استخدم قنوات أضيق أو خلايا أكبر.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 لا تحتوي المتاهة على طرق مسدودة كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو خلايا أصغر.
 [Home island size]
@@ -1720,6 +1718,14 @@ OpenGL غير متوفر في هذا الإصدار.
 حجم الأراضي المشاع
 [Moat width]
 عرض الخندق المائي
+[Wall thickness]
+سماكة الجدران
+[Gardens]
+الحدائق
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+الجدران بهذه السماكة تترك المداخل ضيقة جدًا؛ استخدم جدرانًا أرق أو خلايا أكبر.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+الخنادق المائية بهذا العرض تترك مساحة قليلة جدًا داخل كل مقر؛ استخدم خندقًا أضيق أو جدرانًا أرق أو خلايا أكبر.
 [Bridge count]
 عدد الجسور
 [Continent size]

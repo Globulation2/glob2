@@ -1710,8 +1710,6 @@ Speichenbreite
 Vernetzungsgrad
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Das Labyrinth braucht mindestens zwei Zellen in der Breite und in der Höhe; verwenden Sie eine größere Karte oder kleinere Zellen.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-So breite Kanäle lassen in jeder Zelle zu wenig Gras übrig; verwenden Sie schmalere Kanäle oder größere Zellen.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Das Labyrinth hat zu wenige Sackgassen für so viele Kolonien; verwenden Sie eine größere Karte oder kleinere Zellen.
 [Home island size]
@@ -1720,6 +1718,14 @@ Größe der Startinsel
 Größe des Gemeinschaftslands
 [Moat width]
 Grabenbreite
+[Wall thickness]
+Mauerstärke
+[Gardens]
+Gärten
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+So dicke Mauern lassen die Durchgänge zu schmal; verwenden Sie dünnere Mauern oder größere Zellen.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+So breite Gräben lassen in jeder Heimatbasis zu wenig Platz; verwenden Sie einen schmaleren Graben, dünnere Mauern oder größere Zellen.
 [Bridge count]
 Anzahl der Brücken
 [Continent size]

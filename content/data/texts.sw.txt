@@ -1674,8 +1674,6 @@ Ukubwa wa seli
 Wingi wa mizunguko
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Njia tata zinahitaji angalau seli mbili kwa upana na urefu; tumia ramani kubwa au seli ndogo zaidi.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Mifereji yenye upana huu huacha nyasi chache mno katika kila seli; tumia mifereji myembamba au seli kubwa zaidi.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Njia tata hazina njia za kutosha zenye mwisho uliofungwa kwa makazi haya mengi; tumia ramani kubwa au seli ndogo zaidi.
 [Home island size]
@@ -1684,6 +1682,14 @@ Ukubwa wa kisiwa cha nyumbani
 Ukubwa wa eneo la pamoja
 [Moat width]
 Upana wa mtaro
+[Wall thickness]
+Unene wa kuta
+[Gardens]
+Bustani
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Kuta zenye unene huu huacha milango myembamba mno; tumia kuta nyembamba zaidi au seli kubwa zaidi.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Mitaro yenye upana huu huacha nafasi ndogo mno ndani ya kila kituo cha nyumbani; tumia mtaro mwembamba zaidi, kuta nyembamba zaidi au seli kubwa zaidi.
 [Bridge count]
 Idadi ya madaraja
 [Continent size]

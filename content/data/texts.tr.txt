@@ -1710,8 +1710,6 @@ Işın genişliği
 Döngü yoğunluğu
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirent yatayda ve dikeyde en az iki hücre gerektirir; daha büyük bir harita veya daha küçük hücreler kullanın.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Bu kadar geniş kanallar her hücrede çok az çimen bırakır; daha dar kanallar veya daha büyük hücreler kullanın.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirentte bu kadar koloni için çok az çıkmaz sokak var; daha büyük bir harita veya daha küçük hücreler kullanın.
 [Home island size]
@@ -1720,6 +1718,14 @@ Başlangıç adası boyutu
 Ortak alan boyutu
 [Moat width]
 Su hendeği genişliği
+[Wall thickness]
+Duvar kalınlığı
+[Gardens]
+Bostanlar
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Bu kadar kalın duvarlar geçitleri çok dar bırakır; daha ince duvarlar veya daha büyük hücreler kullanın.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Bu kadar geniş su hendekleri her üssün içinde çok az yer bırakır; daha dar bir hendek, daha ince duvarlar veya daha büyük hücreler kullanın.
 [Bridge count]
 Köprü sayısı
 [Continent size]

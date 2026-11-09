@@ -870,12 +870,13 @@ TEST_SUITE("MapGeneratorDefaults")
 		D small;
 		small.setMethodDefaults(GeneratorRegistry::builtins().idOf("maze"));
 		small.wDec = small.hDec = 6;
-		small.nbTeams = 1;
-		// Hexagons cannot fit here, but Random retains the supported square layout.
+		small.nbTeams = 3;
+		// Squares cannot fit three cul-de-sacs here since Maze 2.0's thinner walls, but hexagons
+		// can, and Random keeps to the supported hexagonal layout.
 		for (unsigned seed = 1; seed <= 8; ++seed)
 		{
 			small.seed = seed;
-			REQUIRE(MazeOptions(small).cellShape == 0);
+			REQUIRE(MazeOptions(small).cellShape == 1);
 		}
 	}
 	TEST_CASE("resource habitat distinguishes terrain permission from growth and occupancy")
@@ -1172,11 +1173,14 @@ TEST_SUITE("MapGeneratorDefaults")
 		// Keep historical comparisons only for designs whose topology is unchanged.
 		// Honeycomb revision4 removed the stone outlines; corner voting changes
 		// Canals and Fingerprint placement; Caravanserai revision 5 (2.0) turned
-		// its mesas into rock with quarry faces and its routes into roads. Their
-		// current worlds are covered by generator contracts and the platform
-		// golden matrix. Do not overwrite archived resource-epoch references with
-		// these intentional new layouts.
-		for (const auto original : {Original{"maze", "cell-shape", 0, 6132248727033081699ULL}})
+		// its mesas into rock with quarry faces and its routes into roads; Maze
+		// revision 17 (2.0) turned its stone-and-channel walls into cliffs with
+		// moated homes, gardens and paved roads (its pin was
+		// {"maze", "cell-shape", 0, 6132248727033081699}). Their current worlds
+		// are covered by generator contracts and the platform golden matrix. Do
+		// not overwrite archived resource-epoch references with these intentional
+		// new layouts.
+		for (const auto original : std::vector<Original>{})
 		{
 			D request;
 			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(original.id));

@@ -1710,8 +1710,6 @@ Szerokość szprych
 Liczba pętli
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirynt wymaga co najmniej dwóch komórek w poziomie i w pionie; użyj większej mapy lub mniejszych komórek.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Tak szerokie kanały zostawiają w każdej komórce za mało trawy; użyj węższych kanałów lub większych komórek.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirynt ma za mało ślepych zaułków dla tylu kolonii; użyj większej mapy lub mniejszych komórek.
 [Home island size]
@@ -1720,6 +1718,14 @@ Rozmiar wyspy startowej
 Rozmiar terenu wspólnego
 [Moat width]
 Szerokość fosy
+[Wall thickness]
+Grubość murów
+[Gardens]
+Ogrody
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tak grube mury zostawiają zbyt wąskie przejścia; użyj cieńszych murów lub większych komórek.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Tak szerokie fosy zostawiają zbyt mało miejsca wewnątrz każdej bazy; użyj węższej fosy, cieńszych murów lub większych komórek.
 [Bridge count]
 Liczba mostów
 [Continent size]

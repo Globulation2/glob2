@@ -1710,8 +1710,6 @@ AI 策略與對抗
 迴路密度
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 迷宮在橫向和縱向上都至少需要兩個區格；請使用更大的地圖或更小的區格。
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-水道這麼寬，每個區格裡剩下的草地太少；請使用更窄的水道或更大的區格。
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 迷宮中的死路太少，不足以容納這麼多殖民地；請使用更大的地圖或更小的區格。
 [Home island size]
@@ -1720,6 +1718,14 @@ AI 策略與對抗
 公地區域大小
 [Moat width]
 護城河寬度
+[Wall thickness]
+牆體厚度
+[Gardens]
+菜園
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+牆這麼厚，區格之間的通道太窄；請使用更薄的牆或更大的區格。
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+護城河這麼寬，每個基地內部剩下的空間太少；請使用更窄的護城河、更薄的牆或更大的區格。
 [Bridge count]
 橋樑數量
 [Continent size]
