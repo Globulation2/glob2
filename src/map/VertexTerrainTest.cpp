@@ -52,7 +52,9 @@ TEST_CASE("classic transitions vote on movement and blend ecology")
 					const auto p = combine(a, b, c, d);
 					CHECK_EQ(p.walkable, water <= 2);
 					CHECK_EQ(p.swimmable, water >= 3);
-					CHECK_EQ(p.shoreline, sand > 0);
+					const unsigned grass = 4 - water - sand;
+					// Sand is a beach; grass meeting water directly is one too.
+					CHECK_EQ(p.shoreline, sand > 0 || (grass > 0 && water > 0));
 					CHECK_EQ(p.buildable, a == GRASS && b == GRASS && c == GRASS && d == GRASS);
 					CHECK_EQ(p.fertilityQ8, water * 64);
 					CHECK_EQ(p.inhibitionQ8, sand * 64);
@@ -66,7 +68,7 @@ TEST_CASE("water-majority grass transitions are swimmable and unbuildable")
 	CHECK_FALSE(p.walkable);
 	CHECK(p.swimmable);
 	CHECK_FALSE(p.buildable);
-	CHECK_FALSE(p.shoreline);
+	CHECK(p.shoreline);
 	// Both corners grow resources, but they share none.
 	CHECK_EQ(p.allowedResources, 0);
 	CHECK_EQ(p.farmMaterial, 255);
@@ -313,6 +315,23 @@ TEST_CASE("mixed cells take the shore habitat and intersect explicit resource li
 	}
 	CHECK(table.farmResource(shore) == NO_RES_TYPE);
 	CHECK(table.farmResource(GRASS) != NO_RES_TYPE);
+}
+
+TEST_CASE("grass directly against water is a shore: no land crops, algae where it swims")
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	CHECK(table.supportsResource(GRASS, WHEAT));
+	for (const auto water : {1, 2, 3})
+	{
+		CAPTURE(water);
+		const auto cell = table.intern(GRASS, water >= 3 ? WATER : GRASS, water >= 2 ? WATER : GRASS, WATER);
+		CHECK(table[cell].properties.shoreline);
+		CHECK_FALSE(table.supportsResource(cell, WHEAT));
+		CHECK_FALSE(table.supportsResource(cell, WOOD));
+		CHECK(table.farmResource(cell) == NO_RES_TYPE);
+		CHECK(table.supportsResource(cell, ALGA) == (water == 3));
+	}
 }
 
 TEST_CASE("a vertex write re-derives the four cells around it")

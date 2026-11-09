@@ -24,9 +24,17 @@ static_assert([] {
 		beach.inhibitionQ8 == 128 && beach.shoreSupportQ8 == 128 && beach.fertilityQ8 == 128 &&
 		gardenEdge.inhibitionQ8 == 128 && gardenEdge.shoreSupportQ8 == 128;
 }());
-// Grass directly against water is legal; an even split favors walking.
-static_assert(combineCornerRules(TERRAIN_PROPERTIES[GRASS], TERRAIN_PROPERTIES[GRASS],
-	TERRAIN_PROPERTIES[WATER], TERRAIN_PROPERTIES[WATER]).walkable);
+// Grass directly against water is legal; an even split favors walking, and
+// the cell is a shoreline, so land crops never grow at the water's edge.
+static_assert([] {
+	const auto& g = TERRAIN_PROPERTIES[GRASS];
+	const auto& w = TERRAIN_PROPERTIES[WATER];
+	const auto even = combineCornerRules(g, g, w, w);
+	const auto bank = combineCornerRules(g, g, g, w);
+	const auto shallows = combineCornerRules(g, w, w, w);
+	return even.walkable && even.shoreline && bank.walkable && bank.shoreline &&
+		shallows.swimmable && shallows.shoreline;
+}());
 static_assert([] {
 	for (unsigned a = 0; a < TERRAIN_COUNT; ++a)
 		for (unsigned b = 0; b < TERRAIN_COUNT; ++b)

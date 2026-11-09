@@ -30,7 +30,9 @@
   `terrainPropertiesAt`; `terrainTypeAt` answers `MIXED_TERRAIN` for a mixed tile.
 - **Beaches are a convention, not a rule.** Grass directly against water is legal: mixed tiles
   are unbuildable and walk with at least two grass corners, otherwise they swim. Sand/water
-  uses the same movement vote; grass/sand always walks. The shipped
+  uses the same movement vote; grass/sand always walks. Any tile mixing walking and swimming
+  corners is a shoreline, as a beach would be, so it takes shore and water resources but never
+  land crops: wheat, wood and fruit stop one tile short of water whether or not sand lies between. The shipped
   maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
   water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
   result does not depend on scan order; the designed generators apply the same rule to their

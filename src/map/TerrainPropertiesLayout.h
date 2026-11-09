@@ -63,6 +63,9 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 // vote. Equal corner weights give speed, health and ecology gradual transitions
 // at 1:3, 2:2 and 3:1 boundaries. Q8 averages round toward zero. Transitions are
 // never buildable; permissions still require all corners and blockers any corner.
+// A transition with both walking and swimming corners is a shoreline, as if a
+// beach stood there: grass straight against water hosts shore resources, not
+// land crops, whichever way its movement vote went.
 constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const TerrainProperties& b,
 	const TerrainProperties& c, const TerrainProperties& d)
 {
@@ -78,10 +81,12 @@ constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const
 	}
 	if (uniform) return a;
 	TerrainProperties result;
+	const bool coast = walking > 0 && swimming > 0;
 	result.walkable = blocked < 2 && walking >= swimming;
 	result.swimmable = blocked < 2 && swimming > walking;
 	result.buildable = false;
-	result.projectileBlocks = result.shoreline = false;
+	result.projectileBlocks = false;
+	result.shoreline = coast;
 	result.flyable = result.resourcesGrow = result.nonGrowingResources = result.fertilitySource = true;
 	result.farmMaterial = 255;
 	// Promote every term before adding: authored signed health rates can span

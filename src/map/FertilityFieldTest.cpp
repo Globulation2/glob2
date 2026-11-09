@@ -236,10 +236,14 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	map.makeSand(6, 6);
 	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	// Fish make open water food habitat; sand never is.
-	CHECK(field.at(4, 4) > 0u);
+	// Sand is never food habitat, and neither is grass straight against water:
+	// that cell is a shore, so the pond's shore ring cuts it off from the
+	// wheat, and only the ungated field still rates its water fertile.
 	CHECK_EQ(std::uint32_t(0), field.at(6, 6));
-	CHECK(field.at(5, 4) > 0u);
+	CHECK_EQ(std::uint32_t(0), field.at(5, 4));
+	CHECK_EQ(std::uint32_t(0), field.at(4, 4));
+	CHECK(Fertility::forMap(map, false).at(4, 4) > 0u);
+	CHECK(field.at(10, 10) > 0u);
 }
 
 void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
