@@ -33,6 +33,31 @@ namespace glob2test
 		game.step(0);
 		return orders;
 	}
+
+	std::vector<ValidatedAIOrder> stepAIValidated(Game &game)
+	{
+		std::vector<unsigned> players;
+		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+			if (game.players[p] && game.players[p]->ai)
+				players.push_back(unsigned(p));
+		const auto &world = game.observeCompletedWorld();
+		game.admitAIOrders(players, false, {}, world);
+		std::vector<ValidatedAIOrder> executed;
+		for (auto &[player, delivered] : game.deliverAIOrders(players, false))
+		{
+			ValidatedAIOrder record;
+			record.player = player;
+			record.tick = game.stepCounter;
+			record.deliveredType = delivered->getOrderType();
+			delivered->sender = int(player);
+			record.order = game.validateAIOrder(delivered, player);			record.result = OrderValidation::validate(game, int(player), *record.order);
+			game.executeOrder(record.order, int(player));
+			executed.push_back(std::move(record));
+		}
+		game.finishOrderPhase(true);
+		game.advanceLiveSimulation(0);
+		return executed;
+	}
 }
 
 class HiringPipelineHarness
