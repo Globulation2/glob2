@@ -5,6 +5,7 @@
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "Continuation.h"
+#include "SimulationInvariants.h"
 #include "DrawFixtures.h"
 #include "GradientFixture.h"
 #include "MapInternal.h"
@@ -18,6 +19,7 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <iomanip>
+#include <optional>
 #include <chrono>
 #include <ctime>
 #include <Environment.h>
@@ -35,13 +37,31 @@ using glob2test::simulationComponents;
 std::vector<Uint32> historicalGoldenState(Game& game) { return simulationComponents(game,true); }
 // Binary saves, or text saves to exercise the text stream format.
 std::string save(Game &game, bool text) { return glob2test::saveGameBytes(game, "Markets V2 test", text); }
+// Cherries held anywhere: building and team stock, and carried packets in stock units.
+Sint64 cherriesOnHand(Game &game)
+{
+	const auto census = glob2test::takeMaterialCensus(game);
+	glob2test::StockAmount total{census.stock[CHERRY], 1};
+	total += census.carried[CHERRY];
+	REQUIRE(total.denominator == 1);
+	return total.numerator;
+}
+Uint64 cherriesEaten(Game &game)
+{
+	Uint64 eaten = 0;
+	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		eaten += std::as_const(game.teams[t]->stats).events().consumed[GameplayMeasurements::MEAL][CHERRY];
+	return eaten;
+}
 }
 
 TEST_SUITE("MarketsV2")
 {
 // Historical checksums remain a separate migration comparison. Current runs also
 // verify delivery and save continuation under both routing configurations.
-std::string marketTrace(bool enabled, bool report=false)
+// fed: keep the workers sated every tick (the golden traces); otherwise they start
+// hungry and eat at the inn, which takes cherries from the market.
+std::string marketTrace(bool enabled, bool report=false, bool fed=true)
 {
 	glob2test::HeadlessGlobals globals;
 	std::ostringstream trace;
@@ -74,21 +94,41 @@ std::string marketTrace(bool enabled, bool report=false)
 		inn->maxUnitWorking = 3;
 		inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT] - 1);
 		market->setMaterial(CHERRY, 100);
+		// Unfed workers eat from the start, so give the inn fruit before the market delivers.
+		if (!fed) inn->setMaterial(CHERRY, 20);
 		second->setMaterial(ORANGE, 100);
 		g.map.setResourceByIndex(5, 10, WHEAT, 0);
 		for (int i=0; i<6; ++i) world.addUnit(WORKER, 4+i, 4, 0, 1);
 		inn->updateCallLists();
+		// Fruit is only moved and eaten: there are no cherry tiles and growth is off.
+		std::optional<glob2test::MaterialLedger> ledger; // from the first step on
+		const Sint64 initialCherries = cherriesOnHand(g);
+		CHECK(initialCherries == (fed ? 100 : 120));
+		const auto scriptedDelivery = [&](int material) {
+			const Sint64 before = market->material(material);
+			market->addMaterialIntoBuilding(material);
+			REQUIRE(ledger);
+			ledger->credit(material, market->material(material) - before);
+		};
 		for (int tick=0; tick<1500; ++tick)
 		{
 			// Identical scripted deliveries on both builds exercise stock transitions.
-			if (tick==500) market->addMaterialIntoBuilding(ORANGE);
-			if (tick==1000) market->addMaterialIntoBuilding(PRUNE);
+			if (tick==500) scriptedDelivery(ORANGE);
+			if (tick==1000) scriptedDelivery(PRUNE);
 			for (int i=0; i<6; ++i)
 			{
 				auto *u = world.team->myUnits[i];
-				u->hungry = Unit::HUNGRY_MAX; u->medical = Unit::MED_FREE;
+				if (fed) u->hungry = Unit::HUNGRY_MAX;
+				else if (tick%400==0) u->hungry = 0; // once the inn holds fruit, meals take it
+				u->medical = Unit::MED_FREE;
 			}
 			world.step();
+			{
+				CAPTURE(pipeline); CAPTURE(tick);
+				CHECK(cherriesOnHand(g) + Sint64(cherriesEaten(g)) == initialCherries);
+				if (!ledger) ledger.emplace(g);
+				else ledger->check("markets tick " + std::to_string(tick+1));
+			}
 			Uint32 hash=2166136261u;
 			for (Uint32 value : historicalGoldenState(g)) hash=(hash ^ value)*16777619u;
 			trace << pipeline << ' ' << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
@@ -120,6 +160,12 @@ std::string marketTrace(bool enabled, bool report=false)
         // delivery; ownExchangeBuilding is retained only for old saved journeys.
         CHECK(inn->material(CHERRY) > 0);
 		CHECK(market->material(CHERRY) < 100);
+		if (!fed) CHECK(cherriesEaten(g) > 0);
+		REQUIRE(ledger);
+		{
+			INFO(ledger->inexactReasons());
+			CHECK(ledger->colonyExact());
+		}
 #if VERSION_MINOR >= 135
 		std::size_t fields=0;
 		for (int t=0;t<Team::MAX_COUNT;++t) for (int r=0;r<MaterialSlotCount;++r) for (int sw=0;sw<SWIM_CLASS_COUNT;++sw)
@@ -137,6 +183,18 @@ std::string marketTrace(bool enabled, bool report=false)
 TEST_CASE("disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]")
 {
 	glob2test::expectGolden("markets-v2/disabled-checksums.txt", marketTrace(false));
+}
+
+// The oracle the checksum traces stand for: across both routing configurations and
+// a save and load, cherries held in buildings and carried by workers plus those
+// eaten always equal what the market and inn started with, and every material's
+// ledger balances.
+TEST_CASE("market cherries are conserved apart from what was eaten [save-format]")
+{
+	marketTrace(false, false, false);
+#if VERSION_MINOR >= 135
+	marketTrace(true, false, false);
+#endif
 }
 
 TEST_CASE("legacy workers already travelling to markets continue after migration [golden][save-format]")

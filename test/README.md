@@ -283,7 +283,9 @@ game or GUI does not compile against them:
   issues only Accepted or Stale orders across seeds, with a documented allowlist
   for rejections already known on master;
 - `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes;
-- `Continuation.h` (engine binary only): save/load continuation checks, below.
+- `Continuation.h` (engine binary only): save/load continuation checks, below;
+- `SimulationInvariants.h` (sim and engine binaries): `expectBuildingInvariants` and
+  the `MaterialLedger`, below.
 
 ### Seeded properties and save continuations
 
@@ -316,6 +318,37 @@ AI decisions, or `stepEngine`), `afterLoad` for what a real loader applies after
 `Game::load` or for checks of the loaded state, `each` for test-specific comparisons
 at every tick, `gui` to save and load through `GameGUI`, and `twoLoads` to compare
 two loads of one save when loading deliberately rebuilds unsaved state.
+
+### Invariants and the material ledger
+
+`test/support/SimulationInvariants.h` holds oracles that are true of any live game,
+so behaviour tests can state what should hold rather than compare a checksum.
+`expectBuildingInvariants(game)` checks `Game::integrity` and, for every live
+building, occupancy within `maxUnitInside`, non-negative stock and reservations no
+larger than the stock.
+
+`MaterialLedger ledger(game)` then `ledger.check("tick n")` after every step checks
+material conservation in two compartments, per material:
+
+- map: the map's stock equals its stock at the start plus measured growth
+  (`growthGlobal`), minus decay, harvests and clearings;
+- colony: building and team stock plus carried packets (in stock units: one packet
+  is the catalog's `materialMultiplier`, 1 for basic materials and 10 for fruit)
+  equals the start plus harvests, minus everything recorded in `consumed` (meals,
+  births, ammunition, construction, upgrades, services and area upkeep).
+
+The first imbalance fails with every term of the identity and later checks stay
+quiet. Flows the measurements count but do not size (`materialSpillageEvents`,
+repair consumption, cargo lost with a dead carrier, stock lost with a removed
+building, a clearing that removes a whole deposit) make that check one-sided
+(nothing may appear from nowhere) and restart an exact segment from the actual
+census; a material whose accepting buildings disagree on the multiplier (colony) or
+whose deposits are not harvested one unit per event (map; wood in the default
+catalog) is not checked. `inexactReasons()` lists every restart and exclusion, and
+`colonyExact()`/`mapExact()` say whether there were none. Create the ledger after
+the game's first engine step, which starts statistics collection (the constructor
+requires it), and declare material a test inserts with `credit()`/`creditMap()`.
+`takeMaterialCensus(game)` counts the same quantities without a ledger.
 
 Map and unit tests that exercise `Map` without the game use the `GrassMap` pattern
 of `src/map/MapQueryTest.cpp`, which sizes the tile array directly instead of

@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "HeadlessGame.h"
+#include "UnitConsts.h"
+#include "Unit.h"
+#include <deque>
 #include "GradientFixture.h"
 #include <nlohmann/json.hpp>
 #include <BinaryStream.h>
@@ -102,6 +106,80 @@ void enableWaterOnly(Fixture& f) {
 
 TEST_SUITE("MapGradientInvalidation")
 {
+// The schedule oracle: whatever the executor count and publication delay, the wheat
+// field workers read is always exactly the field a synchronous recompute gives for the
+// map as it stood at some recent tick (never a partial, mixed or corrupt field), no
+// older than the adaptive refresh interval plus the publication delay, and it catches
+// up with the current map once the map stops changing.
+TEST_CASE("published resource gradients equal a synchronous recompute of a recent tick") {
+    glob2test::HeadlessGlobals globals;
+    struct Schedule { unsigned workers, delay; };
+    for (const Schedule schedule : {Schedule{0,8},Schedule{2,8},Schedule{0,3},Schedule{1,1}}) {
+        CAPTURE(schedule.workers); CAPTURE(schedule.delay);
+        setSyncRandSeed(17);
+        glob2test::HeadlessGame world({.wDec=6,.hDec=6,.discovered=true,.clearImmobile=true,.header=true,.seed=17});
+        auto& game=world.game; auto& map=game.map;
+        game.gameHeader.setResourceGrowthDisabled(true);
+        map.routing().configureGradientPipeline(schedule.workers,schedule.delay);
+        for (int y=0;y<map.getH();++y) for (int x=0;x<4;++x) map.paintVertexSquare(x,y,WATER,1);
+        for (int y=12;y<20;++y) for (int x=12;x<20;++x) map.setResourceByIndex(x,y,WHEAT,1);
+        for (int x=40;x<44;++x) map.setResourceByIndex(x,40,WHEAT,1);
+        REQUIRE(world.addBuilding("swarm",14,24));
+        for (int i=0;i<8;++i) world.addUnit(WORKER,12+i,22);
+        const int cost=map.routing().preparationCostClass(0,accessClass(MovementAccess::Land));
+        const auto recompute=[&] {
+            std::vector<Uint16> field(map.cellCount());
+            map.routing().seedMaterialGradient(0,WHEAT,cost,field.data());
+            map.routing().propagateGradient(field.data(),cost);
+            return field;
+        };
+        // The bound: the adaptive model's maximum field age (a field nobody's plan
+        // demands may stay idle that long), the publication delay, and the
+        // capture-to-publication boundary on either side.
+        const unsigned maximumAge=AdaptiveGradientState::MaximumAge+schedule.delay+2;
+        std::deque<std::vector<Uint16>> recent; // recent[k]: the map k ticks ago
+        unsigned published=0, oldest=0;
+        const Uint64 harvestedBefore=std::as_const(world.team->stats).events().harvested[WHEAT];
+        for (int tick=1;tick<=600;++tick) {
+            CAPTURE(tick);
+            world.step();
+            for (Unit* u:world.team->liveUnits.entries()) u->hungry=Unit::HUNGRY_MAX;
+            recent.push_front(recompute());
+            if (recent.size()>maximumAge+1) recent.pop_back();
+            const Uint16* field=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
+            if (!field) continue;
+            ++published;
+            unsigned age=0;
+            while (age<recent.size() && !std::equal(recent[age].begin(),recent[age].end(),field)) ++age;
+            if (age==recent.size()) {
+                // Name the first cell that matches no recent recompute.
+                std::size_t cell=0;
+                while (cell<map.cellCount() && field[cell]==recent[0][cell]) ++cell;
+                FAIL("published wheat field matches no synchronous recompute of the last "<<recent.size()
+                    <<" ticks; first difference from the current map at cell "<<cell);
+            }
+            oldest=std::max(oldest,age);
+        }
+        CHECK(published>0);
+        // Workers depleted the field, so the published field had to follow the map.
+        CHECK(std::as_const(world.team->stats).events().harvested[WHEAT]>harvestedBefore);
+        CHECK(oldest<=maximumAge);
+        // Freeze the map, then ask for a refresh: the published field must become the
+        // current map's within the adaptive interval and the publication delay.
+        for (Unit* u:world.team->liveUnits.entries()) u->hp=0;
+        world.step(2);
+        const auto settled=recompute();
+        map.routing().updateMaterialGradient(0,WHEAT,MovementAccess::Land);
+        int caughtUp=-1;
+        for (int tick=0;tick<=int(maximumAge) && caughtUp<0;++tick) {
+            const Uint16* field=map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land);
+            if (field && std::equal(settled.begin(),settled.end(),field)) caughtUp=tick;
+            else world.step();
+        }
+        REQUIRE(std::equal(settled.begin(),settled.end(),recompute().begin()));
+        CHECK(caughtUp>=0);
+    }
+}
 TEST_CASE("forbidden painting delays complete routes across passable resources") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
     for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {

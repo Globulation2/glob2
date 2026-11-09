@@ -21,6 +21,7 @@
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "Continuation.h"
+#include "Property.h"
 #include "GradientFixture.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"
@@ -50,6 +51,9 @@ namespace
 		bool slowCadence = false;       // allocate what a large game has: about every 170 ticks
 		Uint32 seed = 1;
 		bool experiment = true;
+		// With experiment false: set the flag and clear it again, rather than never
+		// mentioning it, so the header carries an explicit "off".
+		bool explicitlyOff = false;
 	};
 
 	// A painted square and how it is counted.
@@ -94,6 +98,11 @@ namespace
 		game.seed = options.seed;
 		if (options.experiment)
 			game.experiments.set(ExperimentId::GuardAreaBalancing);
+		else if (options.explicitlyOff)
+		{
+			game.experiments.set(ExperimentId::GuardAreaBalancing, true);
+			game.experiments.set(ExperimentId::GuardAreaBalancing, false);
+		}
 		return game;
 	}
 
@@ -519,6 +528,29 @@ namespace
 		return text.str();
 	}
 
+	// The off-path scenario's full simulation state after every tick, without the
+	// experiment: the flag never mentioned, or explicitly set false.
+	std::vector<std::vector<Uint32>> offPathStates(bool explicitlyOff, Uint32 seed, int ticks)
+	{
+		setSyncRandSeed(seed);
+		Options options;
+		options.experiment = false;
+		options.explicitlyOff = explicitlyOff;
+		options.seed = seed;
+		World world(options);
+		CHECK_FALSE(world.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
+		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
+		std::vector<std::vector<Uint32>> states;
+		for (int tick = 0; tick < ticks; ++tick)
+		{
+			world.run(1);
+			states.push_back(glob2test::simulationComponents(world.game));
+		}
+		return states;
+	}
+
 	// The separable box sum must equal a brute-force count, including across the
 	// torus seam.
 	void crowdingMatchesBruteForce(const Options& options)
@@ -627,6 +659,26 @@ TEST_SUITE("GuardAreaBalance")
 		spawnSplitsBetweenAreas(options);
 		clumpDrainsIntoNewArea(options);
 		glob2test::expectGolden("guard-area/off-path-checksums.txt", offPathTrace());
+	}
+	TEST_CASE("the flag absent and the flag false play the same game, and warriors take the nearest area")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::forEachSeed(2, [](std::uint32_t seed) {
+			const auto absent = offPathStates(false, seed, 800);
+			const auto off = offPathStates(true, seed, 800);
+			REQUIRE(absent.size() == off.size());
+			int firstDifference = -1;
+			for (std::size_t tick = 0; tick < absent.size() && firstDifference < 0; ++tick)
+				if (absent[tick] != off[tick]) firstDifference = int(tick) + 1;
+			CHECK(firstDifference == -1);
+		}, 1);
+		// The semantic checks the golden case runs: with the experiment off every
+		// warrior takes the nearest area and an existing clump stays put.
+		Options options;
+		options.experiment = false;
+		options.explicitlyOff = true;
+		spawnSplitsBetweenAreas(options);
+		clumpDrainsIntoNewArea(options);
 	}
 	TEST_CASE("crowding box sum matches brute force across the torus seam")
 	{

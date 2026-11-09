@@ -28,7 +28,9 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <map>
 #include <set>
+#include <vector>
 
 
 namespace
@@ -309,6 +311,99 @@ TEST_CASE("a repeated starting map has portable per-tick checksums [save-format]
 		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true, true) << '\n';
 	}
 	glob2test::expectGolden("map-tiling/checksums.txt", checksums.str());
+}
+
+// The oracle the checksum trace above stands for: before the first tick, the
+// repeated map is the source map translated onto every tile (terrain, deposits,
+// and every building and unit by type, each tile's colonies under one team per
+// colony), and every team starts with the same colony.
+TEST_CASE("a repeated starting map is the same map on every tile and deals equal teams [save-format]")
+{
+	glob2test::HeadlessGlobals globals;
+	Game game(nullptr, nullptr);
+	REQUIRE(load(game, "maps/balanced_for_2.map.gz"));
+	const int w0 = game.map.getW(), h0 = game.map.getH();
+	const int rx = 2, ry = 2, teams = 4, perTeam = 2;
+	const int colonies = MapTiling::colonyCount(game.mapHeader.getNumberOfTeams(), rx, ry);
+	REQUIRE(MapTiling::placedColonyCount(colonies, teams, perTeam) == colonies);
+	REQUIRE(game.tileForPlay(rx, ry, teams, perTeam));
+	Map& map = game.map;
+	REQUIRE(map.getW() == w0 * rx);
+	REQUIRE(map.getH() == h0 * ry);
+
+	// What occupies a cell, with the owning team separated out.
+	struct Occupant { int type = -1, team = -1; };
+	const auto building = [&](int x, int y) {
+		const Uint16 gid = map.getBuilding(x, y);
+		if (gid == NOGBID) return Occupant{};
+		const int team = Building::GIDtoTeam(gid);
+		const Building* b = game.teams[team]->myBuildings[Building::GIDtoID(gid)];
+		REQUIRE(b);
+		return Occupant{b->typeNum, team};
+	};
+	const auto unit = [&](Uint16 gid) {
+		if (gid == NOGUID) return Occupant{};
+		const int team = Unit::GIDtoTeam(gid);
+		const Unit* u = game.teams[team]->myUnits[Unit::GIDtoID(gid)];
+		REQUIRE(u);
+		return Occupant{u->typeNum, team};
+	};
+	int mismatches = 0;
+	const auto expectSame = [&](bool same, const char* what, int x, int y, int tx, int ty) {
+		if (same || ++mismatches > 5) return;
+		FAIL_CHECK(std::string(what) << " differs between (" << x << "," << y << ") and its translate (" << tx << "," << ty << ")");
+	};
+	for (int copy = 1; copy < rx * ry; ++copy)
+	{
+		const int ox = (copy % rx) * w0, oy = (copy / rx) * h0;
+		// Each translate maps a source tile's teams one-to-one onto the copy's.
+		std::map<int, int> teamOf;
+		std::map<int, int> sourceOf;
+		const auto sameTeam = [&](int from, int to) {
+			if (from < 0 || to < 0) return from == to;
+			const auto [forward, addedForward] = teamOf.emplace(from, to);
+			const auto [backward, addedBackward] = sourceOf.emplace(to, from);
+			return forward->second == to && backward->second == from;
+		};
+		for (int y = 0; y < h0; ++y)
+			for (int x = 0; x < w0; ++x)
+			{
+				const int tx = x + ox, ty = y + oy;
+				expectSame(map.getTerrainType(x, y) == map.getTerrainType(tx, ty), "terrain", x, y, tx, ty);
+				expectSame(map.getResource(x, y) == map.getResource(tx, ty), "the deposit", x, y, tx, ty);
+				const Occupant b0 = building(x, y), b1 = building(tx, ty);
+				expectSame(b0.type == b1.type && sameTeam(b0.team, b1.team), "the building", x, y, tx, ty);
+				const Occupant g0 = unit(map.getGroundUnit(x, y)), g1 = unit(map.getGroundUnit(tx, ty));
+				expectSame(g0.type == g1.type && sameTeam(g0.team, g1.team), "the ground unit", x, y, tx, ty);
+				const Occupant a0 = unit(map.getAirUnit(x, y)), a1 = unit(map.getAirUnit(tx, ty));
+				expectSame(a0.type == a1.type && sameTeam(a0.team, a1.team), "the air unit", x, y, tx, ty);
+			}
+	}
+	CHECK(mismatches == 0);
+
+	// Every team holds the same number of buildings and units of each type.
+	std::vector<std::map<int, int>> buildingsByType(teams), unitsByType(teams);
+	for (int t = 0; t < teams; ++t)
+	{
+		for (const Building* b : game.teams[t]->liveBuildings.entries())
+			if (b && b->buildingState == Building::ALIVE) ++buildingsByType[t][b->typeNum];
+		for (const Unit* u : game.teams[t]->liveUnits.entries())
+			if (u && !u->isDead) ++unitsByType[t][u->typeNum];
+	}
+	CHECK_FALSE(buildingsByType[0].empty());
+	CHECK_FALSE(unitsByType[0].empty());
+	// "type:count ..." so a mismatch prints readably.
+	const auto counts = [](const std::map<int, int>& byType) {
+		std::string text;
+		for (const auto& [type, count] : byType) text += std::to_string(type) + ":" + std::to_string(count) + " ";
+		return text;
+	};
+	for (int t = 1; t < teams; ++t)
+	{
+		CAPTURE(t);
+		CHECK(counts(buildingsByType[t]) == counts(buildingsByType[0]));
+		CHECK(counts(unitsByType[t]) == counts(unitsByType[0]));
+	}
 }
 
 TEST_CASE("advanced controls preview, reset and accept the repeated map on touch [display][artifacts]")
