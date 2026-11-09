@@ -9,6 +9,15 @@ Revision 6 (River 2.0) redrew the finished terrain with the engine's full palett
 from grass, sand and water. The height field, the river's course, the resource bands, the starts and
 their kits are exactly revision 5's for the same seed.
 
+Revision 7 takes the stone out of the height field. The shared field lays stone in the band just above
+the beach, which on a river is the whole shoreline: on gentle banks it walled the shore in stone, so
+colonies could not reach the river's algae, and stone stood where nothing suggests rock. River now
+paints that band empty (`HeightFieldOptions::paintStone` off, at its default width whatever the stone
+amount, so wheat and wood lie where they did) and lays all its stone as quarry faces in rock: every
+colony's own home quarry, and the bluffs' faces. Stone tiles fell from about 2,700–3,300 to 50–90 on
+256x256 seeds 1–12. Stone never runs out, so each colony's supply is its home face of ten tiles plus
+whatever bluff faces it holds; the empty strip above the beach is open floodplain the crops regrow into.
+
 ## How it plays
 
 - **The river is the front line, swum slowly.** Colonies on opposite banks meet only by swimming or by
@@ -21,11 +30,15 @@ their kits are exactly revision 5's for the same seed.
   ground round it at 48/256 of water) runs two to seven vertices back from every shore outside the
   homes' own gardens. The banks are richer than revision 5's (see the food table); the row where loam
   meets grass grows crops but takes no building.
+- **Home quarries.** Every colony has its own outcrop of rock, a disc four tiles round, about 24
+  walking steps from its swarm on dry ground past its garden (six or more steps from water, so it takes
+  no farmland), nearer its own swarm than any other by at least eight tiles. Its face is the ten edge
+  tiles nearest the swarm, stone on plain grass; every colony's face holds the same ten (`quarryFault`).
+  A colony whose ground leaves no room for one fails generation, and the service rolls another seed.
 - **Point bars and bluffs.** On the inside of the river's bends the beach and the sand behind it are
   mudflat (slow, unbuildable, holding nothing, and unlike sand it does not slow the crops behind it),
   never where a deposit stands, so the bars take no stone or crops.
-  On the outside of the bends low rock bluffs stand four to nine tiles back from the water, behind the
-  stone that lines the bank (`bluffs`):
+  On the outside of the bends low rock bluffs stand four to nine tiles back from the water (`bluffs`):
   impassable, towers shoot over them, scree round them. Most carry a quarry face of stone on a flank
   (how many follows `stone-amount`). A strip of walkable bank always runs between a bluff and the
   water, no bluff stands within 22 tiles of a home, and none parts any ground.
@@ -49,7 +62,8 @@ change a rule.
 | Stage | What happens |
 | --- | --- |
 | Height field | `generateHeightField` unchanged: `makeRiver` stamps the bed, the lobby's weights become water, beach, grass and desert, resources are bands of the field, `chooseBalancedStarts` picks the starts, the starting-crop guarantee and groves run. |
-| Bluffs | Planned from the height field rebuilt from the request (`heightFieldSketch`: its terrain and stone band, before the starting-crop top-up, whose wall clearing can remove stone) and the starts alone, exactly as `validateWorld` replans them: cutbank beach vertices of the river (`majorWater`) whose water share over a window a quarter of the bed's diameter (`wetShare`) is in the banks' bottom 20% and below 470 thousandths, strongest first; a crescent lens of walkable tiles 4 to 9 steps from water within about 10 tiles, never on the field's stone, kept in 2x2 blocks; centres 30 apart, 22 from every swarm, one per 80 tiles of width and height; dropped on islands under 1,500 tiles or where the walkable ring round it falls apart. A face of tiles left out of the rock on a flank (60% of bluffs at 100% stone, two flanks from 150%). |
+| Home quarries | Planned first, from the same rebuilt height field and the starts: for each colony the candidate centre whose walk from the swarm is nearest 28 steps (19 to 48), six or more steps from water, whose disc of radius 4 is walkable, on the swarm's own ground, 19 or more tiles from the swarm in a straight line and three from other rock, and whose walkable ring holds together. The face is the ten exposed disc tiles nearest the swarm; the rest is rock. |
+| Bluffs | Planned from the height field rebuilt from the request (`heightFieldSketch`: its terrain, before the starting-crop top-up) and the starts alone, exactly as `validateWorld` replans them: cutbank beach vertices of the river (`majorWater`) whose water share over a window a quarter of the bed's diameter (`wetShare`) is in the banks' bottom 20% and below 470 thousandths, strongest first; a crescent lens of walkable tiles 4 to 9 steps from water within about 10 tiles, kept in 2x2 blocks, never within three tiles of a home quarry; centres 30 apart, 22 from every swarm, one per 80 tiles of width and height; dropped on islands under 1,500 tiles or where the walkable ring round it falls apart. A face of tiles left out of the rock on a flank (60% of bluffs at 100% stone, two flanks from 150%). |
 | Mechanic layers | Deep core (`deepReachForShare`, `deepenWater`): at least 5 tiles from land in a straight line, more until it holds half the water, bodies of 16 vertices or more. Plain grass round every quarry face, rock (`rockVertices`), scree one tile out where a noise peaks, never touching a deposit. Mudflat on beach and sand within three steps of the river at point bars (the banks' top 20% of share, above 530), and on grass one row up at the sharpest (top 8%), never on a vertex touching a deposit. Loam two to seven vertices from water (`layLevee`), never in a garden or before a quarry. Pavement (`paveBeyondWater`) on old desert sand and bare grass from 28 tiles in a straight line and 22 steps (`distanceFromWet`, frayed), never touching a deposit: 40% of it in fractal patches on the temperate banks, all of it in the desert, plus hardpan pans on 55% of the desert's bare grass from 16 tiles (15 steps) and 34 tiles from homes. |
 | Looks | Loam and spring meadow, pale and dune sand, heath and shale (weathered sandstone and dirt), outcrop (hoodoo) rock; `writeLayeredTerrain` writes them and clears every deposit the new ground refuses. The grass looks, lush within 5 tiles of water (3 in the desert) and dry beyond 34 (9) (`gradeGrassLooks`), never dry in a home's garden, 45% of the temperate dry ground in fractal patches (all of the desert's), go on last, after the starts, so placeStarts and the starting-crop guarantee meet plain grass everywhere. |
 | Algae and quarries | The algae the deep core displaced are seated again on the nearest free shallows (straight-line distance plus up to four tiles of noise, so the beds' edges are ragged); quarry faces get stone and the ground before them is cleared. |
@@ -58,7 +72,7 @@ change a rule.
 `validateWorld` keeps revision 5's floor (every colony harvests wheat within 24 and wood within 32
 steps, with 16 building sites within 24), replans the bluffs from the same rebuilt height field and the
 colonies' start positions (the contracts check the replanned bluff and face counts equal generation's
-telemetry) and requires every quarry face to hold its stone (`quarryFault`), and refuses any blocking terrain that parts the walkable ground
+telemetry) and requires every quarry face to hold its stone and every colony's home face the same ten (`quarryFault`), refuses stone anywhere outside a quarry face, and refuses any blocking terrain that parts the walkable ground
 round it (`partingBarrier`).
 
 ## Controls
@@ -73,8 +87,8 @@ round it (`partingBarrier`).
 | Deep channels | on/off (on) | Deep water in the middle of the wide water: slower swimming, no algae there. Every route on foot is the same either way. |
 | River bluffs | on/off (on) | Rock bluffs on the outside of the bends, quarry faces and scree. |
 | Fruit | 0–64 (4) | Fruit groves, as before. |
-| Wheat, wood, stone, algae amount | 0–300% (100) | The field's bands; stone also sets the share of bluffs with a quarry face (none at 0). |
-| Stone on hilltops | on/off (off) | As before. |
+| Wheat, wood, algae amount | 0–300% (100) | The field's bands. |
+| Stone amount | 0–300% (100) | The share of bluffs with a quarry face (none at 0, two flanks from 150%). Every colony keeps its home quarry at any amount. |
 | Repeat landscape | 0–5 (0) | As before; the post-pass runs over the whole map, so repeats differ in their bluffs and gardens. |
 
 ## Food
@@ -147,7 +161,7 @@ One game varies widely: this shows no stalled opening, not a measured improvemen
 ## Verification
 
 Run the River contracts (`GLOB2_CONTRACTS=river`, `MapGeneratorContracts.h`), the toolkit checks for
-`HeightFieldLooks.h` (`MapGeneratorToolkitChecks.h`) and the platform golden rows; sweep every size and
+`HeightFieldLooks.h` (`MapGeneratorToolkitChecks.h`) and the sim-diff map fingerprints; sweep every size and
 colony count against revision 5 per banks value. See [generator verification](verification.md) for
 commands, revisions, save/replay checks and evidence requirements.
 

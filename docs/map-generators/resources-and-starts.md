@@ -29,7 +29,7 @@ were counts of their own until that audit and are percentages since.
 | Old random | The area of each colony's wheat, wood, stone and algae squares | Colony meadows (on): the cleared grass square round each colony |
 | Old islands | The area of each island's deposits | Extra starting deposit (on): the fourth deposit, of whichever of wheat or wood came out smaller |
 | Contested commons | How many of the commons' zones are wheat, wood or fruit, its quarry's size and the moat's algae; home islands' fields are unscaled | Moat bridges (on); Jagged coastlines (on) |
-| Maze | The shore scatter's wheat, wood and stone (48, 24 and 16 tiles per 256 shore tiles at 100), every dead end's treasure (9 fruit tiles) and the channels' algae (24 per 400 water tiles); the homes' kits are unscaled | Sand roads (on); Treasure in dead ends (on): off, the same fruit is scattered along the passages' shores |
+| Maze | The ambient wheat, wood and stone over the loam beds and water banks (40, 20 and 8 tiles per 256 growing tiles at 100), every dead end's treasure (9 fruit tiles), the rubble beside each side of every breach (6 stone tiles) and the algae (24 per 400 water tiles); the homes' kits and quarries are unscaled | Paved roads (on); Treasure in dead ends (on): off, the same fruit is scattered over the growing ground |
 | Fjord continent | The ambient scatter, the core's stone and fruit clumps, the lake's and open sea's algae, and the banks' extra clumps; starter kits and bank guarantees are unscaled | Lake connects to fjords (off); Sandy lake shore (on); Fjord bank deposits (on) |
 | Watershed | Separate wheat and wood farmland budgets, stone outcrops, the share of divide knots with a quarry face, confluence fruit groves, and algae at the mouths and in the shallows; starter kits and the rock are unscaled | River delta (on); Meandering rivers (on); Deep channels (on): no algae in the deep cores; Divide outcrops (on) |
 | Stone highlands | The ponds' farmland (wheat and wood) and algae, how much of the ridgeline is two tiles thick (stone, 0 to 200), and the valleys' fruit groves (four per 128×128 at 100); kits are unscaled | Fruit in home valleys (off) |
@@ -133,9 +133,8 @@ fixed resource pass:
   RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Braided river, Stone highlands, Ring world, City states,
   Tidal flats, Everglades, Spider web and Coral call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.
-  Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
-  down every passage, and its `validateWorld` confirms every colony can still walk to every
-  other.
+  Maze doesn't need it: its deposits stay off the road down every passage, its doorways and its
+  breaches, and its `validateWorld` confirms every colony can still walk to every other.
 
 Every guaranteed placement (starter kits, bank guarantees, per-team clumps) keeps wheat and wood
 at a 1:1 ratio, since those exist for reachability fairness between colonies. Ambient/bonus

@@ -1674,8 +1674,6 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความถี่​ทาง​วน
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 เขาวงกต​ต้อง​มี​อย่างน้อย​สอง​เซลล์​ทั้ง​แนวนอน​และ​แนวตั้ง ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​เซลล์​เล็ก​ลง
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-ร่องน้ำ​กว้าง​ขนาด​นี้​ทำให้​แต่ละ​เซลล์​เหลือ​หญ้า​น้อย​เกินไป ใช้​ร่องน้ำ​แคบ​ลง​หรือ​เซลล์​ใหญ่​ขึ้น
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 เขาวงกต​มี​ทางตัน​น้อย​เกินไป​สำหรับ​จำนวน​อาณานิคม​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ใหญ่​กว่า​หรือ​เซลล์​ที่​เล็ก​กว่า
 [Home island size]
@@ -1684,6 +1682,14 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ขนาด​พื้นที่​ส่วนกลาง
 [Moat width]
 ความ​กว้าง​ของ​คูเมือง
+[Wall thickness]
+ความ​หนา​ของ​กำแพง
+[Gardens]
+สวน​ผัก
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+กำแพง​หนา​ขนาด​นี้​ทำให้​ช่องทาง​เข้า​แคบ​เกินไป ควร​ใช้​กำแพง​ที่​บาง​กว่า​หรือ​เซลล์​ที่​ใหญ่​กว่า
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+คูเมือง​กว้าง​ขนาด​นี้​เหลือ​พื้นที่​ภายใน​ฐานทัพ​แต่ละ​แห่ง​น้อย​เกินไป ควร​ใช้​คูเมือง​ที่​แคบ​กว่า กำแพง​ที่​บาง​กว่า หรือ​เซลล์​ที่​ใหญ่​กว่า
 [Bridge count]
 จำนวน​สะพาน
 [Continent size]

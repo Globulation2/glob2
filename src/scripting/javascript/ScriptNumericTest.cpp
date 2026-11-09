@@ -1,9 +1,33 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptCorpus.h"
 #include "ScriptRuntime.h"
+#include <bit>
 #include <cfenv>
+#include <cmath>
+#include <limits>
+#include <map>
+#include <sstream>
 
-TEST_CASE("JavaScript shared numeric corpus" * doctest::test_suite("JavaScriptNumbers"))
+namespace
+{
+// A corpus row's number; profile 1 returns non-finite results as their names.
+double rowNumber(const Script::Value &value)
+{
+	if (value.kind == Script::Value::Number)
+		return value.number;
+	REQUIRE(value.kind == Script::Value::String);
+	if (value.text == "NaN")
+		return std::numeric_limits<double>::quiet_NaN();
+	REQUIRE((value.text == "Infinity" || value.text == "-Infinity"));
+	return value.text[0] == '-' ? -HUGE_VAL : HUGE_VAL;
+}
+bool sameNumber(double a, double b)
+{
+	return std::isnan(a) ? std::isnan(b) : std::bit_cast<std::uint64_t>(a) == std::bit_cast<std::uint64_t>(b);
+}
+} // namespace
+
+TEST_CASE("JavaScript shared numeric corpus [sim-trace]" * doctest::test_suite("JavaScriptNumbers"))
 {
 	Script::Host host;
 	unsigned seed = 0x12345678;
@@ -31,10 +55,73 @@ TEST_CASE("JavaScript shared numeric corpus" * doctest::test_suite("JavaScriptNu
 		results.items.push_back(std::move(data));
 	}
 	REQUIRE(total > 2000);
+	std::map<std::string, Script::Value> rows;
+	for (const auto &batch : results.items)
+		for (const auto &row : batch.get("results").items)
+		{
+			REQUIRE(row.items.size() == 2);
+			REQUIRE(rows.emplace(row.items[0].text, row.items[1]).second);
+		}
+	CHECK(rows.size() == total);
+	// The operations IEEE 754 rounds exactly must give the host's own result on
+	// every input, whatever the platform: the corpus edges (signed zeros,
+	// subnormals, extremes, ties) and the fixed-seed values. negate/i is -x, so it
+	// recovers each input x and its partner y = edges[(7i+3) mod n].
+	const size_t edges = 55;
+	std::vector<double> x(edges);
+	for (size_t i = 0; i < edges; ++i)
+	{
+		const auto negated = rows.find("negate/" + std::to_string(i));
+		REQUIRE(negated != rows.end());
+		x[i] = -rowNumber(negated->second);
+	}
+	REQUIRE(!rows.contains("negate/" + std::to_string(edges)));
+	unsigned exact = 0;
+	const auto expect = [&](const std::string &name, double expected)
+	{
+		CAPTURE(name);
+		const auto row = rows.find(name);
+		REQUIRE(row != rows.end());
+		const double actual = rowNumber(row->second);
+		INFO("actual " << std::hex << std::bit_cast<std::uint64_t>(actual) << " expected "
+					   << std::bit_cast<std::uint64_t>(expected));
+		CHECK(sameNumber(actual, expected));
+		++exact;
+	};
+	for (size_t i = 0; i < edges; ++i)
+	{
+		const auto n = std::to_string(i);
+		const double a = x[i], b = x[(i * 7 + 3) % edges];
+		expect("add/" + n, a + b);
+		expect("subtract/" + n, a - b);
+		expect("multiply/" + n, a * b);
+		expect("divide/" + n, a / b);
+		expect("remainder/" + n, std::fmod(a, b));
+		expect("sqrt/" + n, std::sqrt(a));
+		expect("abs/" + n, std::fabs(a));
+		expect("floor/" + n, std::floor(a));
+		expect("ceil/" + n, std::ceil(a));
+		expect("trunc/" + n, std::trunc(a));
+		expect("fround/" + n, double(float(a)));
+	}
+	CHECK(exact == 11 * edges);
+	// Results pinned to their mathematically correct values on every platform.
+	expect("hypot/architecture-regression", std::bit_cast<double>(std::uint64_t(0x40018a97b64ae2d6)));
+	CHECK(rows.at("hypot/decision").kind == Script::Value::Boolean);
+	CHECK(rows.at("hypot/decision").number == 1);
+	expect("hypot/no-arguments", 0.0);
+	expect("hypot/inf-nan", HUGE_VAL);
+	expect("sumPrecise/cancellation", 1.0);
+	expect("sumPrecise/negative-zero", -0.0);
+	expect("Number/-0", -0.0);
+	expect("Number/4.9406564584124654e-324", std::numeric_limits<double>::denorm_min());
+	expect("Number/1.7976931348623157e308", std::numeric_limits<double>::max());
+	expect("Number/1e309", HUGE_VAL);
+	expect("JSON.parse/0.1", 0.1);
 	glob2test::script::retain("numeric-profile1", results);
 }
 
-TEST_CASE("JavaScript shared saved global number corpus" *
+TEST_CASE("JavaScript shared saved global number corpus [sim-trace]" *
 		  doctest::test_suite("JavaScriptNumbers"))
 {
 	Script::Host host;
@@ -56,6 +143,32 @@ TEST_CASE("JavaScript shared saved global number corpus" *
 		CHECK(uninterrupted.effects.get("nan").number == 1);
 		CHECK(uninterrupted.effects.get("infinities").number == 1);
 		CHECK(uninterrupted.effects.get("zeros").number == 1);
+		// The snapshot keeps each edge value: canonical NaN, both infinities as their
+		// bits, signed zeros and the extreme finite numbers as numbers.
+		const auto &nodes = uninterrupted.state.get("__glob2_globals").get("nodes").items;
+		const Script::Value *numbers = nullptr;
+		for (const auto &property : nodes.at(0).get("properties").items)
+			if (property.items.at(0).text == "numbers")
+				numbers = &nodes.at(size_t(property.items.at(1).items.at(1).number));
+		REQUIRE(numbers);
+		std::vector<std::string> saved;
+		for (const auto &property : numbers->get("properties").items)
+		{
+			const auto &value = property.items.at(1);
+			std::ostringstream text;
+			if (value.kind == Script::Value::Array)
+				text << value.items.at(0).text << ' ' << value.items.at(1).text;
+			else
+				text << std::hex << std::bit_cast<std::uint64_t>(value.number);
+			saved.push_back(property.items.at(0).text + "=" + text.str());
+		}
+		const std::vector<std::string> edges = {
+			"0=number 7ff8000000000000", "1=number 7ff8000000000000", "2=number 7ff8000000000000",
+			"3=number 7ff8000000000000", "4=number 7ff8000000000000", "5=number 7ff0000000000000",
+			"6=number fff0000000000000", "7=8000000000000000",			"8=0",
+			"9=1",						 "10=8000000000000001",		   "11=7fefffffffffffff",
+			"length=4028000000000000"};
+		CHECK(saved == edges);
 		checkpoint = std::move(uninterrupted.state);
 		snapshots.items.push_back(checkpoint);
 	}

@@ -1710,8 +1710,6 @@ Veľkosť bunky
 Hustota slučiek
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Bludisko potrebuje aspoň dve bunky na šírku aj na výšku; použite väčšiu mapu alebo menšie bunky.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Takéto široké prielivy nechávajú v každej bunke príliš málo trávy; použite užšie prielivy alebo väčšie bunky.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Bludisko má pre toľko kolónií príliš málo slepých uličiek; použite väčšiu mapu alebo menšie bunky.
 [Home island size]
@@ -1720,6 +1718,14 @@ Veľkosť štartovacieho ostrova
 Veľkosť spoločného územia
 [Moat width]
 Šírka vodnej priekopy
+[Wall thickness]
+Hrúbka múrov
+[Gardens]
+Záhrady
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Takéto hrubé múry nechávajú priechody príliš úzke; použite tenšie múry alebo väčšie bunky.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Takéto široké vodné priekopy nechávajú vnútri každej domovskej základne príliš málo miesta; použite užšiu priekopu, tenšie múry alebo väčšie bunky.
 [Bridge count]
 Počet mostov
 [Continent size]

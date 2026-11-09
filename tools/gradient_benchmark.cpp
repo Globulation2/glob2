@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in standalone benchmark. Build/run with tools/gradient_benchmark.py.
 #include <algorithm>
+#include "TerrainBuiltins.h"
 #include <array>
 #include <chrono>
 #include <cstdint>

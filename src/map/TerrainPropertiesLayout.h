@@ -14,11 +14,14 @@ struct TerrainProperties
 	bool walkable = false, swimmable = false, flyable = true;
 	bool resourcesGrow = false, fertilitySource = false, nonGrowingResources = false;
 	bool buildable = false, projectileBlocks = false, shoreline = false;
+	// Derived, never authored: the cell mixes walking and swimming corners.
+	// Algae regrows near coasts (FertilityField's shore growth field).
+	bool coast = false;
 	std::uint16_t groundSpeedQ8 = 256, airSpeedQ8 = 256;
 	std::int16_t groundHealthQ8 = 0, airHealthQ8 = 0;
 	std::uint16_t growthQ8 = 256;
 	std::int16_t fertilityQ8 = 0;
-	std::uint16_t inhibitionQ8 = 0, shoreSupportQ8 = 0;
+	std::uint16_t inhibitionQ8 = 0;
 	std::uint16_t allowedResources = 0;
 	std::uint8_t farmMaterial = 255;
 };
@@ -35,7 +38,7 @@ constexpr bool validTerrainProperties(const TerrainProperties& p)
 	return !(p.walkable && p.swimmable) && (p.allowedResources & ~0xffu) == 0 &&
 		p.groundSpeedQ8 >= 64 &&
 		p.groundSpeedQ8 <= 1024 && p.airSpeedQ8 >= 64 && p.airSpeedQ8 <= 1024 &&
-		p.growthQ8 <= 1024 && p.inhibitionQ8 <= 1024 && p.shoreSupportQ8 <= 1024 &&
+		p.growthQ8 <= 1024 && p.inhibitionQ8 <= 1024 &&
 		p.fertilityQ8 >= -1024 && p.fertilityQ8 <= 1024 &&
 		(p.farmMaterial == 255 || p.farmMaterial < MaterialCount);
 }
@@ -46,11 +49,11 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 	return a.walkable == b.walkable && a.swimmable == b.swimmable && a.flyable == b.flyable &&
 		a.resourcesGrow == b.resourcesGrow && a.fertilitySource == b.fertilitySource &&
 		a.nonGrowingResources == b.nonGrowingResources && a.buildable == b.buildable &&
-		a.projectileBlocks == b.projectileBlocks && a.shoreline == b.shoreline &&
+		a.projectileBlocks == b.projectileBlocks && a.shoreline == b.shoreline && a.coast == b.coast &&
 		a.groundSpeedQ8 == b.groundSpeedQ8 && a.airSpeedQ8 == b.airSpeedQ8 &&
 		a.groundHealthQ8 == b.groundHealthQ8 && a.airHealthQ8 == b.airHealthQ8 &&
 		a.growthQ8 == b.growthQ8 && a.fertilityQ8 == b.fertilityQ8 &&
-		a.inhibitionQ8 == b.inhibitionQ8 && a.shoreSupportQ8 == b.shoreSupportQ8 &&
+		a.inhibitionQ8 == b.inhibitionQ8 &&
 		a.allowedResources == b.allowedResources && a.farmMaterial == b.farmMaterial;
 }
 
@@ -63,6 +66,10 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 // vote. Equal corner weights give speed, health and ecology gradual transitions
 // at 1:3, 2:2 and 3:1 boundaries. Q8 averages round toward zero. Transitions are
 // never buildable; permissions still require all corners and blockers any corner.
+// A transition with both walking and swimming corners is a shoreline, as if a
+// beach stood there: grass straight against water hosts shore resources, not
+// land crops, whichever way its movement vote went. It is also a coast, and
+// algae regrows only near coasts, beach or bare bank alike.
 constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const TerrainProperties& b,
 	const TerrainProperties& c, const TerrainProperties& d)
 {
@@ -78,10 +85,12 @@ constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const
 	}
 	if (uniform) return a;
 	TerrainProperties result;
+	const bool coast = walking > 0 && swimming > 0;
 	result.walkable = blocked < 2 && walking >= swimming;
 	result.swimmable = blocked < 2 && swimming > walking;
 	result.buildable = false;
-	result.projectileBlocks = result.shoreline = false;
+	result.projectileBlocks = false;
+	result.shoreline = result.coast = coast;
 	result.flyable = result.resourcesGrow = result.nonGrowingResources = result.fertilitySource = true;
 	result.farmMaterial = 255;
 	// Promote every term before adding: authored signed health rates can span
@@ -99,7 +108,6 @@ constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const
 	result.growthQ8 = mean(&TerrainProperties::growthQ8);
 	result.fertilityQ8 = mean(&TerrainProperties::fertilityQ8);
 	result.inhibitionQ8 = mean(&TerrainProperties::inhibitionQ8);
-	result.shoreSupportQ8 = mean(&TerrainProperties::shoreSupportQ8);
 	result.allowedResources = 0xff;
 	for (const auto* p : corners)
 	{

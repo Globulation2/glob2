@@ -27,13 +27,15 @@ scenarios: each saved game in `content/games` run 600 ticks (per tick, the aggre
 checksum and every team's checksum and unit and building records), the
 FourSquares1 match record replayed by `match verify` (its per-tick state checksums,
 even when the record names another sim version), and every generator's map
-fingerprint on the golden request set (`MapGeneratorGoldenTest --print`). The
+fingerprint on a fixed request set (`MapGeneratorGoldenTest --print`). The
 `saves` part adds the retained AI and telemetry saves at their own lengths, the
 v108 checkpoint continued 256 ticks and the Maxima continuation (checkpoint 30000
 to 30512, plus its 30256 save resumed to 30512). The `goldens` part runs the
-`[golden]` test cases with `GLOB2_TEST_SIM_TRACE_DIR` set, which makes
-`expectGolden` write each case's actual trace there, and compares the traces line by
-line whatever the committed fixtures say; it needs the build's `engine-tests` and
+`[golden]` and `[sim-trace]` test cases with `GLOB2_TEST_SIM_TRACE_DIR` set, which
+makes `expectGolden` and `recordSimTrace` write each case's actual trace there, and
+compares the traces line by line whatever the committed fixtures say (a
+`[sim-trace]` case has none: it keeps a scenario in sim-diff without a stored
+output); it needs the build's `engine-tests` and
 `unit-tests`. A scenario only one build has (a test case added or removed) is noted
 and left out of the verdict.
 `tools/sim_diff.py base.json.gz candidate.json.gz` reports, per scenario, the first
@@ -49,11 +51,25 @@ python3 tools/sim_diff.py base.json.gz candidate.json.gz
 
 The `sim-diff` workflow does this for every pull request whose change reaches the
 simulation path (`touches_simulation` in `.github/scripts/ci_policy.py`): it builds
-the merge base and the pull request at the perf tier and reports the verdict beside
-the two `SIM_REVISION` values in the job summary. It is in shadow mode: a difference
-without a bump is a warning, not a failure, while its verdicts are compared with
-the sim version check. Equal output does not prove behaviour unchanged; the
-scenarios cover only what they run. `--parts` picks a subset of `games`, `match`, `generators`, `saves` and
+the merge base and the pull request at the perf tier, prints the verdict beside the
+two sim version keys (`test/check_sim_revision.py --key-at <rev>`) in the job
+summary, and judges it:
+
+| Output | Sim version key | Result |
+| --- | --- | --- |
+| differs | unchanged | fails: bump `SIM_REVISION` |
+| differs | moved | passes |
+| equal | moved | passes with a warning |
+
+Equal output does not prove behaviour unchanged, since the scenarios cover only
+what they run, so it never forbids a bump. Generator rows are keyed by generator
+revision: a deliberate generator change that bumps its own revision shows up as new
+rows, noted rather than compared. A pull request that changes a `[sim-trace]`
+scenario's own setup together with simulation code changes that trace too; bump.
+On master pushes the workflow repeats the comparison against the parent commit as
+a post-merge audit, and opens an issue instead of failing. sim-diff is not a merge
+prerequisite (only the fast gate is), but a red verdict means the change is not
+ready. `--parts` picks a subset of `games`, `match`, `generators`, `saves` and
 `goldens`; the generator set is the slowest part.
 
 ## Check compatibility separately

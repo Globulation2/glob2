@@ -13,6 +13,7 @@
 #include "SkinAtlasCache.h"
 #include "SkinShadow.h"
 #include "RadialFade.h"
+#include "CloudCover.h"
 #include "SpriteRenderAtlas.h"
 #include <AssetLoader.h>
 #include <array>
@@ -551,6 +552,11 @@ namespace GAGCore
 		bool unitShaderFailureLogged = false;
 		void createUnitShader();
 		void destroyUnitShader();
+		// The opening cloud bank's program and lattice texture, made on first use.
+		unsigned cloudCoverProgram = 0, cloudCoverTexture = 0;
+		int cloudCoverTextureW = 0, cloudCoverTextureH = 0;
+		bool cloudCoverAttempted = false;
+		void destroyCloudCover();
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static bool SDLCALL watchWindow(void *userdata, SDL_Event *event);
@@ -783,6 +789,13 @@ namespace GAGCore
 		//! it, so it brightens rather than tints. Accelerated renderers only; the
 		//! software renderer draws it normally. Earlier batched draws go first.
 		void drawSurfaceAdditive(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		//! Draw the opening cloud bank over the whole screen, computed per pixel
+		//! from its lattice. Returns false, drawing nothing, where that is not
+		//! supported (only desktop OpenGL draws it), so the caller can draw
+		//! its own texture instead. Earlier batched draws go first.
+		bool drawCloudCover(const CloudCoverFrame &frame);
+		//! Make drawCloudCover's program now, outside a frame.
+		void prepareCloudCover();
 		//! Maximum supported texture dimension, or zero when no limit is reported.
 		int maximumTextureSize() const;
 		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }

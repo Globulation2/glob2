@@ -27,7 +27,7 @@
 #include "Building.h"
 
 namespace {
-// FNV-1a over the simulation components, without the saved map-header format.
+// FNV-1a over the simulation components.
 Uint32 trace(Game& game)
 {
     Uint32 result=2166136261u;
@@ -126,7 +126,7 @@ ContinuationAudit relationshipAudit(Game& game)
 ContinuationAudit continuationAudit(Game& game)
 {
     auto result=relationshipAudit(game);
-    auto components=glob2test::simulationComponents(game,false,true);
+    auto components=glob2test::simulationComponents(game);
     result.first.insert(result.first.begin(),components.begin(),components.end());
     return result;
 }
@@ -136,8 +136,7 @@ void checkPhaseContinuation(Game& game,int ticks,const std::function<void()>& ob
     glob2test::discardPrematureHiringSuggestions(game);
     const auto before=continuationAudit(game);
     const auto random=game.syncRandom;
-    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
-        .name="custom unit phase continuation",
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.name="custom unit phase continuation",
         .afterLoad=[&](Game& original,Game& resumed) {
             REQUIRE(resumed.unitCatalog().digest()==original.unitCatalog().digest());
             REQUIRE(continuationAudit(resumed)==before);
@@ -171,8 +170,7 @@ void checkVisionAction(Unit& unit,int radius)
 void checkVisionContinuation(Game& game,int ticks)
 {
     const auto before=continuationAudit(game);
-    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.includeMapHeader=true,
-        .name="legacy cached flight vision continuation",
+    const auto result=glob2test::expectContinuation(game,{.ticks=ticks,.name="legacy cached flight vision continuation",
         .afterLoad=[&](Game& original,Game& resumed) {
             REQUIRE(continuationAudit(resumed)==before);
             REQUIRE(resumed.map.mapDiscovered==original.map.mapDiscovered);
@@ -838,7 +836,16 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.game.unitCargo.empty());
     }
 
-    TEST_CASE("all locked capability ablations match fixed tick and RNG traces [golden][artifacts]")
+    // Eight units, one per combination of the melee, clear and flight capability
+    // bits (ablation-i: melee = bit 0, clear = bit 1, flight = bit 2), each
+    // carrying wood and stone. The run repeats tick for tick, every unit keeps
+    // exactly the capabilities its definition grants and the layer its movement
+    // implies, nobody loses or gains cargo with nowhere to deliver it, and a save
+    // after the run continues identically. The per-tick trace stays a committed
+    // golden: it is the cross-platform reference that native and browser
+    // determinism evidence (test/run-browser-determinism.py,
+    // .github/scripts/ci_compare_evidence.py) must reproduce row for row.
+    TEST_CASE("all locked capability ablations keep their capabilities and cargo and match fixed tick and RNG traces [golden][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         std::vector<Uint32> expected;
@@ -847,11 +854,13 @@ TEST_SUITE("UnitCustomization")
             glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
             configure(world);
             world.game.gameHeader.setHungerDisabled(true);
+            std::vector<Unit*> units;
             for (int i=0;i<8;++i) {
                 auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-"+std::to_string(i)),5+3*(i%4),5+3*(i/4));
                 REQUIRE(unit);
                 unit->receiveCarriedMaterial(WOOD,{});
                 unit->receiveCarriedMaterial(STONE,{});
+                units.push_back(unit);
             }
             for (int tick=0;tick<96;++tick) {
                 world.game.step(0);
@@ -859,6 +868,28 @@ TEST_SUITE("UnitCustomization")
                 if (!repeat) { expected.push_back(checksum); golden << tick << " " << checksum << "\n"; }
                 else CHECK(checksum==expected[tick]);
             }
+            const auto& map=world.game.map;
+            for (int i=0;i<8;++i) {
+                CAPTURE(i);
+                Unit* unit=units[i];
+                REQUIRE(world.team->myUnits[Unit::GIDtoID(unit->gid)]==unit);
+                CHECK_FALSE(unit->isDead);
+                CHECK(unit->hasCapability(UnitRuntimeTraits::Melee)==bool(i&1));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::GuardIdle)==bool(i&1));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::Clear)==bool(i&2));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::ClearIdle)==bool(i&2));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::Fly)==bool(i&4));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::Walk)==!(i&4));
+                CHECK(unit->hasCapability(UnitRuntimeTraits::Transport));
+                // Flyers occupy the air layer and walkers the ground layer.
+                if (i&4) CHECK(map.getAirUnit(unit->posX,unit->posY)==unit->gid);
+                else CHECK(map.getGroundUnit(unit->posX,unit->posY)==unit->gid);
+                // Nothing on the map takes wood or stone, so both packets stay.
+                CHECK(unit->carriedPacketCount()==2);
+                CHECK(unit->hasCarriedMaterial(WOOD));
+                CHECK(unit->hasCarriedMaterial(STONE));
+            }
+            if (repeat) checkPhaseContinuation(world.game,32);
         }
         glob2test::expectGolden("unit-catalog/ablation-checksums.txt",golden.str());
         glob2test::writeFile(glob2test::artifactDir()/"unit-ablations.trace",golden.str());

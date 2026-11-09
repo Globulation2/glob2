@@ -340,7 +340,7 @@ constexpr double kDeepBarShare = 0.5;
 // The promised bar's wheat and wood, radius-2 clumps (about 13 tiles), and how far apart.
 constexpr int kBarKitRadius = 2, kBarKitSpacing = 7;
 // Algae in every channel, one clump per this many water tiles at 100%, on the half of the water
-// where it regrows best (near sand, which the beaches and riffles supply everywhere).
+// where it regrows best (near a coast, which the banks and riffles supply everywhere).
 constexpr int kWaterTilesPerAlgae = 50;
 constexpr double kAlgaeBestShare = 0.5;
 
@@ -1890,7 +1890,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			5,
+			6, // 6: algae now regrows near any coast, so its best-growing water moved
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no

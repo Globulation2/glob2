@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainGradient.h"
+#include "TerrainBuiltins.h"
 #include "TerrainGradientWorkspace.h"
 #include "map/TerrainRegistry.h"
 #include "map/CellRules.h"

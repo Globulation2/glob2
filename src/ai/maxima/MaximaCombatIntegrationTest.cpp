@@ -491,11 +491,7 @@ static void rallyAssemblesByMovement()
             const auto previousStep=f.game.stepCounter;
             f.game.step(0);
             REQUIRE(f.game.stepCounter==previousStep+1);
-            // Keep the format-115 baseline: this fixture's header version is
-            // rotated eight times by MapHeader/Game checksums (three teams,
-            // no players). A save-format bump must not change movement evidence.
-            const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
-                ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),8);
+            const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
             if(record)output << shift << ' ' << f.game.stepCounter << ' ' << checksum << '\n';
             else {
                 int expectedShift;

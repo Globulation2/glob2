@@ -5,6 +5,7 @@
 
 #include "BuildingType.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "EditorDock.h"
 #include "EditorDockInternal.h"
 #include "ExperimentalFeatures.h"

@@ -168,6 +168,7 @@ ENGINE_TESTS = [
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
     '#src/game/SharedWorkerLifecycleTest.cpp',
+    ('#src/game/ChecksumSchemeTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/TrappedUnitLifecycleTest.cpp',
     '#src/unit/UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
@@ -262,7 +263,6 @@ UNIT_TESTS = [
     '#libs/gag/src/FontMetricsTest.cpp',
     '#libs/gag/src/PackedArrayTest.cpp',
     '#libs/gag/src/EventQueueTest.cpp',
-    '#src/map/generator/MapGeneratorGoldenCoverageTest.cpp',
 
     '#libs/gag/src/GameplayRecordingTest.cpp',
     '#libs/gag/src/RecordingSessionTest.cpp',

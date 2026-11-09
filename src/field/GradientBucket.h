@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <vector>
 #include "GradientConstants.h"
-#include "TerrainHazardCost.h"
-#include "map/TerrainProperties.h"
 
 // One cost layer of the gradient bucket queue. Only cells[0..size) are live;
 // cells.size() is allocated storage, not the number of queued entries. The
@@ -16,21 +14,12 @@
 // may remain in storage and must never be read as queue entries.
 struct GradientBucket
 {
-    // Compiler-selected power of two above every registered terrain edge.
-    // Current definitions retain the 64-bucket fast path; a future quarter-speed
-    // swimming terrain automatically enlarges it rather than aliasing a cursor.
-    static constexpr unsigned COUNT = [] {
-        unsigned largest=GRADIENT_SLOWEST_SWIM_STEP*GRADIENT_DIAGONAL_STEP/GRADIENT_STEP;
-        for(const auto& p:TERRAIN_PROPERTIES)
-        {
-            const unsigned base=p.swimmable?GRADIENT_SLOWEST_SWIM_STEP:GRADIENT_STEP;
-            const unsigned cardinal=gradient_kernel::hazardRouteCost(std::max(1u,(base*256+p.groundSpeedQ8/2)/p.groundSpeedQ8),p.groundHealthQ8);
-            largest=std::max(largest,cardinal*GRADIENT_DIAGONAL_STEP/GRADIENT_STEP);
-        }
-        unsigned count=1;
-        while(count<=largest) count*=2;
-        return count;
-    }();
+    // Power of two above every built-in terrain edge: 64 keeps the fast path.
+    // TerrainProperties.cpp derives the required value from the built-in tables
+    // and fails to compile if a new terrain (a quarter-speed swim, say) needs
+    // more; raise this then. Kept literal so this header, which every gradient
+    // file includes, does not depend on the terrain tables.
+    static constexpr unsigned COUNT = 64;
 
 	std::vector<std::uint32_t> cells;
 	std::size_t size = 0;

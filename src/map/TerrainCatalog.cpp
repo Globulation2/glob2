@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCatalog.h"
+#include "TerrainBuiltins.h"
 #include "TerrainGroupTable.h"
 #include <array>
 

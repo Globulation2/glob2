@@ -20,6 +20,7 @@
 #include "Sketch.h"
 #include "Topology.h"
 #include "Unit.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <array>
 #include <climits>
@@ -1895,7 +1896,7 @@ void placeAlgae(GenerationWorld &game, GenerationContext &context, const Layout 
 			if (c.y < layout.north.at(c.x) - 1 || c.y > layout.south.at(c.x) + 1)
 				shallows.push_back(int(i));
 		}
-	// One small clump per 60 tiles of sea within 3 tiles of a shore: near sand, so it regrows.
+	// One small clump per 60 tiles of sea within 3 tiles of a shore: near the coast, so it regrows.
 	for (int clump = 0; clump < scaledCount(int(shallows.size()) / 60, algaePercent); ++clump)
 	{
 		const int i = shallows[context.bounded("resources", shallows.size())];

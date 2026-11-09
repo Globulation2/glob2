@@ -7,6 +7,18 @@ branches is a triangle opening inwards too, the far ends of neighbouring fans re
 other's gaps, and all the fans meet in a tangle in the middle. Land gets thinner and richer the
 further it is from home.
 
+- **A tropical reef (revision 5).** The coral is drawn from the terrain catalogue on canonical
+  mechanics, with a fixed look painted last (`composeLooks`): lush grass mottled with plain grass
+  (sampled in the wedge frame, so every fan looks alike), pale-sand beaches on every shore (kept,
+  since algae regrows only from sand), a paved road (Paths) down every branch that forks on, the
+  land bridges as reef flats (Rough), and a turquoise shelf of shallows ringing the whole reef
+  with dark deep ocean beyond. Deep water (`deepenWater`) takes open water at least 8 tiles from
+  land, and only the cores joined to the ocean beyond the pads' ring, so its edge follows the
+  coasts and the straits and lagoons inside the fans stay shallow: swimming within the tangle is
+  as it was, swimming out at sea is slower. The deep ocean takes part of the algae band, so the
+  band's tiles per clump and its best-growing share are scaled by the band's size before and
+  after (`algaeBandTiles`), which keeps the algae supply within a few percent of revision 4's.
+
 - **Grown, not drawn.** The trunk leaves the pad heading for the map centre, turned off it by `lean`
   degrees (every colony alike, so the map turns like a pinwheel); everything else is `growBranches`,
   which splits every tip in two, each child turned `fork-angle` degrees (with jitter) from its
@@ -40,7 +52,7 @@ further it is from home.
   one-corner sand perimeter. Ordinary crops cannot cross that perimeter; the court starts empty
   and can fit one 4×4 building with access around it. Roads meet the sand ring
   rather than cutting through the building ground. Nodes remain reachable from their colony,
-  including when sand roads are disabled. The **Expansion nodes** control requests 0–3 per fan
+  including when the roads are disabled. The **Expansion nodes** control requests 0–3 per fan
   (default 2); crowded layouts omit nodes that would overlap homes, another node or a rival fan's
   water strait. These are construction sites, without starter buildings or resource kits.
 - **Resources.** Each pad has an unscaled kit of 40 wheat and 30 wood in front of the swarm and a
@@ -48,8 +60,7 @@ further it is from home.
   carry stone growing from 3 to 9 tiles with it, and every tip a fruit grove from 3 to 12 tiles. The
   branches' wheat and wood are ranked by `PeriodicNoise` sampled in the wedge frame, leaning
   towards home: 30% of their grass under wheat and 21% under wood, since the branches are all the
-  land there is. A few dry sand patches (8% of the branches' inland grass, three or more tiles from
-  water, never on a pad, bud, bridge or expansion court) decorate the wider branches. Algae is counted over the
+  land there is. Algae is counted over the
   shallows up to ten tiles out, one clump per 35 tiles, and seeded on each colony's best-growing 30%
   of that water, the same number of clumps in every wedge.
 - **Routes opened and checked.** After `secureStartingCrops`, an `openRoad` from every colony to
@@ -57,11 +68,16 @@ further it is from home.
   the way. `validateWorld` rebuilds the design and requires every trunk's centre line to be land,
   every colony able to walk to its first fork and, with bridges, every colony reachable on foot
   from colony 0.
-  With **Sand roads** enabled, a one-corner sand line runs down the
-  middle of every branch that forks on and every bridge, off the pads, buds and expansion courts; dead-end tips get
-  none, since they carry no traffic and their narrow land would be left without fields. Every tile
-  touching the sand loses the pure grass a deposit or a building needs, so nothing can grow or be
-  built across the road. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
+  With **Paved roads** (control ID `sand-roads`, kept for saved requests) enabled, a road two
+  vertices wide (`paveRoute`, so the traced tiles are pure Paths) runs down the middle of every
+  branch that forks on, laid after the beaches and off the pads, buds and expansion courts; dead-end
+  tips get none, since they carry no traffic and their narrow land would be left without fields.
+  Roads double walking speed, can be built on, and nothing grows on or across them; the tiles
+  beside them are seams nothing can be built on, and the beaches keep a walkable lane along every
+  edge. The land bridges carry no road: they are reef flats from shore to shore, slow (160/256) and
+  unbuildable, so nobody can wall a crossing off with a building. The roads take branch grass, so
+  the branches' standing wheat and wood (shares of their grass) are about 10–17% lower than
+  revision 4's. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
   default, is the trunk's), so grass remains either side of the road.
 - **Rectangular maps.** The fan is designed in a circle on the map's shorter side and stretched
   along the longer side. Expansion courts retain their circular shape and building capacity.

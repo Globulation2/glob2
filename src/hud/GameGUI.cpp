@@ -474,6 +474,8 @@ void GameGUI::beginIntroCover(Uint64 now)
 		title.players.push_back(std::move(player));
 	}
 	introCover.begin(now, std::move(title));
+	if (globalContainer->gfx && globalContainer->gfx->rendererCapabilities().cloudLayers && !globalContainer->reducedMotion)
+		introCover.prepare(*globalContainer->gfx, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 }
 
 void GameGUI::startReplay(ReplayWriter &writer, const std::string &path)

@@ -20,8 +20,9 @@
 
 // Miscellaneous helpers: checkSum, warpDist*, dumpGradient
 
-Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
+Uint32 Map::checkSum(bool heavy, bool includePending, ChecksumScheme scheme)
 {
+    const bool legacy152 = scheme == ChecksumScheme::Legacy152;
     // Only the current-boundary phase matters: old tick markers all mean due
     // publication/submission on the next observation, while current ones skip it.
     // This scheduling state belongs in every current checksum tier; the explicit

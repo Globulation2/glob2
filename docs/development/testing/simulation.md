@@ -217,9 +217,11 @@ plus the carry home.
 `LegacyRoundTripSave/*` loads
 [`greedy-fetching/round-trip-143.game.gz`](../../../test/fixtures/greedy-fetching/README.md), a
 mid-game save written when fetching still routed by round trip, with round-trip
-fields live. The loader discards those fields; the game plays 1,000 more ticks
-against a golden per-tick trace and continues identically after a binary or text
-save in the current format.
+fields live. The loader discards those fields and must reach a pinned load
+digest (the compatibility contract for that existing save); the game then plays
+1,000 more ticks with both colonies harvesting and every material balancing,
+records the per-tick trace for sim-diff (`[sim-trace]`), and continues
+identically after a binary or text save in the current format.
 
 ## Building material demand
 
@@ -329,12 +331,13 @@ checks seeding and cold input preparation separately from reader expansion.
 `HiringPlanner` verifies that background ranking extends only the required
 frontier, leaves distant cells unresolved, and lets live admission reuse the work.
 
-Intentional routing changes can also move Maxima's fixed army-birth and rally
-trajectories. Their legacy checksum adapters normalize representation, not
-simulation behavior. Refresh them with `GLOB2_RECORD_ARMY_CHECKSUMS=1` and
-`GLOB2_RECORD_RALLY_CHECKSUMS=1` respectively, running the focused
-`Maxima.Economy/army births*` and `Maxima.Combat/rally assembles by movement`
-cases. Then rerun both without those variables to verify the recorded traces.
+Intentional routing changes can also move Maxima's fixed rally trajectory. Its
+legacy checksum adapter normalizes representation, not simulation behavior.
+Refresh it with `GLOB2_RECORD_RALLY_CHECKSUMS=1`, running the focused
+`Maxima.Combat/rally assembles by movement` case, then rerun it without that
+variable to verify the recorded trace. The army-birth scenario has no committed
+trace: `Maxima.Economy/army births are warriors only*` asserts its behavior and
+`army births sim trace` records its checksums for sim-diff.
 
 
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
@@ -362,9 +365,10 @@ settings page. See [experimental features](../../features/experimental-features.
 for the `guard-area-balancing` experiment: spawn, drain, patches, size, three
 areas, erase, settled-guard movement, a save/load continuation and the crowding
 box sum against brute force, plus a `[benchmark]` timing case. Its first case
-runs spawn and drain without the experiment, expects the old outcome, and compares
-the default game's per-100-tick checksums with
-`test/fixtures/guard-area/off-path-checksums.txt` (`[golden]`). Games start with the experiment through
+runs spawn and drain without the experiment, expects the old outcome, checks a
+save/load continuation of the default game, and records its per-100-tick
+checksums as the `guard-area/off-path-checksums.txt` sim-diff trace
+(`[sim-trace]`). Games start with the experiment through
 `glob2test::GameOptions::experiments`; `GameOptions::header` installs the
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../../features/guard-area-balancing.md).

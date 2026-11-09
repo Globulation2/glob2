@@ -531,7 +531,9 @@ void barracksUpgradesKeepTrainingOpen()
     REQUIRE(limits.upgradePriority(f.game.buildingsTypes.getPlaceableTypeNum("barracks"),1)>0);
 }
 
-void armyBirthsMatchPlatformChecksums()
+// The army-birth scenario's per-tick checksums, kept in sim-diff only. The
+// behaviour they stand for is asserted by armyBirthsFollowTheRecipe below.
+void armyBirthsSimTrace()
 {
     setSyncRandSeed(5489);
     Fixture f;
@@ -554,43 +556,24 @@ void armyBirthsMatchPlatformChecksums()
     REQUIRE((swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0));
     swarm->setMaterial(WHEAT, swarm->type->maxMaterial[WHEAT]);
     swarm->productionTimeout=-1;
-    const std::string fixtureFile=(glob2test::sourceRoot() / "test/maxima/fixtures/army-birth-checksums.txt").string();
-    const char* path=fixtureFile.c_str();
-    const bool record=std::getenv("GLOB2_RECORD_ARMY_CHECKSUMS")!=nullptr;
-    std::ifstream expected;
-    std::ofstream output;
-    // Record the same delayed schedule used by normal verification. Dedicated
-    // gradient-publication suites vary executor counts and check every tick.
+    // Keep the delayed schedule used by normal play. Dedicated gradient-publication
+    // suites vary executor counts and check every tick.
     f.game.map.routing().configureGradientPipeline(0,8);
-    if(record) output.open(path);
-    else expected.open(path);
-    REQUIRE((record?output.good():expected.good()));
+    std::string trace;
     for(int tick=1;tick<=512;++tick) {
         f.game.step(0);REQUIRE(f.game.stepCounter==unsigned(tick));
-        // Normalize the header to 115; the fixture uses eight-tick publication. With one
-        // team and no players, the header version is rotated six times.
-        // Normalize representation only; routing changes still require a fixture refresh.
-        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
-            ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);
-        if(record)output<<tick<<' '<<checksum<<'\n';
-        else {
-            int expectedTick;Uint32 expectedChecksum;
-            REQUIRE((expected>>expectedTick>>expectedChecksum));
-            if(expectedTick!=tick || expectedChecksum!=checksum)
-                std::cerr<<"Army birth checksum mismatch: tick="<<tick
-                    <<" actual="<<checksum<<" expected="<<expectedChecksum<<'\n';
-            REQUIRE((expectedTick==tick && expectedChecksum==checksum));
-        }
+        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
+        trace+=std::to_string(tick)+' '+std::to_string(checksum)+'\n';
     }
+    glob2test::recordSimTrace("maxima/army-birth-checksums.txt",trace);
     int workers=0,warriors=0;
     for(int i=0;i<Unit::MAX_COUNT;++i)if(auto* u=f.player.team->myUnits[i]) {
         workers+=u->typeNum==WORKER;warriors+=u->typeNum==WARRIOR;
     }
     REQUIRE((workers==50 && warriors>0));
-    if(!record){expected>>std::ws;REQUIRE(expected.eof());}
 }
 
-// The behaviour the checksum trace above stands for, stated directly: with the
+// The behaviour the sim trace above stands for, stated directly: with the
 // AI's birth mix funded for the army, the swarm produces warriors only, one per
 // production cycle while wheat lasts, and each birth spends exactly the recipe's
 // wheat. The material ledger balances at every tick.
@@ -1060,7 +1043,7 @@ TEST_SUITE("Maxima.Economy")
 	TEST_CASE("explorer target always gets production") { glob2test::HeadlessGlobals globals; explorerTargetAlwaysGetsProduction(); }
 	TEST_CASE("army demand funds training and birth mix") { glob2test::HeadlessGlobals globals; armyDemandFundsTrainingAndBirthMix(); }
 	TEST_CASE("barracks upgrades keep training open") { glob2test::HeadlessGlobals globals; barracksUpgradesKeepTrainingOpen(); }
-	TEST_CASE("army births match platform checksums") { glob2test::HeadlessGlobals globals; armyBirthsMatchPlatformChecksums(); }
+	TEST_CASE("army births sim trace [sim-trace]") { glob2test::HeadlessGlobals globals; armyBirthsSimTrace(); }
 	TEST_CASE("army births are warriors only, steady and paid per the recipe")
 	{
 		glob2test::HeadlessGlobals globals;

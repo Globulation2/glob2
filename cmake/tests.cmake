@@ -183,6 +183,7 @@ set(GLOB2_ENGINE_TESTS_1_SOURCES
     src/map/gradient/MapGradientInvalidationTest.cpp
     src/map/gradient/DelayedGradientPublicationHarness.cpp
     src/map/gradient/GradientPreparationTest.cpp
+    src/game/ChecksumSchemeTest.cpp
     src/team/stats/TeamStatsSaveHarness.cpp
     src/online/OnlineScreenLifetimeTest.cpp
     src/render/PointBarRenderTest.cpp
@@ -561,7 +562,6 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     libs/gag/src/FontMetricsTest.cpp
     libs/gag/src/PackedArrayTest.cpp
     libs/gag/src/EventQueueTest.cpp
-    src/map/generator/MapGeneratorGoldenCoverageTest.cpp
     libs/gag/src/GameplayRecordingTest.cpp
     libs/gag/src/RecordingSessionTest.cpp
     test/support/RecordingValidationProcess.cpp

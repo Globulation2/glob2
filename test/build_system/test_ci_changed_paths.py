@@ -194,8 +194,6 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/check_telemetry_simulation.py", "test/test_javascript_evidence.py",
                      "src/unit/types/UnitCatalogTest.cpp", "src/unit/UnitCustomizationTest.cpp",
                      "test/fixtures/unit-catalog/ablation-checksums.txt",
-                     "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json",
-                     "test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json",
                      "test/maxima/check_save_continuation_fixture.py",
                      "test/fixtures/resources/seeded-compositions-units.trace",
                      "test/support/TestMain.cpp", "libs/gag/src/ImageAssetTest.cpp"):
@@ -206,20 +204,12 @@ class ChangedPathsTest(unittest.TestCase):
                 )
 
     def test_match_record_fixture_runs_native_browser_and_comparison(self):
-        for path in ("test/fixtures/multiplayer/FourSquares1.g2mr",
-                     "test/fixtures/multiplayer/FourSquares1.verify-trace.txt"):
+        for path in ("test/fixtures/multiplayer/FourSquares1.g2mr",):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,
                     deployment=False, cross_platform=True,
                 )
-
-    def test_golden_table_only_runs_golden_job(self):
-        self.assert_jobs(
-            ["test/map-generator-golden.txt"],
-            native=False, browser=False, map_generators=True,
-            deployment=False, cross_platform=False,
-        )
 
     def test_transport_fixture_only_runs_browser_jobs(self):
         for path in ("src/net/NetConnectionHarness.cpp", "test/NativeMultiplayerPeer.cpp",

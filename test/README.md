@@ -48,7 +48,7 @@ python3 tools/dev_build.py map-tests && python3 test/run_tests.py --binary map  
 python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
 python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
 python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
-python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
+python3 test/run_tests.py --update-fixtures --tag golden   # rewrite committed goldens
 ```
 
 The `Maxima.Farming` fertility-cache case checks correctness in every build; its
@@ -196,6 +196,7 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[network]` | binds loopback sockets; never runs alongside another `[network]` case |
 | `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
 | `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it, and `GLOB2_TEST_SIM_TRACE_DIR=<dir>` also writes the actual text there for `tools/sim_fingerprint.py` |
+| `[sim-trace]` | records a trace with `recordSimTrace` and no checked-in text: `GLOB2_TEST_SIM_TRACE_DIR=<dir>` writes it for `tools/sim_fingerprint.py`, which compares it between the merge base and the pull request; the case asserts its behaviour with direct checks |
 | `[writes-preferences]` | legitimately saves settings |
 | `[benchmark]` | timing evidence, not pass/fail; runs only with `--tag benchmark` |
 | `[map-generators]` | the full generator contract; CI runs it in the map-generators job with `--tier full` (the cases are also `[slow]`), the shards use `--exclude-tag map-generators` |
@@ -207,6 +208,17 @@ every script the renderer switches to has a shipped font), so adding an entry ke
 the test green and dropping one fails it. Keep a literal only when it is a format
 contract, such as a wire or save layout, a frozen legacy table or a `static_assert`
 on struct layout, and say why next to it.
+
+Simulation tests detect bugs, not change. Assert the direct invariant the behaviour
+promises (a conserved material ledger, every AI order accepted, a winner declared at
+the decision tick), prefer a property across seeds (`Property.h`) to one hand-picked
+case, and check determinism relationally: the same input twice, save/reload against
+an uninterrupted run (`Continuation.h`), threaded against serial. Never commit a
+stored checksum or trace just to notice that output moved: tag the scenario
+`[sim-trace]` and call `recordSimTrace`, and sim-diff compares it between the merge
+base and the pull request, where a difference without a `SIM_REVISION` bump fails. A
+`[golden]` fixture is for compatibility only: bytes another program or an old file
+must keep matching.
 
 Correctness cases never assert on elapsed wall-clock or CPU time: CI runners and the
 `-O0` coverage build are slow and noisy. Assert a behavioural bound with an operation
@@ -280,8 +292,9 @@ game or GUI does not compile against them:
   withdrawal) and returns each executed order with the `OrderValidation::validate`
   verdict taken just before it executed. `AIOrderValidity/*`
   (`src/ai/AIOrderValidityTest.cpp`) uses it to require that every registered AI
-  issues only Accepted or Stale orders across seeds, with a documented allowlist
-  for rejections already known on master;
+  issues only Accepted or Stale orders across seeds. Its allowlist of known
+  rejections is empty; an entry names one AI, order type and reason, and the run
+  fails once the entry is no longer hit;
 - `DrawFixtures.h`: `sceneOf`, `drawMap`, `drawGUI` and `observeMap` for draw passes;
 - `Continuation.h` (engine binary only): save/load continuation checks, below;
 - `SimulationInvariants.h` (sim and engine binaries): `expectBuildingInvariants` and
@@ -305,8 +318,10 @@ default run still checks the sequence the test always checked.
 
 `test/support/Continuation.h` checks that a saved game continues exactly like the
 game it was saved from. `simulationComponents(game)` is `Game::checkSum`'s full
-component vector (game fields, every building, every unit; the map-header word,
-which saving rewrites, only with `includeMapHeader`). `saveGameBytes`,
+component vector (game fields including the map-header word, every building,
+every unit). With `legacy152Representation` it is the frozen historical layout,
+whose map-header word mixes in the format version saving rewrites, so that word is
+dropped. `saveGameBytes`,
 `saveGUIBytes`, `loadGameBytes` and `loadGameGUI` move a game through memory.
 `expectContinuation(game, {.ticks = n, ...})` saves the game, loads it into a fresh
 `GameGUI` and steps both in lockstep, each with its own synchronized stream bound,

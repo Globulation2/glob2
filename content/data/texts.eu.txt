@@ -1710,8 +1710,6 @@ Erradioen zabalera
 Begizta-maila
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirintoak gutxienez bi gelaxka behar ditu zabaleran eta altueran; erabili mapa handiagoa edo gelaxka txikiagoak.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Hain kanal zabalek belar gutxiegi uzten dute gelaxka bakoitzean; erabili kanal estuagoak edo gelaxka handiagoak.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirintoak kale itsu gutxiegi ditu hainbeste koloniarentzat; erabili mapa handiagoa edo gelaxka txikiagoak.
 [Home island size]
@@ -1720,6 +1718,14 @@ Hasierako uhartearen tamaina
 Eremu komunaren tamaina
 [Moat width]
 Lubanarroaren zabalera
+[Wall thickness]
+Hormen lodiera
+[Gardens]
+Baratzeak
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Hain horma lodiek pasabideak estuegi uzten dituzte; erabili horma meheagoak edo gelaxka handiagoak.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Hain lubanarro zabalek leku gutxiegi uzten dute oinarri bakoitzaren barruan; erabili lubanarro estuagoa, horma meheagoak edo gelaxka handiagoak.
 [Bridge count]
 Zubi kopurua
 [Continent size]

@@ -1710,8 +1710,6 @@ Spaakbreedte
 Aantal lussen
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Het doolhof heeft minstens twee cellen in de breedte en de hoogte nodig; gebruik een grotere kaart of kleinere cellen.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Zulke brede kanalen laten te weinig gras in elke cel over; gebruik smallere kanalen of grotere cellen.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Het doolhof heeft te weinig doodlopende gangen voor zoveel kolonies; gebruik een grotere kaart of kleinere cellen.
 [Home island size]
@@ -1720,6 +1718,14 @@ Grootte van het starteiland
 Grootte van het gemeenschappelijke gebied
 [Moat width]
 Slotgrachtbreedte
+[Wall thickness]
+Muurdikte
+[Gardens]
+Moestuinen
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Zulke dikke muren laten de doorgangen te smal; gebruik dunnere muren of grotere cellen.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Zulke brede slotgrachten laten te weinig ruimte in elke thuisbasis; gebruik een smallere slotgracht, dunnere muren of grotere cellen.
 [Bridge count]
 Aantal bruggen
 [Continent size]

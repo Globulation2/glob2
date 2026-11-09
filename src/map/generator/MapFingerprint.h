@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The fingerprint golden rows and repeatability checks compare generated maps by. Test-only,
+// The fingerprint sim-diff and repeatability checks compare generated maps by. Test-only,
 // and free of doctest so the standalone MapGeneratorGoldenTest harness can use it too.
 #pragma once
 #include "Game.h"
@@ -8,7 +8,7 @@
 #include <cstdint>
 
 /// Everything a generator decides that a player can see: terrain, resources and where each
-/// colony starts. Two maps with the same fingerprint are the same map for golden comparisons.
+/// colony starts. Two maps with the same fingerprint are the same map for fingerprint comparisons.
 inline std::uint64_t mapFingerprint(const Game &game)
 {
 	std::uint64_t hash = 14695981039346656037ull;

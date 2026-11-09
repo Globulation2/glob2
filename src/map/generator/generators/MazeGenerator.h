@@ -4,9 +4,10 @@
 #include "GeneratorDefinition.h"
 struct MazeOptions
 {
-	int cellShape, cellSize, channelWidth, loopiness, warp;
+	// channelWidth is the moat's width since revision 17 (the control keeps its id).
+	int cellShape, cellSize, channelWidth, wallThickness, loopiness, warp, gardens;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
-	bool sandRoads, treasure;
+	bool pavedRoads, treasure;
 	explicit MazeOptions(const GenerationRequest &r);
 };
 GeneratorDefinition mazeDefinition();

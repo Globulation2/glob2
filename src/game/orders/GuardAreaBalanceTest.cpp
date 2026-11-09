@@ -14,8 +14,9 @@
 //
 // The experiment is baked into the game's header (GameOptions::experiments).
 // The first case runs the same scenarios without it, expects the old outcome,
-// and compares the default game's per-100-tick checksums against a checked-in
-// golden, so any change to the default path through this code shows up.
+// checks that a save continues identically, and records the default game's
+// per-100-tick checksums for sim-diff, so any change to the default path through
+// this code shows up there.
 
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
@@ -479,7 +480,7 @@ namespace
 	// field and its refresh flag are saved with the live RNG, and the crowding
 	// counts are recomputed from unit positions at the next rebuild, so no
 	// derived state is lost. The experiment travels in the header, so the loaded
-	// game balances too.
+	// game balances too, and a game without it stays on the default path.
 	void savedGameContinuesIdentically(const Options& options)
 	{
 		World world(options);
@@ -492,8 +493,8 @@ namespace
 		const auto result = glob2test::expectContinuation(world.game, {.ticks = 1000,
 			.step = [](Game& game) { stepGame(game, game.teams[0], 1); return std::vector<std::string>{}; },
 			.gui = &world.headless.gui, .name = "guard continuation",
-			.afterLoad = [](Game& original, Game& loaded) {
-				REQUIRE(loaded.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
+			.afterLoad = [&options](Game& original, Game& loaded) {
+				REQUIRE(loaded.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing) == options.experiment);
 				// Mirrors GameGUI::loadFromHeaders, which applies the player header after Game::load.
 				loaded.setGameHeader(original.gameHeader, true);
 			}});
@@ -651,14 +652,15 @@ namespace
 
 TEST_SUITE("GuardAreaBalance")
 {
-	TEST_CASE("without the experiment every warrior takes the nearest area; nobody leaves it; the checksum trace is stable [golden]")
+	TEST_CASE("without the experiment every warrior takes the nearest area, nobody leaves it, and a save continues identically [sim-trace]")
 	{
 		glob2test::HeadlessGlobals globals;
 		Options options;
 		options.experiment = false;
 		spawnSplitsBetweenAreas(options);
 		clumpDrainsIntoNewArea(options);
-		glob2test::expectGolden("guard-area/off-path-checksums.txt", offPathTrace());
+		savedGameContinuesIdentically(options);
+		glob2test::recordSimTrace("guard-area/off-path-checksums.txt", offPathTrace());
 	}
 	TEST_CASE("the flag absent and the flag false play the same game, and warriors take the nearest area")
 	{
@@ -672,7 +674,7 @@ TEST_SUITE("GuardAreaBalance")
 				if (absent[tick] != off[tick]) firstDifference = int(tick) + 1;
 			CHECK(firstDifference == -1);
 		}, 1);
-		// The semantic checks the golden case runs: with the experiment off every
+		// The semantic checks the first case runs: with the experiment off every
 		// warrior takes the nearest area and an existing clump stays put.
 		Options options;
 		options.experiment = false;

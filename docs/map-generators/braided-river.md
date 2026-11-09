@@ -144,7 +144,7 @@ walk across the terrace, are used before the moraine's flanks.
 
 The source definition and its request/world validators define accepted settings and finished-map
 guarantees. Run the focused contracts (`GLOB2_CONTRACTS=braided-river`, `MapGeneratorContracts.h`)
-and the platform golden rows, inspect small and large rectangles and resource extremes, then check
+and the sim-diff map fingerprints, inspect small and large rectangles and resource extremes, then check
 populated games with complete seat rotations. See [generator verification](verification.md) for
 commands, revisions, save/replay checks and evidence requirements.
 

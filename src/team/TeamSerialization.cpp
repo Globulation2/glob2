@@ -404,8 +404,9 @@ void Team::save(GAGCore::OutputStream *stream)
 
 
 
-Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool legacy152)
+Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, ChecksumScheme scheme)
 {
+    const bool legacy152 = scheme == ChecksumScheme::Legacy152;
 	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
@@ -419,7 +420,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	for (Unit *unit : liveUnits.entries())
 	{
-		cs^=unit->checkSum(checkSumsVectorForUnits,legacy152);
+		cs^=unit->checkSum(checkSumsVectorForUnits,scheme);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
@@ -427,7 +428,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	for (Building *building : liveBuildings.entries())
 	{
-		cs^=building->checkSum(checkSumsVectorForBuildings,legacy152);
+		cs^=building->checkSum(checkSumsVectorForBuildings,scheme);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)

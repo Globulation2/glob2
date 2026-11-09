@@ -45,6 +45,14 @@ int countTiles(const TerrainSketch &, TerrainType);
 /// set for those tiles to take a terrain of their own.
 std::vector<unsigned char> tileCorners(const Torus &, const std::vector<unsigned char> &tiles);
 
+/// Paves a route traced as tiles (tracePath) onto the sketch as `type`. Width 1 sets each traced
+/// tile's top-left vertex: a line one vertex thick that leaves no pure tile of its own, a lane's mark
+/// as the old one-corner sand roads were. Width 2 sets all four corners of every traced tile, so the
+/// traced tiles become pure `type`: a road that reads as one. Only vertices `allowed` accepts change.
+/// Returns the vertices changed.
+int paveRoute(TerrainSketch &, const Torus &, const std::vector<unsigned char> &route, int width,
+			  TerrainType type, const std::function<bool(int)> &allowed);
+
 /// The tiles whose four corner vertices all hold `type` (tile (x, y) takes its rules from vertices
 /// (x, y), (x + 1, y), (x, y + 1) and (x + 1, y + 1)): what the sketch will draw as pure grass,
 /// sand or water. Buildings and deposits need pure grass, and the engine's growth tests read pure

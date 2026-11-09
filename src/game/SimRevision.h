@@ -13,10 +13,11 @@
 // It feeds the sim version key (Online::SimVersion, see "Simulation version" in
 // docs/multiplayer/turn-protocol.md), which partitions rooms, queues, AI ratings
 // and verifiers, so builds that simulate differently never meet in one match.
-// A bump also needs a fresh test/fixtures/multiplayer/FourSquares1.g2mr (its
-// sim version must match); test/check_sim_revision.py and CI fail when the
-// committed verification trace or record changes without a bump.
+// A bump also needs a fresh test/fixtures/multiplayer/FourSquares1.g2mr (re-record
+// it with run_tests.py --update-fixtures --filter "TurnEngineHarness/the committed*");
+// the sim-diff check fails when a pull request simulates differently from its merge
+// base without a bump.
 //
 // Kept apart from Version.h so a bump recompiles only the sim version code.
 // deploy/sim_version.py reads this line.
-#define SIM_REVISION 133
+#define SIM_REVISION 138

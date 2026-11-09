@@ -1710,8 +1710,6 @@ OpenGL در این نسخه موجود نیست.
 میزان حلقه‌دار بودن
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 هزارتو دست‌کم به دو سلول در عرض و در طول نیاز دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-آبراه‌هایی با این پهنا در هر سلول چمن بسیار کمی باقی می‌گذارند؛ از آبراه‌های باریک‌تر یا سلول‌های بزرگ‌تر استفاده کنید.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 هزارتو برای این تعداد مستعمره بن‌بست‌های بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
 [Home island size]
@@ -1720,6 +1718,14 @@ OpenGL در این نسخه موجود نیست.
 اندازهٔ سرزمین مشترک
 [Moat width]
 پهنای خندق آبی
+[Wall thickness]
+ضخامت دیوارها
+[Gardens]
+باغچه‌ها
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+دیوارهایی با این ضخامت گذرگاه‌ها را بسیار باریک می‌کنند؛ از دیوارهای نازک‌تر یا سلول‌های بزرگ‌تر استفاده کنید.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+خندق‌هایی با این پهنا فضای بسیار کمی درون هر پایگاه باقی می‌گذارند؛ از خندق باریک‌تر، دیوارهای نازک‌تر یا سلول‌های بزرگ‌تر استفاده کنید.
 [Bridge count]
 تعداد پل‌ها
 [Continent size]

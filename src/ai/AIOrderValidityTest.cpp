@@ -55,23 +55,6 @@ struct KnownRejection
 	bool inQuickRun; // the default seeds and ticks reach it, not only the [slow] run
 };
 const std::vector<KnownRejection> knownRejections = {
-	// KNOWN: the shared runtime's ChangeAlliances (src/ai/shared_runtime/ManagementMisc.cpp,
-	// queued by Nicowar's fruit alliances in src/ai/nicowar/Farming.cpp) starts from the
-	// team's observed enemy mask and resends it. Team::setCorrectMasks initializes that
-	// mask to ~allies, with bits for teams the map does not have, which validTeamMask
-	// rejects. Reproduce: GLOB2_SEED=1, "Nicowar issues only valid orders", tick 94,
-	// player 0, set_alliance teamNumber 0 allied 0x1 enemy 0xfffffffe on a 2-team map.
-	{AI::NICOWAR, ORDER_SET_ALLIANCE, OrderValidation::Reason::OutOfRange, true},
-	// KNOWN: the same mask through Maxima's ChangeAlliances (src/ai/maxima/AIMaximaRuntime.cpp,
-	// queued for fruit vision in src/ai/maxima/AIMaxima.cpp). Reproduce: GLOB2_SEED=1,
-	// "Maxima issues only valid orders", tick 98, player 0, enemy mask 0xfffffffe.
-	{AI::MAXIMA, ORDER_SET_ALLIANCE, OrderValidation::Reason::OutOfRange, true},
-	// KNOWN: Cabino's moderateSpawns (src/ai/simple/AICabino.cpp) scales ratios with the
-	// integer divisor max/16, which is 1 for a largest ratio of 17..31, so it sends
-	// production ratios above MAX_RATIO_RANGE (16), e.g. worker 21. Reproduce:
-	// GLOB2_SEED=1, "Cabino issues only valid orders in long games [slow]", tick 734,
-	// player 0, modify_swarm gid 0 ratios {21, 6, 1}.
-	{AI::CABINO, ORDER_MODIFY_SWARM, OrderValidation::Reason::OutOfRange, false},
 };
 
 bool known(AI::ImplementationID ai, const glob2test::ValidatedAIOrder &record)

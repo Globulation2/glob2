@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "TeamCapacity.h"
 #include "ExperimentalFeatures.h"
+#include "ChecksumScheme.h"
 #include <vector>
 
 namespace GAGCore
@@ -117,8 +118,9 @@ public:
 	/// Returns the complete game checksum
 	void resetGameSHA1();
 
-	/// Returns a checksum of the map header information
-	Uint32 checkSum() const;
+	/// Returns a checksum of the map header information. Only Legacy152 mixes in
+	/// the file format version, which saving rewrites without changing the game.
+	Uint32 checkSum(ChecksumScheme scheme = ChecksumScheme::Current) const;
 	
 	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;

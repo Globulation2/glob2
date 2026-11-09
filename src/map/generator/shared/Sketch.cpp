@@ -80,6 +80,23 @@ int countTiles(const TerrainSketch &terrain, TerrainType type)
 	return int(std::count(terrain.begin(), terrain.end(), (unsigned char)type));
 }
 
+int paveRoute(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &route, int width,
+			  TerrainType type, const std::function<bool(int)> &allowed)
+{
+	const std::vector<unsigned char> corners = width >= 2 ? tileCorners(t, route) : route;
+	int changed = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (corners.at(i) && sketch.at(i) != type && allowed(i))
+		{
+			sketch.at(i) = type;
+			++changed;
+		}
+	}
+	return changed;
+}
+
 std::vector<unsigned char> tileCorners(const Torus &t, const std::vector<unsigned char> &tiles)
 {
 	std::vector<unsigned char> corners(tiles.size(), 0);

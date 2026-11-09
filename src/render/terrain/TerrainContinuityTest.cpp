@@ -4,6 +4,7 @@
 // material in the catalogue takes part, so a new terrain inherits the check.
 #include "HeadlessGlobals.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include "TerrainMaterials.h"

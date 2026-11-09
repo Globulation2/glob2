@@ -2,6 +2,7 @@
 // Terrain stored per vertex: the corner combine rule, the per-map cell rule
 // table, vertex edits and the conversion of files written before format 146.
 #include "HeadlessGlobals.h"
+#include "TerrainBuiltins.h"
 #include "field/TerrainMovementCosts.h"
 #include "Map.h"
 #include "HeadlessGame.h"
@@ -52,11 +53,14 @@ TEST_CASE("classic transitions vote on movement and blend ecology")
 					const auto p = combine(a, b, c, d);
 					CHECK_EQ(p.walkable, water <= 2);
 					CHECK_EQ(p.swimmable, water >= 3);
-					CHECK_EQ(p.shoreline, sand > 0);
+					const unsigned grass = 4 - water - sand;
+					// Sand is a beach; grass meeting water directly is one too.
+					CHECK_EQ(p.shoreline, sand > 0 || (grass > 0 && water > 0));
 					CHECK_EQ(p.buildable, a == GRASS && b == GRASS && c == GRASS && d == GRASS);
 					CHECK_EQ(p.fertilityQ8, water * 64);
 					CHECK_EQ(p.inhibitionQ8, sand * 64);
-					CHECK_EQ(p.shoreSupportQ8, p.inhibitionQ8);
+					// Algae regrows by any coast, beach or bare bank; sand alone is none.
+					CHECK_EQ(p.coast, water > 0 && water < 4);
 				}
 }
 
@@ -66,7 +70,7 @@ TEST_CASE("water-majority grass transitions are swimmable and unbuildable")
 	CHECK_FALSE(p.walkable);
 	CHECK(p.swimmable);
 	CHECK_FALSE(p.buildable);
-	CHECK_FALSE(p.shoreline);
+	CHECK(p.shoreline);
 	// Both corners grow resources, but they share none.
 	CHECK_EQ(p.allowedResources, 0);
 	CHECK_EQ(p.farmMaterial, 255);
@@ -120,14 +124,13 @@ TEST_CASE("all numeric modifiers use four-corner means in every arrangement")
 	constexpr std::uint16_t growth[] = {0, 0, 512, 1024};
 	constexpr std::int16_t fertility[] = {-1024, -127, 128, 1024};
 	constexpr std::uint16_t inhibition[] = {0, 128, 768, 1024};
-	constexpr std::uint16_t shore[] = {0, 0, 256, 256};
 	for (unsigned i = 0; i < corners.size(); ++i)
 	{
 		auto& p = corners[i];
 		p.groundSpeedQ8 = groundSpeed[i]; p.airSpeedQ8 = airSpeed[i];
 		p.groundHealthQ8 = groundHealth[i]; p.airHealthQ8 = airHealth[i];
 		p.growthQ8 = growth[i]; p.fertilityQ8 = fertility[i];
-		p.inhibitionQ8 = inhibition[i]; p.shoreSupportQ8 = shore[i];
+		p.inhibitionQ8 = inhibition[i];
 		REQUIRE(validTerrainProperties(p));
 	}
 	std::array<unsigned, 4> order{0, 1, 2, 3};
@@ -142,7 +145,6 @@ TEST_CASE("all numeric modifiers use four-corner means in every arrangement")
 		CHECK_EQ(p.growthQ8, 384);
 		CHECK_EQ(p.fertilityQ8, 0);
 		CHECK_EQ(p.inhibitionQ8, 480);
-		CHECK_EQ(p.shoreSupportQ8, 128);
 		CHECK(validTerrainProperties(p));
 	} while (std::next_permutation(order.begin(), order.end()));
 }
@@ -265,7 +267,7 @@ TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed one
 	CHECK(table[shore].properties.shoreline);
 	CHECK_FALSE(table[shore].properties.buildable);
 	CHECK_EQ(table[shore].properties.inhibitionQ8, 128);
-	CHECK_EQ(table[shore].properties.shoreSupportQ8, 128);
+	CHECK_FALSE(table[shore].properties.coast); // sand meeting grass, no water
 	// Costs come from the combined rules.
 	const auto mud = table.intern(MUD, MUD, GRASS, GRASS);
 	CHECK(table[mud].ground[0].cardinal == gradient_kernel::terrainEntrySteps(combine(MUD, MUD, GRASS, GRASS), 0).cardinal);
@@ -313,6 +315,23 @@ TEST_CASE("mixed cells take the shore habitat and intersect explicit resource li
 	}
 	CHECK(table.farmResource(shore) == NO_RES_TYPE);
 	CHECK(table.farmResource(GRASS) != NO_RES_TYPE);
+}
+
+TEST_CASE("grass directly against water is a shore: no land crops, algae where it swims")
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	CHECK(table.supportsResource(GRASS, WHEAT));
+	for (const auto water : {1, 2, 3})
+	{
+		CAPTURE(water);
+		const auto cell = table.intern(GRASS, water >= 3 ? WATER : GRASS, water >= 2 ? WATER : GRASS, WATER);
+		CHECK(table[cell].properties.shoreline);
+		CHECK_FALSE(table.supportsResource(cell, WHEAT));
+		CHECK_FALSE(table.supportsResource(cell, WOOD));
+		CHECK(table.farmResource(cell) == NO_RES_TYPE);
+		CHECK(table.supportsResource(cell, ALGA) == (water == 3));
+	}
 }
 
 TEST_CASE("a vertex write re-derives the four cells around it")

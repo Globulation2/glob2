@@ -56,7 +56,6 @@ void saveArtifact(const std::filesystem::path& path,const std::string& bytes) {
 std::vector<Uint32> continuationComponents(Game& game) {
     std::vector<Uint32> state,buildings,units;
     game.checkSum(&state,&buildings,&units,true);
-    state.erase(state.begin()); // Resaving upgrades the historical save header to the current version.
     state.insert(state.end(),buildings.begin(),buildings.end());
     state.insert(state.end(),units.begin(),units.end());
     return state;

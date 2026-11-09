@@ -28,8 +28,7 @@ oases); the lagoons, sandbars and pools are placed again because the lagoons now
 - **Lagoons are deep in the middle.** A lagoon is a long tidal channel of water whose bed is deep
   water (`deepCore`): swimmable but slower, no algae; its shallow margin keeps algae and its beach.
   Shell banks (sand, pale look) lie round every pool and lagoon on the flats, swelling and thinning
-  round each rim, which is also what lets algae regrow there: algae needs solid sand within reach of
-  its growth probe.
+  round each rim; like any coast, they let algae within reach of its growth probe regrow.
 - **The tor is the central quarry.** The central island's pond is now a knot of rock (Ridges, outcrop
   look: impassable, towers shoot over it) with a quarry face turned to every colony, stone on plain
   grass tiles left out of the rock. Every colony walks within a step or two of the same distance to its
@@ -126,8 +125,8 @@ against 288. No home island was overgrown with wood at the end. One game varies 
 
 ## Verification
 
-Run the focused contracts (`GLOB2_CONTRACTS=tidal-flats`, `MapGeneratorContracts.h`) and the platform
-golden rows, inspect small and large rectangles and resource extremes, then check populated games with
+Run the focused contracts (`GLOB2_CONTRACTS=tidal-flats`, `MapGeneratorContracts.h`) and the sim-diff
+map fingerprints, inspect small and large rectangles and resource extremes, then check populated games with
 complete seat rotations. See [generator verification](verification.md) for commands, revisions,
 save/replay checks and evidence requirements.
 

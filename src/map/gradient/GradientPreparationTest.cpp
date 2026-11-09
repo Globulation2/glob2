@@ -1,4 +1,5 @@
 #include "field/OpenCLGradient.h"
+#include "TerrainBuiltins.h"
 #include "field/TerrainMovementCosts.h"
 #include "field/PreparedTerrainCosts.h"
 #include "ComputeTelemetry.h"
@@ -2344,11 +2345,11 @@ TEST_CASE("the version-152 checksum adapter excludes newly introduced publicatio
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
     auto& map=world.game.map;
     map.setResourceByIndex(12,12,WHEAT,1);
-    const auto legacy=map.checkSum(true,false,true);
-    const auto current=map.checkSum(true,false,false);
+    const auto legacy=map.checkSum(true,false,ChecksumScheme::Legacy152);
+    const auto current=map.checkSum(true,false,ChecksumScheme::Current);
     REQUIRE(map.routing().getMaterialGradientSlot(0,WHEAT,MovementAccess::Land)==nullptr);
-    CHECK(map.checkSum(true,false,true)==legacy);
-    CHECK(map.checkSum(true,false,false)!=current);
+    CHECK(map.checkSum(true,false,ChecksumScheme::Legacy152)==legacy);
+    CHECK(map.checkSum(true,false,ChecksumScheme::Current)!=current);
 }
 
 TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stable identity" * doctest::test_suite("GradientPreparation"))

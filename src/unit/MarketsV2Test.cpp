@@ -60,9 +60,10 @@ TEST_SUITE("MarketsV2")
 {
 // Historical checksums remain a separate migration comparison. Current runs also
 // verify delivery and save continuation under both routing configurations.
-// fed: keep the workers sated every tick (the golden traces); otherwise they start
+// fed: keep the workers sated every tick (the recorded traces); otherwise they start
 // hungry and eat at the inn, which takes cherries from the market.
-std::string marketTrace(bool enabled, bool report=false, bool fed=true)
+// reload: save and load the game at tick 750 and play on from the loaded copy.
+std::string marketTrace(bool enabled, bool report=false, bool fed=true, bool reload=true)
 {
 	glob2test::HeadlessGlobals globals;
 	std::ostringstream trace;
@@ -133,7 +134,7 @@ std::string marketTrace(bool enabled, bool report=false, bool fed=true)
 			Uint32 hash=2166136261u;
 			for (Uint32 value : historicalGoldenState(g)) hash=(hash ^ value)*16777619u;
 			trace << pipeline << ' ' << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
-			if (tick==749)
+			if (tick==749 && reload)
 			{
 				const auto state=simulationComponents(g);
                 const auto checkCheckpoint=[&](const std::string& phase) {
@@ -181,12 +182,17 @@ std::string marketTrace(bool enabled, bool report=false, bool fed=true)
 	return trace.str();
 }
 
-TEST_CASE("disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]")
+// A save and load at tick 750 leaves every later tick of the trace unchanged: the
+// loaded game plays on exactly as the uninterrupted one. The trace with the reload
+// goes to sim-diff.
+TEST_CASE("disabled fruit deliveries continue identically after a mid-game save [sim-trace][save-format][artifacts]")
 {
-	glob2test::expectGolden("markets-v2/disabled-checksums.txt", marketTrace(false));
+	const auto trace = marketTrace(false);
+	CHECK(trace == marketTrace(false, false, true, false));
+	glob2test::recordSimTrace("markets-v2/disabled-checksums.txt", trace);
 }
 
-// The oracle the checksum traces stand for: across both routing configurations and
+// The oracle the recorded traces stand for: across both routing configurations and
 // a save and load, cherries held in buildings and carried by workers plus those
 // eaten always equal what the market and inn started with, and every material's
 // ledger balances.
@@ -198,7 +204,12 @@ TEST_CASE("market cherries are conserved apart from what was eaten [save-format]
 #endif
 }
 
-TEST_CASE("legacy workers already travelling to markets continue after migration [golden][save-format]")
+// The format-133 save holds a worker on its way to a market under the old
+// exchange path. Loaded today, it reaches the market, takes a cherry packet and
+// heads back to its inn; cherries are neither created nor lost, every
+// material's ledger balances, and a re-save in the current format continues
+// identically. The per-tick trace goes to sim-diff.
+TEST_CASE("legacy workers already travelling to markets continue after migration [sim-trace][save-format]")
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.header=true});
@@ -207,24 +218,63 @@ TEST_CASE("legacy workers already travelling to markets continue after migration
 	#if VERSION_MINOR >= 135
 	CHECK_FALSE(world.game.gameHeader.hasExperiment(ExperimentId::MarketsV2));
 	#endif
-	CHECK(world.team->myUnits[0]->ownExchangeBuilding!=nullptr);
+	Unit* traveller=world.team->myUnits[0];
+	REQUIRE(traveller);
+	Building* const market=traveller->ownExchangeBuilding;
+	Building* const inn=traveller->attachedBuilding;
+	REQUIRE(market!=nullptr);
+	REQUIRE(inn!=nullptr);
+	CHECK(traveller->targetBuilding==market);
+	CHECK_FALSE(traveller->hasCarriedMaterial(CHERRY));
+	const auto distanceToInn=[&] { return std::max(std::abs(traveller->posX-inn->posX),std::abs(traveller->posY-inn->posY)); };
+	const Sint64 initialCherries=cherriesOnHand(world.game);
+	const Uint64 initialEaten=cherriesEaten(world.game);
+	const auto feed=[](Game& game) {
+		for (int i=0;i<6;++i) { game.teams[0]->myUnits[i]->hungry=Unit::HUNGRY_MAX; game.teams[0]->myUnits[i]->medical=Unit::MED_FREE; }
+	};
+	std::optional<glob2test::MaterialLedger> ledger; // from the first step on
+	int pickedUp=-1, distanceAtPickup=0;
 	std::ostringstream trace;
 	for (int tick=750;tick<1000;++tick)
 	{
-		for (int i=0;i<6;++i) { world.team->myUnits[i]->hungry=Unit::HUNGRY_MAX; world.team->myUnits[i]->medical=Unit::MED_FREE; }
+		feed(world.game);
 		world.step();
+		{
+			CAPTURE(tick);
+			CHECK(cherriesOnHand(world.game) + Sint64(cherriesEaten(world.game) - initialEaten) == initialCherries);
+			if (!ledger) ledger.emplace(world.game);
+			else ledger->check("legacy market tick " + std::to_string(tick+1));
+		}
+		if (pickedUp<0 && traveller->hasCarriedMaterial(CHERRY)) { pickedUp=tick+1; distanceAtPickup=distanceToInn(); }
 		Uint32 hash=2166136261u;
 		for (Uint32 value : historicalGoldenState(world.game)) hash=(hash^value)*16777619u;
 		trace << "0 " << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
 	}
-	glob2test::expectGolden("markets-v2/legacy-133-checksums.txt",trace.str());
+	CAPTURE(pickedUp);
+	CHECK_FALSE(traveller->isDead);
+	CHECK(pickedUp>0);
+	// Carrying the packet home: bound for the inn and closer to it than at the market.
+	CHECK(traveller->hasCarriedMaterial(CHERRY));
+	CHECK(traveller->targetBuilding==inn);
+	CHECK(distanceToInn()<distanceAtPickup);
+	REQUIRE(ledger);
+	{
+		INFO(ledger->inexactReasons());
+		CHECK(ledger->colonyExact());
+	}
+	const auto result=glob2test::expectContinuation(world.game, {.ticks=64,
+		.step=[&](Game& game) { feed(game); glob2test::stepEngine(game); return std::vector<std::string>{}; },
+		.name="legacy market continuation"});
+	CHECK(result.matched);
+	glob2test::recordSimTrace("markets-v2/legacy-133-checksums.txt",trace.str());
 }
 #if VERSION_MINOR >= 135
-TEST_CASE("enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]")
+TEST_CASE("enabled supply networks repeat deterministically and continue identically after a mid-game save [sim-trace][save-format][artifacts]")
 {
 	const auto trace=marketTrace(true);
 	CHECK(trace==marketTrace(true));
-	glob2test::expectGolden("markets-v2/enabled-checksums.txt",trace);
+	CHECK(trace==marketTrace(true,false,true,false));
+	glob2test::recordSimTrace("markets-v2/enabled-checksums.txt",trace);
 }
 TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
 {

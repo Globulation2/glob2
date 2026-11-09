@@ -74,7 +74,7 @@ struct Fixture
 void farmManagementRadius()
 {
     Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
-    for(int y=0;y<64;++y)map.paintCell(10,y,WATER);
+    for(int y=0;y<64;++y)map.paintCell(9,y,WATER); // cell 10 is the shore, 11 pure grass
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     REQUIRE(home);
@@ -104,7 +104,7 @@ void coastalWheatCrossesFertilityDips()
     for(int resource:{WHEAT,WOOD})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
-        for(int y=0;y<64;++y)map.paintCell(10,y,WATER);
+        for(int y=0;y<64;++y)map.paintCell(9,y,WATER); // cell 10 is the shore, 11 pure grass
         map.setResourceByIndex(11,20,resource,5);
         ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
         ai.budget.farming_wheat_fertility_min=65536;
@@ -627,7 +627,7 @@ void firebreakManagementRadius()
     REQUIRE(home);
     // Firebreaks target actual spreading threats; radius is tested in a
     // fertile corridor rather than against permanently static dry-map trees.
-    for(int y=0;y<64;++y) map.paintCell(10,y,WATER);
+    for(int y=0;y<64;++y) map.paintCell(9,y,WATER); // cell 10 is the shore, 11 pure grass
     for(int y:{21,22,63})map.setResourceByIndex(11,y,WOOD,5);
     REQUIRE(map.materialExpansionRateAt(map.coordToIndex(11,22),MaterialId::Wood)>0);
     ai.budget.farming_enabled=true;

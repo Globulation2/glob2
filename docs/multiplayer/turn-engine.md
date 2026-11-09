@@ -251,24 +251,27 @@ pathfinding, AI code and parameters, order validation, map loading, random numbe
 scripting. Without a bump, builds that simulate differently share rooms, queues, AI
 ratings and verifiers, and their matches desync or fail verification. The revision
 only ever increases. A bump also needs a fresh golden record
-(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version), its
-trace and the other revision-keyed fixtures; `python3 tools/refresh_sim_fixtures.py`
-regenerates them all in the same change (the match record and trace, every `[golden]`
-doctest fixture, this platform's map generator rows, the telemetry traces and the
-Maxima continuation baseline), then runs `test/check_sim_revision.py`. After master CI
-has run, `--from-run <run id>` merges the other platforms' generator rows.
+(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version):
+`python3 test/run_tests.py --update-fixtures --filter "TurnEngineHarness/the committed*"`
+records it in the same change. The few remaining `[golden]` cases are compatibility
+fixtures (old saves, frozen seeded compositions); when one fails, find out why before
+rewriting it with `--update-fixtures --tag golden`. Map generators and the other
+scenarios have no committed output; sim-diff compares them between merge base and
+pull request.
 
 CI enforces what it can detect:
 
-- `test/check_sim_revision.py` (the change-selection job) fails when the committed
-  record names another sim version than the tree, and when the record or its
-  verification trace changed relative to the base revision while the sim version
-  did not.
-- The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
-  on a `match verify` trace that differs from the committed one: the simulation
-  changed.
+- `sim-diff` (see [simulation diff](../development/simulation-verification.md))
+  builds the merge base and the pull request, runs both on the same scenarios, and
+  fails when their output differs while the sim version key did not move. On master
+  pushes it audits each merge against its parent and opens an issue.
+- `test/check_sim_revision.py` (the change-selection job) checks that `SIM_REVISION`
+  is an integer that never goes down.
+- `match verify` of the record must give a `verified` verdict against the checksums
+  its clients reported, in `TurnEngineHarness` and on every platform of the
+  browser/native equivalence job, which also requires their traces to agree.
 
-The golden match covers only what one short Nicowar/Warrush game reaches, so a passing
-check does not prove the simulation is unchanged; bump whenever a change can matter.
+sim-diff's scenarios cover only what they run, so a passing check does not prove
+the simulation is unchanged; bump whenever a change can matter.
 
 [Multiplayer index](README.md) · [Documentation index](../README.md).

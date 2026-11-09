@@ -1710,8 +1710,6 @@ Säteiden leveys
 Silmukoiden määrä
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Sokkelo tarvitsee vähintään kaksi solua sekä vaaka- että pystysuunnassa; käytä suurempaa karttaa tai pienempiä soluja.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Näin leveät kanavat jättävät jokaiseen soluun liian vähän ruohoa; käytä kapeampia kanavia tai suurempia soluja.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Sokkelossa on liian vähän umpikujia näin monelle siirtokunnalle; käytä suurempaa karttaa tai pienempiä soluja.
 [Home island size]
@@ -1720,6 +1718,14 @@ Kotisaaren koko
 Yhteisalueen koko
 [Moat width]
 Vallihaudan leveys
+[Wall thickness]
+Muurien paksuus
+[Gardens]
+Kasvimaat
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Näin paksut muurit jättävät aukot liian kapeiksi; käytä ohuempia muureja tai suurempia soluja.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Näin leveät vallihaudat jättävät jokaisen kotitukikohdan sisälle liian vähän tilaa; käytä kapeampaa vallihautaa, ohuempia muureja tai suurempia soluja.
 [Bridge count]
 Siltojen määrä
 [Continent size]

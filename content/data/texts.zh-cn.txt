@@ -1710,8 +1710,6 @@ OpenGL 在此版本中不可用。
 回环程度
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 迷宫在横向和纵向上都至少需要两个单元格；请使用更大的地图或更小的单元格。
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-水道这么宽，每个单元格里剩下的草地太少；请使用更窄的水道或更大的单元格。
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 迷宫中的死胡同太少，不足以容纳这么多殖民地；请使用更大的地图或更小的单元格。
 [Home island size]
@@ -1720,6 +1718,14 @@ OpenGL 在此版本中不可用。
 公地区域大小
 [Moat width]
 护城河宽度
+[Wall thickness]
+墙体厚度
+[Gardens]
+菜园
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+墙这么厚，单元格之间的通道太窄；请使用更薄的墙或更大的单元格。
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+护城河这么宽，每个基地内部剩下的空间太少；请使用更窄的护城河、更薄的墙或更大的单元格。
 [Bridge count]
 桥梁数量
 [Continent size]

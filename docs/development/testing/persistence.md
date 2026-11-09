@@ -38,13 +38,10 @@ and the unit/building generation-plane migration, compares serialized AI state,
 and advances paired continuations through 128 actual AI decisions and simulation
 ticks after a new-format reload. Each continuation owns its RNG snapshot.
 
-The five expanded designed generators retain golden cases at 13–16 colonies on
-512×512. Refresh selected landscapes on the current platform with
-`MapGeneratorGoldenTest <profile> --update --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
-`--require-rows` requires the current revision of every registered generator on
-the executing platform; fresh foreign rows cannot substitute for local coverage.
-`MapGeneratorGoldenCoverageTest` covers stale, missing and mixed-revision tables.
-Regenerate each affected platform's rows using its actual binary.
+The five expanded designed generators' fingerprint requests include 13–16 colonies
+on 512×512; print them on the current platform with
+`MapGeneratorGoldenTest <profile> --print --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
+The sim-diff workflow compares these rows between merge base and pull request.
 
 ## Entering unit save regression
 
@@ -110,16 +107,16 @@ python3 test/compare_save_continuation.py uninterrupted/game.replay.checksums \
   resumed/game.replay.checksums
 ```
 
-The comparator checks every consecutive team/entity record, reports the first
-mismatch, rejects missing/truncated records, and excludes the aggregate checksum
-because it includes the save header/version. Run the retained late-game regression
+The comparator checks every consecutive tick record, aggregate checksum and
+team/entity records alike, reports the first mismatch and rejects missing or
+truncated records. Run the retained late-game regression
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
-The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
-through 30511 against the current unit-era simulation's complete checksum-record hashes.
-Its midpoint reload also compares complete records, adjusting only the known
-save-format contribution to the aggregate checksum. Its compressed save, expected
-per-tick hashes, and reproduction commands are in
+The retained Maxima format-115 checkpoint runs all 512 ticks from 30000 through
+30511 and saves at 30256; the reload must reproduce every remaining complete
+record, adjusting only the known save-format contribution to the aggregate
+checksum. No expected trajectory is committed: `tools/sim_fingerprint.py` runs the
+same continuation for sim-diff. Its compressed save and reproduction commands are in
 [maxima/fixtures/save-continuation](../../../test/maxima/fixtures/save-continuation/README.md).
 
 ## Untrusted file regression coverage

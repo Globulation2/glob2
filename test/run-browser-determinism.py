@@ -48,6 +48,8 @@ verify_trace = (verify_dir / 'checksums.txt').read_bytes()
 assert verify_trace.count(b'\n') > 600, 'Missing or short verify-match trace'
 (output / 'verify-match.checksums.txt').write_bytes(verify_trace)
 verdict = json.loads((verify_dir / 'verdict.json').read_text())
+# The record carries the checksums its clients reported: a simulation change fails here.
+assert verdict['verdict'] == 'verified', f"match verify: {verdict['verdict']}"
 # Keep the uploaded evidence small: the replay and scratch profile are reproducible.
 (verify_dir / 'match.replay').unlink()
 shutil.rmtree(verify_dir / 'profile', ignore_errors=True)

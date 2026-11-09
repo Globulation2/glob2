@@ -1710,8 +1710,6 @@ Velikost celice
 Gostota zank
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirint potrebuje vsaj dve celici v širino in v višino; uporabite večji zemljevid ali manjše celice.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Tako široki kanali v vsaki celici pustijo premalo trave; uporabite ožje kanale ali večje celice.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirint ima premalo slepih ulic za toliko kolonij; uporabite večji zemljevid ali manjše celice.
 [Home island size]
@@ -1720,6 +1718,14 @@ Velikost začetnega otoka
 Velikost skupnega ozemlja
 [Moat width]
 Širina vodnega jarka
+[Wall thickness]
+Debelina zidov
+[Gardens]
+Vrtovi
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tako debeli zidovi pustijo prehode preozke; uporabite tanjše zidove ali večje celice.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Tako široki vodni jarki pustijo premalo prostora znotraj vsake domače baze; uporabite ožji jarek, tanjše zidove ali večje celice.
 [Bridge count]
 Število mostov
 [Continent size]

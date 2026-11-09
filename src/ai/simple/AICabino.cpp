@@ -3864,17 +3864,21 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	if (ai.game->configuration->isPeacefulModeEnabled()) ratios[WARRIOR]=0;
-	int max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
-	int devisor=1;
-	if(max>16)
-		devisor=max/16;
-
-	for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
+	// Scale the ratios proportionally into the range a swarm accepts (0..16, the
+	// order validator's MAX_RATIO_RANGE), rounding to nearest and keeping every
+	// wanted unit type at least 1. Dividing by an integer max/16 left a largest
+	// ratio of 17..31 unscaled, and the validator rejected the whole order.
+	const int maxRatio=16;
+	const long long max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
+	if(max>maxRatio)
 	{
-		unsigned int num=ratios[i];
-		ratios[i]=static_cast<int>(std::floor(num/devisor+0.5));
-		if(num>0 && ratios[i]==0)
-			ratios[i]=1;
+		for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
+		{
+			const long long num=ratios[i];
+			ratios[i]=static_cast<int>((num*maxRatio+max/2)/max);
+			if(num>0 && ratios[i]==0)
+				ratios[i]=1;
+		}
 	}
 
 	unsigned int assigned_per_swarm=MAXIMUM_UNITS_FOR_SWARM;

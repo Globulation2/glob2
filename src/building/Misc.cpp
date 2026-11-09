@@ -558,8 +558,9 @@ bool Building::integrity()
 }
 
 template<bool Diagnostic>
-Uint32 Building::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
+Uint32 Building::checkSumImpl(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme)
 {
+	const bool legacy152 = scheme == ChecksumScheme::Legacy152;
 	// `cs` is signed `int` so the open-coded `(cs<<31)|(cs>>1)` rotates
 	// use arithmetic right-shift (sign-extending). Do NOT replace these
 	// with the unsigned `rotr1(Uint32)` helper in Utilities.h: when XOR
@@ -713,9 +714,9 @@ Uint32 Building::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy1
 	return Uint32(cs) ^ (legacy152 ? entityRandom.legacyChecksum() : entityRandom.checksum());
 }
 
-Uint32 Building::checkSum(std::vector<Uint32> *fields, bool legacy152)
+Uint32 Building::checkSum(std::vector<Uint32> *fields, ChecksumScheme scheme)
 {
-    return fields ? checkSumImpl<true>(fields, legacy152) : checkSumImpl<false>(nullptr, legacy152);
+    return fields ? checkSumImpl<true>(fields, scheme) : checkSumImpl<false>(nullptr, scheme);
 }
 
 int Building::getEffectiveArmor() const

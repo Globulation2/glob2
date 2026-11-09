@@ -163,9 +163,7 @@ def select(paths, labels=(), known=False):
         if music_set_path(path):
             add(path, 'native', 'browser')
             continue
-        if path == 'test/map-generator-golden.txt':
-            add(path, 'map_generators', 'compatibility')
-        elif path.endswith(('.h', '.hpp', '.hh')):
+        if path.endswith(('.h', '.hpp', '.hh')):
             add(path, *FLAGS)
         elif path.startswith('src/app/cli/') or path in {'src/app/Glob2.cpp', 'src/app/GlobalContainerArgs.cpp', 'tools/cli_reference.py', 'test/test_cli_smoke.py'}:
             add(path, 'native', 'browser', 'windows', 'android', 'macos', 'compatibility', 'cross_platform', 'platform', 'deployment')

@@ -4,86 +4,59 @@
 controllers and an omniscient JavaScript map script. It embeds `ai.js` and
 `map.js`; no source paths are needed to load it. The map is symmetric-arena
 (generator 15), seed 42, dimensions 64×64, two teams; game seed 19.
+`realistic-profile1-initial.game.gz` uses the same map and seeds, with
+`ai-realistic.js` on both teams and `map-realistic.js`. The economic planner reads
+units, building types and visible/remembered resources, calculates toroidal
+distances and weighted resource/health/demand scores, then returns existing worker
+orders. The omniscient survey calculates fertility weights, circular map
+coordinates and colony distances and persists its results.
 
-`profile1-256.checksums.gz` records every simulation tick through tick 256.
-The scripts exercise visibility-filtered observations, whole-map queries,
-private RNG streams, automatically saved globals, gameplay orders, large trig inputs and
-subnormal Math results. These are compatibility fixtures, not benchmarks.
-Changing them requires explaining the intended profile or simulation change.
-
-Run `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory. It compares against the current deep live-world trace, compares
-replays and saves at one and four compute workers, and checks resumed state and
-ticks from several saved checkpoints, including scenario-callback boundaries. The saved payload comparison excludes only
-the existing MapHeader SHA1, which depends on save history; scripts, RNG state,
-entity identities, observations and all simulation bytes must match.
-
-`realistic-profile1-initial.game.gz` and its 256-tick trace use the same map and
-seeds, with `ai-realistic.js` on both teams and `map-realistic.js`. The economic
-planner reads units, building types and visible/remembered resources, calculates
-toroidal distances and weighted resource/health/demand scores, then returns
-existing worker orders. The omniscient survey calculates fertility weights,
-circular map coordinates and colony distances and persists its results.
-
-The `realistic-{economy,survey}-*.txt` files freeze four callbacks on a focused
-32×32 production-engine world. `numeric-corpus.js` covers all exposed Math methods,
-parsing/coercion/formatting, IEEE edge cases and fixed-seed vectors; finite numbers
-in its golden text use hexadecimal binary64 bits. Non-finite script results are
-recorded as observable strings because returned data requires finite numbers.
-`global-number-corpus.js` separately retains raw non-finite results and IEEE edge
-values in automatic globals. Its generated `global-numbers-profile1.value` artifact records their
-snapshot representation and save/load continuation. Snapshots canonicalize NaN
-sign and payload, which are not observable through profile 1; signed zero and
-both infinity signs remain distinct. This checks the actual persisted numeric
-boundary in addition to returned-data formatting.
-
-These additions intentionally expand draft profile 1 coverage. The reproduced
-`hypot(1.2154874465220262, 1.8249387819142753)` disagreement now expects pinned bits `40018a97b64ae2d6` on every
-platform. No fixture preserves the erroneous platform-dependent result. The
-two draft initial saves now embed simple scripts with persistent top-level
-variables. Their traces are regenerated because source bytes and automatic
-global snapshots participate in checksums. Map, seeds, orders and released
-non-JavaScript behavior remain unchanged; numeric and realistic returned-data
-goldens are retained.
-
+Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 159,
+SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and
+`realistic-profile1-initial159.game.gz`. These initial states preserve the
+released setup, scripts and catalogs; old saved matches are deliberately rejected.
 The draft initial saves use format 125 so they include the released format-124
-experiment header before the new scripting identity fields. The header receives
-a four-byte empty experiment list; its map offset advances by four bytes, its
-minor version becomes 125, and its SHA metadata is refreshed. The production
-256-tick traces are regenerated because their aggregate includes the MapHeader
-version. Every prior team/entity record must remain identical. Script sources,
-map, seeds, RNG, orders and numeric/data goldens remain unchanged. Released
-format-124 experiment saves retain their own loader path and receive scripting
-identities on load. Only the unpublished JavaScript initial saves and their trace
-metadata are regenerated for this layout; released save/replay fixtures are not.
+experiment header before the new scripting identity fields.
 
-Global regression cases cover live contexts, restore,
-aliases/cycles, undefined, signed zero, property attributes and rejection rollback.
+No per-tick trace or returned-data text is committed. `JavaScriptSimulation` runs
+both initial saves for 256 ticks through the production Engine, with real AI
+callbacks, and requires one and four compute workers to give identical traces,
+saves and replays, saved continuations at ticks 32 and 128 to reproduce every
+remaining tick record, and replay playback to reproduce the trace. Its cases are
+tagged `[sim-trace]`: `tools/sim_fingerprint.py` compares their traces between the
+merge base and a pull request. `python3 test/check_javascript.py
+/absolute/path/to/glob2 --output artifacts/js-check` makes the same checks through
+the command line, adding realistic continuations at 64, 96 and 224. Saved
+continuation checks compare complete tick records, aggregate checksum included;
+the final save payload comparison excludes only the history-dependent MapHeader
+SHA1.
 
-`JavaScriptSimulation` runs both 256-tick fixtures through the production Engine,
-with real AI callbacks, one/four workers, save/resume at ticks 32 and 128, and
-actual replay playback. It retains complete traces, saves and replays. The Python
-runner adds realistic continuations at 64, 96 and 224. All complete checks include
-the aggregate checksum as well as entity records. Saved continuation checks
-adjust only the known MapHeader version contribution when a legacy initial save
-is written in the current format: the version fields and team/player counts in
-both save headers determine that contribution. All entity bytes and the remaining
-aggregate checksum must still match, and the resumed tick range must be complete.
-The final save payload comparison still excludes only the history-dependent SHA1.
-Replay playback supplies AI
-orders, while the live runs prove AI execution and persisted AI state.
+`numeric-corpus.js` covers all exposed Math methods, parsing/coercion/formatting,
+IEEE edge cases and fixed-seed vectors. Non-finite script results are returned as
+observable strings because returned data requires finite numbers. The numeric
+case checks every exactly rounded operation (add, subtract, multiply, divide,
+remainder, sqrt, abs, floor, ceil, trunc, fround) against the host on every edge
+and fixed-seed input, and pins results with a mathematically correct value: the
+reproduced `hypot(1.2154874465220262, 1.8249387819142753)` disagreement must give
+bits `40018a97b64ae2d6` on every platform. `global-number-corpus.js` retains raw
+non-finite results and IEEE edge values in automatic globals; its case checks their
+snapshot representation and save/load continuation. Snapshots canonicalize NaN
+sign and payload, which are not observable through profile 1; signed zero and both
+infinity signs remain distinct. The `JavaScriptRealistic` case runs both realistic
+scripts for four callbacks on a focused 32×32 world and requires a reloaded
+controller to match one that never reloaded. All of these write `.value` artifacts
+that the cross-platform scripting evidence compares between platforms.
 
-The focused conversion fixture primes production AI globals, RNG and orders,
-then converts a unit into a previously used team slot. A map callback observes
-the stale reference immediately, and `conversion-0.game` saves that boundary
-before the session/replay begins. The test compares all 256 per-tick records,
-same-platform raw saves/replays at one/four workers, decoded final saves after
-loading that immediate boundary, and real replay playback from the converted
-world. It runs in the shared corpus without replacing the original frozen traces.
+The focused conversion fixture primes production AI globals, RNG and orders, then
+converts a unit into a previously used team slot. A map callback observes the stale
+reference immediately, and `conversion-0.game` saves that boundary before the
+session/replay begins. The test compares all 256 per-tick records, same-platform
+raw saves/replays at one/four workers, decoded final saves after loading that
+immediate boundary, and real replay playback from the converted world.
 
-The same fixture/trace is intended for all supported native platforms. Browser
-replay verification can use the replay and checksum sidecar generated by this
-suite; map callbacks still execute when AI decisions are supplied by the replay.
+Browser replay verification can use the replay and checksum sidecar generated by
+this suite; map callbacks still execute when AI decisions are supplied by the
+replay.
 
 `released-v123.replay.gz` preserves the historical browser replay fixture,
 recorded for 1,500 ticks from `content/games/cross-replay.game.gz`, seed 42, by a
@@ -101,72 +74,3 @@ entity identities, that the format-125 round trip retains both, and that 64
 subsequent ticks preserve world, team and entity execution. Only the MapHeader
 format contribution is excluded when comparing the released and upgraded
 aggregate checksums; the experiment and simulation records must match.
-
-The format-127 sixteen-team implementation hashes a larger script-generation
-table. `profile1-256-teams16.checksums.gz` and
-`realistic-profile1-256-teams16.checksums.gz` pin that aggregate checksum layout.
-The original traces remain intact: both checkers compare every historical team,
-building and unit record between the original and expanded traces at all 256 ticks.
-The expanded traces were captured from Linux execution.
-
-`profile1-256-terrain.checksums.gz` and
-`realistic-profile1-256-terrain.checksums.gz` retain the terrain-era simulation baselines.
-Canonical terrain IDs now participate in the map checksum, and property-based
-ecology can change subsequent simulation behavior. Both checkers still load the
-original version-125 saves, then compare complete current traces, one/four-worker
-execution and saved continuations; the native suite also checks replay playback.
-The native fixture runner's `--update-fixtures` option rewrites only the
-deep live-world traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
-MapHeader version normalization and the final-save SHA1 exclusion described above
-remain unchanged.
-
-`profile1-256-resources.checksums.gz` and
-`realistic-profile1-256-resources.checksums.gz` retain the SIM_REVISION 40
-resource-era complete-trace baselines. Private entity, map and story RNG state participates in
-the checksums, alongside resource registries and material-gradient caches. Old
-saves initialize missing streams once and adopt the new trajectories. Historical
-traces and original version-125 saves remain unchanged as migration inputs.
-The Python checker compares complete current checksums, exact one/four-worker
-replay and save output, and every existing saved continuation boundary. It does
-not exclude RNG, registry or cache state from those comparisons.
-
-`profile1-256-units.checksums.gz` and
-`realistic-profile1-256-units.checksums.gz` are the historical format-153 unit-era
-complete-trace references. They include resolved unit-catalog identity, assigned
-job purpose and extended cargo state. These traces remain retained with the original saves. Complete checks, worker parity, saved continuation boundaries
-and the existing narrow MapHeader version/SHA1 adjustments remain unchanged.
-The header-prefix parser bounds every count and byte range through the player
-count. Format 153 adds unit definitions later in GameHeader; it adds no
-MapHeader metadata or player-count offset.
-The parser accepts headers through the current `VERSION_MINOR` in `Version.h` and includes the statistics-delay
-byte introduced in format 155. The current aggregate version adjustment includes
-both the unit-catalog and statistics checksum rotations; historical protocol
-checks retain their own rotation counts.
-The native frozen traces normalize the MapHeader format number to 125 after
-loading. Before exact comparison, the CLI checker adjusts only that version's
-aggregate contribution to the actual input header; entity bytes stay unchanged.
-
-Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 159,
-SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and
-`realistic-profile1-initial159.game.gz`. The corresponding
-`*-256-cached159.checksums.gz` traces are retained historical references. These
-initial states preserve the released setup, scripts and catalogs; old saved
-matches are deliberately rejected.
-
-The historical cached159 traces also include format-160 private-stock and cached-unit-
-performance caps (SIM_REVISION 56). The filename identifies the format-159 input
-save; those traces retain the checksum layout preceding format 168.
-
-Format 168 uses asynchronous routine snapshot checksums and opt-in deep live-world
-sidecars. Current runners compare `profile1-256-deep168.checksums.gz` and
-`realistic-profile1-256-deep168.checksums.gz`; the native `--update-fixtures` option
-rewrites only those current traces. The current baselines include four-corner terrain
-voting and arithmetic-mean modifiers, which can change movement and resource growth
-without changing the saved initial terrain. Their aggregate retains existing full map,
-script, RNG and pending-work coverage, and header flag bit 0 identifies this deep
-mode. Replays separately validate the source-tagged snapshot schema. The native
-corpus normalizes only MapHeader's checksum minor to 125; the Python checker
-adjusts that version contribution with the current two-final-rotation formula,
-including for resumed format-168 saves. Historical traces and input saves remain
-unchanged. One/four-worker byte equivalence and save/replay continuation remain
-required.

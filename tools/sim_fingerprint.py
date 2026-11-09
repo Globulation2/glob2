@@ -12,7 +12,7 @@ The bundle holds, per scenario, the build's own output for fixed inputs:
 - match: the FourSquares1 relay match record replayed by `match verify`, its
   per-tick state checksums. A record from another sim version is still replayed
   in full; only its verdict is "unverifiable".
-- generators: every registered generator's map fingerprint on the golden
+- generators: every registered generator's map fingerprint on a fixed
   request set (MapGeneratorGoldenTest --print), keyed by request.
 - saves: the retained AI and telemetry saves at their own lengths (the
   check_telemetry_simulation.py set), the v108 checkpoint continued for 256
@@ -135,8 +135,11 @@ def run_generators(binary_dir: Path, work: Path, checkout: Path) -> dict:
         # platform id revision wDec hDec teams seed status hash
         if len(fields) != 9 or line.startswith('#'):
             continue
-        _, generator, _, w, h, teams, seed, status, value = fields
-        rows[f'{generator} {w}x{h} teams={teams} seed={seed}'] = f'{status} {value}'
+        _, generator, revision, w, h, teams, seed, status, value = fields
+        # The generator revision is part of the name: a deliberate change to a
+        # generator's maps bumps its revision, which makes its rows new scenarios
+        # (noted, not differences) rather than a sim-diff failure.
+        rows[f'{generator}@{revision} {w}x{h} teams={teams} seed={seed}'] = f'{status} {value}'
     if not rows:
         raise RuntimeError('MapGeneratorGoldenTest --print produced no rows')
     return rows
@@ -157,12 +160,17 @@ def run_goldens(build_dir: Path, work: Path, checkout: Path) -> dict:
     env = headless_environment()
     env['GLOB2_TEST_SIM_TRACE_DIR'] = str(traces)
     env.pop('GLOB2_TEST_UPDATE_FIXTURES', None)
-    command = [sys.executable, str(checkout / 'test/run_tests.py'), '--build-dir', str(build_dir),
-               '--tag', 'golden', '--artifacts', str(work / 'golden-artifacts'),
-               '--junit', str(work / 'golden-artifacts/junit.xml')]
     with (work / 'goldens.log').open('w') as stream:
-        # The verdict against committed fixtures is not ours to judge; the traces are.
-        subprocess.run(command, cwd=checkout, stdout=stream, stderr=subprocess.STDOUT, env=env)
+        # [golden] cases compare with a committed fixture and [sim-trace] cases only
+        # record (Glob2Test recordSimTrace); both write their traces here. The verdict
+        # against committed fixtures is not ours to judge; the traces are. Traces keep
+        # the golden/ prefix so a case moved from expectGolden to recordSimTrace still
+        # matches its merge-base trace.
+        for tag in ('golden', 'sim-trace'):
+            command = [sys.executable, str(checkout / 'test/run_tests.py'), '--build-dir', str(build_dir),
+                       '--tag', tag, '--artifacts', str(work / f'{tag}-artifacts'),
+                       '--junit', str(work / f'{tag}-artifacts/junit.xml')]
+            subprocess.run(command, cwd=checkout, stdout=stream, stderr=subprocess.STDOUT, env=env)
     found = {'golden/' + path.relative_to(traces).as_posix(): path.read_text().splitlines()
              for path in sorted(traces.rglob('*')) if path.is_file()}
     if not found:

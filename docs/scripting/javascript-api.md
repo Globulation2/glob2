@@ -368,7 +368,7 @@ Each entry has `id`, stable `name`, `editorSelectable`, and these gameplay prope
 | `buildable`, `projectileBlocks`, `shoreline` | Building placement capability, projectile obstruction, and shoreline classification |
 | `groundSpeedQ8`, `airSpeedQ8`, `growthQ8` | Multipliers: `256` is normal, `128` half, `512` double |
 | `groundHealthQ8`, `airHealthQ8` | Signed HP per exposed tick, divided by `256`; negative damages |
-| `fertilityQ8`, `inhibitionQ8`, `shoreSupportQ8` | Nearby contribution, inhibition, and aquatic shoreline support in Q8 units |
+| `fertilityQ8`, `inhibitionQ8` | Nearby contribution and inhibition in Q8 units |
 | `allowedResources` | Runtime resource IDs permitted by compiled habitat rules and explicit terrain whitelists; refreshed when either catalog changes |
 | `farmMaterial` | Preferred renewable farming material key, or `null` for none |
 

@@ -1674,8 +1674,6 @@ Globulation 2 कर्सर दाखवा.
 चक्रीय मार्गांचे प्रमाण
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 भूलभुलैयामध्ये आडवे आणि उभे किमान दोन कप्पे हवेत; मोठा नकाशा किंवा लहान कप्पे वापरा.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-इतक्या रुंद जलमार्गांमुळे प्रत्येक कप्प्यात खूप कमी गवत उरते; अरुंद जलमार्ग किंवा मोठे कप्पे वापरा.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 इतक्या वसाहतींसाठी भूलभुलैयामध्ये पुरेसे बंद मार्ग नाहीत; मोठा नकाशा किंवा लहान कप्पे वापरा.
 [Home island size]
@@ -1684,6 +1682,14 @@ Globulation 2 कर्सर दाखवा.
 सामायिक प्रदेशाचा आकार
 [Moat width]
 खंदकाची रुंदी
+[Wall thickness]
+भिंतींची जाडी
+[Gardens]
+बागा
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+इतक्या जाड भिंतींमुळे वाटा खूप अरुंद राहतात; पातळ भिंती किंवा मोठे कप्पे वापरा.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+इतक्या रुंद खंदकांमुळे प्रत्येक मुख्य तळाच्या आत खूपच कमी जागा उरते; अरुंद खंदक, पातळ भिंती किंवा मोठे कप्पे वापरा.
 [Bridge count]
 पुलांची संख्या
 [Continent size]

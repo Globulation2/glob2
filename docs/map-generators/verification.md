@@ -13,8 +13,8 @@ Use contracts, map inspection and populated games for different questions: legal
   Shared colony-placement changes count too: concrete terrain variants consume the engine RNG,
   so changing the number or order of terrain brush passes can change fingerprints even when
   the cleared footprint is identical. Generators that place resources afterward can also change
-  resource amounts and positions. Refresh each affected generator's revision and each existing
-  platform's golden rows from that platform's actual output.
+  resource amounts and positions. Bump each affected generator's revision; the pull request's
+  sim-diff report lists every map fingerprint that moved.
 - `GeneratorControl`s are validated by `GeneratorRegistry`'s constructor: every control's default
   must land on a valid step from its minimum, and (`allowedValues` aside) `(maximum - minimum)`
   must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in
@@ -45,7 +45,7 @@ Use contracts, map inspection and populated games for different questions: legal
   cheapest route, strokes and shape fills, fields and clumps, settlements and the colony walk, the crop guarantee through and around a
   wall, a buried colony's room, balanced starts, per-landmass scatter, lattice noise, the
   wedge frame and the context's shuffle — so a change to a module fails there before it shows
-  up as a changed golden fingerprint downstream. `src/map/generator/MapGeneratorLandscapeChecks.h` does the same
+  up as a changed map fingerprint downstream. `src/map/generator/MapGeneratorLandscapeChecks.h` does the same
   for the landscape modules: symmetry groups against their orbits, morphology and the distance
   transform against brute force, crop growth and dry zones, cost models and route opening, sites
   and cell graphs, pattern wavelengths and seamless stripes, wandering paths, the channel
@@ -65,20 +65,16 @@ Use contracts, map inspection and populated games for different questions: legal
   fewer at 200% than at 100%, over seeds 1-5. The contract headers (`*Contracts.h`, `*Checks.h`)
   report through doctest's `REQUIRE`, so a broken contract fails its case with the expression
   and line instead of aborting the test process.
-- `src/map/generator/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
-  rule honest. `test/map-generator-golden.txt` records, per platform, the fingerprint (terrain,
-  resources and colony starts) every registered generator produces for three seeds at 256, one
-  at 128 and 512, and one each with two and eight colonies, keyed by the generator's revision.
-  `MapGeneratorGoldenTest <profile>` regenerates this platform's rows and fails on any map that
-  changed at an unchanged revision or any generator whose revision moved without the table
-  following; `--update` rewrites this platform's rows and refuses (without `--force`) to record
-  a changed map under an unchanged revision. `--print` emits unapproved, read-only rows to
-  stdout even when output changes at an unchanged recipe revision; expected rows stay untouched.
-  This is how a platform's rows are first bootstrapped from a CI log. Generation is deterministic per
-  platform, not across platforms, so rows carry the platform they were made on. A platform with
-  no rows reports and passes, so a new machine can run the check before its rows exist; CI
-  passes `--require-rows`, which fails instead, so the table has to carry rows for every
-  platform CI builds on (`linux-x86_64` beside the maintainers' `macos-arm64`). `--sweep` rolls
+- `src/map/generator/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest`.
+  `MapGeneratorGoldenTest <profile> --print [--only=id,...]` prints, per registered generator,
+  the fingerprint (terrain, resources and colony starts) of three seeds at 256, one at 128 and
+  512, and one each with two and eight colonies, as rows of `platform id revision wDec hDec teams
+  seed status hash`. No rows are committed: the sim-diff workflow
+  (`.github/workflows/sim-diff.yml`) runs `tools/sim_fingerprint.py`, which calls `--print` on
+  the pull request's merge base and on the pull request, and `tools/sim_diff.py` reports every
+  row that moved. A map change should come with a bump of that generator's revision.
+  Generation is deterministic per platform, not across platforms, so rows carry the platform
+  they were made on. `--sweep` rolls
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell below its
   success floor: three of five seeds at 128 and 256, one of three at 512. No seed generating is
@@ -105,8 +101,7 @@ Use contracts, map inspection and populated games for different questions: legal
 - `tools/new_map_generator.py <id> "<Display name>"` scaffolds a generator that builds, registers
   and passes its own validation: header and source in the designed shape (colonies on a lattice,
   a home and pond each, the kit and crop guarantee), the registry entry, the SConscript line, the
-  next unused legacy id and its translation keys with English placeholders. Its golden rows come
-  from `MapGeneratorGoldenTest <profile> --update`.
+  next unused legacy id and its translation keys with English placeholders.
 - The unit suite (`scons unit-tests && python3 test/run_tests.py --binary unit`) covers the
   rest of the engine and must stay green alongside all of the above.
 

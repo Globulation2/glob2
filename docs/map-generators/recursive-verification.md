@@ -5,8 +5,8 @@ Their design and reusable interfaces are in [recursive layouts](fractal-maps.md)
 
 ## Geometry and compatibility
 
-Run the `MapGeneratorDefaults` and `CustomGameSetup` engine suites and the platform's
-`MapGeneratorGoldenTest` with required golden rows. Cover exact subdivision,
+Run the `MapGeneratorDefaults` and `CustomGameSetup` engine suites and check the
+sim-diff map fingerprints. Cover exact subdivision,
 rectangular Hilbert paths/orientations, bounded failures, crossing connectivity,
 torus seams, contained crop plots, and disjoint building footprints with access.
 Check smallest and largest supported rectangles and dense colony requests.

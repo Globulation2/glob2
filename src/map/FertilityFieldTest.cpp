@@ -236,10 +236,14 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	map.makeSand(6, 6);
 	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	// Fish make open water food habitat; sand never is.
-	CHECK(field.at(4, 4) > 0u);
+	// Sand is never food habitat, and neither is grass straight against water:
+	// that cell is a shore, so the pond's shore ring cuts it off from the
+	// wheat, and only the ungated field still rates its water fertile.
 	CHECK_EQ(std::uint32_t(0), field.at(6, 6));
-	CHECK(field.at(5, 4) > 0u);
+	CHECK_EQ(std::uint32_t(0), field.at(5, 4));
+	CHECK_EQ(std::uint32_t(0), field.at(4, 4));
+	CHECK(Fertility::forMap(map, false).at(4, 4) > 0u);
+	CHECK(field.at(10, 10) > 0u);
 }
 
 void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
@@ -351,12 +355,12 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
         CHECK(cache.aquaticField()==aquatic);
         CHECK(map.resourceGrowthRateAt(index,WHEAT)==(type==GRASS ? wheat : 0));
     }
-    // One sand corner contributes a quarter of its inhibition and shore support,
-    // so the four surrounding cells now change the cached numeric ecology inputs.
+    // One sand corner contributes a quarter of its inhibition (sand alone is no
+    // coast), so the four surrounding cells change the cached ecology inputs.
     map.setVertexTerrain(7,8,SAND);
     CHECK_FALSE(cache.validFor(map));
     CHECK(map.terrainPropertiesAt(index).inhibitionQ8==64);
-    CHECK(map.terrainPropertiesAt(index).shoreSupportQ8==64);
+    CHECK_FALSE(map.terrainPropertiesAt(index).coast);
     CHECK(map.terrainPropertiesAt(index).walkable);
     CHECK_FALSE(map.terrainPropertiesAt(index).resourcesGrow);
     CHECK_FALSE(map.terrainPropertiesAt(index).buildable);
@@ -427,7 +431,7 @@ TEST_CASE("future terrain ecology properties invalidate only their effective inp
         {
         case 0: changed.fertilitySource=true; changed.fertilityQ8=-128; break;
         case 1: changed.inhibitionQ8=128; break;
-        case 2: changed.shoreSupportQ8=128; break;
+        case 2: changed.coast=true; break;
         case 3: changed.growthQ8=0; break;
         case 4: changed.growthQ8=512; break;
         }

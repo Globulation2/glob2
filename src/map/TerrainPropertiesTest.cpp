@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "Building.h"
 #include "sim/snapshot/SnapshotStore.h"
+#include "TerrainBuiltins.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
@@ -449,6 +450,27 @@ TEST_SUITE("TerrainRuntime")
 			  second.resourceGrowthField().landField().values());
 		CHECK(first.resourceGrowthField().aquaticField() ==
 			  second.resourceGrowthField().aquaticField());
+	}
+	TEST_CASE("the retired shoreSupportQ8 field still loads and is ignored")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto builtins = TerrainRegistry::builtins();
+		const auto plain = builtins->importJson(
+			R"({"schemaVersion":1,"terrains":[{"key":"test:dune","name":"Dune","base":"sand","properties":{},"appearance":"sand"}]})");
+		const auto legacy = builtins->importJson(
+			R"({"schemaVersion":1,"terrains":[{"key":"test:dune","name":"Dune","base":"sand","properties":{"shoreSupportQ8":512},"appearance":"sand"}]})");
+		const auto dune = *plain->find("test:dune");
+		CHECK(sameTerrainProperties(plain->properties(dune), legacy->properties(dune)));
+		CHECK_FALSE(plain->properties(dune).coast);
+		// Saves written before the field retired carry it in every embedded definition.
+		std::string saved = plain->serialize();
+		CHECK(saved.find("shoreSupportQ8") == std::string::npos);
+		const auto at = saved.find(R"("properties":{)");
+		REQUIRE(at != std::string::npos);
+		saved.insert(at + 14, R"("shoreSupportQ8":256,)");
+		const auto restored = TerrainRegistry::deserialize(saved);
+		CHECK(sameTerrainProperties(restored->properties(dune), plain->properties(dune)));
+		CHECK(restored->serialize() == plain->serialize());
 	}
 	TEST_CASE(
 		"custom capabilities drive map queries health ecology and immutable match definitions")
@@ -1259,7 +1281,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK_FALSE(terrainProperties(RIDGE_ROCK).projectileBlocks);
 		CHECK(terrainProperties(DIRT).buildable);
 		CHECK(terrainProperties(DIRT).inhibitionQ8 == 256);
-		CHECK(terrainProperties(DIRT).shoreSupportQ8 == 0);
+		CHECK_FALSE(terrainProperties(DIRT).coast);
 		CHECK_FALSE(terrainProperties(DIRT).shoreline);
 		CHECK(terrainProperties(MUD).groundSpeedQ8 == 160);
 		CHECK_FALSE(terrainProperties(MUD).buildable);

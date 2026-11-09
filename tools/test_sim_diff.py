@@ -49,6 +49,16 @@ class CompareTest(unittest.TestCase):
         found = sim_diff.compare(bundle(maps={'a': 'ok 1', 'b': 'ok 2'}), bundle(maps={'a': 'ok 1', 'b': 'ok 3'}))
         self.assertIn('1 generator maps, first: b', found[0]['component'])
 
+    def test_a_new_generator_revision_is_noted_not_a_difference(self):
+        base = bundle(maps={'forts@3 2x2 teams=2 seed=1': 'ok 1', 'river@1 2x2 teams=2 seed=1': 'ok 5'})
+        cand = bundle(maps={'forts@4 2x2 teams=2 seed=1': 'ok 9', 'river@1 2x2 teams=2 seed=1': 'ok 5'})
+        self.assertEqual(sim_diff.compare(base, cand), [])
+        [note] = sim_diff.unmatched_maps(base, cand)
+        self.assertIn('1 rows only in the base and 1 only in the candidate (forts@3, forts@4)', note)
+        cand['scenarios']['generators']['maps']['river@1 2x2 teams=2 seed=1'] = 'ok 6'
+        [found] = sim_diff.compare(base, cand)
+        self.assertIn('first: river@1', found['component'])
+
     def test_golden_traces_report_the_first_differing_line(self):
         trace = lambda lines: {'schema': sim_fingerprint.SCHEMA, 'ticks': 600,
                                'scenarios': {'golden/x.txt': {'kind': 'trace', 'lines': lines}}}

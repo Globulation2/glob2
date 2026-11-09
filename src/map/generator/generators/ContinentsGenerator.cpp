@@ -727,7 +727,7 @@ GeneratorDefinition continentsDefinition()
 		44,
 		// 33 was Patchwork, retired 2026-09-13 and never reused
 		"Continents",
-		5, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
+		6, // 6: algae now regrows near any coast, so its best-growing water moved; 3: the dry reserve's fields are dealt patchiest first, not from the top rows
 		false,
 		{GeneratorControl::choice(
 			 "continent", "Continent",

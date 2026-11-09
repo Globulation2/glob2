@@ -1710,8 +1710,6 @@ Egernes bredde
 Løkketæthed
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labyrinten skal have mindst to celler på tværs og på langs; brug et større kort eller mindre celler.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Så brede kanaler efterlader for lidt græs i hver celle; brug smallere kanaler eller større celler.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labyrinten har for få blindgyder til så mange kolonier; brug et større kort eller mindre celler.
 [Home island size]
@@ -1720,6 +1718,14 @@ Størrelse på startø
 Størrelse på fællesområde
 [Moat width]
 Voldgravsbredde
+[Wall thickness]
+Murtykkelse
+[Gardens]
+Haver
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Så tykke mure gør åbningerne for smalle; brug tyndere mure eller større celler.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Så brede voldgrave efterlader for lidt plads i hver hjembase; brug en smallere voldgrav, tyndere mure eller større celler.
 [Bridge count]
 Antal broer
 [Continent size]

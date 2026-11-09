@@ -191,13 +191,13 @@ search buy?" for any seed, which is the first question a reviewer should ask of 
 changes every map the generator makes.** This bit twice in one afternoon:
 
 - Renaming the generators late, a guard that protected `"tug-*"` missed the two-hyphen
-  `"tug-homes-deal"`. Fourteen of sixteen golden rows changed. The two survivors were the 2-colony
+  `"tug-homes-deal"`. Fourteen of sixteen fingerprint rows changed. The two survivors were the 2-colony
   rows, because `dealStarts` — the thing that stream feeds — is what shuffles colonies onto starts.
 - Renaming them deliberately afterwards invalidated every measured number in both design notes and a
   144-game tournament, all of which described maps that no longer existed.
 
 **Rename streams, telemetry keys and controls before the measurement pass, never after.** If you must
-rename late, regenerate the golden rows, and treat every figure in the notes as stale until re-taken.
+rename late, bump the revision, and treat every figure in the notes as stale until re-taken.
 
 One consolation worth noting: when every map changed, **all 17 contract suites still passed**, because
 they assert properties — the envelope, the refusals, a guaranteed lake and quarry per colony, rivers
@@ -228,7 +228,7 @@ asked, and building sites fell from ~13,000 to ~7,700. The range now ends at 40.
 
 The cost function runs once per proposal, thousands of times, so it is the whole profile. Profile it
 directly (`sample` on a loop of generations) rather than guessing. Even Ground went from 297.8 ms to
-190.1 ms a map, 36 per cent, with four changes and **no map moved** — golden rows are the check that
+190.1 ms a map, 36 per cent, with four changes and **no map moved** — map fingerprints are the check that
 an optimisation is really an optimisation.
 
 - **Hoist anything that does not depend on the loop variable.** `widestWalkClearance` begins with
@@ -256,9 +256,10 @@ an optimisation is really an optimisation.
 
 In this order, because each step is cheaper than the next and rules out different things.
 
-1. **Golden rows.** `MapGeneratorGoldenTest <profile>` — the map fingerprint per generator, seed and
-   shape. This is what says an optimisation or a refactor moved nothing. `--update` after a
-   deliberate change, with the revision bumped.
+1. **Map fingerprints.** `MapGeneratorGoldenTest <profile> --print --only=<id>` — the map
+   fingerprint per generator, seed and shape; the pull request's sim-diff report compares them with
+   the merge base. This is what says an optimisation or a refactor moved nothing. Bump the revision
+   after a deliberate change.
 2. **Contract suites.** Assert the design's promises, not fingerprints: the supported envelope, what
    the validator refuses, the guarantees every colony gets. These should survive a total reshuffle of
    the maps.

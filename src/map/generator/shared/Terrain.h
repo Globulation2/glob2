@@ -23,6 +23,9 @@ struct HeightFieldOptions
 	int wheat = 100, wood = 100, stone = 100, algae = 100;
 	// Stone on the highest grass rather than beside the shore.
 	bool hilltopStone = false;
+	// Off, the stone band keeps its width (so the crops lie where they would) but holds no stone: for a
+	// generator that lays its stone as quarries instead (River).
+	bool paintStone = true;
 	/// The shared terrain and resource controls of a request. A swamp has no sand or desert
 	/// weight and takes its water against its grass alone.
 	static HeightFieldOptions fromRequest(const GenerationRequest &, bool swamp);

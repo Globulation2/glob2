@@ -904,6 +904,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/GraphicContextDraw.cpp
     libs/gag/src/GraphicContextCompound.cpp
     libs/gag/src/GraphicContextUnitShader.cpp
+    libs/gag/src/GraphicContextCloudCover.cpp
     libs/gag/src/GraphicContextMipmaps.cpp
     libs/gag/src/GraphicContextSkinMesh.cpp
     libs/gag/src/SkinMesh.cpp

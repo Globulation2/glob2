@@ -3,6 +3,8 @@
 #define SDL_MAIN_HANDLED
 #include "PowerOfTwo.h"
 #include "Map.h"
+#include "TerrainGroupTable.h"
+#include "TerrainBuiltins.h"
 #include <SDL3/SDL_main.h>
 #include "MapReport.h"
 #include "Material.h"

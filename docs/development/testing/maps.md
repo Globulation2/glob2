@@ -10,22 +10,18 @@ resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
 
-## Map generator golden maps and colony sweep
+## Map generator fingerprints and colony sweep
 
 From the repository root, `scons --build=build/native-tests -j8 release=1 map-generator-golden-test` builds
-`build/native-tests/src/MapGeneratorGoldenTest`. Run it as `./build/native-tests/src/MapGeneratorGoldenTest <profile>`
-to compare this platform's rows of `test/map-generator-golden.txt` against fresh rolls, with
-`--update` after a revision bump, `--print` to bootstrap a platform's rows from a log, and
-`--sweep` to roll every playable landscape at the lobby's colony counts and sizes. A platform
-with no rows reports and passes, so a new machine can run the check before its rows exist;
-`--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
-rows for every platform running that check in CI for the selected platform. The current
-table records vertex terrain (save format 146): every generated map changed when terrain
-moved to map vertices, without individual generator recipe revisions. The complete
+`build/native-tests/src/MapGeneratorGoldenTest`. Run it as
+`./build/native-tests/src/MapGeneratorGoldenTest <profile> --print [--only=id,...]` to print this
+platform's map fingerprint rows, and with `--sweep` to roll every playable landscape at the
+lobby's colony counts and sizes. No fingerprint rows are committed: the sim-diff workflow runs
+`--print` (through `tools/sim_fingerprint.py`) on the merge base and the pull request and
+reports every row that moved; a generator whose maps change should bump its revision. The
 pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
-`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The current table includes
-native macOS arm64 rows; Linux hashes must not be used to bootstrap macOS coverage.
-Golden hashes establish behavior for their retained inputs. Compare topology separately when a serialized-format or resource-state change moves a complete map hash. See the [generator framework](../../map-generators/map-generator-framework.md).
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt` as a historical reference.
+Fingerprints establish behavior for their retained inputs. Compare topology separately when a serialized-format or resource-state change moves a complete map hash. See the [generator framework](../../map-generators/map-generator-framework.md).
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
 attempts for all registered generators at three seeds, including complete serialized worlds and
@@ -346,16 +342,13 @@ Maze and Caravanserai cases also enforce their portable topology references.
 
 `python3 test/collect_generator_evidence.py collect BINARY OUTPUT --platform macos-arm64`
 reads `MapGeneratorGoldenTest --inventory` and runs `--print` twice in fresh profiles.
-The request enumeration is shared with generation, including extended team counts
-without accepted fingerprints. Collection requires every committed Linux reference
-key to remain in that inventory and every requested row to be observed exactly once;
-it rejects missing or extra rows and changed revisions. It retains
+The request enumeration is shared with generation, including extended team counts.
+Collection requires every requested row to be observed exactly once; it rejects
+missing or extra rows and changed revisions. It retains
 raw logs, normalized rows, checkout provenance, host compiler, stable binary hash, and unchanged
-current/historical fixture hashes. Collection does not update expected output or
-replace the strict `--require-rows` gate. The macOS validation job runs that gate
-against its accepted platform rows before collecting observations; both checks
-and the five explicit-design checks are attempted even if another fails. Missing
-rows and full fingerprint changes fail verification. It uploads these
+historical fixture hashes. The macOS validation job collects these observations
+and runs the five explicit-design checks; each is attempted even if the other
+fails. It uploads these
 observations as `generator-observations-macos`. The collector cannot infer the
 binary's build inputs from the checkout; its manifest marks that association
 unverified. Retain the producing build job and compiler/flags/dependencies when

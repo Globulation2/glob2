@@ -3,11 +3,17 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { createHash } = require("node:crypto");
 const { openRuntimeHost } = require("./runtime-host");
-const fixture = require("./fixtures/studio-trace.json");
+const {
+  root,
+  studioScenario,
+  studioGameArgs,
+  traceOptions,
+  nativeStudioTrace,
+} = require("./native-reference");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const root = path.resolve(__dirname, "../../..");
-const source = fs.readFileSync(path.join(root, fixture.source), "utf8");
-const map = fs.readFileSync(path.join(root, fixture.map)).toString("base64");
+const scenario = studioScenario();
+const source = scenario.sourceText;
+const map = scenario.mapBytes.toString("base64");
 test("Studio launches an ephemeral AI-only game and reports live progress", async ({
   page,
 }, info) => {
@@ -19,7 +25,7 @@ test("Studio launches an ephemeral AI-only game and reports live progress", asyn
     const frame=document.getElementById('game');
     addEventListener('message',event=>{if(event.source!==frame.contentWindow||event.origin!==location.origin)return;const m=event.data;messages.push(m);if(m.type==='ready'){
       const map=Uint8Array.from(atob('${map}'),c=>c.charCodeAt(0)).buffer;
-      frame.contentWindow.postMessage({channel:'glob2-ai-studio',version:1,type:'launch',runId:m.runId,revision:m.revision,source:${JSON.stringify(source)},seed:19,opponent:'numbi',map},location.origin,[map]);
+      frame.contentWindow.postMessage({channel:'glob2-ai-studio',version:1,type:'launch',runId:m.runId,revision:m.revision,source:${JSON.stringify(source)},seed:${scenario.seed},opponent:${JSON.stringify(scenario.opponent)},map},location.origin,[map]);
     }});
     frame.src='/studio.html?run='+runId+'&revision=1';
     </script>`,
@@ -106,10 +112,14 @@ for (const variant of ["serial", "threaded"])
   test(`Studio source produces deterministic trace (${variant})`, async ({
     page,
   }, info) => {
-    test.setTimeout(180000);
-    // Fail visibly when setup changes; never bless a new browser result implicitly.
-    expect(sha256(source)).toBe(fixture.sourceSha256);
-    expect(sha256(Buffer.from(map, "base64"))).toBe(fixture.mapSha256);
+    // The native reference runs first in this worker (about a minute on CI).
+    test.setTimeout(600000);
+    const args = [
+      "game",
+      "run",
+      ...studioGameArgs(scenario, "/tmp/studio.map.gz", "/tmp/ai.js"),
+      ...traceOptions("/tmp/result"),
+    ];
     await openRuntimeHost(
       page,
       `<!doctype html><canvas id="canvas"></canvas><script>
@@ -118,7 +128,7 @@ for (const variant of ["serial", "threaded"])
       print:text=>engineLog.push(String(text)),printErr:text=>engineLog.push(String(text)),
       preRun:[function(){ENV.GLOB2_CHECKSUM_SIDECAR='1';FS.writeFile('/tmp/studio.map.gz',Uint8Array.from(atob('${map}'),c=>c.charCodeAt(0)));FS.writeFile('/tmp/ai.js',${JSON.stringify(source)});}],
       async onRuntimeInitialized(){try{
-        const code=await Module.start(['game', 'run','--map-file','/tmp/studio.map.gz','--game-seed','${fixture.seed}','--player','javascript','--ai-script','0:/tmp/ai.js','--player','${fixture.opponent}','--ticks','${fixture.ticks}','--write-replay','--telemetry','checksums','--save','initial','--save','final','--output-dir','/tmp/result']);
+        const code=await Module.start(${JSON.stringify(args)});
         if(code!==0)throw Error('Engine exited '+code);
         const bytes=FS.readFile('/tmp/result/game.replay.checksums');let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));window.trace=btoa(binary);
       }catch(e){window.failure=String(e);}}
@@ -136,10 +146,11 @@ for (const variant of ["serial", "threaded"])
     fs.mkdirSync(directory, { recursive: true });
     const trace = Buffer.from(await page.evaluate(() => window.trace), "base64");
     fs.writeFileSync(path.join(directory, "game.replay.checksums"), trace);
-    // The reference was produced by native execution, then matched by both browser
-    // runtimes. Checking all bytes covers every recorded per-tick checksum.
-    expect(trace.length).toBe(fixture.traceBytes);
-    expect(sha256(trace)).toBe(fixture.traceSha256);
+    // The native client of the same checkout runs the same scenario; checking all
+    // bytes covers every recorded per-tick checksum.
+    const native = nativeStudioTrace();
+    expect(trace.length).toBe(native.length);
+    expect(sha256(trace)).toBe(sha256(native));
     fs.writeFileSync(
       path.join(directory, "run.log"),
       (await page.evaluate(() => engineLog)).join("\n"),
@@ -160,7 +171,7 @@ test("Studio returns bounded runtime diagnostics for a failed controller", async
     window.messages=[];const frame=document.getElementById('game');
     addEventListener('message', event=>{if(event.source!==frame.contentWindow||event.origin!==location.origin)return;const m=event.data;messages.push(m);if(m.type==='ready'){
       const map=Uint8Array.from(atob('${map}'),c=>c.charCodeAt(0)).buffer;
-      frame.contentWindow.postMessage({channel:'glob2-ai-studio',version:1,type:'launch',runId:m.runId,revision:7,source:${JSON.stringify(broken)},seed:19,opponent:'numbi',map},location.origin,[map]);
+      frame.contentWindow.postMessage({channel:'glob2-ai-studio',version:1,type:'launch',runId:m.runId,revision:7,source:${JSON.stringify(broken)},seed:${scenario.seed},opponent:${JSON.stringify(scenario.opponent)},map},location.origin,[map]);
     }});
     frame.src='/studio.html?run=33333333-3333-4333-8333-333333333333&revision=7';
   </script>`,

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCatalogIO.h"
+#include "TerrainBuiltins.h"
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <nlohmann/json.hpp>

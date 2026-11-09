@@ -2,6 +2,7 @@
 #pragma once
 
 #include "TerrainPropertiesLayout.h"
+#include "TerrainBuiltins.h"
 #include "TerrainGroupTable.h"
 #include <array>
 #include <cassert>

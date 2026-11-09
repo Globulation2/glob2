@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "ChecksumScheme.h"
 #include "Material.h"
 #include <algorithm>
 #include <bitset>
@@ -419,9 +420,9 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	bool hasClearShotTo(int targetX, int targetY) const;
 
 	bool integrity();
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme=ChecksumScheme::Current);
 private:
-	template<bool Diagnostic> Uint32 checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152);
+	template<bool Diagnostic> Uint32 checkSumImpl(std::vector<Uint32> *checkSumsVector, ChecksumScheme scheme);
 public:
 
 private:

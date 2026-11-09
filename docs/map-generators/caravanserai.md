@@ -106,8 +106,8 @@ many stone tiles within 48 steps as before, where every mesa tile was a deposit.
 ## Verification
 
 Run the Caravanserai contracts and the shared Glacis/Allotments/Caravanserai block
-(`GLOB2_CONTRACTS=caravanserai,rebuilt-landscapes`, `MapGeneratorContracts.h`) and the platform
-golden rows, inspect small and large rectangles and resource extremes, then check populated games
+(`GLOB2_CONTRACTS=caravanserai,rebuilt-landscapes`, `MapGeneratorContracts.h`) and the sim-diff
+map fingerprints, inspect small and large rectangles and resource extremes, then check populated games
 with complete seat rotations. The validator proves every caravanserai wall standing with no way in
 but its gates; every quarry face stocked, and every face tile holding stone (`quarryFault` passes a tile that cannot hold it); every home tile playing by the same rules as colony 0's;
 every paved road tile a road; nothing on the rock; the field ring and grove sealed from the town and

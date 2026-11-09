@@ -287,14 +287,14 @@ profiles as described in `test/README.md`. The statistics harness also accepts
 at 640×480 and 1024×768 with the supported maximum of 16 teams, large totals and partial legacy history.
 `src/team/stats/MetricSeriesTest.cpp` (in `glob2-unit-tests`) covers the catalog and its
 arithmetic: rates, bands, percentages, coverage gaps and axes.
-`python3 test/check_telemetry_simulation.py build/src/glob2` compares the complete
-1,024-tick four-AI and 2,048-tick 12-team checksum sidecars against compressed
-version-121 fixtures, plus a 2,048-tick Numbi/Castor scenario. It also reloads a
-format-108 mid-run checkpoint and compares
-256 team/entity checksum records against the version-121 reference. Aggregate
-checksums after save/load include `MapHeader::versionMinor`, so a format-108 save
-cannot have the same aggregate checksum as a format-107 save. CI runs the
-same check on Linux and Windows (with `.exe` on Windows).
+`python3 test/check_telemetry_simulation.py build/src/glob2` runs the
+1,024-tick four-AI and 2,048-tick 12-team games and a 2,048-tick Numbi/Castor
+scenario with complete checksum sidecars. It also continues a format-108 mid-run
+checkpoint to tick 1,280, saving at 1,152: the reload must reproduce every
+remaining tick of the uninterrupted run, aggregate checksum and team/entity records
+alike (the aggregate's map-header word does not cover the save format version).
+`tools/sim_fingerprint.py` (part `saves`) compares these runs between builds; no
+trace is committed. CI runs the check on Linux and Windows (with `.exe` on Windows).
 Actual results and platform/performance coverage are recorded with the change's
 validation artifacts; CI compilation alone is not deterministic execution proof.
 

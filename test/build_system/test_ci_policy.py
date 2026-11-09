@@ -65,8 +65,6 @@ class PolicyTest(unittest.TestCase):
     def test_unit_catalog_browser_contracts_keep_cross_platform_selection(self):
         for path in ('src/unit/types/UnitCatalogTest.cpp', 'src/unit/UnitCustomizationTest.cpp',
                      'test/fixtures/unit-catalog/ablation-checksums.txt',
-                     'test/maxima/fixtures/save-continuation/expected-units-30000-30512.json',
-                     'test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json',
                      'test/maxima/check_save_continuation_fixture.py',
                      'test/check_telemetry_simulation.py', 'test/test_javascript_evidence.py'):
             with self.subTest(path=path):
@@ -339,6 +337,8 @@ class ReuseTest(unittest.TestCase):
                 (path/'wasm.replay.checksums').write_bytes(trace)
                 (path/'manifest.json').write_text(json.dumps(dict(project='chromium',variant=variant,threads=threads,ticks=1500,seed=42,trace_sha256=hashlib.sha256(trace).hexdigest())))
             self.assertEqual(evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'}),8)
+            # A failed browser producer is left out; the shards it did upload are ignored.
+            self.assertEqual(evidence.validate_traces(root,['ubuntu-24.04','windows'],set()),2)
             with self.assertRaises(ValueError):evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium','firefox'})
             for threads in (8, 'auto'):
                 path=root/'browser-determinism-wasm-0'/'wasm'/f'threaded-{threads}'

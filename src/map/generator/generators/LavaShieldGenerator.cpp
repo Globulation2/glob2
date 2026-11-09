@@ -1192,7 +1192,7 @@ GeneratorDefinition lavaShieldDefinition()
 			// Revision 7: the crater is uninterrupted lava, without void vents.
 			// Revision 9: live roots preserve all corners of reserved circuit cells.
 			// Revision 10: fertile ground contributes 48 Q8 to crop growth.
-			10,
+			11, // 11: algae now regrows near any coast, so its best-growing water moved
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

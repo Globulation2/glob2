@@ -1698,8 +1698,6 @@ Saiz sel
 Bilangan gelung
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Labirin memerlukan sekurang-kurangnya dua sel melintang dan ke bawah; gunakan peta yang lebih besar atau sel yang lebih kecil.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Saluran selebar ini meninggalkan terlalu sedikit rumput dalam setiap sel; gunakan saluran yang lebih sempit atau sel yang lebih besar.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Labirin ini mempunyai terlalu sedikit jalan buntu untuk koloni sebanyak ini; gunakan peta yang lebih besar atau sel yang lebih kecil.
 [Home island size]
@@ -1708,6 +1706,14 @@ Saiz pulau pangkalan
 Saiz kawasan bersama
 [Moat width]
 Lebar parit
+[Wall thickness]
+Ketebalan tembok
+[Gardens]
+Kebun
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tembok setebal ini menjadikan laluan pintu terlalu sempit; gunakan tembok yang lebih nipis atau sel yang lebih besar.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Parit selebar ini meninggalkan terlalu sedikit ruang di dalam setiap pangkalan utama; gunakan parit yang lebih sempit, tembok yang lebih nipis atau sel yang lebih besar.
 [Bridge count]
 Kiraan jambatan
 [Continent size]

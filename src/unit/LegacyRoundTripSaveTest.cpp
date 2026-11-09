@@ -9,10 +9,14 @@
 #include "MapInternal.h"
 #include "Version.h"
 #include "FileFormatVersions.h"
+#include "SimulationInvariants.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <memory>
+#include <optional>
+#include <array>
+#include <utility>
 #include <algorithm>
 #include <sstream>
 #include "Unit.h"
@@ -23,8 +27,9 @@ namespace
 std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 {
 	std::vector<Uint32> state, buildings, units;
-	game.checkSum(&state, &buildings, &units, true, legacy152);
-	state.erase(state.begin()); // file version changes on save, not simulation
+	game.checkSum(&state, &buildings, &units, true, legacy152 ? ChecksumScheme::Legacy152 : ChecksumScheme::Current);
+	// Only the frozen layout's header word carries the file version saving rewrites.
+	if (legacy152) state.erase(state.begin());
 	state.insert(state.end(), buildings.begin(), buildings.end());
 	state.insert(state.end(), units.begin(), units.end());
 	return state;
@@ -33,9 +38,8 @@ std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 Uint32 digest(Game &game)
 {
 	Uint32 hash=2166136261u;
-	// Keep the historical checksum representation for this regression trace.
-	// Intentional simulation revisions update its trajectory; save/resume
-	// comparisons below still cover the complete current state.
+	// Keep the historical checksum representation for this trace and the pinned
+	// load digest; save/resume comparisons below cover the complete current state.
 	for (Uint32 value : simulation(game, true)) hash=(hash ^ value)*16777619u;
 	return hash;
 }
@@ -68,7 +72,7 @@ TEST_SUITE("LegacyRoundTripSave")
 // round-trip-143.game.gz was written at tick 1,200 by master 06a106d3a, which
 // fetched by round trip: two teams of ten workers feeding an inn and a swarm,
 // with round-trip fields live in the save (see the fixture README).
-TEST_CASE("a format-143 save with live round-trip fields plays on greedily [golden][save-format]")
+TEST_CASE("a format-143 save with live round-trip fields plays on greedily [sim-trace][save-format]")
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.header=true});
@@ -108,13 +112,24 @@ TEST_CASE("a format-143 save with live round-trip fields plays on greedily [gold
     CHECK(g.map.worldRandom.streams == expectedWorld.streams);
 
 
+	// The compatibility contract: this existing save loads to exactly this state,
+	// whatever later simulation changes do to how it plays on. Only a change to
+	// how old saves load (or to the frozen version-152 checksum representation)
+	// may move it, and then deliberately.
+	CHECK(digest(g) == 0x99b5e1f6u);
+
 	std::ostringstream trace;
 	trace << "loaded " << std::hex << digest(g) << std::dec << '\n';
 	std::string checkpoint[2];
 	std::vector<Uint32> atCheckpoint;
+	std::optional<glob2test::MaterialLedger> ledger; // from the first step on
+	std::array<std::uint64_t, 2> harvestedBefore{};
+	for (int t=0; t<2; ++t) harvestedBefore[t] = std::as_const(g.teams[t]->stats).measurements().harvested[WHEAT];
 	for (int tick=1200; tick<2200; ++tick)
 	{
 		world.step();
+		if (!ledger) ledger.emplace(g);
+		else ledger->check("round-trip tick " + std::to_string(tick+1));
 		trace << tick+1 << ' ' << std::hex << digest(g) << std::dec << '\n';
 		if (tick+1 == 1700)
 		{
@@ -123,7 +138,18 @@ TEST_CASE("a format-143 save with live round-trip fields plays on greedily [gold
 			checkpoint[1] = save(g, true);
 		}
 	}
-	glob2test::expectGolden("greedy-fetching/round-trip-143-checksums.txt", trace.str());
+	// Both colonies keep harvesting wheat greedily, and every material balances.
+	for (int t=0; t<2; ++t)
+	{
+		CAPTURE(t);
+		CHECK(std::as_const(g.teams[t]->stats).measurements().harvested[WHEAT] > harvestedBefore[t]);
+	}
+	REQUIRE(ledger);
+	{
+		INFO(ledger->inexactReasons());
+		CHECK(ledger->colonyExact());
+	}
+	glob2test::recordSimTrace("greedy-fetching/round-trip-143-checksums.txt", trace.str());
 
 	// The re-saved game uses the current format, which no longer carries
 	// round-trip fields, and continues exactly as the uninterrupted run did.

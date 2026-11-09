@@ -115,10 +115,10 @@ on a blank 64x64 map with one team and 24 level-0 warriors, seeded so runs repea
 exactly. Two 5x5 areas are painted, "near" 18 tiles from the spawn block and "far"
 32 tiles away on the other axis. Counts are warriors within 7 tiles of an area's
 centre. The first case runs the spawn and drain scenarios **without** the
-experiment, expects the old outcome (24 / 0, nobody leaves), and compares the
-default game's per-100-tick checksums against
-`test/fixtures/guard-area/off-path-checksums.txt` (`[golden]`; `run_tests.py
---update-fixtures` rewrites it when a default-path change is intended). The balancing cases run at the three refresh cadences a game can
+experiment, expects the old outcome (24 / 0, nobody leaves), checks that a save
+of the default game continues identically, and records the default game's
+per-100-tick checksums as the `guard-area/off-path-checksums.txt` trace
+(`[sim-trace]`) that `tools/sim_fingerprint.py` compares between revisions. The balancing cases run at the three refresh cadences a game can
 have (every tick, about every 10 ticks with a small game's resource fields, about
 every 170 with a large game's).
 

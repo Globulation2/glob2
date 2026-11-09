@@ -72,6 +72,17 @@ void ChangeAlliances::modify(Runtime& runtime)
 	else if(!view_other)
 		other_mask&=~t->mask;
 
+	// Keep only bits for teams the map has. The observed enemy mask starts as
+	// ~allies (Team::setCorrectMasks), and the order validator rejects a mask with
+	// bits beyond the map's teams, which silently dropped every alliance change.
+	const std::size_t teamCount=runtime.observation().teams.size();
+	const Uint32 existing=teamCount>=32 ? ~Uint32(0) : (Uint32(1)<<teamCount)-1;
+	alliedmask&=existing;
+	enemymask&=existing;
+	market_mask&=existing;
+	inn_mask&=existing;
+	other_mask&=existing;
+
 	runtime.allies=alliedmask;
 	runtime.enemies=enemymask;
 	runtime.market_view=market_mask;

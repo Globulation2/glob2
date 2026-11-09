@@ -123,7 +123,7 @@ Use `context.stream("name")` for a per-attempt `std::mt19937` stream, or `contex
 
 General map mutation APIs use private map-owned streams initialized from the request seed. Generation and scored trial maps never seed or bind a shared gameplay RNG. Independent target Games isolate random consumption; each target still requires exclusive ownership of its mutable state.
 
-The same seed, generator revision and settings reproduce a world within this implementation on the same platform. Historical seeds intentionally do not promise the same maps, and cross-platform floating-point identity is not a supported contract. Bump a generator's revision when its output changes deliberately after this framework lands.
+The same seed, generator revision and settings reproduce a world within this implementation on the same platform. Historical seeds intentionally do not promise the same maps, and cross-platform floating-point identity is not a supported contract. Bump a generator's revision when its output changes deliberately after this framework lands; no fingerprints are committed, and the pull request's sim-diff report lists every generator map that moved ([verification](verification.md)).
 
 `GenerationService::generate()` returns generator ID, revision, seed, stage, error code and detail. It validates requests before world mutation and verifies dimensions, colony counts, starting swarms and worker counts afterward. The quantitative start proxy is an offline diagnostic, not an automatic terrain repair rule.
 

@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"

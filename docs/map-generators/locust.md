@@ -147,7 +147,7 @@ Finite dry wheat is opening stock, not renewable food. Evaluate whether a contro
 
 The source definition and its request/world validators define accepted settings and
 finished-map guarantees. Run the focused `MapGeneratorDefaults` contracts and the
-platform golden rows, inspect small/large rectangles and resource extremes, then
+sim-diff map fingerprints, inspect small/large rectangles and resource extremes, then
 check populated games with complete seat rotations. See [generator verification](verification.md)
 for commands, revisions, save/replay checks and evidence requirements.
 

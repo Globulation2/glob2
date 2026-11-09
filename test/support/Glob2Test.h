@@ -107,6 +107,14 @@ namespace glob2test
 	// builds' traces whatever the committed fixture says.
 	void expectGolden(const std::string& relative, const std::string& actual);
 
+	// Records `actual` for tools/sim_fingerprint.py without a committed fixture: with
+	// GLOB2_TEST_SIM_TRACE_DIR set it writes the trace to that directory under
+	// `relative`, otherwise it does nothing. sim-diff compares the trace between the
+	// merge base and a pull request, so a scenario keeps change detection without a
+	// stored output to refresh. Tag the case [sim-trace] so the fingerprint runs it,
+	// and give it a direct check of its own: the trace asserts nothing.
+	void recordSimTrace(const std::string& relative, const std::string& actual);
+
 	// Decompresses test/fixtures/<relative>.gz (or any repository-relative .gz) into
 	// the profile and returns the raw file, for loaders that want an uncompressed path.
 	std::filesystem::path inflated(const std::string& relativeGz);

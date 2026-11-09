@@ -531,8 +531,8 @@ source (up to 128 KiB), seed, curated opponent ID, and transferred map ArrayBuff
 run, never newer source. Each document accepts at most one launch.
 
 `platforms/web/tests/studio.spec.js` covers live startup, cleanup, controller diagnostics,
-and both runtimes' exact native checksum reference. Regeneration instructions are
-in [the fixture guide](tests/fixtures/README.md#studio-nativebrowser-checksums).
+and both runtimes' exact checksum trace against a live native run of the same
+scenario ([the fixture guide](tests/fixtures/README.md#studio-nativebrowser-checksums)).
 The deployment stack smoke test also checks isolation and framing policies for
 both Studio routes, the embedded game, the ordinary game entry, and the Monaco
 worker path policy. Firefox and WebKit explicitly include the Studio suite in

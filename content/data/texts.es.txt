@@ -1710,8 +1710,6 @@ Ancho de los radios
 Densidad de bucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 El laberinto necesita al menos dos celdas a lo ancho y a lo alto; usa un mapa más grande o celdas más pequeñas.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Unos canales tan anchos dejan muy poca hierba en cada celda; usa canales más estrechos o celdas más grandes.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 El laberinto tiene muy pocos callejones sin salida para tantas colonias; usa un mapa más grande o celdas más pequeñas.
 [Home island size]
@@ -1720,6 +1718,14 @@ Tamaño de la isla inicial
 Tamaño del área común
 [Moat width]
 Anchura del foso
+[Wall thickness]
+Grosor de los muros
+[Gardens]
+Huertos
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Unos muros tan gruesos dejan los pasos demasiado estrechos; usa muros más delgados o celdas más grandes.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Unos fosos tan anchos dejan demasiado poco espacio dentro de cada base; usa un foso más estrecho, muros más delgados o celdas más grandes.
 [Bridge count]
 Número de puentes
 [Continent size]

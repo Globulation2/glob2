@@ -1,0 +1,10 @@
+{
+  "manifest": "content/data/generators/examples/swamp/manifest.json",
+  "source": "content/data/generators/examples/swamp/generator.js",
+  "generator": "examples:swamp",
+  "seed": 19,
+  "params": { "width": 7, "height": 7, "teams": 4, "workers": 4 },
+  "candidates": 1,
+  "player": "nicowar",
+  "ticks": 64
+}
