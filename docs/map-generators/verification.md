@@ -50,6 +50,21 @@ Use contracts, map inspection and populated games for different questions: legal
   transform against brute force, crop growth and dry zones, cost models and route opening, sites
   and cell graphs, pattern wavelengths and seamless stripes, wandering paths, the channel
   arithmetic against `towerReach`, building room, region homes and every biome kit.
+- `src/map/generator/MapGeneratorPropertyTest.cpp` is the `MapGeneratorProperties` suite, tagged
+  `[slow][map-generators]` and sharded so each case has its own process. Every playable landscape
+  rolls its default request at seeds 1-10 (`test/support/Property.h`; `GLOB2_SEED` replays one,
+  `GLOB2_PROPERTY_ITERS` scales the count) and must give the same map, outcome and checksum twice
+  without touching the simulation RNG; at least seven of the ten rolls must generate; and each
+  successful roll must let every colony walk to colony 0 (`walkFromFirstColony`), reach wheat
+  within 24 steps, wood within 32 and 16 build origins (`startingAccessFailure`, the
+  `startingFloorFailure` floor), and score a `scoreStarts` fairness of at least 0.40, with the
+  landscape's mean at least 0.65. A landscape whose design does not make one of these promises
+  (islands, wood a voyage away, a forest cut rather than walked) is listed with the reason, and
+  the floors' comments record the master measurements they were set from. Every landscape with
+  resource-amount controls must also hold strictly more resources at 100% than at 0% and no
+  fewer at 200% than at 100%, over seeds 1-5. The contract headers (`*Contracts.h`, `*Checks.h`)
+  report through doctest's `REQUIRE`, so a broken contract fails its case with the expression
+  and line instead of aborting the test process.
 - `src/map/generator/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
   rule honest. `test/map-generator-golden.txt` records, per platform, the fingerprint (terrain,
   resources and colony starts) every registered generator produces for three seeds at 256, one
@@ -65,8 +80,12 @@ Use contracts, map inspection and populated games for different questions: legal
   passes `--require-rows`, which fails instead, so the table has to carry rows for every
   platform CI builds on (`linux-x86_64` beside the maintainers' `macos-arm64`). `--sweep` rolls
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
-  and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
-  seed generated: that is what a player would see as a failed generation. CI runs all three.
+  and 256 and three at 512, prints the success rate per cell and fails any valid cell below its
+  success floor: three of five seeds at 128 and 256, one of three at 512. No seed generating is
+  what a player would see as a failed generation; the floor at 128 and 256 sits one seed below
+  the worst cell measured on master (four of five), so a landscape that starts failing often
+  fails the sweep before it fails players. The 512 cells keep one of three, since three seeds
+  leave no margin below the measured worst of two. CI runs all three.
   `--sweep K/N --quick` leaves out the 512 cells, the costliest; pull requests with the full
   matrix run it, and the scheduled master runs sweep every cell. The sweep steps have no shell
   time limit of their own; the job's `timeout-minutes` only catches a hang.

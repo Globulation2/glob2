@@ -440,6 +440,7 @@ set(GLOB2_ENGINE_TESTS_12_REQUIRE
 set(GLOB2_ENGINE_TESTS_13_SOURCES
     src/map/generator/CombGeneratorTest.cpp
     src/map/generator/OrchardCommonsConversionTest.cpp
+    src/map/generator/MapGeneratorPropertyTest.cpp
 )
 
 # Extra compile flags of the group.

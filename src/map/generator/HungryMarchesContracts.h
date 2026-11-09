@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// Checks report through doctest (REQUIRE), so only test code may include this header.
+#include "Glob2Test.h"
 #include "GenerationWorld.h"
 #include "Map.h"
 #include "MapGeneratorContracts.h"
@@ -22,10 +24,10 @@ inline void hungryMarchesContracts()
 	GenerationService service;
 	{
 		Game plain(nullptr), observed(nullptr);
-		assert(service.generate(plain, r));
+		REQUIRE(service.generate(plain, r));
 		const auto result = service.generate(observed, r, true);
-		assert(result && !result.telemetry.records().empty());
-		assert(mapFingerprint(plain) == mapFingerprint(observed));
+		REQUIRE((result && !result.telemetry.records().empty()));
+		REQUIRE(mapFingerprint(plain) == mapFingerprint(observed));
 		std::map<int, long long> reported, actual;
 		for (const auto &record : result.telemetry.records())
 		{
@@ -50,7 +52,7 @@ inline void hungryMarchesContracts()
 					++actual[type];
 			}
 		for (int type : {WOOD, WHEAT, STONE})
-			assert(reported[type] == actual[type]);
+			REQUIRE(reported[type] == actual[type]);
 	}
 	for (auto shape :
 		 {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}, std::pair{7, 9},
@@ -64,13 +66,13 @@ inline void hungryMarchesContracts()
 			Game world(nullptr);
 			const auto result = service.generate(world, request);
 			if (std::min(shape.first, shape.second) == 7 && teams > 4)
-				assert(result.error == GenerationError::InvalidRequest);
+				REQUIRE(result.error == GenerationError::InvalidRequest);
 			else
 			{
 				if (!result)
 					fprintf(stderr, "Hungry Marches %d/%d/%d: %s\n", shape.first, shape.second,
 							teams, result.diagnostic().c_str());
-				assert(result);
+				REQUIRE(result);
 			}
 		}
 	// Largest crowded layouts must leave room for central shoreline detours.
@@ -80,7 +82,7 @@ inline void hungryMarchesContracts()
 		request.nbTeams = 12;
 		request.seed = 106;
 		Game world(nullptr);
-		assert(service.generate(world, request));
+		REQUIRE(service.generate(world, request));
 	}
 	for (int amount : {0, 200})
 	{
@@ -89,7 +91,7 @@ inline void hungryMarchesContracts()
 			if (control.group == ControlGroup::Resources)
 				request.options[control.id] = amount;
 		Game world(nullptr);
-		assert(service.generate(world, request));
+		REQUIRE(service.generate(world, request));
 		GenerationContext check(request);
 		setSyncRandSeed(2026);
 		for (int tick = 0; tick < 4096; ++tick)
@@ -97,11 +99,11 @@ inline void hungryMarchesContracts()
 		const auto error = definition.validateWorld(world, check);
 		if (!error.empty())
 			fprintf(stderr, "Hungry Marches growth: %s\n", error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 	}
 	{
 		Game world(nullptr);
-		assert(service.generate(world, r));
+		REQUIRE(service.generate(world, r));
 		const auto fertility = Fertility::forMap(world.map, false);
 		bool removed = false;
 		for (int y = 0; y < world.map.getH() && !removed; ++y)
@@ -112,18 +114,18 @@ inline void hungryMarchesContracts()
 					removed = true;
 				}
 		GenerationContext check(r);
-		assert(removed && !definition.validateWorld(world, check).empty());
+		REQUIRE((removed && !definition.validateWorld(world, check).empty()));
 	}
 	{
 		Game world(nullptr);
-		assert(service.generate(world, r));
+		REQUIRE(service.generate(world, r));
 		const auto fertility = Fertility::forMap(world.map, false);
 		for (int y = 0; y < world.map.getH(); ++y)
 			for (int x = 0; x < world.map.getW(); ++x)
 				if (world.map.getResource(x, y).type == WHEAT && fertility.at(x, y))
 					world.map.setNoResource(x, y, 1);
 		GenerationContext check(r);
-		assert(!definition.validateWorld(world, check).empty());
+		REQUIRE(!definition.validateWorld(world, check).empty());
 	}
 	puts("PASS Hungry Marches: supported shapes, refusal, telemetry identity, resource extremes, "
 		 "late growth, finite-ration and shared-food corruption");

@@ -4,6 +4,8 @@
 // by MapGeneratorDefaultsTest. Shared-primitive checks live in MapGeneratorToolkitChecks.h and
 // MapGeneratorLandscapeChecks.h; a check here is about one landscape's own contract.
 #pragma once
+// Checks report through doctest (REQUIRE), so only test code may include this header.
+#include "Glob2Test.h"
 #include "BraidedDeltaGenerator.h"
 #include "Map.h"
 #include <array>
@@ -26,7 +28,6 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Sketch.h"
-#include <cassert>
 #include <cmath>
 #include <chrono>
 #include <cstdio>
@@ -51,7 +52,7 @@ inline void emojiContracts()
 	D request;
 	request.setMethodDefaults(method);
 	for (const char *key : {"character", "outline", "inverse"})
-		assert(request.option(key) == 0);
+		REQUIRE(request.option(key) == 0);
 	GenerationService service;
 	std::set<std::string> characters, styles, terrains;
 	for (unsigned seed = 1; seed <= 16; ++seed)
@@ -59,7 +60,7 @@ inline void emojiContracts()
 		request.seed = seed;
 		Game world(nullptr);
 		const auto result = service.generate(world, request, true);
-		assert(result);
+		REQUIRE(result);
 		for (const auto &record : result.telemetry.records())
 		{
 			if (record.key == "emoji.character")
@@ -70,7 +71,7 @@ inline void emojiContracts()
 				terrains.insert(std::get<std::string>(record.value));
 		}
 	}
-	assert(characters.size() >= 4 && styles.size() == 2 && terrains.size() == 2);
+	REQUIRE((characters.size() >= 4 && styles.size() == 2 && terrains.size() == 2));
 	// All explicit variants must work and yield distinct maps at the same seed.
 	std::set<std::uint64_t> variants;
 	for (int character = 1; character <= 23; ++character)
@@ -85,19 +86,19 @@ inline void emojiContracts()
 				const auto result = service.generate(world, request);
 				if (!result)
 					std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-				assert(result);
+				REQUIRE(result);
 				variants.insert(mapFingerprint(world));
 				// Colony count and workers must not stamp home terrain onto the art.
 				auto solo = request;
 				solo.nbTeams = 1;
 				solo.nbWorkers = 1;
 				Game alone(nullptr);
-				assert(service.generate(alone, solo));
+				REQUIRE(service.generate(alone, solo));
 				for (int y = 0; y < (1 << request.hDec); ++y)
 					for (int x = 0; x < (1 << request.wDec); ++x)
-						assert(world.map.vertexTerrainAt(x, y) == alone.map.vertexTerrainAt(x, y));
+						REQUIRE(world.map.vertexTerrainAt(x, y) == alone.map.vertexTerrainAt(x, y));
 			}
-	assert(variants.size() == 92);
+	REQUIRE(variants.size() == 92);
 	// Playtest regression: dense deposits consumed the remaining construction room
 	// around an eight-colony filled-water sunglasses start. Relief must preserve terrain.
 	request.seed = 74021;
@@ -110,20 +111,20 @@ inline void emojiContracts()
 		request.options[key] = 200;
 	{
 		Game crowdedResources(nullptr);
-		assert(service.generate(crowdedResources, request));
+		REQUIRE(service.generate(crowdedResources, request));
 	}
 	for (auto dimensions : {std::pair{7, 7}, std::pair{8, 9}, std::pair{9, 8}})
 	{
 		request.wDec = dimensions.first;
 		request.hDec = dimensions.second;
 		Game world(nullptr);
-		assert(service.generate(world, request).error == GenerationError::InvalidRequest);
-		assert(world.teamsCount() == 0);
+		REQUIRE(service.generate(world, request).error == GenerationError::InvalidRequest);
+		REQUIRE(world.teamsCount() == 0);
 	}
 	request.wDec = request.hDec = 9;
 	request.nbTeams = 9;
 	Game crowded(nullptr);
-	assert(service.generate(crowded, request).error == GenerationError::InvalidRequest);
+	REQUIRE(service.generate(crowded, request).error == GenerationError::InvalidRequest);
 	puts("PASS Emoji: random defaults, all 92 explicit variants, terrain independent of "
 		 "colonies/workers, unsupported geometry rejected");
 }
@@ -152,7 +153,7 @@ inline void fortsContracts()
 			const auto result = GenerationService().generate(game, request, true);
 			if (!result)
 				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 			int crops[2] = {0, 0}, wall = -1;
 			for (int i = 0; i < 64 * 64; ++i)
 			{
@@ -164,9 +165,9 @@ inline void fortsContracts()
 				if (resource.type == STONE && amount == 0)
 					wall = i;
 			}
-			assert(crops[0] >= 32 && crops[1] >= 32);
+			REQUIRE((crops[0] >= 32 && crops[1] >= 32));
 			GenerationContext check(request);
-			assert(definition.validateWorld(game, check).empty());
+			REQUIRE(definition.validateWorld(game, check).empty());
 			if (amount > 0)
 			{
 				// Household fruit is an economic guarantee at nonzero default/max abundance.
@@ -176,7 +177,7 @@ inline void fortsContracts()
 					if (type >= CHERRY && type < CHERRY + 3)
 						game.map.setNoResource(i % 64, i / 64, 1);
 				}
-				assert(definition.validateWorld(game, check).find("orchard") !=
+				REQUIRE(definition.validateWorld(game, check).find("orchard") !=
 					   std::string::npos);
 			}
 			if (amount == 0)
@@ -186,20 +187,20 @@ inline void fortsContracts()
 				setSyncRandSeed(917);
 				for (int tick = 0; tick < 20000; ++tick)
 					game.map.growResources();
-				assert(definition.validateWorld(game, check).empty());
+				REQUIRE(definition.validateWorld(game, check).empty());
 				const Team *team = game.teams[0];
 				for (int dy = -2; dy < 6; ++dy)
 					for (int dx = -2; dx < 6; ++dx)
-						assert(
+						REQUIRE(
 							!game.map.isResource(team->startPosX + dx, team->startPosY + dy));
-				assert(wall >= 0);
+				REQUIRE(wall >= 0);
 				game.map.setNoResource(wall % 64, wall / 64, 1);
-				assert(!definition.validateWorld(game, check).empty());
+				REQUIRE(!definition.validateWorld(game, check).empty());
 			}
 		}
 	request.nbTeams = 4;
 	Game crowded(nullptr);
-	assert(GenerationService().generate(crowded, request).error ==
+	REQUIRE(GenerationService().generate(crowded, request).error ==
 		   GenerationError::InvalidRequest);
 }
 
@@ -225,9 +226,9 @@ inline void braidedDeltaChecks()
 		request.options["flood"] = c.flood;
 		Game game(nullptr);
 		const auto result = GenerationService().generate(game, request, true);
-		assert(result);
+		REQUIRE(result);
 		GenerationContext context(request);
-		assert(definition.validateWorld(game, context).empty());
+		REQUIRE(definition.validateWorld(game, context).empty());
 		// The panhandle's river is deep: some vertex of the map is deep water, and the swamp is marsh.
 		const MapGeneration::Torus torus(game.map);
 		bool deep = false, marsh = false;
@@ -236,17 +237,17 @@ inline void braidedDeltaChecks()
 			deep = deep || game.map.vertexTerrainAt(size_t(i)) == DEEP_WATER;
 			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MUDFLAT;
 		}
-		assert(deep && marsh);
+		REQUIRE((deep && marsh));
 		// Damage: a causeway of sand straight across the map wherever there is water. The terrain no
 		// longer matches the design, so the validator must refuse the world.
 		{
 			Game damaged(nullptr);
-			assert(GenerationService().generate(damaged, request, true));
+			REQUIRE(GenerationService().generate(damaged, request, true));
 			for (int x = 0; x < torus.w; ++x)
 				for (int y = torus.h / 3; y < torus.h / 3 + 3; ++y)
 					if (damaged.map.vertexTerrainAt(x, y) == WATER || damaged.map.vertexTerrainAt(x, y) == DEEP_WATER)
 						damaged.map.setVertexTerrain(x, y, SAND);
-			assert(!definition.validateWorld(damaged, context).empty());
+			REQUIRE(!definition.validateWorld(damaged, context).empty());
 		}
 		// Damage: stone over every tile that will take it. Terrain still matches, but the colonies
 		// are walled in and the finished-world contract must fail after furnishing.
@@ -254,7 +255,7 @@ inline void braidedDeltaChecks()
 			for (int x = 0; x < game.map.getW(); ++x)
 				if (game.map.isResourceAllowed(x, y, STONE))
 					game.map.setResourceByIndex(x, y, STONE, 1);
-		assert(!definition.validateWorld(game, context).empty());
+		REQUIRE(!definition.validateWorld(game, context).empty());
 	}
 	// Undersized maps fail before mutating a Game.
 	GenerationRequest request;
@@ -262,7 +263,7 @@ inline void braidedDeltaChecks()
 	request.wDec = 6;
 	request.hDec = 7;
 	request.nbTeams = 2;
-	assert(!validateGenerationRequest(request, definition).empty());
+	REQUIRE(!validateGenerationRequest(request, definition).empty());
 }
 
 // These checks exercise the finished world's contract, including destructive edits a
@@ -274,7 +275,7 @@ inline void breachableHighlandsContracts()
 	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("breachable-highlands"));
 	request.seed = 1;
 	Game game(nullptr);
-	assert(service.generate(game, request));
+	REQUIRE(service.generate(game, request));
 	GenerationContext context(request);
 	const auto &definition = GeneratorRegistry::builtins().at(request.method);
 	const auto fertility = Fertility::forMap(game.map, false);
@@ -289,34 +290,34 @@ inline void breachableHighlandsContracts()
 		if (type == STONE)
 			ridge = i;
 	}
-	assert(saddle.size() >= 12 && ridge >= 0);
+	REQUIRE((saddle.size() >= 12 && ridge >= 0));
 	const auto before = MapGeneration::contactMatrix(game.map, request.nbTeams,
 													 MapGeneration::StepCosts::walking());
 	for (int i : saddle)
 		game.map.setNoResource(i % game.map.getW(), i / game.map.getW(), 1);
-	assert(definition.validateWorld(game, context).find("saddle") != std::string::npos);
+	REQUIRE(definition.validateWorld(game, context).find("saddle") != std::string::npos);
 	const auto after = MapGeneration::contactMatrix(game.map, request.nbTeams,
 													MapGeneration::StepCosts::walking());
 	int bestSaving = 0;
 	for (int a = 0; a < request.nbTeams; ++a)
 		for (int b = 0; b < request.nbTeams; ++b)
 		{
-			assert(after.cost[a][b] >= 0 && after.cost[a][b] <= before.cost[a][b]);
+			REQUIRE((after.cost[a][b] >= 0 && after.cost[a][b] <= before.cost[a][b]));
 			bestSaving = std::max(bestSaving, before.cost[a][b] - after.cost[a][b]);
 		}
-	assert(bestSaving > 0);
+	REQUIRE(bestSaving > 0);
 	std::printf("Breachable highlands seed 1: clearing saddles saves up to %d walking steps\n",
 				bestSaving);
 	for (int i : saddle)
 		game.map.setResourceByIndex(i % game.map.getW(), i / game.map.getW(), WOOD, 1);
-	assert(definition.validateWorld(game, context).empty());
+	REQUIRE(definition.validateWorld(game, context).empty());
 	game.map.setNoResource(ridge % game.map.getW(), ridge / game.map.getW(), 1);
-	assert(definition.validateWorld(game, context).find("ridge") != std::string::npos);
+	REQUIRE(definition.validateWorld(game, context).find("ridge") != std::string::npos);
 	// Initially separate deposits are insufficient: removing the sand containment
 	// lets future wood growth reach food plots. Keep valid beaches and the original
 	// deposits, then require the validator to reject that future growth connection.
 	Game uncontained(nullptr);
-	assert(service.generate(uncontained, request));
+	REQUIRE(service.generate(uncontained, request));
 	const MapGeneration::Torus farmTorus{uncontained.map.getW(), uncontained.map.getH()};
 	MapGeneration::TerrainSketch terrain(farmTorus.size());
 	for (int i = 0; i < farmTorus.size(); ++i)
@@ -326,7 +327,7 @@ inline void breachableHighlandsContracts()
 	}
 	MapGeneration::layBeaches(terrain, farmTorus);
 	MapGeneration::writeVertices(GenerationMap(uncontained.map).ref(), terrain);
-	assert(definition.validateWorld(uncontained, context).find("farm access lane") !=
+	REQUIRE(definition.validateWorld(uncontained, context).find("farm access lane") !=
 		   std::string::npos);
 	// Abundance changes the farms, never the stone or saddle geometry. Both extremes
 	// still have viable starts and pass the generator's topology and dryness checks.
@@ -336,18 +337,18 @@ inline void breachableHighlandsContracts()
 		for (const char *key : {"wheat-amount", "wood-amount", "algae-amount", "fruit-amount"})
 			changed.options[key] = amount;
 		Game extreme(nullptr);
-		assert(service.generate(extreme, changed));
+		REQUIRE(service.generate(extreme, changed));
 		for (int i : saddle)
-			assert(
+			REQUIRE(
 				extreme.map.getResource(i % extreme.map.getW(), i / extreme.map.getW()).type ==
 				WOOD);
-		assert(extreme.map.getResource(ridge % extreme.map.getW(), ridge / extreme.map.getW())
+		REQUIRE(extreme.map.getResource(ridge % extreme.map.getW(), ridge / extreme.map.getW())
 				   .type == STONE);
 	}
 	D crowded = request;
 	crowded.wDec = crowded.hDec = 7;
 	Game rejected(nullptr);
-	assert(service.generate(rejected, crowded).error == GenerationError::InvalidRequest);
+	REQUIRE(service.generate(rejected, crowded).error == GenerationError::InvalidRequest);
 	puts("PASS breachable highlands: dry saddles, real shortcuts, protected ridges, crop "
 		 "containment, abundance "
 		 "extremes and crowding");
@@ -375,9 +376,9 @@ inline void hedgerowContracts()
 				request.options[key] = amount;
 			Game plain(nullptr), traced(nullptr);
 			const auto before = std::chrono::steady_clock::now();
-			assert(service.generate(plain, request));
+			REQUIRE(service.generate(plain, request));
 			const auto middle = std::chrono::steady_clock::now();
-			assert(service.generate(traced, request, true));
+			REQUIRE(service.generate(traced, request, true));
 			const auto after = std::chrono::steady_clock::now();
 			// Observations, not timing assertions: telemetry must preserve output, while
 			// wall time varies with the machine and other work running on it.
@@ -385,7 +386,7 @@ inline void hedgerowContracts()
 						thickness, amount,
 						std::chrono::duration<double, std::milli>(middle - before).count(),
 						std::chrono::duration<double, std::milli>(after - middle).count());
-			assert(mapFingerprint(plain) == mapFingerprint(traced));
+			REQUIRE(mapFingerprint(plain) == mapFingerprint(traced));
 			// Farm shape and starting stock are guarantees, independent of random
 			// deposit sprites, team indices, and the ambient abundance slider.
 			const auto fertility = Fertility::forMap(plain.map, false);
@@ -413,10 +414,10 @@ inline void hedgerowContracts()
 							renewableWood += fertility.at(cx + dx, cy + dy) > 0;
 						}
 					}
-				assert(kit[0] >= 48 && kit[2] >= 24 && renewableWheat && renewableWood);
+				REQUIRE((kit[0] >= 48 && kit[2] >= 24 && renewableWheat && renewableWood));
 				if (team == 0)
 					expected = kit;
-				assert(kit == expected);
+				REQUIRE(kit == expected);
 			}
 		}
 	// Retain two maps where Euclidean-only placement hid a large land advantage.
@@ -429,10 +430,10 @@ inline void hedgerowContracts()
 		fair.setMethodDefaults(GeneratorRegistry::builtins().idOf("hedgerow-country"));
 		fair.seed = seed;
 		Game world(nullptr), observed(nullptr);
-		assert(service.generate(world, fair));
+		REQUIRE(service.generate(world, fair));
 		// Exercise telemetry isolation through the nontrivial start-selection search too.
-		assert(service.generate(observed, fair, true));
-		assert(mapFingerprint(world) == mapFingerprint(observed));
+		REQUIRE(service.generate(observed, fair, true));
+		REQUIRE(mapFingerprint(world) == mapFingerprint(observed));
 		const MapGeneration::Torus t(world.map);
 		const auto workers = MapGeneration::unitTilesByTeam(world.map, fair.nbTeams);
 		std::vector<std::vector<int>> walks;
@@ -454,7 +455,7 @@ inline void hedgerowContracts()
 			if (owner >= 0)
 				++territory[owner];
 		}
-		assert(100 * *std::min_element(territory.begin(), territory.end()) >=
+		REQUIRE(100 * *std::min_element(territory.begin(), territory.end()) >=
 			   minimumRatio * *std::max_element(territory.begin(), territory.end()));
 	}
 	// A wide, strongly warped edge used to enter the enlarged pond's diagonal
@@ -470,7 +471,7 @@ inline void hedgerowContracts()
 	wide.options["existing-gateways"] = 0;
 	wide.options["wooded-boundary-share"] = 100;
 	Game wideWorld(nullptr);
-	assert(service.generate(wideWorld, wide));
+	REQUIRE(service.generate(wideWorld, wide));
 	// Retain the mixed-parameter bulk failure: a compact diagonal hedge was
 	// fertile at (179,140). The raster growth-envelope safeguard must also be
 	// deterministic when telemetry is enabled through its contraction branch.
@@ -487,14 +488,14 @@ inline void hedgerowContracts()
 	compact.options["stone-amount"] = 150;
 	compact.options["fruit-amount"] = 150;
 	Game compactWorld(nullptr), compactObserved(nullptr);
-	assert(service.generate(compactWorld, compact));
-	assert(service.generate(compactObserved, compact, true));
-	assert(mapFingerprint(compactWorld) == mapFingerprint(compactObserved));
+	REQUIRE(service.generate(compactWorld, compact));
+	REQUIRE(service.generate(compactObserved, compact, true));
+	REQUIRE(mapFingerprint(compactWorld) == mapFingerprint(compactObserved));
 	// Reject the geometric relationship before creating teams, not after a partial map.
 	request.wDec = 6;
 	Game rejected(nullptr);
-	assert(service.generate(rejected, request).error == GenerationError::InvalidRequest);
-	assert(rejected.teamsCount() == 0);
+	REQUIRE(service.generate(rejected, request).error == GenerationError::InvalidRequest);
+	REQUIRE(rejected.teamsCount() == 0);
 	puts("PASS Hedgerow Country: connected dry hedges, resource extremes, telemetry isolation, "
 		 "size rejection");
 }
@@ -507,10 +508,10 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 45 && definition.revision == 5);
-	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
-	assert(request.option("grassland") == 70 && request.option("kopjes") == 1 &&
-		   request.option("game-trails") == 1);
+	REQUIRE((definition.legacyId == 45 && definition.revision == 5));
+	REQUIRE((request.option("watering-holes") == 1 && request.option("dry-patches") == 8));
+	REQUIRE((request.option("grassland") == 70 && request.option("kopjes") == 1 &&
+		   request.option("game-trails") == 1));
 	GenerationService service;
 	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
 		for (int teams : {1, 3, 4})
@@ -524,7 +525,7 @@ inline void savannahContracts()
 			const auto result = service.generate(g, r);
 			if (!result)
 				std::fprintf(stderr, "Savannah contract: %s\n", result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	Game zero(nullptr), abundant(nullptr);
 	D r = request;
@@ -533,17 +534,17 @@ inline void savannahContracts()
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = 0;
-	assert(service.generate(zero, r));
+	REQUIRE(service.generate(zero, r));
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = control.maximum;
-	assert(service.generate(abundant, r));
+	REQUIRE(service.generate(abundant, r));
 	for (int y = 0; y < zero.map.getH(); ++y)
 		for (int x = 0; x < zero.map.getW(); ++x)
 		{
-			assert(zero.map.isGrass(x, y) == abundant.map.isGrass(x, y));
-			assert(zero.map.isWater(x, y) == abundant.map.isWater(x, y));
-			assert(zero.map.isSand(x, y) == abundant.map.isSand(x, y));
+			REQUIRE(zero.map.isGrass(x, y) == abundant.map.isGrass(x, y));
+			REQUIRE(zero.map.isWater(x, y) == abundant.map.isWater(x, y));
+			REQUIRE(zero.map.isSand(x, y) == abundant.map.isSand(x, y));
 		}
 	GenerationContext context(r);
 	setSyncRandSeed(3821);
@@ -554,32 +555,32 @@ inline void savannahContracts()
 	const auto growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Savannah growth: %s\n", growthError.c_str());
-	assert(growthError.empty());
+	REQUIRE(growthError.empty());
 	for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{9, 7}})
 	{
 		r.wDec = dimensions.first;
 		r.hDec = dimensions.second;
 		Game g(nullptr);
-		assert(service.generate(g, r).error == GenerationError::InvalidRequest);
-		assert(g.teamsCount() == 0);
+		REQUIRE(service.generate(g, r).error == GenerationError::InvalidRequest);
+		REQUIRE(g.teamsCount() == 0);
 	}
 	r.wDec = r.hDec = 7;
 	r.nbTeams = 5;
 	Game crowded(nullptr);
-	assert(service.generate(crowded, r).error == GenerationError::InvalidRequest);
+	REQUIRE(service.generate(crowded, r).error == GenerationError::InvalidRequest);
 	// Retained crowded seed: finite random pond darts used to miss its narrow legal gap.
 	r = request;
 	r.wDec = r.hDec = 7;
 	r.seed = 1001;
 	Game narrowGap(nullptr);
-	assert(service.generate(narrowGap, r));
+	REQUIRE(service.generate(narrowGap, r));
 	// Without tall grass or trails the map is still a savannah: the plain is open, not refused.
 	r = request;
 	r.wDec = r.hDec = 7;
 	r.options["grassland"] = 0;
 	r.options["game-trails"] = 0;
 	Game bare(nullptr);
-	assert(service.generate(bare, r));
+	REQUIRE(service.generate(bare, r));
 	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
 }
 
@@ -591,19 +592,19 @@ inline void locustFoodChecks()
 	request.nbTeams = 2;
 	request.seed = 7;
 	Game game(nullptr);
-	assert(GenerationService().generate(game, request));
+	REQUIRE(GenerationService().generate(game, request));
 	Map &map = game.map;
 	// Every wheat tile starts with three to five harvests.
 	for (int i = 0; i < map.getW() * map.getH(); ++i)
 		if (map.getResource(i).type == WHEAT)
-			assert(map.getResource(i).amount >= 3 && map.getResource(i).amount <= 5);
+			REQUIRE((map.getResource(i).amount >= 3 && map.getResource(i).amount <= 5));
 	// The stock cap never refills a deposit or consumes RNG, even with a larger second cap. Cap to
 	// one harvest here so the regrowth check below can harvest every other tile out in one step.
 	const auto beforeCap = syncRandEngine();
 	const auto capped = MapGeneration::capResourceStock(GenerationMap(map).ref(), WHEAT, 1);
 	const auto unchanged = MapGeneration::capResourceStock(GenerationMap(map).ref(), WHEAT, 3);
-	assert(capped.tiles > 96 && capped.amount == capped.tiles);
-	assert(unchanged.amount == capped.amount && syncRandEngine() == beforeCap);
+	REQUIRE((capped.tiles > 96 && capped.amount == capped.tiles));
+	REQUIRE((unchanged.amount == capped.amount && syncRandEngine() == beforeCap));
 	bool rejected = false;
 	try
 	{
@@ -613,26 +614,26 @@ inline void locustFoodChecks()
 	{
 		rejected = true;
 	}
-	assert(rejected);
-	assert(
+	REQUIRE(rejected);
+	REQUIRE(
 		MapGeneration::startingAccessFailure(map, 2, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}})
 			.empty());
 	// No fruit exists here: a required absent supply must fail, as must an impossible room budget.
-	assert(!MapGeneration::startingAccessFailure(map, 2, {{MaterialId::Cherries, 24, "cherries"}}).empty());
-	assert(
+	REQUIRE(!MapGeneration::startingAccessFailure(map, 2, {{MaterialId::Cherries, 24, "cherries"}}).empty());
+	REQUIRE(
 		!MapGeneration::startingAccessFailure(map, 2, {}, map.getW() * map.getH(), 1).empty());
 	std::vector<unsigned char> food(map.getW() * map.getH(), 0);
 	int harvested = 0;
 	for (int i = 0; i < int(food.size()); ++i)
 		if (map.getResource(i).type == WHEAT)
 		{
-			assert(map.getResource(i).amount == 1);
+			REQUIRE(map.getResource(i).amount == 1);
 			if (++harvested % 2)
 				map.decResource(i % map.getW(), i / map.getW());
 			else
 				food[i] = 1;
 		}
-	assert(harvested > 96);
+	REQUIRE(harvested > 96);
 	const auto savedRandom = syncRandEngine();
 	syncRandEngine().seed(19);
 	for (int tick = 0; tick < 2048; ++tick)
@@ -640,9 +641,9 @@ inline void locustFoodChecks()
 	syncRandEngine() = savedRandom;
 	for (int i = 0; i < int(food.size()); ++i)
 	{
-		assert((map.getResource(i).type == WHEAT) == bool(food[i]));
+		REQUIRE((map.getResource(i).type == WHEAT) == bool(food[i]));
 		if (food[i])
-			assert(map.getResource(i).amount == 1);
+			REQUIRE(map.getResource(i).amount == 1);
 	}
 	// Retained compact-rectangle failures: dry rations and quarry frontage can both
 	// need several pockets. Keep the full kit rather than rejecting those otherwise viable starts.
@@ -655,7 +656,7 @@ inline void locustFoodChecks()
 	{
 		compact.seed = seed;
 		Game repaired(nullptr);
-		assert(GenerationService().generate(repaired, compact));
+		REQUIRE(GenerationService().generate(repaired, compact));
 	}
 	puts("PASS Locust: three to five harvests per wheat tile; harvested food never regrows");
 }
@@ -695,20 +696,20 @@ inline void rebuiltLandscapeContracts()
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
 		// Current versions of the rebuilt landscapes (The Glacis 5, Caravanserai 2.0 is 5 as well).
-		assert(definition.revision == (std::string(id) == "allotments" ? 3 : 5));
+		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 5));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
 			  std::tuple{8, 9, 8}, std::tuple{7, 7, 1}})
 		{
 			Game game(nullptr);
-			assert(generate(id, w, h, teams, 11, {}, game).second);
+			REQUIRE(generate(id, w, h, teams, 11, {}, game).second);
 		}
 		// Resource extremes, then growth left alone on the abundant map.
 		Game scarce(nullptr), abundant(nullptr);
-		assert(generate(id, 7, 7, 2, 23, amounts(0), scarce).second);
+		REQUIRE(generate(id, 7, 7, 2, 23, amounts(0), scarce).second);
 		const auto [request, ok] = generate(id, 7, 7, 2, 23, amounts(300), abundant);
-		assert(ok);
+		REQUIRE(ok);
 		setSyncRandSeed(4409);
 		for (int tick = 0; tick < 2048; ++tick)
 			abundant.map.growResources();
@@ -716,13 +717,13 @@ inline void rebuiltLandscapeContracts()
 		const std::string grown = definition.validateWorld(abundant, check);
 		if (!grown.empty())
 			std::fprintf(stderr, "%s growth: %s\n", id, grown.c_str());
-		assert(grown.empty());
+		REQUIRE(grown.empty());
 		// A map far too small for its homes is refused before anything is built.
 		Game crowded(nullptr);
 		D tiny = request;
 		tiny.wDec = tiny.hDec = 6;
 		tiny.nbTeams = 4;
-		assert(service.generate(crowded, tiny).error == GenerationError::InvalidRequest);
+		REQUIRE(service.generate(crowded, tiny).error == GenerationError::InvalidRequest);
 	}
 	{
 		// With no stone to scale and no mesas, the only stone is a designed wall: remove one and
@@ -734,11 +735,11 @@ inline void rebuiltLandscapeContracts()
 		{
 			Game game(nullptr);
 			const auto [request, ok] = generate(id, 8, 8, 4, 31, options, game);
-			assert(ok);
+			REQUIRE(ok);
 			const auto &definition =
 				GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
 			GenerationContext check(request);
-			assert(definition.validateWorld(game, check).empty());
+			REQUIRE(definition.validateWorld(game, check).empty());
 			bool removed = false;
 			for (int i = 0; i < 256 * 256 && !removed; ++i)
 				if (game.map.getResource(i).type == STONE)
@@ -746,13 +747,13 @@ inline void rebuiltLandscapeContracts()
 					game.map.setNoResource(i % 256, i / 256, 1);
 					removed = true;
 				}
-			assert(removed);
-			assert(definition.validateWorld(game, check).find("wall") != std::string::npos);
+			REQUIRE(removed);
+			REQUIRE(definition.validateWorld(game, check).find("wall") != std::string::npos);
 		}
 		// A glacis must stay bare: a crop planted on one is refused.
 		Game game(nullptr);
 		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {}, game);
-		assert(ok);
+		REQUIRE(ok);
 		const auto &definition =
 			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("glacis"));
 		GenerationContext check(request);
@@ -775,17 +776,17 @@ inline void rebuiltLandscapeContracts()
 				else
 					game.map.setNoResource(x, y, 1);
 			}
-		assert(planted);
+		REQUIRE(planted);
 	}
 	{
 		// A village with its plots cleared has no wheat to walk to.
 		Game game(nullptr);
 		const auto [request, ok] = generate("allotments", 8, 8, 4, 31, {}, game);
-		assert(ok);
+		REQUIRE(ok);
 		const auto &definition =
 			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("allotments"));
 		GenerationContext check(request);
-		assert(definition.validateWorld(game, check).empty());
+		REQUIRE(definition.validateWorld(game, check).empty());
 		const Team *team = game.teams[0];
 		for (int dy = -40; dy <= 40; ++dy)
 			for (int dx = -40; dx <= 40; ++dx)
@@ -794,7 +795,7 @@ inline void rebuiltLandscapeContracts()
 				if (game.map.getResource(x, y).type == WHEAT)
 					game.map.setNoResource(x, y, 1);
 			}
-		assert(!definition.validateWorld(game, check).empty());
+		REQUIRE(!definition.validateWorld(game, check).empty());
 	}
 	puts("PASS The Glacis, Allotments, Caravanserai: envelope, resource extremes, contained growth, "
 		 "walls, bare glacis and village crops");
@@ -808,12 +809,12 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 7);
+	REQUIRE((definition.legacyId == 53 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
+	REQUIRE((request.option("block-shape") == 1 && request.option("river-width") == 12 &&
 		   request.option("blocks-per-colony") == 11 && request.option("lakes") == 1 &&
-		   request.option("mountains") == 1);
+		   request.option("mountains") == 1));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -835,20 +836,20 @@ inline void honeycombIsleContracts()
 				std::fprintf(stderr, "Honeycomb isle contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	{
 		// Eight colonies never fit on the smallest map, even with the city squeezed.
 		Game g(nullptr);
-		assert(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
-		assert(g.teamsCount() == 0);
+		REQUIRE(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
+		REQUIRE(g.teamsCount() == 0);
 	}
 	std::set<std::string> homeDesigns;
 	for (unsigned seed = 1; seed <= 12; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(8, 8, 4, seed), true);
-		assert(result);
+		REQUIRE(result);
 		std::vector<unsigned char> grass(g.map.getW() * g.map.getH(), 0);
 		for (int y = 0; y < g.map.getH(); ++y)
 			for (int x = 0; x < g.map.getW(); ++x)
@@ -863,17 +864,17 @@ inline void honeycombIsleContracts()
 			if (type == CHERRY || type == ORANGE || type == PRUNE)
 				fruitCells.insert(cells[i]);
 		}
-		assert(!fruitCells.empty());
+		REQUIRE(!fruitCells.empty());
 		for (int i = 0; i < int(grass.size()); ++i)
 			if (g.map.getResource(i % g.map.getW(), i / g.map.getW()).type == STONE)
-				assert(!fruitCells.count(cells[i]));
+				REQUIRE(!fruitCells.count(cells[i]));
 		for (const auto &record : result.telemetry.records())
 		{
 			if (record.key == "honeycomb-isle.home-design")
 				homeDesigns.insert(std::get<std::string>(record.value));
 		}
 	}
-	assert(homeDesigns.size() == 2);
+	REQUIRE(homeDesigns.size() == 2);
 	// All stone is quarry stock at the mountains and hills: at zero stone there is
 	// none on either tiling.
 	for (int shape : {0, 1})
@@ -883,21 +884,21 @@ inline void honeycombIsleContracts()
 			bare.options["block-shape"] = shape;
 			bare.options["stone-amount"] = 0;
 			Game g(nullptr);
-			assert(service.generate(g, bare));
+			REQUIRE(service.generate(g, bare));
 			for (int y = 0; y < g.map.getH(); ++y)
 				for (int x = 0; x < g.map.getW(); ++x)
-					assert(g.map.getResource(x, y).type != STONE);
+					REQUIRE(g.map.getResource(x, y).type != STONE);
 		}
 	{
 		// The design is cached between the request check, generation and validation. Generating a map,
 		// another map, then the first again must give the same map and the same telemetry.
 		Game first(nullptr), other(nullptr), again(nullptr);
 		const auto a = service.generate(first, make(8, 8, 4, 21), true);
-		assert(service.generate(other, make(8, 8, 6, 22), true));
+		REQUIRE(service.generate(other, make(8, 8, 6, 22), true));
 		const auto b = service.generate(again, make(8, 8, 4, 21), true);
-		assert(a && b);
-		assert(mapFingerprint(first) == mapFingerprint(again));
-		assert(a.telemetry.records() == b.telemetry.records());
+		REQUIRE((a && b));
+		REQUIRE(mapFingerprint(first) == mapFingerprint(again));
+		REQUIRE(a.telemetry.records() == b.telemetry.records());
 	}
 	D r = make(7, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -905,13 +906,13 @@ inline void honeycombIsleContracts()
 			r.options[control.id] = 0;
 	{
 		Game zero(nullptr);
-		assert(service.generate(zero, r));
+		REQUIRE(service.generate(zero, r));
 	}
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = control.maximum;
 	Game abundant(nullptr);
-	assert(service.generate(abundant, r));
+	REQUIRE(service.generate(abundant, r));
 	GenerationContext context(r);
 	setSyncRandSeed(4211);
 	// Full-map growth with nobody harvesting: every field, garden and forest grows, and the roads
@@ -921,14 +922,14 @@ inline void honeycombIsleContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Honeycomb isle growth: %s\n", growthError.c_str());
-	assert(growthError.empty());
+	REQUIRE(growthError.empty());
 	{
 		// A colony whose starter wheat is cleared has none within reach.
 		Game game(nullptr);
 		const D damaged = make(8, 8, 4, 41);
-		assert(service.generate(game, damaged));
+		REQUIRE(service.generate(game, damaged));
 		GenerationContext check(damaged);
-		assert(definition.validateWorld(game, check).empty());
+		REQUIRE(definition.validateWorld(game, check).empty());
 		const Team *team = game.teams[0];
 		for (int dy = -30; dy <= 30; ++dy)
 			for (int dx = -30; dx <= 30; ++dx)
@@ -937,7 +938,7 @@ inline void honeycombIsleContracts()
 				if (game.map.getResource(x, y).type == WHEAT)
 					game.map.setNoResource(x, y, 1);
 			}
-		assert(!definition.validateWorld(game, check).empty());
+		REQUIRE(!definition.validateWorld(game, check).empty());
 	}
 	puts("PASS Honeycomb isle: envelope and refusal, design variety, resource extremes, sealed "
 		 "growth, cached designs, starter wheat");
@@ -947,12 +948,12 @@ inline void karstTowersContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("karst-towers"));
-	assert(definition.legacyId == 54 && definition.revision == 3);
+	REQUIRE((definition.legacyId == 54 && definition.revision == 3));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
+	REQUIRE((request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
 		   request.option("paddy-depth") == 24 && request.option("flooded-terraces") == 88 &&
-		   request.option("lakes") == 1);
+		   request.option("lakes") == 1));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -974,13 +975,13 @@ inline void karstTowersContracts()
 				std::fprintf(stderr, "Karst towers contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	{
 		// Eight colonies never fit on the smallest map, even with the homes shrunk and the rivers narrowed.
 		Game g(nullptr);
-		assert(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
-		assert(g.teamsCount() == 0);
+		REQUIRE(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
+		REQUIRE(g.teamsCount() == 0);
 	}
 	{
 		// Big homes and the widest river on a crowded map shrink rather than refuse.
@@ -988,32 +989,32 @@ inline void karstTowersContracts()
 		crowded.options["home-size"] = 22;
 		crowded.options["river-width"] = 16;
 		Game g(nullptr);
-		assert(service.generate(g, crowded));
+		REQUIRE(service.generate(g, crowded));
 	}
 	std::set<std::string> homeDesigns;
 	for (unsigned seed = 1; seed <= 16; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(8, 8, 4, seed), true);
-		assert(result);
+		REQUIRE(result);
 		for (const auto &record : result.telemetry.records())
 			if (record.key == "karst.home.design")
 				homeDesigns.insert(std::get<std::string>(record.value));
 	}
-	assert(homeDesigns.size() == 4);
+	REQUIRE(homeDesigns.size() == 4);
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = 0;
 	{
 		Game zero(nullptr);
-		assert(service.generate(zero, r));
+		REQUIRE(service.generate(zero, r));
 	}
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = control.maximum;
 	Game abundant(nullptr);
-	assert(service.generate(abundant, r));
+	REQUIRE(service.generate(abundant, r));
 	GenerationContext context(r);
 	setSyncRandSeed(4211);
 	// Full-map growth with nobody harvesting: the terraces, home paddies and lake fields beside all that
@@ -1023,16 +1024,16 @@ inline void karstTowersContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Karst towers growth: %s\n", growthError.c_str());
-	assert(growthError.empty());
+	REQUIRE(growthError.empty());
 	{
 		// Stone laid round a home where its ring stands closes the gates, which the validator refuses. A
 		// round home's middle lies 6.5 tiles right of and 2 below its swarm's corner, and the ring's gates
 		// open 16 to 21 tiles from it at the default home size.
 		Game game(nullptr);
 		const D damaged = make(8, 8, 4, 41);
-		assert(service.generate(game, damaged));
+		REQUIRE(service.generate(game, damaged));
 		GenerationContext check(damaged);
-		assert(definition.validateWorld(game, check).empty());
+		REQUIRE(definition.validateWorld(game, check).empty());
 		const Team *team = game.teams[1];
 		for (int dy = -22; dy <= 22; ++dy)
 			for (int dx = -22; dx <= 22; ++dx)
@@ -1044,7 +1045,7 @@ inline void karstTowersContracts()
 				if (game.map.isGrass(x, y) && !game.map.isResource(x, y))
 					game.map.setResourceByIndex(x, y, STONE, 1);
 			}
-		assert(!definition.validateWorld(game, check).empty());
+		REQUIRE(!definition.validateWorld(game, check).empty());
 	}
 	puts("PASS Karst towers: envelope and refusal, crowded retry, home designs, resource extremes, "
 		 "sealed growth, closed gates");
@@ -1053,12 +1054,12 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	assert(definition.legacyId == 55 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 55 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
+	REQUIRE((request.option("range-spacing") == 128 && request.option("passes") == 2 &&
 		   request.option("playa") == 80 && request.option("home-design") == 0 &&
-		   request.option("cienegas") == 50);
+		   request.option("cienegas") == 50));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1079,13 +1080,13 @@ inline void bajadaContracts()
 			if (!result)
 				std::fprintf(stderr, "Bajada contract (%d x %d, %d colonies): %s\n", 1 << dimensions.first,
 							 1 << dimensions.second, teams, result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	{
 		// Six colonies crowd the homes of a 128-tile map into one another.
 		Game g(nullptr);
-		assert(service.generate(g, make(7, 7, 6, 7)).error == GenerationError::InvalidRequest);
-		assert(g.teamsCount() == 0);
+		REQUIRE(service.generate(g, make(7, 7, 6, 7)).error == GenerationError::InvalidRequest);
+		REQUIRE(g.teamsCount() == 0);
 	}
 	// Every home design comes up at random, and each can be pinned.
 	std::set<std::string> designs, lithologies;
@@ -1093,14 +1094,14 @@ inline void bajadaContracts()
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(8, 8, 4, seed), true);
-		assert(result);
+		REQUIRE(result);
 		for (const auto &record : result.telemetry.records())
 			if (record.key == "bajada.home.design")
 				designs.insert(std::get<std::string>(record.value));
 			else if (record.key == "bajada.lithology")
 				lithologies.insert(std::get<std::string>(record.value));
 	}
-	assert(designs.size() == 6 && lithologies.size() == 3);
+	REQUIRE((designs.size() == 6 && lithologies.size() == 3));
 	// Every design pinned, on every size and colony count the envelope promises it.
 	for (int design = 1; design <= 6; ++design)
 		for (auto [dimension, teams] : {std::pair{8, 4}, std::pair{7, 4}, std::pair{8, 8}, std::pair{9, 8}})
@@ -1112,7 +1113,7 @@ inline void bajadaContracts()
 			if (!result)
 				std::fprintf(stderr, "Bajada design %d (%d, %d colonies): %s\n", design, 1 << dimension, teams,
 							 result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	// Every design grows a real stream tree on every seed tried: a home whose trunk met its town grew
 	// none and halved its food.
@@ -1123,13 +1124,13 @@ inline void bajadaContracts()
 			pinned.options["home-design"] = design;
 			Game g(nullptr);
 			const auto result = service.generate(g, pinned, true);
-			assert(result);
+			REQUIRE(result);
 			for (const auto &record : result.telemetry.records())
 				if (record.key == "bajada.home.branches" && std::get<std::int64_t>(record.value) < 3)
 				{
 					std::fprintf(stderr, "Bajada design %d seed %u grew %d branches\n", design, unsigned(seed),
 								 int(std::get<std::int64_t>(record.value)));
-					assert(false);
+					REQUIRE(false);
 				}
 		}
 	for (int lithology = 1; lithology <= 3; ++lithology)
@@ -1137,7 +1138,7 @@ inline void bajadaContracts()
 		D pinned = make(8, 8, 4, 11);
 		pinned.options["lithology"] = lithology;
 		Game g(nullptr);
-		assert(service.generate(g, pinned));
+		REQUIRE(service.generate(g, pinned));
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -1147,9 +1148,9 @@ inline void bajadaContracts()
 		// No ambient stone: every stone on the map is a designed range or spur, and taking one away
 		// is refused.
 		Game zero(nullptr);
-		assert(service.generate(zero, r));
+		REQUIRE(service.generate(zero, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(zero, check).empty());
+		REQUIRE(definition.validateWorld(zero, check).empty());
 		bool damaged = false;
 		for (int i = 0; i < 256 * 256 && !damaged; ++i)
 			if (zero.map.isResource(i % 256, i / 256) && zero.map.getResource(i % 256, i / 256).type == STONE)
@@ -1157,13 +1158,13 @@ inline void bajadaContracts()
 				zero.map.replaceResource(i % 256, i / 256, Resource{});
 				damaged = true;
 			}
-		assert(damaged && !definition.validateWorld(zero, check).empty());
+		REQUIRE((damaged && !definition.validateWorld(zero, check).empty()));
 	}
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = control.maximum;
 	Game abundant(nullptr);
-	assert(service.generate(abundant, r));
+	REQUIRE(service.generate(abundant, r));
 	GenerationContext context(r);
 	setSyncRandSeed(4211);
 	// Full-map growth with nobody harvesting: the fans and meadows grow, and every town's ring must
@@ -1173,14 +1174,14 @@ inline void bajadaContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Bajada growth: %s\n", growthError.c_str());
-	assert(growthError.empty());
+	REQUIRE(growthError.empty());
 	{
 		// A crop planted in a town is refused.
 		Game game(nullptr);
 		const D planted = make(8, 8, 4, 41);
-		assert(service.generate(game, planted));
+		REQUIRE(service.generate(game, planted));
 		GenerationContext check(planted);
-		assert(definition.validateWorld(game, check).empty());
+		REQUIRE(definition.validateWorld(game, check).empty());
 		const Team *team = game.teams[2];
 		bool sown = false;
 		// A ring of wheat four to five tiles from the swarm's middle, which lies inside the town's ring.
@@ -1195,7 +1196,7 @@ inline void bajadaContracts()
 					sown = true;
 				}
 			}
-		assert(sown && !definition.validateWorld(game, check).empty());
+		REQUIRE((sown && !definition.validateWorld(game, check).empty()));
 	}
 	{
 		// The playa's pan, the cienegas and the quarries: a dry lake bed still has its hardpan, no
@@ -1204,7 +1205,7 @@ inline void bajadaContracts()
 		{
 			Game g(nullptr);
 			const auto result = service.generate(g, r, true);
-			assert(result);
+			REQUIRE(result);
 			for (const auto &record : result.telemetry.records())
 				if (record.key == key)
 					return int(std::get<std::int64_t>(record.value));
@@ -1212,14 +1213,14 @@ inline void bajadaContracts()
 		};
 		D dry = make(8, 8, 4, 53);
 		dry.options["playa"] = 0;
-		assert(measure(dry, "bajada.lakes") <= 0);
+		REQUIRE(measure(dry, "bajada.lakes") <= 0);
 		D none = make(8, 8, 4, 53);
 		none.options["cienegas"] = 0;
-		assert(measure(none, "bajada.cienegas") == 0);
+		REQUIRE(measure(none, "bajada.cienegas") == 0);
 		D many = make(8, 8, 4, 53);
 		many.options["cienegas"] = 100;
-		assert(measure(many, "bajada.cienegas") > measure(make(8, 8, 4, 53), "bajada.cienegas"));
-		assert(measure(make(8, 8, 4, 53), "bajada.quarries") > 4);
+		REQUIRE(measure(many, "bajada.cienegas") > measure(make(8, 8, 4, 53), "bajada.cienegas"));
+		REQUIRE(measure(make(8, 8, 4, 53), "bajada.quarries") > 4);
 	}
 	puts("PASS Bajada: envelope and refusal, home designs, resource extremes, designed stone, sealed "
 		 "towns under growth, crops refused in towns, pan, cienegas and quarries");
@@ -1231,12 +1232,12 @@ inline void braidedRiverContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-river"));
-	assert(definition.legacyId == 42 && definition.revision == 5);
+	REQUIRE((definition.legacyId == 42 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("braid-width") == 40 && request.option("channels") == 6 &&
+	REQUIRE((request.option("braid-width") == 40 && request.option("channels") == 6 &&
 		   request.option("dry-patches") == 35 && request.option("deep-pools") == 1 &&
-		   request.option("season") == 0 && request.option("moraine") == 1);
+		   request.option("season") == 0 && request.option("moraine") == 1));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1253,7 +1254,7 @@ inline void braidedRiverContracts()
 		if (!result)
 			std::fprintf(stderr, "Braided river (%d x %d, %d colonies, seed %u): %s\n", 1 << r.wDec,
 						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		return result.telemetry.records();
 	};
 	const auto measure = [](const auto &recs, const char *key)
@@ -1293,12 +1294,12 @@ inline void braidedRiverContracts()
 			Game g(nullptr);
 			const auto recs = records(r, g);
 			// Every colony's own quarry face holds the same ten stone, and more stand along the bluffs.
-			assert(measure(recs, "braided-river.quarry.bluff-stone") >= 10 * teams);
+			REQUIRE(measure(recs, "braided-river.quarry.bluff-stone") >= 10 * teams);
 			GenerationContext check(r);
-			assert(definition.validateWorld(g, check).empty());
+			REQUIRE(definition.validateWorld(g, check).empty());
 		}
-	assert(pinned >= 24);
-	assert(!definition.validateRequest(make(6, 8, 2, 7)).empty());
+	REQUIRE(pinned >= 24);
+	REQUIRE(!definition.validateRequest(make(6, 8, 2, 7)).empty());
 	// Both seasons come up at random; each variant pinned holds at 128, 256 and 512.
 	std::set<std::string> seasons;
 	for (unsigned seed = 1; seed <= 10; ++seed)
@@ -1308,7 +1309,7 @@ inline void braidedRiverContracts()
 			if (record.key == "braided-river.season")
 				seasons.insert(std::get<std::string>(record.value));
 	}
-	assert(seasons.size() == 2);
+	REQUIRE(seasons.size() == 2);
 	for (int season = 1; season <= 2; ++season)
 		for (int deep = 0; deep <= 1; ++deep)
 			for (auto [dimension, teams] : {std::pair{7, 4}, std::pair{8, 4}, std::pair{9, 8}})
@@ -1318,7 +1319,7 @@ inline void braidedRiverContracts()
 				r.options["deep-pools"] = deep;
 				Game g(nullptr);
 				const auto recs = records(r, g);
-				assert((measure(recs, "braided-river.deep.vertices") > 0) == (deep == 1));
+				REQUIRE((measure(recs, "braided-river.deep.vertices") > 0) == (deep == 1));
 			}
 	// The season is looks only: the same seed plays identically in both.
 	{
@@ -1326,27 +1327,27 @@ inline void braidedRiverContracts()
 		melt.options["season"] = 1;
 		late.options["season"] = 2;
 		Game a(nullptr), b(nullptr);
-		assert(service.generate(a, melt) && service.generate(b, late));
+		REQUIRE((service.generate(a, melt) && service.generate(b, late)));
 		int differentLooks = 0;
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
 				const auto &ra = a.map.terrainPropertiesAt(x, y), &rb = b.map.terrainPropertiesAt(x, y);
-				assert(ra.walkable == rb.walkable && ra.buildable == rb.buildable &&
-					   ra.swimmable == rb.swimmable && ra.inhibitionQ8 == rb.inhibitionQ8);
+				REQUIRE((ra.walkable == rb.walkable && ra.buildable == rb.buildable &&
+					   ra.swimmable == rb.swimmable && ra.inhibitionQ8 == rb.inhibitionQ8));
 				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
-				assert(a.map.isResource(x, y) == b.map.isResource(x, y));
+				REQUIRE(a.map.isResource(x, y) == b.map.isResource(x, y));
 			}
-		assert(differentLooks > 1000);
+		REQUIRE(differentLooks > 1000);
 	}
 	// The bluffs are a seal: cutting a gap through the rock across the seam is refused. A 512 x 256
 	// map runs its river along x, so its seam is the band round y = 0.
 	{
 		const D r = make(9, 8, 4, 17);
 		Game g(nullptr);
-		assert(service.generate(g, r));
+		REQUIRE(service.generate(g, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(g, check).empty());
+		REQUIRE(definition.validateWorld(g, check).empty());
 		int cut = 0;
 		for (int y = 0; y < 256; ++y)
 			for (int x = 200; x < 204; ++x)
@@ -1356,19 +1357,19 @@ inline void braidedRiverContracts()
 					++cut;
 				}
 		const std::string fault = definition.validateWorld(g, check);
-		assert(cut > 0 && fault.find("bluffs") != std::string::npos);
+		REQUIRE((cut > 0 && fault.find("bluffs") != std::string::npos));
 	}
 	{
 		// Every quarry face keeps its stone: taking the stone away is refused.
 		const D r = make(8, 8, 4, 19);
 		Game g(nullptr);
-		assert(service.generate(g, r));
+		REQUIRE(service.generate(g, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(g, check).empty());
+		REQUIRE(definition.validateWorld(g, check).empty());
 		for (int i = 0; i < 256 * 256; ++i)
 			if (g.map.isResource(i % 256, i / 256) && g.map.getResource(i % 256, i / 256).type == STONE)
 				g.map.replaceResource(i % 256, i / 256, Resource{});
-		assert(definition.validateWorld(g, check).find("quarry") != std::string::npos);
+		REQUIRE(definition.validateWorld(g, check).find("quarry") != std::string::npos);
 	}
 	// The moraine: knots and stocked flanks with it, none without; flanks and ambient faces follow the
 	// stone amount while every colony's own face stays.
@@ -1380,23 +1381,23 @@ inline void braidedRiverContracts()
 		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
 		const auto withKnots = records(on, a), without = records(off, b), noStone = records(bare, c),
 				   moreStone = records(rich, d);
-		assert(measure(withKnots, "braided-river.moraine.designed") > 100);
-		assert(measure(withKnots, "braided-river.moraine.quarry-tiles") > 0);
-		assert(measure(without, "braided-river.moraine.designed") == 0 &&
-			   measure(without, "braided-river.moraine.quarry-tiles") == 0);
-		assert(measure(noStone, "braided-river.moraine.quarry-tiles") == 0 &&
-			   measure(noStone, "braided-river.bluffs.ambient-quarries") == 0);
-		assert(measure(noStone, "braided-river.quarry.bluff-stone") == 40);
-		assert(measure(moreStone, "braided-river.moraine.quarry-tiles") >
+		REQUIRE(measure(withKnots, "braided-river.moraine.designed") > 100);
+		REQUIRE(measure(withKnots, "braided-river.moraine.quarry-tiles") > 0);
+		REQUIRE((measure(without, "braided-river.moraine.designed") == 0 &&
+			   measure(without, "braided-river.moraine.quarry-tiles") == 0));
+		REQUIRE((measure(noStone, "braided-river.moraine.quarry-tiles") == 0 &&
+			   measure(noStone, "braided-river.bluffs.ambient-quarries") == 0));
+		REQUIRE(measure(noStone, "braided-river.quarry.bluff-stone") == 40);
+		REQUIRE(measure(moreStone, "braided-river.moraine.quarry-tiles") >
 			   measure(withKnots, "braided-river.moraine.quarry-tiles"));
-		assert(measure(moreStone, "braided-river.bluffs.ambient-quarries") >
+		REQUIRE(measure(moreStone, "braided-river.bluffs.ambient-quarries") >
 			   measure(withKnots, "braided-river.bluffs.ambient-quarries"));
 		// Pavement only where asked for.
 		D flat = make(8, 8, 4, 23);
 		flat.options["dry-patches"] = 0;
 		Game e(nullptr);
-		assert(measure(records(flat, e), "braided-river.pavement.tiles") == 0);
-		assert(measure(withKnots, "braided-river.pavement.tiles") > 1000);
+		REQUIRE(measure(records(flat, e), "braided-river.pavement.tiles") == 0);
+		REQUIRE(measure(withKnots, "braided-river.pavement.tiles") > 1000);
 	}
 	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings the
 	// map validates after a few thousand ticks of growth with nobody harvesting, and the crops grew.
@@ -1406,17 +1407,17 @@ inline void braidedRiverContracts()
 			r.options[control.id] = 0;
 	{
 		Game zero(nullptr);
-		assert(service.generate(zero, r));
+		REQUIRE(service.generate(zero, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(zero, check).empty());
+		REQUIRE(definition.validateWorld(zero, check).empty());
 	}
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
 			r.options[control.id] = control.maximum;
 	Game abundant(nullptr);
-	assert(service.generate(abundant, r));
+	REQUIRE(service.generate(abundant, r));
 	GenerationContext context(r);
-	assert(definition.validateWorld(abundant, context).empty());
+	REQUIRE(definition.validateWorld(abundant, context).empty());
 	const auto wheat = [&]()
 	{
 		int count = 0;
@@ -1432,7 +1433,7 @@ inline void braidedRiverContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Braided river growth: %s\n", growthError.c_str());
-	assert(growthError.empty() && wheat() > before);
+	REQUIRE((growthError.empty() && wheat() > before));
 	puts("PASS Braided river: envelope with pinned seasons and deep pools, looks-only season, sealed "
 		 "bluffs, quarry faces, moraine flanks and pavement, resource extremes, growth");
 }
@@ -1444,7 +1445,7 @@ inline void caravanseraiContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("caravanserai"));
-	assert(definition.legacyId == 41 && definition.revision == 5);
+	REQUIRE((definition.legacyId == 41 && definition.revision == 5));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed, int desert)
 	{
@@ -1483,16 +1484,16 @@ inline void caravanseraiContracts()
 				const TerrainProperties &rules = map.terrainPropertiesAt(x, y);
 				if (group(map, x, y) >= 2)
 				{
-					assert(!rules.walkable && !map.isResource(x, y));
+					REQUIRE((!rules.walkable && !map.isResource(x, y)));
 					rockTiles += group(map, x, y) == 4;
 				}
 				if (rules.walkable && rules.buildable && rules.groundSpeedQ8 == 512)
 				{
-					assert(!map.isResource(x, y) && !rules.resourcesGrow);
+					REQUIRE((!map.isResource(x, y) && !rules.resourcesGrow));
 					++roadTiles;
 				}
 				if (map.isResource(x, y) && map.getResource(x, y).type == STONE)
-					assert(rules.buildable && rules.resourcesGrow);
+					REQUIRE((rules.buildable && rules.resourcesGrow));
 			}
 	};
 	// Every country over the envelope: 128, 256 and 512 tiles, one colony to a crowd.
@@ -1507,18 +1508,18 @@ inline void caravanseraiContracts()
 			if (!result)
 				std::fprintf(stderr, "Caravanserai contract (desert %d, %d x %d, %d colonies): %s\n", desert, 1 << w,
 							 1 << h, teams, result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 			GenerationContext check(r);
-			assert(definition.validateWorld(game, check).empty());
+			REQUIRE(definition.validateWorld(game, check).empty());
 			int rock = 0, roads = 0;
 			inspect(game, rock, roads);
 			// Open erg has no rock; the other countries do on every map big enough for a mesa.
-			assert(desert == 0 ? rock == 0 && measured(result, "caravanserai.quarries") == 0 : w < 8 || rock > 0);
-			assert(desert == 0 || w < 8 || measured(result, "caravanserai.quarries") > 0);
+			REQUIRE((desert == 0 ? rock == 0 && measured(result, "caravanserai.quarries") == 0 : w < 8 || rock > 0));
+			REQUIRE((desert == 0 || w < 8 || measured(result, "caravanserai.quarries") > 0));
 			// Wherever there is a caravanserai there are roads to it.
-			assert(measured(result, "caravanserai.serais") <= 0 || roads > 0);
-			assert(desert != 2 || w < 8 || measured(result, "caravanserai.floor.corners") > 0);
-			assert(desert == 2 || measured(result, "caravanserai.floor.corners") == 0);
+			REQUIRE((measured(result, "caravanserai.serais") <= 0 || roads > 0));
+			REQUIRE((desert != 2 || w < 8 || measured(result, "caravanserai.floor.corners") > 0));
+			REQUIRE((desert == 2 || measured(result, "caravanserai.floor.corners") == 0));
 		}
 	{
 		// Random draws every country.
@@ -1527,12 +1528,12 @@ inline void caravanseraiContracts()
 		{
 			Game game(nullptr);
 			const auto result = service.generate(game, make(8, 8, 4, seed, 3), true);
-			assert(result);
+			REQUIRE(result);
 			for (const auto &record : result.telemetry.records())
 				if (record.key == "caravanserai.desert")
 					countries.insert(std::get<std::string>(record.value));
 		}
-		assert(countries.size() == 3);
+		REQUIRE(countries.size() == 3);
 	}
 	{
 		// Quarry faces follow the stone amount, and a quarry robbed of its stone is refused.
@@ -1543,12 +1544,12 @@ inline void caravanseraiContracts()
 		Game a(nullptr), b(nullptr), c(nullptr);
 		const auto zero = service.generate(a, none, true), normal = service.generate(b, standard, true),
 				   rich = service.generate(c, many, true);
-		assert(zero && normal && rich);
-		assert(measured(zero, "caravanserai.quarries") == 0);
-		assert(measured(rich, "caravanserai.quarries") > measured(normal, "caravanserai.quarries"));
+		REQUIRE((zero && normal && rich));
+		REQUIRE(measured(zero, "caravanserai.quarries") == 0);
+		REQUIRE(measured(rich, "caravanserai.quarries") > measured(normal, "caravanserai.quarries"));
 		// GenerationContext keeps a reference to its request.
 		GenerationContext check(standard);
-		assert(definition.validateWorld(b, check).empty());
+		REQUIRE(definition.validateWorld(b, check).empty());
 		bool robbed = false;
 		for (int y = 0; y < 256 && !robbed; ++y)
 			for (int x = 0; x < 256 && !robbed; ++x)
@@ -1565,22 +1566,22 @@ inline void caravanseraiContracts()
 					robbed = true;
 				}
 			}
-		assert(robbed);
+		REQUIRE(robbed);
 		const std::string error = definition.validateWorld(b, check);
-		assert(error.find("quarry") != std::string::npos);
+		REQUIRE(error.find("quarry") != std::string::npos);
 	}
 	{
 		// Homes are identical by their tiles' rules: a home tile turned to sand is refused.
 		const D r = make(8, 8, 4, 19, 2);
 		Game game(nullptr);
-		assert(service.generate(game, r));
+		REQUIRE(service.generate(game, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(game, check).empty());
+		REQUIRE(definition.validateWorld(game, check).empty());
 		const Team *team = game.teams[1];
 		const int x = (team->startPosX + 8) % 256, y = (team->startPosY + 8) % 256;
 		game.map.paintVertices({{x, y}, {x + 1, y}, {x, y + 1}, {x + 1, y + 1}}, SAND, false);
 		const std::string error = definition.validateWorld(game, check);
-		assert(!error.empty());
+		REQUIRE(!error.empty());
 	}
 	{
 		// Resource extremes in every country with rock, then unattended growth on the abundant map:
@@ -1592,7 +1593,7 @@ inline void caravanseraiContracts()
 				for (const char *key : {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
 					r.options[key] = amount;
 				Game game(nullptr);
-				assert(service.generate(game, r));
+				REQUIRE(service.generate(game, r));
 				if (amount == 0)
 					continue;
 				setSyncRandSeed(4409);
@@ -1602,7 +1603,7 @@ inline void caravanseraiContracts()
 				const std::string grown = definition.validateWorld(game, check);
 				if (!grown.empty())
 					std::fprintf(stderr, "Caravanserai growth (desert %d): %s\n", desert, grown.c_str());
-				assert(grown.empty());
+				REQUIRE(grown.empty());
 				int rock = 0, roads = 0;
 				inspect(game, rock, roads);
 			}
@@ -1615,11 +1616,11 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 60 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 60 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
-		   request.option("passes") == 40 && request.option("effort") == 1);
+	REQUIRE((request.option("water-share") == 10 && request.option("balance") == 70 &&
+		   request.option("passes") == 40 && request.option("effort") == 1));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1642,13 +1643,13 @@ inline void evenGroundContracts()
 				std::fprintf(stderr, "Even Ground contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	{
 		// A 64-tile map has too few cells to balance eight colonies over, and says so up front.
 		Game g(nullptr);
-		assert(service.generate(g, make(6, 6, 8, 7)).error == GenerationError::InvalidRequest);
-		assert(g.teamsCount() == 0);
+		REQUIRE(service.generate(g, make(6, 6, 8, 7)).error == GenerationError::InvalidRequest);
+		REQUIRE(g.teamsCount() == 0);
 	}
 	// The water is a budget the search arranges rather than invents: more of it asked for is more of
 	// it on the finished map, every time. The painted share is below the requested one because the
@@ -1661,12 +1662,12 @@ inline void evenGroundContracts()
 		D r = make(8, 8, 4, 23);
 		r.options["water-share"] = share;
 		Game g(nullptr);
-		assert(service.generate(g, r));
+		REQUIRE(service.generate(g, r));
 		int water = 0;
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 				water += g.map.isWater(x, y);
-		assert(water > previous);
+		REQUIRE(water > previous);
 		previous = water;
 	}
 	// Balance is how much search the stock pass gets, so it has to show in what that pass achieved:
@@ -1678,7 +1679,7 @@ inline void evenGroundContracts()
 		r.options["balance"] = balance;
 		Game g(nullptr);
 		const auto result = service.generate(g, r, true);
-		assert(result);
+		REQUIRE(result);
 		double before = -1, after = -1, searchedCost = NAN, finalCost = NAN, fieldsCost = NAN;
 		for (const auto &record : result.telemetry.records())
 		{
@@ -1693,28 +1694,28 @@ inline void evenGroundContracts()
 			if (record.key == "even-ground.stock.spread-after")
 				after = std::get<double>(record.value);
 		}
-		assert(before >= 0 && after >= 0);
+		REQUIRE((before >= 0 && after >= 0));
 		// Incrementally scored swaps and the full rescan of the best arrangement must agree.
-		assert(fieldsCost > 0); // this seed exercises the optional clustering term
-		assert(std::abs(searchedCost - finalCost) < 1e-9);
+		REQUIRE(fieldsCost > 0); // this seed exercises the optional clustering term
+		REQUIRE(std::abs(searchedCost - finalCost) < 1e-9);
 		return std::pair{before, after};
 	};
 	const auto unsolved = spreadAt(0), solved = spreadAt(100);
-	assert(unsolved.second == unsolved.first); // no moves: nothing moved
-	assert(solved.second < solved.first / 4);  // searched: the spread is a fraction of what it was
+	REQUIRE(unsolved.second == unsolved.first); // no moves: nothing moved
+	REQUIRE(solved.second < solved.first / 4);  // searched: the spread is a fraction of what it was
 	{
 		// The map promises every colony a crop within reach, and refuses a world where that has been
 		// taken away.
 		D r = make(8, 8, 4, 23);
 		Game g(nullptr);
-		assert(service.generate(g, r));
+		REQUIRE(service.generate(g, r));
 		GenerationContext check(r);
-		assert(definition.validateWorld(g, check).empty());
+		REQUIRE(definition.validateWorld(g, check).empty());
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 				if (g.map.isResource(x, y) && g.map.getResource(x, y).type == WHEAT)
 					g.map.replaceResource(x, y, Resource{});
-		assert(!definition.validateWorld(g, check).empty());
+		REQUIRE(!definition.validateWorld(g, check).empty());
 	}
 	puts("PASS Even Ground: envelope including thin maps and refusal, water budget ordering, "
 		 "balance buys a measurably smaller catchment spread, crop reach enforced");
@@ -1724,11 +1725,11 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 61 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 61 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
-		   request.option("levelling") == 100 && request.option("lakes") == 10);
+	REQUIRE((request.option("prizes") == 6 && request.option("march") == 16 &&
+		   request.option("levelling") == 100 && request.option("lakes") == 10));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -1748,32 +1749,32 @@ inline void marchlandContracts()
 				std::fprintf(stderr, "Marchland contract (%d x %d, %d colonies): %s\n",
 							 1 << dimensions.first, 1 << dimensions.second, teams,
 							 result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	// The 64-tile side used to invert the prize-gap clamp bounds (20 > 16).
 	for (auto dimensions : {std::pair{6, 9}, std::pair{9, 6}})
 	{
 		Game g(nullptr);
-		assert(service.generate(g, make(dimensions.first, dimensions.second, 6, 31001)));
+		REQUIRE(service.generate(g, make(dimensions.first, dimensions.second, 6, 31001)));
 	}
 	// A long map needs a ring of colonies rather than a line of them, and gets one.
 	for (auto dimensions : {std::pair{7, 9}, std::pair{9, 7}})
 		for (int teams : {8, 12})
 		{
 			Game g(nullptr);
-			assert(service.generate(g, make(dimensions.first, dimensions.second, teams, 31001)));
+			REQUIRE(service.generate(g, make(dimensions.first, dimensions.second, teams, 31001)));
 		}
 	{
 		// A rope needs two ends, a homeland needs room, and a long map needs enough colonies to
 		// ring it: all three are refused up front rather than failing seed after seed.
 		Game solo(nullptr);
-		assert(service.generate(solo, make(8, 8, 1, 7)).error == GenerationError::InvalidRequest);
-		assert(solo.teamsCount() == 0);
+		REQUIRE(service.generate(solo, make(8, 8, 1, 7)).error == GenerationError::InvalidRequest);
+		REQUIRE(solo.teamsCount() == 0);
 		Game crowded(nullptr);
-		assert(service.generate(crowded, make(7, 7, 12, 7)).error ==
+		REQUIRE(service.generate(crowded, make(7, 7, 12, 7)).error ==
 			   GenerationError::InvalidRequest);
 		Game strung(nullptr);
-		assert(service.generate(strung, make(7, 9, 4, 7)).error ==
+		REQUIRE(service.generate(strung, make(7, 9, 4, 7)).error ==
 			   GenerationError::InvalidRequest);
 	}
 	// A river is character, not structure: some seeds cut one and some do not, and a seed that does
@@ -1788,7 +1789,7 @@ inline void marchlandContracts()
 		{
 			Game g(nullptr);
 			const auto result = service.generate(g, make(8, 8, 4, seed), true);
-			assert(result);
+			REQUIRE(result);
 			// Counts are recorded as integers and residuals as doubles, so read either.
 			const auto number = [](const auto &record)
 			{
@@ -1809,14 +1810,14 @@ inline void marchlandContracts()
 			if (tiles < 0)
 			{
 				++without;
-				assert(fords < 0); // nothing is forded where nothing was cut
+				REQUIRE(fords < 0); // nothing is forded where nothing was cut
 				continue;
 			}
 			++withRiver;
-			assert(tiles > 0 && town == 0 && fords >= 4);
+			REQUIRE((tiles > 0 && town == 0 && fords >= 4));
 		}
 		// Both outcomes happen, so the emphasis is genuinely a draw and not a constant.
-		assert(withRiver > 0 && without > 0);
+		REQUIRE((withRiver > 0 && without > 0));
 	}
 	// Fruit grows on the rope and nowhere else, which is what makes the rope worth pulling, and
 	// every colony's own quarry and lake are guaranteed whatever the sliders say.
@@ -1826,9 +1827,9 @@ inline void marchlandContracts()
 			if (control.group == ControlGroup::Resources)
 				bare.options[control.id] = 0;
 		Game g(nullptr);
-		assert(service.generate(g, bare));
+		REQUIRE(service.generate(g, bare));
 		GenerationContext check(bare);
-		assert(definition.validateWorld(g, check).empty());
+		REQUIRE(definition.validateWorld(g, check).empty());
 		int fruit = 0, water = 0;
 		for (int i = 0; i < 256 * 256; ++i)
 		{
@@ -1836,7 +1837,7 @@ inline void marchlandContracts()
 			fruit += type >= CHERRY && type < CHERRY + 3;
 			water += g.map.isWater(i % 256, i / 256);
 		}
-		assert(fruit > 0 && water > 0);
+		REQUIRE((fruit > 0 && water > 0));
 		// Take the fruit away and the map is no longer a marchland; the validator must say so.
 		for (int i = 0; i < 256 * 256; ++i)
 		{
@@ -1844,7 +1845,7 @@ inline void marchlandContracts()
 			if (type >= CHERRY && type < CHERRY + 3)
 				g.map.setNoResource(i % 256, i / 256, 1);
 		}
-		assert(!definition.validateWorld(g, check).empty());
+		REQUIRE(!definition.validateWorld(g, check).empty());
 	}
 	// Levelling is the map's own argument, so it has to be worth something measurable: the search
 	// must cut the spread of the colonies' walks to the rope to a fraction of what dealing the
@@ -1855,7 +1856,7 @@ inline void marchlandContracts()
 		r.options["levelling"] = levelling;
 		Game g(nullptr);
 		const auto result = service.generate(g, r, true);
-		assert(result);
+		REQUIRE(result);
 		int dealt = -1, solved = -1;
 		for (const auto &record : result.telemetry.records())
 		{
@@ -1864,12 +1865,12 @@ inline void marchlandContracts()
 			if (record.key == "marchland.rope.share-solved")
 				solved = int(std::get<std::int64_t>(record.value));
 		}
-		assert(dealt >= 0 && solved >= 0);
+		REQUIRE((dealt >= 0 && solved >= 0));
 		return std::pair{dealt, solved};
 	};
 	const auto unsolved = rope(0), solved = rope(100);
-	assert(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
-	assert(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
+	REQUIRE(unsolved.second == unsolved.first); // no moves: the rope is where chance left it
+	REQUIRE(solved.second * 4 < solved.first);  // searched: a fraction of the spread it started with
 	puts("PASS Marchland: envelope and refusals, fruit only on the rope, guaranteed home lake and quarry, "
 		 "levelling measurably shares the rope out, rivers drawn on some seeds and forded on all "
 		 "of them");
@@ -1890,20 +1891,20 @@ inline void combContracts()
 		request.options["peninsulas"] = count;
 		Game world(nullptr);
 		auto result = GenerationService().generate(world, request, true);
-		assert(result);
+		REQUIRE(result);
 		shapes.insert(mapFingerprint(world));
 		bool counted = false;
 		for (const auto &record : result.telemetry.records())
 			if (record.key == "comb.peninsulas.actual")
 			{
 				counted = true;
-				assert(std::get<std::int64_t>(record.value) == 2 * count);
+				REQUIRE(std::get<std::int64_t>(record.value) == 2 * count);
 			}
-		assert(counted);
+		REQUIRE(counted);
 		GenerationContext context(request);
-		assert(definition.validateWorld(world, context).empty());
+		REQUIRE(definition.validateWorld(world, context).empty());
 	}
-	assert(shapes.size() == 3);
+	REQUIRE(shapes.size() == 3);
 	puts("PASS Comb: distinct peninsula counts, finished-world contracts and telemetry");
 }
 
@@ -1915,13 +1916,13 @@ inline void encircledKingdomContracts()
 	for (int teams : {1, 2, 13})
 	{
 		request.nbTeams = teams;
-		assert(!definition.validateRequest(request).empty());
+		REQUIRE(!definition.validateRequest(request).empty());
 	}
 	request.nbTeams = 7;
-	assert(!definition.validateRequest(request).empty());
+	REQUIRE(!definition.validateRequest(request).empty());
 	request.nbTeams = 4;
 	request.wDec = 7;
-	assert(!definition.validateRequest(request).empty());
+	REQUIRE(!definition.validateRequest(request).empty());
 	request.wDec = 8;
 	for (int teams = 3; teams <= 12; ++teams)
 		for (int plan = 1; plan <= 3; ++plan)
@@ -1941,21 +1942,21 @@ inline void encircledKingdomContracts()
 			const auto result = GenerationService().generate(game, request, true);
 			if (!result)
 				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 			const Torus t(game.map);
-			assert(std::abs(game.teams[0]->startPosX - t.w / 2) < 20);
-			assert(std::abs(game.teams[0]->startPosY - t.h / 2) < 20);
+			REQUIRE(std::abs(game.teams[0]->startPosX - t.w / 2) < 20);
+			REQUIRE(std::abs(game.teams[0]->startPosY - t.h / 2) < 20);
 			for (int k = 1; k < teams; ++k)
-				assert(std::max(std::abs(game.teams[k]->startPosX - t.w / 2),
+				REQUIRE(std::max(std::abs(game.teams[k]->startPosX - t.w / 2),
 								std::abs(game.teams[k]->startPosY - t.h / 2)) > 60);
 			GenerationContext check(request);
-			assert(definition.validateWorld(game, check).empty());
+			REQUIRE(definition.validateWorld(game, check).empty());
 			// Plant a resource directly beside the capital, outside all gardens: containment
 			// must reject it even though all original starting supplies remain intact.
 			const int x = t.w / 2 + 2, y = t.h / 2 - 20;
-			assert(game.map.isResourceAllowed(x, y, WHEAT));
+			REQUIRE(game.map.isResourceAllowed(x, y, WHEAT));
 			game.map.setResourceByIndex(x, y, WHEAT, 1);
-			assert(!definition.validateWorld(game, check).empty());
+			REQUIRE(!definition.validateWorld(game, check).empty());
 		}
 	// Retained random-study failures: a concave rectangular approach and a remote outer town.
 	for (bool rectangular : {true, false})
@@ -1979,7 +1980,7 @@ inline void encircledKingdomContracts()
 		const auto result = GenerationService().generate(game, edge, true);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 	}
 	// Telemetry and intervening requests must not alter seeded terrain or colonies.
 	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("encircled-kingdom"));
@@ -1988,16 +1989,16 @@ inline void encircledKingdomContracts()
 	request.wDec = request.hDec = 8;
 	request.nbWorkers = 4;
 	Game plain(nullptr), traced(nullptr), other(nullptr), repeated(nullptr);
-	assert(GenerationService().generate(plain, request));
+	REQUIRE(GenerationService().generate(plain, request));
 	const auto observed = GenerationService().generate(traced, request, true);
-	assert(observed && mapFingerprint(plain) == mapFingerprint(traced));
+	REQUIRE((observed && mapFingerprint(plain) == mapFingerprint(traced)));
 	D alternate = request;
 	alternate.seed = 91;
 	alternate.options["fortress-plan"] = 2;
-	assert(GenerationService().generate(other, alternate));
+	REQUIRE(GenerationService().generate(other, alternate));
 	const auto again = GenerationService().generate(repeated, request, true);
-	assert(again && mapFingerprint(traced) == mapFingerprint(repeated));
-	assert(observed.telemetry.records() == again.telemetry.records());
+	REQUIRE((again && mapFingerprint(traced) == mapFingerprint(repeated)));
+	REQUIRE(observed.telemetry.records() == again.telemetry.records());
 	for (int plan = 1; plan <= 3; ++plan)
 	{
 		D grown = request;
@@ -2006,7 +2007,7 @@ inline void encircledKingdomContracts()
 			if (control.group == ControlGroup::Resources)
 				grown.options[control.id] = control.maximum;
 		Game abundant(nullptr);
-		assert(GenerationService().generate(abundant, grown));
+		REQUIRE(GenerationService().generate(abundant, grown));
 		setSyncRandSeed(4211);
 		for (int tick = 0; tick < 4096; ++tick)
 			abundant.map.growResources();
@@ -2014,7 +2015,7 @@ inline void encircledKingdomContracts()
 		const auto error = definition.validateWorld(abundant, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Kingdom growth: %s\n", error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		// Stone is the fortress structure even with all renewable fields fully grown.
 		bool removed = false;
 		for (int y = 0; y < abundant.map.getH(); ++y)
@@ -2024,7 +2025,7 @@ inline void encircledKingdomContracts()
 					abundant.map.replaceResource(x, y, Resource{});
 					removed = true;
 				}
-		assert(removed && !definition.validateWorld(abundant, check).empty());
+		REQUIRE((removed && !definition.validateWorld(abundant, check).empty()));
 	}
 	puts("PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, "
 		 "containment");
@@ -2041,11 +2042,11 @@ inline void faultedCityContracts()
 	GenerationService service;
 	{
 		Game plain(nullptr), observed(nullptr);
-		assert(service.generate(plain, request));
+		REQUIRE(service.generate(plain, request));
 		const auto measured = service.generate(observed, request, true);
-		assert(measured && !measured.telemetry.records().empty());
-		assert(!measured.telemetry.droppedRecords() && !measured.telemetry.invalidValues());
-		assert(mapFingerprint(plain) == mapFingerprint(observed));
+		REQUIRE((measured && !measured.telemetry.records().empty()));
+		REQUIRE((!measured.telemetry.droppedRecords() && !measured.telemetry.invalidValues()));
+		REQUIRE(mapFingerprint(plain) == mapFingerprint(observed));
 	}
 	for (auto shape : {std::pair{8, 8}, std::pair{8, 9}, std::pair{9, 8}, std::pair{9, 9}})
 		for (int teams : {1, 4, 12})
@@ -2055,13 +2056,13 @@ inline void faultedCityContracts()
 			Game world(nullptr);
 			const auto result = service.generate(world, r);
 			if (!result) std::fprintf(stderr, "Faulted City %dx%d/%d: %s\n", 1 << r.wDec, 1 << r.hDec, teams, result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 		}
 	{
 		D r = request; r.wDec = 7;
 		Game world(nullptr);
-		assert(service.generate(world, r).error == GenerationError::InvalidRequest);
-		assert(world.teamsCount() == 0);
+		REQUIRE(service.generate(world, r).error == GenerationError::InvalidRequest);
+		REQUIRE(world.teamsCount() == 0);
 	}
 	for (int amount : {0, 300})
 	{
@@ -2069,7 +2070,7 @@ inline void faultedCityContracts()
 		for (const auto &control : definition.controls)
 			if (control.group == ControlGroup::Resources) r.options[control.id] = amount;
 		Game world(nullptr);
-		assert(service.generate(world, r));
+		REQUIRE(service.generate(world, r));
 		GenerationContext context(r);
 		if (amount == 300)
 		{
@@ -2077,7 +2078,7 @@ inline void faultedCityContracts()
 			for (int tick = 0; tick < 4096; ++tick) world.map.growResources();
 			const auto error = definition.validateWorld(world, context);
 			if (!error.empty()) std::fprintf(stderr, "Faulted City growth: %s\n", error.c_str());
-			assert(error.empty());
+			REQUIRE(error.empty());
 		}
 		// Structural stone is still required at zero ordinary stone abundance.
 		bool damaged = false;
@@ -2085,44 +2086,44 @@ inline void faultedCityContracts()
 			for (int x = 0; x < world.map.getW() && !damaged; ++x)
 				if (amount == 0 && world.map.getResource(x, y).type == STONE)
 				{ world.map.setNoResource(x, y, 1); damaged = true; }
-		if (amount == 0) assert(damaged && !definition.validateWorld(world, context).empty());
+		if (amount == 0) REQUIRE((damaged && !definition.validateWorld(world, context).empty()));
 	}
 	{
 		D scarce = request, rich = request;
 		for (const auto &control : definition.controls) if (control.group == ControlGroup::Resources)
 		{ scarce.options[control.id] = 0; rich.options[control.id] = 300; }
 		Game low(nullptr), high(nullptr);
-		assert(service.generate(low, scarce) && service.generate(high, rich));
+		REQUIRE((service.generate(low, scarce) && service.generate(high, rich)));
 		for (int y = 0; y < low.map.getH(); ++y) for (int x = 0; x < low.map.getW(); ++x)
-			assert(low.map.vertexTerrainAt(x, y) == high.map.vertexTerrainAt(x, y));
+			REQUIRE(low.map.vertexTerrainAt(x, y) == high.map.vertexTerrainAt(x, y));
 	}
 	{
 		Game world(nullptr);
 		const auto result = service.generate(world, request, true);
-		assert(result);
+		REQUIRE(result);
 		int x = -1, y = -1;
 		for (const auto &record : result.telemetry.records()) if (record.subject == 0)
 		{
 			if (record.key == "faulted-city.junction.x") x = int(std::get<std::int64_t>(record.value));
 			if (record.key == "faulted-city.junction.y") y = int(std::get<std::int64_t>(record.value));
 		}
-		assert(x >= 0 && y >= 0);
+		REQUIRE((x >= 0 && y >= 0));
 		// Leave the centre open, but obstruct its reserved gathering/circulation width.
 		world.map.setResourceByIndex((x + 1) % world.map.getW(), y, STONE, 1);
 		GenerationContext context(request);
-		assert(!definition.validateWorld(world, context).empty());
+		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
 
 	{
 		Game world(nullptr);
-		assert(service.generate(world, request));
+		REQUIRE(service.generate(world, request));
 		bool retained = false;
 		for (int y = 0; y < world.map.getH(); ++y)
 			for (int x = 0; x < world.map.getW(); ++x)
 				if (world.map.getResource(x, y).type == WHEAT)
 				{ if (retained) world.map.setNoResource(x, y, 1); retained = true; }
 		GenerationContext context(request);
-		assert(!definition.validateWorld(world, context).empty());
+		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
 	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
 }
@@ -2140,36 +2141,36 @@ inline void eatenMapContracts()
 	{
 		request.options["appetite"] = appetite;
 		Game world(nullptr), repeated(nullptr), sparse(nullptr);
-		assert(service.generate(world, request));
+		REQUIRE(service.generate(world, request));
 		const auto traced = service.generate(repeated, request, true);
-		assert(traced && !traced.telemetry.records().empty());
-		assert(traced.telemetry.invalidValues() == 0);
-		assert(mapFingerprint(world) == mapFingerprint(repeated));
+		REQUIRE((traced && !traced.telemetry.records().empty()));
+		REQUIRE(traced.telemetry.invalidValues() == 0);
+		REQUIRE(mapFingerprint(world) == mapFingerprint(repeated));
 		auto zero = request;
 		for (const char *key :
 			 {"wheat-amount", "wood-amount", "stone-amount", "algae-amount", "fruit-amount"})
 			zero.options[key] = 0;
-		assert(service.generate(sparse, zero));
+		REQUIRE(service.generate(sparse, zero));
 		for (int y = 0; y < 128; ++y)
 			for (int x = 0; x < 128; ++x)
-				assert(world.map.vertexTerrainAt(x, y) == sparse.map.vertexTerrainAt(x, y));
+				REQUIRE(world.map.vertexTerrainAt(x, y) == sparse.map.vertexTerrainAt(x, y));
 		GenerationContext check(request);
-		assert(definition.validateWorld(world, check).empty());
+		REQUIRE(definition.validateWorld(world, check).empty());
 		// Depleting the opening crops must be rejected even when the coastline survives.
 		for (int y = 0; y < 128; ++y)
 			for (int x = 0; x < 128; ++x)
 				if (repeated.map.getResource(x, y).type == WHEAT)
 					repeated.map.setNoResource(x, y, 0);
-		assert(!definition.validateWorld(repeated, check).empty());
+		REQUIRE(!definition.validateWorld(repeated, check).empty());
 		world.map.setVertexTerrain(0, 0, GRASS);
-		assert(!definition.validateWorld(world, check).empty());
+		REQUIRE(!definition.validateWorld(world, check).empty());
 	}
 	// A single greedy spread used to reject this usable crescent. Retry sites, not terrain.
 	request.seed = 71;
 	request.nbWorkers = 8;
 	{
 		Game crescent(nullptr);
-		assert(service.generate(crescent, request));
+		REQUIRE(service.generate(crescent, request));
 	}
 	{
 		auto crowded = request;
@@ -2179,7 +2180,7 @@ inline void eatenMapContracts()
 		crowded.options["wood-amount"] = 175;
 		crowded.options["algae-amount"] = crowded.options["fruit-amount"] = 0;
 		Game crescent(nullptr);
-		assert(service.generate(crescent, crowded));
+		REQUIRE(service.generate(crescent, crowded));
 	}
 	request.seed = 7;
 	request.nbWorkers = 4;
@@ -2190,13 +2191,13 @@ inline void eatenMapContracts()
 		request.hDec = dims.second;
 		request.nbTeams = std::min(dims.first, dims.second) == 7 ? 4 : 8;
 		Game world(nullptr);
-		assert(service.generate(world, request));
+		REQUIRE(service.generate(world, request));
 	}
 	for (auto dims : {std::pair{6, 6}, std::pair{7, 9}, std::pair{9, 7}})
 	{
 		request.wDec = dims.first;
 		request.hDec = dims.second;
-		assert(!definition.validateRequest(request).empty());
+		REQUIRE(!definition.validateRequest(request).empty());
 	}
 	// Small detached crescents are scenery; a larger lobe still supports an island colony.
 	for (const auto [dims, seed, expected] : {std::tuple{8, 7, 1}, std::tuple{9, 11, 2}})
@@ -2207,7 +2208,7 @@ inline void eatenMapContracts()
 		split.seed = seed;
 		split.options["appetite"] = 2;
 		Game world(nullptr);
-		assert(service.generate(world, split));
+		REQUIRE(service.generate(world, split));
 		const MapGeneration::Torus t(world.map);
 		auto land = MapGeneration::pureTiles(world.map, WATER);
 		for (auto &tile : land) tile = !tile;
@@ -2216,7 +2217,7 @@ inline void eatenMapContracts()
 		std::set<int> occupied;
 		for (const auto &units : MapGeneration::unitTilesByTeam(world.map, 4))
 			occupied.insert(labels[units[0]]);
-		assert(occupied.size() == size_t(expected));
+		REQUIRE(occupied.size() == size_t(expected));
 	}
 	puts("PASS Who Ate the Map: reproducibility, unchanged coastline at zero resources, corruption "
 		 "rejection, envelope");
@@ -2245,12 +2246,12 @@ inline void portageLakesTwoContracts()
 		if (!result)
 			std::fprintf(stderr, "Portage Lakes %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
 						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Portage Lakes %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key, int subject = -1)
@@ -2291,11 +2292,11 @@ inline void portageLakesTwoContracts()
 						if (std::abs(dx) + std::abs(dy) <= 2)
 						{
 							const auto next = group(map, (x + dx + w) % w, (y + dy + h) % h);
-							assert(next == TerrainGroup::Water || next == TerrainGroup::DeepWater);
+							REQUIRE((next == TerrainGroup::Water || next == TerrainGroup::DeepWater));
 						}
 			}
-		assert(trail > 0 && (rock > 0 || std::min(w, h) == 64));
-		assert(deepWanted ? deep > 0 : deep == 0);
+		REQUIRE((trail > 0 && (rock > 0 || std::min(w, h) == 64)));
+		REQUIRE((deepWanted ? deep > 0 : deep == 0));
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
 			{
@@ -2304,7 +2305,7 @@ inline void portageLakesTwoContracts()
 				int corners = 0;
 				for (int c = 0; c < 4; ++c)
 					corners += group(map, (x + (c & 1)) % w, (y + (c >> 1)) % h) == TerrainGroup::Ridges;
-				assert(corners < 2 || !rules.walkable);
+				REQUIRE((corners < 2 || !rules.walkable));
 			}
 	};
 	// Pinned variants at every size and several colony counts, both shields, deep and shallow lakes.
@@ -2321,7 +2322,7 @@ inline void portageLakesTwoContracts()
 		++pinned;
 		Game g(nullptr);
 		const auto result = build(g, r, "pinned variant", true);
-		assert(choice(result, "portage-lakes.shield") == shieldNames[shield - 1]);
+		REQUIRE(choice(result, "portage-lakes.shield") == shieldNames[shield - 1]);
 		terrainPromises(g, deep);
 		// Every home's knob holds the same quarry stone, at least five, within a short walk. A map
 		// whose meadows cannot take a knob beside every home falls back to revision 7's stone
@@ -2331,25 +2332,25 @@ inline void portageLakesTwoContracts()
 			++patches;
 			continue;
 		}
-		assert(measure(result, "portage-lakes.quarries.home-stone") >= 5);
+		REQUIRE(measure(result, "portage-lakes.quarries.home-stone") >= 5);
 		for (int k = 0; k < teams; ++k)
 		{
 			const int walk = measure(result, "portage-lakes.quarries.walk-own", k);
-			assert(walk >= 0 && walk <= 24);
+			REQUIRE((walk >= 0 && walk <= 24));
 		}
 	}
 	std::fprintf(stderr, "Portage Lakes pinned variants on stone patches: %d of 6\n", patches);
-	assert(patches <= 1);
+	REQUIRE(patches <= 1);
 	// Both shields come up at random.
 	std::set<std::string> shields;
 	for (std::uint32_t seed = 1; seed <= 6 && shields.size() < 2; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(6, 6, 2, seed), true);
-		assert(result);
+		REQUIRE(result);
 		shields.insert(choice(result, "portage-lakes.shield"));
 	}
-	assert(shields.size() == 2);
+	REQUIRE(shields.size() == 2);
 	{
 		// The shield is only a look: granite and greenstone have the same rules and resources on every
 		// tile of the same request.
@@ -2364,13 +2365,13 @@ inline void portageLakesTwoContracts()
 			for (int x = 0; x < 128; ++x)
 			{
 				const auto &p = a.map.terrainPropertiesAt(x, y), &q = b.map.terrainPropertiesAt(x, y);
-				assert(p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
+				REQUIRE((p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
 					   p.resourcesGrow == q.resourcesGrow && p.inhibitionQ8 == q.inhibitionQ8 &&
-					   p.fertilityQ8 == q.fertilityQ8 && p.groundSpeedQ8 == q.groundSpeedQ8);
-				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+					   p.fertilityQ8 == q.fertilityQ8 && p.groundSpeedQ8 == q.groundSpeedQ8));
+				REQUIRE(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
 				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
 			}
-		assert(differentLooks > 100);
+		REQUIRE(differentLooks > 100);
 	}
 	{
 		// Damage is refused: a quarry stone taken away, a piece of rock turned to grass.
@@ -2378,7 +2379,7 @@ inline void portageLakesTwoContracts()
 		GenerationContext check(r);
 		Game quarried(nullptr), breached(nullptr);
 		build(quarried, r, "quarry damage");
-		assert(service.generate(breached, r));
+		REQUIRE(service.generate(breached, r));
 		bool removed = false, opened = false;
 		for (int i = 0; i < 128 * 128 && !removed; ++i)
 			if (quarried.map.isResource(i % 128, i / 128) && quarried.map.getResource(i % 128, i / 128).type == STONE)
@@ -2393,14 +2394,14 @@ inline void portageLakesTwoContracts()
 				quarried.map.replaceResource(i % 128, i / 128, Resource{});
 				removed = true;
 			}
-		assert(removed && !definition.validateWorld(quarried, check).empty());
+		REQUIRE((removed && !definition.validateWorld(quarried, check).empty()));
 		for (int i = 0; i < 128 * 128 && !opened; ++i)
 			if (group(breached.map, i % 128, i / 128) == TerrainGroup::Ridges)
 			{
 				breached.map.setVertexTerrain(i % 128, i / 128, GRASS);
 				opened = true;
 			}
-		assert(opened && !definition.validateWorld(breached, check).empty());
+		REQUIRE((opened && !definition.validateWorld(breached, check).empty()));
 	}
 	{
 		// Ambient quarry faces on the forest knots follow stone-amount; the homes' faces do not.
@@ -2410,9 +2411,9 @@ inline void portageLakesTwoContracts()
 		Game a(nullptr), b(nullptr), z(nullptr);
 		const auto normal = build(a, few, "default stone", true), more = build(b, many, "abundant stone", true),
 				   zero = build(z, none, "no stone", true);
-		assert(measure(zero, "portage-lakes.quarries.ambient") == 0);
-		assert(measure(more, "portage-lakes.quarries.ambient") > measure(normal, "portage-lakes.quarries.ambient"));
-		assert(measure(zero, "portage-lakes.quarries.home-stone") == measure(more, "portage-lakes.quarries.home-stone"));
+		REQUIRE(measure(zero, "portage-lakes.quarries.ambient") == 0);
+		REQUIRE(measure(more, "portage-lakes.quarries.ambient") > measure(normal, "portage-lakes.quarries.ambient"));
+		REQUIRE(measure(zero, "portage-lakes.quarries.home-stone") == measure(more, "portage-lakes.quarries.home-stone"));
 		// Growth with nobody harvesting keeps every promise: quarries keep their stone, trails stay bare,
 		// timber stays in its plots, the portages stay dry and every colony still reaches every other.
 		setSyncRandSeed(4211);
@@ -2422,7 +2423,7 @@ inline void portageLakesTwoContracts()
 		const std::string error = definition.validateWorld(b, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Portage Lakes 2.0 growth: %s\n", error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		terrainPromises(b, true);
 	}
 	puts("PASS Portage Lakes 2.0: pinned shields and depths at 64-512, looks keep the rules, rock seals, "
@@ -2435,11 +2436,11 @@ inline void portageLakesContracts()
 	const auto &registry = GeneratorRegistry::builtins();
 	const int method = registry.idOf("portage-lakes");
 	const auto &definition = registry.at(method);
-	assert(definition.legacyId == 65 && definition.revision == 8);
+	REQUIRE((definition.legacyId == 65 && definition.revision == 8));
 	GenerationService service;
 	D r;
 	r.setMethodDefaults(method);
-	assert(r.option("deep-lakes") == 1 && r.option("shield") == 0);
+	REQUIRE((r.option("deep-lakes") == 1 && r.option("shield") == 0));
 	r.wDec = r.hDec = 8;
 	r.nbTeams = 4;
 	r.seed = 1;
@@ -2447,7 +2448,7 @@ inline void portageLakesContracts()
 	auto report = service.generate(first, r, true);
 	if (!report)
 		std::fprintf(stderr, "%s\n", report.diagnostic().c_str());
-	assert(report);
+	REQUIRE(report);
 	// Coverage is per water component, not merely a larger global wheat total.
 	const auto checkShoreFields = [](const auto &result, int wanted)
 	{
@@ -2458,17 +2459,17 @@ inline void portageLakesContracts()
 				lakes = int(std::get<std::int64_t>(record.value));
 			if (record.key == "portage-lakes.shore-fields.extra")
 			{
-				assert(std::get<std::int64_t>(record.value) >= 1 &&
-					   std::get<std::int64_t>(record.value) <= wanted);
+				REQUIRE((std::get<std::int64_t>(record.value) >= 1 &&
+					   std::get<std::int64_t>(record.value) <= wanted));
 				++fields;
 			}
 		}
-		assert(lakes > 0 && fields == lakes);
+		REQUIRE((lakes > 0 && fields == lakes));
 	};
 	checkShoreFields(report, 2);
 	const auto fingerprint = mapFingerprint(first);
 	GenerationContext context(r);
-	assert(definition.validateWorld(first, context).empty());
+	REQUIRE(definition.validateWorld(first, context).empty());
 	// Telemetry must not change either placement or RNG, even between other requests.
 	D compact = r;
 	compact.wDec = compact.hDec = 6;
@@ -2477,11 +2478,11 @@ inline void portageLakesContracts()
 	auto smallReport = service.generate(compactGame, compact, true);
 	if (!smallReport)
 		std::fprintf(stderr, "%s\n", smallReport.diagnostic().c_str());
-	assert(smallReport);
+	REQUIRE(smallReport);
 	checkShoreFields(smallReport, 1);
 	Game repeated(nullptr);
-	assert(service.generate(repeated, r, false));
-	assert(mapFingerprint(repeated) == fingerprint);
+	REQUIRE(service.generate(repeated, r, false));
+	REQUIRE(mapFingerprint(repeated) == fingerprint);
 	// Open wheat may spread into meadows; timber stays contained and dry portages cannot refill.
 	setSyncRandSeed(4211);
 	for (int tick = 0; tick < 4096; ++tick)
@@ -2489,7 +2490,7 @@ inline void portageLakesContracts()
 	auto error = definition.validateWorld(first, context);
 	if (!error.empty())
 		std::fprintf(stderr, "Portage Lakes growth: %s\n", error.c_str());
-	assert(error.empty());
+	REQUIRE(error.empty());
 	// Missing dry structural wood must be caught, without relying on fixed coordinates.
 	auto fertility = Fertility::forMap(repeated.map, false);
 	bool removed = false;
@@ -2500,7 +2501,7 @@ inline void portageLakesContracts()
 				repeated.map.replaceResource(x, y, Resource{});
 				removed = true;
 			}
-	assert(removed && !definition.validateWorld(repeated, context).empty());
+	REQUIRE((removed && !definition.validateWorld(repeated, context).empty()));
 	// The compact policy applies to long rectangles too; each distant colony needs algae.
 	for (const auto shape : {std::array<int, 3>{6, 8, 4}, std::array<int, 3>{7, 7, 4}})
 	{
@@ -2514,13 +2515,13 @@ inline void portageLakesContracts()
 		auto result = service.generate(world, rectangular);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 	}
 	// A change to the lake/road terrain cannot silently validate as the original design.
 	const auto originalTerrain = compactGame.map.vertexTerrainAt(0, 0);
 	compactGame.map.setVertexTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
 	GenerationContext compactContext(compact);
-	assert(!definition.validateWorld(compactGame, compactContext).empty());
+	REQUIRE(!definition.validateWorld(compactGame, compactContext).empty());
 	// Failed neutral bays restore a working layout; that must not invalidate its candidate scan.
 	// This crowded request exposed both nondeterministic reconstruction and an iterator lifetime bug.
 	{
@@ -2540,8 +2541,8 @@ inline void portageLakesContracts()
 		auto result = service.generate(one, crowded, true);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result && service.generate(two, crowded));
-		assert(mapFingerprint(one) == mapFingerprint(two));
+		REQUIRE((result && service.generate(two, crowded)));
+		REQUIRE(mapFingerprint(one) == mapFingerprint(two));
 	}
 	// At zero abundance the guaranteed seed budget must still service the inn.
 	// Fertility-only sowing previously exhausted all landscape attempts here.
@@ -2564,7 +2565,7 @@ inline void portageLakesContracts()
 		auto result = service.generate(world, scarce);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 	}
 	// Full maps need shore room budgeted early; tiny maps need their landing first.
 	for (unsigned seed : {650037u, 650064u})
@@ -2587,13 +2588,13 @@ inline void portageLakesContracts()
 		auto result = service.generate(world, shore, true);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		checkShoreFields(result, tiny ? 1 : 2);
 	}
 	// Deliberately unsupported requests are rejected before touching the world.
 	D invalid = compact;
 	invalid.nbTeams = 3;
-	assert(!definition.validateRequest(invalid).empty());
+	REQUIRE(!definition.validateRequest(invalid).empty());
 	for (int amount : {0, 300})
 	{
 		D extreme = r;
@@ -2604,7 +2605,7 @@ inline void portageLakesContracts()
 		auto result = service.generate(world, extreme);
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 	}
 	portageLakesTwoContracts();
 	puts("PASS Portage Lakes: compact/full, repeatability, open wheat growth, missing portage, "
@@ -2626,11 +2627,11 @@ inline void drownedForestContracts()
 		r.wDec = dimensions.first;
 		r.hDec = dimensions.second;
 		r.nbTeams = std::min(8, (1 << r.wDec) * (1 << r.hDec) / 8192);
-		assert(definition.validateRequest(r).empty());
+		REQUIRE(definition.validateRequest(r).empty());
 		if (r.nbTeams < 8)
 		{
 			++r.nbTeams;
-			assert(!definition.validateRequest(r).empty());
+			REQUIRE(!definition.validateRequest(r).empty());
 		}
 	}
 	for (auto dimensions : {std::pair{6, 7}, std::pair{7, 9}, std::pair{10, 9}})
@@ -2638,7 +2639,7 @@ inline void drownedForestContracts()
 		auto r = request;
 		r.wDec = dimensions.first;
 		r.hDec = dimensions.second;
-		assert(!definition.validateRequest(r).empty());
+		REQUIRE(!definition.validateRequest(r).empty());
 	}
 	GenerationService service;
 	// Keep the retained regression worlds off Windows' small main-thread stack.
@@ -2646,17 +2647,17 @@ inline void drownedForestContracts()
 	Game &first = *firstStorage;
 	auto warmStorage = std::make_unique<Game>(nullptr);
 	Game &warm = *warmStorage;
-	assert(service.generate(first, request));
-	assert(service.generate(warm, request, true));
-	assert(mapFingerprint(first) == mapFingerprint(warm));
+	REQUIRE(service.generate(first, request));
+	REQUIRE(service.generate(warm, request, true));
+	REQUIRE(mapFingerprint(first) == mapFingerprint(warm));
 	const auto fingerprint = mapFingerprint(first);
 	GenerationContext check(request);
-	assert(definition.validateWorld(first, check).empty());
+	REQUIRE(definition.validateWorld(first, check).empty());
 	// Forced late growth must not seal circulation or invade the protected towns.
 	setSyncRandSeed(58007);
 	for (int tick = 0; tick < 4096; ++tick)
 		first.map.growResources();
-	assert(definition.validateWorld(first, check).empty());
+	REQUIRE(definition.validateWorld(first, check).empty());
 	// Damage to a designated neck must be detected.
 	auto observedWorldStorage = std::make_unique<Game>(nullptr);
 	Game &observedWorld = *observedWorldStorage;
@@ -2668,16 +2669,16 @@ inline void drownedForestContracts()
 			neck = int(std::get<std::int64_t>(record.value));
 			break;
 		}
-	assert(neck >= 0);
+	REQUIRE(neck >= 0);
 	observedWorld.map.setNoResource(neck % 256, neck / 256, 1);
-	assert(!definition.validateWorld(observedWorld, check).empty());
+	REQUIRE(!definition.validateWorld(observedWorld, check).empty());
 	auto compact = request;
 	compact.wDec = compact.hDec = 7;
 	compact.nbTeams = 2;
 	compact.nbWorkers = 8;
 	auto crowdedStorage = std::make_unique<Game>(nullptr);
 	Game &crowded = *crowdedStorage;
-	assert(service.generate(crowded, compact));
+	REQUIRE(service.generate(crowded, compact));
 	for (int amount : {0, 300})
 	{
 		auto extreme = request;
@@ -2687,16 +2688,16 @@ inline void drownedForestContracts()
 				extreme.options[control.id] = amount;
 		auto worldStorage = std::make_unique<Game>(nullptr);
 		Game &world = *worldStorage;
-		assert(service.generate(world, extreme));
+		REQUIRE(service.generate(world, extreme));
 		GenerationContext verify(extreme);
-		assert(definition.validateWorld(world, verify).empty());
+		REQUIRE(definition.validateWorld(world, verify).empty());
 		if (amount == 0)
 		{
 			for (int y = 0; y < 256; ++y)
 				for (int x = 0; x < 256; ++x)
 					if (world.map.getResource(x, y).type == WHEAT)
 						world.map.setNoResource(x, y, 1);
-			assert(!definition.validateWorld(world, verify).empty());
+			REQUIRE(!definition.validateWorld(world, verify).empty());
 		}
 	}
 	// A worker can stand inside a hypothetical future building rectangle. Circulation
@@ -2713,7 +2714,7 @@ inline void drownedForestContracts()
 	futureRoom.options["fruit-amount"] = 275;
 	auto roomRegressionStorage = std::make_unique<Game>(nullptr);
 	Game &roomRegression = *roomRegressionStorage;
-	assert(service.generate(roomRegression, futureRoom));
+	REQUIRE(service.generate(roomRegression, futureRoom));
 	// Sparse woods on the smallest map still need useful destinations for both homes.
 	auto sparse = compact;
 	sparse.seed = 2;
@@ -2721,7 +2722,7 @@ inline void drownedForestContracts()
 	sparse.options["wood-amount"] = 0;
 	auto sparseRegressionStorage = std::make_unique<Game>(nullptr);
 	Game &sparseRegression = *sparseRegressionStorage;
-	assert(service.generate(sparseRegression, sparse));
+	REQUIRE(service.generate(sparseRegression, sparse));
 	sparse.seed = 100260;
 	sparse.nbWorkers = 3;
 	sparse.options["wooded-neck-thickness"] = 7;
@@ -2732,7 +2733,7 @@ inline void drownedForestContracts()
 	sparse.options["fruit-amount"] = 75;
 	auto scarceRegressionStorage = std::make_unique<Game>(nullptr);
 	Game &scarceRegression = *scarceRegressionStorage;
-	assert(service.generate(scarceRegression, sparse));
+	REQUIRE(service.generate(scarceRegression, sparse));
 	// At full colony density, many alternate bars and thick necks need a longer
 	// bounded search while retaining the same useful-shortcut requirement.
 	auto dense = request;
@@ -2748,7 +2749,7 @@ inline void drownedForestContracts()
 	dense.options["fruit-amount"] = 275;
 	auto denseRegressionStorage = std::make_unique<Game>(nullptr);
 	Game &denseRegression = *denseRegressionStorage;
-	assert(service.generate(denseRegression, dense));
+	REQUIRE(service.generate(denseRegression, dense));
 	// Fully occupied rectangular maps need the same bounded tail as dense squares.
 	auto rectangle = request;
 	rectangle.wDec = 7;
@@ -2762,15 +2763,15 @@ inline void drownedForestContracts()
 	rectangle.options["algae-amount"] = 200;
 	auto rectangularRegressionStorage = std::make_unique<Game>(nullptr);
 	Game &rectangularRegression = *rectangularRegressionStorage;
-	assert(service.generate(rectangularRegression, rectangle));
+	REQUIRE(service.generate(rectangularRegression, rectangle));
 	auto coldStorage = std::make_unique<Game>(nullptr);
 	Game &cold = *coldStorage;
-	assert(service.generate(cold, request));
+	REQUIRE(service.generate(cold, request));
 	// The worker-sensitive compact request evicted the cache; reconstruction is identical.
 	auto originalStorage = std::make_unique<Game>(nullptr);
 	Game &original = *originalStorage;
-	assert(service.generate(original, request));
-	assert(mapFingerprint(cold) == fingerprint && mapFingerprint(original) == fingerprint);
+	REQUIRE(service.generate(original, request));
+	REQUIRE((mapFingerprint(cold) == fingerprint && mapFingerprint(original) == fingerprint));
 	puts("PASS Drowned Forest: envelope, repeatability, cache, growth containment, neck damage, "
 		 "compact workers");
 }
@@ -2794,16 +2795,16 @@ inline void bastionKeysContracts()
 			const auto result = GenerationService().generate(game, request, true);
 			if (!result)
 				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-			assert(result);
+			REQUIRE(result);
 			GenerationContext check(request);
-			assert(definition.validateWorld(game, check).empty());
-			assert(countBuildings(game, 0, "swimmingpool") == 1);
+			REQUIRE(definition.validateWorld(game, check).empty());
+			REQUIRE(countBuildings(game, 0, "swimmingpool") == 1);
 			if (amount == 0)
 			{
 				setSyncRandSeed(917);
 				for (int tick = 0; tick < 20000; ++tick)
 					game.map.growResources();
-				assert(definition.validateWorld(game, check).empty());
+				REQUIRE(definition.validateWorld(game, check).empty());
 			}
 			// A missing permanent rampart is an invalid map, even when the rest is playable.
 			int wall = -1;
@@ -2813,14 +2814,14 @@ inline void bastionKeysContracts()
 					wall = i;
 					break;
 				}
-			assert(wall >= 0);
+			REQUIRE(wall >= 0);
 			game.map.setNoResource(wall % 128, wall / 128, 1);
-			assert(!definition.validateWorld(game, check).empty());
+			REQUIRE(!definition.validateWorld(game, check).empty());
 		}
 	request.nbTeams = 2;
-	assert(!definition.validateRequest(request).empty());
+	REQUIRE(!definition.validateRequest(request).empty());
 	request.wDec = 8;
-	assert(definition.validateRequest(request).empty());
+	REQUIRE(definition.validateRequest(request).empty());
 	// Exercise all fort styles/facings over held-out seeds, both rectangular orientations,
 	// scarce/dense crops, open-water isolation and the full twelve-colony envelope.
 	for (int seed : {207, 208, 211, 307})
@@ -2839,16 +2840,16 @@ inline void bastionKeysContracts()
 			const auto result = GenerationService().generate(game, request, true);
 			if (!result)
 				std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
-			assert(result);
-			assert(coloniesApart(game.map, request.nbTeams, "without swimming").empty());
+			REQUIRE(result);
+			REQUIRE(coloniesApart(game.map, request.nbTeams, "without swimming").empty());
 		}
 	request.setMethodDefaults(GeneratorRegistry::builtins().idOf("bastion-keys"));
 	request.wDec = 8;
 	request.hDec = 7;
 	request.nbTeams = 2;
 	Game bridged(nullptr);
-	assert(GenerationService().generate(bridged, request));
-	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
+	REQUIRE(GenerationService().generate(bridged, request));
+	REQUIRE(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
 	// The estates are dressed in catalogue ground; the sea uses ordinary water.
 	// This recipe does not add a deep-water band around the islands.
@@ -2863,14 +2864,14 @@ inline void bastionKeysContracts()
 				pier = i;
 		}
 		for (const int type : {BOARDWALK, BRICK_PATH, SHALE, LOAM, OUTCROP, RIDGE_ROCK})
-			assert(used.count(type));
-		assert(!used.count(DEEP_WATER) && !used.count(DARK_WATER));
+			REQUIRE(used.count(type));
+		REQUIRE((!used.count(DEEP_WATER) && !used.count(DARK_WATER)));
 		// Any change to the dressing is a changed design, so the final-world check refuses it.
 		GenerationContext dressed(request);
 		bridged.map.setVertexTerrain(pier % t.w, pier / t.w, GRASS);
-		assert(!definition.validateWorld(bridged, dressed).empty());
+		REQUIRE(!definition.validateWorld(bridged, dressed).empty());
 		bridged.map.setVertexTerrain(pier % t.w, pier / t.w, BOARDWALK);
-		assert(definition.validateWorld(bridged, dressed).empty());
+		REQUIRE(definition.validateWorld(bridged, dressed).empty());
 	}
 	TerrainSketch landBridge(t.size());
 	for (int i = 0; i < t.size(); ++i)
@@ -2880,7 +2881,7 @@ inline void bastionKeysContracts()
 	}
 	writeVertices(GenerationMap(bridged.map).ref(), landBridge);
 	GenerationContext check(request);
-	assert(definition.validateWorld(bridged, check).find("walking connection") !=
+	REQUIRE(definition.validateWorld(bridged, check).find("walking connection") !=
 		   std::string::npos);
 	puts("PASS Bastion Keys: envelope, variants, rectangles, twelve colonies, swimming isolation, "
 		 "land-bridge corruption, external crops, "
@@ -2890,11 +2891,11 @@ inline void bastionKeysContracts()
 inline void rainShadowContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("rain-shadow"));
-	assert(definition.legacyId == 27 && definition.revision == 7);
+	REQUIRE((definition.legacyId == 27 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("ridges") == 4 && request.option("ridge-thickness") == 3 &&
-		   request.option("climate") == 0 && request.option("lithology") == 0);
+	REQUIRE((request.option("ridges") == 4 && request.option("ridge-thickness") == 3 &&
+		   request.option("climate") == 0 && request.option("lithology") == 0));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -2912,12 +2913,12 @@ inline void rainShadowContracts()
 		if (!result)
 			std::fprintf(stderr, "Rain shadow %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
 						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Rain shadow %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -2949,11 +2950,11 @@ inline void rainShadowContracts()
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(7, 7, 2, seed), true);
-		assert(result);
+		REQUIRE(result);
 		climates.insert(choice(result, "rain-shadow.climate"));
 		rocks.insert(choice(result, "rain-shadow.lithology"));
 	}
-	assert(climates.size() == 3 && rocks.size() == 3);
+	REQUIRE((climates.size() == 3 && rocks.size() == 3));
 	const char *climateNames[] = {"temperate", "steppe", "desert"}, *rockNames[] = {"granite", "sandstone", "volcanic"};
 	for (int look = 1; look <= 3; ++look)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
@@ -2963,10 +2964,10 @@ inline void rainShadowContracts()
 			pinned.options["lithology"] = 4 - look;
 			Game g(nullptr);
 			const auto result = build(g, pinned, "pinned look", true);
-			assert(choice(result, "rain-shadow.climate") == climateNames[look - 1]);
-			assert(choice(result, "rain-shadow.lithology") == rockNames[3 - look]);
+			REQUIRE(choice(result, "rain-shadow.climate") == climateNames[look - 1]);
+			REQUIRE(choice(result, "rain-shadow.lithology") == rockNames[3 - look]);
 			// Every home holds the same quarry, never below the floor.
-			assert(measure(result, "rain-shadow.quarries.home-stone") >= 8);
+			REQUIRE(measure(result, "rain-shadow.quarries.home-stone") >= 8);
 		}
 	{
 		// The looks are only looks: a temperate granite map and a desert volcanic one have the same
@@ -2984,13 +2985,13 @@ inline void rainShadowContracts()
 			for (int x = 0; x < 256; ++x)
 			{
 				const auto &p = a.map.terrainPropertiesAt(x, y), &q = b.map.terrainPropertiesAt(x, y);
-				assert(p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
+				REQUIRE((p.walkable == q.walkable && p.buildable == q.buildable && p.swimmable == q.swimmable &&
 					   p.resourcesGrow == q.resourcesGrow && p.inhibitionQ8 == q.inhibitionQ8 &&
-					   p.fertilityQ8 == q.fertilityQ8 && p.projectileBlocks == q.projectileBlocks);
-				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+					   p.fertilityQ8 == q.fertilityQ8 && p.projectileBlocks == q.projectileBlocks));
+				REQUIRE(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
 				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
 			}
-		assert(differentLooks > 1000);
+		REQUIRE(differentLooks > 1000);
 	}
 	// Thin, thick, straight and steep ridges stay sealed outside their passes (validateWorld floods
 	// across every ridge with the passes shut), and passes close rather than cut a home's quarry.
@@ -3029,10 +3030,10 @@ inline void rainShadowContracts()
 		// and taking one away is refused; so is taking away a piece of ridge.
 		Game zero(nullptr);
 		const auto result = build(zero, r, "no resources", true);
-		assert(measure(result, "rain-shadow.quarries.ambient") == 0);
+		REQUIRE(measure(result, "rain-shadow.quarries.ambient") == 0);
 		GenerationContext check(r);
 		Game damaged(nullptr);
-		assert(service.generate(damaged, r));
+		REQUIRE(service.generate(damaged, r));
 		bool removed = false;
 		for (int i = 0; i < 256 * 256 && !removed; ++i)
 			if (damaged.map.isResource(i % 256, i / 256) && damaged.map.getResource(i % 256, i / 256).type == STONE)
@@ -3040,9 +3041,9 @@ inline void rainShadowContracts()
 				damaged.map.replaceResource(i % 256, i / 256, Resource{});
 				removed = true;
 			}
-		assert(removed && !definition.validateWorld(damaged, check).empty());
+		REQUIRE((removed && !definition.validateWorld(damaged, check).empty()));
 		Game breached(nullptr);
-		assert(service.generate(breached, r));
+		REQUIRE(service.generate(breached, r));
 		bool opened = false;
 		for (int i = 0; i < 256 * 256 && !opened; ++i)
 			if (terrainGroup(breached.map.vertexTerrainAt(i % 256, i / 256)) == TerrainGroup::Ridges)
@@ -3050,7 +3051,7 @@ inline void rainShadowContracts()
 				breached.map.setVertexTerrain(i % 256, i / 256, GRASS);
 				opened = true;
 			}
-		assert(opened && !definition.validateWorld(breached, check).empty());
+		REQUIRE((opened && !definition.validateWorld(breached, check).empty()));
 	}
 	{
 		// Ambient quarry faces follow stone-amount.
@@ -3059,7 +3060,7 @@ inline void rainShadowContracts()
 		Game a(nullptr), b(nullptr);
 		const int normal = measure(build(a, few, "default stone", true), "rain-shadow.quarries.ambient");
 		const int more = measure(build(b, many, "abundant stone", true), "rain-shadow.quarries.ambient");
-		assert(normal > 4 && more > normal);
+		REQUIRE((normal > 4 && more > normal));
 	}
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
@@ -3075,7 +3076,7 @@ inline void rainShadowContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Rain shadow growth: %s\n", growthError.c_str());
-	assert(growthError.empty());
+	REQUIRE(growthError.empty());
 	puts("PASS Rain shadow: envelope, climates and rocks pinned and random, looks keep the rules, sealed "
 		 "thin and steep ridges, home quarries equal, damage refused, ambient quarries scale, growth "
 		 "keeps the passes and quarries");
@@ -3089,11 +3090,11 @@ inline void tidalFlatsContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tidal-flats"));
-	assert(definition.legacyId == 18 && definition.revision == 9);
+	REQUIRE((definition.legacyId == 18 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("tide") == 0 && request.option("lagoons") == 3 &&
-		   request.option("central-island") == 1);
+	REQUIRE((request.option("tide") == 0 && request.option("lagoons") == 3 &&
+		   request.option("central-island") == 1));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -3110,12 +3111,12 @@ inline void tidalFlatsContracts()
 		if (!result)
 			std::fprintf(stderr, "Tidal flats %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
 						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Tidal flats %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -3156,31 +3157,31 @@ inline void tidalFlatsContracts()
 			++pinned;
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
-			assert(choice(result, "tidal-flats.tide") == tideNames[tide - 1]);
-			assert(measure(result, "tidal-flats.channels.vertices") > 0);
-			assert(measure(result, "tidal-flats.tor.stone") > 0);
-			assert(measure(result, "tidal-flats.tor.stone") == measure(result, "tidal-flats.tor.quarry-tiles"));
+			REQUIRE(choice(result, "tidal-flats.tide") == tideNames[tide - 1]);
+			REQUIRE(measure(result, "tidal-flats.channels.vertices") > 0);
+			REQUIRE(measure(result, "tidal-flats.tor.stone") > 0);
+			REQUIRE(measure(result, "tidal-flats.tor.stone") == measure(result, "tidal-flats.tor.quarry-tiles"));
 			// The faces never eat the tor: at least nine rock vertices on every shape (a 128 map with six
 			// colonies once left two).
-			assert(measure(result, "tidal-flats.tor.rock-vertices") >= 9);
+			REQUIRE(measure(result, "tidal-flats.tor.rock-vertices") >= 9);
 			int mud = 0;
 			for (int y = 0; y < g.map.getH(); ++y)
 				for (int x = 0; x < g.map.getW(); ++x)
 					mud += group(g, x, y) == TerrainGroup::Rough;
-			assert(mud > g.map.getW() * g.map.getH() / 4);
+			REQUIRE(mud > g.map.getW() * g.map.getH() / 4);
 		}
-	assert(pinned >= 20);
-	assert(!definition.validateRequest(make(7, 7, 12, 7)).empty());
+	REQUIRE(pinned >= 20);
+	REQUIRE(!definition.validateRequest(make(7, 7, 12, 7)).empty());
 	// Every tide comes up at random.
 	std::set<std::string> tides;
 	for (std::uint32_t seed = 1; seed <= 40 && tides.size() < 3; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(7, 7, 2, seed), true);
-		assert(result);
+		REQUIRE(result);
 		tides.insert(choice(result, "tidal-flats.tide"));
 	}
-	assert(tides.size() == 3);
+	REQUIRE(tides.size() == 3);
 	// Each tide pinned holds at 128, 256 and 512, and the lagoons get deep beds at 256 and 512.
 	for (int tide = 1; tide <= 3; ++tide)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
@@ -3190,7 +3191,7 @@ inline void tidalFlatsContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned tide");
 			if (dimension >= 8)
-				assert(measure(result, "tidal-flats.deep.vertices") > 0);
+				REQUIRE(measure(result, "tidal-flats.deep.vertices") > 0);
 		}
 	// The tide moves only the water on the flats: the same seed at neap, mean and spring has the same
 	// buildable ground and the same islands, and more water the higher the tide.
@@ -3209,12 +3210,12 @@ inline void tidalFlatsContracts()
 			{
 				const auto &rn = neap.map.terrainPropertiesAt(x, y), &rm = mean.map.terrainPropertiesAt(x, y),
 						   &rs = spring.map.terrainPropertiesAt(x, y);
-				assert(rn.buildable == rm.buildable && rm.buildable == rs.buildable);
+				REQUIRE((rn.buildable == rm.buildable && rm.buildable == rs.buildable));
 				water[0] += rn.swimmable;
 				water[1] += rm.swimmable;
 				water[2] += rs.swimmable;
 			}
-		assert(water[0] < water[1] && water[1] < water[2]);
+		REQUIRE((water[0] < water[1] && water[1] < water[2]));
 	}
 	// Damage the validator must notice: grass laid on the flats, deep water against a shore, and the
 	// tor's stone taken away.
@@ -3240,10 +3241,10 @@ inline void tidalFlatsContracts()
 					for (int dx = 0; dx <= 1; ++dx)
 						damaged.map.setVertexTerrain(x + dx, y + dy, GRASS);
 				const std::string fault = definition.validateWorld(damaged, check);
-				assert(fault.find("built on") != std::string::npos);
+				REQUIRE(fault.find("built on") != std::string::npos);
 				laid = true;
 			}
-		assert(laid);
+		REQUIRE(laid);
 		// Deep water on a beach's edge.
 		bool deepened = false;
 		for (int y = 1; y < 255 && !deepened; ++y)
@@ -3253,14 +3254,14 @@ inline void tidalFlatsContracts()
 					Game damaged(nullptr);
 					build(damaged, r, "deep copy");
 					damaged.map.setVertexTerrain(x, y, DEEP_WATER);
-					assert(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
+					REQUIRE(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
 					deepened = true;
 				}
-		assert(deepened);
+		REQUIRE(deepened);
 		for (int i = 0; i < 256 * 256; ++i)
 			if (g.map.isResource(i % 256, i / 256) && g.map.getResource(i % 256, i / 256).type == STONE)
 				g.map.replaceResource(i % 256, i / 256, Resource{});
-		assert(definition.validateWorld(g, check).find("quarry") != std::string::npos);
+		REQUIRE(definition.validateWorld(g, check).find("quarry") != std::string::npos);
 	}
 	// Without the central island there is no tor and the map still validates.
 	{
@@ -3268,7 +3269,7 @@ inline void tidalFlatsContracts()
 		r.options["central-island"] = 0;
 		Game g(nullptr);
 		const auto result = build(g, r, "no central island");
-		assert(measure(result, "tidal-flats.tor.quarry-tiles") == 0);
+		REQUIRE(measure(result, "tidal-flats.tor.quarry-tiles") == 0);
 	}
 	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings the
 	// map validates after a few thousand ticks of growth with nobody harvesting (every colony and
@@ -3304,7 +3305,7 @@ inline void tidalFlatsContracts()
 		std::fprintf(stderr, "Tidal flats growth: %s\n", growthError.c_str());
 	std::fprintf(stderr, "Tidal flats growth over 4096 ticks: wheat %d -> %d, wood %d -> %d, algae %d -> %d\n",
 				 wheatBefore, count(WHEAT), woodBefore, count(WOOD), algaeBefore, count(ALGA));
-	assert(growthError.empty() && count(WHEAT) > wheatBefore && count(ALGA) > algaeBefore);
+	REQUIRE((growthError.empty() && count(WHEAT) > wheatBefore && count(ALGA) > algaeBefore));
 	puts("PASS Tidal flats: envelope with pinned tides, random tides, tide moves only water, flats "
 		 "unbuildable, deep beds in shallows, tor quarries, damage refused, resource extremes, growth");
 }
@@ -3316,11 +3317,11 @@ inline void tidalFlatsContracts()
 inline void watershedContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("watershed"));
-	assert(definition.legacyId == 13 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 13 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("deep-water") == 1 && request.option("outcrops") == 1 && request.option("climate") == 0 &&
-		   request.option("dryness") == 5 && request.option("river-density") == 5);
+	REQUIRE((request.option("deep-water") == 1 && request.option("outcrops") == 1 && request.option("climate") == 0 &&
+		   request.option("dryness") == 5 && request.option("river-density") == 5));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -3337,12 +3338,12 @@ inline void watershedContracts()
 		if (!result)
 			std::fprintf(stderr, "Watershed %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Watershed %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -3381,9 +3382,9 @@ inline void watershedContracts()
 				if (group == TerrainGroup::DeepWater)
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
-							assert(water[size_t(t.at(x + dx, y + dy))]);
+							REQUIRE(water[size_t(t.at(x + dx, y + dy))]);
 				if (group == TerrainGroup::Barren)
-					assert(fromWater[size_t(t.at(x, y))] >= 22);
+					REQUIRE(fromWater[size_t(t.at(x, y))] >= 22);
 			}
 		// The finished terrain is a fixed point of layBeaches, as revision 3's stamp was: no vertex of
 		// the grass group touches plain water.
@@ -3392,7 +3393,7 @@ inline void watershedContracts()
 				if (terrainGroup(map.vertexTerrainAt(x, y)) == TerrainGroup::Grass)
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
-							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+							REQUIRE(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
 	};
 	// The envelope: every size and colony count the request check accepts, each with a climate and
 	// deep water pinned in turn. A seed the service refuses (revision 3 refused the same seeds: a ford
@@ -3422,11 +3423,11 @@ inline void watershedContracts()
 				continue; // revision 3 refuses this size and colony count on these seeds too
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
-			assert((measure(result, "watershed.deep.vertices") > 0) == (r.option("deep-water") == 1));
+			REQUIRE((measure(result, "watershed.deep.vertices") > 0) == (r.option("deep-water") == 1));
 			checkTerrain(g);
 		}
-	assert(pinned >= 20);
-	assert(!definition.validateRequest(make(7, 7, 17, 7)).empty());
+	REQUIRE(pinned >= 20);
+	REQUIRE(!definition.validateRequest(make(7, 7, 17, 7)).empty());
 	// Every climate comes up at random, and each pinned holds at 128, 256 and 512.
 	std::set<std::string> climates;
 	for (std::uint32_t seed = 1; seed <= 12; ++seed)
@@ -3436,7 +3437,7 @@ inline void watershedContracts()
 		if (result)
 			climates.insert(choice(result, "watershed.climate"));
 	}
-	assert(climates.size() == 3);
+	REQUIRE(climates.size() == 3);
 	const char *names[] = {"temperate", "steppe", "tropical"};
 	for (int climate = 1; climate <= 3; ++climate)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 6}})
@@ -3445,13 +3446,13 @@ inline void watershedContracts()
 			r.options["climate"] = climate;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
-			assert(choice(result, "watershed.climate") == names[climate - 1]);
+			REQUIRE(choice(result, "watershed.climate") == names[climate - 1]);
 			// Deep cores, levees and the delta's mud are on every map; pavement and rock wherever the
 			// uplands reach that far from water (they do at 256 and 512).
-			assert(measure(result, "watershed.deep.vertices") > 0 && measure(result, "watershed.levee.vertices") > 0);
+			REQUIRE((measure(result, "watershed.deep.vertices") > 0 && measure(result, "watershed.levee.vertices") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "watershed.pavement.vertices") > 0 && measure(result, "watershed.knots.placed") > 0 &&
-					   measure(result, "watershed.quarry.stone") > 0);
+				REQUIRE((measure(result, "watershed.pavement.vertices") > 0 && measure(result, "watershed.knots.placed") > 0 &&
+					   measure(result, "watershed.quarry.stone") > 0));
 			checkTerrain(g);
 		}
 	{
@@ -3470,11 +3471,11 @@ inline void watershedContracts()
 				for (const Game *other : {&b, &c})
 				{
 					const auto &p = a.map.terrainPropertiesAt(x, y), &q = other->map.terrainPropertiesAt(x, y);
-					assert(sameTerrainProperties(p, q));
-					assert(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
+					REQUIRE(sameTerrainProperties(p, q));
+					REQUIRE(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
 					differentLooks += a.map.vertexTerrainAt(x, y) != other->map.vertexTerrainAt(x, y);
 				}
-		assert(differentLooks > 2000);
+		REQUIRE(differentLooks > 2000);
 	}
 	{
 		// Deep water off: no deep vertex anywhere, and the same routes on foot: every tile walks alike.
@@ -3483,12 +3484,12 @@ inline void watershedContracts()
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep water");
 		const auto result = build(b, off, "no deep water");
-		assert(measure(result, "watershed.deep.vertices") == 0);
+		REQUIRE(measure(result, "watershed.deep.vertices") == 0);
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
-				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::DeepWater);
-				assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::DeepWater);
+				REQUIRE(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
 			}
 	}
 	{
@@ -3501,14 +3502,14 @@ inline void watershedContracts()
 		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
 		const auto withKnots = build(a, on, "outcrops"), without = build(b, off, "no outcrops"),
 				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
-		assert(measure(withKnots, "watershed.knots.placed") > 2 && measure(withKnots, "watershed.knots.faces") > 0);
-		assert(measure(withKnots, "watershed.rock.vertices") > 0);
-		assert(measure(without, "watershed.knots.placed") == 0 && measure(without, "watershed.rock.vertices") == 0);
+		REQUIRE((measure(withKnots, "watershed.knots.placed") > 2 && measure(withKnots, "watershed.knots.faces") > 0));
+		REQUIRE(measure(withKnots, "watershed.rock.vertices") > 0);
+		REQUIRE((measure(without, "watershed.knots.placed") == 0 && measure(without, "watershed.rock.vertices") == 0));
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
-				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
-		assert(measure(noStone, "watershed.knots.faces") == 0 && measure(noStone, "watershed.quarry.stone") == 0);
-		assert(measure(moreStone, "watershed.knots.faces") > measure(withKnots, "watershed.knots.faces"));
+				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
+		REQUIRE((measure(noStone, "watershed.knots.faces") == 0 && measure(noStone, "watershed.quarry.stone") == 0));
+		REQUIRE(measure(moreStone, "watershed.knots.faces") > measure(withKnots, "watershed.knots.faces"));
 		// Every colony can walk to a quarry face, and the telemetry says how far.
 		for (int team = 0; team < 4; ++team)
 		{
@@ -3516,7 +3517,7 @@ inline void watershedContracts()
 			for (const auto &record : withKnots.telemetry.records())
 				if (record.key == "watershed.quarry.nearest-walk" && record.subject == team)
 					found = std::get<std::int64_t>(record.value) > 0;
-			assert(found);
+			REQUIRE(found);
 		}
 		// Taking a quarry face's stone away is refused.
 		GenerationContext check(on);
@@ -3536,7 +3537,7 @@ inline void watershedContracts()
 				removed = true;
 			}
 		}
-		assert(removed && definition.validateWorld(a, check).find("quarry") != std::string::npos);
+		REQUIRE((removed && definition.validateWorld(a, check).find("quarry") != std::string::npos));
 		// A ring of rock drawn round a patch of open upland cuts it off, and is refused.
 		Game ringed(nullptr);
 		build(ringed, on, "outcrops again");
@@ -3558,7 +3559,7 @@ inline void watershedContracts()
 							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
 				drawn = true;
 			}
-		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		REQUIRE((drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos));
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -3592,7 +3593,7 @@ inline void watershedContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Watershed growth: %s\n", growthError.c_str());
-	assert(growthError.empty() && crops() > before);
+	REQUIRE((growthError.empty() && crops() > before));
 	puts("PASS Watershed: envelope with pinned climates and deep water, shallows round every deep core, "
 		 "beach fixed point, looks keep the rules, pavement beyond the water's reach, outcrops that never cut "
 		 "ground off, stocked quarries, resource extremes, growth");
@@ -3605,11 +3606,11 @@ inline void watershedContracts()
 inline void evergladesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("everglades"));
-	assert(definition.legacyId == 19 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 19 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("mudflats") == 50 && request.option("hammocks") == 3 && request.option("season") == 0 &&
-		   request.option("levee") == 70 && request.option("clearing-size") == 13);
+	REQUIRE((request.option("mudflats") == 50 && request.option("hammocks") == 3 && request.option("season") == 0 &&
+		   request.option("levee") == 70 && request.option("clearing-size") == 13));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -3626,12 +3627,12 @@ inline void evergladesContracts()
 		if (!result)
 			std::fprintf(stderr, "Everglades %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Everglades %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -3688,21 +3689,21 @@ inline void evergladesContracts()
 						for (int dx = -1; dx <= 1; ++dx)
 						{
 							const TerrainGroup nearby = terrainGroup(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)));
-							assert(nearby == TerrainGroup::Water || nearby == TerrainGroup::DeepWater ||
-								   nearby == TerrainGroup::Paths);
+							REQUIRE((nearby == TerrainGroup::Water || nearby == TerrainGroup::DeepWater ||
+								   nearby == TerrainGroup::Paths));
 						}
 				if (group == TerrainGroup::Paths)
 				{
-					assert(map.vertexTerrainAt(x, y) == BOARDWALK);
+					REQUIRE(map.vertexTerrainAt(x, y) == BOARDWALK);
 					++paths;
 				}
 				bool mud = false;
 				for (TerrainType corner : map.cellCorners(x, y))
 					mud = mud || terrainGroup(corner) == TerrainGroup::Rough;
 				if (mud)
-					assert(!map.isResource(x, y));
+					REQUIRE(!map.isResource(x, y));
 			}
-		assert(paths == boardwalks);
+		REQUIRE(paths == boardwalks);
 	};
 	// The envelope: every size and colony count the request check accepts, a season, a mud share and a
 	// hammock count pinned in turn.
@@ -3723,23 +3724,23 @@ inline void evergladesContracts()
 			++pinned;
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
-			assert(choice(result, "everglades.season") == seasons[r.option("season") - 1]);
+			REQUIRE(choice(result, "everglades.season") == seasons[r.option("season") - 1]);
 			checkTerrain(g, measure(result, "everglades.routes.boardwalk-vertices"));
-			assert(count(g, STONE) > 0);
-			assert((vertices(g, TerrainGroup::Rough) > 0) == (r.option("mudflats") > 0));
-			assert(measure(result, "everglades.hammocks.placed") <= measure(result, "everglades.hammocks.wanted"));
+			REQUIRE(count(g, STONE) > 0);
+			REQUIRE((vertices(g, TerrainGroup::Rough) > 0) == (r.option("mudflats") > 0));
+			REQUIRE(measure(result, "everglades.hammocks.placed") <= measure(result, "everglades.hammocks.wanted"));
 			if (r.option("hammocks") > 0 && dimensions.first + dimensions.second >= 16)
-				assert(measure(result, "everglades.hammocks.placed") > 0 && vertices(g, TerrainGroup::Obstacles) > 0);
+				REQUIRE((measure(result, "everglades.hammocks.placed") > 0 && vertices(g, TerrainGroup::Obstacles) > 0));
 			if (r.option("hammocks") == 0)
-				assert(vertices(g, TerrainGroup::Obstacles) == 0);
+				REQUIRE(vertices(g, TerrainGroup::Obstacles) == 0);
 			if (dimensions.first + dimensions.second >= 16)
-				assert(measure(result, "everglades.deep.vertices") > 0 && vertices(g, TerrainGroup::DeepWater) > 0);
+				REQUIRE((measure(result, "everglades.deep.vertices") > 0 && vertices(g, TerrainGroup::DeepWater) > 0));
 			for (int walk : measures(result, "everglades.stone.walk"))
-				assert(walk > 0);
+				REQUIRE(walk > 0);
 		}
-	assert(pinned >= 20);
+	REQUIRE(pinned >= 20);
 	// Revision 3 accepted every colony count up to 12 at 128 (the clearings shrink and the ring widens).
-	assert(definition.validateRequest(make(7, 7, 12, 7)).empty());
+	REQUIRE(definition.validateRequest(make(7, 7, 12, 7)).empty());
 	// Both seasons come up at random, and each pinned holds at 128, 256 and 512 with the variants at
 	// their extremes.
 	std::set<std::string> drawn;
@@ -3747,10 +3748,10 @@ inline void evergladesContracts()
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(7, 7, 2, seed), true);
-		assert(result);
+		REQUIRE(result);
 		drawn.insert(choice(result, "everglades.season"));
 	}
-	assert(drawn.size() == 2);
+	REQUIRE(drawn.size() == 2);
 	for (int season = 1; season <= 2; ++season)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 6}, std::pair{9, 8}})
 		{
@@ -3776,13 +3777,13 @@ inline void evergladesContracts()
 			for (int x = 0; x < 256; ++x)
 			{
 				const auto &rw = wet.map.terrainPropertiesAt(x, y), &rd = dry.map.terrainPropertiesAt(x, y);
-				assert(rw.walkable == rd.walkable && rw.swimmable == rd.swimmable && rw.buildable == rd.buildable &&
+				REQUIRE((rw.walkable == rd.walkable && rw.swimmable == rd.swimmable && rw.buildable == rd.buildable &&
 					   rw.resourcesGrow == rd.resourcesGrow && rw.groundSpeedQ8 == rd.groundSpeedQ8 &&
-					   rw.inhibitionQ8 == rd.inhibitionQ8 && rw.fertilityQ8 == rd.fertilityQ8);
-				assert(wet.map.isResource(x, y) == dry.map.isResource(x, y));
+					   rw.inhibitionQ8 == rd.inhibitionQ8 && rw.fertilityQ8 == rd.fertilityQ8));
+				REQUIRE(wet.map.isResource(x, y) == dry.map.isResource(x, y));
 				differentLooks += wet.map.vertexTerrainAt(x, y) != dry.map.vertexTerrainAt(x, y);
 			}
-		assert(differentLooks > 1000);
+		REQUIRE(differentLooks > 1000);
 	}
 	// Hammocks cut nothing off: the same seed with none and with the most has the same pools, and every
 	// tile walkable in both that colony 0 could reach over the ground without hammocks it still reaches
@@ -3794,7 +3795,7 @@ inline void evergladesContracts()
 		b.options["hammocks"] = 8;
 		build(none, a, "no hammocks");
 		const auto result = build(most, b, "most hammocks");
-		assert(measure(result, "everglades.hammocks.placed") >= 20);
+		REQUIRE(measure(result, "everglades.hammocks.placed") >= 20);
 		const Torus t(none.map);
 		std::vector<unsigned char> openNone(256 * 256), openMost(256 * 256), swarm(256 * 256, 0);
 		for (int i = 0; i < 256 * 256; ++i)
@@ -3812,7 +3813,7 @@ inline void evergladesContracts()
 			lost += reachNone[i] >= 0 && openMost[i] && reachMost[i] < 0;
 			blocked += openNone[i] && !openMost[i];
 		}
-		assert(lost == 0 && blocked > 100);
+		REQUIRE((lost == 0 && blocked > 100));
 	}
 	// Damage the validator must notice: deep water against a bank, and a hammock opened.
 	{
@@ -3829,15 +3830,15 @@ inline void evergladesContracts()
 					Game damaged(nullptr);
 					build(damaged, r, "deep copy");
 					damaged.map.setVertexTerrain(x, y, DEEP_WATER);
-					assert(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
+					REQUIRE(definition.validateWorld(damaged, check).find("Deep water") != std::string::npos);
 					deepened = true;
 				}
-		assert(deepened);
+		REQUIRE(deepened);
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 				if (terrainGroup(g.map.vertexTerrainAt(x, y)) == TerrainGroup::Obstacles)
 					g.map.setVertexTerrain(x, y, GRASS);
-		assert(definition.validateWorld(g, check).find("hammock") != std::string::npos);
+		REQUIRE(definition.validateWorld(g, check).find("hammock") != std::string::npos);
 		// A look changed inside its rule group (plain grass to lush) plays alike but is not the design.
 		Game repainted(nullptr);
 		build(repainted, r, "repainted");
@@ -3848,7 +3849,7 @@ inline void evergladesContracts()
 				repainted.map.setVertexTerrain(i % 256, i / 256, LUSH_GRASS);
 				changed = true;
 			}
-		assert(changed && definition.validateWorld(repainted, check).find("design") != std::string::npos);
+		REQUIRE((changed && definition.validateWorld(repainted, check).find("design") != std::string::npos));
 	}
 	// Boardwalk fords: a drowned map of big, close sloughs boxes colonies in, and openRoutes fords them
 	// with boardwalk (Paths: walkable and fast) rather than sand.
@@ -3865,11 +3866,11 @@ inline void evergladesContracts()
 			if (!result)
 				continue;
 			GenerationContext check(r);
-			assert(definition.validateWorld(g, check).empty());
+			REQUIRE(definition.validateWorld(g, check).empty());
 			fords = measure(result, "everglades.routes.boardwalk-vertices");
 			checkTerrain(g, fords);
 		}
-		assert(fords > 0);
+		REQUIRE(fords > 0);
 	}
 	// Resource extremes: no ambient resources at all still plays and validates; at the ceilings, after a
 	// few thousand ticks of growth with nobody harvesting, the crops and algae grew, no deposit stands on
@@ -3901,8 +3902,8 @@ inline void evergladesContracts()
 	std::fprintf(stderr, "Everglades growth over 4096 ticks: wheat %d -> %d, wood %d -> %d, algae %d -> %d\n",
 				 wheatBefore, count(abundant, WHEAT), woodBefore, count(abundant, WOOD), algaeBefore,
 				 count(abundant, ALGA));
-	assert(growthError.empty() || growthError.find("cannot walk") != std::string::npos);
-	assert(count(abundant, WHEAT) > wheatBefore && count(abundant, ALGA) > algaeBefore);
+	REQUIRE((growthError.empty() || growthError.find("cannot walk") != std::string::npos));
+	REQUIRE((count(abundant, WHEAT) > wheatBefore && count(abundant, ALGA) > algaeBefore));
 	checkTerrain(abundant, measure(abundantResult, "everglades.routes.boardwalk-vertices"));
 	puts("PASS Everglades: envelope with pinned seasons, mud and hammocks, random seasons, season moves only "
 		 "looks, deep beds in shallows, boardwalk fords, hammocks cut nothing off, damage refused, resource "
@@ -3912,11 +3913,11 @@ inline void evergladesContracts()
 inline void ringWorldContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("ring-world"));
-	assert(definition.legacyId == 16 && definition.revision == 4);
+	REQUIRE((definition.legacyId == 16 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&
-		   request.option("climate") == 0 && request.option("belt-width") == 45);
+	REQUIRE((request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&
+		   request.option("climate") == 0 && request.option("belt-width") == 45));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -3933,12 +3934,12 @@ inline void ringWorldContracts()
 		if (!result)
 			std::fprintf(stderr, "Ring world %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Ring world %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key, int subject = -1)
@@ -3983,7 +3984,7 @@ inline void ringWorldContracts()
 				if (group == TerrainGroup::DeepWater)
 				{
 					++deep;
-					assert(fromLand[size_t(t.at(x, y))] >= 36); // six tiles from land in a straight line
+					REQUIRE(fromLand[size_t(t.at(x, y))] >= 36); // six tiles from land in a straight line
 				}
 				ridges += group == TerrainGroup::Ridges;
 				if (group == TerrainGroup::Paths)
@@ -3995,21 +3996,21 @@ inline void ringWorldContracts()
 				for (int dy = 0; dy <= 1; ++dy)
 					for (int dx = 0; dx <= 1; ++dx)
 						roadCorner = roadCorner || groupAt(map, x + dx, y + dy) == TerrainGroup::Paths;
-				assert(!(roadCorner && map.isResource(x, y)));
+				REQUIRE(!(roadCorner && map.isResource(x, y)));
 			}
-		assert((deep > 0) == (r.option("deep-water") == 1) || (r.option("deep-water") == 1 && w == 128 && h == 128));
-		assert((measure(result, "ring-world.deep.vertices") == deep));
+		REQUIRE(((deep > 0) == (r.option("deep-water") == 1) || (r.option("deep-water") == 1 && w == 128 && h == 128)));
+		REQUIRE((measure(result, "ring-world.deep.vertices") == deep));
 		if (r.option("ring-road") == 1 && measure(result, "ring-world.road.tiles") > 0)
-			assert(std::count(roadAt.begin(), roadAt.end(), 1) == int(roadAt.size()));
+			REQUIRE(std::count(roadAt.begin(), roadAt.end(), 1) == int(roadAt.size()));
 		if (r.option("ring-road") == 0)
-			assert(paths == 0);
+			REQUIRE(paths == 0);
 		if (r.option("rock-spine") == 0)
-			assert(ridges == 0 && measure(result, "ring-world.quarry.stone") == 0);
+			REQUIRE((ridges == 0 && measure(result, "ring-world.quarry.stone") == 0));
 		else if (measure(result, "ring-world.tors.placed") > 0)
 		{
-			assert(measure(result, "ring-world.tors.placed") == r.nbTeams);
-			assert(measure(result, "ring-world.quarry.stone") == 5 * r.nbTeams);
-			assert(ridges > 0);
+			REQUIRE(measure(result, "ring-world.tors.placed") == r.nbTeams);
+			REQUIRE(measure(result, "ring-world.quarry.stone") == 5 * r.nbTeams);
+			REQUIRE(ridges > 0);
 		}
 	};
 	// The envelope: every size and colony count the request check accepts, with the climate, deep
@@ -4052,8 +4053,8 @@ inline void ringWorldContracts()
 				 torsPlaced, spines, roads, roadsWanted);
 	// Every envelope map with the spine on has its tors, and every one with the road on its road
 	// (29 maps: 24 with the spine, 25 with the road, all placed).
-	assert(pinned >= 20 && spines > 0 && torsPlaced == spines && roadsWanted > 0 && roads == roadsWanted);
-	assert(!definition.validateRequest(make(7, 7, 6, 7)).empty());
+	REQUIRE((pinned >= 20 && spines > 0 && torsPlaced == spines && roadsWanted > 0 && roads == roadsWanted));
+	REQUIRE(!definition.validateRequest(make(7, 7, 6, 7)).empty());
 	// Every climate comes up at random, and each pinned holds at 128, 256 and 512 with every feature.
 	std::set<std::string> climates;
 	for (std::uint32_t seed = 1; seed <= 12; ++seed)
@@ -4063,7 +4064,7 @@ inline void ringWorldContracts()
 		if (result)
 			climates.insert(choice(result, "ring-world.climate"));
 	}
-	assert(climates.size() == 3);
+	REQUIRE(climates.size() == 3);
 	const char *names[] = {"temperate", "steppe", "tropical"};
 	for (int climate = 1; climate <= 3; ++climate)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
@@ -4072,12 +4073,12 @@ inline void ringWorldContracts()
 			r.options["climate"] = climate;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
-			assert(choice(result, "ring-world.climate") == names[climate - 1]);
+			REQUIRE(choice(result, "ring-world.climate") == names[climate - 1]);
 			checkWorld(g, result, r);
-			assert(measure(result, "ring-world.road.tiles") > 0 && measure(result, "ring-world.loam.vertices") > 0);
+			REQUIRE((measure(result, "ring-world.road.tiles") > 0 && measure(result, "ring-world.loam.vertices") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "ring-world.deep.vertices") > 0 && measure(result, "ring-world.spine.tiles") > 0 &&
-					   measure(result, "ring-world.tors.placed") == teams);
+				REQUIRE((measure(result, "ring-world.deep.vertices") > 0 && measure(result, "ring-world.spine.tiles") > 0 &&
+					   measure(result, "ring-world.tors.placed") == teams));
 		}
 	{
 		// The climate is looks only: the same seed plays identically in all three.
@@ -4094,11 +4095,11 @@ inline void ringWorldContracts()
 			for (int x = 0; x < 256; ++x)
 				for (const Game *other : {&b, &c})
 				{
-					assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
-					assert(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
+					REQUIRE(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
+					REQUIRE(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
 					differentLooks += a.map.vertexTerrainAt(x, y) != other->map.vertexTerrainAt(x, y);
 				}
-		assert(differentLooks > 2000);
+		REQUIRE(differentLooks > 2000);
 	}
 	{
 		// Deep ocean off: no deep vertex, and every tile walks alike.
@@ -4107,12 +4108,12 @@ inline void ringWorldContracts()
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep ocean");
 		const auto result = build(b, off, "no deep ocean");
-		assert(measure(result, "ring-world.deep.vertices") == 0);
+		REQUIRE(measure(result, "ring-world.deep.vertices") == 0);
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
-				assert(groupAt(b.map, x, y) != TerrainGroup::DeepWater);
-				assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+				REQUIRE(groupAt(b.map, x, y) != TerrainGroup::DeepWater);
+				REQUIRE(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
 			}
 	}
 	{
@@ -4125,19 +4126,19 @@ inline void ringWorldContracts()
 			off.options["rock-spine"] = 0;
 			Game a(nullptr), b(nullptr);
 			const auto with = build(a, on, "spine"), without = build(b, off, "no spine");
-			assert(measure(with, "ring-world.spine.segments") >= 3 && measure(with, "ring-world.tors.placed") == 4);
+			REQUIRE((measure(with, "ring-world.spine.segments") >= 3 && measure(with, "ring-world.tors.placed") == 4));
 			int least = INT_MAX, most = 0;
 			for (int team = 0; team < 4; ++team)
 			{
 				const int walk = measure(with, "ring-world.quarry.nearest-walk", team);
-				assert(walk > 0);
+				REQUIRE(walk > 0);
 				least = std::min(least, walk);
 				most = std::max(most, walk);
-				assert(a.teams[team]->startPosX == b.teams[team]->startPosX &&
-					   a.teams[team]->startPosY == b.teams[team]->startPosY);
+				REQUIRE((a.teams[team]->startPosX == b.teams[team]->startPosX &&
+					   a.teams[team]->startPosY == b.teams[team]->startPosY));
 			}
-			assert(most - least <= 6);
-			assert(measure(without, "ring-world.quarry.stone") == 0 && measure(without, "ring-world.spine.tiles") == 0);
+			REQUIRE(most - least <= 6);
+			REQUIRE((measure(without, "ring-world.quarry.stone") == 0 && measure(without, "ring-world.spine.tiles") == 0));
 		}
 		// Damage is refused: a quarry face robbed of its stone, rock drawn round open ground, a road vertex
 		// grassed over.
@@ -4161,7 +4162,7 @@ inline void ringWorldContracts()
 				removed = true;
 			}
 		}
-		assert(removed && definition.validateWorld(robbed, check).find("quarry") != std::string::npos);
+		REQUIRE((removed && definition.validateWorld(robbed, check).find("quarry") != std::string::npos));
 		build(ringed, on, "spine again");
 		bool drawn = false;
 		for (int cy = 8; cy < 248 && !drawn; cy += 4)
@@ -4182,7 +4183,7 @@ inline void ringWorldContracts()
 							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
 				drawn = true;
 			}
-		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		REQUIRE((drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos));
 		build(broken, on, "road again");
 		bool grassed = false;
 		for (int i = 0; i < 256 * 256 && !grassed; ++i)
@@ -4191,7 +4192,7 @@ inline void ringWorldContracts()
 				broken.map.setVertexTerrain(i % 256, i / 256, GRASS);
 				grassed = true;
 			}
-		assert(grassed && definition.validateWorld(broken, check).find("road") != std::string::npos);
+		REQUIRE((grassed && definition.validateWorld(broken, check).find("road") != std::string::npos));
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -4229,7 +4230,7 @@ inline void ringWorldContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Ring world growth: %s\n", growthError.c_str());
-	assert(growthError.empty() && crops() > before);
+	REQUIRE((growthError.empty() && crops() > before));
 	puts("PASS Ring world: envelope with pinned climates, deep ocean, spine and road; shallows round every deep "
 		 "core; looks keep the rules; a quarry tor per colony at an equal walk; rock that never cuts ground off; "
 		 "a road right round the world that holds no crop; damage refused; resource extremes; growth");
@@ -4244,11 +4245,11 @@ inline void shatteredCoastContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("shattered-coast"));
-	assert(definition.legacyId == 7 && definition.revision == 9);
+	REQUIRE((definition.legacyId == 7 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("deep-water") == 1 && request.option("mudflats") == 1 && request.option("outcrops") == 1 &&
-		   request.option("climate") == 0 && request.option("smoothing") == 3);
+	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 1 && request.option("outcrops") == 1 &&
+		   request.option("climate") == 0 && request.option("smoothing") == 3));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -4265,12 +4266,12 @@ inline void shatteredCoastContracts()
 		if (!result)
 			std::fprintf(stderr, "Shattered Coast %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec,
 						 1 << r.hDec, r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Shattered Coast %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -4312,13 +4313,13 @@ inline void shatteredCoastContracts()
 				const int i = t.at(x, y);
 				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
 				if (group == TerrainGroup::DeepWater)
-					assert(fromLand[size_t(i)] >= 3);
+					REQUIRE(fromLand[size_t(i)] >= 3);
 				if (group == TerrainGroup::Rough)
-					assert(fromWorkers[size_t(i)] > 12);
+					REQUIRE(fromWorkers[size_t(i)] > 12);
 				if (group == TerrainGroup::Grass)
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
-							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+							REQUIRE(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
 			}
 	};
 	// The envelope: every size and colony count, each with a climate and the three layers pinned in
@@ -4352,14 +4353,14 @@ inline void shatteredCoastContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
 			if (r.option("deep-water") == 0)
-				assert(measure(result, "shattered-coast.deep.vertices") == 0);
+				REQUIRE(measure(result, "shattered-coast.deep.vertices") == 0);
 			if (r.option("mudflats") == 0)
-				assert(measure(result, "shattered-coast.mudflat.vertices") == 0);
+				REQUIRE(measure(result, "shattered-coast.mudflat.vertices") == 0);
 			if (r.option("outcrops") == 0)
-				assert(measure(result, "shattered-coast.rock.vertices") == 0);
+				REQUIRE(measure(result, "shattered-coast.rock.vertices") == 0);
 			checkTerrain(g, teams);
 		}
-	assert(pinned >= 20);
+	REQUIRE(pinned >= 20);
 	// Every climate comes up at random, and each pinned holds at 128, 256 and 512.
 	std::set<std::string> climates;
 	for (std::uint32_t seed = 1; seed <= 12; ++seed)
@@ -4369,7 +4370,7 @@ inline void shatteredCoastContracts()
 		if (result)
 			climates.insert(choice(result, "shattered-coast.climate"));
 	}
-	assert(climates.size() == 3);
+	REQUIRE(climates.size() == 3);
 	const char *names[] = {"temperate", "steppe", "tropical"};
 	int stacks = 0;
 	for (int climate = 1; climate <= 3; ++climate)
@@ -4379,18 +4380,18 @@ inline void shatteredCoastContracts()
 			r.options["climate"] = climate;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
-			assert(choice(result, "shattered-coast.climate") == names[climate - 1]);
-			assert(measure(result, "shattered-coast.deep.vertices") > 0 &&
+			REQUIRE(choice(result, "shattered-coast.climate") == names[climate - 1]);
+			REQUIRE((measure(result, "shattered-coast.deep.vertices") > 0 &&
 				   measure(result, "shattered-coast.mudflat.vertices") > 0 &&
-				   measure(result, "shattered-coast.looks.lush-vertices") > 0);
+				   measure(result, "shattered-coast.looks.lush-vertices") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "shattered-coast.knots.placed") > 0 &&
-					   measure(result, "shattered-coast.quarry.stone") > 0);
+				REQUIRE((measure(result, "shattered-coast.knots.placed") > 0 &&
+					   measure(result, "shattered-coast.quarry.stone") > 0));
 			stacks += measure(result, "shattered-coast.stacks.placed");
 			checkTerrain(g, teams);
 		}
 	// Sea stacks need the smallest islands, which not every map has; across these maps some do.
-	assert(stacks > 0);
+	REQUIRE(stacks > 0);
 	{
 		// The climate is looks only: the same seed plays identically in all three.
 		Game a(nullptr), b(nullptr), c(nullptr);
@@ -4406,11 +4407,11 @@ inline void shatteredCoastContracts()
 			for (int x = 0; x < 256; ++x)
 				for (const Game *other : {&b, &c})
 				{
-					assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
-					assert(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
+					REQUIRE(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), other->map.terrainPropertiesAt(x, y)));
+					REQUIRE(a.map.getResource(x, y).type == other->map.getResource(x, y).type);
 					differentLooks += a.map.vertexTerrainAt(x, y) != other->map.vertexTerrainAt(x, y);
 				}
-		assert(differentLooks > 2000);
+		REQUIRE(differentLooks > 2000);
 	}
 	{
 		// The pass never moves a deposit: with every layer off the same seed holds the same deposits
@@ -4422,23 +4423,23 @@ inline void shatteredCoastContracts()
 		Game a(nullptr), b(nullptr);
 		const auto withPass = build(a, on, "every layer");
 		const auto without = build(b, off, "no layers");
-		assert(measure(without, "shattered-coast.deep.vertices") == 0 &&
+		REQUIRE((measure(without, "shattered-coast.deep.vertices") == 0 &&
 			   measure(without, "shattered-coast.mudflat.vertices") == 0 &&
-			   measure(without, "shattered-coast.rock.vertices") == 0);
+			   measure(without, "shattered-coast.rock.vertices") == 0));
 		int added = 0;
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
 				const auto p = a.map.getResource(x, y), q = b.map.getResource(x, y);
 				if (q.type != NO_RES_TYPE)
-					assert(p.type == q.type);
+					REQUIRE(p.type == q.type);
 				else if (p.type != NO_RES_TYPE)
 				{
-					assert(p.type == STONE);
+					REQUIRE(p.type == STONE);
 					++added;
 				}
 				const TerrainGroup group = terrainGroup(b.map.vertexTerrainAt(x, y));
-				assert(group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass);
+				REQUIRE((group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass));
 				// Deep water and mud change speeds, never where one can walk or swim.
 				if (terrainGroup(a.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges &&
 					!a.map.isResource(x, y))
@@ -4450,11 +4451,11 @@ inline void shatteredCoastContracts()
 										 terrainGroup(a.map.vertexTerrainAt((x + dx) & 255, (y + dy) & 255)) ==
 											 TerrainGroup::Ridges;
 					if (!rockCorner)
-						assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+						REQUIRE(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
 				}
 			}
-		assert(added == measure(withPass, "shattered-coast.quarry.stone"));
-		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
+		REQUIRE(added == measure(withPass, "shattered-coast.quarry.stone"));
+		REQUIRE(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
 	}
 	{
 		// The mudflats draw their noise from a stream of their own: turning them off changes only the
@@ -4470,11 +4471,11 @@ inline void shatteredCoastContracts()
 			for (int x = 0; x < 256; ++x)
 				if (a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y))
 				{
-					assert(terrainGroup(a.map.vertexTerrainAt(x, y)) == TerrainGroup::Rough &&
-						   terrainGroup(b.map.vertexTerrainAt(x, y)) == TerrainGroup::Sand);
+					REQUIRE((terrainGroup(a.map.vertexTerrainAt(x, y)) == TerrainGroup::Rough &&
+						   terrainGroup(b.map.vertexTerrainAt(x, y)) == TerrainGroup::Sand));
 					++changed;
 				}
-		assert(changed == measure(withMud, "shattered-coast.mudflat.vertices") && changed > 0);
+		REQUIRE((changed == measure(withMud, "shattered-coast.mudflat.vertices") && changed > 0));
 	}
 	{
 		// Outcrops: knots, stacks and stocked faces with them, no ridges vertex without; faces follow
@@ -4486,15 +4487,15 @@ inline void shatteredCoastContracts()
 		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
 		const auto withRock = build(a, on, "outcrops"), without = build(b, off, "no outcrops"),
 				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
-		assert(measure(withRock, "shattered-coast.knots.placed") > 2 && measure(withRock, "shattered-coast.knots.faces") > 0);
-		assert(measure(withRock, "shattered-coast.stacks.placed") > 0);
-		assert(measure(withRock, "shattered-coast.quarry.stone") == measure(withRock, "shattered-coast.quarry.tiles"));
-		assert(measure(without, "shattered-coast.knots.placed") == 0 && measure(without, "shattered-coast.rock.vertices") == 0);
+		REQUIRE((measure(withRock, "shattered-coast.knots.placed") > 2 && measure(withRock, "shattered-coast.knots.faces") > 0));
+		REQUIRE(measure(withRock, "shattered-coast.stacks.placed") > 0);
+		REQUIRE(measure(withRock, "shattered-coast.quarry.stone") == measure(withRock, "shattered-coast.quarry.tiles"));
+		REQUIRE((measure(without, "shattered-coast.knots.placed") == 0 && measure(without, "shattered-coast.rock.vertices") == 0));
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
-				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
-		assert(measure(noStone, "shattered-coast.knots.faces") == 0 && measure(noStone, "shattered-coast.quarry.stone") == 0);
-		assert(measure(moreStone, "shattered-coast.knots.faces") >= measure(withRock, "shattered-coast.knots.faces"));
+				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
+		REQUIRE((measure(noStone, "shattered-coast.knots.faces") == 0 && measure(noStone, "shattered-coast.quarry.stone") == 0));
+		REQUIRE(measure(moreStone, "shattered-coast.knots.faces") >= measure(withRock, "shattered-coast.knots.faces"));
 		// A ring of rock drawn round a patch of open grass cuts it off, and is refused; so is rock beside
 		// a colony.
 		GenerationContext check(on);
@@ -4522,12 +4523,12 @@ inline void shatteredCoastContracts()
 							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
 				drawn = true;
 			}
-		assert(drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+		REQUIRE((drawn && definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos));
 		Game crowded(nullptr);
 		build(crowded, on, "outcrops once more");
 		const int home = unitTilesByTeam(crowded.map, 4)[1].front();
 		crowded.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, OUTCROP);
-		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
+		REQUIRE(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -4561,7 +4562,7 @@ inline void shatteredCoastContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Shattered Coast growth: %s\n", growthError.c_str());
-	assert(growthError.empty() && crops() > before);
+	REQUIRE((growthError.empty() && crops() > before));
 	puts("PASS Shattered Coast: envelope with pinned climates and layers, shallows round every deep core, "
 		 "beach fixed point, mud off the homes, looks keep the rules, the pass moves no deposit, rock that never "
 		 "cuts ground off or crowds a colony, stocked quarries following stone, resource extremes, growth");
@@ -4576,11 +4577,11 @@ inline void shatteredCoastContracts()
 inline void riverContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
-	assert(definition.legacyId == 2 && definition.revision == 6);
+	REQUIRE((definition.legacyId == 2 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
-		   request.option("river-width") == 35);
+	REQUIRE((request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
+		   request.option("river-width") == 35));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -4611,12 +4612,12 @@ inline void riverContracts()
 		if (!result)
 			std::fprintf(stderr, "River %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "River %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		// The validator replans the very bluffs generate drew (both from the rebuilt height field), and
 		// every quarry face tile holds its stone.
 		const RiverBluffCount replanned = riverReplannedBluffs(g, r);
@@ -4625,9 +4626,9 @@ inline void riverContracts()
 			std::fprintf(stderr, "River %s: replanned %d bluffs and %d faces, generated %d and %d\n", what,
 						 replanned.placed, replanned.faces, measure(result, "river.bluffs.placed"),
 						 measure(result, "river.bluffs.faces"));
-		assert(replanned.placed == measure(result, "river.bluffs.placed") &&
-			   replanned.faces == measure(result, "river.bluffs.faces"));
-		assert(measure(result, "river.quarry.stone") == measure(result, "river.quarry.tiles"));
+		REQUIRE((replanned.placed == measure(result, "river.bluffs.placed") &&
+			   replanned.faces == measure(result, "river.bluffs.faces")));
+		REQUIRE(measure(result, "river.quarry.stone") == measure(result, "river.quarry.tiles"));
 		return result;
 	};
 	// The terrain promises on a finished map: the water is the height field's (the course is
@@ -4655,7 +4656,7 @@ inline void riverContracts()
 				for (int dx = -2; dx <= 7; ++dx)
 					swarm[size_t(t.at(g.teams[k]->startPosX + dx, g.teams[k]->startPosY + dy))] = 1;
 		for (size_t i = 0; i < wet.size(); ++i)
-			assert(swarm[i] || wet[i] == was[i]);
+			REQUIRE((swarm[i] || wet[i] == was[i]));
 		std::vector<unsigned char> land(size_t(w) * h, 0);
 		for (size_t i = 0; i < land.size(); ++i)
 			land[i] = !wet[i];
@@ -4664,14 +4665,14 @@ inline void riverContracts()
 		{
 			const TerrainGroup group = terrainGroup(TerrainType(finished[size_t(i)]));
 			if (group == TerrainGroup::DeepWater)
-				assert(fromLand[size_t(i)] >= 3);
+				REQUIRE(fromLand[size_t(i)] >= 3);
 			if (group == TerrainGroup::Barren)
-				assert(fromWet[size_t(i)] >= 22);
+				REQUIRE(fromWet[size_t(i)] >= 22);
 			if (group == TerrainGroup::Fertile || group == TerrainGroup::Ridges ||
 				(group == TerrainGroup::Rough && finished[size_t(i)] != MUDFLAT))
-				assert(fromWet[size_t(i)] >= 2);
+				REQUIRE(fromWet[size_t(i)] >= 2);
 		}
-		assert(partingBarrier(map) < 0);
+		REQUIRE(partingBarrier(map) < 0);
 	};
 	// The envelope: every size and colony count, banks pinned in turn. A seed the service refuses
 	// (revision 5 refused the same seeds: no balanced or separated starts, or no floor) is rolled
@@ -4700,13 +4701,13 @@ inline void riverContracts()
 				continue; // revision 5 refuses this size and colony count on these seeds too
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
-			assert(choice(result, "river.banks") == (r.option("banks") == 1 ? "temperate" : "desert"));
-			assert(measure(result, "river.deep.vertices") > 0 && measure(result, "river.levee.vertices") > 0);
+			REQUIRE(choice(result, "river.banks") == (r.option("banks") == 1 ? "temperate" : "desert"));
+			REQUIRE((measure(result, "river.deep.vertices") > 0 && measure(result, "river.levee.vertices") > 0));
 			// Every alga the deep water displaced found a shallow.
-			assert(measure(result, "river.algae.reseated") == measure(result, "river.displaced.algae"));
+			REQUIRE(measure(result, "river.algae.reseated") == measure(result, "river.displaced.algae"));
 			checkTerrain(g, r);
 		}
-	assert(pinned >= 16);
+	REQUIRE(pinned >= 16);
 	// Both banks come up at random, and each pinned holds at 128, 256 and 512.
 	std::set<std::string> banks;
 	for (std::uint32_t seed = 1; seed <= 8; ++seed)
@@ -4716,7 +4717,7 @@ inline void riverContracts()
 		if (result)
 			banks.insert(choice(result, "river.banks"));
 	}
-	assert(banks.size() == 2);
+	REQUIRE(banks.size() == 2);
 	for (int b = 1; b <= 2; ++b)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 8}})
 		{
@@ -4725,10 +4726,10 @@ inline void riverContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned banks");
 			if (b == 2 && dimension >= 8)
-				assert(measure(result, "river.hardpan.vertices") > 0 && measure(result, "river.pavement.vertices") > 0);
+				REQUIRE((measure(result, "river.hardpan.vertices") > 0 && measure(result, "river.pavement.vertices") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "river.bluffs.placed") > 0 && measure(result, "river.quarry.stone") > 0 &&
-					   measure(result, "river.levee.vertices") > 0);
+				REQUIRE((measure(result, "river.bluffs.placed") > 0 && measure(result, "river.quarry.stone") > 0 &&
+					   measure(result, "river.levee.vertices") > 0));
 			checkTerrain(g, r);
 		}
 	{
@@ -4742,7 +4743,7 @@ inline void riverContracts()
 		build(b, desert, "desert");
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
-				assert(a.map.terrainPropertiesAt(x, y).swimmable == b.map.terrainPropertiesAt(x, y).swimmable);
+				REQUIRE(a.map.terrainPropertiesAt(x, y).swimmable == b.map.terrainPropertiesAt(x, y).swimmable);
 	}
 	{
 		// Deep water off: no deep vertex anywhere, and every tile walks alike.
@@ -4751,12 +4752,12 @@ inline void riverContracts()
 		Game a(nullptr), b(nullptr);
 		build(a, on, "deep channel");
 		const auto result = build(b, off, "no deep channel");
-		assert(measure(result, "river.deep.vertices") == 0 && measure(result, "river.displaced.algae") == 0);
+		REQUIRE((measure(result, "river.deep.vertices") == 0 && measure(result, "river.displaced.algae") == 0));
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
-				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::DeepWater);
-				assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::DeepWater);
+				REQUIRE(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
 			}
 	}
 	{
@@ -4769,14 +4770,14 @@ inline void riverContracts()
 		Game a(nullptr), b(nullptr), c(nullptr), d(nullptr);
 		const auto withBluffs = build(a, on, "bluffs"), without = build(b, off, "no bluffs"),
 				   noStone = build(c, bare, "no stone"), moreStone = build(d, rich, "abundant stone");
-		assert(measure(withBluffs, "river.bluffs.placed") > 1 && measure(withBluffs, "river.bluffs.faces") > 0);
-		assert(measure(withBluffs, "river.rock.vertices") > 0);
-		assert(measure(without, "river.bluffs.placed") == 0 && measure(without, "river.rock.vertices") == 0);
+		REQUIRE((measure(withBluffs, "river.bluffs.placed") > 1 && measure(withBluffs, "river.bluffs.faces") > 0));
+		REQUIRE(measure(withBluffs, "river.rock.vertices") > 0);
+		REQUIRE((measure(without, "river.bluffs.placed") == 0 && measure(without, "river.rock.vertices") == 0));
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
-				assert(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
-		assert(measure(noStone, "river.bluffs.faces") == 0 && measure(noStone, "river.quarry.stone") == 0);
-		assert(measure(moreStone, "river.quarry.stone") > measure(withBluffs, "river.quarry.stone"));
+				REQUIRE(terrainGroup(b.map.vertexTerrainAt(x, y)) != TerrainGroup::Ridges);
+		REQUIRE((measure(noStone, "river.bluffs.faces") == 0 && measure(noStone, "river.quarry.stone") == 0));
+		REQUIRE(measure(moreStone, "river.quarry.stone") > measure(withBluffs, "river.quarry.stone"));
 		// Taking the quarry faces' stone away (every stone tile beside rock: the band's own stone may stand there too) is refused.
 		GenerationContext check(on);
 		int removed = 0;
@@ -4795,7 +4796,7 @@ inline void riverContracts()
 				++removed;
 			}
 		}
-		assert(removed > 0 && definition.validateWorld(a, check).find("quarry") != std::string::npos);
+		REQUIRE((removed > 0 && definition.validateWorld(a, check).find("quarry") != std::string::npos));
 		// A ring of rock drawn round a patch of open ground cuts it off, and is refused.
 		Game ringed(nullptr);
 		build(ringed, on, "bluffs again");
@@ -4824,7 +4825,7 @@ inline void riverContracts()
 				drawn = true;
 			}
 		const std::string ringError = definition.validateWorld(ringed, check);
-		assert(drawn && ringError.find("cuts ground off") != std::string::npos);
+		REQUIRE((drawn && ringError.find("cuts ground off") != std::string::npos));
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -4858,9 +4859,9 @@ inline void riverContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "River growth: %s\n", growthError.c_str());
-	assert(growthError.empty() || growthError.find("building origins") != std::string::npos);
+	REQUIRE((growthError.empty() || growthError.find("building origins") != std::string::npos));
 	std::fprintf(stderr, "River growth: crops %d -> %d, stone %d -> %d\n", cropsBefore, count(WHEAT) + count(WOOD), stoneBefore, count(STONE));
-	assert(count(WHEAT) + count(WOOD) > cropsBefore && count(STONE) >= stoneBefore && partingBarrier(abundant.map) < 0);
+	REQUIRE((count(WHEAT) + count(WOOD) > cropsBefore && count(STONE) >= stoneBefore && partingBarrier(abundant.map) < 0));
 	puts("PASS River: envelope with pinned banks, the river's water unchanged, shallows round every deep core, "
 		 "algae reseated, levees and rock off the beach, pavement beyond the water's reach, random banks, deep "
 		 "water and bluffs switching off, bluffs that never cut ground off, stocked quarries, damage refused, "
@@ -4870,11 +4871,11 @@ inline void riverContracts()
 inline void craterLakesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("crater-lakes"));
-	assert(definition.legacyId == 4 && definition.revision == 6);
+	REQUIRE((definition.legacyId == 4 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("crater-type") == 0 && request.option("deep-water") == 1 && request.option("crater-rims") == 1 &&
-		   request.option("lake-density") == 25 && request.option("lake-size") == 25);
+	REQUIRE((request.option("crater-type") == 0 && request.option("deep-water") == 1 && request.option("crater-rims") == 1 &&
+		   request.option("lake-density") == 25 && request.option("lake-size") == 25));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -4891,12 +4892,12 @@ inline void craterLakesContracts()
 		if (!result)
 			std::fprintf(stderr, "Crater lakes %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Crater lakes %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key)
@@ -4939,17 +4940,17 @@ inline void craterLakesContracts()
 				const int i = t.at(x, y);
 				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
 				if (group == TerrainGroup::DeepWater)
-					assert(fromLand[size_t(i)] >= 3);
+					REQUIRE(fromLand[size_t(i)] >= 3);
 				if (group == TerrainGroup::Fertile)
-					assert(fromWorkers[size_t(i)] >= 8 * 8);
+					REQUIRE(fromWorkers[size_t(i)] >= 8 * 8);
 				if (group == TerrainGroup::Rough)
-					assert(fromWorkers[size_t(i)] >= 8 * 8);
+					REQUIRE(fromWorkers[size_t(i)] >= 8 * 8);
 				if (group == TerrainGroup::Ridges)
 				{
-					assert(fromWorkers[size_t(i)] >= 20 * 20);
+					REQUIRE(fromWorkers[size_t(i)] >= 20 * 20);
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
-							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+							REQUIRE(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
 				}
 				if (map.isResource(x, y) && !map.terrainSupportsResourceAtByIndex(x, y, map.getResource(x, y).type))
 				{
@@ -4957,7 +4958,7 @@ inline void craterLakesContracts()
 								 int(map.getResource(x, y).type), x, y, int(map.vertexTerrainAt(x, y)),
 								 int(map.vertexTerrainAt(t.x(x + 1), y)), int(map.vertexTerrainAt(x, t.y(y + 1))),
 								 int(map.vertexTerrainAt(t.x(x + 1), t.y(y + 1))));
-					assert(false);
+					REQUIRE(false);
 				}
 			}
 	};
@@ -4988,12 +4989,12 @@ inline void craterLakesContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
 			if (r.option("deep-water") == 0)
-				assert(measure(result, "crater-lakes.deep.vertices") == 0);
+				REQUIRE(measure(result, "crater-lakes.deep.vertices") == 0);
 			if (r.option("crater-rims") == 0)
-				assert(measure(result, "crater-lakes.rock.vertices") == 0 && measure(result, "crater-lakes.quarry.stone") == 0);
+				REQUIRE((measure(result, "crater-lakes.rock.vertices") == 0 && measure(result, "crater-lakes.quarry.stone") == 0));
 			checkTerrain(g, teams);
 		}
-	assert(pinned >= 20);
+	REQUIRE(pinned >= 20);
 	// Both crater types come up at random, and each pinned holds at 128, 256 and 512 with deep cores,
 	// rims and stocked quarries.
 	std::set<std::string> types;
@@ -5004,7 +5005,7 @@ inline void craterLakesContracts()
 		if (result)
 			types.insert(choice(result, "crater-lakes.type"));
 	}
-	assert(types.size() == 2);
+	REQUIRE(types.size() == 2);
 	const char *names[] = {"maar", "kettle"};
 	for (int type = 1; type <= 2; ++type)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 6}})
@@ -5013,13 +5014,13 @@ inline void craterLakesContracts()
 			r.options["crater-type"] = type;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned type");
-			assert(choice(result, "crater-lakes.type") == names[type - 1]);
-			assert(measure(result, "crater-lakes.deep.vertices") > 0 && measure(result, "crater-lakes.rim.arcs") > 0 &&
-				   measure(result, "crater-lakes.rock.vertices") > 0 && measure(result, "crater-lakes.algae.moved") > 0);
+			REQUIRE(choice(result, "crater-lakes.type") == names[type - 1]);
+			REQUIRE((measure(result, "crater-lakes.deep.vertices") > 0 && measure(result, "crater-lakes.rim.arcs") > 0 &&
+				   measure(result, "crater-lakes.rock.vertices") > 0 && measure(result, "crater-lakes.algae.moved") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "crater-lakes.quarry.faces") > 0 &&
+				REQUIRE((measure(result, "crater-lakes.quarry.faces") > 0 &&
 					   measure(result, "crater-lakes.quarry.stone") == measure(result, "crater-lakes.quarry.tiles") &&
-					   measure(result, "crater-lakes.loam.vertices") > 0);
+					   measure(result, "crater-lakes.loam.vertices") > 0));
 			checkTerrain(g, teams);
 		}
 	{
@@ -5032,8 +5033,8 @@ inline void craterLakesContracts()
 		Game a(nullptr), b(nullptr);
 		const auto withPass = build(a, on, "every layer");
 		const auto without = build(b, off, "no layers");
-		assert(measure(without, "crater-lakes.deep.vertices") == 0 && measure(without, "crater-lakes.rock.vertices") == 0);
-		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
+		REQUIRE((measure(without, "crater-lakes.deep.vertices") == 0 && measure(without, "crater-lakes.rock.vertices") == 0));
+		REQUIRE(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
 		int algaeA = 0, algaeB = 0;
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
@@ -5041,7 +5042,7 @@ inline void craterLakesContracts()
 				const TerrainGroup ga = terrainGroup(a.map.vertexTerrainAt(x, y)),
 								   gb = terrainGroup(b.map.vertexTerrainAt(x, y));
 				const bool wetA = ga == TerrainGroup::Water || ga == TerrainGroup::DeepWater;
-				assert(wetA == (gb == TerrainGroup::Water));
+				REQUIRE(wetA == (gb == TerrainGroup::Water));
 				const auto p = a.map.getResource(x, y), q = b.map.getResource(x, y);
 				algaeA += p.type == ALGA;
 				algaeB += q.type == ALGA;
@@ -5054,10 +5055,10 @@ inline void craterLakesContracts()
 							rockCorner = rockCorner ||
 										 terrainGroup(a.map.vertexTerrainAt((x + dx) & 255, (y + dy) & 255)) ==
 											 TerrainGroup::Ridges;
-					assert(rockCorner || p.type == STONE);
+					REQUIRE((rockCorner || p.type == STONE));
 				}
 			}
-		assert(algaeA == algaeB - measure(withPass, "crater-lakes.algae.lost"));
+		REQUIRE(algaeA == algaeB - measure(withPass, "crater-lakes.algae.lost"));
 	}
 	{
 		// Rims: arcs and stocked faces with them, none without; faces follow the stone amount, none at
@@ -5068,9 +5069,9 @@ inline void craterLakesContracts()
 		Game a(nullptr), c(nullptr), d(nullptr);
 		const auto withRock = build(a, on, "rims"), noStone = build(c, bare, "no stone"),
 				   moreStone = build(d, rich, "abundant stone");
-		assert(measure(withRock, "crater-lakes.rim.arcs") > 4 && measure(withRock, "crater-lakes.quarry.faces") > 0);
-		assert(measure(noStone, "crater-lakes.quarry.faces") == 0 && measure(noStone, "crater-lakes.quarry.stone") == 0);
-		assert(measure(moreStone, "crater-lakes.quarry.faces") >= measure(withRock, "crater-lakes.quarry.faces"));
+		REQUIRE((measure(withRock, "crater-lakes.rim.arcs") > 4 && measure(withRock, "crater-lakes.quarry.faces") > 0));
+		REQUIRE((measure(noStone, "crater-lakes.quarry.faces") == 0 && measure(noStone, "crater-lakes.quarry.stone") == 0));
+		REQUIRE(measure(moreStone, "crater-lakes.quarry.faces") >= measure(withRock, "crater-lakes.quarry.faces"));
 		GenerationContext check(on);
 		bool drawn = false;
 		const auto workers = unitTilesByTeam(a.map, 4);
@@ -5093,19 +5094,19 @@ inline void craterLakesContracts()
 					for (int dx = -5; dx <= 5; ++dx)
 						if (std::max(std::abs(dx), std::abs(dy)) >= 4)
 							ringed.map.setVertexTerrain(cx + dx, cy + dy, RIDGE_ROCK);
-				assert(definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
+				REQUIRE(definition.validateWorld(ringed, check).find("cuts ground off") != std::string::npos);
 				drawn = true;
 			}
-		assert(drawn);
+		REQUIRE(drawn);
 		const int home = workers[1].front();
 		Game crowded(nullptr);
 		build(crowded, on, "rims once more");
 		crowded.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, OUTCROP);
-		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
+		REQUIRE(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
 		Game loamy(nullptr);
 		build(loamy, on, "rims a last time");
 		loamy.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, LOAM);
-		assert(definition.validateWorld(loamy, check).find("Fertile ground") != std::string::npos);
+		REQUIRE(definition.validateWorld(loamy, check).find("Fertile ground") != std::string::npos);
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -5139,7 +5140,7 @@ inline void craterLakesContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Crater lakes growth: %s\n", growthError.c_str());
-	assert(growthError.empty() && crops() > before);
+	REQUIRE((growthError.empty() && crops() > before));
 	puts("PASS Crater lakes: envelope with pinned types and layers, shallows round every deep core, fertile, rough "
 		 "and rock off the homes, legal deposits, the pass keeps lakes, starts and algae, rims that never cut ground "
 		 "off or crowd a colony, quarries following stone, resource extremes, growth");
@@ -5148,12 +5149,12 @@ inline void craterLakesContracts()
 inline void swampContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("swamp"));
-	assert(definition.legacyId == 1 && definition.revision == 6);
+	REQUIRE((definition.legacyId == 1 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 0 &&
+	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 0 &&
 		   request.option("hammocks") == 3 && request.option("causeways") == 1 && request.option("climate") == 0 &&
-		   request.option("smoothing") == 6);
+		   request.option("smoothing") == 6));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -5170,12 +5171,12 @@ inline void swampContracts()
 		if (!result)
 			std::fprintf(stderr, "Swamp %s (%d x %d, %d colonies, seed %u): %s\n", what, 1 << r.wDec, 1 << r.hDec,
 						 r.nbTeams, unsigned(r.seed), result.diagnostic().c_str());
-		assert(result);
+		REQUIRE(result);
 		GenerationContext check(r);
 		const std::string error = definition.validateWorld(g, check);
 		if (!error.empty())
 			std::fprintf(stderr, "Swamp %s validation: %s\n", what, error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 		return result;
 	};
 	const auto measure = [](const auto &result, const char *key, int subject = -1)
@@ -5219,21 +5220,21 @@ inline void swampContracts()
 				const int i = t.at(x, y);
 				const TerrainGroup group = terrainGroup(map.vertexTerrainAt(x, y));
 				if (group == TerrainGroup::DeepWater)
-					assert(fromLand[size_t(i)] >= 3);
+					REQUIRE(fromLand[size_t(i)] >= 3);
 				if (group == TerrainGroup::Rough)
-					assert(!near6[size_t(i)]);
+					REQUIRE(!near6[size_t(i)]);
 				if (group == TerrainGroup::Fertile)
-					assert(!near6[size_t(i)]);
+					REQUIRE(!near6[size_t(i)]);
 				if (group == TerrainGroup::Obstacles)
-					assert(!near12[size_t(i)]);
+					REQUIRE(!near12[size_t(i)]);
 				if (group == TerrainGroup::Grass)
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
-							assert(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
+							REQUIRE(map.vertexTerrainAt(t.x(x + dx), t.y(y + dy)) != WATER);
 			}
 		if (stone)
 			for (int team = 0; team < teams; ++team)
-				assert(measure(result, "swamp.stone.nearest-walk", team) > 0);
+				REQUIRE(measure(result, "swamp.stone.nearest-walk", team) > 0);
 	};
 	// The envelope: every size and colony count, each with a climate and the layers pinned in turn. A
 	// seed the service refuses (revision 5 refused the same seeds) is rolled again, as the lobby does.
@@ -5267,18 +5268,18 @@ inline void swampContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "envelope");
 			if (r.option("deep-water") == 0)
-				assert(measure(result, "swamp.deep.vertices") == 0);
+				REQUIRE(measure(result, "swamp.deep.vertices") == 0);
 			if (r.option("mudflats") == 0)
-				assert(measure(result, "swamp.mud.vertices") == 0);
+				REQUIRE(measure(result, "swamp.mud.vertices") == 0);
 			if (r.option("moss") == 0)
-				assert(measure(result, "swamp.moss.vertices") == 0);
+				REQUIRE(measure(result, "swamp.moss.vertices") == 0);
 			if (r.option("hammocks") == 0)
-				assert(measure(result, "swamp.hammocks.thicket-vertices") == 0);
+				REQUIRE(measure(result, "swamp.hammocks.thicket-vertices") == 0);
 			if (r.option("causeways") == 0)
-				assert(measure(result, "swamp.causeways.laid") == 0);
+				REQUIRE(measure(result, "swamp.causeways.laid") == 0);
 			checkTerrain(g, teams, result, true);
 		}
-	assert(pinned >= 20);
+	REQUIRE(pinned >= 20);
 	// Both climates come up at random, and each pinned holds at 128, 256 and 512 with every layer.
 	std::set<std::string> climates;
 	for (std::uint32_t seed = 1; seed <= 10; ++seed)
@@ -5288,7 +5289,7 @@ inline void swampContracts()
 		if (result)
 			climates.insert(choice(result, "swamp.climate"));
 	}
-	assert(climates.size() == 2);
+	REQUIRE(climates.size() == 2);
 	const char *names[] = {"temperate", "tropical"};
 	for (int climate = 1; climate <= 2; ++climate)
 		for (auto [dimension, teams] : {std::pair{7, 2}, std::pair{8, 4}, std::pair{9, 6}})
@@ -5298,11 +5299,11 @@ inline void swampContracts()
 			r.options["moss"] = 1;
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
-			assert(choice(result, "swamp.climate") == names[climate - 1]);
-			assert(measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0 &&
-				   measure(result, "swamp.looks.lush-vertices") > 0 && measure(result, "swamp.looks.dry-vertices") > 0);
+			REQUIRE(choice(result, "swamp.climate") == names[climate - 1]);
+			REQUIRE((measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0 &&
+				   measure(result, "swamp.looks.lush-vertices") > 0 && measure(result, "swamp.looks.dry-vertices") > 0));
 			if (dimension >= 8)
-				assert(measure(result, "swamp.moss.vertices") > 0 && measure(result, "swamp.hammocks.placed") > 0);
+				REQUIRE((measure(result, "swamp.moss.vertices") > 0 && measure(result, "swamp.hammocks.placed") > 0));
 			checkTerrain(g, teams, result, true);
 		}
 	{
@@ -5317,11 +5318,11 @@ inline void swampContracts()
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
-				assert(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), b.map.terrainPropertiesAt(x, y)));
-				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				REQUIRE(sameTerrainProperties(a.map.terrainPropertiesAt(x, y), b.map.terrainPropertiesAt(x, y)));
+				REQUIRE(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
 				differentLooks += a.map.vertexTerrainAt(x, y) != b.map.vertexTerrainAt(x, y);
 			}
-		assert(differentLooks > 2000);
+		REQUIRE(differentLooks > 2000);
 	}
 	{
 		// The pass never moves a deposit or a start: with every layer off the same seed holds the same
@@ -5337,15 +5338,15 @@ inline void swampContracts()
 		Game a(nullptr), b(nullptr);
 		build(a, on, "every layer");
 		const auto without = build(b, off, "no layers");
-		assert(measure(without, "swamp.deep.vertices") == 0 && measure(without, "swamp.mud.vertices") == 0 &&
+		REQUIRE((measure(without, "swamp.deep.vertices") == 0 && measure(without, "swamp.mud.vertices") == 0 &&
 			   measure(without, "swamp.moss.vertices") == 0 && measure(without, "swamp.hammocks.thicket-vertices") == 0 &&
-			   measure(without, "swamp.causeways.laid") == 0);
+			   measure(without, "swamp.causeways.laid") == 0));
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 			{
-				assert(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
+				REQUIRE(a.map.getResource(x, y).type == b.map.getResource(x, y).type);
 				const TerrainGroup group = terrainGroup(b.map.vertexTerrainAt(x, y));
-				assert(group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass);
+				REQUIRE((group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass));
 				bool changed = false;
 				for (int dy = 0; dy <= 1; ++dy)
 					for (int dx = 0; dx <= 1; ++dx)
@@ -5354,9 +5355,9 @@ inline void swampContracts()
 						changed = changed || g == TerrainGroup::Obstacles || g == TerrainGroup::Paths;
 					}
 				if (!changed)
-					assert(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
+					REQUIRE(a.map.terrainPropertiesAt(x, y).walkable == b.map.terrainPropertiesAt(x, y).walkable);
 			}
-		assert(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
+		REQUIRE(unitTilesByTeam(a.map, 4) == unitTilesByTeam(b.map, 4));
 	}
 	{
 		// Hammocks: more with a higher control, none at 0; a ring of thicket drawn round a patch of open
@@ -5368,9 +5369,9 @@ inline void swampContracts()
 		Game a(nullptr), b(nullptr), c(nullptr);
 		const auto some = build(a, on, "hammocks"), without = build(b, none, "no hammocks"),
 				   more = build(c, many, "many hammocks");
-		assert(measure(some, "swamp.hammocks.placed") > 0);
-		assert(measure(without, "swamp.hammocks.thicket-vertices") == 0);
-		assert(measure(more, "swamp.hammocks.placed") >= measure(some, "swamp.hammocks.placed"));
+		REQUIRE(measure(some, "swamp.hammocks.placed") > 0);
+		REQUIRE(measure(without, "swamp.hammocks.thicket-vertices") == 0);
+		REQUIRE(measure(more, "swamp.hammocks.placed") >= measure(some, "swamp.hammocks.placed"));
 		GenerationContext check(on);
 		const auto workers = unitTilesByTeam(a.map, 4);
 		Game ringed(nullptr);
@@ -5399,16 +5400,16 @@ inline void swampContracts()
 		const std::string ringError = definition.validateWorld(ringed, check);
 		if (ringError.find("cuts ground off") == std::string::npos)
 			std::fprintf(stderr, "Swamp ring of thicket (drawn %d): %s\n", int(drawn), ringError.c_str());
-		assert(drawn && ringError.find("cuts ground off") != std::string::npos);
+		REQUIRE((drawn && ringError.find("cuts ground off") != std::string::npos));
 		const int home = workers[1].front();
 		Game crowded(nullptr);
 		build(crowded, on, "hammocks once more");
 		crowded.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, THICKET);
-		assert(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
+		REQUIRE(definition.validateWorld(crowded, check).find("too near a colony") != std::string::npos);
 		Game muddy(nullptr);
 		build(muddy, on, "mud near home");
 		muddy.map.setVertexTerrain((home % 256 + 3) & 255, home / 256, MUD);
-		assert(definition.validateWorld(muddy, check).find("too near a colony") != std::string::npos);
+		REQUIRE(definition.validateWorld(muddy, check).find("too near a colony") != std::string::npos);
 		Game shore(nullptr);
 		build(shore, on, "deep on the shore");
 		bool placedDeep = false;
@@ -5420,7 +5421,7 @@ inline void swampContracts()
 					shore.map.setVertexTerrain(x, y, DEEP_WATER);
 					placedDeep = true;
 				}
-		assert(placedDeep && definition.validateWorld(shore, check).find("no shallows") != std::string::npos);
+		REQUIRE((placedDeep && definition.validateWorld(shore, check).find("no shallows") != std::string::npos));
 	}
 	{
 		// Causeways: rare, but some maps have them, each saves at least the walk it was planned to,
@@ -5436,10 +5437,10 @@ inline void swampContracts()
 			laid += measure(result, "swamp.causeways.laid");
 			for (int team = 0; team < 4; ++team)
 				if (measure(result, "swamp.causeways.planned-saving", team) >= 0)
-					assert(measure(result, "swamp.causeways.planned-saving", team) >= 30 &&
-						   measure(result, "swamp.causeways.mean-saving-hundredths", team) > 0);
+					REQUIRE((measure(result, "swamp.causeways.planned-saving", team) >= 30 &&
+						   measure(result, "swamp.causeways.mean-saving-hundredths", team) > 0));
 		}
-		assert(laid > 0);
+		REQUIRE(laid > 0);
 	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
@@ -5480,7 +5481,7 @@ inline void swampContracts()
 	const std::string growthError = definition.validateWorld(abundant, context);
 	if (!growthError.empty())
 		std::fprintf(stderr, "Swamp growth (abundant): %s\n", growthError.c_str());
-	assert((growthError.empty() || growthError == startingFloorFailure(abundant.map, 4)) && crops() > before);
+	REQUIRE(((growthError.empty() || growthError == startingFloorFailure(abundant.map, 4)) && crops() > before));
 	{
 		D usual = make(8, 8, 4, 37);
 		Game grown(nullptr);
@@ -5492,7 +5493,7 @@ inline void swampContracts()
 		const std::string error = definition.validateWorld(grown, usualContext);
 		if (!error.empty())
 			std::fprintf(stderr, "Swamp growth: %s\n", error.c_str());
-		assert(error.empty());
+		REQUIRE(error.empty());
 	}
 	puts("PASS Swamp: envelope with pinned climates and layers, shallows round every deep core, beach fixed "
 		 "point, mud, moss and thicket off the homes, stone in reach, looks keep the rules, the pass moves no "
@@ -5579,6 +5580,6 @@ inline void generatorContracts(const std::string &name)
 	for (const auto &entry : catalogContracts())
 		if (entry.name == name)
 			return entry.run();
-	assert(!"no contracts registered under this name");
+	FAIL("no contracts registered under this name");
 }
 } // namespace GeneratorContracts

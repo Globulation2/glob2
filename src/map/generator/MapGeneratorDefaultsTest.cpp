@@ -1338,6 +1338,9 @@ TEST_SUITE("MapGeneratorDefaults")
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-delta"));
+		// Fruit and stone amounts on the default map at 0%, 100% and 300%, to check that raising
+		// the amount raises what the orchard and quarries hold, not merely that some is left.
+		long long fruitAmount[3] = {}, stoneAmount[3] = {};
 		for (int variant = 0; variant < 4; ++variant)
 		{
 			D request;
@@ -1357,12 +1360,25 @@ TEST_SUITE("MapGeneratorDefaults")
 			REQUIRE_MESSAGE(bool(result), result.diagnostic());
 			const MapGeneration::Torus t(world.map);
 			int fruit = 0, stone = 0, wheat = 0;
+			long long fruitTotal = 0, stoneTotal = 0;
 			for (int i = 0; i < t.size(); ++i)
 			{
-				const int type = world.map.getResource(i).type;
+				const auto resource = world.map.getResource(i);
+				const int type = resource.type;
 				fruit += type >= CHERRY && type <= PRUNE;
 				stone += type == STONE;
 				wheat += type == WHEAT;
+				if (type >= CHERRY && type <= PRUNE)
+					fruitTotal += resource.amount;
+				if (type == STONE)
+					stoneTotal += resource.amount;
+			}
+			if (variant < 3)
+			{
+				// variant 0 is 100%, 1 is 0% and 2 is 300%: store them in increasing order.
+				const int slot = variant == 1 ? 0 : variant == 0 ? 1 : 2;
+				fruitAmount[slot] = fruitTotal;
+				stoneAmount[slot] = stoneTotal;
 			}
 			// The great island's orchard and the kopjes' quarries follow their amounts; starter
 			// wheat stays whatever the amount.
@@ -1380,6 +1396,16 @@ TEST_SUITE("MapGeneratorDefaults")
 			GenerationContext check(request);
 			REQUIRE(definition.validateWorld(world, check).empty());
 		}
+		CAPTURE(fruitAmount[0]);
+		CAPTURE(fruitAmount[1]);
+		CAPTURE(fruitAmount[2]);
+		CAPTURE(stoneAmount[0]);
+		CAPTURE(stoneAmount[1]);
+		CAPTURE(stoneAmount[2]);
+		CHECK(fruitAmount[0] < fruitAmount[1]);
+		CHECK(fruitAmount[1] < fruitAmount[2]);
+		CHECK(stoneAmount[0] < stoneAmount[1]);
+		CHECK(stoneAmount[1] < stoneAmount[2]);
 	}
 	TEST_CASE("Braided Delta retained generation and damage contracts")
 	{
