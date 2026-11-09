@@ -1,4 +1,5 @@
 #include "CabinoObservationFixture.h"
+#include "Map.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"

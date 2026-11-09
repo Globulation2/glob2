@@ -5,6 +5,7 @@
 // The effect must change the picture while it plays and leave exactly the
 // ordinary picture once its record has expired.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"

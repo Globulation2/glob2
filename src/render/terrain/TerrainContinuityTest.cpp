@@ -3,6 +3,7 @@
 // its edge must equal what its neighbour computes on the same line. Every
 // material in the catalogue takes part, so a new terrain inherits the check.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include "TerrainMaterials.h"

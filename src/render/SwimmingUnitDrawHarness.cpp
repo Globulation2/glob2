@@ -9,6 +9,7 @@
 // comparison draws one swim frame with and without the fade on a black
 // background.
 #include "scene/SceneMap.h"
+#include "Map.h"
 #include "HeadlessGlobals.h"
 #include "DrawFixtures.h"
 #include "GlobalContainer.h"

@@ -9,6 +9,7 @@
 // the new terrain disallows go.
 
 #include "PowerOfTwo.h"
+#include "Map.h"
 #include "BrushCoverage.h"
 #include "Game.h"
 #include "GlobalContainer.h"

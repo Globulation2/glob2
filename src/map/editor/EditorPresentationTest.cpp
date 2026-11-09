@@ -6,6 +6,7 @@
 // brush; a mouse wheel over the tray scrolls it and over the map zooms.
 
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "MapEdit.h"
 #include "MapEditPresentation.h"
 #include "PhoneEditor.h"

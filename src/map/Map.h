@@ -10,8 +10,8 @@
 #include "claims/ClaimContention.h"
 #include "claims/ClaimHireTargets.h"
 #include "OwnerRandom.h"
-#include <CooperativeTask.h>
-#include "ComputeTelemetry.h"
+namespace GAGCore { class CooperativeTask; }
+struct JoinContext;
 class ComputeExecutor;
 #include <array>
 #include <bit>
@@ -45,6 +45,7 @@ class ComputeExecutor;
 #include "TerrainRegistry.h"
 class MapAssetBundle;
 #include "BitArray.h"
+#include "MapTypes.h"
 
 namespace SimulationSnapshot { struct Handle; }
 
@@ -52,11 +53,6 @@ class Unit;
 class Team;
 class Building;
 
-//! No global unit identifier. This value means there is no unit. Used at Tile::groundUnit or Tile::airUnit.
-#define NOGUID 0xFFFF
-
-//! No global building identifier. This value means there is no building. Used at Tile::building.
-#define NOGBID 0xFFFF
 
 class Map;
 class Game;
@@ -65,13 +61,6 @@ class MapHeader;
 class MapRouting;
 namespace ResourceGrowth { struct Metrics; }
 
-//! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
-//! dx and dy are each in {-1, 0, +1}.
-struct Offset
-{
-	int dx;
-	int dy;
-};
 
 // a 1x1 piece of map
 struct Tile
@@ -96,14 +85,6 @@ struct Tile
 	Uint16 fertility = 0; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
 
-/// Types of areas
-enum AreaType
-{
-	ClearingArea = 0,
-	ForbiddenArea,
-	GuardArea,
-	FarmArea
-};
 
 
 /*! Map, handle all physical localisations
@@ -275,7 +256,9 @@ public:
     void publishWorldResultsDue();
     void submitWorldWork(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
-    void finishResourceGrowth(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
+    void finishResourceGrowth(JoinContext context);
+    // Verification join at no tick.
+    void finishResourceGrowth();
     void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;

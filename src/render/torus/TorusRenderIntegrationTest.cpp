@@ -2,6 +2,7 @@
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
 #include <thread>
+#include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include <chrono>
 #include <Environment.h>

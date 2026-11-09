@@ -1,6 +1,7 @@
 #include "field/OpenCLGradient.h"
 #include "field/TerrainMovementCosts.h"
 #include "field/PreparedTerrainCosts.h"
+#include "ComputeTelemetry.h"
 #include "gradient/MapRouting.h"
 #include "field/GradientDeviceService.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -19,7 +20,6 @@
 #include "Version.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
-#include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
 

@@ -5,6 +5,7 @@
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "ui/ThemeCatalog.h"
 #include "sim/snapshot/SnapshotStore.h"
+#include "Map.h"
 #include "Building.h"
 #include <Environment.h>
 #include "GlobalContainer.h"
@@ -64,7 +65,6 @@
 #include <Toolkit.h>
 #include "ConnectionOverlay.h"
 #include "OnlineUIFixtures.h"
-#include "SettingsScreen.h"
 #include <SDL3_net/SDL_net.h>
 #include <charconv>
 #include <stdexcept>

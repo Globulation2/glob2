@@ -13,6 +13,7 @@
 // check that nothing reads it.
 
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include "Continuation.h"

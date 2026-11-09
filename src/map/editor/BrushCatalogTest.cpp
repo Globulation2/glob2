@@ -2,6 +2,7 @@
 // The editor brush catalogue (BrushCatalog.h), its MapEdit cache, experiment gate,
 // action round trips and the composed swatches (BrushSwatches.h).
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "MapEditDialog.h"

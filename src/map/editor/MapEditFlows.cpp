@@ -1,4 +1,5 @@
 #include "ui/DiagnosticText.h"
+#include "Map.h"
 #include "MapAssetBundle.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Editor flows that must not lose work or leave the editor: quit and window

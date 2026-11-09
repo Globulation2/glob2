@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Game speed settings, controls and playback; the display cases need OpenGL.
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "DrawFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>

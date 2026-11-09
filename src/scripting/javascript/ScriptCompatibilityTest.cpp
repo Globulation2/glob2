@@ -1,4 +1,5 @@
 #include <Environment.h>
+#include "ComputeTelemetry.h"
 #include "gradient/MapRouting.h"
 #include "ProfileNeeds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later

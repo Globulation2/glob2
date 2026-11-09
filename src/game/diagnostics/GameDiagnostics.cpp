@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
+#include "Map.h"
 #include "GameDiagnostics.h"
 #include "sim/presentation/SceneInputs.h"
 #include "Game.h"

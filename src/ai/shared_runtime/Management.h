@@ -10,7 +10,8 @@
 #include "Ressource.h"
 
 #include "shared_runtime/Position.h"
-#include "Map.h"
+#include "MapTypes.h"
+class Map;
 #include "Player.h"
 
 #include <memory>

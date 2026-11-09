@@ -1,4 +1,5 @@
 #include "app/ClientFeatures.h"
+#include "Map.h"
 #include "hive/HiveClient.h"
 #include <type_traits>
 #include "online/InstanceConfig.h"

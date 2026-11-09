@@ -8,6 +8,7 @@
 // on cells) that places nothing explains why.
 
 #include "BrushCoverage.h"
+#include "Map.h"
 #include "BuildingType.h"
 #include "HeadlessGlobals.h"
 #include "ExperimentalFeatures.h"

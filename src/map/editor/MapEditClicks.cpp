@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include <FormatableString.h>
+#include "Map.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"

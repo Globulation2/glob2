@@ -3,6 +3,7 @@
 #include <glob2/BuildConfig.h>
 #endif
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include <Environment.h>

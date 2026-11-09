@@ -11,7 +11,8 @@
 #include "field/Frontier.h"
 #include "field/TerrainTravel.h"
 #include "AIImplementation.h"
-#include "Map.h"
+#include "MapTypes.h"
+class Map;
 #include "Order.h"
 #include "ai/observation/OrderSelection.h"
 #include "Player.h"

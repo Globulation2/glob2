@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Map.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include "editor/BrushSwatches.h"

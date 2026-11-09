@@ -1,4 +1,5 @@
 #include "GameEvent.h"
+#include "Map.h"
 #include "ClientAreaPreview.h"
 #include "sim/ClientEvents.h"
 // SPDX-License-Identifier: GPL-3.0-or-later

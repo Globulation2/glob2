@@ -6,7 +6,8 @@
 #include <SDL3/SDL_stdinc.h>
 
 #include "BuildingGuiState.h"
-#include "Map.h"
+#include "MapTypes.h"
+class Map;
 #include "ViewState.h"
 
 class BuildingType;

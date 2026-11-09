@@ -4,12 +4,13 @@
 #include "online/HttpFetch.h"
 #include <nlohmann/json.hpp>
 #include <set>
-#include "Map.h"
+class Map;
 #include "BrushSwatches.h"
 
 class SetLibraryDialog : public Glob2UI::InGameDialog {
 public:
     SetLibraryDialog(Map& map, std::function<void(std::string, std::vector<std::string>)> import, std::function<void()> changed);
+    ~SetLibraryDialog() override;
     const char* recordingId() const override { return "set_library"; }
     Glob2UI::Element build(const Glob2UI::Presentation&) override;
 protected:
