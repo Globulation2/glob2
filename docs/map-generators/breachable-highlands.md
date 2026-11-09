@@ -217,7 +217,7 @@ build/src/glob2 map generate breachable-highlands --seed 1 \
   --preview artifacts/breachable-highlands/play.png \
   --report-file artifacts/breachable-highlands/play.json
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
-build/src/MapGeneratorGoldenTest breachable-golden --require-rows
+build/src/MapGeneratorGoldenTest breachable-golden --print --only=breachable-highlands
 build/src/MapGeneratorGoldenTest breachable-telemetry --telemetry
 python3 tools/map_telemetry.py collect --generators breachable-highlands \
   --seed-start 20001 --count 16 --set width=256 --set height=256 \
@@ -241,7 +241,7 @@ See the [extraction and paired-map evidence](https://github.com/Globulation2/glo
 
 The source definition and its request/world validators define accepted settings and
 finished-map guarantees. Run the focused `MapGeneratorDefaults` contracts and the
-platform golden rows, inspect small/large rectangles and resource extremes, then
+sim-diff map fingerprints, inspect small/large rectangles and resource extremes, then
 check populated games with complete seat rotations. See [generator verification](verification.md)
 for commands, revisions, save/replay checks and evidence requirements.
 

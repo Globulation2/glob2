@@ -95,7 +95,7 @@ corridor vertex may have been dressed with buildable ground.
 The generator uses existing simulation rules. It changes no engine behavior,
 save format, replay acceptance, network protocol or AI, and no other generator.
 Revision 3 produces different maps from the same seed, so it moves the generator
-revision and the golden rows. It deliberately leaves `SIM_REVISION` alone for now
+revision. It deliberately leaves `SIM_REVISION` alone for now
 (a maintainer decision); Bastion Keys is not in the online fair-generator pool, and
 whether any path regenerates maps from a generator descriptor was not verified.
 
@@ -147,7 +147,7 @@ in the Forts reference.
 
 Automated games establish economy and combat behavior, not human enjoyment or
 exact competitive balance. Revision 3 has not been checked on Linux or Windows,
-so its golden rows exist for macOS arm64 only. The faster tracks and piers change
+so its map fingerprints were checked on macOS arm64 only. The faster tracks and piers change
 how the opening feels, which needs a person to play it. The longer, 60,000-tick
 games and the other AIs were not rerun for revision 3.
 

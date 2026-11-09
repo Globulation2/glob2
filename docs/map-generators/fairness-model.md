@@ -130,12 +130,8 @@ engine to agree exactly. That is what keeps the two implementations from driftin
 
 One generator's maps depend on the coefficients. Lava shield ranks its own settlement
 proposals by the map score (`chooseScoredSettlements`), so refitting changes which town
-layout it picks on some seeds. After a refit, re-run
-`build/src/MapGeneratorGoldenTest PROFILE --update --force` and commit the rows; `--force`
-because a refit is new data for a shared score, not a new revision of that generator.
-
-The Linux rows can only be regenerated on Linux (or copied from the `--print` output in a CI
-log), so after a refit CI stays red for Lava shield until that is done.
+layout it picks on some seeds. After a refit, the sim-diff report shows which Lava shield
+maps moved; say in the PR that the refit moved them.
 
 ## Testing a new measurement without another tournament
 

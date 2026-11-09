@@ -12,7 +12,7 @@ The bundle holds, per scenario, the build's own output for fixed inputs:
 - match: the FourSquares1 relay match record replayed by `match verify`, its
   per-tick state checksums. A record from another sim version is still replayed
   in full; only its verdict is "unverifiable".
-- generators: every registered generator's map fingerprint on the golden
+- generators: every registered generator's map fingerprint on a fixed
   request set (MapGeneratorGoldenTest --print), keyed by request.
 - saves: the retained AI and telemetry saves at their own lengths (the
   check_telemetry_simulation.py set), the v108 checkpoint continued for 256

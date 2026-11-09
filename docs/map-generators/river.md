@@ -161,7 +161,7 @@ One game varies widely: this shows no stalled opening, not a measured improvemen
 ## Verification
 
 Run the River contracts (`GLOB2_CONTRACTS=river`, `MapGeneratorContracts.h`), the toolkit checks for
-`HeightFieldLooks.h` (`MapGeneratorToolkitChecks.h`) and the platform golden rows; sweep every size and
+`HeightFieldLooks.h` (`MapGeneratorToolkitChecks.h`) and the sim-diff map fingerprints; sweep every size and
 colony count against revision 5 per banks value. See [generator verification](verification.md) for
 commands, revisions, save/replay checks and evidence requirements.
 

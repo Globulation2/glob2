@@ -254,9 +254,9 @@ only ever increases. A bump also needs a fresh golden record
 (`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version), its
 trace and the other revision-keyed fixtures; `python3 tools/refresh_sim_fixtures.py`
 regenerates them all in the same change (the match record and trace, every `[golden]`
-doctest fixture, this platform's map generator rows, the telemetry traces and the
-Maxima continuation baseline), then runs `test/check_sim_revision.py`. After master CI
-has run, `--from-run <run id>` merges the other platforms' generator rows.
+doctest fixture, the telemetry traces and the Maxima continuation baseline), then runs
+`test/check_sim_revision.py`. Map generators have no committed rows; sim-diff compares
+their fingerprints between merge base and pull request.
 
 CI enforces what it can detect:
 

@@ -31,7 +31,7 @@ The sources are downloaded once into `artifacts/world-atlas/cache` (ignored by G
 moves it). The script is plain Python 3: polygons are filled by an even-odd scanline, so holes need
 no special handling, and nothing but PIL for previews is required. The output is deterministic for
 a given cache. **The data is part of every map built on it**: when it changes, bump the revision of
-every generator that uses it (Continents), re-record their golden rows, and say so in the PR.
+every generator that uses it (Continents) and say so in the PR; sim-diff shows the moved maps.
 
 ## What a region holds
 
@@ -71,6 +71,6 @@ shrinking never fattens a coast) and `resampleAny` keeps a one-cell river throug
 wide is beach on both sides and grass nowhere), pools too small to be anything but beach are
 filled with the land round them, islets too small to build on vanish, and `largestRegion` finds
 the mainland every colony must share. All of it is integer arithmetic, so the same picture lands on
-the same tiles on every platform; the golden rows for Continents are identical on Linux and macOS.
+the same tiles on every platform; Continents' map fingerprints are identical on Linux and macOS.
 
 Related: [map generators](README.md).

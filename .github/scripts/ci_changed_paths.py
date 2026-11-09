@@ -71,9 +71,6 @@ def classify(paths):
             # Soundtrack set data: packaged by the native and browser builds.
             native = browser = True
             continue
-        if path == "test/map-generator-golden.txt":
-            map_generators = True
-            continue
         if path in TRANSPORT_TESTS:
             browser = True
             continue

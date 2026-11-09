@@ -53,12 +53,6 @@ def inventory(text, platform_tag):
     return result
 
 
-def require_reference_inventory(requests, reference):
-    missing = reference.keys() - requests.keys()
-    if missing:
-        raise ValueError(f'Generator inventory omits committed reference rows: {sorted(missing)}')
-
-
 def compare(first, second):
     a = json.loads((first / 'manifest.json').read_text())
     b = json.loads((second / 'manifest.json').read_text())
@@ -82,11 +76,9 @@ def collect(binary, output, platform_tag):
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     source = json.loads(subprocess.check_output([sys.executable, str(ROOT / 'test/build_provenance.py')], cwd=ROOT))
-    tables = [ROOT / 'test/map-generator-golden.txt',
-              ROOT / 'test/fixtures/map-generators/pre-resource-epoch-golden.txt',
+    tables = [ROOT / 'test/fixtures/map-generators/pre-resource-epoch-golden.txt',
               ROOT / 'test/map-generator-resource-epoch.json']
     before = {str(path.relative_to(ROOT)): digest(path) for path in tables}
-    reference = rows(tables[0].read_text(), 'linux-x86_64')
     binary_before = digest(binary)
     observed = None
     commands = []
@@ -98,7 +90,6 @@ def collect(binary, output, platform_tag):
                            stderr=subprocess.STDOUT, env=dict(os.environ,
                            SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy'))
     requests = inventory((output / 'inventory.log').read_text(), platform_tag)
-    require_reference_inventory(requests, reference)
     for index in range(2):
         with tempfile.TemporaryDirectory(prefix='glob2-generator-evidence-') as profile:
             command = [str(binary), profile, '--print']

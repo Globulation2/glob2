@@ -190,7 +190,7 @@ because a map that was never promised a level rope is not a broken one.
   the question no measurement here answers.
 - No human play, so whether the rope actually produces back-and-forth — the thing the map is named
   for — is untested.
-- Single-platform (macos-arm64) golden rows; this generator uses floating-point scoring throughout
+- Map fingerprints checked on macos-arm64 only; this generator uses floating-point scoring throughout
   and cross-platform identity is not promised.
 
 ## Implementation source

@@ -31,19 +31,15 @@ class GeneratorEvidenceTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             evidence.check_inventory({}, reference)
 
-    def test_complete_inventory_includes_unapproved_extended_team_cases(self):
-        # The current Linux epoch table omits these valid 13--16 team requests.
+    def test_complete_inventory_includes_extended_team_cases(self):
         committed = evidence.rows('linux-x86_64 59 2 9 9 12 1 ok 123\n', 'linux-x86_64')
         requests = evidence.inventory('macos-arm64 59 2 9 9 12 1\nmacos-arm64 59 2 9 9 13 1\n', 'macos-arm64')
-        evidence.require_reference_inventory(requests, committed)
         observed = evidence.rows('macos-arm64 59 2 9 9 12 1 ok 456\nmacos-arm64 59 2 9 9 13 1 ok 789\n', 'macos-arm64')
         evidence.check_inventory(observed, requests)
         with self.assertRaisesRegex(ValueError, 'missing='):
             evidence.check_inventory(committed, requests)
         with self.assertRaisesRegex(ValueError, 'extra='):
             evidence.check_inventory(observed | {(59, 2, 9, 9, 17, 1): ('ok', 1)}, requests)
-        with self.assertRaisesRegex(ValueError, 'omits committed'):
-            evidence.require_reference_inventory({}, committed)
         for malformed in ('', 'macos-arm64 59 2 9 9 12\n', 'macos-arm64 59 2 9 9 12 1\n' * 2):
             with self.assertRaises(ValueError):
                 evidence.inventory(malformed, 'macos-arm64')
@@ -52,9 +48,6 @@ class GeneratorEvidenceTest(unittest.TestCase):
         for mutate in (False, True):
             with self.subTest(mutate=mutate), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
-                table = root / 'test/map-generator-golden.txt'
-                table.parent.mkdir()
-                table.write_text('linux-x86_64 1 2 8 8 4 1 ok 123\n')
                 historical = root / 'test/fixtures/map-generators/pre-resource-epoch-golden.txt'
                 historical.parent.mkdir(parents=True)
                 historical.write_text('preserved historical rows')

@@ -49,7 +49,7 @@ class PartialLinuxWorkflowTest(unittest.TestCase):
         self.assertEqual(evaluate(expression(block("tests"), "shard")), [1, 2, 3, 4])
         self.assertTrue(evaluate(expression(block("audit"), "if")))
         self.assertEqual(evaluate(expression(block("generators"), "suite")), ["sweep-a", "sweep-b", "telemetry"])
-        self.assertEqual(evaluate(expression(block("generators"), "suite"), coverage_profile="compatibility"), ["golden", "telemetry"])
+        self.assertEqual(evaluate(expression(block("generators"), "suite"), coverage_profile="compatibility"), ["telemetry"])
 
     def test_partial_native_shards_skip_full_coverage_auditor(self):
         for shards in ("[1]", "[2,4]", "[1, 2, 3]", "[]", "[ ]"):

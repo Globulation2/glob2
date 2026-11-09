@@ -38,13 +38,10 @@ and the unit/building generation-plane migration, compares serialized AI state,
 and advances paired continuations through 128 actual AI decisions and simulation
 ticks after a new-format reload. Each continuation owns its RNG snapshot.
 
-The five expanded designed generators retain golden cases at 13–16 colonies on
-512×512. Refresh selected landscapes on the current platform with
-`MapGeneratorGoldenTest <profile> --update --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
-`--require-rows` requires the current revision of every registered generator on
-the executing platform; fresh foreign rows cannot substitute for local coverage.
-`MapGeneratorGoldenCoverageTest` covers stale, missing and mixed-revision tables.
-Regenerate each affected platform's rows using its actual binary.
+The five expanded designed generators' fingerprint requests include 13–16 colonies
+on 512×512; print them on the current platform with
+`MapGeneratorGoldenTest <profile> --print --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
+The sim-diff workflow compares these rows between merge base and pull request.
 
 ## Entering unit save regression
 
