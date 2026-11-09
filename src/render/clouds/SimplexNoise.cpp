@@ -45,11 +45,42 @@ namespace SimplexNoise {
 #define INT_ROUND_DIV(x,divisor)    ( ((x)+((divisor)/2)    ) / (divisor) )
 #define INT_ROUND_RSHIFT(x,places)  ( ((x)+(1<<((places)-1))) >> (places) )
 
+	// Every branch below depends on the noise's own input, so on varied input
+	// it mispredicts about half the time. The arithmetic takes their place and
+	// gives the same integers.
 
-	int contribution(int gx, int gy, int gz, int relX, int relY, int relZ);
-	int dotprod(int hash, int x, int y, int z);
-	int hashGridPoint(int gx, int gy, int gz);
+	// The gradients, one axis per table. Rows 14 and 15 are (0,1,1) and (0,1,-1),
+	// as the original switch returned, not the table above.
+	static const signed char gradientX[16] = {1,1,-1,-1, 1,1,-1,-1, 0,0,0,0, 1,-1,0,0};
+	static const signed char gradientY[16] = {1,-1,1,-1, 0,0,0,0, 1,1,-1,-1, 1,1,1,1};
+	static const signed char gradientZ[16] = {0,0,0,0, 1,-1,1,-1, 1,-1,1,-1, 0,0,1,-1};
 
+	static inline int hashGridPoint(int gx, int gy, int gz) {
+		return perm[(byte)(gz + perm[(byte)(gy + perm[(byte)gx])])];
+	}
+
+	/** The dot product with gradients3D[hash&15]. */
+	static inline int dotprod(int hash, int x, int y, int z) {
+		const int g = hash & 15;
+		return gradientX[g]*x + gradientY[g]*y + gradientZ[g]*z;
+	}
+
+	/** Returns the contribution from a grid point, as .24 fixed-point (ie. 2^16 x the .8 FiPo value). */
+	static inline int contribution(int gx, int gy, int gz, int relX, int relY, int relZ) {
+		// relXYZ are .8 fixed-point.
+		int hash = hashGridPoint(gx, gy, gz);
+		int weight = INT_ROUND_DIV(256*256*3,5)- relX*relX - relY*relY - relZ*relZ;
+		// weight is .16 fixed-point. Outside the point's reach it contributes
+		// nothing: a weight of 0 rounds to 0 through both squarings.
+		weight = weight > 0 ? weight : 0;
+		int w2 = INT_ROUND_RSHIFT(weight*weight,16);
+		// w2 is .16 fixed-point.
+		int w4 = INT_ROUND_RSHIFT(w2*w2,16);
+		// w4 is .16 fixed-point.
+		int res = w4 * dotprod(hash, relX,relY,relZ);
+		// res is .24 fixed-point.
+		return res;
+	}
 
 	/** Returns the noise value for a given point.
 	 *  @param x,y,z  The coordinates - in 256ths.
@@ -71,43 +102,22 @@ namespace SimplexNoise {
 		    y0 = gridY-unskew,
 		    z0 = gridZ-unskew;
 		int relX = xin-x0, relY = yin-y0, relZ = zin-z0;
-		
-		// 3. Find exact grid area:
-		int offsetX1, offsetY1;
-		int offsetX2, offsetY2;
+
+		// 3. Find exact grid area from the order of the coordinates, with ties
+		// broken towards X, then Y:
+		//   X > Y > Z: (1,0,0) (1,1,0)    Y > X > Z: (0,1,0) (1,1,0)
+		//   X > Z > Y: (1,0,0) (1,0,1)    Y > Z > X: (0,1,0) (0,1,1)
+		//   Z > X > Y: (0,0,1) (1,0,1)    Z > Y > X: (0,0,1) (0,1,1)
 		/* Z offsets are calculated later, from the X and Y offsets, using
 		 * the formulae offsetX1 + offsetY1 + offsetZ1 = 1
 		 * and          offsetX2 + offsetY2 + offsetZ2 = 2.
-		 * Z offsets are not declared as variables; this seems
-		 * to relieve the register pressure and give a small speed-up.
 		 */
-		// Find order of coordinates within rough grid area:
-		if (relX >= relY) {
-			offsetX2 = 1; offsetY1 = 0; // X is not last and Y not first
-			if (relY >= relZ) { // Ordering: X > Y > Z
-				offsetX1 = 1; /*offsetY1 = 0;*/ //offsetZ1 = 0;
-				/*offsetX2 = 1;*/ offsetY2 = 1; //offsetZ2 = 0;
-			} else if (relX >= relZ) { // Ordering: X > Z > Y
-				offsetX1 = 1; /*offsetY1 = 0;*/ //offsetZ1 = 0;
-				/*offsetX2 = 1;*/ offsetY2 = 0; //offsetZ2 = 1;
-			} else { // Ordering: Z > X > Y
-				offsetX1 = 0; /*offsetY1 = 0;*/ //offsetZ1 = 1;
-				/*offsetX2 = 1;*/ offsetY2 = 0; //offsetZ2 = 1;
-			}
-		} else { // Y > X
-			offsetX1 = 0; offsetY2 = 1; // X is not first and Y not last
-			if (relX >= relZ) { // Ordering: Y > X > Z
-				/*offsetX1 = 0;*/ offsetY1 = 1; //offsetZ1 = 0;
-				offsetX2 = 1; /*offsetY2 = 1;*/ //offsetZ2 = 0;
-			} else if (relY >= relZ) { // Ordering: Y > Z > X
-				/*offsetX1 = 0;*/ offsetY1 = 1; //offsetZ1 = 0;
-				offsetX2 = 0; /*offsetY2 = 1;*/ //offsetZ2 = 1;
-			} else { // Ordering: Z > Y > X
-				/*offsetX1 = 0;*/ offsetY1 = 0; //offsetZ1 = 1;
-				offsetX2 = 0; /*offsetY2 = 1;*/ //offsetZ2 = 1;
-			}
-		}
-		
+		const int xy = relX >= relY, yz = relY >= relZ, xz = relX >= relZ;
+		const int offsetX1 = xy & (yz | xz);
+		const int offsetY1 = (xy ^ 1) & (yz | xz);
+		const int offsetX2 = xy | xz;
+		const int offsetY2 = (xy ^ 1) | yz;
+
 		// 4. Find coordinates wrt. the corners:
 		int relX1 = relX - 256*offsetX1 + INT_ROUND_DIV(256,6);
 		int relY1 = relY - 256*offsetY1 + INT_ROUND_DIV(256,6);
@@ -126,65 +136,5 @@ namespace SimplexNoise {
 			      contribution(igridX+1, igridY+1, igridZ+1, relX3, relY3, relZ3));
 
 		return INT_ROUND_RSHIFT(value,12) + 128;
-	}
-
-
-
-
-	/** Returns the contribution from a grid point, as .24 fixed-point (ie. 2^16 x the .8 FiPo value). */
-	int contribution(int gx, int gy, int gz, int relX, int relY, int relZ) {
-		// relXYZ are .8 fixed-point.
-		int hash = hashGridPoint(gx, gy, gz);
-		int weight = INT_ROUND_DIV(256*256*3,5)- relX*relX - relY*relY - relZ*relZ;
-		// weight is .16 fixed-point.
-		if (weight<=0) return 0;
-		int w2 = INT_ROUND_RSHIFT(weight*weight,16);
-		// w2 is .16 fixed-point.
-		int w4 = INT_ROUND_RSHIFT(w2*w2,16);
-		// w4 is .16 fixed-point.
-		int res = w4 * dotprod(hash, relX,relY,relZ);
-		// res is .24 fixed-point.
-		return res;
-	}
-
-	/** Dot product with gradients3D[hash&15] -
-	 *  Because of the nature of gradients3D, no multiplications are needed - only additions and subtractions.
-	 */
-	int dotprod(int hash, int x, int y, int z) {
-		/*
-	static const int gradients3D[16][3] =
-	{{1,1,0}, {1,-1,0}, {-1,1,0}, {-1,-1,0},
-	 {1,0,1}, {1,0,-1}, {-1,0,1}, {-1,0,-1},
-	 {0,1,1}, {0,1,-1}, {0,-1,1}, {0,-1,-1},
-	 {1,1,0}, {-1,1,0}, {0,-1,1}, {0,-1,-1} // 4th line is an extra tetrahedron
-	};
-		*/
-		switch (hash&15) {
-		case 0: return  x + y;
-		case 1: return  x - y;
-		case 2: return  y-x;// + y;
-		case 3: return -x - y;
-
-		case 4: return  x + z;
-		case 5: return  x - z;
-		case 6: return z-x;// + z;
-		case 7: return -x - z;
-
-		case 8: return  y + z;
-		case 9: return  y - z;
-		case 10:return z-y;// + z;
-		case 11:return -y - z;
-
-		case 12: return  x + y;
-		case 13: return y-x;// + y;
-		case 14: return  z + y;
-		case 15: return y-z;// - y;
-		}//switch
-		assert(false);
-		return 0;//to satisfy -Wall
-	}
-
-	int hashGridPoint(int gx, int gy, int gz) {
-		return perm[(byte)(gz + perm[(byte)(gy + perm[(byte)gx])])];
 	}
 }
