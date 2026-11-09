@@ -152,8 +152,8 @@ a platform missing because its build or test job failed is left out with a notic
 that job, which reports the failure itself (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
 simulation change makes it stale and must bump `SIM_REVISION`; `python3
-tools/refresh_sim_fixtures.py` records a fresh match along with the other
-revision-keyed fixtures.
+test/run_tests.py --update-fixtures --filter "TurnEngineHarness/the committed*"`
+records a fresh match.
 
 Building catalogs are part of match rules identity: a setup carries the canonical
 embedded catalog and its hash, and clients and verifiers compare it with the map
