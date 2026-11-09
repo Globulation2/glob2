@@ -37,9 +37,11 @@ int main(int argc, char **argv)
 	{
 		if (mode == "cancel" && Clock::now() - started > std::chrono::milliseconds(200))
 		{
+			// A cancel that waited for the stalled response would block for the
+			// test server's 10 s stall; 5 s is a hang guard, not a measurement.
 			const auto cancelling = Clock::now();
 			fetch->cancel();
-			if (Clock::now() - cancelling > std::chrono::milliseconds(200))
+			if (Clock::now() - cancelling > std::chrono::seconds(5))
 			{
 				std::cerr << "cancel blocked\n";
 				return 1;

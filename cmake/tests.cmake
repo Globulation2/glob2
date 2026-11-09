@@ -116,7 +116,6 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/ui/settings/SettingsBuildingsTest.cpp
     src/app/SystemLanguageTest.cpp
     src/game/orders/GuardAreaBalanceTest.cpp
-    src/game/GameSpeedTest.cpp
     src/ui/UIIconsTest.cpp
     src/game/screens/CustomGameSetupHarness.cpp
     src/team/TeamLimitTest.cpp
@@ -190,6 +189,7 @@ set(GLOB2_ENGINE_TESTS_1_SOURCES
     src/render/TerrainPresentationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
     src/game/orders/FarmAreaTest.cpp
+    src/game/GameSpeedTest.cpp
     src/team/IntrusivePopulationSaveTest.cpp
 )
 

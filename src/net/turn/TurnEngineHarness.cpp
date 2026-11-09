@@ -1738,6 +1738,8 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK_FALSE(now.rejected);
 		CHECK(now.flooded == 0);
 		CHECK(now.executedMoves > 100);
+		// The delays below are on the harness's simulated clock (net.now advances one
+		// FRAME per loop), not the wall clock, so a slow machine cannot move them.
 		CHECK(now.maxMove < 300);
 		CHECK(now.dropMs >= 0);
 		CHECK(now.dropMs < 300);

@@ -226,7 +226,8 @@ ENGINE_TESTS = [
     '#src/app/SystemLanguageTest.cpp',
     '#src/game/orders/GuardAreaBalanceTest.cpp',
     ('#src/game/orders/FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/game/GameSpeedTest.cpp',
+    # The pacing check steps Engine on an injected clock and reads its GUI's tick.
+    ('#src/game/GameSpeedTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ui/UIPresentationHarness.cpp', dict(require={'editor'})),
     '#src/ui/UIIconsTest.cpp',
     ('#src/hud/touch/GameGUITouchHarness.cpp', dict(require={'editor'})),

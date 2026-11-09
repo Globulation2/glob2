@@ -51,9 +51,9 @@ python3 test/run_tests.py --binary engine --in-process     # fast local loop, no
 python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 ```
 
-The `Maxima.Farming` fertility-cache case checks correctness in every build and
-enforces its CPU-time budget only in optimized builds without coverage
-instrumentation. Fast development builds report that timing for diagnosis.
+The `Maxima.Farming` fertility-cache case checks correctness in every build; its
+CPU-time budget is a separate `[benchmark]` case, enforced only in optimized builds
+without coverage instrumentation.
 
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
@@ -207,6 +207,15 @@ every script the renderer switches to has a shipped font), so adding an entry ke
 the test green and dropping one fails it. Keep a literal only when it is a format
 contract, such as a wire or save layout, a frozen legacy table or a `static_assert`
 on struct layout, and say why next to it.
+
+Correctness cases never assert on elapsed wall-clock or CPU time: CI runners and the
+`-O0` coverage build are slow and noisy. Assert a behavioural bound with an operation
+count (ticks, frames, wake-ups, messages, cache hits) or an injected clock, as
+`RenderFramePacerTest`, the turn harness's simulated network clock and the GameSpeed
+pacing check (`Engine::sessionDelay` on given timestamps) do. A loop waiting for
+something to happen may keep a generous deadline purely as a hang guard that fails
+with a clear message. A timing or latency bound belongs in a separate `[benchmark]`
+case.
 
 Where a test file lives: beside the code it tests, in that code's directory under
 `src/`, `libs/gag/src/`, `libs/usl/test/`, `third_party/natsort/` or `platforms/mobile/`, named `*Test.cpp`,

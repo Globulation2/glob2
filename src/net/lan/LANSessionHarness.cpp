@@ -17,6 +17,7 @@
 #include <ui/Screen.h>
 
 #include <cstdio>
+#include <atomic>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -48,8 +49,12 @@ void request(int code)
 }
 Uint32 SDLCALL readyTimer(void*, SDL_TimerID, Uint32) { request(PressReady); return 0; }
 Uint32 SDLCALL leaveTimer(void*, SDL_TimerID, Uint32) { request(PressLeave); return 0; }
+// Set when the join flow's 40 s timeout fired, rather than inferring the
+// timeout from elapsed time when the lobby returns.
+std::atomic<bool> joinTimedOut{false};
 Uint32 SDLCALL timeoutTimer(void*, SDL_TimerID, Uint32)
 {
+	joinTimedOut = true;
 	SDL_Event event{};
 	event.type = SDL_EVENT_QUIT;
 	SDL_PushEvent(&event);
@@ -72,7 +77,7 @@ public:
         LANFindScreen::onTimer(tick);
         if (!started) {
             started = true;
-            start = SDL_GetTicks();
+            joinTimedOut = false;
             timers[0] = SDL_AddTimer(5000, readyTimer, nullptr);
             // Playing, the guest stays until the host leaves (the runner stops it).
             if (!play) {
@@ -84,7 +89,7 @@ public:
         }
         // Parent updates resume only after the scheduled LAN session returns.
         SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), capture.c_str());
-        const bool ok = SDL_GetTicks() - start < 39000;
+        const bool ok = !joinTimedOut;
         std::puts(ok ? "JOIN PASS: lobby returned through Leave Game" : "JOIN FAIL: lobby timed out");
         endExecute(ok ? 0 : 1);
     }
@@ -92,7 +97,6 @@ private:
     std::string capture;
     bool play = false;
     bool started = false;
-    Uint64 start = 0;
     SDL_TimerID timers[3]{};
 };
 

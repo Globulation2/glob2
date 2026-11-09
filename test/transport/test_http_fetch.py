@@ -145,13 +145,15 @@ class HttpFetchTests(unittest.TestCase):
         port = self.serve()
         result = self.fetch('get', f'http://127.0.0.1:{port}/slow', '', '300')
         self.assertEqual(result['state'], 'timed-out', result)
-        self.assertLess(result['elapsed_ms'], 3000)
+        # A hang guard: a missing timeout would wait out the server's 10 s stall.
+        self.assertLess(result['elapsed_ms'], 5000)
 
     def test_cancel_does_not_block(self):
         port = self.serve(secure=True)
         result = self.fetch('cancel', f'https://localhost:{port}/slow')
         self.assertEqual(result['state'], 'cancelled', result)
-        self.assertLess(result['elapsed_ms'], 2000)
+        # A hang guard: a blocking cancel would wait out the server's 10 s stall.
+        self.assertLess(result['elapsed_ms'], 5000)
 
     def test_rejected_urls(self):
         for url in ('http://example.com/', 'ftp://localhost/', 'https://user:pw@localhost/',
