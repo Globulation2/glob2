@@ -109,6 +109,7 @@ class SmoothBorders
 	std::array<std::uint32_t, 6> pebbleSalt{};
 	std::array<float, 6> pebbleReach{}; // Pixels each field's clasts reach; 0 sheds none.
 	std::array<bool, 6> angular{};
+	std::array<bool, 6> surfed{}; // Fields whose material washes surf onto its shore.
 	int width = 0, height = 0; // Map size in cells, for wrapping pebbles.
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);
 };

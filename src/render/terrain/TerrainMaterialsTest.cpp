@@ -410,6 +410,60 @@ TEST_SUITE("TerrainMaterials")
 						materialWeights(original.at(x * 256 + 128, y * 256 + 128)));
 		}
 	}
+	TEST_CASE("surf measures every land coast without its clasts")
+	{
+		// The wash front runs at a fixed distance inside the land contour. Were
+		// that contour to include a material's clasts, the front would curve
+		// round inside every rounded chip and draw a crescent of foam.
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		const auto water = c.find("water");
+		REQUIRE(c.materials[water].surf.period > 0);
+		const int N = 12;
+		const auto island = [](int x, int y)
+		{
+			const float dx = x - 5.5f, dy = y - 5.5f;
+			return dx * dx + dy * dy < 16.f + 3 * std::sin(x * 1.7f + y);
+		};
+		unsigned shedding = 0;
+		for (TerrainVisual::MaterialId land = 0; land < c.materials.size(); ++land)
+		{
+			if (c.materials[land].surf.period > 0)
+				continue;
+			auto plain = c;
+			auto &edge = plain.profiles[plain.materials[land].profile];
+			if (edge.clasts == TerrainVisual::Profile::Clasts::None || !edge.speckle)
+				continue;
+			edge.clasts = TerrainVisual::Profile::Clasts::None;
+			CAPTURE(c.materials[land].key);
+			++shedding;
+			unsigned compared = 0, chipped = 0;
+			for (int y = 0; y < N; ++y)
+				for (int x = 0; x < N; ++x)
+				{
+					const auto r = contextualRecipe(x, y, N, [&](int x, int y) { return island(x, y) ? land : water; });
+					if (std::all_of(r.corners.begin(), r.corners.end(), [&](auto id) { return id == r.corners[0]; }))
+						continue;
+					const TerrainVisual::PreparedCoverage with(c, r), without(plain, r);
+					for (int py = 0; py < 32; ++py)
+						for (int px = 0; px < 32; ++px)
+						{
+							const auto a = with.at(px * 256 + 128, py * 256 + 128);
+							const auto b = without.at(px * 256 + 128, py * 256 + 128);
+							const auto dominant = [](const TerrainVisual::Coverage &v)
+							{ return v.material[std::max_element(v.weight.begin(), v.weight.end()) - v.weight.begin()]; };
+							chipped += materialWeights(a) != materialWeights(b);
+							if (dominant(a) != land || dominant(b) != land || a.neighbor != water || b.neighbor != water)
+								continue;
+							++compared;
+							CHECK(a.margin == b.margin);
+						}
+				}
+			CHECK(compared > 1000);
+			CHECK(chipped > 0); // The material really does shed clasts here.
+		}
+		CHECK(shedding >= 10); // Rock, soil, frozen and sand families.
+	}
 	TEST_CASE("contextual cells retain every corner region at native and HD sample positions")
 	{
 		glob2test::HeadlessGlobals globals;
