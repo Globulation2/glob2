@@ -60,6 +60,10 @@ very last step with `paintClimate` ([Climates.h](../../../../src/map/generator/s
 - **Painting has to know where it is.** It needs roles only the design knows: which grass is a farm
   or a home, which paving is a town, a street, a deck or a bridge, which water is deep, and which
   rock is a second tier. Pass them through `LookRoles`.
+- **One look per role, no speckle.** Barren and fertile ground used to be mottled with a second
+  look on a fixed vertex hash. Across a whole home base the blotches repeated evenly and read as
+  polka dots, so the maintainer had them removed (2026-11-08). Vary a look by region through
+  `LookRoles`, never per vertex.
 - **Pick looks that contrast.** In the arid climate, sandstone roads beside sandstone-bench cliffs
   are hard to tell apart in a render.
 - **Theme each climate, not just its colours.** The maintainer asked that every volcanic map show
@@ -92,6 +96,13 @@ row on each side, and every tile beside it becomes an unbuildable seam. Use
   the plateau still reach the trail. Then thin a crowded map's walls a tile at a time across the
   whole geometry (`geometryWith`), not just where legs are counted: wall thickness also sets the
   plateau's size and the homes' reach.
+- **Thicken Ridges to three vertices.** Ridges looks (ridge rock, outcrop, hoodoos, termite mounds,
+  petrified stumps) draw peaks only on a tile whose four corners are all rock. A curved or diagonal
+  band two vertices wide has almost no such tile and read as bare ground (maintainer, 2026-11-08).
+  Call `thickenRidges(terrain, t, canGrow)` once the walls are laid: every rock vertex then sits in a
+  full 3x3 block, grown only where `canGrow` allows (keep lanes, doors and farms out). Anything that
+  finds walls by their design tiles must then look a step or two further: Amphitheatre's towers
+  stand against blocked tiles within two steps of a ring, not the ring tiles themselves.
 - **Seal coasts with cliffs, not stone.** `cliffCoast` turns every wallable vertex within two of the
   sea into cliff, water included, so there is no beach to land on and no shore to swim from. That
   replaces the stone ring with its dead-end beach lane.

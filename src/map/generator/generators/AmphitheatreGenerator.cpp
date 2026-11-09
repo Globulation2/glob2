@@ -474,6 +474,13 @@ TerrainSketch sketchTerrain(const Layout &L)
 		if (terrain[i] == WATER || (!rings[i] && !cliffs[i]))
 			continue;
 		terrain[i] = rings[i] ? RIDGE_ROCK : CLIFFS;
+	}
+	// Every ring at least three vertices thick, so its rock draws peaks; never into a ramp.
+	thickenRidges(terrain, t, [&](int i) { return terrain[i] == GRASS && !cornerOf(t, ramp, i); });
+	for (int i = 0; i < n; ++i)
+	{
+		if (terrain[i] != RIDGE_ROCK)
+			continue;
 		// Which ring a rock vertex belongs to: every other one in the second rock.
 		int nearest = 0;
 		for (int j = 1; j < g.rings; ++j)
@@ -527,10 +534,13 @@ TowerPlan planTowers(const GenerationMap &map, const Layout &L, const Generation
 	const Torus &t = L.t;
 	const int n = t.size(), teams = L.g.teams;
 	std::vector<unsigned char> ramps(n, 0), ringStone(n, 0);
+	// A ring's rock is thickened beyond its tiles (thickenRidges), so its stone is every blocked tile
+	// within two steps of them.
+	const std::vector<int> fromRing = stepsFrom(t, L.ring);
 	for (int i = 0; i < n; ++i)
 	{
 		ramps[i] = L.rampOf[i] >= 0 || L.innerRamp[i];
-		ringStone[i] = L.ring[i] && stone[i];
+		ringStone[i] = stone[i] && fromRing[i] >= 0 && fromRing[i] <= 2;
 	}
 	const std::vector<int> fromRamps = stepsFrom(t, ramps);
 	const std::vector<unsigned char> swarms = swarmSurroundings(t, context, 0);
@@ -901,7 +911,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		7,
+		8,
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest

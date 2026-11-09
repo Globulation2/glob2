@@ -496,6 +496,80 @@ int cliffCoast(TerrainSketch &terrain, const Torus &t, const std::function<bool(
 	return cliffs;
 }
 
+int thickenRidges(TerrainSketch &terrain, const Torus &t, const std::function<bool(int)> &canGrow,
+				  int *unresolved)
+{
+	const int n = t.w * t.h;
+	int added = 0, stuck = 0;
+	const auto rock = [&](int i) { return terrain[i] == RIDGE_ROCK; };
+	for (int i = 0; i < n; ++i)
+	{
+		generationCheckpoint();
+		if (!rock(i))
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		// The nine 3x3 blocks holding (x, y), by their top-left corner.
+		int best = -1, bestMissing = 10, bestMass = -1;
+		for (int oy = -2; oy <= 0 && best != -2; ++oy)
+			for (int ox = -2; ox <= 0; ++ox)
+			{
+				int missing = 0;
+				bool allowed = true;
+				for (int dy = 0; dy < 3 && allowed; ++dy)
+					for (int dx = 0; dx < 3; ++dx)
+					{
+						const int j = t.at(x + ox + dx, y + oy + dy);
+						if (rock(j))
+							continue;
+						if (!canGrow(j))
+						{
+							allowed = false;
+							break;
+						}
+						++missing;
+					}
+				if (!allowed)
+					continue;
+				if (missing == 0)
+				{
+					best = -2;
+					break;
+				}
+				int mass = 0;
+				for (int dy = -1; dy < 4; ++dy)
+					for (int dx = -1; dx < 4; ++dx)
+						mass += rock(t.at(x + ox + dx, y + oy + dy));
+				if (missing < bestMissing || (missing == bestMissing && mass > bestMass))
+				{
+					best = (oy + 2) * 3 + (ox + 2);
+					bestMissing = missing;
+					bestMass = mass;
+				}
+			}
+		if (best == -2)
+			continue;
+		if (best < 0)
+		{
+			++stuck;
+			continue;
+		}
+		const int ox = best % 3 - 2, oy = best / 3 - 2;
+		for (int dy = 0; dy < 3; ++dy)
+			for (int dx = 0; dx < 3; ++dx)
+			{
+				const int j = t.at(x + ox + dx, y + oy + dy);
+				if (!rock(j))
+				{
+					terrain[j] = RIDGE_ROCK;
+					++added;
+				}
+			}
+	}
+	if (unresolved)
+		*unresolved = stuck;
+	return added;
+}
+
 bool cornerOf(const Torus &t, const std::vector<unsigned char> &tiles, int i)
 {
 	const int x = t.remainderX(i), y = i / t.w;

@@ -19,6 +19,9 @@ Revision 14 (City states 2.0) builds every barrier and road from the terrain cat
 revisions, written when the engine had only grass, sand and water, used the stone resource for walls
 and sand for roads. The design is drawn with one terrain per rule (TerrainGroup.h), then a last
 pass paints the climate's looks, which share those rules.
+Since revision 15 the commons' ridges are at least three vertices thick (`thickenRidges`, growing
+only into the commons' open grass), because a ridge look draws its peaks only on tiles with four
+rock corners, and barren and fertile ground take one look each, no longer speckled with a second.
 
 | Ground | Rules | Where | Why |
 | --- | --- | --- | --- |

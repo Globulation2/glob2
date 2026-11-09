@@ -20,8 +20,11 @@ Revision 5 draws every wall, coast and road from the terrain catalogue, where ea
 stood the stone resource on grass and drew roads in sand. The design uses one terrain per rule, and a
 last pass paints one of four climates (temperate, arid, highland, volcanic; `gauntlet-climate`), the same
 for every colony, with looks that keep those rules (`shared/Climates.h`). Walls are drawn on
-vertices and lean away from the open ground beside them (`wallVertices`), so no lane, door or home
-loses a tile to a wall.
+vertices and lean away from the open ground beside them (`wallVertices`), so no lane or door
+loses a tile to a wall. Since revision 7 every Ridges wall is at least three vertices thick
+(`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
+draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
+no longer speckled with a second.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -55,7 +58,7 @@ Resource amounts are planting requests: wheat can saturate its finite beds at th
 highest settings. Even 0% retains opening grain and 30 wood tiles per home; fruit
 and algae have no minimum guarantee.
 
-Stone has no abundance slider: every home has one quarry face of 16 stone at the inside foot of its outer wall, between its doors, and since revision 6 every door's tower has a face of 6 stone at the foot of the outer wall beside it, at least three steps from the door, so a tower restocks within a few steps rather than across the home. Farm crossings remain
+Stone has no abundance slider: every home has one quarry face of 16 stone at the inside foot of its outer wall, between its doors, and since revision 6 every door's tower has a face of 6 stone at the foot of the outer wall beside it, at least three steps from the door, so a tower restocks within a few steps rather than across the home. The tower faces go in last, after every crop, and never touch the footprints of the 24 anchors of permanent building room nearest each home's workers (the validator wants 16 within 24 steps), so a 16-colony map's small homes keep their room. Farm crossings remain
 open by construction; allowing them to disappear would undermine this arena's
 circulation contract. Towers begin with ammunition and reserve stone. Players
 still need the ordinary economy and training to maintain and upgrade them. A

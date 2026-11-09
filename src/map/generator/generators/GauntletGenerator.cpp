@@ -56,6 +56,9 @@ constexpr int kQuarryFace = 16;
 constexpr int kTowerStone = 6;
 constexpr int kTowerStoneReach = 10;
 constexpr int kTowerStoneDoorGap = 3;
+// The validator wants 16 anchors of permanent building room within kRoomReach steps of each home's
+// workers; the tower stone keeps clear of the nearest kKeptRoom of them, a margin of eight.
+constexpr int kRoomReach = 24, kKeptRoom = 24;
 constexpr int kDeepFrom = 5;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry face stands (barren ground holds no stone).
@@ -271,6 +274,33 @@ WallMasks wallMasks(const Layout &L)
 	return m;
 }
 
+// The building room the validator counts: footprint anchors (buildAnchors) on buildable ground that
+// crops can never reach. Structural stone is eternal: unlike the conservative generic growth envelope,
+// it is a real barrier here. Ignore buildings and fertility, which can change in play.
+struct PermanentRoom
+{
+	Flood growth;
+	std::vector<unsigned char> sites;
+};
+PermanentRoom permanentRoom(const GenerationMap &map, const Torus &t)
+{
+	std::vector<unsigned char> cropSeeds(t.size(), 0), cropGround(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
+		cropSeeds[i] = type == WHEAT || type == WOOD;
+		cropGround[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) &&
+			(map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) && type != STONE;
+	}
+	PermanentRoom room{floodFrom(t, cropSeeds, cropGround), {}};
+	auto permanentBuilding = buildableTiles(map);
+	for (int i = 0; i < t.size(); ++i)
+		permanentBuilding[i] = permanentBuilding[i] && room.growth.steps[i] < 0;
+	room.sites = buildAnchors(t, permanentBuilding);
+	return room;
+}
+
 bool generate(GenerationWorld &game, GenerationContext &c)
 {
 	c.stage = "gauntlet layout";
@@ -363,6 +393,19 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 	for (int i = 0; i < n; ++i)
 		if (terrain[i] != WATER && (walls.ridge[i] || walls.cliff[i]))
 			terrain[i] = walls.ridge[i] ? RIDGE_ROCK : CLIFFS;
+	// Every partition at least three vertices thick, so its rock draws peaks; never into a road, a
+	// door or a farm.
+	{
+		std::vector<unsigned char> keep(n, 0);
+		for (int i = 0; i < n; ++i)
+			keep[i] = L.road[i] || L.frontOf[i] >= 0;
+		thickenRidges(terrain, t,
+					  [&](int i)
+					  {
+						  return terrain[i] == GRASS && !L.farmRegion[i] && cropCourt[i] < 0 && cropHome[i] < 0 &&
+								 !cornerOf(t, keep, i);
+					  });
+	}
 	{
 		const std::vector<unsigned char> deep = deepSea(
 			terrain, t, [&](int i) { return L.radius[i] < g.lake || L.radius[i] > g.rim; }, kDeepFrom);
@@ -448,18 +491,6 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 				});
 		}
 		c.telemetry.measure("gauntlet.quarry-faces.tiles", faceTiles);
-		// Each door's tower also gets a face at the foot of the outer wall beside it: the towers stand
-		// back from the wall by their doors, a long walk from the face between the doors.
-		int towerStone = 0;
-		for (int k = 0; k < g.teams; ++k)
-			towerStone += plantTowerStone(
-				map, t, towerTiles[k], kTowerStone, kTowerStoneReach,
-				[&](int i)
-				{
-					return L.homeOf[i] == k && !L.road[i] && !L.farmRegion[i] && !reserved[i] &&
-						   fromDoor[i] > kTowerStoneDoorGap && clearGround(map, t.remainderX(i), i / t.w);
-				});
-		c.telemetry.measure("gauntlet.tower-stone.tiles", towerStone);
 	}
 	const auto fertility = Fertility::forMap(map, false);
 	for (int k = 0; k < g.teams; ++k)
@@ -517,6 +548,45 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 	}
 	seedAlgae(map, c, t, "gauntlet-algae", o.algae, AlgaeBand::shallows(1, 4));
 	secureStartingCrops(game, c, t, 24, 32, 0, &L.wall);
+	// Last, each door's tower gets a face at the foot of the outer wall beside it: the towers stand
+	// back from the wall by their doors, a long walk from the face between the doors. Stone takes
+	// building room, so the face never touches the footprints of the kKeptRoom anchors of permanent
+	// room nearest each home's workers, counted exactly as validateWorld counts them (after every
+	// crop is down): a 16-colony map's small homes kept 15 of the 16 it needs when the faces went in
+	// unguarded (#1583).
+	{
+		std::vector<unsigned char> doors(n, 0);
+		for (int i = 0; i < n; ++i)
+			doors[i] = L.frontOf[i] >= 0;
+		const auto fromDoor = stepsFrom(t, doors);
+		const PermanentRoom room = permanentRoom(map, t);
+		const auto walk = walkFromFirstColony(map, g.teams, "the gauntlet", "");
+		const auto open = walkableTiles(map);
+		std::vector<unsigned char> kept(n, 0);
+		for (int k = 0; k < g.teams && walk.error.empty(); ++k)
+		{
+			const auto distance = stepsFrom(t, tileMask(t, walk.workers[k]), open);
+			std::vector<std::pair<int, int>> anchors;
+			for (int i = 0; i < n; ++i)
+				if (distance[i] >= 0 && distance[i] <= kRoomReach && room.sites[i] && room.growth.steps[i] < 0)
+					anchors.push_back({distance[i], i});
+			std::sort(anchors.begin(), anchors.end());
+			for (size_t a = 0; a < anchors.size() && a < size_t(kKeptRoom); ++a)
+				for (int dy = 0; dy < kBuildFootprint; ++dy)
+					for (int dx = 0; dx < kBuildFootprint; ++dx)
+						kept[t.at(t.remainderX(anchors[a].second) + dx, anchors[a].second / t.w + dy)] = 1;
+		}
+		int towerStone = 0;
+		for (int k = 0; k < g.teams; ++k)
+			towerStone += plantTowerStone(
+				map, t, towerTiles[k], kTowerStone, kTowerStoneReach,
+				[&](int i)
+				{
+					return L.homeOf[i] == k && !L.road[i] && !L.farmRegion[i] && !reserved[i] && !kept[i] &&
+						   fromDoor[i] > kTowerStoneDoorGap && clearGround(map, t.remainderX(i), i / t.w);
+				});
+		c.telemetry.measure("gauntlet.tower-stone.tiles", towerStone);
+	}
 	return true;
 }
 std::string validateRequest(const GenerationRequest &r)
@@ -549,22 +619,9 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 				   std::to_string(at / t.w);
 		}
 	}
-	// Structural stone is eternal: unlike the conservative generic growth envelope,
-	// it is a real barrier here. Ignore buildings and fertility, which can change in play.
-	std::vector<unsigned char> cropSeeds(t.size(), 0), cropGround(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-	{
-		const int type = map.getResource(t.remainderX(i), i / t.w).type;
-		cropSeeds[i] = type == WHEAT || type == WOOD;
-		cropGround[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) &&
-			(map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) && type != STONE;
-	}
-	const auto growth = floodFrom(t, cropSeeds, cropGround);
-	auto permanentBuilding = buildableTiles(map);
-	for (int i = 0; i < t.size(); ++i)
-		permanentBuilding[i] = permanentBuilding[i] && growth.steps[i] < 0;
-	const auto sites = buildAnchors(t, permanentBuilding);
+	const PermanentRoom room = permanentRoom(map, t);
+	const auto &growth = room.growth;
+	const auto &sites = room.sites;
 	for (int i = 0; i < t.size(); ++i)
 	{
 		if (L.frontOf[i] >= 0 && (!open[i] || growth.steps[i] >= 0))
@@ -688,7 +745,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		int wheat = 100000, wood = 100000, room = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			if (distance[i] >= 0 && distance[i] <= 24 && sites[i] && growth.steps[i] < 0)
+			if (distance[i] >= 0 && distance[i] <= kRoomReach && sites[i] && growth.steps[i] < 0)
 				++room;
 			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if (type != WHEAT && type != WOOD)
@@ -740,7 +797,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			6,
+			7,
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

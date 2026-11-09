@@ -639,6 +639,24 @@ TerrainSketch sketchTerrain(const Layout &L)
 	for (int i = 0; i < n; ++i)
 		if (terrain[i] != WATER && (cliffs[i] || ridges[i]))
 			terrain[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	// The core at least three vertices thick, so its rock draws peaks; never into the trail or a
+	// farm. A new rock vertex takes the band of the rock beside it.
+	{
+		const TerrainSketch before(terrain);
+		thickenRidges(terrain, t,
+					  [&](int i) { return terrain[i] == GRASS && L.farmOf[i] < 0 && !cornerOf(t, trail, i); });
+		for (int i = 0; i < n; ++i)
+			if (terrain[i] == RIDGE_ROCK && before[i] != RIDGE_ROCK)
+				for (int d = 0; d < 9; ++d)
+				{
+					const int j = t.at(t.remainderX(i) + d % 3 - 1, i / t.w + d / 3 - 1);
+					if (before[j] == RIDGE_ROCK)
+					{
+						band[i] = band[j];
+						break;
+					}
+				}
+	}
 	cliffCoast(
 		terrain, t,
 		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, trail, i); },
@@ -1039,7 +1057,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		8,
+		9,
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's

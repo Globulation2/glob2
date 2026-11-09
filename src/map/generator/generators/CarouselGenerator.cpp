@@ -774,6 +774,10 @@ TerrainSketch sketchTerrain(const Layout &L)
 	for (int i = 0; i < n; ++i)
 		if (terrain[i] != WATER && (cliffs[i] || ridges[i]))
 			terrain[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	// Every siege wall at least three vertices thick, so its rock draws peaks; never into a lane
+	// or a farm.
+	thickenRidges(terrain, t,
+				  [&](int i) { return terrain[i] == GRASS && L.farmOf[i] < 0 && !cornerOf(t, lane, i); });
 	cliffCoast(
 		terrain, t,
 		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, lane, i); },
@@ -1211,7 +1215,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		6,
+		7,
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

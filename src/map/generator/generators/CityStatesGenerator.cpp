@@ -1701,6 +1701,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		if (fordVertex[i])
 			terrain[i] = TRAIL;
 	const auto [cliffs, parapets] = dressWalls(terrain, L, o.stoneWalls);
+	// The commons' ridges and the parapets at least three vertices thick, so their rock draws peaks;
+	// only into the commons' open grass, never a causeway, a home or an islet.
+	thickenRidges(terrain, t,
+				  [&](int i)
+				  { return terrain[i] == GRASS && L.homeOf[i] < 0 && !L.strip[i] && L.region[i] == Commons; });
 	context.telemetry.measure("city-states.walls.cliff-vertices", cliffs);
 	context.telemetry.measure("city-states.walls.parapet-vertices", parapets);
 	// Every home is barren ground but round its own water, where its fields grow, with a grass verge
@@ -1890,7 +1895,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		14,
+		15,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
