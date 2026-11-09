@@ -5,6 +5,7 @@
 
 #include "Game.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include "Minimap.h"

@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # Scene headers may include each other, the client channel types and plain data
 # definitions, but no simulation object headers.
 TERRAIN_HEADERS = (
-    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'CellRules.h', 'TerrainRegistry.h',
+    'TerrainType.h', 'TerrainBuiltins.h', 'TerrainPresentation.h', 'TerrainProperties.h', 'CellRules.h', 'TerrainRegistry.h',
     'TerrainGroupTable.h', 'TerrainGroup.h', 'TerrainPropertiesLayout.h', 'TerrainPresentationLayout.h',
 )
 

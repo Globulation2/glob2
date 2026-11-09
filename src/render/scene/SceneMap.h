@@ -3,7 +3,7 @@
 
 #include "BitArray.h"
 #include "TerrainPresentation.h"
-#include "TerrainProperties.h"
+#include "TerrainPropertiesLayout.h"
 #include "CellRules.h"
 #include "Ressource.h"
 #include "ResourceRegistry.h"

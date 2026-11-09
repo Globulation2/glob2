@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Version.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include <type_traits>
 #include "PowerOfTwo.h"
 #include "ScriptObservations.h"

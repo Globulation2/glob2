@@ -16,7 +16,6 @@ src/engine/sim/presentation/SceneInputs.h -> src/render/scene/SceneExtract.h
 src/engine/sim/presentation/ScenePreparation.h -> src/render/scene/SceneBuffer.h
 src/engine/sim/snapshot/ObservationRecords.h -> src/ai/telemetry/AITelemetry.h
 src/engine/sim/snapshot/WorldSnapshot.h -> src/ai/BuildingCapabilities.h
-src/field/GradientBucket.h -> src/map/TerrainProperties.h
 src/field/GradientRecordRepresentation.h -> src/map/MapState.h
 src/field/RuntimeTerrainGradient.h -> src/map/CellRules.h
 src/field/RuntimeTerrainGradient.h -> src/map/TerrainRegistry.h

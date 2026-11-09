@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "DrawFixtures.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"

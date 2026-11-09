@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "TerrainBuiltins.h"
 #include "field/TerrainMovementCosts.h"
 #include "field/PreparedTerrainCosts.h"
 #include "TerrainProperties.h"
@@ -569,3 +570,8 @@ std::optional<TerrainType> TerrainRegistry::find(std::string_view key) const
 }
 
 const TerrainProperties& builtinTerrainProperties(TerrainType type) { return terrainProperties(type); }
+
+std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source)
+{
+	return deserialize(source, TERRAIN_COUNT);
+}

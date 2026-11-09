@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "field/Grid.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "PowerOfTwo.h"
 #include "MapImage.h"
 #include "TerrainCornerPresentation.h"

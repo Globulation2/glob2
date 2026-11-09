@@ -3,6 +3,8 @@
 // action round trips and the composed swatches (BrushSwatches.h).
 #include "HeadlessGlobals.h"
 #include "Map.h"
+#include "TerrainGroupTable.h"
+#include "TerrainBuiltins.h"
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "MapEditDialog.h"

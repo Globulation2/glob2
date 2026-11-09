@@ -20,6 +20,7 @@
 #include "Sketch.h"
 #include "TerrainCatalog.h"
 #include "Topology.h"
+#include "TerrainGroupTable.h"
 #include <climits>
 #include <functional>
 #include <algorithm>

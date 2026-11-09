@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OverviewTerrainCache.h"
+#include "TerrainBuiltins.h"
 #include "GlobalContainer.h"
 #include "GraphicContext.h"
 #include "scene/SceneMap.h"

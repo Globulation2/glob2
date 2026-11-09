@@ -15,6 +15,7 @@
 #include "TerrainCatalog.h"
 #include "Topology.h"
 #include "Unit.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>

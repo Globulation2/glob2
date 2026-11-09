@@ -8,6 +8,7 @@
 #include "Rock.h"
 #include "TerrainCatalog.h"
 #include "Topology.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>

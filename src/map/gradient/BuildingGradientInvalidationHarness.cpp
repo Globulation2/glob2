@@ -9,6 +9,7 @@
 // flag, which is never written into the building tile grid.
 #include "HeadlessGlobals.h"
 #include "sim/snapshot/SnapshotStore.h"
+#include "TerrainBuiltins.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GradientFixture.h"

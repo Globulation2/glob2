@@ -279,7 +279,11 @@ checksum adapter remains available for diagnostic fixtures.
   spires) for `TERRAIN_COUNT` 64.
   Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
-  a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
+  a format gate. The `TerrainType` enum in `src/map/TerrainType.h` is closed at
+  these 64, because about half of the code includes it: a new built-in takes the
+  next ID as an `inline constexpr TerrainType` in `src/map/TerrainBuiltins.h`,
+  which also holds `TERRAIN_COUNT`, so adding a terrain rebuilds only the tables,
+  the catalogue and the code sized by the count. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
   (from `src/map/io/TerrainFormatHistory.h`: `TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
   `TERRAIN_COUNT_BEFORE_GROUND_LOOKS`, `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE`,
   `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW`, `TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE`,

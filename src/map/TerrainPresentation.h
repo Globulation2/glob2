@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainType.h"
+#include "TerrainBuiltins.h"
 #include "TerrainPresentationLayout.h"
 #include <array>
 #include <cstdint>

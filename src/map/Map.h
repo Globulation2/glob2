@@ -187,7 +187,7 @@ class Map
 	std::shared_ptr<CellRuleTable> cellRuleTable;
 	const CellRule *cellRuleData = nullptr;
 	// Vertices per terrain type, and cells per cell rule.
-	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
+	std::vector<std::size_t> terrainCounts; // one per built-in terrain, sized in the constructor
 	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;

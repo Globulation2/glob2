@@ -59,7 +59,9 @@ class TerrainRegistry
 	// result still needs validating against the loaded registry.
 	static std::optional<unsigned> currentTerrainId(unsigned savedBuiltinCount, unsigned saved);
 	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
-																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
+																	  unsigned savedBuiltinCount);
+	// A file written with the current built-ins (savedBuiltinCount TERRAIN_COUNT).
+	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source);
 	// Saved definitions are resolved and authoritative: no authoring inheritance
 	// or local files are consulted during deserialization.
 	std::string serialize() const;
