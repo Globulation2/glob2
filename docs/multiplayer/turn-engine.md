@@ -251,12 +251,12 @@ pathfinding, AI code and parameters, order validation, map loading, random numbe
 scripting. Without a bump, builds that simulate differently share rooms, queues, AI
 ratings and verifiers, and their matches desync or fail verification. The revision
 only ever increases. A bump also needs a fresh golden record
-(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version), its
-trace and the other revision-keyed fixtures; `python3 tools/refresh_sim_fixtures.py`
-regenerates them all in the same change (the match record and trace, every `[golden]`
-doctest fixture, the telemetry traces and the Maxima continuation baseline), then runs
-`test/check_sim_revision.py`. Map generators have no committed rows; sim-diff compares
-their fingerprints between merge base and pull request.
+(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version) and
+the other revision-keyed fixtures; `python3 tools/refresh_sim_fixtures.py`
+regenerates them all in the same change (the match record and every `[golden]`
+doctest fixture), then runs `test/check_sim_revision.py`. Map generators have no
+committed rows; sim-diff compares their fingerprints between merge base and pull
+request.
 
 CI enforces what it can detect:
 
@@ -266,9 +266,9 @@ CI enforces what it can detect:
   pushes it audits each merge against its parent and opens an issue.
 - `test/check_sim_revision.py` (the change-selection job) checks that `SIM_REVISION`
   is an integer that never goes down.
-- The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
-  on a `match verify` trace that differs from the committed one: the simulation
-  changed.
+- `match verify` of the record must give a `verified` verdict against the checksums
+  its clients reported, in `TurnEngineHarness` and on every platform of the
+  browser/native equivalence job, which also requires their traces to agree.
 
 sim-diff's scenarios cover only what they run, so a passing check does not prove
 the simulation is unchanged; bump whenever a change can matter.

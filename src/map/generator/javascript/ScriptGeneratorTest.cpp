@@ -11,6 +11,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "Sha256.h"
+#include <set>
+#include <utility>
 
 namespace JSGen = MapGeneration::JavaScript;
 using Json = nlohmann::json;
@@ -524,7 +526,7 @@ TEST_CASE("Online generator installation verifies hashes and persists provenance
 	CHECK(library.origins().at(p->id).versionId == origin.versionId);
 }
 
-TEST_CASE("Shared generated worlds continue identically without installed generator code [golden]" *
+TEST_CASE("Shared generated worlds continue identically without installed generator code [sim-trace]" *
 		  doctest::test_suite("ScriptGenerator"))
 {
 	glob2test::HeadlessGlobals globals;
@@ -536,6 +538,7 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
     })"));
 	GeneratorRegistry registry({p->definition(1000000)});
 	std::string trace;
+	std::set<decltype(mapFingerprint(std::declval<Game &>()))> worlds;
 	for (const unsigned seed : {19u, 91u})
 	{
 		GenerationRequest request;
@@ -548,6 +551,9 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		REQUIRE(GenerationService(registry).generate(first, request));
 		REQUIRE(GenerationService(registry).generate(repeat, request));
 		REQUIRE(mapFingerprint(first) == mapFingerprint(repeat));
+		// The seed reaches the script: each seed gives its own world, with both teams.
+		CHECK(worlds.insert(mapFingerprint(first)).second);
+		CHECK(first.teamsCount() == 2);
 		trace +=
 			"world " + std::to_string(seed) + " " + std::to_string(mapFingerprint(first)) + "\n";
 		GameHeader header;
@@ -598,5 +604,6 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		}
 	}
 	glob2test::writeFile(glob2test::artifactDir() / "shared-generators.trace", trace);
-	glob2test::expectGolden("generators/shared-generator-trace.sha256", Online::Sha256::hex(trace) + "\n");
+	// The browser determinism run compares this artifact with the native one.
+	glob2test::recordSimTrace("generators/shared-generator-trace.sha256", Online::Sha256::hex(trace) + "\n");
 }

@@ -112,11 +112,11 @@ mismatch, rejects missing/truncated records, and excludes the aggregate checksum
 because it includes the save header/version. Run the retained late-game regression
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
-The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
-through 30511 against the current unit-era simulation's complete checksum-record hashes.
-Its midpoint reload also compares complete records, adjusting only the known
-save-format contribution to the aggregate checksum. Its compressed save, expected
-per-tick hashes, and reproduction commands are in
+The retained Maxima format-115 checkpoint runs all 512 ticks from 30000 through
+30511 and saves at 30256; the reload must reproduce every remaining complete
+record, adjusting only the known save-format contribution to the aggregate
+checksum. No expected trajectory is committed: `tools/sim_fingerprint.py` runs the
+same continuation for sim-diff. Its compressed save and reproduction commands are in
 [maxima/fixtures/save-continuation](../../../test/maxima/fixtures/save-continuation/README.md).
 
 ## Untrusted file regression coverage

@@ -1,4 +1,10 @@
-"""Complete JavaScript traces, worker equivalence and multiple saved continuations."""
+"""JavaScript execution: complete traces, worker equivalence and multiple saved continuations.
+
+The serial run is the reference: four compute workers must reproduce its replay,
+checksums and final save, and every saved continuation its remaining ticks. No
+committed trace is compared; tools/sim_fingerprint.py and the cross-platform
+scripting evidence cover simulation changes.
+"""
 import argparse
 import gzip
 import hashlib
@@ -180,39 +186,16 @@ def main():
     names = ('profile1', 'realistic-profile1') if args.fixture == 'all' else (args.fixture,)
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     for name in names:
-        released = gzip.decompress((FIXTURE / (name + '-256.checksums.gz')).read_bytes())
-        expanded = gzip.decompress((FIXTURE / (name + '-256-teams16.checksums.gz')).read_bytes())
-        released_ticks, expanded_ticks = complete_ticks(released), complete_ticks(expanded)
-        assert released_ticks.keys() == expanded_ticks.keys()
-        assert all(record[8:] == expanded_ticks[tick][8:]
-                   for tick, record in released_ticks.items()), name + ': released entity records differ'
-        # Preserve historical migration evidence independently of the current
-        # simulation trace. Still load the original version-125 save below.
-        trace = FIXTURE / (name + '-256-deep168.checksums.gz')
-        expected = gzip.decompress(trace.read_bytes())
         initial = FIXTURE / (name + '-initial159.game.gz')
-        header = save_header(initial)
-        # ScriptSimulationTest validates the real input, then normalizes its
-        # MapHeader version to 125 for the frozen trace. The CLI retains the
-        # loaded header. Adjust that single known contribution, retaining every
-        # other aggregate bit and all team/entity bytes.
-        fixture_header = (header[0], 125, *header[2:])
-        expected = adjust_header_checksum(expected, fixture_header, header, checksum_format=168)
-        ticks = complete_ticks(expected)
-        assert set(ticks) == set(range(256)), name + ': incomplete deep trace'
-        manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
-                                     'trace': str(trace.relative_to(ROOT)),
-                                     'releasedTraceSha256': hashlib.sha256(released).hexdigest(),
-                                     'teams16TraceSha256': hashlib.sha256(expanded).hexdigest(),
-                                     'traceSha256': hashlib.sha256(gzip.decompress(trace.read_bytes())).hexdigest(),
-                                     'executedTraceSha256': hashlib.sha256(expected).hexdigest(),
-                                     'fixtureHeaderVersion': 125, 'loadedHeaderVersion': header[1]}
         interval = 32 if name == 'realistic-profile1' else 128
         baseline = output / name / 'workers1'
         actual = run(binary, baseline, initial, 1, interval)
-        assert actual == expected, name + ': complete frozen trace differs'
+        ticks = complete_ticks(actual)
+        assert set(ticks) == set(range(256)), name + ': incomplete trace'
+        manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
+                                     'traceSha256': hashlib.sha256(actual).hexdigest()}
         parallel = output / name / 'workers4'
-        assert run(binary, parallel, initial, 4, interval) == expected
+        assert run(binary, parallel, initial, 4, interval) == actual, name + ': four workers differ from one'
         for filename in ('game.replay', 'game.replay.checksums', 'final.game.gz'):
             assert (baseline / filename).read_bytes() == (parallel / filename).read_bytes(), filename
         # Include either side of the 32-tick scenario callback/AI cadence, using

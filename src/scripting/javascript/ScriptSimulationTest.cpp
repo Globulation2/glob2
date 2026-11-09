@@ -12,7 +12,6 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <map>
-#include <zlib.h>
 #include "Unit.h"
 #include "Building.h"
 
@@ -200,45 +199,39 @@ void samePayload(std::string actual, std::string expected)
 	expected.erase(offset, 20);
 	CHECK(actual == expected);
 }
+// The serial run's per-tick records as text, one tick per line, for sim-diff.
+std::string traceText(const Records &records)
+{
+	static const char digits[] = "0123456789abcdef";
+	std::string text;
+	for (const auto &[tick, record] : records)
+	{
+		text += std::to_string(tick) + ' ';
+		for (const unsigned char byte : record)
+		{
+			text += digits[byte >> 4];
+			text += digits[byte & 15];
+		}
+		text += '\n';
+	}
+	return text;
+}
 void fixture(const std::string &name)
 {
 	const auto initial =
 		glob2test::inflated("test/fixtures/javascript/" + name + "-initial159.game.gz");
-	const auto released = glob2test::readFile(
-		glob2test::inflated("test/fixtures/javascript/" + name + "-256.checksums.gz"));
-	const auto expanded = glob2test::readFile(
-		glob2test::inflated("test/fixtures/javascript/" + name + "-256-teams16.checksums.gz"));
-	// Expanding the generation table changes its aggregate hash, even when the
-	// extra slots are unused. Keep every released team/entity field pinned too.
-	const auto releasedRecords = records(released);
-	const auto expandedRecords = records(expanded);
-	REQUIRE(releasedRecords.size() == expandedRecords.size());
-	for (const auto& [tick, record] : releasedRecords)
-	{
-		CAPTURE(tick);
-		REQUIRE(expandedRecords.contains(tick));
-		CHECK(record.substr(8) == expandedRecords.at(tick).substr(8));
-	}
 	const auto directory = glob2test::artifactDir();
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
-	// Configurable units have their own trace; retain released traces above and
-	// the terrain/resource traces as historical migration evidence.
-    const auto deepFixture = "test/fixtures/javascript/" + name + "-256-deep168.checksums.gz";
-    if (glob2test::updatingFixtures())
-    {
-        gzFile output = gzopen((glob2test::sourceRoot() / deepFixture).string().c_str(), "wb9");
-		REQUIRE(output != nullptr);
-		const auto written = gzwrite(output, serial.trace.data(), unsigned(serial.trace.size()));
-		const auto closed = gzclose(output);
-		REQUIRE(written == int(serial.trace.size()));
-		REQUIRE(closed == Z_OK);
-	}
-    CHECK(serial.trace==glob2test::readFile(glob2test::inflated(deepFixture)));
+	const auto expectedRecords = records(serial.trace);
+	// Every tick from the start through the automatic ending has its record.
+	REQUIRE(expectedRecords.size() == 256);
+	CHECK(expectedRecords.begin()->first == 0);
+	CHECK(expectedRecords.rbegin()->first == 255);
+	glob2test::recordSimTrace("javascript/" + name + "-simulation.trace", traceText(expectedRecords));
     const auto parallel = execute(initial, directory / "workers4", 4, false, true);
 	CHECK(parallel.trace == serial.trace);
 	CHECK(parallel.finalSave == serial.finalSave);
 	CHECK(parallel.replay == serial.replay);
-	const auto expectedRecords = records(serial.trace);
 	for (int boundary : {32, 128})
 	{
 		CAPTURE(boundary);
@@ -260,12 +253,12 @@ void fixture(const std::string &name)
 	CHECK(playback.trace == serial.trace);
 }
 } // namespace
-TEST_CASE("JavaScript original fixture executes, resumes and replays 256 ticks" *
+TEST_CASE("JavaScript original fixture executes, resumes and replays 256 ticks [sim-trace]" *
 		  doctest::test_suite("JavaScriptSimulation"))
 {
 	fixture("profile1");
 }
-TEST_CASE("JavaScript economic planners and map survey execute, resume and replay 256 ticks" *
+TEST_CASE("JavaScript economic planners and map survey execute, resume and replay 256 ticks [sim-trace]" *
 		  doctest::test_suite("JavaScriptSimulation"))
 {
 	fixture("realistic-profile1");

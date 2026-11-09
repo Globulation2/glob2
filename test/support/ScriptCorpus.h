@@ -38,6 +38,9 @@ inline void traceValue(std::ostream &output, const Script::Value &value, const s
 		break;
 	}
 }
+// Keeps a value as artifacts (the .value bytes are compared across platforms by the
+// scripting evidence) and records its trace for sim-diff. Nothing is compared with
+// a committed text: the calling case, tagged [sim-trace], asserts its behaviour.
 inline void retain(const std::string &name, const Script::Value &value)
 {
 	std::ostringstream trace;
@@ -45,6 +48,6 @@ inline void retain(const std::string &name, const Script::Value &value)
 	traceValue(trace, value, "root");
 	writeFile(artifactDir() / (name + ".value"), value.encode());
 	writeFile(artifactDir() / (name + ".txt"), trace.str());
-	expectGolden("javascript/" + name + ".txt", trace.str());
+	recordSimTrace("javascript/" + name + ".txt", trace.str());
 }
 } // namespace glob2test::script

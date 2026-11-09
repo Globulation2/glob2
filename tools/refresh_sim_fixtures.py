@@ -11,12 +11,9 @@ Steps, stopping at the first failure:
 1. Build the dev tier (tools/dev_build.py): the game and engine tests.
    Same-platform checksums match between dev, perf and release builds, so the
    dev build is a valid fixture producer.
-2. Rewrite the committed match record and verification trace
-   (TurnEngineHarness), then every other [golden] doctest fixture.
-3. Regenerate the telemetry simulation traces and the Maxima save-continuation
-   baseline (serial runs).
-4. Check the result with test/check_sim_revision.py --base <base>; this fails
-   while the match record still names the previous sim version.
+2. Rewrite the committed match record (TurnEngineHarness), then every other
+   [golden] doctest fixture.
+3. Check SIM_REVISION with test/check_sim_revision.py --base <base>.
 
 Map generators keep no committed rows: the sim-diff workflow compares every
 generator's fingerprint between the merge base and the pull request.
@@ -30,7 +27,6 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXECUTABLE = '.exe' if os.name == 'nt' else ''
 
 
 def dev_build_directory() -> Path:
@@ -64,11 +60,8 @@ def main(argv: list[str] | None = None) -> int:
         run('build the dev tier', [sys.executable, 'tools/dev_build.py', f'-j{args.jobs}',
                                    str((build / 'src/glob2').relative_to(ROOT)), 'engine-tests'])
     tests = [sys.executable, 'test/run_tests.py', '--build-dir', build, '--binary', 'engine', '-j', str(args.jobs)]
-    run('committed match record and trace', tests + ['--update-fixtures', '--filter', 'TurnEngineHarness/the committed*'])
+    run('committed match record', tests + ['--update-fixtures', '--filter', 'TurnEngineHarness/the committed*'])
     run('[golden] doctest fixtures', tests + ['--update-fixtures', '--tag', 'golden'])
-    glob2 = build / f'src/glob2{EXECUTABLE}'
-    run('telemetry simulation traces', [sys.executable, 'test/check_telemetry_simulation.py', glob2, '--update-fixtures'])
-    run('Maxima save continuation baseline', [sys.executable, 'test/maxima/check_save_continuation_fixture.py', glob2, '--update-fixtures'])
     run('sim version check', [sys.executable, 'test/check_sim_revision.py', '--base', args.base])
     print('\nrefresh_sim_fixtures: done; review `git status` and commit the regenerated fixtures with the change.')
     return 0
