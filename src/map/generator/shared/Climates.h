@@ -22,7 +22,7 @@ namespace MapGeneration
 //   CLIFFS       cliff: sea cliffs, borders, mountain mass                      Obstacles
 //   RIDGE_ROCK   rock: walls towers shoot over                                  Ridges
 //   TRAIL        town, street, road, deck or bridge (the generator says which)  Paths
-//   DIRT         scrub, mottled with scrubAccent                                Barren
+//   DIRT         scrub                                                          Barren
 //   MUD          rough                                                          Rough
 //   LOAM         fertile                                                        Fertile
 //   WATER        stays water, or deep where the generator says                  Water / Deep water
@@ -35,25 +35,23 @@ struct ClimateLook
 	TerrainType beach;                    // Sand
 	TerrainType town, street, road, deck; // Paths
 	TerrainType bridge;                   // Paths
-	TerrainType scrub, scrubAccent;       // Barren
+	TerrainType scrub;                    // Barren
 	TerrainType deep;                     // Deep water
 	TerrainType rough;                    // Rough
-	TerrainType fertile, fertileAccent;   // Fertile
+	TerrainType fertile;                  // Fertile
 	TerrainType rockAccent;               // Ridges: a second rock, for tiers and banding
 	TerrainType farmGrass;                // Grass: farm rows' crop ground
 };
 // The order is part of every map that draws a climate: append, never reorder.
 inline constexpr ClimateLook kClimateLooks[] = {
 	{"temperate", CLIFFS, RIDGE_ROCK, LUSH_GRASS, GRASS, PALE_SAND, BRICK_PATH, BRICK_PATH,
-	 OVERGROWN_ROAD, SLATE_ASHLAR, BOARDWALK, CLAY, HEATH, DEEP_WATER, MUDFLAT, LOAM, SPRING_MEADOW,
-	 OUTCROP, LUSH_GRASS},
+	 OVERGROWN_ROAD, SLATE_ASHLAR, BOARDWALK, CLAY, DEEP_WATER, MUDFLAT, LOAM, OUTCROP, LUSH_GRASS},
 	{"arid", SANDSTONE_BENCHES, HOODOOS, GRASS, DRY_GRASS, DUNE_SAND, SANDSTONE, SANDSTONE, TRAIL,
-	 SANDSTONE, BOARDWALK, LATERITE, WEATHERED_SANDSTONE, DEEP_WATER, HARDPAN, LOAM, LOAM,
-	 TERMITE_MOUNDS, DRY_GRASS},
+	 SANDSTONE, BOARDWALK, LATERITE, DEEP_WATER, HARDPAN, LOAM, TERMITE_MOUNDS, DRY_GRASS},
 	{"highland", GRANITE_TORS, RIDGE_ROCK, GRASS, GRASS, SAND, SLATE_ASHLAR, SLATE_ASHLAR, TRAIL,
-	 SLATE_ASHLAR, BOARDWALK, SHALE, TUNDRA, DEEP_WATER, SCREE, MOSS, LOAM, OUTCROP, GRASS},
+	 SLATE_ASHLAR, BOARDWALK, SHALE, DEEP_WATER, SCREE, MOSS, OUTCROP, GRASS},
 	{"volcanic", OBSIDIAN_RIDGE, OUTCROP, GRASS, DRY_GRASS, SAND, SCORIA_BLOCKS, BASALT_CAUSEWAY,
-	 BASALT_CAUSEWAY, BASALT_CAUSEWAY, BOARDWALK, VOLCANIC_ASH, DIRT, DARK_WATER, PUMICE, LOAM, MOSS,
+	 BASALT_CAUSEWAY, BASALT_CAUSEWAY, BOARDWALK, VOLCANIC_ASH, DARK_WATER, PUMICE, LOAM,
 	 PETRIFIED_STUMPS, DRY_GRASS},
 };
 inline constexpr int kClimateCount = int(sizeof(kClimateLooks) / sizeof(kClimateLooks[0]));
@@ -75,11 +73,9 @@ static_assert(
 				terrainGroup(c.deck) != TerrainGroup::Paths ||
 				terrainGroup(c.bridge) != TerrainGroup::Paths ||
 				terrainGroup(c.scrub) != TerrainGroup::Barren ||
-				terrainGroup(c.scrubAccent) != TerrainGroup::Barren ||
 				terrainGroup(c.deep) != TerrainGroup::DeepWater ||
 				terrainGroup(c.rough) != TerrainGroup::Rough ||
-				terrainGroup(c.fertile) != TerrainGroup::Fertile ||
-				terrainGroup(c.fertileAccent) != TerrainGroup::Fertile)
+				terrainGroup(c.fertile) != TerrainGroup::Fertile)
 				return false;
 		return true;
 	}(),
@@ -110,8 +106,9 @@ struct LookRoles
 	std::function<bool(int)> farm; // grass of a farm's rows: the climate's farm grass
 };
 
-/// Paints the climate over a finished mechanic sketch (see the header). Barren, lava and fertile
-/// ground are mottled by a fixed speckle of the vertex coordinates, not a random draw.
+/// Paints the climate over a finished mechanic sketch (see the header). Barren and fertile ground
+/// take one terrain each, unmottled; lava is mottled with molten pools by a fixed speckle of the
+/// vertex coordinates, not a random draw.
 void paintClimate(TerrainSketch &, const Torus &, const ClimateLook &, const LookRoles &);
 
 /// A colony's base drawn as barren ground (DIRT: buildable, and no crop ever grows on it), for maps

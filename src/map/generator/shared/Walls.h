@@ -270,6 +270,15 @@ int cliffCoast(TerrainSketch &, const Torus &, const std::function<bool(int)> &w
 std::vector<unsigned char> wallVertices(const Torus &, const std::vector<unsigned char> &tiles,
 										const std::vector<unsigned char> *keepOpen = nullptr,
 										const std::vector<unsigned char> *strict = nullptr);
+/// Thickens every Ridges wall (RIDGE_ROCK vertices) to at least three vertices: each rock vertex
+/// ends up in a full 3x3 block of rock, so the wall has tiles whose four corners are all rock, the
+/// only tiles a ridge look draws its peaks on (a two-vertex band, above all a diagonal or curved
+/// one, draws as bare ground). For each vertex outside such a block the pass completes the block
+/// round it that needs the fewest new vertices, all of which `canGrow` must allow (never a door,
+/// a lane, water or paving), preferring the block with the most rock round it. Returns the vertices
+/// added; `unresolved`, when given, counts the rock vertices no allowed block could complete.
+int thickenRidges(TerrainSketch &, const Torus &, const std::function<bool(int)> &canGrow,
+				  int *unresolved = nullptr);
 /// Whether vertex i is a corner of some `tiles` tile.
 bool cornerOf(const Torus &, const std::vector<unsigned char> &tiles, int i);
 

@@ -15,8 +15,11 @@ Revision 5 draws every wall, coast and road from the terrain catalogue, where ea
 stood the stone resource on grass and drew roads in sand. The design uses one terrain per rule, and a
 last pass paints one of four climates (temperate, arid, highland, volcanic; `carousel-climate`), the same
 for every colony, with looks that keep those rules (`shared/Climates.h`). Walls are drawn on
-vertices and lean away from the open ground beside them (`wallVertices`), so no lane, door or home
-loses a tile to a wall.
+vertices and lean away from the open ground beside them (`wallVertices`), so no lane or door
+loses a tile to a wall. Since revision 7 every Ridges wall is at least three vertices thick
+(`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
+draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
+no longer speckled with a second.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -34,7 +37,10 @@ stay unbuildable is rough ground.
 | Deep water | Deep water | Open sea five vertices or more from land | Slower swimming, no algae |
 
 Every home has two quarry faces of 12 stone each at the foot of its outer walls, away from the siege
-line: the walls were its stone when they were built of it. They are unscaled.
+line: the walls were its stone when they were built of it. Since revision 6 every starting tower also
+has a face of 6 stone at the foot of the wall it stands against, within four tiles of it, so its
+carriers restock in a few steps instead of a dozen or more; where that foot is barren or paved, a
+grass niche is opened for it first. Both are unscaled.
 
 
 - **Geometry** (`geometryFor`, `drawLanes`). Designed once in the wedge's frame and turned for every

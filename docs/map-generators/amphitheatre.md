@@ -11,8 +11,11 @@ Revision 6 draws every wall, coast and road from the terrain catalogue, where ea
 stood the stone resource on grass and drew roads in sand. The design uses one terrain per rule, and a
 last pass paints one of four climates (temperate, arid, highland, volcanic; `amphitheatre-climate`), the same
 for every colony, with looks that keep those rules (`shared/Climates.h`). Walls are drawn on
-vertices and lean away from the open ground beside them (`wallVertices`), so no lane, door or home
-loses a tile to a wall.
+vertices and lean away from the open ground beside them (`wallVertices`), so no lane or door
+loses a tile to a wall. Since revision 8 every Ridges wall is at least three vertices thick
+(`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
+draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
+no longer speckled with a second.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -38,7 +41,9 @@ stay unbuildable is rough ground.
 - **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
   of the way to the shallowest territory's far end; the wheat and wood kit faces the nearest sea, and
   two quarry faces of 12 stone each stand at the foot of the territory's side borders, as deep from
-  the ramp as the swarm; scattered fields by `furnishGround`.
+  the ramp as the swarm; since revision 7 every starting tower also has a face of 6 stone at the foot
+  of the wall it stands against by the ramp, kept two steps from the ramp; scattered fields by
+  `furnishGround`.
 - **Inland seas.** `bay-size` percent of the smallest territory, split into two seas, one either side
   of the home (`growLakeBeside`), each wholly on its side of the line from the ramp through the home
   and ten tiles clear of it, seven from any wall. Where any territory lacks the room, every territory
