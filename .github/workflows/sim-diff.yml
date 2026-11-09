@@ -6,11 +6,20 @@ name: sim-diff
 # first scenario, tick and component that differ. Runs only when the change
 # reaches the simulation path (ci_policy.touches_simulation).
 #
-# Shadow mode: the verdict is reported beside the sim version check and never
-# fails the run. See "Simulation diff" in docs/development/simulation-verification.md.
+# Verdict, with the sim version key of each side (test/check_sim_revision.py --key-at):
+#   output differs, key unchanged -> fail (bump SIM_REVISION)
+#   output differs, key changed   -> pass
+#   output equal,   key changed   -> warning (equal output does not prove behaviour
+#                                    is unchanged, so it never forbids a bump)
+# Generator maps are keyed by generator revision, so a generator change that bumps
+# its own revision is a new scenario, not a difference. On master pushes the same
+# comparison against the parent commit is a post-merge audit that opens an issue
+# instead of failing. See "Simulation diff" in docs/development/simulation-verification.md.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [master]
   workflow_dispatch:
 
 concurrency:
@@ -38,7 +47,8 @@ jobs:
           filter: blob:none
       - id: paths
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || 'origin/master' }}
+          # A master push is audited against the commit before it.
+          BASE_SHA: ${{ github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before) || 'origin/master' }}
         run: |
           base=$(git merge-base "$BASE_SHA" HEAD)
           echo "base=$base" >> "$GITHUB_OUTPUT"
@@ -52,11 +62,14 @@ jobs:
           PY
 
   sim-diff:
-    name: sim-diff (shadow)
+    name: sim-diff
     needs: relevant
     if: ${{ needs.relevant.outputs.simulation == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 150
+    permissions:
+      contents: read
+      issues: write  # the post-merge audit opens an issue
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache
@@ -112,31 +125,55 @@ jobs:
           python3 tools/sim_fingerprint.py ../glob2-base/build/linux/client/perf/src/glob2 \
             --checkout ../glob2-base --out artifacts/sim-diff/base.json.gz
           python3 tools/sim_fingerprint.py build/linux/client/perf/src/glob2 --out artifacts/sim-diff/candidate.json.gz
-      - name: Report the verdict (shadow mode)
+      - name: Judge the verdict
+        id: verdict
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set +e
           python3 tools/sim_diff.py artifacts/sim-diff/base.json.gz artifacts/sim-diff/candidate.json.gz \
             --json artifacts/sim-diff/verdict.json | tee artifacts/sim-diff/verdict.txt
           status=${PIPESTATUS[0]}
-          revision() { git show "$1:src/game/SimRevision.h" | grep -oE '#define SIM_REVISION +[0-9]+' | grep -oE '[0-9]+$'; }
-          base_rev=$(revision "$BASE"); head_rev=$(revision HEAD)
+          set -e
+          base_key=$(python3 test/check_sim_revision.py --key-at "$BASE")
+          head_key=$(python3 test/check_sim_revision.py --key-at HEAD)
           {
-            echo "### sim-diff (shadow mode)"
+            echo "### sim-diff"
             echo
-            echo "SIM_REVISION: $base_rev on the merge base, $head_rev here."
+            echo "Sim version key: \`$base_key\` on the base, \`$head_key\` here."
             echo
             echo '```'
             cat artifacts/sim-diff/verdict.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "$status" = 1 ] && [ "$base_rev" = "$head_rev" ]; then
-            echo "::warning::sim-diff: the simulation output changed without a SIM_REVISION bump (shadow mode: not failing)"
-          elif [ "$status" = 0 ] && [ "$base_rev" != "$head_rev" ]; then
-            echo "::notice::sim-diff: SIM_REVISION was bumped but no scenario changed; equal output does not prove behaviour is unchanged"
-          elif [ "$status" = 2 ]; then
-            echo "::warning::sim-diff could not compare the bundles"
+          if [ "$status" = 2 ]; then
+            echo "::error::sim-diff could not compare the bundles"
+            exit 1
           fi
-          exit 0
+          if [ "$status" = 0 ]; then
+            if [ "$base_key" != "$head_key" ]; then
+              echo "::warning::sim-diff: the sim version key moved but no scenario changed; equal output does not prove behaviour is unchanged, so the bump stands"
+            fi
+            exit 0
+          fi
+          if [ "$base_key" != "$head_key" ]; then
+            echo "::notice::sim-diff: simulation output changed and the sim version key moved"
+            exit 0
+          fi
+          message="the simulation output changed but the sim version key did not; bump SIM_REVISION in src/game/SimRevision.h (or, for a generator, its revision)"
+          if [ "$EVENT" = push ]; then
+            echo "::warning::sim-diff post-merge audit: $message"
+            short=$(git rev-parse --short HEAD)
+            gh issue create --title "sim-diff: $short changed simulation output without a sim version bump" \
+              --body "$(printf 'The post-merge audit compared %s with its parent %s.\n\n```\n%s\n```\n\n%s\n\nRun: %s\n' \
+                "$(git rev-parse HEAD)" "$BASE" "$(cat artifacts/sim-diff/verdict.txt)" "$message" "$RUN_URL")" || \
+              echo "::warning::could not open the audit issue"
+            exit 0
+          fi
+          echo "::error::sim-diff: $message"
+          exit 1
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

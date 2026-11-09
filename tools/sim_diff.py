@@ -66,6 +66,20 @@ def unmatched(base: dict, cand: dict) -> list[str]:
     return sorted(set(base['scenarios']) ^ set(cand['scenarios']))
 
 
+def unmatched_maps(base: dict, cand: dict) -> list[str]:
+    """Generator rows only one build has, per scenario: a generator whose revision moved."""
+    notes = []
+    for name in sorted(set(base['scenarios']) & set(cand['scenarios'])):
+        b, c = base['scenarios'][name], cand['scenarios'][name]
+        if 'maps' in b and 'maps' in c:
+            only_base, only_cand = set(b['maps']) - set(c['maps']), set(c['maps']) - set(b['maps'])
+            generators = sorted({key.split(' ', 1)[0] for key in only_base | only_cand})
+            if generators:
+                notes.append(f'{name}: {len(only_base)} rows only in the base and {len(only_cand)} only in '
+                             f'the candidate ({", ".join(generators)})')
+    return notes
+
+
 def compare(base: dict, cand: dict) -> list[dict]:
     if base.get('schema') != cand.get('schema'):
         raise ValueError(f'bundle schemas differ: {base.get("schema")} vs {cand.get("schema")}')
@@ -82,8 +96,10 @@ def compare(base: dict, cand: dict) -> list[dict]:
         elif b['kind'] == 'trace':
             found = first_line_difference(b['lines'], c['lines'])
         else:
-            changed = sorted(key for key in set(b['maps']) | set(c['maps'])
-                             if b['maps'].get(key) != c['maps'].get(key))
+            # A row only one side has is a new generator revision, request or
+            # generator (noted by unmatched_maps), not a simulation difference.
+            changed = sorted(key for key in set(b['maps']) & set(c['maps'])
+                             if b['maps'][key] != c['maps'][key])
             found = {'tick': None, 'component': f'{len(changed)} generator maps, first: {changed[0]}'} if changed else None
         if found:
             differences.append({'scenario': name, **found})
@@ -103,13 +119,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f'sim-diff: cannot compare: {error}', file=sys.stderr)
         return 2
     alone = unmatched(base, cand)
+    revised = unmatched_maps(base, cand)
     verdict = {'equal': not differences, 'scenarios': len(set(base['scenarios']) & set(cand['scenarios'])),
-               'differences': differences, 'unmatched': alone}
+               'differences': differences, 'unmatched': alone, 'unmatched_maps': revised}
     if args.json:
         args.json.write_text(json.dumps(verdict, indent=2) + '\n')
     for name in alone:
         side = 'candidate' if name in cand['scenarios'] else 'base'
         print(f'sim-diff: note: {name} is only in the {side}; not compared')
+    for note in revised:
+        print(f'sim-diff: note: {note}; not compared')
     if not differences:
         print(f'sim-diff: all {verdict["scenarios"]} shared scenarios match')
         return 0
