@@ -40,12 +40,14 @@ EXECUTABLE = '.exe' if os.name == 'nt' else ''
 
 
 def dev_build_directory() -> Path:
+    # build_identity imports scons/dev_build.py lazily; keep scons/ first on the path
+    # until it returns, or tools/dev_build.py (this script's directory) shadows it.
     sys.path.insert(0, str(ROOT / 'scons'))
     try:
         from build_layout import build_identity, default_directory
+        return ROOT / default_directory(build_identity({'dev_fast': '1', 'linker': 'auto'}))
     finally:
         sys.path.pop(0)
-    return ROOT / default_directory(build_identity({'dev_fast': '1', 'linker': 'auto'}))
 
 
 def run(step: str, command: list[str], **kwargs) -> None:

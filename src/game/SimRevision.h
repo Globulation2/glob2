@@ -5,8 +5,10 @@
 // simulation computes from the same MatchSetup and orders, even when the save
 // format (VERSION_MINOR) and the network protocol (NET_PROTOCOL_VERSION) stay
 // the same: game rules, units, buildings, pathfinding, AI code and parameters,
-// order validation, map loading, random number use, scripting (including the
-// installed catalog codes accepted as legacy SGSL language tokens).
+// order validation, map loading, random number use and scripting. Adding or
+// removing a translation catalog needs no bump: SGSL lexes installed catalog codes
+// as language tokens, so data/texts.list.txt is one of the hashed sim data files
+// and the key moves with it.
 //
 // It feeds the sim version key (Online::SimVersion, see "Simulation version" in
 // docs/multiplayer/turn-protocol.md), which partitions rooms, queues, AI ratings
