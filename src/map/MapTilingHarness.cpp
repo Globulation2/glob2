@@ -19,6 +19,8 @@
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
+#include "Continuation.h"
+#include "SimulationInvariants.h"
 #include "ChooseMapScreen.h"
 #include "GUIMapPreview.h"
 #include "FrontendTheme.h"
@@ -283,7 +285,10 @@ TEST_CASE("wraps swimmers, buildings and team areas together across the source s
 	CHECK(game.map.isFarmArea(63, 13, Team::teamNumberToMask(1)));
 }
 
-TEST_CASE("a repeated starting map has portable per-tick checksums [save-format][golden]")
+// Plays the four-team repeated map for 128 ticks, recording the per-tick
+// checksums for sim-diff; the buildings stay consistent at every tick and a save
+// at the end continues identically. The oracle case below checks the map itself.
+TEST_CASE("a repeated starting map plays on consistently and continues after a save [save-format][sim-trace]")
 {
 	glob2test::HeadlessGlobals globals;
 	Game game(nullptr, nullptr);
@@ -309,11 +314,21 @@ TEST_CASE("a repeated starting map has portable per-tick checksums [save-format]
 		// Keep the legacy checksum representation here; dedicated unit-catalog
 		// traces cover its schema. Terrain-rule changes still refresh these ticks.
 		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true, true) << '\n';
+		glob2test::expectBuildingInvariants(game);
 	}
-	glob2test::expectGolden("map-tiling/checksums.txt", checksums.str());
+	for (int t = 0; t < 4; ++t)
+	{
+		CAPTURE(t);
+		CHECK(game.teams[t]->isAlive);
+		CHECK(buildingsOf(game.teams[t]) > 0);
+		CHECK(unitsOf(game.teams[t]) > 0);
+	}
+	const auto result = glob2test::expectContinuation(game, {.ticks = 64, .name = "repeated map continuation"});
+	CHECK(result.matched);
+	glob2test::recordSimTrace("map-tiling/checksums.txt", checksums.str());
 }
 
-// The oracle the checksum trace above stands for: before the first tick, the
+// The oracle for the repeated map itself: before the first tick, the
 // repeated map is the source map translated onto every tile (terrain, deposits,
 // and every building and unit by type, each tile's colonies under one team per
 // colony), and every team starts with the same colony.

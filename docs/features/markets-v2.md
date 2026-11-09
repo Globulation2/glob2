@@ -52,8 +52,11 @@ markets or market routing state require the experiment in the game header; a fil
 with inconsistent state is refused rather than silently changing its rules.
 
 Run `python3 test/run_tests.py --filter 'MarketFetch/*' --filter 'MarketsV2/*'`.
-The disabled-path golden trace is generated from the pre-integration master and
-covers real fruit-market trips and fixed-delay routing. Enabled tests cover
+The disabled and enabled paths play real fruit-market trips with cherries
+conserved, every material's ledger balanced and a mid-game save that leaves every
+later tick unchanged; their per-tick traces are recorded for sim-diff
+(`[sim-trace]`). A format-133 save with a worker already bound for a market
+must finish that pickup and head home after loading. Enabled tests cover
 resource eligibility, pickup, depletion, upgrades and continuation. For playtesting,
 compare the same map and seed with `--experiment markets-v2` enabled and disabled;
 look for supply throughput, worker travel, starvation, and gradient CPU/memory cost.

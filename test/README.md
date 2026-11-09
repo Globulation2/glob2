@@ -48,7 +48,7 @@ python3 tools/dev_build.py map-tests && python3 test/run_tests.py --binary map  
 python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
 python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
 python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
-python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
+python3 test/run_tests.py --update-fixtures --tag golden   # rewrite committed goldens
 ```
 
 The `Maxima.Farming` fertility-cache case checks correctness in every build; its
