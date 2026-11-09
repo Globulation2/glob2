@@ -267,7 +267,7 @@ In this order, because each step is cheaper than the next and rules out differen
 4. **The control study.** State per control what should move and which way, *then* read the table —
    see [the tuning playbook](tuning-playbook.md). A report says what moved, not whether the right
    thing moved.
-5. **The envelope sweep.** `scripts/sweep_shapes.sh`, every shape against every colony count.
+5. **The envelope sweep.** `scripts/sweep_shapes.py`, every shape against every colony count.
 6. **The fairness tournament.** `tools/map_fairness_tournament.py`, with Symmetric arena as the
    control. **This is the only step that would have caught Even Ground.** Everything above it passed.
 

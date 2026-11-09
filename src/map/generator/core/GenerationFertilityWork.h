@@ -9,7 +9,7 @@ namespace MapGeneration
 // their external work explicitly rather than changing simulation's inner loops.
 inline void generationFertilityRebuildWork(int width, int height)
 {
-	if (!generationWork)
+	if (!generationWorkActive())
 		return;
 	const auto tiles = std::uint64_t(width) * height;
 	// 31*31 offsets, four box passes and up to 61 padded samples per tile on
@@ -20,7 +20,7 @@ inline void generationFertilityRebuildWork(int width, int height)
 
 inline void generationFertilityMapWork(const GenerationMap &map)
 {
-	if (!generationWork)
+	if (!generationWorkActive())
 		return;
 	const auto width = map.getW(), height = map.getH();
 	const auto tiles = std::uint64_t(width) * height;

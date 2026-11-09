@@ -3,6 +3,8 @@
 Without GLOB2_BUILD_DIR the newest native client build wins: the fast development
 build that tools/dev_build.py produces (build/<toolchain>/client/debug/dev-*) or
 the release build (build/<toolchain>/client/release), judged by its binaries.
+study_binary() also considers the optimized perf builds (dev_build.py perf=1),
+for map studies and sweeps that run thousands of generations.
 """
 import os
 from pathlib import Path
@@ -34,3 +36,31 @@ def native_build_directory():
 
 def native_binary(name='glob2'):
     return native_build_directory() / 'src' / (name + EXECUTABLE)
+
+
+def _client_builds():
+    toolchain = 'mingw' if os.name == 'nt' else platform.system().lower()
+    client = ROOT / 'build' / toolchain / 'client'
+    return [client / 'release', client / 'perf', client / 'perf' / 'o3',
+            *sorted((client / 'debug').glob('dev-*'))]
+
+
+def study_binary():
+    """The newest native client, perf builds included: (path, optimized).
+
+    Newest, not fastest, so a study never runs code older than the last build.
+    A perf build is several times faster than a dev build for generation.
+    """
+    if os.environ.get('GLOB2_BUILD_DIR'):
+        return native_binary(), 'debug' not in native_binary().parts
+    built = []
+    for path in _client_builds():
+        binary = path / 'src' / ('glob2' + EXECUTABLE)
+        try:
+            built.append((binary.stat().st_mtime, binary, 'debug' not in path.parts))
+        except OSError:
+            pass
+    if not built:
+        return native_binary(), False
+    _, binary, optimized = max(built)
+    return binary, optimized

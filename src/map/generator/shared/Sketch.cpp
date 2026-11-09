@@ -1,3 +1,4 @@
+#include <array>
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -134,6 +135,33 @@ std::vector<unsigned char> pureTiles(const TerrainSketch &terrain, const Torus &
 std::vector<unsigned char> walkableTiles(const TerrainSketch &terrain, const Torus &t)
 {
 	std::vector<unsigned char> walkable(terrain.size(), 0);
+	if (!generationWorkActive())
+	{
+		// Native generation: most tiles have four equal corners, whose combined rule depends
+		// only on that terrain, so combine each terrain's once; mixed tiles combine as before.
+		std::array<signed char, 256> uniform;
+		uniform.fill(-1);
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			const unsigned char a = terrain.at(i), b = terrain.at(t.at(x + 1, y)),
+								c = terrain.at(t.at(x, y + 1)), d = terrain.at(t.at(x + 1, y + 1));
+			if (a == b && a == c && a == d)
+			{
+				if (uniform[a] < 0)
+				{
+					const auto &p = terrainProperties(TerrainType(a));
+					uniform[a] = combineCornerRules(p, p, p, p).walkable;
+				}
+				walkable[i] = uniform[a];
+			}
+			else
+				walkable[i] = combineCornerRules(terrainProperties(TerrainType(a)), terrainProperties(TerrainType(b)),
+												 terrainProperties(TerrainType(c)), terrainProperties(TerrainType(d)))
+								  .walkable;
+		}
+		return walkable;
+	}
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();

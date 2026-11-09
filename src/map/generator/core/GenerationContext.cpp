@@ -36,7 +36,7 @@ std::uint32_t GenerationContext::deriveSeed(std::uint32_t seed, const std::strin
 std::mt19937 &GenerationContext::stream(const std::string &name)
 {
 	const auto existing = streams.find(name);
-	if (MapGeneration::generationWork)
+	if (MapGeneration::generationWorkActive())
 	{
 		MapGeneration::generationCheckpoint();
 		if (name.size() > 128 || (existing == streams.end() && streams.size() >= 256))

@@ -39,6 +39,7 @@ _glob2() {
       'info|paths') command_path='info paths';;
       'map|generate') command_path='map generate';;
       'map|study') command_path='map study';;
+      'map|study-worker') command_path='map study-worker';;
       'map|generators') command_path='map generators';;
       'map|preview') command_path='map preview';;
       'map|render') command_path='map render';;
@@ -62,7 +63,7 @@ _glob2() {
     'dev') compadd random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker;;
     'game') compadd migrate run repeat;;
     'info') compadd version sim-version catalog paths;;
-    'map') compadd generate study generators preview render import-image export-image inspect-package validate-set;;
+    'map') compadd generate study study-worker generators preview render import-image export-image inspect-package validate-set;;
     'match') compadd verify;;
     'online') compadd join play-map host-map turn-client;;
     'script') compadd check attach;;
@@ -145,6 +146,7 @@ _glob2() {
       '--scenario-config[scenario-config]:value:_files' \
       '--map-image[map-image]:value:_files' \
       '--export-generator-package[export-generator-package]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
       '--help[help]' \
       '*:file:_files';;
     'map study') _arguments -s \
@@ -161,6 +163,13 @@ _glob2() {
       '*--report[report]:value:(headroom diagnostics timing terrain)' \
       '*--perturb[perturb]:value:' \
       '--building-artwork[building-artwork]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map study-worker') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
       '--help[help]' \
       '*:file:_files';;
     'map generators') _arguments -s \
@@ -177,6 +186,7 @@ _glob2() {
       '--preview[preview]:value:_files' \
       '--preview-size[preview-size]:value:' \
       '--preview-scale[preview-scale]:value:(2 4 8)' \
+      '--compute-threads[compute-threads]:value:' \
       '--help[help]' \
       '*:file:_files';;
     'map render') _arguments -s \
@@ -186,6 +196,7 @@ _glob2() {
       '--render-max-pixels[render-max-pixels]:value:' \
       '--render-field[render-field]:value:_files' \
       '--field-color[field-color]:value:' \
+      '--compute-threads[compute-threads]:value:' \
       '--help[help]' \
       '*:file:_files';;
     'map import-image') _arguments -s \

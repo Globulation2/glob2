@@ -35,11 +35,11 @@ Use the generator catalogs to pick the closest precedents, then read their curre
 | [`tournament_starts.py`](scripts/tournament_starts.py) | A rotation tournament's per-start economy, optionally joined to a per-colony design draw |
 | [`control_study.py`](scripts/control_study.py) | Any generator's one-control-at-a-time study and random rolls, in parallel, with dead steps flagged |
 | [`refusal_sweep.py`](scripts/refusal_sweep.py) | One control over many seeds, reporting the refusal rate per value: how the top of a range gets found |
-| [`sweep_shapes.sh`](scripts/sweep_shapes.sh) | Every map shape and colony count, three seeds, refusals listed |
+| [`sweep_shapes.py`](scripts/sweep_shapes.py) | Every map shape and colony count, three seeds, refusals listed |
 | [`final_map_stats.py`](scripts/final_map_stats.py) | Several generators' finished maps side by side at their defaults |
 | [`contact_sheet.py`](scripts/contact_sheet.py) | A labelled grid of previews across settings or seeds |
 
-Each script's header gives the commands that produce its input.
+Each script's header gives the commands that produce its input. The sweeps run one process per logical CPU and pick the newest build; build `python3 tools/dev_build.py perf=1` after a change before a large study, since the `-O0` dev build generates several times slower ([iteration speed](references/implementation-and-verification.md#iteration-speed)).
 
 ## Turn the idea into a playable contract
 

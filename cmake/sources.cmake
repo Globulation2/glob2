@@ -876,6 +876,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/RecordingEncoder.cpp
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/RecordingSession.cpp
+    libs/gag/src/ParallelPresentationWork.cpp
     libs/gag/src/PerformanceTelemetry.cpp
     libs/gag/src/BackgroundFileWriter.cpp
     libs/gag/src/Sha1.cpp

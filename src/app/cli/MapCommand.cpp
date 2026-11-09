@@ -515,7 +515,7 @@ int runMapCommand(const Cli::Request &cli)
 			}
 			else if (arg == "--data-dir")
 				directories.push_back(value);
-			else if (arg != "--generator-package")
+			else if (arg != "--generator-package" && arg != "--compute-threads") // applied by dispatch
 				throw std::invalid_argument("Unknown option for " + mode + ": " + arg);
 		}
 		if (!writesMap && !exporting && !render)

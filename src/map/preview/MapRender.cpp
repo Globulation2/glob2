@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GraphicContext.h>
+#include <ParallelPresentationWork.h>
+#include "ParallelFor.h"
 #include "MapRender.h"
 #include "GameDiagnostics.h"
 #include "Game.h"
@@ -81,6 +83,8 @@ void toPng(const PresentationFrame& scene, const std::string& path, int maximumP
 		rendered.panels.building.type=remap(rendered.panels.building.type);
 		rendered.buildingTypes=std::move(types);
 	}
+	// Nothing else runs during an export: compose terrain pages on every core.
+	GAGCore::OfflineRenderScope parallel(ParallelFor::limit());
 	globalContainer->gfx->drawToSurface(canvas.get(), float(std::min(extent, maximumPixels))/extent, [&] {
 		ViewState view;
 		view.scene = &rendered;

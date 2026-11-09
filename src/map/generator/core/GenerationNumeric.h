@@ -10,7 +10,7 @@ namespace MapGeneration::Numeric
 	template <class T> auto name(T x)                                                              \
 	{                                                                                              \
 		using R = decltype(std::name(x));                                                          \
-		if (generationWork)                                                                        \
+		if (generationWorkActive())                                                                        \
 			return static_cast<R>(glob2_math_##name(double(x)));                                   \
 		return std::name(x);                                                                       \
 	}
@@ -18,7 +18,7 @@ namespace MapGeneration::Numeric
 	template <class T, class U> auto name(T x, U y)                                                \
 	{                                                                                              \
 		using R = decltype(std::name(x, y));                                                       \
-		if (generationWork)                                                                        \
+		if (generationWorkActive())                                                                        \
 			return static_cast<R>(glob2_math_##name(double(x), double(y)));                        \
 		return std::name(x, y);                                                                    \
 	}
@@ -36,7 +36,7 @@ GENERATION_BINARY(atan2) GENERATION_BINARY(hypot) GENERATION_BINARY(pow) GENERAT
 template <class T> auto round(T x)
 {
 	using R = decltype(std::round(x));
-	if (!generationWork)
+	if (!generationWorkActive())
 		return std::round(x);
 	const double magnitude = glob2_math_fabs(double(x));
 	const double integer = glob2_math_floor(magnitude);
@@ -44,7 +44,7 @@ template <class T> auto round(T x)
 }
 template <class T> long lround(T x)
 {
-	if (generationWork)
+	if (generationWorkActive())
 		return static_cast<long>(round(x));
 	return std::lround(x);
 }

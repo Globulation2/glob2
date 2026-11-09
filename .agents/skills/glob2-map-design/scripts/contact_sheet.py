@@ -6,8 +6,12 @@
 
 Each --panel is "LABEL" or "LABEL:k=v,k=v"; seed=N inside the settings picks the seed.
 """
-import argparse, os, subprocess, tempfile
+import argparse, os, subprocess, sys, tempfile
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
+from tools.map_generation_study import default_binary, default_jobs, child_threads
 
 
 def font(size):
@@ -18,12 +22,14 @@ def font(size):
     return ImageFont.load_default()
 
 
-def render(binary, generator, seed, w, h, teams, settings, cell):
+def render(binary, generator, seed, w, h, teams, settings, cell, threads=None):
     fd, png = tempfile.mkstemp(suffix='.png')
     os.close(fd)
     cmd = [binary, 'map', 'generate', generator, '--seed', str(seed), '--width', str(w),
            '--height', str(h), '--teams', str(teams), '--preview', png,
            '--preview-size', str(cell)]
+    if threads:
+        cmd += ['--compute-threads', str(threads)]
     for k, v in settings.items():
         cmd += ['--set', f'{k}={v}']
     p = subprocess.run(cmd, capture_output=True, text=True)
@@ -38,7 +44,8 @@ def render(binary, generator, seed, w, h, teams, settings, cell):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('out')
-    ap.add_argument('--binary', default='build/src/glob2')
+    ap.add_argument('--binary', help='native client (default: the newest build, perf builds included)')
+    ap.add_argument('--jobs', type=int, help='concurrent previews (default: one per logical CPU)')
     ap.add_argument('--generator', required=True)
     ap.add_argument('--cell', type=int, default=256)
     ap.add_argument('--cols', type=int, default=4)
@@ -49,9 +56,11 @@ def main():
     ap.add_argument('--panel', action='append', required=True)
     ap.add_argument('--title', default='')
     a = ap.parse_args()
+    a.binary = a.binary or default_binary()
+    a.jobs = a.jobs or default_jobs()
 
     label_h, pad, title_h = 22, 6, (30 if a.title else 0)
-    panels = []
+    requests = []
     for spec in a.panel:
         label, _, kv = spec.partition(':')
         settings, seed, w, h, teams = {}, a.seed, a.width, a.height, a.teams
@@ -67,7 +76,13 @@ def main():
                 teams = int(v)
             else:
                 settings[k] = v
-        img, ok, err = render(a.binary, a.generator, seed, w, h, teams, settings, a.cell)
+        requests.append((label, seed, w, h, teams, settings))
+    # Every panel is an independent process: generate them all at once.
+    threads = child_threads(min(a.jobs, len(requests)))
+    with ThreadPoolExecutor(a.jobs) as pool:
+        rendered = list(pool.map(lambda r: render(a.binary, a.generator, *r[1:], a.cell, threads), requests))
+    panels = []
+    for (label, *_), (img, ok, err) in zip(requests, rendered):
         panels.append((label, img, ok, err))
         print(f'{label:34s} {"ok" if ok else "REFUSED: " + err}', flush=True)
 

@@ -15,8 +15,37 @@ enum class RenderExecution
     Parallel,  // The same batches; requests worker execution where eligible.
     Immediate  // Direct serial drawing and terrain preparation, without batching.
 };
+// An offline capture (no simulation sharing the CPUs) selects its execution
+// for the owner thread; the environment still decides for interactive frames.
+class RenderExecutionScope
+{
+    inline static thread_local const RenderExecution *forced = nullptr;
+    inline static thread_local std::size_t forcedConcurrency = 0;
+    const RenderExecution *previous;
+    std::size_t previousConcurrency;
+    RenderExecution mode;
+
+  public:
+    RenderExecutionScope(RenderExecution mode, std::size_t concurrency)
+        : previous(forced), previousConcurrency(forcedConcurrency), mode(mode)
+    {
+        forced = &this->mode;
+        forcedConcurrency = concurrency;
+    }
+    ~RenderExecutionScope()
+    {
+        forced = previous;
+        forcedConcurrency = previousConcurrency;
+    }
+    RenderExecutionScope(const RenderExecutionScope &) = delete;
+    RenderExecutionScope &operator=(const RenderExecutionScope &) = delete;
+    static const RenderExecution *current() { return forced; }
+    static std::size_t concurrency() { return forcedConcurrency; }
+};
 inline RenderExecution renderExecution()
 {
+    if (const auto *forced = RenderExecutionScope::current())
+        return *forced;
     const char *mode = std::getenv("GLOB2_RENDER_EXECUTION");
     // Keep the original override spelling for existing launch scripts.
     if (!mode || !std::strcmp(mode, "immediate") || !std::strcmp(mode, "auto"))
@@ -29,6 +58,8 @@ inline RenderExecution renderExecution()
 }
 inline std::size_t renderConcurrency()
 {
+    if (const auto forced = RenderExecutionScope::concurrency())
+        return forced;
     const char *value = std::getenv("GLOB2_RENDER_WORKERS");
     if (!value)
         return 2;
