@@ -9,6 +9,7 @@
 // All share the single AINumbi declaration in AINumbi.h.
 
 #include <Stream.h>
+#include "Building.h"
 #include "Map.h"
 #include <sstream>
 

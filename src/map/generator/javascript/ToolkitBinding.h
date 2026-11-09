@@ -3,8 +3,8 @@
 #include "GeneratorPackage.h"
 #include "GenerationContext.h"
 class Game;
-#include "Building.h"
-#include "Team.h"
+class Building;
+#include "TeamCapacity.h"
 #include "GenerationWorld.h"
 #include "Grid.h"
 #include "scripting/javascript/QuickJSOwnership.h"
@@ -180,7 +180,7 @@ class Binding
 				throw TypeMismatch("Noise octaves must be 1..16");
 			if (name == "team" && (value < 0 || value >= request.nbTeams))
 				throw TypeMismatch("Invalid toolkit colony index");
-			if (name == "teams" && (value < 1 || value > Team::MAX_COUNT))
+			if (name == "teams" && (value < 1 || value > TEAM_MAX_COUNT))
 				throw TypeMismatch("Invalid toolkit colony count");
 		}
 	}

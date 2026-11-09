@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "PowerOfTwo.h"
+#include "Building.h"
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include <string>

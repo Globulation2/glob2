@@ -6,10 +6,9 @@
 #include "UnitState.h"
 #include "ResourceClaims.h"
 #include "map/claims/ClaimPolicy.h"
-#include "map/claims/ClaimHireTargets.h"
 namespace gradient_kernel { struct OwnedDestinations; }
 class Map;
-namespace ResourceClaims { struct TerrainComponentLabels; }
+namespace ResourceClaims { struct TerrainComponentLabels; struct HireTarget; }
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"

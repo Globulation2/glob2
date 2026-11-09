@@ -3,6 +3,7 @@
 
 
 #include "AICastor.h"
+#include "Building.h"
 #include "ai/observation/WorldQueries.h"
 #include "Game.h"
 #include "Version.h"

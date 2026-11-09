@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include "Unit.h"
+#include "Building.h"
 #include "Map.h"
 #include "HeadlessGame.h"
 #include "ai/cortex/AICortex.h"
