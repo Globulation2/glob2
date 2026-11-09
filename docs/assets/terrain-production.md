@@ -43,6 +43,22 @@ ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
 ```
 
+The last command synthesises every material and takes a long time. After
+changing only some recipes, check those materials alone:
+
+```sh
+"$ENC" tools/artwork/terrain_synth.py --material dry_grass --write
+"$ENC" tools/artwork/validate_material.py --name dry_grass
+TERRAIN_MATERIALS=dry_grass "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
+```
+
+`TERRAIN_MATERIALS` takes a comma-separated list. Rendered-frame contracts
+cover the named materials, tests about one fixed material (lava's phases, the
+water loops) skip unless it is named, and separability compares the named
+materials against the committed frames of the rest. A change to a shared
+module (`terrain_core.py`, `_grass`, `_waves` and the other `_`-prefixed family
+modules) touches every material built on it: run the whole suite then.
+
 ### Procedural originals
 
 `tools/artwork/terrain_synth.py` synthesises ground-like materials from scratch:
