@@ -431,7 +431,10 @@ slope of that whole shaped distance. Teeth and clasts change within a few
 pixels along an edge, so without their slope a band would stand wide in front
 of each crest and vanish along its flanks. A sample counts only its own
 material's clasts: a neighbour's grain that stops short of the surface would
-otherwise ring the water with surf.
+otherwise ring the water with surf. Against surf a sample leaves out its own
+clasts too: the wash front runs at a fixed distance inside the contour, and
+inside each rounded grain that line is a crescent of foam. Surf therefore
+follows the coast without its chips, and washes over the chips themselves.
 
 In desktop Legacy GL every visible mixed cell takes a coverage mask at the display
 density (8 to 128 texels a side), built by background workers nearest the view

@@ -282,6 +282,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		// A material sheds its own clasts, whatever it meets.
 		pebbleReach[count] = edge.clasts == Profile::Clasts::None ? 0 : PebbleReach * float(edge.speckle) / 256;
 		angular[count] = edge.clasts == Profile::Clasts::Angular;
+		surfed[count] = c.materials[id].surf.period > 0;
 		auto &field = fields[count++];
 		field.material = id;
 		field.feather = float(edge.feather) / 256;
@@ -555,7 +556,11 @@ Coverage SmoothBorders::at(int px, int py) const
 		float d = (score[f] - score[g]) / g1;
 		// Only the sample's own grains: the neighbour's lie beyond its contour,
 		// and one that stops short of the surface would ring the water with surf.
-		const float shape = teethOf(f, g) + grains[f];
+		// Against surf, not even those: the wash front runs at a fixed distance
+		// inside the contour, which inside each rounded grain is a crescent of
+		// foam. Surf follows the coast without its chips, which it covers.
+		const bool chips = surfed[f] == surfed[g];
+		const float shape = teethOf(f, g) + (chips ? grains[f] : 0.f);
 		if (shape == 0)
 			return d;
 		const float risen = risenOf(f, g);
@@ -568,7 +573,7 @@ Coverage SmoothBorders::at(int px, int py) const
 		const auto shapeAt = [&](int qx, int qy)
 		{
 			float s = pair.amplitude ? sign * teethAt(pair, qx, qy, across) : 0;
-			if (pebbleReach[f] > 0) s += pebbleReach[f] * pebble(f, qx, qy);
+			if (chips && pebbleReach[f] > 0) s += pebbleReach[f] * pebble(f, qx, qy);
 			return s;
 		};
 		const float sx = (shapeAt(px + 256, py) - shape) * risen;
