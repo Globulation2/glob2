@@ -145,6 +145,12 @@ void IntroCover::skip(Uint64 now)
 	end = partFrom + PART_MS / 2;
 }
 
+float IntroCover::titleOpacity(Uint64 now) const
+{
+	// Already there with the bank, like the clouds; gone early in the parting.
+	return active(now) ? 1 - ease(ease(part(now)) / .18f) : 0;
+}
+
 float IntroCover::part(Uint64 now) const
 {
 	if (!start || now - start < partFrom)
@@ -619,7 +625,7 @@ void IntroCover::draw(DrawableSurface &gfx, int w, int h, Uint64 now, Font *titl
 	if (!active(now) || w <= 0 || h <= 0)
 		return;
 	const float p = ease(part(now));
-	const float titleAlpha = (1 - ease(p / .18f)) * ease(float(now - start) / 250.f);
+	const float titleAlpha = titleOpacity(now);
 	const TitleLayout layout = layoutTitle(w, h, titleFont, playerFont);
 	if (!clouds)
 	{

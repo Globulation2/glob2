@@ -77,6 +77,8 @@ public:
 	bool blocksInput(Uint64 now) const { return start && part(now) < .35f; }
 	//! 0 while covered, rising to 1 as the bank parts.
 	float part(Uint64 now) const;
+	//! The title's opacity: full from the first frame, fading as the bank starts to part.
+	float titleOpacity(Uint64 now) const;
 
 	//! Get ready to draw on `gfx`, w x h, right after begin(), so that the
 	//! first frames do not wait for the renderer or for the noise.

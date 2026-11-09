@@ -120,6 +120,12 @@ TEST_CASE("three seconds: covered, then parting; a skip parts at once")
 	REQUIRE(cover.active(t0 + IntroCover::TOTAL_MS - 1));
 	REQUIRE_FALSE(cover.active(t0 + IntroCover::TOTAL_MS));
 
+	// The title is there at full strength from the first frame, like the bank.
+	REQUIRE(cover.titleOpacity(t0) == 1.f);
+	REQUIRE(cover.titleOpacity(t0 + IntroCover::COVER_MS - 1) == 1.f);
+	REQUIRE(cover.titleOpacity(t0 + IntroCover::COVER_MS + IntroCover::PART_MS / 2) == 0.f);
+	REQUIRE(cover.titleOpacity(t0 + IntroCover::TOTAL_MS) == 0.f);
+
 	IntroCover skipped;
 	skipped.begin(t0, {"Map", {}});
 	skipped.skip(t0 + 300);
