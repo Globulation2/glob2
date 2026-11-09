@@ -2,30 +2,20 @@ const { test, expect } = require("@playwright/test");
 const fs = require("node:fs");
 const path = require("node:path");
 const { openRuntimeHost } = require("./runtime-host");
-const traceFixture = require("./fixtures/generator-studio-trace.json");
-const root = path.resolve(__dirname, "../../..");
-const manifest = JSON.parse(
-  fs.readFileSync(
-    path.join(root, "content/data/generators/examples/swamp/manifest.json"),
-    "utf8",
-  ),
-);
-const source = JSON.stringify({
-  formatVersion: 1,
-  manifest: { ...manifest, entry: "generator.js" },
-  modules: {
-    "generator.js": fs.readFileSync(
-      path.join(root, "content/data/generators/examples/swamp/generator.js"),
-      "utf8",
-    ),
-  },
-});
-const settings = {
-  seed: 19,
-  params: { width: 7, height: 7, teams: 4, workers: 4 },
-  candidates: 1,
-  startingUnitLevel: 0,
-};
+const {
+  root,
+  generatorStudioScenario,
+  generatorGameArgs,
+  traceOptions,
+  nativeGeneratorTraces,
+  simVersion,
+  packageHash,
+} = require("./native-reference");
+const scenario = generatorStudioScenario();
+const source = scenario.packageJson;
+const settings = scenario.settings;
+// Frozen preview identities by runtime variant, compared within one worker.
+const previews = new Map();
 for (const variant of ["serial", "threaded"])
   test(`generator Studio freezes a world and watches its colonies (${variant})`, async ({
     page,
@@ -52,7 +42,7 @@ for (const variant of ["serial", "threaded"])
     expect(report.type, JSON.stringify(report)).toBe("generated");
     expect(report.success, JSON.stringify(report)).toBe(true);
     expect(report.playable).toBe(true);
-    expect(report.seed).toBe(19);
+    expect(report.seed).toBe(scenario.seed);
     const directory = path.join(
       root,
       "artifacts/generator-studio",
@@ -63,13 +53,28 @@ for (const variant of ["serial", "threaded"])
       path.join(directory, "report.json"),
       JSON.stringify(report, null, 2),
     );
-    // Native-derived references remain mandatory even without local evidence files.
-    expect(report.packageHash).toBe(traceFixture.packageHash);
-    expect(report.versionMinor).toBe(traceFixture.versionMinor);
-    expect(report.simRevision).toBe(traceFixture.simRevision);
-    expect(report.simVersion).toBe(traceFixture.simVersion);
-    expect(report.checksum).toBe(traceFixture.checksum);
-    expect(report.worldFingerprint).toBe(traceFixture.worldFingerprint);
+    // Identities come from the native client of the same checkout, never a
+    // committed digest. The frozen world itself has no native CLI equivalent:
+    // both runtimes must freeze the same one, and the traced game below proves
+    // the generated world against native.
+    const native = simVersion();
+    expect(report.packageHash).toBe(packageHash(source));
+    expect(report.versionMinor).toBe(native.versionMinor);
+    expect(report.simVersion).toBe(
+      `${native.versionMinor}-${native.netProtocol}-${native.dataHash}`,
+    );
+    expect(Number.isInteger(report.simRevision)).toBe(true);
+    expect(Number.isInteger(report.checksum)).toBe(true);
+    expect(report.worldFingerprint).toMatch(/^[0-9a-f]{64}$/);
+    const preview = {
+      checksum: report.checksum,
+      worldFingerprint: report.worldFingerprint,
+    };
+    for (const [other, frozen] of previews)
+      expect(preview, `frozen world differs from the ${other} runtime`).toEqual(
+        frozen,
+      );
+    previews.set(variant, preview);
     const frame = page
       .frames()
       .find((f) => f.url().includes("/generator-studio.html"));
@@ -168,55 +173,16 @@ for (const variant of ["serial", "threaded"])
   test(`frozen generator game and saved continuation match every native checksum (${variant})`, async ({
     page,
   }, info) => {
-    test.setTimeout(360000);
-    expect(sha256(fs.readFileSync(path.join(root, traceFixture.source)))).toBe(
-      traceFixture.sourceSha256,
-    );
-    const options = [
-      "--ticks",
-      String(traceFixture.ticks),
-      "--write-replay",
-      "--telemetry",
-      "checksums",
-      "--save",
-      "initial",
-      "--save",
-      "final",
-      "--output-dir",
-      "/tmp/result",
-    ];
+    // The native reference runs first in this worker (a few minutes on a debug build).
+    test.setTimeout(600000);
+    const options = traceOptions("/tmp/result");
     const generated = await captureGame(
       page,
       variant,
       [
         "game",
         "run",
-        "--generator-package",
-        "/tmp/generator.json",
-        "--generator",
-        "examples:swamp",
-        "--map-seed",
-        "19",
-        "--set",
-        "width=7",
-        "--set",
-        "height=7",
-        "--set",
-        "teams=4",
-        "--set",
-        "workers=4",
-        "--candidates",
-        "1",
-        "--game-seed",
-        "19",
-        "--player",
-        "nicowar",
-        "--player",
-        "nicowar",
-        "--player",
-        "nicowar",
-        "--player",
-        "nicowar",
+        ...generatorGameArgs(scenario, "/tmp/generator.json"),
         ...options,
       ],
       `FS.writeFile('/tmp/generator.json',${JSON.stringify(source)});`,
@@ -225,7 +191,15 @@ for (const variant of ["serial", "threaded"])
     const loaded = await captureGame(
       page,
       variant,
-      ["game", "run", "--load-game", "/tmp/initial.game.gz", ...options],
+      [
+        "game",
+        "run",
+        "--load-game",
+        "/tmp/initial.game.gz",
+        "--ticks",
+        String(scenario.ticks),
+        ...options,
+      ],
       `FS.writeFile('/tmp/initial.game.gz',Uint8Array.from(atob(${JSON.stringify(generated.save)}),c=>c.charCodeAt(0)));`,
     );
     const directory = path.join(
@@ -234,13 +208,14 @@ for (const variant of ["serial", "threaded"])
       info.project.name + "-" + variant,
     );
     fs.mkdirSync(directory, { recursive: true });
+    const native = nativeGeneratorTraces();
     for (const [label, result] of [
       ["generated", generated],
       ["loaded", loaded],
     ]) {
       const trace = Buffer.from(result.trace, "base64");
       fs.writeFileSync(path.join(directory, label + ".checksums"), trace);
-      expect(trace.length).toBe(traceFixture.traceBytes);
-      expect(sha256(trace)).toBe(traceFixture.traceSha256);
+      expect(trace.length, label).toBe(native[label].length);
+      expect(sha256(trace), label).toBe(sha256(native[label]));
     }
   });

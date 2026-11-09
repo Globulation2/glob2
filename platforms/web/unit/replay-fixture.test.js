@@ -20,14 +20,18 @@ test('browser replay fixture stays within the engine replay acceptance boundary'
     `Replay fixture ${version} is outside ${minimum}..${current}; re-record it using fixtures/README.md`);
 });
 
-for (const name of ['generator-studio-trace.json', 'studio-trace.json']) {
-  test(`${name} tracks the engine and simulation revisions`, () => {
-    const fixture = JSON.parse(fs.readFileSync(path.join(root, 'platforms/web/tests/fixtures', name)));
-    const versions = fs.readFileSync(path.join(root, 'src/app/Version.h'), 'utf8');
-    const simulation = fs.readFileSync(path.join(root, 'src/game/SimRevision.h'), 'utf8');
-    assert.equal(fixture.versionMinor, Number(versions.match(/#define VERSION_MINOR\s+(\d+)/)[1]),
-      'Refresh the native Studio reference after reviewing the version change');
-    assert.equal(fixture.simRevision, Number(simulation.match(/#define SIM_REVISION\s+(\d+)/)[1]),
-      'Refresh the native Studio reference after reviewing the simulation change');
+// The Studio specs compare browser traces with a live native run of the same
+// scenario, so their committed manifests name inputs only: no outputs, versions
+// or sim keys that every simulation change would have to refresh by hand.
+const scenarios = {
+  'studio-scenario.json': ['source', 'map', 'seed', 'opponent', 'ticks'],
+  'generator-studio-scenario.json': ['manifest', 'source', 'generator', 'seed', 'params', 'candidates', 'player', 'ticks'],
+};
+for (const [name, keys] of Object.entries(scenarios)) {
+  test(`${name} pins only existing scenario inputs`, () => {
+    const scenario = JSON.parse(fs.readFileSync(path.join(root, 'platforms/web/tests/fixtures', name)));
+    assert.deepEqual(Object.keys(scenario).sort(), [...keys].sort());
+    for (const key of ['source', 'map', 'manifest'])
+      if (key in scenario) assert.ok(fs.existsSync(path.join(root, scenario[key])), `${name}: ${scenario[key]} is missing`);
   });
 }
