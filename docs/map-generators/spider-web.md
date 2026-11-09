@@ -6,6 +6,18 @@ starts on a pad where its spoke meets the frame. Threads are wide enough to buil
 ground route follows them: the knots where threads cross are the places to hold, the hub's
 orchard is the prize, and the water between is crossed only once colonies can swim.
 
+- **A frosted night web (revision 5).** The web is drawn from the terrain catalogue on canonical
+  mechanics, with a fixed look painted last (`composeLooks`): the silk is paved (Paths) in pale
+  moonstone down the spokes and the frame and rime ashlar down the capture threads; every cell
+  and the sea beyond the frame have a dark deep core (`deepenWater`, open water at least 7 tiles
+  from land, the hub's pond excepted) inside a shallow margin along every thread; the dew drops
+  are moss and the hub's pond is ringed by a spring meadow out past the orchard's groves (both
+  Fertile: buildable crop land that waters the ground round it, wood included); beaches stay
+  pale sand on every shore, since algae regrows only from sand; and grass is mottled with lush
+  grass in the wedge frame. The deep cores take part of the algae band, so the band's tiles per
+  clump and its best-growing share are scaled by the band's size before and after
+  (`algaeBandTiles`), which keeps the algae supply within about 10% of revision 4's.
+
 - **Web.** `spokes` per colony (raised on webs with few colonies so the web never reads as a
   star, lowered on crowded ones so halfway out neighbouring spokes keep 2.5 thread widths apart),
   each bowing sideways by a random amount that is greatest at mid-length. The frame joins the
@@ -29,9 +41,7 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   colony carry a fruit grove or stone each, and the hub carries the orchard of all three fruits
   and a quarry. The threads' own wheat and wood are ranked and split by `PeriodicNoise` sampled in
   the wedge frame, so every colony's stretch of web is farmed alike: 20% of their grass under wheat
-  and 13% under wood, so any stretch of thread passes a field or a copse. A few dry sand patches
-  (7% of the threads' inland grass, three or more tiles from water) decorate the threads, sampled in
-  the wedge frame too. Algae is counted over the shallows up to ten tiles out, one clump per 30
+  and 13% under wood, so any stretch of thread passes a field or a copse. Algae is counted over the shallows up to ten tiles out, one clump per 30
   tiles, and seeded on each colony's best-growing 30% of that water, the same number of clumps in
   every wedge.
 - **Routes opened, not hoped for.** Beaches keep the threads walkable, but a small hub can be
@@ -39,11 +49,14 @@ orchard is the prize, and the water between is crossed only once colonies can sw
   every other colony clears any deposits in the way.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every spoke's centre
   line to be land, every colony reachable on foot from colony 0 and the hub reachable too, with
-- **Sand roads.** With `sand-roads` (on), a line of sand one tile thick (`tracePath`) runs down the
-  middle of every spoke and whole thread, off the pads and dew drops; torn stubs, which are dead
-  ends, get none. Every tile touching the sand loses the pure grass a deposit or a building needs,
-  so nothing can grow or be built across a thread and close it. Threads thin on small maps to no
-  less than 75% of the control, so grass remains either side of the road.
+- **Paved roads.** With **Paved roads** (control ID `sand-roads`, kept for saved requests) on,
+  silk is paved down the middle of every spoke and the frame two vertices wide (pure Paths tiles)
+  and down every whole capture thread one vertex wide (`paveRoute`), laid after the beaches, off
+  the pads and dew drops, and stopping at the hub, so the spokes meet on its meadow and the
+  orchard keeps its ground; torn stubs, which are dead ends, get none. Roads double walking speed,
+  can be built on, and nothing grows on or across them, so no field closes a thread; the beaches
+  keep a walkable lane along every edge. Threads thin on small maps to no less than 75% of the
+  control, so grass remains either side of the road.
 - **Rectangular maps.** The web is designed in a circle on the map's shorter side and placed on the
   map by `Stretch`, so on a rectangular map it fills the map as an ellipse; widths stay in tiles.
   Square maps are unchanged.
