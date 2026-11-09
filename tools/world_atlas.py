@@ -33,7 +33,7 @@ special handling, and no numpy, GDAL or PIL is required (PIL is used only for --
 
 The output is deterministic for a given cache, so re-running it changes nothing unless the
 sources or this script change. Bump the Continents generator's revision when the data changes:
-its golden rows fingerprint the maps built from it.
+sim-diff fingerprints the maps built from it.
 """
 
 import argparse

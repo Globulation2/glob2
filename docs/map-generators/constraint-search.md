@@ -128,7 +128,7 @@ Tournament verification selects games round-robin across generators, then maps, 
 rotations. Request at least as many repeats as generators to cover each one. Final-state
 repeat checks still do not establish per-tick or cross-platform simulation equivalence.
 
-For behavior-preserving changes, keep existing golden fingerprints and compare additional
+For behavior-preserving changes, keep the map fingerprints unchanged (sim-diff) and compare additional
 paired seeds/settings with the previous frozen binary. Test the shared contracts separately:
 invalid objectives/schedules, skip/reject/restore paths, incomplete crossing graphs, and
 structured-tool failures. Re-run gameplay studies when layouts or objectives change; do not

@@ -127,7 +127,7 @@ every grass/moss edge tile as no farmland; that is why it is off by default.
   the homes.
 - At the maximum resource amounts revision 5's crops already overgrow some homes' building room
   after a few thousand ticks of unharvested growth; the pass does not change that.
-- Golden rows (`test/map-generator-golden.txt`) and `SIM_REVISION` still describe revision 5.
+- `SIM_REVISION` still describes revision 5.
 
 ## Verification
 

@@ -714,7 +714,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: ${{ fromJSON(inputs.generator_suites || (inputs.coverage_profile == 'full' && '["sweep-a","sweep-b","telemetry"]' || '["golden","telemetry"]')) }}
+        suite: ${{ fromJSON(inputs.generator_suites || (inputs.coverage_profile == 'full' && '["sweep-a","sweep-b","telemetry"]' || '["telemetry"]')) }}
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -741,35 +741,18 @@ jobs:
           sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
 
-      - name: Check secondary-platform golden rows
-        if: ${{ matrix.suite == 'golden' }}
-        run: ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-golden-rows --require-rows
-
-      # tools/refresh_sim_fixtures.py --from-run merges these rows after a recipe revision bump.
-      - name: Print this platform's golden rows
-        if: ${{ !cancelled() && matrix.suite == 'golden' }}
-        run: |
-          mkdir -p artifacts/golden-rows
-          ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-golden-rows --print > artifacts/golden-rows/rows.txt
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() && matrix.suite == 'golden' }}
-        with:
-          name: golden-rows-linux-x86_64-${{ inputs.runner }}
-          path: artifacts/golden-rows/
-          retention-days: 14
-
-      - name: Check golden maps and sweep colony counts
-        id: check_golden_maps_and_sweep_colony_counts
+      - name: Sweep colony counts
+        id: sweep_colony_counts
         if: ${{ startsWith(matrix.suite, 'sweep-') }}
         continue-on-error: true
         run: |
-          # The two jobs divide the four independent sweep shards between runners
-          # and run golden rows alongside the first pair. The job's timeout-minutes
-          # is the only limit: these steps have no wall-clock budget of their own.
-          # Pull requests skip the 512 cells (--quick); scheduled runs sweep all.
+          # The two jobs divide the four independent sweep shards between runners.
+          # The job's timeout-minutes is the only limit: these steps have no
+          # wall-clock budget of their own. Pull requests skip the 512 cells
+          # (--quick); scheduled runs sweep all. Map fingerprint changes are
+          # reported by the sim-diff workflow, not compared against a table here.
           golden() { log=$1; shift; stdbuf -oL ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
           if [ '${{ matrix.suite }}' = sweep-a ]; then
-            golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
             shards=(0 1)
           else
             shards=(2 3)
@@ -781,14 +764,6 @@ jobs:
             golden /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 $quick & sweeps+=($!)
           done
           status=0
-          if [ '${{ matrix.suite }}' = sweep-a ]; then
-            if ! wait $rows; then
-              status=1
-              golden /tmp/golden-print.log glob2-golden-print --print || true
-              cat /tmp/golden-print.log
-            fi
-            cat /tmp/golden-rows.log
-          fi
           for i in "${!shards[@]}"; do
             wait ${sweeps[$i]} || status=1
             cat /tmp/golden-sweep-${shards[$i]}.log

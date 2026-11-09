@@ -100,7 +100,7 @@ allowed to plant on runs out — which is a ceiling on the map rather than a dea
 - The tournament above is 6 maps a generator. It is enough to reject fairness for Even Ground (three
   maps individually significant) but not enough to certify Marchland as fair — only to say it is
   indistinguishable from fair at this sample size.
-- Single-platform (macos-arm64) golden rows only; generator floating-point output is not promised
+- Map fingerprints checked on macos-arm64 only; generator floating-point output is not promised
   identical across platforms, and this generator uses floating-point scoring throughout.
 
 ## Implementation source

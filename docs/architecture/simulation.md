@@ -886,7 +886,7 @@ runs; backend defaults and algorithm choices are unchanged.
   the unit or engine binary is already in the job's single "Build glob2 and the
   regression harnesses" command and `test/run_tests.py` picks the new cases up on
   the next run, so no per-test step is needed. A harness that must stay a
-  separate program (two processes, a golden-table tool) gets a `PROGRAMS` entry
+  separate program (two processes, a map fingerprint tool) gets a `PROGRAMS` entry
   and one step that only runs it: a separate `scons` call per step re-reads the
   whole build and compiles one file at a time. Builds that need other options
   (`role=relay`, `opengl=0`) belong in
@@ -899,9 +899,9 @@ runs; backend defaults and algorithm choices are unchanged.
   not repeat it.
   Browser checks follow the same rule: build once per job, pass outputs to the
   test jobs as artifacts, and shard long suites rather than lengthening one job.
-- A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
-  while the revision stays fails the check, so bump the revision and run `--update` together
-  (see the framework reference). `--sweep` there is the first thing to run after touching
+- A map generator's `revision` changes with its maps: the sim-diff workflow reports every
+  generator fingerprint (`MapGeneratorGoldenTest --print`) that moved, so bump the revision of
+  each generator whose maps change (see the framework reference). `MapGeneratorGoldenTest --sweep` is the first thing to run after touching
   colony placement; a cell it fails is a "Generation failed" a player would see.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.

@@ -214,13 +214,6 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=True,
                 )
 
-    def test_golden_table_only_runs_golden_job(self):
-        self.assert_jobs(
-            ["test/map-generator-golden.txt"],
-            native=False, browser=False, map_generators=True,
-            deployment=False, cross_platform=False,
-        )
-
     def test_transport_fixture_only_runs_browser_jobs(self):
         for path in ("src/net/NetConnectionHarness.cpp", "test/NativeMultiplayerPeer.cpp",
                      "src/net/WssTransportHarness.cpp", "test/run-network-transport-tests.py"):

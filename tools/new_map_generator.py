@@ -16,7 +16,7 @@ each, the starter kit and the crop guarantee, and three controls to start from. 
 What is left is the map itself and the verification the docs ask for:
 
   scons --build=build/native-tests release=1 -j12 map-generator-golden-test engine-tests map-generator-study build/native-tests/src/glob2
-  build/native-tests/src/MapGeneratorGoldenTest <profile> --update     # records its golden rows
+  build/native-tests/src/MapGeneratorGoldenTest <profile> --print --only=<id>   # its map fingerprints
   build/native-tests/src/glob2 map generate <id> --preview artifacts/<id>.png
   See docs/map-generators/cli.md for comparisons with nearest generators.
 """
@@ -297,7 +297,7 @@ def main():
     print('Registered it, added its source to scons/sources.py and its keys to the translation tables')
     print('(English placeholders: translate them). Next:')
     print(f'  scons release=1 -j12 map-generator-golden-test engine-tests map-generator-study {native_binary()}')
-    print(f'  {native_binary("MapGeneratorGoldenTest")} <profile> --update')
+    print(f'  {native_binary("MapGeneratorGoldenTest")} <profile> --print --only={args.id}')
     print(f'  {native_binary()} map generate {args.id} --preview artifacts/{args.id}.png')
     print('  Compare nearest generators at 128, 256, 512: docs/map-generators/cli.md')
 

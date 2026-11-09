@@ -125,8 +125,8 @@ against 288. No home island was overgrown with wood at the end. One game varies 
 
 ## Verification
 
-Run the focused contracts (`GLOB2_CONTRACTS=tidal-flats`, `MapGeneratorContracts.h`) and the platform
-golden rows, inspect small and large rectangles and resource extremes, then check populated games with
+Run the focused contracts (`GLOB2_CONTRACTS=tidal-flats`, `MapGeneratorContracts.h`) and the sim-diff
+map fingerprints, inspect small and large rectangles and resource extremes, then check populated games with
 complete seat rotations. See [generator verification](verification.md) for commands, revisions,
 save/replay checks and evidence requirements.
 

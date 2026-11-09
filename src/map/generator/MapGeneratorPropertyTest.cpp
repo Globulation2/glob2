@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Generator properties across many seeds: what the golden rows only implied for a handful of
+// Generator properties across many seeds: what the map fingerprints only implied for a handful of
 // fixed requests. Every playable landscape, at its defaults, rolls the same map twice from one
 // seed, and every successful roll gives each colony a walk to the others, wheat, wood and room
 // for a first base, and a start the fairness model scores above a floor. Raising a landscape's
@@ -127,7 +127,7 @@ void defaultProperties(int method)
 		const auto b = GenerationService().generate(second, request);
 		++rolls;
 		INFO(a.diagnostic());
-		// Same seed, same map: what each platform's golden rows stood for.
+		// Same seed, same map: what each platform's map fingerprints stand for.
 		CHECK(bool(a) == bool(b));
 		CHECK(a.stage == b.stage);
 		CHECK(a.detail == b.detail);

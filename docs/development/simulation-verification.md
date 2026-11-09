@@ -27,7 +27,7 @@ scenarios: each saved game in `content/games` run 600 ticks (per tick, the aggre
 checksum and every team's checksum and unit and building records), the
 FourSquares1 match record replayed by `match verify` (its per-tick state checksums,
 even when the record names another sim version), and every generator's map
-fingerprint on the golden request set (`MapGeneratorGoldenTest --print`). The
+fingerprint on a fixed request set (`MapGeneratorGoldenTest --print`). The
 `saves` part adds the retained AI and telemetry saves at their own lengths, the
 v108 checkpoint continued 256 ticks and the Maxima continuation (checkpoint 30000
 to 30512, plus its 30256 save resumed to 30512). The `goldens` part runs the
