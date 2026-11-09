@@ -4,8 +4,22 @@
 Run with the pinned asset-tool environment (see docs/assets/terrain-production.md):
 
     artifacts/asset-tools/venv/bin/python -m unittest discover -s tools/artwork -p test_terrain_synth.py
+
+Synthesising every material takes a long time. After changing some recipes,
+name them in TERRAIN_MATERIALS (comma-separated) to synthesise only those:
+
+    TERRAIN_MATERIALS=dry_grass artifacts/asset-tools/venv/bin/python \
+        -m unittest discover -s tools/artwork -p test_terrain_synth.py
+
+Rendered-frame contracts then cover the named materials; tests about one fixed
+material skip unless it is named; separability compares the named materials
+with the committed frames of the rest. A shared module (_grass, _waves,
+terrain_core) affects every material built on it, so run them all after
+changing one.
 """
+import concurrent.futures
 import json
+import os
 import re
 from dataclasses import replace
 import statistics
@@ -37,16 +51,58 @@ from material_tiles import (  # noqa: E402
 )
 
 
+def selected_materials():
+    """The materials TERRAIN_MATERIALS names, in synthesis order; all by default."""
+    names = [n.strip() for n in os.environ.get("TERRAIN_MATERIALS", "").split(",") if n.strip()]
+    if not names:
+        return list(synth.SYNTH_ORDER)
+    unknown = sorted(set(names) - set(synth.SYNTH_ORDER))
+    if unknown:
+        raise ValueError(f"TERRAIN_MATERIALS names unknown materials: {', '.join(unknown)}")
+    return [n for n in synth.SYNTH_ORDER if n in names]
+
+
+SELECTED = selected_materials()
+
+
+def pick(*names):
+    """The named materials that are selected, else the first selected one."""
+    return [name for name in names if name in SELECTED] or SELECTED[:1]
+
+
+def committed_tiles(name):
+    """A material's committed native phase-0 frames, in variant order."""
+    recipe = synth.RECIPES[name]
+    count = (recipe.grid ** 2 or synth.VARIANTS) * recipe.blocks
+    return [Image.open(ROOT / f"content/data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(count)]
+
+
 @unittest.skipUnless(PIL.__version__ == synth.PILLOW_VERSION, "needs the pinned Pillow for deterministic kernels")
 class TerrainSynth(unittest.TestCase):
     results = None
 
     @classmethod
     def setUpClass(cls):
-        cls.results, cls.hd = synth.synthesize_both(synth.SYNTH_ORDER, jobs=2)
+        # The determinism check's second, serial synthesis runs alongside the
+        # main one instead of after it; one material renders on one core.
+        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as pool:
+            again = pool.submit(synth.synthesize, pick("dirt", "lava"), 1)
+            cls.results, cls.hd = synth.synthesize_both(SELECTED)
+            cls.again = again.result()
 
     def tiles(self, name, phase=0):
         return self.results[name][phase]
+
+    def recipes(self):
+        """(name, recipe) for every synthesised material."""
+        return [(name, synth.RECIPES[name]) for name in SELECTED]
+
+    def only(self, *names):
+        """The named materials that were synthesised; skip if none were."""
+        chosen = [name for name in names if name in self.results]
+        if not chosen:
+            self.skipTest(f"needs one of {', '.join(names)} in TERRAIN_MATERIALS")
+        return chosen
 
     def test_every_catalogue_type_has_a_recipe(self):
         catalog = terrain_catalog.load(ROOT / "content")
@@ -92,9 +148,8 @@ class TerrainSynth(unittest.TestCase):
 
     def test_hd_frames_match_their_classic_downsample(self):
         """HD frames are the 4x source of the classic tiles, not a separate look."""
-        _, hd = synth.synthesize_both(["shale", "lava"], jobs=1)
-        for name, phases in hd.items():
-            for phase, tiles in phases.items():
+        for name in pick("shale", "lava"):
+            for phase, tiles in self.hd[name].items():
                 for tile, native in zip(tiles, self.tiles(name, phase)):
                     with self.subTest(material=name, phase=phase):
                         self.assertEqual(tile.size, (4 * TILE, 4 * TILE))
@@ -102,14 +157,13 @@ class TerrainSynth(unittest.TestCase):
                         self.assertLess(color_distance(mean_color([down]), mean_color([native])), 6)
 
     def test_second_synthesis_is_identical(self):
-        again = synth.synthesize(["dirt", "lava"], jobs=1)
-        for name, phases in again.items():
+        for name, phases in self.again.items():
             for phase, tiles in phases.items():
                 for fresh, first in zip(tiles, self.tiles(name, phase)):
                     self.assertEqual(pixel_sha256(fresh), pixel_sha256(first))
 
     def test_frames_are_native_rgba_and_distinct(self):
-        for name, recipe in synth.RECIPES.items():
+        for name, recipe in self.recipes():
             for phase in range(recipe.phases):
                 tiles = self.tiles(name, phase)
                 with self.subTest(material=name, phase=phase):
@@ -132,7 +186,7 @@ class TerrainSynth(unittest.TestCase):
         return block
 
     def test_tileability(self):
-        for name in synth.SYNTH_ORDER:
+        for name in SELECTED:
             if synth.RECIPES[name].grid:
                 continue  # covered by test_grid_materials_continue_across_every_cell_edge
             tiles = self.tiles(name)
@@ -142,7 +196,7 @@ class TerrainSynth(unittest.TestCase):
                 self.assertLessEqual(seam, max(1.5 * grain, 1.0))
 
     def test_perimeter_agreement_for_all_ordered_pairs(self):
-        for name, recipe in synth.RECIPES.items():
+        for name, recipe in self.recipes():
             if recipe.periodic:
                 continue  # covered by test_periodic_materials_share_their_outer_ring_and_wrap
             for phase in range(recipe.phases):
@@ -155,7 +209,7 @@ class TerrainSynth(unittest.TestCase):
                             self.assertEqual(join_error(a, b), 0)
 
     def test_alpha_rules(self):
-        for name, recipe in synth.RECIPES.items():
+        for name, recipe in self.recipes():
             low, high = recipe.alpha_range
             for tile in self.tiles(name):
                 lo, hi = tile.getchannel("A").getextrema()
@@ -163,12 +217,12 @@ class TerrainSynth(unittest.TestCase):
                     self.assertGreaterEqual(lo, low)
                     self.assertLessEqual(hi, high)
         # Every terrain material is opaque: nothing is drawn underneath terrain.
-        for name in synth.SYNTH_ORDER:
+        for name in SELECTED:
             with self.subTest(material=name):
                 self.assertEqual(style_stats(self.tiles(name))["alpha"], 255.0)
 
     def test_style_bands(self):
-        for name, recipe in synth.RECIPES.items():
+        for name, recipe in self.recipes():
             stats = style_stats(self.tiles(name))
             with self.subTest(material=name, stats=stats):
                 self.assertLessEqual(abs(stats["luma"] - recipe.style.luma), 6)
@@ -184,7 +238,8 @@ class TerrainSynth(unittest.TestCase):
         trail = style_stats(reference_tiles("trail"))
         self.assertLess(grass["std"], 8)
         self.assertLess(trail["std"], 14)
-        for name in ("dirt", "clay", "mud", "loam", "moss", "spring_meadow", "deep_snow"):
+        grounds = ("dirt", "clay", "mud", "loam", "moss", "spring_meadow", "deep_snow")
+        for name in [n for n in grounds if n in self.results]:
             stats = style_stats(self.tiles(name))
             with self.subTest(material=name):
                 self.assertLessEqual(stats["std"], 14)
@@ -192,7 +247,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_preview_colors_follow_the_rendered_mean(self):
         previews = {}
-        for name in synth.SYNTH_ORDER:
+        for name in SELECTED:
             recipe = synth.RECIPES[name]
             preview, minimap, mean = synth.preview_colors(name, self.results[name])
             previews[name] = preview
@@ -207,7 +262,9 @@ class TerrainSynth(unittest.TestCase):
                 self.assertTrue(all(0 <= c <= 255 for c in preview + minimap))
 
     def test_non_sibling_materials_are_separable(self):
-        means = {name: mean_color(self.tiles(name)) for name in synth.SYNTH_ORDER}
+        # Unselected materials are compared through their committed frames.
+        means = {name: mean_color(self.tiles(name) if name in self.results else committed_tiles(name))
+                 for name in synth.SYNTH_ORDER}
         groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", road="paths", ice="ice")
         # Pairs whose averages meet but whose textures never could be confused:
@@ -220,6 +277,8 @@ class TerrainSynth(unittest.TestCase):
         names = sorted(means)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
+                if a not in self.results and b not in self.results:
+                    continue
                 if groups[a] == groups[b] or (a, b) in texture_distinct:
                     continue
                 with self.subTest(pair=(a, b)):
@@ -228,7 +287,7 @@ class TerrainSynth(unittest.TestCase):
                     self.assertGreaterEqual(color_distance(means[a], means[b]), 14)
 
     def test_animated_phase_continuity(self):
-        for name in ("lava", "ember_field", "molten_lava_pool"):
+        for name in self.only("lava", "ember_field", "molten_lava_pool"):
             recipe = synth.RECIPES[name]
             self.assertGreater(recipe.phases, 1)
             frames = synth.frames_of(name, self.results[name])
@@ -264,7 +323,7 @@ class TerrainSynth(unittest.TestCase):
     def test_periodic_materials_share_their_outer_ring_and_wrap(self):
         """Periodic variants join any variant: identical outer ring, and each
         tile continues itself across its own edges (no hard seam)."""
-        periodic = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].periodic and not synth.RECIPES[n].grid]
+        periodic = [n for n in SELECTED if synth.RECIPES[n].periodic and not synth.RECIPES[n].grid]
         self.assertEqual(periodic, [])  # Every shipped recipe now uses seeded full blocks.
         for name in periodic:
             tiles = [t.convert("RGB") for t in self.tiles(name)]
@@ -278,8 +337,8 @@ class TerrainSynth(unittest.TestCase):
         """Each grid variant joins its block neighbours, and the block wraps:
         cell-edge contrast stays within the interior's upper contrast range.
         Interior samples cover every grain interpolation phase and plank gap."""
-        grid = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].grid]
-        self.assertEqual(sorted(grid), sorted(synth.SYNTH_ORDER))
+        grid = [n for n in SELECTED if synth.RECIPES[n].grid]
+        self.assertEqual(grid, SELECTED)
         for name in grid:
             recipe = synth.RECIPES[name]
             self.assertTrue(recipe.periodic)
@@ -308,7 +367,7 @@ class TerrainSynth(unittest.TestCase):
                                     self.assertLessEqual(steps[edge], 1.5 * baseline + 0.25)
 
     def test_interchangeable_layout_perimeters_match_and_interiors_differ(self):
-        for name, recipe in synth.RECIPES.items():
+        for name, recipe in self.recipes():
             if recipe.blocks == 1:
                 continue
             for phase in range(recipe.phases):
@@ -333,7 +392,7 @@ class TerrainSynth(unittest.TestCase):
         for kx, ky, cycles, _ in waves.WAVE_SWELL + waves.WAVE_CHOP:
             self.assertLessEqual(cycles / waves.WAVE_PHASES, 0.25, (kx, ky))
         self.assertEqual(waves.WAVE_SIZE % waves.WAVE_PHASES, 0)
-        for name in ("water", "deep_water", "dark_water"):
+        for name in [n for n in ("water", "deep_water", "dark_water") if n in self.results]:
             recipe = synth.RECIPES[name]
             self.assertEqual(recipe.phases, waves.WAVE_PHASES)
             for layout in range(recipe.blocks):
@@ -348,8 +407,8 @@ class TerrainSynth(unittest.TestCase):
 
     def test_catalog_fragment_is_well_formed(self):
         fragment = synth.catalog_fragment(self.results)
-        self.assertEqual([m["key"] for m in fragment["materials"]], synth.SYNTH_ORDER)
-        self.assertEqual(fragment["bindings"], {name: name for name in synth.SYNTH_ORDER})
+        self.assertEqual([m["key"] for m in fragment["materials"]], SELECTED)
+        self.assertEqual(fragment["bindings"], {name: name for name in SELECTED})
         for block in fragment["materials"]:
             self.assertEqual(block["sprite"], f"data/gfx/terrain-{block['key']}")
             recipe = synth.RECIPES[block["key"]]
