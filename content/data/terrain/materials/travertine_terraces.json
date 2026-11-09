@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-travertine_terraces",
   "profile": "canopy",
   "class": "cover",
-  "preview": [205, 195, 172],
+  "preview": [202, 195, 180],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [205, 195, 172],
+  "minimap": [202, 195, 180],
   "seam": {
     "height": 4,
     "cast_q8": 88,

@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-obsidian_ridge",
   "profile": "canopy",
   "class": "cover",
-  "preview": [67, 65, 69],
+  "preview": [64, 65, 77],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [67, 65, 69],
+  "minimap": [64, 65, 77],
   "seam": {
     "height": 4,
     "cast_q8": 88,

@@ -60,7 +60,7 @@ def lozenge_paving(size, diag, key, gap):
         palette={**FROST, "dark": (196, 194, 200), "mid": (220, 218, 222), "light": (238, 236, 238),
                  "warm": (230, 222, 216), "cool": (206, 208, 230), "vein": (146, 150, 176),
                  "key": (108, 120, 176), "key_light": (170, 180, 226)},
-        style=Style(luma=192, std=20, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
+        style=Style(luma=192, std=19, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_moonstone_lozenge(ctx):
     """Polished white marble lozenges with grey-blue veins and blue moonstone
     keystones: a kept, formal floor with hairline cracks and a frost sheen."""

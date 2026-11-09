@@ -7,7 +7,7 @@ from ._strewn import strewn_ground
 
 @recipe(name="travertine_terraces", group="obstacles", label="Travertine terraces", profile="canopy", border_class="cover",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
-        palette={'dark': (184, 172, 146), 'mid': (204, 194, 170), 'light': (222, 214, 194), 'stone': (232, 226, 212), 'stone_core': (196, 164, 120)},
+        palette={'dark': (181, 172, 154), 'mid': (201, 194, 178), 'light': (219, 214, 202), 'stone': (229, 226, 220), 'stone_core': (193, 164, 128)},
         style=Style(luma=196, std=10, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4,
         note="ground under the raised decor sprites (tools/artwork/terrain_decor.py)")
 def render_travertine_terraces(ctx):

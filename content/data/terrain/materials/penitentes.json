@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-penitentes",
   "profile": "rock",
   "class": "solid",
-  "preview": [190, 201, 221],
+  "preview": [185, 205, 214],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [190, 201, 221],
+  "minimap": [185, 205, 214],
   "seam": {
     "height": 4,
     "cast_q8": 72,

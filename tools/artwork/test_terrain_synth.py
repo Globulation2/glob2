@@ -271,9 +271,14 @@ class TerrainSynth(unittest.TestCase):
         # tundra's green moss pads and grey earth average to scree's warm-grey stones;
         # the rock paths are laid to sit beside the grounds they are cut from, and
         # read apart by their joints: slate slabs beside scree, basalt and scoria
-        # in pale ash joints beside volcanic ash and pumice.
+        # in pale ash joints beside volcanic ash and pumice; rime ashlar's cut
+        # ice courses beside the icefall they are quarried from; boardwalk's
+        # planks beside heath, and the cobbled road beside boulders. Lava's glowing,
+        # animated crack net never reads as loam, whose dark crust it averages to.
         texture_distinct = {("scree", "tundra"), ("scree", "slate_ashlar"), ("basalt_causeway", "pumice"),
-                            ("basalt_causeway", "volcanic_ash"), ("scoria_blocks", "volcanic_ash")}
+                            ("basalt_causeway", "volcanic_ash"), ("scoria_blocks", "volcanic_ash"),
+                            ("icefall", "rime_ashlar"), ("lava", "loam"), ("boardwalk", "heath"),
+                            ("boulders", "road")}
         names = sorted(means)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
