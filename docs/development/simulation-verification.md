@@ -27,7 +27,15 @@ scenarios: each saved game in `content/games` run 600 ticks (per tick, the aggre
 checksum and every team's checksum and unit and building records), the
 FourSquares1 match record replayed by `match verify` (its per-tick state checksums,
 even when the record names another sim version), and every generator's map
-fingerprint on the golden request set (`MapGeneratorGoldenTest --print`).
+fingerprint on the golden request set (`MapGeneratorGoldenTest --print`). The
+`saves` part adds the retained AI and telemetry saves at their own lengths, the
+v108 checkpoint continued 256 ticks and the Maxima continuation (checkpoint 30000
+to 30512, plus its 30256 save resumed to 30512). The `goldens` part runs the
+`[golden]` test cases with `GLOB2_TEST_SIM_TRACE_DIR` set, which makes
+`expectGolden` write each case's actual trace there, and compares the traces line by
+line whatever the committed fixtures say; it needs the build's `engine-tests` and
+`unit-tests`. A scenario only one build has (a test case added or removed) is noted
+and left out of the verdict.
 `tools/sim_diff.py base.json.gz candidate.json.gz` reports, per scenario, the first
 tick and component that differ; it exits 0 when all match and 1 when output
 differs. Fingerprint two local builds of your own the same way, running each from
@@ -45,8 +53,8 @@ the merge base and the pull request at the perf tier and reports the verdict bes
 the two `SIM_REVISION` values in the job summary. It is in shadow mode: a difference
 without a bump is a warning, not a failure, while its verdicts are compared with
 the sim version check. Equal output does not prove behaviour unchanged; the
-scenarios cover only what they run. A full fingerprint takes about twelve minutes,
-mostly the generator set; `--parts games,match` skips the generators.
+scenarios cover only what they run. `--parts` picks a subset of `games`, `match`, `generators`, `saves` and
+`goldens`; the generator set is the slowest part.
 
 ## Check compatibility separately
 

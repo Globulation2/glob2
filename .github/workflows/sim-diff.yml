@@ -101,7 +101,8 @@ jobs:
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           prefix="$PWD/build/sdl3-ci/prefix"
           git worktree add --detach ../glob2-base "$BASE"
-          targets="build/linux/client/perf/src/glob2 map-generator-golden-test"
+          # The test binaries carry the [golden] cases whose traces the goldens part compares.
+          targets="build/linux/client/perf/src/glob2 map-generator-golden-test engine-tests unit-tests"
           (cd ../glob2-base && GLOB2_SDL3_PREFIX="$prefix" python3 tools/dev_build.py perf=1 CC=gcc-13 CXX=g++-13 -j4 $targets)
           GLOB2_SDL3_PREFIX="$prefix" python3 tools/dev_build.py perf=1 CC=gcc-13 CXX=g++-13 -j4 $targets
       - name: Fingerprint both builds
