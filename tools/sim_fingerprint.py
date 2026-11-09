@@ -157,12 +157,17 @@ def run_goldens(build_dir: Path, work: Path, checkout: Path) -> dict:
     env = headless_environment()
     env['GLOB2_TEST_SIM_TRACE_DIR'] = str(traces)
     env.pop('GLOB2_TEST_UPDATE_FIXTURES', None)
-    command = [sys.executable, str(checkout / 'test/run_tests.py'), '--build-dir', str(build_dir),
-               '--tag', 'golden', '--artifacts', str(work / 'golden-artifacts'),
-               '--junit', str(work / 'golden-artifacts/junit.xml')]
     with (work / 'goldens.log').open('w') as stream:
-        # The verdict against committed fixtures is not ours to judge; the traces are.
-        subprocess.run(command, cwd=checkout, stdout=stream, stderr=subprocess.STDOUT, env=env)
+        # [golden] cases compare with a committed fixture and [sim-trace] cases only
+        # record (Glob2Test recordSimTrace); both write their traces here. The verdict
+        # against committed fixtures is not ours to judge; the traces are. Traces keep
+        # the golden/ prefix so a case moved from expectGolden to recordSimTrace still
+        # matches its merge-base trace.
+        for tag in ('golden', 'sim-trace'):
+            command = [sys.executable, str(checkout / 'test/run_tests.py'), '--build-dir', str(build_dir),
+                       '--tag', tag, '--artifacts', str(work / f'{tag}-artifacts'),
+                       '--junit', str(work / f'{tag}-artifacts/junit.xml')]
+            subprocess.run(command, cwd=checkout, stdout=stream, stderr=subprocess.STDOUT, env=env)
     found = {'golden/' + path.relative_to(traces).as_posix(): path.read_text().splitlines()
              for path in sorted(traces.rglob('*')) if path.is_file()}
     if not found:

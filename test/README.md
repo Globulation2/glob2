@@ -196,6 +196,7 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[network]` | binds loopback sockets; never runs alongside another `[network]` case |
 | `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
 | `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it, and `GLOB2_TEST_SIM_TRACE_DIR=<dir>` also writes the actual text there for `tools/sim_fingerprint.py` |
+| `[sim-trace]` | records a trace with `recordSimTrace` and no checked-in text: `GLOB2_TEST_SIM_TRACE_DIR=<dir>` writes it for `tools/sim_fingerprint.py`, which compares it between the merge base and the pull request; the case asserts its behaviour with direct checks |
 | `[writes-preferences]` | legitimately saves settings |
 | `[benchmark]` | timing evidence, not pass/fail; runs only with `--tag benchmark` |
 | `[map-generators]` | the full generator contract; CI runs it in the map-generators job with `--tier full` (the cases are also `[slow]`), the shards use `--exclude-tag map-generators` |
