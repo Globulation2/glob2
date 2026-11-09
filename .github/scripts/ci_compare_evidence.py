@@ -64,7 +64,9 @@ def validate_traces(root, native, browsers):
     expected = {(browser, variant, threads) for browser in browsers
                 for variant, threads in BROWSER_TRACE_VARIANTS}
     found = set()
-    for path in root.glob('browser-determinism-wasm-*/wasm/*/manifest.json'):
+    # An empty `browsers` means the browser producer failed and was left out with a
+    # notice: whatever its surviving shards uploaded is not evidence.
+    for path in root.glob('browser-determinism-wasm-*/wasm/*/manifest.json') if browsers else ():
         manifest = json.loads(path.read_text())
         identity = (manifest['project'], manifest['variant'], manifest['threads'])
         if identity not in expected or identity in found:
@@ -118,7 +120,8 @@ def validate_resource_compositions(root, native, browsers, committed, *, units=F
         check(manifest_path.parent, json.loads(manifest_path.read_text()))
     expected = {(variant, browser) for variant in ('serial', 'threaded') for browser in browsers}
     found = set()
-    for path in root.glob(f'browser-determinism-wasm-*/resources/*/*/{selection}/manifest.json'):
+    for path in (root.glob(f'browser-determinism-wasm-*/resources/*/*/{selection}/manifest.json')
+                 if browsers else ()):
         manifest = json.loads(path.read_text())
         identity = (manifest['variant'], manifest['browser'])
         if identity not in expected or identity in found:
