@@ -15,6 +15,9 @@
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
+#include "Continuation.h"
+#include "Property.h"
+#include "SimulationInvariants.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"
 #include "Order.h"
@@ -25,6 +28,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -118,10 +122,13 @@ namespace
 	{
 		int tilesAlive = 0;
 		int harvested = 0;
+		bool ledgerExact = false; // every material balanced exactly at every tick
 	};
-	FieldRun workAField(bool experiment, bool painted, int ticks)
+	FieldRun workAField(bool experiment, bool painted, int ticks, Uint32 seed = 1)
 	{
-		glob2test::HeadlessGame world(options(experiment));
+		auto settings = options(experiment);
+		settings.seed = seed;
+		glob2test::HeadlessGame world(settings);
 		Map& map = world.game.map;
 		addWater(map);
 		const int x0 = 12, y0 = 12;
@@ -133,13 +140,22 @@ namespace
 		world.addBuilding("swarm", x0 + 1, y0 + 9);
 		for (int i = 0; i < 8; i++)
 			world.addUnit(WORKER, x0 - 1 + i, y0 + 7);
+		std::optional<glob2test::MaterialLedger> ledger; // from the first step on
 		for (int t = 0; t < ticks; t++)
 		{
 			world.step();
 			for (Unit* u : world.team->liveUnits.entries())
 					u->hungry = Unit::HUNGRY_MAX;
+			if (!ledger) ledger.emplace(world.game);
+			else if (!ledger->check("field tick " + std::to_string(t + 1))) break;
 		}
 		FieldRun run;
+		if (ledger)
+		{
+			INFO(ledger->inexactReasons());
+			run.ledgerExact = ledger->colonyExact() && ledger->mapExact();
+			CHECK(run.ledgerExact);
+		}
 		for (int y = y0; y < y0 + 6; y++)
 			for (int x = x0; x < x0 + 6; x++)
 				run.tilesAlive += wheatAt(map, x, y) > 0;
@@ -202,6 +218,86 @@ namespace
 		}
 		return trace.str();
 	}
+
+	// The off-path scenario above, run for one way of not having the experiment:
+	// the flag never mentioned, the flag explicitly set false, or set false on a
+	// map that still carries a painted farm mask (as one made with the
+	// experiment would). Records every tick's simulation state; the material
+	// ledger balances at every tick.
+	enum class FarmFlag { Absent, False, FalseWithStaleMask };
+	struct OffPathTick
+	{
+		std::vector<Uint32> components; // the full simulation state
+		std::vector<Uint32> entities;   // buildings' and units' checksum words
+		std::vector<Uint64> resources;  // every cell's deposit
+	};
+	std::vector<OffPathTick> offPathRun(FarmFlag flag, Uint32 seed, int ticks)
+	{
+		setSyncRandSeed(seed);
+		auto settings = options(false);
+		settings.seed = seed;
+		if (flag != FarmFlag::Absent)
+		{
+			settings.experiments.set(ExperimentId::FarmAreas, true);
+			settings.experiments.set(ExperimentId::FarmAreas, false);
+		}
+		glob2test::HeadlessGame world(settings);
+		Map& map = world.game.map;
+		CHECK_FALSE(map.farmAreasEnabled());
+		addWater(map);
+		for (int y = 12; y < 18; y++)
+			for (int x = 12; x < 18; x++)
+				setWheat(map, x, y, 3);
+		for (int y = 4; y < 8; y++)
+			for (int x = 22; x < 26; x++)
+			{
+				put(map, x, y, WOOD, 3);
+				map.addClearArea(x, y, 0);
+			}
+		if (flag == FarmFlag::FalseWithStaleMask)
+			paintFarm(map, 0, 0, map.getW() - 1, map.getH() - 1);
+		world.addBuilding("swarm", 13, 21);
+		for (int i = 0; i < 8; i++)
+			world.addUnit(WORKER, 11 + i, 19);
+		std::optional<glob2test::MaterialLedger> ledger; // from the first step on
+		std::vector<OffPathTick> states;
+		states.reserve(ticks);
+		for (int t = 1; t <= ticks; t++)
+		{
+			world.step();
+			for (Unit* u : world.team->liveUnits.entries())
+				u->hungry = Unit::HUNGRY_MAX;
+			if (!ledger) ledger.emplace(world.game);
+			else ledger->check("off-path tick " + std::to_string(t));
+			OffPathTick state;
+			std::vector<Uint32> buildings, units;
+			state.components = glob2test::simulationComponents(world.game);
+			world.game.checkSum(nullptr, &buildings, &units, true, false);
+			state.entities = buildings;
+			state.entities.insert(state.entities.end(), units.begin(), units.end());
+			for (std::size_t cell = 0; cell < map.cellCount(); ++cell)
+				state.resources.push_back(map.getResource(cell).getUint64());
+			states.push_back(std::move(state));
+		}
+		// The scenario exercises what the experiment touches: harvesting and clearing.
+		CHECK(std::as_const(world.team->stats).events().harvested[WHEAT] > 0);
+		CHECK(std::as_const(world.team->stats).events().cleared[WOOD] > 0);
+		REQUIRE(ledger);
+		INFO(ledger->inexactReasons());
+		CHECK(ledger->colonyExact());
+		return states;
+	}
+
+	// The first tick at which two runs differ in `field`, or -1.
+	template <typename Field>
+	int firstDifference(const std::vector<OffPathTick>& a, const std::vector<OffPathTick>& b, Field field)
+	{
+		REQUIRE(a.size() == b.size());
+		for (std::size_t t = 0; t < a.size(); ++t)
+			if (field(a[t]) != field(b[t]))
+				return int(t) + 1;
+		return -1;
+	}
 }
 
 TEST_SUITE("FarmAreas")
@@ -210,6 +306,23 @@ TEST_SUITE("FarmAreas")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::expectGolden("farm-areas/off-path-checksums.txt", offPathTrace());
+	}
+
+	TEST_CASE("the flag absent and the flag false play the same game, and a stale farm mask is inert")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::forEachSeed(2, [](std::uint32_t seed) {
+			const int ticks = 800;
+			const auto absent = offPathRun(FarmFlag::Absent, seed, ticks);
+			const auto off = offPathRun(FarmFlag::False, seed, ticks);
+			const auto stale = offPathRun(FarmFlag::FalseWithStaleMask, seed, ticks);
+			// Explicitly false is the default game, word for word.
+			CHECK(firstDifference(absent, off, [](const OffPathTick& s) { return s.components; }) == -1);
+			// A painted mask is map data, so the map's checksum word differs; every
+			// unit, building and deposit must still play out identically.
+			CHECK(firstDifference(absent, stale, [](const OffPathTick& s) { return s.entities; }) == -1);
+			CHECK(firstDifference(absent, stale, [](const OffPathTick& s) { return s.resources; }) == -1);
+		}, 1);
 	}
 
 	TEST_CASE("workers on a farm worked down to its seed carry nothing away")
@@ -590,6 +703,24 @@ TEST_SUITE("FarmAreas")
 		// Without the experiment a painted mask is inert: the same game as unpainted.
 		CHECK(inert.tilesAlive == unpainted.tilesAlive);
 		CHECK(inert.harvested == unpainted.harvested);
+	}
+
+	// Farm harvesting draws from another tile of the field and growth refills it:
+	// across seeds, the map's grain and the swarm's stock and births still account
+	// for every unit at every tick, with and without the experiment.
+	TEST_CASE("a worked field accounts for every grain at every tick")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::forEachSeed(3, [](std::uint32_t seed) {
+			for (const bool experiment : {true, false})
+			{
+				CAPTURE(experiment);
+				setSyncRandSeed(seed);
+				const FieldRun run = workAField(experiment, true, 1500, seed);
+				CHECK(run.harvested > 0);
+				CHECK(run.ledgerExact);
+			}
+		}, 1);
 	}
 
 	TEST_CASE("a farm area survives a save and load [save-format]")

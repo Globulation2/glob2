@@ -20,6 +20,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     test/support/HeadlessGame.cpp
     test/support/GameFixtures.cpp
     test/support/Continuation.cpp
+    test/support/SimulationInvariants.cpp
     test/support/DrawFixtures.cpp
     test/support/LegacyResourceTypes.cpp
     src/tutorial/IntroductionTest.cpp
@@ -62,6 +63,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/hud/GameGUISelectionHarness.cpp
     src/render/scene/SceneExtractTest.cpp
     src/game/diagnostics/GameDiagnosticsTest.cpp
+    src/team/stats/MaterialLedgerTest.cpp
     src/building/HiringBucketHarness.cpp
     src/building/HiringPlannerTest.cpp
     src/unit/HungryDefeatHarness.cpp
@@ -999,6 +1001,7 @@ set(GLOB2_SIM_TESTS_0_SOURCES
     test/support/GlobalContainerSlot.cpp
     test/support/HeadlessGlobals.cpp
     test/support/GameFixtures.cpp
+    test/support/SimulationInvariants.cpp
     test/sim/stubs/PresentationStubs.cpp
     src/ai/engine/AIOrderSchedulerTest.cpp
     src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp

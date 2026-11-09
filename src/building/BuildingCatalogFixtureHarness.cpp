@@ -6,6 +6,7 @@
 #include "HeadlessGame.h"
 #include "GameFixtures.h"
 #include "Continuation.h"
+#include "SimulationInvariants.h"
 #include "BuildingType.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -37,22 +38,6 @@ Building* place(glob2test::HeadlessGame& world, const char* key, int x, int y)
 // Keep the historical trace representation while save/resume comparisons retain
 // current simulation components except the normalized map-header version.
 std::vector<Uint32> historicalGoldenState(Game& game) { return glob2test::simulationComponents(game, true); }
-void invariants(Game& game)
-{
-    REQUIRE(game.integrity());
-    for (int team=0; team<game.mapHeader.getNumberOfTeams(); ++team)
-        for (auto* building : game.teams[team]->liveBuildings.entries())
-        {
-            if (!building) continue;
-            CHECK(building->unitsInside.size() <= std::size_t(building->maxUnitInside));
-            for (int resource=0; resource<MaterialCount; ++resource)
-            {
-                CHECK(building->material(resource) >= 0);
-                CHECK(building->reservedMaterials[resource] >= 0);
-                CHECK(building->reservedMaterials[resource] <= building->material(resource));
-            }
-        }
-}
 }
 TEST_SUITE("BuildingCatalogFixtures")
 {
@@ -90,7 +75,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         world.team->createLists();
         world.game.setWaitingOnMask(0);
         for (int tick=0; tick<257; ++tick) world.step();
-        invariants(world.game);
+        glob2test::expectBuildingInvariants(world.game);
         std::ostringstream golden;
         const auto result=glob2test::expectContinuation(world.game, {.ticks=257,
             .step=[](Game& game) { glob2test::stepEngine(game); return std::vector<std::string>{}; },
@@ -99,7 +84,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
                 CHECK(loaded.buildingsTypes.fingerprint() == original.buildingsTypes.fingerprint());
             },
             .each=[&](Game& original, Game& loaded, int tick) {
-                invariants(original); invariants(loaded);
+                glob2test::expectBuildingInvariants(original); glob2test::expectBuildingInvariants(loaded);
                 if (tick % 32 == 0)
                 {
                     golden << tick+258;

@@ -329,6 +329,62 @@ TEST_SUITE("WinProbability")
         glob2test::writeFile(glob2test::artifactDir() / "rule-checksums.txt", trace.str());
     }
 
+    // The oracle the checksum trace above stands for: played tick by tick through the
+    // engine, the rule leaves the game running until its decision tick, then ends it
+    // on that tick's step with the team the model favours as the winner, whichever
+    // team that is.
+    TEST_CASE("the rule ends a played game right after its decision tick with the favoured winner")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (const int favoured : {0, 1})
+        {
+            CAPTURE(favoured);
+            glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true, .seed = 42});
+            world.addBuilding("inn", 4, 4, 0, 0);
+            world.addBuilding("inn", 16, 4, 0, 1);
+            world.addUnit(WORKER, 8, 8, 0);
+            world.addUnit(WORKER, 20, 8, 1);
+            auto &game = world.game;
+            game.teams[favoured]->prestige = 1000;
+            game.gameHeader.getWinningConditions().clear();
+            WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
+            game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 64;
+            int decidedAt = -1, expectedWinner = -1;
+            for (int tick = 0; tick < 128 && !game.isGameEnded; ++tick)
+            {
+                const Uint32 deciding = game.stepCounter;
+                CAPTURE(deciding);
+                if (deciding == Uint32(WinProbability::MINIMUM_DECISION_TICK))
+                {
+                    // The chances the rule will read on this step.
+                    std::vector<int> allianceOf;
+                    const auto chances = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
+                    REQUIRE(chances.size() == 2);
+                    expectedWinner = chances[0] > chances[1] ? 0 : 1;
+                    REQUIRE(chances[expectedWinner] >= 970);
+                }
+                world.step();
+                if (deciding < Uint32(WinProbability::MINIMUM_DECISION_TICK))
+                {
+                    CHECK_FALSE(game.isGameEnded);
+                    for (int t = 0; t < 2; ++t)
+                    {
+                        CHECK_FALSE(game.teams[t]->hasWon);
+                        CHECK_FALSE(game.teams[t]->hasLost);
+                    }
+                }
+                if (game.isGameEnded) decidedAt = int(deciding);
+            }
+            CHECK(decidedAt == WinProbability::MINIMUM_DECISION_TICK);
+            REQUIRE(expectedWinner >= 0);
+            CHECK(expectedWinner == favoured);
+            CHECK(game.teams[expectedWinner]->hasWon);
+            CHECK_FALSE(game.teams[expectedWinner]->hasLost);
+            CHECK(game.teams[1 - expectedWinner]->hasLost);
+            CHECK_FALSE(game.teams[1 - expectedWinner]->hasWon);
+        }
+    }
+
     TEST_CASE("native arithmetic reproduces every published calibration sample")
     {
         std::map<int, std::vector<WinProbability::Slot>> samples;

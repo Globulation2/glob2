@@ -30,6 +30,7 @@ ENGINE_SUPPORT = [
     'support/HeadlessGame.cpp',
     'support/GameFixtures.cpp',
     'support/Continuation.cpp',
+    'support/SimulationInvariants.cpp',
     'support/DrawFixtures.cpp',
     'support/LegacyResourceTypes.cpp',
 ]
@@ -125,6 +126,7 @@ ENGINE_TESTS = [
     '#src/render/scene/SceneExtractTest.cpp',
     '#src/game/diagnostics/GameDiagnosticsTest.cpp',
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/team/stats/MaterialLedgerTest.cpp',
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
     '#src/building/HiringPlannerTest.cpp',
@@ -605,6 +607,7 @@ SIM_TESTS = [
 SIM_SUPPORT = [
     'support/HeadlessGlobals.cpp',
     'support/GameFixtures.cpp',
+    'support/SimulationInvariants.cpp',
 ]
 
 # Production objects outside SIM_SOURCES and MAP_SOURCES that the simulation still
