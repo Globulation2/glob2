@@ -481,6 +481,11 @@ struct AlgaeBand
 /// one best share taken over the whole map would favour some wedges' water over others'.
 void seedAlgae(GenerationMap &, GenerationContext &, const Torus &, const char *stream,
 			   int algaePercent, const AlgaeBand &, const WedgeFrame *wedges = nullptr);
+/// The water tiles a shallows band would count on a sketch: tiles whose four corners are plain
+/// WATER (the only water algae may stand on), `nearest` to `farthest` steps from any other tile. A
+/// generator that deepens part of its water compares this before and after, and scales its band's
+/// tiles per clump by the ratio, so the deep cores move the algae without shrinking the supply.
+int algaeBandTiles(const TerrainSketch &, const Torus &, int nearest, int farthest);
 /// The same, with the clumps shared out equally between labelled groups of water that are not wedges
 /// (every colony's own bay, say): `groupOf` gives each tile's group, 0 to `groups` - 1, or -1 for
 /// water that belongs to none and takes no clump.

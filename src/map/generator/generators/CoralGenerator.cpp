@@ -7,7 +7,10 @@
 #include "Farmland.h"
 #include "Room.h"
 #include "Grid.h"
+#include "HeightFieldLooks.h"
+#include "TerrainGroupTable.h"
 #include "LatticeNoise.h"
+#include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
@@ -117,12 +120,18 @@ constexpr int kHomeWood = 30;
 // breadbasket.
 constexpr int kWheatShare = 30;
 constexpr int kWoodShare = 21;
-// Dry patches of sand inside the branches, as a share of their inland grass, at least this many
-// steps from water so a strip of grass always lies between patch and beach; and the size of the
-// noise the patches follow, in tiles.
-constexpr double kSandShare = 0.08;
-constexpr int kSandInland = 3;
-constexpr double kSandCell = 10;
+// THE REEF (revision 5). The coral is drawn from the terrain catalogue as a tropical reef: lush
+// grass mottled with plain grass in patches kMottleCell tiles across (kMottleShare of it plain),
+// pale-sand beaches kept on every shore since the algae regrows from them, a paved road (Paths,
+// twice as fast, nothing grows on it) two vertices wide down every branch that forks on, the land
+// bridges as reef flats (Rough: slow, unbuildable, nothing grows) meeting the water with no beach,
+// and the open ocean deep where it is kDeepReach tiles from land in bodies of at least kDeepLeast
+// vertices that reach out beyond the pads' ring. The straits and lagoons inside the fans stay
+// shallow, so swimming within the tangle of fans is as it was.
+constexpr double kMottleCell = 9;
+constexpr double kMottleShare = 0.35;
+constexpr int kDeepReach = 8;
+constexpr int kDeepLeast = 64;
 // One algae clump per this many tiles of shallows at 100, all on the share of each colony's
 // shallows where algae regrows most readily.
 constexpr int kAlgaeTilesPerClump = 35;
@@ -282,13 +291,14 @@ struct Layout
 	std::vector<ShapePoint> pads;
 	std::vector<double> padAngle;                   // each pad's heading, outwards from the centre
 	std::vector<unsigned char> land, water, bridge, expansion; // per tile
+	std::vector<unsigned char> fan; // per tile: land other than the bridges (pads, branches, buds, courts)
 	std::vector<ShapePoint> nodeCentres;
 	std::vector<int> nodeOwners;
 	// Per tile: the colony whose pad it is, the bud it is part of (numbered over every colony), and
 	// the colony whose trunk tip it is; -1 elsewhere.
 	std::vector<int> padOf, budOf, tipOf;
 	std::vector<std::vector<ShapePoint>> trunkLines; // each colony's trunk centre line
-	// The centre lines of every branch that forks on and every bridge, for the sand roads.
+	// The centre lines of every branch that forks on, for the roads.
 	std::vector<std::vector<StrokePoint>> roads;
 	std::string failure;
 
@@ -593,6 +603,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 	// Stamp every colony's copy: its pad, its fan and buds, its bridges to the next colony.
 	L.land.assign(n, 0);
+	L.fan.assign(n, 0);
 	L.bridge.assign(n, 0);
 	L.expansion.assign(n, 0);
 	L.padOf.assign(n, -1);
@@ -608,7 +619,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			t, centre.x, centre.y, padShape, L.axis(k),
 			[&](int i, double, double)
 			{
-				L.land[i] = 1;
+				L.land[i] = L.fan[i] = 1;
 				L.padOf[i] = k;
 			},
 			L.stretch);
@@ -633,6 +644,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (piece.kind == Kind::Expansion)
 			{
 				strokePath(L.land, t, turned);
+				strokePath(L.fan, t, turned);
 				strokePath(L.expansion, t, turned);
 				L.nodeCentres.push_back({turned.front().x, turned.front().y});
 				L.nodeOwners.push_back(k);
@@ -655,18 +667,17 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 							c.halfWidth * c.halfWidth)
 						{
 							const int i = t.at(x, y);
-							L.land[i] = 1;
+							L.land[i] = L.fan[i] = 1;
 							L.budOf[i] = id;
 						}
 				continue;
 			}
-			if (piece.kind == Kind::Bridge)
-				strokePath(L.bridge, t, turned);
+			strokePath(piece.kind == Kind::Bridge ? L.bridge : L.fan, t, turned);
 			strokePath(L.land, t, turned);
-			// Roads keep routes open, so they run down every branch that forks on and every bridge,
-			// but not down the tips: a dead end carries no traffic, and on a tip's narrow land the
-			// road would leave next to no grass for its fields.
-			if (piece.kind == Kind::Bridge || !L.tree[piece.branch].leaf)
+			// Roads run down every branch that forks on, but not down the tips: a dead end carries
+			// no traffic, and on a tip's narrow land the road would leave next to no grass for its
+			// fields. The bridges are reef flats and carry none.
+			if (piece.kind == Kind::Branch && !L.tree[piece.branch].leaf)
 				L.roads.push_back(turned);
 		}
 	}
@@ -804,6 +815,95 @@ std::vector<int> expansionCorners(const Layout &L, ShapePoint centre, Generation
 	return corners;
 }
 
+// The reef's terrain, a pure function of the layout: `mechanics` holds one canonical type per rule
+// (GRASS, SAND, WATER, DEEP_WATER, TRAIL, MUDFLAT), which every placement and check below reads,
+// and `looks` the artwork painted over it last (composeLooks), which can never change a rule.
+struct ReefTerrain
+{
+	TerrainSketch mechanics, looks;
+	int road = 0, flats = 0, deep = 0;
+	int bandBefore = 0, bandAfter = 0; // the algae band's tiles before and after the deep ocean
+};
+
+ReefTerrain sketchTerrain(const Layout &L, GenerationContext &context)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	ReefTerrain T;
+	TerrainSketch &terrain = T.mechanics;
+	terrain.assign(n, GRASS);
+	for (int i = 0; i < n; ++i)
+		if (L.water[i])
+			terrain[i] = WATER;
+	// Every court is a grass disc sealed by a complete one-corner sand ring, so no crop grows into
+	// it; roads stop at the ring.
+	for (const auto &centre : L.nodeCentres)
+		stampContainedPlot(terrain, t, expansionCorners(L, centre, context), kExpansionMargin);
+	layBeaches(terrain, t);
+	T.bandBefore = algaeBandTiles(terrain, t, 1, 10);
+	// The roads, laid after the beaches so a beach never eats one: two vertices wide, so the traced
+	// tiles are pure road, off the pads, the buds and the courts, so homes keep their building room
+	// and every tip its grove. Nothing grows on or across a road.
+	if (CoralOptions(context.request).sandRoads)
+	{
+		std::vector<unsigned char> road(n, 0);
+		for (const std::vector<StrokePoint> &line : L.roads)
+			tracePath(road, t, line);
+		T.road = paveRoute(terrain, t, road, 2, TRAIL, [&](int i)
+						   { return terrain[i] == GRASS && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.expansion[i]; });
+	}
+	// The land bridges are reef flats from shore to shore, beaches included: slow, unbuildable
+	// ground nothing grows on, which nobody can wall off with a building.
+	for (int i = 0; i < n; ++i)
+		if (L.bridge[i] && !L.fan[i] && terrain[i] != WATER)
+		{
+			terrain[i] = MUDFLAT;
+			++T.flats;
+		}
+	// The open ocean is deep: slower to swim, and no algae, which keeps to the shallows. A core is
+	// open water at least kDeepReach tiles from land, and only the cores that reach out beyond the
+	// pads' ring (read in the round design frame) deepen, so the edge of the deep follows the
+	// coasts and the lagoons inside the fans stay shallow.
+	std::vector<unsigned char> dry(n, 0), core(n, 0), outer(n, 0);
+	for (int i = 0; i < n; ++i)
+		dry[i] = terrain[i] != WATER;
+	const std::vector<std::int64_t> fromDry = distanceSquaredTo(t, dry);
+	for (int i = 0; i < n; ++i)
+	{
+		core[i] = !dry[i] && fromDry[i] >= std::int64_t(kDeepReach) * kDeepReach;
+		const ShapePoint p = L.stretch.undo(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w));
+		outer[i] = core[i] && std::hypot(p.x, p.y) >= L.g.rootRadius;
+	}
+	const std::vector<int> joined = stepsFrom(t, outer, core);
+	std::vector<unsigned char> ocean(n, 0);
+	for (int i = 0; i < n; ++i)
+		ocean[i] = joined[i] >= 0;
+	T.deep = deepenWater(terrain, t, kDeepReach, kDeepLeast, DEEP_WATER, &ocean);
+	T.bandAfter = algaeBandTiles(terrain, t, 1, 10);
+
+	// The looks: lush grass mottled with plain grass, sampled in the wedge frame so every colony's
+	// coral looks alike; pale-sand beaches; an overgrown road.
+	T.looks.assign(n, 0);
+	const WedgeFrame wedges(t, L.phase, L.g.wedges, L.stretch);
+	const PeriodicNoise mottle(t.w, t.h, kMottleCell, context.stream("coral-looks"));
+	for (int i = 0; i < n; ++i)
+	{
+		// The courts keep plain grass inside a plain sand ring: cleared ground, unlike the reef.
+		if (L.expansion[i])
+			continue;
+		if (terrain[i] == GRASS)
+		{
+			const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
+			T.looks[i] = mottle.at(cell.s, cell.d) < kMottleShare ? GRASS : LUSH_GRASS;
+		}
+		else if (terrain[i] == SAND)
+			T.looks[i] = PALE_SAND;
+		else if (terrain[i] == TRAIL)
+			T.looks[i] = OVERGROWN_ROAD;
+	}
+	return T;
+}
+
 bool generate(GenerationWorld &game, GenerationContext &context)
 {
 	context.stage = "coral layout";
@@ -824,44 +924,13 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const int n = t.size();
 
 	context.stage = "coral terrain";
-	TerrainSketch terrain(n, GRASS);
-	for (int i = 0; i < n; ++i)
-		if (L.water[i])
-			terrain[i] = WATER;
-	// A few dry patches along the branches, sampled in the wedge frame so every colony's fan gets
-	// the same ones; never on a pad, a bud or a bridge.
-	{
-		std::vector<unsigned char> branches(n, 0);
-		for (int i = 0; i < n; ++i)
-			branches[i] = L.land[i] && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.bridge[i];
-		const WedgeFrame wedges(t, L.phase, L.g.wedges, L.stretch);
-		const PeriodicNoise dry(t.w, t.h, kSandCell, context.stream("coral-sand"));
-		sprinkleSand(terrain, t, branches, kSandShare, kSandInland,
-					 [&](int i)
-					 {
-						 const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
-						 return dry.at(cell.s, cell.d);
-					 });
-	}
-	// The sand roads: a line of sand one tile thick (tracePath, the thinnest there is) down the
-	// middle of every branch that forks on and every bridge, off the pads and the buds, so homes
-	// keep their building room and every tip its grove. Every tile touching a sand corner loses the
-	// pure grass a deposit or a building needs, so nothing can grow or be built across the road.
-	if (o.sandRoads)
-	{
-		std::vector<unsigned char> road(n, 0);
-		for (const std::vector<StrokePoint> &line : L.roads)
-			tracePath(road, t, line);
-		for (int i = 0; i < n; ++i)
-			if (road[i] && terrain[i] == GRASS && L.padOf[i] < 0 && L.budOf[i] < 0)
-				terrain[i] = SAND;
-	}
-	// Courts overwrite through-roads and decorative sand inside their grass disc.
-	// Their complete sand perimeter stays walkable while sealing all crop growth.
-	for (const auto &centre : L.nodeCentres)
-		stampContainedPlot(terrain, t, expansionCorners(L, centre, context), kExpansionMargin);
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
+	const ReefTerrain terrain = sketchTerrain(L, context);
+	writeVertices(map, terrain.mechanics);
+	context.telemetry.measure("coral.reef.road-vertices", terrain.road);
+	context.telemetry.measure("coral.reef.flat-vertices", terrain.flats);
+	context.telemetry.measure("coral.reef.deep-vertices", terrain.deep);
+	context.telemetry.measure("coral.reef.algae-band-before", terrain.bandBefore);
+	context.telemetry.measure("coral.reef.algae-band-after", terrain.bandAfter);
 
 	context.stage = "coral colonies";
 	const auto pad = [&](int team)
@@ -887,10 +956,20 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	// Algae only grows in water with solid sand within reach (see algaeGrowthChance), so it is
 	// counted over the shallows but seeded on each colony's best-growing water, the same number of
 	// clumps in every wedge.
+	// The deep ocean takes part of the band, so the band's tiles per clump shrink with it and the
+	// reef keeps the algae it had before the ocean was deep.
+	const int tilesPerClump =
+		terrain.bandBefore > 0
+			? std::max(1, int(std::lround(double(kAlgaeTilesPerClump) * terrain.bandAfter / terrain.bandBefore)))
+			: kAlgaeTilesPerClump;
+	context.telemetry.measure("coral.algae.tiles-per-clump", tilesPerClump);
+	// ...and its best-growing share widens, so the clumps spread over as many tiles as before
+	// rather than crowding onto the same few.
+	const double bestShare =
+		terrain.bandAfter > 0 ? std::min(1.0, kAlgaeBestShare * terrain.bandBefore / terrain.bandAfter) : kAlgaeBestShare;
 	const WedgeFrame algaeWedges(t, L.phase, L.g.wedges, L.stretch);
 	seedAlgae(map, context, t, "coral-algae", o.algae,
-			  AlgaeBand::shallows(1, 10, kAlgaeTilesPerClump).thriving(kAlgaeBestShare),
-			  &algaeWedges);
+			  AlgaeBand::shallows(1, 10, tilesPerClump).thriving(bestShare), &algaeWedges);
 	secureStartingCrops(game, context, t);
 
 	// Deposits only land on grass and beaches keep every branch walkable along its edge, but a thin
@@ -926,6 +1005,9 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 				context.detail = "no walk from colony 0 reaches colony " + std::to_string(team);
 				return false;
 			}
+	// The looks last: every placement and repair above read the canonical terrain.
+	context.stage = "coral looks";
+	writeLayeredTerrain(map, terrain.mechanics, terrain.looks);
 	return true;
 }
 
@@ -996,13 +1078,18 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		std::vector<unsigned char> room(t.size(), 0);
 		for (int i : inside)
 		{
-			if (!map.isGrass(t.remainderX(i), i / t.w) ||
-				map.getResource(t.remainderX(i), i / t.w).type != NO_RES_TYPE)
+			const int x = t.remainderX(i), y = i / t.w;
+			bool grass = true;
+			for (int c = 0; c < 4; ++c)
+				grass = grass && terrainGroup(map.vertexTerrainAt(size_t(t.at(x + c % 2, y + c / 2)))) ==
+									 TerrainGroup::Grass;
+			if (!grass || map.getResource(x, y).type != NO_RES_TYPE)
 				return "A coral expansion court has lost its clear grass interior.";
 			room[i] = buildable[i];
 		}
 		for (int i = 0; i < t.size(); ++i)
-			if (seal[i] == SAND && map.vertexTerrainAt(t.remainderX(i), i / t.w) != SAND)
+			if (seal[i] == SAND &&
+				terrainGroup(map.vertexTerrainAt(size_t(i))) != TerrainGroup::Sand)
 				return "A coral expansion court has a broken sand ring.";
 		const BuildingGrid grid{{x - 3, y - 3, x + 3, y + 3}, 4, 4, 2, 1};
 		const auto buildings = arrangeBuildingGrid(t, room, walking, grid, workers[L.nodeOwners[node]]);
@@ -1014,6 +1101,15 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 		const ColonyWalk walk = walkFromFirstColony(map, teams, "the coral", "over the bridges");
 		if (!walk.error.empty())
 			return walk.error;
+	}
+	// Every road, flat, beach and deep core stands as designed, vertex for vertex, looks included.
+	{
+		const ReefTerrain designed = sketchTerrain(L, replay);
+		const TerrainSketch terrain = composeLooks(designed.mechanics, designed.looks);
+		for (int i = 0; i < t.size(); ++i)
+			if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != terrain[i])
+				return "The reef at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
+					   ") is not as designed.";
 	}
 	return "";
 }
@@ -1036,8 +1132,10 @@ GeneratorDefinition coralDefinition()
 		"coral",
 		21,
 		"Coral",
-		// Revision 3: sand-ringed, resource-free expansion courts along each fan.
-		4,
+		// Revision 3: sand-ringed, resource-free expansion courts along each fan. Revision 5: the
+		// tropical reef, drawn from the terrain catalogue (paved roads, reef-flat bridges, deep
+		// ocean, lush grass and pale sand looks, no sand patches).
+		5,
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the
@@ -1060,9 +1158,9 @@ GeneratorDefinition coralDefinition()
 			 .withSearchRange(120, 170),
 		 GeneratorControl{"expansion-nodes", "Expansion nodes", 0, 3, 1, 2, ControlGroup::Layout}
 			 .withSearchRange(1, 3),
-		 // Off, the branches are grass from shore to shore, with no sand road down the middle.
-		 // Search keeps roads open as adjacent crops and trees regrow.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+		 // Off, the branches are grass from shore to shore, with no paved road down the middle.
+		 // Search keeps roads open as adjacent crops and trees regrow. The ID predates the paving.
+		 GeneratorControl::toggle("sand-roads", "Paved roads", true, ControlGroup::Layout)
 			 .withSearchValues({1}),
 		 // The branches' standing wheat and wood, the forks' stone, the buds' fruit and the
 		 // shallows' algae; every pad's kit is unscaled.

@@ -111,6 +111,13 @@ band needs about a tile more depth than a step band to keep the same rock (Crate
   (`deepReachForShare`): River's fixed core took 80% of the water and two thirds of the algae.
 - Move displaced algae to the same body's shallows by distance plus noise (Crater lakes, River);
   breadth-first reseating drew wedges.
+- Where algae is seeded after deepening, hold its supply with `algaeBandTiles` (Planting.h):
+  measure the band on the sketch before and after the cores, then scale both the band's tiles per
+  clump and its best-growing share by that ratio. Scaling only the clump size kept the count but
+  crowded the clumps onto a smaller best share, and Spider web lost 12–18% of its algae tiles
+  until the share was widened too (Coral, Spider web).
+- A deep cutoff by radius draws a circle across open sea. Take cores by distance from land and
+  keep only those joined to the region you call ocean (Coral), so the edge follows the coasts.
 - Drop specks (`dropSmallRegions`) and taper threads in and out; a thread stamped as discs ends in
   round caps (Watershed).
 - Deep water swims slower: the sea timer lengthens (Ring world) and a swim shortcut saves less.

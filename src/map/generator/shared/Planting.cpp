@@ -245,6 +245,19 @@ void seedAlgaeIn(GenerationMap &map, GenerationContext &context, const Torus &t,
 }
 } // namespace
 
+int algaeBandTiles(const TerrainSketch &sketch, const Torus &t, int nearest, int farthest)
+{
+	const std::vector<unsigned char> water = pureTiles(sketch, t, WATER);
+	std::vector<unsigned char> dry(water.size());
+	for (size_t i = 0; i < water.size(); ++i)
+		dry[i] = !water[i];
+	const std::vector<int> offshore = stepsFrom(t, dry, water);
+	int tiles = 0;
+	for (int i = 0; i < t.size(); ++i)
+		tiles += water[i] && offshore[i] >= nearest && offshore[i] <= farthest;
+	return tiles;
+}
+
 void seedAlgae(GenerationMap &map, GenerationContext &context, const Torus &t, const char *stream,
 			   int algaePercent, const AlgaeBand &band, const WedgeFrame *wedges)
 {
