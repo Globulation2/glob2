@@ -160,6 +160,12 @@ constexpr double kCore = 7;
 constexpr int kVerge = 4;
 constexpr int kQuarryFace = 12;
 constexpr int kDeepFrom = 5;
+// Every starting tower also has a face of this much stone at the foot of its wall, seeded within this
+// many tiles of it (plantTowerStone): the faces above stand away from the siege line, and a tower
+// whose carriers walk a dozen steps or more for every stone keeps the colony's workers hauling.
+constexpr int kTowerStone = 6;
+constexpr int kTowerStoneReach = 4;
+constexpr int kTowerStoneDoorGap = 2;
 
 // THE TOWERS. Open 2x2 pads per colony beside its `tower-count` towers, and the least distance between
 // sites, kept small so the siege line packs against its wall.
@@ -768,6 +774,10 @@ TerrainSketch sketchTerrain(const Layout &L)
 	for (int i = 0; i < n; ++i)
 		if (terrain[i] != WATER && (cliffs[i] || ridges[i]))
 			terrain[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	// Every siege wall at least three vertices thick, so its rock draws peaks; never into a lane
+	// or a farm.
+	thickenRidges(terrain, t,
+				  [&](int i) { return terrain[i] == GRASS && L.farmOf[i] < 0 && !cornerOf(t, lane, i); });
 	cliffCoast(
 		terrain, t,
 		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, lane, i); },
@@ -807,7 +817,7 @@ std::vector<unsigned char> blockedTiles(const GenerationMap &map, const Torus &t
 // The resources: every home's scattered farmland (no kit: see the header), a fruit grove in every
 // court, the plaza's orchard (fruit only, so nothing smothers it), and the farms' wheat and woodlots.
 void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
-			 const CarouselOptions &o, const std::vector<unsigned char> &pads)
+			 const CarouselOptions &o, const TowerPlan &towers, const std::vector<unsigned char> &pads)
 {
 	const Torus &t = L.t;
 	const Geometry &g = L.g;
@@ -828,10 +838,28 @@ void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
 		return !L.road[i] && !L.roadTile[i] && !reserved[i] && !pads[i] &&
 			   fromPaths[i] > kDoorClearance && clearGround(map, t.remainderX(i), i / t.w);
 	};
-	int faceTiles = 0;
+	int faceTiles = 0, towerTiles = 0, nicheTiles = 0;
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const auto eligible = [&](int i) { return L.homeOf[i] == k && free(i); };
+		// The towers' ammunition first, at the foot of the wall each one stands against.
+		if (k < int(towers.towers.size()))
+		{
+			// Stone at a wall's foot grows no door shut, so the towers' stone keeps only kTowerStoneDoorGap
+			// from the corridors and spokes; where the foot is barren or paved, which holds no stone, it
+			// is a grass niche first.
+			const auto nicheGround = [&](int i)
+			{
+				return L.homeOf[i] == k && !L.road[i] && !L.roadTile[i] && !reserved[i] && !pads[i] &&
+					   fromPaths[i] > kTowerStoneDoorGap;
+			};
+			const auto towerGround = [&](int i)
+			{ return nicheGround(i) && clearGround(map, t.remainderX(i), i / t.w); };
+			nicheTiles += openTowerNiches(map, t, towers.towers[k], kTowerStone, kTowerStoneReach,
+										  kClimateLooks[L.climate].homeGrass, nicheGround,
+										  [&](int i) { return pads[i] != 0; });
+			towerTiles += plantTowerStone(map, t, towers.towers[k], kTowerStone, kTowerStoneReach, towerGround);
+		}
 		// The quarry faces first, at the foot of the home's walls, as far as the walls go from the
 		// siege line - the previous colony's court, which this home's towers cover - and from each
 		// other. A home's outer side opens onto its own farms, so the faces stand where it has walls.
@@ -880,6 +908,8 @@ void furnish(GenerationMap &map, const Layout &L, GenerationContext &context,
 			"carousel-home-stone", "carousel-home-fruit");
 	}
 	context.telemetry.measure("carousel.quarry-faces.tiles", faceTiles);
+	context.telemetry.measure("carousel.tower-stone.tiles", towerTiles);
+	context.telemetry.measure("carousel.tower-niches.tiles", nicheTiles);
 	const int courtFruit = CHERRY + int(context.bounded("carousel-court", 3));
 	if (scaledCount(1, o.fruit) > 0)
 		for (int k = 0; k < g.teams; ++k)
@@ -994,7 +1024,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const std::vector<unsigned char> pads = towerFootprints(t, towers);
 
 	context.stage = "carousel resources";
-	furnish(map, L, context, o, pads);
+	furnish(map, L, context, o, towers, pads);
 	const WedgeFrame algaeWedges(t, L.phase - L.g.wedge / 2, L.g.teams);
 	seedAlgae(map, context, t, "carousel-algae", o.algae, AlgaeBand::shallows(1, 4), &algaeWedges);
 	secureStartingCrops(game, context, t, 24, 32, 0, &none);
@@ -1185,7 +1215,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		5,
+		7,
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

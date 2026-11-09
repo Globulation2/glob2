@@ -44,10 +44,10 @@ void paintClimate(TerrainSketch &terrain, const Torus &t, const ClimateLook &loo
 			terrain[i] = look.rough;
 			break;
 		case DIRT:
-			terrain[i] = ((x * 7 + y * 13) ^ (x * y)) % 4 == 0 ? look.scrubAccent : look.scrub;
+			terrain[i] = look.scrub;
 			break;
 		case LOAM:
-			terrain[i] = ((x * 3 + y * 7) ^ (x * y)) % 5 == 0 ? look.fertileAccent : look.fertile;
+			terrain[i] = look.fertile;
 			break;
 		case TRAIL:
 			switch (roles.path ? roles.path(i) : PathLook::Road)

@@ -12,8 +12,11 @@ Revision 7 draws every wall, coast and road from the terrain catalogue, where ea
 stood the stone resource on grass and drew roads in sand. The design uses one terrain per rule, and a
 last pass paints one of four climates (temperate, arid, highland, volcanic; `switchbacks-climate`), the same
 for every colony, with looks that keep those rules (`shared/Climates.h`). Walls are drawn on
-vertices and lean away from the open ground beside them (`wallVertices`), so no lane, door or home
-loses a tile to a wall.
+vertices and lean away from the open ground beside them (`wallVertices`), so no lane or door
+loses a tile to a wall. Since revision 9 every Ridges wall is at least three vertices thick
+(`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
+draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
+no longer speckled with a second.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -30,7 +33,10 @@ stay unbuildable is rough ground.
 | Lava | Lava | The plateau's pond, in the volcanic climate | Volcanic maps show lava at their centre |
 
 Every home has two quarry faces of 12 stone each at the mountain's foot either side of its trail's
-mouth: the mountains were its stone when they were built of it. They are unscaled.
+mouth: the mountains were its stone when they were built of it. Since revision 7's towers stand up the
+trail, 16 to 47 steps from those faces, revision 8 gives every starting tower a face of 6 stone at the
+foot of the wall it stands against, within four tiles of it and off the trail's walkway, in a grass
+niche opened in the paving (paving holds no stone). Both are unscaled.
 
 
 - **Geometry.** Designed in every colony's `AxisFrame` and turned round the centre; round on a
