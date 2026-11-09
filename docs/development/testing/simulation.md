@@ -331,12 +331,13 @@ checks seeding and cold input preparation separately from reader expansion.
 `HiringPlanner` verifies that background ranking extends only the required
 frontier, leaves distant cells unresolved, and lets live admission reuse the work.
 
-Intentional routing changes can also move Maxima's fixed army-birth and rally
-trajectories. Their legacy checksum adapters normalize representation, not
-simulation behavior. Refresh them with `GLOB2_RECORD_ARMY_CHECKSUMS=1` and
-`GLOB2_RECORD_RALLY_CHECKSUMS=1` respectively, running the focused
-`Maxima.Economy/army births*` and `Maxima.Combat/rally assembles by movement`
-cases. Then rerun both without those variables to verify the recorded traces.
+Intentional routing changes can also move Maxima's fixed rally trajectory. Its
+legacy checksum adapter normalizes representation, not simulation behavior.
+Refresh it with `GLOB2_RECORD_RALLY_CHECKSUMS=1`, running the focused
+`Maxima.Combat/rally assembles by movement` case, then rerun it without that
+variable to verify the recorded trace. The army-birth scenario has no committed
+trace: `Maxima.Economy/army births are warriors only*` asserts its behavior and
+`army births sim trace` records its checksums for sim-diff.
 
 
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across

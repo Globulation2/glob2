@@ -145,14 +145,14 @@ platform workspace is on the branch it reads the copy in `test/fixtures/protocol
 once both exist it requires the copy to equal the source.
 
 `test/fixtures/multiplayer/FourSquares1.g2mr` is a short recorded match (two humans,
-Nicowar and Warrush) with its expected verification trace. The browser/native
+Nicowar and Warrush) carrying the checksums its clients reported. The browser/native
 simulation equivalence job verifies it on Linux, Windows, macOS and in three browsers and
-requires identical traces. It compares only the platforms whose producing job succeeded:
+requires a `verified` verdict and identical traces. It compares only the platforms whose producing job succeeded:
 a platform missing because its build or test job failed is left out with a notice naming
 that job, which reports the failure itself (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
 simulation change makes it stale and must bump `SIM_REVISION`; `python3
-tools/refresh_sim_fixtures.py` records a fresh match and trace along with the other
+tools/refresh_sim_fixtures.py` records a fresh match along with the other
 revision-keyed fixtures.
 
 Building catalogs are part of match rules identity: a setup carries the canonical

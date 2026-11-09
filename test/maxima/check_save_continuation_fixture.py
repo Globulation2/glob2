@@ -1,4 +1,9 @@
-"""Continue a retained legacy save, checking complete hashes and midpoint reload."""
+"""Continue a retained legacy Maxima save, checking a midpoint save/reload against
+the uninterrupted run.
+
+No committed trace is compared: tools/sim_fingerprint.py (part `saves`) runs this
+same continuation for sim-diff.
+"""
 import argparse
 from contextlib import nullcontext
 import gzip
@@ -16,7 +21,6 @@ from check_javascript import complete_ticks, save_header, header_checksum_delta
 from compare_save_continuation import compare
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/save-continuation"
-EXPECTED = FIXTURES / "expected-units-30000-30512.json"
 
 
 def run(binary, saved, output, stop_tick, workers, checkpoint=False):
@@ -33,11 +37,10 @@ def run(binary, saved, output, stop_tick, workers, checkpoint=False):
     return complete_ticks((output / "game.replay.checksums").read_bytes())
 
 
-def check(binary, output, workers, update_fixtures):
+def check(binary, output, workers):
     checkpoint = FIXTURES / "checkpoint-30000-v115.game.gz"
     actual = run(binary, checkpoint, output / "run", 30512, workers, checkpoint=True)
     assert set(actual) == set(range(30000, 30512)), "missing or extra continuation ticks"
-    hashes = {str(t): hashlib.sha256(state).hexdigest() for t, state in actual.items()}
     current = output / "run/checkpoint-30256.game.gz"
     resumed = run(binary, current, output / "resumed", 30512, workers)
     assert set(resumed) == set(range(30256, 30512)), "missing or extra resumed ticks"
@@ -51,23 +54,16 @@ def check(binary, output, workers, update_fixtures):
         assert record[:4] == expected[:4] and record[8:] == expected[8:], f"continuation diverges at {tick}"
         assert struct.unpack_from('<I', record, 4)[0] == struct.unpack_from('<I', expected, 4)[0] ^ delta, \
             f"continuation aggregate diverges at {tick}"
-    # Never accept a regenerated baseline until the independent reload passes.
-    if update_fixtures:
-        EXPECTED.write_text(json.dumps(hashes, indent=2) + "\n")
-    expected = json.loads(EXPECTED.read_text())
-    assert hashes.keys() == expected.keys(), "missing or extra expected ticks"
-    for tick in expected:
-        assert hashes[tick] == expected[tick], f"continuation baseline diverges at {tick}"
     manifest = {
         "revision": subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         "binarySha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
         "checkpointSha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
-        "traceSha256": hashlib.sha256(EXPECTED.read_bytes()).hexdigest(),
-        "workers": workers, "updatedFixtures": update_fixtures,
+        "traceSha256": hashlib.sha256((output / "run/game.replay.checksums").read_bytes()).hexdigest(),
+        "workers": workers,
         "continuationChecksumAdjustment": "MapHeader format-version contribution only",
     }
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(f"PASS: v115 checkpoint matches all {len(hashes)} complete checksum-record hashes")
+    print(f"PASS: v115 checkpoint continues for all {len(actual)} ticks")
     print(f"PASS: save/reload at tick 30256 preserves all {count} complete continuation records")
 
 
@@ -76,15 +72,12 @@ def main():
     parser.add_argument("binary", type=Path)
     parser.add_argument("--output", type=Path, help="Retain traces, commands, logs and manifest")
     parser.add_argument("--parallel-ai", action="store_true")
-    parser.add_argument("--update-fixtures", action="store_true", help="Regenerate only the current unit-era baseline")
     args = parser.parse_args()
-    if args.parallel_ai and args.update_fixtures:
-        parser.error("generate fixtures serially, then verify --parallel-ai without --update-fixtures")
     if args.output:
         args.output.mkdir(parents=True, exist_ok=False)
     context = nullcontext(str(args.output.resolve())) if args.output else tempfile.TemporaryDirectory(prefix="glob2-save-continuation-")
     with context as directory:
-        check(args.binary.resolve(), Path(directory), 4 if args.parallel_ai else 1, args.update_fixtures)
+        check(args.binary.resolve(), Path(directory), 4 if args.parallel_ai else 1)
 
 
 if __name__ == "__main__":

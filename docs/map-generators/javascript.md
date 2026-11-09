@@ -338,13 +338,13 @@ and unchecked vector indexing without modifying source. Use `--write` to apply i
 proposed edits, then review the diff. It does not infer scratch allocations or
 reference ownership; those contracts still require explicit review and regressions.
 
-The `ScriptGenerator` suite's shared-world golden case compares two seeds on a
-128 × 64 world, then compares all simulation checksum components through 256 ticks
-after save/load. It retains the full trace as test evidence and compares its SHA-256
-with `test/fixtures/generators/shared-generator-trace.sha256`. The browser determinism
-suite checks the same reference in serial and threaded Chromium, Firefox and WebKit;
-it does not require a locally prepared native artifact. Regenerate this reference
-with the native test runner's `--update-fixtures` when an intentional simulation
-change updates these worlds, alongside the simulation-version compatibility work.
+The `ScriptGenerator` suite's shared-world case generates two seeds on a
+128 × 64 world, requires each to repeat exactly and differ from the other, then
+compares all simulation checksum components through 256 ticks after save/load.
+It retains the full trace as test evidence and records its SHA-256 for
+`tools/sim_fingerprint.py` (`[sim-trace]`); nothing is committed. The browser
+determinism suite runs the same case in serial and threaded Chromium, Firefox and
+WebKit, and compares the trace with a native one when the checkout provides
+`artifacts/generator-library/native-shared-generators.trace`.
 
 Related: [map generators](README.md).

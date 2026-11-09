@@ -25,8 +25,11 @@ NaNs have one canonical representation, while signed zero and infinity signs
 survive save/load. The integration harness checks AI
 visibility/ownership and transactional scenario effects and continuation. Run
 `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory for the frozen per-tick profile trace, worker
-equivalence and full-game saved continuation.
+with a fresh output directory for complete per-tick traces, worker equivalence and
+full-game saved continuations. No per-tick trace or numeric output is committed:
+the cases assert exact IEEE results, pinned Math bits and continuation directly,
+`tools/sim_fingerprint.py` compares their traces between builds, and the
+cross-platform evidence below compares platforms.
 
 
 `python3 test/run_tests.py --filter 'ScriptEditor/*'` checks the map editor's
@@ -81,7 +84,7 @@ SHA1 metadata when save histories differ. Same-platform equal-history save and
 replay bytes must match. Build success and simulator-only runs are insufficient.
 CI retains evidence even when execution fails; unavailable devices/signing leave
 those platform gates incomplete. See the [fixture notes](../../../test/fixtures/javascript/README.md)
-for the exact frozen worlds, seeds and intended draft profile corrections.
+for the exact worlds, seeds and intended draft profile corrections.
 CI executes the shared scripting corpus in Chromium, Firefox and WebKit and
 compares their numeric/data results, complete traces and decoded saves against
 the Linux and Windows corpus runs. The separate released replay comparison
@@ -106,12 +109,10 @@ simulator, an owned `--simulator-set` to install, run and retrieve the separate 
 
 To retain released simulation compatibility traces, replays, commands, and logs,
 pass `--output artifacts/released-compatibility` to
-`test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
-the legacy checkpoint comparison also checks complete bytes, including the
-aggregate checksum and every stored team/entity record. The current references
-record simulation revision 34's delayed resource growth, scheduled building gradients
-and greedy fetching;
-historical version-123 references remain separate. CI retains these artifacts even when verification fails.
+`test/check_telemetry_simulation.py`. Fresh loads must produce complete sidecars;
+the legacy checkpoint is saved mid-run and resumed, and every remaining team/entity
+record must match the uninterrupted run. CI retains these artifacts even when
+verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording

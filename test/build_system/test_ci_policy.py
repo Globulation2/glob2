@@ -65,8 +65,6 @@ class PolicyTest(unittest.TestCase):
     def test_unit_catalog_browser_contracts_keep_cross_platform_selection(self):
         for path in ('src/unit/types/UnitCatalogTest.cpp', 'src/unit/UnitCustomizationTest.cpp',
                      'test/fixtures/unit-catalog/ablation-checksums.txt',
-                     'test/maxima/fixtures/save-continuation/expected-units-30000-30512.json',
-                     'test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json',
                      'test/maxima/check_save_continuation_fixture.py',
                      'test/check_telemetry_simulation.py', 'test/test_javascript_evidence.py'):
             with self.subTest(path=path):

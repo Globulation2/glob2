@@ -10,8 +10,9 @@
 #include "Order.h"
 #include "Player.h"
 #include "Building.h"
+#include <cmath>
 
-TEST_CASE("JavaScript realistic economic planner and scenario survey" *
+TEST_CASE("JavaScript realistic economic planner and scenario survey [sim-trace]" *
 		  doctest::test_suite("JavaScriptRealistic"))
 {
 	glob2test::HeadlessGlobals globals({.seed = 19});
@@ -49,6 +50,14 @@ TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 		{ return observations.query(name, args, budget); };
 		auto source = glob2test::readFile(glob2test::fixture(
 			team < 0 ? "javascript/map-realistic.js" : "javascript/ai-realistic.js"));
+		// A second controller, never reloaded and with its own copy of the random
+		// stream, is the reference the reloaded one must keep matching.
+		MersenneTwister shadowRandom;
+		shadowRandom.seed(19);
+		auto shadowHost = host;
+		shadowHost.random = [&] { return shadowRandom(); };
+		auto shadowState = Script::Value::object();
+		auto shadow = Script::makeRuntime();
 		auto state = Script::Value::object();
 		auto runtime = Script::makeRuntime();
 		for (int tick = 0; tick < 4; ++tick)
@@ -58,6 +67,11 @@ TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 			observations.observe();
 			auto result = runtime->invoke(source, state, tick == 0, host);
 			auto data = runtime->inspectGlobals();
+			auto uninterrupted = shadow->invoke(source, shadowState, tick == 0, shadowHost);
+			shadowState = std::move(uninterrupted.state);
+			CHECK(result.effects.encode() == uninterrupted.effects.encode());
+			CHECK(data.encode() == shadow->inspectGlobals().encode());
+			CHECK(data.get("calls").number == tick + 1);
 			auto label = std::string(team < 0 ? "realistic-survey-" : "realistic-economy-") +
 						 std::to_string(tick);
 			glob2test::script::retain(
@@ -69,10 +83,32 @@ TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 				accepted->sender = 0;
 				world.game.executeOrder(accepted, -1);
 				CHECK(home->maxUnitWorking == data.get("metrics").get("workers").number);
-				REQUIRE(data.get("scores").items.size() > 0);
+				const auto &scores = data.get("scores").items;
+				REQUIRE(scores.size() > 0);
+				CHECK(scores.size() <= 8);
+				// Ranked best first; every candidate is a visible stock near home.
+				for (size_t i = 0; i < scores.size(); ++i)
+				{
+					CHECK(scores[i].get("value").number > 0);
+					CHECK(scores[i].get("distance").number <= std::hypot(4.0, 4.0));
+					if (i)
+						CHECK(scores[i - 1].get("value").number >= scores[i].get("value").number);
+				}
 			}
 			else
-				CHECK(data.get("colonies").items.size() == 3);
+			{
+				// Three real colonies, each within the torus and at full health.
+				const auto &colonies = data.get("colonies").items;
+				CHECK(colonies.size() == 3);
+				for (const auto &colony : colonies)
+				{
+					CHECK(colony.get("distance").number >= 0);
+					CHECK(colony.get("distance").number < std::hypot(32.0, 32.0));
+					CHECK(colony.get("health").number > 0);
+					CHECK(colony.get("health").number <= 1);
+				}
+				CHECK(data.get("density").number > 0);
+			}
 			state = Script::Value::decode(result.state.encode());
 			if (tick == 1)
 				runtime = Script::makeRuntime();

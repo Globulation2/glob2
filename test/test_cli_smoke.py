@@ -377,11 +377,7 @@ class CliSmoke(unittest.TestCase):
                     self.assertIn("--compute-threads auto|N", result.stderr)
 
     def test_match_verification_preserves_trace_across_compute_sizes(self):
-        reference = None
-        # Git may check out the golden text with CRLF on Windows.
-        golden = (
-            ROOT / "test/fixtures/multiplayer/FourSquares1.verify-trace.txt"
-        ).read_text(encoding="utf-8")
+        reference = trace = None
         for count in (1, 2, 4, 8, "auto"):
             output = self.root / f"verify-{count}"
             self.command(
@@ -395,9 +391,15 @@ class CliSmoke(unittest.TestCase):
                 "--compute-threads",
                 count,
             )
-            self.assertEqual(
-                (output / "checksums.txt").read_text(encoding="utf-8"), golden
-            )
+            # Verified against the record's reported checksums, and the same
+            # per-tick trace whatever the compute size.
+            verdict = json.loads((output / "verdict.json").read_text())
+            self.assertEqual(verdict["verdict"], "verified")
+            checksums = (output / "checksums.txt").read_text(encoding="utf-8")
+            self.assertGreater(checksums.count("\n"), 600)
+            if trace is None:
+                trace = checksums
+            self.assertEqual(checksums, trace)
             result = (output / "result.json").read_bytes()
             if reference is None:
                 reference = result
