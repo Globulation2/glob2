@@ -1710,8 +1710,6 @@ Amplada dels radis
 Densitat de bucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 El laberint necessita almenys dues cel·les d'amplada i d'alçada; fes servir un mapa més gran o cel·les més petites.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Uns canals tan amples deixen massa poca herba a cada cel·la; fes servir canals més estrets o cel·les més grans.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 El laberint té massa pocs atzucacs per a tantes colònies; fes servir un mapa més gran o cel·les més petites.
 [Home island size]
@@ -1720,6 +1718,14 @@ Mida de l'illa inicial
 Mida de l'àrea comuna
 [Moat width]
 Amplada del fossat
+[Wall thickness]
+Gruix dels murs
+[Gardens]
+Horts
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Uns murs tan gruixuts deixen els passos massa estrets; fes servir murs més prims o cel·les més grans.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Uns fossats tan amples deixen massa poc espai dins de cada base; fes servir un fossat més estret, murs més prims o cel·les més grans.
 [Bridge count]
 Nombre de ponts
 [Continent size]

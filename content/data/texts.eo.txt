@@ -1710,8 +1710,6 @@ Larĝo de la radioj
 Bukleco
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 La labirinto bezonas almenaŭ du ĉelojn laŭlarĝe kaj laŭalte; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Tiel larĝaj kanaloj lasas tro malmulte da herbo en ĉiu ĉelo; uzu pli mallarĝajn kanalojn aŭ pli grandajn ĉelojn.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 La labirinto havas tro malmultajn sakstratojn por tiom da kolonioj; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
 [Home island size]
@@ -1720,6 +1718,14 @@ Grandeco de hejminsulo
 Grandeco de komunareo
 [Moat width]
 Larĝo de fosaĵo
+[Wall thickness]
+Dikeco de muroj
+[Gardens]
+Ĝardenoj
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tiel dikaj muroj lasas la pordejojn tro mallarĝaj; uzu pli maldikajn murojn aŭ pli grandajn ĉelojn.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Tiel larĝaj fosaĵoj lasas tro malmulte da spaco en ĉiu hejma bazo; uzu pli mallarĝan fosaĵon, pli maldikajn murojn aŭ pli grandajn ĉelojn.
 [Bridge count]
 Nombro de pontoj
 [Continent size]

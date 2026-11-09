@@ -1674,8 +1674,6 @@ Globulation 2 का कर्सर दिखाएँ।
 चक्रीय रास्ते
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 भूलभुलैया में कम से कम दो खाने चौड़ाई और ऊँचाई में चाहिए; बड़ा नक्शा या छोटे खाने चुनें।
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-इतने चौड़े जलमार्गों से हर खाने में घास कम बचती है; सँकरे जलमार्ग या बड़े खाने चुनें।
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 इतनी बस्तियों के लिए भूलभुलैया में पर्याप्त बंद सिरे नहीं हैं; बड़ा नक्शा या छोटे खाने चुनें।
 [Home island size]
@@ -1684,6 +1682,14 @@ Globulation 2 का कर्सर दिखाएँ।
 साझा मैदान का आकार
 [Moat width]
 खाई की चौड़ाई
+[Wall thickness]
+दीवारों की मोटाई
+[Gardens]
+बगीचे
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+इतनी मोटी दीवारों से रास्ते बहुत सँकरे रह जाते हैं; पतली दीवारें या बड़े खाने चुनें।
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+इतनी चौड़ी खाइयों से हर शुरुआती आधार के भीतर बहुत कम जगह बचती है; सँकरी खाई, पतली दीवारें या बड़े खाने चुनें।
 [Bridge count]
 पुलों की संख्या
 [Continent size]

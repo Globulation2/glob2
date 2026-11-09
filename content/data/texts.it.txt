@@ -1710,8 +1710,6 @@ Larghezza dei raggi
 Densità dei cicli
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Il labirinto richiede almeno due celle in larghezza e in altezza; usa una mappa più grande o celle più piccole.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Canali così larghi lasciano troppo poca erba in ogni cella; usa canali più stretti o celle più grandi.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Il labirinto ha troppo pochi vicoli ciechi per così tante colonie; usa una mappa più grande o celle più piccole.
 [Home island size]
@@ -1720,6 +1718,14 @@ Dimensione dell'isola iniziale
 Dimensione dell'area comune
 [Moat width]
 Larghezza del fossato
+[Wall thickness]
+Spessore dei muri
+[Gardens]
+Orti
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Muri così spessi lasciano i passaggi troppo stretti; usa muri più sottili o celle più grandi.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Fossati così larghi lasciano troppo poco spazio dentro ogni base; usa un fossato più stretto, muri più sottili o celle più grandi.
 [Bridge count]
 Numero di ponti
 [Continent size]

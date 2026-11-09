@@ -1710,8 +1710,6 @@ Largeur des rayons
 Taux de boucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Le labyrinthe doit compter au moins deux cellules en largeur et en hauteur ; utilisez une carte plus grande ou des cellules plus petites.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Des chenaux aussi larges laissent trop peu d'herbe dans chaque cellule ; utilisez des chenaux plus étroits ou des cellules plus grandes.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Le labyrinthe compte trop peu de culs-de-sac pour autant de colonies ; utilisez une carte plus grande ou des cellules plus petites.
 [Home island size]
@@ -1720,6 +1718,14 @@ Taille de l'île de départ
 Taille de la zone commune
 [Moat width]
 Largeur des douves
+[Wall thickness]
+Épaisseur des murs
+[Gardens]
+Potagers
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Des murs aussi épais laissent des passages trop étroits ; utilisez des murs plus fins ou des cellules plus grandes.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Des douves aussi larges laissent trop peu de place dans chaque base ; utilisez des douves plus étroites, des murs plus fins ou des cellules plus grandes.
 [Bridge count]
 Nombre de ponts
 [Continent size]

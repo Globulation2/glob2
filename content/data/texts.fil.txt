@@ -1698,8 +1698,6 @@ Laki ng selula
 Dami ng paikot na ruta
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Kailangan ng labirinto ng kahit dalawang selula nang pahalang at patayo; gumamit ng mas malaking mapa o mas maliliit na selula.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Ang mga kanal na ganito kalawak ay nag-iiwan ng napakakaunting damo sa bawat selula; gumamit ng mas makikitid na mga kanal o mas malalaking selula.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Kulang ang mga dulong walang labasan sa labirinto para sa ganito karaming kolonya; gumamit ng mas malaking mapa o mas maliliit na selula.
 [Home island size]
@@ -1708,6 +1706,14 @@ Laki ng panimulang isla
 Laki ng pinagbahaging lupain
 [Moat width]
 Lapad ng kanal
+[Wall thickness]
+Kapal ng pader
+[Gardens]
+Mga taniman
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Masyadong makitid ang mga daanan dahil sa ganito kakapal na pader; gumamit ng mas manipis na pader o mas malalaking selula.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Napakaliit ng natitirang espasyo sa loob ng bawat panimulang base dahil sa ganito kalapad na kanal; gumamit ng mas makitid na kanal, mas manipis na pader o mas malalaking selula.
 [Bridge count]
 Bilang ng tulay
 [Continent size]

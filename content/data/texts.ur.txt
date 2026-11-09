@@ -1674,8 +1674,6 @@ Globulation 2 کا کرسر دکھائیں۔
 حلقہ دار راستوں کی مقدار
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 بھول بھلیوں میں افقی اور عمودی طور پر کم از کم دو خانے چاہیے؛ بڑا نقشہ یا چھوٹے خانے چنیں۔
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-اتنی چوڑی آبی گزرگاہیں ہر خانے میں بہت کم گھاس چھوڑتی ہیں؛ تنگ گزرگاہیں یا بڑے خانے استعمال کریں۔
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 اتنی بستیوں کے لیے بھول بھلیوں میں بند گلیاں کم ہیں؛ بڑا نقشہ یا چھوٹے خانے چنیں۔
 [Home island size]
@@ -1684,6 +1682,14 @@ Globulation 2 کا کرسر دکھائیں۔
 مشترکہ میدان کا سائز
 [Moat width]
 خندق کی چوڑائی
+[Wall thickness]
+دیواروں کی موٹائی
+[Gardens]
+باغیچے
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+اتنی موٹی دیواروں سے راستے بہت تنگ رہ جاتے ہیں؛ پتلی دیواریں یا بڑے خانے استعمال کریں۔
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+اتنی چوڑی خندقیں ہر ابتدائی اڈے کے اندر بہت کم جگہ چھوڑتی ہیں؛ تنگ خندق، پتلی دیواریں یا بڑے خانے استعمال کریں۔
 [Bridge count]
 پلوں کی تعداد
 [Continent size]

@@ -1710,8 +1710,6 @@ OpenGL недоступний у цій збірці.
 Кількість петель
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Лабіринту потрібно щонайменше дві комірки по горизонталі й вертикалі; використайте більшу карту або менші комірки.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-За такої ширини проток у кожній комірці лишається замало трави; використайте вужчі протоки або більші комірки.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 У лабіринті замало тупиків для такої кількості колоній; використайте більшу карту або менші комірки.
 [Home island size]
@@ -1720,6 +1718,14 @@ OpenGL недоступний у цій збірці.
 Розмір спільної землі
 [Moat width]
 Ширина рову
+[Wall thickness]
+Товщина стін
+[Gardens]
+Городи
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+За такої товщини стін проходи лишаються надто вузькими; використайте тонші стіни або більші комірки.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+За такої ширини ровів усередині кожної бази лишається замало місця; використайте вужчий рів, тонші стіни або більші комірки.
 [Bridge count]
 Кількість мостів
 [Continent size]

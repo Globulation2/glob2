@@ -1674,8 +1674,6 @@ Cell size
 Loopiness
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 The maze needs at least two cells across and down; use a bigger map or smaller cells.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.
 [Home island size]
@@ -1684,6 +1682,14 @@ Home island size
 Commons size
 [Moat width]
 Moat width
+[Wall thickness]
+Wall thickness
+[Gardens]
+Gardens
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.
 [Bridge count]
 Bridge count
 [Continent size]

@@ -1710,8 +1710,6 @@ Kích thước ô
 Mật độ vòng lặp
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Mê cung cần ít nhất hai ô theo chiều ngang và chiều dọc; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Kênh rộng như vậy để lại quá ít cỏ trong mỗi ô; hãy dùng kênh hẹp hơn hoặc ô lớn hơn.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Mê cung có quá ít ngõ cụt cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ô nhỏ hơn.
 [Home island size]
@@ -1720,6 +1718,14 @@ Kích thước đảo khởi đầu
 Kích thước vùng đất chung
 [Moat width]
 Độ rộng hào nước
+[Wall thickness]
+Độ dày tường
+[Gardens]
+Vườn rau
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Tường dày như vậy khiến lối đi quá hẹp; hãy dùng tường mỏng hơn hoặc ô lớn hơn.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Hào nước rộng như vậy để lại quá ít chỗ bên trong mỗi căn cứ; hãy dùng hào hẹp hơn, tường mỏng hơn hoặc ô lớn hơn.
 [Bridge count]
 Số lượng cầu
 [Continent size]

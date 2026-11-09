@@ -1710,8 +1710,6 @@ Cortex
 Βαθμός διασύνδεσης
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 Ο λαβύρινθος χρειάζεται τουλάχιστον δύο κελιά σε πλάτος και ύψος. Χρησιμοποιήστε μεγαλύτερο χάρτη ή μικρότερα κελιά.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Τόσο φαρδιά κανάλια αφήνουν πολύ λίγο γρασίδι σε κάθε κελί. Χρησιμοποιήστε στενότερα κανάλια ή μεγαλύτερα κελιά.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 Ο λαβύρινθος έχει πολύ λίγα αδιέξοδα για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή μικρότερα κελιά.
 [Home island size]
@@ -1720,6 +1718,14 @@ Cortex
 Μέγεθος κοινής περιοχής
 [Moat width]
 Πλάτος τάφρου
+[Wall thickness]
+Πάχος τειχών
+[Gardens]
+Κήποι
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Τόσο παχιά τείχη αφήνουν τα περάσματα πολύ στενά. Χρησιμοποιήστε λεπτότερα τείχη ή μεγαλύτερα κελιά.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Τόσο φαρδιές τάφροι αφήνουν πολύ λίγο χώρο μέσα σε κάθε βάση. Χρησιμοποιήστε στενότερη τάφρο, λεπτότερα τείχη ή μεγαλύτερα κελιά.
 [Bridge count]
 Αριθμός γεφυρών
 [Continent size]

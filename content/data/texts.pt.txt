@@ -1710,8 +1710,6 @@ Largura dos raios
 Densidade de ciclos
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
 O labirinto precisa de pelo menos duas células na horizontal e na vertical; use um mapa maior ou células mais pequenas.
-[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Canais tão largos deixam muito pouca erva em cada célula; use canais mais estreitos ou células maiores.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
 O labirinto tem poucos becos sem saída para tantas colónias; use um mapa maior ou células mais pequenas.
 [Home island size]
@@ -1720,6 +1718,14 @@ Tamanho da ilha inicial
 Tamanho da área comum
 [Moat width]
 Largura do fosso
+[Wall thickness]
+Espessura das muralhas
+[Gardens]
+Hortas
+[Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
+Muralhas tão grossas deixam as passagens demasiado estreitas; use muralhas mais finas ou células maiores.
+[Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
+Fossos tão largos deixam demasiado pouco espaço dentro de cada base; use um fosso menos largo, muralhas mais finas ou células maiores.
 [Bridge count]
 Número de pontes
 [Continent size]
