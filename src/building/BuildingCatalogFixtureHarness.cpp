@@ -10,6 +10,7 @@
 #include "BuildingType.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <optional>
 #include <sstream>
 #include <nlohmann/json.hpp>
 #include "Unit.h"
@@ -37,7 +38,7 @@ Building* place(glob2test::HeadlessGame& world, const char* key, int x, int y)
 }
 // Keep the historical trace representation while save/resume comparisons retain
 // current simulation components except the normalized map-header version.
-std::vector<Uint32> historicalGoldenState(Game& game) { return glob2test::simulationComponents(game, true); }
+std::vector<Uint32> historicalTraceState(Game& game) { return glob2test::simulationComponents(game, true); }
 }
 TEST_SUITE("BuildingCatalogFixtures")
 {
@@ -56,7 +57,11 @@ TEST_CASE("ordinary building aliases never suppress sprite binding [display]")
     CHECK(catalog.get(1)->miniSpritePtr != nullptr);
 }
 
-TEST_CASE("retained seeded compositions preserve full simulation continuation [golden]")
+// Each retained seeded catalog runs 257 ticks with its capability-composed
+// buildings fully stocked: every building invariant and every material's ledger
+// holds at every tick, and a save continues identically for 257 more ticks. The
+// sampled state goes to sim-diff.
+TEST_CASE("retained seeded compositions keep their invariants and preserve full simulation continuation [sim-trace]")
 {
     glob2test::HeadlessGlobals globals;
     for (const int seed : {713, 714, 715})
@@ -74,8 +79,20 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
             for (int n=0; n<4; ++n) world.game.map.setResourceByIndex(5+resource*4, 22+n, resource, 5);
         world.team->createLists();
         world.game.setWaitingOnMask(0);
-        for (int tick=0; tick<257; ++tick) world.step();
-        glob2test::expectBuildingInvariants(world.game);
+        std::optional<glob2test::MaterialLedger> ledger; // from the first step on
+        for (int tick=0; tick<257; ++tick)
+        {
+            world.step();
+            glob2test::expectBuildingInvariants(world.game);
+            if (!ledger) ledger.emplace(world.game);
+            else ledger->check("seed " + std::to_string(seed) + " tick " + std::to_string(tick+1));
+        }
+        REQUIRE(ledger);
+        INFO(ledger->inexactReasons());
+        CHECK(ledger->checks() == 256);
+        // Wood and stone deposits here are not harvested one unit at a time, so
+        // the map compartment is excluded for them; the colony must stay exact.
+        CHECK(ledger->colonyExact());
         std::ostringstream golden;
         const auto result=glob2test::expectContinuation(world.game, {.ticks=257,
             .step=[](Game& game) { glob2test::stepEngine(game); return std::vector<std::string>{}; },
@@ -88,12 +105,12 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
                 if (tick % 32 == 0)
                 {
                     golden << tick+258;
-                    for (const auto value : historicalGoldenState(original)) golden << ' ' << value;
+                    for (const auto value : historicalTraceState(original)) golden << ' ' << value;
                     golden << '\n';
                 }
             }});
         REQUIRE(result.matched);
-        glob2test::expectGolden("building-catalog/composition/seed-" + std::to_string(seed) + ".trace", golden.str());
+        glob2test::recordSimTrace("building-catalog/composition/seed-" + std::to_string(seed) + ".trace", golden.str());
     }
 }
 TEST_CASE("format136 terrain snapshot imports frozen buildings and continues after resave" * glob2test::needs({"ai:castor"}))

@@ -294,7 +294,7 @@ TEST_SUITE("WinProbability")
             CHECK_FALSE(WinningCondition::getWinningCondition(&legacy, FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE - 1));
         }
     }
-    TEST_CASE("enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]")
+    TEST_CASE("enabled rule ends the game for the leader at its decision boundary and records the per-tick trace [sim-trace][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true, .seed = 42});
@@ -303,7 +303,7 @@ TEST_SUITE("WinProbability")
         world.addUnit(WORKER, 8, 8, 0);
         world.addUnit(WORKER, 20, 8, 1);
         auto &game = world.game;
-        // Keep the header at the format used to record this fixture: the map
+        // Pin the header format the recorded trace has always used: the map
         // version contributes to Game::checkSum even when gameplay is unchanged.
         game.mapHeader.versionMinor = FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE;
         game.teams[0]->prestige = 1000;
@@ -325,7 +325,7 @@ TEST_SUITE("WinProbability")
         CHECK(game.isGameEnded);
         CHECK(game.teams[0]->hasWon);
         CHECK(game.teams[1]->hasLost);
-        glob2test::expectGolden("win-probability/rule-trace.txt", trace.str());
+        glob2test::recordSimTrace("win-probability/rule-trace.txt", trace.str());
         glob2test::writeFile(glob2test::artifactDir() / "rule-checksums.txt", trace.str());
     }
 

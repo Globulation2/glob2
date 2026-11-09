@@ -12,11 +12,14 @@ discards the round-trip fields, and plays ticks 1,201–2,200 with greedy
 fetching, salted private entity RNG streams, and scheduled building walking fields
 (the save restores no pending
 fields, and its pre-148 header gets the default eight-tick delay).
-`round-trip-143-checksums.txt` is that per-tick trace (FNV-1a over every
-checksum part except the MapHeader, whose version changes on save),
-retained through the unit-catalog refactor using the version-152 checksum
-representation adapter. The save/resume state comparison uses the complete current
-representation. Re-saving at tick 1,700
+The loaded state must hash to the digest pinned in the test (FNV-1a over every
+checksum part except the MapHeader, whose version changes on save, in the
+version-152 checksum representation): that is the compatibility contract for
+this existing save. The per-tick trace of the 1,000 ticks that follow is recorded
+for sim-diff as `greedy-fetching/round-trip-143-checksums.txt` rather than
+committed, since every simulation change moves it; the test checks directly that
+both colonies keep harvesting and that every material balances. The save/resume
+state comparison uses the complete current representation. Re-saving at tick 1,700
 in binary and text form, in the current format, must continue identically.
 The old save has no PCG state: loading initializes every unit/building stream once
 from its saved seed, GID and generation, and the new saves preserve that progress. Format 152 similarly initializes map
