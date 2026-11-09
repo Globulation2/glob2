@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "TerrainGroupTable.h"
 #include "Utilities.h"
 #include <algorithm>

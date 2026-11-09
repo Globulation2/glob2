@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapAssetBundle.h"
+#include "TerrainBuiltins.h"
 #include "Map.h"
 #include "Game.h"
 #include "render/terrain/TerrainCatalogIO.h"

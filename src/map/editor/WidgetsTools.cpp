@@ -3,6 +3,8 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include <GAG.h>
+#include "TerrainGroupTable.h"
+#include "TerrainBuiltins.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "TerrainPresentation.h"

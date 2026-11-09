@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainPresentation.h"
+#include "TerrainBuiltins.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "MapThumbnail.h"
 #include "ResourceRegistry.h"

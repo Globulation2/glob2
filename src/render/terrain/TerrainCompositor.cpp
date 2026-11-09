@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include "TerrainBuiltins.h"
 #include <atomic>
 #include <unordered_map>
 #include "map/TerrainRegistry.h"

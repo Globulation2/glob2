@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapAssetBundle.h"
+#include "TerrainBuiltins.h"
 #include "online/Sha256.h"
 #include "TerrainRegistry.h"
 #include "ResourceRegistry.h"

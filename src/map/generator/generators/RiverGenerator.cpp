@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include "TerrainCatalog.h"
 #include "Topology.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>

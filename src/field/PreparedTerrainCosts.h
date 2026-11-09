@@ -2,6 +2,7 @@
 #pragma once
 
 #include "TerrainMovementCosts.h"
+#include "TerrainBuiltins.h"
 
 namespace gradient_kernel
 {

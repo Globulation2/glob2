@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GradientPropagation.h"
+#include "TerrainBuiltins.h"
 #include "PreparedTerrainCosts.h"
 
 #ifndef GLOB2_GRADIENT_BENCH_EVENT

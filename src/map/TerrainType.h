@@ -7,8 +7,9 @@
 
 // Stable serialized identities, stored once per map vertex. Each type's group (and
 // so its behaviour) lives in TerrainGroupTable.h, its names and colours in
-// TerrainCatalog.cpp; append new identities before TERRAIN_COUNT and record the
-// previous count in io/TerrainFormatHistory.h.
+// TerrainCatalog.cpp. This enum is closed: about half of the code includes it,
+// so new built-in identities and TERRAIN_COUNT live in TerrainBuiltins.h; record
+// the previous count in io/TerrainFormatHistory.h.
 // Format 146 retired the two shore profiles (5 and 6) and renumbered the
 // catalogue behind TRAIL; files written earlier are remapped on load.
 enum TerrainType : std::uint16_t
@@ -108,7 +109,6 @@ enum TerrainType : std::uint16_t
 	HOODOOS=62,
 	// Snapped stone stumps with growth rings (Ridges, like rock spires), format 212.
 	PETRIFIED_STUMPS=63,
-	TERRAIN_COUNT=64,
 };
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.

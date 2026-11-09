@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "TerrainBuiltins.h"
 #include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"

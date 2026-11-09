@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
+#include "TerrainBuiltins.h"
 #include "InGameTouchTheme.h"
 #include "TouchReadout.h"
 #include "ThumbSide.h"

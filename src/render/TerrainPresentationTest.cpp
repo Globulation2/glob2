@@ -2,8 +2,10 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
+#include "TerrainGroupTable.h"
 #include "HeadlessGlobals.h"
 #include "Map.h"
+#include "TerrainBuiltins.h"
 #include "HeadlessGame.h"
 #include "DrawFixtures.h"
 #include <Environment.h>

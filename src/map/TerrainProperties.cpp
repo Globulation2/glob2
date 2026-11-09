@@ -3,6 +3,10 @@
 // than in every translation unit that includes TerrainProperties.h (the pair
 // check alone evaluates TERRAIN_COUNT squared combinations).
 #include "TerrainProperties.h"
+#include "field/GradientBucket.h"
+#include "field/TerrainHazardCost.h"
+#include <algorithm>
+#include "TerrainBuiltins.h"
 
 static_assert([] { for (const auto& p : TERRAIN_PROPERTIES) if (!validTerrainProperties(p)) return false; return true; }());
 // Uniform terrain profiles remain unchanged.
@@ -45,3 +49,17 @@ static_assert([] {
 				return false;
 	return true;
 }(), "Every built-in pair must combine into valid rules");
+
+// The bucket ring must exceed every built-in terrain edge (see GradientBucket::COUNT).
+static_assert(GradientBucket::COUNT == [] {
+        unsigned largest=GRADIENT_SLOWEST_SWIM_STEP*GRADIENT_DIAGONAL_STEP/GRADIENT_STEP;
+        for(const auto& p:TERRAIN_PROPERTIES)
+        {
+            const unsigned base=p.swimmable?GRADIENT_SLOWEST_SWIM_STEP:GRADIENT_STEP;
+            const unsigned cardinal=gradient_kernel::hazardRouteCost(std::max(1u,(base*256+p.groundSpeedQ8/2)/p.groundSpeedQ8),p.groundHealthQ8);
+            largest=std::max(largest,cardinal*GRADIENT_DIAGONAL_STEP/GRADIENT_STEP);
+        }
+        unsigned count=1;
+        while(count<=largest) count*=2;
+        return count;
+    }(), "GradientBucket::COUNT must be the power of two above the largest built-in terrain edge");

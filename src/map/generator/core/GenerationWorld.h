@@ -21,7 +21,7 @@
 #include "MapStateView.h"
 #include "Ressource.h"
 #include "TeamCapacity.h"
-#include "TerrainProperties.h"
+#include "TerrainPropertiesLayout.h"
 #include "TerrainType.h"
 #include <array>
 #include <cstddef>

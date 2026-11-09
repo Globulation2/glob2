@@ -20,6 +20,7 @@
 #include "Sketch.h"
 #include "Topology.h"
 #include "Unit.h"
+#include "TerrainGroupTable.h"
 #include <algorithm>
 #include <array>
 #include <climits>

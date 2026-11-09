@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GradientCosts.h"
+#include "TerrainBuiltins.h"
 #include "MovementClass.h"
 #include "TerrainHazardCost.h"
 #include "map/TerrainProperties.h"

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainMaterials.h"
+#include "TerrainBuiltins.h"
 #include "map/TerrainGroupTable.h"
 #include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>

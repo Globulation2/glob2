@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainMaterials.h"
+#include "TerrainBuiltins.h"
 #include "TerrainStones.h"
 #include "TerrainType.h"
 #include "render/MapAssetSprites.h"
