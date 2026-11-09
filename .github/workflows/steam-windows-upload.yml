@@ -33,6 +33,7 @@ jobs:
       github.actor_id == 6193625 &&
       github.triggering_actor == 'genixpro' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 90
     runs-on: windows-2022
     environment: steam-release
     permissions:

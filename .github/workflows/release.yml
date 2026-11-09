@@ -52,6 +52,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -95,6 +96,7 @@ jobs:
 
   source:
     needs: preflight
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -121,6 +123,7 @@ jobs:
 
   android-package:
     needs: preflight
+    timeout-minutes: 90
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -196,6 +199,7 @@ jobs:
 
   linux-package:
     needs: preflight
+    timeout-minutes: 240
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -305,6 +309,7 @@ jobs:
   distro-build:
     needs: preflight
     name: Source build on ${{ matrix.name }}
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     container: ${{ matrix.image }}
     strategy:
@@ -362,6 +367,7 @@ jobs:
 
   rpm-package:
     needs: [preflight, source]
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     container: fedora:43
     steps:
@@ -413,6 +419,7 @@ jobs:
 
   windows-package:
     needs: preflight
+    timeout-minutes: 180
     runs-on: windows-latest
     defaults:
       run:
@@ -586,6 +593,7 @@ jobs:
             architecture: arm64
           - runner: macos-15-intel
             architecture: x86_64
+    timeout-minutes: 60
     runs-on: ${{ matrix.runner }}
     env:
       MACOSX_DEPLOYMENT_TARGET: '15.0'
@@ -633,6 +641,7 @@ jobs:
   flatpak-package:
     if: ${{ inputs.build_flatpak }}
     needs: preflight
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
@@ -676,6 +685,7 @@ jobs:
 
   snap-package:
     needs: preflight
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -706,6 +716,7 @@ jobs:
   compiler-profile-portability:
     if: inputs.benchmark_profiles
     needs: [preflight, linux-package, windows-package]
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

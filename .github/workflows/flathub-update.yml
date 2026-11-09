@@ -29,6 +29,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - name: Require owner-controlled release repository and dispatch
@@ -47,6 +48,7 @@ jobs:
 
   credentials:
     needs: context
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: flathub-update
     steps:
@@ -67,6 +69,7 @@ jobs:
 
   build:
     needs: credentials
+    timeout-minutes: 180
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
@@ -105,6 +108,7 @@ jobs:
 
   propose:
     needs: build
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: flathub-update
     steps:
