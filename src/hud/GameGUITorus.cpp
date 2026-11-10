@@ -6,6 +6,7 @@
 #include "render/UnitMotion.h"
 #include "Unit.h"
 #include "render/MapDrawer.h"
+#include "Team.h"
 
 // Adapt the rendered surface to the normal tool coordinate system, retaining
 // sub-tile precision for even-sized buildings and wrapping at the map seams.

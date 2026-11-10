@@ -12,6 +12,7 @@
 #include "Race.h"
 #include <cstdio>
 #include <vector>
+#include "Team.h"
 
 namespace
 {

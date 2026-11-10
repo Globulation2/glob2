@@ -1,30 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Element.h"
+#include "PositionedControl.h"
 #include <algorithm>
 #include <optional>
 
 namespace GAGGUI::ui
 {
-// Layout models for controls painted by a domain renderer. Build these before
-// painting or input; use these same bounds/callbacks in the domain hit-test.
-// Coordinates are in the host's logical surface, not relative to root bounds.
-struct PositionedControl
-{
-	std::string key, role = "button", label, identity;
-	Rect bounds;
-	std::optional<Rect> clip;
-	ControlValue value;
-	bool enabled = true, selected = false;
-	std::vector<ActionKind> actions = {ActionKind::Activate};
-	std::function<bool(const SemanticAction &)> perform;
-	std::function<void(Point)> tap;
-	bool contains(Point point) const
-	{
-		return bounds.contains(point) && (!clip || clip->contains(point));
-	}
-};
-
 namespace detail
 {
 class PositionedNode final : public Node

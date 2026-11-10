@@ -14,6 +14,7 @@
 #include <cstring>
 #include <fstream>
 #include <memory>
+#include "Team.h"
 
 namespace
 {

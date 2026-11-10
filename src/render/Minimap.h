@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "GraphicContext.h"
-struct PresentationFrame;
 #include <ui/Geometry.h>
+
+struct PresentationFrame;
+namespace GAGCore { class DrawableSurface; }
 
 
 ///This class is used to represent a minimap

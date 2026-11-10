@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <filesystem>
 #include <SDL3/SDL_timer.h>
+#include <GraphicContext.h>
 
 TEST_SUITE("PortableGame")
 {

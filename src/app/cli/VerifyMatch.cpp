@@ -34,6 +34,7 @@
 #include "Version.h"
 #include "WinningConditions.h"
 #include "field/GradientAccelerators.h"
+#include "Team.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;

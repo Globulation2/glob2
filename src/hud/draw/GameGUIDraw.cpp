@@ -37,6 +37,9 @@
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "VoiceRecorder.h"
+#include "Team.h"
+#include "GameGUIDialog.h"
+#include "InGameScrollableHistory.h"
 
 void GameGUI::drawPanelButtons(int y)
 {
