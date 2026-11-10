@@ -17,7 +17,6 @@ namespace Online { class SkinDownloads; }
 #include <queue>
 #include <random>
 #include <unordered_map>
-#include <valarray>
 #include <variant>
 
 #include "GameEvent.h"

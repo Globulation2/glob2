@@ -35,5 +35,6 @@
   "src/engine/sim/snapshot/WorldSnapshot.h": 256,
   "src/map/gradient/MapRouting.h": 56,
   "<chrono>": 78,
-  "<valarray>": 295
+  "<valarray>": 146,
+  "<nlohmann/json.hpp>": 137
 }

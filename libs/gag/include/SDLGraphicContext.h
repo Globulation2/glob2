@@ -23,7 +23,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <valarray>
 #include <memory>
 #include <optional>
 #include <cstdint>
@@ -287,9 +286,10 @@ namespace GAGCore
 		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 
-		//! Draw an alpha map of size mapW, mapH using a specific color at coordinates x, y using cells of size cellW, cellH
-		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
-		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		//! Draw an alpha map of size mapW, mapH using a specific color at coordinates x, y using cells of size cellW, cellH.
+		//! map views at least mapW * mapH row-major values; it is read, never kept.
+		virtual void drawAlphaMap(std::span<const float> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		virtual void drawAlphaMap(std::span<const unsigned char> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
 		// old API, deprecated, do not use. It is only there for compatibility with existing code
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
@@ -824,8 +824,8 @@ namespace GAGCore
                           float x, float y, float w, float h, SkinShadow underlay = {}, Uint8 alpha = Color::ALPHA_OPAQUE,
                           Color glow = Color(), Uint8 glowAlpha = 0);
 		
-		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
-		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		virtual void drawAlphaMap(std::span<const float> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		virtual void drawAlphaMap(std::span<const unsigned char> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
 		// compat
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);

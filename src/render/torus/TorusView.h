@@ -7,6 +7,7 @@
 #include "DynamicClouds.h"
 #include <SDL3/SDL.h>
 #include <memory>
+#include <vector>
 #include "render/MapRenderState.h"
 class GameGUI;
 struct TorusDeviceState;
@@ -78,7 +79,7 @@ class TorusView
     DynamicClouds clouds;
     // Map animation state for games drawn without a GameGUI (whose view owns it).
     MapRenderState standaloneRender;
-    std::valarray<unsigned char> cloudPixels;
+    std::vector<unsigned char> cloudPixels;
     int cloudW = 0, cloudH = 0;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;

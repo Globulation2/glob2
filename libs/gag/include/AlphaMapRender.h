@@ -5,14 +5,14 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <valarray>
+#include <span>
 #include <vector>
 
 // OpenGL headers must be included by the caller. Preserve the original four
 // triangles and integer-rounded center alpha, but submit patches in bounded batches.
 namespace GAGCore
 {
-inline void drawAlphaMapBatched(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y,
+inline void drawAlphaMapBatched(std::span<const unsigned char> map, int mapW, int mapH, int x, int y,
                                 int cellW, int cellH, unsigned char red, unsigned char green,
                                 unsigned char blue)
 {

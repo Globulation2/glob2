@@ -365,7 +365,7 @@ void MapDrawer::drawMapFogOfWar(int left, int top, int right, int bot, int sw, i
 void MapDrawer::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	const SceneMap& map = view.drawnScene().map;
-	std::valarray<unsigned char> &overlayAlphas = view.render.overlayAlphas;
+	std::vector<unsigned char> &overlayAlphas = view.render.overlayAlphas;
 	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & Game::DRAW_OVERLAY)
 	{
@@ -379,7 +379,7 @@ void MapDrawer::drawMapOverlayMaps(int left, int top, int right, int bot, int sw
 		int width = (right - left) + 2;
 		int height = (bot - top) + 2;
 
-		overlayAlphas.resize(width * height);
+		overlayAlphas.assign(width * height, 0);
 		for (int y=0; y<height; y++)
 		{
 			for (int x=0; x<width; x++)

@@ -851,7 +851,7 @@ static void run(bool gpu, int width, int height)
             }
             Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             DynamicClouds clouds(&globalContainer->settings);
-            std::valarray<unsigned char> pixels;
+            std::vector<unsigned char> pixels;
             int gridW, gridH;
             clouds.computeWorld(256, 256, 250, pixels, gridW, gridH, 128);
             REQUIRE((gridW == 128 && gridH == 128));
