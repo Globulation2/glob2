@@ -255,28 +255,59 @@ GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
 
-### Experimental CMake build
+### CMake + Ninja build for daily work
 
-A CMake + Ninja build of the native Linux fast-development tier runs beside
-SCons while the two are compared object for object. SCons remains the default
-and the only build for every other target and for anything installed or
-shipped. It needs CMake 3.25 or later, Ninja and `pkg-config`; if the host lacks
-CMake or Ninja, `pip install cmake ninja` into a development virtual environment
-provides both.
+On native Linux, a CMake + Ninja build of the dev tier can replace SCons in the
+everyday edit, build and test loop. It compiles the same sources with the same
+flags (`-O0 -g1`, the managed compiler cache, every feature, and
+`-fno-fast-math -ffp-contract=off` on the strict-numeric simulation sources),
+and its glob2 simulates what the SCons dev build does. What it saves is the fixed
+cost of each build: SCons spends about 26 s on a 32-core host starting up and
+scanning dependencies before it compiles anything, where Ninja's no-change build
+takes about 1.5 s, and the links run as soon as their inputs are ready.
+
+**SCons remains the default build and the only release, packaging, perf
+(`perf=1`), browser, mobile, macOS and Windows build.** Use SCons for anything
+that ships, for performance numbers you quote, and whenever a guide names a
+SCons command. The CMake build needs CMake 3.25 or later, Ninja and
+`pkg-config`; if the host lacks CMake or Ninja, `pip install cmake ninja` into a
+development virtual environment provides both.
 
 ```sh
-python3 tools/dev_build.py --generator=cmake            # configure if needed, build glob2
-python3 tools/dev_build.py --generator=cmake engine-tests unit-tests map-generator-golden-test -j8
-cmake --preset dev && cmake --build --preset dev        # glob2, directly
-python3 test/run_tests.py --build-dir build/cmake/dev -j12
+python3 tools/dev_build.py --generator=cmake .          # glob2 and the four test binaries
+python3 tools/dev_build.py --generator=cmake            # glob2 only
+python3 tools/dev_build.py --generator=cmake unit-tests map-generator-golden-test -j12
+python3 test/run_tests.py --build-dir build/cmake/dev --binary all -j12
+python3 test/test_cli_smoke.py --binary build/cmake/dev/src/glob2
+cmake --build build/cmake/dev --target glob2           # the same, without the wrapper
 python3 tools/compare_build_systems.py                  # parity report
 ```
+
+The wrapper configures `build/cmake/dev` the first time; after that Ninja
+re-runs CMake itself when `CMakeLists.txt`, `cmake/` or the SCons generators it
+imports change. Its arguments are CMake targets (the SCons alias names:
+`engine-tests`, `unit-tests`, `map-tests`, `sim-tests`, `tests`, `glob2-tools`,
+the harness aliases), `.` for glob2 plus the four test binaries, `-k` to keep
+going after an error and `-jN`. SCons options such as `perf=1` or
+`compile_profile=core` are rejected: those builds exist only in SCons. Test
+tools that look for the newest build directory do not see `build/cmake/dev`;
+pass `--build-dir build/cmake/dev` or set `GLOB2_BUILD_DIR=build/cmake/dev`.
+
+Keep both build systems' inputs in step: after changing `scons/sources.py`,
+`scons/javascript.py`, `test/tests.py` or `scons/harness_programs.py`, run
+`python3 scons/export_cmake_sources.py` and commit `cmake/sources.cmake` and
+`cmake/tests.cmake` (`--check` reports a stale file). A new source file needs
+nothing more; a new build step or generator needs a matching rule in
+`CMakeLists.txt`, checked with `tools/compare_build_systems.py`.
 
 The `dev` preset (`CMakePresets.json`) builds into `build/cmake/dev` with
 `-O0 -g1 -fdebug-prefix-map=<checkout>=.` and writes `compile_commands.json`.
 When ccache is installed it is the compiler launcher, with the managed cache
-directory and settings SCons uses. Ninja does not draw from the SCons
-[token pool](#parallel-lanes); the wrapper passes `-j8` unless given `-jN`.
+directory and settings SCons uses (the two builds rarely share entries, since
+CMake passes absolute source paths). Like SCons' `linker=auto`, it links with `lld` when
+`ld.lld` is installed (`-DGLOB2_LINKER=default` turns that off). Ninja does not
+draw from the SCons [token pool](#parallel-lanes); the wrapper passes `-j8`
+unless given `-jN`.
 
 What it builds:
 
@@ -329,7 +360,7 @@ PCH or unity variants, or any browser, mobile, macOS or Windows target.
 `-DGLOB2_EXPORT_RUNTIME_ASSETS=OFF` skips the asset export and points
 `BuildPaths.h` at `GLOB2_RUNTIME_ASSET_DIR` (default: the SCons dev build's).
 
-`tools/compare_build_systems.py` builds glob2, both test binaries, the test
+`tools/compare_build_systems.py` builds glob2, the four test binaries, the test
 programs and the harnesses with both systems into `build/parity/scons` and
 `build/parity/cmake`, both with an extra `-ffile-prefix-map=<checkout>/=`
 (`--glob2-only` limits it to glob2). It then compares every compilation in the
