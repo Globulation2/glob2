@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // A one-colony game on a small torus, owned by the GameGUI that steps it. Needs a
-// live HeadlessGlobals (HeadlessGlobals.h).
+// live HeadlessGlobals (HeadlessGlobals.h). The GameGUI is held by pointer so that
+// tests which only drive the game do not compile the HUD; a test that uses `gui`
+// includes GameGUI.h itself.
 #pragma once
 
 #include "GameFixtures.h"
 
-#include "GameGUI.h"
 #include "Team.h"
+#include "TerrainType.h"
 
+#include <memory>
 #include <optional>
+
+class GameGUI;
 
 namespace glob2test
 {
@@ -34,7 +39,8 @@ namespace glob2test
 	{
 		using Options = GameOptions;
 
-		GameGUI gui;
+		std::unique_ptr<GameGUI> guiOwner;
+		GameGUI& gui;
 		Game& game;
 		// Binds the game's synchronized stream for the test's lifetime, so fixture code
 		// that calls game functions directly draws from the game, as the engine does.
@@ -43,6 +49,7 @@ namespace glob2test
 		int parked = 0;
 
 		explicit HeadlessGame(Options options = {});
+		~HeadlessGame();
 		HeadlessGame(const HeadlessGame&) = delete;
 		HeadlessGame& operator=(const HeadlessGame&) = delete;
 

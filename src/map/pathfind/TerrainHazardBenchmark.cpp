@@ -3,6 +3,7 @@
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "StreamBackend.h"

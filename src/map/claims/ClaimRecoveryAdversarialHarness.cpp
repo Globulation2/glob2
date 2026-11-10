@@ -4,6 +4,7 @@
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "ActiveRouteRuntime.h"

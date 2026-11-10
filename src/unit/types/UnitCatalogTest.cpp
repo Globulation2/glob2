@@ -3,6 +3,7 @@
 #include "GameHeader.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "Race.h"
 #include <nlohmann/json.hpp>
 #include "BinaryStream.h"

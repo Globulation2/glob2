@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "Map.h"
 
 #include "GlobalContainer.h"
@@ -9,7 +10,7 @@
 namespace glob2test
 {
 	HeadlessGame::HeadlessGame(Options options)
-		: gui(false), game(gui.game)
+		: guiOwner(std::make_unique<GameGUI>(false)), gui(*guiOwner), game(gui.game)
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
 		random.emplace(game);
@@ -40,6 +41,8 @@ namespace glob2test
 		if (options.discovered)
 			game.map.setMapDiscovered();
 	}
+
+	HeadlessGame::~HeadlessGame() = default;
 
 	Building* HeadlessGame::addBuilding(const char* typeName, int x, int y, int level, int teamNumber)
 	{

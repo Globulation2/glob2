@@ -3,6 +3,7 @@
 #include "Building.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GradientFixture.h"
 #include "GradientExecutionAudit.h"
 #include "BuildingGradientSearch.h"

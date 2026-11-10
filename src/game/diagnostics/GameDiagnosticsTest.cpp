@@ -3,6 +3,7 @@
 #include "Building.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GraphicContext.h"
 #include "GameDiagnostics.h"
 #include "DatasetWriter.h"
 #include "Order.h"
