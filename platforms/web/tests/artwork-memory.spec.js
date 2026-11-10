@@ -46,7 +46,10 @@ for (const variant of ['serial', 'threaded']) {
       expect(result.workerCount).toBeLessThanOrEqual(16);
     }
     expect(result.heapBytes).toBeGreaterThan(0);
-    expect(result.heapBytes).toBeLessThan(1536 * 1024 * 1024);
+    // The Wasm heap is capped at 2 GiB. HD terrain pages decode in this test only since the
+    // CI package ships the asset video decoder (#1622); serial then peaked at 1540 MiB
+    // (run 42732872960), so the budget keeps a quarter GiB of headroom below the cap.
+    expect(result.heapBytes).toBeLessThan(1792 * 1024 * 1024);
     expect(result.renderContext.error).toBe(0);
     expect(errors).toEqual([]);
     await page.screenshot({path:info.outputPath('high-resolution-match.png')});
