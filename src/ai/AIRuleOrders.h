@@ -4,7 +4,9 @@
 #include "TeamCapacity.h"
 class Game;
 #include "Order.h"
-#include "Building.h"
+#include "BuildingState.h"
+#include "BuildingUtils.h"
+class Building;
 #include "ai/observation/AIWorldView.h"
 #include <algorithm>
 #include <memory>
@@ -31,7 +33,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
     }
     if(world.rules.upgradesDisabled && order.getOrderType()==ORDER_CONSTRUCTION) {
         const auto gid=static_cast<const OrderConstruction&>(order).gid;
-        if(gid>=Building::MAX_COUNT*TEAM_MAX_COUNT) return false;
+        if(gid>=BuildingUtils::MAX_COUNT*TEAM_MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
         return building && (world.catalog->at(building->typeNum).site ||
             (world.catalog->at(building->typeNum).semantics.repairable && building->hp<building->maxHp));
@@ -40,7 +42,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
         return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
     if(world.rules.peaceful && order.getOrderType()==ORDER_MOVE_FLAG) {
         const auto gid=static_cast<const OrderMoveFlag&>(order).gid;
-        if(gid>=Building::MAX_COUNT*TEAM_MAX_COUNT) return false;
+        if(gid>=BuildingUtils::MAX_COUNT*TEAM_MAX_COUNT) return false;
         const auto* building=world.buildingAtSlot(gid);
         if(!building) return true;
         const auto& kind=world.catalog->at(building->typeNum);

@@ -3,6 +3,7 @@
 // the fields name the enemy actually targeted, survive saves, and never change
 // what the simulation computes.
 #include "HeadlessGlobals.h"
+#include "Building.h"
 #include "Map.h"
 #include "HeadlessGame.h"
 #include "AI.h"

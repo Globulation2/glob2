@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AITelemetryFields.h"
+#include "Building.h"
 #include "AINumbi.h"
 #include "NumbiQueries.h"
 #include "ai/engine/AIDecision.h"

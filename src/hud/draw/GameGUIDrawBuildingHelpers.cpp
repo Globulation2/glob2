@@ -20,6 +20,7 @@
 #include "UnitDisplayNames.h"
 #include "FailureShapes.h"
 #include "Team.h"
+#include "Building.h"
 
 void GameGUI::drawBuildingHeader(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos)
 {

@@ -4577,7 +4577,7 @@ inline void shatteredCoastContracts()
 inline void riverContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
-	REQUIRE((definition.legacyId == 2 && definition.revision == 7));
+	REQUIRE((definition.legacyId == 2 && definition.revision == 8));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
@@ -4837,6 +4837,39 @@ inline void riverContracts()
 		const std::string ringError = definition.validateWorld(ringed, check);
 		REQUIRE((drawn && ringError.find("cuts ground off") != std::string::npos));
 	}
+	{
+		// Home gates (revision 8): the default rolls on which a colony started inside a closed ring of
+		// crops (seeds 1, 5 and 8 of the property test's ten) open a gate, and every colony walks to
+		// colony 0; a roll with no ring opens none. A ring of crops drawn round a home is refused.
+		for (std::uint32_t seed : {1u, 2u, 5u, 8u})
+		{
+			D r = request;
+			r.seed = seed;
+			Game g(nullptr);
+			const auto result = build(g, r, "home gates");
+			REQUIRE(walkFromFirstColony(g.map, r.nbTeams, "the banks", "").error.empty());
+			REQUIRE(((measure(result, "river.home_gates.opened") > 0) == (seed != 2)));
+		}
+		D r = request;
+		r.seed = 2;
+		Game sealed(nullptr);
+		build(sealed, r, "sealed home");
+		const Torus t(sealed.map);
+		const int cx = sealed.teams[1]->startPosX + 2, cy = sealed.teams[1]->startPosY + 2;
+		for (int dy = -12; dy <= 12; ++dy)
+			for (int dx = -12; dx <= 12; ++dx)
+			{
+				const int x = t.x(cx + dx), y = t.y(cy + dy);
+				if (std::max(std::abs(dx), std::abs(dy)) == 12 && sealed.map.terrainPropertiesAt(x, y).walkable &&
+					!sealed.map.isResource(x, y) && sealed.map.getBuilding(x, y) == NOGBID)
+					sealed.map.replaceResource(x, y, Resource(Uint16((dx + dy) % 2 ? WOOD : WHEAT), 0, 10, 0));
+			}
+		GenerationContext check(r);
+		const std::string sealedError = definition.validateWorld(sealed, check);
+		if (sealedError.find("cannot walk") == std::string::npos)
+			std::fprintf(stderr, "River sealed home: %s\n", sealedError.c_str());
+		REQUIRE(sealedError.find("cannot walk") != std::string::npos);
+	}
 	D r = make(8, 8, 4, 37);
 	for (const auto &control : definition.controls)
 		if (control.group == ControlGroup::Resources)
@@ -4891,7 +4924,7 @@ inline void riverContracts()
 	puts("PASS River: envelope with pinned banks, the river's water unchanged, shallows round every deep core, "
 		 "algae reseated, levees and rock off the beach, pavement beyond the water's reach, random banks, deep "
 		 "water and bluffs switching off, bluffs that never cut ground off, stocked quarries, damage refused, "
-		 "resource extremes, growth");
+		 "home gates, sealed homes refused, resource extremes, growth");
 }
 
 inline void craterLakesContracts()

@@ -2,6 +2,7 @@
 // Live-game forms of the AI rule helpers. They read the Game, so they live here
 // rather than in AIRules.h / AIRuleOrders.h, which most AI code includes.
 #include "AIRuleOrders.h"
+#include "Building.h"
 #include "Game.h"
 #include "Team.h"
 

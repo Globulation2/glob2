@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <Stream.h>
+#include "Building.h"
 #include "Map.h"
 #include <algorithm>
 #include <bit>

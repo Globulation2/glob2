@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AIProfile.h"
+#include "Building.h"
 #include <PerformanceTelemetry.h>
 #include "AI.h"
 #include "AIRegistry.h"
