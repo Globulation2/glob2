@@ -118,14 +118,14 @@ class BrowserFetch final : public Fetch
 		attributes.userData = this;
 		attributes.onsuccess = succeeded;
 		attributes.onerror = failed;
-		attributes.timeoutMSecs = static_cast<unsigned long>(spec.timeout.count());
+		attributes.timeoutMSecs = static_cast<unsigned long>(spec.timeoutMilliseconds);
 		attributes.requestHeaders = headerPointers.data();
 		if (!body.empty())
 		{
 			attributes.requestData = body.data();
 			attributes.requestDataSize = body.size();
 		}
-		expires = std::chrono::steady_clock::now() + spec.timeout;
+		expires = std::chrono::steady_clock::now() + std::chrono::milliseconds(spec.timeoutMilliseconds);
 		auto *started = emscripten_fetch(&attributes, spec.url.c_str());
 		// A synchronous failure has already been recorded and closed.
 		if (status == State::Pending)
