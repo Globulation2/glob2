@@ -37,8 +37,7 @@ update-only callbacks and capped drawing retain input and screen lifecycle behav
 
 ```sh
 python3 tools/dev_build.py engine-tests unit-tests
-export GLOB2_BUILD_DIR=build/cmake/dev      # where dev_build.py builds on Linux (CMake + Ninja)
-python3 test/run_tests.py                   # headless tier: no [display], no [slow]
+python3 test/run_tests.py                   # headless tier, newest build: no [display], no [slow]
 python3 test/run_tests.py --tier display    # adds [display] cases
 python3 test/run_tests.py --tier full       # everything this platform can run
 python3 test/run_tests.py --list --tag display

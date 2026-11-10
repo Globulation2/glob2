@@ -154,13 +154,7 @@ def main():
             print('dev_build.py: building with SCons (CMake defines no target ' + ', '.join(unknown) + ')',
                   file=sys.stderr)
         else:
-            status = subprocess.call(commands[0], cwd=ROOT, env=environment)
-            if status == 0:
-                directory = CMAKE_DIRECTORY.relative_to(ROOT)
-                print(f'dev_build.py: CMake dev build in {directory}; test tools that pick the newest build do '
-                      f'not look there: pass --build-dir {directory} or set GLOB2_BUILD_DIR={directory}',
-                      file=sys.stderr)
-            raise SystemExit(status)
+            raise SystemExit(subprocess.call(commands[0], cwd=ROOT, env=environment))
     raise SystemExit(subprocess.call(command(remaining), cwd=ROOT, env=environment))
 
 

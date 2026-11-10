@@ -111,8 +111,7 @@ Never ship a dev or perf build, and never quote release measurements as PR
 evidence: perf builds exist so that every performance claim is reproducible from
 one command. Compare against the prebuilt master baseline
 (`tools/dev_baseline.py`, `tools/perf_ab.py --baseline master`) rather than a second
-worktree. Test tools do not yet find `build/cmake/dev` on their own: pass
-`--build-dir build/cmake/dev` (or set `GLOB2_BUILD_DIR`). Plain `scons` gives full debug information; `pch=1` and `unity=1` are
+worktree. Test tools take the newest build, `build/cmake/dev` included. Plain `scons` gives full debug information; `pch=1` and `unity=1` are
 development experiments. `compile_profile=core` leaves most generators, three AIs
 and the editor out of focused dev builds ([core profile](docs/development/build-options.md#core-compile-profile));
 final PR verification always uses the default full profile. Simulation checksums must match between the dev and perf

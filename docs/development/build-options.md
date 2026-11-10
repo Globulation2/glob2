@@ -298,7 +298,7 @@ back to SCons).
 python3 tools/dev_build.py .                            # glob2 and the four test binaries
 python3 tools/dev_build.py                              # glob2 only
 python3 tools/dev_build.py unit-tests map-generator-golden-test -j12
-python3 test/run_tests.py --build-dir build/cmake/dev --binary all -j12
+python3 test/run_tests.py --binary all -j12             # finds the newest build, build/cmake/dev included
 python3 test/test_cli_smoke.py --binary build/cmake/dev/src/glob2
 cmake --build build/cmake/dev --target glob2           # the same, without the wrapper
 python3 tools/compare_build_systems.py                  # parity report
@@ -313,10 +313,9 @@ going after an error and `-jN`. SCons options such as `perf=1` or
 `compile_profile=core` send the request to SCons (with `--generator=cmake`
 they are rejected): those builds exist only in SCons. Test tools that look for
 the newest build directory (`tools/build_paths.py`, so `test/run_tests.py`
-without `--build-dir`) do not see `build/cmake/dev` and may pick an older SCons
-build; pass `--build-dir build/cmake/dev` or set
-`GLOB2_BUILD_DIR=build/cmake/dev`. The wrapper repeats this after each CMake
-build.
+without `--build-dir`) consider `build/cmake/dev` beside the SCons dev and
+release builds and take whichever was built last; `--build-dir` or
+`GLOB2_BUILD_DIR` picks one explicitly.
 
 Keep both build systems' inputs in step: after changing `scons/sources.py`,
 `scons/javascript.py`, `test/tests.py` or `scons/harness_programs.py`, run
