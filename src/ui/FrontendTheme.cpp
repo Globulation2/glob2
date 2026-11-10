@@ -26,15 +26,28 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 	colony = std::make_unique<MenuColony>();
 	// Startup has loaded game sprites. Prepare the live backdrop before the
 	// first menu paint on every host, while the loading screen is still visible.
-	if (Glob2UI::frontendTheme().backdrop.kind == GAGGUI::ui::Backdrop::Kind::Colony &&
-		globalContainer->ensureGameGraphics())
+	if (Glob2UI::frontendTheme().backdrop.kind == GAGGUI::ui::Backdrop::Kind::Colony)
+		ensureColony();
+	syncPalette();
+	for (int i = 0; i < 3; ++i)
+		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
+}
+void FrontendTheme::ensureColony()
+{
+	// One attempt per release: a snapshot that fails to load is not retried every frame.
+	if (!attempted && globalContainer->ensureGameGraphics())
 	{
 		attempted = true;
 		colony->load();
 	}
-	syncPalette();
-	for (int i = 0; i < 3; ++i)
-		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
+}
+void FrontendTheme::releaseColony()
+{
+	// Only a loaded colony is reloaded later; an unavailable one stays unavailable.
+	if (!colony->ready())
+		return;
+	colony->unload();
+	attempted = false;
 }
 void FrontendTheme::syncPalette()
 {
@@ -70,7 +83,7 @@ FrontendScope::FrontendScope(bool enabled) : enabled(enabled)
 	liveScopes.push_back(this);
 	apply();
 	if (!enabled && FrontendTheme::current)
-		FrontendTheme::current->colony->pause();
+		FrontendTheme::current->releaseColony();
 }
 FrontendScope::~FrontendScope()
 {
@@ -129,12 +142,8 @@ void FrontendTheme::onFrame()
 		colony->pause();
 		return;
 	}
-	// Also support switching to a colony theme after startup.
-	if (!attempted && globalContainer->ensureGameGraphics())
-	{
-		attempted = true;
-		colony->load();
-	}
+	// Also covers switching to a colony theme after startup, and returning from gameplay.
+	ensureColony();
 	// An unfocused visible menu still animates (including the gallery host).
 	SDL_Window *window = SDL_GetWindowFromID(globalContainer->gfx->windowID());
 	const bool visible = window && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED);
@@ -170,10 +179,15 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		terrain(s);
 		artwork = bool(globalContainer->terrain);
 	}
-	else if (theme.backdrop.kind == Kind::Colony && colony->ready())
+	else if (theme.backdrop.kind == Kind::Colony)
 	{
-		colony->draw(w, h);
-		artwork = true;
+		// The results screen paints here while gameplay's scope is still open.
+		ensureColony();
+		if (colony->ready())
+		{
+			colony->draw(w, h);
+			artwork = true;
+		}
 	}
 	else if (theme.backdrop.kind == Kind::Image && backdropImage())
 	{

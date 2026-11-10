@@ -648,11 +648,15 @@ int main(int argc, char **argv)
 			{
 				FrontendScope gameplay(false);
 				require(GAGGUI::Style::style == style, "gameplay style");
+				require(!theme.colony->ready(), "gameplay releases the menu colony");
 				FrontendScope nested;
 				require(GAGGUI::Style::style == style, "gameplay dialog style");
 			}
 			require(GAGGUI::Style::style == &theme, "nested restoration");
+			theme.background(globals.gfx, false);
+			require(theme.colony->ready(), "menu paint reloads the released colony");
 		}
+		require(theme.colony->load(argv[2]), "reload colony fixture");
 		require(GAGGUI::Style::style == style &&
 					globals.standardFont->getStyle().color == font.color,
 				"theme/font restoration");

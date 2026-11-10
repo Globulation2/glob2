@@ -27,19 +27,25 @@ class FrontendTheme : public GAGGUI::Style
 	GAGGUI::Style *original;
 	GAGCore::Font::Style originalFonts[3];
 
+	// Frees a loaded colony while gameplay or the editor runs; the next frontend
+	// frame or backdrop paint that needs it loads it again from the snapshot.
+	void releaseColony();
+
 	// Copies the menu theme's colours into the legacy Style fields.
 	void syncPalette();
 	unsigned generation = 0;
 
   private:
 	GAGCore::DrawableSurface *backdropImage();
+	void ensureColony();
 	void terrain(GAGCore::DrawableSurface *);
 	bool attempted = false;
 	std::string fallbackPath;
 	std::unique_ptr<GAGCore::DrawableSurface> fallback, fittedFallback;
 };
 
-// Also used to suspend front-end presentation around gameplay/editor loops.
+// Also used to suspend front-end presentation around gameplay/editor loops; a
+// disabled scope releases the menu colony for its duration.
 // Screens hold scopes for their whole lifetime, and a screen stack creates the
 // next screen before destroying the finished one, so scopes need not end in
 // reverse order: the most recently created live scope decides the presentation.
