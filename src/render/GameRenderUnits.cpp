@@ -44,6 +44,7 @@
 #include "Brush.h"
 #include "unit/render/UnitSkin.h"
 #include "FailureShapes.h"
+#include "Building.h"
 #include <algorithm>
 
 

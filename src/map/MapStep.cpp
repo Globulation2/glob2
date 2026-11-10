@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "Building.h"
 #include "Map.h"
 #include "gradient/MapRouting.h"
 #include "gradient/GradientRuntime.h"

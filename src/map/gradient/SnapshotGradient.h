@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "BuildingRoute.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include "field/GradientWorkspace.h"
 #include "field/GradientDestinations.h"
@@ -9,7 +10,7 @@
 #include <stdexcept>
 #include "TeamCapacity.h"
 #include "BuildingGradientSearch.h"
-#include "Building.h"
+class Building;
 #include "SeedCells.h"
 
 class ComputeExecutor;

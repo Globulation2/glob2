@@ -42,8 +42,6 @@ src/map/generator/javascript/GeneratorPackage.h -> src/online/OnlineStorage.h
 src/map/gradient/BuildingGradientPipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
 src/map/gradient/GradientPipeline.h -> src/engine/sim/snapshot/WorldSnapshot.h
 src/map/gradient/GradientRuntime.h -> src/team/Team.h
-src/map/gradient/SeedCells.h -> src/building/Building.h
-src/map/gradient/SnapshotGradient.h -> src/building/Building.h
 src/map/gradient/SnapshotGradient.h -> src/engine/sim/snapshot/WorldSnapshot.h
 src/map/io/MapHeader.h -> src/app/SaveLoadProfile.h
 src/map/io/MapHeader.h -> src/team/BaseTeam.h

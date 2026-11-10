@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FailureShapes.h"
+#include "Building.h"
 
 #include <algorithm>
 #include <cmath>

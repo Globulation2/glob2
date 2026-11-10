@@ -9,6 +9,7 @@
 // Every owner-side step is O(1) per job; seeding and the search run on workers.
 
 #include <PerformanceTelemetry.h>
+#include "Building.h"
 #include "Map.h"
 #include "gradient/MapRouting.h"
 #include "gradient/GradientRuntime.h"

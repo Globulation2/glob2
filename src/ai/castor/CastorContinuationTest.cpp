@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Version.h"
+#include "Building.h"
 #include "Map.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"

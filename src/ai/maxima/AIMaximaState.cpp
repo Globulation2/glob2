@@ -3,6 +3,7 @@
 
 // Save/load of the resolved strategy, director, and pending execution work.
 #include "AIMaximaContinuation.h"
+#include "Building.h"
 #include "AIMaxima.h"
 #include "Version.h"
 #include "Game.h"
