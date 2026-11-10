@@ -121,7 +121,7 @@ def export_inputs(root, platform):
 def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
     """Fill `exported` (and its sibling audit JSON), from the shared store when possible.
 
-    SCons (prepare_assets) and the experimental CMake build
+    SCons (prepare_assets) and the CMake build
     (scons/cmake_generate.py runtime-assets) both export through here."""
     # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
     if str(Path(__file__).resolve().parent) not in sys.path:

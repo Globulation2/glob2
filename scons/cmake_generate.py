@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line entry points through which the experimental CMake build calls
+"""Command-line entry points through which the CMake build calls
 the same generators SCons uses, so both build systems write identical files.
 
 Every subcommand writes only when the content changed, keeping timestamps (and
