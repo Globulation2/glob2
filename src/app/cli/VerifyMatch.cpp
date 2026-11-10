@@ -35,6 +35,7 @@
 #include "WinningConditions.h"
 #include "field/GradientAccelerators.h"
 #include "Team.h"
+#include "sim/snapshot/WorldSnapshot.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;

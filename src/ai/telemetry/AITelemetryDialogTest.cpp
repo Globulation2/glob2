@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include "render/scene/SceneExtract.h"
 
 using namespace GAGGUI::ui;
 using namespace GAGCore;

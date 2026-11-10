@@ -26,6 +26,7 @@
 #include <SDL3/SDL.h>
 #include <PerformanceTelemetry.h>
 #include <GraphicContext.h>
+#include "render/ViewState.h"
 #ifdef HAVE_OPENGL
 #include <SDL3/SDL_opengl.h>
 #endif

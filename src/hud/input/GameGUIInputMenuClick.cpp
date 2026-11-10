@@ -15,6 +15,7 @@
 #include "PanelButtonHit.h"
 #include "Player.h"
 #include "Unit.h"
+#include "GameGUIToolManager.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

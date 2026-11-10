@@ -44,6 +44,9 @@
 #include "Order.h"
 
 #include <SDL3/SDL_keycode.h>
+#include "render/ViewState.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

@@ -12,6 +12,10 @@
 #include "Unit.h"
 #include "EngineTiming.h"
 #include "sim/EntityRefOf.h"
+#include "render/scene/SceneEntities.h"
+#include "render/scene/Scene.h"
+#include "render/ViewState.h"
+#include "GameGUIToolManager.h"
 
 void GameGUI::cleanOldSelection(void)
 {

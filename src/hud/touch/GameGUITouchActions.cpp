@@ -12,6 +12,8 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "Building.h"
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
 using namespace GAGCore;
 
 namespace

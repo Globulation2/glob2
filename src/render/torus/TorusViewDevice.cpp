@@ -14,6 +14,7 @@
 #include <cmath>
 #include <cstring>
 #include <exception>
+#include "GameGUIToolManager.h"
 
 using namespace GAGCore;
 struct TorusDeviceState

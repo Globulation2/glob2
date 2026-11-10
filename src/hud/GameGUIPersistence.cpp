@@ -28,6 +28,9 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include <glob2/BuildConfig.h>
+#include "render/scene/Scene.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 
 bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)

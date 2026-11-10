@@ -12,6 +12,8 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#include "render/scene/Scene.h"
+#include "GameGUIToolManager.h"
 using namespace GAGCore;
 
 bool GameGUITouch::showsBuildPalette() const

@@ -16,6 +16,8 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#include "render/scene/Scene.h"
+#include "render/ViewState.h"
 using namespace GAGCore;
 
 bool GameGUITouch::lensVisible() const

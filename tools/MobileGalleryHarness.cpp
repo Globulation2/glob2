@@ -69,6 +69,7 @@
 #include <charconv>
 #include <stdexcept>
 #include <iostream>
+#include "GameGUIToolManager.h"
 
 GlobalContainer *globalContainer = nullptr;
 namespace

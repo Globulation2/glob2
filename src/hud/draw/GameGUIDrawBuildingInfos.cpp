@@ -7,6 +7,8 @@
 #include "GlobalContainer.h"
 #include <RenderStateScope.h>
 #include <algorithm>
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
 
 void GameGUI::drawBuildingInfos(void)
 {

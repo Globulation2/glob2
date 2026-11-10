@@ -34,6 +34,8 @@
 #include <jni.h>
 #endif
 #include "Map.h"
+#include "render/ViewState.h"
+#include "GameGUIToolManager.h"
 #if defined(SDL_PLATFORM_IOS)
 #include "platforms/mobile/ios/SafeArea.h"
 #endif

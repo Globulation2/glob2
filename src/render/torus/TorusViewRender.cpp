@@ -16,6 +16,7 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
+#include "GameGUIToolManager.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
