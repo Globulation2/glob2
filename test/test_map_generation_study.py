@@ -38,7 +38,9 @@ class StudyTests(unittest.TestCase):
             (directory / 'result.json').write_text('not JSON' if malformed else json.dumps(result))
             # Misleading console output must not determine success.
             return subprocess.CompletedProcess(command, code, '[complete]', 'failure')
-        with patch.object(study.subprocess, 'run', side_effect=native):
+        # These cases cover the one-process-per-map path; the mock is not a study worker.
+        with patch.object(study, '_supports_worker', return_value=False), \
+                patch.object(study.subprocess, 'run', side_effect=native):
             result = study.generate_map('glob2', 60, 12, 128, 512, 6)
         self.assertTrue(directories)
         self.assertFalse(directories[0].exists(), 'temporary profile leaked')

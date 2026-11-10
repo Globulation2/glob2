@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare the SCons and experimental CMake native Linux development builds.
 
-Builds glob2, both test binaries, the test/tests.py programs and the
+Builds glob2, the four test binaries, the test/tests.py programs and the
 scons/harness_programs.py harnesses with both build systems into separate
 parity directories (SCons through tools/dev_build.py, CMake through the dev
 preset), each with the same extra -ffile-prefix-map so objects do not embed the

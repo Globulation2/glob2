@@ -3,6 +3,7 @@
 // route is pending and after it is published, and exported cross-platform inputs.
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "GradientFixture.h"
 #include "map/claims/ActiveRouteRuntime.h"

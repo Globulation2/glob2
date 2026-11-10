@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "TutorialModel.h"
 #include "scripting/javascript/ScriptValue.h"
 #include "scripting/javascript/ScriptOrders.h"

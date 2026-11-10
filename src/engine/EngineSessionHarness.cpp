@@ -780,7 +780,8 @@ TEST_SUITE("EngineSession")
         CHECK(colony.game->snapshots().metrics.captures == afterStep);
         CHECK(colony.view->scene->tick == initialTick);
         colony.pause();
-		// FrontendTheme retains this serial colony during a foreground match.
+		// FrontendTheme frees this serial colony during a foreground match, but the
+		// results screen paints it while the finished engine is still alive.
 		// Budget both executors, all four possible foreground banks, collectors,
 		// and a fixed allowance for the chart caches and GPU timing ring.
 		auto foreground = std::make_unique<ComputeExecutor>();

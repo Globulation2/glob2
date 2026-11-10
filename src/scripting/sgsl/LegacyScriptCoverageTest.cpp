@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "SGSL.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>

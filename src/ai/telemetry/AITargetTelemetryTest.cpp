@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "AI.h"
 #include "AITelemetryFields.h"
 #include "Order.h"

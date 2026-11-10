@@ -44,6 +44,24 @@ read costs the same as the `game` read it replaces. Code that owns a game-wide
 pipeline (hiring, turret targeting, team statistics, area effects) still takes a
 `Game&`.
 
+The game and its widest owners hold their large members by pointer, behind a
+reference of the old name: `Game` holds `std::unique_ptr<Map> mapOwner; Map& map;`
+and the snapshot store the same way, and `GameGUI` and `MapEdit` hold their `Game`
+that way. Call sites read `game.map.x` as before, but `Game.h` includes neither
+`Map.h` nor the team, building, unit or snapshot-store headers. Include the header
+of what a file uses rather than expecting it through `Game.h`. Small leaf headers
+carry the vocabulary that used to need a wide one:
+
+| Need | Header |
+| --- | --- |
+| `NOGUID`, `NOGBID`, `Offset`, `AreaType` | `src/map/MapTypes.h` |
+| `refOf` handles for live buildings and units (inline) | `src/engine/sim/EntityRefOf.h` |
+| `TERRAIN_COUNT` and built-in terrains added after the 64 in `TerrainType.h` | `src/map/TerrainBuiltins.h` |
+| Building IDs (`BuildingUtils::MAX_COUNT`, `GIDtoTeam`) | `src/building/BuildingUtils.h` |
+| Building routes and `BUILDING_GRADIENT_COUNT` | `src/building/BuildingRoute.h` |
+| Building state enums, including `UnitCantWorkReason` | `src/building/BuildingState.h` |
+| Team limits (`TEAM_MAX_COUNT`) | `src/team/TeamCapacity.h` |
+
 Map routing lives in `MapRouting` (`src/map/gradient/MapRouting.h`), owned by the
 map and reached through `map->routing()`: pathfinding (`pathfindBuilding`,
 `pathfindMaterial`, `pathfindArea`, point-to-point A*), building and material field
@@ -76,6 +94,10 @@ header reaches and through which includers. `include_graph.py cost --days 60
 window times today's fan-in, with the includers that bring the costliest headers
 to the most translation units. Raw fan-in treats a header nobody edits like one
 edited daily, so start decoupling work from the cost ranking.
+Cut an include only where the includers do not use what it carries: `MapRouting.h`
+brings `Map.h` to 56 translation units, but nearly all of them use `Map` directly,
+so removing it would move the include rather than save a rebuild. `include_graph.py
+why` shows the includers; check that they use the header before cutting it.
 
 Some standard and third-party headers cost far more than the rest: with C++20 on
 GCC, `<chrono>` adds about 0.6 s to every translation unit that reaches it (it

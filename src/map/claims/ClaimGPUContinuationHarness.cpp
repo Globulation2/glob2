@@ -6,6 +6,7 @@
 #include <chrono>
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "GradientRuntime.h"
 #include "field/GradientAccelerators.h"

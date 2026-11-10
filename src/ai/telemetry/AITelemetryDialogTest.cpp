@@ -2,6 +2,7 @@
 #include "AI.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "DrawFixtures.h"
 #include "GameGUIDialog.h"

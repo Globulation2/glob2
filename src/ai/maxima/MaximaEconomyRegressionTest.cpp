@@ -1,6 +1,7 @@
 #include "MaximaObservationFixture.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "Property.h"
 #include "SimulationInvariants.h"

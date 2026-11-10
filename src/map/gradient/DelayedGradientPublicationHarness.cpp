@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "LegacyPopulationOutput.h"
 #include "GradientFixture.h"
 #include "GradientExecutionAudit.h"
