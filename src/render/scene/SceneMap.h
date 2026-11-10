@@ -2,7 +2,8 @@
 #pragma once
 
 #include "BitArray.h"
-#include "TerrainPresentation.h"
+#include "TerrainPresentationLayout.h"
+#include "TerrainType.h"
 #include "TerrainPropertiesLayout.h"
 #include "CellRules.h"
 #include "Ressource.h"
