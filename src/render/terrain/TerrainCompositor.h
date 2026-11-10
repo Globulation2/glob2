@@ -4,6 +4,7 @@
 #include "TerrainBuiltins.h"
 #include "TerrainStones.h"
 #include "TerrainType.h"
+#include "map/MapAssetBundle.h"
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
 #include <memory>

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SDLGPUDevice.h>
+#include <chrono>
 #ifndef __EMSCRIPTEN__
 #include <RendererShaderLayouts.h>
 #include <algorithm>

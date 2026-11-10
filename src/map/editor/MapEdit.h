@@ -31,7 +31,6 @@ struct Tile;
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include "EditorDialogs.h"
-#include "SetLibraryDialog.h"
 #include <string>
 #include <vector>
 
@@ -51,6 +50,7 @@ constexpr int mapEditZoneButtonX(int index, int count)
 class MapEdit;
 class PhoneEditor;
 class EditorDock;
+class SetLibraryDialog;
 struct InspectorModel;
 struct EditorSceneCache;
 

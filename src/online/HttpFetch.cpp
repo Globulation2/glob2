@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Native HttpFetch: NetHttp::Request (src/net/HttpExchange.h) pumped from the caller's thread.
 #include "HttpFetch.h"
+#include <chrono>
 #include "HttpExchange.h"
 #include "TlsSetup.h"
 #include <boost/asio.hpp>
@@ -69,7 +70,7 @@ class NativeFetch final : public Fetch
 			options.headers = std::move(spec.headers);
 			options.sendBody = spec.method != Method::Get || !spec.body.empty();
 			options.body = std::move(spec.body);
-			options.timeout = spec.timeout;
+			options.timeout = std::chrono::milliseconds(spec.timeoutMilliseconds);
 			options.responseLimit = spec.responseLimit;
 			options.headerLimit = 64 * 1024;
 			if (url.secure)

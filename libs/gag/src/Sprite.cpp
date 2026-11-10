@@ -15,6 +15,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <SpriteLoad.h>
+#include <SteadyClock.h>
+#include <chrono>
 #include <AssetLoader.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
@@ -748,10 +750,11 @@ namespace GAGCore
     }
     bool Sprite::pollHighResolution(unsigned budgetMs)
     {
-        return pollHighResolutionUntil(std::chrono::steady_clock::now() + std::chrono::milliseconds(budgetMs));
+        return pollHighResolutionUntil(GAGCore::steadyClockNanoseconds() + std::int64_t(budgetMs) * 1000000);
     }
-    bool Sprite::pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline)
+    bool Sprite::pollHighResolutionUntil(std::int64_t deadlineNanoseconds)
     {
+        const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
         for (auto it = pendingHighResolution.begin(); it != pendingHighResolution.end();) {
             if (std::chrono::steady_clock::now() >= deadline) break;
             auto *sprite = it->first;

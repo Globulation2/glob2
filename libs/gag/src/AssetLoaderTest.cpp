@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <chrono>
 #include <AssetLoader.h>
 #include "HighResolutionInputs.h"
 #include <GraphicContext.h>
@@ -473,8 +474,8 @@ TEST_CASE("nonpositive polling budgets do not start cooperative work or finalize
     auto lifetime = std::make_shared<unsigned>(0);
     auto handle = loader.request<unsigned>("zero-budget", {}, [&] { ++prepared; return std::make_shared<const unsigned>(9); });
     loader.onReady<unsigned>(handle, lifetime, [&](std::shared_ptr<const unsigned>) { ++published; });
-    loader.poll(std::chrono::milliseconds::zero());
-    loader.poll(std::chrono::milliseconds(-1));
+    loader.poll(0);
+    loader.poll(-1);
     CHECK(handle.pending()); CHECK(prepared == 0); CHECK(published == 0);
     REQUIRE(loader.wait(handle));
     loader.poll();

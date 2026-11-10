@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#include <chrono>
 #include "TlsSetup.h"
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>

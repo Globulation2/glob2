@@ -1,4 +1,5 @@
 #include "field/OpenCLGradient.h"
+#include <chrono>
 #include "TerrainBuiltins.h"
 #include "field/TerrainMovementCosts.h"
 #include "field/PreparedTerrainCosts.h"

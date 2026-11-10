@@ -99,6 +99,18 @@ brings `Map.h` to 56 translation units, but nearly all of them use `Map` directl
 so removing it would move the include rather than save a rebuild. `include_graph.py
 why` shows the includers; check that they use the header before cutting it.
 
+Some standard and third-party headers cost far more than the rest: with C++20 on
+GCC, `<chrono>` adds about 0.6 s to every translation unit that reaches it (it
+brings formatting and time zones), `nlohmann/json.hpp` about 0.9 s, and
+`<valarray>` and `<random>` about 0.2 s each. Keep them out of widely included
+headers. For a timestamp or deadline, store integer nanoseconds from
+`GAGCore::steadyClockNanoseconds()` (`SteadyClock.h`) or take a millisecond count,
+and convert to `std::chrono` in the `.cpp`. A header that only names `json` in
+declarations includes `<nlohmann/json_fwd.hpp>`. A header that holds a JSON-bearing
+type only by reference or pointer forward-declares it. Fan-in budgets in angle
+brackets (`<chrono>`, `<valarray>`) count the translation units that reach these
+headers through any project file.
+
 Terrain registries and cell rules (`TerrainRegistry.h`, `CellRules.h`) hold
 only layouts: `TerrainPropertiesLayout.h`, `TerrainPresentationLayout.h` and
 `field/EntrySteps.h`. The compile-time built-in tables (`TerrainProperties.h`,

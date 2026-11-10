@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 	if (argc > 3)
 		request.body = argv[3];
 	if (argc > 4)
-		request.timeout = std::chrono::milliseconds(std::stoi(argv[4]));
+		request.timeoutMilliseconds = std::stoi(argv[4]);
 	request.headers = {{"Content-Type", "application/json"}, {"X-Glob2-Test", "header value"}};
 	request.responseLimit = 1024 * 1024;
 

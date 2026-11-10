@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MipReduction.h"
 #include <AssetLoader.h>
+#include <chrono>
 #include <FileManager.h>
 #include <ThreadSupport.h>
 #include <webp/decode.h>
@@ -689,7 +690,8 @@ SDL_Surface *AssetLoader::loadImageSurface(const std::string& path) {
     auto image = handle.get();
     return image ? SDL_DuplicateSurface(image->surface) : nullptr;
 }
-void AssetLoader::poll(std::chrono::milliseconds budget) {
+void AssetLoader::poll(std::int64_t budgetMilliseconds) {
+    const std::chrono::milliseconds budget(budgetMilliseconds);
     impl->checkOwner();
     if (budget <= std::chrono::milliseconds::zero()) return;
     const auto start = Clock::now();

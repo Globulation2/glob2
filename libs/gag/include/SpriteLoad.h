@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <AssetLoader.h>
+#include <chrono>
 #include <memory>
 #include <string>
 

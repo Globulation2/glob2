@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceSprites.h"
+#include "map/MapAssetBundle.h"
 #include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <GraphicContext.h>

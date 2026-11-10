@@ -8,6 +8,7 @@
 #include <Stream.h>
 
 #include "AICabino.h"
+#include <cmath>
 #include "ai/engine/AIDecision.h"
 #include "ai/observation/OrderSelection.h"
 #include "ai/observation/ObservationAreaOrders.h"

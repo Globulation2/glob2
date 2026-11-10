@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderDevice.h>
+#include <chrono>
 #include <deque>
 #include <stdexcept>
 #include <unordered_map>
