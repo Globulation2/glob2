@@ -108,6 +108,19 @@ describe('member expiry races', () => {
     async (change) => {
       const { guest, roomId } = await readyRoom();
       const db = harness.database.db;
+      // Close the guest's socket and let its disconnect land first: while a
+      // socket is open, a late room.state delivery marks the member connected
+      // again, which would race the backdated row below.
+      guest.client.close();
+      await waitUntil(async () => {
+        const row = await db
+          .selectFrom('room_members')
+          .select('connected')
+          .where('room_id', '=', roomId)
+          .where('account_id', '=', guest.accountId)
+          .executeTakeFirstOrThrow();
+        return !row.connected;
+      }, 10_000);
       await db
         .updateTable('room_members')
         .set({ connected: false, last_seen_at: new Date(Date.now() - 3_600_000) })
