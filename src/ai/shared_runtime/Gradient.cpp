@@ -3,6 +3,7 @@
 
 #include "PowerOfTwo.h"
 #include "Map.h"
+#include "field/TerrainTravel.h"
 #include <PerformanceTelemetry.h>
 #include "shared_runtime/Runtime.h"
 #include "Building.h"

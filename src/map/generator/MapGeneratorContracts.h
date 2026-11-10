@@ -8,6 +8,7 @@
 #include "Glob2Test.h"
 #include "BraidedDeltaGenerator.h"
 #include "Map.h"
+#include "TerrainGroupTable.h"
 #include <array>
 #include <algorithm>
 #include <utility>
