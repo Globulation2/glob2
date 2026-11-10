@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <atomic>
-#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <memory>
@@ -26,10 +25,7 @@ public:
     }
     // Coordinator only. A second field's cancellation is observed at the next
     // bounded batch poll even if this control did not receive its notification.
-    void waitFor(std::chrono::microseconds duration) {
-        std::unique_lock lock(waitMutex);
-        changed.wait_for(lock,duration,[&]{return canceled.load(std::memory_order_acquire);});
-    }
+    void waitForMicroseconds(std::int64_t duration);
 };
 // Pre-reserves object/control bytes in the shared host budget; null declines
 // accelerator ownership before original seeds move. No driver initialization.

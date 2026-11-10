@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Build the full-featured fast development client; remaining arguments go to SCons.
 
---generator=cmake instead runs the experimental CMake dev preset (native Linux
+--generator=cmake instead runs the CMake + Ninja dev preset (native Linux
 only): it configures build/cmake/dev when needed, then builds the remaining
-arguments as CMake targets (default: glob2). SCons stays the default.
+arguments as CMake targets (default: glob2; "." is glob2 and the four test
+binaries; -k keeps going after errors; -jN, default -j8). SCons stays the
+default and the release and packaging build.
 """
 import argparse
 import os
@@ -34,13 +36,26 @@ def command(arguments):
 CMAKE_DIRECTORY = ROOT / 'build/cmake/dev'
 
 
+# "." is the everyday edit/build/test loop: glob2 and the four test binaries
+# (the `tests` alias, with their provenance sidecars).
+CMAKE_EVERYTHING = ['glob2', 'tests']
+
+
 def cmake_commands(arguments):
     """Configure (only when the build directory has no build files) and build."""
-    jobs = [word for word in arguments if word.startswith('-j')]
-    targets = [word for word in arguments if not word.startswith('-')]
-    unknown = [word for word in arguments if word.startswith('-') and not word.startswith('-j')]
-    if unknown:
-        raise SystemExit('--generator=cmake accepts only targets and -jN, not ' + ' '.join(unknown))
+    jobs, targets, keep_going = [], [], False
+    for word in arguments:
+        if word.startswith('-j') and word[2:].isdecimal():
+            jobs.append(word)
+        elif word in ('-k', '--keep-going'):
+            keep_going = True
+        elif word == '.':
+            targets += CMAKE_EVERYTHING
+        elif word.startswith('-') or '=' in word:
+            raise SystemExit('--generator=cmake accepts only targets, ".", -k and -jN, not ' + word
+                             + ' (SCons options such as perf=1 have no CMake equivalent; use SCons)')
+        else:
+            targets.append(word)
     commands = []
     if not (CMAKE_DIRECTORY / 'build.ninja').exists():
         commands.append(['cmake', '--preset', 'dev'])
@@ -48,8 +63,11 @@ def cmake_commands(arguments):
     # default to a share of the machine rather than all of it.
     build = ['cmake', '--build', '--preset', 'dev']
     if targets:
-        build += ['--target', *targets]
-    commands.append(build + ['--', jobs[-1] if jobs else '-j8'])
+        build += ['--target', *dict.fromkeys(targets)]
+    build += ['--', jobs[-1] if jobs else '-j8']
+    if keep_going:
+        build += ['-k', '0']
+    commands.append(build)
     return commands
 
 
@@ -57,7 +75,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache-stats', action='store_true', help='show managed compiler-cache statistics and exit')
     parser.add_argument('--generator', choices=('scons', 'cmake'), default='scons',
-                        help='build system (cmake: experimental native Linux dev preset)')
+                        help='build system (cmake: the native Linux CMake + Ninja dev preset)')
     args, remaining = parser.parse_known_args()
     sys.path.insert(0, str(ROOT / 'scons'))
     import dev_store

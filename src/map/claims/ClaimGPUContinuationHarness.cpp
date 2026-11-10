@@ -3,6 +3,7 @@
 // material gradients published by a real GPU backend and by the CPU. Never
 // substitutes a fake device.
 #include "HeadlessGlobals.h"
+#include <chrono>
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
 #include "GameGUI.h"

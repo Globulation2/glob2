@@ -3,8 +3,11 @@
 
 #include "ai/observation/AIWorldView.h"
 #include "BuildingCapabilities.h"
-#include "Building.h"
-#include "Unit.h"
+#include "BuildingState.h"
+#include "BuildingUtils.h"
+#include "UnitState.h"
+class Building;
+class Unit;
 #include "UnitTraining.h"
 #include "Order.h"
 #include <algorithm>
@@ -54,7 +57,7 @@ inline const BuildingType& buildingType(const AIEngine::AIWorldView& world, cons
 }
 inline int constructionCompletionType(const AIEngine::AIWorldView& world, const AIEngine::BuildingView& building)
 {
-    return building.constructionResultState==::Building::REPAIR
+    return building.constructionResultState==::BuildingStateRecord::REPAIR
         ? building.constructionOriginTypeNum : buildingType(world,building).nextLevel;
 }
 inline int realAttackStrength(const AIEngine::AIWorldView& world, const AIEngine::UnitView& unit)
@@ -311,7 +314,7 @@ inline std::shared_ptr<Order> constructionOrder(const AIEngine::AIWorldView& wor
     int workers,int futureWorkers)
 {
     const auto& current=world.catalog->at(building.typeNum);
-    const bool repair=current.site ? building.constructionResultState==::Building::REPAIR : building.hp<building.maxHp;
+    const bool repair=current.site ? building.constructionResultState==::BuildingStateRecord::REPAIR : building.hp<building.maxHp;
     const int target=current.site ? building.typeNum : repair ? current.previous : current.next;
     const auto& placement=target>=0 ? world.catalog->at(target) : current;
     const int origin=current.site ? building.constructionOriginTypeNum : building.typeNum;
@@ -399,7 +402,7 @@ inline std::shared_ptr<Order> missingProductionOrder(const AIEngine::AIWorldView
         provided|=unsigned(index.intentMask(type))&((1u<<NB_UNIT_TYPE)-1);
     };
     for(const auto* building:world.buildingsForTeam(team)) {
-        if(!building || building->buildingState!=::Building::ALIVE) continue;
+        if(!building || building->buildingState!=::BuildingStateRecord::ALIVE) continue;
         includeProvider(buildingType(world,*building).isBuildingSite ? constructionCompletionType(world,*building) : building->typeNum);
         if(!anchor || (index.intentMask(building->typeNum)&((1u<<NB_UNIT_TYPE)-1))) anchor=building;
         if((provided&required)==required) return {};

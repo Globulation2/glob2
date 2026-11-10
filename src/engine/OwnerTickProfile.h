@@ -2,6 +2,7 @@
 #pragma once
 // Opt-in owner-thread attribution; no diagnostic values affect simulation.
 #include "ai/AIProfile.h"
+#include <chrono>
 #include <optional>
 
 namespace OwnerTickProfile {

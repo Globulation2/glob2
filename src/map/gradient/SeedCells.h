@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "BuildingRoute.h"
 #include "MapStateView.h"
 #include "SeedTerrain.h"
 #include "SeedPoint.h"
 #include "MapInternal.h"
-#include "Building.h"
+#include "BuildingUtils.h"
 #include "field/GradientPreparationRules.h"
 #include <algorithm>
 #include <array>
@@ -21,7 +22,7 @@ void materialCellsForMovement(const MapState::View& view, const Uint32* fog, int
 {
     const Uint32 mask=Uint32(1)<<team;
     const Uint32 forbiddenMask=Air ? 0 : mask;
-    const unsigned base=unsigned(team)*Building::MAX_COUNT;
+    const unsigned base=unsigned(team)*BuildingUtils::MAX_COUNT;
     const MaterialMask requested=MaterialMask(1u<<material);
     withOpenTerrain(view,swim,[&](auto terrainAt) {
     const auto natural=naturalMaterialSeed<Air>(view,fog,team,material,terrainAt);
@@ -37,10 +38,10 @@ void materialCellsForMovement(const MapState::View& view, const Uint32* fog, int
                         const auto& deposit=view.resources[i].resource;
                         const auto* p=deposit.type==NO_RES_TYPE?nullptr:&view.resourceProperties(deposit.type);
                         if (!p || !(Air ? p->blocksAir : p->blocksGround)) {
-                            if (cell.building==NOGBID || (Air && unsigned(cell.building)-base>=Building::MAX_COUNT)) value=terrainAt(i);
+                            if (cell.building==NOGBID || (Air && unsigned(cell.building)-base>=BuildingUtils::MAX_COUNT)) value=terrainAt(i);
                             else {
                                 const unsigned id=unsigned(cell.building)-base;
-                                if(id<Building::MAX_COUNT)value=suppliers[id];
+                                if(id<BuildingUtils::MAX_COUNT)value=suppliers[id];
                                 if(Air&&value==GRADIENT_FORBIDDEN)value=terrainAt(i);
                             }
                         }
@@ -105,7 +106,7 @@ bool guardCellsForMovement(const MapState::View& view, Uint32 allies, int team, 
             Uint16 value=GRADIENT_FORBIDDEN;
             if (!(view.areas[i].forbidden&forbiddenMask) && (Air || cell.immobileUnit==IMMOBILE_UNIT_NONE)
                 && (resource==NO_RES_TYPE || !blocked[resource])
-                && ((Air || cell.building==NOGBID) || !(allies&(Uint32(1)<<Building::GIDtoTeam(cell.building))))) {
+                && ((Air || cell.building==NOGBID) || !(allies&(Uint32(1)<<BuildingUtils::GIDtoTeam(cell.building))))) {
                 if (terrainAt(i)!=GRADIENT_FORBIDDEN) value=(view.areas[i].guard&mask)?GRADIENT_AT_GOAL:GRADIENT_UNREACHABLE;
             }
             out[i]=value;
@@ -226,7 +227,7 @@ BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const Bu
                     || (closed(i) && !clearingGoal))
                     out[i]=GRADIENT_FORBIDDEN;
             }
-            else if (!war || ((1u<<Building::GIDtoTeam(cell.building))&b.allies))
+            else if (!war || ((1u<<BuildingUtils::GIDtoTeam(cell.building))&b.allies))
                 out[i]=GRADIENT_FORBIDDEN;
             else if (out[i]!=GRADIENT_AT_GOAL)
                 out[i]=GRADIENT_UNREACHABLE;

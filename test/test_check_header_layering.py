@@ -100,6 +100,25 @@ class GlobalContainerRatchetTest(unittest.TestCase):
             self.assertTrue([e for e in layering.check() if 'src/unit uses globalContainer' in e])
 
 
+class SystemHeaderFaninTest(unittest.TestCase):
+    def test_counts_units_reaching_a_system_header_through_any_project_file(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            files = {'a.cpp': '#include "wide.h"\n', 'b.cpp': '#include <chrono>\n', 'c.cpp': '',
+                     'wide.h': '  #  include <chrono>\n#include <vector>\n'}
+            for name, text in files.items():
+                (root / name).write_text(text)
+            reach = {'a.cpp': {'wide.h'}, 'b.cpp': set(), 'c.cpp': set()}
+
+            class Graph:
+                pass
+            graph = Graph()
+            graph.root, graph.client_units, graph.reach = root, list(reach), reach.__getitem__
+            self.assertEqual(layering.system_header_fanin(graph, ['<chrono>', '<valarray>']),
+                             {'<chrono>': 2, '<valarray>': 0})
+
+
 class RepositoryTest(unittest.TestCase):
     def test_repository_passes(self):
         self.assertEqual(layering.check(), [])

@@ -85,6 +85,20 @@ class DevelopmentBuildTests(unittest.TestCase):
         self.assertNotIn('dev_fast=1', result)
         self.assertNotIn('linker=auto', result)
 
+    def test_cmake_command_targets_and_options(self):
+        spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
+        command = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(command)
+        with patch.object(command, 'CMAKE_DIRECTORY', Path(tempfile.mkdtemp())):
+            configure, build = command.cmake_commands(['.', 'glob2', '-j12', '-k'])
+            self.assertEqual(configure, ['cmake', '--preset', 'dev'])
+            self.assertEqual(build, ['cmake', '--build', '--preset', 'dev', '--target', 'glob2', 'tests',
+                                     '--', '-j12', '-k', '0'])
+            self.assertEqual(command.cmake_commands([])[-1][-2:], ['--', '-j8'])
+            for unsupported in ('perf=1', '--build=x', '-n'):
+                with self.assertRaises(SystemExit):
+                    command.cmake_commands([unsupported])
+
     def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
         spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')
         command = importlib.util.module_from_spec(spec)

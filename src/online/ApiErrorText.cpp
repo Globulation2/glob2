@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ApiErrorText.h"
+#include "PlatformProtocol.h"
 #include "generated/OnlineErrorCatalog.h"
 #include <cmath>
 

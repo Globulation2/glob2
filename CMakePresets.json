@@ -4,7 +4,7 @@
   "configurePresets": [
     {
       "name": "dev",
-      "displayName": "Native Linux fast development (experimental; SCons dev_fast=1 equivalent)",
+      "displayName": "Native Linux development (SCons dev tier equivalent)",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/cmake/dev",
       "cacheVariables": {

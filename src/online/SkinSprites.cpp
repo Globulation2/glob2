@@ -192,7 +192,7 @@ void SkinSprites::pollManifests(unsigned &active)
 			request.url = origin + "/api/v1/skins/versions/" + team.skin.versionId + "/sprites/" +
 						  team.skin.spriteManifestHash + "/manifest";
 			request.responseLimit = 65536;
-			request.timeout = std::chrono::seconds(15);
+			request.timeoutMilliseconds = 15000;
 			team.fetch = start(std::move(request));
 			if (team.fetch)
 				++active;
@@ -230,7 +230,7 @@ bool SkinSprites::loadPageBytes(Page &page, std::string &bytes, unsigned &active
 		request.url = origin + "/api/v1/skins/versions/" + page.version + "/sprites/" +
 					  page.bundle + "/pages/" + page.info.hash;
 		request.responseLimit = page.info.bytes;
-		request.timeout = std::chrono::seconds(15);
+		request.timeoutMilliseconds = 15000;
 		page.fetch = start(std::move(request));
 		if (page.fetch)
 			++active;

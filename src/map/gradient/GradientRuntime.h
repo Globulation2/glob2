@@ -3,6 +3,8 @@
 
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
+#include "BuildingRoute.h"
+#include "BuildingUtils.h"
 #include "GradientPipeline.h"
 #include "BuildingGradientJob.h"
 #include "ResourceGrowth.h"
@@ -97,7 +99,7 @@ struct GradientRuntime
 		int slot = 0;
 		bool stale = false;
 	};
-	static constexpr std::size_t BuildingRequestLimit = Team::MAX_COUNT * Building::MAX_COUNT * BUILDING_GRADIENT_COUNT;
+	static constexpr std::size_t BuildingRequestLimit = TEAM_MAX_COUNT * BuildingUtils::MAX_COUNT * BUILDING_GRADIENT_COUNT;
 	std::deque<BuildingRequest> buildingRequests;
 	// Reserved this tick, prepared together at the observation boundary.
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;

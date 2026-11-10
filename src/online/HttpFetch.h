@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include <chrono>
+#include <cstdint>
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -43,7 +43,7 @@ struct Request
 	// Sent as the request body (POST, PUT, PATCH); set Content-Type in headers.
 	std::string body;
 	// Whole-request deadline: name resolution, connection, TLS and transfer.
-	std::chrono::milliseconds timeout{30000};
+	std::int64_t timeoutMilliseconds = 30000;
 	// Larger responses fail rather than exhaust memory.
 	std::size_t responseLimit = 32 * 1024 * 1024;
 };

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <chrono>
 #include "ScopedEnvironment.h"
 #include <SpriteLoad.h>
 #include <Toolkit.h>
@@ -61,9 +62,9 @@ TEST_CASE("ready sprite pixels publish before unrelated cooperative work") {
     GAGCore::Toolkit::getFileManager()->addDir(temp.path.string());
     auto& loader = GAGCore::Toolkit::assets();
     GAGCore::SpriteLoad loading("ready");
-    loader.poll(std::chrono::seconds(1));
+    loader.poll(1000);
     CHECK_FALSE(loading.poll(std::chrono::milliseconds(20)));
-    loader.poll(std::chrono::seconds(1));
+    loader.poll(1000);
     auto unrelated = loader.request<int>("unrelated-background", {}, [] {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         return std::make_shared<const int>(7);

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AITelemetryFields.h"
+#include "Building.h"
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
 #include "Game.h"

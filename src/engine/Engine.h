@@ -26,6 +26,8 @@
 
 namespace GAGGUI { class Screen; }
 
+namespace GAGGUI { class Screen; }
+
 
 class SimulationRunner;
 class ScenePreparation;

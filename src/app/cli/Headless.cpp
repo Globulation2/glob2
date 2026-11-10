@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "Building.h"
 #include "ComputeTelemetry.h"
 #include "gradient/MapRouting.h"
 #include "Headless.h"

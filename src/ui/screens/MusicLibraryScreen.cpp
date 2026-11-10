@@ -144,7 +144,7 @@ void MusicLibraryScreen::downloadTrack()
 	auto request = requestFor(
 		origin, "/api/v1/music/" + Online::urlEncode(active.at("id").get<std::string>()) +
 					"/tracks/" + std::array<std::string, 3>{"calm", "building", "combat"}[track]);
-	request.timeout = std::chrono::minutes(3);
+	request.timeoutMilliseconds = 180000;
 	request.responseLimit = 16 * 1024 * 1024;
 	kind = FetchKind::Track;
 	fetch = HttpFetch::start(std::move(request));

@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Game.h"
+#include "Team.h"
 
 namespace MapGeneration::JavaScript
 {

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include <chrono>
+#include "Building.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "ProfileNeeds.h"

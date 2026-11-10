@@ -22,10 +22,9 @@ namespace Utilities
 	void BitArray::resize(size_t size, bool defaultValue)
 	{
 		bitLength = size;
-		if (defaultValue)
-			values.resize(bitToByte(size), 1);
-		else
-			values.resize(bitToByte(size), 0);
+		// Every byte becomes 1 or 0 (not 0xFF), discarding old contents, as
+		// std::valarray::resize did; masks on the wire depend on it.
+		values.assign(bitToByte(size), defaultValue ? 1 : 0);
 	}
 	
 	size_t BitArray::bitToByte(size_t v) const
@@ -41,15 +40,13 @@ namespace Utilities
 		const size_t l = values.size();
 		if (l == 0)
 			return;
-		std::copy(&values[0], l + &values[0], stream);
+		std::copy(values.begin(), values.end(), stream);
 	}
 	
 	void BitArray::deserialize(const unsigned char *stream, size_t bitCount)
 	{
 		bitLength = bitCount;
-		values.resize(bitToByte(bitCount));
-		if (values.size() == 0)
-			return;
-		std::copy(stream, stream+values.size(), &values[0]);
+		values.assign(bitToByte(bitCount), 0);
+		std::copy(stream, stream+values.size(), values.begin());
 	}
 }

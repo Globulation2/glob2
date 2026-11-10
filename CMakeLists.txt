@@ -1,10 +1,10 @@
-# Experimental CMake + Ninja build of the native Linux development client.
+# CMake + Ninja build of the native Linux development client.
 #
-# SCons (SConstruct, tools/dev_build.py) remains the supported build system for
+# SCons (SConstruct, tools/dev_build.py) remains the default build system for
 # every target and the only one that ships anything. This file reproduces the
-# SCons fast-development tier object for object so the two can be compared
-# (tools/compare_build_systems.py); see "Experimental CMake build" in
-# docs/development/build-options.md for what it covers and what it does not.
+# SCons dev tier object for object, for the everyday edit/build/test loop, and
+# the two are compared by tools/compare_build_systems.py; see "CMake + Ninja
+# build for daily work" in docs/development/build-options.md.
 #
 #   cmake --preset dev && cmake --build --preset dev
 #   python3 tools/dev_build.py --generator=cmake
@@ -357,6 +357,17 @@ list(REMOVE_DUPLICATES sdl_directories)
 set(link_options ${sdl_link_options} -Wall ${sdl3_link_options} ${webp_link_options})
 if(GLOB2_SDL3_PREFIX)
   list(APPEND link_options "-Wl,-rpath=${sdl_prefix}/lib")
+endif()
+# The SCons dev tier's linker=auto (scons/dev_build.py configure): lld when installed.
+set(GLOB2_LINKER auto CACHE STRING "Development linker: default, auto (lld when installed) or lld")
+set_property(CACHE GLOB2_LINKER PROPERTY STRINGS default auto lld)
+if(NOT GLOB2_LINKER STREQUAL "default")
+  find_program(GLOB2_LLD_PROGRAM ld.lld)
+  if(GLOB2_LLD_PROGRAM)
+    list(APPEND link_options -fuse-ld=lld)
+  elseif(GLOB2_LINKER STREQUAL "lld")
+    message(FATAL_ERROR "GLOB2_LINKER=lld requires an installed ld.lld")
+  endif()
 endif()
 
 # Every program links `ARGN` (object libraries and archives) before SConstruct's

@@ -306,7 +306,7 @@ TEST_CASE("the per-pixel bank on OpenGL matches the reference at every pixel [di
 			glReadPixels(0, 0, pw, ph, GL_RGBA, GL_UNSIGNED_BYTE, (pass ? onWhite : onBlack).data());
 		}
 		double worst = 0, total = 0;
-		size_t far = 0;
+		size_t offBy3 = 0;
 		for (int py = 0; py < ph; ++py)
 			for (int px = 0; px < pw; ++px)
 			{
@@ -320,14 +320,14 @@ TEST_CASE("the per-pixel bank on OpenGL matches the reference at every pixel [di
 					const double error = std::fabs(measured - wanted[k]) * 255;
 					worst = std::max(worst, error);
 					total += error;
-					far += error > 3;
+					offBy3 += error > 3;
 				}
 			}
 		CAPTURE(part);
 		CAPTURE(worst);
 		REQUIRE(total / (4.0 * pw * ph) < .8);
 		// Interpolation on the GPU is coarser than in doubles; rare pixels may differ a little more.
-		REQUIRE(far <= size_t(pw) * ph * 4 / 1000);
+		REQUIRE(offBy3 <= size_t(pw) * ph * 4 / 1000);
 		REQUIRE(worst <= 8);
 	}
 }

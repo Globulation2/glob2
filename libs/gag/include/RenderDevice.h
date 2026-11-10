@@ -4,7 +4,7 @@
 #include <RenderFrame.h>
 #include <string>
 #include <stdexcept>
-#include <chrono>
+#include <SteadyClock.h>
 
 namespace GAGCore
 {
@@ -36,12 +36,12 @@ namespace detail
 class RenderCpuTimer
 {
     std::uint64_t &counter;
-    std::chrono::steady_clock::time_point started=std::chrono::steady_clock::now();
+    std::int64_t started=GAGCore::steadyClockNanoseconds();
   public:
     explicit RenderCpuTimer(std::uint64_t &counter):counter(counter){}
     RenderCpuTimer(const RenderCpuTimer &)=delete;
     RenderCpuTimer &operator=(const RenderCpuTimer &)=delete;
-    ~RenderCpuTimer(){counter+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-started).count();}
+    ~RenderCpuTimer(){counter+=std::uint64_t(GAGCore::steadyClockNanoseconds()-started);}
 };
 }
 struct CaptureRequest

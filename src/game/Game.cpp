@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Team.h"
+#include "Building.h"
 #include "gradient/MapRouting.h"
 #include <algorithm>
 #include <bit>

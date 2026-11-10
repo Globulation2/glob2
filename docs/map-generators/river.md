@@ -18,6 +18,14 @@ colony's own home quarry, and the bluffs' faces. Stone tiles fell from about 2,7
 256x256 seeds 1–12. Stone never runs out, so each colony's supply is its home face of ten tiles plus
 whatever bluff faces it holds; the empty strip above the beach is open floodplain the crops regrow into.
 
+Revision 8 opens a gate out of every home ringed by its fields. Emptying the stone band also opened the
+floor of dry hollows: a hollow that never floods is a closed contour ring of grass inside the wheat and
+wood bands, and the start search likes that open ground, so on three of the ten default rolls at
+256x256 with four colonies (seeds 1, 5 and 8; 26 of seeds 1–60) a colony started inside a ring of
+crops it could not walk out of. Where a colony's ground does not reach colony 0's, the cheapest walk out
+through the crops is now cleared three tiles wide; every other map is exactly revision 7's. Seed 1 opens
+two gates (14 deposits cleared, round colonies 2 and 3), seeds 5 and 8 one each (9 deposits).
+
 ## How it plays
 
 - **The river is the front line, swum slowly.** Colonies on opposite banks meet only by swimming or by
@@ -35,6 +43,10 @@ whatever bluff faces it holds; the empty strip above the beach is open floodplai
   no farmland), nearer its own swarm than any other by at least eight tiles. Its face is the ten edge
   tiles nearest the swarm, stone on plain grass; every colony's face holds the same ten (`quarryFault`).
   A colony whose ground leaves no room for one fails generation, and the service rolls another seed.
+- **Every home walks out.** A home whose field closes round it has a gate three tiles wide through the
+  crops on the cheapest way out, so every colony can walk to every other round the river's loop. The
+  rest of the ring stays as the home's nearest crops. A gate is grass, so the ring can regrow across it
+  in a long game if nobody harvests there.
 - **Point bars and bluffs.** On the inside of the river's bends the beach and the sand behind it are
   mudflat (slow, unbuildable, holding nothing, and unlike sand it does not slow the crops behind it),
   never where a deposit stands, so the bars take no stone or crops.
@@ -67,13 +79,15 @@ change a rule.
 | Mechanic layers | Deep core (`deepReachForShare`, `deepenWater`): at least 5 tiles from land in a straight line, more until it holds half the water, bodies of 16 vertices or more. Plain grass round every quarry face, rock (`rockVertices`), scree one tile out where a noise peaks, never touching a deposit. Mudflat on beach and sand within three steps of the river at point bars (the banks' top 20% of share, above 530), and on grass one row up at the sharpest (top 8%), never on a vertex touching a deposit. Loam two to seven vertices from water (`layLevee`), never in a garden or before a quarry. Pavement (`paveBeyondWater`) on old desert sand and bare grass from 28 tiles in a straight line and 22 steps (`distanceFromWet`, frayed), never touching a deposit: 40% of it in fractal patches on the temperate banks, all of it in the desert, plus hardpan pans on 55% of the desert's bare grass from 16 tiles (15 steps) and 34 tiles from homes. |
 | Looks | Loam and spring meadow, pale and dune sand, heath and shale (weathered sandstone and dirt), outcrop (hoodoo) rock; `writeLayeredTerrain` writes them and clears every deposit the new ground refuses. The grass looks, lush within 5 tiles of water (3 in the desert) and dry beyond 34 (9) (`gradeGrassLooks`), never dry in a home's garden, 45% of the temperate dry ground in fractal patches (all of the desert's), go on last, after the starts, so placeStarts and the starting-crop guarantee meet plain grass everywhere. |
 | Algae and quarries | The algae the deep core displaced are seated again on the nearest free shallows (straight-line distance plus up to four tiles of noise, so the beds' edges are ragged); quarry faces get stone and the ground before them is cleared. |
-| Starts | `placeStarts` and `openStartsBuriedByResources` as in revision 5, with the quarry faces protected from its clearing; then the grass looks. |
+| Starts | `placeStarts` and `openStartsBuriedByResources` as in revision 5, with the quarry faces protected from its clearing. |
+| Home gates | While a colony's workers cannot walk to colony 0's (`walkFromFirstColony`), the cheapest four-connected walk from colony 0's ground to them (a deposit costs three steps; water, rock and quarry faces cannot be crossed) has every deposit on dry ground within one tile cleared (`openHomeGates`, `clearRoute`); the count is `river.home_gates.opened`. No stream draws, so a map with no sealed home is unchanged. Then the grass looks. |
 
 `validateWorld` keeps revision 5's floor (every colony harvests wheat within 24 and wood within 32
 steps, with 16 building sites within 24), replans the bluffs from the same rebuilt height field and the
 colonies' start positions (the contracts check the replanned bluff and face counts equal generation's
-telemetry) and requires every quarry face to hold its stone and every colony's home face the same ten (`quarryFault`), refuses stone anywhere outside a quarry face, and refuses any blocking terrain that parts the walkable ground
-round it (`partingBarrier`).
+telemetry) and requires every quarry face to hold its stone and every colony's home face the same ten (`quarryFault`), refuses stone anywhere outside a quarry face, refuses any blocking terrain that parts the walkable ground
+round it (`partingBarrier`), and (revision 8) requires every colony to walk to colony 0
+(`walkFromFirstColony`): the river loops once round the torus, so its banks join beyond its ends.
 
 ## Controls
 
@@ -157,6 +171,8 @@ One game varies widely: this shows no stalled opening, not a measured improvemen
   machine (load average about 70 on 8 cores) that build took 52–57 s against 31–48 s before the change:
   too noisy for a clean figure, but no more than one extra height-field pass.
 - No rotation tournament or human playtest has been recorded for revision 6.
+- A home gate is plain grass between crops: the field can regrow across it in a long game where nobody
+  harvests, as any crop band can close a path.
 
 ## Verification
 

@@ -95,7 +95,7 @@ struct SkinDownloads::Impl {
             HttpFetch::Request request;
             request.url=origin+"/api/v1/matches/"+match+"/skins";
             request.responseLimit=512*1024;
-            request.timeout=std::chrono::seconds(10);
+            request.timeoutMilliseconds=10000;
             request.headers.emplace_back("Cache-Control","no-cache");
             refreshRequest=fetch(std::move(request));
             nextRefresh=now+60;
@@ -133,7 +133,7 @@ SkinDownloads::SkinDownloads(OnlineStorage &storage,std::string origin,std::stri
         }
         if(!tickets.empty()) {
             HttpFetch::Request request;request.url=impl->origin+"/.well-known/jwks.json";request.responseLimit=65536;
-            request.timeout=std::chrono::seconds(10);
+            request.timeoutMilliseconds=10000;
             impl->keyRequest=impl->fetch(std::move(request));
             if(!impl->keyRequest)impl->failed=true;
         }
@@ -204,7 +204,7 @@ void SkinDownloads::poll(std::int64_t now)
                 }
                 if(active>=4)continue;
                 HttpFetch::Request request;request.url=p.origin+"/api/v1/skins/versions/"+skin->versionId+kinds[asset]+"?sha256="+hashes[asset];
-                request.responseLimit=limits[asset];request.timeout=std::chrono::seconds(15);
+                request.responseLimit=limits[asset];request.timeoutMilliseconds=15000;
                 download=p.fetch(std::move(request));
                 if(download)++active;else{cancel(entry);break;}
             }

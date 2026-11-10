@@ -63,7 +63,7 @@ static constexpr int SWIM_VARIANT_COUNT = 4;
 /// once the can-swim path is reachable).
 static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
-inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * MOVEMENT_CLASS_COUNT;
+// BUILDING_GRADIENT_COUNT: BuildingRoute.h.
 inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
 static_assert(BUILDING_ACCESS_COUNT == BuildingStateRecord::LockCount);
 
@@ -659,18 +659,7 @@ public:
 
 
 
-	enum UnitCantWorkReason
-	{
-		UnitNotAvailable=0,
-		UnitTooLowLevel=1,
-		UnitCantAccessBuilding=2,
-		UnitTooFarFromBuilding=3,
-		UnitCantAccessResource=4,
-		UnitCantAccessFruit=5,
-		UnitTooFarFromResource=6,
-		UnitTooFarFromFruit=7,
-		UnitCantWorkReasonSize,
-	};
+	// UnitCantWorkReason: BuildingStateRecord (BuildingState.h).
 
 	/// Display only. While the local player has this building selected, the
 	/// units behind each tally are kept by gid so the map view can mark them.

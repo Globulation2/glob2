@@ -20,6 +20,7 @@
 #include "UnitDisplayNames.h"
 #include "FailureShapes.h"
 #include "Team.h"
+#include "Building.h"
 #include "render/scene/ScenePanels.h"
 #include "render/scene/Scene.h"
 

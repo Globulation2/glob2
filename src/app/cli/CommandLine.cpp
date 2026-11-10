@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CommandLine.h"
+#include <nlohmann/json.hpp>
 #include "RecordingDefaults.h"
 #include "MapRender.h"
 #include "gradient/ResourceGradientExploration.h"

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BrushSwatches.h"
+#include "MapAssetBundle.h"
 #include "TerrainBuiltins.h"
 #include "TerrainPresentation.h"
 #include "GlobalContainer.h"
@@ -12,8 +13,14 @@
 
 using GAGCore::DrawableSurface;
 
-BrushSwatches::BrushSwatches() = default;
+BrushSwatches::BrushSwatches() : assets(MapAssetBundle::empty()) {}
 BrushSwatches::~BrushSwatches() = default;
+
+void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
+						 std::shared_ptr<const ResourceRegistry> resources)
+{
+	bind(std::move(terrain), std::move(resources), MapAssetBundle::empty());
+}
 
 void BrushSwatches::bind(std::shared_ptr<const TerrainRegistry> terrain,
 						 std::shared_ptr<const ResourceRegistry> resources,
