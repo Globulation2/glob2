@@ -8,7 +8,11 @@ const {clickMainMenu, clickCustomGameStart, clickControl} = require('./main-menu
 // Use the normal game shell and installed mesh assets. The preview switch is
 // confined to this test host; production assignments use verified tickets.
 test('live colony meshes render through WebGL2 and survive context restoration', async ({page}, info) => {
-  test.setTimeout(240000);
+  // Serial software GL on CI runs this at a few frames per second and every
+  // page evaluation waits for the game's main thread. The menu alone may take
+  // its 150 s allowance below; the match, context restoration and three option
+  // round trips after it have taken another 150 s (master run 42638958749).
+  test.setTimeout(360000);
   const executionMode = process.env.GLOB2_SKIN_TEST_THREADS || 'serial';
   if (!['serial', 'threaded'].includes(executionMode)) throw new Error('Unsupported skin test execution mode');
   const errors = [];
