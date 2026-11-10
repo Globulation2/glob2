@@ -13,11 +13,15 @@ async function touchMatch(page,x,y) {await page.touchscreen.tap(x,y);await match
 test.describe('responsive mixed input',()=>{
   test.use({viewport:{width:1024,height:768},hasTouch:true});
   test.beforeEach(async({page})=>{
-    await page.goto(gameURL());await screen(page,'AudioPreferenceScreen');
+    await page.goto(gameURL());
+    // Startup gets the same budget as waitForMainMenu; touch startup first asks about audio.
+    await expect.poll(async()=>(await snapshot(page)).screen,{timeout:60000}).toContain('AudioPreferenceScreen');
     await tapControl(page,'audio.silence');await screen(page,'HandPreferenceScreen');
     await tapControl(page,'hand.right');await screen(page,'MainMenuScreen');
   });
   test('native text editing preserves Unicode and selection across rotation',async({page},info)=>{
+    // Two cold startups (the second after reload), each within the menu budget.
+    test.setTimeout(180000);
     expect(await page.evaluate(()=>Module.presentationMetrics.touch)).toBe(true);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     const canvas=page.locator('#canvas');
@@ -49,6 +53,8 @@ test.describe('responsive mixed input',()=>{
     expect(await page.evaluate(()=>(FS.analyzePath('/home/web_user/.glob2/preferences.txt').exists ? FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'}) : ''))).toContain('username=Ada 🌱');
   });
   test('touch setup and gameplay retain their session when resized with a mouse attached',async({page},info)=>{
+    // Two cold startups (the second after reload), each within the menu budget.
+    test.setTimeout(180000);
     await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
     await clickCustomGameStart(page);
     await expect.poll(async()=>(await snapshot(page)).tick,{timeout:60000}).toBeGreaterThan(20);
