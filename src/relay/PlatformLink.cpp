@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "PlatformLink.h"
+#include <chrono>
 
 #include "HttpClient.h"
 #include "RelayLog.h"

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Availability.h"
+#include <chrono>
 #if GLOB2_DESKTOP_MCP
 // Establish WinSock2 before SDL fixtures can include Windows headers.
 #include <boost/asio.hpp>

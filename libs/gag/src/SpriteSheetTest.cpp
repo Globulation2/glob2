@@ -2,6 +2,7 @@
 // GAGCore::Sprite's sheet loader (the <name>.sheet index tools/package_assets.py
 // writes for packaged builds) and its fallback to one file per frame.
 #include "Glob2Test.h"
+#include <chrono>
 #include "HighResolutionInputs.h"
 #include "LossyAlphaFixture.h"
 #include "SpritePatternFixture.h"

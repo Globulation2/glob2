@@ -1010,7 +1010,7 @@ namespace GAGCore
         void setHighResolutionFrames(std::span<const unsigned> indices);
         static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
-        static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
+        static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is published.
         static void finishHighResolution();
 		static void flushBatches(GraphicContext *gc);

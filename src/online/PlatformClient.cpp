@@ -706,7 +706,7 @@ PlatformClient::makeRest(HttpFetch::Method method, const std::string &path, cons
 	auto call = std::make_unique<RestCall>();
 	call->request.method = method;
 	call->request.url = apiUrl(instance, path);
-	call->request.timeout = std::chrono::milliseconds(options.requestTimeoutMs);
+	call->request.timeoutMilliseconds = options.requestTimeoutMs;
 	call->request.responseLimit = 1024 * 1024;
 	call->request.headers.emplace_back("Accept", "application/json");
 	if (method != HttpFetch::Method::Get)

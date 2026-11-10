@@ -2,7 +2,6 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <atomic>
-#include <chrono>
 #include <cstdint>
 #include <functional>
 #ifdef __EMSCRIPTEN__
@@ -186,7 +185,7 @@ public:
     }
     // Non-blocking even in the browser. Runs cooperative jobs only when no pool
     // exists; a single codec invocation can exceed this scheduling budget.
-    void poll(std::chrono::milliseconds budget = std::chrono::milliseconds(2));
+    void poll(std::int64_t budgetMilliseconds = 2);
     template<class T> std::shared_ptr<const T> wait(const Handle<T>& handle,
             const std::function<void()>& progress = {}) {
         while (handle.pending()) { poll(); if (progress) progress(); yieldWhileWaiting(); }

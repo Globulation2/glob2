@@ -6,7 +6,6 @@
 #include <bit>
 #include <cassert>
 #include <atomic>
-#include <chrono>
 #include <condition_variable>
 #include <cstddef>
 #include <cstdint>
@@ -18,6 +17,7 @@
 #include <stdexcept>
 #include <thread>
 #include <ThreadSupport.h>
+#include <SteadyClock.h>
 #include <PresentationWork.h>
 #include <vector>
 #include <utility>
@@ -319,7 +319,6 @@ public:
 	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8, TurretHorizon = 4, HiringHorizon = 4;
 	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + (TurretHorizon + 1) + (HiringHorizon + 1) + 13;
 private:
-	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
 	inline static thread_local std::size_t activeSlot = 0;
 	inline static thread_local std::size_t deferredSlot = 0, deferredIndex = 0;
@@ -521,7 +520,7 @@ private:
     ComputeTelemetryMode telemetryModeValue = ComputeTelemetryMode::Off, requestedTelemetryMode = ComputeTelemetryMode::Off;
     using DiagnosticClock = std::uint64_t (*)() noexcept;
     static std::uint64_t realDiagnosticClock() noexcept {
-        return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now().time_since_epoch()).count();
+        return std::uint64_t(GAGCore::steadyClockNanoseconds());
     }
     struct DiagnosticsState {
         struct BatchRecord { std::uint64_t serial = 0; BatchDiagnostics tags; };

@@ -22,6 +22,8 @@ this runs in seconds without a build):
    translation units may reach each listed header, with a slack of 2% of the
    client TUs so that adding source files does not trip it. Exceeding it is a
    warning, not a failure: a wider header slows builds but breaks nothing.
+   Entries in angle brackets (`<chrono>`) budget costly standard headers: the
+   TUs that reach them through any project file.
 
 6. globalContainer in the simulation. test/global_container_budget.json caps
    the `globalContainer` references in non-test simulation files per directory;
@@ -281,6 +283,7 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
     budget = json.loads(BUDGET.read_text()) if BUDGET.exists() else {}
     if budget:
         counts = graph.fanin()
+        counts.update(system_header_fanin(graph, [h for h in budget if h.startswith('<')]))
         changed = False
         # A budget catches a header that starts reaching many more translation
         # units (a new wide include), not the one or two a new source file adds.
@@ -301,6 +304,32 @@ def check(write: bool = False, seed: bool = False, root: Path = ROOT) -> list[st
         if changed:
             BUDGET.write_text(json.dumps(budget, indent=2) + '\n')
     return errors
+
+
+def system_header_fanin(graph, names: list[str]) -> dict[str, int]:
+    """Client TUs that reach a system header such as `<chrono>` through any project file.
+
+    The include graph resolves only repository files, so system headers are
+    found by scanning each reached file's own `#include <...>` lines."""
+    if not names:
+        return {}
+    pattern = re.compile(r'^\s*#\s*include\s*(<[^>]+>)', re.M)
+    direct: dict[str, set[str]] = {}
+
+    def includes(path: str) -> set[str]:
+        if path not in direct:
+            try:
+                direct[path] = set(pattern.findall((graph.root / path).read_text(errors='ignore')))
+            except OSError:
+                direct[path] = set()
+        return direct[path]
+
+    counts = dict.fromkeys(names, 0)
+    for unit in graph.client_units:
+        reached = set().union(includes(unit), *(includes(path) for path in graph.reach(unit)))
+        for name in names:
+            counts[name] += name in reached
+    return counts
 
 
 WARNINGS: list[str] = []

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapAssetSprites.h"
+#include "map/MapAssetBundle.h"
 #include <Toolkit.h>
 #include <SDL3_image/SDL_image.h>
 #include <stdexcept>

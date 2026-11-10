@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ProgrammableGLDevice.h>
+#include <chrono>
 #include <PerformanceTelemetry.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>

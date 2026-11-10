@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "map/MapAssetBundle.h"
 #include <SDLGraphicContext.h>
+#include <map>
+#include <memory>
+#include <string>
+
+class MapAssetBundle;
 
 // Owned by a renderer cache, never shared with the simulation thread.
 class MapAssetSprites

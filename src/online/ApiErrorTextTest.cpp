@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "PlatformProtocol.h"
 #include "ApiErrorText.h"
 #include "ui/PresentedError.h"
 #include "generated/OnlineErrorCatalog.h"

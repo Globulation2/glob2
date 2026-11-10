@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <GAG.h>
+#include "SetLibraryDialog.h"
 #include "Map.h"
 #include "LoadSaveDialog.h"
 #include "Game.h"

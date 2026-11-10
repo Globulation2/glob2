@@ -1116,7 +1116,7 @@ TEST_CASE("pending required GPU work cancels at publication and drains through o
                 state->entered=true;
                 const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
                 while(!control->shouldCancel(monotonicNs()) && std::chrono::steady_clock::now()<until)
-                    control->waitFor(std::chrono::microseconds(100));
+                    control->waitForMicroseconds(100);
                 state->timedOut=!control->shouldCancel(monotonicNs());
                 // Simulate a pending driver read into independently owned staging.
                 // The original seeds are never a driver destination.

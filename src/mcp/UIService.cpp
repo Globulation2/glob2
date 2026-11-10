@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "UIService.h"
+#include <chrono>
 #if GLOB2_DESKTOP_MCP
 #include "HttpServer.h"
 #include <ApplicationHost.h>

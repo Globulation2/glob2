@@ -4,7 +4,7 @@
 #include "GradientSelection.h"
 #include <array>
 #include <atomic>
-#include <chrono>
+#include <SteadyClock.h>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -56,7 +56,7 @@ inline constexpr Plan requestedOpenCLPlan() noexcept {return Plan::Frozen8;}
 // initialization. State 1 means another worker is initializing; never wait on it.
 inline std::atomic<unsigned> readyPlans{0}, initializationState{0};
 inline std::uint64_t monotonicNs() {
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    return std::uint64_t(GAGCore::steadyClockNanoseconds());
 }
 inline Plan selectedPlan(Backend b,Algorithm a) {
     if(b==Backend::OpenCL)return Plan::Frozen8;
