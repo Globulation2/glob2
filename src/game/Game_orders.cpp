@@ -31,6 +31,7 @@
 
 #include "ReplayWriter.h"
 #include "Building.h"
+#include "MapScript.h"
 
 namespace
 {

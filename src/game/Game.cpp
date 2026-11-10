@@ -48,6 +48,7 @@
 #include "render/SoftwareTerrainCache.h"
 #include "ai/engine/AIPipeline.h"
 #include "TurretTargeting.h"
+#include "GameScripting.h"
 
 #define BULLET_IMGID 0
 
@@ -59,8 +60,15 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	completedObservation(*completedObservationOwner),
 	mapOwner(std::make_unique<Map>()),
 	map(*mapOwner),
+	sgslScriptOwner(std::make_unique<MapScriptSGSL>()),
+	sgslScript(*sgslScriptOwner),
 	scriptClient(gui),
-	mapscript(this, gui ? &scriptClient : nullptr)
+	mapscriptOwner(std::make_unique<MapScript>(this, gui ? &scriptClient : nullptr)),
+	mapscript(*mapscriptOwner),
+	objectivesOwner(std::make_unique<GameObjectives>()),
+	objectives(*objectivesOwner),
+	gameHintsOwner(std::make_unique<GameHints>()),
+	gameHints(*gameHintsOwner)
 {
 	map.drainGameWork = [this](bool teamStatistics) { if (teamStatistics) drainTeamStats(); drainHiring(); };
 	init(gui, edit);

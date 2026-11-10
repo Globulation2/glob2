@@ -52,6 +52,10 @@
 #include "ReplayWriter.h"
 #include "Team.h"
 #include "Building.h"
+#include "SGSL.h"
+#include "MapScript.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 #define BULLET_IMGID 0
 

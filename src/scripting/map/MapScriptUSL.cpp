@@ -19,6 +19,8 @@ using namespace GAGCore;
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 using std::string;
 using std::unique_ptr;

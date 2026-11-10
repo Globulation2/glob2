@@ -68,6 +68,7 @@
 #include <set>
 #include <sstream>
 #include <stdexcept>
+#include "MapScript.h"
 
 namespace fs = std::filesystem;
 namespace Headless

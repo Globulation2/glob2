@@ -33,6 +33,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include "MapScript.h"
 
 
 namespace

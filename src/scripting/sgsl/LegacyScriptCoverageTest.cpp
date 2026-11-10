@@ -18,6 +18,8 @@
 #include <nlohmann/json.hpp>
 #include "Unit.h"
 #include "Building.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace
 {

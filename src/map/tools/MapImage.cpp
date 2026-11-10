@@ -27,6 +27,7 @@
 #include <utility>
 #include <vector>
 #include "Team.h"
+#include "SGSL.h"
 
 namespace
 {

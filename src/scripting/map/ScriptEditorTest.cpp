@@ -17,6 +17,9 @@
 #include <algorithm>
 #include <fstream>
 #include <tuple>
+#include "SGSL.h"
+#include "MapScript.h"
+#include "GameScripting.h"
 
 using Language = ScriptEditorScreen::Language;
 

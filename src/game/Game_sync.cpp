@@ -38,6 +38,7 @@
 #include "TurretTargeting.h"
 #include "Team.h"
 #include "Building.h"
+#include "GameScripting.h"
 
 #define BULLET_IMGID 0
 

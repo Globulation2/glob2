@@ -14,6 +14,8 @@
 #include <map>
 #include "Unit.h"
 #include "Building.h"
+#include "SGSL.h"
+#include "MapScript.h"
 
 namespace
 {

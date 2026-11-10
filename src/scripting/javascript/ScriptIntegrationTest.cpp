@@ -28,6 +28,10 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <iostream>
+#include "SGSL.h"
+#include "MapScript.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 using namespace Script;
 using namespace GAGCore;
 static std::string save(Game &game)

@@ -27,6 +27,7 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <TextStream.h>
+#include "SGSL.h"
 
 TEST_SUITE("TeamLimit")
 {

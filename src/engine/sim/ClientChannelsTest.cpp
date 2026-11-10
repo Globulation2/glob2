@@ -19,6 +19,8 @@
 #include <thread>
 #include <ThreadSupport.h>
 #include <vector>
+#include "SGSL.h"
+#include "MapScript.h"
 
 namespace
 {

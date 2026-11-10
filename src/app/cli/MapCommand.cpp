@@ -43,6 +43,8 @@
 #include <map>
 #include <stdexcept>
 #include "Team.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace
 {

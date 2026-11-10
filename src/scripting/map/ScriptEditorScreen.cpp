@@ -17,6 +17,9 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <sstream>
+#include "SGSL.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace fe = Glob2UI;
 using fe::Element;

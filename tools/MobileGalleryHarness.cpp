@@ -69,6 +69,9 @@
 #include <charconv>
 #include <stdexcept>
 #include <iostream>
+#include "SGSL.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 GlobalContainer *globalContainer = nullptr;
 namespace

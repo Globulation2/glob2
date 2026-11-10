@@ -23,6 +23,7 @@
 #include "Game.h"
 #include "Unit.h"
 #include "Building.h"
+#include "MapScript.h"
 
 TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 		  doctest::test_suite("JavaScriptCompatibility"))

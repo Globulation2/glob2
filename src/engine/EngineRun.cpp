@@ -57,6 +57,7 @@
 #include <stdexcept>
 #include "Unit.h"
 #include "Building.h"
+#include "MapScript.h"
 #ifdef __EMSCRIPTEN__
 #include "AIJavaScript.h"
 #endif

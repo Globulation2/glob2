@@ -15,6 +15,8 @@
 #include <array>
 #include <sstream>
 #include <stdexcept>
+#include "GameObjectives.h"
+#include "GameHints.h"
 namespace Script
 {
 namespace

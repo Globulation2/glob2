@@ -28,6 +28,7 @@
 
 #include "Brush.h"
 #include "Building.h"
+#include "SGSL.h"
 
 
 #define BULLET_IMGID 0

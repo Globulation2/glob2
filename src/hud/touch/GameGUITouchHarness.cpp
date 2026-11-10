@@ -66,6 +66,7 @@
 #include <source_location>
 #include "Game.h"
 #include "sim/EntityRefOf.h"
+#include "GameHints.h"
 
 static void require(bool condition, const char *message)
 {
