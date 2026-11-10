@@ -11,6 +11,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "DrawFixtures.h"
 #include "hive/HiveObservation.h"
 #include "hive/LocalCommander.h"

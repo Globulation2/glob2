@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "SGSL.h"
 
 TEST_SUITE("LegacyAreaWait")

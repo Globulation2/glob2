@@ -4,6 +4,7 @@
 #include "gradient/MapRouting.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "AI.h"
 #include "AIImplementation.h"
 #include "AIOrderScheduler.h"

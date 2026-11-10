@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "TurretTargeting.h"
 #include "AI.h"

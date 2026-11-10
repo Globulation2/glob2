@@ -4,6 +4,7 @@
 #include "TerrainBuiltins.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GradientFixture.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"

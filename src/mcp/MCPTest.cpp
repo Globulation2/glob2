@@ -11,6 +11,7 @@
 #include <ui/Controls.h>
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "hive/LocalCommander.h"
 #include "hive/HiveWorker.h"

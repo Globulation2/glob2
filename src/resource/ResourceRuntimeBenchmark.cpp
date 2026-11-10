@@ -3,6 +3,7 @@
 #include "HeadlessGlobals.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GradientFixture.h"
 #include "ResourceRegistry.h"
 #include "GradientRuntime.h"
