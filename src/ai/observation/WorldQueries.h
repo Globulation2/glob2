@@ -7,7 +7,7 @@
 #include "map/gradient/SnapshotGradient.h"
 #include "ai/engine/AIDecision.h"
 #include <set>
-#include "Building.h"
+#include "BuildingState.h"
 #include "BuildingCapabilities.h"
 #include "Order.h"
 #include "field/RuntimeTerrainGradient.h"
@@ -158,7 +158,7 @@ public:
  std::shared_ptr<Order> constructionOrder(const Building& b,int workers,int futureWorkers) const
  {
   const auto& k=kind(b);
-  const bool repair=k.site?b.constructionResultState==::Building::REPAIR:b.hp<b.maxHp;
+  const bool repair=k.site?b.constructionResultState==::BuildingStateRecord::REPAIR:b.hp<b.maxHp;
   const int target=k.site?b.typeNum:repair?k.previous:k.next;
   const auto& placement=target>=0?kind(target):k;
   const int origin=k.site?b.constructionOriginTypeNum:b.typeNum;
@@ -231,8 +231,8 @@ public:
   unsigned required=0,provided=0;const Building* anchor=nullptr;
   for(unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if(desired[unit]>0 && allowed(Intent(unit))) required |= 1u<<unit;
   if(!required) return {};
-  for(const auto& b:world.buildings) if(b.team==team && b.buildingState==::Building::ALIVE) {
-   const auto& k=kind(b); const int completed=k.site?(b.constructionResultState==::Building::REPAIR && b.constructionOriginTypeNum>=0?b.constructionOriginTypeNum:k.next):b.typeNum;
+  for(const auto& b:world.buildings) if(b.team==team && b.buildingState==::BuildingStateRecord::ALIVE) {
+   const auto& k=kind(b); const int completed=k.site?(b.constructionResultState==::BuildingStateRecord::REPAIR && b.constructionOriginTypeNum>=0?b.constructionOriginTypeNum:k.next):b.typeNum;
    provided |= unsigned(kind(completed).rawCapabilityMask)&7u;
    if(!anchor || (world.capabilities().intentMask(b.typeNum) & 7u)) anchor=&b;
    if((provided & required)==required) return {};

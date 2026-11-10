@@ -40,6 +40,7 @@
     "src/app": 8,
     "src/team/TeamCapacity.h": 1,
     "src/building/BuildingRoute.h": 1,
+    "src/building/BuildingUtils.h": 1,
     "src/map/TerrainType.h": 2,
     "src/map/TerrainBuiltins.h": 2,
     "src/team/stats/CoverageBuilding.h": 1,

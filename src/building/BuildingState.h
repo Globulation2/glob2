@@ -27,6 +27,19 @@ struct BuildingStateRecord
 		UPGRADE=2,
 		REPAIR=3
 	};
+	// Why a unit could not take a building's job; tallied for the HUD.
+	enum UnitCantWorkReason
+	{
+		UnitNotAvailable=0,
+		UnitTooLowLevel=1,
+		UnitCantAccessBuilding=2,
+		UnitTooFarFromBuilding=3,
+		UnitCantAccessResource=4,
+		UnitCantAccessFruit=5,
+		UnitTooFarFromResource=6,
+		UnitTooFarFromFruit=7,
+		UnitCantWorkReasonSize,
+	};
 
 	// Presentation clocks remain excluded from legacy simulation checksums.
 	Uint32 lastShootStep;

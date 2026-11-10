@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "BuildingRoute.h"
 #include "BuildingGradientPipeline.h"
 #include "BuildingGradientSearch.h"
 #include "SeedCells.h"
