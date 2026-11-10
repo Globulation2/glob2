@@ -28,6 +28,7 @@
 #include "ResourceRegistry.h"
 #include "Sha256.h"
 #include "WinningConditions.h"
+#include "Team.h"
 
 using nlohmann::json;
 

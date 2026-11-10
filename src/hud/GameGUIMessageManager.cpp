@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "GameGUIMessageManager.h"
+#include "InGameScrollableHistory.h"
 #include "GlobalContainer.h"
 #include <SDL3/SDL.h>
 

@@ -18,6 +18,7 @@
 #include <limits>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <GraphicContext.h>
 
 TEST_SUITE("GameDiagnostics")
 {

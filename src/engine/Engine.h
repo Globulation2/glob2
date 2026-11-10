@@ -23,6 +23,8 @@
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
 
+namespace GAGGUI { class Screen; }
+
 
 class SimulationRunner;
 class ScenePreparation;

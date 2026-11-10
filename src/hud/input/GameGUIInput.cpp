@@ -30,6 +30,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
+#include "InGameScrollableHistory.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

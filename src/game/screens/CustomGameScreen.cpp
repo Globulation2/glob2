@@ -39,6 +39,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
+#include "Team.h"
 
 namespace fe = Glob2UI;
 using fe::Element;

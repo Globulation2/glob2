@@ -25,6 +25,7 @@
 #include <vector>
 #include <SDL3/SDL.h>
 #include <PerformanceTelemetry.h>
+#include <GraphicContext.h>
 #ifdef HAVE_OPENGL
 #include <SDL3/SDL_opengl.h>
 #endif

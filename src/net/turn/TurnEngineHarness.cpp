@@ -69,6 +69,7 @@
 #include "TurnTestSupport.h"
 #include "Utilities.h"
 #include "VerifyMatch.h"
+#include "Team.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;

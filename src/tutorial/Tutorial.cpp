@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Order.h"
+#include "GameGUIDialog.h"
 
 void GameGUI::updateTutorial()
 {
