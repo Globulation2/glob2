@@ -5,7 +5,9 @@
 #include "HeightFieldLooks.h"
 #include "LatticeNoise.h"
 #include "Morphology.h"
+#include "Contact.h"
 #include "Pipeline.h"
+#include "Roads.h"
 #include "Rock.h"
 #include "Sketch.h"
 #include "StartingPositions.h"
@@ -107,6 +109,13 @@ using namespace MapGeneration;
 // logical perspective"). The band is painted empty at its default width (riverField), so the crops lie
 // where they did, and every stone is a quarry face in rock: each colony's home quarry
 // (planHomeQuarries) and the bluffs' faces.
+//
+// REVISION 8 (home gates): the empty stone band opened the floor of dry hollows, a contour ring of
+// grass inside the wheat and wood bands, and chooseBalancedStarts likes that open ground: on default
+// rolls (seeds 1, 5 and 8 of ten, 26 of seeds 1-60) a colony started inside a closed ring of crops and
+// could walk nowhere. Where a home's ground does not reach colony 0's, the cheapest walk out through the crops is
+// cleared three tiles wide (openHomeGates), a gate in the field; every other map is
+// unchanged. validateWorld now asks every colony to walk to colony 0 (walkFromFirstColony).
 namespace
 {
 constexpr const char *kBanksStream = "river-banks";
@@ -156,6 +165,11 @@ constexpr int kBluffLandLeast = 1500;
 constexpr double kHomeQuarryRadius = 4.0;
 constexpr int kHomeQuarryStone = 10, kHomeQuarryWalk = 28, kHomeQuarryWalkMost = 48, kHomeQuarryDry = 6;
 constexpr double kHomeQuarryClear = 19;
+// Home gates (revision 8): a colony whose walkable ground does not reach colony 0's has the cheapest
+// walk out cleared (a step onto a deposit costs kHomeGateCosts.clearable, open ground one; never across
+// water), and every deposit within kHomeGateRadius of it, so the gate is three tiles wide.
+constexpr StepCosts kHomeGateCosts{1, 3, -1, -1, -1};
+constexpr int kHomeGateRadius = 1;
 // Far ground: grass dry beyond kGreen tiles (kRibbon on the desert banks); pavement from kPaveReach
 // steps (frayed up to kPaveFray further) of any water, hardpan pans on the desert's bare grass beyond
 // the ribbon on kPanShare percent of it. A crop up to 15 steps from water can have its mirrored probe
@@ -887,6 +901,46 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 	context.telemetry.measure("river.algae.reseated", reseated);
 }
 
+// Gates out of the fields that ring a home: while some colony cannot walk to colony 0 (the validator's
+// walkFromFirstColony), the cheapest four-connected walk from colony 0's ground to that colony's workers
+// under kHomeGateCosts (a deposit costs three steps; water, rock, stone and `keep` cannot be crossed)
+// has every deposit on dry ground within kHomeGateRadius of it cleared (algae beside it stay). Returns how
+// many gates were opened; stops when every colony walks out or one has no walk at all, which the
+// validator then refuses. It draws from no stream, and on a map where every colony already walks out it
+// changes nothing.
+int openHomeGates(GenerationMap &map, const Torus &t, int teams, const std::vector<unsigned char> &keep)
+{
+	std::vector<unsigned char> spare = keep;
+	for (int i = 0; i < t.size(); ++i)
+		spare.at(size_t(i)) = spare.at(size_t(i)) || !map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
+	int opened = 0;
+	while (opened < teams)
+	{
+		const ColonyWalk walk = walkFromFirstColony(map, teams, "the banks", "");
+		if (walk.workers.empty() || walk.workers.at(0).empty())
+			break;
+		const int cut = firstColonyCutOff(walk.steps, walk.workers);
+		if (cut < 0)
+			break;
+		std::vector<int> reached;
+		for (int i = 0; i < t.size(); ++i)
+			if (walk.steps.at(size_t(i)) >= 0)
+				reached.push_back(i);
+		const std::vector<int> route =
+			cheapestWalk(t, GridNeighbors::Cardinal, reached, tileMask(t, walk.workers.at(size_t(cut))),
+						 [&](int, int to, int, int)
+						 {
+							 return keep.at(size_t(to)) ? -1
+														: stepCost(map, t.remainderX(to), to / t.w, kHomeGateCosts);
+						 });
+		if (route.empty())
+			break;
+		clearRoute(map, t, route, kHomeGateRadius, &spare);
+		++opened;
+	}
+	return opened;
+}
+
 void layGrassLooks(GenerationMap &map, const TerrainSketch &grassLooks)
 {
 	TerrainSketch sketch = mapSketch(map);
@@ -937,6 +991,14 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	// rectangle by now, so nothing needs to be kept clear for it. The quarry faces are walls the
 	// relief never clears.
 	openStartsBuriedByResources(game, context, 24, 32, 0, &bluffs.quarry);
+	// A gate out of every field that rings a home (revision 8). The empty stone band leaves the grass
+	// of a dry hollow open, and the wheat and wood bands round it close into a ring: the best ground on
+	// the bank to start on, and sealed (seed 1's colony 2). The cheapest walk out through the crops is
+	// cleared three tiles wide, so a column passes and the first regrowth does not shut it; the quarry
+	// faces are never touched (openHomeGates). A gate takes a few tiles of a ring whose rest stays at
+	// the home's edge, so the starting crops are not topped up again; validateWorld still holds every
+	// colony to its wheat and wood. Where every colony already walks out, nothing changes.
+	context.telemetry.measure("river.home_gates.opened", openHomeGates(game.map, t, teams, bluffs.quarry));
 	// Last, the grass looks: until now every grass vertex was plain GRASS, which is all the
 	// starting-crop guarantee will plant on (a top-up that found plain grass only beside the swarm
 	// filled a desert home's building room with wheat). Looks inside the grass group change no rule
@@ -994,7 +1056,9 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	if (const int parting = partingBarrier(map); parting >= 0)
 		return "A knot of rock at (" + std::to_string(t.remainderX(parting)) + ", " + std::to_string(parting / t.w) +
 			   ") cuts ground off.";
-	return "";
+	// The river loops once round the torus, so its banks join beyond its ends and every colony walks
+	// to every other: no field or rock may seal a home.
+	return walkFromFirstColony(map, teams, "the banks", "round the river").error;
 }
 } // namespace
 
@@ -1054,7 +1118,7 @@ GeneratorDefinition riverDefinition()
 			"river",
 			2,
 			"River",
-			7,
+			8,
 			false,
 			std::move(controls),
 			generate,
