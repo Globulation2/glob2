@@ -177,8 +177,13 @@ std::string marketTrace(bool enabled, bool report=false, bool fed=true, bool rel
 		(void)report;
 #endif
 	}
-	if (!glob2test::artifactDir().empty()) glob2test::writeFile(glob2test::artifactDir()/"checksums.txt",trace.str());
 	return trace.str();
+}
+
+// The browser determinism spec collects exactly these two cases' traces.
+static void exportTrace(const std::string& trace)
+{
+	glob2test::writeFile(glob2test::artifactDir()/"checksums.txt",trace);
 }
 
 // A save and load at tick 750 leaves every later tick of the trace unchanged: the
@@ -188,6 +193,7 @@ TEST_CASE("disabled fruit deliveries continue identically after a mid-game save 
 {
 	const auto trace = marketTrace(false);
 	CHECK(trace == marketTrace(false, false, true, false));
+	exportTrace(trace);
 	glob2test::recordSimTrace("markets-v2/disabled-checksums.txt", trace);
 }
 
@@ -273,6 +279,7 @@ TEST_CASE("enabled supply networks repeat deterministically and continue identic
 	const auto trace=marketTrace(true);
 	CHECK(trace==marketTrace(true));
 	CHECK(trace==marketTrace(true,false,true,false));
+	exportTrace(trace);
 	glob2test::recordSimTrace("markets-v2/enabled-checksums.txt",trace);
 }
 TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
