@@ -4,6 +4,7 @@
 #include "ProfileNeeds.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "AI.h"
 #include "shared_runtime/Runtime.h"
 #include "ExperimentalFeatures.h"

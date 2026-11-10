@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "ScriptEditorScreen.h"
 #include "ui/DiagnosticText.h"
 #include "UIRecordingCanvas.h"

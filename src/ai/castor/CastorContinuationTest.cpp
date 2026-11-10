@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "AI.h"
 #include "AICastor.h"
 #include "ai/engine/AIDecision.h"
