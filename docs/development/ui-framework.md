@@ -1012,7 +1012,10 @@ Element LANFindScreen::build(const Presentation &p)
 `Glob2UI::Screen` paints the live colony background and keeps the frontend theme
 active for its lifetime. Startup prepares the colony's first scene before showing
 the menu; colony backdrops never show a scaled screenshot first. Later colony
-scenes are prepared asynchronously. `Glob2UI::Dialog`
+scenes are prepared asynchronously. Gameplay and the editor hold a disabled
+`FrontendScope`, which frees the colony for their duration on every platform; the
+next colony backdrop paint (the results screen or the menu) loads it again from
+its snapshot. `Glob2UI::Dialog`
 is the same for frontend modals; `Glob2UI::InGameDialog` takes a `Surface`
 (`Match` by default, `Editor` for editor dialogs) and wears the theme
 `themeFor()` maps it to, on every host. On big

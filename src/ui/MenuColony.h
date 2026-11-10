@@ -16,6 +16,8 @@ public:
 	bool load(const std::string& path = "data/menu/colony.bin");
 	void update(Uint64 now, bool visible = true);
 	void pause();
+	// Frees the game and its presentation; ready() is false until the next load().
+	void unload();
 	void draw(int width, int height, bool showStatus = true);
 	bool ready() const { return bool(game); }
 	Uint32 tick() const { return game ? game->stepCounter : 0; }

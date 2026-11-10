@@ -53,11 +53,7 @@ MenuColony::~MenuColony() = default;
 bool MenuColony::load(const std::string& path)
 {
 	ColonyContext context;
-	pause();
-	presentation.reset();
-	*view = ViewState();
-	initialScene.reset();
-	game.reset();
+	unload();
 	try
 	{
 		GAGCore::BinaryInputStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(path));
@@ -97,13 +93,20 @@ bool MenuColony::load(const std::string& path)
 	}
 	catch (const std::exception& error)
 	{
-		presentation.reset();
-		*view = ViewState();
-		initialScene.reset();
-		game.reset();
+		unload();
 		std::cerr << "Menu colony unavailable: " << error.what() << '\n';
 		return false;
 	}
+}
+
+void MenuColony::unload()
+{
+	pause();
+	// Preparation may still read the game, so it goes first.
+	presentation.reset();
+	*view = ViewState();
+	initialScene.reset();
+	game.reset();
 }
 
 void MenuColony::pause()
