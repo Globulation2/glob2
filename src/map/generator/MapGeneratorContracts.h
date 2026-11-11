@@ -2114,10 +2114,11 @@ inline void faultedCityContracts()
 			if (!error.empty()) std::fprintf(stderr, "Faulted City growth: %s\n", error.c_str());
 			REQUIRE(error.empty());
 		}
-		// Structural stone is still required at zero ordinary stone abundance.
+		// Structural stone (the collapsed courtyards' shells and every home's quarry face) is still
+		// required at zero ordinary stone abundance: removing it all must fail validation.
 		bool damaged = false;
-		for (int y = 0; y < world.map.getH() && !damaged; ++y)
-			for (int x = 0; x < world.map.getW() && !damaged; ++x)
+		for (int y = 0; y < world.map.getH(); ++y)
+			for (int x = 0; x < world.map.getW(); ++x)
 				if (amount == 0 && world.map.getResource(x, y).type == STONE)
 				{ world.map.setNoResource(x, y, 1); damaged = true; }
 		if (amount == 0) REQUIRE((damaged && !definition.validateWorld(world, context).empty()));
@@ -2142,8 +2143,13 @@ inline void faultedCityContracts()
 			if (record.key == "faulted-city.junction.y") y = int(std::get<std::int64_t>(record.value));
 		}
 		REQUIRE((x >= 0 && y >= 0));
-		// Leave the centre open, but obstruct its reserved gathering/circulation width.
+		// A paved ramp holds no deposit, so nothing planted can close it.
 		world.map.setResourceByIndex((x + 1) % world.map.getW(), y, STONE, 1);
+		REQUIRE(!world.map.isResource((x + 1) % world.map.getW(), y));
+		// Walling the ramp up is caught.
+		for (int dy = 0; dy <= 2; ++dy)
+			for (int dx = 0; dx <= 2; ++dx)
+				world.map.setVertexTerrain((x + dx) % world.map.getW(), (y + dy) % world.map.getH(), RIDGE_ROCK);
 		GenerationContext context(request);
 		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
@@ -2159,7 +2165,7 @@ inline void faultedCityContracts()
 		GenerationContext context(request);
 		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
-	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
+	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, blocked ramp, structural stone and token food mutations");
 }
 
 inline void eatenMapContracts()
