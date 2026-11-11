@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct FortsOptions
 {
-	int homeSize, gateWidth, riverWidth, lakes, villageSize;
+	int homeSize, gateWidth, riverWidth, lakes, villageSize, hedgerows;
 	int wheat, wood, stone, algae, fruit;
 	explicit FortsOptions(const GenerationRequest &r);
 };

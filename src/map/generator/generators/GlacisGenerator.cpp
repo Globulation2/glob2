@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GlacisGenerator.h"
+#include "Climates.h"
 #include "ResourceSemantics.h"
 #include "Contact.h"
 #include "Drawing.h"
@@ -142,6 +143,21 @@ constexpr int kForestPercent = 30, kFieldTilesPer = 16, kOutcropTilesPer = 700, 
 // Towers: two open pads per colony in its tower bastions, four tiles apart.
 constexpr int kTowerPads = 2, kTowerSpacing = 4;
 
+// What each stencil vertex is, for sketchTerrain's catalogue terrain: the sand of earlier revisions
+// is now paving (covered way, causeways, tracks, garden lanes), barren ground (the wood garden's arc)
+// or rough scree (the glacis and its foot).
+enum VertexKind : unsigned char
+{
+	kPlainVertex,
+	kCausewayVertex,
+	kCoveredVertex,
+	kGlacisVertex,
+	kTrackVertex,
+	kFootVertex,
+	kLaneVertex,
+	kArcVertex
+};
+
 enum TileKind : signed char
 {
 	kOutside,
@@ -176,7 +192,9 @@ struct FortStencil
 	int bastions = 5;
 	double tip = 0, glacis = 0;
 	std::vector<unsigned char> vertex; // TerrainType
+	std::vector<unsigned char> vkind;  // VertexKind of each vertex
 	std::vector<signed char> kind;     // TileKind of each tile
+	std::vector<unsigned char> ridge;  // wall tiles of the bastions, beyond the curtains' line
 	std::vector<signed char> half;     // for kGarden tiles, the garden: 0 and 2 wheat, 1 wood
 	std::vector<unsigned char> zone;   // tiles within the fort's zone (no country features)
 	std::vector<unsigned char> core;   // tiles out to the foot (roads keep off)
@@ -284,6 +302,8 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int
 	s.extent = int(std::ceil(tip + footTo + kZoneMargin)) + 2;
 	const int side = s.side();
 	s.vertex.assign(size_t(side) * side, GRASS);
+	s.vkind.assign(size_t(side) * side, kPlainVertex);
+	s.ridge.assign(size_t(side) * side, 0);
 	s.kind.assign(size_t(side) * side, kOutside);
 	s.half.assign(size_t(side) * side, -1);
 	s.zone.assign(size_t(side) * side, 0);
@@ -325,17 +345,34 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int
 			// The vertex.
 			{
 				const double px = dx, py = dy, d = signedDistance(px, py);
-				unsigned char terrain = GRASS;
+				unsigned char terrain = GRASS, vkind = kPlainVertex;
+				const bool causeway = nearGate(px, py, kCausewayHalf),
+						   track = nearGate(px, py, kTrackHalf);
 				if (d > kBerm && d <= kBerm + kMoat)
-					terrain = nearGate(px, py, kCausewayHalf) ? SAND : WATER;
+				{
+					terrain = causeway ? SAND : WATER;
+					vkind = causeway ? kCausewayVertex : kPlainVertex;
+				}
 				else if (d > kBerm + kMoat && d <= bankTo)
-					terrain = nearGate(px, py, kCausewayHalf) ? SAND : GRASS;
+				{
+					terrain = causeway ? SAND : GRASS;
+					vkind = causeway ? kCausewayVertex : kPlainVertex;
+				}
 				else if (d > bankTo && d <= glacisFrom)
+				{
 					terrain = SAND;
+					vkind = kCoveredVertex;
+				}
 				else if (d > glacisFrom && d <= footTo - kFoot)
-					terrain = nearGate(px, py, kTrackHalf) ? SAND : GRASS;
+				{
+					terrain = track ? SAND : GRASS;
+					vkind = track ? kTrackVertex : kGlacisVertex;
+				}
 				else if (d > footTo - kFoot && d <= footTo)
-					terrain = SAND;
+				{
+					terrain = track ? SAND : GRASS;
+					vkind = track ? kTrackVertex : kFootVertex;
+				}
 				else if (d <= 0.3)
 				{
 					// The garden line across the courtyard, and the lane down the gardens' middle.
@@ -344,13 +381,14 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int
 						(px < -kGardenFront && along > 0 && std::abs(across) <= kCausewayHalf))
 						lines[at] = 1;
 					if (s.threeGardens && px < -kGardenFront && across < -kCausewayHalf &&
-						std::abs(std::hypot(px, py) - kWoodArc * court) <= 0.6)
-						lines[at] = 1;
+						std::abs(std::hypot(px, py) - kWoodArc * court) <= 0.6 && !lines[at])
+						lines[at] = 2;
 					for (const int h : {0, s.threeGardens ? 2 : 0})
 						if (std::hypot(px - s.cisterns[h].x, py - s.cisterns[h].y) <= cistern)
 							terrain = WATER;
 				}
 				s.vertex[at] = terrain;
+				s.vkind[at] = vkind;
 			}
 			// The tile.
 			{
@@ -370,7 +408,11 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int
 						kind = inFrontBastion(px, py) ? kPocket : kCourt;
 				}
 				else if (d <= 0)
+				{
 					kind = nearGate(px, py, kGateHalf) ? kGateTile : kWallTile;
+					// The bastions' faces and flanks stand out beyond the curtains' line.
+					s.ridge[at] = kind == kWallTile && std::hypot(px, py) > shape.curtain * tip + 0.5;
+				}
 				else if (d <= kBerm)
 					kind = kBermTile;
 				else if (d <= kBerm + kMoat)
@@ -388,19 +430,16 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int
 				s.core[at] = d <= footTo;
 			}
 		}
-	// A line vertex is sand unless it would spoil a wall tile (stone stands on pure grass only): the
-	// line stops at the wall's inner face, where its last vertex still touches a wall tile, which
-	// keeps the gardens sealed.
+	// Every line vertex is drawn (sketchTerrain paves the lanes and lays the arc as barren ground),
+	// right up to the wall, whose rock takes over at its own vertices.
 	for (int dy = -s.extent + 1; dy <= s.extent; ++dy)
 		for (int dx = -s.extent + 1; dx <= s.extent; ++dx)
 		{
-			if (!lines[s.index(dx, dy)] || s.vertex[s.index(dx, dy)] != GRASS)
+			const int at = s.index(dx, dy);
+			if (!lines[at] || s.vertex[at] != GRASS)
 				continue;
-			bool spoils = false;
-			for (const auto &[tx, ty] : {std::pair{dx - 1, dy - 1}, {dx, dy - 1}, {dx - 1, dy}, {dx, dy}})
-				spoils = spoils || s.kind[s.index(tx, ty)] == kWallTile;
-			if (!spoils)
-				s.vertex[s.index(dx, dy)] = SAND;
+			s.vertex[at] = SAND;
+			s.vkind[at] = lines[at] == 2 ? kArcVertex : kLaneVertex;
 		}
 	// A cistern's pond stops short of the wall's inner face the same way: stone stands on pure grass
 	// only, so a cistern whose circle reaches within beach range of a wall vertex would drown the
@@ -511,6 +550,10 @@ struct Layout
 	std::vector<int> fortOf;    // colony of every tile in a fort's zone, else -1
 	std::vector<int> gardenOf;  // colony * 3 + garden for garden tiles, else -1
 	std::vector<unsigned char> core, zone, wall, gate, glacis, roads, river;
+	// vkind: the stencil's VertexKind at every vertex; ridge: the bastion wall tiles; ford: road
+	// vertices laid over water; outcrop: the rock outcrops at the fords that hold their quarries.
+	std::vector<unsigned char> vkind, ridge, ford, outcrop;
+	std::vector<int> outcropSeeds;
 	std::vector<Ford> fords;
 	int streams = 0;
 	std::string failure;
@@ -606,6 +649,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.glacis.assign(n, 0);
 	L.roads.assign(n, 0);
 	L.river.assign(n, 0);
+	for (auto *mask : {&L.vkind, &L.ridge, &L.ford, &L.outcrop})
+		mask->assign(n, 0);
 	for (int k = 0; k < teams; ++k)
 	{
 		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
@@ -617,6 +662,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				const int v = t.at(cx + vx, cy + vy);
 				if (s.vertex[at] != GRASS)
 					L.sketch[v] = TerrainType(s.vertex[at]);
+				if (s.vkind[at] != kPlainVertex)
+					L.vkind[v] = s.vkind[at];
 				const auto [tx, ty] = turnStencilTile(L.facings[k], dx, dy);
 				const int i = t.at(cx + tx, cy + ty);
 				if (!s.zone[at])
@@ -631,6 +678,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.core[i] = s.core[at];
 				L.kind[i] = s.kind[at];
 				L.wall[i] = s.kind[at] == kWallTile;
+				L.ridge[i] = s.ridge[at];
 				L.gate[i] = s.kind[at] == kGateTile;
 				L.glacis[i] = s.kind[at] == kGlacisTile;
 				if (s.kind[at] == kGarden)
@@ -810,6 +858,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				const int j = t.at(t.remainderX(ford.tile) + ddx, ford.tile / t.w + ddy);
 				L.sketch[j] = SAND;
 				L.roads[j] = 1;
+				L.ford[j] = 1;
 			}
 	const std::vector<int> fromCore = stepsFrom(t, L.core);
 	for (const Ford &ford : L.fords)
@@ -853,6 +902,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						const int j = t.at(t.remainderX(i) + ddx, i / t.w + ddy);
 						if (!L.core[j])
 						{
+							if (L.sketch[j] == WATER)
+								L.ford[j] = 1;
 							L.roads[j] = 1;
 							L.sketch[j] = SAND;
 						}
@@ -861,18 +912,127 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("glacis.streams", L.streams);
 	context.telemetry.measure("glacis.fords", int(L.fords.size()));
 
-	// The design's own invariant on the sketch as the game will see it: every wall tile stays pure
-	// grass for its stone.
-	TerrainSketch beached = L.sketch;
-	layBeaches(beached, t);
-	const std::vector<unsigned char> pure = pureTiles(beached, t, GRASS);
-	for (int i = 0; i < n; ++i)
-		if (L.wall[i] && !pure[i])
+	// A rock outcrop on each bank of every contested ford, kQuarryOut out, holding the ford's quarry
+	// face: the ford quarries were bare stone on grass, like the walls. Nudged along the bank's
+	// normal until it stands clear of water, roads and the forts' zones.
+	{
+		std::vector<unsigned char> busy(n, 0);
+		for (int i = 0; i < n; ++i)
+			busy[i] = L.zone[i] || L.roads[i] || L.sketch[i] == WATER;
+		const std::vector<int> clearance = stepsFrom(t, busy);
+		for (const Ford &ford : L.fords)
 		{
-			L.failure = "A wall would stand on a beach; try another seed.";
-			return L;
+			const int fx = t.remainderX(ford.tile), fy = ford.tile / t.w;
+			const double nx = -ford.along.y, ny = ford.along.x;
+			for (const int bank : {-1, 1})
+				for (int out = kQuarryOut; out <= kQuarryOut + 6; ++out)
+				{
+					const int c = t.at(fx + int(std::lround(bank * out * nx)),
+									   fy + int(std::lround(bank * out * ny)));
+					if (clearance[c] < 4)
+						continue;
+					for (int ddy = -1; ddy <= 1; ++ddy)
+						for (int ddx = -1; ddx <= 1; ++ddx)
+							L.outcrop[t.at(t.remainderX(c) + ddx, c / t.w + ddy)] = 1;
+					L.outcropSeeds.push_back(c);
+					break;
+				}
 		}
+		context.telemetry.measure("glacis.fords.outcrops", int(L.outcropSeeds.size()));
+	}
 	return L;
+}
+
+// The one look of the Glacis (see the header): grey cut stone against woods. A cliffed scarp, ridge
+// rock on the bastions, slate paving on the covered way, tracks and roads, scree on the glacis, clay
+// on the wood garden's arc, boardwalk over the fords, outcrops at the ford quarries.
+constexpr ClimateLook kGlacisLook = {"glacis", CLIFFS,       RIDGE_ROCK,   GRASS,        GRASS,
+									 PALE_SAND, SLATE_ASHLAR, SLATE_ASHLAR, SLATE_ASHLAR, SLATE_ASHLAR,
+									 BOARDWALK, CLAY,        DEEP_WATER,   SCREE,        LOAM,
+									 OUTCROP,  GRASS};
+constexpr double kSquare = 3.5; // the paved square round each swarm
+constexpr int kVerge = 3;       // grass kept at the wall's foot for towers and quarry faces
+constexpr int kQuarryFace = 12; // stone tiles in one of a courtyard's two quarry faces
+constexpr int kFordFace = 8;    // stone tiles in a ford outcrop's face, at 100% stone
+
+// THE GROUND, as the finished world must hold it: a pure function of the design, so validateWorld
+// rebuilds it and compares every vertex. Revision 6 draws it from the terrain catalogue where
+// earlier revisions stood stone on grass and drew every line in sand:
+//  - the trace is a wall on vertices (wallVertices): ridge rock on the bastions, so the towers in
+//    them shoot out over the glacis, and a cliffed scarp along the curtains; the outcrops at the
+//    fords are ridge rock too;
+//  - the glacis and its foot are scree (Rough): slow to cross under the bastions' towers, nothing
+//    can be built on it and nothing grows there, so no crop ever reaches it;
+//  - the covered way, causeways, tracks, garden lanes and roads are paved, the fords boardwalk;
+//  - the wood garden's arc is barren ground, which holds the wheat and wood apart;
+//  - a paved square round every swarm, kept off the verge at the wall's foot.
+TerrainSketch sketchTerrain(const Layout &L)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	TerrainSketch s = L.sketch;
+	layBeaches(s, t);
+	for (int i = 0; i < n; ++i)
+	{
+		switch (L.vkind[i])
+		{
+		case kGlacisVertex:
+		case kFootVertex:
+			s[i] = MUD;
+			break;
+		case kArcVertex:
+			s[i] = DIRT;
+			break;
+		case kCausewayVertex:
+		case kCoveredVertex:
+		case kTrackVertex:
+		case kLaneVertex:
+			s[i] = TRAIL;
+			break;
+		default:
+			if (L.roads[i])
+				s[i] = TRAIL;
+			break;
+		}
+	}
+	std::vector<unsigned char> open(n, 0), ridgeTiles(n, 0), cliffTiles(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		open[i] = L.gate[i] || L.roads[i];
+		ridgeTiles[i] = (L.wall[i] && L.ridge[i]) || L.outcrop[i];
+		cliffTiles[i] = L.wall[i] && !L.ridge[i];
+	}
+	const std::vector<unsigned char> ridges = wallVertices(t, ridgeTiles, &open, &L.gate),
+									 cliffs = wallVertices(t, cliffTiles, &open, &L.gate);
+	for (int i = 0; i < n; ++i)
+		if (s[i] != WATER && (ridges[i] || cliffs[i]))
+			s[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	const auto canGrow = [&](int i) { return s[i] == GRASS && !cornerOf(t, open, i); };
+	thickenRidges(s, t, canGrow);
+	thickenRidges(s, t, canGrow, nullptr, CLIFFS);
+	std::vector<unsigned char> rock(n, 0);
+	for (int i = 0; i < n; ++i)
+		rock[i] = s[i] == CLIFFS || s[i] == RIDGE_ROCK;
+	const std::vector<int> fromRock = stepsFrom(t, rock);
+	for (int k = 0; k < int(L.homes.size()); ++k)
+	{
+		const ShapePoint p = turnStencilPoint(L.facings[k], L.stencil.swarm);
+		paveCore(s, t, L.homes[k].x + p.x, L.homes[k].y + p.y, kSquare,
+				 [&](int i)
+				 {
+					 return L.fortOf[i] == k && L.kind[i] == kCourt &&
+							(fromRock[i] < 0 || fromRock[i] > kVerge);
+				 });
+	}
+	std::vector<unsigned char> outcropNear(n, 0);
+	for (int i = 0; i < n; ++i)
+		outcropNear[i] = L.outcrop[i];
+	const std::vector<int> fromOutcrop = stepsFrom(t, outcropNear);
+	LookRoles roles;
+	roles.path = [&](int i) { return L.ford[i] ? PathLook::Bridge : PathLook::Road; };
+	roles.rockAccent = [&](int i) { return fromOutcrop[i] >= 0 && fromOutcrop[i] <= 2; };
+	paintClimate(s, t, kGlacisLook, roles);
+	return s;
 }
 
 bool generate(GenerationWorld &game, GenerationContext &context)
@@ -894,19 +1054,8 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "glacis terrain";
-	TerrainSketch terrain = L.sketch;
-	layBeaches(terrain, t);
+	const TerrainSketch terrain = sketchTerrain(L);
 	writeVertices(map, terrain);
-	const DesignedStone walls = designedStone(map, t, L.wall);
-	if (walls.gaps)
-	{
-		context.detail = "a fort wall has a gap at (" + std::to_string(t.remainderX(walls.firstGap)) + ", " +
-						 std::to_string(walls.firstGap / t.w) + ")";
-		return false;
-	}
-	for (int i = 0; i < n; ++i)
-		if (walls.stone[i])
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "glacis colonies";
 	std::vector<int> courtOf(n, -1);
@@ -954,6 +1103,68 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		const std::vector<unsigned char> pads = towerFootprints(t, towers);
 		for (int i = 0; i < n; ++i)
 			reserved[i] = reserved[i] || pads[i];
+	}
+
+	// The walls were the forts' quarry when they were stone: two quarry faces at the foot of each
+	// courtyard's wall, as far from its gates and from each other as the courtyard allows, at every
+	// stone setting. Every fort is a translation of the first, so the choice is made in the fort's
+	// own frame and ties go to the same offset in every fort.
+	context.stage = "glacis quarries";
+	for (int k = 0; k < teams; ++k)
+	{
+		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
+		const auto free = [&](int i)
+		{
+			return L.fortOf[i] == k && (L.kind[i] == kCourt || L.kind[i] == kPocket) && !reserved[i] &&
+				   clearGround(map, t.remainderX(i), i / t.w);
+		};
+		std::vector<int> foot;
+		std::vector<unsigned char> gates(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			gates[i] = L.gate[i] && L.fortOf[i] == k;
+			if (!free(i))
+				continue;
+			bool walled = false;
+			for (int dy = -1; dy <= 1 && !walled; ++dy)
+				for (int dx = -1; dx <= 1 && !walled; ++dx)
+				{
+					const TerrainProperties &p =
+						map.terrainPropertiesAt(t.x(t.remainderX(i) + dx), t.y(i / t.w + dy));
+					walled = !p.walkable && !p.swimmable;
+				}
+			if (walled)
+				foot.push_back(i);
+		}
+		const std::vector<int> fromGate = stepsFrom(t, gates);
+		const auto offset = [&](int i)
+		{ return std::pair{t.offsetY(cy, i / t.w), t.offsetX(cx, t.remainderX(i))}; };
+		const auto better = [&](int a, int b, int va, int vb)
+		{ return va != vb ? va > vb : offset(a) < offset(b); };
+		int first = -1;
+		for (int i : foot)
+			if (first < 0 || better(i, first, fromGate[i], fromGate[first]))
+				first = i;
+		int second = -1;
+		const auto spread = [&](int i)
+		{
+			return std::min(fromGate[i], t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(first),
+													 first / t.w));
+		};
+		for (int i : foot)
+			if (first >= 0 && (second < 0 || better(i, second, spread(i), spread(second))))
+				second = i;
+		std::vector<KitSeed> seeds;
+		for (const int seed : {first, second})
+			if (seed >= 0)
+				seeds.push_back({t.remainderX(seed), seed / t.w, 6});
+		const int placed = plantQuarryFaces(map, t, seeds, kQuarryFace, free);
+		context.telemetry.measure("glacis.court.quarry-tiles", placed, k);
+		if (placed < kQuarryFace)
+		{
+			context.detail = "A fort has no room for its quarry; raise Fort size.";
+			return false;
+		}
 	}
 
 	context.stage = "glacis gardens";
@@ -1080,13 +1291,17 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 					growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(kGroveTiles, o.fruit)),
 							  [&](int i) { return country(i); });
 			}
-			const int quarry = seedNear(t, fx + int(std::lround(bank * kQuarryOut * nx)),
-										fy + int(std::lround(bank * kQuarryOut * ny)), 4,
-										[&](int i) { return country(i); });
-			if (quarry >= 0 && scaledCount(1, o.stone) > 0)
-				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(quarry), quarry / t.w), STONE,
-								   1);
 		}
+	}
+	// Each ford's outcrops hold its quarries: a face at the foot of every one.
+	{
+		int fordStone = 0;
+		const int face = int(scaledCount(kFordFace, o.stone));
+		for (const int seed : L.outcropSeeds)
+			if (face > 0)
+				fordStone += plantQuarryFaces(map, t, {KitSeed{t.remainderX(seed), seed / t.w, 4}}, face,
+											  [&](int i) { return country(i); });
+		context.telemetry.measure("glacis.fords.quarry-tiles", fordStone);
 	}
 	// Extra compact patches on the actual stream banks, after the ford prizes.
 	// Moats and country ponds are deliberately excluded from this mask.
@@ -1117,11 +1332,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		"glacis-outcrops", "glacis-groves");
 	seedAlgae(map, context, t, "glacis-algae", o.algae, AlgaeBand::anyWater(50));
 
-	secureStartingCrops(game, context, t, 24, 32, 0, &walls.stone, &topup);
+	secureStartingCrops(game, context, t, 24, 32, 0, &L.wall, &topup);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
-						&walls.stone);
+						&L.wall);
 	context.stage = "glacis routes";
-	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1}, 0, &walls.stone);
+	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1}, 0, &L.wall);
 	return true;
 }
 
@@ -1154,25 +1369,36 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	const int n = t.size(), teams = context.request.nbTeams;
 	if (const std::string mismatch = designMismatch(L, map, "glacis"); !mismatch.empty())
 		return mismatch;
-	if (const std::string broken = wallStanding(map, t, L.wall, L.gate, "fort wall"); !broken.empty())
-		return broken;
-	std::vector<int> pieces(n, -1);
+	const auto where = [&](int i)
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
+	// Every wall, glacis, lane and road stands as designed, vertex for vertex.
+	const TerrainSketch designed = sketchTerrain(L);
 	for (int i = 0; i < n; ++i)
-		pieces[i] = (L.kind[i] == kCourt || L.kind[i] == kPocket || L.kind[i] == kGarden) ? L.fortOf[i]
-					: (!L.wall[i] && !L.gate[i])                  ? teams
-																  : -1;
-	if (pieceLeak(map, t, pieces, L.gate) >= 0)
-		return "A fort can be entered other than by its gates.";
-	// The glacis stays bare: nothing planted on it, and no grass joins it to anything else a crop
-	// could spread from.
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != designed[i])
+			return "The ground at " + where(i) + " is not as designed.";
+	// With its gates shut, nothing walks or swims into or out of a fort.
+	for (int k = 0; k < teams; ++k)
+	{
+		const auto inFort = [&](int i)
+		{
+			return L.fortOf[i] == k && (L.kind[i] == kCourt || L.kind[i] == kPocket ||
+										L.kind[i] == kGarden || L.wall[i] || L.gate[i]);
+		};
+		std::vector<int> inside;
+		for (int i = 0; i < n; ++i)
+			if (inFort(i) && !L.wall[i] && !L.gate[i])
+				inside.push_back(i);
+		if (const int leak = leakWithShut(map, t, inside, L.gate, true, inFort); leak >= 0)
+			return "A fort can be entered other than by its gates, at " + where(leak) + ".";
+	}
+	// The glacis stays bare: nothing planted on it, and none of it holds a crop.
 	const std::vector<int> fromGlacis = grassReach(map, t, L.glacis);
 	for (int i = 0; i < n; ++i)
 	{
 		if (L.glacis[i] && map.isResource(t.remainderX(i), i / t.w))
 			return "Something was planted on a glacis.";
-		if (fromGlacis[i] >= 0 && L.kind[i] != kGlacisTile && L.kind[i] != kCoveredTile &&
-			L.kind[i] != kFootTile)
-			return "A glacis is joined to grass a crop could spread from.";
+		if (fromGlacis[i] >= 0)
+			return "A glacis holds ground a crop could grow on, at " + where(i) + ".";
 	}
 	// The gardens keep their crops off the town.
 	{
@@ -1239,7 +1465,9 @@ GeneratorDefinition glacisDefinition()
 		"glacis",
 		39,
 		"The Glacis",
-		5,
+		// Revision 6: the terrain catalogue - a cliffed scarp and ridge-rock bastions, a scree glacis,
+		// slate paving, clay arcs, ford outcrops and quarry faces where the walls were stone.
+		6,
 		false,
 		// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
 		// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
