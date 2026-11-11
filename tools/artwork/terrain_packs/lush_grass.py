@@ -15,20 +15,20 @@ def render_lush_grass(ctx):
     lit from the top left and casting short shadows."""
     p, size = RECIPES["lush_grass"].palette, ctx.size
     rgb, _ = turf(ctx, p, broad=7, tuft_cells=80, tuft_y=24, tuft_w=0.45, relief=0.16)
-    common, _, _ = soft_blobs(shared_ctx(ctx), 4, 14.0, 22.0)
-    own, _, _ = soft_blobs(ctx, 4, 14.0, 22.0)
+    common, _, _ = soft_blobs(shared_ctx(ctx), 4, 14.0, 22.0, array=True)
+    own, _, _ = soft_blobs(ctx, 4, 14.0, 22.0, array=True)
     leaves = blend_fields(common, own, ctx.interior_mask)
     # Lobes break each cushion into leaves rather than a smooth disc.
-    common_lobes = fbm(ctx.shared_rng, 70, 2, size=size)
-    lobes = blend_fields(common_lobes, fbm(ctx.rng, 70, 2, size=size), ctx.interior_mask)
+    common_lobes = fbm(ctx.shared_rng, 70, 2, size=size, array=True)
+    lobes = blend_fields(common_lobes, fbm(ctx.rng, 70, 2, size=size, array=True), ctx.interior_mask)
 
     def cushions(blobs, lobe):
-        return [v * (0.55 + 0.45 * smoothstep(0.3, 0.7, b)) for v, b in zip(blobs, lobe)]
+        return blobs * (0.55 + 0.45 * smoothstep(0.3, 0.7, lobe))
 
     cushion = cushions(leaves, lobes)
     leaf = ramp(cushion, [(0.0, p["leaf_shade"]), (0.5, p["leaf"]), (1.0, p["leaf_lit"])])
     # Light against the common cushions so every layout's boundary matches.
     leaf = shade(leaf, cushion, 0.3, reference_height=cushions(common, common_lobes))
-    rgb = mix(rgb, leaf, [smoothstep(0.05, 0.3, c) for c in cushion], 0.9)
+    rgb = mix(rgb, leaf, smoothstep(0.05, 0.3, cushion), 0.9)
     rgb = cast(rgb, cushion, p["leaf_shade"], reach=4, strength=0.45)
     return fine_grain(ctx, rgb, 0.07), None

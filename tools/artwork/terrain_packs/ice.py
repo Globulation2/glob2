@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The ice terrain material."""
+import numpy as np
+
 from terrain_core import (
     RECIPES,
     Style,
@@ -30,14 +32,15 @@ def render_ice(ctx):
     frost = normalize_like(blend_fields(common_frost, own_frost, ctx.interior_mask), common_frost)
     rgb = mix(rgb, p["light"], frost, 0.10)
     fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
-    rgb = [[c * (1 + 0.025 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+    rgb = rgb * (1 + 0.025 * (fine - 0.5) * 2)
     return rgb, None
 
 
 def ice_fields(rng, size):
     """Periodic glassy whorls, soft crystalline frost and fine cold grain."""
-    height = fbm(rng, 3, 3, cells_y=6, size=size)
-    height = domain_warp(height, fbm(rng, 2, 2, size=size), fbm(rng, 2, 2, size=size), 10, 6)
-    frost = [abs(2 * v - 1) for v in fbm(rng, 12, 2, size=size)]
-    fine = lattice_noise(rng, 48, size=size)
+    height = fbm(rng, 3, 3, cells_y=6, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 2, 2, size=size, array=True),
+                         fbm(rng, 2, 2, size=size, array=True), 10, 6)
+    frost = np.abs(2 * fbm(rng, 12, 2, size=size, array=True) - 1)
+    fine = lattice_noise(rng, 48, size=size, array=True)
     return height, frost, fine

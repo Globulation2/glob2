@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The deep snow terrain material."""
+import numpy as np
+
 from terrain_core import (
     Ctx,
     RECIPES,
     Style,
-    clamp01,
     fbm,
     lattice_noise,
     mix,
@@ -29,25 +30,25 @@ def render_deep_snow(ctx):
     """
     p = RECIPES["deep_snow"].palette
     shared_rng, own_rng = ctx.shared_rng, ctx.rng
-    common_raw = fbm(shared_rng, 3, 3, size=ctx.size)
-    own_raw = fbm(own_rng, 3, 3, size=ctx.size)
-    ordered = sorted(common_raw)
+    common_raw = fbm(shared_rng, 3, 3, size=ctx.size, array=True)
+    own_raw = fbm(own_rng, 3, 3, size=ctx.size, array=True)
+    ordered = np.sort(common_raw)
     low, high = ordered[int(0.02 * (len(ordered) - 1))], ordered[int(0.98 * (len(ordered) - 1))]
     span = high - low or 1.0
-    common_height = [clamp01((v - low) / span) for v in common_raw]
-    own_height = [clamp01((v - low) / span) for v in own_raw]
-    interior = ctx.interior_mask
-    height = [a + (b - a) * w for a, b, w in zip(common_height, own_height, interior)]
+    common_height = np.clip((common_raw - low) / span, 0.0, 1.0)
+    own_height = np.clip((own_raw - low) / span, 0.0, 1.0)
+    interior = ctx.interior
+    height = common_height + (own_height - common_height) * interior
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    common_grain = lattice_noise(shared_rng, 48, size=ctx.size)
-    own_grain = lattice_noise(own_rng, 48, size=ctx.size)
-    fine = [a + (b - a) * w for a, b, w in zip(common_grain, own_grain, interior)]
-    rgb = [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+    common_grain = lattice_noise(shared_rng, 48, size=ctx.size, array=True)
+    own_grain = lattice_noise(own_rng, 48, size=ctx.size, array=True)
+    fine = common_grain + (own_grain - common_grain) * interior
+    rgb = rgb * (1 + 0.05 * (fine - 0.5) * 2)
     rgb = shade(rgb, height, 0.12, light=(-0.6, -0.8), reference_height=common_height)
     shared_ctx = Ctx(ctx.name, 0, ctx.phase, ctx.phases, size=ctx.size)
     shared_ctx.rng = shared_rng
-    common_sparkle, _, _ = soft_blobs(shared_ctx, 6, 3.0, 4.0)
-    own_sparkle, _, _ = soft_blobs(ctx, 6, 3.0, 4.0)
-    sparkle = [a + (b - a) * w for a, b, w in zip(common_sparkle, own_sparkle, interior)]
+    common_sparkle, _, _ = soft_blobs(shared_ctx, 6, 3.0, 4.0, array=True)
+    own_sparkle, _, _ = soft_blobs(ctx, 6, 3.0, 4.0, array=True)
+    sparkle = common_sparkle + (own_sparkle - common_sparkle) * interior
     rgb = mix(rgb, p["sparkle"], sparkle, 0.6)
     return rgb, None

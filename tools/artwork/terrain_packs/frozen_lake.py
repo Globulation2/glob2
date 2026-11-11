@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The frozen lake terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -21,11 +23,12 @@ from terrain_core import (
 def warped_edges(ctx, cells, warp, cells_warp=4):
     """Long, wandering fracture lines: Worley edges warped, common at the block edge."""
     size = ctx.size
-    f1, f2, _, c1, c2, _ = block_worley(ctx, cells)
-    cx, cy = fbm(ctx.shared_rng, cells_warp, 2, size=size), fbm(ctx.shared_rng, cells_warp, 2, size=size)
-    wx = blend_fields(cx, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
-    wy = blend_fields(cy, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
-    return domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, warp)
+    f1, f2, _, c1, c2, _ = block_worley(ctx, cells, array=True)
+    cx = fbm(ctx.shared_rng, cells_warp, 2, size=size, array=True)
+    cy = fbm(ctx.shared_rng, cells_warp, 2, size=size, array=True)
+    wx = blend_fields(cx, fbm(ctx.rng, cells_warp, 2, size=size, array=True), ctx.interior_mask)
+    wy = blend_fields(cy, fbm(ctx.rng, cells_warp, 2, size=size, array=True), ctx.interior_mask)
+    return domain_warp(f2 - f1, wx, wy, warp)
 
 
 def bubbles(ctx):
@@ -33,7 +36,7 @@ def bubbles(ctx):
     size = ctx.size
 
     def make(rng):
-        mask = [0.0] * (size * size)
+        mask = np.zeros(size * size)
         for _ in range(3 * (size // N) ** 2):
             x, y = rng.random() * size, rng.random() * size
             for _ in range(rng.randint(5, 12)):
@@ -54,31 +57,31 @@ def render_frozen_lake(ctx):
     like ice and stays static, pale and grey-white beside any water."""
     p, size = RECIPES["frozen_lake"].palette, ctx.size
     # Depth: broad clear (dark) and cloudy (pale) zones of thick lake ice.
-    depth = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size))
+    depth = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size, array=True))
     rgb = ramp(depth, [(0.0, p["deep"]), (0.55, p["mid"]), (1.0, p["pale"])])
     # Cold streaks frozen into the ice.
-    streak = layout_field(ctx, lambda rng: fbm(rng, 4, 3, cells_y=14, size=size))
-    rgb = mix(rgb, p["pale"], [smoothstep(0.55, 0.85, v) for v in streak], 0.25)
+    streak = layout_field(ctx, lambda rng: fbm(rng, 4, 3, cells_y=14, size=size, array=True))
+    rgb = mix(rgb, p["pale"], smoothstep(0.55, 0.85, streak), 0.25)
     # Soft specular sheen: a broad diagonal glint.
-    sheen = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
-    rgb = mix(rgb, p["glint"], [smoothstep(0.6, 0.9, v) for v in sheen], 0.35)
+    sheen = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size, array=True))
+    rgb = mix(rgb, p["glint"], smoothstep(0.6, 0.9, sheen), 0.35)
     # Pressure cracks: few, long and bright; a fine fracture net under them.
     major = warped_edges(ctx, 1, 18, 3)
     fine = warped_edges(ctx, 6, 6, 8)
-    gate = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size))
-    net = [(1 - smoothstep(0.012, 0.03, e)) * smoothstep(0.42, 0.55, g) for e, g in zip(fine, gate)]
+    gate = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size, array=True))
+    net = (1 - smoothstep(0.012, 0.03, fine)) * smoothstep(0.42, 0.55, gate)
     rgb = mix(rgb, p["crack"], net, 0.27)
     # Only some ridges survive: long pressure cracks, not a full net.
-    keep = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
-    ridge = [smoothstep(0.45, 0.6, k) for k in keep]
-    line = [(1 - smoothstep(0.01, 0.035, e)) * r for e, r in zip(major, ridge)]
-    halo = [(1 - smoothstep(0.02, 0.09, e)) * r for e, r in zip(major, ridge)]
+    keep = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size, array=True))
+    ridge = smoothstep(0.45, 0.6, keep)
+    line = (1 - smoothstep(0.01, 0.035, major)) * ridge
+    halo = (1 - smoothstep(0.02, 0.09, major)) * ridge
     rgb = mix(rgb, p["crack"], halo, 0.225)
     rgb = mix(rgb, p["white"], line, 0.765)
     rgb = mix(rgb, p["white"], bubbles(ctx), 0.7)
     # Frost and wind-blown snow dusting in patches.
-    frost = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size))
-    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
-    dust = [smoothstep(0.62, 0.8, f) * (0.6 + 0.4 * g) for f, g in zip(frost, grain)]
+    frost = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size, array=True))
+    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size, array=True))
+    dust = smoothstep(0.62, 0.8, frost) * (0.6 + 0.4 * grain)
     rgb = mix(rgb, p["frost"], dust, 0.7)
     return rgb, None

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The loam terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -28,7 +30,7 @@ def render_loam(ctx):
     height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     grit = blend_fields(common_grit, own_grit, ctx.interior_mask)
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
+    rgb = rgb * (1 + 0.12 * (grit - 0.5) * 2)
     # Green-brown flecks remain soft, sparse and about two native pixels wide.
     flecks = blend_fields(common_flecks, own_flecks, ctx.interior_mask)
     return mix(rgb, p["fleck"], flecks, 0.8), None
@@ -36,10 +38,10 @@ def render_loam(ctx):
 
 def loam_fields(rng, size):
     """Periodic loam height, fine grain and flecks at the existing native scale."""
-    height = fbm(rng, 5, 4, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    grit = lattice_noise(rng, 48, size=size)
-    flecks = [0.0] * (size * size)
+    height = fbm(rng, 5, 4, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True), fbm(rng, 3, 2, size=size, array=True), 8)
+    grit = lattice_noise(rng, 48, size=size, array=True)
+    flecks = np.zeros(size * size)
     for _ in range(22 * (size // N) ** 2):
         x, y = rng.random() * size, rng.random() * size
         radius = 4.0 + rng.random() * 1.5

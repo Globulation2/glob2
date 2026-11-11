@@ -6,7 +6,6 @@ from terrain_core import (
     N,
     RECIPES,
     Style,
-    as_list,
     fbm,
     lattice_noise,
     layout_field,
@@ -53,15 +52,15 @@ def render_wind_swept_snow(ctx):
     fine = scale * (ripple_k[0] * xx + ripple_k[1] * yy) / size
     # Broad bends keep crests long and roughly parallel; a weaker, finer warp
     # offsets neighbouring stretches so crests split and merge.
-    bend = np.array(layout_field(ctx, lambda rng: fbm(rng, 3, 1, size=size))).reshape(size, size)
-    fray = np.array(layout_field(ctx, lambda rng: fbm(rng, 8, 2, size=size))).reshape(size, size)
+    bend = layout_field(ctx, lambda rng: fbm(rng, 3, 1, size=size, array=True)).reshape(size, size)
+    fray = layout_field(ctx, lambda rng: fbm(rng, 8, 2, size=size, array=True)).reshape(size, size)
     # A very broad swing turns the local crest direction by about fifteen
     # degrees either way across a few tiles, so a field is not one corduroy.
-    swing = np.array(layout_field(ctx, lambda rng: fbm(rng, 0.375, 1, size=size))).reshape(size, size)
+    swing = layout_field(ctx, lambda rng: fbm(rng, 0.375, 1, size=size, array=True)).reshape(size, size)
     phase = base + 1.1 * (swing - 0.5) + 0.7 * (bend - 0.5) + 0.18 * (fray - 0.5)
     ripple_phase = fine + 1.1 * (swing - 0.5) + 0.7 * (bend - 0.5) + 0.12 * (fray - 0.5)
     # Drift height: tall drifts where snow piled up, low scoured flats elsewhere.
-    pile = np.array(layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size))).reshape(size, size)
+    pile = layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size, array=True)).reshape(size, size)
     amp = np.clip((pile - 0.4) / 0.38, 0, 1)
     amp = 0.08 + 0.92 * amp * amp * (3 - 2 * amp)
     crest = 0.8
@@ -75,14 +74,14 @@ def render_wind_swept_snow(ctx):
     light /= np.linalg.norm(light)
     lambert = (-hx * light[0] - hy * light[1] + light[2]) / np.sqrt(hx * hx + hy * hy + 1)
     tone = np.clip(0.55 + 1.2 * (lambert - light[2]), 0, 1)
-    rgb = ramp(as_list(tone), [(0.0, p["shadow"]), (0.3, p["lee"]), (0.55, p["mid"]), (1.0, p["lit"])])
+    rgb = ramp(tone.ravel(), [(0.0, p["shadow"]), (0.3, p["lee"]), (0.55, p["mid"]), (1.0, p["lit"])])
     # A crisp rim catches the sun along each crest.
     f = phase % 1.0
     rim = np.clip(1 - np.maximum(crest - f, 0) / 0.04 - np.maximum(f - crest, 0) / 0.012, 0, 1) * amp
-    rgb = mix(rgb, p["crest"], as_list(rim), 0.6)
+    rgb = mix(rgb, p["crest"], rim.ravel(), 0.6)
     # Wind-polished grain and sparkle on the lit faces.
-    grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.02 * (v - 0.5) * 2) for c, v in zip(channel, grain_field)] for channel in rgb]
-    speck = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size)))
-    rgb = mix(rgb, p["sparkle"], as_list(np.clip((speck - 0.9) / 0.06, 0, 1) * tone.ravel()), 0.6)
+    grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    rgb = rgb * (1 + 0.02 * (grain_field - 0.5) * 2)
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size, array=True))
+    rgb = mix(rgb, p["sparkle"], np.clip((speck - 0.9) / 0.06, 0, 1) * tone.ravel(), 0.6)
     return rgb, None

@@ -5,7 +5,6 @@ import numpy as np
 from terrain_core import (
     RECIPES,
     Style,
-    as_list,
     cast,
     jag,
     lattice_noise,
@@ -37,17 +36,17 @@ def render_glacier(ctx):
     tones = np.array([ctx.shared_rng.random() for _ in range(SCREE_TONES)])
     key = (fragment * 7 + layer * 1031 + 3) % SCREE_TONES
     tone = np.where(rock, 0.1 + 0.7 * tones[key], 0.0)
-    rgb = ramp(as_list(tone), [(0.0, p["snow"]), (0.01, p["dark"]), (0.45, p["mid"]), (0.8, p["light"])])
+    rgb = ramp(tone.ravel(), [(0.0, p["snow"]), (0.01, p["dark"]), (0.45, p["mid"]), (0.8, p["light"])])
     # Wind-packed drifts across the snow between the stones.
-    drift = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 6, size=size))).reshape(size, size)
-    rgb = mix(rgb, p["drift"], as_list(np.where(rock, 0.0, np.clip((drift - 0.45) * 2.5, 0, 1))), 0.8)
-    grit = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))).reshape(size, size)
-    fine = as_list(np.where(rock, 0.06, 0.04) * (grit - 0.5) * 2)
-    rgb = [[c * (1 + f) for c, f in zip(channel, fine)] for channel in rgb]
-    (*rgb, height), (common,) = jag(ctx, [*rgb, as_list(top)], [as_list(common_top)], 3, cells=6)
-    rgb = shade(rgb, height, 0.85, reference_height=common)
-    h = np.array(height).reshape(size, size)
+    drift = layout_field(ctx, lambda rng: lattice_noise(rng, 6, size=size, array=True)).reshape(size, size)
+    rgb = mix(rgb, p["drift"], np.where(rock, 0.0, np.clip((drift - 0.45) * 2.5, 0, 1)).ravel(), 0.8)
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True)).reshape(size, size)
+    fine = (np.where(rock, 0.06, 0.04) * (grit - 0.5) * 2).ravel()
+    rgb = rgb * (1 + fine)
+    (*rgb, height), (common,) = jag(ctx, [*rgb, top.ravel()], [common_top.ravel()], 3, cells=6)
+    rgb = shade(np.stack(rgb), height, 0.85, reference_height=common)
+    h = height.reshape(size, size)
     # Blue snow shade around the stones, lighter than talus's dark gaps.
     occlusion = np.clip((wrap_blur(h, 6) - h) / 6.0, 0, 1)
-    rgb = mix(rgb, p["void"], as_list(occlusion), 0.55)
+    rgb = mix(rgb, p["void"], occlusion.ravel(), 0.55)
     return cast(rgb, height, p["void"], reach=4, strength=0.35), None

@@ -18,10 +18,11 @@ def render_dry_grass(ctx):
                        comb=1.0)
 
     def waves(rng):
-        w = fbm(rng, 2, 2, cells_y=8, size=size)
-        return domain_warp(w, fbm(rng, 2, 2, size=size), fbm(rng, 2, 2, size=size), 1.2 * size / N)
+        w = fbm(rng, 2, 2, cells_y=8, size=size, array=True)
+        return domain_warp(w, fbm(rng, 2, 2, size=size, array=True), fbm(rng, 2, 2, size=size, array=True),
+                           1.2 * size / N)
 
     wave = normalize_like(layout(ctx, waves), waves(ctx.shared_rng))
-    rgb = mix(rgb, p["crest"], [smoothstep(0.6, 0.85, v) * (0.4 + 0.6 * h) for v, h in zip(wave, height)], 0.35)
-    rgb = mix(rgb, p["trough"], [smoothstep(0.4, 0.15, v) for v in wave], 0.3)
+    rgb = mix(rgb, p["crest"], smoothstep(0.6, 0.85, wave) * (0.4 + 0.6 * height), 0.35)
+    rgb = mix(rgb, p["trough"], smoothstep(0.4, 0.15, wave), 0.3)
     return fine_grain(ctx, rgb, 0.08), None

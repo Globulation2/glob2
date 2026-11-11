@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The boulders terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -29,21 +31,22 @@ def render_boulders(ctx):
     p = RECIPES["boulders"].palette
     common, common_grit, common_pebbles = boulders_fields(ctx.shared_rng, ctx.size)
     own, own_grit, own_pebbles = boulders_fields(ctx.rng, ctx.size)
-    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    height = normalize_like(blend_fields(common, own, ctx.interior), common, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["ground_dark"]), (0.5, p["ground"]), (1.0, p["ground_light"])])
-    grit = blend_fields(common_grit, own_grit, ctx.interior_mask)
-    rgb = [[c * (1 + 0.1 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
-    pebbles = blend_fields(common_pebbles, own_pebbles, ctx.interior_mask)
+    grit = blend_fields(common_grit, own_grit, ctx.interior)
+    rgb = rgb * (1 + 0.1 * (grit - 0.5) * 2)
+    pebbles = blend_fields(common_pebbles, own_pebbles, ctx.interior)
     rgb = mix(rgb, p["ground_dark"], pebbles, 0.35)
     return rgb, None
 
 
 def boulders_fields(rng, size):
     """Periodic dusty earth and faint pebbles under the unchanged raised decor."""
-    height = fbm(rng, 6, 3, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 6)
-    grit = lattice_noise(rng, 48, size=size)
-    pebbles = [0.0] * (size * size)
+    height = fbm(rng, 6, 3, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True),
+                         fbm(rng, 3, 2, size=size, array=True), 6)
+    grit = lattice_noise(rng, 48, size=size, array=True)
+    pebbles = np.zeros(size * size)
     for _ in range(10 * (size // N) ** 2):
         x, y = rng.random() * size, rng.random() * size
         radius = rng.uniform(2.5, 4.0)
