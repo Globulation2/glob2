@@ -57,6 +57,7 @@ uint64_t Planner::retainedQueryVectorBytes() const noexcept
     total += bytes(incrementalWorld.tiles);
     total += bytes(incrementalWorld.buildings);
     total += bytes(incrementalWorld.feedingColonies);
+    total += bytes(incrementalWorld.enemyStructures) + bytes(enemyStructureSourceCache);
     total += incrementalWorld.retainedProfileIndexBytes();
     total += bytes(foodInput.yield);
     total += bytes(foodInput.traversable);
@@ -71,7 +72,8 @@ uint64_t Planner::retainedQueryVectorBytes() const noexcept
     for (const auto& values : routeParentCache) total += bytes(values);
     for (const auto& values : materialDistanceCache) total += bytes(values.storage());
     for (const auto* values : {&waterDistanceCache, &footprintDistanceCache,
-            &completedBuildingDistanceCache, &criticalBuildingDistanceCache, &towerBuildingDistanceCache})
+            &completedBuildingDistanceCache, &towerBuildingDistanceCache,
+            &structureDistanceCache, &enemyStructureDistanceCache})
         total += bytes(values->storage());
     for (const auto& frontier : distanceFrontiers) total += frontier.retainedBytes();
     total += foodLedger.retainedVectorBytes() + foodResult.retainedVectorBytes()
@@ -270,7 +272,7 @@ void WorldState::reset(int w, int h)
 {
 	width=w; height=h; tick=0; swimmingBuilders=0;
 	std::fill(accessibleSupplies, accessibleSupplies+MaterialCount, 0);
-	feedingColonies.clear();
+	feedingColonies.clear(); enemyStructures.clear(); contestedBuildings.clear();
 	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear(); invalidateProfileIndex();
 }
 namespace
@@ -394,8 +396,10 @@ PlacementPolicy::PlacementPolicy()
 	  duplicateFirstScore(100), duplicateScoreScale(50), materialDistanceWeight(8),
 	  foodZoneRadius(2), innerFoodZoneMultiplier(100),
 	  hospitalFoodZoneMultiplier(50), towerFoodZoneMultiplier(25),
-	  towerCriticalDistanceWeight(10), towerSpacingTarget(8), towerSpacingWeight(12),
-	  towerThreatTarget(35), towerThreatWeight(2), laborScale(10),
+	  towerBorderPercent(50), towerInteriorPercent(25), towerBorderEnemyRatio(2),
+	  towerRoleDistanceFalloff(4), towerSpreadSaturationTiles(12), towerSpreadPercent(35),
+	  towerRepairHealthPercent(100),
+	  laborScale(10),
 	  downtimeWorkerScale(2), arteryLengthScale(5), repairBaseDemand(20),
 	  actionTimeoutTicks(300), routeClearableResourceCost(25), routeFarmCost(12),
 	  routeFertilityCost(2), colonyMinimumAnchorDistance(24),
@@ -514,8 +518,10 @@ void Planner::reset()
 	threatProtectionSourceCache.clear();threatPrefixCache.clear();
 	protectionPrefixCache.clear();
 	buildingDistanceSourceCache.clear();
-	completedBuildingDistanceCache.clear();criticalBuildingDistanceCache.clear();
+	completedBuildingDistanceCache.clear();
 	towerBuildingDistanceCache.clear();completedBuildingCountCache.clear();
+	structureDistanceCache.clear();enemyStructureDistanceCache.clear();
+	enemyStructureSourceCache.clear();enemyStructureGapCache=INT_MAX;
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
 	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.reset();
 	scoringNeighborhoodWidth=scoringNeighborhoodHeight=0;
@@ -900,8 +906,8 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	{
 		buildingDistanceSourceCache.swap(buildingSources);
 		completedBuildingDistanceCache.assign(size,INT_MAX);
-		criticalBuildingDistanceCache.assign(size,INT_MAX);
 		towerBuildingDistanceCache.assign(size,INT_MAX);
+		structureDistanceCache.assign(size,INT_MAX);
 		auto& queues=distanceFrontiers;
 		for(auto& queue:queues)queue.clear();
 		for(size_t i=0;i<world.buildings.size();++i)
@@ -910,21 +916,34 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 			const int index=world.index(building.centerX,building.centerY);
 			if(!building.site&&completedBuildingDistanceCache[index]==INT_MAX)
 			{completedBuildingDistanceCache[index]=0;queues[0].push_back(index);}
-			if((serves(building.buildingType,configuredSwarmType,building.level)
-			   ||serves(building.buildingType,configuredInnType,building.level)
-			   ||serves(building.buildingType,configuredSchoolType,building.level))
-			   &&criticalBuildingDistanceCache[index]==INT_MAX)
-			{criticalBuildingDistanceCache[index]=0;queues[1].push_back(index);}
-			if(serves(building.buildingType,configuredTowerType,building.level)
-			   &&towerBuildingDistanceCache[index]==INT_MAX)
-			{towerBuildingDistanceCache[index]=0;queues[2].push_back(index);}
+			const bool tower=serves(building.buildingType,configuredTowerType,building.level);
+			DistanceField& source=tower?towerBuildingDistanceCache:structureDistanceCache;
+			if(source[index]==INT_MAX){source[index]=0;queues[tower?1:2].push_back(index);}
 		}
 		DistanceField* fields[3]={&completedBuildingDistanceCache,
-			&criticalBuildingDistanceCache,&towerBuildingDistanceCache};
+			&towerBuildingDistanceCache,&structureDistanceCache};
 		// A four-neighbour multi-source BFS is exactly wrapped Manhattan distance,
 		// which replaces a full building scan at every candidate coordinate.
+		enemyStructureSourceCache.clear(); // the gap below depends on own buildings too
 		for(int field=0;field<3;++field)
 			field::expandDistances(*fields[field],queues[field],{world.width,world.height},field::Cardinal,INT_MAX);
+	}
+	// Role-sited towers measure the frontier from remembered enemy buildings.
+	if(world.enemyStructures!=enemyStructureSourceCache
+	   ||int(enemyStructureDistanceCache.size())!=size)
+	{
+		enemyStructureSourceCache=world.enemyStructures;
+		enemyStructureDistanceCache.assign(size,INT_MAX);
+		auto& queue=distanceFrontiers[0];queue.clear();
+		for(int index:world.enemyStructures)
+			if(index>=0&&index<size&&enemyStructureDistanceCache[index]==INT_MAX)
+			{enemyStructureDistanceCache[index]=0;queue.push_back(index);}
+		field::expandDistances(enemyStructureDistanceCache,queue,{world.width,world.height},field::Cardinal,INT_MAX);
+		enemyStructureGapCache=INT_MAX;
+		for(const WorldBuilding& building:world.buildings)
+			if(!serves(building.buildingType,configuredTowerType,building.level))
+				enemyStructureGapCache=std::min<int>(enemyStructureGapCache,
+					enemyStructureDistanceCache[world.index(building.centerX,building.centerY)]);
 	}
 	// Footprint spacing changes only when a reservation or a building footprint
 	// changes. Most placement reviews see the same sources, so retain the
@@ -2276,7 +2295,8 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 
 		if(building.hp<building.hpMax)
 		{
-			if(!limits.repairAllowed(building.buildingType) || !profile->atLevel(building.level)->repairable)
+			if(!limits.repairAllowed(building.buildingType) || !profile->atLevel(building.level)->repairable
+			   || !repairWanted(world,building))
 				continue;
 			Candidate candidate;candidate.action.type=RepairBuilding;
 			candidate.action.buildingId=building.id;candidate.action.buildingType=building.buildingType;
@@ -2334,6 +2354,69 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 		}
 		candidates.push_back(candidate);
 	}
+}
+
+TowerRole Planner::towerRole(const WorldState& world,int ordinal) const
+{
+	// A golden-ratio sequence over the tower's ordinal: deterministic, and every
+	// prefix of it holds the configured shares closely even with few towers.
+	// The colony's first building salts it, so seats and maps differ.
+	uint32_t salt=0;
+	if(!world.buildings.empty())
+	{
+		salt=2166136261u;
+		hashValue(salt,uint32_t(world.index(world.buildings.front().centerX,
+			world.buildings.front().centerY)));
+	}
+	const uint32_t position=(salt+uint32_t(ordinal)*40503u)&0xFFFFu;
+	const int percent=int(position*100u>>16);
+	if(percent<placementPolicy.towerBorderPercent)return TowerBorder;
+	if(percent<placementPolicy.towerBorderPercent+placementPolicy.towerInteriorPercent)
+		return TowerInterior;
+	return TowerFruit;
+}
+
+int Planner::towerRoleLocationQuality(const WorldState& world,
+	const DevelopmentAction& action) const
+{
+	// An existing tower keeps its site; upgrades and repairs are not resited.
+	if(action.buildingId>=0||structureDistanceCache.empty())return 50;
+	const int index=world.index(action.centerX,action.centerY);
+	const int falloff=placementPolicy.towerRoleDistanceFalloff;
+	const int own=structureDistanceCache[index];
+	auto nearness=[falloff](int distance)
+	{return distance==INT_MAX?0:clamp100(100-distance*falloff);};
+	TowerRole role=towerRole(world,committedBuildingCount(world,action.buildingType));
+	int fruit=INT_MAX;
+	if(role==TowerFruit)
+	{
+		for(int material=5;material<=7;++material)
+			fruit=std::min(fruit,materialDistanceAt(world,material,index));
+		if(fruit==INT_MAX)role=TowerInterior; // no known fruit: guard the colony
+	}
+	const int enemy=enemyStructureDistanceCache.empty()?INT_MAX
+		:enemyStructureDistanceCache[index];
+	if(role==TowerBorder&&(enemy==INT_MAX||enemyStructureGapCache==INT_MAX))
+		role=TowerInterior; // no known enemy: guard the colony
+	int quality=0;
+	if(role==TowerBorder)
+	{
+		// Prefer the point on the way to the nearest enemy buildings that is
+		// ratio times farther from them than from our own: with ratio 2, a third
+		// of the way out. Both distances must match to sit on that point.
+		const int ratio=placementPolicy.towerBorderEnemyRatio;
+		const int ownTarget=enemyStructureGapCache/(ratio+1);
+		const int enemyTarget=enemyStructureGapCache-ownTarget;
+		quality=nearness(std::abs(own-ownTarget)+std::abs(enemy-enemyTarget));
+	}
+	else if(role==TowerFruit)quality=nearness(fruit);
+	else quality=nearness(own);
+	const int towers=towerBuildingDistanceCache.empty()?INT_MAX
+		:towerBuildingDistanceCache[index];
+	const int spread=towers==INT_MAX?100
+		:clamp100(towers*100/std::max(1,placementPolicy.towerSpreadSaturationTiles));
+	const int share=placementPolicy.towerSpreadPercent;
+	return clamp100((quality*(100-share)+spread*share)/100);
 }
 
 UtilityComponents Planner::scoreCandidate(const WorldState& world,
@@ -2443,6 +2526,10 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(!locationTiles->empty())
 	{threat/=locationTiles->size();protection/=locationTiles->size();}
 	u.threatExposure=clamp100(threat);u.defendedness=clamp100(protection-threat/2);
+	// Towers are sited only by their role and spread (towerRoleLocationQuality):
+	// no threat facing, defendedness, building spacing or stone distance.
+	const bool tower=serves(action.buildingType,configuredTowerType,action.targetLevel);
+	if(tower){u.threatExposure=0;u.defendedness=0;}
 	int spacingQuality=100;
 	const int barracksRing=2*action.terminalFootprint.width+2*action.terminalFootprint.height;
 	const bool packedBarracks=action.type==BuildStandalone
@@ -2450,7 +2537,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		&&!action.accessTiles.empty()&&int(action.accessTiles.size())<barracksRing;
 	const bool opensNewParcel=(candidate.newCampus
 		||action.type==BuildStandalone)&&purpose!=ColonySeed&&!packedBarracks;
-	if(opensNewParcel&&!locationTiles->empty()&&!footprintDistanceCache.empty())
+	if(opensNewParcel&&!tower&&!locationTiles->empty()&&!footprintDistanceCache.empty())
 	{
 		int distance=INT_MAX;
 		for(size_t i=0;i<locationTiles->size();++i)
@@ -2505,38 +2592,8 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	}
 	else if(serves(action.buildingType,configuredBarracksType,action.targetLevel))
 		u.roleLocationQuality=clamp100(protection-threat); // no deployment reward
-	else if(serves(action.buildingType,configuredTowerType,action.targetLevel))
-	{
-		int criticalDistance=INT_MAX,towerDistance=INT_MAX;
-		if(action.buildingId<0&&!criticalBuildingDistanceCache.empty())
-		{
-			const int index=world.index(action.centerX,action.centerY);
-			criticalDistance=criticalBuildingDistanceCache[index];
-			towerDistance=towerBuildingDistanceCache[index];
-		}
-		else for(size_t i=0;i<world.buildings.size();++i)
-		{
-			const WorldBuilding& building=world.buildings[i];
-			const int distance=world.wrappedManhattan(action.centerX,action.centerY,
-				building.centerX,building.centerY);
-			if(serves(building.buildingType,configuredSwarmType,building.level)
-			   ||serves(building.buildingType,configuredInnType,building.level)
-			   ||serves(building.buildingType,configuredSchoolType,building.level))
-				criticalDistance=std::min(criticalDistance,distance);
-			if(serves(building.buildingType,configuredTowerType,building.level)&&building.id!=action.buildingId)
-				towerDistance=std::min(towerDistance,distance);
-		}
-		const int criticalQuality=criticalDistance==INT_MAX?0:
-			clamp100(100-criticalDistance*placementPolicy.towerCriticalDistanceWeight);
-		const int spacingQuality=towerDistance==INT_MAX?100:
-			clamp100(100-std::abs(towerDistance-placementPolicy.towerSpacingTarget)
-				*placementPolicy.towerSpacingWeight);
-		const int threatFacing=clamp100(100
-			-std::abs(threat-placementPolicy.towerThreatTarget)
-				*placementPolicy.towerThreatWeight);
-		u.roleLocationQuality=clamp100((criticalQuality*4+materialQualityAt(3)*2
-			+threatFacing*2+spacingQuality+protection)/10);
-	}
+	else if(tower)
+		u.roleLocationQuality=towerRoleLocationQuality(world,action);
 	else
 		// Training institutions stay inside the settlement while favoring the
 		// material that dominates their actual construction-site requirements.
@@ -2656,7 +2713,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		{needed+=target->constructionMaterials[r];scarcity+=std::max(0,target->constructionMaterials[r]-world.accessibleSupplies[r]);}
 		u.materialScarcity=needed?clamp100(scarcity*100/needed):0;
 	}
-	if(operatingKinds)u.roleLocationQuality=(u.roleLocationQuality+operatingQuality/operatingKinds)/2;
+	if(operatingKinds&&!tower)u.roleLocationQuality=(u.roleLocationQuality+operatingQuality/operatingKinds)/2;
 	u.constructionLabor=clamp100(action.workers*placementPolicy.laborScale);
 	if((action.type==UpgradeBuilding||action.type==RepairBuilding)&&from)
 	{
@@ -2795,11 +2852,13 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.innerFoodZoneMultiplier);
 	hashValue(signature,placementPolicy.hospitalFoodZoneMultiplier);
 	hashValue(signature,placementPolicy.towerFoodZoneMultiplier);
-	hashValue(signature,placementPolicy.towerCriticalDistanceWeight);
-	hashValue(signature,placementPolicy.towerSpacingTarget);
-	hashValue(signature,placementPolicy.towerSpacingWeight);
-	hashValue(signature,placementPolicy.towerThreatTarget);
-	hashValue(signature,placementPolicy.towerThreatWeight);
+	hashValue(signature,placementPolicy.towerBorderPercent);
+	hashValue(signature,placementPolicy.towerInteriorPercent);
+	hashValue(signature,placementPolicy.towerBorderEnemyRatio);
+	hashValue(signature,placementPolicy.towerRoleDistanceFalloff);
+	hashValue(signature,placementPolicy.towerSpreadSaturationTiles);
+	hashValue(signature,placementPolicy.towerSpreadPercent);
+	hashValue(signature,placementPolicy.towerRepairHealthPercent);
 	hashValue(signature,placementPolicy.laborScale);
 	hashValue(signature,placementPolicy.downtimeWorkerScale);
 	hashValue(signature,placementPolicy.arteryLengthScale);
@@ -3369,7 +3428,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
             prepareFoodLedger(world,action.id,action.buildingId);
             if(!foodUpgradePasses(world,action,reason)) {if(rejected)*rejected=reason;return false;}
         }
-		if(action.type==RepairBuilding&&b->hp>=b->hpMax)
+		if(action.type==RepairBuilding&&!repairWanted(world,*b))
 		{reason=RejectedUpgradeContract;if(rejected)*rejected=reason;return false;}
 		return true;
 	}
@@ -3837,7 +3896,12 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("protectionPrefixCache",protectionPrefixCache);
 	a("buildingDistanceSourceCache",buildingDistanceSourceCache);
 	a("completedBuildingDistanceCache",completedBuildingDistanceCache);
-	a("criticalBuildingDistanceCache",criticalBuildingDistanceCache);
+	{
+		// A retired cache keeps its slot in the saved layout: written empty
+		// since role-sited towers, and any saved contents are discarded.
+		DistanceField retired;
+		a("criticalBuildingDistanceCache",retired);
+	}
 	a("towerBuildingDistanceCache",towerBuildingDistanceCache);
 	a("completedBuildingCountCache",completedBuildingCountCache);
 	a("scoringReservedGeneration",scoringReservedGeneration);
@@ -3918,6 +3982,60 @@ void Planner::saveExecutionState(GAGCore::OutputStream* stream) const
     AIMaximaContinuation::Writer archive(stream,true);
     const_cast<Planner*>(this)->executionState(archive);
     stream->writeLeaveSection();
+}
+bool Planner::repairWanted(const WorldState& world,const WorldBuilding& building) const
+{
+	if(building.hp>=building.hpMax)return false;
+	if(!serves(building.buildingType,configuredTowerType,building.level))return true;
+	if(static_cast<long long>(building.hp)*100
+	   >=static_cast<long long>(building.hpMax)*placementPolicy.towerRepairHealthPercent)
+		return false;
+	return !std::binary_search(world.contestedBuildings.begin(),
+		world.contestedBuildings.end(),building.id);
+}
+
+Planner::TowerState Planner::towerState() const
+{
+	TowerState state;
+	state.pendingEnemyStructures=incrementalWorld.enemyStructures;
+	state.pendingContestedBuildings=incrementalWorld.contestedBuildings;
+	state.structureDistance=structureDistanceCache;
+	state.enemyStructureDistance=enemyStructureDistanceCache;
+	state.enemyStructureSource=enemyStructureSourceCache;
+	state.enemyStructureGap=enemyStructureGapCache;
+	return state;
+}
+void Planner::restoreTowerState(TowerState state)
+{
+	auto sortedIndexes=[](const std::vector<int>& values,int size)
+	{
+		for(int index:values)if(index<0||index>=size)return false;
+		return std::is_sorted(values.begin(),values.end())
+			&&std::adjacent_find(values.begin(),values.end())==values.end();
+	};
+	if(!sortedIndexes(state.pendingEnemyStructures,incrementalWorld.width*incrementalWorld.height))
+		throw std::runtime_error("Invalid saved enemy structures");
+	if(!std::is_sorted(state.pendingContestedBuildings.begin(),state.pendingContestedBuildings.end())
+	   ||std::adjacent_find(state.pendingContestedBuildings.begin(),state.pendingContestedBuildings.end())
+		!=state.pendingContestedBuildings.end()
+	   ||state.pendingContestedBuildings.size()>incrementalWorld.buildings.size())
+		throw std::runtime_error("Invalid saved contested buildings");
+	for(int id:state.pendingContestedBuildings)
+		if(!incrementalWorld.building(id))throw std::runtime_error("Invalid saved contested building");
+	// The derived fields share the saved building caches' map size, or are empty.
+	const size_t size=completedBuildingDistanceCache.size();
+	for(const DistanceField* field:{&state.structureDistance,&state.enemyStructureDistance})
+		if(!field->empty()&&field->size()!=size)
+			throw std::runtime_error("Invalid saved tower siting cache");
+	if(!sortedIndexes(state.enemyStructureSource,int(std::max(size,state.enemyStructureDistance.size())))
+	   ||state.enemyStructureGap<0)
+		throw std::runtime_error("Invalid saved tower siting cache");
+	incrementalWorld.enemyStructures=std::move(state.pendingEnemyStructures);
+	incrementalWorld.contestedBuildings=std::move(state.pendingContestedBuildings);
+	structureDistanceCache=std::move(state.structureDistance);
+	enemyStructureDistanceCache=std::move(state.enemyStructureDistance);
+	enemyStructureSourceCache=std::move(state.enemyStructureSource);
+	enemyStructureGapCache=state.enemyStructureGap;
 }
 void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
 {

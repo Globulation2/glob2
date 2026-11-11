@@ -148,6 +148,8 @@ template<class A> void fields(A& a, WorldState& value)
         for(const auto& colony:value.feedingColonies)if(colony.x<0 || colony.x>=value.width || colony.y<0 || colony.y>=value.height)
             throw std::runtime_error("Invalid saved feeding colony");
     }
+    // enemyStructures and contestedBuildings are appended at the end of Maxima's
+    // execution state (Planner::TowerState) so older payloads stay exact prefixes.
 	value.invalidateProfileIndex();
 }
 

@@ -285,6 +285,10 @@ upgrades.recovery_inn_weight = 100
 
 # Repair policy: damaged-building repair actions.
 repairs.enabled = true
+# A repair turns a building back into a site, so a tower under repair stops
+# shooting. Towers wait until they are badly damaged and no enemy fighter is near.
+repairs.tower_health_percent = 60
+repairs.tower_enemy_radius = 12
 
 # Construction policy: global site concurrency selected from population,
 # strategic utility, and emergency conditions.
@@ -466,11 +470,23 @@ placement.food_zone_radius = 2
 placement.inner_food_zone_multiplier = 100
 placement.hospital_food_zone_multiplier = 50
 placement.tower_food_zone_multiplier = 25
+# Legacy tower siting inputs, accepted for saved configurations and unused.
 placement.tower_critical_distance_weight = 10
 placement.tower_spacing_target = 8
 placement.tower_spacing_weight = 12
 placement.tower_threat_target = 35
 placement.tower_threat_weight = 2
+# Towers: each new tower takes the border, interior or fruit role (shares
+# below, fruit the remainder). Border towers prefer the point between own and
+# enemy buildings at tower_border_enemy_ratio times as far from the enemy;
+# interior towers prefer own buildings; fruit towers prefer fruit. All prefer
+# distance from existing towers. Stone is not considered.
+placement.tower_border_percent = 50
+placement.tower_interior_percent = 25
+placement.tower_border_enemy_ratio = 2
+placement.tower_role_distance_falloff = 4
+placement.tower_spread_saturation_tiles = 12
+placement.tower_spread_percent = 35
 placement.labor_scale = 10
 placement.downtime_worker_scale = 2
 placement.artery_length_scale = 5

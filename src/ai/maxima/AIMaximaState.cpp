@@ -259,6 +259,13 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     archive("budget.prestige_completion_allowed",budget.prestige_completion_allowed);
     archive("budget.prestige_desired_buildings",budget.prestige_desired_buildings);
     archive("prestige_migration_pending",prestige_migration_pending);
+    auto towers=development_planner.towerState();
+    archive("placement_enemy_structures",towers.pendingEnemyStructures);
+    archive("placement_contested_buildings",towers.pendingContestedBuildings);
+    archive("tower_structure_distance",towers.structureDistance);
+    archive("tower_enemy_structure_distance",towers.enemyStructureDistance);
+    archive("tower_enemy_structure_source",towers.enemyStructureSource);
+    archive("tower_enemy_structure_gap",towers.enemyStructureGap);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -346,6 +353,16 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     }
     if(budget.tactical_quarantine_ticks<0 || budget.tactical_quarantine_ticks>1000000)
         throw std::runtime_error("Invalid saved Maxima tactical quarantine duration");
+    if(versionMinor>=FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES) {
+        AIMaximaPlacement::Planner::TowerState towers;
+        archive("placement_enemy_structures",towers.pendingEnemyStructures);
+    archive("placement_contested_buildings",towers.pendingContestedBuildings);
+        archive("tower_structure_distance",towers.structureDistance);
+        archive("tower_enemy_structure_distance",towers.enemyStructureDistance);
+        archive("tower_enemy_structure_source",towers.enemyStructureSource);
+        archive("tower_enemy_structure_gap",towers.enemyStructureGap);
+        development_planner.restoreTowerState(std::move(towers));
+    }
     stream->readLeaveSection();
 
 }
