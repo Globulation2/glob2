@@ -487,6 +487,9 @@ placement.tower_border_enemy_ratio = 2
 placement.tower_role_distance_falloff = 4
 placement.tower_spread_saturation_tiles = 12
 placement.tower_spread_percent = 35
+# An inn or swarm upgrade that fails its food check (which rebuilds the ledger
+# without the building) is not checked again for this many ticks.
+placement.food_upgrade_retry_ticks = 512
 placement.labor_scale = 10
 placement.downtime_worker_scale = 2
 placement.artery_length_scale = 5
@@ -631,7 +634,7 @@ farming.wheat_invasion_clearing_enabled = true
 farming.wood_firebreak_enabled = true
 farming.proactive_clearing_enabled = true
 farming.normal_interval_ticks = 512
-farming.urgent_interval_ticks = 64
+farming.urgent_interval_ticks = 128
 farming.management_radius = 16
 farming.wheat_fertility_min = 3276
 # Legacy diagnostic values; wood protection now uses the renewable-capacity quota.
@@ -726,11 +729,19 @@ scheduling.building_interval_ticks = 200
 scheduling.building_phase_offset_ticks = 33
 scheduling.defense_interval_ticks = 150
 scheduling.defense_phase_offset_ticks = 84
-scheduling.fruit_interval_ticks = 250
+scheduling.fruit_interval_ticks = 500
 scheduling.fruit_phase_offset_ticks = 85
 scheduling.explorer_attack_interval_ticks = 1000
 scheduling.explorer_attack_phase_offset_ticks = 570
 scheduling.placement_interval_ticks = 512
+# Building events mark the strategy dirty; a review they trigger waits until
+# this many ticks after the last one. New reservations likewise re-plan
+# maintenance clearing at most this often (farming updates re-plan at once).
+scheduling.strategy_review_min_gap_ticks = 100
+scheduling.maintenance_clearing_min_gap_ticks = 128
+# Building changes alone re-run preemptive defense topology at most this often;
+# zone-cap and amphibious changes still recompute at once.
+scheduling.preemptive_defense_min_gap_ticks = 300
 scheduling.explorer_warning_duration_ticks = 2500
 scheduling.explorer_colony_warning_duration_ticks = 1800
 

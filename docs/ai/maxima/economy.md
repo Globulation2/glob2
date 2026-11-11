@@ -167,6 +167,21 @@ Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
 priority until completion.
 
+The scan prunes by branch and bound. Each candidate is first scored optimistically,
+before routing: no artery, no farm-loss penalty and, for inns and swarms, the best
+possible food quality. Its true score can only be lower, so a candidate whose bound
+cannot beat the best already found in its water tier is skipped without routing,
+food walk or full scoring. The scan visits origins nearest Maxima's completed
+buildings first, so a strong site is found early and the bound prunes most of the
+map; once a strict water-tier site exists, fallback-tier sites are skipped outright.
+A colony site's food is bounded by the unclaimed food inside the window its supply
+search can reach (a summed-area table), so hopeless colony sites skip the flood
+fill. Inn and swarm upgrades likewise compete on that bound,
+and their food-ledger check (which rebuilds the ledger without the building) runs
+only for the upgrade that would win. The chosen site is the one a full evaluation
+would pick from the same snapshot. An upgrade that fails its food check is not
+checked again for `placement.food_upgrade_retry_ticks` (512).
+
 For every building category, repairs and upgrades share an allowance that leaves
 at least half the existing buildings operational, rounded up: two or three
 buildings permit one maintenance job; four or five permit two. A lone building

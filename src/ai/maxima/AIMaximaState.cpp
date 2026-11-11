@@ -266,6 +266,17 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     archive("tower_enemy_structure_distance",towers.enemyStructureDistance);
     archive("tower_enemy_structure_source",towers.enemyStructureSource);
     archive("tower_enemy_structure_gap",towers.enemyStructureGap);
+    archive("maintenance_clearing_requested_by_farming",maintenance_clearing_requested_by_farming);
+    archive("last_maintenance_clearing_tick",last_maintenance_clearing_tick);
+    std::map<int,int> foodUpgradeRetries=development_planner.foodUpgradeRetries();
+    archive("food_upgrade_retries",foodUpgradeRetries);
+    archive("farming_wood_reserve_valid",farming_wood_reserve_valid);
+    archive("farming_wood_reserve_cells",farming_wood_reserve.cells);
+    archive("farming_wood_reserve_seeds",farming_wood_reserve.seeds);
+    archive("farming_wood_reserve_wheat",farming_wood_reserve.wheatCapacity);
+    archive("farming_wood_reserve_wood",farming_wood_reserve.woodCapacity);
+    archive("farming_wood_reserve_target",farming_wood_reserve.targetWoodCapacity);
+    archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -362,6 +373,30 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         archive("tower_enemy_structure_source",towers.enemyStructureSource);
         archive("tower_enemy_structure_gap",towers.enemyStructureGap);
         development_planner.restoreTowerState(std::move(towers));
+    }
+    maintenance_clearing_requested_by_farming=false;last_maintenance_clearing_tick=-1000000;
+    farming_wood_reserve=WoodReserve(0);farming_wood_reserve_valid=false;
+    budget.preemptive_min_gap_ticks=0;
+    if(versionMinor>=FILE_FORMAT_VERSION_MAXIMA_COALESCED_REVIEWS) {
+        archive("maintenance_clearing_requested_by_farming",maintenance_clearing_requested_by_farming);
+        archive("last_maintenance_clearing_tick",last_maintenance_clearing_tick);
+        if(last_maintenance_clearing_tick>timer)
+            throw std::runtime_error("Invalid saved Maxima maintenance clearing tick");
+        std::map<int,int> foodUpgradeRetries;
+        archive("food_upgrade_retries",foodUpgradeRetries);
+        development_planner.restoreFoodUpgradeRetries(std::move(foodUpgradeRetries),int(timer));
+        archive("farming_wood_reserve_valid",farming_wood_reserve_valid);
+        archive("farming_wood_reserve_cells",farming_wood_reserve.cells);
+        archive("farming_wood_reserve_seeds",farming_wood_reserve.seeds);
+        archive("farming_wood_reserve_wheat",farming_wood_reserve.wheatCapacity);
+        archive("farming_wood_reserve_wood",farming_wood_reserve.woodCapacity);
+        archive("farming_wood_reserve_target",farming_wood_reserve.targetWoodCapacity);
+        for(Uint8 cell:farming_wood_reserve.cells)if(cell>2)
+            throw std::runtime_error("Invalid saved Maxima wood reserve");
+        if(farming_wood_reserve.seeds<0)throw std::runtime_error("Invalid saved Maxima wood reserve");
+        archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
+        if(budget.preemptive_min_gap_ticks<0||budget.preemptive_min_gap_ticks>100000)
+            throw std::runtime_error("Invalid saved Maxima preemptive defense gap");
     }
     stream->readLeaveSection();
 
@@ -693,6 +728,10 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
+	maintenance_clearing_requested_by_farming=false;
+	last_maintenance_clearing_tick=-1000000;
+	farming_wood_reserve=WoodReserve(0);
+	farming_wood_reserve_valid=false;
 	development_cycle_pending=false;
 	preemptive_defense_pending=false;
 	reactive_defense_pending=false;

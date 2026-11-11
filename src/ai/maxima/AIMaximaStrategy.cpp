@@ -502,6 +502,7 @@ namespace
 		INT_SPEC(placement, tower_role_distance_falloff, "placement.tower_role_distance_falloff", 0, 50, "weight", "placement", "Role-sited tower quality lost per tile from its role's preferred spot", StrategyImpactMedium),
 		INT_SPEC(placement, tower_spread_saturation_tiles, "placement.tower_spread_saturation_tiles", 1, 64, "tiles", "placement", "Distance from the nearest tower beyond which role-sited towers gain no further spread", StrategyImpactMedium),
 		INT_SPEC(placement, tower_spread_percent, "placement.tower_spread_percent", 0, 100, "percent", "placement", "Share of a role-sited tower's location quality given to distance from other towers", StrategyImpactMedium),
+		INT_SPEC(placement, food_upgrade_retry_ticks, "placement.food_upgrade_retry_ticks", 0, 100000, "ticks", "placement", "Ticks before an inn or swarm upgrade that failed its food check is checked again", StrategyImpactLow),
 		INT_SPEC(placement, labor_scale, "placement.labor_scale", 0, 50, "weight", "placement", "Construction labor utility cost per assigned worker", StrategyImpactMedium),
 		INT_SPEC(placement, downtime_worker_scale, "placement.downtime_worker_scale", 1, 50, "weight", "placement", "Worker effectiveness scale reducing upgrade downtime", StrategyImpactMedium),
 		INT_SPEC(placement, artery_length_scale, "placement.artery_length_scale", 0, 50, "weight", "placement", "Utility cost per new circulation-artery tile", StrategyImpactMedium),
@@ -733,6 +734,9 @@ namespace
 		INT_SPEC(scheduling, explorer_attack_interval_ticks, "scheduling.explorer_attack_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between explorer attack-positioning passes", StrategyImpactMedium),
 		INT_SPEC(scheduling, explorer_attack_phase_offset_ticks, "scheduling.explorer_attack_phase_offset_ticks", 0, 1000000, "ticks", "scheduling", "Phase offset for explorer attack positioning", StrategyImpactLow),
 		INT_SPEC(scheduling, placement_interval_ticks, "scheduling.placement_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between development-planner cycles", StrategyImpactMedium),
+		INT_SPEC(scheduling, strategy_review_min_gap_ticks, "scheduling.strategy_review_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between strategy reviews triggered by building events; periodic reviews keep their interval", StrategyImpactMedium),
+		INT_SPEC(scheduling, maintenance_clearing_min_gap_ticks, "scheduling.maintenance_clearing_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between maintenance-clearing plans triggered by new reservations; farming-triggered plans run at once", StrategyImpactLow),
+		INT_SPEC(scheduling, preemptive_defense_min_gap_ticks, "scheduling.preemptive_defense_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between preemptive defense recomputes triggered by building changes alone", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_warning_duration_ticks, "scheduling.explorer_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of a general explorer-bomb warning", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_colony_warning_duration_ticks, "scheduling.explorer_colony_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of an explorer warning near the colony", StrategyImpactLow),
 
@@ -1550,6 +1554,16 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
         // Existing one-pipeline saves retain their executable strategy.
         restored.prestige.max_pipelines=1;
         provenance["prestige.max_pipelines"]="legacy single prestige pipeline";
+    }
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_COALESCED_REVIEWS) {
+        // Earlier saves reviewed strategy and re-planned clearing on every trigger.
+        if(!provenance.count("scheduling.strategy_review_min_gap_ticks"))restored.scheduling.strategy_review_min_gap_ticks=0;
+        if(!provenance.count("scheduling.maintenance_clearing_min_gap_ticks"))restored.scheduling.maintenance_clearing_min_gap_ticks=0;
+        if(!provenance.count("placement.food_upgrade_retry_ticks"))restored.placement.food_upgrade_retry_ticks=0;
+        if(!provenance.count("scheduling.preemptive_defense_min_gap_ticks"))restored.scheduling.preemptive_defense_min_gap_ticks=0;
+        for(const char* key:{"scheduling.strategy_review_min_gap_ticks","scheduling.maintenance_clearing_min_gap_ticks",
+            "placement.food_upgrade_retry_ticks","scheduling.preemptive_defense_min_gap_ticks"})
+            if(!provenance.count(key))provenance[key]="legacy immediate reviews";
     }
     if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES) {
         // Saves before role-sited towers lack its controls; they adopt the defaults.
