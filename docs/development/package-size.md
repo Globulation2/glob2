@@ -124,7 +124,7 @@ APIs from it. Sprite estimates include padded atlas cells at the maximum frame
 dimensions and any upload copies. Expired weak cache keys are periodically removed
 so unique preview and music requests do not accumulate session metadata.
 Never wait inside a worker or capture a mutable screen, FileManager or renderer.
-Build `scons asset-loading-benchmark` and run the resulting tool against the same
+Build `python3 tools/dev_build.py asset-loading-benchmark` and run the resulting tool against the same
 runtime tree with different worker overrides. It reports wall time to final
 readiness, process CPU time, worker occupancy, estimated peak scratch and a
 fingerprint of native and selected HD base-layer pixels. Pixel hashing is outside

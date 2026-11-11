@@ -4,7 +4,6 @@ These tests execute packaging/resource generation on Linux; they do not exercise
 Apple's language selection or permission UI.
 """
 import contextlib
-import ast
 import importlib.util
 import json
 from pathlib import Path
@@ -24,6 +23,7 @@ sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 sys.path.insert(0, str(ROOT / 'buildsys'))
 import ios
 from apple_localizations import localization_files
+import bundle  # noqa: E402  (no SCons needed to import it)
 
 
 def strings(path):
@@ -58,7 +58,7 @@ class AppleLocalizationTests(unittest.TestCase):
             env.Replace(BUNDLE_NAME=str(root / 'Glob2'), BUNDLE_BINARIES=[],
                         BUNDLE_RESOURCEDIRS=['data', *map(str, directories)],
                         BUNDLE_PLIST=str(root / 'Info.plist'), BUNDLE_ICON=str(root / 'Glob2.icns'),
-                        BUILDDIR=str(root / 'build'), LEAN_IMAGE_PREFIX='fixture', VERSION='1')
+                        BUILDDIR=str(root / 'build'), LEAN_IMAGE_PREFIX='fixture', VERSION='1', BUNDLE_JOBS=1)
             _, sources = bundle.bundleEmitter([], [], env)
             self.assertTrue({str(file.resolve()) for file in localization_files(directories)} <=
                             {str(node.abspath) for node in sources})
@@ -77,7 +77,6 @@ class AppleLocalizationTests(unittest.TestCase):
                 (destination / 'data/test.txt').write_text('exported game data')
 
             with contextlib.chdir(root), patch.object(bundle, 'run', side_effect=platform_command), \
-                 patch.object(bundle, 'GetOption', return_value=1), \
                  patch.object(bundle, 'addDependentLibsToBundle'), \
                  patch.object(bundle, 'install_macos'), patch('tools.package_assets.export_assets', side_effect=export):
                 bundle.createBundle([], [], env)
@@ -118,13 +117,8 @@ class AppleLocalizationTests(unittest.TestCase):
 
     def test_shipped_sources_keep_english_development_fallback_and_key_parity(self):
         # Read the real release bundle declaration, rather than only the test's
-        # synthetic environment, so dropping a locale from SConstruct fails.
-        declared = []
-        for node in ast.walk(ast.parse((ROOT / 'SConstruct').read_text())):
-            if isinstance(node, ast.Call):
-                for keyword in node.keywords:
-                    if keyword.arg == 'BUNDLE_RESOURCEDIRS':
-                        declared.extend(ast.literal_eval(keyword.value))
+        # synthetic environment, so dropping a locale from it fails.
+        declared = list(bundle.RESOURCE_DIRECTORIES)
         self.assertTrue({'platforms/macos/en.lproj', 'platforms/macos/mr.lproj', 'platforms/macos/ta.lproj', 'platforms/macos/te.lproj', 'platforms/macos/th.lproj', 'platforms/macos/bg.lproj'} <= set(declared))
         for base, plist_path in ((ROOT / 'platforms/macos', ROOT / 'platforms/macos/Info.plist'),
                                  (ROOT / 'platforms/mobile/ios', ROOT / 'platforms/mobile/ios/Info.plist.in')):

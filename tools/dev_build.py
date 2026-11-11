@@ -11,8 +11,8 @@ Arguments are SCons-style build options (key=value), targets and a few flags:
     python3 tools/dev_build.py role=relay release=1 relay
     python3 tools/dev_build.py compile_profile=core engine-tests
 
-Native Linux and Windows (MSYS2 MinGW, where mingw=1 is added) builds use
-CMake + Ninja. The options resolve, through
+Native Linux, macOS and Windows (MSYS2 MinGW, where mingw=1 is added) builds
+use CMake + Ninja. The options resolve, through
 buildsys/build_layout.py, to a build identity and its directory
 (build/linux/client/debug/dev-..., build/linux/client/perf[/o3], ...), which
 the CMake build configures with GLOB2_BUILD_ARGS. Without perf=1 or release=1
@@ -22,7 +22,9 @@ the install target installs as `scons install` does (into BINDIR=, INSTALLDIR=
 and DATADIR=, a shipping build without the build prefix's rpath),
 -jN the jobs (default 8), -k keeps going and -n only prints the commands.
 A target may be a CMake target name or a file under the build directory
-(glob2.exe names the glob2 target).
+(glob2.exe names the glob2 target). On macOS the bundle and package targets
+build Glob2.app and Glob2-<version>.dmg from a release build linked with the
+pinned image libraries, as SConstruct's do.
 
 Requests the CMake build does not cover yet (other targets and hosts,
 recording codecs other than h264) go to SCons; --generator=scons or
@@ -152,8 +154,8 @@ class Request:
 def scons_reason(arguments):
     """Why these arguments need SCons, or None when the CMake build builds them."""
     host = 'mingw' if windows_host() else platform.system().lower()
-    if host not in ('linux', 'mingw'):
-        return 'the CMake build covers native Linux and MSYS2 MinGW builds'
+    if host not in ('linux', 'darwin', 'mingw'):
+        return 'the CMake build covers native Linux, macOS and MSYS2 MinGW builds'
     for tool in ('cmake', 'ninja'):
         if not shutil.which(tool):
             return tool + ' is not installed'
@@ -169,7 +171,7 @@ def scons_reason(arguments):
     except ValueError as error:
         return 'SCons rejects the options too: ' + str(error)
     if identity['target'] != 'native' or identity['toolchain'] != host:
-        return 'the CMake build covers native Linux and MSYS2 MinGW builds'
+        return 'the CMake build covers native Linux, macOS and MSYS2 MinGW builds'
     version = subprocess.run(['cmake', '--version'], capture_output=True, text=True).stdout
     found = re.search(r'(\d+)\.(\d+)', version)
     if not found or (int(found.group(1)), int(found.group(2))) < (3, 25):
@@ -205,6 +207,9 @@ def cmake_commands(arguments):
                 # The interpreter running this script runs the build's generators; on
                 # Windows FindPython would otherwise prefer a registered CPython to MSYS2's.
                 'Python3_EXECUTABLE': Path(sys.executable).as_posix()}
+    if platform.system() == 'Darwin':
+        # SConstruct links the pinned image libraries only when the bundle is asked for.
+        settings['GLOB2_MAC_BUNDLE'] = 'ON' if {'bundle', 'package'} & set(targets) else 'OFF'
     for key, default in INSTALL_DEFAULTS.items():
         settings['GLOB2_' + key] = request.tools.get(key, default)
     commands = []

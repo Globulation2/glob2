@@ -945,6 +945,11 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/ui/Screen.cpp
 )
 
+# buildsys/sources.py GAG_DARWIN_SOURCES.
+set(GLOB2_GAG_DARWIN_SOURCES
+    libs/gag/src/MacScrollMonitor.mm
+)
+
 # buildsys/sources.py USL_SOURCES.
 set(GLOB2_USL_SOURCES
     libs/usl/src/code.cpp

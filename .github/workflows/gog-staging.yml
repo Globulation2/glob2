@@ -306,7 +306,7 @@ jobs:
           test -z "$(git status --porcelain --untracked-files=no)"
       - name: Install build tools
         run: |
-          brew install nasm cmake freetype libpng jpeg-turbo scons \
+          brew install nasm cmake ninja freetype libpng jpeg-turbo \
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build and stage macOS depot
         working-directory: source
@@ -326,7 +326,7 @@ jobs:
           esac
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 server=0 package
+          python3 tools/dev_build.py -j2 release=1 package
           python3 ../driver/tools/gog_release.py stage-macos --source-root "$PWD" \
             --app build/darwin/client/release/Glob2.app \
             --output artifacts/gog/macos --version "$VERSION" \

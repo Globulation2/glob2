@@ -57,6 +57,8 @@ def content():
         _list('GLOB2_STRICT_CXXFLAGS', javascript.STRICT_CXXFLAGS, 'javascript.STRICT_CXXFLAGS.'),
         _list('GLOB2_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_SOURCES],
               'buildsys/sources.py GAG_SOURCES.'),
+        _list('GLOB2_GAG_DARWIN_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_DARWIN_SOURCES],
+              'buildsys/sources.py GAG_DARWIN_SOURCES.'),
         _list('GLOB2_USL_SOURCES', ['libs/usl/src/' + name for name in sources.USL_SOURCES],
               'buildsys/sources.py USL_SOURCES.'),
         _list('GLOB2_RELAY_SOURCES', ['src/' + name for name in sources.RELAY_SOURCES],
@@ -124,16 +126,16 @@ def test_binaries():
     """test/SConscript's test binaries: (key, target, compiled entries, production entries,
     module libraries, every client object?, aliases that build it)."""
     return (
-        ('ENGINE_TESTS', 'glob2-engine-tests', registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS,
+        ('ENGINE_TESTS', 'glob2-engine-tests', registry.SUPPORT + registry.MAC_SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS,
          [], (), True, ('engine-tests', 'tests')),
-        ('UNIT_TESTS', 'glob2-unit-tests', registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS,
+        ('UNIT_TESTS', 'glob2-unit-tests', registry.SUPPORT + registry.MAC_SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS,
          registry.UNIT_PRODUCTION_SOURCES, (), False, ('unit-tests', 'tests')),
         # The module binaries hold cases moved out of the two above, so engine-tests and
         # unit-tests build them too.
-        ('MAP_TESTS', 'glob2-map-tests', registry.SUPPORT + registry.MAP_STUBS + registry.MAP_TESTS,
+        ('MAP_TESTS', 'glob2-map-tests', registry.SUPPORT + registry.MAC_SUPPORT + registry.MAP_STUBS + registry.MAP_TESTS,
          registry.MAP_PRODUCTION_SOURCES, ('map',), False, ('map-tests', 'unit-tests', 'tests')),
         ('SIM_TESTS', 'glob2-sim-tests',
-         registry.SUPPORT + registry.SIM_SUPPORT + registry.SIM_STUBS + registry.SIM_TESTS,
+         registry.SUPPORT + registry.MAC_SUPPORT + registry.SIM_SUPPORT + registry.SIM_STUBS + registry.SIM_TESTS,
          registry.SIM_PRODUCTION_SOURCES, ('sim', 'map'), False, ('sim-tests', 'engine-tests', 'tests')),
     )
 

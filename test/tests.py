@@ -23,6 +23,11 @@ SUPPORT = [
     'support/Glob2Test.cpp',
     'support/GlobalContainerSlot.cpp',
 ]
+# Native macOS test binaries also link this: Foundation's scoped activity keeps
+# App Nap from throttling background test processes.
+MAC_SUPPORT = [
+    ('support/TestActivity_mac.mm', dict(require={'mac'})),
+]
 
 # Linked into glob2-engine-tests only.
 ENGINE_SUPPORT = [

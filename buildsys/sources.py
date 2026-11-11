@@ -911,6 +911,9 @@ GAG_SOURCES = (
 )
 
 
+# libgag sources only native macOS builds compile (Objective-C++).
+GAG_DARWIN_SOURCES = ('MacScrollMonitor.mm',)
+
 USL_SOURCES = (
     'code.cpp',
     'debug.cpp',

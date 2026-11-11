@@ -1,5 +1,10 @@
-import SCons.Util, os
-from SCons.Script import GetOption
+"""The macOS application bundle: Glob2.app with its assets, libraries and dSYM.
+
+SConstruct's Bundle builder and the CMake build's bundle target
+(buildsys/cmake_generate.py bundle) both run createBundle; neither path needs
+the other's build system.
+"""
+import os
 import sys
 import shutil
 import subprocess
@@ -8,6 +13,19 @@ sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 from moltenvk import install_macos
 from apple_localizations import copy_localizations, localization_files
+
+# Bundle inputs beside the build directory's glob2, relative to the checkout.
+RESOURCE_DIRECTORIES = ["data", "maps", "campaigns", "scripts",
+                        "platforms/macos/en.lproj", "platforms/macos/mr.lproj", "platforms/macos/ta.lproj",
+                        "platforms/macos/te.lproj", "platforms/macos/bg.lproj", "platforms/macos/th.lproj"]
+PLIST = "platforms/macos/Info.plist"
+ICON = "platforms/macos/Glob2.icns"
+
+
+def _flatten(items):
+    if isinstance(items, (list, tuple)):
+        return [leaf for item in items for leaf in _flatten(item)]
+    return [items]
 
 
 def run(command) :
@@ -30,7 +48,7 @@ def createBundle(target, source, env) :
     if not env.get('LEAN_IMAGE_PREFIX'):
         raise RuntimeError('Mac release packaging requires the pinned lean SDL_image build')
     # add binaries
-    for bin in env.Flatten( env['BUNDLE_BINARIES'] ) :
+    for bin in _flatten(env['BUNDLE_BINARIES']):
         original = str(bin)
         packaged = str(Path(bundleDir)/'Contents/MacOS'/Path(original).name)
         shutil.copy2(original, packaged)
@@ -53,7 +71,7 @@ def createBundle(target, source, env) :
     from runtime_assets import sprite_packing_profile
     packing = sprite_packing_profile(env.get('sprite_packing', 'auto'), env.get('release', True),
                                      'GLOB2_H264_ASSETS' in env.get('CPPDEFINES', []))
-    export_assets(Path.cwd(), assets, platform='macos', jobs=GetOption('num_jobs'),
+    export_assets(Path.cwd(), assets, platform='macos', jobs=env['BUNDLE_JOBS'],
                   terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
                   video_sprites=packing == 'video')
     for directory in ('data', 'maps', 'campaigns', 'scripts'):
@@ -99,8 +117,12 @@ def bundleEmitter(target, source, env):
 
 def generate(env) :
     print("Loading Bundle tool")
+    import SCons.Builder
+    import SCons.Action
+    from SCons.Script import GetOption
     Builder = SCons.Builder.Builder
     Action = SCons.Action.Action
+    env['BUNDLE_JOBS'] = GetOption('num_jobs')
     bundleBuilder = Builder(
         action = Action( createBundle, createBundleMessage ),
         emitter = bundleEmitter,
@@ -111,3 +133,16 @@ def generate(env) :
 
 def exists(env) :
     return True
+
+
+def bundle_environment(builddir, binary, lean_image_prefix, recording_prefix, version, jobs,
+                       sprite_packing='auto', h264=True):
+    """The SConstruct environment keys createBundle reads, for a build directory."""
+    builddir = str(builddir)
+    return {'BUNDLE_NAME': builddir + '/Glob2', 'BUNDLE_SYMBOL_DIR': builddir + '/symbols',
+            'BUNDLE_BINARIES': [str(binary)], 'BUNDLE_RESOURCEDIRS': list(RESOURCE_DIRECTORIES),
+            'BUNDLE_PLIST': PLIST, 'BUNDLE_ICON': ICON, 'BUILDDIR': builddir,
+            'LEAN_IMAGE_PREFIX': str(lean_image_prefix), 'RECORDING_PREFIX': str(recording_prefix or ''),
+            'VERSION': version, 'BUNDLE_JOBS': jobs, 'sprite_packing': sprite_packing, 'release': True,
+            'CPPDEFINES': ['GLOB2_H264_ASSETS'] if h264 else []}
+

@@ -12,7 +12,7 @@ Install Apple command-line tools and the Homebrew dependencies:
 
 ```sh
 xcode-select --install
-brew install python cmake freetype libpng jpeg-turbo scons pkgconf ccache nasm opusfile opus libogg speex openssl@3 boost fribidi libepoxy
+brew install python cmake ninja freetype libpng jpeg-turbo pkgconf ccache nasm opusfile opus libogg speex openssl@3 boost fribidi libepoxy
 python3 buildsys/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export PATH="$GLOB2_SDL3_PREFIX/bin:$PATH"
@@ -78,7 +78,7 @@ python3 test/run_tests.py --build-dir build/local-dev --quick
 
 Keep the platform-specific compiler/OpenSSL options from setup on subsequent invocations. On Windows run `./build/local-dev/src/glob2.exe`. The explicit output directory above makes the runner and executable location unambiguous.
 
-The helper enables compiler caching, limits default concurrency and selects a separate fast output directory. It takes `key=value` build options and targets, and builds Linux and Windows with CMake and Ninja (macOS, browser and mobile builds still with SCons). Use [build options](build-options.md) for full symbols, cache settings and browser/mobile variants. Run the client in the output directory reported by the build; outputs are isolated by toolchain, role and configuration.
+The helper enables compiler caching, limits default concurrency and selects a separate fast output directory. It takes `key=value` build options and targets, and builds Linux, macOS and Windows with CMake and Ninja (browser and mobile builds still with SCons). Use [build options](build-options.md) for full symbols, cache settings and browser/mobile variants. Run the client in the output directory reported by the build; outputs are isolated by toolchain, role and configuration.
 
 ## Ordinary and optimized builds
 

@@ -2,8 +2,8 @@
 
 Release workflow and verification requirements.
 
-The Mac App Store release path uses the native SCons build, then stages a separate
-sandboxed app. Direct-distribution DMGs use `scons release=1 package` and are not
+The Mac App Store release path uses the native CMake build (`tools/dev_build.py ... bundle`), then stages a separate
+sandboxed app. Direct-distribution DMGs use `python3 tools/dev_build.py release=1 package` and are not
 used for App Store uploads. Apple requires the App Sandbox entitlement and a
 signed installer package for the Mac App Store.
 
@@ -22,7 +22,7 @@ store presentation changes do not select a build or release the product.
 On macOS, run:
 
 ```sh
-scons release=1 -j2
+python3 tools/dev_build.py release=1 -j2
 ```
 
 This compiles the game without packaging or release signing it. On Apple silicon,

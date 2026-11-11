@@ -5,7 +5,8 @@ import subprocess
 import tempfile
 
 
-def create_dmg(target, source, env):
+def create_dmg(target, source, env=None):
+    """Write target[0], a compressed image holding each source directory (Glob2.app)."""
     image = Path(str(target[0])).resolve()
     image.parent.mkdir(parents=True, exist_ok=True)
     image.unlink(missing_ok=True)

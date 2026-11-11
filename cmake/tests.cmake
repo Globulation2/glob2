@@ -141,6 +141,26 @@ set(GLOB2_ENGINE_TESTS_0_REQUIRE
 
 # Group 1.
 set(GLOB2_ENGINE_TESTS_1_SOURCES
+    test/support/TestActivity_mac.mm
+    libs/gag/src/MacScrollMonitorTest.mm
+    libs/gag/src/MacScrollVisualHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ENGINE_TESTS_1_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ENGINE_TESTS_1_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ENGINE_TESTS_1_REQUIRE
+    mac
+)
+
+# Group 2.
+set(GLOB2_ENGINE_TESTS_2_SOURCES
     src/tutorial/IntroductionUITest.cpp
     src/map/gradient/GradientLegacyQueueHarness.cpp
     src/map/gradient/GradientMarketTurnoverHarness.cpp
@@ -199,25 +219,6 @@ set(GLOB2_ENGINE_TESTS_1_SOURCES
 )
 
 # Extra compile flags of the group.
-set(GLOB2_ENGINE_TESTS_1_CXXFLAGS
-    -fno-access-control
-)
-
-# Extra definitions of the group.
-set(GLOB2_ENGINE_TESTS_1_DEFINES
-)
-
-# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
-set(GLOB2_ENGINE_TESTS_1_REQUIRE
-)
-
-# Group 2.
-set(GLOB2_ENGINE_TESTS_2_SOURCES
-    src/ai/LegacyAIStateTest.cpp
-    src/ai/AIRulesTest.cpp
-)
-
-# Extra compile flags of the group.
 set(GLOB2_ENGINE_TESTS_2_CXXFLAGS
     -fno-access-control
 )
@@ -228,14 +229,12 @@ set(GLOB2_ENGINE_TESTS_2_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_ENGINE_TESTS_2_REQUIRE
-    ai:cabino
-    ai:cortex
 )
 
 # Group 3.
 set(GLOB2_ENGINE_TESTS_3_SOURCES
-    src/ai/AICustomCatalogTest.cpp
-    src/ai/AIRecoveryCoverageTest.cpp
+    src/ai/LegacyAIStateTest.cpp
+    src/ai/AIRulesTest.cpp
 )
 
 # Extra compile flags of the group.
@@ -250,18 +249,18 @@ set(GLOB2_ENGINE_TESTS_3_DEFINES
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_ENGINE_TESTS_3_REQUIRE
     ai:cabino
-    ai:castor
     ai:cortex
 )
 
 # Group 4.
 set(GLOB2_ENGINE_TESTS_4_SOURCES
-    libs/gag/src/MacScrollMonitorTest.mm
-    libs/gag/src/MacScrollVisualHarness.cpp
+    src/ai/AICustomCatalogTest.cpp
+    src/ai/AIRecoveryCoverageTest.cpp
 )
 
 # Extra compile flags of the group.
 set(GLOB2_ENGINE_TESTS_4_CXXFLAGS
+    -fno-access-control
 )
 
 # Extra definitions of the group.
@@ -270,7 +269,9 @@ set(GLOB2_ENGINE_TESTS_4_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_ENGINE_TESTS_4_REQUIRE
-    mac
+    ai:cabino
+    ai:castor
+    ai:cortex
 )
 
 # Group 5.
@@ -535,7 +536,7 @@ set(GLOB2_UNIT_TESTS_MODULES )
 set(GLOB2_UNIT_TESTS_ALIASES unit-tests tests)
 
 # glob2-unit-tests: the registry entries it compiles.
-set(GLOB2_UNIT_TESTS_GROUPS 0 1 2 3 4)
+set(GLOB2_UNIT_TESTS_GROUPS 0 1 2 3 4 5)
 
 # Group 0.
 set(GLOB2_UNIT_TESTS_0_SOURCES
@@ -700,8 +701,7 @@ set(GLOB2_UNIT_TESTS_0_REQUIRE
 
 # Group 1.
 set(GLOB2_UNIT_TESTS_1_SOURCES
-    libs/gag/src/UnitDrawBatchTest.cpp
-    libs/gag/src/MapGeometryCacheTest.cpp
+    test/support/TestActivity_mac.mm
 )
 
 # Extra compile flags of the group.
@@ -714,20 +714,17 @@ set(GLOB2_UNIT_TESTS_1_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_UNIT_TESTS_1_REQUIRE
-    opengl
+    mac
 )
 
 # Group 2.
 set(GLOB2_UNIT_TESTS_2_SOURCES
-    libs/gag/src/SpriteDrawBatchTest.cpp
-    libs/gag/src/SpriteSheetTest.cpp
-    libs/gag/src/OpaqueRectangleBatchTest.cpp
-    libs/gag/src/SkinModelRenderTest.cpp
+    libs/gag/src/UnitDrawBatchTest.cpp
+    libs/gag/src/MapGeometryCacheTest.cpp
 )
 
 # Extra compile flags of the group.
 set(GLOB2_UNIT_TESTS_2_CXXFLAGS
-    -fno-access-control
 )
 
 # Extra definitions of the group.
@@ -736,15 +733,20 @@ set(GLOB2_UNIT_TESTS_2_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_UNIT_TESTS_2_REQUIRE
+    opengl
 )
 
 # Group 3.
 set(GLOB2_UNIT_TESTS_3_SOURCES
-    platforms/mobile/MobileCertificateHarness.cpp
+    libs/gag/src/SpriteDrawBatchTest.cpp
+    libs/gag/src/SpriteSheetTest.cpp
+    libs/gag/src/OpaqueRectangleBatchTest.cpp
+    libs/gag/src/SkinModelRenderTest.cpp
 )
 
 # Extra compile flags of the group.
 set(GLOB2_UNIT_TESTS_3_CXXFLAGS
+    -fno-access-control
 )
 
 # Extra definitions of the group.
@@ -753,12 +755,11 @@ set(GLOB2_UNIT_TESTS_3_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_UNIT_TESTS_3_REQUIRE
-    wss
 )
 
 # Group 4.
 set(GLOB2_UNIT_TESTS_4_SOURCES
-    platforms/mobile/MobileTemporaryFilesHarness.cpp
+    platforms/mobile/MobileCertificateHarness.cpp
 )
 
 # Extra compile flags of the group.
@@ -771,6 +772,24 @@ set(GLOB2_UNIT_TESTS_4_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_UNIT_TESTS_4_REQUIRE
+    wss
+)
+
+# Group 5.
+set(GLOB2_UNIT_TESTS_5_SOURCES
+    platforms/mobile/MobileTemporaryFilesHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_UNIT_TESTS_5_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_UNIT_TESTS_5_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_UNIT_TESTS_5_REQUIRE
     not-mingw
 )
 
@@ -908,7 +927,7 @@ set(GLOB2_MAP_TESTS_MODULES map)
 set(GLOB2_MAP_TESTS_ALIASES map-tests unit-tests tests)
 
 # glob2-map-tests: the registry entries it compiles.
-set(GLOB2_MAP_TESTS_GROUPS 0 1)
+set(GLOB2_MAP_TESTS_GROUPS 0 1 2)
 
 # Group 0.
 set(GLOB2_MAP_TESTS_0_SOURCES
@@ -954,15 +973,11 @@ set(GLOB2_MAP_TESTS_0_REQUIRE
 
 # Group 1.
 set(GLOB2_MAP_TESTS_1_SOURCES
-    src/map/FertilityFieldTest.cpp
-    src/map/gradient/GradientTest.cpp
-    src/map/MapQueryTest.cpp
-    src/map/gradient/PathGradientHarness.cpp
+    test/support/TestActivity_mac.mm
 )
 
 # Extra compile flags of the group.
 set(GLOB2_MAP_TESTS_1_CXXFLAGS
-    -fno-access-control
 )
 
 # Extra definitions of the group.
@@ -971,6 +986,28 @@ set(GLOB2_MAP_TESTS_1_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_MAP_TESTS_1_REQUIRE
+    mac
+)
+
+# Group 2.
+set(GLOB2_MAP_TESTS_2_SOURCES
+    src/map/FertilityFieldTest.cpp
+    src/map/gradient/GradientTest.cpp
+    src/map/MapQueryTest.cpp
+    src/map/gradient/PathGradientHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_MAP_TESTS_2_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_MAP_TESTS_2_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_MAP_TESTS_2_REQUIRE
 )
 
 # Production sources whose client objects glob2-map-tests links.
@@ -994,7 +1031,7 @@ set(GLOB2_SIM_TESTS_MODULES sim map)
 set(GLOB2_SIM_TESTS_ALIASES sim-tests engine-tests tests)
 
 # glob2-sim-tests: the registry entries it compiles.
-set(GLOB2_SIM_TESTS_GROUPS 0 1 2 3 4)
+set(GLOB2_SIM_TESTS_GROUPS 0 1 2 3 4 5)
 
 # Group 0.
 set(GLOB2_SIM_TESTS_0_SOURCES
@@ -1025,7 +1062,7 @@ set(GLOB2_SIM_TESTS_0_REQUIRE
 
 # Group 1.
 set(GLOB2_SIM_TESTS_1_SOURCES
-    src/ai/cortex/CortexNetCoverageTest.cpp
+    test/support/TestActivity_mac.mm
 )
 
 # Extra compile flags of the group.
@@ -1038,17 +1075,16 @@ set(GLOB2_SIM_TESTS_1_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_SIM_TESTS_1_REQUIRE
-    ai:cortex
+    mac
 )
 
 # Group 2.
 set(GLOB2_SIM_TESTS_2_SOURCES
-    src/ai/cortex/CortexPolicyCoverageTest.cpp
+    src/ai/cortex/CortexNetCoverageTest.cpp
 )
 
 # Extra compile flags of the group.
 set(GLOB2_SIM_TESTS_2_CXXFLAGS
-    -fno-access-control
 )
 
 # Extra definitions of the group.
@@ -1062,7 +1098,7 @@ set(GLOB2_SIM_TESTS_2_REQUIRE
 
 # Group 3.
 set(GLOB2_SIM_TESTS_3_SOURCES
-    src/ai/AISavePortabilityHarness.cpp
+    src/ai/cortex/CortexPolicyCoverageTest.cpp
 )
 
 # Extra compile flags of the group.
@@ -1076,14 +1112,12 @@ set(GLOB2_SIM_TESTS_3_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_SIM_TESTS_3_REQUIRE
-    ai:castor
+    ai:cortex
 )
 
 # Group 4.
 set(GLOB2_SIM_TESTS_4_SOURCES
-    src/ai/nicowar/NicowarFarmingHarness.cpp
-    src/ai/maxima/MaximaRelocationIntegrationTest.cpp
-    src/ai/maxima/MaximaFarmingIntegrationTest.cpp
+    src/ai/AISavePortabilityHarness.cpp
 )
 
 # Extra compile flags of the group.
@@ -1097,6 +1131,27 @@ set(GLOB2_SIM_TESTS_4_DEFINES
 
 # Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
 set(GLOB2_SIM_TESTS_4_REQUIRE
+    ai:castor
+)
+
+# Group 5.
+set(GLOB2_SIM_TESTS_5_SOURCES
+    src/ai/nicowar/NicowarFarmingHarness.cpp
+    src/ai/maxima/MaximaRelocationIntegrationTest.cpp
+    src/ai/maxima/MaximaFarmingIntegrationTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_SIM_TESTS_5_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_SIM_TESTS_5_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_SIM_TESTS_5_REQUIRE
 )
 
 # Production sources whose client objects glob2-sim-tests links.

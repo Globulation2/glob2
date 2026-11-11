@@ -571,10 +571,9 @@ def main():
             BUNDLE_NAME=bdir+"/Glob2",
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
-            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
-                                 "platforms/macos/en.lproj", "platforms/macos/mr.lproj", "platforms/macos/ta.lproj", "platforms/macos/te.lproj", "platforms/macos/bg.lproj", "platforms/macos/th.lproj"],
-            BUNDLE_PLIST="platforms/macos/Info.plist",
-            BUNDLE_ICON="platforms/macos/Glob2.icns" )
+            BUNDLE_RESOURCEDIRS=list(bundle.RESOURCE_DIRECTORIES),
+            BUNDLE_PLIST=bundle.PLIST,
+            BUNDLE_ICON=bundle.ICON)
         # Go through the builders rather than calling their actions directly.
         # A direct call runs while scons is still *reading* this file, before
         # anything has been compiled, so the bundle gets whatever binary happens

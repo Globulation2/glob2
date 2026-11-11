@@ -142,7 +142,7 @@ class DevelopmentBuildTests(unittest.TestCase):
                               ['recording_codec=vp9'], ['--debug=explain']):
                 self.assertIsNotNone(command.scons_reason(arguments), arguments)
         for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),
-                                    ({'which': None}, 'not installed'), ({'system': 'Darwin'}, 'Linux')):
+                                    ({'which': None}, 'not installed'), ({'system': 'FreeBSD'}, 'macOS')):
             system, which, run = host(**overrides)
             with system, which, run:
                 self.assertIn(expected, command.scons_reason([]))

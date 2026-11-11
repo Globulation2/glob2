@@ -35,16 +35,16 @@ build options (`perf=1`, `opt=3`, `release=1`, `role=relay`,
 test binaries), `-jN`, `-k` and `-n`. Without `perf=1`, `release=1` or
 `role=relay` it adds the dev tier's `dev_fast=1 linker=auto`.
 
-On native Linux, and on Windows in the MSYS2 MINGW64 shell (where it adds
-`mingw=1`), every such request builds with [CMake + Ninja](#cmake--ninja-build):
+On native Linux and macOS, and on Windows in the MSYS2 MINGW64 shell (where it
+adds `mingw=1`), every such request builds with [CMake + Ninja](#cmake--ninja-build):
 the options resolve, through `buildsys/build_layout.py`, to a build identity and
 its directory (`build/linux/client/debug/dev-dev_fast-true-linker-auto`,
 `build/linux/client/perf`, `build/linux/client/release`, ...), which CMake
 configures with `GLOB2_BUILD_ARGS`. `CC=`, `CXX=`, `CXXFLAGS=` and `LINKFLAGS=`
 set the compilers and base flags, `--build=DIR` picks another directory, and a
 file target names its CMake target (`build/linux/client/release/src/glob2` and
-`build/mingw/client/release/src/glob2.exe` are `glob2`). Browser, mobile and
-macOS targets, other hosts and the
+`build/mingw/client/release/src/glob2.exe` are `glob2`). Browser and mobile
+targets, other hosts and the
 `recording_codec` variants still build with SCons, which enables caching and
 `dev_fast=1` in a separate output directory and defaults to one job per CPU (the
 [token pool](#parallel-lanes) shares them between concurrent builds); the
@@ -266,7 +266,13 @@ MinGW-w64 GCC it builds the Windows client (`build/mingw/...`) the way
 SConstruct's `mingw=1` does: `WIN32` and `BOOST_ASIO_HAS_PTHREADS`, Winsock,
 `opengl32`/`glu32`, a POSIX regex library (`regex`, else `systre`), the Windows
 certificate store, the `mingw32` recording libraries and `-mwindows` for the
-client and harnesses but not the console test programs. `GLOB2_BUILD_ARGS` takes the SCons
+client and harnesses but not the console test programs. On macOS it builds
+`build/darwin/...` with Homebrew's (else MacPorts') libraries, Apple's frameworks
+and Objective-C++ sources; release builds keep `-g` and skip `-fwhole-program`
+and `-s`. Its `bundle` target makes `Glob2.app` (assets, libraries, MoltenVK and
+a dSYM, through `buildsys/bundle.py`) and `package` also `Glob2-<version>.dmg`;
+`tools/dev_build.py` sets `GLOB2_MAC_BUNDLE` for them, which links the pinned
+PNG/JPEG SDL_image as SConstruct did for those targets. `GLOB2_BUILD_ARGS` takes the SCons
 build options; `buildsys/build_layout.py` resolves them into the build identity,
 so the tier, its flags, its feature switches, its asset profile and its default
 directory are the ones SCons computes. Each tier compiles the same sources with
@@ -464,8 +470,8 @@ An explicit `--build` directory refuses an incompatible existing identity.
 
 ```sh
 python3 tools/dev_build.py client_profile=free
-scons release=1 client_profile=free
-scons release=1 client_profile=free distribution=app_store bundle
+python3 tools/dev_build.py release=1 client_profile=free
+python3 tools/dev_build.py release=1 client_profile=free distribution=app_store bundle   # macOS
 scons target=ios release=1 client_profile=free
 ```
 

@@ -40,7 +40,7 @@ def build_config(args):
     identity = build_identity(build_arguments(args))
     config = build_config.ConfigurationText()
     build_config.add_package(config, datadir=args.datadir, version=PACKAGE_VERSION, font=args.font,
-                             darwin=False, windows=identity['toolchain'] == 'mingw',
+                             darwin=identity['toolchain'] == 'darwin', windows=identity['toolchain'] == 'mingw',
                              china=bool(identity.get('china')), identity=identity)
     build_config.add_native_wss(config)
     if args.opengl:
@@ -124,6 +124,8 @@ def recording(args):
                 for name in recording_dependencies.codec_libraries('h264')]
     if args.target == 'mingw32':
         system = ['mfplat', 'mfuuid', 'ole32', 'strmiids', 'bcrypt']
+    elif args.target == 'darwin':
+        system = ['-framework ' + name for name in ('VideoToolbox', 'CoreMedia', 'CoreVideo', 'Foundation', 'AudioToolbox')]
     else:
         system = (['va', 'va-drm'] if identity.get('vaapi_api') else []) + ['dl', 'm']
     print(';'.join(archives + system))
@@ -175,6 +177,46 @@ def lean_image_prefix(args):
         os.close(saved)
     write_if_changed(Path(args.builddir) / 'image-runtime.json', json.dumps({'prefix': str(prefix)}) + '\n')
     print(Path(prefix).resolve().as_posix())
+
+
+def package_version(args):
+    print(PACKAGE_VERSION)
+
+
+def mac_image_prefix(args):
+    """The pinned PNG/JPEG SDL_image macOS bundles link (mac_image_dependency), built on
+    first use as SConstruct does for its bundle and package targets."""
+    from mac_image_dependency import ensure
+    environment = dict(os.environ)
+    if args.sdl_prefix:
+        environment['GLOB2_SDL3_PREFIX'] = str(Path(args.sdl_prefix).resolve())
+    sys.stdout.flush()
+    saved = os.dup(1)
+    os.dup2(2, 1)
+    try:
+        prefix = ensure(ROOT, jobs=args.jobs, environment=environment)
+        sys.stdout.flush()
+    finally:
+        os.dup2(saved, 1)
+        os.close(saved)
+    print(Path(prefix).resolve().as_posix())
+
+
+def bundle(args):
+    """Glob2.app in the build directory: SConstruct's Bundle builder (buildsys/bundle.py)."""
+    sys.path.insert(0, str(ROOT))  # bundle.py imports tools.package_assets
+    import bundle as mac_bundle
+    arguments = build_arguments(args)
+    environment = mac_bundle.bundle_environment(
+        Path(args.builddir).resolve().as_posix(), args.binary, args.lean_image_prefix, args.recording_prefix,
+        PACKAGE_VERSION, args.jobs, arguments.get('sprite_packing', 'auto'))
+    mac_bundle.createBundle(None, None, environment)
+
+
+def dmg(args):
+    """The release disk image of an application bundle (buildsys/dmg.py)."""
+    import dmg as disk_image
+    disk_image.create_dmg([args.output], [args.app])
 
 
 # content/data files installed beside the game, as `scons install` installed them.
@@ -281,8 +323,8 @@ def configure(args):
         resolved = build_identity(arguments)
     except ValueError as error:
         raise SystemExit('invalid build arguments: ' + str(error))
-    if resolved['target'] != 'native' or resolved['toolchain'] not in ('linux', 'mingw'):
-        raise SystemExit('the CMake build supports native Linux and MinGW builds; got ' + json.dumps(resolved))
+    if resolved['target'] != 'native' or resolved['toolchain'] not in ('linux', 'darwin', 'mingw'):
+        raise SystemExit('the CMake build supports native Linux, macOS and MinGW builds; got ' + json.dumps(resolved))
     content = dict(resolved, generator='cmake')
     write_if_changed(Path(args.builddir) / 'identity.json', json.dumps(content, sort_keys=True, indent=2) + '\n')
     print(json.dumps({'identity': resolved, 'directory': (ROOT / default_directory(resolved)).as_posix(),
@@ -367,9 +409,9 @@ def main(argv=None):
     command('official-instance', official_instance, builddir=False)
     sub = command('recording', recording, builddir=False)
     sub.add_argument('--prefix', required=True)
-    sub.add_argument('--target', choices=('linux', 'mingw32'), default='linux')
+    sub.add_argument('--target', choices=('linux', 'mingw32', 'darwin'), default='linux')
     sub = command('recording-prefix', recording_prefix)
-    sub.add_argument('--target', choices=('linux', 'mingw32'), default='linux')
+    sub.add_argument('--target', choices=('linux', 'mingw32', 'darwin'), default='linux')
     # SCons' compiler names (its CC/CXX defaults), so both share one store entry.
     sub.add_argument('--cc', default=os.environ.get('CC', 'gcc'))
     sub.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
@@ -380,6 +422,19 @@ def main(argv=None):
     sub.add_argument('--cc', default=os.environ.get('CC', 'gcc'))
     sub.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
     sub.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
+    command('package-version', package_version, builddir=False)
+    sub = command('mac-image-prefix', mac_image_prefix)
+    sub.add_argument('--sdl-prefix', default='')
+    sub.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
+    sub = command('bundle', bundle)
+    sub.add_argument('--binary', required=True)
+    sub.add_argument('--lean-image-prefix', required=True)
+    sub.add_argument('--recording-prefix', default='')
+    sub.add_argument('--jobs', type=int, default=8)
+    sub.add_argument('--arg', action='append', default=[])
+    sub = command('dmg', dmg, builddir=False)
+    sub.add_argument('--app', required=True)
+    sub.add_argument('--output', required=True)
     sub = command('install', install)
     sub.add_argument('--installdir', required=True)
     sub.add_argument('--bindir', required=True)

@@ -1,8 +1,8 @@
-from sources import GAG_SOURCES
+from sources import GAG_SOURCES, GAG_DARWIN_SOURCES
 Import("env")
 libgag_sources = list(GAG_SOURCES)
 if env["PLATFORM"] == "darwin" and not env.get("mingw"):
-    libgag_sources.append("MacScrollMonitor.mm")
+    libgag_sources += GAG_DARWIN_SOURCES
 
 
     

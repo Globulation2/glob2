@@ -52,7 +52,7 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
       - name: Install development dependencies
-        run: brew install cmake freetype libpng jpeg-turbo scons pkgconf opusfile opus libogg speex openssl@3 boost fribidi libepoxy
+        run: brew install cmake ninja freetype libpng jpeg-turbo pkgconf opusfile opus libogg speex openssl@3 boost fribidi libepoxy
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         id: asset_encoder_python
         with:
@@ -82,7 +82,7 @@ jobs:
               test "$(pkg-config --variable=libdir "$package")" = "$PWD/build/sdl3-ci/prefix/lib"
             done
           fi
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 $preview_target \
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py release=1 -j2 $preview_target \
             build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
       - name: Capture actual registered Thai menus and gameplay on macOS
