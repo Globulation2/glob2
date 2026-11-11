@@ -20,7 +20,7 @@ namespace GAGCore
 namespace
 {
 template<class Alpha>
-void recordAlphaMap(RenderBackend &backend, const std::valarray<Alpha> &map,
+void recordAlphaMap(RenderBackend &backend, std::span<const Alpha> map,
                     int mapW, int mapH, int x, int y, int cellW, int cellH,
                     const Color &color, float divisor)
 {
@@ -665,7 +665,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 #endif
 	}
 
-	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	void GraphicContext::drawAlphaMap(std::span<const float> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		if (renderBatch)
 			renderBatch->barrier();
@@ -747,7 +747,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
 
-	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	void GraphicContext::drawAlphaMap(std::span<const unsigned char> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		if (renderBatch)
 			renderBatch->barrier();

@@ -417,7 +417,7 @@ namespace GAGCore
 
 	}
 
-	void DrawableSurface::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	void DrawableSurface::drawAlphaMap(std::span<const float> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		assert(mapW * mapH <= static_cast<int>(map.size()));
 
@@ -426,7 +426,7 @@ namespace GAGCore
 				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha((Uint8)(255.0f * map[mapW * dy + dx])));
 	}
 
-	void DrawableSurface::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	void DrawableSurface::drawAlphaMap(std::span<const unsigned char> map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		assert(mapW * mapH <= static_cast<int>(map.size()));
 

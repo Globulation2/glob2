@@ -7,7 +7,6 @@
 
 #include <memory>
 #include <string>
-#include <valarray>
 #include <vector>
 
 namespace GAGCore
@@ -46,9 +45,9 @@ public:
 	struct Layers
 	{
 		int w = 0, h = 0;
-		std::valarray<unsigned char> shadow; //!< black, cast down and right
-		std::valarray<unsigned char> body;   //!< the bank's coverage
-		std::valarray<unsigned char> light;  //!< coverage times tone: creases dark, sunlit tops bright
+		std::vector<unsigned char> shadow; //!< black, cast down and right
+		std::vector<unsigned char> body;   //!< the bank's coverage
+		std::vector<unsigned char> light;  //!< coverage times tone: creases dark, sunlit tops bright
 	};
 
 	//! One layer of the bank. The near layer rushes past as the view drops

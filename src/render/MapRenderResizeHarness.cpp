@@ -30,6 +30,8 @@
 #include <filesystem>
 #include "CreditScreen.h"
 #include <iostream>
+#include <span>
+#include <valarray>
 #include "sim/snapshot/SnapshotStore.h"
 #include "MapDrawer.h"
 #include "Building.h"
@@ -702,7 +704,7 @@ void run(bool gpu)
 		REQUIRE(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
 		gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),255,255,255);
 		std::valarray<unsigned char> opaque(static_cast<unsigned char>(255),4);
-		gfx->drawAlphaMap(opaque,2,2,0,0,gfx->getW(),gfx->getH(),Color(0,0,0));
+		gfx->drawAlphaMap(std::span<const unsigned char>(std::begin(opaque),opaque.size()),2,2,0,0,gfx->getW(),gfx->getH(),Color(0,0,0));
 		capturePixels(gfx);
 		REQUIRE(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
 	}

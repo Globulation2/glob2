@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
-#include <valarray>
 
 class DynamicClouds;
 class ColonySkinPreview;
@@ -46,7 +45,7 @@ struct MapRenderState
 	//! not drawn, so it is active() exactly when this frame draws the fog faded.
 	FogFade fogFade;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
-	std::valarray<unsigned char> overlayAlphas;
+	std::vector<unsigned char> overlayAlphas;
 	//! How this frame's zoom draws each map element; set by MapDrawer::drawMap.
 	ZoomDetail detail;
 	//! The terrain overview's sampled palette image, kept between frames.

@@ -6,7 +6,7 @@
 #include "Settings.h"
 #include <algorithm>
 #include <cmath>
-#include <valarray>
+#include <vector>
 
 namespace GAGCore
 {
@@ -52,7 +52,7 @@ class DynamicClouds
 	/// screen height/granularity+1
 	int hGrid;
 	///cloud/shadow density
-	std::valarray<unsigned char> alphaMap, cloudMap;
+	std::vector<unsigned char> alphaMap, cloudMap;
     int renderOffsetX, renderOffsetY, renderCellSize;
 public:
 	 ///render() distinguishes between CLOUD and SHADOW
@@ -102,6 +102,6 @@ public:
 	 * Samples the cloud layer over the whole world at a coarse lattice.
 	 * @param out receives gridW*gridH opacities, row-major from the map origin
 	 */
-	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH,
+	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::vector<unsigned char> &out, int &gridW, int &gridH,
                       int maxGridSize = 2048) const;
 };
