@@ -11,7 +11,7 @@ the same objects as the game:
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
 The module libraries are archives of the client objects in `MAP_SOURCES` and
-`SIM_SOURCES` (`scons/sources.py`), so the linker takes only the members a test
+`SIM_SOURCES` (`buildsys/sources.py`), so the linker takes only the members a test
 reaches: a map change relinks a few hundred objects instead of the whole client.
 `engine-tests` also builds `glob2-sim-tests` and `unit-tests` also builds
 `glob2-map-tests` (`map-tests` and `sim-tests` build one alone), because the module
@@ -126,7 +126,7 @@ Actions, into the step summary with a `::error file=,line=` annotation per failu
 `test/test_run_tests.py` covers the runner itself.
 Each test executable prints a `GLOB2_TEST_PROVENANCE` line naming the source tree,
 compiler and flags that produced it. Native builds write that identity to
-`<binary>.provenance.json` after linking (`scons/test_provenance.py`), so a commit or
+`<binary>.provenance.json` after linking (`buildsys/test_provenance.py`), so a commit or
 stray untracked file that changes no compiled input recompiles and relinks nothing;
 browser and mobile test executables embed it instead.
 The runner escapes commas and backslashes in selected names and checks that JUnit

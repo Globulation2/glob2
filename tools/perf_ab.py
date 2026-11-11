@@ -136,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
     lease = None
     if args.baseline == 'master':
         # A shared lease on the baseline worktree keeps dev_baseline.py gc away from it.
-        sys.path.insert(0, str(ROOT / 'scons'))
+        sys.path.insert(0, str(ROOT / 'buildsys'))
         import dev_store
         worktree = next(parent for parent in baseline.parents if (parent / '.baseline-complete').exists())
         lease = dev_store.Lease(worktree)

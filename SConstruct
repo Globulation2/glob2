@@ -6,7 +6,7 @@ import io
 import atexit
 import SCons.Errors
 from pathlib import Path
-sys.path.append( os.path.abspath("scons") )
+sys.path.append( os.path.abspath("buildsys") )
 import bundle
 import official_instance
 import ccache
@@ -259,7 +259,7 @@ def configure(env, server_only, relay=False):
         Exit(1)
        
     configfile.finish()
-    # Only the files that name optional sources include this header (scons/sources.py).
+    # Only the files that name optional sources include this header (buildsys/sources.py).
     from sources import profile_header
     profile_content = profile_header(env['compile_profile'])
     def write_profile(target, source, env):
@@ -344,7 +344,7 @@ def main():
             env['ENV'][name] = os.environ[name]
     # Compiler discovery also needs the selected SDK, not just compilation.
     env.Tool('default')
-    # Share the machine's CPUs with every other build lane (scons/jobserver.py).
+    # Share the machine's CPUs with every other build lane (buildsys/jobserver.py).
     import jobserver
     env['SPAWN'] = jobserver.wrap_spawn(env['SPAWN'])
     jobserver.register_lane(env.Dir('#').abspath, bdir, sys.argv)
@@ -624,8 +624,8 @@ def main():
         bundle_assets = [str(p) for p in source_files(Path.cwd(), 'macos')]
         env.Depends(application, bundle_assets + [
             'tools/package_assets.py', 'tools/asset-requirements.txt', 'tools/packed_sprite_assets.py',
-            'scons/runtime_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json',
-            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', 'scons/moltenvk.py', 'scons/moltenvk.json',
+            'buildsys/runtime_assets.py', 'buildsys/recording_dependencies.py', 'buildsys/recording-versions.json',
+            'buildsys/bundle.py', 'buildsys/addDependentLibsToBundle.py', 'buildsys/moltenvk.py', 'buildsys/moltenvk.json',
             Value(bundle_assets), Value(env['sprite_packing'])])
         env.Alias("bundle", application)
         if "package" in COMMAND_LINE_TARGETS:
@@ -653,7 +653,7 @@ def main():
         "content/maps",
         "third_party/natsort",
         "content/scripts",
-        "scons",
+        "buildsys",
         "src",
         "test",
         "tools",

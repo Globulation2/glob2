@@ -91,7 +91,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/release/release.py check --tag "$RELEASE_TAG"
-          python3 -c 'import sys; sys.path.insert(0,"platforms/mobile"); sys.path.insert(0,"scons"); from ios_release import marketing_version; from build_layout import PACKAGE_VERSION; print(marketing_version(PACKAGE_VERSION))'
+          python3 -c 'import sys; sys.path.insert(0,"platforms/mobile"); sys.path.insert(0,"buildsys"); from ios_release import marketing_version; from build_layout import PACKAGE_VERSION; print(marketing_version(PACKAGE_VERSION))'
           if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 

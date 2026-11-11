@@ -237,7 +237,7 @@ def dependency_key(root, identity, fingerprint):
     ]
     files += [
         str(p.relative_to(root))
-        for p in (Path(root) / "scons/vcpkg-ports").rglob("*")
+        for p in (Path(root) / "buildsys/vcpkg-ports").rglob("*")
         if p.is_file()
     ]
     return key(root, files, {"identity": identity, "compiler": fingerprint})

@@ -37,7 +37,7 @@ ALWAYS = (
     'UnitCustomization/*ablation*', 'RuntimeResources/frozen seeded resource compositions*',
     'MapGenerator*Golden*', 'SimVersion*/*',
 )
-UNATTRIBUTABLE_PREFIXES = ('SConstruct', 'scons/', 'src/SConscript', 'libs/gag/src/SConscript', 'libs/usl/src/SConscript',
+UNATTRIBUTABLE_PREFIXES = ('SConstruct', 'buildsys/', 'src/SConscript', 'libs/gag/src/SConscript', 'libs/usl/src/SConscript',
                            'test/', 'content/', '.github/', 'third_party/', 'vcpkg.json', 'platforms/')
 SOURCE_SUFFIXES = ('.cpp', '.cc', '.c', '.mm')
 

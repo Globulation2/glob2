@@ -238,7 +238,7 @@ protocols, storage and CLI code, and retain cleanup and rollback handling.
 
 Bulgarian and Thai use their reviewed online catalogs with the English source catalog.
 `tools/localization/build_online_error_catalog.py` generates the embedded resource
-with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
+with exact input SHA-256 identities. The shared `buildsys/online_error_catalog.py`
 rule is called independently by native, serial/threaded browser, Android and iOS
 builders, including test and unit-production consumers. It generates under each
 builder’s existing `include/generated` directory, with explicit consumer

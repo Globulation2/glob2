@@ -32,7 +32,7 @@ PACK_RECIPE = "packed-sprites-v8"
 def encoder_identity(ffmpeg):
     path = Path(ffmpeg).resolve()
     version = subprocess.check_output([path, "-version"], text=True)
-    lock = json.loads((images.ROOT / "scons/recording-versions.json").read_text())
+    lock = json.loads((images.ROOT / "buildsys/recording-versions.json").read_text())
     version_number = lock["ffmpeg"]["directory"].removeprefix("ffmpeg-")
     if not re.match(rf"ffmpeg version {re.escape(version_number)}(?:\s|[-+])", version):
         raise ValueError("Sprite video encoding requires the pinned FFmpeg " + version_number)
@@ -276,7 +276,7 @@ def score(candidate, directory, platform, sources, group):
     sizes = {name: (directory / name).stat().st_size for name in paths}
     result = dict(stored_bytes=sum(sizes.values()) + len(index))
     if platform == "web":
-        from scons.web_assets import split, PART_BYTES
+        from buildsys.web_assets import split, PART_BYTES
         result["transfer_bytes"] = 0
         for part in split(paths, sizes, PART_BYTES):
             payload = b"".join((directory / name).read_bytes() for name in part)
@@ -288,7 +288,7 @@ def score(candidate, directory, platform, sources, group):
 
 def brotli_size(payload):
     import brotli
-    from scons.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
+    from buildsys.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
     return len(brotli.compress(payload, quality=DATA_BROTLI_QUALITY, lgwin=BROTLI_WINDOW))
 
 
@@ -299,7 +299,7 @@ def encode_group(name, group, cache, platform, encoder, lossy):
         fingerprint = pixel_fingerprint
     size_policy = None
     if platform == "web":
-        from scons.web_assets import PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW
+        from buildsys.web_assets import PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW
         size_policy = (images.BROTLI_VERSION, PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW)
     sources = sorted(group["frames"])
     key = hashlib.sha256(json.dumps([PACK_RECIPE, name, group["crf"], group["material"],

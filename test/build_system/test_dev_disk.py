@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_disk  # noqa: E402
 import dev_store  # noqa: E402
 import check_artifacts  # noqa: E402

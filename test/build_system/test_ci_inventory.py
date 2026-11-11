@@ -84,7 +84,7 @@ class InventoryTest(unittest.TestCase):
 
     def test_documentation_beside_ci_and_build_code_stays_cheap(self):
         for path in ('.github/README.md', '.github/actions/sdl3/README.md',
-                     'scons/README.md', 'test/build_system/README.md'):
+                     'buildsys/README.md', 'test/build_system/README.md'):
             with self.subTest(path=path):
                 _, plan, _ = selector.choose_checks([path], True, 'pull_request')
                 self.assertEqual(plan['mode'], 'cheap-contracts')

@@ -41,7 +41,7 @@ def stage(binary, root, original_assets=False, runtime=None, *, sprite_packing="
     if not prefix and os.environ.get("GLOB2_SDL3_PREFIX"):
         prefix = str(Path(os.environ["GLOB2_SDL3_PREFIX"]) / "recording")
     notices = (Path(prefix) if prefix else binary.resolve().parent.parent / "recording/prefix") / "share/licenses/recording"
-    from scons.runtime_assets import sprite_packing_profile
+    from buildsys.runtime_assets import sprite_packing_profile
     packing = sprite_packing_profile(sprite_packing, True, notices.is_dir())
     stage_assets(Path.cwd(), root, original_assets, packing=packing, jobs=jobs)
     if notices.is_dir():

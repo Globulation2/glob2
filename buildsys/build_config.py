@@ -1,7 +1,7 @@
 """glob2/BuildConfig.h text, shared by SConstruct and the CMake build.
 
 SConstruct decides each entry from its configure checks; CMake decides the same
-entries from its own checks and renders them here (scons/cmake_generate.py), so
+entries from its own checks and renders them here (buildsys/cmake_generate.py), so
 both build systems write byte-identical headers for the same configuration.
 """
 import io

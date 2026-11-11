@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 import unittest
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from client_features import resolve, header
 from build_layout import build_identity, default_directory
 from dev_build import dependency_identity

@@ -30,8 +30,8 @@ if 'windows-installer' in COMMAND_LINE_TARGETS:
                ('COPYING', 'docs/assets/source-attribution.md',
                 'tools/release/windows_runtime.py', 'tools/release/package_windows.py',
                 'tools/release/package_nsis.py', 'tools/package_assets.py',
-                'tools/packed_sprite_assets.py', 'scons/runtime_assets.py',
-                'scons/recording_dependencies.py', 'scons/recording-versions.json',
+                'tools/packed_sprite_assets.py', 'buildsys/runtime_assets.py',
+                'buildsys/recording_dependencies.py', 'buildsys/recording-versions.json',
                 'platforms/windows/win32_installer.nsi')]
     inputs.append(Value(env['sprite_packing']))
     output = '#' + env['BUILDDIR'] + '/glob2-' + env['VERSION'] + '-windows-x86_64-setup.exe'

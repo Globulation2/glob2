@@ -13,7 +13,7 @@ Install Apple command-line tools and the Homebrew dependencies:
 ```sh
 xcode-select --install
 brew install python cmake freetype libpng jpeg-turbo scons pkgconf ccache nasm opusfile opus libogg speex openssl@3 boost fribidi libepoxy
-python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
+python3 buildsys/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export PATH="$GLOB2_SDL3_PREFIX/bin:$PATH"
 export DYLD_LIBRARY_PATH="$GLOB2_SDL3_PREFIX/lib"
@@ -39,7 +39,7 @@ sudo apt-get install -y git g++-13 python3 python3-venv scons pkg-config ccache 
   libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev \
   libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
   libgl1-mesa-dri xvfb xauth openbox x11-utils
-python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
+python3 buildsys/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export PATH="$GLOB2_SDL3_PREFIX/bin:$PATH"
 export LD_LIBRARY_PATH="$GLOB2_SDL3_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
@@ -58,7 +58,7 @@ pacman -S --needed git make mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf 
   mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre mingw-w64-x86_64-openssl \
   mingw-w64-x86_64-boost mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre \
   mingw-w64-x86_64-nasm mingw-w64-x86_64-ccache
-python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
+python3 buildsys/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 2
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export PATH="$GLOB2_SDL3_PREFIX/bin:$PATH"
 python3 tools/dev_build.py mingw=1 --build=build/local-dev
@@ -66,7 +66,7 @@ python3 tools/dev_build.py mingw=1 --build=build/local-dev
 
 Keep the prefix’s DLL directory in PATH when running the game or tests from this shell. Packaged Windows builds stage runtime DLLs beside their binaries; see [package size](package-size.md).
 
-The declarations are [vcpkg.json](../../vcpkg.json), [SConstruct](../../SConstruct), and the [SDL3 source lock](../../scons/sdl3-versions.json). Recording codecs build from pinned sources; see [media dependencies](media-dependencies.md).
+The declarations are [vcpkg.json](../../vcpkg.json), [SConstruct](../../SConstruct), and the [SDL3 source lock](../../buildsys/sdl3-versions.json). Recording codecs build from pinned sources; see [media dependencies](media-dependencies.md).
 
 ## Routine editing
 

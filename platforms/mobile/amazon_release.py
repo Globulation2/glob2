@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from build_layout import PACKAGE_VERSION
 from dev_store import android_sdk
 from asset_bundle import verify_apk_assets

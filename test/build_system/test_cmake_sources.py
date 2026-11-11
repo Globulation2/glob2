@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import build_config  # noqa: E402
 import export_cmake_sources  # noqa: E402
 import harness_programs  # noqa: E402
@@ -22,7 +22,7 @@ class CMakeSourcesTests(unittest.TestCase):
         for path, text in export_cmake_sources.outputs().items():
             with self.subTest(path=path.name):
                 self.assertEqual(path.read_text(), text,
-                                 f'cmake/{path.name} is stale; run python3 scons/export_cmake_sources.py')
+                                 f'cmake/{path.name} is stale; run python3 buildsys/export_cmake_sources.py')
 
     def test_check_mode_reports_staleness(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -78,7 +78,7 @@ class CMakeSourcesTests(unittest.TestCase):
         script = (ROOT / 'src/SConscript').read_text()
         self.assertIn('from harness_programs import HARNESS_PROGRAMS', script)
         tail = script.split('# Harness and tool programs', 1)[1]
-        self.assertNotIn("development_program('", tail, 'add harness programs to scons/harness_programs.py')
+        self.assertNotIn("development_program('", tail, 'add harness programs to buildsys/harness_programs.py')
         for program in harness_programs.HARNESS_PROGRAMS:
             self.assertTrue((ROOT / program.source.lstrip('#')).is_file(), program.source)
             if not isinstance(program.link, str):
@@ -104,11 +104,11 @@ class CMakeSourcesTests(unittest.TestCase):
         self.assertIn('foreach(binary IN LISTS GLOB2_TEST_BINARIES)', cmake)
         self.assertIn('glob2_test_objects(unused TEST_PRODUCTION', cmake)
         self.assertIn('glob2_objects_of(module_objects glob2_client ${GLOB2_${upper}_SOURCES})', cmake)
-        self.assertNotRegex(cmake, r'[\w/]+\.(cpp|c)\b', 'list sources in scons/sources.py, not CMakeLists.txt')
+        self.assertNotRegex(cmake, r'[\w/]+\.(cpp|c)\b', 'list sources in buildsys/sources.py, not CMakeLists.txt')
 
     def test_build_config_matches_sconstruct_rendering(self):
         """The CMake bridge renders BuildConfig.h through the same helpers as SConstruct."""
-        bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'scons/cmake_generate.py')
+        bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'buildsys/cmake_generate.py')
         module = importlib.util.module_from_spec(bridge)
         bridge.loader.exec_module(module)
         with tempfile.TemporaryDirectory() as directory:
@@ -129,7 +129,7 @@ class CMakeSourcesTests(unittest.TestCase):
             self.assertIn(helper, sconstruct)
 
     def test_bridge_identity_is_the_scons_dev_identity(self):
-        bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'scons/cmake_generate.py')
+        bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'buildsys/cmake_generate.py')
         module = importlib.util.module_from_spec(bridge)
         bridge.loader.exec_module(module)
         import json
@@ -141,11 +141,11 @@ class CMakeSourcesTests(unittest.TestCase):
         self.assertEqual(identity['mode'], 'debug')
 
     def test_export_runs_without_scons(self):
-        # The generator must not import SCons (scons/javascript.py imports it lazily).
+        # The generator must not import SCons (buildsys/javascript.py imports it lazily).
         result = subprocess.run([sys.executable, '-c', 'import runpy, sys\n'
                                  'sys.modules["SCons"] = None\n'
                                  'sys.argv = ["export_cmake_sources.py", "--check"]\n'
-                                 'runpy.run_path("scons/export_cmake_sources.py", run_name="__main__")'],
+                                 'runpy.run_path("buildsys/export_cmake_sources.py", run_name="__main__")'],
                                 cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -154,7 +154,7 @@ class CMakeSourcesTests(unittest.TestCase):
         for module in ('test_provenance', 'runtime_assets', 'shared_assets', 'harness_programs'):
             result = subprocess.run([sys.executable, '-c', 'import sys\n'
                                      'sys.modules["SCons"] = None\n'
-                                     'sys.path.insert(0, "scons")\n'
+                                     'sys.path.insert(0, "buildsys")\n'
                                      f'import {module}'], cwd=ROOT, capture_output=True, text=True)
             with self.subTest(module=module):
                 self.assertEqual(result.returncode, 0, result.stderr)

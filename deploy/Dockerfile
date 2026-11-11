@@ -45,7 +45,7 @@ ARG TARGETARCH
 # types), so it builds the same pinned SDL3 prefix as the other C++ targets.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
-    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
+    python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
     strip /output/glob2-relay
@@ -69,7 +69,7 @@ RUN source-identity
 # and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
-    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
+    python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 && \
     mkdir -p /output/bin /output/lib/glob2 /output/share && \
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \

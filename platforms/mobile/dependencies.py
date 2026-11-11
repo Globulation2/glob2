@@ -11,7 +11,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buildsys"))
 from build_layout import (
     BuildLock,
     build_identity,
@@ -58,8 +58,8 @@ def validate_bundle(prefix, identity, fingerprint):
 
 def java_sources(vcpkg, prefix, downloads):
     artifact = json.loads((ROOT / "platforms/mobile/sdl-java.json").read_text())
-    port = (ROOT / "scons/vcpkg-ports/sdl3/portfile.cmake").read_text()
-    version = json.loads((ROOT / "scons/vcpkg-ports/sdl3/vcpkg.json").read_text())["version"]
+    port = (ROOT / "buildsys/vcpkg-ports/sdl3/portfile.cmake").read_text()
+    version = json.loads((ROOT / "buildsys/vcpkg-ports/sdl3/vcpkg.json").read_text())["version"]
     if version != artifact["version"] or artifact["sha512"] not in port:
         raise ValueError("SDL Java source pin differs from the pinned vcpkg SDL port")
     source = cache(
@@ -236,7 +236,7 @@ def main():
                     "install",
                     "--triplet=" + triplet,
                     "--overlay-triplets=" + str(ROOT / "platforms/mobile/triplets"),
-                    "--overlay-ports=" + str(ROOT / "scons/vcpkg-ports"),
+                    "--overlay-ports=" + str(ROOT / "buildsys/vcpkg-ports"),
                     "--x-manifest-root=" + str(ROOT / "platforms/mobile"),
                     "--x-install-root=" + str(installed),
                     "--x-buildtrees-root=" + str(scratch / "vcpkg-buildtrees"),

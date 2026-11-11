@@ -70,7 +70,7 @@ When the apex used to be the instance, have the website redirect the old app
 paths there with `301` (path and query kept): `/j/*`, `/play/*`, `/signin`,
 `/auth/*`, `/api/*`, `/matches*`, `/players/*`, `/leaderboard*`, `/maps*` and
 `/admin*`. Clients built for the old origin keep working: a former official
-origin listed in `scons/official_instance.py` maps to the new one for stored
+origin listed in `buildsys/official_instance.py` maps to the new one for stored
 selections and invite links, while saved credentials stay with the origin that
 issued them. `platform_stack_smoke.py --attach ... --website https://example.org`
 checks the redirects.
@@ -82,7 +82,7 @@ in the separate
 [Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
 repository on Firebase Hosting (project `bradley-personal-20261027`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
 `app.glob2.online` runs this stack and is the official instance origin
-(`scons/official_instance.py`; former origins are `https://glob2online.com` and
+(`buildsys/official_instance.py`; former origins are `https://glob2online.com` and
 `https://app.glob2online.com`).
 Website releases never restart platform services or matches. Public rating
 snapshots are published to a bucket by the website repository's scheduled
@@ -207,7 +207,7 @@ self-hosted instance leaves `appLinks` out (both files then answer 404) and its
 invites open the game through `glob2://`. Apple caches the file through its CDN;
 after a change, allow a day or reinstall the app.
 
-The apps take the domain from `scons/official_instance.py`: the Android build fills
+The apps take the domain from `buildsys/official_instance.py`: the Android build fills
 the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
 `platforms/mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both using the default host
 `app.glob2.online`. The Amazon and China editions leave online play out, so they

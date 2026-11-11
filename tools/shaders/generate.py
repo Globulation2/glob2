@@ -19,7 +19,7 @@ import struct
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import skin_materials
 
 MANIFEST = Path('libs/gag/shaders/renderer-manifest.json')

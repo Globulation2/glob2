@@ -6,7 +6,7 @@ The experiment parsed SConscript text and used host Boost headers. Native
 configuration wrote a root header and options cache. Running different
 toolchains in the same checkout could therefore change another build's inputs.
 
-SCons now imports plain Python source manifests from `scons/sources.py`.
+SCons now imports plain Python source manifests from `buildsys/sources.py`.
 Native and Emscripten code paths branch before dependency discovery. Every
 toolchain/role/configuration owns a directory, signature database, generated
 header, compilation database, compiler outputs, and temporary directory.
@@ -41,7 +41,7 @@ These checks do not replace platform-specific runtime and determinism tests.
 SDL3, SDL3_image, SDL3_ttf and SDL3_net are built into the selected browser
 output directory using the shared checksum-verified dependency helper. SDL2
 Emscripten ports are not used. The FreeType source dependency is separately
-pinned in `scons/sdl3-vendored.json`; other existing Emscripten ports retain their
+pinned in `buildsys/sdl3-vendored.json`; other existing Emscripten ports retain their
 SDK pins. Browser transport uses WebSockets and does not initialize SDL_net's
 native resolver threads or LAN discovery.
 

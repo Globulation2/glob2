@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_build
 import dev_store
 import shared_dependencies
@@ -172,7 +172,7 @@ def forbidden(*args, **kwargs):
     raise RuntimeError('Compatible reader must not rebuild')
 print(shared.ensure(forbidden, Path(sys.argv[2])/'two', Path(sys.argv[2])/'work'))
 '''
-            result = subprocess.run([sys.executable, '-c', code, str(ROOT / 'scons'), task], capture_output=True, text=True, timeout=5, check=True)
+            result = subprocess.run([sys.executable, '-c', code, str(ROOT / 'buildsys'), task], capture_output=True, text=True, timeout=5, check=True)
             self.assertEqual(result.stdout.strip(), str(prefix))
 
     def test_concurrent_consumers_publish_once(self):
@@ -191,7 +191,7 @@ def build(prefix,work):
     (prefix/'library.a').write_bytes(b'archive')
 shared.ensure(build,Path(sys.argv[2])/'local',Path(sys.argv[2])/'work')
 """
-            processes = [subprocess.Popen([sys.executable, '-c', code, str(ROOT / 'scons'), task], env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
+            processes = [subprocess.Popen([sys.executable, '-c', code, str(ROOT / 'buildsys'), task], env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
             for process in processes:
                 stdout, stderr = process.communicate(timeout=15)
                 self.assertEqual(process.returncode, 0, stderr.decode())

@@ -161,8 +161,8 @@ class FailureEvidence(unittest.TestCase):
 class MacBundleDependencies(unittest.TestCase):
     def test_localized_permission_files_invalidate_bundle(self):
         repo = next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
-        sys.path.insert(0,str(repo/'scons'))
-        module_path = repo/'scons/bundle.py'
+        sys.path.insert(0,str(repo/'buildsys'))
+        module_path = repo/'buildsys/bundle.py'
         spec = importlib.util.spec_from_file_location('localization_bundle_contract',module_path)
         module = importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         class Env(dict):

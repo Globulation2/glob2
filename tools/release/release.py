@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
 from tutorials.content import packaged_assets, reject_retired_assets
 
-VERSION_FILE = ROOT / "scons" / "build_layout.py"
+VERSION_FILE = ROOT / "buildsys" / "build_layout.py"
 
 
 def version():
@@ -99,11 +99,11 @@ def archive(destination, tag=None):
     # Include exact codec sources for offline builds and redistribution.
     source = io.BytesIO(raw)
     with tarfile.open(fileobj=source, mode='r:') as contents:
-        lock = next((m for m in contents.getmembers() if m.name == prefix+'scons/recording-versions.json'),None)
+        lock = next((m for m in contents.getmembers() if m.name == prefix+'buildsys/recording-versions.json'),None)
         versions = json.load(contents.extractfile(lock)) if lock else {}
     if versions:
         import sys
-        sys.path.insert(0,str(ROOT/'scons'))
+        sys.path.insert(0,str(ROOT/'buildsys'))
         from sdl3_dependencies import download
         with tempfile.TemporaryDirectory(prefix='glob2-release-recording-') as temporary:
             download(Path(temporary),versions)
@@ -123,7 +123,7 @@ def archive(destination, tag=None):
     with tarfile.open(target, "r:gz") as packed:
         names = set(packed.getnames())
         required = {prefix + name for name in (
-            "SConstruct", "scons/build_layout.py", "debian/glob2.6", "content/data/glob2.desktop",
+            "SConstruct", "buildsys/build_layout.py", "debian/glob2.6", "content/data/glob2.desktop",
             "content/data/org.globulation2.Globulation2.metainfo.xml",
             "content/data/screenshots/globulation2-gameplay.png",
             "content/data/usl/Language/Runtime/Control.usl",

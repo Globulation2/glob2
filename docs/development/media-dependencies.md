@@ -5,8 +5,8 @@ The recording build and native music playback use pinned codec inputs and bounde
 ## Embedded recording dependencies
 
 Client builds compile a pinned minimal FFmpeg/x264 stack through
-`scons/recording_dependencies.py`; the source SHA-256 lock is
-`scons/recording-versions.json`. Native builds need NASM on x86 targets and
+`buildsys/recording_dependencies.py`; the source SHA-256 lock is
+`buildsys/recording-versions.json`. Native builds need NASM on x86 targets and
 `pkg-config`; Linux builds with `libva` development headers include VAAPI. NVIDIA
 headers are pinned with the other sources. Mobile archives use the target compiler,
 ABI and SDK, including assembly flags; browser archives use standalone wasm32

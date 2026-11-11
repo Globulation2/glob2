@@ -1,7 +1,7 @@
 """Native harness and tool programs src/SConscript builds from the client objects.
 
 Shared by src/SConscript and the CMake build
-(scons/export_cmake_sources.py), so both build the same programs from the same
+(buildsys/export_cmake_sources.py), so both build the same programs from the same
 objects. Each program compiles one harness source with the client's flags and
 links it with:
 
@@ -14,7 +14,7 @@ Fields: `object` names the harness object (default: the source's basename);
 `cxxflags` are appended for the harness object only; `shared` names objects of
 SHARED_OBJECTS linked after it; `trust` adds the platform trust objects (none on
 Linux); `require` is a build feature the program needs ('wss'); `profile` is the
-scons/sources.py optional group it drives (compile_profile=core leaves it out).
+buildsys/sources.py optional group it drives (compile_profile=core leaves it out).
 """
 from collections import namedtuple
 

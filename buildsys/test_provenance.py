@@ -8,7 +8,7 @@ run away from their build directory, so they still embed the identity in
 glob2/TestBuildProvenance.h (GLOB2_TEST_PROVENANCE_EMBEDDED).
 
 The CMake build writes the same sidecar through write_sidecar
-(scons/cmake_generate.py test-provenance), so this module imports SCons lazily.
+(buildsys/cmake_generate.py test-provenance), so this module imports SCons lazily.
 """
 import hashlib
 import importlib.util

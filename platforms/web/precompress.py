@@ -19,7 +19,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scons.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
+from buildsys.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
 
 try:
     import brotli

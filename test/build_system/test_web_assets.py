@@ -11,7 +11,7 @@ import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import web_assets
 
 
@@ -51,7 +51,7 @@ class WebAssetPlanTests(unittest.TestCase):
                              (ROOT / 'content/data/fonts/LICENSE-Noto.txt').read_bytes())
 
     def test_bulgarian_launcher_font_is_tracked_and_packaged_for_api_images(self):
-        build = (ROOT / 'scons/web_build.py').read_text()
+        build = (ROOT / 'buildsys/web_build.py').read_text()
         self.assertIn("str(Path(directory) / 'fonts/sans-core.ttf')", build)
         self.assertIn("str(Path(directory) / 'fonts/LICENSE-DejaVu.txt')", build)
         self.assertIn("'platforms/web/assets/sans-core.ttf'", build)
@@ -221,7 +221,7 @@ class WebAssetPlanTests(unittest.TestCase):
                              {'data/custom/ore0.png', 'data/custom/ore.sheet'})
 
     def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
-        tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
+        tree = ast.parse((ROOT / 'buildsys/web_build.py').read_text())
         inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
                   and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
                           for target in node.targets)]

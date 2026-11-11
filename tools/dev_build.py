@@ -35,7 +35,7 @@ def command(arguments):
     if options.get('target') == 'web' and 'web_variant' not in options:
         defaults.append('web_variant=threaded')
     if not any(word == '-j' or word.startswith('-j') or word.startswith('--jobs') for word in arguments):
-        # The machine-wide token pool (scons/jobserver.py) shares the CPUs between
+        # The machine-wide token pool (buildsys/jobserver.py) shares the CPUs between
         # concurrent builds, so each lane may ask for all of them.
         defaults.append('-j' + str(os.cpu_count() or 1))
     return ['scons', *defaults, *arguments]
@@ -99,7 +99,7 @@ def cmake_commands(arguments):
     commands = []
     if not (CMAKE_DIRECTORY / 'build.ninja').exists():
         commands.append(['cmake', '--preset', 'dev'])
-    # Ninja does not draw from the SCons CPU token pool (scons/jobserver.py);
+    # Ninja does not draw from the SCons CPU token pool (buildsys/jobserver.py);
     # default to a share of the machine rather than all of it.
     build = ['cmake', '--build', '--preset', 'dev']
     if targets:
@@ -121,7 +121,7 @@ def main():
     args, remaining = parser.parse_known_args()
     if args.generator not in ('auto', 'scons', 'cmake'):
         parser.error('GLOB2_DEV_GENERATOR must be auto, scons or cmake, not ' + args.generator)
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     import dev_store
     environment = dict(os.environ)
     environment.setdefault('CCACHE', '1')

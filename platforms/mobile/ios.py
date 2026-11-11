@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 from dev_paths import dependency_prefix
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'buildsys'))
 from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
 from dev_build import dependency_identity
 from ios_release import marketing_version
@@ -128,7 +128,7 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    # Associated domain of the official instance (scons/official_instance.py); none
+    # Associated domain of the official instance (buildsys/official_instance.py); none
     # for the China edition, which has no online play.
     entitlements=plistlib.loads((ROOT/'platforms/mobile/ios/Glob2.entitlements').read_bytes())
     if args.china:
@@ -155,7 +155,7 @@ def main():
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
     lines += localized_resource_lines(ROOT / 'platforms/mobile/ios')
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     from moltenvk import prepare as prepare_moltenvk
     compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)
     lines += ['set_property(TARGET Glob2 PROPERTY XCODE_EMBED_FRAMEWORKS '+cmake_quote(compute_framework)+')',

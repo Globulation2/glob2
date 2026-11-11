@@ -12,7 +12,7 @@ import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "scons"))
+sys.path.insert(0, str(ROOT / "buildsys"))
 from tool_archives import download, digest
 
 SOURCES = json.loads((ROOT / "tools/asset-encoder-sources.json").read_text())

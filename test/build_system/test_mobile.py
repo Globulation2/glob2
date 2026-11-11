@@ -5,7 +5,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from build_layout import build_identity, default_directory, prepare_directory
 from mobile_toolchain import discover
 
@@ -565,14 +565,14 @@ class IOSNumericGuardTests(unittest.TestCase):
         import ast
         from unittest.mock import Mock
         root = Path(__file__).resolve().parents[2]
-        tree = ast.parse((root / 'scons/mobile_build.py').read_text())
+        tree = ast.parse((root / 'buildsys/mobile_build.py').read_text())
         branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If)
                       and ast.unparse(node.test) == "identity['target'] == 'android'"
                       and any(isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'by_source' for t in n.targets) for n in node.body))
         guard = next(node for node in branch.orelse if isinstance(node, ast.Expr)
                      and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name)
                      and node.value.func.id == 'numeric_guard')
-        predicate = next(node for node in ast.parse((root / 'scons/javascript.py').read_text()).body
+        predicate = next(node for node in ast.parse((root / 'buildsys/javascript.py').read_text()).body
                          if isinstance(node, ast.FunctionDef) and node.name == 'guarded_numeric_source')
         namespace = {}
         exec(compile(ast.Module(body=[predicate], type_ignores=[]), '<numeric-selection>', 'exec'), namespace)

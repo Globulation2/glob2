@@ -180,7 +180,7 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libs/usl/', 'content/data/terrain/', 'content/data/resources/', 'content/data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('buildsys/', 'libs/usl/', 'content/data/terrain/', 'content/data/resources/', 'content/data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',

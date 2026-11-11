@@ -21,7 +21,7 @@ class MobileRecordingNoticesTests(unittest.TestCase):
         (self.notices / 'configuration.json').write_text('{"video_codec":"h264"}\n')
         (self.root / 'SConstruct').write_text(
             'import sys\n'
-            f'sys.path.insert(0, {str(ROOT / "scons")!r})\n'
+            f'sys.path.insert(0, {str(ROOT / "buildsys")!r})\n'
             'from mobile_artifacts import stage_recording_notices\n'
             'env = Environment(tools=[])\n'
             'def native(target, source, env):\n'

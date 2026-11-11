@@ -7,7 +7,7 @@ import sys
 
 
 # The interpreter's exact compilation contract, also exported to CMake by
-# scons/export_cmake_sources.py. Paths are relative to the checkout.
+# buildsys/export_cmake_sources.py. Paths are relative to the checkout.
 INCLUDE_DIRECTORIES = ('third_party/quickjs-ng', 'third_party/openlibm/include',
                        'third_party/openlibm/src')
 STRICT_CFLAGS = ('-std=c11', '-fno-fast-math', '-ffp-contract=off', '-fno-strict-aliasing', '-fno-builtin')
@@ -55,7 +55,7 @@ def verify_symbols(target, source, env):
 def numeric_guard(local, objects):
     """Check all script-reachable native numeric code, including host conversion."""
     # Imported here so the source classifiers below load without SCons
-    # (scons/export_cmake_sources.py).
+    # (buildsys/export_cmake_sources.py).
     from SCons.Script import Action, Flatten
     guard = Path(local.Dir('#tools/javascript').abspath) / 'check-math-symbols.py'
     compiler = Path(shutil.which(shlex.split(str(local['CC']))[-1]) or str(local['CC']))

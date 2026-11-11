@@ -5,7 +5,7 @@ import sys
 import tempfile
 import unittest
 import subprocess
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, RELAY_SOURCES, RELAY_GAG_SOURCES
 
@@ -76,7 +76,7 @@ class BuildLayoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with BuildLock(directory):
                 code = "import sys; sys.path.insert(0,sys.argv[1]); from build_layout import BuildLock; BuildLock(sys.argv[2])"
-                process = subprocess.run([sys.executable, '-c', code, str(Path(__file__).resolve().parents[2]/'scons'), directory], capture_output=True, text=True)
+                process = subprocess.run([sys.executable, '-c', code, str(Path(__file__).resolve().parents[2]/'buildsys'), directory], capture_output=True, text=True)
                 self.assertNotEqual(process.returncode,0)
                 self.assertIn('Another build is using',process.stderr)
             with BuildLock(directory):

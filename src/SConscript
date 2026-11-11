@@ -92,7 +92,7 @@ client_object_by_source = dict(zip(client_cpp_sources, client_objects))
 client_objects = unique(client_objects)
 client_objects += platform_trust_sources
 client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
-# Module libraries over the same objects (scons/sources.py MODULE_SOURCES). Only the
+# Module libraries over the same objects (buildsys/sources.py MODULE_SOURCES). Only the
 # module test binaries link them; the game keeps linking the loose objects above.
 from sources import MODULE_SOURCES
 module_libraries = {name: local.StaticLibrary('glob2_' + name, unique(
@@ -101,7 +101,7 @@ module_libraries = {name: local.StaticLibrary('glob2_' + name, unique(
 Export('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog', 'module_libraries')
 
 
-# Harness and tool programs (scons/harness_programs.py, shared with the CMake build).
+# Harness and tool programs (buildsys/harness_programs.py, shared with the CMake build).
 from harness_programs import HARNESS_PROGRAMS, SHARED_OBJECTS, CLIENT, CLIENT_OBJECTS, LIBRARIES, object_name
 from sources import profile_features
 profile_groups = profile_features(env.get('compile_profile', 'full'))

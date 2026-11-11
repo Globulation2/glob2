@@ -62,7 +62,7 @@ jobs:
           cxx: g++-13
       - name: Build pinned SDL3 dependencies
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Build glob2 with ThreadSanitizer

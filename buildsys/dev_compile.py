@@ -79,7 +79,7 @@ def unity_groups(env, sources):
     if not env.get('DEV_IDENTITY', {}).get('unity'):
         return []
     root = Path(env.Dir('#').abspath)
-    allowlist = set(json.loads((root / 'scons/unity-sources.json').read_text()))
+    allowlist = set(json.loads((root / 'buildsys/unity-sources.json').read_text()))
     by_directory = {}
     for source in sources:
         path = Path(env.File(source).srcnode().abspath).relative_to(root).as_posix()

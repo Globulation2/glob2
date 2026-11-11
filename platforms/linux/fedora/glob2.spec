@@ -72,7 +72,7 @@ cp %{SOURCE3} build/sdl3/sources/SDL3_ttf-3.2.2.tar.gz
 cp %{SOURCE4} build/sdl3/sources/SDL3_net-3.2.0.tar.gz
 cp %{SOURCE5} build/sdl3/sources/libwebp-1.6.0.tar.gz
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
-python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build/sdl3/sources --jobs 2
+python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build/sdl3/sources --jobs 2
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
 scons -j2 release=1 retain_symbols=1 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \

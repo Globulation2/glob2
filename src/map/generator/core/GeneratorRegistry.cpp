@@ -2,7 +2,7 @@
 #include "GeneratorRegistry.h"
 #include <mutex>
 #include "CompileProfile.h"
-// compile_profile=core keeps only the generators scons/sources.py names in CORE_GENERATORS.
+// compile_profile=core keeps only the generators buildsys/sources.py names in CORE_GENERATORS.
 #if __has_include(<glob2/CompileProfile.h>)
 #include <glob2/CompileProfile.h>
 #else

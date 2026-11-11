@@ -28,7 +28,7 @@ def development_identity(arguments, target, release=False, profile=False):
         if target != 'web' or release:
             raise ValueError('single web_variant requires a browser development build')
         result['web_variant'] = variant
-    # compile_profile=core leaves optional sources out (scons/sources.py); the full
+    # compile_profile=core leaves optional sources out (buildsys/sources.py); the full
     # profile records nothing, so its identity and build directory stay unchanged.
     compile_profile = arguments.get('compile_profile', 'full')
     if compile_profile not in ('full', 'core'):

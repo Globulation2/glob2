@@ -42,7 +42,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_store  # noqa: E402
 from build_layout import build_identity, default_directory  # noqa: E402
 

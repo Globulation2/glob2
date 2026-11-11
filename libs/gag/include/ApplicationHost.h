@@ -80,7 +80,7 @@ std::unique_ptr<FileSelection> selectFile(const std::string &extension);
 bool storageRestoreFailed();
 
 // Staged game data. The browser host installs some data packages (game sprites,
-// the CJK font, menu music) after the main menu is up; see scons/web_assets.py.
+// the CJK font, menu music) after the main menu is up; see buildsys/web_assets.py.
 // Hosts that ship all data with the application answer true for every package
 // and never report an installation.
 #ifdef __EMSCRIPTEN__

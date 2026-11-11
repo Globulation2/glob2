@@ -47,7 +47,7 @@ namespace GAGCore
 		std::vector<std::size_t> getStringClusterEnds(const std::string &text) override;
 
 		//! Whether the linked SDL3_ttf moves the pen for kerned pairs. Builds without
-		//! HarfBuzz and without scons/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch shift
+		//! HarfBuzz and without buildsys/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch shift
 		//! only the kerned glyph, leaving a gap after it ("Tu torial"). Measured on the
 		//! same font opened with and without kerning; true when the font has no kerning
 		//! to compare.

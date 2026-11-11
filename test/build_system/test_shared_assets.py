@@ -1,4 +1,4 @@
-"""Contracts for sharing runtime-asset exports between checkouts (scons/shared_assets.py)."""
+"""Contracts for sharing runtime-asset exports between checkouts (buildsys/shared_assets.py)."""
 import json
 import os
 import subprocess
@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_store  # noqa: E402
 import shared_assets  # noqa: E402
 

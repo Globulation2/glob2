@@ -88,14 +88,14 @@ def install_export(exported, destination):
 EXPORT_TOOLS = (
     "tools/package_assets.py",
     "tools/packed_sprite_assets.py",
-    "scons/recording_dependencies.py",
-    "scons/recording-versions.json",
+    "buildsys/recording_dependencies.py",
+    "buildsys/recording-versions.json",
     "tools/terrain_tileset.py",
     "tools/terrain_catalog.py",
     "tools/asset-requirements.txt",
     "tools/image_encoding.json",
-    "scons/runtime_assets.py",
-    "scons/shared_assets.py",
+    "buildsys/runtime_assets.py",
+    "buildsys/shared_assets.py",
 )
 
 
@@ -122,8 +122,8 @@ def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
     """Fill `exported` (and its sibling audit JSON), from the shared store when possible.
 
     SCons (prepare_assets) and the CMake build
-    (scons/cmake_generate.py runtime-assets) both export through here."""
-    # Importable as scons.runtime_assets too (test/build_system), so name the sibling by path.
+    (buildsys/cmake_generate.py runtime-assets) both export through here."""
+    # Importable as buildsys.runtime_assets too (test/build_system), so name the sibling by path.
     if str(Path(__file__).resolve().parent) not in sys.path:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
     import shared_assets
@@ -136,7 +136,7 @@ def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
                       terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
                       video_sprites=video)
 
-    # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+    # Checkouts with the same asset inputs share one export (buildsys/shared_assets.py).
     key = shared_assets.content_key(root, inputs + [root / path for path in EXPORT_TOOLS],
                                     ["runtime-assets-v1", platform, lossy, packing, video, sys.version_info[:2]])
     shared_assets.export(root, exported, key, produce)

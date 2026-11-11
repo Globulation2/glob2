@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-sys.path.insert(0,str(ROOT/'scons'))
+sys.path.insert(0,str(ROOT/'buildsys'))
 from tools.release import release
 
 class RecordingSourceArchiveTest(unittest.TestCase):
@@ -20,11 +20,11 @@ class RecordingSourceArchiveTest(unittest.TestCase):
         dependency=b'pinned encoder source'
         pins={'x264':{'archive':'x264.tar.gz','sha256':hashlib.sha256(dependency).hexdigest()}}
         stream=io.BytesIO()
-        required=('SConstruct','scons/build_layout.py','content/data/glob2.desktop',
+        required=('SConstruct','buildsys/build_layout.py','content/data/glob2.desktop',
                   'content/data/org.globulation2.Globulation2.metainfo.xml','content/data/screenshots/globulation2-gameplay.png',
                   'content/data/usl/Language/Runtime/Control.usl','content/data/fonts/sans.ttf','content/maps/SmallForTwo.map.gz')
         with tarfile.open(fileobj=stream,mode='w') as archive:
-            for name in (*required,'scons/recording-versions.json'):
+            for name in (*required,'buildsys/recording-versions.json'):
                 data=json.dumps(pins).encode() if name.endswith('recording-versions.json') else b'source'
                 entry=tarfile.TarInfo(prefix+name);entry.size=len(data);archive.addfile(entry,io.BytesIO(data))
         def download(directory,versions):
@@ -37,7 +37,7 @@ class RecordingSourceArchiveTest(unittest.TestCase):
 
     def test_manual_is_from_committed_blob_without_historical_packaging(self):
         prefix = 'glob2-1.2.3/'
-        required = ('SConstruct', 'scons/build_layout.py', 'content/data/glob2.desktop',
+        required = ('SConstruct', 'buildsys/build_layout.py', 'content/data/glob2.desktop',
                     'content/data/org.globulation2.Globulation2.metainfo.xml',
                     'content/data/screenshots/globulation2-gameplay.png',
                     'content/data/usl/Language/Runtime/Control.usl', 'content/data/fonts/sans.ttf',

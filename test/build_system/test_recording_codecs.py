@@ -5,7 +5,7 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_build  # Resolve the SCons module before release tests extend sys.path.
 from build_layout import build_identity, default_directory
 from recording_dependencies import attach, build, codec_libraries, codec_sources, native_opus_configuration, webm_build_commands
@@ -30,7 +30,7 @@ class RecordingCodecsTests(unittest.TestCase):
                 build_identity(arguments, host=host)
 
     def test_webm_sources_and_archives_exclude_h264(self):
-        pins = json.loads((ROOT / 'scons/recording-versions.json').read_text())
+        pins = json.loads((ROOT / 'buildsys/recording-versions.json').read_text())
         for codec in ('vp9', 'av1'):
             self.assertNotIn('x264', codec_libraries(codec))
             self.assertNotIn('x264', codec_sources(codec))

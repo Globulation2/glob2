@@ -68,7 +68,7 @@ jobs:
           import os, re
           from pathlib import Path
           match = re.search(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$',
-                            Path('scons/build_layout.py').read_text(), re.MULTILINE)
+                            Path('buildsys/build_layout.py').read_text(), re.MULTILINE)
           if match is None or os.environ['TAG'] != 'v' + match.group(1):
               raise SystemExit('Public tag must match the browser package version')
           PYTHON

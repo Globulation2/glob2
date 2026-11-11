@@ -14,7 +14,7 @@ on:
       - CMakeLists.txt
       - CMakePresets.json
       - cmake/**
-      - scons/**
+      - buildsys/**
       - SConstruct
       - '**/SConscript'
       - test/tests.py

@@ -9,7 +9,7 @@ import types
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-spec = importlib.util.spec_from_file_location('hive_api', ROOT / 'scons/hive_api.py')
+spec = importlib.util.spec_from_file_location('hive_api', ROOT / 'buildsys/hive_api.py')
 api = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(api)
 

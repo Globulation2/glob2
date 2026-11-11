@@ -138,7 +138,7 @@ Hosted coverage follows the [CI selection policy](../development/verification.md
 ## Compressed release assets
 
 The release build preloads the shared verified runtime export, including WebP
-support. The shared dependency helper in `scons/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `scons/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
+support. The shared dependency helper in `buildsys/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `buildsys/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
 `platforms/web/package-static.py` creates deterministic gzip sidecars for the
 versioned serial and threaded JS/WASM, the capability loader, content-addressed data packages,
 and HTML entry point. Both runtime binaries and the loader participate in the

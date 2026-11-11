@@ -15,7 +15,7 @@
 #include <Stream.h>
 #include <cstdio>
 #include <stdexcept>
-// compile_profile=core leaves some AIs out (scons/sources.py); ids never change.
+// compile_profile=core leaves some AIs out (buildsys/sources.py); ids never change.
 #if __has_include(<glob2/CompileProfile.h>)
 #include <glob2/CompileProfile.h>
 #else

@@ -62,7 +62,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from build_paths import native_build_directory  # noqa: E402
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import jobserver  # noqa: E402
 
 BINARIES = {'engine': 'glob2-engine-tests', 'unit': 'glob2-unit-tests',
@@ -265,7 +265,7 @@ def compile_profile(build_dir):
 
 
 def note_compile_profile(build_dir):
-    """Say when the binaries come from a reduced compile profile (scons/sources.py)."""
+    """Say when the binaries come from a reduced compile profile (buildsys/sources.py)."""
     profile = compile_profile(build_dir)
     if profile != 'full':
         print(f'[run_tests] compile_profile={profile}: cases needing the code it leaves out are not built '
@@ -921,7 +921,7 @@ def main(argv=None):
         return run_unprofiled(job)
 
     def run_unprofiled(job):
-        # One machine-wide CPU token per running test process (scons/jobserver.py).
+        # One machine-wide CPU token per running test process (buildsys/jobserver.py).
         if job.has('network'):
             with network_lock, jobserver.slot():
                 return run_job(job, args, build_dir)

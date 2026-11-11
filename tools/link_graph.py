@@ -16,7 +16,7 @@ Objects are named by their path under the build directory, without the leading
 `src/` (`map/Map.o`, `libgag.a(Sprite.o)`); a name argument matches any node
 ending with it. The default build directory is the one test/run_tests.py uses
 (GLOB2_BUILD_DIR, else the newest native build); `--build-dir` overrides it.
-`--within GROUP` restricts the graph to a scons/sources.py group (map, sim,
+`--within GROUP` restricts the graph to a buildsys/sources.py group (map, sim,
 core, client, or several joined with +) plus libgag, libusl and third_party;
 `closure --external` then lists what the closure needs from outside the group,
 which is exactly what a module test binary must stub or the group must absorb.
@@ -32,7 +32,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 
 STRONG = set('TDBRGSCAI')   # defined, strong (POSIX nm types; uppercase = global)
 WEAK = set('WVu')           # weak or unique global definitions
@@ -221,7 +221,7 @@ def summarize(members, limit):
 
 
 def group_objects(spec):
-    """Objects of one or more '+'-joined scons/sources.py groups (map, sim, core, client)."""
+    """Objects of one or more '+'-joined buildsys/sources.py groups (map, sim, core, client)."""
     import sources
     groups = {'map': sources.MAP_SOURCES, 'sim': sources.SIM_SOURCES, 'core': sources.CORE_SOURCES,
               'client': sources.CLIENT_SOURCES}
@@ -243,7 +243,7 @@ def main(argv=None):
     parser.add_argument('--build-dir', type=Path, default=None)
     parser.add_argument('--weak', action='store_true', help='also follow weak-only definitions')
     parser.add_argument('--tests', action='store_true', help='include test/ objects as nodes')
-    parser.add_argument('--within', metavar='GROUP', help='restrict nodes to a scons/sources.py group')
+    parser.add_argument('--within', metavar='GROUP', help='restrict nodes to a buildsys/sources.py group')
     parser.add_argument('--with', dest='extra', action='append', default=[], metavar='OBJECT',
                         help='with --within: also keep this object (try a group change before making it)')
     commands = parser.add_subparsers(dest='command', required=True)

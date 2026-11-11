@@ -22,7 +22,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
 | Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
 | Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
-| Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
+| Builds and platform coverage | `SConstruct`, `src/SConscript`, `buildsys/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
 | Tests and replay usage | A domain's tests sit beside its code (`*Test.cpp`, `*Harness.cpp`); cross-domain tests, fixtures and the registry are in `test/`: [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |

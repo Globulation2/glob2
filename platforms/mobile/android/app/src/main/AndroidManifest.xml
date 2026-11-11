@@ -16,7 +16,7 @@
                 <data android:scheme="glob2" android:host="join" />
                 <data android:scheme="glob2" android:host="play" />
             </intent-filter>
-            <!-- App Link for the official instance only (scons/official_instance.py fills
+            <!-- App Link for the official instance only (buildsys/official_instance.py fills
                  officialInstanceHost); verified through https://<host>/.well-known/assetlinks.json. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

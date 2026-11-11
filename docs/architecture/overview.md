@@ -52,7 +52,7 @@ Online accounts, rooms, ratings and match history live in the TypeScript platfor
 | `content-src/` | Source art and provenance for generated content |
 | `platforms/` | Platform shells and packaging: `web/`, `mobile/`, `macos/`, `windows/`, `linux/`, `stores/` |
 | `services/online/` | The TypeScript online platform; `deploy/` holds its hosting scripts |
-| `tools/`, `scons/`, `test/` | Contributor tools, build helpers and cross-domain tests |
+| `tools/`, `buildsys/`, `test/` | Contributor tools, build helpers and cross-domain tests |
 
 The game names its files by paths relative to the runtime tree (`data/gfx/...`,
 `maps/...`). In a checkout that tree is `content/`: the file manager adds it beside
@@ -64,7 +64,7 @@ root because dpkg, snapcraft and F-Droid look for them there.
 
 ## Module libraries
 
-`scons/sources.py` groups the client objects into two link layers, each built as a
+`buildsys/sources.py` groups the client objects into two link layers, each built as a
 static library that only the module test binaries link (the game keeps linking the
 loose objects):
 

@@ -28,7 +28,7 @@ class BrowserPublishTests(unittest.TestCase):
                         + '<link rel="stylesheet" href="script-fonts.css">')
         (fixture.source / 'locales/te.json').write_bytes(
             (fixtures.module.ROOT / 'services/online/packages/i18n/locales/te.json').read_bytes())
-        sys.path.insert(0, str(fixtures.module.ROOT / 'scons'))
+        sys.path.insert(0, str(fixtures.module.ROOT / 'buildsys'))
         import web_assets
         web_assets.launcher_script_fonts(fixtures.module.ROOT, fixture.source)
         self.version = fixtures.module.package(fixture.source, fixture.output)

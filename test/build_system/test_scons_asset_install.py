@@ -16,14 +16,14 @@ class SConsAssetInstallTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "tools").symlink_to(ROOT / "tools", target_is_directory=True)
-            (root / "scons").symlink_to(ROOT / "scons", target_is_directory=True)
+            (root / "buildsys").symlink_to(ROOT / "buildsys", target_is_directory=True)
             folder = root / "content/data/gfx"
             folder.mkdir(parents=True)
             original = folder / "frame0.png"
             Image.new("RGBA", (8, 8), (20, 80, 130, 17)).save(original)
             (root / "SConstruct").write_text(
                 "import sys\nsys.path.insert(0, " + repr(str(ROOT)) + ")\n"
-                "from scons.runtime_assets import prepare_assets\n"
+                "from buildsys.runtime_assets import prepare_assets\n"
                 'env=Environment(tools=[], BUILDDIR="build", release=False, optimized_assets="auto")\n'
                 "stamp=prepare_assets(env)\nDefault(stamp)\n")
             subprocess.run([shutil.which("scons"), "-Q"], cwd=root, check=True,
@@ -42,7 +42,7 @@ class SConsAssetInstallTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "tools").symlink_to(ROOT / "tools", target_is_directory=True)
-            (root / "scons").symlink_to(ROOT / "scons", target_is_directory=True)
+            (root / "buildsys").symlink_to(ROOT / "buildsys", target_is_directory=True)
             folder = root / "content/data/gfx"
             folder.mkdir(parents=True)
             original = folder / "frame0.png"
@@ -50,7 +50,7 @@ class SConsAssetInstallTests(unittest.TestCase):
             (root / "SConstruct").write_text(
                 "import sys\n"
                 "sys.path.insert(0, " + repr(str(ROOT)) + ")\n"
-                "from scons.runtime_assets import install_assets\n"
+                "from buildsys.runtime_assets import install_assets\n"
                 'env=Environment(tools=[], BUILDDIR="build", INSTALLDIR='
                 + repr(str(root / "installed"))
                 + ")\n"

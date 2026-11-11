@@ -34,7 +34,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
             self.assertNotIn(definition, self.core)
         self.assertIn(
             "AIMaximaFarmingPolicy.cpp",
-            (ROOT / "scons/sources.py").read_text(),
+            (ROOT / "buildsys/sources.py").read_text(),
         )
 
     def test_cache_is_private_and_not_serialized(self):

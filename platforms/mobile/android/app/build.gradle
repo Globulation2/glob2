@@ -21,7 +21,7 @@ android {
         versionName nativeBuild.version_name
         // The Amazon APK packages both ARM ABIs; other builds package one.
         ndk { abiFilters.addAll(nativeBuild.abis ?: [nativeBuild.arch]) }
-        // App Link host of the official instance (scons/official_instance.py).
+        // App Link host of the official instance (buildsys/official_instance.py).
         manifestPlaceholders = [officialInstanceHost: nativeBuild.official_instance_host]
     }
     sourceSets.main {

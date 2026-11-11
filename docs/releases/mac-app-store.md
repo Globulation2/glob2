@@ -59,7 +59,7 @@ larger than every previously uploaded build number. Select the immutable public 
 compile and smoke-test an ad hoc sandboxed candidate. Set `upload` to true to
 sign the app, build a `.pkg`, validate it with Apple, and upload it to App Store
 Connect. The public version comes from `PACKAGE_VERSION` in
-`scons/build_layout.py`, so update it in the reviewed source before syncing.
+`buildsys/build_layout.py`, so update it in the reviewed source before syncing.
 The workflow does not submit an uploaded build for App Review; processing and
 submission are separate actions in App Store Connect.
 

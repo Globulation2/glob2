@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 // The source and configuration identity of the running test executable, as JSON.
-// Native builds read <executable>.provenance.json, which scons/test_provenance.py
+// Native builds read <executable>.provenance.json, which buildsys/test_provenance.py
 // writes after linking, so a commit that changes no compiled input relinks nothing.
 // Browser and mobile builds compile the identity in (GLOB2_TEST_PROVENANCE_EMBEDDED).
 #ifdef GLOB2_TEST_PROVENANCE_EMBEDDED

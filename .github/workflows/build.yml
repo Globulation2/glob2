@@ -209,7 +209,7 @@ jobs:
           cc: clang-18
           cxx: clang++-18
       - name: Build pinned SDL3 dependencies
-        run: python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+        run: python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
       - name: Verify coverage accounting
         run: python3 -m unittest discover -s test -p test_run_coverage.py -v
       - uses: ./.github/actions/renderer-shader-tools
@@ -442,7 +442,7 @@ jobs:
         id: build_without_opengl
         continue-on-error: true
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software build-software/src/glob2 engine-tests
@@ -644,7 +644,7 @@ jobs:
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           preview_target=""
@@ -900,10 +900,10 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
       - name: Verify restored WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -923,7 +923,7 @@ jobs:
           ccache -s -v
       - name: Seal built WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -935,7 +935,7 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
       - name: Save WebAssembly object tree
         id: save_webassembly_object_tree
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
@@ -1140,7 +1140,7 @@ jobs:
         id: build_match_relay
         continue-on-error: true
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
@@ -1163,7 +1163,7 @@ jobs:
           fi
           # The browser's editor tests read the native generator catalog, then
           # navigate the visible picker with real keyboard/pointer events.
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)

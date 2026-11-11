@@ -61,8 +61,8 @@ class GOGReleaseTests(unittest.TestCase):
                 cwd=source, text=True).strip()
 
         git('init', '-q')
-        (source / 'scons').mkdir()
-        (source / 'scons/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
+        (source / 'buildsys').mkdir()
+        (source / 'buildsys/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
         resource = source / 'platforms/macos/mr.lproj/InfoPlist.strings'
         resource.parent.mkdir(parents=True)
         resource.write_text('"NSLocalNetworkUsageDescription" = "मूळ मजकूर";\n', encoding='utf-8')
@@ -190,8 +190,8 @@ class GOGReleaseTests(unittest.TestCase):
 
     def test_separate_source_checkout_requires_tag_commit_clean_tree_and_version(self):
         source=self.root/'source'
-        (source/'scons').mkdir(parents=True)
-        layout=source/'scons/build_layout.py'
+        (source/'buildsys').mkdir(parents=True)
+        layout=source/'buildsys/build_layout.py'
         layout.write_text('PACKAGE_VERSION = "0.11.0.0"\n')
         tag='v0.11.0.0'
         for selected,dirty,package,error in (

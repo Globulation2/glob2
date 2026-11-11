@@ -8,7 +8,7 @@ from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 import android_release
 from build_layout import build_identity

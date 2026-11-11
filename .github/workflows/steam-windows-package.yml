@@ -140,7 +140,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ needs.preflight.outputs.source_sha }}"
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 client_profile=free distribution=steam --build=build/mingw/client/release/lean-images mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe

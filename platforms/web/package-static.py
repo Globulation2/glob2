@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Package versioned browser assets and verified deterministic gzip sidecars.
 
-Game data packages (scons/web_assets.py) are already named by their content and
+Game data packages (buildsys/web_assets.py) are already named by their content and
 listed inside both runtimes, so they keep their names under assets/."""
 
 import argparse

@@ -206,7 +206,7 @@ write with `ApplicationHost::persistStorage()`. Credentials are not in
 `preferences.txt`, which players attach to bug reports.
 
 The official origin is one build-time setting: `DEFAULT_ORIGIN` in
-`scons/official_instance.py` (currently `https://app.glob2.online`), overridable
+`buildsys/official_instance.py` (currently `https://app.glob2.online`), overridable
 with `scons official_instance=https://example.org`. Every build path passes it to
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.

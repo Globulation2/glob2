@@ -36,7 +36,7 @@ class SelectionTest(unittest.TestCase):
 
     def test_unattributable_changes_and_stale_maps_run_everything(self):
         for change in ('src/map/Map.h', 'SConstruct', 'test/support/HeadlessGame.cpp', 'content/data/x.json',
-                       '.github/workflows/build.yml', 'src/SConscript', 'scons/sources.py', 'src/data.txt'):
+                       '.github/workflows/build.yml', 'src/SConscript', 'buildsys/sources.py', 'src/data.txt'):
             with self.subTest(change=change):
                 self.assertIsNone(choose([change]).cases)
         self.assertIsNone(choose(['src/unit/Unit.cpp'], None).cases)

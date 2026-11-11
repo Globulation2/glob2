@@ -493,7 +493,7 @@ TEST_SUITE("FontKerning")
 
 	TEST_CASE("the bundled SDL3_ttf moves the pen for kerned pairs")
 	{
-		// Guards scons/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch in every build that
+		// Guards buildsys/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch in every build that
 		// uses the pinned prefix or the vcpkg overlay.
 		TtfScope ttf;
 		TTF_Font *kerned = TTF_OpenFont(fontPath().c_str(), 26);

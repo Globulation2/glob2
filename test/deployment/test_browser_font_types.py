@@ -30,7 +30,7 @@ def play_rules(source):
 @unittest.skipUnless(shutil.which('caddy'), 'Caddy is not installed')
 class BrowserFontTypeTests(unittest.TestCase):
     def test_actual_play_rules_serve_pinned_fonts_css_and_json_with_gzip(self):
-        spec = importlib.util.spec_from_file_location('launcher_web_assets', ROOT / 'scons/web_assets.py')
+        spec = importlib.util.spec_from_file_location('launcher_web_assets', ROOT / 'buildsys/web_assets.py')
         assets = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(assets)
         manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())

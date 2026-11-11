@@ -129,7 +129,7 @@ def validate_checkout(tag, source_commit):
         return subprocess.check_output(["git", *args], cwd=ROOT, text=True, stderr=subprocess.PIPE).strip()
     if git("rev-parse", "HEAD") != source_commit or git("rev-parse", f"refs/tags/{tag}^{{commit}}") != source_commit:
         raise ValueError("checkout HEAD and immutable release tag must identify sourceCommit")
-    version = re.search(r'^PACKAGE_VERSION = "([0-9.]+)"$', (ROOT / "scons/build_layout.py").read_text(), re.MULTILINE)
+    version = re.search(r'^PACKAGE_VERSION = "([0-9.]+)"$', (ROOT / "buildsys/build_layout.py").read_text(), re.MULTILINE)
     if not version or tag != "v" + version[1]:
         raise ValueError("release tag must match PACKAGE_VERSION")
 

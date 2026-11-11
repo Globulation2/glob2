@@ -217,7 +217,7 @@ jobs:
       - name: Build and stage Linux client
         run: |
           stage="$PWD/artifacts/release-stage"
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 lean_images=1 \
@@ -242,7 +242,7 @@ jobs:
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           # Original bytes are an offline measurement tree, not playable artwork.
           python3 tools/package_assets.py --platform linux --original --output artifacts/source-asset-baseline
-          python3 -c 'from scons.runtime_assets import install_export; import sys; install_export("artifacts/source-asset-baseline", sys.argv[1])' "$stage/usr/share/glob2"
+          python3 -c 'from buildsys.runtime_assets import install_export; import sys; install_export("artifacts/source-asset-baseline", sys.argv[1])' "$stage/usr/share/glob2"
           mkdir -p artifacts/package-sizes
           tar -C "$stage" -czf artifacts/package-sizes/baseline.tar.gz usr
           python3 tools/release/package_sizes.py report --staged-root "$stage" \
@@ -359,7 +359,7 @@ jobs:
         run: |
           # The checkout is owned by another user inside the container.
           git config --global --add safe.directory '*'
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0
@@ -396,7 +396,7 @@ jobs:
           top="$GITHUB_WORKSPACE/artifacts/rpmbuild"
           mkdir -p "$top"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
           cp "artifacts/release-source/glob2-${VERSION}.tar.gz" "$top/SOURCES/"
-          python3 scons/sdl3_dependencies.py --download-only --work "$top/SOURCES"
+          python3 buildsys/sdl3_dependencies.py --download-only --work "$top/SOURCES"
           python3 tools/build_asset_encoder.py fetch --sources "$top/SOURCES"
           rpmbuild -ba platforms/linux/fedora/glob2.spec --define "_topdir $top"
           stage="$GITHUB_WORKSPACE/artifacts/rpm-size-stage"
@@ -457,7 +457,7 @@ jobs:
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 client_profile=free mingw=1 server=0 build/mingw/client/release/src/glob2.exe
@@ -617,7 +617,7 @@ jobs:
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build application and DMG
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package

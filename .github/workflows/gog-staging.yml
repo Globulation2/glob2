@@ -157,7 +157,7 @@ jobs:
           CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
           set -euo pipefail
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python ../driver/tools/gog_release.py stage-windows --source-root "$PWD" \
@@ -264,7 +264,7 @@ jobs:
             *) exit 1 ;;
           esac
           stage="$PWD/artifacts/gog/install"
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 server=0 lean_images=1 BINDIR="$stage/usr/bin" \
             INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
@@ -324,7 +324,7 @@ jobs:
             2) repeat_args=(game repeat "$save" --ticks 10 --runs 1) ;;
             *) exit 1 ;;
           esac
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 server=0 package
           python3 ../driver/tools/gog_release.py stage-macos --source-root "$PWD" \

@@ -9,7 +9,7 @@ import types
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 from SCons.Script import Environment
 from online_error_catalog import configure, bind_objects, bind_consumer, _generate
 from dev_compile import unique
@@ -101,9 +101,9 @@ class OnlineErrorBuildTest(unittest.TestCase):
 
     def test_native_and_each_independent_web_mobile_builder_register_missing_header(self):
         paths = []
-        for builder, target in [('src/SConscript', 'native'), ('scons/web_build.py', 'web-serial'),
-                                ('scons/web_build.py', 'web-threaded'),
-                                ('scons/mobile_build.py', 'android'), ('scons/mobile_build.py', 'ios')]:
+        for builder, target in [('src/SConscript', 'native'), ('buildsys/web_build.py', 'web-serial'),
+                                ('buildsys/web_build.py', 'web-threaded'),
+                                ('buildsys/mobile_build.py', 'android'), ('buildsys/mobile_build.py', 'ios')]:
             with self.subTest(builder=builder, target=target):
                 _, header, _ = self.graph(builder, target)
                 paths.append(header[0].abspath)
@@ -139,12 +139,12 @@ class OnlineErrorBuildTest(unittest.TestCase):
         scope = dict(tests=env, object_root=self.output / 'android-objects',
                      registry=registry, by_source=mapping, unique=unique, available=lambda options: True,
                      online_error_catalog=catalog, bind_online_error_consumer=bind_consumer)
-        execute([function('scons/mobile_build.py', 'test_objects'),
-                 function('scons/mobile_build.py', 'production_objects')], scope, 'scons/mobile_build.py')
+        execute([function('buildsys/mobile_build.py', 'test_objects'),
+                 function('buildsys/mobile_build.py', 'production_objects')], scope, 'buildsys/mobile_build.py')
         return scope
 
     def test_android_unit_tests_and_production_reuse_and_fallback_depend_on_header(self):
-        env, catalog, mapping = self.graph('scons/mobile_build.py', 'android')
+        env, catalog, mapping = self.graph('buildsys/mobile_build.py', 'android')
         scope = self.android_functions(env.Clone(), catalog, mapping)
         test_object = scope['test_objects'](['#src/online/ApiErrorTextTest.cpp'], 'test-')[0]
         self.assertIn(catalog[0], test_object.depends)
@@ -154,8 +154,8 @@ class OnlineErrorBuildTest(unittest.TestCase):
         self.assertIn(catalog[0], fallback.depends)
 
     def test_web_and_ios_actual_test_object_loops_attach_header(self):
-        for builder, target in [('scons/web_build.py', 'web-serial'), ('scons/web_build.py', 'web-threaded'),
-                                ('scons/mobile_build.py', 'ios')]:
+        for builder, target in [('buildsys/web_build.py', 'web-serial'), ('buildsys/web_build.py', 'web-threaded'),
+                                ('buildsys/mobile_build.py', 'ios')]:
             with self.subTest(target=target):
                 env, catalog, _ = self.graph(builder, target)
                 outer = function(builder, '_build_variant' if target.startswith('web') else 'build_mobile')

@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buildsys"))
 
 from build_layout import BuildLock, write_if_changed
 from dev_store import Lease, android_java_command, cache, isolated, mobile_tools

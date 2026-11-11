@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from tools.release.package_sizes import inventory, compare
-from scons.runtime_assets import optimized_install_enabled
+from buildsys.runtime_assets import optimized_install_enabled
 
 
 class PackageSizeTests(unittest.TestCase):

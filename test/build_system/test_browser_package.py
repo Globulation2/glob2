@@ -36,7 +36,7 @@ class BrowserPackageTests(unittest.TestCase):
 
     def test_standalone_launcher_font_closure_is_pinned_and_packaged(self):
         import sys
-        sys.path.insert(0, str(module.ROOT / 'scons'))
+        sys.path.insert(0, str(module.ROOT / 'buildsys'))
         import web_assets
         self.localized_source()
         with (self.source / 'index.html').open('a') as stream:
@@ -98,7 +98,7 @@ class BrowserPackageTests(unittest.TestCase):
             "wasm": b"wasm" * 1000,
         }.items():
             (self.source / ("index." + ext)).write_bytes(data)
-        # Content-addressed game data (scons/web_assets.py) keeps its name.
+        # Content-addressed game data (buildsys/web_assets.py) keeps its name.
         (self.source / "assets").mkdir()
         self.package = self.source / "assets/core.0123456789abcdef.data"
         self.package.write_bytes(b"assets" * 1000)

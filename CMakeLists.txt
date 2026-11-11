@@ -11,10 +11,10 @@
 #   python3 tools/dev_build.py
 #
 # Source lists come from cmake/sources.cmake and cmake/tests.cmake, generated
-# from scons/sources.py, test/tests.py and scons/harness_programs.py by
-# scons/export_cmake_sources.py. Generated headers, runtime assets and test
+# from buildsys/sources.py, test/tests.py and buildsys/harness_programs.py by
+# buildsys/export_cmake_sources.py. Generated headers, runtime assets and test
 # provenance come from the same Python code SCons uses, through
-# scons/cmake_generate.py.
+# buildsys/cmake_generate.py.
 cmake_minimum_required(VERSION 3.25)
 project(glob2 LANGUAGES C CXX)
 
@@ -30,22 +30,22 @@ find_package(Python3 3.8 REQUIRED COMPONENTS Interpreter)
 find_program(GLOB2_PKG_CONFIG pkg-config REQUIRED)
 set(GLOB2_ROOT "${CMAKE_SOURCE_DIR}")
 set(GLOB2_OUT "${CMAKE_BINARY_DIR}")
-set(GLOB2_BRIDGE "${GLOB2_ROOT}/scons/cmake_generate.py")
+set(GLOB2_BRIDGE "${GLOB2_ROOT}/buildsys/cmake_generate.py")
 include("${GLOB2_ROOT}/cmake/sources.cmake")
 include("${GLOB2_ROOT}/cmake/tests.cmake")
 # The bridge and the generators it imports decide configure-time results.
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
-  "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/build_config.py" "${GLOB2_ROOT}/scons/checkout_paths.py"
-  "${GLOB2_ROOT}/scons/build_layout.py" "${GLOB2_ROOT}/scons/client_features.py"
-  "${GLOB2_ROOT}/scons/official_instance.py" "${GLOB2_ROOT}/scons/recording_dependencies.py")
+  "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/build_config.py" "${GLOB2_ROOT}/buildsys/checkout_paths.py"
+  "${GLOB2_ROOT}/buildsys/build_layout.py" "${GLOB2_ROOT}/buildsys/client_features.py"
+  "${GLOB2_ROOT}/buildsys/official_instance.py" "${GLOB2_ROOT}/buildsys/recording_dependencies.py")
 
-# Runs a scons/cmake_generate.py subcommand at configure time.
+# Runs a buildsys/cmake_generate.py subcommand at configure time.
 function(glob2_bridge output)
   execute_process(COMMAND "${Python3_EXECUTABLE}" "${GLOB2_BRIDGE}" ${ARGN}
                   WORKING_DIRECTORY "${GLOB2_ROOT}"
                   OUTPUT_VARIABLE result RESULT_VARIABLE status OUTPUT_STRIP_TRAILING_WHITESPACE)
   if(NOT status EQUAL 0)
-    message(FATAL_ERROR "scons/cmake_generate.py ${ARGN} failed")
+    message(FATAL_ERROR "buildsys/cmake_generate.py ${ARGN} failed")
   endif()
   set(${output} "${result}" PARENT_SCOPE)
 endfunction()
@@ -189,7 +189,7 @@ set(stamps "${GLOB2_OUT}/generated-stamps")
 add_custom_command(OUTPUT "${stamps}/skin-materials"
   BYPRODUCTS "${GLOB2_OUT}/include/glob2/SkinMaterials.h"
   COMMAND ${bridge} skin-materials --builddir "${GLOB2_OUT}" --stamp "${stamps}/skin-materials"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/skin_materials.py"
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/skin_materials.py"
           "${GLOB2_ROOT}/libs/gag/shaders/skin-materials.json" "${GLOB2_ROOT}/libs/gag/shaders/skin-material.glsl"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating glob2/SkinMaterials.h" VERBATIM)
 
@@ -198,14 +198,14 @@ glob2_bridge(shader_inputs shader-inputs)
 add_custom_command(OUTPUT "${stamps}/shaders"
   BYPRODUCTS "${GLOB2_OUT}/shaders/RendererShaderLayouts.h"
   COMMAND ${bridge} shaders --builddir "${GLOB2_OUT}" --stamp "${stamps}/shaders"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/renderer_shaders.py" ${shader_inputs}
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/renderer_shaders.py" ${shader_inputs}
           "${GLOB2_ROOT}/tools/shaders/gradient_compute.py" "${GLOB2_ROOT}/tools/shaders/gradient_preparation_rules.py"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating renderer shader assets" VERBATIM)
 
 add_custom_command(OUTPUT "${stamps}/hive-api"
   BYPRODUCTS "${GLOB2_OUT}/include/hive/PlayerAPIContract.h"
   COMMAND ${bridge} hive-api --builddir "${GLOB2_OUT}" --stamp "${stamps}/hive-api"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/hive_api.py"
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/hive_api.py"
           "${GLOB2_ROOT}/services/online/packages/hive/src/commander-api.txt"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating Hive player API contract" VERBATIM)
 
@@ -223,13 +223,13 @@ glob2_bridge(skin_render_inputs skin-render-inputs)
 add_custom_command(OUTPUT "${stamps}/skin-render"
   BYPRODUCTS "${GLOB2_OUT}/src/SkinRenderRecipe.h"
   COMMAND ${bridge} skin-render --builddir "${GLOB2_OUT}" --stamp "${stamps}/skin-render"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/skin_render.py" ${skin_render_inputs}
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/skin_render.py" ${skin_render_inputs}
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating SkinRenderRecipe.h" VERBATIM)
 
 add_custom_target(glob2_generated DEPENDS
   "${stamps}/skin-materials" "${stamps}/shaders" "${stamps}/hive-api" "${stamps}/skin-render"
   "${GLOB2_OUT}/include/generated/OnlineErrorCatalog.h")
-# ---- Runtime assets: scons/runtime_assets.py's export, shared through the store ----
+# ---- Runtime assets: buildsys/runtime_assets.py's export, shared through the store ----
 # The bridge writes a depfile naming every asset input and the directories that
 # hold them, so the export runs again only when one of them changes.
 set(GLOB2_ASSET_JOBS 8 CACHE STRING "Parallel jobs for a runtime-asset export that misses the shared store")
@@ -239,7 +239,7 @@ if(GLOB2_EXPORT_RUNTIME_ASSETS)
     COMMAND ${bridge} runtime-assets --builddir "${GLOB2_OUT}" --depfile "${GLOB2_OUT}/runtime-assets.d"
             --jobs "${GLOB2_ASSET_JOBS}"
     DEPFILE "${GLOB2_OUT}/runtime-assets.d"
-    DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/scons/runtime_assets.py" "${GLOB2_ROOT}/scons/shared_assets.py"
+    DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/runtime_assets.py" "${GLOB2_ROOT}/buildsys/shared_assets.py"
     WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Exporting verified runtime assets" VERBATIM)
   add_custom_target(glob2_runtime_asset_export DEPENDS "${GLOB2_OUT}/runtime-assets.json")
   add_dependencies(glob2_runtime_assets glob2_runtime_asset_export)
@@ -297,7 +297,7 @@ add_library(usl STATIC ${GLOB2_USL_SOURCES})
 add_library(gag STATIC ${GLOB2_GAG_SOURCES})
 
 # QuickJS and openlibm: the interpreter's strict numeric contract, per source
-# exactly as scons/javascript.py compiles them.
+# exactly as buildsys/javascript.py compiles them.
 add_library(Glob2JavaScript STATIC ${GLOB2_JAVASCRIPT_SOURCES})
 set_source_files_properties(${GLOB2_JAVASCRIPT_SOURCES} PROPERTIES
   COMPILE_OPTIONS "-O0;${GLOB2_JAVASCRIPT_CFLAGS}"
@@ -359,7 +359,7 @@ set(link_options ${sdl_link_options} -Wall ${sdl3_link_options} ${webp_link_opti
 if(GLOB2_SDL3_PREFIX)
   list(APPEND link_options "-Wl,-rpath=${sdl_prefix}/lib")
 endif()
-# The SCons dev tier's linker=auto (scons/dev_build.py configure): lld when installed.
+# The SCons dev tier's linker=auto (buildsys/dev_build.py configure): lld when installed.
 set(GLOB2_LINKER auto CACHE STRING "Development linker: default, auto (lld when installed) or lld")
 set_property(CACHE GLOB2_LINKER PROPERTY STRINGS default auto lld)
 if(NOT GLOB2_LINKER STREQUAL "default")
@@ -420,7 +420,7 @@ target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "$
 target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
 
 # test/SConscript available(): native Linux builds have the WSS transport, are never MinGW
-# and build the full compile profile, so every scons/sources.py optional group is present.
+# and build the full compile profile, so every buildsys/sources.py optional group is present.
 function(glob2_available output)
   set(ok TRUE)
   foreach(feature IN LISTS ARGN)
@@ -486,7 +486,7 @@ foreach(group IN LISTS GLOB2_TEST_PRODUCTION_GROUPS)
   endif()
 endforeach()
 
-# The module libraries (scons/sources.py MODULE_SOURCES): archives of client objects
+# The module libraries (buildsys/sources.py MODULE_SOURCES): archives of client objects
 # that only the module test binaries link.
 foreach(module map sim)
   string(TOUPPER "${module}" upper)
@@ -557,7 +557,7 @@ foreach(program IN LISTS GLOB2_TEST_PROGRAMS)
   endif()
 endforeach()
 
-# scons/harness_programs.py: the client flags; objects as each program's link kind says.
+# buildsys/harness_programs.py: the client flags; objects as each program's link kind says.
 foreach(name IN LISTS GLOB2_HARNESS_SHARED_OBJECTS)
   add_library(glob2_harness_${name} OBJECT EXCLUDE_FROM_ALL "${GLOB2_ROOT}/${GLOB2_HARNESS_SHARED_${name}_SOURCE}")
   target_link_libraries(glob2_harness_${name} PRIVATE glob2_client_settings)

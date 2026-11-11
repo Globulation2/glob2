@@ -44,7 +44,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    shared_cache = cache(root, 'emscripten-' + key(root, ['platforms/web/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json', 'scons/opus-versions.json', 'scons/opus_dependencies.py'], [PORTS, threaded])) if not isolated() else output
+    shared_cache = cache(root, 'emscripten-' + key(root, ['platforms/web/toolchain.json', 'buildsys/sdl3-versions.json', 'buildsys/sdl3-vendored.json', 'buildsys/opus-versions.json', 'buildsys/opus_dependencies.py'], [PORTS, threaded])) if not isolated() else output
     build_environment['EM_CACHE'] = str(shared_cache / 'cache')
     build_environment['EM_PORTS'] = str(shared_cache / 'ports')
     # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
@@ -123,7 +123,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     if str(root) not in sys_path: sys_path.insert(0, str(root))
     from tools.package_assets import source_files, export_assets
     # Game data ships as content-addressed packages next to the page (see
-    # scons/web_assets.py), not as one --preload-file blob: the page shows
+    # buildsys/web_assets.py), not as one --preload-file blob: the page shows
     # progress, caches them across visits and fetches optional data later. The
     # serial variant exports and packages the data once; the threaded runtime
     # embeds the same manifest and loads the same packages.
@@ -134,10 +134,10 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         from runtime_assets import sprite_packing_profile
         packing = sprite_packing_profile(arguments.get('sprite_packing', 'auto'), identity['mode'] == 'release')
         asset_inputs = list(source_files(root, 'web'))
-        asset_tools = ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/shared_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json']
+        asset_tools = ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'buildsys/recording_dependencies.py', 'buildsys/recording-versions.json', 'buildsys/runtime_assets.py', 'buildsys/shared_assets.py', 'buildsys/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json']
         def prepare_assets(target, source, env):
-            # Name the sibling by path, as scons/runtime_assets.py does: the
-            # action can run where SConstruct's scons/ entry is not on sys.path.
+            # Name the sibling by path, as buildsys/runtime_assets.py does: the
+            # action can run where SConstruct's buildsys/ entry is not on sys.path.
             if str(Path(__file__).resolve().parent) not in sys.path:
                 sys.path.insert(0, str(Path(__file__).resolve().parent))
             import shared_assets
@@ -145,7 +145,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 export_assets(root, output, platform='web', optimized=True, lossy=identity['mode']=='release',
                               jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
                               packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
-            # Checkouts with the same asset inputs share one export (scons/shared_assets.py).
+            # Checkouts with the same asset inputs share one export (buildsys/shared_assets.py).
             key = shared_assets.content_key(root, asset_inputs + [root / path for path in asset_tools],
                                             ['runtime-assets-v1', 'web', identity['mode'] == 'release', packing])
             shared_assets.export(root, asset_root, key, produce)
@@ -159,7 +159,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_manifest = asset_output / 'asset-manifest.js'
         # The plan also reads the browser copies (platforms/web/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
-        plan_inputs = ['scons/web_assets.py', 'tools/package_assets.py', 'deploy/sim_version.py', 'platforms/web/derive_assets.py',
+        plan_inputs = ['buildsys/web_assets.py', 'tools/package_assets.py', 'deploy/sim_version.py', 'platforms/web/derive_assets.py',
                        'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'content/data/terrain/tileset.json', 'content/data/resources/registry.json']
         plan_inputs += [str(p) for p in Path('platforms/web/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
@@ -452,7 +452,7 @@ def build_web(directory, identity, arguments):
     script_fonts = env.Command(script_font_targets,
         ['services/online/packages/i18n/script-fonts.css', 'content/data/fonts/scripts/manifest.json',
          'content/data/fonts/LICENSE-Noto.txt', 'content/data/fonts/LICENSE-DejaVu.txt', 'content/data/fonts/LICENSE-Droid.txt',
-         'platforms/web/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
+         'platforms/web/assets/sans-core.ttf', 'buildsys/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])

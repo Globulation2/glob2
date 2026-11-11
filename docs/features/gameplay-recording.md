@@ -163,8 +163,8 @@ and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
 | Linux | VAAPI (when built with libva), then NVENC |
 | Browser | WebCodecs with advisory hardware preference |
 
-The pinned hashes are in `scons/recording-versions.json`; the minimal dependency
-recipe and cache validation are in `scons/recording_dependencies.py`. Default builds
+The pinned hashes are in `buildsys/recording-versions.json`; the minimal dependency
+recipe and cache validation are in `buildsys/recording_dependencies.py`. Default builds
 enable H.264 encoders and AAC, with MP4/WebM muxing, MOV/Matroska demuxing and
 required conversion/prerequisites. Native clients and the browser's lazy asset
 video worker use the same pinned software H.264 decoder and parser. Release

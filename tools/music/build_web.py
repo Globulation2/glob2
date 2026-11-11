@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(root / "scons"))
+sys.path.insert(0, str(root / "buildsys"))
 from dev_store import browser_sdk
 from opus_dependencies import build
 

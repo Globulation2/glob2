@@ -271,7 +271,7 @@ void Application::choose(int choice)
 	}
 }
 
-// The browser installs some data after the main menu is up (scons/web_assets.py);
+// The browser installs some data after the main menu is up (buildsys/web_assets.py);
 // native hosts never report an installation.
 void Application::installStagedAssets()
 {

@@ -47,7 +47,7 @@ for cache controls and debugging limits.
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
 The pinned SDK is installed once per user and host/version; build outputs remain
 checkout-local and ignored by Git. Shared source manifests in
-`scons/sources.py` drive native and browser builds. Each target owns its
+`buildsys/sources.py` drive native and browser builds. Each target owns its
 configuration, objects, compilation database, and signature database. Compatible
 SDK library and port caches are shared across worktrees.
 Native builds do not require Emscripten; browser builds do not probe system libraries.
@@ -102,9 +102,9 @@ resize the canvas through the SDK.
 ### Game data and loading
 
 The build packs the files the game reads at run time into content-addressed
-packages under `assets/` (`scons/web_assets.py`); build scripts, translation
+packages under `assets/` (`buildsys/web_assets.py`); build scripts, translation
 tooling, documentation, icons and store screenshots stay out.
-`python3 scons/web_assets.py --report` lists the size of each category and package.
+`python3 buildsys/web_assets.py --report` lists the size of each category and package.
 `platforms/web/asset-loader.js` downloads `core` and `game` in parallel while the WebAssembly
 module streams in. The game starts once all three are ready, and prepares the
 live menu colony before hiding the loading page. This keeps the sprite download

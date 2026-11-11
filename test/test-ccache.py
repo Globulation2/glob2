@@ -9,7 +9,7 @@ import tempfile
 from unittest.mock import patch
 
 root = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('glob2_ccache', root / 'scons/ccache.py')
+spec = importlib.util.spec_from_file_location('glob2_ccache', root / 'buildsys/ccache.py')
 wrapper = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(wrapper)
 
@@ -42,7 +42,7 @@ with tempfile.TemporaryDirectory(prefix='glob2-ccache-') as directory:
     child_env['CCACHE_CONFIGPATH'] = str(config)
     (work / 'SConstruct').write_text(
         'import os, sys\n'
-        f'sys.path.insert(0, {str(root / "scons")!r})\n'
+        f'sys.path.insert(0, {str(root / "buildsys")!r})\n'
         'import ccache\n'
         'env = Environment(ENV=dict(os.environ))\n'
         'ccache.enable(env)\n'
@@ -88,7 +88,7 @@ for identity, flags in (("{'target':'native','toolchain':'linux','dev_fast':True
           (checkout / 'value.h').write_text('#define VALUE 7\n')
           (checkout / 'probe.cpp').write_text('#include "value.h"\nint main() { return VALUE; }\n')
           (checkout / 'SConstruct').write_text(
-              'import os, sys\n' + f'sys.path.insert(0, {str(root / "scons")!r})\n' +
+              'import os, sys\n' + f'sys.path.insert(0, {str(root / "buildsys")!r})\n' +
               'import ccache\nfrom dev_build import configure\n' +
               "env=Environment(ENV=dict(os.environ), CXX=ARGUMENTS.get('CXX','g++'))\n" +
               "configure(env, " + identity + ")\n" + flags +

@@ -10,7 +10,7 @@ import tempfile
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCK = ROOT / 'scons/moltenvk.json'
+LOCK = ROOT / 'buildsys/moltenvk.json'
 
 
 def digest(path):

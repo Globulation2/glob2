@@ -164,7 +164,7 @@ function wireSize(name, encoding) {
   const size = encoding && wireSizes[name]?.[encoding === 'br' ? 'br' : encoding === 'gzip' ? 'gzip' : ''];
   return Number.isFinite(size) && size > 0 ? size : null;
 }
-// Uncompressed module size per runtime, written into the page by scons/web_build.py.
+// Uncompressed module size per runtime, written into the page by buildsys/web_build.py.
 let wasmSizes = {};
 try { wasmSizes = JSON.parse(document.body.dataset.wasmBytes || '{}') || {}; } catch (_) {}
 if (typeof wasmSizes !== 'object') wasmSizes = {};
@@ -526,7 +526,7 @@ function applyOnlineLanguage() {
 }
 function cjkInterface() { return /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
 // After the menu is up, the rest of the game data downloads in the background,
-// most needed first (scons/web_assets.py):
+// most needed first (buildsys/web_assets.py):
 // Core and game sprites already arrived together under the loading page.
 // - menu-music, then font-cjk: the full font, so Chinese, Japanese and Korean
 //   player names and chat get their glyphs, then the other languages' full

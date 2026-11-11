@@ -75,7 +75,7 @@ python3 tools/dev_build.py compile_profile=core engine-tests unit-tests
 python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto-compile_profile-core
 ```
 
-It leaves out the optional groups `scons/sources.py` defines as filters over
+It leaves out the optional groups `buildsys/sources.py` defines as filters over
 `CLIENT_SOURCES`:
 
 - `generators`: the map generators in `src/map/generator/generators/`, except
@@ -223,7 +223,7 @@ asset and renderer shader directories live in the generated
 `glob2/BuildPaths.h`, which only the four files that use them include, and the
 version banner reports the source revision from `glob2/BuildStamp.h` instead of
 `__DATE__`/`__TIME__`. Add a new checkout-specific value to
-`scons/checkout_paths.py`, never to `BuildConfig.h` or a `-D` flag.
+`buildsys/checkout_paths.py`, never to `BuildConfig.h` or a `-D` flag.
 
 Builds other than shipping invocations (`bundle`, `package`, `install`,
 `retain_symbols`) set `CCACHE_BASEDIR` to the checkout and map debug paths to
@@ -241,7 +241,7 @@ an explicit `CCACHE_DIR` uses that directory's own configuration.
 ### Parallel lanes
 
 Every build, test run and asset export on one machine shares a pool of `ncpu + 1`
-CPU tokens (`scons/jobserver.py`): each compiler or linker process SCons spawns,
+CPU tokens (`buildsys/jobserver.py`): each compiler or linker process SCons spawns,
 each running test process and each asset-encoding worker holds one token, so
 several checkouts building at once share the CPUs instead of multiplying the
 process count. `-j` keeps its meaning as a lane's maximum. Tokens are `flock`ed
@@ -317,9 +317,9 @@ without `--build-dir`) consider `build/cmake/dev` beside the SCons dev and
 release builds and take whichever was built last; `--build-dir` or
 `GLOB2_BUILD_DIR` picks one explicitly.
 
-Keep both build systems' inputs in step: after changing `scons/sources.py`,
-`scons/javascript.py`, `test/tests.py` or `scons/harness_programs.py`, run
-`python3 scons/export_cmake_sources.py` and commit `cmake/sources.cmake` and
+Keep both build systems' inputs in step: after changing `buildsys/sources.py`,
+`buildsys/javascript.py`, `test/tests.py` or `buildsys/harness_programs.py`, run
+`python3 buildsys/export_cmake_sources.py` and commit `cmake/sources.cmake` and
 `cmake/tests.cmake` (`--check` reports a stale file). A new source file needs
 nothing more; a new build step or generator needs a matching rule in
 `CMakeLists.txt`, checked with `tools/compare_build_systems.py`.
@@ -336,7 +336,7 @@ unless given `-jN`.
 What it builds:
 
 - `libusl.a`, `libgag.a`, `libGlob2JavaScript.a` (QuickJS and openlibm with the
-  strict numeric flags of `scons/javascript.py`, applied per source), every
+  strict numeric flags of `buildsys/javascript.py`, applied per source), every
   client object, as the object library `glob2_client`, and `glob2`. The numeric
   symbol guard runs once the guarded client objects are compiled, before any
   program links them.
@@ -348,13 +348,13 @@ What it builds:
   objects compile separately, the latter once for every binary that links
   them), the client objects reused wherever SCons reuses them, the `glob2_map`
   and `glob2_sim` module archives linked as one `--start-group` group, and a
-  `<binary>.provenance.json` sidecar written by `scons/test_provenance.py` on
+  `<binary>.provenance.json` sidecar written by `buildsys/test_provenance.py` on
   every build of the alias.
 - The `test/tests.py` `PROGRAMS` and the `src/SConscript` harnesses listed in
-  `scons/harness_programs.py` (now the table SCons builds them from too):
+  `buildsys/harness_programs.py` (now the table SCons builds them from too):
   `MapGeneratorGoldenTest`, `LANSessionHarness`, the `transport-test`
   programs, `OnlinePlayHarness`, `mobile-gallery` and the skin tools.
-- The runtime assets: the `scons/runtime_assets.py` export, shared through the
+- The runtime assets: the `buildsys/runtime_assets.py` export, shared through the
   development store, into `build/cmake/dev/runtime-assets`, which `BuildPaths.h`
   names. A depfile lists every asset input and the directories holding them,
   so the export runs again only when one changes. `identity.json` is the SCons
@@ -368,14 +368,14 @@ and the rest) are CMake targets of the same names.
 
 Source lists, include directories, the strict-numeric source sets, the test
 registry and the harness table come from `cmake/sources.cmake` and
-`cmake/tests.cmake`, which `python3 scons/export_cmake_sources.py` writes from
-`scons/sources.py`, `scons/javascript.py`, `test/tests.py` and
-`scons/harness_programs.py`. Commit the regenerated files with any change to
+`cmake/tests.cmake`, which `python3 buildsys/export_cmake_sources.py` writes from
+`buildsys/sources.py`, `buildsys/javascript.py`, `test/tests.py` and
+`buildsys/harness_programs.py`. Commit the regenerated files with any change to
 those; `test/build_system/test_cmake_sources.py` fails while one is stale.
 `BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `SkinMaterials.h`, the
 renderer shaders, the Hive contract, the online error catalog and
 `SkinRenderRecipe.h` come from the SCons generators, through
-`scons/cmake_generate.py`.
+`buildsys/cmake_generate.py`.
 
 What it does not do yet: build the pinned recording libraries (it uses
 `GLOB2_SDL3_PREFIX`'s `recording/` or the SCons build's prefix), the relay and
@@ -416,7 +416,7 @@ class names and results match the SCons build.
 The `build-system equivalence` workflow
 (`.github/workflows/build-system-equivalence.yml`) runs that comparison with
 GCC 13 on Ubuntu 24.04 on master pushes and on pull requests that touch
-`CMakeLists.txt`, `CMakePresets.json`, `cmake/`, `scons/`, `SConstruct`, any
+`CMakeLists.txt`, `CMakePresets.json`, `cmake/`, `buildsys/`, `SConstruct`, any
 `SConscript`, `test/tests.py` or the comparison script. It fails on a flag or
 source-set difference and writes object-hash results to the step summary and
 the `build-system-equivalence` artifact without failing on them until parity
@@ -506,7 +506,7 @@ Verification requires the complete receipt set, including the generator and
 pinned Vulkan headers; missing receipts or a changed target fail the build.
 Shader translation tools remain development dependencies.
 
-Apple packaging fetches hash-pinned MoltenVK **1.4.2** using `scons/moltenvk.json`.
+Apple packaging fetches hash-pinned MoltenVK **1.4.2** using `buildsys/moltenvk.json`.
 macOS bundles select the executable's architecture and include its framework and
 Apache-2.0 notice; iOS device/simulator projects embed and sign the matching slice.
 Downloads and extraction publish to the dependency cache only after validating

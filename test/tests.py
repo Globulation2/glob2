@@ -1,19 +1,19 @@
 """Registry of every native test and test-adjacent program.
 
-test/SConscript builds four doctest binaries from these tables and scons/mobile_build.py
+test/SConscript builds four doctest binaries from these tables and buildsys/mobile_build.py
 cross-compiles the same lists (portable_engine_tests() and portable_unit_tests() fold
 the module binaries back into the two the mobile and browser builds produce). Paths
 are relative to test/ unless they start with '#', which is the repository root: a
 domain's tests sit beside the code they test.
 
 Placement rule: a test joins UNIT_TESTS if it needs neither GlobalContainer nor any
-client object; MAP_TESTS if it needs only the map layer (scons/sources.py
+client object; MAP_TESTS if it needs only the map layer (buildsys/sources.py
 MAP_SOURCES); SIM_TESTS if it needs the simulation but no GameGUI, window or menu;
 otherwise ENGINE_TESTS. Entry options:
   cxxflags  extra compiler flags for that translation unit only
   defines   extra preprocessor defines for that translation unit only
   require   build features the entry needs: 'wss', 'not-mingw', 'opengl', and the
-            optional source groups of scons/sources.py ('generators', 'editor',
+            optional source groups of buildsys/sources.py ('generators', 'editor',
             'ai:castor', ...) that compile_profile=core leaves out
 """
 
@@ -534,7 +534,7 @@ UNIT_STUBS = [
 ]
 
 # Module test binaries (test/README.md): each links one module library of
-# scons/sources.py plus the libraries below it, libgag, libusl and only the stubs
+# buildsys/sources.py plus the libraries below it, libgag, libusl and only the stubs
 # and production objects listed here, so a change in that layer rebuilds and links
 # a few hundred objects rather than the whole client. Cases moved here keep their
 # runner policy: map cases came from glob2-unit-tests and share a process, sim cases

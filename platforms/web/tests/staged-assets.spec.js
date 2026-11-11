@@ -2,7 +2,7 @@ const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {gameURL, clickMainMenu, clickCustomGameStart} = require('./main-menu');
 
-// Data packages (scons/web_assets.py): startup sprites, the full font and menu
+// Data packages (buildsys/web_assets.py): startup sprites, the full font and menu
 // music. Native builds load all of it at startup.
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name, timeout = 60000) =>

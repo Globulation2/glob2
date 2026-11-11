@@ -26,7 +26,7 @@ online play (the online hub and invite links) while retaining LAN play. It reuse
 Android dependency builds and checks matching native libraries in both ABIs,
 the packaged asset index, alignment and both native build IDs. It derives
 `versionName` from
-`PACKAGE_VERSION` in `scons/build_layout.py`. The four version components map
+`PACKAGE_VERSION` in `buildsys/build_layout.py`. The four version components map
 to one increasing Android `versionCode`; never reuse or lower a code already
 submitted to Amazon. A release build remains unsigned until the separate
 release workflow signs it. The [local Android `sign` command](../mobile/android.md#android) is for developer

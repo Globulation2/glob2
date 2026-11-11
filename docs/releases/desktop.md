@@ -72,7 +72,7 @@ and tag identify the same commit; browser publication checks the tag commit and
 game version directly. Mirror only reviewed public commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
-`PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
+`PACKAGE_VERSION` in `buildsys/build_layout.py`, `vcpkg.json`, and
 `platforms/linux/fedora/glob2.spec`, and add its AppStream release notes. Do not move an
 existing tag.
 Mac package jobs pin Python 3.14.8 and SCons 4.11.1 and set `PYTHONPATH` to the

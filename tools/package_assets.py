@@ -147,7 +147,7 @@ def encoder_python(require_brotli=False):
             return configured
     if encoder_ready(require_brotli):
         return sys.executable
-    sys.path.insert(0, str(ROOT / "scons"))
+    sys.path.insert(0, str(ROOT / "buildsys"))
     from dev_store import cache, Lease
 
     name = (
@@ -644,11 +644,11 @@ def encoding_executor(jobs):
     # Spawned workers start from the parent's current sys.path and unpickle
     # work by module name (tools.package_assets.*). SCons restores sys.path
     # after reading each SConscript, dropping the repository root that
-    # scons/runtime_assets.py added, so put it back before any worker starts.
+    # buildsys/runtime_assets.py added, so put it back before any worker starts.
     if __name__ != "__main__" and str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
-    # Each worker holds one machine-wide CPU token for its lifetime (scons/jobserver.py).
-    sys.path.insert(0, str(ROOT / "scons"))
+    # Each worker holds one machine-wide CPU token for its lifetime (buildsys/jobserver.py).
+    sys.path.insert(0, str(ROOT / "buildsys"))
     import jobserver
     return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"),
                                initializer=jobserver.hold_for_process_lifetime)
@@ -765,7 +765,7 @@ def _export_assets(
 
     if cache is None:
         # One encoded-image cache per machine, shared by every checkout (development store).
-        sys.path.insert(0, str(ROOT / "scons"))
+        sys.path.insert(0, str(ROOT / "buildsys"))
         from dev_store import cache as store_cache
         cache = store_cache(root, "asset-cache")
     cache = Path(cache).resolve()
@@ -796,7 +796,7 @@ def _export_assets(
         from tools import packed_sprite_assets
         hd_rows, hd_groups = packed_sprite_assets.plan(content, terrain_document)
         if video_sprites and not sprite_ffmpeg and lossy:
-            sys.path.insert(0, str(ROOT / "scons"))
+            sys.path.insert(0, str(ROOT / "buildsys"))
             from dev_store import Lease
             from recording_dependencies import build
             directory = cache / "host-sprite-encoder"
@@ -1183,7 +1183,7 @@ def export_assets(
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
                               sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
-    sys.path.insert(0, str(ROOT / "scons"))
+    sys.path.insert(0, str(ROOT / "buildsys"))
     from dev_store import Lease, require_free_space
     if not worker:
         require_free_space(output, "the runtime asset export")

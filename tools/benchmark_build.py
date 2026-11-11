@@ -20,7 +20,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 from build_layout import build_identity, default_directory
 
 
@@ -87,7 +87,7 @@ def snapshot(destination):
             shutil.copy2(source, target)
     # Include new implementation files when profiling an uncommitted candidate.
     for name in subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '-z'], cwd=ROOT).decode().split('\0'):
-        if name and name.startswith(('scons/', 'tools/', 'test/')):
+        if name and name.startswith(('buildsys/', 'tools/', 'test/')):
             target = destination / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
@@ -143,8 +143,8 @@ def main():
               'platform': sys.platform, 'samples': [], 'edits': [args.source, args.header],
               'note': 'Compile/link work totals sum command durations and are not parallel wall times.'}
     report['dependency_input_hashes'] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in [*sorted((ROOT / 'scons').glob('*versions.json')), *sorted((ROOT / 'scons').glob('*vendored.json')),
-                     *sorted((ROOT / 'scons/vcpkg-ports').glob('**/*.patch')), ROOT / 'platforms/web/toolchain.json', ROOT / 'vcpkg.json']}
+        for path in [*sorted((ROOT / 'buildsys').glob('*versions.json')), *sorted((ROOT / 'buildsys').glob('*vendored.json')),
+                     *sorted((ROOT / 'buildsys/vcpkg-ports').glob('**/*.patch')), ROOT / 'platforms/web/toolchain.json', ROOT / 'vcpkg.json']}
     report['external_manifests'] = {str(path): json.loads(path.read_text())
         for prefix in filter(None, report['dependency_overrides'].values())
         for path in Path(prefix).glob('*manifest.json')}

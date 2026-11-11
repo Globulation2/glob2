@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 import native_image_dependency as lean
 from build_layout import build_identity, default_directory
 
@@ -72,7 +72,7 @@ class LinuxRuntimeInstallTests(unittest.TestCase):
             (prefix / 'lib/libSDL3_image.so.0').symlink_to(canonical.name)
             (prefix / 'lib/libSDL3_image.so').symlink_to(canonical.name)
             (root / 'SConstruct').write_text(
-                'import sys\nsys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[2] / 'scons'))+')\n'
+                'import sys\nsys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[2] / 'buildsys'))+')\n'
                 'from install_image_runtime import install_runtime\n'
                 'env=Environment(tools=[], BINDIR='+repr(str(root / 'stage/usr/bin'))+', INSTALLDIR='+repr(str(root / 'stage/usr/share'))+')\n'
                 'install_runtime(env, '+repr(str(prefix))+')\n')

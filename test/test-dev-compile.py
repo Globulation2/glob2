@@ -10,8 +10,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='glob2-dev-compile-') as temporary:
     root = Path(temporary)
-    (root / 'scons').mkdir()
-    (root / 'scons/unity-sources.json').write_text(json.dumps(['code/a.cpp', 'code/b.cpp']))
+    (root / 'buildsys').mkdir()
+    (root / 'buildsys/unity-sources.json').write_text(json.dumps(['code/a.cpp', 'code/b.cpp']))
     (root / 'tools/javascript').mkdir(parents=True)
     shutil.copy2(ROOT / 'tools/javascript/check-math-symbols.py', root / 'tools/javascript/check-math-symbols.py')
     (root / 'code').mkdir()
@@ -20,7 +20,7 @@ with tempfile.TemporaryDirectory(prefix='glob2-dev-compile-') as temporary:
     (root / 'code/b.cpp').write_text('#include <string>\nint b() { return std::string("x").size() - 1; }\n')
     (root / 'code/main.cpp').write_text('int a(); int b(); int main() { return a()+b(); }\n')
     (root / 'SConstruct').write_text(f'''import os, sys
-sys.path.insert(0, {str(ROOT / 'scons')!r})
+sys.path.insert(0, {str(ROOT / 'buildsys')!r})
 from dev_compile import objects, unique
 from dev_build import configure
 import ccache

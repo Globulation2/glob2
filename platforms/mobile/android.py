@@ -9,7 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'buildsys'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
 from dev_build import dependency_identity
 import official_instance

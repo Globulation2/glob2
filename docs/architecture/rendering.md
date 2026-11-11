@@ -91,7 +91,7 @@ sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/
 Colony-skin materials are declared once in `libs/gag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
-once in `libs/gag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+once in `libs/gag/shaders/skin-material.glsl`. `buildsys/skin_materials.py`
 compiles both into the generated `include/glob2/SkinMaterials.h`
 (`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
 GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL

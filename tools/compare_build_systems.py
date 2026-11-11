@@ -2,7 +2,7 @@
 """Compare the SCons and CMake native Linux development builds.
 
 Builds glob2, the four test binaries, the test/tests.py programs and the
-scons/harness_programs.py harnesses with both build systems into separate
+buildsys/harness_programs.py harnesses with both build systems into separate
 parity directories (SCons through tools/dev_build.py, CMake through the dev
 preset), each with the same extra -ffile-prefix-map so objects do not embed the
 checkout path, then reports:
@@ -60,9 +60,9 @@ def _load(name, path):
 
 def programs():
     """(SCons aliases, CMake targets) of every test binary, test program and harness."""
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     registry = _load('glob2_test_registry', ROOT / 'test/tests.py')
-    harnesses = _load('glob2_harness_programs', ROOT / 'scons/harness_programs.py').HARNESS_PROGRAMS
+    harnesses = _load('glob2_harness_programs', ROOT / 'buildsys/harness_programs.py').HARNESS_PROGRAMS
     aliases = ['tests'] + [alias for _, _, alias, _ in registry.PROGRAMS] + [program.alias for program in harnesses]
     targets = (['glob2-engine-tests', 'glob2-unit-tests', 'glob2-map-tests', 'glob2-sim-tests']
                + [target for target, *_ in registry.PROGRAMS]

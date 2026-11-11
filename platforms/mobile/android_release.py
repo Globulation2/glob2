@@ -28,7 +28,7 @@ def release_identity(root=ROOT):
     expected = sum(int(part) * factor for part, factor in zip(parts, (1000000, 10000, 100, 1)))
     if type(base) is not int or base != expected or base <= 0 or base * 10 + 3 > 2100000000:
         raise ValueError("Android versionCodeBase does not encode versionName")
-    version_file = (root / "scons/build_layout.py").read_text()
+    version_file = (root / "buildsys/build_layout.py").read_text()
     match = re.search(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$', version_file, re.MULTILINE)
     if not match or name != match.group(1):
         raise ValueError("Android versionName differs from PACKAGE_VERSION")

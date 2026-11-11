@@ -129,7 +129,7 @@ def main():
     parser.add_argument("--write", action="store_true", help="Apply proposed edits; otherwise report only")
     parser.add_argument("--libclang", default=os.getenv("LIBCLANG_PATH", "/usr/lib/x86_64-linux-gnu/libclang-18.so.1"))
     args = parser.parse_args()
-    sys.path.insert(0, str(ROOT / "scons"))
+    sys.path.insert(0, str(ROOT / "buildsys"))
     from sources import INCLUDE_DIRECTORIES
     from clang import cindex
     cindex.Config.set_library_file(args.libclang)

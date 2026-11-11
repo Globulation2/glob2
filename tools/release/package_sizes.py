@@ -10,7 +10,7 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "scons"))
+sys.path.insert(0, str(ROOT / "buildsys"))
 from tool_archives import digest
 
 
