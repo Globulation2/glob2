@@ -2,9 +2,9 @@
 
 `combinations.json` defines the locked capability combinations used by the full-engine
 `UnitCustomization` suite. The suite exercises actual assignments, packet accounting,
-combat, services and save continuation. `ablation-checksums.txt` is the current
-per-tick simulation checksum trace; it is regenerated deliberately when the
-simulation identity changes. The checksum does not cover every cached unit field.
+combat, services and save continuation. Its per-tick ablation checksum trace is
+recorded for sim-diff and compared across platforms, not committed. The checksum
+does not cover every cached unit field.
 The suite's explicit state, inventory, reservation and continuation assertions
 supplement that trace.
 

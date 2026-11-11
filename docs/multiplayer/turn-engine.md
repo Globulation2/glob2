@@ -254,7 +254,7 @@ only ever increases. A bump also needs a fresh golden record
 (`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version):
 `python3 test/run_tests.py --update-fixtures --filter "TurnEngineHarness/the committed*"`
 records it in the same change. The few remaining `[golden]` cases are compatibility
-fixtures (old saves, frozen seeded compositions); when one fails, find out why before
+fixtures (old saves); when one fails, find out why before
 rewriting it with `--update-fixtures --tag golden`. Map generators and the other
 scenarios have no committed output; sim-diff compares them between merge base and
 pull request.

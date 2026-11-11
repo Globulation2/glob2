@@ -78,7 +78,7 @@ def classify(paths):
             "test/check_javascript.py", "test/check_javascript_corpus.py", "test/check_javascript_evidence.py",
             "test/check_telemetry_simulation.py", "test/test_javascript_evidence.py",
             "test/maxima/check_save_continuation_fixture.py",
-            "test/fixtures/resources/seeded-compositions-units.trace",
+            "src/map/TerrainResourcesHarness.cpp",
             "test/build_provenance.py", "test/support/TestMain.cpp",
             "libs/gag/src/ImageAssetTest.cpp",
         }:

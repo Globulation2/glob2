@@ -91,28 +91,35 @@ def native_composition_manifest(root, platform, family):
     return manifests[0]
 
 
-def validate_resource_compositions(root, native, browsers, committed, *, units=False,
+def validate_resource_compositions(root, native, browsers, *, units=False,
                                    expected_source=None):
-    """Require every selected producer and its complete composition trace."""
+    """Require every selected producer's complete composition trace to match the
+    first native producer's, row for row. No committed fixture is involved: the
+    platforms are compared with each other, and sim-diff tracks changes over time."""
     family = 'units' if units else 'resources'
     selection = 'unit-composition' if units else 'composition'
     trace_name = 'unit-ablations.trace' if units else 'seeded-compositions.trace'
-    reference = committed.read_bytes().replace(b'\r\n', b'\n')
-    if len(reference.splitlines()) != (97 if units else 150):
-        raise ValueError(f'Incomplete committed {family} composition trace')
+    reference = None
     source = expected_source
     count = 0
 
     def check(directory, manifest):
-        nonlocal source, count
+        nonlocal source, count, reference
         producer = manifest['producer']
         identity = (producer['revision'], producer['sourceTreeSha256'])
         if producer['dirty'] is not False or not all(identity) or (source is not None and identity != source):
             raise ValueError(f'Resource composition source mismatch: {directory}')
         source = identity
         traces = list(directory.rglob(trace_name))
-        if len(traces) != 1 or traces[0].read_bytes().replace(b'\r\n', b'\n') != reference:
-            raise ValueError(f'Missing, incomplete or different resource composition: {directory}')
+        if len(traces) != 1:
+            raise ValueError(f'Missing resource composition: {directory}')
+        trace = traces[0].read_bytes().replace(b'\r\n', b'\n')
+        if len(trace.splitlines()) != (97 if units else 150):
+            raise ValueError(f'Incomplete {family} composition trace: {directory}')
+        if reference is None:
+            reference = trace
+        elif trace != reference:
+            raise ValueError(f'Different resource composition: {directory}')
         count += 1
 
     for platform in native:
@@ -165,15 +172,13 @@ def main():
         print('::notice::fewer than two platforms produced evidence; nothing to compare')
         return
     print(f'{validate_traces(args.traces, native, browsers)} exact native/browser traces match')
-    resource_count = validate_resource_compositions(args.traces, native, browsers,
-        Path('test/fixtures/resources/seeded-compositions-units.trace'))
+    resource_count = validate_resource_compositions(args.traces, native, browsers)
     print(f'{resource_count} exact native/browser resource composition traces match')
     resource_producer = json.loads(native_composition_manifest(
         args.traces, native[0], 'resources').read_text())['producer']
     resource_source = (resource_producer['revision'], resource_producer['sourceTreeSha256'])
-    unit_count = validate_resource_compositions(args.traces, native, browsers,
-        Path('test/fixtures/unit-catalog/ablation-checksums.txt'), units=True,
-        expected_source=resource_source)
+    unit_count = validate_resource_compositions(args.traces, native, browsers, units=True,
+                                                expected_source=resource_source)
     print(f'{unit_count} exact native/browser unit composition traces match')
     corpora = []
     for profile in profiles:

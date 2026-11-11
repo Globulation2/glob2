@@ -16,15 +16,6 @@ ROOT = Path(__file__).resolve().parents[2]
 class ResourceCollectionTest(unittest.TestCase):
     def collect(self, output, *, failure=None, truncate=False, target='resources'):
         profiles = []
-        references = {
-            ROOT / 'test/fixtures/resources/seeded-compositions-units.trace': b'1 2 3 checksum\n' * 150,
-            ROOT / 'test/fixtures/unit-catalog/ablation-checksums.txt': b'1 2 3 checksum\n' * 97,
-        }
-        original_read = Path.read_bytes
-
-        def read_bytes(path):
-            return references[path] if path in references else original_read(path)
-
         def run(command, **options):
             if 'repeat' in command:
                 replay = Path(options['env']['GLOB2_REPLAY_PATH'])
@@ -46,11 +37,11 @@ class ResourceCollectionTest(unittest.TestCase):
                     raise failure
                 directory = Path(env['GLOB2_TEST_ARTIFACTS_ROOT'])
                 directory.mkdir()
-                fixture = ROOT / ('test/fixtures/unit-catalog/ablation-checksums.txt' if units else
-                                  'test/fixtures/resources/seeded-compositions-units.trace')
-                trace = fixture.read_bytes()
+                trace = b'1 2 3 checksum\n' * (97 if units else 150)
                 name = 'unit-ablations.trace' if units else 'seeded-compositions.trace'
-                (directory / name).write_bytes(trace[:-1] if truncate and target == family else trace)
+                # A truncated run loses its last row.
+                (directory / name).write_bytes(b''.join(trace.splitlines(keepends=True)[:-1])
+                                               if truncate and target == family else trace)
                 (directory / 'build-provenance.json').write_text(json.dumps(dict(
                     revision='revision', sourceTreeSha256='source', dirty=False)))
             return subprocess.CompletedProcess(command, 0)
@@ -58,7 +49,7 @@ class ResourceCollectionTest(unittest.TestCase):
         args = ['run-browser-determinism.py', str(ROOT / 'fake-cli'), str(output),
                 '--engine-binary', str(ROOT / 'fake-engine')]
         try:
-            with redirect_stdout(io.StringIO()), patch('sys.argv', args), patch('subprocess.run', side_effect=run), patch.object(Path, 'read_bytes', read_bytes), patch.dict(
+            with redirect_stdout(io.StringIO()), patch('sys.argv', args), patch('subprocess.run', side_effect=run), patch.dict(
                     os.environ, GLOB2_TEST_UPDATE_FIXTURES='1', GLOB2_TEST_ARTIFACTS='/stale'):
                 runpy.run_path(str(ROOT / 'test/run-browser-determinism.py'), run_name='__main__')
         finally:

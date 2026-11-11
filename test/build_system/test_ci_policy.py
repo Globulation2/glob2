@@ -64,7 +64,6 @@ class PolicyTest(unittest.TestCase):
 
     def test_unit_catalog_browser_contracts_keep_cross_platform_selection(self):
         for path in ('src/unit/types/UnitCatalogTest.cpp', 'src/unit/UnitCustomizationTest.cpp',
-                     'test/fixtures/unit-catalog/ablation-checksums.txt',
                      'test/maxima/check_save_continuation_fixture.py',
                      'test/check_telemetry_simulation.py', 'test/test_javascript_evidence.py'):
             with self.subTest(path=path):
@@ -363,8 +362,6 @@ class ReuseTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             trace = b'1 2 3 checksum\n' * 150
-            committed = root / 'committed.trace'
-            committed.write_bytes(trace)
             producer = dict(revision='revision', sourceTreeSha256='tree', dirty=False)
             native = root / 'browser-determinism-windows/native/resources/native'
             native.mkdir(parents=True)
@@ -377,33 +374,35 @@ class ReuseTest(unittest.TestCase):
                                 selection=dict(name='composition'), exit=0)
                 (path / 'manifest.json').write_text(json.dumps(manifest))
                 (path / 'seeded-compositions.trace').write_bytes(trace)
-            self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed), 3)
+            self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'}), 3)
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows', 'macos'], {'chromium'}, committed)
+                evidence.validate_resource_compositions(root, ['windows', 'macos'], {'chromium'})
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium', 'firefox'}, committed)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium', 'firefox'})
             (path / 'seeded-compositions.trace').write_bytes(trace[:-1])
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'})
+            # A complete trace that differs from the native one in a single row.
+            (path / 'seeded-compositions.trace').write_bytes(trace.replace(b'1 2 3', b'1 2 4', 1))
+            with self.assertRaisesRegex(ValueError, 'Different resource composition'):
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'})
             (path / 'seeded-compositions.trace').write_bytes(trace)
             for change in (dict(dirty=True), dict(dirty=None), dict(revision=''),
                            dict(sourceTreeSha256=''), dict(revision='other'), dict(sourceTreeSha256='other')):
                 manifest['producer'] = dict(producer, **change)
                 (path / 'manifest.json').write_text(json.dumps(manifest))
                 with self.assertRaises(ValueError):
-                    evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+                    evidence.validate_resource_compositions(root, ['windows'], {'chromium'})
             manifest['producer'] = producer
             manifest['exit'] = 1
             (path / 'manifest.json').write_text(json.dumps(manifest))
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'})
 
     def test_unit_compositions_require_complete_matching_producers(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             trace = b'1 2 3 checksum\n' * 97
-            committed = root / 'committed.trace'
-            committed.write_bytes(trace)
             producer = dict(revision='revision', sourceTreeSha256='tree', dirty=False)
             native = root / 'browser-determinism-windows/native/units/native'
             native.mkdir(parents=True)
@@ -416,35 +415,35 @@ class ReuseTest(unittest.TestCase):
                                 selection=dict(name='unit-composition'), exit=0)
                 (path / 'manifest.json').write_text(json.dumps(manifest))
                 (path / 'unit-ablations.trace').write_bytes(trace)
-            self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed, units=True), 3)
+            self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, units=True), 3)
             self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'},
-                committed, units=True, expected_source=('revision', 'tree')), 3)
+                units=True, expected_source=('revision', 'tree')), 3)
             # Each family may be internally consistent and match its golden,
             # while an older binary produced every unit trace. Reject that
             # cross-family source mismatch before accepting combined evidence.
             for source in (('other-revision', 'tree'), ('revision', 'other-tree')):
                 with self.assertRaises(ValueError):
                     evidence.validate_resource_compositions(root, ['windows'], {'chromium'},
-                        committed, units=True, expected_source=source)
+                        units=True, expected_source=source)
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows', 'macos'], {'chromium'}, committed, units=True)
+                evidence.validate_resource_compositions(root, ['windows', 'macos'], {'chromium'}, units=True)
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium', 'firefox'}, committed, units=True)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium', 'firefox'}, units=True)
             (path / 'unit-ablations.trace').write_bytes(trace[:-1])
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed, units=True)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, units=True)
             (path / 'unit-ablations.trace').write_bytes(trace)
             for change in (dict(dirty=True), dict(dirty=None), dict(revision=''),
                            dict(sourceTreeSha256=''), dict(revision='other'), dict(sourceTreeSha256='other')):
                 manifest['producer'] = dict(producer, **change)
                 (path / 'manifest.json').write_text(json.dumps(manifest))
                 with self.assertRaises(ValueError):
-                    evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed, units=True)
+                    evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, units=True)
             manifest['producer'] = producer
             manifest['exit'] = 1
             (path / 'manifest.json').write_text(json.dumps(manifest))
             with self.assertRaises(ValueError):
-                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed, units=True)
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, units=True)
 
 
 
