@@ -9,7 +9,7 @@ native dependencies and APK minimum must use the same minimum API; changing only
 the APK manifest does not backport native libraries. Newer Java APIs need guarded
 fallbacks. Keep the current compile/target SDK when supporting older devices.
 
-Install Python, SCons, Git, make, autotools and pkg-config. Bootstrap the pinned
+Install Python, CMake, Ninja, Git, make, autotools and pkg-config. Bootstrap the pinned
 NDK and packaging tools, then build target dependencies and stage the project:
 
 ```sh
@@ -93,13 +93,13 @@ binaries (`glob2-unit-tests` and `glob2-engine-tests`, from `test/tests.py`):
 
 ```sh
 python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
-scons target=android arch=arm64-v8a release=1 android-tests -j4
+python3 tools/dev_build.py target=android arch=arm64-v8a release=1 android-tests -j4
 python3 platforms/mobile/android_device_tests.py --serial DEVICE_SERIAL \
   --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests
 ```
 
 For an SDK outside the default task-local directory, pass `--android-sdk PATH`
-to the Python build commands and `android_sdk=PATH` to SCons. Keep the dependency,
+to the Python build commands and `android_sdk=PATH` to `tools/dev_build.py`. Keep the dependency,
 project and test architecture consistent. `--binary NAME` runs one of the two.
 The runner checks the device ABI, stages stripped binaries and packaged assets in
 an isolated `/data/local/tmp` directory, runs every case except the `[display]`

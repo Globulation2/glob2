@@ -46,6 +46,9 @@ def content():
     strict = [path for path in client if javascript.strict_numeric_source(path)]
     guarded = [path for path in client if javascript.guarded_numeric_source(path)]
     openlibm = [path.relative_to(ROOT).as_posix() for path in javascript.openlibm_sources(ROOT)]
+    mobile = list(dict.fromkeys(sources.mobile_sources('android') + sources.mobile_sources('ios')))
+    mobile_strict = [path for path in mobile if javascript.strict_numeric_source(path)]
+    mobile_guarded = [path for path in mobile if javascript.guarded_numeric_source(path)]
     blocks = [
         _list('GLOB2_CLIENT_SOURCES', client,
               'buildsys/sources.py CLIENT_SOURCES plus the native-only sources src/SConscript adds.'),
@@ -57,6 +60,15 @@ def content():
         _list('GLOB2_STRICT_CXXFLAGS', javascript.STRICT_CXXFLAGS, 'javascript.STRICT_CXXFLAGS.'),
         _list('GLOB2_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_SOURCES],
               'buildsys/sources.py GAG_SOURCES.'),
+        _list('GLOB2_ANDROID_SOURCES', sources.mobile_sources('android'),
+              'buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).'),
+        _list('GLOB2_IOS_SOURCES', sources.mobile_sources('ios'),
+              'buildsys/sources.py mobile_sources("ios"): libglob2.a (cmake/mobile.cmake).'),
+        _list('GLOB2_IOS_ARC_SOURCES', list(sources.IOS_ARC_SOURCES), 'buildsys/sources.py IOS_ARC_SOURCES.'),
+        _list('GLOB2_MOBILE_STRICT_NUMERIC_SOURCES', mobile_strict,
+              'Mobile sources compiled with GLOB2_STRICT_CXXFLAGS (javascript.strict_numeric_source).'),
+        _list('GLOB2_MOBILE_GUARDED_NUMERIC_SOURCES', mobile_guarded,
+              'Mobile sources whose objects the numeric symbol guard checks.'),
         _list('GLOB2_GAG_DARWIN_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_DARWIN_SOURCES],
               'buildsys/sources.py GAG_DARWIN_SOURCES.'),
         _list('GLOB2_USL_SOURCES', ['libs/usl/src/' + name for name in sources.USL_SOURCES],
@@ -140,6 +152,33 @@ def test_binaries():
     )
 
 
+def mobile_tests_content():
+    """buildsys/mobile_build.py's device tests: the Android engine and unit
+    executables (android-tests) and the iOS script-test archive (ios-tests)."""
+    mobile = set(sources.mobile_sources('android'))
+    blocks = _groups('GLOB2_ANDROID_ENGINE_TESTS',
+                     list(_entries(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.portable_engine_tests())),
+                     'android-tests glob2-engine-tests: its registry entries.')
+    blocks += _groups('GLOB2_ANDROID_UNIT_TESTS',
+                      list(_entries(registry.SUPPORT + registry.UNIT_STUBS + registry.portable_unit_tests())),
+                      'android-tests glob2-unit-tests: its registry entries.')
+    reused, again = [], []
+    for path, options in _entries(registry.UNIT_PRODUCTION_SOURCES):
+        if path in mobile and not options.get('defines') and not options.get('cxxflags'):
+            reused.append(path)
+        else:
+            again.append((path, options))
+    blocks.append(_list('GLOB2_ANDROID_UNIT_REUSED_SOURCES', reused,
+                        'Production sources whose mobile objects the Android unit tests link.'))
+    blocks += _groups('GLOB2_ANDROID_UNIT_PRODUCTION', again,
+                      'Production sources the Android unit tests compile again with the test flags.')
+    blocks += _groups('GLOB2_IOS_SCRIPT_TESTS',
+                      list(_entries(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries()
+                                    + ['#src/online/ApiErrorTextTest.cpp'])),
+                      'ios-tests libglob2-script-tests.a: its registry entries.')
+    return blocks
+
+
 def tests_content():
     client = {name for name in (*sources.CLIENT_SOURCES, *NATIVE_CLIENT_SOURCES)
               if name != ENTRY_POINT and name.endswith('.cpp')}
@@ -171,6 +210,7 @@ def tests_content():
                             f'Production sources {target} links compiled again (GLOB2_TEST_PRODUCTION).'))
     blocks += _groups('GLOB2_TEST_PRODUCTION', list(compiled.items()),
                       'Production sources compiled again with the test flags, shared by the binaries.')
+    blocks += mobile_tests_content()
     blocks.append(_list('GLOB2_TEST_PROGRAMS', [target for target, *_ in registry.PROGRAMS],
                         'test/tests.py PROGRAMS: compiled with the test flags, linked with every client object.'))
     for target, source, alias, group in registry.PROGRAMS:

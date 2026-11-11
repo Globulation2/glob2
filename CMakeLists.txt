@@ -17,18 +17,28 @@
 # provenance come from the same Python code SCons uses, through
 # buildsys/cmake_generate.py.
 cmake_minimum_required(VERSION 3.25)
+set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
+    "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
+# target=android|ios cross-compiles with the pinned mobile toolchain (cmake/mobile.cmake).
+set(GLOB2_MOBILE OFF)
+if(GLOB2_BUILD_ARGS MATCHES "(^| )target=(android|ios)( |$)")
+  include("${CMAKE_CURRENT_LIST_DIR}/cmake/mobile-toolchain.cmake")
+endif()
 project(glob2 LANGUAGES C CXX)
 
 # GLOB2_PLATFORM: linux, or mingw for Windows builds with MSYS2's MinGW-w64 GCC
 # (SConstruct's mingw=1, which the build arguments gain automatically).
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
+if(GLOB2_MOBILE)
+  set(GLOB2_PLATFORM mobile)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
   set(GLOB2_PLATFORM linux)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_CROSSCOMPILING)
   set(GLOB2_PLATFORM darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND MINGW)
   set(GLOB2_PLATFORM mingw)
 else()
-  message(FATAL_ERROR "The CMake build covers native Linux, macOS and MSYS2 MinGW builds; "
+  message(FATAL_ERROR "The CMake build covers native Linux, macOS and MSYS2 MinGW builds, "
+                      "and Android and iOS through GLOB2_BUILD_ARGS target=android|ios; "
                       "use SCons (tools/dev_build.py) for every other target.")
 endif()
 set(windows OFF)
@@ -73,8 +83,6 @@ function(glob2_bridge output)
 endfunction()
 
 # ---- Build identity: SCons' key=value arguments, resolved by buildsys/build_layout.py ----
-set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
-    "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
 separate_arguments(build_args UNIX_COMMAND "${GLOB2_BUILD_ARGS}")
 if(windows AND NOT build_args MATCHES "(^|;)mingw=")
   list(APPEND build_args mingw=1)
@@ -190,6 +198,30 @@ if(GLOB2_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
   endif()
 endif()
 
+# A generator expression selecting the objects of `target` compiled from
+# `paths` (repository-relative), as SCons reuses client objects by source.
+function(glob2_objects_of output target)
+  set(pattern)
+  if(NOT ARGN)
+    set(${output} "" PARENT_SCOPE)
+    return()
+  endif()
+  # MinGW names objects .obj, Linux .o.
+  string(REPLACE "." "\\." extension "${CMAKE_CXX_OUTPUT_EXTENSION}")
+  foreach(path IN LISTS ARGN)
+    string(REGEX REPLACE "([.+])" "\\\\\\1" path "${path}")
+    list(APPEND pattern "/${path}${extension}$")
+  endforeach()
+  list(JOIN pattern "|" pattern)
+  set(${output} "$<FILTER:$<TARGET_OBJECTS:${target}>,INCLUDE,${pattern}>" PARENT_SCOPE)
+endfunction()
+
+# ---- Android and iOS: their own sources, dependency bundle and outputs ----
+if(GLOB2_MOBILE)
+  include("${GLOB2_ROOT}/cmake/mobile.cmake")
+  return()
+endif()
+
 # ---- Dependencies, located as SConstruct does ----
 set(GLOB2_SDL3_PREFIX "$ENV{GLOB2_SDL3_PREFIX}" CACHE PATH "Isolated SDL3 dependency prefix (GLOB2_SDL3_PREFIX)")
 set(sdl_includes)
@@ -244,9 +276,10 @@ endif()
 # and no debug-prefix map. Packaging configures with it; `cmake --install` needs it
 # whenever GLOB2_SDL3_PREFIX is set.
 option(GLOB2_SHIPPING "Build binaries for installation: no build-prefix rpath or debug-path mapping" OFF)
-if(GLOB2_SHIPPING)
-  set(GLOB2_DEBUG_PREFIX_MAP OFF CACHE BOOL "" FORCE)
-endif()
+# macOS app bundles (the bundle and package targets) link the pinned PNG/JPEG
+# SDL_image mac_image_dependency builds, as SConstruct does when asked for them;
+# tools/dev_build.py turns this on for those targets. Like installs, they ship.
+option(GLOB2_MAC_BUNDLE "Build the macOS release for the bundle and package targets" OFF)
 # Removes the build prefix's rpath from a link option list in shipping builds.
 macro(glob2_drop_build_rpath list_name)
   if(GLOB2_SHIPPING AND GLOB2_SDL3_PREFIX)
@@ -523,7 +556,10 @@ if(GLOB2_DEV_FAST)
   list(APPEND ccflags -O0 -g1)
 endif()
 # buildsys/dev_build.py cache_flags(): relocatable debug paths whenever ccache is on.
-if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER)
+# Shipped binaries (installs, macOS bundles) keep absolute debug paths, so their
+# symbols resolve without a source map (buildsys/dev_build.py SHIPPING_TARGETS).
+if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER AND NOT GLOB2_SHIPPING
+   AND NOT (darwin AND GLOB2_MAC_BUNDLE))
   list(APPEND ccflags "-fdebug-prefix-map=${GLOB2_ROOT}=.")
 endif()
 set(cxx_compile_flags ${cxxflags} ${ccflags})
@@ -560,10 +596,6 @@ if(GLOB2_LEAN_IMAGES)
     list(APPEND sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
   endif()
 endif()
-# macOS app bundles (the bundle and package targets) link the pinned PNG/JPEG
-# SDL_image mac_image_dependency builds, as SConstruct does when asked for them;
-# tools/dev_build.py turns this on for those targets.
-option(GLOB2_MAC_BUNDLE "Build the macOS release for the bundle and package targets" OFF)
 set(mac_image_prefix)
 if(darwin AND GLOB2_MAC_BUNDLE AND NOT relay)
   if(NOT GLOB2_MODE STREQUAL "release")
@@ -701,23 +733,6 @@ add_dependencies(glob2_client glob2_generated glob2_build_stamp)
 set_source_files_properties(${GLOB2_STRICT_NUMERIC_SOURCES} PROPERTIES COMPILE_OPTIONS "${GLOB2_STRICT_CXXFLAGS}")
 
 
-# A generator expression selecting the objects of `target` compiled from
-# `paths` (repository-relative), as SCons reuses client objects by source.
-function(glob2_objects_of output target)
-  set(pattern)
-  if(NOT ARGN)
-    set(${output} "" PARENT_SCOPE)
-    return()
-  endif()
-  # MinGW names objects .obj, Linux .o.
-  string(REPLACE "." "\\." extension "${CMAKE_CXX_OUTPUT_EXTENSION}")
-  foreach(path IN LISTS ARGN)
-    string(REGEX REPLACE "([.+])" "\\\\\\1" path "${path}")
-    list(APPEND pattern "/${path}${extension}$")
-  endforeach()
-  list(JOIN pattern "|" pattern)
-  set(${output} "$<FILTER:$<TARGET_OBJECTS:${target}>,INCLUDE,${pattern}>" PARENT_SCOPE)
-endfunction()
 
 # Link inputs in SConstruct's LIBS order; like SCons' unique merge, a library
 # named again later moves to its last position.

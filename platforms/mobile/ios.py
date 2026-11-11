@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate an Xcode app project; SCons compiles the shared game core."""
+"""Generate an Xcode app project; CMake (cmake/mobile.cmake) compiles the shared game core."""
 import argparse
 import json
 import os
@@ -49,7 +49,7 @@ def main():
     parser.add_argument('--mobile-deps',type=Path,help='Read-only dependency prefix to reuse')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--build-number',default='1',help='Numeric CFBundleVersion for this build')
-    parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel SCons jobs')
+    parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel compile jobs')
     parser.add_argument('--developer-dir')
     signing=parser.add_mutually_exclusive_group()
     signing.add_argument('--team',help='Local Apple development team for device signing')
@@ -92,9 +92,7 @@ def main():
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
     prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependency_identity(identity), discover(identity,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with platforms/mobile/dependencies.py --target ios --environment '+args.environment)
-    scons=shutil.which('scons')
-    if not scons: raise ValueError('SCons is required')
-    command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
+    command=[sys.executable,str(ROOT/'tools/dev_build.py'),'--generator=cmake']+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     if args.script_tests: command += ['ios-tests']
     subprocess.run(command,cwd=ROOT,env=env,check=True)
     project.mkdir(parents=True,exist_ok=True)

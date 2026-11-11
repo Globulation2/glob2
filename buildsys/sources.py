@@ -911,6 +911,34 @@ GAG_SOURCES = (
 )
 
 
+# The mobile builds (buildsys/mobile_build.py and cmake/mobile.cmake): the client,
+# libgag and libusl, without desktop voice recording, plus these, relative to the
+# repository root. iOS links its own entry point from Xcode, so it drops Glob2.cpp.
+MOBILE_EXCLUDED_CLIENT_SOURCES = ('audio/VoiceRecorder.cpp',)
+MOBILE_SOURCES = ('platforms/web/VoiceRecorder.cpp', 'platforms/mobile/MobilePaths.cpp',
+                  'platforms/mobile/Documents.cpp', 'platforms/mobile/CertificateTrust.cpp',
+                  'platforms/mobile/TemporaryFiles.cpp')
+ANDROID_SOURCES = ('platforms/mobile/android/Documents.cpp', 'platforms/mobile/android/CertificateTrust.cpp')
+IOS_SOURCES = ('platforms/mobile/ios/SafeArea.mm', 'platforms/mobile/ios/Documents.mm',
+               'platforms/mobile/ios/LaunchLinks.mm', 'platforms/mobile/ios/CertificateTrust.cpp')
+# iOS compiles this one with automatic reference counting.
+IOS_ARC_SOURCES = ('platforms/mobile/ios/Documents.mm',)
+
+
+def mobile_sources(target):
+    """Every source a mobile target compiles into its library, in build order."""
+    files = ['src/' + name for name in CLIENT_SOURCES if name not in MOBILE_EXCLUDED_CLIENT_SOURCES]
+    if target == 'ios':
+        files.remove('src/' + 'app/Glob2.cpp')
+        files += IOS_SOURCES
+    files += ['libs/gag/src/' + name for name in GAG_SOURCES]
+    files += ['libs/usl/src/' + name for name in USL_SOURCES]
+    files += MOBILE_SOURCES
+    if target == 'android':
+        files += ANDROID_SOURCES
+    return files
+
+
 # libgag sources only native macOS builds compile (Objective-C++).
 GAG_DARWIN_SOURCES = ('MacScrollMonitor.mm',)
 

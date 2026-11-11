@@ -35,7 +35,7 @@ class MobileDependencyManifestTests(unittest.TestCase):
                     with patch.object(sys, 'argv', argv), patch.object(ios, 'ROOT', root), \
                          patch.object(ios, 'discover', return_value={'fingerprint': 'pinned'}) as discover, \
                          patch.object(ios, 'dependency_prefix', return_value=prefix) as resolve, \
-                         patch.object(ios.shutil, 'which', side_effect=PrefixResolved):
+                         patch.object(ios.subprocess, 'run', side_effect=PrefixResolved):
                         with self.assertRaises(PrefixResolved): ios.main()
                         resolve.assert_called_once_with(root, expected, 'pinned')
 

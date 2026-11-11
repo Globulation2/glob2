@@ -105,7 +105,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            scons pkg-config unzip zip autoconf automake libtool ccache \
+            pkg-config unzip zip autoconf automake libtool ccache \
             python3-venv g++ make cmake ninja-build curl perl nasm
       - name: Install pinned Android tools
         run: |

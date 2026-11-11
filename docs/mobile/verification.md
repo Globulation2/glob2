@@ -6,7 +6,7 @@ Run native checks, capture consistent layouts and verify real-device behavior be
 
 ```sh
 python3 -m unittest discover -s test/build_system -v
-scons release=1 tests
+python3 tools/dev_build.py release=1 tests
 python3 test/run_tests.py --binary unit --filter 'MobileInput/*' --filter 'MobileDocuments/*'
 python3 test/run_tests.py --filter 'PortableRenderer/*' --filter 'GameGUITouch/*' --filter 'UIPresentation/*'
 ```
@@ -81,7 +81,7 @@ reviewers compare any two sizes, inspect full-resolution images, search by scree
 name or stable ID, and record/export/import feedback per view.
 
 ```sh
-scons release=1 mobile-gallery
+python3 tools/dev_build.py release=1 mobile-gallery
 python3 tools/mobile_gallery/capture.py
 # Faster in-game-only iteration, with the same IDs and comparison sizes:
 python3 tools/mobile_gallery/capture.py --game-only --output artifacts/mobile-gallery/gameplay-review

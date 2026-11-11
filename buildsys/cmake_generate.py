@@ -179,6 +179,168 @@ def lean_image_prefix(args):
     print(Path(prefix).resolve().as_posix())
 
 
+def _mobile(args):
+    """The build identity, its dependency identity and the cross toolchain of a mobile build."""
+    from dev_build import dependency_identity as application_dependency_identity
+    from mobile_toolchain import discover
+    arguments = build_arguments(args)
+    identity = build_identity(arguments)
+    if identity['target'] not in ('android', 'ios'):
+        raise SystemExit('not a mobile build: ' + json.dumps(identity))
+    dependency_identity = application_dependency_identity(identity)
+    # The Amazon flavor changes game behavior, not its pinned native dependencies.
+    dependency_identity.pop('amazon', None)
+    return arguments, identity, dependency_identity, discover(dependency_identity, arguments)
+
+
+def mobile_toolchain(args):
+    """The cross compilers and their flags, which CMake needs before project()."""
+    from dev_store import command_path
+    _, identity, _, toolchain = _mobile(args)
+    ar = Path(command_path(toolchain['ar']))
+    ranlib = ar.with_name('llvm-ranlib' if identity['target'] == 'android' else 'ranlib')
+    flags = toolchain['cflags']
+    sysroot = flags[flags.index('-isysroot') + 1] if '-isysroot' in flags else ''
+    print(json.dumps({'cc': Path(command_path(toolchain['cc'])).as_posix(),
+                      'cxx': Path(command_path(toolchain['cxx'])).as_posix(),
+                      'ar': ar.as_posix(), 'ranlib': ranlib.as_posix(), 'cflags': flags,
+                      'ldflags': toolchain['ldflags'], 'sysroot': sysroot,
+                      'system': 'Linux' if identity['target'] == 'android' else 'Darwin'}))
+
+
+def _cmake_list(name, values):
+    quoted = ['"' + str(value).replace('\\', '/').replace('"', '\\"') + '"' for value in values]
+    return 'set(' + name + '\n  ' + '\n  '.join(quoted) + ')\n' if values else 'set(' + name + ')\n'
+
+
+def mobile_configure(args):
+    """What buildsys/mobile_build.py does before compiling: verify the pinned
+    dependency bundle, write the generated headers, provision the recording
+    libraries and stage their notices. Writes mobile-configuration.cmake."""
+    import hashlib
+    import shutil
+    from dev_store import dependency_prefix, dependency_key, command_path, adopt
+    from mobile_artifacts import verify_android_library
+    from recording_dependencies import build as build_recording, codec_libraries
+    from shared_dependencies import ensure
+    from client_features import header as client_feature_header
+    import official_instance
+    import skin_materials
+    import checkout_paths
+    import renderer_shaders
+    arguments, identity, dependency_identity, toolchain = _mobile(args)
+    output = Path(args.builddir).resolve()
+    prefix = (adopt(arguments['mobile_deps']) if arguments.get('mobile_deps')
+              else dependency_prefix(ROOT, dependency_identity, toolchain['fingerprint']))
+    manifest = prefix / 'manifest.json'
+    if not manifest.is_file():
+        raise SystemExit(f'Missing cross-compiled dependency manifest {manifest}; see docs/mobile/development.md. '
+                         'Host libraries are never used.')
+    dependencies = json.loads(manifest.read_text())
+    if dependencies.get('identity') != dependency_identity or dependencies.get('toolchain') != toolchain['fingerprint']:
+        raise SystemExit('Mobile dependencies belong to a different target/compiler configuration')
+    if dependencies.get('dependency_key') and dependencies['dependency_key'] != dependency_key(
+            ROOT, dependency_identity, toolchain['fingerprint']):
+        raise SystemExit('Mobile dependency inputs changed; rebuild dependencies')
+    def verified(name, digest):
+        path = (prefix / name).resolve()
+        if not path.is_relative_to(prefix) or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+            raise SystemExit('Mobile dependency checksum mismatch: ' + str(path))
+        return path
+    for name, digest in dependencies.get('files', {}).items():
+        verified(name, digest)
+    archives = dependencies.get('archives', {})
+    if not archives:
+        raise SystemExit('Mobile dependency manifest has no verified archives')
+    libraries = []
+    for name, digest in archives.items():
+        path = verified(name, digest)
+        if identity['target'] == 'android':
+            verify_android_library(path, identity['arch'])
+        libraries.append(path.as_posix())
+    write_if_changed(output / 'include/glob2/BuildConfig.h', f'''#pragma once
+#define PACKAGE "glob2"
+#define PACKAGE_NAME "Globulation 2"
+#define PACKAGE_VERSION "{PACKAGE_VERSION}"
+#define PACKAGE_DATA_DIR "."
+#define PRIMARY_FONT "sans.ttf"
+#define GLOB2_MOBILE 1
+#define GLOB2_NATIVE_WSS 1
+#define GLOB2_NO_VOICE 1
+''' + ('#define GLOB2_PROGRAMMABLE_GL 1\n#define GLOB2_GLES3 1\n' if identity['target'] == 'android' else '')
+        + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
+        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
+    skin_materials.generate(ROOT, output)
+    renderer_shaders.verify_compute(ROOT)
+    renderer_shaders.prepare(ROOT, output)
+    checkout_paths.write(output, PACKAGE_SOURCE_DIR='.', GLOB2_RENDER_SHADER_DIR=str((output / 'shaders').resolve()))
+    environment = dict(os.environ)
+    # Cross builds must not inherit host include/library injection.
+    for name in ('CPATH', 'C_INCLUDE_PATH', 'CPLUS_INCLUDE_PATH', 'LIBRARY_PATH', 'SDKROOT', 'MACOSX_DEPLOYMENT_TARGET'):
+        environment.pop(name, None)
+    environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
+    (output / 'tmp').mkdir(parents=True, exist_ok=True)
+    explicit = os.environ.get('GLOB2_RECORDING_PREFIX')
+    sys.stdout.flush()
+    saved = os.dup(1)
+    os.dup2(2, 1)
+    try:
+        ar = Path(command_path(toolchain['ar']))
+        recording_prefix = ensure(
+            build_recording, Path(explicit or output / 'recording/prefix'), output / 'recording/sources',
+            explicit=bool(explicit), execute=True, jobs=args.jobs, sdk_identity=toolchain['fingerprint'],
+            cc=command_path(toolchain['cc']), cxx=command_path(toolchain['cxx']), ar=str(ar),
+            ranlib=str(ar.with_name('llvm-ranlib' if identity['target'] == 'android' else 'ranlib')),
+            target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
+            ldflags=toolchain['ldflags'], environment=environment)
+        sys.stdout.flush()
+    finally:
+        os.dup2(saved, 1)
+        os.close(saved)
+    recording_prefix = Path(recording_prefix).resolve()
+    recording = [(recording_prefix / 'lib' / ('lib' + name + '.a')).as_posix() for name in codec_libraries('h264')]
+    recording_link_options = []
+    if identity['target'] == 'android':
+        recording.append('mediandk')
+        # Static FFmpeg assembly references private tables directly: bind only the
+        # codec archives' symbols inside the JNI library (recording_dependencies.attach).
+        recording_link_options.append('-Wl,--exclude-libs=' + ':'.join(
+            'lib' + name + '.a' for name in codec_libraries('h264')))
+        notices = sorted((recording_prefix / 'share/licenses/recording').glob('*'))
+        if not notices or any(not path.is_file() for path in notices):
+            raise SystemExit('Resolved recording prefix contains no complete recording notices: ' + str(recording_prefix))
+        for notice in notices:
+            staged = output / 'licenses/recording' / notice.name
+            staged.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(notice, staged)
+    else:
+        recording += ['-framework ' + name for name in ('VideoToolbox', 'CoreMedia', 'CoreVideo', 'Foundation', 'AudioToolbox')]
+    write_if_changed(output / 'toolchain.json', json.dumps(toolchain, indent=2, sort_keys=True) + '\n')
+    origin = official_instance.origin(arguments)
+    content = ('# Generated by buildsys/cmake_generate.py mobile-configure; do not edit.\n'
+               + _cmake_list('GLOB2_MOBILE_PREFIX', [prefix.as_posix()])
+               + _cmake_list('GLOB2_MOBILE_LIBRARIES', libraries)
+               + _cmake_list('GLOB2_MOBILE_MANIFEST', [manifest.as_posix()])
+               + _cmake_list('GLOB2_MOBILE_RECORDING_PREFIX', [recording_prefix.as_posix()])
+               + _cmake_list('GLOB2_MOBILE_RECORDING_LIBRARIES', recording)
+               + _cmake_list('GLOB2_MOBILE_RECORDING_LINK_OPTIONS', recording_link_options)
+               + _cmake_list('GLOB2_MOBILE_OFFICIAL_ORIGIN', [origin])
+               + _cmake_list('GLOB2_MOBILE_OFFICIAL_FORMER_ORIGINS', [' '.join(official_instance.former_origins(origin))]))
+    write_if_changed(output / 'mobile-configuration.cmake', content)
+
+
+def embedded_provenance(args):
+    """glob2/TestBuildProvenance.h: the identity mobile and browser test executables
+    carry (test_provenance.register_test_provenance)."""
+    import test_provenance
+    metadata = test_provenance._source_identity(ROOT)
+    metadata.update(json.loads(Path(args.configuration).read_text()))
+    contents = '#pragma once\n// Generated test evidence identity; compiled into the producer.\n'
+    contents += '#define GLOB2_TEST_PROVENANCE_EMBEDDED 1\n'
+    contents += '#define GLOB2_TEST_PROVENANCE_JSON ' + json.dumps(json.dumps(metadata, sort_keys=True)) + '\n'
+    write_if_changed(Path(args.builddir) / 'include/glob2/TestBuildProvenance.h', contents)
+
+
 def package_version(args):
     print(PACKAGE_VERSION)
 
@@ -323,8 +485,10 @@ def configure(args):
         resolved = build_identity(arguments)
     except ValueError as error:
         raise SystemExit('invalid build arguments: ' + str(error))
-    if resolved['target'] != 'native' or resolved['toolchain'] not in ('linux', 'darwin', 'mingw'):
-        raise SystemExit('the CMake build supports native Linux, macOS and MinGW builds; got ' + json.dumps(resolved))
+    native = resolved['target'] == 'native' and resolved['toolchain'] in ('linux', 'darwin', 'mingw')
+    if not native and resolved['target'] not in ('android', 'ios'):
+        raise SystemExit('the CMake build supports native Linux, macOS and MinGW, Android and iOS builds; got '
+                         + json.dumps(resolved))
     content = dict(resolved, generator='cmake')
     write_if_changed(Path(args.builddir) / 'identity.json', json.dumps(content, sort_keys=True, indent=2) + '\n')
     print(json.dumps({'identity': resolved, 'directory': (ROOT / default_directory(resolved)).as_posix(),
@@ -422,6 +586,13 @@ def main(argv=None):
     sub.add_argument('--cc', default=os.environ.get('CC', 'gcc'))
     sub.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
     sub.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
+    sub = command('mobile-toolchain', mobile_toolchain, builddir=False)
+    sub.add_argument('--arg', action='append', default=[])
+    sub = command('mobile-configure', mobile_configure)
+    sub.add_argument('--arg', action='append', default=[])
+    sub.add_argument('--jobs', type=int, default=os.cpu_count() or 1)
+    sub = command('embedded-provenance', embedded_provenance)
+    sub.add_argument('--configuration', required=True)
     command('package-version', package_version, builddir=False)
     sub = command('mac-image-prefix', mac_image_prefix)
     sub.add_argument('--sdl-prefix', default='')

@@ -164,7 +164,7 @@ jobs:
       - name: Install pinned build drivers
         run: |
           python3 -m venv "$RUNNER_TEMP/ios-localization-tools"
-          "$RUNNER_TEMP/ios-localization-tools/bin/pip" install scons==4.11.1 cmake==4.4.3
+          "$RUNNER_TEMP/ios-localization-tools/bin/pip" install ninja==1.11.1.1 cmake==4.4.3
           echo "$RUNNER_TEMP/ios-localization-tools/bin" >> "$GITHUB_PATH"
           brew install autoconf automake libtool nasm pkgconf
       - name: Select and verify the existing pinned Xcode

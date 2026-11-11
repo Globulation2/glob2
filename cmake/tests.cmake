@@ -1277,6 +1277,1032 @@ set(GLOB2_TEST_PRODUCTION_4_DEFINES
 set(GLOB2_TEST_PRODUCTION_4_REQUIRE
 )
 
+# android-tests glob2-engine-tests: its registry entries.
+set(GLOB2_ANDROID_ENGINE_TESTS_GROUPS 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16)
+
+# Group 0.
+set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
+    test/support/TestMain.cpp
+    test/support/Glob2Test.cpp
+    test/support/GlobalContainerSlot.cpp
+    test/support/HeadlessGlobals.cpp
+    test/support/HeadlessGame.cpp
+    test/support/GameFixtures.cpp
+    test/support/Continuation.cpp
+    test/support/SimulationInvariants.cpp
+    test/support/DrawFixtures.cpp
+    test/support/LegacyResourceTypes.cpp
+    src/tutorial/IntroductionTest.cpp
+    src/unit/types/UnitCatalogTest.cpp
+    src/app/cli/CommandLineTest.cpp
+    src/app/ApplicationResourcePlanTest.cpp
+    src/replay/ReplayTelemetryTest.cpp
+    src/unit/EntityRandomLifecycleTest.cpp
+    src/map/generator/javascript/ScriptGeneratorTest.cpp
+    src/map/generator/javascript/ToolkitBindingTest.cpp
+    src/map/generator/javascript/FertilityBindingTest.cpp
+    src/audio/MusicSetTest.cpp
+    src/audio/MusicStreamTest.cpp
+    src/audio/SoundMixerTrackSelectionHarness.cpp
+    src/ai/numbi/NumbiObservationTest.cpp
+    src/ai/engine/AIPipelineTest.cpp
+    src/engine/sim/snapshot/SnapshotChecksumTest.cpp
+    src/ai/AIStateContinuationTest.cpp
+    src/ai/AIOrderValidityTest.cpp
+    src/ai/AIRegistryProfileTest.cpp
+    src/ai/BuildingCapabilitiesTest.cpp
+    src/building/types/BuildingCatalogTest.cpp
+    src/building/BuildingProductionCombatTest.cpp
+    src/building/BuildingCatalogFixtureHarness.cpp
+    src/building/BuildingCatalogBenchmark.cpp
+    src/building/AreaEffectsTest.cpp
+    src/building/AreaEffectsBenchmark.cpp
+    src/building/BuildingServicesTest.cpp
+    src/unit/ServiceEffectRecordTest.cpp
+    src/render/UnitEffectDeterminismTest.cpp
+    libs/gag/src/ScreenExecutionHarness.cpp
+    src/scripting/sgsl/LegacyAreaWaitTest.cpp
+    src/ai/AIDecisionCoverageTest.cpp
+    src/ai/telemetry/AITelemetryDialogTest.cpp
+    src/hive/HiveIntegrationTest.cpp
+    src/scripting/javascript/ScriptPresentationTest.cpp
+    src/scripting/javascript/ScriptRealisticTest.cpp
+    src/building/BuildingExpelHarness.cpp
+    src/map/gradient/InitialBuildingGradientHarness.cpp
+    src/building/FetchApportionmentHarness.cpp
+    src/hud/GameGUISelectionHarness.cpp
+    src/render/scene/SceneExtractTest.cpp
+    src/game/diagnostics/GameDiagnosticsTest.cpp
+    src/team/stats/MaterialLedgerTest.cpp
+    src/building/HiringBucketHarness.cpp
+    src/building/HiringPlannerTest.cpp
+    src/unit/HungryDefeatHarness.cpp
+    src/map/gradient/ImmobileUnitGradientHarness.cpp
+    src/building/InnSwapHarness.cpp
+    src/building/LevelGateHarness.cpp
+    src/map/claims/ClaimRoutePipelineTest.cpp
+    src/map/claims/ActiveClaimRoutesHarness.cpp
+    src/map/claims/ClaimInvalidationHarness.cpp
+    src/unit/MarketFetchHarness.cpp
+    src/unit/FetchHiringScoreHarness.cpp
+    src/unit/LegacyRoundTripSaveTest.cpp
+    src/map/TerrainResourcesHarness.cpp
+    src/map/pathfind/TerrainHazardBenchmark.cpp
+    src/map/TerrainEcologyHarness.cpp
+    src/net/LockstepSessionTest.cpp
+    src/online/MatchSetupTest.cpp
+    src/building/BuildingFootprintHarness.cpp
+    src/map/MapTilingHarness.cpp
+    src/unit/EnteringUnitSaveHarness.cpp
+    src/ai/shared_runtime/RuntimeContinuationTest.cpp
+    src/game/SharedWorkerLifecycleTest.cpp
+    src/unit/TrappedUnitLifecycleTest.cpp
+    src/unit/UnitContinuationHarness.cpp
+    test/SavegameSafetyHarness.cpp
+    test/PortableGameHarness.cpp
+    src/team/stats/TeamStatsPipelineTest.cpp
+    src/team/RoutingRatioPolicyTest.cpp
+    src/team/stats/TeamLabourStatsTest.cpp
+    src/net/turn/TurnNetConnectionTest.cpp
+    src/online/RelayTransportTest.cpp
+    src/online/OnlineResultTest.cpp
+    src/online/PlatformRoomTest.cpp
+    src/online/OnlineServicesTest.cpp
+    src/ai/maxima/MaximaDiagnosticsTest.cpp
+    src/ai/maxima/MaximaLifecycleTest.cpp
+    libs/gag/src/DrawableSurfaceBlendTest.cpp
+    libs/gag/src/FontKerningTest.cpp
+    src/ui/OnlineWordingTest.cpp
+    libs/gag/src/FullscreenAspectHarness.cpp
+    libs/gag/src/PortableRendererHarness.cpp
+    src/render/SoftwareRendererTest.cpp
+    src/render/terrain/TerrainMaterialsTest.cpp
+    src/render/terrain/TerrainStonesTest.cpp
+    src/render/terrain/TerrainContinuityTest.cpp
+    libs/gag/src/WindowResizeHarness.cpp
+    src/ui/settings/SettingsScreenTest.cpp
+    src/render/RendererSwitchIntegrationTest.cpp
+    src/ui/settings/SettingsGraphicsTest.cpp
+    src/ui/ThemeCatalogTest.cpp
+    src/ui/MenuColonyTest.cpp
+    src/ui/settings/SettingsExperimentsTest.cpp
+    src/ui/settings/SettingsBuildingsTest.cpp
+    src/app/SystemLanguageTest.cpp
+    src/game/orders/GuardAreaBalanceTest.cpp
+    src/ui/UIIconsTest.cpp
+    src/game/screens/CustomGameSetupHarness.cpp
+    src/team/TeamLimitTest.cpp
+    src/team/IntrusiveEntityListTest.cpp
+    src/map/preview/MapPreviewHarness.cpp
+    src/ai/engine/AIOrderSchedulerTest.cpp
+    src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp
+    src/game/diagnostics/WarriorTacticsTraceTest.cpp
+    src/ai/maxima/MaximaStrategyTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_0_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_0_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_0_REQUIRE
+)
+
+# Group 1.
+set(GLOB2_ANDROID_ENGINE_TESTS_1_SOURCES
+    src/tutorial/IntroductionUITest.cpp
+    src/map/gradient/GradientLegacyQueueHarness.cpp
+    src/map/gradient/GradientMarketTurnoverHarness.cpp
+    src/map/gradient/GradientBackendSwitchTest.cpp
+    src/mcp/MCPTest.cpp
+    src/unit/UnitCustomizationTest.cpp
+    src/map/MapSetTest.cpp
+    src/unit/render/ColonySkinPreviewTest.cpp
+    src/ui/screens/MusicScreensTest.cpp
+    src/ai/warrush/WarrushObservationTest.cpp
+    src/engine/sim/snapshot/WorldSnapshotTest.cpp
+    src/building/BuildingStockTest.cpp
+    src/building/MaterialDemandTest.cpp
+    src/building/TurretTargetingTest.cpp
+    src/map/ResourceGrowthBenchmark.cpp
+    src/map/ResourceGrowthFixtures.cpp
+    src/map/ResourceGrowthTest.cpp
+    src/resource/ResourceRuntimeBenchmark.cpp
+    src/map/gradient/BuildingGradientBenchmark.cpp
+    test/GameplayRecordingIntegrationTest.cpp
+    src/hud/GUIOrderCoverageTest.cpp
+    src/scripting/sgsl/LegacyScriptCoverageTest.cpp
+    src/scripting/javascript/ScriptCompatibilityTest.cpp
+    src/scripting/javascript/ScriptSessionTest.cpp
+    src/scripting/javascript/ScriptSimulationTest.cpp
+    src/map/gradient/BuildingGradientInvalidationHarness.cpp
+    src/team/stats/WinProbabilityTest.cpp
+    src/engine/sim/ClientChannelsTest.cpp
+    src/building/HiringPipelineTest.cpp
+    src/unit/ResourceFetchTargetHarness.cpp
+    src/unit/ClaimContinuationHarness.cpp
+    src/map/claims/ClaimGPUContinuationHarness.cpp
+    src/map/claims/ClaimRecoveryAdversarialHarness.cpp
+    src/unit/MarketsV2Test.cpp
+    src/map/TerrainPropertiesTest.cpp
+    src/map/VertexTerrainTest.cpp
+    src/game/orders/OrderValidationTest.cpp
+    src/net/turn/TurnEngineHarness.cpp
+    src/map/gradient/ClearingFlagGradientTest.cpp
+    src/map/gradient/MapGradientInvalidationTest.cpp
+    src/map/gradient/DelayedGradientPublicationHarness.cpp
+    src/map/gradient/GradientPreparationTest.cpp
+    src/game/ChecksumSchemeTest.cpp
+    src/team/stats/TeamStatsSaveHarness.cpp
+    src/online/OnlineScreenLifetimeTest.cpp
+    src/render/PointBarRenderTest.cpp
+    src/ai/maxima/MaximaCombatIntegrationTest.cpp
+    src/ai/maxima/MaximaDirectorRegressionTest.cpp
+    src/ai/maxima/MaximaEconomyRegressionTest.cpp
+    src/ai/maxima/MaximaImplementationIntegrationTest.cpp
+    src/render/TerrainPresentationTest.cpp
+    src/render/torus/TorusRenderIntegrationTest.cpp
+    src/game/orders/FarmAreaTest.cpp
+    src/game/GameSpeedTest.cpp
+    src/team/IntrusivePopulationSaveTest.cpp
+    src/ai/nicowar/NicowarFarmingHarness.cpp
+    src/ai/maxima/MaximaRelocationIntegrationTest.cpp
+    src/ai/maxima/MaximaFarmingIntegrationTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_1_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_1_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_1_REQUIRE
+)
+
+# Group 2.
+set(GLOB2_ANDROID_ENGINE_TESTS_2_SOURCES
+    src/ai/LegacyAIStateTest.cpp
+    src/ai/AIRulesTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_2_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_2_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_2_REQUIRE
+    ai:cabino
+    ai:cortex
+)
+
+# Group 3.
+set(GLOB2_ANDROID_ENGINE_TESTS_3_SOURCES
+    src/ai/AICustomCatalogTest.cpp
+    src/ai/AIRecoveryCoverageTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_3_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_3_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_3_REQUIRE
+    ai:cabino
+    ai:castor
+    ai:cortex
+)
+
+# Group 4.
+set(GLOB2_ANDROID_ENGINE_TESTS_4_SOURCES
+    libs/gag/src/MacScrollMonitorTest.mm
+    libs/gag/src/MacScrollVisualHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_4_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_4_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_4_REQUIRE
+    mac
+)
+
+# Group 5.
+set(GLOB2_ANDROID_ENGINE_TESTS_5_SOURCES
+    src/hud/GUIInteractionCoverageTest.cpp
+    src/map/editor/EditorActionCoverageTest.cpp
+    src/map/editor/BrushCatalogTest.cpp
+    src/map/editor/EditorTerrainPaintTest.cpp
+    src/map/editor/EditorFlowsTest.cpp
+    src/map/editor/EditorDockLayoutTest.cpp
+    src/map/editor/EditorPresentationTest.cpp
+    src/engine/EngineSessionHarness.cpp
+    src/render/MapRenderResizeHarness.cpp
+    src/render/HighResolutionIntegrationHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_5_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_5_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_5_REQUIRE
+    editor
+)
+
+# Group 6.
+set(GLOB2_ANDROID_ENGINE_TESTS_6_SOURCES
+    src/ai/telemetry/AITargetTelemetryTest.cpp
+    src/ai/cortex/CortexActionCoverageTest.cpp
+    test/TournamentCompatibilityTest.cpp
+    src/ai/cortex/CortexPolicyCoverageTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_6_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_6_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_6_REQUIRE
+    ai:cortex
+)
+
+# Group 7.
+set(GLOB2_ANDROID_ENGINE_TESTS_7_SOURCES
+    src/ai/castor/CastorContinuationTest.cpp
+    src/ai/AISavePortabilityHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_7_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_7_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_7_REQUIRE
+    ai:castor
+)
+
+# Group 8.
+set(GLOB2_ANDROID_ENGINE_TESTS_8_SOURCES
+    src/scripting/javascript/ScriptIntegrationTest.cpp
+    src/scripting/map/ScriptEditorTest.cpp
+    src/ui/UIPresentationHarness.cpp
+    src/hud/touch/GameGUITouchHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_8_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_8_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_8_REQUIRE
+    editor
+)
+
+# Group 9.
+set(GLOB2_ANDROID_ENGINE_TESTS_9_SOURCES
+    src/net/LanIdentityTest.cpp
+    src/net/WssBackpressureTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_9_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_9_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_9_REQUIRE
+    wss
+)
+
+# Group 10.
+set(GLOB2_ANDROID_ENGINE_TESTS_10_SOURCES
+    src/net/lan/LanMatchHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_10_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_10_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_10_REQUIRE
+    wss
+)
+
+# Group 11.
+set(GLOB2_ANDROID_ENGINE_TESTS_11_SOURCES
+    src/ai/cortex/CortexGeometryHarness.cpp
+    src/ai/cortex/CortexNetCoverageTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_11_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_11_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_11_REQUIRE
+    ai:cortex
+)
+
+# Group 12.
+set(GLOB2_ANDROID_ENGINE_TESTS_12_SOURCES
+    test/UntrustedFilesTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_12_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_12_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_12_REQUIRE
+    ai:cabino
+)
+
+# Group 13.
+set(GLOB2_ANDROID_ENGINE_TESTS_13_SOURCES
+    src/map/generator/CombGeneratorTest.cpp
+    src/map/generator/OrchardCommonsConversionTest.cpp
+    src/map/generator/MapGeneratorPropertyTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_13_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_13_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_13_REQUIRE
+    generators
+)
+
+# Group 14.
+set(GLOB2_ANDROID_ENGINE_TESTS_14_SOURCES
+    src/render/EnteringUnitDrawHarness.cpp
+    src/render/UnitEffectDrawHarness.cpp
+    src/render/FailingUnitMarkersHarness.cpp
+    libs/gag/src/RuntimePackCheck.cpp
+    libs/gag/src/TextRasterHarness.cpp
+    src/unit/render/UnitHighResolutionCacheTest.cpp
+    src/unit/render/UnitTeamColorCacheTest.cpp
+    src/unit/render/UnitTeamShaderTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_14_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_14_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_14_REQUIRE
+    opengl
+)
+
+# Group 15.
+set(GLOB2_ANDROID_ENGINE_TESTS_15_SOURCES
+    src/render/SwimmingUnitDrawHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_15_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_15_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_15_REQUIRE
+    opengl
+)
+
+# Group 16.
+set(GLOB2_ANDROID_ENGINE_TESTS_16_SOURCES
+    src/map/generator/MapGeneratorDefaultsTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_16_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_ENGINE_TESTS_16_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_ENGINE_TESTS_16_REQUIRE
+    editor
+    generators
+)
+
+# android-tests glob2-unit-tests: its registry entries.
+set(GLOB2_ANDROID_UNIT_TESTS_GROUPS 0 1 2 3 4)
+
+# Group 0.
+set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
+    test/support/TestMain.cpp
+    test/support/Glob2Test.cpp
+    test/support/GlobalContainerSlot.cpp
+    test/unit/stubs/MapSectorStubs.cpp
+    test/unit/stubs/SnapshotGradientStubs.cpp
+    test/unit/stubs/MapHeaderStubs.cpp
+    test/unit/stubs/OrderStubs.cpp
+    test/unit/stubs/RaceStubs.cpp
+    platforms/mobile/AssetIndexTest.cpp
+    src/building/HiringRankingTest.cpp
+    libs/gag/src/TextStreamTest.cpp
+    libs/gag/src/AssetLoaderTest.cpp
+    libs/gag/src/SpriteLoadTest.cpp
+    libs/gag/src/SpriteRenderAtlasTest.cpp
+    libs/gag/src/RenderFramePacerTest.cpp
+    libs/gag/src/RenderDeviceTest.cpp
+    libs/gag/src/ProgrammableGLDeviceTest.cpp
+    libs/gag/src/SDLGPUDeviceTest.cpp
+    libs/gag/src/RendererSelectionTest.cpp
+    libs/gag/src/GraphicContextDeviceSkinsTest.cpp
+    libs/gag/src/FontMetricsTest.cpp
+    libs/gag/src/PackedArrayTest.cpp
+    libs/gag/src/EventQueueTest.cpp
+    libs/gag/src/GameplayRecordingTest.cpp
+    libs/gag/src/RecordingSessionTest.cpp
+    test/support/RecordingValidationProcess.cpp
+    libs/usl/test/USLCoverageTest.cpp
+    libs/gag/src/SurfaceCoverageTest.cpp
+    libs/gag/src/SurfaceRasterTest.cpp
+    libs/gag/src/ImageAssetTest.cpp
+    libs/gag/src/GpuTexturePreparationTest.cpp
+    src/scripting/javascript/ScriptRuntimeTest.cpp
+    src/hive/HiveWorkerTest.cpp
+    src/scripting/javascript/ScriptNumericTest.cpp
+    src/hud/AllyTeamWidgetIndexTest.cpp
+    libs/gag/src/BidiTextTest.cpp
+    src/render/scene/SceneBufferTest.cpp
+    src/map/BrushAccumulatorTest.cpp
+    src/map/editor/BrushToolHitTest.cpp
+    src/building/hud/BuildingFailureDisplayTest.cpp
+    src/ai/cortex/CortexUpgradeTest.cpp
+    src/map/editor/EditorWidgetLayoutTest.cpp
+    src/building/FetchApportionmentTest.cpp
+    src/audio/GameMusicControllerTest.cpp
+    src/hud/GhostBuildingOverlapTest.cpp
+    src/ai/shared_runtime/GradientBFSTest.cpp
+    src/field/OpenCLGradientTest.cpp
+    src/field/RuntimeGradientBackendTest.cpp
+    src/field/GradientPreparationContractTest.cpp
+    src/field/OpenCLBorrowedLifetimeTest.cpp
+    src/field/OpenCLRequiredLifetimePoolTest.cpp
+    src/field/OpenCLTransferProofTest.cpp
+    src/field/OpenCLRequiredControlTest.cpp
+    src/field/OpenCLLaneRegistryTest.cpp
+    test/HelloWorldTest.cpp
+    libs/gag/src/Sha1Test.cpp
+    test/VendoredJsonTest.cpp
+    src/online/HttpFetchUrlTest.cpp
+    src/online/PlatformProtocolTest.cpp
+    src/online/ApiErrorTextTest.cpp
+    src/online/InstanceConfigTest.cpp
+    src/online/InviteLinkTest.cpp
+    src/online/MapCacheTest.cpp
+    src/online/SkinAuthorizationTest.cpp
+    src/online/SkinDownloadsTest.cpp
+    src/online/SkinSpritesTest.cpp
+    src/online/ReplayAppearanceTest.cpp
+    src/online/PlatformClientTest.cpp
+    src/online/OnlineResourcesTest.cpp
+    src/online/QuickMatchTest.cpp
+    src/online/MapCatalogTest.cpp
+    src/ui/KeyActionLookupTest.cpp
+    src/net/message/MessageRecipientsTest.cpp
+    src/render/overlay/OverlayFillTest.cpp
+    src/render/ZoomDetailTest.cpp
+    src/render/FogFadeTest.cpp
+    src/render/UnitEffectsTest.cpp
+    src/team/stats/MetricSeriesTest.cpp
+    src/game/rules/TeamLayoutTest.cpp
+    src/hud/input/PanelButtonHitTest.cpp
+    src/hud/draw/ParticleCrossfadeTest.cpp
+    src/map/generator/shared/PerlinNoiseTest.cpp
+    src/audio/PlayerVoiceDrainTest.cpp
+    src/hud/draw/SpriteCenteringTest.cpp
+    libs/gag/src/SkinMeshTest.cpp
+    libs/gag/src/SkinModelTest.cpp
+    libs/gag/src/SkinShapeModelTest.cpp
+    src/building/TurretScanTileTest.cpp
+    src/unit/render/UnitAnimationTest.cpp
+    src/unit/render/SwimmingPresentationTest.cpp
+    src/unit/render/UnitDrawGeometryTest.cpp
+    src/unit/UnitTimingTest.cpp
+    third_party/natsort/NatSortTest.cpp
+    src/game/player/BasePlayerSaveLoadTest.cpp
+    src/team/BaseTeamSaveLoadTest.cpp
+    src/game/BulletSaveLoadTest.cpp
+    src/render/clouds/CloudFieldTest.cpp
+    src/render/clouds/IntroCoverTest.cpp
+    src/common/ExperimentalFeaturesTest.cpp
+    src/game/GameHeaderDefaultAlliancesTest.cpp
+    src/game/GameHeaderTextSaveLoadTest.cpp
+    src/game/GameHintsTest.cpp
+    src/game/GameObjectivesTest.cpp
+    src/map/preview/MapRenderGeometryTest.cpp
+    src/render/torus/TorusGeometryTest.cpp
+    src/render/torus/TorusPickingTest.cpp
+    src/render/torus/TorusTextureTilesTest.cpp
+    src/ai/shared_runtime/TriboolTest.cpp
+    src/game/WinningConditionDecodeTest.cpp
+    src/game/WinningConditionPrestigeToggleTest.cpp
+    src/game/WinningConditionSuddenDeathToggleTest.cpp
+    src/net/message/NetSendOrderDecodeTest.cpp
+    src/net/turn/TurnProtocolTest.cpp
+    src/net/turn/TurnHarnessTest.cpp
+    src/net/turn/TurnTelemetryTest.cpp
+    src/net/ConnectionQualityTest.cpp
+    src/game/orders/OrderAlterateAreaTest.cpp
+    src/replay/ReplayStepCounterTest.cpp
+    src/campaign/CampaignBoundsHarness.cpp
+    src/campaign/CampaignDescriptionCacheHarness.cpp
+    src/campaign/CampaignLoadHarness.cpp
+    src/campaign/CampaignSelectionHarness.cpp
+    src/game/WinningConditionsHarness.cpp
+    libs/gag/src/BufferedFileStreamHarness.cpp
+    platforms/mobile/MobileDocumentsHarness.cpp
+    libs/gag/src/MobileInputHarness.cpp
+    libs/gag/src/PerformanceTelemetryHarness.cpp
+    libs/gag/src/ScrollPhysicsTest.cpp
+    libs/gag/src/GestureScrollTest.cpp
+    src/hud/GameSpeedControlTest.cpp
+    src/hud/GameEventFeedTest.cpp
+    src/audio/MusicBufferTest.cpp
+    src/audio/MusicProducerTest.cpp
+    libs/gag/src/ui/UILayoutHarness.cpp
+    src/ai/maxima/MaximaContinuationTest.cpp
+    src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp
+    src/ai/maxima/MaximaDefenseStandaloneTest.cpp
+    src/ai/maxima/MaximaFarmingStandaloneTest.cpp
+    src/ai/maxima/MaximaForceModelStandaloneTest.cpp
+    src/ai/maxima/MaximaLabourStandaloneTest.cpp
+    src/ai/maxima/MaximaPlacementStandaloneTest.cpp
+    src/ai/maxima/MaximaReconStandaloneTest.cpp
+    src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp
+    src/ai/maxima/MaximaPrestigeStandaloneTest.cpp
+    src/ai/maxima/MaximaTacticsStandaloneTest.cpp
+    src/map/gradient/LegacyResourceGradientStateTest.cpp
+    src/map/gradient/ResourceGradientExplorationTest.cpp
+    src/map/gradient/GradientMarketTargetsTest.cpp
+    src/map/gradient/GradientTargetCellTest.cpp
+    src/map/gradient/AdaptiveGradientStateTest.cpp
+    src/map/TerrainRegistryTest.cpp
+    src/map/TerrainCatalogTest.cpp
+    src/common/BitArrayTest.cpp
+    src/map/BrushCoverageTest.cpp
+    src/common/FilenameStripTest.cpp
+    src/field/FieldTraversalTest.cpp
+    src/map/ResourceClaimsTest.cpp
+    src/map/claims/ClaimRouteSearchTest.cpp
+    src/map/claims/ClaimRecoveryAdversarialTest.cpp
+    src/resource/ResourceRegistryTest.cpp
+    src/map/io/MapExploredAreaSaveLoadTest.cpp
+    src/common/MersenneTwisterTest.cpp
+    src/common/EntityRandomTest.cpp
+    src/common/WordChecksumTest.cpp
+    src/common/ComputeExecutorHarness.cpp
+    src/map/gradient/GradientPipelineHarness.cpp
+    src/map/gradient/GlobalGradientHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_0_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_0_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_TESTS_0_REQUIRE
+)
+
+# Group 1.
+set(GLOB2_ANDROID_UNIT_TESTS_1_SOURCES
+    libs/gag/src/UnitDrawBatchTest.cpp
+    libs/gag/src/MapGeometryCacheTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_1_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_1_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_TESTS_1_REQUIRE
+    opengl
+)
+
+# Group 2.
+set(GLOB2_ANDROID_UNIT_TESTS_2_SOURCES
+    libs/gag/src/SpriteDrawBatchTest.cpp
+    libs/gag/src/SpriteSheetTest.cpp
+    libs/gag/src/OpaqueRectangleBatchTest.cpp
+    libs/gag/src/SkinModelRenderTest.cpp
+    src/map/FertilityFieldTest.cpp
+    src/map/gradient/GradientTest.cpp
+    src/map/MapQueryTest.cpp
+    src/map/gradient/PathGradientHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_2_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_2_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_TESTS_2_REQUIRE
+)
+
+# Group 3.
+set(GLOB2_ANDROID_UNIT_TESTS_3_SOURCES
+    platforms/mobile/MobileCertificateHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_3_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_3_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_TESTS_3_REQUIRE
+    wss
+)
+
+# Group 4.
+set(GLOB2_ANDROID_UNIT_TESTS_4_SOURCES
+    platforms/mobile/MobileTemporaryFilesHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_4_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_TESTS_4_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_TESTS_4_REQUIRE
+    not-mingw
+)
+
+# Production sources whose mobile objects the Android unit tests link.
+set(GLOB2_ANDROID_UNIT_REUSED_SOURCES
+    src/field/GradientDeviceService.cpp
+    src/field/GradientAccelerators.cpp
+    src/field/VulkanGradient.cpp
+    src/field/WebGPUGradient.cpp
+    src/app/cli/CommandLine.cpp
+    src/map/TerrainRegistry.cpp
+    src/map/TerrainCatalog.cpp
+    src/map/CellRules.cpp
+    src/map/MapAssetBundle.cpp
+    src/render/terrain/TerrainCatalogIO.cpp
+    src/render/terrain/TerrainMaterials.cpp
+    src/render/terrain/TerrainBorderRules.cpp
+    src/render/terrain/TerrainSmoothBorders.cpp
+    src/scripting/javascript/ScriptValue.cpp
+    src/scripting/javascript/ScriptRuntime.cpp
+    src/hive/HiveWorker.cpp
+    src/common/BitArray.cpp
+    src/map/Brush.cpp
+    src/map/BrushCoverage.cpp
+    src/render/overlay/OverlayFill.cpp
+    src/audio/PlayerVoice.cpp
+    src/common/Utilities.cpp
+    src/ai/maxima/AIMaximaDefense.cpp
+    src/ai/maxima/AIMaximaFarming.cpp
+    src/ai/maxima/AIMaximaFoodLedger.cpp
+    src/ai/maxima/AIMaximaForceModel.cpp
+    src/ai/maxima/AIMaximaPlacement.cpp
+    src/ai/maxima/AIMaximaRecon.cpp
+    src/ai/maxima/AIMaximaTactics.cpp
+    src/ai/shared_runtime/GradientBFS.cpp
+    src/building/BuildingUtils.cpp
+    src/hud/input/GameGUIKeyActions.cpp
+    src/audio/GameMusicController.cpp
+    src/audio/MusicStream.cpp
+    src/audio/MusicProducer.cpp
+    src/map/FertilityField.cpp
+    src/engine/sim/snapshot/WorldSnapshot.cpp
+    src/map/Map.cpp
+    src/map/MapCells.cpp
+    src/map/MapResourceState.cpp
+    src/map/MapQuery.cpp
+    src/map/MapTerrain.cpp
+    src/map/editor/MapEditKeyActions.cpp
+    src/map/generator/shared/Noise.cpp
+    src/map/gradient/BuildingGradientSearch.cpp
+    src/map/gradient/GradientRuntime.cpp
+    src/map/gradient/MapRouting.cpp
+    src/map/gradient/MapGradientDirection.cpp
+    src/map/gradient/MapGradientChamfer.cpp
+    src/map/gradient/MapGradientPropagation.cpp
+    src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/LegacyResourceGradientState.cpp
+    src/map/gradient/AdaptiveGradientState.cpp
+    src/map/gradient/MapGradientTargets.cpp
+    src/map/gradient/MapGradientMarketTargets.cpp
+    src/resource/ResourceRegistry.cpp
+    src/map/pathfind/MapPathfindPoint.cpp
+    src/net/message/MessageRecipients.cpp
+    src/render/FogFade.cpp
+    src/team/stats/MetricCatalog.cpp
+    src/team/stats/MetricSeries.cpp
+    src/game/rules/TeamLayout.cpp
+    src/game/player/BasePlayer.cpp
+    src/team/BaseTeam.cpp
+    src/game/Bullet.cpp
+    src/common/ExperimentalFeatures.cpp
+    src/game/GameHeader.cpp
+    src/unit/types/UnitCatalog.cpp
+    src/building/BuildingArtwork.cpp
+    src/building/types/BuildingCatalog.cpp
+    src/building/types/Buildings.cpp
+    src/building/types/BuildingTypesColony.cpp
+    src/building/types/BuildingTypesDefence.cpp
+    src/building/types/BuildingTypesFlags.cpp
+    src/building/types/BuildingTypesUpgrade.cpp
+    src/game/GameHints.cpp
+    src/game/GameObjectives.cpp
+    src/render/clouds/SimplexNoise.cpp
+    src/render/clouds/IntroCover.cpp
+    src/game/WinningConditions.cpp
+    src/team/stats/WinProbability.cpp
+    src/map/io/MapExploredAreaIO.cpp
+    src/online/HttpFetchCommon.cpp
+    src/online/InstanceConfig.cpp
+    src/online/InviteLink.cpp
+    src/online/MapCache.cpp
+    src/online/MapCatalog.cpp
+    src/online/OnlineHandoff.cpp
+    src/online/OnlineResources.cpp
+    src/online/MemoryStorage.cpp
+    src/online/PlatformClient.cpp
+    src/online/PlatformProtocol.cpp
+    src/online/ApiErrorText.cpp
+    src/online/QuickMatch.cpp
+    src/online/RelayProbe.cpp
+    src/online/Sha256.cpp
+    src/online/SkinAuthorization.cpp
+    src/online/SkinDownloads.cpp
+    src/online/SkinSpriteManifest.cpp
+    src/online/SkinSprites.cpp
+    src/online/ReplayAppearance.cpp
+    src/online/SimVersion.cpp
+    src/campaign/Campaign.cpp
+    src/audio/SoundMixer.cpp
+    platforms/mobile/Documents.cpp
+    platforms/mobile/CertificateTrust.cpp
+    platforms/mobile/TemporaryFiles.cpp
+    src/net/turn/JitterBuffer.cpp
+    src/net/turn/MatchRecord.cpp
+    src/net/turn/TurnMessages.cpp
+    src/net/turn/TurnSequencer.cpp
+    src/net/turn/TurnSession.cpp
+    src/net/turn/TurnTelemetry.cpp
+    src/replay/ReplayReader.cpp
+    src/replay/ReplayWriter.cpp
+    src/replay/ReplayTelemetry.cpp
+)
+
+# Production sources the Android unit tests compile again with the test flags.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_GROUPS 0 1)
+
+# Group 0.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_0_SOURCES
+    src/field/OpenCLGradient.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_0_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_0_DEFINES
+    GLOB2_TEST_DEVICE_FAILURES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_PRODUCTION_0_REQUIRE
+)
+
+# Group 1.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_1_SOURCES
+    src/game/orders/OrderModify.cpp
+    src/game/orders/OrderBuilding.cpp
+    src/net/message/OrderMessages.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_1_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_ANDROID_UNIT_PRODUCTION_1_DEFINES
+    GLOB2_ORDER_CODEC_ONLY
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_ANDROID_UNIT_PRODUCTION_1_REQUIRE
+)
+
+# ios-tests libglob2-script-tests.a: its registry entries.
+set(GLOB2_IOS_SCRIPT_TESTS_GROUPS 0 1 2)
+
+# Group 0.
+set(GLOB2_IOS_SCRIPT_TESTS_0_SOURCES
+    test/support/TestMain.cpp
+    test/support/Glob2Test.cpp
+    test/support/GlobalContainerSlot.cpp
+    test/support/HeadlessGlobals.cpp
+    test/support/HeadlessGame.cpp
+    test/support/GameFixtures.cpp
+    test/support/Continuation.cpp
+    test/support/SimulationInvariants.cpp
+    test/support/DrawFixtures.cpp
+    test/support/LegacyResourceTypes.cpp
+    src/tutorial/IntroductionTest.cpp
+    src/map/generator/javascript/ScriptGeneratorTest.cpp
+    src/scripting/javascript/ScriptPresentationTest.cpp
+    src/scripting/javascript/ScriptRealisticTest.cpp
+    libs/gag/src/ImageAssetTest.cpp
+    src/scripting/javascript/ScriptRuntimeTest.cpp
+    src/scripting/javascript/ScriptNumericTest.cpp
+    src/online/ApiErrorTextTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_0_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_0_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_IOS_SCRIPT_TESTS_0_REQUIRE
+)
+
+# Group 1.
+set(GLOB2_IOS_SCRIPT_TESTS_1_SOURCES
+    src/scripting/javascript/ScriptCompatibilityTest.cpp
+    src/scripting/javascript/ScriptSessionTest.cpp
+    src/scripting/javascript/ScriptSimulationTest.cpp
+    src/team/stats/TeamStatsSaveHarness.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_1_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_1_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_IOS_SCRIPT_TESTS_1_REQUIRE
+)
+
+# Group 2.
+set(GLOB2_IOS_SCRIPT_TESTS_2_SOURCES
+    src/scripting/javascript/ScriptIntegrationTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_2_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_IOS_SCRIPT_TESTS_2_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_IOS_SCRIPT_TESTS_2_REQUIRE
+    editor
+)
+
 # test/tests.py PROGRAMS: compiled with the test flags, linked with every client object.
 set(GLOB2_TEST_PROGRAMS
     SaveSizeHarness

@@ -135,7 +135,7 @@ jobs:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
           ref: ${{ needs.preflight.outputs.revision }}
       - name: Install native build utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
       - name: Install pinned Android toolchain
         run: |
           python3 platforms/mobile/setup_ndk.py

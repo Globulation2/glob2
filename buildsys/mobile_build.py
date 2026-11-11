@@ -113,15 +113,9 @@ def build_mobile(directory, identity, arguments):
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
-    files = ['src/' + name for name in CLIENT_SOURCES if name != 'audio/VoiceRecorder.cpp']
-    if identity['target'] == 'ios':
-        files.remove('src/app/Glob2.cpp')
-        files += ['platforms/mobile/ios/SafeArea.mm', 'platforms/mobile/ios/Documents.mm', 'platforms/mobile/ios/LaunchLinks.mm', 'platforms/mobile/ios/CertificateTrust.cpp']
-    files += ['libs/gag/src/' + name for name in GAG_SOURCES]
-    files += ['libs/usl/src/' + name for name in USL_SOURCES]
-    files += ['platforms/web/VoiceRecorder.cpp', 'platforms/mobile/MobilePaths.cpp', 'platforms/mobile/Documents.cpp', 'platforms/mobile/CertificateTrust.cpp', 'platforms/mobile/TemporaryFiles.cpp']
+    from sources import mobile_sources, IOS_ARC_SOURCES
+    files = mobile_sources(identity['target'])
     if identity['target'] == 'android':
-        files += ['platforms/mobile/android/Documents.cpp', 'platforms/mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         # SDL3/SDL_main.h supplies Android entry-point routing.
@@ -208,7 +202,7 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        by_source = {name: (objc if name == 'platforms/mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files}
+        by_source = {name: (objc if name in IOS_ARC_SOURCES else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files}
         bind_online_error_objects(env, by_source, online_error_catalog)
         objects = [obj for name in files for obj in by_source[name]] + script_objects
         numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])

@@ -26,7 +26,12 @@ A target may be a CMake target name or a file under the build directory
 build Glob2.app and Glob2-<version>.dmg from a release build linked with the
 pinned image libraries, as SConstruct's do.
 
-Requests the CMake build does not cover yet (other targets and hosts,
+target=android and target=ios (on macOS) cross-compile with CMake too, with the
+pinned mobile toolchain and dependency bundle (android_sdk=, mobile_deps=,
+developer_dir= as for SCons), building lib/libmain.so or lib/libglob2.a and the
+android-tests and ios-tests targets.
+
+Requests the CMake build does not cover yet (the browser, other hosts,
 recording codecs other than h264) go to SCons; --generator=scons or
 --generator=cmake forces one, and GLOB2_DEV_GENERATOR sets the default.
 """
@@ -48,8 +53,9 @@ sys.path.insert(0, str(ROOT / 'buildsys'))
 TOOL_OPTIONS = ('CC', 'CXX', 'CXXFLAGS', 'LINKFLAGS', 'BINDIR', 'INSTALLDIR', 'DATADIR')
 INSTALL_DEFAULTS = {'BINDIR': '/usr/local/bin', 'INSTALLDIR': '/usr/local/share', 'DATADIR': '/usr/local/share'}
 # Identity keys the CMake build does not support yet.
-SCONS_ONLY_KEYS = ('recording_codec', 'profile',
-                   'portaudio', 'web_variant', 'web_legacy_gl', 'target', 'arch', 'amazon')
+SCONS_ONLY_KEYS = ('recording_codec', 'profile', 'portaudio', 'web_variant', 'web_legacy_gl')
+# Cross targets the CMake build covers (cmake/mobile.cmake).
+CMAKE_TARGETS = ('native', 'android', 'ios')
 
 
 def enabled(value):
@@ -63,6 +69,8 @@ def windows_host():
 def development_defaults(options):
     """The dev tier's fast-development flags unless an optimized tier or the relay is
     asked for, and mingw=1 on Windows, whose only native toolchain is MSYS2's MinGW."""
+    if options.get('target', 'native') != 'native':
+        return []  # mobile and browser builds keep their own optimization levels
     optimized = enabled(options.get('perf', 0)) or enabled(options.get('release', 0)) or options.get('role') == 'relay'
     defaults = ['mingw=1'] if windows_host() and 'mingw' not in options else []
     if 'dev_fast' not in options and not optimized:
@@ -170,7 +178,9 @@ def scons_reason(arguments):
         identity = request.identity()
     except ValueError as error:
         return 'SCons rejects the options too: ' + str(error)
-    if identity['target'] != 'native' or identity['toolchain'] != host:
+    if identity['target'] not in CMAKE_TARGETS:
+        return 'target=' + identity['target'] + ' is not supported by the CMake build yet'
+    if identity['target'] == 'native' and identity['toolchain'] != host:
         return 'the CMake build covers native Linux, macOS and MSYS2 MinGW builds'
     version = subprocess.run(['cmake', '--version'], capture_output=True, text=True).stdout
     found = re.search(r'(\d+)\.(\d+)', version)
@@ -207,11 +217,15 @@ def cmake_commands(arguments):
                 # The interpreter running this script runs the build's generators; on
                 # Windows FindPython would otherwise prefer a registered CPython to MSYS2's.
                 'Python3_EXECUTABLE': Path(sys.executable).as_posix()}
-    if platform.system() == 'Darwin':
+    if request.options.get('target', 'native') != 'native':
+        # Mobile builds take their compilers and flags from the pinned toolchain.
+        settings = {name: settings[name] for name in ('GLOB2_BUILD_ARGS', 'Python3_EXECUTABLE')}
+    elif platform.system() == 'Darwin':
         # SConstruct links the pinned image libraries only when the bundle is asked for.
         settings['GLOB2_MAC_BUNDLE'] = 'ON' if {'bundle', 'package'} & set(targets) else 'OFF'
     for key, default in INSTALL_DEFAULTS.items():
-        settings['GLOB2_' + key] = request.tools.get(key, default)
+        if request.options.get('target', 'native') == 'native':
+            settings['GLOB2_' + key] = request.tools.get(key, default)
     commands = []
     new = not (directory / 'build.ninja').exists()
     if new or any(cached(directory, name) != value for name, value in settings.items()):
