@@ -11,7 +11,6 @@ import bundle
 import official_instance
 import ccache
 import dmg
-import nsis
 from sources import INCLUDE_DIRECTORIES
 from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock, PACKAGE_VERSION
 
@@ -33,8 +32,6 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("dev_fast", "Fast full-featured development build", 0))
-    opts.Add(BoolVariable("pch", "Experimental development precompiled headers", 0))
-    opts.Add(BoolVariable("unity", "Experimental selective development unity compilation", 0))
     opts.Add("linker", "Development linker: default, auto, lld", "default")
     opts.Add("compile_profile", "Development source profile: full (default, CI and releases) or core", "full")
     opts.Add("recording_codec", "Recording codec: h264, vp9, av1 (WebM: native Linux only)", "h264")
@@ -56,8 +53,6 @@ def establish_options(env):
     opts.Add(BoolVariable("wss", "Enable native secure WebSocket transport", 1))
     opts.Add(BoolVariable("profile", "Build with profiling on", 0))
     opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
-    opts.Add(BoolVariable("mingwcross", "Cross-compile with mingw for Win32", 0))
-    opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
     opts.Add("font", "Build the game using an alternative font placed in the content/data/font folder", "sans.ttf")
     opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
@@ -90,7 +85,7 @@ def configure(env, server_only, relay=False):
     conf = Configure(env.Clone(), conf_dir=str(Path(env["BUILDDIR"]) / "configure"), log_file=str(Path(env["BUILDDIR"]) / "configure.log"))
     configfile = Configuration(env)
     add_package(configfile, datadir=env["DATADIR"], version=env["VERSION"], font=env["font"],
-                darwin=isDarwinPlatform, windows=env['mingw'] or env['mingwcross'] or isWindowsPlatform,
+                darwin=isDarwinPlatform, windows=env['mingw'] or isWindowsPlatform,
                 china=env['china'], identity=build_identity(ARGUMENTS))
 
     missing=[]
@@ -143,7 +138,7 @@ def configure(env, server_only, relay=False):
             print("Could not find libz or zlib1.dll")
             missing.append("zlib")
     
-    if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
+    if env['mingw'] or isWindowsPlatform:
         if conf.CheckLib("regex"):
             env.Append(LIBS=["regex"])
         elif conf.CheckLib("systre"):
@@ -167,7 +162,7 @@ def configure(env, server_only, relay=False):
     if not conf.CheckCXXHeader("boost/beast/websocket.hpp") or not conf.CheckCXXHeader("boost/asio/ssl.hpp"):
         missing.append("Boost.Beast and Boost.Asio headers")
     add_native_wss(configfile)
-    if env["mingw"] or env["mingwcross"] or isWindowsPlatform:
+    if env["mingw"] or isWindowsPlatform:
         env.Append(LIBS=["ws2_32", "mswsock", "crypt32"])
     elif sys.platform == 'darwin':
         env.Append(FRAMEWORKS=["Security", "CoreFoundation"])
@@ -231,7 +226,7 @@ def configure(env, server_only, relay=False):
 
     #Do checks for portaudio
     if not server_only and conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
-        if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
+        if env['mingw'] or isWindowsPlatform:
             print("--------")
             print("NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used.")
             print("NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame).")
@@ -381,20 +376,13 @@ def main():
     env.Alias('compile_commands.json', database)
     env.Default(database)
 
-    if env['mingw'] or env['mingwcross']:
+    if env['mingw']:
         Tool('mingw')(env)
     if env['mingw'] or isWindowsPlatform:
         # Windows caps command lines at 32K; pass the link arguments via @response-file
         env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
         # The module libraries (libglob2_sim.a, libglob2_map.a) archive thousands of objects.
         env['ARCOM'] = '${TEMPFILE("$AR $ARFLAGS $TARGET $SOURCES", "$ARCOMSTR")}'
-
-    if env['mingwcross']:
-            env.Platform('cygwin')
-            env['CC']  = 'x86_64-w64-mingw32-gcc'
-            env['CXX'] = 'x86_64-w64-mingw32-g++'
-            env['AR']  = 'x86_64-w64-mingw32-ar'
-            env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
 
     # Cache compilation after compiler selection and before configure probes.
     # Link commands continue to use the original compiler driver.
@@ -420,13 +408,6 @@ def main():
         else:
             env.Append(LIBPATH=["/opt/local/lib"])
             env.Append(CPPPATH=["/opt/local/include"])
-    if env['mingwcross']:
-        if os.path.isabs(env['crossroot']):
-            crossroot_abs = env['crossroot']
-        else:
-            crossroot_abs = os.getcwd() + '/' + env['crossroot']
-        env.Append(LIBPATH=[crossroot_abs + '/lib'])
-        env.Append(CPPPATH=[crossroot_abs + '/include'])
 
     # Optional isolated dependency prefix, shared by native CI and local builds.
     sdl_prefix = os.environ.get('GLOB2_SDL3_PREFIX')
@@ -439,7 +420,7 @@ def main():
         if 'install' not in COMMAND_LINE_TARGETS:
             env.Append(RPATH=[sdl_prefix + '/lib'])
         env['ENV']['PATH'] = sdl_prefix + '/bin' + os.pathsep + env['ENV'].get('PATH', '')
-        if not isDarwinPlatform and not isWindowsPlatform and not env['mingw'] and not env['mingwcross']:
+        if not isDarwinPlatform and not isWindowsPlatform and not env['mingw']:
             # RPATH entries undergo another SCons expansion; protect the linker
             # flag directly so the loader receives a literal $ORIGIN.
             env.Append(LINKFLAGS=[env.Literal("-Wl,-rpath,$ORIGIN/../lib/glob2")])
@@ -455,7 +436,7 @@ def main():
     env.Append(CXXFLAGS=["-std=gnu++20"])
     # Strict C++ mode omits MinGW's nonstandard WIN32 alias. Legacy platform
     # guards rely on it (including disabling the Unix OSS audio backend).
-    if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+    if env['mingw'] or isWindowsPlatform:
         # MinGW headers can expose _POSIX_THREADS at different include depths.
         # Keep Asio thread layouts identical across every translation unit.
         env.Append(CPPDEFINES=["WIN32", "BOOST_ASIO_HAS_PTHREADS"])
@@ -489,7 +470,7 @@ def main():
     if not server_only:
         from recording_dependencies import build as build_recording, attach as attach_recording, native_opus_configuration
         recording_opus = native_opus_configuration(env['ENV']) if env['recording_codec'] != 'h264' else None
-        recording_target = 'mingw32' if env['mingw'] or env['mingwcross'] or isWindowsPlatform else 'darwin' if isDarwinPlatform else 'linux'
+        recording_target = 'mingw32' if env['mingw'] or isWindowsPlatform else 'darwin' if isDarwinPlatform else 'linux'
         shared_recording = Path(sdl_prefix) / 'recording' if sdl_prefix and env['recording_codec'] == 'h264' else None
         recording_prefix = Path(os.environ['GLOB2_RECORDING_PREFIX']) if os.environ.get('GLOB2_RECORDING_PREFIX') else shared_recording if shared_recording and (shared_recording/'recording-manifest.json').exists() else Path(bdir)/'recording/prefix'
         # Variant SConscript files resolve relative CPPPATH entries locally.
@@ -543,7 +524,7 @@ def main():
         env.Append(LINKFLAGS=["-pg"])
         env.Append(CXXFLAGS=["-O3"])
         env.Append(LINKFLAGS=["-O3"])
-    if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+    if env['mingw'] or isWindowsPlatform:
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
@@ -572,26 +553,15 @@ def main():
         cache_flags(env)
     env.Alias("dev-dependencies", [])
 
-    env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
-    env["TARFLAGS"] = "-c -z"
-    env.Alias("dist", env["TARFILE"])
-    
+    # The SCons source tarball (dist) was removed; tools/release/release.py builds
+    # source archives. SConscripts keep calling PackTar until they are deleted.
+    if "dist" in COMMAND_LINE_TARGETS:
+        raise SystemExit("scons dist was removed; use tools/release/release.py for source archives")
+    env["TARFILE"] = None
+
     def PackTar(target, source):
-        if "dist" in COMMAND_LINE_TARGETS:
-            for s in Flatten(source):
-                if env.File(s).path.find("/") != -1:
-                    new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-                    f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
-                    env.Tar(target, f)
-                else:
-                    new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-                    f = env.Install(new_dir, s)
-                    env.Tar(target, f)
-              
-    PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
-    PackTar(env["TARFILE"], Glob("content-src/icons/tabler/*"))
-    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libs/gag/include/ui/Icon.h"))
-    PackTar(env["TARFILE"], [p for p in sorted(__import__("glob").glob("third_party/**/*", recursive=True)) if os.path.isfile(p)])
+        pass
+
     #packaging for apple
     if isDarwinPlatform and env["release"] and any(
             target in COMMAND_LINE_TARGETS for target in ("bundle", "package")):
@@ -639,29 +609,21 @@ def main():
 
     Export('env')
     Export('PackTar')
-    if env['mingwcross']:
-        Export('crossroot_abs')
     Export('isWindowsPlatform')
 
     targets = [
         "content/campaigns",
         "content/data",
-        "debian",
-        "platforms/linux/fedora",
         "libs/gag",
         "libs/usl",
         "content/maps",
         "third_party/natsort",
         "content/scripts",
-        "buildsys",
         "src",
         "test",
-        "tools",
-        "platforms/windows"
+        "tools"
     ]
     optimized_install = not env['server'] and env.get('role') != 'relay' and 'install' in COMMAND_LINE_TARGETS
-    if optimized_install and 'dist' in COMMAND_LINE_TARGETS:
-        raise ValueError('Run release install and source dist as separate SCons invocations')
     if not env['server'] and env.get('role') != 'relay':
         from runtime_assets import prepare_assets
         prepare_assets(env)
@@ -673,9 +635,6 @@ def main():
         from install_image_runtime import install_runtime
         install_runtime(env, env['LEAN_IMAGE_PREFIX'])
     for target in targets:
-        # Upstream release archives omit the historical Debian packaging files.
-        if target == "debian" and not os.path.isfile("debian/SConscript"):
-            continue
         SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()

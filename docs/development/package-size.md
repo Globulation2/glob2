@@ -226,9 +226,8 @@ releases. Keep custom image overrides in the user profile so they retain priorit
 
 Windows distributions stage assets and recursively imported DLLs through
 `tools/release/windows_runtime.py`. ZIP, Steam, Epic, Store and NSIS use this
-shared policy; missing non-system imports fail packaging. `scons release=1
-mingw=1 lean_images=1 windows-installer` builds the x64 NSIS installer from that
-same staged tree. It retains the machine installation/shortcuts and legacy
+shared policy; missing non-system imports fail packaging. The x64 NSIS installer
+is built from that same staged tree. It retains the machine installation/shortcuts and legacy
 installation directory lookup, uses solid LZMA, and inventories installed files
 for upgrades and uninstall. Unrelated files and saved games are preserved.
 Compile an existing portable stage with `tools/release/package_nsis.py --stage

@@ -33,7 +33,7 @@ real stencils in `src/map/generator/shared/` are affected; if they are, add
 3.25+ and Ninja installed, a request made only of targets, `.`, `-k` and `-jN`
 builds with [CMake + Ninja](#cmake--ninja-build-for-daily-work) into
 `build/cmake/dev`. Everything else builds with SCons, as before: any SCons
-option (`perf=1`, `target=web`, `compile_profile=core`, `pch=1`, `CXX=...`,
+option (`perf=1`, `target=web`, `compile_profile=core`, `CXX=...`,
 `--build=...`, `-n`), a file target, an alias the CMake build does not define,
 other host systems, and hosts without CMake or Ninja; the wrapper prints which
 build system it chose and why. `--generator=scons` or `--generator=cmake` (or
@@ -51,7 +51,6 @@ python3 tools/dev_build.py                    # glob2, CMake + Ninja on Linux
 python3 tools/dev_build.py engine-tests -j8   # CMake + Ninja on Linux
 python3 tools/dev_build.py --generator=scons engine-tests
 python3 tools/dev_build.py dev_fast=0 linker=default
-python3 tools/dev_build.py pch=1 unity=1
 python3 tools/dev_build.py target=web web_variant=serial
 python3 tools/dev_build.py target=web web_variant=serial web_legacy_gl=0
 python3 tools/dev_build.py target=android arch=arm64-v8a
@@ -145,7 +144,6 @@ strict flags in every tier, so the dev and perf builds of one platform produce t
 same simulation checksums; a mismatch is a bug, not a reason to bump the
 simulation revision.
 
-`pch=1` precompiles
 ### Comparing against master
 
 `python3 tools/dev_baseline.py build` builds the dev and perf tiers of
@@ -178,18 +176,6 @@ only what differs. Baselines build with SCons (`--generator=scons`) in every
 variant: the perf tiers are SCons-only, so this keeps a candidate and its
 baseline on the same build system, and `seed` therefore fills the SCons dev
 directory, which helps only `--generator=scons` builds.
- stable standard headers separately for each compiler/flag
-configuration. Its C++ objects bypass ccache rather than weakening cache
-correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
-checked-in allowlist in deterministic groups of at most four files, preserves
-ordinary source commands for IDEs, and reuses production objects in harnesses.
-Both experiments default off; their speed benefit must be measured. Precompiling
-a wider standard set (adding `chrono`, `functional`, `iostream`, `filesystem`,
-`format`, `nlohmann/json.hpp` and `SDL3/SDL.h`) cut `-O0` compile CPU only to 0.93×
-on a random 16-file sample on Linux GCC 15, and made small files slower to compile
-than without it; PCH is worth making a default only below about 0.75×, so it stays
-opt-in. Most remaining compile time is the project's own headers, which the
-[header dependency rules](conventions.md#header-dependencies) address instead.
 
 `linker=auto` uses installed LLD for native Linux ELF builds and otherwise keeps
 the platform linker. `linker=lld` fails on unsupported targets or missing tools.
@@ -262,15 +248,6 @@ path, or moving include directories, run one build with `--implicit-deps-changed
 `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
 the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction
 before increasing budgets or attributing poor reuse to source size.
-
-Run `python3 tools/benchmark_build.py --help` for isolated comparisons. The default
-is three repetitions of dependency setup, uncached compilation, warm-cache
-rebuilding, no-change builds, source edits and header edits. Reports include exact
-commands, compile databases, dependency manifests, cache deltas and object sizes.
-Compile/link work totals sum command durations; they are not parallel wall times.
-GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
-memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
-No speedup is assumed before measuring matching source and toolchain inputs.
 
 ### CMake + Ninja build for daily work
 

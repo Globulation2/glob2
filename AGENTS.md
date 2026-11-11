@@ -19,7 +19,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `services/online/`, [platform architecture](docs/multiplayer/architecture.md); hosting and deployment scripts in `deploy/` |
 | Game content (the runtime tree) | `content/` holds `data/`, `maps/`, `campaigns/`, `scripts/` and `games/` under the names the game loads them by: the file manager adds a checkout's `content/` as a search root, packages install its directories at their root, and online sim-data hashes use the paths relative to it. Source art and provenance live in `content-src/` |
-| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
+| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `snap/` and `fastlane/` stay at the root because snapcraft and F-Droid expect them there |
 | Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
 | Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `buildsys/`, `.github/workflows/build.yml`, `vcpkg.json` |
@@ -111,8 +111,7 @@ Never ship a dev or perf build, and never quote release measurements as PR
 evidence: perf builds exist so that every performance claim is reproducible from
 one command. Compare against the prebuilt master baseline
 (`tools/dev_baseline.py`, `tools/perf_ab.py --baseline master`) rather than a second
-worktree. Test tools take the newest build, `build/cmake/dev` included. Plain `scons` gives full debug information; `pch=1` and `unity=1` are
-development experiments. `compile_profile=core` leaves most generators, three AIs
+worktree. Test tools take the newest build, `build/cmake/dev` included. Plain `scons` gives full debug information. `compile_profile=core` leaves most generators, three AIs
 and the editor out of focused dev builds ([core profile](docs/development/build-options.md#core-compile-profile));
 final PR verification always uses the default full profile. Simulation checksums must match between the dev and perf
 builds of one platform; do not bump the sim version to mask a build-induced

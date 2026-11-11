@@ -123,7 +123,7 @@ On Linux the executable also discovers `<executable-prefix>/share/glob2`, so the
 
 Default outputs live under `build/<toolchain>/<role>/<mode>`; native toolchains are `darwin`, `linux` and `mingw`. `--build=PATH` selects an output directory with a matching build identity. Generated configuration is under that directory, never in the source root. Options are explicit on each invocation, not loaded from an earlier options cache. `scons -c` cleans the selected configuration. `GLOB2_BUILD_DIR` tells test tools about a nondefault directory.
 
-`mingw=1` selects a native Windows build; `mingwcross=1` selects cross-compilation. The retired lobby `server` and `router` roles are rejected; use the [match relay](../multiplayer/relay.md) and [online platform](../multiplayer/architecture.md).
+`mingw=1` selects a native Windows (MSYS2 MinGW) build. The retired lobby `server` and `router` roles are rejected; use the [match relay](../multiplayer/relay.md) and [online platform](../multiplayer/architecture.md).
 
 ## Platform guides
 

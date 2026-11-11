@@ -196,7 +196,7 @@ def main():
     rendered = (
         left + migration_start + "\n\n" + migration + "\n" + migration_end + right
     )
-    outputs = {guide: rendered, ROOT / "debian/glob2.6": man(schema)}
+    outputs = {guide: rendered, ROOT / "platforms/linux/glob2.6": man(schema)}
     for shell, name in [
         ("bash", "glob2.bash"),
         ("zsh", "_glob2"),

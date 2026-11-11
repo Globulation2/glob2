@@ -123,8 +123,8 @@ cross-distribution packages.
 
 The source archive is made from the selected Git commit, not uncommitted files.
 The release script checks that it contains the build files and essential assets.
-`.gitattributes` omits the historical `debian/` directory from this archive so
-Debian's maintained packaging can supply its own files.
+The repository carries no `debian/` directory, so Debian's maintained packaging
+supplies its own files.
 Installed packages are checked for the executable, desktop integration, game
 data, maps, campaigns and scripts. Build-only runs (no tag) are dispatched from
 the mirror's `master` like every release workflow; publication requires the exact version tag on the checked-out commit. The

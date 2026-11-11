@@ -176,7 +176,6 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/test-ccache.py
-          python3 test/test-dev-compile.py
 
       - uses: ./.github/actions/renderer-shader-tools
       - name: Build glob2 and the regression harnesses

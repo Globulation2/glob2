@@ -25,7 +25,7 @@ import ci_check_inventory as checks
 
 class PolicyTest(unittest.TestCase):
     def test_documentation_checker_is_cheap_contributor_tooling(self):
-        paths = ['INSTALL', 'AUTHORS', 'tools/README', 'debian/README.Debian', 'debian/README.source',
+        paths = ['INSTALL', 'AUTHORS', 'tools/README',
                  'tools/check_docs.py', 'tools/docs/navigation.json',
                  'tools/docs/requirements.txt', 'test/test_check_docs.py']
         for path in paths:
@@ -452,7 +452,7 @@ class SimulationPathTest(unittest.TestCase):
     def test_sim_diff_runs_for_simulation_sources_and_data_only(self):
         import ci_policy
         for path in ('src/unit/Unit.cpp', 'src/game/Game_sync.cpp', 'src/net/turn/TurnEngine.cpp',
-                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'src/SConscript',
+                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'src/SConscript', 'CMakeLists.txt', 'cmake/sources.cmake',
                      'third_party/quickjs-ng/quickjs.c'):
             with self.subTest(path=path):
                 self.assertTrue(ci_policy.touches_simulation([path]))

@@ -33,9 +33,11 @@ def build_identity(arguments, host=None):
         raise ValueError('recording_codec must be h264, vp9, or av1')
     if recording_codec != 'h264' and (
             target != 'native' or (host or platform.system().lower()) != 'linux'
-            or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))
+            or enabled(arguments.get('mingw', 0))
             or arguments.get('role', 'client') != 'client'):
         raise ValueError('WebM recording builds currently support native Linux clients only')
+    if 'mingwcross' in arguments:
+        raise ValueError('mingwcross was removed; build Windows natively under MSYS2 with mingw=1')
     # server=0 is still accepted so existing client commands keep working.
     if enabled(arguments.get('server', 0)):
         raise ValueError('server=1 (the YOG lobby server) was removed; build role=client or role=relay')
@@ -49,7 +51,7 @@ def build_identity(arguments, host=None):
     if amazon and (target != 'android' or role != 'client' or china or not enabled(arguments.get('release', 0))):
         raise ValueError('amazon=1 supports only the standard Android release client')
     if target in ('android', 'ios'):
-        if role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)):
+        if role != 'client' or enabled(arguments.get('mingw', 0)):
             raise ValueError('mobile targets support only the client role and their own cross compiler')
         if enabled(arguments.get('profile', 0)):
             raise ValueError('mobile profiling uses platform sampling tools; use release=1 with symbols')
@@ -80,9 +82,9 @@ def build_identity(arguments, host=None):
         identity.update(resolve(arguments))
         identity.update(development)
         return identity
-    if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
+    if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0))):
         raise ValueError('web supports only the client role and cannot use a native cross compiler')
-    toolchain = 'mingwcross' if enabled(arguments.get('mingwcross', 0)) else ('mingw' if enabled(arguments.get('mingw', 0)) else (host or platform.system().lower()))
+    toolchain = 'mingw' if enabled(arguments.get('mingw', 0)) else (host or platform.system().lower())
     if target == 'web':
         toolchain = 'emscripten'
     mode = 'profile' if enabled(arguments.get('profile', 0)) else ('release' if enabled(arguments.get('release', 0)) else 'debug')
@@ -93,8 +95,8 @@ def build_identity(arguments, host=None):
     if level != '2' and not perf:
         raise ValueError('opt selects the optimization level of a perf=1 build')
     if perf:
-        if mode != 'debug' or any(development.get(key) for key in ('dev_fast', 'pch', 'unity', 'compile_profile')) or target != 'native':
-            raise ValueError('perf=1 is a native measurement build; it excludes release, profile, dev_fast, pch, unity and compile_profile=core')
+        if mode != 'debug' or any(development.get(key) for key in ('dev_fast', 'compile_profile')) or target != 'native':
+            raise ValueError('perf=1 is a native measurement build; it excludes release, profile, dev_fast and compile_profile=core')
         mode = 'perf'
     if development.get('compile_profile') and role != 'client':
         raise ValueError('compile_profile=core applies to the client role only')
@@ -117,7 +119,7 @@ def build_identity(arguments, host=None):
             raise ValueError('size_optimization experiments require a Linux or MinGW release build')
         identity['size_optimization'] = size_profile
     if enabled(arguments.get('lean_images', 0)):
-        if target != 'native' or toolchain not in ('linux', 'mingw') or role != 'client' or not enabled(arguments.get('release', 0)) or enabled(arguments.get('mingwcross', 0)):
+        if target != 'native' or toolchain not in ('linux', 'mingw') or role != 'client' or not enabled(arguments.get('release', 0)):
             raise ValueError('lean_images requires a native Linux or MinGW release client')
         identity['lean_images'] = True
     if china:

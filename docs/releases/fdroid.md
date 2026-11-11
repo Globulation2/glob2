@@ -84,8 +84,8 @@ licenses against `docs/assets/source-attribution.md` and the font licenses with
 the first submission.
 
 The Fedora spec in `platforms/linux/fedora/glob2.spec` is a starting recipe for the new source
-archive. The checked-in `debian/` directory is historic and is **not** used by
-this workflow; work with the Debian Games Team's Salsa package before proposing
+archive. The repository has no Debian packaging of its own; work with the
+Debian Games Team's Salsa package before proposing
 an update. Debian's upload can subsequently reach Ubuntu during its development
 cycle. Arch and openSUSE have their own maintainers and package repositories.
 Send each maintainer the source archive, checksum, dependency changes, release

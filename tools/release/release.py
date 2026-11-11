@@ -82,20 +82,6 @@ def archive(destination, tag=None):
     prefix = f"glob2-{current}/"
     raw = subprocess.check_output(
         ["git", "archive", "--format=tar", f"--prefix={prefix}", "HEAD"], cwd=ROOT)
-    # Debian packaging is export-ignored, but native installs need its generated manual.
-    # Read the committed blob so local edits cannot enter a tagged source archive.
-    manual = subprocess.check_output(["git", "show", "HEAD:debian/glob2.6"], cwd=ROOT)
-    with tarfile.open(fileobj=io.BytesIO(raw), mode="r:") as contents:
-        members = contents.getnames()
-    if prefix + "debian/glob2.6" not in members:
-        extended = io.BytesIO(raw)
-        with tarfile.open(fileobj=extended, mode="a") as contents:
-            entry = tarfile.TarInfo(prefix + "debian/glob2.6")
-            entry.size = len(manual)
-            entry.mode = 0o644
-            entry.mtime = 0
-            contents.addfile(entry, io.BytesIO(manual))
-        raw = extended.getvalue()
     # Include exact codec sources for offline builds and redistribution.
     source = io.BytesIO(raw)
     with tarfile.open(fileobj=source, mode='r:') as contents:
@@ -123,7 +109,7 @@ def archive(destination, tag=None):
     with tarfile.open(target, "r:gz") as packed:
         names = set(packed.getnames())
         required = {prefix + name for name in (
-            "SConstruct", "buildsys/build_layout.py", "debian/glob2.6", "content/data/glob2.desktop",
+            "SConstruct", "buildsys/build_layout.py", "platforms/linux/glob2.6", "content/data/glob2.desktop",
             "content/data/org.globulation2.Globulation2.metainfo.xml",
             "content/data/screenshots/globulation2-gameplay.png",
             "content/data/usl/Language/Runtime/Control.usl",

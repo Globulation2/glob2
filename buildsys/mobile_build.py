@@ -156,7 +156,6 @@ def build_mobile(directory, identity, arguments):
             # Retain build definitions (including the official origin).
             # TestMain.cpp defines SDL_MAIN_HANDLED itself.
             tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
-            # by_source also maps unity members to their shared production object.
             client_objects = unique([obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp']) + script_objects
             library_objects = [obj for name, obj in by_source.items()
                                if name.startswith('libs/gag/') or name.startswith('libs/usl/')] + script_objects

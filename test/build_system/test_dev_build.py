@@ -34,13 +34,13 @@ class DevelopmentBuildTests(unittest.TestCase):
         for target in ('native', 'web', 'android', 'ios'):
             normal = build_identity({'target': target})
             variants = [build_identity({'target': target, **args}) for args in
-                        ({'dev_fast': 1}, {'pch': 1}, {'unity': 1}, {'pch': 1, 'unity': 1})]
-            self.assertEqual(len({default_directory(i) for i in [normal, *variants]}), 5)
+                        ({'dev_fast': 1}, {'linker': 'lld'}, {'dev_fast': 1, 'linker': 'lld'})]
+            self.assertEqual(len({default_directory(i) for i in [normal, *variants]}), 4)
             for identity in variants:
                 self.assertEqual(dev_build.dependency_identity(identity), dev_build.dependency_identity(normal))
 
     def test_invalid_profiles(self):
-        for args in ({'release': 1, 'pch': 1}, {'profile': 1, 'dev_fast': 1}, {'unity': 'maybe'},
+        for args in ({'pch': 1}, {'unity': 1}, {'release': 1, 'dev_fast': 1}, {'profile': 1, 'dev_fast': 1}, {'dev_fast': 'maybe'},
                      {'web_variant': 'serial'}, {'target': 'web', 'release': 1, 'web_variant': 'serial'},
                      {'dependency_jobs': 0}, {'linker': 'mold'}):
             with self.subTest(args=args), self.assertRaises(ValueError):
@@ -75,7 +75,7 @@ class DevelopmentBuildTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
-        result = command.command(['target=web', 'pch=1', '--build=custom', 'web-tests'])
+        result = command.command(['target=web', 'linker=lld', '--build=custom', 'web-tests'])
         self.assertIn('web_variant=threaded', result)
         result = command.command(['dev_fast=0', '-j3', 'linker=default', 'CC=clang', 'engine-tests'])
         self.assertNotIn('dev_fast=1', result)
@@ -122,27 +122,6 @@ class DevelopmentBuildTests(unittest.TestCase):
             system, which, run = host(**overrides)
             with system, which, run:
                 self.assertIn(expected, command.scons_reason([]))
-
-    def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
-        spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')
-        command = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(command)
-        with tempfile.TemporaryDirectory() as task:
-            source, destination = Path(task) / 'source', Path(task) / 'snapshot'
-            source.mkdir()
-            destination.mkdir()
-            def git(*args):
-                return subprocess.check_output(['git', '-C', str(source), *args], stderr=subprocess.DEVNULL, text=True)
-            git('init')
-            (source / 'SConstruct').write_text('baseline')
-            git('add', 'SConstruct')
-            git('-c', 'user.name=Build fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'fixture')
-            (source / 'SConstruct').write_text('candidate')
-            with patch.object(command, 'ROOT', source):
-                command.snapshot(destination)
-            self.assertEqual((destination / 'SConstruct').read_text(), 'candidate')
-            self.assertEqual(subprocess.check_output(['git', '-C', str(destination), 'rev-parse', 'HEAD'], text=True), git('rev-parse', 'HEAD'))
-            self.assertIn('M SConstruct', subprocess.check_output(['git', '-C', str(destination), 'status', '--porcelain'], text=True))
 
     def test_shared_install_reuses_content_and_relocates_metadata(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}):

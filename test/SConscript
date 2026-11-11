@@ -48,7 +48,7 @@ def available(options):
     required = options.get('require', ())
     if any(name in OPTIONAL_SOURCES and name not in profile_groups for name in required):
         return False
-    if 'mac' in required and (env['PLATFORM'] != 'darwin' or env.get('mingw') or env.get('mingwcross')):
+    if 'mac' in required and (env['PLATFORM'] != 'darwin' or env.get('mingw')):
         return False
     if 'wss' in required and not env.get('wss', True):
         return False

@@ -59,8 +59,8 @@ The game names its files by paths relative to the runtime tree (`data/gfx/...`,
 any search root that holds it, so running from the repository needs no setup.
 Installed packages and exported asset trees hold those directories at their root.
 Saves, replays and online sim-data hashes use the virtual paths, so the layout of
-the repository does not affect them. `debian/`, `snap/` and `fastlane/` stay at the
-root because dpkg, snapcraft and F-Droid look for them there.
+the repository does not affect them. `snap/` and `fastlane/` stay at the root
+because snapcraft and F-Droid look for them there.
 
 ## Module libraries
 

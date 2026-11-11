@@ -9,7 +9,7 @@ if 'install' in COMMAND_LINE_TARGETS and not env.get('server'):
                                 ('completions/_glob2', 'zsh/site-functions/_glob2'),
                                 ('completions/glob2.fish', 'fish/vendor_completions.d/glob2.fish')]:
         env.Alias('install', env.InstallAs(env['INSTALLDIR'] + '/' + destination, source))
-    env.Alias('install', env.Install(env['INSTALLDIR'] + '/man/man6', '#debian/glob2.6'))
+    env.Alias('install', env.Install(env['INSTALLDIR'] + '/man/man6', '#platforms/linux/glob2.6'))
 if 'dist' in COMMAND_LINE_TARGETS:
     for directory, _, files in os.walk('generators/training'):
         for filename in sorted(files):

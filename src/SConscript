@@ -40,7 +40,7 @@ online_error_catalog = configure_online_error_catalog(local, Path(Dir('#').abspa
 from skin_render import configure as configure_skin_render
 configure_skin_render(local)
 platform_trust_sources = []
-if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw') or env.get('mingwcross'):
+if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw'):
     platform_trust_sources = local.Object('PlatformTrustCore.o', '#platforms/mobile/CertificateTrust.cpp')
     platform_trust_sources += local.Object('PlatformTrustPolicy.o', '#platforms/mobile/ios/CertificateTrust.cpp' if env['PLATFORM'] == 'darwin' else 'net/WindowsCertificateTrust.cpp')
 source_files += platform_trust_sources

@@ -3,19 +3,21 @@ import os
 from pathlib import Path
 import shutil
 
-DEVELOPMENT_KEYS = ('dev_fast', 'pch', 'unity', 'linker', 'web_variant', 'compile_profile')
+DEVELOPMENT_KEYS = ('dev_fast', 'linker', 'web_variant', 'compile_profile')
 
 
 def development_identity(arguments, target, release=False, profile=False):
     from build_layout import enabled
     result = {}
-    for name in ('dev_fast', 'pch', 'unity'):
-        if str(arguments.get(name, 0)).lower() not in ('0', '1', 'false', 'true', 'no', 'yes', 'off', 'on'):
-            raise ValueError(name + ' must be 0 or 1')
-        if enabled(arguments.get(name, 0)):
-            result[name] = True
+    for name in ('pch', 'unity'):
+        if name in arguments:
+            raise ValueError(name + '=1 was removed with the experimental precompiled-header and unity builds')
+    if str(arguments.get('dev_fast', 0)).lower() not in ('0', '1', 'false', 'true', 'no', 'yes', 'off', 'on'):
+        raise ValueError('dev_fast must be 0 or 1')
+    if enabled(arguments.get('dev_fast', 0)):
+        result['dev_fast'] = True
     if result and (release or profile):
-        raise ValueError('dev_fast, pch and unity require a non-release, non-profile build')
+        raise ValueError('dev_fast requires a non-release, non-profile build')
     linker = arguments.get('linker', 'default')
     if linker not in ('default', 'auto', 'lld'):
         raise ValueError('linker must be default, auto or lld')

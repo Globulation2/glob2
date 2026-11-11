@@ -26,7 +26,8 @@ class BuildLayoutTests(unittest.TestCase):
             with self.subTest(args=args), self.assertRaises(ValueError):
                 build_identity(args)
         self.assertEqual(build_identity({'server':'0'}), build_identity({}))
-        self.assertEqual(build_identity({'mingwcross':'1'})['toolchain'], 'mingwcross')
+        with self.assertRaises(ValueError):
+            build_identity({'mingwcross':'1'})
         self.assertEqual(build_identity({})['role'], 'client')
         self.assertTrue(build_identity({})['native_wss'])
         self.assertFalse(build_identity({'wss':'0'})['native_wss'])
