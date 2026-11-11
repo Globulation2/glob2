@@ -18,7 +18,9 @@
 // destructors for std::list/std::map etc. on Team and Game are skipped, and
 // the program leaks the storage at exit. test/unit/stubs/MapHeaderStubs.cpp
 // supplies the few non-inline methods WC.cpp invokes (MapHeader getters and
-// the MapScriptSGSL hooks).
+// the MapScriptSGSL hooks). Game holds its script state behind owning pointers
+// with same-named references, so the harness points those two references at
+// zeroed storage of their own, as the embedded members were before.
 //
 // Every case states the won and lost team masks the rules imply and checks the
 // predicates against them. The same cases are also written as a one-line record
@@ -33,12 +35,14 @@
 #include "Player.h"
 #include "MapHeader.h"
 #include "SGSL.h"
+#include "MapScript.h"
 
 #include <algorithm>
 #include <array>
 #include <cstdio>
 #include <cstring>
 #include <initializer_list>
+#include <memory>
 #include <string>
 
 namespace {
@@ -64,13 +68,32 @@ constexpr int kMaxTeams = 4;
 alignas(Game) unsigned char gameStorage[sizeof(Game)];
 alignas(Team) unsigned char teamStorage[kMaxTeams][sizeof(Team)];
 
+alignas(MapScriptSGSL) unsigned char sgslStorage[sizeof(MapScriptSGSL)];
+alignas(MapScript) unsigned char mapScriptStorage[sizeof(MapScript)];
+
 Game* g() { return reinterpret_cast<Game*>(gameStorage); }
 Team* T(int i) { return reinterpret_cast<Team*>(teamStorage[i]); }
+
+// Game declares each script owner immediately followed by its reference, which
+// occupies the pointer-sized slot after the owner. clearAll() checks the result.
+template <typename Target>
+void bindReference(std::unique_ptr<Target>& owner, unsigned char* storage)
+{
+	static_assert(sizeof(std::unique_ptr<Target>) == sizeof(Target*));
+	Target* target = reinterpret_cast<Target*>(storage);
+	std::memcpy(reinterpret_cast<unsigned char*>(&owner) + sizeof owner, &target, sizeof target);
+}
 
 void clearAll()
 {
 	std::memset(gameStorage, 0, sizeof(gameStorage));
 	std::memset(teamStorage, 0, sizeof(teamStorage));
+	std::memset(sgslStorage, 0, sizeof(sgslStorage));
+	std::memset(mapScriptStorage, 0, sizeof(mapScriptStorage));
+	bindReference(g()->sgslScriptOwner, sgslStorage);
+	bindReference(g()->mapscriptOwner, mapScriptStorage);
+	REQUIRE(static_cast<void*>(&g()->sgslScript) == sgslStorage);
+	REQUIRE(static_cast<void*>(&g()->mapscript) == mapScriptStorage);
 	std::memset(glob2test::sgsl::teamWon, 0, sizeof(glob2test::sgsl::teamWon));
 	std::memset(glob2test::sgsl::teamLost, 0, sizeof(glob2test::sgsl::teamLost));
 }
