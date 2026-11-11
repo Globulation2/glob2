@@ -167,6 +167,6 @@ def critical_change(paths):
     paths=[p for p in paths if not p.endswith('.md')
            and not (p.startswith('.github/workflows/') and cheap_path(p))]
     prefixes=('.github/','buildsys/','cmake/','test/build_system/')
-    files={'SConstruct','CMakeLists.txt','CMakePresets.json','vcpkg.json','requirements-dev.txt','test/run_tests.py',
+    files={'CMakeLists.txt','CMakePresets.json','vcpkg.json','requirements-dev.txt','test/run_tests.py',
            'test/ci_native_shard_plan.py','test/ci-compatibility.json','test/ci-native-auxiliary.json'}
-    return any(p.startswith(prefixes) or p in files or p.endswith('/SConscript') for p in paths)
+    return any(p.startswith(prefixes) or p in files for p in paths)

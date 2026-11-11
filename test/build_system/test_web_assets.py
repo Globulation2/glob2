@@ -51,11 +51,11 @@ class WebAssetPlanTests(unittest.TestCase):
                              (ROOT / 'content/data/fonts/LICENSE-Noto.txt').read_bytes())
 
     def test_bulgarian_launcher_font_is_tracked_and_packaged_for_api_images(self):
-        build = (ROOT / 'buildsys/web_build.py').read_text()
-        self.assertIn("str(Path(directory) / 'fonts/sans-core.ttf')", build)
-        self.assertIn("str(Path(directory) / 'fonts/LICENSE-DejaVu.txt')", build)
-        self.assertIn("'platforms/web/assets/sans-core.ttf'", build)
-        self.assertIn("'content/data/fonts/LICENSE-DejaVu.txt'", build)
+        build = (ROOT / 'cmake/web.cmake').read_text()
+        self.assertIn('"${GLOB2_OUT}/fonts/sans-core.ttf"', build)
+        self.assertIn('"${GLOB2_OUT}/fonts/LICENSE-DejaVu.txt"', build)
+        self.assertIn('"${web}/assets/sans-core.ttf"', build)
+        self.assertIn('"${GLOB2_ROOT}/content/data/fonts/LICENSE-DejaVu.txt"', build)
         docker = (ROOT / 'deploy/Dockerfile').read_text()
         for stage in ('web-build', 'platform-runtime-deps'):
             section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
@@ -221,9 +221,9 @@ class WebAssetPlanTests(unittest.TestCase):
                              {'data/custom/ore0.png', 'data/custom/ore.sheet'})
 
     def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
-        tree = ast.parse((ROOT / 'buildsys/web_build.py').read_text())
-        inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
-                  and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
+        tree = ast.parse((ROOT / 'buildsys/cmake_generate.py').read_text())
+        inputs = [node.value for node in tree.body if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == 'WEB_PLAN_INPUTS'
                           for target in node.targets)]
         self.assertEqual(len(inputs), 1)
         self.assertIn('content/data/terrain/tileset.json', ast.literal_eval(inputs[0]))

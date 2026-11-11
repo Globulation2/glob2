@@ -4,8 +4,8 @@ Fast builds accelerate editing; ordinary debug builds provide full symbols and r
 
 Native distribution packages that extract separate debug symbols can use
 `release=1 retain_symbols=1`. This preserves release optimization and the free
-launch profile while keeping compiler debug information and disabling stripping
-by SCons. The RPM recipe uses this mode so Fedora can produce its debug packages.
+launch profile while keeping compiler debug information and disabling stripping.
+The RPM recipe uses this mode so Fedora can produce its debug packages.
 Its output directory is separate from ordinary stripped release builds. Other
 release packages keep their existing stripping behavior; macOS already retains
 symbols for its matching dSYM.
@@ -24,35 +24,36 @@ checksum from every build and run. It runs on macOS CI and the Linux Clang job,
 because an analysis on Apple clang 21 saw `-O2` turn this loop shape into an ASan
 heap overflow with run-to-run-varying sums. If it ever fails, check whether the
 real stencils in `src/map/generator/shared/` are affected; if they are, add
-`-fno-vectorize -fno-slp-vectorize` to the strict numeric sources in
-`src/SConscript` for Clang and refresh that platform's generator rows.
+`-fno-vectorize -fno-slp-vectorize` for Clang to the strict numeric sources'
+flags (`STRICT_CXXFLAGS` in `buildsys/javascript.py`, applied by `CMakeLists.txt`)
+and refresh that platform's generator rows.
 
 ## Fast development builds
 
-`python3 tools/dev_build.py` builds every tier. Its arguments are SCons-style
-build options (`perf=1`, `opt=3`, `release=1`, `role=relay`,
-`compile_profile=core`, `lean_images=1`, ...), targets, `.` (glob2 and the four
-test binaries), `-jN`, `-k` and `-n`. Without `perf=1`, `release=1` or
-`role=relay` it adds the dev tier's `dev_fast=1 linker=auto`.
+`python3 tools/dev_build.py` builds every tier and platform with
+[CMake + Ninja](#cmake--ninja-build): native Linux and macOS, Windows in the MSYS2
+MINGW64 shell (where it adds `mingw=1`), `target=web`, `target=android` and
+`target=ios` (on macOS). Its arguments are `key=value` build options (`perf=1`,
+`opt=3`, `release=1`, `role=relay`, `compile_profile=core`, `lean_images=1`,
+...), targets, `.` (glob2 and the four test binaries), `-jN` (default `-j8`), `-k`
+(keep going), `-n` (print the commands only) and `--build=DIR`. Native builds
+without `perf=1`, `release=1`, `profile=1` or `role=relay` add the dev tier's
+`dev_fast=1 linker=auto`; browser development builds also add
+`web_variant=threaded`; mobile builds add nothing.
 
-On native Linux and macOS, and on Windows in the MSYS2 MINGW64 shell (where it
-adds `mingw=1`), every such request builds with [CMake + Ninja](#cmake--ninja-build):
-the options resolve, through `buildsys/build_layout.py`, to a build identity and
+The options resolve, through `buildsys/build_layout.py`, to a build identity and
 its directory (`build/linux/client/debug/dev-dev_fast-true-linker-auto`,
-`build/linux/client/perf`, `build/linux/client/release`, ...), which CMake
-configures with `GLOB2_BUILD_ARGS`. `CC=`, `CXX=`, `CXXFLAGS=` and `LINKFLAGS=`
-set the compilers and base flags, `--build=DIR` picks another directory, and a
-file target names its CMake target (`build/linux/client/release/src/glob2` and
-`build/mingw/client/release/src/glob2.exe` are `glob2`). Browser and mobile
-targets, other hosts and the
-`recording_codec` variants still build with SCons, which enables caching and
-`dev_fast=1` in a separate output directory and defaults to one job per CPU (the
-[token pool](#parallel-lanes) shares them between concurrent builds); the
-wrapper prints which build system it chose and why. `--generator=scons` or
-`--generator=cmake` (or `GLOB2_DEV_GENERATOR=scons|cmake|auto`) forces the choice.
-Install ccache before using the development command. Native dependencies still
-come from the existing package-manager or `GLOB2_SDL3_PREFIX` configuration;
-mobile dependencies and SDKs still require their existing setup steps.
+`build/linux/client/perf`, `build/linux/client/release`,
+`build/emscripten/client/release`, ...), which CMake configures with
+`GLOB2_BUILD_ARGS`; a directory whose options changed is reconfigured. `CC=`,
+`CXX=`, `CXXFLAGS=` and `LINKFLAGS=` set the compilers and base flags,
+`portaudio=1` enables the PortAudio voice backend, and a file target names its
+CMake target (`build/linux/client/release/src/glob2` and
+`build/mingw/client/release/src/glob2.exe` are `glob2`; a browser file is
+`web-package`). Delete a build directory to clean it. Install ccache before using
+the development command. Native dependencies still come from the existing
+package-manager or `GLOB2_SDL3_PREFIX` configuration; mobile dependencies and SDKs
+still require their existing setup steps.
 
 ```sh
 python3 tools/dev_build.py                    # glob2, the dev tier
@@ -68,8 +69,7 @@ python3 tools/dev_build.py --cache-stats
 ```
 
 Fast builds use `-O0 -g1`: backtraces and basic symbols remain, but full variable
-inspection requires ordinary debug compilation. Fast/PCH/unity options reject
-release, perf or profiling builds. Preserve numeric guards and compare simulation
+inspection requires ordinary debug compilation (`dev_fast=0`). Preserve numeric guards and compare simulation
 checksums when validating build configurations; do not bump the simulation
 revision to mask a build-induced mismatch.
 
@@ -180,16 +180,15 @@ CPU), and prefer a CPU-time metric the benchmark prints (for example `/usr/bin/t
 older baselines that no comparison is using, and `dev_baseline.py seed WORKTREE`
 copies a baseline's dev build into a fresh worktree so its first build recompiles
 only what differs. Each baseline builds with its own revision's
-`tools/dev_build.py`, so a candidate and its baseline share one build system's
-compile and link lines. A CMake build directory records absolute paths and
-cannot be relocated, so `seed` copies only SCons dev builds; the shared compiler
-cache already serves a baseline's objects to a fresh worktree's first CMake build.
+`tools/dev_build.py`, so a candidate and its baseline share compile and link
+lines. A CMake build directory records absolute paths and cannot be relocated, so
+`seed` leaves CMake builds alone; the shared compiler cache already serves a
+baseline's objects to a fresh worktree's first build.
 
 `linker=auto` uses installed LLD for native Linux ELF builds and otherwise keeps
 the platform linker. `linker=lld` fails on unsupported targets or missing tools.
 Android retains its NDK linker, and Apple/browser builds retain their existing
-linkers. `dependency_jobs=N` overrides SCons dependency parallelism, which otherwise
-follows SCons `-j`; the CMake build provisions them with one job per CPU.
+linkers. The build provisions pinned dependencies with one job per CPU.
 
 Recording and browser SDL/Opus installations are shared by recipe, pinned inputs,
 compiler, SDK, architecture and ABI configuration. Publication is staged and
@@ -206,7 +205,6 @@ failures and permanent HTTP errors fail immediately.
 Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.
-A cold native dry-run can still require an existing SCons configure directory.
 
 ### Sharing the compiler cache between checkouts
 
@@ -234,55 +232,48 @@ an explicit `CCACHE_DIR` uses that directory's own configuration.
 
 ### Parallel lanes
 
-Every build, test run and asset export on one machine shares a pool of `ncpu + 1`
-CPU tokens (`buildsys/jobserver.py`): each compiler or linker process SCons spawns,
-each running test process and each asset-encoding worker holds one token, so
-several checkouts building at once share the CPUs instead of multiplying the
-process count. `-j` keeps its meaning as a lane's maximum. Tokens are `flock`ed
-files under the development store's `state/jobserver/`, released by the kernel
+Test runs and asset exports on one machine share a pool of `ncpu + 1` CPU tokens
+(`buildsys/jobserver.py`): each running test process and each asset-encoding
+worker holds one token, so several checkouts working at once share the CPUs
+instead of multiplying the process count. Ninja does not draw from the pool;
+`-jN` caps a lane's compile jobs, and `tools/dev_build.py` defaults to `-j8`.
+Tokens are `flock`ed files under the development store's `state/jobserver/`, released by the kernel
 when a process exits, so a killed build leaks nothing. Children of a token holder
 acquire nothing. `GLOB2_JOBSERVER=0` disables the pool and `GLOB2_JOBSERVER_TOKENS`
 resizes it; Windows builds run without it. `python3 tools/dev_environment.py
 lanes` lists the builds running now.
+
 ### Up-to-date checks
 
-SCons rehashes a file only when its timestamp changed (`Decider('content-timestamp')`),
-and every build except `release=1` keeps the scanned `#include` list of each file
-until that file changes (`implicit_cache`). Together they take a no-change
-`tools/dev_build.py . engine-tests unit-tests` from about 68 s to about 27 s on a
-32-core Linux host. After adding a header that shadows another one on the include
-path, or moving include directories, run one build with `--implicit-deps-changed`.
-
-`CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics through
-the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction
+Ninja tracks headers through compiler depfiles, so a no-change build takes about
+1.5 s. `CCACHE_DEBUG=1 CCACHE_DEBUGDIR=/absolute/path` enables miss diagnostics
+through the wrapper. Do not add sloppiness settings. Inspect cache statistics and eviction
 before increasing budgets or attributing poor reuse to source size.
 
 ### CMake + Ninja build
 
-On native Linux, CMake + Ninja builds every tier: dev, `compile_profile=core`,
-perf, perf-confirm, release (with `lean_images=1`, `retain_symbols=1` and
-`opengl=0`) and the `role=relay` match relay, plus installation. Under MSYS2's
-MinGW-w64 GCC it builds the Windows client (`build/mingw/...`) the way
-SConstruct's `mingw=1` does: `WIN32` and `BOOST_ASIO_HAS_PTHREADS`, Winsock,
-`opengl32`/`glu32`, a POSIX regex library (`regex`, else `systre`), the Windows
-certificate store, the `mingw32` recording libraries and `-mwindows` for the
-client and harnesses but not the console test programs. On macOS it builds
-`build/darwin/...` with Homebrew's (else MacPorts') libraries, Apple's frameworks
-and Objective-C++ sources; release builds keep `-g` and skip `-fwhole-program`
-and `-s`. Its `bundle` target makes `Glob2.app` (assets, libraries, MoltenVK and
-a dSYM, through `buildsys/bundle.py`) and `package` also `Glob2-<version>.dmg`;
-`tools/dev_build.py` sets `GLOB2_MAC_BUNDLE` for them, which links the pinned
-PNG/JPEG SDL_image as SConstruct did for those targets. `GLOB2_BUILD_ARGS` takes the SCons
-build options; `buildsys/build_layout.py` resolves them into the build identity,
-so the tier, its flags, its feature switches, its asset profile and its default
-directory are the ones SCons computes. Each tier compiles the same sources with
-the same flags as SCons (`-fno-fast-math -ffp-contract=off` on the
-strict-numeric simulation sources in every tier), checked by
-`tools/compare_build_systems.py --tier`. Compared with SCons it saves the fixed
-cost of each build: SCons spends about 26 s on a 32-core host starting up and
-scanning dependencies before it compiles anything, where Ninja's no-change build
-takes about 1.5 s. It needs CMake 3.25 or later, Ninja and `pkg-config`; `pip
-install cmake ninja` into a development virtual environment provides both.
+CMake + Ninja builds every tier: dev, `compile_profile=core`, perf,
+perf-confirm, release (with `lean_images=1`, `retain_symbols=1` and `opengl=0`)
+and the `role=relay` match relay, plus installation. Under MSYS2's MinGW-w64 GCC
+it builds the Windows client (`build/mingw/...`) with `WIN32` and
+`BOOST_ASIO_HAS_PTHREADS`, Winsock, `opengl32`/`glu32`, a POSIX regex library
+(`regex`, else `systre`), the Windows certificate store, the `mingw32` recording
+libraries and `-mwindows` for the client and harnesses but not the console test
+programs. On macOS it builds `build/darwin/...` with Homebrew's (else MacPorts')
+libraries, Apple's frameworks and Objective-C++ sources; release builds keep `-g`
+and skip `-fwhole-program` and `-s`. Its `bundle` target makes `Glob2.app`
+(assets, libraries, MoltenVK and a dSYM, through `buildsys/bundle.py`) and
+`package` also `Glob2-<version>.dmg`; `tools/dev_build.py` sets
+`GLOB2_MAC_BUNDLE` for them, which links the pinned PNG/JPEG SDL_image.
+`target=web` (`cmake/web-toolchain.cmake`, `cmake/web.cmake`) and
+`target=android`/`target=ios` (`cmake/mobile-toolchain.cmake`, `cmake/mobile.cmake`)
+use the same `CMakeLists.txt`. `GLOB2_BUILD_ARGS` takes the build options;
+`buildsys/build_layout.py` resolves them into the build identity, which fixes the
+tier, its flags, its feature switches, its asset profile and its default
+directory. The strict-numeric simulation sources compile with
+`-fno-fast-math -ffp-contract=off` (`STRICT_CXXFLAGS` in `buildsys/javascript.py`)
+in every tier. The build needs CMake 3.25 or later, Ninja and `pkg-config`; `pip
+install cmake ninja` into a development virtual environment provides the first two.
 
 ```sh
 python3 tools/dev_build.py .                            # glob2 and the four test binaries
@@ -290,29 +281,32 @@ python3 tools/dev_build.py perf=1 engine-tests unit-tests
 python3 tools/dev_build.py role=relay release=1 relay   # glob2-relay and glob2-relay-tests
 python3 test/run_tests.py --binary all -j12             # finds the newest build
 cmake --preset perf && cmake --build --preset perf --target engine-tests
-python3 tools/compare_build_systems.py --tier release   # parity report for one tier
 ```
 
 The presets in `CMakePresets.json` (`dev`, `core`, `perf`, `perf-o3`, `release`,
 `relay`) configure the tiers into their default directories, as
 `tools/dev_build.py` does. After configuring, Ninja re-runs CMake itself when
-`CMakeLists.txt`, `cmake/` or the generators it imports change. Targets are the
-SCons alias names: `engine-tests`, `unit-tests`, `map-tests`, `sim-tests`,
-`tests`, `glob2-tools`, `relay`, `relay-tests` and the harness aliases. Test
+`CMakeLists.txt`, `cmake/` or the generators it imports change. Targets are
+`glob2`, `engine-tests`, `unit-tests`, `map-tests`, `sim-tests`, `tests`,
+`glob2-tools`, `relay`, `relay-tests`, `usl_runner` and the harness aliases
+(`transport-test`, `mobile-gallery`, ...), plus `install`, macOS `bundle` and
+`package`, and for the browser `web-package`, `web-tests`, `web-serial` and
+`web-threaded`, for mobile `android-tests` and `ios-tests`. Source archives come
+from `tools/release/release.py`. Test
 tools that look for the newest build directory (`tools/build_paths.py`, so
 `test/run_tests.py` without `--build-dir`) take whichever dev or release build
 was built last; `--build-dir` or `GLOB2_BUILD_DIR` picks one explicitly.
 
-Tier flags follow SConstruct: `GLOB2_CXXFLAGS` and `GLOB2_LINKFLAGS` (SCons'
-`CXXFLAGS` and `LINKFLAGS`, default `-g`; distributions pass their optflags)
-come first; `dev_fast` replaces every `-g`/`-O` with `-O0 -g1`; `perf=1` compiles
+Tier flags: `GLOB2_CXXFLAGS` and `GLOB2_LINKFLAGS` (`CXXFLAGS=` and
+`LINKFLAGS=` of `tools/dev_build.py`, default `-g`; distributions pass their
+optflags) come first; `dev_fast` replaces every `-g`/`-O` with `-O0 -g1`; `perf=1` compiles
 C++ with `-O2 -g1` (`-O3` with `opt=3`) and links at the same level; `release=1`
 adds `-O3`, links with `-O3 -fwhole-program` and strips with `-s` (test binaries
 keep their symbols) unless `retain_symbols=1`. QuickJS and openlibm compile at
 `-O2` in the optimized tiers and `-O0` otherwise. When ccache is installed it is
-the compiler launcher, with the managed cache directory and settings SCons uses,
-and `-fdebug-prefix-map=<checkout>=.` makes objects relocatable. `linker=auto`
-links with `lld` when `ld.lld` is installed. Ninja does not draw from the SCons
+the compiler launcher, with the managed cache directory and settings, and
+`-fdebug-prefix-map=<checkout>=.` makes objects relocatable. `linker=auto` links
+with `lld` when `ld.lld` is installed. Ninja does not draw from the
 [token pool](#parallel-lanes); the wrapper passes `-j8` unless given `-jN`.
 
 Keep the generated source lists in step: after changing `buildsys/sources.py`,
@@ -331,10 +325,10 @@ What it builds:
   groups (`GLOB2_CORE_EXCLUDED_SOURCES`), the tests and harnesses that need
   them, and writes `glob2/CompileProfile.h` accordingly.
 - `glob2-engine-tests`, `glob2-unit-tests`, `glob2-map-tests` and
-  `glob2-sim-tests` from the `test/tests.py` registry, as `test/SConscript`
-  builds them: the test include directories and `SDL_MAIN_HANDLED`, one object
-  library per group of entries with the same `cxxflags`, `defines` and `require`,
-  the client objects reused wherever SCons reuses them, the `glob2_map` and
+  `glob2-sim-tests` from the `test/tests.py` registry: the test include
+  directories and `SDL_MAIN_HANDLED`, one object library per group of entries
+  with the same `cxxflags`, `defines` and `require`, the client objects, the
+  `glob2_map` and
   `glob2_sim` module archives linked as one `--start-group` group, and a
   `<binary>.provenance.json` sidecar written by `buildsys/test_provenance.py` on
   every build of the alias.
@@ -346,15 +340,14 @@ What it builds:
   `recording/` beside `GLOB2_SDL3_PREFIX`, or a shared-store build made on first
   use), and with `lean_images=1` the private PNG/JPEG/WebP SDL_image
   (`buildsys/native_image_dependency.py`), both through
-  `buildsys/shared_dependencies.py` as SCons provisions them.
+  `buildsys/shared_dependencies.py`.
 - The runtime assets: the `buildsys/runtime_assets.py` export for the tier's
   asset profile (lossy WebP and video sprite packing in release builds), shared
   through the development store, into `<build>/runtime-assets`, which
   `BuildPaths.h` names. A depfile lists every asset input and the directories
   holding them, so the export runs again only when one changes.
   `identity.json` is the resolved identity plus `"generator": "cmake"`, which
-  `test/run_tests.py`, `tools/perf_ab.py` and `tools/dev_baseline.py` read and
-  SCons refuses to adopt.
+  `test/run_tests.py`, `tools/perf_ab.py` and `tools/dev_baseline.py` read.
 
 `BuildConfig.h`, `BuildPaths.h`, `BuildStamp.h`, `CompileProfile.h`,
 `SkinMaterials.h`, the renderer shaders, the Hive contract, the online error
@@ -364,8 +357,8 @@ asset export and points `BuildPaths.h` at `GLOB2_RUNTIME_ASSET_DIR`.
 
 #### Installation
 
-`cmake --install <build>` (honouring `DESTDIR`) installs what `scons install`
-does: `glob2` into `GLOB2_BINDIR`, and under `GLOB2_INSTALLDIR` the verified
+`python3 tools/dev_build.py release=1 install` builds a shipping binary and runs
+`cmake --install <build>` (honouring `DESTDIR`), which installs `glob2` into `GLOB2_BINDIR`, and under `GLOB2_INSTALLDIR` the verified
 runtime-asset tree merged into `glob2/` (`runtime_assets.install_export`), the
 renderer shaders, the desktop entry, AppStream metainfo, hicolor icons, shell
 completions and `man/man6/glob2.6`, the SDL3 runtime from `GLOB2_SDL3_PREFIX`
@@ -373,8 +366,7 @@ into `<bindir>/../lib/glob2` with its notices, the recording notices, and with
 `lean_images=1` the private SDL_image with its soname links and notice.
 `GLOB2_DATADIR` is the data directory compiled into the game. All three default
 under `CMAKE_INSTALL_PREFIX`. Configure installed builds with
-`-DGLOB2_SHIPPING=ON`, which, like a `scons install` invocation, leaves out the
-build prefix's rpath and the debug-path mapping; installing a
+`-DGLOB2_SHIPPING=ON`, which leaves out the build prefix's rpath and the debug-path mapping; installing a
 `GLOB2_SDL3_PREFIX` build without it fails.
 
 ```sh
@@ -384,43 +376,6 @@ cmake -S . -B build/linux/client/release/lean-images -G Ninja \
 cmake --build build/linux/client/release/lean-images --target glob2
 DESTDIR="$stage" cmake --install build/linux/client/release/lean-images
 ```
-
-#### Parity with SCons
-
-`tools/compare_build_systems.py --tier dev|core|perf|perf-o3|release|relay`
-builds the tier with both systems into `build/parity/<tier>/{scons,cmake}`, both
-with an extra `-ffile-prefix-map=<checkout>/=`: glob2, the four test binaries,
-the test programs and the harnesses (`--glob2-only` limits it to glob2; the core
-tier builds glob2 and the test binaries, the relay tier `relay`). It then
-compares every compilation in the two `compile_commands.json` files: the `-I`
-search order and the multiset of all other flags, with paths normalised. A
-source compiled more than once must have the same multiset of compilations in
-both. Matching compilations' objects are compared by sha256, raw and with debug
-sections stripped. The CMake parity build compiles through ccache with
-`-DGLOB2_CCACHE_BASEDIR=` (empty): `CCACHE_BASEDIR` rewrites CMake's absolute
-source paths relative to its build directory, so in the ordinary build
-`__FILE__` reads `../../../../../src/...` where SCons has `src/...`.
-`--no-build` reuses existing parity builds, `--time-noop` also times a
-no-change rebuild of both dev builds, `--json` writes the full report and
-`--summary` appends a Markdown summary. It exits 1 on any flag or source-set
-difference; object differences are reported only.
-
-Remaining object differences: in the debug tiers every object's debug sections
-differ (the compilations run from different working directories); release
-objects are byte-identical. Four objects differ in data in every tier: three
-embed `BuildPaths.h`'s absolute build-directory paths, and `TextSort.cpp`'s
-`assert` text names `third_party/natsort/strnatcmp.c` where SCons, finding it
-through `-I.`, has `./third_party/...`. In the ordinary CMake build the
-`__FILE__` difference above also reaches doctest's case file names;
-`test/run_tests.py` maps them back to repository paths (`source_name`).
-
-The `build-system equivalence` workflow
-(`.github/workflows/build-system-equivalence.yml`) runs that comparison for the
-dev, perf, release and relay tiers with GCC 13 on Ubuntu 24.04 on master pushes
-and on pull requests that touch `CMakeLists.txt`, `CMakePresets.json`, `cmake/`,
-`buildsys/`, `SConstruct`, any `SConscript`, `test/tests.py` or the comparison
-script. It fails on a flag or source-set difference and writes object-hash
-results to the step summary and the `build-system-equivalence` artifact.
 
 ### Shared renderer shader assets
 
@@ -472,10 +427,10 @@ An explicit `--build` directory refuses an incompatible existing identity.
 python3 tools/dev_build.py client_profile=free
 python3 tools/dev_build.py release=1 client_profile=free
 python3 tools/dev_build.py release=1 client_profile=free distribution=app_store bundle   # macOS
-scons target=ios release=1 client_profile=free
+python3 tools/dev_build.py target=ios release=1 client_profile=free
 ```
 
-Use standard release packaging for shipping. Fast/PCH/unity development builds
+Use standard release packaging for shipping. Fast development builds
 are unsuitable for release qualification. Keep the actual producer
 `identity.json` with final-package evidence; do not reconstruct it from an
 intended command after signing.
@@ -525,8 +480,8 @@ Native Linux clients can select `recording_codec=h264` (the default),
 `recording_codec=vp9`, or `recording_codec=av1`:
 
 ```sh
-scons release=1 recording_codec=vp9
-scons release=1 recording_codec=av1
+python3 tools/dev_build.py release=1 recording_codec=vp9
+python3 tools/dev_build.py release=1 recording_codec=av1
 python3 tools/dev_build.py recording_codec=vp9 unit-tests
 ```
 

@@ -70,7 +70,7 @@ def default_build_dir():
 
 
 def cmake_objects(build_dir, include_tests):
-    """(node name, path) of a CMake build's objects, named as the SCons layout names them:
+    """(node name, path) of a CMake build's objects, named by source:
     client objects by their path under src/ ('map/Map.o'), test objects under 'test/'."""
     found = []
     for directory in sorted((build_dir / 'CMakeFiles').glob('*.dir')):

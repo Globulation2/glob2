@@ -280,37 +280,6 @@ def webm_build_commands(sources, prefix, cc, cxx, ar, ranlib, cflags, ldflags, v
     return [('aom', aom)]
 
 
-def attach(env, prefix, target, video_codec='h264'):
-    prefix = Path(prefix)
-    manifest = prefix / 'recording-manifest.json'
-    if manifest.exists() and json.loads(manifest.read_text())['identity'].get('video_codec', 'h264') != video_codec:
-        raise ValueError('Recording prefix codec does not match recording_codec')
-    if target != 'wasm':
-        env.Append(CPPDEFINES=['GLOB2_H264_ASSETS'])
-    if video_codec != 'h264':
-        env.Append(CPPDEFINES=['GLOB2_RECORDING_' + video_codec.upper()])
-    env.Prepend(CPPPATH=[str(prefix / 'include')])
-    env.Append(LIBS=[env.File(str(prefix / 'lib' / ('lib' + name + '.a'))) for name in codec_libraries(video_codec)])
-    if video_codec != 'h264':
-        # Keep Opus under the native client's existing dependency ownership.
-        # Append after FFmpeg so --as-needed links also resolve its Opus calls.
-        env.ParseConfig('pkg-config opus --cflags --libs')
-    if target in ('darwin', 'ios'):
-        env.Append(FRAMEWORKS=['VideoToolbox', 'CoreMedia', 'CoreVideo', 'Foundation', 'AudioToolbox'])
-    elif target == 'android':
-        env.Append(LIBS=['mediandk'])
-        # Static FFmpeg assembly references private tables directly. Bind only
-        # codec archive symbols locally inside the JNI shared library; SDL's
-        # Java entry points must remain exported.
-        env.Append(LINKFLAGS=['-Wl,--exclude-libs=' + ':'.join('lib'+name+'.a' for name in codec_libraries(video_codec))])
-    elif target == 'mingw32': env.Append(LIBS=['mfplat', 'mfuuid', 'ole32', 'strmiids', 'bcrypt'])
-    elif target == 'linux':
-        manifest = prefix / 'recording-manifest.json'
-        if manifest.exists() and json.loads(manifest.read_text())['identity'].get('vaapi_api'):
-            env.Append(LIBS=['va', 'va-drm'])
-        env.Append(LIBS=['dl', 'm'])
-
-
 if __name__ == '__main__':
     import argparse
     parser=argparse.ArgumentParser(description=__doc__)

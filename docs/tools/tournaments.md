@@ -14,14 +14,14 @@ or tournament adjudication is part of the worker or engine.
 
 ## Start locally
 
-Build the production client (`scons -j4 release=1 server=0`), then prepare a directory
+Build the production client (`python3 tools/dev_build.py -j4 release=1`), then prepare a directory
 containing `glob2` and `content/data/`. Include optional symbols and any other runtime files
 needed by that build. Bundles must contain regular files, not symlinks. Run from the
 repository root:
 
 ```sh
 mkdir -p /tmp/glob2-supplied
-cp build/src/glob2 /tmp/glob2-supplied/glob2
+cp build/linux/client/release/src/glob2 /tmp/glob2-supplied/glob2
 cp -R data /tmp/glob2-supplied/data
 python3 -m tools.tournaments bundle /tmp/glob2-supplied /tmp/glob2-bundles \
   --revision "$(git rev-parse HEAD)" --dirty-identity YOUR_SOURCE_DIFF_HASH
@@ -89,10 +89,10 @@ Game and generation commands require `--output-dir DIR`; an existing
 Values are separate ordinary arguments, not JSON.
 
 ```sh
-build/src/glob2 map study 15 --seed 42 \
+build/linux/client/release/src/glob2 map study 15 --seed 42 \
   --set teams=2 --set width=7 --set height=7 \
   --write-map --rotations 2 --output-dir /tmp/generated
-build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
+build/linux/client/release/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
   --game-seed 19 --player cortex --player cortex \
   --ai-param 0:swarmWorkerCap=4 --ai-param 1:swarmWorkerCap=7 \
   --ticks 4096 --save initial --save every:512 --save final \
@@ -102,7 +102,7 @@ build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
 To exercise a custom profile, append repeatable rule arguments to a new game:
 
 ```sh
-build/src/glob2 game run --map-file content/maps/SmallForTwo.map.gz \
+build/linux/client/release/src/glob2 game run --map-file content/maps/SmallForTwo.map.gz \
   --game-seed 19 --player cortex --player maxima \
   --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
   --ticks 30000 --save initial --save final --write-replay \
@@ -663,7 +663,7 @@ planning/statistics, not SSH, process pools, retries or transfers.
 python3 test/test_tournaments.py
 python3 test/test_tournament_pipeline.py
 python3 test/test_map_fairness_tournament.py
-scons -j4 release=1 server=0 engine-tests
+python3 tools/dev_build.py -j4 release=1 engine-tests
 python3 test/run_tests.py --filter 'TournamentCompatibility/*'
 python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 ```

@@ -48,7 +48,7 @@ SIM_DIFF_PREFIXES = ('src/game/', 'src/unit/', 'src/building/', 'src/team/', 'sr
                      'content/data/usl/', 'content/data/buildings/', 'content/data/resources/',
                      'content/data/generators/', 'content/data/rulesets.json', 'content/data/nicowar')
 # The build files that apply the strict numeric flags to simulation sources.
-SIM_DIFF_FILES = {'src/SConscript', 'CMakeLists.txt', 'cmake/sources.cmake', 'deploy/sim_version.py', 'src/app/Version.h'}
+SIM_DIFF_FILES = {'buildsys/javascript.py', 'CMakeLists.txt', 'cmake/sources.cmake', 'deploy/sim_version.py', 'src/app/Version.h'}
 
 
 def touches_simulation(paths):
@@ -181,7 +181,7 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('buildsys/', 'cmake/', 'libs/usl/', 'content/data/terrain/', 'content/data/resources/', 'content/data/units/')) or path in {'SConstruct', 'CMakeLists.txt', 'CMakePresets.json', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('buildsys/', 'cmake/', 'libs/usl/', 'content/data/terrain/', 'content/data/resources/', 'content/data/units/')) or path in {'CMakeLists.txt', 'CMakePresets.json', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',

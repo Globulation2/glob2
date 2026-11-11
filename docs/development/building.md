@@ -78,7 +78,7 @@ python3 test/run_tests.py --build-dir build/local-dev --quick
 
 Keep the platform-specific compiler/OpenSSL options from setup on subsequent invocations. On Windows run `./build/local-dev/src/glob2.exe`. The explicit output directory above makes the runner and executable location unambiguous.
 
-The helper enables compiler caching, limits default concurrency and selects a separate fast output directory. It takes `key=value` build options and targets, and builds Linux, macOS and Windows with CMake and Ninja (browser and mobile builds still with SCons). Use [build options](build-options.md) for full symbols, cache settings and browser/mobile variants. Run the client in the output directory reported by the build; outputs are isolated by toolchain, role and configuration.
+The helper enables compiler caching, limits default concurrency and selects a separate fast output directory. It takes `key=value` build options and targets, and builds every platform, including the browser and mobile targets, with CMake and Ninja. Use [build options](build-options.md) for full symbols, cache settings and browser/mobile variants. Run the client in the output directory reported by the build; outputs are isolated by toolchain, role and configuration.
 
 ## Ordinary and optimized builds
 

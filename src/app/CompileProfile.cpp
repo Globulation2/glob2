@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CompileProfile.h"
 #include <stdexcept>
-// Native SCons builds generate this header; builders that compile every source may not.
+// Native builds generate this header; builders that compile every source may not.
 #if __has_include(<glob2/CompileProfile.h>)
 #include <glob2/CompileProfile.h>
 #else

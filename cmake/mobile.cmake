@@ -1,4 +1,4 @@
-# Android and iOS: what buildsys/mobile_build.py builds, included by CMakeLists.txt
+# Android and iOS, included by CMakeLists.txt
 # for GLOB2_BUILD_ARGS target=android|ios after cmake/mobile-toolchain.cmake chose
 # the pinned cross compilers.
 #
@@ -8,8 +8,8 @@
 #   iOS      lib/libglob2.a (Xcode links it with SDL's startup) and, for
 #            ios-tests, lib/libglob2-script-tests.a.
 #
-# The same sources (buildsys/sources.py mobile_sources), flags and pinned
-# dependency bundle as the SCons build; compared by tools/compare_build_systems.py.
+# Sources come from buildsys/sources.py mobile_sources; libraries from the
+# pinned, checksum-verified dependency bundle (platforms/mobile/dependencies.py).
 glob2_identity(GLOB2_MOBILE_TARGET target "")
 set(android OFF)
 if(GLOB2_MOBILE_TARGET STREQUAL "android")
@@ -46,7 +46,7 @@ add_custom_command(OUTPUT "${GLOB2_OUT}/include/generated/OnlineErrorCatalog.h"
 add_custom_target(glob2_generated DEPENDS
   "${GLOB2_OUT}/include/hive/PlayerAPIContract.h" "${GLOB2_OUT}/include/generated/OnlineErrorCatalog.h")
 
-# ---- Flags: mobile_build.py's CCFLAGS (after the toolchain's) and CXXFLAGS ----
+# ---- Flags: CCFLAGS (after the toolchain's) and CXXFLAGS ----
 if(GLOB2_MODE STREQUAL "release")
   set(ccflags -g -O2)
   set(javascript_optimization -O2)
@@ -64,7 +64,7 @@ if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER)
 endif()
 set(cxxflags -std=gnu++20 -fexceptions)
 # The libraries name sources relative to the checkout in __FILE__ (assertions),
-# as SCons' relative command lines did, rather than the build host's path.
+# rather than the build host's path.
 list(APPEND ccflags "-fmacro-prefix-map=${GLOB2_ROOT}/=")
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX,OBJCXX>:${cxxflags}>" ${ccflags})
 add_compile_definitions(HAVE_CONFIG_H
@@ -149,7 +149,7 @@ function(glob2_mobile_test_objects output registry prefix)
     set(sources ${GLOB2_${registry}_${group}_SOURCES})
     list(TRANSFORM sources PREPEND "${GLOB2_ROOT}/")
     add_library(${prefix}_${group} OBJECT EXCLUDE_FROM_ALL ${sources})
-    # Executables' own objects: the toolchain's -fPIC only, as SCons' Object.
+    # Executables' own objects: the toolchain's -fPIC only.
     set_target_properties(${prefix}_${group} PROPERTIES POSITION_INDEPENDENT_CODE OFF)
     target_include_directories(${prefix}_${group} PRIVATE "${GLOB2_ROOT}/test" "${GLOB2_ROOT}/test/support"
                                "${GLOB2_ROOT}/libs/gag/src")

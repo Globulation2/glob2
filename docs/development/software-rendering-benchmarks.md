@@ -3,7 +3,7 @@
 Measure the production software backend with matching perf binaries ([build tiers](build-options.md#build-tiers)) and retained scenes. [Backend architecture](../architecture/software-rendering.md) explains rasterization and caches.
 
 ```sh
-scons perf=1 opengl=0 software-render-benchmark
+python3 tools/dev_build.py perf=1 opengl=0 software-render-benchmark
 PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
   PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
   GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \

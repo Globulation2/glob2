@@ -13,8 +13,9 @@ whose certificate it already trusts (see [secure network transports](gateway.md)
 
 ## Architecture
 
-- SCons is the source of truth for every toolchain. Plain Python source manifests
-  are shared by native and web targets; target identities keep generated output
+- One CMake build (`CMakeLists.txt`, with `cmake/web.cmake` for the browser) serves
+  every toolchain. Plain Python source manifests in `buildsys/` are shared by native
+  and web targets; target identities keep generated output
   isolated.
 - `Application` and `ScreenStack` own interactive navigation. The browser host
   schedules frames; loading uses cooperative jobs. Generation uses owned

@@ -108,7 +108,7 @@ jobs:
           EOF
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ inputs.compiler }} python3 python3-venv scons pkg-config nasm libva-dev ccache \
+            ca-certificates git ${{ inputs.compiler }} python3 python3-venv ninja-build pkg-config nasm libva-dev ccache \
             cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
@@ -138,44 +138,15 @@ jobs:
           key: ccache-main-${{ inputs.runner }}-${{ inputs.compiler }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-main-${{ inputs.runner }}-
 
-      - name: Identify Linux compiler
-        id: linux_compiler
-        run: |
-          digest=$(sha256sum "$(command -v ${{ inputs.compiler }})" | cut -d' ' -f1)
-          echo "digest=$digest" >> "$GITHUB_OUTPUT"
-
-      - name: Restore Linux object tree
-        id: restore_linux_object_tree
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/linux/client/release/.sconsign.dblite
-            build/linux/client/release/identity.json
-            build/linux/client/release/configure
-            build/linux/client/release/include/glob2/BuildConfig.h
-            build/linux/client/release/**/*.o
-            build/linux/client/release/**/*.a
-          key: linux-objects-v1-${{ inputs.runner }}-${{ steps.linux_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: linux-objects-v1-${{ inputs.runner }}-${{ steps.linux_compiler.outputs.digest }}-
-
       - name: Reset the cache statistics
         id: cache_ready
         run: |
           ccache -z
-          rm -f build/linux/client/release/src/GlobalContainerArgs.o
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Check the stencil vectorizer
         if: ${{ inputs.compiler == 'clang-18' }}
         run: python3 tools/compiler/check_stencil_vectorizer.py --cxx clang++-18
-
-      - name: Test compiler cache integration
-        if: ${{ inputs.compiler == 'g++-13' && !inputs.generator_only }}
-        id: test_compiler_cache_integration
-        continue-on-error: true
-        run: |
-          python3 test/test-ccache.py
 
       - uses: ./.github/actions/renderer-shader-tools
       - name: Build glob2 and the regression harnesses
@@ -189,7 +160,7 @@ jobs:
           fi
           if [ '${{ inputs.web_native }}' = true ]; then targets+=(transport-test); fi
           if [ '${{ inputs.desktop_localization }}' = true ] && [ '${{ inputs.compiler }}' = g++-13 ] && [ '${{ inputs.runner }}' = ubuntu-24.04 ] && [ '${{ inputs.generator_only }}' != true ]; then targets+=(translation-preview-harness); fi
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=${{ inputs.c_compiler }} CXX=${{ inputs.compiler == 'clang-18' && 'clang++-18' || inputs.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py CC=${{ inputs.c_compiler }} CXX=${{ inputs.compiler == 'clang-18' && 'clang++-18' || inputs.compiler }} -j$(nproc) release=1 "${targets[@]}"
 
       - name: Capture actual registered Thai menus and gameplay on primary Linux
         if: ${{ !cancelled() && inputs.desktop_localization && inputs.compiler == 'g++-13' && inputs.runner == 'ubuntu-24.04' && !inputs.generator_only && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
@@ -215,10 +186,11 @@ jobs:
           test -d build/linux/client/release/runtime-assets/data
           {
             find build/linux/client/release/shaders -type f -print0
-            find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0
+            # CMakeFiles/ holds CMake's compiler-identification programs, not ours.
+            find build/linux/client/release build/sdl3-ci/prefix/lib \( -path '*/configure' -o -path '*/CMakeFiles' \) -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0
             find build/linux/client/release/runtime-assets -type f -print0
             # Test programs read their build identity from <binary>.provenance.json.
-            find build/linux/client/release -path '*/configure' -prune -o -type f -name '*.provenance.json' -print0
+            find build/linux/client/release \( -path '*/configure' -o -path '*/CMakeFiles' \) -prune -o -type f -name '*.provenance.json' -print0
             printf '%s\0' build/linux/client/release/runtime-assets.json
           } | tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
@@ -235,23 +207,6 @@ jobs:
           retention-days: 2
           if-no-files-found: error
 
-      - name: Save Linux object tree
-        id: save_linux_object_tree
-        if: ${{ !cancelled() && steps.package_linux_test_programs.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/linux/client/release/.sconsign.dblite
-            build/linux/client/release/identity.json
-            build/linux/client/release/configure
-            build/linux/client/release/include/glob2/BuildConfig.h
-            build/linux/client/release/**/*.o
-            build/linux/client/release/**/*.a
-          key: linux-objects-v1-${{ inputs.runner }}-${{ steps.linux_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-      # A run that touched a widely included header and still shows near-total
-      # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
         id: report_the_cache_statistics
         continue-on-error: true
@@ -460,7 +415,7 @@ jobs:
             python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
           else
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ inputs.compiler }} python3 python3-venv scons pkg-config nasm libva-dev ccache \
+            ca-certificates git ${{ inputs.compiler }} python3 python3-venv pkg-config nasm libva-dev ccache \
             libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \

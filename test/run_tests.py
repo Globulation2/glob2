@@ -192,9 +192,9 @@ def list_cases(binary, kind):
 def source_name(filename):
     """Doctest's source file name as a repository path.
 
-    SCons compiles root-relative paths; the CMake build passes absolute ones, which
-    ccache's CCACHE_BASEDIR rewrites relative to the build directory
-    ("../../../../../src/..."). Both name the same file."""
+    The build passes absolute paths, which ccache's CCACHE_BASEDIR rewrites
+    relative to the build directory ("../../../../../src/..."); older builds
+    passed root-relative ones. All name the same file."""
     path = filename.replace('\\', '/')
     if os.path.isabs(path):
         try:

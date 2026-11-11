@@ -1,4 +1,4 @@
-# The browser build: what buildsys/web_build.py builds, included by
+# The browser build, included by
 # CMakeLists.txt for GLOB2_BUILD_ARGS target=web after cmake/web-toolchain.cmake
 # selected the pinned Emscripten SDK.
 #
@@ -7,7 +7,7 @@
 # their own SDL3 and Opus builds. Beside them: the asset packages and
 # asset-manifest.js, the music, recording, asset-video and Hive worker modules,
 # the page (index.html and its studio siblings), the loader and the launcher
-# fonts. Targets keep the SCons names: web-package (everything), web-serial,
+# fonts. Targets: web-package (everything), web-serial,
 # web-threaded and web-tests (script-tests.js for each runtime).
 glob2_identity(GLOB2_WEB_RELEASE mode debug)
 glob2_bridge(unused web-configure --builddir "${GLOB2_OUT}" ${build_arg_options})
@@ -30,7 +30,7 @@ else()
 endif()
 find_program(GLOB2_WEB_CCACHE ccache)
 # ccache around em++ (unless Emscripten's EM_COMPILER_WRAPPER caches inside it),
-# with relocatable debug paths as buildsys/dev_build.py cache_flags gives SCons.
+# with relocatable debug paths.
 set(web_ccache OFF)
 if(GLOB2_WEB_CCACHE AND GLOB2_CCACHE AND NOT DEFINED ENV{EM_COMPILER_WRAPPER})
   set(web_ccache ON)
@@ -41,8 +41,8 @@ if(web_ccache AND GLOB2_DEBUG_PREFIX_MAP)
   set(web_prefix_map "-fdebug-prefix-map=${GLOB2_ROOT}=.")
 endif()
 
-# SCons' CXXFLAGS/CCFLAGS/LINKFLAGS of a variant's environment, with
-# buildsys/dev_build.py configure()'s dev_fast applied.
+# The CXXFLAGS/CCFLAGS/LINKFLAGS of a variant's environment, with
+# dev_fast applied.
 function(glob2_web_flags cxx_out cc_out link_out cxxflags ccflags linkflags)
   if(GLOB2_DEV_FAST)
     list(FILTER cxxflags EXCLUDE REGEX "^-[gO]")
@@ -122,7 +122,7 @@ set_source_files_properties(${web_strict_sources} PROPERTIES COMPILE_OPTIONS "${
 set_source_files_properties("${GLOB2_ROOT}/src/app/Glob2.cpp" PROPERTIES
   COMPILE_DEFINITIONS "SDL_MAIN_HANDLED;main=glob2ApplicationMain")
 # Shipped modules name sources relative to the checkout in __FILE__ (assertions),
-# as SCons' relative command lines did, rather than the build host's path.
+# rather than the build host's path.
 add_compile_options("-fmacro-prefix-map=${GLOB2_ROOT}/=")
 # QuickJS and openlibm (buildsys/javascript.py javascript_objects): CFLAGS first,
 # the interpreter's include directories after the shared ones.
@@ -334,7 +334,7 @@ set(worker_includes "${GLOB2_WEB_${upper}_SHADERS}" "${GLOB2_WEB_${upper}_OUT}/i
     "${GLOB2_WEB_${upper}_OPUS_PREFIX}/include/opus" "${GLOB2_ROOT}/third_party/quickjs-ng")
 glob2_web_flags(game_cxxflags unused_cc unused_link "-std=gnu++20;-fwasm-exceptions;-g2;${optimization};${ports}" "" "")
 glob2_web_flags(recording_cxxflags recording_ccflags unused_link "-std=gnu++20;-fwasm-exceptions" "-O3;-msimd128" "")
-# web_build.py replaces the recording modules' CCFLAGS outright, debug-path map included.
+# The recording modules have their own CCFLAGS, without the debug-path map.
 if(web_prefix_map)
   list(REMOVE_ITEM recording_ccflags "${web_prefix_map}")
 endif()

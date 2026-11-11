@@ -20,7 +20,7 @@ class RecordingSourceArchiveTest(unittest.TestCase):
         dependency=b'pinned encoder source'
         pins={'x264':{'archive':'x264.tar.gz','sha256':hashlib.sha256(dependency).hexdigest()}}
         stream=io.BytesIO()
-        required=('SConstruct','buildsys/build_layout.py','platforms/linux/glob2.6','content/data/glob2.desktop',
+        required=('CMakeLists.txt','buildsys/build_layout.py','platforms/linux/glob2.6','content/data/glob2.desktop',
                   'content/data/org.globulation2.Globulation2.metainfo.xml','content/data/screenshots/globulation2-gameplay.png',
                   'content/data/usl/Language/Runtime/Control.usl','content/data/fonts/sans.ttf','content/maps/SmallForTwo.map.gz')
         with tarfile.open(fileobj=stream,mode='w') as archive:
@@ -37,7 +37,7 @@ class RecordingSourceArchiveTest(unittest.TestCase):
 
     def test_archive_carries_the_committed_manual(self):
         prefix = 'glob2-1.2.3/'
-        required = ('SConstruct', 'buildsys/build_layout.py', 'platforms/linux/glob2.6', 'content/data/glob2.desktop',
+        required = ('CMakeLists.txt', 'buildsys/build_layout.py', 'platforms/linux/glob2.6', 'content/data/glob2.desktop',
                     'content/data/org.globulation2.Globulation2.metainfo.xml',
                     'content/data/screenshots/globulation2-gameplay.png',
                     'content/data/usl/Language/Runtime/Control.usl', 'content/data/fonts/sans.ttf',

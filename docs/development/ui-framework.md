@@ -477,7 +477,7 @@ localizes it during rendering so changing language updates an existing notice
 without restarting the engine.
 
 The native API error bridge embeds the reviewed Bulgarian and Thai online catalogs
-as separate generated resources; keep the generator, SCons input dependencies and
+as separate generated resources; keep the generator, its `CMakeLists.txt` input dependencies and
 source hashes aligned when either catalog changes. Use the generator's byte count
 to review resource growth; catalog data adds no runtime dependency. Structured message
 keys and parameters select the current locale. An exact legacy English literal
@@ -1471,7 +1471,7 @@ preference fields or simulation state are introduced.
 
 ## Verification
 
-- `scons unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
+- `python3 tools/dev_build.py unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
   runs `libs/gag/src/ui/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
   recording canvas. Measure and arrange,
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,

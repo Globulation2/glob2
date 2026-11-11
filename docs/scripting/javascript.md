@@ -272,7 +272,7 @@ Profile versioning and API-maintenance obligations are in the reference.
 
 ## Verify a change
 
-Build `unit-tests engine-tests` with SCons, then run:
+Build `python3 tools/dev_build.py unit-tests engine-tests`, then run:
 
 ```sh
 python3 test/run_tests.py --filter 'JavaScript*/*'

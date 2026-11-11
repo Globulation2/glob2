@@ -1,7 +1,7 @@
 """The official platform instance, as one build-time setting.
 
-Every build path (desktop SConstruct, web, Android, iOS) takes the origin from here,
-or from the `official_instance=https://host` SCons argument, so moving the official
+Every build (desktop, web, Android, iOS) takes the origin from here,
+or from the `official_instance=https://host` build argument, so moving the official
 instance to another domain is a change to DEFAULT_ORIGIN alone. It feeds the client
 constant `Online::OFFICIAL_INSTANCE_ORIGIN` (src/online/InstanceConfig.h), the Android
 App Link host and the iOS associated domain. Legacy YOG endpoints are separate.

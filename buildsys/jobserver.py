@@ -10,8 +10,6 @@ Tokens are lock files `<dev home>/state/jobserver/token-NN`. Holding an exclusiv
 so a crashed or killed process never leaks a token (which is why this is not a
 POSIX semaphore or a pipe of bytes).
 
-- SCons wraps `SPAWN` (`wrap_spawn`): each compiler or linker process holds one
-  token while it runs. `-j` keeps its meaning as the lane's maximum.
 - `test/run_tests.py` holds one token per running test process.
 - `tools/package_assets.py` encoding workers hold one token for their lifetime.
 
@@ -110,18 +108,6 @@ def child_environment(environment: dict | None = None) -> dict:
     result = dict(os.environ if environment is None else environment)
     result[HELD] = '1'
     return result
-
-
-def wrap_spawn(spawn):
-    """Wrap an SCons SPAWN function so each spawned command holds one token."""
-    if not enabled():
-        return spawn
-
-    def spawn_with_token(sh, escape, cmd, args, env):
-        with acquire():
-            return spawn(sh, escape, cmd, args, child_environment(env))
-
-    return spawn_with_token
 
 
 _lifetime_token = None

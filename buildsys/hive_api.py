@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Generate the existing Hive player contract for every client toolchain."""
-from pathlib import Path
 
 
 def player_contract(text):
@@ -21,20 +20,3 @@ def render(text):
             'namespace Hive { inline constexpr const char *PlayerAPIContract = R"' + delimiter
             + '(' + text + ')' + delimiter + '"; }\n')
 
-
-def configure(env, directory):
-    from SCons.Script import Action
-    from build_layout import write_if_changed
-
-    def generate(target, source, env):
-        write_if_changed(str(target[0]), render(Path(str(source[0])).read_text(encoding='utf-8')))
-        return 0
-
-    # SConscript evaluation can run with its variant directory as cwd. Resolve
-    # relative build paths against the project, just like the include search path.
-    directory = Path(directory)
-    if not directory.is_absolute():
-        directory = Path(env.Dir('#').abspath) / directory
-    target = directory.resolve() / 'include/hive/PlayerAPIContract.h'
-    return env.Command(str(target), [env.File('#services/online/packages/hive/src/commander-api.txt'), env.File('#buildsys/hive_api.py')],
-                       Action(generate, 'Generating Hive player API contract'))

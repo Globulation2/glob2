@@ -15,7 +15,7 @@ exercises compiled application code, not an HTML mockup.
 Run from the repository root:
 
 ```sh
-scons --build=build/native-tests -j8 release=1 engine-tests build/native-tests/src/glob2
+python3 tools/dev_build.py --build=build/native-tests -j8 release=1 engine-tests glob2
 python3 test/run_tests.py --build-dir build/native-tests --filter 'CustomGameSetup/*'
 ```
 
@@ -46,7 +46,7 @@ Use the catalog's legacy language code (`br` for Brazilian Portuguese, `si` for
 Slovenian, `cz` for Czech, and `dk` for Danish):
 
 ```sh
-scons --build=build/native-tests -j8 release=1 server=0 menu-colony-harness
+python3 tools/dev_build.py --build=build/native-tests -j8 release=1 menu-colony-harness
 mkdir -p artifacts/localized-lobby
 GLOB2_PREVIEW_LANGUAGE=fr build/native-tests/test/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
 GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/test/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700

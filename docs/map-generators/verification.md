@@ -100,9 +100,9 @@ Use contracts, map inspection and populated games for different questions: legal
   using the documented batch commands before showing it.
 - `tools/new_map_generator.py <id> "<Display name>"` scaffolds a generator that builds, registers
   and passes its own validation: header and source in the designed shape (colonies on a lattice,
-  a home and pond each, the kit and crop guarantee), the registry entry, the SConscript line, the
+  a home and pond each, the kit and crop guarantee), the registry entry, the `buildsys/sources.py` line, the
   next unused legacy id and its translation keys with English placeholders.
-- The unit suite (`scons unit-tests && python3 test/run_tests.py --binary unit`) covers the
+- The unit suite (`python3 tools/dev_build.py unit-tests && python3 test/run_tests.py --binary unit`) covers the
   rest of the engine and must stay green alongside all of the above.
 
 Generators validate their own construction results rather than trusting the geometry to always

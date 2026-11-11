@@ -26,7 +26,7 @@ class MaximaNamingTest(unittest.TestCase):
         manifests = "\n".join(
             (ROOT / name).read_text()
             for name in (
-                "SConstruct",
+                "cmake/sources.cmake",
                 "buildsys/sources.py",
                 "test/tests.py",
             )

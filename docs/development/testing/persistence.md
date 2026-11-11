@@ -166,7 +166,7 @@ checkpoints. The native paired CPU runner and profiling workflow are described i
 
 ## Save size measurements
 
-Build `scons release=1 server=0 save-size-harness`, then run:
+Build `python3 tools/dev_build.py release=1 save-size-harness`, then run:
 
 ```sh
 python3 test/measure_save_sizes.py build/darwin/client/release/test/SaveSizeHarness \

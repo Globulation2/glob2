@@ -167,7 +167,7 @@ High amounts can remove legal starting sites or wall colonies into crops. Widen 
 
 ## Registration and style
 
-From the repository root, `python3 tools/new_map_generator.py <id> "<Display name>"` scaffolds the header/source, registry entry, SCons source and translation keys. It mutates several files; inspect its output. The current scaffold is a starter design, not a finished implementation: add strategic variation, actual abundance scaling, site dealing where needed, design-specific validation and a `validateRequest` such as `designFailure<design>` when appropriate. Remove the generated TODO comments once the real design is described.
+From the repository root, `python3 tools/new_map_generator.py <id> "<Display name>"` scaffolds the header/source, registry entry, `buildsys/sources.py` entry and translation keys. It mutates several files; inspect its output, and run `python3 buildsys/export_cmake_sources.py` to regenerate `cmake/sources.cmake`. The current scaffold is a starter design, not a finished implementation: add strategic variation, actual abundance scaling, site dealing where needed, design-specific validation and a `validateRequest` such as `designFailure<design>` when appropriate. Remove the generated TODO comments once the real design is described.
 
 Take the next free legacy id and never reuse a retired one (the framework doc's catalog lists the retired numbers). The numeric id is a compatibility identity: seeds derive from the request seed and the stream names, so renumbering a generator during review changes no fingerprint, only the id column of its fingerprint rows. Several branches written in parallel will pick the same number; expect to renumber before merging.
 
@@ -183,7 +183,7 @@ Randomness comes from `GenerationContext::stream`, `bounded`, and `shuffle` with
 
 ## Several generator branches at once
 
-Generators written in parallel meet in the same handful of files: the registry, the SCons source list, the framework doc's catalog and toolkit tables, the defaults test's call list and the toolkit checks' `PASS` line. Merging them by line is how these files get broken: a union merge duplicates registry entries (the registry throws `Invalid generator registration` for a repeated id, and every CI job that loads it fails), splices two `puts` calls into one, drops a brace between two functions that shared a closing line, and a line-level dedupe silently deletes repeated code lines such as `for (const auto &d : definitions)`. Merge these files by key instead: one entry per generator in the registry and source list, catalog and toolkit rows keyed on their first cell, and the `PASS` line rebuilt from its fragments. Never run a line dedupe on a code header.
+Generators written in parallel meet in the same handful of files: the registry, the source list (`buildsys/sources.py` and the generated `cmake/sources.cmake`), the framework doc's catalog and toolkit tables, the defaults test's call list and the toolkit checks' `PASS` line. Merging them by line is how these files get broken: a union merge duplicates registry entries (the registry throws `Invalid generator registration` for a repeated id, and every CI job that loads it fails), splices two `puts` calls into one, drops a brace between two functions that shared a closing line, and a line-level dedupe silently deletes repeated code lines such as `for (const auto &d : definitions)`. Merge these files by key instead: one entry per generator in the registry and source list, catalog and toolkit rows keyed on their first cell, and the `PASS` line rebuilt from its fragments. Never run a line dedupe on a code header.
 
 Stack the branches in one order, rebase each onto the previous one's tip, and normalize the shared files after every rebase; then a branch's fingerprints computed at the top of the stack are valid for every branch below it, because each branch's own sim-diff report already showed its shared-code changes leaving the other generators alone. Build and run the tests on each branch before pushing it: a stack that compiles at the top can still fail at a middle branch whose registry lost an entry. Keep build logs and other session files out of commits (`git add` the files you changed, not the tree).
 
@@ -198,16 +198,16 @@ Near-duplicates survive a batch even after the shared files merge: two ways to s
 Use an optimized client for measurements and choose build concurrency for available memory. The following are entry points, not a claim they have been run for a new design:
 
 ```sh
-scons release=1 server=0 map-generator-study engine-tests map-generator-golden-test
+python3 tools/dev_build.py release=1 map-generator-study engine-tests map-generator-golden-test
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
-build/src/MapGeneratorGoldenTest glob2-map-design-golden --print --only=<id>
-build/src/MapGeneratorGoldenTest glob2-map-design-sweep --sweep
-build/src/MapGeneratorGoldenTest glob2-map-design-perf --performance
-scons release=1 server=0
-build/src/glob2 map generators
-build/src/glob2 map generators canals
-build/src/glob2 map generate canals --seed 7 --width 128 --height 256 --teams 4 --output artifacts/map-design/canals-7.map --preview artifacts/map-design/canals-7.png --report-file artifacts/map-design/canals-7.json
+build/linux/client/release/src/MapGeneratorGoldenTest glob2-map-design-golden --print --only=<id>
+build/linux/client/release/src/MapGeneratorGoldenTest glob2-map-design-sweep --sweep
+build/linux/client/release/src/MapGeneratorGoldenTest glob2-map-design-perf --performance
+python3 tools/dev_build.py release=1
+build/linux/client/release/src/glob2 map generators
+build/linux/client/release/src/glob2 map generators canals
+build/linux/client/release/src/glob2 map generate canals --seed 7 --width 128 --height 256 --teams 4 --output artifacts/map-design/canals-7.map --preview artifacts/map-design/canals-7.png --report-file artifacts/map-design/canals-7.json
 ```
 
 Use disposable test profiles, following the [test README](../../../../test/README.md). No fingerprint rows are committed: the pull request's sim-diff workflow runs `MapGeneratorGoldenTest --print` on the merge base and the pull request and lists every row that moved. For intentional output changes, bump the affected generator's revision and check that only the expected generators' rows moved. A fingerprint proves reproducibility of a known snapshot, not quality. `--performance` times every generator at its own defaults (256x256, seed 42) and asserts identical bytes, outcomes and telemetry with the internal performance collector on and off; for a broader load, `MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...]` (see the [framework doc](../../../../docs/map-generators/map-generator-framework.md)) round-robins every generator at randomly drawn parameters, which is also a fixed-seed/round-count way to compare a shared primitive's before/after cost, and a target for an external sampling profiler.
@@ -225,7 +225,7 @@ Build a request matrix from the live catalog:
 [tools/map_generator_study.py](../../../../tools/map_generator_study.py) obtains playable defaults from the registry or takes a JSON config list with `id`, numeric `method`, and `params`. Study `w`/`h` use exponents; the normal CLI uses tile counts. Obtain current keys and IDs from `MapGeneratorStudy --catalog`; do not hardcode another catalog in a new tool.
 
 ```sh
-build/src/MapGeneratorStudy --catalog
+build/linux/client/release/src/MapGeneratorStudy --catalog
 python3 tools/map_generator_study.py --configs artifacts/map-design/configs.json --count 32 --start 20001 --workers 3 --output artifacts/map-design/study --label held-out
 ```
 
@@ -290,7 +290,7 @@ Lessons from rebuilding, reviewing and profiling generators, grouped by the job 
 
 Each stage of the loop has its own cost; spend effort where it is.
 
-- **Rebuild.** A generator's `.cpp` recompiles one object, and its header adds `GeneratorRegistry.cpp`; the link is about a second. On SCons most of an incremental build is its own fixed overhead (reading SConscripts and scanning dependencies, about 20 s on a laptop), not compilation.
+- **Rebuild.** A generator's `.cpp` recompiles one object, and its header adds `GeneratorRegistry.cpp`; the link is about a second, and Ninja's own overhead on a no-change build is about 1.5 s.
 - **Measure on a perf build.** `python3 tools/dev_build.py perf=1` generates several times faster than the `-O0` dev build (about 8× on a sweep). The study scripts (`control_study.py`, `refusal_sweep.py`, `final_map_stats.py`, `contact_sheet.py`, `sweep_shapes.py`) default to the newest client build, perf builds included, and note when that is a dev build, so rebuild the perf tier after a change before a large study. Their `--jobs` defaults to one per logical CPU, and the largest maps are queued first so they do not trail at the end.
 - **Studies run in persistent workers.** `tools/map_generation_study.generate_map` sends each study to a `glob2 map study-worker` kept per thread, which skips process start and setup per map; results are identical to one process per map (`GLOB2_STUDY_WORKER=0` restores that, and older binaries without the command fall back automatically).
 - **One process, every core.** `map study --candidates N` generates its candidates in parallel and chooses exactly as the serial search did; the map report measures its walking, swimming and clearing models, and each colony's field, in parallel; `map render` composes terrain pages on every core. `--compute-threads N` on any `map` command caps that width; the scripts pass each process its share of the machine so concurrent workers do not oversubscribe it.

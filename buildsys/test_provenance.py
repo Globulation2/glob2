@@ -2,13 +2,13 @@
 
 Native test programs get a `<binary>.provenance.json` sidecar, written after the
 link step whenever the program's alias is built, so the identity is computed
-inside a build action rather than at every SConscript read and a commit that
+inside a build action rather than at configure time, and a commit that
 changes no compiled input relinks nothing. Browser and mobile test executables
 run away from their build directory, so they still embed the identity in
 glob2/TestBuildProvenance.h (GLOB2_TEST_PROVENANCE_EMBEDDED).
 
-The CMake build writes the same sidecar through write_sidecar
-(buildsys/cmake_generate.py test-provenance), so this module imports SCons lazily.
+The CMake build writes the sidecar through write_sidecar
+(buildsys/cmake_generate.py test-provenance).
 """
 import hashlib
 import importlib.util
@@ -53,35 +53,3 @@ def write_sidecar(root, binary, sidecar, configuration):
     metadata['binarySha256'], metadata['binaryStamp'] = _binary_sha256(Path(binary), previous)
     write_if_changed(str(path), json.dumps(metadata, sort_keys=True) + '\n')
 
-
-def attach_sidecar(env, program):
-    """Write <program>.provenance.json after every build of `program`; returns the node."""
-    from SCons.Script import Action, AlwaysBuild
-    root = Path(env.Dir('#').srcnode().abspath)
-    binary = Path(program[0].abspath)
-    sidecar = str(binary) + '.provenance.json'
-    configuration = _configuration(env)
-
-    def generate(target, source, env):
-        write_sidecar(root, binary, str(target[0]), configuration)
-        return 0
-
-    node = env.Command(sidecar, program, Action(generate, 'Recording $TARGET'))
-    AlwaysBuild(node)
-    return node
-
-
-def register_test_provenance(env, output):
-    """Embedded identity for browser and mobile test executables."""
-    from SCons.Script import Action, Value
-    root = Path(env.Dir('#').srcnode().abspath)
-    metadata = _source_identity(root)
-    metadata.update(_configuration(env))
-    contents = '#pragma once\n// Generated test evidence identity; compiled into the producer.\n'
-    contents += '#define GLOB2_TEST_PROVENANCE_EMBEDDED 1\n'
-    contents += '#define GLOB2_TEST_PROVENANCE_JSON ' + json.dumps(json.dumps(metadata, sort_keys=True)) + '\n'
-    target = (root / output).resolve() / 'include/glob2/TestBuildProvenance.h'
-    def generate(target, source, env):
-        write_if_changed(str(target[0]), contents)
-        return 0
-    return env.Command(str(target), Value(contents), Action(generate, 'Generating $TARGET'))

@@ -51,7 +51,6 @@ class ChangedPathsTest(unittest.TestCase):
                 'child:-m unittest discover -s test/build_system -v'])
         requirements = root / 'test/build_system/requirements.txt'
         lines = requirements.read_text().splitlines()
-        self.assertIn('scons==4.11.1', lines)
         include = next(line[3:] for line in lines if line.startswith('-r '))
         self.assertEqual((requirements.parent / include).resolve(), root / 'tools/asset-requirements.txt')
         development = (root / 'requirements-dev.txt').read_text()
@@ -83,9 +82,9 @@ class ChangedPathsTest(unittest.TestCase):
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False, music=False, platform=False,
         )
-        # The shared content/data/zik/SConscript is a build input: every job.
+        # A file shared by every soundtrack set is a build input: every job.
         self.assert_jobs(
-            ["content/data/zik/SConscript"], native=True, browser=True, map_generators=True,
+            ["content/data/zik/sets.json"], native=True, browser=True, map_generators=True,
             deployment=True, cross_platform=True,
         )
 

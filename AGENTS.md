@@ -22,7 +22,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `snap/` and `fastlane/` stay at the root because snapcraft and F-Droid expect them there |
 | Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
 | Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
-| Builds and platform coverage | `SConstruct`, `src/SConscript`, `buildsys/`, `.github/workflows/build.yml`, `vcpkg.json` |
+| Builds and platform coverage | `tools/dev_build.py`, `CMakeLists.txt`, `CMakePresets.json`, `cmake/`, `buildsys/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
 | Tests and replay usage | A domain's tests sit beside its code (`*Test.cpp`, `*Harness.cpp`); cross-domain tests, fixtures and the registry are in `test/`: [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
@@ -63,7 +63,8 @@ failures as successful games.
   `generator/`), `src/field/`, `src/ai/`, `src/engine/sim/`, `src/replay/`,
   `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
   simulation data files listed by `deploy/sim_version.py`, and the strict numeric
-  flags in `src/SConscript` (`-fno-fast-math -ffp-contract=off`) is the simulation
+  flags (`-fno-fast-math -ffp-contract=off`, `STRICT_CXXFLAGS` in
+  `buildsys/javascript.py`, applied by `CMakeLists.txt`) is the simulation
   path. A change that can alter what it computes is judged by the `sim-diff` verdict
   against its merge base and by cross-platform agreement in the full matrix: add
   `ci:full`, whose browser/native equivalence job requires Linux, Windows, macOS and
@@ -102,7 +103,7 @@ failures as successful games.
 
 | Tier | Command | Use it for |
 | --- | --- | --- |
-| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja on Linux) | editing, tests, checksum and golden traces, save/replay checks |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja) | editing, tests, checksum and golden traces, save/replay checks |
 | perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols) | the first measurement of a performance change |
 | perf-confirm | `python3 tools/dev_build.py perf=1 opt=3` | the number you quote in a performance PR |
 | release | `python3 tools/dev_build.py release=1` and the platform packaging workflow | shipping and package verification only |

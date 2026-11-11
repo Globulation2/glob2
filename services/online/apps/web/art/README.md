@@ -81,7 +81,7 @@ an abrupt reset. The two hero WebP posters are the video's opening frame.
 Rebuild with the native harness and FFmpeg on PATH:
 
 ```sh
-scons --build=build/native-tests release=1 server=0 menu-colony-harness
+python3 tools/dev_build.py --build=build/native-tests release=1 menu-colony-harness
 python3 tools/record_menu_colony.py --harness build/native-tests/test/MenuColonyHarness
 ```
 

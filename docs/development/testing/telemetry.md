@@ -5,7 +5,7 @@ Focused regression scenarios and commands. Start with the [native test guide](..
 ## Performance telemetry
 
 ```sh
-scons -j8 release=1 server=0 unit-tests
+python3 tools/dev_build.py -j8 release=1 unit-tests
 python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'
 ```
 

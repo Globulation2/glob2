@@ -1,9 +1,8 @@
 # The cross compilers of an Android or iOS build, included before project().
 #
 # buildsys/mobile_toolchain.py discovers the pinned NDK or Xcode compilers for
-# GLOB2_BUILD_ARGS (target=android|ios, arch=, android_sdk=, developer_dir=, ...)
-# exactly as buildsys/mobile_build.py does; their target and sysroot flags
-# become the languages' initial flags, so CMake's own compiler checks already
+# GLOB2_BUILD_ARGS (target=android|ios, arch=, android_sdk=, developer_dir=, ...);
+# their target and sysroot flags become the languages' initial flags, so CMake's own compiler checks already
 # build for the device. cmake/mobile.cmake builds the libraries and tests.
 find_program(GLOB2_TOOLCHAIN_PYTHON NAMES python3 python REQUIRED)
 if(Python3_EXECUTABLE)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write cmake/sources.cmake and cmake/tests.cmake from the SCons manifests.
+"""Write cmake/sources.cmake and cmake/tests.cmake from the shared manifests.
 
 The CMake build (CMakeLists.txt) reads its source lists, include
 directories, the QuickJS/openlibm strict-numeric contract, the test registry
@@ -30,7 +30,7 @@ _spec = importlib.util.spec_from_file_location('glob2_test_registry', ROOT / 'te
 registry = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(registry)
 
-# src/SConscript adds these native-only sources to CLIENT_SOURCES.
+# Native builds add these sources (the MCP server) to CLIENT_SOURCES.
 NATIVE_CLIENT_SOURCES = ('mcp/Tools.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp')
 ENTRY_POINT = 'app/Glob2.cpp'
 
@@ -52,7 +52,7 @@ def content():
     mobile_guarded = [path for path in mobile if javascript.guarded_numeric_source(path)]
     blocks = [
         _list('GLOB2_CLIENT_SOURCES', client,
-              'buildsys/sources.py CLIENT_SOURCES plus the native-only sources src/SConscript adds.'),
+              'buildsys/sources.py CLIENT_SOURCES plus the native-only sources.'),
         'set(GLOB2_CLIENT_ENTRY_POINT src/' + ENTRY_POINT + ')\n',
         _list('GLOB2_STRICT_NUMERIC_SOURCES', strict,
               'Client sources compiled with GLOB2_STRICT_CXXFLAGS (javascript.strict_numeric_source).'),
@@ -79,6 +79,7 @@ def content():
           for name, paths in sources.WEB_WORKER_SOURCES.items()],
         _list('GLOB2_GAG_DARWIN_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_DARWIN_SOURCES],
               'buildsys/sources.py GAG_DARWIN_SOURCES.'),
+        'set(GLOB2_USL_RUNNER_SOURCE ' + sources.USL_RUNNER_SOURCE + ')\n',
         _list('GLOB2_USL_SOURCES', ['libs/usl/src/' + name for name in sources.USL_SOURCES],
               'buildsys/sources.py USL_SOURCES.'),
         _list('GLOB2_RELAY_SOURCES', ['src/' + name for name in sources.RELAY_SOURCES],
@@ -143,7 +144,7 @@ def _groups(name, entries, comment):
 
 
 def test_binaries():
-    """test/SConscript's test binaries: (key, target, compiled entries, production entries,
+    """The native test binaries: (key, target, compiled entries, production entries,
     module libraries, every client object?, aliases that build it)."""
     return (
         ('ENGINE_TESTS', 'glob2-engine-tests', registry.SUPPORT + registry.MAC_SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS,
@@ -194,7 +195,7 @@ def tests_content():
               if name != ENTRY_POINT and name.endswith('.cpp')}
     binaries = test_binaries()
     blocks = ['set(GLOB2_TEST_BINARIES ' + ' '.join(key for key, *_ in binaries) + ')\n']
-    # test/SConscript production_objects: plain client sources reuse the client
+    # Production sources: plain client sources reuse the client
     # object; the rest compile again with the test flags, once for every binary
     # (their 'unit-' objects are shared).
     compiled = {}
@@ -232,7 +233,7 @@ def tests_content():
     blocks.append(_list('GLOB2_TEST_PROGRAM_SIDECARS',
                         [target for target, source, *_ in registry.PROGRAMS
                          if source.endswith('TranslationPreviewHarness.cpp')],
-                        'Programs that get a <binary>.provenance.json sidecar, as in test/SConscript.'))
+                        'Programs that get a <binary>.provenance.json sidecar.'))
     blocks.append(_list('GLOB2_TEST_LEGACY_ALIASES',
                         [f'{old}={new}' for old, new in registry.LEGACY_ALIASES.items()],
                         'test/tests.py LEGACY_ALIASES as alias=binary.'))

@@ -97,7 +97,7 @@ def main():
         parser.error('Choose a new output directory; existing evidence is never overwritten')
     args.output.mkdir(parents=True)
     sources = args.output / 'source-files'
-    for relative in ('src/SConscript', 'tools/skins/rig_benchmark.cpp', 'tools/skins/game_preview.cpp', 'tools/skins/benchmark_rigs.py'):
+    for relative in ('buildsys/harness_programs.py', 'tools/skins/rig_benchmark.cpp', 'tools/skins/game_preview.cpp', 'tools/skins/benchmark_rigs.py'):
         destination = sources / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative, destination)

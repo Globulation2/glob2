@@ -2479,7 +2479,7 @@ set(GLOB2_TEST_PROGRAM_torus-render-benchmark_ALIAS torus-render-benchmark)
 set(GLOB2_TEST_PROGRAM_torus-render-benchmark_GROUP tools)
 set(GLOB2_TEST_PROGRAM_torus-render-benchmark_REQUIRE )
 
-# Programs that get a <binary>.provenance.json sidecar, as in test/SConscript.
+# Programs that get a <binary>.provenance.json sidecar.
 set(GLOB2_TEST_PROGRAM_SIDECARS
     TranslationPreviewHarness
 )

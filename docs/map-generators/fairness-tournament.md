@@ -17,8 +17,8 @@
 Build the optimized client and the study tool first:
 
 ```bash
-scons release=1 -j3
-scons release=1 -j3 map-generator-study
+python3 tools/dev_build.py release=1 -j3
+python3 tools/dev_build.py release=1 -j3 map-generator-study
 ```
 
 Then run a preset:

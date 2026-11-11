@@ -180,7 +180,7 @@ host schedules frames itself and records neither.
 ## Verifying
 
 ```sh
-scons -j3 CCACHE=1 release=1 server=0 tests
+python3 tools/dev_build.py -j3 release=1 tests
 python3 test/run_tests.py --binary unit --filter 'TurnTelemetry/*' --filter 'TurnHarness/*'
 python3 test/run_tests.py --binary engine --filter 'TurnEngineHarness/*'
 ```

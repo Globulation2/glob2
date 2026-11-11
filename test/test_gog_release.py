@@ -215,7 +215,7 @@ class GOGReleaseTests(unittest.TestCase):
 
     def test_public_tag_source_diff_blocks_release(self):
         tag = "v0.9.5.0"
-        with patch("gog_release.command", side_effect=["a" * 40, "b" * 40, "SConstruct"]), \
+        with patch("gog_release.command", side_effect=["a" * 40, "b" * 40, "CMakeLists.txt"]), \
              patch("gog_release.subprocess.run"), patch("gog_release.version", return_value=tag[1:]):
             with self.assertRaisesRegex(ValueError, "differs from public tag"):
                 preflight(tag, f"refs/gog-upstream/{tag}")
@@ -426,7 +426,7 @@ class ReleasedPayloadTests(unittest.TestCase):
     def test_workflow_released_jobs_have_no_build_or_upload_path(self):
         workflow=(Path(__file__).resolve().parents[1]/'.github/workflows/gog-staging.yml').read_text()
         released=workflow[workflow.index('  released-windows:'):]
-        self.assertNotIn('scons ',released)
+        self.assertNotIn('tools/dev_build.py',released)
         self.assertNotIn('GOG_PASSWORD',released)
         self.assertIn('!inputs.reuse_released_payload &&',workflow)
         self.assertIn('"$REUSE_RELEASED" == true && "$RELEASE_MODE" != build',workflow)

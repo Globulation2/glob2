@@ -11,8 +11,8 @@ rewrites their install names. Build with `wss=0` when producing a TCP-only
 client without OpenSSL or Boost.Beast.
 
 The release bundle includes campaigns, maps, data, scripts, the project license
-and third-party asset attribution. Its Info.plist version is set from the SCons
-package version before the bundle is signed.
+and third-party asset attribution. Its Info.plist version is set from `PACKAGE_VERSION`
+in `buildsys/build_layout.py` before the bundle is signed.
 
 Release `bundle` and `package` builds require CMake and Homebrew codec dependencies
 for the pinned PNG/JPEG/WebP SDL_image build. Assets are exported to smaller verified

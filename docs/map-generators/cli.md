@@ -1,7 +1,7 @@
 # Map generation, PNG previews, and JSON reports
 
 The normal **client executable** includes map tools. Build with
-`scons release=1 server=0`, then run the examples from the repository root.
+`python3 tools/dev_build.py release=1`, then run the examples from the repository root.
 Set `GLOB2_BIN` to the executable for your platform (for example,
 `export GLOB2_BIN="$PWD/build/darwin/client/release/src/glob2"` on macOS,
 `build/linux/client/release/src/glob2` on Linux, or

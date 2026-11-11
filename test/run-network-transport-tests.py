@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run shared framing and native loopback tests after `scons release=1 transport-test`."""
+"""Run shared framing and native loopback tests after `python3 tools/dev_build.py release=1 transport-test`."""
 from pathlib import Path
 import os
 import platform

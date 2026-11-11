@@ -638,13 +638,12 @@ def packaging_jobs(jobs=None):
 
 def encoding_executor(jobs):
     # Pillow's WebP encoder and our RGBA64 reference decoder hold the GIL.
-    # Spawn avoids inheriting SCons threads/leases and works on every host OS.
+    # Spawn avoids inheriting the caller's threads/leases and works on every host OS.
     if jobs == 1:
         return ThreadPoolExecutor(max_workers=1)
     # Spawned workers start from the parent's current sys.path and unpickle
-    # work by module name (tools.package_assets.*). SCons restores sys.path
-    # after reading each SConscript, dropping the repository root that
-    # buildsys/runtime_assets.py added, so put it back before any worker starts.
+    # work by module name (tools.package_assets.*): make sure the repository
+    # root is on it before any worker starts.
     if __name__ != "__main__" and str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
     # Each worker holds one machine-wide CPU token for its lifetime (buildsys/jobserver.py).

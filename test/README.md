@@ -17,13 +17,13 @@ reaches: a map change relinks a few hundred objects instead of the whole client.
 `glob2-map-tests` (`map-tests` and `sim-tests` build one alone), because the module
 binaries hold cases moved out of those two.
 
-All are listed in `test/tests.py`, built by `test/SConscript` and land in
+All are listed in `test/tests.py`, built by `CMakeLists.txt` (through the generated `cmake/tests.cmake`) and land in
 `build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
 and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
 programs that remain come from the `PROGRAMS` table in the same file
 (`MapReportHarness`, `MenuColonyHarness`, and the `glob2-tools` group) or from
-`src/SConscript` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the transport
-programs and the map generator study tools). The per-harness
+`buildsys/harness_programs.py` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the
+transport programs and the map generator study tools). The per-harness
 aliases documented in the domain verification guides are listed in `LEGACY_ALIASES`; they build
 the binary that now contains the test.
 

@@ -24,7 +24,7 @@ The code lives in `src/relay/`. The turn core it hosts lives in `src/net/turn/`.
 ## Building and running
 
 ```sh
-scons role=relay release=1 relay      # glob2-relay and glob2-relay-tests
+python3 tools/dev_build.py role=relay release=1 relay      # glob2-relay and glob2-relay-tests
 build/<toolchain>/relay/release/src/glob2-relay
 ```
 
@@ -320,7 +320,7 @@ All metric names start with `glob2_relay_`.
 ## Tests
 
 ```sh
-scons role=relay release=1 relay
+python3 tools/dev_build.py role=relay release=1 relay
 build/<toolchain>/relay/release/src/glob2-relay-tests
 python3 -m unittest discover -s test/relay_service -v
 ```

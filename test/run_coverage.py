@@ -229,7 +229,7 @@ def main():
     flags = instrumentation_flags(args.optimization, args.debug_info)
     # The plain debug tier (no dev_fast) with instrumented C++; the QuickJS and
     # openlibm C sources stay uninstrumented, as they always have been.
-    command = [sys.executable, str(ROOT / 'tools/dev_build.py'), '--generator=cmake', f'-j{args.jobs}',
+    command = [sys.executable, str(ROOT / 'tools/dev_build.py'), f'-j{args.jobs}',
                'dev_fast=0', 'linker=default', f'--build={build}', 'tests',
                f'CC={args.cc}', f'CXX={args.cxx}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']

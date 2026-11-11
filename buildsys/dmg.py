@@ -19,14 +19,3 @@ def create_dmg(target, source, env=None):
                         '-volname', image.stem, '-format', 'UDZO', str(image)], check=True)
 
 
-def create_dmg_message(target, source, env):
-    return 'Creating DMG package'
-
-
-def generate(env):
-    print('Loading dmg tool...')
-    env.Append(BUILDERS={'Dmg': env.Builder(action=env.Action(create_dmg, create_dmg_message))})
-
-
-def exists(env):
-    return True

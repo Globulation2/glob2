@@ -247,7 +247,7 @@ fallbacks outside the documented shared-vocabulary allowlist.
 Run from the repository root on a machine with the native dependencies:
 
 ```sh
-scons -j8 release=1 engine-tests build/src/glob2
+python3 tools/dev_build.py -j8 release=1 engine-tests glob2
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 python3 test/run_tests.py --filter 'GameSpeed/*'
 python3 content/data/check_translations.py --strict

@@ -1,8 +1,7 @@
 """The macOS application bundle: Glob2.app with its assets, libraries and dSYM.
 
-SConstruct's Bundle builder and the CMake build's bundle target
-(buildsys/cmake_generate.py bundle) both run createBundle; neither path needs
-the other's build system.
+The CMake build's bundle target runs createBundle through
+buildsys/cmake_generate.py bundle, with the environment bundle_environment builds.
 """
 import os
 import sys
@@ -12,7 +11,7 @@ from pathlib import Path
 sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 from moltenvk import install_macos
-from apple_localizations import copy_localizations, localization_files
+from apple_localizations import copy_localizations
 
 # Bundle inputs beside the build directory's glob2, relative to the checkout.
 RESOURCE_DIRECTORIES = ["data", "maps", "campaigns", "scripts",
@@ -101,43 +100,9 @@ def createBundle(target, source, env) :
     run("codesign --force --sign - %s" % bundleDir )
 
 
-def createBundleMessage(target, source, env) :
-    out ="Running Bundle builder\n"
-    for a in target : out+= "Target:"+ str(a) + "\n"
-    for a in source : out+= "Source:"+ str(a) + "\n"
-    return out
-
-def bundleEmitter(target, source, env):
-    target = env.Dir(env['BUNDLE_NAME']+".app")
-    source = list(env.Flatten(env['BUNDLE_BINARIES']))
-    source += [env.File(str(resource)) for resource in localization_files(env.get('BUNDLE_RESOURCEDIRS', []))]
-    source += [env.File(env['BUNDLE_PLIST']), env.File(env['BUNDLE_ICON'])]
-
-    return target, source
-
-def generate(env) :
-    print("Loading Bundle tool")
-    import SCons.Builder
-    import SCons.Action
-    from SCons.Script import GetOption
-    Builder = SCons.Builder.Builder
-    Action = SCons.Action.Action
-    env['BUNDLE_JOBS'] = GetOption('num_jobs')
-    bundleBuilder = Builder(
-        action = Action( createBundle, createBundleMessage ),
-        emitter = bundleEmitter,
-    )
-    env['BUNDLE_RESOURCEDIRS'] = []
-    env['BUNDLE_PLUGINS'] = []
-    env.Append( BUILDERS={'Bundle' : bundleBuilder } )
-
-def exists(env) :
-    return True
-
-
 def bundle_environment(builddir, binary, lean_image_prefix, recording_prefix, version, jobs,
                        sprite_packing='auto', h264=True):
-    """The SConstruct environment keys createBundle reads, for a build directory."""
+    """The settings createBundle reads, for a build directory."""
     builddir = str(builddir)
     return {'BUNDLE_NAME': builddir + '/Glob2', 'BUNDLE_SYMBOL_DIR': builddir + '/symbols',
             'BUNDLE_BINARIES': [str(binary)], 'BUNDLE_RESOURCEDIRS': list(RESOURCE_DIRECTORIES),

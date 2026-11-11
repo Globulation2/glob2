@@ -14,9 +14,8 @@ from tools import terrain_tileset
 
 class EncodingExecutorTests(unittest.TestCase):
     def test_spawned_workers_import_tools_after_the_repository_leaves_sys_path(self):
-        # SCons restores sys.path after each SConscript, so by build time the
-        # repository root that buildsys/runtime_assets.py inserted is gone while
-        # tools.package_assets stays imported.
+        # A caller may drop the repository root from sys.path after importing
+        # tools.package_assets; spawned workers must still find it.
         root = package_assets.ROOT.resolve()
         saved = list(sys.path)
         sys.path[:] = [p for p in sys.path if Path(p or os.getcwd()).resolve() != root]

@@ -12,7 +12,7 @@ original/AI/material/mask folders into the PNG **source pack** in
 byte-for-byte. These PNGs are retained for provenance and editing; the client
 loads WebP artwork.
 
-SCons and release packagers use `tools/package_assets.py` for runtime encoding,
+The build and release packagers use `tools/package_assets.py` for runtime encoding,
 including HD layers, all atlas mips and the rewritten `frames.txt` index. Release
 exports select the smaller of lossless WebP Q75/method 4 and lossy WebP Q90/method
 6. Alpha and geometry stay exact; lossy RGB can differ. Lossless exports preserve

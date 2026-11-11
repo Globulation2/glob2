@@ -184,15 +184,15 @@ coverage reporting, as described in the [development guide](../development/headl
 For verification, build unit tests; an external FFmpeg is used only for independent decoding:
 
 ```sh
-scons release=1 server=0 unit-tests
+python3 tools/dev_build.py release=1 unit-tests
 GLOB2_TEST_FFMPEG=ffmpeg build/darwin/client/release/test/glob2-unit-tests -ts=GameplayRecording
 python3 test/test_recording_tool.py
-scons release=1 server=0 engine-tests
+python3 tools/dev_build.py release=1 engine-tests
 GLOB2_TEST_FFMPEG=ffmpeg build/darwin/client/release/test/glob2-engine-tests -ts=GameplayRecording.Integration
 GLOB2_TEST_FFMPEG=ffmpeg GLOB2_TEST_FFPROBE=ffprobe \
   GLOB2_RECORDING_FIXTURE=artifacts/path/to/recording-sections.mp4 \
   python3 test/test_recording_tool.py
-scons release=1 server=0 recording-multiplayer-test
+python3 tools/dev_build.py release=1 recording-multiplayer-test
 python3 test/run_recording_multiplayer.py \
   build/darwin/client/release/test/recording-multiplayer-peer \
   --output artifacts/multiplayer-recording
@@ -219,7 +219,7 @@ rendering, camera movement, audio, runtime, dimensions and warmup identical:
 
 ```sh
 node platforms/web/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-benchmark
-GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
+GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py release=1 software-render-benchmark
 PROFILE_SAVE=content/games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
   PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
   build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080

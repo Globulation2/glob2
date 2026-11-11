@@ -57,33 +57,16 @@ class DevelopmentBuildTests(unittest.TestCase):
             with self.subTest(args=args), self.assertRaises(ValueError):
                 build_identity(args, host='linux')
 
-    def test_dependency_configuration_skips_query_only_targets(self):
-        script = types.ModuleType('SCons.Script')
-        script.GetOption = lambda name: False
-        script.COMMAND_LINE_TARGETS = []
-        package = types.ModuleType('SCons')
-        package.Script = script
-        for targets, flags, expected in [([], (), True), (['compile_commands.json'], (), False),
-                                       (['custom/compile_commands.json'], (), False),
-                                       (['compile_commands.json', 'glob2'], (), True),
-                                       ([], ('clean',), False), ([], ('no_exec',), False),
-                                       ([], ('help',), False)]:
-            with self.subTest(targets=targets, flags=flags), patch.dict(sys.modules, {'SCons': package, 'SCons.Script': script}), patch.object(script, 'COMMAND_LINE_TARGETS', targets), patch.object(script, 'GetOption', side_effect=lambda name: name in flags):
-                self.assertEqual(dev_build.can_build_dependencies(), expected)
-
-    def test_development_command_preserves_overrides(self):
+    def test_development_defaults_preserve_overrides(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
-        result = command.command(['target=web', 'linker=lld', '--build=custom', 'web-tests'])
-        self.assertIn('web_variant=threaded', result)
-        result = command.command(['dev_fast=0', '-j3', 'linker=default', 'CC=clang', 'engine-tests'])
-        self.assertNotIn('dev_fast=1', result)
-        self.assertNotIn('linker=auto', result)
-        self.assertEqual(result.count('-j3'), 1)
-        result = command.command(['perf=1', 'opt=3'])
-        self.assertNotIn('dev_fast=1', result)
-        self.assertNotIn('linker=auto', result)
+        self.assertEqual(command.development_defaults({}), ['dev_fast=1', 'linker=auto'])
+        self.assertIn('web_variant=threaded', command.development_defaults({'target': 'web', 'linker': 'lld'}))
+        self.assertEqual(command.development_defaults({'dev_fast': '0', 'linker': 'default'}), [])
+        for options in ({'perf': '1', 'opt': '3'}, {'release': '1'}, {'profile': '1'}, {'role': 'relay'},
+                        {'target': 'android'}, {'target': 'web', 'release': '1'}):
+            self.assertEqual(command.development_defaults(options), [], options)
 
     def test_cmake_command_targets_and_options(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
@@ -107,7 +90,7 @@ class DevelopmentBuildTests(unittest.TestCase):
         relay = command.cmake_commands(['role=relay', 'release=1', 'relay'])
         self.assertEqual(relay[-1][2], str(ROOT / 'build/linux/relay/release'))
         self.assertEqual(command.compiler_environment(['CC=clang', 'CXX=clang++'], {})['CXX'], 'clang++')
-        # `install` builds glob2 as a shipping build, then installs it where SCons would.
+        # `install` builds glob2 as a shipping build, then installs it.
         staged = command.cmake_commands(['release=1', 'lean_images=1', 'BINDIR=/stage/usr/bin',
                                          'INSTALLDIR=/stage/usr/share', 'DATADIR=/usr/share', 'install'])
         for setting in ('-DGLOB2_SHIPPING=ON', '-DGLOB2_BINDIR=/stage/usr/bin',
@@ -120,7 +103,7 @@ class DevelopmentBuildTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 command.cmake_commands([unsupported])
 
-    def test_default_generator_is_cmake_only_for_requests_it_builds(self):
+    def test_tools_and_host_checks(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
@@ -131,22 +114,18 @@ class DevelopmentBuildTests(unittest.TestCase):
                                  return_value=subprocess.CompletedProcess([], 0, stdout=version)))
         system, which, run = host()
         with system, which, run:
-            for arguments in ([], ['.'], ['engine-tests', 'unit-tests', '-j12', '-k'], ['perf=1'],
-                              ['perf=1', 'opt=3', 'engine-tests'], ['release=1', 'CXX=g++-13'],
-                              ['compile_profile=core', 'engine-tests'], ['--build=build/x'], ['-n'],
-                              ['role=relay', 'release=1', 'relay'],
-                              ['build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2'],
-                              ['target=web', 'release=1', 'web-package'], ['target=android', 'arch=x86_64']):
-                self.assertIsNone(command.scons_reason(arguments), arguments)
-            # Other hosts' toolchains and the options the CMake build does not cover stay on SCons.
-            for arguments in (['mingw=1', 'release=1'],
-                              ['recording_codec=vp9'], ['--debug=explain']):
-                self.assertIsNotNone(command.scons_reason(arguments), arguments)
+            for arguments in ([], ['.'], ['perf=1', 'opt=3', 'engine-tests'], ['role=relay', 'release=1', 'relay'],
+                              ['recording_codec=vp9', 'release=1'], ['target=web', 'release=1', 'web-package'],
+                              ['target=android', 'arch=x86_64']):
+                command.check_tools(arguments)
+            # A native build for another host's toolchain cannot run here.
+            with self.assertRaisesRegex(ValueError, 'mingw'):
+                command.check_tools(['mingw=1', 'release=1'])
         for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),
-                                    ({'which': None}, 'not installed'), ({'system': 'FreeBSD'}, 'macOS')):
+                                    ({'which': None}, 'not installed')):
             system, which, run = host(**overrides)
-            with system, which, run:
-                self.assertIn(expected, command.scons_reason([]))
+            with system, which, run, self.assertRaisesRegex(ValueError, expected):
+                command.check_tools([])
 
     def test_shared_install_reuses_content_and_relocates_metadata(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}):

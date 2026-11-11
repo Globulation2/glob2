@@ -8,7 +8,7 @@ create databases. The test creates and drops its own database, generates
 signing keys, runs the API on loopback behind a local TLS proxy (the client
 only speaks wss:// and https:// to non-loopback names, and a verified
 certificate for `localhost` exercises the real TLS path), and drives the
-`platform-client-probe` harness built by `scons release=1 transport-test`.
+`platform-client-probe` harness built by `python3 tools/dev_build.py release=1 transport-test`.
 
     GLOB2_PLATFORM_DIR=/path/to/platform \\
     GLOB2_PLATFORM_DATABASE_URL=postgres://glob2:glob2@127.0.0.1:55432/postgres \\

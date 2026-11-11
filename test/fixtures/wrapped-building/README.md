@@ -19,10 +19,10 @@ the checked-in fixture to a temporary raw file — matching what CI does.
 In a checkout of PR #165, from the repository root:
 
 ```sh
-scons -j4 release=1 server=0 building-footprint-test
+python3 tools/dev_build.py -j4 release=1 building-footprint-test
 gunzip -c test/fixtures/wrapped-building/reproducer.game.gz > /tmp/wrapped-building-reproducer.game
-./build/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
-./build/src/BuildingFootprintHarness
+./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
+./build/linux/client/release/src/BuildingFootprintHarness
 ```
 
 Both commands must exit 0. The first consumes the supplied saved state; the
@@ -36,9 +36,9 @@ Use a disposable worktree so the PR checkout stays unchanged:
 git worktree add --detach ../glob2-pr165-old-validator HEAD
 cd ../glob2-pr165-old-validator
 git apply test/fixtures/wrapped-building/restore-old-validator.patch
-scons -j4 release=1 server=0 building-footprint-test
+python3 tools/dev_build.py -j4 release=1 building-footprint-test
 gunzip -c test/fixtures/wrapped-building/reproducer.game.gz > /tmp/wrapped-building-reproducer.game
-./build/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
+./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
 ```
 
 Expected: exit 1 with `FAIL: integrity must preserve exactly the wrapped building footprint`. The test patch restores only the
@@ -49,8 +49,8 @@ Restore the fix and re-run the same saved state:
 
 ```sh
 git apply -R test/fixtures/wrapped-building/restore-old-validator.patch
-scons -j4 release=1 server=0 building-footprint-test
-./build/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
+python3 tools/dev_build.py -j4 release=1 building-footprint-test
+./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
 ```
 
 Expected: exit 0. These before/after commands were verified locally.
@@ -62,7 +62,7 @@ or CI.
 The source setup is in `test/BuildingFootprintHarness.cpp`. To generate another copy:
 
 ```sh
-./build/src/BuildingFootprintHarness --write-fixture /tmp/pr165-reproducer.game
+./build/linux/client/release/src/BuildingFootprintHarness --write-fixture /tmp/pr165-reproducer.game
 gzip -kn6 /tmp/pr165-reproducer.game   # matches the repository's gzip-by-default map/save format
 ```
 

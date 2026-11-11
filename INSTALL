@@ -4,13 +4,13 @@ For packaged downloads, use the [public download page](https://glob2.online/) an
 
 ## Build from source
 
-Follow [Build and run](docs/development/building.md) for current macOS, Linux and Windows prerequisites, pinned SDL3 setup, build commands and executable paths. Run commands from the repository root. Use `python3 tools/dev_build.py` for routine development and `scons release=1` for an optimized build.
+Follow [Build and run](docs/development/building.md) for current macOS, Linux and Windows prerequisites, pinned SDL3 setup, build commands and executable paths. Run commands from the repository root. Use `python3 tools/dev_build.py` for routine development and `python3 tools/dev_build.py release=1` for an optimized build.
 
 ## Install a Linux source build
 
-After setting up the build dependencies, `scons release=1 install` installs the executable and runtime assets. The default destinations are `/usr/local/bin/glob2` and `/usr/local/share/glob2`; writing there requires appropriate filesystem permissions. Follow [the installation contract](docs/development/building.md#install-a-linux-source-build) for a user-writable destination and runtime data-path options.
+After setting up the build dependencies, `python3 tools/dev_build.py release=1 install` installs the executable and runtime assets. The default destinations are `/usr/local/bin/glob2` and `/usr/local/share/glob2`; writing there requires appropriate filesystem permissions. Follow [the installation contract](docs/development/building.md#install-a-linux-source-build) for a user-writable destination and runtime data-path options.
 
-Use the platform packaging guide for [macOS and Windows](docs/releases/desktop.md), the [browser](docs/releases/browser.md), or [mobile](docs/mobile/README.md). Clean the selected build configuration with `scons -c`; cleaning build output is separate from uninstalling installed files.
+Use the platform packaging guide for [macOS and Windows](docs/releases/desktop.md), the [browser](docs/releases/browser.md), or [mobile](docs/mobile/README.md). Clean a build configuration by deleting its build directory (for example `build/linux/client/release`); cleaning build output is separate from uninstalling installed files.
 
 If this source archive does not include `docs/`, start from the maintained
 [documentation index](https://github.com/Globulation2/glob2/blob/master/docs/README.md)

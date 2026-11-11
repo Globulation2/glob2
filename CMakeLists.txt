@@ -1,11 +1,11 @@
-# CMake + Ninja build of the native Linux, macOS and Windows (MSYS2 MinGW) client.
+# The CMake + Ninja build of Globulation 2: the native Linux, macOS and Windows
+# (MSYS2 MinGW) client and relay, and through cmake/mobile.cmake and
+# cmake/web.cmake the Android, iOS and browser builds.
 #
-# GLOB2_BUILD_ARGS takes the same key=value build arguments SCons does
-# (dev_fast=1, perf=1 opt=3, release=1, ...); buildsys/build_layout.py resolves
-# them into the build identity, so both build systems agree on the tier, its
-# flags and its default directory. Each tier reproduces the SCons build object
-# for object, compared by tools/compare_build_systems.py; see "CMake + Ninja
-# build" in docs/development/build-options.md.
+# GLOB2_BUILD_ARGS takes key=value build arguments (dev_fast=1, perf=1 opt=3,
+# release=1, target=web, ...); buildsys/build_layout.py resolves them into the
+# build identity: the tier, its flags and its default directory. See "CMake +
+# Ninja build" in docs/development/build-options.md.
 #
 #   cmake --preset dev && cmake --build --preset dev
 #   cmake --preset perf && cmake --build --preset perf
@@ -14,11 +14,11 @@
 # Source lists come from cmake/sources.cmake and cmake/tests.cmake, generated
 # from buildsys/sources.py, test/tests.py and buildsys/harness_programs.py by
 # buildsys/export_cmake_sources.py. Generated headers, runtime assets and test
-# provenance come from the same Python code SCons uses, through
+# provenance come from the Python generators in buildsys/, through
 # buildsys/cmake_generate.py.
 cmake_minimum_required(VERSION 3.25)
 set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
-    "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
+    "key=value build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
 # target=android|ios cross-compiles with the pinned mobile toolchain (cmake/mobile.cmake),
 # target=web with the pinned Emscripten SDK (cmake/web.cmake).
 set(GLOB2_MOBILE OFF)
@@ -31,7 +31,7 @@ endif()
 project(glob2 LANGUAGES C CXX)
 
 # GLOB2_PLATFORM: linux, or mingw for Windows builds with MSYS2's MinGW-w64 GCC
-# (SConstruct's mingw=1, which the build arguments gain automatically).
+# (mingw=1, which the build arguments gain automatically).
 if(GLOB2_MOBILE OR GLOB2_WEB)
   set(GLOB2_PLATFORM cross)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
@@ -43,7 +43,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND MINGW)
 else()
   message(FATAL_ERROR "The CMake build covers native Linux, macOS and MSYS2 MinGW builds, "
                       "and Android and iOS through GLOB2_BUILD_ARGS target=android|ios; "
-                      "use SCons (tools/dev_build.py) for every other target.")
+                      "other hosts are not supported.")
 endif()
 set(windows OFF)
 set(darwin OFF)
@@ -59,7 +59,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 endif()
 if(CMAKE_BUILD_TYPE)
   message(FATAL_ERROR "Choose the tier with GLOB2_BUILD_ARGS (for example perf=1), not CMAKE_BUILD_TYPE, "
-                      "whose flags would differ from the SCons tiers")
+                      "whose flags would differ from the tiers'")
 endif()
 
 find_package(Python3 3.8 REQUIRED COMPONENTS Interpreter)
@@ -77,7 +77,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
 
 # Reconfigures when a provisioned dependency disappears: shared-store entries
 # outlive no build directory (a cached build tree can outlast its store), so a
-# missing archive must provision it again, as every SCons run did.
+# missing archive must provision it again.
 function(glob2_configure_depends)
   foreach(path IN LISTS ARGN)
     if(IS_ABSOLUTE "${path}")
@@ -97,7 +97,7 @@ function(glob2_bridge output)
   set(${output} "${result}" PARENT_SCOPE)
 endfunction()
 
-# ---- Build identity: SCons' key=value arguments, resolved by buildsys/build_layout.py ----
+# ---- Build identity: key=value arguments, resolved by buildsys/build_layout.py ----
 separate_arguments(build_args UNIX_COMMAND "${GLOB2_BUILD_ARGS}")
 if(windows AND NOT build_args MATCHES "(^|;)mingw=")
   list(APPEND build_args mingw=1)
@@ -109,7 +109,7 @@ endforeach()
 glob2_bridge(configuration configure --builddir "${GLOB2_OUT}" ${build_arg_options})
 string(JSON identity GET "${configuration}" identity)
 string(JSON GLOB2_DEFAULT_DIRECTORY GET "${configuration}" directory)
-# opengl=0 (SConstruct's option): software rendering only, without probing for OpenGL.
+# opengl=0: software rendering only, without probing for OpenGL.
 string(JSON opengl_argument ERROR_VARIABLE unset GET "${configuration}" arguments opengl)
 set(GLOB2_OPENGL ON)
 if(NOT unset AND opengl_argument MATCHES "^(0|false|no|off)$")
@@ -132,16 +132,10 @@ glob2_identity(GLOB2_COMPILE_PROFILE compile_profile full)
 glob2_identity(GLOB2_IDENTITY_LINKER linker default)
 glob2_identity(GLOB2_LEAN_IMAGES lean_images OFF)
 glob2_identity(GLOB2_SIZE_OPTIMIZATION size_optimization "")
-foreach(key recording_codec)
-  glob2_identity(value ${key} "")
-  if(value)
-    message(FATAL_ERROR "The CMake build does not support ${key} yet (GLOB2_BUILD_ARGS='${GLOB2_BUILD_ARGS}')")
-  endif()
-endforeach()
-if(GLOB2_MODE STREQUAL "profile")
-  message(FATAL_ERROR "The CMake build does not support profile=1")
-endif()
-# role=relay builds glob2-relay and its tests only (src/SConscript's relay branch).
+# recording_codec=vp9|av1: WebM recording with the client's Opus (native Linux;
+# buildsys/build_layout.py rejects it elsewhere).
+glob2_identity(GLOB2_RECORDING_CODEC recording_codec h264)
+# role=relay builds glob2-relay and its tests only.
 set(relay OFF)
 if(GLOB2_ROLE STREQUAL "relay")
   set(relay ON)
@@ -153,7 +147,7 @@ if(NOT binary_directory STREQUAL GLOB2_DEFAULT_DIRECTORY)
   message(STATUS "Building '${GLOB2_BUILD_ARGS}' in ${GLOB2_OUT}; its default directory is ${GLOB2_DEFAULT_DIRECTORY}")
 endif()
 
-# Splits pkg-config output the way SCons ParseConfig does: -I to the include
+# Splits pkg-config output: -I to the include
 # path, -D to the definitions, linker words to the link line, the rest to the
 # compile options.
 function(glob2_pkg_config prefix)
@@ -186,8 +180,8 @@ function(glob2_pkg_config prefix)
   endforeach()
 endfunction()
 
-# ---- Compiler cache: the same managed ccache store and settings as SCons ----
-option(GLOB2_CCACHE "Compile through ccache (the managed SCons cache) when it is installed" ON)
+# ---- Compiler cache: the managed ccache store (buildsys/ccache.py) ----
+option(GLOB2_CCACHE "Compile through ccache (the managed cache) when it is installed" ON)
 if(GLOB2_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
   find_program(GLOB2_CCACHE_PROGRAM ccache)
   if(GLOB2_CCACHE_PROGRAM)
@@ -199,7 +193,7 @@ if(GLOB2_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
     endif()
     # CCACHE_BASEDIR shares hits between checkouts but rewrites CMake's absolute
     # source paths relative to the build directory, which changes __FILE__;
-    # parity builds (tools/compare_build_systems.py) set it empty to keep them.
+    # set it empty to keep them.
     set(GLOB2_CCACHE_BASEDIR "${GLOB2_ROOT}" CACHE STRING "CCACHE_BASEDIR for compiles (empty: none)")
     if(GLOB2_CCACHE_BASEDIR)
       set(basedir "CCACHE_BASEDIR=${GLOB2_CCACHE_BASEDIR}")
@@ -214,7 +208,7 @@ if(GLOB2_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
 endif()
 
 # A generator expression selecting the objects of `target` compiled from
-# `paths` (repository-relative), as SCons reuses client objects by source.
+# `paths` (repository-relative): client objects reused by source.
 function(glob2_objects_of output target)
   set(pattern)
   if(NOT ARGN)
@@ -241,7 +235,7 @@ if(GLOB2_WEB)
   return()
 endif()
 
-# ---- Dependencies, located as SConstruct does ----
+# ---- Dependencies ----
 set(GLOB2_SDL3_PREFIX "$ENV{GLOB2_SDL3_PREFIX}" CACHE PATH "Isolated SDL3 dependency prefix (GLOB2_SDL3_PREFIX)")
 set(sdl_includes)
 set(sdl_link_options)
@@ -263,13 +257,13 @@ if(GLOB2_SDL3_PREFIX)
     set(sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
   endif()
 endif()
-# The linker spelling of SConstruct's RPATH entries: ld64 takes no -rpath=.
+# The linker spelling of a build-prefix RPATH entry: ld64 takes no -rpath=.
 if(darwin)
   set(rpath_flag "-Wl,-rpath,")
 else()
   set(rpath_flag "-Wl,-rpath=")
 endif()
-# macOS's other libraries come from Homebrew, else MacPorts, as in SConstruct.
+# macOS's other libraries come from Homebrew, else MacPorts.
 set(host_includes)
 set(host_directories)
 if(darwin)
@@ -291,12 +285,12 @@ if(darwin)
     set(host_directories /opt/local/lib)
   endif()
 endif()
-# What `scons install` changes for the binaries it installs: no build-prefix rpath
+# What installed binaries need: no build-prefix rpath
 # and no debug-prefix map. Packaging configures with it; `cmake --install` needs it
 # whenever GLOB2_SDL3_PREFIX is set.
 option(GLOB2_SHIPPING "Build binaries for installation: no build-prefix rpath or debug-path mapping" OFF)
 # macOS app bundles (the bundle and package targets) link the pinned PNG/JPEG
-# SDL_image mac_image_dependency builds, as SConstruct does when asked for them;
+# SDL_image mac_image_dependency builds, only when asked for them;
 # tools/dev_build.py turns this on for those targets. Like installs, they ship.
 option(GLOB2_MAC_BUNDLE "Build the macOS release for the bundle and package targets" OFF)
 # Removes the build prefix's rpath from a link option list in shipping builds.
@@ -307,7 +301,7 @@ macro(glob2_drop_build_rpath list_name)
 endmacro()
 
 # The pinned h264 recording libraries: GLOB2_RECORDING_PREFIX, the prefix beside
-# GLOB2_SDL3_PREFIX, or a shared-store build (built on first use, as SCons does).
+# GLOB2_SDL3_PREFIX, or a shared-store build (built on first use).
 # The relay links no media library and only needs SDL's headers for libgag's types.
 set(recording_includes)
 set(recording_libraries)
@@ -324,8 +318,17 @@ else()
   else()
     set(recording_target linux)
   endif()
-  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target})
-  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target})
+  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target}
+               --codec ${GLOB2_RECORDING_CODEC})
+  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target}
+               --codec ${GLOB2_RECORDING_CODEC})
+  if(NOT GLOB2_RECORDING_CODEC STREQUAL "h264")
+    # FFmpeg's WebM encoders use the client's Opus, after the codec archives.
+    glob2_pkg_config(recording_opus opus --cflags --libs)
+    list(APPEND recording_libraries ${recording_opus_libraries})
+    string(TOUPPER "GLOB2_RECORDING_${GLOB2_RECORDING_CODEC}" recording_define)
+    add_compile_definitions(${recording_define})
+  endif()
   set(recording_includes "${recording_prefix}/include")
   glob2_configure_depends(${recording_libraries})
   glob2_pkg_config(opusfile opusfile --cflags)
@@ -334,12 +337,12 @@ else()
 endif()
 
 include(CheckIncludeFileCXX)
-# SConstruct's Windows libraries: zlib, a POSIX regex, Winsock and the Windows OpenGL names.
+# Windows libraries: zlib, a POSIX regex, Winsock and the Windows OpenGL names.
 set(zlib_libraries z)
 set(regex_libraries)
 set(platform_libraries)
 set(windows_libraries)
-# macOS frameworks, linked after every library as SCons' FRAMEWORKS are.
+# macOS frameworks, linked after every library.
 set(frameworks)
 if(darwin)
   set(frameworks Security CoreFoundation)
@@ -367,7 +370,7 @@ else()
   set(glu_name GLU)
 endif()
 if(NOT relay)
-  # On macOS the probes search the Homebrew or MacPorts prefix too, as SConstruct's do.
+  # On macOS the probes search the Homebrew or MacPorts prefix too.
   if(darwin)
     set(CMAKE_REQUIRED_INCLUDES ${sdl_includes} ${host_includes})
   endif()
@@ -406,10 +409,24 @@ if(NOT relay)
     set(fribidi_libraries fribidi)
     list(APPEND build_config_options --fribidi)
   endif()
+  # The PortAudio voice backend, off unless asked for (portaudio=1);
+  # it crashes voice chat on Windows, so Windows never uses it.
+  option(GLOB2_PORTAUDIO "Use PortAudio for voice chat when it is installed" OFF)
+  set(portaudio_libraries)
+  if(GLOB2_PORTAUDIO AND NOT windows)
+    find_library(GLOB2_PORTAUDIO_LIBRARY portaudio HINTS ${host_directories})
+    check_include_file_cxx(portaudio.h GLOB2_HAVE_PORTAUDIO_H)
+    if(GLOB2_PORTAUDIO_LIBRARY AND GLOB2_HAVE_PORTAUDIO_H)
+      set(portaudio_libraries portaudio)
+      list(APPEND build_config_options --portaudio)
+    else()
+      message(STATUS "GLOB2_PORTAUDIO: PortAudio not found, building without it")
+    endif()
+  endif()
 endif()
 
-# ---- Generated headers: the SCons generators, called through the bridge ----
-option(GLOB2_EXPORT_RUNTIME_ASSETS "Export the runtime assets into the build directory, as SCons does" ON)
+# ---- Generated headers: the buildsys/ generators, called through the bridge ----
+option(GLOB2_EXPORT_RUNTIME_ASSETS "Export the runtime assets into the build directory" ON)
 if(relay)
   set(GLOB2_EXPORT_RUNTIME_ASSETS OFF)
   set(GLOB2_RUNTIME_ASSET_DIR "${GLOB2_OUT}/runtime-assets")
@@ -421,13 +438,13 @@ else()
     message(FATAL_ERROR "GLOB2_EXPORT_RUNTIME_ASSETS=OFF needs GLOB2_RUNTIME_ASSET_DIR, another build's runtime-assets")
   endif()
 endif()
-# SConstruct's DATADIR: the installed data directory compiled into glob2/BuildConfig.h.
+# DATADIR: the installed data directory compiled into glob2/BuildConfig.h.
 if(windows OR darwin)
   set(default_datadir /usr/local/share)
 else()
   set(default_datadir "${CMAKE_INSTALL_PREFIX}/share")
 endif()
-set(GLOB2_DATADIR "${default_datadir}" CACHE PATH "Installed data directory compiled into the game (SCons DATADIR)")
+set(GLOB2_DATADIR "${default_datadir}" CACHE PATH "Installed data directory compiled into the game (DATADIR)")
 glob2_bridge(unused build-config --builddir "${GLOB2_OUT}" "--datadir=${GLOB2_DATADIR}"
              ${build_config_options} ${build_arg_options})
 glob2_bridge(unused build-paths --builddir "${GLOB2_OUT}" --runtime-assets "${GLOB2_RUNTIME_ASSET_DIR}")
@@ -495,23 +512,23 @@ if(GLOB2_EXPORT_RUNTIME_ASSETS)
   add_dependencies(glob2_runtime_assets glob2_runtime_asset_export)
 endif()
 
-# SCons refreshes the revision on every invocation; so does this (it rewrites
+# The revision is refreshed on every build (the bridge rewrites
 # the header only when the revision changed).
 add_custom_target(glob2_build_stamp
   COMMAND ${bridge} build-stamp --builddir "${GLOB2_OUT}"
   BYPRODUCTS "${GLOB2_OUT}/include/glob2/BuildStamp.h"
   WORKING_DIRECTORY "${GLOB2_ROOT}" VERBATIM)
 
-# ---- Tier flags: SConstruct's CXXFLAGS/CFLAGS/CCFLAGS/LINKFLAGS, step by step ----
-# CCFLAGS reach C and C++ objects, CXXFLAGS only C++ and CFLAGS only C, as in SCons.
-set(GLOB2_CXXFLAGS "-g" CACHE STRING "SCons CXXFLAGS before the tier's own (distributions pass their optflags)")
-set(GLOB2_LINKFLAGS "-g" CACHE STRING "SCons LINKFLAGS before the tier's own")
+# ---- Tier flags: CXXFLAGS/CFLAGS/CCFLAGS/LINKFLAGS, step by step ----
+# CCFLAGS reach C and C++ objects, CXXFLAGS only C++ and CFLAGS only C.
+set(GLOB2_CXXFLAGS "-g" CACHE STRING "CXXFLAGS before the tier's own (distributions pass their optflags)")
+set(GLOB2_LINKFLAGS "-g" CACHE STRING "LINKFLAGS before the tier's own")
 option(GLOB2_DEBUG_PREFIX_MAP "Map the checkout to . in debug information so checkouts share cache entries (off for shipping builds)" ON)
 separate_arguments(cxxflags UNIX_COMMAND "${GLOB2_CXXFLAGS}")
 separate_arguments(linkflags UNIX_COMMAND "${GLOB2_LINKFLAGS}")
 set(cflags)
 set(ccflags)
-# Removes every -g* and -O* word from each named list, as SCons' tier code does.
+# Removes every -g* and -O* word from each named list.
 macro(glob2_drop_debug_and_optimization)
   foreach(list_name ${ARGN})
     list(FILTER ${list_name} EXCLUDE REGEX "^-[gO]")
@@ -525,7 +542,7 @@ if(GLOB2_MODE STREQUAL "release" AND NOT GLOB2_RETAIN_SYMBOLS AND NOT darwin)
 endif()
 list(APPEND cxxflags -std=gnu++20 -Wall -fPIC)
 list(APPEND cflags -fPIC)
-# Uninitialized-read diagnostics (DET_INIT=zero|pattern), an environment variable as in SConstruct.
+# Uninitialized-read diagnostics (DET_INIT=zero|pattern), an environment variable.
 if(DEFINED ENV{DET_INIT} AND NOT "$ENV{DET_INIT}" STREQUAL "")
   list(APPEND cxxflags "-ftrivial-auto-var-init=$ENV{DET_INIT}")
   list(APPEND ccflags "-ftrivial-auto-var-init=$ENV{DET_INIT}")
@@ -566,16 +583,21 @@ if(GLOB2_SIZE_OPTIMIZATION)
     list(APPEND linkflags -Os)
   endif()
 endif()
+# profile=1: gprof instrumentation at -O3.
+if(GLOB2_MODE STREQUAL "profile")
+  list(APPEND cxxflags -pg -O3)
+  list(APPEND linkflags -pg -O3)
+endif()
 # Windows programs start without a console; test binaries drop it again.
 if(windows)
   list(APPEND linkflags -mwindows)
 endif()
-# buildsys/dev_build.py configure(): dev_fast compiles everything at -O0 -g1.
+# dev_fast compiles everything at -O0 -g1.
 if(GLOB2_DEV_FAST)
   glob2_drop_debug_and_optimization(cflags cxxflags ccflags linkflags)
   list(APPEND ccflags -O0 -g1)
 endif()
-# buildsys/dev_build.py cache_flags(): relocatable debug paths whenever ccache is on.
+# Relocatable debug paths whenever ccache is on, so checkouts share cache entries.
 # Shipped binaries (installs, macOS bundles) keep absolute debug paths, so their
 # symbols resolve without a source map (buildsys/dev_build.py SHIPPING_TARGETS).
 if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER AND NOT GLOB2_SHIPPING
@@ -584,15 +606,15 @@ if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER AND NOT GLOB2_SHIPPING
 endif()
 set(cxx_compile_flags ${cxxflags} ${ccflags})
 set(c_compile_flags ${cflags} ${ccflags})
-# Objective-C++ (macOS) compiles with the C++ flags, as SCons compiles .mm with CXXFLAGS.
+# Objective-C++ (macOS) compiles with the C++ flags.
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX,OBJCXX>:${cxx_compile_flags}>" "$<$<COMPILE_LANGUAGE:C>:${c_compile_flags}>")
-set(GLOB2_EXTRA_COMPILE_FLAGS "" CACHE STRING "Extra compile flags (tools/compare_build_systems.py parity builds)")
+set(GLOB2_EXTRA_COMPILE_FLAGS "" CACHE STRING "Extra compile flags for every object")
 if(GLOB2_EXTRA_COMPILE_FLAGS)
   separate_arguments(extra_flags UNIX_COMMAND "${GLOB2_EXTRA_COMPILE_FLAGS}")
   add_compile_options(${extra_flags})
 endif()
 
-glob2_bridge(instance official-instance)
+glob2_bridge(instance official-instance ${build_arg_options})
 string(JSON official_origin GET "${instance}" origin)
 string(JSON former_origins GET "${instance}" former)
 add_compile_definitions(
@@ -661,9 +683,9 @@ list(TRANSFORM GLOB2_USL_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_JAVASCRIPT_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_JAVASCRIPT_INCLUDE_DIRECTORIES PREPEND "${GLOB2_ROOT}/")
 
-# ---- The relay: glob2-relay and glob2-relay-tests (src/SConscript's relay branch) ----
+# ---- The relay: glob2-relay and glob2-relay-tests ----
 if(relay)
-  # SConstruct's LINKFLAGS, and its LIBS filtered to these, in their order.
+  # The link flags, and the libraries the relay needs, in their order.
   set(relay_link_options ${sdl_link_options} ${linkflags})
   if(GLOB2_SDL3_PREFIX)
     list(APPEND relay_link_options "${rpath_flag}${sdl_prefix}/lib")
@@ -717,12 +739,12 @@ set(javascript_options ${javascript_optimization} ${GLOB2_JAVASCRIPT_CFLAGS} ${j
 set_source_files_properties(${GLOB2_JAVASCRIPT_SOURCES} PROPERTIES
   COMPILE_OPTIONS "${javascript_options}"
   COMPILE_DEFINITIONS "${GLOB2_JAVASCRIPT_DEFINES}")
-# A source's INCLUDE_DIRECTORIES would precede the shared path; SCons appends
-# these, and the archive holds nothing else.
+# A source's INCLUDE_DIRECTORIES would precede the shared path; these come
+# after it, and the archive holds nothing else.
 target_include_directories(Glob2JavaScript PRIVATE ${GLOB2_JAVASCRIPT_INCLUDE_DIRECTORIES})
 
-# The numeric guard (tools/javascript/check-math-symbols.py) SCons runs after
-# each script-reachable object. Here it runs once the archive or program links.
+# The numeric guard (tools/javascript/check-math-symbols.py) checks every
+# script-reachable object once the archive or program links.
 set(numeric_guard "${Python3_EXECUTABLE}" "${GLOB2_ROOT}/tools/javascript/check-math-symbols.py" --nm "${CMAKE_NM}")
 add_custom_command(TARGET Glob2JavaScript POST_BUILD
   COMMAND ${numeric_guard} "$<TARGET_OBJECTS:Glob2JavaScript>"
@@ -739,7 +761,7 @@ target_include_directories(glob2_client_settings INTERFACE "${GLOB2_OUT}/src" "$
 
 set(client_sources ${GLOB2_CLIENT_SOURCES})
 list(REMOVE_ITEM client_sources "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
-# Every client object except the entry point, as src/SConscript exports for tests.
+# Every client object except the entry point, which the tests link too.
 # macOS and Windows verify TLS certificates through the platform store
 # (buildsys/sources.py PLATFORM_TRUST_SOURCES); Linux uses OpenSSL's.
 set(platform_trust_sources)
@@ -756,10 +778,10 @@ set_source_files_properties(${GLOB2_STRICT_NUMERIC_SOURCES} PROPERTIES COMPILE_O
 
 
 
-# Link inputs in SConstruct's LIBS order; like SCons' unique merge, a library
-# named again later moves to its last position.
+# Link inputs in dependency order; a library named again later moves to its
+# last position.
 set(libraries ${zlib_libraries} ${regex_libraries} pthread ssl crypto ${platform_libraries} ${opengl_libraries}
-    ${fribidi_libraries} ${recording_libraries} SDL3_net opusfile opus ogg SDL3_ttf SDL3_image speex
+    ${fribidi_libraries} ${portaudio_libraries} ${recording_libraries} SDL3_net opusfile opus ogg SDL3_ttf SDL3_image speex
     ${windows_libraries} ${sdl3_libraries} ${webp_libraries})
 list(REVERSE libraries)
 list(REMOVE_DUPLICATES libraries)
@@ -775,7 +797,7 @@ if(GLOB2_SDL3_PREFIX)
   list(APPEND link_options "${rpath_flag}${sdl_prefix}/lib")
 endif()
 glob2_drop_build_rpath(link_options)
-# linker=auto|lld (buildsys/dev_build.py configure): lld when installed.
+# linker=auto|lld: lld when installed.
 if(NOT GLOB2_IDENTITY_LINKER STREQUAL "default" AND GLOB2_PLATFORM STREQUAL "linux")
   find_program(GLOB2_LLD_PROGRAM ld.lld)
   if(GLOB2_LLD_PROGRAM)
@@ -784,13 +806,13 @@ if(NOT GLOB2_IDENTITY_LINKER STREQUAL "default" AND GLOB2_PLATFORM STREQUAL "lin
     message(FATAL_ERROR "linker=lld requires an installed ld.lld")
   endif()
 endif()
-# test/SConscript keeps function names in test binaries for crash backtraces.
+# Test binaries keep function names for crash backtraces (no -s).
 # Test programs are console programs: no -mwindows either.
 set(test_link_options ${link_options})
 list(REMOVE_ITEM test_link_options -s -mwindows)
 
-# Every program links `ARGN` (object libraries and archives) before SConstruct's
-# LIBS, with its library directories and LINKFLAGS (the test flags for tests).
+# Every program links `ARGN` (object libraries and archives) before the
+# libraries, with its library directories and LINKFLAGS (the test flags for tests).
 function(glob2_link target)
   target_link_libraries(${target} PRIVATE ${ARGN} ${libraries})
   target_link_directories(${target} PRIVATE ${sdl_directories} ${sdl3_directories} ${webp_directories})
@@ -806,9 +828,9 @@ function(glob2_link target)
   add_dependencies(${target} glob2_generated glob2_build_stamp)
 endfunction()
 
-# The numeric guard (tools/javascript/check-math-symbols.py) SCons runs after
-# each script-reachable client object; here once they are compiled, before any
-# program links them.
+# The numeric guard (tools/javascript/check-math-symbols.py) over every
+# script-reachable client object, once they are compiled and before any program
+# links them.
 glob2_objects_of(guarded_objects glob2_client ${GLOB2_GUARDED_NUMERIC_SOURCES})
 add_custom_command(OUTPUT "${stamps}/numeric-guard"
   COMMAND ${numeric_guard} "${guarded_objects}"
@@ -822,11 +844,11 @@ add_executable(glob2 "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
 set_target_properties(glob2 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
 target_link_libraries(glob2 PRIVATE glob2_client_settings)
 glob2_link(glob2 glob2_client Glob2JavaScript gag usl)
-# As SCons' RUNTIME_ASSET_STAMP dependency: glob2, the test binaries and test programs.
+# The runtime assets come with glob2, the test binaries and test programs.
 add_dependencies(glob2 glob2_runtime_assets glob2_numeric_guard)
 
-# ---- Stage 3: test binaries, test programs and harnesses (test/SConscript, src/SConscript) ----
-# None is part of the default build, as in SCons; aliases match the SCons ones
+# ---- Stage 3: test binaries, test programs and harnesses ----
+# None is part of the default build; aliases name them
 # (engine-tests, unit-tests, tests, transport-test, map-generator-golden-test, ...).
 set(alias_names)
 function(glob2_alias alias)
@@ -838,14 +860,14 @@ function(glob2_alias alias)
   endif()
 endfunction()
 
-# test/SConscript's test environment: the shared flags without the client's
+# The test environment: the shared flags without the client's
 # SkinRenderRecipe.h directory, plus these include directories and SDL_MAIN_HANDLED.
 add_library(glob2_test_settings INTERFACE)
 target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "${GLOB2_ROOT}/test/support"
                            "${GLOB2_ROOT}/libs/gag/src" "${GLOB2_ROOT}/third_party/quickjs-ng")
 target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
 
-# test/SConscript available(): 'mac' needs macOS; native builds always have the WSS transport; an
+# An entry's requirements: 'mac' needs macOS; native builds always have the WSS transport; an
 # optional buildsys/sources.py group is present only in the full compile profile.
 function(glob2_available output)
   set(ok TRUE)
@@ -879,7 +901,7 @@ function(glob2_test_objects output registry prefix)
   set(${output} ${objects} PARENT_SCOPE)
 endfunction()
 
-# The configuration a provenance sidecar records, as test_provenance._configuration does for SCons.
+# The configuration a provenance sidecar records.
 get_directory_property(provenance_defines COMPILE_DEFINITIONS)
 list(JOIN ccflags " " provenance_ccflags)
 list(JOIN cxxflags " " provenance_cxxflags)
@@ -894,7 +916,7 @@ endforeach()
 set(provenance_configuration "${GLOB2_OUT}/test-provenance-configuration.json")
 glob2_bridge(unused provenance-configuration --output "${provenance_configuration}" ${provenance_arguments})
 
-# <binary>.provenance.json after every build of the alias, like SCons' AlwaysBuild sidecar.
+# <binary>.provenance.json, rewritten after every build of the alias.
 function(glob2_provenance target)
   add_custom_target(${target}-provenance
     COMMAND ${bridge} test-provenance --binary "$<TARGET_FILE:${target}>" --configuration "${provenance_configuration}"
@@ -907,7 +929,7 @@ function(glob2_test_binary target)
 endfunction()
 
 # Production sources compiled again with the test flags, shared by the binaries
-# that link them, as test/SConscript shares its 'unit-' objects.
+# that link them.
 glob2_test_objects(unused TEST_PRODUCTION glob2_test_production)
 set(production_libraries)
 foreach(group IN LISTS GLOB2_TEST_PRODUCTION_GROUPS)
@@ -943,7 +965,7 @@ foreach(binary IN LISTS GLOB2_TEST_BINARIES)
     glob2_link(${target} glob2_client Glob2JavaScript gag usl)
   elseif(GLOB2_${binary}_MODULES)
     # Map and sim still reference each other: GNU ld resolves the archives as one
-    # group, as test/SConscript's --start-group does; ld64 rescans on its own.
+    # group (--start-group); ld64 rescans on its own.
     set(group ${GLOB2_${binary}_MODULES})
     list(TRANSFORM group PREPEND glob2_)
     list(APPEND group Glob2JavaScript gag usl)
@@ -1035,6 +1057,11 @@ foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
   glob2_alias(${${prefix}_ALIAS} ${program})
 endforeach()
 
+# libs/usl/test/usl_runner: runs USL scripts against libusl (built on request).
+add_executable(usl_runner EXCLUDE_FROM_ALL "${GLOB2_ROOT}/${GLOB2_USL_RUNNER_SOURCE}")
+target_link_libraries(usl_runner PRIVATE usl)
+set_target_properties(usl_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/libs/usl/test")
+
 foreach(alias IN LISTS alias_names)
   get_property(members GLOBAL PROPERTY "GLOB2_ALIAS_${alias}")
   list(REMOVE_DUPLICATES members)
@@ -1042,7 +1069,7 @@ foreach(alias IN LISTS alias_names)
   add_dependencies(${alias} ${members})
 endforeach()
 
-# ---- macOS application bundle and disk image (SConstruct's bundle and package targets) ----
+# ---- macOS application bundle and disk image (the bundle and package targets) ----
 # bundle: build/darwin/.../Glob2.app with its assets, libraries, MoltenVK and dSYM
 # (buildsys/bundle.py); package: also Glob2-<version>.dmg in the checkout.
 if(darwin AND GLOB2_MAC_BUNDLE)
@@ -1059,11 +1086,11 @@ if(darwin AND GLOB2_MAC_BUNDLE)
   add_dependencies(package bundle)
 endif()
 
-# ---- Installation: what `scons install` installs (cmake --install, honours DESTDIR) ----
-# SConstruct's BINDIR and INSTALLDIR: the executable's directory and the share
+# ---- Installation (cmake --install, honours DESTDIR) ----
+# BINDIR and INSTALLDIR: the executable's directory and the share
 # directory that holds glob2/, applications/, icons/, man/ and the completions.
-set(GLOB2_BINDIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installed executable directory (SCons BINDIR)")
-set(GLOB2_INSTALLDIR "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Installed share directory (SCons INSTALLDIR)")
+set(GLOB2_BINDIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installed executable directory (BINDIR)")
+set(GLOB2_INSTALLDIR "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Installed share directory (INSTALLDIR)")
 if(GLOB2_SDL3_PREFIX AND NOT GLOB2_SHIPPING)
   install(CODE "message(FATAL_ERROR \"Installing a GLOB2_SDL3_PREFIX build needs -DGLOB2_SHIPPING=ON, \"
                 \"so the installed binary carries no build-prefix rpath\")")

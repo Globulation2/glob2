@@ -12,7 +12,7 @@ These are headless map-operation tests; they do not drive editor mouse events.
 
 ## Map generator fingerprints and colony sweep
 
-From the repository root, `scons --build=build/native-tests -j8 release=1 map-generator-golden-test` builds
+From the repository root, `python3 tools/dev_build.py --build=build/native-tests -j8 release=1 map-generator-golden-test` builds
 `build/native-tests/src/MapGeneratorGoldenTest`. Run it as
 `./build/native-tests/src/MapGeneratorGoldenTest <profile> --print [--only=id,...]` to print this
 platform's map fingerprint rows, and with `--sweep` to roll every playable landscape at the
@@ -55,7 +55,7 @@ profiling tool, not a timing threshold in CI.
 
 ## Map generator profiling fixture
 
-`scons --build=build/native-tests -j8 release=1 map-generator-profile-fixture` builds
+`python3 tools/dev_build.py --build=build/native-tests -j8 release=1 map-generator-profile-fixture` builds
 `build/native-tests/src/MapGeneratorProfileFixture <profile-dir> <seed> <rounds>`, which round-robins every
 registered generator for `rounds` passes with parameters (shared and generator-specific) drawn
 at random the same way `GenerationRequest::randomizeControls` does, and prints a per-generator
@@ -135,7 +135,7 @@ A lone vertex makes the four cells around it mixed. Batch larger edits with
 ## Map repetition regression
 
 ```sh
-scons -j8 release=1 tests
+python3 tools/dev_build.py -j8 release=1 tests
 python3 test/run_tests.py --filter 'MapTiling/*'
 ```
 
@@ -148,7 +148,7 @@ advanced repetition dialog across desktop/touch viewports, safe insets and text 
 
 ## Map CLI
 
-Build the normal client with `scons --build=build/native-tests release=1`, then run
+Build the normal client with `python3 tools/dev_build.py --build=build/native-tests release=1`, then run
 `python3 test/test_map_cli.py build/native-tests/src/glob2` (use `.exe` on Windows).
 The test uses a disposable profile and the shared `MapPreview` software renderer
 with an invalid video driver, proving PNG export requires no display.
@@ -189,7 +189,7 @@ Linux and Windows CI run the native conversion suite.
 
 ### Map JSON reports
 
-Build `scons --build=build/native-tests release=1 map-report-test`, then run
+Build `python3 tools/dev_build.py --build=build/native-tests release=1 map-report-test`, then run
 `python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/test/MapReportHarness`
 (add `.exe` to both binaries on Windows). The suite runs without graphics, checks
 the [published report contract](../../map-generators/report-format.md), recomputes fairness

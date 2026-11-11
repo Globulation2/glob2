@@ -6,9 +6,11 @@ The experiment parsed SConscript text and used host Boost headers. Native
 configuration wrote a root header and options cache. Running different
 toolchains in the same checkout could therefore change another build's inputs.
 
-SCons now imports plain Python source manifests from `buildsys/sources.py`.
+The build reads plain Python source manifests from `buildsys/sources.py`. The
+decision was first implemented in SCons; SCons has since been retired, and CMake
+reads the manifests through the generated `cmake/sources.cmake`.
 Native and Emscripten code paths branch before dependency discovery. Every
-toolchain/role/configuration owns a directory, signature database, generated
+toolchain/role/configuration owns a directory, build state, generated
 header, compilation database, compiler outputs, and temporary directory.
 Browser ports and compiled SDK libraries share a cache keyed by the pinned SDK
 and port configuration, with Emscripten locking and process-held resource leases.
@@ -31,12 +33,9 @@ The browser SDK revision and version are recorded in
 `platforms/web/toolchain.json`. Emscripten verifies port archive checksums. Release reproducibility also depends on native dependencies and packaging inputs; SDK pinning alone does not establish it.
 
 CI validates the identity rules directly and builds native and WebAssembly
-outputs in their own jobs. `test/build_system/coexistence.py` remains an
-explicit diagnostic for concurrent and alternating builds; it verifies that
-object and artifact contents, timestamps, and tracked source files remain
-unchanged. Running that full native build again in the browser job would
-duplicate the Linux lanes without improving routine pull-request coverage.
-These checks do not replace platform-specific runtime and determinism tests.
+outputs in their own jobs. Running the full native build again in the browser
+job would duplicate the Linux lanes without improving routine pull-request
+coverage. These checks do not replace platform-specific runtime and determinism tests.
 
 SDL3, SDL3_image, SDL3_ttf and SDL3_net are built into the selected browser
 output directory using the shared checksum-verified dependency helper. SDL2

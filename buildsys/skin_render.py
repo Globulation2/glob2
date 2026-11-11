@@ -50,17 +50,3 @@ def content(root, paths):
         '#define SKIN_WEBP_ENCODER_VERSION ' + str(encoder_version) + '\n' +
         '#define SKIN_WEBP_VERSION "' + recipe['webpVersion'] + '"\n')
 
-
-def configure(env):
-    from SCons.Scanner import Scanner
-    root = Path(env.Dir('#').abspath)
-    paths = inputs(root)
-
-    def generate(target, source, env):
-        Path(str(target[0])).write_text(content(root, paths))
-        return 0
-
-    header = env.Command('SkinRenderRecipe.h', [str(p) for p in paths], generate,
-                         source_scanner=Scanner(lambda node, env, path: []))
-    env.Append(CPPPATH=[env.Dir('.').abspath])
-    env.Depends(env.File('app/cli/RenderSkin.o'), header)

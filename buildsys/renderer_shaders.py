@@ -87,24 +87,3 @@ def verify_compute(root):
     spec.loader.exec_module(rules)
     rules.verify()
 
-
-def configure(env, root, output, browser=False):
-    verify_compute(root)
-    directory = prepare(root, output)
-    env.Append(CPPPATH=[str(directory.resolve())])
-    # The shader directory reaches the two consumers through glob2/BuildPaths.h
-    # (buildsys/checkout_paths.py), never as a -D on every compile line.
-    files = [str(path) for path in sorted(directory.rglob('*')) if path.is_file() and not path.name.startswith('.')
-             and 'native-sources' not in path.relative_to(directory).parts
-             and path.suffix not in ('.h', '.air')]
-    env['RENDER_SHADER_FILES'] = files
-    env['RENDER_SHADER_DIRECTORY'] = str(directory)
-    return directory
-
-
-def install(env):
-    from SCons.Script import Alias
-    directory = Path(env['RENDER_SHADER_DIRECTORY'])
-    for source in env['RENDER_SHADER_FILES']:
-        relative = Path(source).relative_to(directory)
-        Alias('install', env.InstallAs(str(Path(env['INSTALLDIR']) / 'glob2/shaders' / relative), source))

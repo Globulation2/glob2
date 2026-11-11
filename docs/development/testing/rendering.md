@@ -58,7 +58,7 @@ For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
 engine tests into a separate directory with the sanitizer flags and run the same filter:
 
 ```sh
-scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
+python3 tools/dev_build.py -j8 --build=build/tests-asan engine-tests \
   CXXFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' \
   LINKFLAGS='-g -fsanitize=address,undefined'
 python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
@@ -67,8 +67,8 @@ python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelectio
 Use `GLOB2_SDL3_PREFIX` when building against the pinned SDL3 dependency prefix.
 The native build records its library directory in the runtime search path.
 
-SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
-normal build. This is a direct method regression, not an interactive replay test.
+The build directory keeps these flags until a later build of it omits
+`CXXFLAGS=` and `LINKFLAGS=`, which restores the default `-g`. This is a direct method regression, not an interactive replay test.
 
 ## Aspect-ratio and screen-capture regression
 

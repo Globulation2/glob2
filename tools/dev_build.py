@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build glob2 for development, testing and measurement.
 
-Arguments are SCons-style build options (key=value), targets and a few flags:
+Arguments are key=value build options, targets and a few flags:
 
     python3 tools/dev_build.py                       # glob2, the dev tier
     python3 tools/dev_build.py . -j12                # glob2 and the four test binaries
@@ -11,29 +11,27 @@ Arguments are SCons-style build options (key=value), targets and a few flags:
     python3 tools/dev_build.py role=relay release=1 relay
     python3 tools/dev_build.py compile_profile=core engine-tests
 
-Native Linux, macOS and Windows (MSYS2 MinGW, where mingw=1 is added) builds
-use CMake + Ninja. The options resolve, through
-buildsys/build_layout.py, to a build identity and its directory
-(build/linux/client/debug/dev-..., build/linux/client/perf[/o3], ...), which
-the CMake build configures with GLOB2_BUILD_ARGS. Without perf=1 or release=1
-the dev tier's dev_fast=1 linker=auto are added. CC=, CXX=, CXXFLAGS= and
-LINKFLAGS= set the compilers and base flags, --build=DIR another directory,
-the install target installs as `scons install` does (into BINDIR=, INSTALLDIR=
-and DATADIR=, a shipping build without the build prefix's rpath),
--jN the jobs (default 8), -k keeps going and -n only prints the commands.
-A target may be a CMake target name or a file under the build directory
-(glob2.exe names the glob2 target). On macOS the bundle and package targets
-build Glob2.app and Glob2-<version>.dmg from a release build linked with the
-pinned image libraries, as SConstruct's do.
+Every build uses CMake + Ninja: native Linux, macOS and Windows (in MSYS2's
+MINGW64 shell, where mingw=1 is added), target=android, target=ios (on macOS)
+and target=web. The options resolve, through buildsys/build_layout.py, to a
+build identity and its directory (build/linux/client/debug/dev-...,
+build/linux/client/perf[/o3], build/emscripten/client/release, ...), which
+CMake configures with GLOB2_BUILD_ARGS; dev_build.py reconfigures a directory
+whose options changed. Native builds without perf=1, release=1 or profile=1
+add the dev tier's dev_fast=1 linker=auto; browser development builds add
+web_variant=threaded too.
 
-target=android and target=ios (on macOS) cross-compile with CMake too, with the
-pinned mobile toolchain and dependency bundle (android_sdk=, mobile_deps=,
-developer_dir= as for SCons), building lib/libmain.so or lib/libglob2.a and the
-android-tests and ios-tests targets.
-
-Requests the CMake build does not cover yet (the browser, other hosts,
-recording codecs other than h264) go to SCons; --generator=scons or
---generator=cmake forces one, and GLOB2_DEV_GENERATOR sets the default.
+CC=, CXX=, CXXFLAGS= and LINKFLAGS= set the compilers and base flags (CXXFLAGS
+and LINKFLAGS replace the default -g), portaudio=1 enables the PortAudio voice
+backend, --build=DIR picks another directory, -jN the jobs (default 8), -k
+keeps going and -n only prints the commands. A target may be a CMake target or
+a file under the build directory (glob2.exe names glob2; a browser file names
+web-package). The install target builds a shipping binary (no build-prefix
+rpath) and runs `cmake --install` into BINDIR=, INSTALLDIR= and DATADIR=. On
+macOS the bundle and package targets build Glob2.app and Glob2-<version>.dmg,
+linked with the pinned image libraries. Mobile builds take android_sdk=,
+mobile_deps= and developer_dir=, and build lib/libmain.so or lib/libglob2.a
+and the android-tests and ios-tests targets.
 """
 import argparse
 import os
@@ -49,13 +47,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'buildsys'))
 
 # Options that set the compilers, base flags and install directories rather than
-# the build identity, with SConstruct's defaults.
-TOOL_OPTIONS = ('CC', 'CXX', 'CXXFLAGS', 'LINKFLAGS', 'BINDIR', 'INSTALLDIR', 'DATADIR')
+# the build identity.
+TOOL_OPTIONS = ('CC', 'CXX', 'CXXFLAGS', 'LINKFLAGS', 'BINDIR', 'INSTALLDIR', 'DATADIR', 'portaudio')
 INSTALL_DEFAULTS = {'BINDIR': '/usr/local/bin', 'INSTALLDIR': '/usr/local/share', 'DATADIR': '/usr/local/share'}
-# Identity keys the CMake build does not support yet.
-SCONS_ONLY_KEYS = ('recording_codec', 'profile', 'portaudio')
-# Cross targets the CMake build covers (cmake/mobile.cmake, cmake/web.cmake).
-CMAKE_TARGETS = ('native', 'android', 'ios', 'web')
 
 
 def enabled(value):
@@ -72,7 +66,8 @@ def development_defaults(options):
     target = options.get('target', 'native')
     if target in ('android', 'ios'):
         return []  # the mobile drivers' builds keep their own optimization levels
-    optimized = enabled(options.get('perf', 0)) or enabled(options.get('release', 0)) or options.get('role') == 'relay'
+    optimized = (enabled(options.get('perf', 0)) or enabled(options.get('release', 0))
+                 or enabled(options.get('profile', 0)) or options.get('role') == 'relay')
     defaults = ['mingw=1'] if windows_host() and target == 'native' and 'mingw' not in options else []
     if target == 'web' and not optimized and 'web_variant' not in options:
         defaults.append('web_variant=threaded')  # one runtime for development
@@ -81,24 +76,6 @@ def development_defaults(options):
     if 'linker' not in options and not optimized:
         defaults.append('linker=auto')
     return defaults
-
-
-def command(arguments):
-    """The SCons command line for these arguments, with the development defaults."""
-    options = {word.split('=', 1)[0]: word.split('=', 1)[1] for word in arguments if '=' in word}
-    # perf=1 is the optimized measurement tier: no fast-development flags, and the
-    # platform linker so its output directory is build/<toolchain>/client/perf[/o3].
-    perf = enabled(options.get('perf', '0'))
-    defaults = ['dev_fast=1'] if 'dev_fast' not in options and not perf else []
-    if 'linker' not in options and not perf:
-        defaults.append('linker=auto')
-    if options.get('target') == 'web' and 'web_variant' not in options:
-        defaults.append('web_variant=threaded')
-    if not any(word == '-j' or word.startswith('-j') or word.startswith('--jobs') for word in arguments):
-        # The machine-wide token pool (buildsys/jobserver.py) shares the CPUs between
-        # concurrent builds, so each lane may ask for all of them.
-        defaults.append('-j' + str(os.cpu_count() or 1))
-    return ['scons', *defaults, *arguments]
 
 
 # "." is the everyday edit/build/test loop: glob2 and the four test binaries
@@ -164,34 +141,19 @@ class Request:
         return list(dict.fromkeys(names))
 
 
-def scons_reason(arguments):
-    """Why these arguments need SCons, or None when the CMake build builds them."""
-    host = 'mingw' if windows_host() else platform.system().lower()
-    if host not in ('linux', 'darwin', 'mingw'):
-        return 'the CMake build covers native Linux, macOS and MSYS2 MinGW builds'
+def check_tools(arguments):
+    """Stop with a reason when this host cannot build these arguments."""
     for tool in ('cmake', 'ninja'):
         if not shutil.which(tool):
-            return tool + ' is not installed'
-    try:
-        request = Request(arguments)
-    except ValueError as error:
-        return str(error)
-    for key in SCONS_ONLY_KEYS:
-        if key in request.options:
-            return key + '= is not supported by the CMake build yet'
-    try:
-        identity = request.identity()
-    except ValueError as error:
-        return 'SCons rejects the options too: ' + str(error)
-    if identity['target'] not in CMAKE_TARGETS:
-        return 'target=' + identity['target'] + ' is not supported by the CMake build yet'
-    if identity['target'] == 'native' and identity['toolchain'] != host:
-        return 'the CMake build covers native Linux, macOS and MSYS2 MinGW builds'
+            raise ValueError(tool + ' is not installed (pip install cmake ninja provides both)')
     version = subprocess.run(['cmake', '--version'], capture_output=True, text=True).stdout
     found = re.search(r'(\d+)\.(\d+)', version)
     if not found or (int(found.group(1)), int(found.group(2))) < (3, 25):
-        return 'the CMake build needs CMake 3.25 or later'
-    return None
+        raise ValueError('the build needs CMake 3.25 or later')
+    identity = Request(arguments).identity()
+    host = 'mingw' if windows_host() else platform.system().lower()
+    if identity['target'] == 'native' and identity['toolchain'] != host:
+        raise ValueError('native ' + identity['toolchain'] + ' builds run on that host; this is ' + host)
 
 
 def cached(directory, name):
@@ -208,13 +170,13 @@ def cmake_commands(arguments):
     """Configure (when the build directory is new or its options changed) and build."""
     request = Request(arguments)
     directory = request.build_directory()
-    # The install target installs as `scons install` does: a shipping build (no
-    # build-prefix rpath or debug-path mapping) into BINDIR, INSTALLDIR and DATADIR.
+    # The install target: a shipping build (no build-prefix rpath or debug-path
+    # mapping) installed into BINDIR, INSTALLDIR and DATADIR.
     targets = request.target_names()
     install = 'install' in targets
     if install:
         targets = [target for target in targets if target != 'install'] or ['glob2']
-    # SConstruct's defaults; restating them resets an earlier override.
+    # The defaults; restating them resets an earlier override.
     settings = {'GLOB2_BUILD_ARGS': ' '.join(request.build_args),
                 'GLOB2_CXXFLAGS': request.tools.get('CXXFLAGS', '-g'),
                 'GLOB2_LINKFLAGS': request.tools.get('LINKFLAGS', '-g'),
@@ -226,11 +188,14 @@ def cmake_commands(arguments):
         # Mobile builds take their compilers and flags from the pinned toolchain.
         settings = {name: settings[name] for name in ('GLOB2_BUILD_ARGS', 'Python3_EXECUTABLE')}
     elif platform.system() == 'Darwin':
-        # SConstruct links the pinned image libraries only when the bundle is asked for.
+        # Only app bundles link the pinned image libraries.
         settings['GLOB2_MAC_BUNDLE'] = 'ON' if {'bundle', 'package'} & set(targets) else 'OFF'
     for key, default in INSTALL_DEFAULTS.items():
         if request.options.get('target', 'native') == 'native':
             settings['GLOB2_' + key] = request.tools.get(key, default)
+    if request.options.get('target', 'native') == 'native':
+        # portaudio=1: the PortAudio voice backend.
+        settings['GLOB2_PORTAUDIO'] = 'ON' if enabled(request.tools.get('portaudio', 0)) else 'OFF'
     commands = []
     new = not (directory / 'build.ninja').exists()
     if new or any(cached(directory, name) != value for name, value in settings.items()):
@@ -241,8 +206,7 @@ def cmake_commands(arguments):
     build = ['cmake', '--build', str(directory)]
     if targets:
         build += ['--target', *targets]
-    # Ninja does not draw from the SCons CPU token pool (buildsys/jobserver.py);
-    # default to a share of the machine rather than all of it.
+    # Default to a share of the machine rather than all of it.
     build += ['--', request.jobs or '-j8']
     if request.keep_going:
         build += ['-k', '0']
@@ -267,13 +231,7 @@ def compiler_environment(arguments, environment):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--cache-stats', action='store_true', help='show managed compiler-cache statistics and exit')
-    parser.add_argument('--generator', choices=('auto', 'scons', 'cmake'),
-                        default=os.environ.get('GLOB2_DEV_GENERATOR', 'auto'),
-                        help='build system (default auto: CMake + Ninja for native Linux builds it covers, '
-                             'else SCons; GLOB2_DEV_GENERATOR sets the default)')
     args, remaining = parser.parse_known_args()
-    if args.generator not in ('auto', 'scons', 'cmake'):
-        parser.error('GLOB2_DEV_GENERATOR must be auto, scons or cmake, not ' + args.generator)
     import dev_store
     environment = dict(os.environ)
     environment.setdefault('CCACHE', '1')
@@ -284,25 +242,17 @@ def main():
             ccache.configure_managed(managed)
             environment['CCACHE_DIR'] = str(managed)
         raise SystemExit(subprocess.call(['ccache', '--show-stats'], env=environment))
-    generator = args.generator
-    if generator == 'auto':
-        reason = scons_reason(remaining)
-        generator = 'scons' if reason else 'cmake'
-        if reason:
-            print('dev_build.py: building with SCons (' + reason + ')', file=sys.stderr)
-    if generator == 'cmake':
-        try:
-            commands = cmake_commands(remaining)
-            environment = compiler_environment(remaining, environment)
-        except ValueError as error:
-            raise SystemExit('dev_build.py: ' + str(error))
-        for step in commands:
-            print('+ ' + shlex.join(step), file=sys.stderr)
-            status = subprocess.call(step, cwd=ROOT, env=environment)
-            if status:
-                raise SystemExit(status)
-        raise SystemExit(0)
-    raise SystemExit(subprocess.call(command(remaining), cwd=ROOT, env=environment))
+    try:
+        check_tools(remaining)
+        commands = cmake_commands(remaining)
+        environment = compiler_environment(remaining, environment)
+    except ValueError as error:
+        raise SystemExit('dev_build.py: ' + str(error))
+    for step in commands:
+        print('+ ' + shlex.join(step), file=sys.stderr)
+        status = subprocess.call(step, cwd=ROOT, env=environment)
+        if status:
+            raise SystemExit(status)
 
 
 if __name__ == '__main__':

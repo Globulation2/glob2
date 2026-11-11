@@ -143,7 +143,7 @@ Run platform checks from `services/online/` and engine tests via the shared regi
 
 ```sh
 npm run check
-scons release=1 server=0 tests
+python3 tools/dev_build.py release=1 tests
 python3 test/run_tests.py --filter 'HiveMind*/*'
 ```
 

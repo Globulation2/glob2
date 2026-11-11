@@ -22,7 +22,7 @@ def find_game_binary() -> Path | None:
 
 
 def find_dump_binary() -> Path | None:
-    # `scons maxima-strategy-dump` builds the tool next to the test binaries;
+    # `python3 tools/dev_build.py maxima-strategy-dump` builds the tool next to the test binaries;
     # MAXIMA_STRATEGY_DUMP overrides the location.
     path = os.environ.get("MAXIMA_STRATEGY_DUMP")
     if path:
@@ -36,7 +36,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.binary = find_dump_binary()
         if cls.binary is None:
-            raise unittest.SkipTest("build MaximaStrategyDump first: scons release=1 server=0 maxima-strategy-dump")
+            raise unittest.SkipTest("build MaximaStrategyDump first: python3 tools/dev_build.py release=1 maxima-strategy-dump")
         cls.game_binary = find_game_binary()
         schema = cls.run_binary("--dump-maxima-schema")
         cls.schema = json.loads(schema.stdout)

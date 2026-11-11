@@ -1,4 +1,4 @@
-"""Shared asset export and SCons installation graph for release installs."""
+"""Shared runtime-asset export and release installation."""
 
 import gzip
 import hashlib
@@ -84,7 +84,7 @@ def install_export(exported, destination):
     )
 
 
-# Export tools whose content is part of the shared export key (and SCons' inputs).
+# Export tools whose content is part of the shared export key.
 EXPORT_TOOLS = (
     "tools/package_assets.py",
     "tools/packed_sprite_assets.py",
@@ -121,8 +121,7 @@ def export_inputs(root, platform):
 def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
     """Fill `exported` (and its sibling audit JSON), from the shared store when possible.
 
-    SCons (prepare_assets) and the CMake build
-    (buildsys/cmake_generate.py runtime-assets) both export through here."""
+    The CMake build exports through here (buildsys/cmake_generate.py runtime-assets)."""
     # Importable as buildsys.runtime_assets too (test/build_system), so name the sibling by path.
     if str(Path(__file__).resolve().parent) not in sys.path:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -141,57 +140,3 @@ def export_tree(root, exported, platform, inputs, lossy, packing, video, jobs):
                                     ["runtime-assets-v1", platform, lossy, packing, video, sys.version_info[:2]])
     shared_assets.export(root, exported, key, produce)
 
-
-def prepare_assets(env):
-    from SCons.Script import Action, Value, GetOption
-
-    if env.get("RUNTIME_ASSET_STAMP") is not None:
-        return env["RUNTIME_ASSET_STAMP"]
-    root = Path.cwd()
-    platform = host_platform()
-    exported = Path(env["BUILDDIR"]).resolve() / "runtime-assets"
-    inputs = export_inputs(root, platform)
-
-    lossy = optimized_install_enabled(env.get("release", True), env.get("optimized_assets", "auto"))
-
-    packing = sprite_packing_profile(env.get("sprite_packing", "auto"), env.get("release", True),
-                                     "GLOB2_H264_ASSETS" in env.get("CPPDEFINES", []))
-    video = packing == "video"
-
-    tools = list(EXPORT_TOOLS)
-
-    def export(target, source, env):
-        export_tree(root, exported, platform, inputs, lossy, packing, video, GetOption("num_jobs"))
-        return 0
-
-    stamp = env.Command(
-        str(exported.with_suffix(".json")),
-        inputs + tools + [Value(inputs), Value([lossy, packing, video])],
-        Action(export, "Exporting verified runtime assets"),
-    )
-    env.Precious(stamp)  # SCons must not unlink the previous ownership audit.
-    if not (exported / "data").is_dir():
-        env.AlwaysBuild(stamp)
-    env["RUNTIME_ASSET_STAMP"] = stamp
-    return stamp
-
-
-def install_assets(env):
-    from SCons.Script import Action
-
-    stamp = prepare_assets(env)
-    exported = Path(env["BUILDDIR"]).resolve() / "runtime-assets"
-    destination = Path(env["INSTALLDIR"]) / "glob2"
-
-    def install(target, source, env):
-        install_export(exported, destination)
-        return 0
-
-    installed = env.Command(
-        str(destination / STAMP),
-        stamp,
-        Action(install, "Installing verified runtime assets"),
-    )
-    env.Precious(installed)  # Preserve the inventory used to remove obsolete assets.
-    env.AlwaysBuild(installed)
-    env.Alias("install", installed)

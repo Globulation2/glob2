@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Command-line entry points through which the CMake build calls
-the same generators SCons uses, so both build systems write identical files.
+the Python generators in buildsys/.
 
 Every subcommand writes only when the content changed, keeping timestamps (and
-therefore Ninja and compiler-cache state) stable. Nothing here imports SCons.
+therefore Ninja and compiler-cache state) stable.
 """
 import argparse
 import json
@@ -25,7 +25,7 @@ def _touch(stamp):
 
 
 def build_arguments(args):
-    """The SCons-style key=value build arguments CMake was configured with."""
+    """The key=value build arguments CMake was configured with."""
     arguments = {}
     for word in getattr(args, 'arg', None) or []:
         key, separator, value = word.partition('=')
@@ -47,11 +47,13 @@ def build_config(args):
         build_config.add_opengl(config)
     if args.fribidi:
         build_config.add_fribidi(config)
+    if args.portaudio:
+        build_config.add_portaudio(config)
     write_if_changed(Path(args.builddir) / 'include/glob2/BuildConfig.h', config.text())
 
 
 def compile_profile(args):
-    """glob2/CompileProfile.h, as SConstruct writes it for every native build."""
+    """glob2/CompileProfile.h, for every native build."""
     from sources import profile_header
     write_if_changed(Path(args.builddir) / 'include/glob2/CompileProfile.h', profile_header(args.profile))
 
@@ -108,7 +110,7 @@ def skin_render_inputs(args):
 
 def official_instance(args):
     import official_instance
-    origin = official_instance.origin()
+    origin = official_instance.origin(build_arguments(args))
     print(json.dumps({'origin': origin, 'former': ' '.join(official_instance.former_origins(origin))}))
 
 
@@ -118,10 +120,10 @@ def recording(args):
     prefix = Path(args.prefix).resolve()
     manifest = prefix / 'recording-manifest.json'
     identity = json.loads(manifest.read_text())['identity'] if manifest.exists() else {}
-    if identity.get('video_codec', 'h264') != 'h264':
-        raise SystemExit('Recording prefix codec does not match the h264 CMake build')
+    if identity.get('video_codec', 'h264') != args.codec:
+        raise SystemExit('Recording prefix codec does not match recording_codec=' + args.codec)
     archives = [(prefix / 'lib' / ('lib' + name + '.a')).as_posix()
-                for name in recording_dependencies.codec_libraries('h264')]
+                for name in recording_dependencies.codec_libraries(args.codec)]
     if args.target == 'mingw32':
         system = ['mfplat', 'mfuuid', 'ole32', 'strmiids', 'bcrypt']
     elif args.target == 'darwin':
@@ -132,15 +134,16 @@ def recording(args):
 
 
 def recording_prefix(args):
-    """Provision the pinned h264 recording libraries as SConstruct does and print their prefix.
+    """Provision the pinned recording libraries and print their prefix.
 
     GLOB2_RECORDING_PREFIX, or a prefix with recording/ beside GLOB2_SDL3_PREFIX,
     is used as given; otherwise the shared dependency store builds or reuses one
-    keyed by the same recipe and compilers SCons uses."""
-    from recording_dependencies import build as build_recording
+    keyed by the recipe and compilers."""
+    from recording_dependencies import build as build_recording, native_opus_configuration
     from shared_dependencies import ensure
     sdl = os.environ.get('GLOB2_SDL3_PREFIX')
-    shared = Path(sdl) / 'recording' if sdl else None
+    # The prefix beside the SDL3 one holds the h264 build only.
+    shared = Path(sdl) / 'recording' if sdl and args.codec == 'h264' else None
     has_shared = bool(shared and (shared / 'recording-manifest.json').exists())
     explicit = os.environ.get('GLOB2_RECORDING_PREFIX')
     builddir = Path(args.builddir).resolve()
@@ -154,7 +157,8 @@ def recording_prefix(args):
         prefix = ensure(build_recording, prefix.resolve(), builddir / 'recording/sources',
                         explicit=bool(explicit or has_shared), execute=True,
                         cc=args.cc, cxx=args.cxx, ar=args.ar, ranlib=args.ranlib, target=args.target,
-                        video_codec='h264', opus_configuration=None, environment=dict(os.environ), jobs=args.jobs)
+                        video_codec=args.codec, environment=dict(os.environ), jobs=args.jobs,
+                        opus_configuration=native_opus_configuration(os.environ) if args.codec != 'h264' else None)
         sys.stdout.flush()
     finally:
         os.dup2(saved, 1)
@@ -164,7 +168,7 @@ def recording_prefix(args):
 
 def lean_image_prefix(args):
     """The private PNG/JPEG/WebP SDL_image a lean_images=1 release links, built on
-    first use as SConstruct does; also records it in image-runtime.json."""
+    first use; also records it in image-runtime.json."""
     from native_image_dependency import ensure
     sys.stdout.flush()
     saved = os.dup(1)
@@ -331,7 +335,7 @@ def mobile_configure(args):
 
 def embedded_provenance(args):
     """glob2/TestBuildProvenance.h: the identity mobile and browser test executables
-    carry (test_provenance.register_test_provenance)."""
+    carry."""
     import test_provenance
     metadata = test_provenance._source_identity(ROOT)
     metadata.update(json.loads(Path(args.configuration).read_text()))
@@ -555,7 +559,7 @@ def package_version(args):
 
 def mac_image_prefix(args):
     """The pinned PNG/JPEG SDL_image macOS bundles link (mac_image_dependency), built on
-    first use as SConstruct does for its bundle and package targets."""
+    first use for the bundle and package targets."""
     from mac_image_dependency import ensure
     environment = dict(os.environ)
     if args.sdl_prefix:
@@ -573,7 +577,7 @@ def mac_image_prefix(args):
 
 
 def bundle(args):
-    """Glob2.app in the build directory: SConstruct's Bundle builder (buildsys/bundle.py)."""
+    """Glob2.app in the build directory (buildsys/bundle.py)."""
     sys.path.insert(0, str(ROOT))  # bundle.py imports tools.package_assets
     import bundle as mac_bundle
     arguments = build_arguments(args)
@@ -589,7 +593,7 @@ def dmg(args):
     disk_image.create_dmg([args.output], [args.app])
 
 
-# content/data files installed beside the game, as `scons install` installed them.
+# content/data files installed beside the game.
 DESKTOP_FILES = (('content/data/glob2.desktop', 'applications/org.globulation2.Globulation2.desktop'),
                  ('content/data/org.globulation2.Globulation2.metainfo.xml',
                   'metainfo/org.globulation2.Globulation2.metainfo.xml'),
@@ -602,7 +606,7 @@ DESKTOP_FILES = (('content/data/glob2.desktop', 'applications/org.globulation2.G
 
 
 def _copy(source, destination):
-    """Copy a file, a symbolic link as a link, as SCons Install does."""
+    """Copy a file, a symbolic link as a link."""
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.is_symlink() or destination.exists():
         destination.unlink()
@@ -614,7 +618,7 @@ def _copy(source, destination):
 
 
 def install(args):
-    """Everything `scons install` installs beside the glob2 executable, under $DESTDIR.
+    """Everything installed beside the glob2 executable, under $DESTDIR.
 
     The verified runtime-asset tree merges into <installdir>/glob2
     (runtime_assets.install_export); then the shaders, desktop integration,
@@ -669,7 +673,7 @@ def install(args):
 
 
 def ccache_directory(args):
-    """The managed compiler cache SCons uses, configured the same way."""
+    """The managed compiler cache, configured."""
     if os.environ.get('CCACHE_DIR'):
         import dev_store
         print(Path(dev_store.adopt(os.environ['CCACHE_DIR'])).as_posix())
@@ -682,11 +686,10 @@ def ccache_directory(args):
 
 
 def configure(args):
-    """Resolve the build arguments as SCons does, write identity.json and print the identity.
+    """Resolve the build arguments, write identity.json and print the identity.
 
-    test/run_tests.py, tools/perf_ab.py and tools/dev_baseline.py read identity.json;
-    the generator key keeps SCons from adopting the directory
-    (build_layout.prepare_directory refuses a mismatch). CMake reads the printed
+    test/run_tests.py, tools/perf_ab.py and tools/dev_baseline.py read identity.json
+    (build_layout.prepare_directory refuses a mismatched identity). CMake reads the printed
     JSON: the resolved identity and its default build directory."""
     arguments = build_arguments(args)
     try:
@@ -704,7 +707,7 @@ def configure(args):
 
 
 def test_provenance(args):
-    """<binary>.provenance.json, through the code test/SConscript's sidecar runs."""
+    """<binary>.provenance.json, the test binary's build identity."""
     import test_provenance
     configuration = json.loads(Path(args.configuration).read_text())
     test_provenance.write_sidecar(ROOT, args.binary, args.binary + '.provenance.json', configuration)
@@ -723,7 +726,7 @@ def _depfile_path(path):
 
 
 def runtime_assets(args):
-    """Export the runtime assets as SCons' dev tier does, then write a Ninja depfile.
+    """Export the runtime assets, then write a Ninja depfile.
 
     The export (runtime_assets.export_tree) clones a finished tree from the
     development store when one with the same content key exists. The depfile
@@ -733,7 +736,7 @@ def runtime_assets(args):
     builddir = Path(args.builddir).resolve()
     platform = runtime_assets.host_platform()
     inputs = runtime_assets.export_inputs(ROOT, platform)
-    # As prepare_assets: the release flag and the asset options pick the profile;
+    # The release flag and the asset options pick the profile;
     # the CMake build always has h264 recording, so video packing is available.
     arguments = build_arguments(args)
     release = build_identity(arguments)['mode'] == 'release'
@@ -766,6 +769,7 @@ def main(argv=None):
     sub.add_argument('--font', default='sans.ttf')
     sub.add_argument('--opengl', action='store_true')
     sub.add_argument('--fribidi', action='store_true')
+    sub.add_argument('--portaudio', action='store_true')
     sub.add_argument('--arg', action='append', default=[])
     sub = command('build-paths', build_paths)
     sub.add_argument('--runtime-assets', required=True)
@@ -778,13 +782,16 @@ def main(argv=None):
     command('hive-api', hive_api, stamp=True)
     command('skin-render', skin_render, stamp=True)
     command('skin-render-inputs', skin_render_inputs, builddir=False)
-    command('official-instance', official_instance, builddir=False)
+    sub = command('official-instance', official_instance, builddir=False)
+    sub.add_argument('--arg', action='append', default=[])
     sub = command('recording', recording, builddir=False)
     sub.add_argument('--prefix', required=True)
     sub.add_argument('--target', choices=('linux', 'mingw32', 'darwin'), default='linux')
+    sub.add_argument('--codec', choices=('h264', 'vp9', 'av1'), default='h264')
     sub = command('recording-prefix', recording_prefix)
     sub.add_argument('--target', choices=('linux', 'mingw32', 'darwin'), default='linux')
-    # SCons' compiler names (its CC/CXX defaults), so both share one store entry.
+    sub.add_argument('--codec', choices=('h264', 'vp9', 'av1'), default='h264')
+    # The default compiler names, so every build shares one store entry.
     sub.add_argument('--cc', default=os.environ.get('CC', 'gcc'))
     sub.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
     sub.add_argument('--ar', default='ar')

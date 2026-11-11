@@ -1,4 +1,5 @@
-"""The CMake build reads SCons' manifests, never its own copy."""
+"""The CMake build reads the shared manifests (buildsys/sources.py, test/tests.py,
+buildsys/harness_programs.py) through generated lists, never its own copy."""
 import contextlib
 import importlib
 import importlib.util
@@ -77,23 +78,12 @@ class CMakeSourcesTests(unittest.TestCase):
                 with self.subTest(source=source):
                     self.assertEqual(flags[group].split(), list(options.get('cxxflags', ())))
 
-    def test_harness_programs_come_from_the_shared_table(self):
-        script = (ROOT / 'src/SConscript').read_text()
-        self.assertIn('from harness_programs import HARNESS_PROGRAMS', script)
-        tail = script.split('# Harness and tool programs', 1)[1]
-        self.assertNotIn("development_program('", tail, 'add harness programs to buildsys/harness_programs.py')
+    def test_harness_programs_name_real_sources(self):
         for program in harness_programs.HARNESS_PROGRAMS:
             self.assertTrue((ROOT / program.source.lstrip('#')).is_file(), program.source)
             if not isinstance(program.link, str):
                 for name in program.link:
                     self.assertIn(name, sources.CLIENT_SOURCES)
-
-    def test_native_only_sources_match_src_sconscript(self):
-        script = (ROOT / 'src/SConscript').read_text()
-        added = re.search(r"source_files \+= \[('mcp/[^\]]*)\]", script)
-        self.assertIsNotNone(added, 'src/SConscript no longer adds the MCP sources this way')
-        self.assertEqual(tuple(re.findall(r"'([^']+)'", added.group(1))),
-                         export_cmake_sources.NATIVE_CLIENT_SOURCES)
 
     def test_cmake_reads_the_generated_lists(self):
         cmake = (ROOT / 'CMakeLists.txt').read_text()
@@ -109,8 +99,8 @@ class CMakeSourcesTests(unittest.TestCase):
         self.assertIn('glob2_objects_of(module_objects glob2_client ${GLOB2_${upper}_SOURCES})', cmake)
         self.assertNotRegex(cmake, r'[\w/]+\.(cpp|c)\b', 'list sources in buildsys/sources.py, not CMakeLists.txt')
 
-    def test_build_config_matches_sconstruct_rendering(self):
-        """The CMake bridge renders BuildConfig.h through the same helpers as SConstruct."""
+    def test_build_config_renders_through_the_shared_helpers(self):
+        """The bridge renders BuildConfig.h through buildsys/build_config.py."""
         bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'buildsys/cmake_generate.py')
         module = importlib.util.module_from_spec(bridge)
         bridge.loader.exec_module(module)
@@ -126,12 +116,8 @@ class CMakeSourcesTests(unittest.TestCase):
         build_config.add_fribidi(expected)
         self.assertEqual(text, expected.text())
         self.assertIn('#define HAVE_OPENGL  \n', text)
-        sconstruct = (ROOT / 'SConstruct').read_text()
-        for helper in ('add_package(configfile', 'add_native_wss(configfile)', 'add_opengl(configfile)',
-                       'add_fribidi(configfile)'):
-            self.assertIn(helper, sconstruct)
 
-    def test_bridge_identity_is_the_scons_identity(self):
+    def test_bridge_identity_is_the_build_layout_identity(self):
         bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'buildsys/cmake_generate.py')
         module = importlib.util.module_from_spec(bridge)
         bridge.loader.exec_module(module)
@@ -147,24 +133,10 @@ class CMakeSourcesTests(unittest.TestCase):
                 self.assertEqual(json.loads(printed.getvalue())['directory'],
                                  (ROOT / module.default_directory(expected)).as_posix())
 
-    def test_export_runs_without_scons(self):
-        # The generator must not import SCons (buildsys/javascript.py imports it lazily).
-        result = subprocess.run([sys.executable, '-c', 'import runpy, sys\n'
-                                 'sys.modules["SCons"] = None\n'
-                                 'sys.argv = ["export_cmake_sources.py", "--check"]\n'
-                                 'runpy.run_path("buildsys/export_cmake_sources.py", run_name="__main__")'],
-                                cwd=ROOT, capture_output=True, text=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-
-    def test_bridge_modules_import_without_scons(self):
-        # The CMake build calls the provenance and asset export code without SCons installed.
-        for module in ('test_provenance', 'runtime_assets', 'shared_assets', 'harness_programs'):
-            result = subprocess.run([sys.executable, '-c', 'import sys\n'
-                                     'sys.modules["SCons"] = None\n'
-                                     'sys.path.insert(0, "buildsys")\n'
-                                     f'import {module}'], cwd=ROOT, capture_output=True, text=True)
-            with self.subTest(module=module):
-                self.assertEqual(result.returncode, 0, result.stderr)
+    def test_nothing_imports_scons(self):
+        for path in sorted((ROOT / 'buildsys').glob('*.py')) + sorted((ROOT / 'tools').glob('*.py')):
+            with self.subTest(path=path.name):
+                self.assertNotRegex(path.read_text(), r'(?m)^\s*(from|import) SCons\b')
 
 
 if __name__ == '__main__':

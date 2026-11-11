@@ -1,6 +1,6 @@
 """Registry of every native test and test-adjacent program.
 
-test/SConscript builds four doctest binaries from these tables and buildsys/mobile_build.py
+CMakeLists.txt builds four doctest binaries from these tables and cmake/mobile.cmake
 cross-compiles the same lists (portable_engine_tests() and portable_unit_tests() fold
 the module binaries back into the two the mobile and browser builds produce). Paths
 are relative to test/ unless they start with '#', which is the repository root: a
@@ -346,7 +346,7 @@ UNIT_TESTS = [
     '#src/unit/render/UnitDrawGeometryTest.cpp',
     '#src/unit/UnitTimingTest.cpp',
     '#third_party/natsort/NatSortTest.cpp',
-    # Former standalone programs compiled by test/SConstruct or directly in CI.
+    # Former standalone programs once compiled directly in CI.
     '#src/game/player/BasePlayerSaveLoadTest.cpp',
     '#src/team/BaseTeamSaveLoadTest.cpp',
     '#src/game/BulletSaveLoadTest.cpp',
@@ -689,7 +689,7 @@ MODULE_CASE_FLOORS = {
 
 # Standalone programs: (target, source, alias, group). group 'test' programs are run by
 # CI through their own runners; 'tools' are developer utilities and benchmarks. The
-# transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
+# transport programs the browser tests drive are harnesses (buildsys/harness_programs.py) under 'transport-test'.
 PROGRAMS = [
     ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
 

@@ -110,7 +110,7 @@ def main():
     if args.developer_dir:
         options["developer_dir"] = args.developer_dir
     # Application feature profiles do not change the pinned native libraries.
-    # Use the same identity as the SCons consumer when publishing the manifest.
+    # Use the same identity as the build that consumes the manifest (cmake/mobile.cmake).
     identity = dependency_identity(build_identity(options))
     toolchain = discover(identity, options)
     final = dependency_prefix(ROOT, identity, toolchain["fingerprint"], lease=False)

@@ -4,7 +4,7 @@ Focused regression scenarios and commands. Start with the [native test guide](..
 
 ## Match relay
 
-`scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
+`python3 tools/dev_build.py role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
 doctest binary of its own (the relay role builds no engine or SDL code). Run it
 directly, then `python3 -m unittest discover -s test/relay_service -v` for the end-to-end
 tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
@@ -14,7 +14,7 @@ package's ticket fixtures. See [docs/multiplayer/relay.md](../../multiplayer/rel
 Release builds have no switch that opens an online screen directly; players reach
 them through the online hub. To look at a screen offline, render its canned states:
 `src/ui/OnlineUIFixtures.h` holds the fixtures (hub, room, match start, quick match,
-profile, maps) for the `UIPresentation` cases and `scons release=1 mobile-gallery`.
+profile, maps) for the `UIPresentation` cases and `python3 tools/dev_build.py release=1 mobile-gallery`.
 `PlatformClientTest` in the unit binary covers the client's request lifetimes,
 including screens destroyed with requests in flight.
 
@@ -31,7 +31,7 @@ Switches the online and LAN tests use:
 
 ## Real LAN session regression
 
-The direct transport/security checks use `scons release=1 transport-test`,
+The direct transport/security checks use `python3 tools/dev_build.py release=1 transport-test`,
 `python3 test/run-network-transport-tests.py`,
 `build/darwin/client/release/src/lan-discovery-test` (substitute your platform),
 and `python3 -m unittest discover -s test/transport -v`. Deployment script
@@ -48,7 +48,7 @@ create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
 From the repository root:
 
 ```sh
-scons --build=build/native-tests -j2 release=1 lan-test
+python3 tools/dev_build.py --build=build/native-tests -j2 release=1 lan-test
 python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness
 ```
 
@@ -79,7 +79,7 @@ the one-tick-bundle rows). `TurnHarness` (unit binary) and `TurnEngineHarness` (
 binary) have `[benchmark]` cases that measure the same on the simulated network, per
 link profile (`docs/multiplayer/turn-timing.md#measured-delay`).
 
-`OnlinePlayHarness` (`scons release=1 server=0 online-play-test`) plays an online
+`OnlinePlayHarness` (`python3 tools/dev_build.py release=1 online-play-test`) plays an online
 room through the real hub, Room, starting and results screens against a live
 instance in a host and a guest process; see "End-to-end check" in
 [docs/multiplayer/client.md](../../multiplayer/client.md).

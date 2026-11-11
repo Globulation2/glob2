@@ -44,9 +44,10 @@ def packages_for(binary, run=subprocess.check_output):
 
 
 def runtime_binaries(root):
-    """Built runtime programs, excluding SCons' disposable compiler probes."""
+    """Built runtime programs, excluding the build's disposable compiler probes."""
     for path in sorted(root.rglob('*')):
-        if path.is_relative_to(root / 'configure') or not path.is_file():
+        # configure/ (older builds) and CMakeFiles/ hold compiler probes.
+        if path.is_relative_to(root / 'configure') or 'CMakeFiles' in path.relative_to(root).parts or not path.is_file():
             continue
         with path.open('rb') as source:
             elf = source.read(4) == b'\x7fELF'

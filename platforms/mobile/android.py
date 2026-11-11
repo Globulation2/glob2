@@ -141,7 +141,7 @@ def main():
     dependency_toolchains={abi:discover(dependency_identities[abi], {'android_sdk':str(sdk)})['fingerprint'] for abi in arches}
     prefixes={abi:dependency_prefix(ROOT, dependency_identities[abi], dependency_toolchains[abi]) for abi in arches}
     for abi in arches:
-        subprocess.run([sys.executable,str(ROOT/'tools/dev_build.py'),'--generator=cmake','target=android','arch='+abi,
+        subprocess.run([sys.executable,str(ROOT/'tools/dev_build.py'),'target=android','arch='+abi,
             'release='+str(int(args.release)),'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
             'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,check=True)
     with BuildLock(output):

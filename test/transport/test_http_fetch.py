@@ -1,6 +1,6 @@
 """Native HttpFetch against local HTTP and HTTPS servers.
 
-Builds with `scons release=1 transport-test` (the http-fetch-test harness).
+Builds with `python3 tools/dev_build.py release=1 transport-test` (the http-fetch-test harness).
 """
 import http.server
 import json

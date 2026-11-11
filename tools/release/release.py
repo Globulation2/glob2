@@ -109,7 +109,7 @@ def archive(destination, tag=None):
     with tarfile.open(target, "r:gz") as packed:
         names = set(packed.getnames())
         required = {prefix + name for name in (
-            "SConstruct", "buildsys/build_layout.py", "platforms/linux/glob2.6", "content/data/glob2.desktop",
+            "CMakeLists.txt", "buildsys/build_layout.py", "platforms/linux/glob2.6", "content/data/glob2.desktop",
             "content/data/org.globulation2.Globulation2.metainfo.xml",
             "content/data/screenshots/globulation2-gameplay.png",
             "content/data/usl/Language/Runtime/Control.usl",

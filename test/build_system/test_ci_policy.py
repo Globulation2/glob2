@@ -89,7 +89,7 @@ class PolicyTest(unittest.TestCase):
         self.assertEqual({flag for flag, on in music.items() if on}, {'music'})
         assets = self.select(['content/data/zik/woodland/a1.ogg', 'content/data/zik/woodland/LICENSE.txt'])
         self.assertEqual({flag for flag, on in assets.items() if on}, {'native', 'browser'})
-        self.assertEqual(self.select(['content/data/zik/SConscript']), policy.full())
+        self.assertEqual(self.select(['content/data/zik/sets.json']), policy.full())
         # Music-only changes stay cheap; mixing engine code selects affected checks too.
         report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py'])
         self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
@@ -129,11 +129,11 @@ class PolicyTest(unittest.TestCase):
             self.assertEqual(self.select([path]),policy.full())
 
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):
-        for path in ['src/app/Version.h','libs/gag/include/Surface.h','libs/gag/include/AudioFormat.h','buildsys/opus_dependencies.py','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
+        for path in ['src/app/Version.h','libs/gag/include/Surface.h','libs/gag/include/AudioFormat.h','buildsys/opus_dependencies.py','CMakeLists.txt','unmapped/new.cpp','test/ci_native_shard_plan.py']:
             self.assertEqual(self.select([path]), policy.full(), path)
         self.assertEqual(policy.select([], known=False)[0], policy.full())
         self.assertFalse(any(self.select([]).values()))
-        self.assertEqual(self.select(['src/hud/input/GameGUIInput.cpp','SConstruct']),policy.full())
+        self.assertEqual(self.select(['src/hud/input/GameGUIInput.cpp','CMakeLists.txt']),policy.full())
 
     def test_labels_only_expand(self):
         paths = ['src/game/Game_sync.cpp']
@@ -245,7 +245,7 @@ class PolicyTest(unittest.TestCase):
 
     def test_ci_build_and_selector_changes_force_full_verification(self):
         for path in ('.github/workflows/build.yml', '.github/scripts/ci_changed_paths.py',
-                     'test/build_system/test_ci_policy.py', 'SConstruct'):
+                     'test/build_system/test_ci_policy.py', 'CMakeLists.txt'):
             with self.subTest(path=path):
                 report,_ = self.exercise('pull_request', [path])
                 self.assertEqual(report['verification_mode'], 'full')
@@ -452,7 +452,7 @@ class SimulationPathTest(unittest.TestCase):
     def test_sim_diff_runs_for_simulation_sources_and_data_only(self):
         import ci_policy
         for path in ('src/unit/Unit.cpp', 'src/game/Game_sync.cpp', 'src/net/turn/TurnEngine.cpp',
-                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'src/SConscript', 'CMakeLists.txt', 'cmake/sources.cmake',
+                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'buildsys/javascript.py', 'CMakeLists.txt', 'cmake/sources.cmake',
                      'third_party/quickjs-ng/quickjs.c'):
             with self.subTest(path=path):
                 self.assertTrue(ci_policy.touches_simulation([path]))

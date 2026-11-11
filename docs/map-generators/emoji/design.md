@@ -118,8 +118,8 @@ those archived cohorts as current balance claims.
 ## Reproduction
 
 ```sh
-scons release=1 server=0 -j4 build/src/glob2 engine-tests map-generator-golden-test
-build/src/glob2 map generate emoji --seed 7 --set character=1 \
+python3 tools/dev_build.py release=1 -j4 glob2 engine-tests map-generator-golden-test
+build/linux/client/release/src/glob2 map generate emoji --seed 7 --set character=1 \
   --set outline=1 --set inverse=1 --output artifacts/emoji/smile.map \
   --preview artifacts/emoji/smile.png --report-file artifacts/emoji/smile.json
 ```

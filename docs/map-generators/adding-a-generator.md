@@ -150,7 +150,7 @@ Old numeric IDs and descriptor bytes remain stable. The adapter resolves histori
 Build and run the contract checks:
 
 ```sh
-scons release=1 -j12 map-generator-study engine-tests
+python3 tools/dev_build.py release=1 -j12 map-generator-study engine-tests
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```

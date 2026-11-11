@@ -10,7 +10,7 @@ explorers and warriors in distinct visible cells at the camera's minimum zoom.
 Run from the repository root with an isolated profile:
 
 ```sh
-scons perf=1 torus-render-benchmark
+python3 tools/dev_build.py perf=1 torus-render-benchmark
 mkdir -p artifacts/render-profile
 GLOB2_USER_DATA_DIR="$PWD/artifacts/render-profile/profile" \
 GLOB2_BENCH_FLAT=1 GLOB2_BENCH_SIZE=256x256 GLOB2_BENCH_UNITS=1000 \

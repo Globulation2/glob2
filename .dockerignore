@@ -9,7 +9,6 @@ platforms/web/node_modules
 **/__pycache__
 *.o
 *.a
-.scons*
 config.h
 
 .env

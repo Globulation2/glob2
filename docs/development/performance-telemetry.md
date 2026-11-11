@@ -116,7 +116,7 @@ in serial play; it absorbs once more after the thread stops. Records name the th
 ran on: `thread=main`, `thread=simulation` or `thread=main+simulation`. Threaded sessions
 budget presentation against 60 Hz instead of the serial render interval.
 
-Run `scons -j8 release=1 server=0 tests`, then
+Run `python3 tools/dev_build.py -j8 release=1 tests`, then
 `python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'` and
 `python3 test/run_tests.py --filter 'TeamStatsSave/*' --filter 'SavegameSafety/*'`. The dedicated collector
 harness uses an injected clock; the save harness checks background completion/failure counts.

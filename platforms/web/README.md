@@ -38,9 +38,9 @@ python3 platforms/web/serve.py 8765 --bind 127.0.0.1 --directory build/emscripte
 
 Use `web_variant=serial` for a serial-only development client. All game features
 and shared assets remain present; a threaded-only client reports an error when
-the host cannot support threads. Ordinary SCons defaults to both runtimes,
+the host cannot support threads. A release `target=web` build has both runtimes,
 and `web-package` requires both. Full browser compatibility verification also
-uses both. `pch=1` and `unity=1` are explicit experiments; see
+uses both. See
 [development build profiles](../../docs/development/build-options.md#fast-development-builds)
 for cache controls and debugging limits.
 
@@ -453,16 +453,11 @@ The browser test matrix runs at most ten jobs at once so Linux test shards can
 start promptly during a full workflow run.
 
 `web-native` restores the main Ubuntu 24.04 native compiler cache read-only
-for its router and transport fixtures. It also restores its own SCons objects,
-keyed by the installed compiler binary, and recompiles `GlobalContainerArgs.cpp`
-to refresh the build banner. Master and manual workflow dispatches save those
-objects for later runs. Emscripten uses a separate bounded cache
+for its router and transport fixtures and recompiles `GlobalContainerArgs.cpp`
+to refresh the build banner. Emscripten uses a separate bounded cache
 through `EM_COMPILER_WRAPPER=ccache`, keyed by runner OS/architecture and the
 pinned toolchain. Only master saves that compiler cache, after pruning unused
-entries; the first run for a new toolchain starts cold. The WebAssembly build
-also restores SCons object files from the most recent master build. It rebuilds
-`GlobalContainerArgs.cpp` on every run so the compile-time banner stays current;
-manual workflow dispatches can warm this object cache on their own branch.
+entries; the first run for a new toolchain starts cold.
 Compiler contents and input files remain validated; no timestamp or time-macro
 sloppiness is enabled. Cache statistics are printed for native and WASM builds.
 The Emscripten ports/system-library directory and linked output are rebuilt on

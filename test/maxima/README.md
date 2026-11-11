@@ -7,7 +7,7 @@ standalone policy checks in `glob2-unit-tests`, the engine integrations in
 `glob2-engine-tests`); the Python tests are plain `unittest` files:
 
 ```sh
-scons release=1 server=0 tests maxima-strategy-dump
+python3 tools/dev_build.py release=1 tests maxima-strategy-dump
 python3 test/run_tests.py --filter 'Maxima.*'
 MAXIMA_STRATEGY_DUMP=build/darwin/client/release/test/MaximaStrategyDump \
   GLOB2_BUILD_DIR=build/darwin/client/release python3 src/ai/maxima/MaximaStrategyConfigTest.py
@@ -33,7 +33,7 @@ are required.
 Run focused shared-binary cases for food accounting, continuation and relocation:
 
 ```sh
-scons release=1 server=0 tests
+python3 tools/dev_build.py release=1 tests
 python3 test/run_tests.py --filter 'Maxima.FoodLedger/*' --filter 'Maxima.Continuation/*'   # glob2-unit-tests
 python3 test/run_tests.py --filter 'Maxima.Relocation/*'                                    # glob2-engine-tests
 ```
