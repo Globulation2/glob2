@@ -439,6 +439,7 @@ struct PlacementPolicy
 	int towerSpreadSaturationTiles;
 	int towerSpreadPercent;
 	int towerRepairHealthPercent;
+	int foodUpgradeRetryTicks;
 	int laborScale;
 	int downtimeWorkerScale;
 	int arteryLengthScale;
@@ -629,6 +630,10 @@ public:
 		int enemyStructureGap=INT_MAX;
 	};
 	TowerState towerState() const;
+	/// Inn and swarm upgrades that failed their food check, by building id, and
+	/// the tick before which they are not checked again. Saved after older fields.
+	const std::map<int,int>& foodUpgradeRetries() const { return foodUpgradeRetryTick; }
+	void restoreFoodUpgradeRetries(std::map<int,int> retries,int tick);
 	/// Whether a damaged building should be repaired now. Towers wait for
 	/// heavy damage and for nearby enemy fighters to leave.
 	bool repairWanted(const WorldState& world,const WorldBuilding& building) const;
@@ -698,6 +703,10 @@ private:
 	struct Candidate;
 	static void preferUpgrades(std::vector<Candidate>& candidates,
 		const std::vector<DevelopmentIntent>& intents);
+	void applyUpgradePriority(Candidate& candidate,int priority) const;
+	bool resolveLazyCandidate(const WorldState& world,Candidate& candidate);
+	size_t bestCandidate(const WorldState& world,std::vector<Candidate>& candidates);
+	bool anyViableCandidate(const WorldState& world,std::vector<Candidate>& candidates);
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;
@@ -779,6 +788,13 @@ private:
 	mutable int foodLedgerExcludedAction;
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
+	// While non-negative, foodLocationQuality returns it without walking: the
+	// optimistic bound used to skip walks for candidates that cannot win.
+	mutable int foodQualityCeiling=-1;
+	// While set, scoreCandidate omits farm loss (a penalty that is never
+	// negative): the optimistic pre-routing bound of the scan.
+	mutable bool optimisticScoring=false;
+	std::map<int,int> foodUpgradeRetryTick;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
     mutable std::array<int,MaterialCount> foodCandidateIndependent{},foodCandidateProduction{};
     mutable bool foodQueryValid=false;
@@ -797,6 +813,13 @@ private:
 	int colonyAnchorDistance(const WorldState& world, int x, int y) const;
 	std::pair<int,int> colonyBenefit(const WorldState& world,
 		const DevelopmentAction& action) const;
+	std::pair<int,int> computeColonyBenefit(const WorldState& world,
+		const DevelopmentAction& action) const;
+	// One-entry colonyBenefit memo, live only inside a scan slice.
+	mutable bool colonyBenefitMemoActive=false,colonyBenefitMemoValid=false;
+	mutable std::array<int,7> colonyBenefitMemoKey{};
+	mutable int colonyBenefitMemoType=-1;
+	mutable std::pair<int,int> colonyBenefitMemo;
 	mutable std::vector<uint8_t> colonyFoodClaims;
 	mutable std::vector<std::pair<int,int> > colonyAnchors;
 	bool colonyCandidatePasses(const WorldState& world,

@@ -312,11 +312,18 @@ remain standing spatial invariants.
 
 ## Scheduling and telemetry
 
-The complete policy normally runs every 512 ticks, and every 64 ticks while an
+The complete policy normally runs every 512 ticks, and every 128 ticks while an
 urgent farming condition holds. Strategy reviews, land clearing, maintenance
 clearing, defense, farming and placement share one deterministic map-scale job
 slot per AI update. A due strategy review takes priority and publishes its budget
-before the smaller executors run; other due jobs stay pending for later updates. Derived masks are reused and only real
+before the smaller executors run; other due jobs stay pending for later updates.
+Building events mark the strategy for review, but such a review waits until
+`scheduling.strategy_review_min_gap_ticks` (100) after the last one; the periodic
+review keeps its interval. A farming update re-plans maintenance clearing at once,
+while new reservations re-plan it at most every
+`scheduling.maintenance_clearing_min_gap_ticks` (128). Placement and clearing read
+the wood reserve chosen by the latest farming update instead of rebuilding the
+wheat plan and worker reachability for each query. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports
 `microseconds`, `wood_reserve_seeds`, `wood_reserve_capacity`,
 `wood_reserve_target`, `wheat_renewable_capacity`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,

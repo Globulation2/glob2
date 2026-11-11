@@ -67,13 +67,20 @@ inline void traverseWeightedFoodSupply(const AIEngine::AIWorldView* map,const st
 {
     const int width=foodWidth(map),size=width*foodHeight(map);
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
-    std::vector<unsigned> distance(size,infinity);
+    // Per-thread generation-stamped distances: an unstamped cell reads as infinity,
+    // so no full-map allocation or fill per building.
+    struct Scratch { std::vector<unsigned> distance; std::vector<uint32_t> stamp; uint32_t generation=0; };
+    thread_local Scratch scratch;
+    if(int(scratch.stamp.size())!=size){scratch.distance.assign(size,infinity);scratch.stamp.assign(size,0);scratch.generation=0;}
+    if(++scratch.generation==0){std::fill(scratch.stamp.begin(),scratch.stamp.end(),0);scratch.generation=1;}
+    const uint32_t generation=scratch.generation;
+    const auto distanceAt=[&](int index){return scratch.stamp[index]==generation?scratch.distance[index]:infinity;};
     using Entry=std::pair<unsigned,int>;
     std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> queue;
     auto add=[&](int x,int y,unsigned cost) {
         x=map->normalizeX(x);y=map->normalizeY(y);const int index=y*width+x;
-        if(cost<distance[index] && foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles))
-        {distance[index]=cost;queue.emplace(cost,index);}
+        if(cost<distanceAt(index) && foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles))
+        {scratch.stamp[index]=generation;scratch.distance[index]=cost;queue.emplace(cost,index);}
     };
     for(const auto* building:buildings)
         for(int dy=-1;dy<=foodBuildingType(map,*building).height;++dy)
@@ -83,7 +90,7 @@ inline void traverseWeightedFoodSupply(const AIEngine::AIWorldView* map,const st
     while(!queue.empty())
     {
         const auto [cost,index]=queue.top();queue.pop();
-        if(distance[index]!=cost)continue;
+        if(distanceAt(index)!=cost)continue;
         const auto action=visit(index,int((cost+GRADIENT_STEP-1)/GRADIENT_STEP));
         if(action==field::Visit::Stop)break;
         if(action==field::Visit::Skip)continue;
@@ -185,7 +192,18 @@ inline long long reachableFoodCapacity(const AIEngine::AIWorldView* map, const A
 	const auto accessible=[&](int x, int y) {
 		return foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles);
 	};
-	std::map<int,int> distance;
+	// Generation-stamped per-thread distances: a flat array visited in the same
+	// order as the former map, without a tree insert per reached tile.
+	struct Scratch { std::vector<int> distance; std::vector<uint32_t> stamp; uint32_t generation=0; };
+	thread_local Scratch scratch;
+	const std::size_t size=std::size_t(width)*foodHeight(map);
+	if(scratch.stamp.size()!=size){scratch.distance.assign(size,0);scratch.stamp.assign(size,0);scratch.generation=0;}
+	if(++scratch.generation==0){std::fill(scratch.stamp.begin(),scratch.stamp.end(),0);scratch.generation=1;}
+	const uint32_t generation=scratch.generation;
+	const auto claim=[&](int index,int steps) {
+		if(scratch.stamp[index]==generation)return false;
+		scratch.stamp[index]=generation;scratch.distance[index]=steps;return true;
+	};
 	std::vector<int> queue;
 	for(int dy=-1;dy<=foodBuildingType(map,*building).height;++dy)
 		for(int dx=-1;dx<=foodBuildingType(map,*building).width;++dx)
@@ -195,7 +213,7 @@ inline long long reachableFoodCapacity(const AIEngine::AIWorldView* map, const A
 			const int x=map->normalizeX(building->posX+dx);
 			const int y=map->normalizeY(building->posY+dy);
 			const int index=y*width+x;
-			if(accessible(x,y) && distance.insert(std::make_pair(index,0)).second)
+			if(accessible(x,y) && claim(index,0))
 				queue.push_back(index);
 		}
 	long long capacity=0;
@@ -206,11 +224,11 @@ inline long long reachableFoodCapacity(const AIEngine::AIWorldView* map, const A
 			if(MapState::terrainSupportsMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&map->resourceAt(tileIndex).resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
 				capacity+=AIResourceSources::renewablePotential(map->state(),map->tileIndex(x,y),MaterialId::Food)+foodStockCapacityEquivalent(MapState::materialAmountAt(map->state(),map->tileIndex(x,y),MaterialId::Food),stockHorizonTicks);
-			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
+			return scratch.distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int px,int py) {
 			const int nx=map->normalizeX(px),ny=map->normalizeY(py),adjacent=ny*width+nx;
-			if(accessible(nx,ny)&&distance.insert(std::make_pair(adjacent,distance[index]+1)).second)
-				queue.push_back(adjacent);
+			if(scratch.stamp[adjacent]!=generation&&accessible(nx,ny))
+			{claim(adjacent,scratch.distance[index]+1);queue.push_back(adjacent);}
 		});
 	return capacity;
 }

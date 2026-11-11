@@ -3829,6 +3829,10 @@ Maxima::Maxima(Player *player)
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
+	maintenance_clearing_requested_by_farming=false;
+	last_maintenance_clearing_tick=-1000000;
+	farming_wood_reserve=WoodReserve(0);
+	farming_wood_reserve_valid=false;
 	development_cycle_pending=false;
 	preemptive_defense_pending=false;
 	reactive_defense_pending=false;
@@ -3862,7 +3866,10 @@ void Maxima::tick(Context& runtime)
 	// slot before the small executors so initialization, loaded saves and dirty
 	// plans publish a coherent budget before those executors consume it. A due
 	// periodic review shares this slot rather than evaluating a second time.
-	const bool strategyReviewDue=!director.initialized || director.dirty
+	// Building events mark the plan dirty; such reviews are spaced by
+	// strategy_review_min_gap_ticks from the last one (snapshot.tick).
+	const bool strategyReviewDue=!director.initialized
+		|| (director.dirty && timer-snapshot.tick>=strategy.scheduling.strategy_review_min_gap_ticks)
 		||timer%strategy.scheduling.strategy_interval_ticks
 			==staggered_phase(strategy.scheduling.strategy_phase_offset_ticks,
 				strategy.scheduling.strategy_interval_ticks,team);
@@ -4020,9 +4027,12 @@ void Maxima::tick(Context& runtime)
 		land_clearing_pending=false;
 		manage_land_clearing(runtime);
 	}
-	else if(maintenance_clearing_pending)
+	else if(maintenance_clearing_pending
+		&& (maintenance_clearing_requested_by_farming
+		    || timer-last_maintenance_clearing_tick>=strategy.scheduling.maintenance_clearing_min_gap_ticks))
 	{
-		maintenance_clearing_pending=false;
+		maintenance_clearing_pending=false;maintenance_clearing_requested_by_farming=false;
+		last_maintenance_clearing_tick=timer;
 		update_maintenance_clearing_areas(runtime);
 	}
 	else if(preemptive_defense_pending)
@@ -4040,7 +4050,7 @@ void Maxima::tick(Context& runtime)
 		update_farming(runtime);
 		last_farming_tick=timer;
 		land_clearing_pending=true;
-		maintenance_clearing_pending=true;
+		maintenance_clearing_pending=true;maintenance_clearing_requested_by_farming=true;
 	}
 	else if(development_cycle_pending)
 	{
@@ -4467,6 +4477,7 @@ void Maxima::configure_development_planner()
 	policy.towerSpreadSaturationTiles=strategy.placement.tower_spread_saturation_tiles;
 	policy.towerSpreadPercent=strategy.placement.tower_spread_percent;
 	policy.towerRepairHealthPercent=strategy.repairs.tower_health_percent;
+	policy.foodUpgradeRetryTicks=strategy.placement.food_upgrade_retry_ticks;
 	policy.laborScale=strategy.placement.labor_scale;
 	policy.downtimeWorkerScale=strategy.placement.downtime_worker_scale;
 	policy.arteryLengthScale=strategy.placement.artery_length_scale;
@@ -4552,7 +4563,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
     }
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
-	const WoodReserve wood_reserve=select_wood_reserve(runtime);
+	const WoodReserve wood_reserve=current_wood_reserve(runtime);
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;

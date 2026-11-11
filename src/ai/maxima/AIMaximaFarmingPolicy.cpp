@@ -354,7 +354,7 @@ Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& runtime)
 	settlement_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.teamNumber(), CompletedBuildings));
 	Gradient& settlement=runtime.get_gradient_manager().get_gradient(settlement_info);
-	const WoodReserve wood_reserve=select_wood_reserve(runtime);
+	const WoodReserve wood_reserve=current_wood_reserve(runtime);
 	WoodClearingTarget best;
 	int best_score=INT_MIN;
 	for(int x=0; x<mi.get_width(); ++x)
@@ -434,7 +434,7 @@ bool Maxima::continue_clearing_campaign(Context& runtime)
 			runtime.push_order(std::shared_ptr<Order>(new OrderModifyClearingFlag(
 				flag->gid, clearing_resources)));
 
-			const WoodReserve wood_reserve=select_wood_reserve(runtime);
+			const WoodReserve wood_reserve=current_wood_reserve(runtime);
 			bool reserve_overlap=false;
 			for(size_t i=0;i<wood_reserve.cells.size();++i)
 				if(wood_reserve.cells[i] && runtime.observation().distanceSquared(
@@ -599,16 +599,21 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 	// Ignore transient units. Reserve selection may include approaches workers
 	// can open by harvesting; circulation clearing needs currently empty routes.
 	std::vector<Uint8> reachable(size,0);
+	// Per-thread generation-stamped visit marks in place of a full-map array per pass.
+	thread_local std::vector<uint32_t> visitStamp;thread_local uint32_t visitGeneration=0;
+	if(int(visitStamp.size())!=size){visitStamp.assign(size,0);visitGeneration=0;}
 	for(int swimming=0;swimming<=1;++swimming)
 	{
-		std::vector<Uint8> visited(size,0);
+		if(++visitGeneration==0){std::fill(visitStamp.begin(),visitStamp.end(),0);visitGeneration=1;}
+		const uint32_t generation=visitGeneration;
+		const auto visited=[&](int index){return visitStamp[index]==generation;};
 		std::vector<int> queue;
 		for (const AIEngine::UnitView* worker : runtime.observation().unitsForTeam(runtime.teamNumber()))
 		{
 			if(!worker||!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*worker,WORKER)
 			   ||int(worker->performance[SWIM]>0)!=swimming)continue;
 			const int index=(*map).normalizeY(worker->posY)*w+(*map).normalizeX(worker->posX);
-			if(!visited[index]){visited[index]=1;queue.push_back(index);}
+			if(!visited(index)){visitStamp[index]=generation;queue.push_back(index);}
 		}
 		field::traverse(queue,{w,h},field::Surrounding,
 			[&](int index) {
@@ -629,14 +634,14 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 				const bool farm_area=after_harvest
 					&& next<int(applied_farm_protection_mask.size())
 					&& applied_farm_protection_mask[next];
-				if(visited[next]||tile.building!=NOGBID
+				if(visited(next)||tile.building!=NOGBID
 				   ||(MapState::resourceBlocksGround(map->state(),next) && !farm_area && !(after_harvest
 				      && (MapState::hasMaterial(map->state(),map->tileIndex(nx,ny),MaterialId::Wood) || MapState::hasMaterial(map->state(),map->tileIndex(nx,ny),MaterialId::Food))))
 				   ||(!map->state().terrainProperties(map->tileIndex(nx,ny)).walkable && !(swimming && map->state().terrainProperties(map->tileIndex(nx,ny)).swimmable))
 				   ||!((map->visibilityAt(map->tileIndex(nx,ny)).discovered&(runtime.observedTeam().allies))!=0)
 				   ||(((map->areasAt(map->tileIndex(nx,ny)).forbidden&(runtime.observedTeam().mask))!=0)
 				      && !farm_area && !development_planner.isCirculationReserved(next)))return;
-				visited[next]=1;queue.push_back(next);
+				visitStamp[next]=generation;queue.push_back(next);
 			});
 	}
 
@@ -712,7 +717,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	const int h=(*map).height;
 	const int size=w*h;
 	MaintenanceClearingPlan plan(size);
-	const WoodReserve wood_reserve=select_wood_reserve(runtime);
+	const WoodReserve wood_reserve=current_wood_reserve(runtime);
 	const bool enabled=budget.farming_enabled
 		&& budget.farming_maintenance_clearing_enabled;
 
@@ -742,6 +747,11 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	{
 		const std::map<int,AIMaximaPlacement::Reservation>& reservations=
 			development_planner.reservations();
+		// One member mask and one preserved-resource map serve every reservation:
+		// each reservation marks only its own cells and undoes them afterwards,
+		// in place of a full-map allocation and copy per reservation.
+		std::vector<Uint8> memberMask(size,0);
+		std::vector<std::pair<int,Uint8>> preservedUndo;
 		for(std::map<int,AIMaximaPlacement::Reservation>::const_iterator reservation=
 			reservations.begin(); reservation!=reservations.end(); ++reservation)
 		{
@@ -753,7 +763,6 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 				reservation_member_footprints(runtime, contract);
 			// Only actual/pending members need their footprint kept clear. Future
 			// upgrade land and unused campus slots remain resource-preserving.
-			std::vector<Uint8> memberMask(size,0);
 			std::vector<int> circulation=contract.circulationTiles;
 			for(const auto& member:members)
 			{
@@ -779,12 +788,17 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 				}),circulation.end());
 			if(budget.farming_resource_preserving_circulation_enabled)
 			{
-				std::vector<Uint8> preserved=grandfathered_resource;
+				// This reservation's view of grandfathered_resource; every change is
+				// logged and reverted below, so the next reservation sees the original.
+				std::vector<Uint8>& preserved=grandfathered_resource;
+				preservedUndo.clear();
+				const auto setPreserved=[&](int index,Uint8 value)
+				{preservedUndo.emplace_back(index,preserved[index]);preserved[index]=value;};
 				// Old saves may have maintained the whole future footprint. Do not
 				// grandfather those destructive clearing obligations into this plan.
 				for(int index:contract.footprintTiles)if(!memberMask[index])
 				{
-					preserved[index]=(MapState::materialMaskAt(map->state(),index)&((1u<<materialIndex(MaterialId::Food))|(1u<<materialIndex(MaterialId::Wood))))!=0;
+					setPreserved(index,(MapState::materialMaskAt(map->state(),index)&((1u<<materialIndex(MaterialId::Food))|(1u<<materialIndex(MaterialId::Wood))))!=0);
 				}
 				for(const auto& member:members)
 				{
@@ -792,7 +806,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 						Farming::selectResourcePreservingCirculation(w,h,member,
 							circulation,preserved,resource_burden,reachable);
 					retain_circulation(selection.tiles);
-					for(int index:selection.tiles)preserved[index]=0;
+					for(int index:selection.tiles)setPreserved(index,0);
 					if(selection.fallbackEntranceTile>=0)
 					{
 						++plan.reservation_fallback_entrances;
@@ -800,9 +814,12 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 				}
 				for(int index:circulation)
 					plan.reservation_resources_preserved+=preserved[index]!=0;
+				for(auto undo=preservedUndo.rbegin();undo!=preservedUndo.rend();++undo)
+					preserved[undo->first]=undo->second;
 			}
 			else
 				retain_circulation(circulation);
+			for(const auto& member:members)for(int index:member)memberMask[index]=0;
 		}
 	}
 
@@ -1077,6 +1094,14 @@ bool Maxima::has_hard_farming_contract(int index) const
 {
 	return development_planner.isFootprintReserved(index)
 		|| development_planner.isCirculationReserved(index);
+}
+
+Maxima::WoodReserve Maxima::current_wood_reserve(Context& runtime) const
+{
+	if(farming_wood_reserve_valid && int(farming_wood_reserve.cells.size())
+	   ==runtime.observation().width*runtime.observation().height)
+		return farming_wood_reserve;
+	return select_wood_reserve(runtime);
 }
 
 Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
@@ -1495,9 +1520,11 @@ void Maxima::update_farming(Context& runtime)
 		|| !budget.farming_enabled || !budget.farming_protection_enabled)
 	{
 		release_farming_protection(runtime);
+		farming_wood_reserve_valid=false;
 		return;
 	}
 	FarmProtectionPlan plan=build_farming_protection_plan(runtime);
+	farming_wood_reserve=plan.wood_reserve;farming_wood_reserve_valid=true;
 
 	resolve_wheat_invasion_clearing(runtime, plan);
 	int added=0;

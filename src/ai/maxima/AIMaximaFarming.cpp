@@ -107,11 +107,39 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 	assert(resourceBurden.size()==size_t(size));
 	assert(reachable.size()==size_t(size));
 	ReservationClearingSelection result;
-	std::vector<uint8_t> footprintMask(size,0),allowed(size,0);
-	for(int index:footprint)if(index>=0&&index<size)footprintMask[index]=1;
-	for(int index:circulation)if(index>=0&&index<size&&!footprintMask[index])
+	// Called per reservation member every maintenance plan: per-thread
+	// generation-stamped scratch replaces five full-map arrays per call. An
+	// unstamped cell reads as the former default (0, UINT64_MAX, INT_MAX, -1).
+	struct Scratch
 	{
-		allowed[index]=1;
+		std::vector<uint32_t> footprint,allowed,node;
+		std::vector<uint64_t> cost;std::vector<int> length,parent;
+		uint32_t generation=0;
+	};
+	thread_local Scratch s;
+	if(int(s.node.size())!=size)
+	{
+		s.footprint.assign(size,0);s.allowed.assign(size,0);s.node.assign(size,0);
+		s.cost.assign(size,UINT64_MAX);s.length.assign(size,INT_MAX);s.parent.assign(size,-1);
+		s.generation=0;
+	}
+	if(++s.generation==0)
+	{
+		std::fill(s.footprint.begin(),s.footprint.end(),0);std::fill(s.allowed.begin(),s.allowed.end(),0);
+		std::fill(s.node.begin(),s.node.end(),0);s.generation=1;
+	}
+	const uint32_t g=s.generation;
+	const auto footprintMask=[&](int index){return s.footprint[index]==g;};
+	const auto allowed=[&](int index){return s.allowed[index]==g;};
+	const auto touch=[&](int index)
+	{if(s.node[index]!=g){s.node[index]=g;s.cost[index]=UINT64_MAX;s.length[index]=INT_MAX;s.parent[index]=-1;}};
+	const auto cost=[&](int index){return s.node[index]==g?s.cost[index]:UINT64_MAX;};
+	const auto length=[&](int index){return s.node[index]==g?s.length[index]:INT_MAX;};
+	const auto parent=[&](int index){return s.node[index]==g?s.parent[index]:-1;};
+	for(int index:footprint)if(index>=0&&index<size)s.footprint[index]=g;
+	for(int index:circulation)if(index>=0&&index<size&&!footprintMask(index))
+	{
+		s.allowed[index]=g;
 		if(!preservedResources[index])result.tiles.push_back(index);
 		else ++result.preservedResourceTiles;
 	}
@@ -120,48 +148,46 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 	// beside the building. Search only within the promised circulation land.
 	typedef std::tuple<uint64_t,int,int> Entry;
 	std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry> > queue;
-	std::vector<uint64_t> cost(size,UINT64_MAX);
-	std::vector<int> length(size,INT_MAX),parent(size,-1);
 	auto resourceCost=[&](int index)->uint64_t
 	{return preservedResources[index]?std::max(1,resourceBurden[index]):0;};
-	for(int index:circulation)if(index>=0&&index<size&&allowed[index])
+	for(int index:circulation)if(index>=0&&index<size&&allowed(index))
 	{
 		bool source=reachable[index]!=0;
 		const int x=dimensionRemainder(index, width),y=index/width;
 		for(int dy=-1;dy<=1&&!source;++dy)for(int dx=-1;dx<=1&&!source;++dx)
 		{
 			const int next=(dimensionRemainder(y+dy+height, height))*width+dimensionRemainder(x+dx+width, width);
-			source=!footprintMask[next]&&reachable[next];
+			source=!footprintMask(next)&&reachable[next];
 		}
 		if(source)
-		{cost[index]=resourceCost(index);length[index]=1;queue.push(Entry(cost[index],1,index));}
+		{touch(index);s.cost[index]=resourceCost(index);s.length[index]=1;queue.push(Entry(s.cost[index],1,index));}
 	}
 	int entrance=-1;
 	field::traversePriority(queue,{width,height},field::Surrounding,
 		[](const Entry& entry){return std::get<2>(entry);},
 		[&](const Entry& entry) {
 			const int index=std::get<2>(entry),x=dimensionRemainder(index, width),y=index/width;
-			if(std::get<0>(entry)!=cost[index] || std::get<1>(entry)!=length[index])return field::Visit::Skip;
+			if(std::get<0>(entry)!=cost(index) || std::get<1>(entry)!=length(index))return field::Visit::Skip;
 			const int neighbors[4]={y*width+dimensionRemainder(x+width-1, width),y*width+dimensionRemainder(x+1, width),
 				(dimensionRemainder(y+height-1, height))*width+x,(dimensionRemainder(y+1, height))*width+x};
-			for(int next:neighbors)if(footprintMask[next]){entrance=index;break;}
+			for(int next:neighbors)if(footprintMask(next)){entrance=index;break;}
 			return entrance>=0?field::Visit::Stop:field::Visit::Expand;
 		},[&](const Entry& entry,int px,int py) {
 			const int index=std::get<2>(entry);
 			const int next=(dimensionRemainder(py+height, height))*width+dimensionRemainder(px+width, width);
-			if(!allowed[next])return;
-			const uint64_t nextCost=cost[index]+resourceCost(next);
-			const int nextLength=length[index]+1;
-			if(nextCost<cost[next]||(nextCost==cost[next]&&nextLength<length[next]))
+			if(!allowed(next))return;
+			const uint64_t nextCost=cost(index)+resourceCost(next);
+			const int nextLength=length(index)+1;
+			if(nextCost<cost(next)||(nextCost==cost(next)&&nextLength<length(next)))
 			{
-				cost[next]=nextCost;length[next]=nextLength;parent[next]=index;
+				touch(next);s.cost[next]=nextCost;s.length[next]=nextLength;s.parent[next]=index;
 				queue.push(Entry(nextCost,nextLength,next));
 			}
 		});
 	if(entrance>=0)
 	{
-		if(cost[entrance]>0)result.fallbackEntranceTile=entrance;
-		for(int index=entrance;index>=0;index=parent[index])
+		if(cost(entrance)>0)result.fallbackEntranceTile=entrance;
+		for(int index=entrance;index>=0;index=parent(index))
 			result.tiles.push_back(index);
 	}
 	std::sort(result.tiles.begin(),result.tiles.end());

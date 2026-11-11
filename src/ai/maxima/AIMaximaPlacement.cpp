@@ -398,7 +398,7 @@ PlacementPolicy::PlacementPolicy()
 	  hospitalFoodZoneMultiplier(50), towerFoodZoneMultiplier(25),
 	  towerBorderPercent(50), towerInteriorPercent(25), towerBorderEnemyRatio(2),
 	  towerRoleDistanceFalloff(4), towerSpreadSaturationTiles(12), towerSpreadPercent(35),
-	  towerRepairHealthPercent(100),
+	  towerRepairHealthPercent(100), foodUpgradeRetryTicks(0),
 	  laborScale(10),
 	  downtimeWorkerScale(2), arteryLengthScale(5), repairBaseDemand(20),
 	  actionTimeoutTicks(300), routeClearableResourceCost(25), routeFarmCost(12),
@@ -466,6 +466,13 @@ struct Planner::Candidate
 	Candidate() : newCampus(false) {}
 	DevelopmentAction action;
 	bool newCampus;
+	// A food-managed upgrade whose food check is deferred: its utility is the
+	// optimistic bound (best food quality) until resolveLazyCandidate runs.
+	bool lazyFood=false;
+	int lazyPriority=0;
+	// Set by preferUpgrades when it scaled upgrades; a resolved lazy
+	// candidate re-applies the same scaling to its exact utility.
+	bool upgradePreferred=false;
 };
 
 Planner::Planner() { reset(); }
@@ -522,6 +529,7 @@ void Planner::reset()
 	towerBuildingDistanceCache.clear();completedBuildingCountCache.clear();
 	structureDistanceCache.clear();enemyStructureDistanceCache.clear();
 	enemyStructureSourceCache.clear();enemyStructureGapCache=INT_MAX;
+	foodUpgradeRetryTick.clear();
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
 	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.reset();
 	scoringNeighborhoodWidth=scoringNeighborhoodHeight=0;
@@ -1115,7 +1123,21 @@ int Planner::nearestCompletedBuildingDistance(const WorldState& world,
 std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 	const Footprint& footprint) const
 {
-	std::vector<int> distance(world.tiles.size(),-1), queue, food;
+	// Per-thread generation-stamped depths: an unstamped cell reads as unvisited
+	// (-1), replacing a full-map allocation and fill per candidate colony site.
+	struct Scratch { std::vector<int> depth; std::vector<uint32_t> stamp; uint32_t generation=0; };
+	thread_local Scratch scratch;
+	if(scratch.stamp.size()!=world.tiles.size())
+	{scratch.depth.assign(world.tiles.size(),-1);scratch.stamp.assign(world.tiles.size(),0);scratch.generation=0;}
+	if(++scratch.generation==0){std::fill(scratch.stamp.begin(),scratch.stamp.end(),0);scratch.generation=1;}
+	const uint32_t generation=scratch.generation;
+	struct Distance
+	{
+		Scratch& s;uint32_t g;
+		int operator[](int index) const {return s.stamp[index]==g?s.depth[index]:-1;}
+		void set(int index,int value) {s.stamp[index]=g;s.depth[index]=value;}
+	} distance{scratch,generation};
+	std::vector<int> queue, food;
 	const field::Grid grid(world.width,world.height);
 	const int width=world.width, height=world.height;
 	const int maskX=grid.maskX(), maskY=grid.maskY(), cellMask=int(grid.cells())-1;
@@ -1145,7 +1167,7 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 			}
 			// A hypothetical building must not offer a shortcut through its footprint.
 			if(relativeX<footprint.width && relativeY<footprint.height) return;
-			distance[index]=depth;queue.push_back(index);
+			distance.set(index,depth);queue.push_back(index);
 		};
 		for(int dy=-1;dy<=footprint.height;++dy)
 			for(int dx=-1;dx<=footprint.width;++dx)
@@ -1207,6 +1229,21 @@ int Planner::colonyAnchorDistance(const WorldState& world,int x,int y) const
 }
 
 std::pair<int,int> Planner::colonyBenefit(const WorldState& world,
+	const DevelopmentAction& action) const
+{
+	// Within one scan slice the world and claims are fixed, and a colony site is
+	// checked, bounded and scored in turn: reuse its flood fill.
+	const std::array<int,7> key{action.centerX,action.centerY,action.initialFootprint.left,
+		action.initialFootprint.top,action.initialFootprint.width,action.initialFootprint.height,action.workers};
+	if(colonyBenefitMemoActive&&colonyBenefitMemoValid&&colonyBenefitMemoKey==key&&colonyBenefitMemoType==action.buildingType)
+		return colonyBenefitMemo;
+	const auto result=computeColonyBenefit(world,action);
+	if(colonyBenefitMemoActive)
+	{colonyBenefitMemoKey=key;colonyBenefitMemoType=action.buildingType;colonyBenefitMemo=result;colonyBenefitMemoValid=true;}
+	return result;
+}
+
+std::pair<int,int> Planner::computeColonyBenefit(const WorldState& world,
 	const DevelopmentAction& action) const
 {
 	long long food=0;
@@ -1684,6 +1721,7 @@ int Planner::foodLocationQuality(const WorldState& world,
 	const DevelopmentAction& action) const
 {
     if(!foodManagedType(action.buildingType))return 0;
+    if(foodQualityCeiling>=0)return foodQualityCeiling; // bound pass: no walk
 	const int demand=prepareFeedingCandidate(world,action);
 	if(demand<=0)return 0;
     const long long reach=foodQuery.residual;
@@ -1786,7 +1824,9 @@ bool Planner::routeArtery(const WorldState& world, const std::vector<int>& ring,
 	RejectionReason& reason) const
 {
 	route.clear();
-	std::vector<int> targets[2];
+	// Reused per thread: routing runs for every candidate that reaches it.
+	thread_local std::vector<int> targets[2];
+	targets[0].clear();targets[1].clear();
 	for(size_t i=0;i<ring.size();++i)
 	{
 		const int x=world.normalizeX(ring[i]),y=ring[i]/world.width;
@@ -1979,6 +2019,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	}
 
 	size_t processed=0;
+	colonyBenefitMemoActive=true;colonyBenefitMemoValid=false;
+	struct MemoScope{bool& active;~MemoScope(){active=false;}} memoScope{colonyBenefitMemoActive};
 	while(originCursor<totalOrigins&&processed<std::max<size_t>(1,originBudget))
 	{
 		const size_t ti=originCursor/mapArea;
@@ -2040,8 +2082,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				candidate.action.parcelTiles=parcelTiles(world,originX,originY,t);
 				if(!colonyCandidatePasses(world,intent,candidate.action,reason))
 				{lastDiagnostics.rejected[reason]++;continue;}
-				if(!foodCandidatePasses(world,&intent,candidate.action,reason))
-				{lastDiagnostics.rejected[reason]++;continue;}
+				// The food check walks the map, so it runs last: after every cheap
+				// rejection and only for candidates that could still win.
 				if(!relocationCandidatePasses(world,intent,candidate.action,reason))
 				{lastDiagnostics.rejected[reason]++;continue;}
 				const std::vector<int> initialTiles=footprintTiles(world,
@@ -2068,6 +2110,30 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 					   ||isFootprintReserved(index)){reason=RejectedAccess;ringLegal=false;break;}
 				}
 				if(!ringLegal){lastDiagnostics.rejected[reason]++;continue;}
+				// Checks that read only the parcel run before routing.
+				const int coordinateKey=world.index(candidate.action.centerX,candidate.action.centerY);
+				std::map<int,uint32_t>::const_iterator quarantine=coordinateQuarantines.find(coordinateKey);
+				if(quarantine!=coordinateQuarantines.end())
+				{lastDiagnostics.rejected[RejectedQuarantine]++;continue;}
+				bool fallbackTier=false;
+				if(waterTierPasses(world,candidate.action.parcelTiles,6))fallbackTier=false;
+				else if(waterTierPasses(world,candidate.action.parcelTiles,5))fallbackTier=true;
+				else {lastDiagnostics.rejected[RejectedWaterTier]++;continue;}
+				candidate.action.fallbackWaterTier=fallbackTier;
+				const bool walksFood=foodManagedType(candidate.action.buildingType)&&intent.purpose!=ColonySeed;
+				const Candidate& best=fallbackTier ? bestFallback : bestStrict;
+				const bool contested=fallbackTier ? hasFallback : hasStrict;
+				// Branch and bound. Utility only falls as the route, farm loss and a
+				// worse food supply are added, so a score with no artery, no farm loss
+				// and the best food quality bounds the candidate. One that cannot beat
+				// the tier's current best cannot win: skip its routing, walk and score.
+				if(contested)
+				{
+					optimisticScoring=true;foodQualityCeiling=walksFood?100:0;
+					candidate.action.utility=scoreCandidate(world,&intent,candidate);
+					optimisticScoring=false;foodQualityCeiling=-1;
+					if(!candidateBetter(candidate,best))continue;
+				}
 				if(placementPolicy.arteryRoutingEnabled
 				   && !routeArtery(world,candidate.action.accessTiles,intent.workers,
 					hasNetwork,signature,candidate.action.arteryTiles,reason))
@@ -2094,23 +2160,25 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 					if(contains(candidate.action.parcelTiles,candidate.action.arteryTiles[r]))
 					{routeCrossesParcel=true;break;}
 				if(routeCrossesParcel){lastDiagnostics.rejected[RejectedCirculation]++;continue;}
-				const int coordinateKey=world.index(candidate.action.centerX,candidate.action.centerY);
-				std::map<int,uint32_t>::const_iterator quarantine=coordinateQuarantines.find(coordinateKey);
-				if(quarantine!=coordinateQuarantines.end())
-				{lastDiagnostics.rejected[RejectedQuarantine]++;continue;}
-				if(waterTierPasses(world,candidate.action.parcelTiles,6))
+				if(walksFood)
 				{
-					candidate.action.fallbackWaterTier=false;
-					candidate.action.utility=scoreCandidate(world,&intent,candidate);
-					retainCandidate(candidate,false);
+					// With the route known, bound again before the food walk.
+					if(contested)
+					{
+						foodQualityCeiling=100;
+						candidate.action.utility=scoreCandidate(world,&intent,candidate);
+						foodQualityCeiling=-1;
+						if(!candidateBetter(candidate,best))continue;
+					}
+					if(!foodCandidatePasses(world,&intent,candidate.action,reason))
+					{lastDiagnostics.rejected[reason]++;continue;}
 				}
-				else if(waterTierPasses(world,candidate.action.parcelTiles,5))
-				{
-					candidate.action.fallbackWaterTier=true;
-					candidate.action.utility=scoreCandidate(world,&intent,candidate);
-					retainCandidate(candidate,true);
-				}
-				else lastDiagnostics.rejected[RejectedWaterTier]++;
+				// A colony's score is its food benefit alone (PlacementPolicy::score),
+				// so its role-location food walk would be discarded: skip it.
+				if(intent.purpose==ColonySeed)foodQualityCeiling=0;
+				candidate.action.utility=scoreCandidate(world,&intent,candidate);
+				foodQualityCeiling=-1;
+				retainCandidate(candidate,fallbackTier);
 		}
 	}
 	bestStrictAction=bestStrict.action;
@@ -2340,18 +2408,22 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 		if(!revalidate(world,candidate.action,&reason))
 		{lastDiagnostics.rejected[reason]++;continue;}
 		// A larger inn must be backed by wheat it can actually reach, so badly
-		// sited inns stop collecting upgrades that starve their neighbours.
-		if(!foodUpgradePasses(world,candidate.action,reason))
-		{lastDiagnostics.rejected[reason]++;continue;}
-		candidate.action.utility=scoreCandidate(world,NULL,candidate);
-		if(priority>0)
+		// sited inns stop collecting upgrades that starve their neighbours. That
+		// check rebuilds the food ledger without this building, so it is deferred:
+		// the candidate competes on its best-food bound and is checked only if
+		// it could win (resolveLazyCandidate).
+		candidate.lazyFood=foodManagedType(candidate.action.buildingType);
+		if(candidate.lazyFood)
 		{
-			// Replace only demand; retain the location's original spacing score.
-			const int demand=clamp100(priority);
-			candidate.action.utility.total+=placementPolicy.unmetDemandWeight
-				*(demand-candidate.action.utility.unmetDemand);
-			candidate.action.utility.unmetDemand=demand;
+			const auto retry=foodUpgradeRetryTick.find(building.id);
+			if(retry!=foodUpgradeRetryTick.end() && world.tick<retry->second)
+			{lastDiagnostics.rejected[RejectedFoodCapacity]++;continue;}
 		}
+		candidate.lazyPriority=priority;
+		if(candidate.lazyFood)foodQualityCeiling=100;
+		candidate.action.utility=scoreCandidate(world,NULL,candidate);
+		foodQualityCeiling=-1;
+		applyUpgradePriority(candidate,priority);
 		candidates.push_back(candidate);
 	}
 }
@@ -2652,36 +2724,41 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 			reserved[uniqueReserved++]=reserved[i];
 		}
 	reserved.resize(uniqueReserved);
-	uint64_t farmLoss=0;const uint64_t maxFarm=maximumFarmCapacityCache;
-	std::vector<int>& affected=scoringAffectedScratch;affected.clear();
-	affected.reserve(reserved.size()*9);
-	for(size_t i=0;i<reserved.size();++i)
+	// The optimistic bound omits farm loss, a penalty that is never negative.
+	u.projectedFarmLoss=0;
+	if(!optimisticScoring)
 	{
-		const int* neighborhood=&(*scoringNeighborhoodCache)[reserved[i]*9];
-		for(int offset=0;offset<9;++offset)
+		uint64_t farmLoss=0;const uint64_t maxFarm=maximumFarmCapacityCache;
+		std::vector<int>& affected=scoringAffectedScratch;affected.clear();
+		affected.reserve(reserved.size()*9);
+		for(size_t i=0;i<reserved.size();++i)
 		{
-			const int index=neighborhood[offset];
-			if(scoringAffectedGeneration[index]!=scoringGeneration)
+			const int* neighborhood=&(*scoringNeighborhoodCache)[reserved[i]*9];
+			for(int offset=0;offset<9;++offset)
 			{
-				scoringAffectedGeneration[index]=scoringGeneration;
-				scoringBlockedNeighbors[index]=0;
-				affected.push_back(index);
+				const int index=neighborhood[offset];
+				if(scoringAffectedGeneration[index]!=scoringGeneration)
+				{
+					scoringAffectedGeneration[index]=scoringGeneration;
+					scoringBlockedNeighbors[index]=0;
+					affected.push_back(index);
+				}
+				if(offset!=4)++scoringBlockedNeighbors[index];
 			}
-			if(offset!=4)++scoringBlockedNeighbors[index];
 		}
+		// Count blocked neighbours while expanding the reservation above.  This is
+		// the reverse of asking every affected tile about its eight neighbours; the
+		// counts (and the per-tile integer division below) are exactly identical.
+		for(size_t i=0;i<affected.size();++i)
+		{
+			const int index=affected[i];
+			const int blockedNeighbors=scoringBlockedNeighbors[index];
+			farmLoss+=scoringReservedGeneration[index]==scoringGeneration
+				?world.tiles[index].farmCapacity
+				:world.tiles[index].farmCapacity*blockedNeighbors/8;
+		}
+		u.projectedFarmLoss=clamp100(int(farmLoss*100/(maxFarm*std::max<size_t>(1,affected.size()))));
 	}
-	// Count blocked neighbours while expanding the reservation above.  This is
-	// the reverse of asking every affected tile about its eight neighbours; the
-	// counts (and the per-tile integer division below) are exactly identical.
-	for(size_t i=0;i<affected.size();++i)
-	{
-		const int index=affected[i];
-		const int blockedNeighbors=scoringBlockedNeighbors[index];
-		farmLoss+=scoringReservedGeneration[index]==scoringGeneration
-			?world.tiles[index].farmCapacity
-			:world.tiles[index].farmCapacity*blockedNeighbors/8;
-	}
-	u.projectedFarmLoss=clamp100(int(farmLoss*100/(maxFarm*std::max<size_t>(1,affected.size()))));
 	// Reserve the high-value food halo for food infrastructure.  This is a
 	// proximity opportunity cost, distinct from projectedFarmLoss: the latter
 	// prevents every role from paving over productive cells, while this term
@@ -2736,6 +2813,69 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	u.total=placementPolicy.score(u,purpose,spacingQuality); return u;
 }
 
+void Planner::applyUpgradePriority(Candidate& candidate,int priority) const
+{
+	if(priority<=0)return;
+	// Replace only demand; retain the location's original spacing score.
+	const int demand=clamp100(priority);
+	candidate.action.utility.total+=placementPolicy.unmetDemandWeight
+		*(demand-candidate.action.utility.unmetDemand);
+	candidate.action.utility.unmetDemand=demand;
+}
+
+bool Planner::resolveLazyCandidate(const WorldState& world,Candidate& candidate)
+{
+	if(!candidate.lazyFood)return true;
+	candidate.lazyFood=false;
+	RejectionReason reason=RejectedUpgradeContract;
+	if(!foodUpgradePasses(world,candidate.action,reason))
+	{
+		lastDiagnostics.rejected[reason]++;
+		if(placementPolicy.foodUpgradeRetryTicks>0)
+		{
+			std::erase_if(foodUpgradeRetryTick,[&](const auto& entry){return entry.second<=world.tick;});
+			foodUpgradeRetryTick[candidate.action.buildingId]=world.tick+placementPolicy.foodUpgradeRetryTicks;
+		}
+		return false;
+	}
+	candidate.action.utility=scoreCandidate(world,NULL,candidate);
+	applyUpgradePriority(candidate,candidate.lazyPriority);
+	if(candidate.upgradePreferred && candidate.action.utility.total>0)
+		candidate.action.utility.total=int(std::min<long long>(INT_MAX,
+			static_cast<long long>(candidate.action.utility.total)*125/100));
+	return true;
+}
+
+size_t Planner::bestCandidate(const WorldState& world,std::vector<Candidate>& candidates)
+{
+	// Exact argmax: a lazy candidate's bound is at least its utility, so once the
+	// leader is resolved no unresolved candidate can overtake it.
+	FoodBaselineBatch baselineBatch(world,foodBaselineBatch);
+	for(;;)
+	{
+		if(candidates.empty())return size_t(-1);
+		size_t best=0;
+		for(size_t i=1;i<candidates.size();++i)
+			if(candidateBetter(candidates[i],candidates[best]))best=i;
+		if(!candidates[best].lazyFood)return best;
+		if(!resolveLazyCandidate(world,candidates[best]))
+			candidates.erase(candidates.begin()+best);
+	}
+}
+
+bool Planner::anyViableCandidate(const WorldState& world,std::vector<Candidate>& candidates)
+{
+	FoodBaselineBatch baselineBatch(world,foodBaselineBatch);
+	for(size_t i=0;i<candidates.size();)
+	{
+		if(candidates[i].action.utility.total<0){++i;continue;}
+		if(!resolveLazyCandidate(world,candidates[i])){candidates.erase(candidates.begin()+i);continue;}
+		if(candidates[i].action.utility.total>=0)return true;
+		++i;
+	}
+	return false;
+}
+
 void Planner::preferUpgrades(std::vector<Candidate>& candidates,
 	const std::vector<DevelopmentIntent>& intents)
 {
@@ -2749,10 +2889,13 @@ void Planner::preferUpgrades(std::vector<Candidate>& candidates,
 				   && intent.purpose==candidate.action.purpose)return;
 	const int upgradePreferencePercent=125;
 	for(Candidate& candidate:candidates)
+	{
+		if(candidate.action.type==UpgradeBuilding)candidate.upgradePreferred=true;
 		if(candidate.action.type==UpgradeBuilding && candidate.action.utility.total>0)
 			candidate.action.utility.total=int(std::min<long long>(INT_MAX,
 				static_cast<long long>(candidate.action.utility.total)
 				*upgradePreferencePercent/100));
+	}
 }
 
 bool Planner::candidateBetter(const Candidate& lhs, const Candidate& rhs) const
@@ -2859,6 +3002,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.towerSpreadSaturationTiles);
 	hashValue(signature,placementPolicy.towerSpreadPercent);
 	hashValue(signature,placementPolicy.towerRepairHealthPercent);
+	hashValue(signature,placementPolicy.foodUpgradeRetryTicks);
 	hashValue(signature,placementPolicy.laborScale);
 	hashValue(signature,placementPolicy.downtimeWorkerScale);
 	hashValue(signature,placementPolicy.arteryLengthScale);
@@ -2944,26 +3088,24 @@ bool Planner::selectAction(const WorldState& world,
 	addUpgradeAndRepairCandidates(world,limits,candidates);
 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
 	if(limits.activeNewConstruction<limits.newConstruction
-	   && std::none_of(candidates.begin(),candidates.end(),
-		[](const Candidate& c){return c.action.utility.total>=0;}))
+	   && !anyViableCandidate(world,candidates))
 		for(const DevelopmentIntent& intent:intents)
 			if(intent.purpose==ForwardSupport)
 				addBuildCandidates(world,intent,signature,hasNetwork,candidates);
 	if(limits.activeNewConstruction<limits.newConstruction
-	   && std::none_of(candidates.begin(),candidates.end(),
-		[](const Candidate& c){return c.action.utility.total>=0;}))
+	   && !anyViableCandidate(world,candidates))
 		for(const DevelopmentIntent& intent:intents)
 			if(intent.purpose==Fortification)
 				addBuildCandidates(world,intent,signature,hasNetwork,candidates);
-	if(candidates.empty())
+	preferUpgrades(candidates,intents);
+	const size_t bestIndex=bestCandidate(world,candidates);
+	if(bestIndex==size_t(-1))
 	{
 		if(limits.activeNewConstruction<limits.newConstruction)
 			recordBlocked(intents,signature);
 		return false;
 	}
-	preferUpgrades(candidates,intents);
-	Candidate best=candidates[0];
-	for(size_t i=1;i<candidates.size();++i)if(candidateBetter(candidates[i],best))best=candidates[i];
+	const Candidate best=candidates[bestIndex];
 	if(best.action.utility.total<0)
 	{
 		lastDiagnostics.rejected[RejectedNegativeUtility]++;
@@ -3052,8 +3194,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,maintenance);
 		maintenanceDiagnostics=lastDiagnostics;
 		lastDiagnostics=saved;
-		reuseMaintenance=std::any_of(maintenance.begin(),maintenance.end(),
-			[](const Candidate& c){return c.action.utility.total>=0;});
+		reuseMaintenance=anyViableCandidate(incrementalWorld,maintenance);
 		return reuseMaintenance;
 	};
 	size_t remaining=size_t(std::max(1,originBudget));
@@ -3110,7 +3251,9 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	}
 	else addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,candidates);
 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
-	if(candidates.empty())
+	preferUpgrades(candidates,incrementalIntents);
+	const size_t bestIndex=bestCandidate(incrementalWorld,candidates);
+	if(bestIndex==size_t(-1))
 	{
 		if(incrementalLimits.activeNewConstruction<incrementalLimits.newConstruction)
 			recordBlocked(incrementalIntents,incrementalSignature);
@@ -3120,10 +3263,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		incrementalSelectionActive=false;
 		incrementalCandidates.clear();return SelectionEmpty;
 	}
-	preferUpgrades(candidates,incrementalIntents);
-	Candidate best=candidates[0];
-	for(size_t i=1;i<candidates.size();++i)
-		if(candidateBetter(candidates[i],best))best=candidates[i];
+	const Candidate best=candidates[bestIndex];
 	if(best.action.utility.total<0)
 	{
 		lastDiagnostics.rejected[RejectedNegativeUtility]++;
@@ -3992,6 +4132,14 @@ bool Planner::repairWanted(const WorldState& world,const WorldBuilding& building
 		return false;
 	return !std::binary_search(world.contestedBuildings.begin(),
 		world.contestedBuildings.end(),building.id);
+}
+
+void Planner::restoreFoodUpgradeRetries(std::map<int,int> retries,int tick)
+{
+	for(const auto& [building,retry]:retries)
+		if(building<0||retry<0||retry>tick+100000)
+			throw std::runtime_error("Invalid saved food upgrade retry");
+	foodUpgradeRetryTick=std::move(retries);
 }
 
 Planner::TowerState Planner::towerState() const

@@ -99,10 +99,12 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
     def test_dirty_plan_is_recomputed_before_scheduled_executors(self) -> None:
         tick = function(self.source, "void Maxima::tick")
         # tick delegates evaluation through the sole director entrypoint.
-        # Dirty and uninitialized plans must still enter that slot immediately.
+        # Uninitialized plans enter that slot immediately; dirty plans enter it
+        # once the configured gap since the last review (snapshot.tick) has passed.
         due = tick[tick.index("const bool strategyReviewDue="):
                    tick.index("if(strategyReviewDue)")]
-        self.assertRegex(due, r"!director\.initialized\s*\|\|\s*director\.dirty\s*\|\|")
+        self.assertRegex(due, r"!director\.initialized\s*\n?\s*\|\|\s*\(director\.dirty\s*&&\s*"
+                         r"timer-snapshot\.tick>=strategy\.scheduling\.strategy_review_min_gap_ticks\)")
         review = function(tick, "if(strategyReviewDue)")
         self.assertEqual(review.count("check_phases(runtime);"), 1)
         replan = tick.index("check_phases(runtime);")
