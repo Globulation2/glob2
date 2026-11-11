@@ -4460,14 +4460,13 @@ void Maxima::configure_development_planner()
 	policy.innerFoodZoneMultiplier=strategy.placement.inner_food_zone_multiplier;
 	policy.hospitalFoodZoneMultiplier=strategy.placement.hospital_food_zone_multiplier;
 	policy.towerFoodZoneMultiplier=strategy.placement.tower_food_zone_multiplier;
-	policy.towerCriticalDistanceWeight=strategy.placement.defensive_siting_enabled
-		? strategy.placement.tower_critical_distance_weight : 0;
-	policy.towerSpacingTarget=strategy.placement.tower_spacing_target;
-	policy.towerSpacingWeight=strategy.placement.spacing_compactness_enabled
-		? strategy.placement.tower_spacing_weight : 0;
-	policy.towerThreatTarget=strategy.placement.tower_threat_target;
-	policy.towerThreatWeight=strategy.placement.defensive_siting_enabled
-		? strategy.placement.tower_threat_weight : 0;
+	policy.towerBorderPercent=strategy.placement.tower_border_percent;
+	policy.towerInteriorPercent=strategy.placement.tower_interior_percent;
+	policy.towerBorderEnemyRatio=strategy.placement.tower_border_enemy_ratio;
+	policy.towerRoleDistanceFalloff=strategy.placement.tower_role_distance_falloff;
+	policy.towerSpreadSaturationTiles=strategy.placement.tower_spread_saturation_tiles;
+	policy.towerSpreadPercent=strategy.placement.tower_spread_percent;
+	policy.towerRepairHealthPercent=strategy.repairs.tower_health_percent;
 	policy.laborScale=strategy.placement.labor_scale;
 	policy.downtimeWorkerScale=strategy.placement.downtime_worker_scale;
 	policy.arteryLengthScale=strategy.placement.artery_length_scale;
@@ -4655,6 +4654,12 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		{
 			if(!enemy||AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy).isVirtual
 			   ||!(enemy->seenByMask&runtime.observedTeam().allies))continue;
+			const auto& enemyType=AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy);
+			if(!AIMaximaBuildings::serves(runtime.observation(),enemyType,
+					AIMaximaBuildings::ProjectileDefense))
+				world.enemyStructures.push_back(world.index(
+					(*map).normalizeX(enemy->posX-enemyType.decLeft),
+					(*map).normalizeY(enemy->posY-enemyType.decTop)));
 			const int radius=strategy.placement.enemy_threat_radius;
 			for(int dy=-radius;dy<=radius;++dy)
 				for(int dx=-(radius-std::abs(dy));
@@ -4712,6 +4717,37 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	}
 	std::sort(world.buildings.begin(),world.buildings.end(),
 		[](const WorldBuilding& a,const WorldBuilding& b){return a.id<b.id;});
+	std::sort(world.enemyStructures.begin(),world.enemyStructures.end());
+	world.enemyStructures.erase(std::unique(world.enemyStructures.begin(),
+		world.enemyStructures.end()),world.enemyStructures.end());
+	// A tower under repair is a site and cannot shoot: hold its repair while a
+	// visible enemy fighter (warrior or attacking explorer) is close to it.
+	if(const int radius=strategy.repairs.tower_enemy_radius)
+	{
+		std::vector<std::pair<int,int>> fighters;
+		for(int team=0;team<Team::MAX_COUNT;++team)
+		{
+			if(std::size_t(team)>=runtime.observation().teams.size()
+			   || !(runtime.observedTeam().enemies&runtime.observation().teams[team].mask))continue;
+			for(const AIEngine::UnitView* unit:runtime.observation().unitsForTeam(team))
+			{
+				if(!unit||!AIEngine::ObservationQueries::visible(runtime.observation(),
+					unit->posX,unit->posY,runtime.observedTeam().mask))continue;
+				if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
+				   ||unit->performance[MAGIC_ATTACK_GROUND]>0)
+					fighters.emplace_back(unit->posX,unit->posY);
+			}
+		}
+		for(const WorldBuilding& building:world.buildings)
+		{
+			if(building.site||building.hp>=building.hpMax)continue;
+			const auto* type=profile_variant(building.buildingType,building.level);
+			if(!type||!(type->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::ProjectileDefense)))continue;
+			for(const auto& [x,y]:fighters)
+				if(world.wrappedManhattan(x,y,building.centerX,building.centerY)<=radius)
+				{world.contestedBuildings.push_back(building.id);break;}
+		}
+	}
 	for(size_t i=0;i<world.buildings.size();++i)
 	{
 		const WorldBuilding& building=world.buildings[i];

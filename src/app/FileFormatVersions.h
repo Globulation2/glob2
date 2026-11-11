@@ -433,3 +433,7 @@ static constexpr int FILE_FORMAT_VERSION_ICEFALL = 212;
 //! Resource claims: material destination planes on gradient fields, active claims, pending
 //! unit routes, claim policy cadence and bounded claim recovery are saved.
 static constexpr int FILE_FORMAT_VERSION_RESOURCE_CLAIMS = 213;
+
+//! Maxima role-sited towers: the placement world snapshot carries remembered enemy
+//! building positions, and older strategies restore the previous tower siting.
+static constexpr int FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES = 214;

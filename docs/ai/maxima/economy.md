@@ -195,6 +195,27 @@ tower. Viable ordinary builds, repairs and upgrades take precedence. Normal
 quotas, siting and farm protection still apply; a committed tower site remains
 ordinary construction when other demand appears.
 
+Each new tower takes a siting role from a deterministic golden-ratio sequence
+over the colony's tower count, so the shares hold even across a few towers:
+`placement.tower_border_percent` border towers, `placement.tower_interior_percent`
+interior towers and fruit towers for the remainder (50/25/25 by default). A
+border tower prefers the point between Maxima's nearest non-tower building and
+the nearest seen enemy non-tower building that is `placement.tower_border_enemy_ratio`
+times as far from the enemy (a third of the way out by default). An interior
+tower prefers Maxima's own buildings and a fruit tower prefers known fruit; both
+border and fruit towers fall back to interior siting when no enemy building or
+fruit is known. Every role also prefers distance from existing towers, which
+takes `placement.tower_spread_percent` of the location score and saturates at
+`placement.tower_spread_saturation_tiles`. Stone distance, threat and
+defendedness play no part in tower siting.
+
+A repair turns a building back into a site, and a tower site cannot shoot. A
+tower is therefore repaired only once its hit points fall below
+`repairs.tower_health_percent` of maximum, and never while a visible enemy
+warrior or ground-attacking explorer is within `repairs.tower_enemy_radius`
+tiles; a selected repair that becomes contested before it is issued is dropped.
+Other buildings are repaired at any damage.
+
 Economic recovery restricts growth and development, while military activity
 continues to follow defence needs, eligible forces, reachability, target safety
 and cooldowns. Food pressure alone does not veto attacks.

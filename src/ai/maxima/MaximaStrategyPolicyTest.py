@@ -109,6 +109,10 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "model.inn_capacity_level3", "economy.sustainable_inn_floor",
             "economy.sustainable_inn_corn_divisor", "economy.sustainable_inn_offset",
             "food.ticks_per_meal",
+            # Superseded by role-sited towers.
+            "placement.tower_critical_distance_weight", "placement.tower_spacing_target",
+            "placement.tower_spacing_weight", "placement.tower_threat_target",
+            "placement.tower_threat_weight",
         }
         unused = []
         for line in self.strategy.splitlines():
