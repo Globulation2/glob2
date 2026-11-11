@@ -53,7 +53,7 @@ so looks never change a rule.
 | Talus and floors | Scree one corner out from the rock, two where a fray noise passes; in canyon country, hardpan on the next 12 percent of the relief, fading out beyond 3 corners from a mesa and within 18 of a home. |
 | Dunes and scrub | Stripes wrapping the torus about 12 tiles apart; single grass corners of scrub in 16% of the hollows and 30% of a three-tile halo round every oasis, never two side by side. |
 | Shores | Spring meadow on the corners two and three steps from every neutral or caravanserai pond. |
-| Looks | One per role: every sand is dune sand; the country's rock, road and courtyard artwork. Grass stays plain everywhere, oases, scrub and homes alike: the homes must, since the starting-crop guarantee reads plain grass after the looks are written. |
+| Looks | One per role: every sand is dune sand; the country's rock, road and courtyard artwork. Grass is plain in the oases, homes and courtyards and dry over the desert's scrub, two named regions. The scrub must stay dry: the looks are written before the starting-crop guarantee, which plants only on plain grass, so plain scrub let it plant out in the desert. |
 | Resources | Wheat in a solid arc of the field ring nearest the swarm (at least 60), palms in the grove (at least 30), caravanserai groves, quarry, grain and palms, oasis palms and grain, algae, quarry-face stone. |
 
 ## Controls

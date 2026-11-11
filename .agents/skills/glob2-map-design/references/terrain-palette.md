@@ -53,6 +53,12 @@ as rules: two looks of one group on one map say "these play differently" when th
   vertex some distance from land. City states and the arena maps dropped theirs (2026-11-11).
 - **No geology lessons in looks.** Grain size sorting down a slope, wind-rippled crests on the
   highest dunes and similar realism cost readability for a detail no player acts on.
+- **A look written before the starting stages is a rule.** Where a generator writes its looks
+  before `placeStarts`, the crop guarantee and the cramped-start repair, those stages see the look:
+  the guarantee plants only on exact `GRASS`. Caravanserai's scrub drawn plain instead of dry let it
+  plant out in the desert and left a colony with no reachable wood (2026-11-11). Either keep the
+  staged look until the last of those stages and repaint after (Braided river, Watershed:
+  `finishGrass`), or keep the region in a look that is not exact `GRASS`.
 - **Home gardens show no seam.** Where a map's grass look is not plain `GRASS`, paint the gardens
   in that look once every stage that needs exact `GRASS` has run (below), so no disc marks a home.
 

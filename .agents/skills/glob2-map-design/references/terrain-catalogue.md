@@ -169,6 +169,11 @@ The first answer, barren bases, overshot.
 - **Bases whose food grows on farms** (Carousel, Switchbacks, Gauntlet) are still the climate's
   barren ground with a paved square round the swarm: their farms are dedicated, walled areas.
 - **A themed fertile home** can read well: Maze's keeps are spring meadow throughout.
+- **Removing a feature can remove building room.** Maze's paved temple courts were the one ground
+  nothing grew on; dropping them left a colony with three 4x4 sites within 24 steps where the
+  property test promises sixteen. The cell outside every keep's door is now a forecourt of plain
+  grass with no loam beds or ambient fields. Run the map-generator test tier, not just the sweep,
+  after removing anything buildable.
 - **Farms keep their grass,** in the climate's farm look (`farmGrass`). Fertile soils would change
   the rules: they irrigate.
 - **Barren has a cost.** It holds back crops behind it as sand did. Paths do not, so paving a town

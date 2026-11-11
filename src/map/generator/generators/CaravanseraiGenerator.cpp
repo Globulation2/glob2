@@ -323,6 +323,8 @@ struct Layout
 	// The mechanic sketch's extra masks: home vertices, the road and courtyard vertices, quarry face
 	// tiles and the rock tiles.
 	std::vector<unsigned char> homeVertex, road, court, quarry, rockTile;
+	// Corners an oasis, home or courtyard owns; the rest of the grass is the desert's scrub.
+	std::vector<unsigned char> feature;
 	int desert = 1;
 	std::string failure;
 };
@@ -845,6 +847,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		roadCorners += L.road[i];
 	context.telemetry.measure("caravanserai.meadow.corners", meadow);
 	context.telemetry.measure("caravanserai.road.corners", roadCorners);
+	L.feature = feature;
 	// The design's invariants on the sketch as the game will see it: courtyard walls on pure grass.
 	TerrainSketch beached = L.sketch;
 	layBeaches(beached, t);
@@ -881,9 +884,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	{
 		// The looks, one per role and each inside its vertex's rule group so nothing plays
 		// differently: every sand (dunes, beaches and paths alike) dune sand, the country's rock and
-		// roads, the courtyards paved. Grass stays plain everywhere: the homes must (the starting-crop
-		// guarantee, run after these looks are written, looks for plain grass), and one grass keeps the
-		// oases, the scrub and the homes alike.
+		// roads, the courtyards paved. Grass is plain in the oases, homes and courtyards and dry over
+		// the desert's scrub, two regions the design names. The scrub must stay dry, not only for the
+		// look: these looks are written before the starting-crop guarantee, which plants only on plain
+		// grass, so plain scrub let it plant out in the desert and left a colony without reachable
+		// wood (256x256, 4 colonies, seed 5).
 		const Country &country = kCountries[L.desert];
 		TerrainSketch looks(n, 0);
 		for (int i = 0; i < n; ++i)
@@ -892,6 +897,10 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			{
 			case SAND:
 				looks[i] = DUNE_SAND;
+				break;
+			case GRASS:
+				if (!L.feature[i])
+					looks[i] = DRY_GRASS;
 				break;
 			case RIDGE_ROCK:
 				looks[i] = country.rock;

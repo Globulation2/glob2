@@ -193,6 +193,10 @@ struct MazeDesign
 {
 	MazeLayout layout;
 	std::vector<unsigned char> isHome, open, breach, kind;
+	// The cell outside every home's door, its forecourt: plain grass with no loam beds and no
+	// ambient fields, so every colony has building room a short walk from its swarm (the paved
+	// temple courts gave some homes that room until revision 18 dropped them).
+	std::vector<unsigned char> forecourt;
 	std::vector<int> exitEdge, deadEnds, labels;
 	std::vector<int> gardenSteps; // per colony (team order): cells to its nearest garden, -1 for none
 	std::uint32_t lookSeed = 0;
@@ -360,6 +364,10 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 	d.deadEnds = deadEnds(g, d.open, d.isHome, d.exitEdge);
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		d.exitEdge[L.homes[k]] = doors[k];
+	d.forecourt.assign(g.cells.size(), 0);
+	for (size_t k = 0; k < L.homes.size(); ++k)
+		if (doors[k] >= 0)
+			d.forecourt[g.other(doors[k], L.homes[k])] = 1;
 
 	// Every cell's kind: homes, the dead ends' treasure cells, junctions (three ways or more) with
 	// their fountains, and the rest corridors, among which gardens are dealt.
@@ -661,7 +669,8 @@ MazeTerrain sketchTerrain(const MazeDesign &d, const MazeOptions &o, const Torus
 	const double loamReach = r + .5 + kLoamDepth;
 	std::vector<unsigned char> loam(n, 0);
 	for (int i = 0; i < n; ++i)
-		loam[i] = (kindOf(i) == Corridor || kindOf(i) == DeadEnd) && !M.wall[i] && !M.throat[i] &&
+		loam[i] = (kindOf(i) == Corridor || kindOf(i) == DeadEnd) && !d.forecourt[d.labels[i]] &&
+				  !M.wall[i] && !M.throat[i] &&
 				  !M.floor[i] && std::sqrt(double(fromWall[i])) <= loamReach;
 	for (int i = 0; i < n; ++i)
 		if (s[i] == GRASS && cornerOf(t, loam, i))
@@ -928,7 +937,8 @@ void scatterThroughMaze(GenerationMap &map, GenerationContext &context, const Ma
 			const auto &terrain = map.terrainPropertiesAt(int(i));
 			const bool growing = (depth[i] >= 1 && depth[i] <= kShoreBand) ||
 								 (terrain.fertilitySource && !terrain.swimmable);
-			if (growing && !d.isHome[d.labels[i]] && !M.onRoad[i] && !M.throat[i] &&
+			if (growing && !d.isHome[d.labels[i]] && !d.forecourt[d.labels[i]] && !M.onRoad[i] &&
+				!M.throat[i] &&
 				!M.floor[i] && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
 				map.getGroundUnit(x, y) == NOGUID)
 			{

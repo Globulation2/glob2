@@ -42,7 +42,9 @@ has terrain of its own.
   their centre. Every water body has a sand bank, so its algae regrows. Corridor and dead-end cells
   have loam beds along their walls' feet (Fertile ground, which waters itself and the ground round
   it). Revision 18 dropped the paved temple courts (a share of the cells paved wall to wall);
-  those cells are ordinary corridors and junctions now.
+  those cells are ordinary corridors and junctions now. The cell outside every home's door, its
+  forecourt, is plain grass with no loam beds and no ambient fields, so every colony keeps building
+  room a short walk from its swarm, as the courts gave some homes.
 - **Fair gardens.** Gardens are dealt so every home's nearest garden is the same number of cells
   away, two cells by preference (a short walk into the maze rather than a forecourt). Telemetry
   records each home's distance (`maze.garden.steps.min`/`max`), and `validateWorld` refuses a map
