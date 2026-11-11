@@ -64,13 +64,14 @@ failures as successful games.
   `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
   simulation data files listed by `deploy/sim_version.py`, and the strict numeric
   flags in `src/SConscript` (`-fno-fast-math -ffp-contract=off`) is the simulation
-  path. A change that can alter what it computes is judged by the `sim-diff` verdict
-  against its merge base and by cross-platform agreement in the full matrix: add
-  `ci:full`, whose browser/native equivalence job requires Linux, Windows, macOS and
-  the browsers to verify the same match identically; see
-  [simulation verification](docs/development/simulation-verification.md). A change
-  to optimization flags or compilers needs a same-platform `-O0` against `-O3`
-  checksum match instead. Changes outside the path need neither; say so in the PR.
+  path. The fast gate's `sim-diff` verdict judges every change to it. A change that
+  does alter what the simulation computes, and so bumps `SIM_REVISION`, also needs
+  cross-platform agreement: add `ci:full`, whose browser/native equivalence job
+  requires Linux, Windows, macOS and the browsers to verify the same match
+  identically; see [simulation verification](docs/development/simulation-verification.md).
+  A change that `sim-diff` shows computes the same (refactors, include and layout
+  changes) needs nothing more. A change to optimization flags or compilers needs a
+  same-platform `-O0` against `-O3` checksum match instead.
 - **Sim version.** `SIM_REVISION` in `src/game/SimRevision.h` is the only thing that
   ties online rooms, ratings and verifiers to simulation behavior. Bump it in every
   change that can alter what the simulation computes from the same setup and
@@ -196,11 +197,19 @@ table from `tools/perf_ab.py`. Address review feedback when provided.
 
 Merging waits for the **fast gate** (`.github/workflows/ci-fast.yml`, target under
 15 minutes): cheap contracts, the sim-version check, header layering, a Linux build
-and the headless test tier. Everything else (full Linux matrix, Windows, macOS,
-Android, browsers, coverage) runs on master every six hours and is not a merge
-prerequisite. Add the `ci:full` label to run the full matrix on a PR whose
-change touches build inputs, shared headers, platform shells or test
-infrastructure. Keep unfinished PRs in draft.
+and the headless test tier. **A green fast gate is enough to merge.** Everything
+else (full Linux matrix, Windows, macOS, Android, browsers, coverage) runs on master
+every six hours and is not a merge prerequisite. Open the PR as soon as the change
+builds and its focused tests pass, and merge when the gate is green; don't hold
+merges for extra verification that the gate and the master run already provide.
+
+Add `ci:full`, and wait for it, only when platform divergence is the change's main
+risk: build system, toolchain or compiler-flag changes, platform shells and
+platform-conditional (`#if`) code, test-runner infrastructure, and simulation
+changes that bump `SIM_REVISION`. Refactors, include cuts and header moves don't
+need it, even in widely included headers: the master run catches a missed
+platform include within six hours, and the fix is one line. Fixing forward is
+cheaper than verifying everything up front. Keep unfinished PRs in draft.
 
 **Master red rule.** When the newest decided full master run has had a gating job
 failing for more than 24 hours, the next merge must be the repair or a revert,
@@ -213,9 +222,12 @@ whose rebase stopped on a conflict.
 
 Locally, `python3 test/run_tests.py` runs the headless tier; `--tier full` adds
 display and slow cases; `--affected` runs only the cases whose recorded coverage
-intersects your change. Choose focused checks from the change's actual risks, keep
-every affected compatibility boundary covered, and fetch current master before
-final validation without rebasing merely because master advanced. When an API
+intersects your change. Choose focused checks from the change's actual risks: build
+what you touched and run `--affected` or the relevant suites. Don't reproduce the CI
+matrix locally (the full tier, the web build, cross-toolchain emulation) unless the
+change targets that platform or feature. The fast gate reruns the headless tier
+anyway. Fetch current master before final validation without rebasing merely
+because master advanced. When an API
 changes, update its test doubles and build the affected harnesses; fixtures that
 change process-wide SDL drivers or other global state must restore it or run in
 an isolated process. See [PR verification and CI](docs/development/verification.md).
