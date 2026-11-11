@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OldTownGenerator.h"
+#include "Climates.h"
 #include "Farmland.h"
 #include "FertilityField.h"
 #include "GenerationWorld.h"
@@ -16,76 +17,97 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Tessellation.h"
+#include "Walls.h"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <numeric>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
 
-// Old town: a city of stone blocks and narrow grass streets, with farmland all round it.
-// The city is a warped grid of irregular blocks (Tessellation.h); every block is solid stone, every
-// street between blocks is grass, so the streets form a dense grid with a flanking route round every
-// corner, unlike a maze's single ways. Some blocks are plazas instead: open grass with a fountain
-// pond, and every colony starts in a plaza of its own; the plaza at the city's centre is the
-// cathedral square, with an orchard of all three fruits round its fountain. Outside the city the land
-// is laid out in farm rows, with building plots dotted through them.
+// Old town: a dense medieval town of houses and narrow paved streets inside the ruins of its wall,
+// with hedged fields all round it.
 //
-// Streets are buildable and buildings block walking, so every building a player puts up closes a
-// street: the players build the city's fortifications and chokepoints themselves, and a tower on a
-// street fires over the block into the next street. The fields outside are where the food is; the
-// streets are where the fight is.
+// The town is a warped grid of irregular blocks (Tessellation.h). Every street between blocks is
+// paved: twice as fast to walk, nothing grows on it, and it can still be built on, so every
+// building a player puts up closes a street: the players build the town's chokepoints themselves,
+// and a tower on a street fires over the houses into the next. Some blocks are plazas: every
+// colony's home is three of them (a fountain garden, a green for the swarm and a mason's yard), the extra plazas are paved
+// market squares with a fountain and a fruit grove, and the cathedral square at the middle keeps an
+// orchard of all three fruits round its fountain. Outside the town the land is laid out in farm
+// rows dotted with building plots, and short country roads run in from the fields.
 //
-// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone blocks are permanent
-// and unbuildable, so the city's shape is fixed and only the streets can change hands; crops regrow
-// near water, and the only water inside the city is the fountains, so a colony that wants to eat
-// must farm the plazas or go out to the fields. A block stops walking but not shooting, so the
-// blocks are also cover for towers.
+// REVISION 10 (OLD TOWN 2.0, 2026-11-11). Revisions 1 to 9 drew every block as solid stone: the
+// town's walls, its tower cover and an endless quarry at once, on grass streets, with sand farm caps,
+// sand tendrils and beaches. 2.0 draws it from the terrain catalogue in one of four climates:
+//  - Blocks are urban fabric of five kinds: rows of houses (Ridges masses towers shoot over),
+//    courtyard houses with a door and a court inside, paved workshop yards, garden plots round a
+//    well-pond, and rubble lots where a house fell down.
+//  - Stone is placed rather than built in: a mason's yard in every home (a stack of stone, the same
+//    for every colony), faces at the robbed foot of the old town wall, and the rubble lots, the last
+//    two scaled by the stone amount.
+//  - The town wall stands again as a ruin: broken Ridges stretches round the town, breached wherever a
+//    street or a country road meets it and where it has collapsed (a continuous wall with gates was
+//    rejected in play as unfair to whoever started far from one).
+//  - The farm rows' caps are barren and their crossings paths; the tendrils are country roads.
+//    No beaches.
 //
-// FEEDBACK 2026-09-13 (first play): "the biggest problem is the unfair accessibility for accessing
-// the outlying farm lands. delete the stone ring that surrounds the entire main base so that there
-// is just free access to farm lands no matter where you are located. and otherwise make sure that we
-// stamp tons of those 10x4 little 'farm hubs' all over these farm lands, sporadically, maybe like
-// 2.5x the number of players. and remove all the stone from the outer farm lands and reduce the
-// amount of wood by like 2/3. The little 'pools' that occasionally replace the 'old city' grid in
-// the center need to be like 2x bigger, and more of them need to contain fruits - not just the one
-// at the center. the pools should really be big enough that they push up close against their
-// surrounding grid cells' stone. same with the pools associated with each user's home base." So:
-// no wall and no gates; farm plots (layFarm's 10x4 clearings, stampFarmPlot) spread over the fields
-// at three per colony (the control is whole plots per colony; 2.5 was asked for); no outcrops in the
-// fields and a third of the wood; every plaza's pool sized to its block, a tile short of the streets
-// round it; a fruit grove beside every plaza's pool, the cathedral keeping the full orchard.
-//
-// FEEDBACK 2026-09-13 (second play): "close to good, but it might play nicer if the outer ring had
-// little 'tendril' sand roads extending inwards towards the cities and settlements." A first reading
-// ran a road from the ring along the streets to every plaza; the user meant something else (third
-// play): "small roads but way more frequent, extending from the outer perimeter of the circle,
-// inwards like 10 or 12 squares, maybe with a bit of meandering or waviness." So: from the fields'
-// sand cap, every kTendrilSpacing tiles round it, a wandering line of sand ten to twelve tiles long
-// runs straight in towards the city's middle (`tendrils`, on). Where one meets an outer block it
-// carves a notch of sand into it (stone stands only on pure grass), so the city frays into the fields.
+// FEEDBACK 2026-09-13 (revisions 2 to 9, still binding): no continuous wall, free access to the
+// fields from every home; about three farm plots per colony in the fields; pools that fill their
+// plazas to a tile short of the streets; fruit in many plazas; short, frequent, wavy roads in from
+// the fields' edge.
 namespace
 {
 
 // Every home's starting kit, unscaled whatever the amounts say: wheat and wood beside the fountain.
-// No quarry: the blocks are stone, the nearest of them a few steps from every door.
 constexpr int kHomeWheat = 14, kHomeWood = 12;
-// Outside the city the farm rows keep this margin of grass from the outermost blocks and run along
-// the map's axis; a farm plot's middle keeps this far inside the fields, so its ring of sand and the
-// margin round it (10 wide, 4 high, a ring of 2 and a vertex more) never meet the city.
+// The mason's yard: a stack of this much stone on a block of its own beside every home, the same
+// for every home.
+constexpr int kMasonStone = 12;
+// ...and this much wheat and wood beside it.
+constexpr int kYardStore = 8;
+// A home's court block is a green round its swarm: a paved court a 4x4 swarm fits on would leave its
+// rim of paving against grass, which cannot be built on.
+// The robbed wall: a face of stone at the wall's inner foot every this many tiles round it.
+constexpr int kWallFaceSpacing = 40, kWallFaceStone = 8;
+// Outside the town the farm rows keep this margin of grass from the outermost blocks; a farm plot's
+// middle keeps this far inside the fields (FarmPlot: 10 wide, 4 high, a ring of 2 and a vertex more).
 constexpr int kFarmMargin = 4, kFarmRim = 2, kFarmBridges = 16, kPlotMargin = 9;
-// Tendrils (third play: "dozens of them, all the way around the perimeter, roughly evenly spaced ...
-// a default width of 2 cells of sand", then "1/2 the number of those inwards roads"): one every this
-// many tiles round the fields' sand cap, this long (plus up to kTendrilExtra), wandering sideways by
-// up to this many tiles, stroked kTendrilHalfWidth either side of its line: three corners across,
-// which is two whole tiles of sand. Sixteen tiles apart on a ring of about 600 tiles is some
-// thirty-five tendrils on a 256 map (eight apart, seventy, was too many).
-constexpr int kTendrilSpacing = 16, kTendrilLength = 10, kTendrilExtra = 3;
-constexpr double kTendrilWander = 2.0, kTendrilHalfWidth = 1.5;
+// Country roads: one every this many tiles round the fields' edge, this long (plus up to
+// kRoadExtra), wandering sideways by up to kRoadWander, stroked kRoadHalfWidth either side.
+constexpr int kRoadSpacing = 16, kRoadLength = 10, kRoadExtra = 3;
+constexpr double kRoadWander = 2.0, kRoadHalfWidth = 1.5;
+// The town wall: a ring this far outside the town's edge, this thick, breached this far round
+// every street and road that meets it.
+constexpr double kWallRadius = 1.5, kWallHalfThickness = 1.5, kBreachReach = 2.5;
+
+// The climates' looks for Old town: the shared four with the Obstacles look a hedge or thicket,
+// since a hedge is the only Obstacles terrain the town draws (it never draws a cliff).
+constexpr std::array<ClimateLook, kClimateCount> oldTownLooks()
+{
+	std::array<ClimateLook, kClimateCount> looks{};
+	for (int k = 0; k < kClimateCount; ++k)
+		looks[k] = kClimateLooks[k];
+	looks[0].cliff = HEDGE;
+	looks[1].cliff = THICKET;
+	looks[2].cliff = THICKET;
+	looks[3].cliff = HEDGE;
+	return looks;
+}
+constexpr std::array<ClimateLook, kClimateCount> kOldTownLooks = oldTownLooks();
+static_assert(terrainGroup(kOldTownLooks[0].cliff) == TerrainGroup::Obstacles &&
+				  terrainGroup(kOldTownLooks[1].cliff) == TerrainGroup::Obstacles &&
+				  terrainGroup(kOldTownLooks[2].cliff) == TerrainGroup::Obstacles &&
+				  terrainGroup(kOldTownLooks[3].cliff) == TerrainGroup::Obstacles,
+			  "Old town's hedges keep the Obstacles rules.");
+
+enum BlockKind { Houses, Courtyard, Workshop, GardenPlot, RubbleLot, kBlockKinds };
+constexpr const char *kBlockNames[kBlockKinds] = {"houses", "courtyard", "workshop", "garden", "rubble"};
+constexpr int kBlockWeights[kBlockKinds] = {55, 15, 10, 10, 10};
+
 // A fountain fills its plaza to this far short of the streets round it (FEEDBACK 2026-09-13: pools
-// "big enough that they push up close against their surrounding grid cells' stone"): the block's
-// half width less the street's, less a tile for the beach. 4.0 at the default block and street, an
-// area two and a half times the old 2.5.
+// "big enough that they push up close against their surrounding grid cells' stone").
 double fountainRadiusFor(int blockSize, int streetWidth)
 {
 	return std::max(2.5, blockSize / 2.0 - streetWidth / 2.0 - 1.0);
@@ -96,16 +118,19 @@ struct Layout
 	Torus t{1, 1};
 	Tessellation g;
 	double cx = 0, cy = 0, cityRadius = 0, homeRadius = 0;
-	std::vector<int> cell;
-	std::vector<int> homeCell, annexCell,
-		plazaCell;            // each colony's fountain block and swarm block, then the other plazas
-	std::vector<double> axes; // each home's facing: from the fountain to the swarm
-	int cathedral = -1;
-	std::vector<int> homeOf;
-	std::vector<unsigned char> city, block, street, water, road, farmRegion;
-	Farm farm; // the fields' rows, sand and plots
+	std::vector<int> cell, kind;
+	std::vector<int> homeCell, annexCell, yardCell, plazaCell;
+	std::vector<double> axes;
+	int cathedral = -1, climate = 0;
+	std::vector<int> homeOf, masonSeed;
+	std::vector<unsigned char> city, block, street, water, road, farmRegion, house, wall, rubble,
+		paved, rock;
+	std::vector<ShapePoint> homes, kits, wallFaces;
+	Farm farm;
 	double fountainRadius = 0;
-	std::vector<ShapePoint> homes, kits;
+	TerrainSketch sketch, finished;
+	int breaches = 0, unthickened = 0;
+	std::array<int, kBlockKinds> kindCounts{};
 	std::string failure;
 };
 
@@ -118,11 +143,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
 	L.cx = t.w / 2.0;
 	L.cy = t.h / 2.0;
-	// The city is a disc of `citySize` percent of the half side; the fields begin at its edge.
 	L.cityRadius = o.citySize / 100.0 * std::min(t.w, t.h) / 2.0;
 
-	// The blocks: a square tiling warped into irregular polygons. Every edge is a street, and the
-	// warp keeps streets that share no corner a street's width and a house apart.
+	// The blocks: a square tiling warped into irregular polygons. Every edge is a street.
 	L.g = squareTessellation(t.w, t.h, o.blockSize);
 	const std::vector<unsigned char> walls(L.g.edges.size(), 1);
 	warpCorners(L.g, warpLimit(L.g) * o.warp / 100, walls, o.streetWidth + 6, o.blockSize / 4,
@@ -133,7 +156,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.failure = "The blocks could not be labelled.";
 		return L;
 	}
-	// The city's cells: those whose whole block lies inside the city's edge.
 	std::vector<unsigned char> inCity(L.g.cellCount(), 0);
 	int cityCells = 0;
 	for (int cell = 0; cell < L.g.cellCount(); ++cell)
@@ -143,36 +165,29 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		inCity[cell] = d + o.blockSize / 2.0 < L.cityRadius;
 		cityCells += inCity[cell];
 	}
-	// Plazas: the colonies' plazas as far apart among the city's cells as the city allows
-	// (farthest-point spreading by centre distance, the cathedral square taken first so no colony
-	// starts on it), then `plazas` per colony farthest from those.
 	L.cathedral = L.cell[t.at(int(L.cx), int(L.cy))];
-	if (cityCells < teams + 1)
+	if (cityCells < 2 * teams + 1)
 	{
-		L.failure =
-			"The city has too few blocks for this many colonies; use a bigger city, smaller "
-			"blocks or fewer colonies.";
+		L.failure = "The city has too few blocks for this many colonies; use a bigger city, smaller "
+					"blocks or fewer colonies.";
 		return L;
 	}
 	{
 		// Farthest-point spreading over the city's cells, the cathedral square taken first so no
-		// colony starts on it. A home plaza is two blocks, not one: a single block of 14 less its
-		// streets is 10 tiles across, and with a fountain in the middle no 4x4 swarm fits beside it
-		// (measured: every settlement failed); so each home takes a neighbouring block as well, the
-		// fountain in the first and the swarm in the second. Extra plazas are given up first when the
-		// city is small.
+		// colony starts on it. A home is three blocks: a fountain garden, beside it towards the
+		// middle of town a green for the swarm, and beside that a mason's yard.
 		std::vector<long long> nearest(L.g.cellCount(), 0);
 		std::vector<unsigned char> taken(L.g.cellCount(), 0);
 		taken[L.cathedral] = 1;
 		for (int cell = 0; cell < L.g.cellCount(); ++cell)
 			nearest[cell] = L.g.distance2(cell, L.cathedral);
-		const int extra = std::min(o.plazas * teams, std::max(0, (cityCells - 1 - 2 * teams) / 2));
+		const int extra = std::min(o.plazas * teams, std::max(0, (cityCells - 1 - 3 * teams) / 2));
+		// (Three blocks a home where the town has room, two where the yard shares the green.)
 		context.telemetry.measure("old-town.plazas.target", o.plazas * teams);
 		context.telemetry.measure("old-town.plazas.fitted-target", extra);
 		if (extra < o.plazas * teams)
-			context.telemetry.fallback(
-				"old-town.plazas.reduced",
-				"Home pairs take priority over extra plazas in a small city.");
+			context.telemetry.fallback("old-town.plazas.reduced",
+									   "Home pairs take priority over extra plazas in a small city.");
 		for (int k = 0; k < teams + extra; ++k)
 		{
 			int best = -1;
@@ -184,8 +199,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			taken[best] = 1;
 			if (k < teams)
 			{
-				// The home's second block: its city neighbour nearest the cathedral, so the swarm
-				// stands on the side towards the middle of town.
 				int annex = -1;
 				for (int edge : L.g.cells[best].edges)
 				{
@@ -198,8 +211,27 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				if (annex < 0)
 					break;
 				taken[annex] = 1;
+				// The mason's yard: a free neighbouring block of the court block (or of the fountain
+				// block), nearest the court.
+				int yardCell = -1;
+				for (int from : {annex, best})
+				{
+					for (int edge : L.g.cells[from].edges)
+					{
+						const int next = L.g.other(edge, from);
+						if (inCity[next] && !taken[next] &&
+							(yardCell < 0 || L.g.distance2(next, annex) < L.g.distance2(yardCell, annex)))
+							yardCell = next;
+					}
+					if (yardCell >= 0) break;
+				}
+				// A town too small for a yard of its own puts the yard on the green.
+				if (yardCell < 0 || cityCells < 3 * teams + 1)
+					yardCell = annex;
+				taken[yardCell] = 1;
 				L.homeCell.push_back(best);
 				L.annexCell.push_back(annex);
+				L.yardCell.push_back(yardCell);
 				for (int cell = 0; cell < L.g.cellCount(); ++cell)
 					nearest[cell] = std::min(nearest[cell], L.g.distance2(cell, annex));
 			}
@@ -214,47 +246,74 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						"smaller blocks or fewer colonies.";
 			return L;
 		}
-		// The spreading picks the plazas in a fixed order (the first is always the same for a
-		// given tiling), so the deal decides which colony gets which pair (FEEDBACK 2026-09-13:
-		// "player 1 always top right"). The annexes travel with their plazas.
 		std::vector<int> order(teams);
 		std::iota(order.begin(), order.end(), 0);
 		dealStarts(context, order);
-		std::vector<int> dealtHomes, dealtAnnexes;
+		std::vector<int> dealtHomes, dealtAnnexes, dealtYards;
 		for (int k : order)
 		{
 			dealtHomes.push_back(L.homeCell[k]);
 			dealtAnnexes.push_back(L.annexCell[k]);
+			dealtYards.push_back(L.yardCell[k]);
 		}
 		L.homeCell = dealtHomes;
 		L.annexCell = dealtAnnexes;
+		L.yardCell = dealtYards;
 	}
+	L.climate = drawClimate(context, "old-town-climate");
+	context.telemetry.choice("old-town.climate", kOldTownLooks[L.climate].name);
 
-	// Streets: the band along every cell border inside the city; blocks: the rest of the city's
-	// cells, except the plazas. No wall (FEEDBACK 2026-09-13): the fields are open on every side.
+	// Streets: the band along every cell border inside the town; blocks: the rest of the town's cells.
 	L.city.assign(n, 0);
 	std::vector<unsigned char> border(n, 0);
+	std::vector<double> radial(n, 0.0);
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		const double d = std::hypot(t.offsetX(int(L.cx), x), t.offsetY(int(L.cy), y));
-		L.city[i] = d < L.cityRadius;
+		radial[i] = std::hypot(t.offsetX(int(L.cx), x), t.offsetY(int(L.cy), y));
+		L.city[i] = radial[i] < L.cityRadius;
 		for (const auto &s : kCardinalSteps)
 			if (L.cell[t.at(x + s[0], y + s[1])] != L.cell[i])
 				border[i] = 1;
 	}
+	// The paved street is the band along every cell border, as wide as it always was: a 4x4 building
+	// fits on it, so a colony can build in its streets and close them.
 	L.street = dilateRound(t, border, o.streetWidth / 2.0);
-	std::vector<unsigned char> plaza(L.g.cellCount(), 0);
-	plaza[L.cathedral] = 1;
-	for (int cell : L.homeCell)
-		plaza[cell] = 1;
-	for (int cell : L.annexCell)
-		plaza[cell] = 1;
-	for (int cell : L.plazaCell)
-		plaza[cell] = 1;
+	std::vector<int> plazaKind(L.g.cellCount(), 0); // 1 cathedral, 2 home fountain, 3 home green, 4 market, 5 mason's yard
+	plazaKind[L.cathedral] = 1;
+	for (int cell : L.homeCell) plazaKind[cell] = 2;
+	for (int cell : L.annexCell) plazaKind[cell] = 3;
+	for (int k = 0; k < int(L.yardCell.size()); ++k)
+		if (L.yardCell[k] != L.annexCell[k]) plazaKind[L.yardCell[k]] = 5;
+	for (int cell : L.plazaCell) plazaKind[cell] = 4;
 	L.block.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.block[i] = L.city[i] && inCity[L.cell[i]] && !L.street[i] && !plaza[L.cell[i]];
+		L.block[i] = L.city[i] && inCity[L.cell[i]] && !L.street[i] && !plazaKind[L.cell[i]];
+
+	// Every block's kind, from its own stream.
+	L.kind.assign(L.g.cellCount(), -1);
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+	{
+		if (!inCity[cell] || plazaKind[cell]) continue;
+		int roll = context.bounded("town-blocks", 100), k = 0;
+		while (k + 1 < kBlockKinds && roll >= kBlockWeights[k]) roll -= kBlockWeights[k++];
+		L.kind[cell] = k;
+		++L.kindCounts[k];
+	}
+	for (int k = 0; k < kBlockKinds; ++k)
+		context.telemetry.measure(std::string("old-town.blocks.") + kBlockNames[k], L.kindCounts[k]);
+	// A block's back: a direction per block (from its own stream) a partial house leans towards.
+	std::vector<ShapePoint> back(L.g.cellCount(), ShapePoint{1, 0});
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		if (L.kind[cell] >= 0)
+		{
+			const double a = context.bounded("town-backs", 3600) / 3600.0 * 2 * kPi;
+			back[cell] = {std::cos(a), std::sin(a)};
+		}
+	std::vector<unsigned char> notBlock(n, 0);
+	for (int i = 0; i < n; ++i) notBlock[i] = !L.block[i];
+	const std::vector<int> depth = stepsFrom(t, notBlock);
+
 	// Fountains: a pond at the middle of every plaza; the colonies' kits round theirs.
 	L.water.assign(n, 0);
 	L.homeOf.assign(n, -1);
@@ -278,7 +337,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.axes.push_back(std::atan2(swarmAt.y - fountainAt.y, swarmAt.x - fountainAt.x) + kPi);
 		fillShape(L.water, t, fountainAt.x, fountainAt.y, fountain, 0.0);
 		for (int i = 0; i < n; ++i)
-			if (L.cell[i] == L.homeCell[k] || L.cell[i] == L.annexCell[k])
+			if (L.cell[i] == L.homeCell[k] || L.cell[i] == L.annexCell[k] || L.cell[i] == L.yardCell[k])
 				L.homeOf[i] = k;
 	}
 	for (int cell : L.plazaCell)
@@ -290,16 +349,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const ShapePoint c = tilePoint(L.g.cells[L.cathedral].centre);
 		fillShape(L.water, t, c.x, c.y, fountain, 0.0);
 	}
-	// Outside the city: farm rows over everything beyond the outermost blocks' margin, along the map's
-	// axis with the row through the centre a crop row, bridged every kFarmBridges tiles; then farm
-	// plots (FEEDBACK 2026-09-13) spread through the fields, each the farthest a plot can stand from
-	// the city and from every plot before it, so they are evenly dotted about.
+	// Garden plots' well-ponds.
+	for (int cell = 0; cell < L.g.cellCount(); ++cell)
+		if (L.kind[cell] == GardenPlot)
+		{
+			const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+			const RadialShape well(std::max(2.0, L.fountainRadius - 1.5), 0.2, context, "town-wells");
+			fillShape(L.water, t, c.x, c.y, well, 0.0);
+		}
+
+	// Outside the town: farm rows over everything beyond the margin, along the map's axis, bridged
+	// every kFarmBridges tiles, then building plots spread through the fields (FEEDBACK 2026-09-13).
 	L.farmRegion.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
-		const double d = std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w));
-		L.farmRegion[i] = d > L.cityRadius + kFarmMargin;
-	}
+		L.farmRegion[i] = radial[i] > L.cityRadius + kFarmMargin;
 	TerrainSketch rows(n, GRASS);
 	L.farm = layFarm(rows, t, L.farmRegion, 0.0, {L.cx, L.cy}, kFarmRim, bestFarmRows(0.0), nullptr,
 					 {kFarmBridges, o.waterCrossings, o.cropCrossings}, true);
@@ -328,31 +391,180 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.farm.water[i])
 			L.water[i] = 1;
-	// Tendrils (FEEDBACK 2026-09-13, third play): short wavy sand roads from the fields' cap ring in
-	// towards the city, one every kTendrilSpacing tiles round the ring, kTendrilLength to
-	// kTendrilLength + kTendrilExtra tiles long, each a wanderingPath stroked two tiles of sand wide.
-	// They cross the margin and run into the outer streets and blocks; the pools are left alone.
+	// Country roads (FEEDBACK 2026-09-13, the tendrils): short wavy roads from the fields' edge in
+	// towards the town, one every kRoadSpacing tiles round it.
 	L.road.assign(n, 0);
 	if (o.tendrils)
 	{
 		const double ring = L.cityRadius + kFarmMargin + 1;
-		const int count = std::max(1, int(std::lround(2 * kPi * ring / kTendrilSpacing)));
+		const int count = std::max(1, int(std::lround(2 * kPi * ring / kRoadSpacing)));
 		const double phase = context.bounded("town-tendrils", 3600) / 3600.0 * 2 * kPi;
 		std::mt19937 &wobble = context.stream("town-tendrils");
 		for (int k = 0; k < count; ++k)
 		{
 			const double a = phase + 2 * kPi * k / count;
-			const double length =
-				kTendrilLength + context.bounded("town-tendrils", kTendrilExtra + 1);
+			const double length = kRoadLength + context.bounded("town-tendrils", kRoadExtra + 1);
 			const ShapePoint from = polarPoint(L.cx, L.cy, ring, a);
 			const ShapePoint to = polarPoint(L.cx, L.cy, ring - length, a);
-			strokePath(L.road, t,
-					   wanderingPath(t, from, to, kTendrilHalfWidth, kTendrilWander, 0.0, wobble));
+			strokePath(L.road, t, wanderingPath(t, from, to, kRoadHalfWidth, kRoadWander, 0.0, wobble));
 		}
 		for (int i = 0; i < n; ++i)
 			if (L.water[i])
 				L.road[i] = 0;
 	}
+
+	// THE TOWN WALL: a ring just outside the town's edge, breached round every street and road that
+	// meets it, and wherever its collapse noise says it fell.
+	const std::vector<int> collapse = periodicNoise(t.w, t.h, 16, context.stream("town-wall"));
+	std::vector<unsigned char> openings(n, 0);
+	for (int i = 0; i < n; ++i)
+		openings[i] = L.road[i] || (L.street[i] && L.city[i]);
+	const std::vector<unsigned char> nearOpening = dilateRound(t, openings, kBreachReach);
+	std::vector<unsigned char> ring(n, 0);
+	L.wall.assign(n, 0);
+	const double wallAt = L.cityRadius + kWallRadius;
+	for (int i = 0; i < n; ++i)
+	{
+		ring[i] = std::abs(radial[i] - wallAt) <= kWallHalfThickness && !L.water[i];
+		L.wall[i] = ring[i] && !nearOpening[i] && collapse[i] < 46000;
+	}
+	{
+		// Breaches: the gaps round the ring, counted by walking it in angle.
+		const int steps = std::max(64, int(2 * kPi * wallAt));
+		bool previous = false, first = false;
+		for (int s = 0; s <= steps; ++s)
+		{
+			const ShapePoint p = polarPoint(L.cx, L.cy, wallAt, 2 * kPi * s / steps);
+			const bool solid = L.wall[t.at(int(std::floor(p.x)), int(std::floor(p.y)))];
+			if (s == 0) first = solid;
+			else if (previous && !solid) ++L.breaches;
+			previous = solid;
+		}
+		(void)first;
+		context.telemetry.measure("old-town.wall.breaches", L.breaches);
+		// The robbed wall's quarry faces, at its inner foot.
+		const int faces = std::max(1, int(2 * kPi * wallAt / kWallFaceSpacing));
+		for (int k = 0; k < faces; ++k)
+			L.wallFaces.push_back(polarPoint(L.cx, L.cy, wallAt - kWallHalfThickness - 2.5, 2 * kPi * (k + 0.5) / faces));
+	}
+
+	// THE BLOCKS. Houses are wall tiles turned into Ridges below; yards and squares are paved.
+	L.house.assign(n, 0);
+	L.rubble.assign(n, 0);
+	L.paved.assign(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		if (!L.block[i] || L.road[i] || L.water[i]) continue;
+		const int cell = L.cell[i];
+		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+		const double ox = t.offsetX(int(c.x), t.remainderX(i)), oy = t.offsetY(int(c.y), i / t.w);
+		const double along = ox * back[cell].x + oy * back[cell].y;
+		const double across = -ox * back[cell].y + oy * back[cell].x;
+		switch (L.kind[cell])
+		{
+		case Houses:
+			// Rows of houses round the block; a large block keeps a back yard in the middle.
+			L.house[i] = depth[i] <= 4;
+			break;
+		case Courtyard:
+			// A ring of building with a court inside, its door on the block's back.
+			L.house[i] = depth[i] <= 3 && !(along > 0 && std::abs(across) <= 1.5);
+			break;
+		case Workshop:
+			// A paved yard with a workshop along its back.
+			// An open yard (grass, buildable) with a workshop along its back.
+			L.house[i] = along > o.blockSize * 0.18 && depth[i] <= 3;
+			break;
+		case GardenPlot:
+			break;
+		case RubbleLot:
+			// What is left of a house: a corner standing on the block's back, the rest fallen.
+			L.house[i] = along > o.blockSize * 0.25 && depth[i] <= 2;
+			L.rubble[i] = !L.house[i] && depth[i] >= 2;
+			break;
+		}
+	}
+	// Market squares are paved round a grass grove ring.
+	for (int i = 0; i < n; ++i)
+	{
+		const int cell = L.cell[i];
+		if (!L.city[i] || L.water[i]) continue;
+		if (cell >= 0 && plazaKind[cell] == 4 && !L.street[i])
+		{
+			const ShapePoint c = tilePoint(L.g.cells[cell].centre);
+			const double d = std::hypot(t.offsetX(int(c.x), t.remainderX(i)), t.offsetY(int(c.y), i / t.w));
+			L.paved[i] = d > L.fountainRadius + 3.5;
+		}
+	}
+	L.masonSeed.assign(teams, -1);
+	for (int k = 0; k < teams; ++k)
+	{
+		const ShapePoint yard = tilePoint(L.g.cells[L.yardCell[k]].centre);
+		L.masonSeed[k] = t.at(int(std::lround(yard.x)), int(std::lround(yard.y)));
+	}
+
+	// THE SKETCH, one terrain per rule.
+	TerrainSketch &s = L.sketch;
+	s.assign(n, GRASS);
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.farm.sand[i]) s[i] = SAND;
+		if (L.water[i]) s[i] = WATER;
+	}
+	dressFarmSand(s, L.farm);
+	const std::vector<unsigned char> pavedCorners = tileCorners(t, L.paved);
+	for (int i = 0; i < n; ++i)
+	{
+		if (s[i] == WATER) continue;
+		if ((L.street[i] && L.city[i]) || L.road[i] || pavedCorners[i]) s[i] = TRAIL;
+	}
+	// Walls to vertices, leaning away from the streets, roads and squares; then three vertices
+	// thick, never onto paving, water, a home, a plaza or the fields' rows.
+	std::vector<unsigned char> open(n, 0), wallTiles(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		open[i] = (L.street[i] && L.city[i]) || L.road[i] || L.paved[i];
+		wallTiles[i] = (L.house[i] && !open[i]) || L.wall[i];
+	}
+	const std::vector<unsigned char> keep = tileCorners(t, open);
+	std::vector<unsigned char> reserved(n, 0);
+	for (int i = 0; i < n; ++i)
+		reserved[i] = L.homeOf[i] >= 0 || L.water[i] || (L.cell[i] >= 0 && plazaKind[L.cell[i]] && !L.street[i]) ||
+			L.farmRegion[i] || L.rubble[i];
+	const std::vector<unsigned char> reservedCorners = tileCorners(t, reserved);
+	// A building or the wall takes every corner its tiles touch except the corners it shares with
+	// open ground (a street, a road, a court), so it fills its block to the paving evenly on every
+	// side and leaves the paving whole.
+	const std::vector<unsigned char> wallCorners = tileCorners(t, wallTiles);
+	for (int i = 0; i < n; ++i)
+		if (wallCorners[i] && !keep[i] && s[i] == GRASS && (!reservedCorners[i] || L.wall[i]))
+			s[i] = RIDGE_ROCK;
+	const auto canGrow = [&](int i) { return s[i] == GRASS && !keep[i] && !reservedCorners[i]; };
+	thickenRidges(s, t, canGrow, &L.unthickened, RIDGE_ROCK);
+	L.rock.assign(n, 0);
+	std::vector<unsigned char> wallVertex(n, 0);
+	const std::vector<unsigned char> wallTileCorners = tileCorners(t, L.wall);
+	for (int i = 0; i < n; ++i)
+	{
+		L.rock[i] = s[i] == RIDGE_ROCK;
+		wallVertex[i] = L.rock[i] && wallTileCorners[i] && !L.city[i];
+	}
+	context.telemetry.measure("old-town.walls.unthickened-vertices", L.unthickened);
+
+	// THE LOOK, painted last.
+	L.finished = s;
+	LookRoles roles;
+	roles.tended = [&L](int i) { return L.homeOf[i] >= 0; };
+	roles.farm = [&L](int i) { return L.farmRegion[i] != 0; };
+	roles.rockAccent = [&wallVertex](int i) { return wallVertex[i] != 0; };
+	roles.path = [&L](int i)
+	{
+		if (L.road[i] && !L.city[i]) return PathLook::Road;
+		if (L.farmRegion[i]) return PathLook::Road;
+		return (L.street[i] && L.city[i]) ? PathLook::Street : PathLook::Town;
+	};
+	paintClimate(L.finished, t, kOldTownLooks[L.climate], roles);
+
 	context.telemetry.measure("old-town.farm-plots.actual", plotsPlaced);
 	context.telemetry.measure("old-town.city.cells", cityCells);
 	context.telemetry.measure("old-town.plazas.actual", L.plazaCell.size());
@@ -377,19 +589,64 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "old town terrain";
-	TerrainSketch terrain(n, GRASS);
-	for (int i = 0; i < n; ++i)
-		terrain[i] = L.water[i] ? WATER : (L.farm.sand[i] || L.road[i]) ? SAND : GRASS;
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
-	// The blocks are stone, wherever the beaches left pure grass.
-	for (int i = 0; i < n; ++i)
-		if (L.block[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	writeVertices(map, L.finished);
+
+	// The mason's yards first, before anyone stands near them: the same stone in every home.
+	context.stage = "old town stone";
+	// Every home gets the same stack: as much as the smallest yard holds, up to kMasonStone.
+	const auto yard = [&](int k)
+	{
+		const ShapePoint swarm = L.homes[k];
+		const bool shared = L.yardCell[k] == L.annexCell[k];
+		return [&, k, swarm, shared](int i)
+		{
+			return (shared || L.cell[i] == L.yardCell[k]) && L.homeOf[i] == k && clearGround(map, t.remainderX(i), i / t.w) &&
+				   (!shared || std::hypot(t.offsetX(int(swarm.x), t.remainderX(i)), t.offsetY(int(swarm.y), i / t.w)) > 3.0);
+		};
+	};
+	int stack = kMasonStone;
+	std::vector<int> seeds(teams, -1);
+	for (int k = 0; k < teams; ++k)
+	{
+		const int at = L.masonSeed[k];
+		seeds[k] = seedNear(t, t.remainderX(at), at / t.w, 8, yard(k));
+		if (seeds[k] < 0) { stack = 0; break; }
+		// The yard's room: the eligible ground connected to its seed.
+		std::vector<unsigned char> seen(n, 0);
+		std::vector<int> queue{seeds[k]};
+		seen[seeds[k]] = 1;
+		const auto eligible = yard(k);
+		for (size_t q = 0; q < queue.size() && int(queue.size()) < kMasonStone; ++q)
+			for (const auto &step : kCardinalSteps)
+			{
+				const int j = t.at(t.remainderX(queue[q]) + step[0], queue[q] / t.w + step[1]);
+				if (!seen[j] && eligible(j)) { seen[j] = 1; queue.push_back(j); }
+			}
+		stack = std::min(stack, int(queue.size()));
+	}
+	int masonStone = 0;
+	for (int k = 0; k < teams && stack > 0; ++k)
+		masonStone += growPatch(map, t, seeds[k], STONE, stack, yard(k));
+	context.telemetry.measure("old-town.stone.mason-stack", stack);
+	// The yard also keeps a store of grain and timber: a colony's first harvest within reach whatever
+	// the houses round its home leave.
+	for (int k = 0; k < teams; ++k)
+	{
+		const int at = L.masonSeed[k];
+		plantPatchNear(map, t, KitSeed{t.remainderX(at), at / t.w, 8}, WHEAT, kYardStore, yard(k));
+		plantPatchNear(map, t, KitSeed{t.remainderX(at), at / t.w, 8}, WOOD, kYardStore, yard(k));
+	}
+	context.telemetry.measure("old-town.stone.mason", masonStone);
 
 	context.stage = "old town colonies";
-	const auto homeMask = [&](int team) { return homeGrassMask(map, t, L.homeOf, team); };
-	// The swarm on the annex block's middle, as the top-left tile of its 4x4 footprint.
+	const auto homeMask = [&](int team)
+	{
+		std::vector<unsigned char> home(n, 0);
+		for (int i = 0; i < n; ++i)
+			home[i] = L.homeOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable &&
+				!map.isResource(t.remainderX(i), i / t.w);
+		return home;
+	};
 	const auto anchor = [&](int team)
 	{
 		return MapGeneratorPoint(int(std::lround(L.homes[team].x)) - 2,
@@ -404,9 +661,26 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		plantHomeKit(
 			map, t, context, L.kits[k], L.axes[k], L.homeRadius, kHomeWheat, kHomeWood, [&](int i)
 			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
+	// The robbed wall's faces and the rubble lots, scaled by the stone amount.
+	int wallStone = 0, rubbleStone = 0;
+	for (const ShapePoint &p : L.wallFaces)
+		wallStone += plantQuarryFaces(map, t, {KitSeed{int(p.x), int(p.y), 6}},
+			int(scaledCount(kWallFaceStone, o.stone)),
+			[&](int i) { return L.homeOf[i] < 0 && !L.farmRegion[i] && clearGround(map, t.remainderX(i), i / t.w); });
+	{
+		const std::vector<int> heaps = periodicNoise(t.w, t.h, 4, context.stream("town-rubble"));
+		const int threshold = 65535 - std::min(65535, o.stone * 260);
+		for (int i = 0; i < n; ++i)
+			if (L.rubble[i] && heaps[i] > threshold && clearGround(map, t.remainderX(i), i / t.w))
+			{
+				map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+				++rubbleStone;
+			}
+	}
+	context.telemetry.measure("old-town.stone.wall", wallStone);
+	context.telemetry.measure("old-town.stone.rubble", rubbleStone);
 	// The cathedral square's orchard round its fountain, and a grove of one fruit in turn beside every
-	// other plaza's pool (FEEDBACK 2026-09-13: "more of them need to contain fruits"). A pool fills its
-	// plaza to a tile short of the streets, so the fruit stands on the ground round it.
+	// market's pool (FEEDBACK 2026-09-13: "more of them need to contain fruits").
 	const auto roundPlaza = [&](int cell)
 	{
 		const ShapePoint c = tilePoint(L.g.cells[cell].centre);
@@ -433,10 +707,9 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 					   CHERRY + fruit++ % 3, 1, 5, roundPlaza(cell));
 		}
 	}
-	// The fields outside: half the fertile row ground under wheat and a twentieth under wood (a third
-	// of the sixth it was, FEEDBACK 2026-09-13), no outcrops, in patches, the farm plots kept clear;
-	// inside the city only the plazas are fertile (their fountains), and get a light share so they
-	// stay open to build on.
+	// The fields outside: half the fertile row ground under wheat and a twentieth under wood, in
+	// patches, the farm plots kept clear; inside the town the plazas, gardens and fountain gardens
+	// get a light share.
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 8, context.stream("town-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream("town-split"));
@@ -460,8 +733,8 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		"town-stone", "town-fruit");
 	const auto plazas = [&](int i)
 	{
-		return L.city[i] && !L.block[i] && !L.street[i] && L.homeOf[i] < 0 &&
-			   clearGround(map, t.remainderX(i), i / t.w);
+		return L.city[i] && !L.house[i] && !L.street[i] && !L.paved[i] && L.homeOf[i] < 0 &&
+			   !L.rubble[i] && clearGround(map, t.remainderX(i), i / t.w);
 	};
 	int plazaFertile = 0;
 	for (int i = 0; i < n; ++i)
@@ -476,13 +749,12 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		},
 		"town-stone", "town-fruit");
 	seedAlgae(map, context, t, "town-algae", o.algae, AlgaeBand::anyWater(50));
-	const std::vector<unsigned char> &stone = L.block;
+	std::vector<unsigned char> stone(n, 0);
+	for (int i = 0; i < n; ++i)
+		stone[i] = map.getResource(t.remainderX(i), i / t.w).type == STONE;
 	secureStartingCrops(game, context, t, 24, 32, 0, &stone);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
-						&stone);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0, &stone);
 	clearFarmPlots(map, t, {L.farm});
-	// The streets join every plaza and open onto the fields on every side; only crops could close a
-	// street, so only crops are cleared.
 	context.stage = "old town routes";
 	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1});
 	return true;
@@ -496,12 +768,30 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	if (const std::string mismatch = designMismatch(L, map, "old town"); !mismatch.empty())
 		return mismatch;
 	const Torus &t = L.t;
+	for (int i = 0; i < t.size(); ++i)
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.finished[i])
+			return "The town's terrain differs from its design at (" + std::to_string(t.remainderX(i)) +
+				   ", " + std::to_string(i / t.w) + ").";
+	if (wallTerrainMismatch(map, t, L.rock, TerrainGroup::Ridges) >= 0)
+		return "A house or the town wall is not Ridges.";
+	// Every home keeps the same stone in its mason's yard (12 where the town has room for a yard of
+	// its own; a cramped town's yards share the home's green and hold what the smallest fits).
+	std::vector<int> stone(context.request.nbTeams, 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (L.homeOf[i] >= 0 && map.getResource(t.remainderX(i), i / t.w).type == STONE)
+			++stone[L.homeOf[i]];
+	for (int k = 0; k < int(stone.size()); ++k)
+		if (stone[k] != stone[0] || stone[k] < 1)
+			return "Colony " + std::to_string(k) + "'s mason's yard has lost its stone (" + std::to_string(stone[k]) + " against " + std::to_string(stone[0]) + ").";
 	if (const std::string lost =
 			homePondMissing(map, t, L.kits, context.request.nbTeams, "plaza", "fountain");
 		!lost.empty())
 		return lost;
-	return walkFromFirstColony(map, context.request.nbTeams, "the city", "through the streets")
-		.error;
+	if (const std::string access = startingAccessFailure(map, context.request.nbTeams,
+			{{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}, {MaterialId::Stone, 24, "stone"}});
+		!access.empty())
+		return access;
+	return walkFromFirstColony(map, context.request.nbTeams, "the town", "through the streets").error;
 }
 } // namespace
 
@@ -522,12 +812,8 @@ GeneratorDefinition oldTownDefinition()
 		"old-town",
 		31,
 		"Old town",
-		9,
+		10, // 10: Old town 2.0, urban blocks, paved streets, placed stone, ruined wall, climates
 		false,
-		// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
-		// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
-		// that one building closes; three farm plots per colony through the fields (FEEDBACK
-		// 2026-09-13 asked for about two and a half).
 		{GeneratorControl{"city-size", "City size", 40, 90, 5, 70, ControlGroup::Layout}
 			 .withSearchRange(55, 80),
 		 GeneratorControl{"block-size", "Block size", 10, 20, 1, 14, ControlGroup::Layout}
@@ -540,8 +826,6 @@ GeneratorDefinition oldTownDefinition()
 																								3),
 		 GeneratorControl{"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout}
 			 .withSearchRange(3, 6),
-		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
-		 // both on by default so workers cross the rows rather than walking round them.
 		 waterCrossingsControl(), cropCrossingsControl(),
 		 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain)
 			 .withSearchValues({0, 1}),
@@ -554,6 +838,5 @@ GeneratorDefinition oldTownDefinition()
 		true,
 		designFailure<design>,
 		validateWorld,
-		// The town's open spots are small ponds, not paved plazas.
-		{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:tight-building"}};
+		{"terrain:urban", "feature:stone-walls", "feature:lakes", "feature:farmland", "style:tight-building"}};
 }
