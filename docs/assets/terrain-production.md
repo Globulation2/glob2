@@ -398,7 +398,10 @@ lichen stains, loose rocks and a few jointed fractures, under broad light that
 rises toward the rims facing the light. Each south face is the plateau's own
 stone, stretched down the drop and put in shade: broad facets each turned their
 own way to the light, faint broken bedding, darkest at the foot, over a dark
-contact strip and a long shadow. The lip is lit in broken stretches; rims facing
+contact strip and a soft shadow. Every layer of a mass's contact shadow stays
+within the footprint a frame can see (its cell and a 22-pixel halo), so it never
+stops square at a cell edge beside a rim; where a cell's bottom corners are open
+ground the shadow runs on into the frame's rows below the cell. The lip is lit in broken stretches; rims facing
 away from the light fall dark. The plateau has no discrete objects that could
 repeat. Each vertex colour owns a patch of noise fields (relief, tone and grain)
 that a cell blends with variance-preserving bilinear weights, so along a shared
