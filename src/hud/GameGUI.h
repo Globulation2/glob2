@@ -26,7 +26,6 @@ namespace Online { class SkinDownloads; }
 #include "UnitConsts.h"
 #include "sim/EntityRef.h"
 #include <deque>
-#include "TorusView.h"
 #include "IntroCover.h"
 #include "Brush.h"
 #include "Campaign.h"
@@ -40,9 +39,6 @@ namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
-#include "render/scene/SceneExtract.h"
-#include "render/ViewState.h"
-#include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
 #include "BuildingGuiState.h"
@@ -65,6 +61,18 @@ namespace GAGGUI
 	namespace ui { class Host; }
 }
 namespace Glob2UI { class InGameDialog; }
+// Held by pointer so that files using GameGUI do not compile the scene and renderer.
+class GameGUIToolManager;
+class SceneExtractor;
+class TorusView;
+struct PresentationFrame;
+struct SceneBuildingPanel;
+struct SceneRequest;
+struct ViewState;
+struct MapRenderState;
+class GameHeader;
+namespace SimulationSnapshot { struct BuildingView; }
+using SnapshotBuilding = SimulationSnapshot::BuildingView;
 using namespace GAGGUI;
 
 class TeamStats;
@@ -104,7 +112,8 @@ class GameGUI : public ClientCommandSink
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
     friend class TorusRenderIntegrationTest;
-    TorusView torusView;
+    std::unique_ptr<TorusView> torusViewOwner;
+    TorusView &torusView;
     bool torusPointerDown = false;
     bool torusMapPointer(int x, int y, int &mx, int &my) const;
     bool handleTorusPointer(const SDL_Event &event);
@@ -332,20 +341,17 @@ public:
 	Game *replayTelemetryGame();
 	//! Starts recording to writer at path (an empty path records to memory), with this GUI's game header.
 	void startReplay(ReplayWriter &writer, const std::string &path);
-	const PresentationFrame& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
+	const PresentationFrame& drawnScene() const
+	{
+		if (publishedScene) return *publishedScene;
+		return frameScene;
+	}
 	/// Draw scenes published by the simulation thread (null: use the explicitly prepared local frame).
-	void setPublishedScene(const PresentationFrame* scene)
-    {
-        publishedScene = scene;
-        view.scene = &drawnScene();
-        if (view.scene->buildingTypes) choiceCatalog = view.scene->buildingTypes;
-        toolManager.setDrawnScene(view.scene->world.catalogs ? view.scene : nullptr);
-        reconcilePublishedBuildingGuiState();
-    }
+	void setPublishedScene(const PresentationFrame* scene);
 	/// What the next scene should show; read by extraction, which runs where the
 	/// game may be read. The main thread publishes it through the runner mailbox.
 	SceneRequest sceneRequest(bool includeTiming = true);
-    void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
+    void stampPresentationRequest(SceneRequest& request) const;
 	/// Standalone owner-side observation through the shared read boundary.
 	void prepareLocalPresentation(PresentationFrame& scene);
     // Explicit observation for standalone clients and owner-side tools.
@@ -380,7 +386,7 @@ public:
 		tickClock = (((tickClock >> 32) + 1) << 32) | Uint32(time);
 	}
 	/// Water and cloud animation phase of this GUI's map view (presentation only).
-	int mapAnimationTime() const { return view.render.animationTime; }
+	int mapAnimationTime() const;
 	friend class Game;
 	// Read by the simulation thread as well as the GUI (see SimulationRunner).
 	std::atomic<bool> gamePaused{false};
@@ -506,7 +512,8 @@ private:
 	void handleKeySwitchToAreaBrush(int figure);
 	void handleKeySelectConstruct(const char *buildingName);
 	void handleKeySelectPlaceFlag(const char *flagName);
-	void handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone);
+	//! `zone` is a GameGUIToolManager::ZoneType.
+	void handleKeySelectPlaceArea(int zone);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent);
 	void handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent);
@@ -736,7 +743,8 @@ private:
 	
 	// Brushes
 	BrushTool brush;
-	GameGUIToolManager toolManager;
+	std::unique_ptr<GameGUIToolManager> toolManagerOwner;
+	GameGUIToolManager &toolManager;
 
 	//! Unset and clean everything related to the selection so a new one can be set
 	void cleanOldSelection(void);
@@ -977,9 +985,11 @@ private:
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
 	///ViewState. Owned here (not on Game) and passed into MapDrawer::drawMap.
-	ViewState view;
+	std::unique_ptr<ViewState> viewOwner;
+	ViewState &view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
-	PresentationFrame frameScene;
+	std::unique_ptr<PresentationFrame> frameSceneOwner;
+	PresentationFrame &frameScene;
 	Uint64 lastTickTime = 0;
 	Uint32 tickInterval = 0;
 	///PresentationFrame published by the simulation thread, or null when an owner-side tool prepares a local frame
@@ -987,7 +997,8 @@ private:
 	const PresentationFrame* publishedScene = nullptr;
 	const SceneBuildingPanel* inputBuildingPanel();
 	///Extracts frameScene; keeps the state that spans frames (the overlay map).
-	SceneExtractor sceneExtractor;
+	std::unique_ptr<SceneExtractor> sceneExtractorOwner;
+	SceneExtractor &sceneExtractor;
 
 	///Accessor: pending value if set, else authoritative from `b`.
 	Sint32 displayedPosX(const Building& b) const;
@@ -1006,16 +1017,16 @@ private:
 	template<class B> bool displayedExplorersRequireBombing(const B& b) const { return ::displayedExplorersRequireBombing(buildingGuiState,b); }
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 	// The same for the selected building's panel model.
-	Sint32 displayedPosX(const SnapshotBuilding& b) const { return ::displayedPosX(buildingGuiState, b); }
-	Sint32 displayedPosY(const SnapshotBuilding& b) const { return ::displayedPosY(buildingGuiState, b); }
-	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }
-	Sint32 displayedPosY(const SceneBuildingPanel& b) const { return ::displayedPosY(buildingGuiState, b); }
-	Sint32 displayedMaxUnitWorking(const SceneBuildingPanel& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
-	Sint32 displayedUnitStayRange(const SceneBuildingPanel& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
-	Sint32 displayedPriority(const SceneBuildingPanel& b) const { return ::displayedPriority(buildingGuiState, b); }
-	bool displayedClearingResource(const SceneBuildingPanel& b, int i) const { return ::displayedClearingResource(buildingGuiState, b, i); }
-	Sint32 displayedMinLevelToFlag(const SceneBuildingPanel& b) const { return ::displayedMinLevelToFlag(buildingGuiState, b); }
-	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const SceneBuildingPanel& b) const { return ::displayedRatio(buildingGuiState, b); }
+	Sint32 displayedPosX(const SnapshotBuilding& b) const;
+	Sint32 displayedPosY(const SnapshotBuilding& b) const;
+	Sint32 displayedPosX(const SceneBuildingPanel& b) const;
+	Sint32 displayedPosY(const SceneBuildingPanel& b) const;
+	Sint32 displayedMaxUnitWorking(const SceneBuildingPanel& b) const;
+	Sint32 displayedUnitStayRange(const SceneBuildingPanel& b) const;
+	Sint32 displayedPriority(const SceneBuildingPanel& b) const;
+	bool displayedClearingResource(const SceneBuildingPanel& b, int i) const;
+	Sint32 displayedMinLevelToFlag(const SceneBuildingPanel& b) const;
+	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const SceneBuildingPanel& b) const;
 
 	///Get-or-create the pending state for a building (used by GUI mutators).
 	BuildingGuiState& pendingFor(Uint16 gid) { return buildingGuiState[gid]; }

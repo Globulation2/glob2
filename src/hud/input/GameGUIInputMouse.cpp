@@ -24,6 +24,10 @@
 #include "Player.h"
 #include "Unit.h"
 #include "Building.h"
+#include "render/scene/Scene.h"
+#include "render/ViewState.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

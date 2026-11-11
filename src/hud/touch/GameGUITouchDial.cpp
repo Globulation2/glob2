@@ -17,6 +17,7 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#include "render/scene/ScenePanels.h"
 using namespace GAGCore;
 
 bool GameGUITouch::usesDial() const

@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "Unit.h"
 #include "Building.h"
+#include "render/scene/ScenePanels.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

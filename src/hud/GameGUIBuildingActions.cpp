@@ -4,6 +4,7 @@
 #include "Order.h"
 #include "Building.h"
 #include "BuildingType.h"
+#include "render/scene/ScenePanels.h"
 using std::shared_ptr;
 void GameGUI::requestBuildingConstruction(const SceneBuildingPanel &building)
 {

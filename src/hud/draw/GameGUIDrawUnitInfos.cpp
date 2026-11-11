@@ -15,6 +15,8 @@
 #include "Unit.h"
 #include "render/UnitAnimation.h"
 #include "UnitDisplayNames.h"
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
 
 namespace {
 // Render one "[label] (displayLevel) : performance" row of the unit-info panel.

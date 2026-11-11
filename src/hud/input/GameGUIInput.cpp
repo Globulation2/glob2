@@ -31,6 +31,10 @@
 #include "Player.h"
 #include "Unit.h"
 #include "InGameScrollableHistory.h"
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;

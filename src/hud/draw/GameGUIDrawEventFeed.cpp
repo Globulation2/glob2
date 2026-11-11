@@ -19,6 +19,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "UnitConsts.h"
+#include "render/scene/Scene.h"
 
 namespace
 {

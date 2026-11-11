@@ -35,6 +35,7 @@
 #include <vector>
 #include "Unit.h"
 #include "Building.h"
+#include "GameGUIToolManager.h"
 
 using namespace GAGCore;
 

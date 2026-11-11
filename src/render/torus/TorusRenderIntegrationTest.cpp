@@ -51,6 +51,7 @@
 #include "render/SoftwareTerrainCache.h"
 #include "render/MapDrawer.h"
 #include "sim/EntityRefOf.h"
+#include "GameGUIToolManager.h"
 
 class TorusRenderIntegrationTest
 {

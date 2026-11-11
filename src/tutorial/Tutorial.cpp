@@ -6,6 +6,7 @@
 #include "IntBuildingType.h"
 #include "Order.h"
 #include "GameGUIDialog.h"
+#include "render/scene/Scene.h"
 
 void GameGUI::updateTutorial()
 {

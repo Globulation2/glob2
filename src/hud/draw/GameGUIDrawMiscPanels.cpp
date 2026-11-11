@@ -15,6 +15,8 @@
 #include "Team.h"
 #include "TeamDisplay.h"
 #include "render/ResourceSprites.h"
+#include "render/scene/Scene.h"
+#include "GameGUIToolManager.h"
 
 void GameGUI::drawResourceInfos(void)
 {

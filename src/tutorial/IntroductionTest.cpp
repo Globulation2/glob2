@@ -23,6 +23,7 @@
 #include <zlib.h>
 #include "Unit.h"
 #include "Building.h"
+#include "sim/snapshot/WorldSnapshot.h"
 
 namespace
 {

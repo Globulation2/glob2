@@ -35,6 +35,7 @@
 #include "sim/snapshot/SnapshotStore.h"
 #include "MapDrawer.h"
 #include "Building.h"
+#include "render/scene/SceneExtract.h"
 
 // The host publishes a frame before drawing; do the same in this direct fixture.
 static void drawOverlays(GameGUI &gui)

@@ -66,6 +66,8 @@
 #include <source_location>
 #include "Game.h"
 #include "sim/EntityRefOf.h"
+#include "render/scene/SceneExtract.h"
+#include "GameGUIToolManager.h"
 
 static void require(bool condition, const char *message)
 {

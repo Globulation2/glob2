@@ -18,6 +18,8 @@
 #include "BuildingPresentation.h"
 #include "render/scene/BuildingCatalogView.h"
 #include "Ressource.h"
+#include "render/scene/Scene.h"
+#include "GameGUIToolManager.h"
 
 namespace {
 

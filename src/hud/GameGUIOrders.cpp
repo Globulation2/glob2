@@ -30,6 +30,8 @@
 #include "Order.h"
 #include "net/message/MessageRecipients.h"
 #include "sim/EntityRefOf.h"
+#include "render/scene/Scene.h"
+#include "GameGUIToolManager.h"
 
 
 using std::shared_ptr;
