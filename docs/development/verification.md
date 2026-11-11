@@ -305,8 +305,7 @@ tell cheap tooling changes from engine changes and choose affected boundaries:
 simulation, save and AI paths add platform and browser evidence, networking adds
 transport, server and deployment checks, and shared build inputs, shared headers
 and unknown paths select everything. The cheap `music` job covers `tools/music/`;
-files inside a soundtrack set, `content/data/zik/<set>/`, are engine inputs and
-`content/data/zik/SConscript` is build infrastructure. The repeated native
+files inside a soundtrack set, `content/data/zik/<set>/`, are engine inputs. The repeated native
 compatibility inventory is maintained in `test/ci-compatibility.json`.
 
 `Relevant checks passed` checks both top-level job results and the exact current

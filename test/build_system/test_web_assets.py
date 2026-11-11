@@ -85,9 +85,9 @@ class WebAssetPlanTests(unittest.TestCase):
             self.assertEqual(self.owner.get(path), 'core', path)
 
     def test_build_files_and_documentation_are_not_shipped(self):
-        for path in ('data/SConscript', 'data/check_translations.py', 'data/fonts/build_chinese_font.py',
+        for path in ('data/check_translations.py', 'data/fonts/build_chinese_font.py',
                      'data/fonts/README.md', 'data/fonts/script-probes.json',
-                     'campaigns/SConscript', 'data/screenshots/globulation2-gameplay.png'):
+                     'data/screenshots/globulation2-gameplay.png'):
             self.assertIn(path, self.skipped)
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
 

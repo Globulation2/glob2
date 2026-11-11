@@ -21,13 +21,6 @@ from glob2music.qa.calibrate import spec_and_waivers  # noqa: E402
 from glob2music.qa.result import FAIL, PASS, CheckResult, Report  # noqa: E402
 from glob2music.spec import DEFAULT_SPEC, SAMPLE_RATE as SR  # noqa: E402
 
-ZIK_SCONSCRIPT = '''import os
-
-Import("env")
-
-SConscript("original/SConscript")'''
-
-
 def manifest(**overrides):
     data = {'title': 'Test Set', 'method': 'symbolic-acoustic', 'license': 'CC-BY-4.0', 'shipped': True,
             'credits': ['"Tune" by Someone, CC BY 4.0, https://example.org/tune'],
@@ -84,41 +77,11 @@ class ResolveTest(unittest.TestCase):
                 cli._resolve(str(tmp / 'no-such-set'))
 
 
-class RegisterAndInstallTest(unittest.TestCase):
-    def zik(self, tmp, text=ZIK_SCONSCRIPT):
+class InstallTest(unittest.TestCase):
+    def zik(self, tmp):
         zik = Path(tmp) / 'zik'
         (zik / 'original').mkdir(parents=True)
-        (zik / 'original' / 'SConscript').write_text('')
-        (zik / 'SConscript').write_text(text)
         return zik
-
-    def test_register_set_is_idempotent_and_keeps_original_first(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            zik = self.zik(tmp)
-            cli._register_set(zik, 'test-zither')
-            first = (zik / 'SConscript').read_text()
-            self.assertTrue(first.startswith('import os\n\nImport("env")\n\nfor music_set in ("original", "test-zither"):'))
-            (zik / 'test-zither').mkdir()
-            (zik / 'test-zither' / 'SConscript').write_text('')
-            cli._register_set(zik, 'test-zither')
-            self.assertEqual((zik / 'SConscript').read_text(), first)
-            cli._register_set(zik, 'test-bells')
-            self.assertIn('("original", "test-bells", "test-zither")', (zik / 'SConscript').read_text())
-
-    def test_register_set_refuses_an_unexpected_sconscript(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            zik = self.zik(tmp, 'print("hand written")\n')
-            with self.assertRaises(ManifestError):
-                cli._register_set(zik, 'test-zither')
-            with self.assertRaises(ManifestError):
-                cli._register_set(Path(tmp) / 'missing', 'test-zither')
-
-    def test_recursive_discovery_needs_no_registration_edit(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            text = (Path(__file__).resolve().parents[3] / 'content/data/zik/SConscript').read_text()
-            zik = self.zik(tmp, text)
-            cli._register_set(zik, 'new-set')
-            self.assertEqual((zik / 'SConscript').read_text(), text)
 
     def install(self, tmp, zik, failed=False, shipped=True):
         set_dir = Path(tmp) / 'sets' / 'test-set'
@@ -139,21 +102,21 @@ class RegisterAndInstallTest(unittest.TestCase):
                 contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
             return cli.main(['install', str(set_dir / 'set.toml'), '--data-dir', str(zik)])
 
-    def test_install_copies_files_writes_license_and_registers(self):
+    def test_install_copies_files_and_writes_license(self):
         with tempfile.TemporaryDirectory() as tmp:
             zik = self.zik(tmp)
             self.assertEqual(self.install(tmp, zik), 0)
             dest = zik / 'test-set'
             self.assertEqual((dest / 'a2.opus').read_bytes(), b'a2.opus')
-            self.assertEqual((dest / 'SConscript').read_text(), cli.SCONSCRIPT)
             self.assertIn('Licence: CC0-1.0', (dest / 'LICENSE.txt').read_text())
-            self.assertIn('"test-set"', (zik / 'SConscript').read_text())
+            # Sets are discovered by directory: nothing else is written.
+            self.assertEqual(sorted(path.name for path in dest.iterdir()),
+                             ['LICENSE.txt', 'a1.opus', 'a2.opus', 'a3.opus'])
 
-    def test_install_refuses_failed_unshipped_or_unregistrable_sets(self):
-        for kwargs, text in (({'failed': True}, ZIK_SCONSCRIPT), ({'shipped': False}, ZIK_SCONSCRIPT),
-                             ({}, 'print("hand written")\n')):
-            with self.subTest(**kwargs, text=text[:10]), tempfile.TemporaryDirectory() as tmp:
-                zik = self.zik(tmp, text)
+    def test_install_refuses_failed_unshipped_or_misplaced_sets(self):
+        for kwargs, missing in (({'failed': True}, False), ({'shipped': False}, False), ({}, True)):
+            with self.subTest(**kwargs, missing=missing), tempfile.TemporaryDirectory() as tmp:
+                zik = Path(tmp) / 'absent' if missing else self.zik(tmp)
                 self.assertNotEqual(self.install(tmp, zik, **kwargs), 0)
                 self.assertFalse((zik / 'test-set').exists())
 

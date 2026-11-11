@@ -12,15 +12,6 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
 modules:
-  - name: scons
-    buildsystem: simple
-    build-commands:
-      - python3 setup.py install --prefix=/app
-    sources:
-      - type: archive
-        url: https://files.pythonhosted.org/packages/source/s/scons/scons-4.8.1.tar.gz
-        sha256: 5b641357904d2f56f7bfdbb37e165ab996b6143c948b9df0efc7305f54949daa
-
   - name: libogg
     buildsystem: autotools
     sources:
@@ -217,7 +208,7 @@ modules:
   - name: glob2
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="$PWD:/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL3" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - export PYTHONPATH="$PWD:/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 tools/dev_build.py --generator=cmake -j2 release=1 CXXFLAGS="-I/app/include -I/app/include/SDL3" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
       - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl

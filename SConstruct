@@ -612,13 +612,9 @@ def main():
     Export('isWindowsPlatform')
 
     targets = [
-        "content/campaigns",
-        "content/data",
         "libs/gag",
         "libs/usl",
-        "content/maps",
         "third_party/natsort",
-        "content/scripts",
         "src",
         "test",
         "tools"

@@ -210,7 +210,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev \
+            g++ python3 python3-venv pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev \
             libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev \
             libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
             libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
@@ -220,11 +220,11 @@ jobs:
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 lean_images=1 \
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j2 release=1 client_profile=free server=0 lean_images=1 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
-          scons -j2 release=1 client_profile=free server=0 lean_images=1 unit-tests
+          python3 tools/dev_build.py -j2 release=1 client_profile=free server=0 lean_images=1 unit-tests
           LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-unit-tests --test-suite=ImageAssets
           env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info version
           env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info paths --format json > "$RUNNER_TEMP/linux-installed-paths.json"
@@ -238,7 +238,7 @@ jobs:
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
-          scons -j2 release=1 client_profile=free server=0 lean_images=0 optimized_assets=0 \
+          python3 tools/dev_build.py -j2 release=1 client_profile=free server=0 lean_images=0 optimized_assets=0 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           # Original bytes are an offline measurement tree, not playable artwork.
           python3 tools/package_assets.py --platform linux --original --output artifacts/source-asset-baseline
@@ -273,7 +273,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             stage="$PWD/artifacts/profile-$profile"
-            scons -j2 release=1 client_profile=free server=0 lean_images=1 size_optimization="$profile" \
+            python3 tools/dev_build.py -j2 release=1 client_profile=free server=0 lean_images=1 size_optimization="$profile" \
               BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
             python3 tools/release/archives.py linux --stage "$stage" \
               --output "$PWD/artifacts/profile-$profile.tar.gz" \
@@ -320,14 +320,14 @@ jobs:
             image: debian:trixie
             install: >-
               apt-get update -qq && apt-get install -y --no-install-recommends
-              git ca-certificates g++ make python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev
+              git ca-certificates g++ make python3 python3-venv pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev
               libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev
               libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
               libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
           - name: Fedora 43
             image: fedora:43
             install: >-
-              dnf install -y git gcc-c++ make python3 scons pkgconf-pkg-config nasm libva-devel cmake freetype-devel
+              dnf install -y git gcc-c++ make python3 ninja-build pkgconf-pkg-config nasm libva-devel cmake freetype-devel
               libpng-devel libpng-static libjpeg-turbo-devel zlib-ng-compat-static
               libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXScrnSaver-devel libXtst-devel
               wayland-devel libxkbcommon-devel alsa-lib-devel pulseaudio-libs-devel
@@ -337,7 +337,7 @@ jobs:
           - name: Arch Linux
             image: archlinux:base-devel
             install: >-
-              pacman -Syu --noconfirm --needed git python scons pkgconf nasm libva cmake freetype2
+              pacman -Syu --noconfirm --needed git python ninja pkgconf nasm libva cmake freetype2
               libpng libjpeg-turbo
               libx11 libxext libxcursor libxi libxrandr libxss libxtst wayland libxkbcommon alsa-lib libpulse
               opusfile opus libogg speex boost openssl
@@ -347,7 +347,7 @@ jobs:
             install: |
               set -e
               zypper --non-interactive dist-upgrade --allow-downgrade
-              zypper --non-interactive install git gcc-c++ make python3 scons pkg-config nasm libva-devel cmake freetype2-devel libpng16-devel libjpeg8-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel wayland-devel libxkbcommon-devel alsa-devel libpulse-devel opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel libepoxy-devel
+              zypper --non-interactive install git gcc-c++ make python3 ninja pkg-config nasm libva-devel cmake freetype2-devel libpng16-devel libjpeg8-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel wayland-devel libxkbcommon-devel alsa-devel libpulse-devel opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel libepoxy-devel
     steps:
       - name: Install dependencies
         run: ${{ matrix.install }}
@@ -362,7 +362,7 @@ jobs:
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py --generator=cmake -j2 release=1 client_profile=free server=0
           build/linux/client/release/src/glob2 info version
 
   rpm-package:
@@ -373,7 +373,7 @@ jobs:
     steps:
       - name: Install RPM tools and build dependencies
         run: |
-          dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config nasm libva-devel \
+          dnf install -y git rpm-build gcc-c++ python3 ninja-build pkgconf-pkg-config nasm libva-devel \
             cmake freetype-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel \
             libXScrnSaver-devel libXtst-devel wayland-devel libxkbcommon-devel libpng-devel libpng-static zlib-ng-compat-static \
             opusfile-devel opus-devel libogg-devel speex-devel boost-devel openssl-devel \

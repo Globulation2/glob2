@@ -26,7 +26,7 @@ BuildRequires:  libjpeg-turbo-devel
 
 BuildRequires:  gcc-c++
 BuildRequires:  python3
-BuildRequires:  scons
+BuildRequires:  ninja-build
 BuildRequires:  freetype-devel
 BuildRequires:  libX11-devel
 BuildRequires:  libXext-devel
@@ -75,17 +75,18 @@ export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build/sdl3/sources --jobs 2
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
-scons -j2 release=1 retain_symbols=1 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
-    BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
+# A shipping build (no build-prefix rpath or debug-path mapping) for installation.
+cmake -S . -B build/rpm -G Ninja -DGLOB2_BUILD_ARGS="release=1 retain_symbols=1 optimized_assets=1" \
+    -DGLOB2_CXXFLAGS="%{optflags}" -DGLOB2_LINKFLAGS="%{build_ldflags}" -DGLOB2_SHIPPING=ON \
+    -DGLOB2_BINDIR=%{_bindir} -DGLOB2_INSTALLDIR=%{_datadir} -DGLOB2_DATADIR=%{_datadir}
+cmake --build build/rpm --target glob2 -- -j2
 
 %install
 export GLOB2_ASSET_ENCODER_PYTHON="$PWD/artifacts/asset-encoder/venv/bin/python"
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
-scons -j2 release=1 retain_symbols=1 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
-    BINDIR=%{buildroot}%{_bindir} \
-    INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} optimized_assets=1 install
+DESTDIR=%{buildroot} cmake --install build/rpm
 
 %files
 %license COPYING

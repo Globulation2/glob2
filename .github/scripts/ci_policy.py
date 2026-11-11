@@ -90,7 +90,7 @@ MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-dep
 
 def music_set_path(path):
     """A file inside one soundtrack set directory, content/data/zik/<set>/...: game data that
-    the native and browser packaging checks cover (content/data/zik/SConscript stays shared)."""
+    the native and browser packaging checks cover."""
     return path.startswith('content/data/zik/') and path.count('/') >= 4
 
 
