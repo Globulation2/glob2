@@ -25,6 +25,7 @@
 #include "GameGUITouch.h"
 #include "HudUnitConversionIcon.h"
 #include "GameGUIDialog.h"
+#include "InGameScrollableHistory.h"
 #include "GameGUIInternal.h"
 #include "LoadSaveDialog.h"
 #include "GameUtilities.h"

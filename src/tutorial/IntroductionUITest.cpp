@@ -17,6 +17,8 @@
 #include "Game.h"
 #include "MapScript.h"
 #include "GameObjectives.h"
+#include "Team.h"
+#include "GameGUIDialog.h"
 
 TEST_CASE("guidance releases keyboard focus when returning to gameplay [display]" * doctest::test_suite("IntroductionUI"))
 {

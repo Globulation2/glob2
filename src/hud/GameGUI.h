@@ -5,7 +5,9 @@
 #pragma once
 namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
-#include <ui/PositionedControls.h>
+#include <CooperativeTask.h>
+#include <GAGColor.h>
+#include <ui/PositionedControl.h>
 #include <ui/Icon.h>
 
 #include <InputState.h>
@@ -34,7 +36,6 @@ namespace Online { class SkinDownloads; }
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
 #include "GameEventFeed.h"
-#include "GameGUIDialog.h"
 class InGameStatisticsPanel;
 namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
@@ -62,7 +63,9 @@ using namespace GAGCore;
 namespace GAGGUI
 {
 	class OverlayScreen;
+	namespace ui { class Host; }
 }
+namespace Glob2UI { class InGameDialog; }
 using namespace GAGGUI;
 
 class TeamStats;

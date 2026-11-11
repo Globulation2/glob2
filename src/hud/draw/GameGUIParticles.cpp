@@ -12,6 +12,7 @@
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
 #include "Building.h"
+#include <GraphicContext.h>
 
 namespace
 {

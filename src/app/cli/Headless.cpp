@@ -69,6 +69,7 @@
 #include <sstream>
 #include <stdexcept>
 #include "MapScript.h"
+#include "Team.h"
 
 namespace fs = std::filesystem;
 namespace Headless

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iterator>
+#include <ui/Host.h>
 
 using namespace GAGCore;
 namespace ui = GAGGUI::ui;

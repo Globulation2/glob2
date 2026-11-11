@@ -32,6 +32,7 @@
 #include "ReplayWriter.h"
 #include "Building.h"
 #include "MapScript.h"
+#include "Team.h"
 
 namespace
 {

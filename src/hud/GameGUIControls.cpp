@@ -20,6 +20,8 @@
 #include <limits>
 #include "Building.h"
 #include "Unit.h"
+#include "Team.h"
+#include "GameGUIDialog.h"
 
 using namespace GAGGUI::ui;
 namespace

@@ -41,6 +41,7 @@
 #include <AssetLoader.h>
 #include <Toolkit.h>
 #include <atomic>
+#include "Team.h"
 
 namespace
 {

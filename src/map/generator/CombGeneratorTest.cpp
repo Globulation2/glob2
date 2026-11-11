@@ -31,6 +31,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <string>
+#include "Team.h"
 
 namespace
 {
