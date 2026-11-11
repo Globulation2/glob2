@@ -36,8 +36,8 @@ with no beach and seals its two wedges from each other along the coast. Each lon
 tongue therefore keeps one **ford**: the flow is cut across its whole width for about
 five tiles at a point 40–65% of the way down and filled with scree, slow but
 walkable. Short tongues stop inland and leave a broad coastal gap, as before. The
-crater is an uninterrupted lava lake, with ash between the lake and the rim
-circuit, and loam and moss on the rim. All colonies still meet on foot, over the rim,
+crater is an uninterrupted lava lake, with ash (dirt) between the lake and the rim
+circuit, and loam on the rim. All colonies still meet on foot, over the rim,
 the fords and the short tongues' gaps; swimming adds coastal approaches. No colony
 requires swimming to survive or meet rivals.
 
@@ -133,15 +133,15 @@ remain authoritative.
 | --- | --- |
 | Island radius `0.43 × shorter side`, roughness `0.06` | A gently irregular island with ocean left across every toroidal seam, including at maximum positive coastline wobble. Stretch changes centres to fill rectangles; flow thickness stays in map tiles. |
 | Crater radius `max(8, 0.06 × shorter side)`, roughness `0.08` | A visible lava lake at minimum size without consuming the whole slope. Corners touching anything but lava are ember. No starter ponds are added. |
-| Crater circuit at local lake radius + 5, half-width 1.5 corners | A continuous dirt-track route round the crater; inside it, two corners clear of the track, the crater wall is dirt and clay; outside it, out to the lava roots ±4 tiles by noise, the rim is loam with moss patches. The circuit uses approximately one sample per circumference tile. Live lava roots keep all four corners of every reserved circuit cell clear, so blocked-corner ties cannot close its outer edge; the track stroke and flow paths retain their drawn geometry. |
+| Crater circuit at local lake radius + 5, half-width 1.5 corners | A continuous dirt-track route round the crater; inside it, two corners clear of the track, the crater wall is dirt; outside it, out to the lava roots ±4 tiles by noise, the rim is loam. The circuit uses approximately one sample per circumference tile. Live lava roots keep all four corners of every reserved circuit cell clear, so blocked-corner ties cannot close its outer edge; the track stroke and flow paths retain their drawn geometry. |
 | Lava roots at lake radius + rim width + 5 | Separates the useful rim budget from the fixed circuit cost. Thick root lobes form a broken crown of lava; the openings admit approaches. |
 | Angular interval weights `0.65 + U[0,1)` | Unequal green wedge sizes with a lower bound. The weights normalize to a full turn; no complete branch is copied into another sector. |
 | Primary steps 3; angular memory 0.72; angular noise 0.055 radians | Bends persist over several steps instead of alternating in a noisy zigzag. Heading stays within 30% of the smaller adjacent angular interval. Radius always increases. |
 | Width `clamp(shorter/70, 2, 5)`, roots ×1.8 | Thick roots taper to legible, raster-safe fingers. Width does not grow without bound on large maps. The flows are drawn on corners half a tile thinner than this. Any hot corner marks the tile as part of the lava margin; movement follows the corner vote, so two or more hot corners block ground movement, while three land corners permit walking. |
 | Ford: 2.5 tiles either side, along the flow, of a point 40–65% down each long tongue | A crossing about five tiles long through the whole width of the flow, filled with scree (slow, unbuildable, walkable). No crust stone within four corners of a ford. |
 | Flow girth: ±25% over 18-tile noise; primary toes ×1.35 over the last three points; corner strokes at least 1.25 | Flows swell, narrow and spread at their toes instead of reading as constant-width tubes; the thinnest stretch is still a wall two pure tiles across. |
-| Margins along the flows: 12-tile noise cells; crust below 0.62, bare to 0.70, scree to 0.85, ash above; reaches 3, 3 and 4 corners at 256-tile sides, halved at 128 | Stretches of stone crust on the grass, bare grass up to the flow, scree aprons and dirt or clay ash, measured from live lava and cooled branches alike. Laid after the towns, their rings and roads, which they never touch. The crust provides accessible stone while retaining breaks and varied ground along the flows. |
-| Upper-slope ash: from the lava roots a third of the way to the coast, where a 9-tile noise exceeds a threshold rising from 0.45 to 1 | Dirt and clay patches that thin out downhill give the cone a slope. Laid with the margins, after the towns. |
+| Margins along the flows: 12-tile noise cells; crust below 0.62, bare to 0.70, scree to 0.85, ash above; reaches 3, 3 and 4 corners at 256-tile sides, halved at 128 | Stretches of stone crust on the grass, bare grass up to the flow, scree aprons and dirt ash, measured from live lava and cooled branches alike. Laid after the towns, their rings and roads, which they never touch. The crust provides accessible stone while retaining breaks and varied ground along the flows. |
+| Upper-slope ash: from the lava roots a third of the way to the coast, where a 9-tile noise exceeds a threshold rising from 0.45 to 1 | Dirt patches that thin out downhill give the cone a slope. Laid with the margins, after the towns. |
 | Deep water about 10 steps from any land, ±4 by 20-tile noise | The far sea reads dark and swims slowly; algae stay in the shallow band; no island or islet sits in a ruled ring of shallows. |
 | Short-flow setback 12–22 × `sqrt(shorter/128)` | Broad coastal detours remain useful as size grows. A conservative minimum coastline radius protects the gap against a later bend. Long flows end beyond the maximum coastline radius. |
 | Fork origins 25–75% along parents | Branches emerge along the slope, leaving roots readable and avoiding coast-tip stubs. |
@@ -320,7 +320,7 @@ once, rather than summing discarded proposals into the final map.
 | `lava-shield.starter.secondary` | Fallback occurrence when a starter crop needs another compact patch because the first seed had insufficient connected frontage. Successful first fields do not probe or change. |
 | `lava-shield.ambient.wheat`, `.wood`, `.stone`, `lava-shield.prizes.fruit` | Actual optional tile placements, distinct from guarantees and the crust. |
 | `lava-shield.lava.vertices`, `.fords` | Lava and ember corners in the live tongues (not the crater), and long tongues given a ford. |
-| `lava-shield.crater.ash`, `lava-shield.ground.loam`, `.deep-water` | Corners of crater-wall ash, rim loam and moss, and deep sea. |
+| `lava-shield.crater.ash`, `lava-shield.ground.loam`, `.deep-water` | Corners of crater-wall ash, rim loam, and deep sea. |
 | `lava-shield.margin.crust`, `.scree`, `.ash` | Crust stone tiles, and scree and ash corners, laid along the flows after the towns. |
 
 The generic algae helper supplies its existing counters. Counters reuse values

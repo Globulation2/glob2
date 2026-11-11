@@ -8,6 +8,7 @@
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
+#include "HeightFieldLooks.h"
 #include "Homes.h"
 #include "LatticeNoise.h"
 #include "Morphology.h"
@@ -20,6 +21,7 @@
 #include "Rock.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "TerrainGroupTable.h"
 #include "Topology.h"
 #include "Walls.h"
 #include <algorithm>
@@ -91,7 +93,8 @@ using namespace MapGeneration;
 // - Two sketches. The design keeps a mechanic sketch, the canonical type of each rule group (GRASS,
 //   SAND, WATER, DEEP_WATER, SHALE, SCREE, RIDGE_ROCK) that every shared helper and check reads;
 //   generate paints looks over it with composeLooks (Sketch.h), so looks never change a rule. Home
-//   gardens stay plain GRASS, where the starting-crop guarantee looks for it.
+//   gardens stay plain GRASS, where the starting-crop guarantee looks for it, until the grass looks
+//   go on last (finishGrass).
 // - The bluffs are rock, not a line of stone. The sealed spine (traceSealedLap) and a tile either side
 //   of it are the wall's core, rock vertices only where all four tiles are rock (rockVertices, Rock.h),
 //   so the blocked region is exactly the core and the spine is wholly rock: the seal no longer depends
@@ -104,7 +107,7 @@ using namespace MapGeneration;
 // - The moraine hummocks are knots of rock two rows thick on the contour they stood on, with stone on
 //   their flanks as quarries (one flank per knot at the default `stone-amount`, none at 0, both from
 //   200%); the gaps between knots are still the doors to hold, one at every riffle landing.
-// - Bars are lush grass and their beaches and the riffles pale gravel (looks only: the sand is the
+// - Bars are the season's bar grass and their beaches and the riffles pale gravel (looks only: the sand is the
 //   sand revision 4 laid). Where a channel is widest, mostly at confluences, its core two steps from
 //   any land is deep water (deepCore, `deep-pools`): swimmable but slower, no algae, and it still waters
 //   the bars. Riffles keep plain water round them, and the channel and ford checks read swimmable
@@ -113,8 +116,14 @@ using namespace MapGeneration;
 //   which inhibit crop growth on the bank strip. Pavement (Barren: buildable, holds no deposit, inhibits
 //   growth exactly as sand does) now takes `dry-patches` percent of the terrace only beyond kPaveReach
 //   steps from water, where nothing grows anyway, and the rest of the terrace is dry grass by look.
-// - A season, looks only: Meltwater (lush bars, blue pools, tundra pavement) or Late summer (bars
-//   drying back from the water, dark pools, heath). Every choice is in telemetry.
+// - A season, looks only: Meltwater (lush bars, blue pools, tundra pavement) or Late summer (green
+//   bars, dark pools, heath). Every choice is in telemetry.
+//
+// REVISION 7 (one look per role): one look per rule group, but for the grass, whose two regions are
+// the map's subject: every bar (a component the design draws) in the season's bar grass, the whole
+// terrace dry grass, gardens included, laid once every stage that needs exact GRASS has run. The
+// terrace's green band by the water, the bars drying back from the water and the second pavement look
+// dealt out by noise are gone. Looks only: every rule, deposit and start is revision 6's.
 namespace
 {
 
@@ -279,7 +288,7 @@ constexpr const char *kBluffStream = "braided-river-bluffs";
 // --- The dry terrace (2.0) ------------------------------------------------------------------------
 //
 // Revision 4 broke the terrace with sand patches from eight steps from the water; sand inhibits crop
-// growth on the bank strip in front. Pavement (a Barren mechanic, heath or tundra by look: buildable,
+// growth on the bank strip in front. Pavement (a Barren mechanic, tundra or heath by look: buildable,
 // holds nothing, inhibits growth exactly as sand does) now takes `dry-patches` percent of the terrace
 // beyond kPaveReach steps from the water, where no crop grows anyway, chosen where a noise of period
 // kPavePeriod (with a detail of kPaveDetailPeriod, so the edges fray) peaks, and keeps kPaveHomeClear
@@ -298,24 +307,26 @@ constexpr const char *kPaveStream = "braided-river-pavement";
 // vertices wide, so only its widest stretches and the confluences hold any: the bare core drew a dark
 // thread down nearly every channel, and three steps left single vertices that read as holes.
 constexpr int kDeepSteps = 2, kDeepFordClear = 2, kDeepOpen = 1, kDeepLeast = 10;
-// Looks: the terrace is green within kGreenReach steps of the water in each season and dry grass
-// beyond, except round every home, within kGardenRadius (give or take kGardenFray) of its middle, kept
-// plain grass for the starting crops. Bars are lush within kLushReach steps of water (every bar tile in
-// Meltwater). The pavement takes its second look where a noise passes kPaveSecondShare.
-constexpr int kGreenReach[2] = {14, 9};
-constexpr int kLushReach = 3;
-constexpr double kGardenRadius = 11, kGardenFray = 3, kPaveSecondShare = 0.65;
+// Looks: one per rule group and season, but for the grass: every bar in the season's bar look, the
+// terrace kTerraceGrass, laid by finishGrass once every stage that tests exact GRASS has run.
+// Until then the grass that revision 6 left plain stays plain GRASS, so the starting-crop top-up
+// (floodReach) and every other stage find exactly the ground they found then: round every home within
+// kGardenRadius (give or take kGardenFray) of its middle, the terrace within kStagedGreen steps of the
+// water, and the bars beyond kStagedLush steps of the water in Late summer.
+constexpr int kStagedGreen[2] = {14, 9};
+constexpr int kStagedLush = 3;
+constexpr double kGardenRadius = 11, kGardenFray = 3;
+constexpr TerrainType kTerraceGrass = DRY_GRASS;
 constexpr const char *kLookStream = "braided-river-looks";
 constexpr const char *kSeasonStream = "braided-river-season";
 struct Season
 {
 	const char *name;
-	TerrainType pavement, pavementSecond, deep;
-	bool lushBars; // every bar tile lush, not only by the water
-	int green;     // index into kGreenReach
+	TerrainType pavement, deep, bar;
+	bool stagedLushBars; // until finishGrass, every bar tile is non-plain grass, not only by the water
 };
-constexpr Season kSeasons[2] = {{"meltwater", TUNDRA, HEATH, DEEP_WATER, true, 0},
-								{"late-summer", HEATH, DIRT, DARK_WATER, false, 1}};
+constexpr Season kSeasons[2] = {{"meltwater", TUNDRA, DEEP_WATER, LUSH_GRASS, true},
+								{"late-summer", HEATH, DARK_WATER, GRASS, false}};
 
 // --- Resources ------------------------------------------------------------------------------------
 //
@@ -1418,9 +1429,18 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// The looks over the mechanic sketch (composeLooks keeps each inside its rule group): bars lush and
-// their beaches and the riffles pale gravel, the terrace green by the water and dry beyond except
-// round the homes, pavement heath or tundra, pools by season, the moraine's knots outcrops.
+// A grass vertex of a bar (a corner of a bar tile) rather than of a terrace.
+bool barVertex(const Layout &L, int i)
+{
+	const Torus &t = L.t;
+	const auto barTile = [&](int j) { return L.comp[j] >= 0 && !L.isTerrace(L.comp[j]); };
+	const int x = t.remainderX(i), y = i / t.w;
+	return barTile(i) || barTile(t.at(x - 1, y)) || barTile(t.at(x, y - 1)) || barTile(t.at(x - 1, y - 1));
+}
+
+// The looks over the mechanic sketch (composeLooks keeps each inside its rule group): the beaches and
+// the riffles pale gravel, pavement tundra or heath, pools by season, the moraine's knots outcrops.
+// The grass here is only staged (see kStagedGreen): finishGrass lays its looks.
 TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 {
 	const Torus &t = L.t;
@@ -1432,7 +1452,6 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
 	const std::vector<int> nearWater = stepsFrom(t, wet);
 	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, context.stream(kLookStream));
-	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, context.stream(kLookStream));
 	std::vector<std::pair<int, int>> middles;
 	for (const Home &home : L.homes)
 	{
@@ -1447,31 +1466,29 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 				return true;
 		return false;
 	};
-	const auto barTile = [&](int i) { return L.comp[i] >= 0 && !L.isTerrace(L.comp[i]); };
-	const auto touchesBar = [&](int i)
-	{
-		const int x = t.remainderX(i), y = i / t.w;
-		return barTile(i) || barTile(t.at(x - 1, y)) || barTile(t.at(x, y - 1)) || barTile(t.at(x - 1, y - 1));
-	};
 	TerrainSketch looks(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
 		switch (L.terrain[i])
 		{
 		case GRASS:
+			// Staged: plain GRASS where revision 6's looks left it, the final look elsewhere.
 			if (garden(i))
 				break;
-			if (touchesBar(i))
-				looks[i] = season.lushBars || nearWater[i] <= kLushReach ? LUSH_GRASS : GRASS;
-			else if (nearWater[i] > kGreenReach[season.green] + kGardenFray * (fray[i] - 32768) / 32768.0)
-				looks[i] = DRY_GRASS;
+			if (barVertex(L, i))
+			{
+				if (season.stagedLushBars || nearWater[i] <= kStagedLush)
+					looks[i] = LUSH_GRASS;
+			}
+			else if (nearWater[i] > kStagedGreen[L.season] + kGardenFray * (fray[i] - 32768) / 32768.0)
+				looks[i] = kTerraceGrass;
 			break;
 		case SAND:
 			// Every sand vertex is the river's: bar heads, beaches and riffles, all pale gravel.
 			looks[i] = PALE_SAND;
 			break;
 		case SHALE:
-			looks[i] = split[i] < kPaveSecondShare * 65536 ? season.pavement : season.pavementSecond;
+			looks[i] = season.pavement;
 			break;
 		case DEEP_WATER:
 			looks[i] = season.deep;
@@ -1485,6 +1502,20 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 		}
 	}
 	return looks;
+}
+
+// The grass's final looks, once no stage needs exact GRASS: every bar vertex in the season's bar look,
+// every terrace vertex (gardens included) in kTerraceGrass. Looks inside the grass group change no rule
+// and no deposit.
+void finishGrass(GenerationMap &map, const Layout &L)
+{
+	const Torus &t = L.t;
+	const TerrainType bar = kSeasons[L.season].bar;
+	TerrainSketch sketch = mapSketch(map);
+	for (int i = 0; i < t.size(); ++i)
+		if (terrainGroup(TerrainType(sketch[i])) == TerrainGroup::Grass)
+			sketch[i] = barVertex(L, i) ? bar : kTerraceGrass;
+	writeVertices(map, sketch);
 }
 
 bool generate(GenerationWorld &game, GenerationContext &context)
@@ -1752,6 +1783,8 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		opened += more;
 	}
 	context.telemetry.measure("braided-river.routes.opened", opened);
+	// Last, the grass looks: every stage above that tests exact GRASS has run.
+	finishGrass(map, L);
 	if (context.telemetry.enabled())
 	{
 		// How far each colony walks to its own quarry face, and to the nearest face of any kind: the
@@ -1890,7 +1923,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			6, // 6: algae now regrows near any coast, so its best-growing water moved
+			7, // 7: one look per role
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no
@@ -1910,7 +1943,7 @@ GeneratorDefinition braidedRiverDefinition()
 			 // too: at 0 the way across is a tree, at 100 every stretch long enough is open.
 			 GeneratorControl{"extra-riffles", "Extra riffles", 0, 100, 5, 25, ControlGroup::Layout}
 				 .withSearchRange(15, 60),
-			 // Pavement (heath or tundra by look; buildable, holds nothing, and grows nothing near
+			 // Pavement (tundra or heath by look; buildable, holds nothing, and grows nothing near
 			 // it) on this share of the terrace beyond the water's reach, where nothing grows anyway:
 			 // the stony dry terrace and building room no crop ever takes. Revision 4 laid sand
 			 // patches nearer the water instead, which slowed the bank strip's crops.
@@ -1926,7 +1959,7 @@ GeneratorDefinition braidedRiverDefinition()
 			 GeneratorControl::toggle("deep-pools", "Deep pools", true, ControlGroup::Terrain)
 				 .withSearchValues({0, 1}),
 			 // Looks only: Meltwater (lush bars, blue pools, frost-cracked tundra) or Late summer
-			 // (bars drying back from the water, dark pools, heath). Both play identically.
+			 // (green bars, dark pools, heath), both on a dry-grass terrace. Both play identically.
 			 GeneratorControl::choice("season", "Season", {"Random", "Meltwater", "Late summer"}, 0,
 									  ControlGroup::Terrain)
 				 .withSearchValues({1, 2}),

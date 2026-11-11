@@ -34,10 +34,9 @@ using namespace MapGeneration;
 
 // Caravanserai: oasis towns on a desert trade route.
 //
-// WHAT IT LOOKS LIKE. A desert seen from the air: dunes in long parallel bands, wind-rippled on
-// their crests and pale in the hollows between them, sparse dry scrub in the hollows, flat-topped
-// rock mesas standing out of the sand on skirts of scree, and scattered oases, each an irregular
-// pool ringed with spring meadow, lush grass and date palms drying out towards the sand. Every
+// WHAT IT LOOKS LIKE. A desert seen from the air: dune sand in long parallel bands, sparse scrub in
+// the hollows between them, flat-topped rock mesas standing out of the sand on skirts of scree, and
+// scattered oases, each an irregular pool ringed with spring meadow, grass and date palms. Every
 // colony's home is a large oasis town round its own lake, its shore a ring of fields and a palm
 // grove behind a sand path, the town beyond. Half way between neighbouring towns stands a
 // caravanserai: a square walled courtyard, paved, with a gate at either end and a well in the
@@ -59,10 +58,9 @@ using namespace MapGeneration;
 //
 // THE DESERT CONTROL is the country: an open erg of dunes with no rock and earth trails; dunes and
 // mesas, sandstone hoodoos on scree with flagstone roads; or canyon country, twice the rock in
-// grey ridges rimmed with hoodoos, standing on slow hardpan floors that only the roads cross
-// quickly. Every look is drawn inside its mechanic's rule group (composeLooks), so dune sand plays
-// as sand, and the homes, the kit areas and every tile a shared helper reads stay their canonical
-// types: plain grass, sand and water.
+// grey ridges, standing on slow hardpan floors that only the roads cross quickly. Every look is drawn
+// inside its mechanic's rule group (composeLooks), one per role, so dune sand plays as sand; the grass
+// everywhere stays plain, as the homes and kit areas must for the shared helpers that read them.
 //
 // FAIRNESS. The towns stand on a lattice and are one stencil stamped by one quarter turn drawn per
 // map, so every home oasis, lake, field ring and palm grove is identical, and the validator proves
@@ -134,24 +132,20 @@ constexpr int kFloorPercent[3] = {0, 0, 12};
 // the relief falling kFloorFalloff a corner (twice that towards a home).
 constexpr int kFloorReach = 3, kFloorHomeClearance = 18, kFloorFalloff = 1200;
 // Oasis shores: spring meadow on the corners two and three steps from an oasis pond (one step is
-// its beach), lush grass out to kLushReach.
-constexpr int kMeadowNear = 2, kMeadowFar = 3, kLushReach = 4;
-// Dune looks: the middle of each band's crest share is wind-rippled.
-constexpr int kCrestLow = 55, kCrestHigh = 85;
-// The outer corners of every home's town look dry this far in.
-constexpr int kTownRim = 2;
+// its beach).
+constexpr int kMeadowNear = 2, kMeadowFar = 3;
 
-// What each Desert country looks like: only looks, each inside its mechanic's rule group. Mesa rock
-// (cores and rims), its talus, the roads, the caravanserais' courtyards.
+// What each Desert country looks like: only looks, each inside its mechanic's rule group. Mesa rock,
+// the roads, the caravanserais' courtyards.
 struct Country
 {
 	const char *name;
-	TerrainType rock, rim, talus, road, court;
+	TerrainType rock, road, court;
 };
 constexpr std::array<Country, 3> kCountries{{
-	{"Open erg", OUTCROP, OUTCROP, SCREE, TRAIL, SANDSTONE},
-	{"Dunes and mesas", HOODOOS, HOODOOS, SCREE, SANDSTONE, BRICK_PATH},
-	{"Canyon country", RIDGE_ROCK, HOODOOS, SCREE, TRAIL, SANDSTONE},
+	{"Open erg", OUTCROP, TRAIL, SANDSTONE},
+	{"Dunes and mesas", HOODOOS, SANDSTONE, BRICK_PATH},
+	{"Canyon country", RIDGE_ROCK, TRAIL, SANDSTONE},
 }};
 
 enum HomeKind : signed char
@@ -326,11 +320,9 @@ struct Layout
 	std::vector<int> courtyardOf;  // caravanserai of every courtyard tile, else -1
 	std::vector<int> oasisOf;      // scattered or route oasis of every tile, else -1
 	std::vector<unsigned char> wall, gate, mesa, route;
-	// The mechanic sketch's extra masks: home vertices (kept plain), the road and courtyard
-	// vertices, quarry face tiles, the rock tiles, corners that must stay plain grass (walls,
-	// quarries), and every vertex owned by a home, oasis or caravanserai.
-	std::vector<unsigned char> homeVertex, road, court, quarry, rockTile, plain, feature;
-	std::vector<int> dunePhase; // 0 to 65535 across one dune band, crests in the upper part
+	// The mechanic sketch's extra masks: home vertices, the road and courtyard vertices, quarry face
+	// tiles and the rock tiles.
+	std::vector<unsigned char> homeVertex, road, court, quarry, rockTile;
 	int desert = 1;
 	std::string failure;
 };
@@ -407,7 +399,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.court.assign(n, 0);
 	L.quarry.assign(n, 0);
 	L.rockTile.assign(n, 0);
-	L.plain.assign(n, 0);
 	std::vector<unsigned char> feature(n, 0); // corners any oasis, home or courtyard owns
 	for (int k = 0; k < teams; ++k)
 	{
@@ -763,20 +754,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			++scree;
 		}
 	}
-	// Every quarry tile keeps four plain grass corners, and the ring before it is grass too (its
-	// corners beyond the quarry's may look dry).
+	// Every quarry tile keeps four plain grass corners, and the ring before it is grass too.
 	{
-		const std::vector<unsigned char> approach = quarryApproach(t, L.quarry), corners = tileCorners(t, L.quarry);
+		const std::vector<unsigned char> approach = quarryApproach(t, L.quarry);
 		for (int i = 0; i < n; ++i)
 			if ((L.quarry[i] || approach[i]) && !rock[i])
-			{
 				L.sketch[i] = GRASS;
-				L.plain[i] = corners[i];
-			}
 	}
-	for (int i = 0; i < n; ++i)
-		if (wallCorner[i] && L.sketch[i] == GRASS)
-			L.plain[i] = 1;
 	context.telemetry.measure("caravanserai.mesa.rock-corners", rockCorners);
 	context.telemetry.measure("caravanserai.talus.corners", scree);
 	// Canyon floors: slow hardpan on the next band of the relief below the mesas.
@@ -813,13 +797,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<int> phase = stripePhase(t, dunes, duneStream);
 	// Many dune bands to one stripe of the field: a whole number, so the bands still wrap.
 	const int bands = std::max(1, int(std::lround(stripeSpacing(t, dunes) / kDuneSpacing)));
-	L.dunePhase.assign(n, 0);
 	int scrub = 0;
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = t.remainderX(i), y = i / t.w;
-		L.dunePhase[i] = int((std::int64_t(phase[i]) * bands) % 65536);
-		const bool hollow = L.dunePhase[i] < 65536 * kHollowPercent / 100;
+		const int dunePhase = int((std::int64_t(phase[i]) * bands) % 65536);
+		const bool hollow = dunePhase < 65536 * kHollowPercent / 100;
 		if (L.sketch[i] != SAND || fromKept[i] < 2)
 			continue;
 		// Round every oasis the scrub thickens into a halo, wherever the dunes lie.
@@ -862,7 +845,6 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		roadCorners += L.road[i];
 	context.telemetry.measure("caravanserai.meadow.corners", meadow);
 	context.telemetry.measure("caravanserai.road.corners", roadCorners);
-	L.feature = feature;
 	// The design's invariants on the sketch as the game will see it: courtyard walls on pure grass.
 	TerrainSketch beached = L.sketch;
 	layBeaches(beached, t);
@@ -897,51 +879,22 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
 	{
-		// The looks, each inside its vertex's rule group so nothing plays differently: oasis grass
-		// lush by the water and dry at the sand's edge, scrub dry, dunes rippled on their crests and
-		// pale in the hollows, the country's rock with its rims, talus and roads, the courtyards
-		// paved. The homes, the quarries and the walls' corners stay plain, as do the beaches.
+		// The looks, one per role and each inside its vertex's rule group so nothing plays
+		// differently: every sand (dunes, beaches and paths alike) dune sand, the country's rock and
+		// roads, the courtyards paved. Grass stays plain everywhere: the homes must (the starting-crop
+		// guarantee, run after these looks are written, looks for plain grass), and one grass keeps the
+		// oases, the scrub and the homes alike.
 		const Country &country = kCountries[L.desert];
-		std::vector<unsigned char> wet(n, 0), open(n, 0), desert(n, 0);
-		for (int i = 0; i < n; ++i)
-		{
-			wet[i] = terrain[i] == WATER;
-			open[i] = terrain[i] != RIDGE_ROCK;
-			desert[i] = !L.feature[i];
-		}
-		const std::vector<int> nearWater = stepsFrom(t, wet), inRock = stepsFrom(t, open),
-							   inOasis = stepsFrom(t, desert);
 		TerrainSketch looks(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			// A home is plain grass but for the dry outer rim of its town, the same on every home.
-			if (L.homeVertex[i] && terrain[i] == GRASS && L.homeKind[i] == kTown && inOasis[i] <= kTownRim)
-				looks[i] = DRY_GRASS;
-			if (L.homeVertex[i] || L.plain[i])
-				continue;
 			switch (terrain[i])
 			{
-			case GRASS:
-				if (!L.feature[i])
-					looks[i] = DRY_GRASS;
-				else if (nearWater[i] >= 0 && nearWater[i] <= kLushReach)
-					looks[i] = LUSH_GRASS;
-				else if (inOasis[i] <= 1)
-					looks[i] = DRY_GRASS;
-				break;
 			case SAND:
-				if (L.feature[i] || (nearWater[i] >= 0 && nearWater[i] <= 1))
-					break;
-				looks[i] = L.dunePhase[i] < 65536 * kHollowPercent / 100 ? PALE_SAND
-						   : L.dunePhase[i] >= 65536 * kCrestLow / 100 && L.dunePhase[i] < 65536 * kCrestHigh / 100
-							   ? WINDY_SAND_DUNE
-							   : DUNE_SAND;
+				looks[i] = DUNE_SAND;
 				break;
 			case RIDGE_ROCK:
-				looks[i] = inRock[i] <= 1 ? country.rim : country.rock;
-				break;
-			case SCREE:
-				looks[i] = country.talus;
+				looks[i] = country.rock;
 				break;
 			case TRAIL:
 				looks[i] = L.court[i] ? country.court : country.road;
@@ -1216,8 +1169,9 @@ GeneratorDefinition caravanseraiDefinition()
 			41,
 			"Caravanserai",
 			// Revision 5 (2.0): mesas of rock with quarry faces, roads of path, paved courtyards,
-			// meadow shores, dune and country looks.
-			5,
+			// meadow shores, dune and country looks. Revision 6: one look per role (one dune sand,
+			// one rock, plain grass throughout).
+			6,
 			false,
 			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
 			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest

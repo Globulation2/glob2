@@ -91,10 +91,13 @@ using namespace MapGeneration;
 //   loam about kLoamDeep vertices deep surrounds it, and the gardens keep plain grass beyond the beach
 //   so a lakeside home and an inland one start on comparable ground.
 // - Islands themed: a stone island is volcanic (a pumice beach, Rough, round grass carrying its stone);
-//   fruit and grain islands are lush green.
-// - A climate, looks only (`climate`: temperate, steppe, tropical): grass graded by distance from
-//   water, the beach, deep water, loam, rock, road, mud and headland looks. Every choice is in
-//   telemetry.
+//   fruit and grain islands carry the belt's grass.
+// - A climate, looks only (`climate`: temperate, steppe, tropical): one look per rule group (grass,
+//   beach, deep water, loam, rock, road, mud and headland). Every choice is in telemetry.
+//
+// REVISION 6 (one look per role): the grass graded lush and dry by distance from water, the lush
+// islands and the second loam look dealt out by noise are gone; each climate draws one grass and one
+// loam. Looks only: every rule, deposit and start is revision 5's.
 namespace
 {
 
@@ -130,7 +133,6 @@ constexpr int kUnreached = INT_MIN;
 constexpr const char *kSpineStream = "ring-world-spine";
 constexpr const char *kRoadStream = "ring-world-road";
 constexpr const char *kCoastStream = "ring-world-coast";
-constexpr const char *kLookStream = "ring-world-looks";
 constexpr const char *kClimateStream = "ring-world-climate";
 constexpr const char *kIsleStream = "ring-world-isles";
 // Deep ocean: ocean vertices at least kDeepSteps tiles from land in a straight line, opened by kDeepOpen
@@ -170,18 +172,16 @@ constexpr double kHeadland = 0.56, kBay = 0.42, kHeadlandGate = 0.5, kBayGate = 
 constexpr int kLoamDeep = 5;
 constexpr double kGardenRadius = 12, kGardenFray = 3;
 
-// The look-only climates. lush and green are the steps from water within which the grass is lush and
-// still green; beyond green it is dry.
+// The look-only climates: one look per rule group.
 struct Climate
 {
 	const char *name;
-	TerrainType beach, deep, loam, loamSecond, rock, road, mud, headland;
-	int lush, green;
+	TerrainType grass, beach, deep, loam, rock, road, mud, headland;
 };
 constexpr Climate kClimates[3] = {
-	{"temperate", PALE_SAND, DEEP_WATER, SPRING_MEADOW, MOSS, RIDGE_ROCK, TRAIL, MUDFLAT, GRANITE_TORS, 8, 26},
-	{"steppe", SAND, DEEP_WATER, LOAM, SPRING_MEADOW, HOODOOS, SANDSTONE, HARDPAN, SANDSTONE_BENCHES, 5, 17},
-	{"tropical", SAND, DARK_WATER, MOSS, LOAM, OUTCROP, OVERGROWN_ROAD, MUD, BOULDERS, 14, 48}};
+	{"temperate", GRASS, PALE_SAND, DEEP_WATER, SPRING_MEADOW, RIDGE_ROCK, TRAIL, MUDFLAT, GRANITE_TORS},
+	{"steppe", DRY_GRASS, SAND, DEEP_WATER, LOAM, HOODOOS, SANDSTONE, HARDPAN, SANDSTONE_BENCHES},
+	{"tropical", LUSH_GRASS, SAND, DARK_WATER, MOSS, OUTCROP, OVERGROWN_ROAD, MUD, BOULDERS}};
 
 double unitDraw(std::mt19937 &rng)
 {
@@ -1119,43 +1119,22 @@ Features planFeatures(const Stamp &stamp, const Torus &t, const Axes &axes, cons
 	return f;
 }
 
-// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
-TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, const Climate &climate,
-						 GenerationContext &context)
+// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group): one
+// per rule group, but for the volcanic islands' pumice beaches.
+TerrainSketch lookSketch(const Features &f, const Torus &t, const Climate &climate)
 {
 	const int n = t.size();
 	const TerrainSketch &mech = f.mechanics;
-	std::vector<unsigned char> wet(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		wet[i] = wetType(mech[i]);
-	// Straight-line distance, so the grass grades in rounded bands rather than squares.
-	const std::vector<std::int64_t> wetReach = distanceSquaredTo(t, wet);
-	std::vector<double> fromWet(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		fromWet[i] = wetReach[i] < 0 ? 1e9 : std::sqrt(double(wetReach[i]));
-	std::mt19937 &random = context.stream(kLookStream);
-	const std::vector<int> fray = fractalNoise(t.w, t.h, 32, 3, random);
-	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
-	std::vector<unsigned char> green(size_t(n), 0);
-	for (size_t k = 0; k < stamp.islands.size(); ++k)
-		if (f.isleTheme[k] != 0)
-			for (int i : stamp.islands[k].tiles)
-				green[i] = 1;
 	TerrainSketch looks(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const double shift = 7.0 * (fray[i] - 32768) / 32768.0;
-		const bool second = split[i] > 0.6 * 65536;
 		switch (mech[i])
 		{
 		case GRASS:
-			if (green[i] || fromWet[i] <= climate.lush + shift)
-				looks[i] = LUSH_GRASS;
-			else if (fromWet[i] > climate.green + shift)
-				looks[i] = DRY_GRASS;
+			looks[i] = climate.grass;
 			break;
 		case LOAM:
-			looks[i] = second ? climate.loamSecond : climate.loam;
+			looks[i] = climate.loam;
 			break;
 		case SAND:
 			looks[i] = climate.beach;
@@ -1186,7 +1165,7 @@ TerrainSketch lookSketch(const Features &f, const Stamp &stamp, const Torus &t, 
 }
 
 // Each island carries one themed prize at its middle, as stockIslands lays it, with the theme the
-// design already drew (and painted the island for).
+// design already drew.
 void stockThemedIslands(GenerationMap &map, GenerationContext &context, const std::vector<Island> &islands,
 						const std::vector<int> &themes)
 {
@@ -1692,7 +1671,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		return false;
 
 	// The looks, last: they change no rule, so nothing any stage above saw or placed changes.
-	writeVertices(map, composeLooks(features.mechanics, lookSketch(features, stamp, t, climate, context)));
+	writeVertices(map, composeLooks(features.mechanics, lookSketch(features, t, climate)));
 	if (context.telemetry.enabled())
 	{
 		// How far each colony walks to its nearest quarry face, on the finished map (-1 when none).
@@ -1924,7 +1903,7 @@ GeneratorDefinition ringWorldDefinition()
 	return {"ring-world",
 			16,
 			"Ring world",
-			5,
+			6, // 6: one look per role
 			false,
 			// Belt width is the share of the map's breadth the belt covers on average; lake density
 			// is lakes per 4096 tiles of belt; resource islands are counted per 128x128 of map.
@@ -1956,8 +1935,8 @@ GeneratorDefinition ringWorldDefinition()
 			 // to colony all the way round the world.
 			 GeneratorControl::toggle("ring-road", "Ring road", true, ControlGroup::Layout)
 				 .withSearchValues({0, 1}),
-			 // Looks only: Temperate (spring meadows, grey rock, granite headlands), Steppe (dry
-			 // grass, hoodoos, sandstone roads) or Tropical (lush grass, dark water, mossy banks).
+			 // Looks only: Temperate (green grass, spring meadows, grey rock, granite headlands), Steppe
+			 // (dry grass, hoodoos, sandstone roads) or Tropical (lush grass, dark water, mossy banks).
 			 // All play alike.
 			 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
 									  ControlGroup::Terrain)

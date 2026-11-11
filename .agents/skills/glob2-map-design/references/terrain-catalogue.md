@@ -21,9 +21,10 @@ matter most:
 | A wall towers shoot over | Ridges (ridge rock, outcrop, hoodoos, petrified stumps) | Impassable; projectiles pass | Siege walls, causeway parapets, a mountain's leg walls, arena tiers |
 | A road | Paths (road, brick path, slate ashlar, basalt causeway, boardwalk) | Twice as fast; buildable; nothing grows; holds no field back | Streets, towns, trails, decks, bridges |
 | Ground crops never take | Barren (dirt, clay, shale, laterite, volcanic ash) | Buildable; inhibits growth like sand | Bases whose food grows elsewhere, farm caps, plot rings, scrub |
-| No-build, still walkable | Rough (mudflat, hardpan, scree, pumice) | Slow; unbuildable; nothing grows | Gate throats, lane gutters, ramps, no-man's-land |
+| No-build, still walkable | Rough (mudflat, hardpan, scree, pumice) | Slow; unbuildable; nothing grows | Ramps, talus, no-man's-land; not gates or lanes (below) |
 | A barrier fliers fear | Lava | Impassable; burns fliers | A volcanic centrepiece or moat |
-| Open sea | Deep water | Slower swimming; no algae | Sea well away from land (`deepSea`) |
+| Slow swimming water | Deep water | Slower swimming; no algae | Only where the design wants slower swimming (a lagoon core, an opt-in control); never every vertex some distance from land |
+| Frozen ground | Ice (frozen lake, glacier ice, deep and wind-swept snow) | Walkable at half speed; wears ground units down (8/256 hp a step, about 2 hp over 30 tiles); unbuildable; nothing grows | A crossing with a price: Spider web's frozen cells |
 | Sand | Sand | Unbuildable; inhibits growth; shoreline for algae | Only where the subject is sand: a desert, an arena floor, a real beach |
 
 **Sand only where it is sand.** On the older maps sand stood in for roads, gates, no-build markers,
@@ -36,12 +37,14 @@ concept"):
 | A road | Paths |
 | A farm cap or plot ring | Barren (`dressFarmSand`) |
 | A farm's bridges and crossings | Paths (`dressFarmSand`) |
-| A gate that must stay unbuildable | Rough (the maintainer's choice over paving it) |
+| A gate or lane that must stay unbuildable | Paths, plain from end to end. A rough strip in a paved gate or lane read as two terrains and slowed the road; the maintainer chose plain road and accepted that a gate can be built in (City states, Carousel, 2026-11-11) |
 | A scrub patch | Barren, with a rough core on open ground |
 
 **Beaches are no longer required.** Grass directly against water is legal. A generator using the
 catalogue need not run `layBeaches`, and the five above no longer do. Lay a beach only when the
-design wants one. Two consequences:
+design wants one; a pale-sand beach where grass meets open water reads well, and the maintainer asked
+for it back on Spider web (a grass-only beach pass there, so tundra and ice still meet the water
+bare). Two consequences:
 - **Algae.** Algae regrows only where sand lies at its probe point, so a coast without sand keeps
   whatever algae was seeded but grows no more.
 - **Order.** `layBeaches` reacts only to `WATER` and turns every other land vertex beside it into
@@ -60,10 +63,13 @@ very last step with `paintClimate` ([Climates.h](../../../../src/map/generator/s
 - **Painting has to know where it is.** It needs roles only the design knows: which grass is a farm
   or a home, which paving is a town, a street, a deck or a bridge, which water is deep, and which
   rock is a second tier. Pass them through `LookRoles`.
-- **One look per role, no speckle.** Barren and fertile ground used to be mottled with a second
-  look on a fixed vertex hash. Across a whole home base the blotches repeated evenly and read as
-  polka dots, so the maintainer had them removed (2026-11-08). Vary a look by region through
-  `LookRoles`, never per vertex.
+- **One look per rule group per map, no speckle.** Barren and fertile ground used to be mottled with
+  a second look on a fixed vertex hash; across a whole home base the blotches read as polka dots
+  (removed 2026-11-08). The natural generators then split looks by noise regions and distance bands
+  instead, which read as stripes and patchwork (removed 2026-11-11). A role takes one look per map;
+  a second look needs a named feature drawn as one region and the maintainer's agreement
+  ([terrain palette](terrain-palette.md#one-look-per-rule-group-per-map)). Lava is drawn in
+  concentric rings (ember rim, lava, molten core) by `paintClimate`.
 - **Pick looks that contrast.** In the arid climate, sandstone roads beside sandstone-bench cliffs
   are hard to tell apart in a render.
 - **Theme each climate, not just its colours.** The maintainer asked that every volcanic map show
@@ -96,13 +102,28 @@ row on each side, and every tile beside it becomes an unbuildable seam. Use
   the plateau still reach the trail. Then thin a crowded map's walls a tile at a time across the
   whole geometry (`geometryWith`), not just where legs are counted: wall thickness also sets the
   plateau's size and the homes' reach.
-- **Thicken Ridges to three vertices.** Ridges looks (ridge rock, outcrop, hoodoos, termite mounds,
-  petrified stumps) draw peaks only on a tile whose four corners are all rock. A curved or diagonal
+- **Thicken every wall to three vertices, cliffs too.** Ridges looks (ridge rock, outcrop, hoodoos,
+  termite mounds, petrified stumps) draw peaks only on a tile whose four corners are all rock, and an
+  Obstacles mass (cliffs, glacier, obsidian) draws its rim and top the same way. A curved or diagonal
   band two vertices wide has almost no such tile and read as bare ground (maintainer, 2026-11-08).
   Call `thickenRidges(terrain, t, canGrow)` once the walls are laid: every rock vertex then sits in a
-  full 3x3 block, grown only where `canGrow` allows (keep lanes, doors and farms out). Anything that
-  finds walls by their design tiles must then look a step or two further: Amphitheatre's towers
-  stand against blocked tiles within two steps of a ring, not the ring tiles themselves.
+  full 3x3 block, grown only where `canGrow` allows (keep lanes, doors and farms out); pass `CLIFFS` as
+  the last argument for Obstacles walls. Carousel's siege walls and Switchbacks' borders, two
+  vertices thick between a lane or a farm, drew as a string of blobs that looked passable
+  (2026-11-11). Where a wall has nowhere else to grow, let it take a farm's edge (its grass and cap
+  ring, a siege wall even its crossings) and open water, never its water rows; cliffs that took farm
+  crossings closed farms' entrances on 6- and 8-colony maps. Measure the effect on a terrain dump:
+  count tiles that are wholly one rock (`map study --report terrain`, code 10 + terrain id) before
+  and after. Anything that finds walls by their design tiles must then look a step or two further:
+  Amphitheatre's towers stand against blocked tiles within two steps of a ring, not the ring tiles
+  themselves.
+- **Keep paving off a wall's verge.** A thicker wall brings a home's paved square (`paveCore`) within
+  reach of the wall's foot; the towers' stone step (`openTowerNiches`) then repaints that paving as
+  grass after the terrain is written, and the validator reports the ground "not as designed".
+  Pave only beyond the verge (Carousel, Switchbacks).
+- **Never cut one wall through another.** Gauntlet's partitions were laid across the ring wall and
+  the coast band, and won the shared vertices, so each cut a notch of different rock through a
+  continuous cliff that read as a hole. Let the continuous wall win and stop the other at its foot.
 - **Seal coasts with cliffs, not stone.** `cliffCoast` turns every wallable vertex within two of the
   sea into cliff, water included, so there is no beach to land on and no shore to swim from. That
   replaces the stone ring with its dead-end beach lane.
@@ -117,8 +138,12 @@ A stone wall was every colony's quarry, often its only one, and a home kit commo
 "since the home is walled in it". Remove the stone and the towers starve of ammunition:
 - **Stone.** City states' tower-building AI mined 30–55% less stone and fired less until each home
   got its stone back.
-- **Quarry faces.** Use `plantQuarryFaces` (Planting.h) to put stone at the foot of a terrain wall,
-  where it blocks no way through. Seed the faces in the home's own frame so every home gets the same.
+- **Quarry faces stand at the foot, never in the rock.** Use `plantQuarryFaces` (Planting.h) to put
+  stone at the foot of a terrain wall, where it blocks no way through. Seed the faces in the home's
+  own frame so every home gets the same. Never carve a quarry into a ridge: Rain shadow's quarries
+  were grass notches cut through the rock band, which read as holes punched in the mountain; since
+  revision 9 they are the open ground within two steps of the rock (`quarryNear` with the open
+  ground as the wall and the rock as the open side).
 - **Check the count.** Telemetry counts placed tiles. Carousel's faces were seeded on the homes'
   outer side, which opens onto their own farms with no wall, and all of them placed 0. Search a
   home's actual wall feet instead, and keep the faces away from where its towers stand.
@@ -132,15 +157,26 @@ A stone wall was every colony's quarry, often its only one, and a home kit commo
 ## Themed bases
 
 The maintainer's main complaint about the first renders was "too much plain grass" in player bases.
-- **Bases whose food grows on farms** (Carousel, Switchbacks, Gauntlet) are the climate's barren
-  ground with a paved square round the swarm (`barrenBase`, `paveCore`).
-- **Bases that grow their own food** (City states, Amphitheatre) are barren except within about
-  ten steps of their own water, where the fields grow.
+The first answer, barren bases, overshot.
+- **Homes are not barren.** City states and Amphitheatre covered every home in barren ground beyond
+  ten steps of its own water (`barrenBase`). Barren holds no crop and holds back the fields beside
+  it, so the wings went dead and the home kinds stopped reading (maintainer, 2026-11-11: "almost all
+  of the variants for a player's home base are paved over end to end... I wanted the paved section
+  to be in the center, and for the wings to have farmable areas for wheat and wood"). Draw a home as
+  grass with a paved centre (`paveCore`), give its wings water of their own (a pond each side) and
+  seed fields there, and keep scrub off the town district: a scrub patch beside the swarm leaves an
+  unbuildable seam that pushes the swarm off its anchor.
+- **Bases whose food grows on farms** (Carousel, Switchbacks, Gauntlet) are still the climate's
+  barren ground with a paved square round the swarm: their farms are dedicated, walled areas.
+- **A themed fertile home** can read well: Maze's keeps are spring meadow throughout.
 - **Farms keep their grass,** in the climate's farm look (`farmGrass`). Fertile soils would change
   the rules: they irrigate.
 - **Barren has a cost.** It holds back crops behind it as sand did. Paths do not, so paving a town
   or a road instead of sanding it lets the fields beside it grow better. City states' paved towns
   raised the AIs' wheat by about 20% in paired games. Call this out as a change of pace.
+- **One paving per map,** a bridge excepted: Maze's plazas and keep courts now share its road look.
+- **Lava is drawn in rings,** ember rim, lava and a round molten core (`paintClimate`), never
+  mottled; Lava shield is the model.
 
 ## Validate the terrain you designed
 
@@ -155,6 +191,12 @@ The maintainer's main complaint about the first renders was "too much plain gras
   first tile it reaches outside: that is where the seal leaks.
 - **Paint every corner of a ford or bridge.** A ford tile with one land corner swims. Revision 12 of
   City states failed validation on some seeds for exactly this.
+- **Compare refusals with the previous build.** Keep a copy of the pre-change binary and diff
+  `sweep_shapes.py` against it after every change; a new refusal is a regression even where the
+  message looks unrelated. Make refusal messages say where and how much (each colony's walk, the
+  broken tile), which turns a refusal into a diagnosis.
+- **"Not as designed" can come from a later stage.** When generation's written terrain and the
+  validator's rebuild disagree, bisect by checking the map against the sketch after each stage.
 - **Check every image of a mirrored placement.** City states placed its islet mirror images without
   checking them against each other, and two overlapped on rectangles.
 
@@ -164,6 +206,13 @@ The maintainer's main complaint about the first renders was "too much plain gras
   generator for a second, record its rows with `MapGeneratorGoldenTest <profile> --print
   --only=<id>`. That takes seconds for one generator; the full table takes half an hour on a debug
   build. Then check the extraction leaves them byte for byte.
+- **Iterate on an -O2 CMake build.** A separate `cmake --preset dev -B build/cmake/iter
+  -DCMAKE_{C,CXX}_FLAGS="-O2 -g1"` rebuilds one generator in about 13 s against SCons' 20 s of
+  overhead, with byte-identical maps; quote performance only from the SCons perf tier.
+- **A render helper must clear its old output.** A failed `map generate` leaves yesterday's PNG in
+  place; delete the outputs first or check the exit status, or a broken map looks unchanged.
+- **Find the change by diffing renders.** Difference two renders of one map, block-average it and
+  crop the busiest block: faster than hunting by eye for where a wall or quarry moved.
 - **Look at the real game view.** `glob2 map render MAP --output x.png --render-max-pixels 4096`
   draws it at 16 pixels a tile. Minimap previews cannot show whether a wall reads, a climate looks
   right or decor renders.

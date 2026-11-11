@@ -26,7 +26,7 @@ namespace MapGeneration
 //   MUD          rough                                                          Rough
 //   LOAM         fertile                                                        Fertile
 //   WATER        stays water, or deep where the generator says                  Water / Deep water
-//   LAVA         lava, mottled with molten pools                                Lava
+//   LAVA         lava: ember rim, lava, molten core (concentric)                Lava
 struct ClimateLook
 {
 	const char *name;
@@ -107,8 +107,8 @@ struct LookRoles
 };
 
 /// Paints the climate over a finished mechanic sketch (see the header). Barren and fertile ground
-/// take one terrain each, unmottled; lava is mottled with molten pools by a fixed speckle of the
-/// vertex coordinates, not a random draw.
+/// take one terrain each, unmottled; every lava body is drawn in concentric rings (ember field at its
+/// edge, lava, and a small round core of molten lava in a body deep enough), with no random draw.
 void paintClimate(TerrainSketch &, const Torus &, const ClimateLook &, const LookRoles &);
 
 /// A colony's base drawn as barren ground (DIRT: buildable, and no crop ever grows on it), for maps
@@ -122,9 +122,4 @@ int barrenBase(TerrainSketch &, const Torus &, const std::function<bool(int)> &b
 /// TRAIL. For the town square round a swarm.
 void paveCore(TerrainSketch &, const Torus &, double cx, double cy, double radius,
 			  const std::function<bool(int)> &base);
-
-/// Open water at least `from` vertices from any land, among the vertices `sea` marks: where a
-/// generator's deep water goes (slower swimming, no algae, which keeps to the shallows).
-std::vector<unsigned char> deepSea(const TerrainSketch &, const Torus &,
-								   const std::function<bool(int)> &sea, int from);
 } // namespace MapGeneration

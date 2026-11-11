@@ -56,10 +56,10 @@ using namespace MapGeneration;
 // - Two sketches: the mechanic sketch holds each vertex's canonical rule-group type (GRASS, SAND,
 //   WATER, DEEP_WATER, LOAM, SHALE, MUDFLAT, HARDPAN, SCREE, RIDGE_ROCK) and every rule below reads
 //   it; looks are painted over it with composeLooks, which can never change a rule. Every home's
-//   garden (kGardenRadius tiles round the swarm's middle, frayed) keeps GRASS mechanics, and the grass
-//   looks (lush, dry) go on only after placeStarts and openStartsBuriedByResources, so the starts and
-//   the starting-crop guarantee meet plain GRASS everywhere, as they always did, and no home reads as
-//   a round lawn.
+//   garden (kGardenRadius tiles round the swarm's middle, frayed) keeps GRASS mechanics. The banks
+//   draw one look per rule group (revision 9): the desert's one grass look, dry grass, goes on only
+//   after placeStarts, openStartsBuriedByResources and the home gates, gardens included, so the starts
+//   and the starting-crop guarantee meet plain GRASS everywhere and no home reads as a round lawn.
 // - Deep channel (`deep-channel`): plain water far enough from land is deep water (deepenWater):
 //   at least kDeepReach tiles in a straight line, so the core's outline is round, more until the core
 //   holds at most kDeepShare of the water (deepReachForShare), so at least three whole tiles of
@@ -93,15 +93,18 @@ using namespace MapGeneration;
 //   before the starting-crop top-up) and the starts alone, in generate and in
 //   validateWorld alike, so the validator plans exactly the bluffs generate drew and checks every
 //   quarry holds its stone.
-// - Far ground: grass graded lush near water and dry beyond kGreen tiles, on the temperate banks
-//   only on dryShare of that ground in patches, never in a home's garden; beyond kPaveReach steps of
+// - Far ground: beyond kPaveReach steps of
 //   any water (where the growth probe never finds water, and a mirrored probe almost never reaches a
 //   crop) old desert sand and bare grass are pavement (Barren: buildable, holds nothing, inhibits
 //   growth like sand), never on a vertex touching a deposit.
-// - Banks (`banks`): Temperate as above (spring meadow and loam, heath and shale, outcrop bluffs) or
+// - Banks (`banks`): Temperate as above (plain grass, sand and loam, heath pavement, outcrop bluffs) or
 //   Desert, a Nile: the same mechanics, plus baked hardpan pans (Rough, which does not inhibit) on the
-//   bare grass between the green ribbon (kRibbon steps) and the pavement, the pavement weathered
-//   sandstone, the desert sand dunes and the bluffs hoodoos. The gardens keep every home green.
+//   bare grass from kPanReach steps out, the grass dry, the pavement weathered sandstone and the bluffs
+//   hoodoos; the loam levee is the green ribbon.
+//
+// REVISION 9 (one look per role): each rule group takes one look per banks variant. The lush and dry
+// grass bands, the second levee, sand and pavement looks dealt out by noise, and the dune sand behind the
+// beach are gone (looks only: every rule, deposit and start is revision 8's).
 //
 // REVISION 7 (home quarries): no stone from the height field. Its stone band lies just above the beach,
 // which on a river is the whole shoreline, so on gentle banks it walled the shore in stone and the
@@ -124,7 +127,6 @@ constexpr const char *kGardenStream = "river-gardens";
 constexpr const char *kBluffStream = "river-bluffs";
 constexpr const char *kMudStream = "river-mud";
 constexpr const char *kAlgaeStream = "river-algae";
-constexpr const char *kDryStream = "river-dry";
 
 // Deep water: plain water kDeepReach tiles from land in a straight line (so the core's outline is round,
 // not a staircase of squares), in bodies of kDeepLeast vertices or more. The reach rises above kDeepReach
@@ -136,7 +138,8 @@ constexpr int kDeepReach = 5, kDeepLeast = 16, kDeepShare = 500;
 // distance plus up to kAlgaeWobble tiles of noise, so the reseated beds have ragged edges rather than the
 // wedges a flood's visiting order drew.
 constexpr double kAlgaeWobble = 4;
-// Home gardens: plain grass within kGardenRadius (frayed by kGardenFray) of every swarm's middle.
+// Home gardens: grass (no levee, mud, scree or pavement) within kGardenRadius (frayed by kGardenFray)
+// of every swarm's middle.
 constexpr double kGardenRadius = 12, kGardenFray = 5;
 // Levee: grass kLeveeNear to kLeveeFar vertices from water, one more where a noise passes kLeveeWide.
 constexpr int kLeveeNear = 2, kLeveeFar = 7, kLeveeWide = 40000;
@@ -170,17 +173,13 @@ constexpr double kHomeQuarryClear = 19;
 // water), and every deposit within kHomeGateRadius of it, so the gate is three tiles wide.
 constexpr StepCosts kHomeGateCosts{1, 3, -1, -1, -1};
 constexpr int kHomeGateRadius = 1;
-// Far ground: grass dry beyond kGreen tiles (kRibbon on the desert banks); pavement from kPaveReach
-// steps (frayed up to kPaveFray further) of any water, hardpan pans on the desert's bare grass beyond
-// the ribbon on kPanShare percent of it. A crop up to 15 steps from water can have its mirrored probe
-// land 30 steps out, so pavement from 22 steps still cost a low-water map (water weight 30) 8% of its
-// food; from 28 it costs about 2%.
-// The temperate banks stay green to kGreen, beyond the heath's kPaveReach: dry from 20 tiles turned most
-// of a default map (whose ground lies mostly over 20 tiles from water) brown, and with the heath and
-// the old desert sand the temperate banks read as a desert. The desert's ribbon is a third as wide.
-constexpr int kLush = 5, kGreen = 34, kRibbon = 9, kPaveReach = 28, kPaveFray = 3, kPanShare = 55;
+// Far ground: pavement from kPaveReach steps (frayed up to kPaveFray further) of any water, hardpan pans
+// on the desert's bare grass on kPanShare percent of it. A crop up to 15 steps from water can have its
+// mirrored probe land 30 steps out, so pavement from 22 steps still cost a low-water map (water weight
+// 30) 8% of its food; from 28 it costs about 2%.
+constexpr int kPaveReach = 28, kPaveFray = 3, kPanShare = 55;
 // Pans only where the growth probe (15 tiles each way) never finds water, so they take no farmland that
-// grows: from 16 steps. Between the ribbon and there the desert is dry grass.
+// grows: from 16 steps.
 constexpr int kPanReach = 16;
 // Both edges are measured as straight lines from water, floored in eight-connected steps: pavement
 // never within kPaveFloor steps, pans never within kPanFloor.
@@ -189,22 +188,18 @@ constexpr int kPaveFloor = 22, kPanFloor = 15;
 // 16 building sites within 24 steps, which reach 34 tiles out along a diagonal.
 constexpr double kPanHomeClear = 34;
 
-// The banks' variants. paveShare is the percentage of the ground beyond kPaveReach that is paved:
-// heath patches in dry grass on the temperate banks, all of it in the desert. dryShare is the
-// percentage of the grass beyond `green` that looks dry, in patches: a mosaic of meadow and dry grass on
-// the temperate uplands, all of it in the desert.
+// The banks' variants: one look per rule group (every other group keeps its plain type: grass, sand,
+// loam, deep water, mudflat, hardpan). paveShare is the percentage of the ground beyond kPaveReach that
+// is paved: heath patches in the grass on the temperate banks, all of it in the desert.
 struct Banks
 {
 	const char *name;
-	TerrainType levee, leveeSecond, pave, paveSecond, dune, duneSecond, deep, mud, pan, rock;
-	int lush, green, paveShare, dryShare;
+	TerrainType grass, pave, rock;
+	int paveShare;
 	bool desert;
 };
-constexpr Banks kBanks[2] = {
-	{"temperate", LOAM, SPRING_MEADOW, HEATH, SHALE, PALE_SAND, DUNE_SAND, DEEP_WATER, MUDFLAT, HARDPAN, OUTCROP,
-	 kLush, kGreen, 40, 45, false},
-	{"desert", LOAM, LOAM, WEATHERED_SANDSTONE, DIRT, DUNE_SAND, WINDY_SAND_DUNE, DEEP_WATER, MUDFLAT, HARDPAN,
-	 HOODOOS, 3, kRibbon, 100, 100, true}};
+constexpr Banks kBanks[2] = {{"temperate", GRASS, HEATH, OUTCROP, 40, false},
+							 {"desert", DRY_GRASS, WEATHERED_SANDSTONE, HOODOOS, 100, true}};
 
 // The river's bends: the share of its own water round every vertex, and the cuts that make a bank
 // vertex a point bar, a sharp one, or a cutbank, from the banks' own distribution.
@@ -626,10 +621,10 @@ struct LayerCounts
 	int deep = 0, levee = 0, mud = 0, pave = 0, pan = 0, scree = 0, rock = 0, garden = 0, barCut = 0, bluffCut = 0, deepReach = 0;
 };
 
-// The post-pass: the mechanic layers over the height field's terrain, then the looks.
-// The grass looks come back in `grassLooks`, to be laid after the starts (layGrassLooks).
+// The post-pass: the mechanic layers over the height field's terrain, then the looks. The grass look
+// is laid after the starts (layGrassLook).
 void redraw(GenerationWorld &game, GenerationContext &context, const RiverOptions &o, const Banks &banks,
-			const Bluffs &bluffs, LayerCounts &counts, TerrainSketch &grassLooks)
+			const Bluffs &bluffs, LayerCounts &counts)
 {
 	GenerationMap &map = game.map;
 	const Torus t(map);
@@ -743,7 +738,7 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 			eligible[i] = !garden[i] && !halo[i] && !holding[i];
 		if (banks.paveShare < 100)
 		{
-			// Patches of the far ground, not all of it: heath in the dry grass.
+			// Patches of the far ground, not all of it: heath in the grass.
 			std::vector<unsigned char> farGround(size_t(n), 0);
 			for (int i = 0; i < n; ++i)
 				farGround[i] = eligible[i] && farField[i] >= kPaveReach;
@@ -771,57 +766,13 @@ void redraw(GenerationWorld &game, GenerationContext &context, const RiverOption
 		}
 	}
 
-	// The looks.
+	// The looks: one per rule group; the grass look waits for the starts (layGrassLook).
 	TerrainSketch paint(size_t(n), 0);
-	const std::vector<int> fromWet = distanceFromWet(t, mech);
-	const std::vector<int> jitter = periodicNoise(t.w, t.h, 9, looks);
-	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, looks);
-	grassLooks.assign(size_t(n), 0);
-	gradeGrassLooks(grassLooks, mech, fromWet, std::vector<unsigned char>(size_t(n), 0), jitter, banks.lush,
-					banks.green, 3, &garden);
-	if (banks.dryShare < 100)
-	{
-		// Only patches of the dry ground look dry; the rest stays green (looks only).
-		std::vector<unsigned char> dry(size_t(n), 0);
-		for (int i = 0; i < n; ++i)
-			dry[i] = grassLooks[i] == DRY_GRASS;
-		const std::vector<unsigned char> keep =
-			noisyShare(dry, fractalNoise(t.w, t.h, 24, 3, context.stream(kDryStream)), banks.dryShare);
-		for (int i = 0; i < n; ++i)
-			if (dry[i] && !keep[i])
-				grassLooks[i] = 0;
-	}
 	for (int i = 0; i < n; ++i)
-	{
-		const bool second = split[i] > 0.62 * 65536;
-		switch (mech[i])
-		{
-		case LOAM:
-			paint[i] = second ? banks.leveeSecond : banks.levee;
-			break;
-		case SAND:
-			if (fromWet[i] > 2)
-				paint[i] = second ? banks.duneSecond : banks.dune;
-			break;
-		case SHALE:
-			paint[i] = second ? banks.paveSecond : banks.pave;
-			break;
-		case DEEP_WATER:
-			paint[i] = banks.deep;
-			break;
-		case MUDFLAT:
-			paint[i] = banks.mud;
-			break;
-		case HARDPAN:
-			paint[i] = banks.pan;
-			break;
-		case RIDGE_ROCK:
+		if (mech[i] == SHALE)
+			paint[i] = banks.pave;
+		else if (mech[i] == RIDGE_ROCK)
 			paint[i] = banks.rock;
-			break;
-		default:
-			break;
-		}
-	}
 	const DisplacedResources lost = writeLayeredTerrain(map, mech, paint);
 
 	// The algae deep water displaced, seated again on the nearest free shallows (the river's own first,
@@ -941,12 +892,15 @@ int openHomeGates(GenerationMap &map, const Torus &t, int teams, const std::vect
 	return opened;
 }
 
-void layGrassLooks(GenerationMap &map, const TerrainSketch &grassLooks)
+// The banks' one grass look over every plain grass vertex, the homes' gardens included.
+void layGrassLook(GenerationMap &map, TerrainType look)
 {
+	if (look == GRASS || terrainGroup(look) != TerrainGroup::Grass)
+		return;
 	TerrainSketch sketch = mapSketch(map);
 	for (size_t i = 0; i < sketch.size(); ++i)
-		if (sketch[i] == GRASS && grassLooks[i] && terrainGroup(TerrainType(grassLooks[i])) == TerrainGroup::Grass)
-			sketch[i] = grassLooks[i];
+		if (sketch[i] == GRASS)
+			sketch[i] = look;
 	writeVertices(map, sketch);
 }
 
@@ -980,8 +934,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		return false;
 	}
 	LayerCounts counts;
-	TerrainSketch grassLooks;
-	redraw(game, context, options, banks, bluffs, counts, grassLooks);
+	redraw(game, context, options, banks, bluffs, counts);
 	context.stage = "starts";
 	if (!placeStarts(game, context))
 		return false;
@@ -999,11 +952,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	// the home's edge, so the starting crops are not topped up again; validateWorld still holds every
 	// colony to its wheat and wood. Where every colony already walks out, nothing changes.
 	context.telemetry.measure("river.home_gates.opened", openHomeGates(game.map, t, teams, bluffs.quarry));
-	// Last, the grass looks: until now every grass vertex was plain GRASS, which is all the
+	// Last, the grass look: until now every grass vertex was plain GRASS, which is all the
 	// starting-crop guarantee will plant on (a top-up that found plain grass only beside the swarm
-	// filled a desert home's building room with wheat). Looks inside the grass group change no rule
-	// and no deposit, so they go on now, over whatever plain grass the starts left.
-	layGrassLooks(game.map, grassLooks);
+	// filled a desert home's building room with wheat). A look inside the grass group changes no rule
+	// and no deposit, so it goes on now, over all the plain grass the starts left, gardens included.
+	layGrassLook(game.map, banks.grass);
 	return true;
 }
 
@@ -1093,9 +1046,9 @@ GeneratorDefinition riverDefinition()
 		// Off, the river runs straight across the map instead of meandering.
 		GeneratorControl::toggle("winding-river", "Winding river", true, ControlGroup::Terrain)
 			.withSearchValues({0, 1}),
-		// Temperate (loam and spring meadow levees, heath, outcrop bluffs) or Desert, a Nile: one green
-		// ribbon along the water between baked hardpan pans (slow, unbuildable) and weathered
-		// sandstone, with hoodoo bluffs. Every home's garden stays green either way.
+		// Temperate (green grass, loam levees, heath, outcrop bluffs) or Desert, a Nile: a loam ribbon
+		// along the water in dry grass, baked hardpan pans (slow, unbuildable) and weathered sandstone,
+		// with hoodoo bluffs.
 		GeneratorControl::choice("banks", "Banks", {"Random", "Temperate", "Desert"}, 0, ControlGroup::Terrain)
 			.withSearchValues({1, 2}),
 		// On, the wide water has a core of deep water: swimming across is slower and no algae grows
@@ -1118,7 +1071,7 @@ GeneratorDefinition riverDefinition()
 			"river",
 			2,
 			"River",
-			8,
+			9, // 9: one look per role
 			false,
 			std::move(controls),
 			generate,

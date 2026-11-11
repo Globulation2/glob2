@@ -1,10 +1,10 @@
 # Caravanserai
 
 **Caravanserai** (`caravanserai`, numeric ID 41) is oasis towns on a desert trade route. Dunes run
-in long bands, wind-rippled on their crests and pale in the hollows, with dry scrub between them;
+in long bands of dune sand, with scrub in the hollows between them;
 flat-topped mesas stand out of the sand on skirts of scree, their stone quarried from faces cut
-into their flanks; scattered oases are irregular pools ringed with spring meadow, lush grass and
-date palms, drying out towards the sand. Every colony's home is a large oasis town round its own
+into their flanks; scattered oases are irregular pools ringed with spring meadow, grass and
+date palms. Every colony's home is a large oasis town round its own
 lake with a ring of fields and a palm grove. Half way between neighbours stands a caravanserai, a
 square walled courtyard, paved, with a well, in an oasis of its own with orchards and a quarry, and
 the caravan routes between them are roads.
@@ -32,7 +32,7 @@ were lines of sand.
   buildings or crops; only the roads cross it quickly. The floors keep 18 corners off every home,
   so no colony's dooryard is slower than another's.
 - **Oasis shores feed.** Spring meadow (crop land that waters its surroundings) rings every neutral
-  oasis pond and the caravanserais' ponds, inside the lush grass. The homes are unchanged: lake,
+  oasis pond and the caravanserais' ponds, inside the oasis grass. The homes are unchanged: lake,
   field ring and palm grove on plain grass, the kit guaranteed.
 
 ## How it is built
@@ -53,7 +53,7 @@ so looks never change a rule.
 | Talus and floors | Scree one corner out from the rock, two where a fray noise passes; in canyon country, hardpan on the next 12 percent of the relief, fading out beyond 3 corners from a mesa and within 18 of a home. |
 | Dunes and scrub | Stripes wrapping the torus about 12 tiles apart; single grass corners of scrub in 16% of the hollows and 30% of a three-tile halo round every oasis, never two side by side. |
 | Shores | Spring meadow on the corners two and three steps from every neutral or caravanserai pond. |
-| Looks | Dune crests wind-rippled, hollows pale; scrub and oasis rims dry, shores lush; the country's rock, rims, talus, road and courtyard artwork; a dry rim round every town, the same on every home. |
+| Looks | One per role: every sand is dune sand; the country's rock, road and courtyard artwork. Grass stays plain everywhere, oases, scrub and homes alike: the homes must, since the starting-crop guarantee reads plain grass after the looks are written. |
 | Resources | Wheat in a solid arc of the field ring nearest the swarm (at least 60), palms in the grove (at least 30), caravanserai groves, quarry, grain and palms, oasis palms and grain, algae, quarry-face stone. |
 
 ## Controls
@@ -63,7 +63,7 @@ so looks never change a rule.
 | Home oasis size | 18–30 (24) | The home's radius; shrinks to fit crowded maps. |
 | Oases | Sparse, Normal, Many (Normal) | Scattered oases per desert tile. |
 | Caravanserais per colony | 1–3 (2) | Caravanserais to each colony's nearest neighbours, each with its roads. |
-| Desert | Open erg, Dunes and mesas, Canyon country, Random (Random) | The country. Open erg: dunes, no rock, earth trails, a sandstone court. Dunes and mesas: 5% of the map in sandstone hoodoo mesas on scree, flagstone roads, a brick court. Canyon country: 11% in grey rock mesas rimmed with hoodoos, on hardpan floors, earth trails. |
+| Desert | Open erg, Dunes and mesas, Canyon country, Random (Random) | The country. Open erg: dunes, no rock, earth trails, a sandstone court. Dunes and mesas: 5% of the map in sandstone hoodoo mesas on scree, flagstone roads, a brick court. Canyon country: 11% in grey rock mesas, on hardpan floors, earth trails. |
 | Wheat, wood, algae, fruit amount | 0–300% (100) | Linear; the home's kit floors are guaranteed. |
 | Stone amount | 0–300% (100) | Quarry faces on the mesas and the caravanserais' quarries; the caravanserai walls are always stone. |
 

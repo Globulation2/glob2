@@ -48,7 +48,7 @@ constexpr double kOuterCourtWidth = 48;
 constexpr double kLakeCourtGap = 7;
 constexpr double kHomeFarmDepth = 22;
 // A coast's cliff band reaches this far inland from the water, where the sealing ring's inner edge
-// stood; the quarry face's size; open water this many vertices from land is deep.
+// stood; the quarry face's size. The sea and the lake are one plain water: no deep water.
 constexpr double kCoastBand = 6;
 constexpr int kQuarryFace = 16;
 // Every door's tower also has a face of this much stone at the foot of the outer wall, seeded within
@@ -59,7 +59,6 @@ constexpr int kTowerStoneDoorGap = 3;
 // The validator wants 16 anchors of permanent building room within kRoomReach steps of each home's
 // workers; the tower stone keeps clear of the nearest kKeptRoom of them, a margin of eight.
 constexpr int kRoomReach = 24, kKeptRoom = 24;
-constexpr int kDeepFrom = 5;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry face stands (barren ground holds no stone).
 constexpr double kCore = 7;
@@ -182,7 +181,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		L.coast[i] = (rad >= g.lake && rad < g.lake + kCoastBand) ||
 					 (rad <= g.rim && rad > g.rim - kCoastBand);
 		L.wall[i] = L.coast[i];
-		if (std::abs(rad - g.outer) <= 1.2)
+		const bool ring = L.coast[i] || std::abs(rad - g.outer) <= 1.2;
+		if (ring)
 			L.wall[i] = 1;
 		// Each separator follows one of three court families: straight, bent or paired gardens.
 		const double bend =
@@ -192,8 +192,11 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			std::abs(separator) < o.partitionWall * .5 + .4 &&
 			std::abs(rad - L.gateRadius) > o.gateWidth * .5)
 		{
+			// A partition stops at the ring's cliff and the coast's: the cliff runs on unbroken past
+			// it (revisions 7-8 cut the partition's rock through them, which read as a notch punched
+			// in the wall).
 			L.wall[i] = 1;
-			L.partition[i] = 1;
+			L.partition[i] = !ring;
 		}
 		// A protected winding promenade, with its gate crossings all at the same radius.
 		const double promenade =
@@ -267,9 +270,9 @@ WallMasks wallMasks(const Layout &L)
 	{
 		if (L.radius[i] < L.g.lake || L.radius[i] > L.g.rim)
 			m.ridge[i] = m.cliff[i] = 0;
-		// Where a partition meets the ring, the vertex is the partition's: towers shoot over it.
-		if (m.ridge[i])
-			m.cliff[i] = 0;
+		// Where a partition meets the ring, the vertex is the ring's cliff, so the cliff runs on.
+		if (m.cliff[i])
+			m.ridge[i] = 0;
 	}
 	return m;
 }
@@ -407,10 +410,7 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 					  });
 	}
 	{
-		const std::vector<unsigned char> deep = deepSea(
-			terrain, t, [&](int i) { return L.radius[i] < g.lake || L.radius[i] > g.rim; }, kDeepFrom);
 		LookRoles roles;
-		roles.deep = [&](int i) { return deep[i] != 0; };
 		roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
 		roles.farm = [&](int i) { return L.farmRegion[i] || cropCourt[i] >= 0 || cropHome[i] >= 0; };
 		roles.path = [&](int) { return PathLook::Road; };
@@ -797,7 +797,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			8, // 8: grass meeting water is a shore, so crops start one tile in
+			9, // 9: plain water, lava in rings, partitions stop at the ring's cliff
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

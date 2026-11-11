@@ -15,8 +15,12 @@ for every colony, with looks that keep those rules (`shared/Climates.h`). Walls 
 vertices and lean away from the open ground beside them (`wallVertices`), so no lane or door
 loses a tile to a wall. Since revision 9 every Ridges wall is at least three vertices thick
 (`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
-draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
-no longer speckled with a second.
+draws its peaks only on tiles with four rock corners. Since revision 11 every Obstacles cliff, the
+borders between colonies included, is thickened the same way (`thickenRidges` with cliff rock),
+growing into grass and barren ground, a farm's edge and cap ring included, but never the trail, a
+farm's crossings or its water rows, so a border draws as one continuous mass rather than a string of
+blobs; the home's paved square keeps off the grass verge at a wall's foot, and the water is one
+plain water. Barren and fertile ground take one look each, no longer speckled with a second.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -29,8 +33,9 @@ stay unbuildable is rough ground.
 | Sea cliffs | Obstacles | Any coast of open sea (none at the defaults) | No beach to land on |
 | Trail | Paths | Every trail, from wall to wall | A quicker climb; the towers keep off its walkway |
 | Farms | Grass in the climate's farm look; crossings Paths, caps and plot rings Barren (`dressFarmSand`) | Every farm | Farm ground reads by climate; no sand stands in for a road or a ring |
-| Base | Barren, paved round the swarm | Every home, but a grass verge four vertices wide at the foot of its walls | Food grows on the farms, so the base is the climate's barren ground; the verge holds the quarry faces and the towers against the walls (a tile mixing grass and barren corners holds no building) |
-| Lava | Lava | The plateau's pond, in the volcanic climate | Volcanic maps show lava at their centre |
+| Base | Barren, paved round the swarm | Every home, but a grass verge four vertices wide at the foot of its walls, which the paved square also keeps off | Food grows on the farms, so the base is the climate's barren ground; the verge holds the quarry faces and the towers against the walls (a tile mixing grass and barren corners holds no building) |
+| Lava | Lava | The plateau's pond, in the volcanic climate, drawn in concentric rings (ember field at the rim, lava, a molten core) | Volcanic maps show lava at their centre |
+| Water | Water | The farms' rows and any open sea | One plain water, with no deep water |
 
 Every home has two quarry faces of 12 stone each at the mountain's foot either side of its trail's
 mouth: the mountains were its stone when they were built of it. Since revision 7's towers stand up the

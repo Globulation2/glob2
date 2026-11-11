@@ -304,12 +304,14 @@ A material opts in with a `decor` block:
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
 - Stone pillars and the Outcrops looks go further and keep clear of open-ground
-  masses (`"clear_of_masses"`, 0 or 1, object decor only; every built-in object
-  decor sets 1, so the corner-count rule above now matters only for custom
-  object decor). A cell draws none of that decor when a mass vertex lies
-  within that many vertices of its corners (0: its own corners), so spires and
-  pillars never crowd a cliff's rim, walls or terraces. One vertex is the
-  terrain a cell's fog check already covers. The cells still play as obstacles;
+  masses (`"clear_of_masses"`, 0 or 1, object decor only). A cell draws none of
+  that decor when a mass vertex lies within that many vertices of its corners
+  (0: its own corners), so spires and pillars never stand on a cliff's rim,
+  walls or terraces. Every built-in object decor sets 0: at 1 (until
+  2026-11-11) every cell within about two tiles of a mass stayed bare, a strip
+  of flat rock between the cliff and the spires; at 0 the spires run up to
+  the cliff's foot. One vertex is the terrain a cell's fog check already
+  covers. The cells still play as obstacles;
   they show only their ground, and the mass's rim draws in the cells it touches.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one

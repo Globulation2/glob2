@@ -55,7 +55,7 @@ using namespace MapGeneration;
 // staggered no straight road runs across the map. Crops regrow only near water and never beside sand,
 // so the windward streams decide where the fields are and the lee sand is a desert even though it is
 // walkable: an army on it is far from any inn. Sand also carries no building, so a forward base has to
-// wait for the next valley. Stone is no longer the ridge itself but the quarry faces cut into it: one
+// wait for the next valley. Stone is no longer the ridge itself but the quarry faces at its foot: one
 // behind every home, the same for every colony, and more along the ridges as `stone-amount` says.
 //
 // DESIGN 2.0 (2026-11-07, after Bajada 2.0). The ridges are Ridges-group rock drawn as tiles and
@@ -65,11 +65,12 @@ using namespace MapGeneration;
 // stretches), and design() thickens it half a tile at a time until a flood across every ridge with
 // the passes shut finds no way over. Two sketches: the mechanics (WATER, SAND, GRASS, LOAM, SCREE,
 // RIDGE_ROCK) that every shared helper and check reads, and looks painted over them with composeLooks
-// inside each vertex's rule group: a look-only `climate` (temperate, steppe, desert) grades the valley
-// grass lush by the water and dry away from it and the lee sand from plain at the scree to dunes and
-// wind-rippled crests downwind, and a look-only `lithology` picks granite, sandstone hoodoos or volcanic
+// inside each vertex's rule group, one per role: a look-only `climate` (temperate, steppe, desert) sets
+// how far from the water the valley grass is lush (plain grass beyond) and picks the map's one sand,
+// the seeps are spring meadow, and a look-only `lithology` picks granite, sandstone hoodoos or volcanic
 // outcrop with pumice talus. Home clearings, the ground round them and quarry approaches stay plain
-// GRASS, which the starting-crop guarantee and the stone rule need.
+// GRASS, which the starting-crop guarantee and the stone rule need, and which the valley's grass
+// beyond the lush banks matches.
 //
 // The quarry behind every home is found once in colony 0's frame and copied tile for tile: the warp
 // that sways the ridges fades to nothing across every home's valley (so the ridges run straight behind
@@ -150,8 +151,8 @@ constexpr double kLakeBand = 0.18, kLakeRadius = 5.0, kRiverHalfWidth = 1.0, kRi
 // The rock band is drawn this many tiles thicker than `ridge-thickness` (1.5 for the thinnest, whose
 // slanted stretches otherwise leak), and thickened by kRockCoreStep until no flood crosses it.
 constexpr double kRockCoreExtra = 1.0, kThinRockCoreExtra = 1.5, kRockCoreStep = 0.5, kRockCoreMost = 3.0;
-// Quarry faces: tiles of the rock within kQuarryHalf (Chebyshev) of the face point and kQuarryDepth
-// steps of the open side. A home's quarry must hold at least kHomeQuarryStone; ambient faces, half
+// Quarry faces: open ground at the rock's foot, within kQuarryHalf (Chebyshev) of the face point and
+// kQuarryDepth steps of the rock (since revision 9; they were cut into the rock before). A home's quarry must hold at least kHomeQuarryStone; ambient faces, half
 // as wide, stand one every kQuarryPitch tiles of ridge face at the default `stone-amount`. Passes
 // keep kQuarryPassClear tiles along the ridge from any quarry, and water three tiles (a beach is laid
 // a vertex out from water, and every corner of a quarry tile must stay grass).
@@ -168,18 +169,18 @@ constexpr int kLeeTalus = 1, kLeeTalusFray = 3, kMouthTalus = 3;
 constexpr int kTalusCut = 30000, kMouthTalusCut = 22000;
 
 // The looks of a climate, inside each vertex's rule group so every climate plays alike: how far from
-// water the valley grass stays lush and green, the share of the grass beyond that drying, and the
-// lee sand's grade from the scree to the dune crests.
+// water the valley grass is lush (plain beyond), and the one sand of the map (beaches, patches, roads
+// and the lee band alike).
 struct Climate
 {
 	const char *name;
-	int lushReach, greenReach, dryPercent;
-	TerrainType nearSand, dune, crest, patch, beach, seepWet, seepDry;
+	int lushReach;
+	TerrainType sand;
 };
 constexpr std::array<Climate, 3> kClimates{{
-	{"temperate", 3, 16, 35, SAND, DUNE_SAND, WINDY_SAND_DUNE, SAND, SAND, SPRING_MEADOW, MOSS},
-	{"steppe", 2, 8, 75, SAND, DUNE_SAND, WINDY_SAND_DUNE, DUNE_SAND, SAND, SPRING_MEADOW, LOAM},
-	{"desert", 2, 5, 100, PALE_SAND, DUNE_SAND, WINDY_SAND_DUNE, PALE_SAND, PALE_SAND, SPRING_MEADOW, LOAM},
+	{"temperate", 3, SAND},
+	{"steppe", 2, DUNE_SAND},
+	{"desert", 2, PALE_SAND},
 }};
 // What the ridges are made of: rock and its talus, looks only.
 struct Lithology
@@ -193,9 +194,9 @@ constexpr std::array<Lithology, 3> kLithologies{{
 	{"volcanic", OUTCROP, PUMICE},
 }};
 // The garden round every home that keeps plain grass (the starting-crop guarantee looks for it), as
-// tiles beyond the home clearing, frayed by up to kGardenFray more so it never reads as a lawn cut
-// round a compass point (a fray of 5 still read as a round green lawn on dry steppe).
-constexpr double kGarden = 2, kGardenFray = 12;
+// tiles beyond the home clearing. Plain grass is the valley's own grass, so the garden only shows
+// where it cuts into a lush bank.
+constexpr double kGarden = 2;
 
 struct Layout
 {
@@ -582,7 +583,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<unsigned char> lee(n, 0);
 		for (int i = 0; i < n; ++i)
 			lee[i] = !L.band[i] && !L.pass[i] && L.phase[i] < 32768;
-		const std::vector<int> face = quarryNear(t, L.band, lee, face0, kQuarryHalf, kQuarryDepth);
+		// The quarry lies at the rock's foot: open ground within kQuarryDepth steps of the rock round
+		// the face point, so the ridge stays whole (revisions 7-8 cut it into the rock, which read as
+		// a hole punched in the mountain).
+		const std::vector<int> face = quarryNear(t, lee, L.band, face0, kQuarryHalf, kQuarryDepth);
 		L.quarry.assign(n, 0);
 		L.quarryOf.assign(n, -1);
 		for (int k = 0; k < teams; ++k)
@@ -590,7 +594,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			{
 				const int i = t.at(t.remainderX(faceOf(k)) + t.offsetX(t.remainderX(face0), t.remainderX(q)),
 								   faceOf(k) / t.w + t.offsetY(face0 / t.w, q / t.w));
-				if (L.band[i])
+				if (!L.band[i] && !L.pass[i])
 				{
 					L.quarry[i] = 1;
 					L.quarryOf[i] = k;
@@ -751,7 +755,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			windOpen[i] = open && L.phase[i] >= 32768;
 		}
 		const std::vector<int> fromLee = stepsFrom(t, leeOpen), fromWind = stepsFrom(t, windOpen),
-							   fromWater = stepsFrom(t, L.water);
+							   fromWater = stepsFrom(t, L.water), fromBand = stepsFrom(t, L.band);
 		const std::vector<unsigned char> busy = dilate(t, [&]
 		{
 			std::vector<unsigned char> m(n, 0);
@@ -783,13 +787,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 										  std::abs(t.offsetY(c / t.w, other / t.w))) >= spacing;
 			if (!clear)
 				continue;
-			const std::vector<int> &from = fromLee[c] == 1 ? fromLee : fromWind;
+			// The face at the rock's foot on the side `c` faces: open ground of that side within
+			// kQuarryDepth steps of the rock.
+			const std::vector<unsigned char> &side = fromLee[c] == 1 ? leeOpen : windOpen;
 			std::vector<int> tiles;
 			for (int dy = -kAmbientQuarryHalf; dy <= kAmbientQuarryHalf && clear; ++dy)
 				for (int dx = -kAmbientQuarryHalf; dx <= kAmbientQuarryHalf && clear; ++dx)
 				{
 					const int i = t.at(t.remainderX(c) + dx, c / t.w + dy);
-					if (L.band[i] && !L.quarry[i] && from[i] >= 1 && from[i] <= kQuarryDepth)
+					if (side[i] && !L.quarry[i] && fromBand[i] >= 1 && fromBand[i] <= kQuarryDepth)
 					{
 						tiles.push_back(i);
 						clear = (fromWater[i] < 0 || fromWater[i] > kQuarryWaterClear) && !busy[i];
@@ -923,7 +929,6 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	// Sand patches over the valleys' grass (first play: "some inland desert or sporadic sand patches
 	// to break up the texture"): `sand-patches` percent of the grass at least three tiles from any
 	// water, in patches from a noise field, kept off the homes, the rock, the roads and the quarries.
-	std::vector<unsigned char> patched(n, 0);
 	{
 		std::vector<unsigned char> valley(n, 0);
 		const std::vector<unsigned char> nearQuarry = dilate(t, L.quarry, 2);
@@ -931,10 +936,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			valley[i] = !L.band[i] && !L.road[i] && !L.sand[i] && L.homeOf[i] < 0 && !L.pass[i] &&
 						!L.scree[i] && !L.seep[i] && !nearQuarry[i];
 		const std::vector<int> patches = periodicNoise(t.w, t.h, 14, context.stream("rain-patches"));
-		const TerrainSketch before = terrain;
 		sprinkleSand(terrain, t, valley, o.sandPatches / 100.0, 3, [&](int i) { return patches[i]; });
-		for (int i = 0; i < n; ++i)
-			patched[i] = terrain[i] == SAND && before[i] != SAND;
 	}
 	layBeaches(terrain, t);
 	// A beach never eats the rock: where the sway squeezes a stream or a river against a ridge, the
@@ -942,60 +944,38 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.rock[i])
 			terrain[i] = RIDGE_ROCK;
-	// The looks, inside each vertex's rule group so nothing plays differently: the climate's grass lush
-	// by the water and drying away from it, the lee sand plain at the scree, then dunes and wind-rippled
-	// crests downwind, seeps wet by the streams, and the lithology's rock and talus. The home clearings
-	// and a frayed garden round them stay plain grass, where the starting-crop guarantee looks for it,
-	// and so do the quarries' approaches.
+	// The looks, one per role and inside each vertex's rule group so nothing plays differently: the
+	// valley grass lush by the water and plain beyond it, the climate's one sand, the seeps spring
+	// meadow, and the lithology's rock and talus. The home clearings and a garden round them stay plain
+	// grass, where the starting-crop guarantee (run after these looks are written) looks for it, and so
+	// do the quarries' approaches.
 	{
 		std::vector<unsigned char> wet(n, 0);
 		for (int i = 0; i < n; ++i)
 			wet[i] = terrain[i] == WATER;
 		const std::vector<int> nearWater = stepsFrom(t, wet);
-		const std::vector<int> dry = fractalNoise(t.w, t.h, 32, 3, context.stream("rain-dry"));
-		const int dryCut = percentile(dry, L.climate.dryPercent);
-		const std::vector<int> crests = periodicNoise(t.w, t.h, 4, context.stream("rain-dunes"));
-		const std::vector<int> fray = fractalNoise(t.w, t.h, 16, 3, context.stream("rain-garden"));
+		const double gardenReach = L.homeRadius + kHomeMargin + kGarden;
 		const auto garden = [&](int i)
 		{
-			const double reach = L.homeRadius + kHomeMargin + kGarden + kGardenFray * fray[i] / 65536.0;
 			for (const ShapePoint &home : L.homes)
-				if (t.dist2(int(home.x), int(home.y), t.remainderX(i), i / t.w) <= reach * reach)
+				if (t.dist2(int(home.x), int(home.y), t.remainderX(i), i / t.w) <= gardenReach * gardenReach)
 					return true;
 			return false;
 		};
-		const int o2 = std::max(1, o.leeWidth);
 		TerrainSketch looks(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
 			switch (terrain[i])
 			{
 			case GRASS:
-				if (approach[i] || garden(i))
-					break;
-				if (nearWater[i] >= 0 && nearWater[i] <= L.climate.lushReach)
+				if (!approach[i] && !garden(i) && nearWater[i] >= 0 && nearWater[i] <= L.climate.lushReach)
 					looks[i] = LUSH_GRASS;
-				else if (nearWater[i] >= 0 && nearWater[i] <= L.climate.greenReach + 2 * fray[i] / 65536)
-					break;
-				else if (dry[i] <= dryCut)
-					looks[i] = DRY_GRASS;
 				break;
 			case SAND:
-				if (nearWater[i] >= 0 && nearWater[i] <= 1)
-					looks[i] = L.climate.beach;
-				else if (patched[i])
-					looks[i] = L.climate.patch;
-				else if (L.sand[i] && !L.road[i] && !passFloor[i] && L.shadow[i] >= 1)
-				{
-					// Downwind from the scree: plain sand, then dunes, then wind-rippled crests.
-					const int k = L.shadow[i];
-					looks[i] = k <= 2 ? L.climate.nearSand
-							   : (k > (o2 + 1) / 2 && crests[i] > 36000) ? L.climate.crest
-																		 : L.climate.dune;
-				}
+				looks[i] = L.climate.sand;
 				break;
 			case LOAM:
-				looks[i] = nearWater[i] >= 0 && nearWater[i] <= 2 ? L.climate.seepWet : L.climate.seepDry;
+				looks[i] = SPRING_MEADOW;
 				break;
 			case RIDGE_ROCK:
 				looks[i] = L.lithology.rock;
@@ -1113,7 +1093,10 @@ GeneratorDefinition rainShadowDefinition()
 		"rain-shadow",
 		27,
 		"Rain shadow",
-		7,
+		// Revision 8: one look per role (lush grass by the water and plain beyond, one sand per
+		// climate, spring-meadow seeps). Revision 9: quarry faces at the rock's foot, the ridges
+		// whole.
+		9,
 		false,
 		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three

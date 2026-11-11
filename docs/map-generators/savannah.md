@@ -26,7 +26,7 @@ those experiments in their header like any map that contains them.
 | Signature | Construction |
 | --- | --- |
 | Golden grass with lone and dead trees | Tall grass over the dry plain in noise-ranked sweeps, thinning to scrub; trees, small clumps and dead trees dotted on it |
-| Red earth | Every crop plot is sealed in dirt and clay instead of sand; dry patches become clay pans with shale |
+| Red earth | Every crop plot is sealed in clay instead of sand; dry patches become clay pans |
 | Kopjes | A ridge-rock core with stone on its flanks, skirted by scree |
 | Watering holes and game trails | Larger neutral ponds with a deep centre, a mud ring (maize holes) or sand bank (rice holes), fish in the shallows; brick paths from each home's approaches to the nearest hole |
 
@@ -89,8 +89,8 @@ operations explain their units; the evidence section records actual verification
   therefore a play constraint, even when static gathering paths say more wheat is
   reachable. Both plots fit the radius-23 reservation and leave the western approaches
   clear. The radius-two quarry sits 18 tiles east.
-- **Seals:** every plot is ringed by two corner rows of dirt (stretches of it clay, on
-  noise). Barren earth stops growth and inhibits the water probe exactly as sand did,
+- **Seals:** every plot is ringed by two corner rows of barren earth, drawn as clay like
+  every barren corner on the map. Barren earth stops growth and inhibits the water probe exactly as sand did,
   so the containment proof is unchanged, but a pure earth tile can carry a building.
   Kopje plots are sealed in scree instead.
 - **Algae:** one radius-one clump per 30 eligible pure-water tiles at 100%,
@@ -136,8 +136,8 @@ operations explain their units; the evidence section records actual verification
   (the Kopjes share), a potato patch (15%) or a grove. A grove is radius three, seven
   wood at 100%, finite when dry. A potato patch is radius 3.5, eight potatoes at 100%:
   potatoes regrow without water, so the sealed patch is renewable food on the dry plain.
-  A kopje is a radius-four stone plot sealed in scree with a radius-2.2 ridge-rock and
-  outcrop core over its centre: four stone at 100% on its flanks, impassable rock that
+  A kopje is a radius-four stone plot sealed in scree with a radius-2.2 ridge-rock
+  core over its centre: four stone at 100% on its flanks, impassable rock that
   towers shoot over.
 - **Lone trees and camp-sites:** shared dart throwing with spacing 12 proposes tree
   sites outside every reservation and plot; each is a tree, a clump of two or three, or
@@ -152,7 +152,7 @@ operations explain their units; the evidence section records actual verification
   until cleared.
 - **Dry patches:** periodic noise with cell period 14 makes coherent patches instead
   of speckles. `sprinkleSand` ranks eligible vertices and keeps three steps from water;
-  the patches then become clay with shale. Beaches are laid after all terrain
+  the patches then become clay. Beaches are laid after all terrain
   operations, and deep water after them. Plot eligibility is then trimmed to final
   pure-grass tiles; beaches and kopje cores may remove plot tiles, but starter floors
   are never reduced.

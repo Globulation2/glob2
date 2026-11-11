@@ -34,14 +34,15 @@ has terrain of its own.
 - **Moated keeps.** Every home is a keep: inside its cliff walls a moat `channel-width` tiles wide
   (2 by default; the control kept the original channel width's id) runs along every side but the
   back, with sand banks. The keep's fields line the moat's inner bank and a paved court surrounds the
-  swarm. One boardwalk bridge carries the road across the moat at the door. The moat leaves a verge at the back for the quarry, opening further
+  swarm; every other open tile of the keep is spring meadow (Fertile: buildable crop land that
+  waters the ground round it), since revision 18. One boardwalk bridge carries the road across the moat at the door. The moat leaves a verge at the back for the quarry, opening further
   forward on a warped or hexagonal cell until the verge has room.
 - **Water where the food should grow.** Junction cells (three ways or more) hold a fountain in a
   paved plaza. `gardens` (15% of the non-home cells by default) are garden cells with a pool at
   their centre. Every water body has a sand bank, so its algae regrows. Corridor and dead-end cells
   have loam beds along their walls' feet (Fertile ground, which waters itself and the ground round
-  it). A share of the remaining cells are paved temple courts, buildable and fast but infertile by
-  design: the only ground nothing grows on.
+  it). Revision 18 dropped the paved temple courts (a share of the cells paved wall to wall);
+  those cells are ordinary corridors and junctions now.
 - **Fair gardens.** Gardens are dealt so every home's nearest garden is the same number of cells
   away, two cells by preference (a short walk into the maze rather than a forecourt). Telemetry
   records each home's distance (`maze.garden.steps.min`/`max`), and `validateWorld` refuses a map
@@ -68,7 +69,8 @@ has terrain of its own.
   The amount controls scale the ambient layers, the treasure, the rubble and the algae; the home
   kits are unscaled.
 - **The look.** One fixed jungle-temple palette (not the shared climates): cliff walls, overgrown
-  road, brick-paved plazas, courts and keep courts, a boardwalk bridge, scree breaches, moss over much of the loam, and lush grass in the gardens, the keeps and near water,
+  road for every road, plaza and keep court (one paving since revision 18), a boardwalk bridge, scree breaches, spring meadow over
+  every keep, moss over much of the other loam, and lush grass in the gardens and near water,
   split by fractal noise. Looks are painted over canonical mechanics with `composeLooks`, so a look
   never changes a rule.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and checks:

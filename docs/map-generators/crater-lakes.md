@@ -7,9 +7,11 @@ an open land map where water shapes the paths and farmland rings every lake.
 
 Revision 6 (Crater Lakes 2.0) draws the same bowls with the engine's full terrain palette: dark
 middles in the bigger lakes, broken rims of rock round the bowls with quarry faces, a talus at the
-rock's foot, patches of dark soil on the outer flanks, heath or tundra on the dry uplands between
+rock's foot, patches of dark soil on the outer flanks, ash or tundra on the dry uplands between
 the craters, and a choice of volcanic maars or glacial kettles. Revision 5 drew everything from
-grass, sand and water.
+grass, sand and water. Revision 7 draws one look per kind of ground: revision 6 banded the grass
+lush and dry by its distance from water and split the inland sand and the uplands into two looks
+each, which made the field hard to read.
 
 ## How it plays
 
@@ -37,20 +39,20 @@ grass, sand and water.
   sand it does not hold crops back.
 - **Dark soil.** Grass on the outer flank, from the rim band's outer row to three tiles
   (straight-line, frayed) beyond it, is loam in patches: buildable crop land that waters the land round it at 48/256 of water. The home
-  garden, 12 tiles round a swarm (frayed outward), keeps plain grass, as do quarry faces and the
-  ring before them.
-- **Uplands.** Grass 22 steps or more and about 24 tiles (frayed) from any water is heath, tundra or ash where a noise
+  garden, 12 tiles round a swarm (frayed outward), stays grass (in the crater type's grass look),
+  as do quarry faces and the ring before them.
+- **Uplands.** Grass 22 steps or more and about 24 tiles (frayed) from any water is ash or tundra where a noise
   field passes: buildable, but it inhibits crop growth like sand, so it lies only beyond the water's
   reach.
-- **Looks only.** Lush grass on the inner slopes, dry grass on the high ground, beach and dune
-  artwork change nothing in play.
+- **Looks only.** The crater type picks one look for each kind of ground (grass, sand, deep water,
+  rock, talus, loam, upland), home gardens included; it changes nothing in play.
 
 ## Crater types
 
 | Type | Rims | Looks |
 | --- | --- | --- |
-| Volcanic maars | Dense and thick: rock runs of one to three sectors, gaps of one or two, a band six to ten tiles from the water | Ridge rock, pumice talus, loam, heath and ash uplands, plain beaches and dunes, deep blue water |
-| Glacial kettles | Sparse and thin: runs of one or two sectors, gaps of two to four, a band six to nine tiles from the water | Outcrops, scree talus, moss, tundra and heath uplands, pale beaches, dark water, more lush grass |
+| Volcanic maars | Dense and thick: rock runs of one to three sectors, gaps of one or two, a band six to ten tiles from the water | Ridge rock, pumice talus, loam, ash uplands, plain grass and sand, deep blue water |
+| Glacial kettles | Sparse and thin: runs of one or two sectors, gaps of two to four, a band six to nine tiles from the water | Outcrops, scree talus, moss, tundra uplands, lush grass, pale sand, dark water |
 
 Random (the default) picks one per map. The two play alike apart from how much rock the rims hold.
 
@@ -66,12 +68,12 @@ comments record why. Revision 5's stages run unchanged, then the crater pass:
 | Rims | Rim band tiles (every corner six to ten tiles from water in a straight line, six to nine for kettles; nearest one lake, not on a neck, 24 tiles from homes) cut into sectors of about seven tiles by angle round the lake's middle; runs of rock sectors and open ones per crater type; `blocksOfTwo` keeps the rock two tiles thick; quarry faces on the outer flank (`quarryNear`'s selection, worked out from one flood of the open ground); a parting check drops any arc that cuts ground off; `rockVertices`. |
 | Deep cores | Straight-line distance from land at least 4.5 tiles plus a frayed 1.5, specks under 12 vertices dropped; displaced algae to the nearest free pure shallows of the same lake. |
 | Talus, loam, uplands | Rough at the rock's inner foot (two steps to six tiles from water), loam patches on the outer flank (straight-line), barren uplands beyond the water's reach (22 steps and 24 tiles, frayed), none in the home garden. |
-| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, by crater type; quarry stone stocked, and generation refuses the map if any face tile is left without its stone. |
+| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, one per rule group by crater type; quarry stone stocked, and generation refuses the map if any face tile is left without its stone. |
 
 Every layer and choice is in telemetry (`crater-lakes.*`): the type, deep vertices, algae moved and
 lost, rim lakes, arcs and dropped arcs, rock vertices, cleared stone and crops, quarry faces wanted,
-placed and stocked, each colony's walk to its nearest face, talus, loam and upland vertices, and the
-look counts, with the swarm corners.
+placed and stocked, each colony's walk to its nearest face, talus, loam and upland vertices, with the
+swarm corners.
 
 ## Controls
 

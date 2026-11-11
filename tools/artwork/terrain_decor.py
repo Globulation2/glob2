@@ -1050,8 +1050,10 @@ CONNECTED = ("hedge", "thicket", "cliffs", "glacier") + MASS_SETS
 OPEN_EDGED = ("cliffs", "glacier") + MASS_SETS
 # Free-standing obstacles that keep clear of open-edged masses ("clear_of_masses"):
 # no spire or pillar is drawn on a cell with a mass vertex within this many
-# vertices of its corners, so the mass's rim and terraces read cleanly.
-CLEAR_OF_MASSES = {name: 1 for name in ("boulders", "ridge_rock", "outcrop", "penitentes",
+# vertices of its corners. 0 skips only cells with a mass corner of their own, so
+# spires run up to a cliff's foot; 1 (until 2026-11-11) left a bare strip two
+# tiles wide beside every mass.
+CLEAR_OF_MASSES = {name: 0 for name in ("boulders", "ridge_rock", "outcrop", "penitentes",
                                          "termite_mounds", "hoodoos", "petrified_stumps")}
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell

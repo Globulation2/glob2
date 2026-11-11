@@ -276,8 +276,10 @@ std::vector<unsigned char> wallVertices(const Torus &, const std::vector<unsigne
 /// round it that needs the fewest new vertices, all of which `canGrow` must allow (never a door,
 /// a lane, water or paving), preferring the block with the most rock round it. Returns the vertices
 /// added; `unresolved`, when given, counts the rock vertices no allowed block could complete.
+/// `rock` is the wall's terrain: RIDGE_ROCK by default, CLIFFS for an Obstacles wall, whose look
+/// likewise draws its rock only on tiles with four cliff corners.
 int thickenRidges(TerrainSketch &, const Torus &, const std::function<bool(int)> &canGrow,
-				  int *unresolved = nullptr);
+				  int *unresolved = nullptr, TerrainType rock = RIDGE_ROCK);
 /// Whether vertex i is a corner of some `tiles` tile.
 bool cornerOf(const Torus &, const std::vector<unsigned char> &tiles, int i);
 

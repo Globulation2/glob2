@@ -4,9 +4,8 @@
 range meets its basin, as in the Mojave or the Great Basin. Long rock ranges cross the map, each cut
 by a few passes. Below both faces of every range hangs a row of alluvial fans, each a spring at the
 range's foot and a tree of streams that splits as it runs downhill, green along its streams and dying
-out in pale washes. Grain size sorts down the slope: talus and coarse gravel at the foot of the
-range, varnished pavement over the middle of the bajada, clay towards the playa. In the middle of
-each basin lies the playa, a cracked hardpan pan with salt crust, shallow lakes and spring-fed
+out in sand washes, with talus at the foot of the range and desert pavement across the bajada. In the
+middle of each basin lies the playa, a hardpan pan with white salt flats, shallow lakes and spring-fed
 cienegas at its edge. Every colony's home is a fan of its own with its town on the fan's dry
 shoulder and a quarry face in the range above it.
 
@@ -52,7 +51,7 @@ of each rule group, which every shared helper and check reads) and paints looks 
 | Playa | Lakes with salt rims and meadows, the hardpan pan across the basin floor with salt crust patches, and cienegas at its edge. |
 | Homes stamped | Every home's footprint is erased and the stencil drawn over it, tile for tile, turned half a turn below the far face. |
 | Quarries and talus | Each home's quarry face is found in the stencil's columns, so every home's is the same; ambient faces along the ranges; a face tile is taken only where no water, beach or pass floor could reach its corners (ambient faces skipped that check and left unstocked holes in the rock); scree round the rock (`talusApron`). |
-| Terrain | Rock vertices only where all four tiles are rock, so the blocked region is exactly the drawn one and every quarry tile keeps four grass corners. Dune bands; pavement beyond the water's reach; looks by lithology and slope. |
+| Terrain | Rock vertices only where all four tiles are rock, so the blocked region is exactly the drawn one and every quarry tile keeps four grass corners. Dune bands; pavement beyond the water's reach. Looks, one per role: green ground lush within 9 steps of water, every other grass dry (the garden round each swarm and the towns stay plain grass, which the starting-crop guarantee reads after the looks are written); one dune sand, with the playa's salt flats pale; the lithology's rock, talus and one pavement. |
 | Resources | The stencil's crops, farmland on neutral fans, meadows and cienegas (`furnishGround`), outcrops and lone scrub on dry grass, fruit groves, algae, quarry stone. |
 
 ## Controls

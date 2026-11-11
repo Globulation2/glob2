@@ -438,7 +438,6 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	// scree skirt; the kopje control sets its share of features (Few 15%, Normal 25%, Many 40%).
 	const int kopjeShare[] = {15, 25, 40};
 	int groves = 0, kopjes = 0, potatoes = 0, proposedGroves = 0;
-	const auto rock = periodicNoise(t.w, t.h, 5, context.stream("savannah-kopje-rock"));
 	for (const Site &s : spreadPoints(t, 22, context, "savannah-grove-sites"))
 	{
 		++proposedGroves;
@@ -457,8 +456,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 				 "savannah-grove-outlines", SCREE);
 			const RadialShape core(2.2, 0.3, context, "savannah-kopje-cores");
 			forEachTileInShape(t, at.x, at.y, core, 0,
-							   [&](int i, double, double)
-							   { L.terrain[i] = rock[i] > 39000 ? OUTCROP : RIDGE_ROCK; });
+							   [&](int i, double, double) { L.terrain[i] = RIDGE_ROCK; });
 			++kopjes;
 		}
 		else if (roll < kopjeShare[o.kopjes] + 15)
@@ -501,14 +499,13 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		eligible[i] = !L.reserved[i];
 	// Period 14 gives patches several tiles across, not construction-destroying speckle. Dry
-	// patches are laid as sand and then turned to cracked clay pans with gravel.
+	// patches are laid as sand and then turned to clay pans.
 	const auto dry = periodicNoise(t.w, t.h, 14, context.stream("savannah-dry-patches"));
 	sprinkleSand(L.terrain, t, eligible, o.dryPatches / 100.0, 3, [&](int i) { return dry[i]; });
-	const auto earth = periodicNoise(t.w, t.h, 6, context.stream("savannah-earth"));
+	// One barren look, the red earth: the pans, and the plots' dirt seals (dirt until now only so the
+	// holes' banks, which may cover clay, never covered a seal), are all clay.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.terrain[i] == SAND && eligible[i])
-			L.terrain[i] = earth[i] > 42000 ? SHALE : CLAY;
-		else if (L.terrain[i] == DIRT && earth[i] > 36000)
+		if ((L.terrain[i] == SAND && eligible[i]) || L.terrain[i] == DIRT)
 			L.terrain[i] = CLAY;
 	layBeaches(L.terrain, t);
 	// Each watering hole's open water, three steps inside its shallows, is deep.
@@ -870,7 +867,8 @@ GeneratorDefinition savannahDefinition()
 	return {"savannah",
 			45,
 			"Savannah",
-			5,
+			// Revision 6: one look per role (clay seals and pans, ridge-rock kopjes).
+			6,
 			false,
 			{GeneratorControl::choice("watering-holes", "Watering holes",
 									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain)
