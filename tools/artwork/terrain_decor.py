@@ -2037,6 +2037,38 @@ def dome_shade(coverage, gain):
     return from_data(np.clip(0.5 + (gx * lx + gy * ly) / 255 * gain, 0.0, 1.0) * 255)
 
 
+# Contact shadows as (dx, dy, blur, strength) layers, thrown to the lower right.
+# A frame knows the footprint only HALO pixels past its cell, so every layer's
+# offset plus about two and a half blur radii stays within it: a longer throw
+# would need rock the frame cannot see, and the shadow would stop square at the
+# top and left of each cell beside a rim. The cliffs' longer throw is a darker
+# far layer rather than a farther one.
+CLIFF_SHADOW = ((2, 4, 1.5, 0.70), (6, 9, 2.5, 0.58), (10, 14, 3, 0.46))
+MASS_SHADOW = ((2, 4, 1.5, 0.62), (6, 8, 2.5, 0.50), (9, 12, 3, 0.38))
+SHADOW_PAD = 16               # room for the blur past the halo (edge rows repeated)
+
+
+def contact_shadow(coverage, mask, colour, layers):
+    """A mass's contact shadow over its cell, as an RGBA layer.
+
+    When neither bottom corner is the mass's, the cell below draws nothing
+    that could carry the shadow, so it continues into the frame's CLIFF_BELOW
+    rows rather than stopping square at the cell edge. Nothing of the mass
+    lies below such a cell, so that part is exact."""
+    below = 0 if mask & 0b1100 else CLIFF_BELOW
+    pad = SHADOW_PAD + below
+    source = Image.fromarray(np.pad(np.asarray(coverage), pad, mode="edge"))
+    shadow = None
+    for dx, dy, blur, strength in layers:
+        layer = shifted(source, dx, dy).filter(ImageFilter.GaussianBlur(blur)).point(
+            lambda v, k=strength: int(v * k))
+        shadow = layer if shadow is None else ImageChops.lighter(shadow, layer)
+    left = pad + HALO
+    out = Image.new("RGBA", (CELL, CELL + below), colour + (255,))
+    out.putalpha(shadow.crop((left, left, left + CELL, left + CELL + below)))
+    return out
+
+
 # Each facet band of the cliff face turns its own way to the light.
 FACET_TURNS = np.array([runtime_hash(level, 7, 0xface7) % 1000 / 1000 - 0.5 for level in range(CLIFF_FACETS + 1)])
 
@@ -2066,13 +2098,7 @@ def render_cliff(name, mask, colours, interior=0, foreign=0):
     own.paste(coverage.crop(cell), cell[:2])
 
     # A long contact shadow: the cliff is taller than any foliage.
-    shadow = ImageChops.lighter(ImageChops.lighter(
-        shifted(coverage, 2, 5).filter(ImageFilter.GaussianBlur(1.5)).point(lambda v: int(v * 0.70)),
-        shifted(coverage, 10, 13).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.55))),
-        shifted(coverage, 24, 30).filter(ImageFilter.GaussianBlur(8)).point(lambda v: int(v * 0.40)))
-    layer = Image.new("RGBA", (CELL, CELL), (*style["shadow"], 255))
-    layer.putalpha(shadow.crop(cell))
-    frame.alpha_composite(layer, (0, CLIFF_TOP))
+    frame.alpha_composite(contact_shadow(coverage, mask, style["shadow"], CLIFF_SHADOW), (0, CLIFF_TOP))
 
     # Wall: the face of this cell's footprint, up to its full height (see
     # wall_canvas), on a canvas padded `pad` rows at the top.
@@ -2306,14 +2332,7 @@ def render_mass(name, mask, colours, interior=0, foreign=0):
     own = Image.new("L", coverage.size)
     own.paste(coverage.crop(cell), cell[:2])
 
-    # Contact shadow, shifted less than the halo so it continues across cell edges.
-    shadow = ImageChops.lighter(ImageChops.lighter(
-        shifted(coverage, 2, 5).filter(ImageFilter.GaussianBlur(1.5)).point(lambda v: int(v * 0.62)),
-        shifted(coverage, 10, 13).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.50))),
-        shifted(coverage, 16, 20).filter(ImageFilter.GaussianBlur(5)).point(lambda v: int(v * 0.36)))
-    layer = Image.new("RGBA", (CELL, CELL), look["shadow"] + (255,))
-    layer.putalpha(shadow.crop(cell))
-    frame.alpha_composite(layer, (0, CLIFF_TOP))
+    frame.alpha_composite(contact_shadow(coverage, mask, look["shadow"], MASS_SHADOW), (0, CLIFF_TOP))
 
     # Wall: the face of this cell's footprint, as for cliffs (see wall_canvas).
     wall_alpha, wall_height, pad = wall_canvas(own, coverage, lift)
