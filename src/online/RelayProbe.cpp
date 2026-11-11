@@ -26,7 +26,7 @@ RelayProbe::RelayProbe(std::string origin, FetchStarter startFetch, std::functio
 	HttpFetch::Request request;
 	request.url = apiUrl(this->origin, Api::relayRegions());
 	request.headers.emplace_back("Accept", "application/json");
-	request.timeout = std::chrono::milliseconds(this->options.requestTimeoutMs * 2);
+	request.timeoutMilliseconds = this->options.requestTimeoutMs * 2;
 	request.responseLimit = 64 * 1024;
 	listing = this->startFetch(std::move(request));
 }
@@ -40,7 +40,7 @@ void RelayProbe::startAttempt(Target &target)
 {
 	HttpFetch::Request request;
 	request.url = target.region.probeUrl;
-	request.timeout = std::chrono::milliseconds(options.requestTimeoutMs);
+	request.timeoutMilliseconds = options.requestTimeoutMs;
 	request.responseLimit = 4096;
 	target.attempts++;
 	target.startedAt = now();

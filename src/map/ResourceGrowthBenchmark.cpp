@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HeadlessGlobals.h"
+#include <chrono>
 #include "Building.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "ProfileNeeds.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "ResourceGrowth.h"
 #include "gradient/GradientRuntime.h"
 #include <nlohmann/json.hpp>

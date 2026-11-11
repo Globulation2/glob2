@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "PlatformProtocol.h"
+#include <string>
+#include <string_view>
 
 namespace Online
 {
+struct ApiError;
 // Presentation only. The decoded raw code/message/details and the client/model
 // diagnostics stay unchanged. Bulgarian and Thai have reviewed resources.
 std::string presentApiError(const ApiError &error, std::string_view locale);

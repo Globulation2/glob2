@@ -282,7 +282,7 @@ std::unique_ptr<MapCache::Download> MapCache::fetch(const std::string &origin,
 	HttpFetch::Request request;
 	request.url = origin + blobPath(hash);
 	request.headers = std::move(headers);
-	request.timeout = std::chrono::milliseconds(120000);
+	request.timeoutMilliseconds = 120000;
 	// Gzip maps are far smaller than MAX_MAP_BYTES; raw ones may approach it.
 	request.responseLimit = MAX_MAP_BYTES;
 	auto started = startFetch ? startFetch(std::move(request)) : nullptr;

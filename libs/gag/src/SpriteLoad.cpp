@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SpriteLoad.h>
+#include <chrono>
 #include "GraphicContextPrivate.h"
 #include "SpriteHighResolution.h"
 #include <Toolkit.h>
@@ -227,7 +228,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     auto &loader = Toolkit::assets();
     auto advanceInputs = [&] {
         if (std::chrono::steady_clock::now() < deadline)
-            loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
+            loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()).count());
     };
     if (!impl->sources) {
         if (impl->discovery.pending()) { advanceInputs(); return false; }

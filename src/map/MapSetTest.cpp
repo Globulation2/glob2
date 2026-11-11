@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "TerrainBuiltins.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "DrawFixtures.h"
 #include "editor/BrushSwatches.h"
 #include "MapAssetBundle.h"

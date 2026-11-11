@@ -6,6 +6,7 @@
 #include "VoiceRecorder.h"
 #include <assert.h>
 #include <stdio.h>
+#include <valarray>
 #include "Order.h"
 #include "Utilities.h"
 

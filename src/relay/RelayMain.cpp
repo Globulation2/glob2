@@ -8,6 +8,7 @@
 #endif
 
 #include "HttpClient.h"
+#include <chrono>
 #include "JwksStore.h"
 #include "PlatformLink.h"
 #include "RelayConfig.h"

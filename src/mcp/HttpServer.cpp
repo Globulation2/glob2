@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HttpServer.h"
+#include <chrono>
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <SDL3_image/SDL_image.h>

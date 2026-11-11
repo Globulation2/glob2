@@ -860,7 +860,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             }
             // Polling remains interruptible by required publication/save/stop.
             const auto delay=std::chrono::microseconds(shared->status.pollMicros ? shared->status.pollMicros : 100);
-            if(required && required->controls[0])required->controls[0]->waitFor(delay);
+            if(required && required->controls[0])required->controls[0]->waitForMicroseconds(delay.count());
             else std::this_thread::sleep_for(delay);
 		}
 		// Failure unwinds only into batch's nonblocking proof/quarantine guard.
@@ -1381,6 +1381,10 @@ void releaseGradientDeviceBytes(std::size_t bytes) noexcept {globalDeviceBudget.
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
 std::size_t openCLHostBytes() noexcept {return hostBudget.current.load(std::memory_order_relaxed);}
+void OpenCLRequiredControl::waitForMicroseconds(std::int64_t duration) {
+    std::unique_lock lock(waitMutex);
+    changed.wait_for(lock,std::chrono::microseconds(duration),[&]{return canceled.load(std::memory_order_acquire);});
+}
 std::shared_ptr<OpenCLRequiredControl> makeOpenCLRequiredControl() noexcept {
     struct LeasedControl : OpenCLRequiredControl {
         BudgetLease lease{hostBudget};

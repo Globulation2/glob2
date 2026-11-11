@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "GameFixtures.h"
 #include "AreaEffects.h"
 #include "BuildingType.h"

@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include <valarray>
+#include <cstddef>
+#include <vector>
 
 namespace Utilities
 {
@@ -20,7 +21,7 @@ namespace Utilities
 	private:
 		static constexpr size_t BITS_PER_BYTE = 8;
 
-		std::valarray<unsigned char> values;
+		std::vector<unsigned char> values;
 		size_t bitLength;
 
 		//! Number of whole bytes needed to hold `v` bits, i.e. ceil(v/8).

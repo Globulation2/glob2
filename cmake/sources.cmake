@@ -920,6 +920,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/GUIStyle.cpp
     libs/gag/src/KeyPress.cpp
     libs/gag/src/Sprite.cpp
+    libs/gag/src/SteadyClock.cpp
     libs/gag/src/StreamBackend.cpp
     libs/gag/src/Stream.cpp
     libs/gag/src/StringTable.cpp

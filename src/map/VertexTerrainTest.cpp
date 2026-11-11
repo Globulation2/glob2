@@ -6,6 +6,7 @@
 #include "field/TerrainMovementCosts.h"
 #include "Map.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "BinaryStream.h"
 #include "TextStream.h"
 #include "StreamBackend.h"

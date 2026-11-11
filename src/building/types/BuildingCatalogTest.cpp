@@ -9,6 +9,7 @@
 #include "OnlineFakes.h"
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
+#include "GameGUI.h"
 #include "OnlineStorage.h"
 #include "SimVersion.h"
 #include "GameHeader.h"

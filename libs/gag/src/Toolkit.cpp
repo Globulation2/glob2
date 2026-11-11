@@ -99,7 +99,7 @@ namespace GAGCore
         };
         // Consume ready HD output before more reads/decodes can spend this
         // turn's whole budget and leave large prepared buffers accumulating.
-        Sprite::pollHighResolutionUntil(deadline);
+        Sprite::pollHighResolutionUntil(std::chrono::duration_cast<std::chrono::nanoseconds>(deadline.time_since_epoch()).count());
         for (auto it = loadingSprites.begin(); it != loadingSprites.end() && remaining().count();) {
             if (it->second->pollUntil(deadline)) {
                 auto sprite = it->second->take();
@@ -111,8 +111,8 @@ namespace GAGCore
         }
         // Sprite decoding can spend the whole turn; generic loads still get
         // a turn so their finalizers are published (AssetLoader::poll).
-        assets().poll(std::max(remaining(), std::chrono::milliseconds(1)));
-        const bool reloaded = Sprite::pollHighResolutionUntil(deadline);
+        assets().poll(std::max(remaining(), std::chrono::milliseconds(1)).count());
+        const bool reloaded = Sprite::pollHighResolutionUntil(std::chrono::duration_cast<std::chrono::nanoseconds>(deadline.time_since_epoch()).count());
         return loadingSprites.empty() && reloaded;
     }
     unsigned Toolkit::assetProgress()

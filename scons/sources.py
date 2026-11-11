@@ -876,6 +876,7 @@ GAG_SOURCES = (
     'GUIStyle.cpp',
     'KeyPress.cpp',
     'Sprite.cpp',
+    'SteadyClock.cpp',
     'StreamBackend.cpp',
     'Stream.cpp',
     'StringTable.cpp',
