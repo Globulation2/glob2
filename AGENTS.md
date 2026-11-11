@@ -102,16 +102,16 @@ failures as successful games.
 
 | Tier | Command | Use it for |
 | --- | --- | --- |
-| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja into `build/cmake/dev` on Linux, `--generator=scons` for SCons) | editing, tests, checksum and golden traces, save/replay checks |
-| perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols; always SCons, like the master baselines) | the first measurement of a performance change |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja on Linux) | editing, tests, checksum and golden traces, save/replay checks |
+| perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols) | the first measurement of a performance change |
 | perf-confirm | `python3 tools/dev_build.py perf=1 opt=3` | the number you quote in a performance PR |
-| release | `scons release=1` and the platform packaging workflow | shipping and package verification only |
+| release | `python3 tools/dev_build.py release=1` and the platform packaging workflow | shipping and package verification only |
 
 Never ship a dev or perf build, and never quote release measurements as PR
 evidence: perf builds exist so that every performance claim is reproducible from
 one command. Compare against the prebuilt master baseline
 (`tools/dev_baseline.py`, `tools/perf_ab.py --baseline master`) rather than a second
-worktree. Test tools take the newest build, `build/cmake/dev` included. Plain `scons` gives full debug information. `compile_profile=core` leaves most generators, three AIs
+worktree. Test tools take the newest build. `compile_profile=core` leaves most generators, three AIs
 and the editor out of focused dev builds ([core profile](docs/development/build-options.md#core-compile-profile));
 final PR verification always uses the default full profile. Simulation checksums must match between the dev and perf
 builds of one platform; do not bump the sim version to mask a build-induced

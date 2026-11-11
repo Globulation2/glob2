@@ -1,9 +1,8 @@
 """Locate native build outputs; GLOB2_BUILD_DIR selects a custom build identity.
 
-Without GLOB2_BUILD_DIR the newest native client build wins: the CMake + Ninja dev
-build that tools/dev_build.py produces by default (build/cmake/dev), its SCons dev
-builds (build/<toolchain>/client/debug/dev-*) or the release build
-(build/<toolchain>/client/release), judged by its binaries.
+Without GLOB2_BUILD_DIR the newest native client build wins: the dev builds
+tools/dev_build.py produces by default (build/<toolchain>/client/debug/dev-*) or
+the release build (build/<toolchain>/client/release), judged by its binaries.
 study_binary() also considers the optimized perf builds (dev_build.py perf=1),
 for map studies and sweeps that run thousands of generations.
 """
@@ -12,8 +11,6 @@ from pathlib import Path
 import platform
 
 ROOT = Path(__file__).resolve().parents[1]
-# The CMake dev preset's binary directory; an unoptimized build, like the SCons dev-*.
-CMAKE_DEV = ROOT / 'build/cmake/dev'
 EXECUTABLE = '.exe' if os.name == 'nt' else ''
 
 
@@ -32,7 +29,7 @@ def native_build_directory():
         return ROOT / os.environ['GLOB2_BUILD_DIR']
     toolchain = 'mingw' if os.name == 'nt' else platform.system().lower()
     release = ROOT / 'build' / toolchain / 'client/release'
-    candidates = [release, *sorted((ROOT / 'build' / toolchain / 'client/debug').glob('dev-*')), CMAKE_DEV]
+    candidates = [release, *sorted((ROOT / 'build' / toolchain / 'client/debug').glob('dev-*'))]
     built = [(time, path) for path in candidates if (time := _newest_output(path)) is not None]
     return max(built)[1] if built else release
 
@@ -45,11 +42,11 @@ def _client_builds():
     toolchain = 'mingw' if os.name == 'nt' else platform.system().lower()
     client = ROOT / 'build' / toolchain / 'client'
     return [client / 'release', client / 'perf', client / 'perf' / 'o3',
-            *sorted((client / 'debug').glob('dev-*')), CMAKE_DEV]
+            *sorted((client / 'debug').glob('dev-*'))]
 
 
 def _optimized(binary):
-    return 'debug' not in binary.parts and not binary.is_relative_to(CMAKE_DEV)
+    return 'debug' not in binary.parts
 
 
 def study_binary():

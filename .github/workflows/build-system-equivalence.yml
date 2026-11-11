@@ -1,11 +1,11 @@
 name: build-system equivalence
 
-# Builds the native Linux dev tier (glob2, both test binaries, the test programs
-# and the harnesses) with SCons and with the experimental CMake build, then
-# compares every compilation (tools/compare_build_systems.py). Any difference
-# in a compile command or in the set of compiled sources fails; object-hash
-# differences are summarised without failing until parity is exact. See
-# "Experimental CMake build" in docs/development/build-options.md.
+# Builds each native Linux tier (glob2, the test binaries, the test programs and
+# the harnesses; the relay for the relay tier) with SCons and with CMake, then
+# compares every compilation (tools/compare_build_systems.py --tier). Any
+# difference in a compile command or in the set of compiled sources fails;
+# object-hash differences are summarised without failing. See "Parity with
+# SCons" in docs/development/build-options.md.
 on:
   push:
     branches: [master]
@@ -34,9 +34,13 @@ env:
 
 jobs:
   build-system-equivalence:
-    name: build-system-equivalence
+    name: build-system-equivalence (${{ matrix.tier }})
     runs-on: ubuntu-24.04
     timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        tier: [dev, perf, release, relay]
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache
@@ -79,26 +83,26 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-equivalence-ubuntu-24.04-gcc13-${{ github.sha }}
-          restore-keys: ccache-equivalence-ubuntu-24.04-gcc13-
+          key: ccache-equivalence-${{ matrix.tier }}-ubuntu-24.04-gcc13-${{ github.sha }}
+          restore-keys: ccache-equivalence-${{ matrix.tier }}-ubuntu-24.04-gcc13-
       - name: Build with both systems and compare
         id: compare
         run: |
           ccache -z
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           export GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix"
-          python3 tools/compare_build_systems.py --jobs 4 --json artifacts/build-system-equivalence.json \
-            --summary "$GITHUB_STEP_SUMMARY"
+          python3 tools/compare_build_systems.py --tier ${{ matrix.tier }} --jobs 4 \
+            --json artifacts/build-system-equivalence-${{ matrix.tier }}.json --summary "$GITHUB_STEP_SUMMARY"
           ccache -s
       - name: Save the compiler cache
         if: ${{ !cancelled() && steps.compare.outcome != 'skipped' && github.event_name == 'push' }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-equivalence-ubuntu-24.04-gcc13-${{ github.sha }}
+          key: ccache-equivalence-${{ matrix.tier }}-ubuntu-24.04-gcc13-${{ github.sha }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: build-system-equivalence
-          path: artifacts/build-system-equivalence.json
+          name: build-system-equivalence-${{ matrix.tier }}
+          path: artifacts/build-system-equivalence-${{ matrix.tier }}.json
           retention-days: 14

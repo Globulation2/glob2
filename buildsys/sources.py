@@ -819,6 +819,9 @@ RELAY_GAG_SOURCES = (
     'Stream.cpp',
     'StreamBackend.cpp',
 )
+# The relay's entry point and the sources of glob2-relay-tests beside the relay objects.
+RELAY_MAIN_SOURCE = 'relay/RelayMain.cpp'
+RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'relay/RelayAdmissionTest.cpp')
 
 GAG_SOURCES = (
     'AssetLoader.cpp',

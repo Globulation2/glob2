@@ -87,9 +87,8 @@ runtime assets. See [asset loading](../docs/development/package-size.md#release-
 for worker controls, scratch accounting and measurement limits.
 
 Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native build:
-the SCons `tools/dev_build.py` output or `build/<platform>/client/release`. It
-does not yet consider `build/cmake/dev`, where `tools/dev_build.py` builds by
-default on Linux, so name that directory explicitly. The default
+a `tools/dev_build.py` dev build (`build/<platform>/client/debug/dev-*`) or
+`build/<platform>/client/release`. The default
 tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
 about a quarter of the full inventory's time; `--tier display` adds display cases
 (`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs, not

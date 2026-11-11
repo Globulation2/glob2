@@ -60,13 +60,22 @@ def content():
         _list('GLOB2_USL_SOURCES', ['libs/usl/src/' + name for name in sources.USL_SOURCES],
               'buildsys/sources.py USL_SOURCES.'),
         _list('GLOB2_RELAY_SOURCES', ['src/' + name for name in sources.RELAY_SOURCES],
-              'buildsys/sources.py RELAY_SOURCES (not built by CMake yet).'),
+              'buildsys/sources.py RELAY_SOURCES.'),
         _list('GLOB2_RELAY_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.RELAY_GAG_SOURCES],
-              'buildsys/sources.py RELAY_GAG_SOURCES (not built by CMake yet).'),
+              'buildsys/sources.py RELAY_GAG_SOURCES.'),
+        'set(GLOB2_RELAY_MAIN_SOURCE src/' + sources.RELAY_MAIN_SOURCE + ')\n',
+        _list('GLOB2_RELAY_TEST_SOURCES', ['src/' + name for name in sources.RELAY_TEST_SOURCES],
+              'buildsys/sources.py RELAY_TEST_SOURCES: glob2-relay-tests beside the relay objects.'),
         _list('GLOB2_MAP_SOURCES', ['src/' + name for name in sources.MAP_SOURCES],
               'buildsys/sources.py MAP_SOURCES: the glob2_map module library.'),
         _list('GLOB2_SIM_SOURCES', ['src/' + name for name in sources.SIM_SOURCES],
               'buildsys/sources.py SIM_SOURCES: the glob2_sim module library.'),
+        _list('GLOB2_OPTIONAL_GROUPS', list(sources.OPTIONAL_SOURCES),
+              'buildsys/sources.py OPTIONAL_SOURCES: the groups compile_profile=core leaves out.'),
+        _list('GLOB2_CORE_EXCLUDED_SOURCES',
+              ['src/' + name for name in sources.CLIENT_SOURCES
+               if name not in sources.profile_sources('core')],
+              'Client sources in an optional group, which compile_profile=core does not build.'),
         _list('GLOB2_INCLUDE_DIRECTORIES', sources.INCLUDE_DIRECTORIES,
               'buildsys/sources.py INCLUDE_DIRECTORIES, in search order.'),
         _list('GLOB2_JAVASCRIPT_SOURCES',
@@ -182,7 +191,8 @@ def tests_content():
                       f'set({prefix}_LINK {kind})\n'
                       f'set({prefix}_CXXFLAGS {" ".join(program.cxxflags)})\n'
                       f'set({prefix}_SHARED {" ".join(program.shared)})\n'
-                      f'set({prefix}_REQUIRE {program.require or ""})\n')
+                      f'set({prefix}_REQUIRE {program.require or ""})\n'
+                      f'set({prefix}_PROFILE {program.profile or ""})\n')
         if kind == 'sources':
             blocks.append(_list(prefix + '_LINK_SOURCES', ['src/' + name for name in program.link],
                                 'Client sources whose objects the program links.'))

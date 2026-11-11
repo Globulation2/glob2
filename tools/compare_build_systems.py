@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Compare the SCons and CMake native Linux development builds.
+"""Compare the SCons and CMake native Linux builds of one tier.
 
 Builds glob2, the four test binaries, the test/tests.py programs and the
 buildsys/harness_programs.py harnesses with both build systems into separate
-parity directories (SCons through tools/dev_build.py, CMake through the dev
-preset), each with the same extra -ffile-prefix-map so objects do not embed the
-checkout path, then reports:
+parity directories (build/parity/<tier>/{scons,cmake}; SCons through
+tools/dev_build.py, CMake through the tier's preset), each with the same extra
+-ffile-prefix-map so objects do not embed the checkout path, then reports:
 
 1. per compilation, the compile flags of both compile_commands.json files: the
    -I search order (first occurrence of each directory) and the multiset of
@@ -18,6 +18,7 @@ checkout path, then reports:
    stripped.
 
     python3 tools/compare_build_systems.py               # build both, then compare
+    python3 tools/compare_build_systems.py --tier perf   # the perf=1 tier (dev, core, perf, perf-o3, release)
     python3 tools/compare_build_systems.py --no-build    # compare existing parity builds
     python3 tools/compare_build_systems.py --glob2-only  # only glob2 (the stage 1-2 scope)
     python3 tools/compare_build_systems.py --json report.json --summary summary.md
@@ -40,8 +41,26 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-SCONS_DIRECTORY = ROOT / 'build/parity/scons'
-CMAKE_DIRECTORY = ROOT / 'build/parity/cmake'
+# Each tier's SCons arguments (with the tools/dev_build.py defaults it should not
+# add spelled out) and the CMake preset that builds the same identity.
+TIERS = {
+    'dev': ([], 'dev'),
+    'core': (['compile_profile=core'], 'core'),
+    'perf': (['perf=1'], 'perf'),
+    'perf-o3': (['perf=1', 'opt=3'], 'perf-o3'),
+    'release': (['release=1', 'dev_fast=0', 'linker=default'], 'release'),
+    'relay': (['role=relay', 'release=1', 'dev_fast=0', 'linker=default'], 'relay'),
+}
+SCONS_DIRECTORY = ROOT / 'build/parity/dev/scons'
+CMAKE_DIRECTORY = ROOT / 'build/parity/dev/cmake'
+TIER = 'dev'
+
+
+def select_tier(tier):
+    global SCONS_DIRECTORY, CMAKE_DIRECTORY, TIER
+    TIER = tier
+    SCONS_DIRECTORY = ROOT / 'build/parity' / tier / 'scons'
+    CMAKE_DIRECTORY = ROOT / 'build/parity' / tier / 'cmake'
 # Maps the checkout away in both builds. With "<root>/=" rather than "<root>=.",
 # the absolute source paths CMake passes and the relative ones SCons passes give
 # the same __FILE__ text.
@@ -79,12 +98,18 @@ def build_scons(jobs, everything):
     # CC/CXX carry the extra flag so it reaches C and C++ objects alike; SCons'
     # ccache wrapping and every other flag stay as tools/dev_build.py sets them.
     command = [sys.executable, 'tools/dev_build.py', '--generator=scons', '--build=' + str(SCONS_DIRECTORY.relative_to(ROOT)),
+               *TIERS[TIER][0],
                'CC=' + os.environ.get('CC', 'gcc') + ' ' + PREFIX_MAP,
                'CXX=' + os.environ.get('CXX', 'g++') + ' ' + PREFIX_MAP]
     if jobs:
         command.append('-j' + str(jobs))
     targets = [str(SCONS_DIRECTORY.relative_to(ROOT) / 'src/glob2')]
-    if everything:
+    if TIER == 'relay':
+        targets = ['relay']
+    elif TIER == 'core' and everything:
+        # compile_profile=core leaves out the harnesses of the optional groups.
+        targets += ['tests']
+    elif everything:
         targets += programs()[0]
     run(command + targets + [str(SCONS_DIRECTORY.relative_to(ROOT) / 'compile_commands.json')])
 
@@ -94,9 +119,14 @@ def build_cmake(jobs, everything):
     # source paths relative to the build directory (__FILE__ becomes
     # "../../../src/..."), which no prefix map can match to SCons' root-relative
     # paths. Without it, hits need the same checkout path, as on CI runners.
-    run(['cmake', '--preset', 'dev', '-B', str(CMAKE_DIRECTORY), '-DGLOB2_CCACHE_BASEDIR=',
+    run(['cmake', '--preset', TIERS[TIER][1], '-B', str(CMAKE_DIRECTORY), '-DGLOB2_CCACHE_BASEDIR=',
          '-DGLOB2_EXTRA_COMPILE_FLAGS=' + PREFIX_MAP])
-    targets = ['glob2'] + (programs()[1] if everything else [])
+    if TIER == 'relay':
+        targets = ['relay']
+    elif TIER == 'core':
+        targets = ['glob2'] + (['tests'] if everything else [])
+    else:
+        targets = ['glob2'] + (programs()[1] if everything else [])
     run(['cmake', '--build', str(CMAKE_DIRECTORY), '--target', *targets, '--', '-j' + str(jobs or 8)])
 
 
@@ -258,7 +288,7 @@ def markdown(report):
     """A GitHub step summary: failures first, object parity as information."""
     failed = report['flag_differences'] or report['only_scons'] or report['only_cmake']
     objects = report['objects']
-    lines = ['## Build-system equivalence (SCons vs CMake)', '',
+    lines = [f'## Build-system equivalence (SCons vs CMake, {TIER} tier)', '',
              ('**Failed:** compile commands differ.' if failed else 'Compile commands match.'), '',
              '| Check | Result |', '| --- | --- |',
              f"| Compilations compared | {report['compilations']} |",
@@ -298,6 +328,7 @@ def time_noop(jobs):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--no-build', action='store_true', help='compare the existing parity builds')
+    parser.add_argument('--tier', choices=sorted(TIERS), default='dev', help='the build tier to compare (default: dev)')
     parser.add_argument('--glob2-only', action='store_true',
                         help='build only glob2, not the test binaries, test programs and harnesses')
     parser.add_argument('--jobs', type=int, default=8, help='parallel compile jobs for each build')
@@ -306,6 +337,7 @@ def main():
     parser.add_argument('--time-noop', action='store_true',
                         help='also time a no-change rebuild of both ordinary development builds')
     args = parser.parse_args()
+    select_tier(args.tier)
     if not args.no_build:
         build_scons(args.jobs, not args.glob2_only)
         build_cmake(args.jobs, not args.glob2_only)

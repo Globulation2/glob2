@@ -959,7 +959,7 @@ set(GLOB2_USL_SOURCES
     libs/usl/src/usl.cpp
 )
 
-# buildsys/sources.py RELAY_SOURCES (not built by CMake yet).
+# buildsys/sources.py RELAY_SOURCES.
 set(GLOB2_RELAY_SOURCES
     src/relay/HttpClient.cpp
     src/relay/JwksStore.cpp
@@ -977,12 +977,21 @@ set(GLOB2_RELAY_SOURCES
     src/net/turn/TurnTelemetry.cpp
 )
 
-# buildsys/sources.py RELAY_GAG_SOURCES (not built by CMake yet).
+# buildsys/sources.py RELAY_GAG_SOURCES.
 set(GLOB2_RELAY_GAG_SOURCES
     libs/gag/src/BinaryStream.cpp
     libs/gag/src/Sha1.cpp
     libs/gag/src/Stream.cpp
     libs/gag/src/StreamBackend.cpp
+)
+
+set(GLOB2_RELAY_MAIN_SOURCE src/relay/RelayMain.cpp)
+
+# buildsys/sources.py RELAY_TEST_SOURCES: glob2-relay-tests beside the relay objects.
+set(GLOB2_RELAY_TEST_SOURCES
+    src/relay/RelayTestMain.cpp
+    src/relay/RelayTicketTest.cpp
+    src/relay/RelayAdmissionTest.cpp
 )
 
 # buildsys/sources.py MAP_SOURCES: the glob2_map module library.
@@ -1261,6 +1270,150 @@ set(GLOB2_SIM_SOURCES
     src/unit/types/UnitType.cpp
     src/team/stats/WinProbability.cpp
     src/game/WinningConditions.cpp
+)
+
+# buildsys/sources.py OPTIONAL_SOURCES: the groups compile_profile=core leaves out.
+set(GLOB2_OPTIONAL_GROUPS
+    generators
+    editor
+    ai:castor
+    ai:cortex
+    ai:cabino
+)
+
+# Client sources in an optional group, which compile_profile=core does not build.
+set(GLOB2_CORE_EXCLUDED_SOURCES
+    src/ai/castor/Control.cpp
+    src/ai/castor/GetOrder.cpp
+    src/ai/castor/Lifecycle.cpp
+    src/ai/castor/Maps.cpp
+    src/ai/castor/Placement.cpp
+    src/ai/castor/Projects.cpp
+    src/ai/castor/State.cpp
+    src/ai/castor/Telemetry.cpp
+    src/ai/simple/AICabino.cpp
+    src/ai/simple/AICabinoTelemetry.cpp
+    src/ai/cortex/CortexSnapshotQueries.cpp
+    src/ai/cortex/CortexObservation.cpp
+    src/ai/cortex/CortexObservationObserve.cpp
+    src/ai/cortex/CortexPlacement.cpp
+    src/ai/cortex/CortexPlacementCandidates.cpp
+    src/ai/cortex/CortexPlacementGeo.cpp
+    src/ai/cortex/CortexPolicy.cpp
+    src/ai/cortex/CortexPolicyEconomy.cpp
+    src/ai/cortex/CortexPolicyTech.cpp
+    src/ai/cortex/CortexPolicyCombat.cpp
+    src/ai/cortex/CortexTuning.cpp
+    src/ai/cortex/CortexFoodSources.cpp
+    src/ai/cortex/CortexWater.cpp
+    src/ai/cortex/CortexNet.cpp
+    src/ai/cortex/AICortex.cpp
+    src/ai/cortex/AICortexFlags.cpp
+    src/ai/cortex/AICortexTranslate.cpp
+    src/ai/cortex/AICortexDebug.cpp
+    src/ai/cortex/CortexWheatDump.cpp
+    src/ai/cortex/CortexTelemetry.cpp
+    src/map/editor/screens/EditorMainMenu.cpp
+    src/map/editor/PhoneEditor.cpp
+    src/map/editor/PhoneEditorView.cpp
+    src/map/editor/PhoneEditorTray.cpp
+    src/map/editor/PhoneEditorInspection.cpp
+    src/map/editor/SetLibraryDialog.cpp
+    src/map/generator/generators/CityStatesGenerator.cpp
+    src/map/generator/generators/ConcreteIslandsGenerator.cpp
+    src/map/generator/generators/ContestedCommonsGenerator.cpp
+    src/map/generator/generators/MazeGenerator.cpp
+    src/map/generator/generators/CraterLakesGenerator.cpp
+    src/map/generator/generators/EvergladesGenerator.cpp
+    src/map/generator/generators/FjordContinentGenerator.cpp
+    src/map/generator/generators/IslandsGenerator.cpp
+    src/map/generator/generators/IslesGenerator.cpp
+    src/map/generator/generators/RingWorldGenerator.cpp
+    src/map/generator/generators/RiverGenerator.cpp
+    src/map/generator/generators/RuggedArchipelagoGenerator.cpp
+    src/map/generator/generators/ShatteredCoastGenerator.cpp
+    src/map/generator/generators/StoneHighlandsGenerator.cpp
+    src/map/generator/generators/SpiderWebGenerator.cpp
+    src/map/generator/generators/CoralGenerator.cpp
+    src/map/generator/generators/AmphitheatreGenerator.cpp
+    src/map/generator/generators/CarouselGenerator.cpp
+    src/map/generator/generators/SwitchbacksGenerator.cpp
+    src/map/generator/generators/SwampGenerator.cpp
+    src/map/generator/generators/SymmetricArenaGenerator.cpp
+    src/map/generator/generators/TidalFlatsGenerator.cpp
+    src/map/generator/generators/WatershedGenerator.cpp
+    src/map/generator/generators/LastTreelineGenerator.cpp
+    src/map/generator/generators/BastionKeysGenerator.cpp
+    src/map/generator/generators/DrownedForestGenerator.cpp
+    src/map/generator/generators/WhoAteTheMapGenerator.cpp
+    src/map/generator/generators/HungryMarchesGenerator.cpp
+    src/map/generator/generators/CombGenerator.cpp
+    src/map/generator/generators/MarchlandGenerator.cpp
+    src/map/generator/generators/EncircledKingdomGenerator.cpp
+    src/map/generator/generators/OrchardCommonsGenerator.cpp
+    src/map/generator/generators/GauntletGenerator.cpp
+    src/map/generator/generators/FaultedCityGenerator.cpp
+    src/map/generator/generators/HiddenOasisGenerator.cpp
+    src/map/generator/generators/PortageLakesGenerator.cpp
+    src/map/generator/generators/CentralQuarryGenerator.cpp
+    src/map/generator/generators/BajadaGenerator.cpp
+    src/map/generator/generators/KarstTowersGenerator.cpp
+    src/map/generator/generators/HoneycombIsleGenerator.cpp
+    src/map/generator/generators/EmojiGenerator.cpp
+    src/map/generator/generators/BraidedRiverGenerator.cpp
+    src/map/generator/generators/BraidedDeltaGenerator.cpp
+    src/map/generator/generators/BreachableHighlandsGenerator.cpp
+    src/map/generator/generators/HedgerowCountryGenerator.cpp
+    src/map/generator/generators/DrumlinFieldGenerator.cpp
+    src/map/generator/generators/ContinentsGenerator.cpp
+    src/map/generator/generators/SavannahGenerator.cpp
+    src/map/generator/generators/RiceTerracesGenerator.cpp
+    src/map/generator/generators/LocustGenerator.cpp
+    src/map/generator/generators/PlantationsGenerator.cpp
+    src/map/generator/generators/HilbertRiverGenerator.cpp
+    src/map/generator/generators/FractalMapSupport.cpp
+    src/map/generator/generators/SierpinskiGardensGenerator.cpp
+    src/map/generator/generators/AnthillGenerator.cpp
+    src/map/generator/generators/OldTownGenerator.cpp
+    src/map/generator/generators/PolderGenerator.cpp
+    src/map/generator/generators/CanalsGenerator.cpp
+    src/map/generator/generators/OldGrowthGenerator.cpp
+    src/map/generator/generators/RainShadowGenerator.cpp
+    src/map/generator/generators/FingerprintGenerator.cpp
+    src/map/generator/generators/GlacisGenerator.cpp
+    src/map/generator/generators/AllotmentsGenerator.cpp
+    src/map/generator/generators/CaravanseraiGenerator.cpp
+    src/map/editor/Widgets.cpp
+    src/map/editor/WidgetsTools.cpp
+    src/map/editor/WidgetsUnit.cpp
+    src/map/editor/WidgetsBuilding.cpp
+    src/map/editor/MapEditCtor.cpp
+    src/map/editor/MapEditIO.cpp
+    src/map/editor/MapEditDraw.cpp
+    src/map/editor/MapEditEvents.cpp
+    src/map/editor/MapEditAction.cpp
+    src/map/editor/MapEditActionView.cpp
+    src/map/editor/MapEditActionTerrain.cpp
+    src/map/editor/MapEditActionUnit.cpp
+    src/map/editor/MapEditActionBuilding.cpp
+    src/map/editor/MapEditDelegate.cpp
+    src/map/editor/MapEditClicks.cpp
+    src/map/editor/MapEditTerrainPaint.cpp
+    src/map/editor/MapEditDialog.cpp
+    src/map/editor/EditorDialogs.cpp
+    src/map/editor/MapEditFlows.cpp
+    src/map/editor/MapEditBrushes.cpp
+    src/map/editor/BrushCatalog.cpp
+    src/map/editor/EditorDock.cpp
+    src/map/editor/EditorDockTerrain.cpp
+    src/map/editor/EditorDockObjects.cpp
+    src/map/editor/MapEditDock.cpp
+    src/map/editor/MapEditInspector.cpp
+    src/map/editor/MapEditPresentation.cpp
+    src/map/editor/screens/NewMapScreen.cpp
+    src/map/editor/screens/MapEditorScreen.cpp
+    src/map/editor/screens/EditorLoadScreen.cpp
+    src/map/editor/screens/EditorGenerateScreen.cpp
 )
 
 # buildsys/sources.py INCLUDE_DIRECTORIES, in search order.

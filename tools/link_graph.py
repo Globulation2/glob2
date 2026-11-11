@@ -69,8 +69,40 @@ def default_build_dir():
     return native_build_directory()
 
 
+def cmake_objects(build_dir, include_tests):
+    """(node name, path) of a CMake build's objects, named as the SCons layout names them:
+    client objects by their path under src/ ('map/Map.o'), test objects under 'test/'."""
+    found = []
+    for directory in sorted((build_dir / 'CMakeFiles').glob('*.dir')):
+        target = directory.name[:-len('.dir')]
+        test = target.startswith(('glob2_engine_tests', 'glob2_unit_tests', 'glob2_map_tests',
+                                  'glob2_sim_tests', 'glob2_test_production'))
+        if target not in ('glob2_client', 'glob2') and not (include_tests and test):
+            continue
+        for path in sorted(directory.rglob('*.o')):
+            name = path.relative_to(directory).as_posix()
+            name = name[:-len('.cpp.o')] + '.o' if name.endswith('.cpp.o') else name
+            name = name[len('src/'):] if name.startswith('src/') else name
+            found.append(('test/' + name if test else name, path))
+    return found
+
+
 def collect(build_dir, include_tests=False):
     """Nodes for every client object and the libgag/libusl archive members."""
+    if (build_dir / 'CMakeFiles').is_dir():
+        objects = cmake_objects(build_dir, include_tests)
+        archives = [build_dir / name for name in ('libgag.a', 'libusl.a', 'libGlob2JavaScript.a')
+                    if (build_dir / name).exists()]
+        paths = [path for _, path in objects] + archives
+        names = [name for name, _ in objects] + [None] * len(archives)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+            tables = list(pool.map(nm_symbols, paths))
+        nodes = {}
+        for path, name, members in zip(paths, names, tables):
+            for member, table in members.items():
+                member = member.replace('.cpp.o', '.o').replace('.c.o', '.o') if member else member
+                nodes[f'{path.name}({member})' if member else name] = table
+        return nodes
     paths = sorted(p for p in (build_dir / 'src').rglob('*.o'))
     paths += sorted((build_dir / 'libs').rglob('*.a'))
     paths += sorted((build_dir / 'third_party').rglob('*.o'))

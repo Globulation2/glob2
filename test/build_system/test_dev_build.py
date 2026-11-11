@@ -89,15 +89,36 @@ class DevelopmentBuildTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
-        with patch.object(command, 'CMAKE_DIRECTORY', Path(tempfile.mkdtemp())):
-            configure, build = command.cmake_commands(['.', 'glob2', '-j12', '-k'])
-            self.assertEqual(configure, ['cmake', '--preset', 'dev'])
-            self.assertEqual(build, ['cmake', '--build', '--preset', 'dev', '--target', 'glob2', 'tests',
-                                     '--', '-j12', '-k', '0'])
-            self.assertEqual(command.cmake_commands([])[-1][-2:], ['--', '-j8'])
-            for unsupported in ('perf=1', '--build=x', '-n'):
-                with self.assertRaises(SystemExit):
-                    command.cmake_commands([unsupported])
+        directory = Path(tempfile.mkdtemp())
+        configure, build = command.cmake_commands(['--build=' + str(directory), '.', 'glob2', '-j12', '-k'])
+        self.assertEqual(configure[:4], ['cmake', '-S', str(ROOT), '-B'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=dev_fast=1 linker=auto', configure)
+        self.assertEqual(build, ['cmake', '--build', str(directory), '--target', 'glob2', 'tests',
+                                 '--', '-j12', '-k', '0'])
+        self.assertEqual(command.cmake_commands(['--build=' + str(directory)])[-1][-2:], ['--', '-j8'])
+        # Each tier configures its own default directory, with no development defaults.
+        perf = command.cmake_commands(['perf=1', 'opt=3', 'engine-tests'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=perf=1 opt=3', perf[0])
+        self.assertEqual(perf[-1][2], str(ROOT / 'build/linux/client/perf/o3'))
+        release = command.cmake_commands(['release=1', 'CXXFLAGS=-g -O1', 'build/linux/client/release/src/glob2'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=release=1', release[0])
+        self.assertIn('-DGLOB2_CXXFLAGS=-g -O1', release[0])
+        self.assertEqual(release[-1][3:5], ['--target', 'glob2'])
+        relay = command.cmake_commands(['role=relay', 'release=1', 'relay'])
+        self.assertEqual(relay[-1][2], str(ROOT / 'build/linux/relay/release'))
+        self.assertEqual(command.compiler_environment(['CC=clang', 'CXX=clang++'], {})['CXX'], 'clang++')
+        # `install` builds glob2 as a shipping build, then installs it where SCons would.
+        staged = command.cmake_commands(['release=1', 'lean_images=1', 'BINDIR=/stage/usr/bin',
+                                         'INSTALLDIR=/stage/usr/share', 'DATADIR=/usr/share', 'install'])
+        for setting in ('-DGLOB2_SHIPPING=ON', '-DGLOB2_BINDIR=/stage/usr/bin',
+                        '-DGLOB2_INSTALLDIR=/stage/usr/share', '-DGLOB2_DATADIR=/usr/share'):
+            self.assertIn(setting, staged[0])
+        self.assertEqual(staged[-2][2:5], [str(ROOT / 'build/linux/client/release/lean-images'), '--target', 'glob2'])
+        self.assertEqual(staged[-1], ['cmake', '--install', str(ROOT / 'build/linux/client/release/lean-images')])
+        self.assertIn('-n', command.cmake_commands(['--build=' + str(directory), '-n'])[-1])
+        for unsupported in ('--weird', 'build/elsewhere/glob2'):
+            with self.assertRaises(ValueError):
+                command.cmake_commands([unsupported])
 
     def test_default_generator_is_cmake_only_for_requests_it_builds(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
@@ -110,12 +131,15 @@ class DevelopmentBuildTests(unittest.TestCase):
                                  return_value=subprocess.CompletedProcess([], 0, stdout=version)))
         system, which, run = host()
         with system, which, run:
-            for arguments in ([], ['.'], ['engine-tests', 'unit-tests', '-j12', '-k']):
-                self.assertIsNone(command.scons_reason(arguments), arguments)
-            # The perf tiers, SCons options and file targets stay on SCons.
-            for arguments in (['perf=1'], ['perf=1', 'opt=3', 'engine-tests'], ['target=web'],
+            for arguments in ([], ['.'], ['engine-tests', 'unit-tests', '-j12', '-k'], ['perf=1'],
+                              ['perf=1', 'opt=3', 'engine-tests'], ['release=1', 'CXX=g++-13'],
                               ['compile_profile=core', 'engine-tests'], ['--build=build/x'], ['-n'],
-                              ['build/linux/client/debug/dev-x/src/glob2']):
+                              ['role=relay', 'release=1', 'relay'],
+                              ['build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2']):
+                self.assertIsNone(command.scons_reason(arguments), arguments)
+            # Other targets and the options the CMake build does not cover stay on SCons.
+            for arguments in (['target=web'], ['mingw=1', 'release=1'],
+                              ['recording_codec=vp9'], ['--debug=explain']):
                 self.assertIsNotNone(command.scons_reason(arguments), arguments)
         for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),
                                     ({'which': None}, 'not installed'), ({'system': 'Darwin'}, 'Linux')):

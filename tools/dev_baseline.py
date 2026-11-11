@@ -20,13 +20,15 @@ tools/perf_ab.py --baseline master; `--merge-base HEAD` picks the baseline of th
 current branch's merge base. Consumers hold a shared lease, so `gc`, which keeps
 the newest --keep baselines, never removes one in use.
 
-`seed` copies a baseline's dev build directory into a fresh worktree of a nearby
-revision (copy-on-write where the filesystem supports it) so that its first build
-recompiles only what differs; it reports what SCons would rebuild.
+`seed` copies a baseline's SCons dev build directory into a fresh worktree of a
+nearby revision (copy-on-write where the filesystem supports it) so that its first
+build recompiles only what differs. A CMake build directory records absolute
+paths and cannot move; the shared compiler cache already gives a fresh worktree's
+first CMake build the baseline's objects, so `seed` leaves it alone.
 
-Baselines always build with SCons (`dev_build.py --generator=scons`), the build
-that makes every perf-tier candidate, so a baseline and its candidate come from
-the same build system's compile and link lines.
+Each baseline builds with its own revision's tools/dev_build.py, which picks the
+build system that revision's candidates use for the same tier, so a baseline and
+its candidate come from the same compile and link lines.
 """
 from __future__ import annotations
 
@@ -92,7 +94,7 @@ def build(sha: str, variants: list[str], jobs: int) -> Path:
         record = {'sha': sha, 'host': host(), 'started': time.time(), 'variants': {}}
         for variant in variants:
             directory = build_directory(worktree, variant)
-            command = [sys.executable, 'tools/dev_build.py', '--generator=scons', f'-j{jobs}', *VARIANTS[variant]['command'],
+            command = [sys.executable, 'tools/dev_build.py', f'-j{jobs}', *VARIANTS[variant]['command'],
                        str((directory / 'src/glob2').relative_to(worktree)), *TARGETS]
             subprocess.run(command, cwd=worktree, check=True)
             record['variants'][variant] = str(directory)
@@ -141,6 +143,11 @@ def seed(target: Path, sha: str) -> int:
     worktree = build(sha, ['dev'], os.cpu_count() or 2) if not (home() / sha / '.baseline-complete').exists() else home() / sha
     source = build_directory(worktree, 'dev')
     destination = build_directory(target.resolve(), 'dev')
+    identity = source / 'identity.json'
+    if identity.exists() and json.loads(identity.read_text()).get('generator') == 'cmake':
+        print(f'{source} is a CMake build, which cannot be relocated; the shared compiler cache '
+              'already serves its objects to the first build of the new worktree')
+        return 0
     if destination.exists():
         raise SystemExit(f'{destination} exists; seed only fresh worktrees')
     copy_tree(source, destination)

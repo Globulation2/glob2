@@ -1,9 +1,10 @@
 Import('env')
+from pathlib import Path
 from sources import profile_sources
 source_files = list(profile_sources(env.get('compile_profile', 'full')))
 if env.get('role') == 'relay':
     # The relay role builds glob2-relay and its tests only.
-    from sources import RELAY_SOURCES, RELAY_GAG_SOURCES
+    from sources import RELAY_SOURCES, RELAY_GAG_SOURCES, RELAY_MAIN_SOURCE, RELAY_TEST_SOURCES
     relay_env = env.Clone()
     relay_env.Append(CPPPATH=['#src/relay'])
     relay_env['LIBS'] = [lib for lib in relay_env.get('LIBS', []) if lib in ('ssl', 'crypto', 'pthread')]
@@ -14,7 +15,7 @@ if env.get('role') == 'relay':
     relay_objects += [relay_env.Object('relay-gag-' + source.replace('.cpp', '.o'), '#libs/gag/src/' + source)
                       for source in RELAY_GAG_SOURCES]
     record(relay_env, relay_objects, 'compile')
-    relay_main = relay_env.Object('relay/RelayMain.cpp')
+    relay_main = relay_env.Object(RELAY_MAIN_SOURCE)
     record(relay_env, relay_main, 'compile')
     relay = record(relay_env, relay_env.Program('glob2-relay', relay_objects + relay_main), 'link')
     relay_env.Default(relay)
@@ -23,8 +24,8 @@ if env.get('role') == 'relay':
     tests_env.Append(CPPPATH=['#test/third_party'])
     tests_env.Append(CPPDEFINES=[('RELAY_FIXTURE_DIR', '\\"%s\\"' % Dir('#test/fixtures/relay-tickets').abspath)])
     relay_tests = tests_env.Program('glob2-relay-tests', relay_objects + [
-        tests_env.Object('relay-test-' + name + '.o', '#src/relay/' + name + '.cpp')
-        for name in ('RelayTestMain', 'RelayTicketTest', 'RelayAdmissionTest')])
+        tests_env.Object('relay-test-' + Path(name).stem + '.o', '#src/' + name)
+        for name in RELAY_TEST_SOURCES])
     tests_env.Alias('relay-tests', relay_tests)
     tests_env.Alias('relay', relay_tests)
     Return()

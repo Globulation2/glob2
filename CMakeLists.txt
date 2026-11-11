@@ -1,14 +1,15 @@
-# CMake + Ninja build of the native Linux development client.
+# CMake + Ninja build of the native Linux client.
 #
-# tools/dev_build.py builds the dev tier with it by default on native Linux;
-# SCons (SConstruct) remains the build for every other target and tier and the
-# only one that ships anything. This file reproduces the SCons dev tier object
-# for object, for the everyday edit/build/test loop, and
-# the two are compared by tools/compare_build_systems.py; see "CMake + Ninja
-# build for daily work" in docs/development/build-options.md.
+# GLOB2_BUILD_ARGS takes the same key=value build arguments SCons does
+# (dev_fast=1, perf=1 opt=3, release=1, ...); buildsys/build_layout.py resolves
+# them into the build identity, so both build systems agree on the tier, its
+# flags and its default directory. Each tier reproduces the SCons build object
+# for object, compared by tools/compare_build_systems.py; see "CMake + Ninja
+# build" in docs/development/build-options.md.
 #
 #   cmake --preset dev && cmake --build --preset dev
-#   python3 tools/dev_build.py
+#   cmake --preset perf && cmake --build --preset perf
+#   python3 tools/dev_build.py [perf=1 [opt=3] | release=1]
 #
 # Source lists come from cmake/sources.cmake and cmake/tests.cmake, generated
 # from buildsys/sources.py, test/tests.py and buildsys/harness_programs.py by
@@ -19,11 +20,15 @@ cmake_minimum_required(VERSION 3.25)
 project(glob2 LANGUAGES C CXX)
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_CROSSCOMPILING)
-  message(FATAL_ERROR "The CMake build covers native Linux development builds only; "
+  message(FATAL_ERROR "The CMake build covers native Linux builds; "
                       "use SCons (tools/dev_build.py) for every other target.")
 endif()
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Configure into a separate build directory, for example: cmake --preset dev")
+endif()
+if(CMAKE_BUILD_TYPE)
+  message(FATAL_ERROR "Choose the tier with GLOB2_BUILD_ARGS (for example perf=1), not CMAKE_BUILD_TYPE, "
+                      "whose flags would differ from the SCons tiers")
 endif()
 
 find_package(Python3 3.8 REQUIRED COMPONENTS Interpreter)
@@ -49,6 +54,55 @@ function(glob2_bridge output)
   endif()
   set(${output} "${result}" PARENT_SCOPE)
 endfunction()
+
+# ---- Build identity: SCons' key=value arguments, resolved by buildsys/build_layout.py ----
+set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
+    "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
+separate_arguments(build_args UNIX_COMMAND "${GLOB2_BUILD_ARGS}")
+set(build_arg_options)
+foreach(word IN LISTS build_args)
+  list(APPEND build_arg_options "--arg=${word}")
+endforeach()
+glob2_bridge(configuration configure --builddir "${GLOB2_OUT}" ${build_arg_options})
+string(JSON identity GET "${configuration}" identity)
+string(JSON GLOB2_DEFAULT_DIRECTORY GET "${configuration}" directory)
+# Reads an identity key, or `default` when the identity leaves it out.
+function(glob2_identity output key default)
+  string(JSON value ERROR_VARIABLE missing GET "${identity}" ${key})
+  if(missing)
+    set(value "${default}")
+  endif()
+  set(${output} "${value}" PARENT_SCOPE)
+endfunction()
+glob2_identity(GLOB2_MODE mode debug)
+glob2_identity(GLOB2_OPT opt 2)
+glob2_identity(GLOB2_ROLE role client)
+glob2_identity(GLOB2_DEV_FAST dev_fast OFF)
+glob2_identity(GLOB2_RETAIN_SYMBOLS retain_symbols OFF)
+glob2_identity(GLOB2_COMPILE_PROFILE compile_profile full)
+glob2_identity(GLOB2_IDENTITY_LINKER linker default)
+glob2_identity(GLOB2_LEAN_IMAGES lean_images OFF)
+glob2_identity(GLOB2_SIZE_OPTIMIZATION size_optimization "")
+foreach(key recording_codec)
+  glob2_identity(value ${key} "")
+  if(value)
+    message(FATAL_ERROR "The CMake build does not support ${key} yet (GLOB2_BUILD_ARGS='${GLOB2_BUILD_ARGS}')")
+  endif()
+endforeach()
+if(GLOB2_MODE STREQUAL "profile")
+  message(FATAL_ERROR "The CMake build does not support profile=1")
+endif()
+# role=relay builds glob2-relay and its tests only (src/SConscript's relay branch).
+set(relay OFF)
+if(GLOB2_ROLE STREQUAL "relay")
+  set(relay ON)
+elseif(NOT GLOB2_ROLE STREQUAL "client")
+  message(FATAL_ERROR "The CMake build does not support role=${GLOB2_ROLE}")
+endif()
+file(REAL_PATH "${GLOB2_OUT}" binary_directory)
+if(NOT binary_directory STREQUAL GLOB2_DEFAULT_DIRECTORY)
+  message(STATUS "Building '${GLOB2_BUILD_ARGS}' in ${GLOB2_OUT}; its default directory is ${GLOB2_DEFAULT_DIRECTORY}")
+endif()
 
 # Splits pkg-config output the way SCons ParseConfig does: -I to the include
 # path, -D to the definitions, linker words to the link line, the rest to the
@@ -120,69 +174,86 @@ if(GLOB2_SDL3_PREFIX)
   set(ENV{PKG_CONFIG_PATH} "${sdl_prefix}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
   set(sdl_includes "${sdl_prefix}/include")
   set(sdl_directories "${sdl_prefix}/lib")
-  # Development runs load the prefix in place; installed copies (a later stage)
-  # use only $ORIGIN/../lib/glob2.
+  # Development runs load the prefix in place; installed copies use only their
+  # bundled $ORIGIN/../lib/glob2 (distributions reject build paths).
   set(sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
 endif()
+# What `scons install` changes for the binaries it installs: no build-prefix rpath
+# and no debug-prefix map. Packaging configures with it; `cmake --install` needs it
+# whenever GLOB2_SDL3_PREFIX is set.
+option(GLOB2_SHIPPING "Build binaries for installation: no build-prefix rpath or debug-path mapping" OFF)
+if(GLOB2_SHIPPING)
+  set(GLOB2_DEBUG_PREFIX_MAP OFF CACHE BOOL "" FORCE)
+endif()
+# Removes the build prefix's rpath from a link option list in shipping builds.
+macro(glob2_drop_build_rpath list_name)
+  if(GLOB2_SHIPPING AND GLOB2_SDL3_PREFIX)
+    list(REMOVE_ITEM ${list_name} "-Wl,-rpath,${sdl_prefix}/lib" "-Wl,-rpath=${sdl_prefix}/lib")
+  endif()
+endmacro()
 
-glob2_bridge(scons_directory scons-dev-directory)
-if(DEFINED ENV{GLOB2_RECORDING_PREFIX})
-  set(recording_default "$ENV{GLOB2_RECORDING_PREFIX}")
-elseif(GLOB2_SDL3_PREFIX AND EXISTS "${sdl_prefix}/recording/recording-manifest.json")
-  set(recording_default "${sdl_prefix}/recording")
+# The pinned h264 recording libraries: GLOB2_RECORDING_PREFIX, the prefix beside
+# GLOB2_SDL3_PREFIX, or a shared-store build (built on first use, as SCons does).
+# The relay links no media library and only needs SDL's headers for libgag's types.
+set(recording_includes)
+set(recording_libraries)
+set(build_config_options)
+set(opengl_libraries)
+set(fribidi_libraries)
+if(relay)
+  glob2_pkg_config(sdl3 sdl3 --cflags)
 else()
-  # SCons builds the pinned recording libraries into its own build directory.
-  set(recording_default "${scons_directory}/recording/prefix")
+  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}")
+  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}")
+  set(recording_includes "${recording_prefix}/include")
+  glob2_pkg_config(opusfile opusfile --cflags)
+  glob2_pkg_config(sdl3 sdl3 --cflags --libs)
+  glob2_pkg_config(webp libwebp --cflags --libs --static)
 endif()
-set(GLOB2_RECORDING_PREFIX "${recording_default}" CACHE PATH "Pinned h264 recording library prefix")
-if(NOT EXISTS "${GLOB2_RECORDING_PREFIX}/include")
-  message(FATAL_ERROR "No recording prefix at ${GLOB2_RECORDING_PREFIX}. Set GLOB2_SDL3_PREFIX to a "
-                      "shared prefix with recording/, or run tools/dev_build.py once so SCons builds one.")
-endif()
-file(REAL_PATH "${GLOB2_RECORDING_PREFIX}" recording_prefix)
-glob2_bridge(recording_libraries recording --prefix "${recording_prefix}")
-
-glob2_pkg_config(opusfile opusfile --cflags)
-glob2_pkg_config(sdl3 sdl3 --cflags --libs)
-glob2_pkg_config(webp libwebp --cflags --libs --static)
 
 include(CheckIncludeFileCXX)
-find_library(GLOB2_GL_LIBRARY GL)
-find_library(GLOB2_GLU_LIBRARY GLU)
-find_library(GLOB2_EPOXY_LIBRARY epoxy)
-find_library(GLOB2_FRIBIDI_LIBRARY fribidi)
-check_include_file_cxx(GL/gl.h GLOB2_HAVE_GL_H)
-check_include_file_cxx(GL/glu.h GLOB2_HAVE_GLU_H)
-check_include_file_cxx(epoxy/gl.h GLOB2_HAVE_EPOXY_H)
-check_include_file_cxx(fribidi/fribidi.h GLOB2_HAVE_FRIBIDI_H)
-set(opengl_libraries)
-set(build_config_options)
-if(GLOB2_GL_LIBRARY AND GLOB2_HAVE_GL_H AND GLOB2_GLU_LIBRARY AND GLOB2_HAVE_GLU_H
-   AND GLOB2_EPOXY_LIBRARY AND GLOB2_HAVE_EPOXY_H)
-  set(opengl_libraries GL GLU epoxy)
-  list(APPEND build_config_options --opengl)
-else()
-  message(STATUS "One or more library missing for OpenGL support, disabling OpenGL support.")
-endif()
-set(fribidi_libraries)
-if(GLOB2_FRIBIDI_LIBRARY AND GLOB2_HAVE_FRIBIDI_H)
-  set(fribidi_libraries fribidi)
-  list(APPEND build_config_options --fribidi)
+if(NOT relay)
+  find_library(GLOB2_GL_LIBRARY GL)
+  find_library(GLOB2_GLU_LIBRARY GLU)
+  find_library(GLOB2_EPOXY_LIBRARY epoxy)
+  find_library(GLOB2_FRIBIDI_LIBRARY fribidi)
+  check_include_file_cxx(GL/gl.h GLOB2_HAVE_GL_H)
+  check_include_file_cxx(GL/glu.h GLOB2_HAVE_GLU_H)
+  check_include_file_cxx(epoxy/gl.h GLOB2_HAVE_EPOXY_H)
+  check_include_file_cxx(fribidi/fribidi.h GLOB2_HAVE_FRIBIDI_H)
+  if(GLOB2_GL_LIBRARY AND GLOB2_HAVE_GL_H AND GLOB2_GLU_LIBRARY AND GLOB2_HAVE_GLU_H
+     AND GLOB2_EPOXY_LIBRARY AND GLOB2_HAVE_EPOXY_H)
+    set(opengl_libraries GL GLU epoxy)
+    list(APPEND build_config_options --opengl)
+  else()
+    message(STATUS "One or more library missing for OpenGL support, disabling OpenGL support.")
+  endif()
+  if(GLOB2_FRIBIDI_LIBRARY AND GLOB2_HAVE_FRIBIDI_H)
+    set(fribidi_libraries fribidi)
+    list(APPEND build_config_options --fribidi)
+  endif()
 endif()
 
 # ---- Generated headers: the SCons generators, called through the bridge ----
-option(GLOB2_EXPORT_RUNTIME_ASSETS "Export the runtime assets into the build directory, as the SCons dev tier does" ON)
-if(GLOB2_EXPORT_RUNTIME_ASSETS)
+option(GLOB2_EXPORT_RUNTIME_ASSETS "Export the runtime assets into the build directory, as SCons does" ON)
+if(relay)
+  set(GLOB2_EXPORT_RUNTIME_ASSETS OFF)
+  set(GLOB2_RUNTIME_ASSET_DIR "${GLOB2_OUT}/runtime-assets")
+elseif(GLOB2_EXPORT_RUNTIME_ASSETS)
   set(GLOB2_RUNTIME_ASSET_DIR "${GLOB2_OUT}/runtime-assets")
 else()
-  set(GLOB2_RUNTIME_ASSET_DIR "${scons_directory}/runtime-assets" CACHE PATH
-      "Runtime assets the CMake glob2 loads when it does not export its own (default: the SCons dev build's)")
+  set(GLOB2_RUNTIME_ASSET_DIR "" CACHE PATH "Runtime assets glob2 loads when it does not export its own")
+  if(NOT GLOB2_RUNTIME_ASSET_DIR)
+    message(FATAL_ERROR "GLOB2_EXPORT_RUNTIME_ASSETS=OFF needs GLOB2_RUNTIME_ASSET_DIR, another build's runtime-assets")
+  endif()
 endif()
-# The SCons dev-tier identity, marked as a CMake build; test/run_tests.py reads its mode.
-glob2_bridge(unused identity --builddir "${GLOB2_OUT}")
-glob2_bridge(unused build-config --builddir "${GLOB2_OUT}" ${build_config_options})
+# SConstruct's DATADIR: the installed data directory compiled into glob2/BuildConfig.h.
+set(GLOB2_DATADIR "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Installed data directory compiled into the game (SCons DATADIR)")
+glob2_bridge(unused build-config --builddir "${GLOB2_OUT}" "--datadir=${GLOB2_DATADIR}"
+             ${build_config_options} ${build_arg_options})
 glob2_bridge(unused build-paths --builddir "${GLOB2_OUT}" --runtime-assets "${GLOB2_RUNTIME_ASSET_DIR}")
 glob2_bridge(unused build-stamp --builddir "${GLOB2_OUT}")
+glob2_bridge(unused compile-profile --builddir "${GLOB2_OUT}" --profile "${GLOB2_COMPILE_PROFILE}")
 
 set(bridge "${Python3_EXECUTABLE}" "${GLOB2_BRIDGE}")
 set(stamps "${GLOB2_OUT}/generated-stamps")
@@ -237,7 +308,7 @@ add_custom_target(glob2_runtime_assets)
 if(GLOB2_EXPORT_RUNTIME_ASSETS)
   add_custom_command(OUTPUT "${GLOB2_OUT}/runtime-assets.json"
     COMMAND ${bridge} runtime-assets --builddir "${GLOB2_OUT}" --depfile "${GLOB2_OUT}/runtime-assets.d"
-            --jobs "${GLOB2_ASSET_JOBS}"
+            --jobs "${GLOB2_ASSET_JOBS}" ${build_arg_options}
     DEPFILE "${GLOB2_OUT}/runtime-assets.d"
     DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/runtime_assets.py" "${GLOB2_ROOT}/buildsys/shared_assets.py"
     WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Exporting verified runtime assets" VERBATIM)
@@ -252,10 +323,79 @@ add_custom_target(glob2_build_stamp
   BYPRODUCTS "${GLOB2_OUT}/include/glob2/BuildStamp.h"
   WORKING_DIRECTORY "${GLOB2_ROOT}" VERBATIM)
 
-# ---- Flags shared by every object, in SConstruct's order ----
-# The preset supplies the tier flags (-O0 -g1 -fdebug-prefix-map) through
-# CMAKE_<LANG>_FLAGS, as dev_build.configure and cache_flags do for SCons.
-add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-std=gnu++20;-Wall;-fPIC>" "$<$<COMPILE_LANGUAGE:C>:-fPIC>")
+# ---- Tier flags: SConstruct's CXXFLAGS/CFLAGS/CCFLAGS/LINKFLAGS, step by step ----
+# CCFLAGS reach C and C++ objects, CXXFLAGS only C++ and CFLAGS only C, as in SCons.
+set(GLOB2_CXXFLAGS "-g" CACHE STRING "SCons CXXFLAGS before the tier's own (distributions pass their optflags)")
+set(GLOB2_LINKFLAGS "-g" CACHE STRING "SCons LINKFLAGS before the tier's own")
+option(GLOB2_DEBUG_PREFIX_MAP "Map the checkout to . in debug information so checkouts share cache entries (off for shipping builds)" ON)
+separate_arguments(cxxflags UNIX_COMMAND "${GLOB2_CXXFLAGS}")
+separate_arguments(linkflags UNIX_COMMAND "${GLOB2_LINKFLAGS}")
+set(cflags)
+set(ccflags)
+# Removes every -g* and -O* word from each named list, as SCons' tier code does.
+macro(glob2_drop_debug_and_optimization)
+  foreach(list_name ${ARGN})
+    list(FILTER ${list_name} EXCLUDE REGEX "^-[gO]")
+  endforeach()
+endmacro()
+# Release builds outside macOS link with -s, so they compile without -g unless
+# a distribution keeps symbols for its debug packages.
+if(GLOB2_MODE STREQUAL "release" AND NOT GLOB2_RETAIN_SYMBOLS)
+  list(REMOVE_ITEM cxxflags -g)
+  list(REMOVE_ITEM linkflags -g)
+endif()
+list(APPEND cxxflags -std=gnu++20 -Wall -fPIC)
+list(APPEND cflags -fPIC)
+# Uninitialized-read diagnostics (DET_INIT=zero|pattern), an environment variable as in SConstruct.
+if(DEFINED ENV{DET_INIT} AND NOT "$ENV{DET_INIT}" STREQUAL "")
+  list(APPEND cxxflags "-ftrivial-auto-var-init=$ENV{DET_INIT}")
+  list(APPEND ccflags "-ftrivial-auto-var-init=$ENV{DET_INIT}")
+endif()
+list(APPEND linkflags -Wall)
+if(GLOB2_MODE STREQUAL "perf")
+  # Measurement builds: shipping optimization with symbols for profilers.
+  glob2_drop_debug_and_optimization(cxxflags linkflags)
+  list(APPEND cxxflags -O${GLOB2_OPT} -g1)
+  list(APPEND linkflags -O${GLOB2_OPT})
+elseif(GLOB2_MODE STREQUAL "release")
+  list(APPEND cxxflags -O3)
+  list(APPEND linkflags -O3 -fwhole-program)
+  if(NOT GLOB2_RETAIN_SYMBOLS)
+    list(APPEND cxxflags -s)
+    list(APPEND linkflags -s)
+  endif()
+endif()
+# buildsys/size_optimization.py: the opt-in GCC size experiments of release builds.
+if(GLOB2_SIZE_OPTIMIZATION)
+  if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(FATAL_ERROR "size_optimization experiments currently require GCC")
+  endif()
+  list(APPEND ccflags -ffunction-sections -fdata-sections)
+  list(APPEND linkflags -Wl,--gc-sections)
+  if(GLOB2_SIZE_OPTIMIZATION STREQUAL "lto" OR GLOB2_SIZE_OPTIMIZATION STREQUAL "size")
+    # GCC's linker plugin decides visibility; -fwhole-program would change it under LTO.
+    list(APPEND ccflags -flto)
+    list(REMOVE_ITEM linkflags -fwhole-program)
+    list(APPEND linkflags -flto)
+  endif()
+  if(GLOB2_SIZE_OPTIMIZATION STREQUAL "size")
+    list(APPEND cxxflags -Os)
+    list(APPEND cflags -Os)
+    list(APPEND linkflags -Os)
+  endif()
+endif()
+# buildsys/dev_build.py configure(): dev_fast compiles everything at -O0 -g1.
+if(GLOB2_DEV_FAST)
+  glob2_drop_debug_and_optimization(cflags cxxflags ccflags linkflags)
+  list(APPEND ccflags -O0 -g1)
+endif()
+# buildsys/dev_build.py cache_flags(): relocatable debug paths whenever ccache is on.
+if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER)
+  list(APPEND ccflags "-fdebug-prefix-map=${GLOB2_ROOT}=.")
+endif()
+set(cxx_compile_flags ${cxxflags} ${ccflags})
+set(c_compile_flags ${cflags} ${ccflags})
+add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${cxx_compile_flags}>" "$<$<COMPILE_LANGUAGE:C>:${c_compile_flags}>")
 set(GLOB2_EXTRA_COMPILE_FLAGS "" CACHE STRING "Extra compile flags (tools/compare_build_systems.py parity builds)")
 if(GLOB2_EXTRA_COMPILE_FLAGS)
   separate_arguments(extra_flags UNIX_COMMAND "${GLOB2_EXTRA_COMPILE_FLAGS}")
@@ -268,11 +408,20 @@ string(JSON former_origins GET "${instance}" former)
 add_compile_definitions(
   "GLOB2_OFFICIAL_INSTANCE_ORIGIN=\"${official_origin}\""
   "GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"${former_origins}\""
-  HAVE_CONFIG_H GLOB2_H264_ASSETS
+  HAVE_CONFIG_H $<$<NOT:$<BOOL:${relay}>>:GLOB2_H264_ASSETS>
   ${opusfile_defines} ${sdl3_defines} ${webp_defines})
 add_compile_options(${opusfile_options} ${sdl3_options} ${webp_options})
 
-set(include_directories "${recording_prefix}/include" ${sdl_includes} "${GLOB2_OUT}/include"
+# lean_images=1: the private PNG/JPEG/WebP SDL_image comes before every other prefix.
+set(lean_image_prefix)
+set(lean_includes)
+if(GLOB2_LEAN_IMAGES)
+  glob2_bridge(lean_image_prefix lean-image-prefix --builddir "${GLOB2_OUT}")
+  set(lean_includes "${lean_image_prefix}/include/SDL3")
+  list(PREPEND sdl_directories "${lean_image_prefix}/lib")
+  list(APPEND sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
+endif()
+set(include_directories ${recording_includes} ${lean_includes} ${sdl_includes} "${GLOB2_OUT}/include"
     ${opusfile_includes} "${GLOB2_OUT}/shaders")
 foreach(directory IN LISTS GLOB2_INCLUDE_DIRECTORIES)
   if(directory STREQUAL ".")
@@ -285,12 +434,52 @@ list(APPEND include_directories ${sdl3_includes} ${webp_includes})
 list(REMOVE_DUPLICATES include_directories)
 include_directories(${include_directories})
 
+# compile_profile=core leaves the optional groups out (buildsys/sources.py profile_sources).
+set(GLOB2_PROFILE_GROUPS ${GLOB2_OPTIONAL_GROUPS})
+if(GLOB2_COMPILE_PROFILE STREQUAL "core")
+  list(REMOVE_ITEM GLOB2_CLIENT_SOURCES ${GLOB2_CORE_EXCLUDED_SOURCES})
+  list(REMOVE_ITEM GLOB2_STRICT_NUMERIC_SOURCES ${GLOB2_CORE_EXCLUDED_SOURCES})
+  list(REMOVE_ITEM GLOB2_GUARDED_NUMERIC_SOURCES ${GLOB2_CORE_EXCLUDED_SOURCES})
+  set(GLOB2_PROFILE_GROUPS)
+elseif(NOT GLOB2_COMPILE_PROFILE STREQUAL "full")
+  message(FATAL_ERROR "Unknown compile_profile ${GLOB2_COMPILE_PROFILE}")
+endif()
 list(TRANSFORM GLOB2_CLIENT_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_STRICT_NUMERIC_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_GAG_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_USL_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_JAVASCRIPT_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_JAVASCRIPT_INCLUDE_DIRECTORIES PREPEND "${GLOB2_ROOT}/")
+
+# ---- The relay: glob2-relay and glob2-relay-tests (src/SConscript's relay branch) ----
+if(relay)
+  # SConstruct's LINKFLAGS, and its LIBS filtered to these, in their order.
+  set(relay_link_options ${sdl_link_options} ${linkflags})
+  if(GLOB2_SDL3_PREFIX)
+    list(APPEND relay_link_options "-Wl,-rpath=${sdl_prefix}/lib")
+  endif()
+  glob2_drop_build_rpath(relay_link_options)
+  list(TRANSFORM GLOB2_RELAY_SOURCES PREPEND "${GLOB2_ROOT}/")
+  list(TRANSFORM GLOB2_RELAY_GAG_SOURCES PREPEND "${GLOB2_ROOT}/")
+  add_library(glob2_relay_objects OBJECT ${GLOB2_RELAY_SOURCES} ${GLOB2_RELAY_GAG_SOURCES})
+  list(TRANSFORM GLOB2_RELAY_TEST_SOURCES PREPEND "${GLOB2_ROOT}/")
+  add_executable(glob2-relay "${GLOB2_ROOT}/${GLOB2_RELAY_MAIN_SOURCE}")
+  add_executable(glob2-relay-tests EXCLUDE_FROM_ALL ${GLOB2_RELAY_TEST_SOURCES})
+  foreach(target glob2_relay_objects glob2-relay glob2-relay-tests)
+    target_include_directories(${target} PRIVATE "${GLOB2_ROOT}/src/relay")
+    add_dependencies(${target} glob2_generated glob2_build_stamp)
+  endforeach()
+  target_include_directories(glob2-relay-tests PRIVATE "${GLOB2_ROOT}/test/third_party")
+  target_compile_definitions(glob2-relay-tests PRIVATE "RELAY_FIXTURE_DIR=\"${GLOB2_ROOT}/test/fixtures/relay-tickets\"")
+  foreach(target glob2-relay glob2-relay-tests)
+    target_link_libraries(${target} PRIVATE glob2_relay_objects pthread ssl crypto)
+    target_link_options(${target} PRIVATE ${relay_link_options})
+    set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
+  endforeach()
+  add_custom_target(relay DEPENDS glob2-relay glob2-relay-tests)
+  add_custom_target(relay-tests DEPENDS glob2-relay-tests)
+  return()
+endif()
 
 # ---- Stage 1: libraries ----
 add_library(usl STATIC ${GLOB2_USL_SOURCES})
@@ -299,8 +488,20 @@ add_library(gag STATIC ${GLOB2_GAG_SOURCES})
 # QuickJS and openlibm: the interpreter's strict numeric contract, per source
 # exactly as buildsys/javascript.py compiles them.
 add_library(Glob2JavaScript STATIC ${GLOB2_JAVASCRIPT_SOURCES})
+# buildsys/javascript.py: -O2 for the optimized tiers, -O0 otherwise.
+if(GLOB2_MODE STREQUAL "release" OR GLOB2_MODE STREQUAL "perf")
+  set(javascript_optimization -O2)
+else()
+  set(javascript_optimization -O0)
+endif()
+if(GLOB2_SIZE_OPTIMIZATION STREQUAL "size")
+  set(javascript_size -Os)
+else()
+  set(javascript_size)
+endif()
+set(javascript_options ${javascript_optimization} ${GLOB2_JAVASCRIPT_CFLAGS} ${javascript_size})
 set_source_files_properties(${GLOB2_JAVASCRIPT_SOURCES} PROPERTIES
-  COMPILE_OPTIONS "-O0;${GLOB2_JAVASCRIPT_CFLAGS}"
+  COMPILE_OPTIONS "${javascript_options}"
   COMPILE_DEFINITIONS "${GLOB2_JAVASCRIPT_DEFINES}")
 # A source's INCLUDE_DIRECTORIES would precede the shared path; SCons appends
 # these, and the archive holds nothing else.
@@ -355,28 +556,35 @@ list(REVERSE libraries)
 list(REMOVE_DUPLICATES libraries)
 list(REVERSE libraries)
 list(REMOVE_DUPLICATES sdl_directories)
-set(link_options ${sdl_link_options} -Wall ${sdl3_link_options} ${webp_link_options})
+set(link_options ${sdl_link_options} ${linkflags} ${sdl3_link_options} ${webp_link_options})
 if(GLOB2_SDL3_PREFIX)
   list(APPEND link_options "-Wl,-rpath=${sdl_prefix}/lib")
 endif()
-# The SCons dev tier's linker=auto (buildsys/dev_build.py configure): lld when installed.
-set(GLOB2_LINKER auto CACHE STRING "Development linker: default, auto (lld when installed) or lld")
-set_property(CACHE GLOB2_LINKER PROPERTY STRINGS default auto lld)
-if(NOT GLOB2_LINKER STREQUAL "default")
+glob2_drop_build_rpath(link_options)
+# linker=auto|lld (buildsys/dev_build.py configure): lld when installed.
+if(NOT GLOB2_IDENTITY_LINKER STREQUAL "default")
   find_program(GLOB2_LLD_PROGRAM ld.lld)
   if(GLOB2_LLD_PROGRAM)
     list(APPEND link_options -fuse-ld=lld)
-  elseif(GLOB2_LINKER STREQUAL "lld")
-    message(FATAL_ERROR "GLOB2_LINKER=lld requires an installed ld.lld")
+  elseif(GLOB2_IDENTITY_LINKER STREQUAL "lld")
+    message(FATAL_ERROR "linker=lld requires an installed ld.lld")
   endif()
 endif()
+# test/SConscript keeps function names in test binaries for crash backtraces.
+set(test_link_options ${link_options})
+list(REMOVE_ITEM test_link_options -s)
 
 # Every program links `ARGN` (object libraries and archives) before SConstruct's
-# LIBS, with its library directories and LINKFLAGS.
+# LIBS, with its library directories and LINKFLAGS (the test flags for tests).
 function(glob2_link target)
   target_link_libraries(${target} PRIVATE ${ARGN} ${libraries})
   target_link_directories(${target} PRIVATE ${sdl_directories} ${sdl3_directories} ${webp_directories})
-  target_link_options(${target} PRIVATE ${link_options})
+  get_target_property(is_test ${target} GLOB2_TEST)
+  if(is_test)
+    target_link_options(${target} PRIVATE ${test_link_options})
+  else()
+    target_link_options(${target} PRIVATE ${link_options})
+  endif()
   add_dependencies(${target} glob2_generated glob2_build_stamp)
 endfunction()
 
@@ -419,12 +627,13 @@ target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "$
                            "${GLOB2_ROOT}/libs/gag/src" "${GLOB2_ROOT}/third_party/quickjs-ng")
 target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
 
-# test/SConscript available(): native Linux builds have the WSS transport, are never MinGW
-# and build the full compile profile, so every buildsys/sources.py optional group is present.
+# test/SConscript available(): native Linux builds have the WSS transport and are never
+# MinGW; an optional buildsys/sources.py group is present only in the full compile profile.
 function(glob2_available output)
   set(ok TRUE)
   foreach(feature IN LISTS ARGN)
-    if(feature STREQUAL "mac" OR (feature STREQUAL "opengl" AND NOT opengl_libraries))
+    if(feature STREQUAL "mac" OR (feature STREQUAL "opengl" AND NOT opengl_libraries)
+       OR (feature IN_LIST GLOB2_OPTIONAL_GROUPS AND NOT feature IN_LIST GLOB2_PROFILE_GROUPS))
       set(ok FALSE)
     endif()
   endforeach()
@@ -453,12 +662,14 @@ endfunction()
 
 # The configuration a provenance sidecar records, as test_provenance._configuration does for SCons.
 get_directory_property(provenance_defines COMPILE_DEFINITIONS)
-set(provenance_arguments "--compiler=${CMAKE_CXX_COMPILER}" "--ccflags=${CMAKE_CXX_FLAGS}"
-    "--cxxflags=-std=gnu++20 -Wall -fPIC ${GLOB2_EXTRA_COMPILE_FLAGS}")
+list(JOIN ccflags " " provenance_ccflags)
+list(JOIN cxxflags " " provenance_cxxflags)
+set(provenance_arguments "--compiler=${CMAKE_CXX_COMPILER}" "--ccflags=${provenance_ccflags}"
+    "--cxxflags=${provenance_cxxflags} ${GLOB2_EXTRA_COMPILE_FLAGS}")
 foreach(define IN LISTS provenance_defines ITEMS SDL_MAIN_HANDLED)
   list(APPEND provenance_arguments "--define=${define}")
 endforeach()
-foreach(option IN LISTS link_options)
+foreach(option IN LISTS test_link_options)
   list(APPEND provenance_arguments "--linkflag=${option}")
 endforeach()
 set(provenance_configuration "${GLOB2_OUT}/test-provenance-configuration.json")
@@ -507,6 +718,7 @@ foreach(binary IN LISTS GLOB2_TEST_BINARIES)
     list(APPEND production ${selected})
   endforeach()
   add_executable(${target} EXCLUDE_FROM_ALL ${objects} ${reused} ${production})
+  set_target_properties(${target} PROPERTIES GLOB2_TEST ON)
   add_dependencies(${target} glob2_client ${production_libraries})
   if(GLOB2_${binary}_ALL_CLIENT_OBJECTS)
     glob2_link(${target} glob2_client Glob2JavaScript gag usl)
@@ -542,6 +754,7 @@ foreach(program IN LISTS GLOB2_TEST_PROGRAMS)
     continue()
   endif()
   add_executable(${program} EXCLUDE_FROM_ALL "${GLOB2_ROOT}/${GLOB2_TEST_PROGRAM_${program}_SOURCE}")
+  set_target_properties(${program} PROPERTIES GLOB2_TEST ON)
   target_link_libraries(${program} PRIVATE glob2_test_settings)
   glob2_link(${program} glob2_client Glob2JavaScript gag usl)
   add_dependencies(${program} glob2_runtime_assets glob2_numeric_guard)
@@ -565,6 +778,9 @@ foreach(name IN LISTS GLOB2_HARNESS_SHARED_OBJECTS)
 endforeach()
 foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
   set(prefix GLOB2_HARNESS_${program})
+  if(${prefix}_PROFILE AND NOT ${prefix}_PROFILE IN_LIST GLOB2_PROFILE_GROUPS)
+    continue()  # compile_profile=core leaves out the code it drives
+  endif()
   # Native Linux builds always have the WSS transport, the only requirement used.
   set(sources "${GLOB2_ROOT}/${${prefix}_SOURCE}")
   set(inputs)
@@ -596,3 +812,30 @@ foreach(alias IN LISTS alias_names)
   add_custom_target(${alias})
   add_dependencies(${alias} ${members})
 endforeach()
+
+# ---- Installation: what `scons install` installs (cmake --install, honours DESTDIR) ----
+# SConstruct's BINDIR and INSTALLDIR: the executable's directory and the share
+# directory that holds glob2/, applications/, icons/, man/ and the completions.
+set(GLOB2_BINDIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installed executable directory (SCons BINDIR)")
+set(GLOB2_INSTALLDIR "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Installed share directory (SCons INSTALLDIR)")
+if(GLOB2_SDL3_PREFIX AND NOT GLOB2_SHIPPING)
+  install(CODE "message(FATAL_ERROR \"Installing a GLOB2_SDL3_PREFIX build needs -DGLOB2_SHIPPING=ON, \"
+                \"so the installed binary carries no build-prefix rpath\")")
+endif()
+install(TARGETS glob2 RUNTIME DESTINATION "${GLOB2_BINDIR}")
+set(install_arguments "--builddir=${GLOB2_OUT}" "--installdir=${GLOB2_INSTALLDIR}" "--bindir=${GLOB2_BINDIR}"
+    "--recording-prefix=${recording_prefix}")
+if(GLOB2_SDL3_PREFIX)
+  list(APPEND install_arguments "--sdl-prefix=${sdl_prefix}")
+endif()
+if(GLOB2_LEAN_IMAGES)
+  list(APPEND install_arguments "--lean-image-prefix=${lean_image_prefix}")
+endif()
+string(REPLACE ";" "\" \"" install_arguments "${install_arguments}")
+install(CODE "
+  message(STATUS \"Installing verified runtime assets and desktop integration\")
+  execute_process(COMMAND \"${Python3_EXECUTABLE}\" \"${GLOB2_BRIDGE}\" install \"${install_arguments}\"
+                  WORKING_DIRECTORY \"${GLOB2_ROOT}\" RESULT_VARIABLE status)
+  if(NOT status EQUAL 0)
+    message(FATAL_ERROR \"buildsys/cmake_generate.py install failed\")
+  endif()")

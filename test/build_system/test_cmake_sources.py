@@ -1,5 +1,8 @@
 """The CMake build reads SCons' manifests, never its own copy."""
+import contextlib
+import importlib
 import importlib.util
+import io
 from pathlib import Path
 import re
 import subprocess
@@ -128,17 +131,21 @@ class CMakeSourcesTests(unittest.TestCase):
                        'add_fribidi(configfile)'):
             self.assertIn(helper, sconstruct)
 
-    def test_bridge_identity_is_the_scons_dev_identity(self):
+    def test_bridge_identity_is_the_scons_identity(self):
         bridge = importlib.util.spec_from_file_location('cmake_generate', ROOT / 'buildsys/cmake_generate.py')
         module = importlib.util.module_from_spec(bridge)
         bridge.loader.exec_module(module)
         import json
-        with tempfile.TemporaryDirectory() as directory:
-            module.main(['identity', '--builddir', directory])
-            identity = json.loads((Path(directory) / 'identity.json').read_text())
-        self.assertEqual(identity.pop('generator'), 'cmake')
-        self.assertEqual(identity, module.build_identity(module.DEV_IDENTITY))
-        self.assertEqual(identity['mode'], 'debug')
+        for arguments in (['dev_fast=1', 'linker=auto'], ['perf=1', 'opt=3'], ['release=1'], ['role=relay', 'release=1']):
+            with self.subTest(arguments=arguments), tempfile.TemporaryDirectory() as directory:
+                with contextlib.redirect_stdout(io.StringIO()) as printed:
+                    module.main(['configure', '--builddir', directory, *('--arg=' + word for word in arguments)])
+                identity = json.loads((Path(directory) / 'identity.json').read_text())
+                self.assertEqual(identity.pop('generator'), 'cmake')
+                expected = module.build_identity(dict(word.split('=', 1) for word in arguments))
+                self.assertEqual(identity, expected)
+                self.assertEqual(json.loads(printed.getvalue())['directory'],
+                                 (ROOT / module.default_directory(expected)).as_posix())
 
     def test_export_runs_without_scons(self):
         # The generator must not import SCons (buildsys/javascript.py imports it lazily).

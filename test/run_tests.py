@@ -192,9 +192,9 @@ def list_cases(binary, kind):
 def source_name(filename):
     """Doctest's source file name as a repository path.
 
-    SCons compiles root-relative paths; the experimental CMake build passes absolute
-    ones, which ccache's CCACHE_BASEDIR rewrites relative to the build directory
-    ("../../../src/..."). Both name the same file."""
+    SCons compiles root-relative paths; the CMake build passes absolute ones, which
+    ccache's CCACHE_BASEDIR rewrites relative to the build directory
+    ("../../../../../src/..."). Both name the same file."""
     path = filename.replace('\\', '/')
     if os.path.isabs(path):
         try:
@@ -856,7 +856,7 @@ def main(argv=None):
                 print(f'[run_tests] {binary} is not built; skipping', flush=True)
                 continue
             moved = f' (it holds cases moved out of {BINARIES[FAMILY[kind]]})' if kind in MODULE_PROGRAMS else ''
-            raise SystemExit(f'{binary} is not built; run: scons release=1 server=0 {FAMILY[kind]}-tests{moved}')
+            raise SystemExit(f'{binary} is not built; run: python3 tools/dev_build.py {FAMILY[kind]}-tests{moved}')
         cases += list_cases(binary, kind)
         listed.append(kind)
     note_compile_profile(build_dir)
