@@ -57,7 +57,7 @@ def lozenge_paving(size, diag, key, gap):
 
 @recipe(name="moonstone_lozenge", group="paths", label="Moonstone lozenge", profile="paved", border_class="built",
         seam=SEAM,
-        palette={**FROST, "dark": (196, 194, 200), "mid": (220, 218, 222), "light": (238, 236, 238),
+        palette={**FROST, "dark": (198, 192, 200), "mid": (222, 216, 222), "light": (240, 234, 238),
                  "warm": (230, 222, 216), "cool": (206, 208, 230), "vein": (146, 150, 176),
                  "key": (108, 120, 176), "key_light": (170, 180, 226)},
         style=Style(luma=192, std=19, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)

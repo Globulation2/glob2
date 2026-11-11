@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "8f2c67adcfd984891c69ce43d29971063eef56f02b7d34d163822878011338fa"
+      "sha256": "77d1200d5049bedc6f8fc8ca1796f14048374d027b6a941fea3804bcd297eb08"
     },
     {
       "runtime": "frames.txt",
@@ -104659,1282 +104659,1282 @@
     {
       "runtime": "terrain-moonstone_lozenge0.png",
       "source": "procedural-materials/terrain-moonstone_lozenge0.png",
-      "sha256": "96f63338bbbf197ba19faddc5d49baa8a4991d73ebae00d743c350e86df4f51c"
+      "sha256": "7066623bf8a305ed6eeabb8109e04b8bdc875655979b3bc4d378ea91d0521184"
     },
     {
       "runtime": "terrain-moonstone_lozenge1.png",
       "source": "procedural-materials/terrain-moonstone_lozenge1.png",
-      "sha256": "423ed9f6ee4117edfae856b1f96e6c31cf71f2d14115344f4c1ee5a0c2a06c11"
+      "sha256": "c8b46c93c8e22f12509bd8ddea86ccd1cbc45bc190cee918fa5357cc83eb97c7"
     },
     {
       "runtime": "terrain-moonstone_lozenge2.png",
       "source": "procedural-materials/terrain-moonstone_lozenge2.png",
-      "sha256": "2d8e4f406254da24b99025c643668e03a905f29cf362530b4e5a566c51c96652"
+      "sha256": "12fcc76db5f4e959bbd8834205e63542957aa4d63edf175c3329ffb1427032f2"
     },
     {
       "runtime": "terrain-moonstone_lozenge3.png",
       "source": "procedural-materials/terrain-moonstone_lozenge3.png",
-      "sha256": "4e13a6dae43eec47f2cf232822dc666f3ac97582db5dadaf4c60ae82a81c68a4"
+      "sha256": "79c124927f62095d85459163812eb2aa6fe604fc6324c8b1a4bafd9ce63d0175"
     },
     {
       "runtime": "terrain-moonstone_lozenge4.png",
       "source": "procedural-materials/terrain-moonstone_lozenge4.png",
-      "sha256": "4c7c6ad333599b638111484e31c879f2946eb3ba4f4f9437915f2c900bad6705"
+      "sha256": "e3f325c636ee8b3b8a42a478858f5e523dc5f46a9e6fed8050fd34363bce9529"
     },
     {
       "runtime": "terrain-moonstone_lozenge5.png",
       "source": "procedural-materials/terrain-moonstone_lozenge5.png",
-      "sha256": "965a166961cb55c5ad7444796fc41a11e61508d3fd0ba575c59dadb024bda45b"
+      "sha256": "24dc6b38fb345e30fbdaa1536f601fd4e30f89009f9c26ab92fda8a790c8a949"
     },
     {
       "runtime": "terrain-moonstone_lozenge6.png",
       "source": "procedural-materials/terrain-moonstone_lozenge6.png",
-      "sha256": "94f0cf4bb2df626d6fc6e06b0dbdf735ad26f9b43f3ceecd208f849a9b2248d3"
+      "sha256": "5ae152e36ddc85fa57b286ce0db2271c04bc32d4d9fc7154686a41779f6800d0"
     },
     {
       "runtime": "terrain-moonstone_lozenge7.png",
       "source": "procedural-materials/terrain-moonstone_lozenge7.png",
-      "sha256": "82b705bd5051043399d50921899da5242125061c32ce5e60b8010e5c67cdf5be"
+      "sha256": "1e2491ff6446a788a62da5bc6c38fa889af17be8b506ada532b17e14d5f8d688"
     },
     {
       "runtime": "terrain-moonstone_lozenge8.png",
       "source": "procedural-materials/terrain-moonstone_lozenge8.png",
-      "sha256": "928c0c58d101014cd12ab4e53fee935daa7fd7db62a95f3cc037d8ffd4bf78e4"
+      "sha256": "d1b19637e10d30a42e38d53d57efe9bb63b18ccc357944360312ca6d3b439c9f"
     },
     {
       "runtime": "terrain-moonstone_lozenge9.png",
       "source": "procedural-materials/terrain-moonstone_lozenge9.png",
-      "sha256": "102e9e0c24093333dfbfaddbed818a127ecc36e60d240b2ab0a439b8eec31612"
+      "sha256": "ff916155e3fdc9052afa0868533f8fbc3c22f6b1d2e1ebd190029c4085bfe647"
     },
     {
       "runtime": "terrain-moonstone_lozenge10.png",
       "source": "procedural-materials/terrain-moonstone_lozenge10.png",
-      "sha256": "f806974e463b87e4c99e89b39cbe5403697a604190b177ba4d75d687f0e20d4b"
+      "sha256": "d37cf1932377d07e020de606a570524ea059fe36a654a78b4c8cb45ad00e2150"
     },
     {
       "runtime": "terrain-moonstone_lozenge11.png",
       "source": "procedural-materials/terrain-moonstone_lozenge11.png",
-      "sha256": "dc8ccdd632980e7edcce2dff860375fabbeae5bfd896802910eeb7b80ed50bec"
+      "sha256": "985e983dc24557bd287a651d07fe8f76011a055e293b49b3fbff1bcff757e88a"
     },
     {
       "runtime": "terrain-moonstone_lozenge12.png",
       "source": "procedural-materials/terrain-moonstone_lozenge12.png",
-      "sha256": "199f5294e87a3b2f9a9426a54d8c90b455bad297fd8bb99b05879688e5df0bfd"
+      "sha256": "18c334a12059c93d46a3c5ad2a0df932840e4f7e73f130178f64674369305fa0"
     },
     {
       "runtime": "terrain-moonstone_lozenge13.png",
       "source": "procedural-materials/terrain-moonstone_lozenge13.png",
-      "sha256": "10e95dd0be287e14fd6b39b92f13ad3b0b33b8cfe3785cbb75004d5759880997"
+      "sha256": "e6ff0f9798501f2cb20bb18691aa1f105ec2d45272fe712c1b7ad4993302c819"
     },
     {
       "runtime": "terrain-moonstone_lozenge14.png",
       "source": "procedural-materials/terrain-moonstone_lozenge14.png",
-      "sha256": "c14161e60150f837eb262d5695397d166b65af5ba6601b8eee09e39234e2acaf"
+      "sha256": "f99a3e8f015525e569dbcec0d680f5a935cd77c84991be63438a22a0a90f7e85"
     },
     {
       "runtime": "terrain-moonstone_lozenge15.png",
       "source": "procedural-materials/terrain-moonstone_lozenge15.png",
-      "sha256": "d9baf6f588c3030a20e21a6f050fa9c5664fa8618f156f17ba5ab1790e83e679"
+      "sha256": "5bf3b2a90396e9a1a1241ddaeda75a747ae29851896e6ae69723466a0bcdc7c1"
     },
     {
       "runtime": "terrain-moonstone_lozenge16.png",
       "source": "procedural-materials/terrain-moonstone_lozenge16.png",
-      "sha256": "c096004ef15f62ec2dfd128edb43c7273b8c50eeb1b258ae926c0f9b245c6c8e"
+      "sha256": "118251a34db66abd76bc291342579fcb94666b54560d07441a674ddc14a997b0"
     },
     {
       "runtime": "terrain-moonstone_lozenge17.png",
       "source": "procedural-materials/terrain-moonstone_lozenge17.png",
-      "sha256": "0e7550a243d79e17f09246dffac156ca8d4bae34cfa357b9ba0befc2ad27732b"
+      "sha256": "600727d751b8af2ecd0b5f5eedd4564464d3ae24f42c6f7c9c7a94555dcafa42"
     },
     {
       "runtime": "terrain-moonstone_lozenge18.png",
       "source": "procedural-materials/terrain-moonstone_lozenge18.png",
-      "sha256": "d72763c84968d9f615f94e37bd5a3c9a141821c2a8228435d9b8adb50a3b4fca"
+      "sha256": "caba4eb7bba90dcb803bd9e7e1c400901ecf2dec7648cf6390c0bc438dc0bc35"
     },
     {
       "runtime": "terrain-moonstone_lozenge19.png",
       "source": "procedural-materials/terrain-moonstone_lozenge19.png",
-      "sha256": "9e06aa1a19cdc03173430ca94feac848dc0775d71576844df622fbeb89445ad1"
+      "sha256": "59a32e1484e37fdaf885af116789685296e9bc6b0f7aba45267410d88f29bb89"
     },
     {
       "runtime": "terrain-moonstone_lozenge20.png",
       "source": "procedural-materials/terrain-moonstone_lozenge20.png",
-      "sha256": "9a91014dbabc7b7d3c19b3f86474c97871d633166e409980f1b7e297abdac274"
+      "sha256": "e916155835898ae6f92fa6d3a4bd5f68aba6e855f9c94616de55850dc62ff438"
     },
     {
       "runtime": "terrain-moonstone_lozenge21.png",
       "source": "procedural-materials/terrain-moonstone_lozenge21.png",
-      "sha256": "08233786395a9c82c511a248a3192fd7044f6a4e7b263cf21e59511fbadb065c"
+      "sha256": "da5c68b57dfa2dc3fe25b2d5eefeb429ea007d0de440f6f7b94360ad7d4ce90e"
     },
     {
       "runtime": "terrain-moonstone_lozenge22.png",
       "source": "procedural-materials/terrain-moonstone_lozenge22.png",
-      "sha256": "e4f5d8d8eb894fbec45d5ca1cf492761f002991ede0232202e1e115f55701787"
+      "sha256": "497b0890ae4c4de28a4b143475373af8e9216a77c2178701efbf7a9c700e150b"
     },
     {
       "runtime": "terrain-moonstone_lozenge23.png",
       "source": "procedural-materials/terrain-moonstone_lozenge23.png",
-      "sha256": "21247152ee48ed1cd00a7e565e0d2c9c48f51b8b2309157e5ffc0df52175634f"
+      "sha256": "c58f12413db97f1009354a488a578b25d22b239924efdb2445649713f52cbf77"
     },
     {
       "runtime": "terrain-moonstone_lozenge24.png",
       "source": "procedural-materials/terrain-moonstone_lozenge24.png",
-      "sha256": "19b7baa5b6499dad90c3aba63746d66bfa61a3a4ac1388cfd46b15ae8b784afa"
+      "sha256": "f54b8e0d781245fc480df461c8f6e72381a4ea234cdba9d3d6664f2c341db12d"
     },
     {
       "runtime": "terrain-moonstone_lozenge25.png",
       "source": "procedural-materials/terrain-moonstone_lozenge25.png",
-      "sha256": "c2ec1953902b5dfbca268d9d82fea2c5f574b586e56edfa6e0c36f31dbbb3bf4"
+      "sha256": "9c9ec9f92c18f8b5fd8065e1b1606255671a23d65ab311cbc3c0cd712e109805"
     },
     {
       "runtime": "terrain-moonstone_lozenge26.png",
       "source": "procedural-materials/terrain-moonstone_lozenge26.png",
-      "sha256": "6e737a94ff5ce664a8368fbfe48e9fe09d801a7eab284a88d0eeb1612929a8e4"
+      "sha256": "c0ed4fbb059d483a9f7296737e708faaf6026df4f1d95e76c1e5d28fddbfb98f"
     },
     {
       "runtime": "terrain-moonstone_lozenge27.png",
       "source": "procedural-materials/terrain-moonstone_lozenge27.png",
-      "sha256": "e5a85621f1a02e474aa279ccf78c804aa2156d14a066c0f53b0e97a6b80c9c1c"
+      "sha256": "e082d151ed525f3ee572b87e5c2fb198122b166d3dd2c5594000049e3cdcb2da"
     },
     {
       "runtime": "terrain-moonstone_lozenge28.png",
       "source": "procedural-materials/terrain-moonstone_lozenge28.png",
-      "sha256": "269fa4669c96e9ac8439a1f253f6d6022d3898d4d216100bc8c3d53de1df6c9a"
+      "sha256": "d0140f05ac33bf61582d97bd40ff083f7a527bc1d86cd513178b9442c99d9ec7"
     },
     {
       "runtime": "terrain-moonstone_lozenge29.png",
       "source": "procedural-materials/terrain-moonstone_lozenge29.png",
-      "sha256": "8ce806ab84444f19c2818f13cd399a1c77ab99850af4c1353906d7114e8a1905"
+      "sha256": "8fe1e34d17fb5a471c12ca45c5598dd5048130477a262d83311984ae02b9b917"
     },
     {
       "runtime": "terrain-moonstone_lozenge30.png",
       "source": "procedural-materials/terrain-moonstone_lozenge30.png",
-      "sha256": "32d22ed35296c5bea3974294fe829097b4a6e48168ee31644c7e2772404237f3"
+      "sha256": "f4286fc3ca4d89d35b3ef31fe530f08b270928c97d023250243f4501b97edcc7"
     },
     {
       "runtime": "terrain-moonstone_lozenge31.png",
       "source": "procedural-materials/terrain-moonstone_lozenge31.png",
-      "sha256": "0712cc356bda97641f92ab99c813be0c1a92e17dc5e23d10f12a9ac41e5e3786"
+      "sha256": "57f1e02065a9abc369018448ff2391d99e92aa3e8514201ffba176497b2bdd40"
     },
     {
       "runtime": "terrain-moonstone_lozenge32.png",
       "source": "procedural-materials/terrain-moonstone_lozenge32.png",
-      "sha256": "974d689f7e5b4f4a8d571dcc5d38cc64be7b8700a76f7da1b736bd276f5b7f80"
+      "sha256": "0036ed38fd10646b2831a8a544da9ca71ade093b1e8a1b2177c9ccf26ad31294"
     },
     {
       "runtime": "terrain-moonstone_lozenge33.png",
       "source": "procedural-materials/terrain-moonstone_lozenge33.png",
-      "sha256": "b95dc6a23858b262bb44380c49e75053fdff4e7e1e6d041eb35e6f740b7d137f"
+      "sha256": "39a7796681e4fac0f0c9599d72fd39d4b9c3ddc821ac6cc2e4fa61643ac0b157"
     },
     {
       "runtime": "terrain-moonstone_lozenge34.png",
       "source": "procedural-materials/terrain-moonstone_lozenge34.png",
-      "sha256": "84dc61579eb097ec3ede098996adba1540130557344498ab3da26da3203b01f3"
+      "sha256": "cd43d4ae49dd8f6648ec9ab3ea41fd1fb298121313b234a073676474935ace9a"
     },
     {
       "runtime": "terrain-moonstone_lozenge35.png",
       "source": "procedural-materials/terrain-moonstone_lozenge35.png",
-      "sha256": "5b2fd652456c87a5f075700b8a2899b43b7a72c1ca903fbb8c93e133768a019a"
+      "sha256": "6c77a9204e2b5faf3eb2fcc9b9051cfe04dea34d000c2d9c8be4272af4596186"
     },
     {
       "runtime": "terrain-moonstone_lozenge36.png",
       "source": "procedural-materials/terrain-moonstone_lozenge36.png",
-      "sha256": "4a76c71d9083279d8090e1da06420e71a3cdade93ef4b19131cf8716c59352a9"
+      "sha256": "eef69cff6824620025c10b8319cf08aa96a15ee3043457cd07d6c4ea93ed7ce8"
     },
     {
       "runtime": "terrain-moonstone_lozenge37.png",
       "source": "procedural-materials/terrain-moonstone_lozenge37.png",
-      "sha256": "7b73133085369b4467bd45462597c0bde46cb2d1704b72c5a002cb2bd334ad7a"
+      "sha256": "f6c740e1b990a17da6b381a6c2dec65b602841f456de96a9997de56a627731cb"
     },
     {
       "runtime": "terrain-moonstone_lozenge38.png",
       "source": "procedural-materials/terrain-moonstone_lozenge38.png",
-      "sha256": "07c1ce3e143794062daafb8213a4b99a79d8614691133d8ca134aa9933603899"
+      "sha256": "3e0682d2502b4cd26d77e3f45b4f6acf63a3774e8c067139e9e5d702cec2a318"
     },
     {
       "runtime": "terrain-moonstone_lozenge39.png",
       "source": "procedural-materials/terrain-moonstone_lozenge39.png",
-      "sha256": "6532fcebc49bf40f0c22cd9a55b059e85247615dcd74d82f52072305a124d243"
+      "sha256": "d7f6449bcfa27d34e7cffc5555e15f52c7046322e028c3c8ace8f09424bfc0aa"
     },
     {
       "runtime": "terrain-moonstone_lozenge40.png",
       "source": "procedural-materials/terrain-moonstone_lozenge40.png",
-      "sha256": "5f080ab6b8d8013ca15acc3f9dd1fb9ea4122f3194247d064bc42d429029ea9f"
+      "sha256": "a4d4301b4914ffc13d752d96a021bcc2348de3c53e0cec432319251040719254"
     },
     {
       "runtime": "terrain-moonstone_lozenge41.png",
       "source": "procedural-materials/terrain-moonstone_lozenge41.png",
-      "sha256": "7b538b7309e3a5940b357b5d83356520903371f9e1f50a840e76b21e826bf170"
+      "sha256": "5ea5ed593113294856ddb631866eb9f60645dc477685a4713443a4be69417150"
     },
     {
       "runtime": "terrain-moonstone_lozenge42.png",
       "source": "procedural-materials/terrain-moonstone_lozenge42.png",
-      "sha256": "6488d671387850dbf5bcbe7b6e8ecfc78de717c7693f5768827da9700bac51df"
+      "sha256": "b43775e74af2eb0611789635089ae1dcc9c661dba5036b584e8ee8bb0ce987fb"
     },
     {
       "runtime": "terrain-moonstone_lozenge43.png",
       "source": "procedural-materials/terrain-moonstone_lozenge43.png",
-      "sha256": "66766c9ad93111874730712447e9f7fba037566cc1db11d75a40e5ee30224a9e"
+      "sha256": "5fb6c59fd8d8bf9ad02bb9cc22d9a03fb6c0553e38d60573562bc93062295c18"
     },
     {
       "runtime": "terrain-moonstone_lozenge44.png",
       "source": "procedural-materials/terrain-moonstone_lozenge44.png",
-      "sha256": "ea40e223c6b2604c7d265071cdf8bd5d498f94ebd3b82bb8eee91d9c7c293edc"
+      "sha256": "2f1bc11388b787f371283b4237f549d1f986632946bbf145ea288748611df92b"
     },
     {
       "runtime": "terrain-moonstone_lozenge45.png",
       "source": "procedural-materials/terrain-moonstone_lozenge45.png",
-      "sha256": "aa681ceac61514ab4434e5d58b47158afcea1f8801019a7b5a49f00f557c73a5"
+      "sha256": "00844ba89327b3db7ceb8a81b6a43b085ac5be80b2d6f17d7d959323935b1eaa"
     },
     {
       "runtime": "terrain-moonstone_lozenge46.png",
       "source": "procedural-materials/terrain-moonstone_lozenge46.png",
-      "sha256": "77771bc8fe7e4e58e2f1b1a2fc7cbfe9cd604f6b586f5cbaf6a60c6778fef9dd"
+      "sha256": "6275dac18109cec86bbfab14fee0b44711520e47d65f15785c3579267ba1c92d"
     },
     {
       "runtime": "terrain-moonstone_lozenge47.png",
       "source": "procedural-materials/terrain-moonstone_lozenge47.png",
-      "sha256": "da660497780b423f88e653789464226ac3433b54943dfb205453fcd5ca2e1636"
+      "sha256": "590a4a4fefafcc49b20e0dc5b45496032d1951600b312c9d736767d3ff69298f"
     },
     {
       "runtime": "terrain-moonstone_lozenge48.png",
       "source": "procedural-materials/terrain-moonstone_lozenge48.png",
-      "sha256": "7c204c8f2b8d80a9d67f5d138c0852e70a5965b162bb51d5e915fc2bf852171f"
+      "sha256": "dd5e91f19f6530cafd88e770958f040794aa030e16c322b0d8ad730fcf30965d"
     },
     {
       "runtime": "terrain-moonstone_lozenge49.png",
       "source": "procedural-materials/terrain-moonstone_lozenge49.png",
-      "sha256": "5ff6f390ad7d26619c3212d961baa78ffc4d04648b481cc7e81cc15fd1bb2941"
+      "sha256": "b2984cb54fbd35f7ab551f3b0d127dbaa19ab599f086c419c5b5d73c84ed53b2"
     },
     {
       "runtime": "terrain-moonstone_lozenge50.png",
       "source": "procedural-materials/terrain-moonstone_lozenge50.png",
-      "sha256": "bff9b2cdc9f7d79f76e5a63cb72abf3e4614d7501ba013bdc916641162e87405"
+      "sha256": "b2fc0f6b1369e552689e057d97edde6737ee245ff595423363bd4006a93c59bd"
     },
     {
       "runtime": "terrain-moonstone_lozenge51.png",
       "source": "procedural-materials/terrain-moonstone_lozenge51.png",
-      "sha256": "1417937136401730dd88e9c51086a3339b9042a6af0589ca76e7ccc8dbad2012"
+      "sha256": "0a36d2fd724e80ddb749ac83298eb1408fe18fbe00e88791019a4aaa4cec0cd3"
     },
     {
       "runtime": "terrain-moonstone_lozenge52.png",
       "source": "procedural-materials/terrain-moonstone_lozenge52.png",
-      "sha256": "0186b3bd3fc9e16713c51db8cc1e0643e8b6a406109df78403b66f27f3a0b179"
+      "sha256": "f88f578b0f383b0662c6a7fa4118c84a04e3e3b7254d31ddb082eb6949eb4b35"
     },
     {
       "runtime": "terrain-moonstone_lozenge53.png",
       "source": "procedural-materials/terrain-moonstone_lozenge53.png",
-      "sha256": "f0790687b38a34f5bf3985c07d625a18ad569b0857401c86ed2287a7736fd1d4"
+      "sha256": "132d85422db5eddccece88a77d48e187b46b6f0117d88bc1db81a30eefac6587"
     },
     {
       "runtime": "terrain-moonstone_lozenge54.png",
       "source": "procedural-materials/terrain-moonstone_lozenge54.png",
-      "sha256": "4aaffc252ce45382fae19ddbda9055694b6147c76417fd98e3507101ae53eb26"
+      "sha256": "55eee2c2990aa8c244119f7aa06d27e708e90209fdd07498ab66b83fb31b67c5"
     },
     {
       "runtime": "terrain-moonstone_lozenge55.png",
       "source": "procedural-materials/terrain-moonstone_lozenge55.png",
-      "sha256": "cbeb7a26b9122e5420a4e20cca41cd45768fbe13d2ab7da2c0eddbd9781ac4cc"
+      "sha256": "b0915283fc2618b24a00d3465c739bd6ce5511fb217b82635531d918092a11be"
     },
     {
       "runtime": "terrain-moonstone_lozenge56.png",
       "source": "procedural-materials/terrain-moonstone_lozenge56.png",
-      "sha256": "31f27f18befd439cf06f04afa6e2b74d3ad31d776698737e168ccd143bd2d7d6"
+      "sha256": "d89bc5f9c895af17dcac24c421fc12f72ed978d21d81f3956fb521586fc5cb85"
     },
     {
       "runtime": "terrain-moonstone_lozenge57.png",
       "source": "procedural-materials/terrain-moonstone_lozenge57.png",
-      "sha256": "167959e82d3ce690982dbd9c1b92b30cf1712a112e7f77058dc259fa248f3f62"
+      "sha256": "4304c0a5b5f543176c361e46f62f980391688e7314642eb60e3c8fc50a3d8da8"
     },
     {
       "runtime": "terrain-moonstone_lozenge58.png",
       "source": "procedural-materials/terrain-moonstone_lozenge58.png",
-      "sha256": "c0cb3bab33c5375e452db8b70a20fea22c5d3a31865beb9ecca28279fe432b28"
+      "sha256": "79d382b434379bf020783e6c7bf87e9c662d5f596c0432d507879452b5e8b910"
     },
     {
       "runtime": "terrain-moonstone_lozenge59.png",
       "source": "procedural-materials/terrain-moonstone_lozenge59.png",
-      "sha256": "e75a5ed6630843d1926370fa1477f6a6df9c1835db716308f7e78ffb13241253"
+      "sha256": "acf3d01cc14b5f9ada84a73d07fb68e1e0e24f1fd3ddaf87bfb95d3effc35187"
     },
     {
       "runtime": "terrain-moonstone_lozenge60.png",
       "source": "procedural-materials/terrain-moonstone_lozenge60.png",
-      "sha256": "ad53e4247a262b2e86b7b40973a5ceb4974e90e5fd1d67d8efa3f3d98eff90ac"
+      "sha256": "3098699889cb9006c2e4e55e1c6e30caa46c0485316df60dc805babbb58f04ba"
     },
     {
       "runtime": "terrain-moonstone_lozenge61.png",
       "source": "procedural-materials/terrain-moonstone_lozenge61.png",
-      "sha256": "45909da47e62c7bca76321b27455f4669e464df2e405b4df5c6028a33751d283"
+      "sha256": "78acd288041a8bb79682d4a1b46d676cc3a06435fdb39aaf901194a3e6586ba6"
     },
     {
       "runtime": "terrain-moonstone_lozenge62.png",
       "source": "procedural-materials/terrain-moonstone_lozenge62.png",
-      "sha256": "fe92bba679a95a49fc84ea4d43f775b8eaa726b3792ef9a4193ffdb58e6be735"
+      "sha256": "f3f484430f03132ae7e991e20dbc2802e782ab63e49a34a87d0a9bae96ec1882"
     },
     {
       "runtime": "terrain-moonstone_lozenge63.png",
       "source": "procedural-materials/terrain-moonstone_lozenge63.png",
-      "sha256": "163be3490bb1e35e89e4cde03bbec7bc9610995fea9620d0a6483f5fcb766926"
+      "sha256": "0a0a071233c8f2194dcf82af49be9d537cc690418de7fa829b8c21fd49dbe2ff"
     },
     {
       "runtime": "terrain-moonstone_lozenge64.png",
       "source": "procedural-materials/terrain-moonstone_lozenge64.png",
-      "sha256": "00eb9c301cb544ed1514aec1b19b6477cf14505345dddbfc0da2b49654bb9481"
+      "sha256": "23433b9fcea00bf3ff68465ff2bbb4ec91ad0b5ae245b4495f460bb738feb02a"
     },
     {
       "runtime": "terrain-moonstone_lozenge65.png",
       "source": "procedural-materials/terrain-moonstone_lozenge65.png",
-      "sha256": "0b9a3c6dbd8f109cf2f2c9f5c01fb35634e62c1d24a755d210035857ad5a3480"
+      "sha256": "7b0ebb2c97c928e0131e592db885dcf2f220f922bc93945f3019b0ed029a1789"
     },
     {
       "runtime": "terrain-moonstone_lozenge66.png",
       "source": "procedural-materials/terrain-moonstone_lozenge66.png",
-      "sha256": "7fa74b3544922d7ec50ea8030dccd2412307c5f8d4e462f3070a3914b7dab268"
+      "sha256": "3f56372285e83faf9e1fe176788dcced49649eddbe0d657b5efa2dfd606f248f"
     },
     {
       "runtime": "terrain-moonstone_lozenge67.png",
       "source": "procedural-materials/terrain-moonstone_lozenge67.png",
-      "sha256": "f71e9c41e022157b131c05c4c18ec69703db65527aa7fba1797dbc002c45e1ca"
+      "sha256": "c6b70268bb16639a00cce8e56b7fd6ac40d2acdd0b606484a323b83043b2ba3f"
     },
     {
       "runtime": "terrain-moonstone_lozenge68.png",
       "source": "procedural-materials/terrain-moonstone_lozenge68.png",
-      "sha256": "bf254fb1726f903cd1e23b96757d5f1e46b3ca7df0af483c1654b8c01fa83d48"
+      "sha256": "97565fb8ca2674d92896871f7f1c78d5a5b21b3548abe6cbacc862b1d468d329"
     },
     {
       "runtime": "terrain-moonstone_lozenge69.png",
       "source": "procedural-materials/terrain-moonstone_lozenge69.png",
-      "sha256": "4ba09d64f412416f795bde2d1cc0225bf38d62465e36e6d029bb965edbb49bc0"
+      "sha256": "36e8a7d8287c05071e0b650f11996159df345ea12e639ad8c5ee0a5121e31938"
     },
     {
       "runtime": "terrain-moonstone_lozenge70.png",
       "source": "procedural-materials/terrain-moonstone_lozenge70.png",
-      "sha256": "39e241ad9db84b46280c15f1e1679178f920defa054e204cd2baeb5ab6a4cc6a"
+      "sha256": "3da0f1f999a030672caea12c0296480bf245a703049cc7726802496fa5c12896"
     },
     {
       "runtime": "terrain-moonstone_lozenge71.png",
       "source": "procedural-materials/terrain-moonstone_lozenge71.png",
-      "sha256": "b3e7249dc8acbce747226a059b5c3f3fcf70ea0e788c94e468ee945a00d33bae"
+      "sha256": "0c4924847559f81608cd11bdd421a467ca6ba5d240ee302c57acb7f618bb60b5"
     },
     {
       "runtime": "terrain-moonstone_lozenge72.png",
       "source": "procedural-materials/terrain-moonstone_lozenge72.png",
-      "sha256": "51a438ddf18a3559fdfc1fc9862b0fe39fe3ec27feb3fe78defc8783bb1d4fe2"
+      "sha256": "708a7eff88396274f020685c04404115a191f596ba27e0fdbfd22e92aba03630"
     },
     {
       "runtime": "terrain-moonstone_lozenge73.png",
       "source": "procedural-materials/terrain-moonstone_lozenge73.png",
-      "sha256": "d9c85d7dcaf4fa9e48e40418ef4d737ef258c9954f06d960a7e03f37c6a58ad7"
+      "sha256": "4d6d7cebecebb0fd9b13d84f9b91a780e8251a8b7eaf147c4a2697f31057db7b"
     },
     {
       "runtime": "terrain-moonstone_lozenge74.png",
       "source": "procedural-materials/terrain-moonstone_lozenge74.png",
-      "sha256": "869112bde2138373f5d3751efd3bda9093de42ea0e8c1af6f27c5a9ecc4f8aba"
+      "sha256": "a635daefd7522637f81f2b1518c8692fa6da04554857283a77b9e728140cce44"
     },
     {
       "runtime": "terrain-moonstone_lozenge75.png",
       "source": "procedural-materials/terrain-moonstone_lozenge75.png",
-      "sha256": "b630f8a9b756b11744501bd26cb43d45615a2f404e90238b861df8adffd84b87"
+      "sha256": "235e3cd1bc1e53ef4fa41a1b9cb5ddb1717fdd48b208e84e3c5d697f64c2b9d3"
     },
     {
       "runtime": "terrain-moonstone_lozenge76.png",
       "source": "procedural-materials/terrain-moonstone_lozenge76.png",
-      "sha256": "653c7e3e3a8fd33c809a206880209f1169d006c3ef8760624d5c6cf1ae0a1dca"
+      "sha256": "8ddb82dbc35f9cdab6dae5bf9dcb7c9f25d2ea853c0926a245f9f537f0e68057"
     },
     {
       "runtime": "terrain-moonstone_lozenge77.png",
       "source": "procedural-materials/terrain-moonstone_lozenge77.png",
-      "sha256": "0c934ae86c7157b206956b64412f86315d1aaff03b427ac69eebc21e30696aa0"
+      "sha256": "b7b0b9eee9266a523f5550b7e198a1130cfa4ada386e748b66f1a7d66fbc449a"
     },
     {
       "runtime": "terrain-moonstone_lozenge78.png",
       "source": "procedural-materials/terrain-moonstone_lozenge78.png",
-      "sha256": "de791829f5c30b458f12f56be9f602a30fba496ab12f54c74555077a656a7f17"
+      "sha256": "d1caffadc5c0f57dd7579813f4592f7ee643ea77d66efbfd9f1f4c90b0c13e27"
     },
     {
       "runtime": "terrain-moonstone_lozenge79.png",
       "source": "procedural-materials/terrain-moonstone_lozenge79.png",
-      "sha256": "3c901d0ac52626ea59401a213b228dc1c4e36f109f9d22c49f37c584d2291210"
+      "sha256": "342bacd67e40a45e40a372912cb9e3b9087cbfd748472f88ddaae0f347aa75be"
     },
     {
       "runtime": "terrain-moonstone_lozenge80.png",
       "source": "procedural-materials/terrain-moonstone_lozenge80.png",
-      "sha256": "48c90b3cbb0c653036a9656eba892f421a11a4ec496029be4e5e58eb74d6b4bb"
+      "sha256": "e676c78ac4ffc9fa5d8277a3775e82f090af687517d1225978c378e182a4042e"
     },
     {
       "runtime": "terrain-moonstone_lozenge81.png",
       "source": "procedural-materials/terrain-moonstone_lozenge81.png",
-      "sha256": "d7ac71848a009da9044a6362c0ba47cd51e8b62c4829bf4865b0ddc0cb4fc0de"
+      "sha256": "26e6d22160eaedda95e2c40b621bb23a6ceedc8cbc891dcbf03a1f6ab76d1850"
     },
     {
       "runtime": "terrain-moonstone_lozenge82.png",
       "source": "procedural-materials/terrain-moonstone_lozenge82.png",
-      "sha256": "76bedf5019c6ae2082c7dac49ca66c4e620f54dc4139627aab124d2ab72a670c"
+      "sha256": "b62155661f47b18e063bff726a4cdcdeaaefd5610f53fd468a7fe6c2aabebe37"
     },
     {
       "runtime": "terrain-moonstone_lozenge83.png",
       "source": "procedural-materials/terrain-moonstone_lozenge83.png",
-      "sha256": "230043300d789ae5e113e323800584bcea9a7060f01c13cb51fe6fc2311554cd"
+      "sha256": "855c8d6c331eb83b65051a402cac9822d2e81eb3cc999d4c5db9cab188dc9c60"
     },
     {
       "runtime": "terrain-moonstone_lozenge84.png",
       "source": "procedural-materials/terrain-moonstone_lozenge84.png",
-      "sha256": "373f2d851617de8c9bcfe9fd131144df0d4152159289745321968436e30bd8df"
+      "sha256": "b6b93a03b1a70c1481308caf85aec843e89821150ee038b75288271a879bc840"
     },
     {
       "runtime": "terrain-moonstone_lozenge85.png",
       "source": "procedural-materials/terrain-moonstone_lozenge85.png",
-      "sha256": "89242cf4e0911817115b9eff59729b814390aa41189a16b29c2c561df311b938"
+      "sha256": "97e7aa2624a44d1faae9cc91679ecd9de3cd5e99ea003a4fb8a01ac962fdd17f"
     },
     {
       "runtime": "terrain-moonstone_lozenge86.png",
       "source": "procedural-materials/terrain-moonstone_lozenge86.png",
-      "sha256": "1820dbe5280b87fa805091908ac3aa0a90f4d4fd745a8d26428c9f7f1884896b"
+      "sha256": "c19ac4d46a8d91df061d9b407fda8747ba30b4366a3e1b80b1c813d8c6c78874"
     },
     {
       "runtime": "terrain-moonstone_lozenge87.png",
       "source": "procedural-materials/terrain-moonstone_lozenge87.png",
-      "sha256": "e56242290b282f2559def55bf165cfa8c5254df4b3f49c9c1fd0316c2c5cda18"
+      "sha256": "e1ec493fc5c1aeee2e7213bb082d43f05cbc77c84d646876e585c2150c0f5eb6"
     },
     {
       "runtime": "terrain-moonstone_lozenge88.png",
       "source": "procedural-materials/terrain-moonstone_lozenge88.png",
-      "sha256": "b88b5b50dac9cb5bbd6b206ebe680d52c8ed9d2250efa3c5bcecedfbd7a9ae3e"
+      "sha256": "76089be93da571d96a2f2379695c8ef999172eb7661ee1c93f441b2de9dea1c5"
     },
     {
       "runtime": "terrain-moonstone_lozenge89.png",
       "source": "procedural-materials/terrain-moonstone_lozenge89.png",
-      "sha256": "1e6d485745f04b67d16d7854f9517b00eec6b97bace55559e10d6de47ecc4620"
+      "sha256": "920e32017347a4badb2a77d3c179f745ee3bb8afe7159d84c288cfc424205d9e"
     },
     {
       "runtime": "terrain-moonstone_lozenge90.png",
       "source": "procedural-materials/terrain-moonstone_lozenge90.png",
-      "sha256": "3346b0ab818fc0f1780a7a1f1e0006be2372520e90f7c1b112691e1a9d485181"
+      "sha256": "7169302d36a8370897b3ecb24009940f56d400b3cd717bfd9933fb7a19e3659f"
     },
     {
       "runtime": "terrain-moonstone_lozenge91.png",
       "source": "procedural-materials/terrain-moonstone_lozenge91.png",
-      "sha256": "d56c114391d19ba9617ec8a912f0ea7559cc01b87cafda7add7759837c569f20"
+      "sha256": "17d5fc1cf207526a453cb14f785c8f409b1ffdc20d339c0ca0c4d940daa8b026"
     },
     {
       "runtime": "terrain-moonstone_lozenge92.png",
       "source": "procedural-materials/terrain-moonstone_lozenge92.png",
-      "sha256": "9eaa0c61430d019ada87a00224e744c9064049cf8ec3aac312bfbbf9f246b7c0"
+      "sha256": "7bdd5bbbc085fd89dd2a10c7a41320c4328c3273f25dca602032b06b71d2d305"
     },
     {
       "runtime": "terrain-moonstone_lozenge93.png",
       "source": "procedural-materials/terrain-moonstone_lozenge93.png",
-      "sha256": "e95720e26b7b500e793738fd8d7438ba7c6c46028807d531acafc662af58d368"
+      "sha256": "14e45d11d7d6a07efa16f2ed77546b5053db76db4587dc01adb34ac572bff582"
     },
     {
       "runtime": "terrain-moonstone_lozenge94.png",
       "source": "procedural-materials/terrain-moonstone_lozenge94.png",
-      "sha256": "c7c31f6c111b65a76d009d1509847a4e7bb2de1a1c5461eeeaf8d780d7fe5f1e"
+      "sha256": "3ab8e7268db8b4ed0daeadcff7e07d6b044715c23348b4c4243224d03fff9f36"
     },
     {
       "runtime": "terrain-moonstone_lozenge95.png",
       "source": "procedural-materials/terrain-moonstone_lozenge95.png",
-      "sha256": "707a93e42ac1d46207d780cac50d578902b848983ac27f17eb0bec9473c23595"
+      "sha256": "119e2c81606a6279968370a760ba70aa089395cc342cc68e6eb0cf80bdeece8a"
     },
     {
       "runtime": "terrain-moonstone_lozenge96.png",
       "source": "procedural-materials/terrain-moonstone_lozenge96.png",
-      "sha256": "9641083c05261040fb4074630a71c3ace0ca41daf5a8b56998bf5a47172611b6"
+      "sha256": "f7091912f61568de00148d5712af59f5412876a90413c855d6389610aad800e1"
     },
     {
       "runtime": "terrain-moonstone_lozenge97.png",
       "source": "procedural-materials/terrain-moonstone_lozenge97.png",
-      "sha256": "6d94a8c7b5a87a8b9c9ae264ab19736c557e0baf968c77a91cc4e73fccb85cb4"
+      "sha256": "c671db96596f7436dcf7bf95c1220795225cc9fc12e467e89276d3ab1b86eded"
     },
     {
       "runtime": "terrain-moonstone_lozenge98.png",
       "source": "procedural-materials/terrain-moonstone_lozenge98.png",
-      "sha256": "319e81f71e62ad92623dd52e6603abd67794805207b9e266b33a2c6b615b8d34"
+      "sha256": "581ae152d68d420530117806912bcc5c84d568ac31fe5142f47fb2a620e2601d"
     },
     {
       "runtime": "terrain-moonstone_lozenge99.png",
       "source": "procedural-materials/terrain-moonstone_lozenge99.png",
-      "sha256": "503f3f1a5994bf944a10bc8adde84893c54f04a5680781a5d78872a2812c426e"
+      "sha256": "37ec62dce91607a37678db0e9d288e5e15d442d019ac0916dbecd13dba7cca26"
     },
     {
       "runtime": "terrain-moonstone_lozenge100.png",
       "source": "procedural-materials/terrain-moonstone_lozenge100.png",
-      "sha256": "3f20c0a971cace6c3bb40e87c7e49691a3cf60eee325916d6d471e9c06087faa"
+      "sha256": "cb3f942a001c7ac7a15ed394e9a76f1682e5d1340abf5d306ff75546a9a548ee"
     },
     {
       "runtime": "terrain-moonstone_lozenge101.png",
       "source": "procedural-materials/terrain-moonstone_lozenge101.png",
-      "sha256": "c266dddab4472a6e1b560d79c85b99f79fcbe919eca9be9dd64e4391e4faaba6"
+      "sha256": "13f0a62cf48f5f1942ac7cef8882220e4131b811d50fb77613e2267fce02347e"
     },
     {
       "runtime": "terrain-moonstone_lozenge102.png",
       "source": "procedural-materials/terrain-moonstone_lozenge102.png",
-      "sha256": "662ba053c2a278fc926b6a3fd78ea5941762b8da2c6abe25f05aececa68fec5c"
+      "sha256": "d6509d75d9363b642e0d17a7a0058a509113faf0d4bf20f2ba7f1370485731f4"
     },
     {
       "runtime": "terrain-moonstone_lozenge103.png",
       "source": "procedural-materials/terrain-moonstone_lozenge103.png",
-      "sha256": "967b155bc7749a177ad89a7174cd35b53036d911f1195a43c59717f58e423fd2"
+      "sha256": "94331ed1ff8d77238493bf395e1b3afe83168a59ca482fd40256f2fd72fb7a52"
     },
     {
       "runtime": "terrain-moonstone_lozenge104.png",
       "source": "procedural-materials/terrain-moonstone_lozenge104.png",
-      "sha256": "222e99e589f75f6ba40fa135aae165179be4b88d157ac0652a5b8f8bfae96434"
+      "sha256": "924d4934ce350588095750de51a6eb2057ec491967349776bbc5a51818dd2764"
     },
     {
       "runtime": "terrain-moonstone_lozenge105.png",
       "source": "procedural-materials/terrain-moonstone_lozenge105.png",
-      "sha256": "8a5fa65a986a3ce9cdd791462491c2477c1ff69b3129a8a6ad6af7e81388a697"
+      "sha256": "f4cab870f4e23ecddee2d84296c44c01670b0dedf394ee05629a91631ffee0b5"
     },
     {
       "runtime": "terrain-moonstone_lozenge106.png",
       "source": "procedural-materials/terrain-moonstone_lozenge106.png",
-      "sha256": "39ad297b2daca7f5d35c2cd02be68f3ccc7b8e7de960b9efe56e699b4f21708c"
+      "sha256": "61ec0f9fe8ea3b900e36371488229e2e2988b7761df265c4771db56015a98a3d"
     },
     {
       "runtime": "terrain-moonstone_lozenge107.png",
       "source": "procedural-materials/terrain-moonstone_lozenge107.png",
-      "sha256": "1836312ffc54c12b0c7219de723368ba2fe1edbe53d02f76667afce4d8aafca1"
+      "sha256": "468fa849b6250ebadfa7e21910eebdb117b06bbdb39e7dee1f2b767edc1c8f19"
     },
     {
       "runtime": "terrain-moonstone_lozenge108.png",
       "source": "procedural-materials/terrain-moonstone_lozenge108.png",
-      "sha256": "3ef8c7a045f2f775818c589bc402d1105cbfa9d42229c1614064e7b97634d6f0"
+      "sha256": "a0fff0d864c7647905830ee52283834ff030b8557b64b7a0f1758be607bb8a3e"
     },
     {
       "runtime": "terrain-moonstone_lozenge109.png",
       "source": "procedural-materials/terrain-moonstone_lozenge109.png",
-      "sha256": "c26dbf3ca22d099f4624b228978e9702241c6a1334cd27bdd2315c65df017216"
+      "sha256": "9b6f0be7f428a10f66275378f226f218de1a1c590bee929967dcac81f8fa167d"
     },
     {
       "runtime": "terrain-moonstone_lozenge110.png",
       "source": "procedural-materials/terrain-moonstone_lozenge110.png",
-      "sha256": "9fe2f6cabb278368b544df17ebca7c023b7c6195dbe89cdcb8b6f490f67c9b61"
+      "sha256": "8e757f59479efa8023acd2c42b0fda53441302a15a380714bdbc4b0ec23d5d3e"
     },
     {
       "runtime": "terrain-moonstone_lozenge111.png",
       "source": "procedural-materials/terrain-moonstone_lozenge111.png",
-      "sha256": "771633dfffbc65fcda5a366b8bf9ac48a50713733e0e1eeee9546e8921676f56"
+      "sha256": "1ada6c637be997a4232431d19595e6cb7fafd91fe1b56fcd9609dfa9d716bf24"
     },
     {
       "runtime": "terrain-moonstone_lozenge112.png",
       "source": "procedural-materials/terrain-moonstone_lozenge112.png",
-      "sha256": "569bf0f040fe4b5f00670be425ef6bf73a62dbf13469f319c195cd857a2b12d4"
+      "sha256": "0acdf1fa8eadd20277398ec2beb13b46febf0367d68dd83a049bbdb04bed174b"
     },
     {
       "runtime": "terrain-moonstone_lozenge113.png",
       "source": "procedural-materials/terrain-moonstone_lozenge113.png",
-      "sha256": "a8de78317c902615db16eef4ddfc1a731c57bdeb195719ea8abcdb28e7d3314f"
+      "sha256": "f908f8d4401eb6a2b3be51cdaa34ee2edfb6a3d6612cad3ea58e8b5f188b5db0"
     },
     {
       "runtime": "terrain-moonstone_lozenge114.png",
       "source": "procedural-materials/terrain-moonstone_lozenge114.png",
-      "sha256": "2effd5ab02d7161547c67fd4a6963297d1754ce704c72a2ff32f114b3d3ba3dd"
+      "sha256": "1a3f085808c46247bc10b1020b3437854809fbe3d5c57dd3e699ce1b29f39c99"
     },
     {
       "runtime": "terrain-moonstone_lozenge115.png",
       "source": "procedural-materials/terrain-moonstone_lozenge115.png",
-      "sha256": "e9e4cb5e3dfa86c5369abc718ae24ab2ec0e67d9caa84609125408c806811b13"
+      "sha256": "ddb834c5943ef2496099f830aa43404e43d0a4d5f4f96441af02ea540408ca7b"
     },
     {
       "runtime": "terrain-moonstone_lozenge116.png",
       "source": "procedural-materials/terrain-moonstone_lozenge116.png",
-      "sha256": "da852f493c73d0c68adb0c7a4834cc4427b7c442ae1d986e50d31efb72838a92"
+      "sha256": "4ae4c8639fd9cbf6dbd2ffbe192ab9cf600c9c1f091543e02809d4de84eb4092"
     },
     {
       "runtime": "terrain-moonstone_lozenge117.png",
       "source": "procedural-materials/terrain-moonstone_lozenge117.png",
-      "sha256": "9a7de3fbb58f3b6c8064c0653d5c9c9f6daddf7418f5fd9b8be963a63fe1233e"
+      "sha256": "1288e1738f6ec0ec8345b44751ee2ba7e83e4bc6ef27d2245ec0239a720e867e"
     },
     {
       "runtime": "terrain-moonstone_lozenge118.png",
       "source": "procedural-materials/terrain-moonstone_lozenge118.png",
-      "sha256": "253e8b191d67abbd0e30f7f904ac719ab2eeb5830dd0e5b76920692ed009ea8a"
+      "sha256": "6d253b0e12dbfd24081c5bad9d724b5e3d23d3094318c1bffe301f42e5e7456f"
     },
     {
       "runtime": "terrain-moonstone_lozenge119.png",
       "source": "procedural-materials/terrain-moonstone_lozenge119.png",
-      "sha256": "a72945763892d74ddfceb789ff85eb28bbdd15b48bd5d6670265048f1c673c2f"
+      "sha256": "e161e4909b5b73f9ad2b6168897428a5658b85b8de52902859e8eaf311a84186"
     },
     {
       "runtime": "terrain-moonstone_lozenge120.png",
       "source": "procedural-materials/terrain-moonstone_lozenge120.png",
-      "sha256": "b3dbe6117c75e71c7c57a9b18fa7e79e26f468edae05f749a5d09c9022f26f4e"
+      "sha256": "32f0683109ba5feeecc1e224fc45785834a319c48b71075bb98e62e2b07daa57"
     },
     {
       "runtime": "terrain-moonstone_lozenge121.png",
       "source": "procedural-materials/terrain-moonstone_lozenge121.png",
-      "sha256": "ff53c2ae92deeebdcc2a5154d5fc7de41b25ed7cd31cbc23dbfee18f66886a20"
+      "sha256": "25a879da79ee4f8ba5bea01e1817957f18329bbe172f846cf31d48cb05657192"
     },
     {
       "runtime": "terrain-moonstone_lozenge122.png",
       "source": "procedural-materials/terrain-moonstone_lozenge122.png",
-      "sha256": "048c8b30991f27be839b58fa1aaef40bcc53ddcd2ced5f81c6d1e38c0f6c3300"
+      "sha256": "26dbd3221324f537f4b0b5514d0883e0d2d943f65efc79b2472c99ca0dff356e"
     },
     {
       "runtime": "terrain-moonstone_lozenge123.png",
       "source": "procedural-materials/terrain-moonstone_lozenge123.png",
-      "sha256": "18e391a0f2328d8f3ed5081558cdd0794729fdc7a20d5a6aba98a3d59b4ef82d"
+      "sha256": "b355c26602e2e2614dc29f5e196f348bcbb1e689654125e49f81c06317b76fa2"
     },
     {
       "runtime": "terrain-moonstone_lozenge124.png",
       "source": "procedural-materials/terrain-moonstone_lozenge124.png",
-      "sha256": "4d56f9ffd7e17e0377f89838414fe8a06750601a44ca029ba048b18b49092d5e"
+      "sha256": "c36bc993f6f6af22afa996d4818b76223e742fe096b71776a8e76d49eee2c75a"
     },
     {
       "runtime": "terrain-moonstone_lozenge125.png",
       "source": "procedural-materials/terrain-moonstone_lozenge125.png",
-      "sha256": "b6dd4c7391472bce6f491d681fb18920a526a452ab18d0457feae3757185cd2f"
+      "sha256": "72d8352f9df67986e371c121967ec51347bb5ad3cc1b72752cbcdd7f261761d5"
     },
     {
       "runtime": "terrain-moonstone_lozenge126.png",
       "source": "procedural-materials/terrain-moonstone_lozenge126.png",
-      "sha256": "f9028395fd058a7c469145a0c7776b1b0864dd04314993db12e4e04592f66ca2"
+      "sha256": "357a7855c70836ebe05f0a1dc213cb428ba5a4fd134000bc4c5e1990e34741b6"
     },
     {
       "runtime": "terrain-moonstone_lozenge127.png",
       "source": "procedural-materials/terrain-moonstone_lozenge127.png",
-      "sha256": "5a72e25f8c16366240e88f116319d81778b982594a38c7f65016e2f33c06fab6"
+      "sha256": "d8f8ae7542f0abb276cddcf15d688f6215881f4e61716645b6f1a7e642fc948f"
     },
     {
       "runtime": "terrain-moonstone_lozenge128.png",
       "source": "procedural-materials/terrain-moonstone_lozenge128.png",
-      "sha256": "c80338da07497287e887aa4d614c49c0b3fecaed4f69bb9cddd670898ae96cc5"
+      "sha256": "136064442d86483672b30d066b986b436710169974e58dec04a88defca807b14"
     },
     {
       "runtime": "terrain-moonstone_lozenge129.png",
       "source": "procedural-materials/terrain-moonstone_lozenge129.png",
-      "sha256": "c26713ed7c01bc0b79fd5a74e9b1b59360879452878f53acbbbf960a4319bffe"
+      "sha256": "b314911f216acc769d75182c1699ffb31362363afbb76a9fc192371487d7a97d"
     },
     {
       "runtime": "terrain-moonstone_lozenge130.png",
       "source": "procedural-materials/terrain-moonstone_lozenge130.png",
-      "sha256": "c1a8ac939e49b6bcdd753a835647a33ce72a5f09b3519015adff5e61c449e702"
+      "sha256": "a7dc16ebf8440e39b0f944506d6016a97caed829d21ed59721545b000c9106ec"
     },
     {
       "runtime": "terrain-moonstone_lozenge131.png",
       "source": "procedural-materials/terrain-moonstone_lozenge131.png",
-      "sha256": "15288a531369e1dc655b622548c6e8d859d6ffdc67505e7387138a318a26d39c"
+      "sha256": "ba7473c72ffa7a03cb229f01e365a5e7032f7536c5e8a76a802406e810ba36b1"
     },
     {
       "runtime": "terrain-moonstone_lozenge132.png",
       "source": "procedural-materials/terrain-moonstone_lozenge132.png",
-      "sha256": "788ca289b9c733b922a1fa2268d4c98d0488b8f7dba6be80b38b668a93ec3795"
+      "sha256": "4d7695a56b8a3de038392026287cb3d8d20851e3a328424b69fbf4cd7db98c8c"
     },
     {
       "runtime": "terrain-moonstone_lozenge133.png",
       "source": "procedural-materials/terrain-moonstone_lozenge133.png",
-      "sha256": "17d940a2dd6cccdccec2ad8665449a5cd616ac5de480cd9c8f2d4044153e52e0"
+      "sha256": "f8f1a20053ed854b0a61289a31abf69d267417812fe94786a04c694bd3acf946"
     },
     {
       "runtime": "terrain-moonstone_lozenge134.png",
       "source": "procedural-materials/terrain-moonstone_lozenge134.png",
-      "sha256": "ead91d19d3ecedc0c3a8408f5a8929d14b78d7beed592e57d217919b97ec40a4"
+      "sha256": "b50b478926d7524f553ad031034389578d557170c2e23b056e27a55f812a2d25"
     },
     {
       "runtime": "terrain-moonstone_lozenge135.png",
       "source": "procedural-materials/terrain-moonstone_lozenge135.png",
-      "sha256": "bf36eebb91c85931407f83f08672985222a2a460ef43404306571c9aedada497"
+      "sha256": "a8efdaf568b82c5595da520b673b54c6e918e5970872ed59f18753da8e110a40"
     },
     {
       "runtime": "terrain-moonstone_lozenge136.png",
       "source": "procedural-materials/terrain-moonstone_lozenge136.png",
-      "sha256": "0f25bd780b111436854d004af92bc96b341e86741c336c2b5cd4d4d45c0e6802"
+      "sha256": "99cb9aad157dd2f3f6c49272d5a5e27b30700c7e78107b863febeca698879531"
     },
     {
       "runtime": "terrain-moonstone_lozenge137.png",
       "source": "procedural-materials/terrain-moonstone_lozenge137.png",
-      "sha256": "80c84b6fc756f327efd9d35ad085cd6f553f602d40f48e3593359fbc453ecc4d"
+      "sha256": "4dafcb0070b8aebf52e8be63ec249984671569463208fac09a9dfa017b34c244"
     },
     {
       "runtime": "terrain-moonstone_lozenge138.png",
       "source": "procedural-materials/terrain-moonstone_lozenge138.png",
-      "sha256": "247ebd1041e4ff9c6651209345a01801fc30150aefc1521f9de6f05c30c33283"
+      "sha256": "6301f9244716b6d00ae3e1f94337faacba6055efa3ace9ba30a905e023d154a6"
     },
     {
       "runtime": "terrain-moonstone_lozenge139.png",
       "source": "procedural-materials/terrain-moonstone_lozenge139.png",
-      "sha256": "53fddfab2a1cc1559bcb69af28ba39813b5e9d08ac878101875d58957902ef51"
+      "sha256": "ea6d7fe9e0f9813a2058ca18127a1c681d0bbbf719bda112cd93e4cc0f2bdd28"
     },
     {
       "runtime": "terrain-moonstone_lozenge140.png",
       "source": "procedural-materials/terrain-moonstone_lozenge140.png",
-      "sha256": "5fd81008c1ef118650d6b670b78b33f6ca70b3b6c455eacc6ebc5011b001dae8"
+      "sha256": "bede29557f9feac4d00cedf4404e363ee727a2d106bafc731d683e5369f7c8e9"
     },
     {
       "runtime": "terrain-moonstone_lozenge141.png",
       "source": "procedural-materials/terrain-moonstone_lozenge141.png",
-      "sha256": "c44b82908b226461fb66787386affce44268d0b924ec72de54079f3e7c5134fe"
+      "sha256": "1a38f887ba8bbbfeccf0f3a181d00a2eaee809a61b58d735605e29f8e5a97523"
     },
     {
       "runtime": "terrain-moonstone_lozenge142.png",
       "source": "procedural-materials/terrain-moonstone_lozenge142.png",
-      "sha256": "ac01cb737a0faa7d6da13af787b8bdf820aea1e0077e09b8bffc18b3b7d899c7"
+      "sha256": "3df191951e54c32074020441312b44d8178901e7e181b97f2f6fdfd9e934c6e7"
     },
     {
       "runtime": "terrain-moonstone_lozenge143.png",
       "source": "procedural-materials/terrain-moonstone_lozenge143.png",
-      "sha256": "c7f7e2ec3402c65d9f3e4cfa65c2a7cd597cc633216e4cb1bb643a62eccf8396"
+      "sha256": "12234eacb1879927ae4b88ad92dd368e26b560ef89cc989c54262e3bc18b24f3"
     },
     {
       "runtime": "terrain-moonstone_lozenge144.png",
       "source": "procedural-materials/terrain-moonstone_lozenge144.png",
-      "sha256": "2a1e80cbaec2b7ae5172870e39ffd1fc41bf20c7e8401dfff468ef179bfac51d"
+      "sha256": "f9a2ee84fd64d582263fc4f31654de6891ee76b48097640e88a873e99546759b"
     },
     {
       "runtime": "terrain-moonstone_lozenge145.png",
       "source": "procedural-materials/terrain-moonstone_lozenge145.png",
-      "sha256": "e4ebf64466d151bee8949b21b657f345d07df9a7b07726cab1cbcb81b8d118d4"
+      "sha256": "3328b273ddb8ed839d9f15c24158f38665b503ef4192335efcb15c9a90923e62"
     },
     {
       "runtime": "terrain-moonstone_lozenge146.png",
       "source": "procedural-materials/terrain-moonstone_lozenge146.png",
-      "sha256": "374316a035aa1aa7837659d0c95eebbe7c145983cc104bc5432c13388eb9872a"
+      "sha256": "ea9fad83ca0dc97f24c601a8132c3494f6170e45f3f1a741c25c1aabd2aacb05"
     },
     {
       "runtime": "terrain-moonstone_lozenge147.png",
       "source": "procedural-materials/terrain-moonstone_lozenge147.png",
-      "sha256": "925cd639369cd88100ac9589dccee66ca4c396e6bb48c8ce2294e35f285642d4"
+      "sha256": "88dca1854128e09c4121263f2958a94dd6702d3602ba72401d55125d6f5d1b43"
     },
     {
       "runtime": "terrain-moonstone_lozenge148.png",
       "source": "procedural-materials/terrain-moonstone_lozenge148.png",
-      "sha256": "98a50728e872b9745f99c2187da28cd811637dc9fffacd6cae045058b5edcbad"
+      "sha256": "360602947cd6c24fc200596d1b0dae39a47c4a49d0b865a4f4e74011a828cf9f"
     },
     {
       "runtime": "terrain-moonstone_lozenge149.png",
       "source": "procedural-materials/terrain-moonstone_lozenge149.png",
-      "sha256": "dd42fdedd0bb9742bd6805905ce1da87d405e48a42e411a0b47532e6592fc60a"
+      "sha256": "89b2a480d5c051c89794f404526f109d3b3da7c2fc1a01d78afaaf41350ed6fa"
     },
     {
       "runtime": "terrain-moonstone_lozenge150.png",
       "source": "procedural-materials/terrain-moonstone_lozenge150.png",
-      "sha256": "166aa91efe903c27a196e7241820f765ced20525b77d2cf2d4892f2618c5228b"
+      "sha256": "b5b5ecac96d4c8ccb7301601ac85445cf1c227da00998de6dc4b03d782560a13"
     },
     {
       "runtime": "terrain-moonstone_lozenge151.png",
       "source": "procedural-materials/terrain-moonstone_lozenge151.png",
-      "sha256": "add79914fffe210e109072c03b217bfa3a91b2ddffbe899e45ad16a83032113f"
+      "sha256": "a9c671f551152218e343c6c86f13bf1f39559e4def1bf0732f248f4725def1b7"
     },
     {
       "runtime": "terrain-moonstone_lozenge152.png",
       "source": "procedural-materials/terrain-moonstone_lozenge152.png",
-      "sha256": "ec87ba87f297fb748c12a0b1c72bd188621fa438c57b554eccf488f18b5ffe6d"
+      "sha256": "5d624f2f1f91f5a956e9f9fe55ce4f64bcb06a48c764650681cb84b9b4a33e0b"
     },
     {
       "runtime": "terrain-moonstone_lozenge153.png",
       "source": "procedural-materials/terrain-moonstone_lozenge153.png",
-      "sha256": "454b63a59b7603e093d280fb90ef455b041ee5e92aae3042299f18c400ef9fbb"
+      "sha256": "6a7ae9b50b0cb2befdf842595e9878d626b6106b076f0b7a1b2127fc04b48877"
     },
     {
       "runtime": "terrain-moonstone_lozenge154.png",
       "source": "procedural-materials/terrain-moonstone_lozenge154.png",
-      "sha256": "cdd9e00c229e97522f067f61defb6589a1fea5f19f19e3b3c00c1ecab2ae2b3d"
+      "sha256": "1f921006c2736b9d703284362050222e56e47268fcd99076f3fb7bfa4512ce0c"
     },
     {
       "runtime": "terrain-moonstone_lozenge155.png",
       "source": "procedural-materials/terrain-moonstone_lozenge155.png",
-      "sha256": "2f40a1a9c68788ec6b5523e5920f525471a7de2f4a325906c540389834b6ffc0"
+      "sha256": "ddafe4cc33a995a6cccb546aa89c15f09ded62a27ec1755aceffcdef60d1f844"
     },
     {
       "runtime": "terrain-moonstone_lozenge156.png",
       "source": "procedural-materials/terrain-moonstone_lozenge156.png",
-      "sha256": "95aca96320aeef8a7811f67633ec6fae792767c8500f3857b7b2e9a9282c30be"
+      "sha256": "93bac70614c1ee5a5f1e356bfcc5c7c2232d9601581ed141d8de7986c07177a7"
     },
     {
       "runtime": "terrain-moonstone_lozenge157.png",
       "source": "procedural-materials/terrain-moonstone_lozenge157.png",
-      "sha256": "1f693dd2c5ec50b89247c5f7715f92e9f23ec59b65eeef7fb7d59576cd990b79"
+      "sha256": "03783f8777ec6fb8d36681f5d6e13be3fe73ebf44a21226f9337f197a83d682d"
     },
     {
       "runtime": "terrain-moonstone_lozenge158.png",
       "source": "procedural-materials/terrain-moonstone_lozenge158.png",
-      "sha256": "b8439a96a467021ee60c6d415ded1bf0a8d4ef03ed628da8ae49043c41e3affc"
+      "sha256": "2ab1fe2090dca2846c6ff9a10facb4d5d44c8f0830041f96f9937c001822c971"
     },
     {
       "runtime": "terrain-moonstone_lozenge159.png",
       "source": "procedural-materials/terrain-moonstone_lozenge159.png",
-      "sha256": "e877fd9babb0bc9b7523843d8150875b5319afc57018ade6a6d11afc8ca1c30f"
+      "sha256": "1541b18c1baa38a467ebb93b68c963566e40edd21264e9c4c36262305a140525"
     },
     {
       "runtime": "terrain-moonstone_lozenge160.png",
       "source": "procedural-materials/terrain-moonstone_lozenge160.png",
-      "sha256": "b59f6404245e8b3b2f100a6f18969ab93973a881abc4a26765f7fdf96c85ed25"
+      "sha256": "b21f6a814d1d57327f4627328085e6a01c9dc31ce5c5db801022885d4bd902c9"
     },
     {
       "runtime": "terrain-moonstone_lozenge161.png",
       "source": "procedural-materials/terrain-moonstone_lozenge161.png",
-      "sha256": "7054cda54a9d130e7ad22691fc6e3ee7389555dbb0436b6908d0e24fcf0269b8"
+      "sha256": "52e69a3ce87ea3cb0517dd4c4b4ae2937db629b36737de042fac848160ce6954"
     },
     {
       "runtime": "terrain-moonstone_lozenge162.png",
       "source": "procedural-materials/terrain-moonstone_lozenge162.png",
-      "sha256": "b6e6ae346cc7fa5664d0e3f41c24aa51b05fbec57614dc7c41900cc2e6070d18"
+      "sha256": "9b2db875e778138af77332e648cc08c58430da0d7c14731a44d0645292377a16"
     },
     {
       "runtime": "terrain-moonstone_lozenge163.png",
       "source": "procedural-materials/terrain-moonstone_lozenge163.png",
-      "sha256": "874ca44d6b67156c615a69d5eb378b26f452affe3e184a562baf89a4690ec9fa"
+      "sha256": "a295f92612c9c2489eaac43d0f74baab8363545224ffc5cd6bc1855cc35c7020"
     },
     {
       "runtime": "terrain-moonstone_lozenge164.png",
       "source": "procedural-materials/terrain-moonstone_lozenge164.png",
-      "sha256": "498264e3143a902d5b9c49c1ce06b4f57f0facd6d6783e10e6fea799b945a4b9"
+      "sha256": "2e31dc37c9066e82b5038045d5fe0f26237eb3a85d9f4e77369f9e3e4250ca37"
     },
     {
       "runtime": "terrain-moonstone_lozenge165.png",
       "source": "procedural-materials/terrain-moonstone_lozenge165.png",
-      "sha256": "724401f173430a5b0ffe399095845abfbd60c36c8f000fdb8de02c3f1fa4a6f9"
+      "sha256": "007eef1c9944bf89f70ee5be03926b79b4a900e3f39313f684667988783c4e7c"
     },
     {
       "runtime": "terrain-moonstone_lozenge166.png",
       "source": "procedural-materials/terrain-moonstone_lozenge166.png",
-      "sha256": "9e5884b868c66c158ecfdeb4d2fb1a4cd1224b07a207215db85b4a5b7298646b"
+      "sha256": "361c77ed5f0317b589e12952e0634a62df4b4ccdfe4aa00668ec16abdb1c9523"
     },
     {
       "runtime": "terrain-moonstone_lozenge167.png",
       "source": "procedural-materials/terrain-moonstone_lozenge167.png",
-      "sha256": "1aece9868329869a71a2ed9da546c8e13898d384af10ccefc0da116e1d81978d"
+      "sha256": "6d9344031f04879bc1c2b2c5a5895ecdd4c7f7546ca77e9edcd5cd2174a650be"
     },
     {
       "runtime": "terrain-moonstone_lozenge168.png",
       "source": "procedural-materials/terrain-moonstone_lozenge168.png",
-      "sha256": "413110d7ebd351c2ee1e7f8a276b3bce21710cbb20ae3ce87ab9c31d2aeb0600"
+      "sha256": "bf611809c2726d3bd9c0cd33f08d44eb7469fd5a11fbc2ca0f38ad3a854c8f1c"
     },
     {
       "runtime": "terrain-moonstone_lozenge169.png",
       "source": "procedural-materials/terrain-moonstone_lozenge169.png",
-      "sha256": "3ff67147ba3f3d5cbe66850d2ebaae1e6c09946223fabbd2cd09a03bf78e5dca"
+      "sha256": "6dd7040954086958e1a741ebd02540cc0f03dd21b5b3cb67689cb0f278ac2c20"
     },
     {
       "runtime": "terrain-moonstone_lozenge170.png",
       "source": "procedural-materials/terrain-moonstone_lozenge170.png",
-      "sha256": "7572f0cf4620e81be2998a8782eb0f84267e53420180a448d305eeacacdaf0b8"
+      "sha256": "674ff6e0325042a83c9c1312e53a971da7c2f7cebe8e9e6bc85ea35ef6876ab8"
     },
     {
       "runtime": "terrain-moonstone_lozenge171.png",
       "source": "procedural-materials/terrain-moonstone_lozenge171.png",
-      "sha256": "0e286b93b517bce76b2cad5eb6e8c87c6a5827330b7f1cb4a2e197c43e8f8c26"
+      "sha256": "437f4fc09a6629b0c4aa137d7012dc38b4cc042bc423bf8eb49b0856106f78c6"
     },
     {
       "runtime": "terrain-moonstone_lozenge172.png",
       "source": "procedural-materials/terrain-moonstone_lozenge172.png",
-      "sha256": "a8343e3e0e8fe0d7df0ac3abf56643ddd9f16a00a7237daf79c3c1ce0f2303d8"
+      "sha256": "295b6280dac403da48bc361926d38eae94104e599602180f0ce04a834e75feaa"
     },
     {
       "runtime": "terrain-moonstone_lozenge173.png",
       "source": "procedural-materials/terrain-moonstone_lozenge173.png",
-      "sha256": "84f984889d43d77c9e60a0cc0d2f7f257d3180bd1436e63fbc0da217434848df"
+      "sha256": "16bfca517bcdb70f9063d25e9b8a57c2cfe953a70e962cd177efb41c7df9a52c"
     },
     {
       "runtime": "terrain-moonstone_lozenge174.png",
       "source": "procedural-materials/terrain-moonstone_lozenge174.png",
-      "sha256": "ea1db3bff38a4acece9d2aa2afa9cd50a6a4a0ed35412d2d827aaf2153599438"
+      "sha256": "a5c47402bcf781414ff5f1088a75ac2e4fc87d9e01a1f6f615afbe2700c6d985"
     },
     {
       "runtime": "terrain-moonstone_lozenge175.png",
       "source": "procedural-materials/terrain-moonstone_lozenge175.png",
-      "sha256": "e1b51cc6a6bd5fe47dfecf3c13638cc665bda192ae19cedd91f04cf4c1181378"
+      "sha256": "37cf66eca7aef5b6480a7aab992ceb632a009e88f6a15f6ad2c2a30ed5bc146a"
     },
     {
       "runtime": "terrain-moonstone_lozenge176.png",
       "source": "procedural-materials/terrain-moonstone_lozenge176.png",
-      "sha256": "475c0e6aa958ddd239eed64a442d1979f9ad95db02011520ffcab4ae78fcb968"
+      "sha256": "3ac747dca051919d60bba924a787515327ec466ce37630ee02382142333e1639"
     },
     {
       "runtime": "terrain-moonstone_lozenge177.png",
       "source": "procedural-materials/terrain-moonstone_lozenge177.png",
-      "sha256": "6a242a4ca29b82457aa0986376c9688bc71956275d704c6a2d1e05b21c176f23"
+      "sha256": "e958ae53f5f036d11f55f5ac0eeee54a24959e528f7f2fa1ebe00c1a38a0c760"
     },
     {
       "runtime": "terrain-moonstone_lozenge178.png",
       "source": "procedural-materials/terrain-moonstone_lozenge178.png",
-      "sha256": "4d1ff79902cffa572cd9cd70564c5d2d89d0279d04d994dc2e6704b9da29d90e"
+      "sha256": "1b1678c437f13d0d067eefa1d33239c4b72bdc05a350ed30b8602d9e565360f7"
     },
     {
       "runtime": "terrain-moonstone_lozenge179.png",
       "source": "procedural-materials/terrain-moonstone_lozenge179.png",
-      "sha256": "f86f0852bb7c3e64d5c5c67a35b51726810ff8a32d61fd2e6733e4b949e35464"
+      "sha256": "71785e5bbe5795d9e317fe4ef6a4fabb28d9dfc8759415d8a2f78101003c627b"
     },
     {
       "runtime": "terrain-moonstone_lozenge180.png",
       "source": "procedural-materials/terrain-moonstone_lozenge180.png",
-      "sha256": "88db219bf3685ca981d1cfd149cfa60a0cdaba15dbd6b9407fee2a14a1abb412"
+      "sha256": "70edc0df2901b2f3da1ecfcd850aa6ae8e8da726b858b6de8c71ad4d72ed8d3a"
     },
     {
       "runtime": "terrain-moonstone_lozenge181.png",
       "source": "procedural-materials/terrain-moonstone_lozenge181.png",
-      "sha256": "eb35cd980299b9b9f077cecc30e74eca878b0df96cea62d0dfd94b0425a7ddb9"
+      "sha256": "c8845150da6988280a26eacb166d91024b661914102bc4e5adf8d150c110c418"
     },
     {
       "runtime": "terrain-moonstone_lozenge182.png",
       "source": "procedural-materials/terrain-moonstone_lozenge182.png",
-      "sha256": "d98566c1755fb6932f97452026a57249eab2e12bec3910e0fea2ec2371debe62"
+      "sha256": "0fa3216c51ea9defffbfecb1fc67dea4a8be741b004cfd985149fe06d6b3dedf"
     },
     {
       "runtime": "terrain-moonstone_lozenge183.png",
       "source": "procedural-materials/terrain-moonstone_lozenge183.png",
-      "sha256": "a9509ea396c718be47b0ec6a48859a85f2d39dfe44b1cb93ddcb9b215fad8e07"
+      "sha256": "75c427c4ed62646bb81f6bef714723b6c6f6994b2ebe08c1faa903bf1f72e91f"
     },
     {
       "runtime": "terrain-moonstone_lozenge184.png",
       "source": "procedural-materials/terrain-moonstone_lozenge184.png",
-      "sha256": "dbc752a8f1e6d7d2d20baaac03036ab672e2bfd88a4350734815475bb6f79df6"
+      "sha256": "4d698b937f2c2a145d489b0e718a8e0261acde94affe79b1146e6d0b7eb073ca"
     },
     {
       "runtime": "terrain-moonstone_lozenge185.png",
       "source": "procedural-materials/terrain-moonstone_lozenge185.png",
-      "sha256": "8ca0b86df914745387f1859c006821eba630451f7f226568e7d89521f4b5789d"
+      "sha256": "8e0910204bd8e4089d93aabad409188f6dfeb9fb67acd7f083958370c59fb149"
     },
     {
       "runtime": "terrain-moonstone_lozenge186.png",
       "source": "procedural-materials/terrain-moonstone_lozenge186.png",
-      "sha256": "2ce49743971afd59ee587e0cbafde4ba85a9490db93f8e7cc71e2ca5abe77f4a"
+      "sha256": "c2bd933079c70ef6d8e71c7ca17f269f2cbc3a3eb822553d7fad0ebc4cf52d1e"
     },
     {
       "runtime": "terrain-moonstone_lozenge187.png",
       "source": "procedural-materials/terrain-moonstone_lozenge187.png",
-      "sha256": "17f90af5357f3cbc66bd30cf24f854318cd08167a7fd05d37e5996235e11f293"
+      "sha256": "a6f0c6973ef0cea66c3c547cdae5ed13bbc81c39949e3f27ae9643bc044d35af"
     },
     {
       "runtime": "terrain-moonstone_lozenge188.png",
       "source": "procedural-materials/terrain-moonstone_lozenge188.png",
-      "sha256": "fa082826051fc5c2fe7353dfa9da9d222c5ee0593ebdbac8d3829e7ff2926301"
+      "sha256": "68b294720aa69dc7b3e65c0a55721596710ea4054c29559ffd647d81c39e94dc"
     },
     {
       "runtime": "terrain-moonstone_lozenge189.png",
       "source": "procedural-materials/terrain-moonstone_lozenge189.png",
-      "sha256": "af1be82344c4db7123788428fe9d6e38de083925fe116d7e4ff0cf736c8f3309"
+      "sha256": "313af2981d89792aca17273c6e7ac41014b05df1958b9d16ecca2abea0061cb2"
     },
     {
       "runtime": "terrain-moonstone_lozenge190.png",
       "source": "procedural-materials/terrain-moonstone_lozenge190.png",
-      "sha256": "10f9b587b8b00ffe97862032f08ff7fef4f7b84dfc9cf1e9b6b623b780f16030"
+      "sha256": "ebd517272952b2038229bd321d6943af8401de17fd19cc553c278f2f16f8c372"
     },
     {
       "runtime": "terrain-moonstone_lozenge191.png",
       "source": "procedural-materials/terrain-moonstone_lozenge191.png",
-      "sha256": "823c2b567328465b0fe403bd16d3e7dd4cd907a74f0fd30e5f82d4458384b8e3"
+      "sha256": "0a8c36df194823b17cbc60fd81545f72254cf12f72ed39b3fff6585b84cd7359"
     },
     {
       "runtime": "terrain-moonstone_lozenge192.png",
       "source": "procedural-materials/terrain-moonstone_lozenge192.png",
-      "sha256": "0025efa72cb66240ee03fb4378c04bdb82da7e2c46db8c7670cf60cced0daecc"
+      "sha256": "dc28432e630f2456ada46f6635a0708c46c73705138c706ef5888067dbd49986"
     },
     {
       "runtime": "terrain-moonstone_lozenge193.png",
       "source": "procedural-materials/terrain-moonstone_lozenge193.png",
-      "sha256": "21967fb2b97b7847b06f0d48ee1cb4b595c243be5825cfd82ba204ca3973319e"
+      "sha256": "7104d8917727314623c03d9e0cf1badfd79630e526886f52bb6e0d86b8082e2b"
     },
     {
       "runtime": "terrain-moonstone_lozenge194.png",
       "source": "procedural-materials/terrain-moonstone_lozenge194.png",
-      "sha256": "bc03e04f5908c421810b98c3df49337d55546ea87b3293c2a0442b19538c51b7"
+      "sha256": "949a16570838575503906da3370ace1c836e1a2a82ccf3b3296714b788f4736e"
     },
     {
       "runtime": "terrain-moonstone_lozenge195.png",
       "source": "procedural-materials/terrain-moonstone_lozenge195.png",
-      "sha256": "43f061aaefc442f1d983c81e3747c9c4fa205cb5e1cfc5549ec7863f5825576d"
+      "sha256": "46616db54e7f717f26bf09894354e6c4415fda250f1e5ac0e37616f0a0a7a69f"
     },
     {
       "runtime": "terrain-moonstone_lozenge196.png",
       "source": "procedural-materials/terrain-moonstone_lozenge196.png",
-      "sha256": "7538c9e6013823a57a4570b69041e13e60aaeb41dc3aed0ee2fc6aae93263723"
+      "sha256": "49a3e610ffe61b1b3cfb8570af33fb27a704c666d213429c2c216795efa71e2e"
     },
     {
       "runtime": "terrain-moonstone_lozenge197.png",
       "source": "procedural-materials/terrain-moonstone_lozenge197.png",
-      "sha256": "0f42ef54e0b2de8efef10042a78b6566d86e075262849491976d2e3689805c03"
+      "sha256": "8df00c5a548373462635fdc7d3e3edfec0e39e470d1fad89b3b0dded3c94e13b"
     },
     {
       "runtime": "terrain-moonstone_lozenge198.png",
       "source": "procedural-materials/terrain-moonstone_lozenge198.png",
-      "sha256": "51c89e35d977109716ea760a2a289546ce0beb36f3165411fd6b2b996147f87c"
+      "sha256": "816896f7fd7b05202f90c0bd88f4ab6ba96b48c9a124fa7f07d9918fc690c56d"
     },
     {
       "runtime": "terrain-moonstone_lozenge199.png",
       "source": "procedural-materials/terrain-moonstone_lozenge199.png",
-      "sha256": "5c69d9b82667a8f2502192bc56edc32420a208bfcb02d8d9e6c3d251669d2b6d"
+      "sha256": "caf33571d30e1cfd967c04746b98aa684b434378d26758a8e1e310eb312616e9"
     },
     {
       "runtime": "terrain-moonstone_lozenge200.png",
       "source": "procedural-materials/terrain-moonstone_lozenge200.png",
-      "sha256": "631ac59d886b8e6a38ec63f37189ef39b4b56def05fb15b1dff3f3465631c93b"
+      "sha256": "830f79aa1f9daff8ddc6ef97c4b98357f2e143ce66c0e836ec8902b880919073"
     },
     {
       "runtime": "terrain-moonstone_lozenge201.png",
       "source": "procedural-materials/terrain-moonstone_lozenge201.png",
-      "sha256": "dc27f6e0fa0b06f0da061d291bee654b18fd297fa269248c2b1ace2a9f78bc37"
+      "sha256": "6db6099e76765b5c75d1cfac810acc79d94f447dbc0c4d7b8b347e925fca9589"
     },
     {
       "runtime": "terrain-moonstone_lozenge202.png",
       "source": "procedural-materials/terrain-moonstone_lozenge202.png",
-      "sha256": "7eec64a561bef6c71df19040900611195e208b950e124dbda9c7b879fde919d0"
+      "sha256": "ac483872cce9b63b768689cd1e2a76731319ea10fd57f6cbee22e01ec747354e"
     },
     {
       "runtime": "terrain-moonstone_lozenge203.png",
       "source": "procedural-materials/terrain-moonstone_lozenge203.png",
-      "sha256": "0c9f9a6365f1e339b78b203b07253581859d305a80d5aa8818a296b187111429"
+      "sha256": "ff0145b7ed163e2cafccfe820f6f66c8946cbe47b97cd42a6b25a55f17e3308f"
     },
     {
       "runtime": "terrain-moonstone_lozenge204.png",
       "source": "procedural-materials/terrain-moonstone_lozenge204.png",
-      "sha256": "96ab6ae8845d15c77b6fe249b48af17698f27dc717301e9b240828c55050666a"
+      "sha256": "ff8714e14e859851ead778c3f3f738fddf61fe439ed24015ca059ca9243c0642"
     },
     {
       "runtime": "terrain-moonstone_lozenge205.png",
       "source": "procedural-materials/terrain-moonstone_lozenge205.png",
-      "sha256": "4d2bbd5eb05843a3649c80cf4c886c0370ecb7874b3ead6c4ba0750c765dca40"
+      "sha256": "f242ab0f63682eb12469f7b80425a01f8bf440a8841aba11b66729f8e1428929"
     },
     {
       "runtime": "terrain-moonstone_lozenge206.png",
       "source": "procedural-materials/terrain-moonstone_lozenge206.png",
-      "sha256": "a9e56108a884b99add68cfa7e13489d9c829f59162815127dafb9e6fc17caf5a"
+      "sha256": "7bbfc2ecd764c52a3fb481e55b1a4a4f39efb18410bf153583d55984d6d11170"
     },
     {
       "runtime": "terrain-moonstone_lozenge207.png",
       "source": "procedural-materials/terrain-moonstone_lozenge207.png",
-      "sha256": "033d4c44e70e340c1151c9bca50c6b0931b8a9c3aba6600c848f0f74e18fd5b6"
+      "sha256": "c434597558db805aec2cb049fbf5e5010901a5b366c73179d07e5776f7a12e97"
     },
     {
       "runtime": "terrain-moonstone_lozenge208.png",
       "source": "procedural-materials/terrain-moonstone_lozenge208.png",
-      "sha256": "a59301b4a4ec9fd9f06a78e67bab93e1222aff4d13ab0c37c1e7b33529a6d320"
+      "sha256": "20c577e372a4f29f45404c78bc0e7daaf2c917464f4af835e6aa94324f022cc8"
     },
     {
       "runtime": "terrain-moonstone_lozenge209.png",
       "source": "procedural-materials/terrain-moonstone_lozenge209.png",
-      "sha256": "c35bc62fe6cfddba955fe6e06261f6ef5a6e76893d5f6c349e88b54383c5ee75"
+      "sha256": "6bbfe54c6df956155045ee21305e505825b87f5ae91c6675909325708dae4ab7"
     },
     {
       "runtime": "terrain-moonstone_lozenge210.png",
       "source": "procedural-materials/terrain-moonstone_lozenge210.png",
-      "sha256": "6b5df7ac91931efa6384fa47e5f4ee718d1955530ab0545e64f589596a0ed8ee"
+      "sha256": "fb70459731e7df4e09c7ba21fdfa44c3528dfdd3d27a1dfedebcaf3444179f66"
     },
     {
       "runtime": "terrain-moonstone_lozenge211.png",
       "source": "procedural-materials/terrain-moonstone_lozenge211.png",
-      "sha256": "c0f6ffa02c0e20051e0a9d1f6247c02972fe9e49880972073b20c62c8195aeef"
+      "sha256": "f671cb79aa2a196c0cbf2e5e3a1e9a2b1a9c800c92a58ab07618cd46128df41a"
     },
     {
       "runtime": "terrain-moonstone_lozenge212.png",
       "source": "procedural-materials/terrain-moonstone_lozenge212.png",
-      "sha256": "cdaecaace96d593aa95678618800c3f71cccdf89550084abdfafaac2a37907e8"
+      "sha256": "3b59a30284b9aeedce085601739e5ecfa1e02bfea078fbb0e4ccaff2bcf83f9c"
     },
     {
       "runtime": "terrain-moonstone_lozenge213.png",
       "source": "procedural-materials/terrain-moonstone_lozenge213.png",
-      "sha256": "7e23b06d886cc8cd3443346602dc7aab95c0d2c3dca0c69ebc8d4c63d54b9e6f"
+      "sha256": "c48a62344b70a160281fb56cec6cabd26a31acc7a2bfbaceefcd7e3dc87f21a6"
     },
     {
       "runtime": "terrain-moonstone_lozenge214.png",
       "source": "procedural-materials/terrain-moonstone_lozenge214.png",
-      "sha256": "619cec36231f8d27d4ca2697f49f52e155038e850d5fa44b04e428bb8f408b9b"
+      "sha256": "38849681a374ea56a631d37bbb86368444a74cb0bac8d4f622478981966f669a"
     },
     {
       "runtime": "terrain-moonstone_lozenge215.png",
       "source": "procedural-materials/terrain-moonstone_lozenge215.png",
-      "sha256": "b38aff3c9b25d365b7a03871a81092f4d3bcdada764673c639cc911c33205f22"
+      "sha256": "e970c4640878c00acc8badcd017b7ba50edffee810ad996ae754c9526a0fa19e"
     },
     {
       "runtime": "terrain-moonstone_lozenge216.png",
       "source": "procedural-materials/terrain-moonstone_lozenge216.png",
-      "sha256": "1ee50c0fe1442fdbfec934af42ea712fffe9cb824d72c905112d8e2f3705c9a9"
+      "sha256": "99dfea47093cbb2fe53a7aa7ae82db1dd794b3e4ec3aac0f3cf6632564f7ce6e"
     },
     {
       "runtime": "terrain-moonstone_lozenge217.png",
       "source": "procedural-materials/terrain-moonstone_lozenge217.png",
-      "sha256": "12527f604b587592ce72ba2613211bbfec52fb1303364454bf8488b38014ab08"
+      "sha256": "dbda4999207562124b1291502f73d7eded582fb49a2548bb20dd901f362d68e0"
     },
     {
       "runtime": "terrain-moonstone_lozenge218.png",
       "source": "procedural-materials/terrain-moonstone_lozenge218.png",
-      "sha256": "90be8243a626fa06fa5d3bb624768a5125d86900913bea83a5adf2d0ca75003e"
+      "sha256": "048b0b6816310ce214852a2aa40196140998e708fe10bcaa022dee437bca9ec1"
     },
     {
       "runtime": "terrain-moonstone_lozenge219.png",
       "source": "procedural-materials/terrain-moonstone_lozenge219.png",
-      "sha256": "4b921fae155c4f38d421ee588bf67e3c52deb13e1a666b6ff32c72f5c732fdda"
+      "sha256": "50ba10bb5adabcea3a0c3af7368341a450c540a5be083e1f217da788c5000832"
     },
     {
       "runtime": "terrain-moonstone_lozenge220.png",
       "source": "procedural-materials/terrain-moonstone_lozenge220.png",
-      "sha256": "d6d645b68a0a9e9509bd1342e61dcf589acd2b79361ce893043db058a3920870"
+      "sha256": "d5c634b43c126c8d81bf5f039ded423efe0f50caaf71df10746d51de128d0332"
     },
     {
       "runtime": "terrain-moonstone_lozenge221.png",
       "source": "procedural-materials/terrain-moonstone_lozenge221.png",
-      "sha256": "8203497ec8341b807526c18ee244dc682bd90483906f7bb886f480f59b0925aa"
+      "sha256": "5351dea0fa0f783fe4c6575bca1cf65221009a535bc4832a48fe466ee3ff9deb"
     },
     {
       "runtime": "terrain-moonstone_lozenge222.png",
       "source": "procedural-materials/terrain-moonstone_lozenge222.png",
-      "sha256": "6a92c8010ec9afe71eb4df2d7ba7c098d796ff5fa1574bc5716fb8e17ece4a2c"
+      "sha256": "3c06890981fbd1f91c0ac3bfb09a6349e585e68ce07f8584ee0054a46f9f0607"
     },
     {
       "runtime": "terrain-moonstone_lozenge223.png",
       "source": "procedural-materials/terrain-moonstone_lozenge223.png",
-      "sha256": "2ce96b12550fc9b58d91c1f9ab3dd0aad7a3378497670c3868bff360ed66c55b"
+      "sha256": "ab486f28e39e47fdf70a78dc07fd2f6e71e149be49894af7c8e5d3e890f352d4"
     },
     {
       "runtime": "terrain-moonstone_lozenge224.png",
       "source": "procedural-materials/terrain-moonstone_lozenge224.png",
-      "sha256": "a528d7165b043926aae4339d44174acf55d0f10f96be38c1979ec46745eb941c"
+      "sha256": "417730cb2c5038033122645ccc56dbb5bd451479ec65fa4f99c59e3b53f7c965"
     },
     {
       "runtime": "terrain-moonstone_lozenge225.png",
       "source": "procedural-materials/terrain-moonstone_lozenge225.png",
-      "sha256": "3756ee4e1171f01b41b251e92b4f7148d9abb5e37aee83a0983426ac045a4029"
+      "sha256": "99bc031d5b2b7045f49806f008e4f2d35e5d771971e1dd2a85c66d46f3d41bbf"
     },
     {
       "runtime": "terrain-moonstone_lozenge226.png",
       "source": "procedural-materials/terrain-moonstone_lozenge226.png",
-      "sha256": "cad10bd344d7b92124e8390981b297429f6f0bd05938edc211691e524c846f9e"
+      "sha256": "dff36d11884c5fa0fc8b4d2db3144f66bf02293e1c0e54245deedfe6a493f699"
     },
     {
       "runtime": "terrain-moonstone_lozenge227.png",
       "source": "procedural-materials/terrain-moonstone_lozenge227.png",
-      "sha256": "9f7ff1aa956aa999a294acf0b93434a6ac3b35742ac7f4354c3e421c66852d7f"
+      "sha256": "a58694ae61436112e4965e43d8be95461d95155448310ac0372fb8a740f5e6cc"
     },
     {
       "runtime": "terrain-moonstone_lozenge228.png",
       "source": "procedural-materials/terrain-moonstone_lozenge228.png",
-      "sha256": "3e2e7667a793789660b6df1d0e035270012bca0687e3fb1aa0669f3992aecdda"
+      "sha256": "26694bcbb87e4dbecebb4e9b413f5427e205b8914068de2ca58b3191be4e6b58"
     },
     {
       "runtime": "terrain-moonstone_lozenge229.png",
       "source": "procedural-materials/terrain-moonstone_lozenge229.png",
-      "sha256": "a0aa5c8f7b8e3ec2166bbb0211d3d177ac8fe27288813ffdbf35cbc2aa90aec3"
+      "sha256": "167112f72ee8f937b9cfcfb63ac9e75a69620f3a9a10b6b461a70c5669bdd325"
     },
     {
       "runtime": "terrain-moonstone_lozenge230.png",
       "source": "procedural-materials/terrain-moonstone_lozenge230.png",
-      "sha256": "777528a604c34ef8606fdcac438ae89509c58c5b817b6f3e073623b8f7e314e1"
+      "sha256": "3f7015a8f55d1ad6432738dcc655ffec49f67ada6979f30debeef537dea436fa"
     },
     {
       "runtime": "terrain-moonstone_lozenge231.png",
       "source": "procedural-materials/terrain-moonstone_lozenge231.png",
-      "sha256": "02c9f77d0f99adcc32a2bc9878367f574c1db481af3da9efd0d20d8509bcf6f6"
+      "sha256": "9e5a6af9298acb6ce30597f345d3a21cd841ef5ada968fbad7f672462d7c98f7"
     },
     {
       "runtime": "terrain-moonstone_lozenge232.png",
       "source": "procedural-materials/terrain-moonstone_lozenge232.png",
-      "sha256": "443f3d4e6769767b2b13852cc7066817c4e24571c9e792a463b35e5c71d6c296"
+      "sha256": "31ad86ca8601a345b60b34bb8aeaac979f9bb3d66322ab621d1168867ac714a7"
     },
     {
       "runtime": "terrain-moonstone_lozenge233.png",
       "source": "procedural-materials/terrain-moonstone_lozenge233.png",
-      "sha256": "c20cf3b426e3681bbf206b7231de66a7ac35f2dc47ea2efe3b626c7f4bbd05b8"
+      "sha256": "90940d2201fdbb6c98f1aeff45f11ed84971f11887c0595411d2fccf9bb2c536"
     },
     {
       "runtime": "terrain-moonstone_lozenge234.png",
       "source": "procedural-materials/terrain-moonstone_lozenge234.png",
-      "sha256": "75c4658e791fed0d18bc8f61bbd0263565b99ff66f4d3fd0be83f656662e8a29"
+      "sha256": "d88a017f77230022433539382199787bdea2eda714a3cdfb49c1e37546a37467"
     },
     {
       "runtime": "terrain-moonstone_lozenge235.png",
       "source": "procedural-materials/terrain-moonstone_lozenge235.png",
-      "sha256": "4af769d11982b0b7865a3cbd9d0914aa48521303b1a18ad58d24a00d5766c952"
+      "sha256": "5702e7a13ca056760b1440a3002df1db014e2d2759b371f5cee081723ffe636f"
     },
     {
       "runtime": "terrain-moonstone_lozenge236.png",
       "source": "procedural-materials/terrain-moonstone_lozenge236.png",
-      "sha256": "98a9dac2639532a316793daff4d8e0144be5e53aaf17ebfa9987ecfbb7f152ed"
+      "sha256": "f41ff053a233b61250326d3f498ca7a821ea6a535a5687ba1fd5bfd64a961081"
     },
     {
       "runtime": "terrain-moonstone_lozenge237.png",
       "source": "procedural-materials/terrain-moonstone_lozenge237.png",
-      "sha256": "e6a33972ef7e028a2427799b4f6c63f320192dbe5f67ed2ecc6d624a5d528cae"
+      "sha256": "6dd32c6eecab9e6ea2bc34a16a1c6933e343e860cd072ea29d4949056d39fefc"
     },
     {
       "runtime": "terrain-moonstone_lozenge238.png",
       "source": "procedural-materials/terrain-moonstone_lozenge238.png",
-      "sha256": "6c1c1ff4f150f2bc1af5453b84a41930aa9b6599a827cc73f58b34e51a7a3a47"
+      "sha256": "e1639930cc54f09d9e1242d8c64b324f19203c399a09352922d677d0ae863eff"
     },
     {
       "runtime": "terrain-moonstone_lozenge239.png",
       "source": "procedural-materials/terrain-moonstone_lozenge239.png",
-      "sha256": "adea7f8b92c825e515d8665c4f94a5ce59782fef048f802d5de956ea1fdf3ad6"
+      "sha256": "ef4558279913a2703d966e31cc7f274c51195b951871a6d0f7d9569ecae194cd"
     },
     {
       "runtime": "terrain-moonstone_lozenge240.png",
       "source": "procedural-materials/terrain-moonstone_lozenge240.png",
-      "sha256": "c63fbedf87bd90eeb13ed8b74fea9ee44ffd030ac88d5637be8c3fafb2ca0c51"
+      "sha256": "ab41b568354ce85616baecd9c21381ca387c6acd3a2cd2a9d2510b0a8ed786a7"
     },
     {
       "runtime": "terrain-moonstone_lozenge241.png",
       "source": "procedural-materials/terrain-moonstone_lozenge241.png",
-      "sha256": "8dc27d42b1913a0f7932af6fb51370d2cba699fb344ba1eb0bb1a55ac9cc0e9f"
+      "sha256": "5d11bcdd7587d5b5b35ec866dd0122838e3345cf8cd3b767ff4fe449d86bf59e"
     },
     {
       "runtime": "terrain-moonstone_lozenge242.png",
       "source": "procedural-materials/terrain-moonstone_lozenge242.png",
-      "sha256": "f11c2db12a62c0742d98955ad2f76511ac5af7f0fc785d9641fd82cd52d93d56"
+      "sha256": "8edc8f283e88f96f11aaebe9fda6d990ad7863b4148089232235d50138c99008"
     },
     {
       "runtime": "terrain-moonstone_lozenge243.png",
       "source": "procedural-materials/terrain-moonstone_lozenge243.png",
-      "sha256": "b9b8a07e84bdae36e45152ffe4698370efbfa6fa0eae056698606d9309a7e64f"
+      "sha256": "afcd91a5d7c65d3f7b723c7b2e2f928f1298c783776da0268a67e6c482557cd6"
     },
     {
       "runtime": "terrain-moonstone_lozenge244.png",
       "source": "procedural-materials/terrain-moonstone_lozenge244.png",
-      "sha256": "b149b6f24645e8876f638b988742be00285ce6419b6ec2b888c0ad7ae98c7f2a"
+      "sha256": "6096a165494794bb580f9d1b5b9039b50c979956aa4aba052cc7b7ff6bdd58a8"
     },
     {
       "runtime": "terrain-moonstone_lozenge245.png",
       "source": "procedural-materials/terrain-moonstone_lozenge245.png",
-      "sha256": "dfda9b58f77d15a52b1fc0b1323d985b434d5705a1d1a55410c728e6ea70aa78"
+      "sha256": "827ac10349d23f7ee97cea40e90986e7208ec41a6b1547662ca966bab94395f0"
     },
     {
       "runtime": "terrain-moonstone_lozenge246.png",
       "source": "procedural-materials/terrain-moonstone_lozenge246.png",
-      "sha256": "2733b46ae2255e6e1062e29298b0bad5f56b0db99476fdb807ac863e0e38a158"
+      "sha256": "7e35079faa175451b389e4274f40fa194abccd5785281594152aed0f4c8819b9"
     },
     {
       "runtime": "terrain-moonstone_lozenge247.png",
       "source": "procedural-materials/terrain-moonstone_lozenge247.png",
-      "sha256": "7aff75709cc46f946c2e34689579b092d2b223db2fce9fb8bd0e5e9d6ae78314"
+      "sha256": "c0a279e30bb227b877a44e91fd327d80472f800024fa71795732114d16a7db9c"
     },
     {
       "runtime": "terrain-moonstone_lozenge248.png",
       "source": "procedural-materials/terrain-moonstone_lozenge248.png",
-      "sha256": "54f80f659240bd55e437a74d097821b732949dff7b7b23f2195e44e2cf00fb1f"
+      "sha256": "f570f8f420b0ef8f35009a51890904ddd27cb195680341513b0d9fcc745b313a"
     },
     {
       "runtime": "terrain-moonstone_lozenge249.png",
       "source": "procedural-materials/terrain-moonstone_lozenge249.png",
-      "sha256": "d9f8cf36596b1855909b45d57fef46078930468bff35a5e3936af26ef5625ce9"
+      "sha256": "239601bdcabf92df8a82b2f2edd49bab2886981e64dc024846e35f28c6f609a5"
     },
     {
       "runtime": "terrain-moonstone_lozenge250.png",
       "source": "procedural-materials/terrain-moonstone_lozenge250.png",
-      "sha256": "2cd5cd71ba644a6e28ee2d717d798e05f9b65a62f793da64ea69aaae98222f0e"
+      "sha256": "730d9f8d97cd706d3191a652ff00c1667a28a58acafd7cca150a5c82957f0e1e"
     },
     {
       "runtime": "terrain-moonstone_lozenge251.png",
       "source": "procedural-materials/terrain-moonstone_lozenge251.png",
-      "sha256": "6df2d56de68c6ec537ec17ff83dc2db365180c85f1e164b8a645e21143311d2b"
+      "sha256": "e140e7b97aab34ffbe68fae4de6d2d728edc5e21f578443c8efe99200f282e30"
     },
     {
       "runtime": "terrain-moonstone_lozenge252.png",
       "source": "procedural-materials/terrain-moonstone_lozenge252.png",
-      "sha256": "e38c47fb93d8775f1b8fbaf7d29d31a8b5c4edd5c199d69364d2bf144037462b"
+      "sha256": "4ce69d98c79175478158fad75fdd26ca2a151671f1ba65c64e4123e400f51f55"
     },
     {
       "runtime": "terrain-moonstone_lozenge253.png",
       "source": "procedural-materials/terrain-moonstone_lozenge253.png",
-      "sha256": "2b32194175fd625362ec71dada844fc10b8c0211f238b442299974222c78d43f"
+      "sha256": "aab32169a1f7d048ca958f883cf139019e690cd382810164c41d6259fa73516f"
     },
     {
       "runtime": "terrain-moonstone_lozenge254.png",
       "source": "procedural-materials/terrain-moonstone_lozenge254.png",
-      "sha256": "74fb688cb96c5f4405b3df52ba4a08fe0933944e9d050a590d06b0d7bc5634a2"
+      "sha256": "76abb253bafc67aea5317e047805cc43e00821e54f38ffbaab70580be6f1487e"
     },
     {
       "runtime": "terrain-moonstone_lozenge255.png",
       "source": "procedural-materials/terrain-moonstone_lozenge255.png",
-      "sha256": "5a645f6ecb64baf6facc548492220ffdd2f24fac500fdf17996f401a9121163c"
+      "sha256": "b76e7a14522b7d3245eaadce3bf57968734adb9fa2390275e196be39e0f5c271"
     },
     {
       "runtime": "terrain-frost_pinwheel0.png",
