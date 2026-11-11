@@ -211,8 +211,7 @@ else()
   # ---- ios-tests: the in-process script corpus as an archive for the test app ----
   # Its TestMain.cpp entry point is renamed; the app calls glob2ScriptTestMain.
   glob2_mobile_test_objects(script_objects IOS_SCRIPT_TESTS glob2_ios_script)
-  set_source_files_properties("${GLOB2_ROOT}/test/support/TestMain.cpp" TARGET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                              PROPERTIES COMPILE_DEFINITIONS main=glob2ScriptTestMain)
+  set_source_files_properties("${GLOB2_ROOT}/test/support/TestMain.cpp" PROPERTIES COMPILE_DEFINITIONS main=glob2ScriptTestMain)
   add_library(glob2-script-tests STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:glob2_mobile>
               $<TARGET_OBJECTS:glob2_javascript> ${script_objects})
   set_target_properties(glob2-script-tests PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${GLOB2_OUT}/lib" LINKER_LANGUAGE CXX)
