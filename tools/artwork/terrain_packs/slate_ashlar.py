@@ -14,7 +14,7 @@ from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, ston
 from terrain_core import (N, NATIVE_PX, RECIPES, Style, clamp01, fbm, lattice_noise, layout_field, mix, ramp, recipe,
                           shade, smoothstep)
 
-UNIT = N // 4  # a quarter tile: 8 native px
+UNIT = N // 8  # an eighth of a tile: 4 native px
 SHAPES = [((3, 2), 3), ((2, 2), 2), ((4, 2), 2), ((3, 1), 2), ((2, 1), 1)]  # (1, 1) only as the fallback
 
 
@@ -40,7 +40,7 @@ def ashlar(size, rng):
                         taken[y][x] = True
                     # Half a module off the grid, so no joint follows a tile edge.
                     rects.append((gx * UNIT + UNIT / 2, gy * UNIT + UNIT / 2, w * UNIT, h * UNIT,
-                                  rng.uniform(2.0, 6.0)))
+                                  rng.uniform(1.0, 3.0)))
                     break
     return rects
 

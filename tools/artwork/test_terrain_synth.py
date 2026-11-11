@@ -112,7 +112,8 @@ class TerrainSynth(unittest.TestCase):
         # Every engine built-in from BOULDERS on (all but the five classic grounds)
         # has a recipe, so the name list follows TerrainType.h.
         enum = (ROOT / "src/map/TerrainType.h").read_text()
-        count = int(re.search(r"TERRAIN_COUNT=(\d+)", enum).group(1))
+        builtins = (ROOT / "src/map/TerrainBuiltins.h").read_text()
+        count = int(re.search(r"TERRAIN_COUNT = TerrainType\((\d+)\)", builtins).group(1))
         boulders = int(re.search(r"BOULDERS=(\d+)", enum).group(1))
         self.assertEqual(len(synth.BUILTIN_ORDER), count - boulders)
         for name, recipe in synth.RECIPES.items():

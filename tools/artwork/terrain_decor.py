@@ -1840,12 +1840,42 @@ def ice_face(style, base, shade, t, c, g, band):
     return tuple(int(clamp(v, 0, 255)) for v in colour)
 
 
+def wall_canvas(own, coverage, rise):
+    """Wall alpha and height of a mass's face, on a canvas `rise` rows taller
+    at the top than the cell and halo, so a face reaches its full height even
+    above the cell. The footprint `own` lies in this frame's cell; its face may
+    rise into the row above, where a rim that curves away under the next
+    row's top must still cover what that row drew. Returns (alpha, height,
+    pad), both images offset down by pad rows.
+
+    Height: how far above the foot of the face each pixel stands (255 just
+    under the lip, 0 at the ground), following the whole footprint (which
+    continues past the cell edge) so a face running on into the next row has
+    no false foot; the halo below is shorter than the wall, so its last row
+    is carried on down."""
+    width, height = own.size
+    pad = rise - HALO if rise > HALO else 0
+    tall = Image.new("L", (width, height + pad))
+    tall.paste(own, (0, pad))
+    solid = Image.new("L", (width, pad + height + rise))
+    solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, pad))
+    solid.paste(solid.crop((0, pad + height - 1, width, pad + height)).resize((width, rise)), (0, pad + height))
+    wall_alpha, wall_height = Image.new("L", tall.size), Image.new("L", tall.size)
+    for d in range(rise + 1):
+        wall_alpha = ImageChops.lighter(wall_alpha, shifted(tall, 0, -d))
+        wall_height = ImageChops.lighter(
+            wall_height, solid.crop((0, d, width, d + height + pad)).point(lambda v, d=d: v and int(d * 255 / rise)))
+    return wall_alpha, wall_height, pad
+
+
 def render_cliff(name, mask, colours, interior=0, foreign=0):
     """A 32x64 native frame: contact shadow, fractured wall, then the plateau.
 
     The same ownership rules as render_connected: the frame draws the rock whose
     footprint lies in its cell, and the next row's plateau covers this row's
-    wall wherever the cliff continues.
+    wall wherever the cliff continues. Where the rim curves away under the
+    next row, that row's wall rises the full height into this row's cell and
+    covers the rest, so no square of this row's wall shows past the corner.
     """
     frame = Image.new("RGBA", (CELL, CLIFF_TOP + CELL + CLIFF_BELOW))
     if not mask:
@@ -1871,31 +1901,20 @@ def render_cliff(name, mask, colours, interior=0, foreign=0):
     layer.putalpha(shadow.crop(cell))
     frame.alpha_composite(layer, (0, CLIFF_TOP))
 
-    # Wall: for each pixel, how far above the foot of the face it stands (1 just
-    # under the lip, 0 at the ground).
-    # The wall's shading follows the whole footprint, which continues past the
-    # cell edge: cropped to this cell, a face running on into the next row
-    # would end in a false dark foot at the edge.
-    # The halo below is shorter than the wall, so its last row is carried on down.
-    wall_alpha, wall_height = Image.new("L", own.size), Image.new("L", own.size)
+    # Wall: the face of this cell's footprint, up to its full height (see
+    # wall_canvas), on a canvas padded `pad` rows at the top.
+    wall_alpha, wall_height, pad = wall_canvas(own, coverage, CLIFF_RAISE)
     width, height = own.size
-    solid = Image.new("L", (width, height + CLIFF_RAISE))
-    solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, 0))
-    solid.paste(solid.crop((0, height - 1, width, height)).resize((width, CLIFF_RAISE)), (0, height))
-    for d in range(CLIFF_RAISE + 1):
-        wall_alpha = ImageChops.lighter(wall_alpha, shifted(own, 0, -d))
-        wall_height = ImageChops.lighter(
-            wall_height, solid.crop((0, d, width, d + height)).point(lambda v, d=d: v and int(d * 255 / CLIFF_RAISE)))
     column, grit, height_px = columns.load(), rough.load(), wall_height.load()
     stone = surface.load()
-    wall = Image.new("RGB", own.size)
+    wall = Image.new("RGB", wall_alpha.size)
     wp = wall.load()
-    for y in range(height):
+    for y in range(-pad, height):
         # The face shows the plateau above its foot; below the halo the last
         # row carries on.
         yy = min(y + CLIFF_RAISE, height - 1)
         for x in range(width):
-            t = height_px[x, y] / 255
+            t = height_px[x, y + pad] / 255
             c = column[x, yy] / 255
             g = grit[x, yy] / 255
             # Broad facets: the column field cut into bands, each turned its own
@@ -1913,11 +1932,11 @@ def render_cliff(name, mask, colours, interior=0, foreign=0):
             # top running on; frames in one row share rows, so it stays seamless.
             base = stone[x, HALO + 10 + (y - HALO + CLIFF_RAISE) // 2]
             if "cornice" in style:
-                wp[x, y] = ice_face(style, base, shade, t, c, g, band)
+                wp[x, y + pad] = ice_face(style, base, shade, t, c, g, band)
                 continue
             warm = (1.04, 1.0, 0.94)
-            wp[x, y] = tuple(int(clamp(base[k] * shade * warm[k], 0, 255)) for k in range(3))
-    region = (HALO, HALO - CLIFF_RAISE, HALO + CELL, HALO + CELL)
+            wp[x, y + pad] = tuple(int(clamp(base[k] * shade * warm[k], 0, 255)) for k in range(3))
+    region = (HALO, HALO - CLIFF_RAISE + pad, HALO + CELL, HALO + CELL + pad)
     layer = wall.crop(region).convert("RGBA")
     layer.putalpha(wall_alpha.crop(region))
     frame.alpha_composite(layer, (0, CLIFF_TOP - CLIFF_RAISE))
@@ -2175,26 +2194,18 @@ def render_mass(name, mask, colours, interior=0, foreign=0):
     layer.putalpha(shadow.crop(cell))
     frame.alpha_composite(layer, (0, CLIFF_TOP))
 
-    # Wall: how far above the foot of the face each pixel stands, carried past
-    # the cell edge as for cliffs, so a continuing face has no false foot.
-    wall_alpha, wall_height = Image.new("L", own.size), Image.new("L", own.size)
+    # Wall: the face of this cell's footprint, as for cliffs (see wall_canvas).
+    wall_alpha, wall_height, pad = wall_canvas(own, coverage, lift)
     width, height = own.size
-    solid = Image.new("L", (width, height + lift))
-    solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, 0))
-    solid.paste(solid.crop((0, height - 1, width, height)).resize((width, lift)), (0, height))
-    for d in range(lift + 1):
-        wall_alpha = ImageChops.lighter(wall_alpha, shifted(own, 0, -d))
-        wall_height = ImageChops.lighter(
-            wall_height, solid.crop((0, d, width, d + height)).point(lambda v, d=d: v and int(d * 255 / lift)))
     column, grit, height_px = columns.load(), rough.load(), wall_height.load()
-    wall = Image.new("RGB", own.size)
+    wall = Image.new("RGB", wall_alpha.size)
     wp = wall.load()
     wall_colour = look["wall"]
-    for y in range(height):
+    for y in range(-pad, height):
         yy = min(y + lift, height - 1)
         for x in range(width):
-            wp[x, y] = wall_colour(height_px[x, y] / 255, column[x, yy] / 255, grit[x, yy] / 255)
-    region = (HALO, HALO - lift, HALO + CELL, HALO + CELL)
+            wp[x, y + pad] = wall_colour(height_px[x, y + pad] / 255, column[x, yy] / 255, grit[x, yy] / 255)
+    region = (HALO, HALO - lift + pad, HALO + CELL, HALO + CELL + pad)
     layer = wall.crop(region).convert("RGBA")
     layer.putalpha(wall_alpha.crop(region))
     frame.alpha_composite(layer, (0, CLIFF_TOP - lift))

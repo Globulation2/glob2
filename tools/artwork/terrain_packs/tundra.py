@@ -46,7 +46,7 @@ def render_tundra(ctx):
     rgb = mix(rgb, stones, cover, 1.0)
     drift = layout_field(ctx, lambda rng: fbm(rng, 2, 3, size=size))
     patch = [0.7 * smoothstep(0.08, 0.3, d) + 0.3 * v for d, v in zip(centre, drift)]
-    mat, moss = heather_cushions(ctx, p, cells=10, tufts=1400, threshold=0.47, spread=0.2, light=0.15,
+    mat, moss = heather_cushions(ctx, p, cells=10, tufts=1400, threshold=0.82, spread=0.2, light=0.15,
                                  part=0.1, dead_share=0.05, patch=patch)
     rgb = mix(rgb, p["shadow"], soft_shadow(moss), 0.12)
     return mix(rgb, mat, moss, 1.0), None

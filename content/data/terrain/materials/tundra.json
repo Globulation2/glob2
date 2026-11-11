@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-tundra",
   "profile": "brush",
   "class": "solid",
-  "preview": [91, 88, 70],
+  "preview": [91, 86, 73],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [91, 88, 70],
+  "minimap": [91, 86, 73],
   "seam": {
     "height": 2,
     "cast_q8": 48,

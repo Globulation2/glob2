@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-frost_pinwheel",
   "profile": "paved",
   "class": "built",
-  "preview": [185, 188, 210],
+  "preview": [184, 188, 210],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [185, 188, 210],
+  "minimap": [184, 188, 210],
   "seam": {
     "height": 3,
     "cast_q8": 24,

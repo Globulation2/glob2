@@ -57,17 +57,17 @@ def lozenge_paving(size, diag, key, gap):
 
 @recipe(name="moonstone_lozenge", group="paths", label="Moonstone lozenge", profile="paved", border_class="built",
         seam=SEAM,
-        palette={**FROST, "dark": (196, 194, 200), "mid": (220, 218, 222), "light": (238, 236, 238),
+        palette={**FROST, "dark": (198, 192, 200), "mid": (222, 216, 222), "light": (240, 234, 238),
                  "warm": (230, 222, 216), "cool": (206, 208, 230), "vein": (146, 150, 176),
                  "key": (108, 120, 176), "key_light": (170, 180, 226)},
-        style=Style(luma=192, std=19, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
+        style=Style(luma=192, std=19, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_moonstone_lozenge(ctx):
     """Polished white marble lozenges with grey-blue veins and blue moonstone
     keystones: a kept, formal floor with hairline cracks and a frost sheen."""
     p, size = RECIPES["moonstone_lozenge"].palette, ctx.size
-    centres, ids, edge, first_key = lozenge_paving(size, 32 * NATIVE_PX, 4.0 * NATIVE_PX, 1.25 * NATIVE_PX)
+    centres, ids, edge, first_key = lozenge_paving(size, 16 * NATIVE_PX, 2.0 * NATIVE_PX, 1.25 * NATIVE_PX)
     decay = decay_fields(ctx, reclaim=(0.68, 0.9))
-    reach = 32 + 20 * NATIVE_PX
+    reach = 32 + 10 * NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.03, cracked=0.2, sink=0.4, heave=0.25)
     texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
@@ -87,7 +87,7 @@ def render_moonstone_lozenge(ctx):
     gem = ramp([clamp01(0.5 * t + 0.5 * smoothstep(0.0, 2.5 * NATIVE_PX, e)) for t, e in zip(texture, edge)],
                [(0.0, p["key"]), (1.0, p["key_light"])])
     rgb = mix(rgb, gem, keys)
-    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 12 * NATIVE_PX,
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 6 * NATIVE_PX,
                 joint=(0.0, 1.8), creep=2.5, chipping=1.0, bevel=1.6, bevel_strength=0.3,
                 moss=1.0, weeds=0.35, lichen=0.4, grit=0.6, dust=0.15, lip=0.2, shadow=0.3, damp=0.5,
                 finish_grain=0.05)

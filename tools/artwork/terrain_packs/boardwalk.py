@@ -22,18 +22,18 @@ from terrain_core import (
 
 
 def plank_rectangles(size, rng):
-    """Planks in runs of uneven width, each 2.5 to 4.5 cells long, wrapping
+    """Planks in runs of uneven width, each 2 to 3.6 cells long, wrapping
     the block, with their knot positions."""
     planks, knots = [], []
     # Rows start a few native px into the block so no plank gap lies on a
     # cell cut, where it would read as a tile seam.
     y = 3 * NATIVE_PX
-    for width in uneven_rows(size, rng, heights=(7, 9, 11, 13), offset=y):
+    for width in uneven_rows(size, rng, heights=(6, 7, 9, 10), offset=y):
         start = rng.random() * size
         x, row = start, []
         while True:
-            length = rng.uniform(2.5, 4.5) * N
-            if start + size - (x + length) < 2.0 * N:
+            length = rng.uniform(2.0, 3.6) * N
+            if start + size - (x + length) < 1.6 * N:
                 row.append((x, start + size - x))
                 break
             row.append((x, length))
@@ -41,8 +41,8 @@ def plank_rectangles(size, rng):
         for x0, length in row:
             planks.append((x0, y, length, width, 1.5))
             if rng.random() < 0.6:
-                knots.append(((x0 + rng.uniform(0.6, 2.0) * N) % size, y + rng.uniform(0.3, 0.7) * width,
-                              rng.uniform(5, 9)))
+                knots.append(((x0 + rng.uniform(0.5, 1.6) * N) % size, y + rng.uniform(0.3, 0.7) * width,
+                              rng.uniform(4, 7)))
         y += width
     return planks, knots
 
@@ -70,7 +70,7 @@ def render_boardwalk(ctx):
     planks, knot_list = plank_rectangles(size, shared)
     centres, ids, edge, axial, across = rectangle_geometry(size, planks)
     decay = decay_fields(ctx, reclaim=(0.8, 0.96))
-    reach = 32 + 4.5 * N
+    reach = 32 + 3.6 * N
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.05, cracked=0.16, sink=0.3, heave=0.3)
     # A lost plank has rotted away from one end, not vanished whole.
     broken = [0.0] * (size * size)
@@ -148,7 +148,7 @@ def render_boardwalk(ctx):
     rgb = mix(rgb, p["nail"], nails, 0.6)
     # Splits run along the grain from a plank end.
     along = [0.0 if s.kink > 0 else math.pi for s in fates]
-    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 40.0,
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 32.0,
                 joint=(0.0, 2.0), creep=1.0, tilt=0.006, chipping=0.8, bevel=1.5, bevel_strength=0.2,
                 crack_along=along, moss=0.2, weeds=0.3, lichen=0.1, grit=0.4, dust=0.1, lip=0.2,
                 shadow=0.35, finish_grain=0.05, broken=broken, damp=0.0)

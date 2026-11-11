@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-heath",
   "profile": "brush",
   "class": "solid",
-  "preview": [108, 99, 88],
+  "preview": [110, 102, 90],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [108, 99, 88],
+  "minimap": [110, 102, 90],
   "seam": {
     "height": 2,
     "cast_q8": 48,

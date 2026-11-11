@@ -15,7 +15,7 @@ from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, ston
 from terrain_core import (N, NATIVE_PX, RECIPES, Style, fbm, layout_field, mix, ramp, recipe, shade, smoothstep,
                           stamp_disc)
 
-CELL = N  # one basketweave square: two blocks of one tile x half a tile
+CELL = N // 2  # one basketweave square: two blocks of half a tile x a quarter tile
 
 
 def basketweave(size, rng):
@@ -27,7 +27,7 @@ def basketweave(size, rng):
             # Offset a quarter square so neither the outer nor the inner joint
             # of a square runs along a tile edge.
             x, y = i * CELL + CELL / 4, j * CELL + CELL / 4
-            r = lambda: rng.uniform(6.0, 16.0)
+            r = lambda: rng.uniform(3.0, 8.0)
             if (i + j) % 2 == 0:
                 rects += [(x, y, CELL, half, r()), (x, y + half, CELL, half, r())]
             else:
@@ -42,10 +42,10 @@ def pores(ctx, rng, density):
     mask = [0.0] * (ctx.size * ctx.size)
     for _ in range(int(density * ctx.area_scale)):
         x, y = rng.random() * ctx.size, rng.random() * ctx.size
-        spread = rng.uniform(2.0, 6.0) * NATIVE_PX
+        spread = rng.uniform(1.0, 3.0) * NATIVE_PX
         for _ in range(rng.randint(3, 9)):
             px, py = x + rng.gauss(0, spread) * 1.4, y + rng.gauss(0, spread) * 0.7
-            stamp_disc(mask, px, py, (0.5 + 1.6 * rng.random() ** 3) * NATIVE_PX, softness=0.45)
+            stamp_disc(mask, px, py, (0.35 + 1.0 * rng.random() ** 3) * NATIVE_PX, softness=0.45)
     return mask
 
 
@@ -68,21 +68,21 @@ def render_scoria_blocks(ctx):
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.25, own=0.5, staining=0.15)
 
-    # Crumbling rims: the soft stone is bitten back one to three native px,
+    # Crumbling rims: the soft stone is bitten back up to a native px or two,
     # unevenly along each rim, widening the joint where it does.
     # Discrete bites, not an even fuzz. They come from the shared stream and the
     # common wear only: the rims are geometry, and every layout's bevel lighting
     # takes its scale from them, so they must be the same in every layout.
     erosion, _ = layout_pair(ctx, lambda rng: fbm(rng, 6, 3, size=size))
-    edge = [e - 1.5 * NATIVE_PX * smoothstep(0.55, 0.62, r) * (1.0 + w)
+    edge = [e - 0.75 * NATIVE_PX * smoothstep(0.55, 0.62, r) * (1.0 + w)
             for e, r, w in zip(edge, erosion, decay.common_wear)]
 
     # Dished faces where the path is walked: lit as a shallow bowl, dusty.
     def dish_of(wear):
-        return [-smoothstep(1.0 * NATIVE_PX, 8 * NATIVE_PX, e) * smoothstep(0.3, 0.8, w) for e, w in zip(edge, wear)]
+        return [-smoothstep(0.5 * NATIVE_PX, 4 * NATIVE_PX, e) * smoothstep(0.3, 0.8, w) for e, w in zip(edge, wear)]
     dish = dish_of(decay.wear)
     rgb = mix(rgb, p["dust"], [-d * 0.15 for d in dish], 1.0)
-    rgb = shade(rgb, dish, 0.35, reference_height=dish_of(decay.common_wear))
+    rgb = shade(rgb, dish, 0.15, reference_height=dish_of(decay.common_wear))
 
     # Pores in clusters; on a few stretches they are packed with pale ash.
     holes = stamped(ctx, lambda rng: pores(ctx, rng, 7))
@@ -97,7 +97,7 @@ def render_scoria_blocks(ctx):
     # reference surface with it, and that sets every layout's lighting scale.
     broken, _ = layout_pair(ctx, lambda rng: fbm(rng, 4, 2, size=size))
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, CELL * 0.25,
-                joint=(0.0, 1.5), creep=0.8, chipping=1.6, bevel=1.8, bevel_strength=0.34, crack_width=1.0,
+                joint=(0.0, 1.5), creep=0.8, chipping=0.9, bevel=1.0, bevel_strength=0.3, crack_width=0.8,
                 crack_along=across, moss=0.0, weeds=0.15, lichen=0.25, grit=0.3, grit_cover=0.5, dust=0.12,
                 lip=0.26, shadow=0.45, broken=broken)
 
