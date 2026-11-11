@@ -23,6 +23,10 @@ the newest --keep baselines, never removes one in use.
 `seed` copies a baseline's dev build directory into a fresh worktree of a nearby
 revision (copy-on-write where the filesystem supports it) so that its first build
 recompiles only what differs; it reports what SCons would rebuild.
+
+Baselines always build with SCons (`dev_build.py --generator=scons`), the build
+that makes every perf-tier candidate, so a baseline and its candidate come from
+the same build system's compile and link lines.
 """
 from __future__ import annotations
 
@@ -88,7 +92,7 @@ def build(sha: str, variants: list[str], jobs: int) -> Path:
         record = {'sha': sha, 'host': host(), 'started': time.time(), 'variants': {}}
         for variant in variants:
             directory = build_directory(worktree, variant)
-            command = [sys.executable, 'tools/dev_build.py', f'-j{jobs}', *VARIANTS[variant]['command'],
+            command = [sys.executable, 'tools/dev_build.py', '--generator=scons', f'-j{jobs}', *VARIANTS[variant]['command'],
                        str((directory / 'src/glob2').relative_to(worktree)), *TARGETS]
             subprocess.run(command, cwd=worktree, check=True)
             record['variants'][variant] = str(directory)
@@ -142,7 +146,7 @@ def seed(target: Path, sha: str) -> int:
     copy_tree(source, destination)
     for lock in destination.rglob('.build-lock'):
         lock.unlink()
-    dry = subprocess.run([sys.executable, 'tools/dev_build.py', '-n', '--debug=explain', *TARGETS],
+    dry = subprocess.run([sys.executable, 'tools/dev_build.py', '--generator=scons', '-n', '--debug=explain', *TARGETS],
                          cwd=target, capture_output=True, text=True)
     rebuilt = sum(1 for line in dry.stdout.splitlines() if line.startswith('scons: rebuilding') and ".o'" in line)
     print(f'seeded {destination} from {sha[:12]}; the next build recompiles {rebuilt} object(s)')

@@ -1,8 +1,9 @@
 """Locate native build outputs; GLOB2_BUILD_DIR selects a custom build identity.
 
-Without GLOB2_BUILD_DIR the newest native client build wins: the fast development
-build that tools/dev_build.py produces (build/<toolchain>/client/debug/dev-*) or
-the release build (build/<toolchain>/client/release), judged by its binaries.
+Without GLOB2_BUILD_DIR the newest native client build wins: the CMake + Ninja dev
+build that tools/dev_build.py produces by default (build/cmake/dev), its SCons dev
+builds (build/<toolchain>/client/debug/dev-*) or the release build
+(build/<toolchain>/client/release), judged by its binaries.
 study_binary() also considers the optimized perf builds (dev_build.py perf=1),
 for map studies and sweeps that run thousands of generations.
 """
@@ -11,6 +12,8 @@ from pathlib import Path
 import platform
 
 ROOT = Path(__file__).resolve().parents[1]
+# The CMake dev preset's binary directory; an unoptimized build, like the SCons dev-*.
+CMAKE_DEV = ROOT / 'build/cmake/dev'
 EXECUTABLE = '.exe' if os.name == 'nt' else ''
 
 
@@ -29,7 +32,7 @@ def native_build_directory():
         return ROOT / os.environ['GLOB2_BUILD_DIR']
     toolchain = 'mingw' if os.name == 'nt' else platform.system().lower()
     release = ROOT / 'build' / toolchain / 'client/release'
-    candidates = [release, *sorted((ROOT / 'build' / toolchain / 'client/debug').glob('dev-*'))]
+    candidates = [release, *sorted((ROOT / 'build' / toolchain / 'client/debug').glob('dev-*')), CMAKE_DEV]
     built = [(time, path) for path in candidates if (time := _newest_output(path)) is not None]
     return max(built)[1] if built else release
 
@@ -42,7 +45,11 @@ def _client_builds():
     toolchain = 'mingw' if os.name == 'nt' else platform.system().lower()
     client = ROOT / 'build' / toolchain / 'client'
     return [client / 'release', client / 'perf', client / 'perf' / 'o3',
-            *sorted((client / 'debug').glob('dev-*'))]
+            *sorted((client / 'debug').glob('dev-*')), CMAKE_DEV]
+
+
+def _optimized(binary):
+    return 'debug' not in binary.parts and not binary.is_relative_to(CMAKE_DEV)
 
 
 def study_binary():
@@ -52,12 +59,12 @@ def study_binary():
     A perf build is several times faster than a dev build for generation.
     """
     if os.environ.get('GLOB2_BUILD_DIR'):
-        return native_binary(), 'debug' not in native_binary().parts
+        return native_binary(), _optimized(native_binary())
     built = []
     for path in _client_builds():
         binary = path / 'src' / ('glob2' + EXECUTABLE)
         try:
-            built.append((binary.stat().st_mtime, binary, 'debug' not in path.parts))
+            built.append((binary.stat().st_mtime, binary, _optimized(binary)))
         except OSError:
             pass
     if not built:

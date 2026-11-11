@@ -1,13 +1,14 @@
 # CMake + Ninja build of the native Linux development client.
 #
-# SCons (SConstruct, tools/dev_build.py) remains the default build system for
-# every target and the only one that ships anything. This file reproduces the
-# SCons dev tier object for object, for the everyday edit/build/test loop, and
+# tools/dev_build.py builds the dev tier with it by default on native Linux;
+# SCons (SConstruct) remains the build for every other target and tier and the
+# only one that ships anything. This file reproduces the SCons dev tier object
+# for object, for the everyday edit/build/test loop, and
 # the two are compared by tools/compare_build_systems.py; see "CMake + Ninja
 # build for daily work" in docs/development/build-options.md.
 #
 #   cmake --preset dev && cmake --build --preset dev
-#   python3 tools/dev_build.py --generator=cmake
+#   python3 tools/dev_build.py
 #
 # Source lists come from cmake/sources.cmake and cmake/tests.cmake, generated
 # from scons/sources.py, test/tests.py and scons/harness_programs.py by
@@ -18,7 +19,7 @@ cmake_minimum_required(VERSION 3.25)
 project(glob2 LANGUAGES C CXX)
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_CROSSCOMPILING)
-  message(FATAL_ERROR "The experimental CMake build covers native Linux development builds only; "
+  message(FATAL_ERROR "The CMake build covers native Linux development builds only; "
                       "use SCons (tools/dev_build.py) for every other target.")
 endif()
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)

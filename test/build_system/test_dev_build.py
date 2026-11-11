@@ -99,6 +99,30 @@ class DevelopmentBuildTests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     command.cmake_commands([unsupported])
 
+    def test_default_generator_is_cmake_only_for_requests_it_builds(self):
+        spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
+        command = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(command)
+        def host(system='Linux', which='/usr/bin/tool', version='cmake version 3.28.3\n'):
+            return (patch.object(command.platform, 'system', return_value=system),
+                    patch.object(command.shutil, 'which', return_value=which),
+                    patch.object(command.subprocess, 'run',
+                                 return_value=subprocess.CompletedProcess([], 0, stdout=version)))
+        system, which, run = host()
+        with system, which, run:
+            for arguments in ([], ['.'], ['engine-tests', 'unit-tests', '-j12', '-k']):
+                self.assertIsNone(command.scons_reason(arguments), arguments)
+            # The perf tiers, SCons options and file targets stay on SCons.
+            for arguments in (['perf=1'], ['perf=1', 'opt=3', 'engine-tests'], ['target=web'],
+                              ['compile_profile=core', 'engine-tests'], ['--build=build/x'], ['-n'],
+                              ['build/linux/client/debug/dev-x/src/glob2']):
+                self.assertIsNotNone(command.scons_reason(arguments), arguments)
+        for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),
+                                    ({'which': None}, 'not installed'), ({'system': 'Darwin'}, 'Linux')):
+            system, which, run = host(**overrides)
+            with system, which, run:
+                self.assertIn(expected, command.scons_reason([]))
+
     def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
         spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')
         command = importlib.util.module_from_spec(spec)
