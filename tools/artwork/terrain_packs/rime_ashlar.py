@@ -50,13 +50,13 @@ def render_rime_ashlar(ctx):
     reach = 32 + 78 + NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.05, cracked=0.24, sink=0.55, heave=0.3)
     # Clear ice is darker and bluer inside, milkier toward the rim.
-    texture = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size))
+    texture = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size, array=True))
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["deep"]), (0.55, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.4, own=0.7, staining=0.35)
-    milk = [smoothstep(6.0 * NATIVE_PX, 0.0, e) for e in edge]
+    milk = smoothstep(6.0 * NATIVE_PX, 0.0, edge)
     rgb = mix(rgb, p["light"], milk, 0.35)
     # Fracture planes inside the ice: pale, thin, crossing several blocks.
-    planes = group_cracks(ctx, cells=4, width=0.035, gaps=0.45)
+    planes = group_cracks(ctx, cells=4, width=0.035, gaps=0.45, array=True)
     rgb = mix(rgb, (248, 252, 255), planes, 0.7)
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 17.0,
                 joint=(0.0, 2.2), creep=3.5, chipping=1.0, bevel=2.2, bevel_strength=0.32,

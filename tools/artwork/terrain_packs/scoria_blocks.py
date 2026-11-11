@@ -10,8 +10,10 @@ pits of loose cinder rather than soil.
 """
 import math
 
+import numpy as np
+
 from ._rock_paths import ASH_GROUND, grains, layout_pair, stamped
-from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, stone_fates
+from ._paving import decay_fields, dress, per_stone, rectangle_geometry, stone_colour, stone_fates
 from terrain_core import (N, NATIVE_PX, RECIPES, Style, fbm, layout_field, mix, ramp, recipe, shade, smoothstep,
                           stamp_disc)
 
@@ -39,7 +41,7 @@ def pores(ctx, rng, density):
     """Vesicles, `density` clusters per tile: gas bubbles froze in swarms, so
     each cluster is a few larger holes among many pinholes, a little
     stretched along one flow direction."""
-    mask = [0.0] * (ctx.size * ctx.size)
+    mask = np.zeros(ctx.size * ctx.size)
     for _ in range(int(density * ctx.area_scale)):
         x, y = rng.random() * ctx.size, rng.random() * ctx.size
         spread = rng.uniform(1.0, 3.0) * NATIVE_PX
@@ -64,7 +66,7 @@ def render_scoria_blocks(ctx):
     centres, ids, edge, _, _ = rectangle_geometry(size, rects, gap=0.9 * NATIVE_PX)
     decay = decay_fields(ctx, reclaim=(0.8, 0.95))
     fates, common = stone_fates(ctx, decay, centres, 32 + CELL, lost=0.03, cracked=0.25, sink=0.8, heave=0.35)
-    texture = layout_field(ctx, lambda rng: fbm(rng, 14, 4, size=size))
+    texture = layout_field(ctx, lambda rng: fbm(rng, 14, 4, size=size, array=True))
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.25, own=0.5, staining=0.15)
 
@@ -73,48 +75,47 @@ def render_scoria_blocks(ctx):
     # Discrete bites, not an even fuzz. They come from the shared stream and the
     # common wear only: the rims are geometry, and every layout's bevel lighting
     # takes its scale from them, so they must be the same in every layout.
-    erosion, _ = layout_pair(ctx, lambda rng: fbm(rng, 6, 3, size=size))
-    edge = [e - 0.75 * NATIVE_PX * smoothstep(0.55, 0.62, r) * (1.0 + w)
-            for e, r, w in zip(edge, erosion, decay.common_wear)]
+    erosion, _ = layout_pair(ctx, lambda rng: fbm(rng, 6, 3, size=size, array=True))
+    edge = edge - 0.75 * NATIVE_PX * smoothstep(0.55, 0.62, erosion) * (1.0 + decay.common_wear)
 
     # Dished faces where the path is walked: lit as a shallow bowl, dusty.
     def dish_of(wear):
-        return [-smoothstep(0.5 * NATIVE_PX, 4 * NATIVE_PX, e) * smoothstep(0.3, 0.8, w) for e, w in zip(edge, wear)]
+        return -smoothstep(0.5 * NATIVE_PX, 4 * NATIVE_PX, edge) * smoothstep(0.3, 0.8, wear)
     dish = dish_of(decay.wear)
-    rgb = mix(rgb, p["dust"], [-d * 0.15 for d in dish], 1.0)
+    rgb = mix(rgb, p["dust"], -dish * 0.15, 1.0)
     rgb = shade(rgb, dish, 0.15, reference_height=dish_of(decay.common_wear))
 
     # Pores in clusters; on a few stretches they are packed with pale ash.
     holes = stamped(ctx, lambda rng: pores(ctx, rng, 7))
     rgb = mix(rgb, p["pore"], holes, 0.85)
-    fill_c, fill = layout_pair(ctx, lambda rng: fbm(rng, 6, 2, size=size))
-    rgb = mix(rgb, p["ash_fill"], [h * smoothstep(0.62, 0.75, f) for h, f in zip(holes, fill)], 0.5)
+    fill_c, fill = layout_pair(ctx, lambda rng: fbm(rng, 6, 2, size=size, array=True))
+    rgb = mix(rgb, p["ash_fill"], holes * smoothstep(0.62, 0.75, fill), 0.5)
 
     # Cracks across each block's short side.
     across = [math.pi / 2 if w >= h else 0.0 for _, _, w, h, _ in rects]
     # A lost block is often only partly gone: a ragged pit in what remains. The
     # pit outline comes from the shared stream: `dress` also lights its common
     # reference surface with it, and that sets every layout's lighting scale.
-    broken, _ = layout_pair(ctx, lambda rng: fbm(rng, 4, 2, size=size))
+    broken, _ = layout_pair(ctx, lambda rng: fbm(rng, 4, 2, size=size, array=True))
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, CELL * 0.25,
                 joint=(0.0, 1.5), creep=0.8, chipping=0.9, bevel=1.0, bevel_strength=0.3, crack_width=0.8,
                 crack_along=across, moss=0.0, weeds=0.15, lichen=0.25, grit=0.3, grit_cover=0.5, dust=0.12,
                 lip=0.26, shadow=0.45, broken=broken)
 
     # Rust bleeding from oxidised blocks into the joint beside them.
-    near_joint = [1 - smoothstep(-1.0 * NATIVE_PX, 2.5 * NATIVE_PX, e) for e in edge]
-    redness = [1.0 if fates[k].hue > 0.6 else 0.0 for k in ids]
-    streak = layout_field(ctx, lambda rng: fbm(rng, 16, 2, size=size))
-    rgb = mix(rgb, p["rust"], [j * r * smoothstep(0.4, 0.6, s) for j, r, s in zip(near_joint, redness, streak)], 0.25)
+    near_joint = 1 - smoothstep(-1.0 * NATIVE_PX, 2.5 * NATIVE_PX, edge)
+    redness = per_stone(fates, lambda f: 1.0 if f.hue > 0.6 else 0.0)[ids]
+    streak = layout_field(ctx, lambda rng: fbm(rng, 16, 2, size=size, array=True))
+    rgb = mix(rgb, p["rust"], near_joint * redness * smoothstep(0.4, 0.6, streak), 0.25)
     # Loose cinders shed from the rims, lying in the joints and on worn rims.
     crumbs, red_crumbs = stamped(ctx, lambda rng: (grains(ctx, rng, 2200, 0.35, 0.9), grains(ctx, rng, 200, 0.35, 0.8)))
-    rgb = mix(rgb, p["cinder"], [c * j for c, j in zip(crumbs, near_joint)], 0.85)
-    rgb = mix(rgb, p["cinder_red"], [c * j for c, j in zip(red_crumbs, near_joint)], 0.8)
+    rgb = mix(rgb, p["cinder"], crumbs * near_joint, 0.85)
+    rgb = mix(rgb, p["cinder_red"], red_crumbs * near_joint, 0.8)
     # Pits of lost blocks: a heap of loose cinder, lit as a low mound.
-    lost = [1.0 if fates[k].lost and b > 0.5 else 0.0 for k, b in zip(ids, broken)]
-    heap = layout_field(ctx, lambda rng: fbm(rng, 40, 3, size=size))
+    lost = np.where((per_stone(fates, lambda f: f.lost)[ids] != 0) & (broken > 0.5), 1.0, 0.0)
+    heap = layout_field(ctx, lambda rng: fbm(rng, 40, 3, size=size, array=True))
     cinder_bed = ramp(heap, [(0.0, p["cinder"]), (0.6, p["mid"]), (1.0, p["light"])])
-    cinder_bed = mix(cinder_bed, p["cinder_red"], [c for c in red_crumbs], 0.9)
-    cinder_bed = mix(cinder_bed, p["pore"], [c for c in crumbs], 0.6)
-    rgb = mix(rgb, cinder_bed, [l * 0.85 for l in lost])
+    cinder_bed = mix(cinder_bed, p["cinder_red"], red_crumbs, 0.9)
+    cinder_bed = mix(cinder_bed, p["pore"], crumbs, 0.6)
+    rgb = mix(rgb, cinder_bed, lost * 0.85)
     return rgb, None

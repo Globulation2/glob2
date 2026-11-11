@@ -27,7 +27,8 @@ in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 statistics. The original legacy artwork remains available as style references;
 new terrain frames use their own `terrain-` prefixes and do not overwrite it.
 Use an isolated environment with the pinned asset-tool dependencies, including
-NumPy and SciPy for exact indexed full-block Worley fields. Pillow's resampling kernels are a determinism
+NumPy, which the field library and the barrier surfaces compute with, and SciPy for exact indexed
+full-block Worley fields. Pillow's resampling kernels are a determinism
 input:
 
 ```sh
@@ -66,7 +67,20 @@ periodic value noise (a random lattice tiled 3×3 and resized bicubically, so th
 field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
 F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Named
 geometry and animation random streams use deterministic `fnv1a32` seeds derived
-from the material, layout and phase. Each layout renders a continuous field whose boundary geometry is
+from the material, layout and phase.
+
+The field library in `tools/artwork/terrain_core.py` computes with NumPy. A field
+is a flat list or a flat array, and an RGB triple three lists or one `(3, n)`
+array: each helper returns arrays when it is given any and lists otherwise, and
+the generators (`fbm`, `lattice_noise`, `block_worley`, `flat` and the like) return
+arrays when called with `array=True`. Write recipes over arrays, as the laid paths,
+laterite, heath and the tundras are, so a block layout renders in seconds rather
+than minutes; per-object work (stones, shrubs, leaves) stays a loop over the
+objects with each object's box done as one array operation. Both forms repeat the
+same arithmetic in the same order (sums in order, `math.hypot` and Python's float
+power where NumPy rounds differently), so moving a recipe from lists to arrays,
+without changing what it draws, leaves its frames byte-identical: compare a
+layout's raw fields before and after to confirm it. Each layout renders a continuous field whose boundary geometry is
 shared with the other layouts; its interior uses a separate seed. Existing tiles
 are never read into an output; the original grass, sand, trail, ice and water
 tiles are measured (luma mean and spread, wrapped neighbour grain, saturation)
@@ -437,7 +451,8 @@ in view.
 
 The masses beside cliffs and glacier share one renderer (`render_mass`): each
 names a surface (`tools/artwork/terrain_masses.py`, numpy) giving its lit top,
-outline heights and wall marks over the cell and halo, a wall colour by height,
+outline heights and wall marks over the cell and halo, a wall colour by height
+(a function over arrays, as cliff and mass walls and lighting are built),
 its rise and its rim and shadow colours. Surfaces are built only from parts
 neighbouring frames share: per-vertex-colour noise patches with variance-preserving
 bilinear weights, an interior patch that vanishes at the cell edge, features

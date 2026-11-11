@@ -59,6 +59,7 @@ import random
 import sys
 from pathlib import Path
 
+import numpy as np
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
@@ -88,10 +89,12 @@ from terrain_core import (  # noqa: E402
     XS,
     YS,
     apply_style,
+    as_field,
     band_weight,
     box_down_fields,
     fields_to_image,
     neutral_band,
+    rgb_field,
     style_transform,
 )
 import terrain_packs  # noqa: E402,F401  registers every material recipe
@@ -183,11 +186,11 @@ def render_phase(name, phase):
 
         def cell(values, variant):
             gx, gy = variant % rec.grid, variant // rec.grid
-            return [values[y * size + x]
-                    for y in range(gy * N, (gy + 1) * N)
-                    for x in range(gx * N, (gx + 1) * N)]
+            return values[..., gy * N:(gy + 1) * N, gx * N:(gx + 1) * N].reshape(values.shape[:-2] + (N * N,))
 
-        renders = [([cell(channel, v) for channel in rgb], None if alpha is None else cell(alpha, v))
+        blocks = [(rgb_field(rgb).reshape(3, size, size),
+                   None if alpha is None else as_field(alpha).reshape(size, size)) for rgb, alpha in blocks]
+        renders = [(cell(rgb, v), None if alpha is None else cell(alpha, v))
                    for rgb, alpha in blocks for v in range(rec.cells)]
     else:
         renders = [render_fields(name, variant, phase) for variant in range(VARIANTS)]
@@ -202,7 +205,7 @@ def render_phase(name, phase):
     if rec.periodic and not rec.grid:
         renders = force_periodic_band(renders)
     small = [box_down_fields(rgb, alpha) for rgb, alpha in renders]
-    pooled = [sum((rgb[k] for rgb, _ in small), []) for k in range(3)]
+    pooled = np.concatenate([rgb_field(rgb) for rgb, _ in small], axis=1)
     transform = style_transform(pooled, rec.style.luma, rec.style.std, rec.style.match)
     native, hd = [], []
     for (rgb, alpha), (small_rgb, small_alpha) in zip(renders, small):

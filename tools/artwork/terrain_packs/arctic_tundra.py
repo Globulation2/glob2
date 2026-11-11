@@ -39,55 +39,55 @@ def render_arctic_tundra(ctx):
     p = RECIPES["arctic_tundra"].palette
     size = ctx.size
     centre, _ = frost_polygons(ctx)
-    rim = [1 - smoothstep(0.03, 0.12, d) for d in centre]
+    rim = 1 - smoothstep(0.03, 0.12, centre)
     rgb = frozen_ground(ctx, p, rim)
     stones, cover = tundra_stones(ctx, p)
     rgb = mix(rgb, p["shadow"], soft_shadow(cover), 0.25)
     rgb = mix(rgb, stones, cover, 1.0)
     # Snow lies exactly where tundra's moss pads grow: the same clumps of
     # rounded cushions, built of small lumps instead of sprigs, in snow tones.
-    drift = layout_field(ctx, lambda rng: fbm(rng, 2, 3, size=size))
-    patch = [0.7 * smoothstep(0.08, 0.3, d) + 0.3 * v for d, v in zip(centre, drift)]
+    drift = layout_field(ctx, lambda rng: fbm(rng, 2, 3, size=size, array=True))
+    patch = 0.7 * smoothstep(0.08, 0.3, centre) + 0.3 * drift
     drifts, cushions = heather_cushions(ctx, p, cells=10, tufts=1400, threshold=0.83, spread=0.2, light=0.08,
                                         part=0.04, dead_share=0.0, patch=patch)
     # Drifted snow fills the hollows between neighbouring cushions, so a
     # clump reads as one scalloped drift rather than separate domes.
-    merged = gaussian_filter(np.asarray(cushions).reshape(size, size), 5.0, mode="wrap").ravel()
-    snow = [max(c, smoothstep(0.3, 0.6, m)) for c, m in zip(cushions, merged)]
-    drifts = mix(drifts, p["body"], [s - c for s, c in zip(snow, cushions)], 0.8)
+    merged = gaussian_filter(cushions.reshape(size, size), 5.0, mode="wrap").ravel()
+    snow = np.maximum(cushions, smoothstep(0.3, 0.6, merged))
+    drifts = mix(drifts, p["body"], snow - cushions, 0.8)
     rgb = mix(rgb, p["shadow"], soft_shadow(snow), 0.2)
     rgb = mix(rgb, snow_texture(ctx, p, drifts), snow, 1.0)
     # A thin dusting of snow caught on the stone tops.
-    dust = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
-    rgb = mix(rgb, p["tip"], [c * smoothstep(0.55, 0.8, v) for c, v in zip(cover, dust)], 0.55)
+    dust = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size, array=True))
+    rgb = mix(rgb, p["tip"], cover * smoothstep(0.55, 0.8, dust), 0.55)
     # The barren group's mark lies mostly on the bare ground: its faint cracks
     # dark in the troughs, blue shadowed fissures where they split the snow,
     # with a quarter of its packing and gravel showing through the drifts.
-    crack = mix(flat(p["crack"], size), p["fissure"], snow, 1.0)
+    crack = mix(flat(p["crack"], size, array=True), p["fissure"], snow, 1.0)
     rgb = desaturate(rgb, 0.05)
     marked = barren_mark(ctx, rgb, crack, fade=0.0)
-    return mix(rgb, marked, [1 - 0.75 * s for s in snow], 1.0), None
+    return mix(rgb, marked, 1 - 0.75 * snow, 1.0), None
 
 
 def frozen_ground(ctx, p, rim):
     """Dark frozen earth, colder and greyer than tundra's peat, with the
     rime frost along the raised polygon rims."""
     size = ctx.size
-    base = layout_field(ctx, lambda rng: fbm(rng, 5, 3, size=size))
+    base = layout_field(ctx, lambda rng: fbm(rng, 5, 3, size=size, array=True))
     rgb = ramp(base, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    fines = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
-    rgb = mix(rgb, p["rim"], [r * (0.5 + 0.5 * f) for r, f in zip(rim, fines)], 0.6)
-    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (0.93 + 0.14 * v) for c, v in zip(ch, grit)] for ch in rgb]
-    rime = layout_field(ctx, lambda rng: lattice_noise(rng, 160, size=size))
-    rgb = mix(rgb, p["rime"], [smoothstep(0.86, 0.94, v) for v in rime], 0.45)
+    fines = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size, array=True))
+    rgb = mix(rgb, p["rim"], rim * (0.5 + 0.5 * fines), 0.6)
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    rgb = rgb * (0.93 + 0.14 * grit)
+    rime = layout_field(ctx, lambda rng: lattice_noise(rng, 160, size=size, array=True))
+    rgb = mix(rgb, p["rime"], smoothstep(0.86, 0.94, rime), 0.45)
     return rgb
 
 
 def snow_texture(ctx, p, rgb):
     """Fine snow grain and sparkle over the cushions."""
     size = ctx.size
-    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.03 * (v - 0.5) * 2) for c, v in zip(ch, grain)] for ch in rgb]
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 128, size=size))
-    return mix(rgb, p["sparkle"], [smoothstep(0.9, 0.96, v) for v in speck], 0.6)
+    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    rgb = rgb * (1 + 0.03 * (grain - 0.5) * 2)
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 128, size=size, array=True))
+    return mix(rgb, p["sparkle"], smoothstep(0.9, 0.96, speck), 0.6)

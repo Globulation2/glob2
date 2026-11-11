@@ -3,6 +3,8 @@
 import math
 import random
 
+import numpy as np
+
 from terrain_core import (
     RECIPES,
     TAU,
@@ -12,6 +14,7 @@ from terrain_core import (
     block_object_field,
     clamp01,
     fbm,
+    hypot,
     lattice_noise,
     layout_field,
     mix,
@@ -43,24 +46,24 @@ def render_heath(ctx):
     rgb = heath_ground(ctx, p)
     mat, cover = heather_shrubs(ctx, p)
     rgb = mix(rgb, p["shadow"], cast_shadow(cover), 0.55)
-    return [[g * (1 - a) + m for g, m, a in zip(gc, mc, cover)] for gc, mc in zip(rgb, mat)], None
+    return rgb * (1 - cover) + mat, None
 
 
 def cast_shadow(cover):
     """A long soft shadow down-right of each shrub, grounding it."""
-    out = [0.0] * len(cover)
+    out = np.zeros(len(cover))
     for dx, dy, w in ((3, 4, 0.3), (6, 8, 0.35), (9, 12, 0.35)):
-        out = [o + w * v for o, v in zip(out, shifted(cover, dx, dy))]
-    return [o * (1 - c) for o, c in zip(out, cover)]
+        out = out + w * shifted(cover, dx, dy)
+    return out * (1 - cover)
 
 
 def heath_ground(ctx, p):
     """Pale, faded sandy peat under the barren group's mark."""
     size = ctx.size
-    base = layout_field(ctx, lambda rng: fbm(rng, 4, 3, size=size))
+    base = layout_field(ctx, lambda rng: fbm(rng, 4, 3, size=size, array=True))
     rgb = ramp(base, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    sand = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (0.93 + 0.14 * v) for c, v in zip(ch, sand)] for ch in rgb]
+    sand = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    rgb = rgb * (0.93 + 0.14 * sand)
     return barren_mark(ctx, rgb, p["crack"], fade=0.15)
 
 
@@ -85,16 +88,16 @@ def heather_shrubs(ctx, p, count=3, radius=(18.0, 34.0), threshold=0.52):
     and each shrub's leaves from its own seed, so every layout draws the same
     shrubs across the block edge."""
     size = ctx.size
-    common_stand = fbm(ctx.shared_rng, 1.5, 3, size=size)
-    stand = blend_fields(common_stand, fbm(ctx.rng, 1.5, 3, size=size), ctx.interior_mask)
+    common_stand = fbm(ctx.shared_rng, 1.5, 3, size=size, array=True)
+    stand = blend_fields(common_stand, fbm(ctx.rng, 1.5, 3, size=size, array=True), ctx.interior_mask)
     shared, own = block_object_field(ctx, count, radius, spacing=0.8)
 
     def at(field, o):
         return field[int(o[1]) % size * size + int(o[0]) % size]
 
     shrubs = [o for o in shared if at(common_stand, o) > threshold] + [o for o in own if at(stand, o) > threshold]
-    colour = [[0.0] * (size * size) for _ in range(3)]
-    alpha = [0.0] * (size * size)
+    colour = np.zeros((3, size * size))
+    alpha = np.zeros(size * size)
     for shrub in sorted(shrubs, key=lambda o: o[1]):
         draw_shrub(colour, alpha, shrub, p, size)
     return colour, alpha
@@ -117,16 +120,22 @@ def draw_shrub(colour, alpha, shrub, p, size):
 
     # Woody base under the leaves, so the gaps between them read dark; lit
     # like the dome above it.
-    base = tuple(c * 1.15 for c in p["stem"])
+    base = np.array([c * 1.15 for c in p["stem"]])
     reach = int(r * 1.5) + 2
-    for y in range(int(cy) - reach, int(cy) + reach + 1):
-        for x in range(int(cx) - reach, int(cx) + reach + 1):
-            dx, dy = x + 0.5 - cx, y + 0.5 - cy
-            d = math.hypot(dx, dy) / (0.9 * outline(math.atan2(dy, dx)))
-            a = smoothstep(1.0, 0.8, d)
-            if a > 0:
-                lam = (dx * LIGHT3[0] + dy * LIGHT3[1]) / r
-                composite(colour, alpha, (y % size) * size + x % size, tuple(c * (1 + 0.5 * lam) for c in base), a)
+    ys = np.arange(int(cy) - reach, int(cy) + reach + 1)
+    xs = np.arange(int(cx) - reach, int(cx) + reach + 1)
+    dx = np.broadcast_to((xs + 0.5 - cx)[None, :], (len(ys), len(xs)))
+    dy = np.broadcast_to((ys + 0.5 - cy)[:, None], (len(ys), len(xs)))
+    bump = np.zeros(dx.shape)
+    angle = np.arctan2(dy, dx)
+    for h, a, ph in lumps:
+        bump = bump + a * np.sin(h * angle + ph)
+    d = hypot(dx, dy) / (0.9 * (r * (1 + bump)))
+    a = smoothstep(1.0, 0.8, d)
+    on = a > 0
+    lam = (dx[on] * LIGHT3[0] + dy[on] * LIGHT3[1]) / r
+    index = ((ys % size)[:, None] * size + (xs % size)[None, :])[on]
+    composite(colour, alpha, index, base[:, None] * (1 + 0.5 * lam), a[on])
 
     # Leaves: scattered over the mound, more of them than would just cover it.
     leaves = []
@@ -158,51 +167,55 @@ def draw_shrub(colour, alpha, shrub, p, size):
             draw_dot(colour, alpha, lx + math.cos(heading) * tip, ly + math.sin(heading) * tip, 1.2, bead, size)
 
 
+def _box(cx, cy, low, high):
+    """Pixel rows and columns of a small box around (cx, cy), as the per-pixel
+    loops `range(int(c) - low, int(c) + high)` had them."""
+    return np.arange(int(cy) - low, int(cy) + high), np.arange(int(cx) - low, int(cx) + high)
+
+
 def draw_leaf(colour, alpha, cx, cy, heading, half_length, half_width, tint, size):
     """A small pointed leaf, paler toward its tip, with a faint midrib and
     halves just turned to and away from the light, casting a light shadow
     onto what lies under it."""
     ca, sa = math.cos(heading), math.sin(heading)
     reach = int(half_length) + 3
+    ys, xs = _box(cx, cy, reach, reach + 2)
+    index = (ys % size)[:, None] * size + (xs % size)[None, :]
     for pass_shadow in (True, False):
         ox, oy = (0.8, 1.1) if pass_shadow else (0.0, 0.0)
-        for y in range(int(cy) - reach, int(cy) + reach + 2):
-            for x in range(int(cx) - reach, int(cx) + reach + 2):
-                dx, dy = x + 0.5 - cx - ox, y + 0.5 - cy - oy
-                along = dx * ca + dy * sa
-                across = -dx * sa + dy * ca
-                t = along / half_length
-                if abs(t) >= 1:
-                    continue
-                # Rounder at the stalk end, pointed at the tip.
-                w = half_width * (1 - t) ** 0.8 * (1 + t) ** 0.4 / 1.1
-                if w <= 0.15:
-                    continue
-                a = clamp01(w - abs(across) + 0.5)
-                if a <= 0:
-                    continue
-                i = (y % size) * size + x % size
-                if pass_shadow:
-                    for k in range(3):
-                        colour[k][i] *= 1 - 0.18 * a
-                    continue
-                s = across / w
-                facing = (-sa * LIGHT3[0] + ca * LIGHT3[1]) * (1 if s > 0 else -1)
-                f = (0.9 + 0.09 * (t + 1)) * (1 + 0.06 * facing - 0.08 * smoothstep(0.2, 0.0, abs(s)) * (1 - abs(t)))
-                composite(colour, alpha, i, tuple(c * f for c in tint), a)
+        dx = (xs + 0.5 - cx - ox)[None, :]
+        dy = (ys + 0.5 - cy - oy)[:, None]
+        along = dx * ca + dy * sa
+        across = -dx * sa + dy * ca
+        t = along / half_length
+        on = np.abs(t) < 1
+        t, across, i = t[on], across[on], index[on]
+        # Rounder at the stalk end, pointed at the tip.
+        w = half_width * (1 - t) ** 0.8 * (1 + t) ** 0.4 / 1.1
+        on = w > 0.15
+        t, across, i, w = t[on], across[on], i[on], w[on]
+        a = clamp01(w - np.abs(across) + 0.5)
+        on = a > 0
+        t, across, i, w, a = t[on], across[on], i[on], w[on], a[on]
+        if pass_shadow:
+            colour[:, i] *= 1 - 0.18 * a
+            continue
+        s = across / w
+        facing = (-sa * LIGHT3[0] + ca * LIGHT3[1]) * np.where(s > 0, 1, -1)
+        f = (0.9 + 0.09 * (t + 1)) * (1 + 0.06 * facing - 0.08 * smoothstep(0.2, 0.0, np.abs(s)) * (1 - np.abs(t)))
+        composite(colour, alpha, i, np.asarray(tint)[:, None] * f, a)
 
 
 def draw_dot(colour, alpha, cx, cy, radius, rgb, size):
     """A tiny round bead, such as a faded flower."""
-    for y in range(int(cy) - 2, int(cy) + 3):
-        for x in range(int(cx) - 2, int(cx) + 3):
-            a = clamp01(radius - math.hypot(x + 0.5 - cx, y + 0.5 - cy) + 0.5)
-            if a > 0:
-                composite(colour, alpha, (y % size) * size + x % size, rgb, a)
+    ys, xs = _box(cx, cy, 2, 3)
+    a = clamp01(radius - hypot((xs + 0.5 - cx)[None, :], (ys + 0.5 - cy)[:, None]) + 0.5)
+    on = a > 0
+    index = ((ys % size)[:, None] * size + (xs % size)[None, :])[on]
+    composite(colour, alpha, index, np.asarray(rgb, dtype=np.float64)[:, None], a[on])
 
 
 def composite(colour, alpha, i, rgb, a):
-    """Lay `rgb` at coverage `a` over the premultiplied canvas."""
-    for k in range(3):
-        colour[k][i] = colour[k][i] * (1 - a) + rgb[k] * a
+    """Lay `rgb` at coverage `a` over the premultiplied canvas at pixels `i`."""
+    colour[:, i] = colour[:, i] * (1 - a) + rgb * a
     alpha[i] = alpha[i] * (1 - a) + a

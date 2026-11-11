@@ -2,7 +2,9 @@
 """The boardwalk terrain material."""
 import math
 
-from ._paving import decay_fields, dress, rectangle_geometry, stone_fates, uneven_rows
+import numpy as np
+
+from ._paving import decay_fields, dress, per_stone, rectangle_geometry, stone_fates, uneven_rows
 from terrain_core import (
     N,
     NATIVE_PX,
@@ -73,35 +75,35 @@ def render_boardwalk(ctx):
     reach = 32 + 3.6 * N
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.05, cracked=0.16, sink=0.3, heave=0.3)
     # A lost plank has rotted away from one end, not vanished whole.
-    broken = [0.0] * (size * size)
+    pixel = np.arange(size * size)
+    column = pixel % size
+    broken = np.zeros(size * size)
     for k, ((x0, y0, w, h, _), s) in enumerate(zip(planks, fates)):
         if not s.lost:
             continue
         span = w * (0.2 + 0.3 * s.tone)
-        for i in range(size * size):
-            if ids[i] == k:
-                dx = (i % size + 0.5 - x0) % size
-                broken[i] = 1.0 if (dx < span if s.kink > 0 else dx > w - span) else 0.0
+        here = ids == k
+        dx = (column[here] + 0.5 - x0) % size
+        broken[here] = np.where((dx < span) if s.kink > 0 else (dx > w - span), 1.0, 0.0)
     # Each plank samples its own stretch of grain, so neighbouring planks
     # never share a grain line.
     shifts = [int(shared.random() * size) for _ in planks]
-    grain_common = fbm(shared, 2, 3, cells_y=40, size=size)
-    grain_own = fbm(own, 2, 3, cells_y=40, size=size)
-    streak_c = lattice_noise(shared, 4, 64, size=size)
-    streak_o = lattice_noise(own, 4, 64, size=size)
-    interior = ctx.interior_mask
-    tone, knots, nails, rust, rot, streak = ([0.0] * (size * size) for _ in range(6))
+    grain_common = fbm(shared, 2, 3, cells_y=40, size=size, array=True)
+    grain_own = fbm(own, 2, 3, cells_y=40, size=size, array=True)
+    streak_c = lattice_noise(shared, 4, 64, size=size, array=True)
+    streak_o = lattice_noise(own, 4, 64, size=size, array=True)
+    interior = ctx.interior
+    knots, nails, rust = (np.zeros(size * size) for _ in range(3))
     # Weathering is per board: each plank has gone its own way, darker where
     # it lies damp, silvered where it dried in the sun, and always along the grain.
     def plank_value(field, common_field):
         out = []
         for cx, cy in centres:
             at = int(cy) % size * size + int(cx) % size
-            out.append(common_field[at] if min(cx, cy, size - cx, size - cy) < reach else field[at])
-        return out
+            out.append(float(common_field[at] if min(cx, cy, size - cx, size - cy) < reach else field[at]))
+        return np.array(out)
     plank_damp = plank_value(decay.damp, decay.common_damp)
     plank_sun = plank_value(decay.wear, decay.common_wear)
-    dark = [0.0] * (size * size)
     for kx, ky, kr in knot_list:
         stamp_disc(knots, kx % size, ky % size, kr, softness=0.6)
     # Nails in pairs near each plank end, with a rust streak running down.
@@ -111,39 +113,36 @@ def render_boardwalk(ctx):
                 stamp_disc(nails, px % size, y0 + h * fy, 1.6, softness=0.3)
                 if s.sink > 0.12:
                     stamp_stroke(rust, px % size, y0 + h * fy + 1.5, math.pi / 2, 3.0 + 10.0 * s.sink, 1.4, 0.6)
-    for i in range(size * size):
-        x, y, k = i % size, i // size, ids[i]
-        s = fates[k]
-        sample = y * size + (x + shifts[k]) % size
-        w = interior[i]
-        g = grain_common[sample] + (grain_own[sample] - grain_common[sample]) * w
-        st = streak_c[sample] + (streak_o[sample] - streak_c[sample]) * w
-        bright = 1 + (s.tone - 0.5) * 0.5
-        # Cupped planks: one edge lifted toward the light, the other sunk.
-        cup = 1 + 0.1 * s.cast * (across[i] - 0.5) * 2
-        tone[i] = clamp01((0.45 * g + 0.55 * st) * bright * cup)
-        streak[i] = smoothstep(0.35, 0.75, st)
-        dark[i] = smoothstep(0.5, 0.85, plank_damp[k]) * (0.55 + 0.45 * g)
-        # Ends rot where the ground is damp.
-        rot[i] = (1 - smoothstep(0.0, 14.0, axial[i])) * smoothstep(0.45, 0.85, decay.growth[i])
+    sample = (pixel // size) * size + (column + np.array(shifts)[ids]) % size
+    g = grain_common[sample] + (grain_own[sample] - grain_common[sample]) * interior
+    st = streak_c[sample] + (streak_o[sample] - streak_c[sample]) * interior
+    bright = per_stone(fates, lambda s: 1 + (s.tone - 0.5) * 0.5)[ids]
+    # Cupped planks: one edge lifted toward the light, the other sunk.
+    cup = 1 + 0.1 * per_stone(fates, lambda s: s.cast)[ids] * (across - 0.5) * 2
+    tone = clamp01((0.45 * g + 0.55 * st) * bright * cup)
+    streak = smoothstep(0.35, 0.75, st)
+    dark = smoothstep(0.5, 0.85, plank_damp)[ids] * (0.55 + 0.45 * g)
+    # Ends rot where the ground is damp.
+    rot = (1 - smoothstep(0.0, 14.0, axial)) * smoothstep(0.45, 0.85, decay.growth)
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 6, 128, size=size))
-    rgb = [[c * (1 + 0.14 * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 6, 128, size=size, array=True))
+    rgb = rgb * (1 + 0.14 * (fine - 0.5) * 2)
     # Silvering along the grain where the sun has had the board longest;
     # planks that kept their colour stay a warmer brown, damp ones go dark.
-    hue = [fates[k].hue for k in ids]
-    rgb = mix(rgb, p["warm"], [max(0.0, h) * 0.55 for h in hue], 1.0)
-    rgb = mix(rgb, p["silver"], [smoothstep(0.4, 0.8, plank_sun[k]) * (0.25 + 0.5 * max(0.0, -h)) * (0.4 + 0.6 * st)
-                                 for k, h, st in zip(ids, hue, streak)], 1.0)
-    rgb = [[c * (1 - 0.28 * d) for c, d in zip(channel, dark)] for channel in rgb]
+    hue = per_stone(fates, lambda s: s.hue)[ids]
+    rgb = mix(rgb, p["warm"], np.maximum(0.0, hue) * 0.55, 1.0)
+    rgb = mix(rgb, p["silver"], smoothstep(0.4, 0.8, plank_sun)[ids] * (0.25 + 0.5 * np.maximum(0.0, -hue))
+              * (0.4 + 0.6 * streak), 1.0)
+    rgb = rgb * (1 - 0.28 * dark)
     rgb = mix(rgb, p["damp"], dark, 0.2)
     # Planks bleached pale by the sun, and a few gone orange with rust and sap.
-    rgb = mix(rgb, p["bleached"], [smoothstep(0.86, 0.95, fates[k].stain) for k in ids], 0.6)
-    rgb = mix(rgb, p["stain"], [1.0 if fates[k].stain < 0.06 else 0.0 for k in ids], 0.35)
+    stain = per_stone(fates, lambda s: s.stain)
+    rgb = mix(rgb, p["bleached"], smoothstep(0.86, 0.95, stain)[ids], 0.6)
+    rgb = mix(rgb, p["stain"], np.where(stain < 0.06, 1.0, 0.0)[ids], 0.35)
     rgb = mix(rgb, p["knot"], knots, 0.55)
     # Some planks have rotted dark right through.
-    rotten = [1.0 if fates[k].cast < -0.75 else 0.0 for k in ids]
-    rgb = mix(rgb, p["rot"], [max(r, 0.7 * q) for r, q in zip(rot, rotten)], 0.6)
+    rotten = per_stone(fates, lambda s: 1.0 if s.cast < -0.75 else 0.0)[ids]
+    rgb = mix(rgb, p["rot"], np.maximum(rot, 0.7 * rotten), 0.6)
     rgb = mix(rgb, p["rust"], rust, 0.5)
     rgb = mix(rgb, p["nail"], nails, 0.6)
     # Splits run along the grain from a plank end.

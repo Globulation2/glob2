@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The frost pinwheel terrain material."""
+import numpy as np
 
 from ._frost_paths import FROST, SEAM, weather
 from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, stone_fates
@@ -51,15 +52,15 @@ def render_frost_pinwheel(ctx):
     decay = decay_fields(ctx, reclaim=(0.6, 0.86))
     reach = 32 + 14 * NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.05, cracked=0.18, sink=0.5, heave=0.3)
-    texture = layout_field(ctx, lambda rng: fbm(rng, 12, 3, size=size))
+    texture = layout_field(ctx, lambda rng: fbm(rng, 12, 3, size=size, array=True))
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.45, own=0.8, staining=0.0)
-    sq = [(1.0 if fates[k].tone > 0.5 else 0.2) if k in squares else 0.0 for k in ids]
-    ice = ramp([clamp01(0.6 * t + 0.4 * smoothstep(0.0, 3.0 * NATIVE_PX, e)) for t, e in zip(texture, edge)],
+    sq = np.array([(1.0 if f.tone > 0.5 else 0.2) if k in squares else 0.0 for k, f in enumerate(fates)])[ids]
+    ice = ramp(clamp01(0.6 * texture + 0.4 * smoothstep(0.0, 3.0 * NATIVE_PX, edge)),
                [(0.0, p["ice"]), (1.0, p["ice_light"])])
     rgb = mix(rgb, ice, sq)
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
-    rgb = mix(rgb, p["glint"], [smoothstep(0.9, 0.95, s) * (1 - q) for s, q in zip(speck, sq)], 0.45)
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size, array=True))
+    rgb = mix(rgb, p["glint"], smoothstep(0.9, 0.95, speck) * (1 - sq), 0.45)
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 5.6 * NATIVE_PX,
                 joint=(0.0, 2.0), creep=3.5, chipping=1.0, bevel=2.0, bevel_strength=0.3,
                 moss=1.0, weeds=0.6, lichen=0.6, grit=0.7, dust=0.18, lip=0.2, shadow=0.35, damp=0.5)

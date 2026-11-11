@@ -16,6 +16,8 @@ share exactly:
 
 A surface returns (top colour, outline heights, wall columns, wall grit) as
 images over the cell plus its halo, and each mass names a wall colour ramp.
+A wall takes arrays of face height, column and grit values (0..1) and returns
+the face's (..., 3) colours, which render_mass clamps and truncates to bytes.
 """
 import math
 import random
@@ -298,18 +300,17 @@ def sandstone_surface(colours, interior, filled):
 
 def sandstone_wall(t, c, g):
     """Thick beds by height, each recessed at its foot; wind hollows from the grit."""
-    beds = ((198, 130, 86), (218, 156, 106), (230, 178, 128))
+    beds = np.array(((198, 130, 86), (218, 156, 106), (230, 178, 128)), dtype=float)
     level = t * 3.0
-    k = min(2, int(level))
+    k = np.minimum(2, level.astype(np.int64))
     colour = beds[k]
     shade = 0.82 + 0.30 * (c - 0.5)
-    if level - k < 0.12 and k > 0:
-        shade *= 0.72                      # the recess under the bed above
-    if g > 0.68:
-        shade *= 0.8                       # a wind hollow
-    if t > 0.95:
-        colour, shade = (236, 210, 168), max(shade, 0.98)
-    return tuple(int(min(255, ch * shade)) for ch in colour)
+    shade = np.where((level - k < 0.12) & (k > 0), shade * 0.72, shade)   # the recess under the bed above
+    shade = np.where(g > 0.68, shade * 0.8, shade)                        # a wind hollow
+    top = t > 0.95
+    colour = np.where(top[..., None], np.array((236.0, 210.0, 168.0)), colour)
+    shade = np.where(top, np.maximum(shade, 0.98), shade)
+    return colour * shade[..., None]
 
 
 # --------------------------------------------------------------------------
@@ -373,10 +374,10 @@ def obsidian_surface(colours, interior, filled):
 
 
 def obsidian_wall(t, c, g):
-    colour = tuple(int(a + (b - a) * t) for a, b in zip((22, 22, 28), (64, 66, 80)))
+    colour = np.trunc(np.array((22.0, 22.0, 28.0)) + np.array((42.0, 44.0, 52.0)) * t[..., None])
     shade = 0.85 + 0.35 * (c - 0.5)
-    sheen = max(0.0, (c - 0.72) * 3.0)     # vertical glints down the glass
-    return tuple(int(min(255, ch * shade + 120 * sheen)) for ch in colour)
+    sheen = np.maximum(0.0, (c - 0.72) * 3.0)     # vertical glints down the glass
+    return colour * shade[..., None] + (120 * sheen)[..., None]
 
 
 # --------------------------------------------------------------------------
@@ -435,13 +436,13 @@ def granite_surface(colours, interior, filled):
 
 
 def granite_wall(t, c, g):
-    colour = (142, 136, 124) if t > 0.15 else (110, 118, 80)       # moss at the foot
+    colour = np.where((t > 0.15)[..., None], np.array((142.0, 136.0, 124.0)),
+                      np.array((110.0, 118.0, 80.0)))               # moss at the foot
     shade = 0.80 + 0.3 * (c - 0.5)
-    if abs(t * 3 - round(t * 3)) < 0.05 and 0.1 < t < 0.95:
-        shade *= 0.7                                                # a sheeting joint
-    if t > 0.93:
-        shade = max(shade, 0.98)
-    return tuple(int(min(255, ch * shade)) for ch in colour)
+    joint = (np.abs(t * 3 - np.round(t * 3)) < 0.05) & (0.1 < t) & (t < 0.95)
+    shade = np.where(joint, shade * 0.7, shade)                     # a sheeting joint
+    shade = np.where(t > 0.93, np.maximum(shade, 0.98), shade)
+    return colour * shade[..., None]
 
 
 # --------------------------------------------------------------------------
@@ -482,11 +483,11 @@ def travertine_surface(colours, interior, filled):
 
 def travertine_wall(t, c, g):
     """Fluted white flowstone, cream at the foot, with an occasional ochre seep."""
-    colour = tuple(int(a + (b - a) * t ** 0.8) for a, b in zip((206, 190, 160), (244, 240, 230)))
+    colour = np.trunc(np.array((206.0, 190.0, 160.0)) + np.array((38.0, 50.0, 70.0)) * (t ** 0.8)[..., None])
     shade = 0.80 + 0.36 * (c - 0.5)
-    if c > 0.78:
-        colour = tuple(int(a * 0.86 + b * 0.14) for a, b in zip(colour, (190, 140, 88)))  # ochre seep down a flute
-    return tuple(int(min(255, ch * shade)) for ch in colour)
+    seep = np.trunc(colour * 0.86 + np.array((190.0, 140.0, 88.0)) * 0.14)  # ochre seep down a flute
+    colour = np.where((c > 0.78)[..., None], seep, colour)
+    return colour * shade[..., None]
 
 
 SURFACES = {
