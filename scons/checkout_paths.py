@@ -72,7 +72,7 @@ def stamp_content(root) -> str:
 
 
 def write_stamp(builddir, root) -> Path:
-    """Write BuildStamp.h now (the experimental CMake build, on every build)."""
+    """Write BuildStamp.h now (the CMake build, on every build)."""
     path = Path(builddir) / 'include/glob2/BuildStamp.h'
     write_if_changed(path, stamp_content(root))
     return path

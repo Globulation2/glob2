@@ -10,6 +10,7 @@
 namespace GAGCore {std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *);}
 #include <array>
 #include <cstring>
+#include <span>
 #include <valarray>
 #include <vector>
 #include <type_traits>
@@ -68,7 +69,7 @@ void compareAlphaMapChunks(GraphicContext &context, float divisor)
         ~Restore() {ContextAccess::backend(context)=previous;}
     } restore{context,ContextAccess::backend(context)};
     ContextAccess::backend(context)=batched.get();
-    context.drawAlphaMap(map,mapW,mapH,2,3,5,5,Color(60,130,230));
+    context.drawAlphaMap(std::span<const Alpha>(std::begin(map),map.size()),mapW,mapH,2,3,5,5,Color(60,130,230));
     batched->flush();
     for(int j=0;j<mapH-1;++j)for(int i=0;i<mapW-1;++i) {
         auto vertex=[](float x,float y,float alpha){return SDL_Vertex{{x,y},{60/255.f,130/255.f,230/255.f,alpha},{0,0}};};
@@ -151,7 +152,7 @@ TEST_SUITE("SurfaceCoverage")
             glColor4f(r,g,b,a);glVertex2f(2+x*3,3+y*3);glEnd();
         }
         const auto reference=capture();background();
-        context->drawAlphaMap(map,width,height,2,3,3,3,color);
+        context->drawAlphaMap(std::span<const float>(std::begin(map),map.size()),width,height,2,3,3,3,color);
         CHECK(capture()==reference);
     }
 #endif
@@ -204,8 +205,8 @@ TEST_SUITE("SurfaceCoverage")
         floating.setClipRect(3,3,7,7); bytes.setClipRect(3,3,7,7);
         const std::valarray<float> floats{1,0,1,0,1,0,1,0,1};
         const std::valarray<unsigned char> alphas{255,0,255,0,255,0,255,0,255};
-        floating.drawAlphaMap(floats,3,3,2,2,4,4,Color(255,40,20));
-        bytes.drawAlphaMap(alphas,3,3,2,2,4,4,Color(255,40,20));
+        floating.drawAlphaMap(std::span<const float>(std::begin(floats),floats.size()),3,3,2,2,4,4,Color(255,40,20));
+        bytes.drawAlphaMap(std::span<const unsigned char>(std::begin(alphas),alphas.size()),3,3,2,2,4,4,Color(255,40,20));
         for (int y=0; y<16; ++y) for (int x=0; x<16; ++x)
         {
             CHECK(pixel(floating,x,y)==pixel(bytes,x,y));

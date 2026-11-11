@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare the SCons and experimental CMake native Linux development builds.
+"""Compare the SCons and CMake native Linux development builds.
 
 Builds glob2, the four test binaries, the test/tests.py programs and the
 scons/harness_programs.py harnesses with both build systems into separate
@@ -78,7 +78,7 @@ def run(command, **kwargs):
 def build_scons(jobs, everything):
     # CC/CXX carry the extra flag so it reaches C and C++ objects alike; SCons'
     # ccache wrapping and every other flag stay as tools/dev_build.py sets them.
-    command = [sys.executable, 'tools/dev_build.py', '--build=' + str(SCONS_DIRECTORY.relative_to(ROOT)),
+    command = [sys.executable, 'tools/dev_build.py', '--generator=scons', '--build=' + str(SCONS_DIRECTORY.relative_to(ROOT)),
                'CC=' + os.environ.get('CC', 'gcc') + ' ' + PREFIX_MAP,
                'CXX=' + os.environ.get('CXX', 'g++') + ' ' + PREFIX_MAP]
     if jobs:
@@ -284,7 +284,7 @@ def time_noop(jobs):
     """Seconds for a no-change build of each ordinary development build."""
     environment = dict(os.environ)
     results = {}
-    for name, command in (('scons', [sys.executable, 'tools/dev_build.py']),
+    for name, command in (('scons', [sys.executable, 'tools/dev_build.py', '--generator=scons']),
                           ('cmake', [sys.executable, 'tools/dev_build.py', '--generator=cmake'])):
         if jobs:
             command.append('-j' + str(jobs))

@@ -4,7 +4,6 @@
 #include "Grid.h"
 #include "Sketch.h"
 #include "TerrainGroup.h"
-#include "TerrainGroupTable.h"
 #include <functional>
 #include <array>
 #include <climits>

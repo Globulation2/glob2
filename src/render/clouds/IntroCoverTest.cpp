@@ -20,7 +20,7 @@
 
 namespace
 {
-double mean(const std::valarray<unsigned char> &v)
+double mean(const std::vector<unsigned char> &v)
 {
 	double sum = 0;
 	for (unsigned char c : v)
@@ -173,8 +173,8 @@ TEST_CASE("the bank is opaque when closed, thins steadily and is gone when parte
 
 		// Pure: the same inputs give the same lattice.
 		IntroCover::computeLayers(w, h, 3.0, .4f, again);
-		REQUIRE((again.body == middle.body).min());
-		REQUIRE((again.shadow == middle.shadow).min());
+		REQUIRE(again.body == middle.body);
+		REQUIRE(again.shadow == middle.shadow);
 	}
 }
 

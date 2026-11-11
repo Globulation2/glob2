@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Walls.h"
+#include "TerrainGroupTable.h"
 #include "GenerationWorld.h"
 #include "ResourceSemantics.h"
 #include "Sketch.h"

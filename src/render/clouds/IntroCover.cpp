@@ -227,9 +227,9 @@ void IntroCover::computeLayers(const Lattice &lattice, Threshold threshold, Laye
 	// stretched with smooth filtering, so cloud edges are curves, not steps.
 	out.w = texelsFor(w);
 	out.h = texelsFor(h);
-	out.shadow.resize(size_t(out.w) * out.h);
-	out.body.resize(size_t(out.w) * out.h);
-	out.light.resize(size_t(out.w) * out.h);
+	out.shadow.assign(size_t(out.w) * out.h, 0);
+	out.body.assign(size_t(out.w) * out.h, 0);
+	out.light.assign(size_t(out.w) * out.h, 0);
 	const float maxDistance = std::hypot(cx, cy);
 	const float base = threshold.base, bias = threshold.bias;
 

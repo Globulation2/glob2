@@ -8,6 +8,7 @@
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
 #include "Map.h"
+#include "TerrainGroupTable.h"
 #include <array>
 #include <utility>
 #include <random>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write cmake/sources.cmake and cmake/tests.cmake from the SCons manifests.
 
-The experimental CMake build (CMakeLists.txt) reads its source lists, include
+The CMake build (CMakeLists.txt) reads its source lists, include
 directories, the QuickJS/openlibm strict-numeric contract, the test registry
 (test/tests.py) and the harness programs (scons/harness_programs.py) from the
 generated files, so the two build systems cannot drift:

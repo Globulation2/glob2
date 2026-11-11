@@ -9,7 +9,7 @@
 #define AI_MAXIMA_RUNTIME_H
 
 #include "field/Frontier.h"
-#include "field/TerrainTravel.h"
+#include "field/TerrainTravelMode.h"
 #include "AIImplementation.h"
 #include "MapTypes.h"
 class Map;

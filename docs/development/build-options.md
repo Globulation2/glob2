@@ -29,7 +29,17 @@ real stencils in `src/map/generator/shared/` are affected; if they are, add
 
 ## Fast development builds
 
-`python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
+`python3 tools/dev_build.py` builds the dev tier. On native Linux with CMake
+3.25+ and Ninja installed, a request made only of targets, `.`, `-k` and `-jN`
+builds with [CMake + Ninja](#cmake--ninja-build-for-daily-work) into
+`build/cmake/dev`. Everything else builds with SCons, as before: any SCons
+option (`perf=1`, `target=web`, `compile_profile=core`, `pch=1`, `CXX=...`,
+`--build=...`, `-n`), a file target, an alias the CMake build does not define,
+other host systems, and hosts without CMake or Ninja; the wrapper prints which
+build system it chose and why. `--generator=scons` or `--generator=cmake` (or
+`GLOB2_DEV_GENERATOR=scons|cmake|auto`) forces the choice.
+
+Through SCons it enables caching and `dev_fast=1` in a separate output
 directory, forwarding SCons targets and options. It defaults to one job per CPU
 (the [token pool](#parallel-lanes) shares them between concurrent builds) and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
 Install ccache before using the development command. Native dependencies still
@@ -37,8 +47,9 @@ come from the existing package-manager or `GLOB2_SDL3_PREFIX` configuration;
 mobile dependencies and SDKs still require their existing setup steps.
 
 ```sh
-python3 tools/dev_build.py
-python3 tools/dev_build.py engine-tests -j8
+python3 tools/dev_build.py                    # glob2, CMake + Ninja on Linux
+python3 tools/dev_build.py engine-tests -j8   # CMake + Ninja on Linux
+python3 tools/dev_build.py --generator=scons engine-tests
 python3 tools/dev_build.py dev_fast=0 linker=default
 python3 tools/dev_build.py pch=1 unity=1
 python3 tools/dev_build.py target=web web_variant=serial
@@ -115,7 +126,7 @@ code it compiled.
 
 | Tier | Command | Evidence it may back |
 | --- | --- | --- |
-| dev | `python3 tools/dev_build.py` (`-O0 -g1`) | correctness, checksum and golden traces, save/replay continuity |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`; CMake + Ninja on Linux) | correctness, checksum and golden traces, save/replay continuity |
 | perf-screen | `scons perf=1` (`-O2 -g1`) | the direction and rough size of a performance change |
 | perf-confirm | `scons perf=1 opt=3` (`-O3 -g1`) | the number quoted in a performance PR; required when screening shows under 5% or mixed signs |
 | release | `scons release=1` and the platform packaging | shipping, package size and store QA only; never PR performance evidence |
@@ -124,7 +135,10 @@ code it compiled.
 with `opt=3`). It keeps the full client profile, lossless development assets and
 `-g1` symbols, and does not strip or use `-fwhole-program`, so a profiler can
 attribute samples and every performance claim is reproducible from one `scons`
-command. `tools/dev_build.py perf=1` runs it with the managed compiler cache.
+command. `tools/dev_build.py perf=1` runs it with the managed compiler cache;
+the perf tiers always build with SCons, like the
+[master baselines](#comparing-against-master) they are compared with, so a
+candidate and its baseline share one build system's compile and link lines.
 Rendering measurements that need shipped asset paths add
 `sprite_packing=video optimized_assets=1`. Simulation numeric sources keep their
 strict flags in every tier, so the dev and perf builds of one platform produce the
@@ -160,7 +174,10 @@ CPU), and prefer a CPU-time metric the benchmark prints (for example `/usr/bin/t
 -f cpu=%U` with `--metric 'cpu=([0-9.]+)'`) over wall time. `dev_baseline.py gc --keep 3` removes
 older baselines that no comparison is using, and `dev_baseline.py seed WORKTREE`
 copies a baseline's dev build into a fresh worktree so its first build recompiles
-only what differs.
+only what differs. Baselines build with SCons (`--generator=scons`) in every
+variant: the perf tiers are SCons-only, so this keeps a candidate and its
+baseline on the same build system, and `seed` therefore fills the SCons dev
+directory, which helps only `--generator=scons` builds.
  stable standard headers separately for each compiler/flag
 configuration. Its C++ objects bypass ccache rather than weakening cache
 correctness; C and Objective-C++ objects bypass PCH. `unity=1` combines only the
@@ -257,7 +274,7 @@ No speedup is assumed before measuring matching source and toolchain inputs.
 
 ### CMake + Ninja build for daily work
 
-On native Linux, a CMake + Ninja build of the dev tier can replace SCons in the
+On native Linux, a CMake + Ninja build of the dev tier is the default for the
 everyday edit, build and test loop. It compiles the same sources with the same
 flags (`-O0 -g1`, the managed compiler cache, every feature, and
 `-fno-fast-math -ffp-contract=off` on the strict-numeric simulation sources),
@@ -266,18 +283,22 @@ cost of each build: SCons spends about 26 s on a 32-core host starting up and
 scanning dependencies before it compiles anything, where Ninja's no-change build
 takes about 1.5 s, and the links run as soon as their inputs are ready.
 
-**SCons remains the default build and the only release, packaging, perf
-(`perf=1`), browser, mobile, macOS and Windows build.** Use SCons for anything
-that ships, for performance numbers you quote, and whenever a guide names a
-SCons command. The CMake build needs CMake 3.25 or later, Ninja and
+`tools/dev_build.py` uses it whenever the request is only CMake targets, `.`,
+`-k` and `-jN` (see [fast development builds](#fast-development-builds)).
+**SCons remains the only release, packaging, perf (`perf=1`), browser, mobile,
+macOS and Windows build**, and the build for any SCons option. Use SCons for
+anything that ships, for performance numbers you quote, and whenever a guide
+names a SCons command; `--generator=scons` gives the SCons dev build of the
+same targets. The CMake build needs CMake 3.25 or later, Ninja and
 `pkg-config`; if the host lacks CMake or Ninja, `pip install cmake ninja` into a
-development virtual environment provides both.
+development virtual environment provides both (without them the wrapper falls
+back to SCons).
 
 ```sh
-python3 tools/dev_build.py --generator=cmake .          # glob2 and the four test binaries
-python3 tools/dev_build.py --generator=cmake            # glob2 only
-python3 tools/dev_build.py --generator=cmake unit-tests map-generator-golden-test -j12
-python3 test/run_tests.py --build-dir build/cmake/dev --binary all -j12
+python3 tools/dev_build.py .                            # glob2 and the four test binaries
+python3 tools/dev_build.py                              # glob2 only
+python3 tools/dev_build.py unit-tests map-generator-golden-test -j12
+python3 test/run_tests.py --binary all -j12             # finds the newest build, build/cmake/dev included
 python3 test/test_cli_smoke.py --binary build/cmake/dev/src/glob2
 cmake --build build/cmake/dev --target glob2           # the same, without the wrapper
 python3 tools/compare_build_systems.py                  # parity report
@@ -289,9 +310,12 @@ imports change. Its arguments are CMake targets (the SCons alias names:
 `engine-tests`, `unit-tests`, `map-tests`, `sim-tests`, `tests`, `glob2-tools`,
 the harness aliases), `.` for glob2 plus the four test binaries, `-k` to keep
 going after an error and `-jN`. SCons options such as `perf=1` or
-`compile_profile=core` are rejected: those builds exist only in SCons. Test
-tools that look for the newest build directory do not see `build/cmake/dev`;
-pass `--build-dir build/cmake/dev` or set `GLOB2_BUILD_DIR=build/cmake/dev`.
+`compile_profile=core` send the request to SCons (with `--generator=cmake`
+they are rejected): those builds exist only in SCons. Test tools that look for
+the newest build directory (`tools/build_paths.py`, so `test/run_tests.py`
+without `--build-dir`) consider `build/cmake/dev` beside the SCons dev and
+release builds and take whichever was built last; `--build-dir` or
+`GLOB2_BUILD_DIR` picks one explicitly.
 
 Keep both build systems' inputs in step: after changing `scons/sources.py`,
 `scons/javascript.py`, `test/tests.py` or `scons/harness_programs.py`, run

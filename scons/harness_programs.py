@@ -1,6 +1,6 @@
 """Native harness and tool programs src/SConscript builds from the client objects.
 
-Shared by src/SConscript and the experimental CMake build
+Shared by src/SConscript and the CMake build
 (scons/export_cmake_sources.py), so both build the same programs from the same
 objects. Each program compiles one harness source with the client's flags and
 links it with:

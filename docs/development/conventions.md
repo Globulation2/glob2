@@ -107,9 +107,12 @@ headers. For a timestamp or deadline, store integer nanoseconds from
 `GAGCore::steadyClockNanoseconds()` (`SteadyClock.h`) or take a millisecond count,
 and convert to `std::chrono` in the `.cpp`. A header that only names `json` in
 declarations includes `<nlohmann/json_fwd.hpp>`. A header that holds a JSON-bearing
-type only by reference or pointer forward-declares it. Fan-in budgets in angle
-brackets (`<chrono>`, `<valarray>`) count the translation units that reach these
-headers through any project file.
+type only by reference or pointer forward-declares it. An interface that reads a
+buffer takes a `std::span` of its elements (as `drawAlphaMap` does) rather than
+naming the caller's container, and render-side members use `std::vector` rather
+than `std::valarray`. Fan-in budgets in angle brackets (`<chrono>`, `<valarray>`,
+`<nlohmann/json.hpp>`) count the translation units that reach these headers
+through any project file.
 
 Terrain registries and cell rules (`TerrainRegistry.h`, `CellRules.h`) hold
 only layouts: `TerrainPropertiesLayout.h`, `TerrainPresentationLayout.h` and

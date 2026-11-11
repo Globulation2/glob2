@@ -2,6 +2,7 @@
 #pragma once
 #include "PowerOfTwo.h"
 #include "TerrainMovementCosts.h"
+#include "TerrainTravelMode.h"
 #include "map/TerrainRegistry.h"
 #include <limits>
 #include <queue>
@@ -13,9 +14,6 @@
 
 namespace field
 {
-// Persisted IDs. Geometric fields deliberately ignore movement speed/access.
-enum class TerrainTravel : unsigned char { Geometric=0, Walk=1, Swim=2, Fly=3 };
-constexpr bool validTerrainTravel(unsigned value) { return value<=unsigned(TerrainTravel::Fly); }
 constexpr bool terrainTravelAllowed(const TerrainProperties& p,TerrainTravel mode)
 {
     return mode==TerrainTravel::Geometric || (mode==TerrainTravel::Fly?p.flyable:

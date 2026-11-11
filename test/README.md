@@ -37,7 +37,7 @@ update-only callbacks and capped drawing retain input and screen lifecycle behav
 
 ```sh
 python3 tools/dev_build.py engine-tests unit-tests
-python3 test/run_tests.py                   # headless tier: no [display], no [slow]
+python3 test/run_tests.py                   # headless tier, newest build: no [display], no [slow]
 python3 test/run_tests.py --tier display    # adds [display] cases
 python3 test/run_tests.py --tier full       # everything this platform can run
 python3 test/run_tests.py --list --tag display
@@ -87,7 +87,9 @@ runtime assets. See [asset loading](../docs/development/package-size.md#release-
 for worker controls, scratch accounting and measurement limits.
 
 Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native build:
-the `tools/dev_build.py` output or `build/<platform>/client/release`. The default
+the SCons `tools/dev_build.py` output or `build/<platform>/client/release`. It
+does not yet consider `build/cmake/dev`, where `tools/dev_build.py` builds by
+default on Linux, so name that directory explicitly. The default
 tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
 about a quarter of the full inventory's time; `--tier display` adds display cases
 (`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs, not

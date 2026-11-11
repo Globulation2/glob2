@@ -1,4 +1,4 @@
-"""The experimental CMake build reads SCons' manifests, never its own copy."""
+"""The CMake build reads SCons' manifests, never its own copy."""
 import importlib.util
 from pathlib import Path
 import re
