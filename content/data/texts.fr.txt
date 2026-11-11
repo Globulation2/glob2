@@ -2080,6 +2080,8 @@ Taille des pâtés de maisons
 Largeur des canaux
 [Extra bridges]
 Ponts supplémentaires
+[Grand canal]
+Grand canal
 [Polder]
 Polder
 [Old town]

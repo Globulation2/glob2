@@ -2080,6 +2080,8 @@ Háztömb mérete
 Csatorna szélessége
 [Extra bridges]
 További hidak
+[Grand canal]
+Nagy csatorna
 [Polder]
 Polder
 [Old town]

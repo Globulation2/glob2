@@ -2080,6 +2080,8 @@ Cortex
 Πλάτος καναλιών
 [Extra bridges]
 Επιπλέον γέφυρες
+[Grand canal]
+Μεγάλο κανάλι
 [Polder]
 Πόλντερ
 [Old town]

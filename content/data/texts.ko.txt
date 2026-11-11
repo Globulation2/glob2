@@ -2080,6 +2080,8 @@ Globulation 2 커서를 표시합니다.
 운하 너비
 [Extra bridges]
 추가 다리
+[Grand canal]
+대운하
 [Polder]
 간척지
 [Old town]

@@ -2080,6 +2080,8 @@ Korttelin koko
 Kanaalin leveys
 [Extra bridges]
 Lisäsillat
+[Grand canal]
+Suuri kanava
 [Polder]
 Polderi
 [Old town]

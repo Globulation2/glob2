@@ -2080,6 +2080,8 @@ Globulation 2のカーソルを表示します。
 運河の幅
 [Extra bridges]
 追加の橋
+[Grand canal]
+大運河
 [Polder]
 ポルダー
 [Old town]

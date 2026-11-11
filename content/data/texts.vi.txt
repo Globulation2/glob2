@@ -2080,6 +2080,8 @@ Kích thước khu phố
 Độ rộng kênh
 [Extra bridges]
 Cầu bổ sung
+[Grand canal]
+Kênh lớn
 [Polder]
 Đất lấn biển
 [Old town]

@@ -2080,6 +2080,8 @@ Rozmiar kwartałów
 Szerokość kanałów
 [Extra bridges]
 Dodatkowe mosty
+[Grand canal]
+Wielki kanał
 [Polder]
 Polder
 [Old town]

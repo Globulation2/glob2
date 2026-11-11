@@ -2080,6 +2080,8 @@ OpenGL 在此版本中不可用。
 运河宽度
 [Extra bridges]
 额外桥梁
+[Grand canal]
+大运河
 [Polder]
 圩田
 [Old town]

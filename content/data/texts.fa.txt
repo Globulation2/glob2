@@ -2080,6 +2080,8 @@ OpenGL در این نسخه موجود نیست.
 پهنای کانال
 [Extra bridges]
 پل‌های اضافی
+[Grand canal]
+کانال بزرگ
 [Polder]
 پولدر
 [Old town]

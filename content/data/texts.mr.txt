@@ -2048,6 +2048,8 @@ Globulation 2 कर्सर दाखवा.
 कालव्याची रुंदी
 [Extra bridges]
 अतिरिक्त पूल
+[Grand canal]
+मोठा कालवा
 [Polder]
 पोल्डर
 [Old town]

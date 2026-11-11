@@ -2080,6 +2080,8 @@ Velikost bloku
 Šířka kanálů
 [Extra bridges]
 Další mosty
+[Grand canal]
+Velký kanál
 [Polder]
 Poldr
 [Old town]

@@ -2080,6 +2080,8 @@ Mida de les illes de cases
 Amplada dels canals
 [Extra bridges]
 Ponts addicionals
+[Grand canal]
+Gran canal
 [Polder]
 Pòlder
 [Old town]

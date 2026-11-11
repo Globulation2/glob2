@@ -2080,6 +2080,8 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض القناة
 [Extra bridges]
 جسور إضافية
+[Grand canal]
+القناة الكبرى
 [Polder]
 بولدر
 [Old town]

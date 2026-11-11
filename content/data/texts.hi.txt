@@ -2048,6 +2048,8 @@ Globulation 2 का कर्सर दिखाएँ।
 नहर की चौड़ाई
 [Extra bridges]
 अतिरिक्त पुल
+[Grand canal]
+बड़ी नहर
 [Polder]
 बाँध से सुरक्षित नीची ज़मीन
 [Old town]

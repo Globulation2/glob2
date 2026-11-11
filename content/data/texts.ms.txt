@@ -2072,6 +2072,8 @@ Saiz blok
 Lebar terusan
 [Extra bridges]
 Jambatan tambahan
+[Grand canal]
+Terusan besar
 [Polder]
 Polder
 [Old town]

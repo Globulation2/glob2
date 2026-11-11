@@ -2080,6 +2080,8 @@ Blok boyutu
 Kanal genişliği
 [Extra bridges]
 Ek köprüler
+[Grand canal]
+Büyük kanal
 [Polder]
 Polder
 [Old town]

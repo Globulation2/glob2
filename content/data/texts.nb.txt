@@ -2048,6 +2048,8 @@ Blokkstørrelse
 Kanalbredde
 [Extra bridges]
 Ekstra broer
+[Grand canal]
+Storkanal
 [Polder]
 Polder
 [Old town]

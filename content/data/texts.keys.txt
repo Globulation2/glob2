@@ -1023,6 +1023,7 @@
 [Block size]
 [Canal width]
 [Extra bridges]
+[Grand canal]
 [Polder]
 [Old town]
 [Anthill]

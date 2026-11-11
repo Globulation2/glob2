@@ -2080,6 +2080,8 @@ Mărimea cvartalelor
 Lățimea canalelor
 [Extra bridges]
 Poduri suplimentare
+[Grand canal]
+Canalul mare
 [Polder]
 Polder
 [Old town]

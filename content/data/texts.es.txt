@@ -2080,6 +2080,8 @@ Tamaño de las manzanas
 Anchura de los canales
 [Extra bridges]
 Puentes adicionales
+[Grand canal]
+Gran canal
 [Polder]
 Pólder
 [Old town]

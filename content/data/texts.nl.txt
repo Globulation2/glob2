@@ -2080,6 +2080,8 @@ Grootte van de bouwblokken
 Grachtbreedte
 [Extra bridges]
 Extra bruggen
+[Grand canal]
+Groot kanaal
 [Polder]
 Polder
 [Old town]
