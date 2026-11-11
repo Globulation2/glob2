@@ -2072,6 +2072,8 @@ Laki ng bloke
 Lapad ng kanal
 [Extra bridges]
 Mga karagdagang tulay
+[Grand canal]
+Malaking kanal
 [Polder]
 Polder
 [Old town]

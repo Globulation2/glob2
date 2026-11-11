@@ -70,10 +70,6 @@ const Exception kExceptions[] = {
 	// Without trails (the default) the forest is cut through, not walked: its validator checks
 	// colony contact with chopping costs instead.
 	{"old-growth", false, 32, 16, "colonies reach each other by cutting through the forest"},
-	// FINDING, not design: canals' validator checks walls, moats, lakes and the walk, but not
-	// building room, and seed 6 leaves colony 2 only 3 of the 16 build origins the floor asks
-	// for. Wheat and wood reach are still checked; drop this entry once canals keeps the room.
-	{"canals", true, 32, 0, "canals does not yet guarantee building room (seed 6, colony 2)"},
 };
 
 const Exception &exceptionFor(const char *id)

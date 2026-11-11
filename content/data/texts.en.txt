@@ -2048,6 +2048,8 @@ Block size
 Canal width
 [Extra bridges]
 Extra bridges
+[Grand canal]
+Grand canal
 [Polder]
 Polder
 [Old town]

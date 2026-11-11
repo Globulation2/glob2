@@ -2080,6 +2080,8 @@ Tamanho dos quarteirões
 Largura dos canais
 [Extra bridges]
 Pontes extra
+[Grand canal]
+Grande canal
 [Polder]
 Pólder
 [Old town]

@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct CanalsOptions
 {
-	int blockShape, blockSize, canalWidth, warp, extraBridges, towers, towerCount;
+	int blockShape, blockSize, canalWidth, warp, extraBridges, towers, towerCount, grandCanal;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CanalsOptions(const GenerationRequest &r);
 };

@@ -2080,6 +2080,8 @@ Ukuran blok
 Lebar kanal
 [Extra bridges]
 Jembatan tambahan
+[Grand canal]
+Kanal besar
 [Polder]
 Polder
 [Old town]

@@ -2080,6 +2080,8 @@ Tamanho do quarteirão
 Largura dos canais
 [Extra bridges]
 Pontes extras
+[Grand canal]
+Kanol veur
 [Polder]
 Pôlder
 [Old town]

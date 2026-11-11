@@ -2048,6 +2048,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 కాలువ వెడల్పు
 [Extra bridges]
 అదనపు వంతెనలు
+[Grand canal]
+మహా కాలువ
 [Polder]
 పోల్డర్
 [Old town]

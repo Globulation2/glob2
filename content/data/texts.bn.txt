@@ -2048,6 +2048,8 @@ Globulation 2-এর কার্সার দেখান।
 খালের প্রস্থ
 [Extra bridges]
 অতিরিক্ত সেতু
+[Grand canal]
+বড় খাল
 [Polder]
 পোল্ডার
 [Old town]

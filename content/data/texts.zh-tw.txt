@@ -2080,6 +2080,8 @@ AI 策略與對抗
 運河寬度
 [Extra bridges]
 額外橋樑
+[Grand canal]
+大運河
 [Polder]
 圩田
 [Old town]

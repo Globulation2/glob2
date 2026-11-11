@@ -2080,6 +2080,8 @@ Grando de kvartaloj
 Larĝo de kanaloj
 [Extra bridges]
 Kromaj pontoj
+[Grand canal]
+Granda kanalo
 [Polder]
 Poldero
 [Old town]

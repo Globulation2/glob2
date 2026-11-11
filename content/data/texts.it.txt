@@ -2080,6 +2080,8 @@ Dimensione degli isolati
 Larghezza dei canali
 [Extra bridges]
 Ponti aggiuntivi
+[Grand canal]
+Canal grande
 [Polder]
 Polder
 [Old town]

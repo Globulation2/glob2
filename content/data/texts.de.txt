@@ -2080,6 +2080,8 @@ Blockgröße
 Kanalbreite
 [Extra bridges]
 Zusätzliche Brücken
+[Grand canal]
+Großer Kanal
 [Polder]
 Polder
 [Old town]

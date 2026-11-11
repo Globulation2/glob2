@@ -2080,6 +2080,8 @@ Kvartersstorlek
 Kanalbredd
 [Extra bridges]
 Extra broar
+[Grand canal]
+Stora kanalen
 [Polder]
 Polder
 [Old town]

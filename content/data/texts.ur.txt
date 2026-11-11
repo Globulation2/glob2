@@ -2048,6 +2048,8 @@ Globulation 2 کا کرسر دکھائیں۔
 نہر کی چوڑائی
 [Extra bridges]
 اضافی پل
+[Grand canal]
+بڑی نہر
 [Polder]
 بندوں سے گھری زمین
 [Old town]
