@@ -13,7 +13,6 @@
 #include "BrushCatalog.h"
 #include "BrushSwatches.h"
 #include "MapEditPresentation.h"
-#include "TerrainPresentation.h"
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
 #include <memory>
