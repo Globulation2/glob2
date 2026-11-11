@@ -25,23 +25,23 @@ def render_clay(ctx):
     """Red baked clay in bold plates, under the barren group's mark."""
     p = RECIPES["clay"].palette
     size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
-    f1, f2, _, common1, common2, _ = block_worley(ctx, 6)
-    common_noise = fbm(shared, 4, 3, size=size)
-    noise = blend_fields(common_noise, fbm(own, 4, 3, size=size), ctx.interior_mask)
-    common_x, common_y = fbm(shared, 4, 2, size=size), fbm(shared, 4, 2, size=size)
-    wx = blend_fields(common_x, fbm(own, 4, 2, size=size), ctx.interior_mask)
-    wy = blend_fields(common_y, fbm(own, 4, 2, size=size), ctx.interior_mask)
-    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, 5)
-    common_plates_raw = domain_warp([1 - v for v in common1], common_x, common_y, 5)
-    plates_raw = domain_warp([1 - v for v in f1], wx, wy, 5)
+    f1, f2, _, common1, common2, _ = block_worley(ctx, 6, array=True)
+    common_noise = fbm(shared, 4, 3, size=size, array=True)
+    noise = blend_fields(common_noise, fbm(own, 4, 3, size=size, array=True), ctx.interior_mask)
+    common_x, common_y = fbm(shared, 4, 2, size=size, array=True), fbm(shared, 4, 2, size=size, array=True)
+    wx = blend_fields(common_x, fbm(own, 4, 2, size=size, array=True), ctx.interior_mask)
+    wy = blend_fields(common_y, fbm(own, 4, 2, size=size, array=True), ctx.interior_mask)
+    edge = domain_warp(f2 - f1, wx, wy, 5)
+    common_plates_raw = domain_warp(1 - common1, common_x, common_y, 5)
+    plates_raw = domain_warp(1 - f1, wx, wy, 5)
     common_plates = normalize_like(common_plates_raw, common_plates_raw)
     plates = normalize_like(plates_raw, common_plates_raw)
-    common_tone = [0.6 * a + 0.4 * b for a, b in zip(common_noise, common_plates)]
-    tone = normalize_like([0.6 * a + 0.4 * b for a, b in zip(noise, plates)], common_tone)
+    common_tone = 0.6 * common_noise + 0.4 * common_plates
+    tone = normalize_like(0.6 * noise + 0.4 * plates, common_tone)
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    common_grit = lattice_noise(shared, 48, size=size)
-    grit = blend_fields(common_grit, lattice_noise(own, 48, size=size), ctx.interior_mask)
-    rgb = [[c * (1 + 0.08 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
+    common_grit = lattice_noise(shared, 48, size=size, array=True)
+    grit = blend_fields(common_grit, lattice_noise(own, 48, size=size, array=True), ctx.interior_mask)
+    rgb = rgb * (1 + 0.08 * (grit - 0.5) * 2)
     cracks = band(edge, 0.04, 0.07)
     rgb = mix(rgb, p["crack"], cracks, 0.7)
     return barren_mark(ctx, rgb, p["crack"], cells=9, fade=0.1), None

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The dirt terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -33,7 +35,7 @@ def render_dirt(ctx):
                             low=0.02, high=0.98)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+    rgb = rgb * (1 + 0.12 * (fine - 0.5) * 2)
     pebbles = blend_fields(common_pebbles, own_pebbles, ctx.interior_mask)
     rgb = mix(rgb, p["pebble"], pebbles, 0.8)
     return barren_mark(ctx, rgb, p["crack"], fade=0.0), None
@@ -41,10 +43,10 @@ def render_dirt(ctx):
 
 def dirt_fields(rng, size):
     """Periodic earth, fine grain and pebble masks at the original density."""
-    height = fbm(rng, 5, 4, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 10)
-    fine = lattice_noise(rng, 48, size=size)
-    pebbles = [0.0] * (size * size)
+    height = fbm(rng, 5, 4, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True), fbm(rng, 3, 2, size=size, array=True), 10)
+    fine = lattice_noise(rng, 48, size=size, array=True)
+    pebbles = np.zeros(size * size)
     for _ in range(40 * (size // N) ** 2):
         x, y = rng.random() * size, rng.random() * size
         stamp_disc(pebbles, x, y, rng.uniform(1.6, 2.6), softness=0.6)

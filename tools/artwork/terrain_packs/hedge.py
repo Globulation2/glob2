@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The hedge terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -26,21 +28,22 @@ def render_hedge(ctx):
     p = RECIPES["hedge"].palette
     common, common_grit, common_leaves = hedge_fields(ctx.shared_rng, ctx.size)
     own, own_grit, own_leaves = hedge_fields(ctx.rng, ctx.size)
-    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    height = normalize_like(blend_fields(common, own, ctx.interior), common, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["gap"]), (0.5, p["dark"]), (1.0, p["mid"])])
-    grit = blend_fields(common_grit, own_grit, ctx.interior_mask)
-    rgb = [[c * (1 + 0.14 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
-    leaves = blend_fields(common_leaves, own_leaves, ctx.interior_mask)
+    grit = blend_fields(common_grit, own_grit, ctx.interior)
+    rgb = rgb * (1 + 0.14 * (grit - 0.5) * 2)
+    leaves = blend_fields(common_leaves, own_leaves, ctx.interior)
     rgb = mix(rgb, p["light"], leaves, 0.25)
     return rgb, None
 
 
 def hedge_fields(rng, size):
     """Periodic litter height, grain and leaf flecks beneath the raised hedge."""
-    height = fbm(rng, 8, 3, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    grit = lattice_noise(rng, 48, size=size)
-    leaves = [0.0] * (size * size)
+    height = fbm(rng, 8, 3, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True),
+                         fbm(rng, 3, 2, size=size, array=True), 8)
+    grit = lattice_noise(rng, 48, size=size, array=True)
+    leaves = np.zeros(size * size)
     for _ in range(14 * (size // N) ** 2):
         x, y = rng.random() * size, rng.random() * size
         radius = rng.uniform(2.5, 4.5)

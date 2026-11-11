@@ -15,6 +15,8 @@ only, no pixels read."""
 import math
 import random
 
+import numpy as np
+
 from terrain_core import N, TAU, blend_fields, fnv1a32, mix, ramp, smoothstep
 
 
@@ -60,8 +62,6 @@ def wave_fields(phase, phases=WAVE_PHASES, layout=0):
     Integer sine-table samples preserve the loop exactly. Vectorization keeps
     all phases/layouts practical at1024px without changing wavelength/speed.
     """
-    import numpy as np
-
     key = (phase, phases)
     if layout == 0 and key in _WAVE_CACHE:
         return _WAVE_CACHE[key]
@@ -91,11 +91,13 @@ def wave_fields(phase, phases=WAVE_PHASES, layout=0):
         values = np.zeros((size, size))
         for kx, ky, cycles, amplitude, ph in components:
             values += (amplitude / total) * table[(kx * xw + ky * yw + ph - cycles * phase * (size // phases)) % size]
-        out.append(values.ravel().tolist())
-    swell_values = np.asarray(out[0]).reshape(size, size)
+        out.append(values.ravel())
+    swell_values = out[0].reshape(size, size)
     front = (np.roll(swell_values, 2, axis=1) + np.roll(swell_values, 1, axis=0)
              - np.roll(swell_values, -2, axis=1) - np.roll(swell_values, -1, axis=0)) * 6
-    out.append(front.ravel().tolist())
+    out.append(front.ravel())
+    for values in out:
+        values.setflags(write=False)
     result = tuple(out)
     if layout == 0:
         _WAVE_CACHE.clear()
@@ -108,11 +110,8 @@ def wave_cell(ctx, values):
     if ctx.size == WAVE_SIZE:
         return values
     gx, gy = ctx.variant % WAVE_GRID, ctx.variant // WAVE_GRID
-    out = []
-    for y in range(gy * N, gy * N + N):
-        row = y * WAVE_SIZE + gx * N
-        out.extend(values[row:row + N])
-    return out
+    block = values.reshape(WAVE_SIZE, WAVE_SIZE)
+    return block[gy * N:gy * N + N, gx * N:gx * N + N].ravel()
 
 
 def wave_layers(ctx):
@@ -130,9 +129,8 @@ def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
     """Swell bands lit on their leading face, with glints where chop crests
     ride swell crests."""
     s, c, f = wave_layers(ctx)
-    t = [0.5 + swell_weight * a + chop_weight * b for a, b in zip(s, c)]
-    rgb = ramp([smoothstep(0.05, 0.5, v) for v in t], [(0.0, palette["deep"]), (1.0, palette["base"])])
-    rgb = mix(rgb, palette["light"], [0.8 * smoothstep(0.45, 0.85, v) + front * smoothstep(0, 1, d)
-                                      for v, d in zip(t, f)], 1.0)
-    glints = [smoothstep(0.0, 0.6, a) * smoothstep(0.22, 0.55, b) for a, b in zip(s, c)]
+    t = 0.5 + swell_weight * s + chop_weight * c
+    rgb = ramp(smoothstep(0.05, 0.5, t), [(0.0, palette["deep"]), (1.0, palette["base"])])
+    rgb = mix(rgb, palette["light"], 0.8 * smoothstep(0.45, 0.85, t) + front * smoothstep(0, 1, f), 1.0)
+    glints = smoothstep(0.0, 0.6, s) * smoothstep(0.22, 0.55, c)
     return mix(rgb, palette["glint"], glints, glint)

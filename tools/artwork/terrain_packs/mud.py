@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The mud terrain material."""
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -32,18 +34,18 @@ def render_mud(ctx):
     # One reference range for all layouts keeps their common perimeter exact.
     # Blend the height and wetness fields before colouring rather than fading
     # between finished images; pools and mud contours can cross cell edges.
-    ordered = sorted(common)
+    ordered = np.sort(common)
     low = ordered[int(0.02 * (len(ordered) - 1))]
     high = ordered[int(0.98 * (len(ordered) - 1))]
     span = max(high - low, 1e-9)
-    height = [clamp01((a + (b - a) * w - low) / span)
-              for a, b, w in zip(common, own, ctx.interior_mask)]
+    mask = ctx.interior
+    height = clamp01((common + (own - common) * mask - low) / span)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    grit = [a + (b - a) * w for a, b, w in zip(common_grit, own_grit, ctx.interior_mask)]
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
-    pools = [a + (b - a) * w for a, b, w in zip(common_pools, own_pools, ctx.interior_mask)]
+    grit = common_grit + (own_grit - common_grit) * mask
+    rgb = rgb * (1 + 0.12 * (grit - 0.5) * 2)
+    pools = common_pools + (own_pools - common_pools) * mask
     rgb = mix(rgb, p["sheen"], pools, 0.25)
-    height, common_height, pit, _ = lumps(ctx, 9, pits=0.25, warp=12)
+    height, common_height, pit, _ = lumps(ctx, 9, pits=0.25, warp=12, array=True)
     rgb = shade(rgb, height, 0.5, reference_height=common_height)
     return wet_pits(rgb, height, common_height, pit, p["water"], p["glint"]), None
 
@@ -51,10 +53,10 @@ def render_mud(ctx):
 def mud_fields(rng, size):
     """Periodic mud height, grain and wet pools, a little finer than the
     original feature scale."""
-    height = fbm(rng, 8, 4, size=size)
-    height = domain_warp(height, fbm(rng, 5, 2, size=size), fbm(rng, 5, 2, size=size), 8)
-    grit = lattice_noise(rng, 48, size=size)
-    pools = [0.0] * (size * size)
+    height = fbm(rng, 8, 4, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 5, 2, size=size, array=True), fbm(rng, 5, 2, size=size, array=True), 8)
+    grit = lattice_noise(rng, 48, size=size, array=True)
+    pools = np.zeros(size * size)
     # Pools may wrap around the block, so shared boundary pools remain whole.
     for _ in range(rng.randint(3, 5) * (size // N) ** 2):
         x, y = rng.random() * size, rng.random() * size

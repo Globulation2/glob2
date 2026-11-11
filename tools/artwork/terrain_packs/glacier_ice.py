@@ -85,7 +85,7 @@ def fracture_planes(rng, size, count, length, width, halo):
             x, y = x + math.cos(a) * span, y + math.sin(a) * span
             done += span
             a += rng.gauss(0, 0.22)
-    return core.ravel().tolist(), glow.ravel().tolist()
+    return core.ravel(), glow.ravel()
 
 
 def flat_bubbles(rng, size, clusters):
@@ -104,7 +104,7 @@ def flat_bubbles(rng, size, clusters):
             d = np.sqrt((u / rx) ** 2 + (v / ry) ** 2)
             body = np.clip((1 - d) / 0.25, 0, 1) * (0.7 + 0.3 * np.clip((d - 0.55) / 0.3, 0, 1))
             mask[index] = np.maximum(mask[index], body)
-    return mask.ravel().tolist()
+    return mask.ravel()
 
 
 @recipe(name="glacier_ice", group="ice", label="Glacier ice", profile="frozen", border_class="solid",
@@ -121,26 +121,27 @@ def render_glacier_ice(ctx):
     bubble spans more than a tile."""
     p, size = RECIPES["glacier_ice"].palette, ctx.size
     # Depth: broad cloudy and clear zones, with soft darker clear pockets.
-    depth = layout_field(ctx, lambda rng: domain_warp(fbm(rng, 3, 4, size=size), fbm(rng, 3, 2, size=size),
-                                                      fbm(rng, 3, 2, size=size), 24))
+    depth = layout_field(ctx, lambda rng: domain_warp(
+        fbm(rng, 3, 4, size=size, array=True), fbm(rng, 3, 2, size=size, array=True),
+        fbm(rng, 3, 2, size=size, array=True), 24))
     rgb = ramp(depth, [(0.0, p["abyss"]), (0.3, p["deep"]), (0.7, p["mid"]), (1.0, p["pale"])])
-    pockets = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))
-    rgb = mix(rgb, p["abyss"], [smoothstep(0.6, 0.8, v) for v in pockets], 0.3)
+    pockets = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size, array=True))
+    rgb = mix(rgb, p["abyss"], smoothstep(0.6, 0.8, pockets), 0.3)
     # Fractures: under one per tile, mostly single straight runs between half
     # a tile and a tile and a half long, so the ice reads as crevassed rather
     # than scratched.
     core, glow = layout_field_pair(ctx, lambda rng: fracture_planes(rng, size, 0.7, (64, 190), 2.0, 9.0))
-    wobble_x = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size))
-    wobble_y = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size))
+    wobble_x = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size, array=True))
+    wobble_y = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size, array=True))
     core, glow = (domain_warp(f, wobble_x, wobble_y, 2) for f in (core, glow))
     rgb = mix(rgb, p["glow"], glow, 0.7)
     rgb = mix(rgb, p["white"], core, 0.75)
     # Small flattened bubbles and rime speckle frozen into the surface.
     rgb = mix(rgb, p["white"], layout_field(ctx, lambda rng: flat_bubbles(rng, size, 1.5)), 0.85)
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
-    rgb = mix(rgb, p["rime"], [smoothstep(0.72, 0.92, v) for v in speck], 0.3)
-    grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
-    rgb = [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, grain_field)] for channel in rgb]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size, array=True))
+    rgb = mix(rgb, p["rime"], smoothstep(0.72, 0.92, speck), 0.3)
+    grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size, array=True))
+    rgb = rgb * (1 + 0.05 * (grain_field - 0.5) * 2)
     return rgb, None
 
 

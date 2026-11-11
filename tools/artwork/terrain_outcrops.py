@@ -74,6 +74,43 @@ def spots(rng, count, rx, ry, gap):
     return out
 
 
+def paint_spans(H, chunk=32):
+    """Screen source index and height above ground of every painted pixel.
+
+    Each ground pixel above 0.5 is a vertical span of screen pixels: step k
+    (0 up to its height + 0.5) lands on screen row int(y - h + k). Rows are
+    painted back to front and each row's steps in order, so a later (row,
+    step) wins a screen pixel; each chunk of rows keeps its last write per
+    pixel and later chunks overwrite earlier ones."""
+    src = np.full(R * R, -1, np.int64)
+    zmap = np.zeros(R * R)
+    for start in range(0, R, chunk):
+        ys, xs = np.nonzero(H[start:start + chunk] > 0.5)
+        if not len(ys):
+            continue
+        ys = ys + start
+        hv = H[ys, xs]
+        # Steps k = 0 .. floor(h + 0.5), as `k <= h + 0.5` allows.
+        steps = np.floor(hv + 0.5).astype(np.int64) + 1
+        owner = np.repeat(np.arange(len(ys)), steps)
+        k = np.arange(len(owner)) - np.repeat(np.cumsum(steps) - steps, steps)
+        y, x, h = ys[owner], xs[owner], hv[owner]
+        sy = (y - h + k).astype(int)
+        ok = (sy >= 0) & (sy < R)
+        y, x, h, k, sy = y[ok], x[ok], h[ok], k[ok], sy[ok]
+        target = sy * R + x
+        # Sort by screen pixel, then by paint order (row, then step).
+        span = int(k.max()) + 1 if len(k) else 1
+        order = np.argsort((target * R + y) * span + k)
+        target, y, x, h, k = target[order], y[order], x[order], h[order], k[order]
+        last = np.ones(len(target), dtype=bool)
+        last[:-1] = target[1:] != target[:-1]
+        target = target[last]
+        src[target] = y[last] * R + x[last]
+        zmap[target] = np.maximum(h[last] - k[last], 0)
+    return src.reshape(R, R), zmap.reshape(R, R)
+
+
 def render(H, colour_fn, shadow_strength=0.45, ao=0.25, rim_light=0.15):
     """Draw height field H (ground coordinates, render pixels) in three-quarter view.
 
@@ -86,31 +123,29 @@ def render(H, colour_fn, shadow_strength=0.45, ao=0.25, rim_light=0.15):
     yy, xx = np.mgrid[0:R, 0:R]
     dirxy = LIGHT[:2] / np.linalg.norm(LIGHT[:2])
 
-    def shadowed(z0):
-        hit = np.zeros(H.shape, bool)
+    def shadowed(*levels):
+        # March toward the light; a sample's column depends only on x and its
+        # row only on y, so each step is one row gather and one column gather.
+        # Levels are never below ground, so once the ray climbs past the
+        # highest point nothing further can shade.
+        hits = [np.zeros(H.shape, bool) for _ in levels]
+        axis = np.arange(R)
+        peak = H.max()
         for t in range(2, 260, 2):
-            sx = np.clip((xx + dirxy[0] * t).astype(int), 0, R - 1)
-            sy = np.clip((yy + dirxy[1] * t).astype(int), 0, R - 1)
-            hit |= H[sy, sx] > z0 + 1.25 * t
-        return hit
-    top_shadow = ndimage.gaussian_filter(shadowed(H + 0.5).astype(float), 1.5)
-    ground_shadow = ndimage.gaussian_filter(shadowed(np.zeros_like(H)).astype(float), 4)
+            if 1.25 * t >= peak:
+                break
+            sx = np.clip((axis + dirxy[0] * t).astype(int), 0, R - 1)
+            sy = np.clip((axis + dirxy[1] * t).astype(int), 0, R - 1)
+            seen = H[sy][:, sx]
+            for hit, z0 in zip(hits, levels):
+                hit |= seen > z0 + 1.25 * t
+        return hits
+    top_hit, ground_hit = shadowed(H + 0.5, np.zeros_like(H))
+    top_shadow = ndimage.gaussian_filter(top_hit.astype(float), 1.5)
+    ground_shadow = ndimage.gaussian_filter(ground_hit.astype(float), 4)
     cavity = np.clip((ndimage.gaussian_filter(H, 10) - H) / 20, 0, 1)
 
-    src = np.full((R, R), -1, np.int64)
-    zmap = np.zeros((R, R))
-    cols = np.arange(R)
-    for y in range(R):
-        row = H[y]
-        live = row > 0.5
-        if not live.any():
-            continue
-        xs, hv = cols[live], row[live]
-        for k in range(int(hv.max()) + 2):
-            sy = (y - hv + k).astype(int)
-            ok = (k <= hv + 0.5) & (sy >= 0) & (sy < R)
-            src[sy[ok], xs[ok]] = y * R + xs[ok]
-            zmap[sy[ok], xs[ok]] = np.maximum(hv[ok] - k, 0)
+    src, zmap = paint_spans(H)
     painted = src >= 0
     sidx = src[painted]
     syy, sxx = sidx // R, sidx % R

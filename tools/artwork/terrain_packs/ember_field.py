@@ -2,6 +2,8 @@
 """The ember field terrain material."""
 import math
 
+import numpy as np
+
 from terrain_core import (
     RECIPES,
     Style,
@@ -37,12 +39,14 @@ def render_ember_field(ctx):
     height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+    rgb = rgb * (1 + 0.12 * (fine - 0.5) * 2)
     # Cracks carrying a dim steady glow, sharing lava's DNA.
-    f1, f2, _, _, _, _ = block_worley(ctx, 16)
-    common_x, common_y = fbm(ctx.shared_rng, 4, 2, size=ctx.size), fbm(ctx.shared_rng, 4, 2, size=ctx.size)
-    own_x, own_y = fbm(ctx.rng, 4, 2, size=ctx.size), fbm(ctx.rng, 4, 2, size=ctx.size)
-    edge = domain_warp([b - a for a, b in zip(f1, f2)],
+    f1, f2, _, _, _, _ = block_worley(ctx, 16, array=True)
+    common_x = fbm(ctx.shared_rng, 4, 2, size=ctx.size, array=True)
+    common_y = fbm(ctx.shared_rng, 4, 2, size=ctx.size, array=True)
+    own_x = fbm(ctx.rng, 4, 2, size=ctx.size, array=True)
+    own_y = fbm(ctx.rng, 4, 2, size=ctx.size, array=True)
+    edge = domain_warp(f2 - f1,
                        blend_fields(common_x, own_x, ctx.interior_mask),
                        blend_fields(common_y, own_y, ctx.interior_mask), 6)
     cracks = band(edge, 0.03, 0.04)
@@ -50,22 +54,21 @@ def render_ember_field(ctx):
     # Ten embers per native tile matches the former eight-to-twelve average.
     # Perimeter embers are whole shared objects rather than faded RGB images.
     shared, own = block_object_field(ctx, 10, (3.5, 5.0), spacing=0.85)
-    glow = [0.0] * (ctx.size * ctx.size)
-    core = [0.0] * (ctx.size * ctx.size)
+    glow = np.zeros(ctx.size * ctx.size)
+    core = np.zeros(ctx.size * ctx.size)
     for cx, cy, r, offset in shared + own:
         intensity = 0.35 + 0.65 * (0.5 + 0.5 * math.sin(TAU * (ctx.t % 1.0 + offset)))
         stamp_disc(glow, cx, cy, r * 2.6, intensity * 0.7, 0.9)
         stamp_disc(core, cx, cy, r, intensity, 0.6)
     rgb = mix(rgb, p["ember_dim"], glow, 1.0)
-    ember_color = [
-        [a + (b - a) * c for c in core] for a, b in zip(p["ember"], p["ember_core"])
-    ]
+    ember_color = np.stack([a + (b - a) * core for a, b in zip(p["ember"], p["ember_core"])])
     rgb = mix(rgb, ember_color, core, 1.0)
     return rgb, None
 
 
 def ember_field_soil(rng, size):
     """Periodic crust height and fine grain, independent of animation time."""
-    height = fbm(rng, 5, 4, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    return height, lattice_noise(rng, 48, size=size)
+    height = fbm(rng, 5, 4, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True),
+                         fbm(rng, 3, 2, size=size, array=True), 8)
+    return height, lattice_noise(rng, 48, size=size, array=True)

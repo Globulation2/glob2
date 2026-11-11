@@ -5,7 +5,6 @@ import numpy as np
 from terrain_core import (
     RECIPES,
     Style,
-    as_list,
     cast,
     jag,
     lattice_noise,
@@ -34,13 +33,13 @@ def render_cliffs(ctx):
     tones = np.array([ctx.shared_rng.random() for _ in range(SCREE_TONES)])
     key = (fragment * 7 + layer * 1031 + 3) % SCREE_TONES
     tone = np.where(rock, 0.3 + 0.55 * tones[key], 0.0)
-    rgb = ramp(as_list(tone), [(0.0, p["ground"]), (0.3, p["dark"]), (0.58, p["mid"]), (0.85, p["light"])])
-    grit = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))).reshape(size, size)
-    fine = as_list(np.where(rock, 0.06, 0.22) * (grit - 0.5) * 2)
-    rgb = [[c * (1 + f) for c, f in zip(channel, fine)] for channel in rgb]
-    (*rgb, height), (common,) = jag(ctx, [*rgb, as_list(top)], [as_list(common_top)], 3, cells=6)
-    rgb = shade(rgb, height, 0.85, reference_height=common)
-    h = np.array(height).reshape(size, size)
+    rgb = ramp(tone.ravel(), [(0.0, p["ground"]), (0.3, p["dark"]), (0.58, p["mid"]), (0.85, p["light"])])
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True)).reshape(size, size)
+    fine = (np.where(rock, 0.06, 0.22) * (grit - 0.5) * 2).ravel()
+    rgb = rgb * (1 + fine)
+    (*rgb, height), (common,) = jag(ctx, [*rgb, top.ravel()], [common_top.ravel()], 3, cells=6)
+    rgb = shade(np.stack(rgb), height, 0.85, reference_height=common)
+    h = height.reshape(size, size)
     occlusion = np.clip((wrap_blur(h, 6) - h) / 6.0, 0, 1)
-    rgb = mix(rgb, p["void"], as_list(occlusion), 0.9)
+    rgb = mix(rgb, p["void"], occlusion.ravel(), 0.9)
     return cast(rgb, height, p["void"], reach=4, strength=0.5), None

@@ -10,7 +10,6 @@ from terrain_core import (
     TAU,
     blend_fields,
     cast,
-    clamp01,
     domain_warp,
     fbm,
     flat,
@@ -63,7 +62,7 @@ def hex_paving(size, columns, gap):
             ids = np.where(take, (row % rows) * columns + col % columns, ids)
     centres = [((c * step_x) % size, ((r + 0.5 * (c % 2)) * step_y) % size)
                for r in range(rows) for c in range(columns)]
-    return centres, radius, ids.ravel().tolist(), (best - gap / 2).ravel().tolist()
+    return centres, radius, ids.ravel(), (best - gap / 2).ravel()
 
 
 @recipe(name="overgrown_road", group="paths", label="Mossy setts", profile="paved", border_class="built",
@@ -86,15 +85,16 @@ def render_overgrown_road(ctx):
     columns = 2 * max(1, round(size / (2 * 9 * NATIVE_PX)))
     centres, radius, ids, edge = hex_paving(size, columns, gap)
     record_stones(ctx, ids, edge, centres)
-    interior = ctx.interior_mask
+    interior = ctx.interior
     # Reclaimed patches: where this broad field is high, setts are lost and
     # moss creeps over the stone; elsewhere the road is mostly intact.
     def growth_field(rng):
-        return domain_warp(fbm(rng, 3, 3, size=size), fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 12)
+        return domain_warp(fbm(rng, 3, 3, size=size, array=True), fbm(rng, 3, 2, size=size, array=True),
+                           fbm(rng, 3, 2, size=size, array=True), 12)
     common_raw = growth_field(ctx.shared_rng)
     common_growth = normalize_like(common_raw, common_raw, 0.02, 0.98)
     growth = normalize_like(blend_fields(common_raw, growth_field(ctx.rng), interior), common_raw, 0.02, 0.98)
-    patch = [smoothstep(0.68, 0.9, g) for g in growth]
+    patch = smoothstep(0.68, 0.9, growth)
 
     # Per-sett attributes: tone, warm/cool cast, tilt as the sett has settled,
     # whether it is lost or cracked, and the crack's heading, segments and kink. Setts reaching the
@@ -102,7 +102,7 @@ def render_overgrown_road(ctx):
     def setts(rng, field):
         out = []
         for cx, cy in centres:
-            g = smoothstep(0.68, 0.9, field[int(cy) % size * size + int(cx) % size])
+            g = smoothstep(0.68, 0.9, float(field[int(cy) % size * size + int(cx) % size]))
             out.append((rng.random(), rng.random() * 2 - 1,
                         (rng.uniform(-1, 1), rng.uniform(-1, 1)),
                         rng.random() < 0.06 + 0.4 * g,
@@ -112,44 +112,46 @@ def render_overgrown_road(ctx):
     common, own = setts(ctx.shared_rng, common_growth), setts(ctx.rng, growth)
     reach = 32 + radius + NATIVE_PX
     stones = [c if min(x, y, size - x, size - y) < reach else o for (x, y), c, o in zip(centres, common, own)]
+    centre_x = np.array([c[0] for c in centres])[ids]
+    centre_y = np.array([c[1] for c in centres])[ids]
+    xs = (np.arange(size * size) % size) + 0.5
+    ys = (np.arange(size * size) // size) + 0.5
+
+    def per_sett(setts_of, value):
+        return np.array([value(s) for s in setts_of], dtype=np.float64)[ids]
 
     # Slightly chipped rims, the joint between setts, moss creeping 1-2 native
     # px over the stone in reclaimed patches, and each sett's settled height.
     # The shared stream's own surface is the common reference that keeps the
     # bevel's lighting scale, and so the block perimeter, identical in every layout.
     def surface(chip, setts_of, patch_of):
-        face = [e - 1.2 * (c - 0.5) * 2 for e, c in zip(edge, chip)]
-        lost = [1.0 if setts_of[k][3] else 0.0 for k in ids]
-        joint = [1 - smoothstep(0.5, 2.0, f) for f in face]
-        creep = [1 - smoothstep(c * 2 * NATIVE_PX, c * 2 * NATIVE_PX + 1.5, f) if c > 0.05 else 0.0
-                 for f, c in zip(face, patch_of)]
-        height = []
-        for i in range(size * size):
-            x, y, k = i % size + 0.5, i // size + 0.5, ids[i]
-            cx, cy = centres[k]
-            ox = (x - cx + size / 2) % size - size / 2
-            oy = (y - cy + size / 2) % size - size / 2
-            tx, ty = setts_of[k][2]
-            h = smoothstep(-0.5, 2.0 * NATIVE_PX, face[i]) * (1 + 0.012 * (tx * ox + ty * oy))
-            height.append(0.0 if lost[i] else h)
-        return joint, [max(l, c) for l, c in zip(lost, creep)], height
+        face = edge - 1.2 * (chip - 0.5) * 2
+        lost = per_sett(setts_of, lambda s: 1.0 if s[3] else 0.0)
+        joint = 1 - smoothstep(0.5, 2.0, face)
+        low = patch_of * 2 * NATIVE_PX
+        creep = np.where(patch_of > 0.05, 1 - smoothstep(low, low + 1.5, face), 0.0)
+        ox = (xs - centre_x + size / 2) % size - size / 2
+        oy = (ys - centre_y + size / 2) % size - size / 2
+        tx, ty = per_sett(setts_of, lambda s: s[2][0]), per_sett(setts_of, lambda s: s[2][1])
+        h = smoothstep(-0.5, 2.0 * NATIVE_PX, face) * (1 + 0.012 * (tx * ox + ty * oy))
+        return joint, np.maximum(lost, creep), np.where(lost != 0, 0.0, h)
 
-    common_chip = fbm(ctx.shared_rng, 48, 2, size=size)
-    chip = blend_fields(common_chip, fbm(ctx.rng, 48, 2, size=size), interior)
+    common_chip = fbm(ctx.shared_rng, 48, 2, size=size, array=True)
+    chip = blend_fields(common_chip, fbm(ctx.rng, 48, 2, size=size, array=True), interior)
     joint, covered, height = surface(chip, stones, patch)
     common_joint, common_covered, common_height = surface(
-        common_chip, common, [smoothstep(0.68, 0.9, g) for g in common_growth])
+        common_chip, common, smoothstep(0.68, 0.9, common_growth))
 
     # Stone colour, bevel and settling tilt.
-    texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))
-    tone = [clamp01(0.5 * t + 0.5 * stones[k][0]) for t, k in zip(texture, ids)]
+    texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size, array=True))
+    tone = np.clip(0.5 * texture + 0.5 * per_sett(stones, lambda s: s[0]), 0.0, 1.0)
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    cast_w = [stones[k][1] for k in ids]
-    rgb = mix(rgb, p["warm"], [max(0.0, c) for c in cast_w], 0.35)
-    rgb = mix(rgb, p["cool"], [max(0.0, -c) for c in cast_w], 0.35)
+    cast_w = per_sett(stones, lambda s: s[1])
+    rgb = mix(rgb, p["warm"], np.maximum(0.0, cast_w), 0.35)
+    rgb = mix(rgb, p["cool"], np.maximum(0.0, -cast_w), 0.35)
     rgb = shade(rgb, height, 0.3, reference_height=common_height)
     # A jagged crack running in from the rim of some setts, with a kink or two.
-    cracks = [0.0] * (size * size)
+    cracks = np.zeros(size * size)
     for (cx, cy), s in zip(centres, stones):
         if s[4] and not s[3]:
             angle, x, y = s[5], cx - math.cos(s[5]) * 0.85 * radius, cy - math.sin(s[5]) * 0.85 * radius
@@ -159,23 +161,22 @@ def render_overgrown_road(ctx):
                 x, y = x + math.cos(angle) * length * radius, y + math.sin(angle) * length * radius
     rgb = mix(rgb, p["crack"], cracks, 0.75)
     # Lichen blotches on the stone, heavier in reclaimed patches.
-    lichen_patch = layout_field(ctx, lambda rng: fbm(rng, 14, 3, size=size))
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 72, size=size))
-    lichen = [smoothstep(0.6 - 0.15 * g, 0.8 - 0.15 * g, a) * smoothstep(0.35, 0.65, s)
-              for a, s, g in zip(lichen_patch, speck, growth)]
+    lichen_patch = layout_field(ctx, lambda rng: fbm(rng, 14, 3, size=size, array=True))
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 72, size=size, array=True))
+    lichen = smoothstep(0.6 - 0.15 * growth, 0.8 - 0.15 * growth, lichen_patch) * smoothstep(0.35, 0.65, speck)
     rgb = mix(rgb, p["lichen"], lichen, 0.4)
 
     # Joints: dark soil, with moss along a third to half of their length.
-    joint_moss = layout_field(ctx, lambda rng: fbm(rng, 20, 2, size=size))
-    joint_rgb = mix(flat(p["joint"], size), p["moss_dark"], [smoothstep(0.45, 0.6, v) for v in joint_moss], 0.8)
+    joint_moss = layout_field(ctx, lambda rng: fbm(rng, 20, 2, size=size, array=True))
+    joint_rgb = mix(flat(p["joint"], size, array=True), p["moss_dark"], smoothstep(0.45, 0.6, joint_moss), 0.8)
     rgb = mix(rgb, joint_rgb, joint)
     # Lost setts and creeping moss: soil under olive moss.
-    moss_tex = layout_field(ctx, lambda rng: fbm(rng, 40, 3, size=size))
-    veg = ramp([clamp01(0.7 * m + 0.3 * g) for m, g in zip(moss_tex, growth)],
+    moss_tex = layout_field(ctx, lambda rng: fbm(rng, 40, 3, size=size, array=True))
+    veg = ramp(np.clip(0.7 * moss_tex + 0.3 * growth, 0.0, 1.0),
                [(0.0, p["soil"]), (0.35, p["moss_dark"]), (0.7, p["moss"]), (1.0, p["moss_light"])])
 
     def clumps(rng):
-        mask = [0.0] * (size * size)
+        mask = np.zeros(size * size)
         for _ in range(int(260 * ctx.area_scale / 64)):
             x, y = rng.random() * size, rng.random() * size
             for _ in range(rng.randint(3, 6)):
@@ -185,7 +186,7 @@ def render_overgrown_road(ctx):
         return mask
     # Weeds grow from lost setts and the joints of reclaimed patches.
     def weeds(clump, covered_of, joint_of, growth_of):
-        return [l * max(c, j * smoothstep(0.4, 0.8, g)) for l, c, j, g in zip(clump, covered_of, joint_of, growth_of)]
+        return clump * np.maximum(covered_of, joint_of * smoothstep(0.4, 0.8, growth_of))
     common_clumps = clumps(ctx.shared_rng)
     leaves = weeds(blend_fields(common_clumps, clumps(ctx.rng), interior), covered, joint, growth)
     common_leaves = weeds(common_clumps, common_covered, common_joint, common_growth)
@@ -195,8 +196,7 @@ def render_overgrown_road(ctx):
     rgb = shade(rgb, leaves, 0.2, reference_height=common_leaves)
     # Raised setts and weeds shadow the ground beside them; the Paths mark's
     # worn lip runs beside every joint.
-    rgb = cast(rgb, [h + 0.6 * l for h, l in zip(height, leaves)], p["shadow"], reach=NATIVE_PX, strength=0.4)
+    rgb = cast(rgb, height + 0.6 * leaves, p["shadow"], reach=NATIVE_PX, strength=0.4)
     rgb = worn_edge(rgb, joint, light=(NATIVE_PX, NATIVE_PX), strength=0.18)
-    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.08 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
-    return rgb, None
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    return rgb * (1 + 0.08 * (grit - 0.5) * 2), None

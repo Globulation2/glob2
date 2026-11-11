@@ -2,6 +2,8 @@
 """The volcanic ash terrain material."""
 import math
 
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -42,17 +44,17 @@ def render_volcanic_ash(ctx):
     soil = normalize_like(blend_fields(common, own, mask), common, low=0.02, high=0.98)
     rgb = ramp(soil, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     broad = blend_fields(common_broad, own_broad, mask)
-    rgb = [[c * (0.88 + 0.24 * v) for c, v in zip(channel, broad)] for channel in rgb]
+    rgb = rgb * (0.88 + 0.24 * broad)
     fine = blend_fields(common_fine, own_fine, mask)
-    rgb = [[c * (1 + 0.22 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+    rgb = rgb * (1 + 0.22 * (fine - 0.5) * 2)
     rgb = mix(rgb, p["glint"], blend_fields(common_glints, own_glints, mask), 0.75)
     stones = blend_fields(common_stones, own_stones, mask)
     rgb = mix(rgb, p["stone"], stones, 0.92)
     # A faint lit top-left edge lifts each stone off the soil.
-    rim = [max(0.0, s - t) for s, t in zip(stones, shifted(stones, -3, -3))]
+    rim = np.maximum(0.0, stones - shifted(stones, -3, -3))
     rgb = mix(rgb, p["stone_lit"], rim, 0.7)
     pores = blend_fields(common_pores, own_pores, mask)
-    rgb = mix(rgb, p["pore"], [v * s for v, s in zip(pores, stones)], 0.8)
+    rgb = mix(rgb, p["pore"], pores * stones, 0.8)
     rgb = mix(rgb, p["rust"], blend_fields(common_rust, own_rust, mask), 0.85)
     return barren_mark(ctx, rgb, p["crack"], cells=6, fade=0.18), None
 
@@ -62,12 +64,12 @@ def ash_fields(rng, size):
     with a pinprick highlight and pits), clustered pale flecks and sparse
     clusters of rust specks."""
     scale = (size // N) ** 2
-    soil = fbm(rng, 6, 3, size=size)
-    soil = domain_warp(soil, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    broad = normalize(fbm(rng, 2, 2, size=size))
-    fine = lattice_noise(rng, 48, size=size)
-    stones, pores = [0.0] * (size * size), [0.0] * (size * size)
-    glints, rust = [0.0] * (size * size), [0.0] * (size * size)
+    soil = fbm(rng, 6, 3, size=size, array=True)
+    soil = domain_warp(soil, fbm(rng, 3, 2, size=size, array=True), fbm(rng, 3, 2, size=size, array=True), 8)
+    broad = normalize(fbm(rng, 2, 2, size=size, array=True))
+    fine = lattice_noise(rng, 48, size=size, array=True)
+    stones, pores = np.zeros(size * size), np.zeros(size * size)
+    glints, rust = np.zeros(size * size), np.zeros(size * size)
     for _ in range(10 * scale):
         x, y = rng.random() * size, rng.random() * size
         r = rng.uniform(4.5, 8.0)

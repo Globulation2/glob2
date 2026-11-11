@@ -46,9 +46,11 @@ resources. HD frames are registered through tools/artwork/highres_pack.py and
 provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each obstacle material file in
 content/data/terrain/materials/.
-Python 3 with Pillow and NumPy (development-only dependencies); the
-connected-mass surfaces and walls are computed as arrays, operation for
-operation as the per-pixel loops they replace, so frames stay byte-identical.
+Python 3 with Pillow and NumPy (development-only dependencies); the canopy and
+connected-mass surfaces, their walls and the object canvas (domes, faceted
+rocks, shadows) are computed as arrays, operation for operation as the
+per-pixel loops they replace (`math.hypot` and Python's float power where
+NumPy rounds differently), so frames stay byte-identical.
 """
 import argparse
 import concurrent.futures
@@ -178,9 +180,20 @@ class Noise:
     def __init__(self, rng, cells):
         self.cells = cells
         self.grid = [[rng.random() for _ in range(cells + 2)] for _ in range(cells + 2)]
+        self.table = np.array(self.grid)
 
     def __call__(self, x, y):
+        """The noise at a point, or at arrays of points."""
         fx, fy = x / S * self.cells, y / S * self.cells
+        if isinstance(fx, np.ndarray) or isinstance(fy, np.ndarray):
+            fx, fy = np.broadcast_arrays(np.asarray(fx, dtype=np.float64), np.asarray(fy, dtype=np.float64))
+            ix, iy = fx.astype(np.int64), fy.astype(np.int64)
+            tx, ty = fx - ix, fy - iy
+            tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+            g = self.table
+            a = lerp(g[iy, ix], g[iy, ix + 1], tx)
+            b = lerp(g[iy + 1, ix], g[iy + 1, ix + 1], tx)
+            return lerp(a, b, ty)
         ix, iy = int(fx), int(fy)
         tx, ty = fx - ix, fy - iy
         tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
@@ -198,49 +211,57 @@ def fbm(rng, base, octaves=3):
 
 
 class Canvas:
-    """Straight RGBA float canvas composited back to front."""
+    """Straight RGBA float canvas composited back to front.
+
+    `over` and `darken` take one pixel index or an array of distinct indices
+    (with per-pixel colours and amounts), each pixel computed as alone."""
 
     def __init__(self):
-        self.rgb = [[0.0, 0.0, 0.0] for _ in range(S * S)]
-        self.a = [0.0] * (S * S)
+        self.rgb = np.zeros((S * S, 3))
+        self.a = np.zeros(S * S)
         # Coverage by object bodies alone, so a shadow can tell an object it
         # darkens from earlier shadow on the ground it should deepen.
-        self.body = [0.0] * (S * S)
+        self.body = np.zeros(S * S)
 
     def over(self, i, color, alpha, body=True):
-        if alpha <= 0:
+        i = np.atleast_1d(np.asarray(i, dtype=np.int64))
+        alpha = np.broadcast_to(np.asarray(alpha, dtype=np.float64), i.shape)
+        color = np.broadcast_to(np.asarray(color, dtype=np.float64), i.shape + (3,))
+        keep = alpha > 0
+        if not keep.all():
+            i, alpha, color = i[keep], alpha[keep], color[keep]
+        if not len(i):
             return
         if body:
             self.body[i] = alpha + self.body[i] * (1 - alpha)
         a0 = self.a[i]
         out = alpha + a0 * (1 - alpha)
-        if out <= 0:
-            return
+        keep = out > 0
+        if not keep.all():
+            i, alpha, color, a0, out = i[keep], alpha[keep], color[keep], a0[keep], out[keep]
         c0 = self.rgb[i]
-        self.rgb[i] = [(color[k] * alpha + c0[k] * a0 * (1 - alpha)) / out for k in range(3)]
+        self.rgb[i] = (color * alpha[:, None] + c0 * a0[:, None] * (1 - alpha)[:, None]) / out[:, None]
         self.a[i] = out
 
     def darken(self, i, amount):
         """Multiply what is already there (shadow cast onto earlier objects)."""
-        if amount <= 0 or self.a[i] <= 0:
-            return
-        self.rgb[i] = [c * (1 - amount) for c in self.rgb[i]]
+        i = np.atleast_1d(np.asarray(i, dtype=np.int64))
+        amount = np.broadcast_to(np.asarray(amount, dtype=np.float64), i.shape)
+        keep = (amount > 0) & (self.a[i] > 0)
+        i, amount = i[keep], amount[keep]
+        self.rgb[i] = self.rgb[i] * (1 - amount)[:, None]
 
     def image(self):
         # Fade the outer few render pixels so soft shadows never end in a
         # hard line at the sprite frame.
-        for i in range(S * S):
-            x, y = i % S, i // S
-            edge = min(x, y, S - 1 - x, S - 1 - y)
-            if edge < 12:
-                self.a[i] *= smoothstep(0, 12, edge)
-        img = Image.new("RGBA", (S, S))
-        img.putdata([
-            (int(clamp(r / 255) * 255 + 0.5), int(clamp(g / 255) * 255 + 0.5),
-             int(clamp(b / 255) * 255 + 0.5), int(clamp(a) * 255 + 0.5))
-            for (r, g, b), a in zip(self.rgb, self.a)
-        ])
-        return img
+        index = np.arange(S * S)
+        x, y = index % S, index // S
+        edge = np.minimum(np.minimum(x, y), np.minimum(S - 1 - x, S - 1 - y))
+        near = edge < 12
+        self.a[near] = self.a[near] * smooth_field(0, 12, edge[near].astype(np.float64))
+        rgba = np.concatenate([np.clip(self.rgb / 255, 0.0, 1.0), np.clip(self.a, 0.0, 1.0)[:, None]], axis=1)
+        data = np.floor(rgba * 255 + 0.5).astype(np.uint8).reshape(S, S, 4)
+        return Image.fromarray(data)
 
 
 # --------------------------------------------------------------------------
@@ -250,23 +271,47 @@ class Canvas:
 
 
 def lumpy_outline(rng, harmonics=4, amount=0.12):
+    """The outline radius at an angle (a float or an array of angles)."""
     lumps = [(h, amount * rng.uniform(0.3, 1.0) / h ** 0.6, rng.uniform(0, math.tau))
              for h in range(2, 2 + harmonics)]
-    return lambda angle: 1 + sum(a * math.sin(h * angle + p) for h, a, p in lumps)
+
+    def outline(angle):
+        if isinstance(angle, np.ndarray):
+            total = 0
+            for h, a, p in lumps:
+                total = total + a * np.sin(h * angle + p)
+            return 1 + total
+        return 1 + sum(a * math.sin(h * angle + p) for h, a, p in lumps)
+    return outline
+
+
+def hypot_field(dx, dy):
+    """`math.hypot` over arrays; NumPy's hypot rounds differently in the last bit."""
+    dx, dy = np.broadcast_arrays(np.asarray(dx, dtype=np.float64), np.asarray(dy, dtype=np.float64))
+    return np.fromiter(map(math.hypot, dx.ravel().tolist(), dy.ravel().tolist()),
+                       dtype=np.float64, count=dx.size).reshape(dx.shape)
+
+
+def pow_field(values, exponent):
+    """Python's float power over an array: NumPy squares rather than calling pow."""
+    values = np.asarray(values, dtype=np.float64)
+    return np.fromiter(map(math.pow, values.ravel().tolist(), [exponent] * values.size),
+                       dtype=np.float64, count=values.size).reshape(values.shape)
 
 
 def dome(cx, cy, rx, ry, outline, power=0.6):
-    """Height field of a lumpy elliptical dome; returns [(i, h, nx, ny)]."""
-    out = []
+    """Height field of a lumpy elliptical dome: arrays (i, h, dx, dy, d) of
+    its pixels in row order."""
     reach = 1.35
-    for y in range(max(0, int(cy - ry * reach)), min(S, int(cy + ry * reach) + 1)):
-        for x in range(max(0, int(cx - rx * reach)), min(S, int(cx + rx * reach) + 1)):
-            dx, dy = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
-            d = math.hypot(dx, dy) / outline(math.atan2(dy, dx))
-            if d < 1:
-                h = (1 - d * d) ** power
-                out.append((y * S + x, h, dx, dy, d))
-    return out
+    ys = np.arange(max(0, int(cy - ry * reach)), min(S, int(cy + ry * reach) + 1))
+    xs = np.arange(max(0, int(cx - rx * reach)), min(S, int(cx + rx * reach) + 1))
+    dx, dy = np.broadcast_arrays((xs + 0.5 - cx)[None, :] / rx, (ys + 0.5 - cy)[:, None] / ry)
+    d = hypot_field(dx, dy) / outline(np.arctan2(dy, dx))
+    inside = d < 1
+    d = d[inside]
+    h = pow_field(1 - d * d, power)
+    index = (ys[:, None] * S + xs[None, :])[inside]
+    return index, h, dx[inside], dy[inside], d
 
 
 def polygon_mask(points, blur=0.0):
@@ -280,19 +325,27 @@ def polygon_mask(points, blur=0.0):
     return {i: v / 255 for i, v in enumerate(data) if v}
 
 
+def shadow_on(canvas, image, strength, darken, cover, colour):
+    """Lay a blurred shadow image on the canvas: darken the objects it falls on
+    by `darken` of its strength and cover open ground with `colour` by `cover`."""
+    values = image_data(image).ravel()
+    i = np.flatnonzero(values)
+    a = strength * values[i] / 255
+    b = canvas.body[i]
+    canvas.darken(i, a * darken * b)
+    canvas.over(i, colour, a * cover * (1 - b), body=False)
+
+
 def cast_shadow(canvas, footprint, strength, spread, offset):
-    """Soft contact shadow of a footprint {i: coverage}, offset to the lower right."""
-    img = Image.new("L", (S, S), 0)
-    img.putdata([int(footprint.get(i, 0) * 255) for i in range(S * S)])
+    """Soft contact shadow of a footprint (indices, coverage), offset to the lower right."""
+    index, coverage = footprint
+    values = np.zeros(S * S, dtype=np.uint8)
+    values[index] = (coverage * 255).astype(np.uint8)
+    img = Image.fromarray(values.reshape(S, S))
     img = img.transform(img.size, Image.Transform.AFFINE,
                         (1, 0, -offset * SHADOW[0], 0, 1, -offset * SHADOW[1]))
     img = img.filter(ImageFilter.GaussianBlur(spread))
-    for i, v in enumerate(img.getdata()):
-        if v:
-            a = strength * v / 255
-            b = canvas.body[i]
-            canvas.darken(i, a * 0.8 * b)
-            canvas.over(i, (12, 14, 10), a * 0.85 * (1 - b), body=False)
+    shadow_on(canvas, img, strength, 0.8, 0.85, (12, 14, 10))
 
 
 def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
@@ -302,40 +355,37 @@ def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
     cx, cy = bx + rx * 0.35, by + ry * 0.25
     ImageDraw.Draw(img).ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=255)
     img = img.filter(ImageFilter.GaussianBlur(max(2.0, ry * 0.35)))
-    for i, v in enumerate(img.getdata()):
-        if v:
-            # Darken the objects it falls on; deepen shadow already on the
-            # ground rather than stopping at its faint rim.
-            a = strength * v / 255
-            b = canvas.body[i]
-            canvas.darken(i, a * 0.6 * b)
-            canvas.over(i, (14, 16, 12), a * 0.8 * (1 - b), body=False)
+    # Darken the objects it falls on; deepen shadow already on the ground
+    # rather than stopping at its faint rim.
+    shadow_on(canvas, img, strength, 0.6, 0.8, (14, 16, 12))
 
 
 def shade_dome(canvas, pixels, color_at, *, light=0.55, rim=0.35, front=0.0, face_color=None,
                edge_soft=0.08):
     """Lambert-ish shading of a dome from its implicit normal, painted over."""
     lx, ly = LIGHT
-    for i, h, dx, dy, d in pixels:
-        nz = max(h, 0.05)
-        nx, ny = dx * (1 - h) * 1.4, dy * (1 - h) * 1.4
-        norm = math.sqrt(nx * nx + ny * ny + nz * nz)
-        lam = (-(nx * lx + ny * ly) + 0.55 * nz) / norm
-        x, y = i % S, i // S
-        base = color_at(x, y, h)
-        value = 0.62 + light * lam
-        if front and dy > 0:
-            # Three-quarter view: the lower face turns toward the viewer and
-            # away from the light, reading as the object's side.
-            t = smoothstep(0.15, 0.85, dy) * front
-            base = mix3(base, face_color or base, t)
-            value *= 1 - 0.35 * t
-        # Edge darkening only on the side turned away from the light, so an
-        # object never sits in a dark ring.
-        away = max(0.0, (dx * -lx + dy * -ly) / max(1e-6, math.hypot(dx, dy)))
-        value *= 1 - rim * smoothstep(0.8, 1.0, d) * away
-        alpha = 1 - smoothstep(1 - edge_soft, 1.0, d)
-        canvas.over(i, tuple(c * value for c in base), alpha)
+    i, h, dx, dy, d = pixels
+    nz = np.maximum(h, 0.05)
+    nx, ny = dx * (1 - h) * 1.4, dy * (1 - h) * 1.4
+    norm = np.sqrt(nx * nx + ny * ny + nz * nz)
+    lam = (-(nx * lx + ny * ly) + 0.55 * nz) / norm
+    x, y = i % S, i // S
+    base = np.stack([np.broadcast_to(np.asarray(c, dtype=np.float64), i.shape) for c in color_at(x, y, h)], -1)
+    value = 0.62 + light * lam
+    if front:
+        # Three-quarter view: the lower face turns toward the viewer and
+        # away from the light, reading as the object's side.
+        lower = dy > 0
+        t = smooth_field(0.15, 0.85, dy) * front
+        face = base if face_color is None else face_color
+        base = np.where(lower[:, None], mix_field(base, face, t), base)
+        value = np.where(lower, value * (1 - 0.35 * t), value)
+    # Edge darkening only on the side turned away from the light, so an
+    # object never sits in a dark ring.
+    away = np.maximum(0.0, (dx * -lx + dy * -ly) / np.maximum(1e-6, hypot_field(dx, dy)))
+    value = value * (1 - rim * smooth_field(0.8, 1.0, d) * away)
+    alpha = 1 - smooth_field(1 - edge_soft, 1.0, d)
+    canvas.over(i, base * value[:, None], alpha)
 
 
 # --------------------------------------------------------------------------
@@ -396,7 +446,7 @@ def facet_rock(rng, cx, cy, r, squash=0.8, height=0.95):
     its own. Planes facing the viewer (down-screen) are steeper, giving the
     rock a narrow front face in the three-quarter view.
 
-    Returns [(i, alpha, nx, ny, nz, rim)] for its silhouette, where rim is
+    Returns arrays (i, alpha, nx, ny, nz, rim) of its silhouette, where rim is
     how far toward the outline the pixel lies (0 inside, 1 at the edge)."""
     base = rng.uniform(0, math.tau)
     facets = rng.randint(6, 9)
@@ -410,27 +460,32 @@ def facet_rock(rng, cx, cy, r, squash=0.8, height=0.95):
     tilt = (rng.uniform(-0.2, -0.04), rng.uniform(-0.18, -0.02))
     soft = 0.05
     ry = r * squash
-    out = []
-    for y in range(max(0, int(cy - ry * 1.4)), min(S, int(cy + ry * 1.4) + 1)):
-        v = (y + 0.5 - cy) / ry
-        for x in range(max(0, int(cx - r * 1.4)), min(S, int(cx + r * 1.4) + 1)):
-            u = (x + 0.5 - cx) / r
-            hs = [(s * (1 - (u * pu + v * pv)), -s * pu, -s * pv) for s, pu, pv in planes]
-            hs.append((top + tilt[0] * u + tilt[1] * v, tilt[0], tilt[1]))
-            m = min(h for h, _, _ in hs)
-            if m <= 0:
-                continue
-            ws = [math.exp(-(h - m) / soft) for h, _, _ in hs]
-            total = sum(ws)
-            h = m - soft * math.log(total)
-            if h <= 0:
-                continue
-            gu = sum(w * g for w, (_, g, _) in zip(ws, hs)) / total
-            gv = sum(w * g for w, (_, _, g) in zip(ws, hs)) / total
-            nx, ny, nz = -height * gu, -height * gv / squash, 1.0
-            n = math.sqrt(nx * nx + ny * ny + nz * nz)
-            out.append((y * S + x, clamp(h / 0.03), nx / n, ny / n, nz / n, 1 - smoothstep(0, 0.14, h)))
-    return out
+    ys = np.arange(max(0, int(cy - ry * 1.4)), min(S, int(cy + ry * 1.4) + 1))
+    xs = np.arange(max(0, int(cx - r * 1.4)), min(S, int(cx + r * 1.4) + 1))
+    u, v = np.broadcast_arrays(((xs + 0.5 - cx) / r)[None, :], ((ys + 0.5 - cy) / ry)[:, None])
+    index = ys[:, None] * S + xs[None, :]
+    hs = [(s * (1 - (u * pu + v * pv)), -s * pu, -s * pv) for s, pu, pv in planes]
+    hs.append((top + tilt[0] * u + tilt[1] * v, tilt[0], tilt[1]))
+    m = np.minimum.reduce([h for h, _, _ in hs])
+    keep = m > 0
+    m, index = m[keep], index[keep]
+    hs = [(h[keep], gu, gv) for h, gu, gv in hs]
+    ws = [np.exp(-(h - m) / soft) for h, _, _ in hs]
+    total = 0
+    for w in ws:
+        total = total + w
+    h = m - soft * np.log(total)
+    keep = h > 0
+    h, index, total = h[keep], index[keep], total[keep]
+    ws = [w[keep] for w in ws]
+    gu = gv = 0
+    for w, (_, pu, pv) in zip(ws, hs):
+        gu = gu + w * pu
+        gv = gv + w * pv
+    gu, gv = gu / total, gv / total
+    nx, ny, nz = -height * gu, -height * gv / squash, 1.0
+    n = np.sqrt(nx * nx + ny * ny + nz * nz)
+    return index, np.clip(h / 0.03, 0.0, 1.0), nx / n, ny / n, nz / n, 1 - smooth_field(0, 0.14, h)
 
 
 def place_rocks(rng, sizes, edge):
@@ -488,12 +543,12 @@ LONG = tuple(c / math.hypot(0.9, 0.43) for c in (0.9, 0.43))
 
 
 def mask_image(pixels, threshold=0.0):
-    """An "L" image of [(i, alpha, ...)] silhouette pixels."""
-    values = bytearray(S * S)
-    for i, alpha, *_ in pixels:
-        if alpha > threshold:
-            values[i] = int(alpha * 255 + 0.5)
-    return Image.frombytes("L", (S, S), bytes(values))
+    """An "L" image of silhouette pixels: arrays (i, alpha, ...)."""
+    index, alpha = pixels[0], pixels[1]
+    keep = alpha > threshold
+    values = np.zeros(S * S, dtype=np.uint8)
+    values[index[keep]] = (alpha[keep] * 255 + 0.5).astype(np.uint8)
+    return Image.fromarray(values.reshape(S, S))
 
 
 def translate(image, dx, dy):
@@ -538,7 +593,7 @@ def render_boulders(rng, edge):
     lichen = fbm(rng, 18 * k, 2)
     cracks = fbm(rng, 10 * k, 2)
     family = boulder_palette(rng)  # one rock type per frame, varied per stone
-    owner = [-1] * (S * S)
+    owner = np.full(S * S, -1, dtype=np.int64)
     rocks = []
     for bx, by, r, kind in place_rocks(rng, boulder_sizes(rng, edge), edge):
         squash = rng.uniform(0.55, 0.7)  # the top, seen obliquely
@@ -554,9 +609,9 @@ def render_boulders(rng, edge):
                      (S - 16 - blur * 2 - (bx + r)) / LONG[0])
         shade = sweep(footprint, max(0.0, length), LONG, 0.55).filter(ImageFilter.GaussianBlur(blur))
         shadows = ImageChops.lighter(shadows, shade)
-    for i, v in enumerate(shadows.getdata()):
-        if v:
-            canvas.over(i, (12, 14, 10), 0.6 * v / 255, body=False)
+    values = image_data(shadows).ravel()
+    lying = np.flatnonzero(values)
+    canvas.over(lying, (12, 14, 10), 0.6 * values[lying] / 255, body=False)
     for n, (bx, by, r, kind, squash, h, top) in enumerate(rocks):
         ground_shadow(canvas, bx + r * 0.1, by, r * 1.05, r * squash * 0.42, 0.55)
         j = rng.uniform(-9, 9)
@@ -568,7 +623,7 @@ def render_boulders(rng, edge):
         # light's horizontal part as the outline turns, so the facets carry
         # down the body.
         columns = {}
-        for i, alpha, *_ in top:
+        for i, alpha in zip(top[0].tolist(), top[1].tolist()):
             if alpha > 0.02:
                 x, y = i % S, i // S
                 lo, hi, a = columns.get(x, (y, y, 0.0))
@@ -589,67 +644,85 @@ def render_boulders(rng, edge):
             flare = 0.0 if kind == "rubble" else 0.14  # bodies spread toward the ground
             reach = int((max(faces) - min(faces)) * flare / 2) + 2
             bottom = min(S, int(max(f[1] + f[4] for f in faces.values())) + 2)
-            for x in range(max(0, min(faces) - reach), min(S, max(faces) + reach + 1)):
-                for y in range(min(f[0] for f in faces.values()), bottom):
-                    # The source column under the top, found through the flare.
-                    source = middle + (x + 0.5 - middle)
-                    for _ in range(2):
-                        face = faces.get(int(source))
-                        if not face:
-                            break
-                        t = clamp((y - face[1]) / max(1.0, face[4]))
-                        source = middle + (x + 0.5 - middle) / (1 + flare * t)
-                    face = faces.get(int(source))
-                    if not face or y < face[0]:
-                        continue
-                    lo, hi, coverage, lam, base = face
-                    depth = (y + 0.5 - hi) / max(1.0, base)  # 0 under the top, 1 at the ground
-                    alpha = coverage * clamp(1 + base - (y - hi))
-                    if alpha <= 0:
-                        continue
-                    i = y * S + x
-                    g = grit(x, y)
-                    streak = cracks(x, y * 0.2)
-                    c = mix3(face_colour, tone, 0.4 + 0.5 * lam)
-                    value = (0.68 + 0.55 * lam) * (0.88 + 0.24 * g) * (0.82 + 0.3 * streak)
-                    value *= 1 + 0.22 * (1 - smoothstep(0.0, 0.14, depth))  # a rounded shoulder
-                    value *= 1 - 0.32 * smoothstep(0.3, 1.0, depth)  # darker toward the ground
-                    value *= speck.uniform(0.97, 1.03)
-                    canvas.over(i, tuple(v * value for v in c), alpha)
-                    if alpha > 0.5:
-                        owner[i] = n
-        for i, alpha, nx, ny, nz, rim in top:
-            x, y = i % S, i // S
-            lam = max(0.0, nx * LIGHT3[0] + ny * LIGHT3[1] + nz * LIGHT3[2])
+            # Every face pixel at once, as the per-column loop found them:
+            # columns of the top as arrays over their x range.
+            first, last = min(faces), max(faces)
+            found = np.zeros(last - first + 1, dtype=bool)
+            f_lo, f_hi = np.zeros(len(found), dtype=np.int64), np.zeros(len(found), dtype=np.int64)
+            f_cov, f_lam, f_base = np.zeros(len(found)), np.zeros(len(found)), np.zeros(len(found))
+            for x, (lo, hi, coverage, lam, base) in faces.items():
+                col = x - first
+                found[col], f_lo[col], f_hi[col], f_cov[col], f_lam[col], f_base[col] = True, lo, hi, coverage, lam, base
+
+            def face_at(source):
+                col = source.astype(np.int64) - first
+                inside = (col >= 0) & (col < len(found))
+                col = np.where(inside, col, 0)
+                return inside & found[col], col
+
+            # Pixels in the loop's order: column by column, down each column.
+            xs = np.arange(max(0, first - reach), min(S, last + reach + 1))[:, None]
+            ys = np.arange(min(f[0] for f in faces.values()), bottom)[None, :]
+            xs, ys = np.broadcast_arrays(xs, ys)
+            # The source column under the top, found through the flare.
+            source = middle + (xs + 0.5 - middle)
+            active = np.ones(xs.shape, dtype=bool)
+            for _ in range(2):
+                hit, col = face_at(source)
+                active &= hit
+                t = np.clip((ys - f_hi[col]) / np.maximum(1.0, f_base[col]), 0.0, 1.0)
+                source = np.where(active, middle + (xs + 0.5 - middle) / (1 + flare * t), source)
+            hit, col = face_at(source)
+            hit &= ys >= f_lo[col]
+            hi, base = f_hi[col], f_base[col]
+            depth = (ys + 0.5 - hi) / np.maximum(1.0, base)  # 0 under the top, 1 at the ground
+            alpha = f_cov[col] * np.clip(1 + base - (ys - hi), 0.0, 1.0)
+            hit &= alpha > 0
+            x, y, col, depth, alpha = xs[hit], ys[hit], col[hit], depth[hit], alpha[hit]
+            lam = f_lam[col]
             g = grit(x, y)
-            c = mix3(tone, face_colour, smoothstep(0.25, 0.75, ny) * 0.6)
-            if nz > 0.8 and lichen(x, y) > 0.72:
-                c = mix3(c, (128, 128, 92), smoothstep(0.72, 0.82, lichen(x, y)) * 0.3)
-            value = (0.45 + 0.8 * lam) * (0.86 + 0.28 * g) * speck.uniform(0.96, 1.04)
-            # A dark line on the outline turned from the light separates stones.
-            away = clamp(0.5 + 0.5 * (nx * -LIGHT[0] + ny * -LIGHT[1]) / max(1e-6, math.hypot(nx, ny)))
-            value *= 1 - 0.35 * rim * away
-            canvas.over(i, tuple(v * value for v in c), alpha)
-            if alpha > 0.5:
-                owner[i] = n
+            streak = cracks(x, y * 0.2)
+            c = mix_field(face_colour, tone, 0.4 + 0.5 * lam)
+            value = (0.68 + 0.55 * lam) * (0.88 + 0.24 * g) * (0.82 + 0.3 * streak)
+            value = value * (1 + 0.22 * (1 - smooth_field(0.0, 0.14, depth)))  # a rounded shoulder
+            value = value * (1 - 0.32 * smooth_field(0.3, 1.0, depth))  # darker toward the ground
+            value = value * np.array([speck.uniform(0.97, 1.03) for _ in range(len(value))])
+            i = y * S + x
+            canvas.over(i, c * value[:, None], alpha)
+            owner[i[alpha > 0.5]] = n
+        i, alpha, nx, ny, nz, rim = top
+        x, y = i % S, i // S
+        lam = np.maximum(0.0, nx * LIGHT3[0] + ny * LIGHT3[1] + nz * LIGHT3[2])
+        g = grit(x, y)
+        c = mix_field(tone, face_colour, smooth_field(0.25, 0.75, ny) * 0.6)
+        moss = lichen(x, y)
+        mossy = (nz > 0.8) & (moss > 0.72)
+        c = np.where(mossy[:, None], mix_field(c, (128, 128, 92), smooth_field(0.72, 0.82, moss) * 0.3), c)
+        value = (0.45 + 0.8 * lam) * (0.86 + 0.28 * g) * np.array([speck.uniform(0.96, 1.04) for _ in range(len(i))])
+        # A dark line on the outline turned from the light separates stones.
+        away = np.clip(0.5 + 0.5 * (nx * -LIGHT[0] + ny * -LIGHT[1]) / np.maximum(1e-6, hypot_field(nx, ny)),
+                       0.0, 1.0)
+        value = value * (1 - 0.35 * rim * away)
+        canvas.over(i, c * value[:, None], alpha)
+        owner[i[alpha > 0.5]] = n
     # Crevices where stones meet, and each stone's shade on the others.
-    seam = Image.new("L", (S, S), 0)
-    seam.putdata([255 if o >= 0 and ((i % S + 1 < S and owner[i + 1] not in (-1, o)) or
-                                     (i + S < S * S and owner[i + S] not in (-1, o))) else 0
-                  for i, o in enumerate(owner)])
-    seam = list(seam.filter(ImageFilter.GaussianBlur(3.5)).getdata())
-    shade = [0.0] * (S * S)
+    grid = owner.reshape(S, S)
+    right = np.zeros((S, S), dtype=bool)
+    right[:, :-1] = (grid[:, 1:] != -1) & (grid[:, 1:] != grid[:, :-1])
+    down = np.zeros((S, S), dtype=bool)
+    down[:-1] = (grid[1:] != -1) & (grid[1:] != grid[:-1])
+    seam = Image.fromarray(np.where((grid >= 0) & (right | down), 255, 0).astype(np.uint8))
+    seam = image_data(seam.filter(ImageFilter.GaussianBlur(3.5))).ravel()
+    shade = np.zeros(S * S)
     for n, (bx, by, r, *_) in enumerate(rocks):
-        mask = Image.new("L", (S, S), 0)
-        mask.putdata([255 if o == n else 0 for o in owner])
+        mask = Image.fromarray(np.where(grid == n, 255, 0).astype(np.uint8))
         d = r * 0.3
         mask = translate(mask, d * SHADOW[0], d * SHADOW[1])
-        for i, v in enumerate(mask.filter(ImageFilter.GaussianBlur(r * 0.12)).getdata()):
-            if v and owner[i] not in (-1, n):
-                shade[i] = max(shade[i], v / 255)
-    for i in range(S * S):
-        if owner[i] >= 0:
-            canvas.darken(i, min(0.7, seam[i] / 255 * 2.2 * 0.6 + shade[i] * 0.35))
+        v = image_data(mask.filter(ImageFilter.GaussianBlur(r * 0.12))).ravel()
+        on = (v != 0) & (owner != -1) & (owner != n)
+        shade[on] = np.maximum(shade[on], v[on] / 255)
+    stone = np.flatnonzero(owner >= 0)
+    canvas.darken(stone, np.minimum(0.7, seam[stone] / 255 * 2.2 * 0.6 + shade[stone] * 0.35))
     return canvas
 
 
@@ -717,11 +790,11 @@ def render_thicket(rng, edge):
             b = a + rng.choice((-1, 1)) * rng.uniform(0.5, 0.9)
             draw.line([(bx, by), (bx + math.cos(b) * length * 0.3, by + math.sin(b) * length * 0.3)],
                       fill=255, width=2)
-        twig_mask = {i: v / 255 for i, v in enumerate(twigs.getdata()) if v}
+        values = image_data(twigs).ravel()
+        twig = np.flatnonzero(values)
 
         bark = (58 + rng.uniform(-6, 6), 44 + rng.uniform(-5, 5), 32)
-        for i, v in twig_mask.items():
-            canvas.over(i, bark, v)
+        canvas.over(twig, bark, values[twig] / 255)
         o = rng.uniform(-8, 8)
         foliage(canvas, rng, cx, cy + r * 0.45, r, r * 1.05, base=(104 + o, 122 + o, 52), light=(176 + o, 182 + o, 92),
                 dark=(42, 48, 22), clump=(6, 9), density=48, lumps=0.2, shadow=0.5)
@@ -732,8 +805,9 @@ VIEW = (0.0, 0.7071, 0.7071)  # toward the viewer in the three-quarter view
 
 
 def face_mask(points, inset=0.0):
-    """Supersampled coverage of a polygon as {index: coverage}, cropped to its
-    bounding box; `inset` shrinks it toward its centroid by that many pixels."""
+    """Supersampled coverage of a polygon as arrays (indices, coverage) of its
+    covered pixels, in row order; `inset` shrinks it toward its centroid by
+    that many pixels."""
     if inset:
         mx = sum(p[0] for p in points) / len(points)
         my = sum(p[1] for p in points) / len(points)
@@ -744,12 +818,13 @@ def face_mask(points, inset=0.0):
     x1 = min(S, int(max(p[0] for p in points)) + 2)
     y1 = min(S, int(max(p[1] for p in points)) + 2)
     if x1 <= x0 or y1 <= y0:
-        return {}
+        return np.zeros(0, dtype=np.int64), np.zeros(0)
     w, h = x1 - x0, y1 - y0
     img = Image.new("L", (w * 2, h * 2), 0)
     ImageDraw.Draw(img).polygon([((x - x0) * 2, (y - y0) * 2) for x, y in points], fill=255)
-    data = img.resize((w, h), Image.Resampling.BOX).getdata()
-    return {(y0 + k // w) * S + x0 + k % w: v / 255 for k, v in enumerate(data) if v}
+    data = image_data(img.resize((w, h), Image.Resampling.BOX)).ravel()
+    k = np.flatnonzero(data)
+    return (y0 + k // w) * S + x0 + k % w, data[k] / 255
 
 
 def convex_hull(points):
@@ -856,34 +931,37 @@ def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45):
     for rock in rocks:
         ground = max(y for _, y, _ in rock.ring)
         height = max(z for _, _, z in rock.ring + [rock.peak])
-        for i, v in face_mask(rock.silhouette()).items():
-            canvas.over(i, tuple(c * 0.3 for c in rock.tone), v)
+        i, v = face_mask(rock.silhouette())
+        canvas.over(i, tuple(c * 0.3 for c in rock.tone), v)
         xs = [x for x, _, _ in rock.ring]
         fissures = [rng.uniform(min(xs), max(xs)) for _ in range(rng.randint(1, 3))]
+        inner = np.zeros(S * S)
         for poly, normal, kind in rock.faces():
             value = facet_value(normal) * rng.uniform(0.94, 1.06)
-            inner = face_mask(poly, inset=1.6)
-            for i, v in face_mask(poly).items():
-                x, y = i % S, i // S
-                g = grit(x, y)
-                shade = value * (0.84 + 0.3 * g + 0.08 * (fine(x, y) - 0.5))
-                if kind == "side":
-                    # Darker toward the foot, faint bedding lines across the wall.
-                    foot = smoothstep(ground - height, ground + 4, y)
-                    shade *= 1 - 0.28 * foot * foot
-                    if strata:
-                        shade *= 1 - strata * smoothstep(0.75, 0.95, math.sin((y - 0.35 * x) / 4.5 + g * 4))
-                    # Vertical joints that wander a little down the face.
-                    if min(abs(x - f - (g - 0.5) * 10) for f in fissures) < 1.4:
-                        shade *= 0.72
-                color = tuple(c * shade for c in rock.tone)
-                if lichen and kind == "top":
-                    m = moss(x, y)
-                    color = mix3(color, lichen, smoothstep(0.68, 0.82, m) * 0.35 * (0.6 + 0.4 * value))
-                seam = (1 - inner.get(i, 0)) * (0.22 if kind == "side" else 0.05)
-                if seam > 0:
-                    color = tuple(c * (1 - seam) for c in color)
-                canvas.over(i, color, v)
+            inner_i, inner_v = face_mask(poly, inset=1.6)
+            inner[inner_i] = inner_v
+            i, v = face_mask(poly)
+            x, y = i % S, i // S
+            g = grit(x, y)
+            shade = value * (0.84 + 0.3 * g + 0.08 * (fine(x, y) - 0.5))
+            if kind == "side":
+                # Darker toward the foot, faint bedding lines across the wall.
+                foot = smooth_field(ground - height, ground + 4, y.astype(np.float64))
+                shade = shade * (1 - 0.28 * foot * foot)
+                if strata:
+                    shade = shade * (1 - strata * smooth_field(0.75, 0.95, np.sin((y - 0.35 * x) / 4.5 + g * 4)))
+                # Vertical joints that wander a little down the face.
+                if len(i):
+                    gap = np.minimum.reduce([np.abs(x - f - (g - 0.5) * 10) for f in fissures])
+                    shade = np.where(gap < 1.4, shade * 0.72, shade)
+            color = np.asarray(rock.tone, dtype=np.float64)[None, :] * shade[:, None]
+            if lichen and kind == "top":
+                m = moss(x, y)
+                color = mix_field(color, lichen, smooth_field(0.68, 0.82, m) * 0.35 * (0.6 + 0.4 * value))
+            seam = (1 - inner[i]) * (0.22 if kind == "side" else 0.05)
+            color = np.where((seam > 0)[:, None], color * (1 - seam)[:, None], color)
+            canvas.over(i, color, v)
+            inner[inner_i] = 0.0
     return canvas
 
 
@@ -1215,23 +1293,23 @@ def crown_kernel(rng, style, radius, base, top):
     lumps = lumpy_outline(rng, harmonics, amount)
     # Summed harmonics can exceed `amount`; rescale so the crown keeps within
     # its kernel and its cluster's reach.
-    peak = max(lumps(i * math.tau / 720) for i in range(720)) - 1
+    peak = float(np.max(lumps(np.arange(720) * math.tau / 720))) - 1
     scale = min(1.0, amount / peak) if peak > 0 else 1.0
     outline = lambda angle: 1 + (lumps(angle) - 1) * scale
     dab_lo, dab_hi, dab_amp, dab_area = style["dab"]
     half = int(radius * (1 + amount)) + dab_hi + 2
     n = half * 2
-    values = [0.0] * (n * n)
 
     def surface(dx, dy):
         d = math.hypot(dx, dy) / radius / outline(math.atan2(dy, dx))
         return base + (top - base) * (1 - d * d) ** 0.55 if d < 1 else None
 
-    for y in range(n):
-        for x in range(n):
-            h = surface(x + 0.5 - half, y + 0.5 - half)
-            if h is not None:
-                values[y * n + x] = h
+    offsets = np.arange(n) + 0.5 - half
+    dx, dy = np.broadcast_arrays(offsets[None, :], offsets[:, None])
+    d = hypot_field(dx, dy) / radius / outline(np.arctan2(dy, dx))
+    inside = d < 1
+    values = np.zeros((n, n))
+    values[inside] = base + (top - base) * (1 - d[inside] * d[inside]) ** 0.55
     for _ in range(int(radius * radius / dab_area) + 3):
         angle, rho = rng.uniform(0, math.tau), math.sqrt(rng.random()) * radius * 1.02
         cx, cy = math.cos(angle) * rho, math.sin(angle) * rho
@@ -1239,14 +1317,15 @@ def crown_kernel(rng, style, radius, base, top):
         if under is None:
             continue
         r, amp = rng.uniform(dab_lo, dab_hi), dab_amp * rng.uniform(0.7, 1.2)
-        for y in range(max(0, int(cy + half - r)), min(n, int(cy + half + r) + 2)):
-            for x in range(max(0, int(cx + half - r)), min(n, int(cx + half + r) + 2)):
-                q = 1 - ((x + 0.5 - half - cx) ** 2 + (y + 0.5 - half - cy) ** 2) / (r * r)
-                if q > 0:
-                    i = y * n + x
-                    values[i] = max(values[i], under + amp * q ** 0.6)
-    image = Image.new("L", (n, n))
-    image.putdata([int(clamp(v) * 255) for v in values])
+        ys = np.arange(max(0, int(cy + half - r)), min(n, int(cy + half + r) + 2))
+        xs = np.arange(max(0, int(cx + half - r)), min(n, int(cx + half + r) + 2))
+        if not len(xs) or not len(ys):
+            continue
+        q = 1 - (pow_field(xs[None, :] + 0.5 - half - cx, 2) + pow_field(ys[:, None] + 0.5 - half - cy, 2)) / (r * r)
+        box = values[ys[0]:ys[-1] + 1, xs[0]:xs[-1] + 1]
+        hit = q > 0
+        box[hit] = np.maximum(box[hit], under + amp * q[hit] ** 0.6)
+    image = Image.fromarray((np.clip(values, 0.0, 1.0) * 255).astype(np.uint8))
     return image, half
 
 
@@ -1359,36 +1438,44 @@ def canopy_surface(name, colours, interior):
             wood = ImageChops.lighter(wood, layer)
         else:
             heights = ImageChops.lighter(heights, layer)
-    hp, wp = heights.load(), wood.load()
+    hp, wp = image_data(heights), image_data(wood)
     tints = [style["tint"][(colours >> k) & 1] for k in range(4)]
-    broad = heights.filter(ImageFilter.GaussianBlur(8)).load()
+    broad = image_data(heights.filter(ImageFilter.GaussianBlur(8)))
     lx, ly, lz = CANOPY_LIGHT
     norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
-    image = Image.new("RGB", (size, size))
-    pix = image.load()
-    for y in range(size):
-        for x in range(size):
-            h = hp[x, y] / 255
-            gx = (hp[min(x + 2, size - 1), y] - hp[max(x - 2, 0), y]) / 255 * 18
-            gy = (hp[x, min(y + 2, size - 1)] - hp[x, max(y - 2, 0)]) / 255 * 18
-            lam = (-gx * lx - gy * ly + lz) / (math.sqrt(gx * gx + gy * gy + 1) * norm_l)
-            # Crevices between crowns, and the low gaps, fall into shade.
-            occlusion = clamp(1 + (h - broad[x, y] / 255) * 3.2) * (0.45 + 0.55 * smoothstep(0.05, 0.5, h))
-            t = clamp((0.10 + 0.95 * lam) * occlusion + 0.18 * (h - 0.6))
-            colour = ramp(style["ramp"], t)
-            if style["wood"] and h < 0.28:
-                gap = 1 - smoothstep(0.10, 0.28, h)
-                colour = mix3(colour, (50, 40, 24), gap * 0.75)
-                if wp[x, y]:
-                    colour = mix3(colour, (104, 78, 46) if wp[x, y] > 200 else (78, 60, 36),
-                                  gap * wp[x, y] / 255)
-            # Each vertex colour also tints its corner; the bilinear blend gives
-            # mottling larger than a cell without a repeated feature.
-            u, v = clamp((x - HALO + 0.5) / CELL), clamp((y - HALO + 0.5) / CELL)
-            weights = ((1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v)
-            scale = sum(w * tints[k][0] for k, w in enumerate(weights))
-            shift = [sum(w * tints[k][1][c] for k, w in enumerate(weights)) for c in range(3)]
-            pix[x, y] = tuple(int(clamp(colour[c] * scale + shift[c], 0, 255)) for c in range(3))
+    # Every pixel at once, operation for operation as the per-pixel loop did.
+    index = np.arange(size)
+    right, left = np.minimum(index + 2, size - 1), np.maximum(index - 2, 0)
+    h = hp / 255
+    gx = (hp[:, right] - hp[:, left]) / 255 * 18
+    gy = (hp[right, :] - hp[left, :]) / 255 * 18
+    lam = (-gx * lx - gy * ly + lz) / (np.sqrt(gx * gx + gy * gy + 1) * norm_l)
+    # Crevices between crowns, and the low gaps, fall into shade.
+    occlusion = np.clip(1 + (h - broad / 255) * 3.2, 0.0, 1.0) * (0.45 + 0.55 * smooth_field(0.05, 0.5, h))
+    t = np.clip((0.10 + 0.95 * lam) * occlusion + 0.18 * (h - 0.6), 0.0, 1.0)
+    colour = ramp_field(style["ramp"], t)
+    if style["wood"]:
+        low = h < 0.28
+        gap = 1 - smooth_field(0.10, 0.28, h)
+        colour = np.where(low[..., None], mix_field(colour, (50, 40, 24), gap * 0.75), colour)
+        bark = np.where((wp > 200)[..., None], np.array((104, 78, 46), dtype=np.float64),
+                        np.array((78, 60, 36), dtype=np.float64))
+        colour = np.where((low & (wp != 0))[..., None], mix_field(colour, bark, gap * wp / 255), colour)
+    # Each vertex colour also tints its corner; the bilinear blend gives
+    # mottling larger than a cell without a repeated feature.
+    u = np.clip((index - HALO + 0.5) / CELL, 0.0, 1.0)[None, :]
+    v = np.clip((index - HALO + 0.5) / CELL, 0.0, 1.0)[:, None]
+    weights = ((1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v)
+    scale = 0
+    for k, w in enumerate(weights):
+        scale = scale + w * tints[k][0]
+    out = np.empty((size, size, 3))
+    for c in range(3):
+        shift = 0
+        for k, w in enumerate(weights):
+            shift = shift + w * tints[k][1][c]
+        out[..., c] = colour[..., c] * scale + shift
+    image = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
     return image, heights
 
 
