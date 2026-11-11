@@ -939,6 +939,34 @@ def mobile_sources(target):
     return files
 
 
+# The browser build (buildsys/web_build.py and cmake/web.cmake): the client
+# without native transports and recording, plus the browser platform layer.
+WEB_EXCLUDED_CLIENT_SOURCES = ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp',
+                               'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')
+WEB_EXCLUDED_GAG_SOURCES = ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')
+WEB_SOURCES = ('platforms/web/HiveBrowserHost.cpp', 'platforms/web/VoiceRecorder.cpp',
+               'platforms/web/ApplicationHost.cpp', 'platforms/web/RecordingPlatform.cpp',
+               'platforms/web/NetTransport.cpp', 'platforms/web/Launcher.cpp', 'platforms/web/HttpFetch.cpp',
+               'platforms/web/Audio.cpp', 'platforms/web/GradientCompute.cpp')
+# The browser's worker programs, each its own WebAssembly module.
+WEB_WORKER_SOURCES = {
+    'music': ('platforms/web/MusicWorker.cpp', 'src/audio/MusicProducer.cpp', 'src/audio/MusicStream.cpp'),
+    'recording': ('platforms/web/RecordingWorker.cpp', 'libs/gag/src/RecordingEncoder.cpp',
+                  'libs/gag/src/RecordingSession.cpp', 'libs/gag/src/RecordingMetadata.cpp'),
+    'asset-video': ('platforms/web/AssetVideoWorker.cpp', 'libs/gag/src/AssetVideoDecoder.cpp'),
+    'hive': ('platforms/web/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp',
+             'src/scripting/javascript/ScriptValue.cpp'),
+}
+
+
+def web_sources():
+    """Every source the browser's game runtime compiles, in build order."""
+    files = ['src/' + name for name in CLIENT_SOURCES if name not in WEB_EXCLUDED_CLIENT_SOURCES]
+    files += ['libs/gag/src/' + name for name in GAG_SOURCES if name not in WEB_EXCLUDED_GAG_SOURCES]
+    files += ['libs/usl/src/' + name for name in USL_SOURCES]
+    return files + list(WEB_SOURCES)
+
+
 # libgag sources only native macOS builds compile (Objective-C++).
 GAG_DARWIN_SOURCES = ('MacScrollMonitor.mm',)
 

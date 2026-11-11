@@ -866,7 +866,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv ninja-build nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 platforms/web/setup.py
@@ -878,21 +878,6 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
-      - name: Restore WebAssembly object tree
-        id: restore_webassembly_object_tree
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/emscripten/client/release/.sconsign.dblite
-            build/emscripten/client/release/identity.json
-            build/emscripten/client/release/include/glob2/BuildConfig.h
-            build/emscripten/client/release/obj
-            build/emscripten/client/release/threaded/obj
-            build/emscripten/client/release/threaded/include
-            build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
       - name: Restore pinned WebAssembly dependencies
         id: wasm_dependencies
         uses: actions/cache/restore@v4
@@ -916,10 +901,7 @@ jobs:
         run: |
           ccache -z
           echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
-          # This source embeds __DATE__ and __TIME__. Refresh it after restoring
-          # objects so the binary still reports the current compilation time.
-          rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o build/emscripten/client/release/threaded/obj/src/GlobalContainerArgs.cpp.o
-          scons target=web release=1 web-tests build/emscripten/client/release/index.html -j$(nproc)
+          python3 tools/dev_build.py target=web release=1 web-tests web-package -j$(nproc)
           ccache -s -v
       - name: Seal built WebAssembly dependency prefixes
         env:
@@ -936,21 +918,6 @@ jobs:
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
           key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
-      - name: Save WebAssembly object tree
-        id: save_webassembly_object_tree
-        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/emscripten/client/release/.sconsign.dblite
-            build/emscripten/client/release/identity.json
-            build/emscripten/client/release/include/glob2/BuildConfig.h
-            build/emscripten/client/release/obj
-            build/emscripten/client/release/threaded/obj
-            build/emscripten/client/release/threaded/include
-            build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Prune WebAssembly compiler cache
         id: prune_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}

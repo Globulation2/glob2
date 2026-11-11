@@ -2227,6 +2227,124 @@ set(GLOB2_ANDROID_UNIT_PRODUCTION_1_DEFINES
 set(GLOB2_ANDROID_UNIT_PRODUCTION_1_REQUIRE
 )
 
+# web-tests script-tests.js: its registry entries.
+set(GLOB2_WEB_TESTS_GROUPS 0 1 2)
+
+# Group 0.
+set(GLOB2_WEB_TESTS_0_SOURCES
+    test/support/TestMain.cpp
+    test/support/Glob2Test.cpp
+    test/support/GlobalContainerSlot.cpp
+    test/support/HeadlessGlobals.cpp
+    test/support/HeadlessGame.cpp
+    test/support/GameFixtures.cpp
+    test/support/Continuation.cpp
+    test/support/SimulationInvariants.cpp
+    test/support/DrawFixtures.cpp
+    test/support/LegacyResourceTypes.cpp
+    src/tutorial/IntroductionTest.cpp
+    src/map/generator/javascript/ScriptGeneratorTest.cpp
+    src/scripting/javascript/ScriptPresentationTest.cpp
+    src/scripting/javascript/ScriptRealisticTest.cpp
+    libs/gag/src/ImageAssetTest.cpp
+    src/scripting/javascript/ScriptRuntimeTest.cpp
+    src/scripting/javascript/ScriptNumericTest.cpp
+    src/online/ApiErrorTextTest.cpp
+    src/common/EntityRandomTest.cpp
+    src/unit/EntityRandomLifecycleTest.cpp
+    src/common/ComputeExecutorHarness.cpp
+    src/field/WebGPUGradientTest.cpp
+    src/app/ApplicationResourcePlanTest.cpp
+    src/replay/ReplayTelemetryTest.cpp
+    src/map/gradient/GradientPipelineHarness.cpp
+    src/map/claims/ClaimRecoveryAdversarialTest.cpp
+    src/engine/sim/snapshot/SnapshotChecksumTest.cpp
+    src/map/claims/ActiveClaimRoutesHarness.cpp
+    src/map/claims/ClaimRoutePipelineTest.cpp
+    src/map/claims/ClaimInvalidationHarness.cpp
+    src/game/SharedWorkerLifecycleTest.cpp
+    src/map/gradient/InitialBuildingGradientHarness.cpp
+    src/render/scene/SceneExtractTest.cpp
+    src/render/scene/SceneBufferTest.cpp
+    src/render/overlay/OverlayFillTest.cpp
+    src/resource/ResourceRegistryTest.cpp
+    src/map/TerrainResourcesHarness.cpp
+    src/unit/types/UnitCatalogTest.cpp
+    src/building/types/BuildingCatalogTest.cpp
+    src/building/BuildingCatalogFixtureHarness.cpp
+    src/building/BuildingServicesTest.cpp
+    src/building/BuildingProductionCombatTest.cpp
+    src/ai/shared_runtime/RuntimeContinuationTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_WEB_TESTS_0_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_WEB_TESTS_0_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_WEB_TESTS_0_REQUIRE
+)
+
+# Group 1.
+set(GLOB2_WEB_TESTS_1_SOURCES
+    src/scripting/javascript/ScriptCompatibilityTest.cpp
+    src/scripting/javascript/ScriptSessionTest.cpp
+    src/scripting/javascript/ScriptSimulationTest.cpp
+    src/team/stats/TeamStatsSaveHarness.cpp
+    src/scripting/sgsl/LegacyScriptCoverageTest.cpp
+    src/unit/ResourceFetchTargetHarness.cpp
+    src/unit/ClaimContinuationHarness.cpp
+    src/map/claims/ClaimRecoveryAdversarialHarness.cpp
+    src/game/ChecksumSchemeTest.cpp
+    src/map/gradient/BuildingGradientInvalidationHarness.cpp
+    src/map/gradient/DelayedGradientPublicationHarness.cpp
+    src/engine/sim/snapshot/WorldSnapshotTest.cpp
+    src/map/gradient/PathGradientHarness.cpp
+    src/map/gradient/GradientPreparationTest.cpp
+    src/ai/cortex/CortexActionCoverageTest.cpp
+    src/map/MapQueryTest.cpp
+    src/hud/GUIInteractionCoverageTest.cpp
+    src/unit/UnitCustomizationTest.cpp
+    src/building/MaterialDemandTest.cpp
+    src/ai/AICustomCatalogTest.cpp
+    src/unit/MarketsV2Test.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_WEB_TESTS_1_CXXFLAGS
+    -fno-access-control
+)
+
+# Extra definitions of the group.
+set(GLOB2_WEB_TESTS_1_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_WEB_TESTS_1_REQUIRE
+)
+
+# Group 2.
+set(GLOB2_WEB_TESTS_2_SOURCES
+    src/scripting/javascript/ScriptIntegrationTest.cpp
+)
+
+# Extra compile flags of the group.
+set(GLOB2_WEB_TESTS_2_CXXFLAGS
+)
+
+# Extra definitions of the group.
+set(GLOB2_WEB_TESTS_2_DEFINES
+)
+
+# Build features the group needs ('mac', 'wss', 'opengl', 'not-mingw').
+set(GLOB2_WEB_TESTS_2_REQUIRE
+    editor
+)
+
 # ios-tests libglob2-script-tests.a: its registry entries.
 set(GLOB2_IOS_SCRIPT_TESTS_GROUPS 0 1 2)
 

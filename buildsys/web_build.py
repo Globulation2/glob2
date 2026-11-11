@@ -15,7 +15,7 @@ from build_timing import record
 from dev_build import configure as configure_development, can_build_dependencies, dependency_jobs
 from shared_dependencies import ensure as ensure_dependency
 from dev_compile import objects as development_objects, unique
-from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
+from sources import INCLUDE_DIRECTORIES, WEB_WORKER_SOURCES
 import web_assets
 from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
 import skin_materials
@@ -188,11 +188,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
-    files += ['libs/gag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
-    files += ['libs/usl/src/' + s for s in USL_SOURCES]
-    files += ['platforms/web/HiveBrowserHost.cpp', 'platforms/web/VoiceRecorder.cpp', 'platforms/web/ApplicationHost.cpp', 'platforms/web/RecordingPlatform.cpp', 'platforms/web/NetTransport.cpp', 'platforms/web/Launcher.cpp', 'platforms/web/HttpFetch.cpp']
-    files += ['platforms/web/Audio.cpp', 'platforms/web/GradientCompute.cpp']
+    from sources import web_sources
+    files = web_sources()
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -242,37 +239,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                                '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'content/games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
-        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp', '#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
-                ('#src/unit/ResourceFetchTargetHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/unit/ClaimContinuationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/map/claims/ClaimRecoveryAdversarialHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/map/claims/ClaimRecoveryAdversarialTest.cpp',
-                '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
-                '#src/map/claims/ActiveClaimRoutesHarness.cpp',
-                '#src/map/claims/ClaimRoutePipelineTest.cpp',
-                '#src/map/claims/ClaimInvalidationHarness.cpp',
-                '#src/game/SharedWorkerLifecycleTest.cpp',
-                ('#src/game/ChecksumSchemeTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/map/gradient/InitialBuildingGradientHarness.cpp',
-                ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/render/scene/SceneExtractTest.cpp', '#src/render/scene/SceneBufferTest.cpp',
-                '#src/render/overlay/OverlayFillTest.cpp',
-                ('#src/map/gradient/PathGradientHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/resource/ResourceRegistryTest.cpp', '#src/map/TerrainResourcesHarness.cpp',
-                '#src/unit/types/UnitCatalogTest.cpp',
-                ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
-                '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
-                ('#src/building/MaterialDemandTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
-                ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:
+        for entry in registry.web_test_entries():
             source, options = (entry, {}) if isinstance(entry, str) else entry
             local = tests.Clone()
             local.Append(CXXFLAGS=options.get('cxxflags', []))
@@ -362,7 +329,7 @@ def build_web(directory, identity, arguments):
         '-sEXPORTED_RUNTIME_METHODS=["UTF8ToString","HEAPU8","HEAP16"]']
     configure_development(music, identity)
     music_objects = [music.Object(str(Path(directory) / 'music-obj' / (source + '.o')), source)
-        for source in ('platforms/web/MusicWorker.cpp', 'src/audio/MusicProducer.cpp', 'src/audio/MusicStream.cpp')]
+        for source in WEB_WORKER_SOURCES['music']]
     record(music, music_objects, "compile")
     music_program = record(music, music.Program(str(Path(directory) / 'music-runtime.js'), music_objects), "link")
     music.SideEffect(str(Path(directory) / 'music-runtime.wasm'), music_program)
@@ -387,7 +354,7 @@ def build_web(directory, identity, arguments):
     attach_recording(recording, recording_prefix, 'wasm')
     configure_development(recording, identity)
     recording_objects = [recording.Object(str(Path(directory) / 'recording-obj' / (source + '.o')), source)
-        for source in ('platforms/web/RecordingWorker.cpp', 'libs/gag/src/RecordingEncoder.cpp', 'libs/gag/src/RecordingSession.cpp', 'libs/gag/src/RecordingMetadata.cpp')]
+        for source in WEB_WORKER_SOURCES['recording']]
     record(recording, recording_objects, "compile")
     recording_program = record(recording, recording.Program(str(Path(directory) / 'recording-runtime.js'), recording_objects), 'link')
     recording.SideEffect(str(Path(directory) / 'recording-runtime.wasm'), recording_program)
@@ -407,7 +374,7 @@ def build_web(directory, identity, arguments):
         '-sEXPORTED_FUNCTIONS=["_glob2_decode_asset_video","_malloc","_free"]',
         '-sEXPORTED_RUNTIME_METHODS=["HEAPU8"]']
     video_objects = [asset_video.Object(str(Path(directory) / 'asset-video-obj' / (source + '.o')), source)
-        for source in ('platforms/web/AssetVideoWorker.cpp', 'libs/gag/src/AssetVideoDecoder.cpp')]
+        for source in WEB_WORKER_SOURCES['asset-video']]
     record(asset_video, video_objects, "compile")
     video_program = record(asset_video, asset_video.Program(str(Path(directory) / 'asset-video-runtime.js'), video_objects), 'link')
     asset_video.SideEffect(str(Path(directory) / 'asset-video-runtime.wasm'), video_program)
@@ -424,7 +391,7 @@ def build_web(directory, identity, arguments):
     hive.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     configure_development(hive, identity)
     hive_objects = [hive.Object(str(Path(directory) / 'hive-obj' / (source + '.o')), source)
-        for source in ('platforms/web/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp', 'src/scripting/javascript/ScriptValue.cpp')]
+        for source in WEB_WORKER_SOURCES['hive']]
     hive_objects += javascript_objects(hive, Path(directory) / 'hive-obj/third_party', True)
     record(hive, hive_objects, "compile")
     hive_program = record(hive, hive.Program(str(Path(directory) / 'hive-runtime.js'), hive_objects), 'link')

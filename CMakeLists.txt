@@ -19,17 +19,21 @@
 cmake_minimum_required(VERSION 3.25)
 set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
     "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
-# target=android|ios cross-compiles with the pinned mobile toolchain (cmake/mobile.cmake).
+# target=android|ios cross-compiles with the pinned mobile toolchain (cmake/mobile.cmake),
+# target=web with the pinned Emscripten SDK (cmake/web.cmake).
 set(GLOB2_MOBILE OFF)
+set(GLOB2_WEB OFF)
 if(GLOB2_BUILD_ARGS MATCHES "(^| )target=(android|ios)( |$)")
   include("${CMAKE_CURRENT_LIST_DIR}/cmake/mobile-toolchain.cmake")
+elseif(GLOB2_BUILD_ARGS MATCHES "(^| )target=web( |$)")
+  include("${CMAKE_CURRENT_LIST_DIR}/cmake/web-toolchain.cmake")
 endif()
 project(glob2 LANGUAGES C CXX)
 
 # GLOB2_PLATFORM: linux, or mingw for Windows builds with MSYS2's MinGW-w64 GCC
 # (SConstruct's mingw=1, which the build arguments gain automatically).
-if(GLOB2_MOBILE)
-  set(GLOB2_PLATFORM mobile)
+if(GLOB2_MOBILE OR GLOB2_WEB)
+  set(GLOB2_PLATFORM cross)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
   set(GLOB2_PLATFORM linux)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_CROSSCOMPILING)
@@ -70,6 +74,17 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/build_config.py" "${GLOB2_ROOT}/buildsys/checkout_paths.py"
   "${GLOB2_ROOT}/buildsys/build_layout.py" "${GLOB2_ROOT}/buildsys/client_features.py"
   "${GLOB2_ROOT}/buildsys/official_instance.py" "${GLOB2_ROOT}/buildsys/recording_dependencies.py")
+
+# Reconfigures when a provisioned dependency disappears: shared-store entries
+# outlive no build directory (a cached build tree can outlast its store), so a
+# missing archive must provision it again, as every SCons run did.
+function(glob2_configure_depends)
+  foreach(path IN LISTS ARGN)
+    if(IS_ABSOLUTE "${path}")
+      set_property(DIRECTORY "${CMAKE_SOURCE_DIR}" APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${path}")
+    endif()
+  endforeach()
+endfunction()
 
 # Runs a buildsys/cmake_generate.py subcommand at configure time.
 function(glob2_bridge output)
@@ -221,6 +236,10 @@ if(GLOB2_MOBILE)
   include("${GLOB2_ROOT}/cmake/mobile.cmake")
   return()
 endif()
+if(GLOB2_WEB)
+  include("${GLOB2_ROOT}/cmake/web.cmake")
+  return()
+endif()
 
 # ---- Dependencies, located as SConstruct does ----
 set(GLOB2_SDL3_PREFIX "$ENV{GLOB2_SDL3_PREFIX}" CACHE PATH "Isolated SDL3 dependency prefix (GLOB2_SDL3_PREFIX)")
@@ -308,6 +327,7 @@ else()
   glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target})
   glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target})
   set(recording_includes "${recording_prefix}/include")
+  glob2_configure_depends(${recording_libraries})
   glob2_pkg_config(opusfile opusfile --cflags)
   glob2_pkg_config(sdl3 sdl3 --cflags --libs)
   glob2_pkg_config(webp libwebp --cflags --libs --static)
@@ -591,6 +611,7 @@ set(lean_includes)
 if(GLOB2_LEAN_IMAGES)
   glob2_bridge(lean_image_prefix lean-image-prefix --builddir "${GLOB2_OUT}")
   set(lean_includes "${lean_image_prefix}/include/SDL3")
+  glob2_configure_depends("${lean_image_prefix}/lib")
   list(PREPEND sdl_directories "${lean_image_prefix}/lib")
   if(GLOB2_PLATFORM STREQUAL "linux")
     list(APPEND sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
@@ -607,6 +628,7 @@ if(darwin AND GLOB2_MAC_BUNDLE AND NOT relay)
   endif()
   glob2_bridge(mac_image_prefix mac-image-prefix --builddir "${GLOB2_OUT}" ${image_options})
   list(PREPEND lean_includes "${mac_image_prefix}/include")
+  glob2_configure_depends("${mac_image_prefix}/lib")
   list(PREPEND sdl_directories "${mac_image_prefix}/lib")
 endif()
 set(include_directories ${recording_includes} ${lean_includes} ${sdl_includes} ${host_includes} "${GLOB2_OUT}/include"

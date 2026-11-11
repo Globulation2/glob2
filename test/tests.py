@@ -793,6 +793,59 @@ def scripting_entries():
             if (entry if isinstance(entry, str) else entry[0]) in selected]
 
 
+# Linked into the browser's script-tests.js beside the scripting corpus (web-tests).
+WEB_TESTS = [
+    '#src/online/ApiErrorTextTest.cpp',
+    '#src/common/EntityRandomTest.cpp',
+    '#src/unit/EntityRandomLifecycleTest.cpp',
+    ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/common/ComputeExecutorHarness.cpp',
+    '#src/field/WebGPUGradientTest.cpp',
+    '#src/app/ApplicationResourcePlanTest.cpp',
+    '#src/replay/ReplayTelemetryTest.cpp',
+    '#src/map/gradient/GradientPipelineHarness.cpp',
+    ('#src/unit/ResourceFetchTargetHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/unit/ClaimContinuationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/claims/ClaimRecoveryAdversarialHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/claims/ClaimRecoveryAdversarialTest.cpp',
+    '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
+    '#src/map/claims/ActiveClaimRoutesHarness.cpp',
+    '#src/map/claims/ClaimRoutePipelineTest.cpp',
+    '#src/map/claims/ClaimInvalidationHarness.cpp',
+    '#src/game/SharedWorkerLifecycleTest.cpp',
+    ('#src/game/ChecksumSchemeTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/InitialBuildingGradientHarness.cpp',
+    ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/render/scene/SceneExtractTest.cpp',
+    '#src/render/scene/SceneBufferTest.cpp',
+    '#src/render/overlay/OverlayFillTest.cpp',
+    ('#src/map/gradient/PathGradientHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/resource/ResourceRegistryTest.cpp',
+    '#src/map/TerrainResourcesHarness.cpp',
+    '#src/unit/types/UnitCatalogTest.cpp',
+    ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/building/types/BuildingCatalogTest.cpp',
+    '#src/building/BuildingCatalogFixtureHarness.cpp',
+    '#src/building/BuildingServicesTest.cpp',
+    '#src/building/BuildingProductionCombatTest.cpp',
+    ('#src/building/MaterialDemandTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
+    ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
+]
+
+
+def web_test_entries():
+    """Every entry the browser's script-tests.js compiles."""
+    return SUPPORT + ENGINE_SUPPORT + scripting_entries() + WEB_TESTS
+
+
 def portable_engine_tests():
     """ENGINE_TESTS plus the sim cases, for builders that link one whole-client binary."""
     return ENGINE_TESTS + SIM_TESTS

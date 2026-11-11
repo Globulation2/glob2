@@ -23,6 +23,7 @@ endif()
 # notices; the results come back in mobile-configuration.cmake.
 glob2_bridge(unused mobile-configure --builddir "${GLOB2_OUT}" ${build_arg_options})
 include("${GLOB2_OUT}/mobile-configuration.cmake")
+glob2_configure_depends(${GLOB2_MOBILE_LIBRARIES} ${GLOB2_MOBILE_RECORDING_LIBRARIES})
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${GLOB2_MOBILE_MANIFEST}" "${GLOB2_ROOT}/platforms/mobile/toolchain.json"
   "${GLOB2_ROOT}/buildsys/mobile_toolchain.py" "${GLOB2_ROOT}/buildsys/mobile_artifacts.py")
@@ -62,6 +63,9 @@ if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER)
   list(APPEND ccflags "-fdebug-prefix-map=${GLOB2_ROOT}=.")
 endif()
 set(cxxflags -std=gnu++20 -fexceptions)
+# The libraries name sources relative to the checkout in __FILE__ (assertions),
+# as SCons' relative command lines did, rather than the build host's path.
+list(APPEND ccflags "-fmacro-prefix-map=${GLOB2_ROOT}/=")
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX,OBJCXX>:${cxxflags}>" ${ccflags})
 add_compile_definitions(HAVE_CONFIG_H
   "GLOB2_OFFICIAL_INSTANCE_ORIGIN=\"${GLOB2_MOBILE_OFFICIAL_ORIGIN}\""

@@ -100,10 +100,11 @@ that path only when it belongs to the same identity. `identity.json` records
 ownership, and generated configuration is written to
 `include/glob2/BuildConfig.h`.
 
-Existing native commands retain their roles. For example, `scons release=1`
-builds the desktop client, while `scons target=web release=1` writes the browser
-application to `build/emscripten/client/release`. The compatibility command
-`python3 platforms/web/build.py` delegates to SCons.
+Existing native commands retain their roles. For example,
+`python3 tools/dev_build.py release=1` builds the desktop client, while
+`python3 tools/dev_build.py target=web release=1` writes the browser application
+to `build/emscripten/client/release` (CMake, `cmake/web.cmake`). The
+compatibility command `python3 platforms/web/build.py` delegates to it.
 
 The served release is `index.html`, `index.js`, `index.wasm` and the
 content-addressed data packages in `assets/` (`<package>[-<part>].<hash>.data`),

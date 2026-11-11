@@ -53,10 +53,10 @@ runtime. Use `web_variant=serial` where cross-origin isolation, shared memory or
 worker rendering is unavailable. A threaded-only package reports unsupported
 hosts instead of attempting to fetch a missing serial runtime. Music, recording,
 Hive, scripting, assets and localization remain available in either variant.
-Ordinary `scons target=web` defaults to both variants; `web-package` requires both.
+A release `target=web` build has both variants; `web-package` requires both.
 Browser SDL/Opus installations are shared by SDK and threading configuration,
 while the standalone music decoder always uses serial Opus libraries.
 See [fast development builds](../development/build-options.md#fast-development-builds)
-for PCH/unity options, caching, dependency jobs and measurement limitations.
+for caching, dependency jobs and measurement limitations.
 
 Related: [browser guide and decision index](README.md).

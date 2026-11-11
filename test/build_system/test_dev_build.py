@@ -135,10 +135,11 @@ class DevelopmentBuildTests(unittest.TestCase):
                               ['perf=1', 'opt=3', 'engine-tests'], ['release=1', 'CXX=g++-13'],
                               ['compile_profile=core', 'engine-tests'], ['--build=build/x'], ['-n'],
                               ['role=relay', 'release=1', 'relay'],
-                              ['build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2']):
+                              ['build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2'],
+                              ['target=web', 'release=1', 'web-package'], ['target=android', 'arch=x86_64']):
                 self.assertIsNone(command.scons_reason(arguments), arguments)
-            # Other targets and the options the CMake build does not cover stay on SCons.
-            for arguments in (['target=web'], ['mingw=1', 'release=1'],
+            # Other hosts' toolchains and the options the CMake build does not cover stay on SCons.
+            for arguments in (['mingw=1', 'release=1'],
                               ['recording_codec=vp9'], ['--debug=explain']):
                 self.assertIsNotNone(command.scons_reason(arguments), arguments)
         for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),

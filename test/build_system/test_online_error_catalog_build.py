@@ -163,6 +163,7 @@ class OnlineErrorBuildTest(unittest.TestCase):
                             and any(isinstance(child, ast.Call) and isinstance(child.func, ast.Name)
                                     and child.func.id == 'bind_online_error_consumer' for child in ast.walk(node)))
                 registry = types.SimpleNamespace(SUPPORT=[], ENGINE_SUPPORT=[], scripting_entries=lambda: [],
+                                                 web_test_entries=lambda: ['#src/online/ApiErrorTextTest.cpp'],
                                                  source_path=lambda source: source.lstrip('#'))
                 scope = dict(tests=env.Clone(), test_objects=[], object_root=self.output / (target + '-objects'),
                              output=self.output / (target + '-tests'), registry=registry,

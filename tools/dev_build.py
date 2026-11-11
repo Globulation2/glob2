@@ -53,9 +53,9 @@ sys.path.insert(0, str(ROOT / 'buildsys'))
 TOOL_OPTIONS = ('CC', 'CXX', 'CXXFLAGS', 'LINKFLAGS', 'BINDIR', 'INSTALLDIR', 'DATADIR')
 INSTALL_DEFAULTS = {'BINDIR': '/usr/local/bin', 'INSTALLDIR': '/usr/local/share', 'DATADIR': '/usr/local/share'}
 # Identity keys the CMake build does not support yet.
-SCONS_ONLY_KEYS = ('recording_codec', 'profile', 'portaudio', 'web_variant', 'web_legacy_gl')
-# Cross targets the CMake build covers (cmake/mobile.cmake).
-CMAKE_TARGETS = ('native', 'android', 'ios')
+SCONS_ONLY_KEYS = ('recording_codec', 'profile', 'portaudio')
+# Cross targets the CMake build covers (cmake/mobile.cmake, cmake/web.cmake).
+CMAKE_TARGETS = ('native', 'android', 'ios', 'web')
 
 
 def enabled(value):
@@ -69,10 +69,13 @@ def windows_host():
 def development_defaults(options):
     """The dev tier's fast-development flags unless an optimized tier or the relay is
     asked for, and mingw=1 on Windows, whose only native toolchain is MSYS2's MinGW."""
-    if options.get('target', 'native') != 'native':
-        return []  # mobile and browser builds keep their own optimization levels
+    target = options.get('target', 'native')
+    if target in ('android', 'ios'):
+        return []  # the mobile drivers' builds keep their own optimization levels
     optimized = enabled(options.get('perf', 0)) or enabled(options.get('release', 0)) or options.get('role') == 'relay'
-    defaults = ['mingw=1'] if windows_host() and 'mingw' not in options else []
+    defaults = ['mingw=1'] if windows_host() and target == 'native' and 'mingw' not in options else []
+    if target == 'web' and not optimized and 'web_variant' not in options:
+        defaults.append('web_variant=threaded')  # one runtime for development
     if 'dev_fast' not in options and not optimized:
         defaults.append('dev_fast=1')
     if 'linker' not in options and not optimized:
@@ -153,7 +156,9 @@ class Request:
                 path = (path if path.is_absolute() else ROOT / path).resolve()
                 if directory not in path.parents:
                     raise ValueError(target + ' is not in the build directory ' + str(directory))
-                names.append(path.name.removesuffix('.exe'))
+                # The browser's page and runtimes come from its web-package target.
+                web = self.options.get('target') == 'web'
+                names.append('web-package' if web else path.name.removesuffix('.exe'))
             else:
                 names.append(target)
         return list(dict.fromkeys(names))

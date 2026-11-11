@@ -88,7 +88,7 @@ separate ACCESS_LOCAL_NETWORK permission flow.
 ## Verification
 
 ```sh
-scons release=1 transport-test -j4
+python3 tools/dev_build.py release=1 transport-test -j4
 python3 test/run-network-transport-tests.py
 python3 -m unittest discover -s test/transport -v
 ```

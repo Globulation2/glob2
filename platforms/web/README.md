@@ -25,7 +25,7 @@ From the repository root:
 
 ```sh
 python3 platforms/web/setup.py
-scons target=web release=1 -j8
+python3 tools/dev_build.py target=web release=1 -j8 web-package
 python3 platforms/web/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
@@ -373,7 +373,7 @@ recording, and the MessagePort limitation in some WebKit builds.
 
 ### Performance investigation
 
-Build with `scons target=web release=1 web_profile=1` to retain WebAssembly
+Build with `python3 tools/dev_build.py target=web release=1 web_profile=1` to retain WebAssembly
 function names in CPU profiles while keeping release optimization. Install the
 browser test dependencies, serve the build, then run from the repository root:
 

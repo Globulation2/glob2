@@ -38,7 +38,7 @@ cp ../services/online/instance.example.yaml instance.yaml
    quick-match queues.
 3. Optionally build the WebAssembly client to serve "Play in browser" at `/play/`:
    `./build-web-client.sh <served-dir>` builds it with the pinned Emscripten
-   SDK in a container (`scons target=web release=1 web-package`, see
+   SDK in a container (`tools/dev_build.py target=web release=1 web-package`, see
    [platforms/web/README.md](../../platforms/web/README.md)), writes the Brotli and gzip copies
    (`platforms/web/precompress.py`) and installs the result into `<served-dir>`; set
    `GLOB2_WEB_CLIENT_DIR` in `.env` to that directory. Caddy serves it with the

@@ -46,6 +46,7 @@ def content():
     strict = [path for path in client if javascript.strict_numeric_source(path)]
     guarded = [path for path in client if javascript.guarded_numeric_source(path)]
     openlibm = [path.relative_to(ROOT).as_posix() for path in javascript.openlibm_sources(ROOT)]
+    web = sources.web_sources()
     mobile = list(dict.fromkeys(sources.mobile_sources('android') + sources.mobile_sources('ios')))
     mobile_strict = [path for path in mobile if javascript.strict_numeric_source(path)]
     mobile_guarded = [path for path in mobile if javascript.guarded_numeric_source(path)]
@@ -69,6 +70,13 @@ def content():
               'Mobile sources compiled with GLOB2_STRICT_CXXFLAGS (javascript.strict_numeric_source).'),
         _list('GLOB2_MOBILE_GUARDED_NUMERIC_SOURCES', mobile_guarded,
               'Mobile sources whose objects the numeric symbol guard checks.'),
+        _list('GLOB2_WEB_SOURCES', web, 'buildsys/sources.py web_sources(): the browser runtime (cmake/web.cmake).'),
+        _list('GLOB2_WEB_STRICT_NUMERIC_SOURCES', [path for path in web if javascript.strict_numeric_source(path)],
+              'Browser sources compiled with GLOB2_STRICT_CXXFLAGS.'),
+        _list('GLOB2_WEB_GUARDED_NUMERIC_SOURCES', [path for path in web if javascript.guarded_numeric_source(path)],
+              'Browser sources whose objects the numeric symbol guard checks.'),
+        *[_list('GLOB2_WEB_WORKER_' + name + '_SOURCES', list(paths), 'buildsys/sources.py WEB_WORKER_SOURCES.')
+          for name, paths in sources.WEB_WORKER_SOURCES.items()],
         _list('GLOB2_GAG_DARWIN_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_DARWIN_SOURCES],
               'buildsys/sources.py GAG_DARWIN_SOURCES.'),
         _list('GLOB2_USL_SOURCES', ['libs/usl/src/' + name for name in sources.USL_SOURCES],
@@ -172,6 +180,8 @@ def mobile_tests_content():
                         'Production sources whose mobile objects the Android unit tests link.'))
     blocks += _groups('GLOB2_ANDROID_UNIT_PRODUCTION', again,
                       'Production sources the Android unit tests compile again with the test flags.')
+    blocks += _groups('GLOB2_WEB_TESTS', list(_entries(registry.web_test_entries())),
+                      'web-tests script-tests.js: its registry entries.')
     blocks += _groups('GLOB2_IOS_SCRIPT_TESTS',
                       list(_entries(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries()
                                     + ['#src/online/ApiErrorTextTest.cpp'])),

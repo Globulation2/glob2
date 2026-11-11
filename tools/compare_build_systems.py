@@ -33,6 +33,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shlex
 import shutil
 import subprocess
@@ -152,8 +153,9 @@ class Normaliser:
         words = entry['arguments'] if 'arguments' in entry else shlex.split(entry['command'])
         directory = entry['directory']
         source = os.path.normpath(os.path.join(directory, entry['file']))
+        # Launchers: ccache, `cmake -E env` and its NAME=value settings (the browser's EM_*).
         while words and (Path(words[0]).name in ('ccache', 'env', 'cmake') or words[0] in ('-E', 'env')
-                         or words[0].startswith(('--unset=', 'CCACHE_'))):
+                         or words[0].startswith('--unset=') or re.match(r'[A-Z_]+=', words[0])):
             words = words[1:]
         compiler = os.path.realpath(shutil.which(words[0]) or words[0])
         includes, flags = [], []
