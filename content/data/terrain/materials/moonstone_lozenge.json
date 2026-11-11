@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-moonstone_lozenge",
   "profile": "paved",
   "class": "built",
-  "preview": [190, 192, 209],
+  "preview": [189, 192, 211],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [190, 192, 209],
+  "minimap": [189, 192, 211],
   "seam": {
     "height": 3,
     "cast_q8": 24,

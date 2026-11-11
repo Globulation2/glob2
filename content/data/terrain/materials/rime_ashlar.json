@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-rime_ashlar",
   "profile": "paved",
   "class": "built",
-  "preview": [181, 187, 212],
+  "preview": [181, 186, 212],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [181, 187, 212],
+  "minimap": [181, 186, 212],
   "seam": {
     "height": 3,
     "cast_q8": 24,

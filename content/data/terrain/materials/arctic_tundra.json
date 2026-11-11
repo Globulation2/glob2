@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-arctic_tundra",
   "profile": "brush",
   "class": "solid",
-  "preview": [136, 135, 141],
+  "preview": [137, 135, 136],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [136, 135, 141],
+  "minimap": [137, 135, 136],
   "seam": {
     "height": 2,
     "cast_q8": 48,
