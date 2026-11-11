@@ -92,6 +92,11 @@ bounded arithmetic queries while solving the common production fraction. Other
 materials use the existing prepared distance fields and unreachable penalty. Profile, requested staffing, output ratios and colony demand state
 are included in planner signatures and continuation.
 
+Ledger evaluation is a pure function of its input and mode, and a development
+cycle rebuilds the same ledger several times (relocation, retirement, scoring and
+revalidation). The planner keeps the three most recent evaluations and reuses one
+whose input is identical; the result is unchanged, only the work is skipped.
+
 Within one synchronous upgrade/repair scan of the captured world, hypothetical
 upgrades share the unexcluded baseline claims, keyed by the excluded pending
 order. Reuse ends with that scan, so later world or order changes rebuild it.

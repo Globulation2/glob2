@@ -321,7 +321,9 @@ Building events mark the strategy for review, but such a review waits until
 `scheduling.strategy_review_min_gap_ticks` (100) after the last one; the periodic
 review keeps its interval. A farming update re-plans maintenance clearing at once,
 while new reservations re-plan it at most every
-`scheduling.maintenance_clearing_min_gap_ticks` (128). Placement and clearing read
+`scheduling.maintenance_clearing_min_gap_ticks` (128), and building changes alone
+re-run the preemptive defense topology at most every
+`scheduling.preemptive_defense_min_gap_ticks` (300). Placement and clearing read
 the wood reserve chosen by the latest farming update instead of rebuilding the
 wheat plan and worker reachability for each query. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports

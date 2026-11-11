@@ -739,6 +739,9 @@ scheduling.placement_interval_ticks = 512
 # maintenance clearing at most this often (farming updates re-plan at once).
 scheduling.strategy_review_min_gap_ticks = 100
 scheduling.maintenance_clearing_min_gap_ticks = 128
+# Building changes alone re-run preemptive defense topology at most this often;
+# zone-cap and amphibious changes still recompute at once.
+scheduling.preemptive_defense_min_gap_ticks = 300
 scheduling.explorer_warning_duration_ticks = 2500
 scheduling.explorer_colony_warning_duration_ticks = 1800
 

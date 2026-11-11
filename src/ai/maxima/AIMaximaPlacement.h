@@ -795,6 +795,16 @@ private:
 	// negative): the optimistic pre-routing bound of the scan.
 	mutable bool optimisticScoring=false;
 	std::map<int,int> foodUpgradeRetryTick;
+	struct FoodEvaluation
+	{
+		AIMaximaFoodLedger::EvaluationMode mode=AIMaximaFoodLedger::EvaluationMode::Full;
+		AIMaximaFoodLedger::Input input;
+		AIMaximaFoodLedger::Result result;
+	};
+	mutable std::vector<FoodEvaluation> foodEvaluationMemo; // most recent first
+	void evaluateFoodLedgerMemo(AIMaximaFoodLedger::EvaluationMode mode) const;
+	mutable std::vector<int> scanOrderCache;
+	const std::vector<int>& scanOrder(const WorldState& world) const;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
     mutable std::array<int,MaterialCount> foodCandidateIndependent{},foodCandidateProduction{};
     mutable bool foodQueryValid=false;
@@ -821,6 +831,13 @@ private:
 	mutable int colonyBenefitMemoType=-1;
 	mutable std::pair<int,int> colonyBenefitMemo;
 	mutable std::vector<uint8_t> colonyFoodClaims;
+	mutable unsigned colonyClaimsEpoch=0,colonyPrefixEpoch=~0u;
+	mutable const WorldState* colonyPrefixWorld=nullptr;
+	mutable int colonyPrefixTick=-1;
+	mutable std::vector<uint64_t> colonyFoodPrefix;
+	uint64_t colonyUnclaimedFoodInWindow(const WorldState& world,int left,int top,int width,int height) const;
+	std::pair<int,int> colonyBenefitUpperBound(const WorldState& world,const DevelopmentAction& action) const;
+	std::pair<int,int> colonyBenefitFrom(const WorldState& world,const DevelopmentAction& action,int capacity) const;
 	mutable std::vector<std::pair<int,int> > colonyAnchors;
 	bool colonyCandidatePasses(const WorldState& world,
 		const DevelopmentIntent& intent, const DevelopmentAction& action,

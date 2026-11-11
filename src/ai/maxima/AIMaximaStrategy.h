@@ -798,6 +798,7 @@ struct MaximaStrategy
 		int placement_interval_ticks;
 		int strategy_review_min_gap_ticks;
 		int maintenance_clearing_min_gap_ticks;
+		int preemptive_defense_min_gap_ticks;
 		int explorer_warning_duration_ticks;
 		int explorer_colony_warning_duration_ticks;
 	} scheduling;

@@ -736,6 +736,7 @@ namespace
 		INT_SPEC(scheduling, placement_interval_ticks, "scheduling.placement_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between development-planner cycles", StrategyImpactMedium),
 		INT_SPEC(scheduling, strategy_review_min_gap_ticks, "scheduling.strategy_review_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between strategy reviews triggered by building events; periodic reviews keep their interval", StrategyImpactMedium),
 		INT_SPEC(scheduling, maintenance_clearing_min_gap_ticks, "scheduling.maintenance_clearing_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between maintenance-clearing plans triggered by new reservations; farming-triggered plans run at once", StrategyImpactLow),
+		INT_SPEC(scheduling, preemptive_defense_min_gap_ticks, "scheduling.preemptive_defense_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between preemptive defense recomputes triggered by building changes alone", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_warning_duration_ticks, "scheduling.explorer_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of a general explorer-bomb warning", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_colony_warning_duration_ticks, "scheduling.explorer_colony_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of an explorer warning near the colony", StrategyImpactLow),
 
@@ -1559,8 +1560,9 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
         if(!provenance.count("scheduling.strategy_review_min_gap_ticks"))restored.scheduling.strategy_review_min_gap_ticks=0;
         if(!provenance.count("scheduling.maintenance_clearing_min_gap_ticks"))restored.scheduling.maintenance_clearing_min_gap_ticks=0;
         if(!provenance.count("placement.food_upgrade_retry_ticks"))restored.placement.food_upgrade_retry_ticks=0;
+        if(!provenance.count("scheduling.preemptive_defense_min_gap_ticks"))restored.scheduling.preemptive_defense_min_gap_ticks=0;
         for(const char* key:{"scheduling.strategy_review_min_gap_ticks","scheduling.maintenance_clearing_min_gap_ticks",
-            "placement.food_upgrade_retry_ticks"})
+            "placement.food_upgrade_retry_ticks","scheduling.preemptive_defense_min_gap_ticks"})
             if(!provenance.count(key))provenance[key]="legacy immediate reviews";
     }
     if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES) {

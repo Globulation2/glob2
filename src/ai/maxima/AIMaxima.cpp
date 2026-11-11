@@ -3198,6 +3198,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.target_switch_margin=strategy.scoring.target_switch_margin;
 	budget.preemptive_recompute_ticks=
 		strategy.scheduling.preemptive_defense_recompute_ticks;
+	budget.preemptive_min_gap_ticks=strategy.scheduling.preemptive_defense_min_gap_ticks;
 	budget.preemptive_inner_distance=
 		strategy.military.preemptive_defense_inner_distance;
 	budget.preemptive_band_width=

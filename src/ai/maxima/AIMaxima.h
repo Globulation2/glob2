@@ -270,6 +270,8 @@ private:
 		int preemptive_effective_zone_max;
 		int target_switch_margin;
 		int preemptive_recompute_ticks;
+		// Least ticks between recomputes triggered by building changes alone.
+		int preemptive_min_gap_ticks=0;
 		int preemptive_inner_distance;
 		int preemptive_band_width;
 		int preemptive_path_slack;
