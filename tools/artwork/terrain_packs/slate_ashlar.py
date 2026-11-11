@@ -9,10 +9,12 @@ takes back the joints and lost slabs.
 """
 import math
 
+import numpy as np
+
 from ._rock_paths import SLATE_GROUND, layout_pair, rosettes, stamped
-from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, stone_fates, stone_field
-from terrain_core import (N, NATIVE_PX, RECIPES, Style, clamp01, fbm, lattice_noise, layout_field, mix, ramp, recipe,
-                          shade, smoothstep)
+from ._paving import decay_fields, dress, per_stone, rectangle_geometry, stone_colour, stone_fates, stone_field
+from terrain_core import (N, NATIVE_PX, RECIPES, Style, clamp01, fbm, flat, lattice_noise, layout_field, mix, ramp,
+                          recipe, shade, smoothstep)
 
 UNIT = N // 8  # an eighth of a tile: 4 native px
 SHAPES = [((3, 2), 3), ((2, 2), 2), ((4, 2), 2), ((3, 1), 2), ((2, 1), 1)]  # (1, 1) only as the fallback
@@ -59,57 +61,59 @@ def render_slate_ashlar(ctx):
     reach = 32 + 2 * UNIT
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.03, cracked=0.0, sink=0.55, heave=0.3)
     along_x = [r[2] >= r[3] for r in rects]
-    grain_h = layout_field(ctx, lambda rng: fbm(rng, 2, 3, cells_y=40, size=size))
-    grain_v = layout_field(ctx, lambda rng: fbm(rng, 40, 3, cells_y=2, size=size))
-    grain = [h if along_x[k] else v for h, v, k in zip(grain_h, grain_v, ids)]
-    bed = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 2, 2, size=size))
-    texture = [clamp01(0.55 * g + 0.45 * bed[k]) for g, k in zip(grain, ids)]
+    grain_h = layout_field(ctx, lambda rng: fbm(rng, 2, 3, cells_y=40, size=size, array=True))
+    grain_v = layout_field(ctx, lambda rng: fbm(rng, 40, 3, cells_y=2, size=size, array=True))
+    lengthwise = np.array(along_x)[ids]
+    grain = np.where(lengthwise, grain_h, grain_v)
+    bed = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 2, 2, size=size, array=True))
+    texture = clamp01(0.55 * grain + 0.45 * np.array(bed)[ids])
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.55, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.45, own=0.6, staining=0.35)
 
     # Rim delamination: along stretches of each rim, thin layers have flaked
     # off in steps one to five native px deep, showing fresh darker stone.
     def flake_depth(rng):
-        reach_field = fbm(rng, 10, 2, size=size)
-        where = fbm(rng, 5, 2, size=size)
-        return [(1.0 + 5.0 * r) * NATIVE_PX * smoothstep(0.45, 0.6, w) for r, w in zip(reach_field, where)]
+        reach_field = fbm(rng, 10, 2, size=size, array=True)
+        where = fbm(rng, 5, 2, size=size, array=True)
+        return (1.0 + 5.0 * reach_field) * NATIVE_PX * smoothstep(0.45, 0.6, where)
 
     def flaked_of(depth):
-        return [smoothstep(0.5, -0.5, e - d) if d > 0.5 and e > 0 else 0.0 for e, d in zip(edge, depth)]
+        return np.where((depth > 0.5) & (edge > 0), smoothstep(0.5, -0.5, edge - depth), 0.0)
     d1c, d1 = layout_pair(ctx, flake_depth)
     d2c, d2 = layout_pair(ctx, flake_depth)
-    flaked = [max(a, b) for a, b in zip(flaked_of(d1), flaked_of([0.5 * d for d in d2]))]
+    flaked = np.maximum(flaked_of(d1), flaked_of(0.5 * d2))
     rgb = mix(rgb, p["fresh"], flaked, 0.45)
-    relief = [-(a + b) * 0.5 for a, b in zip(flaked_of(d1), flaked_of([0.5 * d for d in d2]))]
-    relief_c = [-(a + b) * 0.5 for a, b in zip(flaked_of(d1c), flaked_of([0.5 * d for d in d2c]))]
+    relief = -(flaked_of(d1) + flaked_of(0.5 * d2)) * 0.5
+    relief_c = -(flaked_of(d1c) + flaked_of(0.5 * d2c)) * 0.5
     rgb = shade(rgb, relief, 0.5, reference_height=relief_c)
 
     # Whole lost laminae on a few slabs: a darker fresh face with a crisp step.
-    lamina_c, lamina = layout_pair(ctx, lambda rng: fbm(rng, 3, 3, size=size))
-    chosen = [1.0 if fates[k].stain > 0.72 else 0.0 for k in ids]
-    chosen_c = [1.0 if common[k].stain > 0.72 else 0.0 for k in ids]
-    peeled = [smoothstep(0.58, 0.6, f) * c for f, c in zip(lamina, chosen)]
+    lamina_c, lamina = layout_pair(ctx, lambda rng: fbm(rng, 3, 3, size=size, array=True))
+    chosen = per_stone(fates, lambda f: 1.0 if f.stain > 0.72 else 0.0)[ids]
+    chosen_c = per_stone(common, lambda f: 1.0 if f.stain > 0.72 else 0.0)[ids]
+    peeled = smoothstep(0.58, 0.6, lamina) * chosen
     rgb = mix(rgb, p["fresh"], peeled, 0.5)
-    rgb = shade(rgb, [-0.6 * v for v in peeled], 0.25,
-                reference_height=[-0.6 * smoothstep(0.58, 0.6, f) * c for f, c in zip(lamina_c, chosen_c)])
+    rgb = shade(rgb, -0.6 * peeled, 0.25, reference_height=-0.6 * smoothstep(0.58, 0.6, lamina_c) * chosen_c)
 
     # Cleavage splits: about one slab in five has split right across along its
     # grain, one side settled a little lower than the other.
+    pixel = np.arange(size * size)
+    px, py = pixel % size + 0.5, pixel // size + 0.5
+    cx = np.array([c[0] for c in centres])[ids]
+    cy = np.array([c[1] for c in centres])[ids]
+    dx = (px - cx + size / 2) % size - size / 2
+    dy = (py - cy + size / 2) % size - size / 2
+
     def splits(stones):
-        mask, side = [0.0] * (size * size), [0.0] * (size * size)
-        for i, k in enumerate(ids):
-            st = stones[k]
-            if st.kink < 0.6 or st.lost or edge[i] <= 0:
-                continue
-            x0, y0, w, h, _ = rects[k]
-            cx, cy = centres[k]
-            a = (0.0 if along_x[k] else math.pi / 2) + 0.12 * (st.tone - 0.5)
-            off = (st.cast * 0.3) * min(w, h)
-            dx = (i % size + 0.5 - cx + size / 2) % size - size / 2
-            dy = (i // size + 0.5 - cy + size / 2) % size - size / 2
-            d = -dx * math.sin(a) + dy * math.cos(a) - off
-            mask[i] = 1 - smoothstep(0.25 * NATIVE_PX, 0.85 * NATIVE_PX, abs(d))
-            side[i] = -0.15 if d > 0 else 0.0
+        split = per_stone(stones, lambda st: st.kink >= 0.6 and not st.lost)[ids] != 0
+        split &= edge > 0
+        angle = [(0.0 if along_x[k] else math.pi / 2) + 0.12 * (st.tone - 0.5) for k, st in enumerate(stones)]
+        sin = np.array([math.sin(a) for a in angle])[ids]
+        cos = np.array([math.cos(a) for a in angle])[ids]
+        off = np.array([(st.cast * 0.3) * min(r[2], r[3]) for st, r in zip(stones, rects)])[ids]
+        d = -dx * sin + dy * cos - off
+        mask = np.where(split, 1 - smoothstep(0.25 * NATIVE_PX, 0.85 * NATIVE_PX, np.abs(d)), 0.0)
+        side = np.where(split & (d > 0), -0.15, 0.0)
         return mask, side
     split, step = splits(fates)
     _, step_c = splits(common)
@@ -119,16 +123,14 @@ def render_slate_ashlar(ctx):
     # Crusty lichen rosettes, pale grey and a few ochre, hugging the rims of
     # quiet, damp, unwalked stretches.
     body, rim = stamped(ctx, lambda rng: rosettes(ctx, rng, 90, 0.8, 2.2))
-    quiet = [smoothstep(0.3, 0.7, d) * (1 - w) * (1 if 0 < e < 3 * NATIVE_PX else 0)
-             for d, w, e in zip(decay.damp, decay.wear, edge)]
-    tint = layout_field(ctx, lambda rng: lattice_noise(rng, 3, size=size))
-    lichen_c = mix([[c] * (size * size) for c in p["lichen_pale"]], p["lichen_ochre"],
-                   [smoothstep(0.55, 0.7, t) for t in tint], 1.0)
-    rgb = mix(rgb, lichen_c, [b * q * 0.35 for b, q in zip(body, quiet)], 1.0)
-    rgb = mix(rgb, lichen_c, [r * q for r, q in zip(rim, quiet)], 0.7)
+    quiet = smoothstep(0.3, 0.7, decay.damp) * (1 - decay.wear) * np.where((0 < edge) & (edge < 3 * NATIVE_PX), 1.0, 0.0)
+    tint = layout_field(ctx, lambda rng: lattice_noise(rng, 3, size=size, array=True))
+    lichen_c = mix(flat(p["lichen_pale"], size, array=True), p["lichen_ochre"], smoothstep(0.55, 0.7, tint), 1.0)
+    rgb = mix(rgb, lichen_c, body * quiet * 0.35, 1.0)
+    rgb = mix(rgb, lichen_c, rim * quiet, 0.7)
 
-    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 40, size=size))
-    rgb = [[c * (0.95 + 0.1 * v) for c, v in zip(ch, fine)] for ch in rgb]
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 40, size=size, array=True))
+    rgb = rgb * (0.95 + 0.1 * fine)
     crack_heading = [0.0 if a else math.pi / 2 for a in along_x]
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, UNIT,
                 joint=(0.0, 1.8), creep=1.2, chipping=1.4, bevel=1.6, bevel_strength=0.32, crack_width=1.0,

@@ -12,7 +12,9 @@ interior mask, so all layouts agree at the perimeter.
 import math
 import random
 
-from terrain_core import NATIVE_PX, TAU, blend_fields, stamp_disc
+import numpy as np
+
+from terrain_core import NATIVE_PX, TAU, as_field, blend_fields, stamp_disc
 
 # Volcanic ground for the joints of dark paths: pale ash and grit instead of
 # soil and green moss.
@@ -39,16 +41,16 @@ def stamped(ctx, make):
     common = make(random.Random(ctx.shared_rng.random()))
     own = make(random.Random(ctx.rng.random()))
     if isinstance(common, tuple):
-        return tuple(blend_fields(c, o, ctx.interior_mask) for c, o in zip(common, own))
-    return blend_fields(common, own, ctx.interior_mask)
+        return tuple(blend_fields(as_field(c), as_field(o), ctx.interior_mask) for c, o in zip(common, own))
+    return blend_fields(as_field(common), as_field(own), ctx.interior_mask)
 
 
 def layout_pair(ctx, make):
     """(common field, blended field) from forked streams, so one field can
     drive both colour and relief, with the common field as the relief's
     lighting reference."""
-    common = make(random.Random(ctx.shared_rng.random()))
-    own = make(random.Random(ctx.rng.random()))
+    common = as_field(make(random.Random(ctx.shared_rng.random())))
+    own = as_field(make(random.Random(ctx.rng.random())))
     return common, blend_fields(common, own, ctx.interior_mask)
 
 
@@ -56,7 +58,7 @@ def rosettes(ctx, rng, count, r_min, r_max):
     """Crustose lichen: round patches with a brighter, lobed rim, `count` per
     8x8 block. Returns (body, rim) masks."""
     size = ctx.size
-    body, rim = [0.0] * (size * size), [0.0] * (size * size)
+    body, rim = np.zeros(size * size), np.zeros(size * size)
     for _ in range(int(count * ctx.area_scale / 64)):
         x, y = rng.random() * size, rng.random() * size
         r = rng.uniform(r_min, r_max) * NATIVE_PX
@@ -65,14 +67,14 @@ def rosettes(ctx, rng, count, r_min, r_max):
             a = rng.random() * TAU
             stamp_disc(rim, x + 0.8 * r * math.cos(a), y + 0.8 * r * math.sin(a),
                        rng.uniform(0.3, 0.5) * r, 1.0, softness=0.5)
-    rim = [min(r, 1.0) * (1.0 if b > 0.05 else 0.0) for r, b in zip(rim, body)]
+    rim = np.minimum(rim, 1.0) * np.where(body > 0.05, 1.0, 0.0)
     return body, rim
 
 
 def grains(ctx, rng, count, r_min, r_max):
     """Loose grains (cinders, grit), `count` per 8x8 block."""
     size = ctx.size
-    mask = [0.0] * (size * size)
+    mask = np.zeros(size * size)
     for _ in range(int(count * ctx.area_scale / 64)):
         stamp_disc(mask, rng.random() * size, rng.random() * size, rng.uniform(r_min, r_max) * NATIVE_PX,
                    softness=0.4)

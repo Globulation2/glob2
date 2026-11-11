@@ -2,13 +2,16 @@
 """The brick path terrain material."""
 import math
 
-from ._paving import decay_fields, dress, stone_fates, stone_field
+import numpy as np
+
+from ._paving import decay_fields, dress, per_stone, stone_fates, stone_field
 from terrain_core import (
     NATIVE_PX,
     RECIPES,
     Style,
     clamp01,
     fbm,
+    hypot,
     layout_field,
     recipe,
 )
@@ -63,36 +66,33 @@ def herringbone(size, pairs):
         x, y = (ox * width + shift) % size, (oy * width + shift) % size
         bricks.append((x, y, length, width, 0))
         bricks.append((x, (y + width) % size, width, length, 1))
-    ids = [-1] * (size * size)
-    edge = [0.0] * (size * size)
-    along = [0.0] * (size * size)
+    ids = np.full((size, size), -1, dtype=np.int64)
+    edge = np.zeros((size, size))
+    along = np.zeros((size, size))
     gap = NATIVE_PX  # one native pixel of joint on each brick's right and bottom side
     radius = 0.75 * NATIVE_PX
     for k, (x0, y0, bw, bh, vertical) in enumerate(bricks):
         fw, fh = bw - gap, bh - gap
-        for py in range(math.floor(y0), math.ceil(y0 + bh) + 1):
-            v = py + 0.5 - y0
-            if not 0 <= v < bh:
-                continue
-            row = (py % size) * size
-            for px in range(math.floor(x0), math.ceil(x0 + bw) + 1):
-                u = px + 0.5 - x0
-                if not 0 <= u < bw:
-                    continue
-                i = row + px % size
-                ids[i] = k
-                if u >= fw or v >= fh:
-                    edge[i] = -0.5 * NATIVE_PX
-                else:
-                    dx = min(u, fw - u)
-                    dy = min(v, fh - v)
-                    e = min(dx, dy)
-                    if dx < radius and dy < radius:
-                        e = radius - math.hypot(radius - dx, radius - dy)
-                    edge[i] = e
-                along[i] = (v / bh) if vertical else (u / bw)
-    assert min(ids) >= 0
-    return bricks, ids, edge, along
+        py = np.arange(math.floor(y0), math.ceil(y0 + bh) + 1)
+        v = py + 0.5 - y0
+        py, v = py[(0 <= v) & (v < bh)], v[(0 <= v) & (v < bh)]
+        px = np.arange(math.floor(x0), math.ceil(x0 + bw) + 1)
+        u = px + 0.5 - x0
+        px, u = px[(0 <= u) & (u < bw)], u[(0 <= u) & (u < bw)]
+        uu, vv = np.broadcast_arrays(u[None, :], v[:, None])
+        dx = np.minimum(uu, fw - uu)
+        dy = np.minimum(vv, fh - vv)
+        e = np.minimum(dx, dy)
+        corner = (dx < radius) & (dy < radius)
+        if corner.any():
+            e[corner] = radius - hypot(radius - dx[corner], radius - dy[corner])
+        e = np.where((uu >= fw) | (vv >= fh), -0.5 * NATIVE_PX, e)
+        rows, cols = (py % size)[:, None], (px % size)[None, :]
+        ids[rows, cols] = k
+        edge[rows, cols] = e
+        along[rows, cols] = (vv / bh) if vertical else (uu / bw)
+    assert ids.min() >= 0
+    return bricks, ids.ravel(), edge.ravel(), along.ravel()
 
 
 @recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
@@ -116,25 +116,19 @@ def render_brick_path(ctx):
     # Bricks crack across their length, not along it.
     across = [(math.pi / 2 if not vertical else 0.0) + (1 if s.kink > 0 else -1) * 0.0
               for (_, _, _, _, vertical), s in zip(bricks, fates)]
-    mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size))
+    mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size, array=True))
     # Bricks were laid batch by batch, so firings drift in broad runs.
-    batch = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 3, 2, size=size))
+    batch = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 3, 2, size=size, array=True))
     firing = [firing_of(clamp01(0.7 * s.tone + 0.3 * b)) for s, b in zip(fates, batch)]
-    rgb = ([0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size))
     # Each brick one firing, graded end to end by its settling, with a fine
     # mottle across all of them.
     # A few bricks have spalled: their fired skin is gone and the dark, rough
     # core shows.
-    spalled = [s.tone > 0.9 for s in fates]
-    for i in range(size * size):
-        k = ids[i]
-        s = fates[k]
-        c = firing[k]
-        f = (1 + 0.09 * s.cast * (along[i] - 0.5) * 2) * (1 + 0.12 * (mottle[i] - 0.5) * 2)
-        if spalled[k]:
-            f *= 0.7 + 0.25 * (mottle[i] - 0.5) * 2
-        for ch in range(3):
-            rgb[ch][i] = c[ch] * f
+    cast = per_stone(fates, lambda s: s.cast)[ids]
+    f = (1 + 0.09 * cast * (along - 0.5) * 2) * (1 + 0.12 * (mottle - 0.5) * 2)
+    spalled = per_stone(fates, lambda s: s.tone > 0.9)[ids] != 0
+    f = np.where(spalled, f * (0.7 + 0.25 * (mottle - 0.5) * 2), f)
+    rgb = np.array(firing, dtype=np.float64).T[:, ids] * f
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 3.2 * NATIVE_PX,
                 joint=(0.0, 1.5), creep=0.0, chipping=0.8, bevel=1.5, bevel_strength=0.3,
                 crack_along=across, moss=0.25, weeds=0.3, lichen=0.2, grit=0.95, grit_cover=0.22, dust=0.18, lip=0.2)

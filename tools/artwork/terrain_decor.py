@@ -46,7 +46,9 @@ resources. HD frames are registered through tools/artwork/highres_pack.py and
 provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each obstacle material file in
 content/data/terrain/materials/.
-Pure Python 3 plus Pillow; no numpy.
+Python 3 with Pillow and NumPy (development-only dependencies); the
+connected-mass surfaces and walls are computed as arrays, operation for
+operation as the per-pixel loops they replace, so frames stay byte-identical.
 """
 import argparse
 import concurrent.futures
@@ -60,6 +62,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import numpy as np
 import PIL
 from PIL import Image, ImageDraw, ImageFilter, ImageChops
 
@@ -126,6 +129,47 @@ def lerp(a, b, t):
 
 def mix3(a, b, t):
     return tuple(lerp(x, y, t) for x, y in zip(a, b))
+
+
+# Array forms of the helpers above, for the connected masses: each repeats the
+# scalar arithmetic in the same order, so results match bit for bit.
+
+
+def smooth_field(a, b, v):
+    """`smoothstep` over an array."""
+    if b == a:
+        return np.where(v >= b, 1.0, 0.0)
+    t = np.clip((v - a) / (b - a), 0.0, 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def mix_field(a, b, t):
+    """`mix3` over (..., 3) colour arrays (or colours) and a weight array."""
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+    return a + (b - a) * np.asarray(t, dtype=np.float64)[..., None]
+
+
+def ramp_field(stops, t):
+    """`ramp` over an array: (..., 3) colours."""
+    out = np.empty(t.shape + (3,))
+    done = np.zeros(t.shape, dtype=bool)
+    for (t0, c0), (t1, c1) in zip(stops, stops[1:]):
+        take = ~done & (t <= t1)
+        colour = mix_field(c0, c1, np.clip((t - t0) / (t1 - t0), 0.0, 1.0))
+        out[take] = colour[take]
+        done |= take
+    out[~done] = stops[-1][1]
+    return out
+
+
+def image_data(image):
+    """An L or RGB image as an array indexed [y, x] (or [y, x, channel])."""
+    return np.asarray(image).astype(np.int64)
+
+
+def from_data(values):
+    """Clamp to 0..255, truncate as `int` does and make an L or RGB image."""
+    return Image.fromarray(np.clip(values, 0, 255).astype(np.uint8))
 
 
 class Noise:
@@ -1356,19 +1400,16 @@ def canopy_field(mask, foreign=0):
     corners only those two values count, as before, so frames still agree."""
     bits = [1 if (mask >> k) & 1 else -1 if (foreign >> k) & 1 else 0 for k in range(4)]
     size = CELL + 2 * HALO
-    values = []
-    for y in range(size):
-        v = clamp((y - HALO + 0.5) / CELL)
-        for x in range(size):
-            u = clamp((x - HALO + 0.5) / CELL)
-            value = lerp(lerp(bits[0], bits[1], u), lerp(bits[2], bits[3], u), v)
-            if mask in (6, 9) and not foreign:
-                # Substantial joins avoid hourglass pinholes at diagonal corners.
-                value += 0.24 * math.sin(u * math.pi) ** 2 * math.sin(v * math.pi) ** 2
-            values.append(int(clamp(value) * 255))
-    image = Image.new("L", (size, size))
-    image.putdata(values)
-    return image
+    u = np.clip((np.arange(size) - HALO + 0.5) / CELL, 0.0, 1.0)[None, :]
+    v = u.T
+    value = lerp(lerp(bits[0], bits[1], u), lerp(bits[2], bits[3], u), v)
+    if mask in (6, 9) and not foreign:
+        # Substantial joins avoid hourglass pinholes at diagonal corners.
+        # Python's float power, not NumPy's square, so the frames match.
+        sin_u = np.array([math.sin(t * math.pi) ** 2 for t in u.ravel().tolist()])[None, :]
+        sin_v = sin_u.T
+        value = value + 0.24 * sin_u * sin_v
+    return Image.fromarray((np.clip(value, 0.0, 1.0) * 255).astype(np.uint8))
 
 
 def shifted(image, dx, dy):
@@ -1616,15 +1657,18 @@ def noise_patch(rng, cells, size=CLIFF_PATCH):
     lattice.putdata([rng.randrange(256) for _ in range((cells + 3) ** 2)])
     step = size / cells
     big = lattice.resize((int(step * (cells + 3)),) * 2, Image.Resampling.BICUBIC)
-    data = big.crop((int(step), int(step), int(step) + size, int(step) + size)).getdata()
-    return [v / 255 for v in data]
+    data = big.crop((int(step), int(step), int(step) + size, int(step) + size))
+    return np.asarray(data).astype(np.float64).ravel() / 255
 
 
 def octaves(rng, cells, count, size=CLIFF_PATCH):
     fields = [noise_patch(rng, cells * 2 ** o, size) for o in range(count)]
     weights = [0.5 ** o for o in range(count)]
     total = sum(weights)
-    return [sum(w * f[i] for w, f in zip(weights, fields)) / total for i in range(size * size)]
+    out = np.zeros(size * size)
+    for w, f in zip(weights, fields):
+        out = out + w * f
+    return out / total
 
 
 @functools.lru_cache(maxsize=8)
@@ -1681,7 +1725,8 @@ def cliff_features(name, rng, size, centre, fractures, lengths, rocks, spots=Non
     for (x, y) in (spots or disc_spots)(rng, rocks, 14):
         draw_rock(ImageDraw.Draw(stones), rng, centre + x, centre + y, rng.uniform(5, 11))
     joints = joints.filter(ImageFilter.GaussianBlur(0.6))
-    return [v / 255 for v in joints.getdata()], [v / 255 for v in stones.getdata()]
+    return (np.asarray(joints).astype(np.float64).ravel() / 255,
+            np.asarray(stones).astype(np.float64).ravel() / 255)
 
 
 @functools.lru_cache(maxsize=16)
@@ -1712,8 +1757,76 @@ def cliff_detail(name, interior):
         ImageDraw.Draw(fade).rectangle((18, 18, CELL - 19, CELL - 19), fill=255)
         joints = ImageChops.multiply(joints.filter(ImageFilter.GaussianBlur(0.6)),
                                      fade.filter(ImageFilter.GaussianBlur(3)))
-        features = ([max(a, b / 255) for a, b in zip(features[0], joints.getdata())], features[1])
+        features = (np.maximum(features[0], np.asarray(joints).astype(np.float64).ravel() / 255), features[1])
     return fields + features
+
+
+def corner_blend(patches, detail, count):
+    """Blend each vertex colour's patch fields over the cell and halo.
+
+    `patches` holds the four corners' field tuples (flat CLIFF_PATCH-square
+    arrays centred on the vertex), `detail` a filled cell's interior fields
+    (flat CELL-square) or None. The first `count` fields take the
+    variance-preserving bilinear blend; the rest, features drawn whole, take
+    the maximum of every patch that reaches the pixel. Every step repeats the
+    per-pixel arithmetic in order, so the frames are unchanged."""
+    size = CELL + 2 * HALO
+    grid = np.clip((np.arange(size) - HALO + 0.5) / CELL, 0.0, 1.0)
+    u, v = grid[None, :], grid[:, None]
+    weights = [(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v]
+    centre = CLIFF_PATCH // 2
+
+    def view(k, f):
+        oy = centre - HALO - (CELL if k & 2 else 0)
+        ox = centre - HALO - (CELL if k & 1 else 0)
+        return np.asarray(patches[k][f]).reshape(CLIFF_PATCH, CLIFF_PATCH)[oy:oy + size, ox:ox + size]
+
+    region = np.zeros((size, size), dtype=bool)
+    region[HALO:HALO + CELL, HALO:HALO + CELL] = True
+    inside = np.zeros((size, size))
+    if detail:
+        # Zero at the cell edge, so neighbours never see it.
+        edge = np.minimum(np.minimum(u, 1 - u), np.minimum(v, 1 - v))
+        inside = np.where(region, 0.35 * smooth_field(0.0, 0.32, edge), 0.0)
+        weights = [w * (1 - inside) for w in weights]
+
+    def own(f):
+        return np.pad(np.asarray(detail[f]).reshape(CELL, CELL), HALO)
+
+    norm = np.sqrt(weights[0] * weights[0] + weights[1] * weights[1] + weights[2] * weights[2]
+                   + weights[3] * weights[3] + inside * inside)
+    fields = []
+    for f in range(len(patches[0])):
+        if f < count:
+            # Variance-preserving blend: the mix is as rough at the middle of
+            # a cell as next to a vertex, so no grid shows through.
+            total = 0.0
+            for k, w in enumerate(weights):
+                total = total + w * (view(k, f) - 0.5)
+            if detail:
+                total = total + inside * (own(f) - 0.5)
+            fields.append(np.clip(0.5 + total / norm, 0.0, 1.0))
+        else:
+            # Fractures and rocks are drawn whole, never faded: every disc
+            # that reaches the pixel contributes.
+            value = np.maximum(np.maximum(view(0, f), view(1, f)), np.maximum(view(2, f), view(3, f)))
+            if detail:
+                value = np.where(region, np.maximum(value, own(f)), value)
+            fields.append(value)
+    return fields
+
+
+def surface_light(relief, scale):
+    """Lambert term of a relief field lit by CANOPY_LIGHT, with clamped edges,
+    and the term of flat ground."""
+    size = relief.shape[0]
+    after = np.minimum(np.arange(size) + 1, size - 1)
+    before = np.maximum(np.arange(size) - 1, 0)
+    gx = (relief[:, after] - relief[:, before]) * scale
+    gy = (relief[after, :] - relief[before, :]) * scale
+    lx, ly, lz = CANOPY_LIGHT
+    norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
+    return (-gx * lx - gy * ly + lz) / (np.sqrt(gx * gx + gy * gy + 1) * norm_l), lz / norm_l
 
 
 @functools.lru_cache(maxsize=48)
@@ -1723,46 +1836,9 @@ def cliff_surface(name, colours, interior, filled):
     size = CELL + 2 * HALO
     patches = [cliff_patch(name, (colours >> k) & 1) for k in range(4)]
     detail = cliff_detail(name, interior) if filled else None
-    centre = CLIFF_PATCH // 2
-    fields = [[0.0] * (size * size) for _ in range(5)]
-    for y in range(size):
-        v = clamp((y - HALO + 0.5) / CELL)
-        for x in range(size):
-            u = clamp((x - HALO + 0.5) / CELL)
-            weights = [(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v]
-            samples = []
-            for k in range(4):
-                px = x - HALO - (CELL if k & 1 else 0) + centre
-                py = y - HALO - (CELL if k & 2 else 0) + centre
-                samples.append(py * CLIFF_PATCH + px)
-            inside = 0.0
-            if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
-                # Zero at the cell edge, so neighbours never see it.
-                inside = 0.35 * smoothstep(0.0, 0.32, min(u, 1 - u, v, 1 - v))
-                weights = [w * (1 - inside) for w in weights]
-            norm = math.sqrt(sum(w * w for w in weights) + inside * inside)
-            i = y * size + x
-            j = (y - HALO) * CELL + x - HALO
-            for f in range(3):
-                # Variance-preserving blend: the mix is as rough at the middle of
-                # a cell as next to a vertex, so no grid shows through.
-                total = sum(w * (patches[k][f][samples[k]] - 0.5) for k, w in enumerate(weights) if w)
-                if inside:
-                    total += inside * (detail[f][j] - 0.5)
-                fields[f][i] = clamp(0.5 + total / norm)
-            # Fractures and rocks are drawn whole, never faded: every disc that
-            # reaches the pixel contributes.
-            for f in (3, 4):
-                value = max(patch[f][sample] for patch, sample in zip(patches, samples))
-                if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
-                    value = max(value, detail[f][j])
-                fields[f][i] = value
+    fields = corner_blend(patches, detail, 3)
     # Add the features of the cell's four edges.
-    features = []
-    for f in (3, 4):
-        image = Image.new("L", (size, size))
-        image.putdata([int(v * 255) for v in fields[f]])
-        features.append(image)
+    features = [Image.fromarray((fields[f] * 255).astype(np.uint8)) for f in (3, 4)]
     bit = lambda k: (colours >> k) & 1
     for vertical, first, second, cx, cy in ((False, bit(0), bit(1), HALO + CELL // 2, HALO),
                                             (False, bit(2), bit(3), HALO + CELL // 2, HALO + CELL),
@@ -1772,72 +1848,54 @@ def cliff_surface(name, colours, interior, filled):
             layer = Image.new("L", (size, size))
             layer.paste(source, (cx - source.width // 2, cy - source.height // 2))
             features[c] = ImageChops.lighter(features[c], layer)
-    fields[3], fields[4] = ([v / 255 for v in image.getdata()] for image in features)
+    fields[3], fields[4] = (np.asarray(image).astype(np.float64) / 255 for image in features)
     height, tone, grain, joints, stones = fields
     # Fine pitting: independent per pixel, so it needs no agreement at edges.
     rng = random.Random(fnv1a32(f"{style['seed']}-pits:{colours}:{interior}:{int(filled)}"))
-    pits = [rng.random() for _ in range(size * size)]
+    pits = np.array([rng.random() for _ in range(size * size)]).reshape(size, size)
     # Heights: the crags weather into shelves, flat beds with a short riser at
     # each step, so the stone breaks into planes with crisp lit and shaded edges.
     def shelves(h, g):
         level = h * CLIFF_SHELVES + 0.15 * (g - 0.5)
-        step = math.floor(level)
-        return (step + smoothstep(0.0, 0.4, level - step)) / CLIFF_SHELVES
+        step = np.floor(level)
+        return (step + smooth_field(0.0, 0.4, level - step)) / CLIFF_SHELVES
     k0, k_shelf, k_crag, k_grain, k_pit, k_joint, k_rock = style["relief"]
-    relief = [k0 + k_shelf * shelves(h, g) + k_crag * h + k_grain * (g - 0.5) + k_pit * (pt - 0.5) - k_joint * jt
-              + k_rock * st
-              for h, g, pt, jt, st in zip(height, grain, pits, joints, stones)]
-    lx, ly, lz = CANOPY_LIGHT
-    norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
-    flat = lz / norm_l
-    image = Image.new("RGB", (size, size))
-    pix = image.load()
-    for y in range(size):
-        for x in range(size):
-            i = y * size + x
-            r = relief[i]
-            gx = (relief[y * size + min(x + 1, size - 1)] - relief[y * size + max(x - 1, 0)]) * 10
-            gy = (relief[min(y + 1, size - 1) * size + x] - relief[max(y - 1, 0) * size + x]) * 10
-            lam = (-gx * lx - gy * ly + lz) / (math.sqrt(gx * gx + gy * gy + 1) * norm_l)
-            t = (0.46 + 0.8 * (lam - flat) + 0.30 * (r - 0.53) + 0.34 * (tone[i] - 0.5)
-                 + 0.14 * (grain[i] - 0.5) + 0.06 * (pits[i] - 0.5))
-            colour = ramp(style["ramp"], clamp(t))
-            # Lichen and weathering stains on the higher, rougher stone.
-            stain = smoothstep(0.58, 0.78, tone[i]) * smoothstep(0.45, 0.7, grain[i])
-            if stain:
-                colour = mix3(colour, style["lichen"], 0.35 * stain)
-            if joints[i]:
-                colour = mix3(colour, style["crack"], 0.85 * joints[i])
-            # Scrub in the lowest hollows, where the grain is also high.
-            low = smoothstep(0.36, 0.28, r) * smoothstep(0.6, 0.8, grain[i])
-            if low:
-                colour = mix3(colour, mix3(*style["scrub"], clamp(lam)), 0.8 * low)
-            pix[x, y] = tuple(int(clamp(c, 0, 255)) for c in colour)
+    relief = (k0 + k_shelf * shelves(height, grain) + k_crag * height + k_grain * (grain - 0.5)
+              + k_pit * (pits - 0.5) - k_joint * joints + k_rock * stones)
+    lam, flat = surface_light(relief, 10)
+    t = (0.46 + 0.8 * (lam - flat) + 0.30 * (relief - 0.53) + 0.34 * (tone - 0.5)
+         + 0.14 * (grain - 0.5) + 0.06 * (pits - 0.5))
+    colour = ramp_field(style["ramp"], np.clip(t, 0.0, 1.0))
+    # Lichen and weathering stains on the higher, rougher stone.
+    stain = smooth_field(0.58, 0.78, tone) * smooth_field(0.45, 0.7, grain)
+    colour = mix_field(colour, style["lichen"], 0.35 * stain)
+    colour = mix_field(colour, style["crack"], 0.85 * joints)
+    # Scrub in the lowest hollows, where the grain is also high.
+    low = smooth_field(0.36, 0.28, relief) * smooth_field(0.6, 0.8, grain)
+    colour = mix_field(colour, mix_field(*style["scrub"], np.clip(lam, 0.0, 1.0)), 0.8 * low)
+    image = from_data(colour)
     # The outline follows the crags but not the joints: a joint reaching the rim
     # would notch it, and the wall below would extrude the notch into a column.
-    heights = Image.new("L", (size, size))
-    heights.putdata([int(clamp(0.22 + 0.62 * h) * 255) for h in height])
+    heights = from_data(np.clip(0.22 + 0.62 * height, 0.0, 1.0) * 255)
     # Vertical streaks for the walls: the plateau's tone and joints smeared down
     # the face, so fractures line up with the joints above them.
-    marks = Image.new("L", (size, size))
-    marks.putdata([int(clamp(0.5 + 0.4 * (tn - 0.5) + 0.6 * (g - 0.5) - 0.35 * j) * 255)
-                   for tn, g, j in zip(tone, grain, joints)])
+    marks = from_data(np.clip(0.5 + 0.4 * (tone - 0.5) + 0.6 * (grain - 0.5) - 0.35 * joints, 0.0, 1.0) * 255)
     # Columns: the marks drawn out down the face, so fractures line up with
     # the plateau above; rough: the same marks barely softened, for texture.
     return image, heights, marks.filter(ImageFilter.GaussianBlur((0.3, 30))), marks.filter(ImageFilter.GaussianBlur(1.0))
 
 
 def ice_face(style, base, shade, t, c, g, band):
-    """One pixel of a glacier front: blue ice whose depth follows the facet
-    shade, crossed by broken debris bands, under a snow cornice at the lip."""
-    colour = ramp(style["wall"], clamp(0.02 + 1.25 * shade + 0.36 * (c - 0.5)))
+    """A glacier front: blue ice whose depth follows the facet shade, crossed
+    by broken debris bands, under a snow cornice at the lip. Arrays in, the
+    face's (..., 3) colours out."""
+    colour = ramp_field(style["wall"], np.clip(0.02 + 1.25 * shade + 0.36 * (c - 0.5), 0.0, 1.0))
     # A little of the snowfield above, so facets keep its tone.
-    colour = mix3(colour, tuple(v * (0.45 + 0.5 * shade) for v in base), 0.15)
-    seam = (1 - smoothstep(0.0, 0.05, band)) * smoothstep(0.5, 0.66, g)
-    colour = mix3(colour, style["debris"], 0.40 * seam)
-    lip = smoothstep(0.80, 0.92, t + 0.10 * (g - 0.5))
-    colour = mix3(colour, tuple(v * (0.86 + 0.14 * t) for v in style["cornice"]), lip)
-    return tuple(int(clamp(v, 0, 255)) for v in colour)
+    colour = mix_field(colour, base * (0.45 + 0.5 * shade)[..., None], 0.15)
+    seam = (1 - smooth_field(0.0, 0.05, band)) * smooth_field(0.5, 0.66, g)
+    colour = mix_field(colour, style["debris"], 0.40 * seam)
+    lip = smooth_field(0.80, 0.92, t + 0.10 * (g - 0.5))
+    return mix_field(colour, np.asarray(style["cornice"], dtype=np.float64) * (0.86 + 0.14 * t)[..., None], lip)
 
 
 def wall_canvas(own, coverage, rise):
@@ -1855,17 +1913,43 @@ def wall_canvas(own, coverage, rise):
     is carried on down."""
     width, height = own.size
     pad = rise - HALO if rise > HALO else 0
-    tall = Image.new("L", (width, height + pad))
-    tall.paste(own, (0, pad))
+    tall = np.zeros((height + pad, width), dtype=np.uint8)
+    tall[pad:] = np.asarray(own)
     solid = Image.new("L", (width, pad + height + rise))
     solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, pad))
     solid.paste(solid.crop((0, pad + height - 1, width, pad + height)).resize((width, rise)), (0, pad + height))
-    wall_alpha, wall_height = Image.new("L", tall.size), Image.new("L", tall.size)
+    solid = np.asarray(solid) != 0
+    wall_alpha = np.zeros(tall.shape, dtype=np.uint8)
+    wall_height = np.zeros(tall.shape, dtype=np.uint8)
     for d in range(rise + 1):
-        wall_alpha = ImageChops.lighter(wall_alpha, shifted(tall, 0, -d))
-        wall_height = ImageChops.lighter(
-            wall_height, solid.crop((0, d, width, d + height + pad)).point(lambda v, d=d: v and int(d * 255 / rise)))
-    return wall_alpha, wall_height, pad
+        # The footprint moved up d rows, and the face d rows above its foot.
+        wall_alpha[:len(tall) - d] = np.maximum(wall_alpha[:len(tall) - d], tall[d:])
+        wall_height = np.maximum(wall_height, np.where(solid[d:d + height + pad], int(d * 255 / rise), 0)
+                                 .astype(np.uint8))
+    return Image.fromarray(wall_alpha), Image.fromarray(wall_height), pad
+
+
+def wall_rows(pad, height, rise):
+    """Rows of a wall canvas (y from -pad) and the face rows they show."""
+    rows = np.arange(-pad, height)
+    return rows, np.minimum(rows + rise, height - 1)
+
+
+def dome_shade(coverage, gain):
+    """Broad light over a top: the gradient of the blurred footprint toward
+    the light, as an L image."""
+    dome = image_data(coverage.filter(ImageFilter.GaussianBlur(14)))
+    height, width = dome.shape
+    after_x, before_x = np.minimum(np.arange(width) + 2, width - 1), np.maximum(np.arange(width) - 2, 0)
+    after_y, before_y = np.minimum(np.arange(height) + 2, height - 1), np.maximum(np.arange(height) - 2, 0)
+    gx = dome[:, after_x] - dome[:, before_x]
+    gy = dome[after_y, :] - dome[before_y, :]
+    lx, ly, _ = CANOPY_LIGHT
+    return from_data(np.clip(0.5 + (gx * lx + gy * ly) / 255 * gain, 0.0, 1.0) * 255)
+
+
+# Each facet band of the cliff face turns its own way to the light.
+FACET_TURNS = np.array([runtime_hash(level, 7, 0xface7) % 1000 / 1000 - 0.5 for level in range(CLIFF_FACETS + 1)])
 
 
 def render_cliff(name, mask, colours, interior=0, foreign=0):
@@ -1905,37 +1989,29 @@ def render_cliff(name, mask, colours, interior=0, foreign=0):
     # wall_canvas), on a canvas padded `pad` rows at the top.
     wall_alpha, wall_height, pad = wall_canvas(own, coverage, CLIFF_RAISE)
     width, height = own.size
-    column, grit, height_px = columns.load(), rough.load(), wall_height.load()
-    stone = surface.load()
-    wall = Image.new("RGB", wall_alpha.size)
-    wp = wall.load()
-    for y in range(-pad, height):
-        # The face shows the plateau above its foot; below the halo the last
-        # row carries on.
-        yy = min(y + CLIFF_RAISE, height - 1)
-        for x in range(width):
-            t = height_px[x, y + pad] / 255
-            c = column[x, yy] / 255
-            g = grit[x, yy] / 255
-            # Broad facets: the column field cut into bands, each turned its own
-            # way to the light. Bands follow the field, so a facet crossing a
-            # cell edge keeps its shade on both sides.
-            level = c * CLIFF_FACETS
-            turn = runtime_hash(int(level), 7, 0xface7) % 1000 / 1000 - 0.5
-            # Bedding: faint, broken seams under lit steps.
-            band = (t * 2.6 + 0.25 * c) % 1.0
-            ledge = (0.10 * (1 - smoothstep(0.0, 0.07, band)) - 0.05 * smoothstep(0.90, 1.0, band)) * smoothstep(0.42, 0.6, g)
-            # The face is the stone of the plateau above it, in shade: darkest
-            # at the foot, with skylight near the lip.
-            shade = clamp(0.30 + 0.34 * t ** 0.9 + 0.26 * turn - ledge)
-            # Stretched twice down the face so it reads as a drop, not as the
-            # top running on; frames in one row share rows, so it stays seamless.
-            base = stone[x, HALO + 10 + (y - HALO + CLIFF_RAISE) // 2]
-            if "cornice" in style:
-                wp[x, y + pad] = ice_face(style, base, shade, t, c, g, band)
-                continue
-            warm = (1.04, 1.0, 0.94)
-            wp[x, y + pad] = tuple(int(clamp(base[k] * shade * warm[k], 0, 255)) for k in range(3))
+    rows, face = wall_rows(pad, height, CLIFF_RAISE)
+    t = image_data(wall_height) / 255
+    # The face shows the plateau above its foot; below the halo the last
+    # row carries on.
+    c = image_data(columns)[face] / 255
+    g = image_data(rough)[face] / 255
+    # Broad facets: the column field cut into bands, each turned its own
+    # way to the light. Bands follow the field, so a facet crossing a
+    # cell edge keeps its shade on both sides.
+    turn = FACET_TURNS[(c * CLIFF_FACETS).astype(np.int64)]
+    # Bedding: faint, broken seams under lit steps.
+    band = (t * 2.6 + 0.25 * c) % 1.0
+    ledge = (0.10 * (1 - smooth_field(0.0, 0.07, band)) - 0.05 * smooth_field(0.90, 1.0, band)) * smooth_field(0.42, 0.6, g)
+    # The face is the stone of the plateau above it, in shade: darkest
+    # at the foot, with skylight near the lip.
+    shade = np.clip(0.30 + 0.34 * t ** 0.9 + 0.26 * turn - ledge, 0.0, 1.0)
+    # Stretched twice down the face so it reads as a drop, not as the
+    # top running on; frames in one row share rows, so it stays seamless.
+    base = image_data(surface)[HALO + 10 + (rows - HALO + CLIFF_RAISE) // 2].astype(np.float64)
+    if "cornice" in style:
+        wall = from_data(ice_face(style, base, shade, t, c, g, band))
+    else:
+        wall = from_data(base * shade[..., None] * np.array((1.04, 1.0, 0.94)))
     region = (HALO, HALO - CLIFF_RAISE + pad, HALO + CELL, HALO + CELL + pad)
     layer = wall.crop(region).convert("RGBA")
     layer.putalpha(wall_alpha.crop(region))
@@ -1943,15 +2019,7 @@ def render_cliff(name, mask, colours, interior=0, foreign=0):
 
     # Broad light over the plateau: it rises toward the rims that face the
     # light and falls away toward those that do not.
-    dome = coverage.filter(ImageFilter.GaussianBlur(14)).load()
-    shade = Image.new("L", coverage.size)
-    sh = shade.load()
-    lx, ly, _ = CANOPY_LIGHT
-    for y in range(coverage.size[1]):
-        for x in range(coverage.size[0]):
-            gx = dome[min(x + 2, coverage.size[0] - 1), y] - dome[max(x - 2, 0), y]
-            gy = dome[x, min(y + 2, coverage.size[1] - 1)] - dome[x, max(y - 2, 0)]
-            sh[x, y] = int(clamp(0.5 + (gx * lx + gy * ly) / 255 * 1.6) * 255)
+    shade = dome_shade(coverage, 1.6)
     lighter = surface.point(lambda v: min(255, int(v * 1.12 + 4)))
     darker = surface.point(lambda v: int(v * 0.80))
     top = Image.composite(lighter, Image.composite(surface, darker, shade.point(lambda v: min(255, v * 2))),
@@ -1997,8 +2065,8 @@ def stretched_patch(rng, cells_x, cells_y, size=CLIFF_PATCH):
     lattice.putdata([rng.randrange(256) for _ in range((cells_x + 3) * (cells_y + 3))])
     sx, sy = size / cells_x, size / cells_y
     big = lattice.resize((int(sx * (cells_x + 3)), int(sy * (cells_y + 3))), Image.Resampling.BICUBIC)
-    data = big.crop((int(sx), int(sy), int(sx) + size, int(sy) + size)).getdata()
-    return [v / 255 for v in data]
+    data = big.crop((int(sx), int(sy), int(sx) + size, int(sy) + size))
+    return np.asarray(data).astype(np.float64).ravel() / 255
 
 
 @functools.lru_cache(maxsize=4)
@@ -2053,30 +2121,7 @@ def icefall_surface(colours, interior, filled):
     size = CELL + 2 * HALO
     patches = [icefall_patch((colours >> k) & 1) for k in range(4)]
     detail = icefall_detail(interior) if filled else None
-    centre = CLIFF_PATCH // 2
-    count = len(patches[0])
-    fields = [[0.0] * (size * size) for _ in range(count)]
-    for y in range(size):
-        v = clamp((y - HALO + 0.5) / CELL)
-        for x in range(size):
-            u = clamp((x - HALO + 0.5) / CELL)
-            weights = [(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v]
-            samples = [(y - HALO - (CELL if k & 2 else 0) + centre) * CLIFF_PATCH
-                       + x - HALO - (CELL if k & 1 else 0) + centre for k in range(4)]
-            inside = 0.0
-            if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
-                # Zero at the cell edge, so neighbours never see it.
-                inside = 0.35 * smoothstep(0.0, 0.32, min(u, 1 - u, v, 1 - v))
-                weights = [w * (1 - inside) for w in weights]
-            norm = math.sqrt(sum(w * w for w in weights) + inside * inside)
-            i = y * size + x
-            j = (y - HALO) * CELL + x - HALO
-            for f in range(count):
-                total = sum(w * (patches[k][f][samples[k]] - 0.5) for k, w in enumerate(weights) if w)
-                if inside:
-                    total += inside * (detail[f][j] - 0.5)
-                fields[f][i] = clamp(0.5 + total / norm)
-    tone, scour, _, _, grain = fields
+    tone, scour, _, _, grain = corner_blend(patches, detail, len(patches[0]))
     # Crevasses of the cell's top and bottom edges, the only two it can see.
     bit = lambda k: (colours >> k) & 1
     crack = [0.0] * (size * size)
@@ -2093,48 +2138,35 @@ def icefall_surface(colours, interior, filled):
                 if core > crack[i]:
                     crack[i] = core
                     near[i] = smoothstep(-0.3, 0.6, (y + 0.5 - centre) / width)
-    relief = [0.5 + 0.10 * (t - 0.5) + 0.04 * (g - 0.5) - 0.42 * k for t, g, k in zip(tone, grain, crack)]
-    lx, ly, lz = CANOPY_LIGHT
-    norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
-    flat = lz / norm_l
-    image = Image.new("RGB", (size, size))
-    pix = image.load()
-    for y in range(size):
-        for x in range(size):
-            i = y * size + x
-            gx = (relief[y * size + min(x + 1, size - 1)] - relief[y * size + max(x - 1, 0)]) * 12
-            gy = (relief[min(y + 1, size - 1) * size + x] - relief[max(y - 1, 0) * size + x]) * 12
-            lam = (-gx * lx - gy * ly + lz) / (math.sqrt(gx * gx + gy * gy + 1) * norm_l)
-            # Wind-packed snow with faint sastrugi; scoured ridges bare blue ice.
-            colour = ramp(style["snow"], clamp(0.5 + 0.7 * (tone[i] - 0.5) + 0.25 * (grain[i] - 0.5)))
-            bare = smoothstep(0.605, 0.635, scour[i] + 0.10 * (grain[i] - 0.5))
-            if bare:
-                colour = mix3(colour, ramp(style["ice"], tone[i]), 0.85 * bare)
-            if crack[i]:
-                # The far wall faces the viewer and catches skylight; the gap
-                # under the near lip falls into deep blue shadow.
-                inner = ramp(style["crevasse"], clamp(crack[i] * (0.55 + 0.6 * near[i])))
-                colour = mix3(colour, inner, smoothstep(0.0, 0.2, crack[i]))
-            shade = clamp(0.92 + 0.9 * (lam - flat), 0.45, 1.12)
-            pix[x, y] = tuple(int(clamp(c * shade, 0, 255)) for c in colour)
+    crack = np.array(crack).reshape(size, size)
+    near = np.array(near).reshape(size, size)
+    relief = 0.5 + 0.10 * (tone - 0.5) + 0.04 * (grain - 0.5) - 0.42 * crack
+    lam, flat = surface_light(relief, 12)
+    # Wind-packed snow with faint sastrugi; scoured ridges bare blue ice.
+    colour = ramp_field(style["snow"], np.clip(0.5 + 0.7 * (tone - 0.5) + 0.25 * (grain - 0.5), 0.0, 1.0))
+    bare = smooth_field(0.605, 0.635, scour + 0.10 * (grain - 0.5))
+    colour = mix_field(colour, ramp_field(style["ice"], tone), 0.85 * bare)
+    # The far wall faces the viewer and catches skylight; the gap under the
+    # near lip falls into deep blue shadow.
+    inner = ramp_field(style["crevasse"], np.clip(crack * (0.55 + 0.6 * near), 0.0, 1.0))
+    colour = mix_field(colour, inner, smooth_field(0.0, 0.2, crack))
+    shade = np.clip(0.92 + 0.9 * (lam - flat), 0.45, 1.12)
+    image = from_data(colour * shade[..., None])
     # The outline follows the snow's broad swell, not the crevasses: a crack
     # meeting the rim shows on the wall below it instead.
-    heights = Image.new("L", (size, size))
-    heights.putdata([int(clamp(0.22 + 0.62 * t) * 255) for t in tone])
+    heights = from_data(np.clip(0.22 + 0.62 * tone, 0.0, 1.0) * 255)
     # Wall streaks: fluting from the fine grain, and crevasses carried down the face.
-    marks = Image.new("L", (size, size))
-    marks.putdata([int(clamp(0.5 + 0.9 * (g - 0.5) - 0.5 * k) * 255) for g, k in zip(grain, crack)])
+    marks = from_data(np.clip(0.5 + 0.9 * (grain - 0.5) - 0.5 * crack, 0.0, 1.0) * 255)
     return image, heights, marks.filter(ImageFilter.GaussianBlur((0.4, 30))), marks.filter(ImageFilter.GaussianBlur(1.0))
 
 
 def icefall_wall(t, c, g):
     """Fluting: vertical runnels from the column field over blue that deepens
     toward the foot, with a snow rind at the lip."""
-    colour = ramp(ICEFALL_STYLE["wall"], clamp(t * 0.96 + 0.08 * (c - 0.5)))
-    shade = clamp(0.82 + 0.42 * (c - 0.5) + 0.10 * (g - 0.5))
-    if t > 0.94:
-        shade = max(shade, 0.98)
-    return tuple(int(clamp(colour[k] * shade, 0, 255)) for k in range(3))
+    colour = ramp_field(ICEFALL_STYLE["wall"], np.clip(t * 0.96 + 0.08 * (c - 0.5), 0.0, 1.0))
+    shade = np.clip(0.82 + 0.42 * (c - 0.5) + 0.10 * (g - 0.5), 0.0, 1.0)
+    shade = np.where(t > 0.94, np.maximum(shade, 0.98), shade)
+    return colour * shade[..., None]
 
 
 # The connected Barriers masses beside cliffs: each names its surface (the lit
@@ -2197,29 +2229,16 @@ def render_mass(name, mask, colours, interior=0, foreign=0):
     # Wall: the face of this cell's footprint, as for cliffs (see wall_canvas).
     wall_alpha, wall_height, pad = wall_canvas(own, coverage, lift)
     width, height = own.size
-    column, grit, height_px = columns.load(), rough.load(), wall_height.load()
-    wall = Image.new("RGB", wall_alpha.size)
-    wp = wall.load()
-    wall_colour = look["wall"]
-    for y in range(-pad, height):
-        yy = min(y + lift, height - 1)
-        for x in range(width):
-            wp[x, y + pad] = wall_colour(height_px[x, y + pad] / 255, column[x, yy] / 255, grit[x, yy] / 255)
+    _, face = wall_rows(pad, height, lift)
+    wall = from_data(look["wall"](image_data(wall_height) / 255, image_data(columns)[face] / 255,
+                                  image_data(rough)[face] / 255))
     region = (HALO, HALO - lift + pad, HALO + CELL, HALO + CELL + pad)
     layer = wall.crop(region).convert("RGBA")
     layer.putalpha(wall_alpha.crop(region))
     frame.alpha_composite(layer, (0, CLIFF_TOP - lift))
 
     # Broad light over the top, rising toward the rims that face the light.
-    dome = coverage.filter(ImageFilter.GaussianBlur(14)).load()
-    shade = Image.new("L", coverage.size)
-    sh = shade.load()
-    lx, ly, _ = CANOPY_LIGHT
-    for y in range(coverage.size[1]):
-        for x in range(coverage.size[0]):
-            gx = dome[min(x + 2, coverage.size[0] - 1), y] - dome[max(x - 2, 0), y]
-            gy = dome[x, min(y + 2, coverage.size[1] - 1)] - dome[x, max(y - 2, 0)]
-            sh[x, y] = int(clamp(0.5 + (gx * lx + gy * ly) / 255 * 1.4) * 255)
+    shade = dome_shade(coverage, 1.4)
     lighter = surface.point(lambda v: min(255, int(v * 1.06 + 4)))
     darker = surface.point(lambda v: int(v * 0.86))
     top = Image.composite(lighter, Image.composite(surface, darker, shade.point(lambda v: min(255, v * 2))),
