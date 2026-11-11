@@ -274,12 +274,51 @@ def _block_worley_master(size, count, metric, stretch, state):
             guard, rng.getstate())
 
 
-def block_worley(ctx, count, metric="euclid", stretch=1.0):
+@lru_cache(maxsize=4)
+def _block_worley_kept_master(size, count, metric, stretch, state, keep):
+    """`_block_worley_master` over the kept points only. Every point is still
+    drawn, so the stream advances as without `keep`; the guard is certified
+    against the kept points, whose cells reach further than the full set's."""
+    rng = random.Random()
+    rng.setstate(state)
+    points = [(rng.random() * size, rng.random() * size) for _ in range(count)]
+    angles = [rng.random() * TAU for _ in range(count)] if metric == "angular" else []
+    turns = [(math.cos(a), math.sin(a)) for a in angles] if angles else None
+    first, second, ids = _worley_kept(points, turns, keep, metric, stretch, size)
+    band = 64
+    reach = max(second[i] for i in range(size * size)
+                if min(i % size, i // size, size - 1 - i % size, size - 1 - i // size) < band)
+    factor = (1.0 if metric == "euclid" else
+              1 / math.sqrt(1 + 1 / stretch ** 2) if metric == "angular" else 1 / math.sqrt(2))
+    guard = math.ceil(band + reach / factor) + 1
+    cell = size / math.sqrt(count)
+    return (points, turns, [v / cell for v in first], [v / cell for v in second], ids,
+            guard, rng.getstate())
+
+
+def _worley_kept(points, turns, keep, metric, stretch, size):
+    """Worley over the points whose `keep` is true; IDs index all points."""
+    index = [i for i, k in enumerate(keep) if k]
+    first, second, ids = _worley_from_points(
+        [points[i] for i in index], metric,
+        [turns[i] for i in index] if turns is not None else None, stretch, size=size)
+    return first, second, [index[i] for i in ids]
+
+
+def block_worley(ctx, count, metric="euclid", stretch=1.0, keep=None):
     """Shared boundary cells, independently placed interior cells, exact F1/F2.
 
     Returns own F1/F2/IDs followed by their common references. The certified
     geometry guard keeps every layout identical throughout the outer64 pixels.
+
+    `keep(count)`, when given, draws one flag per cell from `ctx.shared_rng`
+    just after the cell points, and returns them; the cells are then built
+    from the kept points alone (distances still in units of the full cell
+    spacing, IDs still indexing every cell), so a kept cell is never cut by
+    a neighbour that was left out.
     """
+    if keep is not None:
+        return _block_worley_keep(ctx, round(count * ctx.area_scale), metric, stretch, keep)
     size, count = ctx.size, round(count * ctx.area_scale)
     points, turns, common1, common2, common_ids, guard, state = _block_worley_master(
         size, count, metric, stretch, ctx.shared_rng.getstate())
@@ -296,6 +335,32 @@ def block_worley(ctx, count, metric="euclid", stretch=1.0):
             a = ctx.rng.random() * TAU
             rotations[i] = (math.cos(a), math.sin(a))
     first, second, ids = _worley_from_points(positions, metric, rotations, stretch, size=size)
+    cell = size / math.sqrt(count)
+    return [v / cell for v in first], [v / cell for v in second], ids, common1, common2, common_ids
+
+
+def _block_worley_keep(ctx, count, metric, stretch, keep):
+    """`block_worley` with a keep-mask drawn just after the cell points."""
+    size = ctx.size
+    start = ctx.shared_rng.getstate()
+    for _ in range(count * (3 if metric == "angular" else 2)):
+        ctx.shared_rng.random()
+    after_points = ctx.shared_rng.getstate()
+    flags = tuple(bool(k) for k in keep(count))
+    points, turns, common1, common2, common_ids, guard, _ = _block_worley_kept_master(
+        size, count, metric, stretch, start, flags)
+    if ctx.variant == 0:
+        ctx.rng.setstate(after_points)
+        return common1, common2, common_ids, common1, common2, common_ids
+    positions, rotations = list(points), list(turns) if turns is not None else None
+    for i, (x, y) in enumerate(points):
+        if min(x, y, size - x, size - y) <= guard:
+            continue
+        positions[i] = (ctx.rng.uniform(guard, size - guard), ctx.rng.uniform(guard, size - guard))
+        if rotations is not None:
+            a = ctx.rng.random() * TAU
+            rotations[i] = (math.cos(a), math.sin(a))
+    first, second, ids = _worley_kept(positions, rotations, flags, metric, stretch, size)
     cell = size / math.sqrt(count)
     return [v / cell for v in first], [v / cell for v in second], ids, common1, common2, common_ids
 

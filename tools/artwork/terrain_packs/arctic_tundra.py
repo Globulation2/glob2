@@ -48,7 +48,7 @@ def render_arctic_tundra(ctx):
     # rounded cushions, built of small lumps instead of sprigs, in snow tones.
     drift = layout_field(ctx, lambda rng: fbm(rng, 2, 3, size=size))
     patch = [0.7 * smoothstep(0.08, 0.3, d) + 0.3 * v for d, v in zip(centre, drift)]
-    drifts, cushions = heather_cushions(ctx, p, cells=10, tufts=1400, threshold=0.47, spread=0.2, light=0.08,
+    drifts, cushions = heather_cushions(ctx, p, cells=10, tufts=1400, threshold=0.83, spread=0.2, light=0.08,
                                         part=0.04, dead_share=0.0, patch=patch)
     # Drifted snow fills the hollows between neighbouring cushions, so a
     # clump reads as one scalloped drift rather than separate domes.

@@ -68,10 +68,13 @@ def laterite_nodules(ctx, fines):
     size = len(fines)
     height, common = [0.0] * size, [0.0] * size
     tone, iron, top = [0.0] * size, [0.0] * size, [0.0] * size
-    for cells, keep, low, high, black_share in ((5, 0.75, 0.7, 0.95, 0.0), (14, 0.7, 0.55, 0.85, 0.09)):
-        f1, f2, ids, c1, c2, cids = block_worley(ctx, cells)
+    for cells, keep, low, high, black_share in ((5, 0.1875, 0.7, 0.95, 0.0), (14, 0.175, 0.55, 0.85, 0.09)):
+        # Cells come from the kept nodules only, so none is cut or flattened
+        # against a neighbour that was left out.
+        kept = []
+        f1, f2, ids, c1, c2, cids = block_worley(
+            ctx, cells, keep=lambda n: kept.extend(ctx.shared_rng.random() < keep for _ in range(n)) or kept)
         count = cells * ctx.area_scale
-        kept = [ctx.shared_rng.random() < keep for _ in range(count)]
         radius = [0.5 * ctx.shared_rng.uniform(low, high) for _ in range(count)]
         shade_of = [ctx.shared_rng.random() for _ in range(count)]
         black = [ctx.shared_rng.random() < black_share for _ in range(count)]

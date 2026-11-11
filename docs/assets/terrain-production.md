@@ -393,7 +393,10 @@ by the frames that share it. Its ground material is talus: the chips and cobbles
 of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
-follows the crags rather than the cell grid. Cliffs draw in their own decor
+follows the crags rather than the cell grid. Each frame's wall rises the full
+twenty native pixels, into the frame above its cell where it must: at a convex
+south corner the rim curves in under the next row, and that row's wall, not its
+top, covers the strip of the cell above. Cliffs draw in their own decor
 layer, so against hedge, thicket or crags they keep their walls; hedge and
 thicket keep their own edge, while crags keep clear of the rim.
 
