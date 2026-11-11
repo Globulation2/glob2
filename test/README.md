@@ -60,12 +60,12 @@ authorization, refresh, expiry and cancellation across preview owners.
 
 `UnitCatalog` validates developer-authored definitions and migration boundaries.
 `UnitCustomization` exercises combined capabilities, cargo accounting and save
-continuation. Its locked ablation fixture exports `unit-ablations.trace`; native
-and serial/threaded browser evidence must match every row of the committed trace.
-`test/run-browser-determinism.py --engine-binary` retains that evidence alongside
-the stock replay and resource composition traces. Current resource compositions
-use `test/fixtures/resources/seeded-compositions-units.trace`; the earlier
-`seeded-compositions.trace` remains historical evidence. Native and browser
+continuation. Its locked ablation case exports `unit-ablations.trace`, and the
+`RuntimeResources` composition case exports `seeded-compositions.trace`; both are
+`[sim-trace]` cases with no committed fixture. `test/run-browser-determinism.py
+--engine-binary` retains the native traces alongside the stock replay, and
+`.github/scripts/ci_compare_evidence.py` requires every native and serial/threaded
+browser trace to match the first native one row for row. Native and browser
 resource/unit evidence must identify the same clean source revision.
 
 `SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig

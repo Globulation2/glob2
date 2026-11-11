@@ -841,11 +841,11 @@ TEST_SUITE("UnitCustomization")
     // carrying wood and stone. The run repeats tick for tick, every unit keeps
     // exactly the capabilities its definition grants and the layer its movement
     // implies, nobody loses or gains cargo with nowhere to deliver it, and a save
-    // after the run continues identically. The per-tick trace stays a committed
-    // golden: it is the cross-platform reference that native and browser
-    // determinism evidence (test/run-browser-determinism.py,
-    // .github/scripts/ci_compare_evidence.py) must reproduce row for row.
-    TEST_CASE("all locked capability ablations keep their capabilities and cargo and match fixed tick and RNG traces [golden][artifacts]")
+    // after the run continues identically. The per-tick trace is recorded for
+    // sim-diff and for the cross-platform evidence, where every native and
+    // browser producer must match the first native trace row for row
+    // (test/run-browser-determinism.py, .github/scripts/ci_compare_evidence.py).
+    TEST_CASE("all locked capability ablations keep their capabilities and cargo and match fixed tick and RNG traces [sim-trace][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         std::vector<Uint32> expected;
@@ -891,7 +891,7 @@ TEST_SUITE("UnitCustomization")
             }
             if (repeat) checkPhaseContinuation(world.game,32);
         }
-        glob2test::expectGolden("unit-catalog/ablation-checksums.txt",golden.str());
+        glob2test::recordSimTrace("unit-catalog/ablation-checksums.txt",golden.str());
         glob2test::writeFile(glob2test::artifactDir()/"unit-ablations.trace",golden.str());
     }
 

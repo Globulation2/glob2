@@ -34,7 +34,8 @@ MAX_AGE = dt.timedelta(days=7)
 # fnmatch patterns over "Suite/name [tags]" (the binary prefix removed); [[] matches a bracket.
 ALWAYS = (
     'TurnEngineHarness/*', '*[[]save-format[]]*', '*[[]golden[]]*', '*Replay*/*',
-    'UnitCustomization/*ablation*', 'MapGenerator*Golden*', 'SimVersion*/*',
+    'UnitCustomization/*ablation*', 'RuntimeResources/frozen seeded resource compositions*',
+    'MapGenerator*Golden*', 'SimVersion*/*',
 )
 UNATTRIBUTABLE_PREFIXES = ('SConstruct', 'scons/', 'src/SConscript', 'libs/gag/src/SConscript', 'libs/usl/src/SConscript',
                            'test/', 'content/', '.github/', 'third_party/', 'vcpkg.json', 'platforms/')

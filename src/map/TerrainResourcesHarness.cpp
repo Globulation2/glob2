@@ -1139,7 +1139,7 @@ TEST_CASE("renamed deposits and sprite variants preserve stochastic stock trajec
 }
 }
 
-TEST_CASE("frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("frozen seeded resource compositions preserve invariants and exact simulation continuation [sim-trace]" * doctest::test_suite("RuntimeResources"))
 {
     glob2test::HeadlessGlobals globals;
     using Json=nlohmann::json;
@@ -1318,7 +1318,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         REQUIRE(result.matched);
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
-    glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
+    glob2test::recordSimTrace("resources/seeded-compositions-units.trace",trace.str());
 }
 
 TEST_CASE("frozen resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))

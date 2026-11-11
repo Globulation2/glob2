@@ -193,9 +193,8 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/check_javascript_evidence.py", "test/build_provenance.py",
                      "test/check_telemetry_simulation.py", "test/test_javascript_evidence.py",
                      "src/unit/types/UnitCatalogTest.cpp", "src/unit/UnitCustomizationTest.cpp",
-                     "test/fixtures/unit-catalog/ablation-checksums.txt",
                      "test/maxima/check_save_continuation_fixture.py",
-                     "test/fixtures/resources/seeded-compositions-units.trace",
+                     "src/map/TerrainResourcesHarness.cpp",
                      "test/support/TestMain.cpp", "libs/gag/src/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
