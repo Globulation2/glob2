@@ -17,6 +17,7 @@
 #include <StreamBackend.h>
 #include <array>
 #include "Building.h"
+#include "MapScript.h"
 
 namespace
 {

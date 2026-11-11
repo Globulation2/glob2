@@ -49,6 +49,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include "Building.h"
+#include "SGSL.h"
 
 static void require(bool ok, const char* message)
 {

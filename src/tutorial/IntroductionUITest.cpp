@@ -15,6 +15,8 @@
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include "Game.h"
+#include "MapScript.h"
+#include "GameObjectives.h"
 #include "Team.h"
 #include "GameGUIDialog.h"
 

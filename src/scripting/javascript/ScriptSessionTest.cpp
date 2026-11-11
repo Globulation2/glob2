@@ -9,6 +9,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include "Game.h"
+#include "MapScript.h"
 
 TEST_CASE("JavaScript fatal failure tears down a live engine session" *
 		  doctest::test_suite("JavaScriptSession"))

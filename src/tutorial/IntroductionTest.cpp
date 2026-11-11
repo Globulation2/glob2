@@ -23,6 +23,10 @@
 #include <zlib.h>
 #include "Unit.h"
 #include "Building.h"
+#include "SGSL.h"
+#include "MapScript.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 #include "sim/snapshot/WorldSnapshot.h"
 
 namespace

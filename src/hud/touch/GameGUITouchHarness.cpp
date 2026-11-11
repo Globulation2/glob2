@@ -66,6 +66,7 @@
 #include <source_location>
 #include "Game.h"
 #include "sim/EntityRefOf.h"
+#include "GameHints.h"
 #include "render/scene/SceneExtract.h"
 #include "GameGUIToolManager.h"
 

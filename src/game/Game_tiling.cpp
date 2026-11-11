@@ -13,6 +13,8 @@
 #include "UnitType.h"
 
 #include <vector>
+#include "SGSL.h"
+#include "MapScript.h"
 
 namespace
 {

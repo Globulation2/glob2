@@ -51,6 +51,7 @@
 #include <cstdio>
 #include <iostream>
 #include <chrono>
+#include "SGSL.h"
 
 GlobalContainer *globalContainer = nullptr;
 using namespace GAGCore;
