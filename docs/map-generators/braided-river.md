@@ -2,7 +2,7 @@
 
 **Braided river** (`braided-river`, numeric ID 42) is a glacial outwash plain: a wide pale bed of
 gravel runs the long way round the map, its channels splitting and rejoining round lens-shaped bars
-of lush grass, darker where they scour pools at the confluences. Dry, stony terraces lie along either
+of green grass, darker where they scour pools at the confluences. Dry, stony terraces lie along either
 bank, and a line of bedrock bluffs closes the far seam of the torus where the two terraces meet. The
 glacier's moraine is hummocked along each terrace edge. Homes stand on the terraces; the bars are the
 fertile ground; on foot the only way from bank to bank is over the riffles (sand fords) that join the
@@ -10,7 +10,9 @@ bars this map, and which bars join which is redrawn every seed.
 
 Revision 5 (Braided River 2.0) redrew the map with the engine's full terrain palette; revision 4 drew
 everything from grass, sand, water and stone. The braid, the riffles, the homes and their kits are
-laid exactly as revision 4 laid them for the same seed.
+laid exactly as revision 4 laid them for the same seed. Revision 7 draws each rule group in one look
+per season, but for the grass: green bars against a dry terrace; every rule, deposit and start is
+revision 6's.
 
 ## How it plays
 
@@ -34,8 +36,8 @@ laid exactly as revision 4 laid them for the same seed.
   face of stone: one on every colony's own terrace, as near its column as fits and the same ten stone
   each, and more along both faces with `stone-amount`. Scree skirts the rock (slow, unbuildable,
   grows nothing).
-- **The dry terrace is building room.** Beyond the water's reach the terrace is pavement (heath or
-  tundra: buildable, holds nothing, slows growth near it as sand does) and dry grass with finite
+- **The dry terrace is building room.** Beyond the water's reach the terrace is pavement (tundra or
+  heath: buildable, holds nothing, slows growth near it as sand does) and dry grass with finite
   woodlots and stone outcrops. Revision 4 broke the terrace with sand patches from eight steps from the
   water, which slowed the bank strip's crops; pavement lies only where nothing grows anyway.
 
@@ -57,7 +59,7 @@ change a rule.
 | Buttresses and relief | Every colony's buttress (a half ellipse four tiles out, its outer two rows over five columns a quarry face) as near its column as fits on its own terrace; ambient buttresses one per 64 tiles of each face at 100% stone; a relief of up to three rows along each face; scree aprons (`talusApron`). Rock keeps 3 tiles clear of every home's settling box and 12 steps from water. |
 | Pavement | `dry-patches` percent of the terrace beyond 22 steps from water, where a fractal noise peaks, 20 tiles (frayed) from every home's middle and off every quarry. |
 | Deep pools | Water two steps from any land (`deepCore`), opened so only cores three vertices across survive, in pools of ten or more, clear of every riffle. |
-| Looks | Season (Meltwater: every bar tile lush, blue deep water, tundra pavement; Late summer: bars lush only by the water, dark water, heath and dirt). Terrace green within 14 or 9 steps of water (frayed) and dry grass beyond, every home's garden plain grass; every sand vertex pale gravel; knots outcrop. |
+| Looks | Season (Meltwater: lush bars, blue deep water, tundra pavement; Late summer: plain green bars, dark water, heath). The whole terrace, gardens included, is dry grass, laid with the bars' grass after every stage that needs exact grass (the starting-crop top-up still finds the plain grass revision 6 left); every sand vertex pale gravel; moraine knots outcrop, the bluffs plain rock. |
 | Resources | Every home's kit (wheat and wood beside the swarm, stone behind) and its promised bar's wheat and wood, unscaled; bar farmland a third of their grass, bank strips a quarter of that; dry woodlots and outcrops counted over dry grass and pavement both; fruit on the deep bars; algae; quarry stone. |
 
 `validateWorld` rebuilds the design and requires: the band round the seam cannot be crossed over

@@ -274,7 +274,7 @@ TEST_SUITE("TerrainMaterials")
 								"hoodoos", "petrified_stumps"})
 		{
 			CAPTURE(key);
-			CHECK(definitions.materials[definitions.find(key)].decor.clearOfMasses == 1);
+			CHECK(definitions.materials[definitions.find(key)].decor.clearOfMasses == 0);
 		}
 		// Masses and foliage never use it.
 		for (const char *key : {"cliffs", "icefall", "hedge", "thicket"})
@@ -293,10 +293,10 @@ TEST_SUITE("TerrainMaterials")
 					material["decor"]["clear_of_masses"] = bad;
 					CHECK_THROWS(TerrainVisual::Catalog::parse(document));
 				}
-				material["decor"]["clear_of_masses"] = 0;
-				CHECK(TerrainVisual::Catalog::parse(document)
-						  .materials[definitions.find("boulders")].decor.clearOfMasses == 0);
 				material["decor"]["clear_of_masses"] = 1;
+				CHECK(TerrainVisual::Catalog::parse(document)
+						  .materials[definitions.find("boulders")].decor.clearOfMasses == 1);
+				material["decor"]["clear_of_masses"] = 0;
 			}
 			// Masses and connected foliage tile across cells, so skipping one
 			// would cut their surface.

@@ -39,9 +39,10 @@ drew everything from grass, sand and water.
 - **Moss (off by default).** With `moss` on, grass in the lowest third of the land, in patches and
   beyond each home's 12-tile garden, is moss: crop land that waters its neighbours a little. It is
   off by default because the growth tool loses food to it (see Food).
-- **Looks only.** Lush grass on low ground, dry tussocks on the hummock tops (never within a
-  frayed disc about 20 tiles round a home's middle), pale and yellow beach sand, and the climate's artwork change nothing in play.
-  Every swarm keeps a frayed disc of plain grass about 11 tiles in radius.
+- **Looks only.** The climate picks one look for each kind of ground over the whole map, homes
+  included: one grass, one sand, one deep water, one mud, one moss and one thicket. They change
+  nothing in play. Revision 7 dropped the second beach sand, the lush and dry grass bands and the
+  plain-grass discs round the swarms, which made the map hard to read.
 
 ## How it is built
 
@@ -58,7 +59,7 @@ again), then the bog pass over a mechanic sketch of canonical types:
 | Mud | Beach sand within two steps of water, outside 12 tiles of every swarm and 6 of algae, ranked by smooth noise; the `mudflats` share of it. |
 | Moss | Grass below the land's 36th percentile, where a patch field passes, outside 12 tiles of every swarm, in patches of 24 vertices or more (only with `moss` on). |
 | Causeways | Per colony, the best straight crossing found by a walking flood from its swarm; two rows of boardwalk vertices, so the crossing tiles are pure boardwalk; causeways 16 tiles apart. |
-| Looks | `composeLooks` by climate; lush and dry grass by the land's percentiles with a noise fray. |
+| Looks | `composeLooks` by climate: one look per rule group, map-wide (the pass runs after every stage that needs exact grass). |
 
 ## Controls
 
@@ -72,7 +73,7 @@ again), then the bog pass over a mechanic sketch of canonical types:
 | Moss | on/off (off) | Moss in the hollows, beyond each home's 12-tile garden. |
 | Hammocks | 0–8 (3) | Thicket hammocks per 128×128 tiles. |
 | Causeways | on/off (on) | Boardwalks across necks of water near homes where the walk round is long. |
-| Climate | Random, Temperate, Tropical | Looks only: Temperate is a bog (black water, mud, moss, brown thicket, pale beaches); Tropical a mangrove swamp (blue deep water, mudflats, loam, dark hedge canopy, more lush grass). Plays identically. |
+| Climate | Random, Temperate, Tropical | Looks only: Temperate is a bog (plain grass, pale sand, black water, mud, moss, brown thicket); Tropical a mangrove swamp (lush grass, yellow sand, blue deep water, mudflats, loam, dark hedge canopy). Plays identically. |
 | Wheat, wood, stone, algae amount | 0–300% (100) | The resource bands of the field. |
 | Stone on hilltops | on/off (off) | Stone on the highest grass rather than above the beaches. |
 | Repeat landscape | 0–5 (0) | Tile the field so colonies can share one patch. The bog pass runs once over the whole map, so the repeated patches no longer match exactly in hammocks, deep cores, mud, causeways and looks. |
@@ -123,8 +124,6 @@ every grass/moss edge tile as no farmland; that is why it is off by default.
   place fewer than wanted (telemetry `swamp.hammocks.short`).
 - Causeways are rare by construction (none on some maps) and promised to nobody; their savings are in
   `swamp.causeways.planned-saving` and `mean-saving-hundredths` per colony.
-- Dry grass renders as bare brown ground in the game view, so it is kept to the hummock tops and off
-  the homes.
 - At the maximum resource amounts revision 5's crops already overgrow some homes' building room
   after a few thousand ticks of unharvested growth; the pass does not change that.
 - `SIM_REVISION` still describes revision 5.

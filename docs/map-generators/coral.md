@@ -8,10 +8,11 @@ other's gaps, and all the fans meet in a tangle in the middle. Land gets thinner
 further it is from home.
 
 - **A tropical reef (revision 5).** The coral is drawn from the terrain catalogue on canonical
-  mechanics, with a fixed look painted last (`composeLooks`): lush grass mottled with plain grass
-  (sampled in the wedge frame, so every fan looks alike), pale-sand beaches on every shore (kept,
+  mechanics, with one fixed look per kind of ground painted last (`composeLooks`): lush grass
+  everywhere, homes and expansion courts included (revision 7; earlier revisions mottled it with
+  plain grass and left the courts plain), pale sand on every shore and court ring (kept,
   since algae regrows only from sand), a paved road (Paths) down every branch that forks on, the
-  land bridges as reef flats (Rough), and a turquoise shelf of shallows ringing the whole reef
+  land bridges grass and beach like the branches (revision 8; reef flats before), and a turquoise shelf of shallows ringing the whole reef
   with dark deep ocean beyond. Deep water (`deepenWater`) takes open water at least 8 tiles from
   land, and only the cores joined to the ocean beyond the pads' ring, so its edge follows the
   coasts and the straits and lagoons inside the fans stay shallow: swimming within the tangle is
@@ -74,8 +75,9 @@ further it is from home.
   tips get none, since they carry no traffic and their narrow land would be left without fields.
   Roads double walking speed, can be built on, and nothing grows on or across them; the tiles
   beside them are seams nothing can be built on, and the beaches keep a walkable lane along every
-  edge. The land bridges carry no road: they are reef flats from shore to shore, slow (160/256) and
-  unbuildable, so nobody can wall a crossing off with a building. The roads take branch grass, so
+  edge. The land bridges carry no road: since revision 8 they are grass with a beach on both shores,
+  like the branches (they were reef flats, slow and unbuildable, until then); nothing is planted on
+  them, but a building or grown crops can now narrow a crossing. The roads take branch grass, so
   the branches' standing wheat and wood (shares of their grass) are about 10–17% lower than
   revision 4's. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
   default, is the trunk's), so grass remains either side of the road.

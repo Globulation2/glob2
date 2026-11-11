@@ -121,15 +121,14 @@ constexpr int kHomeWood = 30;
 constexpr int kWheatShare = 30;
 constexpr int kWoodShare = 21;
 // THE REEF (revision 5). The coral is drawn from the terrain catalogue as a tropical reef: lush
-// grass mottled with plain grass in patches kMottleCell tiles across (kMottleShare of it plain),
-// pale-sand beaches kept on every shore since the algae regrows from them, a paved road (Paths,
+// grass (one look all over since revision 7, homes and courts included; revision 5 mottled it with
+// plain grass and left the courts plain), pale-sand beaches kept on every shore since the algae
+// regrows from them (the courts' sand rings in the same pale sand), a paved road (Paths,
 // twice as fast, nothing grows on it) two vertices wide down every branch that forks on, the land
-// bridges as reef flats (Rough: slow, unbuildable, nothing grows) meeting the water with no beach,
-// and the open ocean deep where it is kDeepReach tiles from land in bodies of at least kDeepLeast
-// vertices that reach out beyond the pads' ring. The straits and lagoons inside the fans stay
+// bridges grass and beach like the branches (reef flats until revision 8), and the open ocean
+// deep where it is kDeepReach tiles from land in bodies of at least kDeepLeast vertices that reach
+// out beyond the pads' ring. The straits and lagoons inside the fans stay
 // shallow, so swimming within the tangle of fans is as it was.
-constexpr double kMottleCell = 9;
-constexpr double kMottleShare = 0.35;
 constexpr int kDeepReach = 8;
 constexpr int kDeepLeast = 64;
 // One algae clump per this many tiles of shallows at 100, all on the share of each colony's
@@ -676,7 +675,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			strokePath(L.land, t, turned);
 			// Roads run down every branch that forks on, but not down the tips: a dead end carries
 			// no traffic, and on a tip's narrow land the road would leave next to no grass for its
-			// fields. The bridges are reef flats and carry none.
+			// fields. The bridges carry none.
 			if (piece.kind == Kind::Branch && !L.tree[piece.branch].leaf)
 				L.roads.push_back(turned);
 		}
@@ -816,12 +815,12 @@ std::vector<int> expansionCorners(const Layout &L, ShapePoint centre, Generation
 }
 
 // The reef's terrain, a pure function of the layout: `mechanics` holds one canonical type per rule
-// (GRASS, SAND, WATER, DEEP_WATER, TRAIL, MUDFLAT), which every placement and check below reads,
+// (GRASS, SAND, WATER, DEEP_WATER, TRAIL), which every placement and check below reads,
 // and `looks` the artwork painted over it last (composeLooks), which can never change a rule.
 struct ReefTerrain
 {
 	TerrainSketch mechanics, looks;
-	int road = 0, flats = 0, deep = 0;
+	int road = 0, deep = 0;
 	int bandBefore = 0, bandAfter = 0; // the algae band's tiles before and after the deep ocean
 };
 
@@ -852,14 +851,9 @@ ReefTerrain sketchTerrain(const Layout &L, GenerationContext &context)
 		T.road = paveRoute(terrain, t, road, 2, TRAIL, [&](int i)
 						   { return terrain[i] == GRASS && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.expansion[i]; });
 	}
-	// The land bridges are reef flats from shore to shore, beaches included: slow, unbuildable
-	// ground nothing grows on, which nobody can wall off with a building.
-	for (int i = 0; i < n; ++i)
-		if (L.bridge[i] && !L.fan[i] && terrain[i] != WATER)
-		{
-			terrain[i] = MUDFLAT;
-			++T.flats;
-		}
+	// The land bridges are reef like the rest: grass with a beach on both shores (revisions 5-7 drew
+	// them as reef flats, Rough ground from shore to shore; the maintainer preferred them to match the
+	// branches, 2026-11-11). Nothing is planted on them (furnish), so they open clear.
 	// The open ocean is deep: slower to swim, and no algae, which keeps to the shallows. A core is
 	// open water at least kDeepReach tiles from land, and only the cores that reach out beyond the
 	// pads' ring (read in the round design frame) deepen, so the edge of the deep follows the
@@ -881,21 +875,13 @@ ReefTerrain sketchTerrain(const Layout &L, GenerationContext &context)
 	T.deep = deepenWater(terrain, t, kDeepReach, kDeepLeast, DEEP_WATER, &ocean);
 	T.bandAfter = algaeBandTiles(terrain, t, 1, 10);
 
-	// The looks: lush grass mottled with plain grass, sampled in the wedge frame so every colony's
-	// coral looks alike; pale-sand beaches; an overgrown road.
+	// The looks, one per rule group: lush grass, pale sand, an overgrown road. The pads and courts
+	// wear them too (the looks are written after every stage that reads the canonical terrain).
 	T.looks.assign(n, 0);
-	const WedgeFrame wedges(t, L.phase, L.g.wedges, L.stretch);
-	const PeriodicNoise mottle(t.w, t.h, kMottleCell, context.stream("coral-looks"));
 	for (int i = 0; i < n; ++i)
 	{
-		// The courts keep plain grass inside a plain sand ring: cleared ground, unlike the reef.
-		if (L.expansion[i])
-			continue;
 		if (terrain[i] == GRASS)
-		{
-			const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
-			T.looks[i] = mottle.at(cell.s, cell.d) < kMottleShare ? GRASS : LUSH_GRASS;
-		}
+			T.looks[i] = LUSH_GRASS;
 		else if (terrain[i] == SAND)
 			T.looks[i] = PALE_SAND;
 		else if (terrain[i] == TRAIL)
@@ -927,7 +913,6 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const ReefTerrain terrain = sketchTerrain(L, context);
 	writeVertices(map, terrain.mechanics);
 	context.telemetry.measure("coral.reef.road-vertices", terrain.road);
-	context.telemetry.measure("coral.reef.flat-vertices", terrain.flats);
 	context.telemetry.measure("coral.reef.deep-vertices", terrain.deep);
 	context.telemetry.measure("coral.reef.algae-band-before", terrain.bandBefore);
 	context.telemetry.measure("coral.reef.algae-band-after", terrain.bandAfter);
@@ -1136,7 +1121,7 @@ GeneratorDefinition coralDefinition()
 		// tropical reef, drawn from the terrain catalogue (paved roads, reef-flat bridges, deep
 		// ocean, lush grass and pale sand looks, no sand patches). Revision 6: algae regrows near
 		// any coast now, so its best-growing water moved.
-		6,
+		8, // 8: land bridges are grass and beach like the branches, not reef flats
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the

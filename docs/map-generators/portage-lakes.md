@@ -8,7 +8,8 @@ opposite shores. Initial land routes connect every colony without either investm
 
 Revision 8 (Portage Lakes 2.0) rebuilt the map for the engine's full terrain palette; revision 7
 drew the rock knots as stone deposits on grass and the trails as sand, and everything else from
-grass, sand and water.
+grass, sand and water. Revision 9 draws each rule group in one look (plain grass everywhere); every
+rule, deposit and start is revision 8's.
 
 ## How it plays
 
@@ -44,9 +45,9 @@ grass, sand and water.
   walk and every swim save a measured walking time (deep water and fast trails counted), by the same
   rule as steps: at least 8 plain-tile units and a fifth of the walk round (4 and a tenth on compact
   maps).
-- **Forest floor.** The forest stays Grass (Barren holds no wood); it is drawn as dry grass under
-  the trees, lush grass by the water and in the best meadows, plain grass in the home gardens, the
-  kit plots and every quarry's approach.
+- **Forest floor.** The forest stays Grass (Barren holds no wood); all the grass, forest floor,
+  meadows and home gardens alike, is one plain grass look. Trails turn to boardwalk where they meet
+  wet ground.
 
 ## How it is built
 

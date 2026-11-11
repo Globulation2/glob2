@@ -109,11 +109,11 @@ constexpr int kLakeReach = 60;
 constexpr int kHomeRampDepth = 14;
 // Every home's starter kit: this much wheat and wood facing its nearest sea, unscaled; its stone is
 // its quarry faces (kQuarryFace).
-constexpr int kHomeWheat = 30;
-constexpr int kHomeWood = 30;
-// Ambient farmland on a territory, as percentages of its tiles at 100.
-constexpr int kHomeWheatShare = 3;
-constexpr int kHomeWoodShare = 2;
+constexpr int kHomeWheat = 45;
+constexpr int kHomeWood = 45;
+// Ambient farmland on a territory's watered ground, as percentages of its tiles at 100.
+constexpr int kHomeWheatShare = 6;
+constexpr int kHomeWoodShare = 4;
 // Nothing is planted within this many steps of a ramp.
 constexpr int kRampClearance = 5;
 // Open 2x2 pads beside every colony's `tower-count` towers, and the spacing between sites.
@@ -132,8 +132,8 @@ constexpr int kWalkSpread = 12;
 // THE GROUND (revision 6). The pit's floor is a sand track from this share of its radius out to the
 // first wall: an arena floor round the orchard that nothing can be built on. Every territory has two
 // quarry faces of this many stone at the foot of its side borders, as deep from its ramp as its swarm:
-// the walls were the colonies' stone when they were built of it. Open water this many vertices from
-// land is deep.
+// the walls were the colonies' stone when they were built of it. The bays are one plain water: no
+// deep water.
 constexpr double kArenaFloorShare = 0.75;
 constexpr int kQuarryFace = 12;
 // Every starting tower also has a face of this much stone at the foot of the wall it stands against,
@@ -142,14 +142,9 @@ constexpr int kQuarryFace = 12;
 constexpr int kTowerStone = 6;
 constexpr int kTowerStoneReach = 4;
 constexpr int kTowerStoneRampGap = 2;
-constexpr int kDeepFrom = 5;
-// A territory stays grass this many steps round its seas, where its crops grow; elsewhere it is
-// barren but for a paved square this far round its swarm and a grass verge this many vertices wide at
-// the foot of its walls, where its quarry faces stand. The volcanic pit's lava pool, as a share of
-// the pit's radius.
-constexpr int kGrassReach = 10;
+// A territory is grass but for a paved square this far round its swarm. The volcanic pit's lava
+// pool, as a share of the pit's radius.
 constexpr double kCore = 7;
-constexpr int kVerge = 4;
 constexpr double kLavaPoolShare = 0.25;
 
 struct Geometry
@@ -488,21 +483,13 @@ TerrainSketch sketchTerrain(const Layout &L)
 				nearest = j;
 		tier[i] = nearest % 2;
 	}
-	// Every territory is barren ground but round its seas, where its crops grow, with a paved square
-	// round its swarm and a grass verge at the foot of its walls where its quarry stands.
-	{
-		const std::vector<int> fromBay = stepsFrom(t, L.bay);
-		barrenBase(
-			terrain, t, [&](int i) { return L.territory[i] >= 0 && !L.ring[i] && !cliff[i]; },
-			[&](int i) { return fromBay[i] >= 0 && fromBay[i] <= kGrassReach; }, kVerge);
-		for (int k = 0; k < g.teams; ++k)
-			paveCore(terrain, t, t.remainderX(L.anchor[k]), L.anchor[k] / t.w, kCore,
-					 [&](int i) { return L.territory[i] == k; });
-	}
-	const std::vector<unsigned char> deep =
-		deepSea(terrain, t, [&](int i) { return L.bay[i] != 0; }, kDeepFrom);
+	// Every territory is grass with a paved square round its swarm: its wings, the ground round the
+	// inland seas either side of its home, are open farmland. (Revisions 7-9 laid barren ground over
+	// everything beyond ten steps of the seas, which left most of a territory dead.)
+	for (int k = 0; k < g.teams; ++k)
+		paveCore(terrain, t, t.remainderX(L.anchor[k]), L.anchor[k] / t.w, kCore,
+				 [&](int i) { return L.territory[i] == k; });
 	LookRoles roles;
-	roles.deep = [&](int i) { return deep[i] != 0; };
 	roles.tended = [&](int i) { return L.territory[i] >= 0; };
 	roles.rockAccent = [&](int i) { return tier[i] != 0; };
 	paintClimate(terrain, t, kClimateLooks[L.climate], roles);
@@ -773,7 +760,10 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 				ramp[i] = 1;
 				rampTiles.push_back(i);
 			}
-		if (!openRoad(map, t, workers[team], ramp, &none) ||
+		// Home to ramp is a straight trail (openTrail without a lie, a tile either side cleared):
+		// the cheapest-to-clear walk (openRoad) bent round the farmland round a territory's seas, and
+		// on large maps one colony's way to its ramp ran tens of steps longer than its rivals'.
+		if (!openTrail(map, t, workers[team], ramp, none, none, nullptr, 0, 1) ||
 			!openRoad(map, t, rampTiles, pit, &none))
 		{
 			context.detail =
@@ -911,7 +901,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		9, // 9: grass meeting water is a shore, so crops start one tile in
+		10, // 10: territories are grass again outside their paved squares, more farmland, plain water
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest

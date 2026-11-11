@@ -216,7 +216,7 @@ class TerrainTileset(unittest.TestCase):
 
     def test_clear_of_masses_is_a_small_object_decor_distance(self):
         boulders = next(m for m in self.document["materials"] if m["key"] == "boulders")
-        self.assertEqual(boulders["decor"]["clear_of_masses"], 1)
+        self.assertEqual(boulders["decor"]["clear_of_masses"], 0)
         for value in (0, 1):
             boulders["decor"]["clear_of_masses"] = value
             validate(self.document)
@@ -224,7 +224,7 @@ class TerrainTileset(unittest.TestCase):
             boulders["decor"]["clear_of_masses"] = value
             with self.assertRaises(ValueError):
                 validate(self.document)
-        boulders["decor"]["clear_of_masses"] = 1
+        boulders["decor"]["clear_of_masses"] = 0
         # Connected frames (masses and foliage) tile across cells.
         for key in ("cliffs", "hedge"):
             material = next(m for m in self.document["materials"] if m["key"] == key)

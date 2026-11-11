@@ -66,11 +66,9 @@ using namespace MapGeneration;
 // SHATTERED COAST 2.0 (revision 9): the same patchwork, drawn with the engine's full terrain palette.
 // The design brief: a photograph of a shattered coast shows (1) dark water in the middle of the
 // bigger bays and lakes with a pale band of shallows along every shore; (2) mud in the sheltered
-// coves and small ponds, pale sand on the open shores and dunes on the dry patches inland; (3) lush
-// meadows in the broad stretches of grass and parched grass on the thin necks between waters; (4)
-// rock: sea stacks where the sea has eaten a headland down to its last speck, and knots of bedrock
-// standing out of the wider grass, quarried on the side the nearest colony comes from. Its patchwork
-// character is the point, so this is a post-pass, not a redesign:
+// coves and small ponds; (3) rock: sea stacks where the sea has eaten a headland down to its last
+// speck, and knots of bedrock standing out of the wider grass, quarried on the side the nearest
+// colony comes from. Its patchwork character is the point, so this is a post-pass, not a redesign:
 // - Revision 8 runs unchanged first: the fitted mix, painting, smoothing, beaches, starts, home
 //   deposits, opening repairs and expansion clumps are identical for the same seed (every new draw
 //   uses streams of its own). The pass then repaints only ground nobody stands on: no tile holding
@@ -95,8 +93,11 @@ using namespace MapGeneration;
 //   swarm. Stone-amount sets how many knots carry a quarry face on the side facing the nearest swarm
 //   (stone on grass, tiles left out of the rock). A knot or stack whose rock parts the walkable
 //   ground round it is dropped, so the rock never cuts anything off; validateWorld checks it again.
-// - A climate, looks only (Temperate, Steppe, Tropical): beach, dune, mud, deep water and rock looks
-//   and how much of the grass is lush or parched. Every layer and choice is in telemetry.
+// - A climate, looks only (Temperate, Steppe, Tropical): one look for each rule group, so all the
+//   grass, all the sand, the mud, the deep water and the rock each read as one thing (revision 10;
+//   revision 9 banded the grass lush and parched by its distance from the shore and split the sand
+//   into two beach and two dune looks by noise, which made the patchwork hard to read). Every layer
+//   and choice is in telemetry.
 
 // A dry run of the paint-and-smooth process on a small scratch map, used only to learn what shares
 // of water, sand and grass a painting ends up with after `smooth` passes (fitTerrainMix below).
@@ -1012,7 +1013,6 @@ namespace
 // Streams of their own, so every draw revision 8 made is the draw it made.
 constexpr const char *kKnotStream = "shattered-coast-knots";
 constexpr const char *kStackStream = "shattered-coast-stacks";
-constexpr const char *kLookStream = "shattered-coast-looks";
 constexpr const char *kClimateStream = "shattered-coast-climate";
 // The mudflats' noise draws from a stream of its own, so turning them off changes no look.
 constexpr const char *kMudStream = "shattered-coast-mud";
@@ -1041,20 +1041,18 @@ constexpr double kFaceShare = 0.75;
 // Ground within this many tiles of a colony's workers never holds a ridges vertex (validateWorld).
 constexpr int kRockHomeCheck = 16;
 
-// The look-only climates. lush is the grass clearance (steps to the nearest non-grass vertex) from
-// which grass is lush; sliver the widest clearance a thin neck of grass may reach and still be dry;
-// dryRims whether the rim of every patch dries out too.
+// The look-only climates: one look for each rule group the coast pass draws. The grass is one look
+// all over, home meadows included (the looks are composed last, after every stage that reads GRASS):
+// the map's character is its shattered outline, and grass banded by its distance from the water only
+// blurred it.
 struct Climate
 {
 	const char *name;
-	TerrainType beach, beachSecond, dune, duneSecond, deep, mud, rock;
-	int lush, sliver;
-	bool dryRims;
+	TerrainType grass, sand, deep, mud, rock;
 };
-constexpr Climate kClimates[3] = {
-	{"temperate", PALE_SAND, SAND, DUNE_SAND, PALE_SAND, DEEP_WATER, MUDFLAT, OUTCROP, 5, 2, false},
-	{"steppe", SAND, PALE_SAND, WINDY_SAND_DUNE, DUNE_SAND, DEEP_WATER, HARDPAN, HOODOOS, 8, 3, true},
-	{"tropical", PALE_SAND, PALE_SAND, DUNE_SAND, SAND, DARK_WATER, MUD, OUTCROP, 3, 1, false}};
+constexpr Climate kClimates[3] = {{"temperate", GRASS, SAND, DEEP_WATER, MUDFLAT, OUTCROP},
+								  {"steppe", DRY_GRASS, DUNE_SAND, DEEP_WATER, HARDPAN, HOODOOS},
+								  {"tropical", LUSH_GRASS, PALE_SAND, DARK_WATER, MUD, OUTCROP}};
 
 double sq(double v)
 {
@@ -1416,61 +1414,24 @@ Outcrops planOutcrops(const GenerationMap &map, const Torus &t, GenerationContex
 // How many vertices each layer took.
 struct LayerCounts
 {
-	int deep = 0, mud = 0, rock = 0, lush = 0, dry = 0, paleBeach = 0, dunes = 0;
+	int deep = 0, mud = 0, rock = 0;
 };
 
-// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
-TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climate &climate, GenerationContext &context,
-						 LayerCounts &counts)
+// The looks over the mechanic sketch, by climate: one per rule group (composeLooks keeps each
+// inside its rule group).
+TerrainSketch lookSketch(const TerrainSketch &mech, const Climate &climate)
 {
-	const int n = t.size();
-	std::vector<unsigned char> wet(size_t(n), 0), grass(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-	{
-		wet[i] = mech[i] == WATER || mech[i] == DEEP_WATER;
-		grass[i] = mech[i] == GRASS;
-	}
-	const std::vector<int> fromWet = stepsFrom(t, wet);
-	const std::vector<int> depth = clearance(t, grass);
-	// The widest a grass vertex's neighbourhood gets: a thin neck stays thin all along.
-	std::vector<int> negated(static_cast<size_t>(n));
-	for (int i = 0; i < n; ++i)
-		negated[i] = -depth[i];
-	const std::vector<int> widest = windowMinimum(t, negated, 2);
-	std::mt19937 &random = context.stream(kLookStream);
-	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, random);
-	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
-	TerrainSketch looks(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
+	TerrainSketch looks(mech.size(), 0);
+	for (size_t i = 0; i < mech.size(); ++i)
 	{
 		generationCheckpoint();
-		const int shift = (fray[i] - 32768) * 2 / 32768; // -2 to 1
-		const bool second = split[i] > int(0.62 * 65536);
 		switch (mech[i])
 		{
 		case GRASS:
-			if (depth[i] >= climate.lush + shift)
-			{
-				looks[i] = LUSH_GRASS;
-				++counts.lush;
-			}
-			else if (-widest[i] <= climate.sliver || (climate.dryRims && depth[i] == 1 && fray[i] > 30000))
-			{
-				looks[i] = DRY_GRASS;
-				++counts.dry;
-			}
+			looks[i] = climate.grass;
 			break;
 		case SAND:
-			if (fromWet[i] <= 2) // a beach is up to two vertices wide (layBeaches turns both sides)
-			{
-				looks[i] = second ? climate.beachSecond : climate.beach;
-				counts.paleBeach += looks[i] == PALE_SAND;
-			}
-			else
-			{
-				looks[i] = second ? climate.duneSecond : climate.dune;
-				++counts.dunes;
-			}
+			looks[i] = climate.sand;
 			break;
 		case DEEP_WATER:
 			looks[i] = climate.deep;
@@ -1585,7 +1546,7 @@ bool coastPass(GenerationWorld &game, GenerationContext &context, const Shattere
 	const int climateIndex =
 		o.climate > 0 ? std::clamp(o.climate, 1, 3) - 1 : int(context.bounded(kClimateStream, 3));
 	const Climate &climate = kClimates[climateIndex];
-	const TerrainSketch finished = composeLooks(mech, lookSketch(mech, t, climate, context, counts));
+	const TerrainSketch finished = composeLooks(mech, lookSketch(mech, climate));
 	writeVertices(map, finished);
 
 	// The quarry faces' stone: one permanent deposit on every face tile.
@@ -1612,10 +1573,6 @@ bool coastPass(GenerationWorld &game, GenerationContext &context, const Shattere
 	context.telemetry.measure("shattered-coast.deep.vertices", counts.deep);
 	context.telemetry.measure("shattered-coast.mudflat.vertices", counts.mud);
 	context.telemetry.measure("shattered-coast.rock.vertices", counts.rock);
-	context.telemetry.measure("shattered-coast.looks.lush-vertices", counts.lush);
-	context.telemetry.measure("shattered-coast.looks.dry-vertices", counts.dry);
-	context.telemetry.measure("shattered-coast.looks.pale-beach-vertices", counts.paleBeach);
-	context.telemetry.measure("shattered-coast.looks.dune-vertices", counts.dunes);
 	context.telemetry.measure("shattered-coast.knots.wanted", rock.wanted);
 	context.telemetry.measure("shattered-coast.knots.placed", rock.knots);
 	context.telemetry.measure("shattered-coast.knots.faces", rock.faces);
@@ -1751,7 +1708,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		9,
+		10, // 10: one look per role (one grass, one sand per climate)
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
@@ -1782,8 +1739,8 @@ GeneratorDefinition shatteredCoastDefinition()
 		 // amount). No rock ever cuts ground off.
 		 GeneratorControl::toggle("outcrops", "Rock outcrops", true, ControlGroup::Layout)
 			 .withSearchValues({0, 1}),
-		 // Looks only: Temperate (pale sand, lush meadows), Steppe (dry grass, dunes, hoodoos)
-		 // or Tropical (lush grass, dark water, mud). All play alike.
+		 // Looks only: Temperate (plain grass and sand, outcrops), Steppe (dry grass, dune sand,
+		 // hardpan, hoodoos) or Tropical (lush grass, pale sand, dark water, mud). All play alike.
 		 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
 								  ControlGroup::Terrain)
 			 .withSearchValues({1, 2, 3}),

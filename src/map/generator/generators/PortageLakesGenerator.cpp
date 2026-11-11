@@ -63,9 +63,13 @@ using namespace MapGeneration;
 // - Lake centres are DEEP_WATER (deepCore, three steps from land), keeping a shallow margin for
 //   beaches and algae; swimming across a lake is slower, which is a feel change (`deep-lakes`).
 // - Two sketches: the mechanics (canonical rule-group types every helper and check reads) and the
-//   looks joined by composeLooks: dry grass on the wooded ridges, lush grass by the water, plain
-//   grass in home gardens, kit plots and quarry approaches; a look-only `shield` (granite or
-//   greenstone) picks the rock, the deep water and the shore mud artwork.
+//   looks joined by composeLooks, one per rule group: the grass plain everywhere, boardwalk where a
+//   trail meets wet ground; a look-only `shield` (granite or greenstone) picks the rock, the deep water
+//   and the shore mud artwork.
+//
+// REVISION 9 (one look per role): the dry grass under the forest and the lush grass by the water and
+// in the best meadows are gone; the grass is one plain look, so no home garden shows. Looks only: every
+// rule, deposit and start is revision 8's.
 namespace
 {
 // The look-only bedrock of the Canadian Shield: everything plays alike.
@@ -1173,62 +1177,18 @@ void finishTerrain(Layout &L, GenerationContext &c, const PortageLakesOptions &o
 				++deep;
 			}
 	}
-	// The looks, inside each vertex's rule group: dry grass on the wooded ridges and wherever nothing
-	// would grow, lush grass by the water and in the best meadows, plain grass in home gardens, the
-	// kit plots and every quarry's approach; the shield's rock, talus, deep water and mud; trail
-	// turned to boardwalk where it meets wet ground.
+	// The looks, one per rule group: the grass stays plain; the shield's rock, talus, deep water and
+	// mud; trail turned to boardwalk where it meets wet ground.
 	const Shield &shield = kShields[L.shield];
-	const auto growth = cropGrowthField(L.terrain, t);
-	std::vector<unsigned char> wet(n, 0), soggy(n, 0), plain(n, 0);
+	std::vector<unsigned char> soggy(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
-		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
-		soggy[i] = wet[i] || L.terrain[i] == MUD;
-	}
-	const auto nearWater = stepsFrom(t, wet);
+		soggy[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER || L.terrain[i] == MUD;
 	const auto nearSoggy = dilate(t, soggy, 2);
-	const auto approach = dilate(t, L.quarry, 1);
-	// A vertex is under the forest when any tile it is a corner of is wooded.
-	std::vector<unsigned char> underForest(n, 0);
-	for (int i = 0; i < n; ++i)
-		if (L.forest[i])
-			for (int corner = 0; corner < 4; ++corner)
-				underForest[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))] = 1;
-	const auto nearForest = dilate(t, underForest, 2);
-	for (int i = 0; i < n; ++i)
-	{
-		const int plot = L.plotOf[i];
-		if (approach[i] || (plot >= 0 && (L.plots[plot].kind == WOOD || L.plots[plot].serviceHome >= 0)))
-			for (int corner = 0; corner < 4; ++corner)
-				plain[t.at(t.remainderX(i) + (corner & 1), i / t.w + (corner >> 1))] = 1;
-	}
-	const auto fray = periodicNoise(t.w, t.h, 8, c.stream("portage-looks"));
-	const auto garden = [&](int i)
-	{
-		const double reach = 8 + 6.0 * fray[i] / 65536;
-		for (int h : L.homes)
-			if (t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) <= reach * reach)
-				return true;
-		return false;
-	};
 	L.looks.assign(n, 0);
 	int mud = 0;
 	for (int i = 0; i < n; ++i)
 		switch (L.terrain[i])
 		{
-		case GRASS:
-		{
-			if (plain[i] || garden(i))
-				break;
-			// The forest floor of the dry ridges is dry grass; open dry ground only in patches, so a
-			// clearing still reads as meadow rather than steppe.
-			const auto g = growth.at(t.remainderX(i), i / t.w);
-			if (g == 0 && (underForest[i] || (nearForest[i] && fray[i] > 30000)))
-				L.looks[i] = DRY_GRASS;
-			else if (nearWater[i] <= 3 || g >= Fertility::kScale * 45 / 100)
-				L.looks[i] = LUSH_GRASS;
-			break;
-		}
 		case MUD:
 			L.looks[i] = shield.margin;
 			++mud;
@@ -2312,7 +2272,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			8,
+			9, // 9: one look per role
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

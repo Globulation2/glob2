@@ -1647,7 +1647,7 @@ TEST_SUITE("MapGeneratorDefaults")
 									(dx + 1) * (dx + 1) + (dy + 1) * (dy + 1) < 16)
 								{
 									const int x = centre.first + dx, y = centre.second + dy;
-									REQUIRE(world.map.isGrass(x, y));
+									REQUIRE(world.map.terrainTypeAt(x, y) == LUSH_GRASS);
 									REQUIRE(world.map.getResource(x, y).type == NO_RES_TYPE);
 									REQUIRE(world.map.canResourcesGrow(x, y));
 								}
@@ -1658,10 +1658,10 @@ TEST_SUITE("MapGeneratorDefaults")
 				world.map.setResourceByIndex(x, y, WHEAT, 1);
 				REQUIRE(definition.validateWorld(world, check).find("clear grass interior") != std::string::npos);
 				world.map.setNoResource(x, y, 1);
-				REQUIRE(world.map.vertexTerrainAt(x + 4, y) == SAND);
+				REQUIRE(world.map.vertexTerrainAt(x + 4, y) == PALE_SAND);
 				world.map.setVertexTerrain(x + 4, y, GRASS);
 				REQUIRE(definition.validateWorld(world, check).find("broken sand ring") != std::string::npos);
-				world.map.setVertexTerrain(x + 4, y, SAND);
+				world.map.setVertexTerrain(x + 4, y, PALE_SAND);
 				REQUIRE(definition.validateWorld(world, check).empty());
 				if (shape == std::pair{8, 8} && roads == 1)
 				{

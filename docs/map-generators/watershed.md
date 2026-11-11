@@ -8,7 +8,8 @@ and on foot a river is crossed only at its fords.
 
 Revision 4 (Watershed 2.0) redrew the map with the engine's full terrain palette; revision 3 drew it
 from grass, sand and water. The rivers, fords, starts and kits are laid exactly as revision 3 laid
-them for the same seed.
+them for the same seed. Revision 5 draws each rule group in one look per climate; every rule,
+deposit and start is revision 4's.
 
 ## How it plays
 
@@ -25,8 +26,8 @@ them for the same seed.
   climate) runs five vertices deep along every channel behind its beach: crop land that is
   buildable and waters the ground round it a little. It makes the river country somewhat richer
   than revision 3 (see the food table); the edge row where levee meets grass grows crops but takes
-  no building. Every home's garden (12 tiles round its middle) stays plain grass, so homes start
-  as they did.
+  no building. Every home's garden (12 tiles round its middle) stays grass, without levee or mud,
+  so homes start as they did.
 - **Mudflats at the delta and the confluences.** The river beaches where the delta splits and where
   rivers meet are mudflat: slow, unbuildable, holding nothing, but unlike sand they do not slow the
   crops behind them. The sea's own beaches stay sand, which the algae need.
@@ -52,7 +53,7 @@ constants record why each choice was made.
 | Starts | Floodplain sites spread across banks, as in revision 3. |
 | Outcrops | Knot centres on crest tiles of the distance-from-water field (no neighbour further from water), 20 steps or more from water, 24 tiles apart, one per 3,500 tiles at most; each a wavering lens 9 to 15 tiles long and 4 to 6 thick along the crest, every tile 17 steps from water. Quarry faces (the downhill rim within two tiles of the middle) on 60% of the knots at 100% stone; the rock left two tiles thick drawn with `rockVertices`; a flood drops any knot whose rock and stone part the walkable ground round it. Planned from the request alone. |
 | Mechanic layers | On a copy of the stamp: pavement (`SHALE`) on upland sand 22 to 25 steps (frayed) from water, grass on the corners of every quarry tile and the ring before it and nowhere else (a disc 2.5 tiles round each face drew olive dry-grass patches across the pavement), frayed scree, rock vertices; the deep sea core (four steps from land, opened) and a deep thread three vertices narrower than each big channel's radius (`deepCore`), tapering in and out over 8 tiles of the channel instead of ending in round caps, with any thread the sea's core does not join under 30 vertices dropped (short runs read as dark pills); mudflat river beaches within 7 tiles of the delta's channels and 9 of a junction, clear of fords, gardens and the sea; levees (`LOAM`) on grass two to five (six where a noise peaks) vertices from water, outside the gardens. |
-| Looks | `composeLooks` over the mechanics by climate: levees, lush grass within 7 to 11 steps of water, dry grass beyond 10 to 18, beach and dune sand, two pavement looks, deep water, mud and rock. The finished terrain must again be a fixed point of `layBeaches()`. |
+| Looks | `composeLooks` over the mechanics by climate, one look per rule group: levees, sand, pavement, deep water, mud and rock. The finished terrain must again be a fixed point of `layBeaches()`. The grass is staged as revision 4 drew it (plain only in the gardens and a band by the water) so the starting-crop top-up finds the same ground; the climate's one grass look goes over all of it, gardens included, after the last route check. |
 | Resources | As in revision 3, on crop land that now includes the levees: every colony's kit, farmland ribbons along the rivers at 2:1 wheat to wood, stone outcrops at the upland edge, fruit at confluences, algae at the mouths and in the sea's shallows; quarry stone on the faces, protected from every clearing and route. |
 
 `validateWorld` plans the layout and the outcrops again from the request and requires: every ford
@@ -74,7 +75,7 @@ walking to colony 0 and standing beside wheat and wood.
 | Meandering rivers | on/off (on) | Off, rivers run without their meanders. |
 | Deep channels | on/off (on) | Deep water in the sea and down the big channels: slower swimming, no algae. Routes on foot are the same either way. |
 | Divide outcrops | on/off (on) | Rock knots on the divides' crests with quarry faces and scree. |
-| Climate | Random, Temperate, Steppe, Tropical | Looks only: Temperate (spring meadow levees, heath and shale, pale beaches, blue deep water, rock outcrops), Steppe (loam, sandstone and dirt, hardpan mud, hoodoos, grass dry from 10 steps), Tropical (moss, laterite and clay, mud, dark water, grass green to 18 steps). All three play identically. |
+| Climate | Random, Temperate, Steppe, Tropical | Looks only: Temperate (green grass, spring meadow levees, heath, pale beaches, blue deep water, rock outcrops), Steppe (dry grass, loam, sandstone, hardpan mud, hoodoos), Tropical (lush grass, moss, laterite, mud, dark water). All three play identically. |
 | Wheat, wood amount | 0–300% (100) | The farmland ribbons; every kit stays. |
 | Stone amount | 0–300% (100) | Upland-edge outcrops and the share of knots with a quarry face (none at 0, all from about 170%). Every kit's stone stays. |
 | Algae, fruit amount | 0–300% (100) | Linear. |
@@ -103,7 +104,7 @@ worst colony in brackets.
 | Revision 4, river density 9 | 2,141 | 84.0 (37) | 222.3 (75) |
 
 The levees are the difference: they water the ground round them, and five vertices deep they gain
-about 8% overall and 5% near the homes, whose gardens keep plain grass. Narrower levees cost food:
+about 8% overall and 5% near the homes, whose gardens keep their grass. Narrower levees cost food:
 the row where levee meets grass grows crops but the tool counts it as nothing (and it is not
 buildable), so two or three deep lost a quarter of the growth potential and four deep 7%; nine deep
 gained 52%, too large a change in feel. Climates are looks only and deep water waters the land as

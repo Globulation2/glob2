@@ -213,19 +213,15 @@ constexpr double kWashLow = 6, kWashHigh = 14;
 // ranges and sand in the basin, where the finest grains settle. kDuneSlope weighs the slope.
 constexpr int kDuneCell = 24, kDuneSlope = 64000, kDuneWavelength = 16, kDuneStretch = 320;
 constexpr int kDunePercent = 48;
-// Looks: of the dune sand, this share (the highest) is drawn as wind-rippled crests; green ground is
-// lush within kLushReach steps of water and dry beyond kGreenReach; plain grass within kPlainGarden
-// tiles of every swarm.
-constexpr int kDuneCrestPercent = 30, kLushReach = 4, kGreenReach = 9, kPlainGarden = 16;
+// Looks: green ground is lush within kLushReach steps of water and every other grass dry; plain grass
+// within kPlainGarden tiles of every swarm.
+constexpr int kLushReach = 9, kPlainGarden = 16;
 // Pavement: the open desert beyond kDryReach steps of water (past the growth probe's reach, so few of
 // the farm's mirrored probes land on it) is
 // gravel where noise kPaveCell tiles across passes kPaveCut; the rest of the desert is dry grass. Within
 // the water's reach it stays grass: crops spread there and its probes are not refused, as they are on
 // pavement, which inhibits growth like sand.
-// Pavement past kClayShare of the way from a range to its playa is drawn as clay, and hardpan within
-// kMudflatReach steps of a lake as mudflat.
-constexpr int kDryReach = 22, kPaveCell = 14, kPaveCut = 20000, kMudflatReach = 2;
-constexpr double kGravelShare = 0.32, kClayShare = 0.66, kGrainBlend = 0.25;
+constexpr int kDryReach = 22, kPaveCell = 14, kPaveCut = 20000;
 // Ambient farmland on the fans and meadows (share of fertile tiles) and desert features (one per
 // this many desert tiles), before the amounts scale them.
 constexpr int kFarmWheatPercent = 26, kFarmWoodPercent = 9;
@@ -327,17 +323,17 @@ HomeDesign homeDesign(int design, bool flip)
 constexpr int kHomeDesigns = 6;
 
 // What the ranges are made of, drawn once per map: only looks, every one inside the rule group of
-// what it draws, so a granite map and a volcanic one play exactly alike. Rock, its talus, then the
-// pavement down the bajada: coarse gravel at the foot, varnished pavement, clay towards the playa.
+// what it draws, so a granite map and a volcanic one play exactly alike: the rock, its talus, and the
+// one pavement of the whole bajada.
 struct Lithology
 {
 	const char *name;
-	TerrainType rock, talus, gravel, pavement, clay;
+	TerrainType rock, talus, pavement;
 };
 constexpr std::array<Lithology, 3> kLithologies{{
-	{"granite", RIDGE_ROCK, SCREE, SHALE, DIRT, CLAY},
-	{"sandstone", HOODOOS, SCREE, WEATHERED_SANDSTONE, LATERITE, CLAY},
-	{"volcanic", OUTCROP, PUMICE, VOLCANIC_ASH, DIRT, CLAY},
+	{"granite", RIDGE_ROCK, SCREE, DIRT},
+	{"sandstone", HOODOOS, SCREE, LATERITE},
+	{"volcanic", OUTCROP, PUMICE, DIRT},
 }};
 
 struct Fan
@@ -1621,17 +1617,15 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			terrain[i] = SHALE;
 	}
 	layBeaches(terrain, t);
-	// The looks, inside each vertex's rule group so nothing plays differently: green ground lush by
-	// the water and drying with distance from it, the dry desert grass, the pavement gravel near the
-	// ranges and clay towards the playa, dune crests wind-rippled, the washes, salt and the playa's
-	// beaches pale, mudflat round its lakes. The garden round every swarm stays plain grass, where the
-	// starting-crop guarantee looks for it.
+	// The looks, inside each vertex's rule group so nothing plays differently, one per role: green
+	// ground lush by the water and dry beyond it and across the desert, one dune sand, the playa's salt
+	// flats pale, one pavement and the lithology's rock and talus. The garden round every swarm stays
+	// plain grass, where the starting-crop guarantee (run after these looks are written) looks for it.
 	{
 		std::vector<unsigned char> wet(n, 0);
 		for (int i = 0; i < n; ++i)
 			wet[i] = terrain[i] == WATER;
 		const std::vector<int> nearWater = stepsFrom(t, wet);
-		const int crestCut = percentile(desertValues, 100 - kDunePercent * kDuneCrestPercent / 100);
 		const auto garden = [&](int i)
 		{
 			const int k = L.homeOf[i];
@@ -1639,14 +1633,6 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 				return false;
 			const MapGeneratorPoint s = L.swarms[k];
 			return t.dist2(t.remainderX(i), i / t.w, s.x + 2, s.y + 2) < kPlainGarden * kPlainGarden;
-		};
-		const auto basinShare = [&](int i)
-		{
-			const int x = t.remainderX(i), y = i / t.w;
-			double nearestRange = 1e9;
-			for (int r = 0; r < L.ranges; ++r)
-				nearestRange = std::min(nearestRange, std::abs(wrappedOffset(y + 0.5, L.ridgeCentre[r][x], t.h)));
-			return nearestRange / (L.spacing / 2);
 		};
 		TerrainSketch looks(n, 0);
 		for (int i = 0; i < n; ++i)
@@ -1656,42 +1642,21 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			case GRASS:
 				if (garden(i) || L.townOf[i] >= 0)
 					break;
-				if (L.green[i] || L.meadow[i])
-					looks[i] = nearWater[i] <= kLushReach ? LUSH_GRASS
-							   : nearWater[i] <= kGreenReach ? GRASS
-															 : DRY_GRASS;
-				else
-					looks[i] = DRY_GRASS;
+				looks[i] = (L.green[i] || L.meadow[i]) && nearWater[i] >= 0 && nearWater[i] <= kLushReach
+							   ? LUSH_GRASS
+							   : DRY_GRASS;
 				break;
 			case SAND:
-				if (openDesert(i) && !L.sand[i] && dunes[i] >= duneCut)
-					looks[i] = dunes[i] >= crestCut ? WINDY_SAND_DUNE : DUNE_SAND;
-				else
-					looks[i] = PALE_SAND;
+				looks[i] = L.salt[i] ? PALE_SAND : DUNE_SAND;
 				break;
 			case SHALE:
-				// Grain size sorts down the slope: coarse gravel at the foot of the ranges, varnished
-				// pavement over the middle of the bajada, clay towards the playa. Towns and fringes keep
-				// the pavement.
-				if (L.pad[i] || L.homeOf[i] >= 0 || L.fringe[i])
-					looks[i] = L.lithology.pavement;
-				else
-				{
-					const double share = basinShare(i) + (pave[i] - 32768) / 65536.0 * kGrainBlend;
-					looks[i] = share < kGravelShare ? L.lithology.gravel
-							   : share < kClayShare ? L.lithology.pavement
-													: L.lithology.clay;
-				}
+				looks[i] = L.lithology.pavement;
 				break;
 			case RIDGE_ROCK:
 				looks[i] = L.lithology.rock;
 				break;
 			case SCREE:
 				looks[i] = L.lithology.talus;
-				break;
-			case HARDPAN:
-				if (nearWater[i] <= kMudflatReach)
-					looks[i] = MUDFLAT;
 				break;
 			default:
 				break;
@@ -1962,7 +1927,9 @@ GeneratorDefinition bajadaDefinition()
 		"bajada",
 		55,
 		"Bajada",
-		4,
+		// Revision 5: one look per role (lush and dry grass by the water, one sand, the salt flats,
+		// one pavement).
+		5,
 		false,
 		{GeneratorControl{"range-spacing", "Range spacing", 128, 256, 16, 128,
 						  ControlGroup::Terrain}

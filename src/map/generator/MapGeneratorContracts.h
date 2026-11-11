@@ -509,7 +509,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	REQUIRE((definition.legacyId == 45 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 45 && definition.revision == 6));
 	REQUIRE((request.option("watering-holes") == 1 && request.option("dry-patches") == 8));
 	REQUIRE((request.option("grassland") == 70 && request.option("kopjes") == 1 &&
 		   request.option("game-trails") == 1));
@@ -696,8 +696,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Current versions of the rebuilt landscapes (The Glacis 5, Caravanserai 2.0 is 5 as well).
-		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 5));
+		// Current versions of the rebuilt landscapes (The Glacis 5, Allotments 3, Caravanserai 6).
+		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : std::string(id) == "caravanserai" ? 6 : 5));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -1055,7 +1055,7 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	REQUIRE((definition.legacyId == 55 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 55 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("range-spacing") == 128 && request.option("passes") == 2 &&
@@ -1233,7 +1233,7 @@ inline void braidedRiverContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-river"));
-	REQUIRE((definition.legacyId == 42 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 42 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("braid-width") == 40 && request.option("channels") == 6 &&
@@ -1446,7 +1446,7 @@ inline void caravanseraiContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("caravanserai"));
-	REQUIRE((definition.legacyId == 41 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 41 && definition.revision == 6));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed, int desert)
 	{
@@ -2437,7 +2437,7 @@ inline void portageLakesContracts()
 	const auto &registry = GeneratorRegistry::builtins();
 	const int method = registry.idOf("portage-lakes");
 	const auto &definition = registry.at(method);
-	REQUIRE((definition.legacyId == 65 && definition.revision == 8));
+	REQUIRE((definition.legacyId == 65 && definition.revision == 9));
 	GenerationService service;
 	D r;
 	r.setMethodDefaults(method);
@@ -2892,7 +2892,7 @@ inline void bastionKeysContracts()
 inline void rainShadowContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("rain-shadow"));
-	REQUIRE((definition.legacyId == 27 && definition.revision == 7));
+	REQUIRE((definition.legacyId == 27 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("ridges") == 4 && request.option("ridge-thickness") == 3 &&
@@ -3091,7 +3091,7 @@ inline void tidalFlatsContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tidal-flats"));
-	REQUIRE((definition.legacyId == 18 && definition.revision == 9));
+	REQUIRE((definition.legacyId == 18 && definition.revision == 10));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("tide") == 0 && request.option("lagoons") == 3 &&
@@ -3318,7 +3318,7 @@ inline void tidalFlatsContracts()
 inline void watershedContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("watershed"));
-	REQUIRE((definition.legacyId == 13 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 13 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("outcrops") == 1 && request.option("climate") == 0 &&
@@ -3607,7 +3607,7 @@ inline void watershedContracts()
 inline void evergladesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("everglades"));
-	REQUIRE((definition.legacyId == 19 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 19 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("mudflats") == 50 && request.option("hammocks") == 3 && request.option("season") == 0 &&
@@ -3914,7 +3914,7 @@ inline void evergladesContracts()
 inline void ringWorldContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("ring-world"));
-	REQUIRE((definition.legacyId == 16 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 16 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&
@@ -4246,7 +4246,7 @@ inline void shatteredCoastContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("shattered-coast"));
-	REQUIRE((definition.legacyId == 7 && definition.revision == 9));
+	REQUIRE((definition.legacyId == 7 && definition.revision == 10));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 1 && request.option("outcrops") == 1 &&
@@ -4383,8 +4383,7 @@ inline void shatteredCoastContracts()
 			const auto result = build(g, r, "pinned climate");
 			REQUIRE(choice(result, "shattered-coast.climate") == names[climate - 1]);
 			REQUIRE((measure(result, "shattered-coast.deep.vertices") > 0 &&
-				   measure(result, "shattered-coast.mudflat.vertices") > 0 &&
-				   measure(result, "shattered-coast.looks.lush-vertices") > 0));
+				   measure(result, "shattered-coast.mudflat.vertices") > 0));
 			if (dimension >= 8)
 				REQUIRE((measure(result, "shattered-coast.knots.placed") > 0 &&
 					   measure(result, "shattered-coast.quarry.stone") > 0));
@@ -4578,7 +4577,7 @@ inline void shatteredCoastContracts()
 inline void riverContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
-	REQUIRE((definition.legacyId == 2 && definition.revision == 8));
+	REQUIRE((definition.legacyId == 2 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
@@ -4931,7 +4930,7 @@ inline void riverContracts()
 inline void craterLakesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("crater-lakes"));
-	REQUIRE((definition.legacyId == 4 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 4 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("crater-type") == 0 && request.option("deep-water") == 1 && request.option("crater-rims") == 1 &&
@@ -5209,7 +5208,7 @@ inline void craterLakesContracts()
 inline void swampContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("swamp"));
-	REQUIRE((definition.legacyId == 1 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 1 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 0 &&
@@ -5360,8 +5359,7 @@ inline void swampContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			REQUIRE(choice(result, "swamp.climate") == names[climate - 1]);
-			REQUIRE((measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0 &&
-				   measure(result, "swamp.looks.lush-vertices") > 0 && measure(result, "swamp.looks.dry-vertices") > 0));
+			REQUIRE((measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0));
 			if (dimension >= 8)
 				REQUIRE((measure(result, "swamp.moss.vertices") > 0 && measure(result, "swamp.hammocks.placed") > 0));
 			checkTerrain(g, teams, result, true);

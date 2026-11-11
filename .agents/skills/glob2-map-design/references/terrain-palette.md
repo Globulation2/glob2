@@ -27,9 +27,40 @@ Corners of two *groups* make a transition tile: never buildable, the numeric eff
 | Barren (`SHALE`; heath, tundra, laterite, ash...) | Buildable; holds nothing; inhibits growth exactly like sand; no shore support | Dry uplands and towns that must never overgrow | Inhibits crops up to about 30 tiles from water | Bajada, Watershed, River, Crater lakes |
 | Rough (`MUDFLAT`, `SCREE`; mud, hardpan, pumice) | Walks at 160/256 speed; unbuildable; holds nothing; no inhibition, no shore support | Flats, talus, point bars, far beaches | Slows footpaths beside homes; algae loses its sand | Tidal flats, Shattered coast, Rain shadow |
 | Paths (`TRAIL`; boardwalk, sandstone, brick...) | Walks at 512/256 speed; buildable; nothing grows on or across it; no inhibition | Ring roads, caravan routes, portage trails, fords | A ruler-straight road reads as a diagram | Ring world, Caravanserai, Portage Lakes, Everglades |
-| Grass looks (`LUSH_GRASS`, `DRY_GRASS`) | Exactly grass | Graded by distance from water | Dry grass renders as bare brown ground in the game view | River, Swamp, Braided river |
-| Sand looks (`DUNE_SAND`, `PALE_SAND`, `WINDY_SAND_DUNE`) | Exactly sand | Dune bands, pale hollows, riffles | None beyond sand's own | Caravanserai, Rain shadow |
-| Ice, Lava, Void | Slow and cold; burns fliers; nothing crosses | Not used by these thirteen | | Honeycomb isle (ice), Lava shield (lava) |
+| Grass looks (`LUSH_GRASS`, `DRY_GRASS`) | Exactly grass | The map's one grass, chosen by its climate; a second only where it is the map's subject (Bajada's fans greening where the water reaches) | Dry grass renders as bare brown ground in the game view; distance bands round every pond read as stripes | Bajada |
+| Sand looks (`DUNE_SAND`, `PALE_SAND`, `WINDY_SAND_DUNE`) | Exactly sand | The map's one sand, chosen by its climate | Two sands on one beach read as two kinds of ground | Caravanserai, Rain shadow |
+| Ice (`ICE`; frozen lake, glacier ice, deep and wind-swept snow) | Walks at 128/256 speed; wears ground units down by 8/256 hp a step; unbuildable; nothing grows | Frozen water to cross on foot at a price | A wide field is a slow, damaging shortcut and building room is lost | Spider web (frozen cells), Honeycomb isle (snow caps) |
+| Lava, Void | Burns fliers; nothing crosses | A volcanic centrepiece, drawn in rings | | Lava shield, the climates' volcanic hearts |
+
+## One look per rule group per map
+
+**A hard rule (maintainer, 2026-11-11).** A map draws each rule group in one look: one grass, one
+sand, one fertile ground, one barren, one rough, one deep water. The climate or variant table picks
+which, so maps still differ from one another; a single map stays readable. A player reads terrain
+as rules: two looks of one group on one map say "these play differently" when they do not.
+
+- **A second look needs a named feature.** Keep one only where it marks a place a player should
+  recognise and name (a salt pan, a playa, scree at a cliff's foot), drawn as one contiguous region
+  the design defines, and agreed with the maintainer. Never deal two looks out by noise, by a vertex
+  hash or by distance bands: mottles, stripes and "second" looks were removed from every natural
+  generator (2026-11-11) for exactly this.
+- **Grass varies only where variation is the map.** Lush grass by water and dry grass beyond is
+  Bajada's subject (desert fans greening where water reaches), and lush bars against a dry terrace
+  is Braided river's, so both keep two clean regions; on River, Swamp and the rest the concentric
+  bands round every pond read as stripes and went.
+- **Deep water is a rule, not a default.** It swims slower and grows no algae; draw it only where the
+  design wants that (a lagoon core, a channel to slow swimmers, an opt-in control), never as every
+  vertex some distance from land. City states and the arena maps dropped theirs (2026-11-11).
+- **No geology lessons in looks.** Grain size sorting down a slope, wind-rippled crests on the
+  highest dunes and similar realism cost readability for a detail no player acts on.
+- **A look written before the starting stages is a rule.** Where a generator writes its looks
+  before `placeStarts`, the crop guarantee and the cramped-start repair, those stages see the look:
+  the guarantee plants only on exact `GRASS`. Caravanserai's scrub drawn plain instead of dry let it
+  plant out in the desert and left a colony with no reachable wood (2026-11-11). Either keep the
+  staged look until the last of those stages and repaint after (Braided river, Watershed:
+  `finishGrass`), or keep the region in a look that is not exact `GRASS`.
+- **Home gardens show no seam.** Where a map's grass look is not plain `GRASS`, paint the gardens
+  in that look once every stage that needs exact `GRASS` has run (below), so no disc marks a home.
 
 ## Keep mechanics canonical and paint looks over them
 
@@ -42,8 +73,8 @@ growth fields and every shared helper read the mechanic sketch.
 **Shared helpers key on exact types.** `Map::isGrass`/`isWater`/`isSand`, `pureTiles(..., GRASS)`,
 `layBeaches` (exact `WATER`), `sprinkleSand`, `floodReach`'s crop top-up, the height-field groves and
 the legacy start fallback in [Terrain.cpp](../../../../src/map/generator/shared/Terrain.cpp) all test
-exact `GRASS` or `WATER`. So keep every home garden plain `GRASS`, lay grass looks after the starts
-and the starting-crop guarantee, and treat any check that must see deep water as water through the
+exact `GRASS` or `WATER`. So keep every home garden plain `GRASS` while they run, lay grass looks
+(gardens included, in the map's one grass look) after the starts and the starting-crop guarantee, and treat any check that must see deep water as water through the
 group (`wetVertices` in [HeightFieldLooks.h](../../../../src/map/generator/shared/HeightFieldLooks.h),
 `swimmable` in the rules). A helper that tests `fertilitySource` for "water" (the shared
 `homePondMissing`, Ring world's `furnishHomes`) counts loam as a pond: use swimmable water.
@@ -57,8 +88,9 @@ Layers added over an older generator must leave its earlier draws identical
 **Check looks in the game view, not only the preview** (`glob2 map render`, the
 [CLI guide](../../../../docs/map-generators/cli.md)). Dry grass from 20 tiles on River's temperate
 banks turned the map brown and read as desert; Swamp keeps it to hummock tops and clears it round
-homes. Split looks with fractal noise: smoothstep value noise alone draws straight-sided patches
-(Braided river).
+homes. A look boundary the design draws (a pan's edge, a named region) can wander with fractal
+noise; smoothstep value noise alone draws straight-sided edges (Braided river). Never use noise to
+choose between two looks (see [one look per rule group](#one-look-per-rule-group-per-map)).
 
 ## Draw distance in straight lines, frayed
 

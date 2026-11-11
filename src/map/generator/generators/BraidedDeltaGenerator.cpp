@@ -34,9 +34,15 @@ namespace N = ::MapGeneration::Numeric;
 //
 // - the permanent swamp: papyrus marsh threaded by channels that split and rejoin, deep lagoons,
 //   and islands of grass ringed with trees round bare salt-pan hearts, one of them a great island;
-// - the seasonal floodplain: loam levees and lush grass along shrinking channels;
+// - the seasonal floodplain: loam levees and woods along shrinking channels;
 // - the fringe, where the channels die out in dry sandy beds among sand ridges;
-// - the desert: dry grass, linear dunes, clay pans and rocky kopjes, round the wrap to the range.
+// - the desert: linear dunes, clay pans and rocky kopjes, round the wrap to the range.
+//
+// LOOKS (revision 8): one look per rule group across the whole map, plain grass, pale sand, mudflat
+// marsh, loam, clay and one deep water, except where a second look marks a named feature as one
+// whole region: the swamp's islands are lush grass, the dunes and sand ridges dune sand, the range's
+// foot scree, the kopjes outcrop, and a bridge a boardwalk deck between brick approaches. No look is
+// dealt by noise or graded by depth or by distance from water.
 //
 // PLAY INTENT: water and food are in the middle, building room and stone at the edge. Colonies
 // start round the swamp's rim on dry ground and push inward for floodplain farms and islands. The
@@ -152,6 +158,7 @@ struct Layout
 	RiverPlan river;
 	std::vector<double> frameU, frameV;   // each map tile's place in the flow frame
 	std::vector<unsigned char> isles;     // map tiles of swamp islands: 2 on the great island
+	std::vector<unsigned char> woodland;  // map vertices where ambient woods may stand
 	int greatIsland = -1;                 // the map tile at the great island's middle
 
 	int toMap(int i) const
@@ -435,7 +442,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			if (sketch[i] == WATER && (core[i] || lagoon[i]) && (depth[i] >= kDeep || gorge))
 			{
 				sketch[i] = DEEP_WATER;
-				look[i] = depth[i] >= kDeep + 2 ? DARK_WATER : DEEP_WATER;
+				look[i] = DEEP_WATER;
 			}
 		}
 		// Keep shallow shoals where the deep core approaches the banks at the
@@ -513,6 +520,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	// Desert features, the fringe's sand ridges and the dry beds are laid only once the homes are
 	// chosen, and never in a home's clearing: they would break up the room a home needs.
 	std::vector<unsigned char> decoMech(n, 0), decoLook(n, 0);
+	// Where the ambient woods may stand: the islands and the floodplain's grass near the water.
+	std::vector<unsigned char> woodland(n, 0);
 	const auto later = [&](int i, TerrainType mechanic, TerrainType painted)
 	{
 		decoMech[i] = mechanic;
@@ -529,12 +538,13 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			{
 				// Islands: grass ringed by trees later, round a bare salt pan where they are wide.
 				look[i] = LUSH_GRASS;
+				woodland[i] = 1;
 				++isleTiles;
 			}
 			else
 			{
 				sketch[i] = MUDFLAT;
-				look[i] = grain[i] > 47000 ? MUD : MUDFLAT;
+				look[i] = MUDFLAT;
 				++marsh;
 			}
 		}
@@ -543,16 +553,19 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			if (fromArm[i] >= 2 && fromArm[i] <= kLeveeCrest)
 			{
 				sketch[i] = LOAM;
-				look[i] = grain[i] > 45000 ? SPRING_MEADOW : LOAM;
+				look[i] = LOAM;
 				++loam;
 			}
 			else
-				look[i] = fromWater[i] <= 10 ? LUSH_GRASS : GRASS;
+			{
+				look[i] = GRASS;
+				woodland[i] = fromWater[i] <= 10;
+			}
 		}
 		else if (r[i] < kFringeEdge + 0.08)
 		{
 			// Sand ridges in broken arcs at the edge of the flood.
-			look[i] = fromWater[i] <= 4 ? GRASS : DRY_GRASS;
+			look[i] = GRASS;
 			if (std::abs(r[i] - kFringeEdge) < 0.02 && duneBreak[i] > 42000)
 				later(i, SAND, DUNE_SAND);
 		}
@@ -561,9 +574,9 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			// The desert.
 			const double stripe = N::sin(2 * kPi * (waveU * double(u) / A + waveV * double(v) / C) + windPhase +
 										 4 * duneBreak[i] / 65536.0 + 2 * grain[i] / 65536.0);
-			look[i] = DRY_GRASS;
+			look[i] = GRASS;
 			if (pan[i])
-				later(i, CLAY, grain[i] > 30000 ? CLAY : DIRT);
+				later(i, CLAY, CLAY);
 			else if (kopje[i] > 63000)
 				later(i, OUTCROP, OUTCROP);
 			else if (kopje[i] > 61500)
@@ -571,7 +584,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			else if (stripe > 0.7 && duneBreak[i] / 65536.0 > duneCut && r[i] > 1.15)
 				later(i, SAND, DUNE_SAND);
 			else if (grain[i] > 52000)
-				later(i, SHALE, SHALE);
+				later(i, SHALE, CLAY);
 		}
 		else
 		{
@@ -582,7 +595,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				look[i] = MUDFLAT;
 			}
 			else
-				look[i] = DRY_GRASS;
+				look[i] = GRASS;
 		}
 	}
 	// Bare salt pans at the hearts of the wider islands.
@@ -839,8 +852,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			return L;
 		}
 	}
-	// The deferred features, outside every home's clearing, which is plain grass: the starting-crop
-	// guarantee plants only on plain grass, not on its lush or dry looks.
+	// The deferred features, outside every home's clearing, which is plain grass: the starting kits
+	// and the starting-crop guarantee plant only on plain GRASS, not on the islands' lush look.
 	{
 		std::vector<unsigned char> clearing(n, 0);
 		for (int site : sites)
@@ -854,7 +867,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		for (int i = 0; i < n; ++i)
 		{
 			if (clearing[i] == 2 && sketch[i] == GRASS)
+			{
 				look[i] = GRASS;
+				woodland[i] = 0;
+			}
 			if (decoMech[i] && !clearing[i] && sketch[i] == GRASS)
 			{
 				sketch[i] = decoMech[i];
@@ -870,6 +886,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	L.paint.assign(t.size(), GRASS);
 	L.frameU.assign(t.size(), 0);
 	L.isles.assign(t.size(), 0);
+	L.woodland.assign(t.size(), 0);
 	L.frameV.assign(t.size(), 0);
 	for (int i = 0; i < n; ++i)
 	{
@@ -881,6 +898,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 																			 : mechanic;
 		L.frameU[m] = f.remainderX(i);
 		L.isles[m] = isle[i];
+		L.woodland[m] = woodland[i];
 		L.frameV[m] = i / f.w;
 	}
 
@@ -987,7 +1005,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		}
 		context.telemetry.measure("braided-delta.quarries", quarries);
 	}
-	// Wheat on the levee loam and woods on the lush ground beside the water and on the islands, as
+	// Wheat on the levee loam and woods on the grass beside the water and on the islands, as
 	// much of each as the amounts ask, in stands rather than speckle.
 	const std::vector<int> stands = periodicNoise(t.w, t.h, 6, context.stream("braided-delta-stands"));
 	const auto loam = pureTiles(L.terrain, t, LOAM), grass = pureTiles(L.terrain, t, GRASS);
@@ -999,7 +1017,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			continue;
 		if (loam[i] && stands[i] >= 65536 * (1 - wheatShare))
 			map.setResourceByIndex(x, y, WHEAT, 1);
-		else if (grass[i] && TerrainType(L.paint[i]) == LUSH_GRASS && stands[i] < 65536 * woodShare)
+		else if (grass[i] && L.woodland[i] && stands[i] < 65536 * woodShare)
 			map.setResourceByIndex(x, y, WOOD, 1);
 	}
 	seedAlgae(map, context, t, "braided-delta-algae", o.algae, AlgaeBand::anyWater(90));
@@ -1148,7 +1166,7 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			7,
+			8, // 8: one look per role
 			false,
 			{GeneratorControl::choice("flood", "Flood", {"Dry", "Normal", "Wet"}, 1, ControlGroup::Terrain)
 				 .withSearchValues({0, 1, 2}),

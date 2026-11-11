@@ -24,21 +24,23 @@ vertices and lean away from the open ground beside them (`wallVertices`), so no 
 loses a tile to a wall. Since revision 7 every Ridges wall is at least three vertices thick
 (`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
 draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
-no longer speckled with a second.
+no longer speckled with a second. Since revision 9 a partition stops at the arena ring's cliff and
+the coasts': the cliff runs on unbroken past it (revisions 7-8 cut the partition's rock through the
+ring, which read as a notch in the wall), and the water is one plain water.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
 
 | Ground | Rules | Where | Why |
 | --- | --- | --- | --- |
-| Partitions | Ridges | Between neighbouring courts, broken by their offset gates | Towers support the next court over them |
-| Arena ring and home borders | Obstacles | The ring between homes and courts, and the borders between homes | No tower shoots through them |
+| Partitions | Ridges | Between neighbouring courts, broken by their offset gates, ending at the ring's and coasts' cliff | Towers support the next court over them |
+| Arena ring and home borders | Obstacles | The ring between homes and courts, unbroken where partitions meet it, and the borders between homes | No tower shoots through them |
 | Coasts | Obstacles | A band from the lake's and the outer sea's water to six tiles inland | No beach and no lane behind it: nothing lands, nothing swims out |
 | Promenade and approaches | Paths, rough ground in the doors | The circuit's promenade and every radial approach | Quicker to march; nothing can be built in a door |
 | Farms | Grass in the climate's farm look; crossings Paths, caps and plot rings Barren (`dressFarmSand`) | Every home farm and court garden | Farm ground reads by climate; no sand stands in for a road or a ring |
 | Base | Barren, paved round the swarm | Every home outside its farm, but a grass verge four vertices wide at the foot of its walls | Food grows on the farms, so the base is the climate's barren ground; the verge holds the quarry faces and the towers against the walls (a tile mixing grass and barren corners holds no building) |
-| Lava | Lava | The central lake, in the volcanic climate | Volcanic maps show lava at their centre |
-| Deep water | Deep water | Water five vertices or more from land | Slower swimming, no algae |
+| Lava | Lava | The central lake, in the volcanic climate, drawn in concentric rings (ember field at the rim, lava, a molten core) | Volcanic maps show lava at their centre |
+| Water | Water | The central lake, the outer sea and the farms' channels | One plain water, with no deep water |
 
 
 ## Controls and supported requests

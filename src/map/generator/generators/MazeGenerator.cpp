@@ -46,8 +46,8 @@ using namespace MapGeneration;
 //   paved plaza at every junction cell, a pool in the garden cells. Every water body has a sand bank,
 //   so its algae regrows.
 // - Corridor and dead-end cells grow their food on loam beds along their walls' feet (Fertile ground
-//   waters itself and the ground round it). Temple courts are paved: buildable, fast and infertile by
-//   design, the only ground nothing grows on.
+//   waters itself and the ground round it). Revision 18 drops the paved temple courts (cells paved
+//   wall to wall) and lays every home's open ground as spring meadow (Fertile).
 // - A paved road (Paths, twice as fast) runs unbroken down every passage, through every doorway and
 //   over every keep's bridge.
 // - Stone comes from quarry faces at the foot of every home's back wall and from breach rubble.
@@ -110,9 +110,6 @@ constexpr int kGardenPoolRadius = 4;
 // A breach's gap runs this far along its wall either side of the wall's middle.
 constexpr int kBreachHalf = 4;
 
-// Temple courts: this share of the cells that are neither homes, dead ends nor gardens.
-constexpr int kCourtSharePercent = 10;
-
 // The number of cells from a home's door to its nearest garden the deal tries first: one cell
 // beyond the passage outside the door, so a garden is a short walk into the maze, not a forecourt.
 constexpr int kPreferredGardenSteps = 2;
@@ -127,8 +124,7 @@ enum CellKind : unsigned char
 	Home,
 	DeadEnd,
 	Junction,
-	Garden,
-	Court
+	Garden
 };
 
 int wallRadius(const MazeOptions &o)
@@ -197,6 +193,10 @@ struct MazeDesign
 {
 	MazeLayout layout;
 	std::vector<unsigned char> isHome, open, breach, kind;
+	// The cell outside every home's door, its forecourt: plain grass with no loam beds and no
+	// ambient fields, so every colony has building room a short walk from its swarm (the paved
+	// temple courts gave some homes that room until revision 18 dropped them).
+	std::vector<unsigned char> forecourt;
 	std::vector<int> exitEdge, deadEnds, labels;
 	std::vector<int> gardenSteps; // per colony (team order): cells to its nearest garden, -1 for none
 	std::uint32_t lookSeed = 0;
@@ -320,29 +320,6 @@ void dealGardens(MazeDesign &d, const MazeOptions &o, GenerationContext &context
 				d.gardenSteps[k] = steps[k][cell];
 }
 
-// Temple courts among the corridor and junction cells that open onto no home's door.
-void dealCourts(MazeDesign &d, GenerationContext &context)
-{
-	const Tessellation &g = d.layout.g;
-	std::vector<int> candidates;
-	int ordinary = 0;
-	for (int cell = 0; cell < g.cellCount(); ++cell)
-	{
-		if (d.kind[cell] != Corridor && d.kind[cell] != Junction)
-			continue;
-		++ordinary;
-		bool besideHome = false;
-		for (int edge : g.cells[cell].edges)
-			besideHome = besideHome || (d.open[edge] && d.isHome[g.other(edge, cell)]);
-		if (!besideHome)
-			candidates.push_back(cell);
-	}
-	context.shuffle(candidates.begin(), candidates.end(), "maze-courts");
-	const int wanted = std::min(int(candidates.size()), ordinary * kCourtSharePercent / 100);
-	for (int k = 0; k < wanted; ++k)
-		d.kind[candidates[k]] = Court;
-}
-
 MazeDesign designMaze(const GenerationRequest &request, GenerationContext &context)
 {
 	const MazeOptions o(request);
@@ -387,9 +364,13 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 	d.deadEnds = deadEnds(g, d.open, d.isHome, d.exitEdge);
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		d.exitEdge[L.homes[k]] = doors[k];
+	d.forecourt.assign(g.cells.size(), 0);
+	for (size_t k = 0; k < L.homes.size(); ++k)
+		if (doors[k] >= 0)
+			d.forecourt[g.other(doors[k], L.homes[k])] = 1;
 
 	// Every cell's kind: homes, the dead ends' treasure cells, junctions (three ways or more) with
-	// their fountains, and the rest corridors, among which gardens and courts are dealt.
+	// their fountains, and the rest corridors, among which gardens are dealt.
 	d.kind.assign(g.cells.size(), Corridor);
 	for (int cell = 0; cell < g.cellCount(); ++cell)
 	{
@@ -404,7 +385,6 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 	for (int home : L.homes)
 		d.kind[home] = Home;
 	dealGardens(d, o, context);
-	dealCourts(d, context);
 
 	// Warping never brings two walls that share no corner closer than the narrowest passage allows,
 	// so the validation above still holds for the warped cells: walls meeting at a corner may close
@@ -439,8 +419,7 @@ MazeDesign designMaze(const GenerationRequest &request, GenerationContext &conte
 								  std::count(d.breach.begin(), d.breach.end(), 1));
 		for (const auto &[kind, key] :
 			 {std::pair<int, const char *>{Junction, "maze.junctions.actual"},
-			  {Garden, "maze.gardens.actual"},
-			  {Court, "maze.courts.actual"}})
+			  {Garden, "maze.gardens.actual"}})
 			context.telemetry.measure(key, std::count(d.kind.begin(), d.kind.end(), kind));
 		int least = -1, most = -1;
 		for (int s : d.gardenSteps)
@@ -690,7 +669,8 @@ MazeTerrain sketchTerrain(const MazeDesign &d, const MazeOptions &o, const Torus
 	const double loamReach = r + .5 + kLoamDepth;
 	std::vector<unsigned char> loam(n, 0);
 	for (int i = 0; i < n; ++i)
-		loam[i] = (kindOf(i) == Corridor || kindOf(i) == DeadEnd) && !M.wall[i] && !M.throat[i] &&
+		loam[i] = (kindOf(i) == Corridor || kindOf(i) == DeadEnd) && !d.forecourt[d.labels[i]] &&
+				  !M.wall[i] && !M.throat[i] &&
 				  !M.floor[i] && std::sqrt(double(fromWall[i])) <= loamReach;
 	for (int i = 0; i < n; ++i)
 		if (s[i] == GRASS && cornerOf(t, loam, i))
@@ -703,9 +683,7 @@ MazeTerrain sketchTerrain(const MazeDesign &d, const MazeOptions &o, const Torus
 		const int cell = cellOf(i);
 		if (M.wall[i] || water[i])
 			continue;
-		if (d.kind[cell] == Court)
-			courtTiles[i] = 1;
-		else if (d.kind[cell] == Junction)
+		if (d.kind[cell] == Junction)
 		{
 			const int ox = t.offsetX(g.centreTileX(cell), t.remainderX(i));
 			const int oy = t.offsetY(g.centreTileY(cell), i / t.w);
@@ -775,8 +753,16 @@ MazeTerrain sketchTerrain(const MazeDesign &d, const MazeOptions &o, const Torus
 			}
 	}
 
-	// The looks: an overgrown road, temple paving in the courts, plazas and keeps, a boardwalk
-	// bridge, moss over the loam and lush grass round the water, split by fractal noise.
+	// Every home's open ground is spring meadow (Fertile: buildable crop land that waters the ground
+	// round it), its fields, banks' backs and court edges alike: a green keep in the temple
+	// (FEEDBACK 2026-11-11).
+	for (int i = 0; i < n; ++i)
+		if (s[i] == GRASS && d.isHome[cellOf(i)])
+			s[i] = LOAM;
+
+	// The looks: overgrown road for every road, plaza and keep court, a boardwalk bridge,
+	// spring meadow over every home, moss over the loam and lush grass round the water, split by
+	// fractal noise.
 	std::mt19937 rng(d.lookSeed);
 	const std::vector<int> moss = fractalNoise(t.w, t.h, 16, 3, rng);
 	const std::vector<int> lush = fractalNoise(t.w, t.h, 24, 3, rng);
@@ -784,12 +770,13 @@ MazeTerrain sketchTerrain(const MazeDesign &d, const MazeOptions &o, const Torus
 	TerrainSketch looks(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		if (road[i])
-			looks[i] = OVERGROWN_ROAD;
-		else if (court[i])
-			looks[i] = BRICK_PATH;
-		else if (deck[i])
+		// One paving for every road, plaza and keep court; only the moat's bridge is a boardwalk.
+		if (deck[i])
 			looks[i] = BOARDWALK;
+		else if (road[i] || court[i] || s[i] == TRAIL)
+			looks[i] = OVERGROWN_ROAD;
+		else if (s[i] == LOAM && d.isHome[cellOf(i)])
+			looks[i] = SPRING_MEADOW;
 		else if (s[i] == LOAM && moss[i] > 30000)
 			looks[i] = MOSS;
 		else if (s[i] == GRASS)
@@ -950,7 +937,8 @@ void scatterThroughMaze(GenerationMap &map, GenerationContext &context, const Ma
 			const auto &terrain = map.terrainPropertiesAt(int(i));
 			const bool growing = (depth[i] >= 1 && depth[i] <= kShoreBand) ||
 								 (terrain.fertilitySource && !terrain.swimmable);
-			if (growing && !d.isHome[d.labels[i]] && !M.onRoad[i] && !M.throat[i] &&
+			if (growing && !d.isHome[d.labels[i]] && !d.forecourt[d.labels[i]] && !M.onRoad[i] &&
+				!M.throat[i] &&
 				!M.floor[i] && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
 				map.getGroundUnit(x, y) == NOGUID)
 			{
@@ -1335,7 +1323,7 @@ GeneratorDefinition mazeDefinition()
 		"maze",
 		11,
 		"Maze",
-		17,
+		18, // 18: no paved temple courts; homes spring meadow; one paving but the bridge
 		false,
 		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons", "Random"}, 2)
 			 .withSearchValues({0, 1}),

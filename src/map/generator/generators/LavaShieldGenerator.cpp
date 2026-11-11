@@ -100,7 +100,7 @@ constexpr int kFordClearance = 4;
 // Along a flow, live or cooled, the ground changes every dozen tiles or so (kEdgeCell). Below
 // kCrustBelow on that noise, the grass within kCrustReach corners of the flow carries stone; up
 // to kBareBelow it is left plain so units can walk right up to the flow; up to kScreeBelow a
-// scree apron runs out to kScreeReach corners; above it, ash (dirt, or clay) runs out to
+// scree apron runs out to kScreeReach corners; above it, ash (drawn as dirt) runs out to
 // kAshReach corners. The crust gives about a third of the old full-width stone tongues' tiles
 // and keeps every colony's nearest quarry within the old distances. Each reach is for 256-tile
 // sides and halves at 128, where the wedges are narrow and their open ground is the expansion.
@@ -404,7 +404,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	}
 	const auto isHot = [&](int i)
 	{ return L.terrain[i] == LAVA || L.terrain[i] == EMBER_FIELD; };
-	// The crater wall inside the circuit is ash; the rim outside it is volcanic loam. The
+	// The crater wall inside the circuit is ash (dirt); the rim outside it is volcanic loam. The
 	// margins along the flows wait for the towns (furnishMargins).
 	L.flowEdge.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -412,8 +412,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 						(cooled[i] && (L.terrain[i] == SCREE || L.terrain[i] == SHALE));
 	L.fordCorners = ford;
 	auto &palette = context.stream("lava-palette");
-	const PeriodicNoise ash(t.w, t.h, 7, palette), soil(t.w, t.h, 9, palette),
-		rimEdge(t.w, t.h, 10, palette), seaFloor(t.w, t.h, 20, palette);
+	// One look per role: the ash and soil fields that once split the ash into dirt and clay and the
+	// loam into loam and moss are still drawn, so the rim's edge and the sea floor stay as they were.
+	[[maybe_unused]] const PeriodicNoise ash(t.w, t.h, 7, palette), soil(t.w, t.h, 9, palette);
+	const PeriodicNoise rimEdge(t.w, t.h, 10, palette), seaFloor(t.w, t.h, 20, palette);
 	int craterAsh = 0, loam = 0, deep = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
@@ -425,13 +427,13 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		const double circuit = crater.radiusAt(std::atan2(q.y, q.x)) + 5;
 		if (radius < circuit - 2)
 		{
-			L.terrain[i] = ash.at(x, y) > 0.5 ? CLAY : DIRT;
+			L.terrain[i] = DIRT;
 			++craterAsh;
 		}
 		else if (radius > circuit + 2 &&
 				 radius < L.rootRadius + 1 + kRimSwing * (2 * rimEdge.at(x, y) - 1))
 		{
-			L.terrain[i] = soil.at(x, y) > 0.62 ? MOSS : LOAM;
+			L.terrain[i] = LOAM;
 			++loam;
 		}
 	}
@@ -633,7 +635,7 @@ std::vector<RankedSite> candidateSites(const Layout &L, GenerationMap &map, cons
 	// Pure grass, or the rim's loam, which a town turns back to grass (populate).
 	TerrainSketch ground = L.terrain;
 	for (auto &v : ground)
-		if (v == LOAM || v == MOSS)
+		if (v == LOAM)
 			v = GRASS;
 	const auto usable = pureTiles(ground, t, GRASS);
 	// A cheap Chebyshev bound first, then the town's own footprint: a long town fits ground a
@@ -708,8 +710,11 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 	const auto fromFlow = stepsFrom(t, L.flowEdge);
 	const auto fromFord = stepsFrom(t, L.fordCorners);
 	auto &stream = context.stream("lava-margins");
-	const PeriodicNoise edge(t.w, t.h, kEdgeCell, stream), ash(t.w, t.h, 7, stream),
-		slope(t.w, t.h, 9, stream);
+	// The ash field no longer picks between dirt and clay but is still drawn, so the slope field after
+	// it, which places the ash, stays as it was.
+	const PeriodicNoise edge(t.w, t.h, kEdgeCell, stream);
+	[[maybe_unused]] const PeriodicNoise ash(t.w, t.h, 7, stream);
+	const PeriodicNoise slope(t.w, t.h, 9, stream);
 	const double scale = std::clamp(std::min(t.w, t.h) / 256.0, 0.5, 1.0);
 	const auto reach = [&](int r) { return std::max(1, int(std::lround(r * scale))); };
 	const int crustReach = reach(kCrustReach), screeReach = reach(kScreeReach),
@@ -728,7 +733,7 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 			(std::hypot(q.x, q.y) - L.rootRadius) / (kAshSlope * (L.islandRadius - L.rootRadius));
 		if (down >= 0 && down < 1 && slope.at(x, y) > kAshFrom + (1 - kAshFrom) * down)
 		{
-			terrain[i] = ash.at(x, y) > 0.5 ? CLAY : DIRT;
+			terrain[i] = DIRT;
 			++ashen;
 			continue;
 		}
@@ -746,7 +751,7 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 		}
 		else if (n >= kScreeBelow && d <= ashReach)
 		{
-			terrain[i] = ash.at(x, y) > 0.5 ? CLAY : DIRT;
+			terrain[i] = DIRT;
 			++ashen;
 		}
 	}
@@ -789,7 +794,7 @@ bool populate(GenerationWorld &game, GenerationContext &context, const Layout &L
 		{
 			const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
 			townGrass[i] = 1;
-			if (terrain[i] == LOAM || terrain[i] == MOSS)
+			if (terrain[i] == LOAM)
 				terrain[i] = GRASS;
 		}
 		for (const auto &[dx, dy] : town.ring)
@@ -1192,7 +1197,8 @@ GeneratorDefinition lavaShieldDefinition()
 			// Revision 7: the crater is uninterrupted lava, without void vents.
 			// Revision 9: live roots preserve all corners of reserved circuit cells.
 			// Revision 10: fertile ground contributes 48 Q8 to crop growth.
-			11, // 11: algae now regrows near any coast, so its best-growing water moved
+			// Revision 11: algae now regrows near any coast, so its best-growing water moved.
+			12, // 12: one look per role (ash all dirt, the rim all loam)
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),
