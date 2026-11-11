@@ -27,7 +27,7 @@ in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 statistics. The original legacy artwork remains available as style references;
 new terrain frames use their own `terrain-` prefixes and do not overwrite it.
 Use an isolated environment with the pinned asset-tool dependencies, including
-NumPy, which the field library and the barrier surfaces compute with, and SciPy for exact indexed
+NumPy, which the field library, the recipes and the decor compute with, and SciPy for exact indexed
 full-block Worley fields. Pillow's resampling kernels are a determinism
 input:
 
@@ -73,9 +73,9 @@ The field library in `tools/artwork/terrain_core.py` computes with NumPy. A fiel
 is a flat list or a flat array, and an RGB triple three lists or one `(3, n)`
 array: each helper returns arrays when it is given any and lists otherwise, and
 the generators (`fbm`, `lattice_noise`, `block_worley`, `flat` and the like) return
-arrays when called with `array=True`. Write recipes over arrays, as the laid paths,
-laterite, heath and the tundras are, so a block layout renders in seconds rather
-than minutes; per-object work (stones, shrubs, leaves) stays a loop over the
+arrays when called with `array=True`. Every recipe is written over arrays, so a
+block layout renders in a few seconds; write new ones the same way, since a recipe
+over lists pays for each per-pixel call to a helper. Per-object work (stones, shrubs, leaves) stays a loop over the
 objects with each object's box done as one array operation. Both forms repeat the
 same arithmetic in the same order (sums in order, `math.hypot` and Python's float
 power where NumPy rounds differently), so moving a recipe from lists to arrays,
