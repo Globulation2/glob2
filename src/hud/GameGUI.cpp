@@ -20,6 +20,10 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUIToolManager.h"
+#include "TorusView.h"
+#include "render/ViewState.h"
+#include "render/scene/SceneExtract.h"
 #include "online/SkinDownloads.h"
 #include "render/ColonySkinPreview.h"
 #include "GameGUITouch.h"
@@ -43,7 +47,9 @@ using std::shared_ptr;
 using std::static_pointer_cast;
 
 GameGUI::GameGUI(bool persistPreferences)
-	: keyboardManager(GameGUIShortcuts), gameOwner(std::make_unique<Game>(this)), game(*gameOwner), defaultAssign(game), toolManager(game, brush, defaultAssign, ghostManager),
+	: torusViewOwner(std::make_unique<TorusView>()), torusView(*torusViewOwner),
+	  keyboardManager(GameGUIShortcuts), gameOwner(std::make_unique<Game>(this)), game(*gameOwner), defaultAssign(game),
+	  toolManagerOwner(std::make_unique<GameGUIToolManager>(game, brush, defaultAssign, ghostManager)), toolManager(*toolManagerOwner),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
@@ -51,7 +57,10 @@ GameGUI::GameGUI(bool persistPreferences)
 	         10, // y offset
 	         128, // width
 	         128, //height
-	         Minimap::ShowFOW) // minimap mode
+	         Minimap::ShowFOW), // minimap mode
+	  viewOwner(std::make_unique<ViewState>()), view(*viewOwner),
+	  frameSceneOwner(std::make_unique<PresentationFrame>()), frameScene(*frameSceneOwner),
+	  sceneExtractorOwner(std::make_unique<SceneExtractor>()), sceneExtractor(*sceneExtractorOwner)
 {
 	// Headless clients may consume simulation events before the full GUI init.
 	selectionMode = NO_SELECTION;
@@ -83,6 +92,26 @@ void GameGUI::requestPause(bool pause)
 	enqueueOrder(std::make_shared<PauseGameOrder>(pause));
 }
 
+void GameGUI::setPublishedScene(const PresentationFrame* scene)
+{
+	publishedScene = scene;
+	view.scene = &drawnScene();
+	if (view.scene->buildingTypes) choiceCatalog = view.scene->buildingTypes;
+	toolManager.setDrawnScene(view.scene->world.catalogs ? view.scene : nullptr);
+	reconcilePublishedBuildingGuiState();
+}
+
+void GameGUI::stampPresentationRequest(SceneRequest& request) const
+{
+	request.tickTime = lastTickTime;
+	request.tickInterval = tickInterval;
+}
+
+int GameGUI::mapAnimationTime() const
+{
+	return view.render.animationTime;
+}
+
 GameGUI::~GameGUI()
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
@@ -96,6 +125,16 @@ Sint32 GameGUI::displayedPosY(const Building& b) const { return ::displayedPosY(
 Sint32 GameGUI::displayedMaxUnitWorking(const Building& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
 Sint32 GameGUI::displayedUnitStayRange(const Building& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
 Sint32 GameGUI::displayedPriority(const Building& b) const { return ::displayedPriority(buildingGuiState, b); }
+Sint32 GameGUI::displayedPosX(const SnapshotBuilding& b) const { return ::displayedPosX(buildingGuiState, b); }
+Sint32 GameGUI::displayedPosY(const SnapshotBuilding& b) const { return ::displayedPosY(buildingGuiState, b); }
+Sint32 GameGUI::displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }
+Sint32 GameGUI::displayedPosY(const SceneBuildingPanel& b) const { return ::displayedPosY(buildingGuiState, b); }
+Sint32 GameGUI::displayedMaxUnitWorking(const SceneBuildingPanel& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
+Sint32 GameGUI::displayedUnitStayRange(const SceneBuildingPanel& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
+Sint32 GameGUI::displayedPriority(const SceneBuildingPanel& b) const { return ::displayedPriority(buildingGuiState, b); }
+bool GameGUI::displayedClearingResource(const SceneBuildingPanel& b, int i) const { return ::displayedClearingResource(buildingGuiState, b, i); }
+Sint32 GameGUI::displayedMinLevelToFlag(const SceneBuildingPanel& b) const { return ::displayedMinLevelToFlag(buildingGuiState, b); }
+std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const SceneBuildingPanel& b) const { return ::displayedRatio(buildingGuiState, b); }
 bool GameGUI::displayedClearingResource(const Building& b, int i) const { return ::displayedClearingResource(buildingGuiState, b, i); }
 Sint32 GameGUI::displayedMinLevelToFlag(const Building& b) const { return ::displayedMinLevelToFlag(buildingGuiState, b); }
 std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) const { return ::displayedRatio(buildingGuiState, b); }

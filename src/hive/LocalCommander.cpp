@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <limits>
 #include "Game.h"
+#include "render/scene/Scene.h"
 namespace Hive
 {
 namespace

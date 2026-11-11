@@ -40,6 +40,8 @@
 #include "Team.h"
 #include "GameGUIDialog.h"
 #include "InGameScrollableHistory.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 void GameGUI::drawPanelButtons(int y)
 {

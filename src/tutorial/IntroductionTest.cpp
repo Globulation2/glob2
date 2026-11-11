@@ -27,6 +27,7 @@
 #include "MapScript.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "sim/snapshot/WorldSnapshot.h"
 
 namespace
 {

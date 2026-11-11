@@ -58,6 +58,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "MapScript.h"
+#include "render/MapRenderState.h"
 #ifdef __EMSCRIPTEN__
 #include "AIJavaScript.h"
 #endif

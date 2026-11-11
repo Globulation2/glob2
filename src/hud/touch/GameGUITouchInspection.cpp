@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <iterator>
 #include <ui/Host.h>
+#include "render/scene/ScenePanels.h"
+#include "GameGUIToolManager.h"
 
 using namespace GAGCore;
 namespace ui = GAGGUI::ui;

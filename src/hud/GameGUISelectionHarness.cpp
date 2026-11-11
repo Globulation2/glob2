@@ -14,6 +14,8 @@
 
 #include <memory>
 #include "sim/EntityRefOf.h"
+#include "render/scene/ScenePanels.h"
+#include "render/ViewState.h"
 
 
 class GameGUISelectionHarness

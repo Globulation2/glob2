@@ -59,6 +59,7 @@
 #include <stdexcept>
 #include <vector>
 #include <utility>
+#include "TorusView.h"
 #if !defined(WIN32)
 #include <dlfcn.h>
 #endif

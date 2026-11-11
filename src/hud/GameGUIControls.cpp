@@ -22,6 +22,8 @@
 #include "Unit.h"
 #include "Team.h"
 #include "GameGUIDialog.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 using namespace GAGGUI::ui;
 namespace

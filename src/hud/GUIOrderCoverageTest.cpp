@@ -6,6 +6,7 @@
 #include "BuildingGuiState.h"
 #include <memory>
 #include "Building.h"
+#include "render/scene/Scene.h"
 
 namespace {
 const SceneBuildingPanel& presentedBuilding(GameGUI& gui, const Building& building)

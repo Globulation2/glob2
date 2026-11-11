@@ -72,6 +72,7 @@
 #include "SGSL.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "GameGUIToolManager.h"
 
 GlobalContainer *globalContainer = nullptr;
 namespace

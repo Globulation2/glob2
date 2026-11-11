@@ -70,6 +70,7 @@
 #include "Utilities.h"
 #include "VerifyMatch.h"
 #include "Team.h"
+#include "render/ViewState.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;

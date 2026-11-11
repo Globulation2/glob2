@@ -29,6 +29,10 @@
 #include <StringTable.h>
 #include <ui/TextLayout.h>
 #include "Building.h"
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
+#include "render/ViewState.h"
+#include "GameGUIToolManager.h"
 using namespace GAGCore;
 
 void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected, double points)

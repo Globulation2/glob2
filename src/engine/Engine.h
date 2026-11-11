@@ -22,6 +22,9 @@
 #include "NetEngine.h"
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
+#include "EntityRandom.h"
+
+namespace GAGGUI { class Screen; }
 
 namespace GAGGUI { class Screen; }
 

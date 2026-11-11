@@ -40,6 +40,7 @@
 #include <time.h>
 #include "PerformanceTelemetry.h"
 #include "MapDrawer.h"
+#include "GameGUIToolManager.h"
 GlobalContainer *globalContainer = nullptr;
 static bool instrumentedTiming()
 {

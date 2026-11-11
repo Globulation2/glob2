@@ -26,6 +26,10 @@
 #include "Unit.h"
 #include "VoiceRecorder.h"
 #include "Building.h"
+#include "render/scene/ScenePanels.h"
+#include "render/scene/Scene.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 
 using std::shared_ptr;
 using std::static_pointer_cast;
@@ -64,8 +68,9 @@ void GameGUI::handleKeySelectPlaceFlag(const char *flagName)
 	}
 }
 
-void GameGUI::handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone)
+void GameGUI::handleKeySelectPlaceArea(int zoneIndex)
 {
+	const auto zone = static_cast<GameGUIToolManager::ZoneType>(zoneIndex);
 	if (selectionMode != BRUSH_SELECTION)
 		clearSelection();
 	if (brush.getType() == BrushTool::MODE_NONE)

@@ -11,6 +11,9 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#include "render/scene/Scene.h"
+#include "TorusView.h"
+#include "GameGUIToolManager.h"
 using namespace GAGCore;
 
 void GameGUITouch::updatePlacementPreview(ViewPoint point)

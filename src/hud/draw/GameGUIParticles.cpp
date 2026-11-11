@@ -13,6 +13,9 @@
 #include "ParticleCrossfade.h"
 #include "Building.h"
 #include <GraphicContext.h>
+#include "render/scene/SceneEntities.h"
+#include "render/scene/Scene.h"
+#include "TorusView.h"
 
 namespace
 {

@@ -68,6 +68,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include "render/ViewState.h"
 
 GlobalContainer *globalContainer = nullptr;
 using namespace GAGGUI;
