@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EncircledKingdomGenerator.h"
+#include "Climates.h"
 #include "Drawing.h"
 #include "DesignCache.h"
 #include "Farmland.h"
@@ -23,9 +24,17 @@ using namespace MapGeneration;
 // One agricultural kingdom, several invading towns. Colony zero is deliberately never dealt:
 // its connected heartland is richer than any single outer town, not than the whole coalition.
 // Alliances belong to the lobby. More opponents means a harder siege, not a larger starting army.
-// Ramparts are eternal stone deposits; wide gates and two unwalled water fronts admit attacks.
-// All renewable crops live in visible sand-contained gardens, leaving roads and building courts
-// usable after growth. No simulation rules, team settings or growth flags are changed here.
+// All renewable crops live in visible gardens edged with barren ground, leaving roads and building
+// courts usable after growth. No simulation rules, team settings or growth flags are changed here.
+//
+// Revision 4 draws a desert citadel from the terrain catalogue: the heartland is a green oasis
+// walled in sandstone, in arid country of laterite scrub, hardpan pans and dunes. The ramparts are
+// permanent walls (where earlier revisions stood stone on grass, which a siege could mine through):
+// sandstone benches (Obstacles) along the curtains, and hoodoos (Ridges) that towers shoot over on
+// the stretches facing the gates and posterns. Wide gates, narrow posterns and two unwalled water
+// fronts admit attacks. The outer towns are open oasis hamlets with paved squares and loam beds,
+// each with a sandstone outcrop for its quarry; the enceinte's stone comes back as quarry faces
+// along its inner foot. One fixed look (kKingdomLook), not a climate.
 namespace
 {
 constexpr int kTownRadius = 27;
@@ -41,6 +50,13 @@ struct Layout
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<unsigned char> wall, roads, gates, inside, reserved;
+	// ridge: rampart tiles towers shoot over; ford: road vertices over water; quarry: the capital's
+	// stone; outcrop: the hamlets' rock; gardenArea: every garden's tiles, rim included; scrub,
+	// hardpan, dune: the arid country's ground.
+	std::vector<unsigned char> ridge, ford, quarry, outcrop, gardenArea, scrub, hardpan, dune;
+	std::vector<int> outcropSeeds;
+	std::vector<double> innerFaces; // arcs along the enceinte where its inner quarry faces stand
+	TerrainSketch drawn;            // the finished ground (sketchTerrain)
 	std::vector<int> homeOf, plotOf;
 	std::vector<std::vector<unsigned char>> portMasks, gateMasks;
 	std::vector<ShapePoint> homes, polygon, fronts, ports;
@@ -119,6 +135,7 @@ void garden(Layout &L, RegionBounds b, int resource, int owner, bool starter)
 		{
 			const int i = t.at(x, y);
 			L.reserved[i] = 1;
+			L.gardenArea[i] = 1;
 			L.terrain[i] = x <= b.x0 || x >= b.x1 || y <= b.y0 || y >= b.y1 ? SAND
 						   : x >= b.x1 - 6                                  ? WATER
 																			: GRASS;
@@ -139,12 +156,18 @@ void town(Layout &L, ShapePoint p, int team)
 			if (L.roads[i])
 				L.terrain[i] = SAND;
 			L.homeOf[i] = team;
-			// Two opposing, wide entrances, with extra side exits so an outer town does not
-			// obstruct the circumferential road. The capital is a town within the great enceinte.
-			if (team && (std::abs(x) >= r - 1 || std::abs(y) >= r - 1) && std::abs(x) > 6 &&
-				std::abs(y) > 6)
-				L.wall[i] = 1;
+			// Outer towns are open hamlets (earlier revisions walled them in stone); the capital is
+			// a town within the great enceinte.
 		}
+	// A hamlet's sandstone outcrop, its quarry, in the quarter its gardens leave free.
+	if (team)
+	{
+		const int ox = cx + (L.townPlan == 0 ? -16 : 16), oy = cy + (L.townPlan == 0 ? -16 : 16);
+		for (int y = -2; y <= 2; ++y)
+			for (int x = -2; x <= 2; ++x)
+				L.outcrop[L.t.at(ox + x, oy + y)] = 1;
+		L.outcropSeeds.push_back(L.t.at(ox, oy));
+	}
 	garden(L, {cx + 6, cy - 24, cx + 24, cy - 3}, WHEAT, team, true);
 	if (L.townPlan == 0)
 		garden(L, {cx + 6, cy + 3, cx + 24, cy + 24}, WOOD, team, true);
@@ -159,6 +182,137 @@ void town(Layout &L, ShapePoint p, int team)
 		else
 			garden(L, {cx + 6, cy + 3, cx + 24, cy + 24}, WHEAT, 0, true);
 	}
+}
+
+// The desert citadel's one look (see the header): sandstone benches and hoodoos for the walls,
+// sandstone paving, a lush heartland and oases in dry grass, laterite scrub, hardpan, dune sand,
+// boardwalk over the moat, loam beds (the heartland's are spring meadow, painted after).
+constexpr ClimateLook kKingdomLook = {"kingdom",  SANDSTONE_BENCHES, HOODOOS,    LUSH_GRASS, DRY_GRASS,
+									  DUNE_SAND,  SANDSTONE,         SANDSTONE,  SANDSTONE,  SANDSTONE,
+									  BOARDWALK,  LATERITE,          DEEP_WATER, HARDPAN,    LOAM,
+									  TERMITE_MOUNDS, LUSH_GRASS};
+constexpr double kSquare = 5;   // the paved square round every town's swarm
+constexpr int kVerge = 3;       // grass kept at the rampart's inner foot for its quarry faces
+constexpr int kInnerFace = 16;  // stone tiles in each quarry face along the enceinte's inner foot
+constexpr int kHamletFace = 20; // stone tiles in a hamlet's outcrop face
+
+// The arid country beyond the moat: laterite scrub on a third of the open ground, hardpan pans at
+// the heart of the scrub, and dune fields where a second noise peaks, all kept a few tiles off the
+// roads, towns, moat and water so every approach stays a road through dry grass.
+void aridCountry(Layout &L, GenerationContext &c)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	std::vector<unsigned char> busy(n, 0);
+	for (int i = 0; i < n; ++i)
+		busy[i] = L.inside[i] || L.reserved[i] || L.roads[i] || L.terrain[i] != GRASS || L.homeOf[i] >= 0;
+	const std::vector<int> fromBusy = stepsFrom(t, busy);
+	const std::vector<int> scrubNoise = fractalNoise(t.w, t.h, 32, 3, c.stream("kingdom-arid"));
+	const std::vector<int> duneNoise = fractalNoise(t.w, t.h, 48, 2, c.stream("kingdom-dunes"));
+	std::vector<int> open;
+	for (int i = 0; i < n; ++i)
+		if (fromBusy[i] >= 3)
+			open.push_back(i);
+	if (open.empty())
+		return;
+	const auto quantile = [&](const std::vector<int> &field, int percent)
+	{
+		std::vector<int> values;
+		for (int i : open)
+			values.push_back(field[i]);
+		const size_t k = values.size() * size_t(100 - percent) / 100;
+		std::nth_element(values.begin(), values.begin() + std::min(k, values.size() - 1), values.end());
+		return values[std::min(k, values.size() - 1)];
+	};
+	const int scrubFrom = quantile(scrubNoise, 34), panFrom = quantile(scrubNoise, 9),
+			  duneFrom = quantile(duneNoise, 7);
+	int scrub = 0, pans = 0, dunes = 0;
+	for (int i : open)
+	{
+		if (duneNoise[i] >= duneFrom && fromBusy[i] >= 6)
+		{
+			L.dune[i] = 1;
+			++dunes;
+		}
+		else if (scrubNoise[i] >= panFrom && fromBusy[i] >= 5)
+		{
+			L.hardpan[i] = 1;
+			++pans;
+		}
+		else if (scrubNoise[i] >= scrubFrom)
+		{
+			L.scrub[i] = 1;
+			++scrub;
+		}
+	}
+	c.telemetry.measure("kingdom.arid.scrub", scrub);
+	c.telemetry.measure("kingdom.arid.hardpan", pans);
+	c.telemetry.measure("kingdom.arid.dunes", dunes);
+}
+
+// THE GROUND, as the finished world must hold it: a pure function of the design, kept with it
+// (Layout::drawn) and compared vertex for vertex by validateWorld.
+//  - roads, gates, posterns and streets are paved, boardwalk where they cross the moat;
+//  - every garden's sand rim is barren ground and its bed loam, watered by its pool as before;
+//  - the arid country is scrub, hardpan and dunes; the outcrops and the enceinte are walls on
+//    vertices, hoodoos facing the doors and benches elsewhere, at least three vertices thick;
+//  - a paved square round every town's swarm.
+TerrainSketch sketchTerrain(const Layout &L)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	TerrainSketch s = L.terrain;
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.gardenArea[i] && s[i] == SAND && !L.roads[i])
+			s[i] = DIRT;
+		else if (L.plotOf[i] >= 0 && s[i] == GRASS)
+			s[i] = LOAM;
+		else if (L.roads[i] && s[i] == SAND)
+			s[i] = TRAIL;
+		else if (s[i] == GRASS && L.dune[i])
+			s[i] = SAND;
+		else if (s[i] == GRASS && L.hardpan[i])
+			s[i] = MUD;
+		else if (s[i] == GRASS && L.scrub[i])
+			s[i] = DIRT;
+	}
+	std::vector<unsigned char> open(n, 0), ridgeTiles(n, 0), cliffTiles(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		open[i] = L.gates[i] || L.roads[i];
+		ridgeTiles[i] = L.wall[i] && L.ridge[i];
+		cliffTiles[i] = (L.wall[i] && !L.ridge[i]) || L.outcrop[i];
+	}
+	const std::vector<unsigned char> ridges = wallVertices(t, ridgeTiles, &open, &L.gates),
+									 cliffs = wallVertices(t, cliffTiles, &open, &L.gates);
+	for (int i = 0; i < n; ++i)
+		if (s[i] != WATER && (ridges[i] || cliffs[i]))
+			s[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	const auto canGrow = [&](int i)
+	{ return (s[i] == GRASS || s[i] == DIRT) && !L.gardenArea[i] && !cornerOf(t, open, i); };
+	thickenRidges(s, t, canGrow);
+	thickenRidges(s, t, canGrow, nullptr, CLIFFS);
+	std::vector<unsigned char> rock(n, 0);
+	for (int i = 0; i < n; ++i)
+		rock[i] = s[i] == CLIFFS || s[i] == RIDGE_ROCK;
+	const std::vector<int> fromRock = stepsFrom(t, rock);
+	for (int k = 0; k < int(L.homes.size()); ++k)
+		paveCore(s, t, L.homes[k].x - 1, L.homes[k].y - 5, kSquare,
+				 [&](int i)
+				 {
+					 return L.homeOf[i] == k && !L.gardenArea[i] && !L.quarry[i] &&
+							(fromRock[i] < 0 || fromRock[i] > kVerge);
+				 });
+	LookRoles roles;
+	roles.tended = [&](int i) { return L.inside[i] || L.homeOf[i] >= 0; };
+	roles.path = [&](int i) { return L.ford[i] ? PathLook::Bridge : PathLook::Town; };
+	paintClimate(s, t, kKingdomLook, roles);
+	// The heartland's gardens are spring meadow, the hamlets' loam beds: two named features.
+	for (int i = 0; i < n; ++i)
+		if (s[i] == LOAM && L.inside[i])
+			s[i] = SPRING_MEADOW;
+	return s;
 }
 Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 {
@@ -177,6 +331,9 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 	L.reserved.assign(t.size(), 0);
 	L.homeOf.assign(t.size(), -1);
 	L.plotOf.assign(t.size(), -1);
+	for (auto *mask : {&L.ridge, &L.ford, &L.quarry, &L.outcrop, &L.gardenArea, &L.scrub, &L.hardpan,
+					   &L.dune})
+		mask->assign(t.size(), 0);
 	L.plan = o.plan ? o.plan - 1 : int(c.bounded("kingdom-plan", 3));
 	L.townPlan = c.bounded("kingdom-towns", 3);
 	const double cx = t.w / 2, cy = t.h / 2;
@@ -260,6 +417,68 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 		ports.push_back(chosen);
 		L.ports.push_back(boundaryAt(L, chosen).first);
 	}
+	// Posterns: narrow doors between neighbouring gates, away from the ports and the corners, so a
+	// siege that can no longer mine the walls still has more than the gates to choose from.
+	std::vector<double> posterns;
+	{
+		const int wanted = o.posterns == 0 ? std::min(6, fronts) : o.posterns - 1;
+		std::vector<double> sorted = gates;
+		std::sort(sorted.begin(), sorted.end());
+		std::vector<double> middles;
+		for (size_t k = 0; k < sorted.size(); ++k)
+		{
+			const double a = sorted[k], b = sorted[(k + 1) % sorted.size()] + (k + 1 == sorted.size() ? L.perimeter : 0);
+			middles.push_back(std::fmod((a + b) / 2, L.perimeter));
+		}
+		for (int p = 0; p < wanted && !middles.empty(); ++p)
+		{
+			const double desired =
+				middles[size_t(p * int(middles.size()) / std::max(1, wanted)) % middles.size()] +
+				(p >= int(middles.size()) ? 0.25 * L.perimeter / fronts : 0);
+			double chosen = -1, cost = 1e30;
+			for (size_t e = 0; e < L.polygon.size(); ++e)
+				for (double a = L.edgeStart[e] + 10; a < L.edgeStart[e + 1] - 10; a += 1)
+				{
+					bool clear = true;
+					for (double g : gates)
+						clear = clear && arcDistance(a, g, L.perimeter) >= 20;
+					for (double q : ports)
+						clear = clear && arcDistance(a, q, L.perimeter) >= 24;
+					for (double q : posterns)
+						clear = clear && arcDistance(a, q, L.perimeter) >= 20;
+					const double d = arcDistance(a, desired, L.perimeter);
+					if (clear && d < cost)
+					{
+						cost = d;
+						chosen = a;
+					}
+				}
+			if (chosen < 0)
+			{
+				c.telemetry.fallback("kingdom.posterns.omitted", "No room for another postern.", p);
+				continue;
+			}
+			posterns.push_back(chosen);
+			const auto [pp, pn] = boundaryAt(L, chosen);
+			std::vector<unsigned char> door(t.size(), 0);
+			strokePath(door, t, {{pp.x - pn.x * 4, pp.y - pn.y * 4, 1.25}, {pp.x + pn.x * 14, pp.y + pn.y * 14, 1.25}});
+			for (int i = 0; i < t.size(); ++i)
+				L.gates[i] |= door[i];
+		}
+		c.telemetry.measure("kingdom.posterns.wanted", wanted);
+		c.telemetry.measure("kingdom.posterns.placed", int(posterns.size()));
+	}
+	// The enceinte's quarry faces stand along its inner foot midway between its doors.
+	{
+		std::vector<double> doors = gates;
+		doors.insert(doors.end(), posterns.begin(), posterns.end());
+		std::sort(doors.begin(), doors.end());
+		for (size_t k = 0; k < doors.size(); ++k)
+		{
+			const double a = doors[k], b = doors[(k + 1) % doors.size()] + (k + 1 == doors.size() ? L.perimeter : 0);
+			L.innerFaces.push_back(std::fmod((a + b) / 2, L.perimeter));
+		}
+	}
 	int gateArea = 0;
 	L.portMasks.assign(2, std::vector<unsigned char>(t.size(), 0));
 	for (int y = 0; y < t.h; ++y)
@@ -278,10 +497,19 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 			if ((d >= 5 && d <= 11) || (port && d > -7 && d <= 11))
 				L.terrain[i] = WATER;
 			if (std::abs(d) < 2 && !port && !L.gates[i])
+			{
 				L.wall[i] = 1;
+				// The curtain facing a door is rock its towers shoot over.
+				for (double g : gates)
+					L.ridge[i] = L.ridge[i] || arcDistance(arc, g, L.perimeter) < 24;
+				for (double q : posterns)
+					L.ridge[i] = L.ridge[i] || arcDistance(arc, q, L.perimeter) < 14;
+			}
 			if (L.gates[i])
 			{
 				++gateArea;
+				if (L.terrain[i] == WATER)
+					L.ford[i] = 1;
 				L.terrain[i] = SAND;
 				L.roads[i] = 1;
 			}
@@ -464,7 +692,7 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 	// supplies expansion frontage, not the opening's only stone.
 	for (int y = (L.townPlan == 1 ? -20 : 5); y < (L.townPlan == 1 ? -17 : 8); ++y)
 		for (int x = -22; x < -19; ++x)
-			L.wall[t.at(int(cx) + x, int(cy) + y)] = 1;
+			L.quarry[t.at(int(cx) + x, int(cy) + y)] = 1;
 	if (L.plan == 2)
 	{
 		for (int side : {-1, 1})
@@ -536,8 +764,11 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 			   k % 4 == 3 ? WOOD : WHEAT, 0, false);
 	}
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i])
+		if (L.wall[i] || L.outcrop[i])
 			L.roads[i] = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (L.outcrop[i])
+			L.terrain[i] = GRASS;
 	layBeaches(L.terrain, t);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	// A beach at the edge of a waterfront removes its last rampart tile intentionally; the
@@ -559,6 +790,8 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 				}
 			}
 	}
+	aridCountry(L, c);
+	L.drawn = sketchTerrain(L);
 	c.telemetry.choice("kingdom.plan", L.plan == 0   ? "elongated"
 									   : L.plan == 1 ? "bastioned"
 													 : "paired-courtyard");
@@ -594,7 +827,7 @@ std::string assess(const GenerationWorld &game, const Layout &L, GenerationConte
 					economicWalk[i] = 1;
 			}
 	const auto units = unitTilesByTeam(game.map, teams);
-	const auto growth = cropGrowthField(L.terrain, t);
+	const auto growth = cropGrowthField(L.drawn, t);
 	const auto anchors = buildAnchors(t, potentialBuildingTiles(game.map));
 	std::vector<std::uint64_t> food(teams, 0);
 	for (const auto &g : L.gardens)
@@ -714,9 +947,9 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 	}
 	const Torus &t = L.t;
 	const EncircledKingdomOptions o(c.request);
-	writeVertices(game.map, L.terrain);
+	writeVertices(game.map, L.drawn);
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i])
+		if (L.quarry[i])
 			game.map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
@@ -727,14 +960,14 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 			{
 				auto m = homeGrassMask(game.map, t, L.homeOf, k);
 				for (int i = 0; i < t.size(); ++i)
-					if (L.plotOf[i] >= 0 || L.wall[i])
+					if (L.plotOf[i] >= 0 || L.wall[i] || L.quarry[i] || L.outcrop[i])
 						m[i] = 0;
 				return m;
 			},
 			[&](int k) { return MapGeneratorPoint(int(L.homes[k].x) - 3, int(L.homes[k].y) - 7); }))
 		return false;
 	c.stage = "kingdom gardens";
-	const auto fertility = cropGrowthField(L.terrain, t);
+	const auto fertility = cropGrowthField(L.drawn, t);
 	for (size_t j = 0; j < L.gardens.size(); ++j)
 	{
 		const auto &g = L.gardens[j];
@@ -766,6 +999,43 @@ bool generate(GenerationWorld &game, GenerationContext &c)
 			c.detail = "A town garden lost its renewable starter supply.";
 			return false;
 		}
+	}
+	// The quarries: a face at each hamlet's outcrop, and faces along the enceinte's inner foot
+	// midway between its doors, where its stone stood when the ramparts were stone.
+	c.stage = "kingdom quarries";
+	for (int k = 1; k < c.request.nbTeams; ++k)
+	{
+		const int seed = L.outcropSeeds[size_t(k - 1)];
+		const int placed = plantQuarryFaces(
+			game.map, t, {KitSeed{t.remainderX(seed), seed / t.w, 6}}, kHamletFace,
+			[&](int i)
+			{
+				return L.homeOf[i] == k && !L.gardenArea[i] && !L.roads[i] &&
+					   clearGround(game.map, t.remainderX(i), i / t.w);
+			});
+		c.telemetry.measure("kingdom.hamlet.quarry-tiles", placed, k);
+		if (placed < kHamletFace / 2)
+		{
+			c.detail = "A hamlet has no room for its quarry.";
+			return false;
+		}
+	}
+	{
+		int inner = 0;
+		for (const double arc : L.innerFaces)
+		{
+			const auto [p, normal] = boundaryAt(L, arc);
+			inner += plantQuarryFaces(
+				game.map, t,
+				{KitSeed{int(std::lround(p.x - normal.x * 4)), int(std::lround(p.y - normal.y * 4)), 8}},
+				kInnerFace,
+				[&](int i)
+				{
+					return L.inside[i] && !L.roads[i] && !L.gardenArea[i] && L.homeOf[i] < 0 &&
+						   clearGround(game.map, t.remainderX(i), i / t.w);
+				});
+		}
+		c.telemetry.measure("kingdom.enceinte.quarry-tiles", inner);
 	}
 	// Dry hinterland scenery cannot overgrow the approaches. Fertile timber stays in gardens.
 	const auto noise = fractalNoise(t.w, t.h, 24, 3, c.stream("kingdom-country"));
@@ -813,14 +1083,16 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	if (auto e = designMismatch(L, game.map, "kingdom"); !e.empty())
 		return e;
 	const Torus &t = L.t;
-	const auto fertility = cropGrowthField(L.terrain, t);
+	const auto where = [&](int i)
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
+	for (int i = 0; i < t.size(); ++i)
+		if (game.map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.drawn[i])
+			return "The ground at " + where(i) + " is not as designed.";
+	const auto fertility = cropGrowthField(L.drawn, t);
 	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &fertility); !e.empty())
 		return e;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.wall[i] &&
-			!permanentResourceBarrier(game.map,i))
-			return "A kingdom rampart is missing.";
 		if (L.roads[i] && game.map.resourceBlocksGround(i))
 			return "A kingdom road is obstructed at " + std::to_string(t.remainderX(i)) + "," +
 				   std::to_string(i / t.w);
@@ -917,7 +1189,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 } // namespace
 EncircledKingdomOptions::EncircledKingdomOptions(const GenerationRequest &r)
 	: plan(r.option("fortress-plan")), gateWidth(r.option("gate-width")),
-	  farmland(r.option("heartland-farmland")), wheat(r.option("wheat-amount")),
+	  farmland(r.option("heartland-farmland")), posterns(r.option("posterns")), wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -928,7 +1200,9 @@ GeneratorDefinition encircledKingdomDefinition()
 		"encircled-kingdom",
 		63,
 		"Encircled Kingdom",
-		3,
+		// Revision 4: the desert citadel - permanent sandstone ramparts with hoodoo fronts,
+		// posterns, inner quarry faces, oasis hamlets with outcrop quarries, arid country.
+		4,
 		false,
 		{GeneratorControl::choice(
 			 "fortress-plan", "Fortress plan",
@@ -939,6 +1213,9 @@ GeneratorDefinition encircledKingdomDefinition()
 		 GeneratorControl{"heartland-farmland", "Heartland farmland", 75, 150, 25, 100,
 						  ControlGroup::Layout}
 			 .withSearchRange(100, 150),
+		 GeneratorControl::choice("posterns", "Posterns",
+								  {"Automatic", "None", "1", "2", "3", "4", "5", "6"}, 0)
+			 .withSearchValues({0, 1, 3, 5}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

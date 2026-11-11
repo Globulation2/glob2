@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "field/Grid.h"
 #include "KarstTowersGenerator.h"
+#include "Climates.h"
+#include "Rock.h"
+#include "Walls.h"
 #include "Channels.h"
 #include "DesignCache.h"
 #include "GenerationWorld.h"
@@ -59,8 +62,12 @@ using namespace MapGeneration;
 // same. Between neighbouring homes in a row lies a doline lake in a ring of sealed fields, where
 // there is room for one; beyond the valleys, sinkholes drain into chains of pools.
 //
-// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone never runs out and cannot
-// be cleared, so the towers are permanent terrain and a bowl's gates are its only ways in. Crops
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). The towers are permanent
+// terrain walls (revision 4; earlier revisions stood them in stone on grass), so a bowl's gates are
+// its only ways in: tall travertine pillars (Obstacles) round the bowls and over the karst, and low
+// outcrops (Ridges) flanking every gate, so a bowl's towers can cover its own approach. The stone
+// they held comes back as quarry faces at the bowl's foot, the same in every bowl, and at towers
+// near the fords; scree talus frays round the towers out in the karst. Crops
 // regrow by the density of pure water near them, so the design puts water beside every field it
 // plants: the home paddy's channel, the flooded terraces, the lakes. The river terraces are the
 // surplus, and they lie on the fronts; swimming turns a river from a wall into a way through them.
@@ -69,8 +76,13 @@ using namespace MapGeneration;
 namespace
 {
 
-// Every home's starting kit, unscaled: wheat and wood beside its pond. No quarry: the ring is stone.
-constexpr int kHomeWheat = 14, kHomeWood = 12;
+// Every home's starting kit, unscaled: wheat and wood beside its pond, and two quarry faces at the
+// foot of its ring.
+constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeFace = 12;
+// Quarry faces at the towers nearest each ford's landings, this many stone tiles at 100% stone.
+constexpr int kFordFace = 8;
+// Rivers at least this wide get a deep channel this many corners in from their banks.
+constexpr int kDeepRiver = 9, kDeepFromBank = 3;
 // The ring of towers round a home clearing: the margin inside it, its solid core, how far its lumpy
 // outer edge reaches, and the ground beyond kept clear of rivers and paddies so the gates open on land.
 constexpr double kClearingMargin = 2, kRingCore = 3, kRingOuter = 3, kBowlApron = 4;
@@ -148,11 +160,14 @@ struct Layout
 	std::vector<int> paddyOf; // the paddy a pure-grass tile belongs to, or -1; home paddies last
 	std::vector<unsigned char> bowl, riverWater, lakeWater, water, tower, paddyZone, homePaddy;
 	std::vector<unsigned char> thicket;   // how thick the karst is, 0 to 255
+	std::vector<int> fray;                // smooth noise fraying the talus round the towers
 	std::vector<unsigned char> gateOpen;  // tiles each gate's opening must keep free of stone
 	std::vector<unsigned char> flooded;   // by paddy id
 	std::vector<unsigned char> lakeField; // by paddy id: a sealed field round a lake, not a river paddy
 	std::vector<River> rivers;
 	std::vector<Ford> fords;
+	std::vector<unsigned char> ford;  // corners the fords' bridges laid over water
+	int riverWidth = 0;               // the rivers' width, as narrowed to fit
 	TerrainSketch terrain;
 	std::string failure;
 };
@@ -972,8 +987,12 @@ void waterHomes(Layout &L, const Work &w)
 		if (L.water[i])
 			L.terrain[i] = WATER;
 	layBeaches(L.terrain, t);
+	const TerrainSketch before = L.terrain;
 	for (const Ford &f : L.fords)
 		bridgeAcross(L.terrain, t, f.from, f.to, 1.5);
+	L.ford.assign(n, 0);
+	for (int i = 0; i < n; ++i)
+		L.ford[i] = before[i] == WATER && L.terrain[i] != WATER;
 	// The home paddies' tiles join the paddies, one id per home, for the containment check.
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		aroundPoint(t, L.homes[k], 14,
@@ -984,6 +1003,124 @@ void waterHomes(Layout &L, const Work &w)
 					});
 }
 
+
+// The one look of the karst (see the header): pale travertine pillars, outcrops at the gates, earth
+// trails along the bunds, boardwalk fords, spring-meadow terraces, scree talus, a deep river channel.
+constexpr ClimateLook kKarstLook = {"karst",   TRAVERTINE_TERRACES, OUTCROP,     LUSH_GRASS, GRASS,
+									PALE_SAND, TRAIL,               TRAIL,       TRAIL,      TRAIL,
+									BOARDWALK, SHALE,               DEEP_WATER,  SCREE,      SPRING_MEADOW,
+									OUTCROP,   LUSH_GRASS};
+
+// The tower tiles drawn as rock: every tower tile the beaches and bunds left pure grass (where its
+// stone used to stand), and of those, the ones flanking a bowl's gates are outcrops.
+std::vector<unsigned char> towerTiles(const Layout &L)
+{
+	std::vector<unsigned char> rock(L.t.size(), 0);
+	for (int i = 0; i < L.t.size(); ++i)
+		rock[i] = L.tower[i] && pureTile(L.terrain, L.t, i, GRASS);
+	return rock;
+}
+
+// THE GROUND, as the finished world must hold it: a pure function of the design, so validateWorld
+// rebuilds it and compares every vertex.
+//  - the towers are walls on vertices (wallVertices), leaning off the gates: outcrop beside a bowl's
+//    gates, travertine elsewhere, at least three vertices thick; scree talus frays round the towers
+//    out in the karst, never in a bowl, a paddy or a valley's shore;
+//  - the bunds are earth trails (Paths: nothing grows across them, and unlike sand they starve no
+//    crop beside them), every crossed corner of a ford's bridge boardwalk;
+//  - the dry paddies, lake fields and home paddies are spring meadow (Fertile), the flooded ones water;
+//  - a wide river has a deep channel down its middle.
+TerrainSketch sketchTerrain(const Layout &L)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	TerrainSketch s = L.terrain;
+	std::vector<unsigned char> bridge(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		int fords = 0;
+		for (int vy = 0; vy <= 1; ++vy)
+			for (int vx = 0; vx <= 1; ++vx)
+				fords += L.ford[t.at(x + vx, y + vy)];
+		if (fords >= 2)
+			for (int vy = 0; vy <= 1; ++vy)
+				for (int vx = 0; vx <= 1; ++vx)
+				{
+					const int v = t.at(x + vx, y + vy);
+					if (s[v] == WATER || L.ford[v])
+						bridge[v] = 1;
+				}
+	}
+	for (int i = 0; i < n; ++i)
+	{
+		if (bridge[i])
+			s[i] = TRAIL;
+		else if (s[i] == SAND && (L.paddyZone[i] || L.homePaddy[i]))
+			s[i] = TRAIL;
+		else if (s[i] == GRASS && L.paddyOf[i] >= 0)
+			s[i] = LOAM;
+	}
+	// A crop corner of a paddy is meadow only where the whole tile is the paddy's: paddyOf marks
+	// tiles by their top-left corner, so its other three corners join it.
+	for (int i = 0; i < n; ++i)
+		if (L.paddyOf[i] >= 0)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			for (const int v : {t.at(x + 1, y), t.at(x, y + 1), t.at(x + 1, y + 1)})
+				if (s[v] == GRASS)
+					s[v] = LOAM;
+		}
+	const std::vector<unsigned char> rock = towerTiles(L);
+	std::vector<unsigned char> ridgeTiles(n, 0), cliffTiles(n, 0);
+	const std::vector<unsigned char> gateSide = dilate(t, L.gateOpen, 3);
+	for (int i = 0; i < n; ++i)
+	{
+		ridgeTiles[i] = rock[i] && L.bowl[i] && gateSide[i];
+		cliffTiles[i] = rock[i] && !ridgeTiles[i];
+	}
+	const std::vector<unsigned char> ridges = wallVertices(t, ridgeTiles, &L.gateOpen, &L.gateOpen),
+									 cliffs = wallVertices(t, cliffTiles, &L.gateOpen, &L.gateOpen);
+	for (int i = 0; i < n; ++i)
+		if (s[i] == GRASS && (ridges[i] || cliffs[i]))
+			s[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
+	const auto canGrow = [&](int i)
+	{
+		return s[i] == GRASS && L.homeOf[i] < 0 && !L.homePaddy[i] && !cornerOf(t, L.gateOpen, i);
+	};
+	thickenRidges(s, t, canGrow);
+	thickenRidges(s, t, canGrow, nullptr, CLIFFS);
+	// Talus: scree frayed round the towers out in the karst, off the bowls, paddies and shores.
+	{
+		std::vector<unsigned char> walls(n, 0), eligible(n, 0);
+		for (int i = 0; i < n; ++i)
+			walls[i] = s[i] == CLIFFS || s[i] == RIDGE_ROCK;
+		const std::vector<unsigned char> shore = dilate(t, L.water, 3);
+		const std::vector<unsigned char> apron = dilate(t, L.bowl, 3);
+		const std::vector<unsigned char> paddies = dilate(t, L.paddyZone, 2);
+		for (int i = 0; i < n; ++i)
+			eligible[i] = s[i] == GRASS && !shore[i] && !apron[i] && !paddies[i];
+		const std::vector<unsigned char> talus = talusApron(t, walls, eligible, L.fray, 0, 2, 40000);
+		for (int i = 0; i < n; ++i)
+			if (talus[i])
+				s[i] = MUD;
+	}
+	std::vector<unsigned char> riverCore(n, 0);
+	if (L.riverWidth >= kDeepRiver)
+	{
+		std::vector<unsigned char> river(n, 0);
+		for (int i = 0; i < n; ++i)
+			river[i] = s[i] == WATER && L.riverWater[i];
+		riverCore = deepCore(t, river, kDeepFromBank);
+	}
+	LookRoles roles;
+	roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
+	roles.path = [&](int i) { return bridge[i] ? PathLook::Bridge : PathLook::Road; };
+	roles.deep = [&](int i) { return riverCore[i] != 0; };
+	paintClimate(s, t, kKarstLook, roles);
+	return s;
+}
+
 // The layout with homes no bigger than `homeCap` and rivers no wider than `riverCap`.
 Layout designAt(const GenerationRequest &request, GenerationContext &context, int homeCap, int riverCap)
 {
@@ -992,6 +1129,7 @@ Layout designAt(const GenerationRequest &request, GenerationContext &context, in
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	Work w{o, context};
 	w.riverWidth = std::min(o.riverWidth, riverCap);
+	L.riverWidth = w.riverWidth;
 	if (!placeHomesAndRivers(L, w, homeCap))
 		return L;
 	raiseTowers(L, w);
@@ -1004,6 +1142,7 @@ Layout designAt(const GenerationRequest &request, GenerationContext &context, in
 	clearValleys(L, w);
 	terracePaddies(L, w);
 	waterHomes(L, w);
+	L.fray = periodicNoise(L.t.w, L.t.h, 6, context.stream("karst-talus"));
 	return L;
 }
 
@@ -1069,15 +1208,14 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "karst terrain";
-	writeVertices(map, L.terrain);
-	int towers = 0;
-	for (int i = 0; i < n; ++i)
-		if (L.tower[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
-		{
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
-			++towers;
-		}
-	context.telemetry.measure("karst.tower.tiles", towers);
+	const TerrainSketch drawn = sketchTerrain(L);
+	writeVertices(map, drawn);
+	{
+		int towers = 0;
+		for (const unsigned char rock : towerTiles(L))
+			towers += rock;
+		context.telemetry.measure("karst.tower.tiles", towers);
+	}
 
 	context.stage = "karst colonies";
 	if (!settleRoundColonies(game, context, "karst-starts", L.homeOf, L.homes, L.homeRadius))
@@ -1089,6 +1227,63 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		plantHomeKit(map, t, context, L.kits[k], 0.0, L.homeRadius, kHomeWheat, kHomeWood,
 					 [&](int i) { return L.homeOf[i] == k && !L.homePaddy[i] && open(i); });
+	// Each bowl's quarry: two faces at the foot of its ring, as far from its gates and from each other
+	// as the clearing allows. Every bowl is drawn the same, so the choice is made by offset from the
+	// home and ties go to the same offset in every bowl.
+	const auto blockedNear = [&](int i)
+	{
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const TerrainProperties &p = map.terrainPropertiesAt(t.x(t.remainderX(i) + dx), t.y(i / t.w + dy));
+				if (!p.walkable && !p.swimmable)
+					return true;
+			}
+		return false;
+	};
+	const std::vector<int> fromGate = stepsFrom(t, L.gateOpen);
+	for (int k = 0; k < teams; ++k)
+	{
+		const int cx = int(std::floor(L.homes[k].x)), cy = int(std::floor(L.homes[k].y));
+		// The clearing reaches past the home's own ground to the ring's inner edge.
+		std::vector<unsigned char> clearing(n, 0);
+		const double reach = L.homeRadius + kClearingMargin + kRingWobble + 1;
+		aroundPoint(t, L.homes[k], int(std::ceil(reach)),
+					[&](int i, int dx, int dy) { clearing[i] = std::hypot(dx, dy) <= reach; });
+		const auto free = [&](int i)
+		{ return clearing[i] && !L.homePaddy[i] && !L.gateOpen[i] && open(i); };
+		const auto offset = [&](int i)
+		{ return std::pair{t.offsetY(cy, i / t.w), t.offsetX(cx, t.remainderX(i))}; };
+		std::vector<int> foot;
+		aroundPoint(t, L.homes[k], int(std::ceil(reach)),
+					[&](int i, int, int)
+					{
+						if (free(i) && blockedNear(i))
+							foot.push_back(i);
+					});
+		const auto better = [&](int a, int b, int va, int vb)
+		{ return va != vb ? va > vb : offset(a) < offset(b); };
+		int first = -1, second = -1;
+		for (int i : foot)
+			if (first < 0 || better(i, first, fromGate[i], fromGate[first]))
+				first = i;
+		const auto spread = [&](int i)
+		{ return std::min(fromGate[i], t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(first), first / t.w)); };
+		for (int i : foot)
+			if (first >= 0 && (second < 0 || better(i, second, spread(i), spread(second))))
+				second = i;
+		std::vector<KitSeed> seeds;
+		for (const int seed : {first, second})
+			if (seed >= 0)
+				seeds.push_back({t.remainderX(seed), seed / t.w, 3});
+		const int placed = plantQuarryFaces(map, t, seeds, kHomeFace, free);
+		context.telemetry.measure("karst.home.quarry-tiles", placed, k);
+		if (placed < kHomeFace)
+		{
+			context.detail = "A bowl has no room for its quarry; raise Home size.";
+			return false;
+		}
+	}
 	// Home paddies are sown whole, whatever the amounts: they are each colony's guaranteed food.
 	sowPaddies(map, L, [&](int p) { return p >= L.paddies; }, open);
 
@@ -1104,9 +1299,21 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	context.telemetry.measure("karst.paddies.sown", sownPaddies);
 	sowPaddies(map, L, [&](int p) { return p < L.paddies && sown[p]; }, open);
 
+	// A quarry face at the tower nearest each ford's landings, scaled by the stone amount.
+	{
+		int fordStone = 0;
+		const int face = int(scaledCount(kFordFace, o.stone));
+		for (const Ford &f : L.fords)
+			for (const ShapePoint &end : {f.from, f.to})
+				if (face > 0)
+					fordStone += plantQuarryFaces(
+						map, t, {KitSeed{int(end.x), int(end.y), 12}}, face,
+						[&](int i) { return !L.bowl[i] && !L.paddyZone[i] && open(i); });
+		context.telemetry.measure("karst.fords.quarry-tiles", fordStone);
+	}
 	// Woods in the thickets and in broken patches at the towers' feet. Wood that water could spread stays
 	// well away from the bowls and lakes.
-	const Fertility::Field growth = cropGrowthField(L.terrain, t);
+	const Fertility::Field growth = cropGrowthField(drawn, t);
 	const std::vector<std::int64_t> fromTower = distanceSquaredTo(t, L.tower);
 	const std::vector<std::int64_t> fromBowl = distanceSquaredTo(t, L.bowl);
 	const std::vector<std::int64_t> fromLake = distanceSquaredTo(t, L.lakeWater);
@@ -1151,7 +1358,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	}
 	seedAlgae(map, context, t, "karst-algae", o.algae, AlgaeBand::shallows(1, 4, 70));
 	secureStartingCrops(game, context, t, 24, 32, 0, &L.tower);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, 100, o.algae, o.fruit}, 24, 32, 0, &L.tower);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0, &L.tower);
 
 	context.stage = "karst routes";
 	openColonyRoutes(map, context, t, StepCosts{1, 3, 40, -1, -1});
@@ -1186,10 +1393,17 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 					return "A paddy's bund is broken at " + at(x, y) + ": its crops could spread out.";
 			}
 	}
-	// Every gate stays free of stone and every ford stays dry.
+	// Every tower, bund and terrace stands as designed, vertex for vertex.
+	const TerrainSketch designed = sketchTerrain(L);
 	for (int i = 0; i < t.size(); ++i)
-		if (L.gateOpen[i] && map.isResource(t.remainderX(i), i / t.w) && map.getResource(t.remainderX(i), i / t.w).type == STONE)
-			return "A home's gate is closed by stone at " + at(t.remainderX(i), i / t.w) + ".";
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != designed[i])
+			return "The ground at " + at(t.remainderX(i), i / t.w) + " is not as designed.";
+	// Every gate stays open and every ford stays dry.
+	for (int i = 0; i < t.size(); ++i)
+		if (L.gateOpen[i] && (!map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable ||
+							  (map.isResource(t.remainderX(i), i / t.w) &&
+							   map.getResource(t.remainderX(i), i / t.w).type == STONE)))
+			return "A home's gate is closed at " + at(t.remainderX(i), i / t.w) + ".";
 	for (const Ford &f : L.fords)
 		if (!map.terrainPropertiesAt(int(f.centre.x), int(f.centre.y)).walkable)
 			return "A ford is under water at " + at(int(f.centre.x), int(f.centre.y)) + ".";
@@ -1202,7 +1416,8 @@ KarstTowersOptions::KarstTowersOptions(const GenerationRequest &r)
 	  homeDesign(r.option("home-design")), riverWidth(r.option("river-width")), fords(r.option("fords")),
 	  paddyDepth(r.option("paddy-depth")), homeSize(r.option("home-size")), meander(r.option("river-meander")),
 	  sinkholes(r.option("sinkholes")), flooded(r.option("flooded-terraces")), lakes(r.option("lakes")),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")), algae(r.option("algae-amount")),
+	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+	  algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
 }
@@ -1213,7 +1428,9 @@ GeneratorDefinition karstTowersDefinition()
 		"karst-towers",
 		54,
 		"Karst towers",
-		3,
+		// Revision 4: the terrain catalogue - travertine pillars and gate outcrops, quarry faces, a
+		// stone amount, trail bunds, spring-meadow terraces, scree talus and deep river channels.
+		4,
 		false,
 		{GeneratorControl{"tower-spacing", "Tower spacing", 14, 32, 2, 16, ControlGroup::Terrain}
 			 .withSearchRange(14, 24),
@@ -1244,6 +1461,7 @@ GeneratorDefinition karstTowersDefinition()
 			 .withSearchRange(15, 19),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 		generate,

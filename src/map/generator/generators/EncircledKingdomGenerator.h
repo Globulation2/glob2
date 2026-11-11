@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct EncircledKingdomOptions
 {
-	int plan, gateWidth, farmland;
+	int plan, gateWidth, farmland, posterns;
 	int wheat, wood, stone, algae, fruit;
 	explicit EncircledKingdomOptions(const GenerationRequest &);
 };

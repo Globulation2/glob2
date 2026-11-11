@@ -1,8 +1,8 @@
 # Encircled Kingdom
 
 A deliberately asymmetric siege landscape for **3–16 colonies**. Colony zero starts
-inside a large fortified agricultural heartland. The other colonies occupy smaller
-fortified towns outside its perimeter. More opponents make the siege harder; the
+inside a large walled agricultural heartland, a green oasis in arid country. The other
+colonies occupy open oasis hamlets outside its perimeter. More opponents make the siege harder; the
 map does not compensate with extra starting units or finished economic buildings.
 
 Choose **You vs all** under Teams, with the human in colony zero, for the
@@ -12,19 +12,29 @@ the same terrain works, but the outside colonies can fight each other.
 
 ## Landscape and choices
 
-The kingdom has broad land gates, a moat, and two unwalled waterfronts that become
-alternate approaches for swimmers. Ramparts are permanent stone **resource deposits**,
-not destructible buildings. They also supply mining frontage. Control of ground and
-forward buildings, rather than destruction of terrain, opens a front.
+The kingdom has broad land gates, narrow posterns, a moat, and two unwalled waterfronts
+that become alternate approaches for swimmers. Since revision 4 the ramparts are permanent
+terrain walls that cannot be mined: sandstone benches (Obstacles, which stop arrows) along the
+curtains, and hoodoos (Ridges, which towers shoot over) on the stretches facing each gate and
+postern. Control of ground and forward buildings opens a front. The ramparts' stone comes back
+as quarry faces of 16 along the enceinte's inner foot, one midway between every two doors.
 
 The capital has two renewable starter wheat gardens, a wood garden, and a nearby
-quarry. Outer towns have one starter wheat garden, a wood garden and stone ramparts.
+quarry. Outer towns are open hamlets (revision 3 walled them in stone) with one starter wheat
+garden, a wood garden, a paved square and a sandstone outcrop holding a 20-stone quarry face.
+
+The map has one fixed look of its own (`kKingdomLook`, a desert citadel, not a shared climate).
+Inside the walls the heartland is lush grass with spring-meadow garden beds. Outside lies dry
+grass in arid country: laterite scrub (Barren) on about a third of the open ground, hardpan
+pans (Rough) at the heart of the scrub, and dune sand, all kept a few tiles off roads, towns
+and water. Streets are sandstone paving; the gates and posterns cross the moat on boardwalk.
 All colonies start with one ordinary swarm and the shared starting-worker count.
 Additional irrigated fields inside the kingdom make its economic potential larger
 than that of any single outer town. Losing a frontier can expose those farms and
 provide an attacker with room for inns and forward construction.
 
-Streets and visible sand boundaries contain crop growth. Dry countryside woodland
+Streets and the gardens' barren rims contain crop growth; garden beds are loam (the
+heartland's spring meadow). Dry countryside woodland
 cannot regrow after being cleared. No tile disables the engine's resource-growth
 flag. The exterior road, short lanes to nearby fronts, and town streets preserve circulation through the siege.
 
@@ -57,6 +67,10 @@ teach AIs a special siege strategy.
 
 - **Fortress plan:** automatic, elongated enclosure, bastioned enclosure, paired courtyards.
 - **Gate width:** 6–14, in steps of two, default 10; broadens the land crossings.
+- **Posterns:** Automatic (one per land front, at most six), None, or 1–6. Narrow doors, 2–3 tiles
+  wide, are placed midway between neighbouring gates, away from the ports and the outline's
+  corners. They are shut along with the gates in the perimeter check. The front assignment below
+  counts the gates only.
 - **Heartland farmland:** 75–150, default 100; a size setting, not a literal percentage. Values
   75, 100, 125 and 150 give plot lengths of 18, 20, 22 and 24 terrain corners.
   Longer plots stay within reserved districts, preserving streets, courts and starter gardens.
@@ -66,9 +80,10 @@ teach AIs a special siege strategy.
 Guaranteed supplies remain at zero abundance: 64 wheat tiles and 32 wood tiles in
 each applicable starter garden (including at least 16 timber tiles within a
 20-tile radius of the starting swarm), four wheat or two wood seeds in each expansion
-plot, the capital's small quarry, and structural ramparts. Expansion seed guarantees
-are necessary because sand containment prevents empty plots from being colonized
-by a distant crop. Structural stone is not governed by the ambient stone control.
+plot, the capital's small quarry, the enceinte's inner quarry faces and the hamlets' outcrop
+faces. Expansion seed guarantees are necessary because barren containment prevents empty plots
+from being colonized by a distant crop. Structural stone is not governed by the ambient stone
+control.
 Resource density never changes the fortress drawing or the town positions.
 
 ## Implementation and validation
@@ -78,7 +93,8 @@ settlement, resource placement and final validator. It reuses the shared drawing
 morphology, garden planting, room, growth, settlement and movement tools. Existing
 generators, save formats, network versions and replay acceptance are unchanged.
 
-Checks cover complete town footprints across the torus, colony-zero placement,
+Checks cover every terrain vertex as `sketchTerrain` designed it, complete town footprints
+across the torus, colony-zero placement,
 accessible starter wheat/wood/stone, locally visible timber, building room, connected approaches, a closed
 land perimeter when gates are blocked, independently usable swimming waterfronts,
 resource containment, and a larger allocated food/building potential for the

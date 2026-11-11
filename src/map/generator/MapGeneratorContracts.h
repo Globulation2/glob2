@@ -194,8 +194,18 @@ inline void fortsContracts()
 					for (int dx = -2; dx < 6; ++dx)
 						REQUIRE(
 							!game.map.isResource(team->startPosX + dx, team->startPosY + dy));
+				// The bailey keeps its quarry faces at every stone setting; the ramparts are terrain
+				// walls, and one opened is refused.
 				REQUIRE(wall >= 0);
-				game.map.setNoResource(wall % 64, wall / 64, 1);
+				int rampart = -1;
+				for (int i = 0; i < 64 * 64 && rampart < 0; ++i)
+				{
+					const TerrainGroup g = terrainGroup(game.map.vertexTerrainAt(size_t(i)));
+					if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
+						rampart = i;
+				}
+				REQUIRE(rampart >= 0);
+				game.map.setVertexTerrain(rampart % 64, rampart / 64, GRASS);
 				REQUIRE(!definition.validateWorld(game, check).empty());
 			}
 		}
@@ -696,8 +706,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Current versions of the rebuilt landscapes (The Glacis 5, Allotments 3, Caravanserai 6).
-		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : std::string(id) == "caravanserai" ? 6 : 5));
+		// Current versions of the rebuilt landscapes (The Glacis 6, Allotments 3, Caravanserai 6).
+		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 6));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -728,10 +738,9 @@ inline void rebuiltLandscapeContracts()
 	}
 	{
 		// With no stone to scale and no mesas, the only stone is a designed wall: remove one and
-		// the validator must notice, for the forts and the caravanserais alike.
+		// the validator must notice. (The Glacis's walls are terrain since its revision 6: below.)
 		for (const auto &[id, options] :
-			 {std::pair{"glacis", std::vector<std::pair<const char *, int>>{{"stone-amount", 0}}},
-			  std::pair{"caravanserai",
+			 {std::pair{"caravanserai",
 						std::vector<std::pair<const char *, int>>{{"stone-amount", 0}, {"desert", 0}}}})
 		{
 			Game game(nullptr);
@@ -753,11 +762,27 @@ inline void rebuiltLandscapeContracts()
 		}
 		// A glacis must stay bare: a crop planted on one is refused.
 		Game game(nullptr);
-		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {}, game);
+		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {{"stone-amount", 0}}, game);
 		REQUIRE(ok);
 		const auto &definition =
 			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("glacis"));
 		GenerationContext check(request);
+		REQUIRE(definition.validateWorld(game, check).empty());
+		{
+			// The fort's walls are terrain: one opened is refused.
+			Game breached(nullptr);
+			REQUIRE(generate("glacis", 8, 8, 2, 31, {{"stone-amount", 0}}, breached).second);
+			int wall = -1;
+			for (int i = 0; i < 256 * 256 && wall < 0; ++i)
+			{
+				const TerrainGroup g = terrainGroup(breached.map.vertexTerrainAt(size_t(i)));
+				if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
+					wall = i;
+			}
+			REQUIRE(wall >= 0);
+			breached.map.setVertexTerrain(wall % 256, wall / 256, GRASS);
+			REQUIRE(!definition.validateWorld(breached, check).empty());
+		}
 		// The glacis ring lies some 32 to 46 tiles out from the fort's middle: try tiles out there
 		// until one is refused as glacis, putting back each one that was not.
 		const Team *team = game.teams[0];
@@ -768,14 +793,17 @@ inline void rebuiltLandscapeContracts()
 			{
 				const int x = (team->startPosX + int(std::lround(d * std::cos(direction * kPi / 8))) + 256) % 256;
 				const int y = (team->startPosY + int(std::lround(d * std::sin(direction * kPi / 8))) + 256) % 256;
-				if (!game.map.isGrass(x, y) || game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
+				// The glacis is scree since revision 6, rough ground nothing grows on.
+				if (terrainGroup(game.map.vertexTerrainAt(x, y)) != TerrainGroup::Rough ||
+					game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
 					continue;
 				++tries;
-				game.map.setResourceByIndex(x, y, WHEAT, 1);
+				// Scree holds no crop, so the deposit is forced, as damage would be.
+				game.map.replaceResource(x, y, Resource(WHEAT, 0, 1, 0));
 				if (definition.validateWorld(game, check).find("glacis") != std::string::npos)
 					planted = true;
 				else
-					game.map.setNoResource(x, y, 1);
+					game.map.replaceResource(x, y, Resource{});
 			}
 		REQUIRE(planted);
 	}
@@ -949,7 +977,7 @@ inline void karstTowersContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("karst-towers"));
-	REQUIRE((definition.legacyId == 54 && definition.revision == 3));
+	REQUIRE((definition.legacyId == 54 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
@@ -1972,6 +2000,7 @@ inline void encircledKingdomContracts()
 		edge.options = {{"fortress-plan", 3},
 						{"gate-width", rectangular ? 10 : 6},
 						{"heartland-farmland", 75},
+						{"posterns", 0},
 						{"wheat-amount", rectangular ? 200 : 275},
 						{"wood-amount", rectangular ? 200 : 150},
 						{"stone-amount", rectangular ? 75 : 150},
@@ -2017,16 +2046,20 @@ inline void encircledKingdomContracts()
 		if (!error.empty())
 			std::fprintf(stderr, "Kingdom growth: %s\n", error.c_str());
 		REQUIRE(error.empty());
-		// Stone is the fortress structure even with all renewable fields fully grown.
-		bool removed = false;
-		for (int y = 0; y < abundant.map.getH(); ++y)
-			for (int x = 0; x < abundant.map.getW(); ++x)
-				if (abundant.map.getResource(x, y).type == STONE)
+		// The enceinte is a terrain wall even with all renewable fields fully grown: one opened is
+		// refused.
+		bool opened = false;
+		for (int y = 0; y < abundant.map.getH() && !opened; ++y)
+			for (int x = 0; x < abundant.map.getW() && !opened; ++x)
+			{
+				const TerrainGroup g = terrainGroup(abundant.map.vertexTerrainAt(x, y));
+				if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
 				{
-					abundant.map.replaceResource(x, y, Resource{});
-					removed = true;
+					abundant.map.setVertexTerrain(x, y, GRASS);
+					opened = true;
 				}
-		REQUIRE((removed && !definition.validateWorld(abundant, check).empty()));
+			}
+		REQUIRE((opened && !definition.validateWorld(abundant, check).empty()));
 	}
 	puts("PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, "
 		 "containment");
