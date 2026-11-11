@@ -1381,6 +1381,7 @@ set(GLOB2_HARNESS_LANSessionHarness_CXXFLAGS )
 set(GLOB2_HARNESS_LANSessionHarness_SHARED )
 set(GLOB2_HARNESS_LANSessionHarness_REQUIRE )
 set(GLOB2_HARNESS_LANSessionHarness_PROFILE )
+set(GLOB2_HARNESS_LANSessionHarness_TRUST OFF)
 
 set(GLOB2_HARNESS_OnlinePlayHarness_SOURCE src/online/OnlinePlayHarness.cpp)
 set(GLOB2_HARNESS_OnlinePlayHarness_ALIAS online-play-test)
@@ -1389,6 +1390,7 @@ set(GLOB2_HARNESS_OnlinePlayHarness_CXXFLAGS -fno-access-control)
 set(GLOB2_HARNESS_OnlinePlayHarness_SHARED )
 set(GLOB2_HARNESS_OnlinePlayHarness_REQUIRE )
 set(GLOB2_HARNESS_OnlinePlayHarness_PROFILE )
+set(GLOB2_HARNESS_OnlinePlayHarness_TRUST OFF)
 
 set(GLOB2_HARNESS_twelve-team-benchmark_SOURCE tools/unit-animation/twelve-team-benchmark.cpp)
 set(GLOB2_HARNESS_twelve-team-benchmark_ALIAS twelve-team-benchmark)
@@ -1397,6 +1399,7 @@ set(GLOB2_HARNESS_twelve-team-benchmark_CXXFLAGS )
 set(GLOB2_HARNESS_twelve-team-benchmark_SHARED )
 set(GLOB2_HARNESS_twelve-team-benchmark_REQUIRE )
 set(GLOB2_HARNESS_twelve-team-benchmark_PROFILE )
+set(GLOB2_HARNESS_twelve-team-benchmark_TRUST OFF)
 
 set(GLOB2_HARNESS_MapGeneratorStudy_SOURCE src/map/generator/MapGeneratorStudy.cpp)
 set(GLOB2_HARNESS_MapGeneratorStudy_ALIAS map-generator-study)
@@ -1405,6 +1408,7 @@ set(GLOB2_HARNESS_MapGeneratorStudy_CXXFLAGS )
 set(GLOB2_HARNESS_MapGeneratorStudy_SHARED )
 set(GLOB2_HARNESS_MapGeneratorStudy_REQUIRE )
 set(GLOB2_HARNESS_MapGeneratorStudy_PROFILE generators)
+set(GLOB2_HARNESS_MapGeneratorStudy_TRUST OFF)
 
 set(GLOB2_HARNESS_MapGeneratorGoldenTest_SOURCE src/map/generator/MapGeneratorGoldenTest.cpp)
 set(GLOB2_HARNESS_MapGeneratorGoldenTest_ALIAS map-generator-golden-test)
@@ -1413,6 +1417,7 @@ set(GLOB2_HARNESS_MapGeneratorGoldenTest_CXXFLAGS )
 set(GLOB2_HARNESS_MapGeneratorGoldenTest_SHARED )
 set(GLOB2_HARNESS_MapGeneratorGoldenTest_REQUIRE )
 set(GLOB2_HARNESS_MapGeneratorGoldenTest_PROFILE generators)
+set(GLOB2_HARNESS_MapGeneratorGoldenTest_TRUST OFF)
 
 set(GLOB2_HARNESS_MapGeneratorProfileFixture_SOURCE src/map/generator/MapGeneratorProfileFixture.cpp)
 set(GLOB2_HARNESS_MapGeneratorProfileFixture_ALIAS map-generator-profile-fixture)
@@ -1421,6 +1426,7 @@ set(GLOB2_HARNESS_MapGeneratorProfileFixture_CXXFLAGS )
 set(GLOB2_HARNESS_MapGeneratorProfileFixture_SHARED )
 set(GLOB2_HARNESS_MapGeneratorProfileFixture_REQUIRE )
 set(GLOB2_HARNESS_MapGeneratorProfileFixture_PROFILE generators)
+set(GLOB2_HARNESS_MapGeneratorProfileFixture_TRUST OFF)
 
 set(GLOB2_HARNESS_net-connection-test_SOURCE src/net/NetConnectionHarness.cpp)
 set(GLOB2_HARNESS_net-connection-test_ALIAS transport-test)
@@ -1429,6 +1435,7 @@ set(GLOB2_HARNESS_net-connection-test_CXXFLAGS )
 set(GLOB2_HARNESS_net-connection-test_SHARED )
 set(GLOB2_HARNESS_net-connection-test_REQUIRE )
 set(GLOB2_HARNESS_net-connection-test_PROFILE )
+set(GLOB2_HARNESS_net-connection-test_TRUST OFF)
 
 set(GLOB2_HARNESS_lan-discovery-test_SOURCE src/net/LANDiscoveryHarness.cpp)
 set(GLOB2_HARNESS_lan-discovery-test_ALIAS transport-test)
@@ -1437,6 +1444,7 @@ set(GLOB2_HARNESS_lan-discovery-test_CXXFLAGS )
 set(GLOB2_HARNESS_lan-discovery-test_SHARED )
 set(GLOB2_HARNESS_lan-discovery-test_REQUIRE )
 set(GLOB2_HARNESS_lan-discovery-test_PROFILE )
+set(GLOB2_HARNESS_lan-discovery-test_TRUST OFF)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_lan-discovery-test_LINK_SOURCES
@@ -1453,6 +1461,7 @@ set(GLOB2_HARNESS_wss-transport-test_CXXFLAGS )
 set(GLOB2_HARNESS_wss-transport-test_SHARED )
 set(GLOB2_HARNESS_wss-transport-test_REQUIRE wss)
 set(GLOB2_HARNESS_wss-transport-test_PROFILE )
+set(GLOB2_HARNESS_wss-transport-test_TRUST ON)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_wss-transport-test_LINK_SOURCES
@@ -1470,6 +1479,7 @@ set(GLOB2_HARNESS_wss-listener-test_CXXFLAGS )
 set(GLOB2_HARNESS_wss-listener-test_SHARED )
 set(GLOB2_HARNESS_wss-listener-test_REQUIRE wss)
 set(GLOB2_HARNESS_wss-listener-test_PROFILE )
+set(GLOB2_HARNESS_wss-listener-test_TRUST ON)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_wss-listener-test_LINK_SOURCES
@@ -1487,6 +1497,7 @@ set(GLOB2_HARNESS_http-fetch-test_CXXFLAGS )
 set(GLOB2_HARNESS_http-fetch-test_SHARED )
 set(GLOB2_HARNESS_http-fetch-test_REQUIRE wss)
 set(GLOB2_HARNESS_http-fetch-test_PROFILE )
+set(GLOB2_HARNESS_http-fetch-test_TRUST ON)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_http-fetch-test_LINK_SOURCES
@@ -1501,6 +1512,7 @@ set(GLOB2_HARNESS_platform-client-probe_CXXFLAGS )
 set(GLOB2_HARNESS_platform-client-probe_SHARED OnlineProbeFileManager)
 set(GLOB2_HARNESS_platform-client-probe_REQUIRE wss)
 set(GLOB2_HARNESS_platform-client-probe_PROFILE )
+set(GLOB2_HARNESS_platform-client-probe_TRUST ON)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_platform-client-probe_LINK_SOURCES
@@ -1526,6 +1538,7 @@ set(GLOB2_HARNESS_online-screens-probe_CXXFLAGS )
 set(GLOB2_HARNESS_online-screens-probe_SHARED OnlineProbeFileManager)
 set(GLOB2_HARNESS_online-screens-probe_REQUIRE wss)
 set(GLOB2_HARNESS_online-screens-probe_PROFILE )
+set(GLOB2_HARNESS_online-screens-probe_TRUST ON)
 
 # Client sources whose objects the program links.
 set(GLOB2_HARNESS_online-screens-probe_LINK_SOURCES
@@ -1555,6 +1568,7 @@ set(GLOB2_HARNESS_mobile-gallery_CXXFLAGS )
 set(GLOB2_HARNESS_mobile-gallery_SHARED )
 set(GLOB2_HARNESS_mobile-gallery_REQUIRE )
 set(GLOB2_HARNESS_mobile-gallery_PROFILE editor)
+set(GLOB2_HARNESS_mobile-gallery_TRUST OFF)
 
 set(GLOB2_HARNESS_skin-preview_SOURCE tools/skins/preview.cpp)
 set(GLOB2_HARNESS_skin-preview_ALIAS skin-preview)
@@ -1563,6 +1577,7 @@ set(GLOB2_HARNESS_skin-preview_CXXFLAGS )
 set(GLOB2_HARNESS_skin-preview_SHARED )
 set(GLOB2_HARNESS_skin-preview_REQUIRE )
 set(GLOB2_HARNESS_skin-preview_PROFILE )
+set(GLOB2_HARNESS_skin-preview_TRUST OFF)
 
 set(GLOB2_HARNESS_skin-rig-benchmark_SOURCE tools/skins/rig_benchmark.cpp)
 set(GLOB2_HARNESS_skin-rig-benchmark_ALIAS skin-rig-benchmark)
@@ -1571,6 +1586,7 @@ set(GLOB2_HARNESS_skin-rig-benchmark_CXXFLAGS -fno-access-control)
 set(GLOB2_HARNESS_skin-rig-benchmark_SHARED )
 set(GLOB2_HARNESS_skin-rig-benchmark_REQUIRE )
 set(GLOB2_HARNESS_skin-rig-benchmark_PROFILE )
+set(GLOB2_HARNESS_skin-rig-benchmark_TRUST OFF)
 
 set(GLOB2_HARNESS_skin-game-preview_SOURCE tools/skins/game_preview.cpp)
 set(GLOB2_HARNESS_skin-game-preview_ALIAS skin-game-preview)
@@ -1579,6 +1595,7 @@ set(GLOB2_HARNESS_skin-game-preview_CXXFLAGS -fno-access-control)
 set(GLOB2_HARNESS_skin-game-preview_SHARED )
 set(GLOB2_HARNESS_skin-game-preview_REQUIRE )
 set(GLOB2_HARNESS_skin-game-preview_PROFILE )
+set(GLOB2_HARNESS_skin-game-preview_TRUST OFF)
 
 # buildsys/harness_programs.py SHARED_OBJECTS.
 set(GLOB2_HARNESS_SHARED_OBJECTS

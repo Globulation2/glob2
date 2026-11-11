@@ -104,7 +104,6 @@ jobs:
             make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
-            mingw-w64-x86_64-scons
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
@@ -143,7 +142,7 @@ jobs:
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 client_profile=free distribution=steam --build=build/mingw/client/release/lean-images mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j$(nproc) release=1 client_profile=free distribution=steam --build=build/mingw/client/release/lean-images mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
       - uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
         if: always()
         continue-on-error: true

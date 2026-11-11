@@ -119,7 +119,7 @@ jobs:
           update: true
           install: >-
             git make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
             mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-opusfile mingw-w64-x86_64-opus mingw-w64-x86_64-libogg
@@ -159,7 +159,7 @@ jobs:
           set -euo pipefail
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          python3 tools/dev_build.py -j2 release=1 mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python ../driver/tools/gog_release.py stage-windows --source-root "$PWD" \
             --exe build/mingw/client/release/lean-images/src/glob2.exe \
             --runtime /mingw64/bin --sdl-runtime build/sdl3-ci/prefix/bin --output artifacts/gog/windows \

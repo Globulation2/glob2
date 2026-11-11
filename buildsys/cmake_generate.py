@@ -40,7 +40,8 @@ def build_config(args):
     identity = build_identity(build_arguments(args))
     config = build_config.ConfigurationText()
     build_config.add_package(config, datadir=args.datadir, version=PACKAGE_VERSION, font=args.font,
-                             darwin=False, windows=False, china=bool(identity.get('china')), identity=identity)
+                             darwin=False, windows=identity['toolchain'] == 'mingw',
+                             china=bool(identity.get('china')), identity=identity)
     build_config.add_native_wss(config)
     if args.opengl:
         build_config.add_opengl(config)
@@ -121,7 +122,10 @@ def recording(args):
         raise SystemExit('Recording prefix codec does not match the h264 CMake build')
     archives = [(prefix / 'lib' / ('lib' + name + '.a')).as_posix()
                 for name in recording_dependencies.codec_libraries('h264')]
-    system = (['va', 'va-drm'] if identity.get('vaapi_api') else []) + ['dl', 'm']
+    if args.target == 'mingw32':
+        system = ['mfplat', 'mfuuid', 'ole32', 'strmiids', 'bcrypt']
+    else:
+        system = (['va', 'va-drm'] if identity.get('vaapi_api') else []) + ['dl', 'm']
     print(';'.join(archives + system))
 
 
@@ -147,7 +151,7 @@ def recording_prefix(args):
     try:
         prefix = ensure(build_recording, prefix.resolve(), builddir / 'recording/sources',
                         explicit=bool(explicit or has_shared), execute=True,
-                        cc=args.cc, cxx=args.cxx, ar=args.ar, ranlib=args.ranlib, target='linux',
+                        cc=args.cc, cxx=args.cxx, ar=args.ar, ranlib=args.ranlib, target=args.target,
                         video_codec='h264', opus_configuration=None, environment=dict(os.environ), jobs=args.jobs)
         sys.stdout.flush()
     finally:
@@ -256,13 +260,13 @@ def ccache_directory(args):
     """The managed compiler cache SCons uses, configured the same way."""
     if os.environ.get('CCACHE_DIR'):
         import dev_store
-        print(dev_store.adopt(os.environ['CCACHE_DIR']))
+        print(Path(dev_store.adopt(os.environ['CCACHE_DIR'])).as_posix())
         return
     import ccache
     import dev_store
     managed = dev_store.cache(ROOT, 'ccache', lease=False)
     ccache.configure_managed(managed)
-    print(managed)
+    print(Path(managed).as_posix())
 
 
 def configure(args):
@@ -277,8 +281,8 @@ def configure(args):
         resolved = build_identity(arguments)
     except ValueError as error:
         raise SystemExit('invalid build arguments: ' + str(error))
-    if resolved['target'] != 'native' or resolved['toolchain'] != 'linux':
-        raise SystemExit('the CMake build supports native Linux builds; got ' + json.dumps(resolved))
+    if resolved['target'] != 'native' or resolved['toolchain'] not in ('linux', 'mingw'):
+        raise SystemExit('the CMake build supports native Linux and MinGW builds; got ' + json.dumps(resolved))
     content = dict(resolved, generator='cmake')
     write_if_changed(Path(args.builddir) / 'identity.json', json.dumps(content, sort_keys=True, indent=2) + '\n')
     print(json.dumps({'identity': resolved, 'directory': (ROOT / default_directory(resolved)).as_posix(),
@@ -301,7 +305,7 @@ def provenance_configuration(args):
 
 
 def _depfile_path(path):
-    return str(path).replace(' ', '\\ ').replace('#', '\\#').replace('$', '$$')
+    return Path(path).as_posix().replace(' ', '\\ ').replace('#', '\\#').replace('$', '$$')
 
 
 def runtime_assets(args):
@@ -363,7 +367,9 @@ def main(argv=None):
     command('official-instance', official_instance, builddir=False)
     sub = command('recording', recording, builddir=False)
     sub.add_argument('--prefix', required=True)
+    sub.add_argument('--target', choices=('linux', 'mingw32'), default='linux')
     sub = command('recording-prefix', recording_prefix)
+    sub.add_argument('--target', choices=('linux', 'mingw32'), default='linux')
     # SCons' compiler names (its CC/CXX defaults), so both share one store entry.
     sub.add_argument('--cc', default=os.environ.get('CC', 'gcc'))
     sub.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))

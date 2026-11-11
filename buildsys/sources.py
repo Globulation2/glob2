@@ -819,6 +819,12 @@ RELAY_GAG_SOURCES = (
     'Stream.cpp',
     'StreamBackend.cpp',
 )
+# The certificate-trust sources src/SConscript adds where TLS verification uses
+# the platform store (Linux uses OpenSSL's), relative to the repository root.
+PLATFORM_TRUST_SOURCES = {
+    'darwin': ('platforms/mobile/CertificateTrust.cpp', 'platforms/mobile/ios/CertificateTrust.cpp'),
+    'mingw': ('platforms/mobile/CertificateTrust.cpp', 'src/net/WindowsCertificateTrust.cpp'),
+}
 # The relay's entry point and the sources of glob2-relay-tests beside the relay objects.
 RELAY_MAIN_SOURCE = 'relay/RelayMain.cpp'
 RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'relay/RelayAdmissionTest.cpp')

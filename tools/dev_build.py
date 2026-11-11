@@ -11,7 +11,8 @@ Arguments are SCons-style build options (key=value), targets and a few flags:
     python3 tools/dev_build.py role=relay release=1 relay
     python3 tools/dev_build.py compile_profile=core engine-tests
 
-Native Linux builds use CMake + Ninja. The options resolve, through
+Native Linux and Windows (MSYS2 MinGW, where mingw=1 is added) builds use
+CMake + Ninja. The options resolve, through
 buildsys/build_layout.py, to a build identity and its directory
 (build/linux/client/debug/dev-..., build/linux/client/perf[/o3], ...), which
 the CMake build configures with GLOB2_BUILD_ARGS. Without perf=1 or release=1
@@ -20,7 +21,8 @@ LINKFLAGS= set the compilers and base flags, --build=DIR another directory,
 the install target installs as `scons install` does (into BINDIR=, INSTALLDIR=
 and DATADIR=, a shipping build without the build prefix's rpath),
 -jN the jobs (default 8), -k keeps going and -n only prints the commands.
-A target may be a CMake target name or a file under the build directory.
+A target may be a CMake target name or a file under the build directory
+(glob2.exe names the glob2 target).
 
 Requests the CMake build does not cover yet (other targets and hosts,
 recording codecs other than h264) go to SCons; --generator=scons or
@@ -44,7 +46,7 @@ sys.path.insert(0, str(ROOT / 'buildsys'))
 TOOL_OPTIONS = ('CC', 'CXX', 'CXXFLAGS', 'LINKFLAGS', 'BINDIR', 'INSTALLDIR', 'DATADIR')
 INSTALL_DEFAULTS = {'BINDIR': '/usr/local/bin', 'INSTALLDIR': '/usr/local/share', 'DATADIR': '/usr/local/share'}
 # Identity keys the CMake build does not support yet.
-SCONS_ONLY_KEYS = ('recording_codec', 'profile', 'mingw',
+SCONS_ONLY_KEYS = ('recording_codec', 'profile',
                    'portaudio', 'web_variant', 'web_legacy_gl', 'target', 'arch', 'amazon')
 
 
@@ -52,10 +54,15 @@ def enabled(value):
     return str(value).lower() in ('1', 'true', 'yes', 'on')
 
 
+def windows_host():
+    return platform.system() == 'Windows' or sys.platform == 'win32'
+
+
 def development_defaults(options):
-    """The dev tier's fast-development flags unless an optimized tier or the relay is asked for."""
+    """The dev tier's fast-development flags unless an optimized tier or the relay is
+    asked for, and mingw=1 on Windows, whose only native toolchain is MSYS2's MinGW."""
     optimized = enabled(options.get('perf', 0)) or enabled(options.get('release', 0)) or options.get('role') == 'relay'
-    defaults = []
+    defaults = ['mingw=1'] if windows_host() and 'mingw' not in options else []
     if 'dev_fast' not in options and not optimized:
         defaults.append('dev_fast=1')
     if 'linker' not in options and not optimized:
@@ -136,7 +143,7 @@ class Request:
                 path = (path if path.is_absolute() else ROOT / path).resolve()
                 if directory not in path.parents:
                     raise ValueError(target + ' is not in the build directory ' + str(directory))
-                names.append(path.name)
+                names.append(path.name.removesuffix('.exe'))
             else:
                 names.append(target)
         return list(dict.fromkeys(names))
@@ -144,8 +151,9 @@ class Request:
 
 def scons_reason(arguments):
     """Why these arguments need SCons, or None when the CMake build builds them."""
-    if platform.system() != 'Linux':
-        return 'the CMake build is native Linux only'
+    host = 'mingw' if windows_host() else platform.system().lower()
+    if host not in ('linux', 'mingw'):
+        return 'the CMake build covers native Linux and MSYS2 MinGW builds'
     for tool in ('cmake', 'ninja'):
         if not shutil.which(tool):
             return tool + ' is not installed'
@@ -160,8 +168,8 @@ def scons_reason(arguments):
         identity = request.identity()
     except ValueError as error:
         return 'SCons rejects the options too: ' + str(error)
-    if identity['target'] != 'native' or identity['toolchain'] != 'linux':
-        return 'the CMake build is native Linux only'
+    if identity['target'] != 'native' or identity['toolchain'] != host:
+        return 'the CMake build covers native Linux and MSYS2 MinGW builds'
     version = subprocess.run(['cmake', '--version'], capture_output=True, text=True).stdout
     found = re.search(r'(\d+)\.(\d+)', version)
     if not found or (int(found.group(1)), int(found.group(2))) < (3, 25):
@@ -193,7 +201,10 @@ def cmake_commands(arguments):
     settings = {'GLOB2_BUILD_ARGS': ' '.join(request.build_args),
                 'GLOB2_CXXFLAGS': request.tools.get('CXXFLAGS', '-g'),
                 'GLOB2_LINKFLAGS': request.tools.get('LINKFLAGS', '-g'),
-                'GLOB2_SHIPPING': 'ON' if install else 'OFF'}
+                'GLOB2_SHIPPING': 'ON' if install else 'OFF',
+                # The interpreter running this script runs the build's generators; on
+                # Windows FindPython would otherwise prefer a registered CPython to MSYS2's.
+                'Python3_EXECUTABLE': Path(sys.executable).as_posix()}
     for key, default in INSTALL_DEFAULTS.items():
         settings['GLOB2_' + key] = request.tools.get(key, default)
     commands = []

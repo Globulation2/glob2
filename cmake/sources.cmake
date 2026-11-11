@@ -987,6 +987,18 @@ set(GLOB2_RELAY_GAG_SOURCES
 
 set(GLOB2_RELAY_MAIN_SOURCE src/relay/RelayMain.cpp)
 
+# sources.PLATFORM_TRUST_SOURCES: the darwin certificate-trust sources.
+set(GLOB2_DARWIN_TRUST_SOURCES
+    platforms/mobile/CertificateTrust.cpp
+    platforms/mobile/ios/CertificateTrust.cpp
+)
+
+# sources.PLATFORM_TRUST_SOURCES: the mingw certificate-trust sources.
+set(GLOB2_MINGW_TRUST_SOURCES
+    platforms/mobile/CertificateTrust.cpp
+    src/net/WindowsCertificateTrust.cpp
+)
+
 # buildsys/sources.py RELAY_TEST_SOURCES: glob2-relay-tests beside the relay objects.
 set(GLOB2_RELAY_TEST_SOURCES
     src/relay/RelayTestMain.cpp

@@ -64,6 +64,9 @@ def content():
         _list('GLOB2_RELAY_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.RELAY_GAG_SOURCES],
               'buildsys/sources.py RELAY_GAG_SOURCES.'),
         'set(GLOB2_RELAY_MAIN_SOURCE src/' + sources.RELAY_MAIN_SOURCE + ')\n',
+        *[_list('GLOB2_' + platform.upper() + '_TRUST_SOURCES', list(paths),
+                'sources.PLATFORM_TRUST_SOURCES: the ' + platform + ' certificate-trust sources.')
+          for platform, paths in sources.PLATFORM_TRUST_SOURCES.items()],
         _list('GLOB2_RELAY_TEST_SOURCES', ['src/' + name for name in sources.RELAY_TEST_SOURCES],
               'buildsys/sources.py RELAY_TEST_SOURCES: glob2-relay-tests beside the relay objects.'),
         _list('GLOB2_MAP_SOURCES', ['src/' + name for name in sources.MAP_SOURCES],
@@ -192,7 +195,8 @@ def tests_content():
                       f'set({prefix}_CXXFLAGS {" ".join(program.cxxflags)})\n'
                       f'set({prefix}_SHARED {" ".join(program.shared)})\n'
                       f'set({prefix}_REQUIRE {program.require or ""})\n'
-                      f'set({prefix}_PROFILE {program.profile or ""})\n')
+                      f'set({prefix}_PROFILE {program.profile or ""})\n'
+                      f'set({prefix}_TRUST {"ON" if program.trust else "OFF"})\n')
         if kind == 'sources':
             blocks.append(_list(prefix + '_LINK_SOURCES', ['src/' + name for name in program.link],
                                 'Client sources whose objects the program links.'))

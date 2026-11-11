@@ -1,4 +1,4 @@
-# CMake + Ninja build of the native Linux client.
+# CMake + Ninja build of the native Linux and Windows (MSYS2 MinGW) client.
 #
 # GLOB2_BUILD_ARGS takes the same key=value build arguments SCons does
 # (dev_fast=1, perf=1 opt=3, release=1, ...); buildsys/build_layout.py resolves
@@ -19,9 +19,19 @@
 cmake_minimum_required(VERSION 3.25)
 project(glob2 LANGUAGES C CXX)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_CROSSCOMPILING)
-  message(FATAL_ERROR "The CMake build covers native Linux builds; "
+# GLOB2_PLATFORM: linux, or mingw for Windows builds with MSYS2's MinGW-w64 GCC
+# (SConstruct's mingw=1, which the build arguments gain automatically).
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
+  set(GLOB2_PLATFORM linux)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND MINGW)
+  set(GLOB2_PLATFORM mingw)
+else()
+  message(FATAL_ERROR "The CMake build covers native Linux and MSYS2 MinGW builds; "
                       "use SCons (tools/dev_build.py) for every other target.")
+endif()
+set(windows OFF)
+if(GLOB2_PLATFORM STREQUAL "mingw")
+  set(windows ON)
 endif()
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Configure into a separate build directory, for example: cmake --preset dev")
@@ -59,6 +69,9 @@ endfunction()
 set(GLOB2_BUILD_ARGS "dev_fast=1 linker=auto" CACHE STRING
     "SCons-style build arguments, for example 'dev_fast=1 linker=auto', 'perf=1 opt=3' or 'release=1'")
 separate_arguments(build_args UNIX_COMMAND "${GLOB2_BUILD_ARGS}")
+if(windows AND NOT build_args MATCHES "(^|;)mingw=")
+  list(APPEND build_args mingw=1)
+endif()
 set(build_arg_options)
 foreach(word IN LISTS build_args)
   list(APPEND build_arg_options "--arg=${word}")
@@ -66,6 +79,12 @@ endforeach()
 glob2_bridge(configuration configure --builddir "${GLOB2_OUT}" ${build_arg_options})
 string(JSON identity GET "${configuration}" identity)
 string(JSON GLOB2_DEFAULT_DIRECTORY GET "${configuration}" directory)
+# opengl=0 (SConstruct's option): software rendering only, without probing for OpenGL.
+string(JSON opengl_argument ERROR_VARIABLE unset GET "${configuration}" arguments opengl)
+set(GLOB2_OPENGL ON)
+if(NOT unset AND opengl_argument MATCHES "^(0|false|no|off)$")
+  set(GLOB2_OPENGL OFF)
+endif()
 # Reads an identity key, or `default` when the identity leaves it out.
 function(glob2_identity output key default)
   string(JSON value ERROR_VARIABLE missing GET "${identity}" ${key})
@@ -126,7 +145,7 @@ function(glob2_pkg_config prefix)
       list(APPEND libraries "${CMAKE_MATCH_1}")
     elseif(word MATCHES "^-L(.+)")
       list(APPEND directories "${CMAKE_MATCH_1}")
-    elseif(word MATCHES "^-Wl,")
+    elseif(word MATCHES "^-Wl," OR word STREQUAL "-mwindows")
       list(APPEND link_options "${word}")
     else()
       list(APPEND options "${word}")
@@ -171,12 +190,20 @@ set(sdl_link_options)
 set(sdl_directories)
 if(GLOB2_SDL3_PREFIX)
   file(REAL_PATH "${GLOB2_SDL3_PREFIX}" sdl_prefix)
-  set(ENV{PKG_CONFIG_PATH} "${sdl_prefix}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+  # MinGW's pkg-config separates its search path with ';', as Windows paths hold ':'.
+  if(windows)
+    set(ENV{PKG_CONFIG_PATH} "${sdl_prefix}/lib/pkgconfig;$ENV{PKG_CONFIG_PATH}")
+  else()
+    set(ENV{PKG_CONFIG_PATH} "${sdl_prefix}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+  endif()
   set(sdl_includes "${sdl_prefix}/include")
   set(sdl_directories "${sdl_prefix}/lib")
   # Development runs load the prefix in place; installed copies use only their
-  # bundled $ORIGIN/../lib/glob2 (distributions reject build paths).
-  set(sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
+  # bundled $ORIGIN/../lib/glob2 (distributions reject build paths). Windows
+  # loads DLLs from the executable's directory instead.
+  if(NOT windows)
+    set(sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
+  endif()
 endif()
 # What `scons install` changes for the binaries it installs: no build-prefix rpath
 # and no debug-prefix map. Packaging configures with it; `cmake --install` needs it
@@ -203,8 +230,13 @@ set(fribidi_libraries)
 if(relay)
   glob2_pkg_config(sdl3 sdl3 --cflags)
 else()
-  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}")
-  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}")
+  if(windows)
+    set(recording_target mingw32)
+  else()
+    set(recording_target linux)
+  endif()
+  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target})
+  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target})
   set(recording_includes "${recording_prefix}/include")
   glob2_pkg_config(opusfile opusfile --cflags)
   glob2_pkg_config(sdl3 sdl3 --cflags --libs)
@@ -212,18 +244,44 @@ else()
 endif()
 
 include(CheckIncludeFileCXX)
+# SConstruct's Windows libraries: zlib, a POSIX regex, Winsock and the Windows OpenGL names.
+set(zlib_libraries z)
+set(regex_libraries)
+set(platform_libraries)
+set(windows_libraries)
+if(windows)
+  find_library(GLOB2_Z_LIBRARY z)
+  if(NOT GLOB2_Z_LIBRARY)
+    set(zlib_libraries zlib1)
+  endif()
+  find_library(GLOB2_REGEX_LIBRARY regex)
+  if(GLOB2_REGEX_LIBRARY)
+    set(regex_libraries regex)
+  else()
+    set(regex_libraries systre tre intl iconv)
+  endif()
+  set(platform_libraries ws2_32 mswsock crypt32)
+  set(windows_libraries wsock32 winmm)
+  set(gl_name opengl32)
+  set(glu_name glu32)
+else()
+  set(gl_name GL)
+  set(glu_name GLU)
+endif()
 if(NOT relay)
-  find_library(GLOB2_GL_LIBRARY GL)
-  find_library(GLOB2_GLU_LIBRARY GLU)
+  find_library(GLOB2_GL_LIBRARY ${gl_name})
+  find_library(GLOB2_GLU_LIBRARY ${glu_name})
   find_library(GLOB2_EPOXY_LIBRARY epoxy)
   find_library(GLOB2_FRIBIDI_LIBRARY fribidi)
   check_include_file_cxx(GL/gl.h GLOB2_HAVE_GL_H)
   check_include_file_cxx(GL/glu.h GLOB2_HAVE_GLU_H)
   check_include_file_cxx(epoxy/gl.h GLOB2_HAVE_EPOXY_H)
   check_include_file_cxx(fribidi/fribidi.h GLOB2_HAVE_FRIBIDI_H)
-  if(GLOB2_GL_LIBRARY AND GLOB2_HAVE_GL_H AND GLOB2_GLU_LIBRARY AND GLOB2_HAVE_GLU_H
+  if(NOT GLOB2_OPENGL)
+    message(STATUS "opengl=0: building without OpenGL support")
+  elseif(GLOB2_GL_LIBRARY AND GLOB2_HAVE_GL_H AND GLOB2_GLU_LIBRARY AND GLOB2_HAVE_GLU_H
      AND GLOB2_EPOXY_LIBRARY AND GLOB2_HAVE_EPOXY_H)
-    set(opengl_libraries GL GLU epoxy)
+    set(opengl_libraries ${gl_name} ${glu_name} epoxy)
     list(APPEND build_config_options --opengl)
   else()
     message(STATUS "One or more library missing for OpenGL support, disabling OpenGL support.")
@@ -248,7 +306,12 @@ else()
   endif()
 endif()
 # SConstruct's DATADIR: the installed data directory compiled into glob2/BuildConfig.h.
-set(GLOB2_DATADIR "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH "Installed data directory compiled into the game (SCons DATADIR)")
+if(windows)
+  set(default_datadir /usr/local/share)
+else()
+  set(default_datadir "${CMAKE_INSTALL_PREFIX}/share")
+endif()
+set(GLOB2_DATADIR "${default_datadir}" CACHE PATH "Installed data directory compiled into the game (SCons DATADIR)")
 glob2_bridge(unused build-config --builddir "${GLOB2_OUT}" "--datadir=${GLOB2_DATADIR}"
              ${build_config_options} ${build_arg_options})
 glob2_bridge(unused build-paths --builddir "${GLOB2_OUT}" --runtime-assets "${GLOB2_RUNTIME_ASSET_DIR}")
@@ -384,6 +447,10 @@ if(GLOB2_SIZE_OPTIMIZATION)
     list(APPEND linkflags -Os)
   endif()
 endif()
+# Windows programs start without a console; test binaries drop it again.
+if(windows)
+  list(APPEND linkflags -mwindows)
+endif()
 # buildsys/dev_build.py configure(): dev_fast compiles everything at -O0 -g1.
 if(GLOB2_DEV_FAST)
   glob2_drop_debug_and_optimization(cflags cxxflags ccflags linkflags)
@@ -409,6 +476,9 @@ add_compile_definitions(
   "GLOB2_OFFICIAL_INSTANCE_ORIGIN=\"${official_origin}\""
   "GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"${former_origins}\""
   HAVE_CONFIG_H $<$<NOT:$<BOOL:${relay}>>:GLOB2_H264_ASSETS>
+  # Strict C++ mode omits MinGW's WIN32 alias, which platform guards use; MinGW
+  # headers expose _POSIX_THREADS at different include depths, so fix Asio's choice.
+  $<$<BOOL:${windows}>:WIN32> $<$<BOOL:${windows}>:BOOST_ASIO_HAS_PTHREADS>
   ${opusfile_defines} ${sdl3_defines} ${webp_defines})
 add_compile_options(${opusfile_options} ${sdl3_options} ${webp_options})
 
@@ -419,7 +489,9 @@ if(GLOB2_LEAN_IMAGES)
   glob2_bridge(lean_image_prefix lean-image-prefix --builddir "${GLOB2_OUT}")
   set(lean_includes "${lean_image_prefix}/include/SDL3")
   list(PREPEND sdl_directories "${lean_image_prefix}/lib")
-  list(APPEND sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
+  if(NOT windows)
+    list(APPEND sdl_link_options "-Wl,-rpath,$ORIGIN/../lib/glob2")
+  endif()
 endif()
 set(include_directories ${recording_includes} ${lean_includes} ${sdl_includes} "${GLOB2_OUT}/include"
     ${opusfile_includes} "${GLOB2_OUT}/shaders")
@@ -472,7 +544,7 @@ if(relay)
   target_include_directories(glob2-relay-tests PRIVATE "${GLOB2_ROOT}/test/third_party")
   target_compile_definitions(glob2-relay-tests PRIVATE "RELAY_FIXTURE_DIR=\"${GLOB2_ROOT}/test/fixtures/relay-tickets\"")
   foreach(target glob2-relay glob2-relay-tests)
-    target_link_libraries(${target} PRIVATE glob2_relay_objects pthread ssl crypto)
+    target_link_libraries(${target} PRIVATE glob2_relay_objects pthread ssl crypto ${platform_libraries})
     target_link_options(${target} PRIVATE ${relay_link_options})
     set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
   endforeach()
@@ -526,7 +598,13 @@ target_include_directories(glob2_client_settings INTERFACE "${GLOB2_OUT}/src" "$
 set(client_sources ${GLOB2_CLIENT_SOURCES})
 list(REMOVE_ITEM client_sources "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
 # Every client object except the entry point, as src/SConscript exports for tests.
-add_library(glob2_client OBJECT ${client_sources})
+# macOS and Windows verify TLS certificates through the platform store
+# (buildsys/sources.py PLATFORM_TRUST_SOURCES); Linux uses OpenSSL's.
+set(trust_sources)
+if(windows)
+  list(TRANSFORM GLOB2_MINGW_TRUST_SOURCES PREPEND "${GLOB2_ROOT}/" OUTPUT_VARIABLE trust_sources)
+endif()
+add_library(glob2_client OBJECT ${client_sources} ${trust_sources})
 target_link_libraries(glob2_client PRIVATE glob2_client_settings)
 add_dependencies(glob2_client glob2_generated glob2_build_stamp)
 set_source_files_properties(${GLOB2_STRICT_NUMERIC_SOURCES} PROPERTIES COMPILE_OPTIONS "${GLOB2_STRICT_CXXFLAGS}")
@@ -540,9 +618,11 @@ function(glob2_objects_of output target)
     set(${output} "" PARENT_SCOPE)
     return()
   endif()
+  # MinGW names objects .obj, Linux .o.
+  string(REPLACE "." "\\." extension "${CMAKE_CXX_OUTPUT_EXTENSION}")
   foreach(path IN LISTS ARGN)
     string(REGEX REPLACE "([.+])" "\\\\\\1" path "${path}")
-    list(APPEND pattern "/${path}\\.o$")
+    list(APPEND pattern "/${path}${extension}$")
   endforeach()
   list(JOIN pattern "|" pattern)
   set(${output} "$<FILTER:$<TARGET_OBJECTS:${target}>,INCLUDE,${pattern}>" PARENT_SCOPE)
@@ -550,8 +630,9 @@ endfunction()
 
 # Link inputs in SConstruct's LIBS order; like SCons' unique merge, a library
 # named again later moves to its last position.
-set(libraries z pthread ssl crypto ${opengl_libraries} ${fribidi_libraries} ${recording_libraries}
-    SDL3_net opusfile opus ogg SDL3_ttf SDL3_image speex ${sdl3_libraries} ${webp_libraries})
+set(libraries ${zlib_libraries} ${regex_libraries} pthread ssl crypto ${platform_libraries} ${opengl_libraries}
+    ${fribidi_libraries} ${recording_libraries} SDL3_net opusfile opus ogg SDL3_ttf SDL3_image speex
+    ${windows_libraries} ${sdl3_libraries} ${webp_libraries})
 list(REVERSE libraries)
 list(REMOVE_DUPLICATES libraries)
 list(REVERSE libraries)
@@ -571,8 +652,9 @@ if(NOT GLOB2_IDENTITY_LINKER STREQUAL "default")
   endif()
 endif()
 # test/SConscript keeps function names in test binaries for crash backtraces.
+# Test programs are console programs: no -mwindows either.
 set(test_link_options ${link_options})
-list(REMOVE_ITEM test_link_options -s)
+list(REMOVE_ITEM test_link_options -s -mwindows)
 
 # Every program links `ARGN` (object libraries and archives) before SConstruct's
 # LIBS, with its library directories and LINKFLAGS (the test flags for tests).
@@ -627,12 +709,13 @@ target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "$
                            "${GLOB2_ROOT}/libs/gag/src" "${GLOB2_ROOT}/third_party/quickjs-ng")
 target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
 
-# test/SConscript available(): native Linux builds have the WSS transport and are never
-# MinGW; an optional buildsys/sources.py group is present only in the full compile profile.
+# test/SConscript available(): native builds always have the WSS transport; an
+# optional buildsys/sources.py group is present only in the full compile profile.
 function(glob2_available output)
   set(ok TRUE)
   foreach(feature IN LISTS ARGN)
-    if(feature STREQUAL "mac" OR (feature STREQUAL "opengl" AND NOT opengl_libraries)
+    if(feature STREQUAL "mac" OR (feature STREQUAL "not-mingw" AND windows)
+       OR (feature STREQUAL "opengl" AND NOT opengl_libraries)
        OR (feature IN_LIST GLOB2_OPTIONAL_GROUPS AND NOT feature IN_LIST GLOB2_PROFILE_GROUPS))
       set(ok FALSE)
     endif()
@@ -781,8 +864,14 @@ foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
   if(${prefix}_PROFILE AND NOT ${prefix}_PROFILE IN_LIST GLOB2_PROFILE_GROUPS)
     continue()  # compile_profile=core leaves out the code it drives
   endif()
-  # Native Linux builds always have the WSS transport, the only requirement used.
+  # Native builds always have the WSS transport, the only requirement used.
   set(sources "${GLOB2_ROOT}/${${prefix}_SOURCE}")
+  # Programs that verify certificates link the platform trust objects, which
+  # glob2_client already holds for the programs that link all of it.
+  if(windows AND ${prefix}_TRUST AND NOT ${prefix}_LINK MATCHES "^client")
+    glob2_objects_of(trust glob2_client ${GLOB2_MINGW_TRUST_SOURCES})
+    list(APPEND sources "${trust}")
+  endif()
   set(inputs)
   foreach(name IN LISTS ${prefix}_SHARED)
     list(APPEND inputs glob2_harness_${name})
@@ -799,7 +888,7 @@ foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
   set_target_properties(${program} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
   target_link_libraries(${program} PRIVATE glob2_client_settings)
   target_compile_options(${program} PRIVATE ${${prefix}_CXXFLAGS})
-  if(NOT ${prefix}_LINK STREQUAL "libraries")
+  if(NOT ${prefix}_LINK STREQUAL "libraries" OR (windows AND ${prefix}_TRUST))
     add_dependencies(${program} glob2_client glob2_numeric_guard)
   endif()
   glob2_link(${program} ${inputs})

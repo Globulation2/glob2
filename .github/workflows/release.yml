@@ -440,7 +440,7 @@ jobs:
           update: true
           install: >-
             git make mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-nasm mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-nasm mingw-w64-x86_64-python
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
@@ -460,9 +460,9 @@ jobs:
           python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 client_profile=free mingw=1 server=0 build/mingw/client/release/src/glob2.exe
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
-          scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 unit-tests
+          python3 tools/dev_build.py -j2 release=1 client_profile=free mingw=1 build/mingw/client/release/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j2 release=1 client_profile=free mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          python3 tools/dev_build.py -j2 release=1 client_profile=free mingw=1 lean_images=1 unit-tests
           image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
           PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-unit-tests.exe --test-suite=ImageAssets
           ./build/mingw/client/release/lean-images/src/glob2.exe info version
@@ -499,7 +499,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             binary="build/mingw/client/release/size-$profile/lean-images/src/glob2.exe"
-            scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
+            python3 tools/dev_build.py -j2 release=1 client_profile=free mingw=1 lean_images=1 size_optimization="$profile" "$binary"
             python3 tools/release/package_windows.py "$binary" "artifacts/profile-$profile.zip"
             python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' \
               "artifacts/profile-$profile.zip" "artifacts/profile-$profile"
