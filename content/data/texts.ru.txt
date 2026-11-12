@@ -5888,6 +5888,10 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Каменные грибы
 [petrified_stumps]
 Окаменелые пни
+[steppe_grass]
+Степная трава
+[moor_grass]
+Пустошная трава
 [terrain group water]
 Вода
 [terrain group sand]

@@ -8,4 +8,7 @@
 // and bumps the count, rather than extending the TerrainType enum, which about
 // half of the code includes. Only the built-in tables, the catalogue, the
 // gradient kernels and code sized by the count include this header.
-inline constexpr TerrainType TERRAIN_COUNT = TerrainType(64);
+// Format 216: steppe grass and moor grass, two more looks in the Grass group.
+inline constexpr TerrainType STEPPE_GRASS = TerrainType(64);
+inline constexpr TerrainType MOOR_GRASS = TerrainType(65);
+inline constexpr TerrainType TERRAIN_COUNT = TerrainType(66);

@@ -5888,6 +5888,10 @@ Termitières
 Cheminées de fée
 [petrified_stumps]
 Souches pétrifiées
+[steppe_grass]
+Herbe de steppe
+[moor_grass]
+Herbe de lande
 [terrain group water]
 Eau
 [terrain group sand]

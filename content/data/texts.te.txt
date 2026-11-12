@@ -5864,6 +5864,10 @@ AI ద్వారా రూపొందించబడలేదు
 హూడూ స్తంభాలు
 [petrified_stumps]
 శిలాజ మొద్దులు
+[steppe_grass]
+స్టెప్పీ గడ్డి
+[moor_grass]
+ఎత్తైన ప్రాంత గడ్డి
 [terrain group water]
 నీరు
 [terrain group sand]

@@ -276,7 +276,8 @@ checksum adapter remains available for diagnostic fixtures.
   54; format 211 appended `GLACIER` (Obstacles, like cliffs) for 55; format 212 appended `ICEFALL`,
   `SANDSTONE_BENCHES`, `OBSIDIAN_RIDGE`, `GRANITE_TORS` and `TRAVERTINE_TERRACES` (Obstacles, like
   cliffs) and `PENITENTES`, `TERMITE_MOUNDS`, `HOODOOS` and `PETRIFIED_STUMPS` (Ridges, like rock
-  spires) for `TERRAIN_COUNT` 64.
+  spires) for 64; format 216 appended `STEPPE_GRASS` and `MOOR_GRASS` (Grass, like grass) for
+  `TERRAIN_COUNT` 66.
   Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. The `TerrainType` enum in `src/map/TerrainType.h` is closed at
@@ -292,8 +293,8 @@ checksum adapter remains available for diagnostic fixtures.
   `TERRAIN_COUNT_BEFORE_VOLCANIC_ASH`, `TERRAIN_COUNT_BEFORE_GLACIER_ICE`,
   `TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD`, `TERRAIN_COUNT_BEFORE_LATERITE`, `TERRAIN_COUNT_BEFORE_CLIFFS`,
   `TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL`, `TERRAIN_COUNT_BEFORE_ROCK_PATHS`,
-  `TERRAIN_COUNT_BEFORE_ICE_PATHS`, `TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA`, `TERRAIN_COUNT_BEFORE_GLACIER`
-  or `TERRAIN_COUNT_BEFORE_ICEFALL` for older files),
+  `TERRAIN_COUNT_BEFORE_ICE_PATHS`, `TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA`, `TERRAIN_COUNT_BEFORE_GLACIER`,
+  `TERRAIN_COUNT_BEFORE_ICEFALL` or `TERRAIN_COUNT_BEFORE_STEPPE_GRASS` for older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer

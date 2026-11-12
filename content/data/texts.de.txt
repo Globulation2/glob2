@@ -5888,6 +5888,10 @@ Termitenhügel
 Felstürme
 [petrified_stumps]
 Versteinerte Baumstümpfe
+[steppe_grass]
+Steppengras
+[moor_grass]
+Moorgras
 [terrain group water]
 Wasser
 [terrain group sand]

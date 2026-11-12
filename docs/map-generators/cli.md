@@ -273,7 +273,7 @@ cliffs `#886C52`, molten lava pool `#B73F0C`, slate ashlar `#686C76`, basalt cau
 `#4C4A4C`, scoria blocks `#584C44`, rime ashlar `#B5BBD4`, moonstone lozenges `#BEC0D1`,
 frost pinwheel `#B9BCD2`, arctic tundra `#89888D`, glacier `#B0C8E2`, icefall `#94C4E2`, sandstone benches `#D6AA7C`, obsidian ridge
 `#3E3E4A`, granite tors `#8C8C7C`, travertine terraces `#E2DAC8`, penitentes `#DEE8F6`, termite mounds `#AA7048`,
-hoodoos `#DEA074`, petrified stumps `#8E806C`). Heath, shale, mudflat
+hoodoos `#DEA074`, petrified stumps `#8E806C`, steppe grass `#5C7D65`, moor grass `#54714D`). Heath, shale, mudflat
 and brick path keep the image colours they had before their redesign, so
 existing exported images still import them, although the minimap shows the
 colour of each new texture. Import recognises the catalogue types **only by

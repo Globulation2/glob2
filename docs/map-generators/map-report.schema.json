@@ -619,6 +619,12 @@
         "petrified_stumps": {
           "$ref": "#/$defs/coverage"
         },
+        "steppe_grass": {
+          "$ref": "#/$defs/coverage"
+        },
+        "moor_grass": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

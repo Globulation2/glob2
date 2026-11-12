@@ -5864,6 +5864,10 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 হুডু স্তম্ভ
 [petrified_stumps]
 জীবাশ্ম গুঁড়ি
+[steppe_grass]
+স্তেপ ঘাস
+[moor_grass]
+উচ্চভূমির ঘাস
 [terrain group water]
 জল
 [terrain group sand]

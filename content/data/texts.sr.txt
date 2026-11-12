@@ -5888,6 +5888,10 @@ FFmpeg није доступан, па је снимање искључено. �
 Земљане пирамиде
 [petrified_stumps]
 Окамењени пањеви
+[steppe_grass]
+Степска трава
+[moor_grass]
+Тресетна трава
 [terrain group water]
 Вода
 [terrain group sand]

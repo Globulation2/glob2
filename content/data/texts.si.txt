@@ -5888,6 +5888,10 @@ Termitnjaki
 Zemeljske piramide
 [petrified_stumps]
 Okameneli štori
+[steppe_grass]
+Stepska trava
+[moor_grass]
+Barjanska trava
 [terrain group water]
 Voda
 [terrain group sand]

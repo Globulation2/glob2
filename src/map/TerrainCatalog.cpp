@@ -118,6 +118,10 @@ constexpr auto TERRAIN_TYPES = []
 		authored(TERMITE_MOUNDS, "termite_mounds", "[termite_mounds]", {150, 96, 62}, {170, 112, 72}),
 		authored(HOODOOS, "hoodoos", "[hoodoos]", {204, 140, 98}, {222, 160, 116}),
 		authored(PETRIFIED_STUMPS, "petrified_stumps", "[petrified_stumps]", {124, 110, 92}, {142, 128, 108}),
+		// Sage blue-grey fescue with a silver wind sheen: plays exactly like grass.
+		authored(STEPPE_GRASS, "steppe_grass", "[steppe_grass]", {92, 125, 101}, {92, 125, 101}),
+		// Green turf with blue shadows and blue-violet stems: plays exactly like grass.
+		authored(MOOR_GRASS, "moor_grass", "[moor_grass]", {84, 113, 77}, {84, 113, 77}),
 	}};
 	std::array<TerrainTypeDefinition, TERRAIN_COUNT> definitions{};
 	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)

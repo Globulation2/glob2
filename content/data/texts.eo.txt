@@ -5888,6 +5888,10 @@ Termitejoj
 Ŝtonaj kamentuboj
 [petrified_stumps]
 Ŝtoniĝintaj stumpoj
+[steppe_grass]
+Stepa herbo
+[moor_grass]
+Marĉeja herbo
 [terrain group water]
 Akvo
 [terrain group sand]

@@ -84,6 +84,8 @@ constexpr ExpectedTerrain EXPECTED[] = {
 	{"termite_mounds", "[termite_mounds]", G::Ridges, true, {150, 96, 62}, {170, 112, 72}, {170, 112, 72}, {150, 96, 62}},
 	{"hoodoos", "[hoodoos]", G::Ridges, true, {204, 140, 98}, {222, 160, 116}, {222, 160, 116}, {204, 140, 98}},
 	{"petrified_stumps", "[petrified_stumps]", G::Ridges, true, {124, 110, 92}, {142, 128, 108}, {142, 128, 108}, {124, 110, 92}},
+	{"steppe_grass", "[steppe_grass]", G::Grass, true, {92, 125, 101}, {92, 125, 101}, {92, 125, 101}, {92, 125, 101}},
+	{"moor_grass", "[moor_grass]", G::Grass, true, {84, 113, 77}, {84, 113, 77}, {84, 113, 77}, {84, 113, 77}},
 };
 struct ExpectedLegacyName
 {
@@ -107,7 +109,7 @@ TEST_SUITE("TerrainCatalog")
 {
 	TEST_CASE("built-in rows, presentations and name lookups match the former constexpr table")
 	{
-		static_assert(std::size(EXPECTED) == 64 && std::size(EXPECTED) <= TERRAIN_COUNT);
+		static_assert(std::size(EXPECTED) == 66 && std::size(EXPECTED) <= TERRAIN_COUNT);
 		for (unsigned i = 0; i < std::size(EXPECTED); ++i)
 		{
 			const auto type = TerrainType(i);

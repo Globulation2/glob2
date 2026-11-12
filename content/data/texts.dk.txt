@@ -5888,6 +5888,10 @@ Termitboer
 Jordpyramider
 [petrified_stumps]
 Forstenede stubbe
+[steppe_grass]
+Steppegræs
+[moor_grass]
+Mosegræs
 [terrain group water]
 Vand
 [terrain group sand]

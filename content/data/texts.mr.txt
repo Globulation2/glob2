@@ -7002,6 +7002,10 @@ MCP सर्व्हर सक्षम करा
 हूडू स्तंभ
 [petrified_stumps]
 जीवाश्म बुंधे
+[steppe_grass]
+स्टेप गवत
+[moor_grass]
+पठारी गवत
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

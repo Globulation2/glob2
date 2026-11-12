@@ -44,3 +44,5 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA = 53;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER = 54;
 // Format 211 ended the built-ins at GLACIER; format 212 added ICEFALL through PETRIFIED_STUMPS.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_ICEFALL = 55;
+// Formats 212 to 215 ended the built-ins at PETRIFIED_STUMPS.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_STEPPE_GRASS = 64;

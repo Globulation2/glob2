@@ -5864,6 +5864,10 @@ AI से नहीं बना
 हूडू स्तंभ
 [petrified_stumps]
 जीवाश्म ठूँठ
+[steppe_grass]
+स्टेपी घास
+[moor_grass]
+पठारी घास
 [terrain group water]
 पानी
 [terrain group sand]

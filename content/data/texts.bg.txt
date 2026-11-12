@@ -5864,6 +5864,10 @@ FFmpeg не е наличен, така че записът е изключен.
 Земни пирамиди
 [petrified_stumps]
 Вкаменени пънове
+[steppe_grass]
+Степна трева
+[moor_grass]
+Тресавищна трева
 [terrain group water]
 Вода
 [terrain group sand]

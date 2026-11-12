@@ -5888,6 +5888,10 @@ Termiteros
 Chimeneas de hadas
 [petrified_stumps]
 Tocones petrificados
+[steppe_grass]
+Hierba de estepa
+[moor_grass]
+Hierba de páramo
 [terrain group water]
 Agua
 [terrain group sand]

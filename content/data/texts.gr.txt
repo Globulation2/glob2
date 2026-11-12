@@ -5888,6 +5888,10 @@ CPU %0%
 Καμινάδες νεράιδων
 [petrified_stumps]
 Απολιθωμένα κούτσουρα
+[steppe_grass]
+Γρασίδι στέπας
+[moor_grass]
+Γρασίδι ρεικότοπου
 [terrain group water]
 Νερό
 [terrain group sand]

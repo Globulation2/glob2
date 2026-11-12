@@ -5888,6 +5888,10 @@ Termiters
 Xemeneies de fades
 [petrified_stumps]
 Soques petrificades
+[steppe_grass]
+Herba d'estepa
+[moor_grass]
+Herba de landa
 [terrain group water]
 Aigua
 [terrain group sand]

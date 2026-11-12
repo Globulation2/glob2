@@ -5888,6 +5888,10 @@ AI 生成ではない
 フードゥー
 [petrified_stumps]
 珪化木の切り株
+[steppe_grass]
+ステップの草地
+[moor_grass]
+荒れ野の草地
 [terrain group water]
 水
 [terrain group sand]

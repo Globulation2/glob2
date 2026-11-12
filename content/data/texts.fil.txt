@@ -7002,6 +7002,10 @@ Mga punso ng anay
 Mga hoodoo
 [petrified_stumps]
 Mga tuod na naging bato
+[steppe_grass]
+Damo ng estepa
+[moor_grass]
+Damo ng kaparangan
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

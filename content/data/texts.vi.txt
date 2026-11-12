@@ -5888,6 +5888,10 @@ Gò mối
 Trụ đá nấm
 [petrified_stumps]
 Gốc cây hóa đá
+[steppe_grass]
+Cỏ thảo nguyên
+[moor_grass]
+Cỏ đồng hoang
 [terrain group water]
 Nước
 [terrain group sand]

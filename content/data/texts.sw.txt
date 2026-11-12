@@ -5864,6 +5864,10 @@ Vichuguu
 Nguzo za mawe
 [petrified_stumps]
 Visiki vilivyogeuka mawe
+[steppe_grass]
+Nyasi za nyika
+[moor_grass]
+Nyasi za uwanda wa juu
 [terrain group water]
 Maji
 [terrain group sand]

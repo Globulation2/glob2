@@ -5888,6 +5888,10 @@ Termitiště
 Skalní hřiby
 [petrified_stumps]
 Zkamenělé pařezy
+[steppe_grass]
+Stepní tráva
+[moor_grass]
+Vřesovištní tráva
 [terrain group water]
 Voda
 [terrain group sand]

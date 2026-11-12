@@ -5888,6 +5888,10 @@ Termitstackar
 Jordpyramider
 [petrified_stumps]
 Förstenade stubbar
+[steppe_grass]
+Stäppgräs
+[moor_grass]
+Hedgräs
 [terrain group water]
 Vatten
 [terrain group sand]

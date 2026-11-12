@@ -5888,6 +5888,10 @@ AI 생성 아님
 후두
 [petrified_stumps]
 규화목 그루터기
+[steppe_grass]
+스텝 풀
+[moor_grass]
+황야 풀
 [terrain group water]
 물
 [terrain group sand]
