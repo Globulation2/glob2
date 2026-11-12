@@ -1,6 +1,6 @@
 const {test, expect} = require('@playwright/test');
 
-// Check the actual served release, not just the SCons flag list. Accidentally
+// Check the actual served release, not just the build's flag list. Accidentally
 // restoring Asyncify would otherwise let a blocking UI regression pass E2E.
 for (const runtime of ['index.wasm','threaded/index.wasm']) {
 test(`${runtime} does not instrument stacks with Asyncify`, async ({request}) => {

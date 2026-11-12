@@ -91,7 +91,7 @@ class AndroidReleaseTests(unittest.TestCase):
     def test_recipe_rejects_missing_abi(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for path in ("platforms/mobile/android-release.json", "scons/build_layout.py",
+            for path in ("platforms/mobile/android-release.json", "buildsys/build_layout.py",
                          "platforms/mobile/toolchain.json",
                          "platforms/stores/fdroid/metadata/org.globulation2.glob2.yml"):
                 target = root / path
@@ -106,7 +106,7 @@ class AndroidReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for path in ("platforms/mobile/android-release.json", "platforms/mobile/toolchain.json",
-                         "scons/build_layout.py", "platforms/stores/fdroid/metadata/org.globulation2.glob2.yml"):
+                         "buildsys/build_layout.py", "platforms/stores/fdroid/metadata/org.globulation2.glob2.yml"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
@@ -118,7 +118,7 @@ class AndroidReleaseTests(unittest.TestCase):
     def test_recipe_template_supports_later_tag(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for path in ("platforms/mobile/android-release.json", "scons/build_layout.py",
+            for path in ("platforms/mobile/android-release.json", "buildsys/build_layout.py",
                          "platforms/mobile/toolchain.json",
                          "platforms/stores/fdroid/metadata/org.globulation2.glob2.yml"):
                 target = root / path
@@ -126,15 +126,15 @@ class AndroidReleaseTests(unittest.TestCase):
                 target.write_bytes((ROOT / path).read_bytes())
             (root / "platforms/mobile/android-release.json").write_text(
                 json.dumps({"versionName": "0.11.0.6", "versionCodeBase": 110006}))
-            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.11.0.6"\n')
+            (root / "buildsys/build_layout.py").write_text('PACKAGE_VERSION = "0.11.0.6"\n')
             self.assertEqual(android_release.check_recipe(root), [1100001, 1100002, 1100003])
 
     def test_version_manifest_rejects_mismatch(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "platforms/mobile").mkdir(parents=True)
-            (root / "scons").mkdir()
-            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.4"\n')
+            (root / "buildsys").mkdir()
+            (root / "buildsys/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.4"\n')
             (root / "platforms/mobile/android-release.json").write_text(json.dumps({"versionName": "0.9.5.4", "versionCodeBase": 90501}))
             with self.assertRaisesRegex(ValueError, "does not encode"):
                 android_release.release_identity(root)
@@ -198,7 +198,7 @@ class AndroidReleaseTests(unittest.TestCase):
     def test_apk_rejects_unexpected_same_abi_library(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for path in ("platforms/mobile/android-release.json", "platforms/mobile/toolchain.json", "scons/build_layout.py"):
+            for path in ("platforms/mobile/android-release.json", "platforms/mobile/toolchain.json", "buildsys/build_layout.py"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
@@ -216,7 +216,7 @@ class AndroidReleaseTests(unittest.TestCase):
     def test_shared_apk_verification_preserves_release_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for path in ("platforms/mobile/android-release.json", "platforms/mobile/toolchain.json", "scons/build_layout.py"):
+            for path in ("platforms/mobile/android-release.json", "platforms/mobile/toolchain.json", "buildsys/build_layout.py"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())

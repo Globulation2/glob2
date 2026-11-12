@@ -55,7 +55,7 @@ def command(*args):
 
 
 def version():
-    match = VERSION_PATTERN.search((ROOT / "scons/build_layout.py").read_text())
+    match = VERSION_PATTERN.search((ROOT / "buildsys/build_layout.py").read_text())
     if not match:
         raise ValueError("PACKAGE_VERSION is missing")
     return match.group(1)
@@ -82,14 +82,14 @@ def preflight(tag, upstream_ref, source_root=None, reuse_released=False, mode="b
                                           cwd=source_root, text=True).strip()
         if changed:
             raise ValueError("source checkout contains tracked changes")
-        match = VERSION_PATTERN.search((source_root / "scons/build_layout.py").read_text())
+        match = VERSION_PATTERN.search((source_root / "buildsys/build_layout.py").read_text())
         if not match or tag != f"v{match.group(1)}":
             raise ValueError("source PACKAGE_VERSION does not match tag")
         return {"tag": tag, "version": match.group(1), "source_commit": upstream,
                 "workflow_commit": head}
     # The mirror may carry release workflows, but game source must be identical
     # to the public tag selected for this release.
-    game_paths = ("SConstruct", "scons", "src", "libs", "third_party", "content",
+    game_paths = ("CMakeLists.txt", "cmake", "buildsys", "src", "libs", "third_party", "content",
                   "platforms/macos", "vcpkg.json")
     changed = command("git", "diff", "--name-only", upstream, head, "--", *game_paths)
     if changed:

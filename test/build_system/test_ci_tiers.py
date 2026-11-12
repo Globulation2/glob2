@@ -25,9 +25,9 @@ class TierTest(unittest.TestCase):
         self.assertFalse(gui['compatibility']);self.assertTrue(gui['browsers_all']);self.assertTrue(gui['android'])
         self.assertEqual(gui['android_arches'],['arm64-v8a'])
     def test_shared_simulation_platform_and_unknown_paths_are_full(self):
-        for path in ['src/hud/GameGUI.h','src/game/Game_sync.cpp','src/ai/AI.cpp','src/net/Net.cpp','SConstruct','platforms/mobile/android.py','new-unknown-directory/thing.cpp','test/fixtures/javascript/profile.game.gz']:
+        for path in ['src/hud/GameGUI.h','src/game/Game_sync.cpp','src/ai/AI.cpp','src/net/Net.cpp','CMakeLists.txt','platforms/mobile/android.py','new-unknown-directory/thing.cpp','test/fixtures/javascript/profile.game.gz']:
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
-        self.assertTrue(self.profile(['src/map/gradient/PathGradientHarness.cpp','SConstruct'])['compatibility'])
+        self.assertTrue(self.profile(['src/map/gradient/PathGradientHarness.cpp','CMakeLists.txt'])['compatibility'])
         self.assertTrue(self.profile([])['android'])
     def test_master_and_schedule_override_docs(self):
         for event in ['push','schedule','workflow_dispatch']:
@@ -48,8 +48,8 @@ class TierTest(unittest.TestCase):
                 self.assertFalse(profile['android'])
                 self.assertFalse(profile['compatibility'])
                 self.assertEqual(profile['profile'],'lightweight')
-                self.assertTrue(self.profile([path,'SConstruct'])['compatibility'])
-                self.assertTrue(self.profile([path,'SConstruct'])['android'])
+                self.assertTrue(self.profile([path,'CMakeLists.txt'])['compatibility'])
+                self.assertTrue(self.profile([path,'CMakeLists.txt'])['android'])
     def selection(self, paths, event='pull_request', draft=False):
         with tempfile.TemporaryDirectory() as directory:
             old_cwd=Path.cwd()

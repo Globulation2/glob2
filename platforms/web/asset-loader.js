@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Writes the game's data packages (built by scons/web_assets.py) into the virtual
+// Writes the game's data packages (built by buildsys/web_assets.py) into the virtual
 // file system. Core and game are run dependencies: main() starts only after
 // both are installed, exactly as with Emscripten's --preload-file. Optional packages
 // (in-game music, high-resolution artwork) are fetched only when the page asks,

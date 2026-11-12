@@ -19,10 +19,10 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `services/online/`, [platform architecture](docs/multiplayer/architecture.md); hosting and deployment scripts in `deploy/` |
 | Game content (the runtime tree) | `content/` holds `data/`, `maps/`, `campaigns/`, `scripts/` and `games/` under the names the game loads them by: the file manager adds a checkout's `content/` as a search root, packages install its directories at their root, and online sim-data hashes use the paths relative to it. Source art and provenance live in `content-src/` |
-| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
+| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `snap/` and `fastlane/` stay at the root because snapcraft and F-Droid expect them there |
 | Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
 | Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
-| Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
+| Builds and platform coverage | `tools/dev_build.py`, `CMakeLists.txt`, `CMakePresets.json`, `cmake/`, `buildsys/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
 | Tests and replay usage | A domain's tests sit beside its code (`*Test.cpp`, `*Harness.cpp`); cross-domain tests, fixtures and the registry are in `test/`: [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
@@ -63,7 +63,8 @@ failures as successful games.
   `generator/`), `src/field/`, `src/ai/`, `src/engine/sim/`, `src/replay/`,
   `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
   simulation data files listed by `deploy/sim_version.py`, and the strict numeric
-  flags in `src/SConscript` (`-fno-fast-math -ffp-contract=off`) is the simulation
+  flags (`-fno-fast-math -ffp-contract=off`, `STRICT_CXXFLAGS` in
+  `buildsys/javascript.py`, applied by `CMakeLists.txt`) is the simulation
   path. The fast gate's `sim-diff` verdict judges every change to it. A change that
   does alter what the simulation computes, and so bumps `SIM_REVISION`, also needs
   cross-platform agreement: add `ci:full`, whose browser/native equivalence job
@@ -103,17 +104,16 @@ failures as successful games.
 
 | Tier | Command | Use it for |
 | --- | --- | --- |
-| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja into `build/cmake/dev` on Linux, `--generator=scons` for SCons) | editing, tests, checksum and golden traces, save/replay checks |
-| perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols; always SCons, like the master baselines) | the first measurement of a performance change |
+| dev | `python3 tools/dev_build.py` (`-O0 -g1`, compiler cache, all features; CMake + Ninja) | editing, tests, checksum and golden traces, save/replay checks |
+| perf-screen | `python3 tools/dev_build.py perf=1` (`-O2`, full profile, symbols) | the first measurement of a performance change |
 | perf-confirm | `python3 tools/dev_build.py perf=1 opt=3` | the number you quote in a performance PR |
-| release | `scons release=1` and the platform packaging workflow | shipping and package verification only |
+| release | `python3 tools/dev_build.py release=1` and the platform packaging workflow | shipping and package verification only |
 
 Never ship a dev or perf build, and never quote release measurements as PR
 evidence: perf builds exist so that every performance claim is reproducible from
 one command. Compare against the prebuilt master baseline
 (`tools/dev_baseline.py`, `tools/perf_ab.py --baseline master`) rather than a second
-worktree. Test tools take the newest build, `build/cmake/dev` included. Plain `scons` gives full debug information; `pch=1` and `unity=1` are
-development experiments. `compile_profile=core` leaves most generators, three AIs
+worktree. Test tools take the newest build. `compile_profile=core` leaves most generators, three AIs
 and the editor out of focused dev builds ([core profile](docs/development/build-options.md#core-compile-profile));
 final PR verification always uses the default full profile. Simulation checksums must match between the dev and perf
 builds of one platform; do not bump the sim version to mask a build-induced

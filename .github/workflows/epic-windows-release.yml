@@ -102,7 +102,7 @@ jobs:
           update: true
           install: >-
             git make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
@@ -121,12 +121,12 @@ jobs:
           RELEASE_TAG: ${{ inputs.tag }}
           SOURCE_REF: ${{ inputs.source_ref }}
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           # package_windows.py also finds the SDL3 DLLs through this prefix.
           export GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix
-          scons -j$(nproc) release=1 client_profile=free distribution=epic --build=build/mingw/client/release/lean-images mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          python3 tools/dev_build.py -j$(nproc) release=1 client_profile=free distribution=epic --build=build/mingw/client/release/lean-images mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             --stage-dir artifacts/epic/windows \

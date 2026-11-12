@@ -32,7 +32,7 @@ lost connections behave.
 
 ## Running two instances
 
-Build the client (`scons -j3 release=1 server=0`, see the
+Build the client (`python3 tools/dev_build.py -j3 release=1`, see the
 [development reference](../development/README.md)). The binary is
 `build/<platform>/client/release/src/glob2`; run it from the repository root.
 

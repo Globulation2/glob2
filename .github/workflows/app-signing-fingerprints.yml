@@ -62,7 +62,7 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess, sys
           root = pathlib.Path.cwd()
-          sys.path.insert(0, str(root / 'scons'))
+          sys.path.insert(0, str(root / 'buildsys'))
           from dev_store import paths
           dev = paths(root)
           sdk = pathlib.Path(dev['android_sdk'])

@@ -24,7 +24,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 
 PACKAGE = 'org.globulation2.glob2'

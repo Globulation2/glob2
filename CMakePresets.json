@@ -3,18 +3,62 @@
   "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
   "configurePresets": [
     {
-      "name": "dev",
-      "displayName": "Native Linux development (SCons dev tier equivalent)",
+      "name": "base",
+      "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/cmake/dev",
       "cacheVariables": {
-        "CMAKE_C_FLAGS": "-O0 -g1 -fdebug-prefix-map=${sourceDir}=.",
-        "CMAKE_CXX_FLAGS": "-O0 -g1 -fdebug-prefix-map=${sourceDir}=.",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
+    },
+    {
+      "name": "dev",
+      "inherits": "base",
+      "displayName": "Development (-O0 -g1, lld when installed)",
+      "binaryDir": "${sourceDir}/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "dev_fast=1 linker=auto"}
+    },
+    {
+      "name": "core",
+      "inherits": "base",
+      "displayName": "Development, core compile profile",
+      "binaryDir": "${sourceDir}/build/linux/client/debug/dev-dev_fast-true-linker-auto-compile_profile-core",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "dev_fast=1 linker=auto compile_profile=core"}
+    },
+    {
+      "name": "perf",
+      "inherits": "base",
+      "displayName": "Performance screening (-O2 -g1)",
+      "binaryDir": "${sourceDir}/build/linux/client/perf",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "perf=1"}
+    },
+    {
+      "name": "perf-o3",
+      "inherits": "base",
+      "displayName": "Performance confirmation (-O3 -g1)",
+      "binaryDir": "${sourceDir}/build/linux/client/perf/o3",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "perf=1 opt=3"}
+    },
+    {
+      "name": "relay",
+      "inherits": "base",
+      "displayName": "Match relay (release)",
+      "binaryDir": "${sourceDir}/build/linux/relay/release",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "role=relay release=1"}
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "displayName": "Release (-O3, stripped)",
+      "binaryDir": "${sourceDir}/build/linux/client/release",
+      "cacheVariables": {"GLOB2_BUILD_ARGS": "release=1"}
     }
   ],
   "buildPresets": [
-    {"name": "dev", "configurePreset": "dev"}
+    {"name": "dev", "configurePreset": "dev"},
+    {"name": "core", "configurePreset": "core"},
+    {"name": "perf", "configurePreset": "perf"},
+    {"name": "perf-o3", "configurePreset": "perf-o3"},
+    {"name": "relay", "configurePreset": "relay"},
+    {"name": "release", "configurePreset": "release"}
   ]
 }

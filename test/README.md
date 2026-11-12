@@ -11,19 +11,19 @@ the same objects as the game:
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
 The module libraries are archives of the client objects in `MAP_SOURCES` and
-`SIM_SOURCES` (`scons/sources.py`), so the linker takes only the members a test
+`SIM_SOURCES` (`buildsys/sources.py`), so the linker takes only the members a test
 reaches: a map change relinks a few hundred objects instead of the whole client.
 `engine-tests` also builds `glob2-sim-tests` and `unit-tests` also builds
 `glob2-map-tests` (`map-tests` and `sim-tests` build one alone), because the module
 binaries hold cases moved out of those two.
 
-All are listed in `test/tests.py`, built by `test/SConscript` and land in
+All are listed in `test/tests.py`, built by `CMakeLists.txt` (through the generated `cmake/tests.cmake`) and land in
 `build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
 and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
 programs that remain come from the `PROGRAMS` table in the same file
 (`MapReportHarness`, `MenuColonyHarness`, and the `glob2-tools` group) or from
-`src/SConscript` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the transport
-programs and the map generator study tools). The per-harness
+`buildsys/harness_programs.py` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the
+transport programs and the map generator study tools). The per-harness
 aliases documented in the domain verification guides are listed in `LEGACY_ALIASES`; they build
 the binary that now contains the test.
 
@@ -87,9 +87,8 @@ runtime assets. See [asset loading](../docs/development/package-size.md#release-
 for worker controls, scratch accounting and measurement limits.
 
 Without `--build-dir` or `GLOB2_BUILD_DIR` the runner uses the newest native build:
-the SCons `tools/dev_build.py` output or `build/<platform>/client/release`. It
-does not yet consider `build/cmake/dev`, where `tools/dev_build.py` builds by
-default on Linux, so name that directory explicitly. The default
+a `tools/dev_build.py` dev build (`build/<platform>/client/debug/dev-*`) or
+`build/<platform>/client/release`. The default
 tier is `headless`, which leaves out `[display]` and `[slow]` cases and runs in
 about a quarter of the full inventory's time; `--tier display` adds display cases
 (`--quick` is the same), and `--tier full` runs everything. Timeouts catch hangs, not
@@ -126,7 +125,7 @@ Actions, into the step summary with a `::error file=,line=` annotation per failu
 `test/test_run_tests.py` covers the runner itself.
 Each test executable prints a `GLOB2_TEST_PROVENANCE` line naming the source tree,
 compiler and flags that produced it. Native builds write that identity to
-`<binary>.provenance.json` after linking (`scons/test_provenance.py`), so a commit or
+`<binary>.provenance.json` after linking (`buildsys/test_provenance.py`), so a commit or
 stray untracked file that changes no compiled input recompiles and relinks nothing;
 browser and mobile test executables embed it instead.
 The runner escapes commas and backslashes in selected names and checks that JUnit

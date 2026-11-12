@@ -12,7 +12,7 @@ identical to the release asset and to `single_include/` at the tag), and
 `fb6aa70cbece087f37ab4685c182b287c53be54f785f981b9db9d30d2d028b37`), with the
 upstream `LICENSE.MIT`. Include it as `<nlohmann/json.hpp>`: native, browser and
 mobile builds share `third_party/nlohmann-json/include` through
-`INCLUDE_DIRECTORIES` in `scons/sources.py`. It is for platform JSON (realtime
+`INCLUDE_DIRECTORIES` in `buildsys/sources.py`. It is for platform JSON (realtime
 messages, REST bodies, match setup), never for simulation state, saves or
 replays. To update, replace both headers and the licence from a new release and
 record the new tag, commit and hashes here.

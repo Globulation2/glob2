@@ -16,7 +16,7 @@ Objects are named by their path under the build directory, without the leading
 `src/` (`map/Map.o`, `libgag.a(Sprite.o)`); a name argument matches any node
 ending with it. The default build directory is the one test/run_tests.py uses
 (GLOB2_BUILD_DIR, else the newest native build); `--build-dir` overrides it.
-`--within GROUP` restricts the graph to a scons/sources.py group (map, sim,
+`--within GROUP` restricts the graph to a buildsys/sources.py group (map, sim,
 core, client, or several joined with +) plus libgag, libusl and third_party;
 `closure --external` then lists what the closure needs from outside the group,
 which is exactly what a module test binary must stub or the group must absorb.
@@ -32,7 +32,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 
 STRONG = set('TDBRGSCAI')   # defined, strong (POSIX nm types; uppercase = global)
 WEAK = set('WVu')           # weak or unique global definitions
@@ -69,8 +69,40 @@ def default_build_dir():
     return native_build_directory()
 
 
+def cmake_objects(build_dir, include_tests):
+    """(node name, path) of a CMake build's objects, named by source:
+    client objects by their path under src/ ('map/Map.o'), test objects under 'test/'."""
+    found = []
+    for directory in sorted((build_dir / 'CMakeFiles').glob('*.dir')):
+        target = directory.name[:-len('.dir')]
+        test = target.startswith(('glob2_engine_tests', 'glob2_unit_tests', 'glob2_map_tests',
+                                  'glob2_sim_tests', 'glob2_test_production'))
+        if target not in ('glob2_client', 'glob2') and not (include_tests and test):
+            continue
+        for path in sorted(directory.rglob('*.o')):
+            name = path.relative_to(directory).as_posix()
+            name = name[:-len('.cpp.o')] + '.o' if name.endswith('.cpp.o') else name
+            name = name[len('src/'):] if name.startswith('src/') else name
+            found.append(('test/' + name if test else name, path))
+    return found
+
+
 def collect(build_dir, include_tests=False):
     """Nodes for every client object and the libgag/libusl archive members."""
+    if (build_dir / 'CMakeFiles').is_dir():
+        objects = cmake_objects(build_dir, include_tests)
+        archives = [build_dir / name for name in ('libgag.a', 'libusl.a', 'libGlob2JavaScript.a')
+                    if (build_dir / name).exists()]
+        paths = [path for _, path in objects] + archives
+        names = [name for name, _ in objects] + [None] * len(archives)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+            tables = list(pool.map(nm_symbols, paths))
+        nodes = {}
+        for path, name, members in zip(paths, names, tables):
+            for member, table in members.items():
+                member = member.replace('.cpp.o', '.o').replace('.c.o', '.o') if member else member
+                nodes[f'{path.name}({member})' if member else name] = table
+        return nodes
     paths = sorted(p for p in (build_dir / 'src').rglob('*.o'))
     paths += sorted((build_dir / 'libs').rglob('*.a'))
     paths += sorted((build_dir / 'third_party').rglob('*.o'))
@@ -221,7 +253,7 @@ def summarize(members, limit):
 
 
 def group_objects(spec):
-    """Objects of one or more '+'-joined scons/sources.py groups (map, sim, core, client)."""
+    """Objects of one or more '+'-joined buildsys/sources.py groups (map, sim, core, client)."""
     import sources
     groups = {'map': sources.MAP_SOURCES, 'sim': sources.SIM_SOURCES, 'core': sources.CORE_SOURCES,
               'client': sources.CLIENT_SOURCES}
@@ -243,7 +275,7 @@ def main(argv=None):
     parser.add_argument('--build-dir', type=Path, default=None)
     parser.add_argument('--weak', action='store_true', help='also follow weak-only definitions')
     parser.add_argument('--tests', action='store_true', help='include test/ objects as nodes')
-    parser.add_argument('--within', metavar='GROUP', help='restrict nodes to a scons/sources.py group')
+    parser.add_argument('--within', metavar='GROUP', help='restrict nodes to a buildsys/sources.py group')
     parser.add_argument('--with', dest='extra', action='append', default=[], metavar='OBJECT',
                         help='with --within: also keep this object (try a group change before making it)')
     commands = parser.add_subparsers(dest='command', required=True)

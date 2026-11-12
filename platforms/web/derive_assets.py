@@ -2,7 +2,7 @@
 """Smaller browser copies of three startup files, checked in under platforms/web/assets/.
 
 The browser downloads the `core` package before the main menu, so these copies
-replace their runtime counterparts there (scons/web_assets.py); native bundles
+replace their runtime counterparts there (buildsys/web_assets.py); native bundles
 use the shared runtime export without these browser crop/font derivatives. Regenerate them whenever a source changes; the build falls back to
 the original file while `sources.json` does not match it, and
 test/build_system/test_web_assets.py fails.

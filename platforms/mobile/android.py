@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and stage a native Android application using the shared SCons manifest."""
+"""Build and stage a native Android application from the shared CMake build (cmake/mobile.cmake)."""
 import argparse
 import hashlib
 import json
@@ -9,7 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'buildsys'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
 from dev_build import dependency_identity
 import official_instance
@@ -45,7 +45,7 @@ def main():
     parser.add_argument('--fdroid',action='store_true',help='Apply F-Droid release codes and unsigned APK checks')
     parser.add_argument('--android-sdk',default=None)
     parser.add_argument('--gradle')
-    parser.add_argument('--jobs',type=int,default=8,help='SCons native compiler jobs')
+    parser.add_argument('--jobs',type=int,default=8,help='Native compiler jobs')
     parser.add_argument('--version-code',type=int,help='Android version code; fixed by the F-Droid release manifest in --fdroid mode')
     parser.add_argument('--amazon-apk',action='store_true',help='Package both ARM ABIs for the Amazon Appstore')
     parser.add_argument('--version-name',help='Android release version name')
@@ -141,8 +141,8 @@ def main():
     dependency_toolchains={abi:discover(dependency_identities[abi], {'android_sdk':str(sdk)})['fingerprint'] for abi in arches}
     prefixes={abi:dependency_prefix(ROOT, dependency_identities[abi], dependency_toolchains[abi]) for abi in arches}
     for abi in arches:
-        subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
-            'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
+        subprocess.run([sys.executable,str(ROOT/'tools/dev_build.py'),'target=android','arch='+abi,
+            'release='+str(int(args.release)),'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
             'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.

@@ -4,7 +4,7 @@ Compare whole-game memory and CPU with identical retained inputs and perf binari
 
 ## Native simulation memory and CPU comparisons
 
-Build the client itself with `scons perf=1` (`opt=3` for the quoted numbers); the `tests` target alone
+Build the client itself with `python3 tools/dev_build.py perf=1` (`opt=3` for the quoted numbers); the `tests` target alone
 can leave an older game executable in place. Preserve a baseline with the same
 benchmark instrumentation, build options and dependencies before rebuilding.
 The structured runner accepts `--benchmark-warmup N` when loading a saved game.

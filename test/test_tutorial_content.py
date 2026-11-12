@@ -67,26 +67,6 @@ class TutorialContentTest(unittest.TestCase):
         d=copy.deepcopy(self.lesson)
         d['steps'][0]['onEnter']=[{'type':'scenarioOrder','team':1,'order':{'type':'moveFlag','destination':'missing'}}]
         with self.assertRaises(ValueError): builder.validate(d)
-    def test_source_and_debug_packages_keep_lesson_definitions_and_scripts(self):
-        class Environment(dict):
-            def Install(self, destination, source):
-                installed.append((destination,source))
-            def Alias(self, *args): pass
-        for target in ('dist','install'):
-            packed=[];installed=[];old=Path.cwd()
-            try:
-                os.chdir(ROOT/'content/scripts')
-                runpy.run_path('SConscript',init_globals={'env':Environment(TARFILE='source.tar',INSTALLDIR='prefix'),
-                    'Import':lambda *args:None,'PackTar':lambda archive,path:packed.append(Path(path).as_posix()),
-                    'COMMAND_LINE_TARGETS':[target]})
-            finally:
-                os.chdir(old)
-            self.assertIn('tutorials/catalog.json',packed)
-            self.assertIn('tutorials/healing.json',packed)
-            self.assertIn('healing.js',packed)
-            for part in range(1,5):
-                self.assertNotIn(f'tutorial_part{part}.sgsl',packed)
-            self.assertTrue(any('tutorials' in dest and source.endswith('catalog.json') for dest,source in installed))
     def test_an_additional_ordinary_step_needs_only_definition_data(self):
         d=copy.deepcopy(self.lesson)
         d['steps'].append(copy.deepcopy(d['steps'][1]));d['steps'][-1]['id']='build-another'
@@ -109,20 +89,6 @@ class TutorialContentTest(unittest.TestCase):
             self.assertNotEqual(result.returncode,0)
             self.assertIn(message,result.stderr)
             self.assertEqual(result.stdout,'')
-
-    def test_source_archive_keeps_the_build_tools_shared_inventory(self):
-        packed=[]
-        old=Path.cwd()
-        try:
-            os.chdir(ROOT/'tools')
-            runpy.run_path('SConscript',init_globals={'env':{'TARFILE':'source.tar'},
-                'Import':lambda *args:None,
-                'PackTar':lambda archive,paths:packed.extend(paths if isinstance(paths,list) else [paths]),
-                'COMMAND_LINE_TARGETS':['dist']})
-        finally:
-            os.chdir(old)
-        self.assertIn('tutorials/build.py',packed)
-        self.assertIn('tutorials/content.py',packed)
 
     def test_shared_inventory_rejects_empty_catalogs(self):
         from tutorials.content import packaged_assets

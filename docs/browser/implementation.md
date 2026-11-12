@@ -13,8 +13,9 @@ whose certificate it already trusts (see [secure network transports](gateway.md)
 
 ## Architecture
 
-- SCons is the source of truth for every toolchain. Plain Python source manifests
-  are shared by native and web targets; target identities keep generated output
+- One CMake build (`CMakeLists.txt`, with `cmake/web.cmake` for the browser) serves
+  every toolchain. Plain Python source manifests in `buildsys/` are shared by native
+  and web targets; target identities keep generated output
   isolated.
 - `Application` and `ScreenStack` own interactive navigation. The browser host
   schedules frames; loading uses cooperative jobs. Generation uses owned
@@ -100,10 +101,11 @@ that path only when it belongs to the same identity. `identity.json` records
 ownership, and generated configuration is written to
 `include/glob2/BuildConfig.h`.
 
-Existing native commands retain their roles. For example, `scons release=1`
-builds the desktop client, while `scons target=web release=1` writes the browser
-application to `build/emscripten/client/release`. The compatibility command
-`python3 platforms/web/build.py` delegates to SCons.
+Existing native commands retain their roles. For example,
+`python3 tools/dev_build.py release=1` builds the desktop client, while
+`python3 tools/dev_build.py target=web release=1` writes the browser application
+to `build/emscripten/client/release` (CMake, `cmake/web.cmake`). The
+compatibility command `python3 platforms/web/build.py` delegates to it.
 
 The served release is `index.html`, `index.js`, `index.wasm` and the
 content-addressed data packages in `assets/` (`<package>[-<part>].<hash>.data`),
@@ -138,7 +140,7 @@ Hosted coverage follows the [CI selection policy](../development/verification.md
 ## Compressed release assets
 
 The release build preloads the shared verified runtime export, including WebP
-support. The shared dependency helper in `scons/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `scons/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
+support. The shared dependency helper in `buildsys/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `buildsys/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
 `platforms/web/package-static.py` creates deterministic gzip sidecars for the
 versioned serial and threaded JS/WASM, the capability loader, content-addressed data packages,
 and HTML entry point. Both runtime binaries and the loader participate in the

@@ -111,8 +111,8 @@ def args(**overrides):
 
 class ListingTest(unittest.TestCase):
     def test_source_names_are_repository_paths_in_both_build_systems(self):
-        # SCons passes root-relative paths; CMake absolute ones, which CCACHE_BASEDIR
-        # rewrites relative to build/cmake/dev.
+        # Absolute paths, CCACHE_BASEDIR's build-relative rewrite and the old
+        # root-relative spelling all name the same file.
         for name in ('src/map/MapQueryTest.cpp', '../../../src/map/MapQueryTest.cpp',
                      './src/map/MapQueryTest.cpp', str(run_tests.ROOT / 'src/map/MapQueryTest.cpp')):
             self.assertEqual(run_tests.source_name(name), 'src/map/MapQueryTest.cpp')

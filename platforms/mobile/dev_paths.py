@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buildsys"))
 from dev_store import (
     android_sdk,
     dependency_prefix,

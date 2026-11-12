@@ -250,7 +250,7 @@ python3 tools/skins/make_paint.py artifacts/skins/units --material mixed
 cp content/data/skins/colony-v1/swarm.gsk artifacts/skins/units/
 python3 tools/skins/test_export.py artifacts/skins/units
 python3 tools/skins/install_units.py artifacts/skins/units
-scons release=1 skin-preview
+python3 tools/dev_build.py release=1 skin-preview
 build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skins/comparison
 GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/src/glob2
 ```
@@ -413,7 +413,7 @@ it saves cold/hit/repaint/eviction images for comparison. Identical cache hits
 should have identical pixels; moving a pose to another atlas cell can introduce
 small GPU interpolation rounding differences.
 
-For a full-map comparison, `scons release=1 skin-game-preview` builds a diagnostic
+For a full-map comparison, `python3 tools/dev_build.py release=1 skin-game-preview` builds a diagnostic
 harness. Set `SKIN_PREVIEW_SAVE` to a saved game with at least two colonies and
 `SKIN_PREVIEW_CAPTURE` to a relative BMP output path; run the harness with `-g`.
 It inserts a visible row of four team-zero workers and four team-one workers
@@ -635,7 +635,7 @@ neutral paint under all four materials, checker paint, and a mixed-material
 checker:
 
 ```sh
-scons release=1 server=0 skin-preview
+python3 tools/dev_build.py release=1 skin-preview
 build/linux/client/release/src/skin-preview \
   content/data/skins/colony-v1/worker-walk.gsb artifacts/review/shapes --rig-review
 build/linux/client/release/src/skin-preview \
@@ -839,7 +839,7 @@ checks, not release-performance measurements.
 
 #### Paired rig frame measurements
 
-Build `scons release=1 server=0 skin-rig-benchmark skin-game-preview` for the
+Build `python3 tools/dev_build.py release=1 skin-rig-benchmark skin-game-preview` for the
 diagnostics. `tools/skins/benchmark_rigs.py` runs alternating baked and rig
 processes (`GLOB2_SKIN_RIGS=0` for the baked runs), saves the exact commands,
 binary, source and asset identities, raw frame samples, peak process RSS and

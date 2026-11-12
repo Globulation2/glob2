@@ -1,19 +1,19 @@
 #!/bin/sh
-# Builds the WebAssembly client (scons target=web release=1) inside a container with
+# Builds the WebAssembly client (tools/dev_build.py target=web release=1) inside a container with
 # the pinned Emscripten SDK, writes Brotli and gzip copies (platforms/web/precompress.py),
 # and installs the result into the directory Caddy serves at /play/
 # (GLOB2_WEB_CLIENT_DIR) with deploy/install-web-client.py. Needs Docker and Python 3
 # on the host; the SDK and the build cache persist in the glob2-web-toolchain volume
 # between runs.
 #
-#   deploy/build-web-client.sh <output-dir> [scons arguments...]
+#   deploy/build-web-client.sh <output-dir> [build arguments...]
 #
-# Extra arguments go to scons, e.g. official_instance=https://play.example.org.
+# Extra arguments go to tools/dev_build.py, e.g. official_instance=https://play.example.org.
 # With GLOB2_WEB_INSTALL=0 the client is only built (build/emscripten/client/release)
 # and not installed; deploy/update-host.sh installs it after the new stack is up.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
-output=${1:?usage: deploy/build-web-client.sh <output-dir> [scons arguments...]}
+output=${1:?usage: deploy/build-web-client.sh <output-dir> [build arguments...]}
 shift
 jobs=${GLOB2_BUILD_JOBS:-4}
 image=${GLOB2_WEB_BUILD_IMAGE:-ubuntu:24.04}
@@ -30,13 +30,13 @@ docker run --rm \
 		apt-get update -qq
 		# The embedded recording build configures x264 (needs strings, from binutils) and
 		# cross-compiles FFmpeg, whose configure needs a host C compiler and pkg-config.
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config nasm >/dev/null
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 ninja-build xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config nasm >/dev/null
 		git config --global --add safe.directory "*"
 		python3 platforms/web/setup.py
 		# Both runtimes (serial and threaded), the loader and the page. The
 		# runtime asset export installs its pinned image encoder (Pillow) into a
 		# private environment under GLOB2_DEV_HOME, hence python3-venv.
-		scons target=web release=1 -j"$JOBS" "$@" web-package
+		python3 tools/dev_build.py target=web release=1 -j"$JOBS" "$@" web-package
 		encoder_python="$(python3 tools/package_assets.py --platform web --encoder-python)"
 		"$encoder_python" platforms/web/precompress.py --require-brotli build/emscripten/client/release
 		chown -R "$OWNER" build/emscripten

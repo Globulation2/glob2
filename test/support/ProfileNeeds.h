@@ -13,7 +13,7 @@
 
 namespace glob2test
 {
-// Whether this build has an optional group of scons/sources.py: "generators", "editor",
+// Whether this build has an optional group of buildsys/sources.py: "generators", "editor",
 // "ai:castor", "ai:cortex" or "ai:cabino".
 inline bool built(std::string_view group)
 {

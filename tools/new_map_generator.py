@@ -8,14 +8,14 @@ shape (design, generate, validateWorld; docs/map-generators/adding-a-generator.m
 colonies on the roomiest lattice the torus holds (Orbits.h), a round home and pond for
 each, the starter kit and the crop guarantee, and three controls to start from. Then:
 
-  * adds its definition to GeneratorRegistry::builtins() and its source to scons/sources.py,
+  * adds its definition to GeneratorRegistry::builtins() and its source to buildsys/sources.py,
   * adds its translation keys to content/data/texts.keys.txt and, with the English text as a
     placeholder, to every table (translate them before merging),
   * picks the next unused legacy id (or --legacy-id).
 
 What is left is the map itself and the verification the docs ask for:
 
-  scons --build=build/native-tests release=1 -j12 map-generator-golden-test engine-tests map-generator-study build/native-tests/src/glob2
+  python3 tools/dev_build.py --build=build/native-tests release=1 -j12 map-generator-golden-test engine-tests map-generator-study glob2
   build/native-tests/src/MapGeneratorGoldenTest <profile> --print --only=<id>   # its map fingerprints
   build/native-tests/src/glob2 map generate <id> --preview artifacts/<id>.png
   See docs/map-generators/cli.md for comparisons with nearest generators.
@@ -30,7 +30,7 @@ from build_paths import native_binary
 ROOT = Path(__file__).resolve().parent.parent
 GENERATORS = ROOT / 'src' / 'map' / 'generator' / 'generators'
 REGISTRY = ROOT / 'src' / 'map' / 'generator' / 'core' / 'GeneratorRegistry.cpp'
-SOURCE_MANIFEST = ROOT / 'scons' / 'sources.py'
+SOURCE_MANIFEST = ROOT / 'buildsys' / 'sources.py'
 TEXTS = ROOT / 'content' / 'data'
 
 HEADER = '''// SPDX-License-Identifier: GPL-3.0-or-later
@@ -288,15 +288,15 @@ def main():
     manifest = SOURCE_MANIFEST.read_text()
     anchor = "    'map/generator/generators/WatershedGenerator.cpp',\n"
     if anchor not in manifest:
-        sys.exit('scons/sources.py no longer lists WatershedGenerator.cpp; add the source by hand')
+        sys.exit('buildsys/sources.py no longer lists WatershedGenerator.cpp; add the source by hand')
     SOURCE_MANIFEST.write_text(manifest.replace(anchor, anchor + f"    'map/generator/generators/{name}Generator.cpp',\n", 1))
 
     append_keys([args.display, 'Home size', 'Too many colonies for this map; use a bigger map or fewer colonies.',
                  'The homes are too small; use a bigger home size.'])
     print(f'Created {header.relative_to(ROOT)} and {source.relative_to(ROOT)} (legacy id {legacy}).')
-    print('Registered it, added its source to scons/sources.py and its keys to the translation tables')
+    print('Registered it, added its source to buildsys/sources.py and its keys to the translation tables')
     print('(English placeholders: translate them). Next:')
-    print(f'  scons release=1 -j12 map-generator-golden-test engine-tests map-generator-study {native_binary()}')
+    print('  python3 tools/dev_build.py release=1 -j12 map-generator-golden-test engine-tests map-generator-study glob2')
     print(f'  {native_binary("MapGeneratorGoldenTest")} <profile> --print --only={args.id}')
     print(f'  {native_binary()} map generate {args.id} --preview artifacts/{args.id}.png')
     print('  Compare nearest generators at 128, 256, 512: docs/map-generators/cli.md')

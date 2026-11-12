@@ -68,7 +68,7 @@ Candidate validation uses `python3 platforms/mobile/android_release.py check-can
 
 ## Recording libraries and exports
 
-Mobile SCons builds compile the pinned minimal FFmpeg/x264 recording libraries
+Mobile builds (CMake, `cmake/mobile.cmake`) compile the pinned minimal FFmpeg/x264 recording libraries
 for each ABI and SDK; Xcode links the archives and VideoToolbox, while Android
 links MediaCodec through the NDK. Compiler, SDK, flags and source hashes invalidate
 the dependency cache. App packages include recording dependency notices.

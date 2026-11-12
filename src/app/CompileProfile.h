@@ -2,7 +2,7 @@
 #pragma once
 #include <string>
 
-// Which optional sources this executable was built with (scons compile_profile=core|full,
+// Which optional sources this executable was built with (tools/dev_build.py compile_profile=core|full,
 // see docs/development/build-options.md). Code that needs to know asks here rather than
 // including the generated header, so its object stays identical in both profiles.
 namespace CompileProfile

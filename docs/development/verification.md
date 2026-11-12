@@ -22,7 +22,7 @@ The selected revision's complete working tree remains available to every check.
 The selector runs shared build-system contracts in a dedicated
 `artifacts/build-contract-venv`, created with the pinned asset encoder's Python.
 It installs `test/build_system/requirements.txt` there, including the asset
-requirements and SCons, without modifying the shared encoder environment.
+requirements, without modifying the shared encoder environment.
 
 CI measurements batch completed runs hourly using trusted default-branch code and
 inert artifacts. Cancellations do not create measurement workflows, and cheap-only
@@ -153,7 +153,7 @@ platform and build configuration's evidence distinct. Fixture profiles remain
 under the output's `profiles/` and must not be published as review evidence.
 
 The optional macOS localization mode builds the existing ad hoc `bundle`
-target in the initial SCons invocation. Its package check verifies actual Thai
+target in the initial `tools/dev_build.py` invocation. Its package check verifies actual Thai
 and English catalogs, font files and notices, the localized permission purpose,
 the signature seal, and packaged CLI startup without inherited build-library
 paths. It uses no Apple credentials or notarization. The package report
@@ -305,8 +305,7 @@ tell cheap tooling changes from engine changes and choose affected boundaries:
 simulation, save and AI paths add platform and browser evidence, networking adds
 transport, server and deployment checks, and shared build inputs, shared headers
 and unknown paths select everything. The cheap `music` job covers `tools/music/`;
-files inside a soundtrack set, `content/data/zik/<set>/`, are engine inputs and
-`content/data/zik/SConscript` is build infrastructure. The repeated native
+files inside a soundtrack set, `content/data/zik/<set>/`, are engine inputs. The repeated native
 compatibility inventory is maintained in `test/ci-compatibility.json`.
 
 `Relevant checks passed` checks both top-level job results and the exact current

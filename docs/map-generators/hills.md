@@ -145,8 +145,8 @@ unchanged.
 ## Reproduction
 
 ```sh
-scons release=1 server=0 -j6 engine-tests map-generator-golden-test build/src/glob2
-build/src/glob2 map generate hills --seed 7 --width 256 --height 256 --teams 4 --output artifacts/hills/seed-7.map --preview artifacts/hills/seed-7.png --report-file artifacts/hills/seed-7.json
+python3 tools/dev_build.py release=1 -j6 engine-tests map-generator-golden-test glob2
+build/linux/client/release/src/glob2 map generate hills --seed 7 --width 256 --height 256 --teams 4 --output artifacts/hills/seed-7.map --preview artifacts/hills/seed-7.png --report-file artifacts/hills/seed-7.json
 python3 tools/map_telemetry.py collect --generators hills --seed-start 20001 --count 8 --set width=256 --set height=256 --set teams=4 --jobs 2 --output-dir artifacts/hills/held-out
 python3 tools/map_telemetry.py summarize artifacts/hills/held-out
 ```

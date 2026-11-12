@@ -96,7 +96,7 @@ Focused regression commands (FFmpeg and native Opus development headers required
 
 ```sh
 PYTHONPATH=tools/music python3 -m unittest tools.music.tests.test_community tools.music.tests.test_runtime
-scons release=1 engine-tests
+python3 tools/dev_build.py release=1 engine-tests
 python3 test/run_tests.py --help
 ```
 

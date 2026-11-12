@@ -102,7 +102,7 @@ both software and OpenGL rendering.
 From the repository root:
 
 ```sh
-scons -j6 release=1 server=0 engine-tests
+python3 tools/dev_build.py -j6 release=1 engine-tests
 python3 test/run_tests.py --filter 'MapPreview/*'
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```

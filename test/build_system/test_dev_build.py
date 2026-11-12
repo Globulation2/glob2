@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import dev_build
 import dev_store
 import shared_dependencies
@@ -34,13 +34,13 @@ class DevelopmentBuildTests(unittest.TestCase):
         for target in ('native', 'web', 'android', 'ios'):
             normal = build_identity({'target': target})
             variants = [build_identity({'target': target, **args}) for args in
-                        ({'dev_fast': 1}, {'pch': 1}, {'unity': 1}, {'pch': 1, 'unity': 1})]
-            self.assertEqual(len({default_directory(i) for i in [normal, *variants]}), 5)
+                        ({'dev_fast': 1}, {'linker': 'lld'}, {'dev_fast': 1, 'linker': 'lld'})]
+            self.assertEqual(len({default_directory(i) for i in [normal, *variants]}), 4)
             for identity in variants:
                 self.assertEqual(dev_build.dependency_identity(identity), dev_build.dependency_identity(normal))
 
     def test_invalid_profiles(self):
-        for args in ({'release': 1, 'pch': 1}, {'profile': 1, 'dev_fast': 1}, {'unity': 'maybe'},
+        for args in ({'pch': 1}, {'unity': 1}, {'release': 1, 'dev_fast': 1}, {'profile': 1, 'dev_fast': 1}, {'dev_fast': 'maybe'},
                      {'web_variant': 'serial'}, {'target': 'web', 'release': 1, 'web_variant': 'serial'},
                      {'dependency_jobs': 0}, {'linker': 'mold'}):
             with self.subTest(args=args), self.assertRaises(ValueError):
@@ -57,49 +57,53 @@ class DevelopmentBuildTests(unittest.TestCase):
             with self.subTest(args=args), self.assertRaises(ValueError):
                 build_identity(args, host='linux')
 
-    def test_dependency_configuration_skips_query_only_targets(self):
-        script = types.ModuleType('SCons.Script')
-        script.GetOption = lambda name: False
-        script.COMMAND_LINE_TARGETS = []
-        package = types.ModuleType('SCons')
-        package.Script = script
-        for targets, flags, expected in [([], (), True), (['compile_commands.json'], (), False),
-                                       (['custom/compile_commands.json'], (), False),
-                                       (['compile_commands.json', 'glob2'], (), True),
-                                       ([], ('clean',), False), ([], ('no_exec',), False),
-                                       ([], ('help',), False)]:
-            with self.subTest(targets=targets, flags=flags), patch.dict(sys.modules, {'SCons': package, 'SCons.Script': script}), patch.object(script, 'COMMAND_LINE_TARGETS', targets), patch.object(script, 'GetOption', side_effect=lambda name: name in flags):
-                self.assertEqual(dev_build.can_build_dependencies(), expected)
-
-    def test_development_command_preserves_overrides(self):
+    def test_development_defaults_preserve_overrides(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
-        result = command.command(['target=web', 'pch=1', '--build=custom', 'web-tests'])
-        self.assertIn('web_variant=threaded', result)
-        result = command.command(['dev_fast=0', '-j3', 'linker=default', 'CC=clang', 'engine-tests'])
-        self.assertNotIn('dev_fast=1', result)
-        self.assertNotIn('linker=auto', result)
-        self.assertEqual(result.count('-j3'), 1)
-        result = command.command(['perf=1', 'opt=3'])
-        self.assertNotIn('dev_fast=1', result)
-        self.assertNotIn('linker=auto', result)
+        self.assertEqual(command.development_defaults({}), ['dev_fast=1', 'linker=auto'])
+        self.assertIn('web_variant=threaded', command.development_defaults({'target': 'web', 'linker': 'lld'}))
+        self.assertEqual(command.development_defaults({'dev_fast': '0', 'linker': 'default'}), [])
+        for options in ({'perf': '1', 'opt': '3'}, {'release': '1'}, {'profile': '1'}, {'role': 'relay'},
+                        {'target': 'android'}, {'target': 'web', 'release': '1'}):
+            self.assertEqual(command.development_defaults(options), [], options)
 
     def test_cmake_command_targets_and_options(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
-        with patch.object(command, 'CMAKE_DIRECTORY', Path(tempfile.mkdtemp())):
-            configure, build = command.cmake_commands(['.', 'glob2', '-j12', '-k'])
-            self.assertEqual(configure, ['cmake', '--preset', 'dev'])
-            self.assertEqual(build, ['cmake', '--build', '--preset', 'dev', '--target', 'glob2', 'tests',
-                                     '--', '-j12', '-k', '0'])
-            self.assertEqual(command.cmake_commands([])[-1][-2:], ['--', '-j8'])
-            for unsupported in ('perf=1', '--build=x', '-n'):
-                with self.assertRaises(SystemExit):
-                    command.cmake_commands([unsupported])
+        directory = Path(tempfile.mkdtemp())
+        configure, build = command.cmake_commands(['--build=' + str(directory), '.', 'glob2', '-j12', '-k'])
+        self.assertEqual(configure[:4], ['cmake', '-S', str(ROOT), '-B'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=dev_fast=1 linker=auto', configure)
+        self.assertEqual(build, ['cmake', '--build', str(directory), '--target', 'glob2', 'tests',
+                                 '--', '-j12', '-k', '0'])
+        self.assertEqual(command.cmake_commands(['--build=' + str(directory)])[-1][-2:], ['--', '-j8'])
+        # Each tier configures its own default directory, with no development defaults.
+        perf = command.cmake_commands(['perf=1', 'opt=3', 'engine-tests'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=perf=1 opt=3', perf[0])
+        self.assertEqual(perf[-1][2], str(ROOT / 'build/linux/client/perf/o3'))
+        release = command.cmake_commands(['release=1', 'CXXFLAGS=-g -O1', 'build/linux/client/release/src/glob2'])
+        self.assertIn('-DGLOB2_BUILD_ARGS=release=1', release[0])
+        self.assertIn('-DGLOB2_CXXFLAGS=-g -O1', release[0])
+        self.assertEqual(release[-1][3:5], ['--target', 'glob2'])
+        relay = command.cmake_commands(['role=relay', 'release=1', 'relay'])
+        self.assertEqual(relay[-1][2], str(ROOT / 'build/linux/relay/release'))
+        self.assertEqual(command.compiler_environment(['CC=clang', 'CXX=clang++'], {})['CXX'], 'clang++')
+        # `install` builds glob2 as a shipping build, then installs it.
+        staged = command.cmake_commands(['release=1', 'lean_images=1', 'BINDIR=/stage/usr/bin',
+                                         'INSTALLDIR=/stage/usr/share', 'DATADIR=/usr/share', 'install'])
+        for setting in ('-DGLOB2_SHIPPING=ON', '-DGLOB2_BINDIR=/stage/usr/bin',
+                        '-DGLOB2_INSTALLDIR=/stage/usr/share', '-DGLOB2_DATADIR=/usr/share'):
+            self.assertIn(setting, staged[0])
+        self.assertEqual(staged[-2][2:5], [str(ROOT / 'build/linux/client/release/lean-images'), '--target', 'glob2'])
+        self.assertEqual(staged[-1], ['cmake', '--install', str(ROOT / 'build/linux/client/release/lean-images')])
+        self.assertIn('-n', command.cmake_commands(['--build=' + str(directory), '-n'])[-1])
+        for unsupported in ('--weird', 'build/elsewhere/glob2'):
+            with self.assertRaises(ValueError):
+                command.cmake_commands([unsupported])
 
-    def test_default_generator_is_cmake_only_for_requests_it_builds(self):
+    def test_tools_and_host_checks(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
@@ -110,39 +114,18 @@ class DevelopmentBuildTests(unittest.TestCase):
                                  return_value=subprocess.CompletedProcess([], 0, stdout=version)))
         system, which, run = host()
         with system, which, run:
-            for arguments in ([], ['.'], ['engine-tests', 'unit-tests', '-j12', '-k']):
-                self.assertIsNone(command.scons_reason(arguments), arguments)
-            # The perf tiers, SCons options and file targets stay on SCons.
-            for arguments in (['perf=1'], ['perf=1', 'opt=3', 'engine-tests'], ['target=web'],
-                              ['compile_profile=core', 'engine-tests'], ['--build=build/x'], ['-n'],
-                              ['build/linux/client/debug/dev-x/src/glob2']):
-                self.assertIsNotNone(command.scons_reason(arguments), arguments)
+            for arguments in ([], ['.'], ['perf=1', 'opt=3', 'engine-tests'], ['role=relay', 'release=1', 'relay'],
+                              ['recording_codec=vp9', 'release=1'], ['target=web', 'release=1', 'web-package'],
+                              ['target=android', 'arch=x86_64']):
+                command.check_tools(arguments)
+            # A native build for another host's toolchain cannot run here.
+            with self.assertRaisesRegex(ValueError, 'mingw'):
+                command.check_tools(['mingw=1', 'release=1'])
         for overrides, expected in (({'version': 'cmake version 3.22.1\n'}, '3.25'),
-                                    ({'which': None}, 'not installed'), ({'system': 'Darwin'}, 'Linux')):
+                                    ({'which': None}, 'not installed')):
             system, which, run = host(**overrides)
-            with system, which, run:
-                self.assertIn(expected, command.scons_reason([]))
-
-    def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
-        spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')
-        command = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(command)
-        with tempfile.TemporaryDirectory() as task:
-            source, destination = Path(task) / 'source', Path(task) / 'snapshot'
-            source.mkdir()
-            destination.mkdir()
-            def git(*args):
-                return subprocess.check_output(['git', '-C', str(source), *args], stderr=subprocess.DEVNULL, text=True)
-            git('init')
-            (source / 'SConstruct').write_text('baseline')
-            git('add', 'SConstruct')
-            git('-c', 'user.name=Build fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'fixture')
-            (source / 'SConstruct').write_text('candidate')
-            with patch.object(command, 'ROOT', source):
-                command.snapshot(destination)
-            self.assertEqual((destination / 'SConstruct').read_text(), 'candidate')
-            self.assertEqual(subprocess.check_output(['git', '-C', str(destination), 'rev-parse', 'HEAD'], text=True), git('rev-parse', 'HEAD'))
-            self.assertIn('M SConstruct', subprocess.check_output(['git', '-C', str(destination), 'status', '--porcelain'], text=True))
+            with system, which, run, self.assertRaisesRegex(ValueError, expected):
+                command.check_tools([])
 
     def test_shared_install_reuses_content_and_relocates_metadata(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}):
@@ -172,7 +155,7 @@ def forbidden(*args, **kwargs):
     raise RuntimeError('Compatible reader must not rebuild')
 print(shared.ensure(forbidden, Path(sys.argv[2])/'two', Path(sys.argv[2])/'work'))
 '''
-            result = subprocess.run([sys.executable, '-c', code, str(ROOT / 'scons'), task], capture_output=True, text=True, timeout=5, check=True)
+            result = subprocess.run([sys.executable, '-c', code, str(ROOT / 'buildsys'), task], capture_output=True, text=True, timeout=5, check=True)
             self.assertEqual(result.stdout.strip(), str(prefix))
 
     def test_concurrent_consumers_publish_once(self):
@@ -191,7 +174,7 @@ def build(prefix,work):
     (prefix/'library.a').write_bytes(b'archive')
 shared.ensure(build,Path(sys.argv[2])/'local',Path(sys.argv[2])/'work')
 """
-            processes = [subprocess.Popen([sys.executable, '-c', code, str(ROOT / 'scons'), task], env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
+            processes = [subprocess.Popen([sys.executable, '-c', code, str(ROOT / 'buildsys'), task], env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
             for process in processes:
                 stdout, stderr = process.communicate(timeout=15)
                 self.assertEqual(process.returncode, 0, stderr.decode())

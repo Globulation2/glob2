@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 import native_image_dependency as lean
 from build_layout import build_identity, default_directory
 
@@ -55,32 +55,6 @@ class NativeImageTests(unittest.TestCase):
                                 ({'lean_images': '1', 'release': '1', 'role': 'relay'}, 'linux')):
             with self.assertRaisesRegex(ValueError, 'lean_images'):
                 build_identity(arguments, host=host)
-
-@unittest.skipUnless(__import__('shutil').which('scons'), 'SCons unavailable')
-class LinuxRuntimeInstallTests(unittest.TestCase):
-    def test_real_install_graph_preserves_one_canonical_library_and_aliases(self):
-        import subprocess
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            prefix = root / 'prefix'
-            (prefix / 'lib').mkdir(parents=True)
-            notice = prefix / 'share/licenses/SDL3_image/LICENSE.txt'
-            notice.parent.mkdir(parents=True)
-            notice.write_text('decoder license')
-            canonical = prefix / 'lib/libSDL3_image.so.0.4.6'
-            canonical.write_bytes(b'decoder')
-            (prefix / 'lib/libSDL3_image.so.0').symlink_to(canonical.name)
-            (prefix / 'lib/libSDL3_image.so').symlink_to(canonical.name)
-            (root / 'SConstruct').write_text(
-                'import sys\nsys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[2] / 'scons'))+')\n'
-                'from install_image_runtime import install_runtime\n'
-                'env=Environment(tools=[], BINDIR='+repr(str(root / 'stage/usr/bin'))+', INSTALLDIR='+repr(str(root / 'stage/usr/share'))+')\n'
-                'install_runtime(env, '+repr(str(prefix))+')\n')
-            subprocess.run(['scons', '-Q', 'install'], cwd=root, check=True, capture_output=True)
-            installed = root / 'stage/usr/lib/glob2'
-            self.assertEqual((installed / canonical.name).read_bytes(), b'decoder')
-            self.assertTrue((installed / 'libSDL3_image.so.0').is_symlink())
-            self.assertEqual((installed / 'libSDL3_image.so').resolve(), (installed / canonical.name).resolve())
 
 
 if __name__ == '__main__':

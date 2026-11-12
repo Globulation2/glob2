@@ -199,7 +199,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            clang-18 llvm-18 python3 scons pkg-config nasm libva-dev git cmake \
+            clang-18 llvm-18 python3 ninja-build pkg-config nasm libva-dev git cmake \
             libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
@@ -209,7 +209,7 @@ jobs:
           cc: clang-18
           cxx: clang++-18
       - name: Build pinned SDL3 dependencies
-        run: python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+        run: python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
       - name: Verify coverage accounting
         run: python3 -m unittest discover -s test -p test_run_coverage.py -v
       - uses: ./.github/actions/renderer-shader-tools
@@ -407,7 +407,7 @@ jobs:
           EOF
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config nasm libva-dev ccache \
+            ca-certificates git ${{ matrix.compiler }} python3 python3-venv ninja-build pkg-config nasm libva-dev ccache \
             cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
@@ -442,10 +442,10 @@ jobs:
         id: build_without_opengl
         continue-on-error: true
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software build-software/src/glob2 engine-tests
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py CXX=${{ matrix.compiler }} -j$(nproc) release=1 opengl=0 --build=build-software build-software/src/glob2 engine-tests
           python3 test/SoftwareStartupTest.py build-software/src/glob2
           python3 test/run_tests.py --binary engine --build-dir build-software --no-display --filter 'TorusRender/*software*' --junit artifacts/tests/software-junit.xml
 
@@ -569,7 +569,7 @@ jobs:
             make mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
-            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-ninja
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
             mingw-w64-x86_64-opusfile
@@ -644,12 +644,12 @@ jobs:
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           preview_target=""
           if test "${{ github.event_name == 'workflow_dispatch' && inputs.desktop_localization }}" = true; then preview_target=translation-preview-harness; fi
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 $preview_target build/mingw/client/release/src/glob2.exe \
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j$(nproc) release=1 mingw=1 $preview_target build/mingw/client/release/src/glob2.exe \
             unit-tests \
             engine-tests \
             software-render-benchmark \
@@ -866,7 +866,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv ninja-build nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 platforms/web/setup.py
@@ -878,21 +878,6 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
-      - name: Restore WebAssembly object tree
-        id: restore_webassembly_object_tree
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/emscripten/client/release/.sconsign.dblite
-            build/emscripten/client/release/identity.json
-            build/emscripten/client/release/include/glob2/BuildConfig.h
-            build/emscripten/client/release/obj
-            build/emscripten/client/release/threaded/obj
-            build/emscripten/client/release/threaded/include
-            build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
       - name: Restore pinned WebAssembly dependencies
         id: wasm_dependencies
         uses: actions/cache/restore@v4
@@ -900,10 +885,10 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
       - name: Verify restored WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -916,14 +901,11 @@ jobs:
         run: |
           ccache -z
           echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
-          # This source embeds __DATE__ and __TIME__. Refresh it after restoring
-          # objects so the binary still reports the current compilation time.
-          rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o build/emscripten/client/release/threaded/obj/src/GlobalContainerArgs.cpp.o
-          scons target=web release=1 web-tests build/emscripten/client/release/index.html -j$(nproc)
+          python3 tools/dev_build.py target=web release=1 web-tests web-package -j$(nproc)
           ccache -s -v
       - name: Seal built WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -935,22 +917,7 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
-      - name: Save WebAssembly object tree
-        id: save_webassembly_object_tree
-        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/emscripten/client/release/.sconsign.dblite
-            build/emscripten/client/release/identity.json
-            build/emscripten/client/release/include/glob2/BuildConfig.h
-            build/emscripten/client/release/obj
-            build/emscripten/client/release/threaded/obj
-            build/emscripten/client/release/threaded/include
-            build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'buildsys/web_build.py', 'buildsys/sdl3_dependencies.py', 'buildsys/sdl3-*.json', 'buildsys/vcpkg-ports/sdl3/*.patch') }}
       - name: Prune WebAssembly compiler cache
         id: prune_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
@@ -1096,7 +1063,7 @@ jobs:
         id: install_native_build_dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv ninja-build nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
       # This job only reads that cache; transport-specific misses stay local.
       - name: Restore native compiler cache
@@ -1107,25 +1074,6 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-main-ubuntu-24.04-
-      - name: Identify native compiler
-        id: native_compiler
-        run: |
-          digest=$(sha256sum "$(command -v g++-13)" | cut -d' ' -f1)
-          echo "digest=$digest" >> "$GITHUB_OUTPUT"
-      - name: Restore native object tree
-        id: restore_native_object_tree
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/linux/**/.sconsign.dblite
-            build/linux/**/identity.json
-            build/linux/**/configure
-            build/linux/**/include/glob2/BuildConfig.h
-            build/linux/**/*.o
-            build/linux/**/*.a
-          key: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-
       - name: Reset native compiler cache statistics
         id: reset_native_compiler_cache_statistics
         run: |
@@ -1140,10 +1088,10 @@ jobs:
         id: build_match_relay
         continue-on-error: true
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py CXX=g++-13 role=relay release=1 relay -j$(nproc)
       - name: Test match relay
         id: test_match_relay
         continue-on-error: true
@@ -1163,10 +1111,10 @@ jobs:
           fi
           # The browser's editor tests read the native generator catalog, then
           # navigate the visible picker with real keyboard/pointer events.
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
       - name: Test network transport
         id: test_network_transport
         continue-on-error: true
@@ -1189,20 +1137,6 @@ jobs:
             build/linux/client/release/runtime-assets \
             build/linux/client/release/runtime-assets.json \
             build/sdl3-ci/prefix/lib
-      - name: Save native object tree
-        id: save_native_object_tree
-        if: ${{ !cancelled() && steps.package_the_programs_the_browser_tests_drive.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/linux/**/.sconsign.dblite
-            build/linux/**/identity.json
-            build/linux/**/configure
-            build/linux/**/include/glob2/BuildConfig.h
-            build/linux/**/*.o
-            build/linux/**/*.a
-          key: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true

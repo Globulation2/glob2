@@ -8,7 +8,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buildsys"))
 from build_layout import build_identity, default_directory, prepare_directory
 
 from tools.release.archives import MIB, choose_xz, linux_archives, zip_archive

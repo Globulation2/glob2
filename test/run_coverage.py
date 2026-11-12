@@ -227,8 +227,11 @@ def main():
         return run_logged(command, output / log, env=env, stream_logs=args.stream_logs)
 
     flags = instrumentation_flags(args.optimization, args.debug_info)
-    command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
-               f'CC={args.cc}', f'CXX={args.cxx}', f'CFLAGS={flags}', f'CXXFLAGS={flags}',
+    # The plain debug tier (no dev_fast) with instrumented C++; the QuickJS and
+    # openlibm C sources stay uninstrumented, as they always have been.
+    command = [sys.executable, str(ROOT / 'tools/dev_build.py'), f'-j{args.jobs}',
+               'dev_fast=0', 'linker=default', f'--build={build}', 'tests',
+               f'CC={args.cc}', f'CXX={args.cxx}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']
     if args.with_cli:
         command.append(str(build / 'src/glob2'))

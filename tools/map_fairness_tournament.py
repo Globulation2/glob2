@@ -993,8 +993,8 @@ def command_run(args):
     paths = resolve_paths(args, out)
     for binary in (paths['glob2'], paths['study']):
         if not binary.exists():
-            raise SystemExit(f'error: {binary} not found; build with scons release=1 and '
-                             f'scons release=1 map-generator-study')
+            raise SystemExit(f'error: {binary} not found; build with '
+                             f'python3 tools/dev_build.py release=1 glob2 map-generator-study')
     # Provenance and pure throughput settings, not things that change the games played.
     ignored = ('jobs', 'verify_games', 'description', 'git_revision', 'preset_file')
     comparable = {k: v for k, v in config.items() if k not in ignored}

@@ -43,7 +43,7 @@ std::cout << "{\"resource\":" << sizeof(ResourceCell)
 
 
 def measure(compiler, includes):
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     from sources import INCLUDE_DIRECTORIES
     with tempfile.TemporaryDirectory(prefix='glob2-gradient-layout-') as directory:
         source = Path(directory) / 'layout.cpp'

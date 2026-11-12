@@ -160,7 +160,7 @@ docker buildx build -f deploy/Dockerfile --target engine-agent \
   -t glob2-engine-agent:simver-$(python3 deploy/sim_version.py ../glob2-0.9.25) --load .
 ```
 
-The engine stage builds the pinned SDL3 family with `scons/sdl3_dependencies.py`
+The engine stage builds the pinned SDL3 family with `buildsys/sdl3_dependencies.py`
 from the engine source, so this works for releases from the SDL3 migration on. An
 SDL2-era release (before #487) has no such helper; build its agent from that
 release's own Dockerfile and dependencies instead.

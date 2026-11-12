@@ -72,10 +72,10 @@ and tag identify the same commit; browser publication checks the tag commit and
 game version directly. Mirror only reviewed public commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
-`PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
+`PACKAGE_VERSION` in `buildsys/build_layout.py`, `vcpkg.json`, and
 `platforms/linux/fedora/glob2.spec`, and add its AppStream release notes. Do not move an
 existing tag.
-Mac package jobs pin Python 3.14.8 and SCons 4.11.1 and set `PYTHONPATH` to the
+Mac package jobs pin Python 3.14.8 and set `PYTHONPATH` to the
 checkout so spawned asset encoder workers can import the source helpers.
 
 Build-only runs leave Flatpak off by default because it takes longer to build;
@@ -85,7 +85,7 @@ public source commit contained in that checkout. Tagged publication builds pin
 the selected public tag. The GitHub publication run builds Flatpak. The Flatpak recipe comes from the
 reviewed mirror workflow revision and pins its game source to the selected public
 commit. Its build exposes the source directory on `PYTHONPATH` so spawned asset
-encoder workers can import the tagged tools under SCons.
+encoder workers can import the tagged tools during the build.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
 `content/data/screenshots/`; the AppStream metadata pins its URL to the commit that
@@ -123,8 +123,8 @@ cross-distribution packages.
 
 The source archive is made from the selected Git commit, not uncommitted files.
 The release script checks that it contains the build files and essential assets.
-`.gitattributes` omits the historical `debian/` directory from this archive so
-Debian's maintained packaging can supply its own files.
+The repository carries no `debian/` directory, so Debian's maintained packaging
+supplies its own files.
 Installed packages are checked for the executable, desktop integration, game
 data, maps, campaigns and scripts. Build-only runs (no tag) are dispatched from
 the mirror's `master` like every release workflow; publication requires the exact version tag on the checked-out commit. The

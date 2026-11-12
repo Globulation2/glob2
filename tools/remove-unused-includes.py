@@ -27,11 +27,11 @@ transitively.
 Scope is src/ only. libs/gag/ and libs/usl/ are vendored (see cpp-bugs/CLAUDE.md).
 
 Usage:
-  scons compile_commands.json          # refresh the compile database first
+  python3 tools/dev_build.py           # refresh the newest build's compile database first
   tools/remove-unused-includes.py [--jobs N] [--only REGEX] [--dry-run]
 
 Afterwards:
-  scons -j16 && scons -j16 tests
+  python3 tools/dev_build.py . -j16
   then the replay and gradient verification in docs/development/headless-replays.md.
   Replay equality is the only check that catches the one risk -fsyntax-only misses:
   a removed header's static-initializer side effect.
@@ -84,7 +84,12 @@ def macos_sdk():
 def load_compile_commands(root, only):
     path = os.path.join(root, "compile_commands.json")
     if not os.path.exists(path):
-        sys.exit("compile_commands.json missing — run: scons compile_commands.json")
+        # The newest native build's database (tools/build_paths.py).
+        sys.path.insert(0, os.path.join(root, "tools"))
+        from build_paths import native_build_directory
+        path = os.path.join(native_build_directory(), "compile_commands.json")
+    if not os.path.exists(path):
+        sys.exit("compile_commands.json missing — run: python3 tools/dev_build.py")
     with open(path) as f:
         entries = json.load(f)
     commands = {}
@@ -102,7 +107,7 @@ def load_compile_commands(root, only):
     stale = [f for f in commands if f not in present]
     if stale:
         sys.exit("compile_commands.json lists files that no longer exist "
-                 f"({stale[:3]}...) — run: scons compile_commands.json")
+                 f"({stale[:3]}...) — run: python3 tools/dev_build.py")
     return commands
 
 

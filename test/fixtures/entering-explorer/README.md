@@ -29,10 +29,10 @@ the checked-in fixture to a temporary raw file — matching what CI does.
 In a checkout of PR #166, from the repository root:
 
 ```sh
-scons -j4 release=1 server=0 entering-unit-save-test
+python3 tools/dev_build.py -j4 release=1 entering-unit-save-test
 gunzip -c test/fixtures/entering-explorer/reproducer.game.gz > /tmp/entering-explorer-reproducer.game
-./build/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
-./build/src/EnteringUnitSaveHarness
+./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
+./build/linux/client/release/src/EnteringUnitSaveHarness
 ```
 
 Both commands must exit 0. The first consumes the supplied saved state; the
@@ -46,9 +46,9 @@ Use a disposable worktree so the PR checkout stays unchanged:
 git worktree add --detach ../glob2-pr166-old-validator HEAD
 cd ../glob2-pr166-old-validator
 git apply test/fixtures/entering-explorer/restore-old-validator.patch
-scons -j4 release=1 server=0 entering-unit-save-test
+python3 tools/dev_build.py -j4 release=1 entering-unit-save-test
 gunzip -c test/fixtures/entering-explorer/reproducer.game.gz > /tmp/entering-explorer-reproducer.game
-./build/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
+./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
 ```
 
 Expected: exit 1 with `Invariant failed: expectedX == x` followed by `FAIL: load entering-explorer fixture`. The test patch restores only the
@@ -59,8 +59,8 @@ Restore the fix and re-run the same saved state:
 
 ```sh
 git apply -R test/fixtures/entering-explorer/restore-old-validator.patch
-scons -j4 release=1 server=0 entering-unit-save-test
-./build/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
+python3 tools/dev_build.py -j4 release=1 entering-unit-save-test
+./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
 ```
 
 Expected: exit 0. These before/after commands were verified locally.
@@ -72,7 +72,7 @@ or CI.
 The source setup is in `test/EnteringUnitSaveHarness.cpp`. To generate another copy:
 
 ```sh
-./build/src/EnteringUnitSaveHarness --write-fixture /tmp/pr166-reproducer.game
+./build/linux/client/release/src/EnteringUnitSaveHarness --write-fixture /tmp/pr166-reproducer.game
 gzip -kn6 /tmp/pr166-reproducer.game   # matches the repository's gzip-by-default map/save format
 ```
 

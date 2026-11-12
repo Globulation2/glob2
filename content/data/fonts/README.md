@@ -125,7 +125,7 @@ resolves implicit levels for a single line; it is not a complete implementation
 of explicit Unicode embedding/isolate controls. Numeric ratios/dates are kept
 as LTR spans within the new RTL route.
 
-HarfBuzz 10.1.0 is pinned in `scons/sdl3-versions.json` and matches the vcpkg
+HarfBuzz 10.1.0 is pinned in `buildsys/sdl3-versions.json` and matches the vcpkg
 baseline. Its unmodified upstream `COPYING` notice ships as
 `LICENSE-HarfBuzz.txt` alongside the font notices on native, mobile and browser
 packages. It uses the Old MIT licence (the vcpkg SPDX identifier is

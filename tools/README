@@ -17,9 +17,9 @@ unless a tool's guide says otherwise.
 
 ## Legacy sprite utility
 
-`mksprite.cpp` packs images into sprite sheets. Its explicit `scons mksprite` target
-uses `Magick++-config` from an installed ImageMagick development environment, as
-declared in `tools/SConscript`. Current artwork workflows are documented under
+`mksprite.cpp` packs images into sprite sheets. It has no build target since the SCons
+build was retired; compile it by hand against ImageMagick's Magick++
+(`` c++ mksprite.cpp $(Magick++-config --cxxflags --ldflags --libs) ``). Current artwork workflows are documented under
 [assets](../docs/assets/README.md).
 
 This extensionless README is retained because source-distribution packaging names

@@ -891,7 +891,7 @@ runs; backend defaults and algorithm choices are unchanged.
   regression harnesses" command and `test/run_tests.py` picks the new cases up on
   the next run, so no per-test step is needed. A harness that must stay a
   separate program (two processes, a map fingerprint tool) gets a `PROGRAMS` entry
-  and one step that only runs it: a separate `scons` call per step re-reads the
+  and one step that only runs it: a separate build call per step re-checks the
   whole build and compiles one file at a time. Builds that need other options
   (`role=relay`, `opengl=0`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the

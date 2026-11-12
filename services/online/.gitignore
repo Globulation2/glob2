@@ -7,7 +7,7 @@ coverage/
 /keys/
 *.tsbuildinfo
 
-# The repository root ignores SCons config.* files; sources here may use the name.
+# The repository root ignores config.* files; sources here may use the name.
 !config.*
 
 .cache/

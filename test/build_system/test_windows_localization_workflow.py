@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import unittest
 
-ROOT = next(p for p in Path(__file__).resolve().parents if (p / 'SConstruct').is_file())
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / 'CMakeLists.txt').is_file())
 WORKFLOW = Path(os.environ.get('GLOB2_WINDOWS_LOCALIZATION_WORKFLOW', ROOT / '.github/workflows/windows-generator-diagnostics.yml'))
 
 
@@ -25,24 +25,24 @@ class WindowsLocalizationWorkflow(unittest.TestCase):
     def test_optional_input_and_existing_revision_checkout(self):
         self.assertRegex(self.text, r'desktop_localization:\n        description: [^\n]+\n        required: false\n        type: boolean\n        default: false')
         self.assertIn('ref: ${{ inputs.revision || github.sha }}', self.text)
-        self.assertEqual(self.text.count('GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons '), 1)
+        self.assertEqual(self.text.count('GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py '), 1)
         self.assertIn('GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS: "1"', self.text)
 
     @unittest.skipUnless(shutil.which("bash"), "Workflow shell contract requires Bash (MSYS2 on Windows)")
     def test_actual_shell_target_selection_preserves_default(self):
         build = step(self.text, 'Build glob2 and the regression harnesses')
-        selection = re.search(r'          preview_target=""\n.*?scons[^\n]+', build, re.S).group(0)
+        selection = re.search(r'          preview_target=""\n.*?python3 tools/dev_build\.py[^\n]+', build, re.S).group(0)
         selection = '\n'.join(line.strip() for line in selection.splitlines())
         # Shell functions avoid executable-bit/temporary-path differences on
         # Windows and do not require the nonstandard nproc command on macOS.
-        stubs = 'scons() { printf "%s\\n" "$GLOB2_SDL3_PREFIX" "$@"; }; nproc() { printf "4\\n"; };\n'
+        stubs = 'python3() { shift; printf "%s\\n" "$GLOB2_SDL3_PREFIX" "$@"; }; nproc() { printf "4\\n"; };\n'
         for mode in ('', 'false', 'true'):
             with self.subTest(mode=mode):
                 command = stubs + selection.replace('${{ inputs.desktop_localization }}', mode)
                 result = subprocess.run(['bash', '-e', '-c', command], text=True, capture_output=True, check=True)
                 args = result.stdout.splitlines()
                 self.assertEqual(args[:2], ['build/sdl3-ci/prefix', '-j4'])
-                expected = ['release=1', 'mingw=1', 'server=0', 'engine-tests']
+                expected = ['release=1', 'mingw=1', 'engine-tests']
                 if mode == 'true': expected.extend(['translation-preview-harness', 'unit-tests', 'build/mingw/client/release/src/glob2.exe'])
                 self.assertEqual(args[2:], expected)
 

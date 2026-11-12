@@ -90,7 +90,7 @@ class LocalizedResourcePlacement(unittest.TestCase):
             self.assertEqual(qa.localized_strings_path(app),correct)
 
     def test_xcode_localized_sources_use_resources_without_duplicate_locale(self):
-        repo=next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
+        repo=next(p for p in Path(__file__).resolve().parents if (p/'CMakeLists.txt').is_file())
         sys.path.insert(0,str(repo/'platforms/mobile'))
         spec=importlib.util.spec_from_file_location('ios_packaging_contract',ROOT/'platforms/mobile/ios.py')
         generator=importlib.util.module_from_spec(spec);spec.loader.exec_module(generator)
@@ -156,29 +156,6 @@ class FailureEvidence(unittest.TestCase):
             smoke_call=next(p for p in calls if 'platforms/mobile/ios_smoke.py' in p)
             self.assertIn('--simulator-set',smoke_call)
             self.assertNotIn('shutdown all',' '.join(' '.join(p) for p in calls))
-
-
-class MacBundleDependencies(unittest.TestCase):
-    def test_localized_permission_files_invalidate_bundle(self):
-        repo = next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
-        sys.path.insert(0,str(repo/'scons'))
-        module_path = repo/'scons/bundle.py'
-        spec = importlib.util.spec_from_file_location('localization_bundle_contract',module_path)
-        module = importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-        class Env(dict):
-            def Dir(self,p):return p
-            def File(self,p):return p
-            def Flatten(self,p):return p
-        with tempfile.TemporaryDirectory() as temp:
-            root=Path(temp);plist=root/'Info.plist';plist.write_text('plist')
-            thai=root/'th.lproj/InfoPlist.strings';thai.parent.mkdir();thai.write_text('purpose')
-            english=root/'en.lproj/InfoPlist.strings';english.parent.mkdir();english.write_text('purpose')
-            icon=root/'Glob2.icns';icon.write_text('icon')
-            env=Env(BUNDLE_NAME='Glob2',BUNDLE_BINARIES=['binary'],BUNDLE_PLIST=str(plist),
-                    BUNDLE_ICON=str(icon),BUNDLE_RESOURCEDIRS=[str(thai.parent),str(english.parent)])
-            target,sources=module.bundleEmitter([],[],env)
-            self.assertEqual(target,'Glob2.app')
-            self.assertEqual(set(sources),{'binary',str(plist),str(icon),str(thai),str(english)})
 
 
 if __name__=='__main__':unittest.main()

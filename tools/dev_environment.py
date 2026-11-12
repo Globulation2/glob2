@@ -9,7 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "buildsys"))
 import dev_store as store
 from tool_archives import digest
 

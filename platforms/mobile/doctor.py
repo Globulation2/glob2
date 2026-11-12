@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from build_layout import build_identity, default_directory
 from mobile_toolchain import discover
 
@@ -12,7 +12,7 @@ from mobile_toolchain import discover
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('target', choices=['android', 'ios'])
-    parser.add_argument('options', nargs='*', help='SCons-style key=value options')
+    parser.add_argument('options', nargs='*', help='key=value build options')
     args = parser.parse_args()
     options = {'target': args.target}
     try:

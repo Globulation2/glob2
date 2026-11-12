@@ -242,7 +242,7 @@ def stale_toolchains(checkouts: list[Path], home: Path) -> list[Path]:
     Mobile and Emscripten toolchains are keyed by their checkout manifests
     (dev_store.mobile_tools, dev_store.browser_sdk); a key no checkout produces is
     stale. Shared archive components are stale when no kept toolchain links to them."""
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     import dev_store
     manifests = {
         'mobile': ['platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/emulator.json'],
@@ -277,7 +277,7 @@ def stale_toolchains(checkouts: list[Path], home: Path) -> list[Path]:
 
 
 def prune_toolchains(checkouts: list[Path], home: Path, apply: bool) -> list[dict]:
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     import dev_store
     report = []
     for path in stale_toolchains(checkouts, home):

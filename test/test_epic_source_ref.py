@@ -21,7 +21,7 @@ class EpicSourceRefTests(unittest.TestCase):
         self.git('init', '-q')
         self.git('config', 'user.email', 'test@example.invalid')
         self.git('config', 'user.name', 'Fixture')
-        for name in module.ALLOWED_PATHS | {'scons/build_layout.py', 'src/game/example.cpp'}:
+        for name in module.ALLOWED_PATHS | {'buildsys/build_layout.py', 'src/game/example.cpp'}:
             path = Path(name)
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('release\n')
@@ -56,7 +56,7 @@ class EpicSourceRefTests(unittest.TestCase):
                 self.select(value)
 
     def test_unrelated_engine_and_version_changes_rejected(self):
-        for path in ['src/game/example.cpp', 'scons/build_layout.py']:
+        for path in ['src/game/example.cpp', 'buildsys/build_layout.py']:
             self.git('checkout', '--detach', self.base)
             Path(path).write_text('changed\n')
             sha = self.commit()

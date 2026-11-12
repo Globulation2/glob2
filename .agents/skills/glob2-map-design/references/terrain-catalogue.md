@@ -214,9 +214,9 @@ The first answer, barren bases, overshot.
   generator for a second, record its rows with `MapGeneratorGoldenTest <profile> --print
   --only=<id>`. That takes seconds for one generator; the full table takes half an hour on a debug
   build. Then check the extraction leaves them byte for byte.
-- **Iterate on an -O2 CMake build.** A separate `cmake --preset dev -B build/cmake/iter
-  -DCMAKE_{C,CXX}_FLAGS="-O2 -g1"` rebuilds one generator in about 13 s against SCons' 20 s of
-  overhead, with byte-identical maps; quote performance only from the SCons perf tier.
+- **Iterate on the perf build.** `python3 tools/dev_build.py perf=1 map-generator-golden-test`
+  rebuilds one changed generator in seconds, with byte-identical maps; quote performance only
+  from the perf tier.
 - **A render helper must clear its old output.** A failed `map generate` leaves yesterday's PNG in
   place; delete the outputs first or check the exit status, or a broken map looks unchanged.
 - **Find the change by diffing renders.** Difference two renders of one map, block-average it and

@@ -26,7 +26,7 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates git g++ make nasm python3 python3-venv scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+    ca-certificates git g++ make nasm python3 python3-venv ninja-build scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
@@ -45,13 +45,14 @@ ARG TARGETARCH
 # types), so it builds the same pinned SDL3 prefix as the other C++ targets.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
-    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
-    scons role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
+    python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
+    python3 tools/dev_build.py role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
     strip /output/glob2-relay
 
 # The engine's source tree: this repository by default. To build an engine
-# agent for another (older) sim version, pass that release's checkout:
+# agent for another (older) sim version, pass that release's checkout (trees
+# from before the CMake build, which keep the build scripts in scons/, still build with SCons):
 #   docker buildx build --build-context engine-source=../glob2-old --target engine-agent …
 FROM source AS engine-source
 
@@ -69,8 +70,13 @@ RUN source-identity
 # and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
-    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
-    scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 && \
+    tools=buildsys; [ -d buildsys ] || tools=scons; \
+    python3 "$tools/sdl3_dependencies.py" --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
+    if [ -f buildsys/cmake_generate.py ]; then \
+        python3 tools/dev_build.py release=1 -j${JOBS} build/linux/client/release/src/glob2; \
+    else \
+        scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2; \
+    fi && \
     mkdir -p /output/bin /output/lib/glob2 /output/share && \
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
     cp -a build/sdl3/prefix/lib/libSDL3* build/sdl3/prefix/lib/libharfbuzz* /output/lib/glob2/ && \

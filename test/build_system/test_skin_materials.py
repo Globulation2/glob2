@@ -7,7 +7,7 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import skin_materials  # noqa: E402
 
 
@@ -33,7 +33,7 @@ class SkinMaterialsTest(unittest.TestCase):
                 self.assertFalse(line.endswith('\\'), 'GLSL 1.20 has no line continuation')
 
     def test_shader_edits_rebake_sprites(self):
-        text = (ROOT / 'scons/skin_render.py').read_text()
+        text = (ROOT / 'buildsys/skin_render.py').read_text()
         for path in (skin_materials.REGISTRY, skin_materials.SHADER):
             self.assertIn("'%s'" % path.as_posix(), text, '%s must feed SKIN_RENDER_REVISION' % path)
 

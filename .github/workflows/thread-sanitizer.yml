@@ -45,8 +45,8 @@ jobs:
           EOF
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev \
-            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            ca-certificates git g++-13 python3 python3-venv pkg-config nasm libva-dev \
+            cmake ninja-build libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -62,14 +62,15 @@ jobs:
           cxx: g++-13
       - name: Build pinned SDL3 dependencies
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Build glob2 with ThreadSanitizer
         run: |
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=gcc-13 CXX=g++-13 -j$(nproc) release=0 server=0 \
-            --build=build/tsan \
+          # The plain debug tier (no dev_fast) with ThreadSanitizer.
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py CC=gcc-13 CXX=g++-13 -j$(nproc) \
+            dev_fast=0 linker=default --build=build/tsan \
             CXXFLAGS='-g -fsanitize=thread' LINKFLAGS='-fsanitize=thread' \
             build/tsan/src/glob2
 

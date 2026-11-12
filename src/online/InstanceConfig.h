@@ -16,10 +16,10 @@ class OnlineStorage;
 
 // The official instance. Self-hosted instances are chosen in settings or by
 // following an invite link; they are equally first-class. The origin is one
-// build-time setting (scons/official_instance.py, or official_instance=...),
+// build-time setting (buildsys/official_instance.py, or official_instance=...),
 // shared with the Android App Link host and the iOS associated domain.
 #ifndef GLOB2_OFFICIAL_INSTANCE_ORIGIN
-#error "GLOB2_OFFICIAL_INSTANCE_ORIGIN is defined by the build (scons/official_instance.py)"
+#error "GLOB2_OFFICIAL_INSTANCE_ORIGIN is defined by the build (buildsys/official_instance.py)"
 #endif
 inline constexpr const char *OFFICIAL_INSTANCE_ORIGIN = GLOB2_OFFICIAL_INSTANCE_ORIGIN;
 // Origins the official instance used before, space-separated (the same build

@@ -61,8 +61,8 @@ class GOGReleaseTests(unittest.TestCase):
                 cwd=source, text=True).strip()
 
         git('init', '-q')
-        (source / 'scons').mkdir()
-        (source / 'scons/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
+        (source / 'buildsys').mkdir()
+        (source / 'buildsys/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
         resource = source / 'platforms/macos/mr.lproj/InfoPlist.strings'
         resource.parent.mkdir(parents=True)
         resource.write_text('"NSLocalNetworkUsageDescription" = "मूळ मजकूर";\n', encoding='utf-8')
@@ -190,8 +190,8 @@ class GOGReleaseTests(unittest.TestCase):
 
     def test_separate_source_checkout_requires_tag_commit_clean_tree_and_version(self):
         source=self.root/'source'
-        (source/'scons').mkdir(parents=True)
-        layout=source/'scons/build_layout.py'
+        (source/'buildsys').mkdir(parents=True)
+        layout=source/'buildsys/build_layout.py'
         layout.write_text('PACKAGE_VERSION = "0.11.0.0"\n')
         tag='v0.11.0.0'
         for selected,dirty,package,error in (
@@ -215,7 +215,7 @@ class GOGReleaseTests(unittest.TestCase):
 
     def test_public_tag_source_diff_blocks_release(self):
         tag = "v0.9.5.0"
-        with patch("gog_release.command", side_effect=["a" * 40, "b" * 40, "SConstruct"]), \
+        with patch("gog_release.command", side_effect=["a" * 40, "b" * 40, "CMakeLists.txt"]), \
              patch("gog_release.subprocess.run"), patch("gog_release.version", return_value=tag[1:]):
             with self.assertRaisesRegex(ValueError, "differs from public tag"):
                 preflight(tag, f"refs/gog-upstream/{tag}")
@@ -426,7 +426,7 @@ class ReleasedPayloadTests(unittest.TestCase):
     def test_workflow_released_jobs_have_no_build_or_upload_path(self):
         workflow=(Path(__file__).resolve().parents[1]/'.github/workflows/gog-staging.yml').read_text()
         released=workflow[workflow.index('  released-windows:'):]
-        self.assertNotIn('scons ',released)
+        self.assertNotIn('tools/dev_build.py',released)
         self.assertNotIn('GOG_PASSWORD',released)
         self.assertIn('!inputs.reuse_released_payload &&',workflow)
         self.assertIn('"$REUSE_RELEASED" == true && "$RELEASE_MODE" != build',workflow)

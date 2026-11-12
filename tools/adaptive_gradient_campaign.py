@@ -95,7 +95,7 @@ def validate_bundle_set(bundles):
                 or options.get('collector_contract') != collector.CONTRACT_ID
                 or type(options.get('unified_model_trained')) is not bool
                 or options.get('release') != 1 or options.get('optimization') != 'O3'
-                or options.get('dev_fast') != 0 or options.get('pch') != 0 or options.get('unity') != 0):
+                or options.get('dev_fast') != 0 or options.get('pch', 0) != 0 or options.get('unity', 0) != 0):
             raise ValueError('Supplied bundles require ordinary O3 release and exact unified model/collector contract')
         if not bundle.get('source_revision'):
             raise ValueError('Supplied bundle source revision required')
@@ -130,7 +130,7 @@ def qualification(receipt, emitted, header):
                 or options.get('adaptive_gradient_contract_sha256') != receipt['collector_contract_sha256']
                 or options.get('unified_model_trained') is not True
                 or options.get('release') != 1 or options.get('dev_fast') != 0
-                or options.get('pch') != 0 or options.get('unity') != 0
+                or options.get('pch', 0) != 0 or options.get('unity', 0) != 0
                 or options.get('optimization') != 'O3'):
             raise ValueError('Qualified bundle contract/build flags differ')
         sha = next(f['sha256'] for f in bundle['files'] if f['path'] == bundle['executable'])

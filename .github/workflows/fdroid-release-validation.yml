@@ -105,7 +105,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            scons pkg-config unzip zip autoconf automake libtool ccache \
+            pkg-config unzip zip autoconf automake libtool ccache \
             python3-venv g++ make cmake ninja-build curl perl nasm
       - name: Install pinned Android tools
         run: |
@@ -114,7 +114,7 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root = pathlib.Path.cwd()
-          import sys; sys.path.insert(0, str(root/'scons'))
+          import sys; sys.path.insert(0, str(root/'buildsys'))
           from dev_store import paths
           dev=paths(root)
           sdk=pathlib.Path(dev['android_sdk'])

@@ -1,4 +1,4 @@
-"""Contracts for the machine-wide CPU token pool (scons/jobserver.py)."""
+"""Contracts for the machine-wide CPU token pool (buildsys/jobserver.py)."""
 import os
 import signal
 import subprocess
@@ -10,12 +10,12 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import jobserver  # noqa: E402
 
 HOLDER = textwrap.dedent('''
     import os, sys, time
-    sys.path.insert(0, {scons!r})
+    sys.path.insert(0, {buildsys!r})
     import jobserver
     from pathlib import Path
     folder, log, hold = Path(sys.argv[1]), Path(sys.argv[2]), float(sys.argv[3])
@@ -35,7 +35,7 @@ class JobserverTest(unittest.TestCase):
         self.folder = Path(self.directory.name) / 'tokens'
         self.folder.mkdir()
         self.script = Path(self.directory.name) / 'holder.py'
-        self.script.write_text(HOLDER.format(scons=str(ROOT / 'scons')))
+        self.script.write_text(HOLDER.format(buildsys=str(ROOT / 'buildsys')))
         self.environment = {k: v for k, v in os.environ.items() if not k.startswith('GLOB2_JOBSERVER')}
 
     def tearDown(self):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage and sign a SCons-built macOS bundle for App Store sandbox testing.
+"""Stage and sign a built macOS bundle (tools/dev_build.py release=1 bundle) for App Store sandbox testing.
 
 With an Apple Distribution identity and installer identity, also make the .pkg
 that App Store Connect accepts. The default ad hoc signature is for local testing.
@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ENTITLEMENTS = ROOT / "platforms/macos/AppStore.entitlements"
 ICON_SOURCE = ROOT / "content/data/icons/glob2-icon-128x128.png"
-sys.path.insert(0, str(ROOT / "scons"))
+sys.path.insert(0, str(ROOT / "buildsys"))
 from build_layout import PACKAGE_VERSION
 
 
@@ -91,7 +91,7 @@ def main():
     if output.suffix != ".app":
         parser.error("--output must end in .app")
     if not source.is_dir() or not (source / "Contents/MacOS/glob2").is_file():
-        parser.error(f"not a built Glob2.app: {source}; run scons release=1 bundle")
+        parser.error(f"not a built Glob2.app: {source}; run python3 tools/dev_build.py release=1 bundle")
     if source == output or source in output.parents or output in source.parents:
         parser.error("source and output must be separate directories")
     package = output.with_suffix(".pkg")

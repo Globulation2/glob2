@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scons"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buildsys"))
 import dev_store as store
 from tool_archives import install
 
@@ -145,7 +145,7 @@ class StoreTests(unittest.TestCase):
 
     def test_dependency_keys_invalidate_changed_added_and_removed_overlay_files(self):
         identity = {"target": "ios", "arch": "arm64", "environment": "simulator", "mode": "release"}
-        port = self.a / "scons/vcpkg-ports/sdl3"
+        port = self.a / "buildsys/vcpkg-ports/sdl3"
         port.mkdir(parents=True)
         recipe = port / "portfile.cmake"
         recipe.write_text('camera on')
@@ -199,7 +199,7 @@ class StoreTests(unittest.TestCase):
         path.mkdir(parents=True)
         code = "import sys;sys.path.insert(0,sys.argv[1]);from dev_store import Lease;Lease(sys.argv[2],exclusive=True,blocking=False)"
         command = subprocess.run(
-            [sys.executable, "-c", code, str(ROOT / "scons"), str(path)],
+            [sys.executable, "-c", code, str(ROOT / "buildsys"), str(path)],
             check=False,
             capture_output=True,
             text=True,
@@ -211,7 +211,7 @@ class StoreTests(unittest.TestCase):
         path = store.cache(self.a, "active")
         code = "import sys;sys.path.insert(0,sys.argv[1]);from dev_store import Lease;Lease(sys.argv[2],blocking=False)"
         command = subprocess.run(
-            [sys.executable, "-c", code, str(ROOT / "scons"), str(path)],
+            [sys.executable, "-c", code, str(ROOT / "buildsys"), str(path)],
             check=False,
             capture_output=True,
             text=True,
@@ -299,7 +299,7 @@ class StoreTests(unittest.TestCase):
             sys.executable,
             "-c",
             code,
-            str(ROOT / "scons"),
+            str(ROOT / "buildsys"),
             str(destination),
             json.dumps(artifact),
             str(self.base / "downloads"),
@@ -383,7 +383,7 @@ class StoreTests(unittest.TestCase):
             )
         )
         vcpkg = self.base / "vcpkg"
-        port = self.a / "scons/vcpkg-ports/sdl3"
+        port = self.a / "buildsys/vcpkg-ports/sdl3"
         port.mkdir(parents=True)
         (port / "portfile.cmake").write_text("SHA512 " + checksum)
         (port / "vcpkg.json").write_text(json.dumps({"version": "test"}))

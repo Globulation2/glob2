@@ -56,7 +56,7 @@ jobs:
           fetch-depth: 0
       - name: Install build utilities
         id: install_build_utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config nasm unzip zip autoconf automake libtool ccache
+        run: sudo apt-get update -qq && sudo apt-get install -y python3-venv cmake ninja-build pkg-config nasm unzip zip autoconf automake libtool ccache
       - name: Restore checksum-pinned Android build tools
         id: android_tools
         uses: actions/cache/restore@v4
@@ -68,10 +68,10 @@ jobs:
             build/mobile-tools/android-sdk/platforms
             build/mobile-tools/android-sdk/platform-tools
             build/mobile-tools/gradle-8.13
-          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'scons/tool_archives.py') }}
+          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'buildsys/tool_archives.py') }}
       - name: Verify restored Android tool content
         env:
-          TOOL_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'scons/tool_archives.py') }}
+          TOOL_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'buildsys/tool_archives.py') }}
         run: |
           for prefix in build/mobile-tools/android-sdk/{ndk,cmdline-tools,build-tools,platforms,platform-tools} build/mobile-tools/gradle-8.13; do
             python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$TOOL_KEY"
@@ -91,21 +91,21 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed
-          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'buildsys/vcpkg-ports/**', 'buildsys/mobile_toolchain.py') }}
       - name: Verify restored Android dependency content
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'buildsys/vcpkg-ports/**', 'buildsys/mobile_toolchain.py') }}
         run: python3 .github/scripts/ci_dependency_cache.py verify --prefix 'build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed' --key "$DEPENDENCY_KEY"
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
         run: python3 platforms/mobile/dependencies.py --arch '${{ matrix.arch }}' --release --jobs 2
       - name: Seal and save pinned Android dependencies
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'buildsys/vcpkg-ports/**', 'buildsys/mobile_toolchain.py') }}
         run: python3 .github/scripts/ci_dependency_cache.py seal --prefix 'build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed' --key "$DEPENDENCY_KEY"
       - name: Seal verified Android tools
         env:
-          TOOL_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'scons/tool_archives.py') }}
+          TOOL_KEY: ${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'buildsys/tool_archives.py') }}
         run: |
           for prefix in build/mobile-tools/android-sdk/{ndk,cmdline-tools,build-tools,platforms,platform-tools} build/mobile-tools/gradle-8.13; do
             python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$TOOL_KEY"
@@ -114,7 +114,7 @@ jobs:
         if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.android_dependencies.outputs.cache-hit != 'true' }}
         with:
           path: build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed
-          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'buildsys/vcpkg-ports/**', 'buildsys/mobile_toolchain.py') }}
       - uses: actions/cache/save@v4
         if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.arch == 'arm64-v8a' && steps.android_tools.outputs.cache-hit != 'true' }}
         with:
@@ -125,7 +125,7 @@ jobs:
             build/mobile-tools/android-sdk/platforms
             build/mobile-tools/android-sdk/platform-tools
             build/mobile-tools/gradle-8.13
-          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'scons/tool_archives.py') }}
+          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'buildsys/tool_archives.py') }}
       - name: Restore Android compiler cache
         id: restore_android_compiler_cache
         continue-on-error: true

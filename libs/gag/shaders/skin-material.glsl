@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Colony-skin materials, shared verbatim by the game's tile renderer, the
 // server sprite baker and the web studio. Ids, names, the shell count and the
-// fur geometry live in skin-materials.json; scons/skin_materials.py checks the
+// fur geometry live in skin-materials.json; buildsys/skin_materials.py checks the
 // defines below agree with it and compiles both files into SkinMaterials.h.
 //
 // Valid as GLSL 1.20 and GLSL ES 3.00: no version line, no loops, texture

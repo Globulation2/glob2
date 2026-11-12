@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate an Xcode app project; SCons compiles the shared game core."""
+"""Generate an Xcode app project; CMake (cmake/mobile.cmake) compiles the shared game core."""
 import argparse
 import json
 import os
@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 from dev_paths import dependency_prefix
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scons'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'buildsys'))
 from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
 from dev_build import dependency_identity
 from ios_release import marketing_version
@@ -49,7 +49,7 @@ def main():
     parser.add_argument('--mobile-deps',type=Path,help='Read-only dependency prefix to reuse')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--build-number',default='1',help='Numeric CFBundleVersion for this build')
-    parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel SCons jobs')
+    parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel compile jobs')
     parser.add_argument('--developer-dir')
     signing=parser.add_mutually_exclusive_group()
     signing.add_argument('--team',help='Local Apple development team for device signing')
@@ -92,9 +92,7 @@ def main():
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
     prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependency_identity(identity), discover(identity,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with platforms/mobile/dependencies.py --target ios --environment '+args.environment)
-    scons=shutil.which('scons')
-    if not scons: raise ValueError('SCons is required')
-    command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
+    command=[sys.executable,str(ROOT/'tools/dev_build.py')]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     if args.script_tests: command += ['ios-tests']
     subprocess.run(command,cwd=ROOT,env=env,check=True)
     project.mkdir(parents=True,exist_ok=True)
@@ -128,7 +126,7 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    # Associated domain of the official instance (scons/official_instance.py); none
+    # Associated domain of the official instance (buildsys/official_instance.py); none
     # for the China edition, which has no online play.
     entitlements=plistlib.loads((ROOT/'platforms/mobile/ios/Glob2.entitlements').read_bytes())
     if args.china:
@@ -155,7 +153,7 @@ def main():
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
     lines += localized_resource_lines(ROOT / 'platforms/mobile/ios')
-    sys.path.insert(0, str(ROOT / 'scons'))
+    sys.path.insert(0, str(ROOT / 'buildsys'))
     from moltenvk import prepare as prepare_moltenvk
     compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)
     lines += ['set_property(TARGET Glob2 PROPERTY XCODE_EMBED_FRAMEWORKS '+cmake_quote(compute_framework)+')',

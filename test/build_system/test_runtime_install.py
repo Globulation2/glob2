@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from PIL import Image
 from tools.package_assets import export_assets
-from scons.runtime_assets import install_export, STAMP
+from buildsys.runtime_assets import install_export, STAMP
 
 
 class RuntimeInstallTests(unittest.TestCase):

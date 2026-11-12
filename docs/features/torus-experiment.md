@@ -12,14 +12,14 @@
 Build with OpenGL enabled and launch:
 
 ```sh
-scons release=1 opengl=1 -j4 build/src/glob2
+python3 tools/dev_build.py release=1 opengl=1 -j4 glob2
 ./tools/run_torus.sh
 ```
 
-A software-only build can be checked with `scons release=1 opengl=0`; this
+A software-only build can be checked with `python3 tools/dev_build.py release=1 opengl=0`; this
 configuration is built and startup-tested with SDL dummy drivers in Linux CI,
-including GPU mode requested by preferences or the command line. Build options are cached by SCons, so
-pass `opengl=1` when switching back to the GPU build.
+including GPU mode requested by preferences or the command line. It shares the release build
+directory, and a later build without `opengl=0` reconfigures it for the GPU build.
 
 The launcher keeps preferences, saves and replays under `experiment/profile`.
 That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
@@ -162,7 +162,7 @@ The software path continues to draw the original surfaces.
 ### Large-map profiling
 
 A loaded-game benchmark is available with
-`scons release=1 opengl=1 torus-render-benchmark` (part of the `glob2-tools` group).
+`python3 tools/dev_build.py release=1 opengl=1 torus-render-benchmark` (part of the `glob2-tools` group).
 Run from the repository root:
 
 ```sh
@@ -219,7 +219,7 @@ view. No torus camera state is serialized or sent over the network.
 
 ### Rendering regression
 
-The `TorusRender` suite in `glob2-engine-tests` (`scons release=1 engine-tests`)
+The `TorusRender` suite in `glob2-engine-tests` (`python3 tools/dev_build.py release=1 engine-tests`)
 covers this. From the repository root, run:
 
 ```sh

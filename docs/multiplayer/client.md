@@ -206,8 +206,8 @@ write with `ApplicationHost::persistStorage()`. Credentials are not in
 `preferences.txt`, which players attach to bug reports.
 
 The official origin is one build-time setting: `DEFAULT_ORIGIN` in
-`scons/official_instance.py` (currently `https://app.glob2.online`), overridable
-with `scons official_instance=https://example.org`. Every build path passes it to
+`buildsys/official_instance.py` (currently `https://app.glob2.online`), overridable
+with `python3 tools/dev_build.py official_instance=https://example.org`. Every build path passes it to
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.
 
@@ -385,7 +385,7 @@ presence traffic and the relay's outgoing backlog also affect how long a paused
 client can remain connected. Recovery follows the turn session's reconnect path.
 
 
-**End-to-end check.** `OnlinePlayHarness` (`scons release=1 server=0
+**End-to-end check.** `OnlinePlayHarness` (`python3 tools/dev_build.py release=1
 online-play-test`) drives the real screens against a live instance. In a room
 run, the host signs in as a guest, creates a room with a one-minute sudden-death
 timer and writes its code; the guest joins by the code, takes a seat and readies;

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""The compile-profile groups in scons/sources.py partition CLIENT_SOURCES exactly."""
+"""The compile-profile groups in buildsys/sources.py partition CLIENT_SOURCES exactly."""
 from pathlib import Path
 import re
 import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scons'))
+sys.path.insert(0, str(ROOT / 'buildsys'))
 import sources  # noqa: E402
 
 

@@ -8,7 +8,7 @@ price does not authorize a mainland download.
 
 ## Release configuration
 
-Build the local-play client with `scons china=1 release=1`. The China identity
+Build the local-play client with `python3 tools/dev_build.py china=1 release=1`. The China identity
 uses its own build directory. The Android and iOS targets also accept
 `china=1`; see [mobile builds](../mobile/development.md) for toolchains and
 packaging. Pass `--china` to `platforms/mobile/dependencies.py` and the matching

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Render production screens with disposable, offline review fixtures.
-// Build: scons release=1 mobile-gallery
+// Build: python3 tools/dev_build.py release=1 mobile-gallery
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "ui/ThemeCatalog.h"

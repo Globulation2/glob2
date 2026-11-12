@@ -119,7 +119,7 @@ jobs:
           update: true
           install: >-
             git make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
             mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-opusfile mingw-w64-x86_64-opus mingw-w64-x86_64-libogg
@@ -157,9 +157,9 @@ jobs:
           CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
           set -euo pipefail
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          python3 tools/dev_build.py -j2 release=1 mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python ../driver/tools/gog_release.py stage-windows --source-root "$PWD" \
             --exe build/mingw/client/release/lean-images/src/glob2.exe \
             --runtime /mingw64/bin --sdl-runtime build/sdl3-ci/prefix/bin --output artifacts/gog/windows \
@@ -241,7 +241,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build \
+            g++ python3 python3-venv pkg-config nasm libva-dev cmake ninja-build \
             libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev \
             libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev \
             libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev \
@@ -264,9 +264,9 @@ jobs:
             *) exit 1 ;;
           esac
           stage="$PWD/artifacts/gog/install"
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 server=0 lean_images=1 BINDIR="$stage/usr/bin" \
+          python3 tools/dev_build.py -j2 release=1 server=0 lean_images=1 BINDIR="$stage/usr/bin" \
             INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           python3 ../driver/tools/gog_release.py stage-linux --source-root "$PWD" --stage "$stage" \
             --output artifacts/gog/linux --version "$VERSION" \
@@ -306,7 +306,7 @@ jobs:
           test -z "$(git status --porcelain --untracked-files=no)"
       - name: Install build tools
         run: |
-          brew install nasm cmake freetype libpng jpeg-turbo scons \
+          brew install nasm cmake ninja freetype libpng jpeg-turbo \
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build and stage macOS depot
         working-directory: source
@@ -324,9 +324,9 @@ jobs:
             2) repeat_args=(game repeat "$save" --ticks 10 --runs 1) ;;
             *) exit 1 ;;
           esac
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 server=0 package
+          python3 tools/dev_build.py -j2 release=1 package
           python3 ../driver/tools/gog_release.py stage-macos --source-root "$PWD" \
             --app build/darwin/client/release/Glob2.app \
             --output artifacts/gog/macos --version "$VERSION" \

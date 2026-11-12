@@ -14,7 +14,7 @@ Formats 58–124 receive scripting identities on load; later formats validate th
 stored identities and generation tables. The current save, network and replay gates live in [Version.h](../../../src/app/Version.h) and [ReplayReader.h](../../../src/replay/ReplayReader.h). Draft JavaScript
 fixtures use format 125; released historical fixtures remain unchanged.
 
-Build `unit-tests engine-tests` with SCons and run
+Build `python3 tools/dev_build.py release=1 unit-tests engine-tests` and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
 (use the build directory for your platform).
 The runtime harness checks capability restrictions, deterministic work exhaustion,

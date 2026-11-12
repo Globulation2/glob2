@@ -3,8 +3,8 @@
 
 The graph resolves each `#include` the way the compiler would for a client
 translation unit: the including file's directory first (quoted includes only),
-then `INCLUDE_DIRECTORIES` from `scons/sources.py`, then the test and library
-directories the SConscripts add. Includes that resolve to no repository file
+then `INCLUDE_DIRECTORIES` from `buildsys/sources.py`, then the test and library
+directories `CMakeLists.txt` adds. Includes that resolve to no repository file
 (system, SDL, Boost, generated headers) are ignored. Preprocessor conditions
 are not evaluated, so the graph over-approximates slightly; it matched
 `clang++ -M` within 0.5% for the widest headers when this tool was written.
@@ -36,12 +36,12 @@ INCLUDE = re.compile(rb'^[ \t]*#[ \t]*include[ \t]*([<"])([^>"]+)[>"]', re.M)
 SOURCE_SUFFIXES = {'.cpp', '.cc', '.c', '.mm'}
 HEADER_SUFFIXES = {'.h', '.hpp', '.hh', '.inl', '.ipp'}
 SKIP_DIRECTORIES = {'build', 'artifacts', '.git', 'node_modules', 'third_party', 'services', 'platforms', 'docs'}
-# Directories the SConscripts add to CPPPATH beyond INCLUDE_DIRECTORIES.
+# Directories CMakeLists.txt adds beyond INCLUDE_DIRECTORIES.
 EXTRA_DIRECTORIES = ('test', 'test/support', 'libs/gag/src', 'test/third_party', 'third_party/quickjs-ng', 'src/relay')
 
 
 def _sources_module(root: Path):
-    sys.path.insert(0, str(root / 'scons'))
+    sys.path.insert(0, str(root / 'buildsys'))
     try:
         import sources  # noqa: PLC0415
     finally:

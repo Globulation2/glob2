@@ -38,7 +38,7 @@
   "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
   "vcpkg-configuration": {
     "overlay-ports": [
-      "scons/vcpkg-ports"
+      "buildsys/vcpkg-ports"
     ]
   }
 }

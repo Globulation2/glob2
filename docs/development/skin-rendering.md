@@ -48,7 +48,7 @@ worker adapter, run its opt-in `native.test.ts` under Xvfb with
 ## Preview a skinned match
 
 The `skin-game-preview` diagnostic measures the colony-skin path through the real
-Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
+Scene renderer. Build it with `python3 tools/dev_build.py release=1 skin-game-preview`, then set
 `SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
 mesh directory containing the colony-v2 `paint.webp` (a 512x512 colour atlas with
 one 256x256 quadrant per model: worker, warrior, explorer, swarm) and optionally

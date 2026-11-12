@@ -1,6 +1,6 @@
 """glob2-relay end to end: real binary, real sockets, fixture-key tickets, fake platform.
 
-Build first with `scons role=relay release=1 relay`; GLOB2_RELAY_BINARY overrides the
+Build first with `python3 tools/dev_build.py role=relay release=1 relay`; GLOB2_RELAY_BINARY overrides the
 binary. Run with `python3 -m unittest discover -s test/relay_service -v`.
 """
 import hashlib
@@ -109,7 +109,7 @@ class RelayMatchTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not relay_binary().exists():
-            raise unittest.SkipTest(f'{relay_binary()} is not built (scons role=relay release=1 relay)')
+            raise unittest.SkipTest(f'{relay_binary()} is not built (python3 tools/dev_build.py role=relay release=1 relay)')
         cls.key = SigningKey.fixture()
         jwks = json.loads((FIXTURES / 'jwks.json').read_text())
         assert cls.key.jwk('fixture-key-1')['x'] == jwks['keys'][0]['x'], 'fixture key derivation'

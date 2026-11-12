@@ -4,7 +4,7 @@
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
-// Native SCons builds generate the revision stamp; other toolchains report "unknown".
+// Native builds generate the revision stamp; other toolchains report "unknown".
 #if __has_include(<glob2/BuildStamp.h>)
 #include <glob2/BuildStamp.h>
 #endif

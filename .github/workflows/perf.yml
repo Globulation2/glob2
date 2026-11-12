@@ -46,7 +46,7 @@ jobs:
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev ccache \
-            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            cmake ninja-build libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -78,7 +78,7 @@ jobs:
           export LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           mkdir -p artifacts/perf
           # One case at a time, so cases do not compete for the runner's cores.
-          python3 test/run_tests.py --tag benchmark --binary all -j1 --build-dir build/linux/client/perf \
+          python3 test/run_tests.py --tag benchmark --binary all -j1 --build-dir build/linux/client/perf/o3 \
             --junit artifacts/perf/junit.xml --write-timings artifacts/perf/benchmarks.json
           git rev-parse HEAD > artifacts/perf/revision.txt
       - name: Compare with the merge base
@@ -90,7 +90,7 @@ jobs:
           export GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" CC=gcc-13 CXX=g++-13
           base=$(git merge-base "$BASE_SHA" HEAD)
           python3 tools/dev_baseline.py build --sha "$base" --variants perf-o3
-          python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf --pairs 3 \
+          python3 tools/perf_ab.py --baseline master --candidate build/linux/client/perf/o3 --pairs 3 \
             --name benchmarks --json artifacts/perf/perf-ab.json \
             -- python3 test/run_tests.py --tag benchmark --binary all -j1 --build-dir {build} \
             | tee artifacts/perf/perf-ab.md

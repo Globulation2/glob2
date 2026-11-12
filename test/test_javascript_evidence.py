@@ -21,7 +21,7 @@ spec.loader.exec_module(android)
 
 class ProvenanceTests(unittest.TestCase):
     def test_isolated_tool_lease_does_not_change_source_identity(self):
-        spec = importlib.util.spec_from_file_location('dev_store', ROOT / 'scons/dev_store.py')
+        spec = importlib.util.spec_from_file_location('dev_store', ROOT / 'buildsys/dev_store.py')
         store = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(store)
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,21 @@
+"""Create the release disk image without expanding bundled dylib aliases."""
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+
+
+def create_dmg(target, source, env=None):
+    """Write target[0], a compressed image holding each source directory (Glob2.app)."""
+    image = Path(str(target[0])).resolve()
+    image.parent.mkdir(parents=True, exist_ok=True)
+    image.unlink(missing_ok=True)
+    with tempfile.TemporaryDirectory(prefix='glob2-dmg-', dir=image.parent) as temporary:
+        stage = Path(temporary)
+        for item in source:
+            path = Path(str(item))
+            shutil.copytree(path, stage/path.name, symlinks=True)
+        subprocess.run(['hdiutil', 'create', '-srcfolder', str(stage),
+                        '-volname', image.stem, '-format', 'UDZO', str(image)], check=True)
+
+

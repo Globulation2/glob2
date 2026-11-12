@@ -406,7 +406,7 @@ def main():
 
     args.run_dir = os.path.abspath(args.run_dir)
     if not os.path.exists(args.bin):
-        sys.exit(f"error: binary not found: {args.bin} (scons release=1 -j16)")
+        sys.exit(f"error: binary not found: {args.bin} (python3 tools/dev_build.py release=1 -j16)")
     if args.holdout:
         cmd_holdout(args)
     else:

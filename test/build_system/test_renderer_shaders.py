@@ -340,7 +340,7 @@ class RendererShaderTest(unittest.TestCase):
                 shader.verify_bundle(source)
 
     def test_build_prebuilt_route_preserves_artifacts_without_local_tools(self):
-        build_spec = importlib.util.spec_from_file_location('shader_build', ROOT/'scons/renderer_shaders.py')
+        build_spec = importlib.util.spec_from_file_location('shader_build', ROOT/'buildsys/renderer_shaders.py')
         build = importlib.util.module_from_spec(build_spec);build_spec.loader.exec_module(build)
         with tempfile.TemporaryDirectory() as directory:
             source, output = Path(directory)/'prebuilt', Path(directory)/'build'

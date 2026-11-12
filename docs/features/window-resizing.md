@@ -133,7 +133,7 @@ Windows native displays, Wayland and mixed-DPI transitions on their actual hosts
 
 ### Permanent regression coverage
 
-Build `scons release=1 engine-tests`, then run:
+Build `python3 tools/dev_build.py release=1 engine-tests`, then run:
 
 ```sh
 python3 test/run_tests.py --filter 'MapRenderResize/*'

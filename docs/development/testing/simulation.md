@@ -255,7 +255,7 @@ It runs headlessly in disposable profile directories in Linux and Windows CI.
 
 ## Shared compute executor
 
-Build `scons release=1 server=0 unit-tests path-gradient-test
+Build `python3 tools/dev_build.py release=1 unit-tests path-gradient-test
 building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
 For deferred batches it checks earliest-due ordering (ties and lane order by

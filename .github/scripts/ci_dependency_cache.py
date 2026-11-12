@@ -22,10 +22,10 @@ def compiler_identity(command):
 
 
 def key(cc, cxx):
-    files = [Path('scons/sdl3_dependencies.py'), Path('scons/sdl3-versions.json'),
-             Path('scons/sdl3-vendored.json'), Path('scons/recording_dependencies.py'),
-             Path('scons/recording-versions.json'), Path('.github/scripts/ci_dependency_cache.py')]
-    files += sorted(Path('scons/vcpkg-ports/sdl3').glob('*.patch'))
+    files = [Path('buildsys/sdl3_dependencies.py'), Path('buildsys/sdl3-versions.json'),
+             Path('buildsys/sdl3-vendored.json'), Path('buildsys/recording_dependencies.py'),
+             Path('buildsys/recording-versions.json'), Path('.github/scripts/ci_dependency_cache.py')]
+    files += sorted(Path('buildsys/vcpkg-ports/sdl3').glob('*.patch'))
     identity = {'schema': 1, 'platform': platform.platform(), 'machine': platform.machine(),
                 'image': [os.environ.get('ImageOS'), os.environ.get('ImageVersion')],
                 'cc': compiler_identity(cc), 'cxx': compiler_identity(cxx),

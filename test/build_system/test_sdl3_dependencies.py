@@ -11,7 +11,7 @@ import urllib.error
 from unittest import mock
 
 spec = importlib.util.spec_from_file_location(
-    'sdl3_dependencies', Path(__file__).resolve().parents[2] / 'scons/sdl3_dependencies.py')
+    'sdl3_dependencies', Path(__file__).resolve().parents[2] / 'buildsys/sdl3_dependencies.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
