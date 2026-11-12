@@ -200,6 +200,8 @@ struct SpriteLoad::Impl {
     std::unique_ptr<Sprite> sprite;
     size_t frame = 0;
     int maxTextureSize = 0;
+    double finishedWeight = 0; // progressTotal() once complete
+    bool inputsQueued = false;
 };
 SpriteLoad::SpriteLoad(std::string name, bool variableAtlas) : impl(std::make_unique<Impl>()) {
     impl->name = std::move(name); impl->variableAtlas = variableAtlas;
@@ -234,18 +236,27 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         if (impl->discovery.pending()) { advanceInputs(); return false; }
         impl->sources = impl->discovery.get();
         if (!impl->sources || !impl->sources->frames) {
-            impl->failure = "No frames for sprite: " + impl->name; impl->complete = true; return true;
+            impl->failure = "No frames for sprite: " + impl->name; impl->finishedWeight = 1; impl->complete = true; return true;
         }
-        std::vector<AssetLoader::Dependency> dependencies;
-        for (const auto &source : impl->sources->entries) {
+    }
+    if (!impl->inputsQueued) {
+        // Queue the inputs within the caller's budget: a sheet of thousands of
+        // frame files would otherwise hold the presentation thread for a
+        // second (several on a cold disk), with the loading screen frozen.
+        const auto &entries = impl->sources->entries;
+        while (impl->images.size() < entries.size()) {
+            if (impl->images.size() % 32 == 0 && std::chrono::steady_clock::now() >= deadline) return false;
+            const auto &source = entries[impl->images.size()];
             if (source.packed) {
                 PackedSpriteFrame location;
                 PackedSpriteFrame::parse(source.path.substr(source.path.find_last_of('/') + 1), location);
                 impl->images.push_back(location.request(loader, source.path, false, AssetLoader::Priority::Required));
             } else
                 impl->images.push_back(loader.requestImage(source.path));
-            dependencies.push_back(impl->images.back().dependency());
         }
+        std::vector<AssetLoader::Dependency> dependencies;
+        dependencies.reserve(impl->images.size());
+        for (const auto &image : impl->images) dependencies.push_back(image.dependency());
         impl->prepared = loader.requestEstimated<Prepared>("sprite-pixels:" + impl->name + (impl->retried ? ":frames" : ":sheets") + ":" + std::to_string(impl->maxTextureSize) + (impl->variableAtlas ? ":variable" : ":equal"),
             std::move(dependencies), [sources = impl->sources, images = impl->images, maximum = impl->maxTextureSize, variable = impl->variableAtlas] { return cut(*sources, images, maximum, variable); },
             [sources = impl->sources, images = impl->images, maximum = impl->maxTextureSize, variable = impl->variableAtlas] {
@@ -257,6 +268,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
             highResolutionNeedsAsyncLoad(impl->name, impl->sources->frames);
         if (!impl->deferOptionalHD)
             impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
+        impl->inputsQueued = true;
     }
     if (!impl->pixels) {
         if (impl->prepared.pending()) { advanceInputs(); return false; }
@@ -264,14 +276,14 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         if (!impl->pixels) impl->pixels = impl->prepared.get();
         if (!impl->pixels) {
             if (impl->sources->sheets && !impl->retried) {
-                impl->retried = true; impl->sources.reset(); impl->images.clear(); impl->prepared = {};
+                impl->retried = true; impl->sources.reset(); impl->images.clear(); impl->prepared = {}; impl->inputsQueued = false;
                 auto directory = loader.requestDirectory((impl->name.find('/') == std::string::npos ? std::string() : impl->name.substr(0, impl->name.rfind('/'))));
                 impl->discovery = loader.request<Sources>("sprite-frame-index:" + impl->name, {directory.dependency()},
                     [directory, name = impl->name] { return discover(*directory.get(), {}, name, false); });
                 return false;
             }
             impl->failure = "Cannot prepare sprite: " + impl->name + ": " + impl->prepared.error();
-            impl->complete = true; return true;
+            impl->finishedWeight = progressTotal(); impl->complete = true; return true;
         }
         impl->images.clear(); impl->prepared = {};
         impl->sprite = std::make_unique<Sprite>();
@@ -345,6 +357,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     impl->sprite->recomputeBlockCompleteHD();
     if (!impl->deferOptionalHD) impl->sprite->createHighResolutionAtlas(impl->highResolution);
     impl->sprite->registerLoaded();
+    impl->finishedWeight = progressTotal();
     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
     impl->complete = true;
     return true;
@@ -354,4 +367,17 @@ std::string SpriteLoad::error() const { return impl->failure; }
 std::unique_ptr<Sprite> SpriteLoad::take() { return impl->complete ? std::move(impl->sprite) : nullptr; }
 size_t SpriteLoad::completed() const { return impl->frame; }
 size_t SpriteLoad::total() const { return impl->sources ? impl->sources->frames : impl->frame; }
+double SpriteLoad::progressTotal() const {
+    if (impl->complete) return impl->finishedWeight;
+    // The index may be read before this load is next polled.
+    auto sources = impl->sources ? impl->sources : impl->discovery.get();
+    return sources ? double(sources->entries.size() + 1) : 0;
+}
+double SpriteLoad::progressDone() const {
+    if (impl->complete) return impl->finishedWeight;
+    if (!impl->sources) return 0;
+    // Input handles are released once the prepared pixels arrive.
+    if (impl->pixels) return double(impl->sources->entries.size());
+    return double(std::count_if(impl->images.begin(), impl->images.end(), [](const auto& image) { return !image.pending(); }));
+}
 }

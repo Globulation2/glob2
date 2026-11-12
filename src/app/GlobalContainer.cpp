@@ -37,6 +37,8 @@
 
 #include <ApplicationHost.h>
 #include <algorithm>
+#include <chrono>
+#include <cmath>
 
 
 /**
@@ -165,29 +167,100 @@ GlobalContainer::~GlobalContainer(void)
 
 // applyCommand is defined in GlobalContainerArgs.cpp.
 
-void GlobalContainer::updateLoadProgressScreen(int value)
+namespace
 {
-	// Terrain may still be preparing; the title remains visible while
-	// frame polling finishes the required game families.
+// Share of the bar for the synchronous startup steps (texts, music, fonts),
+// measured at about a sixth of startup on warm and cold disks. Sprite loading
+// has the rest: it advances only while the startup loop polls it, after
+// these steps, and Toolkit::assetProgress() weights it by decoded files.
+// finishLoadingStep() fractions likewise follow each step's measured time.
+constexpr float LOADING_STEPS_SHARE = 0.16f;
+// How quickly the drawn bar catches up with measured progress, which advances
+// in bursts as the main thread publishes decoded sprites.
+constexpr float LOADING_EASE_SECONDS = 0.06f;
+// Fade the terrain in when it arrives after the wordmark is already showing.
+constexpr float LOADING_TERRAIN_FADE_SECONDS = 0.25f;
+// Presentation-thread time per startup turn for queuing and publishing
+// sprites. Only the splash shares a native frame, so it gets most of it; the
+// browser keeps its short turns (docs/browser/adr-004-cooperative-loading.md).
+#ifdef __EMSCRIPTEN__
+constexpr unsigned STARTUP_ASSET_BUDGET_MS = 4;
+#else
+constexpr unsigned STARTUP_ASSET_BUDGET_MS = 12;
+#endif
+}
+
+float GlobalContainer::loadingProgress() const
+{
+	const float assets = gameGraphics ? 1.0f : gameGraphicsRequested ? Toolkit::assetProgress() : 0.0f;
+	return LOADING_STEPS_SHARE * loadingSteps + (1 - LOADING_STEPS_SHARE) * assets;
+}
+
+void GlobalContainer::finishLoadingStep(float fraction)
+{
+	loadingSteps = std::max(loadingSteps, fraction);
+	if (gfx && title)
+		drawLoadingScreen();
+}
+
+void GlobalContainer::drawLoadingScreen(bool settle)
+{
+	using Clock = std::chrono::steady_clock;
+	const auto now = Clock::now();
+	const bool first = loadingDrawn == Clock::time_point{};
+	const float target = loadingProgress();
+	float shown = target;
+	if (!settle && !first)
+	{
+		const float seconds = std::chrono::duration<float>(now - loadingDrawn).count();
+		shown = loadingShown + (target - loadingShown) * (1 - std::exp(-seconds / LOADING_EASE_SECONDS));
+	}
+	loadingShown = std::clamp(std::max(loadingShown, shown), 0.0f, 1.0f);
+	loadingDrawn = now;
+
+	// The terrain sheet loads with the other sprites; the wordmark shows
+	// on black until it arrives.
+	if (!terrain)
+	{
+		terrain = Toolkit::findSprite("data/gfx/terrain");
+		if (terrain)
+			loadingTerrainShown = first ? Clock::time_point{} : now;
+	}
+	gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color(0, 0, 0));
 	if (terrain)
 	{
-		unsigned randomSeed = 1;
-		unsigned columnCount = gfx->getW() / 32;
-		unsigned limit = (value * columnCount) / 100;
-		for (int y = 0; y < gfx->getH(); y += 32)
-			for (int x = 0; x < gfx->getW(); x += 32)
-			{
-				randomSeed = randomSeed * 69069;
-				unsigned index;
-				if (x/32 < (int)limit)
-					index = ((randomSeed >> 16) & 0xF);
-				else if (x/32 == (int)limit)
-					index = ((randomSeed >> 16) & 0x7) + 64;
-				else
-					index = ((randomSeed >> 16) & 0xF) + 128;
-				gfx->drawSprite(x, y, terrain, index);
-			}
-		gfx->finishDrawingSprite(terrain, 255);
+		const float fade = std::min(1.0f, std::chrono::duration<float>(now - loadingTerrainShown).count() / LOADING_TERRAIN_FADE_SECONDS);
+		const Uint8 alpha = Uint8(255 * fade);
+		// Loaded columns are grass, the edge column is the shore and the
+		// rest is water. The edge moves by fractions of a column: the next
+		// tiles blend in over the current ones.
+		const int columns = (gfx->getW() + 31) / 32;
+		const float position = loadingShown * columns;
+		const int edge = std::min(int(position), columns);
+		const Uint8 blend = Uint8(alpha * (position - edge));
+		const auto drawTiles = [&](int edgeColumn, int firstColumn, int lastColumn, Uint8 tileAlpha)
+		{
+			unsigned randomSeed = 1;
+			for (int y = 0; y < gfx->getH(); y += 32)
+				for (int x = 0, column = 0; x < gfx->getW(); x += 32, ++column)
+				{
+					randomSeed = randomSeed * 69069;
+					if (column < firstColumn || column > lastColumn)
+						continue;
+					unsigned index;
+					if (column < edgeColumn)
+						index = ((randomSeed >> 16) & 0xF);
+					else if (column == edgeColumn)
+						index = ((randomSeed >> 16) & 0x7) + 64;
+					else
+						index = ((randomSeed >> 16) & 0xF) + 128;
+					gfx->drawSprite(x, y, terrain, index, tileAlpha);
+				}
+			gfx->finishDrawingSprite(terrain, tileAlpha);
+		};
+		drawTiles(edge, 0, columns, alpha);
+		if (blend)
+			drawTiles(edge + 1, edge, edge + 1, blend);
 	}
 	// Keep the splash wordmark inside portrait viewports without stretching it.
 	const float titleWidth = std::min(float(title->getW()), gfx->getW() * 0.8f);
@@ -197,56 +270,58 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 	gfx->nextFrame();
 }
 
+void GlobalContainer::openLoadingScreen(void)
+{
+	// create graphic context
+	GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
+	std::optional<GAGCore::RendererBackend> environmentBackend;
+#ifndef __EMSCRIPTEN__
+	if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
+		environmentBackend = GAGCore::parseRendererBackend(selected);
+#endif
+	GraphicContext::setInitialRendererBackend(GAGCore::resolveRendererPreference(
+		settings.rendererBackend, rendererLaunchOverride, environmentBackend));
+	gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+	gfx->setBackendPreferenceCallback([this](GAGCore::RendererBackend selected) {
+		settings.rendererBackend = selected;
+		if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;
+	});
+	gfx->setTargetRenderFps(settings.targetRenderFps);
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+	gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)
+	{
+		const bool changed = bool(settings.screenFlags & GraphicContext::FULLSCREEN) != fullscreen;
+		settings.screenWidth=w; settings.screenHeight=h;
+		if (gfx->getOptionFlags() & GraphicContext::RESIZABLE) settings.screenFlags |= GraphicContext::RESIZABLE;
+		if (fullscreen) settings.screenFlags |= GraphicContext::FULLSCREEN;
+		else settings.screenFlags &= ~GraphicContext::FULLSCREEN;
+		// Resizes are kept in memory and saved by the normal settings/shutdown flow.
+		// F11 is a preference change and persists immediately.
+		if (changed && !settings.save()) std::cerr << "Could not save display preferences." << std::endl;
+	});
+#endif
+	gfx->setCompactWindowAllowed(true);
+	gfx->refreshPresentation();
+	gfx->setMinRes(640, 480);
+
+	// The wordmark is the only image the first frame waits for.
+	title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.webp");
+	drawLoadingScreen();
+
+	// Native builds have every data package; the browser installs game sprites
+	// before startup and menu music afterward (buildsys/web_assets.py). Start
+	// decoding now so it overlaps the texts, music and fonts.
+	if (GAGCore::ApplicationHost::assetPackageReady("game"))
+		requestGameGraphics();
+	finishLoadingStep(0.17f);
+}
+
 // glob2-client specific actions here.
 void GlobalContainer::loadClient(void)
 {
-	// Native builds have every data package; the browser installs game sprites
-	// before startup and menu music afterward (buildsys/web_assets.py).
-	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
-    IntBuildingType::init();
+	IntBuildingType::init();
 	if (!runNoX)
 	{
-		// create graphic context
-		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
-        std::optional<GAGCore::RendererBackend> environmentBackend;
-#ifndef __EMSCRIPTEN__
-        if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
-            environmentBackend = GAGCore::parseRendererBackend(selected);
-#endif
-        GraphicContext::setInitialRendererBackend(GAGCore::resolveRendererPreference(
-            settings.rendererBackend, rendererLaunchOverride, environmentBackend));
-		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
-        gfx->setBackendPreferenceCallback([this](GAGCore::RendererBackend selected) {
-            settings.rendererBackend = selected;
-            if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;
-        });
-        gfx->setTargetRenderFps(settings.targetRenderFps);
-#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
-		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)
-		{
-			const bool changed = bool(settings.screenFlags & GraphicContext::FULLSCREEN) != fullscreen;
-			settings.screenWidth=w; settings.screenHeight=h;
-			if (gfx->getOptionFlags() & GraphicContext::RESIZABLE) settings.screenFlags |= GraphicContext::RESIZABLE;
-			if (fullscreen) settings.screenFlags |= GraphicContext::FULLSCREEN;
-			else settings.screenFlags &= ~GraphicContext::FULLSCREEN;
-			// Resizes are kept in memory and saved by the normal settings/shutdown flow.
-			// F11 is a preference change and persists immediately.
-			if (changed && !settings.save()) std::cerr << "Could not save display preferences." << std::endl;
-		});
-#endif
-		gfx->setCompactWindowAllowed(true);
-        gfx->refreshPresentation();
-		gfx->setMinRes(640, 480);
-
-		// load data required for drawing progress screen
-		title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.webp");
-		if (gameData)
-			terrain = Toolkit::getSprite("data/gfx/terrain");
-		updateLoadProgressScreen(0);
-
-        if (gameData) requestGameGraphics();
-        Toolkit::pollAssets(4);
-
 		// No loading/menu music may escape before the mobile audio prompt.
 #ifdef GLOB2_MOBILE
 		settings.applyAudioStartupPolicy(true);
@@ -257,22 +332,16 @@ void GlobalContainer::loadClient(void)
 		mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
 		// Track slots must match the MusicTrack enum order. Engine::run may
 		// later overwrite the InGame* slots with a randomly chosen music dir.
-        mix->loadTracks({{"data/zik/original/a1.opus", MusicTrack::InGameDefault},
-            {"data/zik/original/a2.opus", MusicTrack::BuildingEvent}, {"data/zik/original/a3.opus", MusicTrack::WarEvent}});
-        loadMenuMusic();
+		mix->loadTracks({{"data/zik/original/a1.opus", MusicTrack::InGameDefault},
+			{"data/zik/original/a2.opus", MusicTrack::BuildingEvent}, {"data/zik/original/a3.opus", MusicTrack::WarEvent}});
+		loadMenuMusic();
 		mix->setNextTrack(MusicTrack::Intro);
 		mix->setNextTrack(MusicTrack::Menu);
 
 		// create voice recorder
 		voiceRecorder = std::make_unique<VoiceRecorder>();
 
-		updateLoadProgressScreen(15);
-	}
-
-
-	if (!runNoX)
-	{
-		updateLoadProgressScreen(35);
+		finishLoadingStep(0.91f);
 	}
 
 	// initiate keyboard actions
@@ -292,16 +361,16 @@ void GlobalContainer::loadClient(void)
 
 	if (!runNoX)
 	{
-		updateLoadProgressScreen(40);
+		finishLoadingStep(0.96f);
 
 		// load fonts
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
 		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
 		loadGameFonts();
-        // Separate frontend aliases avoid changing gameplay/editor font metrics.
-        Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
-        Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
+		// Separate frontend aliases avoid changing gameplay/editor font metrics.
+		Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
+		Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
 		// Frontend title/caption roles used by the declarative menus.
 		Toolkit::loadFont(fontfile.c_str(), 30, "front-title");
 		Toolkit::loadFont(fontfile.c_str(), 12, "front-caption");
@@ -312,25 +381,24 @@ void GlobalContainer::loadClient(void)
 		littleFont = Toolkit::getFont("little");
 		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
-		updateLoadProgressScreen(50);
-        if (gameData && !deferAssetLoading) {
-            while (!ensureGameGraphics()) {
-                updateLoadProgressScreen(50 + Toolkit::assetProgress() / 2);
-                SDL_PumpEvents();
+		finishLoadingStep(1.0f);
+		if (GAGCore::ApplicationHost::assetPackageReady("game") && !deferAssetLoading) {
+			while (!ensureGameGraphics(STARTUP_ASSET_BUDGET_MS)) {
+				drawLoadingScreen();
+				SDL_PumpEvents();
 #ifndef __EMSCRIPTEN__
-                SDL_Delay(1);
+				SDL_Delay(1);
 #endif
-            }
-        }
+			}
+		}
 
 		// use custom style
 		Style::style = new Glob2Style;
-
-		updateLoadProgressScreen(gameGraphics ? 100 : 50 + Toolkit::assetProgress() / 2);
+		drawLoadingScreen(gameGraphics);
 	}
 }
 
-void GlobalContainer::loadGameGraphics(bool showProgress)
+void GlobalContainer::loadGameGraphics()
 {
 	const auto sprite = [](const std::string& path) {
 		auto* result = Toolkit::getSprite(path);
@@ -349,8 +417,6 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	// load shader for invisible terrain
 	terrainShader = sprite("data/gfx/shade");
 
-	if (showProgress)
-		updateLoadProgressScreen(60);
 	// load resources
 	resources = sprite("data/gfx/ressource");
 	resources->createTextureAtlas(true);
@@ -364,14 +430,10 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	bulletExplosion = sprite("data/gfx/explosion");
 	deathAnimation = sprite("data/gfx/death");
 
-	if (showProgress)
-		updateLoadProgressScreen(70);
 	// load units
 	units = sprite("data/gfx/unit");
 	initUnitSkins();
 
-	if (showProgress)
-		updateLoadProgressScreen(90);
 	// load graphics for gui
 	unitmini = sprite("data/gfx/unitmini");
 	gamegui = sprite("data/gfx/gamegui");
@@ -415,23 +477,23 @@ void GlobalContainer::requestGameGraphics()
 }
 bool GlobalContainer::finishAssetLoading()
 {
-    return ensureGameGraphics();
+    return ensureGameGraphics(STARTUP_ASSET_BUDGET_MS);
 }
 void GlobalContainer::drawAssetLoading()
 {
     if (gfx->beginRenderFrame())
-        updateLoadProgressScreen(50 + Toolkit::assetProgress() / 2);
+        drawLoadingScreen(gameGraphics);
 }
 
-bool GlobalContainer::ensureGameGraphics(void)
+bool GlobalContainer::ensureGameGraphics(unsigned budgetMs)
 {
 	if (runNoX || gameGraphics)
 		return true;
 	if (!GAGCore::ApplicationHost::assetPackageReady("game"))
 		return false;
     requestGameGraphics();
-    if (!Toolkit::pollAssets(4)) return false;
-    loadGameGraphics(false);
+    if (!Toolkit::pollAssets(budgetMs)) return false;
+    loadGameGraphics();
     return true;
 }
 
@@ -460,9 +522,18 @@ void GlobalContainer::load(void)
 	// Harnesses exercising autosave can opt in after loading.
 	if (runNoX || runTestGames || structuredHeadless)
 		settings.autosaveGames = false;
+	// Show the splash before the slower setup below.
+	if (!runNoX)
+		openLoadingScreen();
 
-	// load texts
-	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
+	// load texts: every language, about half of the synchronous steps
+	const auto textProgress = [this](float fraction)
+	{
+		// Redraw at most every 30ms so the splash does not slow the reads.
+		if (!runNoX && std::chrono::steady_clock::now() - loadingDrawn > std::chrono::milliseconds(30))
+			finishLoadingStep(0.17f + 0.53f * fraction);
+	};
+	if (!Toolkit::getStringTable()->load("data/texts.list.txt", textProgress))
 	{
 		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
 		assert(false);
@@ -483,6 +554,8 @@ void GlobalContainer::load(void)
 		settings.language = SystemLanguage::choose(SystemLanguage::preferred(),
 			[strings](const std::string &code) { return strings->hasLanguage(code); });
 	strings->setLang(strings->getLangCode(settings.language));
+	if (!runNoX)
+		finishLoadingStep(0.70f);
 	// load default unit types
 	Race::loadDefault();
 
@@ -507,7 +580,7 @@ void GlobalContainer::loadOffscreenGraphics()
 		requestGameGraphics();
 		while (!Toolkit::pollAssets(4))
 			SDL_Delay(1);
-		loadGameGraphics(false);
+		loadGameGraphics();
 	}
 }
 

@@ -21,7 +21,8 @@ namespace GAGCore
 	namespace {
         std::unique_ptr<AssetLoader> assetLoader;
         std::map<std::string, std::unique_ptr<SpriteLoad>> loadingSprites;
-        size_t completedSpriteLoads = 0, submittedSpriteLoads = 0;
+        // Progress units (SpriteLoad::progressTotal) of the sprite loads that have finished.
+        double completedSpriteWork = 0;
     }
 	AssetLoader &Toolkit::assets()
 	{
@@ -55,7 +56,7 @@ namespace GAGCore
 	{
         loadingSprites.clear();
 		assetLoader.reset();
-        completedSpriteLoads = submittedSpriteLoads = 0;
+        completedSpriteWork = 0;
 		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 			delete (*it).second;
 		spriteMap.clear();
@@ -83,7 +84,6 @@ namespace GAGCore
     {
         if (spriteMap.contains(name) || loadingSprites.contains(name)) return;
         loadingSprites[name] = std::make_unique<SpriteLoad>(name, variableAtlas);
-        ++submittedSpriteLoads;
     }
     Sprite *Toolkit::findSprite(const std::string& name)
     {
@@ -105,7 +105,7 @@ namespace GAGCore
                 auto sprite = it->second->take();
                 if (sprite) spriteMap[it->first] = sprite.release();
                 else std::cerr << it->second->error() << std::endl;
-                ++completedSpriteLoads;
+                completedSpriteWork += it->second->progressTotal();
                 it = loadingSprites.erase(it);
             } else ++it;
         }
@@ -115,9 +115,16 @@ namespace GAGCore
         const bool reloaded = Sprite::pollHighResolutionUntil(std::chrono::duration_cast<std::chrono::nanoseconds>(deadline.time_since_epoch()).count());
         return loadingSprites.empty() && reloaded;
     }
-    unsigned Toolkit::assetProgress()
+    float Toolkit::assetProgress()
     {
-        return submittedSpriteLoads ? unsigned(completedSpriteLoads * 100 / submittedSpriteLoads) : 100;
+        double done = completedSpriteWork, total = completedSpriteWork;
+        for (const auto &[name, load] : loadingSprites) {
+            // A sprite whose index is not read yet counts as one unit of work.
+            const double work = load->progressTotal();
+            total += work > 0 ? work : 1;
+            done += load->progressDone();
+        }
+        return total > 0 ? float(std::min(1.0, done / total)) : 1.0f;
     }
     Sprite *Toolkit::getSprite(const std::string name)
     {

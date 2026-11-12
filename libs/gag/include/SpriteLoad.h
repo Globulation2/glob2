@@ -21,6 +21,13 @@ public:
     std::unique_ptr<Sprite> take();
     size_t completed() const;
     size_t total() const;
+    // Loading work: one unit per frame file or sheet as it decodes, and one
+    // for publishing the sprite. Decoding trails queuing and reading, so it
+    // follows whichever of them is slower; startup time tracks it far more
+    // closely than the sprite count. The total is zero until the sprite index
+    // has been read.
+    double progressDone() const;
+    double progressTotal() const;
 private:
     struct Impl;
     std::unique_ptr<Impl> impl;
