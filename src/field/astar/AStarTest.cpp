@@ -271,7 +271,7 @@ TEST_SUITE("AStar")
 			for (unsigned forced : {0u, 16u, 32u, 64u, 4096u})
 			{
 				workspace.forcedWindow = forced;
-				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2})
+				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2, astar::Kernel::NEON})
 				{
 				if (!astar::kernelAvailable(kernel))
 					continue;
@@ -311,7 +311,7 @@ TEST_SUITE("AStar")
 			std::vector<std::uint32_t> actual, expected;
 			workspace.expansionLog = &actual;
 			workspace.forcedWindow = trial % 3 == 0 ? 4096 : 0;
-			workspace.kernel = astar::Kernel(trial % 3);
+			workspace.kernel = astar::Kernel(trial % 4);
 			if (!astar::kernelAvailable(workspace.kernel))
 				workspace.kernel = astar::Kernel::Scalar;
 			workspace.searchGoals(domain, q, goals, results);

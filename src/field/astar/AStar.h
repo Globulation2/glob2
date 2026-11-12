@@ -25,6 +25,10 @@
 #include <emmintrin.h>
 #define GLOB2_ASTAR_SSE2 1
 #endif
+#if defined(__ARM_NEON) && !defined(GLOB2_ASTAR_SCALAR)
+#include <arm_neon.h>
+#define GLOB2_ASTAR_NEON 1
+#endif
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -65,20 +69,33 @@ constexpr std::uint32_t MaximumCost = 65533;
 // and tools/astar_benchmark.cpp compare them against the reference search.
 //  Branchy: one neighbour at a time, branching on each test (the reference).
 //  Scalar:  all eight neighbours classified into bit masks without branching.
-//  SSE2:    the same classification in two four-lane vectors.
+//  SSE2, NEON: the same classification in two four-lane vectors.
 enum class Kernel : std::uint8_t
 {
 	Branchy,
 	Scalar,
-	SSE2
+	SSE2,
+	NEON
 };
 inline bool kernelAvailable(Kernel kernel)
 {
+	switch (kernel)
+	{
+	case Kernel::SSE2:
 #ifdef GLOB2_ASTAR_SSE2
-	return true;
+		return true;
 #else
-	return kernel != Kernel::SSE2;
+		return false;
 #endif
+	case Kernel::NEON:
+#ifdef GLOB2_ASTAR_NEON
+		return true;
+#else
+		return false;
+#endif
+	default:
+		return true;
+	}
 }
 // GLOB2_ASTAR_KERNEL=branchy|scalar|sse2 overrides the choice for diagnosis.
 inline Kernel automaticKernel()
@@ -92,8 +109,12 @@ inline Kernel automaticKernel()
 				return Kernel::Scalar;
 			if (!std::strcmp(name, "sse2") && kernelAvailable(Kernel::SSE2))
 				return Kernel::SSE2;
+			if (!std::strcmp(name, "neon") && kernelAvailable(Kernel::NEON))
+				return Kernel::NEON;
 		}
-		return kernelAvailable(Kernel::SSE2) ? Kernel::SSE2 : Kernel::Scalar;
+		if (kernelAvailable(Kernel::SSE2))
+			return Kernel::SSE2;
+		return kernelAvailable(Kernel::NEON) ? Kernel::NEON : Kernel::Scalar;
 	}();
 	return chosen;
 }
@@ -287,6 +308,61 @@ template <Kernel K>
 		return lanes;
 	}
 #endif
+#ifdef GLOB2_ASTAR_NEON
+	if constexpr (K == Kernel::NEON)
+	{
+		// The same regrouping as SSE2: lo = above[0..2], beside[0];
+		// hi = beside[2], below[0..2].
+		const int stride = off[6] - off[3] - 1;
+		const std::uint32_t *base = nodes + p;
+		const uint32x4_t above = vld1q_u32(base - stride - 1), beside = vld1q_u32(base - 1),
+						 below = vld1q_u32(base + stride - 1);
+		const uint32x4_t lo = vsetq_lane_u32(vgetq_lane_u32(beside, 0), above, 3);
+		const uint32x4_t hi = vsetq_lane_u32(vgetq_lane_u32(beside, 2), vextq_u32(below, below, 3), 0);
+		const auto at = [&](int d) { return std::uint32_t(costs[int(p) + off[d]]); };
+		const std::uint32_t lowCosts[4] = {at(0), at(1), at(2), at(3)}, highCosts[4] = {at(4), at(5), at(6), at(7)};
+		const uint32x4_t costLo = vld1q_u32(lowCosts), costHi = vld1q_u32(highCosts);
+		const std::uint32_t diagonalLowLanes[4] = {~0u, 0, ~0u, 0}, diagonalHighLanes[4] = {0, ~0u, 0, ~0u};
+		const uint32x4_t diagonalLo = vld1q_u32(diagonalLowLanes), diagonalHi = vld1q_u32(diagonalHighLanes);
+		const uint32x4_t byte = vdupq_n_u32(0xff);
+		const auto stepOf = [&](uint32x4_t c, uint32x4_t diagonal) {
+			return vbslq_u32(diagonal, vshrq_n_u32(c, 8), vandq_u32(c, byte));
+		};
+		const uint32x4_t g = vdupq_n_u32(gp), limit = vdupq_n_u32(maximumCost);
+		const uint32x4_t candLo = vaddq_u32(g, stepOf(costLo, diagonalLo));
+		const uint32x4_t candHi = vaddq_u32(g, stepOf(costHi, diagonalHi));
+		const uint32x4_t stop = vdupq_n_u32(StopBits), low = vdupq_n_u32(0xffff);
+		const std::uint32_t laneBits[4] = {1, 2, 4, 8};
+		const uint32x4_t bits = vld1q_u32(laneBits);
+		const auto mask = [&](uint32x4_t m) {
+			const uint32x4_t b = vandq_u32(m, bits);
+#if defined(__aarch64__)
+			return unsigned(vaddvq_u32(b));
+#else
+			const uint32x2_t pair = vpadd_u32(vget_low_u32(b), vget_high_u32(b));
+			return unsigned(vget_lane_u32(vpadd_u32(pair, pair), 0));
+#endif
+		};
+		const auto classifyHalf = [&](uint32x4_t w, uint32x4_t cand, unsigned &improve, unsigned &over) {
+			const uint32x4_t open = vceqq_u32(vandq_u32(w, stop), vdupq_n_u32(0));
+			const uint32x4_t beyond = vcgtq_u32(cand, limit);
+			const uint32x4_t better = vcgtq_u32(vandq_u32(w, low), cand);
+			improve = mask(vbicq_u32(vandq_u32(open, better), beyond));
+			over = mask(vandq_u32(open, beyond));
+		};
+		unsigned improveLo, overLo, improveHi, overHi;
+		classifyHalf(lo, candLo, improveLo, overLo);
+		classifyHalf(hi, candHi, improveHi, overHi);
+		lanes.improve = improveLo | improveHi << 4;
+		lanes.over = overLo | overHi << 4;
+		lanes.edge = mask(vtstq_u32(vorrq_u32(lo, hi), vdupq_n_u32(EdgeBit))) != 0;
+		vst1q_u32(word, lo);
+		vst1q_u32(word + 4, hi);
+		vst1q_u32(candidate, candLo);
+		vst1q_u32(candidate + 4, candHi);
+		return lanes;
+	}
+#endif
 	std::uint32_t edge = 0;
 	[&]<unsigned... D>(std::integer_sequence<unsigned, D...>) {
 		(
@@ -405,6 +481,10 @@ class Workspace
 #ifdef GLOB2_ASTAR_SSE2
 		case Kernel::SSE2:
 			return with.template operator()<Kernel::SSE2>();
+#endif
+#ifdef GLOB2_ASTAR_NEON
+		case Kernel::NEON:
+			return with.template operator()<Kernel::NEON>();
 #endif
 		default:
 			return with.template operator()<Kernel::Scalar>();

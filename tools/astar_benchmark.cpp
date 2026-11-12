@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 		else if (a == "--kernel" && i + 1 < argc)
 		{
 			const std::string k = argv[++i];
-			kernel = k == "branchy" ? 0 : k == "scalar" ? 1 : 2;
+			kernel = k == "branchy" ? 0 : k == "scalar" ? 1 : k == "sse2" ? 2 : 3;
 		}
 		else
 		{
@@ -302,7 +302,7 @@ int main(int argc, char **argv)
 			q.wantPath = true;
 			const auto reference = astar::referenceSearch(domain, q, &expected);
 			for (unsigned forced : {0u, 4096u})
-				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2})
+				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2, astar::Kernel::NEON})
 			{
 				if (!astar::kernelAvailable(kernel))
 					continue;
