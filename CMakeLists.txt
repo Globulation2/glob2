@@ -279,6 +279,17 @@ if(darwin)
   if(brew_prefix)
     set(host_includes "${brew_prefix}/include")
     set(host_directories "${brew_prefix}/lib")
+    # openssl@3 is keg-only, while another OpenSSL may be linked into the prefix.
+    # Put its headers and libraries ahead of the prefix's, so both come from the
+    # same release: include directories precede CXXFLAGS on CMake's compile line,
+    # so a caller's -I<keg>/include would otherwise lose to newer prefix headers
+    # whose symbols (OPENSSL_sk_set_*_thunks in 3.6) the keg's libcrypto lacks.
+    execute_process(COMMAND "${GLOB2_BREW}" --prefix openssl@3 OUTPUT_VARIABLE openssl_prefix
+                    RESULT_VARIABLE status OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+    if(status EQUAL 0 AND EXISTS "${openssl_prefix}/include/openssl/ssl.h")
+      list(PREPEND host_includes "${openssl_prefix}/include")
+      list(PREPEND host_directories "${openssl_prefix}/lib")
+    endif()
     set(ENV{PATH} "${brew_prefix}/bin:$ENV{PATH}")
   else()
     set(host_includes /opt/local/include)
