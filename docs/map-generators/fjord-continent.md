@@ -89,11 +89,16 @@ take their rules from the canonical terrains they are painted over.
 
 ## Supported envelope
 - The map's shorter side must be at least 128 tiles, and fit 32 tiles of it per colony: 4 colonies
-  on 128 (a tight fit), 8 on 256, 16 on 512. The continent fills a rectangle as a stretched oval.
+  on 128 (a tight fit), 8 on 256, 16 on 512. The continent fills a rectangle as a stretched oval;
+  the fjords' sideways swing, the bank crops and quarry faces and the fallback quarry search are
+  measured against that stretch (revision 17), so on a long map a fjord still runs in towards the
+  sheet rather than along the coast, and both its banks keep ground at the mouth.
 - A seed whose design or finished world cannot keep these promises is refused, and the lobby rolls
   another candidate. Over 60 seeds: 256x256 with 4 or 8 colonies, 512x512 with 8 and 512x256 with 6
   never refused; 512x512 with 16 refused 1 in 6; 128x128 with 4 refused 1 in 5, mostly for quarry
-  stone.
+  stone. Over 30 seeds on the 4:1 shapes (revision 17): 512x128 with 4 colonies refused 2,
+  128x512 with 4 refused 1, 512x128 with 3 refused 3 and 128x512 with 2 none, for quarry stone or a
+  landing that does not reach its fjord.
 
 ## Validation
 `validateWorld` rebuilds the design and checks the finished world:
