@@ -43,6 +43,7 @@ struct UnitEffectAnimation
 	Sint8 dx, dy;         //!< direction the unit leaves the building in
 	Uint8 kind;           //!< UnitEffect::Kind
 	Uint8 level;          //!< a trained unit's new displayed level, otherwise 0
+	Team *fromTeam = nullptr; //!< a converted unit's previous team, otherwise null
 };
 
 //! Per-game render container for bullet explosions, unit death animations and
@@ -98,6 +99,10 @@ public:
 	//! A unit came out of a building at (x, y): plays its pending service effect
 	//! once it is half out, `emergeTicks` from now, while buildings still cover it.
 	void onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team, int emergeTicks);
+	//! A hungry unit at (x, y) defected from `from` to `to`, whose inn will feed
+	//! it, and is now `newGid`. Its effects under the old gid are dropped. No-op
+	//! when disabled.
+	void onUnitConverted(const Map& map, int x, int y, Team *from, Team *to, Uint16 oldGid, Uint16 newGid);
 	//! A unit died: forget any service effect it was waiting to play.
 	void onUnitGone(Uint16 unitGid);
 

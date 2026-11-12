@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Draws a swarm and the worker it has just produced, and workers leaving a
-// hospital and a school, through the whole map pass at several ages of their
-// effects (UnitEffects.h), saving each frame for review.
+// Draws a swarm and the worker it has just produced, workers leaving a
+// hospital and a school, and a worker defecting to another team's inn, through
+// the whole map pass at several ages of their effects (UnitEffects.h), saving
+// each frame for review.
 // The effect must change the picture while it plays and leave exactly the
 // ordinary picture once its record has expired.
 #include "HeadlessGlobals.h"
@@ -9,6 +10,7 @@
 #include "DrawFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "Team.h"
 #include "Unit.h"
 #include "Building.h"
 #include "IntBuildingType.h"
@@ -265,5 +267,69 @@ TEST_CASE("exit effects travel with a unit that has walked on from its exit tile
 		CHECK_MESSAGE(std::abs(cx - unitX) < std::abs(cx - exitPixelX), typeName, " effect nearer the unit");
 		CHECK_MESSAGE(std::abs(cy - (exitY * 32 + 16)) < 24, typeName, " effect centred at y ", cy);
 	}
+}
+
+TEST_CASE("a conversion plays differently for the team that gained the unit, the team that lost it and anyone else [display:640x480][artifacts]")
+{
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true,
+		.width = SCREEN_W, .height = SCREEN_H, .screenFlags = GraphicContext::USEGPU});
+	globalContainer->settings.clouds = false;
+	globalContainer->settings.cloudShadows = false;
+	globalContainer->settings.buildingParticles = true;
+
+	Game game(nullptr);
+	game.map.setSize(5, 5, GRASS);
+	game.map.setGame(&game);
+	for (int team = 0; team < 3; ++team)
+		game.addTeam(team);
+	// Distinct colours, so each team's motes show on the grass: red loses the unit to blue.
+	game.teams[0]->setCorrectColor(GAGCore::Color(220, 40, 30));
+	game.teams[1]->setCorrectColor(GAGCore::Color(40, 90, 230));
+	game.teams[2]->setCorrectColor(GAGCore::Color(230, 200, 40));
+	Building* inn = game.addBuilding(SWARM_X, SWARM_Y, globalContainer->buildingsTypes.getFinishedTypeNum("inn"), 1);
+	REQUIRE(inn != nullptr);
+	// The unit defected two tiles left of team 1's inn and already belongs to team 1.
+	const int x = inn->posX - 2, y = inn->posY + inn->type->height + 1;
+	Unit* unit = game.addUnit(x, y, 1, WORKER, 0, 0, 0, 1);
+	REQUIRE(unit != nullptr);
+	const auto convertAged = [&](int age) {
+		game.animations->clear();
+		game.animations->onUnitConverted(game.map, x, y, game.teams[0], game.teams[1], Uint16(0), unit->gid);
+		for (int tick = 0; tick <= age; ++tick)
+			game.animations->step();
+	};
+	const auto drawFor = [&](int localTeam) {
+		auto* gfx = globalContainer->gfx;
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
+		ViewState view;
+		glob2test::drawMap(game, 0, 0, SCREEN_W, SCREEN_H, 0, 0, 0, 0, localTeam, view,
+			Game::DRAW_WHOLE_MAP | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_COMPLETE_TERRAIN,
+			nullptr, nullptr, true);
+		return grab();
+	};
+
+	const char* names[] = {"lost", "gained", "neutral"};
+	for (int localTeam = 0; localTeam < 3; ++localTeam)
+	{
+		game.animations->clear();
+		const Frame ordinary = drawFor(localTeam);
+		save(ordinary, std::string("convert-") + names[localTeam] + "-none");
+		for (int age : {2, 5, 10, 14, 18, 22, 26, 30, 40})
+		{
+			convertAged(age);
+			const Frame frame = drawFor(localTeam);
+			save(frame, std::string("convert-") + names[localTeam] + "-age" + std::to_string(age));
+			CHECK_MESSAGE(differing(frame, ordinary) > 0, names[localTeam], " effect shows at age ", age);
+		}
+		convertAged(UnitEffect::LifetimeTicks);
+		CHECK(differing(drawFor(localTeam), ordinary) == 0);
+	}
+
+	// The three viewers see different effects while it plays.
+	convertAged(10);
+	const Frame lost = drawFor(0), gained = drawFor(1), neutral = drawFor(2);
+	CHECK(differing(lost, gained) > 0);
+	CHECK(differing(lost, neutral) > 0);
+	CHECK(differing(gained, neutral) > 0);
 }
 }

@@ -148,37 +148,70 @@ void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw
 	GAGCore::GraphicContext &gfx = *globalContainer->gfx;
 	const float pixelsPerUnit = gfx.mapTransformScale() * gfx.getRasterScale();
 	Sprite::flushBatches(&gfx);
-	// A spawn's dust and a service's icons travel with their unit: they burst
-	// around its drawn centre, so their outward motion adds to its own. The unit
-	// pass queued where it drew each unit (one entry per seam copy).
+	// A spawn's dust, a service's icons and a conversion's motes and icon travel
+	// with their unit: they burst around its drawn centre, so their outward
+	// motion adds to its own. The unit pass queued where it drew each unit (one
+	// entry per seam copy).
 	const auto &overlays = view.render.unitOverlays;
+	const auto teamHue = [&](int team) {
+		auto color = presentationColor(entities.teams[team].color);
+		if (const auto chosen = view.render.skinPreview().buildingColor(team))
+			color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
+		return UnitEffectArt::hueOf(color);
+	};
 	for (const SceneSectorEffects &sector : entities.sectors)
 		for (const SceneUnitEffect &effect : sector.unitEffects)
 		{
 			const float age = effect.age + view.render.unitMotion;
 			const auto kind = UnitEffect::Kind(effect.kind);
-			const bool spawn = kind == UnitEffect::Kind::Spawn;
-			if (age >= (spawn ? UnitEffect::DustTicks : UnitEffect::IconDelayTicks + UnitEffect::IconTicks) ||
+			const bool spawn = kind == UnitEffect::Kind::Spawn, convert = kind == UnitEffect::Kind::Convert;
+			const float ends = spawn ? UnitEffect::DustTicks : convert ? float(UnitEffect::LifetimeTicks)
+				: UnitEffect::IconDelayTicks + UnitEffect::IconTicks;
+			if (age >= ends ||
 				(!(drawOptions & Game::DRAW_WHOLE_MAP) && !map.isFOWDiscovered(effect.x, effect.y, visibleTeams)))
 				continue;
+			if (convert && (effect.fromTeam < 0 || size_t(effect.fromTeam) >= entities.teams.size()))
+				continue;
 			int glyph = -1;
-			if (!spawn)
+			if (!spawn && !convert)
 			{
 				if (!entities.typeDefinitions || effect.buildingType < 0 || size_t(effect.buildingType) >= entities.typeDefinitions->size())
 					continue;
 				glyph = (*entities.typeDefinitions)[effect.buildingType].presentation.iconFrame;
 			}
-			auto color = presentationColor(entities.teams[effect.team].color);
-			if (const auto chosen = view.render.skinPreview().buildingColor(effect.team))
-				color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
-			const float hue = UnitEffectArt::hueOf(color);
+			const float hue = teamHue(effect.team);
 			const std::uint32_t seed = UnitEffect::seedOf(effect.x, effect.y, effect.unit);
+			// The team that gained a converted unit sees its colours gather and a
+			// heart rise; the team that lost it sees its own colours fall off and a
+			// heart break; anyone else, replays included, sees both colours.
+			UnitEffect::ConvertView convertView = UnitEffect::ConvertView::Neutral;
+			if (convert && !globalContainer->isViewingGame())
+				convertView = localTeam == effect.team ? UnitEffect::ConvertView::Gained
+					: localTeam == effect.fromTeam ? UnitEffect::ConvertView::Lost : UnitEffect::ConvertView::Neutral;
+			const float fromHue = convert ? teamHue(effect.fromTeam) : hue;
 			const auto drawAt = [&](float cx, float cy, float opacity) {
 				if (spawn)
 				{
 					UnitEffect::forEachDustGlow(age, [&](const UnitEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
 					UnitEffect::forEachDustMote(seed, age,
 						[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
+				}
+				else if (convert)
+				{
+					if (convertView != UnitEffect::ConvertView::Gained)
+						UnitEffect::forEachShedMote(seed, age,
+							[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, fromHue, cx, cy, mote, opacity); });
+					if (convertView != UnitEffect::ConvertView::Lost)
+					{
+						UnitEffect::forEachGatherGlow(age, [&](const UnitEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, opacity); });
+						UnitEffect::forEachGatherMote(seed, age,
+							[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, opacity); });
+					}
+					// The gainer's heart takes the unit's new colour, the loser's its old one.
+					const bool gained = convertView == UnitEffect::ConvertView::Gained;
+					UnitEffect::forEachConvertHeart(convertView, age, [&](const UnitEffect::Icon &icon, UnitEffect::HeartPart part) {
+						art.drawHeart(gfx, part, gained ? hue : fromHue, gained ? 1.f : 0.8f, cx, cy, icon, opacity);
+					});
 				}
 				else
 					UnitEffect::forEachServiceIcon(seed, age, [&](const UnitEffect::Icon &icon) {
@@ -190,7 +223,8 @@ void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw
 				if (unit.unit == effect.unit)
 				{
 					// A spawn fades in with its own opacity, which its dust does not
-					// share; a serviced unit's opacity is its fog fade, which its icons do.
+					// share; a serviced or converted unit's opacity is its fog fade,
+					// which its effect does.
 					drawAt(unit.x + 16, unit.y + 16, spawn ? 1 : unit.opacity);
 					drawn = true;
 				}
@@ -206,7 +240,7 @@ void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw
 				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
 					const float cx = float(centreX + dx), cy = float(centreY + dy);
 					// A service's icons burst once the unit is half out, half a tile short of its exit tile.
-					if (spawn)
+					if (spawn || convert)
 						drawAt(cx, cy, 1);
 					else
 						drawAt(cx - effect.dx * 16.f, cy - effect.dy * 16.f, 1);

@@ -405,11 +405,26 @@ When a unit comes out of a building that healed, fed or trained it:
 - A trained unit floats its highest new level, displayed as in the unit panel, rising
   like a combat level-up number.
 
+When a hungry unit defects to the team whose inn will feed it, it shimmers in its new
+team's colour, brightening over two thirds of a second and settling over one more.
+What else plays depends on who watches:
+
+- The team that gained it sees a cloud of motes in its colour gather onto the unit (the
+  swarm's dust played backwards) and a soft heart in its colour pop up, wobble and rise.
+- The team that lost it sees motes in its own colour fall off the unit, and a heart in
+  its colour appear above, tremble, crack down the middle and fall in two halves.
+- Anyone else, and every replay viewer, sees both clouds of motes and no heart.
+
+Because conversion is caused by hunger, the effect plays where the unit stood when it
+switched, not at a building, and like the others it is hidden on a fogged tile.
+
 `Building::swarmStep` records spawns in `GameAnimations` beside death animations. A
 successful feed, heal or training (some level rose) at the end of a stay
 (`Unit::handleDisplacement`) records a pending service by unit gid; it plays when the
 unit actually comes out (`Unit::handleMovementExitingBuilding`, or `expelFromBuilding`
-for a unit already on its way out). A unit expelled mid-stay, a trainee leaving while
+for a unit already on its way out). A conversion (`Unit::handleActivity`) records its
+effect under the unit's new gid with the old team, dropping any effect left under
+the old gid. A unit expelled mid-stay, a trainee leaving while
 upgrades are disabled, or one whose course became invalid plays nothing. Records are
 render-only, absent from checksums, saves and replays, and kept only with a display.
 They are captured into the snapshot's effects (`UnitEffectRecord`), and `MapDrawer::drawMap`
@@ -427,7 +442,7 @@ colour blends normally, since added red turns yellow over grass. The icons are t
 largest pre-sized frame that fits on screen. Skinned meshes are
 brightened instead by adding their composited tile again, tinted (the `glow` arguments
 of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. Dust
-stars and glows are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
+stars, glows and hearts are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
 effects ship no new image assets.
 
 ### Additive draws
