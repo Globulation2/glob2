@@ -28,13 +28,13 @@ def _flatten(items):
 
 
 def run(command) :
-    print(("\033[32m:: ", command, "\033[0m"))
+    print("\033[32m:: " + command + "\033[0m")
     result = os.system(command)
     if result:
         raise RuntimeError("bundle command failed: %s" % command)
     return result
 def norun(command) :
-    print(("\033[31mXX ", command, "\033[0m"))
+    print("\033[31mXX " + command + "\033[0m")
 
 
 

@@ -108,9 +108,10 @@ class CMakeSourcesTests(unittest.TestCase):
             module.main(['build-config', '--builddir', directory, '--opengl', '--fribidi'])
             text = (Path(directory) / 'include/glob2/BuildConfig.h').read_text()
         expected = build_config.ConfigurationText()
+        identity = module.build_identity({})
         build_config.add_package(expected, datadir='/usr/local/share', version=module.PACKAGE_VERSION,
-                                 font='sans.ttf', darwin=False, windows=False, china=False,
-                                 identity=module.build_identity({}))
+                                 font='sans.ttf', darwin=identity['toolchain'] == 'darwin',
+                                 windows=identity['toolchain'] == 'mingw', china=False, identity=identity)
         build_config.add_native_wss(expected)
         build_config.add_opengl(expected)
         build_config.add_fribidi(expected)
