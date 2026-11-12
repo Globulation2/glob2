@@ -21,11 +21,17 @@ struct MapOverlayQueue
 		Uint8 vertical, reversed, barWidth, alpha;
 		Uint8 r, g, b, r2, g2, b2;
 	};
-	//! A filled status dot with a dark rim.
+	//! What a status badge says needs attention. Indexes the frames of
+	//! GlobalContainer::statusIcons (tools/icons/export_map_icons.py) and
+	//! picks the badge's colour: red for harm, amber for a missing supply.
+	enum StatusIcon : Uint8 { Hurt, Hungry, Damaged, Understaffed, Unarmed, StatusIconCount };
+	//! A disc in the status's colour carrying its icon, with a dark rim.
+	//! Centred on its point, or `beside` it: up and to the right, so it
+	//! does not hide a unit far smaller on screen than the badge.
 	struct Pip
 	{
 		float screenX, screenY;
-		Uint8 r, g, b, alpha;
+		Uint8 icon, alpha, beside;
 	};
 
 	//! A unit seen from too far to draw: a team-coloured shape with a dark rim.
@@ -60,8 +66,8 @@ struct MapOverlayQueue
 	void bar(int mapX, int mapY, bool vertical, bool reversed, int maxLength, int actLength,
 			 int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2,
 			 int barWidth);
-	void pip(GAGCore::GraphicContext &gfx, int mapX, int mapY, Uint8 r, Uint8 g, Uint8 b,
-			 float opacity);
+	void pip(GAGCore::GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float opacity,
+			 bool beside = false);
 
 	void marker(GAGCore::GraphicContext &gfx, int mapX, int mapY, MarkerShape shape,
 				float sizePoints, Uint8 r, Uint8 g, Uint8 b, float opacity);
@@ -75,8 +81,9 @@ struct MapOverlayQueue
 
 	//! Draws and empties the queue. `scale` converts map pixels of an overlay's
 	//! own geometry to logical screen units (ZoomDetail::overlayScale);
-	//! `unitsPerPoint` sizes markers and glyphs, which are measured in points.
-	void flush(GAGCore::GraphicContext &gfx, GAGCore::Sprite *icons, double scale, double unitsPerPoint);
+	//! `unitsPerPoint` sizes markers, glyphs and status badges, which are measured in points.
+	void flush(GAGCore::GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore::Sprite *statusIcons,
+			   double scale, double unitsPerPoint);
 
 private:
 	int anchorMapX = 0, anchorMapY = 0;

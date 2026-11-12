@@ -423,6 +423,7 @@ void GlobalContainer::loadGameGraphics()
 	resources->createTextureAtlas(true);
 	resourceMini = sprite("data/gfx/ressourcemini");
 	mapIcons = sprite("data/gfx/mapicon");
+	statusIcons = sprite("data/gfx/statusicon");
 	areaClearing = sprite("data/gfx/area-clearing");
 	areaForbidden = sprite("data/gfx/area-forbidden");
 	areaGuard = sprite("data/gfx/area-guard");
@@ -451,7 +452,7 @@ void GlobalContainer::requestGameGraphics()
 {
     if (gameGraphicsRequested) return;
     for (const char *name : {"terrain", "cloud", "black", "shade", "ressource", "ressourcemini",
-        "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
+        "mapicon", "statusicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
 	for (const auto &material : TerrainVisual::loadCatalog().materials)

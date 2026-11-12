@@ -129,10 +129,10 @@ void MapDrawer::anchorBars(int x, int y, MapRenderState* drawnRender, float opac
 }
 
 
-void MapDrawer::drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender, float opacity)
+void MapDrawer::drawStatusPip(int x, int y, MapOverlayQueue::StatusIcon icon, MapRenderState* drawnRender, float opacity, bool beside)
 {
 	if (drawnRender)
-		drawnRender->overlays.pip(*globalContainer->gfx, x, y, r, g, b, drawnRender->detail.statusPip * opacity);
+		drawnRender->overlays.pip(*globalContainer->gfx, x, y, icon, drawnRender->detail.statusPip * opacity, beside);
 }
 
 
@@ -252,7 +252,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	struct OverlayPass
 	{
 		MapRenderState &render;
-		void flush() { render.overlays.flush(*globalContainer->gfx, globalContainer->mapIcons, render.detail.overlayScale, globalContainer->gfx->logicalUnitsPerPoint()); }
+		void flush() { render.overlays.flush(*globalContainer->gfx, globalContainer->mapIcons, globalContainer->statusIcons, render.detail.overlayScale, globalContainer->gfx->logicalUnitsPerPoint()); }
 		~OverlayPass()
 		{
 			// Drawing may throw (for example on allocation failure). Discard

@@ -160,8 +160,8 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio, drawnRender);
 		}
 
-		// Attention outlasts the bars when zoomed out, as a status pip: damage, a building
-		// with under half its workers, an inn without food, a tower without ammunition.
+		// Attention outlasts the bars when zoomed out, as a status badge: damage, a tower
+		// without ammunition, an inn without food, a building with under half its workers.
 		const bool damaged = type->hpMax && building->hp!=building->maxHp;
 		const bool understaffed = building->maxUnitWorking>0 && building->working.count*2<building->maxUnitWorking;
 		const bool unfed = buildingFeedingUnfunded(*type, entities.materials(*building));
@@ -181,9 +181,13 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 		if (type->maxBullets)
 			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200, drawnRender);
 		if (damaged)
-			drawStatusPip(x+type->width*32-4, y+4, 255, 0, 0, drawnRender);
-		else if (understaffed || unfed || unarmed)
-			drawStatusPip(x+type->width*32-4, y+4, 255, 176, 0, drawnRender);
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Damaged, drawnRender);
+		else if (unarmed)
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Unarmed, drawnRender);
+		else if (unfed)
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Hungry, drawnRender);
+		else if (understaffed)
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Understaffed, drawnRender);
 	}
 
 	if (drawOptions & Game::DRAW_ACCESSIBILITY)

@@ -290,7 +290,8 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 
 	if ((drawOptions & Game::DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
-		// A hungry or hurt unit keeps a status pip once every bar has faded.
+		// A hungry or hurt unit keeps a status badge once every bar has faded,
+		// beside the top right of its body rather than over it.
 		const int food=int((Sint64(unit->hungry)*10)/definition.runtime.foodCapacity);
 		const bool hungry=food<=1;
 		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
@@ -302,9 +303,9 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender, opacity);
 		if (hurt)
-			drawStatusPip(px+16, py+28, 255, 0, 0, drawnRender, opacity);
+			drawStatusPip(px+24, py+8, MapOverlayQueue::Hurt, drawnRender, opacity, true);
 		else if (hungry)
-			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender, opacity);
+			drawStatusPip(px+24, py+8, MapOverlayQueue::Hungry, drawnRender, opacity, true);
 
 		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
 		if ((unit->performance[HARVEST]) && (unit->carriedMaterial>=0) && carriedAlpha>0)

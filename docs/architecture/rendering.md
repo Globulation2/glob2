@@ -365,7 +365,7 @@ simulation, saves and replays are unaffected.
   sprite's pixels are at their peak; the derivation is in `FogFade.cpp`), and fully fogged
   or fully clear corners draw the same single fill or sprite as with the setting off.
 - Enemy units fade with the clearer of their tile and the tile they come from, and so does
-  everything drawn for them: bars and status pips (through the `opacity` parameter of
+  everything drawn for them: bars and status badges (through the `opacity` parameter of
   `MapDrawer::anchorBars`, `drawStatusPip`, `drawPointBar` and `drawHealthBar`; queued bars take
   it from their anchor), selection circles, the level-up number and magic effect, the
   carried resource and the accessibility label. A fading unit's sprite is translucent and so

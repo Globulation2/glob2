@@ -17,7 +17,7 @@ it is saved, checksummed or read by the simulation.
   `MapDrawer::drawMap` computes it once per frame into `MapRenderState::detail`.
   The map has two looks, the detailed map and the strategic overview. Everything
   that differs between them (terrain, unit and building sprites, flags, zone
-  outlines, status pips, the territory wash) cross-fades inside one narrow window,
+  outlines, status badges, the territory wash) cross-fades inside one narrow window,
   from 9 down to 7 points per tile, so each look is undistorted over a range of
   zooms either side of it. Keep new representations on that window.
   A small map cannot zoom out far enough to reach the overview by tile size,
@@ -36,9 +36,17 @@ it is saved, checksummed or read by the simulation.
   the map point a bar keeps fixed while its size changes.
 - Bars hold their 100% size from 48 down to 20 points per tile and change slowly
   outside that. Between 20 and 16 points every bar fades together. From there down
-  to the overview a status pip marks what needs attention (a starving unit or one at
-  60% health or less; a damaged building, one with under half its workers, an inn
-  without food, a tower without ammunition).
+  to the overview a status badge marks what needs attention: a disc, red for harm
+  and amber for a missing supply, carrying an icon of the problem. A unit shows
+  hurt (60% health or less) before hungry (starving), beside its top right so the
+  badge, larger on screen than a unit this far out, does not cover it. A building
+  shows, at its top right and in this order of precedence, damaged, a tower without
+  ammunition, an inn without food (the hungry icon) and under half its workers.
+  Badges are 9 points across, shrinking with the other overlays to no less than 8;
+  on a HiDPI display the icon keeps about 12 pixels.
+  Their icons (`MapOverlayQueue::StatusIcon`) come from the SVGs in
+  `content-src/icons/status/`, rasterised by the same script as the map icons into
+  `content/data/gfx/statusicon*.png` at sizes from 8 pixels.
 - Zones cross-fade from pattern sprites with an outline to a flat translucent tint
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
