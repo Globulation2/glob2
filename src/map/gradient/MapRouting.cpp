@@ -37,6 +37,11 @@ bool MapRouting::buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy
 	return gradientRuntime->buildingSeeds.current(copy, map.identity());
 }
 
+bool MapRouting::buildingSeedDemand() const
+{
+	return building_seed::captureAlways() || !gradientRuntime->buildingRequests.empty();
+}
+
 void MapRouting::captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const
 {
 	buildingSeedTemplates();

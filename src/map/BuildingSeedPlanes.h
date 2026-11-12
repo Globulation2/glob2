@@ -25,9 +25,10 @@ struct BuildingSeedPlanes
 	//! or closed terrain stops this kind; GRADIENT_UNREACHABLE elsewhere. Air
 	//! ignores buildings and immobile units, as the seeder does.
 	std::array<std::vector<std::uint16_t>, SeedPassabilityCount> planes;
-	//! Per team: cells painted forbidden for that team.
+	//! Per team: cells painted forbidden for that team. Empty until a team
+	//! has any, so unused teams cost neither memory nor capture copies.
 	std::array<Bits, TEAM_MAX_COUNT> forbidden;
-	//! Per team: cells occupied by one of that team's buildings.
+	//! Per team: cells occupied by one of that team's buildings (empty as above).
 	std::array<Bits, TEAM_MAX_COUNT> buildings;
 	std::size_t cells = 0;
 

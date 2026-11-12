@@ -428,6 +428,10 @@ public:
 	const MapState::BuildingSeedPlanes& buildingSeedTemplates() const;
 	//! Owner thread: whether a captured copy still equals the live templates.
 	bool buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy) const;
+	//! Whether this boundary's capture should carry building seed templates:
+	//! building field requests are queued for staging from it. Without them,
+	//! readers of the capture seed by scanning.
+	bool buildingSeedDemand() const;
 	//! Owner thread: bring a captured copy up to date, copying changed chunks.
 	void captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const;
 

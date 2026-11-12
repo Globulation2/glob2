@@ -11,9 +11,15 @@ using MapState::SeedPassability;
 constexpr std::array<SeedPassability, MapState::SeedPassabilityCount> Kinds{
 	SeedPassability::Walk, SeedPassability::WalkSwim, SeedPassability::WaterOnly, SeedPassability::Air};
 
-//! Sets one bit; returns whether it changed.
-bool setBit(MapState::BuildingSeedPlanes::Bits& bits, std::size_t index, bool value)
+//! Sets one bit, allocating a team's bitset on its first set bit; returns
+//! whether it changed.
+bool setBit(MapState::BuildingSeedPlanes::Bits& bits, std::size_t index, bool value, std::size_t cells)
 {
+	if (bits.empty())
+	{
+		if (!value) return false;
+		bits.assign((cells + 63) / 64, 0);
+	}
 	const auto bit = std::uint64_t(1) << (index % 64);
 	auto& word = bits[index / 64];
 	const auto next = (word & ~bit) | (value ? bit : 0);
@@ -23,12 +29,15 @@ bool setBit(MapState::BuildingSeedPlanes::Bits& bits, std::size_t index, bool va
 }
 
 bool auditFlag = std::getenv("GLOB2_BUILDING_SEED_AUDIT") != nullptr;
+bool captureAlwaysFlag = false;
 }
 
 namespace building_seed
 {
 bool auditEnabled() { return auditFlag; }
 void setAuditEnabled(bool enabled) { auditFlag = enabled; }
+bool captureAlways() { return captureAlwaysFlag; }
+void setCaptureAlways(bool enabled) { captureAlwaysFlag = enabled; }
 }
 
 void BuildingSeedTemplates::reset()
@@ -54,8 +63,8 @@ bool BuildingSeedTemplates::refresh(const MapState::View& view, std::size_t inde
 	const int owner = building == NOGBID ? -1 : BuildingUtils::GIDtoTeam(building);
 	for (int team = 0; team < TEAM_MAX_COUNT; ++team)
 	{
-		changed |= setBit(data.forbidden[team], index, forbidden & (Uint32(1) << team));
-		changed |= setBit(data.buildings[team], index, owner == team);
+		changed |= setBit(data.forbidden[team], index, forbidden & (Uint32(1) << team), data.cells);
+		changed |= setBit(data.buildings[team], index, owner == team, data.cells);
 	}
 	return changed;
 }
@@ -71,10 +80,9 @@ const MapState::BuildingSeedPlanes& BuildingSeedTemplates::ensure(const MapState
 {
 	const auto cells = std::size_t(view.width) * view.height;
 	if (!stale && data.cells == cells) return data;
-	const auto words = (cells + 63) / 64;
 	for (auto& plane : data.planes) plane.resize(cells);
-	for (auto& bits : data.forbidden) bits.assign(words, 0);
-	for (auto& bits : data.buildings) bits.assign(words, 0);
+	for (auto& bits : data.forbidden) bits.clear();
+	for (auto& bits : data.buildings) bits.clear();
 	for (std::size_t i = 0; i < cells; ++i)
 	{
 		for (const auto kind : Kinds)
@@ -82,12 +90,12 @@ const MapState::BuildingSeedPlanes& BuildingSeedTemplates::ensure(const MapState
 		for (Uint32 mask = view.areas[i].forbidden; mask; mask &= mask - 1)
 		{
 			const auto team = std::countr_zero(mask);
-			if (team < TEAM_MAX_COUNT) setBit(data.forbidden[team], i, true);
+			if (team < TEAM_MAX_COUNT) setBit(data.forbidden[team], i, true, cells);
 		}
 		if (const auto building = view.occupancy[i].building; building != NOGBID)
 		{
 			const auto team = BuildingUtils::GIDtoTeam(building);
-			if (team >= 0 && team < TEAM_MAX_COUNT) setBit(data.buildings[team], i, true);
+			if (team >= 0 && team < TEAM_MAX_COUNT) setBit(data.buildings[team], i, true, cells);
 		}
 	}
 	data.cells = cells;
@@ -101,14 +109,19 @@ const MapState::BuildingSeedPlanes& BuildingSeedTemplates::ensure(const MapState
 void BuildingSeedTemplates::capture(MapState::BuildingSeedSnapshot& out, std::uint64_t world, std::uint64_t& bytesCopied) const
 {
 	const auto cells = data.cells;
-	const bool full = out.world != world || out.epoch != epoch || out.planes.cells != cells
+	bool full = out.world != world || out.epoch != epoch || out.planes.cells != cells
 		|| out.stamps.size() != changes.chunks.size();
-	const auto words = (cells + 63) / 64;
+	// A team's bitset allocated since this copy was filled is copied whole.
+	for (int team = 0; team < TEAM_MAX_COUNT; ++team)
+	{
+		if (out.planes.forbidden[team].size() != data.forbidden[team].size())
+		{ out.planes.forbidden[team] = data.forbidden[team]; bytesCopied += data.forbidden[team].size() * sizeof(std::uint64_t); }
+		if (out.planes.buildings[team].size() != data.buildings[team].size())
+		{ out.planes.buildings[team] = data.buildings[team]; bytesCopied += data.buildings[team].size() * sizeof(std::uint64_t); }
+	}
 	if (full)
 	{
 		for (auto& plane : out.planes.planes) plane.resize(cells);
-		for (auto& bits : out.planes.forbidden) bits.resize(words);
-		for (auto& bits : out.planes.buildings) bits.resize(words);
 		out.stamps.assign(changes.chunks.size(), 0);
 	}
 	const auto copyRange = [&](std::size_t start, std::size_t length) {
@@ -117,12 +130,17 @@ void BuildingSeedTemplates::capture(MapState::BuildingSeedSnapshot& out, std::ui
 		// Whole words: neighbouring cells copied with them are live values too,
 		// and their own chunks are recopied whenever their stamps move.
 		const auto first = start / 64, last = (start + length + 63) / 64;
+		bytesCopied += length * sizeof(std::uint16_t) * data.planes.size();
+		const auto copyBits = [&](const MapState::BuildingSeedPlanes::Bits& from, MapState::BuildingSeedPlanes::Bits& to) {
+			if (from.empty()) return;
+			std::copy(from.begin() + first, from.begin() + last, to.begin() + first);
+			bytesCopied += (last - first) * sizeof(std::uint64_t);
+		};
 		for (int team = 0; team < TEAM_MAX_COUNT; ++team)
 		{
-			std::copy(data.forbidden[team].begin() + first, data.forbidden[team].begin() + last, out.planes.forbidden[team].begin() + first);
-			std::copy(data.buildings[team].begin() + first, data.buildings[team].begin() + last, out.planes.buildings[team].begin() + first);
+			copyBits(data.forbidden[team], out.planes.forbidden[team]);
+			copyBits(data.buildings[team], out.planes.buildings[team]);
 		}
-		bytesCopied += length * sizeof(std::uint16_t) * data.planes.size() + (last - first) * sizeof(std::uint64_t) * 2 * TEAM_MAX_COUNT;
 	};
 	std::size_t dirty = 0;
 	if (!full)

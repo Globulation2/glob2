@@ -469,10 +469,18 @@ void requireSameTemplates(const MapState::BuildingSeedPlanes& actual, const MapS
 	REQUIRE(actual.cells == expected.cells);
 	for (size_t k = 0; k < actual.planes.size(); ++k)
 		requireSameCells(actual.planes[k], expected.planes[k].data(), what + " plane " + std::to_string(k));
+	// A team's bitset is allocated on its first set bit and kept afterwards,
+	// so an all-zero bitset and an absent one are the same contents.
+	const auto sameBits = [&](const MapState::BuildingSeedPlanes::Bits& a, const MapState::BuildingSeedPlanes::Bits& b) {
+		const auto zero = [](const auto& bits) { return std::all_of(bits.begin(), bits.end(), [](std::uint64_t w) { return w == 0; }); };
+		if (a.empty() || b.empty()) return zero(a) && zero(b);
+		return a == b;
+	};
 	for (size_t t = 0; t < actual.forbidden.size(); ++t)
 	{
-		REQUIRE(actual.forbidden[t] == expected.forbidden[t]);
-		REQUIRE(actual.buildings[t] == expected.buildings[t]);
+		INFO("team " << t);
+		REQUIRE(sameBits(actual.forbidden[t], expected.forbidden[t]));
+		REQUIRE(sameBits(actual.buildings[t], expected.buildings[t]));
 	}
 }
 
@@ -525,6 +533,8 @@ void buildingSeedTemplatesMatchScan(std::uint32_t seed)
 	std::vector<Uint16> scanned(cells), templated(cells);
 	using namespace gradient_preparation;
 	SimulationSnapshot::Store store;
+	building_seed::setCaptureAlways(true);
+	struct Restore { ~Restore() { building_seed::setCaptureAlways(false); } } restore;
 	auto boundary = store.captureBoundary(game);
 	const auto checkSeeds = [&](const std::string& what) {
 		auto plain = view();

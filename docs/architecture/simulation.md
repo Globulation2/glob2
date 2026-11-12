@@ -711,7 +711,8 @@ checksum adapter remains available for diagnostic fixtures.
   lazy initialization makes the seed most of a cold field's cost. Four planes, one
   for each passability kind (walk, walk+swim, water-only, air), hold the
   building-independent obstacles. Per-team bitsets hold forbidden paint and building
-  cells. A seed copies its kind's plane, then overlays the team's forbidden paint,
+  cells; a team's bitset is allocated at its first set bit. A seed copies its kind's
+  plane, then overlays the team's forbidden paint,
   enemy buildings (combat routes), the goal disk (clearing and combat) or its own
   footprint, keeping the scan's precedence of buildings over paint. The per-cell
   rules in `SeedCells.h` are shared by both paths. `Map::resourceSeedChanged` keeps
@@ -719,10 +720,14 @@ checksum adapter remains available for diagnostic fixtures.
   rebuilds them lazily, because a bulk edit's raw writes may still be in progress
   when it invalidates. Every template change goes with a mark on one of the map's
   tracked arrays, so Store boundary reuse stays correct without a tracker of its
-  own. Captures copy only changed 16x16 chunks into the `BuildingSeeds` snapshot
-  component, which `buildingGradientView()` leases to workers and to cold hiring
-  routes. Copy traffic is reported as `buildingSeedBytesCopied`, separately from
-  map arrays. The output is bit-identical to the scan, and nothing is saved.
+  own. The `BuildingSeeds` snapshot component, which `buildingGradientView()` leases
+  to workers and to cold hiring routes, is filled only at boundaries that have
+  building field requests queued for staging (or reused while still current).
+  Seeds save worker time, but each copy costs the simulation thread, and copying
+  at every boundary measured slower than master. A capture without templates
+  seeds by scanning. A fill copies only the 16x16 chunks changed since its pooled
+  buffer was last filled. Copy traffic is reported as `buildingSeedBytesCopied`,
+  separately from map arrays. The output is bit-identical to the scan, and nothing is saved.
   `GLOB2_BUILDING_SEED_AUDIT` (set by `test/run_tests.py`) recomputes every
   template-backed seed with the scan and throws on any difference.
 

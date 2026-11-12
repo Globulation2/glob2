@@ -583,12 +583,14 @@ Handle capture(const Game& game,
 	}
 	if (needs(result->requirements, Component::BuildingSeeds))
 	{
-		// Reused while unchanged; otherwise refill the free copy closest to the
-		// live templates, chunk by chunk.
+		// Reused while unchanged. Otherwise copied (changed chunks of the free
+		// copy closest to the live templates) only when building field requests
+		// will be staged from this boundary: copying at every boundary costs the
+		// owner more than the seeds it saves workers. Absent templates mean scans.
 		const auto& routing = game.map.routing();
 		if (previous && previous->buildingSeeds && routing.buildingSeedsCurrent(*previous->buildingSeeds))
 			result->buildingSeeds = previous->buildingSeeds;
-		else
+		else if (routing.buildingSeedDemand())
 		{
 			auto copy = storage ? storage->buildingSeeds.acquire(storage->allocations,
 				[&](const MapState::BuildingSeedSnapshot& buffer) {

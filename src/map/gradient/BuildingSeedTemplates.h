@@ -53,4 +53,8 @@ namespace building_seed
 //! computed by the full scan, and any difference throws.
 bool auditEnabled();
 void setAuditEnabled(bool enabled);
+//! Tests: capture templates at every boundary, not only when building field
+//! requests are queued.
+bool captureAlways();
+void setCaptureAlways(bool enabled);
 }
