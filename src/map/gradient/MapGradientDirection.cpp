@@ -31,11 +31,6 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 	return best;
 }
 
-int MapRouting::minStepCost(int swimClass) const
-{
-	return map.terrainMinimumGround[swimClass];
-}
-
 int MapRouting::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
 	const auto cost = map.cellRule(targetIndex).ground[swimClass];

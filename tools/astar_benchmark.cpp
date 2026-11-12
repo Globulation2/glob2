@@ -98,7 +98,10 @@ std::vector<Record> load(const char *path)
 		r.maximumExpansions = u32();
 		r.floor.cardinal = u32();
 		r.floor.diagonal = u32();
-		r.goals.resize(u32());
+		const std::uint32_t goalCount = u32();
+		if (at + std::size_t(goalCount) * 4 > data.size())
+			break; // a capture cut short
+		r.goals.resize(goalCount);
 		for (auto &g : r.goals)
 			g = u32();
 		r.entries.resize(std::size_t(r.boxW) * r.boxH);
@@ -271,13 +274,23 @@ int main(int argc, char **argv)
 		else if (a == "--kernel" && i + 1 < argc)
 		{
 			const std::string k = argv[++i];
-			kernel = k == "branchy" ? 0 : k == "scalar" ? 1 : k == "sse2" ? 2 : 3;
+			kernel = k == "branchy" ? 0 : k == "scalar" ? 1 : k == "sse2" ? 2 : k == "neon" ? 3 : -2;
+			if (kernel == -2 || !astar::kernelAvailable(astar::Kernel(kernel)))
+			{
+				std::cerr << "kernel " << k << " is unknown or not built here\n";
+				return 2;
+			}
 		}
 		else
 		{
 			std::cerr << "unknown argument " << a << "\n";
 			return 2;
 		}
+	}
+	if (variant != "new" && variant != "torus" && variant != "reference" && variant != "legacy")
+	{
+		std::cerr << "unknown variant " << variant << "\n";
+		return 2;
 	}
 	const auto records = load(argv[1]);
 	std::vector<const Record *> chosen;
@@ -288,21 +301,45 @@ int main(int argc, char **argv)
 
 	if (verify)
 	{
-		// Every point record: the engine must reproduce the reference expansion sequence.
+		// Every record: each kernel and window mode must reproduce the reference
+		// expansion sequence (point searches) or the reference answers (many goals).
 		astar::Workspace workspace;
 		std::vector<std::uint32_t> actual, expected;
 		workspace.expansionLog = &actual;
 		std::size_t mismatches = 0, checked = 0;
+		std::vector<astar::GoalResult> results;
+		const auto kernels = {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2, astar::Kernel::NEON};
 		for (const auto *r : chosen)
 		{
-			if (r->kind != 0)
+			if (r->kind == 1)
+			{
+				const BoxDomain domain(*r);
+				const astar::GoalQuery g{r->width, r->height, r->start, r->maximumCost, r->floor};
+				const auto reference = astar::referenceGoals(domain, g, r->goals, &expected);
+				for (unsigned forced : {0u, 4096u})
+					for (auto kernel : kernels)
+					{
+						if (!astar::kernelAvailable(kernel))
+							continue;
+						workspace.forcedWindow = forced;
+						workspace.kernel = kernel;
+						results.assign(r->goals.size(), {});
+						workspace.searchGoals(domain, g, r->goals, results);
+						++checked;
+						bool same = actual == expected;
+						for (std::size_t i = 0; i < results.size(); ++i)
+							same &= results[i].reached == reference[i].reached && results[i].cost == reference[i].cost &&
+									results[i].firstDx == reference[i].firstDx && results[i].firstDy == reference[i].firstDy;
+						mismatches += !same;
+					}
 				continue;
+			}
 			const BoxDomain domain(*r);
 			auto q = queryOf(*r);
 			q.wantPath = true;
 			const auto reference = astar::referenceSearch(domain, q, &expected);
 			for (unsigned forced : {0u, 4096u})
-				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2, astar::Kernel::NEON})
+				for (auto kernel : kernels)
 			{
 				if (!astar::kernelAvailable(kernel))
 					continue;

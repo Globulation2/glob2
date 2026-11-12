@@ -197,9 +197,9 @@ class Map
 	// Cheapest cardinal and diagonal entry among the rules present; {0, 0} if none admits the class.
 	std::array<gradient_kernel::EntrySteps, MOVEMENT_CLASS_COUNT> terrainRouteFloors{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, MOVEMENT_CLASS_COUNT> terrainMinimumGround{}; // set in the constructor, from field/TerrainMovementCosts.h
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
+	void refreshRouteFloors();
 	std::uint64_t terrainGenerationValue = 1;
     // Explicit availability changes of intrinsically static material sources.
     // Shared AI gradients persist only whether this generation is current.

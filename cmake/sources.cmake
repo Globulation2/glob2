@@ -462,6 +462,7 @@ set(GLOB2_CLIENT_SOURCES
     src/map/MapQuery.cpp
     src/map/MapResources.cpp
     src/map/claims/ClaimHireTargets.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/map/claims/MapClaimRoutes.cpp
     src/map/claims/MapClaimInvalidation.cpp
     src/map/claims/ClaimTerrainComponents.cpp
@@ -1406,6 +1407,7 @@ set(GLOB2_ANDROID_SOURCES
     src/map/MapQuery.cpp
     src/map/MapResources.cpp
     src/map/claims/ClaimHireTargets.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/map/claims/MapClaimRoutes.cpp
     src/map/claims/MapClaimInvalidation.cpp
     src/map/claims/ClaimTerrainComponents.cpp
@@ -2189,6 +2191,7 @@ set(GLOB2_IOS_SOURCES
     src/map/MapQuery.cpp
     src/map/MapResources.cpp
     src/map/claims/ClaimHireTargets.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/map/claims/MapClaimRoutes.cpp
     src/map/claims/MapClaimInvalidation.cpp
     src/map/claims/ClaimTerrainComponents.cpp
@@ -3141,6 +3144,7 @@ set(GLOB2_WEB_SOURCES
     src/map/MapQuery.cpp
     src/map/MapResources.cpp
     src/map/claims/ClaimHireTargets.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/map/claims/MapClaimRoutes.cpp
     src/map/claims/MapClaimInvalidation.cpp
     src/map/claims/ClaimTerrainComponents.cpp
@@ -3766,6 +3770,7 @@ set(GLOB2_MAP_SOURCES
     src/map/MapQuery.cpp
     src/map/MapResources.cpp
     src/map/claims/ClaimHireTargets.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/map/claims/MapClaimRoutes.cpp
     src/map/claims/MapClaimInvalidation.cpp
     src/map/claims/ClaimTerrainComponents.cpp

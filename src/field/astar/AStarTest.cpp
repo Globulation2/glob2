@@ -287,7 +287,8 @@ TEST_SUITE("AStar")
 		workspace.expansionLog = &actual;
 		for (unsigned trial = 0; trial < 300; ++trial)
 		{
-			const int w = 1 << (4 + random() % 4), h = 1 << (4 + random() % 4);
+			// From 2 wide (every neighbour aliases across a seam) to 128.
+			const int w = 1 << (1 + random() % 7), h = 1 << (1 + random() % 7);
 			auto domain = randomWorld(random, w, h, random() % 35, trial % 3 != 0);
 			astar::Query q{w, h, std::uint32_t(random() % unsigned(w * h)), std::uint32_t(random() % unsigned(w * h))};
 			q.goalRadius = random() % 3 == 0 ? 1 : 0;
@@ -316,7 +317,30 @@ TEST_SUITE("AStar")
 		}
 	}
 
-	TEST_CASE("many goals resolve as separate searches would")
+	TEST_CASE("search stamps wrap without stale cells")
+	{
+		// 600 searches on one geometry cross the 8-bit stamp's wrap twice;
+		// different worlds each time make any stale cell visible.
+		std::mt19937 random(31337);
+		astar::Workspace workspace;
+		std::vector<std::uint32_t> actual, expected;
+		workspace.expansionLog = &actual;
+		workspace.forcedWindow = 32;
+		for (unsigned trial = 0; trial < 600; ++trial)
+		{
+			auto domain = randomWorld(random, 64, 64, random() % 30, trial % 2);
+			astar::Query q{64, 64, std::uint32_t(random() % 4096), std::uint32_t(random() % 4096)};
+			q.floor = floorOf(domain);
+			const auto reference = astar::referenceSearch(domain, q, &expected);
+			const auto r = workspace.search(domain, q);
+			INFO("trial " << trial);
+			REQUIRE(r.status == reference.status);
+			CHECK(r.cost == reference.cost);
+			CHECK(actual == expected);
+		}
+	}
+
+	TEST_CASE("many goals: reachability and cost of separate searches, steps of the reference")
 	{
 		std::mt19937 random(5123);
 		astar::Workspace workspace;
@@ -337,7 +361,7 @@ TEST_SUITE("AStar")
 			std::vector<astar::GoalResult> results(goals.size());
 			std::vector<std::uint32_t> actual, expected;
 			workspace.expansionLog = &actual;
-			workspace.forcedWindow = trial % 3 == 0 ? 4096 : 0;
+			workspace.forcedWindow = std::array{0u, 16u, 32u, 4096u}[trial % 4];
 			workspace.kernel = astar::Kernel(trial % 4);
 			if (!astar::kernelAvailable(workspace.kernel))
 				workspace.kernel = astar::Kernel::Scalar;
@@ -353,11 +377,6 @@ TEST_SUITE("AStar")
 			}
 			for (std::size_t i = 0; i < goals.size(); ++i)
 			{
-				// The separate search: other goals are only their own cells.
-				ArrayDomain alone = domain;
-				for (auto other : goals)
-					if (other != goals[i] && !domain.entries[other])
-						alone.entries[other] = 0;
 				std::vector<std::uint32_t> costs;
 				if (goals[i] == start)
 				{
@@ -366,7 +385,7 @@ TEST_SUITE("AStar")
 					continue;
 				}
 				// Goal cells other than this one are terminal: compute costs with them blocked.
-				ArrayDomain terminal = alone;
+				ArrayDomain terminal = domain;
 				for (auto other : goals)
 					if (other != goals[i] && other != start)
 						terminal.entries[other] = 0;

@@ -3,7 +3,7 @@
 // World adapters of the point-to-point search (field/astar/AStar.h). Each reads
 // the authoritative cell records through MapState::View, which the live Map and
 // every engine snapshot expose alike, and answers one cell at a time: the
-// search samples each cell once per query, in lazily filled blocks.
+// search samples a cell when it first touches it.
 #include "MapStateView.h"
 #include "field/TerrainMovementCosts.h"
 #include "field/astar/AStar.h"

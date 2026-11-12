@@ -167,8 +167,6 @@ public:
 	void loadGradient(GAGCore::InputStream*,Uint16*&,size_t,bool,int legacyCost=-1);
 	void consolidateLegacyRoutingFields();
 
-	//! Cheapest possible step for a class, the A* heuristic unit.
-	int minStepCost(int swimClass) const;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
 	int stepCost(int dx, int dy, size_t targetIndex, int swimClass) const;
 
@@ -343,9 +341,10 @@ public:
 	bool pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy);
 	struct PointTarget { int x, y; };
 	struct PointTargetResult { bool reached = false; Sint8 dx = 0, dy = 0; };
-	//! Ground movement only: one bounded search answering, for every target,
-	//! what pathfindPointToPoint would answer if every other target cell were
-	//! occupied. Targets are terminal and may be entered when occupied.
+	//! Ground movement only: one bounded search resolving every target. Each is
+	//! reached, at the same cost, exactly when pathfindPointToPoint would reach
+	//! it with every other target cell occupied; targets are terminal and may be
+	//! entered when occupied. Among equally cheap routes the step may differ.
 	void pathfindPointTargets(int x, int y, std::span<const PointTarget> targets, MovementAccess movementAccessValue,
 							  Uint32 teamMask, int maximumLength, std::vector<PointTargetResult> &results);
 

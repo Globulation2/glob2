@@ -100,7 +100,7 @@ inline bool kernelAvailable(Kernel kernel)
 		return true;
 	}
 }
-// GLOB2_ASTAR_KERNEL=branchy|scalar|sse2 overrides the choice for diagnosis.
+// GLOB2_ASTAR_KERNEL=branchy|scalar|sse2|neon overrides the choice for diagnosis.
 inline Kernel automaticKernel()
 {
 	static const Kernel chosen = [] {
@@ -411,12 +411,14 @@ class Workspace
 	void searchGoals(const Domain &domain, const GoalQuery &query, std::span<const std::uint32_t> goals,
 					 std::span<GoalResult> results);
 
-	// Benchmarks and tests may pin the first window side; 0 sizes it from the query.
+	// Benchmarks and tests may pin the first window side (rounded up to a power
+	// of two); 0 sizes it from the query.
 	unsigned forcedWindow = 0;
 	// The neighbour kernel; results never depend on it.
 	Kernel kernel = automaticKernel();
-	// The side of the window the last search finished in; 0 for the whole map.
-	int windowSide() const { return torus ? 0 : side; }
+	// The side of the window the last search finished in: 0 for the whole map,
+	// -1 when it ended before searching.
+	int windowSide() const { return finishedSide; }
 	// Tests record the world index of every expansion of the final attempt.
 	std::vector<std::uint32_t> *expansionLog = nullptr;
 
@@ -449,8 +451,12 @@ class Workspace
 	Planes *planes = &cached[0];
 
 	detail::BucketQueue queue;
+	// The current search. Members rather than locals so its lambdas stay small;
+	// goalCells and goalPoints also keep their allocations between searches.
 	int targetX = 0, targetY = 0;
 	unsigned goalRadius = 0;
+	Floor stepFloor;
+	int finishedSide = -1;
 	std::vector<std::uint32_t> goalCells; // sorted world indices for searchGoals
 	std::vector<std::array<int, 2>> goalPoints;
 
@@ -485,6 +491,13 @@ class Workspace
 	}
 
 	void layout(int width, int height, std::uint32_t start, int requestedSide);
+	int initialSide(int width, int height, std::uint32_t reach) const;
+	static std::uint32_t reachOf(std::uint32_t maximumCost, Floor floor);
+	// Runs attempts in growing windows until one completes; returns the restarts.
+	template <class Domain, class Heuristic, class GoalTest, class OnGoalFor>
+	unsigned grow(const Domain &domain, int width, int height, std::uint32_t start, int windowSide,
+				  std::uint32_t maximumCost, std::uint32_t maximumExpansions, Heuristic &h, GoalTest &isGoal,
+				  Result &result, OnGoalFor &&onGoalFor);
 	template <class Run> bool dispatch(Run &&run) const
 	{
 		const auto with = [&]<Kernel K>() {
@@ -552,7 +565,8 @@ inline void Workspace::layout(int width, int height, std::uint32_t start, int re
 	assert(slot < cached.size());
 	planes = &cached[slot];
 	auto &P = *planes;
-	if (P.width != width || P.height != height || P.side != side)
+	// Window planes depend only on their side; the whole map's on its size.
+	if (P.side != side || (torus && (P.width != width || P.height != height)))
 	{
 		P.width = width;
 		P.height = height;
@@ -584,7 +598,9 @@ template <class Domain, class GoalTest>
 	const auto world = std::uint32_t((worldY(py) << wShift) + worldX(px));
 	const bool goal = isGoal(px, py, world);
 	const unsigned entry = domain.entry(world, goal);
-	assert(!entry || ((entry & 0xff) && (entry >> 8)));
+	// Positive steps, none below the heuristic floor: the floor must be a
+	// consistent lower bound, or buckets could be pushed behind the ring's base.
+	assert(!entry || ((entry & 0xff) >= std::max(1u, stepFloor.cardinal) && (entry >> 8) >= std::max(1u, stepFloor.diagonal)));
 	P.steps[p] = std::uint16_t(entry);
 	P.nodes[p] = stamped | std::uint32_t((entry ? 0 : detail::Blocked) | (goal ? detail::Goal : 0)) << 16;
 }
@@ -714,6 +730,40 @@ inline bool Workspace::run(const Domain &domain, std::uint32_t startPlane, std::
 	return true;
 }
 
+inline int Workspace::initialSide(int width, int height, std::uint32_t reach) const
+{
+	if (forcedWindow)
+		return int(std::bit_ceil(std::max(forcedWindow, 4u)));
+	return firstSide(width, height, reach);
+}
+
+inline std::uint32_t Workspace::reachOf(std::uint32_t maximumCost, Floor floor)
+{
+	return floor.cardinal ? std::min<std::uint32_t>(maximumCost / floor.cardinal, 64) : 64;
+}
+
+template <class Domain, class Heuristic, class GoalTest, class OnGoalFor>
+inline unsigned Workspace::grow(const Domain &domain, int width, int height, std::uint32_t start, int windowSide,
+								std::uint32_t maximumCost, std::uint32_t maximumExpansions, Heuristic &h,
+								GoalTest &isGoal, Result &result, OnGoalFor &&onGoalFor)
+{
+	maximumCost = std::min(maximumCost, MaximumCost);
+	for (unsigned restarts = 0;; windowSide *= 2, ++restarts)
+	{
+		layout(width, height, start, windowSide);
+		const auto startPlane = planeOf(start);
+		result = {};
+		auto onGoal = onGoalFor(startPlane);
+		if (dispatch([&]<Kernel K, bool Torus>() {
+				return run<K, Torus>(domain, startPlane, maximumCost, maximumExpansions, h, isGoal, onGoal, result);
+			}))
+		{
+			finishedSide = torus ? 0 : side;
+			return restarts;
+		}
+	}
+}
+
 template <class Domain> inline Result Workspace::search(const Domain &domain, const Query &q)
 {
 	assert(q.start < std::uint32_t(q.width) * q.height && q.target < std::uint32_t(q.width) * q.height);
@@ -721,10 +771,10 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 	targetX = int(q.target & unsigned(q.width - 1));
 	targetY = int(q.target >> shift);
 	goalRadius = q.goalRadius;
+	stepFloor = q.floor;
+	finishedSide = -1;
 	const int sx = int(q.start & unsigned(q.width - 1)), sy = int(q.start >> shift);
 	const std::uint32_t apart = std::max(detail::torusDistance(sx, targetX, q.width), detail::torusDistance(sy, targetY, q.height));
-	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
-	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, std::max(apart + 4, reach));
 	// A goal set none of whose cells can be entered is unreachable at once,
 	// unless the search starts in it.
 	if (apart > q.goalRadius && !detail::anyGoalEnterable(domain, q))
@@ -734,6 +784,7 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 		return {};
 	}
 	const Floor floor = q.floor;
+	// GCC does not accept [[gnu::always_inline]] on a C++20 lambda's operator.
 	const auto h = [this, floor](std::uint32_t p) __attribute__((always_inline)) -> std::uint32_t {
 		const unsigned ax = detail::torusDistance(worldX(planeX(p)), targetX, mapW);
 		const unsigned ay = detail::torusDistance(worldY(planeY(p)), targetY, mapH);
@@ -743,28 +794,18 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 		return (detail::torusDistance(worldX(px), targetX, mapW) <= goalRadius) &
 			   (detail::torusDistance(worldY(py), targetY, mapH) <= goalRadius);
 	};
-	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
 	Result result;
-	unsigned restarts = 0;
-	for (;; windowSide *= 2, ++restarts)
-	{
-		layout(q.width, q.height, q.start, windowSide);
-		const auto startPlane = planeOf(q.start);
-		result = {};
-		const auto found = [&](std::uint32_t p) {
-			result.status = Status::Found;
-			result.cost = costOf(p);
-			result.goal = worldIndex(p);
-			trace(p, startPlane, q.wantPath ? &result : nullptr, &result.firstDx, &result.firstDy);
-			return true;
-		};
-		const bool complete = dispatch([&]<Kernel K, bool Torus>() {
-			return run<K, Torus>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result);
-		});
-		if (complete)
-			break;
-	}
-	result.restarts = restarts;
+	const int windowSide = initialSide(q.width, q.height, std::max(apart + 4, reachOf(q.maximumCost, q.floor)));
+	result.restarts = grow(domain, q.width, q.height, q.start, windowSide, q.maximumCost, q.maximumExpansions, h, isGoal,
+						   result, [&](std::uint32_t startPlane) {
+							   return [&, startPlane](std::uint32_t p) {
+								   result.status = Status::Found;
+								   result.cost = costOf(p);
+								   result.goal = worldIndex(p);
+								   trace(p, startPlane, q.wantPath ? &result : nullptr, &result.firstDx, &result.firstDy);
+								   return true;
+							   };
+						   });
 	return result;
 }
 
@@ -773,9 +814,9 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 								   std::span<GoalResult> results)
 {
 	assert(goals.size() == results.size());
-	if (goals.empty())
-		return;
-	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
+	finishedSide = -1;
+	for (auto &r : results)
+		r = {};
 	// Goals that cannot be entered are never reached; they neither keep the
 	// search going nor guide it.
 	goalCells.clear();
@@ -784,17 +825,17 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 			goalCells.push_back(g);
 	std::sort(goalCells.begin(), goalCells.end());
 	goalCells.erase(std::unique(goalCells.begin(), goalCells.end()), goalCells.end());
-	for (auto &r : results)
-		r = {};
 	if (goalCells.empty())
 	{
 		if (expansionLog)
 			expansionLog->clear();
 		return;
 	}
+	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
 	goalPoints.clear();
 	for (auto g : goalCells)
 		goalPoints.push_back({int(g & unsigned(q.width - 1)), int(g >> shift)});
+	stepFloor = q.floor;
 	const Floor floor = q.floor;
 	const auto h = [this, floor](std::uint32_t p) -> std::uint32_t {
 		const int x = worldX(planeX(p)), y = worldY(planeY(p));
@@ -807,32 +848,21 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 	auto isGoal = [this](int, int, std::uint32_t world) {
 		return std::binary_search(goalCells.begin(), goalCells.end(), world);
 	};
-	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
-	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, reach + 1);
-	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
-	for (;; windowSide *= 2)
-	{
-		layout(q.width, q.height, q.start, windowSide);
-		const auto startPlane = planeOf(q.start);
-		for (auto &r : results)
-			r = {};
-		std::size_t remaining = goalCells.size();
-		const auto reached = [&](std::uint32_t p) {
-			const auto world = worldIndex(p);
-			int dx = 0, dy = 0;
-			trace(p, startPlane, nullptr, &dx, &dy);
-			for (std::size_t i = 0; i < goals.size(); ++i)
-				if (goals[i] == world)
-					results[i] = {true, costOf(p), dx, dy};
-			return --remaining == 0;
-		};
-		Result scratch;
-		const bool complete = dispatch([&]<Kernel K, bool Torus>() {
-			return run<K, Torus>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal,
-								 reached, scratch);
-		});
-		if (complete)
-			return;
-	}
+	Result status; // only run's bookkeeping; the answers go to results
+	const int windowSide = initialSide(q.width, q.height, reachOf(q.maximumCost, q.floor) + 1);
+	grow(domain, q.width, q.height, q.start, windowSide, q.maximumCost, std::numeric_limits<std::uint32_t>::max(), h,
+		 isGoal, status, [&](std::uint32_t startPlane) {
+			 for (auto &r : results)
+				 r = {};
+			 return [&, startPlane, remaining = goalCells.size()](std::uint32_t p) mutable {
+				 const auto world = worldIndex(p);
+				 int dx = 0, dy = 0;
+				 trace(p, startPlane, nullptr, &dx, &dy);
+				 for (std::size_t i = 0; i < goals.size(); ++i)
+					 if (goals[i] == world)
+						 results[i] = {true, costOf(p), dx, dy};
+				 return --remaining == 0;
+			 };
+		 });
 }
 } // namespace astar

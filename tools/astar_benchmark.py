@@ -6,9 +6,10 @@
     python3 tools/astar_benchmark.py run --verify
     python3 tools/astar_benchmark.py profile --tool callgrind|cachegrind [--variant new]
 
-`capture` runs the content/games saves headlessly with GLOB2_ASTAR_CAPTURE set and
-writes artifacts/astar/corpus.bin: every query with the entry costs of the window
-it searched. `run` builds tools/astar_benchmark.cpp standalone (g++, -O2 by
+`capture` runs the content/games saves and long AI matches headlessly with
+GLOB2_ASTAR_CAPTURE set and writes artifacts/astar/corpus.bin: every query with
+the entry costs of the window it searched, within --budget bytes (4 GiB) for the
+whole campaign and only with that much disk space free. `run` builds tools/astar_benchmark.cpp standalone (g++, -O2 by
 default, no -march) and prints ns/query and expansions/query for the unified
 search, its reference and the replaced searches ("legacy": the old unit search
 ported to the captured entries, and the old claim search extracted from git).
@@ -69,27 +70,45 @@ def build(opt: str, extra: list[str]) -> Path:
 
 
 def capture(arguments) -> None:
+    """Every run appends to one corpus, within one byte budget for the campaign.
+
+    Each run gets what remains of the budget (GLOB2_ASTAR_CAPTURE_BYTES stops its
+    process there), and no run starts without that much free space plus a margin.
+    """
     WORK.mkdir(parents=True, exist_ok=True)
     corpus = Path(arguments.out)
+    corpus.parent.mkdir(parents=True, exist_ok=True)
     corpus.unlink(missing_ok=True)
-    env = dict(os.environ, SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy',
-               GLOB2_ASTAR_CAPTURE=str(corpus), GLOB2_ASTAR_CAPTURE_LIMIT=str(arguments.limit))
-    for game in arguments.games:
-        saved = ROOT / 'content' / 'games' / f'{game}.game.gz'
-        print(f'{game}: {arguments.ticks} ticks', file=sys.stderr, flush=True)
-        subprocess.run([str(arguments.binary), 'game', 'run', '--load-game', str(saved), '--ticks', str(arguments.ticks),
-                        '--compute-threads', '1', '--output-dir', str(WORK / 'runs' / game)],
-                       cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
+    jobs = [('game', game) for game in arguments.games]
     if not arguments.no_matches:
-        for name, players, ticks, seed in MATCHES:
+        jobs += [('match', match) for match in MATCHES]
+    for kind, job in jobs:
+        used = corpus.stat().st_size if corpus.exists() else 0
+        remaining = arguments.budget - used
+        if remaining <= 64 << 10:
+            print(f'capture budget of {arguments.budget} bytes spent; stopping', file=sys.stderr)
+            break
+        free = shutil.disk_usage(corpus.parent).free
+        if free < remaining + (1 << 30):
+            sys.exit(f'only {free} bytes free beside {corpus}; need {remaining} plus 1 GiB. Lower --budget.')
+        env = dict(os.environ, SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy', GLOB2_ASTAR_CAPTURE=str(corpus),
+                   GLOB2_ASTAR_CAPTURE_LIMIT=str(arguments.limit), GLOB2_ASTAR_CAPTURE_BYTES=str(remaining))
+        if kind == 'game':
+            saved = ROOT / 'content' / 'games' / f'{job}.game.gz'
+            print(f'{job}: {arguments.ticks} ticks', file=sys.stderr, flush=True)
+            command = ['game', 'run', '--load-game', str(saved), '--ticks', str(arguments.ticks),
+                       '--output-dir', str(WORK / 'runs' / job)]
+            shutil.rmtree(WORK / 'runs' / job, ignore_errors=True)
+        else:
+            name, players, ticks, seed = job
             print(f'{name}: {" vs ".join(players)}, {ticks} ticks', file=sys.stderr, flush=True)
             output = WORK / 'runs' / f'{name}-{seed}'
             shutil.rmtree(output, ignore_errors=True)
-            subprocess.run([str(arguments.binary), 'game', 'run', '--map-file', str(ROOT / 'content' / 'maps' / f'{name}.map.gz'),
-                            '--game-seed', str(seed), *[a for p in players for a in ('--player', p)],
-                            '--ticks', str(ticks), '--win-probability', '0', '--compute-threads', '1',
-                            '--output-dir', str(output)],
-                           cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
+            command = ['game', 'run', '--map-file', str(ROOT / 'content' / 'maps' / f'{name}.map.gz'),
+                       '--game-seed', str(seed), *[a for p in players for a in ('--player', p)],
+                       '--ticks', str(ticks), '--win-probability', '0', '--output-dir', str(output)]
+        subprocess.run([str(arguments.binary), *command, '--compute-threads', '1'],
+                       cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
     size = corpus.stat().st_size if corpus.exists() else 0
     print(f'{corpus}: {size} bytes', file=sys.stderr)
 
@@ -125,7 +144,8 @@ def main() -> None:
     c = commands.add_parser('capture')
     c.add_argument('--binary', type=Path, required=True)
     c.add_argument('--ticks', type=int, default=1500)
-    c.add_argument('--limit', type=int, default=400000)
+    c.add_argument('--limit', type=int, default=400000, help='records per run')
+    c.add_argument('--budget', type=int, default=4 << 30, help='corpus bytes for the whole campaign')
     c.add_argument('--games', nargs='*', default=list(GAMES))
     c.add_argument('--no-matches', action='store_true', help='only the saved games')
     c.add_argument('--out', default=str(CORPUS))

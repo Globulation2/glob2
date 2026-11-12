@@ -283,7 +283,11 @@ python3 tools/astar_benchmark.py capture --binary build/linux/client/perf/src/gl
 ```
 
 The corpus lands in `artifacts/astar/corpus.bin` and is never committed; record the
-command and the record counts in the pull request instead. Then build the benchmark
+command and the record counts in the pull request instead. A whole-map search
+records the whole map, so capture is bounded: `--budget` (4 GiB by default) caps the
+campaign's corpus, each run receives what remains through
+`GLOB2_ASTAR_CAPTURE_BYTES`, and no run starts without that much free space plus
+1 GiB. `GLOB2_ASTAR_CAPTURE_LIMIT` additionally caps records per process. Then build the benchmark
 standalone (g++, `-O2` by default, no `-march`) and run it:
 
 ```sh
@@ -291,13 +295,14 @@ python3 tools/astar_benchmark.py run --verify
 python3 tools/astar_benchmark.py run --repeat 5 --variants legacy new reference
 ```
 
-`--verify` requires every kernel and window mode to reproduce the reference
-expansion sequence on every captured point query. `legacy` replays the searches the
+`--verify` requires every kernel and window mode to reproduce the reference on
+every captured query: the expansion sequence of point searches, and the answers
+and expansion sequence of many-goal attack scans. `legacy` replays the searches the
 engine replaced: the old unit search ported to the captured entries, and the old
 claim search extracted from git (`ClaimRouteSearch.h` at the last revision that had
 it). The benchmark binary also takes `--kernel branchy|scalar|sse2|neon`,
-`--window N` (0 sizes the window from the query; a side at least the map's forces
-whole-map mode) and `--only point|goals|claims`.
+`--window N` (0 sizes the window from the query; other sides round up to a power
+of two, and one at least the map's forces whole-map mode) and `--only point|goals|claims`.
 
 The captured entries are cheaper to read than the live map, so the benchmark
 understates the engine's advantage in game, where each sample reads four cell

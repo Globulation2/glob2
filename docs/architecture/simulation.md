@@ -882,9 +882,10 @@ runs; backend defaults and algorithm choices are unchanged.
   changing them needs no sim version. Changing the contract does. Domains read
   `MapState::View`, the same records on the live map (`MapAStar::UnitDomain`) and in
   claim snapshots (`ResourceClaims::RouteDomain`). A ground unit's attack scan
-  resolves all its candidates with one `searchGoals` call; goals are terminal, and
-  the scan keeps the per-candidate acceptance order and step of the separate
-  searches it replaced.
+  resolves all its candidates with one `searchGoals` call. Goals are terminal, so
+  each candidate is reached at the same cost as by the separate searches it
+  replaced; the scan keeps their acceptance order and keeps a failed search's
+  zero step, while ties between equally cheap first steps follow `searchGoals`.
 - Influence has two distinct contracts in `src/field/Influence.h`: convergent
   maximum-contribution propagation and four directional sweeps. Castor requires
   the latter's staggered scan order and byte arithmetic; replacing it with

@@ -2,11 +2,11 @@
 #pragma once
 #include "ClaimRoute.h"
 #include "field/astar/AStar.h"
-#include "field/astar/AStarCapture.h"
 #include "ResourceClaimRouteView.h"
 #include "ClaimPolicy.h"
 #include "ComputeExecutor.h"
 #include "sim/snapshot/WorldSnapshot.h"
+#include <bit>
 #include <deque>
 #include <cstdlib>
 #include <memory>
@@ -14,6 +14,10 @@
 
 namespace ResourceClaims
 {
+// Records a claim route query for tools/astar_benchmark.py when
+// GLOB2_ASTAR_CAPTURE is set (field/astar/AStarCapture.h); otherwise nothing.
+void captureRouteQuery(const RouteDomain& domain, const astar::Query& query, int windowSide);
+
 struct RouteIdentity
 {
     Owner unit = 0;
@@ -73,10 +77,11 @@ class RoutePipeline
         try {
             const auto& input = work.input;
             const auto view = input.world.view();
-            // Admissible A* heuristic: octile distance priced at the cheapest
+            // Consistent A* heuristic: octile distance priced at the cheapest
             // cardinal and diagonal entry costs among the terrain rules present
-            // on this map for the unit's movement class, computed outside the
-            // hot loop and cached per thread until the terrain changes.
+            // on this map for the unit's movement class (the engine never
+            // reopens a cell), computed outside the hot loop and cached per
+            // thread until the terrain changes.
             unsigned cardinal=0, diagonal=0;
             {
                 // A publication lease is immutable, but BufferPool reuses its
@@ -111,7 +116,6 @@ class RoutePipeline
                 }
                 cardinal=cache.cardinal[input.profile.movement]; diagonal=cache.diagonal[input.profile.movement];
                 if(cardinal==std::numeric_limits<unsigned>::max()) cardinal=diagonal=0;
-                cardinal=std::min(cardinal,diagonal); diagonal=std::min(diagonal,2*cardinal);
             }
             thread_local astar::Workspace scratch;
             astar::Query query;
@@ -124,8 +128,7 @@ class RoutePipeline
             query.wantPath = true;
             const RouteDomain domain{view, input.profile};
             auto found = scratch.search(domain, query);
-            if (astar::capture::enabled()) [[unlikely]]
-                astar::capture::point(domain, query, scratch.windowSide());
+            captureRouteQuery(domain, query, scratch.windowSide());
             auto& route = work.output.route;
             static_assert(int(RouteStatus::ExpansionLimit) == int(astar::Status::ExpansionLimit));
             route.status = RouteStatus(found.status);
@@ -163,7 +166,9 @@ public:
             throw std::logic_error("publish due claim routes before admitting the next tick");
         if (tick >= std::numeric_limits<std::uint64_t>::max() / 2) throw std::overflow_error("claim route deadline");
         const auto cells = std::size_t(input.world.width) * input.world.height;
-        if (input.world.width <= 0 || input.world.height <= 0 || input.start >= cells || input.target >= cells ||
+        // The search engine wraps with masks: map sides are powers of two.
+        if (input.world.width <= 0 || input.world.height <= 0 || !std::has_single_bit(unsigned(input.world.width)) ||
+            !std::has_single_bit(unsigned(input.world.height)) || input.start >= cells || input.target >= cells ||
             !input.world.terrain || !input.world.terrain->rules || !input.world.occupancy || !input.world.areas || !input.world.resources ||
             !input.world.catalogs || !input.world.catalogs->resources ||
             input.profile.movement < 0 || input.profile.movement >= MOVEMENT_CLASS_COUNT || !input.maximumExpansions)
