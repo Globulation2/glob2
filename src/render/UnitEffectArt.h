@@ -36,13 +36,21 @@ public:
 	//! Draw a sparkle or glow offset from (x, y), at `opacity` of its own.
 	void draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Sparkle &sparkle, float opacity);
 	void draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Glow &glow, float opacity);
+	//! A converted unit's soft heart in `hue`, whole or one half of it broken
+	//! along a jagged crack; `saturation` scales its colour.
+	GAGCore::DrawableSurface &heart(UnitEffect::HeartPart part, float hue, float saturation);
+
 	//! Draw one of a building's map icons, glyph `glyph` of `icons` (mapicon), in
 	//! the service's colour over a soft shadow. `pixelsPerUnit` picks the largest
 	//! pre-sized frame that fits on screen rather than scaling a large one down.
 	void draw(GAGCore::GraphicContext &gfx, GAGCore::Sprite &icons, int glyph, UnitEffect::Kind kind,
 		float x, float y, const UnitEffect::Icon &icon, float opacity, float pixelsPerUnit);
+	//! Draw part of a heart offset from (x, y), as a converted unit's icon.
+	void drawHeart(GAGCore::GraphicContext &gfx, UnitEffect::HeartPart part, float hue, float saturation, float x, float y,
+		const UnitEffect::Icon &icon, float opacity);
 
 private:
 	std::map<int, std::unique_ptr<GAGCore::DrawableSurface>> stars, glows;
+	std::map<int, std::unique_ptr<GAGCore::DrawableSurface>> hearts;
 	std::unique_ptr<GAGCore::DrawableSurface> core_, glint_;
 };

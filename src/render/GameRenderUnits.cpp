@@ -90,13 +90,14 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 	}
 	// A unit a swarm has just produced fades in as a team-colour silhouette,
 	// sliding out of the swarm; one a building has just serviced shimmers in the
-	// service's colour (UnitEffects.h).
+	// service's colour, and one that has just changed sides in its new colour (UnitEffects.h).
 	const auto effect = view.render.unitEffects.find(gid);
 	const bool hasEffect = effect != view.render.unitEffects.end();
 	const auto effectKind = hasEffect ? UnitEffect::Kind(effect->second.kind) : UnitEffect::Kind::Spawn;
 	const float effectAge = hasEffect ? effect->second.age + view.render.unitMotion : 0;
 	const UnitEffect::UnitLook effectLook = !hasEffect ? UnitEffect::UnitLook{1, 0, 0}
 		: effectKind == UnitEffect::Kind::Spawn ? UnitEffect::unitLook(effectAge)
+		: effectKind == UnitEffect::Kind::Convert ? UnitEffect::UnitLook{1, 0, UnitEffect::convertSilhouette(effectAge)}
 		: UnitEffect::UnitLook{1, 0, UnitEffect::serviceSilhouette(effectAge)};
 	fogAlpha = Uint8(std::lround(fogAlpha * effectLook.opacity));
 	if (fogAlpha == 0)
@@ -167,7 +168,8 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 	// and their original ground shadows.
 	const float teamHue = UnitEffectArt::hueOf(color);
 	const GAGCore::Color glow = !hasEffect ? GAGCore::Color()
-		: effectKind == UnitEffect::Kind::Spawn ? UnitEffectArt::tint(teamHue) : UnitEffectArt::serviceTint(effectKind);
+		: effectKind == UnitEffect::Kind::Spawn || effectKind == UnitEffect::Kind::Convert ? UnitEffectArt::tint(teamHue)
+		: UnitEffectArt::serviceTint(effectKind);
 	const Uint8 glowAlpha = Uint8(std::lround(255 * effectLook.silhouette));
 	// A swimmer's limbs fade into the water, whichever artwork draws it.
 	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM || pronePhase >= 0) &&

@@ -9,6 +9,7 @@
 #include "sim/SimServices.h"
 
 #include "Building.h"
+#include "render/GameAnimations.h"
 
 #include "Utilities.h"
 
@@ -139,6 +140,7 @@ void Unit::handleActivity(void)
 							previousClearingArea.reset(); previousClearingAreaDistance=UNIT_CLEAR_AREA_DISTANCE_NONE;
 						}
 						const Uint16 targetGID = GIDfrom(targetID, targetTeam->teamNumber);
+						const Uint16 previousGID = gid;
 						const Uint32 identity = owner->ctx.services->allocateScriptIdentity(false, targetGID);
 						++currentTeam->stats.events().conversionsOut[typeNum];
 						++targetTeam->stats.events().conversionsIn[typeNum];
@@ -169,6 +171,8 @@ void Unit::handleActivity(void)
 						owner=targetTeam;
 						targetTeam->attachUnit(targetID, this);
 						race=&targetTeam->race;
+						owner->ctx.animations->onUnitConverted(*owner->map, posX, posY, currentTeam, targetTeam,
+							previousGID, targetGID);
 					}
 				}
 

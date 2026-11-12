@@ -108,6 +108,19 @@ void GameAnimations::onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, i
 	sectorUnitEffects[map.getSectorIndex(x, y)].push_back(effect);
 }
 
+void GameAnimations::onUnitConverted(const Map& map, int x, int y, Team *from, Team *to, Uint16 oldGid, Uint16 newGid)
+{
+	if (!enabled)
+		return;
+	pendingServices.erase(oldGid);
+	for (auto& bucket : sectorUnitEffects)
+		std::erase_if(bucket, [&](const UnitEffectAnimation& effect) { return effect.unitGid == oldGid || effect.unitGid == newGid; });
+	// step() runs later in the same tick, so the effect is first captured at age 0.
+	UnitEffectAnimation effect{x, y, -1, to, newGid, 0, -1, 0, 0, Uint8(UnitEffect::Kind::Convert), 0};
+	effect.fromTeam = from;
+	sectorUnitEffects[map.getSectorIndex(x, y)].push_back(effect);
+}
+
 void GameAnimations::onUnitGone(Uint16 unitGid)
 {
 	pendingServices.erase(unitGid);

@@ -183,6 +183,46 @@ DrawableSurface &UnitEffectArt::glint()
 
 namespace
 {
+float smooth01(float edge0, float edge1, float x)
+{
+	const float t = std::clamp((x - edge0) / (edge1 - edge0), 0.f, 1.f);
+	return t * t * (3 - 2 * t);
+}
+}
+
+DrawableSurface &UnitEffectArt::heart(UnitEffect::HeartPart part, float hue, float saturation)
+{
+	using UnitEffect::HeartPart;
+	auto &image = hearts[int(part) * 100000 + hueKey(hue) * 100 + int(std::lround(saturation * 99))];
+	if (image)
+		return *image;
+	const float s = saturation;
+	// Soft and lit from the top left like the units, with a glossy highlight and no outline.
+	image = rasterize([=](float u, float v, Pixel &pixel) {
+		const float x = u / 0.82f, y = -(v - 0.08f) / 0.78f;
+		const float a = x * x + y * y - 0.55f;
+		const float f = a * a * a - x * x * y * y * y;
+		float body = f < 0 ? 1 - smooth01(-0.006f, 0.f, f) : 0;
+		if (part != HeartPart::Whole)
+		{
+			// A jagged crack down the middle, a little gap either side of it.
+			const float zig = 0.09f * (std::fabs(std::fmod(v * 3.2f + 10.25f, 1.f) - 0.5f) * 4 - 1);
+			const float side = part == HeartPart::Left ? zig - u : u - zig;
+			body *= smooth01(0.025f, 0.06f, side);
+		}
+		if (body <= 0)
+			return;
+		const float light = std::clamp(0.64f - 0.2f * (u * 0.6f + v * 0.9f), 0.f, 1.f);
+		Rgba c = hsl(hue, 0.9f * s, light);
+		const float gloss = 1 - smooth01(0.4f, 1, std::hypot((u + 0.34f) / 0.16f, (v + 0.3f) / 0.1f));
+		c = mix(c, {1, 1, 1, 1}, 0.7f * gloss);
+		pixel.over({c.r, c.g, c.b, body});
+	}, hsl(hue, 0.9f * s, 0.45f));
+	return *image;
+}
+
+namespace
+{
 Uint8 opacityByte(float alpha)
 {
 	return Uint8(std::lround(255 * std::clamp(alpha, 0.f, 1.f)));
@@ -232,4 +272,15 @@ void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, GAGCore::Sprite &icons, i
 		gfx.drawSurface(cx - half + 0.6f, cy - half + 0.6f, icon.size, icon.size, shadow, opacityByte(icon.alpha * opacity * 0.55f));
 	if (DrawableSurface *glyphShape = icons.silhouette(frame, serviceTint(kind)))
 		gfx.drawSurface(cx - half, cy - half, icon.size, icon.size, glyphShape, alpha);
+}
+
+void UnitEffectArt::drawHeart(GAGCore::GraphicContext &gfx, UnitEffect::HeartPart part, float hue, float saturation,
+	float x, float y, const UnitEffect::Icon &icon, float opacity)
+{
+	const Uint8 alpha = opacityByte(icon.alpha * opacity);
+	if (!alpha)
+		return;
+	// A stretched heart keeps its area and its bottom: it squashes onto it.
+	const float w = icon.size / std::sqrt(icon.stretch), h = icon.size * std::sqrt(icon.stretch);
+	gfx.drawSurface(x + icon.x - w / 2, y + icon.y + icon.size / 2 - h, w, h, &heart(part, hue, saturation), alpha);
 }

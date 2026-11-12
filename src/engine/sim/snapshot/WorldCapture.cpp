@@ -481,7 +481,7 @@ Handle capture(const Game& game,
                 for (const auto* e:game.animations->getExplosions(i)) sector.explosions.push_back({e->x,e->y,e->ticksLeft});
                 for (const auto* d:game.animations->getDeathAnimations(i)) sector.deaths.push_back({d->x,d->y,d->ticksLeft,d->team->teamNumber});
                 for (const auto& s:game.animations->getUnitEffects(i))
-                    sector.unitEffects.push_back({s.x,s.y,s.age,s.team->teamNumber,s.unitGid,s.buildingGid,s.buildingType,s.dx,s.dy,s.kind,s.level});
+                    sector.unitEffects.push_back({s.x,s.y,s.age,s.team->teamNumber,s.unitGid,s.buildingGid,s.buildingType,s.dx,s.dy,s.kind,s.level,s.fromTeam?s.fromTeam->teamNumber:-1});
             }
         }
         result->effects=std::move(effects);
