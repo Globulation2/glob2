@@ -2089,7 +2089,7 @@ Velikost blokov
 [Extra bridges]
 Dodatni mostovi
 [Grand canal]
-මහා ඇළ
+Veliki kanal
 [Polder]
 Polder
 [Old town]
