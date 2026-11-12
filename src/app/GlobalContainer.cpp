@@ -309,8 +309,9 @@ void GlobalContainer::openLoadingScreen(void)
 	drawLoadingScreen();
 
 	// Native builds have every data package; the browser installs game sprites
-	// before startup and menu music afterward (buildsys/web_assets.py). Start
-	// decoding now so it overlaps the texts, music and fonts.
+	// before startup and menu music afterward (buildsys/web_assets.py).
+	// Request now so the sprite indexes are read during the texts, music and
+	// fonts; the startup loop then queues and decodes their frames.
 	if (GAGCore::ApplicationHost::assetPackageReady("game"))
 		requestGameGraphics();
 	finishLoadingStep(0.17f);
