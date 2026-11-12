@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "AnimationClock.h"
 #include "FogFade.h"
 #include "MapOverlayQueue.h"
 #include "ZoomDetail.h"
@@ -33,10 +34,14 @@ struct MapRenderState
 	MapRenderState(MapRenderState &&) noexcept;
 	MapRenderState &operator=(MapRenderState &&) noexcept;
 
-	//! Water and cloud phase, advanced once per drawn frame; frozen while paused.
+	//! Water and cloud phase in steps of 1/60 s of real time, advanced by
+	//! animationClock each drawn frame; frozen while paused.
 	int animationTime = 0;
-	//! Phase of the animated area (forbidden/guard/clear/farm) markers.
+	AnimationClock animationClock;
+	//! Phase of the animated area (forbidden/guard/clear/farm) markers, in the
+	//! same steps, advanced by areaClock on frames that draw the areas.
 	int areaAnimationTick = 0;
+	AnimationClock areaClock;
 	//! How far this frame draws units from their ticked state towards the next tick,
 	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
 	float unitMotion = 0;

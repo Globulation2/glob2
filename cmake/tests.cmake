@@ -615,6 +615,7 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     src/net/message/MessageRecipientsTest.cpp
     src/render/overlay/OverlayFillTest.cpp
     src/render/ZoomDetailTest.cpp
+    src/render/AnimationClockTest.cpp
     src/render/FogFadeTest.cpp
     src/render/UnitEffectsTest.cpp
     src/team/stats/MetricSeriesTest.cpp
@@ -1880,6 +1881,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/net/message/MessageRecipientsTest.cpp
     src/render/overlay/OverlayFillTest.cpp
     src/render/ZoomDetailTest.cpp
+    src/render/AnimationClockTest.cpp
     src/render/FogFadeTest.cpp
     src/render/UnitEffectsTest.cpp
     src/team/stats/MetricSeriesTest.cpp

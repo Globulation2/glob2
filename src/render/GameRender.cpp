@@ -184,7 +184,7 @@ void MapDrawer::prepareSceneMapFrame(const PresentationFrame &scene, int localTe
 {
     view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
     view.render.skinPreview().poll();
-    if (!paused) ++view.render.animationTime;
+    view.render.animationTime += view.render.animationClock.advance(paused);
     const Uint32 visibleTeams = globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
         : scene.entities.teams[localTeam].mask;
     if (globalContainer->settings.smoothFog && !(drawOptions & Game::DRAW_WHOLE_MAP))
@@ -199,8 +199,8 @@ void MapDrawer::finishMapCapture(ViewState &view, Uint32 options, bool paused)
 }
 void MapDrawer::finishMapCapture(MapRenderState &render, Uint32 options, bool paused)
 {
-    if (!paused && (options & Game::DRAW_AREA) && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
-        ++render.areaAnimationTick;
+    if ((options & Game::DRAW_AREA) && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
+        render.areaAnimationTick += render.areaClock.advance(paused);
 }
 
 void MapDrawer::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,

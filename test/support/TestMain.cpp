@@ -13,6 +13,7 @@
 #include "field/GradientDeviceService.h"
 #include "field/GradientAccelerators.h"
 #include "BuildProvenance.h"
+#include "render/AnimationClock.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -136,6 +137,9 @@ int main(int argc, char **argv)
 	}
 	SDL_SetMainReady();
 	install();
+	// Map animations advance one step per drawn frame, so drawn phases do not
+	// depend on how fast the test machine renders.
+	AnimationClock::fixedSteps = 1;
 	doctest::Context context(argc, argv);
 	context.setOption("no-breaks", true);
 	const int result = context.run();
