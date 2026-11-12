@@ -1734,8 +1734,16 @@ Mantereen koko
 Rannikon rikkonaisuus
 [Fjord width]
 Vuonon leveys
-[Lake connects to fjords]
-Järvi yhdistyy vuonoihin
+[Ice sheet size]
+Jääpeitteen koko
+[Fjord landings]
+Vuonojen rantautumispaikat
+[Fjord continents need at least one colony.]
+Vuonomanner tarvitsee vähintään yhden siirtokunnan.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Vuonomanner tarvitsee kartan, jonka lyhyempi sivu on vähintään 128 ruutua.
+[Ice reach]
+Jään ulottuvuus
 [Resource islands]
 Luonnonvarasaaret
 [Watershed]
@@ -1980,8 +1988,8 @@ Hiekkatiet
 Aarteita umpikujissa
 [Fjord bank deposits]
 Esiintymiä vuonojen rannoilla
-[Sandy lake shore]
-Hiekkainen järvenranta
+[Nunatak orchards]
+Nunatakkien hedelmätarhat
 [River delta]
 Jokisuisto
 [Meandering rivers]

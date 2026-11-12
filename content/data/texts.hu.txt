@@ -1734,8 +1734,16 @@ Kontinens mérete
 Partvonal tagoltsága
 [Fjord width]
 Fjord szélessége
-[Lake connects to fjords]
-A tó kapcsolódik a fjordokhoz
+[Ice sheet size]
+Jégtakaró mérete
+[Fjord landings]
+Fjordok kikötőhelyei
+[Fjord continents need at least one colony.]
+A fjordkontinenshez legalább egy kolónia kell.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+A fjordkontinenshez olyan térkép kell, amelynek rövidebb oldala legalább 128 mező.
+[Ice reach]
+Jég kiterjedése
 [Resource islands]
 Nyersanyagszigetek
 [Watershed]
@@ -1980,8 +1988,8 @@ Homokutak
 Kincsek a zsákutcákban
 [Fjord bank deposits]
 Lelőhelyek a fjordok partján
-[Sandy lake shore]
-Homokos tópart
+[Nunatak orchards]
+Nunatakok gyümölcsösei
 [River delta]
 Folyódelta
 [Meandering rivers]

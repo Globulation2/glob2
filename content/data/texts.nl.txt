@@ -1734,8 +1734,16 @@ Continentgrootte
 Grilligheid van de kust
 [Fjord width]
 Fjordbreedte
-[Lake connects to fjords]
-Meer verbonden met fjorden
+[Ice sheet size]
+Grootte van de ijskap
+[Fjord landings]
+Aanlegplaatsen in fjorden
+[Fjord continents need at least one colony.]
+Een fjordencontinent heeft minstens één kolonie nodig.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Een fjordencontinent heeft een kaart nodig van minstens 128 vakjes aan de kortste zijde.
+[Ice reach]
+Reikwijdte van het ijs
 [Resource islands]
 Grondstofeilanden
 [Watershed]
@@ -1980,8 +1988,8 @@ Zandwegen
 Schatten in doodlopende gangen
 [Fjord bank deposits]
 Voorraden langs de fjordoevers
-[Sandy lake shore]
-Zandige meeroever
+[Nunatak orchards]
+Boomgaarden op nunatakken
 [River delta]
 Rivierdelta
 [Meandering rivers]

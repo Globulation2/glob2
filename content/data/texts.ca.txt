@@ -1734,8 +1734,16 @@ Mida del continent
 Irregularitat de la costa
 [Fjord width]
 Amplada del fiord
-[Lake connects to fjords]
-Llac connectat als fiords
+[Ice sheet size]
+Mida del casquet glacial
+[Fjord landings]
+Desembarcadors dels fiords
+[Fjord continents need at least one colony.]
+Un continent de fiords necessita almenys una colònia.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Un continent de fiords necessita un mapa d'almenys 128 caselles al costat més curt.
+[Ice reach]
+Abast del gel
 [Resource islands]
 Illes de recursos
 [Watershed]
@@ -1980,8 +1988,8 @@ Camins de sorra
 Tresors als atzucacs
 [Fjord bank deposits]
 Dipòsits a les ribes dels fiords
-[Sandy lake shore]
-Riba sorrenca del llac
+[Nunatak orchards]
+Horts als nunataks
 [River delta]
 Delta del riu
 [Meandering rivers]

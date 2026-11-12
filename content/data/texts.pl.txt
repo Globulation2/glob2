@@ -1734,8 +1734,16 @@ Rozmiar kontynentu
 Urozmaicenie wybrzeża
 [Fjord width]
 Szerokość fiordu
-[Lake connects to fjords]
-Jezioro połączone z fiordami
+[Ice sheet size]
+Rozmiar lądolodu
+[Fjord landings]
+Lądowiska w fiordach
+[Fjord continents need at least one colony.]
+Kontynent fiordów wymaga co najmniej jednej kolonii.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Kontynent fiordów wymaga mapy o krótszym boku co najmniej 128 pól.
+[Ice reach]
+Zasięg lodu
 [Resource islands]
 Wyspy z surowcami
 [Watershed]
@@ -1980,8 +1988,8 @@ Piaszczyste drogi
 Skarby w ślepych zaułkach
 [Fjord bank deposits]
 Złoża na brzegach fiordów
-[Sandy lake shore]
-Piaszczysty brzeg jeziora
+[Nunatak orchards]
+Sady na nunatakach
 [River delta]
 Delta rzeki
 [Meandering rivers]

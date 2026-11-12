@@ -610,7 +610,7 @@ struct CustomGameSetupHarness
 		original.setup.random = true;
 		original.setup.generatorHistory.select(original.setup.generator, fjord);
 		auto &g = original.setup.generator;
-		g.options["lake-connected"] = 1;
+		g.options["nunataks"] = 0;
 		g.options["resource-islands"] = 7;
 		g.options["lake-size"] = 50;
 		original.setup.capacity = g.nbTeams;
@@ -637,12 +637,12 @@ struct CustomGameSetupHarness
 		};
 		REQUIRE(restored.decode(withOption("retired-option 5")));
 		REQUIRE((restored.setup.generator.options == g.options && restored.encode() == encoded));
-		for (const char *corrupt : {"lake-connected 2", "resource-islands 21", "coast-roughness -1"})
+		for (const char *corrupt : {"nunataks 2", "resource-islands 21", "coast-roughness -1"})
 		{
 			REQUIRE(!restored.decode(withOption(corrupt)));
 			REQUIRE(restored.encode() == encoded);
 		}
-		REQUIRE(!restored.decode(encoded.substr(0, at) + "options 3\nlake-connected 1\n" +
+		REQUIRE(!restored.decode(encoded.substr(0, at) + "options 3\nnunataks 1\n" +
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
 	}
@@ -1731,26 +1731,26 @@ struct CustomGameSetupHarness
     {
       auto &options = screen.setup.generator.options;
       const auto revision = screen.setup.mapRevision;
-      REQUIRE(options["lake-connected"] == 0);
-      clickControl("generator/lake-connected");
-      REQUIRE((options["lake-connected"] == 1 && screen.setup.mapRevision != revision &&
+      REQUIRE(options["nunataks"] == 1);
+      clickControl("generator/nunataks");
+      REQUIRE((options["nunataks"] == 0 && screen.setup.mapRevision != revision &&
              !screen.validMap && screen.previewPending));
-      REQUIRE(host.focused() == "generator/lake-connected");
-      host.focus("generator/lake-connected", true);
+      REQUIRE(host.focused() == "generator/nunataks");
+      host.focus("generator/nunataks", true);
       keyEvent(SDLK_SPACE);
-      REQUIRE(options["lake-connected"] == 0);
+      REQUIRE(options["nunataks"] == 1);
       keyEvent(SDLK_RETURN);
-      REQUIRE(options["lake-connected"] == 1);
+      REQUIRE(options["nunataks"] == 0);
       // Tab walks off the checkbox and Shift+Tab back onto it, like any other control.
       keyEvent(SDLK_TAB);
-      REQUIRE(host.focused() != "generator/lake-connected");
+      REQUIRE(host.focused() != "generator/nunataks");
       keyEvent(SDLK_TAB, SDL_KMOD_SHIFT);
-      REQUIRE(host.focused() == "generator/lake-connected");
+      REQUIRE(host.focused() == "generator/nunataks");
       preview();
       REQUIRE(screen.validMap);
       capture("map-checkboxes");
-      clickControl("generator/lake-connected");
-      REQUIRE(options["lake-connected"] == 0);
+      clickControl("generator/nunataks");
+      REQUIRE(options["nunataks"] == 1);
     }
     landscape(MapGenerationDescriptor::eRIVER);
 

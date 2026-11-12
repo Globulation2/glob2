@@ -1734,8 +1734,16 @@ OpenGL недоступен в этой сборке.
 Изрезанность побережья
 [Fjord width]
 Ширина фьорда
-[Lake connects to fjords]
-Озеро соединено с фьордами
+[Ice sheet size]
+Размер ледникового щита
+[Fjord landings]
+Причалы во фьордах
+[Fjord continents need at least one colony.]
+Континенту фьордов нужна хотя бы одна колония.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Континенту фьордов нужна карта с короткой стороной не меньше 128 клеток.
+[Ice reach]
+Протяжённость льда
 [Resource islands]
 Острова с ресурсами
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL недоступен в этой сборке.
 Сокровища в тупиках
 [Fjord bank deposits]
 Залежи на берегах фьордов
-[Sandy lake shore]
-Песчаный берег озера
+[Nunatak orchards]
+Сады на нунатаках
 [River delta]
 Дельта реки
 [Meandering rivers]

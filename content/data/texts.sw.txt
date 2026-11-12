@@ -1698,8 +1698,16 @@ Ukubwa wa bara
 Ukwaru wa pwani
 [Fjord width]
 Upana wa ghuba nyembamba
-[Lake connects to fjords]
-Ziwa linaungana na ghuba nyembamba
+[Ice sheet size]
+Ukubwa wa tabaka la barafu
+[Fjord landings]
+Mahali pa kutua kwenye fyordi
+[Fjord continents need at least one colony.]
+Bara la fyordi linahitaji angalau koloni moja.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Bara la fyordi linahitaji ramani yenye upande mfupi wa angalau vigae 128.
+[Ice reach]
+Kiwango cha barafu
 [Resource islands]
 Visiwa vya rasilimali
 [Watershed]
@@ -1948,8 +1956,8 @@ Barabara za mchanga
 Hazina katika njia za mwisho
 [Fjord bank deposits]
 Akiba kwenye kingo za ghuba nyembamba
-[Sandy lake shore]
-Ufukwe wa ziwa wenye mchanga
+[Nunatak orchards]
+Bustani za matunda za nunatak
 [River delta]
 Delta ya mto
 [Meandering rivers]

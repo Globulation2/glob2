@@ -1734,8 +1734,16 @@ Ukuran benua
 Ketidakteraturan pantai
 [Fjord width]
 Lebar fjord
-[Lake connects to fjords]
-Danau terhubung ke fjord
+[Ice sheet size]
+Ukuran lapisan es
+[Fjord landings]
+Tempat mendarat di fjord
+[Fjord continents need at least one colony.]
+Benua fjord membutuhkan setidaknya satu koloni.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Benua fjord membutuhkan peta dengan sisi terpendek minimal 128 petak.
+[Ice reach]
+Jangkauan es
 [Resource islands]
 Pulau sumber daya
 [Watershed]
@@ -1980,8 +1988,8 @@ Jalan pasir
 Harta di jalan buntu
 [Fjord bank deposits]
 Sumber daya di tepi fjord
-[Sandy lake shore]
-Tepi danau berpasir
+[Nunatak orchards]
+Kebun buah di nunatak
 [River delta]
 Delta sungai
 [Meandering rivers]
