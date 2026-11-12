@@ -58,7 +58,7 @@ namespace GAGCore
 		The key file contains all keys, each one on a different line
 		A translation file contains pair of key-value for the given translation
 	*/
-	bool StringTable::load(const std::string filename)
+	bool StringTable::load(const std::string filename, const std::function<void(float)> &progress)
 	{
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
@@ -136,6 +136,8 @@ namespace GAGCore
 				}
 				delete inputLineStream;
 			}
+			if (progress)
+				progress(float(i + 1) / translationFiles.size());
 		}
 		
 		// A reload (the browser installs the full translations after startup)

@@ -38,7 +38,9 @@ namespace GAGCore
         //! Share a presentation budget across cooperative jobs, sprites and HD reloads.
         //! One indivisible decode/upload may exceed it; zero only queries readiness.
         static bool pollAssets(unsigned budgetMs = 2);
-        static unsigned assetProgress();
+        //! Fraction (0 to 1) of the requested sprite work done, weighted by
+        //! source files rather than by sprite, so large sheets count fully.
+        static float assetProgress();
 		static void releaseSprite(const std::string name);
 		
 		static void loadFont(const std::string filename, unsigned size, const std::string name);

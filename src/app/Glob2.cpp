@@ -357,7 +357,13 @@ public:
         if (hidden) return true;
         int width, height;
         if (GAGCore::ApplicationHost::takeViewportSize(width, height)) gfx->resizeViewport(width, height);
-        if (globalContainer->finishAssetLoading()) return false;
+        if (globalContainer->finishAssetLoading()) {
+#ifndef __EMSCRIPTEN__
+            // Leave a full bar up while the first menu frame is built.
+            draw();
+#endif
+            return false;
+        }
 #ifndef __EMSCRIPTEN__
         draw();
 #endif

@@ -5,6 +5,7 @@
 #include "ComputeTelemetry.h"
 #include "ApplicationResourcePlan.h"
 #include <atomic>
+#include <chrono>
 
 #include <memory>
 #include <CooperativeTask.h>
@@ -43,13 +44,23 @@ public:
 	enum { OPTION_MAP_EDIT_USE_USL=0x2 };
 
 private:
-	void updateLoadProgressScreen(int value);
-	void loadGameGraphics(bool showProgress);
+	//! Open the window and draw the splash; sprite decoding starts here.
+	void openLoadingScreen(void);
+	//! Record that the synchronous startup steps are `fraction` done and redraw.
+	void finishLoadingStep(float fraction);
+	//! Overall startup progress, 0 to 1: the synchronous steps and sprite decoding.
+	float loadingProgress() const;
+	//! Draw the splash, easing the bar towards loadingProgress(); `settle`
+	//! draws it there directly.
+	void drawLoadingScreen(bool settle = false);
+	void loadGameGraphics();
     void requestGameGraphics();
 	void loadGameFonts();
 	bool gameGraphics = false;
     bool gameGraphicsRequested = false;
 	bool menuMusic = false;
+	float loadingSteps = 0, loadingShown = 0;
+	std::chrono::steady_clock::time_point loadingDrawn, loadingTerrainShown;
 
 public:
 	explicit GlobalContainer(const char *profileName="glob2", const std::string& buildingCatalog="");
@@ -73,7 +84,8 @@ public:
 	//! hosts staging sprites later return false until
 	//! GAGCore::ApplicationHost::assetPackageReady("game"). Always true
 	//! without graphics (runNoX).
-	bool ensureGameGraphics(void);
+	//! `budgetMs` bounds the presentation-thread work done per call.
+	bool ensureGameGraphics(unsigned budgetMs = 4);
 	//! Standalone tool startup, after selecting SDL drivers, on the graphics thread.
 	void loadOffscreenGraphics();
 	bool gameGraphicsLoaded(void) const { return gameGraphics; }

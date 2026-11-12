@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <functional>
 #include <vector>
 #include <bitset>
 #include <map>
@@ -29,7 +30,9 @@ namespace GAGCore
 		bool isLangComplete(int l) { return !incomplete[l]; }
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool loadIncompleteList(const std::string filename);
-		bool load(const std::string filename);
+		//! `progress`, if given, receives the fraction (0 to 1) of the
+		//! translation files read so far.
+		bool load(const std::string filename, const std::function<void(float)> &progress = {});
 		const std::string getString(const std::string stringname) const;
 		bool doesStringExist(const std::string stringname) const;
 		const std::string getStringInLang(const std::string stringname, int lang) const;
