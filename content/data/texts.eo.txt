@@ -1734,8 +1734,16 @@ Grandeco de kontinento
 Malglateco de marbordo
 [Fjord width]
 Larĝo de fjordo
-[Lake connects to fjords]
-Lago ligita al fjordoj
+[Ice sheet size]
+Grando de la glacikovraĵo
+[Fjord landings]
+Albordiĝejoj de fjordoj
+[Fjord continents need at least one colony.]
+Fjorda kontinento bezonas almenaŭ unu kolonion.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Fjorda kontinento bezonas mapon kun almenaŭ 128 kaheloj sur la pli mallonga flanko.
+[Ice reach]
+Etendo de la glacio
 [Resource islands]
 Rimedinsuloj
 [Watershed]
@@ -1980,8 +1988,8 @@ Sablaj vojoj
 Trezoroj en senelirejoj
 [Fjord bank deposits]
 Kuŝejoj ĉe fjordaj bordoj
-[Sandy lake shore]
-Sabla lagbordo
+[Nunatak orchards]
+Fruktoĝardenoj sur nunatakoj
 [River delta]
 Riverdelto
 [Meandering rivers]

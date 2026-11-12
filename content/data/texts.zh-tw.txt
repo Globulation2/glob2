@@ -1734,8 +1734,16 @@ AI 策略與對抗
 海岸線曲折度
 [Fjord width]
 峽灣寬度
-[Lake connects to fjords]
-湖泊連通峽灣
+[Ice sheet size]
+冰蓋大小
+[Fjord landings]
+峽灣登陸點
+[Fjord continents need at least one colony.]
+峽灣大陸至少需要一個殖民地。
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+峽灣大陸需要短邊至少 128 格的地圖。
+[Ice reach]
+冰封範圍
 [Resource islands]
 資源島嶼
 [Watershed]
@@ -1980,8 +1988,8 @@ AI 策略與對抗
 死路盡頭的寶藏
 [Fjord bank deposits]
 峽灣岸邊的資源
-[Sandy lake shore]
-沙質湖岸
+[Nunatak orchards]
+冰原島峰果園
 [River delta]
 河口三角洲
 [Meandering rivers]

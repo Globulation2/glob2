@@ -1734,8 +1734,16 @@ Velikost celine
 Razgibanost obale
 [Fjord width]
 Širina fjorda
-[Lake connects to fjords]
-Jezero povezano s fjordi
+[Ice sheet size]
+Velikost ledenega pokrova
+[Fjord landings]
+Pristajališča v fjordih
+[Fjord continents need at least one colony.]
+Celina fjordov potrebuje vsaj eno kolonijo.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Celina fjordov potrebuje zemljevid s krajšo stranico vsaj 128 polj.
+[Ice reach]
+Doseg ledu
 [Resource islands]
 Otoki s surovinami
 [Watershed]
@@ -1980,8 +1988,8 @@ Peščene poti
 Zakladi v slepih ulicah
 [Fjord bank deposits]
 Nahajališča na bregovih fjordov
-[Sandy lake shore]
-Peščena obala jezera
+[Nunatak orchards]
+Sadovnjaki na nunatakih
 [River delta]
 Rečna delta
 [Meandering rivers]

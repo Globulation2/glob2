@@ -1698,8 +1698,16 @@ Globulation 2-এর কার্সার দেখান।
 উপকূলের রুক্ষতা
 [Fjord width]
 ফিয়র্ডের প্রস্থ
-[Lake connects to fjords]
-হ্রদটি ফিয়র্ডগুলোর সাথে সংযুক্ত
+[Ice sheet size]
+বরফের চাদরের আকার
+[Fjord landings]
+ফিয়র্ডের ঘাট
+[Fjord continents need at least one colony.]
+ফিয়র্ড মহাদেশে অন্তত একটি উপনিবেশ লাগে।
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+ফিয়র্ড মহাদেশের জন্য মানচিত্রের ছোট দিকটি অন্তত ১২৮ ঘর হতে হবে।
+[Ice reach]
+বরফের বিস্তার
 [Resource islands]
 সম্পদ দ্বীপ
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2-এর কার্সার দেখান।
 বন্ধ পথের মধ্যে গুপ্তধন
 [Fjord bank deposits]
 ফিয়র্ডের তীরে সম্পদভাণ্ডার
-[Sandy lake shore]
-বালুকাময় হ্রদের তীর
+[Nunatak orchards]
+নুনাটাকের ফলবাগান
 [River delta]
 নদী বদ্বীপ
 [Meandering rivers]

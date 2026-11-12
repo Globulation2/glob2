@@ -1734,8 +1734,16 @@ Kích thước lục địa
 Độ khúc khuỷu của bờ biển
 [Fjord width]
 Độ rộng vịnh hẹp
-[Lake connects to fjords]
-Hồ nối với vịnh hẹp
+[Ice sheet size]
+Kích thước chỏm băng
+[Fjord landings]
+Bến đổ bộ vịnh hẹp
+[Fjord continents need at least one colony.]
+Lục địa vịnh hẹp cần ít nhất một thuộc địa.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Lục địa vịnh hẹp cần bản đồ có cạnh ngắn ít nhất 128 ô.
+[Ice reach]
+Phạm vi băng
 [Resource islands]
 Đảo tài nguyên
 [Watershed]
@@ -1980,8 +1988,8 @@ Bờ biển lởm chởm
 Kho báu ở ngõ cụt
 [Fjord bank deposits]
 Mỏ tài nguyên ven vịnh hẹp
-[Sandy lake shore]
-Bờ hồ đầy cát
+[Nunatak orchards]
+Vườn cây trên nunatak
 [River delta]
 Châu thổ sông
 [Meandering rivers]

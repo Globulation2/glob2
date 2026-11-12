@@ -1734,8 +1734,16 @@ Kontinentstorlek
 Kustlinjens oregelbundenhet
 [Fjord width]
 Fjordbredd
-[Lake connects to fjords]
-Sjön ansluter till fjordarna
+[Ice sheet size]
+Inlandsisens storlek
+[Fjord landings]
+Landstigningsplatser i fjordarna
+[Fjord continents need at least one colony.]
+En fjordkontinent behöver minst en koloni.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+En fjordkontinent behöver en karta med minst 128 rutor på den kortare sidan.
+[Ice reach]
+Isens utbredning
 [Resource islands]
 Resursöar
 [Watershed]
@@ -1980,8 +1988,8 @@ Sandvägar
 Skatter i återvändsgränder
 [Fjord bank deposits]
 Fyndigheter längs fjordstränderna
-[Sandy lake shore]
-Sandig sjöstrand
+[Nunatak orchards]
+Fruktlundar på nunatakker
 [River delta]
 Flodens delta
 [Meandering rivers]

@@ -53,9 +53,18 @@ inline constexpr ClimateLook kClimateLooks[] = {
 	{"volcanic", OBSIDIAN_RIDGE, OUTCROP, GRASS, DRY_GRASS, SAND, SCORIA_BLOCKS, BASALT_CAUSEWAY,
 	 BASALT_CAUSEWAY, BASALT_CAUSEWAY, BOARDWALK, VOLCANIC_ASH, DARK_WATER, PUMICE, LOAM,
 	 PETRIFIED_STUMPS, DRY_GRASS},
+	// Polar: glacier cliffs, penitente ridges, pale beaches, rime paving, arctic tundra, dark cold
+	// sea, scree, moss. Not drawn by drawClimate (see kDrawnClimateCount): a map is polar because its
+	// generator says so (Fjord continent), never by the luck of a city's draw.
+	{"polar", GLACIER, PENITENTES, GRASS, GRASS, PALE_SAND, RIME_ASHLAR, MOONSTONE_LOZENGE, TRAIL,
+	 FROST_PINWHEEL, BOARDWALK, ARCTIC_TUNDRA, DARK_WATER, SCREE, MOSS, OUTCROP, GRASS},
 };
 inline constexpr int kClimateCount = int(sizeof(kClimateLooks) / sizeof(kClimateLooks[0]));
 inline constexpr int kVolcanicClimate = 3;
+inline constexpr int kPolarClimate = 4;
+/// The climates drawClimate chooses between: the first four. A climate appended after them is only
+/// ever chosen by name, so appending one never moves an existing map's draw.
+inline constexpr int kDrawnClimateCount = 4;
 static_assert(
 	[]
 	{

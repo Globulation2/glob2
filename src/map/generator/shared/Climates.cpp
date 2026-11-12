@@ -90,7 +90,7 @@ std::vector<TerrainType> lavaRings(const TerrainSketch &terrain, const Torus &t)
 
 int drawClimate(GenerationContext &context, const char *stream)
 {
-	return int(context.bounded(stream, kClimateCount));
+	return int(context.bounded(stream, kDrawnClimateCount));
 }
 
 void paintClimate(TerrainSketch &terrain, const Torus &t, const ClimateLook &look,

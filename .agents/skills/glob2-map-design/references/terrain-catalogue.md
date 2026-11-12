@@ -59,7 +59,10 @@ very last step with `paintClimate` ([Climates.h](../../../../src/map/generator/s
 - **The rules can't move.** A static_assert checks every climate's looks against their mechanic's
   group, so a look never changes a rule, and one tuning pass covers every climate.
 - **Draw the climate inside `design`.** Use its own stream (`drawClimate(context, "<id>-climate")`) so
-  the validator rebuilds the same one, and record it with `telemetry.choice`.
+  the validator rebuilds the same one, and record it with `telemetry.choice`. `drawClimate` chooses
+  among the first four (`kDrawnClimateCount`); a climate appended after them, such as polar
+  (`kPolarClimate`, used by Fjord continent), is only ever taken by name, so appending one moves no
+  existing map.
 - **Painting has to know where it is.** It needs roles only the design knows: which grass is a farm
   or a home, which paving is a town, a street, a deck or a bridge, which water is deep, and which
   rock is a second tier. Pass them through `LookRoles`.

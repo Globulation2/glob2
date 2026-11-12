@@ -1734,8 +1734,16 @@ Kontinentearen tamaina
 Kostaldearen irregulartasuna
 [Fjord width]
 Fiordoaren zabalera
-[Lake connects to fjords]
-Aintzira fiordoekin lotuta
+[Ice sheet size]
+Izotz-geruzaren tamaina
+[Fjord landings]
+Fiordoetako lehorreratzeak
+[Fjord continents need at least one colony.]
+Fiordo-kontinente batek gutxienez kolonia bat behar du.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Fiordo-kontinente batek alde laburrenean gutxienez 128 lauki dituen mapa behar du.
+[Ice reach]
+Izotzaren hedadura
 [Resource islands]
 Baliabide-uharteak
 [Watershed]
@@ -1980,8 +1988,8 @@ Harea-bideak
 Altxorrak kale itsuetan
 [Fjord bank deposits]
 Fiordoen ertzetako baliabideak
-[Sandy lake shore]
-Aintziraren ertz hareatsua
+[Nunatak orchards]
+Nunatak-baratzeak
 [River delta]
 Ibai-delta
 [Meandering rivers]

@@ -1734,8 +1734,16 @@ OpenGL در این نسخه موجود نیست.
 ناهمواری ساحل
 [Fjord width]
 پهنای آبدره
-[Lake connects to fjords]
-اتصال دریاچه به آبدره‌ها
+[Ice sheet size]
+اندازه صفحه یخی
+[Fjord landings]
+اسکله‌های آبدره
+[Fjord continents need at least one colony.]
+قاره آبدره‌ای دست‌کم به یک مستعمره نیاز دارد.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+قاره آبدره‌ای به نقشه‌ای نیاز دارد که ضلع کوتاه‌ترش دست‌کم ۱۲۸ خانه باشد.
+[Ice reach]
+گستره یخ
 [Resource islands]
 جزایر منابع
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL در این نسخه موجود نیست.
 گنج در بن‌بست‌ها
 [Fjord bank deposits]
 ذخایر کرانهٔ آبدره‌ها
-[Sandy lake shore]
-کرانهٔ شنی دریاچه
+[Nunatak orchards]
+باغ‌های نوناتاک
 [River delta]
 دلتای رودخانه
 [Meandering rivers]

@@ -1734,8 +1734,16 @@ Taille du continent
 Irrégularité des côtes
 [Fjord width]
 Largeur des fjords
-[Lake connects to fjords]
-Lac relié aux fjords
+[Ice sheet size]
+Taille de la calotte glaciaire
+[Fjord landings]
+Débarcadères des fjords
+[Fjord continents need at least one colony.]
+Un continent à fjords nécessite au moins une colonie.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Un continent à fjords nécessite une carte d'au moins 128 cases sur son côté le plus court.
+[Ice reach]
+Étendue de la glace
 [Resource islands]
 Îles de ressources
 [Watershed]
@@ -1980,8 +1988,8 @@ Chemins de sable
 Trésors dans les culs-de-sac
 [Fjord bank deposits]
 Gisements sur les rives des fjords
-[Sandy lake shore]
-Rive sableuse du lac
+[Nunatak orchards]
+Vergers des nunataks
 [River delta]
 Delta de la rivière
 [Meandering rivers]

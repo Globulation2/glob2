@@ -1734,8 +1734,16 @@ OpenGL 在此版本中不可用。
 海岸线曲折度
 [Fjord width]
 峡湾宽度
-[Lake connects to fjords]
-湖泊连通峡湾
+[Ice sheet size]
+冰盖大小
+[Fjord landings]
+峡湾登陆点
+[Fjord continents need at least one colony.]
+峡湾大陆至少需要一个殖民地。
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+峡湾大陆需要短边至少 128 格的地图。
+[Ice reach]
+冰封范围
 [Resource islands]
 资源岛屿
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL 在此版本中不可用。
 死路尽头的宝藏
 [Fjord bank deposits]
 峡湾岸边的资源
-[Sandy lake shore]
-沙质湖岸
+[Nunatak orchards]
+冰原岛峰果园
 [River delta]
 河口三角洲
 [Meandering rivers]

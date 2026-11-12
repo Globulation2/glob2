@@ -1734,8 +1734,16 @@ OpenGL недоступний у цій збірці.
 Порізаність узбережжя
 [Fjord width]
 Ширина фіорду
-[Lake connects to fjords]
-Озеро з’єднане з фіордами
+[Ice sheet size]
+Розмір льодовикового щита
+[Fjord landings]
+Причали у фіордах
+[Fjord continents need at least one colony.]
+Континенту фіордів потрібна хоча б одна колонія.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Континенту фіордів потрібна мапа з коротшою стороною щонайменше 128 клітинок.
+[Ice reach]
+Протяжність льоду
 [Resource islands]
 Острови з ресурсами
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL недоступний у цій збірці.
 Скарби в глухих кутах
 [Fjord bank deposits]
 Поклади на берегах фіордів
-[Sandy lake shore]
-Піщаний берег озера
+[Nunatak orchards]
+Сади на нунатаках
 [River delta]
 Дельта річки
 [Meandering rivers]

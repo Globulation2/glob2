@@ -1698,8 +1698,16 @@ Continent size
 Coast roughness
 [Fjord width]
 Fjord width
-[Lake connects to fjords]
-Lake connects to fjords
+[Ice sheet size]
+Ice sheet size
+[Fjord landings]
+Fjord landings
+[Fjord continents need at least one colony.]
+Fjord continents need at least one colony.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+A fjord continent needs a map at least 128 tiles on its shorter side.
+[Ice reach]
+Ice reach
 [Resource islands]
 Resource islands
 [Watershed]
@@ -1948,8 +1956,8 @@ Sand roads
 Treasure in dead ends
 [Fjord bank deposits]
 Fjord bank deposits
-[Sandy lake shore]
-Sandy lake shore
+[Nunatak orchards]
+Nunatak orchards
 [River delta]
 River delta
 [Meandering rivers]

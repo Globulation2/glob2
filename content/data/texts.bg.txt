@@ -1698,8 +1698,16 @@ OpenGL не е наличен в тази компилация.
 Неравности на брега
 [Fjord width]
 Ширина на фиорда
-[Lake connects to fjords]
-Езерото се свързва с фиорди
+[Ice sheet size]
+Размер на ледената шапка
+[Fjord landings]
+Пристани във фиордите
+[Fjord continents need at least one colony.]
+Континентът с фиорди се нуждае от поне една колония.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Континентът с фиорди се нуждае от карта с по-къса страна поне 128 полета.
+[Ice reach]
+Обхват на леда
 [Resource islands]
 Ресурсни острови
 [Watershed]
@@ -1948,8 +1956,8 @@ OpenGL не е наличен в тази компилация.
 Съкровище в задънена улица
 [Fjord bank deposits]
 Находища по бреговете на фиордите
-[Sandy lake shore]
-Пясъчен бряг на езерото
+[Nunatak orchards]
+Овощни градини на нунатаки
 [River delta]
 Речна делта
 [Meandering rivers]

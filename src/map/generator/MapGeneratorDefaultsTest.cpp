@@ -307,7 +307,7 @@ class MapGeneratorDefaultsTest
 				  .withSearchRange(3, 5),
 			  GeneratorControl::choice("test-shape", "Cell shape", {"Squares", "Hexagons"}, 0)
 				  .withSearchValues({0, 1}),
-			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)
+			  GeneratorControl::toggle("test-switch", "Nunatak orchards", false)
 				  .withSearchValues({1})},
 			 [](GenerationWorld &game, GenerationContext &context)
 			 {
@@ -348,7 +348,7 @@ class MapGeneratorDefaultsTest
 				}
 				return false;
 			};
-			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true)
+			const auto on = GeneratorControl::toggle("switch", "Nunatak orchards", true)
 								.withSearchValues({0, 1});
 			REQUIRE((on.isToggle() && on.defaultValue == 1 &&
 				   on.values() == std::vector<int>({0, 1})));
@@ -385,7 +385,7 @@ class MapGeneratorDefaultsTest
 		REQUIRE(screen.descriptor.option("test-switch") == 0);
 		edit(screen, "Island size", 16);
 		edit(screen, "Channel width", 5);
-		edit(screen, "Lake connects to fjords", 1);
+		edit(screen, "Nunatak orchards", 1);
 		REQUIRE(screen.descriptor.option("test-shape") == 0);
 		edit(screen, "Cell shape", 1);
 		select(screen, D::eRIVER);

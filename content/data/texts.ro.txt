@@ -1734,8 +1734,16 @@ Mărimea continentului
 Neregularitatea coastei
 [Fjord width]
 Lățimea fiordului
-[Lake connects to fjords]
-Lac conectat la fiorduri
+[Ice sheet size]
+Dimensiunea calotei glaciare
+[Fjord landings]
+Debarcadere în fiorduri
+[Fjord continents need at least one colony.]
+Un continent cu fiorduri are nevoie de cel puțin o colonie.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Un continent cu fiorduri are nevoie de o hartă cu latura mai scurtă de cel puțin 128 de pătrate.
+[Ice reach]
+Întinderea gheții
 [Resource islands]
 Insule cu resurse
 [Watershed]
@@ -1980,8 +1988,8 @@ Drumuri de nisip
 Comori în fundături
 [Fjord bank deposits]
 Zăcăminte pe malurile fiordurilor
-[Sandy lake shore]
-Mal nisipos al lacului
+[Nunatak orchards]
+Livezi pe nunatakuri
 [River delta]
 Delta râului
 [Meandering rivers]
