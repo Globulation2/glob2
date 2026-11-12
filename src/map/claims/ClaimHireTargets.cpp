@@ -91,5 +91,5 @@ void Map::prepareClaimHireTargets(int teamNumber)
     // about a microsecond; below this many requests the dispatch would cost
     // the owner more than the searches themselves.
     if(index.requests.size()<HireTargetIndex::parallelSearches)for(std::size_t i=0;i<index.requests.size();++i)search(i);
-    else compute.run(index.requests.size(),search,{ComputeProducer::Other,game->stepCounter,game->stepCounter});
+    else compute.run(index.requests.size(),search,{ComputeProducer::Claims,game->stepCounter,game->stepCounter});
 }

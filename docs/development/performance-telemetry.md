@@ -433,7 +433,9 @@ window; callback durations still publish at callback completion. Histograms and
 variance updates never run under the scheduler mutex for permanent telemetry.
 Job callback wall durations, player lanes, gradient subtypes, required waits, incomplete
 deadlines and unique affected ticks are available with diagnostics `off`.
-Turrets have their own producer and tick-deadline joins. Save/teardown joins do not
+Turrets have their own producer and tick-deadline joins, as do claim route and hire-target
+searches (`claims`). The in-game "What holds up progress?" chart draws every producer that
+waited in the shown range, one line each, and omits the rest. Save/teardown joins do not
 count as required tick waits. A tick can wait for several producers, so per-producer
 wait-tick counts must not be summed into a global affected-tick count.
 

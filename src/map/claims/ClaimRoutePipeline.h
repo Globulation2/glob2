@@ -195,7 +195,7 @@ public:
         const ComputeExecutor::Group batch{group->jobs.size(), {run, group.get()}, ComputeExecutor::NoLane};
         try {
             group->batch = executor.submit(std::span(&batch, 1), ComputeExecutor::boundaryDue(due),
-                {ComputeProducer::Other, due - 1, due});
+                {ComputeProducer::Claims, due - 1, due});
         } catch (...) { for (auto* work : group->jobs) work->group.reset(); throw; }
         sealedTick = due - 1;
     }

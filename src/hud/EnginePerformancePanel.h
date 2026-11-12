@@ -37,11 +37,20 @@ class EnginePerformancePanel
 	bool costsOpen = false, slowOpen = false, explorerOpen = false;
 	bool recent = false;
 	double cursorMinute = -1;
+	struct SeriesStyle
+	{
+		GAGCore::Color color;
+		bool dotted = false; // markers only, for hues shared by two series
+	};
 	struct Chart
 	{
 		std::string title, unit, explanation;
 		std::vector<std::string> labels;
 		std::vector<std::unique_ptr<EnginePerformancePanel>> series;
+		// Per-series colours; empty uses the default four-colour cycle.
+		std::vector<SeriesStyle> styles;
+		// Draw only series with a positive value somewhere in the shown range.
+		bool nonZeroOnly = false;
 	};
 	std::vector<Chart> charts;
 	struct PlotBounds
@@ -54,7 +63,9 @@ class EnginePerformancePanel
 	Glob2UI::Element taskCosts(const Glob2UI::Presentation &);
 	PlotBounds paintLines(Glob2UI::Canvas &, Glob2UI::Rect,
 						  const std::vector<EnginePerformancePanel *> &,
-						  const std::vector<std::string> &, const std::string &unit);
+						  const std::vector<std::string> &, const std::string &unit,
+						  const std::vector<SeriesStyle> &styles = {});
+	std::vector<std::size_t> visibleSeries(const Chart &) const;
 	unsigned selectedSlow = 0;
 	std::uint64_t revision = ~std::uint64_t(0), session = 0;
 	unsigned cachedScope = ~0u;
