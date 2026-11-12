@@ -167,7 +167,7 @@ void EnginePerformancePanel::refresh()
 		// Waits are event measurements: an advancing, covered interval with no
 		// wait events is a measured zero, not an unsupported clock or missing data.
 		const bool waitMetric =
-			(scope >= unsigned(pt::Id::WaitAI) && scope <= unsigned(pt::Id::WaitTurret)) ||
+			(scope >= unsigned(pt::Id::WaitAI) && scope <= unsigned(pt::Id::WaitClaims)) ||
 			scope == unsigned(pt::Id::JoinWait);
 		if (waitMetric && !m.time.count && ticks &&
 			w.metrics[unsigned(pt::Id::OwnerAdvance)].time.count &&
@@ -463,13 +463,36 @@ void EnginePerformancePanel::initCharts()
 		"Owner advancement, including required joins. p95 is approximate; budget follows game "
 		"speed.",
 		{{"Mean", o, View::Mean}, {"p95", o + 2, View::Mean}, {"Budget", o + 14, View::Mean}});
+	// Every producer's wait, in ComputeProducer order. Only producers that
+	// waited somewhere in the shown range are drawn (see visibleSeries).
 	add("What holds up progress?", "ms/tick",
-		"Total exposed waiting and selected producers, per advancing tick. Zero means no waits in "
-		"a covered interval.",
-		{{"All waits", id(pt::Id::JoinWait), View::PerTick},
-		 {"AI", id(pt::Id::WaitAI), View::PerTick},
+		"Exposed waiting per advancing tick for each background producer that waited in the "
+		"shown range. A tick can wait for several producers at once.",
+		{{"AI", id(pt::Id::WaitAI), View::PerTick},
+		 {"Zone / resource gradients", id(pt::Id::WaitPeriodicGradient), View::PerTick},
+		 {"Building gradients", id(pt::Id::WaitBuildingGradient), View::PerTick},
+		 {"Resource growth", id(pt::Id::WaitResourceGrowth), View::PerTick},
+		 {"Hiring", id(pt::Id::WaitHiring), View::PerTick},
+		 {"Presentation", id(pt::Id::WaitPresentation), View::PerTick},
+		 {"Other", id(pt::Id::WaitOther), View::PerTick},
+		 {"Mixed", id(pt::Id::WaitMixed), View::PerTick},
 		 {"Checksums", id(pt::Id::WaitChecksum), View::PerTick},
-		 {"Building gradients", id(pt::Id::WaitBuildingGradient), View::PerTick}});
+		 {"Team statistics", id(pt::Id::WaitTeamStatistics), View::PerTick},
+		 {"Turret targeting", id(pt::Id::WaitTurret), View::PerTick},
+		 {"Claims", id(pt::Id::WaitClaims), View::PerTick}});
+	{
+		// Stable colour per producer, so a producer keeps its colour as others
+		// appear and disappear. Eight validated dark-surface hues; the four
+		// producers that rarely wait reuse a hue drawn as dots instead of lines.
+		const GAGCore::Color blue(57, 135, 229), orange(217, 89, 38), aqua(25, 158, 112),
+			yellow(201, 133, 0), magenta(213, 81, 129), green(0, 131, 0), violet(144, 133, 233),
+			red(230, 103, 103);
+		auto &chart = charts.back();
+		chart.nonZeroOnly = true;
+		chart.styles = {{blue},   {orange},       {aqua},         {yellow},
+						{magenta}, {violet, true}, {orange, true}, {aqua, true},
+						{violet},  {red},          {yellow, true}, {green}};
+	}
 	add("How often is progress delayed?", "%",
 		"Advancing ticks with any exposed wait, and ticks over budget. Producer counts can "
 		"overlap.",
@@ -575,14 +598,18 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 		auto &chart = charts[i];
 		fe::CanvasOptions options;
 		options.accessibleText = chart.title + " (" + chart.unit + "). " + chart.explanation;
-		for (std::size_t n = 0; n < chart.series.size(); ++n)
-		{
-			chart.series[n]->refresh();
+		for (auto &s : chart.series)
+			s->refresh();
+		const auto shown = visibleSeries(chart);
+		for (const auto n : shown)
 			options.accessibleText +=
 				" " + chart.labels[n] + ": " +
 				(chart.series[n]->points.empty() ? "Collecting"
 												 : number(chart.series[n]->points.back().value));
-		}
+		if (chart.nonZeroOnly && shown.empty())
+			options.accessibleText += " No background waits in the shown range.";
+		// Each legend row holds two series; grow the plot to keep its height.
+		const int legendRows = int((std::max<std::size_t>(shown.size(), 4) + 1) / 2);
 		auto inspect = [this, i](fe::Point at)
 		{
 			auto &data = *charts[i].series[0];
@@ -594,16 +621,36 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 		const auto key =
 			i == 0 ? "engine-performance/chart" : "engine-performance/chart/" + std::to_string(i);
 		auto canvas = fe::canvas(
-			key, {p.textPt(340), p.textPt(220)},
+			key, {p.textPt(340), p.textPt(220 + 18 * (legendRows - 2))},
 			[this, i](fe::Canvas &c, fe::Rect r, const fe::Frame &)
 			{
-				std::vector<EnginePerformancePanel *> data;
-				for (auto &s : charts[i].series)
-				{
+				auto &chart = charts[i];
+				for (auto &s : chart.series)
 					s->refresh();
-					data.push_back(s.get());
+				std::vector<EnginePerformancePanel *> data;
+				std::vector<std::string> labels;
+				std::vector<SeriesStyle> styles;
+				for (const auto n : visibleSeries(chart))
+				{
+					data.push_back(chart.series[n].get());
+					labels.push_back(chart.labels[n]);
+					if (n < chart.styles.size())
+						styles.push_back(chart.styles[n]);
 				}
-				chartPlots[i] = paintLines(c, r, data, charts[i].labels, charts[i].unit);
+				if (chart.nonZeroOnly && data.empty() && !chart.series.front()->points.empty())
+				{
+					chartPlots[i] = {};
+					c.fillRect(r, GAGCore::Color(18, 25, 35));
+					c.text({r.x + 10, r.y + 12}, fe::FontRole::Support,
+						   "No background waits in the shown range.", GAGCore::Color(220, 225, 235));
+					return;
+				}
+				// The hover position is mapped through the first series' windows,
+				// which every series shares.
+				if (data.empty())
+					data.push_back(chart.series.front().get());
+				chartPlots[i] = paintLines(c, r, data, labels.empty() ? chart.labels : labels,
+										   chart.unit, styles);
 			},
 			options);
 		cards.push_back(fe::card(fe::column({fe::label(chart.title),canvas,fe::hint(chart.explanation + (i==6 ? []{
@@ -668,6 +715,7 @@ fe::Element EnginePerformancePanel::taskCosts(const fe::Presentation &p)
 				 {I::ComputeChecksum, "Checksums"},
 				 {I::ComputeTeamStatistics, "Team statistics"},
 				 {I::ComputeResourceGrowth, "Resource growth"},
+				 {I::ComputeClaims, "Claims"},
 				 {I::ComputeScene, "Scene preparation"},
 				 {I::ComputeMaintenance, "Maintenance"}}},
 			   {"Rendering and supporting work",
@@ -722,6 +770,32 @@ fe::Element EnginePerformancePanel::taskCosts(const fe::Presentation &p)
 	return fe::column(std::move(sections), {p.pt(8)});
 }
 
+std::vector<std::size_t> EnginePerformancePanel::visibleSeries(const Chart &chart) const
+{
+	std::vector<std::size_t> shown;
+	for (std::size_t n = 0; n < chart.series.size(); ++n)
+	{
+		if (!chart.nonZeroOnly)
+		{
+			shown.push_back(n);
+			continue;
+		}
+		// Match paintLines' range: the last five game minutes or the whole session.
+		const auto &points = chart.series[n]->points;
+		if (points.empty())
+			continue;
+		const double xmin = std::max(points.front().tickStart / 1800.,
+									 recent ? points.back().x - 5. : 0.);
+		for (const auto &point : points)
+			if (point.x >= xmin && std::isfinite(point.value) && point.value > 0)
+			{
+				shown.push_back(n);
+				break;
+			}
+	}
+	return shown;
+}
+
 std::string EnginePerformancePanel::viewUnit() const
 {
 	if (scope >= pt::ScopeCount)
@@ -738,7 +812,7 @@ std::string EnginePerformancePanel::viewUnit() const
 	{
 	case View::Calls:
 		return (scope >= unsigned(pt::Id::WaitTickAI) &&
-				scope <= unsigned(pt::Id::WaitTickTurret)) ||
+				scope <= unsigned(pt::Id::WaitTickClaims)) ||
 					   scope == unsigned(pt::Id::TickWaited)
 				   ? "ticks/min"
 				   : "calls/min";
@@ -769,12 +843,15 @@ void EnginePerformancePanel::paint(fe::Canvas &c, fe::Rect r)
 EnginePerformancePanel::PlotBounds
 EnginePerformancePanel::paintLines(fe::Canvas &c, fe::Rect r,
 								   const std::vector<EnginePerformancePanel *> &data,
-								   const std::vector<std::string> &labels, const std::string &unit)
+								   const std::vector<std::string> &labels, const std::string &unit,
+								   const std::vector<SeriesStyle> &styles)
 {
 	const GAGCore::Color ink(220, 225, 235), muted(150, 166, 183), grid(48, 61, 75),
 		gold(220, 171, 81);
-	const GAGCore::Color colors[]{GAGCore::Color(87, 208, 235), GAGCore::Color(244, 181, 91),
-								  GAGCore::Color(186, 157, 240), GAGCore::Color(127, 218, 160)};
+	const GAGCore::Color palette[]{GAGCore::Color(87, 208, 235), GAGCore::Color(244, 181, 91),
+								   GAGCore::Color(186, 157, 240), GAGCore::Color(127, 218, 160)};
+	auto style = [&](std::size_t n)
+	{ return n < styles.size() ? styles[n] : SeriesStyle{palette[n % 4]}; };
 	c.fillRect(r, GAGCore::Color(18, 25, 35));
 	c.pushClip(r);
 	if (data.empty() || data.front()->points.empty())
@@ -912,10 +989,11 @@ EnginePerformancePanel::paintLines(fe::Canvas &c, fe::Rect r,
 				continue;
 			}
 			const fe::Point at{x(point.x), y(point.value)};
-			if (connected && mode == point.mode)
-				c.line(previous, at, colors[n % 4]);
+			const auto look = style(n);
+			if (connected && mode == point.mode && !look.dotted)
+				c.line(previous, at, look.color);
 			else
-				c.fillRect({at.x - 1, at.y - 1, 3, 3}, colors[n % 4]);
+				c.fillRect({at.x - 1, at.y - 1, 3, 3}, look.color);
 			previous = at;
 			connected = true;
 			mode = point.mode;
@@ -943,7 +1021,7 @@ EnginePerformancePanel::paintLines(fe::Canvas &c, fe::Rect r,
 			fe::ellipsize(measurer, fe::FontRole::Support, labels[n], labelWidth) + suffix;
 		legend = fe::ellipsize(measurer, fe::FontRole::Support, legend, availableWidth);
 		c.text({r.x + 8 + column * r.w / 2, r.y + 6 + row * legendStep}, fe::FontRole::Support,
-			   legend, colors[n % 4]);
+			   legend, style(n).color);
 	}
 	std::string status = std::string(inspecting ? "Selected: " : "Latest interval: ") +
 						 number(selected.tickStart / 1800.) + "–" + number(selected.x) + " min · " +

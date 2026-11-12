@@ -395,7 +395,8 @@ their source signatures and digests.
 ## Executor wait diagnostics and tracing
 
 Use `--compute-telemetry waits` to attribute unfinished required batches to AI,
-periodic/building gradients, resource growth, hiring, presentation, other or mixed work.
+periodic/building gradients, resource growth, hiring, presentation, checksums, team
+statistics, turrets, claim routing and hire targets (`claims`), other or mixed work.
 Use `trace` for scheduling events. Collection defaults to off; legacy compute timing
 fields are unavailable (`null`) unless the selected mode collects them. Benchmark readers
 must check availability rather than treating null as zero. The gradient pipeline benchmark

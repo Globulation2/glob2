@@ -371,20 +371,20 @@ private:
 		// Scope blocks follow ComputeProducer order; verify their bounds when
 		// extending the taxonomy instead of duplicating every producer mapping.
 		static constexpr std::pair<Id, Id> blocks[]{
-			{Id::ComputeAI, Id::ComputeTurret},
-			{Id::WaitAI, Id::WaitTurret},
-			{Id::WaitTickAI, Id::WaitTickTurret},
-			{Id::QueueAI, Id::QueueTurret},
-			{Id::LaneAI, Id::LaneTurret},
-			{Id::ExternalAI, Id::ExternalTurret},
-			{Id::JoinAI, Id::JoinTurret},
-			{Id::OwnerJoinAI, Id::OwnerJoinTurret},
-			{Id::DeadlineAI, Id::DeadlineTurret},
-			{Id::NotificationAI, Id::NotificationTurret},
-			{Id::CriticalCallbackAI, Id::CriticalCallbackTurret},
-			{Id::CriticalQueueAI, Id::CriticalQueueTurret},
-			{Id::CriticalLaneAI, Id::CriticalLaneTurret},
-			{Id::CriticalExternalAI, Id::CriticalExternalTurret}};
+			{Id::ComputeAI, Id::ComputeClaims},
+			{Id::WaitAI, Id::WaitClaims},
+			{Id::WaitTickAI, Id::WaitTickClaims},
+			{Id::QueueAI, Id::QueueClaims},
+			{Id::LaneAI, Id::LaneClaims},
+			{Id::ExternalAI, Id::ExternalClaims},
+			{Id::JoinAI, Id::JoinClaims},
+			{Id::OwnerJoinAI, Id::OwnerJoinClaims},
+			{Id::DeadlineAI, Id::DeadlineClaims},
+			{Id::NotificationAI, Id::NotificationClaims},
+			{Id::CriticalCallbackAI, Id::CriticalCallbackClaims},
+			{Id::CriticalQueueAI, Id::CriticalQueueClaims},
+			{Id::CriticalLaneAI, Id::CriticalLaneClaims},
+			{Id::CriticalExternalAI, Id::CriticalExternalClaims}};
 		static_assert(
 			[]
 			{

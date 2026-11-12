@@ -6,6 +6,7 @@
 #include "GameFixtures.h"
 #include "Continuation.h"
 #include <PerformanceTelemetry.h>
+#include "ComputeTelemetry.h"
 #include <vector>
 #include <cmath>
 #include <algorithm>
@@ -1599,6 +1600,34 @@ TEST_SUITE("TeamStatsSave")
         panel.scope=unsigned(PerformanceTelemetry::Id::GPUTime);panel.refresh();
         CHECK(std::isnan(panel.points[1].value));
         CHECK(perf.history->window(1).metrics[unsigned(PerformanceTelemetry::Id::WaitAI)].time.count==0);
+    }
+    TEST_CASE("the progress chart shows each producer that waited in the shown range")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto &perf=PerformanceTelemetry::collector();
+        perf.history=std::make_unique<PerformanceTelemetry::History>();
+        // Ten game minutes: AI waits in the first, claims in the last.
+        for(unsigned i=0;i<10;++i){
+            auto w=std::make_unique<PerformanceTelemetry::Window>();
+            w->tickStart=i*1800;w->tickEnd=(i+1)*1800;
+            w->startNs=i*60000000000ULL;w->endNs=(i+1)*60000000000ULL;
+            w->metrics[unsigned(PerformanceTelemetry::Id::OwnerAdvance)].time.add(1000);
+            if(i==0)w->metrics[unsigned(PerformanceTelemetry::Id::WaitAI)].time.add(2000000);
+            if(i==9)w->metrics[unsigned(PerformanceTelemetry::Id::WaitClaims)].time.add(3000000);
+            perf.history->append(std::move(*w));
+        }
+        EnginePerformancePanel panel;
+        panel.initCharts();
+        auto &chart=*std::find_if(panel.charts.begin(),panel.charts.end(),
+            [](const auto &c){return c.title=="What holds up progress?";});
+        REQUIRE(chart.nonZeroOnly);
+        REQUIRE(chart.series.size()==unsigned(ComputeProducer::Count));
+        REQUIRE(chart.styles.size()==chart.series.size());
+        for(auto &s:chart.series)s->refresh();
+        auto labels=[&]{std::vector<std::string> out;for(auto n:panel.visibleSeries(chart))out.push_back(chart.labels[n]);return out;};
+        CHECK(labels()==std::vector<std::string>{"AI","Claims"});
+        panel.recent=true;
+        CHECK(labels()==std::vector<std::string>{"Claims"});
     }
 	TEST_CASE("performance explorer units follow the selected population and denominator")
 	{
