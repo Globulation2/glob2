@@ -947,6 +947,7 @@ set(GLOB2_MAP_TESTS_0_SOURCES
     src/map/BrushCoverageTest.cpp
     src/common/FilenameStripTest.cpp
     src/field/FieldTraversalTest.cpp
+    src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
     src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
@@ -1963,6 +1964,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/map/BrushCoverageTest.cpp
     src/common/FilenameStripTest.cpp
     src/field/FieldTraversalTest.cpp
+    src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
     src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
