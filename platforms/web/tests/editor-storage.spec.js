@@ -9,6 +9,9 @@ const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
 for(const fault of ['quota','aborted transaction']) test(`editor save before quit survives ${fault} with export and retry`,async({page,context},info)=>{
+  // Three cold starts (first load, a second tab, a reload). Each takes 18-35 s
+  // to reach the menu under SwiftShader on hosted runners, before any editing.
+  test.setTimeout(240000);
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
   await clickControl(page,'new-map');await screen(page,'NewMapScreen');
