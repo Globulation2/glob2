@@ -41,13 +41,28 @@ struct BoxDomain
 	const Record &r;
 	unsigned shift;
 	explicit BoxDomain(const Record &record) : r(record), shift(unsigned(std::countr_zero(unsigned(record.width)))) {}
+	static inline std::uint64_t evaluations = 0;
 	unsigned entry(std::uint32_t i, bool) const
 	{
+		++evaluations;
 		const int x = int(i & unsigned(r.width - 1)), y = int(i >> shift);
 		const int dx = (x - r.boxX) & (r.width - 1), dy = (y - r.boxY) & (r.height - 1);
 		if (dx >= r.boxW || dy >= r.boxH)
 			return 0;
 		return r.entries[std::size_t(dy) * r.boxW + dx];
+	}
+};
+
+struct OthersBlocked
+{
+	const BoxDomain &domain;
+	const std::vector<std::uint32_t> &goals;
+	std::uint32_t goal;
+	unsigned entry(std::uint32_t i, bool g) const
+	{
+		if (i != goal && std::find(goals.begin(), goals.end(), i) != goals.end())
+			return 0;
+		return domain.entry(i, g);
 	}
 };
 
@@ -239,6 +254,7 @@ int main(int argc, char **argv)
 	unsigned repeat = 5;
 	std::string only = "all", variant = "new";
 	bool verify = false;
+	int window = -1;
 	for (int i = 2; i < argc; ++i)
 	{
 		const std::string a = argv[i];
@@ -250,6 +266,8 @@ int main(int argc, char **argv)
 			variant = argv[++i];
 		else if (a == "--verify")
 			verify = true;
+		else if (a == "--window" && i + 1 < argc)
+			window = std::stoi(argv[++i]);
 		else
 		{
 			std::cerr << "unknown argument " << a << "\n";
@@ -296,6 +314,9 @@ int main(int argc, char **argv)
 	astar::Workspace workspace;
 	if (variant == "torus")
 		workspace.forcedWindow = 1u << 20;
+	if (window >= 0)
+		workspace.forcedWindow = unsigned(window);
+
 	LegacyUnitSearch legacy;
 #ifdef GLOB2_ASTAR_BASELINE_CLAIMS
 	ResourceClaims::RouteSearch legacyClaims;
@@ -313,14 +334,16 @@ int main(int argc, char **argv)
 			{
 				if (r->kind == 1)
 				{
-					// The replaced scan searched candidate by candidate.
+					// The replaced scan searched candidate by candidate; in game the
+					// other candidates' cells are occupied, so they are blocked.
 					for (auto goal : r->goals)
 					{
 						auto single = q;
 						single.target = goal;
 						single.goalRadius = 0;
 						int dx, dy;
-						found += legacy.find(domain, single, &dx, &dy);
+						const OthersBlocked alone{domain, r->goals, goal};
+						found += legacy.find(alone, single, &dx, &dy);
 						expansions += legacy.expansions;
 						digest = digest * 31 + std::uint64_t(dx + 2) * 5 + std::uint64_t(dy + 2);
 					}
@@ -379,6 +402,7 @@ int main(int argc, char **argv)
 				astar::GoalQuery g{r->width, r->height, r->start, r->maximumCost, r->floor};
 				goalResults.resize(r->goals.size());
 				workspace.searchGoals(domain, g, r->goals, goalResults);
+				expansions += 0;
 				for (const auto &result : goalResults)
 				{
 					found += result.reached;
@@ -403,6 +427,7 @@ int main(int argc, char **argv)
 				t.mix(digest);
 			}
 		}
+	std::printf("domain evaluations per query: %.1f\n", double(BoxDomain::evaluations) / double(chosen.size() * repeat));
 	std::printf("%-8s %-10s %8s %12s %10s %9s %9s %18s\n", "kind", "variant", "queries", "ns/query", "exp/query",
 				"found", "restarts", "digest");
 	for (const auto &[kind, t] : totals)

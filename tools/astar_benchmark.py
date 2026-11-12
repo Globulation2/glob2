@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -27,6 +28,14 @@ WORK = ROOT / 'artifacts' / 'astar'
 CORPUS = WORK / 'corpus.bin'
 OLD_CLAIM_SEARCH = 'src/map/claims/ClaimRouteSearch.h'
 GAMES = ('gd-small-2ai', 'gd-archipelago', 'gd-large-4ai', 'gd-bigarena-long', 'G2', 'cross-replay')
+# New games from maps (saves made before resource claims never route claims):
+# map, players, ticks, seed. Long enough for armies to meet.
+MATCHES = (
+    ('SmallForTwo', ('castor', 'maxima'), 20000, 19),
+    ('SmallForTwo', ('maxima', 'maxima'), 20000, 23),
+    ('FourSquares1', ('castor', 'cortex', 'maxima', 'numbi'), 20000, 713),
+    ('FourSquares1', ('maxima', 'maxima', 'castor', 'castor'), 20000, 41),
+)
 
 
 def git(*args: str) -> str:
@@ -70,12 +79,24 @@ def capture(arguments) -> None:
         subprocess.run([str(arguments.binary), 'game', 'run', '--load-game', str(saved), '--ticks', str(arguments.ticks),
                         '--compute-threads', '1', '--output-dir', str(WORK / 'runs' / game)],
                        cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
-    print(f'{corpus}: {corpus.stat().st_size} bytes', file=sys.stderr)
+    if not arguments.no_matches:
+        for name, players, ticks, seed in MATCHES:
+            print(f'{name}: {" vs ".join(players)}, {ticks} ticks', file=sys.stderr, flush=True)
+            output = WORK / 'runs' / f'{name}-{seed}'
+            shutil.rmtree(output, ignore_errors=True)
+            subprocess.run([str(arguments.binary), 'game', 'run', '--map-file', str(ROOT / 'content' / 'maps' / f'{name}.map.gz'),
+                            '--game-seed', str(seed), *[a for p in players for a in ('--player', p)],
+                            '--ticks', str(ticks), '--win-probability', '0', '--compute-threads', '1',
+                            '--output-dir', str(output)],
+                           cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
+    size = corpus.stat().st_size if corpus.exists() else 0
+    print(f'{corpus}: {size} bytes', file=sys.stderr)
 
 
 def run(arguments) -> None:
     binary = build(arguments.opt, arguments.cxxflags)
-    base = [str(binary), str(arguments.corpus), '--repeat', str(arguments.repeat), '--only', arguments.only]
+    base = [str(binary), str(arguments.corpus), '--repeat', str(arguments.repeat), '--only', arguments.only,
+            *arguments.knobs]
     if arguments.verify:
         subprocess.run([*base, '--verify'], check=True)
         return
@@ -92,7 +113,7 @@ def profile(arguments) -> None:
     else:
         tool += ['--cache-sim=yes', '--branch-sim=yes']
     subprocess.run([*tool, str(binary), str(arguments.corpus), '--repeat', '1', '--only', arguments.only,
-                    '--variant', arguments.variant], check=True)
+                    '--variant', arguments.variant, *arguments.knobs], check=True)
     annotate = 'callgrind_annotate' if arguments.tool == 'callgrind' else 'cg_annotate'
     subprocess.run([annotate, '--auto=yes', str(out)] if arguments.tool == 'callgrind' else [annotate, str(out)])
 
@@ -105,6 +126,7 @@ def main() -> None:
     c.add_argument('--ticks', type=int, default=1500)
     c.add_argument('--limit', type=int, default=400000)
     c.add_argument('--games', nargs='*', default=list(GAMES))
+    c.add_argument('--no-matches', action='store_true', help='only the saved games')
     c.add_argument('--out', default=str(CORPUS))
     for name in ('run', 'profile'):
         p = commands.add_parser(name)
@@ -113,6 +135,7 @@ def main() -> None:
         p.add_argument('--repeat', type=int, default=5)
         p.add_argument('--only', default='all')
         p.add_argument('--cxxflags', nargs='*', default=[])
+        p.add_argument('--knobs', nargs='*', default=[], help='extra benchmark flags, e.g. --fill 2')
         if name == 'run':
             p.add_argument('--variants', nargs='*', default=['legacy', 'new', 'reference'])
             p.add_argument('--verify', action='store_true')

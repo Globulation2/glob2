@@ -124,7 +124,7 @@ template <class Domain>
 void goals(const Domain &domain, const GoalQuery &q, std::span<const std::uint32_t> goalCells, int windowSide)
 {
 	detail::write(domain, 1, q.width, q.height, boxOf(q.width, q.height, q.start, windowSide), q.start, 0, 0,
-				  q.maximumCost, 0xffffffffu, q.sizing, goalCells, [&](int, int, std::uint32_t world) {
+				  q.maximumCost, 0xffffffffu, q.floor, goalCells, [&](int, int, std::uint32_t world) {
 					  return std::find(goalCells.begin(), goalCells.end(), world) != goalCells.end();
 				  });
 }

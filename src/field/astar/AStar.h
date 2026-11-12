@@ -17,7 +17,7 @@
 //  * Expansions count non-stale pops; the budget is checked before the goal test.
 // The window used to hold the search is an implementation detail: a search that
 // reaches the edge of its window restarts in a larger one and so reproduces the
-// same expansion sequence.
+// same expansion sequence. Searches sample the Domain lazily, once per touched cell.
 #include "../Grid.h"
 #include <algorithm>
 #include <array>
@@ -26,6 +26,7 @@
 #include <cstdint>
 #include <limits>
 #include <span>
+#include <utility>
 #include <vector>
 
 namespace astar
@@ -77,15 +78,17 @@ struct Result
 	unsigned restarts = 0;            // window regrowths, for benchmarks
 };
 
-// Many goals at once, without a heuristic: one bounded Dijkstra resolves every
-// goal, as separate searches with the same passability would. Goals are terminal:
-// a goal is never expanded, so no path passes through one goal to another.
+// Many goals at once: one search resolves every goal as separate searches with
+// the same passability would. Goals are terminal: a goal is never expanded, so
+// no path passes through one goal to another. The heuristic is the octile
+// distance to the nearest goal (consistent, being a minimum of consistent
+// bounds); the search ends once every goal is closed.
 struct GoalQuery
 {
 	int width = 0, height = 0;
 	std::uint32_t start = 0;
 	std::uint32_t maximumCost = MaximumCost;
-	Floor sizing; // only sizes the first window
+	Floor floor;
 };
 struct GoalResult
 {
@@ -102,13 +105,22 @@ enum : std::uint8_t
 	Goal = 0x08,
 	Blocked = 0x10,
 	Edge = 0x20,
-	Open = 0x40,
 	Closed = 0x80,
 };
 constexpr bool diagonal(unsigned d) { return field::Surrounding[d].x != 0 && field::Surrounding[d].y != 0; }
-constexpr unsigned BlockShift = 3; // 8x8 fill blocks
-constexpr unsigned RingBits = 9;   // f grows by at most 255 + 255 per expansion
+constexpr unsigned RingBits = 9; // f grows by at most 255 + 255 per expansion
 constexpr unsigned Ring = 1u << RingBits;
+
+inline unsigned torusDistance(int a, int b, int size)
+{
+	const unsigned d = unsigned(a - b) & unsigned(size - 1);
+	return std::min(d, unsigned(size) - d);
+}
+inline unsigned octile(unsigned a, unsigned b, Floor floor)
+{
+	const unsigned lo = std::min(a, b), hi = std::max(a, b);
+	return (hi - lo) * floor.cardinal + lo * floor.diagonal;
+}
 
 // Buckets of f, popped lowest first and LIFO within one value.
 class BucketQueue
@@ -187,27 +199,35 @@ class Workspace
 	std::vector<std::uint32_t> *expansionLog = nullptr;
 
   private:
-	// Plane geometry. Bounded windows hold side x side interior cells around
-	// the start plus a one-cell Edge halo, so neighbours need no wrap or bounds
-	// checks. A torus window is the whole map, wrapped with masks.
+	// Plane geometry. Strides are powers of two. A bounded window keeps an Edge
+	// halo in plane row/column 0 and side - 1, so neighbours need no wrap or
+	// bounds checks; a torus window is the whole map, wrapped with masks.
 	bool torus = false;
 	int side = 0, stride = 0, rows = 0;
 	int mapW = 0, mapH = 0, originX = 0, originY = 0;
-	unsigned wShift = 0, strideShift = 0, blockColumns = 0, blockRows = 0;
-	unsigned blockShiftX = detail::BlockShift, blockShiftY = detail::BlockShift;
+	unsigned wShift = 0, strideShift = 0;
 	std::array<int, 8> offsets{};
 
-	std::vector<std::uint16_t> g;
-	std::vector<std::uint8_t> state, cardinal, diagonal;
-	std::vector<std::uint16_t> heuristicX, heuristicY; // per plane column / row
-	std::vector<std::uint16_t> goalX, goalY;           // raw toroidal distances
-	std::vector<std::uint16_t> blockStamp;
-	std::uint16_t stamp = 0;
-	detail::BucketQueue queue;
-	std::vector<std::uint32_t> goalCells; // world indices for searchGoals
+	// Each cell is sampled from the Domain on first touch in a search; mark
+	// holds the search stamp of that touch. Each geometry keeps its own planes,
+	// so searches of different sizes alternate without reallocating.
+	struct Planes
+	{
+		int width = 0, height = 0, side = -1;
+		std::vector<std::uint16_t> g;
+		std::vector<std::uint8_t> state, mark;
+		std::vector<std::uint16_t> steps; // cardinal | diagonal << 8
+		std::uint8_t stamp = 0;
+	};
+	std::array<Planes, 16> cached{}; // by log2(side); slot 0 is the whole map
+	Planes *planes = &cached[0];
 
-	// Plane coordinates. Strides are powers of two; a bounded window keeps its
-	// Edge halo in plane row/column 0 and side - 1.
+	detail::BucketQueue queue;
+	int targetX = 0, targetY = 0;
+	unsigned goalRadius = 0;
+	std::vector<std::uint32_t> goalCells; // sorted world indices for searchGoals
+	std::vector<std::array<int, 2>> goalPoints;
+
 	int planeX(std::uint32_t p) const { return int(p & unsigned(stride - 1)); }
 	int planeY(std::uint32_t p) const { return int(p >> strideShift); }
 	int worldX(int px) const { return (originX + px) & (mapW - 1); }
@@ -221,20 +241,32 @@ class Workspace
 		const int x = int(world & unsigned(mapW - 1)), y = int(world >> wShift);
 		return std::uint32_t((((y - originY) & (mapH - 1)) << strideShift) + ((x - originX) & (mapW - 1)));
 	}
+	template <bool Torus> std::uint32_t step(std::uint32_t p, unsigned d) const
+	{
+		if constexpr (!Torus)
+			return std::uint32_t(int(p) + offsets[d]);
+		else
+			return std::uint32_t((((planeY(p) + field::Surrounding[d].y) & (rows - 1)) << strideShift) +
+								 ((planeX(p) + field::Surrounding[d].x) & (stride - 1)));
+	}
+	std::uint32_t neighbour(std::uint32_t p, unsigned d) const { return torus ? step<true>(p, d) : step<false>(p, d); }
+	// Visits the eight neighbours in field::Surrounding order with constant directions.
+	template <class Visit> static void forEachDirection(Visit &&visit)
+	{
+		[&]<unsigned... D>(std::integer_sequence<unsigned, D...>) {
+			(visit(std::integral_constant<unsigned, D>{}), ...);
+		}(std::make_integer_sequence<unsigned, 8>{});
+	}
 
 	void layout(int width, int height, std::uint32_t start, int requestedSide);
-	void beginSearch();
-	template <class Domain, class GoalTest> void fillBlock(const Domain &domain, unsigned bx, unsigned by, GoalTest &&isGoal);
-	template <class Domain, class GoalTest>
-	void ensureAround(const Domain &domain, std::uint32_t p, GoalTest &&isGoal);
-	std::uint32_t neighbour(std::uint32_t p, unsigned d) const;
+	template <class Domain, class GoalTest> void sample(const Domain &domain, std::uint32_t p, GoalTest &isGoal);
 	void trace(std::uint32_t p, std::uint32_t startPlane, Result *result, int *dx, int *dy) const;
 	static int firstSide(int width, int height, std::uint32_t reach);
 
-	template <class Domain> bool attempt(const Domain &domain, const Query &query, int side, Result &result);
-	template <class Domain>
-	bool attemptGoals(const Domain &domain, const GoalQuery &query, std::span<const std::uint32_t> goals,
-					  std::span<GoalResult> results, int side);
+	// One attempt in the current window; false when the search met the halo.
+	template <bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
+	bool run(const Domain &domain, std::uint32_t startPlane, std::uint32_t maximumCost, std::uint32_t maximumExpansions,
+			 Heuristic &&h, GoalTest &isGoal, OnGoal &&onGoal, Result &result);
 };
 
 inline int Workspace::firstSide(int width, int height, std::uint32_t reach)
@@ -247,11 +279,8 @@ inline int Workspace::firstSide(int width, int height, std::uint32_t reach)
 inline void Workspace::layout(int width, int height, std::uint32_t start, int requestedSide)
 {
 	assert(std::has_single_bit(unsigned(width)) && std::has_single_bit(unsigned(height)));
-	const bool wholeMap = requestedSide >= width || requestedSide >= height;
-	const int newSide = wholeMap ? 0 : requestedSide;
-	const bool geometryChanged = torus != wholeMap || side != newSide || mapW != width || mapH != height;
-	torus = wholeMap;
-	side = newSide;
+	torus = requestedSide >= width || requestedSide >= height;
+	side = torus ? 0 : requestedSide;
 	mapW = width;
 	mapH = height;
 	wShift = unsigned(std::countr_zero(unsigned(width)));
@@ -270,103 +299,51 @@ inline void Workspace::layout(int width, int height, std::uint32_t start, int re
 		originY = sy - side / 2;
 	}
 	strideShift = unsigned(std::countr_zero(unsigned(stride)));
-	blockShiftX = std::min<unsigned>(detail::BlockShift, strideShift);
-	blockShiftY = std::min<unsigned>(detail::BlockShift, unsigned(std::countr_zero(unsigned(rows))));
-	blockColumns = unsigned(stride) >> blockShiftX;
-	blockRows = unsigned(rows) >> blockShiftY;
 	for (unsigned d = 0; d < 8; ++d)
 		offsets[d] = field::Surrounding[d].y * stride + field::Surrounding[d].x;
-	const auto cells = std::size_t(stride) * rows;
-	if (geometryChanged || g.size() != cells)
+	const unsigned slot = torus ? 0 : strideShift;
+	assert(slot < cached.size());
+	planes = &cached[slot];
+	auto &P = *planes;
+	if (P.width != width || P.height != height || P.side != side)
 	{
-		g.assign(cells, 0xffff);
-		state.assign(cells, 0);
-		cardinal.assign(cells, 0);
-		diagonal.assign(cells, 0);
+		P.width = width;
+		P.height = height;
+		P.side = side;
+		const auto cells = std::size_t(stride) * rows;
+		P.g.assign(cells, 0xffff);
+		P.state.assign(cells, 0);
+		P.steps.assign(cells, 0);
+		P.mark.assign(cells, 0);
+		P.stamp = 0;
 		if (!torus)
 			for (int py = 0; py < rows; ++py)
 				for (int px = 0; px < stride; ++px)
 					if (px == 0 || py == 0 || px == stride - 1 || py == rows - 1)
-						state[std::size_t(py) * stride + px] = detail::Edge | detail::Blocked;
-		blockStamp.assign(std::size_t(blockColumns) * blockRows, 0);
-		stamp = 0;
-		heuristicX.resize(stride);
-		goalX.resize(stride);
-		heuristicY.resize(rows);
-		goalY.resize(rows);
+						P.state[std::size_t(py) * stride + px] = detail::Edge | detail::Blocked;
 	}
-}
-
-inline void Workspace::beginSearch()
-{
-	if (++stamp == 0)
+	if (++P.stamp == 0)
 	{
-		std::fill(blockStamp.begin(), blockStamp.end(), 0);
-		stamp = 1;
-	}
-}
-
-inline std::uint32_t Workspace::neighbour(std::uint32_t p, unsigned d) const
-{
-	if (!torus)
-		return std::uint32_t(int(p) + offsets[d]);
-	const int x = planeX(p), y = planeY(p);
-	return std::uint32_t((((y + field::Surrounding[d].y) & (rows - 1)) << strideShift) +
-						 ((x + field::Surrounding[d].x) & (stride - 1)));
-}
-
-template <class Domain, class GoalTest>
-inline void Workspace::fillBlock(const Domain &domain, unsigned bx, unsigned by, GoalTest &&isGoal)
-{
-	blockStamp[std::size_t(by) * blockColumns + bx] = stamp;
-	const int x0 = int(bx << blockShiftX), y0 = int(by << blockShiftY);
-	const int x1 = x0 + (1 << blockShiftX), y1 = y0 + (1 << blockShiftY);
-	for (int py = y0; py < y1; ++py)
-	{
-		const auto rowWorld = std::uint32_t(worldY(py) << wShift);
-		auto p = std::size_t(py) * stride + x0;
-		for (int px = x0; px < x1; ++px, ++p)
-		{
-			if (!torus && (state[p] & detail::Edge))
-				continue; // the halo is fixed for the window's lifetime
-			const auto world = rowWorld + std::uint32_t(worldX(px));
-			const bool goal = isGoal(px, py, world);
-			const unsigned entry = domain.entry(world, goal);
-			g[p] = 0xffff;
-			cardinal[p] = std::uint8_t(entry);
-			diagonal[p] = std::uint8_t(entry >> 8);
-			assert(!entry || ((entry & 0xff) && (entry >> 8)));
-			state[p] = std::uint8_t((entry ? 0 : detail::Blocked) | (goal ? detail::Goal : 0));
-		}
+		std::fill(P.mark.begin(), P.mark.end(), 0);
+		P.stamp = 1;
 	}
 }
 
 template <class Domain, class GoalTest>
-inline void Workspace::ensureAround(const Domain &domain, std::uint32_t p, GoalTest &&isGoal)
+inline void Workspace::sample(const Domain &domain, std::uint32_t p, GoalTest &isGoal)
 {
+	auto &P = *planes;
+	P.mark[p] = P.stamp;
+	if (!torus && (P.state[p] & detail::Edge))
+		return; // the halo is fixed for the window's lifetime
 	const int px = planeX(p), py = planeY(p);
-	const unsigned maskX = (1u << blockShiftX) - 1, maskY = (1u << blockShiftY) - 1;
-	const unsigned ix = unsigned(px) & maskX, iy = unsigned(py) & maskY;
-	// A cell strictly inside its block has all its neighbours in that block,
-	// which was filled when the cell was first reached.
-	if (ix - 1 < maskX - 1 && iy - 1 < maskY - 1 && blockStamp[(std::size_t(py) >> blockShiftY) * blockColumns +
-																	 (unsigned(px) >> blockShiftX)] == stamp)
-		return;
-	unsigned columns[3], rowList[3], nc = 0, nr = 0;
-	const auto add = [](unsigned *list, unsigned &n, unsigned b) {
-		for (unsigned i = 0; i < n; ++i)
-			if (list[i] == b)
-				return;
-		list[n++] = b;
-	};
-	for (int dx = -1; dx <= 1; ++dx)
-		add(columns, nc, unsigned((px + dx) & (stride - 1)) >> blockShiftX);
-	for (int dy = -1; dy <= 1; ++dy)
-		add(rowList, nr, unsigned((py + dy) & (rows - 1)) >> blockShiftY);
-	for (unsigned r = 0; r < nr; ++r)
-		for (unsigned c = 0; c < nc; ++c)
-			if (blockStamp[std::size_t(rowList[r]) * blockColumns + columns[c]] != stamp)
-				fillBlock(domain, columns[c], rowList[r], isGoal);
+	const auto world = std::uint32_t((worldY(py) << wShift) + worldX(px));
+	const bool goal = isGoal(px, py, world);
+	const unsigned entry = domain.entry(world, goal);
+	assert(!entry || ((entry & 0xff) && (entry >> 8)));
+	P.g[p] = 0xffff;
+	P.steps[p] = std::uint16_t(entry);
+	P.state[p] = std::uint8_t((entry ? 0 : detail::Blocked) | (goal ? detail::Goal : 0));
 }
 
 inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *result, int *dx, int *dy) const
@@ -376,7 +353,7 @@ inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *
 		result->cells.clear();
 	while (p != startPlane)
 	{
-		const unsigned d = state[p] & detail::Direction;
+		const unsigned d = planes->state[p] & detail::Direction;
 		if (result)
 			result->cells.push_back(worldIndex(p));
 		*dx = field::Surrounding[d].x;
@@ -387,95 +364,74 @@ inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *
 		std::reverse(result->cells.begin(), result->cells.end());
 }
 
-template <class Domain> inline bool Workspace::attempt(const Domain &domain, const Query &q, int windowSide, Result &result)
+template <bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
+inline bool Workspace::run(const Domain &domain, std::uint32_t startPlane, std::uint32_t maximumCost,
+						   std::uint32_t maximumExpansions, Heuristic &&h, GoalTest &isGoal, OnGoal &&onGoal,
+						   Result &result)
 {
-	layout(q.width, q.height, q.start, windowSide);
-	beginSearch();
-	const int tx = int(q.target & unsigned(q.width - 1)), ty = int(q.target >> wShift);
-	const auto distance = [](int a, int b, int size) {
-		const int d = std::abs(a - b);
-		return std::min(d, size - d);
-	};
-	for (int px = 0; px < stride; ++px)
-	{
-		const int raw = distance(worldX(px), tx, q.width);
-		goalX[px] = std::uint16_t(raw);
-		heuristicX[px] = std::uint16_t(std::max(0, raw - int(q.goalRadius)));
-	}
-	for (int py = 0; py < rows; ++py)
-	{
-		const int raw = distance(worldY(py), ty, q.height);
-		goalY[py] = std::uint16_t(raw);
-		heuristicY[py] = std::uint16_t(std::max(0, raw - int(q.goalRadius)));
-	}
-	const unsigned fc = q.floor.cardinal, fd = q.floor.diagonal;
-	const auto h = [&](std::uint32_t p) -> std::uint32_t {
-		const unsigned a = heuristicX[planeX(p)], b = heuristicY[planeY(p)];
-		const unsigned lo = std::min(a, b), hi = std::max(a, b);
-		return (hi - lo) * fc + lo * fd;
-	};
-	const unsigned radius = q.goalRadius;
-	auto isGoal = [&](int px, int py, std::uint32_t) { return goalX[px] <= radius && goalY[py] <= radius; };
-
-	const auto startPlane = planeOf(q.start);
-	ensureAround(domain, startPlane, isGoal);
-	g[startPlane] = 0;
-	state[startPlane] = std::uint8_t((state[startPlane] & detail::Goal) | detail::Open);
+	auto &P = *planes;
+	std::uint8_t *const st = P.state.data();
+	std::uint8_t *const mark = P.mark.data();
+	std::uint16_t *const gs = P.g.data();
+	const std::uint16_t *const costs = P.steps.data();
+	const std::uint8_t stamp = P.stamp;
+	sample(domain, startPlane, isGoal);
+	gs[startPlane] = 0;
+	st[startPlane] &= detail::Goal; // the start is never tested for passability
 	queue.reset(h(startPlane));
 	queue.push(h(startPlane), startPlane);
-
-	result = {};
+	bool limited = false;
 	if (expansionLog)
 		expansionLog->clear();
-	bool limited = false;
-	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
 	while (!queue.empty())
 	{
 		const auto p = queue.pop();
-		auto st = state[p];
-		if (st & detail::Closed)
+		const auto sp = st[p];
+		if (sp & detail::Closed)
 			continue;
-		if (result.expansions >= q.maximumExpansions)
+		if (result.expansions >= maximumExpansions)
 		{
 			result.status = Status::ExpansionLimit;
 			return true;
 		}
 		++result.expansions;
-		state[p] = st | detail::Closed;
+		st[p] = sp | detail::Closed;
 		if (expansionLog) [[unlikely]]
 			expansionLog->push_back(worldIndex(p));
-		if (st & detail::Goal)
+		if (sp & detail::Goal)
 		{
-			result.status = Status::Found;
-			result.cost = g[p];
-			result.goal = worldIndex(p);
-			trace(p, startPlane, q.wantPath ? &result : nullptr, &result.firstDx, &result.firstDy);
-			return true;
+			if (onGoal(p))
+				return true;
+			if (p != startPlane)
+				continue; // goals are terminal
 		}
-		ensureAround(domain, p, isGoal);
-		const std::uint32_t gp = g[p];
-		for (unsigned d = 0; d < 8; ++d)
-		{
-			const auto n = neighbour(p, d);
-			const auto sn = state[n];
+		const std::uint32_t gp = gs[p];
+		bool edge = false;
+		forEachDirection([&](auto direction) {
+			constexpr unsigned d = decltype(direction)::value;
+			const auto n = step<Torus>(p, d);
+			if (mark[n] != stamp)
+				sample(domain, n, isGoal);
+			const auto sn = st[n];
 			if (sn & (detail::Closed | detail::Blocked))
 			{
-				if (sn & detail::Edge)
-					return false; // the window is too small; restart larger
-				continue;
+				edge |= (sn & detail::Edge) != 0;
+				return;
 			}
-			const std::uint32_t candidate = gp + (detail::diagonal(d) ? diagonal[n] : cardinal[n]);
+			const std::uint32_t candidate = gp + (detail::diagonal(d) ? costs[n] >> 8 : costs[n] & 0xff);
 			if (candidate > maximumCost)
 			{
 				limited = true;
-				continue;
+				return;
 			}
-			if (candidate >= g[n])
-				continue;
-			g[n] = std::uint16_t(candidate);
-			state[n] = std::uint8_t((sn & ~detail::Direction) | detail::Open | d);
+			if (candidate >= gs[n])
+				return;
+			gs[n] = std::uint16_t(candidate);
+			st[n] = std::uint8_t((sn & ~detail::Direction) | d);
 			queue.push(candidate + h(n), n);
-		}
+		});
+		if (edge) [[unlikely]]
+			return false; // the window is too small; restart larger
 	}
 	result.status = limited ? Status::CostLimit : Status::Unreachable;
 	return true;
@@ -484,89 +440,46 @@ template <class Domain> inline bool Workspace::attempt(const Domain &domain, con
 template <class Domain> inline Result Workspace::search(const Domain &domain, const Query &q)
 {
 	assert(q.start < std::uint32_t(q.width) * q.height && q.target < std::uint32_t(q.width) * q.height);
-	const int sx = int(q.start & unsigned(q.width - 1)), sy = int(q.start / unsigned(q.width));
-	const int tx = int(q.target & unsigned(q.width - 1)), ty = int(q.target / unsigned(q.width));
-	const auto torusDistance = [](int a, int b, int size) {
-		const int d = std::abs(a - b);
-		return std::min(d, size - d);
-	};
-	const std::uint32_t apart = std::uint32_t(std::max(torusDistance(sx, tx, q.width), torusDistance(sy, ty, q.height)));
+	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
+	targetX = int(q.target & unsigned(q.width - 1));
+	targetY = int(q.target >> shift);
+	goalRadius = q.goalRadius;
+	const int sx = int(q.start & unsigned(q.width - 1)), sy = int(q.start >> shift);
+	const std::uint32_t apart = std::max(detail::torusDistance(sx, targetX, q.width), detail::torusDistance(sy, targetY, q.height));
 	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
 	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, std::max(apart + 4, reach));
+	const Floor floor = q.floor;
+	const auto h = [this, floor](std::uint32_t p) -> std::uint32_t {
+		const unsigned ax = detail::torusDistance(worldX(planeX(p)), targetX, mapW);
+		const unsigned ay = detail::torusDistance(worldY(planeY(p)), targetY, mapH);
+		return detail::octile(ax > goalRadius ? ax - goalRadius : 0, ay > goalRadius ? ay - goalRadius : 0, floor);
+	};
+	auto isGoal = [this](int px, int py, std::uint32_t) {
+		return detail::torusDistance(worldX(px), targetX, mapW) <= goalRadius &&
+			   detail::torusDistance(worldY(py), targetY, mapH) <= goalRadius;
+	};
+	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
 	Result result;
 	unsigned restarts = 0;
-	while (!attempt(domain, q, windowSide, result))
+	for (;; windowSide *= 2, ++restarts)
 	{
-		windowSide *= 2;
-		++restarts;
+		layout(q.width, q.height, q.start, windowSide);
+		const auto startPlane = planeOf(q.start);
+		result = {};
+		const auto found = [&](std::uint32_t p) {
+			result.status = Status::Found;
+			result.cost = planes->g[p];
+			result.goal = worldIndex(p);
+			trace(p, startPlane, q.wantPath ? &result : nullptr, &result.firstDx, &result.firstDy);
+			return true;
+		};
+		const bool complete = torus ? run<true>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result)
+									: run<false>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result);
+		if (complete)
+			break;
 	}
 	result.restarts = restarts;
 	return result;
-}
-
-template <class Domain>
-inline bool Workspace::attemptGoals(const Domain &domain, const GoalQuery &q, std::span<const std::uint32_t> goals,
-									std::span<GoalResult> results, int windowSide)
-{
-	layout(q.width, q.height, q.start, windowSide);
-	beginSearch();
-	goalCells.assign(goals.begin(), goals.end());
-	std::sort(goalCells.begin(), goalCells.end());
-	auto isGoal = [&](int, int, std::uint32_t world) {
-		return std::binary_search(goalCells.begin(), goalCells.end(), world);
-	};
-	for (auto &r : results)
-		r = {};
-	const auto startPlane = planeOf(q.start);
-	ensureAround(domain, startPlane, isGoal);
-	g[startPlane] = 0;
-	state[startPlane] = std::uint8_t((state[startPlane] & detail::Goal) | detail::Open);
-	queue.reset(0);
-	queue.push(0, startPlane);
-	std::size_t remaining = goalCells.size();
-	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
-	while (remaining && !queue.empty())
-	{
-		const auto p = queue.pop();
-		auto st = state[p];
-		if (st & detail::Closed)
-			continue;
-		state[p] = st | detail::Closed;
-		if (st & detail::Goal)
-		{
-			const auto world = worldIndex(p);
-			int dx = 0, dy = 0;
-			trace(p, startPlane, nullptr, &dx, &dy);
-			for (std::size_t i = 0; i < goals.size(); ++i)
-				if (goals[i] == world && !results[i].reached)
-				{
-					results[i] = {true, g[p], dx, dy};
-					--remaining;
-				}
-			if (p != startPlane)
-				continue; // goals are terminal
-		}
-		ensureAround(domain, p, isGoal);
-		const std::uint32_t gp = g[p];
-		for (unsigned d = 0; d < 8; ++d)
-		{
-			const auto n = neighbour(p, d);
-			const auto sn = state[n];
-			if (sn & (detail::Closed | detail::Blocked))
-			{
-				if (sn & detail::Edge)
-					return false;
-				continue;
-			}
-			const std::uint32_t candidate = gp + (detail::diagonal(d) ? diagonal[n] : cardinal[n]);
-			if (candidate > maximumCost || candidate >= g[n])
-				continue;
-			g[n] = std::uint16_t(candidate);
-			state[n] = std::uint8_t((sn & ~detail::Direction) | detail::Open | d);
-			queue.push(candidate, n);
-		}
-	}
-	return true;
 }
 
 template <class Domain>
@@ -576,10 +489,50 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 	assert(goals.size() == results.size());
 	if (goals.empty())
 		return;
-	const std::uint32_t reach =
-		q.sizing.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.sizing.cardinal, 64) : 64;
+	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
+	goalCells.assign(goals.begin(), goals.end());
+	std::sort(goalCells.begin(), goalCells.end());
+	goalCells.erase(std::unique(goalCells.begin(), goalCells.end()), goalCells.end());
+	goalPoints.clear();
+	for (auto g : goalCells)
+		goalPoints.push_back({int(g & unsigned(q.width - 1)), int(g >> shift)});
+	const Floor floor = q.floor;
+	const auto h = [this, floor](std::uint32_t p) -> std::uint32_t {
+		const int x = worldX(planeX(p)), y = worldY(planeY(p));
+		std::uint32_t best = std::numeric_limits<std::uint32_t>::max();
+		for (const auto &goal : goalPoints)
+			best = std::min(best, std::uint32_t(detail::octile(detail::torusDistance(x, goal[0], mapW),
+															   detail::torusDistance(y, goal[1], mapH), floor)));
+		return best;
+	};
+	auto isGoal = [this](int, int, std::uint32_t world) {
+		return std::binary_search(goalCells.begin(), goalCells.end(), world);
+	};
+	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
 	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, reach + 1);
-	while (!attemptGoals(domain, q, goals, results, windowSide))
-		windowSide *= 2;
+	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
+	for (;; windowSide *= 2)
+	{
+		layout(q.width, q.height, q.start, windowSide);
+		const auto startPlane = planeOf(q.start);
+		for (auto &r : results)
+			r = {};
+		std::size_t remaining = goalCells.size();
+		const auto reached = [&](std::uint32_t p) {
+			const auto world = worldIndex(p);
+			int dx = 0, dy = 0;
+			trace(p, startPlane, nullptr, &dx, &dy);
+			for (std::size_t i = 0; i < goals.size(); ++i)
+				if (goals[i] == world)
+					results[i] = {true, planes->g[p], dx, dy};
+			return --remaining == 0;
+		};
+		Result scratch;
+		const bool complete =
+			torus ? run<true>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal, reached, scratch)
+				  : run<false>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal, reached, scratch);
+		if (complete)
+			return;
+	}
 }
 } // namespace astar

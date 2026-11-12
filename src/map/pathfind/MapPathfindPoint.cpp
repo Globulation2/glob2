@@ -91,7 +91,7 @@ void MapRouting::pathfindPointTargets(int x, int y, std::span<const PointTarget>
 	query.height = map.h;
 	query.start = std::uint32_t(map.coordToIndex(x, y));
 	query.maximumCost = std::uint32_t(std::min<std::int64_t>(Map::GRADIENT_COST_LIMIT, std::int64_t(maximumLength) * GRADIENT_STEP));
-	query.sizing = MapAStar::floorOf(map.routeStepFloor(swimClass));
+	query.floor = MapAStar::floorOf(map.routeStepFloor(swimClass));
 	pointTargetResults.resize(goals.size());
 	const MapAStar::UnitDomain<false> domain{map.liveView(), swimClass, teamMask};
 	pointSearchWorkspace().searchGoals(domain, query, goals, pointTargetResults);

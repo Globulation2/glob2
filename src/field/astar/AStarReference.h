@@ -100,4 +100,86 @@ Result referenceSearch(const Domain &domain, const Query &q, std::vector<std::ui
 	result.status = limited ? Status::CostLimit : Status::Unreachable;
 	return result;
 }
+
+// Many goals, as searchGoals defines them: terminal goals, the nearest-goal
+// octile heuristic, and the same queue order.
+template <class Domain>
+std::vector<GoalResult> referenceGoals(const Domain &domain, const GoalQuery &q, std::span<const std::uint32_t> goals,
+									   std::vector<std::uint32_t> *log = nullptr)
+{
+	const int W = q.width, H = q.height;
+	const auto cells = std::size_t(W) * H;
+	std::vector<std::uint32_t> g(cells, 0xffffffffu);
+	std::vector<std::uint8_t> closed(cells, 0), parent(cells, 0);
+	const auto isGoal = [&](std::uint32_t i) { return std::find(goals.begin(), goals.end(), i) != goals.end(); };
+	const auto h = [&](std::uint32_t i) {
+		std::uint32_t best = 0xffffffffu;
+		for (auto goal : goals)
+			best = std::min(best, std::uint32_t(detail::octile(
+									  detail::torusDistance(int(i % unsigned(W)), int(goal % unsigned(W)), W),
+									  detail::torusDistance(int(i / unsigned(W)), int(goal / unsigned(W)), H), q.floor)));
+		return best;
+	};
+	using Entry = std::tuple<std::uint32_t, std::int64_t, std::uint32_t>;
+	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> open;
+	std::int64_t sequence = 0;
+	if (log)
+		log->clear();
+	std::vector<GoalResult> results(goals.size());
+	std::size_t remaining = 0;
+	{
+		std::vector<std::uint32_t> unique(goals.begin(), goals.end());
+		std::sort(unique.begin(), unique.end());
+		remaining = std::size_t(std::unique(unique.begin(), unique.end()) - unique.begin());
+	}
+	g[q.start] = 0;
+	open.emplace(h(q.start), -sequence++, q.start);
+	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
+	while (!open.empty() && remaining)
+	{
+		const auto p = std::get<2>(open.top());
+		open.pop();
+		if (closed[p])
+			continue;
+		closed[p] = 1;
+		if (log)
+			log->push_back(p);
+		if (isGoal(p))
+		{
+			int dx = 0, dy = 0;
+			for (auto at = p; at != q.start;)
+			{
+				const auto d = parent[at];
+				dx = field::Surrounding[d].x;
+				dy = field::Surrounding[d].y;
+				const int x = int(at % unsigned(W)) - dx, y = int(at / unsigned(W)) - dy;
+				at = std::uint32_t(((y + H) % H) * W + (x + W) % W);
+			}
+			for (std::size_t i = 0; i < goals.size(); ++i)
+				if (goals[i] == p)
+					results[i] = {true, g[p], dx, dy};
+			if (--remaining == 0)
+				break;
+			if (p != q.start)
+				continue;
+		}
+		const int x = int(p % unsigned(W)), y = int(p / unsigned(W));
+		for (unsigned d = 0; d < 8; ++d)
+		{
+			const auto n = std::uint32_t(((y + field::Surrounding[d].y + H) % H) * W + (x + field::Surrounding[d].x + W) % W);
+			if (closed[n])
+				continue;
+			const unsigned entry = domain.entry(n, isGoal(n));
+			if (!entry)
+				continue;
+			const auto candidate = g[p] + (detail::diagonal(d) ? entry >> 8 : entry & 0xff);
+			if (candidate > maximumCost || candidate >= g[n])
+				continue;
+			g[n] = candidate;
+			parent[n] = std::uint8_t(d);
+			open.emplace(candidate + h(n), -sequence++, n);
+		}
+	}
+	return results;
+}
 } // namespace astar

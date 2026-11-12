@@ -302,7 +302,19 @@ TEST_SUITE("AStar")
 			}
 			astar::GoalQuery q{w, h, start, std::uint32_t(30 + random() % 200), floorOf(domain)};
 			std::vector<astar::GoalResult> results(goals.size());
+			std::vector<std::uint32_t> actual, expected;
+			workspace.expansionLog = &actual;
+			workspace.forcedWindow = trial % 3 == 0 ? 4096 : 0;
 			workspace.searchGoals(domain, q, goals, results);
+			workspace.expansionLog = nullptr;
+			const auto reference = astar::referenceGoals(domain, q, goals, &expected);
+			CHECK(actual == expected);
+			for (std::size_t i = 0; i < goals.size(); ++i)
+			{
+				CHECK(results[i].reached == reference[i].reached);
+				CHECK(results[i].cost == reference[i].cost);
+				CHECK((results[i].firstDx == reference[i].firstDx && results[i].firstDy == reference[i].firstDy));
+			}
 			for (std::size_t i = 0; i < goals.size(); ++i)
 			{
 				// The separate search: other goals are only their own cells.
