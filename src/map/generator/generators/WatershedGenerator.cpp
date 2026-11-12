@@ -82,10 +82,9 @@ using namespace MapGeneration;
 //   Rock.h), opened so no single-vertex holes remain and kept clear of every ford. Swimmable but
 //   slower, no algae, and it waters the land as plain water does; the shallow margins keep the algae,
 //   the beaches and the fords. Swimming the trunk and the sea is slower than in revision 3.
-// - Levees: a band of fertile ground (Fertile, spring meadow, moss or loam by look: buildable crop land
+// - Levees: a band of fertile ground (Fertile, spring meadow, loam or moss by look: buildable crop land
 //   that waters the ground round it at 48/256 of water) from the beach out to kLeveeDeep vertices along
-//   every channel, outside the home gardens. Looks then grade the grass beyond by its distance from
-//   water: lush, grass, dry. The levees' own watering more than repays the row of farmland their edge
+//   every channel, outside the home gardens. The levees' own watering more than repays the row of farmland their edge
 //   costs (a tile between grass and loam corners grows crops but is not buildable): a band two or three
 //   deep lost a quarter of the map's growth potential, five deep gains about 8% (see the docs' food
 //   table), so the river country is a little richer than revision 3, never poorer.
@@ -103,8 +102,13 @@ using namespace MapGeneration;
 //   downhill side (stone on grass, tiles left out of the rock, a ring of grass before them), with
 //   scree skirting the rest. Knots are planned from the request alone, so validateWorld plans them
 //   again: every quarry holds its stone (quarryFault), and no knot parts the ground round it.
-// - A climate, looks only (Temperate, Steppe, Tropical): levee, pavement, sand, deep water, mudflat and
-//   rock looks and how far the grass stays green. Every choice is in telemetry.
+// - A climate, looks only (Temperate, Steppe, Tropical): one look per rule group (grass, levee,
+//   pavement, sand, deep water, mudflat, rock). Every choice is in telemetry.
+//
+// REVISION 5 (one look per role): the grass graded lush and dry by distance from water, the dune sand
+// behind the beaches and the second levee and pavement looks dealt out by noise are gone; the climate's
+// one grass look goes on last, gardens included, once guaranteeStartingResources (which tests exact
+// GRASS) has run. Looks only: every rule, deposit and start is revision 4's.
 namespace
 {
 
@@ -178,20 +182,20 @@ constexpr int kKnotReach = 20, kKnotSlack = 3, kKnotSpacing = 24, kKnotFordClear
 constexpr int kKnotHalfLength = 4, kFaceHalf = 2, kFaceLeast = 4, kTalusInner = 0, kTalusOuter = 2;
 constexpr double kFaceShare = 0.6;
 
-// The look-only climates. lush and green are the steps from water within which the grass is lush and
-// still green; beyond green it is dry.
+// The look-only climates: one look per rule group. The grass look goes on last (finishGrass); until
+// then the grass is staged as revision 4 drew it, plain GRASS only in the gardens and from stagedLush
+// to stagedGreen steps from water, so guaranteeStartingResources' top-up (which plants on exact GRASS)
+// finds exactly the ground it found then.
 struct Climate
 {
 	const char *name;
-	TerrainType levee, leveeSecond, pave, paveSecond, beach, dune, duneSecond, deep, mud, rock;
-	int lush, green;
+	TerrainType grass, levee, pave, sand, deep, mud, rock;
+	int stagedLush, stagedGreen;
 };
 constexpr Climate kClimates[3] = {
-	{"temperate", SPRING_MEADOW, MOSS, HEATH, SHALE, PALE_SAND, DUNE_SAND, PALE_SAND, DEEP_WATER, MUDFLAT,
-	 OUTCROP, 9, 15},
-	{"steppe", LOAM, SPRING_MEADOW, WEATHERED_SANDSTONE, DIRT, SAND, DUNE_SAND, WINDY_SAND_DUNE, DEEP_WATER, HARDPAN,
-	 HOODOOS, 7, 10},
-	{"tropical", MOSS, LOAM, LATERITE, CLAY, SAND, DUNE_SAND, SAND, DARK_WATER, MUD, OUTCROP, 11, 18}};
+	{"temperate", GRASS, SPRING_MEADOW, HEATH, PALE_SAND, DEEP_WATER, MUDFLAT, OUTCROP, 9, 15},
+	{"steppe", DRY_GRASS, LOAM, WEATHERED_SANDSTONE, SAND, DEEP_WATER, HARDPAN, HOODOOS, 7, 10},
+	{"tropical", LUSH_GRASS, MOSS, LATERITE, SAND, DARK_WATER, MUD, OUTCROP, 11, 18}};
 
 double sq(double v)
 {
@@ -2430,7 +2434,8 @@ void paintBankLayers(std::vector<unsigned char> &mech, const Layout &layout,
 		}
 }
 
-// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group).
+// The looks over the mechanic sketch, by climate (composeLooks keeps each inside its rule group); the
+// grass only staged (see Climate).
 TerrainSketch lookSketch(const std::vector<unsigned char> &mech, int w, int h, const Climate &climate,
 						 const std::vector<unsigned char> &garden, GenerationContext &context)
 {
@@ -2442,30 +2447,29 @@ TerrainSketch lookSketch(const std::vector<unsigned char> &mech, int w, int h, c
 	const std::vector<int> fromWet = stepsFrom(t, wet);
 	std::mt19937 &random = context.stream(kLookStream);
 	const std::vector<int> fray = periodicNoise(w, h, 9, random);
-	const std::vector<int> split = fractalNoise(w, h, 16, 3, random);
 	TerrainSketch looks(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
 		const double shift = 3.0 * (fray[i] - 32768) / 32768.0;
-		const bool second = split[i] > 0.62 * 65536;
 		switch (mech[i])
 		{
 		case GRASS:
+			// Staged: plain GRASS where revision 4's looks left it, any other grass look elsewhere.
 			if (garden[i])
 				break;
-			if (fromWet[i] <= climate.lush + shift)
+			if (fromWet[i] <= climate.stagedLush + shift)
 				looks[i] = LUSH_GRASS;
-			else if (fromWet[i] > climate.green + shift)
+			else if (fromWet[i] > climate.stagedGreen + shift)
 				looks[i] = DRY_GRASS;
 			break;
 		case LOAM:
-			looks[i] = second ? climate.leveeSecond : climate.levee;
+			looks[i] = climate.levee;
 			break;
 		case SAND:
-			looks[i] = fromWet[i] <= 2 ? climate.beach : second ? climate.duneSecond : climate.dune;
+			looks[i] = climate.sand;
 			break;
 		case SHALE:
-			looks[i] = second ? climate.paveSecond : climate.pave;
+			looks[i] = climate.pave;
 			break;
 		case DEEP_WATER:
 			looks[i] = climate.deep;
@@ -2481,6 +2485,21 @@ TerrainSketch lookSketch(const std::vector<unsigned char> &mech, int w, int h, c
 		}
 	}
 	return looks;
+}
+
+// The climate's one grass look over every grass vertex, the gardens included, once no stage needs
+// exact GRASS. A look inside the grass group changes no rule and no deposit.
+void finishGrass(GenerationMap &map, const Climate &climate)
+{
+	const int w = map.getW(), h = map.getH();
+	TerrainSketch sketch(size_t(w) * h, 0);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const TerrainType v = map.vertexTerrainAt(x, y);
+			sketch[size_t(y) * w + x] = terrainGroup(v) == TerrainGroup::Grass ? climate.grass : v;
+		}
+	writeVertices(map, sketch);
 }
 
 bool generate(GenerationWorld &game, GenerationContext &context)
@@ -2628,6 +2647,8 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	guaranteeStartingResources(game, context, 16, 16, 0, &knots.quarry);
 	if (connectColonies(map, teams, &knots.quarry, context.detail) < 0)
 		return false;
+	// Last, the grass look: nothing after this tests exact GRASS.
+	finishGrass(map, climate);
 	if (context.telemetry.enabled())
 	{
 		// How far each colony walks to the nearest quarry face: the fairness of the outcrops' stone,
@@ -2782,7 +2803,7 @@ GeneratorDefinition watershedDefinition()
 		"watershed",
 		13,
 		"Watershed",
-		4,
+		5, // 5: one look per role
 		false,
 		{// Springs per area of land; each one that finds its way to the network is a tributary.
 		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}
@@ -2814,8 +2835,8 @@ GeneratorDefinition watershedDefinition()
 		 // quarry face of stone (how many follows the stone amount) and scree round them.
 		 GeneratorControl::toggle("outcrops", "Divide outcrops", true, ControlGroup::Layout)
 			 .withSearchValues({0, 1}),
-		 // Looks only: Temperate (spring meadows, heath, blue water), Steppe (dry grass,
-		 // sandstone and hoodoos) or Tropical (lush banks, laterite, dark water). All play alike.
+		 // Looks only: Temperate (green grass, spring meadows, heath, blue water), Steppe (dry grass,
+		 // sandstone and hoodoos) or Tropical (lush grass, moss, laterite, dark water). All play alike.
 		 GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Steppe", "Tropical"}, 0,
 								  ControlGroup::Terrain)
 			 .withSearchValues({1, 2, 3}),

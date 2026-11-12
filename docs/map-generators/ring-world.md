@@ -6,7 +6,8 @@ the other wrap: there are no corners, and every colony has exactly two land neig
 
 Revision 4 (Ring World 2.0) redrew the map with the engine's full terrain palette; revision 3 drew it
 from grass, sand and water. The belt, its lakes and islands and every colony's site are laid exactly as
-revision 3 laid them for the same seed.
+revision 3 laid them for the same seed. Revision 6 draws each rule group in one look per climate;
+every rule, deposit and start is revision 5's.
 
 ## How it plays
 
@@ -44,7 +45,7 @@ revision 3 laid them for the same seed.
   start on comparable ground; a lakeside home's kit takes the wettest ground, which can be beside
   its loam beach rather than where revision 3 put it.
 - **Themed islands.** Islands out at sea carry one prize each: stone islands are volcanic (a pumice
-  beach round grass carrying the stone), fruit and grain islands are lush green.
+  beach round grass carrying the stone); fruit and grain islands carry the belt's grass.
 
 ## How it is built
 
@@ -61,7 +62,7 @@ constants record why each choice was made.
 | Spine | Runs along the ring from a random start; across, the rock is 1.8 to 2.8 tiles each side (tapering at a run's ends) of a centre line wandering 3 tiles off the belt's own; none within 8 steps of water, 16 tiles of a home or 3 of the road or a tor; cores kept only where they are two tiles thick, pieces under 10 tiles dropped. |
 | Mechanic sketch | On a copy of the stamp: lake loam rings; mudflat and boulders on ocean beach vertices by the share of ocean in a 6-tile disc round them (bays under 42%, headlands over 56%, each on half of them by a noise), clear of homes, the road and the tors; volcanic islands; a frayed scree apron round the spine 12 or more steps from water; the road; the rock (`rockVertices`). Any group of boulders or spine that parts the walkable ground round it (the quarry faces counted as blocking) is dropped and the sketch painted again, for up to 24 rounds; a sketch still parting after the last is refused. |
 | Resources | The quarry faces' stone first; then, as in revision 3, every home's kit (never within 3 tiles of a tor), themed island prizes, the ambient scatter, shallows algae, the ground before every face cleared, the starting-crop promise and cramped-start reopening (quarry stone protected); the walk from every swarm to its face opened (a deposit costs four steps); the belt road backstop (`openBeltRoad`, never over a face). |
-| Looks | Painted last with `composeLooks` by climate, so no stage above saw them: grass lush near water and dry far from it by straight-line distance with a wide fray, beach, deep water, two loam looks, mud, headland, rock and road looks, pumice on volcanic islands' beaches. |
+| Looks | Painted last with `composeLooks` by climate, so no stage above saw them: one look per rule group (grass, beach, deep water, loam, mud, headland, rock, road), gardens included, plus pumice on volcanic islands' beaches. |
 
 `validateWorld` floods from colony 0's workers (water, buildings and every deposit blocking) and
 requires every colony reached and a walkable loop round the map; requires a body of swimmable water
@@ -84,7 +85,7 @@ least 24 tiles of belt length per colony.
 | Deep ocean | on/off (on) | Deep water six steps from land: slower swimming, no algae. Routes on foot are the same either way. |
 | Rock spine | on/off (on) | The broken spine and every colony's quarry tor. Off, no rock and no quarry; the sites are the same either way. |
 | Ring road | on/off (on) | The trail road round the world. Off, the belt is grass between the colonies, as in revision 3. |
-| Climate | Random, Temperate, Steppe, Tropical | Looks only: Temperate (spring meadow and moss, pale beaches, grey rock, granite headlands, trail), Steppe (loam, hoodoos, sandstone road, hardpan bays, grass dry from about 17 tiles), Tropical (moss and loam, dark deep water, mossy road, mud, grass green to about 48 tiles). All three play identically. |
+| Climate | Random, Temperate, Steppe, Tropical | Looks only: Temperate (green grass, spring meadow, pale beaches, grey rock, granite headlands, trail), Steppe (dry grass, loam, hoodoos, sandstone road, hardpan bays), Tropical (lush grass, moss, dark deep water, mossy road, mud). All three play identically. |
 | Wheat, wood, stone, algae, fruit amount | 0–300% (100) | The ambient scatter and the shallows' algae. Every kit, island prize and quarry face stays. |
 
 ## Food

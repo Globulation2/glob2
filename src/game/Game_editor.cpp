@@ -28,6 +28,7 @@
 
 #include "Brush.h"
 #include "Building.h"
+#include "SGSL.h"
 #include "Team.h"
 
 

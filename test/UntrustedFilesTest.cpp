@@ -15,6 +15,8 @@
 #include <fstream>
 #include <BinaryStream.h>
 #include <map>
+#include "SGSL.h"
+#include "MapScript.h"
 
 namespace {
 struct ReadCondition : AISharedRuntime::Conditions::Condition {

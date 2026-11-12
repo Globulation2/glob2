@@ -307,7 +307,7 @@ class MapGeneratorDefaultsTest
 				  .withSearchRange(3, 5),
 			  GeneratorControl::choice("test-shape", "Cell shape", {"Squares", "Hexagons"}, 0)
 				  .withSearchValues({0, 1}),
-			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)
+			  GeneratorControl::toggle("test-switch", "Nunatak orchards", false)
 				  .withSearchValues({1})},
 			 [](GenerationWorld &game, GenerationContext &context)
 			 {
@@ -348,7 +348,7 @@ class MapGeneratorDefaultsTest
 				}
 				return false;
 			};
-			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true)
+			const auto on = GeneratorControl::toggle("switch", "Nunatak orchards", true)
 								.withSearchValues({0, 1});
 			REQUIRE((on.isToggle() && on.defaultValue == 1 &&
 				   on.values() == std::vector<int>({0, 1})));
@@ -385,7 +385,7 @@ class MapGeneratorDefaultsTest
 		REQUIRE(screen.descriptor.option("test-switch") == 0);
 		edit(screen, "Island size", 16);
 		edit(screen, "Channel width", 5);
-		edit(screen, "Lake connects to fjords", 1);
+		edit(screen, "Nunatak orchards", 1);
 		REQUIRE(screen.descriptor.option("test-shape") == 0);
 		edit(screen, "Cell shape", 1);
 		select(screen, D::eRIVER);
@@ -1647,7 +1647,7 @@ TEST_SUITE("MapGeneratorDefaults")
 									(dx + 1) * (dx + 1) + (dy + 1) * (dy + 1) < 16)
 								{
 									const int x = centre.first + dx, y = centre.second + dy;
-									REQUIRE(world.map.isGrass(x, y));
+									REQUIRE(world.map.terrainTypeAt(x, y) == LUSH_GRASS);
 									REQUIRE(world.map.getResource(x, y).type == NO_RES_TYPE);
 									REQUIRE(world.map.canResourcesGrow(x, y));
 								}
@@ -1658,10 +1658,10 @@ TEST_SUITE("MapGeneratorDefaults")
 				world.map.setResourceByIndex(x, y, WHEAT, 1);
 				REQUIRE(definition.validateWorld(world, check).find("clear grass interior") != std::string::npos);
 				world.map.setNoResource(x, y, 1);
-				REQUIRE(world.map.vertexTerrainAt(x + 4, y) == SAND);
+				REQUIRE(world.map.vertexTerrainAt(x + 4, y) == PALE_SAND);
 				world.map.setVertexTerrain(x + 4, y, GRASS);
 				REQUIRE(definition.validateWorld(world, check).find("broken sand ring") != std::string::npos);
-				world.map.setVertexTerrain(x + 4, y, SAND);
+				world.map.setVertexTerrain(x + 4, y, PALE_SAND);
 				REQUIRE(definition.validateWorld(world, check).empty());
 				if (shape == std::pair{8, 8} && roads == 1)
 				{

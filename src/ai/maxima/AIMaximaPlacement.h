@@ -287,6 +287,9 @@ struct FeedingColony
     std::vector<int> demand{0,0,0}; // recipient-class meals/tick, FoodLedger::RateScale
 };
 
+/// Siting role of a role-sited tower.
+enum TowerRole { TowerBorder, TowerInterior, TowerFruit };
+
 struct WorldState
 {
 	WorldState();
@@ -313,6 +316,12 @@ struct WorldState
 	std::vector<WorldTile> tiles;
 	std::vector<WorldBuilding> buildings;
 	std::vector<BuildingProfile> profiles;
+	/// Tile indices of seen, standing enemy buildings other than towers, sorted.
+	/// Only tower siting reads them.
+	std::vector<int> enemyStructures;
+	/// Ids of own towers with a visible enemy fighter nearby, sorted. Their
+	/// repairs wait, since a tower under repair cannot shoot.
+	std::vector<int> contestedBuildings;
 private:
 	// Derived per-snapshot lookup. Copying a world changes profiles.data(), so
 	// copied caches rebuild before use; deserialization invalidates explicitly.
@@ -423,11 +432,14 @@ struct PlacementPolicy
 	int innerFoodZoneMultiplier;
 	int hospitalFoodZoneMultiplier;
 	int towerFoodZoneMultiplier;
-	int towerCriticalDistanceWeight;
-	int towerSpacingTarget;
-	int towerSpacingWeight;
-	int towerThreatTarget;
-	int towerThreatWeight;
+	int towerBorderPercent;
+	int towerInteriorPercent;
+	int towerBorderEnemyRatio;
+	int towerRoleDistanceFalloff;
+	int towerSpreadSaturationTiles;
+	int towerSpreadPercent;
+	int towerRepairHealthPercent;
+	int foodUpgradeRetryTicks;
 	int laborScale;
 	int downtimeWorkerScale;
 	int arteryLengthScale;
@@ -604,6 +616,30 @@ public:
 
 	const PlacementPolicy& policy() const { return placementPolicy; }
 	PlacementPolicy& mutablePolicy() { return placementPolicy; }
+	/// Tower state: the pending selection's remembered enemy buildings and
+	/// contested towers, and the derived siting caches. Saved after every older
+	/// Maxima field so earlier formats stay exact prefixes; restored caches keep
+	/// continuation exact.
+	struct TowerState
+	{
+		std::vector<int> pendingEnemyStructures;
+		std::vector<int> pendingContestedBuildings;
+		DistanceField structureDistance;
+		DistanceField enemyStructureDistance;
+		std::vector<int> enemyStructureSource;
+		int enemyStructureGap=INT_MAX;
+	};
+	TowerState towerState() const;
+	/// Inn and swarm upgrades that failed their food check, by building id, and
+	/// the tick before which they are not checked again. Saved after older fields.
+	const std::map<int,int>& foodUpgradeRetries() const { return foodUpgradeRetryTick; }
+	void restoreFoodUpgradeRetries(std::map<int,int> retries,int tick);
+	/// Whether a damaged building should be repaired now. Towers wait for
+	/// heavy damage and for nearby enemy fighters to leave.
+	bool repairWanted(const WorldState& world,const WorldBuilding& building) const;
+	void restoreTowerState(TowerState state);
+	/// Siting role of the tower with this ordinal among the colony's towers.
+	TowerRole towerRole(const WorldState& world,int ordinal) const;
 	const PlacementDiagnostics& diagnostics() const { return lastDiagnostics; }
 	/// The same record under the name the regressions use: what the last
 	/// selection considered, chose, and rejected.
@@ -667,6 +703,10 @@ private:
 	struct Candidate;
 	static void preferUpgrades(std::vector<Candidate>& candidates,
 		const std::vector<DevelopmentIntent>& intents);
+	void applyUpgradePriority(Candidate& candidate,int priority) const;
+	bool resolveLazyCandidate(const WorldState& world,Candidate& candidate);
+	size_t bestCandidate(const WorldState& world,std::vector<Candidate>& candidates);
+	bool anyViableCandidate(const WorldState& world,std::vector<Candidate>& candidates);
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;
@@ -748,6 +788,23 @@ private:
 	mutable int foodLedgerExcludedAction;
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
+	// While non-negative, foodLocationQuality returns it without walking: the
+	// optimistic bound used to skip walks for candidates that cannot win.
+	mutable int foodQualityCeiling=-1;
+	// While set, scoreCandidate omits farm loss (a penalty that is never
+	// negative): the optimistic pre-routing bound of the scan.
+	mutable bool optimisticScoring=false;
+	std::map<int,int> foodUpgradeRetryTick;
+	struct FoodEvaluation
+	{
+		AIMaximaFoodLedger::EvaluationMode mode=AIMaximaFoodLedger::EvaluationMode::Full;
+		AIMaximaFoodLedger::Input input;
+		AIMaximaFoodLedger::Result result;
+	};
+	mutable std::vector<FoodEvaluation> foodEvaluationMemo; // most recent first
+	void evaluateFoodLedgerMemo(AIMaximaFoodLedger::EvaluationMode mode) const;
+	mutable std::vector<int> scanOrderCache;
+	const std::vector<int>& scanOrder(const WorldState& world) const;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
     mutable std::array<int,MaterialCount> foodCandidateIndependent{},foodCandidateProduction{};
     mutable bool foodQueryValid=false;
@@ -766,7 +823,21 @@ private:
 	int colonyAnchorDistance(const WorldState& world, int x, int y) const;
 	std::pair<int,int> colonyBenefit(const WorldState& world,
 		const DevelopmentAction& action) const;
+	std::pair<int,int> computeColonyBenefit(const WorldState& world,
+		const DevelopmentAction& action) const;
+	// One-entry colonyBenefit memo, live only inside a scan slice.
+	mutable bool colonyBenefitMemoActive=false,colonyBenefitMemoValid=false;
+	mutable std::array<int,7> colonyBenefitMemoKey{};
+	mutable int colonyBenefitMemoType=-1;
+	mutable std::pair<int,int> colonyBenefitMemo;
 	mutable std::vector<uint8_t> colonyFoodClaims;
+	mutable unsigned colonyClaimsEpoch=0,colonyPrefixEpoch=~0u;
+	mutable const WorldState* colonyPrefixWorld=nullptr;
+	mutable int colonyPrefixTick=-1;
+	mutable std::vector<uint64_t> colonyFoodPrefix;
+	uint64_t colonyUnclaimedFoodInWindow(const WorldState& world,int left,int top,int width,int height) const;
+	std::pair<int,int> colonyBenefitUpperBound(const WorldState& world,const DevelopmentAction& action) const;
+	std::pair<int,int> colonyBenefitFrom(const WorldState& world,const DevelopmentAction& action,int capacity) const;
 	mutable std::vector<std::pair<int,int> > colonyAnchors;
 	bool colonyCandidatePasses(const WorldState& world,
 		const DevelopmentIntent& intent, const DevelopmentAction& action,
@@ -789,6 +860,7 @@ private:
 		DevelopmentAction& bestFallback, bool& hasFallback, size_t& fallbackCount);
 	void addUpgradeAndRepairCandidates(const WorldState& world,
 		const DevelopmentLimits& limits, std::vector<Candidate>& candidates);
+	int towerRoleLocationQuality(const WorldState& world,const DevelopmentAction& action) const;
 	UtilityComponents scoreCandidate(const WorldState& world,
 		const DevelopmentIntent* intent, const Candidate& candidate) const;
 	bool candidateBetter(const Candidate& lhs, const Candidate& rhs) const;
@@ -866,8 +938,13 @@ private:
 	mutable std::vector<int> protectionPrefixCache;
 	mutable std::vector<int> buildingDistanceSourceCache;
 	mutable DistanceField completedBuildingDistanceCache;
-	mutable DistanceField criticalBuildingDistanceCache;
 	mutable DistanceField towerBuildingDistanceCache;
+	// Role-sited towers: distance to own non-tower buildings, to remembered enemy
+	// non-tower buildings, and the shortest own-to-enemy building distance.
+	mutable DistanceField structureDistanceCache;
+	mutable DistanceField enemyStructureDistanceCache;
+	mutable std::vector<int> enemyStructureSourceCache;
+	mutable int enemyStructureGapCache=INT_MAX;
 	mutable std::map<int,int> completedBuildingCountCache;
 	mutable std::vector<uint32_t> scoringReservedGeneration;
 	mutable std::vector<uint32_t> scoringAffectedGeneration;

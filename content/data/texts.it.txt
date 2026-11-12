@@ -1734,8 +1734,16 @@ Dimensione del continente
 Irregolarità della costa
 [Fjord width]
 Larghezza del fiordo
-[Lake connects to fjords]
-Lago collegato ai fiordi
+[Ice sheet size]
+Dimensione della calotta glaciale
+[Fjord landings]
+Approdi dei fiordi
+[Fjord continents need at least one colony.]
+Un continente di fiordi richiede almeno una colonia.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Un continente di fiordi richiede una mappa di almeno 128 caselle sul lato più corto.
+[Ice reach]
+Estensione del ghiaccio
 [Resource islands]
 Isole di risorse
 [Watershed]
@@ -1980,8 +1988,8 @@ Strade di sabbia
 Tesori nei vicoli ciechi
 [Fjord bank deposits]
 Giacimenti sulle rive dei fiordi
-[Sandy lake shore]
-Riva sabbiosa del lago
+[Nunatak orchards]
+Frutteti sui nunatak
 [River delta]
 Delta del fiume
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Dimensione degli isolati
 Larghezza dei canali
 [Extra bridges]
 Ponti aggiuntivi
+[Grand canal]
+Canal grande
 [Polder]
 Polder
 [Old town]

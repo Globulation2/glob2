@@ -1698,8 +1698,16 @@ Globulation 2 का कर्सर दिखाएँ।
 तट का ऊबड़पन
 [Fjord width]
 फ़्योर्ड की चौड़ाई
-[Lake connects to fjords]
-झील फ़्योर्ड से जुड़ती है
+[Ice sheet size]
+बर्फ़ की चादर का आकार
+[Fjord landings]
+फ़्योर्ड के घाट
+[Fjord continents need at least one colony.]
+फ़्योर्ड महाद्वीप को कम से कम एक उपनिवेश चाहिए।
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+फ़्योर्ड महाद्वीप के लिए नक्शे की छोटी भुजा कम से कम 128 खाने होनी चाहिए।
+[Ice reach]
+बर्फ़ का विस्तार
 [Resource islands]
 संसाधन वाले द्वीप
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2 का कर्सर दिखाएँ।
 बंद सिरों पर ख़ज़ाना
 [Fjord bank deposits]
 फ़्योर्ड किनारे के भंडार
-[Sandy lake shore]
-झील का रेतीला किनारा
+[Nunatak orchards]
+नुनाटक के बाग़
 [River delta]
 नदी का डेल्टा
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Globulation 2 का कर्सर दिखाएँ।
 नहर की चौड़ाई
 [Extra bridges]
 अतिरिक्त पुल
+[Grand canal]
+बड़ी नहर
 [Polder]
 बाँध से सुरक्षित नीची ज़मीन
 [Old town]

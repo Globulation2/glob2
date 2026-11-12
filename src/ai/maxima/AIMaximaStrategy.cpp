@@ -317,6 +317,8 @@ namespace
 		INT_SPEC(upgrades, recovery_inn_weight, "upgrades.recovery_inn_weight", 0, 1000, "weight", "upgrades", "Inn upgrade priority forced during recovery posture", StrategyImpactMedium),
 
 		BOOL_SPEC(repairs, enabled, "repairs.enabled", "enabled", "repairs", "Enable repairs of damaged buildings", StrategyImpactHigh),
+		INT_SPEC(repairs, tower_health_percent, "repairs.tower_health_percent", 1, 100, "percent", "repairs", "Repair a tower only once its hit points fall below this share of maximum; 100 repairs any damage", StrategyImpactHigh),
+		INT_SPEC(repairs, tower_enemy_radius, "repairs.tower_enemy_radius", 0, 64, "tiles", "repairs", "Hold a tower's repair while a visible enemy warrior or attacking explorer is within this distance; 0 never holds", StrategyImpactHigh),
 
 		INT_SPEC(construction, population_mid, "construction.population_mid", 0, 1000, "units", "construction", "Population threshold for a second site", StrategyImpactCritical),
 		INT_SPEC(construction, population_high, "construction.population_high", 0, 1000, "units", "construction", "Population threshold for a third site", StrategyImpactCritical),
@@ -453,7 +455,7 @@ namespace
 		INT_SPEC(postures, portfolio_expansion_divisor, "postures.portfolio_expansion_divisor", 1, 20, "score", "postures", "Normalizer for growth and expansion demand added to expansion posture", StrategyImpactCritical),
 
 		BOOL_SPEC(placement, food_preservation_enabled, "placement.food_preservation_enabled", "enabled", "placement", "Enable farm-loss and food-zone placement penalties", StrategyImpactHigh),
-		BOOL_SPEC(placement, defensive_siting_enabled, "placement.defensive_siting_enabled", "enabled", "placement", "Enable defendedness, threat-exposure, and tower-defense siting", StrategyImpactHigh),
+		BOOL_SPEC(placement, defensive_siting_enabled, "placement.defensive_siting_enabled", "enabled", "placement", "Enable defendedness and threat-exposure siting", StrategyImpactHigh),
 		BOOL_SPEC(placement, spacing_compactness_enabled, "placement.spacing_compactness_enabled", "enabled", "placement", "Enable compactness and building-spacing placement heuristics", StrategyImpactMedium),
 		BOOL_SPEC(placement, artery_routing_enabled, "placement.artery_routing_enabled", "enabled", "placement", "Enable circulation-artery route scoring and reservation", StrategyImpactHigh),
 		INT_SPEC(placement, unmet_demand_weight, "placement.unmet_demand_weight", 0, 100, "weight", "placement", "Placement score weight for unmet strategic demand", StrategyImpactMedium),
@@ -489,11 +491,18 @@ namespace
 		INT_SPEC(placement, inner_food_zone_multiplier, "placement.inner_food_zone_multiplier", 0, 200, "percent", "placement", "Food-zone penalty multiplier for schools and other inner strategic buildings", StrategyImpactMedium),
 		INT_SPEC(placement, hospital_food_zone_multiplier, "placement.hospital_food_zone_multiplier", 0, 200, "percent", "placement", "Food-zone penalty multiplier for hospitals", StrategyImpactLow),
 		INT_SPEC(placement, tower_food_zone_multiplier, "placement.tower_food_zone_multiplier", 0, 200, "percent", "placement", "Food-zone penalty multiplier for defensive towers", StrategyImpactLow),
-		INT_SPEC(placement, tower_critical_distance_weight, "placement.tower_critical_distance_weight", 0, 50, "weight", "placement", "Tower location penalty per tile from critical buildings", StrategyImpactMedium),
-		INT_SPEC(placement, tower_spacing_target, "placement.tower_spacing_target", 0, 64, "tiles", "placement", "Preferred distance between defensive towers", StrategyImpactMedium),
-		INT_SPEC(placement, tower_spacing_weight, "placement.tower_spacing_weight", 0, 50, "weight", "placement", "Tower location penalty per tile away from preferred spacing", StrategyImpactMedium),
-		INT_SPEC(placement, tower_threat_target, "placement.tower_threat_target", 0, 100, "score", "placement", "Preferred local threat level for tower placement", StrategyImpactMedium),
-		INT_SPEC(placement, tower_threat_weight, "placement.tower_threat_weight", 0, 50, "weight", "placement", "Tower location penalty per point away from preferred threat", StrategyImpactMedium),
+		INT_SPEC(placement, tower_critical_distance_weight, "placement.tower_critical_distance_weight", 0, 50, "weight", "placement", "Legacy tower siting input retained for saved configurations; unused since role-sited towers", StrategyImpactMedium),
+		INT_SPEC(placement, tower_spacing_target, "placement.tower_spacing_target", 0, 64, "tiles", "placement", "Legacy tower siting input retained for saved configurations; unused since role-sited towers", StrategyImpactMedium),
+		INT_SPEC(placement, tower_spacing_weight, "placement.tower_spacing_weight", 0, 50, "weight", "placement", "Legacy tower siting input retained for saved configurations; unused since role-sited towers", StrategyImpactMedium),
+		INT_SPEC(placement, tower_threat_target, "placement.tower_threat_target", 0, 100, "score", "placement", "Legacy tower siting input retained for saved configurations; unused since role-sited towers", StrategyImpactMedium),
+		INT_SPEC(placement, tower_threat_weight, "placement.tower_threat_weight", 0, 50, "weight", "placement", "Legacy tower siting input retained for saved configurations; unused since role-sited towers", StrategyImpactMedium),
+		INT_SPEC(placement, tower_border_percent, "placement.tower_border_percent", 0, 100, "percent", "placement", "Share of role-sited towers placed between own and enemy buildings", StrategyImpactMedium),
+		INT_SPEC(placement, tower_interior_percent, "placement.tower_interior_percent", 0, 100, "percent", "placement", "Share of role-sited towers placed beside own buildings; the remainder guards fruit", StrategyImpactMedium),
+		INT_SPEC(placement, tower_border_enemy_ratio, "placement.tower_border_enemy_ratio", 1, 8, "ratio", "placement", "Border tower preferred distance from enemy buildings as a multiple of its distance from own buildings", StrategyImpactMedium),
+		INT_SPEC(placement, tower_role_distance_falloff, "placement.tower_role_distance_falloff", 0, 50, "weight", "placement", "Role-sited tower quality lost per tile from its role's preferred spot", StrategyImpactMedium),
+		INT_SPEC(placement, tower_spread_saturation_tiles, "placement.tower_spread_saturation_tiles", 1, 64, "tiles", "placement", "Distance from the nearest tower beyond which role-sited towers gain no further spread", StrategyImpactMedium),
+		INT_SPEC(placement, tower_spread_percent, "placement.tower_spread_percent", 0, 100, "percent", "placement", "Share of a role-sited tower's location quality given to distance from other towers", StrategyImpactMedium),
+		INT_SPEC(placement, food_upgrade_retry_ticks, "placement.food_upgrade_retry_ticks", 0, 100000, "ticks", "placement", "Ticks before an inn or swarm upgrade that failed its food check is checked again", StrategyImpactLow),
 		INT_SPEC(placement, labor_scale, "placement.labor_scale", 0, 50, "weight", "placement", "Construction labor utility cost per assigned worker", StrategyImpactMedium),
 		INT_SPEC(placement, downtime_worker_scale, "placement.downtime_worker_scale", 1, 50, "weight", "placement", "Worker effectiveness scale reducing upgrade downtime", StrategyImpactMedium),
 		INT_SPEC(placement, artery_length_scale, "placement.artery_length_scale", 0, 50, "weight", "placement", "Utility cost per new circulation-artery tile", StrategyImpactMedium),
@@ -725,6 +734,9 @@ namespace
 		INT_SPEC(scheduling, explorer_attack_interval_ticks, "scheduling.explorer_attack_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between explorer attack-positioning passes", StrategyImpactMedium),
 		INT_SPEC(scheduling, explorer_attack_phase_offset_ticks, "scheduling.explorer_attack_phase_offset_ticks", 0, 1000000, "ticks", "scheduling", "Phase offset for explorer attack positioning", StrategyImpactLow),
 		INT_SPEC(scheduling, placement_interval_ticks, "scheduling.placement_interval_ticks", 1, 1000000, "ticks", "scheduling", "Interval between development-planner cycles", StrategyImpactMedium),
+		INT_SPEC(scheduling, strategy_review_min_gap_ticks, "scheduling.strategy_review_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between strategy reviews triggered by building events; periodic reviews keep their interval", StrategyImpactMedium),
+		INT_SPEC(scheduling, maintenance_clearing_min_gap_ticks, "scheduling.maintenance_clearing_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between maintenance-clearing plans triggered by new reservations; farming-triggered plans run at once", StrategyImpactLow),
+		INT_SPEC(scheduling, preemptive_defense_min_gap_ticks, "scheduling.preemptive_defense_min_gap_ticks", 0, 100000, "ticks", "scheduling", "Least ticks between preemptive defense recomputes triggered by building changes alone", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_warning_duration_ticks, "scheduling.explorer_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of a general explorer-bomb warning", StrategyImpactLow),
 		INT_SPEC(scheduling, explorer_colony_warning_duration_ticks, "scheduling.explorer_colony_warning_duration_ticks", 0, 1000000, "ticks", "scheduling", "Duration of an explorer warning near the colony", StrategyImpactLow),
 
@@ -1031,6 +1043,10 @@ namespace
 				"economy.food_headroom_critical")+") must be <= "
 				"economy.food_headroom_warning ("+valueSource(provenance,
 				"economy.food_headroom_warning")+")";
+		else if(value.placement.tower_border_percent+value.placement.tower_interior_percent>100)
+			error="placement.tower_border_percent ("+valueSource(provenance,
+				"placement.tower_border_percent")+") plus placement.tower_interior_percent ("
+				+valueSource(provenance, "placement.tower_interior_percent")+") must be <= 100";
 		else if(value.construction.population_mid>value.construction.population_high)
 			error="construction.population_mid ("+valueSource(provenance,
 				"construction.population_mid")+") must be <= construction.population_high ("
@@ -1538,6 +1554,33 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
         // Existing one-pipeline saves retain their executable strategy.
         restored.prestige.max_pipelines=1;
         provenance["prestige.max_pipelines"]="legacy single prestige pipeline";
+    }
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_COALESCED_REVIEWS) {
+        // Earlier saves reviewed strategy and re-planned clearing on every trigger.
+        if(!provenance.count("scheduling.strategy_review_min_gap_ticks"))restored.scheduling.strategy_review_min_gap_ticks=0;
+        if(!provenance.count("scheduling.maintenance_clearing_min_gap_ticks"))restored.scheduling.maintenance_clearing_min_gap_ticks=0;
+        if(!provenance.count("placement.food_upgrade_retry_ticks"))restored.placement.food_upgrade_retry_ticks=0;
+        if(!provenance.count("scheduling.preemptive_defense_min_gap_ticks"))restored.scheduling.preemptive_defense_min_gap_ticks=0;
+        for(const char* key:{"scheduling.strategy_review_min_gap_ticks","scheduling.maintenance_clearing_min_gap_ticks",
+            "placement.food_upgrade_retry_ticks","scheduling.preemptive_defense_min_gap_ticks"})
+            if(!provenance.count(key))provenance[key]="legacy immediate reviews";
+    }
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES) {
+        // Saves before role-sited towers lack its controls; they adopt the defaults.
+        if(!provenance.count("placement.tower_border_percent"))restored.placement.tower_border_percent=50;
+        if(!provenance.count("placement.tower_interior_percent"))restored.placement.tower_interior_percent=25;
+        if(!provenance.count("placement.tower_border_enemy_ratio"))restored.placement.tower_border_enemy_ratio=2;
+        if(!provenance.count("placement.tower_role_distance_falloff"))restored.placement.tower_role_distance_falloff=4;
+        if(!provenance.count("placement.tower_spread_saturation_tiles"))restored.placement.tower_spread_saturation_tiles=12;
+        if(!provenance.count("placement.tower_spread_percent"))restored.placement.tower_spread_percent=35;
+        // Earlier towers were repaired at any damage, whatever was nearby.
+        if(!provenance.count("repairs.tower_health_percent"))restored.repairs.tower_health_percent=100;
+        if(!provenance.count("repairs.tower_enemy_radius"))restored.repairs.tower_enemy_radius=0;
+        for(const char* key:{"placement.tower_border_percent",
+            "placement.tower_interior_percent","placement.tower_border_enemy_ratio",
+            "placement.tower_role_distance_falloff","placement.tower_spread_saturation_tiles",
+            "placement.tower_spread_percent","repairs.tower_health_percent","repairs.tower_enemy_radius"})
+            if(!provenance.count(key))provenance[key]="legacy tower siting";
     }
     for(const auto& spec:parameterSpecs)
         if(!provenance.count(spec.key))

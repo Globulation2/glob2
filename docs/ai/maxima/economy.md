@@ -167,6 +167,21 @@ Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
 priority until completion.
 
+The scan prunes by branch and bound. Each candidate is first scored optimistically,
+before routing: no artery, no farm-loss penalty and, for inns and swarms, the best
+possible food quality. Its true score can only be lower, so a candidate whose bound
+cannot beat the best already found in its water tier is skipped without routing,
+food walk or full scoring. The scan visits origins nearest Maxima's completed
+buildings first, so a strong site is found early and the bound prunes most of the
+map; once a strict water-tier site exists, fallback-tier sites are skipped outright.
+A colony site's food is bounded by the unclaimed food inside the window its supply
+search can reach (a summed-area table), so hopeless colony sites skip the flood
+fill. Inn and swarm upgrades likewise compete on that bound,
+and their food-ledger check (which rebuilds the ledger without the building) runs
+only for the upgrade that would win. The chosen site is the one a full evaluation
+would pick from the same snapshot. An upgrade that fails its food check is not
+checked again for `placement.food_upgrade_retry_ticks` (512).
+
 For every building category, repairs and upgrades share an allowance that leaves
 at least half the existing buildings operational, rounded up: two or three
 buildings permit one maintenance job; four or five permit two. A lone building
@@ -194,6 +209,27 @@ demand is covered, spare workers beyond the training reserve can fund another
 tower. Viable ordinary builds, repairs and upgrades take precedence. Normal
 quotas, siting and farm protection still apply; a committed tower site remains
 ordinary construction when other demand appears.
+
+Each new tower takes a siting role from a deterministic golden-ratio sequence
+over the colony's tower count, so the shares hold even across a few towers:
+`placement.tower_border_percent` border towers, `placement.tower_interior_percent`
+interior towers and fruit towers for the remainder (50/25/25 by default). A
+border tower prefers the point between Maxima's nearest non-tower building and
+the nearest seen enemy non-tower building that is `placement.tower_border_enemy_ratio`
+times as far from the enemy (a third of the way out by default). An interior
+tower prefers Maxima's own buildings and a fruit tower prefers known fruit; both
+border and fruit towers fall back to interior siting when no enemy building or
+fruit is known. Every role also prefers distance from existing towers, which
+takes `placement.tower_spread_percent` of the location score and saturates at
+`placement.tower_spread_saturation_tiles`. Stone distance, threat and
+defendedness play no part in tower siting.
+
+A repair turns a building back into a site, and a tower site cannot shoot. A
+tower is therefore repaired only once its hit points fall below
+`repairs.tower_health_percent` of maximum, and never while a visible enemy
+warrior or ground-attacking explorer is within `repairs.tower_enemy_radius`
+tiles; a selected repair that becomes contested before it is issued is dropped.
+Other buildings are repaired at any damage.
 
 Economic recovery restricts growth and development, while military activity
 continues to follow defence needs, eligible forces, reachability, target safety

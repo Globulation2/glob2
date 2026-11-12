@@ -1592,6 +1592,112 @@ TEST_CASE("forward support has its own spatial pathway and leaves ordinary sitin
     CHECK_FALSE(planner.revalidateSelection(world,{ordinary},limits,forward,&reason));
     CHECK(reason==RejectedAuthorization);
 }
+namespace
+{
+// A 32x32 world with one own colony building at (6,16), remembered enemy
+// buildings at (21,16) and fruit at (16,28). Type 7 is the tower role.
+WorldState towerRoleWorld()
+{
+    WorldState world=makeWorld();
+    WorldBuilding home;home.id=1;home.buildingType=0;home.level=1;home.centerX=6;home.centerY=16;
+    world.buildings.push_back(home);
+    world.swimmingBuilders=4; // no circulation network here, so builders may root one
+    for(int dy=-2;dy<2;++dy)for(int dx=-2;dx<2;++dx)
+    {world.tile(6+dx,16+dy).occupied=true;world.tile(6+dx,16+dy).ownOccupied=true;}
+    world.enemyStructures.push_back(world.index(21,16));
+    world.tile(16,28).materialType=5;world.tile(16,28).materialSources=MaterialMask(1u<<5);
+    world.tile(16,28).materialAmount=10;
+    return world;
+}
+DevelopmentAction siteTower(const WorldState& world,int borderPercent,int interiorPercent)
+{
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    PlacementPolicy& policy=planner.mutablePolicy();
+    policy.towerBorderPercent=borderPercent;policy.towerInteriorPercent=interiorPercent;
+    // An ordinary intent: fortification waits while upgrades are available,
+    // and siting is scored identically for both.
+    DevelopmentIntent intent;intent.buildingType=7;
+    intent.unmetCount=1;intent.priority=100;
+    DevelopmentLimits limits;limits.newConstruction=1;
+    DevelopmentAction action;
+    REQUIRE(planner.selectAction(world,{intent},limits,action));
+    CHECK(action.buildingType==7);
+    return action;
+}
+int distanceTo(const WorldState& world,const DevelopmentAction& action,int x,int y)
+{return world.wrappedManhattan(action.centerX,action.centerY,x,y);}
+}
+
+TEST_CASE("role-sited towers take the configured border, interior and fruit shares" * doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=towerRoleWorld();
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    planner.mutablePolicy().towerBorderPercent=50;planner.mutablePolicy().towerInteriorPercent=25;
+    int counts[3]={0,0,0};
+    for(int ordinal=0;ordinal<400;++ordinal)++counts[planner.towerRole(world,ordinal)];
+    CHECK(counts[TowerBorder]>=196);CHECK(counts[TowerBorder]<=204);
+    CHECK(counts[TowerInterior]>=96);CHECK(counts[TowerInterior]<=104);
+    CHECK(counts[TowerFruit]>=96);CHECK(counts[TowerFruit]<=104);
+}
+
+TEST_CASE("role-sited towers go a third of the way to the enemy, beside home, or by fruit" * doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=towerRoleWorld();
+    // Home (6,16) to enemy (21,16) is 15 tiles: the border point is (11,16).
+    const DevelopmentAction border=siteTower(world,100,0);
+    CHECK(distanceTo(world,border,11,16)<=3);
+    const DevelopmentAction interior=siteTower(world,0,100);
+    CHECK(distanceTo(world,interior,6,16)<=5);
+    const DevelopmentAction fruit=siteTower(world,0,0);
+    CHECK(distanceTo(world,fruit,16,28)<=3);
+    // Without a known enemy a border tower guards the colony instead.
+    world.enemyStructures.clear();
+    const DevelopmentAction unknown=siteTower(world,100,0);
+    CHECK(distanceTo(world,unknown,6,16)<=5);
+}
+
+TEST_CASE("role-sited towers spread away from existing towers" * doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=towerRoleWorld();
+    const DevelopmentAction first=siteTower(world,100,0);
+    WorldBuilding tower;tower.id=2;tower.buildingType=7;tower.level=1;
+    tower.centerX=first.centerX;tower.centerY=first.centerY;
+    world.buildings.push_back(tower);occupy(world,first);
+    const DevelopmentAction second=siteTower(world,100,0);
+    CHECK(distanceTo(world,second,first.centerX,first.centerY)>=4);
+}
+
+namespace
+{
+// Repair choice for one damaged building of the given type (7 is the tower).
+bool repairChosen(int type,int hp,bool contested)
+{
+    WorldState world=makeWorld();
+    WorldBuilding building;building.id=5;building.buildingType=type;building.level=1;
+    building.centerX=16;building.centerY=16;building.hp=hp;building.hpMax=100;
+    world.buildings.push_back(building);
+    for(int dy=-1;dy<1;++dy)for(int dx=-1;dx<1;++dx)
+    {world.tile(16+dx,16+dy).occupied=true;world.tile(16+dx,16+dy).ownOccupied=true;}
+    if(contested)world.contestedBuildings.push_back(building.id);
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    planner.mutablePolicy().towerRepairHealthPercent=60;
+    DevelopmentLimits limits;limits.newConstruction=1;
+    DevelopmentAction action;
+    return planner.selectAction(world,{},limits,action)
+        &&action.type==RepairBuilding&&action.buildingId==building.id;
+}
+}
+
+TEST_CASE("towers wait for heavy damage and no nearby enemy before repairing" * doctest::test_suite("Maxima.Placement"))
+{
+    CHECK_FALSE(repairChosen(7,80,false)); // still fighting fit
+    CHECK(repairChosen(7,50,false));
+    CHECK_FALSE(repairChosen(7,50,true));  // an enemy fighter is close
+    // Other buildings keep repairing at any damage.
+    CHECK(repairChosen(2,90,false));
+    CHECK(repairChosen(2,90,true));
+}
+
 TEST_CASE("forward support uses catalog roles with nonlegacy type identities")
 {
     WorldState world=makeWorld();

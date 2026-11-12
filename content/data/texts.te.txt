@@ -1698,8 +1698,16 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 తీరరేఖ మెలికలు
 [Fjord width]
 ఫ్యోర్డ్ వెడల్పు
-[Lake connects to fjords]
-సరస్సు ఫ్యోర్డ్‌లకు అనుసంధానించబడి ఉంది
+[Ice sheet size]
+మంచు పలక పరిమాణం
+[Fjord landings]
+ఫియోర్డ్ దిగుడు స్థలాలు
+[Fjord continents need at least one colony.]
+ఫియోర్డ్ ఖండానికి కనీసం ఒక కాలనీ అవసరం.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+ఫియోర్డ్ ఖండానికి చిన్న వైపు కనీసం 128 గడులు ఉన్న మ్యాప్ అవసరం.
+[Ice reach]
+మంచు విస్తీర్ణం
 [Resource islands]
 వనరుల ద్వీపాలు
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 మూసుకుపోయిన దారుల చివర నిధి
 [Fjord bank deposits]
 ఫ్యోర్డ్ తీర నిక్షేపాలు
-[Sandy lake shore]
-ఇసుక సరస్సు తీరం
+[Nunatak orchards]
+నునాటక్ పండ్ల తోటలు
 [River delta]
 నదీ డెల్టా
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 కాలువ వెడల్పు
 [Extra bridges]
 అదనపు వంతెనలు
+[Grand canal]
+మహా కాలువ
 [Polder]
 పోల్డర్
 [Old town]

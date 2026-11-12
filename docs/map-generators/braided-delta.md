@@ -5,9 +5,9 @@ that never reaches the sea. It leaves a rock range through a gorge, runs down a 
 panhandle, and at the apex spreads into one great swamp in the middle of a desert basin. Out from
 the apex: the permanent swamp, papyrus marsh threaded by channels that split and rejoin, deep
 lagoons, and islands of grass round bare salt-pan hearts, one of them a great island with an
-orchard; the seasonal floodplain, loam levees and lush grass along shrinking channels; the fringe,
-where the channels die out in dry sandy beds among sand ridges; and the desert, dry grass, linear
-dunes, clay pans and rocky kopjes, round the wrap to the range.
+orchard; the seasonal floodplain, loam levees and woods along shrinking channels; the fringe,
+where the channels die out in dry sandy beds among sand ridges; and the desert, linear dunes, clay
+pans and rocky kopjes, round the wrap to the range.
 
 Revision 6 replaced the earlier ladder of parallel channels and identical islands. The coastal
 delta first drawn for the rebuild (trunk, fan, sea) was set aside as too close to
@@ -46,7 +46,8 @@ picks its axis on a square map.
 | Swamp | Mudflat, except where the island noise rises; one great island along the flow. Channel banks are mudflat, not sand. |
 | Crossings | Boardwalk bridges over the panhandle; sand fords across the channels on a spanning set of the land plus loops; then a repair that fords any piece still cut off by the cheapest crossing of shallow water (or a lagoon), never the panhandle's river. |
 | Homes | Spread by walking distance round the swamp's rim, on squares of pure grass with room; desert features are laid only afterwards, outside every home's clearing. |
-| Resources | Starter kits first, then the great island's orchard, a quarry at each kopje, wheat on levee loam, woods on lush ground and islands, and algae. |
+| Resources | Starter kits first, then the great island's orchard, a quarry at each kopje, wheat on levee loam, woods on the islands and the floodplain grass within ten steps of water, and algae. |
+| Looks | One look per rule group over the whole map: plain grass, pale sand, mudflat, loam, clay and deep water. A second look appears only as a named feature drawn as one region: lush grass on the swamp's islands, dune sand on dunes and sand ridges, scree at the range's foot, outcrop kopjes, and a bridge's boardwalk deck between brick approaches. Revision 8 dropped the noise-dealt mud, spring meadow, dirt and shale looks, the second deep water by depth, and the lush/dry grass bands. |
 
 The design is built once per request and reused by the request check, generation and validation
 (`cachedDesign`).
@@ -60,7 +61,7 @@ The design is built once per request and reused by the request check, generation
 | Islands | 0–100 (50) | How much of the swamp is island rather than marsh. |
 | River crossings | 1–3 (2) | Boardwalk bridges over the panhandle's river. |
 | Dunes | 0–100 (50) | Desert dune cover. |
-| Wheat / Wood amount | 0–300% (100) | Levee wheat and lush-ground woods; starter kits stay fixed. |
+| Wheat / Wood amount | 0–300% (100) | Levee wheat and island and floodplain woods; starter kits stay fixed. |
 | Stone amount | 0–300% (100) | Each kopje's quarry. |
 | Fruit amount | 0–300% (100) | The great island's groves; 0 removes the orchard. |
 | Algae amount | 0–300% (100) | Algae in the shallow water. |

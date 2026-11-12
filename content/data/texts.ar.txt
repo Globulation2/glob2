@@ -1734,8 +1734,16 @@ OpenGL غير متوفر في هذا الإصدار.
 وعورة الساحل
 [Fjord width]
 عرض المضيق البحري
-[Lake connects to fjords]
-البحيرة متصلة بالمضائق البحرية
+[Ice sheet size]
+حجم الغطاء الجليدي
+[Fjord landings]
+مراسي المضايق
+[Fjord continents need at least one colony.]
+تحتاج القارة ذات المضايق إلى مستعمرة واحدة على الأقل.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+تحتاج القارة ذات المضايق إلى خريطة لا يقل ضلعها الأقصر عن 128 مربعًا.
+[Ice reach]
+امتداد الجليد
 [Resource islands]
 جزر الموارد
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL غير متوفر في هذا الإصدار.
 كنوز في الطرق المسدودة
 [Fjord bank deposits]
 رواسب على ضفاف المضائق البحرية
-[Sandy lake shore]
-شاطئ رملي حول البحيرة
+[Nunatak orchards]
+بساتين النوناتاك
 [River delta]
 دلتا النهر
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض القناة
 [Extra bridges]
 جسور إضافية
+[Grand canal]
+القناة الكبرى
 [Polder]
 بولدر
 [Old town]

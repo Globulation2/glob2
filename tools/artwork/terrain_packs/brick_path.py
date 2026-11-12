@@ -2,13 +2,16 @@
 """The brick path terrain material."""
 import math
 
-from ._paving import decay_fields, dress, stone_fates, stone_field
+import numpy as np
+
+from ._paving import decay_fields, dress, per_stone, stone_fates, stone_field
 from terrain_core import (
     NATIVE_PX,
     RECIPES,
     Style,
     clamp01,
     fbm,
+    hypot,
     layout_field,
     recipe,
 )
@@ -33,57 +36,63 @@ def firing_of(u):
     return BRICK_FIRINGS[-1][0]
 
 
-def herringbone(size, width, length):
+def herringbone(size, pairs):
     """Axis-aligned herringbone over a periodic block, in render pixels.
 
-    Bricks are `width` x `length` (joint included). Horizontal bricks sit on the
-    lattice (width, width), (length, -length); each vertical brick hangs below
-    its horizontal partner's left end. The pattern repeats over the block when
-    size / 2 is a multiple of both width and length. Axis-aligned rather than
-    at 45 degrees: joints stay on whole native pixels, and a path reads the
-    same running across or down the screen.
+    Bricks are 2:1, `width` = size / (2 * pairs) by twice that (joint
+    included), so the pattern repeats over the block: horizontal bricks sit
+    on the lattice (width, width), (length, -length), which closes when
+    size / 2 is a whole number of widths and of lengths. Each vertical brick
+    hangs below its horizontal partner's left end. Axis-aligned rather than
+    at 45 degrees, so a path reads the same running across or down the
+    screen. Brick edges need not fall on whole pixels; each pixel takes the
+    brick its centre lies in.
 
     Returns the brick list and, per pixel, the brick index, the distance from
     the brick face's edge (negative in the joint) and the position along the
     brick (0..1) for lengthwise firing gradients.
     """
-    assert (size // 2) % width == 0 and (size // 2) % length == 0
+    width = size / (2 * pairs)
+    length = 2 * width
+    per = 2 * pairs  # lattice units of one width across the block
     origins = set()
-    span = size // width + size // length + 4
-    for i in range(-span, span):
-        for j in range(-span, span):
-            origins.add(((i * width + j * length) % size, (i * width - j * length) % size))
+    for i in range(per):
+        for j in range(per):
+            origins.add(((i + 2 * j) % per, (i - 2 * j) % per))
     bricks = []
     # Shift by half a brick width so joints never run along a cell edge.
-    shift = width // 2
+    shift = width / 2
     for ox, oy in sorted(origins):
-        ox, oy = (ox + shift) % size, (oy + shift) % size
-        bricks.append((ox, oy, length, width, 0))
-        bricks.append((ox, (oy + width) % size, width, length, 1))
-    ids = [-1] * (size * size)
-    edge = [0.0] * (size * size)
-    along = [0.0] * (size * size)
+        x, y = (ox * width + shift) % size, (oy * width + shift) % size
+        bricks.append((x, y, length, width, 0))
+        bricks.append((x, (y + width) % size, width, length, 1))
+    ids = np.full((size, size), -1, dtype=np.int64)
+    edge = np.zeros((size, size))
+    along = np.zeros((size, size))
     gap = NATIVE_PX  # one native pixel of joint on each brick's right and bottom side
     radius = 0.75 * NATIVE_PX
     for k, (x0, y0, bw, bh, vertical) in enumerate(bricks):
         fw, fh = bw - gap, bh - gap
-        for v in range(bh):
-            row = ((y0 + v) % size) * size
-            for u in range(bw):
-                i = row + (x0 + u) % size
-                ids[i] = k
-                if u >= fw or v >= fh:
-                    edge[i] = -0.5 * NATIVE_PX
-                else:
-                    dx = min(u + 0.5, fw - u - 0.5)
-                    dy = min(v + 0.5, fh - v - 0.5)
-                    e = min(dx, dy)
-                    if dx < radius and dy < radius:
-                        e = radius - math.hypot(radius - dx, radius - dy)
-                    edge[i] = e
-                along[i] = (v / bh) if vertical else (u / bw)
-    assert min(ids) >= 0
-    return bricks, ids, edge, along
+        py = np.arange(math.floor(y0), math.ceil(y0 + bh) + 1)
+        v = py + 0.5 - y0
+        py, v = py[(0 <= v) & (v < bh)], v[(0 <= v) & (v < bh)]
+        px = np.arange(math.floor(x0), math.ceil(x0 + bw) + 1)
+        u = px + 0.5 - x0
+        px, u = px[(0 <= u) & (u < bw)], u[(0 <= u) & (u < bw)]
+        uu, vv = np.broadcast_arrays(u[None, :], v[:, None])
+        dx = np.minimum(uu, fw - uu)
+        dy = np.minimum(vv, fh - vv)
+        e = np.minimum(dx, dy)
+        corner = (dx < radius) & (dy < radius)
+        if corner.any():
+            e[corner] = radius - hypot(radius - dx[corner], radius - dy[corner])
+        e = np.where((uu >= fw) | (vv >= fh), -0.5 * NATIVE_PX, e)
+        rows, cols = (py % size)[:, None], (px % size)[None, :]
+        ids[rows, cols] = k
+        edge[rows, cols] = e
+        along[rows, cols] = (vv / bh) if vertical else (uu / bw)
+    assert ids.min() >= 0
+    return bricks, ids.ravel(), edge.ravel(), along.ravel()
 
 
 @recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
@@ -97,38 +106,30 @@ def render_brick_path(ctx):
     settled and chipped, some cracked across or lost to the soil, sand and
     grit in the joints, dust over the firings and moss where it is damp."""
     p, size = RECIPES["brick_path"].palette, ctx.size
-    # Pavers of 2:1 proportion, 8 x 16 native px with their joint: half a
-    # tile long, the same range as the trail's setts and the sandstone flags,
-    # so a brick is still a brick at 32 px per cell, and every joint lands on
-    # whole native pixels, so the tiles stay crisp.
-    bricks, ids, edge, along = herringbone(size, 8 * NATIVE_PX, 16 * NATIVE_PX)
+    # Pavers of 2:1 proportion, 6.4 x 12.8 native px with their joint: two
+    # fifths of a tile long, so a brick is still a brick at 32 px per cell.
+    bricks, ids, edge, along = herringbone(size, 20)
     centres = [((x0 + bw / 2) % size, (y0 + bh / 2) % size) for x0, y0, bw, bh, _ in bricks]
     decay = decay_fields(ctx, reclaim=(0.88, 0.97))
-    reach = 32 + 16 * NATIVE_PX
+    reach = 32 + 13 * NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.035, cracked=0.12, sink=0.5, heave=0.3)
     # Bricks crack across their length, not along it.
     across = [(math.pi / 2 if not vertical else 0.0) + (1 if s.kink > 0 else -1) * 0.0
               for (_, _, _, _, vertical), s in zip(bricks, fates)]
-    mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size))
+    mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size, array=True))
     # Bricks were laid batch by batch, so firings drift in broad runs.
-    batch = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 3, 2, size=size))
+    batch = stone_field(ctx, centres, reach, lambda rng: fbm(rng, 3, 2, size=size, array=True))
     firing = [firing_of(clamp01(0.7 * s.tone + 0.3 * b)) for s, b in zip(fates, batch)]
-    rgb = ([0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size))
     # Each brick one firing, graded end to end by its settling, with a fine
     # mottle across all of them.
     # A few bricks have spalled: their fired skin is gone and the dark, rough
     # core shows.
-    spalled = [s.tone > 0.9 for s in fates]
-    for i in range(size * size):
-        k = ids[i]
-        s = fates[k]
-        c = firing[k]
-        f = (1 + 0.09 * s.cast * (along[i] - 0.5) * 2) * (1 + 0.12 * (mottle[i] - 0.5) * 2)
-        if spalled[k]:
-            f *= 0.7 + 0.25 * (mottle[i] - 0.5) * 2
-        for ch in range(3):
-            rgb[ch][i] = c[ch] * f
-    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 4 * NATIVE_PX,
+    cast = per_stone(fates, lambda s: s.cast)[ids]
+    f = (1 + 0.09 * cast * (along - 0.5) * 2) * (1 + 0.12 * (mottle - 0.5) * 2)
+    spalled = per_stone(fates, lambda s: s.tone > 0.9)[ids] != 0
+    f = np.where(spalled, f * (0.7 + 0.25 * (mottle - 0.5) * 2), f)
+    rgb = np.array(firing, dtype=np.float64).T[:, ids] * f
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 3.2 * NATIVE_PX,
                 joint=(0.0, 1.5), creep=0.0, chipping=0.8, bevel=1.5, bevel_strength=0.3,
                 crack_along=across, moss=0.25, weeds=0.3, lichen=0.2, grit=0.95, grit_cover=0.22, dust=0.18, lip=0.2)
     return rgb, None

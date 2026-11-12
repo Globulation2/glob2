@@ -14,6 +14,7 @@
 #include <memory>
 #include <fstream>
 #include "sim/EntityRefOf.h"
+#include "SGSL.h"
 
 namespace
 {

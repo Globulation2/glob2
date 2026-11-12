@@ -52,42 +52,42 @@ def lozenge_paving(size, diag, key, gap):
     consider(0.0, half, square, 3 * n * n)
     for base_x, base_y in ((0, 0), (half, half), (half, 0), (0, half)):
         centres += [((base_x + i * diag) % size, (base_y + j * diag) % size) for j in range(n) for i in range(n)]
-    return centres, ids.ravel().tolist(), (best - gap / 2).ravel().tolist(), 2 * n * n
+    return centres, ids.ravel(), (best - gap / 2).ravel(), 2 * n * n
 
 
 @recipe(name="moonstone_lozenge", group="paths", label="Moonstone lozenge", profile="paved", border_class="built",
         seam=SEAM,
-        palette={**FROST, "dark": (196, 194, 200), "mid": (220, 218, 222), "light": (238, 236, 238),
+        palette={**FROST, "dark": (198, 192, 200), "mid": (222, 216, 222), "light": (240, 234, 238),
                  "warm": (230, 222, 216), "cool": (206, 208, 230), "vein": (146, 150, 176),
                  "key": (108, 120, 176), "key_light": (170, 180, 226)},
-        style=Style(luma=192, std=19, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
+        style=Style(luma=192, std=19, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_moonstone_lozenge(ctx):
     """Polished white marble lozenges with grey-blue veins and blue moonstone
     keystones: a kept, formal floor with hairline cracks and a frost sheen."""
     p, size = RECIPES["moonstone_lozenge"].palette, ctx.size
-    centres, ids, edge, first_key = lozenge_paving(size, 32 * NATIVE_PX, 4.0 * NATIVE_PX, 1.25 * NATIVE_PX)
+    centres, ids, edge, first_key = lozenge_paving(size, 16 * NATIVE_PX, 2.0 * NATIVE_PX, 1.25 * NATIVE_PX)
     decay = decay_fields(ctx, reclaim=(0.68, 0.9))
-    reach = 32 + 20 * NATIVE_PX
+    reach = 32 + 10 * NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.03, cracked=0.2, sink=0.4, heave=0.25)
-    texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))
+    texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size, array=True))
     rgb = stone_colour(lambda t: ramp(t, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.3, own=0.6, staining=0.0)
     # Veins: a warped band field, each flag cut from a different part of the
     # block so its veining is strong, faint or absent.
     def vein_field(rng):
-        f = fbm(rng, 5, 4, size=size)
-        return domain_warp(f, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 40)
+        f = fbm(rng, 5, 4, size=size, array=True)
+        return domain_warp(f, fbm(rng, 3, 2, size=size, array=True), fbm(rng, 3, 2, size=size, array=True), 40)
     v = layout_field(ctx, vein_field)
-    amount = [smoothstep(0.35, 0.9, fates[k].stain) for k in ids]
-    veins = [a * (1 - smoothstep(0.0, 0.05, abs(x - 0.5))) for x, a in zip(v, amount)]
+    amount = smoothstep(0.35, 0.9, np.array([f.stain for f in fates]))[ids]
+    veins = amount * (1 - smoothstep(0.0, 0.05, np.abs(v - 0.5)))
     rgb = mix(rgb, p["vein"], veins, 0.75)
     # Keystones: deep blue moonstone with a pale sheen toward the light.
     # About half the keystones are frosted over, so they do not form a dot grid.
-    keys = [(1.0 if fates[k].tone > 0.45 else 0.25) if k >= first_key else 0.0 for k in ids]
-    gem = ramp([clamp01(0.5 * t + 0.5 * smoothstep(0.0, 2.5 * NATIVE_PX, e)) for t, e in zip(texture, edge)],
+    keys = np.array([(1.0 if f.tone > 0.45 else 0.25) if k >= first_key else 0.0 for k, f in enumerate(fates)])[ids]
+    gem = ramp(clamp01(0.5 * texture + 0.5 * smoothstep(0.0, 2.5 * NATIVE_PX, edge)),
                [(0.0, p["key"]), (1.0, p["key_light"])])
     rgb = mix(rgb, gem, keys)
-    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 12 * NATIVE_PX,
+    rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 6 * NATIVE_PX,
                 joint=(0.0, 1.8), creep=2.5, chipping=1.0, bevel=1.6, bevel_strength=0.3,
                 moss=1.0, weeds=0.35, lichen=0.4, grit=0.6, dust=0.15, lip=0.2, shadow=0.3, damp=0.5,
                 finish_grain=0.05)

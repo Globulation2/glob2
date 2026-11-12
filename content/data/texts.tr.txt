@@ -1734,8 +1734,16 @@ Kıta boyutu
 Kıyı girintiliği
 [Fjord width]
 Fiyort genişliği
-[Lake connects to fjords]
-Göl fiyortlara bağlı
+[Ice sheet size]
+Buz örtüsü boyutu
+[Fjord landings]
+Fiyort iskeleleri
+[Fjord continents need at least one colony.]
+Fiyort kıtası en az bir koloni gerektirir.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Fiyort kıtası, kısa kenarı en az 128 kare olan bir harita gerektirir.
+[Ice reach]
+Buzun uzanımı
 [Resource islands]
 Kaynak adaları
 [Watershed]
@@ -1980,8 +1988,8 @@ Kum yollar
 Çıkmaz yollarda hazine
 [Fjord bank deposits]
 Fiyort kıyılarında kaynaklar
-[Sandy lake shore]
-Kumlu göl kıyısı
+[Nunatak orchards]
+Nunatak meyve bahçeleri
 [River delta]
 Nehir deltası
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Blok boyutu
 Kanal genişliği
 [Extra bridges]
 Ek köprüler
+[Grand canal]
+Büyük kanal
 [Polder]
 Polder
 [Old town]

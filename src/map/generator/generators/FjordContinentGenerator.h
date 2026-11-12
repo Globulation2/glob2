@@ -4,8 +4,8 @@
 #include "GeneratorDefinition.h"
 struct FjordContinentOptions
 {
-	int continentSize, roughness, fjordWidth, resourceIslands, lakeSize, lakeConnected;
-	bool sandyLakeShore, bankDeposits;
+	int continentSize, roughness, fjordWidth, sheetSize, iceReach, landings, resourceIslands;
+	bool nunataks, bankDeposits;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit FjordContinentOptions(const GenerationRequest &r);
 };

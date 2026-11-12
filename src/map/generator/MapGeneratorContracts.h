@@ -194,8 +194,18 @@ inline void fortsContracts()
 					for (int dx = -2; dx < 6; ++dx)
 						REQUIRE(
 							!game.map.isResource(team->startPosX + dx, team->startPosY + dy));
+				// The bailey keeps its quarry faces at every stone setting; the ramparts are terrain
+				// walls, and one opened is refused.
 				REQUIRE(wall >= 0);
-				game.map.setNoResource(wall % 64, wall / 64, 1);
+				int rampart = -1;
+				for (int i = 0; i < 64 * 64 && rampart < 0; ++i)
+				{
+					const TerrainGroup g = terrainGroup(game.map.vertexTerrainAt(size_t(i)));
+					if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
+						rampart = i;
+				}
+				REQUIRE(rampart >= 0);
+				game.map.setVertexTerrain(rampart % 64, rampart / 64, GRASS);
 				REQUIRE(!definition.validateWorld(game, check).empty());
 			}
 		}
@@ -509,7 +519,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	REQUIRE((definition.legacyId == 45 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 45 && definition.revision == 6));
 	REQUIRE((request.option("watering-holes") == 1 && request.option("dry-patches") == 8));
 	REQUIRE((request.option("grassland") == 70 && request.option("kopjes") == 1 &&
 		   request.option("game-trails") == 1));
@@ -696,8 +706,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Current versions of the rebuilt landscapes (The Glacis 5, Caravanserai 2.0 is 5 as well).
-		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 5));
+		// Current versions of the rebuilt landscapes (The Glacis 6, Allotments 3, Caravanserai 6).
+		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 6));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -728,10 +738,9 @@ inline void rebuiltLandscapeContracts()
 	}
 	{
 		// With no stone to scale and no mesas, the only stone is a designed wall: remove one and
-		// the validator must notice, for the forts and the caravanserais alike.
+		// the validator must notice. (The Glacis's walls are terrain since its revision 6: below.)
 		for (const auto &[id, options] :
-			 {std::pair{"glacis", std::vector<std::pair<const char *, int>>{{"stone-amount", 0}}},
-			  std::pair{"caravanserai",
+			 {std::pair{"caravanserai",
 						std::vector<std::pair<const char *, int>>{{"stone-amount", 0}, {"desert", 0}}}})
 		{
 			Game game(nullptr);
@@ -753,11 +762,27 @@ inline void rebuiltLandscapeContracts()
 		}
 		// A glacis must stay bare: a crop planted on one is refused.
 		Game game(nullptr);
-		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {}, game);
+		const auto [request, ok] = generate("glacis", 8, 8, 2, 31, {{"stone-amount", 0}}, game);
 		REQUIRE(ok);
 		const auto &definition =
 			GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("glacis"));
 		GenerationContext check(request);
+		REQUIRE(definition.validateWorld(game, check).empty());
+		{
+			// The fort's walls are terrain: one opened is refused.
+			Game breached(nullptr);
+			REQUIRE(generate("glacis", 8, 8, 2, 31, {{"stone-amount", 0}}, breached).second);
+			int wall = -1;
+			for (int i = 0; i < 256 * 256 && wall < 0; ++i)
+			{
+				const TerrainGroup g = terrainGroup(breached.map.vertexTerrainAt(size_t(i)));
+				if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
+					wall = i;
+			}
+			REQUIRE(wall >= 0);
+			breached.map.setVertexTerrain(wall % 256, wall / 256, GRASS);
+			REQUIRE(!definition.validateWorld(breached, check).empty());
+		}
 		// The glacis ring lies some 32 to 46 tiles out from the fort's middle: try tiles out there
 		// until one is refused as glacis, putting back each one that was not.
 		const Team *team = game.teams[0];
@@ -768,14 +793,17 @@ inline void rebuiltLandscapeContracts()
 			{
 				const int x = (team->startPosX + int(std::lround(d * std::cos(direction * kPi / 8))) + 256) % 256;
 				const int y = (team->startPosY + int(std::lround(d * std::sin(direction * kPi / 8))) + 256) % 256;
-				if (!game.map.isGrass(x, y) || game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
+				// The glacis is scree since revision 6, rough ground nothing grows on.
+				if (terrainGroup(game.map.vertexTerrainAt(x, y)) != TerrainGroup::Rough ||
+					game.map.isResource(x, y) || game.map.getBuilding(x, y) != NOGBID)
 					continue;
 				++tries;
-				game.map.setResourceByIndex(x, y, WHEAT, 1);
+				// Scree holds no crop, so the deposit is forced, as damage would be.
+				game.map.replaceResource(x, y, Resource(WHEAT, 0, 1, 0));
 				if (definition.validateWorld(game, check).find("glacis") != std::string::npos)
 					planted = true;
 				else
-					game.map.setNoResource(x, y, 1);
+					game.map.replaceResource(x, y, Resource{});
 			}
 		REQUIRE(planted);
 	}
@@ -949,7 +977,7 @@ inline void karstTowersContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("karst-towers"));
-	REQUIRE((definition.legacyId == 54 && definition.revision == 3));
+	REQUIRE((definition.legacyId == 54 && definition.revision == 4));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
@@ -1055,7 +1083,7 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	REQUIRE((definition.legacyId == 55 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 55 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("range-spacing") == 128 && request.option("passes") == 2 &&
@@ -1233,7 +1261,7 @@ inline void braidedRiverContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-river"));
-	REQUIRE((definition.legacyId == 42 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 42 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("braid-width") == 40 && request.option("channels") == 6 &&
@@ -1446,7 +1474,7 @@ inline void caravanseraiContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("caravanserai"));
-	REQUIRE((definition.legacyId == 41 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 41 && definition.revision == 6));
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed, int desert)
 	{
@@ -1972,6 +2000,7 @@ inline void encircledKingdomContracts()
 		edge.options = {{"fortress-plan", 3},
 						{"gate-width", rectangular ? 10 : 6},
 						{"heartland-farmland", 75},
+						{"posterns", 0},
 						{"wheat-amount", rectangular ? 200 : 275},
 						{"wood-amount", rectangular ? 200 : 150},
 						{"stone-amount", rectangular ? 75 : 150},
@@ -2017,16 +2046,20 @@ inline void encircledKingdomContracts()
 		if (!error.empty())
 			std::fprintf(stderr, "Kingdom growth: %s\n", error.c_str());
 		REQUIRE(error.empty());
-		// Stone is the fortress structure even with all renewable fields fully grown.
-		bool removed = false;
-		for (int y = 0; y < abundant.map.getH(); ++y)
-			for (int x = 0; x < abundant.map.getW(); ++x)
-				if (abundant.map.getResource(x, y).type == STONE)
+		// The enceinte is a terrain wall even with all renewable fields fully grown: one opened is
+		// refused.
+		bool opened = false;
+		for (int y = 0; y < abundant.map.getH() && !opened; ++y)
+			for (int x = 0; x < abundant.map.getW() && !opened; ++x)
+			{
+				const TerrainGroup g = terrainGroup(abundant.map.vertexTerrainAt(x, y));
+				if (g == TerrainGroup::Obstacles || g == TerrainGroup::Ridges)
 				{
-					abundant.map.replaceResource(x, y, Resource{});
-					removed = true;
+					abundant.map.setVertexTerrain(x, y, GRASS);
+					opened = true;
 				}
-		REQUIRE((removed && !definition.validateWorld(abundant, check).empty()));
+			}
+		REQUIRE((opened && !definition.validateWorld(abundant, check).empty()));
 	}
 	puts("PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, "
 		 "containment");
@@ -2081,10 +2114,11 @@ inline void faultedCityContracts()
 			if (!error.empty()) std::fprintf(stderr, "Faulted City growth: %s\n", error.c_str());
 			REQUIRE(error.empty());
 		}
-		// Structural stone is still required at zero ordinary stone abundance.
+		// Structural stone (the collapsed courtyards' shells and every home's quarry face) is still
+		// required at zero ordinary stone abundance: removing it all must fail validation.
 		bool damaged = false;
-		for (int y = 0; y < world.map.getH() && !damaged; ++y)
-			for (int x = 0; x < world.map.getW() && !damaged; ++x)
+		for (int y = 0; y < world.map.getH(); ++y)
+			for (int x = 0; x < world.map.getW(); ++x)
 				if (amount == 0 && world.map.getResource(x, y).type == STONE)
 				{ world.map.setNoResource(x, y, 1); damaged = true; }
 		if (amount == 0) REQUIRE((damaged && !definition.validateWorld(world, context).empty()));
@@ -2109,8 +2143,13 @@ inline void faultedCityContracts()
 			if (record.key == "faulted-city.junction.y") y = int(std::get<std::int64_t>(record.value));
 		}
 		REQUIRE((x >= 0 && y >= 0));
-		// Leave the centre open, but obstruct its reserved gathering/circulation width.
+		// A paved ramp holds no deposit, so nothing planted can close it.
 		world.map.setResourceByIndex((x + 1) % world.map.getW(), y, STONE, 1);
+		REQUIRE(!world.map.isResource((x + 1) % world.map.getW(), y));
+		// Walling the ramp up is caught.
+		for (int dy = 0; dy <= 2; ++dy)
+			for (int dx = 0; dx <= 2; ++dx)
+				world.map.setVertexTerrain((x + dx) % world.map.getW(), (y + dy) % world.map.getH(), RIDGE_ROCK);
 		GenerationContext context(request);
 		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
@@ -2126,7 +2165,7 @@ inline void faultedCityContracts()
 		GenerationContext context(request);
 		REQUIRE(!definition.validateWorld(world, context).empty());
 	}
-	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations");
+	puts("PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, blocked ramp, structural stone and token food mutations");
 }
 
 inline void eatenMapContracts()
@@ -2437,7 +2476,7 @@ inline void portageLakesContracts()
 	const auto &registry = GeneratorRegistry::builtins();
 	const int method = registry.idOf("portage-lakes");
 	const auto &definition = registry.at(method);
-	REQUIRE((definition.legacyId == 65 && definition.revision == 8));
+	REQUIRE((definition.legacyId == 65 && definition.revision == 9));
 	GenerationService service;
 	D r;
 	r.setMethodDefaults(method);
@@ -2892,7 +2931,7 @@ inline void bastionKeysContracts()
 inline void rainShadowContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("rain-shadow"));
-	REQUIRE((definition.legacyId == 27 && definition.revision == 7));
+	REQUIRE((definition.legacyId == 27 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("ridges") == 4 && request.option("ridge-thickness") == 3 &&
@@ -3091,7 +3130,7 @@ inline void tidalFlatsContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("tidal-flats"));
-	REQUIRE((definition.legacyId == 18 && definition.revision == 9));
+	REQUIRE((definition.legacyId == 18 && definition.revision == 10));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("tide") == 0 && request.option("lagoons") == 3 &&
@@ -3318,7 +3357,7 @@ inline void tidalFlatsContracts()
 inline void watershedContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("watershed"));
-	REQUIRE((definition.legacyId == 13 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 13 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("outcrops") == 1 && request.option("climate") == 0 &&
@@ -3607,7 +3646,7 @@ inline void watershedContracts()
 inline void evergladesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("everglades"));
-	REQUIRE((definition.legacyId == 19 && definition.revision == 4));
+	REQUIRE((definition.legacyId == 19 && definition.revision == 5));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("mudflats") == 50 && request.option("hammocks") == 3 && request.option("season") == 0 &&
@@ -3914,7 +3953,7 @@ inline void evergladesContracts()
 inline void ringWorldContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("ring-world"));
-	REQUIRE((definition.legacyId == 16 && definition.revision == 5));
+	REQUIRE((definition.legacyId == 16 && definition.revision == 6));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("rock-spine") == 1 && request.option("ring-road") == 1 &&
@@ -4246,7 +4285,7 @@ inline void shatteredCoastContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("shattered-coast"));
-	REQUIRE((definition.legacyId == 7 && definition.revision == 9));
+	REQUIRE((definition.legacyId == 7 && definition.revision == 10));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 1 && request.option("outcrops") == 1 &&
@@ -4383,8 +4422,7 @@ inline void shatteredCoastContracts()
 			const auto result = build(g, r, "pinned climate");
 			REQUIRE(choice(result, "shattered-coast.climate") == names[climate - 1]);
 			REQUIRE((measure(result, "shattered-coast.deep.vertices") > 0 &&
-				   measure(result, "shattered-coast.mudflat.vertices") > 0 &&
-				   measure(result, "shattered-coast.looks.lush-vertices") > 0));
+				   measure(result, "shattered-coast.mudflat.vertices") > 0));
 			if (dimension >= 8)
 				REQUIRE((measure(result, "shattered-coast.knots.placed") > 0 &&
 					   measure(result, "shattered-coast.quarry.stone") > 0));
@@ -4578,7 +4616,7 @@ inline void shatteredCoastContracts()
 inline void riverContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("river"));
-	REQUIRE((definition.legacyId == 2 && definition.revision == 8));
+	REQUIRE((definition.legacyId == 2 && definition.revision == 9));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("banks") == 0 && request.option("deep-channel") == 1 && request.option("bluffs") == 1 &&
@@ -4931,7 +4969,7 @@ inline void riverContracts()
 inline void craterLakesContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("crater-lakes"));
-	REQUIRE((definition.legacyId == 4 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 4 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("crater-type") == 0 && request.option("deep-water") == 1 && request.option("crater-rims") == 1 &&
@@ -5209,7 +5247,7 @@ inline void craterLakesContracts()
 inline void swampContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("swamp"));
-	REQUIRE((definition.legacyId == 1 && definition.revision == 6));
+	REQUIRE((definition.legacyId == 1 && definition.revision == 7));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	REQUIRE((request.option("deep-water") == 1 && request.option("mudflats") == 40 && request.option("moss") == 0 &&
@@ -5360,8 +5398,7 @@ inline void swampContracts()
 			Game g(nullptr);
 			const auto result = build(g, r, "pinned climate");
 			REQUIRE(choice(result, "swamp.climate") == names[climate - 1]);
-			REQUIRE((measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0 &&
-				   measure(result, "swamp.looks.lush-vertices") > 0 && measure(result, "swamp.looks.dry-vertices") > 0));
+			REQUIRE((measure(result, "swamp.deep.vertices") > 0 && measure(result, "swamp.mud.vertices") > 0));
 			if (dimension >= 8)
 				REQUIRE((measure(result, "swamp.moss.vertices") > 0 && measure(result, "swamp.hammocks.placed") > 0));
 			checkTerrain(g, teams, result, true);

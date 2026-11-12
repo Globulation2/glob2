@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The shale terrain material."""
+import numpy as np
+
 from terrain_core import (
     RECIPES,
     Style,
@@ -28,15 +30,15 @@ def render_shale(ctx):
     one overlaps the next, with jagged broken edges, under the barren mark."""
     p = RECIPES["shale"].palette
     size = ctx.size
-    height, common, ids = plates(ctx, 3, stretch=1.7, step=0.35, rise=0.05)
+    height, common, ids = plates(ctx, 3, stretch=1.7, step=0.35, rise=0.05, array=True)
     count = 3 * ctx.area_scale
     tones = [p["chips"][int(ctx.shared_rng.random() * len(p["chips"]))] for _ in range(count)]
-    rgb = [[tones[i][k] for i in ids] for k in range(3)]
+    rgb = np.asarray(tones, dtype=np.float64).T[:, ids]
     rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.08))
-    layers = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=24, size=size))
-    rgb = [[c * (0.9 + 0.2 * v) for c, v in zip(channel, layers)] for channel in rgb]
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
-    rgb = [[c * (0.94 + 0.12 * v) for c, v in zip(channel, speck)] for channel in rgb]
+    layers = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=24, size=size, array=True))
+    rgb = rgb * (0.9 + 0.2 * layers)
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size, array=True))
+    rgb = rgb * (0.94 + 0.12 * speck)
     (*rgb, height), (common,) = jag(ctx, [*rgb, height], [common], 6, cells=12)
     rgb = shade(rgb, height, 0.35, reference_height=common)
     rgb = cast(rgb, height, p["gap"], reach=5, strength=0.55)

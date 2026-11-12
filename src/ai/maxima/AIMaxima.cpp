@@ -3198,6 +3198,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.target_switch_margin=strategy.scoring.target_switch_margin;
 	budget.preemptive_recompute_ticks=
 		strategy.scheduling.preemptive_defense_recompute_ticks;
+	budget.preemptive_min_gap_ticks=strategy.scheduling.preemptive_defense_min_gap_ticks;
 	budget.preemptive_inner_distance=
 		strategy.military.preemptive_defense_inner_distance;
 	budget.preemptive_band_width=
@@ -3829,6 +3830,10 @@ Maxima::Maxima(Player *player)
 	farming_urgent=false;
 	land_clearing_pending=false;
 	maintenance_clearing_pending=false;
+	maintenance_clearing_requested_by_farming=false;
+	last_maintenance_clearing_tick=-1000000;
+	farming_wood_reserve=WoodReserve(0);
+	farming_wood_reserve_valid=false;
 	development_cycle_pending=false;
 	preemptive_defense_pending=false;
 	reactive_defense_pending=false;
@@ -3862,7 +3867,10 @@ void Maxima::tick(Context& runtime)
 	// slot before the small executors so initialization, loaded saves and dirty
 	// plans publish a coherent budget before those executors consume it. A due
 	// periodic review shares this slot rather than evaluating a second time.
-	const bool strategyReviewDue=!director.initialized || director.dirty
+	// Building events mark the plan dirty; such reviews are spaced by
+	// strategy_review_min_gap_ticks from the last one (snapshot.tick).
+	const bool strategyReviewDue=!director.initialized
+		|| (director.dirty && timer-snapshot.tick>=strategy.scheduling.strategy_review_min_gap_ticks)
 		||timer%strategy.scheduling.strategy_interval_ticks
 			==staggered_phase(strategy.scheduling.strategy_phase_offset_ticks,
 				strategy.scheduling.strategy_interval_ticks,team);
@@ -4020,9 +4028,12 @@ void Maxima::tick(Context& runtime)
 		land_clearing_pending=false;
 		manage_land_clearing(runtime);
 	}
-	else if(maintenance_clearing_pending)
+	else if(maintenance_clearing_pending
+		&& (maintenance_clearing_requested_by_farming
+		    || timer-last_maintenance_clearing_tick>=strategy.scheduling.maintenance_clearing_min_gap_ticks))
 	{
-		maintenance_clearing_pending=false;
+		maintenance_clearing_pending=false;maintenance_clearing_requested_by_farming=false;
+		last_maintenance_clearing_tick=timer;
 		update_maintenance_clearing_areas(runtime);
 	}
 	else if(preemptive_defense_pending)
@@ -4040,7 +4051,7 @@ void Maxima::tick(Context& runtime)
 		update_farming(runtime);
 		last_farming_tick=timer;
 		land_clearing_pending=true;
-		maintenance_clearing_pending=true;
+		maintenance_clearing_pending=true;maintenance_clearing_requested_by_farming=true;
 	}
 	else if(development_cycle_pending)
 	{
@@ -4460,14 +4471,14 @@ void Maxima::configure_development_planner()
 	policy.innerFoodZoneMultiplier=strategy.placement.inner_food_zone_multiplier;
 	policy.hospitalFoodZoneMultiplier=strategy.placement.hospital_food_zone_multiplier;
 	policy.towerFoodZoneMultiplier=strategy.placement.tower_food_zone_multiplier;
-	policy.towerCriticalDistanceWeight=strategy.placement.defensive_siting_enabled
-		? strategy.placement.tower_critical_distance_weight : 0;
-	policy.towerSpacingTarget=strategy.placement.tower_spacing_target;
-	policy.towerSpacingWeight=strategy.placement.spacing_compactness_enabled
-		? strategy.placement.tower_spacing_weight : 0;
-	policy.towerThreatTarget=strategy.placement.tower_threat_target;
-	policy.towerThreatWeight=strategy.placement.defensive_siting_enabled
-		? strategy.placement.tower_threat_weight : 0;
+	policy.towerBorderPercent=strategy.placement.tower_border_percent;
+	policy.towerInteriorPercent=strategy.placement.tower_interior_percent;
+	policy.towerBorderEnemyRatio=strategy.placement.tower_border_enemy_ratio;
+	policy.towerRoleDistanceFalloff=strategy.placement.tower_role_distance_falloff;
+	policy.towerSpreadSaturationTiles=strategy.placement.tower_spread_saturation_tiles;
+	policy.towerSpreadPercent=strategy.placement.tower_spread_percent;
+	policy.towerRepairHealthPercent=strategy.repairs.tower_health_percent;
+	policy.foodUpgradeRetryTicks=strategy.placement.food_upgrade_retry_ticks;
 	policy.laborScale=strategy.placement.labor_scale;
 	policy.downtimeWorkerScale=strategy.placement.downtime_worker_scale;
 	policy.arteryLengthScale=strategy.placement.artery_length_scale;
@@ -4553,7 +4564,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
     }
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
-	const WoodReserve wood_reserve=select_wood_reserve(runtime);
+	const WoodReserve wood_reserve=current_wood_reserve(runtime);
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
@@ -4655,6 +4666,12 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		{
 			if(!enemy||AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy).isVirtual
 			   ||!(enemy->seenByMask&runtime.observedTeam().allies))continue;
+			const auto& enemyType=AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy);
+			if(!AIMaximaBuildings::serves(runtime.observation(),enemyType,
+					AIMaximaBuildings::ProjectileDefense))
+				world.enemyStructures.push_back(world.index(
+					(*map).normalizeX(enemy->posX-enemyType.decLeft),
+					(*map).normalizeY(enemy->posY-enemyType.decTop)));
 			const int radius=strategy.placement.enemy_threat_radius;
 			for(int dy=-radius;dy<=radius;++dy)
 				for(int dx=-(radius-std::abs(dy));
@@ -4712,6 +4729,37 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	}
 	std::sort(world.buildings.begin(),world.buildings.end(),
 		[](const WorldBuilding& a,const WorldBuilding& b){return a.id<b.id;});
+	std::sort(world.enemyStructures.begin(),world.enemyStructures.end());
+	world.enemyStructures.erase(std::unique(world.enemyStructures.begin(),
+		world.enemyStructures.end()),world.enemyStructures.end());
+	// A tower under repair is a site and cannot shoot: hold its repair while a
+	// visible enemy fighter (warrior or attacking explorer) is close to it.
+	if(const int radius=strategy.repairs.tower_enemy_radius)
+	{
+		std::vector<std::pair<int,int>> fighters;
+		for(int team=0;team<Team::MAX_COUNT;++team)
+		{
+			if(std::size_t(team)>=runtime.observation().teams.size()
+			   || !(runtime.observedTeam().enemies&runtime.observation().teams[team].mask))continue;
+			for(const AIEngine::UnitView* unit:runtime.observation().unitsForTeam(team))
+			{
+				if(!unit||!AIEngine::ObservationQueries::visible(runtime.observation(),
+					unit->posX,unit->posY,runtime.observedTeam().mask))continue;
+				if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
+				   ||unit->performance[MAGIC_ATTACK_GROUND]>0)
+					fighters.emplace_back(unit->posX,unit->posY);
+			}
+		}
+		for(const WorldBuilding& building:world.buildings)
+		{
+			if(building.site||building.hp>=building.hpMax)continue;
+			const auto* type=profile_variant(building.buildingType,building.level);
+			if(!type||!(type->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::ProjectileDefense)))continue;
+			for(const auto& [x,y]:fighters)
+				if(world.wrappedManhattan(x,y,building.centerX,building.centerY)<=radius)
+				{world.contestedBuildings.push_back(building.id);break;}
+		}
+	}
 	for(size_t i=0;i<world.buildings.size();++i)
 	{
 		const WorldBuilding& building=world.buildings[i];

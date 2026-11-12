@@ -152,15 +152,14 @@ constexpr int kWallHug = 3;
 constexpr int kCoverTower = 1;
 // THE GROUND (revision 7). Every home has two quarry faces of this many stone at the mountain's foot,
 // seeded this share of the home's radius in from its centre towards the plateau and this share of
-// it to either side: the mountains were the colonies' stone when they were built of it. Open sea
-// this many vertices from land is deep.
+// it to either side: the mountains were the colonies' stone when they were built of it. The sea is
+// one plain water: no deep water.
 constexpr int kQuarryFace = 12;
 constexpr double kQuarryIn = 0.7, kQuarryAcross = 0.6;
 // Every starting tower also has a face of this much stone at the foot of its wall, seeded within this
 // many tiles of it (plantTowerStone): towers stand up the trail, a long walk from the home's faces.
 constexpr int kTowerStone = 6;
 constexpr int kTowerStoneReach = 4;
-constexpr int kDeepFrom = 5;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry faces and towers stand (barren ground holds no stone, and a tile
 // mixing grass and barren corners holds no building).
@@ -657,6 +656,14 @@ TerrainSketch sketchTerrain(const Layout &L)
 					}
 				}
 	}
+	// Every cliff at least three vertices thick too, so the border walls between colonies draw as
+	// one continuous mass: a wall two vertices across, above all a diagonal one, has no tile with four
+	// cliff corners and draws as a string of separate blobs. It grows into grass and barren ground,
+	// a farm's edge and cap ring included, never into the trail, a farm's crossings or water rows.
+	thickenRidges(
+		terrain, t,
+		[&](int i) { return (terrain[i] == GRASS || terrain[i] == DIRT) && !cornerOf(t, trail, i); },
+		nullptr, CLIFFS);
 	cliffCoast(
 		terrain, t,
 		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, trail, i); },
@@ -666,15 +673,18 @@ TerrainSketch sketchTerrain(const Layout &L)
 	barrenBase(
 		terrain, t, [&](int i) { return L.homeOf[i] >= 0 && !L.wall[i] && !L.stone[i]; }, nullptr,
 		kVerge);
+	// The paved square keeps off that verge, so a tower's stone always finds grass at the wall's foot.
+	std::vector<unsigned char> rock(n, 0);
+	for (int i = 0; i < n; ++i)
+		rock[i] = terrain[i] == CLIFFS || terrain[i] == RIDGE_ROCK;
+	const std::vector<int> fromRock = stepsFrom(t, rock);
 	for (int k = 0; k < g.teams; ++k)
 	{
 		const MapGeneratorPoint swarm = homeSwarmSite(L.homes[k], L.axis[k], g.homeR);
-		paveCore(terrain, t, swarm.x + 2, swarm.y + 2, kCore, [&](int i) { return L.homeOf[i] == k; });
+		paveCore(terrain, t, swarm.x + 2, swarm.y + 2, kCore,
+				 [&](int i) { return L.homeOf[i] == k && (fromRock[i] < 0 || fromRock[i] > kVerge); });
 	}
-	const std::vector<unsigned char> deep =
-		deepSea(terrain, t, [&](int i) { return !L.land[i]; }, kDeepFrom);
 	LookRoles roles;
-	roles.deep = [&](int i) { return deep[i] != 0; };
 	roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
 	roles.farm = [&](int i) { return L.farmOf[i] >= 0; };
 	roles.path = [&](int) { return PathLook::Road; };
@@ -1057,7 +1067,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		10, // 10: grass meeting water is a shore, so crops start one tile in
+		11, // 11: plain water, lava in rings, cliffs thickened to draw as one mass
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's

@@ -107,8 +107,8 @@ Use contracts, map inspection and populated games for different questions: legal
 
 Generators validate their own construction results rather than trusting the geometry to always
 succeed: a moat must connect to land at both bridge ends, jagged outlines must leave legal
-settlement footprints, and Fjord's core must keep every player peninsula connected (outside
-lake-connected mode, where that's expected not to hold). Difficult small or crowded combinations
+settlement footprints, and Fjord continent's landings must each open onto their fjord while no
+peninsula reaches another without crossing ice. Difficult small or crowded combinations
 can still fail outright, but do so with a reproducible stage diagnostic, and are discarded by
 `GenerationService`'s candidate sampling rather than surfaced to a player.
 

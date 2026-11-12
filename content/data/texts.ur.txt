@@ -1698,8 +1698,16 @@ Globulation 2 کا کرسر دکھائیں۔
 ساحل کی ناہمواری
 [Fjord width]
 فیورڈ کی چوڑائی
-[Lake connects to fjords]
-جھیل فیورڈ سے ملتی ہے
+[Ice sheet size]
+برفانی تہہ کا سائز
+[Fjord landings]
+فیورڈ کے گھاٹ
+[Fjord continents need at least one colony.]
+فیورڈ براعظم کو کم از کم ایک بستی چاہیے۔
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+فیورڈ براعظم کے لیے ایسا نقشہ چاہیے جس کا چھوٹا ضلع کم از کم 128 خانے ہو۔
+[Ice reach]
+برف کی وسعت
 [Resource islands]
 وسائل کے جزیرے
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2 کا کرسر دکھائیں۔
 بند سروں پر خزانہ
 [Fjord bank deposits]
 فیورڈ کے کناروں کے ذخائر
-[Sandy lake shore]
-جھیل کا ریتیلا کنارا
+[Nunatak orchards]
+نوناٹک کے باغات
 [River delta]
 دریائی ڈیلٹا
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Globulation 2 کا کرسر دکھائیں۔
 نہر کی چوڑائی
 [Extra bridges]
 اضافی پل
+[Grand canal]
+بڑی نہر
 [Polder]
 بندوں سے گھری زمین
 [Old town]

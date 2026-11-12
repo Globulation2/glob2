@@ -17,6 +17,10 @@
 #include <SDL3/SDL.h>
 #include <sstream>
 #include "Game.h"
+#include "SGSL.h"
+#include "MapScript.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace
 {

@@ -1734,8 +1734,16 @@ Tamanho do continente
 Irregularidade da costa
 [Fjord width]
 Largura do fiorde
-[Lake connects to fjords]
-Lago ligado aos fiordes
+[Ice sheet size]
+Tamanho do manto de gelo
+[Fjord landings]
+Desembarcadouros dos fiordes
+[Fjord continents need at least one colony.]
+Um continente de fiordes precisa de pelo menos uma colônia.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Um continente de fiordes precisa de um mapa com pelo menos 128 quadros no lado menor.
+[Ice reach]
+Alcance do gelo
 [Resource islands]
 Ilhas de recursos
 [Watershed]
@@ -1980,8 +1988,8 @@ Estradas de areia
 Tesouros em becos sem saída
 [Fjord bank deposits]
 Depósitos nas margens dos fiordes
-[Sandy lake shore]
-Margem arenosa do lago
+[Nunatak orchards]
+Pomares em nunataks
 [River delta]
 Delta do rio
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Tamanho do quarteirão
 Largura dos canais
 [Extra bridges]
 Pontes extras
+[Grand canal]
+Kanol veur
 [Polder]
 Pôlder
 [Old town]

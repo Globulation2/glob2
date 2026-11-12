@@ -17,6 +17,8 @@
 #include "Player.h"
 #include "SGSL.h"
 #include "Game.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 void Story::toto(StoryContext* gui)
 {

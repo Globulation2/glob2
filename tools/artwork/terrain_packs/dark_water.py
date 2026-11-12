@@ -6,6 +6,9 @@ seed, wind, grid and clock), so crests carry on across the deep/dark blend. Its
 own character: a heavy, inky swell with little chop and faint cold glints, and
 an ink-dark shadow on the back face of every swell crest that travels with it,
 so the troughs read deeper than deep water's."""
+import numpy as np
+from scipy.ndimage import uniform_filter
+
 from terrain_core import RECIPES, Style, mix, recipe, smoothstep
 from ._waves import WAVE_GRID, WAVE_PHASES, WAVE_SIZE, render_waves, wave_layers
 
@@ -21,15 +24,12 @@ def render_dark_water(ctx):
     rgb = render_waves(ctx, p, 0.5, 0.09, 0.3, 0.12)
     swell, _, front = wave_layers(ctx)
     # The lee of each crest, deepest where the swell falls into its trough.
-    lee = [smoothstep(0.0, 1.0, -d) * smoothstep(0.25, -0.35, v) for v, d in zip(swell, front)]
+    lee = smoothstep(0.0, 1.0, -front) * smoothstep(0.25, -0.35, swell)
     return mix(rgb, p["shadow"], soften(lee, ctx.size), 0.7), None
 
 
 def soften(values, size):
     """A wrapping box blur: the swell front steps with the warp's whole-pixel
     offsets, which would otherwise show as fine ridges in the shadow."""
-    import numpy as np
-    from scipy.ndimage import uniform_filter
-
     field = np.asarray(values).reshape(size, size)
-    return uniform_filter(field, size=9 * size // WAVE_SIZE + 1, mode="wrap").ravel().tolist()
+    return uniform_filter(field, size=9 * size // WAVE_SIZE + 1, mode="wrap").ravel()

@@ -54,6 +54,7 @@ struct OperatingPlan
     int carriers=-1;
     int fixedTicks=1,ticksPerTile=0;
     std::array<int,MaterialCount> independent{},production{},trips{};
+    bool operator==(const OperatingPlan&) const = default;
 };
 struct OperatingQuery
 {
@@ -89,6 +90,7 @@ struct ConsumerInput
 	int height;
 	bool colony;
 	bool retirable;
+	bool operator==(const ConsumerInput&) const = default;
 };
 
 struct Policy
@@ -103,6 +105,7 @@ struct Policy
 	/// tiles beyond the supply radius. It keeps unreachable sites ranked last
 	/// without making quality depend on map size.
 	int unreachablePenaltyTiles;
+	bool operator==(const Policy&) const = default;
 };
 
 struct ConsumerResult
@@ -157,6 +160,12 @@ struct Input
 	int index(int x, int y) const;
 	int normalizeX(int x) const;
 	int normalizeY(int y) const;
+	/// Same evaluation inputs: evaluate is a pure function of these and the mode.
+	bool sameEvaluationInput(const Input& other) const
+	{
+		return width==other.width && height==other.height && policy==other.policy
+			&& consumers==other.consumers && yield==other.yield && traversable==other.traversable;
+	}
 
 private:
 	// An invalid mask cannot match a positive dimension. Stale masks fall back

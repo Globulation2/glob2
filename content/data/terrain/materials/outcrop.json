@@ -1043,6 +1043,6 @@
     "sprite": "data/gfx/terrain-decor",
     "full": [48, 49, 50, 51, 52, 53, 54, 55],
     "edge": [56, 57, 58, 59],
-    "clear_of_masses": 1
+    "clear_of_masses": 0
   }
 }

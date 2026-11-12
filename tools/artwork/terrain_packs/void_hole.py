@@ -14,8 +14,8 @@ from terrain_core import RECIPES, Style, blend_fields, fbm, normalize_like, ramp
         preview=(28, 24, 36), minimap=(16, 14, 22))
 def render_void_hole(ctx):
     p = RECIPES["void_hole"].palette
-    common = fbm(ctx.shared_rng, 3, 2, size=ctx.size)
-    own = fbm(ctx.rng, 3, 2, size=ctx.size)
+    common = fbm(ctx.shared_rng, 3, 2, size=ctx.size, array=True)
+    own = fbm(ctx.rng, 3, 2, size=ctx.size, array=True)
     height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
     # Keep the hole quiet and nearly black, with only subtle interior depth.
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])

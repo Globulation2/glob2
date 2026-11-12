@@ -1698,8 +1698,16 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கடற்கரை கரடுமுரடான தன்மை
 [Fjord width]
 கடற்கழி அகலம்
-[Lake connects to fjords]
-ஏரி கடற்கழிகளுடன் இணைகிறது
+[Ice sheet size]
+பனித்தகட்டின் அளவு
+[Fjord landings]
+ஃபியோர்டு இறங்குதுறைகள்
+[Fjord continents need at least one colony.]
+ஃபியோர்டு கண்டத்திற்கு குறைந்தது ஒரு குடியேற்றம் தேவை.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+ஃபியோர்டு கண்டத்திற்கு குறுகிய பக்கம் குறைந்தது 128 கட்டங்கள் கொண்ட வரைபடம் தேவை.
+[Ice reach]
+பனியின் பரப்பு
 [Resource islands]
 வளத் தீவுகள்
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 முட்டுச்சந்துகளில் புதையல்
 [Fjord bank deposits]
 கடற்கழிக் கரை வளங்கள்
-[Sandy lake shore]
-மணல் ஏரிக்கரை
+[Nunatak orchards]
+நுனாடக் பழத்தோட்டங்கள்
 [River delta]
 ஆற்றுக் கழிமுகம்
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கால்வாய் அகலம்
 [Extra bridges]
 கூடுதல் பாலங்கள்
+[Grand canal]
+பெருங்கால்வாய்
 [Polder]
 நீரைத் தடுத்து மீட்ட நிலம்
 [Old town]

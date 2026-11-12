@@ -5,7 +5,6 @@ import numpy as np
 from terrain_core import (
     RECIPES,
     Style,
-    as_list,
     blend_fields,
     block_worley,
     cast,
@@ -51,7 +50,7 @@ def rock_layer(ctx, cells, metric, stretch, base, slope, cap, gap, keep, cap_spr
     size x size arrays; height is -1e3 where no fragment stands.
     """
     size = ctx.size
-    f1, f2, ids, c1, c2, cids = block_worley(ctx, cells, metric, stretch)
+    f1, f2, ids, c1, c2, cids = block_worley(ctx, cells, metric, stretch, array=True)
     count = cells * ctx.area_scale
     r = ctx.shared_rng
     gaps = np.array([gap * (0.6 + 0.8 * r.random()) for _ in range(count)])
@@ -61,7 +60,6 @@ def rock_layer(ctx, cells, metric, stretch, base, slope, cap, gap, keep, cap_spr
     cell_px = size / np.sqrt(count)
 
     def build(a, b, i):
-        a, b, i = np.asarray(a), np.asarray(b), np.asarray(i)
         inside = (b - a - gaps[i]) * cell_px  # render px inside the fragment's edge
         if rounding:
             rise = np.minimum(np.maximum(inside, 0) * slope / caps[i], 1.0)
@@ -150,29 +148,30 @@ def render_scree(ctx):
     stained = np.array([ctx.shared_rng.random() < 0.12 for _ in range(SCREE_TONES)], dtype=float)
     key = (fragment * 7 + layer * 1031 + 3) % SCREE_TONES
     # Each stone its own tone, mottled by weathering within the stone.
-    mottle = np.array(layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))).reshape(size, size)
+    mottle = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size, array=True)).reshape(size, size)
     tone = np.where(rock, 0.2 + 0.65 * tones[key] + 0.3 * (mottle - 0.5), 0.0)
-    rgb = ramp(as_list(tone), [(0.0, p["fines"]), (0.25, p["dark"]), (0.55, p["mid"]), (0.9, p["light"])])
-    rgb = mix(rgb, p["warm"], as_list(stained[key] * rock), 0.3)
+    rgb = ramp(tone.ravel(), [(0.0, p["fines"]), (0.25, p["dark"]), (0.55, p["mid"]), (0.9, p["light"])])
+    rgb = mix(rgb, p["warm"], (stained[key] * rock).ravel(), 0.3)
     # Fine grain everywhere, coarser on the open fines between stones.
-    grit = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))).reshape(size, size)
-    fine = as_list(np.where(rock, 0.10, 0.18) * (grit - 0.5) * 2)
-    rgb = [[c * (1 + f) for c, f in zip(channel, fine)] for channel in rgb]
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True)).reshape(size, size)
+    fine = (np.where(rock, 0.10, 0.18) * (grit - 0.5) * 2).ravel()
+    rgb = rgb * (1 + fine)
     # The heap: a slow rise and fall about a tile across under the stones,
     # so the bed has lit heaps and shadowed hollows like the group's lumps.
-    heap_common = np.array(fbm(ctx.shared_rng, 1.0, 2, size=size)).reshape(size, size)
-    heap = np.array(blend_fields(as_list(heap_common), fbm(ctx.rng, 1.0, 2, size=size), ctx.interior_mask)).reshape(size, size)
+    heap_common = fbm(ctx.shared_rng, 1.0, 2, size=size, array=True).reshape(size, size)
+    heap = blend_fields(heap_common.ravel(), fbm(ctx.rng, 1.0, 2, size=size, array=True),
+                        ctx.interior).reshape(size, size)
     top = top + 9.0 * (heap - 0.5)
     common_top = common_top + 9.0 * (heap_common - 0.5)
     # A gentle bend only, so fracture edges stay straight and angular.
-    (*rgb, height), (common,) = jag(ctx, [*rgb, as_list(top)], [as_list(common_top)], 3, cells=6)
-    rgb = shade(rgb, height, 0.5, reference_height=common)
+    (*rgb, height), (common,) = jag(ctx, [*rgb, top.ravel()], [common_top.ravel()], 3, cells=6)
+    rgb = shade(np.stack(rgb), height, 0.5, reference_height=common)
     # Lichen on the upper faces of a few stones.
-    h = np.array(height).reshape(size, size)
-    lichen = np.array(layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))).reshape(size, size)
+    h = height.reshape(size, size)
+    lichen = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size, array=True)).reshape(size, size)
     lichen = np.clip((lichen - 0.68) / 0.12, 0, 1) * rock * np.clip((h - wrap_blur(h, 10)) / 4.0 + 0.5, 0, 1)
-    rgb = mix(rgb, p["lichen"], as_list(lichen), 0.3)
+    rgb = mix(rgb, p["lichen"], lichen.ravel(), 0.3)
     # Gaps: darken where neighbouring stones stand above this pixel.
     occlusion = np.clip((wrap_blur(h, 8) - h) / 7.0, 0, 1)
-    rgb = mix(rgb, p["void"], as_list(occlusion), 0.6)
+    rgb = mix(rgb, p["void"], occlusion.ravel(), 0.6)
     return cast(rgb, height, p["void"], reach=4, strength=0.35), None

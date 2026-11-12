@@ -325,6 +325,8 @@ struct MaximaStrategy
 	struct Repairs
 	{
 		bool enabled;
+		int tower_health_percent;
+		int tower_enemy_radius;
 	} repairs;
 
 	struct Construction
@@ -515,6 +517,13 @@ struct MaximaStrategy
 		int tower_spacing_weight;
 		int tower_threat_target;
 		int tower_threat_weight;
+		int tower_border_percent;
+		int tower_interior_percent;
+		int tower_border_enemy_ratio;
+		int tower_role_distance_falloff;
+		int tower_spread_saturation_tiles;
+		int tower_spread_percent;
+		int food_upgrade_retry_ticks;
 		int labor_scale;
 		int downtime_worker_scale;
 		int artery_length_scale;
@@ -787,6 +796,9 @@ struct MaximaStrategy
 		int explorer_attack_interval_ticks;
 		int explorer_attack_phase_offset_ticks;
 		int placement_interval_ticks;
+		int strategy_review_min_gap_ticks;
+		int maintenance_clearing_min_gap_ticks;
+		int preemptive_defense_min_gap_ticks;
 		int explorer_warning_duration_ticks;
 		int explorer_colony_warning_duration_ticks;
 	} scheduling;

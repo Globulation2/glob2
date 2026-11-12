@@ -28,6 +28,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include <glob2/BuildConfig.h>
+#include "MapScript.h"
 #include "render/scene/Scene.h"
 #include "TorusView.h"
 #include "GameGUIToolManager.h"

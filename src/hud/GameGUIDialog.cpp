@@ -17,6 +17,8 @@
 #include <cmath>
 #include <sstream>
 #include "Game.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace fe = Glob2UI;
 using fe::Element;

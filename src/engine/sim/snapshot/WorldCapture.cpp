@@ -27,6 +27,7 @@
 #include <bit>
 #include <utility>
 #include "sim/EntityRefOf.h"
+#include "GameScripting.h"
 
 namespace SimulationSnapshot
 {

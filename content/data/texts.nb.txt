@@ -1698,8 +1698,16 @@ Kontinentstørrelse
 Kystruhet
 [Fjord width]
 Fjordbredde
-[Lake connects to fjords]
-Innsjøen forbindes med fjorder
+[Ice sheet size]
+Isdekkets størrelse
+[Fjord landings]
+Landingsplasser i fjordene
+[Fjord continents need at least one colony.]
+Et fjordkontinent trenger minst én koloni.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Et fjordkontinent trenger et kart med minst 128 ruter på den korteste siden.
+[Ice reach]
+Isens utbredelse
 [Resource islands]
 Ressursøyer
 [Watershed]
@@ -1948,8 +1956,8 @@ Sandveier
 Skatter i blindveier
 [Fjord bank deposits]
 Forekomster langs fjordbredden
-[Sandy lake shore]
-Sandstrand langs innsjøen
+[Nunatak orchards]
+Frukthager på nunatakker
 [River delta]
 Elvedelta
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Blokkstørrelse
 Kanalbredde
 [Extra bridges]
 Ekstra broer
+[Grand canal]
+Storkanal
 [Polder]
 Polder
 [Old town]

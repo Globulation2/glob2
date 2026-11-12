@@ -2,6 +2,8 @@
 """The thicket terrain material."""
 import math
 
+import numpy as np
+
 from terrain_core import (
     N,
     RECIPES,
@@ -31,20 +33,21 @@ def render_thicket(ctx):
     p = RECIPES["thicket"].palette
     common, common_grain, common_twigs = thicket_fields(ctx.shared_rng, ctx.size)
     own, own_grain, own_twigs = thicket_fields(ctx.rng, ctx.size)
-    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    height = normalize_like(blend_fields(common, own, ctx.interior), common, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    twigs = blend_fields(common_twigs, own_twigs, ctx.interior_mask)
+    fine = blend_fields(common_grain, own_grain, ctx.interior)
+    rgb = rgb * (1 + 0.12 * (fine - 0.5) * 2)
+    twigs = blend_fields(common_twigs, own_twigs, ctx.interior)
     return mix(rgb, p["twig_dark"], twigs, 0.35), None
 
 
 def thicket_fields(rng, size):
     """Periodic soil, grain and faint twig masks at the original native scale."""
-    height = fbm(rng, 7, 3, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    fine = lattice_noise(rng, 48, size=size)
-    twigs = [0.0] * (size * size)
+    height = fbm(rng, 7, 3, size=size, array=True)
+    height = domain_warp(height, fbm(rng, 3, 2, size=size, array=True),
+                         fbm(rng, 3, 2, size=size, array=True), 8)
+    fine = lattice_noise(rng, 48, size=size, array=True)
+    twigs = np.zeros(size * size)
     for _ in range(rng.randint(3, 5) * (size // N) ** 2):
         length = 14 + rng.random() * 12
         x, y = rng.random() * size, rng.random() * size

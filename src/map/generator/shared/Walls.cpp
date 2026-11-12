@@ -498,11 +498,11 @@ int cliffCoast(TerrainSketch &terrain, const Torus &t, const std::function<bool(
 }
 
 int thickenRidges(TerrainSketch &terrain, const Torus &t, const std::function<bool(int)> &canGrow,
-				  int *unresolved)
+				  int *unresolved, TerrainType wall)
 {
 	const int n = t.w * t.h;
 	int added = 0, stuck = 0;
-	const auto rock = [&](int i) { return terrain[i] == RIDGE_ROCK; };
+	const auto rock = [&](int i) { return terrain[i] == wall; };
 	for (int i = 0; i < n; ++i)
 	{
 		generationCheckpoint();
@@ -561,7 +561,7 @@ int thickenRidges(TerrainSketch &terrain, const Torus &t, const std::function<bo
 				const int j = t.at(x + ox + dx, y + oy + dy);
 				if (!rock(j))
 				{
-					terrain[j] = RIDGE_ROCK;
+					terrain[j] = wall;
 					++added;
 				}
 			}

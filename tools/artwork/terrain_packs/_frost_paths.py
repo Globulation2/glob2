@@ -7,6 +7,8 @@ snow, then `weather` them: wind-blown streaks, powder feathering out of the
 drifts, refrozen glaze, and sparse warm sanding grit, the cue that tells a
 road apart from the slow ice terrain.
 """
+import numpy as np
+
 from terrain_core import NATIVE_PX, domain_warp, fbm, lattice_noise, layout_field, mix, smoothstep
 
 # Frost in place of the shared ground, keyed to the game's own snow: the
@@ -31,27 +33,28 @@ def weather(ctx, rgb, edge, decay, *, streaks=0.5, glaze=0.3, drift_edge=0.5, sa
     meltwater glazing damp stretches smooth; and the broad reclaimed patches
     feathered out with powder so drifts have no hard rim."""
     size = ctx.size
+    edge = np.asarray(edge, dtype=np.float64)
     # Streaks: long in x, narrow in y, warped so they curl like blown snow.
     def streak_field(rng):
-        f = fbm(rng, 2, 3, cells_y=10, size=size)
-        return domain_warp(f, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 24)
+        f = fbm(rng, 2, 3, cells_y=10, size=size, array=True)
+        return domain_warp(f, fbm(rng, 3, 2, size=size, array=True), fbm(rng, 3, 2, size=size, array=True), 24)
     s = layout_field(ctx, streak_field)
-    low = [smoothstep(1.5 * NATIVE_PX, -0.5, e) for e in edge]  # joints and rims
-    blown = [smoothstep(0.52, 0.78, v) * (0.35 + 0.65 * l) for v, l in zip(s, low)]
+    low = smoothstep(1.5 * NATIVE_PX, -0.5, edge)  # joints and rims
+    blown = smoothstep(0.52, 0.78, s) * (0.35 + 0.65 * low)
     rgb = mix(rgb, SNOW_LIGHT, blown, streaks)
     # Powder feathering out from each drift.
-    halo = [smoothstep(0.45, 0.75, g) * (1 - p) for g, p in zip(decay.growth, decay.patch)]
+    halo = smoothstep(0.45, 0.75, decay.growth) * (1 - decay.patch)
     rgb = mix(rgb, SNOW, halo, drift_edge)
     # Glaze: damp stretches refreeze to a smooth, slightly darker sheen.
-    sheen = [smoothstep(0.62, 0.88, d) for d in decay.damp]
+    sheen = smoothstep(0.62, 0.88, decay.damp)
     rgb = mix(rgb, (176, 190, 222), sheen, glaze)
     # Sanding grit: sparse warm specks scattered for footing, densest where
     # the road is most trodden and swept clear of drifts. This is the cue
     # that separates a road from the slow `ice` terrain.
     # Specks one to two native px across: coarse lattice cells, high threshold.
     cells = max(8, size // (5 * NATIVE_PX))
-    speck = layout_field(ctx, lambda rng: lattice_noise(rng, cells, size=size))
-    trod = [w * (1 - p) for w, p in zip(decay.wear, decay.patch)]
-    grit = [smoothstep(0.93 - 0.04 * t, 0.96 - 0.04 * t, v) * (0.3 + 0.7 * t) for v, t in zip(speck, trod)]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, cells, size=size, array=True))
+    trod = decay.wear * (1 - decay.patch)
+    grit = smoothstep(0.93 - 0.04 * trod, 0.96 - 0.04 * trod, speck) * (0.3 + 0.7 * trod)
     rgb = mix(rgb, (150, 138, 124), grit, sanding)
     return rgb

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The mudflat terrain material."""
+import numpy as np
+
 from terrain_core import (
     RECIPES,
     Style,
@@ -29,36 +31,34 @@ def render_mudflat(ctx):
     bloom on top and damp mud in a few sunken plates."""
     p, size = RECIPES["mudflat"].palette, ctx.size
     # Plates about two tiles across; one in twelve has sunk into a damp hollow.
-    f1, f2, ids, c1, c2, cids = block_worley(ctx, 3)
+    f1, f2, ids, c1, c2, cids = block_worley(ctx, 3, array=True)
     count = 3 * ctx.area_scale
-    sunk = [ctx.shared_rng.random() < 0.08 for _ in range(count)]
+    sunk = np.array([ctx.shared_rng.random() < 0.08 for _ in range(count)])
 
     def plate(a, b, i):
         e = b - a
-        if sunk[i]:
-            return -0.6
         # Flat top that curls up toward its rim, then drops into the crack.
-        return smoothstep(0.03, 0.09, e) * (0.65 + 0.35 * (1 - smoothstep(0.09, 0.35, e)))
+        return np.where(sunk[i], -0.6, smoothstep(0.03, 0.09, e) * (0.65 + 0.35 * (1 - smoothstep(0.09, 0.35, e))))
 
-    height = [plate(a, b, i) for a, b, i in zip(f1, f2, ids)]
-    common = [plate(a, b, i) for a, b, i in zip(c1, c2, cids)]
+    height = plate(f1, f2, ids)
+    common = plate(c1, c2, cids)
     # Bend the straight Voronoi cracks; the reference takes the common warp so
     # every layout lights against the same field.
-    cx, cy = fbm(ctx.shared_rng, 6, 2, size=size), fbm(ctx.shared_rng, 6, 2, size=size)
-    sx = blend_fields(cx, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
-    sy = blend_fields(cy, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
+    cx, cy = fbm(ctx.shared_rng, 6, 2, size=size, array=True), fbm(ctx.shared_rng, 6, 2, size=size, array=True)
+    sx = blend_fields(cx, fbm(ctx.rng, 6, 2, size=size, array=True), ctx.interior_mask)
+    sy = blend_fields(cy, fbm(ctx.rng, 6, 2, size=size, array=True), ctx.interior_mask)
     height, common = domain_warp(height, sx, sy, 10), domain_warp(common, cx, cy, 10)
     # Dry crust with salt bloom, each plate faintly its own tone.
-    tone = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    tone = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size, array=True))
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.06))
-    salt = layout_field(ctx, lambda rng: fbm(rng, 10, 2, size=size))
-    rgb = mix(rgb, p["salt"], [smoothstep(0.62, 0.8, v) for v in salt], 0.45)
-    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
-    rgb = [[c * (1 + 0.1 * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+    salt = layout_field(ctx, lambda rng: fbm(rng, 10, 2, size=size, array=True))
+    rgb = mix(rgb, p["salt"], smoothstep(0.62, 0.8, salt), 0.45)
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size, array=True))
+    rgb = rgb * (1 + 0.1 * (fine - 0.5) * 2)
     rgb = shade(rgb, height, 0.45, reference_height=common)
     # Deep dark cracks between the plates; damp mud in the sunken ones.
-    crack = [1 - smoothstep(0.05, 0.35, h) for h in height]
+    crack = 1 - smoothstep(0.05, 0.35, height)
     rgb = mix(rgb, p["gap"], crack, 0.95)
-    pit = [smoothstep(0.1, 0.4, -h) for h in height]
+    pit = smoothstep(0.1, 0.4, -height)
     return wet_pits(rgb, height, common, pit, p["damp"], p["glint"], depth=0.6), None

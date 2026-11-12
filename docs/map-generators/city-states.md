@@ -22,25 +22,28 @@ pass paints the climate's looks, which share those rules.
 Since revision 15 the commons' ridges are at least three vertices thick (`thickenRidges`, growing
 only into the commons' open grass), because a ridge look draws its peaks only on tiles with four
 rock corners, and barren and fertile ground take one look each, no longer speckled with a second.
+Revision 17 makes every home grass outside its paved town and streets (revisions 14-16 laid barren
+ground beyond ten steps of the home's lake, so nothing grew in its wings), adds a pond with a wheat
+field and a wood grove in each wing, paves the causeways end to end with no rough throats, and draws
+the sea as one plain water.
 
 | Ground | Rules | Where | Why |
 | --- | --- | --- | --- |
 | Sea cliffs | Obstacles | Every home's land within two vertices of the sea, and a home creek's mouth where a bay brings the sea near | No beach to land on and no way out: the causeway is a home's only door, for swimmers too |
 | Parapets | Ridges | Both sides of every causeway's deck | Walls the deck in; the gate's towers shoot over them along it |
-| Causeway deck | Paths | Every causeway, paved between its parapets | Quick to cross; nothing grows on it |
-| Gate throats | Rough | Four tiles of deck at each end of every causeway | Nothing can be built there, so no colony can close a gate with a building |
+| Causeway deck | Paths | Every causeway, paved between its parapets from end to end | Quick to cross; nothing grows on it, and a gate can be built in like any road |
 | Town | Paths | Round every swarm, from just inside the gate to a few tiles beyond the swarm and out to the side streets | Buildable, crops never grow into it, and it holds back no field beside it, as sand did |
 | Streets and roads | Paths | Each home's main and side streets, the commons' roads from every landing to the heart and its ring road | As the town; one rule with it, so a street leaves no unbuildable seam through the town |
 | Bridges | Paths | Every ford: the Riverside creek, the island heart, the delta | Land on all four corners of every ford tile |
-| Home ground | Barren | Every home but within ten steps of its own water, the town and a grass verge four vertices wide at the foot of its cliffs | The base reads as the climate's ground; crops grow round the water, quarry faces stand on the verge |
+| Home ground | Grass | Every home outside its town and streets: round its lakes, in its wings and at the foot of its cliffs | Open ground where wheat and wood grow and regrow; quarry faces stand at the cliffs' foot |
 | Islet plots | Barren | The ring round every islet's 10x4 building plot | Keeps the islet's wheat off the plot |
-| Scrub | Barren | The scrub patches (`sand` control) on homes and commons | Holds crops back like sand, but can be built on |
+| Scrub | Barren | The scrub patches (`sand` control) on homes and commons, never on a home's town district | Holds crops back like sand, but can be built on; off the town, so every swarm sits on its anchor |
 | Rough cores | Rough | Two steps inside every scrub patch on the commons | Slow going and no building in the no-man's land; homes keep barren scrub, so building room is equal |
 | Ridges | Obstacles | Highland homes' two ridges, broken by a pass | A home split into valleys |
 | Crag | Ridges | The crag heart's ring, gapped towards every landing | Towers on the crag shoot over it |
 | Citadel | Obstacles | The citadel heart's cliff ring, 4 tiles thick, with a 7-tile ramp towards every landing | A plateau with the orchard on top, held against arrows as well as feet |
-| Lava | Lava | In the volcanic climate: the heart's water (the central lake, the island's moat, the crag's tarn, the delta's rivers) and a 4-tile moat round the citadel, broken at the ramps | Volcanic maps show lava at their centre; impassable on the ground, and fliers burn |
-| Deep water | Deep water | Open sea five vertices or more from land | Slower swimming and no algae; algae stays in the shallows |
+| Lava | Lava | In the volcanic climate: the heart's water (the central lake, the island's moat, the crag's tarn, the delta's rivers) and a 4-tile moat round the citadel, broken at the ramps; drawn in concentric rings (ember field at the rim, lava, a molten core in a body deep enough) | Volcanic maps show lava at their centre; impassable on the ground, and fliers burn |
+| Water | Water | The sea, strait, channels and every lake | One plain water throughout, with no deep water |
 
 ### Climates
 
@@ -48,17 +51,16 @@ One climate is drawn per map (`city-climate`), the same in every home. It paints
 look shares the rules of the terrain it replaces, checked when the generator compiles, so the four
 climates play alike apart from the volcanic citadel's lava.
 
-| Climate | Cliffs | Rock | Town / streets / roads / deck | Scrub / rough | Grass (homes / commons) | Sea |
-| --- | --- | --- | --- | --- | --- | --- |
-| Temperate | cliffs | ridge rock | brick path / brick path / overgrown road / slate ashlar | clay, heath / mudflat | lush / grass | deep water |
-| Arid | sandstone benches | hoodoos | sandstone throughout, road on the commons | laterite, weathered sandstone / hardpan | grass / dry grass | deep water |
-| Highland | granite tors | ridge rock | slate ashlar, road on the commons | shale, tundra / scree | grass / grass | deep water |
-| Volcanic | obsidian ridge | outcrop | scoria blocks / basalt causeway | volcanic ash, dirt / pumice | grass / dry grass | dark water |
+| Climate | Cliffs | Rock | Town / streets / roads / deck | Scrub / rough | Grass (homes / commons) |
+| --- | --- | --- | --- | --- | --- |
+| Temperate | cliffs | ridge rock | brick path / brick path / overgrown road / slate ashlar | clay, heath / mudflat | lush / grass |
+| Arid | sandstone benches | hoodoos | sandstone throughout, road on the commons | laterite, weathered sandstone / hardpan | grass / dry grass |
+| Highland | granite tors | ridge rock | slate ashlar, road on the commons | shale, tundra / scree | grass / grass |
+| Volcanic | obsidian ridge | outcrop | scoria blocks / basalt causeway | volcanic ash, dirt / pumice | grass / dry grass |
 
-Bridges are boardwalk in every climate.
+Bridges are boardwalk and water is plain water in every climate.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
-maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
-stay unbuildable is rough ground.
+maintainer's review (2026-11-07), sand appears only where the subject is sand.
 
 ## Design
 
@@ -82,10 +84,16 @@ stay unbuildable is rough ground.
   is designed in the wedge's frame, arc across it and radius out, and stamped into every home alike,
   so any roll stays fair by rotation.
 - **Homes.** Each has one lake at six tenths of its depth (held clear of both coasts), the swarm
-  between its causeway and the lake in a paved town, an identical unscaled kit of 40 wheat and 30
+  between its causeway and the lake in a paved town, an identical unscaled kit of 60 wheat and 45
   wood beside the lake and a stone deposit beyond it, two quarry faces of 12 stone each at the foot
-  of its sea cliffs either side of the town, then its own scaled ambient farmland on fertile ground,
-  outcrops and a grove. The quarry faces replace the stone the old coast walls put beside every
+  of its sea cliffs either side of the town, then its own scaled ambient farmland on fertile ground
+  (7% of its ground under wheat, 4% under wood), outcrops and a grove. Scrub patches keep off the
+  town district, so every swarm sits on its anchor.
+- **Wings.** Both flanks of every home get a pond at the main lake's radius, 0.62 of the home's half
+  arc out from its axis and 0.8 of the main lake's radius, skipped where it does not fit clear of the
+  coasts and lakes (and in a Highland home, unless it lies past the ridges). Round each wing's pond,
+  or where it would have been, a wheat field of 50 tiles grows on the town's side and a wood grove
+  of 40 on the sea's, both scaled by the wheat and wood amounts. The quarry faces replace the stone the old coast walls put beside every
   town: in paired games, the tower-building AIs mined 30-55% less stone without them.
 - **Streets.** With `sand-roads` (on), a paved line two vertices thick runs from the heart of the
   commons along every home's axis, over its causeway, to a main street seven tiles inside the gate
@@ -114,7 +122,8 @@ stay unbuildable is rough ground.
   bridge walkable, every parapet vertex rock, every colony and the heart reachable on foot from
   colony 0, every islet's plot buildable and no islet reachable on foot. With every causeway shut, no
   colony may walk out of its home and, with the walls on, no colony may walk or swim out of it
-  either. The colonies' walks to their landings must be within twelve steps of each other.
+  either. The colonies' walks to their landings must be within twelve steps of each other; the
+  refusal lists every colony's walk.
 
 ## Controls
 
@@ -130,7 +139,7 @@ stay unbuildable is rough ground.
 | Frontier richness | 60 | 0–100 | How much richer the commons' heart is than its shores |
 | Cliff walls (`stone-walls`) | on | | Off: no sea cliffs, parapets or quarry faces; the homes' coasts are open |
 | Paved roads (`sand-roads`) | on | | Off: no streets (towns and causeway decks stay paved) |
-| Resource amounts | 100% | 0–300% | Every home's ambient fields, outcrops and grove, and everything on the commons; every home's kit, its quarry faces and the islets' wheat are unscaled |
+| Resource amounts | 100% | 0–300% | Every home's wing fields, ambient fields, outcrops and grove, and everything on the commons; every home's kit, its quarry faces and the islets' wheat are unscaled |
 
 The control ids are those of earlier revisions, so saved requests and the online pool keep working.
 

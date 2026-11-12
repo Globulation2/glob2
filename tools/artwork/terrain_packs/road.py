@@ -53,7 +53,7 @@ def render_road(ctx):
     decay = decay_fields(ctx, reclaim=(0.72, 0.9))
     reach = 32 + 58 + NATIVE_PX
     fates, common = stone_fates(ctx, decay, centres, reach, lost=0.06, cracked=0.12, sink=0.5, heave=0.3)
-    texture = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    texture = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size, array=True))
     rgb = stone_colour(lambda tone: ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])]),
                        ids, fates, texture, p, strength=0.45, own=0.75, staining=0.45)
     rgb = dress(ctx, rgb, p, decay, ids, edge, centres, fates, common, 20.0,

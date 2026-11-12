@@ -1734,8 +1734,16 @@ Globulation 2 커서를 표시합니다.
 해안선 굴곡도
 [Fjord width]
 피오르 너비
-[Lake connects to fjords]
-호수와 피오르 연결
+[Ice sheet size]
+빙상 크기
+[Fjord landings]
+피오르 상륙지
+[Fjord continents need at least one colony.]
+피오르 대륙에는 최소 한 개의 식민지가 필요합니다.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+피오르 대륙에는 짧은 변이 128칸 이상인 지도가 필요합니다.
+[Ice reach]
+얼음 범위
 [Resource islands]
 자원 섬
 [Watershed]
@@ -1980,8 +1988,8 @@ Globulation 2 커서를 표시합니다.
 막다른 길의 보물
 [Fjord bank deposits]
 피오르 기슭의 자원
-[Sandy lake shore]
-모래 호숫가
+[Nunatak orchards]
+누나탁 과수원
 [River delta]
 강 삼각주
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Globulation 2 커서를 표시합니다.
 운하 너비
 [Extra bridges]
 추가 다리
+[Grand canal]
+대운하
 [Polder]
 간척지
 [Old town]

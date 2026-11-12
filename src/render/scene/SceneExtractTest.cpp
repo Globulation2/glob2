@@ -26,6 +26,8 @@
 #include <thread>
 #include "sim/snapshot/SnapshotStore.h"
 #include "sim/EntityRefOf.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace {
 template<class Source> concept AcceptsLivePresentationSource=requires(SceneExtractor& preparer,const Source& source,const SceneRequest& request,PresentationFrame& frame) {

@@ -1722,8 +1722,16 @@ Saiz benua
 Kekasaran pantai
 [Fjord width]
 Lebar fjord
-[Lake connects to fjords]
-Tasik bersambung dengan fjord
+[Ice sheet size]
+Saiz lapisan ais
+[Fjord landings]
+Tempat pendaratan fjord
+[Fjord continents need at least one colony.]
+Benua fjord memerlukan sekurang-kurangnya satu koloni.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Benua fjord memerlukan peta dengan sisi terpendek sekurang-kurangnya 128 petak.
+[Ice reach]
+Jangkauan ais
 [Resource islands]
 Pulau-pulau sumber
 [Watershed]
@@ -1972,8 +1980,8 @@ Jalan pasir
 Harta karun di jalan buntu
 [Fjord bank deposits]
 Sumber di tebing fjord
-[Sandy lake shore]
-Tepi tasik berpasir
+[Nunatak orchards]
+Dusun buah nunatak
 [River delta]
 Delta sungai
 [Meandering rivers]
@@ -2072,6 +2080,8 @@ Saiz blok
 Lebar terusan
 [Extra bridges]
 Jambatan tambahan
+[Grand canal]
+Terusan besar
 [Polder]
 Polder
 [Old town]

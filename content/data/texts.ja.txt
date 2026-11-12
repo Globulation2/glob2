@@ -1734,8 +1734,16 @@ Globulation 2のカーソルを表示します。
 海岸線の複雑さ
 [Fjord width]
 フィヨルドの幅
-[Lake connects to fjords]
-湖をフィヨルドにつなげる
+[Ice sheet size]
+氷床の大きさ
+[Fjord landings]
+フィヨルドの上陸地点
+[Fjord continents need at least one colony.]
+フィヨルド大陸には少なくとも1つのコロニーが必要です。
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+フィヨルド大陸には短い辺が128マス以上のマップが必要です。
+[Ice reach]
+氷の広がり
 [Resource islands]
 資源島
 [Watershed]
@@ -1980,8 +1988,8 @@ Globulation 2のカーソルを表示します。
 行き止まりの宝
 [Fjord bank deposits]
 フィヨルド岸の資源
-[Sandy lake shore]
-湖の砂浜
+[Nunatak orchards]
+ヌナタクの果樹園
 [River delta]
 河口の三角州
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Globulation 2のカーソルを表示します。
 運河の幅
 [Extra bridges]
 追加の橋
+[Grand canal]
+大運河
 [Polder]
 ポルダー
 [Old town]

@@ -1734,8 +1734,16 @@ Cortex
 Τραχύτητα ακτογραμμής
 [Fjord width]
 Πλάτος φιόρδ
-[Lake connects to fjords]
-Η λίμνη συνδέεται με τα φιόρδ
+[Ice sheet size]
+Μέγεθος παγοκαλύμματος
+[Fjord landings]
+Αποβάθρες φιόρδ
+[Fjord continents need at least one colony.]
+Η ήπειρος με φιόρδ χρειάζεται τουλάχιστον μία αποικία.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Η ήπειρος με φιόρδ χρειάζεται χάρτη με τουλάχιστον 128 τετράγωνα στη μικρότερη πλευρά.
+[Ice reach]
+Έκταση του πάγου
 [Resource islands]
 Νησιά πόρων
 [Watershed]
@@ -1980,8 +1988,8 @@ Cortex
 Θησαυροί στα αδιέξοδα
 [Fjord bank deposits]
 Κοιτάσματα στις όχθες των φιόρδ
-[Sandy lake shore]
-Αμμώδης όχθη λίμνης
+[Nunatak orchards]
+Οπωρώνες στα νουνατάκ
 [River delta]
 Δέλτα ποταμού
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Cortex
 Πλάτος καναλιών
 [Extra bridges]
 Επιπλέον γέφυρες
+[Grand canal]
+Μεγάλο κανάλι
 [Polder]
 Πόλντερ
 [Old town]

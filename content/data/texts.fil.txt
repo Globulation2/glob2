@@ -1722,8 +1722,16 @@ Laki ng kontinente
 Kagaspangan ng baybayin
 [Fjord width]
 Lapad ng fjord
-[Lake connects to fjords]
-Ang lawa ay kumokonekta sa mga fjord
+[Ice sheet size]
+Laki ng yelong kalatag
+[Fjord landings]
+Daungan sa mga fjord
+[Fjord continents need at least one colony.]
+Kailangan ng kontinente ng fjord ng kahit isang kolonya.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Kailangan ng kontinente ng fjord ng mapang hindi bababa sa 128 tile ang mas maikling gilid.
+[Ice reach]
+Abot ng yelo
 [Resource islands]
 Mga islang may likas na yaman
 [Watershed]
@@ -1972,8 +1980,8 @@ Mga kalsadang buhangin
 Kayamanan sa mga walang patutunguhan
 [Fjord bank deposits]
 Mga deposito sa pampang ng fjord
-[Sandy lake shore]
-Mabuhanging baybayin ng lawa
+[Nunatak orchards]
+Mga taniman sa nunatak
 [River delta]
 Delta ng ilog
 [Meandering rivers]
@@ -2072,6 +2080,8 @@ Laki ng bloke
 Lapad ng kanal
 [Extra bridges]
 Mga karagdagang tulay
+[Grand canal]
+Malaking kanal
 [Polder]
 Polder
 [Old town]

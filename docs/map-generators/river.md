@@ -26,6 +26,9 @@ crops it could not walk out of. Where a colony's ground does not reach colony 0'
 through the crops is now cleared three tiles wide; every other map is exactly revision 7's. Seed 1 opens
 two gates (14 deposits cleared, round colonies 2 and 3), seeds 5 and 8 one each (9 deposits).
 
+Revision 9 draws each rule group in one look per banks variant; every rule, deposit and start is
+revision 8's.
+
 ## How it plays
 
 - **The river is the front line, swum slowly.** Colonies on opposite banks meet only by swimming or by
@@ -54,14 +57,14 @@ two gates (14 deposits cleared, round colonies 2 and 3), seeds 5 and 8 one each 
   impassable, towers shoot over them, scree round them. Most carry a quarry face of stone on a flank
   (how many follows `stone-amount`). A strip of walkable bank always runs between a bluff and the
   water, no bluff stands within 22 tiles of a home, and none parts any ground.
-- **Far ground: a meadow upland.** Grass is lush beside the water and green to 34 tiles out; beyond
-  that about half of it, in patches, is dry. Beyond 28 steps from any water, where crops never regrow,
-  heath patches (pavement: walkable and buildable, holding nothing, slowing crops near it as sand does)
-  break the grass. Every home's garden stays green.
-- **Desert banks.** The `banks` variant Desert is a Nile: one green ribbon along the water, dry grass
-  everywhere beyond nine tiles but the homes' gardens, baked hardpan pans (slow, unbuildable, holding nothing) beyond 16 steps where no
-  crop could grow, and weathered sandstone pavement beyond 28 steps, with hoodoo bluffs. Pans keep 34
-  tiles clear of every home, so every colony keeps its building room.
+- **Far ground: a green upland.** The grass is one plain green everywhere. Beyond 28 steps from any
+  water, where crops never regrow, heath patches (pavement: walkable and buildable, holding nothing,
+  slowing crops near it as sand does) break the grass.
+- **Desert banks.** The `banks` variant Desert is a Nile: the loam levee is the green ribbon along the
+  water, all the grass is dry grass (homes included), baked hardpan pans (slow, unbuildable, holding
+  nothing) lie beyond 16 steps where no crop could grow, and weathered sandstone pavement beyond 28
+  steps, with hoodoo bluffs. Pans keep 34 tiles clear of every home, so every colony keeps its building
+  room.
 
 ## How it is built
 
@@ -77,10 +80,10 @@ change a rule.
 | Home quarries | Planned first, from the same rebuilt height field and the starts: for each colony the candidate centre whose walk from the swarm is nearest 28 steps (19 to 48), six or more steps from water, whose disc of radius 4 is walkable, on the swarm's own ground, 19 or more tiles from the swarm in a straight line and three from other rock, and whose walkable ring holds together. The face is the ten exposed disc tiles nearest the swarm; the rest is rock. |
 | Bluffs | Planned from the height field rebuilt from the request (`heightFieldSketch`: its terrain, before the starting-crop top-up) and the starts alone, exactly as `validateWorld` replans them: cutbank beach vertices of the river (`majorWater`) whose water share over a window a quarter of the bed's diameter (`wetShare`) is in the banks' bottom 20% and below 470 thousandths, strongest first; a crescent lens of walkable tiles 4 to 9 steps from water within about 10 tiles, kept in 2x2 blocks, never within three tiles of a home quarry; centres 30 apart, 22 from every swarm, one per 80 tiles of width and height; dropped on islands under 1,500 tiles or where the walkable ring round it falls apart. A face of tiles left out of the rock on a flank (60% of bluffs at 100% stone, two flanks from 150%). |
 | Mechanic layers | Deep core (`deepReachForShare`, `deepenWater`): at least 5 tiles from land in a straight line, more until it holds half the water, bodies of 16 vertices or more. Plain grass round every quarry face, rock (`rockVertices`), scree one tile out where a noise peaks, never touching a deposit. Mudflat on beach and sand within three steps of the river at point bars (the banks' top 20% of share, above 530), and on grass one row up at the sharpest (top 8%), never on a vertex touching a deposit. Loam two to seven vertices from water (`layLevee`), never in a garden or before a quarry. Pavement (`paveBeyondWater`) on old desert sand and bare grass from 28 tiles in a straight line and 22 steps (`distanceFromWet`, frayed), never touching a deposit: 40% of it in fractal patches on the temperate banks, all of it in the desert, plus hardpan pans on 55% of the desert's bare grass from 16 tiles (15 steps) and 34 tiles from homes. |
-| Looks | Loam and spring meadow, pale and dune sand, heath and shale (weathered sandstone and dirt), outcrop (hoodoo) rock; `writeLayeredTerrain` writes them and clears every deposit the new ground refuses. The grass looks, lush within 5 tiles of water (3 in the desert) and dry beyond 34 (9) (`gradeGrassLooks`), never dry in a home's garden, 45% of the temperate dry ground in fractal patches (all of the desert's), go on last, after the starts, so placeStarts and the starting-crop guarantee meet plain grass everywhere. |
+| Looks | One look per rule group: heath (weathered sandstone) pavement and outcrop (hoodoo) rock; grass, sand, loam, deep water, mudflat and hardpan keep their plain looks. `writeLayeredTerrain` writes them and clears every deposit the new ground refuses. The desert's dry grass goes on last over all plain grass, gardens included, after the starts and the home gates, so placeStarts and the starting-crop guarantee meet plain grass everywhere. |
 | Algae and quarries | The algae the deep core displaced are seated again on the nearest free shallows (straight-line distance plus up to four tiles of noise, so the beds' edges are ragged); quarry faces get stone and the ground before them is cleared. |
 | Starts | `placeStarts` and `openStartsBuriedByResources` as in revision 5, with the quarry faces protected from its clearing. |
-| Home gates | While a colony's workers cannot walk to colony 0's (`walkFromFirstColony`), the cheapest four-connected walk from colony 0's ground to them (a deposit costs three steps; water, rock and quarry faces cannot be crossed) has every deposit on dry ground within one tile cleared (`openHomeGates`, `clearRoute`); the count is `river.home_gates.opened`. No stream draws, so a map with no sealed home is unchanged. Then the grass looks. |
+| Home gates | While a colony's workers cannot walk to colony 0's (`walkFromFirstColony`), the cheapest four-connected walk from colony 0's ground to them (a deposit costs three steps; water, rock and quarry faces cannot be crossed) has every deposit on dry ground within one tile cleared (`openHomeGates`, `clearRoute`); the count is `river.home_gates.opened`. No stream draws, so a map with no sealed home is unchanged. Then the grass look. |
 
 `validateWorld` keeps revision 5's floor (every colony harvests wheat within 24 and wood within 32
 steps, with 16 building sites within 24), replans the bluffs from the same rebuilt height field and the
@@ -97,7 +100,7 @@ round it (`partingBarrier`), and (revision 8) requires every colony to walk to c
 | Smoothing | 1–8 (4) | The field's feature size. |
 | River width | 20–65 (35) | The bed's diameter as a percentage of the mean side. |
 | Winding river | on/off (on) | Off, the river runs straight. Straight rivers have no point bars and few bluffs (bends are read from the banks' own spread). |
-| Banks | Random, Temperate, Desert | Temperate: loam and spring meadow, a green upland with patches of dry grass and heath, outcrop bluffs. Desert: a green ribbon, then dry grass, hardpan pans and weathered sandstone, hoodoo bluffs. |
+| Banks | Random, Temperate, Desert | Temperate: loam levees, a green upland with patches of heath, outcrop bluffs. Desert: a loam ribbon in dry grass, hardpan pans and weathered sandstone, hoodoo bluffs. |
 | Deep channels | on/off (on) | Deep water in the middle of the wide water: slower swimming, no algae there. Every route on foot is the same either way. |
 | River bluffs | on/off (on) | Rock bluffs on the outside of the bends, quarry faces and scree. |
 | Fruit | 0–64 (4) | Fruit groves, as before. |
@@ -140,7 +143,7 @@ deposit, so it takes none (before that guard it cleared 12 stone and 13 wheat on
 off). Pavement from 22 steps cost a low-water map 8%; from 28 it costs about 5% of the total at water
 30 and nothing near the homes. Hardpan lies only where no crop grows. The one shortfall: at water 55 the
 worst colony's ground within 48 steps holds 52 against 57, a bluff standing in it; the means are higher.
-The grass looks change no food.
+The grass look changes no food.
 
 A four-AI calibration game (`map study river --seed 101`, 256x256, Nicowar, Cortex, Cabino and Maxima,
 game seed 1, 20,000 ticks, every map played by the same release game binary; seed 101 draws the Desert
@@ -156,8 +159,8 @@ One game varies widely: this shows no stalled opening, not a measured improvemen
 
 - Deep water swims at three quarters of the speed, so crossing the river by swimming is slower than in
   revision 5: a change in feel.
-- Most of the map lies far from water at the defaults; on the temperate banks the far ground is a
-  mosaic of meadow, dry grass and heath (the dry grass is a look only). The Desert banks change play
+- Most of the map lies far from water at the defaults; on the temperate banks the far ground is grass
+  with patches of heath. The Desert banks change play
   beyond the green ribbon: hardpan is slow and unbuildable.
 - Straight rivers (winding off, or a seed whose bed runs straight) have no point bars and only a few
   bluffs where the bank wiggles.

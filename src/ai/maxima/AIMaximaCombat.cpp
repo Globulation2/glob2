@@ -1756,6 +1756,15 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		last_preemptive_defense_tick, budget.preemptive_recompute_ticks,
 		last_preemptive_defense_tick>-500000))
 		return;
+	// A building change alone waits for the minimum gap; the stale signature is
+	// kept, so the change is picked up by a later pass. The periodic refresh and
+	// zone-cap or amphibious changes still recompute at once.
+	if(last_preemptive_defense_tick>-500000
+	   && budget.preemptive_effective_zone_max==last_preemptive_effective_zone_max
+	   && budget.preemptive_amphibious_active==last_preemptive_amphibious_active
+	   && timer-last_preemptive_defense_tick<budget.preemptive_recompute_ticks
+	   && timer-last_preemptive_defense_tick<budget.preemptive_min_gap_ticks)
+		return;
 	preemptive_building_signature=signature;
 	last_preemptive_defense_tick=timer;
 	last_preemptive_effective_zone_max=budget.preemptive_effective_zone_max;

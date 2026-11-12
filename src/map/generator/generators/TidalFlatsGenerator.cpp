@@ -59,12 +59,15 @@ using namespace MapGeneration;
 //   quarryFault). Telemetry measures every colony's walk to the nearest face.
 // - The tide (`tide`): neap, mean or spring, random by default. It scales the water of every
 //   pool and lagoon (0.8, 1, 1.25 of its radius; spring water keeps kSpringClear tiles from any
-//   island), widens the shell banks at neap, and moves the looks: wet mud by the water, dried
-//   hardpan far from it. The islands and channels are the same at every tide for one seed.
+//   island), widens the shell banks at neap, and picks the flats' look: dried hardpan at neap,
+//   mudflat at mean, wet mud at spring. The islands and channels are the same at every tide for one
+//   seed.
 // - Looks are painted over a mechanic sketch (canonical GRASS, SAND, WATER, DEEP_WATER, MUDFLAT,
-//   RIDGE_ROCK) with composeLooks, so looks never change a rule: sandbars and oases lush, shell
-//   banks pale, wet mud and hardpan on the flats, the tor outcrop. Home islands and the central
-//   island stay plain grass, which the starting-crop guarantee needs.
+//   RIDGE_ROCK) with composeLooks, so looks never change a rule. One look per rule group per tide
+//   (revision 10 dropped the noise-dealt wet-mud seeps, hardpan patches and pale channel patches),
+//   and a second look only for a named feature drawn whole: sandbars and oases lush, shell banks
+//   pale, the tor outcrop. Home islands and the central island stay plain grass, which the
+//   starting-crop guarantee needs.
 //
 // Every island, pool, sandbar and channel is designed in the frame of a colony's wedge - arc across
 // it and radius out from the centre - and stamped into every wedge alike, so whatever the roll,
@@ -130,27 +133,23 @@ constexpr double kLagoonRoughness = 0.2;
 constexpr int kDeepSteps = 2, kDeepLeast = 4;
 
 // The tides. `water` scales every pool and lagoon on the flats; `bank` is how many vertex steps of
-// shell bank ring their water; `wet` how far wet mud reaches from any water (looks); `hardpan`
-// the share of the flats far from water that has dried to hardpan (looks).
+// shell bank ring their water; `flats` and `deep` are the flats' and the lagoon beds' looks.
 struct TideSpec
 {
 	const char *name;
 	double water;
-	int bank, wet;
-	double hardpan;
+	int bank;
+	TerrainType flats, deep;
 };
-constexpr std::array<TideSpec, 3> kTides{{{"neap", 0.8, 3, 2, 0.34},
-										  {"mean", 1.0, 2, 3, 0.16},
-										  {"spring", 1.25, 2, 5, 0.05}}};
+constexpr std::array<TideSpec, 3> kTides{{{"neap", 0.8, 3, HARDPAN, DARK_WATER},
+										  {"mean", 1.0, 2, MUDFLAT, DEEP_WATER},
+										  {"spring", 1.25, 2, MUD, DEEP_WATER}}};
 // A bank's width sways kBankFray tiles either way on noise kBankCell tiles across, its contrast
 // stretched by kBankContrast (smooth noise stays near its middle), never below kBankLeast: a pool
 // a few tiles across sees a wide drift of shells on one side and a thin rim on another, not a ring
 // (a 7-tile cell and 1.2 tiles of sway drew nearly even rings round every pool, bull's-eyes with
 // the wet mud beyond them).
 constexpr double kBankFray = 2.2, kBankLeast = 1.0, kBankCell = 5, kBankContrast = 2.2;
-// Wet mud (looks): see lookSketch.
-constexpr int kSeepCell = 6;
-constexpr double kSeepContrast = 2.2;
 // Spring water keeps this many tiles from every island, so a swollen pool never eats a coast.
 constexpr int kSpringClear = 4;
 
@@ -716,49 +715,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// The looks over the mechanic sketch (composeLooks keeps each inside its rule group): wet mud by the
-// water and dried hardpan far from it, by the tide; shell banks pale and the channels pale in
-// patches; sandbars and oases lush; deep lagoon beds dark at neap; the tor outcrop. Home islands and
-// the central island stay plain grass.
-TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
+// The looks over the mechanic sketch (composeLooks keeps each inside its rule group): the tide's
+// look for the flats and the lagoon beds, the shell banks pale, the sandbars and oases lush, the tor
+// outcrop. Channels, home islands and the central island keep their mechanic's look.
+TerrainSketch lookSketch(const Layout &L)
 {
-	const Torus &t = L.t;
-	const int n = t.size();
+	const int n = L.t.size();
 	const TideSpec &tide = kTides[L.tide];
-	std::vector<unsigned char> wet(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		wet[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
-	const std::vector<int> nearWater = stepsFrom(t, wet);
-	const std::vector<std::int64_t> wetDistance = distanceSquaredTo(t, wet);
-	// Seeps: noise kSeepCell tiles across, a few swells round the rim of even a small pool, its
-	// contrast stretched so the wet mud runs out in tongues on some sides and stops at the bank on
-	// others (a 12-tile cell, about a pool's size, drew an even ring round each: a bull's-eye).
-	const std::vector<int> fray = fractalNoise(t.w, t.h, kSeepCell, 2, context.stream("flats-looks"));
-	const std::vector<int> split = fractalNoise(t.w, t.h, 32, 3, context.stream("flats-looks"));
-	const std::vector<int> shells = fractalNoise(t.w, t.h, 8, 2, context.stream("flats-looks"));
 	TerrainSketch looks(size_t(n), 0);
-	int mud = 0, hardpan = 0;
 	for (int i = 0; i < n; ++i)
 	{
 		switch (L.terrain[i])
 		{
 		case MUDFLAT:
-			// Wet mud beyond the shell banks in blotches, so it reads as seeps, not a ring.
-			if (const double seep = std::clamp(0.5 + kSeepContrast * (fray[i] / 65536.0 - 0.5), 0.0, 1.0),
-				reach = tide.bank + tide.wet * (3.0 * seep - 1.0);
-				reach > 0 && double(wetDistance[i]) <= reach * reach)
-			{
-				looks[i] = MUD;
-				++mud;
-			}
-			else if (nearWater[i] > 8 && split[i] < tide.hardpan * 65536)
-			{
-				looks[i] = HARDPAN;
-				++hardpan;
-			}
+			looks[i] = tide.flats;
 			break;
 		case SAND:
-			if (L.bank[i] || (L.channel[i] && shells[i] > 30000))
+			if (L.bank[i])
 				looks[i] = PALE_SAND;
 			break;
 		case GRASS:
@@ -766,8 +739,7 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 				looks[i] = LUSH_GRASS;
 			break;
 		case DEEP_WATER:
-			if (L.tide == 0)
-				looks[i] = DARK_WATER;
+			looks[i] = tide.deep;
 			break;
 		case RIDGE_ROCK:
 			looks[i] = OUTCROP;
@@ -776,8 +748,6 @@ TerrainSketch lookSketch(const Layout &L, GenerationContext &context)
 			break;
 		}
 	}
-	context.telemetry.measure("tidal-flats.looks.wet-mud", mud);
-	context.telemetry.measure("tidal-flats.looks.hardpan", hardpan);
 	return looks;
 }
 
@@ -937,7 +907,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 	const int n = t.w * t.h;
 
 	context.stage = "flats terrain";
-	writeVertices(map, composeLooks(L.terrain, lookSketch(L, context)));
+	writeVertices(map, composeLooks(L.terrain, lookSketch(L)));
 
 	// The tor's quarry faces go down before the colonies, so nothing is planted over them.
 	context.stage = "flats tor";
@@ -1132,7 +1102,7 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		9,
+		10, // 10: one look per role
 		false,
 		// The home islands' radius as a share of the half side; extra islands (the oases) and
 		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per
@@ -1157,9 +1127,9 @@ GeneratorDefinition tidalFlatsDefinition()
 		 GeneratorControl::toggle("central-island", "Central island", true, ControlGroup::Layout)
 			 .withSearchValues({0, 1}),
 		 // The water on the flats: a neap tide shrinks every pool and lagoon to 0.8 of its radius
-		 // and bares wider shell banks and more dried hardpan; a spring tide swells them to 1.25
-		 // (kept four tiles off every island) with wet mud further from the water. The islands
-		 // and channels are the same at every tide.
+		 // and bares wider shell banks on dried hardpan; a spring tide swells them to 1.25 (kept
+		 // four tiles off every island) on wet mud. The islands and channels are the same at
+		 // every tide.
 		 GeneratorControl::choice("tide", "Tide", {"Random", "Neap tide", "Mean tide", "Spring tide"},
 								  0, ControlGroup::Terrain)
 			 .withSearchValues({1, 2, 3}),

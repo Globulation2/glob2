@@ -107,7 +107,7 @@ void registerFortsBlueprint(Binding &e, JSValueConst object)
 		  {
 			  if (n || !e.game || !e.generation || e.inspecting)
 				  throw TypeMismatch("validateForts()");
-			  return e.write(validateWorld(*e.game, *e.generation));
+			  return e.write(validateClassicWorld(*e.game, *e.generation));
 		  });
 }
 } // namespace MapGeneration::JavaScript

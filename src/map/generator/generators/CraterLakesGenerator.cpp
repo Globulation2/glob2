@@ -80,16 +80,19 @@ using namespace MapGeneration;
 // - Outer rings: grass on the outer flank, from the rim band's outer row to kLoamDeep tiles
 //   (straight-line) beyond it, is loam (Fertile: buildable crop land that waters the land itself), in
 //   patches where a noise field allows.
-// - Every layer leaves the home garden, kPlainHome tiles round a swarm, plain grass: the kits and
-//   the starting-crop guarantee are laid on plain grass, and the garden reads as a clearing.
-// - Uplands: grass kUplandWater or more steps from any water is barren heath or tundra where a
+// - Every layer leaves the home garden, kPlainHome tiles round a swarm, grass: the kits and the
+//   starting-crop guarantee are laid on grass, and the garden reads as a clearing. It wears the
+//   crater type's grass look like the rest, so no disc of different grass marks it.
+// - Uplands: grass kUplandWater or more steps from any water is barren ash or tundra where a
 //   noise field passes, beyond the reach of the crop probe and its mirror, away from the homes.
 // - Every distance from a home is straight-line from the swarm's footprint, frayed outward by a
 //   noise field, so no layer draws a square round a home.
 // - A crater type (`crater-type`): volcanic maars (dense thick rims of dark rock, pumice talus,
-//   loam, heath and ash uplands) or glacial kettles (sparse thin rims of outcrop, scree talus, moss,
-//   dark water, lush grass, tundra uplands). Looks and rim density; every layer and choice is in
-//   telemetry.
+//   loam, ash uplands, plain grass and sand) or glacial kettles (sparse thin rims of outcrop, scree
+//   talus, moss, dark water, lush grass, pale sand, tundra uplands). Looks and rim density; every
+//   layer and choice is in telemetry. Revision 7 keeps one look per rule group: revision 6 banded
+//   the grass lush and dry by its distance from water, split inland sand into dunes and the uplands
+//   into two looks by noise, which made the field hard to read.
 namespace
 {
 // Streams of their own, so every draw revision 5 made is the draw it made.
@@ -132,14 +135,13 @@ struct CraterType
 	const char *name;
 	int onMost, offLeast, offSpan; // a rock run is 1..onMost sectors, an open run offLeast..offLeast+offSpan-1
 	int thickness;                 // how far the rim band reaches beyond kRimInner, in straight-line tiles
-	TerrainType deep, rock, rough, loam, upland, uplandSecond, beach, dune, duneSecond;
-	int lush, dry; // grass lush within `lush` steps of water, dry from `dry` steps
+	// One look per rule group: every grass vertex (home gardens included), every sand vertex and
+	// every upland vertex reads as one thing.
+	TerrainType deep, rock, rough, loam, upland, sand, grass;
 };
 constexpr CraterType kTypes[2] = {
-	{"maar", 3, 1, 2, 4, DEEP_WATER, RIDGE_ROCK, PUMICE, LOAM, HEATH, VOLCANIC_ASH, SAND, DUNE_SAND,
-	 WINDY_SAND_DUNE, 6, 20},
-	{"kettle", 2, 2, 3, 3, DARK_WATER, OUTCROP, SCREE, MOSS, TUNDRA, HEATH, PALE_SAND, PALE_SAND, DUNE_SAND, 9,
-	 24}};
+	{"maar", 3, 1, 2, 4, DEEP_WATER, RIDGE_ROCK, PUMICE, LOAM, VOLCANIC_ASH, SAND, GRASS},
+	{"kettle", 2, 2, 3, 3, DARK_WATER, OUTCROP, SCREE, MOSS, TUNDRA, PALE_SAND, LUSH_GRASS}};
 
 // Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
 std::vector<unsigned char> blocksOfTwo(const Torus &t, const std::vector<unsigned char> &mask)
@@ -626,7 +628,7 @@ Rims planRims(const GenerationMap &map, const Torus &t, GenerationContext &conte
 // How many vertices each layer took, and the deposits the pass exchanged.
 struct LayerCounts
 {
-	int deep = 0, rock = 0, loam = 0, talus = 0, upland = 0, lush = 0, dry = 0, dunes = 0;
+	int deep = 0, rock = 0, loam = 0, talus = 0, upland = 0;
 	int stoneCleared = 0, cropsCleared = 0, algaeMoved = 0, algaeLost = 0;
 };
 
@@ -678,7 +680,7 @@ bool craterPass(GenerationWorld &game, GenerationContext &context, const CraterL
 		if (l >= 0)
 			++bodySize[l];
 	const std::vector<int> fromWater = stepsFrom(t, water);
-	// The straight-line distance too, for the rims, the talus, the loam, the looks and the uplands:
+	// The straight-line distance too, for the rims, the talus, the loam and the uplands:
 	// step contours are squares. rimReach is it rounded to whole tiles; wetReach is frayed by noise.
 	std::vector<double> wetReach(size_t(n), 0);
 	std::vector<int> rimReach(size_t(n), INT_MAX);
@@ -790,36 +792,20 @@ bool craterPass(GenerationWorld &game, GenerationContext &context, const CraterL
 		}
 	}
 
-	// The looks, by crater type (composeLooks keeps each inside its rule group).
+	// The looks, by crater type: one per rule group (composeLooks keeps each inside its rule group).
+	// The home gardens and the quarry rings take the type's grass too: the looks are written after
+	// every stage that reads exact GRASS, and a look never changes a rule.
 	TerrainSketch looks(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
 		generationCheckpoint();
-		const bool second = split[i] > int(0.6 * 65536);
 		switch (mech[i])
 		{
 		case GRASS:
-			if (plain[i] || !home.clear(i, kPlainHome))
-				break;
-			if (wetReach[i] <= type.lush)
-			{
-				looks[i] = LUSH_GRASS;
-				++counts.lush;
-			}
-			else if (wetReach[i] >= type.dry)
-			{
-				looks[i] = DRY_GRASS;
-				++counts.dry;
-			}
+			looks[i] = type.grass;
 			break;
 		case SAND:
-			if (fromWater[i] <= 2)
-				looks[i] = type.beach;
-			else
-			{
-				looks[i] = second ? type.duneSecond : type.dune;
-				++counts.dunes;
-			}
+			looks[i] = type.sand;
 			break;
 		case DEEP_WATER:
 			looks[i] = type.deep;
@@ -834,7 +820,7 @@ bool craterPass(GenerationWorld &game, GenerationContext &context, const CraterL
 			looks[i] = type.loam;
 			break;
 		case SHALE:
-			looks[i] = second ? type.uplandSecond : type.upland;
+			looks[i] = type.upland;
 			break;
 		default:
 			break;
@@ -945,9 +931,6 @@ bool craterPass(GenerationWorld &game, GenerationContext &context, const CraterL
 	context.telemetry.measure("crater-lakes.talus.vertices", counts.talus);
 	context.telemetry.measure("crater-lakes.loam.vertices", counts.loam);
 	context.telemetry.measure("crater-lakes.upland.vertices", counts.upland);
-	context.telemetry.measure("crater-lakes.looks.lush-vertices", counts.lush);
-	context.telemetry.measure("crater-lakes.looks.dry-vertices", counts.dry);
-	context.telemetry.measure("crater-lakes.looks.dune-vertices", counts.dunes);
 	if (counts.algaeLost > 0)
 		context.telemetry.fallback("crater-lakes.algae.shortfall", "Not enough free shallows for the displaced algae");
 	if (o.crater_rims && rims.faces < rims.wanted)
@@ -1121,7 +1104,7 @@ GeneratorDefinition craterLakesDefinition()
 			"crater-lakes",
 			4,
 			"Crater lakes",
-			6,
+			7, // 7: one look per role (one grass, sand and upland per crater type)
 			false,
 			std::move(controls),
 			generate,

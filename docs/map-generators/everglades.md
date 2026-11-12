@@ -24,7 +24,6 @@ leave, so with hammocks on they lie in different places from revision 3's.
   clearing's levee stay sand, so a home keeps its room.
 - **Moss farms better.** The swamp's wet reaches are moss (Fertile: crop land like grass that also
   waters its neighbours at 48/256), most of its grass at the defaults; the dry reaches are sawgrass.
-  The clearings and a tile round them stay plain grass.
 - **Sloughs run dark.** The big pools and sloughs have a bed of deep water (swimmable but slower, no
   algae, still waters the land); every pool keeps a shallow band about two tiles wide where algae
   grows and the banks and fords work.
@@ -65,10 +64,12 @@ leave, so with hammocks on they lie in different places from revision 3's.
    kept at ten tiles or more and 16 tiles from the next. A hammock whose blocked tiles would leave the
    ground round it in two pieces is dropped and the check runs again. `hammocks` per 128x128 tiles
    are wanted; telemetry reports how many fitted.
-4. **Looks.** `composeLooks` paints looks inside each rule group, so looks never change a rule: deep
-   beds dark water; sawgrass lush where it is wet or near the water and tawny where it is dry; mud
-   banks wet mud and mudflat, or mudflat and hardpan; beach sand pale in patches in the dry season;
-   moss, with patches of loam (peat) away from the water in the dry season.
+4. **Looks.** `composeLooks` paints looks inside each rule group, so looks never change a rule. The
+   season picks one look per rule group for the whole map: dark water in the deep beds in both;
+   wet mud, sand and moss in the wet season, hardpan, pale sand and loam (peat) in the dry. Grass is
+   plain grass everywhere: the looks are drawn before the kits and the starting-crop guarantee, which
+   need the clearings as exact grass, so a different grass look would leave lawns round the homes.
+   Revision 5 dropped revision 4's noise-dealt second looks and lush/tawny grass bands.
 5. **Resources (revision 3's).** Each home's unscaled kit (40 wheat, 30 wood, a quarry) beside its
    pond; off the clearings wood on 55% of the ground and wheat on 15%, in patches, stone outcrops and
    fruit groves, scaled by the amounts; algae on the shallows; the starting-crop guarantee.
@@ -91,7 +92,7 @@ leave, so with hammocks on they lie in different places from revision 3's.
 | Levee | 0–100% (70) | Share of each clearing's ring that is sand. |
 | Mudflats | 0–100% (50) | Share of the swamp's pool banks that is mud rather than sand (banks near a clearing stay sand). |
 | Hammocks | 0–8 (3) | Thicket tree islands wanted per 128x128 tiles, as many as fit. |
-| Season | Random, Wet, Dry | Looks only: lush sawgrass and wet mud, or tawny sawgrass, dried mud, pale sand and peat. Random picks from the seed. |
+| Season | Random, Wet, Dry | Looks only: wet mud, sand and moss, or dried mud (hardpan), pale sand and peat (loam). Random picks from the seed. |
 | Wheat, wood, stone, algae, fruit amount | 0–300% (100) | The swamp's fields, outcrops, groves and algae; every home's kit is unscaled. |
 
 ## Food
@@ -100,7 +101,7 @@ Growth potential (`growth_potential.c`: the engine's crop growth chance summed o
 counted as farmland that waters at 48/256, deep water as water), 256x256, 4 colonies, seeds 1–3,
 revision 4 against revision 3 on the same seeds and settings. Mean per colony, worst colony in
 brackets. The season changes no rule on any tile (contract), so food is measured with it pinned wet;
-the dry season's moss/loam tiles play as moss but the terrain dump records them as mixed, which the
+revision 4's dry-season moss/loam tiles play as moss but the terrain dump records them as mixed, which the
 tool scores as nothing (its row below shows that undercount, not less food).
 
 | Variant | Total | Within 24 of swarm | Within 48 |

@@ -1,7 +1,7 @@
 # Tidal flats
 
 **Tidal flats** (`tidal-flats`, numeric ID 18) is an estuary at low water: grass islands stand on a
-wide expanse of grey-brown mud, threaded by pale sand channels and shell banks, with tide pools and
+wide expanse of grey-brown mud, threaded by sand channels and pale shell banks, with tide pools and
 long lagoons over the mud and the odd lush sandbar. Every colony has a home island with a pond; small
 oasis islands round the flats carry a prize each under a crop of wheat, and the island at the centre
 carries the orchard of all three fruits round a rocky tor.
@@ -37,8 +37,8 @@ oases); the lagoons, sandbars and pools are placed again because the lagoons now
   take a single rim tile each, so the tor keeps its rock. The orchard's three groves stand four tiles
   past the tor, off every face's approach.
 - **The tide changes the water.** A neap tide shrinks every pool and lagoon on the flats to 0.8 of its
-  radius and bares wider shell banks and more dried hardpan; a spring tide swells them to 1.25, kept
-  four tiles off every island, with wet mud further from the water. The islands, channels, homes and
+  radius and bares wider shell banks on dried hardpan; a spring tide swells them to 1.25, kept
+  four tiles off every island, on wet mud. The islands, channels, homes and
   kits are the same at every tide for one seed; the water near the islands, and so their food, moves a
   little.
 
@@ -56,7 +56,7 @@ MUDFLAT, RIDGE_ROCK) that every shared helper and check reads, and `generate` pa
 | Tide | `tide` scales pools and lagoons; spring water beyond the mean's only where it keeps 4 tiles from every island. |
 | Sketch | Mud, then channels as sand, islands as grass, water; shell banks within 2 (neap 3) tiles of the water on the flats, their width swaying by up to 2.2 tiles on noise 5 tiles across sampled in the wedge frame, its contrast stretched, never under 1 tile, so a pool has a wide drift of shells on one side and a thin rim on another (a 7-tile cell and 1.2 tiles of sway drew even rings, bull's-eyes); beaches (`layBeaches`); the tor's rock (`rockVertices`); deep cores of the lagoons two vertex steps from any other ground, specks under four vertices left shallow. |
 | Tor | A rough disc 35% of the central island's radius (3.5 to 7 tiles); each colony's quarry face is the rock within a tile of the rim point facing its home (`quarryNear`), or that rim tile alone when the rim gives each colony fewer than six tiles, stocked with stone before the colonies settle; `quarryApproach` keeps the orchard off it. A tor left with fewer than nine rock vertices refuses the map (revision 9's first draw left two at 128 with six colonies). |
-| Looks | Wet mud (MUD) in seeps beyond the shell banks, on noise 6 tiles across with its contrast stretched so it runs out in tongues on some sides of a pool and stops at the bank on others, hardpan on 5 to 34% of the flats far from water by tide, shell banks and patches of the channels pale sand, sandbars and oases lush grass, neap lagoon beds dark water, the tor outcrop. Home islands and the central island stay plain grass, which the starting-crop guarantee reads. |
+| Looks | One look per rule group, chosen by the tide: the flats are hardpan at neap, mudflat at mean and wet mud at spring, and lagoon beds dark water at neap, deep water otherwise. Second looks mark named features drawn whole: shell banks pale sand (channels stay plain sand), sandbars and oases lush grass, the tor outcrop. Home islands and the central island stay plain grass, which the starting-crop guarantee reads. Revision 10 dropped the noise-dealt wet-mud seeps, hardpan patches and pale channel patches. |
 | Resources | Every home's kit (40 wheat and 30 wood beside the pond, a quarry towards the centre), unscaled, then 4% wheat and 2% wood of the island on its most fertile ground and an outcrop, scaled; every oasis under wheat with a fruit or stone prize; the orchard; algae; the starting-crop guarantee. |
 
 `validateWorld` rebuilds the design and requires: every home's pond; no buildable tile on the flats;

@@ -72,11 +72,13 @@ using namespace MapGeneration;
 //   so a little moss measured worse than none; this much measured better than revision 3 (docs).
 // - Fords are boardwalks: where openRoutes has to ford a slough to join a boxed-in colony, the ford
 //   is boardwalk (Paths: fast, buildable, holds nothing) rather than revision 3's odd sand spit.
-// - A season (`season`), looks only: wet (lush sawgrass, wet mud banks, moss) or dry (sawgrass gone
-//   tawny, dried mud and pale sand on the banks, peat), random by default.
+// - A season (`season`), looks only: wet (wet mud banks, moss) or dry (dried mud, pale sand, peat),
+//   random by default.
 // - Looks are painted over a mechanic sketch (canonical GRASS, SAND, WATER, DEEP_WATER, MUDFLAT, MOSS,
-//   THICKET) with composeLooks, so looks never change a rule. The clearings stay plain grass, which
-//   the kit and the starting-crop guarantee need.
+//   THICKET) with composeLooks, so looks never change a rule. Revision 5: one look per rule group per
+//   season, with no noise-dealt second looks and no lush/dry grass bands; grass is plain GRASS all
+//   over, since the looks are drawn before the kit and the starting-crop guarantee, which need the
+//   clearings as exact GRASS.
 namespace
 {
 
@@ -146,21 +148,17 @@ constexpr int kHammockTries = 12; // candidate draws per hammock wanted
 constexpr double kMossHomeClear = 1.0;
 constexpr float kMossWet = 0.30f;
 
-// The seasons, looks only.
+// The seasons, looks only: one look per rule group, the whole map over (grass stays plain GRASS in
+// both, so the clearings, which the kit and the starting-crop guarantee need as exact GRASS, never
+// show as lawns).
 struct Season
 {
 	const char *name;
-	// Grass: lush where the wetness passes `lush` (or near the water), dry where it is under `dry`.
-	float lush, dry;
-	// The dry season's moss shows peat (loam) in patches away from the water. A moss/loam tile plays
-	// as moss (one rule group), but the terrain dump records it as mixed and the growth tool scores it
-	// as nothing, so food is measured with the season pinned wet (the rules are the same; contract).
-	TerrainType deep, bank, mud, mudSecond, moss, mossSecond;
-	int peatShare; // of 65536
+	TerrainType deep, sand, mud, moss;
 };
 constexpr std::array<Season, 2> kSeasons{{
-	{"wet", 0.15f, 0.04f, DARK_WATER, SAND, MUD, MUDFLAT, MOSS, MOSS, 0},
-	{"dry", 0.28f, 0.20f, DARK_WATER, PALE_SAND, MUDFLAT, HARDPAN, MOSS, LOAM, 22000},
+	{"wet", DARK_WATER, SAND, MUD, MOSS},
+	{"dry", DARK_WATER, PALE_SAND, HARDPAN, LOAM},
 }};
 
 struct Geometry
@@ -705,63 +703,25 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 }
 
 // The looks over the mechanic sketch (composeLooks keeps each inside its rule group), by season:
-// sawgrass lush where it is wet and tawny where it is dry, wet or dried mud on the banks, pale sand
-// in the dry season, moss or peat, the sloughs' dark beds. The clearings and the ground just round
-// them stay plain grass.
-TerrainSketch lookSketch(const Layout &L, int seasonIndex, GenerationContext &context)
+// one look per rule group (wet or dried mud on the banks, plain or pale sand, moss or peat, the
+// sloughs' dark beds). Grass keeps its mechanic, plain GRASS, everywhere.
+TerrainSketch lookSketch(const Layout &L, int seasonIndex)
 {
-	const Torus &t = L.t;
-	const int n = t.size();
+	const int n = L.t.size();
 	const Season &season = kSeasons[size_t(seasonIndex)];
-	std::vector<unsigned char> wetVertex(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		wetVertex[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
-	const std::vector<int> fromWet = stepsFrom(t, wetVertex);
-	const std::vector<int> fray = fractalNoise(t.w, t.h, 8, 2, context.stream("glades-looks"));
-	const std::vector<int> split = fractalNoise(t.w, t.h, 20, 2, context.stream("glades-looks"));
-	// The ground within the levee clearance of a clearing keeps plain grass.
-	std::vector<unsigned char> plain(size_t(n), 0);
-	for (int k = 0; k < L.g.teams; ++k)
-	{
-		const Home &h = L.homes[k];
-		const double r = h.outline.maximumRadius() + kLeveeWidth + L.g.clearance + 1;
-		const int box = int(std::ceil(r)) + 1;
-		for (int dy = -box; dy <= box; ++dy)
-			for (int dx = -box; dx <= box; ++dx)
-				if (dx * dx + dy * dy <= r * r)
-					plain[t.at(h.x + dx, h.y + dy)] = 1;
-	}
 	TerrainSketch looks(size_t(n), 0);
-	int lush = 0, dry = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		// The wetness, shifted by fine noise so the looks' edges fray rather than follow contours.
-		const float w = L.wetness[i] + (fray[i] - 32768) / 65536.0f * 0.25f;
 		switch (L.terrain[i])
 		{
-		case GRASS:
-			if (plain[i])
-				break;
-			if (w >= season.lush || (fromWet[i] >= 0 && fromWet[i] <= 2 && w >= season.dry))
-			{
-				looks[i] = LUSH_GRASS;
-				++lush;
-			}
-			else if (w < season.dry)
-			{
-				looks[i] = DRY_GRASS;
-				++dry;
-			}
-			break;
 		case MOSS:
-			looks[i] = fromWet[i] >= 3 && split[i] < season.peatShare ? season.mossSecond : season.moss;
+			looks[i] = season.moss;
 			break;
 		case MUDFLAT:
-			looks[i] = split[i] < 40000 ? season.mud : season.mudSecond;
+			looks[i] = season.mud;
 			break;
 		case SAND:
-			if (!L.sand[i] && split[i] > 30000)
-				looks[i] = season.bank;
+			looks[i] = season.sand;
 			break;
 		case DEEP_WATER:
 			looks[i] = season.deep;
@@ -770,8 +730,6 @@ TerrainSketch lookSketch(const Layout &L, int seasonIndex, GenerationContext &co
 			break;
 		}
 	}
-	context.telemetry.measure("everglades.looks.lush-grass", lush);
-	context.telemetry.measure("everglades.looks.dry-grass", dry);
 	return looks;
 }
 
@@ -938,7 +896,7 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 
 	context.stage = "glades terrain";
 	const int seasonIndex = seasonOf(o);
-	writeVertices(map, composeLooks(L.terrain, lookSketch(L, seasonIndex, context)));
+	writeVertices(map, composeLooks(L.terrain, lookSketch(L, seasonIndex)));
 	context.telemetry.choice("everglades.season", kSeasons[size_t(seasonIndex)].name);
 	context.telemetry.measure("everglades.deep.vertices", L.deepVertices);
 	context.telemetry.measure("everglades.mudflat.vertices", L.mudVertices);
@@ -1062,7 +1020,7 @@ std::string validateWorld(const GenerationWorld &game, const GenerationContext &
 	// and looks, except where openRoutes forded water with boardwalk.
 	{
 		const EvergladesOptions o(context.request);
-		const TerrainSketch drawn = composeLooks(L.terrain, lookSketch(L, seasonOf(o), replay));
+		const TerrainSketch drawn = composeLooks(L.terrain, lookSketch(L, seasonOf(o)));
 		for (int i = 0; i < n; ++i)
 		{
 			const int x = t.remainderX(i), y = i / t.w;
@@ -1094,7 +1052,7 @@ GeneratorDefinition evergladesDefinition()
 		"everglades",
 		19,
 		"Everglades",
-		4,
+		5, // 5: one look per role
 		false,
 		// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
 		// into sloughs; the clearings' radius in tiles; the levee is the share of each clearing's
@@ -1117,7 +1075,7 @@ GeneratorDefinition evergladesDefinition()
 		 // Thicket hammocks (tree islands, impassable) per 128x128 tiles of map.
 		 GeneratorControl{"hammocks", "Hammocks", 0, 8, 1, 3, ControlGroup::Terrain}
 			 .withSearchRange(1, 5),
-		 // Looks only: lush sawgrass and wet mud, or tawny sawgrass, dried mud and peat.
+		 // Looks only: wet mud and moss, or dried mud, pale sand and peat.
 		 GeneratorControl::choice("season", "Season", {"Random", "Wet", "Dry"}, 0,
 								  ControlGroup::Terrain)
 			 .withSearchValues({1, 2}),

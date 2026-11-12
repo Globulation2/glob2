@@ -152,14 +152,13 @@ constexpr int kDoorClearance = 6;
 // THE GROUND (revision 5). The plaza is paved from this far beyond its pond out to its shore: a
 // promenade round the orchard where the spokes come in. Every home has two quarry faces of this
 // many stone at the foot of its walls, away from the siege line (furnish): the walls were the
-// colonies' stone when they were built of it. Open sea this many vertices from land is deep.
+// colonies' stone when they were built of it. The sea is one plain water: no deep water.
 constexpr double kPromenadeIn = 9;
 // A home's paved square reaches this far round its swarm, and its walls keep a grass verge this many
 // vertices wide, where its quarry faces stand (barren ground holds no stone).
 constexpr double kCore = 7;
 constexpr int kVerge = 4;
 constexpr int kQuarryFace = 12;
-constexpr int kDeepFrom = 5;
 // Every starting tower also has a face of this much stone at the foot of its wall, seeded within this
 // many tiles of it (plantTowerStone): the faces above stand away from the siege line, and a tower
 // whose carriers walk a dozen steps or more for every stone keeps the colony's workers hauling.
@@ -754,10 +753,9 @@ TerrainSketch sketchTerrain(const Layout &L)
 		dressFarmSand(terrain, farm);
 	paveTiles(terrain, t, lane, none, paved);
 	paveTiles(terrain, t, promenade, none, paved);
-	// The road down every lane is rough ground: nothing can be built in a lane, as the siege needs.
-	for (int i = 0; i < n; ++i)
-		if (L.road[i] && terrain[i] != WATER && terrain[i] != LAVA)
-			terrain[i] = MUD;
+	// A lane is paved from wall to wall: one road, no rough strip down its middle (revisions 5-8 laid
+	// rough ground along every lane's road so nothing could be built in it; the maintainer preferred
+	// plain road, 2026-11-11).
 	// A wall is the siege's when any of it is near a lane: every tile of it within the court wall's
 	// thickness of a lane or court is rock, so no layer of cliff stops a tower's shot across it.
 	std::vector<unsigned char> ridge(n, 0), cliff(n, 0);
@@ -774,10 +772,24 @@ TerrainSketch sketchTerrain(const Layout &L)
 	for (int i = 0; i < n; ++i)
 		if (terrain[i] != WATER && (cliffs[i] || ridges[i]))
 			terrain[i] = ridges[i] ? RIDGE_ROCK : CLIFFS;
-	// Every siege wall at least three vertices thick, so its rock draws peaks; never into a lane
-	// or a farm.
+	// Every wall at least three vertices thick, so its look draws rock on whole tiles all along it: a
+	// wall two vertices across, above all a diagonal one, draws as bare ground and looks passable.
+	// Never into a lane or the plaza; a wall may take the edge of a farm beside it (its grass, its
+	// barren cap ring and its crossings, never its water rows), which is all the room a siege wall
+	// between a lane and a farm, or a border between two colonies' farms, has to grow into; and the
+	// lagoon and the open sea, which only widens a coast.
+	const auto canThicken = [&](int i)
+	{
+		const bool sea = terrain[i] == WATER && !L.pond[i];
+		return (terrain[i] == GRASS || terrain[i] == DIRT || sea) && !cornerOf(t, open, i);
+	};
 	thickenRidges(terrain, t,
-				  [&](int i) { return terrain[i] == GRASS && L.farmOf[i] < 0 && !cornerOf(t, lane, i); });
+				  [&](int i)
+				  {
+					  return canThicken(i) ||
+							 (terrain[i] == TRAIL && L.farmOf[i] >= 0 && !cornerOf(t, open, i));
+				  });
+	thickenRidges(terrain, t, canThicken, nullptr, CLIFFS);
 	cliffCoast(
 		terrain, t,
 		[&](int i) { return L.land[i] && !L.pond[i] && terrain[i] != WATER && !cornerOf(t, lane, i); },
@@ -786,15 +798,19 @@ TerrainSketch sketchTerrain(const Layout &L)
 	// and a grass verge at the foot of its walls where its quarry stands.
 	barrenBase(
 		terrain, t, [&](int i) { return L.homeOf[i] >= 0 && !L.wall[i]; }, nullptr, kVerge);
+	// The paved square keeps off that verge too: with the walls thickened it can reach one on a small
+	// map, and a tower's stone needs grass at the wall's foot.
+	std::vector<unsigned char> rock(n, 0);
+	for (int i = 0; i < n; ++i)
+		rock[i] = terrain[i] == CLIFFS || terrain[i] == RIDGE_ROCK;
+	const std::vector<int> fromRock = stepsFrom(t, rock);
 	for (int k = 0; k < L.g.teams; ++k)
 	{
 		const MapGeneratorPoint swarm = homeSwarmSite(L.homes[k], L.axis[k], L.g.homeR);
-		paveCore(terrain, t, swarm.x + 2, swarm.y + 2, kCore, [&](int i) { return L.homeOf[i] == k; });
+		paveCore(terrain, t, swarm.x + 2, swarm.y + 2, kCore,
+				 [&](int i) { return L.homeOf[i] == k && (fromRock[i] < 0 || fromRock[i] > kVerge); });
 	}
-	const std::vector<unsigned char> deep =
-		deepSea(terrain, t, [&](int i) { return !L.land[i]; }, kDeepFrom);
 	LookRoles roles;
-	roles.deep = [&](int i) { return deep[i] != 0; };
 	roles.tended = [&](int i) { return L.homeOf[i] >= 0; };
 	roles.farm = [&](int i) { return L.farmOf[i] >= 0; };
 	roles.path = [&](int i) { return L.plaza[i] ? PathLook::Town : PathLook::Street; };
@@ -1227,7 +1243,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		8, // 8: grass meeting water is a shore, so crops start one tile in
+		9, // 9: walls thickened to draw solid rock, lanes plain road, plain water
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

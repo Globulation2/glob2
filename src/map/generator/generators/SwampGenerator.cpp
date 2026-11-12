@@ -83,16 +83,17 @@ using namespace MapGeneration;
 //   if it saves at least kCauseSave steps, is boardwalk (Paths: twice as fast, buildable, holds
 //   nothing). Both ends must already be walkable from the swarm: a causeway shortens a detour, it
 //   never joins ground that was apart. Rare by construction; each one's saving is in telemetry.
-// - A climate, looks only (Temperate bog, Tropical mangrove): the deep water, mud, moss and thicket
-//   artwork, the beaches, and how much grass is lush (low ground) or tussocky and dry (hummocks).
-//   Every swarm keeps kHomePlain tiles of plain grass round it.
+// - A climate, looks only (Temperate bog, Tropical mangrove): one look per rule group, map-wide, for
+//   the grass, the sand, the deep water, mud, moss and thicket. Revision 7 dropped the second beach
+//   sand, the lush/dry grass bands by relief and the plain-grass gardens round the swarms: the pass
+//   runs after placeStarts, the starting-crop top-up and openStartsBuriedByResources, and paints
+//   looks over a mechanic sketch, so a home's grass can take the climate's look like the rest.
 namespace
 {
 // Streams of their own, so every draw revision 5 made is the draw it made.
 constexpr const char *kHammockStream = "swamp-hammocks";
 constexpr const char *kMudStream = "swamp-mud";
 constexpr const char *kMossStream = "swamp-moss";
-constexpr const char *kLookStream = "swamp-looks";
 constexpr const char *kClimateStream = "swamp-climate";
 // Deep water: water vertices at least kDeepReach tiles from land in a straight line (eight-connected
 // steps drew every core as a rectangle), opened by kDeepOpen and kept only in bodies of kDeepLeast
@@ -116,31 +117,22 @@ constexpr int kHammockShore = 3, kHammockHome = 20, kHammockSpacing = 16, kHammo
 // Causeways: from ground within kCauseNear walking steps of a swarm, straight across at most
 // kCauseSpan water tiles, saving at least kCauseSave steps; causeways kCauseApart tiles apart.
 constexpr int kCauseNear = 40, kCauseSpan = 6, kCauseSave = 30, kCauseApart = 16;
-// Every swarm keeps plain grass within this radius of its centre, frayed out by up to kHomeFray
-// tiles so the garden never reads as a square or a round lawn.
-constexpr double kHomePlain = 11, kHomeFray = 5;
 // Deep water keeps this far from algae, so an algae bed is a rounded shoal in the dark water.
 constexpr double kDeepAlgae = 2.5;
-// No dry-grass look within this many tiles of a swarm's footprint (straight-line from its middle, two
-// tiles more, frayed by up to kDryFray either way).
-constexpr int kDryHome = 18;
-constexpr double kDryFray = 3;
 // What validateWorld checks, from every colony's workers (who stand a few tiles from the swarm's
 // footprint): no Rough within kRoughCheck, no Fertile within kFertileCheck, no Obstacles within
 // kHomeCheck.
 constexpr int kRoughCheck = 6, kFertileCheck = 6, kHomeCheck = 12;
 
-// The look-only climates: artwork per mechanic, and the land quantiles below which grass is lush
-// and above which it is dry.
+// The look-only climates: one artwork per mechanic.
 struct Climate
 {
 	const char *name;
-	TerrainType deep, mud, fertile, thicket, beach, beachSecond;
-	double lush, dry;
+	TerrainType grass, sand, deep, mud, fertile, thicket;
 };
 constexpr Climate kClimates[2] = {
-	{"temperate", DARK_WATER, MUD, MOSS, THICKET, PALE_SAND, SAND, 0.32, 0.93},
-	{"tropical", DEEP_WATER, MUDFLAT, LOAM, HEDGE, SAND, PALE_SAND, 0.60, 0.97}};
+	{"temperate", GRASS, PALE_SAND, DARK_WATER, MUD, MOSS, THICKET},
+	{"tropical", LUSH_GRASS, SAND, DEEP_WATER, MUDFLAT, LOAM, HEDGE}};
 
 // Keeps only the tiles of `mask` that lie in some 2x2 block of it, so every kept tile has a rock vertex.
 std::vector<unsigned char> blocksOfTwo(const Torus &t, const std::vector<unsigned char> &mask)
@@ -511,55 +503,22 @@ std::vector<Causeway> planCauseways(const GenerationMap &map, const Torus &t, Ge
 // How many vertices each layer took.
 struct LayerCounts
 {
-	int deep = 0, mud = 0, moss = 0, thicket = 0, boardwalk = 0, lush = 0, dry = 0, paleBeach = 0;
+	int deep = 0, mud = 0, moss = 0, thicket = 0, boardwalk = 0;
 };
 
-TerrainSketch lookSketch(const TerrainSketch &mech, const Torus &t, const Climate &climate, const Relief &relief,
-						 GenerationContext &context, LayerCounts &counts)
+TerrainSketch lookSketch(const TerrainSketch &mech, const Climate &climate)
 {
-	const int n = t.size();
-	const std::vector<int> fromWet = stepsFromWet(t, mech);
-	std::mt19937 &random = context.stream(kLookStream);
-	const std::vector<int> fray = periodicNoise(t.w, t.h, 9, random);
-	const std::vector<int> split = fractalNoise(t.w, t.h, 16, 3, random);
-	const int teams = context.request.nbTeams;
-	const std::vector<int> bootX(context.bootX.begin(), context.bootX.begin() + teams),
-		bootY(context.bootY.begin(), context.bootY.begin() + teams);
-	// Dry tussock renders as bare brown ground, which beside a swarm reads as a scar, not a hummock. The
-	// clearing is a frayed disc: a square one (eight-connected steps from the footprint) cut the dry
-	// patches near a home into triangles with ruler-straight edges.
-	const std::vector<unsigned char> noDry = homeGardens(t, bootX, bootY, teams, kDryHome + 2, fray, kDryFray);
-	const std::vector<unsigned char> plain = homeGardens(t, bootX, bootY, teams, kHomePlain, split, kHomeFray);
-	// The fray moves each quantile by up to this much either way, so lush and dry ground have
-	// ragged edges rather than the field's contour lines.
-	constexpr double kFray = 0.15;
-	TerrainSketch looks(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
+	TerrainSketch looks(mech.size(), 0);
+	for (size_t i = 0; i < mech.size(); ++i)
 	{
 		generationCheckpoint();
-		const double shift = kFray * (fray[i] - 32768) / 32768.0;
 		switch (mech[i])
 		{
 		case GRASS:
-			if (plain[i])
-				break;
-			if (relief.at[i] < relief.quantile(climate.lush + shift))
-			{
-				looks[i] = LUSH_GRASS;
-				++counts.lush;
-			}
-			else if (!noDry[i] && relief.at[i] > relief.quantile(climate.dry + shift))
-			{
-				looks[i] = DRY_GRASS;
-				++counts.dry;
-			}
+			looks[i] = climate.grass;
 			break;
 		case SAND:
-			if (fromWet[i] <= 2 && !plain[i])
-			{
-				looks[i] = split[i] > int(0.6 * 65536) ? climate.beachSecond : climate.beach;
-				counts.paleBeach += looks[i] == PALE_SAND;
-			}
+			looks[i] = climate.sand;
 			break;
 		case DEEP_WATER:
 			looks[i] = climate.deep;
@@ -708,7 +667,7 @@ void bogPass(GenerationWorld &game, GenerationContext &context, const SwampOptio
 	const int climateIndex =
 		o.climate > 0 ? std::clamp(o.climate, 1, 2) - 1 : int(context.bounded(kClimateStream, 2));
 	const Climate &climate = kClimates[climateIndex];
-	writeVertices(map, composeLooks(mech, lookSketch(mech, t, climate, relief, context, counts)));
+	writeVertices(map, composeLooks(mech, lookSketch(mech, climate)));
 
 	context.telemetry.choice("swamp.climate", climate.name);
 	context.telemetry.choice("swamp.deep-water", o.deepWater ? "on" : "off");
@@ -729,9 +688,6 @@ void bogPass(GenerationWorld &game, GenerationContext &context, const SwampOptio
 		context.telemetry.measure("swamp.causeways.planned-saving", c.saving, c.team);
 		context.telemetry.measure("swamp.causeways.mean-saving-hundredths", c.measured, c.team);
 	}
-	context.telemetry.measure("swamp.looks.lush-vertices", counts.lush);
-	context.telemetry.measure("swamp.looks.dry-vertices", counts.dry);
-	context.telemetry.measure("swamp.looks.pale-beach-vertices", counts.paleBeach);
 	if (context.telemetry.enabled())
 	{
 		// How far each colony walks to the nearest stone (-1 when none can be reached).
@@ -892,8 +848,8 @@ GeneratorDefinition swampDefinition()
 		GeneratorControl{"hammocks", "Hammocks", 0, 8, 1, 3, ControlGroup::Layout}.withSearchRange(1, 5),
 		// On, a colony whose walk round a neck of water near home is long gets a boardwalk across it.
 		GeneratorControl::toggle("causeways", "Causeways", true, ControlGroup::Layout).withSearchValues({0, 1}),
-		// Looks only: Temperate (a bog: black water, mud, moss, dry tussocks) or Tropical (a
-		// mangrove swamp: blue water, mudflats, dark canopy, lush grass). Both play alike.
+		// Looks only: Temperate (a bog: black water, pale sand, mud, moss) or Tropical (a mangrove
+		// swamp: blue water, mudflats, dark canopy, lush grass). Both play alike.
 		GeneratorControl::choice("climate", "Climate", {"Random", "Temperate", "Tropical"}, 0, ControlGroup::Terrain)
 			.withSearchValues({1, 2})};
 	for (auto &c : heightFieldResourceControls())
@@ -908,7 +864,7 @@ GeneratorDefinition swampDefinition()
 			"swamp",
 			1,
 			"Swamp",
-			6,
+			7, // 7: one look per role
 			false,
 			std::move(controls),
 			generate,

@@ -27,7 +27,8 @@ in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 statistics. The original legacy artwork remains available as style references;
 new terrain frames use their own `terrain-` prefixes and do not overwrite it.
 Use an isolated environment with the pinned asset-tool dependencies, including
-NumPy and SciPy for exact indexed full-block Worley fields. Pillow's resampling kernels are a determinism
+NumPy, which the field library, the recipes and the decor compute with, and SciPy for exact indexed
+full-block Worley fields. Pillow's resampling kernels are a determinism
 input:
 
 ```sh
@@ -66,7 +67,20 @@ periodic value noise (a random lattice tiled 3×3 and resized bicubically, so th
 field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
 F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Named
 geometry and animation random streams use deterministic `fnv1a32` seeds derived
-from the material, layout and phase. Each layout renders a continuous field whose boundary geometry is
+from the material, layout and phase.
+
+The field library in `tools/artwork/terrain_core.py` computes with NumPy. A field
+is a flat list or a flat array, and an RGB triple three lists or one `(3, n)`
+array: each helper returns arrays when it is given any and lists otherwise, and
+the generators (`fbm`, `lattice_noise`, `block_worley`, `flat` and the like) return
+arrays when called with `array=True`. Every recipe is written over arrays, so a
+block layout renders in a few seconds; write new ones the same way, since a recipe
+over lists pays for each per-pixel call to a helper. Per-object work (stones, shrubs, leaves) stays a loop over the
+objects with each object's box done as one array operation. Both forms repeat the
+same arithmetic in the same order (sums in order, `math.hypot` and Python's float
+power where NumPy rounds differently), so moving a recipe from lists to arrays,
+without changing what it draws, leaves its frames byte-identical: compare a
+layout's raw fields before and after to confirm it. Each layout renders a continuous field whose boundary geometry is
 shared with the other layouts; its interior uses a separate seed. Existing tiles
 are never read into an output; the original grass, sand, trail, ice and water
 tiles are measured (luma mean and spread, wrapped neighbour grain, saturation)
@@ -290,12 +304,14 @@ A material opts in with a `decor` block:
   so a cell where cliffs hold more corners than the obstacles draws only the
   cliff edge; otherwise a stray rock would stand on the plateau.
 - Stone pillars and the Outcrops looks go further and keep clear of open-ground
-  masses (`"clear_of_masses"`, 0 or 1, object decor only; every built-in object
-  decor sets 1, so the corner-count rule above now matters only for custom
-  object decor). A cell draws none of that decor when a mass vertex lies
-  within that many vertices of its corners (0: its own corners), so spires and
-  pillars never crowd a cliff's rim, walls or terraces. One vertex is the
-  terrain a cell's fog check already covers. The cells still play as obstacles;
+  masses (`"clear_of_masses"`, 0 or 1, object decor only). A cell draws none of
+  that decor when a mass vertex lies within that many vertices of its corners
+  (0: its own corners), so spires and pillars never stand on a cliff's rim,
+  walls or terraces. Every built-in object decor sets 0: at 1 (until
+  2026-11-11) every cell within about two tiles of a mass stayed bare, a strip
+  of flat rock between the cliff and the spires; at 0 the spires run up to
+  the cliff's foot. One vertex is the terrain a cell's fog check already
+  covers. The cells still play as obstacles;
   they show only their ground, and the mass's rim draws in the cells it touches.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. Within one layer, mixed materials draw just one
@@ -382,7 +398,10 @@ lichen stains, loose rocks and a few jointed fractures, under broad light that
 rises toward the rims facing the light. Each south face is the plateau's own
 stone, stretched down the drop and put in shade: broad facets each turned their
 own way to the light, faint broken bedding, darkest at the foot, over a dark
-contact strip and a long shadow. The lip is lit in broken stretches; rims facing
+contact strip and a soft shadow. Every layer of a mass's contact shadow stays
+within the footprint a frame can see (its cell and a 22-pixel halo), so it never
+stops square at a cell edge beside a rim; where a cell's bottom corners are open
+ground the shadow runs on into the frame's rows below the cell. The lip is lit in broken stretches; rims facing
 away from the light fall dark. The plateau has no discrete objects that could
 repeat. Each vertex colour owns a patch of noise fields (relief, tone and grain)
 that a cell blends with variance-preserving bilinear weights, so along a shared
@@ -393,7 +412,10 @@ by the frames that share it. Its ground material is talus: the chips and cobbles
 of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
-follows the crags rather than the cell grid. Cliffs draw in their own decor
+follows the crags rather than the cell grid. Each frame's wall rises the full
+twenty native pixels, into the frame above its cell where it must: at a convex
+south corner the rim curves in under the next row, and that row's wall, not its
+top, covers the strip of the cell above. Cliffs draw in their own decor
 layer, so against hedge, thicket or crags they keep their walls; hedge and
 thicket keep their own edge, while crags keep clear of the rim.
 
@@ -434,7 +456,8 @@ in view.
 
 The masses beside cliffs and glacier share one renderer (`render_mass`): each
 names a surface (`tools/artwork/terrain_masses.py`, numpy) giving its lit top,
-outline heights and wall marks over the cell and halo, a wall colour by height,
+outline heights and wall marks over the cell and halo, a wall colour by height
+(a function over arrays, as cliff and mass walls and lighting are built),
 its rise and its rim and shadow colours. Surfaces are built only from parts
 neighbouring frames share: per-vertex-colour noise patches with variance-preserving
 bilinear weights, an interior patch that vanishes at the cell edge, features

@@ -1734,8 +1734,16 @@ OpenGL није доступан у овој верзији.
 Разуђеност обале
 [Fjord width]
 Ширина фјорда
-[Lake connects to fjords]
-Језеро повезано са фјордовима
+[Ice sheet size]
+Величина ледене капе
+[Fjord landings]
+Пристаништа у фјордовима
+[Fjord continents need at least one colony.]
+Континенту фјордова потребна је бар једна колонија.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Континенту фјордова потребна је мапа чија је краћа страна бар 128 поља.
+[Ice reach]
+Домет леда
 [Resource islands]
 Острва са сировинама
 [Watershed]
@@ -1980,8 +1988,8 @@ OpenGL није доступан у овој верзији.
 Благо у ћорсокацима
 [Fjord bank deposits]
 Налазишта на обалама фјордова
-[Sandy lake shore]
-Пешчана обала језера
+[Nunatak orchards]
+Воћњаци на нунатацима
 [River delta]
 Делта реке
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ OpenGL није доступан у овој верзији.
 Ширина канала
 [Extra bridges]
 Додатни мостови
+[Grand canal]
+Велики канал
 [Polder]
 Полдер
 [Old town]

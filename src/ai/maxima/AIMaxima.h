@@ -270,6 +270,8 @@ private:
 		int preemptive_effective_zone_max;
 		int target_switch_margin;
 		int preemptive_recompute_ticks;
+		// Least ticks between recomputes triggered by building changes alone.
+		int preemptive_min_gap_ticks=0;
 		int preemptive_inner_distance;
 		int preemptive_band_width;
 		int preemptive_path_slack;
@@ -869,6 +871,12 @@ private:
 	struct FarmTerrainInputs;
 	/// Read-only query shared by placement, clearing and farming.
 	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime) const;
+	/// The reserve chosen by the latest farming update, or a fresh selection
+	/// before the first one. Placement and clearing read it between farming
+	/// updates rather than rebuilding the wheat plan and worker reachability.
+	WoodReserve current_wood_reserve(AIMaximaRuntime::Context& runtime) const;
+	WoodReserve farming_wood_reserve=WoodReserve(0);
+	bool farming_wood_reserve_valid=false;
 	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime,
 		const std::vector<Uint8>& protectedWheat, const FarmTerrainInputs& terrain) const;
 	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& runtime,
@@ -901,6 +909,10 @@ private:
 	///them. Pending work is serialized to retain exact order timing.
 	bool land_clearing_pending;
 	bool maintenance_clearing_pending;
+	// A farming update requested the pending plan: it runs without waiting for
+	// scheduling.maintenance_clearing_min_gap_ticks after last_maintenance_clearing_tick.
+	bool maintenance_clearing_requested_by_farming=false;
+	int last_maintenance_clearing_tick=-1000000;
 	bool development_cycle_pending;
 	bool preemptive_defense_pending;
 	bool reactive_defense_pending;

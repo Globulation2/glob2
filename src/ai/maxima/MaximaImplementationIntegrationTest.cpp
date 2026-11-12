@@ -858,6 +858,9 @@ static void strategyQueueRegression()
     ai.strategy.scheduling.explorer_attack_phase_offset_ticks=5000;
     ai.strategy.scheduling.defense_interval_ticks=10000;
     ai.strategy.scheduling.defense_phase_offset_ticks=5000;
+    // The queue order below reviews dirty plans at once; the spacing of
+    // event-triggered reviews is checked at the end.
+    ai.strategy.scheduling.strategy_review_min_gap_ticks=0;
     ai.last_farming_tick=62;
     ai.land_clearing_pending=true;
     ai.maintenance_clearing_pending=true;
@@ -900,6 +903,37 @@ static void strategyQueueRegression()
     REQUIRE(ai.preemptive_defense_pending);
     REQUIRE(ai.reactive_defense_pending);
     REQUIRE(ai.development_cycle_pending);
+    // A building event marks the plan dirty, but its review waits for the
+    // minimum gap after the last review while the periodic review keeps its slot.
+    ai.strategy.scheduling.strategy_review_min_gap_ticks=4;
+    const int reviewed=ai.snapshot.tick;
+    ai.director.invalidate();
+    while(ai.timer<reviewed+3)
+    {
+        ai.tick(c);
+        if(ai.timer%64!=0)REQUIRE(ai.snapshot.tick==reviewed);
+    }
+    REQUIRE(ai.director.dirty);
+    ai.tick(c);
+    REQUIRE(ai.snapshot.tick==reviewed+4);
+    REQUIRE_FALSE(ai.director.dirty);
+
+    // A reservation change re-plans maintenance clearing no sooner than the gap
+    // after the last plan; a farming update's request runs at the next free slot.
+    ai.strategy.scheduling.strategy_interval_ticks=100000;
+    ai.strategy.scheduling.maintenance_clearing_min_gap_ticks=6;
+    ai.land_clearing_pending=false;
+    ai.last_maintenance_clearing_tick=ai.timer;
+    ai.maintenance_clearing_pending=true;ai.maintenance_clearing_requested_by_farming=false;
+    const int planned=ai.last_maintenance_clearing_tick;
+    while(ai.timer<planned+5){ai.tick(c);REQUIRE(ai.maintenance_clearing_pending);}
+    ai.tick(c);
+    REQUIRE_FALSE(ai.maintenance_clearing_pending);
+    REQUIRE(ai.last_maintenance_clearing_tick==planned+6);
+    ai.maintenance_clearing_pending=true;ai.maintenance_clearing_requested_by_farming=true;
+    ai.tick(c);
+    REQUIRE_FALSE(ai.maintenance_clearing_pending);
+    REQUIRE(ai.last_maintenance_clearing_tick==planned+7);
 }
 
 // Current execution state round-trips; retired Maxima layouts are rejected

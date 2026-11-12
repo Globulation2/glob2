@@ -18,13 +18,9 @@ class Map;
 #include "sim/snapshot/Requirements.h"
 #include "Utilities.h"
 #include "OwnerRandom.h"
-#include "SGSL.h"
 #include <string>
 #include "MapHeader.h"
 #include "GameHeader.h"
-#include "GameObjectives.h"
-#include "GameHints.h"
-#include "MapScript.h"
 #include "AreaEffects.h"
 #include "BuildingType.h"
 #include "sim/ClientEvents.h"
@@ -157,6 +153,12 @@ struct DeferredGameSHA1
 	void apply(std::string& contents) const;
 	void apply(GAGCore::ChunkedBuffer& contents) const;
 };
+
+// Held by pointer so that files using Game do not compile the scripting runtimes.
+class GameHints;
+class GameObjectives;
+class MapScript;
+class MapScriptSGSL;
 
 class Game : public SimServices
 {
@@ -320,8 +322,10 @@ public:
 	void scriptSyncStep();
 	// JavaScript is the selected scenario runtime. Preserve the serialized SGSL
 	// payload, but leave its execution and presentation dormant in this mode.
-	bool legacyScriptActive() const { return mapscript.getMapScriptMode() != MapScript::JavaScript; }
-	int legacyScriptTimer() const { return legacyScriptActive() ? sgslScript.getMainTimer() : 0; }
+	// Defined inline in GameScripting.h. Every caller must include it: without the
+	// definition GCC only warns at -O0, and optimized builds fail to link.
+	inline bool legacyScriptActive() const;
+	inline int legacyScriptTimer() const;
 
 	/// Updates total prestige stats
 	void prestigeSyncStep();
@@ -471,11 +475,17 @@ public:
 	/// is the same object, bound once at construction.
 	std::unique_ptr<Map> mapOwner;
 	Map& map;
-	MapScriptSGSL sgslScript; ///< SGSL script
+	/// The scripting state is owned through pointers so that Game.h need not
+	/// include the script runtimes; each reference is bound once at construction.
+	std::unique_ptr<MapScriptSGSL> sgslScriptOwner;
+	MapScriptSGSL& sgslScript; ///< SGSL script
 	ScriptClientChannel scriptClient; ///< stable simulation-owned script endpoint
-	MapScript mapscript; ///< new script, currently USL
-	GameObjectives objectives;
-	GameHints gameHints;
+	std::unique_ptr<MapScript> mapscriptOwner;
+	MapScript& mapscript; ///< new script, currently USL
+	std::unique_ptr<GameObjectives> objectivesOwner;
+	GameObjectives& objectives;
+	std::unique_ptr<GameHints> gameHintsOwner;
+	GameHints& gameHints;
 	std::string missionBriefing;
 	///The front-end that owns this game, or null. Simulation code must not use
 	///it; it remains for the torus renderer and GUI-side helpers (see

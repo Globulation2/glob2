@@ -79,6 +79,12 @@ examples must use the same public order/capability interfaces as the controller.
 
 ## Assess effectiveness
 
+For a quick look while tuning Maxima, `python3 tools/maxima_watch.py` rebuilds
+the perf client, plays a seeded Maxima match headless, prints a scoreboard and
+opens the game in the replay viewer; `--seeds 1-8` prints a batch instead and
+`--param KEY=VALUE` passes strategy overrides. It is a viewing aid, not an
+assessment.
+
 Use [the tournament framework](../tools/tournaments.md) for custom assessments as
 well as standard comparisons. Its CLI and planners default to 95% probability
 victory, and cap adjudication uses final win probability. Every game records the

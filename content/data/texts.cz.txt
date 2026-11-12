@@ -1734,8 +1734,16 @@ Velikost kontinentu
 Členitost pobřeží
 [Fjord width]
 Šířka fjordu
-[Lake connects to fjords]
-Jezero spojené s fjordy
+[Ice sheet size]
+Velikost ledovcového štítu
+[Fjord landings]
+Přístaviště ve fjordech
+[Fjord continents need at least one colony.]
+Kontinent fjordů potřebuje alespoň jednu kolonii.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Kontinent fjordů potřebuje mapu s kratší stranou alespoň 128 polí.
+[Ice reach]
+Dosah ledu
 [Resource islands]
 Surovinové ostrovy
 [Watershed]
@@ -1980,8 +1988,8 @@ Písečné cesty
 Poklady ve slepých uličkách
 [Fjord bank deposits]
 Ložiska na březích fjordů
-[Sandy lake shore]
-Písečný břeh jezera
+[Nunatak orchards]
+Sady na nunatacích
 [River delta]
 Říční delta
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Velikost bloku
 Šířka kanálů
 [Extra bridges]
 Další mosty
+[Grand canal]
+Velký kanál
 [Polder]
 Poldr
 [Old town]

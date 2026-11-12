@@ -1698,8 +1698,16 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความ​ขรุขระ​ของ​ชายฝั่ง
 [Fjord width]
 ความ​กว้าง​ฟยอร์ด
-[Lake connects to fjords]
-ทะเลสาบ​เชื่อม​กับ​ฟยอร์ด
+[Ice sheet size]
+ขนาดแผ่นน้ำแข็ง
+[Fjord landings]
+จุดขึ้นฝั่งในฟยอร์ด
+[Fjord continents need at least one colony.]
+ทวีปฟยอร์ดต้องมีอาณานิคมอย่างน้อยหนึ่งแห่ง
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+ทวีปฟยอร์ดต้องใช้แผนที่ที่ด้านสั้นยาวอย่างน้อย 128 ช่อง
+[Ice reach]
+ระยะของน้ำแข็ง
 [Resource islands]
 เกาะ​ทรัพยากร
 [Watershed]
@@ -1948,8 +1956,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 สมบัติ​ซ่อน​อยู่​ใน​ทางตัน
 [Fjord bank deposits]
 แหล่ง​ทรัพยากร​ริมฝั่ง​ฟยอร์ด
-[Sandy lake shore]
-ชายฝั่ง​ทะเลสาบ​ที่​เป็น​ทราย
+[Nunatak orchards]
+สวนผลไม้บนนูนาแทก
 [River delta]
 สามเหลี่ยม​ปากแม่น้ำ
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 ความ​กว้าง​ของ​คลอง
 [Extra bridges]
 สะพาน​เสริม
+[Grand canal]
+คลองใหญ่
 [Polder]
 พอลเดอร์
 [Old town]

@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include "MapScript.h"
 namespace Script
 {
 std::string readSource(const std::string &path)

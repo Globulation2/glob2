@@ -8,6 +8,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <fstream>
+#include "GameScripting.h"
 
 struct ScriptPresentationFixture
 {

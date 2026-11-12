@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-brick_path",
   "profile": "paved",
   "class": "built",
-  "preview": [123, 93, 76],
+  "preview": [122, 94, 76],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [123, 93, 76],
+  "minimap": [122, 94, 76],
   "seam": {
     "height": 3,
     "cast_q8": 48,

@@ -15,7 +15,10 @@ vertices and lean away from the open ground beside them (`wallVertices`), so no 
 loses a tile to a wall. Since revision 8 every Ridges wall is at least three vertices thick
 (`thickenRidges`), growing into open ground but never a lane, door or farm, because a ridge look
 draws its peaks only on tiles with four rock corners. Barren and fertile ground take one look each,
-no longer speckled with a second.
+no longer speckled with a second. Revision 10 makes every territory grass outside its paved square
+(revisions 7-9 laid barren ground beyond ten steps of its seas, which left most of a territory
+dead), raises the farmland, lays the way from home to ramp as a straight trail and draws the bays as
+one plain water.
 There are no beaches: grass meets the water, and a coast that must be sealed is cliff. Following the
 maintainer's review (2026-11-07), sand appears only where the subject is sand, and a gate that must
 stay unbuildable is rough ground.
@@ -26,9 +29,9 @@ stay unbuildable is rough ground.
 | Borders | Obstacles | Between territories, unclaimed ground, pockets a sea closed off | No tower shoots through a border (FEEDBACK 2026-09-14) |
 | Ramps | Rough | Every ramp through every ring | Nothing can be built in a gate |
 | Arena floor | Sand | The pit from three quarters of its radius to the first wall | Arena sand: a track round the orchard that cannot be fortified |
-| Territory | Barren, paved round the swarm | Every territory but within ten steps of its seas, where its crops grow, and a grass verge four vertices wide at the foot of its walls | The base reads as the climate's ground; the verge holds the quarry faces and the towers |
-| Lava | Lava | A pool at the middle of the pit, in the volcanic climate | Volcanic maps show lava at their centre |
-| Deep water | Deep water | Each bay's water five vertices or more from land | Slower swimming, no algae |
+| Territory | Grass, paved round the swarm | Every territory | Open farmland round the seas and out to the walls, where the quarry faces and the towers stand |
+| Lava | Lava | A pool at the middle of the pit, in the volcanic climate, drawn in concentric rings (ember field at the rim, lava, a molten core) | Volcanic maps show lava at their centre |
+| Water | Water | The inland seas | One plain water, with no deep water |
 
 
 - **Arena.** `rings` walls `terrace-width` apart round a pit of `pit-size`, drawn with
@@ -39,11 +42,14 @@ stay unbuildable is rough ground.
   weight per colony, and the weights are tuned until the areas are equal, so every border is a straight
   line between two neighbours.
 - **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
-  of the way to the shallowest territory's far end; the wheat and wood kit faces the nearest sea, and
+  of the way to the shallowest territory's far end; the unscaled kit of 45 wheat and 45 wood faces
+  the nearest sea, and
   two quarry faces of 12 stone each stand at the foot of the territory's side borders, as deep from
   the ramp as the swarm; since revision 7 every starting tower also has a face of 6 stone at the foot
   of the wall it stands against by the ramp, kept two steps from the ramp; scattered fields by
-  `furnishGround`.
+  `furnishGround`, 6% of the territory's watered ground under wheat and 4% under wood. The way from
+  the swarm to its ramp is a straight trail (`openTrail`, a tile cleared either side), so it never
+  bends round the farmland and every colony's walk to its ramp stays even.
 - **Inland seas.** `bay-size` percent of the smallest territory, split into two seas, one either side
   of the home (`growLakeBeside`), each wholly on its side of the line from the ramp through the home
   and ten tiles clear of it, seven from any wall. Where any territory lacks the room, every territory

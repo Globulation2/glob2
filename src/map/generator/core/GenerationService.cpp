@@ -23,6 +23,7 @@
 #include <limits>
 #include <mutex>
 #include <string>
+#include "SGSL.h"
 std::string GenerationResult::diagnostic() const
 {
 	return generatorId + " revision " + std::to_string(revision) + " seed " + std::to_string(seed) +

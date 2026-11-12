@@ -7,9 +7,11 @@ at all; that patchwork is its character. Colonies settle on the widest grass, ea
 meadow, and find their first deposits by looking along the eight compass directions.
 
 Revision 9 (Shattered Coast 2.0) draws the same patchwork with the engine's full terrain palette:
-dark water in the bigger bays, mud in the sheltered coves, pale beaches and dunes, lush meadows and
-parched necks of grass, sea stacks and quarried knots of rock. Revision 8 drew everything from
-grass, sand and water.
+deep water in the bigger bays, mud in the sheltered coves, sea stacks and quarried knots of rock.
+Revision 8 drew everything from grass, sand and water. Revision 10 draws one look per kind of
+ground: all the grass is one grass and all the sand one sand, chosen by the climate (revision 9
+banded the grass lush and parched by its distance from the shore and split the sand into beaches
+and dunes, which made the patchwork hard to read).
 
 ## How it plays
 
@@ -33,8 +35,8 @@ grass, sand and water.
   and permanent; towers shoot over it. Some knots carry a **quarry face** on the side facing the
   nearest home: permanent stone on grass (how many follows `stone-amount`). No rock ever cuts
   walkable ground off; a knot or stack that would is not drawn.
-- **Looks only.** Lush grass in broad meadows, dry grass on thin necks, pale beach sand and dune
-  sand change nothing in play; the climate changes only artwork.
+- **Looks only.** The climate picks one look for each kind of ground (grass, sand, deep water,
+  mud, rock), home meadows included; it changes nothing in play.
 
 ## How it is built
 
@@ -51,7 +53,7 @@ comments record why. Revision 8's stages run unchanged, then the coast pass:
 | Rock | Knots: lenses at least two tiles thick on vacant grass with two tiles of vacant grass round them, at most one per 8,192 tiles, 26 apart; quarry faces on 75% of them at the default stone amount (a knot whose face does not fit hands its turn to the next); sea stacks on 60% of the qualifying islands; a parting check drops any knot or stack that cuts ground off. |
 | Deep cores | `deepCore` at four steps, opened, specks under 12 vertices dropped, never at a corner of a tile holding algae. |
 | Mudflats | Beach vertices of bodies of at most 500 water vertices where a noise field (a stream of its own, so the toggle changes no other look) passes, outside 28 tiles of every swarm. |
-| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, by climate; quarry stone stocked, and generation refuses the map if any face tile is left without its stone. |
+| Looks | A mechanic sketch (canonical types) with looks painted by `composeLooks`, one per rule group by climate; quarry stone stocked, and generation refuses the map if any face tile is left without its stone. |
 
 ## Controls
 
@@ -63,7 +65,7 @@ comments record why. Revision 8's stages run unchanged, then the coast pass:
 | Deep water | on/off (on) | Deep cores in the bigger bays and lakes. Routes on foot are the same either way. |
 | Mudflats | on/off (on) | Mud on the beaches of small, sheltered waters. |
 | Rock outcrops | on/off (on) | Sea stacks and rock knots with quarry faces. |
-| Climate | Random, Temperate, Steppe, Tropical | Looks only: beach, dune, mud, deep water and rock artwork and how much grass is lush or dry. Plays identically. |
+| Climate | Random, Temperate, Steppe, Tropical | Looks only, one per kind of ground: Temperate plain grass and sand, outcrops; Steppe dry grass, dune sand, hardpan, hoodoos; Tropical lush grass, pale sand, dark water, mud. Plays identically. |
 | Wheat, wood, algae amount | 0–300% (100) | Home deposit area and expansion clumps. |
 | Stone amount | 0–300% (100) | Home deposit area, expansion quarries and how many knots carry a quarry face. |
 

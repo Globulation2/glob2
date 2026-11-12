@@ -1698,8 +1698,16 @@ Globulation 2 कर्सर दाखवा.
 किनारपट्टीचा खडबडीतपणा
 [Fjord width]
 फ्योर्डची रुंदी
-[Lake connects to fjords]
-सरोवर फ्योर्डला जोडते
+[Ice sheet size]
+बर्फाच्या थराचा आकार
+[Fjord landings]
+फियोर्डचे घाट
+[Fjord continents need at least one colony.]
+फियोर्ड खंडाला किमान एक वसाहत लागते.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+फियोर्ड खंडासाठी नकाशाची लहान बाजू किमान १२८ चौकटी असावी.
+[Ice reach]
+बर्फाचा विस्तार
 [Resource islands]
 संसाधन बेटे
 [Watershed]
@@ -1948,8 +1956,8 @@ Globulation 2 कर्सर दाखवा.
 बंद मार्गांमधील खजिना
 [Fjord bank deposits]
 फ्योर्डच्या काठांवरील साठे
-[Sandy lake shore]
-वाळूचा तलाव किनारा
+[Nunatak orchards]
+नुनाटकवरील फळबागा
 [River delta]
 नदीचा त्रिभुज प्रदेश
 [Meandering rivers]
@@ -2048,6 +2056,8 @@ Globulation 2 कर्सर दाखवा.
 कालव्याची रुंदी
 [Extra bridges]
 अतिरिक्त पूल
+[Grand canal]
+मोठा कालवा
 [Polder]
 पोल्डर
 [Old town]

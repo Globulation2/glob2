@@ -21,6 +21,8 @@
 #include "Stream.h"
 #include <algorithm>
 #include <stdexcept>
+#include "GameObjectives.h"
+#include "GameHints.h"
 namespace Script
 {
 Observations::Observations(Game &g, int t) : game(g), team(t) {}

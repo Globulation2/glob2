@@ -1734,8 +1734,16 @@ Kontinentgröße
 Küstenzerklüftung
 [Fjord width]
 Fjordbreite
-[Lake connects to fjords]
-See mit Fjorden verbunden
+[Ice sheet size]
+Größe des Eisschilds
+[Fjord landings]
+Fjordanlegestellen
+[Fjord continents need at least one colony.]
+Ein Fjordkontinent braucht mindestens eine Kolonie.
+[A fjord continent needs a map at least 128 tiles on its shorter side.]
+Ein Fjordkontinent braucht eine Karte mit mindestens 128 Feldern an der kürzeren Seite.
+[Ice reach]
+Eisausdehnung
 [Resource islands]
 Rohstoffinseln
 [Watershed]
@@ -1980,8 +1988,8 @@ Sandwege
 Schätze in Sackgassen
 [Fjord bank deposits]
 Vorkommen an den Fjordufern
-[Sandy lake shore]
-Sandiges Seeufer
+[Nunatak orchards]
+Nunatak-Obstgärten
 [River delta]
 Flussdelta
 [Meandering rivers]
@@ -2080,6 +2088,8 @@ Blockgröße
 Kanalbreite
 [Extra bridges]
 Zusätzliche Brücken
+[Grand canal]
+Großer Kanal
 [Polder]
 Polder
 [Old town]
