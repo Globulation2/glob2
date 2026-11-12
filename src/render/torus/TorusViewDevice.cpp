@@ -61,17 +61,18 @@ class SourceMapPhaseScope
     unsigned options;
     bool paused;
     int initialAnimation;
+    AnimationClock initialClock;
     int exceptions;
 public:
     SourceMapPhaseScope(MapRenderState &state,unsigned drawOptions,bool animationsPaused)
         : render(state),options(drawOptions),paused(animationsPaused),
-          initialAnimation(state.animationTime),exceptions(std::uncaught_exceptions())
-    { if(!paused)++render.animationTime; }
+          initialAnimation(state.animationTime),initialClock(state.animationClock),exceptions(std::uncaught_exceptions())
+    { render.animationTime+=render.animationClock.advance(paused); }
     ~SourceMapPhaseScope()
     {
         // The caller draws the ordinary map after a fatal torus exception.
         // Leave that fallback to advance the source phases once for this turn.
-        if(std::uncaught_exceptions()>exceptions)render.animationTime=initialAnimation;
+        if(std::uncaught_exceptions()>exceptions){render.animationTime=initialAnimation;render.animationClock=initialClock;}
         else MapDrawer::finishMapCapture(render,options,paused);
     }
 };
@@ -329,10 +330,14 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         state.captureTile = 0; state.captureX = state.captureY = 0;
         state.advancePreviews = true; state.captureReady = false;
         auto &captureRender = state.captureView.render;
-        // prepareSceneMapFrame advances the frozen capture once. The source
-        // phase already advanced for this host turn and keeps advancing on holds.
-        captureRender.animationTime = sourceRender.animationTime-(sourcePaused?0:1);
+        // prepareSceneMapFrame advances the frozen capture once, by the steps the
+        // source phase already advanced for this host turn; the source keeps
+        // advancing on holds.
+        const int sourceSteps = sourcePaused ? 0 : sourceRender.animationClock.steps();
+        captureRender.animationTime = sourceRender.animationTime-sourceSteps;
+        captureRender.animationClock.presetNext(sourceSteps);
         captureRender.areaAnimationTick = sourceRender.areaAnimationTick;
+        captureRender.areaClock = sourceRender.areaClock;
         captureRender.unitMotion = sourceRender.unitMotion;
         captureRender.minimumZoom = sourceRender.minimumZoom;
         captureRender.zonesEmphasised = sourceRender.zonesEmphasised;

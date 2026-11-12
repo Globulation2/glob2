@@ -614,7 +614,7 @@ void MapDrawer::drawMapAreas(int left, int top, int right, int bot, int sw, int 
 						}
 				}
 			}
-		if (advanceAnimation) areaAnimationTick++;
+		if (advanceAnimation) areaAnimationTick += view.render.areaClock.advance(false);
 	}
 }
 

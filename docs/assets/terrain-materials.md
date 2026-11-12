@@ -122,7 +122,8 @@ remain under `content/data/`, with forward slashes, canonical segments (no empty
 
 For animation, a variant's effective frame is `frame + phase * animation_stride`.
 `animation_frames` is 1–256, `animation_ticks` is a positive integer duration in the
-renderer's animation clock, and the stride must be positive when there is more
+renderer's animation clock (steps of 1/60 s of real time, whatever the frame rate;
+see `src/render/AnimationClock.h`), and the stride must be positive when there is more
 than one phase. Every effective frame must exist and remain below 65536.
 All cells of a material share the phase, so a texture that moves must move the
 same way in every variant. Between phases the renderer linearly crossfades the

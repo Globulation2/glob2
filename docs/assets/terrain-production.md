@@ -513,7 +513,7 @@ with an `overlay` block:
 - A chosen cell keeps one of the `cycles` and starts it at its own hashed step,
   so neighbouring glints never flash together. It advances one step every
   `ticks` steps of the presentation clock that animates lava and water
-  (`MapRenderState::animationTime`, one per drawn frame), so overlays pause with
+  (`MapRenderState::animationTime`, 60 steps per second of real time), so overlays pause with
   the game and still twinkle in the map editor, where the simulation tick never
   moves. A step of `-1` draws nothing.
 - A cell draws an overlay only when all four corners resolve to materials with
