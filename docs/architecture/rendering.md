@@ -415,8 +415,10 @@ What else plays depends on who watches:
   its colour appear above, tremble, crack down the middle and fall in two halves.
 - Anyone else, and every replay viewer, sees both clouds of motes and no heart.
 
-Because conversion is caused by hunger, the effect plays where the unit stood when it
-switched, not at a building, and like the others it is hidden on a fogged tile.
+Because conversion is caused by hunger, the effect starts where the unit stood when it
+switched, not at a building, and follows the unit as it walks on; it is hidden on a
+fogged tile and, unlike the others, dropped rather than left behind when the unit
+is not drawn.
 
 `Building::swarmStep` records spawns in `GameAnimations` beside death animations. A
 successful feed, heal or training (some level rose) at the end of a stay

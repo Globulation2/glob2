@@ -228,7 +228,9 @@ void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw
 					drawAt(unit.x + 16, unit.y + 16, spawn ? 1 : unit.opacity);
 					drawn = true;
 				}
-			if (drawn)
+			// A converted unit walks on towards the inn, so its effect follows it
+			// rather than jumping back to the tile it changed sides on.
+			if (drawn || convert)
 				continue;
 			// The unit was not drawn this frame (it died, or is outside the drawn
 			// area): play the effect from the tile it came out on.
@@ -240,7 +242,7 @@ void MapDrawer::drawMapUnitEffects(int left, int top, int right, int bot, int sw
 				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
 					const float cx = float(centreX + dx), cy = float(centreY + dy);
 					// A service's icons burst once the unit is half out, half a tile short of its exit tile.
-					if (spawn || convert)
+					if (spawn)
 						drawAt(cx, cy, 1);
 					else
 						drawAt(cx - effect.dx * 16.f, cy - effect.dy * 16.f, 1);
