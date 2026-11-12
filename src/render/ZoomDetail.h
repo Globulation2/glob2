@@ -21,7 +21,7 @@ struct ZoomDetail
 
 	//! Opacity of every health, food and occupancy bar.
 	float barAll = 1;
-	//! Opacity of the single status pip that stands in for the bars of an
+	//! Opacity of the single status badge that stands in for the bars of an
 	//! entity needing attention, between the bars fading and the overview.
 	float statusPip = 0;
 
@@ -51,7 +51,7 @@ struct ZoomDetail
 	static constexpr double ZonePatternGone = 9, ZonePatternFull = 16;
 	static constexpr double ZoneStrokeMaxPoints = 2;
 	//! The cross-fade between the detailed map and the strategic overview:
-	//! sprites, terrain, zone outlines and status pips on one side, markers,
+	//! sprites, terrain, zone outlines and status badges on one side, markers,
 	//! icons, flat colours and the territory wash on the other.
 	static constexpr double OverviewFull = 7, OverviewGone = 9;
 	static constexpr double WorkerMarkerSmall = 3, WorkerMarkerFull = 6;

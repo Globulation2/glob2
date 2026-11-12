@@ -120,6 +120,7 @@ public:
 	Sprite *resources = nullptr;
 	Sprite *resourceMini = nullptr;
 	Sprite *mapIcons = nullptr; //!< strategic-view building and flag icons; see MapOverlayQueue
+	Sprite *statusIcons = nullptr; //!< icons of the status badges; see MapOverlayQueue::StatusIcon
 	Sprite *areaClearing = nullptr;
 	Sprite *areaForbidden = nullptr;
 	Sprite *areaGuard = nullptr;

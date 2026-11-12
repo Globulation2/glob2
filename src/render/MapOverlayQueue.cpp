@@ -29,13 +29,13 @@ void MapOverlayQueue::bar(int mapX, int mapY, bool vertical, bool reversed, int 
 					alpha, r, g, b, r2, g2, b2});
 }
 
-void MapOverlayQueue::pip(GraphicContext &gfx, int mapX, int mapY, Uint8 r, Uint8 g, Uint8 b,
-						  float opacity)
+void MapOverlayQueue::pip(GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float opacity,
+						  bool beside)
 {
 	const Uint8 alpha = Uint8(std::lround(std::clamp(opacity, 0.f, 1.f) * 255));
 	if (!alpha)
 		return;
-	Pip pip{0, 0, r, g, b, alpha};
+	Pip pip{0, 0, Uint8(icon), alpha, Uint8(beside)};
 	gfx.mapToScreen(mapX, mapY, pip.screenX, pip.screenY);
 	pips.push_back(pip);
 }
@@ -89,9 +89,27 @@ void fillMarker(GraphicContext &gfx, Uint8 shape, int centerX, int centerY, int 
 		gfx.drawFilledRect(centerX - half, top + row, std::max(1, 2 * half), 1, r, g, b, a);
 	}
 }
+
+// A filled disc `edge` pixels across with its top left corner at (left, top).
+void fillDisc(GraphicContext &gfx, int left, int top, int edge, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	const float radius = edge / 2.f;
+	for (int row = 0; row < edge; row++)
+	{
+		const float dy = row + 0.5f - radius;
+		const int half = int(std::lround(std::sqrt(std::max(0.f, radius * radius - dy * dy))));
+		if (half > 0)
+			gfx.drawFilledRect(left + edge / 2 - half, top + row, 2 * half, 1, r, g, b, a);
+	}
 }
 
-void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double scale, double unitsPerPoint)
+// Badge colours by MapOverlayQueue::StatusIcon: red for harm, amber for a missing supply.
+constexpr Uint8 StatusColors[MapOverlayQueue::StatusIconCount][3] = {
+	{226, 45, 45}, {240, 165, 20}, {226, 45, 45}, {240, 165, 20}, {240, 165, 20}};
+}
+
+void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore::Sprite *statusIcons,
+							double scale, double unitsPerPoint)
 {
 	if (bars.empty() && pips.empty() && markers.empty() && glyphs.empty())
 		return;
@@ -134,14 +152,7 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double 
 				const int edge = size - 2 * inset;
 				if (glyph.shape == Disc)
 				{
-					const float radius = edge / 2.f;
-					for (int row = 0; row < edge; row++)
-					{
-						const float dy = row + 0.5f - radius;
-						const int half = int(std::lround(std::sqrt(std::max(0.f, radius * radius - dy * dy))));
-						if (half > 0)
-							gfx.drawFilledRect(left + size / 2 - half, top + inset + row, 2 * half, 1, r, g, b, a);
-					}
+					fillDisc(gfx, left + inset, top + inset, edge, r, g, b, a);
 					return;
 				}
 				const int cut = std::max(1, corner - inset);
@@ -176,52 +187,77 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double 
 			fillMarker(gfx, marker.shape, centerX, centerY, size, 1, 0, 0, 0, marker.alpha);
 			fillMarker(gfx, marker.shape, centerX, centerY, size, 0, marker.r, marker.g, marker.b, marker.alpha);
 		}
-		GAGCore::OpaqueRectangleBatch rectangles(&gfx);
-		for (const Bar &bar : bars)
 		{
-			// Bar-local map pixels to screen, each edge rounded on its own so
-			// neighbouring pips share boundaries at any scale.
-			const double originX = bar.screenX + bar.offsetX * scale;
-			const double originY = bar.screenY + bar.offsetY * scale;
-			const auto edgeX = [&](int v) { return int(std::lround(originX + v * scale)); };
-			const auto edgeY = [&](int v) { return int(std::lround(originY + v * scale)); };
-			// along: pip axis; across: bar thickness.
-			const auto rect = [&](int along, int across, int length, int thickness, bool filled,
-								  Uint8 r, Uint8 g, Uint8 b)
+			GAGCore::OpaqueRectangleBatch rectangles(&gfx);
+			for (const Bar &bar : bars)
 			{
-				const int ax = bar.vertical ? across : along, ay = bar.vertical ? along : across;
-				const int aw = bar.vertical ? thickness : length;
-				const int ah = bar.vertical ? length : thickness;
-				const int left = edgeX(ax), top = edgeY(ay);
-				const int w = std::max(1, edgeX(ax + aw) - left);
-				const int h = std::max(1, edgeY(ay + ah) - top);
-				if (filled)
-					gfx.drawFilledRect(left, top, w, h, r, g, b, bar.alpha);
-				else
-					gfx.drawRect(left, top, w, h, r, g, b, bar.alpha);
-			};
-			rect(0, 0, bar.maxLength * 3 + 1, bar.barWidth + 2, true, 0, 0, 0);
-			// Pips fill from the start, or from the end when reversed; the
-			// primary colour comes first, then the secondary, then empty slots.
-			for (int i = 0; i < bar.maxLength; i++)
-			{
-				const int slot = bar.reversed ? bar.maxLength - 1 - i : i;
-				if (i < bar.actLength)
-					rect(slot * 3 + 1, 1, 2, bar.barWidth, true, bar.r, bar.g, bar.b);
-				else if (i < bar.actLength + bar.secondActLength)
-					rect(slot * 3 + 1, 1, 2, bar.barWidth, true, bar.r2, bar.g2, bar.b2);
-				else
-					rect(slot * 3, 0, 4, bar.barWidth + 2, false, bar.r / 3, bar.g / 3, bar.b / 3);
+				// Bar-local map pixels to screen, each edge rounded on its own so
+				// neighbouring pips share boundaries at any scale.
+				const double originX = bar.screenX + bar.offsetX * scale;
+				const double originY = bar.screenY + bar.offsetY * scale;
+				const auto edgeX = [&](int v) { return int(std::lround(originX + v * scale)); };
+				const auto edgeY = [&](int v) { return int(std::lround(originY + v * scale)); };
+				// along: pip axis; across: bar thickness.
+				const auto rect = [&](int along, int across, int length, int thickness, bool filled,
+									  Uint8 r, Uint8 g, Uint8 b)
+				{
+					const int ax = bar.vertical ? across : along, ay = bar.vertical ? along : across;
+					const int aw = bar.vertical ? thickness : length;
+					const int ah = bar.vertical ? length : thickness;
+					const int left = edgeX(ax), top = edgeY(ay);
+					const int w = std::max(1, edgeX(ax + aw) - left);
+					const int h = std::max(1, edgeY(ay + ah) - top);
+					if (filled)
+						gfx.drawFilledRect(left, top, w, h, r, g, b, bar.alpha);
+					else
+						gfx.drawRect(left, top, w, h, r, g, b, bar.alpha);
+				};
+				rect(0, 0, bar.maxLength * 3 + 1, bar.barWidth + 2, true, 0, 0, 0);
+				// Pips fill from the start, or from the end when reversed; the
+				// primary colour comes first, then the secondary, then empty slots.
+				for (int i = 0; i < bar.maxLength; i++)
+				{
+					const int slot = bar.reversed ? bar.maxLength - 1 - i : i;
+					if (i < bar.actLength)
+						rect(slot * 3 + 1, 1, 2, bar.barWidth, true, bar.r, bar.g, bar.b);
+					else if (i < bar.actLength + bar.secondActLength)
+						rect(slot * 3 + 1, 1, 2, bar.barWidth, true, bar.r2, bar.g2, bar.b2);
+					else
+						rect(slot * 3, 0, 4, bar.barWidth + 2, false, bar.r / 3, bar.g / 3, bar.b / 3);
+				}
 			}
 		}
+		// Status badges: a disc in the status's colour carrying its icon. They
+		// stay small beside a unit and shrink with the other overlays; on a
+		// HiDPI display the icon keeps about 12 pixels.
+		constexpr double BadgePoints = 9, SmallestBadgePoints = 8;
+		// Icon frames per status icon, by edge length in target pixels
+		// (tools/icons/export_map_icons.py).
+		static const int statusSizes[] = {8, 10, 12, 16, 20, 24, 32};
+		constexpr int StatusSizeCount = int(sizeof(statusSizes) / sizeof(statusSizes[0]));
+		const double badgePoints = std::clamp(BadgePoints * scale / unitsPerPoint, SmallestBadgePoints, BadgePoints);
+		const int size = std::max(5, int(std::lround(badgePoints * unitsPerPoint)));
+		const float room = (size - 2) * 0.9f * raster;
+		int frameSize = 0;
+		for (int i = 0; i < StatusSizeCount; i++)
+			if (statusSizes[i] <= room)
+				frameSize = i;
+		const float drawn = std::min(float(statusSizes[frameSize]), room) / raster;
 		for (const Pip &pip : pips)
 		{
-			const int size = std::max(3, int(std::lround(5 * scale)));
-			const int left = int(std::lround(pip.screenX)) - size / 2;
-			const int top = int(std::lround(pip.screenY)) - size / 2;
-			gfx.drawFilledRect(left - 1, top - 1, size + 2, size + 2, 0, 0, 0, pip.alpha);
-			gfx.drawFilledRect(left, top, size, size, pip.r, pip.g, pip.b, pip.alpha);
+			// Beside its point, the badge's lower left corner just meets it.
+			const int overlap = pip.beside ? size / 6 : size / 2;
+			const int left = int(std::lround(pip.screenX)) - overlap;
+			const int top = int(std::lround(pip.screenY)) - (pip.beside ? size - overlap : size / 2);
+			const Uint8 *color = StatusColors[std::min<int>(pip.icon, StatusIconCount - 1)];
+			fillDisc(gfx, left, top, size, 12, 14, 22, pip.alpha);
+			fillDisc(gfx, left + 1, top + 1, size - 2, color[0], color[1], color[2], pip.alpha);
+			if (statusIcons)
+				gfx.drawSprite(left + (size - drawn) / 2, top + (size - drawn) / 2, drawn, drawn, statusIcons,
+							   unsigned(pip.icon) * StatusSizeCount + frameSize, pip.alpha);
 		}
+		if (statusIcons && !pips.empty())
+			gfx.finishDrawingSprite(statusIcons, 255);
 	}
 	gfx.endScreenOverlay();
 	bars.clear();
