@@ -949,7 +949,6 @@ set(GLOB2_MAP_TESTS_0_SOURCES
     src/field/FieldTraversalTest.cpp
     src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
-    src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
     src/resource/ResourceRegistryTest.cpp
     src/map/io/MapExploredAreaSaveLoadTest.cpp
@@ -1966,7 +1965,6 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/field/FieldTraversalTest.cpp
     src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
-    src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
     src/resource/ResourceRegistryTest.cpp
     src/map/io/MapExploredAreaSaveLoadTest.cpp

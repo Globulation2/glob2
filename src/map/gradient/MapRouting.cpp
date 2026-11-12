@@ -3,10 +3,10 @@
 
 #include "MapRouting.h"
 #include "GradientRuntime.h"
+#include "field/astar/AStar.h"
 
 MapRouting::MapRouting(Map &owner) : map(owner), gradientRuntime(std::make_unique<GradientRuntime>())
 {
-	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MaterialSlotCount; r++)
 			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)

@@ -181,6 +181,8 @@ class Workspace
 
 	// Benchmarks and tests may pin the first window side; 0 sizes it from the query.
 	unsigned forcedWindow = 0;
+	// The side of the window the last search finished in; 0 for the whole map.
+	int windowSide() const { return torus ? 0 : side; }
 	// Tests record the world index of every expansion of the final attempt.
 	std::vector<std::uint32_t> *expansionLog = nullptr;
 

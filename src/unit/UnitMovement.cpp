@@ -278,6 +278,15 @@ void Unit::handleMovementRemovingBlackAround()
 		|| !owner->map->isFreeForGroundUnit(posX+dx,posY+dy,canSwim,owner->me)) movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
 }
 
+namespace
+{
+struct AttackCandidate { int x, y, quality; };
+// Scan scratch for the simulation thread; nothing survives the call.
+thread_local std::vector<AttackCandidate> attackCandidates;
+thread_local std::vector<MapRouting::PointTarget> attackTargetCells;
+thread_local std::vector<MapRouting::PointTargetResult> attackTargetResults;
+}
+
 void Unit::handleMovementAttackingAround()
 {
 	int quality=INT_MAX; // Smaller is better.
@@ -297,6 +306,7 @@ void Unit::handleMovementAttackingAround()
 	{
 		// we look for the best target to attack around us
 		const int radius=runtimeTraits().attackSearchRadius;
+		attackCandidates.clear();
 		for (int x=-radius; x<=radius; x++)
 		{
 			for (int y=-radius; y<=radius; y++)
@@ -319,7 +329,7 @@ void Unit::handleMovementAttackingAround()
 							Building *b=owner->ctx.teams[team]->myBuildings[id];
 							int shootDamage=b->runtime->damage(typeNum);
 							newQuality/=(1+shootDamage);
-							tryAcquireAttackTarget(x, y, newQuality, quality);
+							attackCandidates.push_back({x, y, newQuality});
 						}
 					}
 					gid=owner->map->getGroundUnit(posX+x, posY+y);
@@ -335,13 +345,14 @@ void Unit::handleMovementAttackingAround()
 							{
 								int attackStrength=u->getRealAttackStrength();
 								int newQuality=Uint32((x*x+y*y)<<Q8_FIXED_POINT_SHIFT)/(Uint32(attackStrength)+1u);
-								tryAcquireAttackTarget(x, y, newQuality, quality);
+								attackCandidates.push_back({x, y, newQuality});
 							}
 						}
 					}
 				}
 			}
 		}
+		acquireBestAttackTarget(quality);
 	}
 
 	}
@@ -447,6 +458,39 @@ void Unit::handleMovementAttackingAround()
 	if (performance[FLY] && movement==MOV_RANDOM_GROUND) movement=MOV_RANDOM_FLY;
 }
 
+// Candidates are considered in scan order: each one better than the target held
+// so far is searched for, and the step of that search is kept even when it
+// fails. Ground units resolve every candidate with one bounded search, which
+// answers exactly what the separate searches would.
+void Unit::acquireBestAttackTarget(int& quality)
+{
+	if (attackCandidates.empty())
+		return;
+	if (performance[FLY])
+	{
+		for (const auto& c : attackCandidates)
+			tryAcquireAttackTarget(c.x, c.y, c.quality, quality);
+		return;
+	}
+	auto& targets = attackTargetCells;
+	targets.clear();
+	for (const auto& c : attackCandidates)
+		targets.push_back({posX + c.x, posY + c.y});
+	owner->map->routing().pathfindPointTargets(posX, posY, targets, movementAccess(), owner->me,
+		GOING_TARGET_MAX_PATH_LENGTH, attackTargetResults);
+	for (std::size_t i = 0; i < attackCandidates.size(); ++i)
+	{
+		const auto& c = attackCandidates[i];
+		if (c.quality >= quality)
+			continue;
+		const auto& r = attackTargetResults[i];
+		dx = r.reached ? r.dx : 0;
+		dy = r.reached ? r.dy : 0;
+		if (r.reached)
+			acceptAttackTarget(c.x, c.y, c.quality, quality);
+	}
+}
+
 void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 {
 	if (newQuality >= quality)
@@ -457,6 +501,11 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
     });
 	if (!pathfind)
 		return;
+	acceptAttackTarget(x, y, newQuality, quality);
+}
+
+void Unit::acceptAttackTarget(int x, int y, int newQuality, int& quality)
+{
 	if (abs(x)<=1 && abs(y)<=1)
 	{
 		movement=MOV_ATTACKING_TARGET;

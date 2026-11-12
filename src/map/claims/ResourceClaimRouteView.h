@@ -2,6 +2,7 @@
 #pragma once
 #include "MapStateView.h"
 #include "field/TerrainMovementCosts.h"
+#include <cstdint>
 
 namespace ResourceClaims
 {
@@ -37,4 +38,17 @@ inline unsigned routeEntryCost(const MapState::View& view, std::size_t destinati
     const auto& steps = (*view.rules)[view.cellRules[destination]].ground[profile.movement];
     return diagonal ? steps.diagonal : steps.cardinal;
 }
+
+// The point-to-point search's view of a claim route (field/astar/AStar.h).
+struct RouteDomain
+{
+    const MapState::View& view;
+    RouteProfile profile;
+    unsigned entry(std::uint32_t index, bool) const
+    {
+        if (!routePassable(view, index, profile)) return 0;
+        const auto& steps = (*view.rules)[view.cellRules[index]].ground[profile.movement];
+        return steps.cardinal | steps.diagonal << 8;
+    }
+};
 }

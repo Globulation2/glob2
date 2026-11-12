@@ -183,12 +183,17 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 		if (gradient_kernel::terrainAllowsMovement(p, sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
+			auto &diagonal = terrainGroundDiagonalCounts[sw][rule.ground[sw].diagonal];
 			if (add)
+			{
 				++count;
+				++diagonal;
+			}
 			else
 			{
-				assert(count);
+				assert(count && diagonal);
 				--count;
+				--diagonal;
 			}
 		}
 	if (p.flyable)
@@ -236,6 +241,17 @@ void Map::updateTerrainSummary()
 				terrainMinimumGround[sw] = cost;
 				break;
 			}
+	// Point-to-point heuristic floors: the cheapest steps among present rules.
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
+	{
+		const auto first = [](const auto &counts) {
+			for (unsigned cost = 1; cost < counts.size(); ++cost)
+				if (counts[cost])
+					return cost;
+			return 0u;
+		};
+		terrainRouteFloors[sw] = {first(terrainGroundCostCounts[sw]), first(terrainGroundDiagonalCounts[sw])};
+	}
 	for (unsigned cost = 1; cost < GRADIENT_STEP; ++cost)
 		if (terrainAirCostCounts[cost])
 		{
@@ -282,6 +298,7 @@ void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
+	terrainGroundDiagonalCounts = {};
 	terrainAirCostCounts = {};
 	for (const auto type : vertexTerrain) ++terrainCounts[type];
 	for (const auto rule : cellRules) ++cellRuleCounts[rule];
@@ -597,6 +614,7 @@ void Map::clear()
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
+	terrainGroundDiagonalCounts = {};
 	terrainAirCostCounts = {};
 	updateTerrainSummary();
 	terrainEditChanged = terrainRoutesChanged = false;
@@ -650,8 +668,6 @@ void Map::clear()
 	sectors = NULL;
 	delete[] listedAddr;
 	listedAddr = NULL;
-	delete[] routing().aStarPoints;
-	routing().aStarPoints = NULL;
 
 	arraysBuilt = false;
 
@@ -722,7 +738,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
-	routing().aStarPoints=new MapRouting::AStarAlgorithmPoint[w*h];
 
 
 

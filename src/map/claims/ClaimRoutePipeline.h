@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "ClaimRouteSearch.h"
+#include "ClaimRoute.h"
+#include "field/astar/AStar.h"
+#include "field/astar/AStarCapture.h"
 #include "ResourceClaimRouteView.h"
 #include "ClaimPolicy.h"
 #include "ComputeExecutor.h"
@@ -71,13 +73,6 @@ class RoutePipeline
         try {
             const auto& input = work.input;
             const auto view = input.world.view();
-            const field::Grid grid(view.width, view.height);
-            const int tx = int(input.target % view.width), ty = int(input.target / view.width);
-            const auto distance = [&](std::uint32_t cell) {
-                const auto dx = unsigned(std::abs(int(cell % view.width) - tx));
-                const auto dy = unsigned(std::abs(int(cell / view.width) - ty));
-                return std::max(std::min(dx, unsigned(view.width) - dx), std::min(dy, unsigned(view.height) - dy));
-            };
             // Admissible A* heuristic: octile distance priced at the cheapest
             // cardinal and diagonal entry costs among the terrain rules present
             // on this map for the unit's movement class, computed outside the
@@ -118,18 +113,24 @@ class RoutePipeline
                 if(cardinal==std::numeric_limits<unsigned>::max()) cardinal=diagonal=0;
                 cardinal=std::min(cardinal,diagonal); diagonal=std::min(diagonal,2*cardinal);
             }
-            thread_local RouteSearch scratch;
-            work.output.route = scratch.find(grid, input.start, input.maximumCost,
-                [&](std::uint32_t i) { return routePassable(view, i, input.profile); },
-                [&](std::uint32_t i, bool diagonal) { return routeEntryCost(view, i, input.profile, diagonal); },
-                [&](std::uint32_t i) { return distance(i) <= 1; },
-                [&](std::uint32_t i) {
-                    const unsigned ax=unsigned(std::abs(int(i%view.width)-tx)), ay=unsigned(std::abs(int(i/view.width)-ty));
-                    const unsigned wx=std::min(ax,unsigned(view.width)-ax), wy=std::min(ay,unsigned(view.height)-ay);
-                    const unsigned x=wx>1?wx-1:0, y=wy>1?wy-1:0;
-                    return std::uint64_t(std::max(x,y)-std::min(x,y))*cardinal+std::uint64_t(std::min(x,y))*diagonal;
-                },
-                input.maximumExpansions);
+            thread_local astar::Workspace scratch;
+            astar::Query query;
+            query.width = view.width; query.height = view.height;
+            query.start = input.start; query.target = input.target;
+            query.goalRadius = 1; // routes end within one tile of the target, where pickup happens
+            query.maximumCost = input.maximumCost;
+            query.maximumExpansions = input.maximumExpansions;
+            query.floor = astar::consistentFloor(cardinal, diagonal);
+            query.wantPath = true;
+            const RouteDomain domain{view, input.profile};
+            auto found = scratch.search(domain, query);
+            if (astar::capture::enabled()) [[unlikely]]
+                astar::capture::point(domain, query, scratch.windowSide());
+            auto& route = work.output.route;
+            static_assert(int(RouteStatus::ExpansionLimit) == int(astar::Status::ExpansionLimit));
+            route.status = RouteStatus(found.status);
+            route.cost = found.cost; route.expansions = found.expansions;
+            route.cells = std::move(found.cells);
         } catch (...) { work.error = std::current_exception(); }
         work.input.world = {}; // Drop the immutable lease after computation.
     }

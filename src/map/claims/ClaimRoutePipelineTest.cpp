@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 #include "HeadlessGame.h"
 #include "ClaimRoutePipeline.h"
+#include "field/astar/AStarReference.h"
 #include "sim/snapshot/BufferPool.h"
 
 TEST_SUITE("ClaimRoutePipeline")
@@ -198,17 +199,11 @@ TEST_SUITE("ClaimRoutePipeline")
                     const auto outputs=pipeline.publish(tick+1);REQUIRE(outputs.size()==1);
                     // The heuristic built from present terrain stays admissible:
                     // the route cost equals an uninformed exact search.
-                    const auto view=world.view();ResourceClaims::RouteSearch oracle;
-                    const int tx=int(input.target%world.width),ty=int(input.target/world.width);
-                    const auto exact=oracle.find(field::Grid(world.width,world.height),input.start,input.maximumCost,
-                        [&](Uint32 i){return ResourceClaims::routePassable(view,i,input.profile);},
-                        [&](Uint32 i,bool diagonal){return ResourceClaims::routeEntryCost(view,i,input.profile,diagonal);},
-                        [&](Uint32 i){
-                            const int dx=std::abs(int(i%world.width)-tx),dy=std::abs(int(i/world.width)-ty);
-                            return std::max(std::min(dx,int(world.width)-dx),std::min(dy,int(world.height)-dy))<=1;},
-                        [](Uint32){return Uint64(0);});
+                    const auto view=world.view();
+                    astar::Query query{world.width,world.height,input.start,input.target,1,input.maximumCost};
+                    const auto exact=astar::referenceSearch(ResourceClaims::RouteDomain{view,input.profile},query);
                     CHECK(outputs[0].route.status==ResourceClaims::RouteStatus::Found);
-                    CHECK(outputs[0].route.status==exact.status);
+                    CHECK(int(outputs[0].route.status)==int(exact.status));
                     CHECK(outputs[0].route.cost==exact.cost);
                     CHECK(outputs[0].route.expansions<=exact.expansions);
                 }
@@ -243,15 +238,12 @@ TEST_SUITE("ClaimRoutePipeline")
             const ResourceClaims::RouteInput input{world,{},cell(5,5),cell(15,5)};
             pipeline.submit(1,phase+1,phase*2,input);
             const auto outputs=pipeline.publish(phase*2+1);REQUIRE(outputs.size()==1);
-            const auto view=world.view();ResourceClaims::RouteSearch oracle;
-            const auto exact=oracle.find(field::Grid(world.width,world.height),input.start,input.maximumCost,
-                [&](Uint32 i){return ResourceClaims::routePassable(view,i,input.profile);},
-                [&](Uint32 i,bool diagonal){return ResourceClaims::routeEntryCost(view,i,input.profile,diagonal);},
-                // Routes end within one tile of the target, where pickup happens.
-                [&](Uint32 i){return std::abs(int(i%original.width)-15)<=1 && std::abs(int(i/original.width)-5)<=1;},
-                [](Uint32){return Uint64(0);});
-            REQUIRE(exact.status==ResourceClaims::RouteStatus::Found);
-            CHECK(outputs[0].route.status==exact.status);CHECK(outputs[0].route.cost==exact.cost);
+            const auto view=world.view();
+            // Routes end within one tile of the target, where pickup happens.
+            astar::Query query{original.width,original.height,input.start,input.target,1,input.maximumCost};
+            const auto exact=astar::referenceSearch(ResourceClaims::RouteDomain{view,input.profile},query);
+            REQUIRE(exact.status==astar::Status::Found);
+            CHECK(int(outputs[0].route.status)==int(exact.status));CHECK(outputs[0].route.cost==exact.cost);
             if(!phase)initialCost=exact.cost;else CHECK(exact.cost<initialCost);
         }
         CHECK(allocations==1);

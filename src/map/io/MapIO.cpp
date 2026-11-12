@@ -202,7 +202,6 @@ try
 	resetChangeTracking();
 	refreshLiveView();
 	listedAddr = new Uint8*[size];
-	routing().aStarPoints=new MapRouting::AStarAlgorithmPoint[size];
 
 	// Before format 146 a cell kept its own terrain ID (from format 134) besides
 	// the classic corners; these are the converted IDs, MIXED_TERRAIN where the
