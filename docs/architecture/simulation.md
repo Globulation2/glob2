@@ -873,7 +873,9 @@ runs; backend defaults and algorithm choices are unchanged.
   plainly: f is g plus the octile distance to the goal set at the per-map step
   floors, consistent by construction; the open set is a ring of f buckets popped
   lowest first and, within one f, latest push first; a cell closes on its first pop,
-  and neighbours are visited and pushed in `field::Surrounding` order. The window,
+  and neighbours are visited and pushed in `field::Surrounding` order. A search
+  whose goal cells cannot be entered (and that does not start among them) is
+  unreachable after no expansions; many-goal searches drop such goals first. The window,
   per-cell sampling, packed node words and the branchy, branchless scalar, SSE2 and
   NEON kernels are implementation choices; tests and `tools/astar_benchmark.py run
   --verify` require each to reproduce the reference expansion sequence exactly, so
