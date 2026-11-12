@@ -83,6 +83,8 @@ inline constexpr std::array<TerrainTypeGroup, TERRAIN_COUNT> TERRAIN_TYPE_GROUPS
 		{TERMITE_MOUNDS, G::Ridges},
 		{HOODOOS, G::Ridges},
 		{PETRIFIED_STUMPS, G::Ridges},
+		{STEPPE_GRASS, G::Grass},
+		{MOOR_GRASS, G::Grass},
 	}};
 }();
 

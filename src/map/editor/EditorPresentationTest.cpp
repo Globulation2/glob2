@@ -176,7 +176,8 @@ TEST_SUITE("EditorPresentation")
 								 "molten_lava_pool", "slate_ashlar", "basalt_causeway", "scoria_blocks",
 								 "rime_ashlar", "moonstone_lozenge", "frost_pinwheel", "arctic_tundra", "glacier",
 								 "icefall", "sandstone_benches", "obsidian_ridge", "granite_tors", "travertine_terraces",
-								 "penitentes", "termite_mounds", "hoodoos", "petrified_stumps"})
+								 "penitentes", "termite_mounds", "hoodoos", "petrified_stumps",
+								 "steppe_grass", "moor_grass"})
 		{
 			CAPTURE(terrain);
 			editor.performAction(std::string("select terrain ") + terrain);

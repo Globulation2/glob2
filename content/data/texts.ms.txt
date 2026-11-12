@@ -7004,6 +7004,10 @@ Busut anai-anai
 Cerobong pari-pari
 [petrified_stumps]
 Tunggul membatu
+[steppe_grass]
+Rumput stepa
+[moor_grass]
+Rumput tanah tinggi
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

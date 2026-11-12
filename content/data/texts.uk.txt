@@ -5888,6 +5888,10 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Кам'яні гриби
 [petrified_stumps]
 Скам'янілі пні
+[steppe_grass]
+Степова трава
+[moor_grass]
+Вереськова трава
 [terrain group water]
 Вода
 [terrain group sand]

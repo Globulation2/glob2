@@ -5888,6 +5888,10 @@ Termitiere
 Hornuri ale zânelor
 [petrified_stumps]
 Cioturi pietrificate
+[steppe_grass]
+Iarbă de stepă
+[moor_grass]
+Iarbă de turbărie
 [terrain group water]
 Apă
 [terrain group sand]

@@ -5888,6 +5888,10 @@ Termiteiras
 Chaminés de fada
 [petrified_stumps]
 Cepos petrificados
+[steppe_grass]
+Erva da estepe
+[moor_grass]
+Erva de charneca
 [terrain group water]
 Água
 [terrain group sand]

@@ -5864,6 +5864,10 @@ AI کی بنائی ہوئی نہیں
 ہوڈو ستون
 [petrified_stumps]
 پتھرائے ہوئے تنے
+[steppe_grass]
+سٹیپ گھاس
+[moor_grass]
+بلند میدانی گھاس
 [terrain group water]
 پانی
 [terrain group sand]

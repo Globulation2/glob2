@@ -800,7 +800,9 @@
     "penitentes",
     "termite_mounds",
     "hoodoos",
-    "petrified_stumps"
+    "petrified_stumps",
+    "steppe_grass",
+    "moor_grass"
   ],
   "bindings": {
     "water": "water",
@@ -866,7 +868,9 @@
     "penitentes": "penitentes",
     "termite_mounds": "termite_mounds",
     "hoodoos": "hoodoos",
-    "petrified_stumps": "petrified_stumps"
+    "petrified_stumps": "petrified_stumps",
+    "steppe_grass": "steppe_grass",
+    "moor_grass": "moor_grass"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

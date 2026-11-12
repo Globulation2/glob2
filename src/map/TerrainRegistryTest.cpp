@@ -446,6 +446,17 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(glacierFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcefall.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcefall.dump(), TERRAIN_COUNT_BEFORE_GLACIER));
+
+		// Formats 212 to 215 number their definitions from 64, before steppe grass and moor grass.
+		auto beforeSteppe = Json::parse(registry->serialize());
+		for (auto &item : beforeSteppe["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_STEPPE_GRASS;
+		const auto icefallFormat = TerrainRegistry::deserialize(beforeSteppe.dump(), TERRAIN_COUNT_BEFORE_STEPPE_GRASS);
+		CHECK(icefallFormat->serialize() == registry->serialize());
+		CHECK(icefallFormat->digest() == registry->digest());
+		CHECK(icefallFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeSteppe.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeSteppe.dump(), TERRAIN_COUNT_BEFORE_ICEFALL));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

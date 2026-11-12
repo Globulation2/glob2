@@ -5888,6 +5888,10 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 دودکش‌های جن
 [petrified_stumps]
 کنده‌های سنگ‌شده
+[steppe_grass]
+چمن استپ
+[moor_grass]
+چمن خلنگزار
 [terrain group water]
 آب
 [terrain group sand]

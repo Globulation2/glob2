@@ -5888,6 +5888,10 @@ AI 生成
 怪岩柱
 [petrified_stumps]
 石化樹樁
+[steppe_grass]
+乾冷草原
+[moor_grass]
+高沼草地
 [terrain group water]
 水
 [terrain group sand]

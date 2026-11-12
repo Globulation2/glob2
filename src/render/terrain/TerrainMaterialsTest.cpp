@@ -71,9 +71,9 @@ TerrainVisual::MaterialId stillSteppedWater(TerrainVisual::Catalog &definitions)
 	material.surf.ticks = 6;
 	return id;
 }
-std::array<unsigned, 64> materialWeights(const TerrainVisual::Coverage &coverage)
+std::array<unsigned, 128> materialWeights(const TerrainVisual::Coverage &coverage)
 {
-	std::array<unsigned, 64> weights{};
+	std::array<unsigned, 128> weights{};
 	for (unsigned k = 0; k < 4; ++k) weights[coverage.material[k]] += coverage.weight[k];
 	return weights;
 }
@@ -1249,25 +1249,25 @@ TEST_SUITE("TerrainMaterials")
 				CHECK(row[x] == 0xffc917bdu);
 		}
 	}
-	TEST_CASE("an additional material and a 64-material catalog compose without renderer branches "
+	TEST_CASE("an additional material and a 96-material catalog compose without renderer branches "
 			  "[display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
 		auto j = shippedCatalog();
-		// Pad the shipped catalog to 64 materials with grass clones.
-		for (auto i = j["materials"].size(); i < 64; ++i)
+		// Pad the shipped catalog to 96 materials with grass clones.
+		for (auto i = j["materials"].size(); i < 96; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
 			j["materials"].push_back(m);
 		}
-		REQUIRE(j["materials"].size() == 64);
+		REQUIRE(j["materials"].size() == 96);
 		TerrainVisual::Compositor compositor(TerrainVisual::Catalog::parse(j));
 		compositor.prepare(false, 0);
 		TerrainVisual::Recipe r;
 		r.width = r.height = 16;
 		for (int i = 0; i < 4; ++i)
-			r.corners[i] = 60 + i;
+			r.corners[i] = 92 + i;
 		GAGCore::DrawableSurface result(32, 32);
 		compositor.compose(r, result.getSDLSurface(), 0, 0, 1);
 		CHECK(result.hasOpaquePixels());
@@ -2192,13 +2192,13 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		auto j = shippedCatalog();
-		for (auto i = j["materials"].size(); i < 64; ++i)
+		for (auto i = j["materials"].size(); i < 96; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
 			j["materials"].push_back(m);
 		}
-		CHECK(TerrainVisual::Catalog::parse(j).materials.size() == 64);
+		CHECK(TerrainVisual::Catalog::parse(j).materials.size() == 96);
 		auto patchOnly = j;
 		for (auto &profile : patchOnly["profiles"])
 			if (profile.value("shape", "") == "contextual") profile.erase("shape");

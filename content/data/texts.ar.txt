@@ -5888,6 +5888,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 أعمدة الهودو
 [petrified_stumps]
 جذوع متحجرة
+[steppe_grass]
+عشب السهوب
+[moor_grass]
+عشب المرتفعات
 [terrain group water]
 ماء
 [terrain group sand]

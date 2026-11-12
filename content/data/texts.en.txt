@@ -5866,6 +5866,10 @@ Termite mounds
 Hoodoos
 [petrified_stumps]
 Petrified stumps
+[steppe_grass]
+Steppe grass
+[moor_grass]
+Moor grass
 [terrain group water]
 Water
 [terrain group sand]

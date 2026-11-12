@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 215
+#define VERSION_MINOR 216
+// version 216 adds built-in steppe grass and moor grass; custom terrain IDs move up by two.
 // version 215 saves Maxima's last maintenance-clearing tick and its farming request flag.
 // version 214 saves remembered enemy building positions in Maxima's placement snapshot for role-sited towers.
 // version 213 persists material destination planes, active claims, pending unit routes, claim policy cadence and bounded claim recovery; snapshot-v4 checksums.

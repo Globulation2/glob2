@@ -65,6 +65,8 @@ export const TERRAIN_PRESETS = [
   'termite_mounds',
   'hoodoos',
   'petrified_stumps',
+  'steppe_grass',
+  'moor_grass',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

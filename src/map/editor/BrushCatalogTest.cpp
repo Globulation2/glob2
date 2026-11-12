@@ -133,7 +133,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog.front().section == BrushSection::Terrain);
 		CHECK(catalog.front().key == "grass");
 		CHECK(ids(catalog.front()) ==
-			  std::vector<std::string>{"terrain/grass", "terrain/lush_grass", "terrain/dry_grass"});
+			  std::vector<std::string>{"terrain/grass", "terrain/lush_grass", "terrain/dry_grass",
+									   "terrain/steppe_grass", "terrain/moor_grass"});
 		REQUIRE(catalog.size() > 3);
 		CHECK(catalog[1].key == "sand");
 		CHECK(ids(catalog[1]) == std::vector<std::string>{"terrain/sand", "terrain/dune_sand", "terrain/pale_sand",

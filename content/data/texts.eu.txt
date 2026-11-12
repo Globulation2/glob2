@@ -5888,6 +5888,10 @@ Termita-tontorrak
 Maitagarrien tximiniak
 [petrified_stumps]
 Harritutako enborrak
+[steppe_grass]
+Estepako belarra
+[moor_grass]
+Mendi-larreko belarra
 [terrain group water]
 Ura
 [terrain group sand]

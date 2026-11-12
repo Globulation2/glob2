@@ -7002,6 +7002,10 @@ GL மட்டும்
 ஹூடூ தூண்கள்
 [petrified_stumps]
 கல்லான மரக்கட்டைகள்
+[steppe_grass]
+புல்வெளிப் புல்
+[moor_grass]
+மேட்டுநிலப் புல்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

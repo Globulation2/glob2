@@ -5888,6 +5888,10 @@ Termit tümsekleri
 Peri bacaları
 [petrified_stumps]
 Taşlaşmış kütükler
+[steppe_grass]
+Bozkır çimeni
+[moor_grass]
+Fundalık çimeni
 [terrain group water]
 Su
 [terrain group sand]

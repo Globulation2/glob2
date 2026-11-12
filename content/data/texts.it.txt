@@ -5888,6 +5888,10 @@ Termitai
 Camini delle fate
 [petrified_stumps]
 Ceppi pietrificati
+[steppe_grass]
+Erba della steppa
+[moor_grass]
+Erba della brughiera
 [terrain group water]
 Acqua
 [terrain group sand]

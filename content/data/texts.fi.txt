@@ -5888,6 +5888,10 @@ Termiittikeot
 Maapyramidit
 [petrified_stumps]
 Kivettyneet kannot
+[steppe_grass]
+Aroruoho
+[moor_grass]
+Nummiruoho
 [terrain group water]
 Vesi
 [terrain group sand]

@@ -5864,6 +5864,10 @@ Termittuer
 Jordpyramider
 [petrified_stumps]
 Forsteinede stubber
+[steppe_grass]
+Steppegress
+[moor_grass]
+Heigress
 [terrain group water]
 Vann
 [terrain group sand]

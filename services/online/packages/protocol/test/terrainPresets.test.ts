@@ -56,6 +56,8 @@ describe('built-in terrain presets', () => {
       'termite_mounds',
       'hoodoos',
       'petrified_stumps',
+      'steppe_grass',
+      'moor_grass',
     ]);
   });
 

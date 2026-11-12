@@ -5864,6 +5864,10 @@ AI ทำงาน​อย่างไร
 เสาหินฮูดู
 [petrified_stumps]
 ตอไม้กลายเป็นหิน
+[steppe_grass]
+หญ้า​ทุ่ง​สเตปป์
+[moor_grass]
+หญ้า​ทุ่ง​ราบ​สูง
 [terrain group water]
 น้ำ
 [terrain group sand]

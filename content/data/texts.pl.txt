@@ -5888,6 +5888,10 @@ Termitiery
 Grzyby skalne
 [petrified_stumps]
 Skamieniałe pnie
+[steppe_grass]
+Trawa stepowa
+[moor_grass]
+Trawa wrzosowiskowa
 [terrain group water]
 Woda
 [terrain group sand]

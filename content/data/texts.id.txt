@@ -5888,6 +5888,10 @@ Gundukan rayap
 Cerobong peri
 [petrified_stumps]
 Tunggul membatu
+[steppe_grass]
+Rumput stepa
+[moor_grass]
+Rumput dataran tinggi
 [terrain group water]
 Air
 [terrain group sand]

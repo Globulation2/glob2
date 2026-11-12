@@ -2932,6 +2932,8 @@
 [termite_mounds]
 [hoodoos]
 [petrified_stumps]
+[steppe_grass]
+[moor_grass]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

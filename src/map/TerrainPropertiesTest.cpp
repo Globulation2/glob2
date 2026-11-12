@@ -1197,10 +1197,13 @@ TEST_SUITE("TerrainRuntime")
 		}
 		CHECK(TerrainRegistry::builtins()->find("icefall") == ICEFALL);
 		CHECK(TerrainRegistry::builtins()->find("petrified_stumps") == PETRIFIED_STUMPS);
+		CHECK(TerrainRegistry::builtins()->find("steppe_grass") == STEPPE_GRASS);
+		CHECK(TerrainRegistry::builtins()->find("moor_grass") == MOOR_GRASS);
 	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
+									 std::pair{STEPPE_GRASS, GRASS}, std::pair{MOOR_GRASS, GRASS},
 									 std::pair{DUNE_SAND, SAND}, std::pair{PALE_SAND, SAND}})
 		{
 			CAPTURE(terrainPresentation(look).name);

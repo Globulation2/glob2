@@ -763,7 +763,7 @@ without pair treatments. Classes, strongest first:
 | `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, volcanic_ash, mud, mudflat, hardpan, deep_snow, wind_swept_snow, loam, moss |
 | `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake, glacier_ice |
 | `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, tundra, spring_meadow |
-| `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
+| `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass, steppe_grass, moor_grass |
 | `sand` | contextual | 10 / `beach` | 256 / 1024 / 320 / 512 / 512 | sand, dune_sand, pale_sand |
 | `shore` | contextual | coast only | 256 / 832 / 320 / 384 / 704 | grassy and earthen coasts |
 | `beach` | contextual | coast only | 104 / 1024 / 448 / 0 / 640 | sandy coasts |

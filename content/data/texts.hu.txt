@@ -5888,6 +5888,10 @@ Termeszvárak
 Földpiramisok
 [petrified_stumps]
 Megkövesedett tönkök
+[steppe_grass]
+Sztyeppei fű
+[moor_grass]
+Lápi fű
 [terrain group water]
 Víz
 [terrain group sand]

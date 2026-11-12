@@ -91,11 +91,11 @@ class TerrainTileset(unittest.TestCase):
         expected = catalog_frame_count(self.document)
         self.assertGreaterEqual(expected, 80)
         self.assertEqual(len(validate(self.document)), expected)
-        for i in range(64 - len(self.document["materials"])):
+        for i in range(96 - len(self.document["materials"])):
             m = copy.deepcopy(self.document["materials"][2])
             m["key"] = f"fixture-{i}"
             self.document["materials"].append(m)
-        self.assertEqual(len(self.document["materials"]), 64)
+        self.assertEqual(len(self.document["materials"]), 96)
         self.assertEqual(len(validate(self.document)), expected)
 
     def test_interchangeable_blocks_require_complete_periodic_grids(self):

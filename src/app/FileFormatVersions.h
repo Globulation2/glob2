@@ -441,3 +441,7 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_TOWER_ROLES = 214;
 //! Maxima coalesces strategy reviews and maintenance-clearing plans: the last
 //! clearing tick and whether a farming update requested one are saved.
 static constexpr int FILE_FORMAT_VERSION_MAXIMA_COALESCED_REVIEWS = 215;
+
+//! Built-in steppe grass and moor grass (Grass): TERRAIN_COUNT grew from 64 to 66, so
+//! earlier files carry custom terrain IDs starting at 64 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_STEPPE_GRASS = 216;

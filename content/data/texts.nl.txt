@@ -5888,6 +5888,10 @@ Termietenheuvels
 Aardpiramides
 [petrified_stumps]
 Versteende stronken
+[steppe_grass]
+Steppegras
+[moor_grass]
+Veengras
 [terrain group water]
 Water
 [terrain group sand]

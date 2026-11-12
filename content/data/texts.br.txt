@@ -5888,6 +5888,10 @@ Cupinzeiros
 Chaminés de fada
 [petrified_stumps]
 Tocos petrificados
+[steppe_grass]
+Grama da estepe
+[moor_grass]
+Grama de charneca
 [terrain group water]
 Água
 [terrain group sand]

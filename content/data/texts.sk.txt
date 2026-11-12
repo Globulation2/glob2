@@ -5888,6 +5888,10 @@ Termitiská
 Skalné hríby
 [petrified_stumps]
 Skamenené pne
+[steppe_grass]
+Stepná tráva
+[moor_grass]
+Vresovisková tráva
 [terrain group water]
 Voda
 [terrain group sand]
