@@ -254,7 +254,7 @@ int main(int argc, char **argv)
 	unsigned repeat = 5;
 	std::string only = "all", variant = "new";
 	bool verify = false;
-	int window = -1;
+	int window = -1, kernel = -1;
 	for (int i = 2; i < argc; ++i)
 	{
 		const std::string a = argv[i];
@@ -268,6 +268,11 @@ int main(int argc, char **argv)
 			verify = true;
 		else if (a == "--window" && i + 1 < argc)
 			window = std::stoi(argv[++i]);
+		else if (a == "--kernel" && i + 1 < argc)
+		{
+			const std::string k = argv[++i];
+			kernel = k == "branchy" ? 0 : k == "scalar" ? 1 : 2;
+		}
 		else
 		{
 			std::cerr << "unknown argument " << a << "\n";
@@ -297,8 +302,12 @@ int main(int argc, char **argv)
 			q.wantPath = true;
 			const auto reference = astar::referenceSearch(domain, q, &expected);
 			for (unsigned forced : {0u, 4096u})
+				for (auto kernel : {astar::Kernel::Branchy, astar::Kernel::Scalar, astar::Kernel::SSE2})
 			{
+				if (!astar::kernelAvailable(kernel))
+					continue;
 				workspace.forcedWindow = forced;
+				workspace.kernel = kernel;
 				const auto result = workspace.search(domain, q);
 				++checked;
 				if (result.status != reference.status || result.cost != reference.cost ||
@@ -316,6 +325,8 @@ int main(int argc, char **argv)
 		workspace.forcedWindow = 1u << 20;
 	if (window >= 0)
 		workspace.forcedWindow = unsigned(window);
+	if (kernel >= 0)
+		workspace.kernel = astar::Kernel(kernel);
 
 	LegacyUnitSearch legacy;
 #ifdef GLOB2_ASTAR_BASELINE_CLAIMS

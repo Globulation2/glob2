@@ -19,6 +19,12 @@
 // reaches the edge of its window restarts in a larger one and so reproduces the
 // same expansion sequence. Searches sample the Domain lazily, once per touched cell.
 #include "../Grid.h"
+#include <cstdlib>
+#include <cstring>
+#if defined(__SSE2__) && !defined(GLOB2_ASTAR_SCALAR)
+#include <emmintrin.h>
+#define GLOB2_ASTAR_SSE2 1
+#endif
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -54,6 +60,43 @@ constexpr Floor consistentFloor(unsigned cardinal, unsigned diagonal)
 }
 
 constexpr std::uint32_t MaximumCost = 65533;
+
+// Neighbour expansion kernels. All produce the same expansion sequence; tests
+// and tools/astar_benchmark.cpp compare them against the reference search.
+//  Branchy: one neighbour at a time, branching on each test (the reference).
+//  Scalar:  all eight neighbours classified into bit masks without branching.
+//  SSE2:    the same classification in two four-lane vectors.
+enum class Kernel : std::uint8_t
+{
+	Branchy,
+	Scalar,
+	SSE2
+};
+inline bool kernelAvailable(Kernel kernel)
+{
+#ifdef GLOB2_ASTAR_SSE2
+	return true;
+#else
+	return kernel != Kernel::SSE2;
+#endif
+}
+// GLOB2_ASTAR_KERNEL=branchy|scalar|sse2 overrides the choice for diagnosis.
+inline Kernel automaticKernel()
+{
+	static const Kernel chosen = [] {
+		if (const char *name = std::getenv("GLOB2_ASTAR_KERNEL"))
+		{
+			if (!std::strcmp(name, "branchy"))
+				return Kernel::Branchy;
+			if (!std::strcmp(name, "scalar"))
+				return Kernel::Scalar;
+			if (!std::strcmp(name, "sse2") && kernelAvailable(Kernel::SSE2))
+				return Kernel::SSE2;
+		}
+		return kernelAvailable(Kernel::SSE2) ? Kernel::SSE2 : Kernel::Scalar;
+	}();
+	return chosen;
+}
 
 struct Query
 {
@@ -111,12 +154,12 @@ constexpr bool diagonal(unsigned d) { return field::Surrounding[d].x != 0 && fie
 constexpr unsigned RingBits = 9; // f grows by at most 255 + 255 per expansion
 constexpr unsigned Ring = 1u << RingBits;
 
-inline unsigned torusDistance(int a, int b, int size)
+[[gnu::always_inline]] inline unsigned torusDistance(int a, int b, int size)
 {
 	const unsigned d = unsigned(a - b) & unsigned(size - 1);
 	return std::min(d, unsigned(size) - d);
 }
-inline unsigned octile(unsigned a, unsigned b, Floor floor)
+[[gnu::always_inline]] inline unsigned octile(unsigned a, unsigned b, Floor floor)
 {
 	const unsigned lo = std::min(a, b), hi = std::max(a, b);
 	return (hi - lo) * floor.cardinal + lo * floor.diagonal;
@@ -141,7 +184,7 @@ class BucketQueue
 		count = 0;
 	}
 	bool empty() const { return count == 0; }
-	void push(std::uint32_t f, std::uint32_t cell)
+	[[gnu::always_inline]] void push(std::uint32_t f, std::uint32_t cell)
 	{
 		assert(f >= base && f - base < Ring);
 		const auto slot = f & (Ring - 1);
@@ -173,12 +216,97 @@ class BucketQueue
 		auto &bucket = buckets[slot];
 		const auto cell = bucket.back();
 		bucket.pop_back();
-		if (bucket.empty())
-			occupied[slot >> 6] &= ~(std::uint64_t(1) << (slot & 63));
+		occupied[slot >> 6] &= ~(std::uint64_t(bucket.empty()) << (slot & 63));
 		--count;
 		return cell;
 	}
 };
+struct Lanes
+{
+	unsigned improve = 0, over = 0;
+	bool edge = false;
+};
+constexpr std::uint32_t StopBits = std::uint32_t(Closed | Blocked) << 16;
+constexpr std::uint32_t EdgeBit = std::uint32_t(Edge) << 16;
+
+// Classifies the eight neighbours of an interior plane cell p (offsets in
+// field::Surrounding order): which improve within the cost limit, which only
+// exceed it, and whether any is the window halo. word and candidate receive
+// each neighbour's node word and candidate g.
+template <Kernel K>
+[[gnu::always_inline]] inline Lanes classify(const std::uint32_t *nodes, const std::uint16_t *costs, const int *off,
+											 std::uint32_t p, std::uint32_t gp, std::uint32_t maximumCost,
+											 std::uint32_t *word, std::uint32_t *candidate)
+{
+	Lanes lanes;
+#ifdef GLOB2_ASTAR_SSE2
+	if constexpr (K == Kernel::SSE2)
+	{
+		// Rows above, beside and below p, regrouped into stencil order:
+		// lo = (-1,-1) (0,-1) (1,-1) (-1,0), hi = (1,0) (-1,1) (0,1) (1,1).
+		const int stride = off[6] - off[3] - 1; // (0,1) - (-1,0) - 1
+		const auto *base = reinterpret_cast<const float *>(nodes + p);
+		const __m128 above = _mm_loadu_ps(base - stride - 1), beside = _mm_loadu_ps(base - 1),
+					 below = _mm_loadu_ps(base + stride - 1);
+		const __m128 x = _mm_shuffle_ps(above, beside, _MM_SHUFFLE(0, 0, 2, 2));
+		const __m128 y = _mm_shuffle_ps(beside, below, _MM_SHUFFLE(0, 0, 2, 2));
+		const __m128i lo = _mm_castps_si128(_mm_shuffle_ps(above, x, _MM_SHUFFLE(2, 0, 1, 0)));
+		const __m128i hi = _mm_castps_si128(_mm_shuffle_ps(y, below, _MM_SHUFFLE(2, 1, 2, 0)));
+		const auto at = [&](int d) { return int(costs[int(p) + off[d]]); };
+		const __m128i costLo = _mm_setr_epi32(at(0), at(1), at(2), at(3));
+		const __m128i costHi = _mm_setr_epi32(at(4), at(5), at(6), at(7));
+		// Diagonal lanes take the high byte: lanes 0 and 2 of lo, 1 and 3 of hi.
+		const __m128i byte = _mm_set1_epi32(0xff);
+		const __m128i diagonalLo = _mm_setr_epi32(-1, 0, -1, 0), diagonalHi = _mm_setr_epi32(0, -1, 0, -1);
+		const auto stepOf = [&](__m128i c, __m128i diagonal) {
+			return _mm_or_si128(_mm_and_si128(diagonal, _mm_srli_epi32(c, 8)),
+								_mm_andnot_si128(diagonal, _mm_and_si128(c, byte)));
+		};
+		const __m128i g = _mm_set1_epi32(int(gp)), limit = _mm_set1_epi32(int(maximumCost));
+		const __m128i candLo = _mm_add_epi32(g, stepOf(costLo, diagonalLo));
+		const __m128i candHi = _mm_add_epi32(g, stepOf(costHi, diagonalHi));
+		const __m128i zero = _mm_setzero_si128(), stop = _mm_set1_epi32(int(StopBits)), low = _mm_set1_epi32(0xffff);
+		const auto classifyHalf = [&](__m128i w, __m128i cand, unsigned &improve, unsigned &over) {
+			const __m128i open = _mm_cmpeq_epi32(_mm_and_si128(w, stop), zero);
+			const __m128i beyond = _mm_cmpgt_epi32(cand, limit);
+			const __m128i better = _mm_cmpgt_epi32(_mm_and_si128(w, low), cand);
+			improve = unsigned(_mm_movemask_ps(_mm_castsi128_ps(_mm_andnot_si128(beyond, _mm_and_si128(open, better)))));
+			over = unsigned(_mm_movemask_ps(_mm_castsi128_ps(_mm_and_si128(open, beyond))));
+		};
+		unsigned improveLo, overLo, improveHi, overHi;
+		classifyHalf(lo, candLo, improveLo, overLo);
+		classifyHalf(hi, candHi, improveHi, overHi);
+		lanes.improve = improveLo | improveHi << 4;
+		lanes.over = overLo | overHi << 4;
+		const __m128i edge = _mm_and_si128(_mm_or_si128(lo, hi), _mm_set1_epi32(int(EdgeBit)));
+		lanes.edge = _mm_movemask_epi8(_mm_cmpeq_epi32(edge, zero)) != 0xffff;
+		_mm_store_si128(reinterpret_cast<__m128i *>(word), lo);
+		_mm_store_si128(reinterpret_cast<__m128i *>(word + 4), hi);
+		_mm_store_si128(reinterpret_cast<__m128i *>(candidate), candLo);
+		_mm_store_si128(reinterpret_cast<__m128i *>(candidate + 4), candHi);
+		return lanes;
+	}
+#endif
+	std::uint32_t edge = 0;
+	[&]<unsigned... D>(std::integer_sequence<unsigned, D...>) {
+		(
+			[&] {
+				const auto n = std::uint32_t(int(p) + off[D]);
+				const std::uint32_t w = nodes[n], c = costs[n];
+				const std::uint32_t cand = gp + (diagonal(D) ? c >> 8 : c & 0xff);
+				const unsigned open = (w & StopBits) == 0;
+				const unsigned beyond = cand > maximumCost;
+				lanes.improve |= (open & !beyond & (cand < (w & 0xffff))) << D;
+				lanes.over |= (open & beyond) << D;
+				edge |= w & EdgeBit;
+				word[D] = w;
+				candidate[D] = cand;
+			}(),
+			...);
+	}(std::make_integer_sequence<unsigned, 8>{});
+	lanes.edge = edge != 0;
+	return lanes;
+}
 } // namespace detail
 
 // Reusable scratch for one thread. Results never depend on what a workspace
@@ -193,6 +321,8 @@ class Workspace
 
 	// Benchmarks and tests may pin the first window side; 0 sizes it from the query.
 	unsigned forcedWindow = 0;
+	// The neighbour kernel; results never depend on it.
+	Kernel kernel = automaticKernel();
 	// The side of the window the last search finished in; 0 for the whole map.
 	int windowSide() const { return torus ? 0 : side; }
 	// Tests record the world index of every expansion of the final attempt.
@@ -208,17 +338,21 @@ class Workspace
 	unsigned wShift = 0, strideShift = 0;
 	std::array<int, 8> offsets{};
 
-	// Each cell is sampled from the Domain on first touch in a search; mark
-	// holds the search stamp of that touch. Each geometry keeps its own planes,
-	// so searches of different sizes alternate without reallocating.
+	// Each cell is sampled from the Domain on first touch in a search. Its node
+	// word packs g (bits 0-15), the state flags (16-23) and the stamp of the
+	// search that sampled it (24-31), so one load answers a neighbour visit.
+	// Each geometry keeps its own planes, so searches of different sizes
+	// alternate without reallocating.
 	struct Planes
 	{
 		int width = 0, height = 0, side = -1;
-		std::vector<std::uint16_t> g;
-		std::vector<std::uint8_t> state, mark;
+		std::vector<std::uint32_t> nodes;
 		std::vector<std::uint16_t> steps; // cardinal | diagonal << 8
-		std::uint8_t stamp = 0;
+		std::uint32_t stamp = 0;
 	};
+	static constexpr std::uint32_t flags(std::uint32_t node) { return (node >> 16) & 0xff; }
+	std::uint32_t costOf(std::uint32_t p) const { return planes->nodes[p] & 0xffff; }
+	unsigned directionOf(std::uint32_t p) const { return flags(planes->nodes[p]) & detail::Direction; }
 	std::array<Planes, 16> cached{}; // by log2(side); slot 0 is the whole map
 	Planes *planes = &cached[0];
 
@@ -259,12 +393,29 @@ class Workspace
 	}
 
 	void layout(int width, int height, std::uint32_t start, int requestedSide);
+	template <class Run> bool dispatch(Run &&run) const
+	{
+		const auto with = [&]<Kernel K>() {
+			return torus ? run.template operator()<K, true>() : run.template operator()<K, false>();
+		};
+		switch (kernel)
+		{
+		case Kernel::Branchy:
+			return with.template operator()<Kernel::Branchy>();
+#ifdef GLOB2_ASTAR_SSE2
+		case Kernel::SSE2:
+			return with.template operator()<Kernel::SSE2>();
+#endif
+		default:
+			return with.template operator()<Kernel::Scalar>();
+		}
+	}
 	template <class Domain, class GoalTest> void sample(const Domain &domain, std::uint32_t p, GoalTest &isGoal);
 	void trace(std::uint32_t p, std::uint32_t startPlane, Result *result, int *dx, int *dy) const;
 	static int firstSide(int width, int height, std::uint32_t reach);
 
 	// One attempt in the current window; false when the search met the halo.
-	template <bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
+	template <Kernel K, bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
 	bool run(const Domain &domain, std::uint32_t startPlane, std::uint32_t maximumCost, std::uint32_t maximumExpansions,
 			 Heuristic &&h, GoalTest &isGoal, OnGoal &&onGoal, Result &result);
 };
@@ -311,39 +462,35 @@ inline void Workspace::layout(int width, int height, std::uint32_t start, int re
 		P.height = height;
 		P.side = side;
 		const auto cells = std::size_t(stride) * rows;
-		P.g.assign(cells, 0xffff);
-		P.state.assign(cells, 0);
-		P.steps.assign(cells, 0);
-		P.mark.assign(cells, 0);
+		// Vector kernels read one cell past a neighbour row.
+		P.nodes.assign(cells + 4, 0);
+		P.steps.assign(cells + 4, 0);
 		P.stamp = 0;
-		if (!torus)
-			for (int py = 0; py < rows; ++py)
-				for (int px = 0; px < stride; ++px)
-					if (px == 0 || py == 0 || px == stride - 1 || py == rows - 1)
-						P.state[std::size_t(py) * stride + px] = detail::Edge | detail::Blocked;
 	}
-	if (++P.stamp == 0)
+	if (++P.stamp == 256)
 	{
-		std::fill(P.mark.begin(), P.mark.end(), 0);
+		std::fill(P.nodes.begin(), P.nodes.end(), 0);
 		P.stamp = 1;
 	}
 }
 
 template <class Domain, class GoalTest>
-inline void Workspace::sample(const Domain &domain, std::uint32_t p, GoalTest &isGoal)
+[[gnu::always_inline]] inline void Workspace::sample(const Domain &domain, std::uint32_t p, GoalTest &isGoal)
 {
 	auto &P = *planes;
-	P.mark[p] = P.stamp;
-	if (!torus && (P.state[p] & detail::Edge))
-		return; // the halo is fixed for the window's lifetime
 	const int px = planeX(p), py = planeY(p);
+	const std::uint32_t stamped = P.stamp << 24 | 0xffff;
+	if (!torus && (px == 0 || py == 0 || px == stride - 1 || py == rows - 1))
+	{
+		P.nodes[p] = stamped | std::uint32_t(detail::Edge | detail::Blocked) << 16; // the halo
+		return;
+	}
 	const auto world = std::uint32_t((worldY(py) << wShift) + worldX(px));
 	const bool goal = isGoal(px, py, world);
 	const unsigned entry = domain.entry(world, goal);
 	assert(!entry || ((entry & 0xff) && (entry >> 8)));
-	P.g[p] = 0xffff;
 	P.steps[p] = std::uint16_t(entry);
-	P.state[p] = std::uint8_t((entry ? 0 : detail::Blocked) | (goal ? detail::Goal : 0));
+	P.nodes[p] = stamped | std::uint32_t((entry ? 0 : detail::Blocked) | (goal ? detail::Goal : 0)) << 16;
 }
 
 inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *result, int *dx, int *dy) const
@@ -353,7 +500,7 @@ inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *
 		result->cells.clear();
 	while (p != startPlane)
 	{
-		const unsigned d = planes->state[p] & detail::Direction;
+		const unsigned d = directionOf(p);
 		if (result)
 			result->cells.push_back(worldIndex(p));
 		*dx = field::Surrounding[d].x;
@@ -364,20 +511,21 @@ inline void Workspace::trace(std::uint32_t p, std::uint32_t startPlane, Result *
 		std::reverse(result->cells.begin(), result->cells.end());
 }
 
-template <bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
+template <Kernel K, bool Torus, class Domain, class Heuristic, class GoalTest, class OnGoal>
 inline bool Workspace::run(const Domain &domain, std::uint32_t startPlane, std::uint32_t maximumCost,
 						   std::uint32_t maximumExpansions, Heuristic &&h, GoalTest &isGoal, OnGoal &&onGoal,
 						   Result &result)
 {
 	auto &P = *planes;
-	std::uint8_t *const st = P.state.data();
-	std::uint8_t *const mark = P.mark.data();
-	std::uint16_t *const gs = P.g.data();
+	std::uint32_t *const nodes = P.nodes.data();
 	const std::uint16_t *const costs = P.steps.data();
-	const std::uint8_t stamp = P.stamp;
+	const std::uint32_t stamp = P.stamp;
+	constexpr std::uint32_t ClosedBit = std::uint32_t(detail::Closed) << 16;
+	constexpr std::uint32_t Stop = std::uint32_t(detail::Closed | detail::Blocked) << 16;
+	constexpr std::uint32_t DirectionBits = std::uint32_t(detail::Direction) << 16;
 	sample(domain, startPlane, isGoal);
-	gs[startPlane] = 0;
-	st[startPlane] &= detail::Goal; // the start is never tested for passability
+	// The start is never tested for passability.
+	nodes[startPlane] &= ~(std::uint32_t(0xffff) | std::uint32_t(detail::Blocked) << 16);
 	queue.reset(h(startPlane));
 	queue.push(h(startPlane), startPlane);
 	bool limited = false;
@@ -386,8 +534,8 @@ inline bool Workspace::run(const Domain &domain, std::uint32_t startPlane, std::
 	while (!queue.empty())
 	{
 		const auto p = queue.pop();
-		const auto sp = st[p];
-		if (sp & detail::Closed)
+		const auto np = nodes[p];
+		if (np & ClosedBit)
 			continue;
 		if (result.expansions >= maximumExpansions)
 		{
@@ -395,41 +543,74 @@ inline bool Workspace::run(const Domain &domain, std::uint32_t startPlane, std::
 			return true;
 		}
 		++result.expansions;
-		st[p] = sp | detail::Closed;
+		nodes[p] = np | ClosedBit;
 		if (expansionLog) [[unlikely]]
 			expansionLog->push_back(worldIndex(p));
-		if (sp & detail::Goal)
+		if (flags(np) & detail::Goal)
 		{
 			if (onGoal(p))
 				return true;
 			if (p != startPlane)
 				continue; // goals are terminal
 		}
-		const std::uint32_t gp = gs[p];
+		const std::uint32_t gp = np & 0xffff;
 		bool edge = false;
-		forEachDirection([&](auto direction) {
-			constexpr unsigned d = decltype(direction)::value;
-			const auto n = step<Torus>(p, d);
-			if (mark[n] != stamp)
-				sample(domain, n, isGoal);
-			const auto sn = st[n];
-			if (sn & (detail::Closed | detail::Blocked))
+		// Off the seams a torus cell's neighbours are plain offsets too.
+		const bool wrapped = Torus && (unsigned(planeX(p) - 1) >= unsigned(stride - 2) ||
+									   unsigned(planeY(p) - 1) >= unsigned(rows - 2));
+		if (K == Kernel::Branchy || wrapped)
+		{
+			forEachDirection([&](auto direction) {
+				constexpr unsigned d = decltype(direction)::value;
+				const auto n = wrapped ? step<true>(p, d) : step<false>(p, d);
+				auto nn = nodes[n];
+				if ((nn >> 24) != stamp)
+				{
+					sample(domain, n, isGoal);
+					nn = nodes[n];
+				}
+				if (nn & Stop)
+				{
+					if constexpr (!Torus)
+						edge |= (nn & (std::uint32_t(detail::Edge) << 16)) != 0;
+					return;
+				}
+				const std::uint32_t candidate = gp + (detail::diagonal(d) ? costs[n] >> 8 : costs[n] & 0xff);
+				if (candidate > maximumCost)
+				{
+					limited = true;
+					return;
+				}
+				if (candidate >= (nn & 0xffff))
+					return;
+				nodes[n] = (nn & ~(DirectionBits | 0xffff)) | std::uint32_t(d) << 16 | candidate;
+				queue.push(candidate + h(n), n);
+			});
+		}
+		else
+		{
+			const int *const off = offsets.data();
+			// Sample the neighbours first touched by this expansion.
+			unsigned fresh = 0;
+			forEachDirection([&](auto direction) {
+				constexpr unsigned d = decltype(direction)::value;
+				fresh |= unsigned((nodes[p + off[d]] >> 24) != stamp) << d;
+			});
+			for (; fresh; fresh &= fresh - 1)
+				sample(domain, std::uint32_t(int(p) + off[std::countr_zero(fresh)]), isGoal);
+			alignas(16) std::uint32_t word[8], candidate[8];
+			const auto lanes = detail::classify<K>(nodes, costs, off, p, gp, maximumCost, word, candidate);
+			limited |= lanes.over != 0;
+			if constexpr (!Torus)
+				edge = lanes.edge;
+			for (unsigned improve = lanes.improve; improve; improve &= improve - 1)
 			{
-				edge |= (sn & detail::Edge) != 0;
-				return;
+				const unsigned d = unsigned(std::countr_zero(improve));
+				const auto n = std::uint32_t(int(p) + off[d]);
+				nodes[n] = (word[d] & ~(DirectionBits | 0xffff)) | std::uint32_t(d) << 16 | candidate[d];
+				queue.push(candidate[d] + h(n), n);
 			}
-			const std::uint32_t candidate = gp + (detail::diagonal(d) ? costs[n] >> 8 : costs[n] & 0xff);
-			if (candidate > maximumCost)
-			{
-				limited = true;
-				return;
-			}
-			if (candidate >= gs[n])
-				return;
-			gs[n] = std::uint16_t(candidate);
-			st[n] = std::uint8_t((sn & ~detail::Direction) | d);
-			queue.push(candidate + h(n), n);
-		});
+		}
 		if (edge) [[unlikely]]
 			return false; // the window is too small; restart larger
 	}
@@ -449,14 +630,14 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
 	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, std::max(apart + 4, reach));
 	const Floor floor = q.floor;
-	const auto h = [this, floor](std::uint32_t p) -> std::uint32_t {
+	const auto h = [this, floor](std::uint32_t p) __attribute__((always_inline)) -> std::uint32_t {
 		const unsigned ax = detail::torusDistance(worldX(planeX(p)), targetX, mapW);
 		const unsigned ay = detail::torusDistance(worldY(planeY(p)), targetY, mapH);
 		return detail::octile(ax > goalRadius ? ax - goalRadius : 0, ay > goalRadius ? ay - goalRadius : 0, floor);
 	};
 	auto isGoal = [this](int px, int py, std::uint32_t) {
-		return detail::torusDistance(worldX(px), targetX, mapW) <= goalRadius &&
-			   detail::torusDistance(worldY(py), targetY, mapH) <= goalRadius;
+		return (detail::torusDistance(worldX(px), targetX, mapW) <= goalRadius) &
+			   (detail::torusDistance(worldY(py), targetY, mapH) <= goalRadius);
 	};
 	const std::uint32_t maximumCost = std::min(q.maximumCost, MaximumCost);
 	Result result;
@@ -468,13 +649,14 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 		result = {};
 		const auto found = [&](std::uint32_t p) {
 			result.status = Status::Found;
-			result.cost = planes->g[p];
+			result.cost = costOf(p);
 			result.goal = worldIndex(p);
 			trace(p, startPlane, q.wantPath ? &result : nullptr, &result.firstDx, &result.firstDy);
 			return true;
 		};
-		const bool complete = torus ? run<true>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result)
-									: run<false>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result);
+		const bool complete = dispatch([&]<Kernel K, bool Torus>() {
+			return run<K, Torus>(domain, startPlane, maximumCost, q.maximumExpansions, h, isGoal, found, result);
+		});
 		if (complete)
 			break;
 	}
@@ -524,13 +706,14 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 			trace(p, startPlane, nullptr, &dx, &dy);
 			for (std::size_t i = 0; i < goals.size(); ++i)
 				if (goals[i] == world)
-					results[i] = {true, planes->g[p], dx, dy};
+					results[i] = {true, costOf(p), dx, dy};
 			return --remaining == 0;
 		};
 		Result scratch;
-		const bool complete =
-			torus ? run<true>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal, reached, scratch)
-				  : run<false>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal, reached, scratch);
+		const bool complete = dispatch([&]<Kernel K, bool Torus>() {
+			return run<K, Torus>(domain, startPlane, maximumCost, std::numeric_limits<std::uint32_t>::max(), h, isGoal,
+								 reached, scratch);
+		});
 		if (complete)
 			return;
 	}
