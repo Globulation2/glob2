@@ -8,16 +8,16 @@
         "fillable": 1,
         "gameSprite": "data/gfx/wallc",
         "height": 1,
-        "hpInc": 180,
+        "hpInc": 375,
         "hpInit": 1,
-        "hpMax": 180,
+        "hpMax": 750,
         "hueImage": 1,
         "isBuildingSite": 1,
         "maxMaterial": [
           0,
           0,
           0,
-          1,
+          2,
           0,
           0,
           0,
@@ -112,7 +112,7 @@
         "workPriorityBias": 1,
         "assignmentLimit": 20,
         "constructionCost": {
-          "stone": 1
+          "stone": 2
         },
         "repairCost": {},
         "replenishMaterials": [
@@ -140,8 +140,8 @@
         "crossConnectMultiImage": 1,
         "gameSprite": "data/gfx/wall",
         "height": 1,
-        "hpInit": 180,
-        "hpMax": 180,
+        "hpInit": 750,
+        "hpMax": 750,
         "hueImage": 1,
         "miniSpriteImage": -1,
         "shortTypeNum": 11,
@@ -218,7 +218,7 @@
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
-          "stone": 1
+          "stone": 2
         },
         "replenishMaterials": []
       },

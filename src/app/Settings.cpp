@@ -282,7 +282,7 @@ void Settings::load(std::string filename)
         // Stock JSON now omits production costs to inherit the unit catalog.
         // This exact known identity shares the frozen stock's preference slots;
         // arbitrary installed/custom catalog identities are never migration targets.
-        constexpr std::string_view inheritedStock = "2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71";
+        constexpr std::string_view inheritedStock = "a4ef27ada2fb3359504894901b56b9d7eefd7a053de4efdbe0c5b92fcec4928e";
         if(savedVersion>=2)
         {
             for(const auto& [key,text]:parsed)
@@ -297,24 +297,34 @@ void Settings::load(std::string filename)
             // those preferences across the vocabulary-only identity migration.
             // Never transfer arbitrary custom-catalog keys or overwrite new ones.
             constexpr std::string_view priorStock = "6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54";
+            // Before SIM 152 raised stone wall health and cost, the frozen and
+            // inherited stock identities were these. The wall change kept every
+            // variant key, so their preferences carry to the current identities.
+            constexpr std::string_view priorFrozenStock = "b7c9b811ca4f519c5d1040219ec6c32cf888b1f0fbbeb63022c573bcc20c6803";
+            constexpr std::string_view priorInheritedStock = "2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71";
             BuildingsTypes stock; stock.initLegacy();
             const auto currentStock = stock.fingerprint();
+            // Each step copies one identity's preferences to the next; explicit
+            // preferences already written for a newer identity take precedence.
+            const std::pair<std::string_view, std::string_view> steps[] = {
+                {priorStock, priorFrozenStock},
+                {priorFrozenStock, priorInheritedStock},
+                {priorFrozenStock, currentStock},
+                {priorInheritedStock, inheritedStock},
+                {currentStock, inheritedStock},
+            };
             for (std::size_t i=0; i<stock.size(); ++i)
             {
                 const auto& type = *stock.get(i);
-                const auto oldKey = std::string(priorStock) + "/" + type.key;
-                const auto newKey = currentStock + "/" + type.key;
-                if (const auto old = buildingAssignments.find(oldKey); old != buildingAssignments.end())
-                    buildingAssignments.try_emplace(newKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
-                if (const auto old = buildingRadii.find(oldKey); old != buildingRadii.end())
-                    buildingRadii.try_emplace(newKey, std::clamp(old->second, 0, type.maxUnitStayRange));
-                // Chain the two reviewed stock vocabulary migrations; explicit
-                // preferences already written for a newer identity take precedence.
-                const auto inheritedKey = std::string(inheritedStock) + "/" + type.key;
-                if (const auto old = buildingAssignments.find(newKey); old != buildingAssignments.end())
-                    buildingAssignments.try_emplace(inheritedKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
-                if (const auto old = buildingRadii.find(newKey); old != buildingRadii.end())
-                    buildingRadii.try_emplace(inheritedKey, std::clamp(old->second, 0, type.maxUnitStayRange));
+                for (const auto& [from, to] : steps)
+                {
+                    const auto oldKey = std::string(from) + "/" + type.key;
+                    const auto newKey = std::string(to) + "/" + type.key;
+                    if (const auto old = buildingAssignments.find(oldKey); old != buildingAssignments.end())
+                        buildingAssignments.try_emplace(newKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
+                    if (const auto old = buildingRadii.find(oldKey); old != buildingRadii.end())
+                        buildingRadii.try_emplace(newKey, std::clamp(old->second, 0, type.maxUnitStayRange));
+                }
             }
         }
         else if(savedVersion>=1)
