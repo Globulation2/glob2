@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Point-to-point movement searches share Map scratch but require no area fields.
+// Point-to-point movement searches: the unified A* (field/astar/AStar.h) over the live map.
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/MapRouting.h"
@@ -9,139 +9,96 @@
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "field/TerrainMovementCosts.h"
-#include <queue>
-#include <tuple>
+#include "MapAStarDomain.h"
+#include "field/astar/AStarCapture.h"
+#include <cassert>
+
+astar::Workspace &MapRouting::pointSearchWorkspace()
+{
+	if (!pointSearch)
+		pointSearch = std::make_unique<astar::Workspace>();
+	return *pointSearch;
+}
+
+int MapRouting::pointSearchClass(MovementAccess movementAccessValue, Uint32 teamMask) const
+{
+	const int physical = accessClass(movementAccessValue);
+	const int readerTeam = map.game && std::has_single_bit(teamMask) ? int(std::countr_zero(teamMask)) : -1;
+	return readerTeam >= 0 ? preparationCostClass(readerTeam, physical) : physical;
+}
 
 bool MapRouting::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, MovementAccess movementAccessValue, Uint32 teamMask, int maximumLength)
 {
-    int swimClass=accessClass(movementAccessValue);
-    const int physical=swimClass;
-    const int readerTeam=map.game && std::has_single_bit(teamMask)?int(std::countr_zero(teamMask)):-1;
-    if(readerTeam>=0) {
-        swimClass=preparationCostClass(readerTeam,physical);
-    }
+	const int swimClass = pointSearchClass(movementAccessValue, teamMask);
 	PERF_SCOPE_TIME(PathPoint);
 	*dx = *dy = 0;
-	//This implements a fairly standard A* algorithm, except that each node does not store the location
-	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
-	//Instead, each node holds the direction that you left from the initial node that lead to it, so you
-	//can't trace backwards to find the path, but you can instantly find the direction you need to go from
-	//the initial node, a small optimization since we don't need the whole path
+	if (maximumLength < 0)
+		return false;
 	targetX = (targetX + map.w) & map.wMask;
 	targetY = (targetY + map.h) & map.hMask;
-	// Step costs and the heuristic are in gradient units (see MapInternal.h).
-    const int heuristicStep=map.hasMovementCostModifiers(swimClass) ? minStepCost(swimClass)
-        : (gradient_kernel::weightedClass(swimClass) ? std::min(GRADIENT_STEP,gradient_kernel::WATER_STEP[swimClass]) : GRADIENT_STEP);
-    if(maximumLength<0) return false;
-    const int maximumCost=int(std::min<std::int64_t>(Map::GRADIENT_COST_LIMIT,std::int64_t(maximumLength)*GRADIENT_STEP));
-    const bool air=swimClass==AIR_MOVEMENT_CLASS;
-    const auto blockedAirGoal=[&] {
-        const auto i=map.coordToIndex(targetX,targetY);
-        return !map.terrainPropertiesAt(i).flyable || map.resourceBlocksAir(i) || map.getAirUnit(targetX,targetY)!=NOGUID;
-    };
-    const bool approach=air && blockedAirGoal();
-    AStarAlgorithmPoint reached;
-
-	using Entry = std::tuple<unsigned, int, unsigned>;
-
-	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
-	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> openList;
-	openList.emplace(0, (x << map.hDec) + y, 0);
-	aStarPoints[(x << map.hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
-
-	//These are all the examined points, so that these positions on aStarPoints
-	//Can be reset later. Why not reset or re-allocate the whole thing every
-	//call? Its slow! Use reserve to avoid doing this multiple times
-	aStarExaminedPoints.reserve(std::min(map.size,std::size_t(maximumCost)*2+6));
-	aStarExaminedPoints.push_back((x << map.hDec) + y);
-
-	while(!openList.empty())
+	const bool air = swimClass == AIR_MOVEMENT_CLASS;
+	astar::Query query;
+	query.width = map.w;
+	query.height = map.h;
+	query.start = std::uint32_t(map.coordToIndex(x, y));
+	query.target = std::uint32_t(map.coordToIndex(targetX, targetY));
+	// Step costs are in gradient units (see MapInternal.h).
+	query.maximumCost = std::uint32_t(std::min<std::int64_t>(Map::GRADIENT_COST_LIMIT, std::int64_t(maximumLength) * GRADIENT_STEP));
+	query.floor = MapAStar::floorOf(map.routeStepFloor(swimClass));
+	const auto &view = map.liveView();
+	astar::Result result;
+	if (air)
 	{
-		///Get the smallest from the heap
-		const auto [estimate, position, queuedCost] = openList.top();
-		openList.pop();
-
-		AStarAlgorithmPoint& pos = aStarPoints[position];
-        if (pos.isClosed || pos.moveCost != queuedCost) continue;
-		pos.isClosed = true;
-
-		if((pos.x == targetX && pos.y == targetY) || (approach && map.warpDistMax(pos.x,pos.y,targetX,targetY)<=1))
-		{
-			reached=pos;
-			break;
-		}
-
-		for(int lx=-1; lx<=1; ++lx)
-		{
-			for(int ly=-1; ly<=1; ++ly)
-			{
-				int nx = (pos.x + lx + map.w) & map.wMask;
-				int ny = (pos.y + ly + map.h) & map.hMask;
-				int n = (nx << map.hDec) + ny;
-				AStarAlgorithmPoint& npos = aStarPoints[n];
-				if(npos.isClosed)
-				{
-					continue;
-				}
-				else
-				{
-					int moveCost = pos.moveCost + stepCost(lx, ly, map.coordToIndex(nx, ny), swimClass);
-					if (moveCost > maximumCost) continue;
-					int totalCost = moveCost + heuristicStep * map.warpDistMax(targetX, targetY, nx, ny);
-
-					//If this cell hasn't been examined at all yet
-					if(npos.x == -1)
-					{
-                        if(map.isFreeForMovement(nx,ny,swimClass,teamMask) ||
-                            (!air && nx==targetX && ny==targetY && gradient_kernel::terrainAllowsGround(map.terrainPropertiesAt(nx,ny),swimClass)))
-						{
-							//If the parent cell is the starting cell, add in the starting direction
-							if(pos.dx == 0 && pos.dy == 0)
-							{
-								npos = AStarAlgorithmPoint(nx, ny, lx, ly, moveCost, totalCost, false);
-								openList.emplace(totalCost, n, moveCost);
-							}
-							//Else, the direction is the same as the parents node
-							else
-							{
-								npos = AStarAlgorithmPoint(nx, ny, pos.dx, pos.dy, moveCost, totalCost, false);
-								openList.emplace(totalCost, n, moveCost);
-							}
-							aStarExaminedPoints.push_back(n);
-						}
-					}
-					//Check if we can improve this cells value by taking this route
-					else if(npos.moveCost > moveCost)
-					{
-						npos.moveCost = moveCost;
-						npos.totalCost = totalCost;
-						npos.dx = pos.dx;
-						npos.dy = pos.dy;
-                        openList.emplace(totalCost, n, moveCost);
-					}
-				}
-			}
-		}
+		// A flyer cannot enter a blocked target; it stops beside it instead.
+		const auto i = query.target;
+		const bool blocked = !map.terrainPropertiesAt(i).flyable || map.resourceBlocksAir(i) ||
+							 map.getAirUnit(targetX, targetY) != NOGUID;
+		query.goalRadius = blocked ? 1 : 0;
+		const MapAStar::UnitDomain<true> domain{view, swimClass, teamMask};
+		result = pointSearchWorkspace().search(domain, query);
+		if (astar::capture::enabled()) [[unlikely]]
+			astar::capture::point(domain, query, pointSearchWorkspace().windowSide());
 	}
-
-	AStarAlgorithmPoint final = reached;
-
-	//Clear all of the examined points for the next call to this algorithm
-	for(unsigned i=0; i<aStarExaminedPoints.size(); ++i)
+	else
 	{
-		aStarPoints[aStarExaminedPoints[i]] = AStarAlgorithmPoint();
+		const MapAStar::UnitDomain<false> domain{view, swimClass, teamMask};
+		result = pointSearchWorkspace().search(domain, query);
+		if (astar::capture::enabled()) [[unlikely]]
+			astar::capture::point(domain, query, pointSearchWorkspace().windowSide());
 	}
-
-	aStarExaminedPoints.clear();
-
-	//It was never examined, thus there is no paths
-	if(final.x == -1 || !final.isClosed || final.moveCost > unsigned(maximumCost))
+	if (result.status != astar::Status::Found)
 		return false;
-
-	//Input direction of the final square to the unit
-	*dx = final.dx;
-	*dy = final.dy;
+	*dx = result.firstDx;
+	*dy = result.firstDy;
 	return true;
+}
+
+void MapRouting::pathfindPointTargets(int x, int y, std::span<const PointTarget> targets, MovementAccess movementAccessValue,
+									  Uint32 teamMask, int maximumLength, std::vector<PointTargetResult> &results)
+{
+	const int swimClass = pointSearchClass(movementAccessValue, teamMask);
+	assert(swimClass != AIR_MOVEMENT_CLASS);
+	PERF_SCOPE_TIME(PathPoint);
+	results.assign(targets.size(), {});
+	if (maximumLength < 0 || targets.empty())
+		return;
+	std::vector<std::uint32_t> &goals = pointTargetCells;
+	goals.clear();
+	for (const auto &t : targets)
+		goals.push_back(std::uint32_t(map.coordToIndex(t.x, t.y)));
+	astar::GoalQuery query;
+	query.width = map.w;
+	query.height = map.h;
+	query.start = std::uint32_t(map.coordToIndex(x, y));
+	query.maximumCost = std::uint32_t(std::min<std::int64_t>(Map::GRADIENT_COST_LIMIT, std::int64_t(maximumLength) * GRADIENT_STEP));
+	query.floor = MapAStar::floorOf(map.routeStepFloor(swimClass));
+	pointTargetResults.resize(goals.size());
+	const MapAStar::UnitDomain<false> domain{map.liveView(), swimClass, teamMask};
+	pointSearchWorkspace().searchGoals(domain, query, goals, pointTargetResults);
+	if (astar::capture::enabled()) [[unlikely]]
+		astar::capture::goals(domain, query, goals, pointSearchWorkspace().windowSide());
+	for (std::size_t i = 0; i < goals.size(); ++i)
+		results[i] = {pointTargetResults[i].reached, Sint8(pointTargetResults[i].firstDx), Sint8(pointTargetResults[i].firstDy)};
 }
 
 // Compatibility entry point for existing callers. All movement uses the same A*.

@@ -53,7 +53,6 @@ const int tabClose[8][2]={
 Map::Map() : computeOwner(std::make_unique<ComputeExecutor>()), compute(*computeOwner), routing_(std::make_unique<MapRouting>(*this)), assetBundleValue(MapAssetBundle::empty())
 {
 	terrainCounts.assign(TERRAIN_COUNT, 0);
-	terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
     rebuildTerrainCounts();
 	topologyGeneration=1;
 	game=NULL;
@@ -183,12 +182,17 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 		if (gradient_kernel::terrainAllowsMovement(p, sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
+			auto &diagonal = terrainGroundDiagonalCounts[sw][rule.ground[sw].diagonal];
 			if (add)
+			{
 				++count;
+				++diagonal;
+			}
 			else
 			{
-				assert(count);
+				assert(count && diagonal);
 				--count;
+				--diagonal;
 			}
 		}
 	if (p.flyable)
@@ -202,6 +206,7 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 			--count;
 		}
 	}
+	refreshRouteFloors();
 	const bool flags[] = {bool(p.groundHealthQ8 || p.airHealthQ8),
 						  p.groundSpeedQ8 != 256 || p.groundHealthQ8 < 0,
 						  !p.flyable || p.airSpeedQ8 != 256 || p.airHealthQ8 < 0,
@@ -220,6 +225,20 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 			}
 		}
 }
+// Point-to-point heuristic floors: the cheapest steps among present rules. They
+// follow every rule count change at once, even inside a TerrainEditBatch: a floor
+// above an enterable step would make the A* heuristic inconsistent.
+void Map::refreshRouteFloors()
+{
+	const auto first = [](const auto &counts) {
+		for (unsigned cost = 1; cost < counts.size(); ++cost)
+			if (counts[cost])
+				return cost;
+		return 0u;
+	};
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
+		terrainRouteFloors[sw] = {first(terrainGroundCostCounts[sw]), first(terrainGroundDiagonalCounts[sw])};
+}
 void Map::updateTerrainSummary()
 {
 	terrainHealthEffects = terrainFeatures[0];
@@ -227,15 +246,8 @@ void Map::updateTerrainSummary()
 	airTerrainConstraints = terrainFeatures[2];
 	projectileBlockingTerrain = terrainFeatures[3];
 	terrainBucketCount = terrainFeatures[5] ? 256 : terrainFeatures[4] ? 128 : 64;
-	terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
 	terrainMinimumAir = GRADIENT_STEP;
-	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
-		for (unsigned cost = 1; cost < terrainMinimumGround[sw]; ++cost)
-			if (terrainGroundCostCounts[sw][cost])
-			{
-				terrainMinimumGround[sw] = cost;
-				break;
-			}
+	refreshRouteFloors();
 	for (unsigned cost = 1; cost < GRADIENT_STEP; ++cost)
 		if (terrainAirCostCounts[cost])
 		{
@@ -282,6 +294,7 @@ void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
+	terrainGroundDiagonalCounts = {};
 	terrainAirCostCounts = {};
 	for (const auto type : vertexTerrain) ++terrainCounts[type];
 	for (const auto rule : cellRules) ++cellRuleCounts[rule];
@@ -597,6 +610,7 @@ void Map::clear()
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
+	terrainGroundDiagonalCounts = {};
 	terrainAirCostCounts = {};
 	updateTerrainSummary();
 	terrainEditChanged = terrainRoutesChanged = false;
@@ -650,8 +664,6 @@ void Map::clear()
 	sectors = NULL;
 	delete[] listedAddr;
 	listedAddr = NULL;
-	delete[] routing().aStarPoints;
-	routing().aStarPoints = NULL;
 
 	arraysBuilt = false;
 
@@ -722,7 +734,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
-	routing().aStarPoints=new MapRouting::AStarAlgorithmPoint[w*h];
 
 
 

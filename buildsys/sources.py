@@ -460,6 +460,7 @@ CLIENT_SOURCES = (
     'map/MapQuery.cpp',
     'map/MapResources.cpp',
     'map/claims/ClaimHireTargets.cpp',
+    'map/claims/ClaimRouteCapture.cpp',
     'map/claims/MapClaimRoutes.cpp',
     'map/claims/MapClaimInvalidation.cpp',
     'map/claims/ClaimTerrainComponents.cpp',

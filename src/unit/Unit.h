@@ -245,6 +245,9 @@ protected:
 	// updates movement/dx/dy/targetX/targetY/validTarget and lowers `quality`.
 	// pathfindPointToPoint writes &dx,&dy regardless of success — by design.
 	void tryAcquireAttackTarget(int x, int y, int newQuality, int& quality);
+	// Resolves the scan's candidates in order, as tryAcquireAttackTarget would.
+	void acquireBestAttackTarget(int& quality);
+	void acceptAttackTarget(int x, int y, int newQuality, int& quality);
 	void handleAction(void);
 	// handleAction() helpers — collapse the repeated clear-slot/wrap-move/claim-slot
 	// pattern. Air vs ground is selected by performance[FLY], matching the existing

@@ -193,10 +193,13 @@ class Map
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
 	std::array<std::array<unsigned, 182>, MOVEMENT_CLASS_COUNT> terrainGroundCostCounts{};
+	std::array<std::array<unsigned, 256>, MOVEMENT_CLASS_COUNT> terrainGroundDiagonalCounts{};
+	// Cheapest cardinal and diagonal entry among the rules present; {0, 0} if none admits the class.
+	std::array<gradient_kernel::EntrySteps, MOVEMENT_CLASS_COUNT> terrainRouteFloors{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, MOVEMENT_CLASS_COUNT> terrainMinimumGround{}; // set in the constructor, from field/TerrainMovementCosts.h
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
+	void refreshRouteFloors();
 	std::uint64_t terrainGenerationValue = 1;
     // Explicit availability changes of intrinsically static material sources.
     // Shared AI gradients persist only whether this generation is current.
@@ -593,6 +596,9 @@ public:
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
+    //! Cheapest cardinal and diagonal entry costs among the cell rules present
+    //! for a movement class: the floors of the point-to-point search heuristic.
+    gradient_kernel::EntrySteps routeStepFloor(int movement) const { return terrainRouteFloors[movement]; }
     bool hasMovementCostModifiers(int movement) const
     { return movement==AIR_MOVEMENT_CLASS ? hasAirTerrainConstraints() : hasTerrainMovementModifiers(); }
     unsigned movementQueueBuckets(int movement) const

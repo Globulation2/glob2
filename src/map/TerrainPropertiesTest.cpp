@@ -423,7 +423,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(first.frozenTerrainRegistry() == previous);
 		CHECK(first.terrainGeneration() == generation);
 		CHECK(first.terrainQueueBuckets() == 64);
-		CHECK(first.routing().minStepCost(6) == second.routing().minStepCost(6));
+		CHECK(first.routeStepFloor(6).cardinal == second.routeStepFloor(6).cardinal);
 		CHECK_FALSE(first.hasTerrainHealthEffects());
 		CHECK_FALSE(first.hasAirTerrainConstraints());
 		const auto bog = *first.terrainRegistry().find("test:bog");
@@ -1390,18 +1390,18 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     const auto fast=map.terrainRegistry().find("test:fast-water");
     REQUIRE(fast.has_value());
     map.fillTerrain(WATER);
-    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10);
+    CHECK(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==10);
     map.paintCell(3,3,*fast);
-    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==5);
+    CHECK(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==5);
     map.paintCell(3,3,WATER); // Removing the last fast cell must remove its histogram contribution.
     map.paintCell(25,25,TRAIL);
     CHECK(map.hasTerrainMovementModifiers());
     CHECK_FALSE(map.terrainPropertiesAt(25,25).swimmable); // The pure trail is walking-only.
     CHECK(map.terrainPropertiesAt(24,24).swimmable);
     CHECK(map.terrainPropertiesAt(24,24).groundSpeedQ8==320); // (3*256+512)/4.
-    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==8); // Swimming shores inherit a quarter of trail speed.
+    CHECK(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==8); // Swimming shores inherit a quarter of trail speed.
     map.paintCell(25,25,WATER);
-    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10); // Removing the last fast shore restores the minimum.
+    CHECK(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==10); // Removing the last fast shore restores the minimum.
 
     map.fillTerrain(*fast);
     // This fixed layout makes an overestimated water-only heuristic choose
@@ -1409,7 +1409,7 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     // actual swimming obstacles under corner voting; a lone grass vertex does not.
     for (const auto [x,y]:{std::pair{16,17}, {13,12}, {14,18}, {16,15}, {16,13}, {10,16}, {14,16}, {14,12}, {15,18}})
         paintVertices(map,x,y,x+1,y+1,GRASS);
-    REQUIRE(map.routing().minStepCost(WATER_ONLY_CLASS)==5);
+    REQUIRE(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==5);
     constexpr int startX=8,startY=16,targetX=20,targetY=16;
     // Independent reverse Dijkstra. Price each destination from its four raw
     // corner identities: pure fast water has speed512, while a three-water/one-
@@ -1471,7 +1471,7 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     }
     CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==77);
     map.fillTerrain(WATER);
-    CHECK(map.routing().minStepCost(WATER_ONLY_CLASS)==10);
+    CHECK(map.routeStepFloor(WATER_ONLY_CLASS).cardinal==10);
 }
 
 TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")

@@ -853,6 +853,7 @@ set(GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/resource/ResourceRegistry.cpp
     src/map/pathfind/MapPathfindPoint.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/net/message/MessageRecipients.cpp
     src/render/FogFade.cpp
     src/team/stats/MetricCatalog.cpp
@@ -947,8 +948,8 @@ set(GLOB2_MAP_TESTS_0_SOURCES
     src/map/BrushCoverageTest.cpp
     src/common/FilenameStripTest.cpp
     src/field/FieldTraversalTest.cpp
+    src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
-    src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
     src/resource/ResourceRegistryTest.cpp
     src/map/io/MapExploredAreaSaveLoadTest.cpp
@@ -1963,8 +1964,8 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/map/BrushCoverageTest.cpp
     src/common/FilenameStripTest.cpp
     src/field/FieldTraversalTest.cpp
+    src/field/astar/AStarTest.cpp
     src/map/ResourceClaimsTest.cpp
-    src/map/claims/ClaimRouteSearchTest.cpp
     src/map/claims/ClaimRecoveryAdversarialTest.cpp
     src/resource/ResourceRegistryTest.cpp
     src/map/io/MapExploredAreaSaveLoadTest.cpp
@@ -2127,6 +2128,7 @@ set(GLOB2_ANDROID_UNIT_REUSED_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/resource/ResourceRegistry.cpp
     src/map/pathfind/MapPathfindPoint.cpp
+    src/map/claims/ClaimRouteCapture.cpp
     src/net/message/MessageRecipients.cpp
     src/render/FogFade.cpp
     src/team/stats/MetricCatalog.cpp

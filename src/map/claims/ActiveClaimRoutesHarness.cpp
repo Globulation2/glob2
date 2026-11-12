@@ -8,7 +8,7 @@
 #include "Version.h"
 #include "ClaimPolicy.h"
 #include "GradientFixture.h"
-#include "ClaimRouteSearch.h"
+#include "ClaimRoute.h"
 #include "ResourceClaimRouteView.h"
 #include <fstream>
 #include <BinaryStream.h>
@@ -111,7 +111,8 @@ TEST_SUITE("ActiveClaimRoutes")
             auto& game=fixture.game;auto& map=game.map;map.configureCompute(participants);
             map.enableResourceClaims();
             auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
-            auto* holder=fixture.addUnit(WORKER,9,9);Assignment cleanup{*unit},holderCleanup{*holder};
+            // The holder stands clear of the unit's equally cheap detours around the wheat.
+            auto* holder=fixture.addUnit(WORKER,8,12);Assignment cleanup{*unit},holderCleanup{*holder};
             assign(*unit,*consumer,map,14,8);assign(*holder,*consumer,map,9,8);
             const auto adjacent=Uint32(map.coordToIndex(9,8));map.setMaterialAmountSlot(adjacent,WHEAT,1);
             game.observeCompletedWorld();int dx=0,dy=0;
