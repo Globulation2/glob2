@@ -177,7 +177,9 @@ def cmake_commands(arguments):
     if install:
         targets = [target for target in targets if target != 'install'] or ['glob2']
     # The defaults; restating them resets an earlier override.
-    settings = {'GLOB2_BUILD_ARGS': ' '.join(request.build_args),
+    # Quoted for CMake's separate_arguments(UNIX_COMMAND): mobile_deps= and android_sdk=
+    # paths live under ~/Library/Application Support on macOS.
+    settings = {'GLOB2_BUILD_ARGS': shlex.join(request.build_args),
                 'GLOB2_CXXFLAGS': request.tools.get('CXXFLAGS', '-g'),
                 'GLOB2_LINKFLAGS': request.tools.get('LINKFLAGS', '-g'),
                 'GLOB2_SHIPPING': 'ON' if install else 'OFF',
