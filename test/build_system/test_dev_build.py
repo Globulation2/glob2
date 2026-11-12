@@ -72,6 +72,8 @@ class DevelopmentBuildTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(command)
+        # Default directories are build/<host platform>/...: linux, darwin or mingw.
+        native = ROOT / 'build' / default_directory(build_identity({})).parts[1]
         directory = Path(tempfile.mkdtemp())
         configure, build = command.cmake_commands(['--build=' + str(directory), '.', 'glob2', '-j12', '-k'])
         self.assertEqual(configure[:4], ['cmake', '-S', str(ROOT), '-B'])
@@ -82,22 +84,24 @@ class DevelopmentBuildTests(unittest.TestCase):
         # Each tier configures its own default directory, with no development defaults.
         perf = command.cmake_commands(['perf=1', 'opt=3', 'engine-tests'])
         self.assertIn('-DGLOB2_BUILD_ARGS=perf=1 opt=3', perf[0])
-        self.assertEqual(perf[-1][2], str(ROOT / 'build/linux/client/perf/o3'))
-        release = command.cmake_commands(['release=1', 'CXXFLAGS=-g -O1', 'build/linux/client/release/src/glob2'])
+        self.assertEqual(perf[-1][2], str(native / 'client/perf/o3'))
+        release = command.cmake_commands(['release=1', 'CXXFLAGS=-g -O1', str((native / 'client/release/src/glob2').relative_to(ROOT))])
         self.assertIn('-DGLOB2_BUILD_ARGS=release=1', release[0])
         self.assertIn('-DGLOB2_CXXFLAGS=-g -O1', release[0])
         self.assertEqual(release[-1][3:5], ['--target', 'glob2'])
         relay = command.cmake_commands(['role=relay', 'release=1', 'relay'])
-        self.assertEqual(relay[-1][2], str(ROOT / 'build/linux/relay/release'))
+        self.assertEqual(relay[-1][2], str(native / 'relay/release'))
         self.assertEqual(command.compiler_environment(['CC=clang', 'CXX=clang++'], {})['CXX'], 'clang++')
         # `install` builds glob2 as a shipping build, then installs it.
-        staged = command.cmake_commands(['release=1', 'lean_images=1', 'BINDIR=/stage/usr/bin',
-                                         'INSTALLDIR=/stage/usr/share', 'DATADIR=/usr/share', 'install'])
-        for setting in ('-DGLOB2_SHIPPING=ON', '-DGLOB2_BINDIR=/stage/usr/bin',
-                        '-DGLOB2_INSTALLDIR=/stage/usr/share', '-DGLOB2_DATADIR=/usr/share'):
-            self.assertIn(setting, staged[0])
-        self.assertEqual(staged[-2][2:5], [str(ROOT / 'build/linux/client/release/lean-images'), '--target', 'glob2'])
-        self.assertEqual(staged[-1], ['cmake', '--install', str(ROOT / 'build/linux/client/release/lean-images')])
+        # lean_images=1 (the staged install below) exists only for Linux and MinGW releases.
+        if native.name != 'darwin':
+            staged = command.cmake_commands(['release=1', 'lean_images=1', 'BINDIR=/stage/usr/bin',
+                                             'INSTALLDIR=/stage/usr/share', 'DATADIR=/usr/share', 'install'])
+            for setting in ('-DGLOB2_SHIPPING=ON', '-DGLOB2_BINDIR=/stage/usr/bin',
+                            '-DGLOB2_INSTALLDIR=/stage/usr/share', '-DGLOB2_DATADIR=/usr/share'):
+                self.assertIn(setting, staged[0])
+            self.assertEqual(staged[-2][2:5], [str(native / 'client/release/lean-images'), '--target', 'glob2'])
+            self.assertEqual(staged[-1], ['cmake', '--install', str(native / 'client/release/lean-images')])
         self.assertIn('-n', command.cmake_commands(['--build=' + str(directory), '-n'])[-1])
         for unsupported in ('--weird', 'build/elsewhere/glob2'):
             with self.assertRaises(ValueError):
@@ -204,7 +208,8 @@ shared.ensure(build,Path(sys.argv[2])/'local',Path(sys.argv[2])/'work')
             self.assertFalse(prefix.exists())
             with patch.dict(os.environ, {'GLOB2_DEV_MODE': 'isolated'}):
                 local = shared_dependencies.ensure(fake_builder, Path(task) / 'one', Path(task) / 'work')
-                self.assertEqual(local, Path(task) / 'one')
+                # macOS's temporary directory is a symlink (/var -> /private/var).
+                self.assertEqual(local.resolve(), (Path(task) / 'one').resolve())
 
     def test_configurable_budget_and_no_automatic_pruning(self):
         with patch.dict(os.environ, {'GLOB2_DEV_BUDGET_GIB': '48'}):

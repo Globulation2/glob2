@@ -604,7 +604,27 @@ if(GLOB2_DEBUG_PREFIX_MAP AND CMAKE_CXX_COMPILER_LAUNCHER AND NOT GLOB2_SHIPPING
    AND NOT (darwin AND GLOB2_MAC_BUNDLE))
   list(APPEND ccflags "-fdebug-prefix-map=${GLOB2_ROOT}=.")
 endif()
-set(cxx_compile_flags ${cxxflags} ${ccflags})
+# SCons put CXXFLAGS ahead of its include path, so a -I passed there wins over the
+# Homebrew or MacPorts prefix (the macOS jobs pass keg-only openssl@3 this way while
+# the prefix may hold another OpenSSL's headers). CMake's compile rule puts options
+# after the include list, so those directories move to the front of it instead.
+set(cxx_option_flags)
+set(cxx_flag_includes)
+set(include_follows OFF)
+foreach(word IN LISTS cxxflags)
+  if(include_follows)
+    list(APPEND cxx_flag_includes "${word}")
+    set(include_follows OFF)
+  elseif(word STREQUAL "-I")
+    set(include_follows ON)
+  elseif(word MATCHES "^-I(.+)$")
+    list(APPEND cxx_flag_includes "${CMAKE_MATCH_1}")
+  else()
+    list(APPEND cxx_option_flags "${word}")
+  endif()
+endforeach()
+list(TRANSFORM cxx_flag_includes REPLACE "^(.+)$" "$<$<COMPILE_LANGUAGE:CXX,OBJCXX>:\\1>")
+set(cxx_compile_flags ${cxx_option_flags} ${ccflags})
 set(c_compile_flags ${cflags} ${ccflags})
 # Objective-C++ (macOS) compiles with the C++ flags.
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX,OBJCXX>:${cxx_compile_flags}>" "$<$<COMPILE_LANGUAGE:C>:${c_compile_flags}>")
@@ -653,7 +673,7 @@ if(darwin AND GLOB2_MAC_BUNDLE AND NOT relay)
   glob2_configure_depends("${mac_image_prefix}/lib")
   list(PREPEND sdl_directories "${mac_image_prefix}/lib")
 endif()
-set(include_directories ${recording_includes} ${lean_includes} ${sdl_includes} ${host_includes} "${GLOB2_OUT}/include"
+set(include_directories ${cxx_flag_includes} ${recording_includes} ${lean_includes} ${sdl_includes} ${host_includes} "${GLOB2_OUT}/include"
     ${opusfile_includes} "${GLOB2_OUT}/shaders")
 foreach(directory IN LISTS GLOB2_INCLUDE_DIRECTORIES)
   if(directory STREQUAL ".")
