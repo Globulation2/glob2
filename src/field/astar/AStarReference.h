@@ -37,6 +37,14 @@ Result referenceSearch(const Domain &domain, const Query &q, std::vector<std::ui
 	std::int64_t sequence = 0;
 	if (log)
 		log->clear();
+	if (!goal(q.start))
+	{
+		bool enterable = false;
+		for (std::uint32_t i = 0; i < cells; ++i)
+			enterable |= goal(i) && domain.entry(i, true) != 0;
+		if (!enterable)
+			return {};
+	}
 	g[q.start] = 0;
 	open.emplace(h(q.start), -sequence++, q.start);
 	Result result;
@@ -111,10 +119,14 @@ std::vector<GoalResult> referenceGoals(const Domain &domain, const GoalQuery &q,
 	const auto cells = std::size_t(W) * H;
 	std::vector<std::uint32_t> g(cells, 0xffffffffu);
 	std::vector<std::uint8_t> closed(cells, 0), parent(cells, 0);
-	const auto isGoal = [&](std::uint32_t i) { return std::find(goals.begin(), goals.end(), i) != goals.end(); };
+	std::vector<std::uint32_t> live;
+	for (auto goal : goals)
+		if (goal == q.start || domain.entry(goal, true))
+			live.push_back(goal);
+	const auto isGoal = [&](std::uint32_t i) { return std::find(live.begin(), live.end(), i) != live.end(); };
 	const auto h = [&](std::uint32_t i) {
 		std::uint32_t best = 0xffffffffu;
-		for (auto goal : goals)
+		for (auto goal : live)
 			best = std::min(best, std::uint32_t(detail::octile(
 									  detail::torusDistance(int(i % unsigned(W)), int(goal % unsigned(W)), W),
 									  detail::torusDistance(int(i / unsigned(W)), int(goal / unsigned(W)), H), q.floor)));
@@ -128,7 +140,7 @@ std::vector<GoalResult> referenceGoals(const Domain &domain, const GoalQuery &q,
 	std::vector<GoalResult> results(goals.size());
 	std::size_t remaining = 0;
 	{
-		std::vector<std::uint32_t> unique(goals.begin(), goals.end());
+		std::vector<std::uint32_t> unique(live.begin(), live.end());
 		std::sort(unique.begin(), unique.end());
 		remaining = std::size_t(std::unique(unique.begin(), unique.end()) - unique.begin());
 	}

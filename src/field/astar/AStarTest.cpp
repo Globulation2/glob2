@@ -182,6 +182,33 @@ TEST_SUITE("AStar")
 		CHECK(workspace.search(domain, q).status == astar::Status::Found);
 	}
 
+	TEST_CASE("goal sets that cannot be entered are unreachable without expanding")
+	{
+		ArrayDomain domain;
+		domain.entries.assign(32 * 32, pack(10, 14));
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+				domain.entries[std::size_t((10 + dy) * 32 + 10 + dx)] = 0;
+		astar::Workspace workspace;
+		astar::Query q{32, 32, 0, 10 * 32 + 10, 1};
+		q.floor = floorOf(domain);
+		auto r = workspace.search(domain, q);
+		CHECK(r.status == astar::Status::Unreachable);
+		CHECK(r.expansions == 0);
+		// Starting inside the goal set still succeeds at once.
+		q.start = 9 * 32 + 9;
+		r = workspace.search(domain, q);
+		CHECK(r.status == astar::Status::Found);
+		CHECK(r.expansions == 1);
+		// Many goals: an unenterable goal is unreached and does not hold the search open.
+		const std::vector<std::uint32_t> goals{10 * 32 + 10, 3 * 32 + 3};
+		std::vector<astar::GoalResult> results(goals.size());
+		workspace.searchGoals(domain, astar::GoalQuery{32, 32, 0, 1000, q.floor}, goals, results);
+		CHECK_FALSE(results[0].reached);
+		CHECK(results[1].reached);
+		CHECK(results[1].cost == 42);
+	}
+
 	TEST_CASE("cost and expansion budgets")
 	{
 		ArrayDomain domain;

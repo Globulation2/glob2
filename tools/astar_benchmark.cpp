@@ -230,7 +230,7 @@ using Clock = std::chrono::steady_clock;
 struct Totals
 {
 	std::size_t queries = 0;
-	std::uint64_t expansions = 0, restarts = 0, found = 0;
+	std::uint64_t expansions = 0, restarts = 0, found = 0, pathCells = 0;
 	double seconds = 0;
 	std::uint64_t digest = 1469598103934665603ull;
 	void mix(std::uint64_t v)
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 			auto &t = totals[category(*r)];
 			const auto q = queryOf(*r);
 			const auto begin = Clock::now();
-			std::uint64_t expansions = 0, restarts = 0, found = 0, digest = 0;
+			std::uint64_t expansions = 0, restarts = 0, found = 0, digest = 0, pathCells = 0;
 			if (variant == "legacy")
 			{
 				if (r->kind == 1)
@@ -426,6 +426,7 @@ int main(int argc, char **argv)
 				found += result.status == astar::Status::Found;
 				expansions += result.expansions;
 				restarts += result.restarts;
+				pathCells += result.cells.size();
 				digest = result.cost * 64 + std::uint64_t(result.firstDx + 2) * 5 + std::uint64_t(result.firstDy + 2);
 			}
 			t.seconds += std::chrono::duration<double>(Clock::now() - begin).count();
@@ -435,16 +436,18 @@ int main(int argc, char **argv)
 				t.expansions += expansions;
 				t.restarts += restarts;
 				t.found += found;
+				t.pathCells += pathCells;
 				t.mix(digest);
 			}
 		}
 	std::printf("domain evaluations per query: %.1f\n", double(BoxDomain::evaluations) / double(chosen.size() * repeat));
-	std::printf("%-8s %-10s %8s %12s %10s %9s %9s %18s\n", "kind", "variant", "queries", "ns/query", "exp/query",
-				"found", "restarts", "digest");
+	std::printf("%-8s %-10s %8s %12s %10s %9s %9s %18s %10s\n", "kind", "variant", "queries", "ns/query", "exp/query",
+				"found", "restarts", "digest", "path/found");
 	for (const auto &[kind, t] : totals)
 		if (t.queries)
-			std::printf("%-8s %-10s %8zu %12.1f %10.1f %9llu %9llu %018llx\n", kind.c_str(), variant.c_str(), t.queries,
+			std::printf("%-8s %-10s %8zu %12.1f %10.1f %9llu %9llu %018llx %10.1f\n", kind.c_str(), variant.c_str(), t.queries,
 						1e9 * t.seconds / double(t.queries * repeat), double(t.expansions) / double(t.queries),
-						(unsigned long long)t.found, (unsigned long long)t.restarts, (unsigned long long)t.digest);
+						(unsigned long long)t.found, (unsigned long long)t.restarts, (unsigned long long)t.digest,
+						t.found ? double(t.pathCells) / double(t.found) : 0.0);
 	return 0;
 }

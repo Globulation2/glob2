@@ -661,7 +661,7 @@ MODULE_CASE_FLOORS = {
     'src/map/FertilityFieldTest.cpp': 23,
     'src/common/FilenameStripTest.cpp': 11,
     'src/field/FieldTraversalTest.cpp': 16,
-    'src/field/astar/AStarTest.cpp': 8,
+    'src/field/astar/AStarTest.cpp': 9,
     'src/map/ResourceClaimsTest.cpp': 10,
     'src/map/claims/ClaimRecoveryAdversarialTest.cpp': 7,
     'src/map/gradient/GradientTest.cpp': 12,

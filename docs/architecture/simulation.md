@@ -430,8 +430,8 @@ checksum adapter remains available for diagnostic fixtures.
   field, because a too-small ring can alias a future cost layer. Keep validation out
   of cell/neighbor expansion; compact production snapshots bound it by distinct costs.
   Capability counters keep health, air and projectile shortcuts independent of
-  registry size. A* retains the historical built-in lower bound and lowers it only
-  for faster custom terrain actually present, preserving old route choices.
+  registry size. The point-to-point A* prices its octile heuristic at the cheapest
+  cardinal and diagonal entry among the cell rules present (`Map::routeStepFloor`).
   Map property queries use a derived two-byte index plane into deduplicated
   fixed-layout property structs, keeping equivalent custom IDs out of the hot
   property working set. Canonical tile IDs and persistence remain unchanged.
@@ -858,6 +858,7 @@ runs; backend defaults and algorithm choices are unchanged.
   | Ordered FIFO with payloads | `field::traverse` | Admit and enqueue neighbours; retain first-discovery payloads and stopping rules. |
   | Domain heap search | `field::traversePriority` | Own costs, comparator, stale-entry checks and parent ties, including zero-cost edges. |
   | Component stack/queue | `field::depthFirst` / `field::breadthFirst` | Own discovery and push order. |
+  | Point-to-point search | `astar::Workspace::search` / `searchGoals` | Supply a Domain that answers a cell's packed entry costs, or 0 when it cannot be entered. |
 
   `Grid::neighbors` supplies raw coordinates for bounds checks before wrapping;
   `Grid::neighborIndices` supplies wrapped indices. Both retain stencil order and
@@ -866,6 +867,22 @@ runs; backend defaults and algorithm choices are unchanged.
   and seed either workspace at the owning caller. An early stop preserves writes
   already made; grid traversal finishes the current neighbour stencil before
   visiting the next entry. Use `breadthFirst` for stops during expansion.
+- Point-to-point search (`src/field/astar/AStar.h`) serves unit movement toward
+  arbitrary targets, ground attack scans and claim routes. Its expansion order is
+  simulation state, fixed by an order contract that `AStarReference.h` writes out
+  plainly: f is g plus the octile distance to the goal set at the per-map step
+  floors, consistent by construction; the open set is a ring of f buckets popped
+  lowest first and, within one f, latest push first; a cell closes on its first pop,
+  and neighbours are visited and pushed in `field::Surrounding` order. The window,
+  per-cell sampling, packed node words and the branchy, branchless scalar, SSE2 and
+  NEON kernels are implementation choices; tests and `tools/astar_benchmark.py run
+  --verify` require each to reproduce the reference expansion sequence exactly, so
+  changing them needs no sim version. Changing the contract does. Domains read
+  `MapState::View`, the same records on the live map (`MapAStar::UnitDomain`) and in
+  claim snapshots (`ResourceClaims::RouteDomain`). A ground unit's attack scan
+  resolves all its candidates with one `searchGoals` call; goals are terminal, and
+  the scan keeps the per-candidate acceptance order and step of the separate
+  searches it replaced.
 - Influence has two distinct contracts in `src/field/Influence.h`: convergent
   maximum-contribution propagation and four directional sweeps. Castor requires
   the latter's staggered scan order and byte arithmetic; replacing it with

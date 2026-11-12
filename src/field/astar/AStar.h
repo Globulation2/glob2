@@ -15,6 +15,9 @@
 //  * A popped cell is expanded in field::Surrounding order, and each improved
 //    neighbour is pushed in that order. A cell closes on its first pop.
 //  * Expansions count non-stale pops; the budget is checked before the goal test.
+//  * A search that does not start in its goal set, none of whose cells the Domain
+//    lets it enter, is Unreachable after no expansions. A many-goal search drops
+//    such goals before it starts: they neither guide it nor keep it open.
 // The window used to hold the search is an implementation detail: a search that
 // reaches the edge of its window restarts in a larger one and so reproduces the
 // same expansion sequence. Searches sample the Domain lazily, once per touched cell.
@@ -179,6 +182,19 @@ constexpr unsigned Ring = 1u << RingBits;
 {
 	const unsigned d = unsigned(a - b) & unsigned(size - 1);
 	return std::min(d, unsigned(size) - d);
+}
+template <class Domain> bool anyGoalEnterable(const Domain &domain, const Query &q)
+{
+	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
+	const int tx = int(q.target & unsigned(q.width - 1)), ty = int(q.target >> shift), r = int(q.goalRadius);
+	for (int dy = -r; dy <= r; ++dy)
+		for (int dx = -r; dx <= r; ++dx)
+		{
+			const auto world = std::uint32_t((((ty + dy) & (q.height - 1)) << shift) + ((tx + dx) & (q.width - 1)));
+			if (domain.entry(world, true))
+				return true;
+		}
+	return false;
 }
 [[gnu::always_inline]] inline unsigned octile(unsigned a, unsigned b, Floor floor)
 {
@@ -709,6 +725,14 @@ template <class Domain> inline Result Workspace::search(const Domain &domain, co
 	const std::uint32_t apart = std::max(detail::torusDistance(sx, targetX, q.width), detail::torusDistance(sy, targetY, q.height));
 	const std::uint32_t reach = q.floor.cardinal ? std::min<std::uint32_t>(q.maximumCost / q.floor.cardinal, 64) : 64;
 	int windowSide = forcedWindow ? int(forcedWindow) : firstSide(q.width, q.height, std::max(apart + 4, reach));
+	// A goal set none of whose cells can be entered is unreachable at once,
+	// unless the search starts in it.
+	if (apart > q.goalRadius && !detail::anyGoalEnterable(domain, q))
+	{
+		if (expansionLog)
+			expansionLog->clear();
+		return {};
+	}
 	const Floor floor = q.floor;
 	const auto h = [this, floor](std::uint32_t p) __attribute__((always_inline)) -> std::uint32_t {
 		const unsigned ax = detail::torusDistance(worldX(planeX(p)), targetX, mapW);
@@ -752,9 +776,22 @@ inline void Workspace::searchGoals(const Domain &domain, const GoalQuery &q, std
 	if (goals.empty())
 		return;
 	const unsigned shift = unsigned(std::countr_zero(unsigned(q.width)));
-	goalCells.assign(goals.begin(), goals.end());
+	// Goals that cannot be entered are never reached; they neither keep the
+	// search going nor guide it.
+	goalCells.clear();
+	for (auto g : goals)
+		if (g == q.start || domain.entry(g, true))
+			goalCells.push_back(g);
 	std::sort(goalCells.begin(), goalCells.end());
 	goalCells.erase(std::unique(goalCells.begin(), goalCells.end()), goalCells.end());
+	for (auto &r : results)
+		r = {};
+	if (goalCells.empty())
+	{
+		if (expansionLog)
+			expansionLog->clear();
+		return;
+	}
 	goalPoints.clear();
 	for (auto g : goalCells)
 		goalPoints.push_back({int(g & unsigned(q.width - 1)), int(g >> shift)});

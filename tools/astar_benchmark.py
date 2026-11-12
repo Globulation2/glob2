@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -96,7 +97,7 @@ def capture(arguments) -> None:
 def run(arguments) -> None:
     binary = build(arguments.opt, arguments.cxxflags)
     base = [str(binary), str(arguments.corpus), '--repeat', str(arguments.repeat), '--only', arguments.only,
-            *arguments.knobs]
+            *shlex.split(arguments.knobs)]
     if arguments.verify:
         subprocess.run([*base, '--verify'], check=True)
         return
@@ -113,7 +114,7 @@ def profile(arguments) -> None:
     else:
         tool += ['--cache-sim=yes', '--branch-sim=yes']
     subprocess.run([*tool, str(binary), str(arguments.corpus), '--repeat', '1', '--only', arguments.only,
-                    '--variant', arguments.variant, *arguments.knobs], check=True)
+                    '--variant', arguments.variant, *shlex.split(arguments.knobs)], check=True)
     annotate = 'callgrind_annotate' if arguments.tool == 'callgrind' else 'cg_annotate'
     subprocess.run([annotate, '--auto=yes', str(out)] if arguments.tool == 'callgrind' else [annotate, str(out)])
 
@@ -135,7 +136,7 @@ def main() -> None:
         p.add_argument('--repeat', type=int, default=5)
         p.add_argument('--only', default='all')
         p.add_argument('--cxxflags', nargs='*', default=[])
-        p.add_argument('--knobs', nargs='*', default=[], help='extra benchmark flags, e.g. --fill 2')
+        p.add_argument('--knobs', default='', help='extra benchmark flags, quoted: --knobs "--kernel sse2"')
         if name == 'run':
             p.add_argument('--variants', nargs='*', default=['legacy', 'new', 'reference'])
             p.add_argument('--verify', action='store_true')
