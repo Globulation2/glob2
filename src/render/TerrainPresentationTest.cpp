@@ -2585,21 +2585,17 @@ TEST_SUITE("TerrainValidation")
 		{
 			CAPTURE(key);
 			const auto id = catalog.find(key);
-			REQUIRE(catalog.materials[id].decor.clearOfMasses == 1);
+			REQUIRE(catalog.materials[id].decor.clearOfMasses == 0);
 			const auto drawn = [&](int x)
 			{ return catalog.decorFrame(id, x, y, false, scene.terrainSeed(), 15, colours(x, y)); };
-			// Cell x spans vertices x..x+1; a mass vertex within one of them hides it.
-			for (const int x : {1, 3, 7, 14, 28})
+			// Cell x spans vertices x..x+1; only a mass on its own corners hides it, so
+			// spires run right up to a cliff's foot (x 8 and 13) and to the glacier
+			// across the wrap (x 0 and 29).
+			for (const int x : {0, 1, 3, 7, 8, 13, 14, 28, 29})
 			{
 				CAPTURE(x);
 				CHECK(drawn(x) >= 0);
 				CHECK(onlyDecorFrame(compositor, scene, x, y) == drawn(x));
-			}
-			// x 0 sees the glacier across the wrap.
-			for (const int x : {0, 8, 13, 29})
-			{
-				CAPTURE(x);
-				CHECK(onlyDecorFrame(compositor, scene, x, y) == -1);
 			}
 			// Cells with mass corners still draw the mass's rim, alone.
 			for (const int x : {9, 12, 30})
@@ -2611,12 +2607,15 @@ TEST_SUITE("TerrainValidation")
 				CHECK(layers[3].frame == -1);
 			}
 		}
-		// Across the vertical wrap: row 0 sees the glacier row, row 1 is clear.
+		// Across the vertical wrap: row 30 touches the glacier row and draws only its
+		// rim; rows 0 and 29 stop just short of it and keep their outcrop.
 		const auto outcrop = catalog.find("outcrop");
-		CHECK(onlyDecorFrame(compositor, scene, 3, 0) == -1);
-		CHECK(onlyDecorFrame(compositor, scene, 3, 29) == -1);
-		CHECK(onlyDecorFrame(compositor, scene, 3, 1) ==
-			  catalog.decorFrame(outcrop, 3, 1, false, scene.terrainSeed(), 15, colours(3, 1)));
+		const auto boulders = catalog.find("boulders");
+		CHECK(onlyDecorFrame(compositor, scene, 3, 0) ==
+			  catalog.decorFrame(outcrop, 3, 0, false, scene.terrainSeed(), 15, colours(3, 0)));
+		CHECK(onlyDecorFrame(compositor, scene, 3, 29) ==
+			  catalog.decorFrame(boulders, 3, 29, false, scene.terrainSeed(), 15, colours(3, 29)));
+		CHECK(compositor.decorLayers(scene, 3, 30)[1].frame == -1);
 
 		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);

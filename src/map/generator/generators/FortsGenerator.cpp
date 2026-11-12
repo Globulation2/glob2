@@ -160,6 +160,7 @@ constexpr int kFortFaces = 2;      // quarry faces in each bailey, at the foot o
 constexpr int kFieldSpacing = 20;  // the bocage's field size, in tiles
 constexpr int kCrownShare = 45;    // one country tile in this many is granite crown
 constexpr int kFieldGates = 35;    // percent of hedged borders with a field gate of their own
+constexpr int kOrchardReach = 3;   // how far a household orchard may step off its planned seed
 
 // splitmix64: a fixed integer hash, so a field border's hedge is the same on every platform.
 std::uint64_t mix(std::uint64_t z)
@@ -1167,15 +1168,19 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			const int cx = int(L.homes.at(k).x), cy = int(L.homes.at(k).y);
 			const int u = plan.orchardU + fruit * plan.orchardDu,
 					  v = plan.orchardV + fruit * plan.orchardDv;
-			const int seed = t.at(cx + d.x(u, v), cy + d.y(u, v));
 			const auto eligible = [&](int i)
 			{
 				return L.homeOf.at(i) == k && L.plot.at(i) < 0 && !L.roads.at(i) &&
 					   !reserved.at(i) && clearGround(map, t.remainderX(i), i / t.w);
 			};
+			// The planned seed, or the nearest clear tile to it. A wall on vertices leans a tile
+			// inward on the fort's positive sides, so the long gardens' orchard row along the far
+			// wall (v = r - 3) is rock when that wall faces +x or +y; the orchard steps off it.
+			const int seed =
+				seedNear(t, cx + d.x(u, v), cy + d.y(u, v), kOrchardReach, eligible);
 			const int wanted = int(scaledCount(3, o.fruit));
 			const int placed =
-				eligible(seed) ? growPatch(map, t, seed, CHERRY + fruit, wanted, eligible) : 0;
+				seed >= 0 ? growPatch(map, t, seed, CHERRY + fruit, wanted, eligible) : 0;
 			context.telemetry.measure("forts.orchard.target-tiles", wanted, 3 * k + fruit);
 			context.telemetry.measure("forts.orchard.planted-tiles", placed, 3 * k + fruit);
 			if (placed < wanted)

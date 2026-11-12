@@ -139,6 +139,7 @@ struct Layout
 	std::vector<Island> islands;
 	int ice = 0, glacier = 0, penitentes = 0, tundra = 0;
 	double stretch = 1; // the most the continent's frame stretches a length on the map
+	Stretch fill;       // how a rectangular map stretches the round frame to fill it
 };
 
 // A door's region: the colony's own ground (off the ice) touching the door's tiles, diagonals
@@ -172,6 +173,18 @@ double wrapAngle(double a)
 	return a;
 }
 
+// How many map tiles one length of the continent's round frame covers along map direction `nm` (a
+// unit vector): a fjord's width is drawn in the round frame, and on a rectangular map the frame is
+// stretched to fill it, so a fjord running down a long map's short axis is several times wider than
+// drawn. A square map's fill is the identity and the factor exactly 1.
+double acrossScale(const Stretch &fill, ShapePoint nm)
+{
+	if (fill.sx == fill.sy)
+		return 1.0;
+	const ShapePoint round = fill.undo(nm.x, nm.y);
+	return 1.0 / std::max(1e-9, N::hypot(round.x, round.y));
+}
+
 Layout designAfresh(const GenerationRequest &request, GenerationContext &context)
 {
 	Layout L;
@@ -193,6 +206,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	const double elongation = 1.0 + context.bounded("layout", 1000) / 1000.0 * 0.3;
 	const ShapeTransform xf({W / 2.0, H / 2.0}, rotation, elongation);
 	const Stretch fill = Stretch::toFill(W, H);
+	L.fill = fill;
 	const double maxStretch = std::max(elongation, 1.0 / elongation) * fill.longest();
 	L.stretch = maxStretch;
 	const auto toShape = [&](ShapePoint p)
@@ -271,7 +285,19 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		// the mouth and well before the head.
 		// Capped at a four-colony map's arc: with two or three colonies the full arc would fold a
 		// fjord back on itself.
-		const double amplitude = std::min({gap, 2 * kPi - gap, kPi / 2}) * mouthR * 0.17;
+		// On a rectangular map the frame is stretched to fill it, and a swing across the long axis
+		// would grow with the stretch (four times on a 512x128 map) until the fjord ran along the
+		// coast and left one bank no ground at its mouth; it is shrunk back to its round length. A
+		// square map's fill is the identity and keeps the swing as drawn.
+		double swingStretch = 1.0;
+		if (fill.sx != fill.sy)
+		{
+			const ShapePoint from = xf.toMap({0, 0}), to = xf.toMap(perp);
+			const ShapePoint drawn = toMap(perp), centre = toMap({0, 0});
+			swingStretch = N::hypot(drawn.x - centre.x, drawn.y - centre.y) /
+						   std::max(1e-9, N::hypot(to.x - from.x, to.y - from.y));
+		}
+		const double amplitude = std::min({gap, 2 * kPi - gap, kPi / 2}) * mouthR * 0.17 / swingStretch;
 		const double phase = context.bounded("layout", 3600) / 3600.0 * 2 * kPi;
 		const double mouthWidth = o.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
 		const double headWidth = std::max(1.8, mouthWidth * 0.5);
@@ -769,7 +795,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		const int s = std::clamp(int(N::lround(kQuarryVerge * (samples - 1))), 0, samples - 1);
 		for (int side : {-1, 1})
 		{
-			const double w = (L.width[k][s] + kWallReach + 1.0) * fill.longest();
+			// Square maps keep the verge as drawn; a stretched map's verge stands just past the wall
+			// across the fjord as it is drawn there, not the longest stretch out (far off the bank).
+			const double w = fill.sx == fill.sy ? (L.width[k][s] + kWallReach + 1.0) * fill.longest()
+												: L.width[k][s] * acrossScale(fill, L.normal[k][s]) + kWallReach + 1.0;
 			L.quarries[side < 0 ? L.west[k] : L.east[k]].push_back(
 				{int(N::lround(L.line[k][s].x + L.normal[k][s].x * side * w)),
 				 int(N::lround(L.line[k][s].y + L.normal[k][s].y * side * w)), 4});
@@ -992,7 +1021,7 @@ KitSeed bankSeed(const Layout &L, int k, double progress, int side, double out, 
 {
 	const int samples = int(L.line[k].size());
 	const int s = std::clamp(int(N::lround(progress * (samples - 1))), 0, samples - 1);
-	const double w = L.width[k][s] + kWallReach + out;
+	const double w = L.width[k][s] * acrossScale(L.fill, L.normal[k][s]) + kWallReach + out;
 	return {int(N::lround(L.line[k][s].x + L.normal[k][s].x * side * w)),
 			int(N::lround(L.line[k][s].y + L.normal[k][s].y * side * w)), within};
 }
@@ -1058,10 +1087,13 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 			quarryStone[c] = plantQuarryFaces(map, t, L.quarries[c], kQuarryTiles,
 											  [&](int i) { return L.homeOf[i] == c && takes(i, STONE); });
 		// A small map's mouths can leave a colony short: one more face at the wall foot nearest its
-		// home, anywhere on its own meadows.
+		// home, anywhere on its own meadows. A stretched map stretches the peninsula too, so the search
+		// reaches as much further as the map is stretched.
 		if (quarryStone[c] < kQuarryTiles)
 			quarryStone[c] += plantQuarryFaces(
-				map, t, {KitSeed{int(N::lround(L.home[c].x)), int(N::lround(L.home[c].y)), kQuarrySearch}},
+				map, t,
+				{KitSeed{int(N::lround(L.home[c].x)), int(N::lround(L.home[c].y)),
+						 int(N::lround(kQuarrySearch * L.fill.longest()))}},
 				kQuarryTiles, [&](int i) { return L.homeOf[i] == c && takes(i, STONE); });
 		context.telemetry.measure("fjord-continent.quarry.stone", quarryStone[c], c);
 	}
@@ -1092,8 +1124,11 @@ bool generate(GenerationWorld &game, GenerationContext &context)
 							[&](int i) { return L.homeOf[i] == owner && takes(i, type); });
 						placed > 0)
 						return placed;
-				// A crowded mouth (a small map): the bank's own meadow nearest the mouth, further out.
-				return plantPatchNear(map, t, bankSeed(L, k, 0.0, side, 3, 28), type, 6,
+				// A crowded mouth (a small map): the bank's own meadow nearest the mouth, further out. On
+				// a stretched map a fjord meets the coast at a slant and one bank is a thin wedge of wall
+				// at its mouth, so the search reaches as much further as the map is stretched.
+				return plantPatchNear(map, t,
+									  bankSeed(L, k, 0.0, side, 3, int(N::lround(28 * L.fill.longest()))), type, 6,
 									  [&](int i) { return L.homeOf[i] == owner && takes(i, type); });
 			};
 			const int wheat = bankPatch(kBankWheat, WHEAT);
@@ -1380,7 +1415,10 @@ GeneratorDefinition fjordContinentDefinition()
 		// Revision 16: the frozen continent (2.0). An ice sheet at the heart with a penitente rim,
 		// fjords frozen from the sheet outward behind glacier walls with landings, nunataks, the
 		// polar climate. Nothing of revision 15's draws survives.
-		16,
+		// Revision 17: on a rectangular map the fjords' sideways swing, their banks' crop and quarry
+		// seeds and the fallback quarry search follow the map's stretch, so a fjord no longer runs
+		// along the coast and starves one bank. Square maps are unchanged.
+		17,
 		false,
 		{GeneratorControl{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain}
 			 .withSearchRange(34, 38),
