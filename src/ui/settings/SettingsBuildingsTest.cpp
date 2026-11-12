@@ -61,7 +61,7 @@ TEST_CASE("version one preferences import only into known stock catalogs")
     const auto fingerprint=frozen.fingerprint();
     const auto inheritedFingerprint=globals->buildingsTypes.fingerprint();
     REQUIRE(fingerprint!=inheritedFingerprint);
-    REQUIRE(inheritedFingerprint=="2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71");
+    REQUIRE(inheritedFingerprint=="a4ef27ada2fb3359504894901b56b9d7eefd7a053de4efdbe0c5b92fcec4928e");
     CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",0,false))==11);
     CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",1,true))==13);
     CHECK(settings.buildingRadius(inheritedFingerprint,*globals->buildingsTypes.getByType("warflag",0,false))==std::min(9,globals->buildingsTypes.getByType("warflag",0,false)->maxUnitStayRange));
@@ -113,9 +113,12 @@ TEST_CASE("known frozen stock fingerprints migrate to inherited costs with curre
     BuildingsTypes frozen; frozen.initLegacy();
     const auto legacy=frozen.fingerprint();
     const auto current=globals->buildingsTypes.fingerprint();
-    REQUIRE(current=="2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71");
-    REQUIRE(legacy=="b7c9b811ca4f519c5d1040219ec6c32cf888b1f0fbbeb63022c573bcc20c6803");
-    for(const auto& old : {std::string("6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54"),legacy})
+    REQUIRE(current=="a4ef27ada2fb3359504894901b56b9d7eefd7a053de4efdbe0c5b92fcec4928e");
+    REQUIRE(legacy=="6b9c36f61e8a9978f44384541827f2cfd86bb4b8b186b3a11fa515bb93ff5fd7");
+    // The pre-material identity, the frozen identity before SIM 152's stone
+    // wall change, and the current frozen identity all reach both stock slots.
+    for(const auto& old : {std::string("6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54"),
+                           std::string("b7c9b811ca4f519c5d1040219ec6c32cf888b1f0fbbeb63022c573bcc20c6803"),legacy})
     {
         const auto path=glob2test::profileDir()/"stock-cost-migration-preferences.txt";
         {
@@ -142,6 +145,26 @@ TEST_CASE("known frozen stock fingerprints migrate to inherited costs with curre
         CHECK(restored.buildingAssignment(current,site)==7);
         CHECK(restored.buildingRadius(current,flag)==flag.maxUnitStayRange);
     }
+}
+TEST_CASE("the inherited stock identity before the stone wall change keeps its preferences")
+{
+    glob2test::HeadlessGlobals globals;
+    const auto current=globals->buildingsTypes.fingerprint();
+    BuildingsTypes frozen; frozen.initLegacy();
+    const auto path=glob2test::profileDir()/"stone-wall-migration-preferences.txt";
+    {
+        std::ofstream file(path);
+        file << "version=2\nbuildingAssignment.2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71/inn.0.finished=11\n"
+             << "buildingAssignment.2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71/inn.1.site=13\n"
+             << "buildingAssignment." << current << "/inn.1.site=7\n";
+    }
+    Settings settings; settings.load(path.filename().string());
+    const auto& inn=*globals->buildingsTypes.getByType("inn",0,false);
+    CHECK(settings.buildingAssignment(current,inn)==11);
+    CHECK(settings.buildingAssignment(current,*globals->buildingsTypes.getByType("inn",1,true))==7);
+    // Generated-map preferences never cross into the frozen identity.
+    const auto& frozenInn=*frozen.getByType("inn",0,false);
+    CHECK(settings.buildingAssignment(frozen.fingerprint(),frozenInn)==frozenInn.presentation.defaultAssigned);
 }
 TEST_CASE("per game assignment loads reject duplicate stable and legacy identities")
 {

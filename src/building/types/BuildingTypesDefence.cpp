@@ -99,6 +99,11 @@ extern const std::size_t g_buildingTypesDefenceTowerCount =
 // Flat table entries 47..48.
 BuildingType g_buildingTypesStoneWall[] = {
 	// 47: stonewall0c
+	// SIM 152 raised walls from 180 HP for 1 stone (unchanged since 2008, when
+	// building armor fell from 18 to 10) to 750 HP for 2 stone: a trained
+	// warrior hits a wall for strength 16 - armor 10 = 6, so wall HP is tuned
+	// against that difference. This frozen table changed with the shipped JSON
+	// so maps without an embedded catalog get the same wall.
 	// In the data file the parser sees "hueImage 1;" — the trailing semicolon
 	// is silently dropped by std::istringstream when reading int, so this is
 	// equivalent to "hueImage 1". The duplicate "miniSpriteImage" line
@@ -109,9 +114,9 @@ BuildingType g_buildingTypesStoneWall[] = {
 	  .hueImage = 1,
 	  .fillable = 1,
 	  .width = 1, .height = 1,
-	  .maxMaterial = { /*wood*/0, /*wheat*/0, /*papyrus*/0, /*stone*/1 },
+	  .maxMaterial = { /*wood*/0, /*wheat*/0, /*papyrus*/0, /*stone*/2 },
 	  .maxUnitWorking = 1,
-	  .hpInit = 1, .hpMax = 180, .hpInc = 180,
+	  .hpInit = 1, .hpMax = 750, .hpInc = 375,
 	  .level = 0, .shortTypeNum = 11, .isBuildingSite = 1 },
 
 	// 48: stonewall0
@@ -122,7 +127,7 @@ BuildingType g_buildingTypesStoneWall[] = {
 	  .hueImage = 1,
 	  .crossConnectMultiImage = 1,
 	  .width = 1, .height = 1,
-	  .hpInit = 180, .hpMax = 180,
+	  .hpInit = 750, .hpMax = 750,
 	  .armor = 10,
 	  .level = 0, .shortTypeNum = 11 },
 };

@@ -608,7 +608,7 @@ TEST_SUITE("LanMatchHarness")
             customID=int(snapshot["variants"].size());
             variant["id"]=customID;variant["key"]="network.custom";
             variant["properties"]["type"]="network-custom";
-            variant["properties"]["hpMax"]=431;
+            variant["properties"]["hpInit"]=431;variant["properties"]["hpMax"]=431;
             variant["previous"]="";variant["next"]="";
             variant["semantics"]["placeable"]=true;variant["semantics"]["instantPlacement"]=true;
             variant["semantics"]["repairable"]=false;variant["requiredExperiment"]="network-fixture";
