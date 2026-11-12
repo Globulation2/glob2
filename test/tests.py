@@ -459,6 +459,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
+    '#src/map/gradient/BuildingSeedTemplates.cpp',
     '#src/map/gradient/LegacyResourceGradientState.cpp',
     '#src/map/gradient/AdaptiveGradientState.cpp',
     '#src/map/gradient/MapGradientTargets.cpp',

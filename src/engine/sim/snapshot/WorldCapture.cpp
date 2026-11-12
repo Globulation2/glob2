@@ -581,6 +581,25 @@ Handle capture(const Game& game,
 			result->areaFertility = std::move(area);
 		}
 	}
+	if (needs(result->requirements, Component::BuildingSeeds))
+	{
+		// Reused while unchanged; otherwise refill the free copy closest to the
+		// live templates, chunk by chunk.
+		const auto& routing = game.map.routing();
+		if (previous && previous->buildingSeeds && routing.buildingSeedsCurrent(*previous->buildingSeeds))
+			result->buildingSeeds = previous->buildingSeeds;
+		else
+		{
+			auto copy = storage ? storage->buildingSeeds.acquire(storage->allocations,
+				[&](const MapState::BuildingSeedSnapshot& buffer) {
+					return buffer.world == game.map.identity() ? buffer.generation : Uint64(0);
+				}) : std::make_shared<MapState::BuildingSeedSnapshot>();
+			Uint64 copied = 0;
+			routing.captureBuildingSeeds(*copy, copied);
+			if (storage) storage->buildingSeedBytesCopied += copied;
+			result->buildingSeeds = std::move(copy);
+		}
+	}
 	if (needs(requirements, Component::ResourceFields))
 	{
 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
@@ -640,6 +659,14 @@ void verifyCapture(const Game& game, const Handle& handle)
 			});
 	};
 	const auto live = game.map.cellView();
+	if (handle.buildingSeeds)
+	{
+		const auto& expected = game.map.routing().buildingSeedTemplates();
+		const auto& captured = handle.buildingSeeds->planes;
+		if (captured.cells != expected.cells || captured.planes != expected.planes
+			|| captured.forbidden != expected.forbidden || captured.buildings != expected.buildings)
+			throw std::logic_error("snapshot verification: building seed templates differ from the live map");
+	}
 	if (handle.terrain)
 	{
 		compare("cell rules", handle.terrain->cellRules, game.map.cellRuleState());

@@ -588,6 +588,7 @@ void Map::clear()
 	routing().gradientRuntime->overlaySupplierLocations.clear();
 	routing().gradientRuntime->supplierLocationsDirty=true;
 	routing().gradientRuntime->resourceSeeds.reset();
+	routing().gradientRuntime->buildingSeeds.reset();
 	routing().gradientRuntime->safety.reset();
     routing().gradientRuntime->directFlight = {};
 	routing().clearGradientBufferPool();

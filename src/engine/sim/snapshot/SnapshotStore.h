@@ -29,6 +29,8 @@ public:
 		// Exact map copies are always counted; bytesCopied/reusedComponents cover
 		// only detailedCaptures when optional diagnostics accounting is enabled.
 		Uint64 mapBytesCopied = 0, detailedCaptures = 0;
+		//! Derived building seed templates copied into captures.
+		Uint64 buildingSeedBytesCopied = 0;
 	} metrics;
 	// GLOB2_SNAPSHOT_VERIFY=1 turns capture verification on for every store.
 	Store() { if (const char* value = std::getenv("GLOB2_SNAPSHOT_VERIFY")) storage.verify = *value && *value != '0'; }

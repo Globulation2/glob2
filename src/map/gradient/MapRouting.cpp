@@ -25,3 +25,22 @@ MapRouting::MapRouting(Map &owner) : map(owner), gradientRuntime(std::make_uniqu
 
 // Map::clear frees every buffer above before the owner releases this object.
 MapRouting::~MapRouting() = default;
+
+const MapState::BuildingSeedPlanes& MapRouting::buildingSeedTemplates() const
+{
+	return gradientRuntime->buildingSeeds.ensure(map.stateView());
+}
+
+bool MapRouting::buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy) const
+{
+	buildingSeedTemplates();
+	return gradientRuntime->buildingSeeds.current(copy, map.identity());
+}
+
+void MapRouting::captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const
+{
+	buildingSeedTemplates();
+	std::uint64_t copied = 0;
+	gradientRuntime->buildingSeeds.capture(copy, map.identity(), copied);
+	bytesCopied += copied;
+}

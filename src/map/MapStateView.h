@@ -21,6 +21,7 @@
 // each cell query reads the same arrays directly on both sides.
 namespace MapState
 {
+struct BuildingSeedPlanes;
 struct View
 {
 	int width = 0, height = 0;
@@ -42,6 +43,9 @@ struct View
 	const CellRuleTable* rules = nullptr;
 	const Fertility::GrowthCache* growth = nullptr;
 	std::span<const Uint16> areaFertility;
+	// Derived building seed templates (gradient/BuildingSeedTemplates.h). Only
+	// views that seed building fields carry them; absent, seeding scans.
+	const BuildingSeedPlanes* buildingSeeds = nullptr;
 	bool resourceGrowthDisabled = false;
 	int resourceScarcityLevel = 0;
 

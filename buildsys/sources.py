@@ -447,6 +447,7 @@ CLIENT_SOURCES = (
     'map/gradient/MapGradientMarketTargets.cpp',
     'map/gradient/SnapshotGradient.cpp',
     'map/gradient/ResourceSeedCache.cpp',
+    'map/gradient/BuildingSeedTemplates.cpp',
     'map/io/MapExploredAreaIO.cpp',
     'map/io/MapIO.cpp',
     'map/MapMisc.cpp',

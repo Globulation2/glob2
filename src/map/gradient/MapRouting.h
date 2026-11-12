@@ -36,6 +36,7 @@
 #include <vector>
 
 struct GradientTargetCell;
+namespace MapState { struct BuildingSeedPlanes; struct BuildingSeedSnapshot; }
 struct GradientRuntime;
 struct SharedBuildingGradient;
 namespace SimulationSnapshot { struct Handle; }
@@ -423,6 +424,12 @@ protected:
 public:
 	//! Live published material planes in publication order; every plane has size cells.
 	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
+	//! Owner thread: the live building seed templates, rebuilt first if stale.
+	const MapState::BuildingSeedPlanes& buildingSeedTemplates() const;
+	//! Owner thread: whether a captured copy still equals the live templates.
+	bool buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy) const;
+	//! Owner thread: bring a captured copy up to date, copying changed chunks.
+	void captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const;
 
 protected:
 	bool isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const;

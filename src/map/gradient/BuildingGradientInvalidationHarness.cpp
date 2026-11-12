@@ -13,6 +13,10 @@
 #include "TerrainBuiltins.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGame.h"
+#include "Property.h"
+#include "BuildingSeedTemplates.h"
+#include "SeedCells.h"
+#include <random>
 #include "GradientFixture.h"
 #include "LegacyPopulationOutput.h"
 
@@ -454,6 +458,150 @@ void requireSameCells(const std::vector<Uint16>& actual, const Uint16* expected,
 			INFO(what << " cell " << i << " actual " << actual[i] << " expected " << expected[i]);
 			REQUIRE(actual[i] == expected[i]);
 		}
+}
+
+// Building seed templates: after any sequence of map edits, the incrementally
+// maintained planes equal a fresh rebuild, and template-backed seeds equal the
+// full scan for every building, route and movement class.
+void requireSameTemplates(const MapState::BuildingSeedPlanes& actual, const MapState::BuildingSeedPlanes& expected, const std::string& what)
+{
+	INFO(what);
+	REQUIRE(actual.cells == expected.cells);
+	for (size_t k = 0; k < actual.planes.size(); ++k)
+		requireSameCells(actual.planes[k], expected.planes[k].data(), what + " plane " + std::to_string(k));
+	for (size_t t = 0; t < actual.forbidden.size(); ++t)
+	{
+		REQUIRE(actual.forbidden[t] == expected.forbidden[t]);
+		REQUIRE(actual.buildings[t] == expected.buildings[t]);
+	}
+}
+
+void buildingSeedTemplatesMatchScan(std::uint32_t seed)
+{
+	glob2test::HeadlessGame world({.wDec=6, .hDec=6, .teams=3, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+	auto& game = world.game;
+	auto& m = game.map;
+	std::mt19937 rng(seed);
+	const auto pick = [&](int n) { return int(rng() % unsigned(n)); };
+	auto catalog = nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+	catalog["variants"][game.buildingsTypes.getFinishedTypeNum("hospital")]["semantics"]["occupiesGround"] = false;
+	catalog["variants"][game.buildingsTypes.getFinishedTypeNum("school")]["properties"]["width"] = 3;
+	game.buildingsTypes.loadSnapshotJson(catalog.dump());
+	game.configureBuildingCatalog();
+
+	const std::vector<TerrainType> palette = {GRASS, GRASS, GRASS, SAND, WATER, WATER};
+	const std::vector<Uint16> resources = {WOOD, WHEAT, STONE, ALGA, PAPYRUS};
+	const auto paint = [&](int x, int y) { m.setVertexTerrain(x, y, palette[pick(int(palette.size()))]); };
+	const auto resource = [&](int x, int y) {
+		m.replaceResource(x, y, pick(3) ? Resource{} : Resource{resources[pick(int(resources.size()))], 0, 1, 0});
+	};
+	for (int y = 0; y < 64; ++y)
+		for (int x = 0; x < 64; ++x)
+		{
+			paint(x, y);
+			if (!pick(6)) resource(x, y);
+			if (!pick(25)) m.addForbidden(x, y, pick(3));
+			if (!pick(40)) m.markImmobileUnit(x, y, pick(3));
+		}
+
+	// Footprints near the edge wrap around the torus.
+	std::vector<Building*> buildings;
+	const char* types[] = {"inn", "hospital", "school", "swimmingpool", "warflag", "clearingflag", "explorationflag"};
+	for (int i = 0; i < 9; ++i)
+	{
+		const int x = i < 2 ? 62 : pick(64), y = i < 2 ? 63 - i : pick(64);
+		Building* b = world.addBuilding(types[pick(7)], x, y, 0, pick(3));
+		b->unitStayRange = pick(7);
+		b->clearingMaterialMask = 0;
+		b->setClearsMaterial(WOOD, true); b->setClearsMaterial(ALGA, pick(2));
+		buildings.push_back(b);
+	}
+	game.teams[0]->allies |= game.teams[2]->me;
+
+	auto& live = m.routing().gradientRuntime->buildingSeeds;
+	const auto view = [&] { return m.stateView(); };
+	live.ensure(view());
+	const size_t cells = m.size;
+	std::vector<Uint16> scanned(cells), templated(cells);
+	using namespace gradient_preparation;
+	SimulationSnapshot::Store store;
+	auto boundary = store.captureBoundary(game);
+	const auto checkSeeds = [&](const std::string& what) {
+		auto plain = view();
+		auto withTemplates = plain;
+		withTemplates.buildingSeeds = &live.ensure(plain);
+		// The worker path: the same seeds from a captured building view.
+		const auto leased = boundary.buildingGradientView();
+		const auto captured = leased.view();
+		REQUIRE(captured.buildingSeeds);
+		std::vector<Uint16> fromSnapshot(cells);
+		const auto run = [cells](auto fn) { fn(0, cells); };
+		for (Building* b : buildings)
+			for (BuildingRoute route : {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
+				for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
+				{
+					const auto seedInput = captureBuildingSeed(*b, swim, route);
+					const auto expected = buildingCells(plain, seedInput, scanned.data(), run);
+					const auto actual = buildingCells(withTemplates, seedInput, templated.data(), run);
+					const auto snapshotResult = buildingCells(captured, seedInput, fromSnapshot.data(), run);
+					const std::string where = what + " " + b->type->type + " route " + std::to_string(int(route)) + " swim " + std::to_string(swim);
+					INFO(where);
+					REQUIRE(actual.locked == expected.locked);
+					REQUIRE(actual.resourceState == expected.resourceState);
+					requireSameCells(templated, scanned.data(), where);
+					REQUIRE(snapshotResult.locked == expected.locked);
+					REQUIRE(snapshotResult.resourceState == expected.resourceState);
+					requireSameCells(fromSnapshot, scanned.data(), where + " snapshot");
+				}
+	};
+	checkSeeds("initial");
+
+	for (int step = 0; step < 60; ++step)
+	{
+		const int x = pick(64), y = pick(64);
+		switch (pick(9))
+		{
+		case 0: paint(x, y); break;
+		case 1: resource(x, y); break;
+		case 2: m.addForbidden(x, y, pick(3)); break;
+		case 3: m.removeForbidden(x, y, pick(3)); break;
+		case 4: m.markImmobileUnit(x, y, pick(3)); break;
+		case 5: m.clearImmobileUnit(x, y); break;
+		case 6: {
+			// Clear and restamp a footprint, as kill and construction recovery do.
+			Building* b = buildings[pick(int(buildings.size()))];
+			if (!b->type->semantics.occupiesGround) break;
+			m.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
+			if (pick(2)) m.setBuilding(b->posX, b->posY, b->type->width, b->type->height, b->gid);
+			break;
+		}
+		case 7: {
+			auto tile = m.getTile(x, y);
+			tile.forbidden ^= Uint32(1) << pick(3);
+			if (pick(2)) tile.resource = pick(2) ? Resource{} : Resource{resources[pick(int(resources.size()))], 0, 1, 0};
+			m.replaceTile(x, y, tile);
+			break;
+		}
+		default:
+			// A rare bulk edit invalidates; the next use rebuilds.
+			if (!pick(8)) m.fillTerrain(pick(2) ? GRASS : SAND);
+			else paint(x, y);
+			break;
+		}
+		// Each boundary refreshes only changed chunks of a pooled copy; an
+		// older boundary still leased keeps exactly what it captured.
+		game.stepCounter++;
+		const auto older = boundary;
+		const auto olderPlanes = older.buildingSeeds->planes;
+		boundary = store.captureBoundary(game);
+		BuildingSeedTemplates fresh;
+		const auto& expected = fresh.ensure(view());
+		requireSameTemplates(live.ensure(view()), expected, "step " + std::to_string(step));
+		REQUIRE(boundary.buildingSeeds);
+		requireSameTemplates(boundary.buildingSeeds->planes, expected, "captured step " + std::to_string(step));
+		requireSameTemplates(older.buildingSeeds->planes, olderPlanes, "older capture step " + std::to_string(step));
+		if (step % 15 == 14) checkSeeds("step " + std::to_string(step));
+	}
 }
 
 void scheduledKernelsMatchSynchronous(KernelTerrain config)
@@ -1746,6 +1894,13 @@ TEST_SUITE("BuildingGradientInvalidation")
 	{
 		glob2test::HeadlessGlobals globals;
 		idleFieldStorageIsReusedWithoutStaleRoutes();
+	}
+	TEST_CASE("building seed templates follow map edits and seed exactly as the full scan [property]")
+	{
+		glob2test::forEachSeed(4, [](std::uint32_t seed) {
+			glob2test::HeadlessGlobals globals;
+			buildingSeedTemplatesMatchScan(seed);
+		});
 	}
 	TEST_CASE("snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class")
 	{

@@ -39,6 +39,7 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
         revalidateMaterialClaimOwners(std::move(owners),false);
     }
 	routing().gradientRuntime->resourceSeeds.changed(index, flags);
+	routing().gradientRuntime->buildingSeeds.changed(liveCells, index);
     if (flags & ResourceSeedCache::Terrain)
         routing().gradientRuntime->directFlight.valid = false;
 	// Material availability is not a movement obstacle. Resource replacements
@@ -51,6 +52,7 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
 void Map::invalidateResourceSeeds()
 {
 	routing().gradientRuntime->resourceSeeds.invalidate();
+	routing().gradientRuntime->buildingSeeds.invalidate();
     routing().gradientRuntime->directFlight.valid = false;
 	routing().gradientRuntime->safety.invalidate(true, true);
 }

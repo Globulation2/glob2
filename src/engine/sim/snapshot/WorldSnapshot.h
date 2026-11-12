@@ -17,6 +17,7 @@
 #include "ResourcePlaneKey.h"
 #include "field/GradientDestinationPlanes.h"
 #include "MapChangeTracking.h"
+#include "BuildingSeedPlanes.h"
 #include <span>
 #include <stdexcept>
 #include <limits>
@@ -187,6 +188,8 @@ struct Handle
 	std::shared_ptr<const ResourceFields> resourceFields;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
+	//! Derived building seed templates, for building field seeding only.
+	std::shared_ptr<const MapState::BuildingSeedSnapshot> buildingSeeds;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
     Uint32 activeClaimRuntimeChecksum = 0;
 	std::array<Uint64, 5> mapGenerations{};

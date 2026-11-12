@@ -517,6 +517,8 @@ def run_job(job, args, build_dir):
                TMPDIR=str(root), TMP=str(root), TEMP=str(root), SDL_AUDIODRIVER='dummy')
     # Every save audits resource-claim state against what load would rebuild.
     env.setdefault('GLOB2_CLAIM_AUDIT', '1')
+    # Every template-backed building seed is checked against the full scan.
+    env.setdefault('GLOB2_BUILDING_SEED_AUDIT', '1')
     env.pop('GLOB2_MOBILE_UI', None)
     env.pop('GLOB2_USER_DIR', None)
     # Always override inherited opt-in: a standard run must not take over the desktop.
