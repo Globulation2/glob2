@@ -49,6 +49,9 @@ test.beforeEach(async ({page},info) => {
 });
 
 test('imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game', async ({page},info) => {
+  // Three cold starts (beforeEach, exportedSave's reload, the final reload),
+  // like the persistence-failure test below; see editor-storage.spec.js.
+  test.setTimeout(240000);
   const errors=[]; page.on('pageerror',error=>errors.push(String(error)));
   const bytes=await exportedSave(page), expected=digest(bytes);
   await select(page,'Original.game.gz',bytes); await imported(page);
