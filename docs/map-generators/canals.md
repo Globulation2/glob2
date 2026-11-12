@@ -93,6 +93,8 @@ The varied block kinds provide local objectives. Fairness is statistical.
   inland tile is no shoreline (`chooseTowerSites` with `against`).
 - They cover as much of the other blocks' land across the canal as they can.
 - None may close the colony's walk to a bridge (`settleStartingTowers`).
+- Since revision 11 every starting tower opens with a full magazine and a full stone reserve
+  (`raiseTowers`), so towers facing each other across a canal trade fire from the first ticks.
 
 ## Fields
 - Every block is fertile, because its canal is within the growth probe's reach of all of it.

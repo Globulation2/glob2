@@ -1779,6 +1779,20 @@ inline void arenaChecks()
 	const auto supplied = game.teams[0]->turrets.back();
 	REQUIRE(supplied->material(STONE) == supplied->type->maxMaterial[STONE]);
 	REQUIRE(supplied->desiredMaxUnitWorking == 0);
+	// A plan's towers all start armed and stocked with stone, however close they stand to
+	// another colony's: raiseTowers supplies both stores at every site.
+	{
+		TowerPlan raised;
+		raised.towers = {{t.at(20, 20)}};
+		raised.pads = {{}};
+		const auto before = game.teams[0]->turrets.size();
+		REQUIRE(raiseTowers(GenerationWorld(game).ref(), raised, 0));
+		REQUIRE(game.teams[0]->turrets.size() == before + 1);
+		const auto raisedTower = game.teams[0]->turrets.back();
+		REQUIRE(raisedTower->bullets == raisedTower->type->maxBullets);
+		REQUIRE(raisedTower->material(STONE) == raisedTower->type->maxMaterial[STONE]);
+		REQUIRE(raisedTower->desiredMaxUnitWorking == 0);
+	}
 	// A stocked starter inn registers feeding service immediately but does not
 	// receive fruit. Its entire footprint must obey the same placement mask.
 	std::vector<unsigned char> innGround(t.size(), 1);
@@ -2598,18 +2612,9 @@ inline void farmAndTowerChecks()
 	request.spacing = 4;
 	const TowerPlan plan = chooseTowerSites(sea, owner, buildable, target, keep, 2, request);
 	REQUIRE((plan.towers[0].size() == 3 && plan.towers[1].size() == 3 && plan.pads[0].size() == 2));
-	REQUIRE((plan.stocked[0].size() == 3 && plan.stocked[1].size() == 3));
 	for (size_t a = 0; a < 3; ++a)
 	{
-		// A tower with the other colony's tower in range starts empty; one without starts stocked.
-		bool facing = false;
 		const int s = plan.towers[0][a];
-		for (int o : plan.towers[1])
-			facing = facing || std::max(std::abs(sea.offsetX(s % 64, o % 64)),
-										std::abs(sea.offsetY(s / 64, o / 64))) -
-									   1 <=
-								   request.range;
-		REQUIRE(bool(plan.stocked[0][a]) == !facing);
 		REQUIRE(s % 64 >= 19); // beside the four-tile gap, the only border within range
 	}
 	const std::vector<unsigned char> footprints = towerFootprints(sea, plan);

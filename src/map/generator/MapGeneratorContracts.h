@@ -706,8 +706,9 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Current versions of the rebuilt landscapes (The Glacis 6, Allotments 3, Caravanserai 6).
-		REQUIRE(definition.revision == (std::string(id) == "allotments" ? 3 : 6));
+		// Current versions of the rebuilt landscapes (The Glacis 7, Allotments 3, Caravanserai 6).
+		REQUIRE(definition.revision ==
+				(std::string(id) == "allotments" ? 3 : std::string(id) == "glacis" ? 7 : 6));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},

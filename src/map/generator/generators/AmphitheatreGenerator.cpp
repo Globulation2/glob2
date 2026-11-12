@@ -901,7 +901,7 @@ GeneratorDefinition amphitheatreDefinition()
 		"amphitheatre",
 		23,
 		"Amphitheatre",
-		10, // 10: territories are grass again outside their paved squares, more farmland, plain water
+		11, // 11: every starting tower opens with full bullets and a full stone reserve
 		false,
 		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest

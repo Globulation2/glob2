@@ -16,8 +16,6 @@ namespace MapGeneration
 struct TowerPlan
 {
 	std::vector<std::vector<int>> towers, pads;
-	// Per tower, whether it starts with its bullets: only where no other colony's tower is in range.
-	std::vector<std::vector<unsigned char>> stocked;
 };
 
 /// What a plan asks for.
@@ -47,9 +45,9 @@ TowerRequest startingTowerRequest(int level, int count, int pads, int spacing);
 /// each of its own colony's worth `ownWeight` (the ground it defends, such as its own lanes). Sites are taken
 /// best first, a colony at a time in turn, so every colony gets its first choice before any gets its
 /// second, and every colony ends with the same number. No site may reach a tile of another colony's
-/// `keepOutOfRange` (its swarm). Towers facing each other across a wall are the point, but a tower
-/// within range of another colony's tower starts empty (`stocked`), so the game does not open with
-/// towers shooting each other down. Pads need only keep their spacing. A colony whose ground offers
+/// `keepOutOfRange` (its swarm). Towers facing each other across a wall are the point: every tower
+/// starts armed (raiseTowers), so facing towers trade fire from the first ticks. Pads need only keep
+/// their spacing. A colony whose ground offers
 /// no site that reaches anyone takes its best remaining ones anyway. Returns fewer than asked only
 /// where a colony has no room; the caller decides whether that fails the map.
 TowerPlan chooseTowerSites(const Torus &, const std::vector<int> &owner,
@@ -85,8 +83,9 @@ std::vector<unsigned char> roomyGround(const Torus &, const std::vector<unsigned
 bool settleStartingTowers(GenerationWorld &, GenerationContext &, TowerPlan &, int level,
 						  bool everyColonyNeedsOne, const std::vector<unsigned char> *goal);
 
-/// Builds a plan's towers: every colony's tower sites get a completed tower of `level` (placeTower),
-/// stocked where the plan says. Pads stay open. False, and nothing more built, at the first site that no longer
+/// Builds a plan's towers: every colony's tower sites get a completed tower of `level` (placeTower)
+/// with a full magazine and a full stone reserve, so it defends from the first tick and recruits no
+/// worker to haul its first stone. Pads stay open. False, and nothing more built, at the first site that no longer
 /// fits.
 bool raiseTowers(GenerationWorld &, const TowerPlan &, int level);
 

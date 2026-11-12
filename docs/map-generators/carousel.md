@@ -102,7 +102,9 @@ grass niche is opened for it first. Both are unscaled.
   site stands in the colony's own home, directly against a wall and within six tiles of one, chosen
   for how much of the previous colony's elbow (its court and lanes within twelve tiles) it covers
   (`chooseTowerSites` counting other colonies' elbows only). `settleStartingTowers` drops any site
-  that would close a colony's walk to the plaza and evens the counts.
+  that would close a colony's walk to the plaza and evens the counts. Since revision 10 every
+  starting tower opens with a full magazine and a full stone reserve (`raiseTowers`), including
+  towers within range of a neighbour's.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires its terrain vertex for vertex,
   every colony reachable, no land reachable from the sea (`seaEntry`), 95% of every farm's crop land
   and all of its plot a walk from its colony (`farmReachable`), every designed border standing as wall

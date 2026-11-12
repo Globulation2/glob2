@@ -1467,12 +1467,13 @@ GeneratorDefinition glacisDefinition()
 		"The Glacis",
 		// Revision 6: the terrain catalogue - a cliffed scarp and ridge-rock bastions, a scree glacis,
 		// slate paving, clay arcs, ford outcrops and quarry faces where the walls were stone.
-		6,
+		// Revision 7: every starting tower opens with full bullets and a full stone reserve.
+		7,
 		false,
 		// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
 		// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
 		// 10 reads as a cleared ring against the country; under 6 it does not. Starting towers
-		// off by default: a tower's empty stone store recruits workers before the first harvest.
+		// off by default.
 		{GeneratorControl{"fort-size", "Fort size", 20, 36, 2, 30, ControlGroup::Layout}
 			 .withSearchRange(28, 36),
 		 GeneratorControl::choice("bastions", "Bastions",
