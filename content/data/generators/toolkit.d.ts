@@ -1542,7 +1542,6 @@ export namespace Towers {
 export interface TowerPlan {
 towers: Buffer<Buffer<number, "i32">>;
 pads: Buffer<Buffer<number, "i32">>;
-stocked: Buffer<Buffer<number, "u8">>;
 }
 export function TowerPlan(value?: Partial<TowerPlan>): TowerPlan;
 export interface TowerRequest {

@@ -38,6 +38,7 @@ setting.
   a five-corner causeway and a three-corner track to the foot. `starting-towers` (0-3, 0) raises
   two towers per colony in the front bastions (the bastions flanking the front), scored by the
   fort's own approaches (`chooseTowerSites`, `settleStartingTowers` with the gates as goals).
+  Since revision 7 they open with a full magazine and a full stone reserve (`raiseTowers`).
 - **The gardens.** Every courtyard tile 1.5 tiles behind the fort's middle is garden, closed off
   from the town in front by one row of paved corners and split by a paved lane as wide as the back
   gate. The left half is wheat with a cistern towards its back; the right half is wheat with a

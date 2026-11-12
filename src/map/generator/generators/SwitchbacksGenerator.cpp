@@ -1067,7 +1067,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		11, // 11: plain water, lava in rings, cliffs thickened to draw as one mass
+		12, // 12: every starting tower opens with full bullets and a full stone reserve
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's

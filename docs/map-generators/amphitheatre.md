@@ -62,7 +62,8 @@ stay unbuildable is rough ground.
   arena's outer wall within 18 steps of the colony's ramp mouth and clear of the ramp itself,
   covering the most of the arena (terraces, pit and ramps) over the outer ring (`chooseTowerSites`,
   `settleStartingTowers`). The starting towers protect the arena entrance; border
-  defenses require further construction.
+  defenses require further construction. Since revision 11 every starting tower opens with a full
+  magazine and a full stone reserve (`raiseTowers`).
 - **Checked, not assumed.** The terrain as designed, vertex for vertex, every ramp walkable, territories within
   `kAreaTolerance` percent, every colony's seas the same size, no territory reaching another or the
   arena with the outer ramps shut, and even walks to the ramps and to the pit.

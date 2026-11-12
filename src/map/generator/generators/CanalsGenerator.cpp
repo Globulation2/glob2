@@ -1259,7 +1259,8 @@ GeneratorDefinition canalsDefinition()
 		"Canals",
 		// Revision 10: Canals 2.0, the lagoon city on the terrain catalogue (quays, boardwalk
 		// bridges, paved campi, terrain walls, marshes, gardens and the grand canal).
-		10,
+		// Revision 11: every starting tower opens with full bullets and a full stone reserve.
+		11,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade

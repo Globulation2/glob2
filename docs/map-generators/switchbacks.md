@@ -76,7 +76,8 @@ niche opened in the paving (paving holds no stone). Both are unscaled.
   towards the middle of the map - so it shoots across the rock at the next leg up, where attackers
   coming down from the plateau pass (`chooseTowerSites` counting the colony's own trail). A trail too
   narrow for a tower beside its walkway gets fewer, the same for every colony, and no site may close a
-  trail (`settleStartingTowers`).
+  trail (`settleStartingTowers`). Since revision 12 every starting tower opens with a full magazine
+  and a full stone reserve (`raiseTowers`), so none recruits a worker to haul its first stone.
 - **Checked, not assumed.** The terrain as designed, vertex for vertex, every farm walkable from its colony
   (`farmReachable`), no land reachable from the sea, homes and their farms and the plateau apart with the
   trails shut and with only the middle legs shut (so no leg can be skipped), a level-1 tower at home

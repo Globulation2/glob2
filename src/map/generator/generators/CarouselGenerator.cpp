@@ -1243,7 +1243,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		9, // 9: walls thickened to draw solid rock, lanes plain road, plain water
+		10, // 10: every starting tower opens with full bullets and a full stone reserve
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

@@ -11,19 +11,6 @@
 #include <utility>
 namespace MapGeneration
 {
-namespace
-{
-// Whether a tower on footprint `a` reaches any tile of footprint `b` (both top-left tiles).
-bool footprintsInRange(const Torus &t, int a, int b, int range)
-{
-	const int dx = t.offsetX(t.remainderX(a), t.remainderX(b)), dy = t.offsetY(a / t.w, b / t.w);
-	// The footprints are two wide: a tile of b at dx..dx+1 is within range of a's 0..1 when the gap
-	// between the spans is at most the range.
-	const auto gap = [](int d) { return d > 0 ? std::max(0, d - 1) : std::max(0, -d - 1); };
-	return gap(dx) <= range && gap(dy) <= range;
-}
-} // namespace
-
 TowerRequest startingTowerRequest(int level, int count, int pads, int spacing)
 {
 	TowerRequest request;
@@ -150,33 +137,6 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 			}
 		}
 	}
-	// A tower starts stocked only where no other colony's tower is within its range: towers that face
-	// each other start empty, so the game does not open with them shooting each other down.
-	plan.stocked.assign(colonies, {});
-	for (int k = 0; k < colonies; ++k)
-	{
-		::MapGeneration::generationCheckpoint();
-		for (int i : plan.towers.at(k))
-		{
-			::MapGeneration::generationCheckpoint();
-			bool alone = true;
-			for (int other = 0; other < colonies && alone; ++other)
-			{
-				::MapGeneration::generationCheckpoint();
-				if (other != k)
-					for (int s : plan.towers.at(other))
-					{
-						::MapGeneration::generationCheckpoint();
-						if (footprintsInRange(t, i, s, r))
-						{
-							alone = false;
-							break;
-						}
-					}
-			}
-			plan.stocked.at(k).push_back(alone);
-		}
-	}
 	// Pads: the best remaining sites, spaced from the colony's towers and pads.
 	for (int k = 0; k < colonies; ++k)
 	{
@@ -229,10 +189,7 @@ int dropBlockingSites(const Torus &t, TowerPlan &plan, const std::vector<unsigne
 			if (!plan.pads.at(k).empty())
 				plan.pads.at(k).pop_back();
 			else
-			{
 				plan.towers.at(k).pop_back();
-				plan.stocked.at(k).pop_back();
-			}
 			++dropped;
 		}
 	}
@@ -254,7 +211,6 @@ int evenTowerPlan(TowerPlan &plan)
 	{
 		::MapGeneration::generationCheckpoint();
 		plan.towers.at(k).resize(towers);
-		plan.stocked.at(k).resize(towers);
 		plan.pads.at(k).resize(pads);
 	}
 	return int(towers);
@@ -369,8 +325,10 @@ bool raiseTowers(GenerationWorld &game, const TowerPlan &plan, int level)
 				}
 			}
 			// placeTower measures from the footprint's middle, so the site's middle finds it exactly.
+			// Every starting tower opens with a full magazine and a full stone reserve, so it defends
+			// from the first tick and recruits no worker to haul its first stone.
 			if (placeTower(game, int(k), level, t.remainderX(site) + 1, site / t.w + 1, 1, footprint,
-						   plan.stocked.at(k).at(j) != 0) != site)
+						   true, {}, true) != site)
 				return false;
 		}
 	}
