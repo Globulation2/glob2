@@ -90,7 +90,10 @@ def main():
             command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,bundle_id])
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
-    prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependency_identity(identity), discover(identity,options)['fingerprint'])
+    # Fingerprint the toolchain with the dependency identity, as dependencies.py and the
+    # CMake bridge do; the full identity names a store entry nothing builds outside release.
+    dependencies=dependency_identity(identity)
+    prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependencies, discover(dependencies,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with platforms/mobile/dependencies.py --target ios --environment '+args.environment)
     command=[sys.executable,str(ROOT/'tools/dev_build.py')]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     if args.script_tests: command += ['ios-tests']
@@ -112,7 +115,8 @@ def main():
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/('lib/libglob2-script-tests.a' if args.script_tests else 'lib/libglob2.a')]+[prefix/p for p in manifest['archives']]
-    recording_prefix=output/'recording/prefix'
+    # Resolved by the CMake bridge (mobile-configure): usually the shared dependency store.
+    recording_prefix=Path((output/'recording-prefix.txt').read_text().strip())
     libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',

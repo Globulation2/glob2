@@ -68,6 +68,17 @@ class DevelopmentBuildTests(unittest.TestCase):
                         {'target': 'android'}, {'target': 'web', 'release': '1'}):
             self.assertEqual(command.development_defaults(options), [], options)
 
+    def test_build_args_quote_paths_with_spaces(self):
+        # The macOS shared store lives under ~/Library/Application Support; CMake splits
+        # GLOB2_BUILD_ARGS with separate_arguments(UNIX_COMMAND), which honours quotes.
+        spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
+        command = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(command)
+        ios = command.cmake_commands(['target=ios', 'environment=simulator',
+                                      'mobile_deps=/Library/Application Support/deps'])
+        self.assertIn("-DGLOB2_BUILD_ARGS=target=ios environment=simulator "
+                      "'mobile_deps=/Library/Application Support/deps'", ios[0])
+
     def test_cmake_command_targets_and_options(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
