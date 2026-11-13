@@ -555,6 +555,7 @@ void Map::configureCompute(unsigned threads)
 void Map::clear()
 {
     materialClaimRoutes.reset();
+    claimRuntimeChanged();
     resourceClaimsEnabled=false;
     claimSetupTick.reset();
     activeClaimRules.reset();

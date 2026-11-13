@@ -141,6 +141,20 @@ class Map
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
     Uint32 claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs) const;
+    // The per-tick snapshot checksum of the claim runtime, reused while its
+    // inputs are unchanged. Route states and recovery records change only
+    // through Map methods, which call claimRuntimeChanged(); the pipeline
+    // counters and rules are compared directly, since saves and checksums
+    // can flush the pipeline through const paths. Never saved or checksummed.
+    struct ClaimSnapshotChecksumCache {
+        bool valid = false;
+        Uint32 value = 0;
+        Uint64 sequence = 0;
+        std::optional<Uint64> sealed;
+        std::optional<std::array<Uint64,3>> rules;
+    };
+    mutable ClaimSnapshotChecksumCache claimSnapshotChecksumCache;
+    void claimRuntimeChanged() { claimSnapshotChecksumCache.valid = false; }
     void validateActiveMaterialClaims(ResourceClaims::Ledger& ledger) const;
     // Derived from terrain only; never saved, checksummed or snapshotted.
     mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;

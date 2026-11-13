@@ -108,9 +108,12 @@ ResourceClaims::ClaimRecoverySelection Map::beginClaimRecoverySelection(const Un
 {
     using namespace ResourceClaims;
     if(!activeClaimsEnabled())return {};
-    if(!materialClaimRoutes)materialClaimRoutes=std::make_unique<ActiveRouteRuntime>(compute);
-    auto& recovery=materialClaimRoutes->recovery[unitOwner(unit.gid,unit.scriptIdentity)];
-    recovery.setContext(unit.destinationPurpose,accessClass(unit.movementAccess()));
+    if(!materialClaimRoutes){materialClaimRoutes=std::make_unique<ActiveRouteRuntime>(compute);claimRuntimeChanged();}
+    const auto [entry,inserted]=materialClaimRoutes->recovery.try_emplace(unitOwner(unit.gid,unit.scriptIdentity));
+    auto& recovery=entry->second;
+    const auto material=std::uint8_t(unit.destinationPurpose),movement=std::uint8_t(accessClass(unit.movementAccess()));
+    if(inserted || recovery.material!=material || recovery.movement!=movement)claimRuntimeChanged();
+    recovery.setContext(material,movement);
     return {&recovery,game->stepCounter,recovery.recovering?recovery.nextProbe:0,recovery.recovering,
         !recovery.failureStreak || recovery.allowsAttempt(game->stepCounter)};
 }
@@ -118,13 +121,16 @@ void Map::finishClaimRecoverySelection(const Unit& unit,unsigned probe,unsigned 
 {
     const auto view=beginClaimRecoverySelection(unit);if(!view.state)return;
     auto& recovery=materialClaimRoutes->recovery.at(ResourceClaims::unitOwner(unit.gid,unit.scriptIdentity));
+    const auto before=recovery;
     if(probe==size)recovery.exhausted();else recovery.selected(probe,size);
+    if(!(recovery==before))claimRuntimeChanged();
 }
 unsigned Map::recordClaimFailure(const Unit& unit,ResourceClaims::ClaimFailureKind kind)
 {
     using namespace ResourceClaims;
     const auto view=beginClaimRecoverySelection(unit);if(!view.state)return 0;
     auto& recovery=materialClaimRoutes->recovery.at(unitOwner(unit.gid,unit.scriptIdentity));
+    claimRuntimeChanged();
     if(kind==ClaimFailureKind::NoResource)recovery.recordFailure(game->stepCounter,ClaimRecovery::NoTile,0);
     else {
         const auto found=materialClaimRoutes->states.find(unitOwner(unit.gid,unit.scriptIdentity));
@@ -145,10 +151,13 @@ void Map::claimRecoveryHarvested(const Unit& unit)
 {
     if(!materialClaimRoutes)return;
     const auto found=materialClaimRoutes->recovery.find(ResourceClaims::unitOwner(unit.gid,unit.scriptIdentity));
-    if(found!=materialClaimRoutes->recovery.end())found->second.harvested();
+    if(found==materialClaimRoutes->recovery.end())return;
+    const auto before=found->second;
+    found->second.harvested();
+    if(!(found->second==before))claimRuntimeChanged();
 }
 void Map::forgetClaimRecovery(ResourceClaims::Owner owner)
-{if(materialClaimRoutes)materialClaimRoutes->recovery.erase(owner);}
+{if(materialClaimRoutes && materialClaimRoutes->recovery.erase(owner))claimRuntimeChanged();}
 
 ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
 {
@@ -160,6 +169,8 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
     if (target >= cellCount()) return ResourceClaims::StepResult::Failed;
     if (warpDistMax(unit.posX, unit.posY, target % getW(), target / getW()) <= 1) return ResourceClaims::StepResult::Arrived;
     if (!materialClaimRoutes) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute);
+    // Route stepping advances cursors, waits and admissions in place.
+    claimRuntimeChanged();
     auto& runtime = *materialClaimRoutes;
     auto found = runtime.states.find(owner);
     if (found != runtime.states.end() &&
@@ -318,7 +329,8 @@ bool Map::claimRouteComputing(const Unit& unit) const
 void Map::cancelClaimRoute(ResourceClaims::Owner owner)
 {
     if (!materialClaimRoutes) return;
-    materialClaimRoutes->pipeline.cancel(owner); materialClaimRoutes->states.erase(owner);
+    materialClaimRoutes->pipeline.cancel(owner);
+    if (materialClaimRoutes->states.erase(owner)) claimRuntimeChanged();
 }
 void Map::flushClaimRoutes()
 { if (materialClaimRoutes) materialClaimRoutes->pipeline.flush(); }
@@ -330,6 +342,7 @@ void Map::publishClaimRoutes()
         const auto found = runtime.states.find(output.identity.unit);
         if (found == runtime.states.end() || found->second.identity != output.identity) continue;
         auto& state=found->second;
+        claimRuntimeChanged();
         state.pending = false;
         // A failed replan keeps a still usable earlier route; recovery
         // accounting sees the failure only once that route is gone too.
@@ -399,6 +412,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
 {
     using namespace ResourceClaims;
     materialClaimRoutes.reset(); activeClaimRules.reset(); resourceClaimsEnabled = false; claimSetupTick.reset();
+    claimRuntimeChanged();
     // Saves before format 213 have no claims and continue without them.
     if (versionMinor < FILE_FORMAT_VERSION_RESOURCE_CLAIMS) return;
     GAGCore::BinaryInputStream::CheckedReads checked(stream);
@@ -535,4 +549,12 @@ Uint32 Map::claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs
 }
 
 Uint32 Map::activeClaimRouteChecksum(bool includePending) const { return claimRuntimeChecksum(true, includePending); }
-Uint32 Map::activeClaimSnapshotChecksum() const { return claimRuntimeChecksum(false, false); }
+Uint32 Map::activeClaimSnapshotChecksum() const
+{
+    auto& cache = claimSnapshotChecksumCache;
+    const auto sequence = materialClaimRoutes ? materialClaimRoutes->pipeline.requestSequence() : 0;
+    const auto sealed = materialClaimRoutes ? materialClaimRoutes->pipeline.sealedSubmissionTick() : std::optional<Uint64>{};
+    if (cache.valid && cache.sequence == sequence && cache.sealed == sealed && cache.rules == activeClaimRules) return cache.value;
+    cache = {true, claimRuntimeChecksum(false, false), sequence, sealed, activeClaimRules};
+    return cache.value;
+}

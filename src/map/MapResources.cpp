@@ -506,7 +506,7 @@ void Map::enableResourceClaims()
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
-    materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimRoutes.reset();activeClaimRules.reset();claimRuntimeChanged();
     resourceClaimsEnabled=true;claimSetupTick=game?game->stepCounter:0;
     materialClaims.reset(cellCount());checkActiveClaimRules();
     if(game)game->invalidateObservation();
@@ -521,7 +521,7 @@ void Map::disableResourceClaims()
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
-    materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimRoutes.reset();activeClaimRules.reset();claimRuntimeChanged();
     resourceClaimsEnabled=false;claimSetupTick.reset();
     materialClaims.reset(cellCount());
     routing().setMaterialDestinationsEnabled(false);
