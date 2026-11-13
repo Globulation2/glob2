@@ -1290,6 +1290,14 @@ Cortex
 جارٍ إنشاء المعاينة...
 [Preview unavailable]
 المعاينة غير متاحة
+[Show %0 more landscapes that need different settings]
+
+[Hide landscapes that need different settings]
+
+[Switch to %0 colonies]
+
+[Switch to %0 x %1]
+
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 يُعرض كل مشهد كخريطة حقيقية بحجمك الحالي وعدد مستعمراتك. استخدم أحدها للعب الخريطة المعروضة.
 [Purple]
