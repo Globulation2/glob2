@@ -1283,13 +1283,13 @@ Menjana pratonton...
 [Preview unavailable]
 Pratonton tidak tersedia
 [Show %0 more landscapes that need different settings]
-
+Tunjukkan %0 landskap lagi yang memerlukan tetapan berbeza
 [Hide landscapes that need different settings]
-
+Sembunyikan landskap yang memerlukan tetapan berbeza
 [Switch to %0 colonies]
-
+Tukar kepada %0 koloni
 [Switch to %0 x %1]
-
+Tukar kepada %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Setiap landskap ditunjukkan sebagai peta sebenar pada saiz dan kiraan koloni semasa anda. Gunakan satu untuk memainkan peta yang ditunjukkan.
 [Purple]

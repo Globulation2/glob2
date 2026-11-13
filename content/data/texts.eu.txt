@@ -1291,13 +1291,13 @@ Aurrebista sortzen...
 [Preview unavailable]
 Aurrebista ez dago erabilgarri
 [Show %0 more landscapes that need different settings]
-
+Erakutsi ezarpen desberdinak behar dituzten beste %0 paisaia
 [Hide landscapes that need different settings]
-
+Ezkutatu ezarpen desberdinak behar dituzten paisaiak
 [Switch to %0 colonies]
-
+Aldatu %0 koloniatara
 [Switch to %0 x %1]
-
+Aldatu %0 x %1 neurrira
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Paisaia bakoitza benetako mapa gisa erakusten da zure uneko tamaina eta kolonia kopuruarekin. Aukeratu bat erakutsitako mapa jokatzeko.
 [Purple]

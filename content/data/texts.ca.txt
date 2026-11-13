@@ -1291,13 +1291,13 @@ S'està generant la vista prèvia...
 [Preview unavailable]
 Vista prèvia no disponible
 [Show %0 more landscapes that need different settings]
-
+Mostra %0 paisatges més que requereixen altres opcions
 [Hide landscapes that need different settings]
-
+Amaga els paisatges que requereixen altres opcions
 [Switch to %0 colonies]
-
+Canvia a %0 colònies
 [Switch to %0 x %1]
-
+Canvia a %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Cada paisatge es mostra com un mapa real amb la mida i el nombre de colònies actuals. Tria'n un per jugar el mapa mostrat.
 [Purple]

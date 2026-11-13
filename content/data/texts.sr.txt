@@ -1291,13 +1291,13 @@ Cortex
 [Preview unavailable]
 Преглед није доступан
 [Show %0 more landscapes that need different settings]
-
+Прикажи још предела који захтевају друга подешавања: %0
 [Hide landscapes that need different settings]
-
+Сакриј пределе који захтевају друга подешавања
 [Switch to %0 colonies]
-
+Постави број колонија: %0
 [Switch to %0 x %1]
-
+Пребаци на %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Сваки предео је приказан као права мапа у вашој тренутној величини и броју колонија. Изаберите један да бисте играли приказану мапу.
 [Purple]

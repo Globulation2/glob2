@@ -1291,13 +1291,13 @@ AI 策略与应对
 [Preview unavailable]
 预览不可用
 [Show %0 more landscapes that need different settings]
-
+再显示 %0 个需要不同设置的地形
 [Hide landscapes that need different settings]
-
+隐藏需要不同设置的地形
 [Switch to %0 colonies]
-
+改为 %0 个殖民地
 [Switch to %0 x %1]
-
+改为 %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 每种地貌都以当前大小和殖民地数量实际生成的地图显示。选择一个即可游玩所显示的地图。
 [Purple]

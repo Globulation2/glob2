@@ -1291,13 +1291,13 @@ Előnézet készítése...
 [Preview unavailable]
 Az előnézet nem érhető el
 [Show %0 more landscapes that need different settings]
-
+További %0 más beállítást igénylő táj megjelenítése
 [Hide landscapes that need different settings]
-
+Más beállítást igénylő tájak elrejtése
 [Switch to %0 colonies]
-
+Váltás %0 kolóniára
 [Switch to %0 x %1]
-
+Váltás %0 x %1 méretre
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Minden táj valódi térképként jelenik meg a jelenlegi mérettel és kolóniaszámmal. Válassz egyet a megjelenített térkép játszásához.
 [Purple]

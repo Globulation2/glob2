@@ -1291,13 +1291,13 @@ Tab
 [Preview unavailable]
 Попередній перегляд недоступний
 [Show %0 more landscapes that need different settings]
-
+Показати ще ландшафти, що потребують інших налаштувань: %0
 [Hide landscapes that need different settings]
-
+Сховати ландшафти, що потребують інших налаштувань
 [Switch to %0 colonies]
-
+Змінити кількість колоній на %0
 [Switch to %0 x %1]
-
+Перемкнути на %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Кожен ландшафт показано як справжню карту з вашим поточним розміром і кількістю колоній. Виберіть один, щоб зіграти на показаній карті.
 [Purple]

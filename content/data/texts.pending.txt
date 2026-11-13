@@ -1,4 +1,0 @@
-[Show %0 more landscapes that need different settings]
-[Hide landscapes that need different settings]
-[Switch to %0 colonies]
-[Switch to %0 x %1]

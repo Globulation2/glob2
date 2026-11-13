@@ -1259,13 +1259,13 @@ AI ఆర్డర్లు లేవు
 [Preview unavailable]
 ప్రివ్యూ అందుబాటులో లేదు
 [Show %0 more landscapes that need different settings]
-
+వేరే సెట్టింగ్‌లు అవసరమైన మరో %0 ప్రకృతి దృశ్యాలను చూపించు
 [Hide landscapes that need different settings]
-
+వేరే సెట్టింగ్‌లు అవసరమైన ప్రకృతి దృశ్యాలను దాచు
 [Switch to %0 colonies]
-
+%0 కాలనీలకు మార్చు
 [Switch to %0 x %1]
-
+%0 x %1 పరిమాణానికి మార్చు
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 ప్రతి ల్యాండ్‌స్కేప్ మీ ప్రస్తుత పరిమాణం మరియు కాలనీ సంఖ్య ప్రకారం ఒక నిజమైన మ్యాప్‌గా చూపబడుతుంది. చూపబడిన మ్యాప్‌లో ఒకదాన్ని ఉపయోగించి ఆడండి.
 [Purple]

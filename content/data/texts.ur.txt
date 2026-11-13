@@ -1259,13 +1259,13 @@ AI کا کوئی حکم نہیں
 [Preview unavailable]
 پیش منظر دستیاب نہیں
 [Show %0 more landscapes that need different settings]
-
+مزید %0 منظرنامے دکھائیں جنہیں مختلف ترتیبات درکار ہیں
 [Hide landscapes that need different settings]
-
+وہ منظرنامے چھپائیں جنہیں مختلف ترتیبات درکار ہیں
 [Switch to %0 colonies]
-
+بستیوں کی تعداد %0 کریں
 [Switch to %0 x %1]
-
+جسامت %0 x %1 کریں
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 ہر منظرنامہ موجودہ جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے۔ دکھائے گئے نقشے پر کھیلنے کے لیے اسے چنیں۔
 [Purple]

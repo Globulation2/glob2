@@ -1291,13 +1291,13 @@ Ustvarjanje predogleda …
 [Preview unavailable]
 Predogled ni na voljo
 [Show %0 more landscapes that need different settings]
-
+Prikaži še pokrajine, ki zahtevajo drugačne nastavitve: %0
 [Hide landscapes that need different settings]
-
+Skrij pokrajine, ki zahtevajo drugačne nastavitve
 [Switch to %0 colonies]
-
+Nastavi število kolonij: %0
 [Switch to %0 x %1]
-
+Preklopi na %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Vsaka pokrajina je prikazana kot pravi zemljevid v vaši trenutni velikosti in številu kolonij. Izberite eno, da igrate prikazani zemljevid.
 [Purple]
