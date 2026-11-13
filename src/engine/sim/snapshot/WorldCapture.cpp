@@ -176,14 +176,21 @@ Handle capture(const Game& game,
 		for (int t = 0; t < teams; ++t) if (const auto* team = game.teams[t]) {
 			buildings += team->liveBuildings.size(); units += team->liveUnits.size();
 		}
+		// A pooled buffer's lookups name exactly the gids of its records, so
+		// clearing those slots restores an all-empty table without refilling it.
+		const auto clearSlots = [&](auto& indices, const auto& records, std::size_t size) {
+			if (indices.size() != size) {
+				reserve(indices, size);
+				indices.assign(size, Entities::NoRecord);
+			}
+			else for (const auto& record : records) indices[record.gid] = Entities::NoRecord;
+		};
+		clearSlots(entities->buildingSlotIndices, entities->buildings, std::size_t(teams) * Building::MAX_COUNT);
+		clearSlots(entities->unitSlotIndices, entities->units, std::size_t(teams) * Unit::MAX_COUNT);
 		reserve(entities->buildings, buildings); reserve(entities->units, units);
 		// Reuse constructed records and fill them in place. Every field is
 		// overwritten below; no temporary record or per-record push_back copy.
 		entities->buildings.resize(buildings); entities->units.resize(units);
-		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
-		reserve(entities->unitSlotIndices, teams * Unit::MAX_COUNT);
-		entities->buildingSlotIndices.resize(teams * Building::MAX_COUNT);
-		entities->unitSlotIndices.resize(teams * Unit::MAX_COUNT);
 		reserve(entities->buildingRanges, teams);
 		reserve(entities->unitRanges, teams);
 		entities->buildingRanges.assign(teams, {}); entities->unitRanges.assign(teams, {});
@@ -349,8 +356,6 @@ Handle capture(const Game& game,
 			if (needs(requirements, Component::Entities)) {
 				entities->buildingRanges[t]={Uint32(buildingRecordCount),0};
 				entities->unitRanges[t]={Uint32(unitRecordCount),0};
-				std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
-				std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
 			}
 			continue;
 		}
@@ -391,8 +396,6 @@ Handle capture(const Game& game,
 		// Preserve authoritative append order in compact immutable team ranges.
 		entities->buildingRanges[t] = {Uint32(buildingRecordCount), Uint32(team->liveBuildings.size())};
 		entities->unitRanges[t] = {Uint32(unitRecordCount), Uint32(team->liveUnits.size())};
-		std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
-		std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
 		for (auto* b : team->liveBuildings.entries())
 		{
 			auto& slot = entities->buildingSlotIndices[b->gid];
