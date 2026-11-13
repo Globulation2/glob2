@@ -1259,13 +1259,13 @@ FFA
 [Preview unavailable]
 প্রাকদর্শন পাওয়া যাচ্ছে না
 [Show %0 more landscapes that need different settings]
-
+ভিন্ন সেটিংস প্রয়োজন এমন আরও %0টি ভূদৃশ্য দেখান
 [Hide landscapes that need different settings]
-
+ভিন্ন সেটিংস প্রয়োজন এমন ভূদৃশ্যগুলি লুকান
 [Switch to %0 colonies]
-
+উপনিবেশের সংখ্যা %0 করুন
 [Switch to %0 x %1]
-
+আকার %0 x %1 করুন
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 প্রতিটি ভূদৃশ্য আপনার বর্তমান আকার এবং উপনিবেশ সংখ্যা অনুযায়ী একটি বাস্তব মানচিত্র হিসাবে দেখানো হয়। প্রদর্শিত মানচিত্রটি খেলতে এর যেকোনো একটি ব্যবহার করুন।
 [Purple]

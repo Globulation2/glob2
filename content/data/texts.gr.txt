@@ -1291,13 +1291,13 @@ Cortex
 [Preview unavailable]
 Η προεπισκόπηση δεν είναι διαθέσιμη
 [Show %0 more landscapes that need different settings]
-
+Εμφάνιση ακόμη τοπίων που χρειάζονται άλλες ρυθμίσεις: %0
 [Hide landscapes that need different settings]
-
+Απόκρυψη τοπίων που χρειάζονται άλλες ρυθμίσεις
 [Switch to %0 colonies]
-
+Αλλαγή σε %0 αποικίες
 [Switch to %0 x %1]
-
+Αλλαγή σε %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Κάθε τοπίο εμφανίζεται ως πραγματικός χάρτης στο τρέχον μέγεθος και αριθμό αποικιών σας. Επιλέξτε ένα για να παίξετε τον χάρτη που εμφανίζεται.
 [Purple]

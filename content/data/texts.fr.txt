@@ -1291,13 +1291,13 @@ Génération de l'aperçu...
 [Preview unavailable]
 Aperçu indisponible
 [Show %0 more landscapes that need different settings]
-
+Afficher %0 paysages de plus nécessitant d'autres paramètres
 [Hide landscapes that need different settings]
-
+Masquer les paysages nécessitant d'autres paramètres
 [Switch to %0 colonies]
-
+Passer à %0 colonies
 [Switch to %0 x %1]
-
+Passer à %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Chaque paysage est présenté comme une vraie carte à votre taille et votre nombre de colonies actuels. Choisissez-en un pour jouer la carte affichée.
 [Purple]

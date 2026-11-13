@@ -1291,13 +1291,13 @@ Cortex
 [Preview unavailable]
 پیش‌نمایش در دسترس نیست
 [Show %0 more landscapes that need different settings]
-
+نمایش %0 چشم‌انداز دیگر که تنظیمات متفاوتی لازم دارند
 [Hide landscapes that need different settings]
-
+پنهان کردن چشم‌اندازهایی که تنظیمات متفاوتی لازم دارند
 [Switch to %0 colonies]
-
+تغییر تعداد مستعمره‌ها به %0
 [Switch to %0 x %1]
-
+تغییر اندازه به %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 هر چشم‌انداز به‌صورت یک نقشهٔ واقعی با اندازه و تعداد مستعمره‌های فعلی شما نمایش داده می‌شود. یکی را برای بازی در نقشهٔ نمایش‌داده‌شده انتخاب کنید.
 [Purple]

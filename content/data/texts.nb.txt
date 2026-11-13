@@ -1259,13 +1259,13 @@ Genererer forhåndsvisning ...
 [Preview unavailable]
 Forhåndsvisning utilgjengelig
 [Show %0 more landscapes that need different settings]
-
+Vis %0 flere landskap som krever andre innstillinger
 [Hide landscapes that need different settings]
-
+Skjul landskap som krever andre innstillinger
 [Switch to %0 colonies]
-
+Bytt til %0 kolonier
 [Switch to %0 x %1]
-
+Bytt til %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Hvert landskap vises som et faktisk kart med valgt størrelse og kolonitall. Velg et for å spille på kartet som vises.
 [Purple]

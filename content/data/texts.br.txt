@@ -1291,13 +1291,13 @@ Gerando visualização...
 [Preview unavailable]
 Visualização indisponível
 [Show %0 more landscapes that need different settings]
-
+Mostrar mais %0 paisagens que exigem outros ajustes
 [Hide landscapes that need different settings]
-
+Ocultar paisagens que exigem outros ajustes
 [Switch to %0 colonies]
-
+Mudar para %0 colônias
 [Switch to %0 x %1]
-
+Mudar para %0 x %1
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Cada paisagem é mostrada como um mapa real com seu tamanho e número de colônias atuais. Use uma para jogar o mapa mostrado.
 [Purple]

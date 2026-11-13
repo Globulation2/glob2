@@ -1291,13 +1291,13 @@ AIの命令なし
 [Preview unavailable]
 プレビューを利用できません
 [Show %0 more landscapes that need different settings]
-
+別の設定が必要な地形をあと%0件表示
 [Hide landscapes that need different settings]
-
+別の設定が必要な地形を隠す
 [Switch to %0 colonies]
-
+コロニー数を%0に変更
 [Switch to %0 x %1]
-
+%0 x %1に変更
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 各地形は、現在のサイズとコロニー数で実際に生成したマップとして表示されます。1つ選ぶと、表示されたマップでプレイできます。
 [Purple]
