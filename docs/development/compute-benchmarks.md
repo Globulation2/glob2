@@ -123,10 +123,11 @@ installed at their deadline and dropped (superseded or destination gone);
 `building_gradient_max_pending` is the deepest queue and `building_gradient_wait_ns`
 the owner's time joining jobs at their deadlines; `building_gradient_pending` is the
 number still in flight when the run ended. `building_gradient_synchronous` counts
-building walking fields built on the owner: cold fields, queue overflow and stuck
-units' rebuilds when no refresh can be queued. An area paint or a team-wide reset
-keeps a building's walking fields serving and refreshes them on schedule instead
-of dropping them. `building_gradient_synchronous_by_reason` splits that count:
+building walking fields built on the owner: cold fields, queue overflow and
+rebuilds requested by a unit blocked by an obstacle its field does not know, when
+no refresh can be queued. An area paint or a team-wide reset keeps a building's
+walking fields serving instead of dropping them; a building's own route is
+rebuilt when it comes due by age (`BUILDING_FIELD_REFRESH_TICKS`). `building_gradient_synchronous_by_reason` splits that count:
 `cold_*` by what last dropped the field (`new`, `idle` eviction, the building's
 `own` reset, a `team`-wide reset, an `area` paint), then `overflow`, `inactive`
 (a map without a game, as in the editor) and `other`.

@@ -82,7 +82,8 @@ GradientQueryResult MapRouting::selectGradientQueryImpl(GradientQueryContext& co
         return result;
     }
     if(here<=GRADIENT_UNREACHABLE) {
-        // Own cell stale in the field (see MapRouting::staleCellStep).
+        // Own cell stale in the field (MapRouting::staleCellStep). Material and
+        // market moves take that step in pathfindMaterial before they get here.
         if(context.mode!=GradientQueryContext::Mode::DirectFlight && key.family!=GradientFieldFamily::Materials
             && key.family!=GradientFieldFamily::Markets && staleCellStep(cells,movementAccessFromLegacy(swim),mask,x,y,&result.dx,&result.dy)) {
             result.moved=true;

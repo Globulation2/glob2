@@ -126,22 +126,24 @@ static constexpr int AUTOSAVE_PHASE_TICKS = 79;
 //! gd-large-4ai and at 4000 ticks. Shared with
 //! src/map/gradient/BuildingGradientInvalidationHarness.cpp, which has to let this
 //! interval elapse before it can judge a field. See
-//! MapPathfindBuilding.cpp.
-//! Building footprint fields (routes to a building) no longer use this
-//! interval; see BUILDING_FIELD_REFRESH_TICKS. Flag routes and the
-//! kept-stale bookkeeping of team and area resets still do.
+//! MapPathfindBuilding.cpp. Building footprint fields no longer use it: see
+//! BUILDING_FIELD_REFRESH_TICKS below.
 static constexpr unsigned int GRADIENT_DIRTY_REBUILD_TICKS = 100;
-//! A building footprint field (the route to a building) refreshes on age
-//! alone: map changes do not refresh it. A unit whose better neighbours are
-//! blocked by an obstacle the field does not know, on a field at least 128
-//! ticks old, requests a refresh instead (MapPathfindBuilding.cpp); units in
-//! the way do not. Measured (Nov 2026) on 17 paired AI games, 128-512 maps,
-//! 2-8 teams, against refreshing on any map change after 100 ticks: building
-//! field CPU per tick per unit 0.29x (total 0.84x), routes 0.16 percentage
-//! points longer (0.27% over the shortest), and 5.0% of sampled routes meet an
-//! obstacle the field missed against 2.3%, each repaired by that refresh.
-//! The stuck-unit rebuilds the 100-tick interval was tuned against came
-//! mostly from units standing on cells their field had baked in as
-//! obstacles; the stale-cell step (MapRouting::staleCellStep) removes them.
+
+//! Age at which a building's footprint field (the route units walk to the
+//! building) is rebuilt. Map changes do not rebuild it before then: a unit
+//! that runs into an obstacle the field does not know requests a rebuild
+//! instead (MapRouting::pathfindBuilding), which repairs the routes that
+//! matter when they matter. Flag routes keep GRADIENT_DIRTY_REBUILD_TICKS.
+//!
+//! Measured in Nov 2026 on paired AI games (128-512 maps, 2-8 teams) against
+//! rebuilding after any map change once 100 ticks had passed: building-field
+//! CPU per tick per unit 0.29x, total 0.84x; routes 0.27% longer than the
+//! shortest (0.11% before); 5% of sampled routes meet an obstacle the field
+//! missed (2.3% before), each repaired by the unit that meets it. Over 307
+//! paired tournament configs, units and buildings stayed within 3%. The
+//! stuck-unit rebuilds the 100-tick interval was tuned against came mostly
+//! from units standing on cells their own field had seeded as obstacles,
+//! which MapRouting::staleCellStep now steps off.
 static constexpr unsigned int BUILDING_FIELD_REFRESH_TICKS = 1024;
 
