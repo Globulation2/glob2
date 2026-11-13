@@ -145,7 +145,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"core_materializations",capture.coreMaterializations},
-  {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
+  {"map_bytes_copied",capture.mapBytesCopied},{"building_seed_bytes_copied",capture.buildingSeedBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
   {"entity_bytes_copied",capture.entityBytesCopied},{"entity_sidecar_bytes_copied",capture.entitySidecarBytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},

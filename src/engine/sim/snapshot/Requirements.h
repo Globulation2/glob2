@@ -32,6 +32,9 @@ enum class Component : Uint32
  Statistics = 8192, EntityDiagnostics = 16384, Annotations = 32768, History = 65536, Telemetry = 131072, StatisticsInputs = 262144,
  BuildingSeeds = 524288
 };
+// BuildingSeeds is the one optional component: a capture that requires it may
+// still carry none (only boundaries with building field requests queued copy
+// the derived templates), and its readers then seed by scanning.
 using Requirements = Uint32;
 constexpr Requirements bit(Component value) { return static_cast<Requirements>(value); }
 constexpr Requirements Simulation = bit(Component::Catalogs) | bit(Component::Terrain)

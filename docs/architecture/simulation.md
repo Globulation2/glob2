@@ -721,15 +721,20 @@ checksum adapter remains available for diagnostic fixtures.
   when it invalidates. Every template change goes with a mark on one of the map's
   tracked arrays, so Store boundary reuse stays correct without a tracker of its
   own. The `BuildingSeeds` snapshot component, which `buildingGradientView()` leases
-  to workers and to cold hiring routes, is filled only at boundaries that have
-  building field requests queued for staging (or reused while still current).
-  Seeds save worker time, but each copy costs the simulation thread, and copying
-  at every boundary measured slower than master. A capture without templates
-  seeds by scanning. A fill copies only the 16x16 chunks changed since its pooled
-  buffer was last filled. Copy traffic is reported as `buildingSeedBytesCopied`,
-  separately from map arrays. The output is bit-identical to the scan, and nothing is saved.
-  `GLOB2_BUILDING_SEED_AUDIT` (set by `test/run_tests.py`) recomputes every
-  template-backed seed with the scan and throws on any difference.
+  to building workers and to cold hiring routes, is the one optional component: it is
+  filled only at boundaries with building field requests queued or staged
+  (`MapRouting::buildingSeedDemand`), or reused while still current. The copy runs
+  on the simulation thread while the seeds it speeds up run on workers, so copying
+  at every boundary would cost the critical path more than it saves. Hiring does not
+  request templates; its cold routes use them when present and scan otherwise, as
+  does any reader of a capture without them. A fill copies only the 16x16 chunks
+  changed since its pooled buffer was last filled. `Store::Metrics` reports the
+  traffic as `buildingSeedBytesCopied` (`building_seed_bytes_copied` in AI metrics),
+  separately from map arrays. The output is bit-identical to the scan, and nothing is
+  saved. The footprint overlay assumes a building's occupancy matches its type
+  rectangle, as `Map::setBuilding` stamps it. `GLOB2_BUILDING_SEED_AUDIT` (set by
+  `test/run_tests.py`) recomputes every template-backed seed with the scan and
+  throws on any difference.
 
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL

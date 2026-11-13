@@ -89,6 +89,7 @@ ENGINE_TESTS = [
     ('#src/map/ResourceGrowthTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/resource/ResourceRuntimeBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/BuildingSeedTemplatesBenchmark.cpp',
     '#src/building/BuildingServicesTest.cpp',
     '#src/unit/ServiceEffectRecordTest.cpp',
     '#src/render/UnitEffectDeterminismTest.cpp',

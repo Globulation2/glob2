@@ -48,6 +48,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/building/BuildingCatalogBenchmark.cpp
     src/building/AreaEffectsTest.cpp
     src/building/AreaEffectsBenchmark.cpp
+    src/map/gradient/BuildingSeedTemplatesBenchmark.cpp
     src/building/BuildingServicesTest.cpp
     src/unit/ServiceEffectRecordTest.cpp
     src/render/UnitEffectDeterminismTest.cpp
@@ -1320,6 +1321,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/building/BuildingCatalogBenchmark.cpp
     src/building/AreaEffectsTest.cpp
     src/building/AreaEffectsBenchmark.cpp
+    src/map/gradient/BuildingSeedTemplatesBenchmark.cpp
     src/building/BuildingServicesTest.cpp
     src/unit/ServiceEffectRecordTest.cpp
     src/render/UnitEffectDeterminismTest.cpp

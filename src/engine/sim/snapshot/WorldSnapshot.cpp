@@ -14,7 +14,8 @@ constexpr auto MapInputs = bit(Component::Catalogs) | bit(Component::Terrain)
 Requirements presentationRequirements(CaptureOptions options)
 {
     options.presentation = true;
-    return captureRequirements(options) & ~(bit(Component::ResourceFields) | bit(Component::StatisticsInputs));
+    return captureRequirements(options) & ~(bit(Component::ResourceFields) | bit(Component::StatisticsInputs)
+        | bit(Component::BuildingSeeds));
 }
 }
 Handle Handle::simulationView() const { return project(Simulation); }

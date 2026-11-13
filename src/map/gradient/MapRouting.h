@@ -424,15 +424,18 @@ protected:
 public:
 	//! Live published material planes in publication order; every plane has size cells.
 	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
-	//! Owner thread: the live building seed templates, rebuilt first if stale.
+	// Building seed templates (BuildingSeedTemplates.h). Derived owner state:
+	// the const accessors below may rebuild the live set, so they are called
+	// on the owner thread only, like the other lazily derived routing caches.
+	//! The live templates, rebuilt first if stale.
 	const MapState::BuildingSeedPlanes& buildingSeedTemplates() const;
-	//! Owner thread: whether a captured copy still equals the live templates.
+	//! Whether a captured copy still equals the live templates (never rebuilds).
 	bool buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy) const;
-	//! Whether this boundary's capture should carry building seed templates:
-	//! building field requests are queued for staging from it. Without them,
-	//! readers of the capture seed by scanning.
+	//! Whether this boundary's capture should carry templates: building field
+	//! requests are queued (or already staged) and will be prepared from it. Cold hiring routes read
+	//! the same view but do not request templates; without them they scan.
 	bool buildingSeedDemand() const;
-	//! Owner thread: bring a captured copy up to date, copying changed chunks.
+	//! Bring a captured copy up to date, copying only changed chunks.
 	void captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const;
 
 protected:

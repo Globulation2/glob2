@@ -51,6 +51,12 @@ python3 test/run_tests.py --binary engine --in-process     # fast local loop, no
 python3 test/run_tests.py --update-fixtures --tag golden   # rewrite committed goldens
 ```
 
+Unless already set, the runner turns on two engine audits for every case:
+`GLOB2_CLAIM_AUDIT` checks resource-claim state at every save, and
+`GLOB2_BUILDING_SEED_AUDIT` recomputes every template-backed building seed with the
+full scan and throws on any difference (`GLOB2_BUILDING_SEED_AUDIT=0` turns it off,
+for example for timing runs).
+
 The `Maxima.Farming` fertility-cache case checks correctness in every build; its
 CPU-time budget is a separate `[benchmark]` case, enforced only in optimized builds
 without coverage instrumentation.

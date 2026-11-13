@@ -7,7 +7,8 @@
 #include "MapInternal.h"
 #include "BuildingUtils.h"
 #include "field/GradientPreparationRules.h"
-#include "BuildingSeedTemplates.h"
+#include "BuildingSeedPlanes.h"
+#include "BuildingSeedAudit.h"
 #include <algorithm>
 #include <array>
 #include <atomic>
@@ -305,7 +306,11 @@ BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const Bu
 
 // The template path: copy the passability plane, then overlay what depends
 // on the team and the building. Overlay order keeps the scan's precedence of
-// building cells over forbidden paint.
+// building cells over forbidden paint. The footprint overlay visits only the
+// building's type rectangle at its position, where Map::setBuilding stamps
+// its gid; the scan marks every cell holding the gid. The two agree while
+// occupancy matches the rectangle, an invariant the save integrity check
+// enforces and GLOB2_BUILDING_SEED_AUDIT verifies in tests.
 template<bool WaterOnly, bool Air=false, class Run>
 BuildingSeedResult buildingCellsFromTemplates(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
 {

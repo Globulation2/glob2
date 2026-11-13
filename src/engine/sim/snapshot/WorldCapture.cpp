@@ -585,8 +585,9 @@ Handle capture(const Game& game,
 	{
 		// Reused while unchanged. Otherwise copied (changed chunks of the free
 		// copy closest to the live templates) only when building field requests
-		// will be staged from this boundary: copying at every boundary costs the
-		// owner more than the seeds it saves workers. Absent templates mean scans.
+		// will be prepared from this boundary (MapRouting::buildingSeedDemand):
+		// the copy costs the owner thread, while the seeds it speeds up run on
+		// workers. Absent templates mean scans.
 		const auto& routing = game.map.routing();
 		if (previous && previous->buildingSeeds && routing.buildingSeedsCurrent(*previous->buildingSeeds))
 			result->buildingSeeds = previous->buildingSeeds;
@@ -596,9 +597,14 @@ Handle capture(const Game& game,
 				[&](const MapState::BuildingSeedSnapshot& buffer) {
 					return buffer.world == game.map.identity() ? buffer.generation : Uint64(0);
 				}) : std::make_shared<MapState::BuildingSeedSnapshot>();
+			const auto capacity = copy->planes.capacityBytes() + copy->stamps.capacity() * sizeof(Uint64);
 			Uint64 copied = 0;
 			routing.captureBuildingSeeds(*copy, copied);
-			if (storage) storage->buildingSeedBytesCopied += copied;
+			if (storage)
+			{
+				storage->buildingSeedBytesCopied += copied;
+				if (copy->planes.capacityBytes() + copy->stamps.capacity() * sizeof(Uint64) > capacity) ++storage->allocations;
+			}
 			result->buildingSeeds = std::move(copy);
 		}
 	}

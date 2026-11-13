@@ -532,9 +532,11 @@ void buildingSeedTemplatesMatchScan(std::uint32_t seed)
 	const size_t cells = m.size;
 	std::vector<Uint16> scanned(cells), templated(cells);
 	using namespace gradient_preparation;
+	// Every boundary carries templates here, and each capture is byte-compared
+	// with the live game (including the templates) as GLOB2_SNAPSHOT_VERIFY does.
+	live.setCaptureEveryBoundary(true);
 	SimulationSnapshot::Store store;
-	building_seed::setCaptureAlways(true);
-	struct Restore { ~Restore() { building_seed::setCaptureAlways(false); } } restore;
+	store.setVerification(true);
 	auto boundary = store.captureBoundary(game);
 	const auto checkSeeds = [&](const std::string& what) {
 		auto plain = view();
@@ -569,6 +571,8 @@ void buildingSeedTemplatesMatchScan(std::uint32_t seed)
 	for (int step = 0; step < 60; ++step)
 	{
 		const int x = pick(64), y = pick(64);
+		const auto rebuildsBefore = live.rebuilds();
+		bool bulk = false;
 		switch (pick(9))
 		{
 		case 0: paint(x, y); break;
@@ -594,7 +598,7 @@ void buildingSeedTemplatesMatchScan(std::uint32_t seed)
 		}
 		default:
 			// A rare bulk edit invalidates; the next use rebuilds.
-			if (!pick(8)) m.fillTerrain(pick(2) ? GRASS : SAND);
+			if (!pick(8)) { m.fillTerrain(pick(2) ? GRASS : SAND); bulk = true; }
 			else paint(x, y);
 			break;
 		}
@@ -607,11 +611,32 @@ void buildingSeedTemplatesMatchScan(std::uint32_t seed)
 		BuildingSeedTemplates fresh;
 		const auto& expected = fresh.ensure(view());
 		requireSameTemplates(live.ensure(view()), expected, "step " + std::to_string(step));
+		// Per-cell edits update in place; only bulk edits rebuild.
+		REQUIRE(live.rebuilds() == rebuildsBefore + (bulk ? 1 : 0));
 		REQUIRE(boundary.buildingSeeds);
 		requireSameTemplates(boundary.buildingSeeds->planes, expected, "captured step " + std::to_string(step));
 		requireSameTemplates(older.buildingSeeds->planes, olderPlanes, "older capture step " + std::to_string(step));
 		if (step % 15 == 14) checkSeeds("step " + std::to_string(step));
 	}
+}
+
+// Production capture: boundaries carry templates only while building field
+// requests are pending, and the requested field is still built.
+void buildingSeedCaptureFollowsDemand()
+{
+	glob2test::HeadlessGame world({.wDec=7, .hDec=7, .clearImmobile=true, .header=true, .seed=731});
+	auto& game = world.game;
+	const auto& metrics = game.snapshotStore().metrics;
+	world.step(4);
+	CHECK(metrics.buildingSeedBytesCopied == 0);
+	auto* inn = world.addBuilding("inn", 4, 4);
+	REQUIRE(game.map.routing().requestBuildingField(inn, MovementAccess::Land, BuildingRoute::Footprint) == FieldReadiness::Pending);
+	for (int tick = 0; tick < 16 && !inn->globalGradient[0]; ++tick) world.step(1);
+	REQUIRE(inn->globalGradient[0]);
+	CHECK(metrics.buildingSeedBytesCopied > 0);
+	const auto copied = metrics.buildingSeedBytesCopied;
+	world.step(4);
+	CHECK(metrics.buildingSeedBytesCopied == copied);
 }
 
 void scheduledKernelsMatchSynchronous(KernelTerrain config)
@@ -1904,6 +1929,11 @@ TEST_SUITE("BuildingGradientInvalidation")
 	{
 		glob2test::HeadlessGlobals globals;
 		idleFieldStorageIsReusedWithoutStaleRoutes();
+	}
+	TEST_CASE("snapshot boundaries copy building seed templates only while building fields are requested")
+	{
+		glob2test::HeadlessGlobals globals;
+		buildingSeedCaptureFollowsDemand();
 	}
 	TEST_CASE("building seed templates follow map edits and seed exactly as the full scan [property]")
 	{

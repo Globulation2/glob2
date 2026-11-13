@@ -294,7 +294,9 @@ include builtin construction-origin preferences, extra production state, cargo
 rows (including their identity keys), and relationship IDs. These counters exclude
 view metadata, slot-index preparation, retained capacity, allocator overhead and
 vector growth copies. `Store::Metrics` exposes their deltas alongside the existing
-aggregate `bytesCopied` estimate, whose meaning is unchanged. Pool memory metrics
+aggregate `bytesCopied` estimate, whose meaning is unchanged. Derived building seed
+templates are copied only at boundaries that request them and are counted apart, as
+`buildingSeedBytesCopied` (`building_seed_bytes_copied`), never in map bytes. Pool memory metrics
 continue to describe retained capacity and leases separately. Verification compares
 entity completeness, team/population ordering, identities, lookup tables and logical
 scalar fields, including presentation state. It also checks ordered working/inside

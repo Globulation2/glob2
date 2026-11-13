@@ -277,12 +277,12 @@ behavior parity.
 
 `BuildingGradientBenchmark` is opt-in (`--tag benchmark --filter
 'BuildingGradientBenchmark/*'`). It measures actual building/resource field
-preparation and a fixed stock simulation without AI decisions. The kernel and
-simulation cases compile unchanged against the pre-catalog engine for paired
-measurements. Run them directly, not through `test/run_tests.py`: the runner's
-`GLOB2_BUILDING_SEED_AUDIT` adds a full scan behind every building seed. The
-`building_seed` case compares building seed templates with the full scan in one
-process (with the audit off) and reports a full template rebuild. Kernel rows
+preparation and a fixed stock simulation without AI decisions. The source compiles
+unchanged against the pre-catalog engine for paired measurements. Run it directly,
+not through `test/run_tests.py`: the runner's `GLOB2_BUILDING_SEED_AUDIT` adds a full
+scan behind every building seed. `BuildingSeedTemplatesBenchmark.cpp`, in the same
+suite, compares building seed templates with the full scan in one process (with the
+audit off), checks that their digests match, and reports a full template rebuild. Kernel rows
 include input dimensions, repetitions, iteration counts and output digests;
 simulation rows retain endpoint unit/building counts, health and inventory.
 Run matched release toolchains one process at a time on an otherwise idle host.

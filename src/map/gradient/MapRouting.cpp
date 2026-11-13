@@ -5,6 +5,8 @@
 #include "GradientRuntime.h"
 #include "field/astar/AStar.h"
 
+#include <cassert>
+
 MapRouting::MapRouting(Map &owner) : map(owner), gradientRuntime(std::make_unique<GradientRuntime>())
 {
 	for (int t=0; t<Team::MAX_COUNT; t++)
@@ -28,18 +30,21 @@ MapRouting::~MapRouting() = default;
 
 const MapState::BuildingSeedPlanes& MapRouting::buildingSeedTemplates() const
 {
+	assert(!map.compute.insideJob());
 	return gradientRuntime->buildingSeeds.ensure(map.stateView());
 }
 
 bool MapRouting::buildingSeedsCurrent(const MapState::BuildingSeedSnapshot& copy) const
 {
-	buildingSeedTemplates();
 	return gradientRuntime->buildingSeeds.current(copy, map.identity());
 }
 
 bool MapRouting::buildingSeedDemand() const
 {
-	return building_seed::captureAlways() || !gradientRuntime->buildingRequests.empty();
+	const auto& rt = *gradientRuntime;
+	// Requests queued during team stepping are staged after the capture;
+	// fixtures that stage first leave them reserved instead.
+	return rt.buildingSeeds.captureEveryBoundary() || !rt.buildingRequests.empty() || !rt.stagedBuildings.empty();
 }
 
 void MapRouting::captureBuildingSeeds(MapState::BuildingSeedSnapshot& copy, Uint64& bytesCopied) const
