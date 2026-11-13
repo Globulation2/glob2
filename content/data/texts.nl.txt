@@ -1695,13 +1695,13 @@ Breedte van de landbrug
 [Lake size]
 Meergrootte
 [Crater type]
-
+Kratertype
 [Crater rims]
-
+Kraterranden
 [Volcanic maars]
-
+Vulkanische maren
 [Glacial kettles]
-
+Doodijsgaten
 [Contested commons]
 Betwist gemeenschappelijk gebied
 [Maze]
@@ -1729,7 +1729,7 @@ Slotgrachtbreedte
 [Wall thickness]
 Muurdikte
 [Gardens]
-Moestuinen
+Tuinen
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Zulke dikke muren laten de doorgangen te smal; gebruik dunnere muren of grotere cellen.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1805,7 +1805,7 @@ Gordelbreedte
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+De ringwereld kan met deze startwaarde zijn rotsen en kusten niet aanleggen zonder land af te snijden.
 [City states]
 Stadstaten
 [Strait width]
@@ -1839,11 +1839,11 @@ Grootte van de open plek
 [Levee]
 Dijk
 [Mudflats]
-
+Slikvlakten
 [Hammocks]
-
+Boomeilanden
 [Moss]
-
+Mos
 [Sloughs]
 Moerassloten
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagunes
 [Central island]
 Centraal eiland
 [Tide]
-
+Getij
 [Neap tide]
-
+Doodtij
 [Mean tide]
-
+Gemiddeld getij
 [Spring tide]
-
+Springtij
 [Tidal flats need at least one colony.]
 De wadden hebben minstens één kolonie nodig.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+De centrale rotstoren heeft naast de groevewanden geen ruimte voor zijn rotsen; gebruik een grotere kaart of minder kolonies.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 De thuiseilanden passen niet op deze kaart; gebruik een grotere kaart, minder kolonies of kleinere eilanden.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Rivierdelta
 [Meandering rivers]
 Meanderende rivieren
 [Banks]
-
+Oevers
 [Deep channels]
-
+Diepe geulen
 [River bluffs]
-
+Steile oevers
 [Divide outcrops]
-
+Rotsen op de waterscheiding
 [Deep water]
-
+Diep water
 [Rock outcrops]
-
+Rotspartijen
 [Fruit in home valleys]
 Fruit in de startdalen
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonies aan beide kusten
 [Winding belt]
 Kronkelende gordel
 [Deep ocean]
-
+Diepzee
 [Rock spine]
-
+Rotsrug
 [Ring road]
-
+Ringweg
 [Cell shape]
 Celvorm
 [Squares]
@@ -2067,19 +2067,19 @@ Pasafstand
 [Lee width]
 Breedte van de lijzijde
 [Climate]
-
+Klimaat
 [Temperate]
-
+Gematigd
 [Steppe]
-
+Steppe
 [Tropical]
-
+Tropisch
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Achter de thuisbases staat geen rug; gebruik minder ruggen of een grotere kaart.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+De ruggen laten geen ruimte voor de groeves van de thuisbases; gebruik dikkere ruggen of een grotere kaart.
 [The ridges could not be sealed; use thicker ridges.]
-
+De ruggen konden niet worden afgesloten; gebruik dikkere ruggen.
 [Old growth]
 Oerbos
 [Canals]
@@ -2519,7 +2519,7 @@ Extra doorwaadplaatsen
 [Moraine hummocks]
 Moreneheuvels
 [Deep pools]
-
+Diepe poelen
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 De vlechting laat te weinig terras over voor de thuisbases; gebruik een grotere kaart of een smallere vlechting.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Drinkplaatsen
 [Dry patches]
 Droge plekken
 [Season]
-
+Seizoen
 [Meltwater]
-
+Smeltwater
 [Late summer]
-
+Nazomer
 [Sparse]
 Weinig
 [Normal]
@@ -2713,25 +2713,25 @@ Lange waaier
 [Twin springs]
 Tweelingbronnen
 [Canyon mouth]
-
+Canyonmonding
 [Cienega]
-
+Bronmoeras
 [Coalescing pair]
-
+Samengroeiend paar
 [Cienegas]
-
+Bronmoerassen
 [Rock]
-
+Gesteente
 [Granite]
-
+Graniet
 [Greenstone]
-
+Groensteen
 [Sandstone]
-
+Zandsteen
 [Volcanic]
-
+Vulkanisch
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+De passen snijden in de groeves van de thuisbases; gebruik minder passen, minder kolonies of een grotere kaart.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 De puinwaaiers zijn te smal voor de thuisbases; gebruik een grotere kaart, meer afstand tussen de bergketens, smallere kammen of kleinere zoutmeren.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Dikte van bospassage
 [Extra trails]
 Extra paden
 [Deep lakes]
-
+Diepe meren
 [Bedrock]
-
+Bodemgesteente
 [Portage Lakes needs sides between 64 and 512 tiles.]
 De zijden van deze kaart moeten 64 tot 512 vakjes lang zijn.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Grondstoffen weggeruimd
 [stat cleared about]
 Grondstoffen die werkers in ontruimingsgebieden weghaalden om ruimte te maken.
 [stats topic overview]
-
+Overzicht
 [stats topic economy]
-
+Economie
 [stats topic world]
-
+Wereld
 [stats work construction]
-
+Werk & bouw
 [stats defence]
-
+Verdediging
 [stats history]
-
+Geschiedenis bekijken
 [stats waiting]
-
+Wachten op statistieken…
 [stats unit details]
-
+Eenheidsdetails
 [stats map overlays]
-
+Kaartlagen
 [stats topic]
-
+Onderwerp
 [stats full history]
-
+Volledige geschiedenis openen
 [stats missing readings]
-
+— Nog geen meting vastgelegd. Kies een statistiek voor details.
 [stat win probability]
-
+Winstkans
 [stat win probability about]
-
+Geschatte kans dat je alliantie wint, gemeten gedurende de hele wedstrijd. Bondgenoten delen één kans. Dit model is getraind op AI-spellen; de schattingen houden geen rekening met de stelling of geplande zetten. Oudere opgeslagen spellen kunnen een onvolledige geschiedenis hebben.
 [stat prestige]
 Roem
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Vissen
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten
 [boulders]
-Rotsblokken
+Stenen zuilen
 [hedge]
 Haag
 [thicket]
 Struikgewas
 [ridge_rock]
-
+Rotsnaalden
 [outcrop]
-
+Basaltzuilen
 [dirt]
 Aarde
 [clay]
@@ -5855,7 +5855,7 @@ Vulkanische as
 [glacier_ice]
 Gletsjerijs
 [overgrown_road]
-Overwoekerde weg
+Bemoste klinkers
 [laterite]
 Lateriet
 [cliffs]
@@ -5907,13 +5907,13 @@ Zand
 [terrain group grass]
 Gras
 [terrain group ice]
-IJs
+Sneeuw en ijs
 [terrain group paths]
 Paden
 [terrain group obstacles]
-Obstakels
+Barrières
 [terrain group ridges]
-
+Rotsformaties
 [terrain group barren]
 Onvruchtbare grond
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Bevel niet bevestigd. Open de commandant om het opnieuw te proberen; uw bericht 
 [hive standing order update failed]
 Het bijwerken van het vaste bevel is mislukt. Uw bevel is op dit apparaat gepauzeerd; probeer het opnieuw met het betreffende bedieningselement.
 [engine performance per game minute]
-
+Per spelminuut
 [engine performance per real minute]
-
+Per echte minuut
 [engine performance game engine performance]
-
+Prestaties van de spelengine
 [engine performance task wall-time costs]
-
+Kloktijdkosten per taak
 [engine performance inspect slow ticks]
-
+Trage tikken bekijken
 [engine performance no advancing ticks recorded yet]
-
+Nog geen voortschrijdende tikken vastgelegd.
 [engine performance whole-engine performance]
-
+Prestaties van de hele engine
 [engine performance open performance charts]
-
+Prestatiegrafieken openen
 [engine performance engine performance]
-
+Engineprestaties
 [engine performance follow latest interval]
-
+Laatste interval volgen
 [engine performance compare task costs]
-
+Taakkosten vergelijken
 [engine performance all metrics and slow ticks]
-
+Alle meetwaarden en trage tikken
 [engine performance phase orders]
-
+Opdrachten
 [engine performance phase units]
-
+Eenheden
 [engine performance phase buildings]
-
+Gebouwen
 [engine performance phase map]
-
+Kaart
 [engine performance phase statistics]
-
+Statistieken
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Wereldopname
 [engine performance phase checksums]
-
+Controlesommen
 [engine performance wall time %0]
-
+Kloktijd: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Vereiste wachttijd: %0 ms; eigenaar-joins: %1 ms; vergrendelingen: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms kloktijd
 [engine performance tick %0 wall %1]
-
+Tik %0: %1 ms kloktijd
 [AI for all computer colonies]
 AI voor alle computergestuurde kolonies
 [tundra]

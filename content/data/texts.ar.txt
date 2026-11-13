@@ -1695,13 +1695,13 @@ OpenGL غير متوفر في هذا الإصدار.
 [Lake size]
 حجم البحيرة
 [Crater type]
-
+نوع الفوهات
 [Crater rims]
-
+حواف الفوهات
 [Volcanic maars]
-
+فوهات مار بركانية
 [Glacial kettles]
-
+حفر جليدية
 [Contested commons]
 الأراضي المشاع المتنازع عليها
 [Maze]
@@ -1805,7 +1805,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+لا يستطيع العالم الحلقي وضع صخوره وسواحله دون عزل أجزاء من الأرض في هذه البذرة.
 [City states]
 دول المدن
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL غير متوفر في هذا الإصدار.
 [Levee]
 السد الترابي
 [Mudflats]
-
+سهول طينية
 [Hammocks]
-
+جزر شجرية
 [Moss]
-
+طحلب
 [Sloughs]
 المستنقعات
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL غير متوفر في هذا الإصدار.
 [Central island]
 الجزيرة المركزية
 [Tide]
-
+المد
 [Neap tide]
-
+مد أدنى
 [Mean tide]
-
+مد متوسط
 [Spring tide]
-
+مد أعظمي
 [Tidal flats need at least one colony.]
 تحتاج السهول المدّية إلى مستعمرة واحدة على الأقل.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+لا مكان لصخور التل الصخري المركزي بجوار واجهات المحجر؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 الجزر الأم لا تتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل أو جزرًا أصغر.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL غير متوفر في هذا الإصدار.
 [Meandering rivers]
 أنهار كثيرة التعرج
 [Banks]
-
+الضفاف
 [Deep channels]
-
+قنوات عميقة
 [River bluffs]
-
+جروف النهر
 [Divide outcrops]
-
+نتوءات خط تقسيم المياه
 [Deep water]
-
+مياه عميقة
 [Rock outcrops]
-
+نتوءات صخرية
 [Fruit in home valleys]
 الفاكهة في وديان البداية
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL غير متوفر في هذا الإصدار.
 [Winding belt]
 حزام متعرج
 [Deep ocean]
-
+محيط عميق
 [Rock spine]
-
+سلسلة صخرية
 [Ring road]
-
+طريق دائري
 [Cell shape]
 شكل الخلايا
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL غير متوفر في هذا الإصدار.
 [Lee width]
 عرض جانب الظل
 [Climate]
-
+المناخ
 [Temperate]
-
+معتدل
 [Steppe]
-
+سهوب
 [Tropical]
-
+استوائي
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+لا توجد حافة صخرية خلف المواطن؛ استخدم عددًا أقل من الحواف أو خريطة أكبر.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+لا تترك الحواف الصخرية مكانًا لمحاجر المواطن؛ استخدم حوافًا أسمك أو خريطة أكبر.
 [The ridges could not be sealed; use thicker ridges.]
-
+تعذّر إغلاق الحواف الصخرية؛ استخدم حوافًا أسمك.
 [Old growth]
 الغابة القديمة
 [Canals]
@@ -2419,7 +2419,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [Flood]
 الفيضان
 [Distributaries]
-الروافد المتفرعة
+فروع الدلتا
 [River crossings]
 معابر النهر
 [Dunes]
@@ -2519,7 +2519,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [Moraine hummocks]
 روابي ركامية
 [Deep pools]
-
+برك عميقة
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 الضفيرة لا تترك مدرجات كافية للمواطن؛ استخدم خريطة أكبر أو ضفيرة أضيق.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ OpenGL غير متوفر في هذا الإصدار.
 [Dry patches]
 مناطق جافة
 [Season]
-
+الموسم
 [Meltwater]
-
+مياه الذوبان
 [Late summer]
-
+أواخر الصيف
 [Sparse]
 قليلة
 [Normal]
@@ -2713,25 +2713,25 @@ OpenGL غير متوفر في هذا الإصدار.
 [Twin springs]
 نبعان توأمان
 [Canyon mouth]
-
+مصب الوادي
 [Cienega]
-
+مستنقع ينبوعي
 [Coalescing pair]
-
+مروحتان متلاحمتان
 [Cienegas]
-
+مستنقعات ينبوعية
 [Rock]
-
+الصخور
 [Granite]
-
+غرانيت
 [Greenstone]
-
+حجر أخضر
 [Sandstone]
-
+حجر رملي
 [Volcanic]
-
+بركاني
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+تقطع الممرات الجبلية محاجر المواطن؛ استخدم ممرات أقل أو مستعمرات أقل أو خريطة أكبر.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 السفوح أضيق من أن تتسع للمواطن؛ استخدم خريطة أكبر أو مسافة أوسع بين السلاسل الجبلية أو حوافَّ أضيق أو بحيرات ملحية أصغر.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ OpenGL غير متوفر في هذا الإصدار.
 [Extra trails]
 دروب إضافية
 [Deep lakes]
-
+بحيرات عميقة
 [Bedrock]
-
+الصخر الأساسي
 [Portage Lakes needs sides between 64 and 512 tiles.]
 يجب أن يتراوح طول ضلعي هذه الخريطة بين 64 و512 خانة.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [stat cleared about]
 موارد أزالها العمال في مناطق التصفية لإفساح المجال.
 [stats topic overview]
-
+نظرة عامة
 [stats topic economy]
-
+الاقتصاد
 [stats topic world]
-
+العالم
 [stats work construction]
-
+العمل والبناء
 [stats defence]
-
+الدفاع
 [stats history]
-
+عرض السجل
 [stats waiting]
-
+بانتظار الإحصائيات…
 [stats unit details]
-
+تفاصيل الوحدات
 [stats map overlays]
-
+طبقات الخريطة
 [stats topic]
-
+الموضوع
 [stats full history]
-
+فتح السجل الكامل
 [stats missing readings]
-
+— لم تُسجَّل أي قراءة بعد. اختر إحصائية لعرض التفاصيل.
 [stat win probability]
-
+احتمال الفوز
 [stat win probability about]
-
+الفرصة التقديرية لفوز تحالفك، تُقاس على فترات طوال المباراة. يتشارك الحلفاء احتمالًا واحدًا. دُرّب هذا النموذج على مباريات بين لاعبين آليين؛ ولا تأخذ التقديرات في الحسبان المواقع أو التحركات المخطط لها. قد يكون السجل ناقصًا في الحفظات الأقدم.
 [stat prestige]
 الهيبة
 [stat prestige about]
@@ -5781,15 +5781,15 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [Reroll terrain look]
 إعادة اختيار مظهر التضاريس
 [boulders]
-صخور كبيرة
+أعمدة حجرية
 [hedge]
 سياج نباتي
 [thicket]
 أجمة
 [ridge_rock]
-
+أبراج صخرية
 [outcrop]
-
+أعمدة بازلتية
 [dirt]
 تراب
 [clay]
@@ -5855,11 +5855,11 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [glacier_ice]
 جليد النهر الجليدي
 [overgrown_road]
-طريق مكسو بالعشب
+حجارة رصف مكسوة بالطحالب
 [laterite]
 لاتريت
 [cliffs]
-منحدرات
+جروف
 [molten_lava_pool]
 بركة حمم منصهرة
 [slate_ashlar]
@@ -5907,13 +5907,13 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [terrain group grass]
 عشب
 [terrain group ice]
-جليد
+ثلج وجليد
 [terrain group paths]
 مسارات
 [terrain group obstacles]
-عوائق
+حواجز
 [terrain group ridges]
-
+نتوءات صخرية
 [terrain group barren]
 أرض قاحلة
 [terrain group rough]
@@ -7051,53 +7051,53 @@ GL فقط
 [hive standing order update failed]
 فشل تحديث الأمر الدائم. أمرك متوقف مؤقتًا على هذا الجهاز؛ أعد المحاولة باستخدام عنصر التحكم المعني.
 [engine performance per game minute]
-
+لكل دقيقة لعب
 [engine performance per real minute]
-
+لكل دقيقة حقيقية
 [engine performance game engine performance]
-
+أداء محرك اللعبة
 [engine performance task wall-time costs]
-
+الوقت الفعلي المستغرق للمهام
 [engine performance inspect slow ticks]
-
+فحص الدورات البطيئة
 [engine performance no advancing ticks recorded yet]
-
+لم تُسجَّل بعد أي دورات تقدّمت فيها اللعبة.
 [engine performance whole-engine performance]
-
+أداء المحرك بالكامل
 [engine performance open performance charts]
-
+فتح مخططات الأداء
 [engine performance engine performance]
-
+أداء المحرك
 [engine performance follow latest interval]
-
+متابعة أحدث فترة
 [engine performance compare task costs]
-
+مقارنة تكاليف المهام
 [engine performance all metrics and slow ticks]
-
+كل المقاييس والدورات البطيئة
 [engine performance phase orders]
-
+الأوامر
 [engine performance phase units]
-
+الوحدات
 [engine performance phase buildings]
-
+المباني
 [engine performance phase map]
-
+الخريطة
 [engine performance phase statistics]
-
+الإحصائيات
 [engine performance phase ai]
-
+الذكاء الاصطناعي
 [engine performance phase world capture]
-
+التقاط حالة العالم
 [engine performance phase checksums]
-
+المجاميع الاختبارية
 [engine performance wall time %0]
-
+الوقت الفعلي: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+الانتظار المطلوب: %0 ms؛ انتظار الخيط المالك: %1 ms؛ الأقفال: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms وقت فعلي
 [engine performance tick %0 wall %1]
-
+الدورة %0: %1 ms وقت فعلي
 [AI for all computer colonies]
 الذكاء الاصطناعي لكل المستعمرات التي يديرها الحاسوب
 [tundra]

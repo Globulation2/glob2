@@ -1695,13 +1695,13 @@ OpenGL در این نسخه موجود نیست.
 [Lake size]
 اندازهٔ دریاچه
 [Crater type]
-
+نوع دهانه
 [Crater rims]
-
+لبه‌های دهانه
 [Volcanic maars]
-
+مارهای آتشفشانی
 [Glacial kettles]
-
+چاله‌های یخچالی
 [Contested commons]
 سرزمین مشترک مورد مناقشه
 [Maze]
@@ -1805,7 +1805,7 @@ OpenGL در این نسخه موجود نیست.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 کمربند برای این تعداد مستعمره بیش از حد کوتاه است؛ از نقشهٔ بلندتر یا مستعمره‌های کمتر استفاده کنید.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+جهان حلقه‌ای با این بذر نمی‌تواند سنگ‌ها و ساحل‌هایش را بدون جدا کردن بخشی از زمین قرار دهد.
 [City states]
 دولت‌شهرها
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL در این نسخه موجود نیست.
 [Levee]
 خاکریز
 [Mudflats]
-
+دشت‌های گلی
 [Hammocks]
-
+جزیره‌های درختی
 [Moss]
-
+خزه
 [Sloughs]
 مرداب‌ها
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL در این نسخه موجود نیست.
 [Central island]
 جزیرهٔ مرکزی
 [Tide]
-
+جزر و مد
 [Neap tide]
-
+مد ضعیف
 [Mean tide]
-
+مد متوسط
 [Spring tide]
-
+مد قوی
 [Tidal flats need at least one colony.]
 پهنه‌های جزر و مدی دست‌کم به یک مستعمره نیاز دارند.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+برای سنگ‌های تپه‌سنگ مرکزی کنار دیواره‌های معدن سنگ جایی نیست؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 جزیره‌های اصلی در این نقشه جا نمی‌شوند؛ از نقشهٔ بزرگ‌تر، مستعمرات کمتر یا جزیره‌های کوچک‌تر استفاده کنید.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL در این نسخه موجود نیست.
 [Meandering rivers]
 رودخانه‌های مارپیچ
 [Banks]
-
+کرانه‌ها
 [Deep channels]
-
+آبراهه‌های عمیق
 [River bluffs]
-
+پرتگاه‌های کنار رود
 [Divide outcrops]
-
+رخنمون‌های خط تقسیم آب
 [Deep water]
-
+آب عمیق
 [Rock outcrops]
-
+رخنمون‌های سنگی
 [Fruit in home valleys]
 میوه در دره‌های آغازین
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL در این نسخه موجود نیست.
 [Winding belt]
 کمربند پرپیچ‌وخم
 [Deep ocean]
-
+اقیانوس عمیق
 [Rock spine]
-
+ستیغ سنگی
 [Ring road]
-
+جادهٔ حلقوی
 [Cell shape]
 شکل خانه‌ها
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL در این نسخه موجود نیست.
 [Lee width]
 پهنای پناهگاه باد
 [Climate]
-
+آب‌وهوا
 [Temperate]
-
+معتدل
 [Steppe]
-
+استپ
 [Tropical]
-
+گرمسیری
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+پشت پایگاه‌ها هیچ ستیغی نیست؛ از ستیغ‌های کمتر یا نقشهٔ بزرگ‌تر استفاده کنید.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+ستیغ‌ها جایی برای معدن‌های سنگ پایگاه‌ها باقی نمی‌گذارند؛ از ستیغ‌های ضخیم‌تر یا نقشهٔ بزرگ‌تر استفاده کنید.
 [The ridges could not be sealed; use thicker ridges.]
-
+ستیغ‌ها بسته نشدند؛ از ستیغ‌های ضخیم‌تر استفاده کنید.
 [Old growth]
 جنگل کهن
 [Canals]
@@ -2519,7 +2519,7 @@ Emoji
 [Moraine hummocks]
 تپه‌های یخرفتی
 [Deep pools]
-
+برکه‌های عمیق
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 نوار شریانی برای پایگاه‌ها تراس بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر یا نوار شریانی باریک‌تری استفاده کنید.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Emoji
 [Dry patches]
 نواحی خشک
 [Season]
-
+فصل
 [Meltwater]
-
+آب ذوب برف
 [Late summer]
-
+اواخر تابستان
 [Sparse]
 کم
 [Normal]
@@ -2713,25 +2713,25 @@ Emoji
 [Twin springs]
 چشمه‌های دوقلو
 [Canyon mouth]
-
+دهانهٔ دره
 [Cienega]
-
+مرداب چشمه‌ای
 [Coalescing pair]
-
+جفت مخروط‌افکنهٔ به‌هم‌پیوسته
 [Cienegas]
-
+مرداب‌های چشمه‌ای
 [Rock]
-
+سنگ
 [Granite]
-
+گرانیت
 [Greenstone]
-
+سنگ سبز
 [Sandstone]
-
+ماسه‌سنگ
 [Volcanic]
-
+آتشفشانی
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+گذرگاه‌ها معدن‌های سنگ پایگاه‌ها را می‌بُرند؛ از گذرگاه‌های کمتر، مستعمره‌های کمتر یا نقشهٔ بزرگ‌تر استفاده کنید.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 دامنه‌های مخروط‌افکنه برای پایگاه‌ها بیش از حد تنگ‌اند؛ از نقشهٔ بزرگ‌تر، فاصلهٔ بیشتر رشته‌کوه‌ها، ستیغ‌های باریک‌تر یا دریاچه‌های نمکی کوچک‌تر استفاده کنید.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Emoji
 [Extra trails]
 کوره‌راه‌های بیشتر
 [Deep lakes]
-
+دریاچه‌های عمیق
 [Bedrock]
-
+سنگ بستر
 [Portage Lakes needs sides between 64 and 512 tiles.]
 طول ضلع‌های این نقشه باید بین 64 و 512 خانه باشد.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [stat cleared about]
 منابعی که کارگرها در مناطق پاک‌سازی برای باز کردن جا برداشتند.
 [stats topic overview]
-
+نمای کلی
 [stats topic economy]
-
+اقتصاد
 [stats topic world]
-
+جهان
 [stats work construction]
-
+کار و ساخت‌وساز
 [stats defence]
-
+دفاع
 [stats history]
-
+دیدن تاریخچه
 [stats waiting]
-
+در انتظار آمار…
 [stats unit details]
-
+جزئیات افراد
 [stats map overlays]
-
+لایه‌های نقشه
 [stats topic]
-
+موضوع
 [stats full history]
-
+باز کردن تاریخچهٔ کامل
 [stats missing readings]
-
+— هنوز هیچ مقداری ثبت نشده است. برای دیدن جزئیات، یک آمار را انتخاب کنید.
 [stat win probability]
-
+احتمال پیروزی
 [stat win probability about]
-
+شانس تخمینی پیروزی اتحاد شما که در طول مسابقه به‌طور دوره‌ای اندازه‌گیری می‌شود. متحدان یک احتمال مشترک دارند. این مدل با بازی‌های هوش مصنوعی آموزش دیده است؛ تخمین‌ها موقعیت یا حرکت‌های برنامه‌ریزی‌شده را در نظر نمی‌گیرند. ممکن است تاریخچهٔ ذخیره‌های قدیمی‌تر ناقص باشد.
 [stat prestige]
 اعتبار
 [stat prestige about]
@@ -5781,15 +5781,15 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [Reroll terrain look]
 انتخاب تصادفی دوبارهٔ ظاهر زمین
 [boulders]
-تخته‌سنگ‌ها
+ستون‌های سنگی
 [hedge]
 پرچین
 [thicket]
 بیشه
 [ridge_rock]
-
+مناره‌های سنگی
 [outcrop]
-
+ستون‌های بازالتی
 [dirt]
 خاک
 [clay]
@@ -5855,11 +5855,11 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [glacier_ice]
 یخ یخچال طبیعی
 [overgrown_road]
-جاده پوشیده از گیاه
+سنگ‌فرش خزه‌گرفته
 [laterite]
 لاتریت
 [cliffs]
-صخره‌ها
+پرتگاه‌ها
 [molten_lava_pool]
 برکه گدازه مذاب
 [slate_ashlar]
@@ -5907,13 +5907,13 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [terrain group grass]
 چمن
 [terrain group ice]
-یخ
+برف و یخ
 [terrain group paths]
 راه‌ها
 [terrain group obstacles]
 موانع
 [terrain group ridges]
-
+رخنمون‌ها
 [terrain group barren]
 زمین بایر
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 [hive standing order update failed]
 به‌روزرسانی دستور دائمی ناموفق بود. دستور شما در این دستگاه موقتاً متوقف است؛ با استفاده از کنترل مربوط دوباره تلاش کنید.
 [engine performance per game minute]
-
+در هر دقیقهٔ بازی
 [engine performance per real minute]
-
+در هر دقیقهٔ واقعی
 [engine performance game engine performance]
-
+کارایی موتور بازی
 [engine performance task wall-time costs]
-
+زمان واقعی صرف‌شده برای کارها
 [engine performance inspect slow ticks]
-
+بررسی تیک‌های کند
 [engine performance no advancing ticks recorded yet]
-
+هنوز هیچ تیک پیش‌رونده‌ای ثبت نشده است.
 [engine performance whole-engine performance]
-
+کارایی کل موتور
 [engine performance open performance charts]
-
+باز کردن نمودارهای کارایی
 [engine performance engine performance]
-
+کارایی موتور
 [engine performance follow latest interval]
-
+دنبال کردن آخرین بازه
 [engine performance compare task costs]
-
+مقایسهٔ هزینهٔ کارها
 [engine performance all metrics and slow ticks]
-
+همهٔ معیارها و تیک‌های کند
 [engine performance phase orders]
-
+دستورها
 [engine performance phase units]
-
+افراد
 [engine performance phase buildings]
-
+ساختمان‌ها
 [engine performance phase map]
-
+نقشه
 [engine performance phase statistics]
-
+آمار
 [engine performance phase ai]
-
+هوش مصنوعی
 [engine performance phase world capture]
-
+ثبت وضعیت جهان
 [engine performance phase checksums]
-
+چک‌سام‌ها
 [engine performance wall time %0]
-
+زمان واقعی: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+انتظارهای لازم: %0 ms؛ انتظار برای رشتهٔ مالک: %1 ms؛ قفل‌ها: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms زمان واقعی
 [engine performance tick %0 wall %1]
-
+تیک %0: %1 ms زمان واقعی
 [AI for all computer colonies]
 هوش مصنوعی برای همهٔ مستعمره‌های تحت کنترل رایانه
 [tundra]

@@ -1663,13 +1663,13 @@ Bredde på landbroen
 [Lake size]
 Størrelse på innsjøen
 [Crater type]
-
+Kratertype
 [Crater rims]
-
+Kraterkanter
 [Volcanic maars]
-
+Vulkanske maarer
 [Glacial kettles]
-
+Dødisgroper
 [Contested commons]
 Omstridte allmenninger
 [Maze]
@@ -1697,7 +1697,7 @@ Hager
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Så tykke murer gjør åpningene for smale; bruk tynnere murer eller større celler.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Så brede vollgraver gir for lite plass inne i hver hjemmebase; bruk en smalere vollgrav, tynnere murer eller større celler.
+Så brede vollgraver gir for lite plass inne i hvert hjemmeområde; bruk en smalere vollgrav, tynnere murer eller større celler.
 [Bridge count]
 Antall broer
 [Continent size]
@@ -1769,7 +1769,7 @@ Beltebredde
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Beltet er for kort for så mange kolonier; bruk et lengre kart eller færre kolonier.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Ringverdenen kan ikke legge ut fjell og kyster med dette frøet uten å skjære av land.
 [City states]
 Bystater
 [Strait width]
@@ -1803,11 +1803,11 @@ Lysningsstørrelse
 [Levee]
 Elvevoll
 [Mudflats]
-
+Mudderflater
 [Hammocks]
-
+Treøyer
 [Moss]
-
+Mose
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Laguner
 [Central island]
 Sentraløya
 [Tide]
-
+Tidevann
 [Neap tide]
-
+Nippflo
 [Mean tide]
-
+Middels tidevann
 [Spring tide]
-
+Springflo
 [Tidal flats need at least one colony.]
 Tidevannsflater trenger minst én koloni.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Den sentrale fjellknausen har ikke plass til fjellet sitt ved siden av steinbruddsveggene; bruk et større kart eller færre kolonier.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hjemøyene får ikke plass på dette kartet; bruk et større kart, færre kolonier eller mindre øyer.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Elvedelta
 [Meandering rivers]
 Slyngende elver
 [Banks]
-
+Elvebredder
 [Deep channels]
-
+Dype løp
 [River bluffs]
-
+Elveskrenter
 [Divide outcrops]
-
+Knauser på vannskillet
 [Deep water]
-
+Dypt vann
 [Rock outcrops]
-
+Fjellknauser
 [Fruit in home valleys]
 Frukt i hjemmedaler
 [Moat]
@@ -1993,11 +1993,11 @@ Kolonier på begge kyster
 [Winding belt]
 Slyngende belte
 [Deep ocean]
-
+Dyphav
 [Rock spine]
-
+Fjellrygg
 [Ring road]
-
+Ringvei
 [Cell shape]
 Celleform
 [Squares]
@@ -2035,19 +2035,19 @@ Avstand mellom passasjene
 [Lee width]
 Lebredde
 [Climate]
-
+Klima
 [Temperate]
-
+Temperert
 [Steppe]
-
+Steppe
 [Tropical]
-
+Tropisk
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Ingen rygg står bak hjemmeområdene; bruk færre rygger eller et større kart.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Ryggene gir ikke plass til hjemmeområdenes steinbrudd; bruk tykkere rygger eller et større kart.
 [The ridges could not be sealed; use thicker ridges.]
-
+Ryggene kunne ikke lukkes; bruk tykkere rygger.
 [Old growth]
 Gammelskog
 [Canals]
@@ -2497,7 +2497,7 @@ Ekstra stryk
 [Moraine hummocks]
 Morenehauger
 [Deep pools]
-
+Dype kulper
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Elveflettingen gir for lite terrasseplass til hjemmeområdene. Bruk et større kart eller smalere elvefletting.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ Vannhull
 [Dry patches]
 Tørre flekker
 [Season]
-
+Årstid
 [Meltwater]
-
+Smeltevann
 [Late summer]
-
+Sensommer
 [Sparse]
 Sparsom
 [Normal]
@@ -2691,25 +2691,25 @@ Lang vifte
 [Twin springs]
 Tvillingkilder
 [Canyon mouth]
-
+Canyonmunning
 [Cienega]
-
+Kildemyr
 [Coalescing pair]
-
+Sammenvoksende par
 [Cienegas]
-
+Kildemyrer
 [Rock]
-
+Bergart
 [Granite]
-
+Granitt
 [Greenstone]
-
+Grønnstein
 [Sandstone]
-
+Sandstein
 [Volcanic]
-
+Vulkansk
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Passene skjærer inn i hjemmeområdenes steinbrudd; bruk færre pass, færre kolonier eller et større kart.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Bajadaene er for smale for hjemmeområdene. Bruk et større kart, større avstand mellom fjellkjedene, smalere rygger eller en mindre playa.
 [Central Quarry]
@@ -2861,9 +2861,9 @@ Portasjedybde
 [Extra trails]
 Ekstra løyper
 [Deep lakes]
-
+Dype innsjøer
 [Bedrock]
-
+Berggrunn
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Sjøer og bærestier krever sider på mellom 64 og 512 ruter.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ Ris
 [Fish]
 Fisk
 [boulders]
-Steinblokker
+Steinsøyler
 [hedge]
 Hekk
 [thicket]
 Kratt
 [ridge_rock]
-
+Fjellspir
 [outcrop]
-
+Basaltsøyler
 [dirt]
 Jord
 [clay]
@@ -5831,7 +5831,7 @@ Vulkansk aske
 [glacier_ice]
 Breis
 [overgrown_road]
-Gjengrodd vei
+Mosegrodd brostein
 [laterite]
 Laterittjord
 [cliffs]
@@ -5883,13 +5883,13 @@ Sand
 [terrain group grass]
 Gress
 [terrain group ice]
-Is
+Snø og is
 [terrain group paths]
 Stier
 [terrain group obstacles]
-Hindringer
+Barrierer
 [terrain group ridges]
-
+Fjellformasjoner
 [terrain group barren]
 Goldmark
 [terrain group rough]

@@ -1663,13 +1663,13 @@ OpenGL не е наличен в тази компилация.
 [Lake size]
 Размер на езерото
 [Crater type]
-
+Тип на кратерите
 [Crater rims]
-
+Ръбове на кратерите
 [Volcanic maars]
-
+Вулканични маари
 [Glacial kettles]
-
+Ледникови котловини
 [Contested commons]
 Оспорвани общи земи
 [Maze]
@@ -1697,7 +1697,7 @@ OpenGL не е наличен в тази компилация.
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Стени с такава дебелина оставят проходите твърде тесни; използвайте по-тънки стени или по-големи клетки.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Ровове с такава ширина оставят твърде малко място във всяка домашна база; използвайте по-тесен ров, по-тънки стени или по-големи клетки.
+Ровове с такава ширина оставят твърде малко място във всеки дом; използвайте по-тесен ров, по-тънки стени или по-големи клетки.
 [Bridge count]
 Брой мостове
 [Continent size]
@@ -1707,9 +1707,9 @@ OpenGL не е наличен в тази компилация.
 [Fjord width]
 Ширина на фиорда
 [Ice sheet size]
-Размер на ледената шапка
+Размер на ледената покривка
 [Fjord landings]
-Пристани във фиордите
+Спускания към фиордите
 [Fjord continents need at least one colony.]
 Континентът с фиорди се нуждае от поне една колония.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1769,7 +1769,7 @@ OpenGL не е наличен в тази компилация.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Поясът е твърде къс за толкова колонии; използвайте по-дълга карта или по-малко колонии.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+„Пръстеновиден свят“ не може да разположи скалите и бреговете си при тази начална стойност, без да откъсне част от сушата.
 [City states]
 Градове държави
 [Strait width]
@@ -1803,11 +1803,11 @@ OpenGL не е наличен в тази компилация.
 [Levee]
 Дига
 [Mudflats]
-
+Кални равнини
 [Hammocks]
-
+Горски островчета
 [Moss]
-
+Мъх
 [Sloughs]
 Блатни канали
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ OpenGL не е наличен в тази компилация.
 [Central island]
 Централен остров
 [Tide]
-
+Прилив
 [Neap tide]
-
+Слаб прилив
 [Mean tide]
-
+Среден прилив
 [Spring tide]
-
+Силен прилив
 [Tidal flats need at least one colony.]
 Приливните плитчини се нуждаят от поне една колония.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Централната скала няма място за камъка си до стените на кариерите; използвайте по-голяма карта или по-малко колонии.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Домашните острови не се побират на тази карта; използвайте по-голяма карта, по-малко колонии или по-малки острови.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ OpenGL не е наличен в тази компилация.
 [Meandering rivers]
 Криволичещи реки
 [Banks]
-
+Брегове
 [Deep channels]
-
+Дълбоки корита
 [River bluffs]
-
+Речни урви
 [Divide outcrops]
-
+Скални разкрития по вододелите
 [Deep water]
-
+Дълбока вода
 [Rock outcrops]
-
+Скални разкрития
 [Fruit in home valleys]
 Плодове в домашните долини
 [Moat]
@@ -1993,11 +1993,11 @@ OpenGL не е наличен в тази компилация.
 [Winding belt]
 Криволичещ пояс
 [Deep ocean]
-
+Дълбок океан
 [Rock spine]
-
+Скален хребет
 [Ring road]
-
+Околовръстен път
 [Cell shape]
 Форма на клетката
 [Squares]
@@ -2035,19 +2035,19 @@ OpenGL не е наличен в тази компилация.
 [Lee width]
 Ширина на подветрената зона
 [Climate]
-
+Климат
 [Temperate]
-
+Умерен
 [Steppe]
-
+Степен
 [Tropical]
-
+Тропически
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Зад домовете не стои нито един хребет; използвайте по-малко хребети или по-голяма карта.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Хребетите не оставят място за кариерите на домовете; използвайте по-дебели хребети или по-голяма карта.
 [The ridges could not be sealed; use thicker ridges.]
-
+Хребетите не можаха да бъдат затворени; използвайте по-дебели хребети.
 [Old growth]
 Вековна гора
 [Canals]
@@ -2497,7 +2497,7 @@ HP ≤25/50/75%
 [Moraine hummocks]
 Моренови хълмове
 [Deep pools]
-
+Дълбоки вирове
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разклонената река оставя твърде малко тераси за базите; използвайте по-голяма карта или по-тясна река.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤25/50/75%
 [Dry patches]
 Сухи петна
 [Season]
-
+Сезон
 [Meltwater]
-
+Снеготопене
 [Late summer]
-
+Късно лято
 [Sparse]
 Рядък
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤25/50/75%
 [Twin springs]
 Двойни извори
 [Canyon mouth]
-
+Устие на каньон
 [Cienega]
-
+Изворно блато
 [Coalescing pair]
-
+Сливащи се конуси
 [Cienegas]
-
+Изворни блата
 [Rock]
-
+Скала
 [Granite]
-
+Гранит
 [Greenstone]
-
+Зелен камък
 [Sandstone]
-
+Пясъчник
 [Volcanic]
-
+Вулканична
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Проходите се врязват в кариерите на домовете; използвайте по-малко проходи, по-малко колонии или по-голяма карта.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Бахадите са твърде тесни за базите; използвайте по-голяма карта, по-голямо разстояние между планинските вериги, по-тесни била или по-малка плая.
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤25/50/75%
 [Extra trails]
 Допълнителни пътеки
 [Deep lakes]
-
+Дълбоки езера
 [Bedrock]
-
+Скална основа
 [Portage Lakes needs sides between 64 and 512 tiles.]
 „Езера с преноси“ изисква страни между 64 и 512 полета.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ FFmpeg не е наличен, така че записът е изключен.
 [Fish]
 Риба
 [boulders]
-Камъни
+Каменни стълбове
 [hedge]
 Жив плет
 [thicket]
 Гъсталак
 [ridge_rock]
-
+Скални игли
 [outcrop]
-
+Базалтови колони
 [dirt]
 Почва
 [clay]
@@ -5831,7 +5831,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [glacier_ice]
 Ледников лед
 [overgrown_road]
-Обрасъл път
+Мъхест паваж
 [laterite]
 Латерит
 [cliffs]
@@ -5865,7 +5865,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [travertine_terraces]
 Травертинови тераси
 [penitentes]
-Покаяни снегове
+Каещи се снегове
 [termite_mounds]
 Термитници
 [hoodoos]
@@ -5883,13 +5883,13 @@ FFmpeg не е наличен, така че записът е изключен.
 [terrain group grass]
 Трева
 [terrain group ice]
-Лед
+Сняг и лед
 [terrain group paths]
 Пътища
 [terrain group obstacles]
-Препятствия
+Прегради
 [terrain group ridges]
-
+Скални разкрития
 [terrain group barren]
 Безплодна земя
 [terrain group rough]

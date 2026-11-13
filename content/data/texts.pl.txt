@@ -1695,13 +1695,13 @@ Szerokość mostu lądowego
 [Lake size]
 Wielkość jeziora
 [Crater type]
-
+Rodzaj kraterów
 [Crater rims]
-
+Krawędzie kraterów
 [Volcanic maars]
-
+Maary wulkaniczne
 [Glacial kettles]
-
+Oczka polodowcowe
 [Contested commons]
 Sporny teren wspólny
 [Maze]
@@ -1745,7 +1745,7 @@ Szerokość fiordu
 [Ice sheet size]
 Rozmiar lądolodu
 [Fjord landings]
-Lądowiska w fiordach
+Zejścia do fiordów
 [Fjord continents need at least one colony.]
 Kontynent fiordów wymaga co najmniej jednej kolonii.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ Szerokość pasa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas jest za krótki dla tylu kolonii; użyj dłuższej mapy lub mniejszej liczby kolonii.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Przy tym ziarnie świat pierścieniowy nie może rozmieścić skał i wybrzeży bez odcięcia części lądu.
 [City states]
 Miasta-państwa
 [Strait width]
@@ -1821,7 +1821,7 @@ Kamienne mury
 [Sand patches]
 Płaty piasku
 [Cliff walls]
-Klifowe mury
+Skalne mury
 [Paved roads]
 Brukowane drogi
 [Scrub patches]
@@ -1839,11 +1839,11 @@ Rozmiar polany
 [Levee]
 Grobla
 [Mudflats]
-
+Równiny błotne
 [Hammocks]
-
+Kępy drzew
 [Moss]
-
+Mech
 [Sloughs]
 Starorzecza
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Laguny
 [Central island]
 Wyspa środkowa
 [Tide]
-
+Pływ
 [Neap tide]
-
+Słaby pływ
 [Mean tide]
-
+Średni pływ
 [Spring tide]
-
+Silny pływ
 [Tidal flats need at least one colony.]
 Równiny pływowe potrzebują co najmniej jednej kolonii.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Centralny ostaniec nie ma miejsca na skały obok ścian kamieniołomów; użyj większej mapy lub mniejszej liczby kolonii.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Wyspy macierzyste nie mieszczą się na tej mapie; użyj większej mapy, mniejszej liczby kolonii lub mniejszych wysp.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Delta rzeki
 [Meandering rivers]
 Meandrujące rzeki
 [Banks]
-
+Brzegi
 [Deep channels]
-
+Głębokie koryta
 [River bluffs]
-
+Skarpy rzeczne
 [Divide outcrops]
-
+Wychodnie na działach wodnych
 [Deep water]
-
+Głęboka woda
 [Rock outcrops]
-
+Wychodnie skalne
 [Fruit in home valleys]
 Owoce w dolinach startowych
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonie na obu wybrzeżach
 [Winding belt]
 Kręty pas
 [Deep ocean]
-
+Głęboki ocean
 [Rock spine]
-
+Skalny grzbiet
 [Ring road]
-
+Droga okrężna
 [Cell shape]
 Kształt komórek
 [Squares]
@@ -2067,19 +2067,19 @@ Odstęp przełęczy
 [Lee width]
 Szerokość strony zawietrznej
 [Climate]
-
+Klimat
 [Temperate]
-
+Umiarkowany
 [Steppe]
-
+Stepowy
 [Tropical]
-
+Tropikalny
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Za bazami nie stoi żaden grzbiet; użyj mniejszej liczby grzbietów lub większej mapy.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Grzbiety nie zostawiają miejsca na kamieniołomy baz; użyj grubszych grzbietów lub większej mapy.
 [The ridges could not be sealed; use thicker ridges.]
-
+Nie udało się domknąć grzbietów; użyj grubszych grzbietów.
 [Old growth]
 Puszcza
 [Canals]
@@ -2519,7 +2519,7 @@ Dodatkowe brody
 [Moraine hummocks]
 Pagórki morenowe
 [Deep pools]
-
+Głębokie tonie
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Roztoka zostawia za mało terasy dla baz; użyj większej mapy lub węższej roztoki.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Wodopoje
 [Dry patches]
 Suche obszary
 [Season]
-
+Pora roku
 [Meltwater]
-
+Roztopy
 [Late summer]
-
+Późne lato
 [Sparse]
 Nieliczne
 [Normal]
@@ -2713,25 +2713,25 @@ Długi stożek
 [Twin springs]
 Bliźniacze źródła
 [Canyon mouth]
-
+Wylot kanionu
 [Cienega]
-
+Mokradło źródliskowe
 [Coalescing pair]
-
+Łączące się stożki
 [Cienegas]
-
+Mokradła źródliskowe
 [Rock]
-
+Skała
 [Granite]
-
+Granit
 [Greenstone]
-
+Zieleniec
 [Sandstone]
-
+Piaskowiec
 [Volcanic]
-
+Wulkaniczna
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Przełęcze wcinają się w kamieniołomy baz; użyj mniejszej liczby przełęczy, mniejszej liczby kolonii lub większej mapy.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Stoki ze stożkami napływowymi są zbyt wąskie dla baz; użyj większej mapy, większego odstępu pasm górskich, węższych grzbietów lub mniejszych słonych jezior.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Grubość leśnego przejścia
 [Extra trails]
 Dodatkowe ścieżki
 [Deep lakes]
-
+Głębokie jeziora
 [Bedrock]
-
+Podłoże skalne
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Boki tej mapy muszą mieć od 64 do 512 pól.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Usunięte zasoby
 [stat cleared about]
 Zasoby usunięte przez robotników w obszarach oczyszczania, aby zrobić miejsce.
 [stats topic overview]
-
+Przegląd
 [stats topic economy]
-
+Gospodarka
 [stats topic world]
-
+Świat
 [stats work construction]
-
+Praca i budowa
 [stats defence]
-
+Obrona
 [stats history]
-
+Pokaż historię
 [stats waiting]
-
+Oczekiwanie na statystyki…
 [stats unit details]
-
+Szczegóły jednostek
 [stats map overlays]
-
+Nakładki mapy
 [stats topic]
-
+Temat
 [stats full history]
-
+Otwórz pełną historię
 [stats missing readings]
-
+— Brak zapisanych odczytów. Wybierz statystykę, aby zobaczyć szczegóły.
 [stat win probability]
-
+Prawdopodobieństwo zwycięstwa
 [stat win probability about]
-
+Szacowana szansa zwycięstwa Twojego sojuszu, mierzona przez cały mecz. Sojusznicy mają wspólne prawdopodobieństwo. Model wytrenowano na grach SI; szacunki nie uwzględniają pozycji ani planowanych ruchów. Starsze zapisy mogą mieć niepełną historię.
 [stat prestige]
 Prestiż
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Ryby
 [Reroll terrain look]
 Wylosuj ponownie wygląd terenu
 [boulders]
-Głazy
+Kamienne słupy
 [hedge]
 Żywopłot
 [thicket]
 Zarośla
 [ridge_rock]
-
+Skalne iglice
 [outcrop]
-
+Kolumny bazaltowe
 [dirt]
 Ziemia
 [clay]
@@ -5855,7 +5855,7 @@ Popiół wulkaniczny
 [glacier_ice]
 Lód lodowcowy
 [overgrown_road]
-Zarośnięta droga
+Omszały bruk
 [laterite]
 Lateryt
 [cliffs]
@@ -5907,13 +5907,13 @@ Piasek
 [terrain group grass]
 Trawa
 [terrain group ice]
-Lód
+Śnieg i lód
 [terrain group paths]
 Drogi
 [terrain group obstacles]
-Przeszkody
+Bariery
 [terrain group ridges]
-
+Wychodnie skalne
 [terrain group barren]
 Jałowa ziemia
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Rozkaz niepotwierdzony. Otwórz dowódcę, aby spróbować ponownie. Twoja wiado
 [hive standing order update failed]
 Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany na tym urządzeniu. Spróbuj ponownie za pomocą odpowiedniej kontrolki.
 [engine performance per game minute]
-
+Na minutę gry
 [engine performance per real minute]
-
+Na minutę rzeczywistą
 [engine performance game engine performance]
-
+Wydajność silnika gry
 [engine performance task wall-time costs]
-
+Rzeczywisty czas zadań
 [engine performance inspect slow ticks]
-
+Przejrzyj wolne takty
 [engine performance no advancing ticks recorded yet]
-
+Nie zarejestrowano jeszcze taktów z postępem.
 [engine performance whole-engine performance]
-
+Wydajność całego silnika
 [engine performance open performance charts]
-
+Otwórz wykresy wydajności
 [engine performance engine performance]
-
+Wydajność silnika
 [engine performance follow latest interval]
-
+Śledź najnowszy przedział
 [engine performance compare task costs]
-
+Porównaj koszty zadań
 [engine performance all metrics and slow ticks]
-
+Wszystkie metryki i wolne takty
 [engine performance phase orders]
-
+Rozkazy
 [engine performance phase units]
-
+Jednostki
 [engine performance phase buildings]
-
+Budynki
 [engine performance phase map]
-
+Mapa
 [engine performance phase statistics]
-
+Statystyki
 [engine performance phase ai]
-
+SI
 [engine performance phase world capture]
-
+Zrzut stanu świata
 [engine performance phase checksums]
-
+Sumy kontrolne
 [engine performance wall time %0]
-
+Czas rzeczywisty: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Wymagane oczekiwania: %0 ms; złączenia wątku właściciela: %1 ms; blokady: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms czasu rzeczywistego
 [engine performance tick %0 wall %1]
-
+Takt %0: %1 ms czasu rzeczywistego
 [AI for all computer colonies]
 SI dla wszystkich kolonii sterowanych przez komputer
 [tundra]

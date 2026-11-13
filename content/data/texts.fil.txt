@@ -1687,13 +1687,13 @@ Lapad ng tulay sa lupa
 [Lake size]
 Laki ng lawa
 [Crater type]
-
+Uri ng bunganga
 [Crater rims]
-
+Mga gilid ng bunganga
 [Volcanic maars]
-
+Mga maar ng bulkan
 [Glacial kettles]
-
+Mga kettle ng glacier
 [Contested commons]
 Pinag-aagawang lupain
 [Maze]
@@ -1717,7 +1717,7 @@ Lapad ng kanal
 [Wall thickness]
 Kapal ng pader
 [Gardens]
-Mga taniman
+Mga hardin
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Masyadong makitid ang mga daanan dahil sa ganito kakapal na pader; gumamit ng mas manipis na pader o mas malalaking selula.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1733,7 +1733,7 @@ Lapad ng fjord
 [Ice sheet size]
 Laki ng yelong kalatag
 [Fjord landings]
-Daungan sa mga fjord
+Mga babaan sa fjord
 [Fjord continents need at least one colony.]
 Kailangan ng kontinente ng fjord ng kahit isang kolonya.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1793,7 +1793,7 @@ Lapad ng sinturon
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Masyadong maikli ang sinturon para sa ganito karaming kolonya; gumamit ng mas mahabang mapa o mas kaunting kolonya.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Hindi mailatag ng mundong singsing ang bato at mga baybayin nito nang hindi napuputol ang lupa sa seed na ito.
 [City states]
 Mga lungsod-estado
 [Strait width]
@@ -1827,11 +1827,11 @@ Laki ng bakanteng lugar
 [Levee]
 Dike
 [Mudflats]
-
+Mga kapatagang putik
 [Hammocks]
-
+Mga pulo ng puno
 [Moss]
-
+Lumot
 [Sloughs]
 Mahahabang lawang-latian
 [Everglades need at least one colony.]
@@ -1941,17 +1941,17 @@ Mga Lagoon
 [Central island]
 Gitnang isla
 [Tide]
-
+Taog
 [Neap tide]
-
+Mahinang taog
 [Mean tide]
-
+Katamtamang taog
 [Spring tide]
-
+Malakas na taog
 [Tidal flats need at least one colony.]
 Ang mga tidal flat ay nangangailangan ng kahit isang kolonya.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Walang puwang ang gitnang burol na bato para sa bato nito sa tabi ng mga tibagan; gumamit ng mas malaking mapa o mas kaunting kolonya.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hindi kasya sa mapang ito ang mga pulo na pinagmulan; gumamit ng mas malaking mapa, mas kaunting kolonya o mas maliliit na pulo.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1995,17 +1995,17 @@ Delta ng ilog
 [Meandering rivers]
 Mga paliko-likong ilog
 [Banks]
-
+Mga pampang
 [Deep channels]
-
+Malalalim na daluyan
 [River bluffs]
-
+Mga talampas sa ilog
 [Divide outcrops]
-
+Mga nakausling bato sa hatian ng tubig
 [Deep water]
-
+Malalim na tubig
 [Rock outcrops]
-
+Mga nakausling bato
 [Fruit in home valleys]
 Prutas sa mga panimulang lambak
 [Moat]
@@ -2017,11 +2017,11 @@ Mga kolonya sa magkabilang baybayin
 [Winding belt]
 Paikot-ikot na sinturon
 [Deep ocean]
-
+Malalim na karagatan
 [Rock spine]
-
+Gulugod na bato
 [Ring road]
-
+Paikot na kalsada
 [Cell shape]
 Hugis ng selula
 [Squares]
@@ -2059,19 +2059,19 @@ Agwat ng mga daanan sa bundok
 [Lee width]
 Lapad ng bahaging kubli sa hangin
 [Climate]
-
+Klima
 [Temperate]
-
+Temperado
 [Steppe]
-
+Estepa
 [Tropical]
-
+Tropikal
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Walang tagaytay sa likod ng mga panimulang base; gumamit ng mas kaunting tagaytay o mas malaking mapa.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Walang naiwang puwang ang mga tagaytay para sa mga tibagan ng mga panimulang base; gumamit ng mas makakapal na tagaytay o mas malaking mapa.
 [The ridges could not be sealed; use thicker ridges.]
-
+Hindi maisara ang mga tagaytay; gumamit ng mas makakapal na tagaytay.
 [Old growth]
 Matandang kagubatan
 [Canals]
@@ -2521,7 +2521,7 @@ Mga dagdag na mababaw na agos
 [Moraine hummocks]
 Maliliit na bunton ng moraine
 [Deep pools]
-
+Malalalim na lanaw
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Napakaliit ng natitirang terasa para sa mga panimulang lugar dahil sa nagtitirintas na ilog; gumamit ng mas malaking mapa o mas makitid na ilog.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2581,11 +2581,11 @@ Mga likas na inuman ng tubig
 [Dry patches]
 Mga tuyong patse
 [Season]
-
+Panahon
 [Meltwater]
-
+Pagtunaw ng niyebe
 [Late summer]
-
+Huling tag-init
 [Sparse]
 Kalat-kalat
 [Normal]
@@ -2715,25 +2715,25 @@ Mahabang alluvial fan
 [Twin springs]
 Kambal na bukal
 [Canyon mouth]
-
+Bukana ng kanyon
 [Cienega]
-
+Latiang bukal
 [Coalescing pair]
-
+Nagsasanib na alluvial fan
 [Cienegas]
-
+Mga latiang bukal
 [Rock]
-
+Bato
 [Granite]
-
+Granito
 [Greenstone]
-
+Berdeng bato
 [Sandstone]
-
+Batong-buhangin
 [Volcanic]
-
+Bulkaniko
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Pumapasok ang mga daanan sa bundok sa mga tibagan ng mga panimulang base; gumamit ng mas kaunting daanan, mas kaunting kolonya o mas malaking mapa.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Masyadong makitid ang mga bajada para sa mga panimulang lugar; gumamit ng mas malaking mapa, mas malawak na agwat ng mga kabundukan, mas makikitid na tagaytay, o mas maliit na playa.
 [Central Quarry]
@@ -2885,9 +2885,9 @@ Lalim ng portage
 [Extra trails]
 Mga karagdagang daanan
 [Deep lakes]
-
+Malalalim na lawa
 [Bedrock]
-
+Batong saligan
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Kailangan ng Mga Lawa ng Portage ng 64 hanggang 512 tile sa bawat gilid.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5781,15 +5781,15 @@ Palay
 [Fish]
 Isda
 [boulders]
-Mga malalaking bato
+Mga haliging bato
 [hedge]
 Harang
 [thicket]
 Kasukalan
 [ridge_rock]
-
+Mga matulis na bato
 [outcrop]
-
+Mga haliging basalto
 [dirt]
 Lupa
 [clay]
@@ -5835,13 +5835,13 @@ Buhangin
 [terrain group grass]
 Damo
 [terrain group ice]
-Yelo
+Niyebe at yelo
 [terrain group paths]
 Mga Landas
 [terrain group obstacles]
-Mga balakid
+Mga harang
 [terrain group ridges]
-
+Mga nakausling bato
 [terrain group barren]
 Tigang na lupa
 [terrain group rough]
@@ -6959,9 +6959,9 @@ Nagyelong lawa
 [wind_swept_snow]
 Niyebeng tinangay ng hangin
 [weathered_sandstone]
-Lumang batong-buhangin
+Inagnas na batong-buhangin
 [windy_sand_dune]
-Mahanging buhangin ng burol
+Mahanging buhanginan
 [hardpan]
 Matigas na lupa
 [volcanic_ash]
@@ -6969,7 +6969,7 @@ Abo ng bulkan
 [glacier_ice]
 Yelo ng glacier
 [overgrown_road]
-Daang tinubuan ng damo
+Daang bato na may lumot
 [laterite]
 Lupang laterita
 [cliffs]
@@ -6995,7 +6995,7 @@ Glacier
 [icefall]
 Talon ng yelo
 [sandstone_benches]
-Mga baitang ng sandstone
+Mga baitang ng batong-buhangin
 [obsidian_ridge]
 Tagaytay ng obsidian
 [granite_tors]

@@ -1695,13 +1695,13 @@ Landbroens bredde
 [Lake size]
 Søstørrelse
 [Crater type]
-
+Kratertype
 [Crater rims]
-
+Kraterrande
 [Volcanic maars]
-
+Vulkanske maarer
 [Glacial kettles]
-
+Dødishuller
 [Contested commons]
 Omstridt fællesområde
 [Maze]
@@ -1805,7 +1805,7 @@ Bæltebredde
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bæltet er for kort til så mange kolonier; brug et længere kort eller færre kolonier.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Ringverdenen kan ikke anlægge sine klipper og kyster med dette seed uden at afskære land.
 [City states]
 Bystater
 [Strait width]
@@ -1839,11 +1839,11 @@ Lysningens størrelse
 [Levee]
 Dige
 [Mudflats]
-
+Mudderflader
 [Hammocks]
-
+Træøer
 [Moss]
-
+Mos
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Laguner
 [Central island]
 Central ø
 [Tide]
-
+Tidevand
 [Neap tide]
-
+Niptid
 [Mean tide]
-
+Middeltidevand
 [Spring tide]
-
+Springtid
 [Tidal flats need at least one colony.]
 Vadehavet kræver mindst én koloni.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Det centrale klippetårn har ikke plads til sine klipper ved siden af stenbrudsvæggene; brug et større kort eller færre kolonier.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hjemøerne passer ikke på dette kort; brug et større kort, færre kolonier eller mindre øer.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Floddelta
 [Meandering rivers]
 Bugtede floder
 [Banks]
-
+Bredder
 [Deep channels]
-
+Dybe løb
 [River bluffs]
-
+Flodskrænter
 [Divide outcrops]
-
+Klipper ved vandskellet
 [Deep water]
-
+Dybt vand
 [Rock outcrops]
-
+Klippefremspring
 [Fruit in home valleys]
 Frugt i startdalene
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonier på begge kyster
 [Winding belt]
 Bugtet bælte
 [Deep ocean]
-
+Dybhav
 [Rock spine]
-
+Klipperyg
 [Ring road]
-
+Ringvej
 [Cell shape]
 Celleform
 [Squares]
@@ -2067,19 +2067,19 @@ Afstand mellem pas
 [Lee width]
 Læsidens bredde
 [Climate]
-
+Klima
 [Temperate]
-
+Tempereret
 [Steppe]
-
+Steppe
 [Tropical]
-
+Tropisk
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Der står ingen højderyg bag hjemmene; brug færre højderygge eller et større kort.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Højderyggene efterlader ingen plads til hjemmenes stenbrud; brug tykkere højderygge eller et større kort.
 [The ridges could not be sealed; use thicker ridges.]
-
+Højderyggene kunne ikke lukkes; brug tykkere højderygge.
 [Old growth]
 Urskov
 [Canals]
@@ -2519,7 +2519,7 @@ Ekstra vadesteder
 [Moraine hummocks]
 Morænebakker
 [Deep pools]
-
+Dybe høller
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Fletningen efterlader for lidt terrasse til hjemmene; brug et større kort eller en smallere fletning.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Vandhuller
 [Dry patches]
 Tørre områder
 [Season]
-
+Årstid
 [Meltwater]
-
+Smeltevand
 [Late summer]
-
+Sensommer
 [Sparse]
 Få
 [Normal]
@@ -2713,25 +2713,25 @@ Lang vifte
 [Twin springs]
 Tvillingekilder
 [Canyon mouth]
-
+Kløftmunding
 [Cienega]
-
+Kildemose
 [Coalescing pair]
-
+Sammenvoksende par
 [Cienegas]
-
+Kildemoser
 [Rock]
-
+Bjergart
 [Granite]
-
+Granit
 [Greenstone]
-
+Grønsten
 [Sandstone]
-
+Sandsten
 [Volcanic]
-
+Vulkansk
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Passene skærer ind i hjemmenes stenbrud; brug færre pas, færre kolonier eller et større kort.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Vifterne er for smalle til hjemmene; brug et større kort, større afstand mellem bjergkæder, smallere bjergkamme eller mindre saltsøer.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Skovpassagens tykkelse
 [Extra trails]
 Flere stier
 [Deep lakes]
-
+Dybe søer
 [Bedrock]
-
+Grundfjeld
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Denne korttypes sider skal være mellem 64 og 512 felter.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Ryddede ressourcer
 [stat cleared about]
 Ressourcer fjernet af arbejdere i rydningsområder for at skabe plads.
 [stats topic overview]
-
+Oversigt
 [stats topic economy]
-
+Økonomi
 [stats topic world]
-
+Verden
 [stats work construction]
-
+Arbejde & byggeri
 [stats defence]
-
+Forsvar
 [stats history]
-
+Vis historik
 [stats waiting]
-
+Venter på statistik…
 [stats unit details]
-
+Enhedsdetaljer
 [stats map overlays]
-
+Kortlag
 [stats topic]
-
+Emne
 [stats full history]
-
+Åbn hele historikken
 [stats missing readings]
-
+— Ingen registreret måling endnu. Vælg en statistik for detaljer.
 [stat win probability]
-
+Sejrsandsynlighed
 [stat win probability about]
-
+Anslået chance for at din alliance vinder, målt gennem hele kampen. Allierede deler én sandsynlighed. Modellen er trænet på AI-spil; estimaterne tager ikke højde for stilling eller planlagte træk. Ældre gemte spil kan have ufuldstændig historik.
 [stat prestige]
 Prestige
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Fisk
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen
 [boulders]
-Kampesten
+Stensøjler
 [hedge]
 Hæk
 [thicket]
 Krat
 [ridge_rock]
-
+Klippespir
 [outcrop]
-
+Basaltsøjler
 [dirt]
 Jord
 [clay]
@@ -5855,7 +5855,7 @@ Vulkansk aske
 [glacier_ice]
 Gletsjeris
 [overgrown_road]
-Tilgroet vej
+Mosgroede brosten
 [laterite]
 Laterit
 [cliffs]
@@ -5907,13 +5907,13 @@ Sand
 [terrain group grass]
 Græs
 [terrain group ice]
-Is
+Sne og is
 [terrain group paths]
 Stier
 [terrain group obstacles]
-Forhindringer
+Barrierer
 [terrain group ridges]
-
+Klippeformationer
 [terrain group barren]
 Ufrugtbar jord
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordren er ikke bekræftet. Åbn kommandøren for at prøve igen; din besked er b
 [hive standing order update failed]
 Opdatering af stående ordre mislykkedes. Din ordre er sat på pause på denne enhed; prøv igen med det relevante betjeningselement.
 [engine performance per game minute]
-
+Pr. spilminut
 [engine performance per real minute]
-
+Pr. reelt minut
 [engine performance game engine performance]
-
+Spilmotorens ydeevne
 [engine performance task wall-time costs]
-
+Vægurstid pr. opgave
 [engine performance inspect slow ticks]
-
+Undersøg langsomme tik
 [engine performance no advancing ticks recorded yet]
-
+Ingen fremadskridende tik registreret endnu.
 [engine performance whole-engine performance]
-
+Hele motorens ydeevne
 [engine performance open performance charts]
-
+Åbn ydeevnediagrammer
 [engine performance engine performance]
-
+Motorens ydeevne
 [engine performance follow latest interval]
-
+Følg seneste interval
 [engine performance compare task costs]
-
+Sammenlign opgaveomkostninger
 [engine performance all metrics and slow ticks]
-
+Alle målinger og langsomme tik
 [engine performance phase orders]
-
+Ordrer
 [engine performance phase units]
-
+Enheder
 [engine performance phase buildings]
-
+Bygninger
 [engine performance phase map]
-
+Kort
 [engine performance phase statistics]
-
+Statistik
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Verdensoptagelse
 [engine performance phase checksums]
-
+Kontrolsummer
 [engine performance wall time %0]
-
+Vægurstid: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Påkrævet ventetid: %0 ms; ejer-joins: %1 ms; låse: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms vægurstid
 [engine performance tick %0 wall %1]
-
+Tik %0: %1 ms vægurstid
 [AI for all computer colonies]
 AI for alle computerstyrede kolonier
 [tundra]

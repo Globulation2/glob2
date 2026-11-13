@@ -1695,13 +1695,13 @@ Cortex
 [Lake size]
 Μέγεθος λίμνης
 [Crater type]
-
+Τύπος κρατήρων
 [Crater rims]
-
+Χείλη κρατήρων
 [Volcanic maars]
-
+Ηφαιστειακά μάαρ
 [Glacial kettles]
-
+Παγετωνικές κοιλότητες
 [Contested commons]
 Διεκδικούμενη κοινή γη
 [Maze]
@@ -1731,9 +1731,9 @@ Cortex
 [Gardens]
 Κήποι
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
-Τόσο παχιά τείχη αφήνουν τα περάσματα πολύ στενά. Χρησιμοποιήστε λεπτότερα τείχη ή μεγαλύτερα κελιά.
+Τόσο παχιά τείχη αφήνουν τα περάσματα πολύ στενά· χρησιμοποιήστε λεπτότερα τείχη ή μεγαλύτερα κελιά.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Τόσο φαρδιές τάφροι αφήνουν πολύ λίγο χώρο μέσα σε κάθε βάση. Χρησιμοποιήστε στενότερη τάφρο, λεπτότερα τείχη ή μεγαλύτερα κελιά.
+Τόσο φαρδιές τάφροι αφήνουν πολύ λίγο χώρο μέσα σε κάθε βάση· χρησιμοποιήστε στενότερη τάφρο, λεπτότερα τείχη ή μεγαλύτερα κελιά.
 [Bridge count]
 Αριθμός γεφυρών
 [Continent size]
@@ -1745,7 +1745,7 @@ Cortex
 [Ice sheet size]
 Μέγεθος παγοκαλύμματος
 [Fjord landings]
-Αποβάθρες φιόρδ
+Καταβάσεις στα φιόρδ
 [Fjord continents need at least one colony.]
 Η ήπειρος με φιόρδ χρειάζεται τουλάχιστον μία αποικία.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ Cortex
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Η ζώνη είναι πολύ κοντή για τόσες αποικίες. Χρησιμοποιήστε μακρύτερο χάρτη ή λιγότερες αποικίες.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Ο δακτυλιοειδής κόσμος δεν μπορεί να τοποθετήσει τα βράχια και τις ακτές του με αυτόν τον σπόρο χωρίς να αποκόψει τμήμα της ξηράς.
 [City states]
 Πόλεις-κράτη
 [Strait width]
@@ -1839,11 +1839,11 @@ Cortex
 [Levee]
 Ανάχωμα
 [Mudflats]
-
+Λασπότοποι
 [Hammocks]
-
+Δασικές νησίδες
 [Moss]
-
+Βρύα
 [Sloughs]
 Βαλτόνερα
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Cortex
 [Central island]
 Κεντρικό νησί
 [Tide]
-
+Παλίρροια
 [Neap tide]
-
+Ασθενής παλίρροια
 [Mean tide]
-
+Μέση παλίρροια
 [Spring tide]
-
+Ισχυρή παλίρροια
 [Tidal flats need at least one colony.]
 Οι παλιρροιακές πεδιάδες χρειάζονται τουλάχιστον μία αποικία.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Ο κεντρικός βράχος δεν έχει χώρο για τα πετρώματά του δίπλα στα μέτωπα των λατομείων· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Τα νησιά-πατρίδες δεν χωρούν σε αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη, λιγότερες αποικίες ή μικρότερα νησιά.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Cortex
 [Meandering rivers]
 Μαιανδρικοί ποταμοί
 [Banks]
-
+Όχθες
 [Deep channels]
-
+Βαθιές κοίτες
 [River bluffs]
-
+Απότομες όχθες
 [Divide outcrops]
-
+Προεξοχές στους υδροκρίτες
 [Deep water]
-
+Βαθύ νερό
 [Rock outcrops]
-
+Βραχώδεις προεξοχές
 [Fruit in home valleys]
 Φρούτα στις αρχικές κοιλάδες
 [Moat]
@@ -2025,11 +2025,11 @@ Cortex
 [Winding belt]
 Ελικοειδής ζώνη
 [Deep ocean]
-
+Βαθύς ωκεανός
 [Rock spine]
-
+Βραχώδης ράχη
 [Ring road]
-
+Περιφερειακός δρόμος
 [Cell shape]
 Σχήμα κελιών
 [Squares]
@@ -2067,19 +2067,19 @@ Cortex
 [Lee width]
 Πλάτος υπήνεμης πλευράς
 [Climate]
-
+Κλίμα
 [Temperate]
-
+Εύκρατο
 [Steppe]
-
+Στεπικό
 [Tropical]
-
+Τροπικό
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Καμία κορυφογραμμή δεν υψώνεται πίσω από τις βάσεις· χρησιμοποιήστε λιγότερες κορυφογραμμές ή μεγαλύτερο χάρτη.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Οι κορυφογραμμές δεν αφήνουν χώρο για τα λατομεία των βάσεων· χρησιμοποιήστε παχύτερες κορυφογραμμές ή μεγαλύτερο χάρτη.
 [The ridges could not be sealed; use thicker ridges.]
-
+Οι κορυφογραμμές δεν μπόρεσαν να σφραγιστούν· χρησιμοποιήστε παχύτερες κορυφογραμμές.
 [Old growth]
 Πρωτογενές δάσος
 [Canals]
@@ -2425,9 +2425,9 @@ Emoji
 [Dunes]
 Αμμόλοφοι
 [Dry]
-Ξηρό
+Ξηρή
 [Wet]
-Υγρό
+Υγρή
 [Rejoining frequency]
 Συχνότητα συμβολών
 [Crossing spacing]
@@ -2519,7 +2519,7 @@ Emoji
 [Moraine hummocks]
 Μοραινικοί λοφίσκοι
 [Deep pools]
-
+Βαθιές λιμνούλες
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Το πλέγμα αφήνει πολύ λίγη αναβαθμίδα για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη ή στενότερο πλέγμα.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Emoji
 [Dry patches]
 Ξηρές περιοχές
 [Season]
-
+Εποχή
 [Meltwater]
-
+Λιώσιμο χιονιών
 [Late summer]
-
+Τέλη καλοκαιριού
 [Sparse]
 Λίγοι
 [Normal]
@@ -2713,25 +2713,25 @@ Emoji
 [Twin springs]
 Δίδυμες πηγές
 [Canyon mouth]
-
+Έξοδος φαραγγιού
 [Cienega]
-
+Πηγαίος βάλτος
 [Coalescing pair]
-
+Ενωμένα ριπίδια
 [Cienegas]
-
+Πηγαίοι βάλτοι
 [Rock]
-
+Πέτρωμα
 [Granite]
-
+Γρανίτης
 [Greenstone]
-
+Πρασινόλιθος
 [Sandstone]
-
+Ψαμμίτης
 [Volcanic]
-
+Ηφαιστειακό
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Τα περάσματα κόβουν τα λατομεία των βάσεων· χρησιμοποιήστε λιγότερα περάσματα, λιγότερες αποικίες ή μεγαλύτερο χάρτη.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Οι πλαγιές με ριπίδια είναι πολύ στενές για τις βάσεις· χρησιμοποιήστε μεγαλύτερο χάρτη, μεγαλύτερη απόσταση οροσειρών, στενότερες κορυφογραμμές ή μικρότερες αλμυρές λίμνες.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Emoji
 [Extra trails]
 Πρόσθετα μονοπάτια
 [Deep lakes]
-
+Βαθιές λίμνες
 [Bedrock]
-
+Βραχώδες υπόβαθρο
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Οι πλευρές αυτού του χάρτη πρέπει να έχουν 64 έως 512 πλακίδια.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ CPU %0%
 [stat cleared about]
 Πόροι που αφαίρεσαν οι εργάτες σε ζώνες καθαρισμού για να ανοίξουν χώρο.
 [stats topic overview]
-
+Επισκόπηση
 [stats topic economy]
-
+Οικονομία
 [stats topic world]
-
+Κόσμος
 [stats work construction]
-
+Εργασία και κατασκευή
 [stats defence]
-
+Άμυνα
 [stats history]
-
+Προβολή ιστορικού
 [stats waiting]
-
+Αναμονή για στατιστικά…
 [stats unit details]
-
+Λεπτομέρειες μονάδων
 [stats map overlays]
-
+Επικαλύψεις χάρτη
 [stats topic]
-
+Θέμα
 [stats full history]
-
+Άνοιγμα πλήρους ιστορικού
 [stats missing readings]
-
+— Δεν υπάρχει ακόμη καταγεγραμμένη τιμή. Επιλέξτε ένα στατιστικό για λεπτομέρειες.
 [stat win probability]
-
+Πιθανότητα νίκης
 [stat win probability about]
-
+Εκτιμώμενη πιθανότητα νίκης της συμμαχίας σας, με μετρήσεις σε όλη τη διάρκεια του αγώνα. Οι σύμμαχοι μοιράζονται μία πιθανότητα. Το μοντέλο εκπαιδεύτηκε σε παιχνίδια ΤΝ· οι εκτιμήσεις δεν λαμβάνουν υπόψη τη θέση ή τις σχεδιαζόμενες κινήσεις. Παλαιότερες αποθηκεύσεις μπορεί να έχουν ελλιπές ιστορικό.
 [stat prestige]
 Κύρος
 [stat prestige about]
@@ -5781,15 +5781,15 @@ CPU %0%
 [Reroll terrain look]
 Νέα τυχαία εμφάνιση εδάφους
 [boulders]
-Ογκόλιθοι
+Πέτρινοι στύλοι
 [hedge]
 Φράχτης από θάμνους
 [thicket]
 Πυκνή βλάστηση
 [ridge_rock]
-
+Βραχώδεις πύργοι
 [outcrop]
-
+Βασαλτικοί κίονες
 [dirt]
 Χώμα
 [clay]
@@ -5797,7 +5797,7 @@ CPU %0%
 [shale]
 Σχιστόλιθος
 [heath]
-Θαμνότοπος
+Ρεικότοπος
 [mud]
 Λάσπη
 [mudflat]
@@ -5855,7 +5855,7 @@ CPU %0%
 [glacier_ice]
 Πάγος παγετώνα
 [overgrown_road]
-Κατάφυτος δρόμος
+Βρυώδες λιθόστρωτο
 [laterite]
 Λατερίτης
 [cliffs]
@@ -5907,13 +5907,13 @@ CPU %0%
 [terrain group grass]
 Γρασίδι
 [terrain group ice]
-Πάγος
+Χιόνι και πάγος
 [terrain group paths]
 Δρόμοι
 [terrain group obstacles]
-Εμπόδια
+Φραγμοί
 [terrain group ridges]
-
+Βραχώδεις προεξοχές
 [terrain group barren]
 Άγονο έδαφος
 [terrain group rough]
@@ -7051,53 +7051,53 @@ CPU (αυτόματα)
 [hive standing order update failed]
 Η ενημέρωση της πάγιας εντολής απέτυχε. Η εντολή σας έχει τεθεί σε παύση σε αυτή τη συσκευή. Δοκιμάστε ξανά μέσω του αντίστοιχου στοιχείου ελέγχου.
 [engine performance per game minute]
-
+Ανά λεπτό παιχνιδιού
 [engine performance per real minute]
-
+Ανά πραγματικό λεπτό
 [engine performance game engine performance]
-
+Απόδοση μηχανής παιχνιδιού
 [engine performance task wall-time costs]
-
+Πραγματικός χρόνος εργασιών
 [engine performance inspect slow ticks]
-
+Έλεγχος αργών βημάτων
 [engine performance no advancing ticks recorded yet]
-
+Δεν έχουν καταγραφεί ακόμη βήματα προόδου.
 [engine performance whole-engine performance]
-
+Απόδοση ολόκληρης της μηχανής
 [engine performance open performance charts]
-
+Άνοιγμα γραφημάτων απόδοσης
 [engine performance engine performance]
-
+Απόδοση μηχανής
 [engine performance follow latest interval]
-
+Παρακολούθηση τελευταίου διαστήματος
 [engine performance compare task costs]
-
+Σύγκριση κόστους εργασιών
 [engine performance all metrics and slow ticks]
-
+Όλες οι μετρήσεις και τα αργά βήματα
 [engine performance phase orders]
-
+Εντολές
 [engine performance phase units]
-
+Μονάδες
 [engine performance phase buildings]
-
+Κτίρια
 [engine performance phase map]
-
+Χάρτης
 [engine performance phase statistics]
-
+Στατιστικά
 [engine performance phase ai]
-
+ΤΝ
 [engine performance phase world capture]
-
+Αποτύπωση κόσμου
 [engine performance phase checksums]
-
+Αθροίσματα ελέγχου
 [engine performance wall time %0]
-
+Πραγματικός χρόνος: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Απαιτούμενες αναμονές: %0 ms· συνενώσεις κατόχου: %1 ms· κλειδώματα: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms πραγματικού χρόνου
 [engine performance tick %0 wall %1]
-
+Βήμα %0: %1 ms πραγματικού χρόνου
 [AI for all computer colonies]
 ΤΝ για όλες τις αποικίες που ελέγχει ο υπολογιστής
 [tundra]

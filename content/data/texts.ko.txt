@@ -1695,13 +1695,13 @@ Globulation 2 커서를 표시합니다.
 [Lake size]
 호수 크기
 [Crater type]
-
+크레이터 유형
 [Crater rims]
-
+크레이터 가장자리
 [Volcanic maars]
-
+화산 마르
 [Glacial kettles]
-
+빙하 케틀호
 [Contested commons]
 쟁탈 공유지
 [Maze]
@@ -1729,7 +1729,7 @@ Globulation 2 커서를 표시합니다.
 [Wall thickness]
 벽 두께
 [Gardens]
-텃밭
+정원
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 벽이 이렇게 두꺼우면 출입구가 너무 좁아집니다. 벽을 더 얇게 하거나 칸을 더 크게 하세요.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1805,7 +1805,7 @@ Globulation 2 커서를 표시합니다.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+이 시드에서는 고리 세계가 땅을 끊지 않고 암석과 해안을 배치할 수 없습니다.
 [City states]
 도시 국가
 [Strait width]
@@ -1839,11 +1839,11 @@ Globulation 2 커서를 표시합니다.
 [Levee]
 제방
 [Mudflats]
-
+진흙 평원
 [Hammocks]
-
+나무섬
 [Moss]
-
+이끼
 [Sloughs]
 늪지
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Globulation 2 커서를 표시합니다.
 [Central island]
 중앙 섬
 [Tide]
-
+조수
 [Neap tide]
-
+소조
 [Mean tide]
-
+평균조
 [Spring tide]
-
+대조
 [Tidal flats need at least one colony.]
 갯벌에는 최소 한 개의 식민지가 필요합니다.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+중앙 바위산에 채석장 암벽 옆으로 암석을 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Globulation 2 커서를 표시합니다.
 [Meandering rivers]
 굽이치는 강
 [Banks]
-
+강둑
 [Deep channels]
-
+깊은 수로
 [River bluffs]
-
+강가 절벽
 [Divide outcrops]
-
+분수령 노두
 [Deep water]
-
+깊은 물
 [Rock outcrops]
-
+암석 노두
 [Fruit in home valleys]
 시작 골짜기의 과일
 [Moat]
@@ -2025,11 +2025,11 @@ Globulation 2 커서를 표시합니다.
 [Winding belt]
 구불구불한 띠
 [Deep ocean]
-
+깊은 바다
 [Rock spine]
-
+바위 등줄기
 [Ring road]
-
+순환 도로
 [Cell shape]
 칸 모양
 [Squares]
@@ -2067,19 +2067,19 @@ Globulation 2 커서를 표시합니다.
 [Lee width]
 바람그늘 너비
 [Climate]
-
+기후
 [Temperate]
-
+온대
 [Steppe]
-
+스텝
 [Tropical]
-
+열대
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+본거지 뒤에 산등성이가 없습니다. 산등성이 수를 줄이거나 더 큰 지도를 사용하세요.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+산등성이 때문에 본거지의 채석장을 둘 공간이 없습니다. 산등성이를 더 두껍게 하거나 더 큰 지도를 사용하세요.
 [The ridges could not be sealed; use thicker ridges.]
-
+산등성이를 끊김 없이 이을 수 없었습니다. 산등성이를 더 두껍게 하세요.
 [Old growth]
 원시림
 [Canals]
@@ -2519,7 +2519,7 @@ Globulation 2 커서를 표시합니다.
 [Moraine hummocks]
 빙퇴석 둔덕
 [Deep pools]
-
+깊은 웅덩이
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Globulation 2 커서를 표시합니다.
 [Dry patches]
 건조 지대
 [Season]
-
+계절
 [Meltwater]
-
+해빙기
 [Late summer]
-
+늦여름
 [Sparse]
 적음
 [Normal]
@@ -2713,25 +2713,25 @@ Globulation 2 커서를 표시합니다.
 [Twin springs]
 쌍둥이 샘
 [Canyon mouth]
-
+협곡 어귀
 [Cienega]
-
+샘 습지
 [Coalescing pair]
-
+합쳐지는 선상지
 [Cienegas]
-
+샘 습지
 [Rock]
-
+암석
 [Granite]
-
+화강암
 [Greenstone]
-
+녹색암
 [Sandstone]
-
+사암
 [Volcanic]
-
+화산암
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+고개가 본거지의 채석장을 침범합니다. 고개나 식민지 수를 줄이거나 더 큰 지도를 사용하세요.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 선상지 비탈이 본거지를 두기에 너무 좁습니다. 더 큰 지도, 더 넓은 산맥 간격, 더 좁은 능선 또는 더 작은 염호를 사용하세요.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Globulation 2 커서를 표시합니다.
 [Extra trails]
 추가 오솔길
 [Deep lakes]
-
+깊은 호수
 [Bedrock]
-
+기반암
 [Portage Lakes needs sides between 64 and 512 tiles.]
 이 지도의 각 변은 64~512칸이어야 합니다.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ AI 원격 측정
 [stat cleared about]
 일꾼이 공간을 만들려고 정리 구역에서 제거한 자원입니다.
 [stats topic overview]
-
+개요
 [stats topic economy]
-
+경제
 [stats topic world]
-
+세계
 [stats work construction]
-
+작업 및 건설
 [stats defence]
-
+방어
 [stats history]
-
+기록 보기
 [stats waiting]
-
+통계를 기다리는 중…
 [stats unit details]
-
+유닛 세부 정보
 [stats map overlays]
-
+지도 오버레이
 [stats topic]
-
+주제
 [stats full history]
-
+전체 기록 열기
 [stats missing readings]
-
+— 아직 기록된 값이 없습니다. 자세히 보려면 통계를 선택하세요.
 [stat win probability]
-
+승리 확률
 [stat win probability about]
-
+경기 내내 측정한, 당신의 동맹이 승리할 추정 확률입니다. 동맹은 하나의 확률을 공유합니다. 이 모델은 AI 게임으로 학습되었으며, 추정에는 배치나 계획된 행동이 반영되지 않습니다. 이전 저장 파일은 기록이 불완전할 수 있습니다.
 [stat prestige]
 명성
 [stat prestige about]
@@ -5781,15 +5781,15 @@ AI 생성 아님
 [Reroll terrain look]
 지형 외관 다시 무작위 선택
 [boulders]
-큰 바위
+돌기둥
 [hedge]
 생울타리
 [thicket]
 덤불
 [ridge_rock]
-
+뾰족 바위
 [outcrop]
-
+주상절리
 [dirt]
 흙
 [clay]
@@ -5855,7 +5855,7 @@ AI 생성 아님
 [glacier_ice]
 빙하 얼음
 [overgrown_road]
-풀로 뒤덮인 길
+이끼 낀 포석길
 [laterite]
 라테라이트
 [cliffs]
@@ -5907,13 +5907,13 @@ AI 생성 아님
 [terrain group grass]
 풀
 [terrain group ice]
-얼음
+눈과 얼음
 [terrain group paths]
 길
 [terrain group obstacles]
-장애물
+장벽
 [terrain group ridges]
-
+노두
 [terrain group barren]
 척박한 땅
 [terrain group rough]
@@ -7051,53 +7051,53 @@ GL 전용
 [hive standing order update failed]
 상시 명령 업데이트에 실패했습니다. 명령은 이 장치에서 일시 중지되었습니다. 해당 컨트롤을 사용하여 다시 시도하세요.
 [engine performance per game minute]
-
+게임 시간 1분당
 [engine performance per real minute]
-
+실제 시간 1분당
 [engine performance game engine performance]
-
+게임 엔진 성능
 [engine performance task wall-time costs]
-
+작업별 실제 소요 시간
 [engine performance inspect slow ticks]
-
+느린 틱 살펴보기
 [engine performance no advancing ticks recorded yet]
-
+아직 기록된 진행 틱이 없습니다.
 [engine performance whole-engine performance]
-
+엔진 전체 성능
 [engine performance open performance charts]
-
+성능 차트 열기
 [engine performance engine performance]
-
+엔진 성능
 [engine performance follow latest interval]
-
+최신 구간 따라가기
 [engine performance compare task costs]
-
+작업 비용 비교
 [engine performance all metrics and slow ticks]
-
+모든 지표와 느린 틱
 [engine performance phase orders]
-
+명령
 [engine performance phase units]
-
+유닛
 [engine performance phase buildings]
-
+건물
 [engine performance phase map]
-
+지도
 [engine performance phase statistics]
-
+통계
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+월드 캡처
 [engine performance phase checksums]
-
+체크섬
 [engine performance wall time %0]
-
+실제 시간: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+필수 대기: %0 ms, 소유 스레드 합류: %1 ms, 잠금: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: 실제 시간 %1 ms
 [engine performance tick %0 wall %1]
-
+틱 %0: 실제 시간 %1 ms
 [AI for all computer colonies]
 모든 컴퓨터 제어 식민지의 AI
 [tundra]

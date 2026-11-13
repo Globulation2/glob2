@@ -1695,13 +1695,13 @@ OpenGL није доступан у овој верзији.
 [Lake size]
 Величина језера
 [Crater type]
-
+Врста кратера
 [Crater rims]
-
+Ободи кратера
 [Volcanic maars]
-
+Вулкански маари
 [Glacial kettles]
-
+Глечерске удолине
 [Contested commons]
 Спорно заједничко подручје
 [Maze]
@@ -1743,9 +1743,9 @@ OpenGL није доступан у овој верзији.
 [Fjord width]
 Ширина фјорда
 [Ice sheet size]
-Величина ледене капе
+Величина леденог покривача
 [Fjord landings]
-Пристаништа у фјордовима
+Силази у фјордове
 [Fjord continents need at least one colony.]
 Континенту фјордова потребна је бар једна колонија.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ OpenGL није доступан у овој верзији.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Прстенасти свет са овим семеном не може да постави стене и обале а да не одсече део копна.
 [City states]
 Градови-државе
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL није доступан у овој верзији.
 [Levee]
 Насип
 [Mudflats]
-
+Муљевите равнице
 [Hammocks]
-
+Шумска острвца
 [Moss]
-
+Маховина
 [Sloughs]
 Мртваје
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL није доступан у овој верзији.
 [Central island]
 Средишње острво
 [Tide]
-
+Плима
 [Neap tide]
-
+Слаба плима
 [Mean tide]
-
+Средња плима
 [Spring tide]
-
+Јака плима
 [Tidal flats need at least one colony.]
 Плимским равницама треба бар једна колонија.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Средишња стена нема места за камен поред зидова каменолома; користите већу мапу или мање колонија.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Матична острва не стају на ову мапу; користите већу мапу, мање колонија или мања острва.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL није доступан у овој верзији.
 [Meandering rivers]
 Меандрирајуће реке
 [Banks]
-
+Обале
 [Deep channels]
-
+Дубока корита
 [River bluffs]
-
+Речни одсеци
 [Divide outcrops]
-
+Изданци на развођима
 [Deep water]
-
+Дубока вода
 [Rock outcrops]
-
+Стенски изданци
 [Fruit in home valleys]
 Воће у почетним долинама
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL није доступан у овој верзији.
 [Winding belt]
 Кривудав појас
 [Deep ocean]
-
+Дубоки океан
 [Rock spine]
-
+Стеновити гребен
 [Ring road]
-
+Кружни пут
 [Cell shape]
 Облик ћелија
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL није доступан у овој верзији.
 [Lee width]
 Ширина заветрине
 [Climate]
-
+Клима
 [Temperate]
-
+Умерена
 [Steppe]
-
+Степска
 [Tropical]
-
+Тропска
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Иза база не стоји ниједан гребен; користите мање гребена или већу мапу.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Гребени не остављају места за каменоломе база; користите дебље гребене или већу мапу.
 [The ridges could not be sealed; use thicker ridges.]
-
+Гребене није било могуће затворити; користите дебље гребене.
 [Old growth]
 Прашума
 [Canals]
@@ -2519,7 +2519,7 @@ OpenGL није доступан у овој верзији.
 [Moraine hummocks]
 Моренски брежуљци
 [Deep pools]
-
+Дубоки вирови
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разгранање оставља премало терасе за базе; користите већу мапу или уже разгранање.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ OpenGL није доступан у овој верзији.
 [Dry patches]
 Суве површине
 [Season]
-
+Годишње доба
 [Meltwater]
-
+Отапање
 [Late summer]
-
+Касно лето
 [Sparse]
 Мало
 [Normal]
@@ -2713,25 +2713,25 @@ OpenGL није доступан у овој верзији.
 [Twin springs]
 Извори близанци
 [Canyon mouth]
-
+Излаз из кањона
 [Cienega]
-
+Изворска мочвара
 [Coalescing pair]
-
+Спојене плавине
 [Cienegas]
-
+Изворске мочваре
 [Rock]
-
+Стена
 [Granite]
-
+Гранит
 [Greenstone]
-
+Зелени камен
 [Sandstone]
-
+Пешчар
 [Volcanic]
-
+Вулканска
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Превоји засецају каменоломе база; користите мање превоја, мање колонија или већу мапу.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Падине са плавинама су преуске за базе; користите већу мапу, већи размак планинских венаца, уже гребене или мања слана језера.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ OpenGL није доступан у овој верзији.
 [Extra trails]
 Додатне стазе
 [Deep lakes]
-
+Дубока језера
 [Bedrock]
-
+Основна стена
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Странице ове мапе морају имати од 64 до 512 поља.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ FFmpeg није доступан, па је снимање искључено. �
 [stat cleared about]
 Сировине које су радници уклонили у областима чишћења да би направили места.
 [stats topic overview]
-
+Преглед
 [stats topic economy]
-
+Економија
 [stats topic world]
-
+Свет
 [stats work construction]
-
+Рад и градња
 [stats defence]
-
+Одбрана
 [stats history]
-
+Прикажи историју
 [stats waiting]
-
+Чекање статистике…
 [stats unit details]
-
+Детаљи о јединицама
 [stats map overlays]
-
+Слојеви мапе
 [stats topic]
-
+Тема
 [stats full history]
-
+Отвори целу историју
 [stats missing readings]
-
+— Још нема забележене вредности. Изаберите статистику за детаље.
 [stat win probability]
-
+Вероватноћа победе
 [stat win probability about]
-
+Процењена шанса да ваш савез победи, мерена током целог меча. Савезници деле једну вероватноћу. Модел је обучен на играма ВИ; процене не узимају у обзир положај ни планиране потезе. Старије сачуване игре могу имати непотпуну историју.
 [stat prestige]
 Престиж
 [stat prestige about]
@@ -5781,15 +5781,15 @@ FFmpeg није доступан, па је снимање искључено. �
 [Reroll terrain look]
 Поново насумично изабери изглед терена
 [boulders]
-Громаде
+Камени стубови
 [hedge]
 Жива ограда
 [thicket]
 Густиш
 [ridge_rock]
-
+Стеновите игле
 [outcrop]
-
+Базалтни стубови
 [dirt]
 Земља
 [clay]
@@ -5845,7 +5845,7 @@ FFmpeg није доступан, па је снимање искључено. �
 [wind_swept_snow]
 Наметен снег
 [weathered_sandstone]
-Распаднути пешчар
+Изветрели пешчар
 [windy_sand_dune]
 Ветровите дине
 [hardpan]
@@ -5855,7 +5855,7 @@ FFmpeg није доступан, па је снимање искључено. �
 [glacier_ice]
 Глечерски лед
 [overgrown_road]
-Зарастао пут
+Маховинаста калдрма
 [laterite]
 Латерит
 [cliffs]
@@ -5869,7 +5869,7 @@ FFmpeg није доступан, па је снимање искључено. �
 [scoria_blocks]
 Блокови шљаке
 [rime_ashlar]
-Иње клесаници
+Клесаници од иња
 [moonstone_lozenge]
 Ромбови од месечевог камена
 [frost_pinwheel]
@@ -5907,13 +5907,13 @@ FFmpeg није доступан, па је снимање искључено. �
 [terrain group grass]
 Трава
 [terrain group ice]
-Лед
+Снег и лед
 [terrain group paths]
 Путеви
 [terrain group obstacles]
-Препреке
+Баријере
 [terrain group ridges]
-
+Стенски изданци
 [terrain group barren]
 Неплодна земља
 [terrain group rough]
@@ -7051,53 +7051,53 @@ MCP сервер није доступан у овој апликацији
 [hive standing order update failed]
 Ажурирање трајног наређења није успело. Ваше наређење је паузирано на овом уређају; покушајте поново помоћу одговарајуће контроле.
 [engine performance per game minute]
-
+По минуту игре
 [engine performance per real minute]
-
+По стварном минуту
 [engine performance game engine performance]
-
+Перформансе покретача игре
 [engine performance task wall-time costs]
-
+Стварно време задатака
 [engine performance inspect slow ticks]
-
+Прегледај споре кораке
 [engine performance no advancing ticks recorded yet]
-
+Још нису забележени кораци са напредовањем.
 [engine performance whole-engine performance]
-
+Перформансе целог покретача
 [engine performance open performance charts]
-
+Отвори графиконе перформанси
 [engine performance engine performance]
-
+Перформансе покретача
 [engine performance follow latest interval]
-
+Прати најновији интервал
 [engine performance compare task costs]
-
+Упореди трошкове задатака
 [engine performance all metrics and slow ticks]
-
+Сви показатељи и спори кораци
 [engine performance phase orders]
-
+Наредбе
 [engine performance phase units]
-
+Јединице
 [engine performance phase buildings]
-
+Зграде
 [engine performance phase map]
-
+Мапа
 [engine performance phase statistics]
-
+Статистика
 [engine performance phase ai]
-
+ВИ
 [engine performance phase world capture]
-
+Снимак света
 [engine performance phase checksums]
-
+Контролни збирови
 [engine performance wall time %0]
-
+Стварно време: %0 мс
 [engine performance waits %0 joins %1 locks %2]
-
+Обавезна чекања: %0 мс; спајања власника: %1 мс; закључавања: %2 мс
 [engine performance phase %0 wall %1]
-
+%0: %1 мс стварног времена
 [engine performance tick %0 wall %1]
-
+Корак %0: %1 мс стварног времена
 [AI for all computer colonies]
 ВИ за све колоније којима управља рачунар
 [tundra]

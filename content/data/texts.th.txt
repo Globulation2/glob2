@@ -1663,13 +1663,13 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Lake size]
 ขนาด​ทะเลสาบ
 [Crater type]
-
+ชนิด​หลุม
 [Crater rims]
-
+ขอบ​หลุม
 [Volcanic maars]
-
+มาร์​ภูเขาไฟ
 [Glacial kettles]
-
+แอ่ง​น้ำแข็ง​ละลาย
 [Contested commons]
 พื้นที่​ส่วนกลาง​ที่​ต้อง​แย่งชิง
 [Maze]
@@ -1693,7 +1693,7 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Wall thickness]
 ความ​หนา​ของ​กำแพง
 [Gardens]
-สวน​ผัก
+สวน
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 กำแพง​หนา​ขนาด​นี้​ทำให้​ช่องทาง​เข้า​แคบ​เกินไป ควร​ใช้​กำแพง​ที่​บาง​กว่า​หรือ​เซลล์​ที่​ใหญ่​กว่า
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1769,7 +1769,7 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 แถบ​แผนที่​สั้น​เกินไป​สำหรับ​อาณานิคม​จำนวนมาก​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ยาว​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+ด้วย​ค่า​สุ่ม​นี้ โลก​วงแหวน​ไม่​สามารถ​วาง​หิน​และ​ชายฝั่ง​ได้​โดย​ไม่​ตัด​พื้นดิน​ขาด​ออก​จาก​กัน
 [City states]
 นครรัฐ
 [Strait width]
@@ -1803,11 +1803,11 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Levee]
 คัน​กั้น​น้ำ
 [Mudflats]
-
+ที่ราบ​โคลน
 [Hammocks]
-
+เกาะ​ต้นไม้
 [Moss]
-
+มอส
 [Sloughs]
 บึง
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Central island]
 เกาะ​กลาง
 [Tide]
-
+น้ำขึ้น​น้ำลง
 [Neap tide]
-
+น้ำตาย
 [Mean tide]
-
+น้ำ​ปานกลาง
 [Spring tide]
-
+น้ำเกิด
 [Tidal flats need at least one colony.]
 พื้นที่ราบ​น้ำขึ้น​น้ำลง​จำเป็นต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+เนิน​หิน​กลาง​แผนที่​ไม่มี​ที่​ว่าง​สำหรับ​หิน​ข้าง​หน้า​เหมืองหิน ควร​ใช้​แผนที่​ขนาดใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 หมู่เกาะ​หลัก​ไม่​พอดี​กับ​แผนที่​นี้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า จำนวน​อาณานิคม​น้อยลง หรือ​เกาะ​ขนาดเล็ก​กว่า
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Meandering rivers]
 แม่น้ำ​ที่​คดเคี้ยว
 [Banks]
-
+ริม​ตลิ่ง
 [Deep channels]
-
+ร่องน้ำ​ลึก
 [River bluffs]
-
+หน้าผา​ริม​แม่น้ำ
 [Divide outcrops]
-
+หิน​โผล่​บน​สันปันน้ำ
 [Deep water]
-
+น้ำ​ลึก
 [Rock outcrops]
-
+หิน​โผล่
 [Fruit in home valleys]
 ผลไม้​ใน​หุบเขา​บ้านเกิด
 [Moat]
@@ -1993,11 +1993,11 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Winding belt]
 แถบ​แผ่นดิน​คดเคี้ยว
 [Deep ocean]
-
+มหาสมุทร​ลึก
 [Rock spine]
-
+สัน​หิน
 [Ring road]
-
+ถนน​วงแหวน
 [Cell shape]
 รูปร่าง​เซลล์
 [Squares]
@@ -2035,19 +2035,19 @@ OpenGL ไม่​พร้อม​ใช้งาน​ใน​เวอร�
 [Lee width]
 ความ​กว้าง​ด้าน​อับลม
 [Climate]
-
+ภูมิอากาศ
 [Temperate]
-
+เขต​อบอุ่น
 [Steppe]
-
+ทุ่ง​สเตปป์
 [Tropical]
-
+เขต​ร้อน
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+ไม่มี​สันเขา​อยู่​หลัง​ฐาน ควร​ใช้​สันเขา​น้อย​ลง​หรือ​แผนที่​ขนาดใหญ่​กว่า
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+สันเขา​ไม่​เหลือ​ที่​ว่าง​ให้​เหมืองหิน​ของ​ฐาน ควร​ใช้​สันเขา​ที่​หนา​กว่า​หรือ​แผนที่​ขนาดใหญ่​กว่า
 [The ridges could not be sealed; use thicker ridges.]
-
+ไม่​สามารถ​ปิด​สันเขา​ได้ ควร​ใช้​สันเขา​ที่​หนา​กว่า
 [Old growth]
 ป่า​ดั้งเดิม
 [Canals]
@@ -2497,7 +2497,7 @@ HP ≤25/50/75%
 [Moraine hummocks]
 เนิน​ตะกอน​ธารน้ำแข็ง
 [Deep pools]
-
+แอ่ง​น้ำ​ลึก
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 แม่น้ำ​หลาย​สาย​ทำให้​เหลือ​ลาน​ตะพัก​สำหรับ​ฐาน​น้อย​เกินไป ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​ความ​กว้าง​แนว​แม่น้ำ
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤25/50/75%
 [Dry patches]
 บริเวณ​แห้งแล้ง
 [Season]
-
+ฤดูกาล
 [Meltwater]
-
+น้ำ​หิมะ​ละลาย
 [Late summer]
-
+ปลาย​ฤดูร้อน
 [Sparse]
 เบาบาง
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤25/50/75%
 [Twin springs]
 ตาน้ำ​คู่
 [Canyon mouth]
-
+ปาก​หุบเขา​ลึก
 [Cienega]
-
+บึง​น้ำซับ
 [Coalescing pair]
-
+พัด​ตะกอน​คู่​บรรจบ
 [Cienegas]
-
+บึง​น้ำซับ
 [Rock]
-
+ชนิด​หิน
 [Granite]
-
+หิน​แกรนิต
 [Greenstone]
-
+หิน​กรีนสโตน
 [Sandstone]
-
+หิน​ทราย
 [Volcanic]
-
+หิน​ภูเขาไฟ
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+ช่องเขา​ตัด​เข้า​ไป​ใน​เหมืองหิน​ของ​ฐาน ควร​ใช้​ช่องเขา​น้อย​ลง อาณานิคม​น้อย​ลง หรือ​แผนที่​ขนาดใหญ่​กว่า
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 ที่ราบ​เชิงเขา​แคบ​เกิน​พื้นที่​เริ่มต้น ให้​ใช้​แผนที่​ใหญ่​ขึ้น เพิ่ม​ระยะห่าง​เทือกเขา ลด​ความ​กว้าง​สันเขา หรือ​ลด​ขนาด​แอ่ง​ทะเลสาบ​แห้ง
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤25/50/75%
 [Extra trails]
 เส้นทาง​เพิ่มเติม
 [Deep lakes]
-
+ทะเลสาบ​ลึก
 [Bedrock]
-
+หิน​ฐาน
 [Portage Lakes needs sides between 64 and 512 tiles.]
 ทะเลสาบ​พอร์เทจ​ต้อง​ใช้​แผนที่​ที่​แต่ละ​ด้าน​ยาว 64 ถึง 512 ช่อง
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ AI ทำงาน​อย่างไร
 [Fish]
 ปลา
 [boulders]
-ก้อนหิน
+เสา​หิน
 [hedge]
 แนว​พุ่มไม้
 [thicket]
 ดง​ไม้พุ่ม
 [ridge_rock]
-
+ยอด​หิน​แหลม
 [outcrop]
-
+เสา​หิน​บะซอลต์
 [dirt]
 ดิน
 [clay]
@@ -5831,7 +5831,7 @@ AI ทำงาน​อย่างไร
 [glacier_ice]
 น้ำแข็งธารน้ำแข็ง
 [overgrown_road]
-ถนนที่รกด้วยพืช
+ทาง​ปู​หิน​มี​มอส
 [laterite]
 ดินศิลาแลง
 [cliffs]
@@ -5883,13 +5883,13 @@ AI ทำงาน​อย่างไร
 [terrain group grass]
 หญ้า
 [terrain group ice]
-น้ำแข็ง
+หิมะ​และ​น้ำแข็ง
 [terrain group paths]
 เส้นทาง
 [terrain group obstacles]
-อุปสรรค
+สิ่ง​กีดขวาง
 [terrain group ridges]
-
+หิน​โผล่
 [terrain group barren]
 พื้นที่​แห้งแล้ง
 [terrain group rough]

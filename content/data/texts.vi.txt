@@ -1695,13 +1695,13 @@ Tự động lưu trò chơi khoảng mỗi 10 giây.
 [Lake size]
 Kích thước hồ
 [Crater type]
-
+Loại hố
 [Crater rims]
-
+Vành hố
 [Volcanic maars]
-
+Hồ maar núi lửa
 [Glacial kettles]
-
+Hố băng tan
 [Contested commons]
 Vùng đất chung tranh chấp
 [Maze]
@@ -1729,9 +1729,9 @@ Kích thước vùng đất chung
 [Wall thickness]
 Độ dày tường
 [Gardens]
-Vườn rau
+Khu vườn
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
-Tường dày như vậy khiến lối đi quá hẹp; hãy dùng tường mỏng hơn hoặc ô lớn hơn.
+Tường dày như vậy khiến lối ra vào quá hẹp; hãy dùng tường mỏng hơn hoặc ô lớn hơn.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
 Hào nước rộng như vậy để lại quá ít chỗ bên trong mỗi căn cứ; hãy dùng hào hẹp hơn, tường mỏng hơn hoặc ô lớn hơn.
 [Bridge count]
@@ -1805,7 +1805,7 @@ Thế giới hình vòng
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Với hạt giống này, Thế giới hình vòng không thể đặt đá và bờ biển mà không chia cắt mặt đất.
 [City states]
 Thành bang
 [Strait width]
@@ -1839,11 +1839,11 @@ Kích thước khoảng trống
 [Levee]
 Đê
 [Mudflats]
-
+Bãi bùn
 [Hammocks]
-
+Đảo cây
 [Moss]
-
+Rêu
 [Sloughs]
 Lạch lầy
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Vũng triều
 [Central island]
 Đảo trung tâm
 [Tide]
-
+Thủy triều
 [Neap tide]
-
+Triều kém
 [Mean tide]
-
+Triều trung bình
 [Spring tide]
-
+Triều cường
 [Tidal flats need at least one colony.]
 Bãi triều cần ít nhất một thuộc địa.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Gò đá trung tâm không còn chỗ cho đá bên cạnh các mặt mỏ đá; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Các đảo khởi đầu không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Châu thổ sông
 [Meandering rivers]
 Sông quanh co
 [Banks]
-
+Bờ sông
 [Deep channels]
-
+Lạch sâu
 [River bluffs]
-
+Vách bờ sông
 [Divide outcrops]
-
+Mỏm đá đường phân thủy
 [Deep water]
-
+Nước sâu
 [Rock outcrops]
-
+Mỏm đá lộ
 [Fruit in home valleys]
 Trái cây ở thung lũng khởi đầu
 [Moat]
@@ -2025,11 +2025,11 @@ Thuộc địa ở cả hai bờ
 [Winding belt]
 Vành đai uốn lượn
 [Deep ocean]
-
+Đại dương sâu
 [Rock spine]
-
+Sống đá
 [Ring road]
-
+Đường vành đai
 [Cell shape]
 Hình dạng ô
 [Squares]
@@ -2067,19 +2067,19 @@ Khoảng cách đèo
 [Lee width]
 Độ rộng khuất gió
 [Climate]
-
+Khí hậu
 [Temperate]
-
+Ôn đới
 [Steppe]
-
+Thảo nguyên
 [Tropical]
-
+Nhiệt đới
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Không có sống núi nào phía sau các căn cứ; hãy dùng ít sống núi hơn hoặc bản đồ lớn hơn.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Các sống núi không chừa chỗ cho mỏ đá của các căn cứ; hãy dùng sống núi dày hơn hoặc bản đồ lớn hơn.
 [The ridges could not be sealed; use thicker ridges.]
-
+Không thể khép kín các sống núi; hãy dùng sống núi dày hơn.
 [Old growth]
 Rừng già
 [Canals]
@@ -2519,7 +2519,7 @@ Bãi cạn bổ sung
 [Moraine hummocks]
 Gò băng tích
 [Deep pools]
-
+Vực sâu
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Dải bện để lại quá ít thềm cho các căn cứ; hãy dùng bản đồ lớn hơn hoặc dải bện hẹp hơn.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Hố nước
 [Dry patches]
 Vùng khô
 [Season]
-
+Mùa
 [Meltwater]
-
+Nước tuyết tan
 [Late summer]
-
+Cuối hè
 [Sparse]
 Ít
 [Normal]
@@ -2713,25 +2713,25 @@ Quạt dài
 [Twin springs]
 Suối đôi
 [Canyon mouth]
-
+Cửa hẻm núi
 [Cienega]
-
+Đầm suối
 [Coalescing pair]
-
+Cặp quạt hợp lưu
 [Cienegas]
-
+Đầm suối
 [Rock]
-
+Đá
 [Granite]
-
+Granit
 [Greenstone]
-
+Đá lục
 [Sandstone]
-
+Sa thạch
 [Volcanic]
-
+Đá núi lửa
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Các con đèo cắt vào mỏ đá của các căn cứ; hãy dùng ít đèo hơn, ít thuộc địa hơn hoặc bản đồ lớn hơn.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Sườn quạt bồi tích quá hẹp cho các căn cứ; hãy dùng bản đồ lớn hơn, khoảng cách dãy núi rộng hơn, sống núi hẹp hơn hoặc hồ muối nhỏ hơn.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Hồ và lối xuyên rừng
 [Extra trails]
 Đường mòn bổ sung
 [Deep lakes]
-
+Hồ sâu
 [Bedrock]
-
+Đá gốc
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Các cạnh bản đồ này phải dài từ 64 đến 512 ô.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Tài nguyên đã khai quang
 [stat cleared about]
 Tài nguyên công nhân dọn đi trong vùng khai quang để lấy chỗ trống.
 [stats topic overview]
-
+Tổng quan
 [stats topic economy]
-
+Kinh tế
 [stats topic world]
-
+Thế giới
 [stats work construction]
-
+Công việc & xây dựng
 [stats defence]
-
+Phòng thủ
 [stats history]
-
+Xem lịch sử
 [stats waiting]
-
+Đang chờ số liệu thống kê…
 [stats unit details]
-
+Chi tiết đơn vị
 [stats map overlays]
-
+Lớp phủ bản đồ
 [stats topic]
-
+Chủ đề
 [stats full history]
-
+Mở toàn bộ lịch sử
 [stats missing readings]
-
+— Chưa có số đo nào được ghi. Chọn một chỉ số thống kê để xem chi tiết.
 [stat win probability]
-
+Xác suất thắng
 [stat win probability about]
-
+Ước tính khả năng liên minh của bạn giành chiến thắng, được lấy mẫu trong suốt trận đấu. Các đồng minh dùng chung một xác suất. Mô hình này được huấn luyện trên các trận AI; ước tính không tính đến vị trí hay các nước đi đã định. Các bản lưu cũ có thể có lịch sử không đầy đủ.
 [stat prestige]
 Uy danh
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Cá
 [Reroll terrain look]
 Chọn lại ngẫu nhiên diện mạo địa hình
 [boulders]
-Đá tảng
+Cột đá
 [hedge]
 Hàng rào cây
 [thicket]
 Bụi rậm
 [ridge_rock]
-
+Tháp đá
 [outcrop]
-
+Cột bazan
 [dirt]
 Đất
 [clay]
@@ -5855,7 +5855,7 @@ Tro núi lửa
 [glacier_ice]
 Băng sông băng
 [overgrown_road]
-Con đường cỏ mọc um tùm
+Đá lát phủ rêu
 [laterite]
 Đá ong
 [cliffs]
@@ -5907,13 +5907,13 @@ Cát
 [terrain group grass]
 Cỏ
 [terrain group ice]
-Băng
+Băng tuyết
 [terrain group paths]
 Đường
 [terrain group obstacles]
-Chướng ngại vật
+Rào chắn
 [terrain group ridges]
-
+Mỏm đá lộ
 [terrain group barren]
 Đất cằn
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Lệnh chưa được xác nhận. Mở chỉ huy để thử lại; tin nhắn 
 [hive standing order update failed]
 Cập nhật lệnh thường trực không thành công. Lệnh của bạn đang tạm dừng trên thiết bị này; hãy thử lại bằng thành phần điều khiển tương ứng.
 [engine performance per game minute]
-
+Mỗi phút trong trò chơi
 [engine performance per real minute]
-
+Mỗi phút thực
 [engine performance game engine performance]
-
+Hiệu năng engine trò chơi
 [engine performance task wall-time costs]
-
+Thời gian thực của tác vụ
 [engine performance inspect slow ticks]
-
+Kiểm tra các nhịp chậm
 [engine performance no advancing ticks recorded yet]
-
+Chưa ghi nhận nhịp tiến nào.
 [engine performance whole-engine performance]
-
+Hiệu năng toàn engine
 [engine performance open performance charts]
-
+Mở biểu đồ hiệu năng
 [engine performance engine performance]
-
+Hiệu năng engine
 [engine performance follow latest interval]
-
+Theo dõi khoảng mới nhất
 [engine performance compare task costs]
-
+So sánh chi phí tác vụ
 [engine performance all metrics and slow ticks]
-
+Tất cả chỉ số và nhịp chậm
 [engine performance phase orders]
-
+Lệnh
 [engine performance phase units]
-
+Đơn vị
 [engine performance phase buildings]
-
+Công trình
 [engine performance phase map]
-
+Bản đồ
 [engine performance phase statistics]
-
+Thống kê
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Chụp trạng thái thế giới
 [engine performance phase checksums]
-
+Tổng kiểm tra
 [engine performance wall time %0]
-
+Thời gian thực: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Chờ bắt buộc: %0 ms; luồng chủ chờ gộp việc: %1 ms; khóa: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms thời gian thực
 [engine performance tick %0 wall %1]
-
+Nhịp %0: %1 ms thời gian thực
 [AI for all computer colonies]
 AI cho mọi thuộc địa do máy tính điều khiển
 [tundra]

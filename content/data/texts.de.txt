@@ -1695,13 +1695,13 @@ Breite der Landbrücke
 [Lake size]
 Seegröße
 [Crater type]
-
+Kratertyp
 [Crater rims]
-
+Kraterränder
 [Volcanic maars]
-
+Vulkanische Maare
 [Glacial kettles]
-
+Toteislöcher
 [Contested commons]
 Umkämpftes Gemeinschaftsland
 [Maze]
@@ -1733,7 +1733,7 @@ Gärten
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 So dicke Mauern lassen die Durchgänge zu schmal; verwenden Sie dünnere Mauern oder größere Zellen.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-So breite Gräben lassen in jeder Heimatbasis zu wenig Platz; verwenden Sie einen schmaleren Graben, dünnere Mauern oder größere Zellen.
+So breite Gräben lassen in jeder Heimat zu wenig Platz; verwenden Sie einen schmaleren Graben, dünnere Mauern oder größere Zellen.
 [Bridge count]
 Anzahl der Brücken
 [Continent size]
@@ -1805,7 +1805,7 @@ Gürtelbreite
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Der Gürtel ist zu kurz für so viele Kolonien; verwenden Sie eine längere Karte oder weniger Kolonien.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Die Ringwelt kann mit diesem Startwert ihren Fels und ihre Küsten nicht anlegen, ohne Land abzuschneiden.
 [City states]
 Stadtstaaten
 [Strait width]
@@ -1839,11 +1839,11 @@ Größe der Lichtung
 [Levee]
 Deich
 [Mudflats]
-
+Schlammebenen
 [Hammocks]
-
+Bauminseln
 [Moss]
-
+Moos
 [Sloughs]
 Altwasser
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagunen
 [Central island]
 Zentrale Insel
 [Tide]
-
+Tide
 [Neap tide]
-
+Nipptide
 [Mean tide]
-
+Mittlere Tide
 [Spring tide]
-
+Springtide
 [Tidal flats need at least one colony.]
 Das Wattenmeer braucht mindestens eine Kolonie.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Der zentrale Felsturm hat neben den Steinbruchwänden keinen Platz für seinen Fels; verwenden Sie eine größere Karte oder weniger Kolonien.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Die Heimatinseln passen nicht auf diese Karte; verwenden Sie eine größere Karte, weniger Kolonien oder kleinere Inseln.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Flussdelta
 [Meandering rivers]
 Mäandernde Flüsse
 [Banks]
-
+Ufer
 [Deep channels]
-
+Tiefe Rinnen
 [River bluffs]
-
+Steilufer
 [Divide outcrops]
-
+Felsen der Wasserscheide
 [Deep water]
-
+Tiefes Wasser
 [Rock outcrops]
-
+Felsvorsprünge
 [Fruit in home valleys]
 Obst in den Starttälern
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonien an beiden Küsten
 [Winding belt]
 Gewundener Gürtel
 [Deep ocean]
-
+Tiefsee
 [Rock spine]
-
+Felsrücken
 [Ring road]
-
+Ringstraße
 [Cell shape]
 Zellenform
 [Squares]
@@ -2067,19 +2067,19 @@ Passabstand
 [Lee width]
 Leebreite
 [Climate]
-
+Klima
 [Temperate]
-
+Gemäßigt
 [Steppe]
-
+Steppe
 [Tropical]
-
+Tropisch
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Hinter den Heimaten steht kein Grat; verwenden Sie weniger Grate oder eine größere Karte.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Die Grate lassen keinen Platz für die Steinbrüche der Heimaten; verwenden Sie dickere Grate oder eine größere Karte.
 [The ridges could not be sealed; use thicker ridges.]
-
+Die Grate konnten nicht geschlossen werden; verwenden Sie dickere Grate.
 [Old growth]
 Urwald
 [Canals]
@@ -2519,7 +2519,7 @@ Zusätzliche Furten
 [Moraine hummocks]
 Moränenhügel
 [Deep pools]
-
+Tiefe Kolke
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Die Verflechtung lässt den Heimaten zu wenig Terrasse; verwenden Sie eine größere Karte oder eine schmalere Verflechtung.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Wasserstellen
 [Dry patches]
 Trockene Flächen
 [Season]
-
+Jahreszeit
 [Meltwater]
-
+Schmelzwasser
 [Late summer]
-
+Spätsommer
 [Sparse]
 Wenige
 [Normal]
@@ -2713,25 +2713,25 @@ Langer Fächer
 [Twin springs]
 Zwillingsquellen
 [Canyon mouth]
-
+Canyonmündung
 [Cienega]
-
+Quellsumpf
 [Coalescing pair]
-
+Verschmelzendes Paar
 [Cienegas]
-
+Quellsümpfe
 [Rock]
-
+Gestein
 [Granite]
-
+Granit
 [Greenstone]
-
+Grünstein
 [Sandstone]
-
+Sandstein
 [Volcanic]
-
+Vulkanisch
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Die Pässe schneiden in die Steinbrüche der Heimaten; verwenden Sie weniger Pässe, weniger Kolonien oder eine größere Karte.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Die Schwemmfächer sind zu schmal für die Heimaten; verwenden Sie eine größere Karte, einen größeren Abstand der Gebirgszüge, schmalere Kämme oder kleinere Salzseen.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Dicke der Waldpassage
 [Extra trails]
 Zusätzliche Pfade
 [Deep lakes]
-
+Tiefe Seen
 [Bedrock]
-
+Grundgestein
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Die Seiten dieser Karte müssen zwischen 64 und 512 Feldern lang sein.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Gerodete Ressourcen
 [stat cleared about]
 Von Arbeitern in Rodungszonen entfernte Ressourcen, um Platz zu schaffen.
 [stats topic overview]
-
+Übersicht
 [stats topic economy]
-
+Wirtschaft
 [stats topic world]
-
+Welt
 [stats work construction]
-
+Arbeit & Bau
 [stats defence]
-
+Verteidigung
 [stats history]
-
+Verlauf anzeigen
 [stats waiting]
-
+Warte auf Statistiken…
 [stats unit details]
-
+Einheitendetails
 [stats map overlays]
-
+Kartenebenen
 [stats topic]
-
+Thema
 [stats full history]
-
+Gesamten Verlauf öffnen
 [stats missing readings]
-
+— Noch kein Messwert aufgezeichnet. Wählen Sie eine Statistik für Details.
 [stat win probability]
-
+Siegwahrscheinlichkeit
 [stat win probability about]
-
+Geschätzte Chance, dass Ihr Bündnis gewinnt, über das ganze Spiel hinweg erfasst. Verbündete teilen sich eine Wahrscheinlichkeit. Dieses Modell wurde mit KI-Spielen trainiert; die Schätzungen berücksichtigen weder die Stellung noch geplante Züge. Ältere Spielstände haben möglicherweise einen unvollständigen Verlauf.
 [stat prestige]
 Prestigepunkte
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Fische
 [Reroll terrain look]
 Geländeaussehen neu auswürfeln
 [boulders]
-Felsblöcke
+Steinsäulen
 [hedge]
 Hecke
 [thicket]
 Dickicht
 [ridge_rock]
-
+Felsnadeln
 [outcrop]
-
+Basaltsäulen
 [dirt]
 Erde
 [clay]
@@ -5855,7 +5855,7 @@ Vulkanasche
 [glacier_ice]
 Gletschereis
 [overgrown_road]
-Überwucherte Straße
+Bemooste Pflastersteine
 [laterite]
 Laterit
 [cliffs]
@@ -5907,13 +5907,13 @@ Sand
 [terrain group grass]
 Gras
 [terrain group ice]
-Eis
+Schnee und Eis
 [terrain group paths]
 Wege
 [terrain group obstacles]
-Hindernisse
+Barrieren
 [terrain group ridges]
-
+Felsformationen
 [terrain group barren]
 Unfruchtbarer Boden
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Befehl nicht bestätigt. Öffnen Sie den Kommandanten, um es erneut zu versuchen
 [hive standing order update failed]
 Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf diesem Gerät pausiert; versuchen Sie es mit dem entsprechenden Bedienelement erneut.
 [engine performance per game minute]
-
+Pro Spielminute
 [engine performance per real minute]
-
+Pro Echtzeitminute
 [engine performance game engine performance]
-
+Leistung der Spiel-Engine
 [engine performance task wall-time costs]
-
+Echtzeitkosten der Aufgaben
 [engine performance inspect slow ticks]
-
+Langsame Ticks untersuchen
 [engine performance no advancing ticks recorded yet]
-
+Noch keine fortschreitenden Ticks aufgezeichnet.
 [engine performance whole-engine performance]
-
+Leistung der gesamten Engine
 [engine performance open performance charts]
-
+Leistungsdiagramme öffnen
 [engine performance engine performance]
-
+Engine-Leistung
 [engine performance follow latest interval]
-
+Neuestem Intervall folgen
 [engine performance compare task costs]
-
+Aufgabenkosten vergleichen
 [engine performance all metrics and slow ticks]
-
+Alle Messwerte und langsamen Ticks
 [engine performance phase orders]
-
+Befehle
 [engine performance phase units]
-
+Einheiten
 [engine performance phase buildings]
-
+Gebäude
 [engine performance phase map]
-
+Karte
 [engine performance phase statistics]
-
+Statistiken
 [engine performance phase ai]
-
+KI
 [engine performance phase world capture]
-
+Welterfassung
 [engine performance phase checksums]
-
+Prüfsummen
 [engine performance wall time %0]
-
+Echtzeit: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Erforderliche Wartezeiten: %0 ms; Besitzer-Joins: %1 ms; Sperren: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms Echtzeit
 [engine performance tick %0 wall %1]
-
+Tick %0: %1 ms Echtzeit
 [AI for all computer colonies]
 KI für alle computergesteuerten Kolonien
 [tundra]

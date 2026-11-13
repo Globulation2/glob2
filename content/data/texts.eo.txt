@@ -1695,13 +1695,13 @@ Larĝo de terponto
 [Lake size]
 Grandeco de lago
 [Crater type]
-
+Tipo de krateroj
 [Crater rims]
-
+Kraterrandoj
 [Volcanic maars]
-
+Vulkanaj maaroj
 [Glacial kettles]
-
+Glaĉeraj kavaĵoj
 [Contested commons]
 Pridisputata komunareo
 [Maze]
@@ -1805,7 +1805,7 @@ Larĝo de zono
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+La ringa mondo ne povas meti sian rokon kaj marbordojn sen fortranĉi teron per ĉi tiu semo.
 [City states]
 Urboŝtatoj
 [Strait width]
@@ -1839,11 +1839,11 @@ Grandeco de maldensejo
 [Levee]
 Digo
 [Mudflats]
-
+Ŝlimaj ebenaĵoj
 [Hammocks]
-
+Arbaraj insuletoj
 [Moss]
-
+Musko
 [Sloughs]
 Marĉkanaloj
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagunoj
 [Central island]
 Centra insulo
 [Tide]
-
+Tajdo
 [Neap tide]
-
+Malforta tajdo
 [Mean tide]
-
+Meza tajdo
 [Spring tide]
-
+Forta tajdo
 [Tidal flats need at least one colony.]
 Tajdaj ebenaĵoj bezonas almenaŭ unu kolonion.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+La centra rokmonteto ne havas lokon por sia roko apud la ŝtonminejaj frontoj; uzu pli grandan mapon aŭ malpli da kolonioj.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 La hejmaj insuloj ne taŭgas en ĉi tiu mapo; uzu pli grandan mapon, malpli da kolonioj aŭ pli malgrandajn insulojn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Riverdelto
 [Meandering rivers]
 Meandrantaj riveroj
 [Banks]
-
+Bordoj
 [Deep channels]
-
+Profundaj kanaloj
 [River bluffs]
-
+Riveraj krutaĵoj
 [Divide outcrops]
-
+Akvodislimaj elstaraĵoj
 [Deep water]
-
+Profunda akvo
 [Rock outcrops]
-
+Rokaj elstaraĵoj
 [Fruit in home valleys]
 Fruktoj en hejmvaloj
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonioj ĉe ambaŭ marbordoj
 [Winding belt]
 Serpentuma zono
 [Deep ocean]
-
+Profunda oceano
 [Rock spine]
-
+Roka spino
 [Ring road]
-
+Ringa vojo
 [Cell shape]
 Formo de ĉeloj
 [Squares]
@@ -2067,19 +2067,19 @@ Interspaco de montpasejoj
 [Lee width]
 Larĝo de la ŝirmflanko
 [Climate]
-
+Klimato
 [Temperate]
-
+Modera
 [Steppe]
-
+Stepo
 [Tropical]
-
+Tropika
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Neniu kresto staras malantaŭ la hejmaj bazoj; uzu malpli da krestoj aŭ pli grandan mapon.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+La krestoj lasas neniun lokon por la ŝtonminejoj de la hejmaj bazoj; uzu pli dikajn krestojn aŭ pli grandan mapon.
 [The ridges could not be sealed; use thicker ridges.]
-
+La krestoj ne povis esti fermitaj; uzu pli dikajn krestojn.
 [Old growth]
 Praarbaro
 [Canals]
@@ -2519,7 +2519,7 @@ Pliaj travadejoj
 [Moraine hummocks]
 Morenaj montetoj
 [Deep pools]
-
+Profundaj lagetoj
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Trinkejoj
 [Dry patches]
 Sekaj areoj
 [Season]
-
+Sezono
 [Meltwater]
-
+Degelo
 [Late summer]
-
+Malfrua somero
 [Sparse]
 Malmultaj
 [Normal]
@@ -2713,25 +2713,25 @@ Longa ventumilo
 [Twin springs]
 Ĝemelaj fontoj
 [Canyon mouth]
-
+Kanjonbuŝo
 [Cienega]
-
+Fontmarĉo
 [Coalescing pair]
-
+Kunfluanta paro
 [Cienegas]
-
+Fontmarĉoj
 [Rock]
-
+Roko
 [Granite]
-
+Granito
 [Greenstone]
-
+Verdŝtono
 [Sandstone]
-
+Grejso
 [Volcanic]
-
+Vulkana
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+La montpasejoj tranĉas en la ŝtonminejojn de la hejmaj bazoj; uzu malpli da montpasejoj, malpli da kolonioj aŭ pli grandan mapon.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 La ventumilaj deklivoj estas tro mallarĝaj por la hejmoj; uzu pli grandan mapon, pli grandan interspacon de montaroj, pli mallarĝajn krestojn aŭ pli malgrandajn salajn lagojn.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Dikeco de arbara pasejo
 [Extra trails]
 Pliaj padoj
 [Deep lakes]
-
+Profundaj lagoj
 [Bedrock]
-
+Bazroko
 [Portage Lakes needs sides between 64 and 512 tiles.]
 La flankoj de ĉi tiu mapo devas longi inter 64 kaj 512 kaheloj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Viŝitaj rimedoj
 [stat cleared about]
 Rimedoj forigitaj de laboristoj en viŝataj areoj por fari lokon.
 [stats topic overview]
-
+Superrigardo
 [stats topic economy]
-
+Ekonomio
 [stats topic world]
-
+Mondo
 [stats work construction]
-
+Laboro kaj konstruado
 [stats defence]
-
+Defendado
 [stats history]
-
+Vidi historion
 [stats waiting]
-
+Atendante statistikojn…
 [stats unit details]
-
+Detaloj pri globuloj
 [stats map overlays]
-
+Mapaj tavoloj
 [stats topic]
-
+Temo
 [stats full history]
-
+Malfermi la plenan historion
 [stats missing readings]
-
+— Ankoraŭ neniu registrita mezurado. Elektu statistikon por detaloj.
 [stat win probability]
-
+Venkoprobablo
 [stat win probability about]
-
+Taksita ŝanco, ke via alianco venkos, specimenigita dum la tuta matĉo. Aliancanoj kunhavas unu probablon. Ĉi tiu modelo estis trejnita per AI-ludoj; la taksoj ne konsideras pozicion aŭ planitajn movojn. Pli malnovaj konservitaj ludoj povas havi nekompletan historion.
 [stat prestige]
 Prestiĝo
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Fiŝoj
 [Reroll terrain look]
 Denove hazardigi la aspekton de la tereno
 [boulders]
-Rokegoj
+Ŝtonaj pilieroj
 [hedge]
 Heĝo
 [thicket]
 Densejo
 [ridge_rock]
-
+Rokaj pintoj
 [outcrop]
-
+Bazaltaj kolonoj
 [dirt]
 Tero
 [clay]
@@ -5855,7 +5855,7 @@ Vulkana cindro
 [glacier_ice]
 Glaĉera glacio
 [overgrown_road]
-Superkreskita vojo
+Muskokovritaj pavimŝtonoj
 [laterite]
 Laterito
 [cliffs]
@@ -5881,7 +5881,7 @@ Glaĉero
 [icefall]
 Glaciofalo
 [sandstone_benches]
-Grejsaj benkoj
+Grejsaj ŝtupoj
 [obsidian_ridge]
 Obsidiana kresto
 [granite_tors]
@@ -5907,13 +5907,13 @@ Sablo
 [terrain group grass]
 Herbo
 [terrain group ice]
-Glacio
+Neĝo kaj glacio
 [terrain group paths]
 Padoj
 [terrain group obstacles]
-Obstakloj
+Baroj
 [terrain group ridges]
-
+Elstaraĵoj
 [terrain group barren]
 Malfekunda grundo
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas kon
 [hive standing order update failed]
 Ĝisdatigo de daŭra ordono malsukcesis. Via ordono estas paŭzita sur ĉi tiu aparato; reprovu per la koncerna regilo.
 [engine performance per game minute]
-
+Po luda minuto
 [engine performance per real minute]
-
+Po reala minuto
 [engine performance game engine performance]
-
+Rendimento de la ludmotoro
 [engine performance task wall-time costs]
-
+Realtempaj kostoj de taskoj
 [engine performance inspect slow ticks]
-
+Ekzameni malrapidajn taktojn
 [engine performance no advancing ticks recorded yet]
-
+Ankoraŭ neniu progresa takto registrita.
 [engine performance whole-engine performance]
-
+Rendimento de la tuta motoro
 [engine performance open performance charts]
-
+Malfermi rendimentajn diagramojn
 [engine performance engine performance]
-
+Motora rendimento
 [engine performance follow latest interval]
-
+Sekvi la lastan intervalon
 [engine performance compare task costs]
-
+Kompari taskokostojn
 [engine performance all metrics and slow ticks]
-
+Ĉiuj metrikoj kaj malrapidaj taktoj
 [engine performance phase orders]
-
+Ordonoj
 [engine performance phase units]
-
+Globuloj
 [engine performance phase buildings]
-
+Konstruaĵoj
 [engine performance phase map]
-
+Mapo
 [engine performance phase statistics]
-
+Statistikoj
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Kapto de la mondo
 [engine performance phase checksums]
-
+Kontrolsumoj
 [engine performance wall time %0]
-
+Reala tempo: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Necesaj atendoj: %0 ms; kuniĝoj de posedanto: %1 ms; ŝlosoj: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms reala tempo
 [engine performance tick %0 wall %1]
-
+Takto %0: %1 ms reala tempo
 [AI for all computer colonies]
 AI por ĉiuj komputile regataj kolonioj
 [tundra]

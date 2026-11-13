@@ -1663,13 +1663,13 @@ Upana wa daraja la ardhi
 [Lake size]
 Ukubwa wa ziwa
 [Crater type]
-
+Aina ya mashimo
 [Crater rims]
-
+Kingo za mashimo
 [Volcanic maars]
-
+Mashimo ya volkano
 [Glacial kettles]
-
+Mashimo ya barafu
 [Contested commons]
 Eneo la pamoja linalogombaniwa
 [Maze]
@@ -1709,11 +1709,11 @@ Upana wa ghuba nyembamba
 [Ice sheet size]
 Ukubwa wa tabaka la barafu
 [Fjord landings]
-Mahali pa kutua kwenye fyordi
+Mahali pa kutua kwenye ghuba nyembamba
 [Fjord continents need at least one colony.]
-Bara la fyordi linahitaji angalau koloni moja.
+Bara la ghuba nyembamba linahitaji angalau makazi moja.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
-Bara la fyordi linahitaji ramani yenye upande mfupi wa angalau vigae 128.
+Bara la ghuba nyembamba linahitaji ramani yenye upande mfupi wa angalau vigae 128.
 [Ice reach]
 Kiwango cha barafu
 [Resource islands]
@@ -1769,7 +1769,7 @@ Upana wa ukanda
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Ukanda ni mfupi mno kwa makazi haya mengi; tumia ramani ndefu au makazi machache zaidi.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Ulimwengu wa pete hauwezi kuweka miamba na pwani zake bila kukata ardhi kwenye mbegu hii.
 [City states]
 Miji huru
 [Strait width]
@@ -1803,11 +1803,11 @@ Ukubwa wa eneo wazi
 [Levee]
 Tuta la kuzuia maji
 [Mudflats]
-
+Nyanda za matope
 [Hammocks]
-
+Visiwa vya miti
 [Moss]
-
+Kuvumwani
 [Sloughs]
 Mikondo ya vinamasi
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Maziwa ya pwani
 [Central island]
 Kisiwa cha kati
 [Tide]
-
+Maji kujaa na kupwa
 [Neap tide]
-
+Maji mafu
 [Mean tide]
-
+Maji ya wastani
 [Spring tide]
-
+Bamvua
 [Tidal flats need at least one colony.]
 Tambarare za mawimbi zinahitaji angalau makazi moja.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Kilima cha mwamba cha kati hakina nafasi ya miamba yake kando ya kuta za machimbo; tumia ramani kubwa au makazi machache zaidi.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Visiwa vya nyumbani havitoshei katika ramani hii; tumia ramani kubwa, makazi machache au visiwa vidogo zaidi.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Delta ya mto
 [Meandering rivers]
 Mito inayopinda
 [Banks]
-
+Kingo za mto
 [Deep channels]
-
+Mikondo ya kina kirefu
 [River bluffs]
-
+Majabali ya mto
 [Divide outcrops]
-
+Miamba ya mgawanyiko wa maji
 [Deep water]
-
+Maji ya kina kirefu
 [Rock outcrops]
-
+Miamba iliyojitokeza
 [Fruit in home valleys]
 Matunda katika mabonde ya mwanzo
 [Moat]
@@ -1993,11 +1993,11 @@ Makazi katika pwani zote mbili
 [Winding belt]
 Ukanda unaopinda
 [Deep ocean]
-
+Bahari ya kina kirefu
 [Rock spine]
-
+Uti wa miamba
 [Ring road]
-
+Barabara ya mzunguko
 [Cell shape]
 Umbo la seli
 [Squares]
@@ -2035,19 +2035,19 @@ Nafasi kati ya njia za milimani
 [Lee width]
 Upana wa upande wa nyuma ya upepo
 [Climate]
-
+Hali ya hewa
 [Temperate]
-
+Wastani
 [Steppe]
-
+Nyika
 [Tropical]
-
+Kitropiki
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Hakuna mwinuko nyuma ya maeneo ya nyumbani; tumia miinuko michache zaidi au ramani kubwa.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Miinuko haiachi nafasi kwa machimbo ya maeneo ya nyumbani; tumia miinuko minene zaidi au ramani kubwa.
 [The ridges could not be sealed; use thicker ridges.]
-
+Miinuko haikuweza kufungwa; tumia miinuko minene zaidi.
 [Old growth]
 Msitu wa zamani
 [Canals]
@@ -2497,7 +2497,7 @@ Mikondo ya ziada ya kasi yenye maji mafupi
 [Moraine hummocks]
 Vilima vya vifusi vilivyoachwa na barafu
 [Deep pools]
-
+Madimbwi ya kina
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Mikondo inaacha maeneo machache mno ya ardhi tambarare iliyoinuka kwa makazi; tumia ramani kubwa au mikondo myembamba zaidi.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ Vidimbwi vya kunywea
 [Dry patches]
 Mabaka makavu
 [Season]
-
+Msimu
 [Meltwater]
-
+Maji ya theluji iliyoyeyuka
 [Late summer]
-
+Mwisho wa kiangazi
 [Sparse]
 Vichache
 [Normal]
@@ -2691,25 +2691,25 @@ Mashapo marefu ya umbo la feni
 [Twin springs]
 Chemchemi mbili
 [Canyon mouth]
-
+Mdomo wa korongo
 [Cienega]
-
+Bwawa la chemchemi
 [Coalescing pair]
-
+Feni mbili zinazoungana
 [Cienegas]
-
+Mabwawa ya chemchemi
 [Rock]
-
+Mwamba
 [Granite]
-
+Graniti
 [Greenstone]
-
+Mwamba wa kijani
 [Sandstone]
-
+Mawe ya mchanga
 [Volcanic]
-
+Mwamba wa volkano
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Njia za milimani zinakata machimbo ya maeneo ya nyumbani; tumia njia chache zaidi, makazi machache zaidi au ramani kubwa.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Tambarare za mashapo chini ya milima ni nyembamba mno kwa makazi; tumia ramani kubwa, nafasi kubwa kati ya safu za milima, miinuko myembamba au ziwa dogo kavu la chumvi.
 [Central Quarry]
@@ -2861,9 +2861,9 @@ Unene wa msitu wa kukatwa
 [Extra trails]
 Vijia vya ziada
 [Deep lakes]
-
+Maziwa ya kina kirefu
 [Bedrock]
-
+Mwamba wa msingi
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Maziwa ya vivuko yanahitaji pande zenye vigae kati ya 64 na 512.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5009,9 +5009,9 @@ Rasilimali zilizosafishwa
 [stat cleared about]
 Rasilimali zilizoondolewa na wafanyakazi katika maeneo ya kusafisha kutoa nafasi.
 [stat win probability]
-
+Uwezekano wa ushindi
 [stat win probability about]
-
+Makadirio ya nafasi ya muungano wako kushinda, yaliyopimwa katika mchezo wote. Washirika hushiriki uwezekano mmoja. Modeli hii ilifunzwa kwa michezo ya AI; makadirio hayazingatii nafasi au hatua zilizopangwa. Mihifadhi ya zamani inaweza kuwa na historia isiyokamilika.
 [stat prestige]
 Heshima
 [stat prestige about]
@@ -5757,15 +5757,15 @@ Mchele
 [Fish]
 Samaki
 [boulders]
-Miamba mikubwa
+Mawe yaliyosimama
 [hedge]
 Ua wa mimea
 [thicket]
 Kichaka kizito
 [ridge_rock]
-
+Vilele vya miamba
 [outcrop]
-
+Nguzo za bazalti
 [dirt]
 Udongo
 [clay]
@@ -5821,7 +5821,7 @@ Ziwa lililoganda
 [wind_swept_snow]
 Theluji iliyopeperushwa na upepo
 [weathered_sandstone]
-Mchanga-mawe uliomomonyoka
+Mawe ya mchanga yaliyomomonyoka
 [windy_sand_dune]
 Matuta ya mchanga ya upepo
 [hardpan]
@@ -5829,9 +5829,9 @@ Ganda gumu
 [volcanic_ash]
 Majivu ya volkano
 [glacier_ice]
-Barafu ya theluji ya mlimani
+Barafu ya mto wa barafu
 [overgrown_road]
-Barabara iliyomea majani
+Barabara ya mawe yenye kuvumwani
 [laterite]
 Udongo wa lateriti
 [cliffs]
@@ -5857,9 +5857,9 @@ Mto wa barafu
 [icefall]
 Maporomoko ya barafu
 [sandstone_benches]
-Madawati ya mchanga-mawe
+Ngazi za mawe ya mchanga
 [obsidian_ridge]
-Kingo cha obsidiani
+Mwinuko wa obsidiani
 [granite_tors]
 Miamba ya graniti
 [travertine_terraces]
@@ -5883,13 +5883,13 @@ Mchanga
 [terrain group grass]
 Nyasi
 [terrain group ice]
-Barafu
+Theluji na barafu
 [terrain group paths]
 Njia
 [terrain group obstacles]
 Vizuizi
 [terrain group ridges]
-
+Miamba iliyojitokeza
 [terrain group barren]
 Ardhi kame
 [terrain group rough]
@@ -6991,29 +6991,29 @@ Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
 [stats topic overview]
-
+Muhtasari
 [stats topic economy]
-
+Uchumi
 [stats topic world]
-
+Ulimwengu
 [stats work construction]
-
+Kazi na ujenzi
 [stats defence]
-
+Ulinzi
 [stats history]
-
+Tazama historia
 [stats waiting]
-
+Inasubiri takwimu…
 [stats unit details]
-
+Maelezo ya viumbe
 [stats map overlays]
-
+Tabaka za ramani
 [stats topic]
-
+Mada
 [stats full history]
-
+Fungua historia kamili
 [stats missing readings]
-
+— Bado hakuna kipimo kilichorekodiwa. Chagua takwimu ili kuona maelezo.
 [script error at %0:%1: %2]
 Hitilafu katika %0:%1: %2
 [AI for all computer colonies]
@@ -7051,53 +7051,53 @@ Amri imepokelewa: %0
 [hive order not confirmed]
 Amri haijathibitishwa. Fungua kamanda ili ujaribu tena; ujumbe wako umehifadhiwa.
 [engine performance per game minute]
-
+Kwa dakika ya mchezo
 [engine performance per real minute]
-
+Kwa dakika halisi
 [engine performance game engine performance]
-
+Utendaji wa injini ya mchezo
 [engine performance task wall-time costs]
-
+Gharama za muda halisi za kazi
 [engine performance inspect slow ticks]
-
+Kagua hatua za polepole
 [engine performance no advancing ticks recorded yet]
-
+Bado hakuna hatua zilizosonga zilizorekodiwa.
 [engine performance whole-engine performance]
-
+Utendaji wa injini nzima
 [engine performance open performance charts]
-
+Fungua chati za utendaji
 [engine performance engine performance]
-
+Utendaji wa injini
 [engine performance follow latest interval]
-
+Fuata kipindi cha karibuni
 [engine performance compare task costs]
-
+Linganisha gharama za kazi
 [engine performance all metrics and slow ticks]
-
+Vipimo vyote na hatua za polepole
 [engine performance phase orders]
-
+Amri
 [engine performance phase units]
-
+Viumbe
 [engine performance phase buildings]
-
+Majengo
 [engine performance phase map]
-
+Ramani
 [engine performance phase statistics]
-
+Takwimu
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Kunasa ulimwengu
 [engine performance phase checksums]
-
+Hesabu za ukaguzi
 [engine performance wall time %0]
-
+Muda halisi: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Kusubiri kwa lazima: %0 ms; kuunganisha kwa mmiliki: %1 ms; kufuli: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms muda halisi
 [engine performance tick %0 wall %1]
-
+Hatua %0: %1 ms muda halisi
 [hive standing order update failed]
 Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
 [tundra]

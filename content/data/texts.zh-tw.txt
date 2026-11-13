@@ -1695,13 +1695,13 @@ AI 策略與對抗
 [Lake size]
 湖泊大小
 [Crater type]
-
+湖盆類型
 [Crater rims]
-
+湖盆邊緣
 [Volcanic maars]
-
+低平火山口
 [Glacial kettles]
-
+冰川鍋穴
 [Contested commons]
 爭奪公地
 [Maze]
@@ -1729,7 +1729,7 @@ AI 策略與對抗
 [Wall thickness]
 牆體厚度
 [Gardens]
-菜園
+花園
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 牆這麼厚，區格之間的通道太窄；請使用更薄的牆或更大的區格。
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1805,7 +1805,7 @@ AI 策略與對抗
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 環帶太短，容納不下這麼多殖民地；請使用更長的地圖或減少殖民地數量。
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+使用此種子時，環形世界無法在不切斷地面的情況下佈置岩石和海岸。
 [City states]
 城邦
 [Strait width]
@@ -1839,11 +1839,11 @@ AI 策略與對抗
 [Levee]
 堤壩
 [Mudflats]
-
+泥灘
 [Hammocks]
-
+樹島
 [Moss]
-
+苔蘚
 [Sloughs]
 沼澤水道
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ AI 策略與對抗
 [Central island]
 中央島
 [Tide]
-
+潮汐
 [Neap tide]
-
+小潮
 [Mean tide]
-
+平均潮
 [Spring tide]
-
+大潮
 [Tidal flats need at least one colony.]
 潮間帶至少需要一個殖民地。
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+中央岩丘在採石面旁邊沒有空間放置岩石；請使用更大的地圖或減少殖民地數量。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母島無法容納在這張地圖上；請使用更大的地圖、更少的殖民地或更小的島嶼。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ AI 策略與對抗
 [Meandering rivers]
 曲流河道
 [Banks]
-
+河岸
 [Deep channels]
-
+深水河道
 [River bluffs]
-
+河岸陡崖
 [Divide outcrops]
-
+分水嶺露岩
 [Deep water]
-
+深水
 [Rock outcrops]
-
+露岩
 [Fruit in home valleys]
 起始山谷中的水果
 [Moat]
@@ -2025,11 +2025,11 @@ AI 策略與對抗
 [Winding belt]
 蜿蜒的環帶
 [Deep ocean]
-
+深海
 [Rock spine]
-
+岩石山脊
 [Ring road]
-
+環狀道路
 [Cell shape]
 格子形狀
 [Squares]
@@ -2067,19 +2067,19 @@ AI 策略與對抗
 [Lee width]
 背風帶寬度
 [Climate]
-
+氣候
 [Temperate]
-
+溫帶
 [Steppe]
-
+乾草原
 [Tropical]
-
+熱帶
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+基地後方沒有山脊；請減少山脊數量或使用更大的地圖。
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+山脊沒有給基地的採石場留出空間；請使用更厚的山脊或更大的地圖。
 [The ridges could not be sealed; use thicker ridges.]
-
+無法封閉山脊；請使用更厚的山脊。
 [Old growth]
 原始森林
 [Canals]
@@ -2519,7 +2519,7 @@ Emoji
 [Moraine hummocks]
 冰磧小丘
 [Deep pools]
-
+深潭
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 辮狀帶留給基地的階地太少；請使用更大的地圖或更窄的辮狀帶。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Emoji
 [Dry patches]
 乾燥地帶
 [Season]
-
+季節
 [Meltwater]
-
+融水期
 [Late summer]
-
+夏末
 [Sparse]
 稀少
 [Normal]
@@ -2713,25 +2713,25 @@ Emoji
 [Twin springs]
 雙泉
 [Canyon mouth]
-
+峽谷口
 [Cienega]
-
+泉沼
 [Coalescing pair]
-
+雙扇匯合
 [Cienegas]
-
+泉沼
 [Rock]
-
+岩石
 [Granite]
-
+花崗岩
 [Greenstone]
-
+綠岩
 [Sandstone]
-
+砂岩
 [Volcanic]
-
+火山岩
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+山口切入了基地的採石場；請減少山口、減少殖民地或使用更大的地圖。
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 沖積扇山坡太窄，容不下基地；請使用更大的地圖、更寬的山脈間距、更窄的山脊或更小的鹽湖。
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Emoji
 [Extra trails]
 額外小徑
 [Deep lakes]
-
+深湖
 [Bedrock]
-
+基岩
 [Portage Lakes needs sides between 64 and 512 tiles.]
 此地圖的邊長必須為 64 至 512 格。
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ AI 遙測
 [stat cleared about]
 工人在清除區域中為騰出空間而移除的資源。
 [stats topic overview]
-
+總覽
 [stats topic economy]
-
+經濟
 [stats topic world]
-
+世界
 [stats work construction]
-
+工作與建造
 [stats defence]
-
+防禦
 [stats history]
-
+檢視歷史
 [stats waiting]
-
+正在等待統計資料…
 [stats unit details]
-
+單位詳細資訊
 [stats map overlays]
-
+地圖疊加層
 [stats topic]
-
+主題
 [stats full history]
-
+開啟完整歷史
 [stats missing readings]
-
+— 尚無記錄的讀數。選擇一項統計以查看詳細資訊。
 [stat win probability]
-
+獲勝機率
 [stat win probability about]
-
+在整場比賽中取樣得出的你所在聯盟獲勝的估計機率。盟友共享同一個機率。此模型以 AI 對局訓練；估計不考慮局勢佈局或計畫中的行動。較舊的存檔可能缺少部分歷史記錄。
 [stat prestige]
 聲望
 [stat prestige about]
@@ -5781,15 +5781,15 @@ AI 生成
 [Reroll terrain look]
 重新隨機產生地形外觀
 [boulders]
-巨石
+石柱
 [hedge]
 樹籬
 [thicket]
 灌木叢
 [ridge_rock]
-
+尖岩
 [outcrop]
-
+玄武岩柱
 [dirt]
 泥土
 [clay]
@@ -5855,7 +5855,7 @@ AI 生成
 [glacier_ice]
 冰川冰
 [overgrown_road]
-雜草叢生的石路
+青苔石板路
 [laterite]
 紅土
 [cliffs]
@@ -5907,13 +5907,13 @@ AI 生成
 [terrain group grass]
 草地
 [terrain group ice]
-冰
+冰雪
 [terrain group paths]
 路徑
 [terrain group obstacles]
-障礙物
+屏障
 [terrain group ridges]
-
+露岩
 [terrain group barren]
 貧瘠地面
 [terrain group rough]
@@ -7051,53 +7051,53 @@ MCP 伺服器
 [hive standing order update failed]
 常駐指令更新失敗。您的指令已在此裝置上暫停；請使用對應的控制項重試。
 [engine performance per game minute]
-
+每遊戲分鐘
 [engine performance per real minute]
-
+每現實分鐘
 [engine performance game engine performance]
-
+遊戲引擎效能
 [engine performance task wall-time costs]
-
+任務實際耗時
 [engine performance inspect slow ticks]
-
+檢查緩慢的刻
 [engine performance no advancing ticks recorded yet]
-
+尚未記錄推進的刻。
 [engine performance whole-engine performance]
-
+整個引擎的效能
 [engine performance open performance charts]
-
+開啟效能圖表
 [engine performance engine performance]
-
+引擎效能
 [engine performance follow latest interval]
-
+跟隨最新區間
 [engine performance compare task costs]
-
+比較任務開銷
 [engine performance all metrics and slow ticks]
-
+所有指標和緩慢的刻
 [engine performance phase orders]
-
+命令
 [engine performance phase units]
-
+單位
 [engine performance phase buildings]
-
+建築物
 [engine performance phase map]
-
+地圖
 [engine performance phase statistics]
-
+統計
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+世界擷取
 [engine performance phase checksums]
-
+總和檢查碼
 [engine performance wall time %0]
-
+實際耗時：%0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+必要等待：%0 ms；擁有者執行緒匯合：%1 ms；鎖定：%2 ms
 [engine performance phase %0 wall %1]
-
+%0：實際耗時 %1 ms
 [engine performance tick %0 wall %1]
-
+第 %0 刻：實際耗時 %1 ms
 [AI for all computer colonies]
 所有電腦控制殖民地的 AI
 [tundra]
