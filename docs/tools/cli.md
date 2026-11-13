@@ -736,7 +736,7 @@ Platform: all.
 | `--ticks` | integer; default 90000; ticks; 1..2147483647 | Absolute tick limit; must exceed saved tick. |
 | `--gradient-delay` | integer; default 8; ticks; 1..16 | Gradient scheduling delay in ticks. |
 | `--resource-growth-delay` | integer; ticks; 1..16 | Resource scheduling delay in ticks. |
-| `--ai-order-delay` | integer; ticks; 0..8 | AI order delay in ticks. |
+| `--ai-order-delay` | integer; ticks; 0..16 | AI order delay in ticks. |
 | `--save` | string | Snapshot: initial, final, or every:N. Repeatable. |
 | `--telemetry` | checksums, team-timeline, maxima, warrior-tactics | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |

@@ -350,11 +350,29 @@ std::shared_ptr<Order> Runtime::decide()
 	return std::shared_ptr<Order>(new NullOrder());
 }
 
+bool Runtime::requested_position(unsigned int id, int& x, int& y) const
+{
+    const auto pending=br.pending_buildings.find(id);
+    if(pending==br.pending_buildings.end()) return false;
+    if(std::get<3>(pending->second)!=AI_SHARED_RUNTIME_PENDING_NOT_ISSUED) {
+        x=std::get<0>(pending->second); y=std::get<1>(pending->second); return true;
+    }
+    for(const auto& order:building_orders)
+        if(order->id==int(id))
+            for(const auto& constraint:order->constraints)
+                if(const auto* single=dynamic_cast<const Construction::SinglePosition*>(constraint.get())) {
+                    x=single->x(); y=single->y(); return true;
+                }
+    return false;
+}
+
 void Runtime::orderExecutionCompleted(const Order& order, bool accepted)
 {
     if (const auto* construction=dynamic_cast<const OrderConstruction*>(&order))
         br.order_execution_completed(construction->gid,accepted,
             order.aiSelectedTarget ? std::optional<Uint32>(order.aiSelectedTarget->generation) : std::nullopt);
+    else if (const auto* create=dynamic_cast<const OrderCreate*>(&order); create && !accepted)
+        br.placement_rejected(create->posX,create->posY,create->typeNum);
 }
 
 void Runtime::releaseObservation()

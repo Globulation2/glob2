@@ -32,7 +32,7 @@ entity objects, pathfinding queries or direct mutation methods.
   below; unused arguments are not a versioning or extension mechanism.
 
 AI decisions use an immutable observation for `ctx.tick`. A match-wide engine delay
-of 0–8 ticks (default 8) schedules returned orders at `ctx.tick + delay`; profile 2
+of 0–16 ticks (default 8) schedules returned orders at `ctx.tick + delay`; profile 2
 actions retain their IDs while awaiting execution receipts. An accepted order may
 still have an effect that completes later. Account for outstanding intents before
 issuing duplicate commands. Map-script callbacks keep their existing cadence.

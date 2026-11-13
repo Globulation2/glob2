@@ -64,7 +64,7 @@ New saves retain published lists, pending completed outputs,
 admissions and remaining publication deadlines for deterministic continuation.
 
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
-from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
+from 0 through 16 and defaults to 8 for a new match. It is one match-wide engine
 setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`
 sets the same rule. Saved games retain their original setting; do not override it
 when continuing a save. Delay 8 intentionally changes response pacing compared

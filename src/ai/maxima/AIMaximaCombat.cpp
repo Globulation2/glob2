@@ -2315,6 +2315,30 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		}
 	}
 
+	// A flag ordered in an earlier review may still be in flight. It already
+	// covers the location it was ordered for, so do not order a second one there.
+	for(const int id_flag : existing_defense_flags)
+	{
+		int pending_x=0, pending_y=0;
+		if(flagLocations.empty()) break;
+		if(runtime.get_building_register().is_building_found(id_flag)
+		   || !runtime.get_building_position(id_flag, pending_x, pending_y))
+			continue;
+		int nearest=-1, nearest_dist=INT_MAX;
+		for(std::size_t j=0; j<flagLocations.size(); ++j)
+		{
+			const int d=runtime.observation().distanceSquared(flagLocations[j] / h,
+				powerOfTwoRemainder(flagLocations[j], h), pending_x, pending_y);
+			if(d<nearest_dist) { nearest_dist=d; nearest=int(j); }
+		}
+		if(nearest>=0 && nearest_dist<budget.reactive_defense_move_radius
+			*budget.reactive_defense_move_radius)
+		{
+			flagLocations.erase(flagLocations.begin()+nearest);
+			enemyUnits.erase(enemyUnits.begin()+nearest);
+		}
+	}
+
 	//If there are remaining positions on the map, it is because we didn't have enough existing
 	//flags to cover them, so create new ones
 	for(std::vector<int>::iterator i = flagLocations.begin(); i!=flagLocations.end(); ++i)

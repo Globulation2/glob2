@@ -573,7 +573,7 @@ const std::vector<Command> &commands()
 					 std::to_string(DefaultGradientDelay)),
 			 integer("--resource-growth-delay", "Resource scheduling delay in ticks", 1, 16),
 			 integer("--claim-route-delay", "Resource claim route publication delay in ticks (experiments; no replay)", 1, 8),
-			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
+			 integer("--ai-order-delay", "AI order delay in ticks", 0, 16),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
 					{"checksums", "team-timeline", "maxima", "warrior-tactics"}, "", true),

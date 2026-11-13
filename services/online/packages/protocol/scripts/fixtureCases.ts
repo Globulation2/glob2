@@ -1125,12 +1125,12 @@ export const fixtureCases: FixtureCase[] = [
       ),
     },
   },
-  ...[-1, 9, 1.5].map((delay) => ({
+  ...[-1, 17, 1.5].map((delay) => ({
     schema: 'MatchSetup' as const,
-    name: `ai-order-delay-${delay === -1 ? 'negative' : delay === 9 ? 'too-large' : 'fractional'}`,
+    name: `ai-order-delay-${delay === -1 ? 'negative' : delay === 17 ? 'too-large' : 'fractional'}`,
     valid: false,
     stage: 'schema' as const,
-    note: 'AI order delay must be an integer from zero through eight.',
+    note: 'AI order delay must be an integer from zero through sixteen.',
     value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, aiOrderDelay: delay } },
   })),
   {

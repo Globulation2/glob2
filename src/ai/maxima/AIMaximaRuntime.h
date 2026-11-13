@@ -453,6 +453,9 @@ namespace Construction
 		void remove_building(int id);
 		void set_upgrading(int id, bool awaitingExecution=false);
 		void order_execution_completed(int gid, bool accepted, std::optional<Uint32> generation={});
+		// A rejected or canceled create forgets its issued placement, so the
+		// one-at-a-time placement gate does not wait for the pending timeout.
+		void placement_rejected(int x, int y, int type);
 		void tick();
 		bool is_building_pending(unsigned id) const;
 		bool is_building_found(unsigned id) const;

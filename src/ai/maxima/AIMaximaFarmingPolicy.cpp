@@ -907,7 +907,9 @@ void Maxima::apply_maintenance_clearing_plan(Context& runtime,
 				++released;
 			}
 		}
-		else if(applied_maintenance_clearing_mask[index] && actual)
+		// Remove what this policy applied even when the observation does not show
+		// it yet: an addition still in flight would otherwise land and stay.
+		else if(applied_maintenance_clearing_mask[index])
 		{
 			removals->add_location(x, y);
 			++removed;
@@ -1488,7 +1490,8 @@ void Maxima::apply_farming_protection(Context& runtime,
 			forbidden_added=true;
 			++added;
 		}
-		else if(!forbidden && applied_farm_protection_mask[index] && actual)
+		// As for clearing, an applied cell may not be observed yet.
+		else if(!forbidden && applied_farm_protection_mask[index])
 		{
 			removals->add_location(x, y);
 			forbidden_removed=true;

@@ -126,13 +126,17 @@ void AICastor::computeBuildingSum()
 
 		}
 	}
- for(const auto& intent:pendingCreates) {
-  const auto& kind=queries->kind(intent.type);
-  const int completed=kind.site?kind.next:intent.type;
+ // Creates still in flight, and accepted creates waiting as build projects for
+ // units to clear the site, are buildings already on their way.
+ const auto countIntent=[&](int type){
+  const auto& kind=queries->kind(type);
+  const int completed=kind.site?kind.next:type;
   const int stage=std::clamp(queries->lineagePosition(completed)-1,0,NB_UNIT_LEVELS-1);
   const auto mask=queries->rawIntentMask(completed);
   for(int demand=0;demand<DemandCount;++demand) if(mask&(Uint64(1)<<unsigned(demandIntents[demand]))) buildingLevels[demand][kind.site][stage]++;
- }
+ };
+ for(const auto& intent:pendingCreates) countIntent(intent.type);
+ for(const auto& project:observation->buildProjects) if(project.teamNumber==observedTeam->number) countIntent(project.typeNum);
 	for (int bi=0; bi<AICastor::DemandCount; bi++)
 		for (int si=0; si<2; si++)
 		{

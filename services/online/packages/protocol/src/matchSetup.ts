@@ -185,7 +185,7 @@ export const MatchRules = Strict(
     aiOrderDelay: Type.Optional(
       Type.Integer({
         minimum: 0,
-        maximum: 8,
+        maximum: 16,
         description: 'Engine-wide AI decision delay in ticks; absent means zero.',
       }),
     ),

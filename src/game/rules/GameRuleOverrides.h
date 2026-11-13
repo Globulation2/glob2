@@ -23,7 +23,7 @@ inline void applyGameRule(GameHeader& header, const std::string& item)
 	};
 	std::vector<Rule> rules = {
 		{"teamStatsDelay", 8, [](GameHeader& h, int v) { h.setTeamStatsDelay(v); }},
-		{"aiOrderDelay", 8, [](GameHeader& h, int v) { h.setAIOrderDelay(v); }},
+		{"aiOrderDelay", GameHeader::MAX_AI_ORDER_DELAY, [](GameHeader& h, int v) { h.setAIOrderDelay(v); }},
 		{"buildingGradientDelay", 8, [](GameHeader& h, int v) { h.setBuildingGradientDelay(v); }},
 		{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
 		{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},

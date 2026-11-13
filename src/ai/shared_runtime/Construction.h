@@ -218,6 +218,8 @@ namespace AISharedRuntime
 		{
 		public:
 			SinglePosition(int posx, int posy);
+			int x() const { return posx; }
+			int y() const { return posy; }
 		protected:
 			SinglePosition() : posx(0), posy(0) {}
 			friend class Constraint;
@@ -369,6 +371,9 @@ namespace AISharedRuntime
 			void remove_building(int id);
 			void set_upgrading(unsigned int id, bool awaitingExecution=false);
 			void order_execution_completed(int gid, bool accepted, std::optional<Uint32> generation={});
+			///Forgets the issued placement a rejected or canceled create was for, so the
+			///one-at-a-time placement gate does not wait for the pending timeout.
+			void placement_rejected(int x, int y, int building_type);
 			void tick();
 
 			typedef std::map<int, std::tuple<int, int, int, int> >::iterator pending_iterator;

@@ -133,6 +133,9 @@ namespace AISharedRuntime
 	  void orderExecutionCompleted(const Order& order, bool accepted) override;
 
 	  unsigned int add_building_order(Construction::BuildingOrder *bo);
+	  ///Where a building that is not found yet was requested: its issued position, or
+	  ///the exact position its queued order is constrained to. False otherwise.
+	  bool requested_position(unsigned int id, int& x, int& y) const;
 	  void add_management_order(Management::ManagementOrder *mo);
 	  void add_material_tracker(Management::MaterialTracker *rt, int building_id);
 	  std::shared_ptr<Management::MaterialTracker> get_material_tracker(int building_id);

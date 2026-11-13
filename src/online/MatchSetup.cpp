@@ -268,7 +268,7 @@ MatchRules parseRules(const json& value, const std::string& path)
 	r.allyTeamsFixed = b("allyTeamsFixed");
 	r.resourceGrowthDisabled = b("resourceGrowthDisabled");
 	r.resourceScarcityLevel = i("resourceScarcityLevel", 3);
-	r.aiOrderDelay = value.contains("aiOrderDelay") ? i("aiOrderDelay", 8) : 0;
+	r.aiOrderDelay = value.contains("aiOrderDelay") ? i("aiOrderDelay", int(GameHeader::MAX_AI_ORDER_DELAY)) : 0;
 	r.buildingGradientDelay = value.contains("buildingGradientDelay")
 	                              ? static_cast<int>(integer(value["buildingGradientDelay"], path + "/buildingGradientDelay", 1, 8))
 	                              : int(GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);

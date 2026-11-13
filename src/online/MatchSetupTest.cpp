@@ -110,7 +110,7 @@ TEST_SUITE("MatchSetup")
         const auto absent=MatchSetup::fromJson(document);
         CHECK(absent.rules.aiOrderDelay==0);
         CHECK(absent.toGameHeader(mapWithTeams(4)).getAIOrderDelay()==0);
-        for(unsigned delay : {0u,8u}) {
+        for(unsigned delay : {0u,8u,16u}) {
             CAPTURE(delay);
             document["rules"]["aiOrderDelay"]=delay;
             const auto setup=MatchSetup::fromJson(document);
@@ -123,7 +123,7 @@ TEST_SUITE("MatchSetup")
             CHECK(restored.rules.aiOrderDelay==delay);
             CHECK(restored.toJson()["rules"]["aiOrderDelay"]==delay);
         }
-        for(const auto& invalid : {json(-1),json(9),json(0.5),json(8.0),json("4"),json(true),json(nullptr)}) {
+        for(const auto& invalid : {json(-1),json(17),json(0.5),json(8.0),json("4"),json(true),json(nullptr)}) {
             CAPTURE(invalid);
             document["rules"]["aiOrderDelay"]=invalid;
             CHECK_THROWS_AS(MatchSetup::fromJsonSchemaOnly(document),MatchSetupError);

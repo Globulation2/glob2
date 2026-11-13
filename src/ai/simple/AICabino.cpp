@@ -1421,7 +1421,13 @@ bool SimpleBuildingDefense::findDefense()
 
 					if(AICabino_DEBUG)
 						ai.diagnosticStream<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, 1, 1));
+					// Create the flag fully staffed and sized. Its record finds the flag a
+					// slice later, which the order delay can push past this pass.
+					auto create=std::static_pointer_cast<OrderCreate>(AIEngine::ObservationQueries::createOrder(
+						*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, dr.assigned, dr.assigned));
+					if(const int stayRange=ai.game->catalog->at(typeNum).resolvedType.maxUnitStayRange)
+						create->flagRadius=std::min<int>(std::max(dr.width, dr.height)/2, stayRange);
+					ai.enqueueOrder(create);
 				}
 			}
 			++i;
@@ -1514,8 +1520,10 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						if(AICabino_DEBUG)
 							ai.diagnosticStream<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->identity.gid;
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, std::max(i->width, i->height)/2)));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
+						if(b->unitStayRange!=static_cast<int>(std::max(i->width, i->height)/2))
+							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, std::max(i->width, i->height)/2)));
+						if(b->maxUnitWorking!=static_cast<int>(i->assigned))
+							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);
 						break;
 					}
