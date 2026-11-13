@@ -228,7 +228,7 @@ bool Pipeline::load(Game& game,GAGCore::InputStream* s)
   const auto low=s->readUint32("sequenceLow"),high=s->readUint32("sequenceHigh");
   actor.sequence=Uint64(low)|(Uint64(high)<<32);
   if(!actor.generation)return false;
-  const auto count=s->readCount("feedback",9);
+  const auto count=s->readCount("feedback",GameHeader::MAX_AI_ORDER_DELAY+1);
   for(unsigned i=0;i<count;++i) {
    s->readEnterSection(i);auto receipt=loadExecutionReceipt(*s);
    if(!validRequest(receipt.request,p,actor))return false;

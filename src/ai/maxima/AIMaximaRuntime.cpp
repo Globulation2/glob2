@@ -763,6 +763,11 @@ void BuildingRegister::issue_order(int id,int x,int y,int type)
 	BuildingRecord& r=pendingBuildings[id]; r.x=x;r.y=y;r.type=type;r.age=0;r.issued=true;
 }
 void BuildingRegister::remove_building(int id) { pendingBuildings.erase(id); }
+void BuildingRegister::placement_rejected(int x, int y, int type)
+{
+	for(auto i=pendingBuildings.begin();i!=pendingBuildings.end();++i)
+		if(i->second.issued && i->second.x==x && i->second.y==y && i->second.type==type) { pendingBuildings.erase(i); return; }
+}
 void BuildingRegister::set_upgrading(int id, bool awaitingExecution)
 {
     auto found=foundBuildings.find(id);
@@ -1459,6 +1464,8 @@ void Context::reject_queued_orders(const std::function<bool(const Order&)>& reje
         if(const auto* construction=dynamic_cast<const OrderConstruction*>(i->get()))
             buildings.order_execution_completed(construction->gid,false,
                 (*i)->aiSelectedTarget?std::optional<Uint32>((*i)->aiSelectedTarget->generation):std::nullopt);
+        else if(const auto* create=dynamic_cast<const OrderCreate*>(i->get()))
+            buildings.placement_rejected(create->posX,create->posY,create->typeNum);
         i=orders.erase(i);
     }
 }
@@ -1479,6 +1486,8 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
         if(const auto* construction=dynamic_cast<const OrderConstruction*>(orders.front().get()))
             buildings.order_execution_completed(construction->gid,false,
                 orders.front()->aiSelectedTarget ? std::optional<Uint32>(orders.front()->aiSelectedTarget->generation) : std::nullopt);
+        else if(const auto* create=dynamic_cast<const OrderCreate*>(orders.front().get()))
+            buildings.placement_rejected(create->posX,create->posY,create->typeNum);
         orders.pop_front();
     }
 	if(!orders.empty())

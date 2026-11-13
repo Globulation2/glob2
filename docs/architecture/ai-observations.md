@@ -130,8 +130,9 @@ AI controller lanes preserve decision order;
 gradient and growth jobs need no lane.
 `AIEngine::Pipeline` submits one batch per tick with one job per controller on
 that controller's lane, and joins it at the deadline. The
-match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
-to 8 for new games. An order observed at logical tick `t` is delivered at `t + max(1, delay)`. Thread
+match-wide `GameHeader::aiOrderDelay` is an integer from 0 through
+`GameHeader::MAX_AI_ORDER_DELAY` (16), defaulting to 8 for new games. Engine
+bounds on in-flight AI work (executor slots, saved receipts) derive from that maximum. An order observed at logical tick `t` is delivered at `t + max(1, delay)`. Thread
 count and completion time never choose that deadline or which decision a
 controller makes; the owner publishes in stable request order. Human orders and
 scenario map scripts retain their existing scheduling.

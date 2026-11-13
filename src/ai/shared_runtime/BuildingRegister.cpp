@@ -259,6 +259,19 @@ void BuildingRegister::order_execution_completed(int gid, bool accepted, std::op
 
 
 
+void BuildingRegister::placement_rejected(int x, int y, int building_type)
+{
+    for(auto i=pending_buildings.begin();i!=pending_buildings.end();++i) {
+        const auto& [px,py,type,ticks]=i->second;
+        if(ticks!=AI_SHARED_RUNTIME_PENDING_NOT_ISSUED && px==x && py==y && type==building_type) {
+            pending_buildings.erase(i);
+            return;
+        }
+    }
+}
+
+
+
 void BuildingRegister::tick()
 {
  Runtime::OwnerObservationScope observation(runtime);

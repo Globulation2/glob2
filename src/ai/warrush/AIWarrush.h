@@ -103,6 +103,9 @@ private:
  std::shared_ptr<Order> decide();
 	using Intent = AIPlanning::BuildingIntent;
 	bool provides(const AIEngine::BuildingView& building, Intent intent) const;
+	// Buildings ordered but not yet standing: creates still in flight and, when
+	// counting, the team's build projects waiting for units to clear the site.
+	int inFlightBuildingsOfType(std::initializer_list<Intent> intents, bool includeProjects=true) const;
 	int selectBuilding(Intent intent) const;
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;

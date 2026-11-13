@@ -40,7 +40,7 @@ last samples without executing further orders.
 
 ## AI order scheduling
 
-MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 8;
+MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 16;
 omitting it means 0 for backward compatibility. New match defaults explicitly set
 it to 8 (about 267 ms at the normal 33⅓ ms tick interval). This delays AI responses to
 observed changes and allows decisions to overlap subsequent simulation ticks. The engine stores it in GameHeader and uses the same delay

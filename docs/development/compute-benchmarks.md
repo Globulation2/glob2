@@ -22,7 +22,7 @@ The engine polls each eligible controller at most once per logical tick. A tick'
 decisions form one deferred batch on the map's compute executor, one job per controller
 on that controller's lane: a controller's jobs run in FIFO order without overlap, while
 different controllers may run concurrently with each other and with map computation.
-One match-wide delay of 0–8 ticks sets the order's deadline, which is also the
+One match-wide delay of 0–16 ticks sets the order's deadline, which is also the
 batch's due tick: workers run deferred batches earliest due first. At the deadline
 the owner waits for the batch (it runs no shared jobs itself), then publishes the
 complete batch in player order. A slow worker cannot postpone an order's

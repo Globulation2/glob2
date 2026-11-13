@@ -62,7 +62,9 @@ public:
 	unsigned getTeamStatsDelay() const { return teamStatsDelay; }
     void setTeamStatsDelay(unsigned ticks) { if(ticks>8) throw std::invalid_argument("Team statistics delay must be 0..8 ticks"); teamStatsDelay=ticks; ++observationRevisionValue; }
 	unsigned getAIOrderDelay() const { return aiOrderDelay; }
-	void setAIOrderDelay(unsigned ticks) { if (ticks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
+	///Largest supported AI order delay. Engine bounds for in-flight AI work derive from it.
+	static constexpr unsigned MAX_AI_ORDER_DELAY = 16;
+	void setAIOrderDelay(unsigned ticks) { if (ticks > MAX_AI_ORDER_DELAY) throw std::invalid_argument("AI order delay must be 0..16 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
 	///Ticks between capturing a building walking-field refresh and publishing it (1..8).
 	///Missing fields initialize one tick after admission independently of this rule.
 	static constexpr unsigned DEFAULT_BUILDING_GRADIENT_DELAY = 8;

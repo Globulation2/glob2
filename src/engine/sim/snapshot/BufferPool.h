@@ -11,10 +11,10 @@ namespace SimulationSnapshot
 // A bounded pool of reusable component buffers. The owner thread acquires; a
 // buffer is free again once every consumer has dropped its shared_ptr. The
 // limit covers the longest consumer horizon plus the store's latest capture:
-// delayed map gradients retain up to sixteen ticks, building gradients and AI
-// decisions and statistics up to eight, and turret jobs up to four ticks.
+// delayed map gradients and AI decisions retain up to sixteen ticks, building
+// gradients and statistics up to eight, and turret jobs up to four ticks.
 // All lease the same per-tick captures; a previous turret index retains no world
-// lease, so max(16, 8, 8, 8, 4) + 1 = 17.
+// lease, so max(16, 16, 8, 8, 4) + 1 = 17.
 // Presentation reserves five additional epochs: active input, pending input,
 // and three published/reusable PresentationFrame slots. Unused capacity is never allocated.
 //

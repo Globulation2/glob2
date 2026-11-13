@@ -1370,6 +1370,15 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 
 
+namespace
+{
+// The zone's half extent, limited to what the flag type allows.
+int defenseFlagRadius(const SimpleBuildingDefense::defenseRecord& record, const BuildingType& type)
+{
+	return std::min<int>(std::max(record.width, record.height)/2, type.maxUnitStayRange);
+}
+}
+
 bool SimpleBuildingDefense::findDefense()
 {
  const int typeNum=selectBuilding(ai,AttractWarriors);
@@ -1421,7 +1430,13 @@ bool SimpleBuildingDefense::findDefense()
 
 					if(AICabino_DEBUG)
 						ai.diagnosticStream<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.enqueueOrder(AIEngine::ObservationQueries::createOrder(*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, 1, 1));
+					// Create the flag fully staffed and sized. Its record finds the flag a
+					// slice later, which the order delay can push past this pass.
+					auto create=std::static_pointer_cast<OrderCreate>(AIEngine::ObservationQueries::createOrder(
+						*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, dr.assigned, dr.assigned));
+					if(ai.game->catalog->at(typeNum).resolvedType.maxUnitStayRange)
+						create->flagRadius=defenseFlagRadius(dr, ai.game->catalog->at(typeNum).resolvedType);
+					ai.enqueueOrder(create);
 				}
 			}
 			++i;
@@ -1514,8 +1529,11 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						if(AICabino_DEBUG)
 							ai.diagnosticStream<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->identity.gid;
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, std::max(i->width, i->height)/2)));
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
+						const int radius=defenseFlagRadius(*i, AIEngine::ObservationQueries::buildingType(*ai.game,*b));
+						if(b->unitStayRange!=radius)
+							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, radius)));
+						if(b->maxUnitWorking!=static_cast<int>(i->assigned))
+							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);
 						break;
 					}

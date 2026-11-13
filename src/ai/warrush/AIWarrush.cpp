@@ -269,6 +269,22 @@ bool AIWarrush::provides(const AIEngine::BuildingView& building, Intent intent) 
  return queries->matches(completed,intent);
 }
 
+int AIWarrush::inFlightBuildingsOfType(std::initializer_list<Intent> intents, bool includeProjects) const
+{
+ const auto serves=[&](int type){
+  const auto& kind=observation->catalog->at(type);
+  const int completed=kind.site ? kind.next : type;
+  return std::any_of(intents.begin(),intents.end(),[&](Intent intent){return queries->matches(completed,intent);});
+ };
+ int count=0;
+ for(const auto& request:pendingRequests)
+  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) count+=serves(create->typeNum);
+ if(includeProjects)
+  for(const auto& project:observation->buildProjects)
+   if(project.teamNumber==teamNumber) count+=serves(project.typeNum);
+ return count;
+}
+
 int AIWarrush::selectBuilding(Intent intent) const
 {
  const auto& index = *queries;
@@ -354,7 +370,7 @@ bool AIWarrush::allOfBuildingTypeAreCompleted(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_true,
-								  findBuildingIf(*observation, observedTeam,
+								  inFlightBuildingsOfType({intent}, false) == 0 && findBuildingIf(*observation, observedTeam,
 												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
@@ -371,7 +387,7 @@ bool AIWarrush::allOfBuildingTypeAreFull(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_true,
-								  findBuildingIf(*observation, observedTeam,
+								  inFlightBuildingsOfType({intent}, false) == 0 && findBuildingIf(*observation, observedTeam,
 												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
@@ -386,7 +402,7 @@ int AIWarrush::numberOfBuildingsOfType(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_calls);
 	return telemetry.returnedInt(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_result,
 								 countBuildingsIf(*observation, observedTeam, [this, intent](const AIEngine::BuildingView *b)
-												  { return provides(*b, intent); }));
+												  { return provides(*b, intent); }) + inFlightBuildingsOfType({intent}));
 }
 
 
@@ -403,7 +419,8 @@ int AIWarrush::numberOfExtraBuildings()const
 									provides(*b, Intent::TrainSwim) ||
 									provides(*b, Intent::TrainConstruction) ||
 									provides(*b, Intent::ProjectileDefense);
-						 }));
+						 }) + inFlightBuildingsOfType({Intent::Heal, Intent::TrainWalk, Intent::TrainSwim,
+							Intent::TrainConstruction, Intent::ProjectileDefense}));
 }
 
 bool AIWarrush::allOfBuildingTypeAreFullyWorked(Intent intent)const

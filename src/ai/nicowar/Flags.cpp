@@ -267,6 +267,26 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		}
 	}
 	
+	// A flag ordered in an earlier cycle may still be in flight. It already
+	// covers the location it was ordered for, so do not order a second one there.
+	for(std::vector<int>::iterator i = existing_defense_flags.begin(); i!=existing_defense_flags.end() && !flagLocations.empty(); ++i)
+	{
+		int pending_x = 0, pending_y = 0;
+		if(runtime.get_building_register().is_building_found(*i) || !runtime.requested_position(*i, pending_x, pending_y))
+			continue;
+		int nearest = -1, nearest_dist = INT_MAX;
+		for(std::size_t j = 0; j < flagLocations.size(); ++j)
+		{
+			int d = runtime.observation().distanceSquared(flagLocations[j] / h, powerOfTwoRemainder(flagLocations[j], h), pending_x, pending_y);
+			if(d < nearest_dist) { nearest_dist = d; nearest = int(j); }
+		}
+		if(nearest >= 0 && nearest_dist < (AI_NICOWAR_DEFENSE_FLAG_MAX_MOVE_TILES * AI_NICOWAR_DEFENSE_FLAG_MAX_MOVE_TILES))
+		{
+			flagLocations.erase(flagLocations.begin() + nearest);
+			enemyUnits.erase(enemyUnits.begin() + nearest);
+		}
+	}
+
 	//If there are remaining positions on the map, it is because we didn't have enough existing
 	//flags to cover them, so create new ones
 	for(std::vector<int>::iterator i = flagLocations.begin(); i!=flagLocations.end(); ++i)

@@ -902,4 +902,6 @@ void AIMaxima::Maxima::orderExecutionCompleted(const Order& order, bool accepted
     if(const auto* construction=dynamic_cast<const OrderConstruction*>(&order))
         context.get_building_register().order_execution_completed(construction->gid,accepted,
             order.aiSelectedTarget ? std::optional<Uint32>(order.aiSelectedTarget->generation) : std::nullopt);
+    else if(const auto* create=dynamic_cast<const OrderCreate*>(&order); create && !accepted)
+        context.get_building_register().placement_rejected(create->posX,create->posY,create->typeNum);
 }

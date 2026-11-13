@@ -5,6 +5,7 @@
 #include <BinaryStream.h>
 #include "Version.h"
 #include "GameDiagnostics.h"
+#include "GameHeader.h"
 #include <algorithm>
 #include <limits>
 #include <set>
@@ -90,8 +91,8 @@ bool OrderScheduler::liveWork() const
 }
 void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target)
 {
-	static_assert(ComputeExecutor::AIHorizon >= 8, "the executor sizes its slots for the AI horizon");
-	if (delayTicks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks");
+	static_assert(ComputeExecutor::AIHorizon >= GameHeader::MAX_AI_ORDER_DELAY, "the executor sizes its slots for the AI horizon");
+	if (delayTicks > GameHeader::MAX_AI_ORDER_DELAY) throw std::invalid_argument("AI order delay must be 0..16 ticks");
 	if (liveWork()) throw std::logic_error("Cannot reconfigure a live AI pipeline");
 	executor = &target;
 	delay = delayTicks;
@@ -335,7 +336,7 @@ bool OrderScheduler::load(GAGCore::InputStream* stream)
 	struct Rollback { OrderScheduler& owner; bool success = false; ~Rollback() { if (!success) { owner.clear(); owner.delay = 0; } } } rollback{*this};
 	stream->readEnterSection("AIOrderScheduler");
 	delay = stream->readUint32("delay");
-	if (delay > 8) return false;
+	if (delay > GameHeader::MAX_AI_ORDER_DELAY) return false;
 	const auto hasSubmission = stream->readUint8("hasSubmission");
 	if (hasSubmission > 1) return false;
 	if (hasSubmission) submissionTick = stream->readUint32("submissionTick");

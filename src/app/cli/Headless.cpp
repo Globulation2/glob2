@@ -637,7 +637,7 @@ struct HeadlessRunner
 					permille ? std::optional<Uint32>(static_cast<Uint32>(permille)) : std::nullopt);
 			}
 			for (const auto& rule:many(options,"--rule")) applyGameRule(header, rule);
-			if (options.count("--ai-order-delay")) header.setAIOrderDelay(integer(one(options,"--ai-order-delay"), 0, 8));
+			if (options.count("--ai-order-delay")) header.setAIOrderDelay(integer(one(options,"--ai-order-delay"), 0, GameHeader::MAX_AI_ORDER_DELAY));
 			std::map<int,std::string> overrides;
 			std::set<std::pair<int,std::string>> seen;
 			for(const auto &assignment : many(options,"--ai-param"))

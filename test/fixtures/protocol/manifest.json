@@ -471,21 +471,21 @@
       "schema": "MatchSetup",
       "valid": false,
       "stage": "schema",
-      "note": "AI order delay must be an integer from zero through eight."
+      "note": "AI order delay must be an integer from zero through sixteen."
     },
     {
       "file": "invalid/MatchSetup/ai-order-delay-too-large.json",
       "schema": "MatchSetup",
       "valid": false,
       "stage": "schema",
-      "note": "AI order delay must be an integer from zero through eight."
+      "note": "AI order delay must be an integer from zero through sixteen."
     },
     {
       "file": "invalid/MatchSetup/ai-order-delay-fractional.json",
       "schema": "MatchSetup",
       "valid": false,
       "stage": "schema",
-      "note": "AI order delay must be an integer from zero through eight."
+      "note": "AI order delay must be an integer from zero through sixteen."
     },
     {
       "file": "valid/MatchSetup/building-gradient-delay-two.json",

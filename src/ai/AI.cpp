@@ -142,7 +142,7 @@ AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
         } else if(!receipt.command.empty() && receipt.command.front()!=ORDER_NULL)
             deferredControllerReceipts.push_back(receipt);
     }
-    if(deferredControllerReceipts.size()>9) throw std::logic_error("AI deferred receipt bound exceeded");
+    if(deferredControllerReceipts.size()>GameHeader::MAX_AI_ORDER_DELAY+1) throw std::logic_error("AI deferred receipt bound exceeded");
 	std::shared_ptr<Order> order;
 	// Preserve the existing native training-release policy using captured config
 	// and catalog capabilities. No live rules helper is reachable here.
@@ -163,7 +163,7 @@ AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
                 order=std::make_shared<OrderModifyBuilding>(b.identity.gid,0);
                 order->aiSelectedTarget=b.identity;
                 wrapperReleases.push_back({context.pollSequence,b.identity});
-                if(wrapperReleases.size()>9) throw std::logic_error("AI wrapper release bound exceeded");
+                if(wrapperReleases.size()>GameHeader::MAX_AI_ORDER_DELAY+1) throw std::logic_error("AI wrapper release bound exceeded");
                 break;
             }
 		}
@@ -421,7 +421,7 @@ void AI::loadWrapperFeedback(GAGCore::InputStream* stream)
 {
     stream->readEnterSection("wrapperFeedback");
     wrapperGeneration=stream->readUint32("generation");
-    const auto releases=stream->readCount("releases",9);
+    const auto releases=stream->readCount("releases",GameHeader::MAX_AI_ORDER_DELAY+1);
     for(unsigned i=0;i<releases;++i){
         stream->readEnterSection(i);const auto low=stream->readUint32("sequenceLow"),high=stream->readUint32("sequenceHigh");
         WrapperRelease release{Uint64(low)|(Uint64(high)<<32),{stream->readUint16("gid"),stream->readUint32("targetGeneration")}};
@@ -430,7 +430,7 @@ void AI::loadWrapperFeedback(GAGCore::InputStream* stream)
             throw std::runtime_error("Invalid saved AI wrapper release");
         wrapperReleases.push_back(release);stream->readLeaveSection();
     }
-    const auto receipts=stream->readCount("receipts",9);
+    const auto receipts=stream->readCount("receipts",GameHeader::MAX_AI_ORDER_DELAY+1);
     for(unsigned i=0;i<receipts;++i){
         stream->readEnterSection(i);auto receipt=AIEngine::loadExecutionReceipt(*stream);
         if(receipt.request.player!=unsigned(player->number) || receipt.request.generation!=wrapperGeneration ||
