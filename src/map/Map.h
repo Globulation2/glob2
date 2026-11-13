@@ -10,6 +10,7 @@
 #include "claims/ClaimTerrainComponents.h"
 #include "claims/ClaimContention.h"
 #include "claims/ClaimHireTargets.h"
+#include "claims/ClaimPolicy.h"
 #include "OwnerRandom.h"
 namespace GAGCore { class CooperativeTask; }
 struct JoinContext;
@@ -140,6 +141,11 @@ class Map
     // catalog); a change invalidates every claim at the next publication.
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
+    // Engine setting for experiments, not saved: a loaded game takes the
+    // current value for new routes; saved pending routes keep their due ticks.
+    // Recovery accounting derives a route's submission tick from the current
+    // delay, so continuing a save at another delay is for experiments only.
+    unsigned claimRouteDelayTicks = ResourceClaims::Policy::RoutePublicationDelay;
     Uint32 claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs) const;
     // The per-tick snapshot checksum of the claim runtime, reused while its
     // inputs are unchanged. Route states and recovery records change only
@@ -284,6 +290,9 @@ public:
     void finishResourceGrowth();
     void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
+    //! Ticks from a claim route request to its publication (1..8).
+    void setClaimRouteDelay(unsigned delay);
+    unsigned claimRouteDelay() const { return claimRouteDelayTicks; }
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;

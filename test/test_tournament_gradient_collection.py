@@ -28,6 +28,18 @@ class GradientCollectionJobs(unittest.TestCase):
             with self.subTest(backend=backend),self.assertRaises(ValueError):
                 adapter.validate(item|{'config':item['config']|{'gradient_backend':backend}})
 
+    def test_claim_route_delay_passes_through_and_rejects_replays(self):
+        item=job('game','a'*64,inputs={'save':{'sha256':'b'*64}},config={'ticks':64,'claim_route_delay':3})
+        adapter=EngineJob('game');adapter.validate(item)
+        args=adapter.command(item,{'directory':'/bundle','executable':'glob2'},'/attempt',{'save':'/source.game.gz'})
+        self.assertEqual(args[args.index('--claim-route-delay')+1],'3')
+        for delay in (0,9,True,'2',1.5):
+            with self.subTest(delay=delay),self.assertRaises(ValueError):
+                adapter.validate(item|{'config':item['config']|{'claim_route_delay':delay}})
+        with self.assertRaises(ValueError):
+            adapter.validate(item|{'outputs':item['outputs']|{'replay':True}})
+        adapter.validate(item|{'config':item['config']|{'claim_route_delay':1},'outputs':item['outputs']|{'replay':True}})
+
     def test_requested_cpu_window_requires_measured_counters_and_backend_attestation(self):
         item=job('game','a'*64,inputs={'save':{'sha256':'b'*64}},
                  config={'ticks':64,'benchmark_warmup_ticks':16,'gradient_backend':'cpu'})

@@ -108,7 +108,7 @@ ResourceClaims::ClaimRecoverySelection Map::beginClaimRecoverySelection(const Un
 {
     using namespace ResourceClaims;
     if(!activeClaimsEnabled())return {};
-    if(!materialClaimRoutes){materialClaimRoutes=std::make_unique<ActiveRouteRuntime>(compute);claimRuntimeChanged();}
+    if(!materialClaimRoutes){materialClaimRoutes=std::make_unique<ActiveRouteRuntime>(compute,claimRouteDelayTicks);claimRuntimeChanged();}
     const auto [entry,inserted]=materialClaimRoutes->recovery.try_emplace(unitOwner(unit.gid,unit.scriptIdentity));
     auto& recovery=entry->second;
     const auto material=std::uint8_t(unit.destinationPurpose),movement=std::uint8_t(accessClass(unit.movementAccess()));
@@ -141,7 +141,7 @@ unsigned Map::recordClaimFailure(const Unit& unit,ResourceClaims::ClaimFailureKi
         // first terminal failure, account its original admission once; later
         // recovery submissions are counted before they enter the worker queue.
         if(!recovery.failureStreak && state.identity.request)
-            recovery.admit(Uint32(state.due-1));
+            recovery.admit(Uint32(state.due-std::min<Uint64>(state.due,materialClaimRoutes->pipeline.delayTicks())));
         recovery.recordFailure(game->stepCounter,state.target,
             state.route.status==RouteStatus::Unreachable?ClaimRecovery::TtlTicks:ClaimRecovery::BackoffTicks);
     }
@@ -168,7 +168,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
     const auto target = unit.activeMaterialClaim->access;
     if (target >= cellCount()) return ResourceClaims::StepResult::Failed;
     if (warpDistMax(unit.posX, unit.posY, target % getW(), target / getW()) <= 1) return ResourceClaims::StepResult::Arrived;
-    if (!materialClaimRoutes) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute);
+    if (!materialClaimRoutes) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute,claimRouteDelayTicks);
     // Route stepping advances cursors, waits and admissions in place.
     claimRuntimeChanged();
     auto& runtime = *materialClaimRoutes;
@@ -187,8 +187,8 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
                 : !(live.areas[cell].forbidden & traffic.teamMask) && live.occupancy[cell].building == 0xffff
                     && !MapState::resourceBlocksGround(live, cell));
     };
-    // Routes are computed off the owner thread and published on the next
-    // tick. Rather than stand still meanwhile, the worker takes the ordinary
+    // Routes are computed off the owner thread and published claimRouteDelay()
+    // ticks later. Rather than stand still meanwhile, the worker takes the ordinary
     // material gradient step for the claimed material, exactly as claims-off
     // movement would (demand, movement outcome and reactive refresh
     // included); the published route then rejoins from wherever it got to.
@@ -218,7 +218,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
         RouteInput input{game->observation().project(mask), avoidUnits ? traffic : profileOf(unit), current, target};
         input.maximumExpansions = Policy::RouteMaximumExpansions;
         state.identity = runtime.pipeline.submit(owner, unit.materialClaimTask, game->stepCounter, std::move(input));
-        state.due = Uint64(game->stepCounter) + 1; state.pending = true;
+        state.due = runtime.pipeline.delayTicks() + Uint64(game->stepCounter); state.pending = true;
         return true;
     };
     if (found == runtime.states.end()) {
@@ -332,6 +332,12 @@ void Map::cancelClaimRoute(ResourceClaims::Owner owner)
     materialClaimRoutes->pipeline.cancel(owner);
     if (materialClaimRoutes->states.erase(owner)) claimRuntimeChanged();
 }
+void Map::setClaimRouteDelay(unsigned delay)
+{
+    ResourceClaims::RoutePipeline::validateDelay(delay);
+    claimRouteDelayTicks = delay;
+    if (materialClaimRoutes) materialClaimRoutes->pipeline.setDelay(delay);
+}
 void Map::flushClaimRoutes()
 { if (materialClaimRoutes) materialClaimRoutes->pipeline.flush(); }
 void Map::publishClaimRoutes()
@@ -437,7 +443,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
     stream->readLeaveSection();
     const auto count = stream->readUint32("states");
     if (count > MaximumStates || (count && !enabled)) throw std::runtime_error("Invalid active route state count");
-    if (enabled) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute);
+    if (enabled) materialClaimRoutes = std::make_unique<ActiveRouteRuntime>(compute,claimRouteDelayTicks);
     stream->readEnterSection("records");
     for (unsigned i = 0; i < count; ++i) {
         stream->readEnterSection(i); ActiveRouteRuntime::State state; state.identity = loadIdentity(stream);
@@ -446,7 +452,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
         state.pending = pending;
         stream->readEnterSection("due"); state.due = read64(stream); stream->readLeaveSection();
         if (state.start >= cellCount() || state.target >= cellCount() || pending > 1 || !state.due ||
-            state.due > Uint64(game->stepCounter) + 1) throw std::runtime_error("Invalid active route state");
+            state.due > Uint64(game->stepCounter) + Policy::MaxRoutePublicationDelay) throw std::runtime_error("Invalid active route state");
         state.route = loadRoute(stream, *this, state.start); state.cacheRouteDigest();
         const auto reanchor = stream->readUint8("reanchor"), awaiting = stream->readUint8("awaitingAdmission");
         state.trafficWaits = stream->readUint32("trafficWaits");

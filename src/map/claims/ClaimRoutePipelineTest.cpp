@@ -135,6 +135,61 @@ TEST_SUITE("ClaimRoutePipeline")
         }
         CHECK(executor.liveBatches() == 0);
     }
+    TEST_CASE("a longer delay keeps one batch per source tick in flight until its deadline")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+        ComputeExecutor executor; executor.configure(2);
+        CHECK_THROWS_AS(ResourceClaims::RoutePipeline(executor, 16, 0), std::invalid_argument);
+        CHECK_THROWS_AS(ResourceClaims::RoutePipeline(executor, 16, ResourceClaims::Policy::MaxRoutePublicationDelay + 1), std::invalid_argument);
+        ResourceClaims::RoutePipeline pipeline(executor, 16, 3);
+        CHECK(pipeline.delayTicks() == 3);
+        ResourceClaims::RouteInput input{world, {}, 0, 10};
+        const auto a = pipeline.submit(1, 1, 10, input);
+        // A later tick cannot join the unflushed batch of tick 10.
+        CHECK_THROWS_AS(pipeline.submit(9, 1, 11, input), std::logic_error);
+        CHECK(pipeline.publish(10).empty()); // Seals tick 10.
+        CHECK(pipeline.sealedSubmissionTick() == 10);
+        const auto b = pipeline.submit(2, 1, 11, input);
+        CHECK(pipeline.publish(11).empty());
+        const auto c = pipeline.submit(3, 1, 12, input);
+        CHECK(pipeline.publish(12).empty());
+        CHECK(executor.liveBatches() == 3);
+        // A save mid-flight carries three deadlines and restores into a
+        // pipeline configured with another delay.
+        const auto saved = pipeline.exportPending();
+        REQUIRE(saved.size() == 3);
+        CHECK(saved[0].due == 13); CHECK(saved[1].due == 14); CHECK(saved[2].due == 15);
+        ResourceClaims::RoutePipeline restored(executor, 16, 1);
+        restored.restore(saved);
+        // Pending outputs without a sealed tick are rejected, not dereferenced.
+        CHECK_THROWS_AS(restored.restoreControl(0, std::nullopt), std::invalid_argument);
+        CHECK_THROWS_AS(restored.restoreControl(pipeline.requestSequence(), 15), std::invalid_argument);
+        restored.restoreControl(pipeline.requestSequence(), pipeline.sealedSubmissionTick());
+        for (auto* p : {&pipeline, &restored}) {
+            const auto first = p->publish(13); REQUIRE(first.size() == 1); CHECK(first[0].identity == a);
+            // At delay 1 a route requested on tick 13 is due with b on 14.
+            const auto d = p->submit(4, 1, 13, input);
+            const auto second = p->publish(14);
+            if (p == &pipeline) { REQUIRE(second.size() == 1); CHECK(second[0].identity == b); }
+            else { REQUIRE(second.size() == 2); CHECK(second[0].identity == b); CHECK(second[1].identity == d); }
+            const auto third = p->publish(15); REQUIRE_FALSE(third.empty()); CHECK(third[0].identity == c);
+            if (p == &pipeline) { const auto last = p->publish(16); REQUIRE(last.size() == 1); CHECK(last[0].identity == d); }
+        }
+        // Lowering the delay with work in flight publishes the newer, earlier
+        // deadline first rather than behind the older one.
+        restored.setDelay(4);
+        const auto e = restored.submit(5, 1, 16, input);
+        CHECK(restored.publish(16).empty());
+        restored.setDelay(1);
+        const auto f = restored.submit(6, 1, 17, input);
+        const auto early = restored.publish(18); REQUIRE(early.size() == 1); CHECK(early[0].identity == f);
+        CHECK(restored.publish(19).empty());
+        const auto late = restored.publish(20); REQUIRE(late.size() == 1); CHECK(late[0].identity == e);
+        CHECK(executor.liveBatches() == 0);
+        CHECK_THROWS_AS(restored.setDelay(0), std::invalid_argument);
+    }
     TEST_CASE("cancelled task results cannot publish and invalid inputs fail before submission")
     {
         glob2test::HeadlessGlobals globals;

@@ -718,6 +718,13 @@ struct HeadlessRunner
             engine.gui.game.map.computeExecutor().configureTelemetry(computeMode);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
+        if (options.count("--claim-route-delay")) {
+            // An engine setting, not a match rule: a replay would not reproduce it.
+            const unsigned claimDelay = integer(one(options, "--claim-route-delay"), 1, ResourceClaims::Policy::MaxRoutePublicationDelay);
+            if (recordReplay && claimDelay != ResourceClaims::Policy::RoutePublicationDelay)
+                throw std::invalid_argument("--claim-route-delay other than the default cannot record a replay");
+            engine.gui.game.map.setClaimRouteDelay(claimDelay);
+        }
 		const auto pipeline = engine.gui.game.map.routing().gradientPipelineStatus();
 		if (!pipeline.enabled) engine.gui.game.map.routing().configureGradientPipeline(1, gradientDelay);
 		else {
