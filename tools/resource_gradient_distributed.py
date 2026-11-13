@@ -137,7 +137,7 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
             fmt=actual['format'];current=credits[fmt]
             for key in weights:current[key]+=weights[key]
             build=max(sorted(weights),key=lambda key:current[key]);current[build]-=sum(weights.values())
-        if by_build[build]['platform']['os']=='darwin':collection['threads']=1
+        collection['threads']=1  # one compute participant per game on every platform (no CPU pinning)
         from tools.tournaments.jobs import resource_gradient_collection_outputs
         outputs=resource_gradient_collection_outputs(collection)
         if 'contradictions' in contract:
