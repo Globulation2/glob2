@@ -109,3 +109,7 @@
 [Moss]
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
+[Show %0 more landscapes that need different settings]
+[Hide landscapes that need different settings]
+[Switch to %0 colonies]
+[Switch to %0 x %1]

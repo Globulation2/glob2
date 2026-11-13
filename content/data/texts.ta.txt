@@ -1258,6 +1258,14 @@ AI கட்டளைகள் இல்லை
 முன்னோட்டம் உருவாக்கப்படுகிறது...
 [Preview unavailable]
 முன்னோட்டம் கிடைக்கவில்லை
+[Show %0 more landscapes that need different settings]
+
+[Hide landscapes that need different settings]
+
+[Switch to %0 colonies]
+
+[Switch to %0 x %1]
+
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 ஒவ்வொரு நிலப்பரப்பும் உங்கள் தற்போதைய அளவு மற்றும் குடியிருப்பு எண்ணிக்கைக்கு ஏற்ப ஒரு உண்மையான வரைபடமாகக் காட்டப்பட்டுள்ளது. காட்டப்பட்டுள்ள வரைபடத்தை விளையாட, அவற்றில் ஒன்றைப் பயன்படுத்தவும்.
 [Purple]

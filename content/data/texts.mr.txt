@@ -1258,6 +1258,14 @@ Globulation 2 च्या प्राथमिक शिकवणीत तु
 पूर्वावलोकन तयार करत आहे...
 [Preview unavailable]
 पूर्वावलोकन उपलब्ध नाही
+[Show %0 more landscapes that need different settings]
+
+[Hide landscapes that need different settings]
+
+[Switch to %0 colonies]
+
+[Switch to %0 x %1]
+
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 प्रत्येक भूप्रदेश तुमच्या सध्याच्या आकारानुसार आणि वसाहतींच्या संख्येनुसार एका वास्तविक नकाशाच्या स्वरूपात दाखवला आहे. दाखवलेला नकाशा खेळण्यासाठी त्यापैकी एकाचा वापर करा.
 [Purple]

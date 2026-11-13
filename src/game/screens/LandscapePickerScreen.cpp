@@ -6,6 +6,7 @@
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
+#include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -51,6 +52,11 @@ std::vector<std::string> categoriesOf(const std::vector<LandscapePickerScreen::E
 	std::sort(found.begin(), found.end());
 	return found;
 }
+const GeneratorControl &sharedControl(const std::string &id)
+{
+	const auto &controls = GenerationRequest::sharedControls();
+	return *std::find_if(controls.begin(), controls.end(), [&](const GeneratorControl &c) { return c.id == id; });
+}
 } // namespace
 
 std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vector<Entry> &entries)
@@ -74,15 +80,90 @@ void LandscapePickerScreen::recomputeIncompatible()
 		Glob2UI::DiagnosticText presenter;
 		incompatibleText[i] = presenter(incompatible[i]);
 	}
+	fixes.assign(entries.size(), std::nullopt);
+	for (std::size_t i = 0; i < entries.size(); ++i)
+		if (!incompatible[i].empty())
+			fixes[i] = nearestFix(entries[i].request);
+}
+
+// The smallest step through the shared dropdowns that makes `request` valid: a different colony
+// count, or a different square size. Steps are counted in dropdown positions; on a tie the colony
+// count wins, since it leaves the other landscapes' maps the same size. Each candidate is an
+// up-front validateGenerationRequest, so no worker time is spent.
+std::optional<LandscapePickerScreen::SettingsFix> LandscapePickerScreen::nearestFix(const GenerationRequest &request) const
+{
+	const auto &teams = sharedControl("teams");
+	const auto &width = sharedControl("width");
+	const auto &height = sharedControl("height");
+	const auto &definition = request.definition();
+	std::optional<SettingsFix> best;
+	double bestCost = 0;
+	auto offer = [&](double cost, SettingsFix fix)
+	{
+		if (!best || cost < bestCost)
+		{
+			best = std::move(fix);
+			bestCost = cost;
+		}
+	};
+	const int teamsAt = teams.indexOf(teams.get(request));
+	for (int v : teams.values())
+	{
+		const int steps = std::abs(teams.indexOf(v) - teamsAt);
+		if (steps == 0 || (best && steps >= bestCost))
+			continue;
+		GenerationRequest candidate = request;
+		teams.set(candidate, v);
+		if (validateGenerationRequest(candidate, definition).empty())
+			offer(steps, {{{teams.id, v}}, GAGCore::FormattableString(tr("Switch to %0 colonies")).arg(teams.displayValue(v))});
+	}
+	const int widthAt = width.indexOf(width.get(request));
+	const int heightAt = height.indexOf(height.get(request));
+	for (int v : width.values())
+	{
+		if (height.indexOf(v) < 0)
+			continue;
+		const int steps = std::max(std::abs(width.indexOf(v) - widthAt), std::abs(height.indexOf(v) - heightAt));
+		if (steps == 0 || (best && steps + 0.5 >= bestCost))
+			continue;
+		GenerationRequest candidate = request;
+		width.set(candidate, v);
+		height.set(candidate, v);
+		if (validateGenerationRequest(candidate, definition).empty())
+			offer(steps + 0.5, {{{width.id, v}, {height.id, v}},
+								GAGCore::FormattableString(tr("Switch to %0 x %1")).arg(width.displayValue(v)).arg(height.displayValue(v))});
+	}
+	return best;
 }
 
 void LandscapePickerScreen::setShared(const GeneratorControl &control, int value)
 {
+	setShared(std::vector<std::pair<std::string, int>>{{control.id, value}});
+}
+
+void LandscapePickerScreen::setShared(const std::vector<std::pair<std::string, int>> &changes)
+{
 	for (auto &entry : entries)
-		control.set(entry.request, value);
+		for (const auto &[id, value] : changes)
+			sharedControl(id).set(entry.request, value);
 	recomputeIncompatible();
 	previewer.restart(requestsOf(entries));
 	rebuild();
+}
+
+void LandscapePickerScreen::setUnavailableShown(bool shown)
+{
+	showUnavailable = shown;
+	invalidate();
+}
+
+void LandscapePickerScreen::applySettingsFix(int index)
+{
+	if (index < 0 || index >= int(entries.size()) || !fixes[std::size_t(index)])
+		return;
+	const auto changes = fixes[std::size_t(index)]->changes;
+	setShared(changes);
+	select(index);
 }
 
 bool LandscapePickerScreen::matchesFilters(int index, int skip) const
@@ -104,6 +185,17 @@ void LandscapePickerScreen::rebuild()
 			visible.push_back(i);
 	std::stable_sort(visible.begin(), visible.end(),
 					 [this](int a, int b) { return entries[a].name < entries[b].name; });
+	// The landscapes these settings rule out leave the grid for the trailing group. The check is
+	// up front (validateGenerationRequest), so a card never appears and then drops out.
+	unavailable.clear();
+	const auto ruledOut = std::stable_partition(visible.begin(), visible.end(),
+												[this](int i) { return incompatible[std::size_t(i)].empty(); });
+	unavailable.assign(ruledOut, visible.end());
+	visible.erase(ruledOut, visible.end());
+	// The current landscape is never hidden away: when these settings rule it out, the group
+	// opens so its card (and the way back to a valid setting) is in view.
+	if (std::find(unavailable.begin(), unavailable.end(), selected) != unavailable.end())
+		showUnavailable = true;
 
 	reveal = true;
 	layoutReady = false;
@@ -424,7 +516,13 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 		else
 			select(i);
 	};
-	auto content = fe::padding(fe::Insets::all(p.pt(8)), fe::column({fe::center(picture), fe::label(entry.name), fe::caption(note)}, {p.pt(4)}));
+	std::vector<Element> lines{fe::center(picture), fe::label(entry.name)};
+	if (!note.empty())
+		lines.push_back(fe::caption(note));
+	if (!enabled && fixes[std::size_t(i)])
+		lines.push_back(fe::button("landscape/fix/" + std::to_string(i), fixes[std::size_t(i)]->label,
+								   [this, i] { applySettingsFix(i); }));
+	auto content = fe::padding(fe::Insets::all(p.pt(8)), fe::column(std::move(lines), {p.pt(4)}));
 	options.accessibleLabel = entry.name;
 	return fe::stack({fe::button("landscape/" + std::to_string(i), "", action, options), content});
 }
@@ -496,8 +594,34 @@ Element LandscapePickerScreen::build(const Presentation &p)
 	grid.minChildWidth = p.pt(compact ? 150 : 200);
 	grid.gap = p.pt(12);
 	// Narrow screens scroll the controls away with the grid instead of squeezing it.
-	Element gridElement = compact ? fe::scroll("landscape/grid", fe::column({fe::column(std::move(header), {p.pt(8)}), fe::wrap(std::move(cards), grid)}, {p.pt(10)}))
-								  : fe::scroll("landscape/grid", fe::wrap(std::move(cards), grid));
+	std::vector<Element> sections;
+	if (compact)
+		sections.push_back(fe::column(std::move(header), {p.pt(8)}));
+	sections.push_back(fe::wrap(std::move(cards), grid));
+	if (!unavailable.empty())
+	{
+		// One quiet row after the maps, so the grid stays all maps while nothing is hidden for
+		// good: open, it shows each ruled-out landscape with its reason and a one-step fix.
+		fe::ButtonOptions toggle;
+		toggle.flat = true;
+		toggle.alignLeft = true;
+		const std::string label = showUnavailable ? tr("Hide landscapes that need different settings")
+												  : std::string(GAGCore::FormattableString(tr("Show %0 more landscapes that need different settings"))
+																	.arg(int(unavailable.size())));
+		sections.push_back(fe::button("landscape/unavailable", label,
+									  [this] { setUnavailableShown(!showUnavailable); }, toggle));
+		if (showUnavailable)
+		{
+			std::vector<Element> ruledOut;
+			for (int i : unavailable)
+				ruledOut.push_back(tile(i, p, compact));
+			// Pad to the main grid's column count so a short row keeps the grid's card width.
+			while (int(ruledOut.size()) < columns)
+				ruledOut.push_back(fe::empty());
+			sections.push_back(fe::wrap(std::move(ruledOut), grid));
+		}
+	}
+	Element gridElement = fe::scroll("landscape/grid", fe::column(std::move(sections), {p.pt(10)}));
 	if (compact)
 		header.clear();
 	const bool valid = selected >= 0 && selected < int(entries.size());

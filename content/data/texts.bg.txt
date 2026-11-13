@@ -1258,6 +1258,14 @@ FFA
 Генериране на визуализация...
 [Preview unavailable]
 Прегледът не е наличен
+[Show %0 more landscapes that need different settings]
+
+[Hide landscapes that need different settings]
+
+[Switch to %0 colonies]
+
+[Switch to %0 x %1]
+
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Всеки пейзаж е показан като реална карта с избраните размери и брой колонии. Изберете пейзаж, за да играете на показаната карта.
 [Purple]

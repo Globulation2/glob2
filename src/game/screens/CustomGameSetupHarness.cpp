@@ -691,6 +691,87 @@ struct CustomGameSetupHarness
 		}
 		std::cout << "PASS landscape picker sorts display names consistently and preserves selection through filtering\n";
 	}
+	// Landscapes these settings rule out leave the grid for a collapsed trailing group, decided
+	// up front; each offers the nearest shared settings that make it valid, and taking them puts
+	// it back in the grid, selected.
+	static void landscapeUnavailableGroup(bool display = false)
+	{
+		// A few landscapes keep the up-front checks quick in a debug build; Symmetric arena and
+		// The Comb cannot seat 6 colonies, the others can.
+		std::vector<LandscapePickerScreen::Entry> shown;
+		for (const char *id : {"symmetric-arena", "comb", "contested-commons", "savannah", "swamp"})
+		{
+			const int method = GeneratorRegistry::builtins().idOf(id);
+			GenerationRequest request;
+			request.setMethodDefaults(method);
+			request.wDec = request.hDec = 8;
+			request.nbTeams = 6;
+			shown.push_back({GenerationRequest::methodName(method), request, method, {}});
+		}
+		LandscapePickerScreen opened("Landscape", shown, 0);
+		REQUIRE(opened.unavailableShown()); // Symmetric arena, the current one, is ruled out.
+		LandscapePickerScreen picker("Landscape", shown, 2);
+		REQUIRE(picker.visible.size() + picker.unavailable.size() == shown.size());
+		REQUIRE(picker.unavailable.size() == 2);
+		REQUIRE(!picker.unavailableShown());
+		for (int i : picker.visible)
+			REQUIRE(picker.incompatible[std::size_t(i)].empty());
+		if (display)
+		{
+			// Rolls the compatible previews, opens the group and captures it with the grid above.
+			picker.beginExecution(globalContainer->gfx);
+			const Uint32 deadline = SDL_GetTicks() + 120000;
+			do
+			{
+				REQUIRE(Sint32(SDL_GetTicks() - deadline) < 0);
+				SDL_Delay(10);
+				picker.onTimer(SDL_GetTicks());
+				picker.paintFrame(SDL_GetTicks());
+			} while (picker.busy() || !picker.presentationSettled());
+			REQUIRE(picker.host().find("landscape/unavailable"));
+			REQUIRE(!picker.host().find("landscape/fix/" + std::to_string(picker.unavailable.front())));
+			globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/landscape-unavailable-closed.bmp");
+			globalContainer->gfx->nextFrame();
+			picker.setUnavailableShown(true);
+			picker.paintFrame(SDL_GetTicks());
+			picker.host().scrollIntoView("landscape/fix/" + std::to_string(picker.unavailable.back()));
+			picker.paintFrame(SDL_GetTicks());
+			REQUIRE(picker.host().find("landscape/fix/" + std::to_string(picker.unavailable.front())));
+			globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/landscape-unavailable-open.bmp");
+			globalContainer->gfx->nextFrame();
+			picker.endExecute(LandscapePickerScreen::CANCEL);
+			picker.finishExecution();
+		}
+		int fixable = -1, unfixable = 0;
+		for (int i : picker.unavailable)
+		{
+			INFO(shown[std::size_t(i)].name);
+			REQUIRE(!picker.incompatible[std::size_t(i)].empty());
+			if (!picker.settingsFix(i))
+				++unfixable;
+			else if (fixable < 0 && picker.settingsFix(i)->changes.size() == 1)
+				fixable = i;
+		}
+		REQUIRE(fixable >= 0);
+		REQUIRE(unfixable == 0);
+		// The Comb seats at most 4 colonies at 256 x 256 but 8 at 512 x 512: one size step beats
+		// two colony steps, and a size fix keeps the map square.
+		const int comb = 1;
+		REQUIRE(picker.settingsFix(comb));
+		REQUIRE(picker.settingsFix(comb)->changes == std::vector<std::pair<std::string, int>>({{"width", 9}, {"height", 9}}));
+		const auto fix = *picker.settingsFix(fixable);
+		const std::size_t ruledOut = picker.unavailable.size();
+		REQUIRE(!fix.label.empty());
+		picker.applySettingsFix(fixable);
+		REQUIRE(picker.selection() == fixable);
+		REQUIRE(std::find(picker.visible.begin(), picker.visible.end(), fixable) != picker.visible.end());
+		REQUIRE(picker.incompatible[std::size_t(fixable)].empty());
+		REQUIRE(picker.sharedTeams() == fix.changes.front().second);
+		std::cout << "PASS " << shown.size() - ruledOut << " of " << shown.size()
+				  << " landscapes fit 256 x 256 with 6 colonies; " << unfixable
+				  << " ruled out with no single-setting fix; \"" << fix.label << "\" restores "
+				  << shown[std::size_t(fixable)].name << "\n";
+	}
 	static void previewPriority()
 	{
 		GenerationRequest request;
@@ -2781,6 +2862,16 @@ TEST_SUITE("CustomGameSetup")
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		CustomGameSetupHarness::preferencesModel();
 		CustomGameSetupHarness::landscapeAlphabeticalOrder();
+	}
+	TEST_CASE("landscapes ruled out by the sheet's settings collapse into a fixable group" * glob2test::needs({"generators"}))
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::landscapeUnavailableGroup();
+	}
+	TEST_CASE("landscape unavailable group capture [display:1000x700][artifacts]" * glob2test::needs({"generators"}))
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true, true));
+		CustomGameSetupHarness::landscapeUnavailableGroup(true);
 	}
 
 	TEST_CASE("Telugu map mode buttons fit the desktop map pane [display:800x600][writes-preferences]")

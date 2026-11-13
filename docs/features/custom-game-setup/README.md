@@ -28,7 +28,10 @@ limits when their homes, resources or routes need more room.
   Randomize, under the preview, rolls the same settings again with a new seed.
 - Landscape, at the top of the map column, opens a sheet showing every landscape as
   a real map at the current size and colony count, sorted alphabetically by its
-  localized name. Regenerate all rolls the sheet
+  localized name. Landscapes that cannot be made at that size and colony count
+  (checked up front, before any preview rolls) leave the grid for a collapsed group
+  at its end; opened, each shows why and a button that switches the sheet to the
+  nearest colony count or square size it supports. Regenerate all rolls the sheet
   again with fresh seeds; Randomize parameters rolls it with every landscape's own
   controls drawn at random, redrawing any set the world refuses; Reset to defaults
   puts every landscape back on its registered controls. Use plays exactly the map
