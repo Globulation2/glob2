@@ -30,11 +30,13 @@ decision threshold: fitting it to 1.0 and calling at 97% gives the same error
 and the same saving as leaving it flat and calling at 95%. One dial is enough,
 and the threshold is the one a player can read.
 
-Features come only from TeamStat -- the per-team state the simulation itself
-maintains. The richer GameplayMeasurements and the per-AI telemetry are
-deliberately excluded: both are documented as diagnostic only and must never
-feed the simulation, and a winning condition built on this model does exactly
-that. Anything fitted here has to be computable in-engine.
+Features come from TeamStat and from the published gameplay measurements, both
+computed by the simulation at fixed sample deadlines, so the engine can evaluate
+exactly what was fitted. The measurement values the model reads are covered by
+the routine statistics checksum because a winning condition acts on them. Windowed
+measurements are per-team changes over WINDOW_SAMPLES samples, taken before allies
+are summed. Per-AI telemetry stays excluded. Anything fitted here has to be
+computable in-engine.
 
 Collect calibration/refit games with --win-probability 0 (or the tournament
 setting win_probability_permille=0). Probability-called winners and final-
@@ -62,7 +64,7 @@ from tools.tournaments.analysis import adjudicate
 from tools.tournaments.game_telemetry import parse
 from tools.tournaments.results import Results
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 # The cadence TeamStats samples at (END_OF_GAME_STAT_INTERVAL_MASK in
 # src/team/stats/TeamStat.h). The model is only ever evaluated on these boundaries, in the
 # fit and in the engine alike.
@@ -88,6 +90,14 @@ TIMELINE_FIELDS = {
     'need_food': ('econ', 'needFood'), 'swarms': ('econ', 'swarm'), 'inns': ('econ', 'inn'),
     'schools': ('econ', 'school'), 'barracks': ('econ', 'barracks'), 'towers': ('econ', 'tower'),
 }
+# Gameplay measurements the engine reads (WinProbability::teamInputs), from the
+# GLOB2_MEASURE record of each periodic sample. Windowed values are the change
+# over WINDOW_SAMPLES samples (WinProbability::ACTIVITY_WINDOW_SAMPLES).
+WINDOW_SAMPLES = 4
+GAMEPLAY_MEASUREMENTS = ('feeding', 'barracks_levels', 'delivered_window',
+                         'inn_walk_distance_window', 'swarm_filling_window')
+ATTACK_BUILDING, BUILDING_LEVELS, MATERIAL_SLOTS, SWARM_JOB, LABOUR_PHASES = 5, 6, 15, 0, 4
+
 # Fields the engine prints as "stored/capacity"; split into two measurements.
 PAIR_FIELDS = {'food': ('food_stored', 'food_capacity'), 'fooded': ('fed', 'feedable')}
 
@@ -99,19 +109,20 @@ RATIOS = {
 }
 
 MEASUREMENTS = tuple(TIMELINE_FIELDS) + tuple(
-    name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS)
+    name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS) + GAMEPLAY_MEASUREMENTS
 
 # Measurements that say the same thing in different words. Greedy selection will
 # otherwise take three readings of the same army and leave a model whose
 # coefficients cannot be read. One term per family, as the fairness model does.
 FAMILIES = {
     'army': ('hp', 'attack', 'defense', 'warriors', 'warrior_ratio'),
-    'economy': ('units', 'workers', 'buildings', 'swarms'),
+    'economy': ('units', 'workers', 'buildings', 'swarms', 'delivered_window', 'swarm_filling_window'),
     'food': ('food_stored', 'food_capacity', 'fed', 'feedable', 'fed_ratio', 'food_fill',
-             'food_critical', 'need_food', 'inns', 'starving_ratio'),
+             'food_critical', 'need_food', 'inns', 'starving_ratio', 'feeding',
+             'inn_walk_distance_window'),
     'prestige': ('prestige',),
     'schooling': ('schools',),
-    'fortification': ('barracks', 'towers'),
+    'fortification': ('barracks', 'towers', 'barracks_levels'),
     'exploration': ('explorers',),
 }
 FAMILY_OF = {name: label for label, names in FAMILIES.items() for name in names}
@@ -130,40 +141,44 @@ FAMILY_OF = {name: label for label, names in FAMILIES.items() for name in names}
 RATIO_TRANSFORMS = ('identity',)
 COUNT_TRANSFORMS = ('identity', 'sqrt', 'share')
 
-# The selected, hand-checked model. Order is the order terms were added, which is
-# also decreasing order of what each one contributed.
+# The selected, hand-checked model: greedy forward selection followed by
+# stepwise add/drop/swap refinement on cross-validated fit. Ordered by how much a
+# typical within-contest gap on the term moves the odds, largest first.
 FINAL_FEATURES = [
-    ('units', 'share'),
-    ('prestige', 'identity'),
-    ('barracks', 'sqrt'),
+    ('barracks_levels', 'identity'),
     ('explorers', 'sqrt'),
-    ('starving_ratio', 'identity'),
     ('attack', 'share'),
+    ('feeding', 'sqrt'),
+    ('delivered_window', 'share'),
+    ('swarm_filling_window', 'sqrt'),
+    ('inn_walk_distance_window', 'share'),
 ]
 
 # What each term reads, for the in-game breakdown. Phrases a player can read.
 LABELS = {
-    'units': 'Share of everyone alive',
-    'prestige': 'Prestige',
-    'barracks': 'Barracks',
+    'barracks_levels': 'Barracks, counted by level',
     'explorers': 'Explorers',
-    'starving_ratio': 'Share of your people starving',
     'attack': 'Share of all attack strength',
+    'feeding': 'Units eating at inns',
+    'delivered_window': 'Share of recent deliveries',
+    'swarm_filling_window': 'Recent work feeding swarms',
+    'inn_walk_distance_window': 'Share of recent walking to inns',
 }
 
 # How the engine reads each measurement off a competitor, as a C++ expression on
-# a WinProbabilitySlot. Every one is a non-negative integer.
+# a WinProbability::Slot. Every one is a non-negative integer.
 CPP_MEASUREMENT = {
-    'units': 'slot.units',
-    'prestige': 'slot.prestige',
-    'barracks': 'slot.barracks',
+    'feeding': 'slot.feeding',
     'explorers': 'slot.explorers',
-    'food_critical': 'slot.foodCritical',
+    'barracks_levels': 'slot.barracksLevels',
+    'delivered_window': 'slot.delivered',
+    'inn_walk_distance_window': 'slot.innWalkDistance',
+    'swarm_filling_window': 'slot.swarmFilling',
     'attack': 'slot.attack',
 }
 # Ratios are a division of two of those, done as an integer division in the
-# engine and as the same division here.
-CPP_RATIO = {'starving_ratio': ('slot.foodCritical', 'slot.units')}
+# engine and as the same division here. The published model uses none.
+CPP_RATIO = {}
 
 
 def transform_candidates(name):
@@ -173,16 +188,41 @@ def transform_candidates(name):
 # ---------------------------------------------------------------------------
 # Dataset
 # ---------------------------------------------------------------------------
+def gameplay_fields(line):
+    """The raw GLOB2_MEASURE counters the engine's model inputs are built from.
+
+    A measurement record carries well over a thousand fields; only these are
+    kept, and the rest are never converted.
+    """
+    wanted = {'feeding', 'eatWalkDistance'}
+    wanted.update(f'buildings_{ATTACK_BUILDING}_{level}' for level in range(BUILDING_LEVELS))
+    wanted.update(f'delivered_{material}' for material in range(MATERIAL_SLOTS))
+    wanted.update(f'filling_{SWARM_JOB}_{phase}' for phase in range(LABOUR_PHASES))
+    wanted.update(('team', 'tick', 'final'))
+    fields = {}
+    for token in line.split()[1:]:
+        key, _, value = token.partition('=')
+        if key in wanted:
+            fields[key] = int(value)
+    return fields
+
+
 def timeline(source, record):
     """Per-team state by tick, from one game's verified log.
 
-    Only the two TeamStat-derived record types are read. The prefix test comes
-    before the parser because a game's log is tens of megabytes of mostly
-    performance and per-AI samples, and this has to run over a thousand games.
+    TeamStat state comes from GLOB2_TL/GLOB2_ECON and gameplay measurements from
+    the periodic (non-final) GLOB2_MEASURE records. The prefix test comes before
+    the parser because a game's log is tens of megabytes of mostly performance
+    and per-AI samples, and this has to run over a thousand games.
     """
     samples = defaultdict(dict)
     with source.open_artifact(record, 'stdout.log') as stream:
         for line in stream:
+            if line.startswith('GLOB2_MEASURE '):
+                fields = gameplay_fields(line)
+                if fields.get('final') == 0 and 'tick' in fields and 'team' in fields:
+                    samples[(fields['tick'], fields['team'])]['gameplay'] = fields
+                continue
             if not (line.startswith('GLOB2_TL ') or line.startswith('GLOB2_ECON ')):
                 continue
             parsed = parse(line)
@@ -196,9 +236,34 @@ def timeline(source, record):
     return samples
 
 
-def measurements_of(pair):
-    """One entry's measurements, or None if either record type is missing."""
-    if 'tl' not in pair or 'econ' not in pair:
+def gameplay_inputs(now, then):
+    """The engine's WinProbability::teamInputs, from one team's raw records.
+
+    `then` is the same team's record WINDOW_SAMPLES samples earlier, or None
+    when it was not retained, in which case the window runs from coverage start.
+    """
+    then = then or {}
+
+    def window(key):
+        return float(max(now.get(key, 0) - then.get(key, 0), 0))
+
+    return {
+        'feeding': float(now.get('feeding', 0)),
+        'barracks_levels': float(sum(now.get(f'buildings_{ATTACK_BUILDING}_{level}', 0) * (level + 1)
+                                     for level in range(BUILDING_LEVELS))),
+        'delivered_window': sum(window(f'delivered_{material}') for material in range(MATERIAL_SLOTS)),
+        'inn_walk_distance_window': window('eatWalkDistance'),
+        'swarm_filling_window': sum(window(f'filling_{SWARM_JOB}_{phase}') for phase in range(LABOUR_PHASES)),
+    }
+
+
+def measurements_of(pair, earlier=None):
+    """One entry's measurements, or None if a record type is missing.
+
+    `earlier` is the same team's sample WINDOW_SAMPLES samples before, for the
+    windowed gameplay measurements.
+    """
+    if 'tl' not in pair or 'econ' not in pair or 'gameplay' not in pair:
         return None
     values = {}
     for name, (which, field) in TIMELINE_FIELDS.items():
@@ -217,6 +282,7 @@ def measurements_of(pair):
             return None
     for name, (top, bottom) in RATIOS.items():
         values[name] = values[top] / values[bottom] if values[bottom] > 0 else 0.0
+    values.update(gameplay_inputs(pair['gameplay'], (earlier or {}).get('gameplay')))
     return values
 
 
@@ -271,7 +337,8 @@ def game_slices(source, record, policy='prestige'):
         gone = eliminated.get(team, -1)
         if gone is not None and gone >= 0 and tick > gone:
             continue  # left the game before this sample; not a competitor here
-        values = measurements_of(pair)
+        earlier = samples.get((tick - WINDOW_SAMPLES * SAMPLE_INTERVAL, team))
+        values = measurements_of(pair, earlier)
         if values is not None:
             by_tick[tick][team] = values
     slices = []

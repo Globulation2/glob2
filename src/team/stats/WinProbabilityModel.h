@@ -5,14 +5,13 @@
 // gets a fitness F; its probability of winning is softmax(F) over the sides
 // still standing. Allies are one competitor, because they win together.
 //
-// Fitted on 131630 samples of 1110 randomly drawn AI games -- every AI, every
-// format (1v1, 2v2, free-for-all), every map generator and size -- sampled every
-// 512 ticks, at 21a9fba9a. Games stopped at the tick cap are labelled by the same
-// economic adjudication the ratings use, so the games hardest to call are not the
-// ones missing from the fit.
-// Cross-validated grouped by game: McFadden R2 0.413, top-1 accuracy 77.5%
-// against 42.9% for guessing. Where it says 97% it was right 96-100% of the time,
-// in every phase of the game.
+// Fitted on 690277 samples of 1716 randomly drawn AI games -- every AI,
+// every format (1v1, 2v2, free-for-all with 4 or 8 colonies), every playable map
+// generator at 128x128 and 256x256 -- sampled every 512 ticks, at 8c63c6456.
+// Games ran to a 180,000-tick cap; those that reached it are labelled by the
+// economic adjudication the ratings use.
+// Cross-validated grouped by game: McFadden R2 0.388, top-1 accuracy 75.2%
+// against 41.2% for guessing.
 // See docs/ai/architecture/win-probability-model.md.
 #pragma once
 #include "WinProbability.h"
@@ -21,35 +20,38 @@
 
 namespace WinProbability
 {
-inline constexpr char MODEL_ID[] = "conditional-logit-v1-1991b39cc920b525c4110c5bed70e08a419a6eb263d2fffb0e57774cc0d22861";
+inline constexpr char MODEL_ID[] = "conditional-logit-v1-98dc8b0e8b3e807bb0d97d3ff8dc8b7fa83c673b7295131cc8f67cbba51d6848";
 /// Softmax fixes the scale of F but not its zero, so this level is a
 /// convention and cancels between competitors. Differences are what the
 /// games determined.
-constexpr double WIN_PROBABILITY_INTERCEPT = -2.03852705592847;
-const Sint64 WIN_PROBABILITY_INTERCEPT_FIXED = -8755407037LL;
+constexpr double WIN_PROBABILITY_INTERCEPT = -1.9574329083531128;
+const Sint64 WIN_PROBABILITY_INTERCEPT_FIXED = -8407110325LL;
 
-/// units (share)
-constexpr double WIN_PROBABILITY_UNITS_SHARE = 2.6103326290760207;
-const Sint64 WIN_PROBABILITY_UNITS_SHARE_FIXED = 11211293274LL;
-/// prestige (identity)
-constexpr double WIN_PROBABILITY_PRESTIGE_IDENTITY = 0.022005348104755813;
-const Sint64 WIN_PROBABILITY_PRESTIGE_IDENTITY_FIXED = 94512250LL;
-/// barracks (sqrt)
-constexpr double WIN_PROBABILITY_BARRACKS_SQRT = 0.3801604978320961;
-const Sint64 WIN_PROBABILITY_BARRACKS_SQRT_FIXED = 1632776905LL;
+/// barracks_levels (identity)
+constexpr double WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY = 0.03719225357141172;
+const Sint64 WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED = 159739513LL;
 /// explorers (sqrt)
-constexpr double WIN_PROBABILITY_EXPLORERS_SQRT = 0.25178043804968786;
-const Sint64 WIN_PROBABILITY_EXPLORERS_SQRT_FIXED = 1081388747LL;
-/// starving_ratio (identity)
-constexpr double WIN_PROBABILITY_STARVING_RATIO_IDENTITY = -2.3187514366808952;
-const Sint64 WIN_PROBABILITY_STARVING_RATIO_IDENTITY_FIXED = -9958961588LL;
+constexpr double WIN_PROBABILITY_EXPLORERS_SQRT = 0.19460721225641325;
+const Sint64 WIN_PROBABILITY_EXPLORERS_SQRT_FIXED = 835831612LL;
 /// attack (share)
-constexpr double WIN_PROBABILITY_ATTACK_SHARE = 0.4594896975953988;
-const Sint64 WIN_PROBABILITY_ATTACK_SHARE_FIXED = 1973493224LL;
+constexpr double WIN_PROBABILITY_ATTACK_SHARE = 0.8760779087103361;
+const Sint64 WIN_PROBABILITY_ATTACK_SHARE_FIXED = 3762725967LL;
+/// feeding (sqrt)
+constexpr double WIN_PROBABILITY_FEEDING_SQRT = 0.16898202585942074;
+const Sint64 WIN_PROBABILITY_FEEDING_SQRT_FIXED = 725772275LL;
+/// delivered_window (share)
+constexpr double WIN_PROBABILITY_DELIVERED_WINDOW_SHARE = 0.8780806548657031;
+const Sint64 WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED = 3771327696LL;
+/// swarm_filling_window (sqrt)
+constexpr double WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT = 0.0025409845256532007;
+const Sint64 WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED = 10913445LL;
+/// inn_walk_distance_window (share)
+constexpr double WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE = 0.2670639577282735;
+const Sint64 WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED = 1147030964LL;
 
-constexpr int WIN_PROBABILITY_FEATURE_COUNT = 6;
-constexpr int WIN_PROBABILITY_GAMES = 1110;
-constexpr int WIN_PROBABILITY_SAMPLES = 131630;
+constexpr int WIN_PROBABILITY_FEATURE_COUNT = 7;
+constexpr int WIN_PROBABILITY_GAMES = 1716;
+constexpr int WIN_PROBABILITY_SAMPLES = 690277;
 
 /// The fitted terms by name, for the statistics screen's breakdown.
 struct WinProbabilityTerm
@@ -62,12 +64,13 @@ struct WinProbabilityTerm
 inline const WinProbabilityTerm *winProbabilityTerms()
 {
 	static const WinProbabilityTerm terms[] = {
-		{"units", "share", "Share of everyone alive", WIN_PROBABILITY_UNITS_SHARE},
-		{"prestige", "identity", "Prestige", WIN_PROBABILITY_PRESTIGE_IDENTITY},
-		{"barracks", "sqrt", "Barracks", WIN_PROBABILITY_BARRACKS_SQRT},
+		{"barracks_levels", "identity", "Barracks, counted by level", WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY},
 		{"explorers", "sqrt", "Explorers", WIN_PROBABILITY_EXPLORERS_SQRT},
-		{"starving_ratio", "identity", "Share of your people starving", WIN_PROBABILITY_STARVING_RATIO_IDENTITY},
 		{"attack", "share", "Share of all attack strength", WIN_PROBABILITY_ATTACK_SHARE},
+		{"feeding", "sqrt", "Units eating at inns", WIN_PROBABILITY_FEEDING_SQRT},
+		{"delivered_window", "share", "Share of recent deliveries", WIN_PROBABILITY_DELIVERED_WINDOW_SHARE},
+		{"swarm_filling_window", "sqrt", "Recent work feeding swarms", WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT},
+		{"inn_walk_distance_window", "share", "Share of recent walking to inns", WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE},
 	};
 	return terms;
 }
@@ -82,29 +85,37 @@ inline Sint64 winProbabilityTermFixed(const std::vector<Slot> &slots, std::size_
 	const Slot &slot = slots[index];
 	switch (term)
 	{
-	case 0: // units (share)
-	{
-		Sint64 total = 0;
-		for (std::size_t i = 0; i < slots.size(); ++i)
-			if (slots[i].alive)
-				total += clampCount(slots[i].units);
-		return (WIN_PROBABILITY_UNITS_SHARE_FIXED * shareValue(slot.units, total)) >> FRACTION_SHIFT;
-	}
-	case 1: // prestige (identity)
-		return WIN_PROBABILITY_PRESTIGE_IDENTITY_FIXED * countValue(slot.prestige);
-	case 2: // barracks (sqrt)
-		return (WIN_PROBABILITY_BARRACKS_SQRT_FIXED * rootValue(slot.barracks)) >> ROOT_SHIFT;
-	case 3: // explorers (sqrt)
+	case 0: // barracks_levels (identity)
+		return WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED * countValue(slot.barracksLevels);
+	case 1: // explorers (sqrt)
 		return (WIN_PROBABILITY_EXPLORERS_SQRT_FIXED * rootValue(slot.explorers)) >> ROOT_SHIFT;
-	case 4: // starving_ratio (identity)
-		return (WIN_PROBABILITY_STARVING_RATIO_IDENTITY_FIXED * ratioValue(slot.foodCritical, slot.units)) >> FRACTION_SHIFT;
-	case 5: // attack (share)
+	case 2: // attack (share)
 	{
 		Sint64 total = 0;
 		for (std::size_t i = 0; i < slots.size(); ++i)
 			if (slots[i].alive)
 				total += clampCount(slots[i].attack);
 		return (WIN_PROBABILITY_ATTACK_SHARE_FIXED * shareValue(slot.attack, total)) >> FRACTION_SHIFT;
+	}
+	case 3: // feeding (sqrt)
+		return (WIN_PROBABILITY_FEEDING_SQRT_FIXED * rootValue(slot.feeding)) >> ROOT_SHIFT;
+	case 4: // delivered_window (share)
+	{
+		Sint64 total = 0;
+		for (std::size_t i = 0; i < slots.size(); ++i)
+			if (slots[i].alive)
+				total += clampCount(slots[i].delivered);
+		return (WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED * shareValue(slot.delivered, total)) >> FRACTION_SHIFT;
+	}
+	case 5: // swarm_filling_window (sqrt)
+		return (WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED * rootValue(slot.swarmFilling)) >> ROOT_SHIFT;
+	case 6: // inn_walk_distance_window (share)
+	{
+		Sint64 total = 0;
+		for (std::size_t i = 0; i < slots.size(); ++i)
+			if (slots[i].alive)
+				total += clampCount(slots[i].innWalkDistance);
+		return (WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED * shareValue(slot.innWalkDistance, total)) >> FRACTION_SHIFT;
 	}
 	}
 	return 0;
@@ -127,28 +138,36 @@ inline double winProbabilityMeasurement(const std::vector<Slot> &slots, std::siz
 	switch (term)
 	{
 	case 0:
-	{
-		double total = 0;
-		for (std::size_t i = 0; i < slots.size(); ++i)
-			if (slots[i].alive)
-				total += double(slots[i].units);
-		return total > 0 ? double(slot.units) / total : 0.0;
-	}
+		return double(slot.barracksLevels);
 	case 1:
-		return double(slot.prestige);
-	case 2:
-		return double(slot.barracks);
-	case 3:
 		return double(slot.explorers);
-	case 4:
-		return slot.units > 0 ? double(slot.foodCritical) / double(slot.units) : 0.0;
-	case 5:
+	case 2:
 	{
 		double total = 0;
 		for (std::size_t i = 0; i < slots.size(); ++i)
 			if (slots[i].alive)
 				total += double(slots[i].attack);
 		return total > 0 ? double(slot.attack) / total : 0.0;
+	}
+	case 3:
+		return double(slot.feeding);
+	case 4:
+	{
+		double total = 0;
+		for (std::size_t i = 0; i < slots.size(); ++i)
+			if (slots[i].alive)
+				total += double(slots[i].delivered);
+		return total > 0 ? double(slot.delivered) / total : 0.0;
+	}
+	case 5:
+		return double(slot.swarmFilling);
+	case 6:
+	{
+		double total = 0;
+		for (std::size_t i = 0; i < slots.size(); ++i)
+			if (slots[i].alive)
+				total += double(slots[i].innWalkDistance);
+		return total > 0 ? double(slot.innWalkDistance) / total : 0.0;
 	}
 	}
 	return 0;

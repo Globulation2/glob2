@@ -105,7 +105,10 @@ reader retains them. Routine checksums cover queue identities and published
 simulation-driving statistics/smoothing; full checks
 join and hash complete pending results, published diagnostics and live counters.
 Consequently routine checks detect differing pending simulation statistics when
-they publish; diagnostic measurements are covered by full verification.
+they publish; diagnostic measurements are covered by full verification. The
+measurement values the [win probability model](architecture/win-probability-model.md)
+reads (`WinProbability::teamInputs`) can end a game, so routine checksums cover
+them too.
 AI telemetry collection remains on the owner. Samples are admitted once per
 logical tick, including an initially paused observation. Further paused frames
 and repeated reads of that boundary do not duplicate them.

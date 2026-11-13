@@ -25,6 +25,7 @@
 #include <vector>
 
 class Game;
+class TeamStats;
 
 /// How likely each side is to win, from the state of play.
 ///
@@ -65,25 +66,41 @@ namespace WinProbability
 	/// however strange the state gets.
 	const Sint64 COUNT_CLAMP = (Sint64)1 << 24;
 
+	/// The window, in 512-tick samples, over which recent activity is counted.
+	const int ACTIVITY_WINDOW_SAMPLES = 4;
+
 	/// One competitor, as the model sees it: a team, or an alliance's totals.
 	///
-	/// Only values the simulation already maintains appear here. The per-AI
-	/// telemetry and the gameplay measurements are both documented as diagnostic
-	/// and must never influence play, so neither may be read by a model that
-	/// decides a winning condition.
+	/// Values come from TeamStat and from the published gameplay measurements,
+	/// both computed by the simulation at fixed sample deadlines. Because the
+	/// winning condition reads the measurement values below, they are part of the
+	/// routine statistics checksum (TeamStatsChecksum.h), not only full checks.
 	struct Slot
 	{
-		Sint32 units;         ///< living units, all types
-		Sint32 prestige;      ///< the team's prestige
-		Sint32 barracks;      ///< unique warrior combat-training providers, including their construction sites
-		Sint32 explorers;     ///< living explorers
-		Sint32 foodCritical;  ///< units that are starving
-		Sint32 attack;        ///< total attack power
-		bool alive;           ///< still a competitor; eliminated sides are excluded
+		Sint32 feeding;          ///< units eating at an inn at the latest sample
+		Sint32 explorers;        ///< living explorers
+		Sint32 barracksLevels;   ///< barracks and their sites, each weighted by long level: a level-1 site 1 ... a finished level-3 barracks 6
+		Sint32 delivered;        ///< resources delivered to buildings over the activity window
+		Sint32 innWalkDistance;  ///< distance hungry workers walked to inns over the window
+		Sint32 swarmFilling;     ///< worker-ticks spent filling swarms over the window
+		Sint32 attack;           ///< total attack power
+		bool alive;              ///< still a competitor; eliminated sides are excluded
 
-		Slot() : units(0), prestige(0), barracks(0), explorers(0),
-		         foodCritical(0), attack(0), alive(false) {}
+		Slot() : feeding(0), explorers(0), barracksLevels(0), delivered(0),
+		         innWalkDistance(0), swarmFilling(0), attack(0), alive(false) {}
 	};
+
+	/// The gameplay-measurement inputs of one team, at its latest periodic sample.
+	///
+	/// Windowed values are the change since the sample ACTIVITY_WINDOW_SAMPLES
+	/// earlier, or since coverage began when that sample is not retained. Teams are
+	/// read one at a time so an eliminated ally contributes no recent activity
+	/// rather than removing its whole history from the alliance's totals.
+	struct TeamInputs
+	{
+		Sint64 feeding = 0, barracksLevels = 0, delivered = 0, innWalkDistance = 0, swarmFilling = 0;
+	};
+	TeamInputs teamInputs(const TeamStats &stats);
 
 	/// Clamp a raw measurement into the range the arithmetic is proved over.
 	Sint64 clampCount(Sint64 value);

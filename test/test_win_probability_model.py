@@ -132,41 +132,40 @@ class Arithmetic(unittest.TestCase):
 
 class Probabilities(unittest.TestCase):
     def slot(self, **fields):
-        base = {name: 0 for name in ('units', 'prestige', 'barracks', 'explorers',
-                                     'food_critical', 'attack')}
+        base = {name: 0 for name, _ in W.FINAL_FEATURES}
         base['alive'] = True
         base.update(fields)
         return base
 
     def test_identical_sides_are_evens(self):
         model, _ = published()
-        slots = [self.slot(units=30, attack=100), self.slot(units=30, attack=100)]
+        slots = [self.slot(feeding=9, attack=100), self.slot(feeding=9, attack=100)]
         self.assertEqual(W.fixed_permille(model, slots), [500, 500])
 
     def test_probabilities_sum_to_a_whole(self):
         model, _ = published()
-        for slots in ([self.slot(units=40, attack=90), self.slot(units=9, attack=5)],
-                      [self.slot(units=10), self.slot(units=12), self.slot(units=3),
-                       self.slot(units=30)]):
+        for slots in ([self.slot(feeding=40, attack=90), self.slot(feeding=9, attack=5)],
+                      [self.slot(explorers=10), self.slot(explorers=12), self.slot(explorers=3),
+                       self.slot(explorers=30)]):
             total = sum(W.fixed_permille(model, slots))
             # Truncating division can lose a unit per competitor, never more.
             self.assertLessEqual(abs(total - 1000), len(slots))
 
-    def test_a_bigger_colony_is_favoured(self):
+    def test_more_attack_strength_is_favoured(self):
         model, _ = published()
-        weak, strong = self.slot(units=5), self.slot(units=60)
+        weak, strong = self.slot(attack=5), self.slot(attack=600)
         self.assertLess(*W.fixed_permille(model, [weak, strong]))
 
-    def test_starvation_counts_against_you(self):
+    def test_more_recent_deliveries_are_favoured(self):
         model, _ = published()
-        fed = self.slot(units=40, food_critical=0)
-        starving = self.slot(units=40, food_critical=40)
-        chances = W.fixed_permille(model, [fed, starving])
+        busy = self.slot(delivered_window=400)
+        idle = self.slot(delivered_window=40)
+        chances = W.fixed_permille(model, [busy, idle])
         self.assertGreater(chances[0], chances[1])
 
     def test_eliminated_sides_are_not_competitors(self):
         model, _ = published()
-        slots = [self.slot(units=20), self.slot(units=20, alive=False), self.slot(units=20)]
+        slots = [self.slot(attack=20), self.slot(attack=20, alive=False), self.slot(attack=20)]
         chances = W.fixed_permille(model, slots)
         self.assertEqual(chances[1], 0)
         # The survivors split it between themselves, not three ways.
@@ -201,12 +200,10 @@ class Engine(unittest.TestCase):
             slots, expected = [], []
             for index in sorted(alliances):
                 fields = alliances[index]
-                slots.append({'units': int(fields['units']), 'prestige': int(fields['prestige']),
-                              'barracks': int(fields['barracks']),
-                              'explorers': int(fields['explorers']),
-                              'food_critical': int(fields['foodCritical']),
-                              'attack': int(fields['attack']),
-                              'alive': fields['alive'] == '1'})
+                slot = {name: int(fields[W.CPP_MEASUREMENT[name].split('.', 1)[1]])
+                        for name, _ in W.FINAL_FEATURES}
+                slot['alive'] = fields['alive'] == '1'
+                slots.append(slot)
                 expected.append(int(fields['permille']))
             self.assertEqual(W.fixed_permille(model, slots), expected,
                              f'engine and model disagree at tick {tick}')
@@ -243,9 +240,9 @@ class Emission(unittest.TestCase):
         # would need an approximation must stop the emitter rather than quietly
         # reach the code that decides who won.
         with self.assertRaises(ValueError):
-            W.cpp_kind('units', 'log')
+            W.cpp_kind('attack', 'log')
         with self.assertRaises(ValueError):
-            W.cpp_kind('units', 'decay24')
+            W.cpp_kind('attack', 'decay24')
 
     def test_a_measurement_the_engine_cannot_read_is_refused(self):
         with self.assertRaises(ValueError):
@@ -296,9 +293,41 @@ class Labels(unittest.TestCase):
         for name in W.MEASUREMENTS:
             self.assertIn(name, W.FAMILY_OF, name)
 
-    def test_the_published_model_takes_one_term_per_family(self):
-        families = [W.FAMILY_OF[name] for name, _ in W.FINAL_FEATURES]
-        self.assertEqual(sorted(families), sorted(set(families)))
+
+
+class GameplayInputs(unittest.TestCase):
+    """The fitter's windowed measurements must be the engine's teamInputs."""
+
+    def record(self, step, **extra):
+        fields = {'feeding': 4, 'eatWalkDistance': 10 * step,
+                  f'buildings_{W.ATTACK_BUILDING}_0': 1, f'buildings_{W.ATTACK_BUILDING}_4': 2,
+                  'delivered_0': 10 * step, 'delivered_3': 10 * step,
+                  f'filling_{W.SWARM_JOB}_1': 10 * step}
+        fields.update(extra)
+        return fields
+
+    def test_windows_count_only_recent_activity(self):
+        inputs = W.gameplay_inputs(self.record(9), self.record(9 - W.WINDOW_SAMPLES))
+        self.assertEqual(inputs['feeding'], 4)
+        self.assertEqual(inputs['barracks_levels'], 1 * 1 + 2 * 5)
+        self.assertEqual(inputs['delivered_window'], 2 * 10 * W.WINDOW_SAMPLES)
+        self.assertEqual(inputs['inn_walk_distance_window'], 10 * W.WINDOW_SAMPLES)
+        self.assertEqual(inputs['swarm_filling_window'], 10 * W.WINDOW_SAMPLES)
+
+    def test_a_missing_earlier_sample_counts_from_coverage_start(self):
+        inputs = W.gameplay_inputs(self.record(3), None)
+        self.assertEqual(inputs['delivered_window'], 2 * 30)
+
+    def test_a_window_is_never_negative(self):
+        inputs = W.gameplay_inputs(self.record(1), self.record(5))
+        self.assertEqual(inputs['delivered_window'], 0)
+
+    def test_only_the_fields_the_engine_reads_are_kept(self):
+        line = ('GLOB2_MEASURE team=1 tick=2048 final=0 feeding=7 meals=99 '
+                f'buildings_{W.ATTACK_BUILDING}_2=3 buildings_1_2=8')
+        fields = W.gameplay_fields(line)
+        self.assertEqual(fields, {'team': 1, 'tick': 2048, 'final': 0, 'feeding': 7,
+                                  f'buildings_{W.ATTACK_BUILDING}_2': 3})
 
 
 @unittest.skipUnless(FITTING, 'fitting needs numpy and scipy')

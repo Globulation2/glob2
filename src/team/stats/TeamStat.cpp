@@ -33,6 +33,7 @@
 #include "Version.h"
 #include "StatsChecksum.h"
 #include "TeamStatsChecksum.h"
+#include "WinProbability.h"
 #include <ChecksumStream.h>
 #include <WordChecksum.h>
 #include "Unit.h"
@@ -2130,6 +2131,15 @@ Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothe
 	for (const auto &b : stats.coverageBuildings) {
 		stream.addUint32(Uint32(b.x)); stream.addUint32(Uint32(b.y));
 		stream.addUint32(Uint32(b.width)); stream.addUint32(Uint32(b.height));
+	}
+	// The win-probability model reads these measurement values, and a winning
+	// condition can act on it, so they are simulation-driving and covered here.
+	const WinProbability::TeamInputs inputs = WinProbability::teamInputs(stats);
+	for (Sint64 value : {inputs.feeding, inputs.barracksLevels, inputs.delivered,
+	                     inputs.innWalkDistance, inputs.swarmFilling})
+	{
+		stream.addUint32(Uint32(Uint64(value)));
+		stream.addUint32(Uint32(Uint64(value) >> 32));
 	}
 	return stream.value();
 }

@@ -21,6 +21,19 @@
 #include <stdexcept>
 #include <utility>
 
+namespace
+{
+// A measurement sample as the statistics pipeline retains it every 512 ticks.
+// The model reads barracks levels from the latest one.
+void retainBarracksLevels(Team *team, Uint64 levels, Uint32 tick = 0)
+{
+    GameplayMeasurements sample = team->stats.measurements();
+    sample.tick = tick;
+    sample.buildings[IntBuildingType::ATTACK_BUILDING][0] = levels;
+    team->stats.measurementHistory.assign(1, sample);
+}
+}
+
 TEST_SUITE("WinProbability")
 {
     TEST_CASE("result serialization requires owner-finalized probability history")
@@ -49,14 +62,12 @@ TEST_SUITE("WinProbability")
         Headless::playersAndTeamsJson(finalized,std::as_const(game),eliminated);
         CHECK(nlohmann::json::parse("{"+finalized.str()+"}")["teams"][0]["win_probability"]["end_tick"]==100);
     }
-    TEST_CASE("live chances and automatic history use the same scout-role counts")
+    TEST_CASE("the spectator panel shows the chances the simulation recorded")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams=2, .header=true});
         auto &game = world.game;
-        for (int t=0; t<2; ++t) game.teams[t]->stats.getLatestStat()->totalUnit = 10;
-        // Custom scout roles need not occupy the legacy EXPLORER unit slot.
-        game.teams[0]->stats.getLatestStat()->scouts = 9;
+        game.teams[0]->stats.getLatestStat()->numberUnitPerType[EXPLORER] = 9;
         game.winProbabilitySyncStep();
         PresentationFrame scene;
         SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(SceneRequest{})), SceneRequest{}, scene);
@@ -75,7 +86,7 @@ TEST_SUITE("WinProbability")
         game.gameHeader.setAllyTeamNumber(0, 1);
         game.gameHeader.setAllyTeamNumber(1, 1);
         game.gameHeader.setAllyTeamNumber(2, 2);
-        game.teams[0]->prestige = 50;
+        game.teams[0]->stats.getLatestStat()->totalAttackPower = 50;
         game.winProbabilitySyncStep();
         game.stepCounter = 512;
         game.winProbabilitySyncStep();
@@ -130,7 +141,7 @@ TEST_SUITE("WinProbability")
         glob2test::HeadlessGame world({.teams=2, .header=true});
         auto &game = world.game;
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
-        game.teams[0]->prestige = 150;
+        retainBarracksLevels(game.teams[0], 100);
         std::vector<int> allianceOf;
         const auto expected = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
         REQUIRE(expected[0] >= 950);
@@ -144,42 +155,65 @@ TEST_SUITE("WinProbability")
         CHECK(game.teams[1]->stats.winProbabilityHistory.back().permille == expected[1]);
     }
 
-    TEST_CASE("combat facilities count concrete providers once, including explicit construction targets")
+    TEST_CASE("model inputs come from the latest gameplay sample, with per-team activity windows")
     {
         glob2test::HeadlessGlobals globals;
-        for(int admitted:{7,1,4}) {
-        CAPTURE(admitted);
-        glob2test::HeadlessGame world({.header=true});
-        auto& catalog=world.game.buildingsTypes;
-        const int finished=catalog.getFinishedTypeNum("barracks");
-        const int site=catalog.getPlaceableTypeNum("barracks");
-        const int passive=catalog.getFinishedTypeNum("stonewall");
-        auto snapshot=nlohmann::json::parse(catalog.snapshotJson());
-        snapshot["variants"][finished]["properties"]["shortTypeNum"]=11;
-        snapshot["variants"][passive]["properties"]["shortTypeNum"]=5;
-        snapshot["variants"][finished]["semantics"]["admittedUnitMask"]=admitted;
-        catalog.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
-        auto* stat=world.team->stats.getLatestStat();
-        stat->buildingCountByVariant.assign(catalog.size(),0);
-        stat->buildingCountByVariant[finished]=2;
-        stat->buildingCountByVariant[site]=3;
-        stat->buildingCountByVariant[passive]=7;
-        // Two combat services on each facility still describe one building.
-        std::vector<int> alliances;
-        auto slots=WinProbability::slotsOf(world.game,alliances);
-        REQUIRE(slots.size()==1);
-        CHECK(slots[0].barracks==((admitted&(1u<<WARRIOR))?5:0));
-        if(!(admitted&(1u<<WARRIOR)))continue;
-        world.game.stepCounter=512;
+        glob2test::HeadlessGame world({.teams = 2, .header = true});
+        auto &game = world.game;
+        game.gameHeader.setAllyTeamNumber(0, 1);
+        game.gameHeader.setAllyTeamNumber(1, 1);
+        const Uint32 window = WinProbability::ACTIVITY_WINDOW_SAMPLES * 512;
+        for (int t = 0; t < 2; ++t)
+        {
+            auto &history = game.teams[t]->stats.measurementHistory;
+            history.clear();
+            for (Uint32 tick = 0; tick <= window + 512; tick += 512)
+            {
+                GameplayMeasurements sample = game.teams[t]->stats.measurements();
+                sample.tick = tick;
+                // Cumulative counters grow by 10 per sample.
+                sample.delivered[0] = sample.delivered[3] = tick / 512 * 10;
+                sample.eatWalkDistance = tick / 512 * 10;
+                sample.filling[GameplayMeasurements::SWARM_JOB][1] = tick / 512 * 10;
+                sample.feeding = 3;
+                sample.buildings[IntBuildingType::ATTACK_BUILDING][0] = 1;
+                sample.buildings[IntBuildingType::ATTACK_BUILDING][4] = 2;
+                history.push_back(sample);
+            }
+        }
+        const WinProbability::TeamInputs inputs = WinProbability::teamInputs(game.teams[0]->stats);
+        CHECK(inputs.feeding == 3);
+        CHECK(inputs.barracksLevels == 1 * 1 + 2 * 5);
+        // The window runs back ACTIVITY_WINDOW_SAMPLES samples, not to the start.
+        CHECK(inputs.delivered == 2 * 10 * WinProbability::ACTIVITY_WINDOW_SAMPLES);
+        CHECK(inputs.innWalkDistance == 10 * WinProbability::ACTIVITY_WINDOW_SAMPLES);
+        CHECK(inputs.swarmFilling == 10 * WinProbability::ACTIVITY_WINDOW_SAMPLES);
+
+        // An eliminated ally's history leaves the alliance without making its
+        // recent activity negative.
+        std::vector<int> allianceOf;
+        auto slots = WinProbability::slotsOf(game, allianceOf);
+        REQUIRE(slots.size() == 1);
+        CHECK(slots[0].delivered == 2 * inputs.delivered);
+        game.teams[1]->hasLost = true;
+        slots = WinProbability::slotsOf(game, allianceOf);
+        CHECK(slots[0].delivered == inputs.delivered);
+        CHECK(slots[0].barracksLevels == inputs.barracksLevels);
+
+        // Without a sample far enough back, the window runs from coverage start.
+        auto &history = game.teams[0]->stats.measurementHistory;
+        history.erase(history.begin(), history.begin() + 2);
+        CHECK(WinProbability::teamInputs(game.teams[0]->stats).delivered == 2 * history.back().delivered[0]);
+
+        game.teams[1]->hasLost = false;
+        game.stepCounter = 512;
         std::ostringstream log;
         {
-            glob2test::ScopedEnvironment enabled("GLOB2_TEAM_TIMELINE","1");
-            struct Capture {std::streambuf* previous;~Capture(){std::cout.rdbuf(previous);}} capture{std::cout.rdbuf(log.rdbuf())};
-            world.team->stats.step(world.team);
+            glob2test::ScopedEnvironment enabled("GLOB2_TEAM_TIMELINE", "1");
+            struct Capture {std::streambuf* previous; ~Capture(){std::cout.rdbuf(previous);}} capture{std::cout.rdbuf(log.rdbuf())};
+            game.winProbabilitySyncStep();
         }
-        CHECK(log.str().find(" barracks=5 ")!=std::string::npos);
-        CHECK(log.str().find(" variant_"+std::to_string(passive)+"=7")!=std::string::npos);
-        }
+        CHECK(log.str().find(" barracksLevels=22 ") != std::string::npos);
     }
 
     TEST_CASE("equal alliances share chances and eliminated allies contribute nothing")
@@ -191,15 +225,16 @@ TEST_SUITE("WinProbability")
         game.gameHeader.setAllyTeamNumber(1, 1);
         game.gameHeader.setAllyTeamNumber(2, 2);
         for (int t = 0; t < 3; ++t)
-            game.teams[t]->stats.getLatestStat()->totalUnit = t == 2 ? 20 : 10;
+            game.teams[t]->stats.getLatestStat()->totalAttackPower = t == 2 ? 20 : 10;
         std::vector<int> allianceOf;
         auto slots = WinProbability::slotsOf(game, allianceOf);
         CHECK((allianceOf == std::vector<int>{0, 0, 1}));
         CHECK((WinProbability::permille(slots) == std::vector<int>{500, 500}));
         game.teams[1]->hasLost = true;
         slots = WinProbability::slotsOf(game, allianceOf);
-        CHECK(slots[0].units == 10);
+        CHECK(slots[0].attack == 10);
         CHECK(slots[0].alive);
+        game.winProbabilitySyncStep();
         PresentationFrame scene;
         SceneExtractor().prepare((game).captureReadBoundary(SceneExtractor::captureOptions(SceneRequest{})), SceneRequest{}, scene);
         REQUIRE(scene.panels.hud.winChances.size() == 3);
@@ -215,7 +250,7 @@ TEST_SUITE("WinProbability")
         game.gameHeader.setAllyTeamNumber(0, 1);
         game.gameHeader.setAllyTeamNumber(1, 1);
         game.gameHeader.setAllyTeamNumber(2, 2);
-        game.teams[0]->prestige = 1000;
+        retainBarracksLevels(game.teams[0], 200);
         WinningConditionWinProbability condition;
         CHECK(condition.thresholdPermille == 950);
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 512;
@@ -248,9 +283,8 @@ TEST_SUITE("WinProbability")
             for (int t = 0; t < 3; ++t)
             {
                 auto *team = game.teams[t];
-                team->prestige = roles[t] == 0 ? 200 : 0;
-                team->stats.getLatestStat()->totalUnit = roles[t] == 0 ? 1 : roles[t] == 1 ? 1000 : 100;
-                team->stats.getLatestStat()->needFoodCritical = roles[t] == 1 ? 1000 : 0;
+                retainBarracksLevels(team, roles[t] == 0 ? 200 : 0);
+                team->stats.getLatestStat()->totalAttackPower = roles[t] == 0 ? 1 : roles[t] == 1 ? 1000 : 100;
                 team->hasLost = team->hasWon = false;
                 team->winCondition = WCUnknown;
                 if (roles[t] == 0) winner = t;
@@ -306,9 +340,11 @@ TEST_SUITE("WinProbability")
         // Pin the header format the recorded trace has always used: the map
         // version contributes to Game::checkSum even when gameplay is unchanged.
         game.mapHeader.versionMinor = FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE;
-        game.teams[0]->prestige = 1000;
+        // Team 0 fields the only warriors, so it holds all the attack strength.
+        world.addUnit(WARRIOR, 10, 10, 0);
+        world.addUnit(WARRIOR, 11, 10, 0);
         game.gameHeader.getWinningConditions().clear();
-        WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
+        WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 600);
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 64;
         std::ostringstream trace;
         for (int tick = 0; tick < 128; ++tick)
@@ -345,9 +381,10 @@ TEST_SUITE("WinProbability")
             world.addUnit(WORKER, 8, 8, 0);
             world.addUnit(WORKER, 20, 8, 1);
             auto &game = world.game;
-            game.teams[favoured]->prestige = 1000;
+            world.addUnit(WARRIOR, favoured ? 22 : 10, 10, favoured);
+            world.addUnit(WARRIOR, favoured ? 23 : 11, 10, favoured);
             game.gameHeader.getWinningConditions().clear();
-            WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
+            WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 600);
             game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 64;
             int decidedAt = -1, expectedWinner = -1;
             for (int tick = 0; tick < 128 && !game.isGameEnded; ++tick)
@@ -361,7 +398,7 @@ TEST_SUITE("WinProbability")
                     const auto chances = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
                     REQUIRE(chances.size() == 2);
                     expectedWinner = chances[0] > chances[1] ? 0 : 1;
-                    REQUIRE(chances[expectedWinner] >= 970);
+                    REQUIRE(chances[expectedWinner] >= 600);
                 }
                 world.step();
                 if (deciding < Uint32(WinProbability::MINIMUM_DECISION_TICK))
@@ -406,11 +443,12 @@ TEST_SUITE("WinProbability")
             }
             WinProbability::Slot slot;
             slot.alive = fields.at("alive");
-            slot.units = fields.at("units");
-            slot.prestige = fields.at("prestige");
-            slot.barracks = fields.at("barracks");
+            slot.feeding = fields.at("feeding");
             slot.explorers = fields.at("explorers");
-            slot.foodCritical = fields.at("foodCritical");
+            slot.barracksLevels = fields.at("barracksLevels");
+            slot.delivered = fields.at("delivered");
+            slot.innWalkDistance = fields.at("innWalkDistance");
+            slot.swarmFilling = fields.at("swarmFilling");
             slot.attack = fields.at("attack");
             REQUIRE(fields.at("alliance") == int(samples[fields.at("tick")].size()));
             samples[fields.at("tick")].push_back(slot);

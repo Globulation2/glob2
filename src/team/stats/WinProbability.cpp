@@ -25,9 +25,9 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
-#include "BuildingType.h"
-#include "ai/model/BuildingProjection.h"
+#include "IntBuildingType.h"
 #include <algorithm>
+#include <limits>
 
 namespace WinProbability
 {
@@ -166,6 +166,35 @@ namespace WinProbability
 		return -1;
 	}
 
+	TeamInputs teamInputs(const TeamStats &stats)
+	{
+		TeamInputs inputs;
+		const std::vector<GameplayMeasurements> &history = stats.measurementHistory;
+		if (history.empty())
+			return inputs;
+		// The latest periodic sample, which is the record the model was fitted on.
+		const GameplayMeasurements &now = history.back();
+		const Uint32 since = Uint32(ACTIVITY_WINDOW_SAMPLES * (END_OF_GAME_STAT_INTERVAL_MASK + 1));
+		const GameplayMeasurements *then = nullptr;
+		if (now.tick >= since)
+			for (auto it = history.rbegin(); it != history.rend() && it->tick >= now.tick - since; ++it)
+				if (it->tick == now.tick - since)
+					then = &*it;
+		const auto window = [](Uint64 current, Uint64 past) {
+			return Sint64(current > past ? current - past : 0);
+		};
+		inputs.feeding = Sint64(now.feeding);
+		for (int level = 0; level < NB_BUILDING_LONG_LEVELS; ++level)
+			inputs.barracksLevels += Sint64(now.buildings[IntBuildingType::ATTACK_BUILDING][level]) * (level + 1);
+		for (int material = 0; material < MaterialSlotCount; ++material)
+			inputs.delivered += window(now.delivered[material], then ? then->delivered[material] : 0);
+		inputs.innWalkDistance = window(now.eatWalkDistance, then ? then->eatWalkDistance : 0);
+		for (int phase = 0; phase < GameplayMeasurements::LABOUR_PHASES; ++phase)
+			inputs.swarmFilling += window(now.filling[GameplayMeasurements::SWARM_JOB][phase],
+			                              then ? then->filling[GameplayMeasurements::SWARM_JOB][phase] : 0);
+		return inputs;
+	}
+
 	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams)
 	{
 		const int count = game.teamsCount();
@@ -186,12 +215,9 @@ namespace WinProbability
 				allianceOf[t] = (int)(found - alliances.begin());
 		}
 		std::vector<Slot> slots(alliances.size());
-        std::vector<int> combatProviders;
-        for(size_t variant=0;variant<game.buildingsTypes.size();++variant)
-        {
-            if(ModelBuildingProjection::trainsWarriorCombat(ModelBuildingProjection::completed(game.buildingsTypes,*game.buildingsTypes.get(variant))))
-                combatProviders.push_back(int(variant));
-        }
+		const auto add = [](Sint32 &total, Sint64 value) {
+			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
+		};
 		for (int t = 0; t < count; ++t)
 		{
 			const Team *team = game.teams[t];
@@ -203,14 +229,15 @@ namespace WinProbability
 			if (!team->isAlive || (team->hasLost && !(ignoreLostTeams & (1u << t))))
 				continue;
 			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
+			const TeamInputs inputs = teamInputs(team->stats);
 			slot.alive = true;
-			slot.units += stat->totalUnit;
-			slot.prestige += team->prestige;
-			for(int variant:combatProviders)
-                if(size_t(variant)<stat->buildingCountByVariant.size())slot.barracks+=stat->buildingCountByVariant[variant];
-			slot.explorers += stat->scouts;
-			slot.foodCritical += stat->needFoodCritical;
-			slot.attack += stat->totalAttackPower;
+			add(slot.feeding, inputs.feeding);
+			add(slot.explorers, stat->numberUnitPerType[EXPLORER]);
+			add(slot.barracksLevels, inputs.barracksLevels);
+			add(slot.delivered, inputs.delivered);
+			add(slot.innWalkDistance, inputs.innWalkDistance);
+			add(slot.swarmFilling, inputs.swarmFilling);
+			add(slot.attack, stat->totalAttackPower);
 		}
 		return slots;
 	}
