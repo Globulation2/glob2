@@ -1075,7 +1075,8 @@ void Maxima::release_farming_protection(Context& runtime)
 	{
 		const int x=dimensionRemainder(index, (*map).width);
 		const int y=index/(*map).width;
-		if(applied_farm_protection_mask[index] && map_info.is_forbidden_area(x, y))
+		// An applied cell may still be in flight; release it regardless.
+		if(applied_farm_protection_mask[index])
 		{
 			removals->add_location(x, y);
 			++removed;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "AIOrderScheduler.h"
+#include "GameHeader.h"
 #include "Order.h"
 #include "GameDiagnostics.h"
 #include <BinaryStream.h>
@@ -39,7 +40,7 @@ TEST_SUITE("AIOrderScheduler")
 	TEST_CASE("all delays preserve every FIFO poll and fixed player ordered deadlines")
 	{
 		for (auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits, ComputeTelemetryMode::Trace})
-        for (unsigned delay = 0; delay <= 8; ++delay)
+        for (unsigned delay = 0; delay <= GameHeader::MAX_AI_ORDER_DELAY; ++delay)
 			for (unsigned workers : {0u, 1u, 4u})
 			{
 				CAPTURE(mode); CAPTURE(delay); CAPTURE(workers);

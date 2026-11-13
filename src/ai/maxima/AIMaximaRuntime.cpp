@@ -1464,6 +1464,8 @@ void Context::reject_queued_orders(const std::function<bool(const Order&)>& reje
         if(const auto* construction=dynamic_cast<const OrderConstruction*>(i->get()))
             buildings.order_execution_completed(construction->gid,false,
                 (*i)->aiSelectedTarget?std::optional<Uint32>((*i)->aiSelectedTarget->generation):std::nullopt);
+        else if(const auto* create=dynamic_cast<const OrderCreate*>(i->get()))
+            buildings.placement_rejected(create->posX,create->posY,create->typeNum);
         i=orders.erase(i);
     }
 }

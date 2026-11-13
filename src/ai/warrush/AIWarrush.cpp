@@ -269,7 +269,7 @@ bool AIWarrush::provides(const AIEngine::BuildingView& building, Intent intent) 
  return queries->matches(completed,intent);
 }
 
-int AIWarrush::inFlightBuildingsOfType(std::initializer_list<Intent> intents) const
+int AIWarrush::inFlightBuildingsOfType(std::initializer_list<Intent> intents, bool includeProjects) const
 {
  const auto serves=[&](int type){
   const auto& kind=observation->catalog->at(type);
@@ -279,8 +279,9 @@ int AIWarrush::inFlightBuildingsOfType(std::initializer_list<Intent> intents) co
  int count=0;
  for(const auto& request:pendingRequests)
   if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) count+=serves(create->typeNum);
- for(const auto& project:observation->buildProjects)
-  if(project.teamNumber==teamNumber) count+=serves(project.typeNum);
+ if(includeProjects)
+  for(const auto& project:observation->buildProjects)
+   if(project.teamNumber==teamNumber) count+=serves(project.typeNum);
  return count;
 }
 
@@ -369,7 +370,7 @@ bool AIWarrush::allOfBuildingTypeAreCompleted(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_true,
-								  inFlightBuildingsOfType({intent}) == 0 && findBuildingIf(*observation, observedTeam,
+								  inFlightBuildingsOfType({intent}, false) == 0 && findBuildingIf(*observation, observedTeam,
 												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
@@ -386,7 +387,7 @@ bool AIWarrush::allOfBuildingTypeAreFull(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_true,
-								  inFlightBuildingsOfType({intent}) == 0 && findBuildingIf(*observation, observedTeam,
+								  inFlightBuildingsOfType({intent}, false) == 0 && findBuildingIf(*observation, observedTeam,
 												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&

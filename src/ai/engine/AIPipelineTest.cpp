@@ -142,7 +142,7 @@ TEST_SUITE("AIPipeline")
 TEST_CASE("every shipped controller preserves orders and state across worker counts and all delays" * glob2test::needs({"ai:castor", "ai:cortex", "ai:cabino"}))
 {
     glob2test::HeadlessGlobals globals;
-    for (unsigned delay=0; delay<=8; ++delay) {
+    for (unsigned delay : {0u,1u,2u,4u,8u,12u,GameHeader::MAX_AI_ORDER_DELAY}) {
         CAPTURE(delay);
         std::vector<Tick> expected;
         for (unsigned threads : {1u,2u,4u,8u}) {
@@ -164,7 +164,7 @@ TEST_CASE("every shipped controller preserves orders and state across worker cou
 TEST_CASE("save continuation retains controller caches receipts and future commands at pipeline boundaries" * glob2test::needs({"ai:castor", "ai:cortex", "ai:cabino"}))
 {
     glob2test::HeadlessGlobals globals;
-    for (unsigned delay=0; delay<=8; ++delay) for (unsigned threads : {1u,2u,4u,8u}) {
+    for (unsigned delay : {0u,1u,2u,4u,8u,12u,GameHeader::MAX_AI_ORDER_DELAY}) for (unsigned threads : {1u,2u,4u,8u}) {
         CAPTURE(delay); CAPTURE(threads);
         setSyncRandSeed(0xA171);
         glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
@@ -439,6 +439,27 @@ TEST_CASE("team death cancels submitted work and saves receipts for a revived co
     const auto resumed=prepareAIOrders(restored.game,player,false)[0].second;
     REQUIRE(due->getOrderType()==ORDER_MODIFY_BUILDING);
     CHECK(wire(*due)==wire(*resumed));
+    CHECK(state(game)==state(restored.game));
+    game.drainAI();restored.game.drainAI();
+}
+TEST_CASE("team death at the largest delay saves and restores every canceled receipt")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;game.setWaitingOnMask(0);
+    fixture.addBuilding("swarm",4,4);fixture.addUnit(WORKER,10,10);
+    game.gameHeader.setAIOrderDelay(GameHeader::MAX_AI_ORDER_DELAY);
+    // A different staffing value every poll keeps a real order in flight per tick.
+    game.gameHeader.setAIConfig(0,Script::config(
+        "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:1+c.tick%3};}"));
+    game.players[0]->makeItAI(AI::JAVASCRIPT);
+    constexpr std::array<unsigned,1> player{0};
+    for(unsigned tick=0; tick<GameHeader::MAX_AI_ORDER_DELAY; ++tick) {prepareAIOrders(game,player,false);game.step(0);}
+    game.teams[0]->isAlive=false;
+    CHECK(prepareAIOrders(game,{},false).empty());
+    const auto checkpoint=save(game);
+    glob2test::HeadlessGame restored(glob2test::GameOptions{});
+    load(restored.game,checkpoint,1);
     CHECK(state(game)==state(restored.game));
     game.drainAI();restored.game.drainAI();
 }

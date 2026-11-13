@@ -1370,6 +1370,15 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 
 
+namespace
+{
+// The zone's half extent, limited to what the flag type allows.
+int defenseFlagRadius(const SimpleBuildingDefense::defenseRecord& record, const BuildingType& type)
+{
+	return std::min<int>(std::max(record.width, record.height)/2, type.maxUnitStayRange);
+}
+}
+
 bool SimpleBuildingDefense::findDefense()
 {
  const int typeNum=selectBuilding(ai,AttractWarriors);
@@ -1425,8 +1434,8 @@ bool SimpleBuildingDefense::findDefense()
 					// slice later, which the order delay can push past this pass.
 					auto create=std::static_pointer_cast<OrderCreate>(AIEngine::ObservationQueries::createOrder(
 						*ai.game, ai.team->number, dr.flagx, dr.flagy, typeNum, dr.assigned, dr.assigned));
-					if(const int stayRange=ai.game->catalog->at(typeNum).resolvedType.maxUnitStayRange)
-						create->flagRadius=std::min<int>(std::max(dr.width, dr.height)/2, stayRange);
+					if(ai.game->catalog->at(typeNum).resolvedType.maxUnitStayRange)
+						create->flagRadius=defenseFlagRadius(dr, ai.game->catalog->at(typeNum).resolvedType);
 					ai.enqueueOrder(create);
 				}
 			}
@@ -1520,8 +1529,9 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						if(AICabino_DEBUG)
 							ai.diagnosticStream<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->identity.gid;
-						if(b->unitStayRange!=static_cast<int>(std::max(i->width, i->height)/2))
-							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, std::max(i->width, i->height)/2)));
+						const int radius=defenseFlagRadius(*i, AIEngine::ObservationQueries::buildingType(*ai.game,*b));
+						if(b->unitStayRange!=radius)
+							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->identity.gid, radius)));
 						if(b->maxUnitWorking!=static_cast<int>(i->assigned))
 							ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);

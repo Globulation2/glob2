@@ -158,7 +158,7 @@ one. AI observation history is recorded during simulation, even between decision
 and disabled/eliminated controllers stop recording it.
 
 AI callbacks read a frozen view of their logical `ctx.tick`. The match-wide order
-delay is 0–8 ticks, default 8, and applies to every AI controller. Returned orders
+delay is 0–16 ticks, default 8, and applies to every AI controller. Returned orders
 execute at the engine's scheduled deadline rather than immediately during the
 callback. Account for outstanding actions and execution receipts before issuing
 another command for the same intent. Acceptance of an action is distinct from
