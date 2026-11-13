@@ -2132,14 +2132,23 @@ Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothe
 		stream.addUint32(Uint32(b.x)); stream.addUint32(Uint32(b.y));
 		stream.addUint32(Uint32(b.width)); stream.addUint32(Uint32(b.height));
 	}
-	// The win-probability model reads these measurement values, and a winning
+	// The win-probability model reads these measurement fields, and a winning
 	// condition can act on it, so they are simulation-driving and covered here.
-	const WinProbability::TeamInputs inputs = WinProbability::teamInputs(stats);
-	for (Sint64 value : {inputs.feeding, inputs.barracksLevels, inputs.delivered,
-	                     inputs.innWalkDistance, inputs.swarmFilling})
+	const auto add64 = [&](Uint64 value) {
+		stream.addUint32(Uint32(value));
+		stream.addUint32(Uint32(value >> 32));
+	};
+	const WinProbability::InputSamples samples = WinProbability::inputSamples(stats);
+	for (const GameplayMeasurements *sample : {samples.now, samples.then})
 	{
-		stream.addUint32(Uint32(Uint64(value)));
-		stream.addUint32(Uint32(Uint64(value) >> 32));
+		stream.addUint32(sample ? sample->tick + 1 : 0);
+		if (!sample)
+			continue;
+		add64(sample->feeding);
+		add64(sample->eatWalkDistance);
+		for (Uint64 value : sample->delivered) add64(value);
+		for (Uint64 value : sample->filling[GameplayMeasurements::SWARM_JOB]) add64(value);
+		for (const BuildingMeasurement &variant : sample->variants) add64(variant.count);
 	}
 	return stream.value();
 }

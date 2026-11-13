@@ -25,7 +25,8 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
-#include "IntBuildingType.h"
+#include "BuildingType.h"
+#include "ai/model/BuildingProjection.h"
 #include <algorithm>
 #include <limits>
 
@@ -166,26 +167,49 @@ namespace WinProbability
 		return -1;
 	}
 
-	TeamInputs teamInputs(const TeamStats &stats)
+	InputSamples inputSamples(const TeamStats &stats)
 	{
-		TeamInputs inputs;
+		InputSamples samples;
 		const std::vector<GameplayMeasurements> &history = stats.measurementHistory;
 		if (history.empty())
-			return inputs;
-		// The latest periodic sample, which is the record the model was fitted on.
-		const GameplayMeasurements &now = history.back();
+			return samples;
+		samples.now = &history.back();
 		const Uint32 since = Uint32(ACTIVITY_WINDOW_SAMPLES * (END_OF_GAME_STAT_INTERVAL_MASK + 1));
-		const GameplayMeasurements *then = nullptr;
-		if (now.tick >= since)
-			for (auto it = history.rbegin(); it != history.rend() && it->tick >= now.tick - since; ++it)
-				if (it->tick == now.tick - since)
-					then = &*it;
+		const Uint32 tick = samples.now->tick;
+		if (tick >= since)
+			for (auto it = history.rbegin(); it != history.rend() && it->tick >= tick - since; ++it)
+				if (it->tick == tick - since)
+					samples.then = &*it;
+		return samples;
+	}
+
+	std::vector<CombatProvider> combatProviders(const BuildingsTypes &catalog)
+	{
+		std::vector<CombatProvider> providers;
+		for (std::size_t variant = 0; variant < catalog.size(); ++variant)
+		{
+			const BuildingType &type = *catalog.get(variant);
+			if (ModelBuildingProjection::trainsWarriorCombat(ModelBuildingProjection::completed(catalog, type)))
+				providers.push_back({variant, type.level * 2 + 2 - (type.isBuildingSite ? 1 : 0)});
+		}
+		return providers;
+	}
+
+	TeamInputs teamInputs(const TeamStats &stats, const std::vector<CombatProvider> &providers)
+	{
+		TeamInputs inputs;
+		const InputSamples samples = inputSamples(stats);
+		if (!samples.now)
+			return inputs;
+		const GameplayMeasurements &now = *samples.now;
+		const GameplayMeasurements *then = samples.then;
 		const auto window = [](Uint64 current, Uint64 past) {
 			return Sint64(current > past ? current - past : 0);
 		};
 		inputs.feeding = Sint64(now.feeding);
-		for (int level = 0; level < NB_BUILDING_LONG_LEVELS; ++level)
-			inputs.barracksLevels += Sint64(now.buildings[IntBuildingType::ATTACK_BUILDING][level]) * (level + 1);
+		for (const CombatProvider &provider : providers)
+			if (provider.variant < now.variants.size())
+				inputs.barracksLevels += Sint64(now.variants[provider.variant].count) * provider.weight;
 		for (int material = 0; material < MaterialSlotCount; ++material)
 			inputs.delivered += window(now.delivered[material], then ? then->delivered[material] : 0);
 		inputs.innWalkDistance = window(now.eatWalkDistance, then ? then->eatWalkDistance : 0);
@@ -215,6 +239,7 @@ namespace WinProbability
 				allianceOf[t] = (int)(found - alliances.begin());
 		}
 		std::vector<Slot> slots(alliances.size());
+		const std::vector<CombatProvider> providers = combatProviders(game.buildingsTypes);
 		const auto add = [](Sint32 &total, Sint64 value) {
 			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
 		};
@@ -229,10 +254,10 @@ namespace WinProbability
 			if (!team->isAlive || (team->hasLost && !(ignoreLostTeams & (1u << t))))
 				continue;
 			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
-			const TeamInputs inputs = teamInputs(team->stats);
+			const TeamInputs inputs = teamInputs(team->stats, providers);
 			slot.alive = true;
 			add(slot.feeding, inputs.feeding);
-			add(slot.explorers, stat->numberUnitPerType[EXPLORER]);
+			add(slot.explorers, stat->scouts);
 			add(slot.barracksLevels, inputs.barracksLevels);
 			add(slot.delivered, inputs.delivered);
 			add(slot.innWalkDistance, inputs.innWalkDistance);

@@ -161,15 +161,21 @@ void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std
         if (it == alliances.end()) alliances.push_back(alliance);
     }
     // The chances the simulation recorded at its latest 512-tick sample: the
-    // same numbers the winning condition and the end-of-game chart read.
+    // same numbers the winning condition and the end-of-game chart read. Sides
+    // eliminated or allied since that sample are reconciled by renormalising
+    // over the alliances still standing.
     std::vector<int> chances(alliances.size(), 0);
     std::vector<bool> alive(alliances.size(), false);
     for (const auto& t : world.teams->values)
     {
         if (!t.alive || t.lost) continue;
         alive[allianceOf[t.number]] = true;
-        chances[allianceOf[t.number]] = t.winProbabilityPermille;
+        chances[allianceOf[t.number]] = std::max(chances[allianceOf[t.number]], t.winProbabilityPermille);
     }
+    int total = 0;
+    for (size_t a = 0; a < chances.size(); ++a) total += alive[a] ? chances[a] : 0;
+    for (size_t a = 0; a < chances.size(); ++a)
+        chances[a] = alive[a] && total > 0 ? chances[a] * 1000 / total : 0;
     panels.hud.winChances.clear();
     for (int t=0; t<scene.entities.teamCount; ++t)
     {

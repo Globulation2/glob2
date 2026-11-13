@@ -866,9 +866,9 @@ transport option or result-schema migration is needed. The catalog advertises
 `gameplay_telemetry_version`, `ai_telemetry_version`, and
 `performance_telemetry_version` (gameplay 2, AI 1, performance 2). The typed
 reader also covers the per-team `GLOB2_ECON`/`GLOB2_TL` timeline and the
-`GLOB2_WINPROB` trace as a `team_state` family; unlike the gameplay measurements
-these come straight off `TeamStat`, which is what makes them usable as model
-inputs for something the simulation itself reads. Old bundles can still run and their
+`GLOB2_WINPROB` trace as a `team_state` family, read straight off `TeamStat`.
+The win probability model is fitted on these and on the periodic gameplay
+measurements; AI and performance records are never model inputs. Old bundles can still run and their
 missing new record families are reported as unavailable.
 
 Workers already retain `stdout.log`, compress it, checksum it and transfer it with

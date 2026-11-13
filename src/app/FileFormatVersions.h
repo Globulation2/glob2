@@ -194,7 +194,8 @@ static constexpr int FILE_FORMAT_VERSION_CUSTOM_AI = 129;
 static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;
 
 //! Worker time use, combat-death place and assignment, and the defence snapshot in
-//! gameplay measurements (diagnostic only; older saves start them at load).
+//! gameplay measurements (older saves start them at load). Swarm-filling time is a
+//! win probability model input; the rest is diagnostic.
 static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
 
 //! Canonical terrain identities, terrain experiment requirements and exposure state.

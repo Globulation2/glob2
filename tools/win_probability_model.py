@@ -35,7 +35,9 @@ computed by the simulation at fixed sample deadlines, so the engine can evaluate
 exactly what was fitted. The measurement values the model reads are covered by
 the routine statistics checksum because a winning condition acts on them. Windowed
 measurements are per-team changes over WINDOW_SAMPLES samples, taken before allies
-are summed. Per-AI telemetry stays excluded. Anything fitted here has to be
+are summed. At a decision tick T the engine has not yet published the gameplay
+sample for T, so the model reads the one for T - 512, and the fitter joins that
+same sample to the decision. Per-AI telemetry stays excluded. Anything fitted here has to be
 computable in-engine.
 
 Collect calibration/refit games with --win-probability 0 (or the tournament
@@ -91,9 +93,12 @@ TIMELINE_FIELDS = {
     'schools': ('econ', 'school'), 'barracks': ('econ', 'barracks'), 'towers': ('econ', 'tower'),
 }
 # Gameplay measurements the engine reads (WinProbability::teamInputs), from the
-# GLOB2_MEASURE record of each periodic sample. Windowed values are the change
-# over WINDOW_SAMPLES samples (WinProbability::ACTIVITY_WINDOW_SAMPLES).
+# GLOB2_MEASURE record of the periodic sample published before the decision:
+# PUBLICATION_LAG_SAMPLES behind it. Windowed values are the change over
+# WINDOW_SAMPLES samples (WinProbability::ACTIVITY_WINDOW_SAMPLES). The layout
+# constants below mirror the C++ enums; a test checks them against the headers.
 WINDOW_SAMPLES = 4
+PUBLICATION_LAG_SAMPLES = 1
 GAMEPLAY_MEASUREMENTS = ('feeding', 'barracks_levels', 'delivered_window',
                          'inn_walk_distance_window', 'swarm_filling_window')
 ATTACK_BUILDING, BUILDING_LEVELS, MATERIAL_SLOTS, SWARM_JOB, LABOUR_PHASES = 5, 6, 15, 0, 4
@@ -111,9 +116,11 @@ RATIOS = {
 MEASUREMENTS = tuple(TIMELINE_FIELDS) + tuple(
     name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS) + GAMEPLAY_MEASUREMENTS
 
-# Measurements that say the same thing in different words. Greedy selection will
-# otherwise take three readings of the same army and leave a model whose
-# coefficients cannot be read. One term per family, as the fairness model does.
+# Measurements that say the same thing in different words. Greedy selection takes
+# one term per family so it cannot fill a model with readings of the same army;
+# the stepwise refinement that follows may add a second term from a family when
+# cross-validated fit says it carries separate information, and the published
+# model has two economy and two food terms.
 FAMILIES = {
     'army': ('hp', 'attack', 'defense', 'warriors', 'warrior_ratio'),
     'economy': ('units', 'workers', 'buildings', 'swarms', 'delivered_window', 'swarm_filling_window'),
@@ -257,13 +264,15 @@ def gameplay_inputs(now, then):
     }
 
 
-def measurements_of(pair, earlier=None):
-    """One entry's measurements, or None if a record type is missing.
+def measurements_of(pair, published=None, earlier=None):
+    """One entry's measurements, or None if a TeamStat record type is missing.
 
-    `earlier` is the same team's sample WINDOW_SAMPLES samples before, for the
-    windowed gameplay measurements.
+    `published` is the team's sample PUBLICATION_LAG_SAMPLES before this one --
+    the gameplay record the engine can read at this decision -- and `earlier` the
+    one WINDOW_SAMPLES before that. Either may be None; with no published sample
+    the gameplay inputs are zero, as in the engine.
     """
-    if 'tl' not in pair or 'econ' not in pair or 'gameplay' not in pair:
+    if 'tl' not in pair or 'econ' not in pair:
         return None
     values = {}
     for name, (which, field) in TIMELINE_FIELDS.items():
@@ -282,7 +291,7 @@ def measurements_of(pair, earlier=None):
             return None
     for name, (top, bottom) in RATIOS.items():
         values[name] = values[top] / values[bottom] if values[bottom] > 0 else 0.0
-    values.update(gameplay_inputs(pair['gameplay'], (earlier or {}).get('gameplay')))
+    values.update(gameplay_inputs((published or {}).get('gameplay', {}), (earlier or {}).get('gameplay')))
     return values
 
 
@@ -337,8 +346,10 @@ def game_slices(source, record, policy='prestige'):
         gone = eliminated.get(team, -1)
         if gone is not None and gone >= 0 and tick > gone:
             continue  # left the game before this sample; not a competitor here
-        earlier = samples.get((tick - WINDOW_SAMPLES * SAMPLE_INTERVAL, team))
-        values = measurements_of(pair, earlier)
+        lag = PUBLICATION_LAG_SAMPLES * SAMPLE_INTERVAL
+        published = samples.get((tick - lag, team))
+        earlier = samples.get((tick - lag - WINDOW_SAMPLES * SAMPLE_INTERVAL, team))
+        values = measurements_of(pair, published, earlier)
         if values is not None:
             by_tick[tick][team] = values
     slices = []

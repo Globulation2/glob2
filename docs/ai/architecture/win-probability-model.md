@@ -24,13 +24,13 @@ moves the odds (coefficient times the within-contest standard deviation):
 
 | Term | Reads | Coefficient | Typical gap's effect |
 | --- | --- | ---: | ---: |
-| `barracks_levels` | barracks and their construction sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 barracks) | +0.0372 | 0.32 |
-| `explorers` (sqrt) | living explorers | +0.195 | 0.27 |
-| `attack` (share) | its share of all attack strength | +0.876 | 0.25 |
-| `feeding` (sqrt) | units eating at an inn | +0.169 | 0.24 |
-| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.878 | 0.21 |
-| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0025 | 0.17 |
-| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.267 | 0.08 |
+| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0364 | 0.32 |
+| `explorers` (sqrt) | living explorers | +0.205 | 0.27 |
+| `attack` (share) | its share of all attack strength | +0.904 | 0.25 |
+| `feeding` (sqrt) | units eating at an inn | +0.161 | 0.24 |
+| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.851 | 0.21 |
+| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0024 | 0.17 |
+| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.268 | 0.08 |
 
 Every coefficient is positive. Military investment (barracks, attack), scouting
 and a fed, working economy each carry weight; no single term dominates. The
@@ -75,7 +75,7 @@ Three choices matter:
   views of one outcome; splitting them across folds would let the fit see its own
   test set and report an accuracy nobody could reproduce.
 
-Cross-validated, grouped by game: McFadden R² 0.388, top-1 accuracy 75.2%
+Cross-validated, grouped by game: McFadden R² 0.384, top-1 accuracy 75.0%
 against 41.2% for guessing. On the same games the previous six-term model scored
 0.351 unchanged and 0.375 refitted.
 
@@ -101,11 +101,11 @@ at 1,373.
 A winning condition needs the number to mean what it says, not merely to rank
 correctly. Held out by game, predicted and observed win rates:
 
-| Predicted | 0.010 | 0.034 | 0.062 | 0.094 | 0.130 | 0.177 | 0.249 | 0.360 | 0.509 | 0.690 | 0.861 | 0.969 |
+| Predicted | 0.010 | 0.035 | 0.063 | 0.096 | 0.131 | 0.179 | 0.250 | 0.361 | 0.508 | 0.687 | 0.858 | 0.968 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Observed | 0.006 | 0.022 | 0.039 | 0.065 | 0.115 | 0.172 | 0.266 | 0.375 | 0.534 | 0.717 | 0.867 | 0.967 |
+| Observed | 0.007 | 0.022 | 0.039 | 0.066 | 0.119 | 0.173 | 0.266 | 0.375 | 0.533 | 0.714 | 0.864 | 0.966 |
 
-The top bucket, where the threshold lives, reads 0.969 predicted against 0.967
+The top bucket, where the threshold lives, reads 0.968 predicted against 0.966
 observed. Mid-range predictions are slightly cautious and the lowest buckets
 slightly overstate a losing side's chances; neither affects a call at 95%.
 
@@ -134,9 +134,11 @@ So there is no floating point in the decision path:
 
 The features are values the simulation computes at fixed sample deadlines:
 `TeamStat` (explorers, attack) and the published gameplay measurements (everything
-else). `WinProbability::teamInputs` reads the latest periodic measurement sample
-and the one `ACTIVITY_WINDOW_SAMPLES` (4) samples earlier from the retained
-measurement history, per team, before allies are summed: an eliminated ally then
+else). `WinProbability::teamInputs` reads the latest retained periodic measurement
+sample and the one `ACTIVITY_WINDOW_SAMPLES` (4) samples earlier. A sample is
+published after its source tick, so at a decision tick T the latest is the sample
+for T − 512; the fitter joins that same sample to the decision. Readings are taken
+from the measurement history, per team, before allies are summed: an eliminated ally then
 contributes no recent activity rather than removing its whole history from the
 alliance. The history is saved, so a loaded game reads the same windows; a save
 whose coverage starts later counts the window from coverage start. Because a
@@ -229,9 +231,9 @@ The threshold is the only dial:
 
 | Threshold | Compute saved | Calls on the wrong side |
 | --- | ---: | ---: |
-| **95% (tournament default)** | **26.4%** | **1.6%** (18 of 1,114) |
-| 97% | 19.4% | 1.5% (13 of 847) |
-| 99% | 8.7% | 0.5% (2 of 388) |
+| **95% (tournament default)** | **25.7%** | **1.7%** (18 of 1,090) |
+| 97% | 18.8% | 1.6% (13 of 814) |
+| 99% | 8.4% | 0.5% (2 of 376) |
 
 Measured over the 1,716 games, cross-fitted so no game is scored by a model that
 saw it, with three consecutive qualifying samples required. Errors sit below

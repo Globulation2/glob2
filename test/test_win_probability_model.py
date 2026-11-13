@@ -322,6 +322,35 @@ class GameplayInputs(unittest.TestCase):
         inputs = W.gameplay_inputs(self.record(1), self.record(5))
         self.assertEqual(inputs['delivered_window'], 0)
 
+    def test_layout_constants_match_the_engine(self):
+        def source(path):
+            return (ROOT / path).read_text()
+        building = source('src/building/IntBuildingType.h')
+        self.assertIn(f'ATTACK_BUILDING={W.ATTACK_BUILDING},', building.replace(' ', ''))
+        self.assertIn(f'NB_BUILDING_LONG_LEVELS = {W.BUILDING_LEVELS};', source('src/team/stats/TeamStat.h'))
+        self.assertIn(f'MaterialSlotCount = {W.MATERIAL_SLOTS};', source('src/resource/Material.h'))
+        engine = source('src/team/stats/WinProbability.h')
+        self.assertIn(f'ACTIVITY_WINDOW_SAMPLES = {W.WINDOW_SAMPLES};', engine)
+        stat = source('src/team/stats/TeamStat.h')
+        jobs = re.search(r'enum LabourJob\s*\{([^}]*)\}', stat)[1]
+        self.assertEqual(re.findall(r'\w+', jobs).index('SWARM_JOB'), W.SWARM_JOB)
+        phases = re.findall(r'\w+', re.search(r'enum LabourPhase\s*\{([^}]*)\}', stat)[1])
+        self.assertEqual(phases.index('LABOUR_PHASES'), W.LABOUR_PHASES)
+
+    def test_the_decision_reads_the_previously_published_sample(self):
+        # At tick T the engine's latest retained gameplay sample is T - 512, so a
+        # record logged for T itself must not be what the decision reads.
+        pair = {'tl': {}, 'econ': {'food': '0/0', 'fooded': '0/0'},
+                'gameplay': self.record(9, feeding=99)}
+        for which, field in W.TIMELINE_FIELDS.values():
+            pair[which][field] = 1
+        published = {'gameplay': self.record(5)}
+        earlier = {'gameplay': self.record(5 - W.WINDOW_SAMPLES)}
+        values = W.measurements_of(pair, published, earlier)
+        self.assertEqual(values['feeding'], 4)
+        self.assertEqual(values['delivered_window'], 2 * 10 * W.WINDOW_SAMPLES)
+        self.assertEqual(W.measurements_of(pair)['feeding'], 0)
+
     def test_only_the_fields_the_engine_reads_are_kept(self):
         line = ('GLOB2_MEASURE team=1 tick=2048 final=0 feeding=7 meals=99 '
                 f'buildings_{W.ATTACK_BUILDING}_2=3 buildings_1_2=8')
