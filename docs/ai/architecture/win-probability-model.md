@@ -197,8 +197,10 @@ Live spectators can open an additional, last statistics page showing each side's
 whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
 They do see their own side's chance in the statistics header, beside a trophy:
-two digits from 00 to 99 (a certain win reads 99), evaluated live from the
-current scene rather than the 512-tick samples. Only their own figure is shown,
+two digits from 00 to 99 (a certain win reads 99), the chance the simulation
+recorded at its latest 512-tick sample. Both panels renormalise over the sides
+still standing, so an elimination between samples is reflected at once. Only
+their own figure is shown,
 so it says how the match is going without itemising any opponent.
 
 The end-game metric picker includes **Win probability**, on a fixed 0–100% axis.
