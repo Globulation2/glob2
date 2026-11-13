@@ -39,7 +39,7 @@ void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected,
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint(), density = std::max(.25, double(gfx->getRasterScale()));
-	const auto ink = icon == 9 ? Color(232, 194, 107) : InGameTouchTheme::ink();
+	const auto ink = icon >= 9 ? Color(232, 194, 107) : InGameTouchTheme::ink();
 	const Color accent(232, 194, 107);
 	const auto packed = [](Color c) { return double((Uint32(c.r) << 24) | (Uint32(c.g) << 16) | (Uint32(c.b) << 8) | c.a); };
 	const std::array<double, 4> key{unit, density, packed(InGameTouchTheme::ink()), packed(accent)};
@@ -96,11 +96,17 @@ void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected,
 				case 8:
 					for (int j = 0; j < 2; ++j) { const double xx = -9 + j * 11;
 						line(xx, -8, xx + 7, 0); line(xx + 7, 0, xx, 8); } break;
-				case 9: // Trophy, with handles and a broad pedestal.
+				case 9: // Trophy, with handles and a broad pedestal: the local win chance.
 					line(-6, -9, 6, -9); line(-6, -9, -5, 0); line(-5, 0, 0, 4);
 					line(0, 4, 5, 0); line(5, 0, 6, -9); line(0, 4, 0, 9);
 					line(-5, 10, 5, 10); line(-6, -6, -10, -6); line(-10, -6, -10, -2);
 					line(-10, -2, -5, 2); line(6, -6, 10, -6); line(10, -6, 10, -2); line(10, -2, 5, 2); break;
+				case 10: // Open book: prestige comes from fully upgraded schools.
+					for (int side = -1; side <= 1; side += 2) {
+						line(0, -6, 5 * side, -8); line(5 * side, -8, 10 * side, -7); line(10 * side, -7, 10 * side, 8);
+						line(10 * side, 8, 5 * side, 7); line(5 * side, 7, 0, 9);
+					}
+					line(0, -6, 0, 9); break;
 
 				}
 				const Uint32 alpha = Uint8(std::round(255 * std::clamp(.5 - distance * density * unit, 0., 1.)));
@@ -117,6 +123,11 @@ void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected,
 }
 
 void GameGUITouch::drawPrestigeIcon(ViewPoint center, double logicalSize)
+{
+	drawNavigationIcon(10, center, false, logicalSize / globalContainer->gfx->logicalUnitsPerPoint());
+}
+
+void GameGUITouch::drawWinChanceIcon(ViewPoint center, double logicalSize)
 {
 	drawNavigationIcon(9, center, false, logicalSize / globalContainer->gfx->logicalUnitsPerPoint());
 }
@@ -334,9 +345,17 @@ void GameGUITouch::drawHUD()
 	const auto rate = gui.tickRate.rate();
 	const bool chevrons = gui.canChangeGameSpeed();
 	stats.push_back({rate ? TickRateMeter::format(*rate) : "-", -1, gui.tickRateShortfall() == 2});
+	stats.push_back({gui.localWinChanceText()});
 	const auto paper = InGameTouchTheme::paper();
 	const Color backdrop(paper.r, paper.g, paper.b, 245);
-	gfx->drawFilledRect(int(hud.stats.x), int(hud.stats.y), int(hud.stats.w), int(hud.stats.h), backdrop);
+	// Portrait's win chance row covers only its own cell, beneath prestige,
+	// joined to the rows above like they are joined to each other.
+	const bool thirdRow = hud.cells[6].y > hud.cells[4].y;
+	const double band = thirdRow ? hud.cells[4].y + hud.cells[4].h - hud.stats.y : hud.stats.h;
+	gfx->drawFilledRect(int(hud.stats.x), int(hud.stats.y), int(hud.stats.w), int(band), backdrop);
+	if (thirdRow)
+		gfx->drawFilledRect(int(hud.cells[6].x), int(hud.stats.y + band), int(hud.cells[6].w),
+			int(std::ceil(hud.cells[6].y - hud.stats.y - band)), backdrop);
 	const auto drawUnitImage = [&](ViewRect box, int frame, Color color) {
 		auto *sprite = globalContainer->unitmini;
 		sprite->setBaseColor(color);
@@ -377,7 +396,7 @@ void GameGUITouch::drawHUD()
 		return font->getStringWidth(text) * gfx->textUnitsPerPoint();
 	};
 	const auto eachMetric = [&](const auto &visit) {
-		for (int i : {0, 1, 2, 3, 5})
+		for (int i : {0, 1, 2, 3, 5, 6})
 			visit(hud.cells[i], stats[i].text, false, i != 5 || chevrons);
 		for (int side = 0; side < 2; ++side)
 			visit(conversionCell(side),
@@ -439,11 +458,13 @@ void GameGUITouch::drawHUD()
 		if (stat.icon >= 0)
 			unitIcon(center, stat.icon);
 		else if (i == 3)
+			drawNavigationIcon(10, center, false, iconPoints);
+		else if (i == 6)
 			drawNavigationIcon(9, center, false, iconPoints);
 		else if (chevrons)
 		{
 			// The full speed symbol shares the same icon box as the
-			// unit portraits and trophy, regardless of the active speed.
+			// unit portraits and prestige book, regardless of the active speed.
 			const int lit = gui.litSpeedChevrons();
 			const double pitch = iconPoints / GameSpeedControl::CHEVRONS;
 			for (int c = 0; c < GameSpeedControl::CHEVRONS; ++c)
@@ -460,13 +481,13 @@ void GameGUITouch::drawHUD()
 		drawValue(r, left + iconWidth(false, hasIcon) + (hasIcon ? valueGap : 0), stat.text);
 		if (i == 3)
 		{
-			// Secondary match progress stays below the common primary row.
+			// Secondary match progress stays below the common primary row: a
+			// gold fill only, with no empty track while nobody has prestige.
 			const double barY = r.y + 36 * unit, barW = r.w - 16 * unit;
 			const double barX = r.x + 8 * unit;
 			if (match.state().prestigeWinCondition && match.state().prestigeToReach > 0)
 			{
 				const double progress = std::clamp(double(match.totalPrestige()) / match.state().prestigeToReach, 0., 1.);
-				gfx->drawFilledRect(int(barX), int(barY), int(barW), int(2 * unit), InGameTouchTheme::dialTrack());
 				gfx->drawFilledRect(int(barX), int(barY), int(barW * progress), int(2 * unit), Color(232, 194, 107));
 			}
 		}
@@ -979,7 +1000,7 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	HudLayout hud;
 	const bool wide = safe.w > safe.h || safe.w / unit >= 680;
 	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.persistentPanel;
-	const bool stackedWide = wide && ((safe.w / unit - 92) * .25 - 4) / 2 < 82;
+	const bool stackedWide = wide && ((safe.w / unit - 92) * .23 - 4) / 2 < 82;
 	const double side = (wide ? (safe.h / unit < 360 && !identity ? 72 : stackedWide ? 104 : 84) : 104) * unit, gap = 4 * unit;
 	const double x = safe.x, y = safe.y + gap, rowHeight = 40 * unit;
 	hud.minimap = {safe.x + safe.w - side - gap, wide ? y : y + rowHeight + gap, side, side};
@@ -987,12 +1008,14 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	if (wide)
 	{
 		// Prestige and conversion imagery get more room than simple counters.
-		const double weights[] = {.14, .14, .14, .21, .25, .12};
+		// Win chance (cell 6) follows prestige; its two digits need little room.
+		const int order[] = {0, 1, 2, 3, 6, 4, 5};
+		const double weights[] = {.13, .13, .13, .16, .12, .23, .10};
 		double left = x;
-		for (int i = 0; i < 6; ++i)
+		for (int slot = 0; slot < 7; ++slot)
 		{
-			const double width = available * weights[i];
-			hud.cells[i] = {left, y, width - gap, rowHeight};
+			const double width = available * weights[slot];
+			hud.cells[order[slot]] = {left, y, width - gap, rowHeight};
 			left += width;
 		}
 		hud.stats = {x, y, available - gap, rowHeight};
@@ -1007,7 +1030,10 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 		const double prestige = available / 3;
 		hud.cells[3] = {x, y + rowHeight + gap, prestige - gap, rowHeight};
 		hud.cells[4] = {x + prestige, y + rowHeight + gap, available - prestige - gap, rowHeight};
-		hud.stats = {x, y, available - gap, 2 * rowHeight + gap};
+		// Win chance takes a third row under prestige: still within the
+		// minimap's height, and the conversion composition keeps its width.
+		hud.cells[6] = {x, y + 2 * (rowHeight + gap), prestige - gap, rowHeight};
+		hud.stats = {x, y, available - gap, 3 * rowHeight + 2 * gap};
 	}
 	const double header = InGameTouchTheme::inspectorHeader * unit;
 	hud.identity = {hud.stats.x, hud.stats.y + hud.stats.h + gap, hud.stats.w, header};

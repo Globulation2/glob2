@@ -1666,7 +1666,7 @@ class GameGUITouchHarness
 					const double unit = gfx->logicalUnitsPerPoint();
 					for (const auto &cell : hud.cells)
 						CHECK(cell.h == doctest::Approx(40 * unit));
-					CHECK(hud.stats.y + hud.stats.h == doctest::Approx(hud.cells[4].y + hud.cells[4].h));
+					CHECK(hud.stats.y + hud.stats.h == doctest::Approx(std::max(hud.cells[4].y + hud.cells[4].h, hud.cells[6].y + hud.cells[6].h)));
 					CHECK(hud.identity.y == doctest::Approx(hud.stats.y + hud.stats.h + 4 * unit));
 					if (hud.cells[3].y > hud.cells[0].y)
 					{
@@ -1674,6 +1674,9 @@ class GameGUITouchHarness
 						CHECK(hud.cells[3].w == doctest::Approx(hud.cells[0].w));
 						CHECK(hud.cells[4].x == doctest::Approx(hud.cells[1].x));
 						CHECK(hud.cells[4].x + hud.cells[4].w == doctest::Approx(hud.cells[2].x + hud.cells[2].w));
+						CHECK(hud.cells[6].x == doctest::Approx(hud.cells[3].x));
+						CHECK(hud.cells[6].y > hud.cells[3].y);
+						CHECK(hud.cells[6].y + hud.cells[6].h <= hud.minimap.y + hud.minimap.h);
 					}
 					CHECK(inventory.cells.size() == count);
 					CHECK(inventory.bounds.y == doctest::Approx(gui.touch->allocationRect().y + gui.touch->allocationRect().h));
@@ -4156,12 +4159,12 @@ class GameGUITouchHarness
 				const auto overlaps = [](const auto &a, const auto &b) {
 					return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 				};
-				for (int stat = 0; stat < 6; ++stat)
+				for (int stat = 0; stat < 7; ++stat)
 				{
 					const auto cell = gui.touch->statRect(hud, stat);
 					require(!overlaps(cell, identity) && !overlaps(cell, hud.minimap),
 						"Stat artwork clears the identity and minimap input regions");
-					for (int other = stat + 1; other < 6; ++other)
+					for (int other = stat + 1; other < 7; ++other)
 						require(!overlaps(cell, gui.touch->statRect(hud, other)), "Stat readouts do not overlap");
 				}
 				const double pointUnit = gfx->logicalUnitsPerPoint();

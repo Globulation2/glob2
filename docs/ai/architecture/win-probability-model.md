@@ -201,6 +201,10 @@ always the reason a game ended when one is available on the same tick.
 Live spectators can open an additional, last statistics page showing each side's chance,
 whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
+They do see their own side's chance in the statistics header, beside a trophy:
+two digits from 00 to 99 (a certain win reads 99), evaluated live from the
+current scene rather than the 512-tick samples. Only their own figure is shown,
+so it says how the match is going without itemising any opponent.
 
 The end-game metric picker includes **Win probability**, on a fixed 0–100% axis.
 Its history is sampled every 512 ticks and includes a final partial interval.

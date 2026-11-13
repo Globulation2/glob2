@@ -196,7 +196,8 @@ case alone. That case also clicks the top bar's speed chevrons. The desktop
 statistics case captures the bar at 640 and 1280 pixels with zero and five-digit
 prestige/conversion values, checks the clear gutter before speed, and clicks the
 relocated chevrons. Desktop uses measured icon/value groups with common gutters;
-prestige shares touch's trophy, colony value and conditional match-progress bar. The `GameSpeedControl`
+prestige shares touch's school book, colony value and conditional match-progress bar,
+and the win chance shares its trophy and two-digit local value. The `GameSpeedControl`
 suite (`src/hud/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
 the tick-rate readout's window, one-second refresh, stall decay and formatting with
 explicit times.

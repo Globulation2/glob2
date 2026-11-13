@@ -45,14 +45,17 @@ maximum and wraps to 1x (the desktop top bar has the same control, where a right
 back down). The rate is a rolling three-second average refreshed once per second,
 with one decimal below 25, and the cell is outlined when it falls under 75% of the
 speed's target. Network games have a fixed speed, so the cell shows the rate alone.
-The prestige cell pairs a trophy with the player’s score. A gold progress track
-shows the combined score of all teams against the match threshold when prestige
-victory is enabled. The conversions cell shows two Glob images joined by
+The prestige cell pairs an open book (the school, the only source of prestige) with the player’s score. When prestige
+victory is enabled, a thin gold line beneath it grows with the combined score of
+all teams against the match threshold; there is no empty track behind it. The win chance cell pairs a trophy with the local side's live
+win probability as two digits (00 to 99, with a certain win shown as 99); it
+never shows other players' chances. The conversions cell shows two Glob images joined by
 a directional arrow. The left Glob uses the local team’s colour and the right
 Glob uses a neutral colour representing other teams. A green arrow points toward
 the local team for recruits; a red arrow points away for defectors. These cumulative changes of
-allegiance are not births or deaths. Portrait puts speed above the minimap and
-gives prestige and conversions a larger second row; landscape gives these two
+allegiance are not births or deaths. Portrait puts speed above the minimap,
+gives prestige and conversions a larger second row and win chance a third row
+under prestige, still within the minimap's height; landscape gives these two
 readouts more width. Primary icons share a size and primary values share a type size and
 baseline across the HUD. Values sit to the right of their icons with a consistent
 gap and left alignment; each complete icon-and-value group is centred in its cell.
@@ -178,8 +181,9 @@ and Cancel, keeping both choices visible even in a short row panel.
 
 The statistics backdrop ends at the bottom of its counter rows; each row is
 40 points high, including the prestige progress bar. Portrait stats share three
-equal columns across both rows: trophy, conversions gained and conversions lost
-align with the population counters above. Each icon-and-value group is measured
+equal columns across the first two rows: prestige book, conversions gained and conversions lost
+align with the population counters above, and the win chance trophy sits in the
+first column of a third row whose backdrop covers only that cell. Each icon-and-value group is measured
 and painted in the same normal font style and centered within its column. Compact selection titles
 sit directly below the stats with a four-point gap.
 

@@ -469,11 +469,16 @@ private:
 	const std::vector<GAGGUI::ui::PositionedControl> *hudPaintControls = nullptr;
 	struct TopBarLayout
 	{
-		std::array<std::string, 7> values;
-		std::array<double, 7> x;
+		// Workers, explorers, warriors, prestige, win chance, conversions
+		// gained and lost, then the speed control and tick rate.
+		std::array<std::string, 8> values;
+		std::array<double, 8> x;
 		double scale;
 	};
 	TopBarLayout topBarLayout() const;
+	//! The local side's live win probability as two digits, "00" to "99"
+	//! (certain wins read 99), or "--" before the scene has one.
+	std::string localWinChanceText() const;
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
