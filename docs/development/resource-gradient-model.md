@@ -260,15 +260,24 @@ An unmeasured family receives neither synthetic zero labels nor a validation
 claim. Reports also score the same unified rows with
 the previous weighting, so a weighting change is not mistaken for a feature gain.
 
-The checked-in fit uses a derived view of the historical AI campaign that
-excludes Guard movement rows owned by Cabino, Castor, Cortex, Econo, Nicowar and
-Numbi. Its verified initial maps had no painted zones and its games accepted no
-external orders; those six implementations never paint Guard zones. Raw cohorts
-and persistent map splits are retained, with exclusions recorded separately.
-Maxima/Warrush zero-goal rows remain: zero eligible gradient goals cannot prove
-there were no painted tiles. This filter applies to that recorded campaign,
-not to AI identity at runtime or to future games with human-painted zones.
-Model provenance records both input identities and the exclusion manifest hash.
+The checked-in fit (November 2026) comes from 9,856 games collected on the
+SIM 154 engine with the `unified-gradient-h128-v4` collector: 1.22M eligible
+episodes on 7,385 development and 2,464 held-out maps, with formats, generators
+and AIs sampled evenly. Its held-out decision regret is 2.80, against 3.29 for
+the previous coefficients on the same held-out rows. A learning curve on those
+rows was flat from 461 to 7,385 training maps (2.82 to 2.80): the gain came from
+current-engine data rather than volume, so a later refit after engine changes
+needs only a few hundred maps. Over half of the games reached the 1,800-second
+cap and contributed their complete horizons as censored cohorts. No row filter
+is applied, since Guard and Clear fields are now requested only for teams with
+painted zones (see the top of this guide). Markets remain unmeasured and use the
+combined fallback. Model provenance records the training-input receipt, split
+registry and slot accounting.
+
+The previous fit used a derived view of the historical AI campaign that excluded
+Guard movement rows owned by Cabino, Castor, Cortex, Econo, Nicowar and Numbi,
+which never paint Guard zones; that engine still requested their empty Guard
+fields. Its raw cohorts and map splits remain on the historical evidence branch.
 
 Review pooled and per-family results, format/generator/size, age/demand,
 target-change, route-change and weighted-cost-change slices. A good pooled score
