@@ -52,6 +52,8 @@ struct Storage
 		std::shared_ptr<const std::vector<AITelemetry::Field>> fields;
 	};
 	std::vector<TelemetrySchema> telemetrySchemas;
+	//! Empty between captures; keeps its capacity for the next schema list.
+	std::vector<TelemetrySchema> telemetrySchemaScratch;
 	Uint64 allocations = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;

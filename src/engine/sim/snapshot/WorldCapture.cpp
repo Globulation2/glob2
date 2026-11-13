@@ -530,7 +530,9 @@ Handle capture(const Game& game,
         // capacity: a recycled buffer then copies characters, not allocations.
         auto& rows = telemetry->rows;
         std::size_t count = 0;
-        std::vector<Storage::TelemetrySchema> schemas;
+        std::vector<Storage::TelemetrySchema> localSchemas;
+        auto& schemas = storage ? storage->telemetrySchemaScratch : localSchemas;
+        schemas.clear();
         auto schemaOf = [&](const std::shared_ptr<AITelemetry::Series>& series) {
             const auto& fields = series->fields;
             if (storage)
@@ -559,7 +561,7 @@ Handle capture(const Game& game,
                     row.fields = schemaOf(series); row.values = series->current.values; row.named = series->named;
                 }
         rows.resize(count);
-        if (storage) storage->telemetrySchemas = std::move(schemas);
+        if (storage) { storage->telemetrySchemas.swap(schemas); schemas.clear(); }
         result->telemetry = std::move(telemetry);
     }
 	if (needs(requirements, Component::Entities))
