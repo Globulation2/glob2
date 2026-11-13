@@ -21,8 +21,10 @@
 
 namespace {
 
-// A unit that cannot make progress forces a rebuild at most this often (~5 s).
-constexpr Uint32 STUCK_REBUILD_TICKS = 128;
+// A unit blocked by an obstacle its field does not know requests a rebuild
+// only when the field is at least this old (~5 s); a younger field is
+// trusted and the unit sidesteps.
+constexpr Uint32 OBSTACLE_REBUILD_MIN_AGE = 128;
 
 
 
@@ -40,10 +42,30 @@ FieldReadiness MapRouting::requestBuildingField(Building* building,MovementAcces
     building->globalGradientUsedStep[slot]=now;
     const bool cold=!building->globalGradient[slot];
     const auto last=building->lastGlobalGradientUpdateStepCounter[slot];
-    const bool dirty=(building->dirtyGradient[slot] || building->gradientGeneration[slot]!=map.topologyGeneration)
-        && last+GRADIENT_DIRTY_REBUILD_TICKS<=now;
-    const bool clearing=building->resolveRoute(route)==BuildingRoute::Clearing && last+CLEARING_FLAG_REFRESH_TICKS<=now;
-    if (cold || dirty || clearing) {
+    const BuildingRoute resolved=building->resolveRoute(route);
+    const bool stale=building->dirtyGradient[slot] || building->gradientGeneration[slot]!=map.topologyGeneration;
+    bool due;
+    if (resolved==BuildingRoute::Footprint)
+    {
+        // The route to a building is rebuilt on age alone; map changes do not
+        // make it due (BUILDING_FIELD_REFRESH_TICKS, pathfindBuilding).
+        due=last+BUILDING_FIELD_REFRESH_TICKS<=now;
+        if (!due && !cold && stale && !building->refreshRequested.test(slot))
+        {
+            // Clear the change marks this field ignores, so observers that
+            // lease only current fields (leaseBuildingRoute) may read it.
+            building->dirtyGradient[slot]=false;
+            building->gradientGeneration[slot]=map.topologyGeneration;
+        }
+    }
+    else
+    {
+        // Flag routes follow map changes; a clearing flag's goals are
+        // resources, so it is also rebuilt on a timer.
+        due=(stale && last+GRADIENT_DIRTY_REBUILD_TICKS<=now)
+            || (resolved==BuildingRoute::Clearing && last+CLEARING_FLAG_REFRESH_TICKS<=now);
+    }
+    if (cold || due) {
         if (!requestBuildingRefresh(building,slot)) {
             if (cold) building->globalGradient[slot]=acquireBuildingGradientBuffer();
             updateGlobalGradient(building,movementAccessValue,route);
@@ -129,9 +151,35 @@ bool MapRouting::buildingGradientDirection(EntityRandom& random, Building *build
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	// Settling this layer also settles all equal/better neighbors the generic
 	// direction picker can select. Keep partial-array access inside this adapter.
-	buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route);
+	if (buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route)<=GRADIENT_UNREACHABLE)
+	{
+		// The unit stands where the field has no distance: settle the
+		// neighbours the stale-cell step reads, as buildingAvailable does.
+		for (int d=0; d<8; ++d)
+			buildingGradientValue(building, movementAccessValue, map.coordToIndex(x+tabClose[d][0], y+tabClose[d][1]), route);
+		return staleCellStep(building->globalGradient[slot], movementAccessValue, building->owner->me, x, y, dx, dy);
+	}
 	return directionByGradient(random, building->owner->me, movementAccessValue, x, y,
 		building->globalGradient[slot], dx, dy, strict);
+}
+
+bool MapRouting::buildingStepBlockedByTraffic(Building *building, MovementAccess movementAccessValue, int x, int y, BuildingRoute route) const
+{
+	const int swimClass=accessClass(movementAccessValue);
+	if (swimClass==AIR_MOVEMENT_CLASS) return false;
+	const Uint16 here=buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route);
+	if (here<=GRADIENT_UNREACHABLE) return false;
+	const Uint16* gradient=building->globalGradient[building->routeSlot(swimClass, route)];
+	bool better=false;
+	for (int d=0; d<8; ++d)
+	{
+		const int nx=x+tabClose[d][0], ny=y+tabClose[d][1];
+		if (gradient[map.coordToIndex(nx, ny)]<=here) continue;
+		better=true;
+		if (!map.isHardSpaceForGroundUnit(nx, ny, swimClass>0, building->owner->me)) return false;
+		if (swimClass==WATER_ONLY_CLASS && !map.terrainPropertiesAt(nx, ny).swimmable) return false;
+	}
+	return better;
 }
 
 bool MapRouting::buildingAvailable(Building *building, MovementAccess movementAccessValue, int x, int y, int *dist, BuildingRoute route)
@@ -186,11 +234,15 @@ bool MapRouting::pathfindBuilding(EntityRandom& random, Building *building, Move
 	}
 	if (buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, true, route))
 		return true;
-	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>map.game->stepCounter)
+	// No better free neighbour. Sidestep when the field is young or only other
+	// units stand in the way; neither means the field is wrong.
+	if (building->lastGlobalGradientUpdateStepCounter[slot]+OBSTACLE_REBUILD_MIN_AGE>map.game->stepCounter
+		|| buildingStepBlockedByTraffic(building, movementAccessValue, x, y, route))
 		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 
-	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps
-	// sidestepping on the old field until it publishes; otherwise rebuild now.
+	// An obstacle the old field does not know blocks the way: rebuild it. A
+	// scheduled refresh keeps sidestepping on the old field until it
+	// publishes; otherwise rebuild now.
 	if (requestBuildingRefresh(building, slot))
 		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 	noteBuildingSyncReason(BuildingSyncReason::Other);

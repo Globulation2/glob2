@@ -608,8 +608,13 @@ TEST_CASE("production movement evidence needs no probe and excludes cold and abs
     auto* cells=map.routing().materialGradients[0][WHEAT][0];REQUIRE(cells);
     cells[map.coordToIndex(8,8)]=GRADIENT_AT_GOAL; // Cached goal has no stock.
     CHECK_FALSE(map.routing().pathfindMaterial(random,0,WHEAT,MovementAccess::Land,8,8,&dx,&dy,&stop,nullptr,false));
-    cells[map.coordToIndex(8,8)]=GRADIENT_UNREACHABLE;
+    // Unreached here and around, so the stale-cell step has no neighbour to
+    // take and the query stays an absent observation.
+    std::array<Uint16,9> saved{};
+    for(int i=0;i<9;++i){const auto at=map.coordToIndex(7+i%3,7+i/3);saved[i]=cells[at];cells[at]=GRADIENT_UNREACHABLE;}
     CHECK_FALSE(map.routing().pathfindMaterial(random,0,WHEAT,MovementAccess::Land,8,8,&dx,&dy,&stop,nullptr,false));
+    for(int i=0;i<9;++i)cells[map.coordToIndex(7+i%3,7+i/3)]=saved[i];
+    cells[map.coordToIndex(8,8)]=GRADIENT_UNREACHABLE;
     CHECK(random==reference);
     const auto before=map.routing().gradientRuntime->adaptive.fields.at(key).total;
     CHECK((before==AdaptiveGradientState::Counts{1,0,2}));

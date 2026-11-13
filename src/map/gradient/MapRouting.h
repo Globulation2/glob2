@@ -354,6 +354,20 @@ private:
 	Uint16 buildingGradientValue(Building *building, MovementAccess movementAccessValue, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingGradientDirection(EntityRandom& random, Building *building, MovementAccess movementAccessValue, int x, int y,
 		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
+	//! Whether every better neighbour of (x, y) on the building's field is held
+	//! only by ground units. That is traffic: moving units are never in a
+	//! field, so refreshing it would not help.
+	bool buildingStepBlockedByTraffic(Building *building, MovementAccess movementAccessValue, int x, int y, BuildingRoute route) const;
+	//! A field is stale at the unit's own cell when it holds no distance there
+	//! (blocked or unreached) yet the live map leaves the cell open to the
+	//! unit: typically the unit itself stood still there when the field was
+	//! captured, which seeds the cell as an obstacle. Steps to the best free
+	//! neighbour that has a distance, scored as directionByGradient scores
+	//! steps. Ground movement only; false when the cell is really blocked (the
+	//! caller's own handling, such as the forbidden-area escape, then applies)
+	//! or no neighbour qualifies.
+	bool staleCellStep(const Uint16* gradient, MovementAccess movementAccessValue, Uint32 teamMask, int x, int y,
+		int* dx, int* dy, Uint32 guardAreaMask = 0) const;
 
 protected:
 	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed

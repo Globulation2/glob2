@@ -181,10 +181,12 @@ void Building::dirtyGradients()
 
 // With scheduled building gradients, an edit elsewhere (a team-wide reset or a
 // forbidden-area paint) leaves this building's goals in place: its walking
-// fields keep serving, stale, and the next use requests a scheduled refresh at
-// once (the dirty throttle counts as spent). Only a field without a usable old
-// value (none, or locked) is dropped and rebuilt cold. The building's own
-// changes (moves, types, ranges) still drop everything.
+// fields keep serving, stale. A flag route then requests a scheduled refresh
+// at its next use (the dirty throttle counts as spent); the building's own
+// route ignores the edit until it comes due by age (requestBuildingField).
+// Only a field without a usable old value (none, or locked) is dropped and
+// rebuilt cold. The building's own changes (moves, types, ranges) still drop
+// everything.
 bool Building::keepsStaleGradients(GradientDrop cause) const
 {
 	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->map->routing().buildingGradientPipelineActive();

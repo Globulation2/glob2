@@ -81,7 +81,16 @@ GradientQueryResult MapRouting::selectGradientQueryImpl(GradientQueryContext& co
         result.travelRequired=!result.goalValid;
         return result;
     }
-    if(here<=GRADIENT_UNREACHABLE)return result;
+    if(here<=GRADIENT_UNREACHABLE) {
+        // Own cell stale in the field (MapRouting::staleCellStep). Material and
+        // market moves take that step in pathfindMaterial before they get here.
+        if(context.mode!=GradientQueryContext::Mode::DirectFlight && key.family!=GradientFieldFamily::Materials
+            && key.family!=GradientFieldFamily::Markets && staleCellStep(cells,movementAccessFromLegacy(swim),mask,x,y,&result.dx,&result.dy)) {
+            result.moved=true;
+            result.travelRequired=true;
+        }
+        return result;
+    }
     if(context.mode==GradientQueryContext::Mode::DirectFlight) {
         Sint32 tx=0,ty=0;
         const bool exactPeak=getGlobalGradientDestination(cells,x,y,&tx,&ty);

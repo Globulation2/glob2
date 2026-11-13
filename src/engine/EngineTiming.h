@@ -126,6 +126,24 @@ static constexpr int AUTOSAVE_PHASE_TICKS = 79;
 //! gd-large-4ai and at 4000 ticks. Shared with
 //! src/map/gradient/BuildingGradientInvalidationHarness.cpp, which has to let this
 //! interval elapse before it can judge a field. See
-//! MapPathfindBuilding.cpp.
+//! MapPathfindBuilding.cpp. Building footprint fields no longer use it: see
+//! BUILDING_FIELD_REFRESH_TICKS below.
 static constexpr unsigned int GRADIENT_DIRTY_REBUILD_TICKS = 100;
+
+//! Age at which a building's footprint field (the route units walk to the
+//! building) is rebuilt. Map changes do not rebuild it before then: a unit
+//! that runs into an obstacle the field does not know requests a rebuild
+//! instead (MapRouting::pathfindBuilding), which repairs the routes that
+//! matter when they matter. Flag routes keep GRADIENT_DIRTY_REBUILD_TICKS.
+//!
+//! Measured in Nov 2026 on paired AI games (128-512 maps, 2-8 teams) against
+//! rebuilding after any map change once 100 ticks had passed: building-field
+//! CPU per tick per unit 0.29x, total 0.84x; routes 0.27% longer than the
+//! shortest (0.11% before); 5% of sampled routes meet an obstacle the field
+//! missed (2.3% before), each repaired by the unit that meets it. Over 307
+//! paired tournament configs, units and buildings stayed within 3%. The
+//! stuck-unit rebuilds the 100-tick interval was tuned against came mostly
+//! from units standing on cells their own field had seeded as obstacles,
+//! which MapRouting::staleCellStep now steps off.
+static constexpr unsigned int BUILDING_FIELD_REFRESH_TICKS = 1024;
 

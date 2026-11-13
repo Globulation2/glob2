@@ -77,10 +77,13 @@ team's fields. `ring-flag` puts an exploration flag, with its goal disc kept ins
 the ring, at the centre: a flag is never written into the building tile grid, so
 walking the changed footprint could not discover its field at any distance.
 
-Each scenario has to let `GRADIENT_DIRTY_REBUILD_TICKS` (`src/engine/EngineTiming.h`)
-elapse before it can judge a field, and takes the constant from that header rather
-than copying it — when the interval was raised from 25 to 100, a local copy here
-silently stopped covering it and the regression passed stale fields.
+Each scenario has to let a field come due before it can judge it: building
+routes at `BUILDING_FIELD_REFRESH_TICKS` of age, flag routes once
+`GRADIENT_DIRTY_REBUILD_TICKS` have passed since a change (both in
+`src/engine/EngineTiming.h`). The harness takes the constants from that header
+rather than copying them — when the dirty interval was raised from 25 to 100, a
+local copy here silently stopped covering it and the regression passed stale
+fields.
 
 The scheduled cases run the suite's worlds with the default scheduled building
 pipeline: worker kernels match the synchronous seeding and search for every route,

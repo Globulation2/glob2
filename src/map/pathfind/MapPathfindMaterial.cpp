@@ -63,6 +63,12 @@ bool MapRouting::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 re
             }
     };
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	// Own cell stale in the field (MapRouting::staleCellStep): step off it
+	// instead of escaping or stopping work below.
+	if (staleCellStep(gradient,movementAccessFromLegacy(swimClass),teamMask,x,y,dx,dy)) {
+		*stopWork=false;
+		return true;
+	}
 	if (here==GRADIENT_FORBIDDEN)
 	{
 		*stopWork=true;
