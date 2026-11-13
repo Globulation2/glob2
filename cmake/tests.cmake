@@ -48,6 +48,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/building/BuildingCatalogBenchmark.cpp
     src/building/AreaEffectsTest.cpp
     src/building/AreaEffectsBenchmark.cpp
+    src/map/gradient/BuildingSeedTemplatesBenchmark.cpp
     src/building/BuildingServicesTest.cpp
     src/unit/ServiceEffectRecordTest.cpp
     src/render/UnitEffectDeterminismTest.cpp
@@ -847,6 +848,7 @@ set(GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES
     src/map/gradient/MapGradientChamfer.cpp
     src/map/gradient/MapGradientPropagation.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/gradient/LegacyResourceGradientState.cpp
     src/map/gradient/AdaptiveGradientState.cpp
     src/map/gradient/MapGradientTargets.cpp
@@ -1319,6 +1321,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/building/BuildingCatalogBenchmark.cpp
     src/building/AreaEffectsTest.cpp
     src/building/AreaEffectsBenchmark.cpp
+    src/map/gradient/BuildingSeedTemplatesBenchmark.cpp
     src/building/BuildingServicesTest.cpp
     src/unit/ServiceEffectRecordTest.cpp
     src/render/UnitEffectDeterminismTest.cpp
@@ -2122,6 +2125,7 @@ set(GLOB2_ANDROID_UNIT_REUSED_SOURCES
     src/map/gradient/MapGradientChamfer.cpp
     src/map/gradient/MapGradientPropagation.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/gradient/LegacyResourceGradientState.cpp
     src/map/gradient/AdaptiveGradientState.cpp
     src/map/gradient/MapGradientTargets.cpp

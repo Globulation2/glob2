@@ -7,9 +7,15 @@
 #include "MapInternal.h"
 #include "BuildingUtils.h"
 #include "field/GradientPreparationRules.h"
+#include "BuildingSeedPlanes.h"
+#include "BuildingSeedAudit.h"
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <bit>
+#include <stdexcept>
+#include <string>
+#include <vector>
 #include <type_traits>
 
 namespace gradient_preparation
@@ -142,55 +148,90 @@ struct BuildingSeedResult
     // Clearing routes only: 1 with a resource to clear in range, 2 without.
     Uint8 resourceState=0;
 };
-// Mirrors Map::updateGlobalGradient's seeding for every route. Run supplies the
-// owner's chunk barrier or one worker's range, as for the other seeders.
-template<bool WaterOnly, bool Air=false, class Run>
-BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+// Per-cell rules shared by the full scan and the template path, so the two
+// cannot drift apart. The scan mirrors Map::updateGlobalGradient's seeding.
+inline MapState::SeedPassability seedPassability(int swim)
 {
-    BuildingSeedResult result;
-    const bool canSwim=b.swim>0;
-    constexpr bool air=Air;
-    const auto closed=[&](size_t i) {
-        const auto& p=view.terrainProperties(i);
-        if (air) return !p.flyable;
-        if constexpr (WaterOnly) return !p.swimmable;
-        else return !p.walkable && !(canSwim && p.swimmable);
-    };
-    if (b.route==BuildingRoute::Footprint)
-    {
-        run([&](size_t begin, size_t end) {
-            for (size_t i=begin; i<end; ++i)
-            {
-                const auto& cell=view.occupancy[i];
-                if ((!air && cell.building!=NOGBID))
-                    out[i]=cell.building==b.gid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-                else if ((!air && (view.areas[i].forbidden&b.teamMask)) || (air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i))
-                    || (!air && cell.immobileUnit!=IMMOBILE_UNIT_NONE) || closed(i))
-                    out[i]=GRADIENT_FORBIDDEN;
-                else
-                    out[i]=GRADIENT_UNREACHABLE;
-            }
-        });
-        if (air || !b.occupiesGround)
-            for (int y=0; y<b.height; ++y)
-                for (int x=0; x<b.width; ++x)
-                    out[view.index(b.posX+x,b.posY+y)]=GRADIENT_AT_GOAL;
-        bool reachable=false;
-        if (b.width==b.height)
-            reachable=spiralFindNonZero(out, view.normalizeX(b.posX-1), view.normalizeY(b.posY-1), b.width+1,
-                int(view.wMask), int(view.hMask), int(view.wDec));
-        else
-        {
-            for (int x=-1; x<=b.width && !reachable; ++x)
-                reachable=out[view.index(b.posX+x,b.posY-1)]>GRADIENT_FORBIDDEN || out[view.index(b.posX+x,b.posY+b.height)]>GRADIENT_FORBIDDEN;
-            for (int y=0; y<b.height && !reachable; ++y)
-                reachable=out[view.index(b.posX-1,b.posY+y)]>GRADIENT_FORBIDDEN || out[view.index(b.posX+b.width,b.posY+y)]>GRADIENT_FORBIDDEN;
-        }
-        result.locked=!reachable;
-        return result;
+    using MapState::SeedPassability;
+    if (swim==AIR_MOVEMENT_CLASS) return SeedPassability::Air;
+    if (swim==WATER_ONLY_CLASS) return SeedPassability::WaterOnly;
+    return swim>0 ? SeedPassability::WalkSwim : SeedPassability::Walk;
+}
+template<bool WaterOnly, bool Air>
+bool buildingSeedClosed(const MapState::View& view, size_t i, bool canSwim)
+{
+    const auto& p=view.terrainProperties(i);
+    if (Air) return !p.flyable;
+    if constexpr (WaterOnly) return !p.swimmable;
+    else return !p.walkable && !(canSwim && p.swimmable);
+}
+template<bool Air>
+bool buildingSeedResourceBlocks(const MapState::View& view, size_t i)
+{
+    return Air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i);
+}
+//! The team- and building-independent template value of one cell.
+template<bool WaterOnly, bool Air>
+Uint16 buildingTemplateCell(const MapState::View& view, size_t i, bool canSwim)
+{
+    const auto& cell=view.occupancy[i];
+    if (!Air && cell.building!=NOGBID) return GRADIENT_FORBIDDEN;
+    if (buildingSeedResourceBlocks<Air>(view,i) || (!Air && cell.immobileUnit!=IMMOBILE_UNIT_NONE)
+        || buildingSeedClosed<WaterOnly,Air>(view,i,canSwim))
+        return GRADIENT_FORBIDDEN;
+    return GRADIENT_UNREACHABLE;
+}
+inline Uint16 buildingTemplateCell(const MapState::View& view, size_t i, MapState::SeedPassability kind)
+{
+    using MapState::SeedPassability;
+    switch (kind) {
+    case SeedPassability::Walk: return buildingTemplateCell<false,false>(view,i,false);
+    case SeedPassability::WalkSwim: return buildingTemplateCell<false,false>(view,i,true);
+    case SeedPassability::WaterOnly: return buildingTemplateCell<true,false>(view,i,true);
+    case SeedPassability::Air: break;
     }
+    return buildingTemplateCell<false,true>(view,i,true);
+}
+//! Footprint route: the full seed of one cell.
+template<bool WaterOnly, bool Air>
+Uint16 footprintSeedCell(const MapState::View& view, const BuildingSeed& b, size_t i, bool canSwim)
+{
+    const auto& cell=view.occupancy[i];
+    if (!Air && cell.building!=NOGBID)
+        return cell.building==b.gid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
+    if ((!Air && (view.areas[i].forbidden&b.teamMask)) || buildingSeedResourceBlocks<Air>(view,i)
+        || (!Air && cell.immobileUnit!=IMMOBILE_UNIT_NONE) || buildingSeedClosed<WaterOnly,Air>(view,i,canSwim))
+        return GRADIENT_FORBIDDEN;
+    return GRADIENT_UNREACHABLE;
+}
+//! Clearing and Combat routes: the final seed of one cell whose initial value
+//! is GRADIENT_AT_GOAL inside the goal disk and GRADIENT_UNREACHABLE elsewhere.
+template<bool WaterOnly, bool Air>
+Uint16 routeSeedCell(const MapState::View& view, const BuildingSeed& b, size_t i, bool canSwim, Uint16 value)
+{
     const bool clearing=b.route==BuildingRoute::Clearing, war=b.route==BuildingRoute::Combat;
-    std::fill(out, out+size_t(view.width)*view.height, GRADIENT_UNREACHABLE);
+    const auto& cell=view.occupancy[i];
+    if (Air || cell.building==NOGBID)
+    {
+        // Clearing goals stand on their resource, possibly in water.
+        const bool clearingGoal=clearing && value==GRADIENT_AT_GOAL;
+        if ((!Air && (view.areas[i].forbidden&b.teamMask))
+            || (buildingSeedResourceBlocks<Air>(view,i) && !clearingGoal)
+            || (!Air && cell.immobileUnit!=IMMOBILE_UNIT_NONE)
+            || (buildingSeedClosed<WaterOnly,Air>(view,i,canSwim) && !clearingGoal))
+            return GRADIENT_FORBIDDEN;
+        return value;
+    }
+    if (!war || ((1u<<BuildingUtils::GIDtoTeam(cell.building))&b.allies))
+        return GRADIENT_FORBIDDEN;
+    return value==GRADIENT_AT_GOAL ? value : GRADIENT_UNREACHABLE;
+}
+//! Visits every goal cell of a Clearing or Combat route's disk (cells may
+//! repeat on maps smaller than the disk). Returns the clearing resource state.
+template<class Visit>
+Uint8 forEachRouteGoal(const MapState::View& view, const BuildingSeed& b, Visit visit)
+{
+    const bool clearing=b.route==BuildingRoute::Clearing;
     const int r=b.unitStayRange, r2=r*r;
     bool anyResourceToClear=false;
     for (int yi=-r; yi<=r; yi++)
@@ -210,29 +251,119 @@ BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const Bu
                     if (!selected) continue;
                     anyResourceToClear=true;
                 }
-                if (out[addr]==GRADIENT_UNREACHABLE) out[addr]=GRADIENT_AT_GOAL;
+                visit(addr);
             }
-    if (clearing) result.resourceState=anyResourceToClear ? 1 : 2;
+    return clearing ? (anyResourceToClear ? 1 : 2) : 0;
+}
+inline bool footprintReachable(const MapState::View& view, const BuildingSeed& b, const Uint16* out)
+{
+    if (b.width==b.height)
+        return spiralFindNonZero(out, view.normalizeX(b.posX-1), view.normalizeY(b.posY-1), b.width+1,
+            int(view.wMask), int(view.hMask), int(view.wDec));
+    for (int x=-1; x<=b.width; ++x)
+        if (out[view.index(b.posX+x,b.posY-1)]>GRADIENT_FORBIDDEN || out[view.index(b.posX+x,b.posY+b.height)]>GRADIENT_FORBIDDEN)
+            return true;
+    for (int y=0; y<b.height; ++y)
+        if (out[view.index(b.posX-1,b.posY+y)]>GRADIENT_FORBIDDEN || out[view.index(b.posX+b.width,b.posY+y)]>GRADIENT_FORBIDDEN)
+            return true;
+    return false;
+}
+template<class Visit>
+void forEachSeedBit(const MapState::BuildingSeedPlanes::Bits& bits, Visit visit)
+{
+    for (size_t word=0; word<bits.size(); ++word)
+        for (auto remaining=bits[word]; remaining; remaining&=remaining-1)
+            visit(word*64+size_t(std::countr_zero(remaining)));
+}
+
+// The full scan: reads every cell of the view.
+template<bool WaterOnly, bool Air=false, class Run>
+BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+{
+    BuildingSeedResult result;
+    const bool canSwim=b.swim>0;
+    if (b.route==BuildingRoute::Footprint)
+    {
+        run([&](size_t begin, size_t end) {
+            for (size_t i=begin; i<end; ++i)
+                out[i]=footprintSeedCell<WaterOnly,Air>(view,b,i,canSwim);
+        });
+        if (Air || !b.occupiesGround)
+            for (int y=0; y<b.height; ++y)
+                for (int x=0; x<b.width; ++x)
+                    out[view.index(b.posX+x,b.posY+y)]=GRADIENT_AT_GOAL;
+        result.locked=!footprintReachable(view,b,out);
+        return result;
+    }
+    std::fill(out, out+size_t(view.width)*view.height, GRADIENT_UNREACHABLE);
+    result.resourceState=forEachRouteGoal(view,b,[&](size_t addr) { out[addr]=GRADIENT_AT_GOAL; });
     run([&](size_t begin, size_t end) {
         for (size_t i=begin; i<end; ++i)
-        {
-            const auto& cell=view.occupancy[i];
-            if ((air || cell.building==NOGBID))
-            {
-                // Clearing goals stand on their resource, possibly in water.
-                const bool clearingGoal=clearing && out[i]==GRADIENT_AT_GOAL;
-                if ((!air && (view.areas[i].forbidden&b.teamMask))
-                    || ((air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i)) && !clearingGoal)
-                    || (!air && cell.immobileUnit!=IMMOBILE_UNIT_NONE)
-                    || (closed(i) && !clearingGoal))
-                    out[i]=GRADIENT_FORBIDDEN;
-            }
-            else if (!war || ((1u<<BuildingUtils::GIDtoTeam(cell.building))&b.allies))
-                out[i]=GRADIENT_FORBIDDEN;
-            else if (out[i]!=GRADIENT_AT_GOAL)
-                out[i]=GRADIENT_UNREACHABLE;
-        }
+            out[i]=routeSeedCell<WaterOnly,Air>(view,b,i,canSwim,out[i]);
     });
+    return result;
+}
+
+// The template path: copy the passability plane, then overlay what depends
+// on the team and the building. Overlay order keeps the scan's precedence of
+// building cells over forbidden paint. The footprint overlay visits only the
+// building's type rectangle at its position, where Map::setBuilding stamps
+// its gid; the scan marks every cell holding the gid. The two agree while
+// occupancy matches the rectangle, an invariant the save integrity check
+// enforces and GLOB2_BUILDING_SEED_AUDIT verifies in tests.
+template<bool WaterOnly, bool Air=false, class Run>
+BuildingSeedResult buildingCellsFromTemplates(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+{
+    BuildingSeedResult result;
+    const auto& t=*view.buildingSeeds;
+    const bool canSwim=b.swim>0;
+    const Uint16* plane=t.plane(seedPassability(b.swim));
+    run([&](size_t begin, size_t end) { std::copy(plane+begin, plane+end, out+begin); });
+    if (!Air)
+        for (unsigned mask=b.teamMask; mask; mask&=mask-1)
+        {
+            const auto team=size_t(std::countr_zero(mask));
+            if (team<t.forbidden.size())
+                forEachSeedBit(t.forbidden[team],[&](size_t i) { out[i]=GRADIENT_FORBIDDEN; });
+        }
+    if (b.route==BuildingRoute::Footprint)
+    {
+        for (int y=0; y<b.height; ++y)
+            for (int x=0; x<b.width; ++x)
+            {
+                const size_t i=view.index(b.posX+x,b.posY+y);
+                if (Air || !b.occupiesGround || view.occupancy[i].building==b.gid) out[i]=GRADIENT_AT_GOAL;
+            }
+        result.locked=!footprintReachable(view,b,out);
+        return result;
+    }
+    if (!Air && b.route==BuildingRoute::Combat)
+        for (size_t team=0; team<t.buildings.size(); ++team)
+            if (!((1u<<team)&b.allies))
+                forEachSeedBit(t.buildings[team],[&](size_t i) { out[i]=GRADIENT_UNREACHABLE; });
+    result.resourceState=forEachRouteGoal(view,b,[&](size_t addr) {
+        out[addr]=routeSeedCell<WaterOnly,Air>(view,b,addr,canSwim,GRADIENT_AT_GOAL);
+    });
+    return result;
+}
+
+template<bool WaterOnly, bool Air=false, class Run>
+BuildingSeedResult buildingCellsSelected(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+{
+    const size_t cells=size_t(view.width)*view.height;
+    if (!view.buildingSeeds || view.buildingSeeds->cells!=cells)
+        return buildingCellsForMovement<WaterOnly,Air>(view,b,out,run);
+    const auto result=buildingCellsFromTemplates<WaterOnly,Air>(view,b,out,run);
+    if (building_seed::auditEnabled())
+    {
+        std::vector<Uint16> expected(cells);
+        const auto scanned=buildingCellsForMovement<WaterOnly,Air>(view,b,expected.data(),[cells](auto fn) { fn(0,cells); });
+        const auto mismatch=std::mismatch(expected.begin(),expected.end(),out);
+        if (mismatch.first!=expected.end() || scanned.locked!=result.locked || scanned.resourceState!=result.resourceState)
+            throw std::logic_error("Building seed template differs from the full scan at cell "
+                + std::to_string(mismatch.first-expected.begin()) + " (route "
+                + std::to_string(int(b.route)) + ", swim " + std::to_string(b.swim) + ")");
+    }
     return result;
 }
 
@@ -242,9 +373,9 @@ BuildingSeedResult buildingCells(const MapState::View& view, const BuildingSeed&
     // Select the movement policy once per field, outside every cell loop.
     // The ordinary walking/swimming path retains its original predicate.
     if (b.swim==AIR_MOVEMENT_CLASS)
-        return buildingCellsForMovement<false,true>(view,b,out,run);
+        return buildingCellsSelected<false,true>(view,b,out,run);
     if (b.swim==WATER_ONLY_CLASS)
-        return buildingCellsForMovement<true>(view,b,out,run);
-    return buildingCellsForMovement<false>(view,b,out,run);
+        return buildingCellsSelected<true>(view,b,out,run);
+    return buildingCellsSelected<false>(view,b,out,run);
 }
 }

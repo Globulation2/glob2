@@ -706,6 +706,35 @@ checksum adapter remains available for diagnostic fixtures.
   owner cache retains at most 32 MiB and 24 bytes per cell, with a direct fallback.
   No cached template retains snapshot buffers or reads the live mutable material
   cache. Immediate building seeding uses the same predicates as worker snapshots.
+- Building walking fields seed from owner-maintained templates
+  (`src/map/gradient/BuildingSeedTemplates.h`) instead of scanning the map, since
+  lazy initialization makes the seed most of a cold field's cost. Four planes, one
+  for each passability kind (walk, walk+swim, water-only, air), hold the
+  building-independent obstacles. Per-team bitsets hold forbidden paint and building
+  cells; a team's bitset is allocated at its first set bit. A seed copies its kind's
+  plane, then overlays the team's forbidden paint,
+  enemy buildings (combat routes), the goal disk (clearing and combat) or its own
+  footprint, keeping the scan's precedence of buildings over paint. The per-cell
+  rules in `SeedCells.h` are shared by both paths. `Map::resourceSeedChanged` keeps
+  the planes current cell by cell. Bulk edits invalidate them, and the next use
+  rebuilds them lazily, because a bulk edit's raw writes may still be in progress
+  when it invalidates. Every template change goes with a mark on one of the map's
+  tracked arrays, so Store boundary reuse stays correct without a tracker of its
+  own. The `BuildingSeeds` snapshot component, which `buildingGradientView()` leases
+  to building workers and to cold hiring routes, is the one optional component: it is
+  filled only at boundaries with building field requests queued or staged
+  (`MapRouting::buildingSeedDemand`), or reused while still current. The copy runs
+  on the simulation thread while the seeds it speeds up run on workers, so copying
+  at every boundary would cost the critical path more than it saves. Hiring does not
+  request templates; its cold routes use them when present and scan otherwise, as
+  does any reader of a capture without them. A fill copies only the 16x16 chunks
+  changed since its pooled buffer was last filled. `Store::Metrics` reports the
+  traffic as `buildingSeedBytesCopied` (`building_seed_bytes_copied` in AI metrics),
+  separately from map arrays. The output is bit-identical to the scan, and nothing is
+  saved. The footprint overlay assumes a building's occupancy matches its type
+  rectangle, as `Map::setBuilding` stamps it. `GLOB2_BUILDING_SEED_AUDIT` (set by
+  `test/run_tests.py`) recomputes every template-backed seed with the scan and
+  throws on any difference.
 
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL

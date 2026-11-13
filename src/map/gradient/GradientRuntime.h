@@ -11,6 +11,7 @@
 #include "BuildingGradientDepthPolicy.h"
 #include "SnapshotGradient.h"
 #include "ResourceSeedCache.h"
+#include "BuildingSeedTemplates.h"
 #include "TerrainSafetyCache.h"
 #include "ResourceGradientProbe.h"
 #include "ResourceGradientExploration.h"
@@ -125,6 +126,8 @@ struct GradientRuntime
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
+	// Owner-maintained building seed templates; derived, never saved.
+	BuildingSeedTemplates buildingSeeds;
 	// Shared immediate negative answer when global natural-source counts are zero.
 	std::vector<Uint16> absentMaterialField;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;

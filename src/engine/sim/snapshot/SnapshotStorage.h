@@ -40,11 +40,14 @@ struct Storage
 	BufferPool<ResourceFields> resourceFields;
 	BufferPool<Fertility::GrowthCache> growth;
 	BufferPool<BuildingAreaEffects::FertilitySnapshot> areaFertility;
+	BufferPool<MapState::BuildingSeedSnapshot> buildingSeeds;
 	// Every live plane of every retained capture may be distinct.
 	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;
+	//! Derived building seed template bytes copied (kept apart from map arrays).
+	Uint64 buildingSeedBytesCopied = 0;
 	//! Actual entity extraction passes, including passes over an empty world.
 	Uint64 coreMaterializations = 0;
 	//! Bulk authoritative records read from live objects; excludes view metadata.

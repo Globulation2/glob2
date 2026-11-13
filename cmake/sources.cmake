@@ -449,6 +449,7 @@ set(GLOB2_CLIENT_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/map/gradient/SnapshotGradient.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/io/MapExploredAreaIO.cpp
     src/map/io/MapIO.cpp
     src/map/MapMisc.cpp
@@ -1394,6 +1395,7 @@ set(GLOB2_ANDROID_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/map/gradient/SnapshotGradient.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/io/MapExploredAreaIO.cpp
     src/map/io/MapIO.cpp
     src/map/MapMisc.cpp
@@ -2178,6 +2180,7 @@ set(GLOB2_IOS_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/map/gradient/SnapshotGradient.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/io/MapExploredAreaIO.cpp
     src/map/io/MapIO.cpp
     src/map/MapMisc.cpp
@@ -3131,6 +3134,7 @@ set(GLOB2_WEB_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/map/gradient/SnapshotGradient.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/io/MapExploredAreaIO.cpp
     src/map/io/MapIO.cpp
     src/map/MapMisc.cpp
@@ -3757,6 +3761,7 @@ set(GLOB2_MAP_SOURCES
     src/map/gradient/MapGradientMarketTargets.cpp
     src/map/gradient/SnapshotGradient.cpp
     src/map/gradient/ResourceSeedCache.cpp
+    src/map/gradient/BuildingSeedTemplates.cpp
     src/map/io/MapExploredAreaIO.cpp
     src/map/io/MapIO.cpp
     src/map/MapMisc.cpp

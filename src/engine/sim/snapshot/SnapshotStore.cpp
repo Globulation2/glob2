@@ -29,6 +29,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
+	const auto seedsBefore = storage.buildingSeedBytesCopied;
 	const auto entityBefore = storage.entityBytesCopied;
 	const auto sidecarBefore = storage.entitySidecarBytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage, unchangedBoundary);
@@ -38,6 +39,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 	next.observationRevision = observationRevision;
 	next.boundarySerial = nextBoundarySerial.fetch_add(1, std::memory_order_relaxed);
 	metrics.mapBytesCopied += storage.bytesCopied - copiedBefore;
+	metrics.buildingSeedBytesCopied += storage.buildingSeedBytesCopied - seedsBefore;
 	if (detailedMetrics || game.map.computeExecutor().telemetryEnabled()) {
 		const Handle empty;
 		accountCapture(next, latest ? *latest : empty, storage.bytesCopied - copiedBefore);

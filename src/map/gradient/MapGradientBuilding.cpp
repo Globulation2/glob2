@@ -73,7 +73,10 @@ void MapRouting::updateGlobalGradient(Building *building, MovementAccess movemen
 
     recordFieldCost(gradient,costClass);
     const auto seed=gradient_preparation::captureBuildingSeed(*building,costClass,route);
-    const auto seeded=gradient_preparation::buildingCells(map.stateView(),seed,gradient,
+    // Owner thread: the live templates are current once ensured.
+    auto view=map.stateView();
+    view.buildingSeeds=&buildingSeedTemplates();
+    const auto seeded=gradient_preparation::buildingCells(view,seed,gradient,
         [&](auto fn) { initializeGradientCells(fn); });
     if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 

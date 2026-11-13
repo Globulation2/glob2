@@ -29,14 +29,19 @@ enum class Component : Uint32
  Catalogs = 1, Terrain = 2, Resources = 4, Occupancy = 8,
  Areas = 16, Visibility = 32, Entities = 64, Teams = 128, Rules = 256,
  ResourceFields = 512, Growth = 1024, Session = 2048, Effects = 4096,
- Statistics = 8192, EntityDiagnostics = 16384, Annotations = 32768, History = 65536, Telemetry = 131072, StatisticsInputs = 262144
+ Statistics = 8192, EntityDiagnostics = 16384, Annotations = 32768, History = 65536, Telemetry = 131072, StatisticsInputs = 262144,
+ BuildingSeeds = 524288
 };
+// BuildingSeeds is the one optional component: a capture that requires it may
+// still carry none (only boundaries with building field requests queued copy
+// the derived templates), and its readers then seed by scanning.
 using Requirements = Uint32;
 constexpr Requirements bit(Component value) { return static_cast<Requirements>(value); }
 constexpr Requirements Simulation = bit(Component::Catalogs) | bit(Component::Terrain)
  | bit(Component::Resources) | bit(Component::Occupancy) | bit(Component::Areas)
  | bit(Component::Visibility) | bit(Component::Entities) | bit(Component::Teams)
- | bit(Component::Rules) | bit(Component::ResourceFields) | bit(Component::Growth) | bit(Component::StatisticsInputs);
+ | bit(Component::Rules) | bit(Component::ResourceFields) | bit(Component::Growth) | bit(Component::StatisticsInputs)
+ | bit(Component::BuildingSeeds);
 constexpr Requirements All = Simulation | bit(Component::Session) | bit(Component::Effects)
  | bit(Component::Statistics) | bit(Component::EntityDiagnostics) | bit(Component::Annotations)
  | bit(Component::History) | bit(Component::Telemetry);
