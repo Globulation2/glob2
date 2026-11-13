@@ -86,6 +86,30 @@ void Map::growResources(void)
         }
 }
 
+namespace
+{
+// Restrict-qualified parameters, unlike block-scope restrict pointers, let the
+// vectorizer drop its runtime alias check. Integer-only: any order is exact.
+void addCoverageRun(Uint16 *__restrict c, Uint64 *__restrict m, int n, Uint64 bit)
+{
+	for (int i = 0; i < n; ++i)
+	{
+		const Uint16 count = c[i];
+		c[i] = Uint16(count + 1);
+		m[i] |= count == 0 ? bit : 0;
+	}
+}
+void removeCoverageRun(Uint16 *__restrict c, Uint64 *__restrict m, int n, Uint64 bit)
+{
+	for (int i = 0; i < n; ++i)
+	{
+		const Uint16 count = Uint16(c[i] - 1);
+		c[i] = count;
+		m[i] &= count == 0 ? ~bit : ~Uint64(0);
+	}
+}
+} // namespace
+
 void Map::rebuildGrowthCoverage()
 {
 	static_assert(GROWTH_COVERAGE_BANDS * Team::MAX_COUNT <= sizeof(Uint64) * CHAR_BIT,
@@ -146,22 +170,10 @@ void Map::rebuildGrowthCoverage()
 				for (int x = x0; x < x1;)
 				{
 					const int start = x & wMask, n = std::min(x1 - x, w - start);
-					Uint16 *__restrict const c = counts + row + start;
-					Uint64 *__restrict const m = coverage + row + start;
 					if (delta > 0)
-						for (int i = 0; i < n; ++i)
-						{
-							const Uint16 count = c[i];
-							c[i] = Uint16(count + 1);
-							m[i] |= count == 0 ? bit : 0;
-						}
+						addCoverageRun(counts + row + start, coverage + row + start, n, bit);
 					else
-						for (int i = 0; i < n; ++i)
-						{
-							const Uint16 count = Uint16(c[i] - 1);
-							c[i] = count;
-							m[i] &= count == 0 ? ~bit : ~Uint64(0);
-						}
+						removeCoverageRun(counts + row + start, coverage + row + start, n, bit);
 					x += n;
 				}
 			}
