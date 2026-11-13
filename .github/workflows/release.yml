@@ -593,7 +593,7 @@ jobs:
             architecture: arm64
           - runner: macos-15-intel
             architecture: x86_64
-    timeout-minutes: 60
+    timeout-minutes: 180
     runs-on: ${{ matrix.runner }}
     env:
       MACOSX_DEPLOYMENT_TARGET: '15.0'

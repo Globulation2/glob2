@@ -161,7 +161,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                 contents = contents.replace('static int read(SOCKET', 'static int SDLNetRead(SOCKET')
                 contents = contents.replace("// WSAPoll doesn't exist", "// Glob2 portability patch: keep private Winsock helpers distinct from MinGW I/O.\n#define write SDLNetWrite\n#define read SDLNetRead\n\n// WSAPoll doesn't exist")
                 implementation.write_text(contents)
-        output = work / (source.name + '-build')
+        # Not a sibling named SOURCE-build: newer CMake rejects SDL's source_group
+        # when the source path is a string prefix but not a path prefix of
+        # generated files in the build tree (Arch Linux, CMake 4.2).
+        output = work / 'cmake-build' / source.name
         command = ['cmake', '-S', str(source), '-B', str(output),
                    '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_INSTALL_PREFIX=' + str(prefix),
                    '-DCMAKE_PREFIX_PATH=' + str(prefix), '-DCMAKE_INSTALL_LIBDIR=lib',
