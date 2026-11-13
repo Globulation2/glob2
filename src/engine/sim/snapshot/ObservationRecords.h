@@ -63,7 +63,8 @@ struct Telemetry
         int team = 0, player = 0;
         std::string name;
         bool available = false;
-        std::vector<AITelemetry::Field> fields;
+        // Immutable schema shared by every capture of one series.
+        std::shared_ptr<const std::vector<AITelemetry::Field>> fields;
         std::vector<AITelemetry::Value> values;
         std::vector<AITelemetry::NamedValue> named;
     };

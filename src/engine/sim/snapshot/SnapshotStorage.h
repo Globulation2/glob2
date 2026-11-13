@@ -43,6 +43,17 @@ struct Storage
 	BufferPool<MapState::BuildingSeedSnapshot> buildingSeeds;
 	// Every live plane of every retained capture may be distinct.
 	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
+	//! Schemas of the telemetry series seen most recently; a series' fields are
+	//! fixed when it is created or loaded, so one shared copy serves every capture.
+	struct TelemetrySchema
+	{
+		std::weak_ptr<const AITelemetry::Series> series;
+		const AITelemetry::Field* data = nullptr;
+		std::size_t size = 0;
+		std::shared_ptr<const std::deque<std::string>> text;
+		std::shared_ptr<const std::vector<AITelemetry::Field>> fields;
+	};
+	std::vector<TelemetrySchema> telemetrySchemas;
 	Uint64 allocations = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;

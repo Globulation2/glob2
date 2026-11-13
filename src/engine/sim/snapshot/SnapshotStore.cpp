@@ -118,7 +118,7 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
     if (next.telemetry && next.telemetry == previous.telemetry) ++metrics.reusedComponents;
     else if (next.telemetry) {
         for (const auto& row:next.telemetry->rows) metrics.bytesCopied+=sizeof(row)
-            +row.fields.size()*sizeof(AITelemetry::Field)+row.values.size()*sizeof(AITelemetry::Value)
+            +row.values.size()*sizeof(AITelemetry::Value)
             +row.named.size()*sizeof(AITelemetry::NamedValue);
     }
     if (next.history && next.history == previous.history) ++metrics.reusedComponents;

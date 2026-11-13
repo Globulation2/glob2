@@ -124,31 +124,45 @@ void Map::rebuildGrowthCoverage()
 		growthCoverageValid = true;
 	}
 	const auto &radius = GROWTH_COVERAGE_RADII;
-	constexpr int outerBand = GROWTH_COVERAGE_BANDS - 1;
 	// The count planes are team-major. A changed building touches only its
 	// Chebyshev footprint; growth events still read just three contiguous masks.
+	// Each band paints its own rectangle (Chebyshev distance <= radius), so no
+	// per-cell distance or band test is needed. Only (band, tile) transitions
+	// through zero change a mask bit, so the visiting order is irrelevant.
 	const auto paint = [&](int t, const TeamStats::CoverageBuilding &b, int delta)
 	{
 		const size_t plane = size_t(t) * tileCount;
-		for (int y = b.y - radius[outerBand]; y < b.y + b.height + radius[outerBand]; ++y)
+		Uint64 *const coverage = growthCoverage.data();
+		for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
 		{
-			const int dy = std::max({b.y - y, 0, y - (b.y + b.height - 1)});
-			const size_t row = size_t(y & hMask) * w;
-			for (int x = b.x - radius[outerBand]; x < b.x + b.width + radius[outerBand]; ++x)
+			const int r = radius[band];
+			const Uint64 bit = Uint64(1) << (band * Team::MAX_COUNT + t);
+			Uint16 *const counts = growthCoverageCounts[band].data() + plane;
+			const int x0 = b.x - r, x1 = b.x + b.width + r;
+			for (int y = b.y - r; y < b.y + b.height + r; ++y)
 			{
-				const int dx = std::max({b.x - x, 0, x - (b.x + b.width - 1)});
-				const int d = std::max(dx,dy);
-				const size_t index = row + (x & wMask);
-				for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
-					if (d <= radius[band])
+				const size_t row = size_t(y & hMask) * w;
+				// Split the wrapped row span into contiguous runs.
+				for (int x = x0; x < x1;)
 				{
-					const Uint64 bit = Uint64(1) << (band * Team::MAX_COUNT + t);
-					Uint16 &count = growthCoverageCounts[band][plane + index];
+					const int start = x & wMask, n = std::min(x1 - x, w - start);
+					Uint16 *__restrict const c = counts + row + start;
+					Uint64 *__restrict const m = coverage + row + start;
 					if (delta > 0)
-					{
-						if (count++ == 0) growthCoverage[index] |= bit;
-					}
-					else if (--count == 0) growthCoverage[index] &= ~bit;
+						for (int i = 0; i < n; ++i)
+						{
+							const Uint16 count = c[i];
+							c[i] = Uint16(count + 1);
+							m[i] |= count == 0 ? bit : 0;
+						}
+					else
+						for (int i = 0; i < n; ++i)
+						{
+							const Uint16 count = Uint16(c[i] - 1);
+							c[i] = count;
+							m[i] &= count == 0 ? ~bit : ~Uint64(0);
+						}
+					x += n;
 				}
 			}
 		}
@@ -461,8 +475,12 @@ void MapRouting::stagePeriodicGradientPreparation()
         admit(request);
     }
     for(auto& [key,field]:policy.fields) {
+        // Most fields are idle: skip the destination, target lookup and
+        // predictor setup. The undemanded test has no side effects.
+        if(!field.demand&&!field.reactive&&!field.deferred)continue;
         auto** slot=gradientFieldDestination(key);
         if(!slot)continue;
+        if(field.idle())continue;
         const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
         const auto prediction=[this,key](const auto& inputs,const auto& counts) {
             const auto result=AdaptiveGradientModel::predict(inputs,counts,unsigned(key.family));
@@ -521,8 +539,8 @@ void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 	// the inactive plane becomes visible after switchFogOfWar invalidates it.
 	const bool discoveryChanged = (mapDiscovered[index] & sharedVision) != sharedVision;
 	if (discoveryChanged) ++discoveryRevisionValue;
-	if (discoveryChanged || (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
-		markVisibility(index);
+	if (discoveryChanged) markDiscovered(index);
+	if (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision) markVisibility(index);
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;

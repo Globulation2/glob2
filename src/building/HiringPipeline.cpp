@@ -789,6 +789,8 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						movementClasses[team] |=
 							1u << accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 	}
+	// One projection serves every cold route of this boundary.
+	std::optional<SimulationSnapshot::Handle> buildingView;
 	for (const auto &b : inputs.world.entities->buildings)
 	{
 		const auto requested = initializations ? initializations->find(b.identity.gid)
@@ -850,7 +852,9 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						job.generation = game.map.topologyGeneration;
 						job.captureTick = game.stepCounter;
 						job.seed = gradient_preparation::captureBuildingSeed(*live, job.swim, route);
-						prepared->snapshot = world.buildingGradientView();
+						if (!buildingView)
+							buildingView = world.buildingGradientView();
+						prepared->snapshot = *buildingView;
 						field = prepared->field;
 					}
 					routes->push_back({b.identity, slot, std::move(field), estimate,

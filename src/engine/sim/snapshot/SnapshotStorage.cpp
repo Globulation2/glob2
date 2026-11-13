@@ -51,7 +51,7 @@ MemoryMetrics Storage::memoryMetrics() const
     });
     account(telemetry, [&](const Telemetry& value, bool) {
         Uint64 bytes = vectorBytes(value.rows);
-        for (const auto& row : value.rows) bytes += vectorBytes(row.fields) + vectorBytes(row.values) + vectorBytes(row.named);
+        for (const auto& row : value.rows) bytes += (row.fields ? vectorBytes(*row.fields) : 0) + vectorBytes(row.values) + vectorBytes(row.named);
         return bytes;
     });
     account(history, [&](const History& value, bool leased) {

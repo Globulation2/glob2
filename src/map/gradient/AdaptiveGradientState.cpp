@@ -61,9 +61,7 @@ AdaptiveGradientState::Inputs AdaptiveGradientState::Field::inputs(std::uint32_t
         std::int64_t(bound(added*4096/denominator)),std::int64_t(bound(removed*4096/denominator))};
 }
 AdaptiveGradientState::Evaluation AdaptiveGradientState::Field::evaluate(std::uint32_t tick,const Targets& now,bool hasServing,const Prediction& predict,unsigned fixedInterval) {
-    if(!demand&&!reactive&&!deferred)return {};
-    if(queued)return {};
-    if(inflight){demand=false;return {};}
+    if(idle())return {};
     const auto accept=[&](Reason reason){acceptedReason=reason;return Evaluation{reason};};
     if(!hasServing)return accept(Reason::Cold);
     // Keep the minimum between admissions, including a late publication whose

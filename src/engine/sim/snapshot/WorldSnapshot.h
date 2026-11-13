@@ -86,7 +86,8 @@ struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
 struct Visibility
 {
 	std::vector<Uint32> discovered, visible;
-	ChunkStamps stamps;
+	ChunkStamps stamps; // visible
+	ChunkStamps discoveredStamps;
 	Uint64 discoveryRevision = 0;
 };
 static_assert(std::is_trivially_copyable_v<ResourceCell>);

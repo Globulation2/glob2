@@ -24,6 +24,8 @@
 #include <stdexcept>
 #include <chrono>
 #include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include <bit>
 #include <utility>
 #include "sim/EntityRefOf.h"
@@ -328,8 +330,12 @@ Handle capture(const Game& game,
 		const std::span<const Uint32> visible = game.map.fogOfWar ? std::span<const Uint32>(game.map.fogOfWar, cellCount) : std::span<const Uint32>{};
 		bool resized = prepare(visibility->discovered, discovered.size());
 		resized |= prepare(visibility->visible, cellCount);
-		refresh(visibility->stamps, game.map.changes(MapState::TrackedArray::Visibility), resized, [&](std::size_t start, std::size_t length) {
+		// Discovery and the active fog plane have separate trackers: a fog
+		// switch marks every visible chunk but leaves discovery untouched.
+		refresh(visibility->discoveredStamps, game.map.discoveryChanges(), resized, [&](std::size_t start, std::size_t length) {
 			copyCells(visibility->discovered, discovered, start, length);
+		});
+		refresh(visibility->stamps, game.map.changes(MapState::TrackedArray::Visibility), resized, [&](std::size_t start, std::size_t length) {
 			if (!visible.empty()) copyCells(visibility->visible, visible, start, length);
 			else std::fill_n(visibility->visible.begin() + start, length, 0u);
 		});
@@ -517,12 +523,40 @@ Handle capture(const Game& game,
         result->statistics = std::move(stats);
     }
     if (auto telemetry = acquire(&Storage::telemetry, Component::Telemetry)) {
-        telemetry->rows.clear();
+        // Assign over the pooled rows so their strings and vectors keep their
+        // capacity: a recycled buffer then copies characters, not allocations.
+        auto& rows = telemetry->rows;
+        std::size_t count = 0;
+        std::vector<Storage::TelemetrySchema> schemas;
+        auto schemaOf = [&](const std::shared_ptr<AITelemetry::Series>& series) {
+            const auto& fields = series->fields;
+            if (storage)
+                for (const auto& known : storage->telemetrySchemas)
+                    if (known.data == fields.data() && known.size == fields.size() && known.text == series->fieldText && known.series.lock() == series)
+                    {
+                        schemas.push_back(known);
+                        return known.fields;
+                    }
+            // The shared schema owns the text its views name, so a snapshot
+            // keeps it valid after the series is reset, reloaded or destroyed.
+            struct Owned { std::vector<AITelemetry::Field> fields; std::shared_ptr<const std::deque<std::string>> text; };
+            auto owned = std::make_shared<const Owned>(Owned{fields, series->fieldText});
+            std::shared_ptr<const std::vector<AITelemetry::Field>> shared(owned, &owned->fields);
+            schemas.push_back({series, fields.data(), fields.size(), series->fieldText, shared});
+            return shared;
+        };
         for (int t = 0; t < game.teamsCount(); ++t)
             for (const auto& series : game.teams[t]->stats.aiTelemetry)
                 if (series->active)
-                    telemetry->rows.push_back({t, series->player, series->playerName, series->current.available,
-                        series->fields, series->current.values, series->named});
+                {
+                    if (count == rows.size()) rows.emplace_back();
+                    auto& row = rows[count++];
+                    row.team = t; row.player = series->player; row.name = series->playerName;
+                    row.available = series->current.available;
+                    row.fields = schemaOf(series); row.values = series->current.values; row.named = series->named;
+                }
+        rows.resize(count);
+        if (storage) storage->telemetrySchemas = std::move(schemas);
         result->telemetry = std::move(telemetry);
     }
 	if (needs(requirements, Component::Entities))
@@ -619,12 +653,12 @@ Handle capture(const Game& game,
 		for (const auto &plane : game.map.routing().publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
-            const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
             const auto destinationGeneration=game.map.routing().materialGradientDestinationGeneration(plane.slot);
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
+            const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
-			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
+			values->assign(*plane.slot, *plane.slot + planeCells); // one pass: no zero fill of a new buffer
 			fields->add(ResourceField{plane.key, plane.generation, std::move(values),destinations,destinationGeneration});
 		}
 		result->resourceFields = std::move(fields);
