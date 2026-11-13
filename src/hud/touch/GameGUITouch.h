@@ -54,8 +54,10 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
-	// Share the cached trophy artwork with the compact desktop statistics bar.
+	// Share the cached prestige (school book) and win chance (trophy) artwork
+	// with the compact desktop statistics bar.
 	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
+	void drawWinChanceIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
@@ -162,7 +164,7 @@ class GameGUITouch
 	struct HudLayout
 	{
 		GAGCore::ViewRect minimap, stats, identity;
-		std::array<GAGCore::ViewRect, 6> cells;
+		std::array<GAGCore::ViewRect, 7> cells; // 6 is the local win chance
 	};
 	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
 	GAGCore::ViewRect statRect(const HudLayout &hud, int index) const;
@@ -374,7 +376,7 @@ class GameGUITouch
 	std::string previewType;
 	std::unique_ptr<GAGCore::DrawableSurface> confirmLabel, cancelLabel;
 	// Owned by the HUD so GPU surfaces expire with its graphics context.
-	std::array<std::unique_ptr<GAGCore::DrawableSurface>, 10> navigationIcons;
+	std::array<std::unique_ptr<GAGCore::DrawableSurface>, 11> navigationIcons;
 	std::array<double, 4> navigationIconKey{};
 	void drawNavigationIcon(int icon, GAGCore::ViewPoint center, bool selected, double points = 26);
 	GAGCore::ViewRect world() const;

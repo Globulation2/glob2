@@ -272,6 +272,19 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 	}
 }
 
+std::string GameGUI::localWinChanceText() const
+{
+	// Only the local side's own chance is shown live: one number that says how
+	// the match is going without itemising any opponent's state.
+	const auto &scene = drawnScene();
+	const int team = scene.panels.local.state().number;
+	const auto &chances = scene.panels.hud.winChances;
+	if (!scene.panels.local.record || team < 0 || size_t(team) >= chances.size())
+		return "--";
+	const int percent = std::clamp((chances[team].permille + 5) / 10, 0, 99);
+	return std::string{char('0' + percent / 10), char('0' + percent % 10)};
+}
+
 GameGUI::TopBarLayout GameGUI::topBarLayout() const
 {
 	// Inspection can lay out the HUD before draw() refreshes the legacy pointer.
@@ -284,19 +297,20 @@ GameGUI::TopBarLayout GameGUI::topBarLayout() const
 			std::to_string(stats.getTotalUnits(i));
 	const auto &colony = drawnScene().panels.local.state();
 	layout.values[3] = std::to_string(colony.prestige);
-	layout.values[4] = std::to_string(colony.unitConversionGained);
-	layout.values[5] = std::to_string(colony.unitConversionLost);
+	layout.values[4] = localWinChanceText();
+	layout.values[5] = std::to_string(colony.unitConversionGained);
+	layout.values[6] = std::to_string(colony.unitConversionLost);
 	const auto rate = tickRate.rate();
-	layout.values[6] = rate ? TickRateMeter::format(*rate) : "-";
+	layout.values[7] = rate ? TickRateMeter::format(*rate) : "-";
 	// Measure complete icon/value groups. Keep real gutters even when large
 	// counters require the compact bar's contents to shrink to fit.
 	auto *font = globalContainer->littleFont;
-	std::array<double, 7> widths;
+	std::array<double, 8> widths;
 	double total = 0;
-	for (int i = 0; i < 7; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
-		const double icon = i < 4 ? 16 : i < 6 ? 36 : 0;
-		const double text = i == 6 ? std::max(font->getStringWidth(layout.values[i]),
+		const double icon = i < 5 ? 16 : i < 7 ? 36 : 0;
+		const double text = i == 7 ? std::max(font->getStringWidth(layout.values[i]),
 			font->getStringWidth("999.9")) : font->getStringWidth(layout.values[i]);
 		widths[i] = icon + (icon ? 6 : 0) + text;
 		total += widths[i];
@@ -304,9 +318,9 @@ GameGUI::TopBarLayout GameGUI::topBarLayout() const
 	const double speed = canChangeGameSpeed() ? TOP_BAR_SPEED_WIDTH : 0;
 	const double available = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - 20;
 	constexpr double gutter = 14;
-	layout.scale = std::clamp((available - 6 * gutter - speed) / total, .1, 1.);
-	double x = 10 + std::max(0., (available - total * layout.scale - 6 * gutter - speed) / 2);
-	for (int i = 0; i < 7; ++i)
+	layout.scale = std::clamp((available - 7 * gutter - speed) / total, .1, 1.);
+	double x = 10 + std::max(0., (available - total * layout.scale - 7 * gutter - speed) / 2);
+	for (int i = 0; i < 8; ++i)
 	{
 		layout.x[i] = std::round(x);
 		x += widths[i] * layout.scale + gutter;
@@ -316,7 +330,7 @@ GameGUI::TopBarLayout GameGUI::topBarLayout() const
 
 int GameGUI::topBarSpeedX() const
 {
-	return int(topBarLayout().x[6]);
+	return int(topBarLayout().x[7]);
 }
 
 void GameGUI::drawTopScreenBar(void)
@@ -402,19 +416,20 @@ void GameGUI::drawTopScreenBar(void)
 	{
 		const double width = (22 + font->getStringWidth(layout.values[3])) * scale;
 		const double progress = std::clamp(double(match.totalPrestige()) / match.state().prestigeToReach, 0., 1.);
-		gfx->drawFilledRect(int(layout.x[3]), 14, int(width), 2, Color(80, 70, 55));
 		gfx->drawFilledRect(int(layout.x[3]), 14, int(width * progress), 2, Color(232, 194, 107));
 	}
+	touch->drawWinChanceIcon({layout.x[4] + 8 * scale, 8}, 16 * scale);
+	drawValue(4, layout.x[4] + 22 * scale);
 	for (int side = 0; side < 2; ++side)
 	{
-		const double x = layout.x[4 + side];
+		const double x = layout.x[5 + side];
 		unitConversionIcon->draw(gfx, globalContainer->unitmini,
 			{x, (16 - 16 * scale) / 2, 36 * scale, 16 * scale}, presentationColor(colony.color), side == 0);
-		drawValue(4 + side, x + 42 * scale);
+		drawValue(5 + side, x + 42 * scale);
 	}
 
 	// draw the speed control and the simulation tick rate
-	dec = int(layout.x[6]);
+	dec = int(layout.x[7]);
 	if (canChangeGameSpeed())
 	{
 		const int lit = litSpeedChevrons();
@@ -433,7 +448,7 @@ void GameGUI::drawTopScreenBar(void)
 	const int shortfall = tickRateShortfall();
 	memcpy(actC, shortfall==0 ? whiteC : shortfall==1 ? yellowC : redC, sizeof(actC));
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-	drawValue(6, dec);
+	drawValue(7, dec);
 	globalContainer->littleFont->popStyle();
 
 	// draw window bar
