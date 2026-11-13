@@ -24,6 +24,8 @@
 #include <stdexcept>
 #include <chrono>
 #include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include <bit>
 #include <utility>
 #include "sim/EntityRefOf.h"
@@ -174,14 +176,21 @@ Handle capture(const Game& game,
 		for (int t = 0; t < teams; ++t) if (const auto* team = game.teams[t]) {
 			buildings += team->liveBuildings.size(); units += team->liveUnits.size();
 		}
+		// A pooled buffer's lookups name exactly the gids of its records, so
+		// clearing those slots restores an all-empty table without refilling it.
+		const auto clearSlots = [&](auto& indices, const auto& records, std::size_t size) {
+			if (indices.size() != size) {
+				reserve(indices, size);
+				indices.assign(size, Entities::NoRecord);
+			}
+			else for (const auto& record : records) indices[record.gid] = Entities::NoRecord;
+		};
+		clearSlots(entities->buildingSlotIndices, entities->buildings, std::size_t(teams) * Building::MAX_COUNT);
+		clearSlots(entities->unitSlotIndices, entities->units, std::size_t(teams) * Unit::MAX_COUNT);
 		reserve(entities->buildings, buildings); reserve(entities->units, units);
 		// Reuse constructed records and fill them in place. Every field is
 		// overwritten below; no temporary record or per-record push_back copy.
 		entities->buildings.resize(buildings); entities->units.resize(units);
-		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
-		reserve(entities->unitSlotIndices, teams * Unit::MAX_COUNT);
-		entities->buildingSlotIndices.resize(teams * Building::MAX_COUNT);
-		entities->unitSlotIndices.resize(teams * Unit::MAX_COUNT);
 		reserve(entities->buildingRanges, teams);
 		reserve(entities->unitRanges, teams);
 		entities->buildingRanges.assign(teams, {}); entities->unitRanges.assign(teams, {});
@@ -253,25 +262,38 @@ Handle capture(const Game& game,
 		if (length) std::memcpy(destination.data() + start, source.data() + start, length * sizeof(Element));
 		if (storage) storage->bytesCopied += length * sizeof(Element);
 	};
+	std::vector<Uint32> localDirtyChunks;
+	auto& dirtyChunks = storage ? storage->dirtyChunks : localDirtyChunks;
 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
+		// One pass lists the dirty chunks (branch-free); the copy then visits
+		// only those, in the same ascending order.
 		std::size_t dirty = 0;
 		if (!everything)
+		{
+			if (dirtyChunks.size() < live.chunks.size()) dirtyChunks.resize(live.chunks.size());
+			const auto* captured = stamps.chunks.data();
+			const auto* current = live.chunks.data();
+			auto* list = dirtyChunks.data();
 			for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
-				dirty += stamps.chunks[chunk] != live.chunks[chunk];
+			{
+				list[dirty] = Uint32(chunk);
+				dirty += captured[chunk] != current[chunk];
+			}
+		}
 		if (everything || dirty > live.chunks.size() / 2)
 		{
 			copyRange(std::size_t(0), cellCount);
 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
 			stamps.chunks.assign(live.chunks.begin(), live.chunks.end());
 		}
-		else for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
-			if (stamps.chunks[chunk] != live.chunks[chunk])
-			{
-				geometry.forEachRow(chunk, copyRange);
-				stamps.chunks[chunk] = live.chunks[chunk];
-			}
+		else for (std::size_t i = 0; i < dirty; ++i)
+		{
+			const std::size_t chunk = dirtyChunks[i];
+			geometry.forEachRow(chunk, copyRange);
+			stamps.chunks[chunk] = live.chunks[chunk];
+		}
 		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
 		stamps.filledTick = game.stepCounter;
 	};
@@ -328,8 +350,12 @@ Handle capture(const Game& game,
 		const std::span<const Uint32> visible = game.map.fogOfWar ? std::span<const Uint32>(game.map.fogOfWar, cellCount) : std::span<const Uint32>{};
 		bool resized = prepare(visibility->discovered, discovered.size());
 		resized |= prepare(visibility->visible, cellCount);
-		refresh(visibility->stamps, game.map.changes(MapState::TrackedArray::Visibility), resized, [&](std::size_t start, std::size_t length) {
+		// Discovery and the active fog plane have separate trackers: a fog
+		// switch marks every visible chunk but leaves discovery untouched.
+		refresh(visibility->discoveredStamps, game.map.discoveryChanges(), resized, [&](std::size_t start, std::size_t length) {
 			copyCells(visibility->discovered, discovered, start, length);
+		});
+		refresh(visibility->stamps, game.map.changes(MapState::TrackedArray::Visibility), resized, [&](std::size_t start, std::size_t length) {
 			if (!visible.empty()) copyCells(visibility->visible, visible, start, length);
 			else std::fill_n(visibility->visible.begin() + start, length, 0u);
 		});
@@ -343,8 +369,6 @@ Handle capture(const Game& game,
 			if (needs(requirements, Component::Entities)) {
 				entities->buildingRanges[t]={Uint32(buildingRecordCount),0};
 				entities->unitRanges[t]={Uint32(unitRecordCount),0};
-				std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
-				std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
 			}
 			continue;
 		}
@@ -385,8 +409,6 @@ Handle capture(const Game& game,
 		// Preserve authoritative append order in compact immutable team ranges.
 		entities->buildingRanges[t] = {Uint32(buildingRecordCount), Uint32(team->liveBuildings.size())};
 		entities->unitRanges[t] = {Uint32(unitRecordCount), Uint32(team->liveUnits.size())};
-		std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
-		std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
 		for (auto* b : team->liveBuildings.entries())
 		{
 			auto& slot = entities->buildingSlotIndices[b->gid];
@@ -517,12 +539,42 @@ Handle capture(const Game& game,
         result->statistics = std::move(stats);
     }
     if (auto telemetry = acquire(&Storage::telemetry, Component::Telemetry)) {
-        telemetry->rows.clear();
+        // Assign over the pooled rows so their strings and vectors keep their
+        // capacity: a recycled buffer then copies characters, not allocations.
+        auto& rows = telemetry->rows;
+        std::size_t count = 0;
+        std::vector<Storage::TelemetrySchema> localSchemas;
+        auto& schemas = storage ? storage->telemetrySchemaScratch : localSchemas;
+        schemas.clear();
+        auto schemaOf = [&](const std::shared_ptr<AITelemetry::Series>& series) {
+            const auto& fields = series->fields;
+            if (storage)
+                for (const auto& known : storage->telemetrySchemas)
+                    if (known.data == fields.data() && known.size == fields.size() && known.text == series->fieldText && known.series.lock() == series)
+                    {
+                        schemas.push_back(known);
+                        return known.fields;
+                    }
+            // The shared schema owns the text its views name, so a snapshot
+            // keeps it valid after the series is reset, reloaded or destroyed.
+            struct Owned { std::vector<AITelemetry::Field> fields; std::shared_ptr<const std::deque<std::string>> text; };
+            auto owned = std::make_shared<const Owned>(Owned{fields, series->fieldText});
+            std::shared_ptr<const std::vector<AITelemetry::Field>> shared(owned, &owned->fields);
+            schemas.push_back({series, fields.data(), fields.size(), series->fieldText, shared});
+            return shared;
+        };
         for (int t = 0; t < game.teamsCount(); ++t)
             for (const auto& series : game.teams[t]->stats.aiTelemetry)
                 if (series->active)
-                    telemetry->rows.push_back({t, series->player, series->playerName, series->current.available,
-                        series->fields, series->current.values, series->named});
+                {
+                    if (count == rows.size()) rows.emplace_back();
+                    auto& row = rows[count++];
+                    row.team = t; row.player = series->player; row.name = series->playerName;
+                    row.available = series->current.available;
+                    row.fields = schemaOf(series); row.values = series->current.values; row.named = series->named;
+                }
+        rows.resize(count);
+        if (storage) { storage->telemetrySchemas.swap(schemas); schemas.clear(); }
         result->telemetry = std::move(telemetry);
     }
 	if (needs(requirements, Component::Entities))
@@ -619,13 +671,11 @@ Handle capture(const Game& game,
 		for (const auto &plane : game.map.routing().publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
-            const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
             const auto destinationGeneration=game.map.routing().materialGradientDestinationGeneration(plane.slot);
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
-			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
-			if (storage && values->capacity() < planeCells) ++storage->allocations;
-			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
-			fields->add(ResourceField{plane.key, plane.generation, std::move(values),destinations,destinationGeneration});
+            const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
+			// Shared, not copied: a published plane is immutable until it leaves its slot.
+			fields->add(ResourceField{plane.key, plane.generation, game.map.routing().sharePublishedPlane(plane), planeCells, destinations, destinationGeneration});
 		}
 		result->resourceFields = std::move(fields);
 	}

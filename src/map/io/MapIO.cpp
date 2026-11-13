@@ -695,13 +695,11 @@ void Map::removeTeam(void)
 		for (int r=0; r<MaterialCount; r++)
 		{
 			routing().recordFieldCost(routing().materialGradients[t][r][s], -1);
-			delete[] routing().materialGradients[t][r][s];
+			routing().freePlane(routing().materialGradients[t][r][s]);
 			routing().materialGradientStale[t][r][s]=false;
-			routing().materialGradients[t][r][s]=NULL;
 			routing().recordFieldCost(routing().marketMaterialGradients[t][r][s], -1);
-			delete[] routing().marketMaterialGradients[t][r][s];
+			routing().freePlane(routing().marketMaterialGradients[t][r][s]);
 			routing().marketMaterialGradientStale[t][r][s]=false;
-			routing().marketMaterialGradients[t][r][s]=NULL;
 		}
 		routing().recordFieldCost(routing().forbiddenGradient[t][s], -1);
 		delete[] routing().forbiddenGradient[t][s];
@@ -1651,8 +1649,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         for (int t=0; t<game->teamsCount(); ++t) {
             for (int sw=0; sw<savedSwimClasses; ++sw) {
                 for (int r=0; r<MaterialSlotCount; ++r) {
-                    delete[] routing().materialGradients[t][r][sw]; routing().materialGradientStale[t][r][sw]=false; routing().materialGradients[t][r][sw]=nullptr;
-                    delete[] routing().marketMaterialGradients[t][r][sw]; routing().marketMaterialGradientStale[t][r][sw]=false; routing().marketMaterialGradients[t][r][sw]=nullptr;
+                    routing().freePlane(routing().materialGradients[t][r][sw]); routing().materialGradientStale[t][r][sw]=false;
+                    routing().freePlane(routing().marketMaterialGradients[t][r][sw]); routing().marketMaterialGradientStale[t][r][sw]=false;
 
                 }
                 delete[] routing().forbiddenGradient[t][sw]; routing().forbiddenGradientStale[t][sw]=false; routing().forbiddenGradient[t][sw]=nullptr;
@@ -1709,7 +1707,7 @@ void MapRouting::consolidateLegacyRoutingFields()
             }
         }
         for(int c=1;c<LEGACY_SWIM_CLASS_COUNT;++c)if(c!=shared) {
-            rt.fieldCosts.erase(fields[c]);delete[] fields[c];fields[c]=nullptr;stale[c]=false;
+            rt.fieldCosts.erase(fields[c]);freePlane(fields[c]);stale[c]=false;
         }
     };
     for(int team=0;team<map.game->teamsCount();++team) {

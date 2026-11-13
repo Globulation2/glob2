@@ -3,8 +3,10 @@
 #include "AITelemetryValue.h"
 #include <SDL3/SDL_stdinc.h>
 #include <cstring>
+#include <deque>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 namespace GAGCore
 {
@@ -34,9 +36,11 @@ enum Kind : Uint32
 	Enumeration,
 	Mask
 };
+// Text views into storage that outlives every holder: the static native
+// schema tables, or a series' own fieldText for a schema read from a save.
 struct Field
 {
-	std::string name, unit, meaning;
+	std::string_view name, unit, meaning;
 	Type type = Signed;
 	Kind kind = Gauge;
 	bool operator==(const Field &) const = default;
@@ -63,6 +67,8 @@ struct Series
 	bool active = true;
 	bool schemaPrinted = false; // output state only; not saved
 	std::vector<Field> fields;
+	// Owns the text of fields that do not view the static schema tables.
+	std::shared_ptr<const std::deque<std::string>> fieldText;
 	std::vector<NamedValue> named;
 	Sample current;
 	std::vector<Sample> history;

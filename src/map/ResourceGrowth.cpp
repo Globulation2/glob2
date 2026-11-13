@@ -24,30 +24,68 @@ bool emptyAllowed(const MapState::OccupancyCell &o, const ResourceProperties &p)
 }
 // Publication already knows the one changed material and its exact delta.
 // Avoid constructing and comparing all material stocks for each unit operation.
-void recordDelta(Map &map, const Proposal &p, bool newTile, int delta)
+// Records published deltas in each team's measurements. Every team receives the
+// same global counts, so those are summed once and added when apply finishes;
+// coverage counts go straight to the teams whose bit is set. All counters are
+// integer sums, so the totals match recording each delta for every team.
+class DeltaRecorder
 {
-	const int x = powerOfTwoRemainder(p.tile, map.getW()), y = p.tile / map.getW();
-	std::array<Uint32, GROWTH_COVERAGE_BANDS> coverage;
-	for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
-		coverage[band] = map.teamsWithBuildingsNear(x, y, band);
-	for (int t = 0; t < map.game->mapHeader.getNumberOfTeams(); ++t)
+  public:
+	explicit DeltaRecorder(Map &map) : map(map) {}
+	DeltaRecorder(const DeltaRecorder &) = delete;
+	DeltaRecorder &operator=(const DeltaRecorder &) = delete;
+	~DeltaRecorder()
 	{
-		auto *team = map.game->teams[t];
-		if (!team)
-			continue;
-		auto &m = team->stats.events();
-		m.growthGlobal[0][p.material] += newTile;
-		m.growthGlobal[1][p.material] += std::max(0, delta);
-		m.growthGlobal[2][p.material] += std::max(0, -delta);
+		if (!materials)
+			return;
+		bind();
+		for (int t = 0; t < teams; ++t)
+			if (auto *m = sinks[t])
+				for (unsigned mask = materials; mask; mask &= mask - 1)
+				{
+					const auto material = std::countr_zero(mask);
+					for (int kind = 0; kind < 3; ++kind)
+						m->growthGlobal[kind][material] += global[kind][material];
+				}
+	}
+	void operator()(const Proposal &p, bool newTile, int delta)
+	{
+		bind();
+		const int x = powerOfTwoRemainder(p.tile, map.getW()), y = p.tile / map.getW();
+		const Uint64 added = Uint64(std::max(0, delta)), reduced = Uint64(std::max(0, -delta));
+		global[0][p.material] += newTile;
+		global[1][p.material] += added;
+		global[2][p.material] += reduced;
+		materials |= 1u << p.material;
 		for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
-			if (coverage[band] & (Uint32(1) << t))
+			for (Uint32 mask = map.teamsWithBuildingsNear(x, y, band); mask; mask &= mask - 1)
 			{
-				m.growthTiles[band][p.material] += newTile;
-				m.growthAmount[band][p.material] += std::max(0, delta);
-				m.growthReduction[band][p.material] += std::max(0, -delta);
+				const int t = std::countr_zero(mask);
+				auto *m = t < teams ? sinks[t] : nullptr;
+				if (!m)
+					continue;
+				m->growthTiles[band][p.material] += newTile;
+				m->growthAmount[band][p.material] += added;
+				m->growthReduction[band][p.material] += reduced;
 			}
 	}
-}
+
+  private:
+	void bind()
+	{
+		if (teams >= 0)
+			return;
+		teams = map.game->mapHeader.getNumberOfTeams();
+		for (int t = 0; t < teams; ++t)
+			sinks[t] = map.game->teams[t] ? &map.game->teams[t]->stats.events() : nullptr;
+	}
+	Map &map;
+	int teams = -1;
+	std::array<GameplayMeasurements *, Team::MAX_COUNT> sinks{};
+	Uint64 global[3][MaterialSlotCount]{};
+	Uint32 materials = 0;
+	static_assert(MaterialSlotCount <= 32);
+};
 } // namespace
 void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 {
@@ -147,6 +185,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 	if (batch.proposals.empty()) return;
 	map.rebuildGrowthCoverage();
 	const auto view = map.cellView();
+	DeltaRecorder recordDelta(map);
 	for (const auto &op : batch.proposals)
 	{
 		assert(op.tile < view.resources.size());
@@ -187,7 +226,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 				if (!added) continue;
 				auto unit = op;
 				unit.material = material;
-				recordDelta(map, unit, true, added);
+				recordDelta(unit, true, added);
 				metrics.stockAdded += added;
 			}
 			++metrics.accepted;
@@ -215,7 +254,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 			map.setMaterialAmountSlot(op.tile, material, amount + delta);
 			auto unit = op;
 			unit.material = material;
-			recordDelta(map, unit, false, delta);
+			recordDelta(unit, false, delta);
 			metrics.stockAdded += delta > 0;
 			changed = true;
 		}

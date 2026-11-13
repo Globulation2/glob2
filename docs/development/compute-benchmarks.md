@@ -173,7 +173,9 @@ warmup, including AI deadline waits. Stalled calls do not create tick samples.
 Use these separate instrumented runs for tick-time distributions; ordinary
 paired timing runs retain the default loop and do not pay histogram sampling.
 
-Snapshot component pools permit 22 buffers. Resource-plane pools retain a 17-epoch bound per plane. These limits account for retained immutable inputs across consumer horizons; buffers allocate on
+Snapshot component pools permit 22 buffers. Resource planes are not pooled per
+snapshot: captures share the map's published buffers, and adopted buffers return to
+a recycler of at most 64 spare planes. These limits account for retained immutable inputs across consumer horizons; buffers allocate on
 demand and retain reusable capacity. Lease counters include the store's latest snapshot
 and references from pooled components, rather than counting only workers. Shared catalog
 and terrain payloads are counted once. Byte accounting includes nested vector and growth

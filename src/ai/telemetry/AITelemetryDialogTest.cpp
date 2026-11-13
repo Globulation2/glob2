@@ -127,7 +127,7 @@ TEST_CASE("telemetry layout and painting stay bounded with full schemas" *
 			if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific)
 				continue;
 			const auto &field = schema[i];
-			maxima.push_back({field.name, "na", field.unit, field.meaning, 128});
+			maxima.push_back({std::string(field.name), "na", std::string(field.unit), std::string(field.meaning), 128});
 		}
 		CHECK(maxima.size() > 600);
 		CHECK(measure(std::move(maxima)) < small * 4);

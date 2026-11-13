@@ -17,6 +17,7 @@
 #include <ChecksumStream.h>
 #include <limits>
 #include <algorithm>
+#include <atomic>
 #include <set>
 #include "sim/EntityRefOf.h"
 
@@ -179,20 +180,22 @@ struct HiringPlanner::PreparedRoute
 	BuildingRef building;
 	bool proactive = false;
 	building_gradient::Job job;
-	SimulationSnapshot::Handle snapshot;
+	// One projection per boundary, shared by every cold route bound from it.
+	std::shared_ptr<const SimulationSnapshot::Handle> snapshot;
 	std::shared_ptr<SharedBuildingGradient> field = std::make_shared<SharedBuildingGradient>();
 
 	void initialize()
 	{
 		if (job.data)
 			return;
-		field->width = snapshot.width;
-		field->height = snapshot.height;
-		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
+		const auto &view = *snapshot;
+		field->width = view.width;
+		field->height = view.height;
+		job.data.reset(new Uint16[std::size_t(view.width) * view.height]);
 		job.search = acquireBuildingGradientSearch();
-        auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(snapshot,job.swim);
+        auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(view,job.swim);
 		const auto result = gradient_preparation::buildBuilding(
-			job.seed, snapshot, inputs,
+			job.seed, view, inputs,
 			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
 		job.locked = result.locked;
 		job.resourceState = result.resourceState;
@@ -200,7 +203,7 @@ struct HiringPlanner::PreparedRoute
 			recycleBuildingGradientSearch(std::move(job.search));
 		field->values = job.data.get();
 		field->search = job.search.get();
-		snapshot = {};
+		snapshot.reset();
 	}
 	Building *destination(Game &game) const
 	{
@@ -343,12 +346,15 @@ struct HiringPipeline::Work
 	unsigned team = 0;
 	std::shared_ptr<const Output> output;
 	std::vector<std::shared_ptr<HiringPlanner::PreparedRoute>> gradients;
+	// Set on one job per batch: replaced publications it releases.
+	std::array<std::shared_ptr<const Output>, 16> *retired = nullptr;
 };
 struct HiringPipeline::Batch
 {
 	Uint32 tick = 0, due = 0;
 	ComputeExecutor::Batch ticket;
 	std::vector<Work> work;
+	std::array<std::shared_ptr<const Output>, 16> retired;
 };
 HiringPipeline::HiringPipeline(ComputeExecutor &e) : executor(e) {}
 HiringPipeline::~HiringPipeline()
@@ -364,6 +370,9 @@ HiringPipeline::~HiringPipeline()
 void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
+	if (w.retired)
+		for (auto &output : *w.retired)
+			output.reset();
 	if (w.team % Refresh == w.input->world.tick % Refresh)
 		w.output =
 			std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
@@ -408,6 +417,8 @@ void HiringPipeline::compute(void *context, std::size_t)
 				route.preparation->initialize();
 			if (route.preparation->job.data)
 				w.gradients.push_back(route.preparation);
+			else
+				route.preparation->snapshot.reset(); // Only this team's worker touches it.
 		}
 	w.input.reset();
 }
@@ -453,8 +464,9 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		return;
 	if (pending.size() >= Delay)
 		throw std::logic_error("Hiring publication horizon exceeded");
+	routePool.reclaim();
 	auto input = std::make_shared<HiringPlanner::Inputs>(
-		bindRoutes(game, snapshot, teamMask, &initializationRequests));
+		bindRoutes(game, snapshot, teamMask, &initializationRequests, &routePool));
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
 	batch->due = tick + Delay;
@@ -470,6 +482,11 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		if (teamMask & (1u << t))
 			batch->work.push_back({input, t, {}});
 	auto &b = *pending.emplace_back(std::move(batch));
+	if (!b.work.empty())
+	{
+		b.retired.swap(retired);
+		b.work.front().retired = &b.retired;
+	}
 	std::array<ComputeExecutor::Group, Team::MAX_COUNT> groups;
 	for (unsigned i = 0; i < b.work.size(); ++i)
 		groups[i] = {1, {compute, &b.work[i]}, ComputeExecutor::HiringLaneBase + b.work[i].team};
@@ -514,7 +531,11 @@ void HiringPipeline::publishDue(Uint32 tick)
 			for (const auto &gradient : w.gradients)
 				gradient->publish(*game, preparedHere);
 			if (w.team % Refresh == b.tick % Refresh)
+			{
+				if (published[w.team] && !retired[w.team])
+					retired[w.team] = std::move(published[w.team]);
 				published[w.team] = w.output;
+			}
 			++metrics.published;
 		}
 		pending.pop_front();
@@ -766,15 +787,50 @@ Uint32 HiringPipeline::checkSum() const
 	return s.value;
 }
 
+void HiringPipeline::RoutePool::reclaim()
+{
+	std::erase_if(issued,
+				  [&](std::shared_ptr<HiringPlanner::PreparedRoute> &route)
+				  {
+					  if (route.use_count() != 1)
+						  return false;
+					  // Pairs with the releasing decrement of the last worker reference.
+					  std::atomic_thread_fence(std::memory_order_acquire);
+					  // Initialized routes belong to their batch until publication.
+					  if (!route->job.data && !route->job.search && route->field.use_count() == 1 &&
+						  !route->field->values && !route->field->search)
+					  {
+						  route->snapshot.reset();
+						  spare.push_back(std::move(route));
+					  }
+					  return true;
+				  });
+}
+std::shared_ptr<HiringPlanner::PreparedRoute> HiringPipeline::RoutePool::take()
+{
+	std::shared_ptr<HiringPlanner::PreparedRoute> route;
+	if (spare.empty())
+		route = std::make_shared<HiringPlanner::PreparedRoute>();
+	else
+	{
+		// Never initialized: bindRoutes rewrites every input it set before.
+		route = std::move(spare.back());
+		spare.pop_back();
+	}
+	issued.push_back(route);
+	return route;
+}
 HiringPlanner::Inputs
 HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, unsigned teamMask,
-						   const std::map<Uint16, BuildingRef> *initializations)
+						   const std::map<Uint16, BuildingRef> *initializations, RoutePool *pool)
 {
 	if (world.tick != game.stepCounter)
 		throw std::logic_error("Hiring input boundary mismatch");
 	HiringPlanner::Inputs inputs;
 	inputs.world = world.simulationView();
 	auto routes = std::make_shared<std::vector<HiringPlanner::Inputs::Route>>();
+	if (pool)
+		routes->reserve(pool->lastRoutes);
 	std::array<unsigned, Team::MAX_COUNT> movementClasses{};
 	if (initializations && !initializations->empty())
 	{
@@ -789,6 +845,8 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						movementClasses[team] |=
 							1u << accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 	}
+	// One projection serves every cold route of this boundary.
+	std::shared_ptr<const SimulationSnapshot::Handle> buildingView;
 	for (const auto &b : inputs.world.entities->buildings)
 	{
 		const auto requested = initializations ? initializations->find(b.identity.gid)
@@ -837,7 +895,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 					std::shared_ptr<HiringPlanner::PreparedRoute> prepared;
 					if (!field)
 					{
-						prepared = std::make_shared<HiringPlanner::PreparedRoute>();
+						prepared = pool ? pool->take() : std::make_shared<HiringPlanner::PreparedRoute>();
 						prepared->building = b.identity;
 						prepared->proactive = initialize;
 						auto &job = prepared->job;
@@ -850,13 +908,18 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						job.generation = game.map.topologyGeneration;
 						job.captureTick = game.stepCounter;
 						job.seed = gradient_preparation::captureBuildingSeed(*live, job.swim, route);
-						prepared->snapshot = world.buildingGradientView();
+						if (!buildingView)
+							buildingView = std::make_shared<const SimulationSnapshot::Handle>(
+								world.buildingGradientView());
+						prepared->snapshot = buildingView;
 						field = prepared->field;
 					}
 					routes->push_back({b.identity, slot, std::move(field), estimate,
 									   std::move(prepared), initialize});
 				}
 	}
+	if (pool)
+		pool->lastRoutes = routes->size();
 	inputs.routes = std::move(routes);
 	return inputs;
 }

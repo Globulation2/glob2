@@ -16,7 +16,9 @@ struct GradientFieldKey
     static constexpr std::uint8_t NoMaterial=255;
     GradientFieldFamily family=GradientFieldFamily::Materials;
     std::uint8_t team=0, swim=0, material=NoMaterial;
-    auto operator<=>(const GradientFieldKey&) const = default;
+    // packed() preserves the memberwise lexicographic order in one comparison.
+    bool operator==(const GradientFieldKey&) const = default;
+    std::strong_ordering operator<=>(const GradientFieldKey& other) const { return packed()<=>other.packed(); }
     std::uint32_t packed() const {
         return (std::uint32_t(family)<<24)|(std::uint32_t(team)<<16)|(std::uint32_t(swim)<<8)|material;
     }
@@ -35,7 +37,8 @@ struct GradientTargetKey
 {
     GradientFieldFamily family=GradientFieldFamily::Materials;
     std::uint8_t team=0, swim=0, material=GradientFieldKey::NoMaterial;
-    auto operator<=>(const GradientTargetKey&) const = default;
+    bool operator==(const GradientTargetKey&) const = default;
+    std::strong_ordering operator<=>(const GradientTargetKey& other) const { return packed()<=>other.packed(); }
     static GradientTargetKey of(GradientFieldKey key) {
         const bool sharedGround=key.family==GradientFieldFamily::Materials || key.family==GradientFieldFamily::Markets || key.family==GradientFieldFamily::Clear;
         return {key.family,key.team,std::uint8_t(sharedGround && key.swim<AIR_MOVEMENT_CLASS?0:key.swim),key.material};

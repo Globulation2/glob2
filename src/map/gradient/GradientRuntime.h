@@ -28,6 +28,8 @@
 #include "Ressource.h"
 #include <unordered_map>
 #include <deque>
+#include <mutex>
+#include <memory>
 #include <utility>
 #include "gradient/MapRouting.h"
 
@@ -130,6 +132,48 @@ struct GradientRuntime
 	BuildingSeedTemplates buildingSeeds;
 	// Shared immediate negative answer when global natural-source counts are zero.
 	std::vector<Uint16> absentMaterialField;
+	// Published material planes are shared with captures instead of copied.
+	// The map keeps one lease per plane key while its buffer is published and
+	// immutable. A buffer that leaves its slot (republication, removal) while a
+	// capture still holds it is adopted by the lease: it is never rewritten, and
+	// the last capture to drop it returns it to the recycler for the pipeline.
+	struct PlaneRecycler
+	{
+		static constexpr std::size_t Limit = 64;
+		std::mutex mutex;
+		std::size_t cells = 0;
+		std::vector<std::unique_ptr<Uint16[]>> buffers;
+		void give(Uint16* data, std::size_t count)
+		{
+			std::unique_ptr<Uint16[]> buffer(data);
+			std::lock_guard<std::mutex> lock(mutex);
+			if (count == cells && buffers.size() < Limit) buffers.push_back(std::move(buffer));
+		}
+		std::unique_ptr<Uint16[]> take(std::size_t count)
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			if (count != cells) { buffers.clear(); cells = count; }
+			if (buffers.empty()) return nullptr;
+			auto buffer = std::move(buffers.back());
+			buffers.pop_back();
+			return buffer;
+		}
+	};
+	struct PlaneLease
+	{
+		Uint16* cells = nullptr;
+		std::size_t count = 0;
+		std::weak_ptr<PlaneRecycler> recycler;
+		bool adopted = false; // written by the owner before it drops its reference
+		~PlaneLease()
+		{
+			if (!adopted) return;
+			if (auto target = recycler.lock()) target->give(cells, count);
+			else delete[] cells;
+		}
+	};
+	std::shared_ptr<PlaneRecycler> planeRecycler = std::make_shared<PlaneRecycler>();
+	std::array<std::shared_ptr<PlaneLease>, MapState::PlaneCount> planeLeases;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
     std::shared_ptr<gradient_kernel::BackendSession> backendSession;
     void shareBackendSession()

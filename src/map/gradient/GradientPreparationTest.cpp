@@ -1212,8 +1212,8 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, int(MovementAccess::Amphibious), false));
 	REQUIRE(stone);
-	CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
-	const auto frozen = *stone->values;
+	CHECK(std::ranges::equal(stone->span(), std::span<const Uint16>(liveStone, stone->cells)));
+	const std::vector<Uint16> frozen(stone->span().begin(), stone->span().end());
 	// Published fields are immutable. Replace the live generation through its
 	// normal delayed refresh and retain the captured snapshot across publication.
 	m.replaceResource(10 + STONE, 10, Resource{});
@@ -1223,8 +1223,8 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 		return field && !std::equal(frozen.begin(), frozen.end(), field) ? field : nullptr;
 	});
 	check();
-	CHECK(*stone->values == frozen);
-	CHECK_FALSE(std::equal(stone->values->begin(), stone->values->end(), replacement));
+	CHECK(std::ranges::equal(stone->span(), frozen));
+	CHECK_FALSE(std::equal(stone->span().begin(), stone->span().end(), replacement));
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 

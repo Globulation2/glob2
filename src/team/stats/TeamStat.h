@@ -43,39 +43,39 @@ struct TeamStat
     void configureUnits(std::size_t count);
     std::size_t capacityBytes() const { return buildingCountByVariant.capacity()*sizeof(int)+numberUnitPerType.extraCapacityBytes()+isFree.extraCapacityBytes()+upgradeStatePerType.extraCapacityBytes(); }
 
-	int totalUnit;
+	int totalUnit{};
 	UnitStatistics<int> numberUnitPerType;
-	int workersByConstructionLevel[NB_UNIT_LEVELS];
-	int totalFree;
+	int workersByConstructionLevel[NB_UNIT_LEVELS]{};
+	int totalFree{};
 	UnitStatistics<int> isFree;
-	int totalNeeded;
-	int totalNeededPerLevel[NB_UNIT_LEVELS];
+	int totalNeeded{};
+	int totalNeededPerLevel[NB_UNIT_LEVELS]{};
 
 	std::vector<int> buildingCountByVariant; // concrete catalog IDs, including construction variants
-	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
-	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
-	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS];
+	int totalBuilding{}; // Note that this is the total number of *finished* buildings, building sites are ignored
+	int numberBuildingPerType[IntBuildingType::NB_BUILDING]{};
+	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
 
-	int needFoodCritical;
+	int needFoodCritical{};
 	// Number of units that are hungry but there aren't able to eat
-	int needFoodNoInns;
-	int needFood;
-	int needHeal;
-	int needNothing;
-	int upgradeState[NB_ABILITY][NB_UNIT_LEVELS];
+	int needFoodNoInns{};
+	int needFood{};
+	int needHeal{};
+	int needNothing{};
+	int upgradeState[NB_ABILITY][NB_UNIT_LEVELS]{};
 	UnitStatistics<std::array<std::array<int,NB_UNIT_LEVELS>,NB_ABILITY>> upgradeStatePerType;
 
-	int totalFood;
-	int totalFoodCapacity;
-	int totalUnitFoodable;
-	int totalUnitFooded;
+	int totalFood{};
+	int totalFoodCapacity{};
+	int totalUnitFoodable{};
+	int totalUnitFooded{};
 
-	int totalHP;
-	int totalAttackPower;
+	int totalHP{};
+	int totalAttackPower{};
     int carriers=0,builders=0,meleeUnits=0,rangedUnits=0,scouts=0,idleCarriers=0,idleDefenders=0;
-	int totalDefensePower;
+	int totalDefensePower{};
 		
-	int happiness[HAPPINESS_COUNT+1];
+	int happiness[HAPPINESS_COUNT+1]{};
 };
 
 struct TeamSmoothedStat

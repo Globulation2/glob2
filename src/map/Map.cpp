@@ -555,6 +555,7 @@ void Map::configureCompute(unsigned threads)
 void Map::clear()
 {
     materialClaimRoutes.reset();
+    claimRuntimeChanged();
     resourceClaimsEnabled=false;
     claimSetupTick.reset();
     activeClaimRules.reset();
@@ -637,12 +638,10 @@ void Map::clear()
 		for (int r=0; r<MaterialCount; ++r)
 			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 			{
-				delete[] routing().materialGradients[t][r][swim];
+				routing().freePlane(routing().materialGradients[t][r][swim]);
 				routing().materialGradientStale[t][r][swim]=false;
-				routing().materialGradients[t][r][swim] = NULL;
-				delete[] routing().marketMaterialGradients[t][r][swim];
+				routing().freePlane(routing().marketMaterialGradients[t][r][swim]);
 				routing().marketMaterialGradientStale[t][r][swim]=false;
-				routing().marketMaterialGradients[t][r][swim] = NULL;
 			}
 		for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 		{

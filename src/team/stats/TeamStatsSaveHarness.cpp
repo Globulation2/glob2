@@ -952,7 +952,7 @@ static void aiTelemetryContinuation(const char *path)
 						for (unsigned f = 0; f < actual.values.size(); ++f)
 							if (actual.values[f] != want.values[f])
 								std::fprintf(stderr, "AI %d telemetry %s differs at tick %u\n",
-											 series.implementation, series.fields[f].name.c_str(),
+											 series.implementation, std::string(series.fields[f].name).c_str(),
 											 actual.tick);
 						FAIL("fatal condition in a harness helper");
 					}
@@ -995,7 +995,7 @@ static void aiTelemetryScenarios()
 		require(schema(i).size() >= Specific, "common fields exist for every AI");
 		std::set<std::string> names;
 		for (const auto &f : schema(i))
-			require(names.insert(f.name).second, "schema names are unique");
+			require(names.insert(std::string(f.name)).second, "schema names are unique");
 	}
 	g.gameHeader.setAIConfig(0, "");
 	auto a = g.players[0]->ai->telemetrySeries, b = g.players[1]->ai->telemetrySeries;

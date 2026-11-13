@@ -11,9 +11,18 @@ namespace AITelemetry
 {
 const std::vector<Field> &schema(int implementation)
 {
-	static const std::vector<std::vector<Field>> schemas = []
+	// Never destroyed: snapshots read on other threads may outlive static teardown.
+	static const std::vector<std::vector<Field>> &schemas = *[]
 	{
-		std::vector<std::vector<Field>> all(AI::SIZE);
+		static const auto *orderNames = []
+		{
+			auto *names = new std::vector<std::string>;
+			for (int n = 0; n < 256; ++n)
+				names->push_back("orders_" + std::to_string(n));
+			return names;
+		}();
+		auto *result = new std::vector<std::vector<Field>>(AI::SIZE);
+		auto &all = *result;
 		for (auto &f : all)
 		{
 			f.push_back({"polls", "calls", "Actual AI implementation polls", Unsigned, Counter});
@@ -21,7 +30,7 @@ const std::vector<Field> &schema(int implementation)
 			f.push_back({"emitted_orders", "orders",
 						 "Returned non-null orders; not engine acceptance", Unsigned, Counter});
 			for (int n = 0; n < 256; ++n)
-				f.push_back({"orders_" + std::to_string(n), "orders", "Returned engine order type",
+				f.push_back({(*orderNames)[n], "orders", "Returned engine order type",
 							 Unsigned, Counter});
 		}
 #define AI_BEGIN(number)                                                                           \
@@ -34,7 +43,7 @@ const std::vector<Field> &schema(int implementation)
 #undef AI_BEGIN
 #undef AI_FIELD
 #undef AI_END
-		return all;
+		return result;
 	}();
 	return schemas.at(implementation);
 }

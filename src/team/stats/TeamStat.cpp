@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <tuple>
 #include <type_traits>
+#include <cstring>
 #include <limits>
 
 #include "MapHeader.h"
@@ -384,10 +385,10 @@ EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int
 	value[TYPE_DEFENSE]=defense;
 }
 
-TeamStat::TeamStat()
-{
-	reset();
-}
+// Default member initializers zero every field, which is what reset() of a
+// fresh record produces, without its per-field loops (frozen display and
+// history copies construct STATS_SIZE records each).
+TeamStat::TeamStat() = default;
 
 
 void TeamStat::reset()
@@ -1886,7 +1887,12 @@ void visitEventFields(Visitor&& visit, Destination& destination, Source& source)
 }
 template<class T> void copyEventField(T& destination, const T& source) { destination = source; }
 template<class T, size_t N> void copyEventField(T (&destination)[N], const T (&source)[N])
-{ for (size_t i=0;i<N;++i) copyEventField(destination[i],source[i]); }
+{
+    // Counter tables are plain integers; GCC -O2 copies the recursive loop one
+    // 8-byte element at a time.
+    if constexpr (std::is_trivially_copyable_v<T>) std::memcpy(destination, source, sizeof(destination));
+    else for (size_t i=0;i<N;++i) copyEventField(destination[i],source[i]);
+}
 }
 void TeamStats::completeMeasurements(TeamStatsSample& sample, const GameplayMeasurements& previous)
 {

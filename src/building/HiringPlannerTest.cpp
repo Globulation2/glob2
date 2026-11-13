@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <algorithm>
 #include "HiringPipeline.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
@@ -172,13 +173,13 @@ TEST_SUITE("HiringPlanner")
 		const auto expected = planner.rank(input, 0);
 		CHECK(expected.metrics.resourcePlaneReads > 0);
 		const auto key = MapState::planeKey(0, WHEAT, accessClass(u->movementAccess()), false);
-		const auto plane = input.world.resourceFields->find(key)->values;
-		const auto frozen = *plane;
+		const auto* plane = input.world.resourceFields->find(key);
+		const std::vector<Uint16> frozen(plane->span().begin(), plane->span().end());
 		// Normal field publication can replace a generation without changing
 		// a job's immutable lease or requiring a hiring-specific copy.
 		w.game.map.addForbidden(24, 12, 0);
 		w.game.map.routing().updateMaterialGradient(0, WHEAT, u->movementAccess());
-		CHECK(*plane == frozen);
+		CHECK(std::ranges::equal(plane->span(), frozen));
 		checkPlannerOutput(planner.rank(input, 0), expected);
 	}
 	TEST_CASE("shared resource planes retain ordered unreachable-neighbor admission estimates")
@@ -307,9 +308,9 @@ TEST_SUITE("HiringPlanner")
 		auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
 		auto local = input;
 		auto planes = std::make_shared<SimulationSnapshot::ResourceFields>();
-		auto values = std::make_shared<const std::vector<Uint16>>(
-			w.game.map.getW() * w.game.map.getH(), GRADIENT_UNREACHABLE);
-		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values});
+		const std::size_t cells = std::size_t(w.game.map.getW()) * w.game.map.getH();
+		auto values = std::make_shared<Uint16[]>(cells, Uint16(GRADIENT_UNREACHABLE));
+		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values, cells});
 		local.world.resourceFields = planes;
 		HiringPlanner::Planner a, bCache;
 		const auto normal = a.rank(input, 0), enrolled = bCache.rank(local, 0);

@@ -53,7 +53,7 @@ void require(bool condition)
 	if (!condition)
 		throw std::runtime_error("Invalid AI telemetry");
 }
-void writeString(GAGCore::OutputStream *s, const std::string &v, const char *name)
+void writeString(GAGCore::OutputStream *s, std::string_view v, const char *name)
 {
 	s->writeEnterSection(name);
 	s->writeUint32(v.size(), "length");
@@ -246,18 +246,19 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 		const bool presentation = versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI &&
 								  r.schemaVersion == ReplayPresentationSchema;
 		require(presentation ? fields == 0 : fields >= Specific && fields <= 4096);
+		auto text = std::make_shared<std::deque<std::string>>();
 		for (unsigned f = 0; f < fields; ++f)
 		{
 			s->readEnterSection(f);
 			Field d;
-			d.name = readString(s, "name");
-			d.unit = readString(s, "unit");
-			d.meaning = readString(s, "meaning");
+			d.name = text->emplace_back(readString(s, "name"));
+			d.unit = text->emplace_back(readString(s, "unit"));
+			d.meaning = text->emplace_back(readString(s, "meaning"));
 			auto type = s->readUint32("type"), kind = s->readUint32("kind");
 			require(type <= Real && kind <= Mask && !d.name.empty());
 			require(d.name.find_first_not_of(
 						"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.") ==
-					std::string::npos);
+					std::string_view::npos);
 			for (const auto &prior : r.fields)
 				require(prior.name != d.name);
 			d.type = static_cast<Type>(type);
@@ -265,6 +266,8 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 			r.fields.push_back(d);
 			s->readLeaveSection();
 		}
+		if (!text->empty())
+			r.fieldText = std::move(text);
 		s->readEnterSection("current");
 		r.current = readSample(s, fields);
 		s->readLeaveSection();

@@ -114,6 +114,9 @@ class Map
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	// mapDiscovered only; visibilityChanges covers the active fog plane. Split
+	// so a fog switch does not recopy the near-static discovery plane.
+	MapState::ChangeTracker discoveredChanges;
 	Uint64 discoveryRevisionValue = 1;
 	// Derived from painted masks, independent of reachable gradient goals.
 	std::array<std::array<Uint32, TEAM_MAX_COUNT>, 4> paintedAreaCounts{};
@@ -124,6 +127,7 @@ class Map
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markDiscovered(size_t index) { discoveredChanges.mark(chunkGeometry.chunkOf(index)); }
 	ResourceClaims::Ledger materialClaims;
     // Whether this game uses resource claims (ResourceClaims::Policy). Fixed at
     // new-game setup and saved; saves before format 213 load without claims.
@@ -137,6 +141,20 @@ class Map
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
     Uint32 claimRuntimeChecksum(bool hashRouteCells, bool includePendingOutputs) const;
+    // The per-tick snapshot checksum of the claim runtime, reused while its
+    // inputs are unchanged. Route states and recovery records change only
+    // through Map methods, which call claimRuntimeChanged(); the pipeline
+    // counters and rules are compared directly, since saves and checksums
+    // can flush the pipeline through const paths. Never saved or checksummed.
+    struct ClaimSnapshotChecksumCache {
+        bool valid = false;
+        Uint32 value = 0;
+        Uint64 sequence = 0;
+        std::optional<Uint64> sealed;
+        std::optional<std::array<Uint64,3>> rules;
+    };
+    mutable ClaimSnapshotChecksumCache claimSnapshotChecksumCache;
+    void claimRuntimeChanged() { claimSnapshotChecksumCache.valid = false; }
     void validateActiveMaterialClaims(ResourceClaims::Ledger& ledger) const;
     // Derived from terrain only; never saved, checksummed or snapshotted.
     mutable ResourceClaims::TerrainComponentCache claimTerrainComponentCache;
@@ -146,7 +164,7 @@ class Map
     // Derived per-team table of hire-time claim target searches, rebuilt
     // immediately before each team's hiring phase; never saved or checksummed.
     ResourceClaims::HireTargetIndex claimHireTargets;
-	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); markDiscoveryChanged(); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); markDiscoveryChanged(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
 	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
@@ -156,7 +174,7 @@ class Map
 		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
 		const auto count = chunkGeometry.count();
 		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
-		areaChanges.reset(count); visibilityChanges.reset(count); ++discoveryRevisionValue;
+		areaChanges.reset(count); visibilityChanges.reset(count); discoveredChanges.reset(count); ++discoveryRevisionValue;
 		materialClaims.reset(std::size_t(w) * h);
 	}
 	mutable std::mutex waterSnapshotMutex;
@@ -234,12 +252,13 @@ class Map
 	void finishTerrainEdit();
 public:
 	// Bulk discovery replacements also invalidate the combined snapshot plane.
-	void markDiscoveryChanged() { ++discoveryRevisionValue; visibilityChanges.markAll(); }
+	void markDiscoveryChanged() { ++discoveryRevisionValue; discoveredChanges.markAll(); }
+	const MapState::ChangeTracker& discoveryChanges() const { return discoveredChanges; }
 	Uint64 discoveryRevision() const { return discoveryRevisionValue; }
 	WorldRandomStreams worldRandom;
 	EntityRandom& privateRandom(RandomDomain domain);
 	std::array<Uint64, 5> snapshotGenerations() const
-	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation + discoveredChanges.generation}; }
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
 	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
 	{

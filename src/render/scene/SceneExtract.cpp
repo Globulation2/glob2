@@ -197,11 +197,12 @@ void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std
         row.name=source.name; row.available=source.available;
         if (row.available)
         {
-            for (size_t i=0; i<source.fields.size() && i<source.values.size(); ++i)
+            const auto& fields = *source.fields;
+            for (size_t i=0; i<fields.size() && i<source.values.size(); ++i)
             {
-                const auto& field = source.fields[i]; const auto& value = source.values[i];
+                const auto& field = fields[i]; const auto& value = source.values[i];
                 if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific && (!value.valid || !value.bits)) continue;
-                row.values.push_back({field.name, AITelemetry::displayValue(field,value),field.unit,field.meaning,value.updated});
+                row.values.push_back({std::string(field.name), AITelemetry::displayValue(field,value),std::string(field.unit),std::string(field.meaning),value.updated});
             }
             row.values.insert(row.values.end(), source.named.begin(), source.named.end());
         }

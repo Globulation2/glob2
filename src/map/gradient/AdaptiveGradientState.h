@@ -86,6 +86,14 @@ struct AdaptiveGradientState
         // not refresh later merely because an old query aged. Accepted demand
         // survives until admission, including explicit capacity deferral.
         bool minimumIntervalElapsed(std::uint32_t tick) const {return std::uint32_t(tick-submitted)>=MinimumInterval;}
+        // The evaluation prefix that needs neither targets nor a prediction.
+        // True means evaluate() would return no request.
+        bool idle() {
+            if(!demand&&!reactive&&!deferred)return true;
+            if(queued)return true;
+            if(inflight){demand=false;return true;}
+            return false;
+        }
         Evaluation evaluate(std::uint32_t tick,const Targets&,bool hasServing,const Prediction&,unsigned fixedInterval=0);
         void defer(Reason reason) {deferred=demand=true;acceptedReason=reason;}
         void admitted(std::uint32_t tick) {submitted=tick;demand=reactive=queued=deferred=false;acceptedReason=Reason::None;inflight=true;}

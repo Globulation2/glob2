@@ -633,7 +633,10 @@ checksum adapter remains available for diagnostic fixtures.
   and script identity are unchanged.
   Material and area getters return borrowed const arrays for the current owner
   decision, not leases across publication or cache admission. Snapshot consumers
-  retain snapshot-owned planes; building worker consumers use
+  share published resource planes through per-plane leases instead of copies: a
+  buffer leaving its slot while a capture holds it is adopted, never rewritten, and
+  recycled when the last capture drops it. Code that frees or replaces a plane
+  slot's buffer must go through `MapRouting::freePlane` or `releasePlaneLease`; building worker consumers use
   `SharedBuildingGradient` leases, whose lock protects resumable values and queues. Workers never enqueue live requests: owner
   admission fixes request order and captures primitive inputs, executor jobs own
   private outputs, and only owner publication replaces a live generation.
