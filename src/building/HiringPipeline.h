@@ -24,6 +24,9 @@ class HiringPipeline
 	Game *game = nullptr;
 	std::optional<Uint32> lastObserved;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
+	// Replaced publications, released on the next batch's worker rather than
+	// destroyed on the owner. They are never read again.
+	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> retired;
 	std::deque<std::unique_ptr<Batch>> pending;
 	std::map<Uint16, BuildingRef> initializationRequests;
 	struct Claim

@@ -346,12 +346,15 @@ struct HiringPipeline::Work
 	unsigned team = 0;
 	std::shared_ptr<const Output> output;
 	std::vector<std::shared_ptr<HiringPlanner::PreparedRoute>> gradients;
+	// Set on one job per batch: replaced publications it releases.
+	std::array<std::shared_ptr<const Output>, 16> *retired = nullptr;
 };
 struct HiringPipeline::Batch
 {
 	Uint32 tick = 0, due = 0;
 	ComputeExecutor::Batch ticket;
 	std::vector<Work> work;
+	std::array<std::shared_ptr<const Output>, 16> retired;
 };
 HiringPipeline::HiringPipeline(ComputeExecutor &e) : executor(e) {}
 HiringPipeline::~HiringPipeline()
@@ -367,6 +370,9 @@ HiringPipeline::~HiringPipeline()
 void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
+	if (w.retired)
+		for (auto &output : *w.retired)
+			output.reset();
 	if (w.team % Refresh == w.input->world.tick % Refresh)
 		w.output =
 			std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
@@ -476,6 +482,11 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		if (teamMask & (1u << t))
 			batch->work.push_back({input, t, {}});
 	auto &b = *pending.emplace_back(std::move(batch));
+	if (!b.work.empty())
+	{
+		b.retired.swap(retired);
+		b.work.front().retired = &b.retired;
+	}
 	std::array<ComputeExecutor::Group, Team::MAX_COUNT> groups;
 	for (unsigned i = 0; i < b.work.size(); ++i)
 		groups[i] = {1, {compute, &b.work[i]}, ComputeExecutor::HiringLaneBase + b.work[i].team};
@@ -520,7 +531,11 @@ void HiringPipeline::publishDue(Uint32 tick)
 			for (const auto &gradient : w.gradients)
 				gradient->publish(*game, preparedHere);
 			if (w.team % Refresh == b.tick % Refresh)
+			{
+				if (published[w.team] && !retired[w.team])
+					retired[w.team] = std::move(published[w.team]);
 				published[w.team] = w.output;
+			}
 			++metrics.published;
 		}
 		pending.pop_front();
