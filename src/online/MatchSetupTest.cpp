@@ -10,6 +10,7 @@
 // also check that the copy has not drifted from it.
 
 #include "SimRevision.h"
+#include "GameHeader.h"
 #include "Map.h"
 #include "EngineTiming.h"
 #include "HeadlessGlobals.h"
@@ -97,9 +98,9 @@ std::string sha256Hex(const std::string& text)
 
 TEST_SUITE("MatchSetup")
 {
-    TEST_CASE("New match rules default to eight tick AI decisions")
+    TEST_CASE("New match rules default to the engine's AI decision delay")
     {
-        CHECK(MatchRules{}.aiOrderDelay == 8);
+        CHECK(MatchRules{}.aiOrderDelay == int(GameHeader::DEFAULT_AI_ORDER_DELAY));
     }
 
     TEST_CASE("AI order delay is optional bounded integer data and round trips through headers")

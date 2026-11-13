@@ -86,7 +86,10 @@ TEST_CASE("claim fetch preserves GUI continuations and execution across particip
                 return found==map.materialClaimRoutes->states.end()?nullptr:&found->second;
             }();
             if(traveling && !pendingCopy && state && state->pending) {
-                CHECK(state->due==game.stepCounter);
+                // First seen on the tick it was requested: the route publishes
+                // at the start of the tick claimRouteDelay() later.
+                CHECK(state->due==game.stepCounter+map.claimRouteDelay()-1);
+                CHECK(map.claimRouteDelay()==ResourceClaims::Policy::RoutePublicationDelay);
                 CHECK(map.materialClaimLedger().materialCount(unit->activeMaterialClaim->source,WHEAT)==1);
                 pendingTick=game.stepCounter; pendingCopy=copyGame((prefix+"pending").c_str());
             }

@@ -136,7 +136,12 @@ TEST_SUITE("ActiveClaimRoutes")
             CHECK(game.stepCounter==admittedTick);
             CHECK(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
             CHECK(saveRoutes(map,false)==binary);
+            for(unsigned tick=1;tick<ResourceClaims::Policy::RoutePublicationDelay;++tick) {
+                ++game.stepCounter;map.publishClaimRoutes();
+                CHECK(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            }
             ++game.stepCounter;map.publishClaimRoutes();
+            CHECK(game.stepCounter==admittedTick+ResourceClaims::Policy::RoutePublicationDelay);
             REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
             CHECK(dx==1);CHECK(std::abs(dy)<=1);
             CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
@@ -200,6 +205,10 @@ TEST_SUITE("ActiveClaimRoutes")
             CHECK(saveRoutes(map, text) == pending);
             map.publishClaimRoutes();
             CHECK(map.nextClaimRouteStep(*unit, &dx, &dy) == ResourceClaims::StepResult::Pending);
+            for (unsigned tick = 1; tick < ResourceClaims::Policy::RoutePublicationDelay; ++tick) {
+                ++game.stepCounter; map.publishClaimRoutes();
+                CHECK(map.nextClaimRouteStep(*unit, &dx, &dy) == ResourceClaims::StepResult::Pending);
+            }
             ++game.stepCounter; map.publishClaimRoutes();
             CHECK(map.nextClaimRouteStep(*unit, &dx, &dy) == ResourceClaims::StepResult::Ready);
             CHECK(dx == 1); CHECK(std::abs(dy) <= 1);
@@ -218,6 +227,7 @@ TEST_SUITE("ActiveClaimRoutes")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
         auto& game = fixture.game; auto& map = game.map; map.enableResourceClaims();
+        map.setClaimRouteDelay(1); // Routes publish on the next tick.
         auto* building = fixture.addBuilding("inn", 2, 2);
         auto* unit = fixture.addUnit(WORKER, 8, 8); Assignment cleanup{*unit}; assign(*unit, *building, map, 12, 8);
         game.observeCompletedWorld();
@@ -275,6 +285,7 @@ TEST_SUITE("ActiveClaimRoutes")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
         auto& game=fixture.game;auto& map=game.map;map.enableResourceClaims();
+        map.setClaimRouteDelay(1); // Routes publish on the next tick.
         auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
         Assignment cleanup{*unit};assign(*unit,*building,map,14,8);game.observeCompletedWorld();
         const auto claim=unit->activeMaterialClaim;const auto task=unit->materialClaimTask;
@@ -342,6 +353,7 @@ TEST_SUITE("ActiveClaimRoutes")
         CHECK(map.claimTerrainComponents(accessClass(MovementAccess::Land))==labels);
         CHECK(map.claimTerrainComponentRebuilds()==rebuilds);
         map.enableResourceClaims();
+        map.setClaimRouteDelay(1); // Routes publish on the next tick.
         auto* building=fixture.addBuilding("inn",9,22);
         auto* unit=fixture.addUnit(WORKER,8,8);auto* holder=fixture.addUnit(WORKER,11,10);
         Assignment cleanup{*unit},holderCleanup{*holder};
@@ -570,6 +582,8 @@ TEST_SUITE("ActiveClaimRoutes")
             CAPTURE(walled);CAPTURE(text);
             glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
             auto& game=fixture.game;auto& map=game.map;map.enableResourceClaims();
+            // Routes publish on the next tick, so a replan costs one decision.
+            map.setClaimRouteDelay(1);
             auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
             Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
             unit->materialClaimPolicyState.decisionOrdinal=1;game.observeCompletedWorld();

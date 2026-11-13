@@ -125,7 +125,7 @@ GameHeader::GameHeader()
 void GameHeader::reset()
 {
 	unitCatalogValue=UnitCatalog::availableDefaults();
-	++observationRevisionValue; aiOrderDelay = 8; teamStatsDelay = 8; buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
+	++observationRevisionValue; aiOrderDelay = DEFAULT_AI_ORDER_DELAY; teamStatsDelay = 8; buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 	buildingCatalogSnapshot.clear();
 	buildingArtwork.reset();
 	buildingCatalogExperimentKeys.clear();

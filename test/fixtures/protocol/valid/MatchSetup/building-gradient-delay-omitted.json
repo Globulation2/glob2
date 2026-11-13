@@ -43,7 +43,7 @@
     "allyTeamsFixed": true,
     "resourceGrowthDisabled": false,
     "resourceScarcityLevel": 0,
-    "aiOrderDelay": 8,
+    "aiOrderDelay": 14,
     "instantConstruction": false,
     "stockpileStartLevel": 0,
     "hungerDisabled": false,

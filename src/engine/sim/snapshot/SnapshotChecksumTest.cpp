@@ -20,6 +20,8 @@ SimulationSnapshot::Handle captured(glob2test::HeadlessGame& fixture) {
 Uint32 referenceChecksum(const SimulationSnapshot::Handle& world) {
     return SimulationChecksum::snapshotChecksum(world,true);
 }
+// Reporting turns from a checksum's submission to its delivery.
+constexpr Uint32 Delay=SimulationChecksum::Pipeline::Delay;
 }
 TEST_SUITE("SnapshotChecksum") {
     TEST_CASE("claim state and retry history survive checksum projection and retained captures") {
@@ -62,15 +64,16 @@ TEST_SUITE("SnapshotChecksum") {
         ComputeExecutor executor; executor.configure(1); executor.configureTelemetry(ComputeTelemetryMode::Trace);
         SimulationChecksum::Pipeline pipeline(executor); pipeline.submit(world,0,true);
         CHECK(pipeline.collect(0,false,100).empty());
-        const auto result=pipeline.collect(1,false,100); REQUIRE(result.size()==1);
+        CHECK(pipeline.collect(Delay-1,false,100).empty());
+        const auto result=pipeline.collect(Delay,false,100); REQUIRE(result.size()==1);
         CHECK(result[0].sample.sourceTick==0); CHECK(result[0].worldTick==100);
         const auto trace=executor.telemetrySnapshot(true);
         bool submitted=false,joined=false;
         for (const auto& stream:trace.streams) for (std::size_t i=0;i<stream.used;++i) {
             const auto& event=stream.storage[i]; if (event.producer!=ComputeProducer::Checksum) continue;
             if (event.kind==ComputeTelemetry::EventKind::Submit) {
-                submitted=true; CHECK(event.due==ComputeExecutor::boundaryDue(101));
-                CHECK(event.observationTick==100); CHECK(event.publicationTick==101);
+                submitted=true; CHECK(event.due==ComputeExecutor::boundaryDue(100+Delay));
+                CHECK(event.observationTick==100); CHECK(event.publicationTick==100+Delay);
             }
             if (event.kind==ComputeTelemetry::EventKind::JoinInspection) {
                 joined=true; CHECK(event.logicalTick==100);
@@ -116,9 +119,9 @@ TEST_SUITE("SnapshotChecksum") {
         auto blocking=executor.submit(std::span(&blocker,1),0);
         while (!entered.load()) std::this_thread::yield();
         SimulationChecksum::Pipeline pipeline(executor); pipeline.submit(world,0,true);
-        CHECK(pipeline.collect(0).empty());
+        CHECK(pipeline.collect(Delay-1).empty());
         std::thread unblock([&] { std::this_thread::sleep_for(std::chrono::milliseconds(10)); release=true; });
-        auto result=pipeline.collect(1); unblock.join(); executor.join(blocking);
+        auto result=pipeline.collect(Delay); unblock.join(); executor.join(blocking);
         REQUIRE(result.size()==1); CHECK(result[0].sample.value==referenceChecksum(world));
         const auto metrics=executor.telemetrySnapshot();
         const auto& waits=metrics.summary.joins[unsigned(ComputeProducer::Checksum)][unsigned(JoinReason::TickDeadline)];
@@ -266,7 +269,7 @@ TEST_SUITE("SnapshotChecksum") {
         ComputeExecutor executor; executor.configure(4);
         SimulationChecksum::Pipeline pipeline(executor);
         pipeline.submit(world,0); // Default policy must not sweep maps.
-        const auto result=pipeline.collect(2); REQUIRE(result.size()==1);
+        const auto result=pipeline.collect(Delay); REQUIRE(result.size()==1);
         CHECK(result[0].sample.value==local);
     }
     TEST_CASE("large map arrays are covered only on absolute secondary ticks") {
@@ -291,12 +294,12 @@ TEST_SUITE("SnapshotChecksum") {
             SimulationChecksum::Pipeline pipeline(executor);
             const auto expected=referenceChecksum(world);
             pipeline.submit(world,100,true); pipeline.submit(world,100,true);
-            CHECK(pipeline.collect(100).empty());
-            const auto results=pipeline.collect(101);
+            for (Uint32 now=100;now<100+Delay;++now) CHECK(pipeline.collect(now).empty());
+            const auto results=pipeline.collect(100+Delay);
             REQUIRE(results.size()==1); CHECK(results[0].sample.sourceTick==100);
             CHECK(results[0].sample.value==expected); CHECK(results[0].worldTick==world.tick);
             pipeline.submit(world,101,true);
-            CHECK(pipeline.collect(101).empty());
+            CHECK(pipeline.collect(101+Delay-1).empty());
             pipeline.submit(world,102,true);
             CHECK(pipeline.collect(102,true).size()==2);
             pipeline.submit(world,103,true); pipeline.reset();
@@ -307,7 +310,7 @@ TEST_SUITE("SnapshotChecksum") {
             if (participants==1) CHECK(lease.expired()); // No serial input lease waits for delivery.
             executor.joinAll({JoinReason::Verification,104});
             CHECK(lease.expired()); // Completed hashes retain results, not world buffers.
-            auto completed=pipeline.collect(106); REQUIRE(completed.size()==1);
+            auto completed=pipeline.collect(104+Delay); REQUIRE(completed.size()==1);
             CHECK(completed[0].sample.value==expected);
         }
     }
@@ -359,17 +362,17 @@ TEST_SUITE("SnapshotChecksum") {
         ComputeExecutor executor; executor.configure(2);
         SimulationChecksum::Pipeline pipeline(executor);
         pipeline.submit(world,0,true); ++world.worldIdentity; pipeline.submit(world,1,true);
-        auto results=pipeline.collect(3); REQUIRE(results.size()==1); CHECK(results[0].sample.sourceTick==1);
+        auto results=pipeline.collect(1+Delay); REQUIRE(results.size()==1); CHECK(results[0].sample.sourceTick==1);
         auto entities=std::make_shared<SimulationSnapshot::Entities>(*world.entities);
         entities->buildings.front().fundingOffset=Uint32(entities->funding.size()+10);
         world.entities=entities;
         pipeline.submit(world,2,true);
-        CHECK_THROWS_AS(pipeline.collect(4),std::out_of_range);
-        CHECK_THROWS_AS(pipeline.collect(4,true),std::out_of_range);
+        CHECK_THROWS_AS(pipeline.collect(2+Delay),std::out_of_range);
+        CHECK_THROWS_AS(pipeline.collect(2+Delay,true),std::out_of_range);
         pipeline.reset();
         pipeline.submit(world,3,true);
         executor.configure(1); // Executor teardown drains slots and discards its own errors.
-        CHECK_THROWS_AS(pipeline.collect(5),std::out_of_range);
+        CHECK_THROWS_AS(pipeline.collect(3+Delay),std::out_of_range);
         pipeline.reset();
     }
     TEST_CASE("worker checksums match direct recomputation across live map publications") {

@@ -708,9 +708,19 @@ TEST_SUITE("HiringGradientPreparation")
 			auto *copy = restored.game.resolveBuilding(ref);
 			REQUIRE(copy);
 			CHECK(!copy->globalGradient[slot]);
-			original.game.stepCounter = restored.game.stepCounter = HiringPipeline::Delay;
-			original.game.hiringPipeline->publishDue(HiringPipeline::Delay);
-			restored.game.hiringPipeline->publishDue(HiringPipeline::Delay);
+			// Advance tick by tick: the field stays unpublished until the
+			// boundary the batch is due at, which publishes it.
+			REQUIRE(restored.game.hiringPipeline->rules().delay == HiringPipeline::Delay);
+			while (original.game.stepCounter < HiringPipeline::Delay)
+			{
+				CHECK(!b->globalGradient[slot]);
+				CHECK(!copy->globalGradient[slot]);
+				original.game.step(0);
+				restored.game.step(0);
+				CHECK(original.game.checkSum() == restored.game.checkSum());
+			}
+			original.game.observeCompletedWorld();
+			restored.game.observeCompletedWorld();
 			REQUIRE(b->globalGradient[slot]);
 			REQUIRE(copy->globalGradient[slot]);
 			CHECK(b->globalGradient[slot][original.game.map.coordToIndex(35, 8)] ==
@@ -840,7 +850,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			glob2test::HeadlessGame w(
 				{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 			w.game.map.configureCompute(participants);
-			w.game.stepCounter = 1; // Team zero's next shortlist is three ticks away.
+			w.game.stepCounter = 1; // Team zero is outside the hiring cohort.
 			auto *b = w.addBuilding("inn", 8, 8);
 			b->maxUnitWorking = 0;
 			b->updateCallLists();
@@ -863,7 +873,9 @@ TEST_SUITE("BuildingGradientInitialization")
 				  1);
 			if (participants == 4)
 				CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner == 0);
-			pipeline.publishDue(2);
+			pipeline.publishDue(1 + HiringPipeline::Delay - 1);
+			CHECK(!b->globalGradientSearch[slot]);
+			pipeline.publishDue(1 + HiringPipeline::Delay);
 			REQUIRE(b->globalGradientSearch[slot]);
 			CHECK(!b->globalGradientSearch[slot]->resolved(w.game.map.coordToIndex(60, 8)));
 			CHECK(!pipeline.preparing(*b, slot));
@@ -902,7 +914,7 @@ TEST_SUITE("BuildingGradientInitialization")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w(
 			{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
-		w.game.stepCounter = 4;
+		w.game.stepCounter = HiringPipeline::Refresh; // Team zero is in the hiring cohort.
 		auto *b = innWithWorker(w);
 		CHECK(w.game.map.routing().requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
@@ -918,7 +930,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			  1);
 		w.game.map.submitWorldWork(world);
 		CHECK(w.game.map.routing().buildingGradientPipelineStatus().jobs == 0);
-		pipeline.publishDue(5);
+		pipeline.publishDue(HiringPipeline::Refresh + HiringPipeline::Delay);
 		REQUIRE(pipeline.suggestions(*b));
 	}
 	TEST_CASE(
@@ -974,8 +986,8 @@ TEST_SUITE("BuildingGradientInitialization")
 					restored.game.observeCompletedWorld();
 				}
 				CHECK(restored.game.hiringPipeline->preparing(*copy, slot));
-				original.game.hiringPipeline->publishDue(2);
-				restored.game.hiringPipeline->publishDue(2);
+				original.game.hiringPipeline->publishDue(1 + HiringPipeline::Delay);
+				restored.game.hiringPipeline->publishDue(1 + HiringPipeline::Delay);
 				REQUIRE(b->globalGradient[slot]);
 				REQUIRE(copy->globalGradient[slot]);
 				CHECK(original.game.checkSum() == restored.game.checkSum());

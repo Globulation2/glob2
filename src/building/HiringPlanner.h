@@ -60,6 +60,7 @@ struct Inputs
 	};
 	// One immutable table per boundary, shared by every admitted team job.
 	std::shared_ptr<const std::vector<Route>> routes;
+	Hiring::Rules rules;
 };
 struct Supply
 {

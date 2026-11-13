@@ -392,14 +392,15 @@ TEST_CASE("AI order delay round trips at both boundaries and rejects invalid sav
     }
 }
 
-TEST_CASE("New games and reset headers default to eight tick AI decisions" *
+TEST_CASE("New games and reset headers default to fourteen tick AI decisions" *
           doctest::test_suite("GameHeaderTextSaveLoad"))
 {
     GameHeader header;
-    CHECK(header.getAIOrderDelay() == 8);
+    CHECK(header.getAIOrderDelay() == GameHeader::DEFAULT_AI_ORDER_DELAY);
+    CHECK(GameHeader::DEFAULT_AI_ORDER_DELAY == 14);
     header.setAIOrderDelay(0);
     header.reset();
-    CHECK(header.getAIOrderDelay() == 8);
+    CHECK(header.getAIOrderDelay() == GameHeader::DEFAULT_AI_ORDER_DELAY);
 }
 
 TEST_CASE("Building gradient delay round trips at both boundaries and rejects invalid saved bytes" *

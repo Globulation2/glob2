@@ -69,7 +69,8 @@ class HiringPipelineHarness
         game.drainHiring();
         for(unsigned team=0;team<unsigned(game.teamsCount());++team)
             if(const auto &o=game.hiringPipeline->published[team];o &&
-               (o->tick+HiringPipeline::Delay>game.stepCounter || o->tick%HiringPipeline::Refresh!=team%HiringPipeline::Refresh))
+               (o->tick+game.hiringPipeline->rules().delay>game.stepCounter ||
+                o->tick%game.hiringPipeline->rules().refresh!=team%game.hiringPipeline->rules().refresh))
                 game.hiringPipeline->published[team].reset();
     }
 	static void publish(Game &game)

@@ -7,6 +7,9 @@
 
 TEST_SUITE("ClaimRoutePipeline")
 {
+    // Routes publish this many ticks after their request unless a test pins
+    // another delay.
+    constexpr unsigned Delay = ResourceClaims::Policy::RoutePublicationDelay;
     TEST_CASE("background requests enforce their deterministic expansion budget")
     {
         glob2test::HeadlessGlobals globals;
@@ -18,13 +21,13 @@ TEST_SUITE("ClaimRoutePipeline")
             ResourceClaims::RouteInput input{world, {}, 0, 10};
             input.maximumExpansions = 1;
             pipeline.submit(1, 1, 10, input);
-            const auto ready = pipeline.publish(11);
+            const auto ready = pipeline.publish(10 + Delay);
             REQUIRE(ready.size() == 1);
             CHECK(ready[0].route.status == ResourceClaims::RouteStatus::ExpansionLimit);
             CHECK(ready[0].route.expansions == 1);
             CHECK(ready[0].route.cells.empty());
             input.maximumExpansions = 0;
-            CHECK_THROWS_AS(pipeline.submit(1, 2, 11, input), std::invalid_argument);
+            CHECK_THROWS_AS(pipeline.submit(1, 2, 10 + Delay, input), std::invalid_argument);
         }
     }
     TEST_CASE("saving a fully cancelled batch retains request identity and its sealed tick")
@@ -61,9 +64,10 @@ TEST_SUITE("ClaimRoutePipeline")
         pipeline.flush();
         CHECK(executor.liveBatches() == 1);
         CHECK_THROWS_AS(pipeline.submit(3000, 1, 10, input), std::logic_error);
-        CHECK_THROWS_AS(pipeline.submit(3000, 1, 11, input), std::logic_error);
+        CHECK_THROWS_AS(pipeline.submit(3000, 1, 10 + Delay, input), std::logic_error);
         CHECK(pipeline.publish(10).empty());
-        const auto ready = pipeline.publish(11);
+        CHECK(pipeline.publish(10 + Delay - 1).empty());
+        const auto ready = pipeline.publish(10 + Delay);
         REQUIRE(ready.size() == 2000);
         for (unsigned i = 0; i < ready.size(); ++i) {
             CHECK(ready[i].identity.unit == i);
@@ -85,9 +89,10 @@ TEST_SUITE("ClaimRoutePipeline")
             CHECK(identity.unit == 123); CHECK(identity.task == 456);
             CHECK(pipeline.publish(12).empty());
             const auto saved = pipeline.exportPending();
-            REQUIRE(saved.size() == 1); CHECK(saved[0].due == 13);
+            REQUIRE(saved.size() == 1); CHECK(saved[0].due == 12 + Delay);
             CHECK(pipeline.publish(12).empty()); // Save join did not publish.
-            const auto completed = pipeline.publish(13);
+            CHECK(pipeline.publish(12 + Delay - 1).empty());
+            const auto completed = pipeline.publish(12 + Delay);
             REQUIRE(completed.size() == 1);
             CHECK(completed[0].identity == identity);
             REQUIRE(completed[0].route.status == ResourceClaims::RouteStatus::Found);
@@ -99,8 +104,8 @@ TEST_SUITE("ClaimRoutePipeline")
             }
             ResourceClaims::RoutePipeline restored(executor);
             restored.restore(saved);
-            CHECK(restored.publish(12).empty());
-            const auto resumed = restored.publish(13);
+            CHECK(restored.publish(12 + Delay - 1).empty());
+            const auto resumed = restored.publish(12 + Delay);
             REQUIRE(resumed.size() == 1); CHECK(resumed[0].route.cells == completed[0].route.cells);
             CHECK(resumed[0].identity == identity);
         }
@@ -119,18 +124,18 @@ TEST_SUITE("ClaimRoutePipeline")
         REQUIRE(saved.size() == 2);
         CHECK(saved[0].identity.unit == 1); CHECK(saved[1].identity.unit == 3);
         ResourceClaims::RoutePipeline restored(executor); restored.restore(saved);
-        CHECK(restored.publish(10).empty());
-        const auto actual = restored.publish(11); REQUIRE(actual.size() == 2);
+        CHECK(restored.publish(10 + Delay - 1).empty());
+        const auto actual = restored.publish(10 + Delay); REQUIRE(actual.size() == 2);
         CHECK(actual[0].identity.unit == 1); CHECK(actual[1].identity.unit == 3);
-        REQUIRE(pipeline.publish(11).size() == 2);
+        REQUIRE(pipeline.publish(10 + Delay).size() == 2);
         {
             ResourceClaims::RoutePipeline abandoned(executor);
-            abandoned.submit(4, 1, 12, input); // Never flushed: no live worker borrows it.
+            abandoned.submit(4, 1, 10 + Delay, input); // Never flushed: no live worker borrows it.
             CHECK(executor.liveBatches() == 0);
         }
         {
             ResourceClaims::RoutePipeline abandoned(executor);
-            abandoned.submit(4, 1, 12, input); abandoned.flush();
+            abandoned.submit(4, 1, 10 + Delay, input); abandoned.flush();
             CHECK(executor.liveBatches() == 1);
         }
         CHECK(executor.liveBatches() == 0);
@@ -228,8 +233,8 @@ TEST_SUITE("ClaimRoutePipeline")
         damaged = saved; damaged[0].route.status = ResourceClaims::RouteStatus(255);
         CHECK_THROWS_AS(restored.restore(damaged), std::invalid_argument);
         restored.restore(saved);
-        CHECK(restored.publish(10).empty()); REQUIRE(restored.publish(11).size() == 1);
-        REQUIRE(pipeline.publish(11).size() == 1); CHECK(pipeline.admissionAvailable());
+        CHECK(restored.publish(10 + Delay - 1).empty()); REQUIRE(restored.publish(10 + Delay).size() == 1);
+        REQUIRE(pipeline.publish(10 + Delay).size() == 1); CHECK(pipeline.admissionAvailable());
     }
     TEST_CASE("present terrain bounds preserve optimal cost across cached terrain leases")
     {
@@ -238,7 +243,7 @@ TEST_SUITE("ClaimRoutePipeline")
         const auto original=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
         for(unsigned workers:{1u,3u}) {
             CAPTURE(workers);ComputeExecutor executor;executor.configure(workers);
-            ResourceClaims::RoutePipeline pipeline(executor);
+            ResourceClaims::RoutePipeline pipeline(executor,4096,1); // Publishes on the next tick.
             for(unsigned iteration=0;iteration<4;++iteration) {
                 auto world=original;
                 // Alternating immutable terrain publications exercise cache expiry,
@@ -274,7 +279,7 @@ TEST_SUITE("ClaimRoutePipeline")
         std::uint64_t allocations=0;
         const SimulationSnapshot::Terrain* address=nullptr;
         ComputeExecutor executor;executor.configure(1); // Reuse the same worker-local cache deterministically.
-        ResourceClaims::RoutePipeline pipeline(executor);
+        ResourceClaims::RoutePipeline pipeline(executor,4096,1); // Publishes on the next tick.
         unsigned initialCost=0;
         for(unsigned phase=0;phase<2;++phase) {
             auto terrain=pool.acquire(allocations);
