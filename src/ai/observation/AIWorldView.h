@@ -84,7 +84,7 @@ public:
 		if (!lease.resourceFields || !MapState::validPlane(team, resource, swim)) return {};
 
 		const auto* found = lease.resourceFields->find(MapState::planeKey(team, resource, swim, market));
-		return found ? std::span<const Uint16>(*found->values) : std::span<const Uint16>{};
+		return found ? found->span() : std::span<const Uint16>{};
 	}
 	const SimulationSnapshot::Handle& components() const { return lease; }
 	const AIPlanning::BuildingCapabilityTables& capabilities() const { return *lease.catalogs->capabilities; }

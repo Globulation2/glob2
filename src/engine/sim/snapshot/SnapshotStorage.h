@@ -41,8 +41,6 @@ struct Storage
 	BufferPool<Fertility::GrowthCache> growth;
 	BufferPool<BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	BufferPool<MapState::BuildingSeedSnapshot> buildingSeeds;
-	// Every live plane of every retained capture may be distinct.
-	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
 	//! Schemas of the telemetry series seen most recently; a series' fields are
 	//! fixed when it is created or loaded, so one shared copy serves every capture.
 	struct TelemetrySchema

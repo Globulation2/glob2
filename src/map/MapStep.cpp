@@ -364,6 +364,12 @@ void MapRouting::configureGradientPipeline(unsigned workers, unsigned delay)
 	gradientRuntime->pipeline.onPublished = [this](GradientPipeline::Job& job) {
         auto** slot=job.slot;
         recordFieldCost(job.data.get(),-1);
+        // The retired buffer becomes the job's next output unless a capture
+        // still shares it; then the capture owns it and the job takes a spare.
+        if (job.data && releasePlaneLease(slot,job.data.get())) {
+            (void)job.data.release();
+            job.data=recycledPlane();
+        }
         recordFieldCost(*slot,job.swim);
         if(job.adaptiveKey) {
             auto capture=job.adaptiveCapture;

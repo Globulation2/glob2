@@ -96,7 +96,6 @@ MemoryMetrics Storage::memoryMetrics() const
 		return Uint64(capacities[0] + capacities[1]) * sizeof(Uint32) + Uint64(capacities[2]) * sizeof(Uint16);
 	});
 	account(areaFertility, [&](const BuildingAreaEffects::FertilitySnapshot& value, bool) { return vectorBytes(value.values)+vectorBytes(value.stamps); });
-	account(resourcePlanes, [&](const std::vector<Uint16>& value, bool) { return vectorBytes(value); });
 	account(buildingSeeds, [&](const MapState::BuildingSeedSnapshot& value, bool) { return Uint64(value.planes.capacityBytes()) + vectorBytes(value.stamps); });
 	for (std::size_t i = 0; i < sharedCount; ++i) {
 		result.capacityBytes += shared[i].capacity;

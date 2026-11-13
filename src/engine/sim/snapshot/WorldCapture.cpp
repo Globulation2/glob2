@@ -656,10 +656,8 @@ Handle capture(const Game& game,
             const auto destinationGeneration=game.map.routing().materialGradientDestinationGeneration(plane.slot);
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
             const auto destinations=game.map.routing().materialGradientDestinations(*plane.slot);
-			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
-			if (storage && values->capacity() < planeCells) ++storage->allocations;
-			values->assign(*plane.slot, *plane.slot + planeCells); // one pass: no zero fill of a new buffer
-			fields->add(ResourceField{plane.key, plane.generation, std::move(values),destinations,destinationGeneration});
+			// Shared, not copied: a published plane is immutable until it leaves its slot.
+			fields->add(ResourceField{plane.key, plane.generation, game.map.routing().sharePublishedPlane(plane), planeCells, destinations, destinationGeneration});
 		}
 		result->resourceFields = std::move(fields);
 	}

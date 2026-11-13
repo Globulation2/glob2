@@ -424,6 +424,16 @@ protected:
 public:
 	//! Live published material planes in publication order; every plane has size cells.
 	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
+	//! An immutable shared reference to a published plane's cells (size cells),
+	//! valid after the plane is republished or removed. Owner thread only.
+	std::shared_ptr<const Uint16[]> sharePublishedPlane(const MapState::PublishedPlane& plane) const;
+	//! cells, the buffer of material slot, is leaving that slot. True when a
+	//! capture adopted it: the caller must neither free nor rewrite it.
+	bool releasePlaneLease(Uint16* const* slot, const Uint16* cells);
+	//! Free the buffer of a field slot unless a capture adopted it; slot becomes null.
+	void freePlane(Uint16*& slot);
+	//! A replacement buffer for one a capture adopted; null when none is spare.
+	std::unique_ptr<Uint16[]> recycledPlane();
 	// Building seed templates (BuildingSeedTemplates.h). Derived owner state:
 	// the const accessors below may rebuild the live set, so they are called
 	// on the owner thread only, like the other lazily derived routing caches.

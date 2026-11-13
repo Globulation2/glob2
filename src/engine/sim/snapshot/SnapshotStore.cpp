@@ -90,7 +90,7 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 	if (next.resourceFields) for (const auto& field : next.resourceFields->planes) {
 		const auto* found = previous.resourceFields ? previous.resourceFields->find(field.key) : nullptr;
 		if (found && found->values == field.values) ++metrics.reusedComponents;
-		else metrics.bytesCopied += field.values->size() * sizeof(Uint16);
+		else metrics.bytesCopied += field.cells * sizeof(Uint16);
 	}
     if (next.session && next.session == previous.session) ++metrics.reusedComponents;
     else if (next.session) metrics.bytesCopied+=sizeof(Session)+next.session->players.size()*sizeof(Session::Player)

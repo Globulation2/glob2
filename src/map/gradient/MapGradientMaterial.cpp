@@ -14,6 +14,7 @@
 #include "MapInternal.h"
 
 #include <mutex>
+#include <cassert>
 #include <array>
 #include "SeedCells.h"
 #include <type_traits>
@@ -92,6 +93,13 @@ void MapRouting::updateMaterialGradient(int teamNumber, Uint8 resourceType, Move
 	PERF_SCOPE_TIME(ResourceGradient);
 	auto &slot = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
 	gradientRuntime->pipeline.invalidate(&slot);
+	// A capture may share the published buffer: rewrite a fresh one instead.
+	if (slot && releasePlaneLease(&slot, slot))
+	{
+		recordFieldCost(slot, -1);
+		auto fresh = recycledPlane();
+		slot = fresh ? fresh.release() : new Uint16[map.size];
+	}
 	Uint16 *gradient = slot;
 
 	if(withMarkets && map.game)ensureGradientMarketTargets(teamNumber,resourceType);
@@ -337,19 +345,6 @@ unsigned MapRouting::materialSupplyModesSlot(const Building* consumer, int resou
     return modes;
 }
 
-std::optional<Uint16> MapRouting::planeKeyForSlot(Uint16* const* slot) const
-{
-	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * MOVEMENT_CLASS_COUNT;
-	const auto decode = [&](Uint16* const* first, bool market) {
-		const auto offset = std::size_t(slot - first);
-		return MapState::planeKey(int(offset / (MaterialSlotCount * MOVEMENT_CLASS_COUNT)),
-			int((offset / MOVEMENT_CLASS_COUNT) % MaterialSlotCount), int(offset % MOVEMENT_CLASS_COUNT), market);
-	};
-	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
-	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
-	return std::nullopt;
-}
-
 void MapRouting::publishPlane(Uint16* const* slot)
 {
 	const auto found = planeKeyForSlot(slot);
@@ -363,6 +358,27 @@ void MapRouting::publishPlane(Uint16* const* slot)
 	}
 	publishedPlanes[index - 1].generation = ++planeGenerations[key];
 
+}
+
+std::shared_ptr<const Uint16[]> MapRouting::sharePublishedPlane(const MapState::PublishedPlane& plane) const
+{
+	auto& lease = gradientRuntime->planeLeases[plane.key];
+	Uint16* cells = *plane.slot;
+	if (!lease || lease->cells != cells)
+	{
+		// Every site that moves a buffer out of a material slot releases its lease.
+		assert(!lease || lease.use_count() == 1);
+		lease = std::make_shared<GradientRuntime::PlaneLease>();
+		lease->cells = cells;
+		lease->count = map.size;
+		lease->recycler = gradientRuntime->planeRecycler;
+	}
+	return std::shared_ptr<const Uint16[]>(lease, cells);
+}
+
+std::unique_ptr<Uint16[]> MapRouting::recycledPlane()
+{
+	return gradientRuntime->planeRecycler->take(map.size);
 }
 
 void MapRouting::rebuildPlaneRegistry()

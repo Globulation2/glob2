@@ -140,9 +140,12 @@ struct ResourceField
 {
 	Uint16 key = 0;
 	Uint64 generation = 0;
-	std::shared_ptr<const std::vector<Uint16>> values;
+	//! The published cells, shared with the map (MapRouting::sharePublishedPlane): immutable.
+	std::shared_ptr<const Uint16[]> values;
+	std::size_t cells = 0;
     std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
     Uint64 destinationGeneration = 0;
+	std::span<const Uint16> span() const { return values ? std::span<const Uint16>(values.get(), cells) : std::span<const Uint16>{}; }
 };
 // The live planes at capture, in the map's publication order, with a dense
 // key index so consumers look a plane up without hashing.
