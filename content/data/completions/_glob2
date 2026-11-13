@@ -276,6 +276,7 @@ _glob2() {
       '--ticks[ticks]:value:' \
       '--gradient-delay[gradient-delay]:value:' \
       '--resource-growth-delay[resource-growth-delay]:value:' \
+      '--claim-route-delay[claim-route-delay]:value:' \
       '--ai-order-delay[ai-order-delay]:value:' \
       '*--save[save]:value:' \
       '*--telemetry[telemetry]:value:(checksums team-timeline maxima warrior-tactics)' \

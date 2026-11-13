@@ -303,6 +303,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l fork-rule -r
 complete -c glob2 -n "__glob2_at 'game run'" -l ticks -r
 complete -c glob2 -n "__glob2_at 'game run'" -l gradient-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-growth-delay -r
+complete -c glob2 -n "__glob2_at 'game run'" -l claim-route-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l ai-order-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l save -r
 complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums team-timeline maxima warrior-tactics'
