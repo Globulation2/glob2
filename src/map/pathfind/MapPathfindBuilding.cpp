@@ -40,8 +40,20 @@ FieldReadiness MapRouting::requestBuildingField(Building* building,MovementAcces
     building->globalGradientUsedStep[slot]=now;
     const bool cold=!building->globalGradient[slot];
     const auto last=building->lastGlobalGradientUpdateStepCounter[slot];
-    const bool dirty=(building->dirtyGradient[slot] || building->gradientGeneration[slot]!=map.topologyGeneration)
-        && last+GRADIENT_DIRTY_REBUILD_TICKS<=now;
+    const bool stale=building->dirtyGradient[slot] || building->gradientGeneration[slot]!=map.topologyGeneration;
+    bool dirty=stale && last+GRADIENT_DIRTY_REBUILD_TICKS<=now;
+    if (!cold && building->resolveRoute(route)==BuildingRoute::Footprint)
+    {
+        // Footprint fields refresh on age; map changes alone do not. Units
+        // that meet an obstacle the field missed refresh it (pathfindBuilding).
+        dirty=last+BUILDING_FIELD_REFRESH_TICKS<=now;
+        if (!dirty && stale && !building->refreshRequested.test(slot))
+        {
+            // Serve it as current, so observers may lease it.
+            building->dirtyGradient[slot]=false;
+            building->gradientGeneration[slot]=map.topologyGeneration;
+        }
+    }
     const bool clearing=building->resolveRoute(route)==BuildingRoute::Clearing && last+CLEARING_FLAG_REFRESH_TICKS<=now;
     if (cold || dirty || clearing) {
         if (!requestBuildingRefresh(building,slot)) {
@@ -129,9 +141,35 @@ bool MapRouting::buildingGradientDirection(EntityRandom& random, Building *build
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	// Settling this layer also settles all equal/better neighbors the generic
 	// direction picker can select. Keep partial-array access inside this adapter.
-	buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route);
+	if (buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route)<=GRADIENT_UNREACHABLE)
+	{
+		// The unit stands where the field has no distance. Settle the
+		// neighbours the stale-cell step reads, as buildingAvailable does.
+		for (int d=0; d<8; ++d)
+			buildingGradientValue(building, movementAccessValue, map.coordToIndex(x+tabClose[d][0], y+tabClose[d][1]), route);
+		return staleCellStep(building->globalGradient[slot], movementAccessValue, building->owner->me, x, y, dx, dy);
+	}
 	return directionByGradient(random, building->owner->me, movementAccessValue, x, y,
 		building->globalGradient[slot], dx, dy, strict);
+}
+
+bool MapRouting::buildingStepBlockedByTraffic(Building *building, MovementAccess movementAccessValue, int x, int y, BuildingRoute route) const
+{
+	const int swimClass=accessClass(movementAccessValue);
+	if (swimClass==AIR_MOVEMENT_CLASS) return false;
+	const Uint16 here=buildingGradientValue(building, movementAccessValue, map.coordToIndex(x, y), route);
+	if (here<=GRADIENT_UNREACHABLE) return false;
+	const Uint16* gradient=building->globalGradient[building->routeSlot(swimClass, route)];
+	bool better=false;
+	for (int d=0; d<8; ++d)
+	{
+		const int nx=x+tabClose[d][0], ny=y+tabClose[d][1];
+		if (gradient[map.coordToIndex(nx, ny)]<=here) continue;
+		better=true;
+		if (!map.isHardSpaceForGroundUnit(nx, ny, swimClass>0, building->owner->me)) return false;
+		if (swimClass==WATER_ONLY_CLASS && !map.terrainPropertiesAt(nx, ny).swimmable) return false;
+	}
+	return better;
 }
 
 bool MapRouting::buildingAvailable(Building *building, MovementAccess movementAccessValue, int x, int y, int *dist, BuildingRoute route)
@@ -187,6 +225,9 @@ bool MapRouting::pathfindBuilding(EntityRandom& random, Building *building, Move
 	if (buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, true, route))
 		return true;
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>map.game->stepCounter)
+		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
+	// Units hold every better neighbour: traffic, not a stale field.
+	if (buildingStepBlockedByTraffic(building, movementAccessValue, x, y, route))
 		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 
 	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps

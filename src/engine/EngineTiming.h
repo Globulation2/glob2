@@ -127,5 +127,21 @@ static constexpr int AUTOSAVE_PHASE_TICKS = 79;
 //! src/map/gradient/BuildingGradientInvalidationHarness.cpp, which has to let this
 //! interval elapse before it can judge a field. See
 //! MapPathfindBuilding.cpp.
+//! Building footprint fields (routes to a building) no longer use this
+//! interval; see BUILDING_FIELD_REFRESH_TICKS. Flag routes and the
+//! kept-stale bookkeeping of team and area resets still do.
 static constexpr unsigned int GRADIENT_DIRTY_REBUILD_TICKS = 100;
+//! A building footprint field (the route to a building) refreshes on age
+//! alone: map changes do not refresh it. A unit whose better neighbours are
+//! blocked by an obstacle the field does not know, on a field at least 128
+//! ticks old, requests a refresh instead (MapPathfindBuilding.cpp); units in
+//! the way do not. Measured (Nov 2026) on 17 paired AI games, 128-512 maps,
+//! 2-8 teams, against refreshing on any map change after 100 ticks: building
+//! field CPU per tick per unit 0.29x (total 0.84x), routes 0.16 percentage
+//! points longer (0.27% over the shortest), and 5.0% of sampled routes meet an
+//! obstacle the field missed against 2.3%, each repaired by that refresh.
+//! The stuck-unit rebuilds the 100-tick interval was tuned against came
+//! mostly from units standing on cells their field had baked in as
+//! obstacles; the stale-cell step (MapRouting::staleCellStep) removes them.
+static constexpr unsigned int BUILDING_FIELD_REFRESH_TICKS = 1024;
 

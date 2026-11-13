@@ -5,6 +5,7 @@
 #include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "EngineTiming.h"
 #include "GameGUI.h"
 #include "Unit.h"
 #include "Building.h"
@@ -171,8 +172,14 @@ static void paintingForbiddenAreaRefreshesGradients()
 	{
         if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "painting invalidates or dirties every cached swim class immediately");
+		// The paint does not refresh the footprint field by itself; a unit it
+		// blocks does, once the field is old enough for an obstacle bump.
+		const int slot=accessClass(movementAccessFromLegacy(c));
+		world.game.stepCounter+=200;
 		if (world.game.map.routing().pathfindBuilding(random,world.inn,movementAccessFromLegacy(c),20,24,&dx,&dy))
 			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "building guidance cannot step onto freshly forbidden paint");
+		require(world.inn->refreshRequested.test(slot) || world.inn->lastGlobalGradientUpdateStepCounter[slot]==world.game.stepCounter,
+			"a unit blocked by the new paint requests a refresh");
         world.settle(c);
 		require(!world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "closing the gap cuts off the near route");
 		require(!world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "closing the gap cuts off the distant route");
@@ -185,11 +192,13 @@ static void paintingForbiddenAreaRefreshesGradients()
 	{
         if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "erasing invalidates or dirties every cached swim class immediately");
+		// Opening a path bumps no unit: the route returns when the field is due by age.
+		world.game.stepCounter+=BUILDING_FIELD_REFRESH_TICKS;
         world.settle(c);
 		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "erasing restores the near route");
 		require(world.game.map.routing().buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "erasing restores the distant route");
 	}
-	std::puts("PASS painting and erasing refresh all weighted building routes");
+	std::puts("PASS painting refreshes building routes when a unit meets it, erasing when the field is due");
     }
 }
 }

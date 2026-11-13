@@ -651,6 +651,17 @@ checksum adapter remains available for diagnostic fixtures.
   the newest capture. Queueing before admission adds to the publication delay for
   both this metadata and the serving walking field. Team-wide resets and
   forbidden-area paints keep old fields serving until the refresh publishes.
+- A building's footprint field (the route units walk to the building) refreshes
+  on age alone, every `BUILDING_FIELD_REFRESH_TICKS` (1024, `EngineTiming.h`):
+  map changes elsewhere do not refresh it. A unit whose better neighbours are
+  all blocked by an obstacle the field does not know about, on a field at least
+  128 ticks old, requests a refresh and sidesteps until it publishes; units
+  standing in the way are traffic and request nothing. Flag routes (clearing
+  and combat) keep the any-change rule. A unit standing on a cell its field has
+  no distance for, but which the live map leaves open (usually a cell it stood
+  still on when the field was captured), steps to the best neighbouring cell
+  that has one (`MapRouting::staleCellStep`); building, material and area
+  routes share this step.
   First use after creation, idle eviction, movement, or a type/range change
   queues initialization with the same fixed one-tick publication delay after
   admission, including when a previously used field was evicted while idle.

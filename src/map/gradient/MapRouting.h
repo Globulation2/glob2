@@ -169,6 +169,15 @@ public:
 
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
 	int stepCost(int dx, int dy, size_t targetIndex, int swimClass) const;
+	// The unit's own cell has no value in this field, yet the live map holds no
+	// obstacle there for the unit: the field is stale at that cell (typically
+	// the unit itself, standing still when the field was captured). Steps to
+	// the best free neighbour with a value. Ground classes only.
+	bool staleCellStep(const Uint16* gradient, MovementAccess movementAccessValue, Uint32 teamMask, int x, int y,
+		int* dx, int* dy, Uint32 guardAreaMask = 0) const;
+	// Whether a building step failed only because units hold every better
+	// neighbour: a refresh cannot help, since moving units are not in fields.
+	bool buildingStepBlockedByTraffic(Building *building, MovementAccess movementAccessValue, int x, int y, BuildingRoute route) const;
 
 	// Gradients are built per team and swim class the first time a unit of that
 	// class asks for one, so classes nobody uses cost nothing.

@@ -97,6 +97,33 @@ bool MapRouting::directionByGradient(EntityRandom& random, Uint32 teamMask, Move
 	return true;
 }
 
+bool MapRouting::staleCellStep(const Uint16* gradient, MovementAccess movementAccessValue, Uint32 teamMask, int x, int y,
+	int* dx, int* dy, Uint32 guardAreaMask) const
+{
+	const int swimClass=accessClass(movementAccessValue);
+	if (swimClass==AIR_MOVEMENT_CLASS || gradient[map.coordToIndex(x, y)]>GRADIENT_UNREACHABLE) return false;
+	// Really blocked for this unit (forbidden paint, terrain): callers keep
+	// their own handling, such as the forbidden-area escape.
+	if (!map.isHardSpaceForGroundUnit(x, y, swimClass>0, teamMask)) return false;
+	if (swimClass==WATER_ONLY_CLASS && !map.terrainPropertiesAt(x, y).swimmable) return false;
+	const int costClass=publishedCostClass(gradient,swimClass);
+	int best=-1, bestD=-1;
+	for (int d=0; d<8; ++d)
+	{
+		const int ddx=tabClose[d][0], ddy=tabClose[d][1];
+		const size_t n=map.coordToIndex(x+ddx, y+ddy);
+		const Uint16 g=gradient[n];
+		if (g<=GRADIENT_UNREACHABLE || !map.isFreeForMovement(x+ddx, y+ddy, swimClass, teamMask)) continue;
+		if (guardAreaMask && !(map.areaCells[n].guard & guardAreaMask)) continue;
+		const int score=int(g)-stepCost(ddx, ddy, n, costClass);
+		if (score>best) { best=score; bestD=d; }
+	}
+	if (bestD<0) return false;
+	*dx=tabClose[bestD][0];
+	*dy=tabClose[bestD][1];
+	return true;
+}
+
 int MapRouting::preparationCostClass(int team,int access) const
 {
     if(access!=int(MovementAccess::Amphibious) || !map.game || team<0 || team>=map.game->teamsCount())return access;

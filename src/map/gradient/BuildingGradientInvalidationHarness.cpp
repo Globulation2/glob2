@@ -7,6 +7,7 @@
 // ring is incomplete. The last two pin the cases a proximity walk over the changed
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
+#include <algorithm>
 #include "HeadlessGlobals.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "TerrainBuiltins.h"
@@ -59,13 +60,17 @@ static void require(bool ok, const char* message)
 	GLOB2_REQUIRE(ok, message);
 }
 
-// An invalidated field is rebuilt on its next use once GRADIENT_DIRTY_REBUILD_TICKS
-// have passed since it was built. The harness lets that interval elapse before
-// judging, so a fix that flags the field and one that drops it both count. Taking
-// the engine's own constant rather than a copy: when it was raised from 25 to 100
-// a local copy here silently stopped covering the interval and the regression
-// started passing stale fields.
-static const Uint32 DIRTY_GRACE_TICKS = GRADIENT_DIRTY_REBUILD_TICKS;
+// An invalidated field is rebuilt on its next use once it is due: footprint
+// fields at BUILDING_FIELD_REFRESH_TICKS of age, flag routes once
+// GRADIENT_DIRTY_REBUILD_TICKS have passed since a change. The harness lets the
+// longer interval elapse before judging, so a fix that flags the field and one
+// that drops it both count. Taking the engine's own constants rather than
+// copies: when the dirty interval was raised from 25 to 100 a local copy here
+// silently stopped covering it and the regression started passing stale fields.
+static const Uint32 DIRTY_GRACE_TICKS = std::max(GRADIENT_DIRTY_REBUILD_TICKS, BUILDING_FIELD_REFRESH_TICKS);
+// A field warmed at tick 0 is due by age from this tick on; pipeline tests set
+// the clock here to request refreshes of every footprint field they use.
+static const Uint32 FIELD_DUE_TICKS = BUILDING_FIELD_REFRESH_TICKS;
 
 struct World
 {
@@ -174,8 +179,11 @@ struct World
 		if (!scheduled)
 		{
 			const auto captured=b->lastGlobalGradientUpdateStepCounter[0];
-			const bool refresh=(b->dirtyGradient[0] || b->gradientGeneration[0]!=game.map.topologyGeneration)
-				&& captured+DIRTY_GRACE_TICKS<=game.stepCounter;
+			// Footprint fields come due by age; flag routes when changed.
+			const bool refresh=b->resolveRoute(BuildingRoute::Automatic)==BuildingRoute::Footprint
+				? captured+BUILDING_FIELD_REFRESH_TICKS<=game.stepCounter
+				: (b->dirtyGradient[0] || b->gradientGeneration[0]!=game.map.topologyGeneration)
+					&& captured+GRADIENT_DIRTY_REBUILD_TICKS<=game.stepCounter;
 			glob2test::awaitGradient(game,[&] {
 				game.map.routing().requestBuildingField(b,MovementAccess::Land);
 				return refresh && b->lastGlobalGradientUpdateStepCounter[0]==captured ? nullptr : b->globalGradient[0];
@@ -302,7 +310,8 @@ static void aRingCutsOffAVirtualFlagsField()
 	require(!world.available(flag, 10, 10), "a flag walled in by new construction is no longer offered to a unit outside");
 
 	world.remove(ring);
-	require(world.available(flag, 10, 10), "clearing the ring makes the flag available at once");
+	world.tick(DIRTY_GRACE_TICKS);
+	require(world.available(flag, 10, 10), "clearing the ring makes the flag available at its next refresh");
 	std::puts("PASS a ring around a virtual flag cuts off its field, though no flag is in the building tile grid");
 }
 
@@ -982,7 +991,7 @@ void scheduledSupersession()
 	Building* c = world.place(8, 40);
 	Building* d = world.place(40, 8);
 	for (Building* x : {a, b, c, d}) { world.warm(x); require(world.available(x, 2, 2), "reference warm field"); }
-	s.game.stepCounter = 600; // Past the idle eviction age as well.
+	s.game.stepCounter = FIELD_DUE_TICKS; // Due by age, and past the idle eviction age.
 	s.map.addForbidden(10, 10, 0);
 	s.tick([&] { for (Building* x : {a, b, c, d}) world.available(x, 2, 2); });
 	require(s.status().pending == 4 && s.status().jobs == 4, "four jobs admitted in one tick");
@@ -1023,7 +1032,7 @@ void scheduledSaveBoundaries()
 					auto& list = buildings[x == &s ? 0 : 1];
 					list = {w.place(24, 24), w.place(40, 40)};
 					for (Building* b : list) { w.warm(b); require(w.available(b, 2, 2), "reference warm field"); }
-					x->game.stepCounter = 600;
+					x->game.stepCounter = FIELD_DUE_TICKS;
 					x->map.addForbidden(10, 10, 0);
 					x->tick([&] { for (Building* b : list) w.available(b, 2, 2); });
 					list[1]->globalGradientUsedStep[0] = 0;
@@ -1046,7 +1055,7 @@ void scheduledSaveBoundaries()
 					Scheduler& x = i ? r : s;
 					Building* b = buildings[i][0];
 					require(x.status().published == 1, "restored result publishes at its original deadline");
-					require(x.at(b, 10, 10) == GRADIENT_FORBIDDEN && b->lastGlobalGradientUpdateStepCounter[0] == 601, "same capture");
+					require(x.at(b, 10, 10) == GRADIENT_FORBIDDEN && b->lastGlobalGradientUpdateStepCounter[0] == FIELD_DUE_TICKS + 1, "same capture");
 					require(!buildings[i][1]->globalGradient[0], "an evicted destination stays absent");
 				}
 				require(s.finished(buildings[0][0], 0) == r.finished(buildings[1][0], 0), "same published field");
@@ -1087,7 +1096,7 @@ void scheduledReusedDestination()
 		require(world.available(old, 2, 2), "reference warm field");
 		const auto gid = old->gid;
 		const auto identity = old->scriptIdentity;
-		s.game.stepCounter = 200;
+		s.game.stepCounter = FIELD_DUE_TICKS;
 		s.map.addForbidden(10, 10, 0);
 		s.tick([&] { world.available(old, 2, 2); });
 		require(s.status().pending == 1, "pending");
@@ -1148,9 +1157,10 @@ void scheduledAccessMetadata()
 }
 
 // 8. With the pipeline on, a team-wide reset or a forbidden-area paint keeps
-// the building's walking field serving and refreshes it on schedule, at once
-// and with no owner build. A building's own change still drops it. Creation
-// itself enables delayed publication even without an explicit Scheduler.
+// the building's walking field serving; the field refreshes when it comes due
+// by age (BUILDING_FIELD_REFRESH_TICKS), on schedule and with no owner build.
+// A building's own change still drops it. Creation itself enables delayed
+// publication even without an explicit Scheduler.
 void scheduledResetsKeepStaleFields()
 {
 	for (auto cause : {Building::GradientDrop::Area, Building::GradientDrop::Team})
@@ -1170,10 +1180,14 @@ void scheduledResetsKeepStaleFields()
 		s.map.addForbidden(10, 10, 0);
 		b->resetPathfindGradients(cause);
 		require(b->globalGradient[0] == walking && s.finished(b, 0) == values, "the stale field keeps serving");
+		// The edit alone requests nothing: the field is not yet due by age.
+		s.tick([&] { require(world.available(b, 2, 2) && s.status().queued == 0, "an edit alone requests no refresh"); });
+		require(b->globalGradient[0] == walking, "the field keeps serving until it is due");
+		s.game.stepCounter = b->lastGlobalGradientUpdateStepCounter[0] + BUILDING_FIELD_REFRESH_TICKS;
 		const auto before = s.status();
 		Uint32 captured = 0;
 		s.tick([&] {
-			require(world.available(b, 2, 2) && s.status().queued == 1, "served while a refresh is requested");
+			require(world.available(b, 2, 2) && s.status().queued == 1, "served while the due refresh is requested");
 			captured = s.game.stepCounter + 1;
 		});
 		require(s.status().pending == 1 && s.status().synchronous == before.synchronous, "one scheduled refresh, no owner build");
@@ -1201,7 +1215,7 @@ void scheduledResetsKeepStaleFields()
 		b->resetPathfindGradients(Building::GradientDrop::Area);
 		require(b->globalGradient[0]==walking && b->dirtyGradient[0], "a simulation area edit retains dirty published guidance");
 	}
-	std::puts("PASS area and team-wide resets keep stale walking fields serving and refresh them on schedule");
+	std::puts("PASS area and team-wide resets keep walking fields serving until they are due, then refresh on schedule");
 }
 
 // 9. Slow and failing workers never move the publication tick.
