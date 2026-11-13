@@ -232,35 +232,25 @@ void GlobalContainer::drawLoadingScreen(bool settle)
 		const float fade = std::min(1.0f, std::chrono::duration<float>(now - loadingTerrainShown).count() / LOADING_TERRAIN_FADE_SECONDS);
 		const Uint8 alpha = Uint8(255 * fade);
 		// Loaded columns are grass, the edge column is the shore and the
-		// rest is water. The edge moves by fractions of a column: the next
-		// tiles blend in over the current ones.
+		// rest is sand. The edge snaps to the nearest whole column so the
+		// shoreline stays crisp.
 		const int columns = (gfx->getW() + 31) / 32;
-		const float position = loadingShown * columns;
-		const int edge = std::min(int(position), columns);
-		const Uint8 blend = Uint8(alpha * (position - edge));
-		const auto drawTiles = [&](int edgeColumn, int firstColumn, int lastColumn, Uint8 tileAlpha)
-		{
-			unsigned randomSeed = 1;
-			for (int y = 0; y < gfx->getH(); y += 32)
-				for (int x = 0, column = 0; x < gfx->getW(); x += 32, ++column)
-				{
-					randomSeed = randomSeed * 69069;
-					if (column < firstColumn || column > lastColumn)
-						continue;
-					unsigned index;
-					if (column < edgeColumn)
-						index = ((randomSeed >> 16) & 0xF);
-					else if (column == edgeColumn)
-						index = ((randomSeed >> 16) & 0x7) + 64;
-					else
-						index = ((randomSeed >> 16) & 0xF) + 128;
-					gfx->drawSprite(x, y, terrain, index, tileAlpha);
-				}
-			gfx->finishDrawingSprite(terrain, tileAlpha);
-		};
-		drawTiles(edge, 0, columns, alpha);
-		if (blend)
-			drawTiles(edge + 1, edge, edge + 1, blend);
+		const int edge = std::min(int(loadingShown * columns + 0.5f), columns);
+		unsigned randomSeed = 1;
+		for (int y = 0; y < gfx->getH(); y += 32)
+			for (int x = 0, column = 0; x < gfx->getW(); x += 32, ++column)
+			{
+				randomSeed = randomSeed * 69069;
+				unsigned index;
+				if (column < edge)
+					index = ((randomSeed >> 16) & 0xF);
+				else if (column == edge)
+					index = ((randomSeed >> 16) & 0x7) + 64;
+				else
+					index = ((randomSeed >> 16) & 0xF) + 128;
+				gfx->drawSprite(x, y, terrain, index, alpha);
+			}
+		gfx->finishDrawingSprite(terrain, alpha);
 	}
 	// Keep the splash wordmark inside portrait viewports without stretching it.
 	const float titleWidth = std::min(float(title->getW()), gfx->getW() * 0.8f);
