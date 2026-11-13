@@ -150,11 +150,12 @@ void Game::winProbabilitySyncStep(bool force)
 			<< " tick=" << stepCounter
 			<< " alive=" << (slots[i].alive ? 1 : 0)
 			<< " permille=" << chances[i]
-			<< " units=" << slots[i].units
-			<< " prestige=" << slots[i].prestige
-			<< " barracks=" << slots[i].barracks
+			<< " feeding=" << slots[i].feeding
 			<< " explorers=" << slots[i].explorers
-			<< " foodCritical=" << slots[i].foodCritical
+			<< " barracksLevels=" << slots[i].barracksLevels
+			<< " delivered=" << slots[i].delivered
+			<< " innWalkDistance=" << slots[i].innWalkDistance
+			<< " swarmFilling=" << slots[i].swarmFilling
 			<< " attack=" << slots[i].attack
 			<< std::endl;
 }

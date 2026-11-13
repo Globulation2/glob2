@@ -7,7 +7,6 @@
 - [Why the arithmetic is all integers](#why-the-arithmetic-is-all-integers)
 - [Running it](#running-it)
 - [The winning condition](#the-winning-condition)
-- [What it saves, and why not more](#what-it-saves-and-why-not-more)
 - [Limits](#limits)
 - [Related](#related)
 
@@ -20,27 +19,23 @@ Every competitor still standing gets a fitness
 and its probability of winning is `softmax(F)` over the competitors. Allies are
 one competitor, because they win or lose together.
 
-The fitted terms, in the order selection added them, which is also the order of
-how much each one bought:
+The fitted terms, ordered by how much a typical gap between rivals on that term
+moves the odds (coefficient times the within-contest standard deviation):
 
-| Term | Reads | Coefficient |
-| --- | --- | ---: |
-| `units` (share) | its share of everyone alive | +2.610 |
-| `prestige` | prestige | +0.022 |
-| `barracks` (sqrt) | finished barracks | +0.380 |
-| `explorers` (sqrt) | living explorers | +0.252 |
-| `starving_ratio` | share of its people starving | −2.319 |
-| `attack` (share) | its share of all attack strength | +0.459 |
+| Term | Reads | Coefficient | Typical gap's effect |
+| --- | --- | ---: | ---: |
+| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0364 | 0.32 |
+| `explorers` (sqrt) | living explorers | +0.205 | 0.27 |
+| `attack` (share) | its share of all attack strength | +0.904 | 0.25 |
+| `feeding` (sqrt) | units eating at an inn | +0.161 | 0.24 |
+| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.851 | 0.21 |
+| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0024 | 0.17 |
+| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.268 | 0.08 |
 
-One term per family, as in the fairness model: several readings of the same army
-would each take a slice of the same credit and leave coefficients nobody can
-read. Families here are army, economy, food, prestige, schooling, fortification
-and exploration.
-
-Two things stand out. Sharing most of the living population is worth far more
-than any military term — this is a game you win by out-growing someone. And
-starvation is the one strongly negative term: a colony whose people are dying
-hungry is losing, whatever else it has.
+Every coefficient is positive. Military investment (barracks, attack), scouting
+and a fed, working economy each carry weight; no single term dominates. The
+windowed terms describe what a colony has been doing recently rather than what
+it owns, which the previous model, reading only current counts, could not see.
 
 ### What the fitness does and does not mean
 
@@ -49,20 +44,19 @@ convention and cancels between competitors. Only differences carry meaning. The
 intercept is carried for reporting only.
 
 The model is a *description of how these games went*, not a theory of the game.
-It says that colonies with most of the population and no starvation went on to
-win; it does not say that building barracks causes victory. A term can be a
+It says that colonies with upgraded barracks, most of the attack strength and a
+busy supply chain went on to win; it does not say that building barracks causes
+victory. A term can be a
 symptom rather than a cause.
 
 ## Where the coefficients come from
 
-The following measurements describe the original calibration campaign. They
-have not been rerun against the current simulation; changes to AI and game rules
-can change calibration and the savings available from early adjudication.
-
-1,110 games, sampled every 512 ticks, giving 131,630 training samples. The games
-are a uniform random draw over all eight AIs, all three formats (1v1, 2v2,
-free-for-all) and every map generator and size — the same campaign that produced
-the AI ratings.
+1,716 games, sampled every 512 ticks, giving 690,277 training samples, played at
+SIM revision 155. The games are a random draw over all eight AIs, three formats
+(1v1, 2v2, and free-for-all with 4 or 8 colonies), every playable map generator
+and both 128x128 and 256x256 maps. They ran with `--win-probability 0` to a
+180,000-tick cap, twice the default, so that most games reach a real result:
+13% hit the cap and are labelled by adjudication.
 
 Each 512-tick sample is one contest: the surviving competitors are its entries,
 their live state is the evidence, and the finishing order the game eventually
@@ -77,53 +71,43 @@ Three choices matter:
 - **Games stopped at the tick cap are labelled by the same economic adjudication
   the ratings use.** Excluding them would drop the games that are hardest to
   call, which are exactly the ones this is for.
-- **Cross-validation groups by game.** A game's ~130 samples are near-identical
+- **Cross-validation groups by game.** A game's hundreds of samples are near-identical
   views of one outcome; splitting them across folds would let the fit see its own
   test set and report an accuracy nobody could reproduce.
 
-Cross-validated, grouped by game: McFadden R² 0.413, top-1 accuracy 77.5%
-against 42.9% for guessing.
+Cross-validated, grouped by game: McFadden R² 0.384, top-1 accuracy 75.0%
+against 41.2% for guessing. On the same games the previous six-term model scored
+0.351 unchanged and 0.375 refitted.
+
+### How the terms were chosen
+
+Candidates were every `TeamStat` measurement plus about 190 aggregates of the
+gameplay measurements, each also as 2,048- and 8,192-tick windows of its
+cumulative counters, under the identity, share and square-root transforms. Greedy
+forward selection (one term per family) produced a first set; stepwise refinement
+then tried dropping each term, swapping it for any other candidate or transform,
+and adding new ones, until no change improved cross-validated fit by 0.0005. The
+refinement replaced worker share, which had come in with a negative sign, by
+attack share, and total hit points by units eating.
+
+A gradient-boosted model on every candidate reaches about 0.42, so there is
+headroom, but it cannot be evaluated in integer arithmetic. A learning curve on a
+fixed held-out set shows the seven-term model is flat from about 100 training
+games, so more data would not improve it; the boosted model was still improving
+at 1,373.
 
 ### It is calibrated, and that is what matters here
 
 A winning condition needs the number to mean what it says, not merely to rank
 correctly. Held out by game, predicted and observed win rates:
 
-| Predicted | 0.008 | 0.038 | 0.078 | 0.125 | 0.179 | 0.248 | 0.340 | 0.459 | 0.610 | 0.773 | 0.905 | 0.982 |
+| Predicted | 0.010 | 0.035 | 0.063 | 0.096 | 0.131 | 0.179 | 0.250 | 0.361 | 0.508 | 0.687 | 0.858 | 0.968 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Observed | 0.006 | 0.027 | 0.054 | 0.096 | 0.158 | 0.238 | 0.357 | 0.500 | 0.639 | 0.783 | 0.908 | 0.979 |
+| Observed | 0.007 | 0.022 | 0.039 | 0.066 | 0.119 | 0.173 | 0.266 | 0.375 | 0.533 | 0.714 | 0.864 | 0.966 |
 
-The top bucket — where the threshold lives — reads 0.982 predicted against 0.979
-observed. Broken out by phase of the game, predicted and observed agree to three
-decimals in every one of five tick bands.
-
-### The confidence ramp that was removed
-
-An early lead means far less than the same lead at the end: measured over the
-campaign, whoever *first* held the HP lead for five straight samples went on to
-win only 40% of the time. So the model was fitted with an explicit ramp on game
-age to stop it calling early leads.
-
-The ramp was then removed, because it earned nothing. Fitted on cross-validated
-log-loss it went nearly flat, and a model without it scored the same (0.5219
-against 0.5220). The reason is that the selected features are absolute counts:
-early on everybody has few units, the fitness differences are small of their own
-accord, and the model is unsure without being told to be. The features already
-carry the phase.
-
-What the ramp turned out to be was a second confidence dial, redundant with the
-decision threshold — fitting it to 1.0 and calling at 97% gives the same saving
-and the same error rate as leaving it flat and calling at 95%. One dial is
-enough, and the threshold is the one a player can read.
-
-### What does not predict winning
-
-Screened on its own, every candidate measurement against cross-validated fit:
-`units` and `workers` lead, `hp` and `attack` follow. At the bottom, indis-
-tinguishable from chance, are total **defense power**, **towers** and the
-**warrior fraction** of the population. Defensive strength in particular is
-worth about nothing as a signal — the team leading on it at the midpoint won
-50.3% of the time.
+The top bucket, where the threshold lives, reads 0.968 predicted against 0.966
+observed. Mid-range predictions are slightly cautious and the lowest buckets
+slightly overstate a losing side's chances; neither affects a call at 95%.
 
 ## Why the arithmetic is all integers
 
@@ -136,11 +120,9 @@ come from the platform's library.
 So there is no floating point in the decision path:
 
 - Selection was restricted to transforms with exact integer forms — identity, a
-  division (`share`, `starving_ratio`) and a square root. `log1p` was excluded,
-  and the emitter refuses to emit any transform it cannot do exactly rather than
-  quietly falling back on an approximation. It cost nothing: selecting with
-  `log` available scored 0.4160 against 0.4149 without it, and slightly worse
-  accuracy.
+  division (`share`) and a square root. `log1p` is excluded, and the emitter
+  refuses to emit any transform it cannot do exactly rather than quietly falling
+  back on an approximation.
 - Coefficients are emitted twice — as a `double` for display and reporting, and
   as a fixed-point integer rounded **at generation time**, so the rounding is the
   fit's rather than a compiler's.
@@ -150,11 +132,22 @@ So there is no floating point in the decision path:
 - Scales are chosen so one 64-bit multiply per term cannot overflow given clamped
   inputs, which avoids 128-bit arithmetic and the portability question with it.
 
-The features may only be things the simulation already maintains — `TeamStat` and
-`Team::prestige`. The gameplay measurements and the per-AI telemetry are both
-documented as diagnostic and must never influence play, so a model that decides a
-winning condition cannot read them. Conveniently the `GLOB2_ECON` and `GLOB2_TL`
-telemetry the fit is trained on is itself `TeamStat`-derived, so the training
+The features are values the simulation computes at fixed sample deadlines:
+`TeamStat` (explorers, attack) and the published gameplay measurements (everything
+else). `WinProbability::teamInputs` reads the latest retained periodic measurement
+sample and the one `ACTIVITY_WINDOW_SAMPLES` (4) samples earlier. A sample is
+published after its source tick, so at a decision tick T the latest is the sample
+for T − 512; the fitter joins that same sample to the decision. Readings are taken
+from the measurement history, per team, before allies are summed: an eliminated ally then
+contributes no recent activity rather than removing its whole history from the
+alliance. The history is saved, so a loaded game reads the same windows; a save
+whose coverage starts later counts the window from coverage start. Because a
+winning condition acts on these values, the routine statistics checksum covers
+them (`teamStatsCoreChecksum`), not only full verification. Per-AI telemetry is
+still excluded.
+
+The fitting tool extracts the same values from `GLOB2_TL`, `GLOB2_ECON` and
+periodic `GLOB2_MEASURE` records, with the same window rule, so the training
 features and the in-engine features are the same quantities.
 
 `tools/win_probability_model.py` mirrors the same integer algorithm in Python, so
@@ -163,19 +156,21 @@ features and the in-engine features are the same quantities.
 
 ## Running it
 
-```sh
-# Extract the per-sample dataset from played tournament results (about 90s for
-# a thousand games; the logs are tens of megabytes each).
-python3 tools/win_probability_model.py dataset RESULTS_DIR --output dataset.json.gz
+Collect games with `--win-probability 0` and `team-timeline` telemetry with
+gameplay capture (tournament `outputs` `{"telemetry": ["team-timeline"],
+"log_mode": "gameplay"}`; long free-for-all logs need a larger
+`limits.log_bytes`). Then, from Python:
 
-# What each candidate state measurement predicts on its own.
-python3 tools/win_probability_model.py screen dataset.json.gz
+```python
+from tools import win_probability_model as W
 
-# Select, fit, and regenerate src/team/stats/WinProbabilityModel.h.
-python3 tools/win_probability_model.py fit dataset.json.gz
-
-# What the condition would have saved on games already played.
-python3 tools/win_probability_model.py savings dataset.json.gz
+cache = W.build_dataset([RESULTS_DIR], 'dataset.json.gz')   # per-sample dataset
+data = W.contests(cache)
+W.screen(data)                                              # each candidate alone
+model = W.fit_model(data, W.FINAL_FEATURES)                 # tools.conditional_logit
+model['games'], model['samples'] = len(cache['games']), sum(len(g['entries']) for g in data['games'])
+W.emit_header(model, W.HEADER_PATH, provenance_lines)
+W.summarise_savings(W.savings(cache, W.FINAL_FEATURES, threshold=0.95))
 ```
 
 Needs numpy and scipy for the fit; the arithmetic and the emitter do not.
@@ -202,8 +197,10 @@ Live spectators can open an additional, last statistics page showing each side's
 whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
 They do see their own side's chance in the statistics header, beside a trophy:
-two digits from 00 to 99 (a certain win reads 99), evaluated live from the
-current scene rather than the 512-tick samples. Only their own figure is shown,
+two digits from 00 to 99 (a certain win reads 99), the chance the simulation
+recorded at its latest 512-tick sample. Both panels renormalise over the sides
+still standing, so an elimination between samples is reflected at once. Only
+their own figure is shown,
 so it says how the match is going without itemising any opponent.
 
 The end-game metric picker includes **Win probability**, on a fixed 0–100% axis.
@@ -221,8 +218,8 @@ the adjusted trajectory score (`c=2` log time plus outcome credit) separately
 from ratings. Probability-stop credits are labelled predicted; the raw model
 trace and linear area remain unchanged. See
 [whole-game scores](../../tools/tournaments.md#whole-game-probability-scores).
-The original calibration labels and measurements above used the historical
-economic adjudication, not this new default; these changes do not refit the model.
+The calibration labels and measurements above use the historical economic
+adjudication for capped games, not this default.
 
 When validating or refitting the probability model itself, collect games with
 `--win-probability 0` (tournament setting `win_probability_permille: 0`) and use
@@ -234,33 +231,16 @@ reported accuracy misleading. The extraction default remains the historical
 
 The threshold is the only dial:
 
-| Threshold | Compute saved | Games ended on the wrong side |
+| Threshold | Compute saved | Calls on the wrong side |
 | --- | ---: | ---: |
-| **95% (tournament default)** | **27.1%** | **3.8%** |
-| 97% | 19.7% | 2.3% |
-| 99% | 9.9% | 0.8% |
+| **95% (tournament default)** | **25.7%** | **1.7%** (18 of 1,090) |
+| 97% | 18.8% | 1.6% (13 of 814) |
+| 99% | 8.4% | 0.5% (2 of 376) |
 
-Measured over the 1,110 games, cross-fitted so no game is scored by a model that
-saw it. The error rate sits inside what each threshold implies, which is another
-way of saying the model is calibrated: at 97% it is wrong 2.3% of the time.
-
-## What it saves, and why not more
-
-Of the campaign's 103 core-hours, **63% went to games that never resolved** —
-they ran to the 90,000-tick cap at an average of 402 seconds each, against 137
-for a game the engine decided. Those are the obvious prize.
-
-At 97% the condition returns about a fifth of the total: 25.8% of the compute
-spent on games the engine decided, but only 16.9% of the compute spent on capped
-ones.
-
-That asymmetry is the honest headline, and it is not a defect to be tuned away.
-Capped games hit the cap **precisely because nobody is winning**, so a model
-asked whether the result is beyond doubt correctly answers no. A retrospective
-probe that allows itself hindsight — the earliest point after which the eventual
-winner never again loses the HP lead — puts the ceiling at ~43% of compute; a
-threshold that has to decide in the moment, without knowing the future, reaches
-about half of that. The remainder is not waste; it is genuine uncertainty.
+Measured over the 1,716 games, cross-fitted so no game is scored by a model that
+saw it, with three consecutive qualifying samples required. Errors sit below
+what each threshold implies; the confirmation requirement removes most one-sample
+swings.
 
 ## Limits
 
@@ -269,12 +249,11 @@ about half of that. The remainder is not waste; it is genuine uncertainty.
 - It is fitted on the whole random draw, so it describes the average game across
   every generator and size rather than any particular map. Per-generator
   behaviour has not been broken out.
-- It reads six numbers. Position, terrain, who is adjacent to whom and what is
+- It reads seven numbers. Position, terrain, who is adjacent to whom and what is
   about to happen are all invisible to it, which is part of why a close game
   stays close in its eyes.
-- `prestige` earns a place but a small coefficient, and prestige comes only from
-  top-level schools; in matches where nobody builds them the term contributes
-  nothing at all.
+- The windowed terms see 2,048 ticks of activity. A colony that has just lost its
+  supply chain still shows its earlier deliveries for up to four samples.
 - The error rates above are measured against the *adjudicated* winner for capped
   games, so they inherit whatever the economic adjudication gets wrong.
 - Refitting changes when games end. That is a gameplay change for anyone using
@@ -285,8 +264,8 @@ about half of that. The remainder is not waste; it is genuine uncertainty.
 
 - [The fairness model](../../map-generators/fairness-model.md) — the same estimator, on
   starting positions.
-- [Gameplay statistics](../gameplay-statistics.md) — the diagnostic measurements,
-  which this deliberately does not use.
+- [Gameplay statistics](../gameplay-statistics.md) — the measurements five of the
+  terms are read from.
 - [AI telemetry](../telemetry.md) — per-AI internals, likewise excluded.
 - [Distributed tournaments](../../tools/tournaments.md) — where the calibration games come from.
 - [Headless runs](../../development/headless-replays.md#probability-based-early-victory) — enable the rule with `--win-probability`.

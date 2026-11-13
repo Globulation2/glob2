@@ -4,6 +4,7 @@
 #include <span>
 
 // Routine simulation coverage. Diagnostic ledgers stay in TeamStats::checkSum()
-// for full verification; they do not drive simulation decisions.
+// for full verification; the measurement values the win-probability model reads
+// (WinProbability::inputSamples) drive a winning condition and are covered here.
 Uint32 teamStatsCoreChecksum(const TeamStats&, std::span<const TeamSmoothedStat>,
                              int statsIndex, int smoothedIndex);

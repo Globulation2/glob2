@@ -400,6 +400,10 @@ Handle capture(const Game& game,
 		// balance from the current sample and changing policy inputs.
 		target.workerBalance = target.statistics.idleCarriers - target.statistics.totalNeeded;
 		target.starving = target.statistics.needFoodCritical;
+		{
+			const auto &chances = std::as_const(team->stats).getWinProbabilityHistory();
+			target.winProbabilityPermille = chances.empty() ? 0 : chances.back().permille;
+		}
 		std::copy_n(target.statistics.workersByConstructionLevel, NB_UNIT_LEVELS, target.workersLevel.begin());
 		for (auto* building : team->swarms) append(target.swarms, refOf(building));
 		for (auto* building : team->virtualBuildings) append(target.virtualBuildings, refOf(building));

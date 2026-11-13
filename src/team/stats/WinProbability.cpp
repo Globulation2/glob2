@@ -28,6 +28,7 @@
 #include "BuildingType.h"
 #include "ai/model/BuildingProjection.h"
 #include <algorithm>
+#include <limits>
 
 namespace WinProbability
 {
@@ -166,6 +167,58 @@ namespace WinProbability
 		return -1;
 	}
 
+	InputSamples inputSamples(const TeamStats &stats)
+	{
+		InputSamples samples;
+		const std::vector<GameplayMeasurements> &history = stats.measurementHistory;
+		if (history.empty())
+			return samples;
+		samples.now = &history.back();
+		const Uint32 since = Uint32(ACTIVITY_WINDOW_SAMPLES * (END_OF_GAME_STAT_INTERVAL_MASK + 1));
+		const Uint32 tick = samples.now->tick;
+		if (tick >= since)
+			for (auto it = history.rbegin(); it != history.rend() && it->tick >= tick - since; ++it)
+				if (it->tick == tick - since)
+					samples.then = &*it;
+		return samples;
+	}
+
+	std::vector<CombatProvider> combatProviders(const BuildingsTypes &catalog)
+	{
+		std::vector<CombatProvider> providers;
+		for (std::size_t variant = 0; variant < catalog.size(); ++variant)
+		{
+			const BuildingType &type = *catalog.get(variant);
+			if (ModelBuildingProjection::trainsWarriorCombat(ModelBuildingProjection::completed(catalog, type)))
+				providers.push_back({variant, type.level * 2 + 2 - (type.isBuildingSite ? 1 : 0)});
+		}
+		return providers;
+	}
+
+	TeamInputs teamInputs(const TeamStats &stats, const std::vector<CombatProvider> &providers)
+	{
+		TeamInputs inputs;
+		const InputSamples samples = inputSamples(stats);
+		if (!samples.now)
+			return inputs;
+		const GameplayMeasurements &now = *samples.now;
+		const GameplayMeasurements *then = samples.then;
+		const auto window = [](Uint64 current, Uint64 past) {
+			return Sint64(current > past ? current - past : 0);
+		};
+		inputs.feeding = Sint64(now.feeding);
+		for (const CombatProvider &provider : providers)
+			if (provider.variant < now.variants.size())
+				inputs.barracksLevels += Sint64(now.variants[provider.variant].count) * provider.weight;
+		for (int material = 0; material < MaterialSlotCount; ++material)
+			inputs.delivered += window(now.delivered[material], then ? then->delivered[material] : 0);
+		inputs.innWalkDistance = window(now.eatWalkDistance, then ? then->eatWalkDistance : 0);
+		for (int phase = 0; phase < GameplayMeasurements::LABOUR_PHASES; ++phase)
+			inputs.swarmFilling += window(now.filling[GameplayMeasurements::SWARM_JOB][phase],
+			                              then ? then->filling[GameplayMeasurements::SWARM_JOB][phase] : 0);
+		return inputs;
+	}
+
 	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams)
 	{
 		const int count = game.teamsCount();
@@ -186,12 +239,10 @@ namespace WinProbability
 				allianceOf[t] = (int)(found - alliances.begin());
 		}
 		std::vector<Slot> slots(alliances.size());
-        std::vector<int> combatProviders;
-        for(size_t variant=0;variant<game.buildingsTypes.size();++variant)
-        {
-            if(ModelBuildingProjection::trainsWarriorCombat(ModelBuildingProjection::completed(game.buildingsTypes,*game.buildingsTypes.get(variant))))
-                combatProviders.push_back(int(variant));
-        }
+		const std::vector<CombatProvider> providers = combatProviders(game.buildingsTypes);
+		const auto add = [](Sint32 &total, Sint64 value) {
+			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
+		};
 		for (int t = 0; t < count; ++t)
 		{
 			const Team *team = game.teams[t];
@@ -203,14 +254,15 @@ namespace WinProbability
 			if (!team->isAlive || (team->hasLost && !(ignoreLostTeams & (1u << t))))
 				continue;
 			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
+			const TeamInputs inputs = teamInputs(team->stats, providers);
 			slot.alive = true;
-			slot.units += stat->totalUnit;
-			slot.prestige += team->prestige;
-			for(int variant:combatProviders)
-                if(size_t(variant)<stat->buildingCountByVariant.size())slot.barracks+=stat->buildingCountByVariant[variant];
-			slot.explorers += stat->scouts;
-			slot.foodCritical += stat->needFoodCritical;
-			slot.attack += stat->totalAttackPower;
+			add(slot.feeding, inputs.feeding);
+			add(slot.explorers, stat->scouts);
+			add(slot.barracksLevels, inputs.barracksLevels);
+			add(slot.delivered, inputs.delivered);
+			add(slot.innWalkDistance, inputs.innWalkDistance);
+			add(slot.swarmFilling, inputs.swarmFilling);
+			add(slot.attack, stat->totalAttackPower);
 		}
 		return slots;
 	}

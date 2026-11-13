@@ -69,6 +69,7 @@ struct TeamView
 	TeamStat statistics;
 	std::array<Sint32, MaterialSlotCount> materials{};
 	int workerBalance = 0, starving = 0;
+	int winProbabilityPermille = 0; // the latest recorded 512-tick sample
 	std::array<int, NB_UNIT_LEVELS> workersLevel{};
 	std::vector<BuildingRef> virtualBuildings, swarms;
 };

@@ -24,7 +24,10 @@
 #include <cstddef>
 #include <vector>
 
+class BuildingsTypes;
 class Game;
+class TeamStats;
+struct GameplayMeasurements;
 
 /// How likely each side is to win, from the state of play.
 ///
@@ -65,25 +68,62 @@ namespace WinProbability
 	/// however strange the state gets.
 	const Sint64 COUNT_CLAMP = (Sint64)1 << 24;
 
+	/// The window, in 512-tick samples, over which recent activity is counted.
+	const int ACTIVITY_WINDOW_SAMPLES = 4;
+
 	/// One competitor, as the model sees it: a team, or an alliance's totals.
 	///
-	/// Only values the simulation already maintains appear here. The per-AI
-	/// telemetry and the gameplay measurements are both documented as diagnostic
-	/// and must never influence play, so neither may be read by a model that
-	/// decides a winning condition.
+	/// Values come from TeamStat and from the published gameplay measurements,
+	/// both computed by the simulation at fixed sample deadlines. Because the
+	/// winning condition reads the measurement values below, they are part of the
+	/// routine statistics checksum (TeamStatsChecksum.h), not only full checks.
 	struct Slot
 	{
-		Sint32 units;         ///< living units, all types
-		Sint32 prestige;      ///< the team's prestige
-		Sint32 barracks;      ///< unique warrior combat-training providers, including their construction sites
-		Sint32 explorers;     ///< living explorers
-		Sint32 foodCritical;  ///< units that are starving
-		Sint32 attack;        ///< total attack power
-		bool alive;           ///< still a competitor; eliminated sides are excluded
+		Sint32 feeding;          ///< units eating at an inn at the latest sample
+		Sint32 explorers;        ///< living explorers
+		Sint32 barracksLevels;   ///< warrior training buildings and their sites, weighted 1 (level-1 site) to 6 (finished level 3)
+		Sint32 delivered;        ///< resources delivered to buildings over the activity window
+		Sint32 innWalkDistance;  ///< distance hungry workers walked to inns over the window
+		Sint32 swarmFilling;     ///< worker-ticks spent filling swarms over the window
+		Sint32 attack;           ///< total attack power
+		bool alive;              ///< still a competitor; eliminated sides are excluded
 
-		Slot() : units(0), prestige(0), barracks(0), explorers(0),
-		         foodCritical(0), attack(0), alive(false) {}
+		Slot() : feeding(0), explorers(0), barracksLevels(0), delivered(0),
+		         innWalkDistance(0), swarmFilling(0), attack(0), alive(false) {}
 	};
+
+	/// The retained measurement samples the model reads for one team: the latest
+	/// periodic sample, and the one ACTIVITY_WINDOW_SAMPLES before it if retained.
+	///
+	/// At a decision tick T the sample for T is not yet published (publication
+	/// follows its source tick by at least one tick), so `now` is the sample for
+	/// T - 512. The fitter reads the same sample for the same decision.
+	struct InputSamples
+	{
+		const GameplayMeasurements *now = nullptr, *then = nullptr;
+	};
+	InputSamples inputSamples(const TeamStats &stats);
+
+	/// A building variant that trains warrior combat, completed or as a site, and
+	/// its weight: its long level plus one.
+	struct CombatProvider
+	{
+		std::size_t variant;
+		int weight;
+	};
+	std::vector<CombatProvider> combatProviders(const BuildingsTypes &catalog);
+
+	/// The gameplay-measurement inputs of one team.
+	///
+	/// Windowed values are the change from `then` to `now`, or since coverage began
+	/// when `then` is not retained. Teams are read one at a time so an eliminated
+	/// ally contributes no recent activity rather than removing its whole history
+	/// from the alliance's totals.
+	struct TeamInputs
+	{
+		Sint64 feeding = 0, barracksLevels = 0, delivered = 0, innWalkDistance = 0, swarmFilling = 0;
+	};
+	TeamInputs teamInputs(const TeamStats &stats, const std::vector<CombatProvider> &providers);
 
 	/// Clamp a raw measurement into the range the arithmetic is proved over.
 	Sint64 clampCount(Sint64 value);
