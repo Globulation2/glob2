@@ -54,6 +54,8 @@ struct Storage
 	std::vector<TelemetrySchema> telemetrySchemas;
 	//! Empty between captures; keeps its capacity for the next schema list.
 	std::vector<TelemetrySchema> telemetrySchemaScratch;
+	//! Scratch list of a map array's dirty chunks during one refresh.
+	std::vector<Uint32> dirtyChunks;
 	Uint64 allocations = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;

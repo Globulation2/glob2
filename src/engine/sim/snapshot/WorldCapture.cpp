@@ -262,25 +262,38 @@ Handle capture(const Game& game,
 		if (length) std::memcpy(destination.data() + start, source.data() + start, length * sizeof(Element));
 		if (storage) storage->bytesCopied += length * sizeof(Element);
 	};
+	std::vector<Uint32> localDirtyChunks;
+	auto& dirtyChunks = storage ? storage->dirtyChunks : localDirtyChunks;
 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
+		// One pass lists the dirty chunks (branch-free); the copy then visits
+		// only those, in the same ascending order.
 		std::size_t dirty = 0;
 		if (!everything)
+		{
+			if (dirtyChunks.size() < live.chunks.size()) dirtyChunks.resize(live.chunks.size());
+			const auto* captured = stamps.chunks.data();
+			const auto* current = live.chunks.data();
+			auto* list = dirtyChunks.data();
 			for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
-				dirty += stamps.chunks[chunk] != live.chunks[chunk];
+			{
+				list[dirty] = Uint32(chunk);
+				dirty += captured[chunk] != current[chunk];
+			}
+		}
 		if (everything || dirty > live.chunks.size() / 2)
 		{
 			copyRange(std::size_t(0), cellCount);
 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;
 			stamps.chunks.assign(live.chunks.begin(), live.chunks.end());
 		}
-		else for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
-			if (stamps.chunks[chunk] != live.chunks[chunk])
-			{
-				geometry.forEachRow(chunk, copyRange);
-				stamps.chunks[chunk] = live.chunks[chunk];
-			}
+		else for (std::size_t i = 0; i < dirty; ++i)
+		{
+			const std::size_t chunk = dirtyChunks[i];
+			geometry.forEachRow(chunk, copyRange);
+			stamps.chunks[chunk] = live.chunks[chunk];
+		}
 		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
 		stamps.filledTick = game.stepCounter;
 	};
