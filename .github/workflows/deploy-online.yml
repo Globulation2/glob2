@@ -121,8 +121,9 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
-    # Mostly waiting: the host rebuilds the images and the web client (30-50 min).
-    timeout-minutes: 120
+    # Mostly waiting: the host rebuilds the images and both web client variants
+    # with CMake (about three hours on the current host).
+    timeout-minutes: 320
     environment:
       name: online-production
       url: https://app.glob2.online
@@ -196,7 +197,7 @@ jobs:
       - name: Wait for the deploy
         id: wait
         if: steps.host.outputs.skip != 'true'
-        timeout-minutes: 110
+        timeout-minutes: 300
         run: |
           set -uo pipefail
           polls=0
