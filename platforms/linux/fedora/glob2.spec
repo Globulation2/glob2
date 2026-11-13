@@ -1,3 +1,7 @@
+# Fedora's default -flto=auto breaks FFmpeg's x86 inline-asm constants in the
+# asset tools built during %build (undefined mask24l, mul15_hi, ...).
+%global _lto_cflags %{nil}
+
 Name:           glob2
 Version:        0.11.5.0
 Release:        1%{?dist}
