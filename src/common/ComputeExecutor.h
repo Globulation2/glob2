@@ -1962,7 +1962,8 @@ private:
         if constexpr (Mode != ComputeTelemetryMode::Off)
             diagnostics->summary.joins[unsigned(producer)][unsigned(context.reason)].total.add(diagnosticElapsed<Mode>(start));
         lock.unlock();
-		samples.publish();
+		// Join samples (at most 12) and the first causal samples share one
+		// shard lock; the loop publishes before the buffer would overflow.
 		for (std::size_t i = 0; i < causalCount; ++i)
 		{
 			samples.add(PerfKind::Queue, causalProducer, causal[i].queue);
