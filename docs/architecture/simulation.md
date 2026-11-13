@@ -45,8 +45,8 @@ reorders population membership.
 ## Routine desynchronization checksums
 
 Routine checks run from existing immutable world snapshots on the shared compute
-executor, with a one-tick delivery deadline. Their field selection and cheap
-XOR/rotate mixing follow the original routine path: selected entity state,
+executor, with a four-turn delivery deadline (`ChecksumDeliveryDelay`). Their
+field selection and cheap XOR/rotate mixing follow the original routine path: selected entity state,
 entity RNG fingerprints, relationship counts/presence and team facts. Immutable
 unit/resource/terrain catalog fingerprints contribute without definition walks.
 Pointers, padding and capture identities are excluded. Zero-worker configurations
@@ -482,10 +482,11 @@ checksum adapter remains available for diagnostic fixtures.
 
   | Consumer | Observation input | Effective delay | Publication / first consumer |
   | --- | --- | --- | --- |
-  | AI | Shared AI view of T | max(1, configured 0–8) | T+delay into the ordered command schedule |
-  | Hiring | Shared entity and route views of T | 1, staggered refresh 4 | T+1 before capture; live worker assignment |
+  | AI | Shared AI view of T | max(1, configured 0–16), default 14 | T+delay into the ordered command schedule |
+  | Hiring | Shared entity and route views of T | 4, staggered refresh 8 (saves keep their rules) | T+4 before capture; live worker assignment |
   | Statistics | Shared statistics inputs of T | max(1, configured 0–8) | T+delay before capture; statistics and presentation |
-  | Targeting | Shared targeting view of T | configured positive delay, default 1 | T+delay before capture; live turret firing |
+  | Targeting | Shared targeting view of T | configured 1, 2 or 4, default 2 | T+delay before capture; live turret firing |
+  | Claim routes | Shared claim-route view of T | 8 (`--claim-route-delay` 1–8 for experiments) | T+delay before capture; live claim workers |
   | Periodic gradients | Shared gradient view of T | configured 1–16, default 8 | T+delay before capture; live routing |
   | Building gradients | Shared building-gradient view of T | initialization 1 tick; refresh configured 1–8 (default 8); standalone maps use synchronous live queries | T+delay before capture; live routing |
   | Resource growth | Shared growth view of T | configured 1–16, default 8 | T+delay before capture; live resources |
@@ -1020,7 +1021,7 @@ the lease instead of copying them. Observation only captures route inputs. Missi
 or stale fields keep the obstacle-free ranking estimate. After ranking and team coordination, the hiring
 worker prepares routes only for the primary candidates selected to fill demand;
 the fallback suffix stays on the list without explicit prewarming. Cold fields
-are seeded lazily on that worker and published with the shortlist one tick later,
+are seeded lazily on that worker and published with the shortlist four ticks later,
 provided the building incarnation, slot epoch and topology still match. Existing
 serving fields are reused, including stale generations, without changing their
 refresh schedule. A usable field can still extend during normal ranking, so a
@@ -1042,12 +1043,14 @@ are persisted in the building-gradient draft format 174 and integrated format
 contain no such prepared results. The save compatibility
 floor is unchanged. Saves predating cached hiring start with empty
 state. Lists are a pure function of the snapshot, so game checksums omit them.
-Saves containing the previous four-tick hiring policy are no longer accepted.
+Saves record their hiring rules and continue with them: new games rank each team
+every eight ticks and publish four ticks later, while older saves keep the rules
+they were taken with (publication delay 1–4, refresh 1–16).
 
 ## Turret targeting
 
 Turrets consume ordered three-entry lists refreshed per team every two ticks and
-published one tick after observation. The first currently valid entry fires;
+published two ticks after observation. The first currently valid entry fires;
 owner-side ranking and fallback scans are absent. One pure background kernel
 preserves the original preferred target at the head and ranks alternatives.
 Capture joins the shared completed-tick snapshot union and existing compute pool.

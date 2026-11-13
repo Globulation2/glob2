@@ -64,6 +64,8 @@ public:
 	unsigned getAIOrderDelay() const { return aiOrderDelay; }
 	///Largest supported AI order delay. Engine bounds for in-flight AI work derive from it.
 	static constexpr unsigned MAX_AI_ORDER_DELAY = 16;
+	///AI order delay for new matches.
+	static constexpr unsigned DEFAULT_AI_ORDER_DELAY = 14;
 	void setAIOrderDelay(unsigned ticks) { if (ticks > MAX_AI_ORDER_DELAY) throw std::invalid_argument("AI order delay must be 0..16 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
 	///Ticks between capturing a building walking-field refresh and publishing it (1..8).
 	///Missing fields initialize one tick after admission independently of this rule.
@@ -290,7 +292,7 @@ private:
 	///The number of ticks between an order issue, and the execution of the order.
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
-	Uint8 aiOrderDelay = 8;
+	Uint8 aiOrderDelay = DEFAULT_AI_ORDER_DELAY;
     Uint8 teamStatsDelay = 8;
 	Uint8 buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 

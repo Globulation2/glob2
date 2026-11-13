@@ -128,11 +128,13 @@ class EngineJob:
             raise ValueError('invalid gradient_backend')
         if self.kind == 'game' and 'claim_route_delay' in config:
             # An engine setting for experiments; replays would not reproduce it.
+            # The default differs between bundles, so any explicit value is an
+            # experiment and refuses replay output.
             delay = config['claim_route_delay']
             if type(delay) is not int or not 1 <= delay <= 8:
                 raise ValueError('claim_route_delay must be an integer 1..8')
-            if delay != 1 and job['outputs'].get('replay'):
-                raise ValueError('claim_route_delay other than 1 cannot record replay output')
+            if job['outputs'].get('replay'):
+                raise ValueError('claim_route_delay cannot record replay output')
         if self.kind == 'game' and 'resource_claims' in config:
             # Without this key a new game uses its pinned engine's default:
             # claims off before the shipped default, contention-v2 after it.

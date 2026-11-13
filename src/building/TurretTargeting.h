@@ -86,7 +86,7 @@ bool refreshNeeded(int cooldown, unsigned rhythm, unsigned delay, unsigned refre
 namespace TurretTargeting
 {
 // Fixed-boundary producer used by normal-game first-valid firing.
-struct Configuration { unsigned delay=1, refresh=2, capacity=3, margin=1; };
+struct Configuration { unsigned delay=2, refresh=2, capacity=3, margin=1; };
 class Pipeline
 {
     struct State;

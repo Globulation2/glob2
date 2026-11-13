@@ -900,6 +900,7 @@ TEST_CASE("claim gradient demand records pursuit evidence on the natural materia
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
         auto& game=fixture.game;auto& map=game.map;map.enableResourceClaims();
+        map.setClaimRouteDelay(1); // The route publishes on the next tick.
         auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
         struct Cleanup { Unit& unit; ~Cleanup(){unit.releaseActiveMaterialClaim();unit.attachedBuilding=nullptr;} } cleanup{*unit};
         unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;

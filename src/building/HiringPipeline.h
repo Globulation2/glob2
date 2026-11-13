@@ -45,8 +45,11 @@ class HiringPipeline
 		Uint64 submitted = 0, published = 0;
 	};
 	Metrics metrics;
+	// Rules for new games; a loaded save keeps the rules it was saved with.
 	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,
 							  Extras = Hiring::CandidateExtras, Capacity = 128;
+	static_assert(Hiring::MaxPublicationDelay <= ComputeExecutor::HiringHorizon);
+	const Hiring::Rules &rules() const { return activeRules; }
 	// Owner-only recycling of cold routes that no worker initialized. Reuse
 	// saves their allocations; a route is reclaimed only once the owner holds
 	// its last reference, so no worker can still observe it.
@@ -60,7 +63,7 @@ class HiringPipeline
 	static HiringPlanner::Inputs
 	bindRoutes(Game &, const SimulationSnapshot::Handle &, unsigned teamMask = ~0u,
 			   const std::map<Uint16, BuildingRef> *initializations = nullptr,
-			   RoutePool *pool = nullptr);
+			   RoutePool *pool = nullptr, Hiring::Rules rules = {});
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
 	// Legacy saved continuation support; new buildings initialize on demand.
@@ -78,4 +81,5 @@ class HiringPipeline
 
   private:
 	RoutePool routePool;
+	Hiring::Rules activeRules;
 };

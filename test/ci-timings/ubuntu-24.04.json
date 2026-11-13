@@ -1051,7 +1051,7 @@
     "MarketsV2/world teardown and map reuse discard derived supplier ledgers": 0.1141859790000126,
     "MatchSetup/AI order delay is optional bounded integer data and round trips through headers": 0.11534383899999057,
     "MatchSetup/Building gradient delay is optional bounded integer data and round trips through headers": 0.11595011800000066,
-    "MatchSetup/New match rules default to eight tick AI decisions": 0.01625236050000467,
+    "MatchSetup/New match rules default to the engine's AI decision delay": 0.01625236050000467,
     "MatchSetup/SHA-256 matches the FIPS 180-4 test vectors": 0.015829476000021714,
     "MatchSetup/Scripted map sources preserve exact provenance and enforce team count": 0.020812057999989975,
     "MatchSetup/a map file is found and checked by the hash of its decompressed bytes": 0.11799453599996923,

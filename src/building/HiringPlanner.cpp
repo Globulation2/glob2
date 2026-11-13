@@ -604,8 +604,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 		// Only an outstanding or imminent attraction round makes private offers.
 		// These reduce repeated shortlist exclusion between peers; they reserve
 		// nothing in the live simulation and use no gameplay randomness.
-		if (unsigned(std::max(0, b.subscriptionWorkingTimer)) + Hiring::PublicationDelay +
-				Hiring::RefreshInterval - 1 >= 32)
+		if (unsigned(std::max(0, b.subscriptionWorkingTimer)) + input.rules.lookahead() >= 32)
 		{
 			std::array<unsigned, 3> assigned{};
 			unsigned deliveries = 0;

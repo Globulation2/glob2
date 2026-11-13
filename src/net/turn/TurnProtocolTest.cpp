@@ -13,6 +13,7 @@
 #include <map>
 #include <memory>
 
+#include "ChecksumSample.h"
 #include "JitterBuffer.h"
 #include "Marshaling.h"
 #include "MatchRecord.h"
@@ -1020,11 +1021,13 @@ TEST_SUITE("TurnSequencer")
 		g.atTick(30);
 		g.report(1, 25, 7);
 		g.report(2, 25, 7);
-		g.atTick(274);
+		// Arbitration waits for the checksum delivery delay plus the timeout.
+		const std::uint32_t deadline = 25 + ChecksumDeliveryDelay + SequencerConfig{}.arbitrationTimeoutTicks;
+		g.atTick(deadline - 2);
 		CHECK_FALSE(g.relay.agreedChecksum(25));
-		g.atTick(275);
+		g.atTick(deadline - 1);
 		CHECK_FALSE(g.relay.agreedChecksum(25));
-		g.atTick(276);
+		g.atTick(deadline);
 		REQUIRE(g.relay.agreedChecksum(25));
 		CHECK(*g.relay.agreedChecksum(25) == 7);
 		g.report(3, 25, 8); // late and wrong: two seats agreed, so it rejoins

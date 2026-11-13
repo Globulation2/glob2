@@ -60,10 +60,12 @@ inline constexpr unsigned RouteMaximumExpansions=4096;
 
 // Ticks from a route request to its publication. A route requested on tick t
 // is searched on workers and published at the start of tick t+delay; until
-// then the worker follows the ordinary material gradient. Headless runs can
-// try other values with --claim-route-delay (1..MaxRoutePublicationDelay)
-// without changing the policy; the executor sizes its slots for the maximum.
-inline constexpr unsigned RoutePublicationDelay=1;
+// then the worker follows the ordinary material gradient. Workers take longer
+// than eight ticks to reach their next movement decision, so the delay only
+// buys overlap for the searches. Headless runs can try other values with
+// --claim-route-delay (1..MaxRoutePublicationDelay); the executor sizes its
+// slots for the maximum.
+inline constexpr unsigned RoutePublicationDelay=8;
 inline constexpr unsigned MaxRoutePublicationDelay=8;
 }
 

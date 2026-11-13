@@ -172,7 +172,7 @@ void Pipeline::submit(const SimulationSnapshot::Handle& world, Uint32 sourceTick
     catch (...) { --count; *ptr = {}; throw; }
     if (executor.threadCount()==1) {
         // With no worker there is no overlap to preserve. Compute immediately
-        // so the one-tick reporting delay retains only a scalar, not another
+        // so the reporting delay retains only a scalar, not another
         // generation of pooled snapshot buffers. Worker configurations never
         // take this path, including when they miss their delivery deadline.
         try { executor.join(ptr->batch,{JoinReason::ImmediateRequired,world.tick}); }

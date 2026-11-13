@@ -79,7 +79,7 @@ Hiring plans on the executor from the shared completed-tick snapshot; see
 [simulation hiring](../architecture/simulation.md#hiring). Use shared executor diagnostics for scheduling waits and external process CPU
 measurements for performance. Separate hiring phase timers are retired.
 
-Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
+Structured `game run` accepts `--ai-order-delay D` for a new match (default 14
 ticks). Delays are simulation rules, separate from local thread configuration.
 A loaded match's configured AI delay cannot be overridden.
 

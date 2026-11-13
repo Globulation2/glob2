@@ -36,9 +36,9 @@ class GradientCollectionJobs(unittest.TestCase):
         for delay in (0,9,True,'2',1.5):
             with self.subTest(delay=delay),self.assertRaises(ValueError):
                 adapter.validate(item|{'config':item['config']|{'claim_route_delay':delay}})
-        with self.assertRaises(ValueError):
-            adapter.validate(item|{'outputs':item['outputs']|{'replay':True}})
-        adapter.validate(item|{'config':item['config']|{'claim_route_delay':1},'outputs':item['outputs']|{'replay':True}})
+        for delay in (1,3,8):
+            with self.subTest(replay_delay=delay),self.assertRaises(ValueError):
+                adapter.validate(item|{'config':item['config']|{'claim_route_delay':delay},'outputs':item['outputs']|{'replay':True}})
 
     def test_requested_cpu_window_requires_measured_counters_and_backend_attestation(self):
         item=job('game','a'*64,inputs={'save':{'sha256':'b'*64}},

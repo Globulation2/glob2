@@ -373,7 +373,7 @@ void HiringPipeline::compute(void *context, std::size_t)
 	if (w.retired)
 		for (auto &output : *w.retired)
 			output.reset();
-	if (w.team % Refresh == w.input->world.tick % Refresh)
+	if (w.team % w.input->rules.refresh == w.input->world.tick % w.input->rules.refresh)
 		w.output =
 			std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
 	else
@@ -446,11 +446,12 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		return;
 	if (snapshot.tick != tick)
 		throw std::logic_error("Hiring boundary mismatch");
-	if (tick > std::numeric_limits<Uint32>::max() - Delay)
+	const auto [delay, refresh] = activeRules;
+	if (tick > std::numeric_limits<Uint32>::max() - delay)
 		throw std::overflow_error("Hiring deadline overflow");
 	lastObserved = tick;
 	unsigned teamMask = 0;
-	for (unsigned t = tick % Refresh; t < unsigned(game.teamsCount()); t += Refresh)
+	for (unsigned t = tick % refresh; t < unsigned(game.teamsCount()); t += refresh)
 		teamMask |= 1u << t;
 	std::erase_if(initializationRequests,
 				  [&](const auto &entry)
@@ -462,14 +463,14 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		teamMask |= 1u << Building::GIDtoTeam(gid);
 	if (!teamMask)
 		return;
-	if (pending.size() >= Delay)
+	if (pending.size() >= delay)
 		throw std::logic_error("Hiring publication horizon exceeded");
 	routePool.reclaim();
 	auto input = std::make_shared<HiringPlanner::Inputs>(
-		bindRoutes(game, snapshot, teamMask, &initializationRequests, &routePool));
+		bindRoutes(game, snapshot, teamMask, &initializationRequests, &routePool, activeRules));
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
-	batch->due = tick + Delay;
+	batch->due = tick + delay;
 	initializing.clear();
 	for (const auto &route : *input->routes)
 		if (route.initialize && route.preparation)
@@ -517,6 +518,7 @@ void HiringPipeline::drain(JoinReason reason)
 }
 void HiringPipeline::publishDue(Uint32 tick)
 {
+	const auto refresh = activeRules.refresh;
 	while (!pending.empty() && pending.front()->due <= tick)
 	{
 		auto &b = *pending.front();
@@ -530,7 +532,7 @@ void HiringPipeline::publishDue(Uint32 tick)
 				throw std::logic_error("Missing hiring result");
 			for (const auto &gradient : w.gradients)
 				gradient->publish(*game, preparedHere);
-			if (w.team % Refresh == b.tick % Refresh)
+			if (w.team % refresh == b.tick % refresh)
 			{
 				if (published[w.team] && !retired[w.team])
 					retired[w.team] = std::move(published[w.team]);
@@ -565,8 +567,8 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 	s->writeUint8(lastObserved.has_value(), "hasLast");
 	if (lastObserved)
 		s->writeUint32(*lastObserved, "last");
-	s->writeUint32(Delay, "delay");
-	s->writeUint32(Refresh, "refresh");
+	s->writeUint32(activeRules.delay, "delay");
+	s->writeUint32(activeRules.refresh, "refresh");
 	s->writeUint32(Extras, "extras");
 	s->writeUint32(Capacity, "capacity");
 	s->writeEnterSection("published");
@@ -635,10 +637,15 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 	s->readEnterSection("HiringPipeline");
 	if (readFlag(s, "hasLast"))
 		lastObserved = s->readUint32("last");
-	if ((lastObserved && *lastObserved > game.stepCounter) || s->readUint32("delay") != Delay ||
-		s->readUint32("refresh") != Refresh || s->readUint32("extras") != Extras ||
-		s->readUint32("capacity") != Capacity)
+	Hiring::Rules saved;
+	saved.delay = s->readUint32("delay");
+	saved.refresh = s->readUint32("refresh");
+	if ((lastObserved && *lastObserved > game.stepCounter) || !saved.valid() ||
+		s->readUint32("extras") != Extras || s->readUint32("capacity") != Capacity)
 		throw std::runtime_error("Invalid hiring rules");
+	// Continue with the rules the game was saved under.
+	activeRules = saved;
+	const auto [delay, refresh] = saved;
 	s->readEnterSection("published");
 	for (unsigned t = 0; t < published.size(); ++t)
 	{
@@ -646,9 +653,9 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 		if (readFlag(s, "present"))
 		{
 			auto o = loadOutput(s, game);
-			if (o->team != t || o->tick % Refresh != t % Refresh ||
-				o->tick > std::numeric_limits<Uint32>::max() - Delay ||
-				o->tick + Delay > game.stepCounter)
+			if (o->team != t || o->tick % refresh != t % refresh ||
+				o->tick > std::numeric_limits<Uint32>::max() - delay ||
+				o->tick + delay > game.stepCounter)
 				throw std::runtime_error("Invalid published hiring team or deadline");
 			published[t] = std::move(o);
 		}
@@ -656,7 +663,7 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 	}
 	s->readLeaveSection();
 	const auto count = s->readCount("pending");
-	if (count > Delay)
+	if (count > delay)
 		throw std::runtime_error("Invalid hiring queue");
 	s->readEnterSection("admissions");
 	for (unsigned i = 0; i < count; ++i)
@@ -665,18 +672,18 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 		auto b = std::make_unique<Batch>();
 		b->tick = s->readUint32("tick");
 		b->due = s->readUint32("due");
-		if (b->tick > std::numeric_limits<Uint32>::max() - Delay || b->due != b->tick + Delay ||
+		if (b->tick > std::numeric_limits<Uint32>::max() - delay || b->due != b->tick + delay ||
 			b->due < game.stepCounter || !lastObserved || b->tick > *lastObserved ||
 			(!pending.empty() && b->tick <= pending.back()->tick))
 			throw std::runtime_error("Invalid hiring deadline");
 		const auto teams = s->readCount("teams");
 		unsigned expected = 0;
 		for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
-			expected += t % Refresh == b->tick % Refresh;
+			expected += t % refresh == b->tick % refresh;
 		if ((versionMinor < FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS && teams != expected) ||
 			teams < expected || teams > unsigned(game.teamsCount()))
 			throw std::runtime_error("Invalid hiring team count");
-		unsigned expectedTeam = b->tick % Refresh;
+		unsigned expectedTeam = b->tick % refresh;
 		int previousTeam = -1;
 		unsigned regularTeams = 0;
 		s->readEnterSection("work");
@@ -687,11 +694,11 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 			if (o->tick != b->tick || int(o->team) <= previousTeam ||
 				(versionMinor < FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS &&
 				 o->team != expectedTeam) ||
-				(o->team % Refresh != b->tick % Refresh && !o->buildings.empty()))
+				(o->team % refresh != b->tick % refresh && !o->buildings.empty()))
 				throw std::runtime_error("Invalid hiring admission");
-			expectedTeam += Refresh;
+			expectedTeam += refresh;
 			previousTeam = o->team;
-			regularTeams += o->team % Refresh == b->tick % Refresh;
+			regularTeams += o->team % refresh == b->tick % refresh;
 			b->work.push_back({{}, o->team, o});
 			if (versionMinor >= FILE_FORMAT_VERSION_HIRING_GRADIENTS)
 			{
@@ -759,8 +766,8 @@ Uint32 HiringPipeline::checkSum() const
 		std::none_of(published.begin(), published.end(), [](const auto &o) { return bool(o); }))
 		return 0;
 	GAGCore::ChecksumStream s;
-	s.writeUint32(Delay, "delay");
-	s.writeUint32(Refresh, "refresh");
+	s.writeUint32(activeRules.delay, "delay");
+	s.writeUint32(activeRules.refresh, "refresh");
 	s.writeUint32(Extras, "extras");
 	s.writeUint32(Capacity, "capacity");
 	s.writeUint8(lastObserved.has_value(), "hasLast");
@@ -822,12 +829,17 @@ std::shared_ptr<HiringPlanner::PreparedRoute> HiringPipeline::RoutePool::take()
 }
 HiringPlanner::Inputs
 HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, unsigned teamMask,
-						   const std::map<Uint16, BuildingRef> *initializations, RoutePool *pool)
+						   const std::map<Uint16, BuildingRef> *initializations, RoutePool *pool,
+						   Hiring::Rules rules)
 {
+	if (!rules.valid())
+		throw std::invalid_argument("Invalid hiring rules");
+	const auto refresh = rules.refresh;
 	if (world.tick != game.stepCounter)
 		throw std::logic_error("Hiring input boundary mismatch");
 	HiringPlanner::Inputs inputs;
 	inputs.world = world.simulationView();
+	inputs.rules = rules;
 	auto routes = std::make_shared<std::vector<HiringPlanner::Inputs::Route>>();
 	if (pool)
 		routes->reserve(pool->lastRoutes);
@@ -853,7 +865,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 											   : std::map<Uint16, BuildingRef>::const_iterator{};
 		const bool initialize = initializations && requested != initializations->end() &&
 								requested->second == b.identity;
-		const bool hire = (!initializations || b.team % Refresh == world.tick % Refresh) &&
+		const bool hire = (!initializations || b.team % refresh == world.tick % refresh) &&
 						  HiringPlanner::needsCandidates(b);
 		if (!(teamMask & (1u << b.team)) || (!initialize && !hire))
 			continue;

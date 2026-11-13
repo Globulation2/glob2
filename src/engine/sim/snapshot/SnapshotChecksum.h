@@ -25,6 +25,7 @@ class Pipeline
     };
     ComputeExecutor& executor;
     static constexpr std::size_t Capacity = ChecksumDeliveryDelay + 1;
+    static_assert(ChecksumDeliveryDelay <= ComputeExecutor::ChecksumHorizon);
     std::array<Work, Capacity> pending{};
     std::size_t first = 0, count = 0;
     std::optional<Uint32> lastTick;

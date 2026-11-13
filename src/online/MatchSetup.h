@@ -72,7 +72,7 @@ namespace Online
 		bool allyTeamsFixed = true;
 		bool resourceGrowthDisabled = false;
 		int resourceScarcityLevel = 0; ///< 0..3
-		int aiOrderDelay = 8; ///< Engine-wide decision deadline offset, 0..16 ticks
+		int aiOrderDelay = 14; ///< Engine-wide decision deadline offset, 0..16 ticks; matches GameHeader::DEFAULT_AI_ORDER_DELAY
 		int buildingGradientDelay = 8; ///< Building walking-field refresh publication delay, 1..8 ticks
 		bool instantConstruction = false;
 		int stockpileStartLevel = 0; ///< 0..3

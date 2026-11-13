@@ -4,7 +4,8 @@
 #include <SDL3/SDL_stdinc.h>
 
 // Reporting turns, which continue advancing while the simulation is paused.
-inline constexpr Uint32 ChecksumDeliveryDelay = 1;
+// The hash runs on a worker and is collected this many turns later.
+inline constexpr Uint32 ChecksumDeliveryDelay = 4;
 
 struct ChecksumSample
 {
