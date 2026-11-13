@@ -151,6 +151,7 @@ Game options:
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--benchmark-warmup N` | Opt in to in-engine CPU counters, excluding the first N simulated ticks; tournament game configuration: `benchmark_warmup_ticks`. Loading a save keeps the absolute `ticks` limit; warmup must leave measured ticks. Whole-process resource usage also includes startup/loading. |
 | `--gradient-backend NAME` | Explicit gradient backend (`cpu`, `scalar`, `sse2`, `neon`, `opencl`, `vulkan`, `webgpu`); tournament game configuration: `gradient_backend`. Record the actual backend from the result when comparing compute costs. |
+| `--claim-route-delay N` | Ticks (1–8, default 1) from a resource-claim route request to its publication; an engine setting for experiments, so a non-default value cannot record a replay. Applies to new and loaded games; saved pending routes keep their due ticks. Tournament game configuration: `claim_route_delay` |
 | `--compute-threads auto\|N` | Shared executor participants including the owner; native `auto` prefers eligible physical cores, falling back to logical CPUs then one; browser auto uses logical CPUs capped at eight; explicit N is a positive unsigned integer |
 | `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |

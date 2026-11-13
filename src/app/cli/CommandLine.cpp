@@ -572,6 +572,7 @@ const std::vector<Command> &commands()
 			 integer("--gradient-delay", "Gradient scheduling delay in ticks", 1, 16,
 					 std::to_string(DefaultGradientDelay)),
 			 integer("--resource-growth-delay", "Resource scheduling delay in ticks", 1, 16),
+			 integer("--claim-route-delay", "Resource claim route publication delay in ticks (experiments; no replay)", 1, 8),
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
@@ -769,6 +770,7 @@ const std::vector<Command> &commands()
 					o.group = "Outputs";
 				if (o.name == "--ticks" || o.name == "--record-chapter-ticks" ||
 					o.name == "--gradient-delay" || o.name == "--resource-growth-delay" ||
+					o.name == "--claim-route-delay" ||
 					o.name == "--ai-order-delay" || o.name == "--diagnostic-interval" ||
 					o.name == "--benchmark-warmup")
 					o.units = "ticks";

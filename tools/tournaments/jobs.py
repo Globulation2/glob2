@@ -114,7 +114,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims', 'benchmark_warmup_ticks', 'gradient_backend', 'claim_route_delay'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -126,6 +126,13 @@ class EngineJob:
                 raise ValueError('benchmark_warmup_ticks must leave a positive measured window')
         if 'gradient_backend' in config and config['gradient_backend'] not in ('cpu','scalar','sse2','neon','opencl','vulkan','webgpu'):
             raise ValueError('invalid gradient_backend')
+        if self.kind == 'game' and 'claim_route_delay' in config:
+            # An engine setting for experiments; replays would not reproduce it.
+            delay = config['claim_route_delay']
+            if type(delay) is not int or not 1 <= delay <= 8:
+                raise ValueError('claim_route_delay must be an integer 1..8')
+            if delay != 1 and job['outputs'].get('replay'):
+                raise ValueError('claim_route_delay other than 1 cannot record replay output')
         if self.kind == 'game' and 'resource_claims' in config:
             # Without this key a new game uses its pinned engine's default:
             # claims off before the shipped default, contention-v2 after it.
@@ -232,6 +239,8 @@ class EngineJob:
                 add('--benchmark-warmup',config['benchmark_warmup_ticks'])
             if 'gradient_backend' in config:
                 add('--gradient-backend',config['gradient_backend'])
+            if 'claim_route_delay' in config:
+                add('--claim-route-delay', config['claim_route_delay'])
             for player in config.get('players', []):
                 add('--player', player)
             for player, params in sorted(config.get('ai_params', {}).items()):

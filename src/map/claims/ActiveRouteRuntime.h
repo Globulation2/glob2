@@ -40,6 +40,6 @@ struct ActiveRouteRuntime
     RoutePipeline pipeline;
     std::map<Owner, State> states;
     std::map<Owner, ClaimRecovery> recovery;
-    explicit ActiveRouteRuntime(ComputeExecutor& executor) : pipeline(executor) {}
+    ActiveRouteRuntime(ComputeExecutor& executor, unsigned delay) : pipeline(executor, 4096, delay) {}
 };
 }

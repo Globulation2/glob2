@@ -6,11 +6,14 @@
 #include "ClaimPolicy.h"
 #include "ComputeExecutor.h"
 #include "sim/snapshot/WorldSnapshot.h"
+#include <algorithm>
 #include <bit>
 #include <deque>
 #include <cstdlib>
 #include <memory>
+#include <limits>
 #include <optional>
+#include <string>
 
 namespace ResourceClaims
 {
@@ -42,9 +45,11 @@ struct RoutePublication
     std::uint32_t width = 0, height = 0;
 };
 
-// Fixed-boundary publication. Completion and exportPending join computation but
-// do not publish early. Submit all decisions for one tick, then flush once to
-// start one background batch. Export/save belongs at an observation boundary:
+// Fixed-boundary publication. A route submitted on tick t is due delay ticks
+// later (Policy::RoutePublicationDelay unless configured). Completion and
+// exportPending join computation but do not publish early. Submit all decisions
+// for one tick, then flush once to start one background batch; up to delay
+// batches are in flight. Export/save belongs at an observation boundary:
 // it seals that source tick, just as an early publish/flush does. The consumer
 // checks task identity and each step.
 class RoutePipeline
@@ -59,6 +64,7 @@ class RoutePipeline
     {
         RouteInput input;
         RoutePublication output;
+        std::uint64_t submitted = 0; // Source tick; unused by restored outputs.
         std::shared_ptr<Group> group;
         std::exception_ptr error;
         bool canceled = false; // Owner-only; the worker does not read this flag.
@@ -68,8 +74,20 @@ class RoutePipeline
     std::deque<std::unique_ptr<Work>> pending;
     std::uint64_t nextRequest = 0;
     std::size_t maximumPending;
+    unsigned delay = Policy::RoutePublicationDelay;
+    // Earliest due tick among pending work; outputs restored from a save made
+    // with another delay can be due after newer submissions.
+    std::uint64_t earliestDue = std::numeric_limits<std::uint64_t>::max();
     std::optional<std::uint64_t> lastSubmission;
     std::optional<std::uint64_t> sealedTick;
+    // Source tick of submitted work not yet flushed into an executor batch.
+    std::optional<std::uint64_t> unflushedTick;
+
+    void recomputeEarliestDue()
+    {
+        earliestDue = std::numeric_limits<std::uint64_t>::max();
+        for (const auto& work : pending) earliestDue = std::min(earliestDue, work->output.due);
+    }
 
     static void run(void* context, std::size_t index) noexcept
     {
@@ -140,15 +158,31 @@ class RoutePipeline
 public:
     std::uint64_t requestSequence() const { return nextRequest; }
     std::optional<std::uint64_t> sealedSubmissionTick() const { return sealedTick; }
+    unsigned delayTicks() const { return delay; }
+    static void validateDelay(unsigned ticks)
+    {
+        static_assert(Policy::MaxRoutePublicationDelay <= ComputeExecutor::ClaimsHorizon,
+            "the executor sizes its slots for the claim route horizon");
+        if (ticks < 1 || ticks > Policy::MaxRoutePublicationDelay)
+            throw std::invalid_argument("claim route delay must be 1.." + std::to_string(Policy::MaxRoutePublicationDelay) + " ticks");
+    }
+    // Takes effect for later submissions; pending work keeps its due tick.
+    void setDelay(unsigned ticks) { validateDelay(ticks); delay = ticks; }
     void restoreControl(std::uint64_t value, std::optional<std::uint64_t> tick)
     {
-        if (value < nextRequest || bool(value) != tick.has_value() ||
-            (tick && (*tick >= std::numeric_limits<std::uint64_t>::max() / 2 || (sealedTick && *tick != *sealedTick))))
-            throw std::invalid_argument("invalid saved route control state");
+        // Every restored output was submitted on or before the sealed tick and
+        // is due after it, within the largest delay.
+        bool invalid = value < nextRequest || bool(value) != tick.has_value() ||
+            (tick && *tick >= std::numeric_limits<std::uint64_t>::max() / 2) || (!pending.empty() && !tick);
+        if (!invalid)
+            for (const auto& work : pending)
+                invalid |= work->output.due <= *tick || work->output.due > *tick + Policy::MaxRoutePublicationDelay;
+        if (invalid) throw std::invalid_argument("invalid saved route control state");
         nextRequest = value; sealedTick = tick; lastSubmission = tick;
     }
-    explicit RoutePipeline(ComputeExecutor& value, std::size_t capacity = 4096) : executor(value), maximumPending(capacity)
-    { if (!capacity) throw std::invalid_argument("claim route capacity must be positive"); }
+    explicit RoutePipeline(ComputeExecutor& value, std::size_t capacity = 4096,
+        unsigned ticks = Policy::RoutePublicationDelay) : executor(value), maximumPending(capacity)
+    { if (!capacity) throw std::invalid_argument("claim route capacity must be positive"); setDelay(ticks); }
     RoutePipeline(const RoutePipeline&) = delete;
     ~RoutePipeline()
     {
@@ -162,9 +196,11 @@ public:
         if (!admissionAvailable()) throw std::length_error("claim route pending limit");
         if (lastSubmission && tick < *lastSubmission) throw std::invalid_argument("claim routes require monotonic submission ticks");
         if (sealedTick && tick <= *sealedTick) throw std::logic_error("claim route tick is already flushed");
-        if (!pending.empty() && pending.front()->output.due <= tick)
+        if (earliestDue <= tick)
             throw std::logic_error("publish due claim routes before admitting the next tick");
-        if (tick >= std::numeric_limits<std::uint64_t>::max() / 2) throw std::overflow_error("claim route deadline");
+        if (unflushedTick && *unflushedTick != tick)
+            throw std::logic_error("flush claim routes before admitting the next tick");
+        if (tick >= std::numeric_limits<std::uint64_t>::max() / 2 - delay) throw std::overflow_error("claim route deadline");
         const auto cells = std::size_t(input.world.width) * input.world.height;
         // The search engine wraps with masks: map sides are powers of two.
         if (input.world.width <= 0 || input.world.height <= 0 || !std::has_single_bit(unsigned(input.world.width)) ||
@@ -179,31 +215,35 @@ public:
         if (nextRequest == std::numeric_limits<std::uint64_t>::max()) throw std::overflow_error("claim route request identity");
         auto work = std::make_unique<Work>();
         work->input = std::move(input);
-        work->output = {{unit, task, ++nextRequest}, tick + 1, work->input.start, work->input.target, {}};
+        work->output = {{unit, task, ++nextRequest}, tick + delay, work->input.start, work->input.target, {}};
+        work->submitted = tick;
         work->output.width = unsigned(work->input.world.width); work->output.height = unsigned(work->input.world.height);
         auto* raw = work.get();
         // Staging does not spend an executor slot per unit.
         pending.push_back(std::move(work));
-        lastSubmission = tick;
+        earliestDue = std::min(earliestDue, raw->output.due);
+        lastSubmission = tick; unflushedTick = tick;
         return raw->output.identity;
     }
     void flush()
     {
-        // Publication before the next tick bounds this to one new source tick.
+        // submit() refuses a new tick while work is unflushed, so every
+        // unsubmitted job shares one submission tick and deadline.
+        unflushedTick.reset();
         auto group = std::make_shared<Group>();
         for (auto& work : pending) if (!work->group && !work->restored) group->jobs.push_back(work.get());
         if (group->jobs.empty()) return;
-        const auto due = group->jobs.front()->output.due;
+        const auto due = group->jobs.front()->output.due, source = group->jobs.front()->submitted;
         for (const auto* work : group->jobs)
-            if (work->output.due != due) throw std::logic_error("unpublished claim route horizon");
+            if (work->output.due != due || work->submitted != source) throw std::logic_error("unpublished claim route horizon");
         // Freeze the callback's entire vector and retain it before submission.
         for (auto* work : group->jobs) work->group = group;
         const ComputeExecutor::Group batch{group->jobs.size(), {run, group.get()}, ComputeExecutor::NoLane};
         try {
             group->batch = executor.submit(std::span(&batch, 1), ComputeExecutor::boundaryDue(due),
-                {ComputeProducer::Claims, due - 1, due});
-        } catch (...) { for (auto* work : group->jobs) work->group.reset(); throw; }
-        sealedTick = due - 1;
+                {ComputeProducer::Claims, source, due});
+        } catch (...) { for (auto* work : group->jobs) work->group.reset(); unflushedTick = source; throw; }
+        sealedTick = source;
     }
     bool admissionAvailable() const { return pending.size() < maximumPending; }
     void cancel(Owner unit)
@@ -212,13 +252,20 @@ public:
     {
         flush();
         std::vector<RoutePublication> result;
-        while (!pending.empty() && pending.front()->output.due <= tick) {
-            auto& work = *pending.front();
-            if (work.group) executor.join(work.group->batch, {JoinReason::TickDeadline, Uint32(tick)});
-            if (work.error) std::rethrow_exception(work.error);
-            if (!work.canceled) result.push_back(std::move(work.output));
-            pending.pop_front();
-        }
+        if (earliestDue > tick) return result;
+        // Submission order; with one delay that is also due order. A failed
+        // join leaves the cache covering every route still pending.
+        try {
+            for (auto it = pending.begin(); it != pending.end();) {
+                auto& work = **it;
+                if (work.output.due > tick) { ++it; continue; }
+                if (work.group) executor.join(work.group->batch, {JoinReason::TickDeadline, Uint32(tick)});
+                if (work.error) std::rethrow_exception(work.error);
+                if (!work.canceled) result.push_back(std::move(work.output));
+                it = pending.erase(it);
+            }
+        } catch (...) { recomputeEarliestDue(); throw; }
+        recomputeEarliestDue();
         return result;
     }
     std::vector<RoutePublication> exportPending()
@@ -235,14 +282,12 @@ public:
     void restore(std::vector<RoutePublication> saved)
     {
         if (!pending.empty()) throw std::logic_error("restore claim routes into an empty pipeline");
-        std::optional<std::uint64_t> previousDue;
         for (auto& output : saved) {
             const auto cells = std::uint64_t(output.width) * output.height;
             if (!output.due || output.due > std::numeric_limits<std::uint64_t>::max() / 2 ||
                 !output.identity.request || !output.width || !output.height ||
                 output.width > unsigned(std::numeric_limits<int>::max()) || output.height > unsigned(std::numeric_limits<int>::max()) ||
                 cells > std::numeric_limits<std::uint32_t>::max() || output.start >= cells || output.target >= cells ||
-                (previousDue && output.due != *previousDue) ||
                 (output.route.status != RouteStatus::Found && output.route.status != RouteStatus::Unreachable && output.route.status != RouteStatus::CostLimit && output.route.status != RouteStatus::ExpansionLimit) ||
                 (output.route.status != RouteStatus::Found && !output.route.cells.empty()))
                 throw std::invalid_argument("invalid saved claim route deadlines");
@@ -255,17 +300,15 @@ public:
                 if (!adjacent) throw std::invalid_argument("saved claim route discontinuity");
                 previous = cell;
             }
-            previousDue = output.due;
         }
         if (saved.size() > maximumPending) throw std::length_error("saved claim route pending limit");
         for (auto& output : saved) {
             nextRequest = std::max(nextRequest, output.identity.request);
-            lastSubmission = output.due - 1;
-            sealedTick = output.due - 1;
             auto work = std::make_unique<Work>(); work->output = std::move(output);
             work->restored = true;
             pending.push_back(std::move(work)); // Saved outputs need no computation.
         }
+        recomputeEarliestDue();
     }
 };
 }

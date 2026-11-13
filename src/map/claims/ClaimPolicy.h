@@ -57,6 +57,14 @@ inline constexpr unsigned TrafficWaitLimit=8;
 
 // Bound on A* node expansions for one claim route search.
 inline constexpr unsigned RouteMaximumExpansions=4096;
+
+// Ticks from a route request to its publication. A route requested on tick t
+// is searched on workers and published at the start of tick t+delay; until
+// then the worker follows the ordinary material gradient. Headless runs can
+// try other values with --claim-route-delay (1..MaxRoutePublicationDelay)
+// without changing the policy; the executor sizes its slots for the maximum.
+inline constexpr unsigned RoutePublicationDelay=1;
+inline constexpr unsigned MaxRoutePublicationDelay=8;
 }
 
 namespace ResourceClaims
