@@ -24,6 +24,7 @@ from .transfer import get_chunk, offset, put_chunk
 from .resources import plan_allocations, plan_from_record, validate_frozen_attempt, validate_game_participants
 from .storage import CompressedLog, DEFAULT_ATTEMPT_BYTES, DEFAULT_LOG_BYTES
 
+STORAGE_CHECK_SECONDS = 5.0
 HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 2, 'result_backlog_limit': 128,
                  'disk_reserve_bytes': 5 * 1024**3, 'spool_budget_bytes': 10 * 1024**3,
                  'attempt_budget_bytes': DEFAULT_ATTEMPT_BYTES, 'log_budget_bytes': DEFAULT_LOG_BYTES,
@@ -448,20 +449,31 @@ def execute(root, identity):
                                    job['outputs'].get('log_mode', 'full'))
             stderr = CompressedLog(process.stderr, directory / 'stderr.log.gz', log_limit)
             deadline = time.monotonic() + job['limits'].get('timeout_seconds', 3600)
+            # Storage checks walk directory trees, and the worker-wide walk grows with
+            # every concurrent attempt, so run them every few seconds rather than on
+            # each 0.2 s exit poll. RLIMIT_FSIZE still bounds every child-written file.
+            next_storage_check = 0.0
             while process.poll() is None:
-                if time.monotonic() >= deadline:
+                now = time.monotonic()
+                if now >= deadline:
                     record['category'] = 'timeout'
                     process.kill()
                     break
-                if stdout.error or stderr.error or usage(directory) > attempt_limit:
+                if stdout.error or stderr.error:
                     record['category'] = 'storage_limit'
                     process.kill()
                     break
-                if (shutil.disk_usage(directory).free < worker.config['disk_reserve_bytes']
-                        or usage(worker.root / 'attempts') + usage(worker.root / 'spool') > worker.config['spool_budget_bytes']):
-                    record['category'] = 'disk_pressure'
-                    process.kill()
-                    break
+                if now >= next_storage_check:
+                    next_storage_check = now + STORAGE_CHECK_SECONDS
+                    if usage(directory) > attempt_limit:
+                        record['category'] = 'storage_limit'
+                        process.kill()
+                        break
+                    if (shutil.disk_usage(directory).free < worker.config['disk_reserve_bytes']
+                            or usage(worker.root / 'attempts') + usage(worker.root / 'spool') > worker.config['spool_budget_bytes']):
+                        record['category'] = 'disk_pressure'
+                        process.kill()
+                        break
                 time.sleep(0.2)
             record['exit_code'] = process.wait()
             record['streamed_logs'] = {'stdout.log.gz': stdout.finish(), 'stderr.log.gz': stderr.finish()}

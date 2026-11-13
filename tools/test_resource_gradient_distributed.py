@@ -102,7 +102,7 @@ class DistributedTests(unittest.TestCase):
             self.assertEqual(rows[0]['source_contract_sha256'],d.canonical_hash(legacy));self.assertEqual(rows[0]['collection_threshold_milli'],16000)
             sealed=json.loads(Path(result['completed_manifests'][0]).read_text());self.assertEqual(sealed['cohort']['contract'],legacy)
 
-    def test_fixed_stratified_partition_uses_exact_maps_and_mac_threads(self):
+    def test_fixed_stratified_partition_uses_exact_maps_and_one_thread(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);linux=self.bundle(root,'linux');mac=self.bundle(root,'darwin');plan,maps=self.plan(root)
             manifest=d.make_experiment(plan,maps,[linux,mac],self.cohort(),{linux['id']:7,mac['id']:1})
@@ -120,8 +120,8 @@ class DistributedTests(unittest.TestCase):
                 self.assertEqual(decoded.read_bytes(),Path(source['path']).read_bytes())
                 self.assertEqual(job['config']['resource_gradient_collection']['seed'],
                     d.exploration_seed_for_game(9,job['id']))
-                if job['build']==mac['id']:self.assertEqual(job['config']['resource_gradient_collection']['threads'],1)
-                else:self.assertNotIn('threads',job['config']['resource_gradient_collection'])
+                # Every platform runs one compute participant per collection game.
+                self.assertEqual(job['config']['resource_gradient_collection']['threads'],1)
             self.assertEqual(len({j['config']['resource_gradient_collection']['seed'] for j in manifest['jobs']}),32)
             self.assertEqual(manifest,d.make_experiment(plan,maps,[mac,linux],self.cohort(),{linux['id']:7,mac['id']:1}))
 
