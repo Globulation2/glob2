@@ -177,7 +177,11 @@ arrays. Keep unavailable results invalid until the corresponding calculation run
 A new implementation inherits the common schema by default. Override
 `telemetrySchema()` to return a process-lifetime descriptor vector beginning with
 `AITelemetry::schema(0)`, followed by its own fields. Its numeric indices begin at
-`AITelemetry::Specific`. Override the snapshot hook as needed. This requires no
+`AITelemetry::Specific`. Descriptor text (`name`, `unit`, `meaning`) is held as
+`std::string_view`, so it must view storage that outlives every holder: the static
+catalog tables, or a series' own `fieldText` for text read from a save. World
+captures share one schema per series instead of copying it, and keep that text
+alive for consumers on other threads. Override the snapshot hook as needed. This requires no
 TeamStats, serializer, exporter or order-format changes. Econo and Nicowar delegate
 through the shared AI runtime wrapper; Cabino modules can override the module snapshot hook.
 
