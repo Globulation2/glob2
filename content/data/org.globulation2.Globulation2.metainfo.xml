@@ -358,6 +358,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.5.0" date="2026-11-13">
+      <description>
+        <p>Rebuilt the map generators on a new terrain catalogue with new natural landscapes, cliffs, glaciers and animated shorelines; replaced the old tutorial with training lessons; added twelve languages; redesigned in-game statistics with a win chance readout; made AI opponents stronger and faster; made stone walls tougher and starting towers armed; and improved rendering and performance throughout.</p>
+      </description>
+    </release>
     <release version="0.11.4.0" date="2026-10-21">
       <description>
         <p>Improved mobile building inspection, HUD layout and audio setup; refreshed translations and tutorials; refined map resources and starting settlements; enabled smooth unit motion by default; and fixed browser startup with saved software rendering settings.</p>

@@ -1,0 +1,1 @@
+New terrain catalogue with new landscapes, cliffs, glaciers and animated shores; training lessons replace the old tutorial; twelve new languages; redesigned statistics with win chance; stronger, faster AI; tougher stone walls; and many rendering and performance improvements.
