@@ -1663,13 +1663,13 @@ Globulation 2 کا کرسر دکھائیں۔
 [Lake size]
 جھیل کی جسامت
 [Crater type]
-
+گڑھوں کی قسم
 [Crater rims]
-
+گڑھوں کے کنارے
 [Volcanic maars]
-
+آتش فشانی مار گڑھے
 [Glacial kettles]
-
+برفانی گڑھے
 [Contested commons]
 متنازع مشترکہ میدان
 [Maze]
@@ -1769,7 +1769,7 @@ Globulation 2 کا کرسر دکھائیں۔
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 اتنی بستیوں کے لیے پٹی بہت چھوٹی ہے؛ لمبا نقشہ یا کم بستیاں چنیں۔
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+اس سیڈ پر حلقہ نما دنیا زمین کا کوئی حصہ کاٹے بغیر اپنی چٹانیں اور ساحل نہیں بچھا سکتی۔
 [City states]
 شہری ریاستیں
 [Strait width]
@@ -1803,11 +1803,11 @@ Globulation 2 کا کرسر دکھائیں۔
 [Levee]
 کنارے کا بند
 [Mudflats]
-
+کیچڑ کے میدان
 [Hammocks]
-
+درختوں کے جزیرے
 [Moss]
-
+کائی
 [Sloughs]
 دلدلی نالے
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Globulation 2 کا کرسر دکھائیں۔
 [Central island]
 مرکزی جزیرہ
 [Tide]
-
+مدوجزر
 [Neap tide]
-
+کم مد
 [Mean tide]
-
+اوسط مد
 [Spring tide]
-
+بلند مد
 [Tidal flats need at least one colony.]
 مدوجزر کے ہموار علاقوں کے لیے کم از کم ایک بستی درکار ہے۔
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+مرکزی چٹانی ٹیلے کی چٹانوں کے لیے کان کی دیواروں کے ساتھ جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 آبائی جزیرے نقشے میں نہیں سما سکتے؛ بڑا نقشہ، کم بستیاں یا چھوٹے جزیرے چنیں۔
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Globulation 2 کا کرسر دکھائیں۔
 [Meandering rivers]
 بل کھاتے دریا
 [Banks]
-
+کنارے
 [Deep channels]
-
+گہرے دھارے
 [River bluffs]
-
+دریائی کھڑی چٹانیں
 [Divide outcrops]
-
+آبی تقسیم کی ابھری چٹانیں
 [Deep water]
-
+گہرا پانی
 [Rock outcrops]
-
+ابھری چٹانیں
 [Fruit in home valleys]
 آبائی وادیوں میں پھل
 [Moat]
@@ -1993,11 +1993,11 @@ Globulation 2 کا کرسر دکھائیں۔
 [Winding belt]
 بل کھاتی پٹی
 [Deep ocean]
-
+گہرا سمندر
 [Rock spine]
-
+چٹانی ریڑھ
 [Ring road]
-
+حلقہ نما سڑک
 [Cell shape]
 خانے کی شکل
 [Squares]
@@ -2035,19 +2035,19 @@ Globulation 2 کا کرسر دکھائیں۔
 [Lee width]
 ہوا سے اوٹ والے حصے کی چوڑائی
 [Climate]
-
+آب و ہوا
 [Temperate]
-
+معتدل
 [Steppe]
-
+سٹیپ
 [Tropical]
-
+استوائی
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+ابتدائی اڈوں کے پیچھے کوئی پہاڑی دھار نہیں؛ کم پہاڑی دھاریں یا بڑا نقشہ چنیں۔
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+پہاڑی دھاریں ابتدائی اڈوں کی کانوں کے لیے جگہ نہیں چھوڑتیں؛ موٹی پہاڑی دھاریں یا بڑا نقشہ چنیں۔
 [The ridges could not be sealed; use thicker ridges.]
-
+پہاڑی دھاریں بند نہیں کی جا سکیں؛ موٹی پہاڑی دھاریں چنیں۔
 [Old growth]
 قدیم جنگل
 [Canals]
@@ -2497,7 +2497,7 @@ HP ≤25/50/75%
 [Moraine hummocks]
 برفانی ملبے کے ٹیلے
 [Deep pools]
-
+گہرے تالاب
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 دریا کی شاخیں آبادیوں کے لیے بہت کم ہموار کنارا چھوڑتی ہیں؛ بڑا نقشہ یا کم چوڑی شاخیں چنیں۔
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤25/50/75%
 [Dry patches]
 خشک قطعے
 [Season]
-
+موسم
 [Meltwater]
-
+پگھلی برف کا پانی
 [Late summer]
-
+گرمیوں کا آخر
 [Sparse]
 کم
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤25/50/75%
 [Twin springs]
 جڑواں چشمے
 [Canyon mouth]
-
+گھاٹی کا دہانہ
 [Cienega]
-
+چشمے والی دلدل
 [Coalescing pair]
-
+جڑے ہوئے دو پنکھے
 [Cienegas]
-
+چشمے والی دلدلیں
 [Rock]
-
+چٹان
 [Granite]
-
+گرینائٹ
 [Greenstone]
-
+سبز پتھر
 [Sandstone]
-
+ریتلا پتھر
 [Volcanic]
-
+آتش فشانی
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+درے ابتدائی اڈوں کی کانوں کو کاٹ دیتے ہیں؛ کم درے، کم بستیاں یا بڑا نقشہ چنیں۔
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 دامن کوہی پنکھے ابتدائی علاقوں کے لیے بہت تنگ ہیں؛ بڑا نقشہ، سلسلوں کے درمیان زیادہ فاصلہ، تنگ پہاڑی دھاریں یا چھوٹی خشک جھیل استعمال کریں۔
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤25/50/75%
 [Extra trails]
 اضافی پگڈنڈیاں
 [Deep lakes]
-
+گہری جھیلیں
 [Bedrock]
-
+بنیادی چٹان
 [Portage Lakes needs sides between 64 and 512 tiles.]
 پورٹیج جھیلوں کے لیے ہر سمت 64 سے 512 خانے چاہیے۔
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5009,9 +5009,9 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
 [stat win probability]
-
+جیتنے کا امکان
 [stat win probability about]
-
+آپ کے اتحاد کے جیتنے کا اندازاً امکان، جو پورے میچ کے دوران وقفے وقفے سے ناپا جاتا ہے۔ اتحادیوں کا امکان ایک ہی ہوتا ہے۔ یہ ماڈل مصنوعی ذہانت کے کھیلوں پر تربیت یافتہ ہے؛ اندازے پوزیشن یا منصوبہ بند چالوں کو مدنظر نہیں رکھتے۔ پرانی محفوظ کردہ گیمز میں سابقہ ریکارڈ نامکمل ہو سکتا ہے۔
 [stat prestige]
 وقار
 [stat prestige about]
@@ -5757,15 +5757,15 @@ AI کی بنائی ہوئی نہیں
 [Fish]
 مچھلی
 [boulders]
-بڑے پتھر
+پتھر کے ستون
 [hedge]
 باڑ
 [thicket]
 گھنی جھاڑیاں
 [ridge_rock]
-
+چٹانی مینار
 [outcrop]
-
+بیسالٹ کے ستون
 [dirt]
 مٹی
 [clay]
@@ -5831,11 +5831,11 @@ AI کی بنائی ہوئی نہیں
 [glacier_ice]
 گلیشیئر کی برف
 [overgrown_road]
-گھاس سے ڈھکی سڑک
+کائی زدہ پتھریلا فرش
 [laterite]
 لیٹرائٹ
 [cliffs]
-چٹانیں
+کھڑی چٹانیں
 [molten_lava_pool]
 پگھلے لاوے کا تالاب
 [slate_ashlar]
@@ -5859,7 +5859,7 @@ AI کی بنائی ہوئی نہیں
 [sandstone_benches]
 ریتلے پتھر کے چبوترے
 [obsidian_ridge]
-آبسیڈین کی چوٹی
+آبسیڈین کی پہاڑی دھار
 [granite_tors]
 گرینائٹ کی چٹانیں
 [travertine_terraces]
@@ -5883,13 +5883,13 @@ AI کی بنائی ہوئی نہیں
 [terrain group grass]
 گھاس
 [terrain group ice]
-برف
+برف اور یخ
 [terrain group paths]
 راستے
 [terrain group obstacles]
 رکاوٹیں
 [terrain group ridges]
-
+ابھری چٹانیں
 [terrain group barren]
 بنجر زمین
 [terrain group rough]
@@ -6991,29 +6991,29 @@ MCP سرور چالو کریں
 [scenario messages]
 پیغامات ▸
 [stats topic overview]
-
+جائزہ
 [stats topic economy]
-
+معیشت
 [stats topic world]
-
+دنیا
 [stats work construction]
-
+کام اور تعمیر
 [stats defence]
-
+دفاع
 [stats history]
-
+سابقہ ریکارڈ دیکھیں
 [stats waiting]
-
+اعداد و شمار کا انتظار…
 [stats unit details]
-
+یونٹوں کی تفصیلات
 [stats map overlays]
-
+نقشے کی تہیں
 [stats topic]
-
+موضوع
 [stats full history]
-
+مکمل سابقہ ریکارڈ کھولیں
 [stats missing readings]
-
+— ابھی کوئی پیمائش درج نہیں ہوئی۔ تفصیلات کے لیے کوئی شماریہ منتخب کریں۔
 [script error at %0:%1: %2]
 سطر %0، کالم %1 پر خرابی: %2
 [AI for all computer colonies]
@@ -7051,53 +7051,53 @@ MCP سرور چالو کریں
 [hive order not confirmed]
 حکم کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کرنے کے لیے کمانڈر کھولیں؛ آپ کا پیغام محفوظ ہے۔
 [engine performance per game minute]
-
+فی کھیل منٹ
 [engine performance per real minute]
-
+فی حقیقی منٹ
 [engine performance game engine performance]
-
+کھیل کے انجن کی کارکردگی
 [engine performance task wall-time costs]
-
+کاموں پر صرف ہونے والا اصل وقت
 [engine performance inspect slow ticks]
-
+سست ٹک دیکھیں
 [engine performance no advancing ticks recorded yet]
-
+ابھی تک آگے بڑھنے والا کوئی ٹک درج نہیں ہوا۔
 [engine performance whole-engine performance]
-
+پورے انجن کی کارکردگی
 [engine performance open performance charts]
-
+کارکردگی کے چارٹ کھولیں
 [engine performance engine performance]
-
+انجن کی کارکردگی
 [engine performance follow latest interval]
-
+تازہ ترین وقفے کے ساتھ رہیں
 [engine performance compare task costs]
-
+کاموں کی لاگت کا موازنہ کریں
 [engine performance all metrics and slow ticks]
-
+تمام پیمانے اور سست ٹک
 [engine performance phase orders]
-
+احکامات
 [engine performance phase units]
-
+یونٹ
 [engine performance phase buildings]
-
+عمارتیں
 [engine performance phase map]
-
+نقشہ
 [engine performance phase statistics]
-
+اعداد و شمار
 [engine performance phase ai]
-
+مصنوعی ذہانت
 [engine performance phase world capture]
-
+دنیا کی عکس بندی
 [engine performance phase checksums]
-
+چیک سم
 [engine performance wall time %0]
-
+اصل وقت: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+لازمی انتظار: %0 ms؛ مالک تھریڈ کا انتظار: %1 ms؛ لاک: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms اصل وقت
 [engine performance tick %0 wall %1]
-
+ٹک %0: %1 ms اصل وقت
 [hive standing order update failed]
 مستقل حکم کو اپ ڈیٹ کرنا ناکام رہا۔ آپ کا حکم اس ڈیوائس پر عارضی طور پر روکا گیا ہے؛ متعلقہ کنٹرول استعمال کرکے دوبارہ کوشش کریں۔
 [tundra]

@@ -1695,13 +1695,13 @@ Kara köprüsü genişliği
 [Lake size]
 Göl boyutu
 [Crater type]
-
+Krater türü
 [Crater rims]
-
+Krater kenarları
 [Volcanic maars]
-
+Volkanik maarlar
 [Glacial kettles]
-
+Buzul kazanları
 [Contested commons]
 Çekişmeli ortak alan
 [Maze]
@@ -1729,7 +1729,7 @@ Su hendeği genişliği
 [Wall thickness]
 Duvar kalınlığı
 [Gardens]
-Bostanlar
+Bahçeler
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Bu kadar kalın duvarlar geçitleri çok dar bırakır; daha ince duvarlar veya daha büyük hücreler kullanın.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1745,7 +1745,7 @@ Fiyort genişliği
 [Ice sheet size]
 Buz örtüsü boyutu
 [Fjord landings]
-Fiyort iskeleleri
+Fiyort iniş yerleri
 [Fjord continents need at least one colony.]
 Fiyort kıtası en az bir koloni gerektirir.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ Kuşak genişliği
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Halka dünya bu tohumla zemini bölmeden kayalarını ve kıyılarını yerleştiremiyor.
 [City states]
 Şehir devletleri
 [Strait width]
@@ -1839,11 +1839,11 @@ Açıklık boyutu
 [Levee]
 Set
 [Mudflats]
-
+Çamur düzlükleri
 [Hammocks]
-
+Ağaç adacıkları
 [Moss]
-
+Yosun
 [Sloughs]
 Bataklıklar
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagünler
 [Central island]
 Merkez ada
 [Tide]
-
+Gelgit
 [Neap tide]
-
+Küçük gelgit
 [Mean tide]
-
+Ortalama gelgit
 [Spring tide]
-
+Büyük gelgit
 [Tidal flats need at least one colony.]
 Gelgit düzlükleri için en az bir koloni gerekir.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Merkezdeki kaya tepesinde, taş ocağı cephelerinin yanında kayası için yer yok; daha büyük bir harita veya daha az koloni kullanın.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Ana adalar bu haritaya sığmıyor; daha büyük bir harita, daha az koloni ya da daha küçük adalar kullanın.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Nehir deltası
 [Meandering rivers]
 Menderesli nehirler
 [Banks]
-
+Kıyılar
 [Deep channels]
-
+Derin kanallar
 [River bluffs]
-
+Nehir yarları
 [Divide outcrops]
-
+Su bölümü kayalıkları
 [Deep water]
-
+Derin su
 [Rock outcrops]
-
+Kaya çıkıntıları
 [Fruit in home valleys]
 Başlangıç vadilerinde meyve
 [Moat]
@@ -2025,11 +2025,11 @@ Her iki kıyıda koloniler
 [Winding belt]
 Kıvrımlı kuşak
 [Deep ocean]
-
+Derin okyanus
 [Rock spine]
-
+Kaya omurgası
 [Ring road]
-
+Çevre yolu
 [Cell shape]
 Hücre şekli
 [Squares]
@@ -2067,19 +2067,19 @@ Geçit aralığı
 [Lee width]
 Rüzgâraltı genişliği
 [Climate]
-
+İklim
 [Temperate]
-
+Ilıman
 [Steppe]
-
+Bozkır
 [Tropical]
-
+Tropikal
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Üslerin arkasında sırt yok; daha az sırt veya daha büyük bir harita kullanın.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Sırtlar üslerin taş ocaklarına yer bırakmıyor; daha kalın sırtlar veya daha büyük bir harita kullanın.
 [The ridges could not be sealed; use thicker ridges.]
-
+Sırtlar kapatılamadı; daha kalın sırtlar kullanın.
 [Old growth]
 Yaşlı orman
 [Canals]
@@ -2519,7 +2519,7 @@ Ek sığ geçitler
 [Moraine hummocks]
 Moren tümsekleri
 [Deep pools]
-
+Derin göletler
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Örgü, üsler için çok az teras bırakıyor; daha büyük bir harita veya daha dar bir örgü kullanın.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Su birikintileri
 [Dry patches]
 Kurak alanlar
 [Season]
-
+Mevsim
 [Meltwater]
-
+Kar erimesi
 [Late summer]
-
+Yaz sonu
 [Sparse]
 Az
 [Normal]
@@ -2713,25 +2713,25 @@ Uzun yelpaze
 [Twin springs]
 İkiz kaynaklar
 [Canyon mouth]
-
+Kanyon ağzı
 [Cienega]
-
+Kaynak bataklığı
 [Coalescing pair]
-
+Birleşen yelpaze çifti
 [Cienegas]
-
+Kaynak bataklıkları
 [Rock]
-
+Kayaç
 [Granite]
-
+Granit
 [Greenstone]
-
+Yeşil taş
 [Sandstone]
-
+Kumtaşı
 [Volcanic]
-
+Volkanik
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Geçitler üslerin taş ocaklarını kesiyor; daha az geçit, daha az koloni veya daha büyük bir harita kullanın.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Yelpaze yamaçları üsler için çok dar; daha büyük bir harita, daha geniş sıradağ aralığı, daha dar sırtlar veya daha küçük tuz gölleri kullanın.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Orman geçidi kalınlığı
 [Extra trails]
 Ek patikalar
 [Deep lakes]
-
+Derin göller
 [Bedrock]
-
+Ana kaya
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Bu haritanın kenarları 64 ile 512 kare arasında olmalıdır.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Temizlenen kaynaklar
 [stat cleared about]
 İşçilerin yer açmak için temizlik bölgelerinde kaldırdığı kaynaklar.
 [stats topic overview]
-
+Genel bakış
 [stats topic economy]
-
+Ekonomi
 [stats topic world]
-
+Dünya
 [stats work construction]
-
+İş ve inşaat
 [stats defence]
-
+Savunma
 [stats history]
-
+Geçmişi görüntüle
 [stats waiting]
-
+İstatistikler bekleniyor…
 [stats unit details]
-
+Birim ayrıntıları
 [stats map overlays]
-
+Harita katmanları
 [stats topic]
-
+Konu
 [stats full history]
-
+Tüm geçmişi aç
 [stats missing readings]
-
+— Henüz kaydedilmiş bir ölçüm yok. Ayrıntılar için bir istatistik seçin.
 [stat win probability]
-
+Kazanma olasılığı
 [stat win probability about]
-
+İttifakınızın kazanma olasılığının maç boyunca örneklenen tahmini. Müttefikler tek bir olasılığı paylaşır. Bu model yapay zekâ oyunlarıyla eğitildi; tahminler konumu veya planlanan hamleleri hesaba katmaz. Eski kayıtlarda geçmiş eksik olabilir.
 [stat prestige]
 Prestij
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Balık
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç
 [boulders]
-Kaya blokları
+Taş sütunlar
 [hedge]
 Bitki çiti
 [thicket]
 Çalılık
 [ridge_rock]
-
+Kaya iğneleri
 [outcrop]
-
+Bazalt sütunlar
 [dirt]
 Toprak
 [clay]
@@ -5855,7 +5855,7 @@ Volkanik kül
 [glacier_ice]
 Buzul buzu
 [overgrown_road]
-Otlarla kaplı yol
+Yosunlu parke taşları
 [laterite]
 Laterit
 [cliffs]
@@ -5907,13 +5907,13 @@ Kum
 [terrain group grass]
 Çimen
 [terrain group ice]
-Buz
+Kar ve buz
 [terrain group paths]
 Yollar
 [terrain group obstacles]
-Engeller
+Bariyerler
 [terrain group ridges]
-
+Kaya çıkıntıları
 [terrain group barren]
 Çorak arazi
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Emir onaylanmadı. Tekrar denemek için komutanı açın; mesajınız saklandı.
 [hive standing order update failed]
 Kalıcı emir güncellenemedi. Emriniz bu cihazda duraklatıldı; ilgili denetimi kullanarak tekrar deneyin.
 [engine performance per game minute]
-
+Oyun dakikası başına
 [engine performance per real minute]
-
+Gerçek dakika başına
 [engine performance game engine performance]
-
+Oyun motoru performansı
 [engine performance task wall-time costs]
-
+Görevlerin gerçek süre maliyetleri
 [engine performance inspect slow ticks]
-
+Yavaş adımları incele
 [engine performance no advancing ticks recorded yet]
-
+Henüz ilerleyen adım kaydedilmedi.
 [engine performance whole-engine performance]
-
+Motorun tamamının performansı
 [engine performance open performance charts]
-
+Performans grafiklerini aç
 [engine performance engine performance]
-
+Motor performansı
 [engine performance follow latest interval]
-
+Son aralığı takip et
 [engine performance compare task costs]
-
+Görev maliyetlerini karşılaştır
 [engine performance all metrics and slow ticks]
-
+Tüm ölçümler ve yavaş adımlar
 [engine performance phase orders]
-
+Emirler
 [engine performance phase units]
-
+Birimler
 [engine performance phase buildings]
-
+Binalar
 [engine performance phase map]
-
+Harita
 [engine performance phase statistics]
-
+İstatistikler
 [engine performance phase ai]
-
+Yapay zekâ
 [engine performance phase world capture]
-
+Dünya yakalama
 [engine performance phase checksums]
-
+Sağlama toplamları
 [engine performance wall time %0]
-
+Gerçek süre: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Zorunlu beklemeler: %0 ms; sahip iş parçacığı beklemeleri: %1 ms; kilitler: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms gerçek süre
 [engine performance tick %0 wall %1]
-
+Adım %0: %1 ms gerçek süre
 [AI for all computer colonies]
 Bilgisayar kontrollü tüm koloniler için yapay zekâ
 [tundra]

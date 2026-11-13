@@ -1663,13 +1663,13 @@ Globulation 2-এর কার্সার দেখান।
 [Lake size]
 হ্রদের আকার
 [Crater type]
-
+গহ্বরের ধরন
 [Crater rims]
-
+গহ্বরের কিনারা
 [Volcanic maars]
-
+আগ্নেয় মার গহ্বর
 [Glacial kettles]
-
+হিমবাহী গর্ত
 [Contested commons]
 প্রতিদ্বন্দ্বিতার যৌথ ভূমি
 [Maze]
@@ -1769,7 +1769,7 @@ Globulation 2-এর কার্সার দেখান।
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 এত উপনিবেশের জন্য ভূবলয় ছোট; লম্বা মানচিত্র অথবা কম উপনিবেশ ব্যবহার করুন।
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+এই বীজে বলয় জগৎ ভূমির কোনো অংশ বিচ্ছিন্ন না করে তার পাথর ও উপকূল বসাতে পারে না।
 [City states]
 নগর রাষ্ট্র
 [Strait width]
@@ -1803,11 +1803,11 @@ Globulation 2-এর কার্সার দেখান।
 [Levee]
 বাঁধ
 [Mudflats]
-
+কাদার সমভূমি
 [Hammocks]
-
+গাছের দ্বীপ
 [Moss]
-
+শ্যাওলা
 [Sloughs]
 জলাভূমি
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Globulation 2-এর কার্সার দেখান।
 [Central island]
 কেন্দ্রীয় দ্বীপ
 [Tide]
-
+জোয়ার-ভাটা
 [Neap tide]
-
+মরা কটাল
 [Mean tide]
-
+গড় জোয়ার
 [Spring tide]
-
+ভরা কটাল
 [Tidal flats need at least one colony.]
 জোয়ারভাটার সমতলভূমিতে অন্তত একটি কলোনি থাকা প্রয়োজন।
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+খনির দেয়ালের পাশে কেন্দ্রীয় পাথুরে টিলার পাথরের জায়গা নেই; বড় মানচিত্র ব্যবহার করুন অথবা উপনিবেশের সংখ্যা কমিয়ে দিন।
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 মূল দ্বীপগুলো এই মানচিত্রে ধরছে না; একটি বড় মানচিত্র, কম উপনিবেশ অথবা আরও ছোট দ্বীপ ব্যবহার করুন।
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Globulation 2-এর কার্সার দেখান।
 [Meandering rivers]
 আঁকাবাঁকা নদী
 [Banks]
-
+তীর
 [Deep channels]
-
+গভীর খাত
 [River bluffs]
-
+নদীর খাড়া পাড়
 [Divide outcrops]
-
+জলবিভাজিকার উন্মুক্ত শিলা
 [Deep water]
-
+গভীর জল
 [Rock outcrops]
-
+উন্মুক্ত শিলা
 [Fruit in home valleys]
 নিজ উপত্যকায় ফল
 [Moat]
@@ -1993,11 +1993,11 @@ Globulation 2-এর কার্সার দেখান।
 [Winding belt]
 আঁকাবাঁকা ভূবলয়
 [Deep ocean]
-
+গভীর সমুদ্র
 [Rock spine]
-
+পাথুরে মেরুদণ্ড
 [Ring road]
-
+বলয় সড়ক
 [Cell shape]
 ঘরের আকৃতি
 [Squares]
@@ -2035,19 +2035,19 @@ Globulation 2-এর কার্সার দেখান।
 [Lee width]
 বাতাসের আড়ালের প্রস্থ
 [Climate]
-
+জলবায়ু
 [Temperate]
-
+নাতিশীতোষ্ণ
 [Steppe]
-
+স্তেপ
 [Tropical]
-
+ক্রান্তীয়
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+নিজ ঘাঁটিগুলোর পেছনে কোনো শৈলশিরা নেই; কম শৈলশিরা বা বড় মানচিত্র ব্যবহার করুন।
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+শৈলশিরাগুলো নিজ ঘাঁটির খনির জন্য কোনো জায়গা রাখে না; আরও পুরু শৈলশিরা বা বড় মানচিত্র ব্যবহার করুন।
 [The ridges could not be sealed; use thicker ridges.]
-
+শৈলশিরাগুলো বন্ধ করা যায়নি; আরও পুরু শৈলশিরা ব্যবহার করুন।
 [Old growth]
 প্রাচীন বন
 [Canals]
@@ -2497,7 +2497,7 @@ HP ≤25/50/75%
 [Moraine hummocks]
 মোরাইন টিলা
 [Deep pools]
-
+গভীর জলাশয়
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 নিজ এলাকাগুলোর জন্য বহুশাখা নদী খুব কম সোপানভূমি রেখেছে; বড় মানচিত্র অথবা সরু বহুশাখা নদী ব্যবহার করুন।
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤25/50/75%
 [Dry patches]
 শুষ্ক অংশ
 [Season]
-
+ঋতু
 [Meltwater]
-
+বরফগলা জল
 [Late summer]
-
+গ্রীষ্মের শেষভাগ
 [Sparse]
 বিরল
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤25/50/75%
 [Twin springs]
 জোড়া ঝরনা
 [Canyon mouth]
-
+গিরিখাতের মুখ
 [Cienega]
-
+ঝরনার জলাভূমি
 [Coalescing pair]
-
+মিলিত পললপাখা জোড়া
 [Cienegas]
-
+ঝরনার জলাভূমিগুলো
 [Rock]
-
+শিলা
 [Granite]
-
+গ্রানাইট
 [Greenstone]
-
+সবুজ পাথর
 [Sandstone]
-
+বেলেপাথর
 [Volcanic]
-
+আগ্নেয়
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+গিরিপথগুলো নিজ ঘাঁটির খনি কেটে দেয়; কম গিরিপথ, কম উপনিবেশ বা বড় মানচিত্র ব্যবহার করুন।
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 নিজ এলাকার জন্য বাজাদা খুব সরু; বড় মানচিত্র, পর্বতশ্রেণির বেশি ব্যবধান, সরু শৈলশিরা অথবা ছোট প্লায়া ব্যবহার করুন।
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤25/50/75%
 [Extra trails]
 অতিরিক্ত পথ
 [Deep lakes]
-
+গভীর হ্রদ
 [Bedrock]
-
+মূল শিলা
 [Portage Lakes needs sides between 64 and 512 tiles.]
 পোর্টেজ লেকস-এর প্রতিটি বাহু ৬৪ থেকে ৫১২ টাইল হতে হবে।
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [Fish]
 মাছ
 [boulders]
-বড় পাথর
+পাথরের স্তম্ভ
 [hedge]
 ঝোপের বেড়া
 [thicket]
 ঘন ঝোপ
 [ridge_rock]
-
+পাথুরে চূড়া
 [outcrop]
-
+ব্যাসল্ট স্তম্ভ
 [dirt]
 মাটি
 [clay]
@@ -5831,7 +5831,7 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [glacier_ice]
 হিমবাহের বরফ
 [overgrown_road]
-আগাছায় ঢাকা রাস্তা
+শ্যাওলা ধরা পাথরের পথ
 [laterite]
 ল্যাটেরাইট
 [cliffs]
@@ -5861,7 +5861,7 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [obsidian_ridge]
 অবসিডিয়ান শৈলশিরা
 [granite_tors]
-গ্রানাইটের টর
+গ্রানাইটের পাথুরে টিলা
 [travertine_terraces]
 ট্রাভার্টাইন ধাপ
 [penitentes]
@@ -5883,13 +5883,13 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [terrain group grass]
 ঘাস
 [terrain group ice]
-বরফ
+তুষার ও বরফ
 [terrain group paths]
 পথ
 [terrain group obstacles]
 বাধা
 [terrain group ridges]
-
+উন্মুক্ত শিলা
 [terrain group barren]
 অনুর্বর ভূমি
 [terrain group rough]

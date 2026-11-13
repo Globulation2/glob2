@@ -57,6 +57,7 @@
       "Sandbox",
       "Script",
       "Total",
+      "Tropical",
       "Tutorial",
       "Tutorial ▸",
       "bases"
@@ -94,6 +95,7 @@
       "Prunes",
       "Script",
       "Total",
+      "Tropical",
       "Tutorial",
       "Tutorial ▸",
       "Zones",
@@ -162,11 +164,13 @@
       "Server: %0",
       "Standard",
       "Start",
+      "Steppe",
       "Team",
       "Team %0",
       "Teams",
       "Teams %0/%1",
       "Teams…",
+      "Tide",
       "Version",
       "Veteran"
     ],
@@ -210,6 +214,7 @@
       "Spiral",
       "Standard",
       "Start",
+      "Steppe",
       "Team",
       "Total",
       "Upload",
@@ -254,6 +259,7 @@
       "Plazas",
       "Script",
       "Total",
+      "Tropical",
       "Tutorial",
       "Tutorial ▸",
       "bases"
@@ -356,7 +362,10 @@
       "options",
       "version %0",
       "Glacier",
-      "Grand canal"
+      "Grand canal",
+      "Granite",
+      "Steppe",
+      "Tropical"
     ],
     "texts.gr.txt": [
       "%0 / %1 HP · %2",
@@ -589,6 +598,7 @@
       "Spiral",
       "Standard",
       "Start",
+      "Steppe",
       "Total",
       "Veteran",
       "element",
@@ -638,6 +648,7 @@
       "Script",
       "Server",
       "Server: %0",
+      "Steppe",
       "Team",
       "Team %0",
       "Teams",
@@ -698,6 +709,7 @@
       "P %0/%1/%2",
       "Script",
       "Total",
+      "Tropical",
       "Tutorial",
       "Tutorial ▸",
       "bases"

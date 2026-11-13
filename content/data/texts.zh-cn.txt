@@ -1695,13 +1695,13 @@ OpenGL 在此版本中不可用。
 [Lake size]
 湖泊大小
 [Crater type]
-
+湖盆类型
 [Crater rims]
-
+湖盆边缘
 [Volcanic maars]
-
+低平火山口
 [Glacial kettles]
-
+冰川锅穴
 [Contested commons]
 争夺公地
 [Maze]
@@ -1729,7 +1729,7 @@ OpenGL 在此版本中不可用。
 [Wall thickness]
 墙体厚度
 [Gardens]
-菜园
+花园
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 墙这么厚，单元格之间的通道太窄；请使用更薄的墙或更大的单元格。
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1805,7 +1805,7 @@ OpenGL 在此版本中不可用。
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 环带太短，容纳不下这么多殖民地；请使用更长的地图或减少殖民地数量。
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+使用此种子时，环形世界无法在不切断地面的情况下布置岩石和海岸。
 [City states]
 城邦
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL 在此版本中不可用。
 [Levee]
 堤坝
 [Mudflats]
-
+泥滩
 [Hammocks]
-
+树岛
 [Moss]
-
+苔藓
 [Sloughs]
 沼泽水道
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL 在此版本中不可用。
 [Central island]
 中央岛
 [Tide]
-
+潮汐
 [Neap tide]
-
+小潮
 [Mean tide]
-
+平均潮
 [Spring tide]
-
+大潮
 [Tidal flats need at least one colony.]
 潮间带至少需要一个殖民地。
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+中央岩丘在采石面旁边没有空间放置岩石；请使用更大的地图或减少殖民地数量。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母岛无法容纳在这张地图上；请使用更大的地图、更少的殖民地或更小的岛屿。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL 在此版本中不可用。
 [Meandering rivers]
 曲流河道
 [Banks]
-
+河岸
 [Deep channels]
-
+深水河道
 [River bluffs]
-
+河岸陡崖
 [Divide outcrops]
-
+分水岭露岩
 [Deep water]
-
+深水
 [Rock outcrops]
-
+露岩
 [Fruit in home valleys]
 起始山谷中的水果
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL 在此版本中不可用。
 [Winding belt]
 蜿蜒的环带
 [Deep ocean]
-
+深海
 [Rock spine]
-
+岩石山脊
 [Ring road]
-
+环路
 [Cell shape]
 格子形状
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL 在此版本中不可用。
 [Lee width]
 背风带宽度
 [Climate]
-
+气候
 [Temperate]
-
+温带
 [Steppe]
-
+干草原
 [Tropical]
-
+热带
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+基地后方没有山脊；请减少山脊数量或使用更大的地图。
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+山脊没有给基地的采石场留出空间；请使用更厚的山脊或更大的地图。
 [The ridges could not be sealed; use thicker ridges.]
-
+无法封闭山脊；请使用更厚的山脊。
 [Old growth]
 原始森林
 [Canals]
@@ -2519,7 +2519,7 @@ OpenGL 在此版本中不可用。
 [Moraine hummocks]
 冰碛小丘
 [Deep pools]
-
+深潭
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 辫状带留给基地的阶地太少；请使用更大的地图或更窄的辫状带。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ OpenGL 在此版本中不可用。
 [Dry patches]
 干燥地带
 [Season]
-
+季节
 [Meltwater]
-
+融水期
 [Late summer]
-
+夏末
 [Sparse]
 稀少
 [Normal]
@@ -2713,25 +2713,25 @@ OpenGL 在此版本中不可用。
 [Twin springs]
 双泉
 [Canyon mouth]
-
+峡谷口
 [Cienega]
-
+泉沼
 [Coalescing pair]
-
+双扇汇合
 [Cienegas]
-
+泉沼
 [Rock]
-
+岩石
 [Granite]
-
+花岗岩
 [Greenstone]
-
+绿岩
 [Sandstone]
-
+砂岩
 [Volcanic]
-
+火山岩
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+山口切入了基地的采石场；请减少山口、减少殖民地或使用更大的地图。
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 冲积扇山坡太窄，容不下基地；请使用更大的地图、更宽的山脉间距、更窄的山脊或更小的盐湖。
 [Central Quarry]
@@ -2883,9 +2883,9 @@ OpenGL 在此版本中不可用。
 [Extra trails]
 额外小径
 [Deep lakes]
-
+深湖
 [Bedrock]
-
+基岩
 [Portage Lakes needs sides between 64 and 512 tiles.]
 此地图的边长必须为 64 至 512 格。
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ AI 遥测
 [stat cleared about]
 工人在清除区域中为腾出空间而移除的资源。
 [stats topic overview]
-
+概览
 [stats topic economy]
-
+经济
 [stats topic world]
-
+世界
 [stats work construction]
-
+工作与建造
 [stats defence]
-
+防御
 [stats history]
-
+查看历史
 [stats waiting]
-
+正在等待统计数据…
 [stats unit details]
-
+单位详情
 [stats map overlays]
-
+地图叠加层
 [stats topic]
-
+主题
 [stats full history]
-
+打开完整历史
 [stats missing readings]
-
+— 尚无记录的读数。选择一项统计以查看详情。
 [stat win probability]
-
+获胜概率
 [stat win probability about]
-
+在整场比赛中采样得出的你所在联盟获胜的估计概率。盟友共享同一个概率。此模型基于 AI 对局训练；估计不考虑局势布局或计划中的行动。较旧的存档可能缺少部分历史记录。
 [stat prestige]
 声望
 [stat prestige about]
@@ -5781,15 +5781,15 @@ AI 生成
 [Reroll terrain look]
 重新随机生成地形外观
 [boulders]
-巨石
+石柱
 [hedge]
 树篱
 [thicket]
 灌木丛
 [ridge_rock]
-
+尖岩
 [outcrop]
-
+玄武岩柱
 [dirt]
 泥土
 [clay]
@@ -5855,7 +5855,7 @@ AI 生成
 [glacier_ice]
 冰川冰
 [overgrown_road]
-杂草丛生的石路
+青苔石板路
 [laterite]
 红土
 [cliffs]
@@ -5907,13 +5907,13 @@ AI 生成
 [terrain group grass]
 草地
 [terrain group ice]
-冰
+冰雪
 [terrain group paths]
 路径
 [terrain group obstacles]
-障碍物
+屏障
 [terrain group ridges]
-
+露岩
 [terrain group barren]
 贫瘠地面
 [terrain group rough]
@@ -7051,53 +7051,53 @@ MCP 服务器
 [hive standing order update failed]
 长期指令更新失败。您的指令已在此设备上暂停；请使用相应的控件重试。
 [engine performance per game minute]
-
+每游戏分钟
 [engine performance per real minute]
-
+每现实分钟
 [engine performance game engine performance]
-
+游戏引擎性能
 [engine performance task wall-time costs]
-
+任务实际耗时
 [engine performance inspect slow ticks]
-
+检查慢帧
 [engine performance no advancing ticks recorded yet]
-
+尚未记录推进的帧。
 [engine performance whole-engine performance]
-
+整个引擎的性能
 [engine performance open performance charts]
-
+打开性能图表
 [engine performance engine performance]
-
+引擎性能
 [engine performance follow latest interval]
-
+跟随最新区间
 [engine performance compare task costs]
-
+比较任务开销
 [engine performance all metrics and slow ticks]
-
+所有指标和慢帧
 [engine performance phase orders]
-
+命令
 [engine performance phase units]
-
+单位
 [engine performance phase buildings]
-
+建筑
 [engine performance phase map]
-
+地图
 [engine performance phase statistics]
-
+统计
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+世界捕获
 [engine performance phase checksums]
-
+校验和
 [engine performance wall time %0]
-
+实际耗时：%0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+必要等待：%0 ms；所有者线程汇合：%1 ms；锁：%2 ms
 [engine performance phase %0 wall %1]
-
+%0：实际耗时 %1 ms
 [engine performance tick %0 wall %1]
-
+第 %0 帧：实际耗时 %1 ms
 [AI for all computer colonies]
 所有电脑控制殖民地的 AI
 [tundra]

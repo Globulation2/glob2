@@ -1663,13 +1663,13 @@ Globulation 2 का कर्सर दिखाएँ।
 [Lake size]
 झील का आकार
 [Crater type]
-
+गड्ढों का प्रकार
 [Crater rims]
-
+गड्ढों के किनारे
 [Volcanic maars]
-
+ज्वालामुखीय मार गड्ढे
 [Glacial kettles]
-
+हिमनदीय गड्ढे
 [Contested commons]
 विवादित साझा मैदान
 [Maze]
@@ -1769,7 +1769,7 @@ Globulation 2 का कर्सर दिखाएँ।
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 इतनी बस्तियों के लिए पट्टी बहुत छोटी है; लंबा नक्शा या कम बस्तियाँ चुनें।
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+इस सीड पर वलयाकार दुनिया ज़मीन का कोई हिस्सा काटे बिना अपनी चट्टानें और तट नहीं बिछा सकती।
 [City states]
 नगर-राज्य
 [Strait width]
@@ -1803,11 +1803,11 @@ Globulation 2 का कर्सर दिखाएँ।
 [Levee]
 तटबंध
 [Mudflats]
-
+कीचड़ के मैदान
 [Hammocks]
-
+पेड़ों के टापू
 [Moss]
-
+काई
 [Sloughs]
 दलदली जलमार्ग
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Globulation 2 का कर्सर दिखाएँ।
 [Central island]
 बीच का द्वीप
 [Tide]
-
+ज्वार
 [Neap tide]
-
+लघु ज्वार
 [Mean tide]
-
+औसत ज्वार
 [Spring tide]
-
+वृहत् ज्वार
 [Tidal flats need at least one colony.]
 ज्वारीय समतलों के लिए कम से कम एक बस्ती चाहिए।
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+बीच के चट्टानी टीले की चट्टानों के लिए खदान की दीवारों के पास जगह नहीं है; बड़ा नक्शा या कम बस्तियाँ चुनें।
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 शुरुआती द्वीप इस नक्शे में नहीं समाते; बड़ा नक्शा, कम बस्तियाँ या छोटे द्वीप चुनें।
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Globulation 2 का कर्सर दिखाएँ।
 [Meandering rivers]
 बलखाती नदियाँ
 [Banks]
-
+किनारे
 [Deep channels]
-
+गहरी धाराएँ
 [River bluffs]
-
+नदी की खड़ी चट्टानें
 [Divide outcrops]
-
+जलविभाजक की उभरी चट्टानें
 [Deep water]
-
+गहरा पानी
 [Rock outcrops]
-
+उभरी चट्टानें
 [Fruit in home valleys]
 शुरुआती घाटियों में फल
 [Moat]
@@ -1993,11 +1993,11 @@ Globulation 2 का कर्सर दिखाएँ।
 [Winding belt]
 घुमावदार पट्टी
 [Deep ocean]
-
+गहरा समुद्र
 [Rock spine]
-
+चट्टानी रीढ़
 [Ring road]
-
+वलयाकार सड़क
 [Cell shape]
 खाने की आकृति
 [Squares]
@@ -2035,19 +2035,19 @@ Globulation 2 का कर्सर दिखाएँ।
 [Lee width]
 ओट की चौड़ाई
 [Climate]
-
+जलवायु
 [Temperate]
-
+शीतोष्ण
 [Steppe]
-
+स्टेपी
 [Tropical]
-
+उष्णकटिबंधीय
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+शुरुआती आधारों के पीछे कोई पर्वत धार नहीं है; कम धारें या बड़ा नक्शा चुनें।
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+पर्वत धारें शुरुआती आधारों की खदानों के लिए जगह नहीं छोड़तीं; मोटी धारें या बड़ा नक्शा चुनें।
 [The ridges could not be sealed; use thicker ridges.]
-
+पर्वत धारें बंद नहीं की जा सकीं; मोटी धारें चुनें।
 [Old growth]
 पुराना वन
 [Canals]
@@ -2497,7 +2497,7 @@ Globulation 2 का कर्सर दिखाएँ।
 [Moraine hummocks]
 हिमोढ़ के छोटे टीले
 [Deep pools]
-
+गहरे कुंड
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 नदी की धाराओं के बीच शुरुआती बस्तियों के लिए ऊँची समतल ज़मीन कम बचती है; बड़ा नक्शा या सँकरी नदी चुनें।
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ Globulation 2 का कर्सर दिखाएँ।
 [Dry patches]
 सूखे हिस्से
 [Season]
-
+मौसम
 [Meltwater]
-
+पिघली बर्फ़ का पानी
 [Late summer]
-
+गर्मी का अंत
 [Sparse]
 विरल
 [Normal]
@@ -2691,25 +2691,25 @@ Globulation 2 का कर्सर दिखाएँ।
 [Twin springs]
 जुड़वाँ झरने
 [Canyon mouth]
-
+घाटी का मुहाना
 [Cienega]
-
+झरने वाला दलदल
 [Coalescing pair]
-
+जुड़े हुए जलोढ़ पंखे
 [Cienegas]
-
+झरने वाले दलदल
 [Rock]
-
+चट्टान
 [Granite]
-
+ग्रेनाइट
 [Greenstone]
-
+हरित पत्थर
 [Sandstone]
-
+बलुआ पत्थर
 [Volcanic]
-
+ज्वालामुखीय
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+दर्रे शुरुआती आधारों की खदानों को काटते हैं; कम दर्रे, कम बस्तियाँ या बड़ा नक्शा चुनें।
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 शुरुआती क्षेत्रों के लिए जलोढ़ पंखे बहुत सँकरे हैं; बड़ा नक्शा, पर्वत शृंखलाओं में अधिक दूरी, सँकरी धारें या छोटी सूखी झील चुनें।
 [Central Quarry]
@@ -2861,9 +2861,9 @@ Globulation 2 का कर्सर दिखाएँ।
 [Extra trails]
 अतिरिक्त पगडंडियाँ
 [Deep lakes]
-
+गहरी झीलें
 [Bedrock]
-
+आधार चट्टान
 [Portage Lakes needs sides between 64 and 512 tiles.]
 झीलों के बीच ज़मीनी रास्तों वाले नक्शे की भुजाएँ 64 से 512 टाइल के बीच होनी चाहिए।
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5009,9 +5009,9 @@ AI टेलीमेट्री
 [stat cleared about]
 जगह बनाने के लिए सफ़ाई क्षेत्रों में श्रमिकों द्वारा हटाए गए संसाधन।
 [stat win probability]
-
+जीत की संभावना
 [stat win probability about]
-
+आपके गठबंधन के जीतने की अनुमानित संभावना, जिसे पूरे मैच के दौरान समय-समय पर मापा जाता है। सहयोगियों की संभावना एक ही होती है। यह मॉडल कंप्यूटर खिलाड़ियों के खेलों पर प्रशिक्षित है; अनुमानों में स्थिति या योजनाबद्ध चालों को ध्यान में नहीं रखा जाता। पुराने सहेजे गए खेलों में इतिहास अधूरा हो सकता है।
 [stat prestige]
 प्रतिष्ठा
 [stat prestige about]
@@ -5757,15 +5757,15 @@ AI से नहीं बना
 [Fish]
 मछली
 [boulders]
-बड़े पत्थर
+पत्थर के खंभे
 [hedge]
 झाड़ियों की बाड़
 [thicket]
 घनी झाड़ियाँ
 [ridge_rock]
-
+चट्टानी शिखर
 [outcrop]
-
+बेसाल्ट स्तंभ
 [dirt]
 मिट्टी
 [clay]
@@ -5831,11 +5831,11 @@ AI से नहीं बना
 [glacier_ice]
 हिमनद की बर्फ़
 [overgrown_road]
-घास से ढकी सड़क
+काई लगा पत्थर का फ़र्श
 [laterite]
 लेटराइट
 [cliffs]
-चट्टानें
+खड़ी चट्टानें
 [molten_lava_pool]
 पिघले लावा का कुंड
 [slate_ashlar]
@@ -5861,7 +5861,7 @@ AI से नहीं बना
 [obsidian_ridge]
 ओब्सीडियन कटक
 [granite_tors]
-ग्रेनाइट टॉर
+ग्रेनाइट के चट्टानी टीले
 [travertine_terraces]
 ट्रैवर्टीन सीढ़ीदार चबूतरे
 [penitentes]
@@ -5883,13 +5883,13 @@ AI से नहीं बना
 [terrain group grass]
 घास
 [terrain group ice]
-बर्फ़
+बर्फ़ और हिम
 [terrain group paths]
 रास्ते
 [terrain group obstacles]
-बाधाएँ
+अवरोध
 [terrain group ridges]
-
+उभरी चट्टानें
 [terrain group barren]
 बंजर ज़मीन
 [terrain group rough]
@@ -6991,29 +6991,29 @@ MCP सर्वर चालू करें
 [scenario messages]
 संदेश ▸
 [stats topic overview]
-
+सारांश
 [stats topic economy]
-
+अर्थव्यवस्था
 [stats topic world]
-
+दुनिया
 [stats work construction]
-
+काम और निर्माण
 [stats defence]
-
+रक्षा
 [stats history]
-
+इतिहास देखें
 [stats waiting]
-
+आँकड़ों की प्रतीक्षा…
 [stats unit details]
-
+इकाइयों का विवरण
 [stats map overlays]
-
+नक्शे की परतें
 [stats topic]
-
+विषय
 [stats full history]
-
+पूरा इतिहास खोलें
 [stats missing readings]
-
+— अभी कोई माप दर्ज नहीं हुआ। विवरण के लिए कोई आँकड़ा चुनें।
 [script error at %0:%1: %2]
 पंक्ति %0, कॉलम %1 पर त्रुटि: %2
 [AI for all computer colonies]
@@ -7051,53 +7051,53 @@ MCP सर्वर चालू करें
 [hive order not confirmed]
 आदेश की पुष्टि नहीं हुई। फिर से प्रयास करने के लिए कमांडर खोलें; आपका संदेश सहेज लिया गया है।
 [engine performance per game minute]
-
+प्रति खेल मिनट
 [engine performance per real minute]
-
+प्रति वास्तविक मिनट
 [engine performance game engine performance]
-
+खेल इंजन का प्रदर्शन
 [engine performance task wall-time costs]
-
+कार्यों में लगा वास्तविक समय
 [engine performance inspect slow ticks]
-
+धीमे टिक जाँचें
 [engine performance no advancing ticks recorded yet]
-
+अभी तक आगे बढ़ने वाला कोई टिक दर्ज नहीं हुआ।
 [engine performance whole-engine performance]
-
+पूरे इंजन का प्रदर्शन
 [engine performance open performance charts]
-
+प्रदर्शन चार्ट खोलें
 [engine performance engine performance]
-
+इंजन का प्रदर्शन
 [engine performance follow latest interval]
-
+नवीनतम अंतराल का अनुसरण करें
 [engine performance compare task costs]
-
+कार्यों की लागत की तुलना करें
 [engine performance all metrics and slow ticks]
-
+सभी माप और धीमे टिक
 [engine performance phase orders]
-
+आदेश
 [engine performance phase units]
-
+इकाइयाँ
 [engine performance phase buildings]
-
+इमारतें
 [engine performance phase map]
-
+नक्शा
 [engine performance phase statistics]
-
+आँकड़े
 [engine performance phase ai]
-
+कंप्यूटर खिलाड़ी
 [engine performance phase world capture]
-
+दुनिया का स्नैपशॉट
 [engine performance phase checksums]
-
+चेकसम
 [engine performance wall time %0]
-
+वास्तविक समय: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+आवश्यक प्रतीक्षा: %0 ms; स्वामी थ्रेड की प्रतीक्षा: %1 ms; लॉक: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms वास्तविक समय
 [engine performance tick %0 wall %1]
-
+टिक %0: %1 ms वास्तविक समय
 [hive standing order update failed]
 स्थायी आदेश को अपडेट करना विफल रहा। आपका आदेश इस डिवाइस पर अस्थायी रूप से रोका गया है; संबंधित नियंत्रण का उपयोग करके फिर से प्रयास करें।
 [tundra]

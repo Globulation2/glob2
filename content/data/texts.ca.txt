@@ -1695,13 +1695,13 @@ Amplada del pont de terra
 [Lake size]
 Mida del llac
 [Crater type]
-
+Tipus de cràter
 [Crater rims]
-
+Vores dels cràters
 [Volcanic maars]
-
+Maars volcànics
 [Glacial kettles]
-
+Clots glacials
 [Contested commons]
 Terres comunals disputades
 [Maze]
@@ -1805,7 +1805,7 @@ Amplada del cinturó
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 El cinturó és massa curt per a tantes colònies; fes servir un mapa més llarg o menys colònies.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+El món anell no pot col·locar la seva roca i les seves costes sense aïllar terreny amb aquesta llavor.
 [City states]
 Ciutats estat
 [Strait width]
@@ -1839,11 +1839,11 @@ Mida de la clariana
 [Levee]
 Dic
 [Mudflats]
-
+Planes de fang
 [Hammocks]
-
+Illots boscosos
 [Moss]
-
+Molsa
 [Sloughs]
 Braços morts
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Llacunes
 [Central island]
 Illa central
 [Tide]
-
+Marea
 [Neap tide]
-
+Marea morta
 [Mean tide]
-
+Marea mitjana
 [Spring tide]
-
+Marea viva
 [Tidal flats need at least one colony.]
 Les planes de marea necessiten almenys una colònia.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+El turó rocós central no té espai per a la seva roca al costat dels fronts de pedrera; fes servir un mapa més gran o menys colònies.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Les illes natals no caben en aquest mapa; fes servir un mapa més gran, menys colònies o illes més petites.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Delta del riu
 [Meandering rivers]
 Rius amb meandres
 [Banks]
-
+Ribes
 [Deep channels]
-
+Canals profunds
 [River bluffs]
-
+Escarpes fluvials
 [Divide outcrops]
-
+Afloraments divisoris
 [Deep water]
-
+Aigua profunda
 [Rock outcrops]
-
+Afloraments rocosos
 [Fruit in home valleys]
 Fruita a les valls inicials
 [Moat]
@@ -2025,11 +2025,11 @@ Colònies a les dues costes
 [Winding belt]
 Cinturó sinuós
 [Deep ocean]
-
+Oceà profund
 [Rock spine]
-
+Espinada rocosa
 [Ring road]
-
+Camí circular
 [Cell shape]
 Forma de les cel·les
 [Squares]
@@ -2067,19 +2067,19 @@ Separació dels passos
 [Lee width]
 Amplada del sotavent
 [Climate]
-
+Clima
 [Temperate]
-
+Temperat
 [Steppe]
-
+Estepa
 [Tropical]
-
+Tropical
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+No hi ha cap cresta darrere de les bases; fes servir menys crestes o un mapa més gran.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Les crestes no deixen espai per a les pedreres de les bases; fes servir crestes més gruixudes o un mapa més gran.
 [The ridges could not be sealed; use thicker ridges.]
-
+No s'han pogut segellar les crestes; fes servir crestes més gruixudes.
 [Old growth]
 Bosc primari
 [Canals]
@@ -2425,9 +2425,9 @@ Passos del riu
 [Dunes]
 Dunes de sorra
 [Dry]
-Sec
+Seca
 [Wet]
-Humit
+Humida
 [Rejoining frequency]
 Freqüència de confluències
 [Crossing spacing]
@@ -2519,7 +2519,7 @@ Guals extra
 [Moraine hummocks]
 Monticles de morrena
 [Deep pools]
-
+Gorgs profunds
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 La trena deixa massa poca terrassa per a les bases; usa un mapa més gran o una trena més estreta.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Abeuradors
 [Dry patches]
 Zones seques
 [Season]
-
+Estació
 [Meltwater]
-
+Desglaç
 [Late summer]
-
+Final d'estiu
 [Sparse]
 Pocs
 [Normal]
@@ -2713,25 +2713,25 @@ Ventall llarg
 [Twin springs]
 Fonts bessones
 [Canyon mouth]
-
+Sortida del congost
 [Cienega]
-
+Aiguamoll de font
 [Coalescing pair]
-
+Parell coalescent
 [Cienegas]
-
+Aiguamolls de font
 [Rock]
-
+Roca
 [Granite]
-
+Granit
 [Greenstone]
-
+Roca verda
 [Sandstone]
-
+Gres
 [Volcanic]
-
+Volcànica
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Els colls envaeixen les pedreres de les bases; fes servir menys colls, menys colònies o un mapa més gran.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Els ventalls al·luvials són massa estrets per a les bases; fes servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Gruix del pas boscós
 [Extra trails]
 Corriols addicionals
 [Deep lakes]
-
+Llacs profunds
 [Bedrock]
-
+Sòcol rocós
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Els costats d'aquest mapa han de fer entre 64 i 512 caselles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Recursos netejats
 [stat cleared about]
 Recursos que els treballadors han tret a les zones de neteja per fer lloc.
 [stats topic overview]
-
+Resum
 [stats topic economy]
-
+Economia
 [stats topic world]
-
+Món
 [stats work construction]
-
+Feina i construcció
 [stats defence]
-
+Defensa
 [stats history]
-
+Mostra l'historial
 [stats waiting]
-
+Esperant les estadístiques…
 [stats unit details]
-
+Detalls de les unitats
 [stats map overlays]
-
+Capes del mapa
 [stats topic]
-
+Tema
 [stats full history]
-
+Obre l'historial complet
 [stats missing readings]
-
+— Encara no hi ha cap lectura registrada. Selecciona una estadística per veure'n els detalls.
 [stat win probability]
-
+Probabilitat de victòria
 [stat win probability about]
-
+Probabilitat estimada que la teva aliança guanyi, mostrejada al llarg de la partida. Els aliats comparteixen una mateixa probabilitat. Aquest model s'ha entrenat amb partides de la IA; les estimacions no tenen en compte la posició ni els moviments planificats. Les partides desades antigues poden tenir un historial incomplet.
 [stat prestige]
 Prestigi
 [stat prestige about]
@@ -5781,21 +5781,21 @@ Peixos
 [Reroll terrain look]
 Torna a sortejar l’aspecte del terreny
 [boulders]
-Blocs de roca
+Pilars de pedra
 [hedge]
 Bardissa
 [thicket]
 Matollar
 [ridge_rock]
-
+Agulles de roca
 [outcrop]
-
+Columnes de basalt
 [dirt]
 Terra
 [clay]
 Argila
 [shale]
-Pissarra
+Esquist
 [heath]
 Bruguerar
 [mud]
@@ -5855,7 +5855,7 @@ Cendra volcànica
 [glacier_ice]
 Gel de glacera
 [overgrown_road]
-Camí envaït per la vegetació
+Llambordes molsoses
 [laterite]
 Laterita
 [cliffs]
@@ -5885,7 +5885,7 @@ Bancals de gres
 [obsidian_ridge]
 Cresta d'obsidiana
 [granite_tors]
-Tors de granit
+Tormos de granit
 [travertine_terraces]
 Terrasses de travertí
 [penitentes]
@@ -5907,13 +5907,13 @@ Sorra
 [terrain group grass]
 Herba
 [terrain group ice]
-Gel
+Neu i gel
 [terrain group paths]
 Camins
 [terrain group obstacles]
-Obstacles
+Barreres
 [terrain group ridges]
-
+Afloraments
 [terrain group barren]
 Sòl estèril
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordre no confirmada. Obre el comandant per tornar-ho a intentar; el teu missatge
 [hive standing order update failed]
 L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en aquest dispositiu; torna-ho a intentar amb el control corresponent.
 [engine performance per game minute]
-
+Per minut de joc
 [engine performance per real minute]
-
+Per minut real
 [engine performance game engine performance]
-
+Rendiment del motor de joc
 [engine performance task wall-time costs]
-
+Cost de les tasques en temps real
 [engine performance inspect slow ticks]
-
+Inspecciona els cicles lents
 [engine performance no advancing ticks recorded yet]
-
+Encara no s'ha registrat cap cicle d'avanç.
 [engine performance whole-engine performance]
-
+Rendiment de tot el motor
 [engine performance open performance charts]
-
+Obre els gràfics de rendiment
 [engine performance engine performance]
-
+Rendiment del motor
 [engine performance follow latest interval]
-
+Segueix l'últim interval
 [engine performance compare task costs]
-
+Compara el cost de les tasques
 [engine performance all metrics and slow ticks]
-
+Totes les mètriques i cicles lents
 [engine performance phase orders]
-
+Ordres
 [engine performance phase units]
-
+Unitats
 [engine performance phase buildings]
-
+Edificis
 [engine performance phase map]
-
+Mapa
 [engine performance phase statistics]
-
+Estadístiques
 [engine performance phase ai]
-
+IA
 [engine performance phase world capture]
-
+Captura del món
 [engine performance phase checksums]
-
+Sumes de verificació
 [engine performance wall time %0]
-
+Temps real: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Esperes obligatòries: %0 ms; unions del propietari: %1 ms; bloquejos: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms de temps real
 [engine performance tick %0 wall %1]
-
+Cicle %0: %1 ms de temps real
 [AI for all computer colonies]
 IA per a totes les colònies controlades per l’ordinador
 [tundra]

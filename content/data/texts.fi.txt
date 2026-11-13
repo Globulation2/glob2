@@ -1695,13 +1695,13 @@ Maasillan leveys
 [Lake size]
 Järven koko
 [Crater type]
-
+Kraatterin tyyppi
 [Crater rims]
-
+Kraatterin reunat
 [Volcanic maars]
-
+Vulkaaniset maarit
 [Glacial kettles]
-
+Suppakuopat
 [Contested commons]
 Kiistelty yhteisalue
 [Maze]
@@ -1729,11 +1729,11 @@ Vallihaudan leveys
 [Wall thickness]
 Muurien paksuus
 [Gardens]
-Kasvimaat
+Puutarhat
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Näin paksut muurit jättävät aukot liian kapeiksi; käytä ohuempia muureja tai suurempia soluja.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Näin leveät vallihaudat jättävät jokaisen kotitukikohdan sisälle liian vähän tilaa; käytä kapeampaa vallihautaa, ohuempia muureja tai suurempia soluja.
+Näin leveät vallihaudat jättävät jokaisen kotialueen sisälle liian vähän tilaa; käytä kapeampaa vallihautaa, ohuempia muureja tai suurempia soluja.
 [Bridge count]
 Siltojen määrä
 [Continent size]
@@ -1805,7 +1805,7 @@ Vyöhykkeen leveys
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vyöhyke on liian lyhyt näin monelle siirtokunnalle; käytä pidempää karttaa tai vähemmän siirtokuntia.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Rengasmaailma ei voi tällä siemenellä sijoittaa kallioitaan ja rannikoitaan katkaisematta maata erilleen.
 [City states]
 Kaupunkivaltiot
 [Strait width]
@@ -1839,11 +1839,11 @@ Aukion koko
 [Levee]
 Pato
 [Mudflats]
-
+Mutatasangot
 [Hammocks]
-
+Puusaarekkeet
 [Moss]
-
+Sammal
 [Sloughs]
 Rimmet
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Laguunit
 [Central island]
 Keskussaari
 [Tide]
-
+Vuorovesi
 [Neap tide]
-
+Heikko vuorovesi
 [Mean tide]
-
+Keskimääräinen vuorovesi
 [Spring tide]
-
+Voimakas vuorovesi
 [Tidal flats need at least one colony.]
 Vuorovesitasangot tarvitsevat vähintään yhden siirtokunnan.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Keskuskalliolle ei jää tilaa louhosten seinämien viereen; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Kotisaaret eivät mahdu tälle kartalle; käytä suurempaa karttaa, vähemmän siirtokuntia tai pienempiä saaria.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Jokisuisto
 [Meandering rivers]
 Meanderoivat joet
 [Banks]
-
+Rannat
 [Deep channels]
-
+Syvät uomat
 [River bluffs]
-
+Jokitörmät
 [Divide outcrops]
-
+Vedenjakajan kalliot
 [Deep water]
-
+Syvä vesi
 [Rock outcrops]
-
+Kalliopaljastumat
 [Fruit in home valleys]
 Hedelmiä kotilaaksoissa
 [Moat]
@@ -2025,11 +2025,11 @@ Siirtokuntia molemmilla rannikoilla
 [Winding belt]
 Mutkitteleva vyöhyke
 [Deep ocean]
-
+Syvä valtameri
 [Rock spine]
-
+Kallioselänne
 [Ring road]
-
+Kehätie
 [Cell shape]
 Solujen muoto
 [Squares]
@@ -2067,19 +2067,19 @@ Solien väli
 [Lee width]
 Suojanpuolen leveys
 [Climate]
-
+Ilmasto
 [Temperate]
-
+Lauhkea
 [Steppe]
-
+Aro
 [Tropical]
-
+Trooppinen
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Kotialueiden takana ei ole harjannetta; käytä vähemmän harjanteita tai suurempaa karttaa.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Harjanteet eivät jätä tilaa kotialueiden louhoksille; käytä paksumpia harjanteita tai suurempaa karttaa.
 [The ridges could not be sealed; use thicker ridges.]
-
+Harjanteita ei voitu sulkea; käytä paksumpia harjanteita.
 [Old growth]
 Aarniometsä
 [Canals]
@@ -2519,7 +2519,7 @@ Lisäkahlaamot
 [Moraine hummocks]
 Moreenikumpareet
 [Deep pools]
-
+Syvät suvannot
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Palmikko jättää kotialueille liian vähän terassia; käytä suurempaa karttaa tai kapeampaa palmikkoa.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Juomapaikat
 [Dry patches]
 Kuivat alueet
 [Season]
-
+Vuodenaika
 [Meltwater]
-
+Sulamisvesi
 [Late summer]
-
+Loppukesä
 [Sparse]
 Harvassa
 [Normal]
@@ -2713,25 +2713,25 @@ Pitkä viuhka
 [Twin springs]
 Kaksoislähteet
 [Canyon mouth]
-
+Kanjonin suu
 [Cienega]
-
+Lähdesuo
 [Coalescing pair]
-
+Yhteenkasvava pari
 [Cienegas]
-
+Lähdesuot
 [Rock]
-
+Kivilaji
 [Granite]
-
+Graniitti
 [Greenstone]
-
+Vihreäkivi
 [Sandstone]
-
+Hiekkakivi
 [Volcanic]
-
+Vulkaaninen
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Solat leikkaavat kotialueiden louhoksiin; käytä vähemmän solia, vähemmän siirtokuntia tai suurempaa karttaa.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Viuhkarinteet ovat liian kapeita kotialueille; käytä suurempaa karttaa, suurempaa vuorijonojen väliä, kapeampia harjanteita tai pienempiä suolajärviä.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Raivaussyvyys
 [Extra trails]
 Lisäpolut
 [Deep lakes]
-
+Syvät järvet
 [Bedrock]
-
+Kallioperä
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Kartan sivujen on oltava 64–512 ruudun pituisia.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Raivatut resurssit
 [stat cleared about]
 Työläisten raivausalueilta poistamat resurssit tilan tekemiseksi.
 [stats topic overview]
-
+Yleiskatsaus
 [stats topic economy]
-
+Talous
 [stats topic world]
-
+Maailma
 [stats work construction]
-
+Työ ja rakentaminen
 [stats defence]
-
+Puolustus
 [stats history]
-
+Näytä historia
 [stats waiting]
-
+Odotetaan tilastoja…
 [stats unit details]
-
+Yksikön tiedot
 [stats map overlays]
-
+Karttatasot
 [stats topic]
-
+Aihe
 [stats full history]
-
+Avaa koko historia
 [stats missing readings]
-
+— Lukemaa ei ole vielä tallennettu. Valitse tilasto nähdäksesi tiedot.
 [stat win probability]
-
+Voittotodennäköisyys
 [stat win probability about]
-
+Arvioitu todennäköisyys liittoumasi voitolle, mitattuna koko ottelun ajan. Liittolaiset jakavat saman todennäköisyyden. Malli on koulutettu tekoälyotteluilla; arviot eivät ota huomioon asemaa tai suunniteltuja siirtoja. Vanhemmista tallennuksista voi puuttua osa historiasta.
 [stat prestige]
 Maine
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Kalat
 [Reroll terrain look]
 Arvo maaston ulkoasu uudelleen
 [boulders]
-Lohkareet
+Kivipylväät
 [hedge]
 Pensasaita
 [thicket]
 Tiheikkö
 [ridge_rock]
-
+Kallioneulat
 [outcrop]
-
+Basalttipylväät
 [dirt]
 Multa
 [clay]
@@ -5855,7 +5855,7 @@ Vulkaanista tuhkaa
 [glacier_ice]
 Jäätikköjää
 [overgrown_road]
-Umpeen kasvanut tie
+Sammaloitunut nupukivetys
 [laterite]
 Lateriitti
 [cliffs]
@@ -5907,13 +5907,13 @@ Hiekka
 [terrain group grass]
 Ruoho
 [terrain group ice]
-Jää
+Lumi ja jää
 [terrain group paths]
 Polut
 [terrain group obstacles]
 Esteet
 [terrain group ridges]
-
+Kalliomuodostumat
 [terrain group barren]
 Karuton maa
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Käskyä ei vahvistettu. Avaa komentaja yrittääksesi uudelleen; viestisi on s�
 [hive standing order update failed]
 Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laitteella; yritä uudelleen samalla toiminnolla.
 [engine performance per game minute]
-
+Pelin minuuttia kohden
 [engine performance per real minute]
-
+Todellista minuuttia kohden
 [engine performance game engine performance]
-
+Pelimoottorin suorituskyky
 [engine performance task wall-time costs]
-
+Tehtävien seinäkelloaika
 [engine performance inspect slow ticks]
-
+Tarkastele hitaita askelia
 [engine performance no advancing ticks recorded yet]
-
+Eteneviä askelia ei ole vielä tallennettu.
 [engine performance whole-engine performance]
-
+Koko moottorin suorituskyky
 [engine performance open performance charts]
-
+Avaa suorituskykykaaviot
 [engine performance engine performance]
-
+Moottorin suorituskyky
 [engine performance follow latest interval]
-
+Seuraa uusinta jaksoa
 [engine performance compare task costs]
-
+Vertaa tehtävien kustannuksia
 [engine performance all metrics and slow ticks]
-
+Kaikki mittarit ja hitaat askeleet
 [engine performance phase orders]
-
+Käskyt
 [engine performance phase units]
-
+Yksiköt
 [engine performance phase buildings]
-
+Rakennukset
 [engine performance phase map]
-
+Kartta
 [engine performance phase statistics]
-
+Tilastot
 [engine performance phase ai]
-
+Tekoäly
 [engine performance phase world capture]
-
+Maailman kaappaus
 [engine performance phase checksums]
-
+Tarkistussummat
 [engine performance wall time %0]
-
+Seinäkelloaika: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Pakolliset odotukset: %0 ms; omistajan join-odotukset: %1 ms; lukot: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms seinäkelloaikaa
 [engine performance tick %0 wall %1]
-
+Askel %0: %1 ms seinäkelloaikaa
 [AI for all computer colonies]
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille
 [tundra]

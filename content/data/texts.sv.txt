@@ -1695,13 +1695,13 @@ Landbrons bredd
 [Lake size]
 Sjöstorlek
 [Crater type]
-
+Kratertyp
 [Crater rims]
-
+Kraterkanter
 [Volcanic maars]
-
+Vulkaniska maarer
 [Glacial kettles]
-
+Dödisgropar
 [Contested commons]
 Omtvistad allmänning
 [Maze]
@@ -1805,7 +1805,7 @@ Bältets bredd
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Ringvärlden kan inte lägga ut sitt berg och sina kuster med detta frö utan att skära av mark.
 [City states]
 Stadsstater
 [Strait width]
@@ -1839,11 +1839,11 @@ Gläntans storlek
 [Levee]
 Vall
 [Mudflats]
-
+Lerslätter
 [Hammocks]
-
+Trädöar
 [Moss]
-
+Mossa
 [Sloughs]
 Sumpkanaler
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Laguner
 [Central island]
 Central ö
 [Tide]
-
+Tidvatten
 [Neap tide]
-
+Nipflod
 [Mean tide]
-
+Medeltidvatten
 [Spring tide]
-
+Springflod
 [Tidal flats need at least one colony.]
 Tidvattenslätter kräver minst en koloni.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Den centrala bergknallen får inte plats med sitt berg bredvid stenbrottens väggar; använd en större karta eller färre kolonier.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Hemöarna får inte plats på den här kartan; använd en större karta, färre kolonier eller mindre öar.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Flodens delta
 [Meandering rivers]
 Meandrande floder
 [Banks]
-
+Stränder
 [Deep channels]
-
+Djupa fåror
 [River bluffs]
-
+Flodbranter
 [Divide outcrops]
-
+Hällar vid vattendelaren
 [Deep water]
-
+Djupt vatten
 [Rock outcrops]
-
+Berghällar
 [Fruit in home valleys]
 Frukt i startdalarna
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonier på båda kusterna
 [Winding belt]
 Slingrande bälte
 [Deep ocean]
-
+Djuphav
 [Rock spine]
-
+Bergrygg
 [Ring road]
-
+Ringväg
 [Cell shape]
 Cellform
 [Squares]
@@ -2067,19 +2067,19 @@ Passavstånd
 [Lee width]
 Läsidans bredd
 [Climate]
-
+Klimat
 [Temperate]
-
+Tempererat
 [Steppe]
-
+Stäpp
 [Tropical]
-
+Tropiskt
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Ingen ås står bakom hemmen; använd färre åsar eller en större karta.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Åsarna lämnar ingen plats för hemmens stenbrott; använd tjockare åsar eller en större karta.
 [The ridges could not be sealed; use thicker ridges.]
-
+Åsarna kunde inte slutas tätt; använd tjockare åsar.
 [Old growth]
 Urskog
 [Canals]
@@ -2519,7 +2519,7 @@ Extra vadställen
 [Moraine hummocks]
 Moränkullar
 [Deep pools]
-
+Djupa höljor
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Flätan lämnar för lite terrass åt hemmen; använd en större karta eller en smalare fläta.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Vattenhål
 [Dry patches]
 Torra områden
 [Season]
-
+Årstid
 [Meltwater]
-
+Smältvatten
 [Late summer]
-
+Sensommar
 [Sparse]
 Få
 [Normal]
@@ -2713,25 +2713,25 @@ Lång svämkägla
 [Twin springs]
 Tvillingkällor
 [Canyon mouth]
-
+Kanjonmynning
 [Cienega]
-
+Källkärr
 [Coalescing pair]
-
+Sammanväxande par
 [Cienegas]
-
+Källkärr
 [Rock]
-
+Bergart
 [Granite]
-
+Granit
 [Greenstone]
-
+Grönsten
 [Sandstone]
-
+Sandsten
 [Volcanic]
-
+Vulkaniskt
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Passen skär in i hemmens stenbrott; använd färre pass, färre kolonier eller en större karta.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Svämkäglorna är för smala för hemmen; använd en större karta, större avstånd mellan bergskedjor, smalare åsar eller mindre saltsjöar.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Skogspassagens tjocklek
 [Extra trails]
 Fler stigar
 [Deep lakes]
-
+Djupa sjöar
 [Bedrock]
-
+Berggrund
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Denna kartas sidor måste vara mellan 64 och 512 rutor.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Röjda resurser
 [stat cleared about]
 Resurser som arbetare tagit bort i röjningsområden för att skapa utrymme.
 [stats topic overview]
-
+Översikt
 [stats topic economy]
-
+Ekonomi
 [stats topic world]
-
+Värld
 [stats work construction]
-
+Arbete & byggande
 [stats defence]
-
+Försvar
 [stats history]
-
+Visa historik
 [stats waiting]
-
+Väntar på statistik…
 [stats unit details]
-
+Enhetsdetaljer
 [stats map overlays]
-
+Kartlager
 [stats topic]
-
+Ämne
 [stats full history]
-
+Öppna hela historiken
 [stats missing readings]
-
+— Ingen registrerad mätning ännu. Välj en statistik för detaljer.
 [stat win probability]
-
+Vinstsannolikhet
 [stat win probability about]
-
+Uppskattad chans att din allians vinner, mätt under hela matchen. Allierade delar en sannolikhet. Modellen tränades på AI-matcher; uppskattningarna tar inte hänsyn till ställning eller planerade drag. Äldre sparfiler kan ha ofullständig historik.
 [stat prestige]
 Prestigevärde
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Fisk
 [Reroll terrain look]
 Slumpa terrängens utseende igen
 [boulders]
-Stenblock
+Stenpelare
 [hedge]
 Häck
 [thicket]
 Snår
 [ridge_rock]
-
+Bergspiror
 [outcrop]
-
+Basaltpelare
 [dirt]
 Jord
 [clay]
@@ -5855,7 +5855,7 @@ Vulkanaska
 [glacier_ice]
 Glaciäris
 [overgrown_road]
-Igenvuxen väg
+Mossig kullersten
 [laterite]
 Laterit
 [cliffs]
@@ -5885,7 +5885,7 @@ Sandstensbänkar
 [obsidian_ridge]
 Obsidiankam
 [granite_tors]
-Granitblock
+Granitknallar
 [travertine_terraces]
 Travertinterrasser
 [penitentes]
@@ -5907,13 +5907,13 @@ Sand
 [terrain group grass]
 Gräs
 [terrain group ice]
-Is
+Snö och is
 [terrain group paths]
 Stigar
 [terrain group obstacles]
-Hinder
+Barriärer
 [terrain group ridges]
-
+Bergformationer
 [terrain group barren]
 Obördig mark
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordern har inte bekräftats. Öppna befälhavaren för att försöka igen; ditt 
 [hive standing order update failed]
 Uppdateringen av den stående ordern misslyckades. Din order är pausad på den här enheten; försök igen med motsvarande kontroll.
 [engine performance per game minute]
-
+Per spelminut
 [engine performance per real minute]
-
+Per verklig minut
 [engine performance game engine performance]
-
+Spelmotorns prestanda
 [engine performance task wall-time costs]
-
+Väggtid per uppgift
 [engine performance inspect slow ticks]
-
+Granska långsamma steg
 [engine performance no advancing ticks recorded yet]
-
+Inga framåtskridande steg registrerade ännu.
 [engine performance whole-engine performance]
-
+Hela motorns prestanda
 [engine performance open performance charts]
-
+Öppna prestandadiagram
 [engine performance engine performance]
-
+Motorprestanda
 [engine performance follow latest interval]
-
+Följ senaste intervallet
 [engine performance compare task costs]
-
+Jämför uppgiftskostnader
 [engine performance all metrics and slow ticks]
-
+Alla mätvärden och långsamma steg
 [engine performance phase orders]
-
+Order
 [engine performance phase units]
-
+Enheter
 [engine performance phase buildings]
-
+Byggnader
 [engine performance phase map]
-
+Karta
 [engine performance phase statistics]
-
+Statistik
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Världsinsamling
 [engine performance phase checksums]
-
+Kontrollsummor
 [engine performance wall time %0]
-
+Väggtid: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Nödvändiga väntetider: %0 ms; ägar-joins: %1 ms; lås: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms väggtid
 [engine performance tick %0 wall %1]
-
+Steg %0: %1 ms väggtid
 [AI for all computer colonies]
 AI för alla datorstyrda kolonier
 [tundra]

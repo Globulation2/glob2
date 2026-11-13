@@ -1663,13 +1663,13 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Lake size]
 సరస్సు పరిమాణం
 [Crater type]
-
+బిలాల రకం
 [Crater rims]
-
+బిలాల అంచులు
 [Volcanic maars]
-
+అగ్నిపర్వత మార్ బిలాలు
 [Glacial kettles]
-
+హిమానీనద గుంటలు
 [Contested commons]
 పోటీపడే ఉమ్మడి భూములు
 [Maze]
@@ -1769,7 +1769,7 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 ఇన్ని కాలనీలకు ఈ బెల్ట్ చాలా చిన్నదిగా ఉంది; పొడవైన మ్యాప్‌ను లేదా తక్కువ కాలనీలను ఉపయోగించండి.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+ఈ సీడ్‌లో రింగ్ ప్రపంచం నేలలో ఏ భాగాన్నీ వేరుచేయకుండా తన రాళ్లను, తీరాలను అమర్చలేదు.
 [City states]
 నగర రాష్ట్రాలు
 [Strait width]
@@ -1803,11 +1803,11 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Levee]
 వరద కట్ట
 [Mudflats]
-
+బురద మైదానాలు
 [Hammocks]
-
+చెట్ల దీవులు
 [Moss]
-
+నాచు
 [Sloughs]
 చిత్తడి కాలువలు
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Central island]
 మధ్య ద్వీపం
 [Tide]
-
+పోటుపాట్లు
 [Neap tide]
-
+లఘు పోటు
 [Mean tide]
-
+సగటు పోటు
 [Spring tide]
-
+పెద్ద పోటు
 [Tidal flats need at least one colony.]
 అలల మైదానాలకు కనీసం ఒక కాలనీ అవసరం.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+క్వారీ గోడల పక్కన మధ్యలోని రాతి గుట్ట రాళ్లకు స్థలం లేదు; పెద్ద మ్యాప్‌ను లేదా తక్కువ కాలనీలను ఉపయోగించండి.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 స్వదేశీ దీవులు ఈ పటంలో సరిపోవు; పెద్ద పటాన్ని, తక్కువ కాలనీలను లేదా చిన్న దీవులను ఉపయోగించండి.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Meandering rivers]
 వంకర నదులు
 [Banks]
-
+ఒడ్డులు
 [Deep channels]
-
+లోతైన కాలువలు
 [River bluffs]
-
+నది ఒడ్డు కొండచరియలు
 [Divide outcrops]
-
+జలవిభజన రాతి గుట్టలు
 [Deep water]
-
+లోతైన నీరు
 [Rock outcrops]
-
+రాతి గుట్టలు
 [Fruit in home valleys]
 ఇంటి లోయలలో పండ్లు
 [Moat]
@@ -1993,11 +1993,11 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Winding belt]
 వైండింగ్ బెల్ట్
 [Deep ocean]
-
+లోతైన సముద్రం
 [Rock spine]
-
+రాతి వెన్నెముక
 [Ring road]
-
+వలయ రహదారి
 [Cell shape]
 కణ ఆకారం
 [Squares]
@@ -2035,19 +2035,19 @@ Globulation 2 కర్సర్‌ను ప్రదర్శించండ�
 [Lee width]
 గాలి మరుగున ఉన్న వైపు వెడల్పు
 [Climate]
-
+వాతావరణం
 [Temperate]
-
+సమశీతోష్ణ
 [Steppe]
-
+స్టెప్పీ
 [Tropical]
-
+ఉష్ణమండల
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+ప్రధాన స్థావరాల వెనుక ఏ కొండ వరుసా లేదు; తక్కువ కొండ వరుసలను లేదా పెద్ద మ్యాప్‌ను ఉపయోగించండి.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+కొండ వరుసలు ప్రధాన స్థావరాల క్వారీలకు స్థలం వదలడం లేదు; మందమైన కొండ వరుసలను లేదా పెద్ద మ్యాప్‌ను ఉపయోగించండి.
 [The ridges could not be sealed; use thicker ridges.]
-
+కొండ వరుసలను మూసివేయడం సాధ్యం కాలేదు; మందమైన కొండ వరుసలను ఉపయోగించండి.
 [Old growth]
 పురాతన అడవి
 [Canals]
@@ -2397,7 +2397,7 @@ HP ≤ 25/50/75 %
 [Flood]
 వరద
 [Distributaries]
-ఉపనదీ శాఖలు
+నదీ పాయలు
 [River crossings]
 నది దాటే మార్గాలు
 [Dunes]
@@ -2497,7 +2497,7 @@ HP ≤ 25/50/75 %
 [Moraine hummocks]
 మోరైన్ గుట్టలు
 [Deep pools]
-
+లోతైన మడుగులు
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 ఈ అల్లిక ఇళ్లకు చాలా తక్కువ చదును స్థలాన్ని వదిలివేస్తుంది; పెద్ద పటాన్ని లేదా సన్నని అల్లికను ఉపయోగించండి.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤ 25/50/75 %
 [Dry patches]
 పొడి మచ్చలు
 [Season]
-
+ఋతువు
 [Meltwater]
-
+కరిగిన మంచు నీరు
 [Late summer]
-
+వేసవి చివర
 [Sparse]
 విరళంగా
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤ 25/50/75 %
 [Twin springs]
 జంట ఊటలు
 [Canyon mouth]
-
+లోయ ముఖద్వారం
 [Cienega]
-
+ఊట చిత్తడి
 [Coalescing pair]
-
+కలిసే జంట నిక్షేపాలు
 [Cienegas]
-
+ఊట చిత్తడులు
 [Rock]
-
+రాయి
 [Granite]
-
+గ్రానైట్
 [Greenstone]
-
+పచ్చరాయి
 [Sandstone]
-
+ఇసుకరాయి
 [Volcanic]
-
+అగ్నిపర్వత శిల
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+కనుమలు ప్రధాన స్థావరాల క్వారీలను చీలుస్తున్నాయి; తక్కువ కనుమలు, తక్కువ కాలనీలు లేదా పెద్ద మ్యాప్‌ను ఉపయోగించండి.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 ప్రారంభ స్థలాలకు బజాడాలు చాలా ఇరుకుగా ఉన్నాయి; పెద్ద మ్యాప్, శ్రేణుల మధ్య ఎక్కువ దూరం, ఇరుకైన గట్లు లేదా చిన్న ప్లాయాను ఎంచుకోండి.
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤ 25/50/75 %
 [Extra trails]
 అదనపు ట్రయల్స్
 [Deep lakes]
-
+లోతైన సరస్సులు
 [Bedrock]
-
+పునాది శిల
 [Portage Lakes needs sides between 64 and 512 tiles.]
 పోర్టేజ్ సరస్సులకు ఒక్కో వైపు 64 నుంచి 512 టైల్స్ మధ్య పొడవు అవసరం.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ AI ద్వారా రూపొందించబడలేదు
 [Fish]
 చేపలు
 [boulders]
-బండరాళ్లు
+రాతి స్తంభాలు
 [hedge]
 కంచె పొదలు
 [thicket]
 దట్టమైన పొదలు
 [ridge_rock]
-
+రాతి శిఖరాలు
 [outcrop]
-
+బసాల్ట్ స్తంభాలు
 [dirt]
 మట్టి
 [clay]
@@ -5821,7 +5821,7 @@ AI ద్వారా రూపొందించబడలేదు
 [wind_swept_snow]
 గాలికి ఎగిరిన మంచు
 [weathered_sandstone]
-శిథిలమైన ఇసుకరాయి
+అరిగిపోయిన ఇసుకరాయి
 [windy_sand_dune]
 గాలి అలల ఇసుక దిబ్బలు
 [hardpan]
@@ -5831,7 +5831,7 @@ AI ద్వారా రూపొందించబడలేదు
 [glacier_ice]
 హిమానీనదపు మంచు
 [overgrown_road]
-పిచ్చిమొక్కలు పెరిగిన రహదారి
+నాచు పట్టిన పరచిన రాళ్లు
 [laterite]
 లాటరైట్
 [cliffs]
@@ -5849,7 +5849,7 @@ AI ద్వారా రూపొందించబడలేదు
 [moonstone_lozenge]
 చంద్రకాంత రాంబస్‌లు
 [frost_pinwheel]
-మంచు గిరగిర
+మంచు చక్రం
 [arctic_tundra]
 ఆర్కిటిక్ టండ్రా నేల
 [glacier]
@@ -5859,7 +5859,7 @@ AI ద్వారా రూపొందించబడలేదు
 [sandstone_benches]
 ఇసుకరాతి అరుగులు
 [obsidian_ridge]
-అబ్సిడియన్ శిఖరం
+అబ్సిడియన్ కొండ వరుస
 [granite_tors]
 గ్రానైట్ బండలు
 [travertine_terraces]
@@ -5883,13 +5883,13 @@ AI ద్వారా రూపొందించబడలేదు
 [terrain group grass]
 గడ్డి
 [terrain group ice]
-మంచు
+మంచు మరియు హిమం
 [terrain group paths]
 మార్గాలు
 [terrain group obstacles]
 అడ్డంకులు
 [terrain group ridges]
-
+రాతి గుట్టలు
 [terrain group barren]
 బీడు భూమి
 [terrain group rough]

@@ -1695,13 +1695,13 @@ Lățimea punții de uscat
 [Lake size]
 Mărimea lacului
 [Crater type]
-
+Tipul craterelor
 [Crater rims]
-
+Marginile craterelor
 [Volcanic maars]
-
+Maare vulcanice
 [Glacial kettles]
-
+Cuvete glaciare
 [Contested commons]
 Teritoriu comun disputat
 [Maze]
@@ -1805,7 +1805,7 @@ Lățimea centurii
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Centura este prea scurtă pentru atâtea colonii; folosiți o hartă mai lungă sau mai puține colonii.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Lumea inelară nu își poate așeza roca și coastele fără să izoleze teren cu această sămânță.
 [City states]
 Orașe-stat
 [Strait width]
@@ -1839,11 +1839,11 @@ Mărimea poienii
 [Levee]
 Dig
 [Mudflats]
-
+Câmpii de mâl
 [Hammocks]
-
+Insulițe împădurite
 [Moss]
-
+Mușchi
 [Sloughs]
 Canale mlăștinoase
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagune
 [Central island]
 Insula centrală
 [Tide]
-
+Maree
 [Neap tide]
-
+Maree de cuadratură
 [Mean tide]
-
+Maree medie
 [Spring tide]
-
+Maree de sizigie
 [Tidal flats need at least one colony.]
 Câmpiile de maree au nevoie de cel puțin o colonie.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Stânca centrală nu are loc pentru roca sa lângă fronturile carierelor; folosiți o hartă mai mare sau mai puține colonii.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Insulele natale nu încap pe această hartă; folosiți o hartă mai mare, mai puține colonii sau insule mai mici.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Delta râului
 [Meandering rivers]
 Râuri cu meandre
 [Banks]
-
+Maluri
 [Deep channels]
-
+Canale adânci
 [River bluffs]
-
+Maluri abrupte
 [Divide outcrops]
-
+Aflorimente pe cumpene
 [Deep water]
-
+Apă adâncă
 [Rock outcrops]
-
+Aflorimente stâncoase
 [Fruit in home valleys]
 Fructe în văile de pornire
 [Moat]
@@ -2025,11 +2025,11 @@ Colonii pe ambele coaste
 [Winding belt]
 Centură șerpuită
 [Deep ocean]
-
+Ocean adânc
 [Rock spine]
-
+Creastă de stâncă
 [Ring road]
-
+Drum circular
 [Cell shape]
 Forma celulelor
 [Squares]
@@ -2067,19 +2067,19 @@ Distanța dintre trecători
 [Lee width]
 Lățimea zonei adăpostite
 [Climate]
-
+Climă
 [Temperate]
-
+Temperată
 [Steppe]
-
+Stepă
 [Tropical]
-
+Tropicală
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Nicio creastă nu se află în spatele bazelor; folosiți mai puține creste sau o hartă mai mare.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Crestele nu lasă loc pentru carierele bazelor; folosiți creste mai groase sau o hartă mai mare.
 [The ridges could not be sealed; use thicker ridges.]
-
+Crestele nu au putut fi închise; folosiți creste mai groase.
 [Old growth]
 Pădure seculară
 [Canals]
@@ -2097,7 +2097,7 @@ Lățimea canalelor
 [Extra bridges]
 Poduri suplimentare
 [Grand canal]
-Canalul mare
+Marele canal
 [Polder]
 Polder
 [Old town]
@@ -2519,7 +2519,7 @@ Vaduri suplimentare
 [Moraine hummocks]
 Movile morenice
 [Deep pools]
-
+Bulboane adânci
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Împletitura lasă prea puțină terasă pentru baze; folosiți o hartă mai mare sau o împletitură mai îngustă.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Adăpători
 [Dry patches]
 Zone uscate
 [Season]
-
+Anotimp
 [Meltwater]
-
+Dezgheț
 [Late summer]
-
+Sfârșit de vară
 [Sparse]
 Puține
 [Normal]
@@ -2713,25 +2713,25 @@ Con alungit
 [Twin springs]
 Izvoare gemene
 [Canyon mouth]
-
+Gura canionului
 [Cienega]
-
+Mlaștină de izvor
 [Coalescing pair]
-
+Pereche contopită
 [Cienegas]
-
+Mlaștini de izvor
 [Rock]
-
+Rocă
 [Granite]
-
+Granit
 [Greenstone]
-
+Rocă verde
 [Sandstone]
-
+Gresie
 [Volcanic]
-
+Vulcanică
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Trecătorile taie în carierele bazelor; folosiți mai puține trecători, mai puține colonii sau o hartă mai mare.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Conurile aluviale sunt prea înguste pentru baze; folosiți o hartă mai mare, o distanță mai mare între lanțuri, creste mai înguste sau lacuri sărate mai mici.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Grosimea trecerii
 [Extra trails]
 Poteci suplimentare
 [Deep lakes]
-
+Lacuri adânci
 [Bedrock]
-
+Rocă de bază
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Laturile acestei hărți trebuie să aibă între 64 și 512 pătrate.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Resurse îndepărtate
 [stat cleared about]
 Resurse îndepărtate de lucrători în zonele de curățare pentru a face loc.
 [stats topic overview]
-
+Rezumat
 [stats topic economy]
-
+Economie
 [stats topic world]
-
+Lume
 [stats work construction]
-
+Muncă și construcție
 [stats defence]
-
+Apărare
 [stats history]
-
+Vezi istoricul
 [stats waiting]
-
+Se așteaptă statisticile…
 [stats unit details]
-
+Detalii despre unități
 [stats map overlays]
-
+Straturi ale hărții
 [stats topic]
-
+Subiect
 [stats full history]
-
+Deschide istoricul complet
 [stats missing readings]
-
+— Nicio valoare înregistrată încă. Selectați o statistică pentru detalii.
 [stat win probability]
-
+Probabilitatea victoriei
 [stat win probability about]
-
+Șansa estimată ca alianța voastră să câștige, eșantionată pe tot parcursul meciului. Aliații împart aceeași probabilitate. Acest model a fost antrenat pe jocuri ale IA; estimările nu țin cont de poziție sau de mutările planificate. Salvările mai vechi pot avea un istoric incomplet.
 [stat prestige]
 Prestigiu
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Pești
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului
 [boulders]
-Bolovani
+Stâlpi de piatră
 [hedge]
 Gard viu
 [thicket]
 Desiș
 [ridge_rock]
-
+Ace stâncoase
 [outcrop]
-
+Coloane de bazalt
 [dirt]
 Pământ
 [clay]
@@ -5855,7 +5855,7 @@ Cenușă vulcanică
 [glacier_ice]
 Gheață de ghețar
 [overgrown_road]
-Drum năpădit de vegetație
+Pavaj cu mușchi
 [laterite]
 Laterit
 [cliffs]
@@ -5881,7 +5881,7 @@ Ghețar
 [icefall]
 Cascadă de gheață
 [sandstone_benches]
-Bănci de gresie
+Trepte de gresie
 [obsidian_ridge]
 Creastă de obsidian
 [granite_tors]
@@ -5907,13 +5907,13 @@ Nisip
 [terrain group grass]
 Iarbă
 [terrain group ice]
-Gheață
+Zăpadă și gheață
 [terrain group paths]
 Drumuri
 [terrain group obstacles]
-Obstacole
+Bariere
 [terrain group ridges]
-
+Aflorimente
 [terrain group barren]
 Pământ sterp
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordinul nu a fost confirmat. Deschideți comandantul pentru a încerca din nou; 
 [hive standing order update failed]
 Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe acest dispozitiv; încercați din nou folosind controlul corespunzător.
 [engine performance per game minute]
-
+Pe minut de joc
 [engine performance per real minute]
-
+Pe minut real
 [engine performance game engine performance]
-
+Performanța motorului de joc
 [engine performance task wall-time costs]
-
+Costurile sarcinilor în timp real
 [engine performance inspect slow ticks]
-
+Inspectează pașii lenți
 [engine performance no advancing ticks recorded yet]
-
+Niciun pas de avansare înregistrat încă.
 [engine performance whole-engine performance]
-
+Performanța întregului motor
 [engine performance open performance charts]
-
+Deschide graficele de performanță
 [engine performance engine performance]
-
+Performanța motorului
 [engine performance follow latest interval]
-
+Urmărește ultimul interval
 [engine performance compare task costs]
-
+Compară costurile sarcinilor
 [engine performance all metrics and slow ticks]
-
+Toate metricile și pașii lenți
 [engine performance phase orders]
-
+Ordine
 [engine performance phase units]
-
+Unități
 [engine performance phase buildings]
-
+Clădiri
 [engine performance phase map]
-
+Hartă
 [engine performance phase statistics]
-
+Statistici
 [engine performance phase ai]
-
+IA
 [engine performance phase world capture]
-
+Captura lumii
 [engine performance phase checksums]
-
+Sume de control
 [engine performance wall time %0]
-
+Timp real: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Așteptări necesare: %0 ms; joncțiuni ale proprietarului: %1 ms; blocări: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms timp real
 [engine performance tick %0 wall %1]
-
+Pasul %0: %1 ms timp real
 [AI for all computer colonies]
 IA pentru toate coloniile controlate de calculator
 [tundra]

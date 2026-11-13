@@ -1695,13 +1695,13 @@ Samodejno shrani igro približno vsakih 10 sekund.
 [Lake size]
 Velikost jezera
 [Crater type]
-
+Vrsta kraterjev
 [Crater rims]
-
+Robovi kraterjev
 [Volcanic maars]
-
+Vulkanski maari
 [Glacial kettles]
-
+Ledeniške kotanje
 [Contested commons]
 Sporno skupno ozemlje
 [Maze]
@@ -1733,7 +1733,7 @@ Vrtovi
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Tako debeli zidovi pustijo prehode preozke; uporabite tanjše zidove ali večje celice.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Tako široki vodni jarki pustijo premalo prostora znotraj vsake domače baze; uporabite ožji jarek, tanjše zidove ali večje celice.
+Tako široki vodni jarki pustijo premalo prostora znotraj vsakega doma; uporabite ožji jarek, tanjše zidove ali večje celice.
 [Bridge count]
 Število mostov
 [Continent size]
@@ -1745,7 +1745,7 @@ Razgibanost obale
 [Ice sheet size]
 Velikost ledenega pokrova
 [Fjord landings]
-Pristajališča v fjordih
+Sestopi v fjorde
 [Fjord continents need at least one colony.]
 Celina fjordov potrebuje vsaj eno kolonijo.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ Obročasti svet
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Obročasti svet s tem semenom ne more postaviti skal in obal, ne da bi odrezal del kopnega.
 [City states]
 Mestne države
 [Strait width]
@@ -1839,11 +1839,11 @@ Velikost jase
 [Levee]
 Nasip
 [Mudflats]
-
+Blatne ravnice
 [Hammocks]
-
+Drevesni otočki
 [Moss]
-
+Mah
 [Sloughs]
 Mrtvice
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagune
 [Central island]
 Osrednji otok
 [Tide]
-
+Plimovanje
 [Neap tide]
-
+Šibka plima
 [Mean tide]
-
+Srednja plima
 [Spring tide]
-
+Močna plima
 [Tidal flats need at least one colony.]
 Plimske ravnice potrebujejo vsaj eno kolonijo.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Osrednji skalnik nima prostora za skale ob stenah kamnolomov; uporabite večji zemljevid ali manj kolonij.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Domači otoki ne gredo na ta zemljevid; uporabite večji zemljevid, manj kolonij ali manjše otoke.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Rečna delta
 [Meandering rivers]
 Vijugaste reke
 [Banks]
-
+Bregovi
 [Deep channels]
-
+Globoke struge
 [River bluffs]
-
+Strmi rečni bregovi
 [Divide outcrops]
-
+Izdanki na razvodjih
 [Deep water]
-
+Globoka voda
 [Rock outcrops]
-
+Skalni izdanki
 [Fruit in home valleys]
 Sadje v začetnih dolinah
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonije na obeh obalah
 [Winding belt]
 Vijugast pas
 [Deep ocean]
-
+Globok ocean
 [Rock spine]
-
+Skalni greben
 [Ring road]
-
+Krožna cesta
 [Cell shape]
 Oblika celic
 [Squares]
@@ -2067,19 +2067,19 @@ Razmik prelazov
 [Lee width]
 Širina zavetrne strani
 [Climate]
-
+Podnebje
 [Temperate]
-
+Zmerno
 [Steppe]
-
+Stepsko
 [Tropical]
-
+Tropsko
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Za domovi ne stoji noben greben; uporabite manj grebenov ali večji zemljevid.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Grebeni ne puščajo prostora za kamnolome domov; uporabite debelejše grebene ali večji zemljevid.
 [The ridges could not be sealed; use thicker ridges.]
-
+Grebenov ni bilo mogoče zapreti; uporabite debelejše grebene.
 [Old growth]
 Pragozd
 [Canals]
@@ -2519,7 +2519,7 @@ Dodatni brodi
 [Moraine hummocks]
 Morenski grički
 [Deep pools]
-
+Globoki tolmuni
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Preplet pušča domovom premalo terase; uporabite večji zemljevid ali ožji preplet.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Napajališča
 [Dry patches]
 Suha območja
 [Season]
-
+Obdobje
 [Meltwater]
-
+Odjuga
 [Late summer]
-
+Pozno poletje
 [Sparse]
 Malo
 [Normal]
@@ -2713,25 +2713,25 @@ Dolg vršaj
 [Twin springs]
 Dva izvira
 [Canyon mouth]
-
+Ustje kanjona
 [Cienega]
-
+Izvirno močvirje
 [Coalescing pair]
-
+Spojena vršaja
 [Cienegas]
-
+Izvirna močvirja
 [Rock]
-
+Kamnina
 [Granite]
-
+Granit
 [Greenstone]
-
+Zeleni kamen
 [Sandstone]
-
+Peščenjak
 [Volcanic]
-
+Vulkanska
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Prelazi segajo v kamnolome domov; uporabite manj prelazov, manj kolonij ali večji zemljevid.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Pobočja z vršaji so preozka za domove; uporabite večji zemljevid, večji razmik gorovij, ožje grebene ali manjša slana jezera.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Debelina gozdnega prehoda
 [Extra trails]
 Dodatne poti
 [Deep lakes]
-
+Globoka jezera
 [Bedrock]
-
+Matična kamnina
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Stranice tega zemljevida morajo meriti od 64 do 512 polj.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Odstranjene surovine
 [stat cleared about]
 Surovine, ki so jih delavci odstranili na območjih čiščenja, da so naredili prostor.
 [stats topic overview]
-
+Pregled
 [stats topic economy]
-
+Gospodarstvo
 [stats topic world]
-
+Svet
 [stats work construction]
-
+Delo in gradnja
 [stats defence]
-
+Obramba
 [stats history]
-
+Prikaži zgodovino
 [stats waiting]
-
+Čakanje na statistiko…
 [stats unit details]
-
+Podrobnosti o enotah
 [stats map overlays]
-
+Plasti zemljevida
 [stats topic]
-
+Tema
 [stats full history]
-
+Odpri celotno zgodovino
 [stats missing readings]
-
+— Še ni zabeležene vrednosti. Izberite statistiko za podrobnosti.
 [stat win probability]
-
+Verjetnost zmage
 [stat win probability about]
-
+Ocenjena verjetnost zmage vašega zavezništva, merjena skozi celotno tekmo. Zavezniki si delijo eno verjetnost. Model je bil naučen na igrah UI; ocene ne upoštevajo položaja ali načrtovanih potez. Starejše shranjene igre imajo morda nepopolno zgodovino.
 [stat prestige]
 Ugled
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Ribe
 [Reroll terrain look]
 Znova naključno izberi videz terena
 [boulders]
-Balvani
+Kamniti stebri
 [hedge]
 Živa meja
 [thicket]
 Goščava
 [ridge_rock]
-
+Skalne igle
 [outcrop]
-
+Bazaltni stebri
 [dirt]
 Prst
 [clay]
@@ -5855,13 +5855,13 @@ Vulkanski pepel
 [glacier_ice]
 Ledeniški led
 [overgrown_road]
-Zaraščena cesta
+Mahoviti tlakovci
 [laterite]
 Lateritna tla
 [cliffs]
 Pečine
 [molten_lava_pool]
-Bazen staljene lave
+Jezerce staljene lave
 [slate_ashlar]
 Skrilaste plošče
 [basalt_causeway]
@@ -5879,7 +5879,7 @@ Arktična tundrska tla
 [glacier]
 Ledenik
 [icefall]
-Ledeni slap
+Ledeniški slap
 [sandstone_benches]
 Peščenjakove police
 [obsidian_ridge]
@@ -5907,13 +5907,13 @@ Pesek
 [terrain group grass]
 Trava
 [terrain group ice]
-Led
+Sneg in led
 [terrain group paths]
 Poti
 [terrain group obstacles]
-Ovire
+Pregrade
 [terrain group ridges]
-
+Skalni izdanki
 [terrain group barren]
 Nerodovitna tla
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ukaz ni potrjen. Odprite poveljnika za ponovni poskus; vaše sporočilo je bilo 
 [hive standing order update failed]
 Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej napravi; poskusite znova z ustreznim kontrolnikom.
 [engine performance per game minute]
-
+Na minuto igre
 [engine performance per real minute]
-
+Na dejansko minuto
 [engine performance game engine performance]
-
+Zmogljivost igralnega pogona
 [engine performance task wall-time costs]
-
+Dejanski čas opravil
 [engine performance inspect slow ticks]
-
+Preglej počasne korake
 [engine performance no advancing ticks recorded yet]
-
+Koraki z napredovanjem še niso zabeleženi.
 [engine performance whole-engine performance]
-
+Zmogljivost celotnega pogona
 [engine performance open performance charts]
-
+Odpri grafe zmogljivosti
 [engine performance engine performance]
-
+Zmogljivost pogona
 [engine performance follow latest interval]
-
+Sledi zadnjemu intervalu
 [engine performance compare task costs]
-
+Primerjaj stroške opravil
 [engine performance all metrics and slow ticks]
-
+Vse meritve in počasni koraki
 [engine performance phase orders]
-
+Ukazi
 [engine performance phase units]
-
+Enote
 [engine performance phase buildings]
-
+Zgradbe
 [engine performance phase map]
-
+Zemljevid
 [engine performance phase statistics]
-
+Statistika
 [engine performance phase ai]
-
+UI
 [engine performance phase world capture]
-
+Zajem sveta
 [engine performance phase checksums]
-
+Kontrolne vsote
 [engine performance wall time %0]
-
+Dejanski čas: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Obvezna čakanja: %0 ms; združitve lastnika: %1 ms; zaklepi: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms dejanskega časa
 [engine performance tick %0 wall %1]
-
+Korak %0: %1 ms dejanskega časa
 [AI for all computer colonies]
 Umetna inteligenca za vse računalniško vodene kolonije
 [tundra]

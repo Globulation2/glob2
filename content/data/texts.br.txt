@@ -1695,13 +1695,13 @@ Largura da ponte de terra
 [Lake size]
 Tamanho do lago
 [Crater type]
-
+Tipo de cratera
 [Crater rims]
-
+Bordas das crateras
 [Volcanic maars]
-
+Maars vulcânicos
 [Glacial kettles]
-
+Depressões glaciais
 [Contested commons]
 Terras comuns disputadas
 [Maze]
@@ -1749,7 +1749,7 @@ Desembarcadouros dos fiordes
 [Fjord continents need at least one colony.]
 Um continente de fiordes precisa de pelo menos uma colônia.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
-Um continente de fiordes precisa de um mapa com pelo menos 128 quadros no lado menor.
+Um continente de fiordes precisa de um mapa com pelo menos 128 casas no lado menor.
 [Ice reach]
 Alcance do gelo
 [Resource islands]
@@ -1805,7 +1805,7 @@ Largura da faixa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 A faixa é curta demais para tantas colônias; use um mapa mais longo ou menos colônias.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+O mundo anel não consegue posicionar a rocha e as costas sem isolar terreno com esta semente.
 [City states]
 Cidades-estado
 [Strait width]
@@ -1839,11 +1839,11 @@ Tamanho da clareira
 [Levee]
 Dique
 [Mudflats]
-
+Planícies de lama
 [Hammocks]
-
+Ilhas de mata
 [Moss]
-
+Musgo
 [Sloughs]
 Charcos
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagoas
 [Central island]
 Ilha central
 [Tide]
-
+Maré
 [Neap tide]
-
+Maré morta
 [Mean tide]
-
+Maré média
 [Spring tide]
-
+Maré viva
 [Tidal flats need at least one colony.]
 As planícies de maré precisam de pelo menos uma colônia.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+A torre rochosa central não tem espaço para sua rocha ao lado das frentes de pedreira; use um mapa maior ou menos colônias.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 As ilhas natais não cabem neste mapa; use um mapa maior, menos colônias ou ilhas menores.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Delta do rio
 [Meandering rivers]
 Rios com meandros
 [Banks]
-
+Margens
 [Deep channels]
-
+Canais profundos
 [River bluffs]
-
+Barrancos do rio
 [Divide outcrops]
-
+Afloramentos divisores
 [Deep water]
-
+Água profunda
 [Rock outcrops]
-
+Afloramentos rochosos
 [Fruit in home valleys]
 Frutas nos vales iniciais
 [Moat]
@@ -2025,11 +2025,11 @@ Colônias em ambas as costas
 [Winding belt]
 Faixa sinuosa
 [Deep ocean]
-
+Oceano profundo
 [Rock spine]
-
+Espinha rochosa
 [Ring road]
-
+Estrada circular
 [Cell shape]
 Forma das células
 [Squares]
@@ -2067,19 +2067,19 @@ Espaçamento das passagens
 [Lee width]
 Largura do sotavento
 [Climate]
-
+Clima
 [Temperate]
-
+Temperado
 [Steppe]
-
+Estepe
 [Tropical]
-
+Tropical
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Nenhuma crista fica atrás das bases; use menos cristas ou um mapa maior.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+As cristas não deixam espaço para as pedreiras das bases; use cristas mais grossas ou um mapa maior.
 [The ridges could not be sealed; use thicker ridges.]
-
+Não foi possível vedar as cristas; use cristas mais grossas.
 [Old growth]
 Floresta primária
 [Canals]
@@ -2097,7 +2097,7 @@ Largura dos canais
 [Extra bridges]
 Pontes extras
 [Grand canal]
-Kanol veur
+Grande canal
 [Polder]
 Pôlder
 [Old town]
@@ -2425,9 +2425,9 @@ Travessias do rio
 [Dunes]
 Dunas
 [Dry]
-Seco
+Seca
 [Wet]
-Úmido
+Úmida
 [Rejoining frequency]
 Frequência de confluências
 [Crossing spacing]
@@ -2519,7 +2519,7 @@ Vaus extras
 [Moraine hummocks]
 Montículos de morena
 [Deep pools]
-
+Poços profundos
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 O entrelaçado deixa pouco terraço para as bases; use um mapa maior ou um entrelaçado mais estreito.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Bebedouros
 [Dry patches]
 Manchas secas
 [Season]
-
+Estação
 [Meltwater]
-
+Degelo
 [Late summer]
-
+Fim do verão
 [Sparse]
 Poucos
 [Normal]
@@ -2713,25 +2713,25 @@ Leque comprido
 [Twin springs]
 Nascentes gêmeas
 [Canyon mouth]
-
+Boca do cânion
 [Cienega]
-
+Brejo de nascente
 [Coalescing pair]
-
+Par coalescente
 [Cienegas]
-
+Brejos de nascente
 [Rock]
-
+Rocha
 [Granite]
-
+Granito
 [Greenstone]
-
+Rocha verde
 [Sandstone]
-
+Arenito
 [Volcanic]
-
+Vulcânica
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+As passagens cortam as pedreiras das bases; use menos passagens, menos colônias ou um mapa maior.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Os leques aluviais são estreitos demais para as bases; use um mapa maior, um espaçamento maior das serras, cristas mais estreitas ou lagoas salinas menores.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Profundidade das trilhas
 [Extra trails]
 Trilhas extras
 [Deep lakes]
-
+Lagos profundos
 [Bedrock]
-
+Embasamento rochoso
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Lagos e trilhas precisa de lados entre 64 e 512 casas.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores em áreas de limpeza para abrir espaço.
 [stats topic overview]
-
+Resumo
 [stats topic economy]
-
+Economia
 [stats topic world]
-
+Mundo
 [stats work construction]
-
+Trabalho e construção
 [stats defence]
-
+Defesa
 [stats history]
-
+Ver histórico
 [stats waiting]
-
+Aguardando estatísticas…
 [stats unit details]
-
+Detalhes das unidades
 [stats map overlays]
-
+Camadas do mapa
 [stats topic]
-
+Tópico
 [stats full history]
-
+Abrir histórico completo
 [stats missing readings]
-
+— Ainda não há nenhuma leitura registrada. Selecione uma estatística para ver detalhes.
 [stat win probability]
-
+Probabilidade de vitória
 [stat win probability about]
-
+Chance estimada de a sua aliança vencer, amostrada ao longo da partida. Aliados compartilham uma única probabilidade. Este modelo foi treinado com partidas da IA; as estimativas não levam em conta a posição nem as jogadas planejadas. Jogos salvos mais antigos podem ter um histórico incompleto.
 [stat prestige]
 Prestígio
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Peixes
 [Reroll terrain look]
 Adtresañ neuz an douar
 [boulders]
-Blocos rochosos
+Pilares de pedra
 [hedge]
 Cerca viva
 [thicket]
 Matagal
 [ridge_rock]
-
+Agulhas de rocha
 [outcrop]
-
+Colunas de basalto
 [dirt]
 Terra
 [clay]
@@ -5851,31 +5851,31 @@ Dunas de vento
 [hardpan]
 Crosta endurecida
 [volcanic_ash]
-Ludu menezioù-tan
+Cinza vulcânica
 [glacier_ice]
 Gelo glacial
 [overgrown_road]
-Hent goloet gant ar geot
+Paralelepípedos musgosos
 [laterite]
 Laterita
 [cliffs]
-Torgennoù
+Penhascos
 [molten_lava_pool]
-Poull lava teuz
+Poça de lava derretida
 [slate_ashlar]
-Mein-glas
+Lajes de ardósia
 [basalt_causeway]
-Chaoser vazalt
+Calçada de basalto
 [scoria_blocks]
-Bloc'hoù skoria
+Blocos de escória
 [rime_ashlar]
-Mogerezh frim
+Cantaria de geada
 [moonstone_lozenge]
-Lozanjoù maen-loar
+Losangos de pedra-da-lua
 [frost_pinwheel]
-Rod-avel frim
+Cata-vento de geada
 [arctic_tundra]
-Douar toundra arktek
+Solo de tundra ártica
 [glacier]
 Geleira
 [icefall]
@@ -5907,13 +5907,13 @@ Areia
 [terrain group grass]
 Grama
 [terrain group ice]
-Gelo
+Neve e gelo
 [terrain group paths]
 Caminhos
 [terrain group obstacles]
-Obstáculos
+Barreiras
 [terrain group ridges]
-
+Afloramentos
 [terrain group barren]
 Solo estéril
 [terrain group rough]
@@ -7051,54 +7051,54 @@ Ordem não confirmada. Abra o comandante para tentar novamente; sua mensagem foi
 [hive standing order update failed]
 A atualização da ordem permanente falhou. Sua ordem está pausada neste dispositivo; tente novamente com o controle correspondente.
 [engine performance per game minute]
-
+Por minuto de jogo
 [engine performance per real minute]
-
+Por minuto real
 [engine performance game engine performance]
-
+Desempenho do motor de jogo
 [engine performance task wall-time costs]
-
+Custos das tarefas em tempo real
 [engine performance inspect slow ticks]
-
+Inspecionar ciclos lentos
 [engine performance no advancing ticks recorded yet]
-
+Nenhum ciclo de avanço registrado ainda.
 [engine performance whole-engine performance]
-
+Desempenho de todo o motor
 [engine performance open performance charts]
-
+Abrir gráficos de desempenho
 [engine performance engine performance]
-
+Desempenho do motor
 [engine performance follow latest interval]
-
+Seguir o intervalo mais recente
 [engine performance compare task costs]
-
+Comparar custos das tarefas
 [engine performance all metrics and slow ticks]
-
+Todas as métricas e ciclos lentos
 [engine performance phase orders]
-
+Ordens
 [engine performance phase units]
-
+Unidades
 [engine performance phase buildings]
-
+Construções
 [engine performance phase map]
-
+Mapa
 [engine performance phase statistics]
-
+Estatísticas
 [engine performance phase ai]
-
+IA
 [engine performance phase world capture]
-
+Captura do mundo
 [engine performance phase checksums]
-
+Somas de verificação
 [engine performance wall time %0]
-
+Tempo real: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Esperas obrigatórias: %0 ms; junções do proprietário: %1 ms; bloqueios: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms de tempo real
 [engine performance tick %0 wall %1]
-
+Ciclo %0: %1 ms de tempo real
 [AI for all computer colonies]
 IA evit an holl drevadennoù meret gant an urzhiataer
 [tundra]
-Douar toundra
+Solo de tundra

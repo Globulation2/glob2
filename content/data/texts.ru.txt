@@ -1695,13 +1695,13 @@ OpenGL недоступен в этой сборке.
 [Lake size]
 Размер озера
 [Crater type]
-
+Тип кратеров
 [Crater rims]
-
+Края кратеров
 [Volcanic maars]
-
+Вулканические маары
 [Glacial kettles]
-
+Ледниковые котловины
 [Contested commons]
 Спорные общие земли
 [Maze]
@@ -1729,7 +1729,7 @@ OpenGL недоступен в этой сборке.
 [Wall thickness]
 Толщина стен
 [Gardens]
-Огороды
+Сады
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 При такой толщине стен проходы остаются слишком узкими; используйте стены потоньше или ячейки побольше.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1745,7 +1745,7 @@ OpenGL недоступен в этой сборке.
 [Ice sheet size]
 Размер ледникового щита
 [Fjord landings]
-Причалы во фьордах
+Спуски во фьорды
 [Fjord continents need at least one colony.]
 Континенту фьордов нужна хотя бы одна колония.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ OpenGL недоступен в этой сборке.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Кольцевому миру при этом сиде не удаётся разместить скалы и побережья, не отрезав часть суши.
 [City states]
 Города-государства
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL недоступен в этой сборке.
 [Levee]
 Дамба
 [Mudflats]
-
+Илистые равнины
 [Hammocks]
-
+Лесные островки
 [Moss]
-
+Мох
 [Sloughs]
 Старицы
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL недоступен в этой сборке.
 [Central island]
 Центральный остров
 [Tide]
-
+Прилив
 [Neap tide]
-
+Слабый прилив
 [Mean tide]
-
+Средний прилив
 [Spring tide]
-
+Сильный прилив
 [Tidal flats need at least one colony.]
 Приливным отмелям нужна хотя бы одна колония.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Центральному останцу не хватает места для скал рядом с забоями каменоломен; используйте карту побольше или меньше колоний.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Родные острова не помещаются на этой карте; используйте карту побольше, меньше колоний или острова поменьше.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL недоступен в этой сборке.
 [Meandering rivers]
 Петляющие реки
 [Banks]
-
+Берега
 [Deep channels]
-
+Глубокие русла
 [River bluffs]
-
+Речные обрывы
 [Divide outcrops]
-
+Скальные выходы на водоразделах
 [Deep water]
-
+Глубокая вода
 [Rock outcrops]
-
+Скальные выходы
 [Fruit in home valleys]
 Фрукты в стартовых долинах
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL недоступен в этой сборке.
 [Winding belt]
 Извилистый пояс
 [Deep ocean]
-
+Глубокий океан
 [Rock spine]
-
+Скальный хребет
 [Ring road]
-
+Кольцевая дорога
 [Cell shape]
 Форма ячеек
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL недоступен в этой сборке.
 [Lee width]
 Ширина подветренной полосы
 [Climate]
-
+Климат
 [Temperate]
-
+Умеренный
 [Steppe]
-
+Степной
 [Tropical]
-
+Тропический
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+За базами не остаётся ни одного хребта; используйте меньше хребтов или карту побольше.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Хребты не оставляют места для каменоломен баз; используйте более толстые хребты или карту побольше.
 [The ridges could not be sealed; use thicker ridges.]
-
+Хребты не удалось сделать сплошными; используйте более толстые хребты.
 [Old growth]
 Старый лес
 [Canals]
@@ -2519,7 +2519,7 @@ OpenGL недоступен в этой сборке.
 [Moraine hummocks]
 Моренные холмы
 [Deep pools]
-
+Глубокие омуты
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Разветвление оставляет базам слишком мало террасы; используйте карту побольше или более узкое разветвление.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ OpenGL недоступен в этой сборке.
 [Dry patches]
 Сухие участки
 [Season]
-
+Сезон
 [Meltwater]
-
+Талые воды
 [Late summer]
-
+Конец лета
 [Sparse]
 Мало
 [Normal]
@@ -2713,25 +2713,25 @@ OpenGL недоступен в этой сборке.
 [Twin springs]
 Родники-близнецы
 [Canyon mouth]
-
+Устье каньона
 [Cienega]
-
+Ключевое болото
 [Coalescing pair]
-
+Сливающиеся конусы
 [Cienegas]
-
+Ключевые болота
 [Rock]
-
+Порода
 [Granite]
-
+Гранит
 [Greenstone]
-
+Зелёный камень
 [Sandstone]
-
+Песчаник
 [Volcanic]
-
+Вулканическая
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Перевалы врезаются в каменоломни баз; используйте меньше перевалов, меньше колоний или карту побольше.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Склоны с конусами выноса слишком узки для баз; используйте карту побольше, большее расстояние между хребтами, более узкие гребни или солёные озёра поменьше.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ OpenGL недоступен в этой сборке.
 [Extra trails]
 Дополнительные тропы
 [Deep lakes]
-
+Глубокие озёра
 [Bedrock]
-
+Коренная порода
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Стороны этой карты должны быть от 64 до 512 клеток.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [stat cleared about]
 Ресурсы, убранные рабочими в зонах очистки, чтобы освободить место.
 [stats topic overview]
-
+Обзор
 [stats topic economy]
-
+Экономика
 [stats topic world]
-
+Мир
 [stats work construction]
-
+Работа и строительство
 [stats defence]
-
+Оборона
 [stats history]
-
+Показать историю
 [stats waiting]
-
+Ожидание статистики…
 [stats unit details]
-
+Подробности о юнитах
 [stats map overlays]
-
+Слои карты
 [stats topic]
-
+Раздел
 [stats full history]
-
+Открыть полную историю
 [stats missing readings]
-
+— Пока нет записанных значений. Выберите показатель, чтобы узнать подробности.
 [stat win probability]
-
+Вероятность победы
 [stat win probability about]
-
+Оценка вероятности победы вашего союза, измеряемая на протяжении всего матча. У союзников общая вероятность. Модель обучена на играх ИИ; оценки не учитывают расположение и запланированные ходы. В старых сохранениях история может быть неполной.
 [stat prestige]
 Престиж
 [stat prestige about]
@@ -5781,15 +5781,15 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [Reroll terrain look]
 Заново выбрать случайный вид ландшафта
 [boulders]
-Валуны
+Каменные столбы
 [hedge]
 Живая изгородь
 [thicket]
 Заросли
 [ridge_rock]
-
+Скальные шпили
 [outcrop]
-
+Базальтовые столбы
 [dirt]
 Грунт
 [clay]
@@ -5855,7 +5855,7 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [glacier_ice]
 Ледниковый лёд
 [overgrown_road]
-Заросшая дорога
+Мшистая брусчатка
 [laterite]
 Латерит
 [cliffs]
@@ -5865,7 +5865,7 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [slate_ashlar]
 Сланцевые плиты
 [basalt_causeway]
-Базальтовая гать
+Базальтовая мостовая
 [scoria_blocks]
 Блоки шлака
 [rime_ashlar]
@@ -5907,13 +5907,13 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [terrain group grass]
 Трава
 [terrain group ice]
-Лёд
+Снег и лёд
 [terrain group paths]
 Дороги
 [terrain group obstacles]
-Препятствия
+Преграды
 [terrain group ridges]
-
+Скальные выходы
 [terrain group barren]
 Бесплодная земля
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Discord открыт. Вы можете вернуться в игру в люб
 [hive standing order update failed]
 Не удалось обновить постоянный приказ. Ваш приказ приостановлен на этом устройстве; повторите попытку с помощью соответствующего элемента управления.
 [engine performance per game minute]
-
+За игровую минуту
 [engine performance per real minute]
-
+За реальную минуту
 [engine performance game engine performance]
-
+Производительность игрового движка
 [engine performance task wall-time costs]
-
+Реальное время выполнения задач
 [engine performance inspect slow ticks]
-
+Просмотреть медленные такты
 [engine performance no advancing ticks recorded yet]
-
+Такты с продвижением пока не записаны.
 [engine performance whole-engine performance]
-
+Производительность всего движка
 [engine performance open performance charts]
-
+Открыть графики производительности
 [engine performance engine performance]
-
+Производительность движка
 [engine performance follow latest interval]
-
+Следить за последним интервалом
 [engine performance compare task costs]
-
+Сравнить время задач
 [engine performance all metrics and slow ticks]
-
+Все показатели и медленные такты
 [engine performance phase orders]
-
+Приказы
 [engine performance phase units]
-
+Юниты
 [engine performance phase buildings]
-
+Здания
 [engine performance phase map]
-
+Карта
 [engine performance phase statistics]
-
+Статистика
 [engine performance phase ai]
-
+ИИ
 [engine performance phase world capture]
-
+Снимок мира
 [engine performance phase checksums]
-
+Контрольные суммы
 [engine performance wall time %0]
-
+Реальное время: %0 мс
 [engine performance waits %0 joins %1 locks %2]
-
+Обязательные ожидания: %0 мс; ожидание потоком-владельцем: %1 мс; блокировки: %2 мс
 [engine performance phase %0 wall %1]
-
+%0: %1 мс реального времени
 [engine performance tick %0 wall %1]
-
+Такт %0: %1 мс реального времени
 [AI for all computer colonies]
 ИИ для всех колоний под управлением компьютера
 [tundra]

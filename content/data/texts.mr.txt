@@ -1663,13 +1663,13 @@ Globulation 2 कर्सर दाखवा.
 [Lake size]
 तलावाचा आकार
 [Crater type]
-
+विवरांचा प्रकार
 [Crater rims]
-
+विवरांच्या कडा
 [Volcanic maars]
-
+ज्वालामुखीय मार विवरे
 [Glacial kettles]
-
+हिमनदीय खळगे
 [Contested commons]
 वादग्रस्त सामायिक जागा
 [Maze]
@@ -1769,7 +1769,7 @@ Globulation 2 कर्सर दाखवा.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 एवढ्या वसाहतींसाठी हा पट्टा खूपच लहान आहे; अधिक मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+या सीडवर वलयाकार जग जमिनीचा कोणताही भाग तोडल्याशिवाय आपले खडक आणि किनारे मांडू शकत नाही.
 [City states]
 नगरराज्ये
 [Strait width]
@@ -1803,11 +1803,11 @@ Globulation 2 कर्सर दाखवा.
 [Levee]
 बांध
 [Mudflats]
-
+चिखलाची मैदाने
 [Hammocks]
-
+झाडांची बेटे
 [Moss]
-
+शेवाळ
 [Sloughs]
 दलदली
 [Everglades need at least one colony.]
@@ -1917,17 +1917,17 @@ Globulation 2 कर्सर दाखवा.
 [Central island]
 मध्यवर्ती बेट
 [Tide]
-
+भरती-ओहोटी
 [Neap tide]
-
+लघु भरती
 [Mean tide]
-
+सरासरी भरती
 [Spring tide]
-
+उधाणाची भरती
 [Tidal flats need at least one colony.]
 भरती-ओहोटीच्या सपाट प्रदेशाला किमान एका वसाहतीची गरज असते.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+मध्यवर्ती खडकाळ टेकाडाच्या खडकांना खाणीच्या कडांशेजारी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 मुख्य बेटे या नकाशावर बसत नाहीत; मोठा नकाशा, कमी वसाहती किंवा लहान बेटे वापरा.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1971,17 +1971,17 @@ Globulation 2 कर्सर दाखवा.
 [Meandering rivers]
 नागमोडी नद्या
 [Banks]
-
+काठ
 [Deep channels]
-
+खोल प्रवाह
 [River bluffs]
-
+नदीकाठचे कडे
 [Divide outcrops]
-
+जलविभाजकावरील उघडे खडक
 [Deep water]
-
+खोल पाणी
 [Rock outcrops]
-
+उघडे खडक
 [Fruit in home valleys]
 सुरुवातीच्या दऱ्यांमधील फळे
 [Moat]
@@ -1993,11 +1993,11 @@ Globulation 2 कर्सर दाखवा.
 [Winding belt]
 वळणावळणाचा पट्टा
 [Deep ocean]
-
+खोल महासागर
 [Rock spine]
-
+खडकाचा कणा
 [Ring road]
-
+वर्तुळाकार रस्ता
 [Cell shape]
 कप्प्यांचा आकार
 [Squares]
@@ -2035,19 +2035,19 @@ Globulation 2 कर्सर दाखवा.
 [Lee width]
 वाऱ्याच्या आडच्या भागाची रुंदी
 [Climate]
-
+हवामान
 [Temperate]
-
+समशीतोष्ण
 [Steppe]
-
+स्टेप
 [Tropical]
-
+उष्णकटिबंधीय
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+मुख्य तळांच्या मागे एकही कटक नाही; कमी कटक किंवा मोठा नकाशा वापरा.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+कटक मुख्य तळांच्या खाणींसाठी जागा सोडत नाहीत; जाड कटक किंवा मोठा नकाशा वापरा.
 [The ridges could not be sealed; use thicker ridges.]
-
+कटक बंद करता आले नाहीत; जाड कटक वापरा.
 [Old growth]
 जुने दाट जंगल
 [Canals]
@@ -2497,7 +2497,7 @@ HP ≤25/50/75%
 [Moraine hummocks]
 मोरेन टेकड्या
 [Deep pools]
-
+खोल डोह
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 गुंफलेल्या नदीमुळे तळांसाठी खूप कमी सपाट जागा उरते; मोठा नकाशा किंवा अरुंद नदी वापरा.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2557,11 +2557,11 @@ HP ≤25/50/75%
 [Dry patches]
 कोरडे ठिपके
 [Season]
-
+ऋतू
 [Meltwater]
-
+वितळलेल्या बर्फाचे पाणी
 [Late summer]
-
+उन्हाळ्याचा शेवट
 [Sparse]
 विरळ
 [Normal]
@@ -2691,25 +2691,25 @@ HP ≤25/50/75%
 [Twin springs]
 जोड झरे
 [Canyon mouth]
-
+घळीचे मुख
 [Cienega]
-
+झऱ्याची दलदल
 [Coalescing pair]
-
+जुळलेली पंखाकार जोडी
 [Cienegas]
-
+झऱ्यांच्या दलदली
 [Rock]
-
+खडक
 [Granite]
-
+ग्रॅनाइट
 [Greenstone]
-
+हरितखडक
 [Sandstone]
-
+वालुकाश्म
 [Volcanic]
-
+ज्वालामुखीय
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+खिंडी मुख्य तळांच्या खाणींमध्ये घुसतात; कमी खिंडी, कमी वसाहती किंवा मोठा नकाशा वापरा.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 तळांसाठी बाजाडा खूप अरुंद आहेत; मोठा नकाशा, डोंगररांगांमध्ये अधिक अंतर, अरुंद डोंगररांगा किंवा लहान प्लाया वापरा.
 [Central Quarry]
@@ -2861,9 +2861,9 @@ HP ≤25/50/75%
 [Extra trails]
 अतिरिक्त पायवाटा
 [Deep lakes]
-
+खोल तलाव
 [Bedrock]
-
+तळखडक
 [Portage Lakes needs sides between 64 and 512 tiles.]
 पोर्टेज लेक्सला ६४ ते ५१२ टाइल्सच्या दरम्यानच्या बाजूंची आवश्यकता आहे.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5757,15 +5757,15 @@ ZIP किंवा तीन ट्रॅक आयात करा
 [Fish]
 मासे
 [boulders]
-मोठे खडक
+दगडी खांब
 [hedge]
 कुंपण
 [thicket]
 दाट झुडपे
 [ridge_rock]
-
+खडकांचे सुळके
 [outcrop]
-
+बेसाल्टचे स्तंभ
 [dirt]
 माती
 [clay]
@@ -5811,13 +5811,13 @@ ZIP किंवा तीन ट्रॅक आयात करा
 [terrain group grass]
 गवत
 [terrain group ice]
-बर्फ
+बर्फ आणि हिम
 [terrain group paths]
 मार्ग
 [terrain group obstacles]
 अडथळे
 [terrain group ridges]
-
+उघडे खडक
 [terrain group barren]
 पडीक जमीन
 [terrain group rough]
@@ -6957,7 +6957,7 @@ MCP सर्व्हर सक्षम करा
 [frozen_lake]
 गोठलेले सरोवर
 [wind_swept_snow]
-वाऱ्याने उडालेले बर्फ
+वाऱ्याने उडालेला बर्फ
 [weathered_sandstone]
 झिजलेला वालुकाश्म
 [windy_sand_dune]
@@ -6969,7 +6969,7 @@ MCP सर्व्हर सक्षम करा
 [glacier_ice]
 हिमनदीचा बर्फ
 [overgrown_road]
-गवताने झाकलेला रस्ता
+शेवाळलेली दगडी फरसबंदी
 [laterite]
 जांभा
 [cliffs]
@@ -6995,11 +6995,11 @@ MCP सर्व्हर सक्षम करा
 [icefall]
 हिमप्रपात
 [sandstone_benches]
-वाळूदगडी पायऱ्या
+वालुकाश्माच्या पायऱ्या
 [obsidian_ridge]
-ऑब्सिडियन कडा
+ऑब्सिडियन कटक
 [granite_tors]
-ग्रॅनाइट टॉर
+ग्रॅनाइटची खडकाळ टेकाडे
 [travertine_terraces]
 ट्रॅव्हर्टाइन पायऱ्या
 [penitentes]

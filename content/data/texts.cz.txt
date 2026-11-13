@@ -1695,13 +1695,13 @@ Automaticky ukládat hru přibližně každých 10 sekund.
 [Lake size]
 Velikost jezera
 [Crater type]
-
+Typ kráterů
 [Crater rims]
-
+Okraje kráterů
 [Volcanic maars]
-
+Sopečné maary
 [Glacial kettles]
-
+Ledovcové kotlíky
 [Contested commons]
 Sporné společné území
 [Maze]
@@ -1733,7 +1733,7 @@ Zahrady
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 Takto silné zdi nechávají průchody příliš úzké; použijte tenčí zdi nebo větší buňky.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
-Takto široké příkopy nechávají uvnitř každé domovské základny příliš málo místa; použijte užší příkop, tenčí zdi nebo větší buňky.
+Takto široké příkopy nechávají uvnitř každého domova příliš málo místa; použijte užší příkop, tenčí zdi nebo větší buňky.
 [Bridge count]
 Počet mostů
 [Continent size]
@@ -1745,7 +1745,7 @@ Velikost kontinentu
 [Ice sheet size]
 Velikost ledovcového štítu
 [Fjord landings]
-Přístaviště ve fjordech
+Sestupy do fjordů
 [Fjord continents need at least one colony.]
 Kontinent fjordů potřebuje alespoň jednu kolonii.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
@@ -1805,7 +1805,7 @@ Prstencový svět
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pás je pro tolik kolonií příliš krátký; použijte delší mapu nebo méně kolonií.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Prstencový svět s tímto semínkem nedokáže rozmístit skály a pobřeží, aniž by odřízl část pevniny.
 [City states]
 Městské státy
 [Strait width]
@@ -1839,11 +1839,11 @@ Velikost mýtiny
 [Levee]
 Hráz
 [Mudflats]
-
+Bahnité pláně
 [Hammocks]
-
+Ostrůvky stromů
 [Moss]
-
+Mech
 [Sloughs]
 Slepá ramena
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Laguny
 [Central island]
 Střední ostrov
 [Tide]
-
+Příliv
 [Neap tide]
-
+Slabý příliv
 [Mean tide]
-
+Střední příliv
 [Spring tide]
-
+Silný příliv
 [Tidal flats need at least one colony.]
 Přílivové pláně potřebují alespoň jednu kolonii.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Centrální skalisko nemá vedle stěn lomů místo pro skály; použijte větší mapu nebo méně kolonií.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Domovské ostrovy se na tuto mapu nevejdou; použijte větší mapu, méně kolonií nebo menší ostrovy.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Sady na nunatacích
 [Meandering rivers]
 Meandrující řeky
 [Banks]
-
+Břehy
 [Deep channels]
-
+Hluboká koryta
 [River bluffs]
-
+Říční srázy
 [Divide outcrops]
-
+Výchozy na rozvodích
 [Deep water]
-
+Hluboká voda
 [Rock outcrops]
-
+Skalní výchozy
 [Fruit in home valleys]
 Ovoce v domovských údolích
 [Moat]
@@ -2025,11 +2025,11 @@ Kolonie na obou pobřežích
 [Winding belt]
 Zvlněný pás
 [Deep ocean]
-
+Hluboký oceán
 [Rock spine]
-
+Skalní hřbet
 [Ring road]
-
+Okružní cesta
 [Cell shape]
 Tvar buněk
 [Squares]
@@ -2067,19 +2067,19 @@ Rozestup průsmyků
 [Lee width]
 Šířka závětří
 [Climate]
-
+Podnebí
 [Temperate]
-
+Mírné
 [Steppe]
-
+Stepní
 [Tropical]
-
+Tropické
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Za domovy nestojí žádný hřeben; použijte méně hřebenů nebo větší mapu.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Hřebeny nenechávají místo pro lomy domovů; použijte tlustší hřebeny nebo větší mapu.
 [The ridges could not be sealed; use thicker ridges.]
-
+Hřebeny se nepodařilo uzavřít; použijte tlustší hřebeny.
 [Old growth]
 Prales
 [Canals]
@@ -2519,7 +2519,7 @@ Brody navíc
 [Moraine hummocks]
 Morénové pahorky
 [Deep pools]
-
+Hluboké tůně
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Divočící řeka ponechává domovům příliš málo terasy; použijte větší mapu nebo užší řeku.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Napajedla
 [Dry patches]
 Suché oblasti
 [Season]
-
+Období
 [Meltwater]
-
+Jarní tání
 [Late summer]
-
+Pozdní léto
 [Sparse]
 Málo
 [Normal]
@@ -2713,25 +2713,25 @@ Dlouhý kužel
 [Twin springs]
 Dvojité prameny
 [Canyon mouth]
-
+Ústí kaňonu
 [Cienega]
-
+Pramenný mokřad
 [Coalescing pair]
-
+Splývající kužele
 [Cienegas]
-
+Pramenné mokřady
 [Rock]
-
+Hornina
 [Granite]
-
+Žula
 [Greenstone]
-
+Zelenokamenná hornina
 [Sandstone]
-
+Pískovec
 [Volcanic]
-
+Sopečná
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Průsmyky zasahují do lomů domovů; použijte méně průsmyků, méně kolonií nebo větší mapu.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Svahy s náplavovými kužely jsou pro domovy příliš úzké; použijte větší mapu, větší rozestup pohoří, užší hřebeny nebo menší slaná jezera.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Tloušťka lesního průchodu
 [Extra trails]
 Další stezky
 [Deep lakes]
-
+Hluboká jezera
 [Bedrock]
-
+Skalní podloží
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Strany této mapy musí měřit 64 až 512 polí.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Odstraněné suroviny
 [stat cleared about]
 Suroviny, které dělníci odstranili v oblastech čištění, aby uvolnili místo.
 [stats topic overview]
-
+Přehled
 [stats topic economy]
-
+Ekonomika
 [stats topic world]
-
+Svět
 [stats work construction]
-
+Práce a stavby
 [stats defence]
-
+Obrana
 [stats history]
-
+Zobrazit historii
 [stats waiting]
-
+Čekání na statistiky…
 [stats unit details]
-
+Podrobnosti o jednotkách
 [stats map overlays]
-
+Mapové vrstvy
 [stats topic]
-
+Téma
 [stats full history]
-
+Otevřít celou historii
 [stats missing readings]
-
+— Zatím žádná zaznamenaná hodnota. Vyberte statistiku pro podrobnosti.
 [stat win probability]
-
+Pravděpodobnost vítězství
 [stat win probability about]
-
+Odhadovaná šance na vítězství vašeho spojenectví, měřená v průběhu celého zápasu. Spojenci sdílejí jednu pravděpodobnost. Model byl natrénován na hrách počítačových hráčů; odhady nezohledňují pozici ani plánované tahy. Starší uložené hry mohou mít neúplnou historii.
 [stat prestige]
 Prestiž
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Ryby
 [Reroll terrain look]
 Znovu náhodně zvolit vzhled terénu
 [boulders]
-Balvany
+Kamenné sloupy
 [hedge]
 Živý plot
 [thicket]
 Houština
 [ridge_rock]
-
+Skalní jehly
 [outcrop]
-
+Čedičové sloupy
 [dirt]
 Hlína
 [clay]
@@ -5855,7 +5855,7 @@ Sopečný popel
 [glacier_ice]
 Ledovcový led
 [overgrown_road]
-Zarostlá cesta
+Omšelá dlažba
 [laterite]
 Laterit
 [cliffs]
@@ -5907,13 +5907,13 @@ Písek
 [terrain group grass]
 Tráva
 [terrain group ice]
-Led
+Sníh a led
 [terrain group paths]
 Cesty
 [terrain group obstacles]
-Překážky
+Bariéry
 [terrain group ridges]
-
+Skalní výchozy
 [terrain group barren]
 Neúrodná půda
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Rozkaz nebyl potvrzen. Otevřete velitele a zkuste to znovu; vaše zpráva byla 
 [hive standing order update failed]
 Aktualizace trvalého rozkazu selhala. Váš rozkaz je na tomto zařízení pozastaven; zkuste to znovu pomocí příslušného ovládacího prvku.
 [engine performance per game minute]
-
+Za herní minutu
 [engine performance per real minute]
-
+Za skutečnou minutu
 [engine performance game engine performance]
-
+Výkon herního enginu
 [engine performance task wall-time costs]
-
+Skutečný čas úloh
 [engine performance inspect slow ticks]
-
+Prohlédnout pomalé kroky
 [engine performance no advancing ticks recorded yet]
-
+Zatím nebyly zaznamenány žádné kroky s postupem.
 [engine performance whole-engine performance]
-
+Výkon celého enginu
 [engine performance open performance charts]
-
+Otevřít grafy výkonu
 [engine performance engine performance]
-
+Výkon enginu
 [engine performance follow latest interval]
-
+Sledovat nejnovější interval
 [engine performance compare task costs]
-
+Porovnat náklady úloh
 [engine performance all metrics and slow ticks]
-
+Všechny metriky a pomalé kroky
 [engine performance phase orders]
-
+Rozkazy
 [engine performance phase units]
-
+Jednotky
 [engine performance phase buildings]
-
+Budovy
 [engine performance phase map]
-
+Mapa
 [engine performance phase statistics]
-
+Statistiky
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Zachycení světa
 [engine performance phase checksums]
-
+Kontrolní součty
 [engine performance wall time %0]
-
+Skutečný čas: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Nutná čekání: %0 ms; spojení vlastníka: %1 ms; zámky: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms skutečného času
 [engine performance tick %0 wall %1]
-
+Krok %0: %1 ms skutečného času
 [AI for all computer colonies]
 AI pro všechny počítačem řízené kolonie
 [tundra]

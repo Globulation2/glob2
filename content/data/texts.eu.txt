@@ -1695,13 +1695,13 @@ Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
 [Crater type]
-
+Krater mota
 [Crater rims]
-
+Krater-ertzak
 [Volcanic maars]
-
+Maar bolkanikoak
 [Glacial kettles]
-
+Glaziar-sakonuneak
 [Contested commons]
 Lur komun lehiatuak
 [Maze]
@@ -1805,7 +1805,7 @@ Gerrikoaren zabalera
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Eraztun-munduak ezin ditu bere arroka eta kostaldeak jarri hazi honekin lurra isolatu gabe.
 [City states]
 Hiri-estatuak
 [Strait width]
@@ -1839,11 +1839,11 @@ Soilgunearen tamaina
 [Levee]
 Dikea
 [Mudflats]
-
+Lokatz-lautadak
 [Hammocks]
-
+Zuhaitz-uhartetxoak
 [Moss]
-
+Goroldioa
 [Sloughs]
 Ur-geldiak
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Albuferak
 [Central island]
 Erdiko uhartea
 [Tide]
-
+Marea
 [Neap tide]
-
+Ur txikiak
 [Mean tide]
-
+Batez besteko marea
 [Spring tide]
-
+Ur biziak
 [Tidal flats need at least one colony.]
 Marea-lautadek gutxienez kolonia bat behar dute.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Erdiko harkaitzak ez du lekurik bere arrokarentzat harrobi-aurpegien ondoan; erabili mapa handiagoa edo kolonia gutxiago.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Jatorrizko uharteak ez dira mapa honetan sartzen; erabili mapa handiagoa, kolonia gutxiago edo uharte txikiagoak.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Ibai-delta
 [Meandering rivers]
 Ibai meandrodunak
 [Banks]
-
+Ibai-ertzak
 [Deep channels]
-
+Ubide sakonak
 [River bluffs]
-
+Ibai-ezpondak
 [Divide outcrops]
-
+Banalerroko azaleramenduak
 [Deep water]
-
+Ur sakona
 [Rock outcrops]
-
+Harkaitz-azaleramenduak
 [Fruit in home valleys]
 Fruta hasierako haranetan
 [Moat]
@@ -2025,11 +2025,11 @@ Koloniak bi kostaldeetan
 [Winding belt]
 Gerriko bihurgunetsua
 [Deep ocean]
-
+Ozeano sakona
 [Rock spine]
-
+Harkaitz-bizkarra
 [Ring road]
-
+Bide zirkularra
 [Cell shape]
 Gelaxken forma
 [Squares]
@@ -2067,19 +2067,19 @@ Mendateen arteko tartea
 [Lee width]
 Haizebearen zabalera
 [Climate]
-
+Klima
 [Temperate]
-
+Epela
 [Steppe]
-
+Estepa
 [Tropical]
-
+Tropikala
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Ez dago gailurrik oinarrien atzean; erabili gailur gutxiago edo mapa handiagoa.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Gailurrek ez diete lekurik uzten oinarrien harrobiei; erabili gailur lodiagoak edo mapa handiagoa.
 [The ridges could not be sealed; use thicker ridges.]
-
+Ezin izan dira gailurrak itxi; erabili gailur lodiagoak.
 [Old growth]
 Oihan zaharra
 [Canals]
@@ -2519,7 +2519,7 @@ Ibi gehigarriak
 [Moraine hummocks]
 Morrena-muinoak
 [Deep pools]
-
+Putzu sakonak
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Txirikordak terraza gutxiegi uzten die etxeei; erabili mapa handiagoa edo txirikorda estuagoa.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Ur-putzuak
 [Dry patches]
 Eremu lehorrak
 [Season]
-
+Urtaroa
 [Meltwater]
-
+Elur-urtzea
 [Late summer]
-
+Uda amaiera
 [Sparse]
 Bakan
 [Normal]
@@ -2713,25 +2713,25 @@ Kono luzea
 [Twin springs]
 Iturburu bikiak
 [Canyon mouth]
-
+Arroilaren ahoa
 [Cienega]
-
+Iturburu-padura
 [Coalescing pair]
-
+Bikote bateratua
 [Cienegas]
-
+Iturburu-padurak
 [Rock]
-
+Arroka
 [Granite]
-
+Granitoa
 [Greenstone]
-
+Harri berdea
 [Sandstone]
-
+Hareharria
 [Volcanic]
-
+Bolkanikoa
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Mendateek oinarrien harrobiak mozten dituzte; erabili mendate gutxiago, kolonia gutxiago edo mapa handiagoa.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Konoen maldak estuegiak dira etxeentzat; erabili mapa handiagoa, mendilerroen arteko tarte handiagoa, gailur estuagoak edo aintzira gazi txikiagoak.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Basoko pasabidearen lodiera
 [Extra trails]
 Bidezidor gehigarriak
 [Deep lakes]
-
+Aintzira sakonak
 [Bedrock]
-
+Oinarri-arroka
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Mapa honen aldeek 64 eta 512 lauki arteko luzera izan behar dute.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Garbitutako baliabideak
 [stat cleared about]
 Langileek garbiketa-eremuetan lekua egiteko kendutako baliabideak.
 [stats topic overview]
-
+Ikuspegi orokorra
 [stats topic economy]
-
+Ekonomia
 [stats topic world]
-
+Mundua
 [stats work construction]
-
+Lana eta eraikuntza
 [stats defence]
-
+Defentsa
 [stats history]
-
+Ikusi historia
 [stats waiting]
-
+Estatistiken zain…
 [stats unit details]
-
+Unitateen xehetasunak
 [stats map overlays]
-
+Maparen geruzak
 [stats topic]
-
+Gaia
 [stats full history]
-
+Ireki historia osoa
 [stats missing readings]
-
+— Oraindik ez dago neurketarik erregistratuta. Hautatu estatistika bat xehetasunak ikusteko.
 [stat win probability]
-
+Irabazteko probabilitatea
 [stat win probability about]
-
+Zure aliantzak irabazteko aukera estimatua, partida osoan zehar laginduta. Aliatuek probabilitate bera partekatzen dute. Eredu hau AIren partidekin entrenatu da; estimazioek ez dute kontuan hartzen ez posizioa ez aurreikusitako mugimenduak. Gordetako partida zaharrek historia osatugabea izan dezakete.
 [stat prestige]
 Ospea
 [stat prestige about]
@@ -5781,21 +5781,21 @@ Arrainak
 [Reroll terrain look]
 Ausaz aukeratu berriro lurraren itxura
 [boulders]
-Harkaitz handiak
+Harri-zutabeak
 [hedge]
 Hesia
 [thicket]
 Sastrakadia
 [ridge_rock]
-
+Harkaitz-orratzak
 [outcrop]
-
+Basalto-zutabeak
 [dirt]
 Lurra
 [clay]
 Buztina
 [shale]
-Arbela
+Eskistoa
 [heath]
 Txilardia
 [mud]
@@ -5855,7 +5855,7 @@ Errauts bolkanikoa
 [glacier_ice]
 Glaziar-izotza
 [overgrown_road]
-Landaretzaz estalitako bidea
+Harri-galtzada goroldiotsua
 [laterite]
 Laterita
 [cliffs]
@@ -5881,7 +5881,7 @@ Glaziarra
 [icefall]
 Izotz-jauzia
 [sandstone_benches]
-Hareharri-bankuak
+Hareharri-erlaitzak
 [obsidian_ridge]
 Obsidiana-gailurra
 [granite_tors]
@@ -5907,13 +5907,13 @@ Harea
 [terrain group grass]
 Belarra
 [terrain group ice]
-Izotza
+Elurra eta izotza
 [terrain group paths]
 Bideak
 [terrain group obstacles]
-Oztopoak
+Hesiak
 [terrain group ridges]
-
+Azaleramenduak
 [terrain group barren]
 Lur antzua
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Agindua ez da berretsi. Ireki komandantea berriro saiatzeko; zure mezua gorde da
 [hive standing order update failed]
 Agindu iraunkorra eguneratzeak huts egin du. Zure agindua gailu honetan pausatuta dago; saiatu berriro dagokion kontrola erabiliz.
 [engine performance per game minute]
-
+Joko-minutuko
 [engine performance per real minute]
-
+Minutu errealeko
 [engine performance game engine performance]
-
+Joko-motorraren errendimendua
 [engine performance task wall-time costs]
-
+Zereginen kostua denbora errealean
 [engine performance inspect slow ticks]
-
+Aztertu urrats motelak
 [engine performance no advancing ticks recorded yet]
-
+Oraindik ez da aurrerapen-urratsik erregistratu.
 [engine performance whole-engine performance]
-
+Motor osoaren errendimendua
 [engine performance open performance charts]
-
+Ireki errendimendu-grafikoak
 [engine performance engine performance]
-
+Motorraren errendimendua
 [engine performance follow latest interval]
-
+Jarraitu azken tarteari
 [engine performance compare task costs]
-
+Konparatu zereginen kostuak
 [engine performance all metrics and slow ticks]
-
+Metrika guztiak eta urrats motelak
 [engine performance phase orders]
-
+Aginduak
 [engine performance phase units]
-
+Unitateak
 [engine performance phase buildings]
-
+Eraikinak
 [engine performance phase map]
-
+Mapa
 [engine performance phase statistics]
-
+Estatistikak
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+Munduaren kaptura
 [engine performance phase checksums]
-
+Egiaztapen-baturak
 [engine performance wall time %0]
-
+Denbora erreala: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Beharrezko itxaronaldiak: %0 ms; jabearen elkartzeak: %1 ms; blokeoak: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms denbora errealean
 [engine performance tick %0 wall %1]
-
+%0. urratsa: %1 ms denbora errealean
 [AI for all computer colonies]
 AA ordenagailuak kontrolatutako kolonia guztientzat
 [tundra]

@@ -1695,13 +1695,13 @@ Globulation 2のカーソルを表示します。
 [Lake size]
 湖の大きさ
 [Crater type]
-
+クレーターの種類
 [Crater rims]
-
+クレーターの縁
 [Volcanic maars]
-
+火山のマール
 [Glacial kettles]
-
+氷河のケトル湖
 [Contested commons]
 争奪共有地
 [Maze]
@@ -1729,7 +1729,7 @@ Globulation 2のカーソルを表示します。
 [Wall thickness]
 壁の厚さ
 [Gardens]
-菜園
+庭園
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 壁がこの厚さだと出入口が狭くなりすぎます。壁を薄くするか、マスを大きくしてください。
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1805,7 +1805,7 @@ Globulation 2のカーソルを表示します。
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+このシードでは、環状世界は地面を分断せずに岩と海岸を配置できません。
 [City states]
 都市国家
 [Strait width]
@@ -1839,11 +1839,11 @@ Globulation 2のカーソルを表示します。
 [Levee]
 堤防
 [Mudflats]
-
+泥原
 [Hammocks]
-
+樹林島
 [Moss]
-
+苔
 [Sloughs]
 沼沢
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Globulation 2のカーソルを表示します。
 [Central island]
 中央の島
 [Tide]
-
+潮
 [Neap tide]
-
+小潮
 [Mean tide]
-
+中潮
 [Spring tide]
-
+大潮
 [Tidal flats need at least one colony.]
 干潟には少なくとも1つのコロニーが必要です。
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+中央の岩山には、採石場の岩肌の横に岩を置く余地がありません。より大きなマップを使うか、コロニーを減らしてください。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母島がこのマップに収まりません。より大きなマップ、より少ないコロニー、またはより小さな島を使ってください。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Globulation 2のカーソルを表示します。
 [Meandering rivers]
 蛇行する川筋
 [Banks]
-
+川岸
 [Deep channels]
-
+深い水路
 [River bluffs]
-
+川沿いの断崖
 [Divide outcrops]
-
+分水嶺の露岩
 [Deep water]
-
+深水
 [Rock outcrops]
-
+露岩
 [Fruit in home valleys]
 開始地点の谷の果物
 [Moat]
@@ -2025,11 +2025,11 @@ Globulation 2のカーソルを表示します。
 [Winding belt]
 曲がりくねった帯
 [Deep ocean]
-
+深海
 [Rock spine]
-
+岩の背骨
 [Ring road]
-
+環状道路
 [Cell shape]
 セルの形
 [Squares]
@@ -2067,19 +2067,19 @@ Globulation 2のカーソルを表示します。
 [Lee width]
 風下側の幅
 [Climate]
-
+気候
 [Temperate]
-
+温帯
 [Steppe]
-
+ステップ
 [Tropical]
-
+熱帯
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+本拠地の背後に尾根がありません。尾根を減らすか、より大きなマップを使ってください。
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+尾根のせいで本拠地の採石場を置く余地がありません。尾根を厚くするか、より大きなマップを使ってください。
 [The ridges could not be sealed; use thicker ridges.]
-
+尾根を閉じられませんでした。尾根を厚くしてください。
 [Old growth]
 原生林
 [Canals]
@@ -2519,7 +2519,7 @@ Globulation 2のカーソルを表示します。
 [Moraine hummocks]
 モレーンの小丘
 [Deep pools]
-
+深い淵
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 網状帯が本拠地に残す段丘が少なすぎます。より大きなマップを使うか、網状帯を狭くしてください。
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Globulation 2のカーソルを表示します。
 [Dry patches]
 乾燥地
 [Season]
-
+季節
 [Meltwater]
-
+雪解け
 [Late summer]
-
+晩夏
 [Sparse]
 少ない
 [Normal]
@@ -2713,25 +2713,25 @@ Globulation 2のカーソルを表示します。
 [Twin springs]
 双子の泉
 [Canyon mouth]
-
+峡谷の出口
 [Cienega]
-
+湧水湿地
 [Coalescing pair]
-
+合流する扇状地
 [Cienegas]
-
+湧水湿地
 [Rock]
-
+岩石
 [Granite]
-
+花崗岩
 [Greenstone]
-
+緑色岩
 [Sandstone]
-
+砂岩
 [Volcanic]
-
+火山岩
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+峠が本拠地の採石場に食い込んでいます。峠かコロニーを減らすか、より大きなマップを使ってください。
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 扇状地の斜面が狭すぎて本拠地が収まりません。より大きなマップ、より広い山脈の間隔、より狭い尾根、またはより小さな塩湖を使ってください。
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Globulation 2のカーソルを表示します。
 [Extra trails]
 追加の小道
 [Deep lakes]
-
+深い湖
 [Bedrock]
-
+基盤岩
 [Portage Lakes needs sides between 64 and 512 tiles.]
 このマップの各辺は64～512マスである必要があります。
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [stat cleared about]
 場所を空けるため、資源除去領域で労働者が取り除いた資源です。
 [stats topic overview]
-
+概要
 [stats topic economy]
-
+経済
 [stats topic world]
-
+世界
 [stats work construction]
-
+作業と建設
 [stats defence]
-
+防衛
 [stats history]
-
+履歴を表示
 [stats waiting]
-
+統計を待っています…
 [stats unit details]
-
+ユニットの詳細
 [stats map overlays]
-
+マップオーバーレイ
 [stats topic]
-
+トピック
 [stats full history]
-
+全履歴を開く
 [stats missing readings]
-
+— まだ記録された値がありません。詳細を見るには統計を選択してください。
 [stat win probability]
-
+勝利確率
 [stat win probability about]
-
+試合を通して記録された、あなたの同盟が勝利する推定確率です。同盟国は1つの確率を共有します。このモデルはAI同士の対戦で学習されており、推定には局面の配置や予定している行動は考慮されません。古いセーブデータでは履歴が不完全な場合があります。
 [stat prestige]
 名声
 [stat prestige about]
@@ -5781,15 +5781,15 @@ AI 生成ではない
 [Reroll terrain look]
 地形の外観を再抽選
 [boulders]
-巨石
+石柱
 [hedge]
 生け垣
 [thicket]
 茂み
 [ridge_rock]
-
+尖塔岩
 [outcrop]
-
+柱状玄武岩
 [dirt]
 土
 [clay]
@@ -5855,7 +5855,7 @@ AI 生成ではない
 [glacier_ice]
 氷河の氷
 [overgrown_road]
-草に覆われた石畳
+苔むした石畳
 [laterite]
 ラテライト
 [cliffs]
@@ -5907,13 +5907,13 @@ AI 生成ではない
 [terrain group grass]
 草
 [terrain group ice]
-氷
+雪と氷
 [terrain group paths]
 道
 [terrain group obstacles]
-障害物
+障壁
 [terrain group ridges]
-
+露岩
 [terrain group barren]
 不毛な地面
 [terrain group rough]
@@ -7051,53 +7051,53 @@ GL のみ
 [hive standing order update failed]
 継続命令の更新に失敗しました。命令はこのデバイス上で一時停止されています。該当するコントロールで再試行してください。
 [engine performance per game minute]
-
+ゲーム内1分あたり
 [engine performance per real minute]
-
+実時間1分あたり
 [engine performance game engine performance]
-
+ゲームエンジンの性能
 [engine performance task wall-time costs]
-
+タスクの実時間コスト
 [engine performance inspect slow ticks]
-
+遅いステップを調べる
 [engine performance no advancing ticks recorded yet]
-
+進行したステップはまだ記録されていません。
 [engine performance whole-engine performance]
-
+エンジン全体の性能
 [engine performance open performance charts]
-
+性能グラフを開く
 [engine performance engine performance]
-
+エンジンの性能
 [engine performance follow latest interval]
-
+最新の区間を追う
 [engine performance compare task costs]
-
+タスクのコストを比較
 [engine performance all metrics and slow ticks]
-
+すべての指標と遅いステップ
 [engine performance phase orders]
-
+命令
 [engine performance phase units]
-
+ユニット
 [engine performance phase buildings]
-
+建物
 [engine performance phase map]
-
+マップ
 [engine performance phase statistics]
-
+統計
 [engine performance phase ai]
-
+AI
 [engine performance phase world capture]
-
+ワールドの取得
 [engine performance phase checksums]
-
+チェックサム
 [engine performance wall time %0]
-
+実時間: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+必須の待機: %0 ms、所有スレッドの合流: %1 ms、ロック: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: 実時間 %1 ms
 [engine performance tick %0 wall %1]
-
+ステップ %0: 実時間 %1 ms
 [AI for all computer colonies]
 すべてのコンピューター操作コロニーのAI
 [tundra]

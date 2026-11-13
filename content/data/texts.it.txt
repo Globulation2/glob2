@@ -1695,13 +1695,13 @@ Larghezza del ponte terrestre
 [Lake size]
 Dimensione del lago
 [Crater type]
-
+Tipo di cratere
 [Crater rims]
-
+Orli dei crateri
 [Volcanic maars]
-
+Maar vulcanici
 [Glacial kettles]
-
+Conche glaciali
 [Contested commons]
 Territori comuni contesi
 [Maze]
@@ -1805,7 +1805,7 @@ Larghezza della fascia
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La fascia è troppo corta per così tante colonie; usa una mappa più lunga o meno colonie.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Il mondo ad anello non riesce a disporre roccia e coste senza isolare parte del terreno con questo seme.
 [City states]
 Città-stato
 [Strait width]
@@ -1839,11 +1839,11 @@ Dimensione della radura
 [Levee]
 Argine
 [Mudflats]
-
+Piane fangose
 [Hammocks]
-
+Isolotti boscosi
 [Moss]
-
+Muschio
 [Sloughs]
 Lanche
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ Lagune
 [Central island]
 Isola centrale
 [Tide]
-
+Marea
 [Neap tide]
-
+Marea di quadratura
 [Mean tide]
-
+Marea media
 [Spring tide]
-
+Marea sizigiale
 [Tidal flats need at least one colony.]
 Le piane di marea hanno bisogno di almeno una colonia.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Il torrione centrale non ha spazio per la sua roccia accanto ai fronti di cava; usa una mappa più grande o meno colonie.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Le isole natali non entrano in questa mappa; usa una mappa più grande, meno colonie o isole più piccole.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ Delta del fiume
 [Meandering rivers]
 Fiumi con meandri
 [Banks]
-
+Sponde
 [Deep channels]
-
+Canali profondi
 [River bluffs]
-
+Scarpate fluviali
 [Divide outcrops]
-
+Affioramenti spartiacque
 [Deep water]
-
+Acqua profonda
 [Rock outcrops]
-
+Affioramenti rocciosi
 [Fruit in home valleys]
 Frutta nelle valli iniziali
 [Moat]
@@ -2025,11 +2025,11 @@ Colonie su entrambe le coste
 [Winding belt]
 Fascia sinuosa
 [Deep ocean]
-
+Oceano profondo
 [Rock spine]
-
+Dorsale rocciosa
 [Ring road]
-
+Strada circolare
 [Cell shape]
 Forma delle celle
 [Squares]
@@ -2067,19 +2067,19 @@ Distanza tra i passi
 [Lee width]
 Larghezza del sottovento
 [Climate]
-
+Clima
 [Temperate]
-
+Temperato
 [Steppe]
-
+Steppa
 [Tropical]
-
+Tropicale
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+Nessuna cresta si trova dietro le basi; usa meno creste o una mappa più grande.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Le creste non lasciano spazio alle cave delle basi; usa creste più spesse o una mappa più grande.
 [The ridges could not be sealed; use thicker ridges.]
-
+Non è stato possibile sigillare le creste; usa creste più spesse.
 [Old growth]
 Foresta primaria
 [Canals]
@@ -2425,9 +2425,9 @@ Attraversamenti del fiume
 [Dunes]
 Dune
 [Dry]
-Secco
+Secca
 [Wet]
-Umido
+Umida
 [Rejoining frequency]
 Frequenza delle confluenze
 [Crossing spacing]
@@ -2519,7 +2519,7 @@ Guadi aggiuntivi
 [Moraine hummocks]
 Dossi morenici
 [Deep pools]
-
+Pozze profonde
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 L'intreccio lascia troppo poco terrazzo per le basi; usa una mappa più grande o un intreccio più stretto.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ Pozze d’acqua
 [Dry patches]
 Zone aride
 [Season]
-
+Stagione
 [Meltwater]
-
+Disgelo
 [Late summer]
-
+Fine estate
 [Sparse]
 Poche
 [Normal]
@@ -2713,25 +2713,25 @@ Conoide lunga
 [Twin springs]
 Sorgenti gemelle
 [Canyon mouth]
-
+Sbocco del canyon
 [Cienega]
-
+Palude sorgiva
 [Coalescing pair]
-
+Coppia coalescente
 [Cienegas]
-
+Paludi sorgive
 [Rock]
-
+Roccia
 [Granite]
-
+Granito
 [Greenstone]
-
+Pietra verde
 [Sandstone]
-
+Arenaria
 [Volcanic]
-
+Vulcanica
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+I valichi intaccano le cave delle basi; usa meno valichi, meno colonie o una mappa più grande.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Le conoidi alluvionali sono troppo strette per le basi; usa una mappa più grande, una distanza maggiore tra le catene, creste più strette o laghi salati più piccoli.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ Spessore del bosco
 [Extra trails]
 Sentieri aggiuntivi
 [Deep lakes]
-
+Laghi profondi
 [Bedrock]
-
+Substrato roccioso
 [Portage Lakes needs sides between 64 and 512 tiles.]
 I lati di questa mappa devono misurare da 64 a 512 caselle.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ Risorse rimosse
 [stat cleared about]
 Risorse rimosse dagli operai nelle aree di raccolta per fare spazio.
 [stats topic overview]
-
+Riepilogo
 [stats topic economy]
-
+Economia
 [stats topic world]
-
+Mondo
 [stats work construction]
-
+Lavoro e costruzione
 [stats defence]
-
+Difesa
 [stats history]
-
+Vedi cronologia
 [stats waiting]
-
+In attesa delle statistiche…
 [stats unit details]
-
+Dettagli unità
 [stats map overlays]
-
+Livelli mappa
 [stats topic]
-
+Argomento
 [stats full history]
-
+Apri cronologia completa
 [stats missing readings]
-
+— Nessuna rilevazione registrata finora. Seleziona una statistica per i dettagli.
 [stat win probability]
-
+Probabilità di vittoria
 [stat win probability about]
-
+Probabilità stimata che la tua alleanza vinca, campionata durante tutta la partita. Gli alleati condividono un'unica probabilità. Questo modello è stato addestrato su partite dell'IA; le stime non tengono conto della posizione né delle mosse pianificate. I salvataggi meno recenti potrebbero avere una cronologia incompleta.
 [stat prestige]
 Prestigio
 [stat prestige about]
@@ -5781,15 +5781,15 @@ Pesci
 [Reroll terrain look]
 Genera un nuovo aspetto casuale del terreno
 [boulders]
-Massi
+Pilastri di pietra
 [hedge]
 Siepe
 [thicket]
 Boscaglia
 [ridge_rock]
-
+Guglie rocciose
 [outcrop]
-
+Colonne di basalto
 [dirt]
 Terra
 [clay]
@@ -5855,7 +5855,7 @@ Cenere vulcanica
 [glacier_ice]
 Ghiaccio di ghiacciaio
 [overgrown_road]
-Strada invasa dalla vegetazione
+Selciato muschioso
 [laterite]
 Suolo lateritico
 [cliffs]
@@ -5885,7 +5885,7 @@ Banchi di arenaria
 [obsidian_ridge]
 Cresta di ossidiana
 [granite_tors]
-Tor di granito
+Torrioni di granito
 [travertine_terraces]
 Terrazze di travertino
 [penitentes]
@@ -5907,13 +5907,13 @@ Sabbia
 [terrain group grass]
 Erba
 [terrain group ice]
-Ghiaccio
+Neve e ghiaccio
 [terrain group paths]
 Percorsi
 [terrain group obstacles]
-Ostacoli
+Barriere
 [terrain group ridges]
-
+Affioramenti
 [terrain group barren]
 Suolo sterile
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Ordine non confermato. Apri il comandante per riprovare; il tuo messaggio è sta
 [hive standing order update failed]
 Aggiornamento dell'ordine permanente non riuscito. Il tuo ordine è sospeso su questo dispositivo; riprova con il controllo corrispondente.
 [engine performance per game minute]
-
+Per minuto di gioco
 [engine performance per real minute]
-
+Per minuto reale
 [engine performance game engine performance]
-
+Prestazioni del motore di gioco
 [engine performance task wall-time costs]
-
+Costi delle attività in tempo reale
 [engine performance inspect slow ticks]
-
+Esamina i tick lenti
 [engine performance no advancing ticks recorded yet]
-
+Nessun tick di avanzamento ancora registrato.
 [engine performance whole-engine performance]
-
+Prestazioni dell'intero motore
 [engine performance open performance charts]
-
+Apri grafici delle prestazioni
 [engine performance engine performance]
-
+Prestazioni del motore
 [engine performance follow latest interval]
-
+Segui l'ultimo intervallo
 [engine performance compare task costs]
-
+Confronta i costi delle attività
 [engine performance all metrics and slow ticks]
-
+Tutte le metriche e tick lenti
 [engine performance phase orders]
-
+Ordini
 [engine performance phase units]
-
+Unità
 [engine performance phase buildings]
-
+Edifici
 [engine performance phase map]
-
+Mappa
 [engine performance phase statistics]
-
+Statistiche
 [engine performance phase ai]
-
+IA
 [engine performance phase world capture]
-
+Cattura del mondo
 [engine performance phase checksums]
-
+Checksum
 [engine performance wall time %0]
-
+Tempo reale: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Attese richieste: %0 ms; join del proprietario: %1 ms; lock: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms di tempo reale
 [engine performance tick %0 wall %1]
-
+Tick %0: %1 ms di tempo reale
 [AI for all computer colonies]
 IA per tutte le colonie controllate dal computer
 [tundra]

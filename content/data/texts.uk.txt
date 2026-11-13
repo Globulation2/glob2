@@ -1695,13 +1695,13 @@ OpenGL недоступний у цій збірці.
 [Lake size]
 Розмір озера
 [Crater type]
-
+Тип кратерів
 [Crater rims]
-
+Краї кратерів
 [Volcanic maars]
-
+Вулканічні маари
 [Glacial kettles]
-
+Льодовикові котловини
 [Contested commons]
 Спірні спільні землі
 [Maze]
@@ -1729,7 +1729,7 @@ OpenGL недоступний у цій збірці.
 [Wall thickness]
 Товщина стін
 [Gardens]
-Городи
+Сади
 [Walls this thick leave the doorways too narrow; use thinner walls or bigger cells.]
 За такої товщини стін проходи лишаються надто вузькими; використайте тонші стіни або більші комірки.
 [Moats this wide leave too little room inside each home; use a narrower moat, thinner walls or bigger cells.]
@@ -1745,11 +1745,11 @@ OpenGL недоступний у цій збірці.
 [Ice sheet size]
 Розмір льодовикового щита
 [Fjord landings]
-Причали у фіордах
+Спуски до фіордів
 [Fjord continents need at least one colony.]
 Континенту фіордів потрібна хоча б одна колонія.
 [A fjord continent needs a map at least 128 tiles on its shorter side.]
-Континенту фіордів потрібна мапа з коротшою стороною щонайменше 128 клітинок.
+Континенту фіордів потрібна карта з коротшою стороною щонайменше 128 клітинок.
 [Ice reach]
 Протяжність льоду
 [Resource islands]
@@ -1805,7 +1805,7 @@ OpenGL недоступний у цій збірці.
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Пояс закороткий для такої кількості колоній; використайте довшу карту або менше колоній.
 [Ring world cannot lay its rock and coasts without cutting ground off on this seed.]
-
+Кільцевому світу з цим сідом не вдається розмістити скелі й узбережжя, не відрізавши частину суходолу.
 [City states]
 Міста-держави
 [Strait width]
@@ -1839,11 +1839,11 @@ OpenGL недоступний у цій збірці.
 [Levee]
 Дамба
 [Mudflats]
-
+Мулові рівнини
 [Hammocks]
-
+Лісові острівці
 [Moss]
-
+Мох
 [Sloughs]
 Стариці
 [Everglades need at least one colony.]
@@ -1949,17 +1949,17 @@ OpenGL недоступний у цій збірці.
 [Central island]
 Центральний острів
 [Tide]
-
+Приплив
 [Neap tide]
-
+Слабкий приплив
 [Mean tide]
-
+Середній приплив
 [Spring tide]
-
+Сильний приплив
 [Tidal flats need at least one colony.]
 Припливним мілинам потрібна хоча б одна колонія.
 [The central tor has no room for its rock beside the quarry faces; use a bigger map or fewer colonies.]
-
+Центральному останцю бракує місця для скель поруч зі стінами каменоломень; використайте більшу карту або менше колоній.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Рідні острови не вміщаються на цій карті; використайте більшу карту, менше колоній або менші острови.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -2003,17 +2003,17 @@ OpenGL недоступний у цій збірці.
 [Meandering rivers]
 Звивисті річки
 [Banks]
-
+Береги
 [Deep channels]
-
+Глибокі русла
 [River bluffs]
-
+Річкові кручі
 [Divide outcrops]
-
+Скельні виходи на вододілах
 [Deep water]
-
+Глибока вода
 [Rock outcrops]
-
+Скельні виходи
 [Fruit in home valleys]
 Фрукти в стартових долинах
 [Moat]
@@ -2025,11 +2025,11 @@ OpenGL недоступний у цій збірці.
 [Winding belt]
 Звивистий пояс
 [Deep ocean]
-
+Глибокий океан
 [Rock spine]
-
+Скельний хребет
 [Ring road]
-
+Кільцева дорога
 [Cell shape]
 Форма клітинок
 [Squares]
@@ -2067,19 +2067,19 @@ OpenGL недоступний у цій збірці.
 [Lee width]
 Ширина підвітряної смуги
 [Climate]
-
+Клімат
 [Temperate]
-
+Помірний
 [Steppe]
-
+Степовий
 [Tropical]
-
+Тропічний
 [No ridge stands behind the homes; use fewer ridges or a bigger map.]
-
+За базами не лишається жодного хребта; використайте менше хребтів або більшу карту.
 [The ridges leave no room for the homes' quarries; use thicker ridges or a bigger map.]
-
+Хребти не лишають місця для каменоломень баз; використайте товщі хребти або більшу карту.
 [The ridges could not be sealed; use thicker ridges.]
-
+Хребти не вдалося зробити суцільними; використайте товщі хребти.
 [Old growth]
 Праліс
 [Canals]
@@ -2519,7 +2519,7 @@ OpenGL недоступний у цій збірці.
 [Moraine hummocks]
 Моренні пагорби
 [Deep pools]
-
+Глибокі ковбані
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
 Розгалуження залишає базам замало тераси; використайте більшу карту або вужче розгалуження.
 [The map is too narrow across for a braid; use a bigger map.]
@@ -2579,11 +2579,11 @@ OpenGL недоступний у цій збірці.
 [Dry patches]
 Сухі ділянки
 [Season]
-
+Сезон
 [Meltwater]
-
+Талі води
 [Late summer]
-
+Кінець літа
 [Sparse]
 Мало
 [Normal]
@@ -2713,25 +2713,25 @@ OpenGL недоступний у цій збірці.
 [Twin springs]
 Джерела-близнюки
 [Canyon mouth]
-
+Гирло каньйону
 [Cienega]
-
+Джерельне болото
 [Coalescing pair]
-
+Конуси, що зливаються
 [Cienegas]
-
+Джерельні болота
 [Rock]
-
+Порода
 [Granite]
-
+Граніт
 [Greenstone]
-
+Зелений камінь
 [Sandstone]
-
+Пісковик
 [Volcanic]
-
+Вулканічна
 [The passes cut into the homes' quarries; use fewer passes, fewer colonies or a bigger map.]
-
+Перевали врізаються в каменоломні баз; використайте менше перевалів, менше колоній або більшу карту.
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
 Схили з конусами виносу надто вузькі для баз; використайте більшу карту, більшу відстань між хребтами, вужчі гребені або менші солоні озера.
 [Central Quarry]
@@ -2883,9 +2883,9 @@ OpenGL недоступний у цій збірці.
 [Extra trails]
 Додаткові стежки
 [Deep lakes]
-
+Глибокі озера
 [Bedrock]
-
+Корінна порода
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Сторони цієї карти мають бути від 64 до 512 клітинок.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
@@ -5017,33 +5017,33 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [stat cleared about]
 Ресурси, прибрані робітниками на ділянках розчищення, щоб звільнити місце.
 [stats topic overview]
-
+Огляд
 [stats topic economy]
-
+Економіка
 [stats topic world]
-
+Світ
 [stats work construction]
-
+Робота й будівництво
 [stats defence]
-
+Оборона
 [stats history]
-
+Переглянути історію
 [stats waiting]
-
+Очікування статистики…
 [stats unit details]
-
+Подробиці про істот
 [stats map overlays]
-
+Шари карти
 [stats topic]
-
+Розділ
 [stats full history]
-
+Відкрити повну історію
 [stats missing readings]
-
+— Записаних значень ще немає. Виберіть показник, щоб побачити подробиці.
 [stat win probability]
-
+Імовірність перемоги
 [stat win probability about]
-
+Оцінка ймовірності перемоги вашого союзу, що вимірюється протягом усього матчу. Союзники мають спільну ймовірність. Модель навчено на іграх ШІ; оцінки не враховують розташування та заплановані ходи. Старіші збереження можуть мати неповну історію.
 [stat prestige]
 Престиж
 [stat prestige about]
@@ -5781,15 +5781,15 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [Reroll terrain look]
 Заново вибрати випадковий вигляд ландшафту
 [boulders]
-Валуни
+Кам’яні стовпи
 [hedge]
 Живопліт
 [thicket]
 Зарості
 [ridge_rock]
-
+Скельні шпилі
 [outcrop]
-
+Базальтові стовпи
 [dirt]
 Ґрунт
 [clay]
@@ -5855,7 +5855,7 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [glacier_ice]
 Льодовиковий лід
 [overgrown_road]
-Зарослий шлях
+Моховита бруківка
 [laterite]
 Латерит
 [cliffs]
@@ -5865,7 +5865,7 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [slate_ashlar]
 Сланцеві плити
 [basalt_causeway]
-Базальтова гребля
+Базальтова мостова
 [scoria_blocks]
 Блоки шлаку
 [rime_ashlar]
@@ -5889,13 +5889,13 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [travertine_terraces]
 Травертинові тераси
 [penitentes]
-Снігові каяльники
+Снігові шпилі
 [termite_mounds]
 Термітники
 [hoodoos]
-Кам'яні гриби
+Кам’яні гриби
 [petrified_stumps]
-Скам'янілі пні
+Скам’янілі пні
 [steppe_grass]
 Степова трава
 [moor_grass]
@@ -5907,13 +5907,13 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [terrain group grass]
 Трава
 [terrain group ice]
-Лід
+Сніг і лід
 [terrain group paths]
 Дороги
 [terrain group obstacles]
-Перешкоди
+Перепони
 [terrain group ridges]
-
+Скельні виходи
 [terrain group barren]
 Неродюча земля
 [terrain group rough]
@@ -7051,53 +7051,53 @@ Discord відкрито. Ви можете повернутися до гри �
 [hive standing order update failed]
 Не вдалося оновити постійний наказ. Ваш наказ призупинено на цьому пристрої; повторіть спробу за допомогою відповідного елемента керування.
 [engine performance per game minute]
-
+За ігрову хвилину
 [engine performance per real minute]
-
+За реальну хвилину
 [engine performance game engine performance]
-
+Продуктивність ігрового рушія
 [engine performance task wall-time costs]
-
+Реальний час виконання завдань
 [engine performance inspect slow ticks]
-
+Переглянути повільні такти
 [engine performance no advancing ticks recorded yet]
-
+Тактів із просуванням ще не записано.
 [engine performance whole-engine performance]
-
+Продуктивність усього рушія
 [engine performance open performance charts]
-
+Відкрити графіки продуктивності
 [engine performance engine performance]
-
+Продуктивність рушія
 [engine performance follow latest interval]
-
+Стежити за останнім інтервалом
 [engine performance compare task costs]
-
+Порівняти час завдань
 [engine performance all metrics and slow ticks]
-
+Усі показники й повільні такти
 [engine performance phase orders]
-
+Накази
 [engine performance phase units]
-
+Істоти
 [engine performance phase buildings]
-
+Будівлі
 [engine performance phase map]
-
+Карта
 [engine performance phase statistics]
-
+Статистика
 [engine performance phase ai]
-
+ШІ
 [engine performance phase world capture]
-
+Знімок світу
 [engine performance phase checksums]
-
+Контрольні суми
 [engine performance wall time %0]
-
+Реальний час: %0 мс
 [engine performance waits %0 joins %1 locks %2]
-
+Обов’язкові очікування: %0 мс; очікування потоком-власником: %1 мс; блокування: %2 мс
 [engine performance phase %0 wall %1]
-
+%0: %1 мс реального часу
 [engine performance tick %0 wall %1]
-
+Такт %0: %1 мс реального часу
 [AI for all computer colonies]
 ШІ для всіх колоній під керуванням комп’ютера
 [tundra]
