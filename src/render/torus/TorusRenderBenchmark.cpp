@@ -38,6 +38,7 @@
 #include "render/SoftwareTerrainCache.h"
 #include "render/terrain/TerrainCompositor.h"
 #include "render/terrain/DirectTerrain.h"
+#include "render/RenderMemoryReport.h"
 #include "render/OverviewTerrainCache.h"
 #include <algorithm>
 #include <cassert>
@@ -366,6 +367,10 @@ static int run(int argc, char **argv)
                 ? std::atoi(std::getenv("GLOB2_BENCH_WARMUP_FRAMES")) : 2);
             auto &compositor = globalContainer->terrainCompositor(gui.game.map.frozenAssetBundle());
             TerrainVisual::Compositor::HighResolutionCoverage initialCoverage;
+            // Streaming is asynchronous: unpaced frames outrun the asset workers,
+            // so memory measurements pace frames like a display would.
+            const int frameIntervalMs = std::max(0, std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")
+                ? std::atoi(std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")) : 0);
             for (int i = -warmupFrames; i < frames; ++i)
             {
                 if (i == 0) initialCoverage = compositor.highResolutionCoverage();
@@ -431,6 +436,7 @@ static int run(int argc, char **argv)
                     std::printf("FRAME_TERRAIN_RESIDENCY frame=%d direct_bytes=%zu page_bytes=%zu page_retained_bytes=%zu peak_texture_bytes=%zu\n",
                         i, atlas ? atlas->textureBytes() : 0, pages ? pages->residentTextureBytes() : 0,
                         pages ? pages->bytes() : 0, gui.view.render.peakTerrainTextureBytes);
+                    std::printf("FRAME_RENDER_MEMORY frame=%d %s\n", i, RenderMemoryReport::fields(gui.view.render).c_str());
                     const auto &rows = gui.view.render.resourceRowMetrics;
                     std::printf("FRAME_RESOURCE_ROWS frame=%d eligibility_cells=%llu frame_cells=%llu animated_cells=%llu\n", i,
                         static_cast<unsigned long long>(rows.eligibilityCells), static_cast<unsigned long long>(rows.frameCells),
@@ -469,6 +475,7 @@ static int run(int argc, char **argv)
                 // Close each device frame after measurement. Otherwise recorder
                 // identity/backup work would be shared by the whole benchmark.
                 if(gfx->renderDevice())ContextAccess::backend(*gfx)->present();
+                if (frameIntervalMs) SDL_Delay(frameIntervalMs);
             }
             std::printf("COMPLETION_SUMMARY mode=%s completed=%zu attempts=%llu intentional_holds=%llu admission_deferrals=%llu completed_per_second=%.6f\n",label,times.size(),
                 static_cast<unsigned long long>(measuredAttempts),static_cast<unsigned long long>(measuredHolds),
@@ -483,6 +490,8 @@ static int run(int argc, char **argv)
                 static_cast<unsigned long long>(coverage.fallbacks - initialCoverage.fallbacks),
                 static_cast<unsigned long long>(initialCoverage.prepares),
                 static_cast<unsigned long long>(initialCoverage.fallbacks));
+            std::printf("RENDER_MEMORY mode=%s %s\n", label, RenderMemoryReport::fields(gui.view.render).c_str());
+            std::fputs(RenderMemoryReport::spriteLines("RENDER_MEMORY_SPRITE", 48).c_str(), stdout);
             std::sort(times.begin(), times.end());
             std::printf("%s median=%.3f ms p95=%.3f ms\n", label, times[times.size()/2], times[(times.size()*95+99)/100-1]);
             std::printf("%s p99=%.3f ms max=%.3f ms\n", label,
@@ -567,6 +576,14 @@ static int run(int argc, char **argv)
                 bool crossedDiscovery = false;
                 bool switchedBackend = false;
                 measure(clouds ? "2D clouds" : "2D no clouds", [&](int cameraFrame) {
+                    // GLOB2_BENCH_SETTLE_FRAMES first holds one view, as a game does
+                    // before the player moves: background work such as the whole-map
+                    // base mask finishes before the camera motion. It is the motion's
+                    // sixtieth frame, the closest zoom of the cycle, because the
+                    // farthest draws the overview and prepares no terrain.
+                    static const int settleFrames = std::max(0, std::getenv("GLOB2_BENCH_SETTLE_FRAMES")
+                        ? std::atoi(std::getenv("GLOB2_BENCH_SETTLE_FRAMES")) : 0);
+                    cameraFrame = cameraFrame < settleFrames ? 60 : cameraFrame - settleFrames;
                     if (discoveryCrossing && !crossedDiscovery && cameraFrame >= 4)
                     {
                         gui.game.map.setMapDiscovered(15, 15, 1);

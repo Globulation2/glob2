@@ -441,6 +441,13 @@ void GlobalContainer::loadGameGraphics()
 void GlobalContainer::requestGameGraphics()
 {
     if (gameGraphicsRequested) return;
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+    // Desktop legacy OpenGL draws terrain with the direct pass, which samples
+    // material frames. Only the menu backdrop draws this sheet, from its
+    // standalone frames: its HD atlas would cost about 90 MiB in memory and
+    // again on the GPU and never be drawn. The browser's pages still use it.
+    Sprite::skipHighResolutionAtlas("data/gfx/terrain");
+#endif
     for (const char *name : {"terrain", "cloud", "black", "shade", "ressource", "ressourcemini",
         "mapicon", "statusicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
@@ -448,6 +455,7 @@ void GlobalContainer::requestGameGraphics()
 	for (const auto &material : TerrainVisual::loadCatalog().materials)
 	{
 		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
+		Sprite::keepHighResolutionPixels(material.sprite); // The compositor samples them.
 		Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
 		{

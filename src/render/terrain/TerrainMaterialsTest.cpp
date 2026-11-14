@@ -172,6 +172,34 @@ TEST_SUITE("TerrainMaterials")
 			}
 	}
 
+	TEST_CASE("declaring a view keeps no prepared textures and still serves phase pixels [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto &compositor = globals->terrainCompositor();
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, y < 12 ? WATER : (x < 16 ? SAND : GRASS));
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto grass = compositor.catalog().find("grass");
+		compositor.declareVisible(0, scene, 0, 0, 31, 31, false);
+		const auto declared = compositor.sourceBytes();
+		compositor.prepareVisible(false, 0, scene, 0, 0, 31, 31);
+		const auto prepared = compositor.sourceBytes();
+		CHECK(prepared > declared);
+		// Direct terrain declares the same view: the composed copies are released,
+		// and it filters its tiles from phase pixels, which need none of them.
+		compositor.declareVisible(0, scene, 0, 0, 31, 31, false);
+		CHECK(compositor.sourceBytes() == declared);
+		CHECK(compositor.phasePixels(grass, 0, 0).size() == 32 * 32);
+		CHECK(compositor.sourceBytes() == declared);
+		// A page view prepares them again.
+		compositor.prepareVisible(false, 0, scene, 0, 0, 31, 31);
+		CHECK(compositor.sourceBytes() == prepared);
+	}
+
 	TEST_CASE("fertile ground overlays glint sparsely, out of step and on its own cycle")
 	{
 		glob2test::HeadlessGlobals globals;

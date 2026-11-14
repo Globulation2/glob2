@@ -276,6 +276,41 @@ namespace GAGCore
 		drawSprite(static_cast<float>(x), static_cast<float>(y), sprite, index, alpha);
 	}
 
+	// Team-colour shader: one quad combining the base and team layers, with no
+	// recoloured copy of the team layer in memory or on the GPU. Units reach it
+	// from the world and from UI previews, and pick native or HD per
+	// blockHasCompleteHD (one resolution throughout an action); other sprites
+	// with a team layer (buildings) take whichever resolution each layer has.
+	// The quad always has the sprite's logical size: HD only adds sampling
+	// density. False, drawing nothing, when the frame has no team layer or the
+	// shader is unavailable (software renderer, or a compile or link failure);
+	// the caller then draws the layers separately.
+	bool DrawableSurface::drawTeamShaderSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha)
+	{
+		if (this != _gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) || !_gc->hasUnitShader())
+			return false;
+		DrawableSurface *base, *team;
+		if (sprite->dynamicTeamColor)
+		{
+			const bool useHD = sprite->blockHasCompleteHD(index)
+				&& (sprite->experimentImages[index] || sprite->experimentRotated[index]);
+			base = useHD ? sprite->experimentImages[index] : sprite->images[index];
+			team = useHD
+				? (sprite->experimentRotated[index] ? sprite->experimentRotated[index]->orig : nullptr)
+				: (sprite->rotated[index] ? sprite->rotated[index]->orig : nullptr);
+		}
+		else
+		{
+			const auto *hdTeam = index < sprite->experimentRotated.size() ? sprite->experimentRotated[index] : nullptr;
+			const auto *nativeTeam = sprite->rotated[index];
+			if (!hdTeam && !nativeTeam) return false;
+			auto *hdBase = index < sprite->experimentImages.size() ? sprite->experimentImages[index] : nullptr;
+			base = hdBase ? hdBase : sprite->images[index];
+			team = hdTeam ? hdTeam->orig : nativeTeam->orig;
+		}
+		return _gc->drawTeamColoredQuad(base, team, x, y, w, h, alpha, sprite->teamHueShiftDegrees());
+	}
+
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
 		// check bounds
@@ -283,25 +318,9 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 		const bool gpuActive = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
-
-		// Team-colour shader: one quad combining base+team, no CPU/GPU recolor
-		// surface. Shared by world units and unit UI previews since they all
-		// reach here. Picks native or HD per blockHasCompleteHD (one resolution
-		// throughout an action) but always draws at the sprite's logical
-		// size -- HD only adds texture sampling density. Falls through when the
-		// shader is unavailable (software renderer, or compile/link failure).
-		if (gpuActive && sprite->dynamicTeamColor && _gc->hasUnitShader())
-		{
-			const bool useHD = sprite->blockHasCompleteHD(index)
-				&& (sprite->experimentImages[index] || sprite->experimentRotated[index]);
-			DrawableSurface *base = useHD ? sprite->experimentImages[index] : sprite->images[index];
-			DrawableSurface *team = useHD
-				? (sprite->experimentRotated[index] ? sprite->experimentRotated[index]->orig : nullptr)
-				: (sprite->rotated[index] ? sprite->rotated[index]->orig : nullptr);
-			if (_gc->drawTeamColoredQuad(base, team, x, y, static_cast<float>(sprite->getW(index)),
-			                             static_cast<float>(sprite->getH(index)), alpha, sprite->teamHueShiftDegrees()))
-				return;
-		}
+		if (drawTeamShaderSprite(x, y, static_cast<float>(sprite->getW(index)),
+		                         static_cast<float>(sprite->getH(index)), sprite, index, alpha))
+			return;
 
 		const bool wantsHDRoute = sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index];
 		// A dynamicTeamColor sprite (unit) with an incomplete HD block must not
@@ -329,6 +348,9 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 
+		if (drawTeamShaderSprite(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+		                         static_cast<float>(h), sprite, index, alpha))
+			return;
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
@@ -346,6 +368,9 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 
+		if (drawTeamShaderSprite(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+		                         static_cast<float>(h), sprite, index, alpha))
+			return;
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);

@@ -196,6 +196,7 @@ set(GLOB2_CLIENT_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -865,9 +866,10 @@ set(GLOB2_STRICT_CXXFLAGS
     -ffp-contract=off
 )
 
-# buildsys/sources.py GAG_SOURCES.
+# buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.
 set(GLOB2_GAG_SOURCES
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -915,6 +917,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -945,6 +948,15 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
+)
+
+# buildsys/sources.py SSE41_SOURCES: libgag sources native x86 builds compile with -msse4.1.
+set(GLOB2_SSE41_SOURCES
+    libs/gag/src/EtcpakSse41.cpp
 )
 
 # buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).
@@ -1142,6 +1154,7 @@ set(GLOB2_ANDROID_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -1637,6 +1650,7 @@ set(GLOB2_ANDROID_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -1684,6 +1698,7 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -1714,6 +1729,10 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -1928,6 +1947,7 @@ set(GLOB2_IOS_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -2426,6 +2446,7 @@ set(GLOB2_IOS_SOURCES
     platforms/mobile/ios/LaunchLinks.mm
     platforms/mobile/ios/CertificateTrust.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -2473,6 +2494,7 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -2503,6 +2525,10 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -2881,6 +2907,7 @@ set(GLOB2_WEB_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -3371,6 +3398,7 @@ set(GLOB2_WEB_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -3416,6 +3444,7 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -3445,6 +3474,10 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -4219,6 +4252,7 @@ set(GLOB2_INCLUDE_DIRECTORIES
     src/net/message
     src/scripting/sgsl
     third_party/nlohmann-json/include
+    third_party/etcpak
 )
 
 # buildsys/javascript.py QUICKJS_SOURCES and openlibm_sources().

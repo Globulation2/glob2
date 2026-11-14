@@ -204,6 +204,22 @@ TEST_CASE("HD staging copies repeated uses then transfers exclusive pixels at th
         SDL_DestroySurface(rgba);
     }
 }
+TEST_CASE("decode totals count each image decode and its pixels") {
+    glob2test::TempDir temp("decode-totals");
+    write(temp.path / "frame.webp", webp, sizeof(webp));
+    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
+    GAGCore::AssetLoader loader(files, {0, 0, 1024 * 1024});
+    const auto before = GAGCore::AssetLoader::decodeTotals();
+    auto request = loader.requestImage("frame.webp");
+    const auto image = loader.wait(request); REQUIRE(image);
+    const auto decoded = GAGCore::AssetLoader::decodeTotals();
+    CHECK(decoded.images == before.images + 1);
+    CHECK(decoded.bytes == before.bytes + std::uint64_t(image->surface->w) * image->surface->h * 4);
+    // A request the cache still holds is not decoded again.
+    auto again = loader.requestImage("frame.webp");
+    REQUIRE(loader.wait(again));
+    CHECK(GAGCore::AssetLoader::decodeTotals().images == decoded.images);
+}
 TEST_CASE("HD staging preserves external consumers and cancellation cannot cancel their input") {
     glob2test::TempDir temp("shared-hd-staging");
     write(temp.path / "frame.webp", webp, sizeof(webp));

@@ -194,6 +194,7 @@ CLIENT_SOURCES = (
     'render/OverviewTerrainCache.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
+    'render/RenderMemoryReport.cpp',
     'render/UnitEffectArt.cpp',
     'render/FogFade.cpp',
     'render/scene/SceneMap.cpp',
@@ -831,8 +832,15 @@ PLATFORM_TRUST_SOURCES = {
 RELAY_MAIN_SOURCE = 'relay/RelayMain.cpp'
 RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'relay/RelayAdmissionTest.cpp')
 
+# Vendored texture block encoders, compiled into libgag; see third_party/README.md.
+# The SSE4.1 copy of them, which native x86 builds compile with -msse4.1 (CMakeLists.txt).
+SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp',)
+ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcpak/etcpak/ProcessRGB.cpp',
+                  'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp')
+
 GAG_SOURCES = (
     'AssetLoader.cpp',
+    'EtcpakSse41.cpp',
     'AssetVideo.cpp',
     'AssetVideoDecoder.cpp',
     'PackedSpriteFrame.cpp',
@@ -880,6 +888,7 @@ GAG_SOURCES = (
     'SkinShapeModel.cpp',
     'MapGeometryCache.cpp',
     'RenderBatch.cpp',
+    'RenderMemory.cpp',
     'DrawableSurface.cpp',
     'DrawableSurfaceDraw.cpp',
     'DrawableSurfaceCompound.cpp',
@@ -934,6 +943,7 @@ def mobile_sources(target):
         files.remove('src/' + 'app/Glob2.cpp')
         files += IOS_SOURCES
     files += ['libs/gag/src/' + name for name in GAG_SOURCES]
+    files += ETCPAK_SOURCES
     files += ['libs/usl/src/' + name for name in USL_SOURCES]
     files += MOBILE_SOURCES
     if target == 'android':
@@ -965,6 +975,7 @@ def web_sources():
     """Every source the browser's game runtime compiles, in build order."""
     files = ['src/' + name for name in CLIENT_SOURCES if name not in WEB_EXCLUDED_CLIENT_SOURCES]
     files += ['libs/gag/src/' + name for name in GAG_SOURCES if name not in WEB_EXCLUDED_GAG_SOURCES]
+    files += ETCPAK_SOURCES
     files += ['libs/usl/src/' + name for name in USL_SOURCES]
     return files + list(WEB_SOURCES)
 
@@ -1058,4 +1069,5 @@ INCLUDE_DIRECTORIES = (
     'src/net/message',
     'src/scripting/sgsl',
     'third_party/nlohmann-json/include',
+    'third_party/etcpak',
 )

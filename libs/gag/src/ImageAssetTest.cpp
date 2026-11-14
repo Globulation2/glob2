@@ -5,6 +5,10 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <AssetLoader.h>
+#include "EtcpakSse41.h"
+#include <etcpak/ProcessDxtc.hpp>
+#include <etcpak/ProcessRGB.hpp>
+#include <RenderMemory.h>
 #include <stdexcept>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
@@ -41,11 +45,13 @@ TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
         p[2] = x < 32 ? 90 + (x + y) * 2 : (cell ? 40 : 170);
         p[3] = x < 48 ? 255 : (y * 8) % 256;
     }
-    const bool previous = GAGCore::AssetImage::compressHighResolution.exchange(true);
-    struct Restore { bool value; ~Restore() { GAGCore::AssetImage::compressHighResolution = value; } } restore{previous};
+    using Compression = GAGCore::AssetImage::BlockCompression;
+    const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::BC3);
+    struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
     GAGCore::AssetImage image(surface);
     image.prepareUpload(true);
     REQUIRE(image.mips.size() > 3);
+    CHECK(image.compression == Compression::BC3);
     const auto expand = [](unsigned c, int bits) { return int((c << (8 - bits)) | (c >> (2 * bits - 8))); };
     for (const auto &level : image.mips) {
         CAPTURE(level.width);
@@ -85,6 +91,59 @@ TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
     }
 }
 #endif
+TEST_CASE("block compression follows the requested format and skips what it cannot encode") {
+    using Compression = GAGCore::AssetImage::BlockCompression;
+    std::vector<unsigned char> pixels(8 * 4 * 4, 200);
+    CHECK(GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::Uncompressed, true).empty());
+    CHECK(GAGCore::AssetImage::compressBlocks(pixels.data(), 2, 2, Compression::BC3, true).empty());
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+    const auto bc3 = GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::BC3, true);
+    const auto etc2 = GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::ETC2, true);
+    // Sixteen bytes for each 4x4 pixels in both formats.
+    CHECK(bc3.size() == 32);
+    CHECK(etc2.size() == 32);
+    CHECK(bc3 != etc2);
+    // A flat opaque block: BC3 stores its alpha endpoints first.
+    CHECK(bc3[0] == 200);
+    // The prepared image records the format its levels hold.
+    const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::ETC2);
+    struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
+    auto *surface = SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(surface != nullptr);
+    SDL_FillSurfaceRect(surface, nullptr, 0xff336699u);
+    GAGCore::AssetImage image(surface);
+    image.prepareUpload(true);
+#if !defined(GLOB2_WEBGL2)
+    CHECK(image.compression == Compression::ETC2);
+    REQUIRE_FALSE(image.mips.empty());
+    CHECK(image.mips.front().compressed.size() == 4 * 16);
+#endif
+#endif
+}
+TEST_CASE("the SSE4.1 encoders match the portable ones where the CPU runs them") {
+    const auto simd = GAGCore::EtcpakSse41::available();
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
+    if (__builtin_cpu_supports("sse4.1")) CHECK(simd.bc3 != nullptr);
+#endif
+    if (!simd.bc3) { CHECK(simd.etc2Rgba == nullptr); return; }
+    REQUIRE(simd.etc2Rgba != nullptr);
+    // Flat 4x4 blocks of distinct colours and alphas: one exact encoding each.
+    constexpr int width = 16, height = 8;
+    std::vector<std::uint32_t> pixels(width * height);
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x) {
+            const unsigned block = (y / 4) * (width / 4) + x / 4;
+            pixels[y * width + x] = (255u - block * 20) << 24 | (block * 31 % 256) << 16 | (block * 57 % 256) << 8 | (block * 89 % 256);
+        }
+    const std::uint32_t count = (width / 4) * (height / 4);
+    std::vector<std::uint64_t> portable(count * 2), sse(count * 2);
+    CompressBc3(pixels.data(), portable.data(), count, width);
+    simd.bc3(pixels.data(), sse.data(), count, width);
+    CHECK(portable == sse);
+    CompressEtc2Rgba(pixels.data(), portable.data(), count, width, true);
+    simd.etc2Rgba(pixels.data(), sse.data(), count, width);
+    CHECK(portable == sse);
+}
 TEST_CASE("prepared image adoption separates shared pixels and transfers exclusive pixels") {
     auto *pixels = SDL_CreateSurface(2, 1, SDL_PIXELFORMAT_ARGB8888);
     REQUIRE(pixels != nullptr);
@@ -103,6 +162,26 @@ TEST_CASE("prepared image adoption separates shared pixels and transfers exclusi
     CHECK(static_cast<Uint32*>(exclusive->getSDLSurface()->pixels)[1] == 0x80445566u);
     GAGCore::AssetImage missing(nullptr);
     CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
+}
+TEST_CASE("the renderer memory report counts the decoded pixels surfaces hold") {
+    const auto before = GAGCore::DrawableSurface::residentPixels();
+    auto *pixels = SDL_CreateSurface(8, 4, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(pixels != nullptr);
+    const auto bytes = size_t(pixels->pitch) * pixels->h;
+    GAGCore::AssetImage image(pixels);
+    {
+        auto surface = GAGCore::DrawableSurface::fromAssetImage(image, true, false);
+        const auto held = GAGCore::DrawableSurface::residentPixels();
+        CHECK(held.surfaces == before.surfaces + 1);
+        CHECK(held.surfaceBytes == before.surfaceBytes + bytes);
+        const auto report = GAGCore::RenderMemory::report();
+        CHECK(report.cpuSurfaceBytes == held.surfaceBytes);
+        CHECK(GAGCore::RenderMemory::fields(report).find(
+            "cpu_surface_bytes=" + std::to_string(held.surfaceBytes) + " ") != std::string::npos);
+    }
+    const auto released = GAGCore::DrawableSurface::residentPixels();
+    CHECK(released.surfaces == before.surfaces);
+    CHECK(released.surfaceBytes == before.surfaceBytes);
 }
 TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
     for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) for (int alphaMode : {0, 1, 2}) {

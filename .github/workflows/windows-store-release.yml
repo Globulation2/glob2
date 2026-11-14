@@ -150,10 +150,16 @@ jobs:
             --store-id "$env:STORE_ID" --version "$env:STORE_VERSION"
           if ($LASTEXITCODE -ne 0) { throw 'Portable payload staging failed.' }
 
+      # Pin the GDK: the payload has no embedded GDK version, so the Submission
+      # Validator judges the packaging tools' GDK, and a GDK newer than the
+      # validator's approved list fails ILI_PcGdkUnsupported. Raise this with
+      # the validator pin, after a Store validation passes on the new pair.
       - name: Install Microsoft GDK
         shell: pwsh
+        env:
+          GDK_VERSION: '2604.5.7903'
         run: |
-          winget install --id Microsoft.Gaming.GDK --exact --source winget --silent `
+          winget install --id Microsoft.Gaming.GDK --exact --version $env:GDK_VERSION --source winget --silent `
             --accept-package-agreements --accept-source-agreements --disable-interactivity
           if ($LASTEXITCODE -ne 0) { throw "GDK installation failed: $LASTEXITCODE" }
 

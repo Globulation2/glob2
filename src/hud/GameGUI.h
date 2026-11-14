@@ -324,6 +324,8 @@ public:
 
 	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
     void swapColonyAppearance(MapRenderState &state);
+	//! The map view's renderer state, for memory reporting.
+	const MapRenderState &renderState() const;
 	/// Chevrons the HUD speed control lights for the current speed.
 	int litSpeedChevrons() const;
 	/// Step the HUD speed control: forwards to the next chevron (the last wraps

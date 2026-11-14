@@ -22,6 +22,7 @@ class SoftwareTerrainCache;
 class DirectTerrain;
 class OverviewTerrainCache;
 class ResourceRowCache;
+namespace TerrainVisual { class Compositor; }
 
 //! Presentation state one map view keeps between frames: animation phases, the
 //! cloud field, the terrain page cache and scratch buffers. Owned by the
@@ -92,6 +93,8 @@ struct MapRenderState
     struct ResourceRowMetrics { std::uint64_t eligibilityCells = 0, frameCells = 0, animatedCells = 0; };
     ResourceRowMetrics resourceRowMetrics;
     std::size_t peakTerrainTextureBytes = 0;
+    //! The compositor the last drawn frame used, for the memory report.
+    std::weak_ptr<TerrainVisual::Compositor> terrainCompositorDrawn;
     std::unique_ptr<ResourceRowCache> resourceRows;
 	DirectTerrain &directTerrain();
 	const DirectTerrain *existingDirectTerrain() const { return directTerrain_.get(); }

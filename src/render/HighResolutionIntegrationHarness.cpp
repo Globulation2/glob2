@@ -122,7 +122,13 @@ class HighResolutionIntegrationHarness
             if (atlas)
             {
                 SDL_CloseIO(atlas);
+#ifdef GLOB2_WEBGL2
                 REQUIRE(sprite->highResolutionAtlas != nullptr);
+#else
+                // Desktop legacy GL draws terrain with the direct pass, so the
+                // terrain sheet keeps standalone frames and builds no atlas.
+                REQUIRE((sprite->highResolutionAtlas != nullptr) == (sprite == globalContainer->resources));
+#endif
             }
             // The bundled pack has HD resource frames but no HD terrain/atlases.
             if (sprite == globalContainer->resources) REQUIRE(sprite->experimentImages[0] != nullptr);

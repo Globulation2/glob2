@@ -46,6 +46,7 @@ class AppleLocalizationTests(unittest.TestCase):
             root = Path(temporary)
             directories = self.fixture(root)
             for name in ('COPYING', 'content/data/javascript-licenses.txt', 'content/data/json-license.txt',
+                         'content/data/etcpak-license.txt',
                          'docs/assets/source-attribution.md', 'Info.plist', 'Glob2.icns'):
                 file = root / name
                 file.parent.mkdir(parents=True, exist_ok=True)

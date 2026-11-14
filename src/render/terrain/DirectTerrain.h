@@ -49,6 +49,10 @@ public:
     // Nothing of this map can draw yet: show the overview.
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;
     std::size_t textureBytes() const;
+    // How long the mask atlas a zoom retired stays allocated as a spare once
+    // it has nothing left to show. A run of zooms reuses it; a still view
+    // gives its memory back.
+    unsigned spareLifetimeMs = 10000;
     std::size_t uploadBytes() const;
     unsigned draws() const;
     struct DiscoveryMetrics { std::size_t rebuilt = 0; };
