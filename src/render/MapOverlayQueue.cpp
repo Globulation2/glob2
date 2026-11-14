@@ -29,13 +29,14 @@ void MapOverlayQueue::bar(int mapX, int mapY, bool vertical, bool reversed, int 
 					alpha, r, g, b, r2, g2, b2});
 }
 
-void MapOverlayQueue::pip(GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float opacity,
-						  bool beside)
+void MapOverlayQueue::pip(GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float severity,
+						  float opacity, bool beside)
 {
 	const Uint8 alpha = Uint8(std::lround(std::clamp(opacity, 0.f, 1.f) * 255));
 	if (!alpha)
 		return;
-	Pip pip{0, 0, Uint8(icon), alpha, Uint8(beside)};
+	Pip pip{0, 0, Uint8(icon), alpha, Uint8(beside),
+			Uint8(std::lround(std::clamp(severity, 0.f, 1.f) * 255))};
 	gfx.mapToScreen(mapX, mapY, pip.screenX, pip.screenY);
 	pips.push_back(pip);
 }
@@ -103,9 +104,6 @@ void fillDisc(GraphicContext &gfx, int left, int top, int edge, Uint8 r, Uint8 g
 	}
 }
 
-// Badge colours by MapOverlayQueue::StatusIcon: red for harm, amber for a missing supply.
-constexpr Uint8 StatusColors[MapOverlayQueue::StatusIconCount][3] = {
-	{226, 45, 45}, {240, 165, 20}, {226, 45, 45}, {240, 165, 20}, {240, 165, 20}};
 }
 
 void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore::Sprite *statusIcons,
@@ -227,34 +225,48 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore
 				}
 			}
 		}
-		// Status badges: a disc in the status's colour carrying its icon. They
-		// sit beside a unit and shrink with the other overlays; the icon keeps
-		// about 12 pixels on a standard display and 24 on a HiDPI one.
-		constexpr double BadgePoints = 18, SmallestBadgePoints = 16;
+		// Status badges: the status's icon drawn bare, with a dark outline baked
+		// into the frames so it reads against any ground. It blends from yellow,
+		// when the condition has just begun, to red at its worst: the red frame is
+		// drawn over the yellow one at the pip's severity. Badges keep one size in
+		// points; they show only once the bars have faded, so shrinking them with
+		// the map would leave them too small to read. On HiDPI that is 20 pixels.
+		constexpr double BadgePoints = 10;
 		// Icon frames per status icon, by edge length in target pixels
 		// (tools/icons/export_map_icons.py).
 		static const int statusSizes[] = {8, 10, 12, 16, 20, 24, 32};
 		constexpr int StatusSizeCount = int(sizeof(statusSizes) / sizeof(statusSizes[0]));
-		const double badgePoints = std::clamp(BadgePoints * scale / unitsPerPoint, SmallestBadgePoints, BadgePoints);
-		const int size = std::max(5, int(std::lround(badgePoints * unitsPerPoint)));
-		const float room = (size - 2) * 0.9f * raster;
+		const int size = std::max(5, int(std::lround(BadgePoints * unitsPerPoint)));
+		// Frames hold every icon's yellow variant, then every icon's red one.
+		const unsigned variantFrames = unsigned(StatusIconCount) * StatusSizeCount;
+		// The largest frame that fits, drawn at its own size so it stays crisp.
+		const float room = size * raster;
 		int frameSize = 0;
 		for (int i = 0; i < StatusSizeCount; i++)
 			if (statusSizes[i] <= room)
 				frameSize = i;
 		const float drawn = std::min(float(statusSizes[frameSize]), room) / raster;
+		// Centre the frame on whole target pixels, so it is drawn pixel for pixel.
+		const float inset = std::round((size - drawn) * raster / 2) / raster;
 		for (const Pip &pip : pips)
 		{
+			if (!statusIcons)
+				break;
 			// Beside its point, the badge's lower left corner just meets it.
 			const int overlap = pip.beside ? size / 6 : size / 2;
-			const int left = int(std::lround(pip.screenX)) - overlap;
-			const int top = int(std::lround(pip.screenY)) - (pip.beside ? size - overlap : size / 2);
-			const Uint8 *color = StatusColors[std::min<int>(pip.icon, StatusIconCount - 1)];
-			fillDisc(gfx, left, top, size, 12, 14, 22, pip.alpha);
-			fillDisc(gfx, left + 1, top + 1, size - 2, color[0], color[1], color[2], pip.alpha);
-			if (statusIcons)
-				gfx.drawSprite(left + (size - drawn) / 2, top + (size - drawn) / 2, drawn, drawn, statusIcons,
-							   unsigned(pip.icon) * StatusSizeCount + frameSize, pip.alpha);
+			const float x = int(std::lround(pip.screenX)) - overlap + inset;
+			const float y = int(std::lround(pip.screenY)) - (pip.beside ? size - overlap : size / 2) + inset;
+			const unsigned frame = unsigned(pip.icon) * StatusSizeCount + frameSize;
+			// Yellow, then red over it. With the badge at opacity a and severity s,
+			// red at a*s over yellow at a*(1-s)/(1-a*s) gives a*((1-s)*yellow +
+			// s*red) over the ground: the blend, faded as a whole, at any opacity.
+			const float a = pip.alpha / 255.f, s = pip.severity / 255.f;
+			if (pip.severity < 255)
+				gfx.drawSprite(x, y, drawn, drawn, statusIcons, frame,
+							   Uint8(std::lround(255 * a * (1 - s) / (1 - a * s))));
+			if (pip.severity > 0)
+				gfx.drawSprite(x, y, drawn, drawn, statusIcons, variantFrames + frame,
+							   Uint8(std::lround(255 * a * s)));
 		}
 		if (statusIcons && !pips.empty())
 			gfx.finishDrawingSprite(statusIcons, 255);

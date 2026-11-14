@@ -15,6 +15,9 @@
 #include "render/SoftwareTerrainCache.h"
 #include "render/terrain/TerrainCompositor.h"
 #include <RenderBackend.h>
+#include <RendererSelection.h>
+#include <SpriteRenderAtlas.h>
+#include <RenderMemory.h>
 #include <PresentationWork.h>
 #include <GameplayRecording.h>
 #include <stdexcept>
@@ -67,6 +70,58 @@ static void profileBoundary(const char *phase)
     throw std::runtime_error("PROFILE_BOUNDARY_STOP requires POSIX signals");
 #endif
 }
+// Linux memory gauges (bytes). Other platforms report only peak_rss_bytes.
+struct ProcessMemory { long long rss = -1, hwm = -1, anon = -1, file = -1, drm = -1; };
+static ProcessMemory processMemory()
+{
+    ProcessMemory result;
+#ifdef __linux__
+    std::ifstream status("/proc/self/status");
+    std::string entry;
+    while (std::getline(status, entry))
+    {
+        const auto colon = entry.find(':');
+        if (colon == std::string::npos) continue;
+        const auto key = entry.substr(0, colon);
+        const long long value = std::atoll(entry.c_str() + colon + 1) * 1024;
+        if (key == "VmRSS") result.rss = value;
+        else if (key == "VmHWM") result.hwm = value;
+        else if (key == "RssAnon") result.anon = value;
+        else if (key == "RssFile") result.file = value;
+    }
+    // DRM fdinfo (amdgpu, i915/xe, msm, panfrost...) reports per-client GPU
+    // memory. Proprietary NVIDIA does not; the runner samples nvidia-smi then.
+    for (int fd = 0; fd < 1024; ++fd)
+    {
+        std::ifstream info("/proc/self/fdinfo/" + std::to_string(fd));
+        if (!info) continue;
+        std::string line;
+        bool drm = false;
+        long long total = 0;
+        while (std::getline(info, line))
+        {
+            drm |= line.rfind("drm-client-id:", 0) == 0;
+            if (line.rfind("drm-resident-", 0) == 0 || line.rfind("drm-memory-", 0) == 0)
+            {
+                const auto colon = line.find(':');
+                long long amount = std::atoll(line.c_str() + colon + 1);
+                if (line.find("KiB") != std::string::npos) amount *= 1024;
+                else if (line.find("MiB") != std::string::npos) amount *= 1024 * 1024;
+                total += amount;
+            }
+        }
+        if (drm) result.drm = std::max(result.drm, 0LL) + total;
+    }
+#endif
+    return result;
+}
+static void printMemory(const char *label, const ProcessMemory &m)
+{
+    printf("%s rss_bytes=%lld hwm_bytes=%lld rss_anon_bytes=%lld rss_file_bytes=%lld drm_fdinfo_bytes=%lld\n",
+           label, m.rss, m.hwm, m.anon, m.file, m.drm);
+}
+// Callgrind can collect only measured frames: --toggle-collect='*profiledFrame*'.
+template <class F> [[gnu::noinline]] static void profiledFrame(F &&body) { body(); }
 static double cpu()
 {
 #ifdef WIN32
@@ -222,8 +277,21 @@ static void interactiveBenchmark()
             SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
-		if (!getenv("PROFILE_RECORD") && gfx->rendererCapabilities().accelerated)
-			throw std::runtime_error("Benchmark requires the software backend (-G)");
+        const bool portable = gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL;
+		if (!getenv("PROFILE_RECORD") && gfx->rendererCapabilities().accelerated && !portable)
+			throw std::runtime_error("Benchmark requires the software (--renderer software) or portable SDL (--renderer sdl) backend");
+        {
+            SDL_Renderer *sdlRenderer = SDL_GetRenderer(SDL_GetWindowFromID(gfx->windowID()));
+            int vsync = 0;
+            if (sdlRenderer) SDL_GetRenderVSync(sdlRenderer, &vsync);
+            printf("RENDERER backend=%s sdl_render_driver=%s vsync=%d max_texture=%d\n",
+                   std::string(GAGCore::rendererBackendName(gfx->backendSwitchStatus().active)).c_str(),
+                   sdlRenderer ? SDL_GetRendererName(sdlRenderer) : "none", vsync, gfx->maximumTextureSize());
+        }
+        // SDL_Renderer queues commands until presentation; skipping it would
+        // grow the queue and leave GPU work unmeasured.
+        if (portable && getenv("PROFILE_NO_PRESENT"))
+            throw std::runtime_error("Portable SDL measurements must present (unset PROFILE_NO_PRESENT)");
         if (const char *mode = std::getenv("PROFILE_MODE");
             mode && std::string(mode) == "interactive")
         {
@@ -311,6 +379,13 @@ static void interactiveBenchmark()
 				gui.viewportX = gui.camera.tileX();
 				gui.viewportY = gui.camera.tileY();
 			}
+			// Games poll asset work every frame, so optional HD layers finish
+			// streaming. PROFILE_HD_COMPLETE=1 measures that steady state instead
+			// of the partially prefetched layers this frame loop never publishes:
+			// layers requested by any warmup frame finish before measurement.
+			const bool completeHighResolution = getenv("PROFILE_HD_COMPLETE") && atoi(getenv("PROFILE_HD_COMPLETE"));
+			if (completeHighResolution)
+				GAGCore::Sprite::finishHighResolution();
 			int units = 0, buildings = 0;
 			for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
 			{
@@ -391,11 +466,18 @@ static void interactiveBenchmark()
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
+			// SDL_Renderer output never reaches the CPU surface; read the last
+			// measured frame back before presentation instead.
+			std::shared_ptr<SDL_Surface> portableCapture;
+			std::string portableCaptureError;
 			for (int i = -warmup; i < frames || (seconds > 0 && (i < 0 || (SDL_GetPerformanceCounter()-measuredStart)/freq < seconds)); i++)
 			{
 				SDL_PumpEvents();
+				if (completeHighResolution && i <= 0)
+					GAGCore::Sprite::finishHighResolution();
 				if (i == 0)
 				{
+                    printMemory("memory_begin", processMemory());
 					profileBoundary("begin");
                     c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
 					initialOps = gfx->backendOperations();
@@ -406,9 +488,11 @@ static void interactiveBenchmark()
 					initialCoverage = compositor.highResolutionCoverage();
 					PerformanceTelemetry::collector().reset();
 				}
+				Uint64 a = 0, b = 0, c = 0;
+				auto body = [&] {
 				if (getenv("PROFILE_PAN"))
 				{ gui.camera.originX += .25; gui.viewportX = gui.camera.tileX(); }
-				Uint64 a = SDL_GetPerformanceCounter();
+				a = SDL_GetPerformanceCounter();
 				// Isolate the retention-copy cost without a production graphics setting.
 				if (getenv("PROFILE_PRESERVE_FRAME"))
 					gfx->beginFrame(GraphicContext::FrameMode::PreserveContent);
@@ -426,10 +510,15 @@ static void interactiveBenchmark()
                                          (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0),
                                          nullptr, nullptr, gui.gamePaused);
 				}
-				Uint64 b = SDL_GetPerformanceCounter();
+				b = SDL_GetPerformanceCounter();
+				if (portable && i == frames - 1 && getenv("PROFILE_CAPTURE") && !portableCapture)
+					gfx->requestMemoryCapture([&](auto image, auto, auto why) {
+						portableCapture = std::move(image); portableCaptureError = why; });
 				if (!getenv("PROFILE_NO_PRESENT"))
 					gfx->nextFrame();
-				Uint64 c = SDL_GetPerformanceCounter();
+				c = SDL_GetPerformanceCounter();
+				};
+				if (i >= 0) profiledFrame(body); else body();
 				if (i >= 0)
 				{
 					draw.push_back(1000. * (b - a) / freq);
@@ -441,7 +530,9 @@ static void interactiveBenchmark()
             gfx->getSDLSurface();
             const double elapsed = (SDL_GetPerformanceCounter()-measuredStart)/freq;
 			double totalCpu = cpu() - c0;
+            const auto steadyMemory = processMemory();
             profileBoundary("end");
+            printMemory("memory_end", steadyMemory);
             printf("timing_valid=%s\n", instrumentedTiming() ? "false" : "true");
 			printf("render_fps=%.4f elapsed_seconds=%.4f frames=%zu\n",draw.size()/elapsed,elapsed,draw.size());
 			recorder.stop(); recorder.shutdown();
@@ -474,11 +565,63 @@ static void interactiveBenchmark()
 				   (unsigned long long)(ops.blits - initialOps.blits),
 				   (unsigned long long)(ops.fills - initialOps.fills),
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
+            if (portable)
+            {
+                // Per-frame submission costs: `triangles` counts logical submissions and
+                // `geometryBatches` the SDL_RenderGeometry calls they were merged into.
+                const double n = double(draw.size());
+                const auto per = [&](std::uint64_t now, std::uint64_t then) { return (now - then) / n; };
+                printf("portable_frame geometry_calls=%.1f vertices=%.1f texture_switches=%.1f "
+                       "texture_uploads=%.2f upload_bytes=%.0f gpu_prepared_uploads=%.2f "
+                       "texture_creates=%.2f texture_destroys=%.2f cpu_premultiplied_bytes=%.0f geometry_batches=%.1f\n",
+                       per(ops.triangles, initialOps.triangles), per(ops.vertices, initialOps.vertices),
+                       per(ops.textureSwitches, initialOps.textureSwitches),
+                       per(ops.textureUploads, initialOps.textureUploads),
+                       per(ops.textureUploadBytes, initialOps.textureUploadBytes),
+                       per(ops.gpuPreparedUploads, initialOps.gpuPreparedUploads),
+                       per(ops.textureCreates, initialOps.textureCreates),
+                       per(ops.textureDestroys, initialOps.textureDestroys),
+                       per(ops.cpuPremultipliedBytes, initialOps.cpuPremultipliedBytes),
+                       per(ops.geometryBatches, initialOps.geometryBatches));
+                printf("portable_warmup texture_uploads=%llu upload_bytes=%llu texture_creates=%llu\n",
+                       (unsigned long long)initialOps.textureUploads,
+                       (unsigned long long)initialOps.textureUploadBytes,
+                       (unsigned long long)initialOps.textureCreates);
+                printf("portable_memory textures=%llu texture_bytes=%llu peak_texture_bytes=%llu "
+                       "gpu_prepared_textures=%llu source_surface_bytes=%llu shared_source_textures=%llu "
+                       "staging_texture_bytes=%llu batch_capacity_bytes=%llu frame_surface_bytes=%llu\n",
+                       (unsigned long long)ops.textureCount, (unsigned long long)ops.textureBytes,
+                       (unsigned long long)ops.peakTextureBytes, (unsigned long long)ops.gpuPreparedTextures,
+                       (unsigned long long)ops.sourceSurfaceBytes, (unsigned long long)ops.sharedSourceTextures,
+                       (unsigned long long)ops.stagingTextureBytes,
+                       (unsigned long long)ops.batchCapacityBytes,
+                       (unsigned long long)(gfx->getSDLSurface() ? std::uint64_t(gfx->getSDLSurface()->h) * gfx->getSDLSurface()->pitch : 0));
+            }
 			printf("terrain_cache bytes=%zu mask_bytes=%zu hits=%llu rebuilds=%llu\n",
 				   terrainCache.bytes(), terrainCache.maskBytes(),
 				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
 				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));
+            // Artwork held outside the backend's texture cache (CPU bytes).
+            printf("artwork_memory terrain_compositor_bytes=%zu sprite_atlas_bytes=%zu drawable_texture_bytes=%zu\n",
+                   compositor.sourceBytes(), GAGCore::spriteAtlasMemoryBytes(),
+                   GAGCore::DrawableSurface::allocatedTextureBytes());
+            // HD sprite layers resident at the end (decoded pixels and textures),
+            // and the deferred frames kept decoded after leaving their windows.
+            {
+                std::size_t cpu = 0, gpu = 0, holders = 0;
+                for (const auto &usage : GAGCore::RenderMemory::sprites())
+                {
+                    cpu += usage.highResolutionCpuBytes;
+                    gpu += usage.highResolutionGpuBytes;
+                    holders += usage.highResolutionCpuBytes + usage.highResolutionGpuBytes > 0;
+                    if (getenv("PROFILE_SPRITE_HD") && usage.highResolutionCpuBytes + usage.highResolutionGpuBytes)
+                        printf("sprite_hd_usage name=%s cpu_bytes=%zu gpu_bytes=%zu\n", usage.name.c_str(),
+                               usage.highResolutionCpuBytes, usage.highResolutionGpuBytes);
+                }
+                printf("sprite_hd cpu_bytes=%zu gpu_bytes=%zu sprites=%zu retired_bytes=%zu\n", cpu, gpu, holders,
+                       GAGCore::Sprite::retiredHighResolutionBytes());
+            }
             // Streaming fallback: a prepared view drew native art for a material
             // whose HD frames had already appeared. Warmup is reported separately.
             const auto coverage = compositor.highResolutionCoverage();
@@ -528,7 +671,12 @@ static void interactiveBenchmark()
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))
-				SDL_SaveBMP(gfx->getSDLSurface(), p);
+			{
+				if (portable && !portableCapture)
+					throw std::runtime_error("Portable capture failed: " + portableCaptureError);
+				if (!SDL_SaveBMP(portable ? portableCapture.get() : gfx->getSDLSurface(), p))
+					throw std::runtime_error(SDL_GetError());
+			}
 		}
 		delete globalContainer;
 		globalContainer = nullptr;

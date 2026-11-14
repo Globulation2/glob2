@@ -47,10 +47,13 @@ std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path)
 void drawSkinShadow(GraphicContext &gfx, SkinShadow shadow, float x, float y,
                     float w, float h, unsigned logicalSize, std::uint8_t alpha)
 {
-    if (!shadow.surface || !shadow.width || !shadow.height || !logicalSize) return;
+    if (!shadow.width || !shadow.height || !logicalSize) return;
+    DrawableSurface *surface = shadow.surface;
+    if (!surface && shadow.sprite) surface = shadow.sprite->baseFrame(shadow.frame);
+    if (!surface) return;
     const float width = shadow.width * w / logicalSize;
     const float height = shadow.height * h / logicalSize;
-    gfx.drawSurface(x + (w-width)/2, y + (h-height)/2, width, height, shadow.surface, alpha);
+    gfx.drawSurface(x + (w-width)/2, y + (h-height)/2, width, height, surface, alpha);
 }
 bool skinMaterialShells(unsigned id)
 {

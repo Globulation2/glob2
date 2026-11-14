@@ -9,6 +9,7 @@
 #include "ScopedEnvironment.h"
 #include "SpriteHighResolution.h"
 #include <AssetLoader.h>
+#include <DetailHysteresis.h>
 #include <RenderMemory.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
@@ -124,6 +125,79 @@ struct RetiredBudget {
     }
     ~RetiredBudget() { GAGCore::Sprite::setRetiredHighResolutionBudget(saved); }
 };
+}
+TEST_CASE("detail hysteresis raises detail at once and lowers it after the delay") {
+    GAGCore::DetailHysteresis detail(1);
+    CHECK_FALSE(detail.update(1, 100, 50));
+    CHECK(detail.update(0, 110, 50));
+    CHECK(detail.level() == 0);
+    // Less detail waits for the delay, measured from the first frame wanting it.
+    CHECK_FALSE(detail.update(2, 200, 50));
+    CHECK_FALSE(detail.update(1, 240, 50));
+    CHECK(detail.level() == 0);
+    // Wanting the current level again restarts the wait.
+    CHECK_FALSE(detail.update(0, 245, 50));
+    CHECK_FALSE(detail.update(1, 260, 50));
+    CHECK_FALSE(detail.update(1, 300, 50));
+    CHECK(detail.update(1, 310, 50));
+    CHECK(detail.level() == 1);
+    CHECK(detail.update(2, 400, 0));
+    CHECK(detail.level() == 2);
+    // A clock reading of zero starts the wait like any other time.
+    GAGCore::DetailHysteresis fromZero(0);
+    CHECK_FALSE(fromZero.update(1, 0, 50));
+    CHECK_FALSE(fromZero.update(1, 49, 50));
+    CHECK(fromZero.update(1, 50, 50));
+}
+TEST_CASE("an on-demand HD sheet releases its layers until a base frame demands them again [display]") {
+    glob2test::TempDir scratch("released-demand-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "data/highres/v1";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "demanded-sheet.sheet") << "native-sheet.webp image 0 4 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (unsigned i = 0; i < 4; ++i) index << "demanded-sheet" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ScopedEnvironment cooperative("GLOB2_ASSET_THREADS", "0");
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "released HD demand");
+    struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/demanded-sheet"));
+    GAGCore::Sprite::setHighResolution(true);
+    const auto resident = [&] {
+        return std::count_if(sprite.experimentImages.begin(), sprite.experimentImages.end(),
+            [](auto *image) { return image != nullptr; });
+    };
+    // The portable renderer loads nothing until a base frame asks.
+    GAGCore::Sprite::finishHighResolution();
+    CHECK(resident() == 0);
+    sprite.baseFrame(1);
+    GAGCore::Sprite::finishHighResolution(&sprite);
+    CHECK(resident() == 4);
+    CHECK(sprite.baseFrame(1) != sprite.nativeFrame(1));
+    sprite.releaseHighResolutionDemand();
+    CHECK(resident() == 0);
+    CHECK(sprite.highResolutionDemanded == false);
+    // A demand in flight is cancelled too.
+    CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+    sprite.releaseHighResolutionDemand();
+    GAGCore::Sprite::finishHighResolution();
+    CHECK(resident() == 0);
+    // And the next base frame loads the layers again.
+    sprite.baseFrame(2);
+    GAGCore::Sprite::finishHighResolution(&sprite);
+    CHECK(resident() == 4);
 }
 TEST_CASE("deferred HD frames that leave their window stay decoded within a budget and a lifetime [display]") {
     glob2test::TempDir scratch("retired-terrain-hd");
@@ -777,6 +851,8 @@ void checkModernStandaloneHD(GAGCore::RendererBackend backend, bool switchDuring
     auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16);
     REQUIRE(inputs.size() == (initialLegacy ? 20 : 16)); // optional legacy atlas files are absent
     if (publishBeforeSwitch) {
+        // Outside legacy GL, layers load once something samples them.
+        sprite.demandHighResolution();
         GAGCore::Sprite::setHighResolution(true);
         REQUIRE(sprite.experimentImages[0]);
         CHECK(sprite.experimentImages[0]->preparedMips.empty());

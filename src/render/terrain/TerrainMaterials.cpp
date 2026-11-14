@@ -5,6 +5,7 @@
 #include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <array>
 #include <cstdlib>
 #include <iterator>
 #include <limits>
@@ -596,7 +597,7 @@ int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t time, std::
 namespace
 {
 // Smooth periodic bump: 0 at u = 0 and 1024, 256 at u = 512.
-int surfBump(int u)
+constexpr int surfBump(int u)
 {
 	const int x = u < 512 ? u : 1024 - u;
 	return x * x * (1536 - 2 * x) / 524288;
@@ -629,24 +630,53 @@ void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned 
 	for (int k = 0; k < 3; ++k)
 		rgb[k] = (rgb[k] * keep + mean[k] * (256 - keep) + 128) / 256;
 }
+namespace
+{
+// surfBump over its whole period, and the bump of the wash's rise at each
+// phase. Exactly the arithmetic above, looked up instead of evaluated per sample.
+struct SurfTables
+{
+	std::array<int, 1024> bump{}, rise{};
+	constexpr SurfTables()
+	{
+		constexpr int in = SurfWashInQ10;
+		for (int u = 0; u < 1024; ++u)
+		{
+			bump[u] = surfBump(u);
+			// The wash rushes up over the first 30% of its period and drains slowly.
+			rise[u] = surfBump(u < in ? u * 512 / in : 512 + (u - in) * 512 / (1024 - in));
+		}
+	}
+};
+constexpr SurfTables surfTables;
+} // namespace
+int surfPhase(const Surf &s, unsigned time)
+{
+	// The wash advances in whole steps of `ticks`, matching its page re-blends.
+	time -= time % unsigned(s.ticks);
+	return int(time % unsigned(s.period) * 1024 / unsigned(s.period));
+}
+int surfReach(const Surf &s, bool surfSide)
+{
+	return surfSide ? std::max(s.shallowWidth, s.foamWidth) : std::max(s.wetWidth, s.reach + s.foamWidth);
+}
 void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3], int land)
 {
 	// Beyond every band (most samples of a mixed cell) surf changes nothing.
-	if (margin >= (surfSide ? std::max(s.shallowWidth, s.foamWidth) : std::max(s.wetWidth, s.reach + s.foamWidth)))
+	if (margin >= surfReach(s, surfSide))
 		return;
+	applySurfAt(s, surfSide, margin, wx, wy, surfPhase(s, time), value, land);
+}
+void applySurfAt(const Surf &s, bool surfSide, int margin, int wx, int wy, int phase,
+				 unsigned value[3], int land)
+{
+	const auto &bump = surfTables.bump;
 	// A slow world-space field staggers each wash along the shore. Its
 	// wavelengths (256 and 512 pixels) divide every map, so it wraps cleanly.
-	// The wash advances in whole steps of `ticks`, matching its page re-blends.
-	time -= time % unsigned(s.ticks);
-	const int phase = int(time % unsigned(s.period) * 1024 / unsigned(s.period));
-	const int offset = surfBump(wx >> 7 & 1023) + surfBump(wy >> 7 & 1023) +
-					   surfBump((wx + wy) >> 6 & 1023);
+	const int offset = bump[wx >> 7 & 1023] + bump[wy >> 7 & 1023] + bump[(wx + wy) >> 6 & 1023];
 	const int u = (phase + offset) & 1023;
-	// The wash rushes up over the first 30% of its period and drains slowly.
-	constexpr int in = SurfWashInQ10;
-	const int rise = u < in ? u * 512 / in : 512 + (u - in) * 512 / (1024 - in);
-	const int run = s.reach * surfBump(rise) / 256 * land / 256;
+	const int run = s.reach * surfTables.rise[u] / 256 * land / 256;
 	for (int k = 0; k < 3; ++k)
 		value[k] = std::min(value[k], 255u);
 	int front;
@@ -679,8 +709,7 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 	}
 	if (front < s.foamWidth)
 	{
-		const int breakup = 96 + (surfBump(wx * 5 >> 7 & 1023) +
-								  surfBump(((wy * 7 >> 7) + phase) & 1023)) * 160 / 512;
+		const int breakup = 96 + (bump[wx * 5 >> 7 & 1023] + bump[((wy * 7 >> 7) + phase) & 1023]) * 160 / 512;
 		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256;
 		for (int k = 0; k < 3; ++k)
 			value[k] = surfMix(value[k], s.foamColor[k], amount);

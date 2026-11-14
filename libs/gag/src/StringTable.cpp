@@ -7,14 +7,22 @@
 #include <Stream.h>
 #include "assert.h"
 #include <iostream>
+#include <atomic>
 #include <cctype>
 
 #include <SDLGraphicContext.h>
 
 namespace GAGCore
 {
+	void StringTable::touch()
+	{
+		static std::atomic<std::uint64_t> revisions{0};
+		revisionNumber = ++revisions;
+	}
+
 	StringTable::StringTable()
 	{
+		touch();
 		languageCount = 0;
 		actLang = 0;
 		defaultLang = 0;
@@ -60,6 +68,10 @@ namespace GAGCore
 	*/
 	bool StringTable::load(const std::string filename, const std::function<void(float)> &progress)
 	{
+		// Progress callbacks may draw and measure text while tables change;
+		// a new revision at either end keeps those results from persisting.
+		struct Revise { StringTable &table; ~Revise() { table.touch(); } } revise{*this};
+		touch();
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
 		InputLineStream *inputLineStream;

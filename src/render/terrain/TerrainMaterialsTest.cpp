@@ -1700,6 +1700,67 @@ TEST_SUITE("TerrainMaterials")
 					CHECK(mismatches == 0);
 				}
 	}
+	TEST_CASE("animation refreshes of mixed cells match their complete composition [display]")
+	{
+		// A page recomposes only the samples an animation step can change, over
+		// the pixels of the cell's previous composition.
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		TerrainVisual::Compositor compositor(definitions);
+		const auto &c = compositor.catalog();
+		const auto water = c.find("water"), sand = c.find("sand"), grass = c.find("grass"),
+				   deep = c.find("deep_water");
+		const std::vector<std::array<TerrainVisual::MaterialId, 4>> mixes = {
+			{water, sand, water, sand}, {water, water, water, grass}, {sand, grass, water, water},
+			{deep, water, sand, sand}, {grass, sand, grass, sand}};
+		const auto bytes = [](GAGCore::DrawableSurface &s)
+		{
+			const auto *surface = s.getSDLSurface();
+			std::vector<Uint32> result;
+			for (int y = 0; y < surface->h; ++y)
+				for (int x = 0; x < surface->w; ++x)
+					result.push_back(reinterpret_cast<const Uint32 *>(
+						static_cast<const unsigned char *>(surface->pixels) + y * surface->pitch)[x]);
+			return result;
+		};
+		for (int scale : {1, 2})
+			for (const auto &corners : mixes)
+				for (bool calmed : {false, true})
+				{
+					TerrainVisual::Recipe r;
+					r.width = r.height = 32;
+					r.x = 5;
+					r.y = 9;
+					r.corners = corners;
+					if (calmed)
+						r.calm = {255, 120, 0, 40};
+					const auto mask = compositor.mask(r, scale);
+					const auto samples = compositor.animatedSamples(mask);
+					const unsigned animatedSlots = compositor.animatedSlots(mask);
+					const int size = 32 * scale;
+					GAGCore::DrawableSurface refreshed(size, size), complete(size, size);
+					compositor.prepare(false, 0);
+					compositor.compose(r, refreshed.getSDLSurface(), 0, 0, scale, &mask);
+					for (int time : {1, 2, 7, 45, 46, 300, 1201})
+					{
+						compositor.prepare(false, time);
+						TerrainVisual::Compositor::Refresh refresh{animatedSlots, animatedSlots, &samples};
+						compositor.compose(r, refreshed.getSDLSurface(), 0, 0, scale, &mask, &refresh);
+						compositor.compose(r, complete.getSDLSurface(), 0, 0, scale, &mask);
+						INFO("scale " << scale << " corners " << corners[0] << "," << corners[1] << ","
+									  << corners[2] << "," << corners[3] << " calmed " << calmed << " time " << time);
+						CHECK(bytes(refreshed) == bytes(complete));
+						// Without the sample list, unchanged slots alone are skipped.
+						TerrainVisual::Compositor::Refresh slots{animatedSlots, animatedSlots};
+						compositor.compose(r, refreshed.getSDLSurface(), 0, 0, scale, &mask, &slots);
+						CHECK(bytes(refreshed) == bytes(complete));
+					}
+					// Materials without animation leave nothing to refresh.
+					if (!animatedSlots)
+						CHECK(samples.empty());
+				}
+	}
 	TEST_CASE("map seed reseeds variants and boundaries without breaking partitions or edges")
 	{
 		glob2test::HeadlessGlobals globals;

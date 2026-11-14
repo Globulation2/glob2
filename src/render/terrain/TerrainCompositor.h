@@ -7,9 +7,12 @@
 #include "map/MapAssetBundle.h"
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
+#include <DetailHysteresis.h>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <span>
+#include <tuple>
 
 class SceneMap;
 namespace TerrainVisual
@@ -48,8 +51,19 @@ class Compositor
     void prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes);
     // Inclusive world-cell bounds, wrapped to the map. HD streams asynchronously
     // with native sources as fallback until each requested frame is available.
+    // Without decor, only material frames stream: a renderer that draws decor
+    // sprites from their native frames alone (the portable SDL renderer) has
+    // no use for HD decor.
     void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
-                        bool nativeComposition = false);
+                        bool nativeComposition = false, bool decor = true);
+    // Whether the portable renderer's pages compose HD material frames for a
+    // view at `density` screen pixels per logical pixel (map scale times raster
+    // scale). Native frames are the HD frames reduced by four, so at one or
+    // fewer an HD page holds texels nothing shows. More detail is taken at
+    // once; native frames only once the view has wanted them for
+    // Sprite::highResolutionDetailDelay(), so zooming across the threshold and
+    // back recomposes nothing. Call once a frame.
+    bool highResolutionPages(double density);
     // The same view for a caller that filters its own tiles through
     // phasePixels(), as direct terrain does: only the HD stream window is
     // declared and no CPU textures are kept here. Without frames the view
@@ -81,9 +95,27 @@ class Compositor
 	};
 	CellMask mask(const Recipe &, int scale) const;
 	void mask(const Recipe &, int scale, CellMask &out) const; // Reuses out's storage.
+	// What changed since a mixed cell was last composed into its target with the
+	// same recipe and mask: the palette slots whose textures have new revisions,
+	// and those whose surf advanced a step. Only samples those can affect are
+	// recomposed; the rest keep the identical pixels already in the target.
+	struct Refresh
+	{
+		unsigned textures = 0, surf = 0; // Palette slot bits.
+		// Optional animatedSamples of the mask, valid when every changed slot
+		// is animated: only those samples are visited.
+		const std::vector<std::uint32_t> *samples = nullptr;
+	};
+	// The samples of a mixed cell that an animated material's textures or surf
+	// can change, in sample order, with a flag for those an opaque animated
+	// texel alone determines. Depends only on the mask, so a page keeps it.
+	std::vector<std::uint32_t> animatedSamples(const CellMask &) const;
+	// Palette slot bits of a mask's animated materials.
+	unsigned animatedSlots(const CellMask &) const;
 	// A uniform recipe ignores the mask; a mixed one composes from it when given.
+	// A refresh requires the mask and is ignored by uniform recipes.
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale,
-				 const CellMask *mask = nullptr) const;
+				 const CellMask *mask = nullptr, const Refresh *refresh = nullptr) const;
 	// Animated textures or surf: either changes this material's composed pixels over time.
 	bool animated(MaterialId id) const
 	{
@@ -209,7 +241,7 @@ class Compositor
         // Every recipe corner must be included in this immutable snapshot.
         void compose(const Recipe &, SDL_Surface *, int scale, const CellMask * = nullptr) const;
         void compose(const Recipe &, SDL_Surface *, int scale, CpuScratch &,
-                     const CellMask * = nullptr) const;
+                     const CellMask * = nullptr, const Refresh * = nullptr) const;
         CellMask mask(const Recipe &, int scale) const;
     };
     std::shared_ptr<const CpuMaterials> cpuMaterials(std::span<const MaterialId> needed = {});
@@ -242,7 +274,7 @@ class Compositor
       std::size_t cpuPublicationBytes() const;
       static void composePixels(const Catalog &, const StoneMaps &, const Recipe &, SDL_Surface *, int, int, int,
                                 std::span<const PreparedMaterialView>, const CellMask *,
-                                unsigned surfTime);
+                                unsigned surfTime, const Refresh * = nullptr);
       static void buildMask(const Catalog &, const StoneMaps &, const Recipe &, int, CellMask &);
 	struct Texture
 	{
@@ -279,6 +311,23 @@ class Compositor
     bool mixedDecorSprites = false;
     bool tieredDecor = false;
     mutable std::mutex tierMutex;
+    // A composition scale below an HD source's samples every step-th texel. Cells
+    // read those from one compact copy per prepared variant revision instead of
+    // striding the whole source (one cache line per sample) for every cell.
+    struct Decimated
+    {
+        std::uint64_t revision = 0;
+        const void *source = nullptr;
+        int sourceSize = 0;
+        std::shared_ptr<const MaterialPixels> pixels;
+    };
+    // The view of a compact copy; `hold` keeps it alive for the caller even if
+    // a later call evicts or rebuilds the entry.
+    PreparedMaterialView decimated(MaterialId, const PreparedMaterialView &, int scale,
+                                   std::shared_ptr<const MaterialPixels> &hold) const;
+    mutable std::mutex decimationMutex;
+    mutable std::map<std::tuple<MaterialId, unsigned, int>, Decimated> decimations;
+    mutable std::size_t decimationBytes = 0;
     mutable std::shared_ptr<const TierField> tierCache;
 	DecorReach reach;
 	std::vector<GAGCore::Sprite *> overlaySprites;
@@ -298,7 +347,8 @@ class Compositor
     Uint64 requestedMapIdentity = 0;
     std::vector<std::string> requestedTerrainPackages;
 #endif
-    void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false);
+    void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false,
+                         bool decor = true);
     Usage visibleUsage(const SceneMap &, int left, int top, int right, int bottom) const;
     // Nonperiodic custom art uses variant zero as its shared boundary source.
     void includeBoundarySources(Usage &usage) const;
@@ -315,6 +365,8 @@ class Compositor
 	std::vector<std::uint64_t> textureRevisions;
 	std::vector<int> highResolutionSizes; // Largest source size seen per material.
 	HighResolutionCoverage coverage;
+    // Detail level of portable pages: 0 HD, 1 native. A view starts native.
+    GAGCore::DetailHysteresis pageDetail{1};
 	int resolution = 1;
 	unsigned preparedTime = 0;
 };

@@ -42,6 +42,8 @@
 
 namespace
 {
+// Every frame these tests paint also checks the per-frame touch layout memo.
+[[maybe_unused]] const bool verifyTouchLayoutFrames = (GameGUITouch::verifyLayoutFrames = true);
 Uint64 renderPanel(GameGUI& gui)
 {
     auto* gfx=globalContainer->gfx;

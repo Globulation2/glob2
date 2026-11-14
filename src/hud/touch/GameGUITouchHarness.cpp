@@ -70,6 +70,9 @@
 #include "render/scene/SceneExtract.h"
 #include "GameGUIToolManager.h"
 
+// Every frame these tests paint also checks the per-frame touch layout memo.
+[[maybe_unused]] static const bool verifyTouchLayoutFrames = (GameGUITouch::verifyLayoutFrames = true);
+
 static void require(bool condition, const char *message)
 {
 	GLOB2_REQUIRE(condition, message);
@@ -1991,7 +1994,7 @@ class GameGUITouchHarness
 			REQUIRE(calls > 0);
 			for (int repeat = 0; repeat < 10; ++repeat)
 				(void)gui.touch->measureNavigation(ui.actions.w / unit).height;
-			CHECK(font.widthCalls == calls + 10 * 6); // Only six whole-caption probes per cache hit.
+			CHECK(font.widthCalls == calls); // A cache hit compares revisions, not text metrics.
 			CHECK(font.clusterCalls == clusters); // Wrapping/shaping is not repeated on a cache hit.
 			CHECK(ui.actions.h > 48 * unit);
 			CHECK(ui.actions.y + ui.actions.h == doctest::Approx(ui.safe.y + ui.safe.h));

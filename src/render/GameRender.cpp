@@ -129,10 +129,10 @@ void MapDrawer::anchorBars(int x, int y, MapRenderState* drawnRender, float opac
 }
 
 
-void MapDrawer::drawStatusPip(int x, int y, MapOverlayQueue::StatusIcon icon, MapRenderState* drawnRender, float opacity, bool beside)
+void MapDrawer::drawStatusPip(int x, int y, MapOverlayQueue::StatusIcon icon, float severity, MapRenderState* drawnRender, float opacity, bool beside)
 {
 	if (drawnRender)
-		drawnRender->overlays.pip(*globalContainer->gfx, x, y, icon, drawnRender->detail.statusPip * opacity, beside);
+		drawnRender->overlays.pip(*globalContainer->gfx, x, y, icon, severity, drawnRender->detail.statusPip * opacity, beside);
 }
 
 

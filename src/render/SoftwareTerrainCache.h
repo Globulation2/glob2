@@ -47,7 +47,21 @@ class SoftwareTerrainCache
 		{
 			*total += mask.bytes();
 		}
-		~HeldMask() { *total -= mask.bytes(); }
+		~HeldMask() { *total -= mask.bytes() + animated.capacity() * sizeof(std::uint32_t); }
+		// Compositor::animatedSamples of the mask, made on its first animation refresh.
+		std::vector<std::uint32_t> animated;
+		bool planned = false;
+		const std::vector<std::uint32_t> &animatedSamples(const TerrainVisual::Compositor &compositor)
+		{
+			if (!planned)
+			{
+				animated = compositor.animatedSamples(mask);
+				animated.shrink_to_fit();
+				*total += animated.capacity() * sizeof(std::uint32_t);
+				planned = true;
+			}
+			return animated;
+		}
 		HeldMask(const HeldMask &) = delete;
 		HeldMask &operator=(const HeldMask &) = delete;
 	};
@@ -72,6 +86,9 @@ class SoftwareTerrainCache
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};
+		// Device pages draw these uniform animated cells from animatedTiles
+		// over the page, which keeps an earlier frame of them underneath.
+		std::array<bool, ChunkTiles * ChunkTiles> overlay{};
 		// An uploaded drawable owns the pixels; a retired page keeps them in parked.
 	// Exactly one owner exists, so texture retirement never discards composition.
 	std::unique_ptr<TerrainVisual::Surface> image;
@@ -103,7 +120,7 @@ class SoftwareTerrainCache
   private:
     bool tryBuildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
         TerrainVisual::Compositor&, SDL_Surface*, bool wasValid, std::size_t budget,
-        bool nativeAvailable = false);
+        bool nativeAvailable = false, std::array<bool, ChunkTiles*ChunkTiles> *dirty = nullptr);
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
@@ -116,6 +133,22 @@ class SoftwareTerrainCache
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
+	// One composed tile per variant of each animated opaque material, shared by
+	// every uniform cell of it on native device pages. An animation step then
+	// recomposes and uploads one small atlas instead of each page's water.
+	struct AnimatedTiles
+	{
+		std::unique_ptr<TerrainVisual::Surface> atlas;
+		std::vector<std::uint64_t> revisions; // Composed texture revision + 1, per variant.
+		std::vector<char> opaque;
+		int columns = 0;
+		bool changed = false;
+	};
+	std::vector<AnimatedTiles> animatedTiles;
+	TerrainVisual::Compositor *overlayCompositor = nullptr; // Set by prepare for draw.
+	// The overlay tile of a uniform cell, composed for the current revision.
+	// Null when its material does not animate or its tile is not opaque.
+	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source);
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
@@ -127,6 +160,7 @@ class SoftwareTerrainCache
 	int resolution = 1;
 	int downsample = 1;
 	bool gpu = false;
+	bool composedHighResolution = false; // Whether the last view composed HD material frames.
     std::shared_ptr<GpuTerrainPageCache> gpuPages;
     std::uint64_t gpuPageGeneration = 0;
 

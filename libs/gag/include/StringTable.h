@@ -6,6 +6,7 @@
 #include <functional>
 #include <vector>
 #include <bitset>
+#include <cstdint>
 #include <map>
 #include <string>
 
@@ -22,8 +23,12 @@ namespace GAGCore
 	public:
 		StringTable();
 		~StringTable();
-		void setLang(int l) { actLang = l; }
-		void setDefaultLang(int l) { defaultLang = l; }
+		void setLang(int l) { actLang = l; touch(); }
+		void setDefaultLang(int l) { defaultLang = l; touch(); }
+		//! Changes whenever lookups may return different text: language
+		//! selection or reloading. Unique across tables, so callers can memoize
+		//! values derived from translations by this number alone.
+		std::uint64_t revision() const { return revisionNumber; }
 		int getLang(void) { return actLang; }
 		int getLangCode(const std::string & lang) { return languageCodes[lang]; }
 		bool hasLanguage(const std::string & lang) const { return languageCodes.count(lang) != 0; }
@@ -39,6 +44,8 @@ namespace GAGCore
 		void print();
 	
 	private:
+		void touch();
+		std::uint64_t revisionNumber;
 		std::vector<OneStringToken *> strings;
 		std::map<std::string, size_t> stringAccess;
 		std::map<std::string, int> languageCodes;

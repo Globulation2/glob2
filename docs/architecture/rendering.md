@@ -38,6 +38,28 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
+Only desktop legacy OpenGL draws sprite frames from their HD layers. The portable
+SDL renderer and the presentation devices reach them solely through
+`Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
+there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
+window first asks for them, and uploads them on the first direct draw. The first
+answers can be native frames, as with any streamed layer. Switching to legacy
+OpenGL reloads every sprite; switching away releases layers nothing asked for.
+
+The portable SDL renderer's terrain pages ask for HD material frames only where
+they show: above one screen pixel per logical pixel (map scale times raster
+scale, 32 pixels a cell on a 1x display), the threshold legacy OpenGL's direct
+terrain uses. Native frames are the HD frames reduced by four, so at or below it
+an HD page holds four times the texels, composed and uploaded for nothing. A
+view starts on native frames and takes HD at once when it zooms in, but drops back
+only after it has wanted native frames for ten seconds (`GAGCore::DetailHysteresis`
+on the clock of the legacy OpenGL sprite bands), so zooming across the threshold
+and back recomposes nothing. Then pages compose from native frames, the HD pages
+are discarded, the streamed banks' frames retire into the shared budget for
+[retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
+release their layers until the next demand. Decor HD frames never stream there,
+since the portable renderer draws decor sprites from their native frames.
+Captures keep their own density and HD artwork.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
@@ -65,6 +87,23 @@ including equal-size terrain tiles. Fractional zoom and camera offsets can put
 a covered pixel arbitrarily close to a frame edge; the nearest-sampling tie
 bias must land in that frame's border rather than a neighboring frame. Keep
 the border copy unblended so transparent edges retain their original RGBA.
+
+The portable SDL renderer merges its blits, fills and triangle lists into
+`SDL_RenderGeometry` runs keyed by texture, blend mode, scale mode and SDL's
+per-call clamp or wrap choice. A draw may join an earlier compatible run only
+when no later pending run covers any cell of a coarse 16-unit occupancy grid
+under its output bounds, so overlapping draws keep painter order whatever their
+blending. Draws that only share an edge may reorder on accelerated renderers,
+whose fill rules rasterize a shared edge once; SDL's software renderer keeps a
+whole output pixel between them because it rounds rectangle edges. At most 64
+runs are pending; clip, render scale and target changes, texture uploads or
+destruction, readback, flush and present submit them first. Lists of 384 or
+more vertices (terrain, bars) follow the pending runs as their own call. On
+SDL's software renderer each run carries indices that reproduce SDL's per-call
+duplicate-vertex detection, so triangle pairs still become the same rectangle
+copies. Fully opaque fills replace the target instead of blending (alpha 255
+gives the same pixels): accelerated renderers draw them with
+`SDL_BLENDMODE_NONE`, and the software renderer fills their rectangles directly.
 
 Native array/cache optimizations require supported desktop OpenGL features.
 Software, portable SDL and unsupported native contexts retain their existing
@@ -456,7 +495,8 @@ additively blended blit:
 
 - **Device renderers** (SDL GPU, programmable GL, WebGPU): a `DrawPacket` blit with
   `Blend::Additive`.
-- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that draw only.
+- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that run only;
+  additive draws batch separately from ordinary draws of the same texture.
 - **Legacy GL:** an immediate quad with `GL_SRC_ALPHA, GL_ONE`.
 
 The software renderer draws the surface normally. A backend opts in through
@@ -878,7 +918,13 @@ state is restored before drawing resumes. A bounded 256×256 startup probe check
 all byte colour/alpha pairs against the CPU integer result. Drivers whose blend
 units differ retain CPU conversion and log their conformance mismatch count.
 Software renderers and unsupported target/blend combinations also keep CPU
-conversion. Preparation uses the existing
+conversion. Region updates (`RenderBackend::prepareTextureRegions`, used by
+terrain pages that rewrote a few cells) patch only the dirty rectangles of a
+texture holding the immediately preceding revision, with the same bytes a whole
+upload stores: the CPU path premultiplies each rectangle with the same integer
+rounding, and GPU-prepared textures clear and re-blend just those rectangles from
+the staging texture. A region update keeps the sampling mode the texture's last
+draw chose, and pending batched draws are submitted before it. Preparation uses the existing
 SDL renderer APIs across OpenGL ES, Metal and other accelerated SDL backends.
 
 For a native preparation comparison, set

@@ -1171,7 +1171,15 @@ TrueTypeFont measures shaped text using SDL_ttf metrics at the authored font siz
 independently of bitmap rendering. Its metrics LRU is bounded to 1,024 entries and
 1 MiB of stored key text; color and drawable scale do not affect its keys. Font
 replacement/reload clears these metrics. Layout measurement neither creates
-bitmaps nor evicts rendered text. Use bounded `listView` controls for large
+bitmaps nor evicts rendered text. A font looks up its script language only when
+`StringTable::revision()` changes (language selection or reload), and
+`Font::metricsRevision()` changes whenever its metrics are dropped, so painters can
+memoize measured layout by those two numbers instead of re-measuring captions every
+frame; the gameplay touch HUD's navigation bar does. The touch HUD also holds
+`GameGUITouch::layout()` fixed for one painted frame (`GameGUITouch::LayoutFrame`,
+opened after `prepareDraw()`), so state that layout reads must change through input,
+`prepareDraw()` or the next scene, never while painting; touch harnesses set
+`verifyLayoutFrames` to recompute and compare every call. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 Bulgarian opts into authored logical draw advances alongside other new locales,

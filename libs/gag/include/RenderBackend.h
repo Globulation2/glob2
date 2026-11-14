@@ -17,6 +17,19 @@ struct RenderOperations
     std::uint64_t rasterJobs = 0;
     std::uint64_t rasterSourceReuses = 0, rasterSourceRetainedBytes = 0;
     std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
+    // SDL_Renderer (portable) submission counters; cumulative like the above.
+    std::uint64_t vertices = 0, textureSwitches = 0;
+    // SDL_RenderGeometry calls after merging compatible consecutive submissions.
+    std::uint64_t geometryBatches = 0;
+    std::uint64_t textureUploads = 0, textureUploadBytes = 0, gpuPreparedUploads = 0;
+    std::uint64_t textureCreates = 0, textureDestroys = 0, cpuPremultipliedBytes = 0;
+    // SDL_Renderer texture-cache gauges: current values, not deltas. Bytes are
+    // width*height*bytes-per-pixel estimates of driver storage; source bytes are
+    // the owners' CPU surfaces that stay alive beside each cached texture.
+    std::uint64_t textureCount = 0, textureBytes = 0, peakTextureBytes = 0;
+    std::uint64_t sourceSurfaceBytes = 0, sharedSourceTextures = 0, gpuPreparedTextures = 0;
+    // Vertex and index storage the batcher keeps allocated between frames.
+    std::uint64_t stagingTextureBytes = 0, batchCapacityBytes = 0;
 };
 
 class RenderBackend
@@ -40,6 +53,14 @@ class RenderBackend
                               const SDL_FRect &, Uint8) { return false; }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+    // Like prepareTexture, after writes confined to `dirty` (pixel rectangles of
+    // the surface). A backend whose cached texture holds exactly `previous` may
+    // update only those rectangles; every other state prepares the whole surface.
+    virtual void prepareTextureRegions(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+                                       std::uint64_t /*previous*/, std::span<const SDL_Rect> /*dirty*/,
+                                       bool linear = false) {
+        prepareTexture(key, pixels, revision, linear);
+    }
 	virtual RenderOperations operations() const { return {}; }
 	// Zero means the backend does not impose or report a texture limit.
 	virtual int maximumTextureSize() const { return 0; }

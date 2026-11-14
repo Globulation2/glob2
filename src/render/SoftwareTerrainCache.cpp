@@ -253,6 +253,21 @@ void retireTexture(SoftwareTerrainCache::Chunk &chunk)
 	chunk.parked.reset(chunk.image->takePixels());
 	chunk.image.reset();
 }
+bool portableRenderer()
+{
+	return globalContainer->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL;
+}
+// Whether this view's pages compose HD material frames. Accelerated renderers
+// do, except the portable SDL renderer at one screen pixel per logical pixel
+// or fewer (Compositor::highResolutionPages), where HD pages only cost.
+// Captures draw once at their own density and keep HD.
+bool composeHighResolution(TerrainVisual::Compositor &compositor, bool tiledCapture)
+{
+	auto &gfx = *globalContainer->gfx;
+	if (!gfx.rendererCapabilities().accelerated) return false;
+	if (tiledCapture || !portableRenderer()) return true;
+	return compositor.highResolutionPages(double(gfx.mapTransformScale()) * gfx.getRasterScale());
+}
 struct SamplingPlan
 {
 	int resolution;
@@ -479,6 +494,7 @@ struct TerrainCellResult
     Uint8 *pixels = nullptr;
     std::optional<TerrainVisual::Compositor::CellMask> mask;
     const TerrainVisual::Compositor::CellMask *reused = nullptr;
+    std::optional<TerrainVisual::Compositor::Refresh> refresh;
     bool opaque = false, empty = false, keepMask = false;
 };
 // The first alpha selects one constant predicate: opaque and empty cells need
@@ -538,7 +554,8 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
                               scratch,
                               result.reused ? result.reused
                               : result.mask ? &*result.mask
-                                            : nullptr);
+                                            : nullptr,
+                              downsample > 1 || !result.refresh ? nullptr : &*result.refresh);
             if (downsample > 1)
                 reduceTile(&nativeTile, &output, 0, 0, downsample);
             std::tie(result.opaque, result.empty) =
@@ -602,6 +619,49 @@ bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
     return surf.period && previousTime / surf.ticks != compositor.surfTime() / surf.ticks;
 }
 
+// An unchanged mixed cell recomposes only the samples its changed textures
+// and advanced surf reach; the page keeps every other sample's pixels.
+template <class Changed>
+TerrainVisual::Compositor::Refresh cellRefresh(const TerrainVisual::Recipe &recipe, Changed materialChanged,
+                                               unsigned previousTime, const TerrainVisual::Compositor &compositor)
+{
+    TerrainVisual::Compositor::Refresh refresh;
+    std::array<TerrainVisual::MaterialId, 4> palette;
+    for (unsigned slot = 0, count = recipe.palette(palette); slot < count; ++slot)
+    {
+        refresh.textures |= unsigned(materialChanged(palette[slot])) << slot;
+        refresh.surf |= unsigned(surfStepChanged(palette[slot], previousTime, compositor)) << slot;
+    }
+    return refresh;
+}
+// Rectangles covering a page's recomposed cells: runs along each row, joined
+// with identical runs directly below them.
+std::vector<SDL_Rect> dirtyRects(const std::array<bool, SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles> &dirty,
+                                 int cellPixels)
+{
+    constexpr int tiles = SoftwareTerrainCache::ChunkTiles;
+    std::vector<SDL_Rect> rects;
+    for (int y = 0; y < tiles; ++y)
+        for (int x = 0; x < tiles;)
+        {
+            if (!dirty[y * tiles + x])
+            {
+                ++x;
+                continue;
+            }
+            const int start = x;
+            while (x < tiles && dirty[y * tiles + x])
+                ++x;
+            const SDL_Rect rect{start * cellPixels, y * cellPixels, (x - start) * cellPixels, cellPixels};
+            auto above = std::find_if(rects.begin(), rects.end(), [&](const SDL_Rect &run)
+                { return run.x == rect.x && run.w == rect.w && run.y + run.h == rect.y; });
+            if (above == rects.end())
+                rects.push_back(rect);
+            else
+                above->h += rect.h;
+        }
+    return rects;
+}
 bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
                      const TerrainVisual::Compositor &compositor)
 {
@@ -615,7 +675,8 @@ bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
                                         TerrainVisual::Compositor &compositor, SDL_Surface *target,
-                                        bool wasValid, std::size_t budget, bool nativeAvailable)
+                                        bool wasValid, std::size_t budget, bool nativeAvailable,
+                                        std::array<bool, ChunkTiles * ChunkTiles> *dirty)
 {
     // Reduced pages compose native cells and filter them; a retained native
     // page is already that input, so the serial path reduces it directly.
@@ -711,6 +772,8 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
                 held->mask.scale == resolution)
                 result.reused = &held->mask;
+            if (wasValid && page.tiles[i] == tiles[i] && tiles[i].discovered && !recipe.uniform())
+                result.refresh = cellRefresh(recipe, materialChanged, page.surfTime, compositor);
             std::array<TerrainVisual::MaterialId, 4> palette;
             const unsigned paletteCount = recipe.palette(palette);
             result.keepMask = tiles[i].discovered && !recipe.uniform() &&
@@ -752,12 +815,52 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                 held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
             page.opaque[result.index] = result.opaque;
             page.empty[result.index] = result.empty;
+            if (dirty) (*dirty)[result.index] = true;
+            page.overlay[result.index] = false;
         }
         first += count;
     }
     return true;
 }
 
+SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainVisual::Compositor &compositor,
+                                                                       const TerrainVisual::Recipe &recipe,
+                                                                       SDL_Rect &source)
+{
+    const auto id = recipe.corners[0];
+    const auto &material = compositor.catalog().materials[id];
+    if (material.animationFrames <= 1 || material.variants.empty()) return nullptr;
+    animatedTiles.resize(compositor.catalog().materials.size());
+    auto &set = animatedTiles[id];
+    const int variants = int(material.variants.size());
+    if (!set.atlas)
+    {
+        set.columns = int(std::ceil(std::sqrt(double(variants))));
+        const int rows = (variants + set.columns - 1) / set.columns;
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            SDL_CreateSurface(set.columns * NativeTilePixels, rows * NativeTilePixels, SDL_PIXELFORMAT_ARGB8888),
+            SDL_DestroySurface);
+        if (!pixels) throw std::bad_alloc();
+        set.atlas = std::make_unique<TerrainVisual::Surface>(pixels.get(), false);
+        pixels.release();
+        set.revisions.assign(variants, 0);
+        set.opaque.assign(variants, 0);
+    }
+    const unsigned variant = compositor.catalog().variantIndex(id, recipe.x, recipe.y, recipe.seed);
+    source = {int(variant) % set.columns * NativeTilePixels, int(variant) / set.columns * NativeTilePixels,
+              NativeTilePixels, NativeTilePixels};
+    const auto revision = compositor.textureRevision(id) + 1;
+    if (set.revisions[variant] != revision)
+    {
+        // A uniform, uncalmed cell's pixels depend only on its material and variant.
+        auto *pixels = set.atlas->getSDLSurface();
+        compositor.compose(recipe, pixels, source.x, source.y, 1);
+        set.opaque[variant] = allAlpha<255>(*pixels, source);
+        set.revisions[variant] = revision;
+        set.changed = true;
+    }
+    return set.opaque[variant] ? &set : nullptr;
+}
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
@@ -769,6 +872,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         chunks.clear();
         gpuPages.reset();
         cpuMaterialLease.reset();
+        animatedTiles.clear();
 		registry = map.frozenTerrainRegistry();
         assets = map.frozenAssetBundle();
 	}
@@ -790,26 +894,29 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     }
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+	overlayCompositor = &compositor;
 	auto &gfx = *globalContainer->gfx;
 	const bool nextGPU = gfx.rendererCapabilities().accelerated;
 	// When even native-size pages need reduction, avoid preparing HD
 	// materials for the interactive Legacy OpenGL view.
 	const bool reducedLegacyView = gfx.isLegacyGLScreen() && !tiledCapture && !preferredDownsample &&
 		samplingPlan(map, left, top, right, bottom, vx, vy, 1).downsample > 1;
+	const bool portable = portableRenderer();
+	const bool highResolution = composeHighResolution(compositor, tiledCapture);
     {
         PERF_SCOPE_TIME(TerrainMaterials);
 	// CPU and device composition can rebuild complete pages beyond the
 	// viewport, so prepare every cell in those pages before collecting jobs.
 	const auto prepareMaterials = [&] {
-		compositor.prepareVisible(nextGPU, time, map,
+		compositor.prepareVisible(highResolution, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView, !portable);
 	};
 	prepareMaterials();
 	// A capture is drawn once, so it waits for streamed HD rather than
 	// keeping the native fallback that interactive frames replace later.
-	if (tiledCapture && nextGPU)
+	if (tiledCapture && highResolution)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
@@ -838,6 +945,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	resolution = nextResolution;
 	gpu = nextGPU;
 	downsample = plan.downsample;
+	// Once a portable view has settled back on native frames, its HD pages are
+	// stale (their materials' revisions moved on) and only hold memory.
+	if (portable && composedHighResolution && !highResolution)
+		std::erase_if(chunks, [&](const auto &chunk) {
+			if (chunk->scale == 1) return false;
+			if (gpuPages) gpuPages->erase(*chunk);
+			return true;
+		});
+	composedHighResolution = highResolution;
 	const auto storage = pageStorage(resolution, false, downsample);
 	const auto uploadReserve = gpu ? pageStorage(resolution, true, downsample) - storage : 0;
     const auto *device = gfx.renderDevice();
@@ -1122,6 +1238,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				{
 					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
 					const bool wasValid = entry->valid;
+					// Cells written by this rebuild; an uploaded page updates only those.
+					std::array<bool, ChunkTiles * ChunkTiles> dirty{};
 					entry->valid = false;
 					entry->opaqueRuns.clear();
                     if (gpuPages) {
@@ -1132,7 +1250,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                             copies.clear();return false;
                         }
                     }
-                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget, native != nullptr))
+                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget, native != nullptr,
+                                              &dirty))
                     {
                         ++workMetrics.serialPages;
                         PERF_SCOPE_TIME(TerrainBatch);
@@ -1140,12 +1259,22 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
 							const int i = y * ChunkTiles + x, n = 32 * resolution / downsample;
+							// Native device pages draw uniform animated cells from
+							// shared tiles; the page keeps an earlier frame below.
+							SDL_Rect tileSource;
+							const bool overlay = gpu && resolution == 1 && downsample == 1 && tiles[i].discovered &&
+								tiles[i].recipe.uniform() && !tiles[i].recipe.calmed() &&
+								animatedTile(compositor, tiles[i].recipe, tileSource);
+							if (wasValid && overlay && entry->overlay[i] && entry->tiles[i] == tiles[i])
+								continue;
 							if (wasValid && entry->tiles[i] == tiles[i] &&
 								(!tiles[i].discovered ||
 								 std::none_of(tiles[i].recipe.corners.begin(),
 											  tiles[i].recipe.corners.end(), materialChanged) &&
                                  !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor)))
 								continue;
+							dirty[i] = true;
+							entry->overlay[i] = overlay;
 							auto &held = entry->masks[i];
 							const auto &recipe = tiles[i].recipe;
 							const int maskScale = downsample > 1 ? 1 : resolution;
@@ -1198,8 +1327,20 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 									}
 								}
 								else
+								{
+									// The page already holds this cell's previous composition.
+									std::optional<TerrainVisual::Compositor::Refresh> refresh;
+									if (wasValid && entry->tiles[i] == tiles[i] && cellMask)
+									{
+										refresh = cellRefresh(recipe, materialChanged, entry->surfTime, compositor);
+										// An animation step visits only the samples it can change.
+										if (held && cellMask == &held->mask &&
+											!((refresh->textures | refresh->surf) & ~compositor.animatedSlots(held->mask)))
+											refresh->samples = &held->animatedSamples(compositor);
+									}
 									compositor.compose(recipe, target, x * n, y * n, resolution,
-													   cellMask);
+													   cellMask, refresh ? &*refresh : nullptr);
+								}
 							}
 							else
 							{
@@ -1214,7 +1355,13 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							}
 						}
                     }
-					if (entry->image && !gpuPages) entry->image->markPixelsChanged();
+					if (entry->image && !gpuPages)
+					{
+						if (!wasValid || std::all_of(dirty.begin(), dirty.end(), [](bool cell) { return cell; }))
+							entry->image->markPixelsChanged();
+						else if (std::any_of(dirty.begin(), dirty.end(), [](bool cell) { return cell; }))
+							entry->image->markPixelsChanged(dirtyRects(dirty, ChunkPixels * resolution / downsample / ChunkTiles));
+					}
 					entry->tiles = tiles;
 					entry->materialRevisions.clear();
 					entry->surfTime = compositor.surfTime();
@@ -1248,6 +1395,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
+		for (auto &set : animatedTiles)
+			if (set.changed)
+			{
+				set.atlas->markPixelsChanged();
+				set.changed = false;
+			}
 		if (gpu && !gpuPages &&
 			std::any_of(copies.begin(), copies.end(), [](const auto &copy) { return !copy.chunk->image; }) &&
 			!makeRoom(uploadReserve))
@@ -1269,15 +1422,15 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 										FallbackMode mode, bool tiledCapture)
 {
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
+	const bool highResolution = composeHighResolution(compositor, tiledCapture);
 	const auto prepareMaterials = [&] {
-		compositor.prepareVisible(gpu, time, map,
+		compositor.prepareVisible(highResolution, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, false, !portableRenderer());
 	};
 	prepareMaterials();
-	if (tiledCapture && gpu)
+	if (tiledCapture && highResolution)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
@@ -1364,6 +1517,23 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 						rect.w * resolution / downsample, rect.h * resolution / downsample);
 				};
                 draw(visible);
+				// Uniform animated cells over the page, from their shared tiles.
+				if (overlayCompositor && copy.chunk->scale == 1 && copy.chunk->downsample == 1)
+					for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
+					{
+						if (!copy.chunk->overlay[i]) continue;
+						SDL_Rect cell{copy.x + i % ChunkTiles * 32, copy.y + i / ChunkTiles * 32, 32, 32}, shown, source;
+						if (!SDL_GetRectIntersection(&cell, &paintBounds, &shown)) continue;
+						auto *set = animatedTile(*overlayCompositor, copy.chunk->tiles[i].recipe, source);
+						if (!set) continue;
+						if (set->changed)
+						{
+							set->atlas->markPixelsChanged();
+							set->changed = false;
+						}
+						target.drawSurface(shown.x, shown.y, shown.w, shown.h, set->atlas.get(),
+							source.x + shown.x - cell.x, source.y + shown.y - cell.y, shown.w, shown.h);
+					}
 			}
 			continue;
 		}

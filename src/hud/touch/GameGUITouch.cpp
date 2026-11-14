@@ -27,6 +27,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
+#include <stdexcept>
 #include <cmath>
 #include <cstdio>
 #ifdef __ANDROID__
@@ -51,7 +52,35 @@ bool GameGUITouch::usesHUD() const
 {
 	return phonePresentationRequested();
 }
+GameGUITouch::LayoutFrame::LayoutFrame(GameGUITouch *touch) : touch(touch)
+{
+	if (touch)
+		++touch->layoutFrames;
+}
+GameGUITouch::LayoutFrame::~LayoutFrame()
+{
+	if (touch && --touch->layoutFrames == 0)
+		touch->frameLayout.reset();
+}
 MobileLayout GameGUITouch::layout() const
+{
+	if (!layoutFrames)
+		return computeLayout();
+	if (!frameLayout)
+		frameLayout = computeLayout();
+	else if (verifyLayoutFrames)
+	{
+		const auto fresh = computeLayout();
+		const auto same = [](const ViewRect &a, const ViewRect &b)
+		{ return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h; };
+		if (!same(fresh.safe, frameLayout->safe) || !same(fresh.status, frameLayout->status) ||
+			!same(fresh.world, frameLayout->world) || !same(fresh.actions, frameLayout->actions) ||
+			!same(fresh.panel, frameLayout->panel) || fresh.persistentPanel != frameLayout->persistentPanel)
+			throw std::logic_error("A touch layout input changed while a frame was painted");
+	}
+	return *frameLayout;
+}
+MobileLayout GameGUITouch::computeLayout() const
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
