@@ -25,10 +25,12 @@ test('WebAssembly decodes exact WebP and normalized PNG pixels', async ({page}) 
   const result=await page.evaluate(() => window.imageResult);
   expect(result.error).toBeUndefined();
   expect(result.code).toBe(0);
-  // Prepared image adoption, padded mip filtering, both WebP modes, normalized PNG,
-  // and strict artwork lookup.
-  // Native PNG/JPEG saving is a separate native-only case.
-  expect((result.report.match(/<testcase\s/g) || []).length).toBe(6);
+  // Block-compression format selection, the SSE4.1/portable encoder comparison
+  // (portable only here) and the renderer memory report (#1694), prepared image
+  // adoption, padded mip filtering, both WebP modes, normalized PNG and strict
+  // artwork lookup. Worker-prepared BC3 levels (not built for WebGL2) and native
+  // PNG/JPEG saving are native-only cases.
+  expect((result.report.match(/<testcase\s/g) || []).length).toBe(9);
   expect(result.report).toContain('name="mip preparation preserves padded alpha weighted integer filtering"');
   expect(result.report).toContain('name="Q90 lossy WebP preserves dimensions and exact alpha"');
   expect(result.report).toContain('name="16-bit RGBA rounds normalized channels to the exporter reference"');
