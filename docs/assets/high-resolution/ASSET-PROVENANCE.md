@@ -8,7 +8,7 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 
 | Source category | Frames |
 | --- | ---: |
-| AI upscale with constrained finishing | 105 |
+| AI upscale with constrained finishing | 103 |
 | AI upscale with constrained finishing, then sharpened | 10 |
 | Generated material with deterministic tiling | 16 |
 | Hand-authored vector | 8 |
@@ -16,7 +16,7 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 | Original-based terrain with deterministic grain and tiling | 256 |
 | Procedural resource painting | 120 |
 | Procedural terrain synthesis | 11324 |
-| Recovered original | 2076 |
+| Recovered original | 2078 |
 
 Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../content/data/highres/v1/manifest.json). See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.
 
@@ -256,12 +256,12 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `ressource11` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_2_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource12` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_3_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource13` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_4_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource14` | AI upscale with constrained finishing | 34×34 | — | resource constrained |
+| `ressource14` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/derived/wheat-native/wheat_4_1.png)) | recovered original wheat, ripe recolour: stage-4 GIMP layers with the classic stage-5 dot colours |
 | `ressource15` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_1_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource16` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_2_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource17` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_3_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource18` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/wheat/wheat_4_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource19` | AI upscale with constrained finishing | 34×34 | — | resource constrained |
+| `ressource19` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/derived/wheat-native/wheat_4_2.png)) | recovered original wheat, ripe recolour: stage-4 GIMP layers with the classic stage-5 dot colours |
 | `ressource2` | Recovered original | 36×39 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_3_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource20` | Recovered original | 32×32 | 199×199 ([source](../../../content-src/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource21` | Recovered original | 32×32 | 199×199 ([source](../../../content-src/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
