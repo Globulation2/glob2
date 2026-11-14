@@ -104,7 +104,9 @@ def building_pass(binary, initial, output):
     output.mkdir(parents=True, exist_ok=True)
     manifest = output/'manifest.json'
     manifest.write_text(json.dumps({'scenarios': [
-        {'id': f'building-d{d}', 'args': ['--load-game', str(initial), *fork(d), '--ticks', '1024'],
+        # 2048 ticks: since building walking fields are seeded from obstacle
+        # templates (#1675), the first 1024 schedule no field job on Linux.
+        {'id': f'building-d{d}', 'args': ['--load-game', str(initial), *fork(d), '--ticks', '2048'],
          'fixture_sha256': {str(initial): digest(initial)}} for d in BUILDING_DELAYS]}))
     subprocess.run([sys.executable, str(Path(__file__).with_name('benchmark_gradient_pipeline.py')), str(binary), str(manifest),
                     '--output', str(output/'verification'), '--workers', '0', '1', '2', '4', '8', '--delays', '8', '--verify'], check=True)

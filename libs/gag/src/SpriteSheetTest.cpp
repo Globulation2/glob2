@@ -675,7 +675,10 @@ TEST_CASE("HD sprite textures follow the zoom's detail band and free covered nat
     CHECK(units.images[index]->texture == 0);
     CHECK(units.images[index]->hasPixels());
     const auto settle = [&] {
-        for (int frame = 0; frame < 2000 && !GAGCore::Sprite::pollHighResolution(4); ++frame)
+        // A wait, not a speed check: slow software-GL runners (GCC 11, Xvfb)
+        // took longer than the former 2000-frame bound to publish the detail.
+        const auto deadline = SDL_GetTicks() + 120000;
+        while (!GAGCore::Sprite::pollHighResolution(4) && SDL_GetTicks() < deadline)
             GAGCore::Toolkit::pollAssets(4);
         REQUIRE(GAGCore::Sprite::pollHighResolution(0));
     };
