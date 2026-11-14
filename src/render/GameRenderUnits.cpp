@@ -45,6 +45,7 @@
 #include "unit/render/UnitSkin.h"
 #include "FailureShapes.h"
 #include "Building.h"
+#include "StatusSeverity.h"
 #include <algorithm>
 
 
@@ -292,9 +293,8 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 	{
 		// A hungry or hurt unit keeps a status badge once every bar has faded,
 		// beside the top right of its body rather than over it.
-		const int food=int((Sint64(unit->hungry)*10)/definition.runtime.foodCapacity);
-		const bool hungry=food<=1;
-		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
+		const int foodCapacity=definition.runtime.foodCapacity;
+		const int food=int((Sint64(unit->hungry)*10)/foodCapacity);
 		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223, 2, drawnRender, opacity);
 
@@ -302,10 +302,14 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
 		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender, opacity);
-		if (hurt)
-			drawStatusPip(px+24, py+8, MapOverlayQueue::Hurt, drawnRender, opacity, true);
-		else if (hungry)
-			drawStatusPip(px+24, py+8, MapOverlayQueue::Hungry, drawnRender, opacity, true);
+		// Hunger outranks injury: feeding the unit is what the player can act on.
+		// StatusSeverity says when each badge appears and how red it is.
+		if (StatusSeverity::unitHungry(unit->hungry, foodCapacity))
+			drawStatusPip(px+24, py+8, MapOverlayQueue::Hungry,
+				StatusSeverity::unitHunger(unit->hungry, foodCapacity), drawnRender, opacity, true);
+		else if (StatusSeverity::unitHurt(unit->hp, unit->performance[HP]))
+			drawStatusPip(px+24, py+8, MapOverlayQueue::Hurt,
+				StatusSeverity::unitInjury(unit->hp, unit->performance[HP]), drawnRender, opacity, true);
 
 		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
 		if ((unit->performance[HARVEST]) && (unit->carriedMaterial>=0) && carriedAlpha>0)

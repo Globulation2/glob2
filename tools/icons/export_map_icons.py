@@ -13,7 +13,10 @@ keep ICONS and SIZES in step with src/render/MapOverlayQueue.cpp.
 
 Status icons, the badges that mark a unit or building needing attention, come
 from content-src/icons/status/<name>.svg and go to content/data/gfx/statusicon<N>.png,
-frame N = icon * len(STATUS_SIZES) + size, in MapOverlayQueue::StatusIcon order.
+frame N = variant * len(STATUS_ICONS) * len(STATUS_SIZES) + icon * len(STATUS_SIZES) + size,
+in MapOverlayQueue::StatusIcon order. The sources are drawn in white; the export paints
+every icon twice, yellow then red, and the game blends between the two by how bad the
+condition is. Badges are drawn bare, with no backing disc.
 """
 import pathlib
 import subprocess
@@ -27,21 +30,29 @@ SIZES = [10, 12, 16, 20, 24, 32, 48]
 # In MapOverlayQueue::StatusIcon order. A badge is small, so the sizes start lower.
 STATUS_ICONS = ["hurt", "hungry", "damaged", "workers", "unarmed"]
 STATUS_SIZES = [8, 10, 12, 16, 20, 24, 32]
+# The two variants replacing the sources' white: yellow when a condition has just
+# begun, red at its worst.
+STATUS_VARIANTS = ["#f7d21e", "#e22d2d"]
 
 
-def export(icons, sizes, directory, prefix):
+def export(icons, sizes, directory, prefix, color=None, first=0):
     for icon, name in enumerate(icons):
-        source = ROOT / "content-src/icons" / directory / f"{name}.svg"
+        source = (ROOT / "content-src/icons" / directory / f"{name}.svg").read_text()
+        if color:
+            source = source.replace("#fff", color)
         for index, size in enumerate(sizes):
-            frame = icon * len(sizes) + index
-            subprocess.run(["rsvg-convert", "-w", str(size), "-h", str(size), str(source),
-                            "-o", str(ROOT / "content/data/gfx" / f"{prefix}{frame}.png")], check=True)
+            frame = first + icon * len(sizes) + index
+            subprocess.run(["rsvg-convert", "-w", str(size), "-h", str(size),
+                            "-o", str(ROOT / "content/data/gfx" / f"{prefix}{frame}.png")],
+                           input=source.encode(), check=True)
     return len(icons) * len(sizes)
 
 
 def main():
     frames = export(ICONS, SIZES, "map", "mapicon")
-    frames += export(STATUS_ICONS, STATUS_SIZES, "status", "statusicon")
+    for variant, color in enumerate(STATUS_VARIANTS):
+        frames += export(STATUS_ICONS, STATUS_SIZES, "status", "statusicon", color,
+                         variant * len(STATUS_ICONS) * len(STATUS_SIZES))
     print(f"wrote {frames} frames")
 
 
