@@ -181,8 +181,8 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 		if (detail.unitSprite > 0 &&
 			!view.render.skinPreview().draw(
 				*globalContainer->gfx, meshClass, unit->team, unit->action, dir, delta, px, py,
-				{unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
-				 unsigned(unitSprite->getH(imgid))},
+				{nullptr, unsigned(unitSprite->getW(imgid)), unsigned(unitSprite->getH(imgid)),
+				 unitSprite, unsigned(imgid)},
 				fogAlpha, pronePhase, Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
 		{
 			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
