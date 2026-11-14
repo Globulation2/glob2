@@ -168,8 +168,8 @@ class TerrainDecor(unittest.TestCase):
             with self.subTest(frame=index):
                 # Every full frame rises above its own cell into the row above...
                 self.assertLess(body_top, cell_top)
-                # ...and throws a shadow well past the cell's right edge.
-                self.assertGreater(shadow_right, cell_left + (32 + 8) * decor.SCALE)
+                # ...and throws its shadow along the sun, past the cell's right edge.
+                self.assertGreater(shadow_right, cell_left + (32 + 2) * decor.SCALE)
         # The tallest stand most of a cell above their own.
         self.assertLess(min(tops), cell_top - 24 * decor.SCALE)
 

@@ -17,6 +17,7 @@ Start with a workflow, then follow the reference for the asset family you are ch
 | --- | --- |
 | [Terrain production](terrain-production.md) | Procedural/image recipes, periodic edges and provenance. |
 | [Terrain rendering](terrain-rendering.md) | Boundaries, seams, caches and compatibility. |
+| [Lighting and shadows](lighting.md) | The canonical sun direction every asset and renderer shares. |
 | [Map-owned artwork](custom-map-artwork.md) | Portable custom artwork contract. |
 | [High-resolution pack](high-resolution/README.md) | Approved inputs and assembly. |
 | [Runtime artwork inventory](high-resolution/ASSET-PROVENANCE.md) | Generated active-frame provenance; maintained by its generator. |

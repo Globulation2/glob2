@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TorusView.h"
 #include "TorusGeometry.h"
+#include "render/Sunlight.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Game.h"
 #include "render/MapDrawer.h"
@@ -565,7 +566,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
     }
     WorldMaterial material;
     material.projection = {2.f/gfx->getW(),0,0,0, 0,-2.f/gfx->getH(),0,0, 0,0,-1.f/20000,0, -1,1,.5f,1};
-    float lx = -1, ly = .25f, lz = .15f;
+    float lx = Sunlight::glancingX, ly = Sunlight::glancingY, lz = Sunlight::glancingZ;
     const float ll = std::sqrt(lx*lx+ly*ly+lz*lz); lx/=ll; ly/=ll; lz=lz/ll+1;
     const float hl = std::sqrt(lx*lx+ly*ly+lz*lz);
     material.sunSpecular = {lx/hl,ly/hl,lz/hl,.18f*roll};

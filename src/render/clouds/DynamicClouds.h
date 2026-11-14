@@ -43,7 +43,8 @@ class DynamicClouds
 	 * this value is set in preferences.txt: cloudSize=300
 	 */
 	float cloudSize;
-	/** scale of the clouds/shadow in percent
+	/** height of the clouds in percent: it scales the cloud field and sets
+	 * how far along the sun the shadows fall (render/Sunlight.h).
 	 * this value is set in preferences.txt: cloudHeight=150
 	 */
 	float cloudHeight;

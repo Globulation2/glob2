@@ -25,7 +25,8 @@ fallbacks where source coverage or registration is uncertain. Consult
 - AI candidates: use the [candidate pipeline](../../tools/artwork/ai/README.md) in a fresh staging directory.
 
 Review logical size, padding, alpha, shadows, neutral/team layers, all states,
-animation directions and every mip. Compare at actual gameplay size as well as
+animation directions and every mip. Light comes from the upper left and shadows
+fall to the lower right, as set out in [lighting and shadows](lighting.md). Compare at actual gameplay size as well as
 zoomed inspection. Do not promote candidates automatically or overwrite originals.
 
 ## Assemble approved inputs

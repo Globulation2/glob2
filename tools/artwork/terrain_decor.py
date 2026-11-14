@@ -110,8 +110,11 @@ SPRITE = "data/gfx/terrain-decor"
 HD_PREFIX = "content/data/highres/v1/terrain-decor"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
+# The canonical sun (docs/assets/lighting.md): light from the upper left,
+# a unit vector toward the light in screen space with y down, and shadows
+# thrown straight away from it, to the lower right.
 LIGHT = (-0.62, -0.78)  # toward the upper left, screen space
-SHADOW = (0.55, 0.42)   # contact shadow offset direction (lower right)
+SHADOW = tuple(-c / math.hypot(*LIGHT) for c in LIGHT)  # contact shadow offset direction (lower right)
 # The same light in 3D for faceted rock: x right, y south, z up; unit length.
 LIGHT3 = tuple(c / math.hypot(LIGHT[0], LIGHT[1], 0.9) for c in (LIGHT[0], LIGHT[1], 0.9))
 
@@ -368,7 +371,7 @@ def shade_dome(canvas, pixels, color_at, *, light=0.55, rim=0.35, front=0.0, fac
     nz = np.maximum(h, 0.05)
     nx, ny = dx * (1 - h) * 1.4, dy * (1 - h) * 1.4
     norm = np.sqrt(nx * nx + ny * ny + nz * nz)
-    lam = (-(nx * lx + ny * ly) + 0.55 * nz) / norm
+    lam = (nx * lx + ny * ly + 0.55 * nz) / norm
     x, y = i % S, i // S
     base = np.stack([np.broadcast_to(np.asarray(c, dtype=np.float64), i.shape) for c in color_at(x, y, h)], -1)
     value = 0.62 + light * lam
@@ -537,9 +540,9 @@ def boulder_palette(rng):
     return rng.choice(tones)
 
 
-# Long cast shadows fall to the lower right from a low sun; a little flatter
-# than the contact shadows so they reach across the open ground.
-LONG = tuple(c / math.hypot(0.9, 0.43) for c in (0.9, 0.43))
+# Long cast shadows fall along the same direction as the contact shadows,
+# straight away from the sun.
+LONG = SHADOW
 
 
 def mask_image(pixels, threshold=0.0):
@@ -746,7 +749,7 @@ def foliage(canvas, rng, cx, cy, rx, ry, *, base, light, dark, clump=(7, 11), de
         spots.append((cx + math.cos(a) * d * rx, y0, rng.uniform(*clump)))
     for x0, y0, rr in sorted(spots, key=lambda t: t[1]):
         # Clumps facing the light are lighter; those low on the front face darker.
-        facing = -((x0 - cx) / rx * LIGHT[0] + (y0 - cy) / ry * LIGHT[1])
+        facing = (x0 - cx) / rx * LIGHT[0] + (y0 - cy) / ry * LIGHT[1]
         low = smoothstep(0.2, 0.9, (y0 - cy) / ry)
         t = clamp(0.5 + 0.5 * facing)
         tint = mix3(base, light, t)
@@ -1140,6 +1143,10 @@ HALO = 22                     # height field kept around the cell
 REACH = CELL - HALO - 4       # a cluster never reaches another cell's halo
 CANOPY_TOP = 64               # frame rows above the cell (16 native)
 CANOPY_BELOW = 64             # frame rows below it, for the long shadow (16 native)
+# The long shadow's sideways drift per row. The sun's direction would drift
+# about 0.8, but a frame sees only HALO pixels of the canopy to its left, so a
+# wider throw would stop square at cell edges; the faded far end stays inside it.
+CANOPY_DRIFT = 0.3
 CANOPY_LIGHT = (-0.50, -0.62, 0.60)
 CANOPY_STYLE = {
     # Shadow, mid and highlight ramps keep the vegetation brighter and more
@@ -1563,7 +1570,7 @@ def render_connected(name, mask, colours, interior=0):
     long_shadow = Image.new("L", coverage.size)
     for d in range(0, length + 1, 2):
         long_shadow = ImageChops.lighter(
-            long_shadow, shifted(caster, 0, d).point(lambda v, f=1 - d / length: int(v * f)))
+            long_shadow, shifted(caster, int(d * CANOPY_DRIFT), d).point(lambda v, f=1 - d / length: int(v * f)))
     long_shadow = long_shadow.filter(ImageFilter.GaussianBlur(6)).point(lambda v: int(v * 0.62))
     for box, row, shadow in ((cell, CANOPY_TOP, ImageChops.lighter(contact, long_shadow)),
                              (below, CANOPY_TOP + CELL, long_shadow)):
@@ -2034,7 +2041,9 @@ def dome_shade(coverage, gain):
     gx = dome[:, after_x] - dome[:, before_x]
     gy = dome[after_y, :] - dome[before_y, :]
     lx, ly, _ = CANOPY_LIGHT
-    return from_data(np.clip(0.5 + (gx * lx + gy * ly) / 255 * gain, 0.0, 1.0) * 255)
+    # The footprint rises inward from each rim, so a rim faces the light where
+    # the rise runs away from it: brightness follows -grad . light.
+    return from_data(np.clip(0.5 - (gx * lx + gy * ly) / 255 * gain, 0.0, 1.0) * 255)
 
 
 # Contact shadows as (dx, dy, blur, strength) layers, thrown to the lower right.

@@ -51,7 +51,7 @@ def render_volcanic_ash(ctx):
     stones = blend_fields(common_stones, own_stones, mask)
     rgb = mix(rgb, p["stone"], stones, 0.92)
     # A faint lit top-left edge lifts each stone off the soil.
-    rim = np.maximum(0.0, stones - shifted(stones, -3, -3))
+    rim = np.maximum(0.0, stones - shifted(stones, 3, 3))
     rgb = mix(rgb, p["stone_lit"], rim, 0.7)
     pores = blend_fields(common_pores, own_pores, mask)
     rgb = mix(rgb, p["pore"], pores * stones, 0.8)
