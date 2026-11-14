@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include <algorithm>
 #include "HiringPipeline.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
@@ -7,6 +6,7 @@
 #include "HeadlessGame.h"
 #include "GradientFixture.h"
 #include "HiringPlanner.h"
+#include <algorithm>
 #include <sstream>
 #include "SharedBuildingGradient.h"
 #include <thread>
@@ -309,7 +309,9 @@ TEST_SUITE("HiringPlanner")
 		auto local = input;
 		auto planes = std::make_shared<SimulationSnapshot::ResourceFields>();
 		const std::size_t cells = std::size_t(w.game.map.getW()) * w.game.map.getH();
-		auto values = std::make_shared<Uint16[]>(cells, Uint16(GRADIENT_UNREACHABLE));
+		// libstdc++ 11 (Ubuntu 22.04) lacks array make_shared.
+		std::shared_ptr<Uint16[]> values(new Uint16[cells]);
+		std::fill_n(values.get(), cells, Uint16(GRADIENT_UNREACHABLE));
 		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values, cells});
 		local.world.resourceFields = planes;
 		HiringPlanner::Planner a, bCache;
