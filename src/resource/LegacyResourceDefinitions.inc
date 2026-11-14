@@ -43,9 +43,9 @@ R"legacy_resources(
         "name": "Trees",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          240,
-          140,
-          184
+          255,
+          180,
+          214
         ],
         "levels": [
           {
