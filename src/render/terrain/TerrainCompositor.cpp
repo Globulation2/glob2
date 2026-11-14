@@ -1266,14 +1266,16 @@ void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 		r.calm = {};
 }
 Compositor::PreparedMaterialView Compositor::decimated(MaterialId id, const PreparedMaterialView &view,
-                                                       int scale) const
+                                                       int scale,
+                                                       std::shared_ptr<const MaterialPixels> &hold) const
 {
     const int size = 32 * scale;
     std::lock_guard lock(decimationMutex);
     auto &entry = decimations[{id, view.variant, scale}];
-    if (entry.revision != view.revision || entry.source != view.pixels.data() || entry.sourceSize != view.size)
+    if (!entry.pixels || entry.revision != view.revision || entry.source != view.pixels.data() ||
+        entry.sourceSize != view.size)
     {
-        if (entry.pixels.empty())
+        if (!entry.pixels)
         {
             // Bound the copies; every entry is rebuilt on demand from its source.
             const auto bytes = std::size_t(size) * size * 4;
@@ -1284,15 +1286,20 @@ Compositor::PreparedMaterialView Compositor::decimated(MaterialId id, const Prep
             }
             decimationBytes += bytes;
         }
-        entry.pixels.resize(std::size_t(size) * size);
+        // Always a fresh copy: a composition in progress (another palette slot
+        // of the same cell, or another thread) may still read the old one
+        // through its hold, so neither eviction nor a rebuild frees it.
+        auto pixels = std::make_shared<MaterialPixels>(std::size_t(size) * size);
         for (int y = 0; y < size; ++y)
             for (int x = 0; x < size; ++x)
-                entry.pixels[std::size_t(y) * size + x] = view.pixels[std::size_t(y) * view.step * view.size + x * view.step];
+                (*pixels)[std::size_t(y) * size + x] = view.pixels[std::size_t(y) * view.step * view.size + x * view.step];
+        entry.pixels = std::move(pixels);
         entry.revision = view.revision;
         entry.source = view.pixels.data();
         entry.sourceSize = view.size;
     }
-    return {view.variant, view.revision, size, entry.pixels, 1};
+    hold = entry.pixels;
+    return {view.variant, view.revision, size, *hold, 1};
 }
 Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
 {
@@ -1506,13 +1513,15 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
     thread_local std::vector<PreparedMaterialView> sources;
     sources.resize(definitions.materials.size());
     std::array<MaterialId, 4> palette;
+    // Keeps decimated copies alive while this cell reads them.
+    std::array<std::shared_ptr<const MaterialPixels>, 4> decimatedPixels;
     for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
     {
         const auto id = palette[i];
         sources[id] = preparedMaterial(r, id);
         sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
         if (sources[id].step > 1)
-            sources[id] = decimated(id, sources[id], scale);
+            sources[id] = decimated(id, sources[id], scale, decimatedPixels[i]);
     }
     composePixels(definitions, *stoneMaps, r, target, ox, oy, scale, sources, mask, preparedTime,
                   mask ? refresh : nullptr);

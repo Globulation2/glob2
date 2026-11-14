@@ -319,9 +319,12 @@ class Compositor
         std::uint64_t revision = 0;
         const void *source = nullptr;
         int sourceSize = 0;
-        MaterialPixels pixels;
+        std::shared_ptr<const MaterialPixels> pixels;
     };
-    PreparedMaterialView decimated(MaterialId, const PreparedMaterialView &, int scale) const;
+    // The view of a compact copy; `hold` keeps it alive for the caller even if
+    // a later call evicts or rebuilds the entry.
+    PreparedMaterialView decimated(MaterialId, const PreparedMaterialView &, int scale,
+                                   std::shared_ptr<const MaterialPixels> &hold) const;
     mutable std::mutex decimationMutex;
     mutable std::map<std::tuple<MaterialId, unsigned, int>, Decimated> decimations;
     mutable std::size_t decimationBytes = 0;
