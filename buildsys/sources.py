@@ -833,6 +833,8 @@ RELAY_MAIN_SOURCE = 'relay/RelayMain.cpp'
 RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'relay/RelayAdmissionTest.cpp')
 
 # Vendored texture block encoders, compiled into libgag; see third_party/README.md.
+# The SSE4.1 copy of them, which native x86 builds compile with -msse4.1 (CMakeLists.txt).
+SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp',)
 ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcpak/etcpak/ProcessRGB.cpp',
                   'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp')
 
