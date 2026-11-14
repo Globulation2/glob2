@@ -68,7 +68,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            cmake ninja-build pkg-config unzip zip autoconf automake libtool ccache
+            cmake ninja-build pkg-config nasm libva-dev unzip zip autoconf automake libtool ccache
       - name: Check Android release tooling
         run: python3 -m unittest discover -s test/build_system -p 'test_amazon_release.py' -v
       - name: Install pinned Android tools

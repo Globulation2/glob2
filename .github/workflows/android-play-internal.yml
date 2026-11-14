@@ -150,7 +150,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            cmake ninja-build pkg-config unzip zip autoconf automake libtool python3-venv
+            cmake ninja-build pkg-config nasm libva-dev unzip zip autoconf automake libtool python3-venv
 
       - name: Install pinned Android tools
         run: |
