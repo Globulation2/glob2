@@ -242,6 +242,19 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 
 #include <nlohmann/json.hpp>
 
+namespace
+{
+// Saves made before SIM_REVISION 161 embed the legacy definitions with their
+// old placeholder minimap colours. Those colours were recomputed from the
+// sprite art on purpose; every other legacy field stays frozen.
+std::string legacyDefinitionsWithoutMinimap(const ResourceRegistry& registry)
+{
+    auto document=nlohmann::json::parse(registry.serialize());
+    for(auto& resource:document.at("resources")) resource.at("presentation").erase("minimap");
+    return document.dump();
+}
+}
+
 TEST_SUITE("RuntimeResources")
 {
 TEST_CASE("material harvesting consumes stock and never invents a delivery")
@@ -1066,7 +1079,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     oldInput.seekFromStart(0);
     GameGUI oldGame(false);
     REQUIRE(oldGame.game.load(&oldInput));
-    CHECK(oldGame.game.map.resourceRegistry().digest()==ResourceRegistry::legacy()->digest());
+    CHECK(legacyDefinitionsWithoutMinimap(oldGame.game.map.resourceRegistry())==legacyDefinitionsWithoutMinimap(*ResourceRegistry::legacy()));
 }
 
 TEST_SUITE("RuntimeResources")
@@ -1345,7 +1358,7 @@ TEST_CASE("frozen resource saves ignore reordered modified installed defaults in
     const auto& legacy=restored.game.map.resourceRegistry();
     REQUIRE(legacy.size()==8);
     CHECK(legacy.properties(*legacy.find("trees")).growthRate==ResourceRateScale);
-    CHECK(legacy.digest()==ResourceRegistry::legacy()->digest());
+    CHECK(legacyDefinitionsWithoutMinimap(legacy)==legacyDefinitionsWithoutMinimap(*ResourceRegistry::legacy()));
 }
 
 TEST_CASE("custom ground and air obstruction independently govern routes across toroidal barriers" * doctest::test_suite("RuntimeResources"))
