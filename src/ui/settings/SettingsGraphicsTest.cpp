@@ -355,7 +355,12 @@ TEST_SUITE("SettingsGraphics")
         Settings settings;
         CHECK(settings.rendererBackend == GAGCore::RendererBackend::Auto);
         for (const auto &[flags, expected] : std::array{
+#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
             std::pair{0, GAGCore::RendererBackend::Software},
+#else
+            // The historical desktop default never set a GPU flag; it is not a Software choice.
+            std::pair{int(GAGCore::GraphicContext::RESIZABLE | GAGCore::GraphicContext::CUSTOMCURSOR), GAGCore::RendererBackend::Auto},
+#endif
             std::pair{int(GAGCore::GraphicContext::USEGPU), GAGCore::RendererBackend::LegacyGL},
             std::pair{int(GAGCore::GraphicContext::PORTABLEGPU), GAGCore::RendererBackend::PortableSDL}}) {
             { std::ofstream out(path); out << "screenFlags=" << flags << '\n'; }
@@ -372,6 +377,19 @@ TEST_SUITE("SettingsGraphics")
         settings.load(file);
         CHECK(settings.rendererBackend == GAGCore::RendererBackend::Auto);
         std::filesystem::remove(path);
+    }
+    TEST_CASE("desktop startup requests the GL surface so Auto resolves to Legacy GL")
+    {
+        const Settings settings;
+        const unsigned flags = startupScreenFlags(settings.screenFlags);
+        CHECK((flags & settings.screenFlags) == settings.screenFlags);
+        CHECK((flags & GAGCore::GraphicContext::PORTABLEGPU) == 0);
+#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+        CHECK(flags == settings.screenFlags);
+#else
+        CHECK((flags & GAGCore::GraphicContext::USEGPU) != 0);
+        CHECK((settings.screenFlags & GAGCore::GraphicContext::USEGPU) == 0); // not persisted
+#endif
     }
     TEST_CASE("render ceiling defaults migrates validates and round trips")
     {

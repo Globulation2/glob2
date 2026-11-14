@@ -96,6 +96,15 @@ Settings::Settings()
 }
 
 
+unsigned startupScreenFlags(unsigned savedFlags)
+{
+#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+	return savedFlags;
+#else
+	return savedFlags | GraphicContext::USEGPU;
+#endif
+}
+
 void Settings::setGraphicsDetail(bool full)
 {
 	clouds = full;
@@ -188,7 +197,13 @@ void Settings::load(std::string filename)
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
             rendererBackend = (screenFlags & GraphicContext::PORTABLEGPU) ? GAGCore::RendererBackend::PortableSDL :
-                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL : GAGCore::RendererBackend::Software;
+                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL :
+#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+                GAGCore::RendererBackend::Software;
+#else
+                // Desktop profiles never set a GPU flag by default; keep them on Auto.
+                GAGCore::RendererBackend::Auto;
+#endif
 		READ_PARSED_INT(uiScale);
         if (const auto value = parsed.find("targetRenderFps"); value != parsed.end())
         {

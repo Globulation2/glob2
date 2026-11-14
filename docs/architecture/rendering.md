@@ -595,14 +595,18 @@ validation remains a separate release gate.
 `programmable-gl`, `webgpu`, `portable-sdl`, `software`, and `legacy-gl`.
 Availability depends on the build, shader assets, device and presentation surface.
 A family listed as unavailable cannot be selected. New devices remain experimental
-until their full feature and hardware release gates pass; Auto retains the existing
-platform policy.
+until their full feature and hardware release gates pass. Auto resolves to Legacy GL
+on desktop builds with OpenGL (Software without it), to WebGL2 Legacy GL or Software
+in browsers depending on the probed adapter, and to Portable SDL on mobile. Desktop
+startup requests the GL surface without persisting it in `screenFlags`, so a
+presentation failure still falls back to Software.
 
 Startup precedence is an explicit command-line option or browser query, then the
 native `GLOB2_RENDERER` environment variable, persisted preference, and Auto. Existing
 `gpu`, `webgl2`, `opengl` and `sdl` aliases remain accepted. Startup overrides are
 session state. Settings without the new preference migrate their previous renderer
-flags; a new profile uses Auto.
+flags; a desktop profile without a GPU flag (the historical default) and a new profile
+use Auto.
 
 Graphics settings request a transition through `requestBackendSwitch()`. The status
 reports requested and active families, phase and failure reason. Requests coalesce

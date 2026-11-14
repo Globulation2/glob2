@@ -203,5 +203,10 @@ public:
 	void resetDefaultFlagRadius();
 };
 
+// Window flags for the startup graphic context. Desktop builds request the GL
+// presentation surface so that the Auto renderer resolves to Legacy GL; the
+// request is not persisted, and an explicit renderer choice still overrides it.
+unsigned startupScreenFlags(unsigned savedFlags);
+
 // Version 2 imports the historical family/level preferences into catalog keys.
 #define SETTINGS_VERSION 2
