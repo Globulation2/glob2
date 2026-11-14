@@ -687,7 +687,8 @@ online sim-version gates reject clients using the older boundary. See the
 ### Probability-based early victory
 
 Every game automatically records alliance win-probability history at the 512-tick
-cadence, with a final sample at the reported terminal tick. Full `result.json`
+cadence, with a final point at the reported terminal tick that repeats the last
+periodic prediction. Full `result.json`
 teams include `win_probability_history` (`[tick, permille]`) and `win_probability`
 (final prediction, model identity, coverage and trapezoidal area). This needs no
 telemetry flag. Detailed log samples remain opt-in with `--telemetry team-timeline`.

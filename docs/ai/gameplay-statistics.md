@@ -254,7 +254,7 @@ about 20 seconds. The chart painter is `TeamStatChart`.
 
 The Score group also includes **Win probability**, an alliance-wide estimate on
 a fixed 0–100% axis. It is recorded automatically every 512 ticks, with explicit
-coverage ticks and a final partial interval; older saves have a gap before new
+coverage ticks and a final partial interval that holds the last prediction; older saves have a gap before new
 samples start. It uses hidden opponent state, so ordinary players see it only in
 post-game results; their live touch sheet excludes it. Spectators retain the live
 chance panel. See the [model guide](architecture/win-probability-model.md) for its
