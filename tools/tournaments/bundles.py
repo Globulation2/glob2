@@ -14,8 +14,15 @@ from .common import lock, atomic_json, canonical, digest, file_hash, hash_id, in
 def validate_cli(executable, directory):
     """A bounded, asset-free probe; CLI identity is independent of the catalog."""
     try:
-        description = json.loads(subprocess.check_output(
-            [str(executable), 'help', '--format', 'json'], cwd=directory, timeout=10))
+        probe = subprocess.run([str(executable), 'help', '--format', 'json'], cwd=directory, timeout=10,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if probe.returncode:
+            # The usual causes are on the host, not in the bundle: a shared library
+            # the binary's runpath cannot find, or an older C library than it was
+            # built against. The loader names both on stderr, so pass it on.
+            detail = probe.stderr.decode(errors='replace').strip()[-1500:]
+            raise ValueError(f'exit status {probe.returncode}' + (': ' + detail if detail else ''))
+        description = json.loads(probe.stdout)
     except (subprocess.SubprocessError, OSError, ValueError) as error:
         raise ValueError('Unable to probe Glob2 CLI 2: ' + str(error)) from error
     if description.get('cli_version') != 2 or description.get('schema_version') != 1 or not isinstance(description.get('commands'), list):

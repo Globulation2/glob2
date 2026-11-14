@@ -338,6 +338,60 @@ class PipelineTests(unittest.TestCase):
         # New work from early hosts must not displace hosts still awaiting service.
         self.assertEqual(set(seen[:8]),{h['name'] for h in hosts},seen)
 
+    def test_acceptance_exports_only_its_own_attempt(self):
+        c=self.expand(2)
+        first,second=c.dispatch('one',self.status|{'slots':2})
+        self.assertTrue(c.accept(self.result(first)))
+        exported=c.root/'attempts'/(first['id']+'.json')
+        exported.unlink()
+        # Accepting another result must not rescan every record; startup repairs.
+        self.assertTrue(c.accept(self.result(second)))
+        self.assertFalse(exported.exists())
+        self.assertTrue((c.root/'attempts'/(second['id']+'.json')).exists())
+        self.assertTrue((c.root/'results'/(second['job']['id']+'.json')).exists())
+        c.close();self.coordinator=Coordinator(c.root)
+        self.assertEqual(read_json(exported)['id'],first['id'])
+
+    def test_transfer_limits_default_to_the_hosts_own_lanes(self):
+        from tools.tournaments.pipeline import transfer_limits
+        hosts=[{'name':'a','input_slots':3,'result_slots':8},{'name':'b'},{'name':'c','result_slots':8}]
+        self.assertEqual(transfer_limits({},hosts),{'input':7,'result':18})
+        self.assertEqual(transfer_limits({'input_transfer_slots':4},hosts),{'input':4,'result':18})
+
+    def test_transfer_sessions_are_reused_and_lane_errors_persist(self):
+        import io
+        from tools.tournaments import pipeline
+        c=self.expand(6)
+        h={'name':'local','transport':'local','directory':str(self.root/'reuse-worker'),'input_slots':1}
+        self.assertEqual(len(c.dispatch('local',self.status|{'slots':6})),6)
+        created=[];calls=[]
+        class Counted(Transport):
+            def __init__(self,*args,**kwargs):
+                super().__init__(*args,**kwargs);created.append(self)
+        def poll(coordinator,host,transport,*args):
+            return self.status|{'slots':6,'counts':{},'spool_bytes':0,'attempts':[]}
+        def deliver(coordinator,transport,identity):
+            calls.append(transport)
+            if len(calls)<=2:
+                raise ValueError('Unable to probe Glob2 CLI 2: exit status 1: GLIBC_2.43 not found')
+            if len(calls)==3:
+                self.assertIsNotNone(coordinator.lane_error('local'))
+            if len(calls)>=6:coordinator.control('cancelled')
+            return True
+        stderr=io.StringIO()
+        with patch.object(pipeline,'Transport',Counted),patch.object(Coordinator,'poll_host',poll), \
+             patch.object(Coordinator,'deliver_attempt',deliver),patch('sys.stderr',stderr):
+            c.run([h])
+        # A session that raised is closed; the next one carries every later delivery.
+        transfer_sessions={id(t) for t in calls}
+        self.assertEqual(len(transfer_sessions),3)
+        self.assertGreaterEqual(len(calls),6)
+        self.assertEqual(len(created),1+len(transfer_sessions))
+        # Two identical failures are reported once, kept until a delivery succeeds.
+        self.assertEqual(stderr.getvalue().count('GLIBC_2.43'),1,stderr.getvalue())
+        self.assertIsNone(c.lane_error('local'))
+        self.assertTrue(all(h['last_transfer_error'] is None for h in c.status()['hosts']))
+
     def test_paused_delivery_is_not_marked_enqueued(self):
         c=self.coordinator;a=c.dispatch('local',self.status)[0];c.control('paused')
         self.assertFalse(c.deliver_attempt(None,a['id']))

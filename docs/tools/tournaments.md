@@ -243,9 +243,11 @@ retains compression metadata needed for transparent decoding.
 Coordinator settings (omitted fields use these defaults): heartbeat_seconds 15,
 lease_seconds 300 (at least two heartbeats), prefetch 2 queued jobs per execution
 slot in addition to active games, infrastructure_attempts 5, process_attempts 2,
-transfer_slots 4 for bounded `--once` synchronization. Continuous `run` uses
-input_transfer_slots 8, result_transfer_slots 8, and poll_seconds 1 (no longer than
-heartbeat_seconds). Each transfer stage limits both running and queued tasks;
+transfer_slots 4 for bounded `--once` synchronization. Continuous `run` caps
+concurrent transfers across all hosts at input_transfer_slots and
+result_transfer_slots, which default to the sum of the hosts' own `input_slots` and
+`result_slots`, so adding hosts adds transfer capacity; it polls every poll_seconds
+1 (no longer than heartbeat_seconds). Each transfer stage limits both running and queued tasks;
 partial transfers rotate among available attempts. Optional prefetch_seconds limits estimated buffered dispatch.
 Leases use coordinator time; running and queued attempts both renew while connected.
 Each dispatch has a new attempt ID and random lease token. A disconnected worker
@@ -388,12 +390,26 @@ into private attempt staging in parallel. A short shared lock publishes objects 
 the record atomically with respect to acknowledgement cleanup, preserving shared
 artifacts needed by other attempts. `collect_slots` therefore controls actual
 compression concurrency. Packing records retain queue and compression durations.
-`reports/pipeline.json` records active control/input/result lane counts and the latest
-worker queue/storage snapshots; snapshots are observations, not promises that every
-configured slot is busy.
+`reports/pipeline.json` records active control/input/result lane counts, the latest
+worker queue/storage snapshots and each host's latest transfer error; snapshots are
+observations, not promises that every configured slot is busy.
 
-Each lane uses its own persistent SSH/Python RPC stream, with bounded messages and
-a timeout covering request writes and response reads. Broken streams are discarded;
+A failed delivery or collection is printed once to the coordinator's stderr, and kept
+as the host's `last_transfer_error` in `status` until a transfer to that host
+succeeds. A host that cannot install a bundle shows why there: the CLI probe passes on
+the binary's stderr, which names a shared library its runpath cannot find or a
+C library older than the one it was built against. Build bundles on (or for) the
+workers' distribution release, and install any shared libraries outside the bundle
+on the workers at the path the binary expects.
+
+Accepting a result writes that attempt's exports only; a full export repair runs
+once when the coordinator starts. Acceptance cost therefore stays flat as an
+experiment grows rather than rising with every result already accepted.
+
+The control lane keeps one persistent SSH/Python RPC stream per host, and transfer
+lanes reuse idle streams to the same host rather than opening one per delivery or
+per chunk batch, with bounded messages and a timeout covering request writes and
+response reads. Broken streams are discarded;
 retry/reconnect uses the existing idempotent operations and lease rules, never an
 unconditional replay of an unknown mutation. Old experiments retain their original
 worker package; resume those with their preserved `worker.pyz`.
