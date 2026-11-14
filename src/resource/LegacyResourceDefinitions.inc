@@ -43,9 +43,9 @@ R"legacy_resources(
         "name": "Trees",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          0,
-          60,
-          0
+          177,
+          143,
+          176
         ],
         "levels": [
           {
@@ -170,9 +170,9 @@ R"legacy_resources(
         "name": "Wheat",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          211,
-          207,
-          167
+          206,
+          154,
+          61
         ],
         "levels": [
           {
@@ -297,9 +297,9 @@ R"legacy_resources(
         "name": "Papyrus",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          0,
-          0,
-          0
+          128,
+          168,
+          111
         ],
         "levels": [
           {
@@ -400,9 +400,9 @@ R"legacy_resources(
         "name": "Rocks",
         "sprite": "data/gfx/ressource",
         "minimap": [
+          123,
           104,
-          112,
-          124
+          152
         ],
         "levels": [
           {
@@ -527,9 +527,9 @@ R"legacy_resources(
         "name": "Algae",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          41,
-          157,
-          165
+          106,
+          94,
+          93
         ],
         "levels": [
           {
@@ -654,9 +654,9 @@ R"legacy_resources(
         "name": "Cherry tree",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          255,
-          127,
-          0
+          60,
+          6,
+          74
         ],
         "levels": [
           {
@@ -748,9 +748,9 @@ R"legacy_resources(
         "name": "Orange tree",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          255,
-          127,
-          0
+          60,
+          47,
+          74
         ],
         "levels": [
           {
@@ -842,9 +842,9 @@ R"legacy_resources(
         "name": "Prune tree",
         "sprite": "data/gfx/ressource",
         "minimap": [
-          255,
-          127,
-          0
+          42,
+          26,
+          86
         ],
         "levels": [
           {

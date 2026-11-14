@@ -84,7 +84,12 @@ thresholds. The selected level uses the **total stock across all materials**.
 Each level has one or more weighted sprite variants. `sprite` is a canonical
 `content/data/`-relative sprite prefix; traversal and absolute paths are rejected.
 Optional `animationFrames`, `animationStride` and `animationTicks` default to one.
-All effective frame indices must fit 0–65535. Installed artwork is loaded through
+All effective frame indices must fit 0–65535. `minimap` is the one colour the
+minimap, map thumbnails and zoomed-out overview paint a deposit in; derive it from
+the sprite frames' visible mean (alpha-weighted, linear light, black drop-shadow
+pixels excluded) so the dot reads like the art. Like every catalog field it is
+part of the registry checksum, so changing it bumps `SIM_REVISION`.
+Installed artwork is loaded through
 the normal asset system. Themed set sheets use map-owned artwork bundles instead,
 so transferring those maps includes their custom sprite files.
 Missing installed artwork referenced by manually imported legacy definitions uses
