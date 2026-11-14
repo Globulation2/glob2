@@ -5048,6 +5048,10 @@ AI 遥测
 声望
 [stat prestige about]
 殖民地的声望，由最高等级的建筑获得。设有声望目标的对局在达到目标时结束。
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 战斗
 [stat band starvation]

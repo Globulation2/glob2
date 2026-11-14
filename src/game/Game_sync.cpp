@@ -171,6 +171,7 @@ void Game::winProbabilitySyncStep(bool force)
 			<< " innWalkDistance=" << slots[i].innWalkDistance
 			<< " swarmFilling=" << slots[i].swarmFilling
 			<< " attack=" << slots[i].attack
+			<< " prestigeNeeded=" << slots[i].prestigeNeeded
 			<< std::endl;
 }
 
@@ -239,6 +240,10 @@ void Game::prestigeSyncStep()
 	{
 		totalPrestigeReached=true;
 	}
+	// Recorded on the statistics cadence, only where prestige can end the game.
+	if (WinProbability::prestigeCounts(*this) && (stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+			teams[i]->stats.recordPrestigeNeeded(stepCounter, WinProbability::prestigeNeeded(*this, i));
 }
 
 

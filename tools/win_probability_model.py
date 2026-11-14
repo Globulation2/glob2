@@ -113,8 +113,16 @@ RATIOS = {
     'starving_ratio': ('food_critical', 'units'),
 }
 
+# Prestige still needed to win (Game::prestigeNeeded), from GLOB2_TL. Recorded
+# only while prestige can end the game, so a missing value is 0 for every side
+# and the term cancels, as in the engine. Allies take their closest member's
+# value rather than a sum: it is a distance, not an amount.
+PRESTIGE_NEEDED = 'prestige_needed'
+MIN_OVER_ALLIES = (PRESTIGE_NEEDED,)
+
 MEASUREMENTS = tuple(TIMELINE_FIELDS) + tuple(
-    name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS) + GAMEPLAY_MEASUREMENTS
+    name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS) + GAMEPLAY_MEASUREMENTS + (
+    PRESTIGE_NEEDED,)
 
 # Measurements that say the same thing in different words. Greedy selection takes
 # one term per family so it cannot fill a model with readings of the same army;
@@ -127,7 +135,7 @@ FAMILIES = {
     'food': ('food_stored', 'food_capacity', 'fed', 'feedable', 'fed_ratio', 'food_fill',
              'food_critical', 'need_food', 'inns', 'starving_ratio', 'feeding',
              'inn_walk_distance_window'),
-    'prestige': ('prestige',),
+    'prestige': ('prestige', PRESTIGE_NEEDED),
     'schooling': ('schools',),
     'fortification': ('barracks', 'towers', 'barracks_levels'),
     'exploration': ('explorers',),
@@ -148,6 +156,19 @@ FAMILY_OF = {name: label for label, names in FAMILIES.items() for name in names}
 RATIO_TRANSFORMS = ('identity',)
 COUNT_TRANSFORMS = ('identity', 'sqrt', 'share')
 
+# A measurement with a hard upper bound can use any transform exactly: the
+# emitter writes its fixed-point values for every integer 0..bound into the
+# header, and the engine and fixed_term below read the same table. Values above
+# the bound are clamped to it, in the fit as in the engine. Prestige needed can
+# never exceed the largest prestige goal, MIN/TEAM_MAX_PRESTIGE in Game.h times
+# TEAM_MAX_COUNT teams.
+TABLE_SHIFT = 20
+TABLE_BOUNDS = {PRESTIGE_NEEDED: 150 * 16}
+TABLE_TRANSFORMS = {
+    'log': math.log1p,
+    'pow25': lambda x: x ** 0.25,
+}
+
 # The selected, hand-checked model: greedy forward selection followed by
 # stepwise add/drop/swap refinement on cross-validated fit. Ordered by how much a
 # typical within-contest gap on the term moves the odds, largest first.
@@ -159,6 +180,7 @@ FINAL_FEATURES = [
     ('delivered_window', 'share'),
     ('swarm_filling_window', 'sqrt'),
     ('inn_walk_distance_window', 'share'),
+    (PRESTIGE_NEEDED, 'log'),
 ]
 
 # What each term reads, for the in-game breakdown. Phrases a player can read.
@@ -170,6 +192,7 @@ LABELS = {
     'delivered_window': 'Share of recent deliveries',
     'swarm_filling_window': 'Recent work feeding swarms',
     'inn_walk_distance_window': 'Share of recent walking to inns',
+    PRESTIGE_NEEDED: 'Prestige still needed to win',
 }
 
 # How the engine reads each measurement off a competitor, as a C++ expression on
@@ -182,6 +205,7 @@ CPP_MEASUREMENT = {
     'inn_walk_distance_window': 'slot.innWalkDistance',
     'swarm_filling_window': 'slot.swarmFilling',
     'attack': 'slot.attack',
+    PRESTIGE_NEEDED: 'slot.prestigeNeeded',
 }
 # Ratios are a division of two of those, done as an integer division in the
 # engine and as the same division here. The published model uses none.
@@ -291,6 +315,9 @@ def measurements_of(pair, published=None, earlier=None):
             return None
     for name, (top, bottom) in RATIOS.items():
         values[name] = values[top] / values[bottom] if values[bottom] > 0 else 0.0
+    needed = pair['tl'].get('prestigeNeeded', 0)
+    # Clamped to its table bound here so the fit sees what the engine reads.
+    values[PRESTIGE_NEEDED] = float(min(max(needed, 0), TABLE_BOUNDS[PRESTIGE_NEEDED])) if isinstance(needed, int) else 0.0
     values.update(gameplay_inputs((published or {}).get('gameplay', {}), (earlier or {}).get('gameplay')))
     return values
 
@@ -312,6 +339,19 @@ def _validate_calibration_dataset(data):
     _validate_calibration_labels(policy)
     for game in data.get('games', []):
         _validate_calibration_labels(policy, game)
+
+
+def group_allies(by_team, key_of):
+    """One competitor's measurements from its teams': summed, except distances."""
+    grouped = defaultdict(lambda: defaultdict(float))
+    for team, values in by_team.items():
+        entry = grouped[key_of[team]]
+        for name, value in values.items():
+            if name in MIN_OVER_ALLIES and name in entry:
+                entry[name] = min(entry[name], value)
+            else:
+                entry[name] += value
+    return grouped
 
 
 def game_slices(source, record, policy='prestige'):
@@ -356,10 +396,7 @@ def game_slices(source, record, policy='prestige'):
     for tick in sorted(by_tick):
         # Allies are one competitor: they win or lose together, so counting them
         # as two independent entries would double-count the evidence.
-        grouped = defaultdict(lambda: defaultdict(float))
-        for team, values in by_tick[tick].items():
-            for name, value in values.items():
-                grouped[key_of[team]][name] += value
+        grouped = group_allies(by_tick[tick], key_of)
         if len(grouped) < 2:
             continue  # nothing left to predict
         for key, values in grouped.items():
@@ -702,7 +739,19 @@ def fixed_term(model, slots, index, term):
         return (coefficient * share_value(slot[name], total)) >> FRACTION_SHIFT
     if transform == 'sqrt':
         return (coefficient * root_value(slot[name])) >> ROOT_SHIFT
+    if transform in TABLE_TRANSFORMS:
+        return (coefficient * table_of(name, transform)[table_index(name, slot[name])]) >> TABLE_SHIFT
     return coefficient * clamp_count(slot[name])
+
+
+def table_of(name, transform):
+    """The fixed-point values of a bounded measurement's transform, 0..bound."""
+    function = TABLE_TRANSFORMS[transform]
+    return [int(round(function(float(i)) * (1 << TABLE_SHIFT))) for i in range(TABLE_BOUNDS[name] + 1)]
+
+
+def table_index(name, value):
+    return min(clamp_count(value), TABLE_BOUNDS[name])
 
 
 def fixed_fitness(model, slots, index):
@@ -755,6 +804,10 @@ def cpp_kind(name, transform):
         return 'sqrt', (expression,), 'ROOT_SHIFT'
     if transform == 'identity':
         return 'identity', (expression,), None
+    if transform in TABLE_TRANSFORMS:
+        if name not in TABLE_BOUNDS:
+            raise ValueError(f'{name} has no bound, so {transform!r} cannot be tabulated exactly')
+        return 'table', (expression,), 'TABLE_SHIFT'
     # Anything else would need an approximation in the one code path that must be
     # exact on every platform. Refuse rather than emit it.
     raise ValueError(f'transform {transform!r} has no exact integer form; '
@@ -777,6 +830,8 @@ def emit_header(model, path, provenance):
     add('// See docs/ai/architecture/win-probability-model.md.')
     add('#pragma once')
     add('#include "WinProbability.h"')
+    if any(cpp_kind(f['name'], f['transform'])[0] == 'table' for f in features):
+        add('#include <algorithm>')
     add('#include <cstddef>')
     add('#include <vector>')
     add('')
@@ -798,6 +853,15 @@ def emit_header(model, path, provenance):
         add(f'/// {name} ({transform})')
         add(f'constexpr double {constant} = {item["coefficient"]!r};')
         add(f'const Sint64 {constant}_FIXED = {to_fixed(item["coefficient"])}LL;')
+        if cpp_kind(name, transform)[0] == 'table':
+            values = table_of(name, transform)
+            add(f'/// {transform}(value) for value 0..{len(values) - 1}, with TABLE_SHIFT fractional bits;')
+            add('/// larger values read the last entry. Generated, so every platform reads the same numbers.')
+            add(f'constexpr Sint64 {constant}_TABLE_LIMIT = {len(values) - 1};')
+            add(f'inline constexpr Sint32 {constant}_TABLE[{len(values)}] = {{')
+            for start in range(0, len(values), 12):
+                add('\t' + ', '.join(str(v) for v in values[start:start + 12]) + ',')
+            add('};')
     add('')
     add(f'constexpr int WIN_PROBABILITY_FEATURE_COUNT = {len(features)};')
     add(f'constexpr int WIN_PROBABILITY_GAMES = {model["games"]};')
@@ -841,6 +905,9 @@ def emit_header(model, path, provenance):
             add(f'\t\treturn {constant} * countValue({expressions[0]});')
         elif kind == 'sqrt':
             add(f'\t\treturn ({constant} * rootValue({expressions[0]})) >> {shift};')
+        elif kind == 'table':
+            table = constant_name(name, transform) + '_TABLE'
+            add(f'\t\treturn ({constant} * {table}[std::min<Sint64>(countValue({expressions[0]}), {table}_LIMIT)]) >> {shift};')
         elif kind == 'ratio':
             top, bottom = expressions
             add(f'\t\treturn ({constant} * ratioValue({top}, {bottom})) >> {shift};')

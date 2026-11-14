@@ -704,6 +704,7 @@ size_t TeamStats::displayCapacityBytes() const
     for (const auto& sample:stats) bytes+=sample.buildingCountByVariant.capacity()*sizeof(int)+sample.numberUnitPerType.extraCapacityBytes()+sample.isFree.extraCapacityBytes()+sample.upgradeStatePerType.extraCapacityBytes();
     bytes += endOfGameStats.capacity() * sizeof(EndOfGameStat);
     bytes += winProbabilityHistory.capacity() * sizeof(WinProbabilitySample);
+    bytes += prestigeNeededHistory.capacity() * sizeof(PrestigeNeededSample);
     bytes += measurementHistory.capacity() * sizeof(GameplayMeasurements);
     for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0])+sample.unitCapacityBytes();
     bytes+=measurements().unitCapacityBytes();
@@ -720,6 +721,7 @@ std::shared_ptr<const TeamStats> TeamStats::frozenHistory() const
     result->endOfGameStats = endOfGameStats;
     result->winProbabilityHistory = winProbabilityHistory;
     result->winProbabilityModel = winProbabilityModel;
+    result->prestigeNeededHistory = prestigeNeededHistory;
     result->measurementHistory = measurementHistory;
     result->coverageStartTick = coverageStartTick;
     result->extendedCoverageStartTick = extendedCoverageStartTick;
@@ -976,6 +978,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor,bool priv
 {
     winProbabilityHistory.clear();
     winProbabilityModel.clear();
+    prestigeNeededHistory.clear();
     publishedMeasurements.reset();
     displaySnapshot.reset();
     historySnapshot.reset();
@@ -1158,6 +1161,23 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor,bool priv
         }
         stream->readLeaveSection();
     }
+    if (versionMinor >= FILE_FORMAT_VERSION_PRESTIGE_NEEDED)
+    {
+        GAGCore::BinaryInputStream::CheckedReads checked(stream);
+        stream->readEnterSection("prestigeNeeded");
+        const auto count = stream->readCount("size");
+        for (unsigned i = 0; i < count; ++i)
+        {
+            stream->readEnterSection(i);
+            const auto tick = stream->readUint32("tick");
+            const auto value = stream->readSint32("value");
+            if (value < 0 || (!prestigeNeededHistory.empty() && tick <= prestigeNeededHistory.back().tick))
+                throw std::runtime_error("Invalid prestige needed history");
+            prestigeNeededHistory.push_back({tick, value});
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG)
     {
@@ -1293,6 +1313,16 @@ void TeamStats::save(GAGCore::OutputStream *stream)
         stream->writeLeaveSection();
     }
     stream->writeLeaveSection();
+    stream->writeEnterSection("prestigeNeeded");
+    stream->writeUint32(prestigeNeededHistory.size(), "size");
+    for (unsigned i = 0; i < prestigeNeededHistory.size(); ++i)
+    {
+        stream->writeEnterSection(i);
+        stream->writeUint32(prestigeNeededHistory[i].tick, "tick");
+        stream->writeSint32(prestigeNeededHistory[i].value, "value");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -1308,6 +1338,16 @@ void TeamStats::recordWinProbability(Uint32 tick, int permille, const std::strin
     if (winProbabilityHistory.empty()) winProbabilityModel = model;
     else if (winProbabilityModel != model) winProbabilityModel = "mixed";
     winProbabilityHistory.push_back({tick, permille});
+}
+
+void TeamStats::recordPrestigeNeeded(Uint32 tick, Sint32 value)
+{
+    if (value < 0 || (!prestigeNeededHistory.empty() && tick < prestigeNeededHistory.back().tick))
+        throw std::logic_error("Invalid prestige needed sample");
+    if (!prestigeNeededHistory.empty() && tick == prestigeNeededHistory.back().tick)
+        return;
+    historySnapshot.reset();
+    prestigeNeededHistory.push_back({tick, value});
 }
 
 Uint64 TeamStats::winProbabilityAreaTwice() const

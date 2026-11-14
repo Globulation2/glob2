@@ -1150,6 +1150,8 @@ static void measurementScreenshots(const std::string &directory)
 			game.stepCounter = tick;
             const int leader = 50 + int(tick * 750 / 4096);
             stats.recordWinProbability(tick, t == 0 ? leader : (1000-leader)/(Team::MAX_COUNT-1), "screenshot-model");
+            // The goal for sixteen colonies is 2,400: the leader closes in fastest.
+            stats.recordPrestigeNeeded(tick, std::max(50, 2400 - int(tick) * (t == 0 ? 2200 : 400 + 60 * t) / 4096));
 			stats.editMeasurements().births[WORKER] = (Uint64(1) << 40) + (t + 1) * tick;
 			stats.editMeasurements().harvested[WHEAT] = (t + 1) * tick;
 			stats.editMeasurements().completed[Measurements::NEW_BUILDING][0][0] = (t + 1) * tick / 512;
@@ -1208,7 +1210,7 @@ static void measurementScreenshots(const std::string &directory)
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
-															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}};
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}, {"prestige needed", false}};
 			screen.selectMetric(EndGameScreen::OVERVIEW);
 			screen.paintFrame(0);
 			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),

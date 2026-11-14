@@ -5048,6 +5048,10 @@ Ocenjena verjetnost zmage vašega zavezništva, merjena skozi celotno tekmo. Zav
 Ugled
 [stat prestige about]
 Ugled kolonije, pridobljen z zgradbami najvišje stopnje. Tekma s ciljem ugleda se konča, ko je cilj dosežen.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Boj
 [stat band starvation]

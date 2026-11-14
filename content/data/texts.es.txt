@@ -5048,6 +5048,10 @@ Probabilidad estimada de que tu alianza gane, muestreada a lo largo de la partid
 Prestigio
 [stat prestige about]
 El prestigio de la colonia, que se obtiene con edificios de nivel máximo. Una partida con objetivo de prestigio termina cuando se alcanza.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Combate
 [stat band starvation]

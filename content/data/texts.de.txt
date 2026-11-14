@@ -5048,6 +5048,10 @@ Geschätzte Chance, dass Ihr Bündnis gewinnt, über das ganze Spiel hinweg erfa
 Prestigepunkte
 [stat prestige about]
 Das Prestige der Kolonie, verdient durch Gebäude der höchsten Stufe. Ein Match mit Prestigeziel endet, sobald es erreicht ist.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Kampf
 [stat band starvation]

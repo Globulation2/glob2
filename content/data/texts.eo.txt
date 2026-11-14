@@ -5048,6 +5048,10 @@ Taksita ŝanco, ke via alianco venkos, specimenigita dum la tuta matĉo. Alianca
 Prestiĝo
 [stat prestige about]
 La prestiĝo de la kolonio, gajnita per plej altnivelaj konstruaĵoj. Matĉo kun prestiĝa celo finiĝas kiam ĝi estas atingita.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Batalo
 [stat band starvation]

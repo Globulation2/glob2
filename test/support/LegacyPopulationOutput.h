@@ -182,6 +182,10 @@ public:
             suppressedAt=sections.size();
             return;
         }
+        if (formatVersion<FILE_FORMAT_VERSION_PRESTIGE_NEEDED && name=="prestigeNeeded") {
+            suppressedAt=sections.size();
+            return;
+        }
         if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="adaptiveGradients" || name=="adaptiveCapture")) {
             suppressedAt=sections.size();

@@ -219,6 +219,27 @@ namespace WinProbability
 		return inputs;
 	}
 
+	bool prestigeCounts(const Game &game)
+	{
+		for (const auto &condition : game.gameHeader.getWinningConditions())
+			if (condition->getType() == WCPrestige)
+				return true;
+		return false;
+	}
+
+	int prestigeNeeded(const Game &game, int team)
+	{
+		// Mirrors WinningConditionPrestige: the threshold is on everyone's prestige
+		// combined, and the winner is the surviving leader. Beating rather than tying
+		// the leader is the target, so a tie still needs one more point.
+		int needed = std::max(0, game.prestigeToReach - game.totalPrestige);
+		const int own = game.teams[team]->prestige;
+		for (int i = 0; i < game.mapHeader.getNumberOfTeams(); ++i)
+			if (i != team && game.teams[i] && game.teams[i]->isAlive)
+				needed = std::max(needed, game.teams[i]->prestige - own + 1);
+		return needed;
+	}
+
 	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams)
 	{
 		const int count = game.teamsCount();
@@ -243,6 +264,7 @@ namespace WinProbability
 		const auto add = [](Sint32 &total, Sint64 value) {
 			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
 		};
+		const bool countsPrestige = prestigeCounts(game);
 		for (int t = 0; t < count; ++t)
 		{
 			const Team *team = game.teams[t];
@@ -255,6 +277,12 @@ namespace WinProbability
 				continue;
 			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
 			const TeamInputs inputs = teamInputs(team->stats, providers);
+			// Allies are as close to a prestige win as their closest member.
+			if (countsPrestige)
+			{
+				const Sint32 needed = Sint32(clampCount(prestigeNeeded(game, t)));
+				slot.prestigeNeeded = slot.alive ? std::min(slot.prestigeNeeded, needed) : needed;
+			}
 			slot.alive = true;
 			add(slot.feeding, inputs.feeding);
 			add(slot.explorers, stat->scouts);

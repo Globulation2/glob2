@@ -119,6 +119,14 @@ struct WinProbabilitySample
     int permille = 0;
 };
 
+// Prestige a team still had to add to win by prestige, sampled on the 512-tick
+// cadence while the prestige condition is on (Game::prestigeNeeded).
+struct PrestigeNeededSample
+{
+    Uint32 tick = 0;
+    Sint32 value = 0;
+};
+
 // Per-variant diagnostics use the catalog's concrete IDs; no family/tier limit.
 struct BuildingMeasurement
 {
@@ -487,6 +495,7 @@ private:
 	std::vector<EndOfGameStat> endOfGameStats;
     std::vector<WinProbabilitySample> winProbabilityHistory;
     std::string winProbabilityModel;
+    std::vector<PrestigeNeededSample> prestigeNeededHistory;
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174=false);
 	void save(GAGCore::OutputStream *stream);
@@ -497,6 +506,8 @@ public:
     const std::string &getWinProbabilityModel() const { return winProbabilityModel; }
     // Twice the trapezoidal area, in permille*ticks. Integer until reporting.
     Uint64 winProbabilityAreaTwice() const;
+    void recordPrestigeNeeded(Uint32 tick, Sint32 value);
+    const std::vector<PrestigeNeededSample> &getPrestigeNeededHistory() const { return prestigeNeededHistory; }
 	TeamStat *getLatestStat(void) { displaySnapshot.reset(); return &(stats[statsIndex]); }
 	//! Read-only access for code that only measures, such as the win probability
 	//! model, so it does not need friendship to reach the sample ring.

@@ -1,2 +1,4 @@
 [replay stopped %0]
 [replay stopped help]
+[stat prestige needed]
+[stat prestige needed about]

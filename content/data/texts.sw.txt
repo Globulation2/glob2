@@ -5016,6 +5016,10 @@ Makadirio ya nafasi ya muungano wako kushinda, yaliyopimwa katika mchezo wote. W
 Heshima
 [stat prestige about]
 Heshima ya makazi, inayopatikana kwa majengo ya kiwango cha juu kabisa. Mechi yenye lengo la heshima huisha likifikiwa.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Mapigano
 [stat band starvation]

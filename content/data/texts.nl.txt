@@ -5048,6 +5048,10 @@ Geschatte kans dat je alliantie wint, gemeten gedurende de hele wedstrijd. Bondg
 Roem
 [stat prestige about]
 De roem van de kolonie, verdiend met gebouwen van het hoogste niveau. Een wedstrijd met een roemdoel eindigt als dat bereikt is.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Gevecht
 [stat band starvation]

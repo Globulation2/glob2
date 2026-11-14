@@ -5016,6 +5016,10 @@ JavaScript এআই আমদানি করুন
 মর্যাদা
 [stat prestige about]
 উপনিবেশের মর্যাদা, যা শীর্ষ-স্তরের ভবনগুলোর মাধ্যমে অর্জিত হয়। মর্যাদার লক্ষ্যমাত্রা অর্জিত হলে একটি ম্যাচ শেষ হয়ে যায়।
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 যুদ্ধ
 [stat band starvation]
