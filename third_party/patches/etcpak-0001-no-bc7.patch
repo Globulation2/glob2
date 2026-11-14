@@ -1,0 +1,48 @@
+--- a/etcpak/ProcessDxtc.cpp	2026-11-13 22:00:21.117710773 -0500
++++ b/etcpak/ProcessDxtc.cpp	2026-11-13 22:00:21.119028962 -0500
+@@ -1,4 +1,3 @@
+-#include "bc7enc.h"
+ #include "Dither.hpp"
+ #include "ForceInline.hpp"
+ #include "ProcessDxtc.hpp"
+@@ -1092,29 +1091,3 @@
+ #endif
+     } while( --blocks );
+ }
+-
+-void CompressBc7( const uint32_t* src, uint64_t* dst, uint32_t blocks, size_t width, const bc7enc_compress_block_params* params )
+-{
+-    int i = 0;
+-    auto ptr = dst;
+-    do
+-    {
+-        uint32_t rgba[4*4];
+-
+-        auto tmp = (char*)rgba;
+-        memcpy( tmp,        src + width * 0, 4*4 );
+-        memcpy( tmp + 4*4,  src + width * 1, 4*4 );
+-        memcpy( tmp + 8*4,  src + width * 2, 4*4 );
+-        memcpy( tmp + 12*4, src + width * 3, 4*4 );
+-        src += 4;
+-        if( ++i == width/4 )
+-        {
+-            src += width * 3;
+-            i = 0;
+-        }
+-
+-        bc7enc_compress_block( ptr, rgba, params );
+-        ptr += 2;
+-    }
+-    while( --blocks );
+-}
+--- a/etcpak/ProcessDxtc.hpp	2026-11-13 22:00:21.117783930 -0500
++++ b/etcpak/ProcessDxtc.hpp	2026-11-13 22:00:21.119098723 -0500
+@@ -11,8 +11,4 @@
+ void CompressBc4( const uint32_t* src, uint64_t* dst, uint32_t blocks, size_t width );
+ void CompressBc5( const uint32_t* src, uint64_t* dst, uint32_t blocks, size_t width );
+ 
+-struct bc7enc_compress_block_params;
+-
+-void CompressBc7( const uint32_t* src, uint64_t* dst, uint32_t blocks, size_t width, const bc7enc_compress_block_params* params );
+-
+ #endif

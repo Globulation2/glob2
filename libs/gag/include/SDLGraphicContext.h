@@ -53,6 +53,7 @@ namespace GAGCore
     struct RenderOperations;
 	
 	class Sprite;
+	namespace RenderMemory { struct SpriteUsage; }
 	
 	//! Font with a given foundry, shape and color
 	class Font
@@ -167,6 +168,7 @@ namespace GAGCore
 		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
 		std::vector<unsigned char> preparedUploadPixels;
         std::vector<AssetImage::Mip> preparedMips;
+        AssetImage::BlockCompression preparedCompression = AssetImage::BlockCompression::Uncompressed;
         std::uint64_t preparedUploadRevision = 0;
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;
@@ -177,6 +179,8 @@ namespace GAGCore
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
 		size_t gpuBytes=0;
+		//! The size of the pixels releasePixels() freed.
+		int releasedW = 0, releasedH = 0;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -231,16 +235,28 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface->w; }
-		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
-		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
+		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface ? sdlsurface->w : releasedW; }
+		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface ? sdlsurface->h : releasedH; }
+		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly.
+		//! Null once releasePixels() succeeded.
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+		//! Whether the decoded pixels are still in memory.
+		bool hasPixels() const { return sdlsurface != nullptr; }
+		//! Frees the decoded pixels of a surface whose desktop legacy OpenGL texture
+		//! holds its current content: the texture is then the only copy, which a
+		//! context rebuild loses, so the owner must be able to load the surface
+		//! again. Only drawing it and reading its size and opacity stay valid.
+		//! Returns false and changes nothing where the pixels are still needed.
+		bool releasePixels();
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
         bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
+		//! Decoded pixels and upload staging that live surfaces hold in memory.
+		struct ResidentPixels { size_t surfaces = 0, surfaceBytes = 0, preparedBytes = 0; };
+		static ResidentPixels residentPixels();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
 		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }
@@ -277,6 +293,8 @@ namespace GAGCore
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		//! Draws a frame's base and team layers as one team-colour shader quad; false when it cannot.
+		bool drawTeamShaderSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
 		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -999,21 +1017,46 @@ namespace GAGCore
         bool createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
+		//! Resident pixel and texture bytes of each loaded sprite, for RenderMemory::sprites().
+		static void memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage);
 		static void setHighResolution(bool enabled);
         static void requestHighResolution(bool enabled);
         static bool highResolutionRequested();
         // An empty name refreshes sprites from the shared HD package.
         static void refreshHighResolutionSprite(const std::string &name);
         // Large terrain banks retain native frames and stream only the caller's HD window.
+        // Leave a sprite's HD frames standalone where nothing draws them in
+        // bulk, so no atlas is decoded, kept in memory or uploaded for it.
+        static void skipHighResolutionAtlas(const std::string& name);
         static void deferHighResolution(const std::string& name);
+        // The caller reads this sprite's HD frames as pixels (terrain materials
+        // feed CPU sampling), so they are never released after upload.
+        static void keepHighResolutionPixels(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);
         void setHighResolutionFrames(std::span<const unsigned> indices);
+        //! Deferred frames that left their window stay decoded, most recently
+        //! retired first, so a view that pans or zooms back reuses them without
+        //! reading the file. The oldest go when they exceed this shared byte
+        //! budget or have been unused for the lifetime.
+        struct RetiredHighResolutionBudget { size_t bytes; std::int64_t lifetimeNanoseconds; };
+        static RetiredHighResolutionBudget retiredHighResolutionBudget();
+        static void setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget);
+        static size_t retiredHighResolutionBytes();
         static void refreshHighResolutionForRenderer();
+        //! Called when legacy OpenGL textures are freed: HD frames whose pixels
+        //! were released have nothing left, so their sprites drop back to
+        //! native artwork and reload HD in the background at the next poll.
+        static void discardUnbackedHighResolution();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is published.
         static void finishHighResolution();
 		static void flushBatches(GraphicContext *gc);
+    private:
+        //! Forget this sprite's retired frames; destroy also deletes them.
+        void releaseRetiredHighResolution(bool destroy);
+        static void evictRetiredHighResolution();
+    public:
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }
 		//! Destructor

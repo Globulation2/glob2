@@ -455,7 +455,10 @@ background waits, and time outside those joins.
 
 Render telemetry retains packets, batches, upload bytes, tracked resource bytes,
 submission/presentation/capture wall time, capture completions, latency,
-and drops. Tracked resource memory is not total GPU/driver memory. Frame intervals
+and drops. Tracked resource memory is not total GPU/driver memory. Legacy OpenGL has
+no render device: there the gauge is the renderer's tracked texture and render-target
+bytes, and each second a `GLOB2_RENDER_MEMORY` record lists them by owner with the
+decoded pixels held in memory ([renderer memory](rendering-benchmarks.md#renderer-memory)). Frame intervals
 and consecutive interval changes describe presentation returns, not display scanout.
 Headless sessions do not fabricate rendering measurements. Capture latency is a
 frame-level counter delta: its mean divides accumulated latency by completed

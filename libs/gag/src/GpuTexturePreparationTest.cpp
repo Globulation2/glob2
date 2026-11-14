@@ -4,6 +4,7 @@
 #include "GraphicContextPrivate.h"
 #include <AssetLoader.h>
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <vector>
 #include <chrono>
@@ -343,6 +344,68 @@ TEST_SUITE("GpuTexturePreparation")
 		CHECK(glGetError() == GL_NO_ERROR);
 		glDeleteTextures(1, &texture);
 	}
+	TEST_CASE("the device decodes worker-encoded BC3 and ETC2 blocks back to their pixels [display]")
+	{
+		TestWindow window(true);
+		using Compression = GAGCore::AssetImage::BlockCompression;
+		// Distinct channels, smooth and hard-edged regions and graded alpha: a
+		// swapped channel or a wrong block order fails by a wide margin.
+		constexpr int width = 64, height = 32;
+		std::vector<unsigned char> bgra(width * height * 4);
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+			{
+				auto *p = bgra.data() + (y * width + x) * 4;
+				const bool cell = ((x / 8) + (y / 8)) % 2;
+				p[0] = x < 32 ? 20 + x * 2 : (cell ? 30 : 60);        // blue
+				p[1] = x < 32 ? 30 + y * 5 : (cell ? 60 : 190);       // green
+				p[2] = x < 32 ? 200 - (x + y) : (cell ? 220 : 170);   // red
+				p[3] = x < 48 ? 255 : 64 + (y * 6) % 192;
+			}
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		struct Format { Compression compression; GLenum name; const char *extension; };
+		unsigned checked = 0;
+		for (const Format &format : {Format{Compression::BC3, 0x83F3, "GL_EXT_texture_compression_s3tc"},
+									 Format{Compression::ETC2, 0x9278, "GL_ARB_ES3_compatibility"}})
+		{
+			CAPTURE(format.extension);
+			if (!SDL_GL_ExtensionSupported(format.extension))
+			{
+				MESSAGE("not supported by this context: " << format.extension);
+				continue;
+			}
+			const auto blocks = GAGCore::AssetImage::compressBlocks(bgra.data(), width, height, format.compression, true);
+			REQUIRE(blocks.size() == size_t(width / 4) * (height / 4) * 16);
+			GLuint texture;
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glCompressedTexImage2D(GL_TEXTURE_2D, 0, format.name, width, height, 0, GLsizei(blocks.size()), blocks.data());
+			REQUIRE(glGetError() == GL_NO_ERROR);
+			std::vector<unsigned char> decoded(bgra.size());
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE, decoded.data());
+			REQUIRE(glGetError() == GL_NO_ERROR);
+			glDeleteTextures(1, &texture);
+			double squared = 0;
+			int worstAlpha = 0;
+			for (size_t i = 0; i < bgra.size(); i += 4)
+			{
+				for (int c = 0; c < 3; ++c)
+				{
+					const double d = double(decoded[i + c]) - bgra[i + c];
+					squared += d * d;
+				}
+				worstAlpha = std::max(worstAlpha, std::abs(int(decoded[i + 3]) - int(bgra[i + 3])));
+			}
+			const double rmse = std::sqrt(squared / (3.0 * width * height));
+			CAPTURE(rmse);
+			CAPTURE(worstAlpha);
+			CHECK(rmse < 8);
+			CHECK(worstAlpha <= 18);
+			++checked;
+		}
+		if (!checked) MESSAGE("this context decodes neither format");
+	}
+
 	TEST_CASE("native mip upload timing [display][benchmark]")
 	{
 		TestWindow window(true);

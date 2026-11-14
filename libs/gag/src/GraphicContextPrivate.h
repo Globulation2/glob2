@@ -77,7 +77,9 @@ namespace GAGCore
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
-		bool hasS3TCCompression;
+		// The block format this context decodes without expanding it, and its GL name.
+		AssetImage::BlockCompression blockCompression = AssetImage::BlockCompression::Uncompressed;
+		unsigned blockCompressionFormat = 0;
 		unsigned allocatedTextureCount;
 		size_t allocatedTextureBytes=0;
 
@@ -86,7 +88,6 @@ namespace GAGCore
 			resetCache();
 			isTextureSRectangle = false;
 			useATIWorkaround = false;
-			hasS3TCCompression = false;
 			allocatedTextureCount = 0;
 		}
 

@@ -40,7 +40,7 @@ namespace GAGCore
 
     bool DrawableSurface::hasOpaquePixels()
     {
-        if (opacityRevision != pixelRevision)
+        if (sdlsurface && opacityRevision != pixelRevision)
         {
             opaquePixels = SurfaceRaster::opaque(sdlsurface);
             opacityRevision = pixelRevision;
@@ -100,6 +100,7 @@ namespace GAGCore
     {
         if (exclusive) { preparedUploadPixels = std::move(image.uploadPixels); preparedMips = std::move(image.mips); }
         else { preparedUploadPixels = image.uploadPixels; preparedMips = image.mips; }
+        preparedCompression = image.compression;
         preparedUploadRevision = pixelRevision;
     }
     void DrawableSurface::prepareTexture()
@@ -121,8 +122,48 @@ namespace GAGCore
 #endif
     }
 
+    DrawableSurface::ResidentPixels DrawableSurface::residentPixels()
+    {
+        ResidentPixels total;
+        for (const auto *surface : liveSurfaces)
+        {
+            if (surface->sdlsurface && surface->sdlsurface->pixels)
+            {
+                ++total.surfaces;
+                total.surfaceBytes += size_t(surface->sdlsurface->pitch) * surface->sdlsurface->h;
+            }
+            total.preparedBytes += surface->preparedUploadPixels.capacity();
+            for (const auto &mip : surface->preparedMips)
+                total.preparedBytes += mip.pixels.capacity() + mip.compressed.capacity();
+        }
+        return total;
+    }
+
+    bool DrawableSurface::releasePixels()
+    {
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+        // Device, software and browser renderers read the pixels on draw or
+        // after a context loss; an atlas frame has no texture of its own.
+        if (!sdlsurface || this == _gc || textureInfo || !texture || glUploadedRevision != pixelRevision ||
+            !_gc || !(_gc->optionFlags & GraphicContext::USEGPU) || _gc->renderDevice() ||
+            _gc->backendSwitchStatus().active != RendererBackend::LegacyGL)
+            return false;
+        hasOpaquePixels(); // Answered from the pixels one last time, then from the cache.
+        releasedW = sdlsurface->w;
+        releasedH = sdlsurface->h;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = nullptr;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
+        return true;
+#else
+        return false;
+#endif
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
+		assert(sdlsurface);
 		auto copy=new DrawableSurface(sdlsurface);
 		copy->highResolutionSampling=highResolutionSampling;
 		return copy;
@@ -210,6 +251,7 @@ namespace GAGCore
 
 	void DrawableSurface::uploadToTexture(void)
 	{
+		if (!sdlsurface) return; // Released pixels: the texture is the only copy.
 		if (!textureInfo && _gc && _gc->renderBatch)
 			_gc->renderBatch->textureChanged(texture);
 		#ifdef HAVE_OPENGL
@@ -364,11 +406,14 @@ namespace GAGCore
                     // render thread for those updates.
                     // Only blocks a worker prepared: the driver never encodes on
                     // this thread. Anything else uploads uncompressed.
-                    const bool compress=glState.hasS3TCCompression &&
+                    // And only in the format this context decodes: artwork decoded
+                    // before the context existed may hold another.
+                    const bool compress=glState.blockCompression != AssetImage::BlockCompression::Uncompressed &&
+                        preparedCompression == glState.blockCompression &&
                         preparedUploadRevision == pixelRevision && !preparedMips.empty() &&
                         !preparedMips.front().compressed.empty();
 #endif
-                    const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
+                    const GLenum internalFormat=compress?GLenum(glState.blockCompressionFormat):GL_RGBA;
                     for (size_t mip = 0; mip < levels->size(); ++mip) {
                         const auto &level = (*levels)[mip];
                         const int w = level.width, h = level.height;
@@ -572,6 +617,8 @@ void GraphicContext::releaseSurfaceTextures()
 #ifdef HAVE_OPENGL
     for (auto *surface : liveSurfaces)
         if (surface != _gc) surface->freeGPUTexture();
+    // Frames whose pixels were released had only their textures.
+    Sprite::discardUnbackedHighResolution();
 #endif
 }
 void GraphicContext::restoreSurfaceTextures()

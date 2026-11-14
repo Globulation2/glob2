@@ -429,6 +429,8 @@ void GameGUI::setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads)
     view.render.skinPreview().setDownloads(std::move(downloads));
 }
 
+const MapRenderState &GameGUI::renderState() const { return view.render; }
+
 void GameGUI::swapColonyAppearance(MapRenderState &state)
 {
     view.render.swapSkinPreview(state);

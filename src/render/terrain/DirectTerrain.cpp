@@ -149,7 +149,7 @@ struct DirectTerrain::State
             std::array<TerrainVisual::Compositor::PhaseSource, 2> stamps{};
         };
         GLuint art = 0, variants = 0;
-        std::size_t bytes = 0;
+        std::size_t bytes = 0, variantBytes = 0; // bytes includes the variant table's.
         int pixels = 0;
         bool failed = false;
         std::map<unsigned, Entry> entries;
@@ -171,6 +171,7 @@ struct DirectTerrain::State
             GLuint index = 0, coverage = 0, edges = 0;
             int size = 0, tile = 0;   // tile is 0 when there is none; the textures stay as a spare.
             std::size_t bytes = 0;
+            Uint64 retiredAt = 0;     // SDL ticks when the spare last had nothing to show.
             std::vector<Uint16> slotOf;
         } previous;
         // A low-density mask of every mixed cell, laid out like the map and
@@ -193,6 +194,8 @@ struct DirectTerrain::State
         std::vector<int> cellOf;    // Per slot: map cell index, or -1.
         std::vector<Uint64> used;   // Per slot: frame last visible.
         Uint64 frame = 0;
+        // The base mask serves the view: there is no atlas at the view's density.
+        bool suspended = false;
         std::size_t pending = 0, bytes = 0;
         bool failed = false;
         // Masks are built by background workers from an immutable material
@@ -600,6 +603,7 @@ struct DirectTerrain::State
         hd.bytes = std::size_t(size) * size * 6 + cellMasks.size() * sizeof(Uint16);
         bytes += hd.bytes;
         hd.tile = tile;
+        hd.suspended = false;
         hd.slotOf.assign(cellMasks.size(), 0);
         const std::size_t slots = std::min<std::size_t>(DirectTerrainData::PendingCorners - 1, std::size_t(size / tile) * (size / tile));
         hd.cellOf.assign(slots, -1);
@@ -615,6 +619,41 @@ struct DirectTerrain::State
         hd.inFlight.clear();
     }
 
+    // At the base mask's density the base already holds every mixed cell of
+    // the map, so the view draws from it alone. Its own atlas, the largest one
+    // at this zoom, and the fallback are freed: every cell reads as pending,
+    // which the shader resolves to the base.
+    void suspendHdAtlas()
+    {
+        glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
+        glBindTexture(GL_TEXTURE_2D, hd.index);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_SHORT, cellMasks.data());
+        auto &old = hd.previous;
+        for (GLuint *texture : {&hd.coverage, &hd.edges, &old.index, &old.coverage, &old.edges})
+        {
+            glDeleteTextures(1, texture);
+            *texture = 0;
+        }
+        bytes -= hd.bytes + old.bytes;
+        hd.bytes = cellMasks.size() * sizeof(Uint16);
+        bytes += hd.bytes;
+        old.bytes = 0;
+        old.size = old.tile = 0;
+        old.slotOf.clear();
+        hd.size = 2048; // The next atlas starts small again.
+        hd.slotOf.assign(cellMasks.size(), 0);
+        hd.cellOf.clear();
+        hd.used.clear();
+        ++hd.generation;
+        {
+            std::lock_guard lock(hd.mutex);
+            hd.jobs.clear();
+            std::erase_if(hd.done, [](const Hd::Result &result) { return !result.base; });
+        }
+        hd.inFlight.clear();
+        hd.suspended = true;
+    }
+
     // The base atlas: map-shaped, zero (unbuilt) everywhere until workers
     // fill it. Large maps take smaller tiles so it stays within 2048 square.
     void createBase(int centreX, int centreY)
@@ -625,7 +664,9 @@ struct DirectTerrain::State
         if (std::max(width, height) * tile > State::MaxAtlasSize) return;
         b.tile = tile;
         const int w = width * tile, h = height * tile;
-        std::vector<Uint8> zeros(std::size_t(w) * h * 4, 0);
+        // Cleared in strips: one map-sized buffer of zeros would be 16 MiB.
+        constexpr int StripRows = 64;
+        const std::vector<Uint8> zeros(std::size_t(w) * StripRows * 4, 0);
         for (GLuint *texture : {&b.coverage, &b.edges})
         {
             glGenTextures(1, texture);
@@ -636,10 +677,13 @@ struct DirectTerrain::State
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            if (texture == &b.coverage)
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, zeros.data());
-            else
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, w, h, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, zeros.data());
+            const bool coverage = texture == &b.coverage;
+            glTexImage2D(GL_TEXTURE_2D, 0, coverage ? GL_RGBA8 : GL_LUMINANCE16, w, h, 0,
+                         coverage ? GL_RGBA : GL_LUMINANCE, coverage ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT, nullptr);
+            for (int y = 0; y < h; y += StripRows)
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, w, std::min(StripRows, h - y),
+                                coverage ? GL_RGBA : GL_LUMINANCE, coverage ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT,
+                                zeros.data());
         }
         b.bytes = std::size_t(w) * h * 6;
         bytes += b.bytes;
@@ -681,11 +725,26 @@ struct DirectTerrain::State
     }
 
     // The fallback has nothing left to show. Its textures stay as the spare
-    // for the next zoom.
+    // for the next zoom, so a run of zooms allocates nothing.
     void retirePreviousHdAtlas()
     {
         hd.previous.tile = 0;
         hd.previous.slotOf.clear();
+        hd.previous.retiredAt = SDL_GetTicks();
+    }
+    // A spare the view has not needed for a while gives its memory back, up
+    // to 96 MiB; the next zoom allocates textures again, without uploading.
+    void releaseIdleSpare(Uint64 lifetimeMs)
+    {
+        auto &old = hd.previous;
+        if (old.tile || !old.coverage || SDL_GetTicks() - old.retiredAt < lifetimeMs) return;
+        glDeleteTextures(1, &old.index);
+        glDeleteTextures(1, &old.coverage);
+        glDeleteTextures(1, &old.edges);
+        old.index = old.coverage = old.edges = 0;
+        bytes -= old.bytes;
+        old.bytes = 0;
+        old.size = 0;
     }
 
 #endif
@@ -896,18 +955,26 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     // two passes would evict and decode the fringe variants every frame.
     constexpr int pageTiles = SoftwareTerrainCache::ChunkTiles;
     const auto page = [](int cell) { return int(std::floor(double(cell) / pageTiles)); };
-    compositor.prepareVisible(true, animationTime, map,
-        page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
-        (page(right + viewportX) + 1) * pageTiles - 1,
-        (page(bottom + viewportY) + 1) * pageTiles - 1);
+    // Artwork is sampled near the display density, 8 to 128 pixels a cell.
+    // Native material and decor frames are the HD frames reduced to 32 pixels
+    // a cell, so HD frames only help above that: a zoomed-out view, which
+    // shows the most variants, streams none of them.
+    int pixels = 8;
+    const double density = gfx.mapTransformScale() * gfx.getRasterScale();
+    while (pixels < 128 && pixels < 32 * density) pixels *= 2;
+    const bool highResolutionFrames = pixels > 32;
+    const auto declare = [&] {
+        compositor.declareVisible(animationTime, map,
+            page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
+            (page(right + viewportX) + 1) * pageTiles - 1,
+            (page(bottom + viewportY) + 1) * pageTiles - 1, highResolutionFrames);
+    };
+    declare();
     // A complete draw is shown once, so it waits for streamed HD artwork.
     if (complete)
     {
         GAGCore::Sprite::finishHighResolution();
-        compositor.prepareVisible(true, animationTime, map,
-            page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
-            (page(right + viewportX) + 1) * pageTiles - 1,
-            (page(bottom + viewportY) + 1) * pageTiles - 1);
+        declare();
     }
     const auto &catalog = compositor.catalog();
     std::set<unsigned> wanted;
@@ -932,25 +999,29 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     }
     if (wanted.empty()) return true;
 
-    // Two endpoints per visible material variant, sampled near the display
-    // density (8 to 128 pixels a cell), in one 16 MiB atlas.
-    int pixels = 8;
-    const double density = gfx.mapTransformScale() * gfx.getRasterScale();
-    while (pixels < 128 && pixels < 32 * density) pixels *= 2;
-    if (out.size < State::MaxAtlasSize && wanted.size() * 2 > std::size_t(out.size / pixels) * (out.size / pixels))
+    // Two endpoints per visible material variant at that density, in one 16 MiB atlas.
+    const auto restartAtlas = [&](int size)
     {
-        // Grow: the atlas and its variant table start again at the new size.
+        // The atlas and its variant table start again at the new size.
         glDeleteTextures(1, &out.art);
         glDeleteTextures(1, &out.variants);
         state->bytes -= out.bytes;
         out.art = out.variants = 0;
-        out.bytes = 0;
-        out.size = State::MaxAtlasSize;
+        out.bytes = out.variantBytes = 0;
+        out.size = size;
         out.entries.clear();
         out.freePairs.clear();
         out.pixels = 0;
         state->uploadedVariants = 0;
-    }
+    };
+    constexpr int SmallAtlasSize = 2048;
+    const auto pairsAt = [&](int size) { return std::size_t(size / pixels) * (size / pixels); };
+    // A density change refilters every tile anyway: take the small atlas again
+    // when the view fits it twice over, so a pan does not grow it straight back.
+    if (out.size > SmallAtlasSize && out.pixels != pixels && wanted.size() * 4 <= pairsAt(SmallAtlasSize))
+        restartAtlas(SmallAtlasSize);
+    if (out.size < State::MaxAtlasSize && wanted.size() * 2 > pairsAt(out.size))
+        restartAtlas(State::MaxAtlasSize); // Grow.
     const int atlasSize = out.size;
     while (pixels > 8 && wanted.size() * 2 > std::size_t(atlasSize / pixels) * (atlasSize / pixels))
         pixels /= 2;
@@ -978,6 +1049,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             out.bytes = std::size_t(atlasSize) * atlasSize * sizeof(Pixel);
+            out.variantBytes = 0;
             state->bytes += out.bytes;
         }
         // The variant table, again whenever an edit added variants.
@@ -991,6 +1063,10 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             glBindTexture(GL_TEXTURE_2D, out.variants);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, DirectTerrainData::VariantWidth, rows, 0,
                 GL_RGBA, GL_UNSIGNED_SHORT, padded.data());
+            const auto variantBytes = padded.size() * sizeof(Record);
+            state->bytes += variantBytes - out.variantBytes;
+            out.bytes += variantBytes - out.variantBytes;
+            out.variantBytes = variantBytes;
             state->variantRows = rows;
             state->uploadedVariants = variants.size();
             state->uploaded += padded.size() * sizeof(Record);
@@ -1028,11 +1104,25 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             {
                 const unsigned phase = (absolutePhase + ahead) % material.animationFrames;
                 const unsigned parity = endpoints == 2 ? (absolutePhase + ahead) % 2 : 0;
-                const auto stamp = compositor.phaseSource(source.material, source.variant, phase);
+                // Below the HD threshold the native frame is the source even while
+                // an HD frame is still resident: sixteen times fewer pixels to
+                // filter, and a stamp that outlives the HD frame's eviction.
+                const bool native = !highResolutionFrames;
+                const auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
                 if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
-                const auto input = compositor.phasePixels(source.material, source.variant, phase);
-                if (input.size() != std::size_t(stamp.size) * stamp.size)
+                // Shipped materials are sampled in place; art that takes its
+                // border from another variant comes as a prepared copy.
+                const auto *surface = compositor.phaseSurface(source.material, source.variant, phase, native);
+                TerrainVisual::Compositor::MaterialPixels input;
+                if (!surface)
+                {
+                    input = compositor.phasePixels(source.material, source.variant, phase, native);
+                    if (input.size() != std::size_t(stamp.size) * stamp.size)
+                        throw std::runtime_error("Animated terrain source changed dimensions");
+                }
+                else if (surface->w != stamp.size)
                     throw std::runtime_error("Animated terrain source changed dimensions");
+                const auto *surfacePixels = surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr;
                 // Box-filter each block in premultiplied colour. Point samples at a
                 // block's corner would read a tile's two edges asymmetrically, so
                 // neighbouring variants, blended to meet at their borders, would not.
@@ -1045,8 +1135,16 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                         for (int dy = 0; dy < block; ++dy)
                             for (int dx = 0; dx < block; ++dx)
                             {
-                                const auto &p = input[std::size_t(y * stamp.size / pixels + dy) * stamp.size +
-                                                      x * stamp.size / pixels + dx];
+                                const auto index = std::size_t(y * stamp.size / pixels + dy) * stamp.size +
+                                                   x * stamp.size / pixels + dx;
+                                std::array<unsigned char, 4> p;
+                                if (surfacePixels)
+                                {
+                                    const Uint32 argb = surfacePixels[index];
+                                    p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
+                                }
+                                else
+                                    p = input[index];
                                 for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
                                 sum[3] += p[3];
                             }
@@ -1180,6 +1278,15 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.
     int size = hd.size;
+    // Once the base mask covers the map it serves any view at its density or
+    // below. Edits there rebuild their base cells; the atlas stays away.
+    const bool baseServes = hd.index && hd.base.tile && tile <= hd.base.tile &&
+        (hd.suspended || (!hd.base.remaining && hd.base.redo.empty()));
+    if (baseServes)
+    {
+        if (!hd.suspended) state->suspendHdAtlas();
+    }
+    else
     {
         std::size_t mixed = 0, current = 0, previous = 0;
         for (int y = top; y <= bottom; ++y)
@@ -1192,9 +1299,22 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
                 previous += !hd.previous.slotOf.empty() && hd.previous.slotOf[cell];
             }
         const auto fits = [&](int atlas) { return std::size_t(atlas / tile) * (atlas / tile) >= mixed + mixed / 4; };
-        if (size < State::MaxAtlasSize && !fits(size))
+        // A density change rebuilds the atlas anyway: take the small one again
+        // when the view fits it twice over, so a pan does not grow it straight back.
+        constexpr int SmallAtlasSize = 2048;
+        if (size > SmallAtlasSize && hd.tile != tile &&
+            std::size_t(SmallAtlasSize / tile) * (SmallAtlasSize / tile) >= mixed * 2)
+            size = SmallAtlasSize;
+        // While a cell is under 32 pixels wide, cells that do not fit simply
+        // draw the complete base mask: coarser texels, but edges come from the
+        // mask's distance channel, and only the view's fringe is affected, since
+        // the nearest cells take slots first. That is not worth the large
+        // atlas, or coarser tiles for every cell.
+        const bool baseTakesOverflow = hd.base.tile && tile <= 4 * hd.base.tile &&
+            !hd.base.remaining && hd.base.redo.empty();
+        if (size < State::MaxAtlasSize && !fits(size) && !baseTakesOverflow)
             size = State::MaxAtlasSize; // Grow once rather than draw coarser.
-        while (tile > 8 && !fits(size))
+        while (tile > 8 && !fits(size) && !baseTakesOverflow)
             tile /= 2;
         if (hd.tile != tile || hd.size != size || !hd.coverage)
             state->restartHdAtlas(tile, size, current > 0 && current >= previous);
@@ -1208,7 +1328,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     struct Want { int distance, cell, x, y; };
     std::vector<Want> missing;
     const int cx = (left + right) / 2, cy = (top + bottom) / 2;
-    for (int y = top; y <= bottom; ++y)
+    for (int y = top; y <= bottom && !hd.suspended; ++y)
         for (int x = left; x <= right; ++x)
         {
             if (!wholeMap && !map.isMapPartiallyDiscovered(x + viewportX - 1, y + viewportY - 1,
@@ -1384,6 +1504,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // The new atlas covers the view: the retired one has nothing left to show.
     if (!hd.pending && hd.previous.tile)
         state->retirePreviousHdAtlas();
+    state->releaseIdleSpare(spareLifetimeMs);
 #endif
 }
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <PerformanceTelemetry.h>
+#include <RenderMemory.h>
 #include "TorusView.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Game.h"
@@ -271,6 +272,8 @@ void TorusView::releaseMaterials()
             glDeleteProgram(material);
         for (auto &tile : tiles)
             glDeleteTextures(1, &tile.texture);
+        if (!tiles.empty())
+            GAGCore::RenderMemory::setAuxiliary(GAGCore::RenderMemory::Auxiliary::ViewTiles, 0);
         if (tileBuffer)
             glDeleteBuffers(1, &tileBuffer);
         if (cloudTexture)
@@ -350,6 +353,7 @@ bool TorusView::prepareRenderTarget()
             {
                 tiles = std::move(candidate);
                 tileMeshDirty = true;
+                GAGCore::RenderMemory::setAuxiliary(GAGCore::RenderMemory::Auxiliary::ViewTiles, allocatedPixels * 4);
                 if (pixelsPerCell < captureDensity)
                     fprintf(stderr, "Torus view: allocation pressure reduced capture to %d pixels per map cell\n", pixelsPerCell);
                 break;
@@ -375,6 +379,7 @@ bool TorusView::prepareRenderTarget()
         {
             for (auto &tile : tiles) glDeleteTextures(1, &tile.texture);
             tiles.clear();
+            GAGCore::RenderMemory::setAuxiliary(GAGCore::RenderMemory::Auxiliary::ViewTiles, 0);
             glDeleteFramebuffers(1, &framebuffer);
             framebuffer = 0;
         }

@@ -18,6 +18,7 @@
 #include <SteadyClock.h>
 #include <chrono>
 #include <AssetLoader.h>
+#include <RenderMemory.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
 #endif
@@ -70,12 +71,38 @@ namespace GAGCore
         bool retainPublishedOnFailure = false;
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
+    // Sprites whose HD frames were discarded with their textures; see
+    // discardUnbackedHighResolution().
+    static std::set<Sprite*> lostHighResolution;
     static std::set<std::string> deferredHighResolutionNames;
+    static std::set<std::string> atlasSkippedHighResolutionNames, pixelSampledHighResolutionNames;
+    // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
+    static bool highResolutionAtlasWanted(const std::string& name)
+    {
+        const auto prefix = name.substr(name.find_last_of('/') + 1);
+        return _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+            (prefix == "terrain" || prefix == "ressource") &&
+            !atlasSkippedHighResolutionNames.contains(name);
+    }
+    struct RetiredHighResolution { Sprite *sprite; unsigned frame; size_t bytes; std::int64_t retiredAt; };
+    // Front = most recently retired.
+    static std::list<RetiredHighResolution> retiredHighResolution;
+    static size_t retiredHighResolutionTotal = 0;
+    // Room for the material variants of a view near the zoom where HD frames
+    // start to matter, so crossing it back and forth decodes nothing.
+    static Sprite::RetiredHighResolutionBudget retiredBudget{
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+        32u * 1024 * 1024,
+#else
+        192u * 1024 * 1024,
+#endif
+        20'000'000'000};
     struct DeferredHighResolution {
         std::set<unsigned> wanted, completed, active;
         std::map<unsigned, HighResolutionInputs> pending;
         std::deque<unsigned> queued;
         std::vector<unsigned> order;
+        std::map<unsigned, std::list<RetiredHighResolution>::iterator> retired;
     };
     static std::map<Sprite*, DeferredHighResolution> deferredHighResolution;
     static Sprite *deferredHighResolutionCursor = nullptr;
@@ -563,15 +590,52 @@ namespace GAGCore
 		return ds;
 	}
 
+    void Sprite::memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage)
+    {
+        for (const auto *sprite : loadedSprites)
+        {
+            RenderMemory::SpriteUsage entry;
+            entry.name = sprite->fileName;
+            const auto add = [&entry](const DrawableSurface *surface, bool highResolution)
+            {
+                if (!surface) return;
+                ++entry.frames;
+                entry.gpuBytes += surface->gpuBytes;
+                if (!surface->sdlsurface || !surface->sdlsurface->pixels) return;
+                const auto bytes = size_t(surface->sdlsurface->pitch) * surface->sdlsurface->h;
+                (highResolution ? entry.highResolutionCpuBytes : entry.nativeCpuBytes) += bytes;
+            };
+            const auto addRotated = [&add](const RotatedImage *rotated, bool highResolution)
+            {
+                if (!rotated) return;
+                add(rotated->orig, highResolution);
+                for (const auto &colored : rotated->rotationMap) add(colored.second, highResolution);
+            };
+            const auto addSprite = [&](const Sprite &source, bool highResolution)
+            {
+                for (const auto *image : source.images) add(image, highResolution);
+                for (const auto *rotated : source.rotated) addRotated(rotated, highResolution);
+                for (const auto *image : source.experimentImages) add(image, true);
+                for (const auto *rotated : source.experimentRotated) addRotated(rotated, true);
+                for (const auto &node : source.teamColorList) add(node.surface.get(), node.key.experiment);
+                add(source.atlas.get(), highResolution);
+            };
+            addSprite(*sprite, false);
+            if (sprite->highResolutionAtlas) addSprite(*sprite->highResolutionAtlas, true);
+            usage.push_back(std::move(entry));
+        }
+    }
+
     Sprite::HighResolutionStats Sprite::highResolutionStats()
     {
         HighResolutionStats stats;
         for(auto sprite:loadedSprites)
         {
-            for(auto s:sprite->experimentImages)if(s)stats.cpuBytes+=s->getW()*s->getH()*4;
+            // Frames whose pixels were released after upload hold no CPU bytes.
+            for(auto s:sprite->experimentImages)if(s&&s->hasPixels())stats.cpuBytes+=s->getW()*s->getH()*4;
             for(auto r:sprite->experimentRotated)if(r)
             {
-                stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
+                if(r->orig->hasPixels())stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
                 for(auto entry:r->rotationMap){stats.cpuBytes+=entry.second->getW()*entry.second->getH()*4;++stats.coloredFrames;}
             }
             // dynamicTeamColor sprites (the unit sprite) never populate the
@@ -592,9 +656,54 @@ namespace GAGCore
     {
         return deferredHighResolutionNames.contains(name);
     }
+    void Sprite::skipHighResolutionAtlas(const std::string& name)
+    {
+        atlasSkippedHighResolutionNames.insert(name);
+    }
+    void Sprite::keepHighResolutionPixels(const std::string& name)
+    {
+        pixelSampledHighResolutionNames.insert(name);
+    }
     void Sprite::deferHighResolution(const std::string& name)
     {
         deferredHighResolutionNames.insert(name);
+    }
+    Sprite::RetiredHighResolutionBudget Sprite::retiredHighResolutionBudget() { return retiredBudget; }
+    void Sprite::setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget)
+    {
+        retiredBudget = budget;
+        evictRetiredHighResolution();
+    }
+    size_t Sprite::retiredHighResolutionBytes() { return retiredHighResolutionTotal; }
+    void Sprite::evictRetiredHighResolution()
+    {
+        std::set<Sprite *> changed;
+        const auto expired = GAGCore::steadyClockNanoseconds() - retiredBudget.lifetimeNanoseconds;
+        while (!retiredHighResolution.empty() && (retiredHighResolutionTotal > retiredBudget.bytes ||
+                                                 retiredHighResolution.back().retiredAt <= expired)) {
+            const auto oldest = retiredHighResolution.back();
+            retiredHighResolution.pop_back();
+            retiredHighResolutionTotal -= oldest.bytes;
+            deferredHighResolution[oldest.sprite].retired.erase(oldest.frame);
+            auto &sprite = *oldest.sprite;
+            delete sprite.experimentImages[oldest.frame]; sprite.experimentImages[oldest.frame] = nullptr;
+            delete sprite.experimentRotated[oldest.frame]; sprite.experimentRotated[oldest.frame] = nullptr;
+            changed.insert(&sprite);
+        }
+        for (auto *sprite : changed) sprite->recomputeBlockCompleteHD();
+    }
+    void Sprite::releaseRetiredHighResolution(bool destroy)
+    {
+        const auto found = deferredHighResolution.find(this);
+        if (found == deferredHighResolution.end()) return;
+        for (const auto &[frame, entry] : found->second.retired) {
+            retiredHighResolutionTotal -= entry->bytes;
+            retiredHighResolution.erase(entry);
+            if (!destroy) continue;
+            delete experimentImages[frame]; experimentImages[frame] = nullptr;
+            delete experimentRotated[frame]; experimentRotated[frame] = nullptr;
+        }
+        found->second.retired.clear();
     }
     void Sprite::setHighResolutionFrames(std::span<const unsigned> indices)
     {
@@ -613,13 +722,29 @@ namespace GAGCore
         std::erase_if(stream.queued, [&](unsigned frame) { return !stream.wanted.contains(frame); });
         experimentImages.resize(images.size(), nullptr);
         experimentRotated.resize(images.size(), nullptr);
-        // Readers own copied pixels, never a borrowed pointer across this declaration.
+        // Frames leaving the window are retired, not deleted, and a frame that
+        // returns is simply wanted again. Readers own copied pixels, never a
+        // borrowed pointer across this declaration: eviction below may delete
+        // any sprite's retired frames.
+        const auto surfaceBytes = [](DrawableSurface *surface) {
+            return surface ? size_t(surface->getW()) * surface->getH() * 4 + surface->gpuBytes : size_t(0);
+        };
         for (unsigned frame = 0; frame < images.size(); ++frame) {
-            if (!stream.wanted.contains(frame)) {
-                delete experimentImages[frame]; experimentImages[frame] = nullptr;
-                delete experimentRotated[frame]; experimentRotated[frame] = nullptr;
+            const auto retired = stream.retired.find(frame);
+            if (stream.wanted.contains(frame)) {
+                if (retired == stream.retired.end()) continue;
+                retiredHighResolutionTotal -= retired->second->bytes;
+                retiredHighResolution.erase(retired->second);
+                stream.retired.erase(retired);
+            } else if (retired == stream.retired.end() && (experimentImages[frame] || experimentRotated[frame])) {
+                const auto bytes = surfaceBytes(experimentImages[frame]) +
+                    (experimentRotated[frame] ? surfaceBytes(experimentRotated[frame]->orig) : 0);
+                retiredHighResolution.push_front({this, frame, bytes, GAGCore::steadyClockNanoseconds()});
+                stream.retired[frame] = retiredHighResolution.begin();
+                retiredHighResolutionTotal += bytes;
             }
         }
+        evictRetiredHighResolution();
         recomputeBlockCompleteHD();
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
@@ -667,6 +792,7 @@ namespace GAGCore
                 stream.queued.clear();
                 stream.completed.clear();
                 stream.wanted.clear();
+                sprite->releaseRetiredHighResolution(true);
                 sprite->setHighResolutionFrames(wanted);
             } else {
                 auto prepared = std::make_unique<Sprite>();
@@ -711,6 +837,7 @@ namespace GAGCore
                 auto wanted = stream.order;
                 stream.pending.clear(); stream.completed.clear(); stream.wanted.clear();
                 stream.active.clear(); stream.queued.clear();
+                sprite->releaseRetiredHighResolution(false);
                 for (auto *&image : sprite->experimentImages) { delete image; image = nullptr; }
                 for (auto *&image : sprite->experimentRotated) { delete image; image = nullptr; }
                 sprite->highResolutionAtlas.reset();
@@ -748,12 +875,47 @@ namespace GAGCore
         }
         requestHighResolution(highResolutionEnabled);
     }
+    void Sprite::discardUnbackedHighResolution()
+    {
+        const auto unbacked = [](const Sprite &sprite) {
+            for (const auto *image : sprite.experimentImages)
+                if (image && !image->hasPixels()) return true;
+            for (const auto *rotated : sprite.experimentRotated)
+                if (rotated && !rotated->orig->hasPixels()) return true;
+            return false;
+        };
+        for (auto *sprite : loadedSprites) {
+            const auto pending = pendingHighResolution.find(sprite);
+            const bool staged = pending != pendingHighResolution.end() && pending->second.prepared &&
+                unbacked(*pending->second.prepared);
+            if (!staged && !unbacked(*sprite)) continue;
+            // A half-built replacement lost its textures too: start it again.
+            if (pending != pendingHighResolution.end()) pendingHighResolution.erase(pending);
+            for (auto *&image : sprite->experimentImages) { delete image; image = nullptr; }
+            for (auto *&image : sprite->experimentRotated) { delete image; image = nullptr; }
+            sprite->clearTeamColorCache();
+            sprite->recomputeBlockCompleteHD();
+            lostHighResolution.insert(sprite);
+        }
+    }
     bool Sprite::pollHighResolution(unsigned budgetMs)
     {
         return pollHighResolutionUntil(GAGCore::steadyClockNanoseconds() + std::int64_t(budgetMs) * 1000000);
     }
     bool Sprite::pollHighResolutionUntil(std::int64_t deadlineNanoseconds)
     {
+        evictRetiredHighResolution();
+        // Reload what a context rebuild discarded, under the renderer now active.
+        for (auto *sprite : lostHighResolution) {
+            if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
+            auto prepared = std::make_unique<Sprite>();
+            prepared->fileName = sprite->fileName;
+            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
+                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()),
+                std::move(prepared), 0, true});
+        }
+        lostHighResolution.clear();
         const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
         for (auto it = pendingHighResolution.begin(); it != pendingHighResolution.end();) {
             if (std::chrono::steady_clock::now() >= deadline) break;
@@ -861,6 +1023,7 @@ namespace GAGCore
         // Portable renderers retain standalone HD sources. Never query GL or
         // allocate its atlas without a current OpenGL rendering context.
         if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return;
+        if (!highResolutionAtlasWanted(fileName)) return;
         const bool resources=fileName=="data/gfx/ressource";
         if(!resources && fileName!="data/gfx/terrain")return;
         int count=0;
@@ -991,8 +1154,7 @@ namespace GAGCore
                 add(directory + '/' + file, mipmaps);
             }
         }
-        if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
-            (prefix == "terrain" || prefix == "ressource"))
+        if (highResolutionAtlasWanted(name))
             for (int mip = 0; mip < 4; ++mip)
                 add(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp", false);
         if (incremental && firstFrame < frames) highResolutionFrameReady(name, firstFrame, inputs);
@@ -1033,8 +1195,7 @@ namespace GAGCore
     bool highResolutionAtlasReady(const std::string& name, HighResolutionInputs& inputs)
     {
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) ||
-            (prefix != "terrain" && prefix != "ressource")) return true;
+        if (!highResolutionAtlasWanted(name)) return true;
         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         bool ready = true;
@@ -1064,7 +1225,15 @@ namespace GAGCore
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
         const bool deferred = highResolutionDeferred(fileName);
         const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !deferred;
-        auto load = [&](const std::string& name, DrawableSurface *original) -> DrawableSurface* {
+        // Desktop legacy OpenGL draws a standalone HD layer from its texture
+        // alone, so its pixels go once uploaded (releasePixels refuses on every
+        // other renderer). The exceptions read pixels later: frames an atlas is
+        // built from, sprites a caller samples, and, without the team-colour
+        // shader, team layers, which a CPU recolour then clones.
+        const bool releaseBase = !deferred && !highResolutionAtlasWanted(fileName) &&
+            !pixelSampledHighResolutionNames.contains(fileName);
+        const bool releaseTeam = releaseBase && _gc->hasUnitShader();
+        auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
             // layer needs a ready standalone texture for that fallback.
@@ -1079,10 +1248,12 @@ namespace GAGCore
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. A direct draw can still upload this source lazily.
             if (!deferred) result->prepareTexture();
+            if (release) result->releasePixels();
             return result.release();
         };
-        auto *normal = load(entry.base, images[index]);
-        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr);
+        // A unit's base layer is recoloured with its team layer without the shader.
+        auto *normal = load(entry.base, images[index], dynamicTeamColor ? releaseTeam : releaseBase);
+        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr, releaseTeam);
         if ((entry.base != "-" && !normal) || (entry.team != "-" && !colored) ||
             (images[index] && entry.base == "-") || (rotated[index] && entry.team == "-")) {
             delete normal; delete colored; return;
@@ -1096,7 +1267,8 @@ namespace GAGCore
 		DrawableSurface *surface;
 		if (teamColor)
 		{
-			if (experiment && experimentRotated[index])
+			// A recolour clones the layer's pixels; a released HD layer has none.
+			if (experiment && experimentRotated[index] && experimentRotated[index]->orig->hasPixels())
 				surface = getColoredSurface(index, true);
 			else if (rotated[index])
 				surface = getColoredSurface(index, false);
@@ -1123,6 +1295,8 @@ namespace GAGCore
 	{
         // Private reload staging sprites were never published. Their destruction
         // must not re-enter the pending map while it destroys its own entries.
+        releaseRetiredHighResolution(false);
+        lostHighResolution.erase(this);
         deferredHighResolution.erase(this);
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);

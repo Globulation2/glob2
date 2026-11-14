@@ -3,6 +3,7 @@
 #include "GraphicContextPrivate.h"
 #include <SoftwareFramePresenter.h>
 #include <RenderBackend.h>
+#include <RenderMemory.h>
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -131,6 +132,7 @@ namespace GAGCore
 		if (frameCache.texture) glDeleteTextures(1, &frameCache.texture);
 		#endif
 		frameCache = FrameCache{};
+		RenderMemory::setAuxiliary(RenderMemory::Auxiliary::FrameCache, 0);
 	}
 
 	void GraphicContext::reportFrameCacheFailure(const char *reason)
@@ -188,6 +190,8 @@ namespace GAGCore
 				}
 				frameCache.textureWidth = tw;
 				frameCache.textureHeight = th;
+				// Drivers store three-channel textures in four bytes a texel.
+				RenderMemory::setAuxiliary(RenderMemory::Auxiliary::FrameCache, size_t(tw) * th * 4);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				// Windows' GDI renderer exposes GL 1.1, which lacks CLAMP_TO_EDGE.

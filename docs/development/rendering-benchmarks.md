@@ -164,7 +164,50 @@ its whole-map base mask; `DIRECT_TERRAIN_BASE` reports when the base covers
 the map, and only cells without a base mask yet draw a straight split between their corners. `FRAME_HD` reports the
 visible mixed cells still waiting. The editor and captures complete the view
 first: they build every visible mask in parallel and wait for streamed HD
-artwork. Pages serve the software and programmable-device renderers, and the
+artwork.
+
+The pass filters its atlas tiles from the sprite frames themselves, so it only
+declares the view's HD stream window to the material compositor and keeps none
+of the compositor's CPU textures. HD material and decor frames are requested
+only above 32 pixels a cell: the native frames are those frames reduced by
+four, which `tools/artwork` guarantees when it renders both, and a zoomed-out
+view, which shows the most variants, would otherwise decode them all to filter
+them back down. Frames that leave
+a stream window are retired, not deleted: they stay decoded, most recently
+retired first, until they exceed a shared budget (192 MiB on desktop, 32 MiB on
+mobile and in the browser) or have gone unused for 20 seconds, so panning or
+zooming back decodes nothing. `image_decodes` in the
+[memory report](#renderer-memory) shows what a camera path still decodes.
+
+Below that threshold the pass filters from the native frame even while an HD
+frame is still resident, and shipped materials are sampled in place, without a
+converted copy; only art that takes its border from another variant is
+prepared first.
+
+The atlases give memory back too. The coverage atlas a zoom retires stays as a
+spare, so a run of zooms allocates nothing, and is freed once the view has been
+still for ten seconds. A density change takes the 2048-texel coverage or
+artwork atlas again when the view fits it twice over. Once the whole-map base
+mask is complete it does more than cover for missing masks: at its own density
+(eight texels a cell on maps up to 256 cells) the view draws from it alone and
+keeps no coverage atlas, and while a cell is under 32 pixels wide, cells that do
+not fit the 2048-texel atlas draw the base instead of growing the atlas to 4096
+texels. The terrain sheet's HD atlas is not built on desktop legacy GL, where
+only the menu backdrop draws that sheet, from its standalone frames.
+
+Standalone HD frames keep no decoded pixels on desktop legacy GL once they are
+uploaded: the texture is the only copy. That covers the unit sheet, the
+largest HD family, and buildings, effects and the cloud. The team-colour
+shader draws every frame that has a team layer, units and buildings alike, as
+one quad from the two layers' textures, so no recoloured copy of a team layer
+exists in memory or on the GPU for each team. The exceptions are read as
+pixels later: frames an atlas is built from, terrain materials, which the
+compositor samples (`Sprite::keepHighResolutionPixels`), and, without the
+shader, team layers, which a CPU recolour then clones. A context rebuild (a
+renderer switch) loses the textures, so those sprites draw native frames at
+once and reload HD from disk on the asset workers.
+
+Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,
 which the direct pass does not support. There pages draw native artwork until the
 view's `hd-terrain-*` families download, then HD.
@@ -192,6 +235,61 @@ path is not an untouched-master baseline.
 
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
+
+## Renderer memory
+
+`tools/rendering/memory_scenario.py` runs the standard memory scenario and reports
+peak memory by owner. It loads a mid-game save of a 256×256 Honeycomb Isles map
+in `torus-render-benchmark`, draws the flat game view on legacy OpenGL with HD
+artwork, and pans while cycling the zoom between the minimum and four times
+that. Build the perf tier first; `--prepare` generates the save (map seed 7,
+four AIs, tick 30000) under `artifacts/render-memory/`.
+
+```sh
+python3 tools/dev_build.py perf=1 glob2 torus-render-benchmark
+python3 tools/rendering/memory_scenario.py --prepare --label master
+python3 tools/rendering/memory_scenario.py --label change --compare master
+```
+
+The table it prints goes in the pull request. Peak process resident memory and,
+on Linux, the GPU driver's per-process memory (`drm-memory-*` in
+`/proc/<pid>/fdinfo`) come from sampling the process; an integrated GPU's driver
+memory is system RAM. The remaining rows are the renderer's own tracked bytes,
+which the benchmark prints as `FRAME_RENDER_MEMORY` with `GLOB2_BENCH_FRAME_TIMES`
+and as `RENDER_MEMORY` when a pass ends:
+
+| Field | Meaning |
+| --- | --- |
+| `cpu_surface_bytes`, `cpu_surfaces` | Decoded pixels that live surfaces still hold, and how many surfaces hold some |
+| `cpu_high_resolution_bytes` | The HD artwork share of those pixels |
+| `cpu_prepared_bytes` | Upload staging not yet released: converted pixels, mip chains, compressed blocks |
+| `cpu_compositor_bytes` | The terrain compositor's own copies of material pixels |
+| `gpu_surface_bytes` | Sprite and atlas textures |
+| `gpu_array_bytes` | Texture-array pages, which duplicate their source textures |
+| `gpu_direct_terrain_bytes`, `gpu_terrain_page_bytes` | Direct terrain atlases and composed terrain pages |
+| `gpu_frame_cache_bytes`, `gpu_skin_atlas_bytes`, `gpu_view_tile_bytes` | Render targets no surface owns |
+| `image_decodes`, `image_decoded_bytes` | Image decodes since launch and the pixels they produced; growth during camera motion is streaming churn |
+| `peak_rss_bytes` | The process's peak resident set (zero on Windows and in the browser) |
+
+`RENDER_MEMORY_SPRITE` lists the sixteen largest sprites with their native and
+HD pixel bytes and texture bytes. Tracked bytes are what the renderer asked for,
+not what the driver or the allocator holds: compare them with the sampled
+process and driver figures, and expect the default framebuffer and driver
+overhead on top.
+
+Streaming is asynchronous, so unpaced frames outrun the asset workers and show
+almost no churn. `GLOB2_BENCH_FRAME_INTERVAL_MS=16` pauses between frames,
+outside the timed interval; the scenario sets it. `GLOB2_BENCH_SETTLE_FRAMES=600`
+first holds one view (the closest zoom of the cycle) for that many frames, as a
+game does before the player moves, so background work such as the whole-map
+base mask finishes; a camera that never rests starves that work. Camera motion applies to the
+flat pass, so a saved-game memory run needs `GLOB2_BENCH_FLAT=1` as well as
+`GLOB2_BENCH_GAME`.
+
+In the game client, legacy OpenGL records the same tracked GPU total as the
+`render.resource_bytes` gauge, and `GLOB2_TEAM_TIMELINE=1` adds a
+`GLOB2_RENDER_MEMORY` line with these fields once a second
+([performance telemetry](performance-telemetry.md#rendering-and-gpu-timing)).
 
 ## CPU presentation batches
 

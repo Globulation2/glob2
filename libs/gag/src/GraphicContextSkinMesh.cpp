@@ -6,6 +6,7 @@
 #include <SkinDeformation.h>
 #include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
+#include <RenderMemory.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <algorithm>
@@ -514,6 +515,7 @@ void GraphicContext::destroySkinRenderer()
 		glDeleteRenderbuffers(1, &r.depth);
 	for (auto color : r.colors)
 		glDeleteTextures(1, &color);
+	RenderMemory::setAuxiliary(RenderMemory::Auxiliary::SkinAtlas, 0);
 #ifdef GLOB2_WEBGL2
 	if (r.vao)
 		glDeleteVertexArrays(1, &r.vao);
@@ -628,6 +630,9 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		r.colors.push_back(color);
 	}
+	// Colour pages plus the shared depth buffer.
+	RenderMemory::setAuxiliary(RenderMemory::Auxiliary::SkinAtlas,
+		(r.colors.size() + (r.depth ? 1 : 0)) * std::size_t(AtlasSize) * AtlasSize * 4);
 	glBindFramebuffer(GL_FRAMEBUFFER, r.framebuffer);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, r.depth);
 	glDisable(GL_SCISSOR_TEST);

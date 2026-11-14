@@ -30,6 +30,11 @@ See content/data/javascript-licenses.txt and third_party/README.md.
 
 JSON library (platform messages):
 nlohmann/json v3.12.0 (MIT). See content/data/json-license.txt and third_party/README.md.
+
+Texture block compression (BC3 and ETC2 encoding of high-resolution textures):
+etcpak 2.1 by Bartosz Taudul and contributors (BSD 3-Clause).
+See content/data/etcpak-license.txt and third_party/README.md.
+
 Runtime image codecs:
 SDL_image (zlib license) and libwebp (BSD license and patent grant).
 See content/data/image-codec-licenses.txt for notices shipped with runtime assets.
