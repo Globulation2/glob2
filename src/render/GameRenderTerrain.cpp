@@ -218,9 +218,31 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
         return false;
     }
     GAGCore::MapGeometryCache::Layer layer(*cache);
-    auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames,
-        int layerKey, int y, int mapY, std::uint64_t revision)
+    // A row records each frame's HD or native layer as it stands. HD frames
+    // stream in later (decor only above 32 pixels a cell) without changing the
+    // row's frames, so the row also names the newest HD layer among its frames:
+    // when one of them gains a layer, the cache keeps replaying the previous
+    // resolution until part of the frame's build budget re-records the row.
+    const auto rowArtwork = [](ResourceRowCache::Layer &rowLayer, const GAGCore::Sprite &layerSprite)
     {
+        const auto spriteRevision = layerSprite.highResolutionRevision();
+        if (rowLayer.artworkFrames != rowLayer.revision || rowLayer.artworkSprite != spriteRevision)
+        {
+            rowLayer.artwork = 0;
+            for (const int frame : rowLayer.frames)
+                if (frame >= 0)
+                    rowLayer.artwork = std::max(rowLayer.artwork, layerSprite.highResolutionRevision(unsigned(frame)));
+            rowLayer.artworkFrames = rowLayer.revision;
+            rowLayer.artworkSprite = spriteRevision;
+        }
+        return rowLayer.artwork;
+    };
+    auto drawLayer = [&](GAGCore::Sprite *layerSprite, ResourceRowCache::Layer &rowLayer,
+        int layerKey, int y, int mapY)
+    {
+        const auto &layerFrames = rowLayer.frames;
+        const auto revision = rowLayer.revision;
+        const auto layerArtwork = rowArtwork(rowLayer, *layerSprite);
         auto draw = [&](int first, int last, int originX, int originY)
         {
             for (int mapX = first; mapX <= last; ++mapX)
@@ -244,7 +266,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             {
                 drawn = cache->draw({mapIdentity, layerKey, 0, mapY, map.getW(), 1}, layerFrames,
                     [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
-                    float((x - mapX) * 32), float(y * 32), revision);
+                    float((x - mapX) * 32), float(y * 32), revision, layerArtwork);
             }
             catch (const std::bad_alloc&) {}
             if (!drawn)
@@ -259,24 +281,23 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
         }
     };
     // Every overlay row draws before the raised decor and resources.
-    const auto &rows = render.resourceRows->rows;
+    auto &rows = render.resourceRows->rows;
     if (overlaySprite)
         for (int y = top; y <= bottom; ++y)
         {
             const int mapY = (y + viewportY) & map.getMaskH();
-            const auto &overlay = rows[mapY].overlay;
+            auto &overlay = rows[mapY].overlay;
             if (overlay.visibleFrames)
-                drawLayer(overlaySprite, overlay.frames, 3, y, mapY, overlay.revision);
+                drawLayer(overlaySprite, overlay, 3, y, mapY);
         }
     for (int y = top; y <= bottom; ++y)
     {
         const int mapY = (y + viewportY) & map.getMaskH();
-        const auto &row = rows[mapY];
+        auto &row = rows[mapY];
         for (unsigned slot = 0; slot < row.decor.size(); ++slot)
             if (row.decor[slot].visibleFrames)
-                drawLayer(decorSprite, row.decor[slot].frames, DecorLayerKey + int(slot), y, mapY,
-                    row.decor[slot].revision);
-        drawLayer(sprite, row.resources.frames, 1, y, mapY, row.resources.revision);
+                drawLayer(decorSprite, row.decor[slot], DecorLayerKey + int(slot), y, mapY);
+        drawLayer(sprite, row.resources, 1, y, mapY);
     }
     return true;
 }

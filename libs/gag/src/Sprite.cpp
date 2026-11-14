@@ -270,6 +270,8 @@ namespace GAGCore
         experimentImages.swap(prepared.experimentImages); experimentRotated.swap(prepared.experimentRotated);
         highResolutionAtlas = std::move(prepared.highResolutionAtlas);
         blockCompleteHD = std::move(prepared.blockCompleteHD);
+        highResolutionLayerRevision = prepared.highResolutionLayerRevision;
+        highResolutionFrameRevisions = std::move(prepared.highResolutionFrameRevisions);
         atlas = std::move(prepared.atlas);
         atlasStamps = std::move(prepared.atlasStamps); atlasRegions = std::move(prepared.atlasRegions);
         atlasMemory = std::move(prepared.atlasMemory); atlasVariableSizes = prepared.atlasVariableSizes;
@@ -461,6 +463,17 @@ namespace GAGCore
 #endif
 	}
 	
+	void Sprite::noteHighResolutionFrame(size_t frame)
+	{
+		if (highResolutionFrameRevisions.size() < images.size()) highResolutionFrameRevisions.resize(images.size(), 0);
+		if (frame < highResolutionFrameRevisions.size())
+			highResolutionFrameRevisions[frame] = ++highResolutionLayerRevision;
+	}
+	void Sprite::noteHighResolutionReplaced()
+	{
+		highResolutionFrameRevisions.assign(images.size(), ++highResolutionLayerRevision);
+	}
+
 	void Sprite::recomputeBlockCompleteHD()
 	{
 		const size_t blockCount = (images.size() + 31) / 32;
@@ -1108,6 +1121,7 @@ namespace GAGCore
             sprite->experimentImages.swap(reload.prepared->experimentImages);
             sprite->experimentRotated.swap(reload.prepared->experimentRotated);
             sprite->recomputeBlockCompleteHD();
+            sprite->noteHighResolutionReplaced();
             sprite->releaseCoveredNativeTextures();
             it = pendingHighResolution.erase(it);
         }
@@ -1144,6 +1158,8 @@ namespace GAGCore
                     auto found = stream.pending.find(*it);
                     if (found->second.pending()) { ++it; continue; }
                     sprite->appendHighResolutionFrame(found->first, *sprite, found->second);
+                    if (sprite->experimentImages[found->first] || sprite->experimentRotated[found->first])
+                        sprite->noteHighResolutionFrame(found->first);
                     stream.completed.insert(found->first);
                     stream.pending.erase(found);
                     it = stream.active.erase(it);

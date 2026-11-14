@@ -247,8 +247,10 @@ For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
 to freeze terrain animation and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
 frames on both executables. Record cold-frame samples as well as steady-state
 medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
-warmed. Compare complete builds from both revisions; the diagnostic immediate
-path is not an untouched-master baseline.
+warmed. Its `stale_artwork` counts cached map rows replayed at their previous
+resolution while newly streamed HD frames wait to be recorded into them; it
+settles once streaming does. Compare complete builds from both revisions; the
+diagnostic immediate path is not an untouched-master baseline.
 
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.

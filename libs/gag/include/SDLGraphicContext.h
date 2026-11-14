@@ -1030,6 +1030,15 @@ namespace GAGCore
 		//! change (load and atomic HD publication); backs blockHasCompleteHD.
 		std::vector<bool> blockCompleteHD;
 		void recomputeBlockCompleteHD();
+		//! Revisions of the HD layers that became drawable: one counter for the
+		//! sprite and the value it had when each frame last gained or replaced
+		//! a layer. Only additions count: deleting a standalone layer frees its
+		//! texture, which invalidates the geometry that recorded it, and an
+		//! atlas page lives until the atlas is replaced, which does the same.
+		std::uint64_t highResolutionLayerRevision = 0;
+		std::vector<std::uint64_t> highResolutionFrameRevisions;
+		void noteHighResolutionFrame(size_t frame);
+		void noteHighResolutionReplaced();
 		void applyTeamHueShift(DrawableSurface &surface);
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
@@ -1125,6 +1134,16 @@ namespace GAGCore
 		//! resolutions from pose to pose. DrawSprite calls this per pose, so it is cached
 		//! (recomputeBlockCompleteHD) rather than rescanned every time.
 		bool blockHasCompleteHD(int index) const;
+		//! Draws choose a frame's HD or native layer when they emit it, so for
+		//! sheets drawn frame by frame (not units, whose HD choice covers a whole
+		//! action block) retained geometry is current while no frame it drew has
+		//! gained an HD layer since. The sprite revision moves whenever any
+		//! frame's does; the frame revision says which (0 if it never has).
+		std::uint64_t highResolutionRevision() const { return highResolutionLayerRevision; }
+		std::uint64_t highResolutionRevision(unsigned frame) const
+		{
+			return frame < highResolutionFrameRevisions.size() ? highResolutionFrameRevisions[frame] : 0;
+		}
 		//! Hue shift, in degrees, from this sprite's base team colour to actColor;
 		//! shared by the CPU recolor path and the uHueShift uniform of the shader.
 		//! Not const: Color::getHSV isn't const-qualified.
