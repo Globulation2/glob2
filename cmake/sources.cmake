@@ -954,6 +954,11 @@ set(GLOB2_GAG_SOURCES
     third_party/etcpak/etcpak/Dither.cpp
 )
 
+# buildsys/sources.py SSE41_SOURCES: libgag sources native x86 builds compile with -msse4.1.
+set(GLOB2_SSE41_SOURCES
+    libs/gag/src/EtcpakSse41.cpp
+)
+
 # buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).
 set(GLOB2_ANDROID_SOURCES
     src/field/OpenCLGradient.cpp
