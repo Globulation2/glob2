@@ -448179,17 +448179,17 @@
         {
           "file": "terrain-glint0.png",
           "role": "base",
-          "sha256": "646fd948af81bed10d77f6eaedaf1e33d9d27094f1996abd43469533af3ed5c1",
-          "source_sha256": "646fd948af81bed10d77f6eaedaf1e33d9d27094f1996abd43469533af3ed5c1",
+          "sha256": "6b76ed11ec70813ad0437e89d3820c87007b918d6dacc32529d9cc53c82ca792",
+          "source_sha256": "6b76ed11ec70813ad0437e89d3820c87007b918d6dacc32529d9cc53c82ca792",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "e50c1cdc170811f43ab078b43a2c776348263574188dd4d9b925da40d191d693"
+          "original_sha256": "e0032660585bc73a77a30458843e40cbde13f74bb6cc9b7853931da3ed81902f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448203,17 +448203,17 @@
         {
           "file": "terrain-glint1.png",
           "role": "base",
-          "sha256": "5b5af36b76c4c170a0b5b3fdaf60496863f36854648daa2ec78893038dac4832",
-          "source_sha256": "5b5af36b76c4c170a0b5b3fdaf60496863f36854648daa2ec78893038dac4832",
+          "sha256": "2b13b3f643073691c722774a37de01f3fecd32f3b9806f8a8b3883d544b073de",
+          "source_sha256": "2b13b3f643073691c722774a37de01f3fecd32f3b9806f8a8b3883d544b073de",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "13066a176ccb91d0eb1c10fe99c5c13dfe03c9625d2e67ac2d2d52e9efe12209"
+          "original_sha256": "713c50fcc4863876ae35b97e0639d5219deca8d3808df4782bc52289861f10f1"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448227,17 +448227,17 @@
         {
           "file": "terrain-glint2.png",
           "role": "base",
-          "sha256": "2901f0b22eb6aff4accbf3a651cc2389bc8ed969ead6e95f06877a7c932950ec",
-          "source_sha256": "2901f0b22eb6aff4accbf3a651cc2389bc8ed969ead6e95f06877a7c932950ec",
+          "sha256": "ae1ed4a467a1e2bee1f41cd15fa213c3a53ecb0ee149ea97baa1c834efb6abdd",
+          "source_sha256": "ae1ed4a467a1e2bee1f41cd15fa213c3a53ecb0ee149ea97baa1c834efb6abdd",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "b75640f0be19de0018a7b0879503be05d5d0ad5bb390174155a13aac20a208ce"
+          "original_sha256": "6248e14bf396d43f2e2b1f160407e505f2be589779cdfbaa7582687e59efcee9"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448251,17 +448251,17 @@
         {
           "file": "terrain-glint3.png",
           "role": "base",
-          "sha256": "fd7173ffdf68bfb10a0dc0c1ea0b814c7d1c4a6c0ca340411b094d4b3a4e3c02",
-          "source_sha256": "fd7173ffdf68bfb10a0dc0c1ea0b814c7d1c4a6c0ca340411b094d4b3a4e3c02",
+          "sha256": "191238c7344f3074837a7d06ba4c7352313dd253d0cae73cc36b22bec1f0bc4c",
+          "source_sha256": "191238c7344f3074837a7d06ba4c7352313dd253d0cae73cc36b22bec1f0bc4c",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "f878d50b46167443dfe09b2108fc6fd8c59a01606f048a5356ba18256fffa968"
+          "original_sha256": "c0af4b05f8cb4de1ea1538b239b2d3f140b7e4f86cf1b26d1530b2bf28929fe4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448275,17 +448275,17 @@
         {
           "file": "terrain-glint4.png",
           "role": "base",
-          "sha256": "c974909e16f0d86428b52c8c6769bfc7228878ebc4fd474bcfddc811ad8b46a7",
-          "source_sha256": "c974909e16f0d86428b52c8c6769bfc7228878ebc4fd474bcfddc811ad8b46a7",
+          "sha256": "c65f61ed632afbba8d891e0915aabfe6639e9d86b4d10a6ff07330d5ae6a0687",
+          "source_sha256": "c65f61ed632afbba8d891e0915aabfe6639e9d86b4d10a6ff07330d5ae6a0687",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "ab98f760559c2fc01e622d40ba466ba2e40bc7c894b66854475223fb70279920"
+          "original_sha256": "156d49fcf96521175e6024f06013b7634ecd7fdc3e5e608cbe7b541a329bd826"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448299,17 +448299,17 @@
         {
           "file": "terrain-glint5.png",
           "role": "base",
-          "sha256": "523954955b0f1e5e3c9adde47a1bb10fdd3c170b8fa5675735666f9db5ad20f9",
-          "source_sha256": "523954955b0f1e5e3c9adde47a1bb10fdd3c170b8fa5675735666f9db5ad20f9",
+          "sha256": "4f91c6e09eb4035dbd686996560effbfdf1783bd573228052f3cc3f8b7d15540",
+          "source_sha256": "4f91c6e09eb4035dbd686996560effbfdf1783bd573228052f3cc3f8b7d15540",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "245cec4ab6f63e081e5f501b2573ddaded628d4a7d86fdaf044584e6833225d6"
+          "original_sha256": "4078d341aff486017bdaee182659ee241e3129efa2134ce7b835b9109f7f81ec"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448323,17 +448323,17 @@
         {
           "file": "terrain-glint6.png",
           "role": "base",
-          "sha256": "0f28fc16edb4f51c5d2e9971a6dea14100558df0a65fa35b50815eb4ce69546e",
-          "source_sha256": "0f28fc16edb4f51c5d2e9971a6dea14100558df0a65fa35b50815eb4ce69546e",
+          "sha256": "f5567884d4f39fa3426dfedc61eda3a10ed36c0ebd7a9721d7a507461ea6bd5a",
+          "source_sha256": "f5567884d4f39fa3426dfedc61eda3a10ed36c0ebd7a9721d7a507461ea6bd5a",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "b026d9a6a6224b13891ed38c9c51c206e43589515dd43691c77d0aef4badda3e"
+          "original_sha256": "4da217c46388ac7f57acb3f288f4754d477036bfbe15517af6a6345cf8960e0a"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448347,17 +448347,17 @@
         {
           "file": "terrain-glint7.png",
           "role": "base",
-          "sha256": "53faa7e8a4cf0e7ff3b43b2886913b23d381ea8dd5f16ceddb8c2286ae02010c",
-          "source_sha256": "53faa7e8a4cf0e7ff3b43b2886913b23d381ea8dd5f16ceddb8c2286ae02010c",
+          "sha256": "b5a798c206d35fd59984346ce966d9d08b7cc5e0a22fd1fd5f6abe2dd7dec0a2",
+          "source_sha256": "b5a798c206d35fd59984346ce966d9d08b7cc5e0a22fd1fd5f6abe2dd7dec0a2",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "148484b4a47154c03dc2709991a16012021b393afb1bb6d0ab6f3bea468e6255"
+          "original_sha256": "c182f88df7ca09ff1e5fbf02bb81ed564ff9e8cd413036a6e9941d8beba3ba4d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448371,17 +448371,17 @@
         {
           "file": "terrain-glint8.png",
           "role": "base",
-          "sha256": "742168ccd83243727e6d69cc85b7c0ac4a48daafabd3567b233ae22dec8eda29",
-          "source_sha256": "742168ccd83243727e6d69cc85b7c0ac4a48daafabd3567b233ae22dec8eda29",
+          "sha256": "afa5aaab097580590e1cb40e5d3530ec8f3942ee2c37872f28c34bcdd6164aa3",
+          "source_sha256": "afa5aaab097580590e1cb40e5d3530ec8f3942ee2c37872f28c34bcdd6164aa3",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "854a8175fb8dc6fa83d8c16e9942c010435e61c633fe1013d48d09105deaae9e"
+          "original_sha256": "fa5b6999d615489525407bc2ffb0ab93d777d1d52953b2af79d53bf63201e3c9"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448395,17 +448395,17 @@
         {
           "file": "terrain-glint9.png",
           "role": "base",
-          "sha256": "d44ac3d9acfd90e05814df1fb0d87480892982b2773fc90ee92fa8b2ca82423c",
-          "source_sha256": "d44ac3d9acfd90e05814df1fb0d87480892982b2773fc90ee92fa8b2ca82423c",
+          "sha256": "7e4bdf1a88d2096ef127b54fff5f663f3ecb7386bba701cf8b162cf3ace06e43",
+          "source_sha256": "7e4bdf1a88d2096ef127b54fff5f663f3ecb7386bba701cf8b162cf3ace06e43",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "4b677593f0939644839073f77cad680f854b315f3051f900e3860d2fff92bca8"
+          "original_sha256": "921262c448f5bd54be277255db6bf47669c2e4850a808a7a80c89715ccf8e435"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448419,17 +448419,17 @@
         {
           "file": "terrain-glint10.png",
           "role": "base",
-          "sha256": "26561e31a8d19741c14d1744212e7a6a0309903b3579c40d7d523d8758ec7726",
-          "source_sha256": "26561e31a8d19741c14d1744212e7a6a0309903b3579c40d7d523d8758ec7726",
+          "sha256": "a1b8590656566b5f726a8ebd826d3dc803d4491f32f05cf22a4f7d9513c1c40e",
+          "source_sha256": "a1b8590656566b5f726a8ebd826d3dc803d4491f32f05cf22a4f7d9513c1c40e",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "a7bf94998defa6d518a73aaf59b40dabcb3c50180927990dd3ab5548fbfb344f"
+          "original_sha256": "519b1affd53847d5fa4e2b4692141b1b396c77b256b9ce2851581cdb2c961009"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448443,17 +448443,17 @@
         {
           "file": "terrain-glint11.png",
           "role": "base",
-          "sha256": "d1c2bd24ec0f0258b0b190bd12e0c19d13e0bb17aa0aa8a2eb1c5483be86c4cd",
-          "source_sha256": "d1c2bd24ec0f0258b0b190bd12e0c19d13e0bb17aa0aa8a2eb1c5483be86c4cd",
+          "sha256": "1475945aefd667c5fe97530f18502dcde780289553a76c98b5fc7c957c89aa87",
+          "source_sha256": "1475945aefd667c5fe97530f18502dcde780289553a76c98b5fc7c957c89aa87",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "01653ff7b84fcf3291f3fc83039cd341134025ea5569fb34ca215c5057e480b3"
+          "original_sha256": "5eb606719ea2da32758b592a368dd7ffa9443c49be5983f46cd4e1eb060d0d0b"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448467,17 +448467,17 @@
         {
           "file": "terrain-glint12.png",
           "role": "base",
-          "sha256": "71a6ffcad0e67a53c639cb675abdd80b0f3738413c21381dc24efa262294b1d0",
-          "source_sha256": "71a6ffcad0e67a53c639cb675abdd80b0f3738413c21381dc24efa262294b1d0",
+          "sha256": "7336464bc35b7c1067c4912538e28d2b47027f0e0ae9227625791d8b97f4cda7",
+          "source_sha256": "7336464bc35b7c1067c4912538e28d2b47027f0e0ae9227625791d8b97f4cda7",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "e7e028a1663b04423945b15b8e2d3ba9c8fd46a845a8bda01f20ed8dca759106"
+          "original_sha256": "db48a96b46429ac3bd398c356d578d1586e72f23e3402c2074f7cf20d55ddf6d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448491,17 +448491,17 @@
         {
           "file": "terrain-glint13.png",
           "role": "base",
-          "sha256": "0c7cc81d41516915845df80f1659e59fd6412ba05a3ef1beb66ab7d24240bd9f",
-          "source_sha256": "0c7cc81d41516915845df80f1659e59fd6412ba05a3ef1beb66ab7d24240bd9f",
+          "sha256": "6778ff9b3c0b2cf48ab5650c9b84c6c6a8a0fd5524538d86ac821a40434eaa5c",
+          "source_sha256": "6778ff9b3c0b2cf48ab5650c9b84c6c6a8a0fd5524538d86ac821a40434eaa5c",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "76ec779b06a11a6a96b691ef58db0517fe874d7088a544e21947af55e789547e"
+          "original_sha256": "f9b33b6f96958d8e2babd9d3aebce9bd47d6255960fed5a4ffe3a2ddd3d33ca0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448515,17 +448515,17 @@
         {
           "file": "terrain-glint14.png",
           "role": "base",
-          "sha256": "94d552da39b9792816acc8883f6b0333e1e96b9cb423ba8c5ffd5520574013f9",
-          "source_sha256": "94d552da39b9792816acc8883f6b0333e1e96b9cb423ba8c5ffd5520574013f9",
+          "sha256": "351ec5d0d0d4b922e312a132607bfc74295ac9b9a13ab32d9b95f5178b8ce996",
+          "source_sha256": "351ec5d0d0d4b922e312a132607bfc74295ac9b9a13ab32d9b95f5178b8ce996",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "69d3df04efff3ffa3958dc59f618138f6cf50def3650ce828ecd5557b02a6b1b"
+          "original_sha256": "befc5ce3b980506abcf74be0bf20fb1736c0543c4e94fd2afd5be4d77599a971"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448539,17 +448539,17 @@
         {
           "file": "terrain-glint15.png",
           "role": "base",
-          "sha256": "906ba548867fcdd339f6ec9b1af7f090519b33b51905d56cf5638a12da764629",
-          "source_sha256": "906ba548867fcdd339f6ec9b1af7f090519b33b51905d56cf5638a12da764629",
+          "sha256": "1b2d188f2a10e5c78f1c9cdb7af696f9fd6fdb67191a2060957c8270a15e0cec",
+          "source_sha256": "1b2d188f2a10e5c78f1c9cdb7af696f9fd6fdb67191a2060957c8270a15e0cec",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "bacad5a32a28b9a2785c562fb4f1054fbc4b532c1e1e1caaa0c806ea17a72772"
+          "original_sha256": "6890197f0b201a790988e19b380e76c3ef3cfe6815bca4e3a2622666f9b271cb"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448563,17 +448563,17 @@
         {
           "file": "terrain-glint16.png",
           "role": "base",
-          "sha256": "4be3775bb5d1186e3491529b5b13b803b63d373c0b2617fae05487b250dbc459",
-          "source_sha256": "4be3775bb5d1186e3491529b5b13b803b63d373c0b2617fae05487b250dbc459",
+          "sha256": "191459e9d9b2588b0fecda0a898d9d6dbbcaa58ece38fe4f7c8267eeafcf4742",
+          "source_sha256": "191459e9d9b2588b0fecda0a898d9d6dbbcaa58ece38fe4f7c8267eeafcf4742",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "84a8b9b1de6b23e69d4e4137168cc14e67c4e6b68120f305d56eb83eba2c413b"
+          "original_sha256": "07167b281da1e859c6f8e9e1fe2a32f04c64ab9334b4dceef5c3105eabe22186"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448587,17 +448587,17 @@
         {
           "file": "terrain-glint17.png",
           "role": "base",
-          "sha256": "e92f4967cc45569667a15356846c1a945eaeeaaf13314f0d13da65f058d79ef1",
-          "source_sha256": "e92f4967cc45569667a15356846c1a945eaeeaaf13314f0d13da65f058d79ef1",
+          "sha256": "cb1af8e094985f87cc6febf11120896ae61d4e9881a5b0ce5000f2a8a55c74d7",
+          "source_sha256": "cb1af8e094985f87cc6febf11120896ae61d4e9881a5b0ce5000f2a8a55c74d7",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "76fd78d9505004ba18bce44b05f9511acddab24385f82a7ca949e7b0ad50721a"
+          "original_sha256": "16456e1d971f69c7f59565dc860598c00de634eee6a08f334364c31c8051fda4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448611,17 +448611,17 @@
         {
           "file": "terrain-glint18.png",
           "role": "base",
-          "sha256": "51a5020b25f64f309ed215c054597ce3f033eef4b623910c38b24a69e65f9a5f",
-          "source_sha256": "51a5020b25f64f309ed215c054597ce3f033eef4b623910c38b24a69e65f9a5f",
+          "sha256": "85d9aa8d85079a082ebe097eff7fb8c121f604468d1bbd7ee8c6444fc6f1a7d6",
+          "source_sha256": "85d9aa8d85079a082ebe097eff7fb8c121f604468d1bbd7ee8c6444fc6f1a7d6",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "18b1f76e79208893e23d9f63152e8c91e155e08b50889bf9700f8443f348d4e6"
+          "original_sha256": "383a7133fe91fb8d1633991e1ad5365d69938e3af28f768c1523aedb5cef82c1"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448635,17 +448635,17 @@
         {
           "file": "terrain-glint19.png",
           "role": "base",
-          "sha256": "0709508fbf5c9d4d123f7b1b3ee86bfdf48941464b2719b2ac3c02e07b11468f",
-          "source_sha256": "0709508fbf5c9d4d123f7b1b3ee86bfdf48941464b2719b2ac3c02e07b11468f",
+          "sha256": "dc2548c23ca8d95b2c2e9a1390327b9b4c9dcb93f1221a99f85c64adca406fc8",
+          "source_sha256": "dc2548c23ca8d95b2c2e9a1390327b9b4c9dcb93f1221a99f85c64adca406fc8",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "e02d89a6be3170ceb0f2b58bfb380bde081399e026150e4b35615cbd06a81985"
+          "original_sha256": "0b1b9ea180302e28bfa6a925fc0a1b88fd3f81923b045820dfccd634d42537f2"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448659,17 +448659,17 @@
         {
           "file": "terrain-glint20.png",
           "role": "base",
-          "sha256": "3d39e773edd6bdce7c8b54e61e17152a059d896b453c135d03e4d1abe402b7b5",
-          "source_sha256": "3d39e773edd6bdce7c8b54e61e17152a059d896b453c135d03e4d1abe402b7b5",
+          "sha256": "3e762b2bc2bff95546b49a910edc08b6fd86d46a6fe431703e21e8d474e17243",
+          "source_sha256": "3e762b2bc2bff95546b49a910edc08b6fd86d46a6fe431703e21e8d474e17243",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "056c24087e1cc3f37dbf2e7774f848f5acf79553a8b40c2ff0ed12cb5f1a8078"
+          "original_sha256": "6763b1ed67fb6b596f53091e3a05a46fed6755a2c98c772d70b8e731786d1920"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448683,17 +448683,17 @@
         {
           "file": "terrain-glint21.png",
           "role": "base",
-          "sha256": "84f6aa05026e7079ceb1877dc4be4aadbe3340ed87251b5965ee053058b0315a",
-          "source_sha256": "84f6aa05026e7079ceb1877dc4be4aadbe3340ed87251b5965ee053058b0315a",
+          "sha256": "10f12b4712222aab04114eeb7edfa430b6add94c0f4d9e931a4e40f37df7b465",
+          "source_sha256": "10f12b4712222aab04114eeb7edfa430b6add94c0f4d9e931a4e40f37df7b465",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "73745b7df6b5f88644d72bb32fc452224b041bf06ef210cdd9110502731c9b51"
+          "original_sha256": "24b3d5685ac235c161d1e243a9e1185c552229854a9beb658a2f8cd0d09f375c"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448707,17 +448707,17 @@
         {
           "file": "terrain-glint22.png",
           "role": "base",
-          "sha256": "1a2cb8f79fd5477a835319c77441cd497387eb55778d8217adc7e67deff0e076",
-          "source_sha256": "1a2cb8f79fd5477a835319c77441cd497387eb55778d8217adc7e67deff0e076",
+          "sha256": "641d6d3d4997a45a102573ff1042052288830a2f580b6a25336121f694b85c19",
+          "source_sha256": "641d6d3d4997a45a102573ff1042052288830a2f580b6a25336121f694b85c19",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "83791408807389e64b0c0cb84cb712873b050c359c2a78af0be17f304b0c94db"
+          "original_sha256": "5999d3fe6183d3ee55953bbbfdbfa87bac87a02e1bdc7184b7cf19832b36f600"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448731,17 +448731,17 @@
         {
           "file": "terrain-glint23.png",
           "role": "base",
-          "sha256": "edd4097e59a9395624f9590c6e39f9c1f54053f1e6847d5ea598c6422b60b819",
-          "source_sha256": "edd4097e59a9395624f9590c6e39f9c1f54053f1e6847d5ea598c6422b60b819",
+          "sha256": "a7b3fa20d70dac800f1b8d81f5fb5ecbbb09f882106802fd653e09c1f79b6dca",
+          "source_sha256": "a7b3fa20d70dac800f1b8d81f5fb5ecbbb09f882106802fd653e09c1f79b6dca",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "e1615c1ca633f803a06f781761ac59ed0b7721241ab9f6ff10ee5fa26779083e"
+          "original_sha256": "afcb11efd6b48c71cb612b57f822c81ee8ecf9ca517439a2a99f3c34dae7e69f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448755,17 +448755,17 @@
         {
           "file": "terrain-glint24.png",
           "role": "base",
-          "sha256": "31c61525cc2399b8ddf83bb5fe0d20f8a4f91e525ae8dd01899a979468ddc91d",
-          "source_sha256": "31c61525cc2399b8ddf83bb5fe0d20f8a4f91e525ae8dd01899a979468ddc91d",
+          "sha256": "0ca3c12ae57605ddf08d54245ab141ea5e3b9090c43865f51ed2573fabf61e75",
+          "source_sha256": "0ca3c12ae57605ddf08d54245ab141ea5e3b9090c43865f51ed2573fabf61e75",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "f07ca8a2ff2b2069754f506cf4bf116661b50fefe506fa327563ca0f7a8f794f"
+          "original_sha256": "fcad3ce27bce273ba7c2bb35893de0ad413d7f7cd83e913abd9be64c1cca8fb3"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448779,17 +448779,17 @@
         {
           "file": "terrain-glint25.png",
           "role": "base",
-          "sha256": "ca4b66b7c8c6a93b8f6a659e696c672fb1fe25acb1d50392c3028125664b80f2",
-          "source_sha256": "ca4b66b7c8c6a93b8f6a659e696c672fb1fe25acb1d50392c3028125664b80f2",
+          "sha256": "d4547e6146e564aa8f15f1cb7f9566f0ccd914b4c050d531efa364a3e92d7934",
+          "source_sha256": "d4547e6146e564aa8f15f1cb7f9566f0ccd914b4c050d531efa364a3e92d7934",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "f4bd53aed03c96b845ee57db37f8774674c255154ec2dce343f476b657858923"
+          "original_sha256": "1adc4417acc76cfbac8375a923001dcd96d390279bb5f8f1aa4f4591aad89ece"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448803,17 +448803,17 @@
         {
           "file": "terrain-glint26.png",
           "role": "base",
-          "sha256": "11c73beaf3b3fb8d80e07427364b0411e36b7e11ec45921c7a872899ef2490c2",
-          "source_sha256": "11c73beaf3b3fb8d80e07427364b0411e36b7e11ec45921c7a872899ef2490c2",
+          "sha256": "de89cbb2fa3457f704154eff1a7eeda1b29d6e5768c7f93383d497a5715b21dd",
+          "source_sha256": "de89cbb2fa3457f704154eff1a7eeda1b29d6e5768c7f93383d497a5715b21dd",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "2758c75f9ce21a75959b1447f4e07895e44bb8699bfdb842e7f43bc43b8f2082"
+          "original_sha256": "962e15f0d2e56d9145a7ebc46fde423ea84fa7d030899facb3a3d9ca1ac38d9d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448827,17 +448827,17 @@
         {
           "file": "terrain-glint27.png",
           "role": "base",
-          "sha256": "9ddfa87533e35c17a7937f75c0337111bd2c13b27394d7d688ac9902c738e490",
-          "source_sha256": "9ddfa87533e35c17a7937f75c0337111bd2c13b27394d7d688ac9902c738e490",
+          "sha256": "865c84a9c71006c1c65ee34b6475e14adc838f1052c37aef6182d950d70eaefd",
+          "source_sha256": "865c84a9c71006c1c65ee34b6475e14adc838f1052c37aef6182d950d70eaefd",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "77f39c46bf057226a230196e5b824d2333a6ee54148fbacb9d9739de244b9c5e"
+          "original_sha256": "868a6e7a2ae599061ed3995256e02914f3d6c0d1756e9df5dbd13cd31b4af297"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448851,17 +448851,17 @@
         {
           "file": "terrain-glint28.png",
           "role": "base",
-          "sha256": "aadb0c46e562c50703d84bd6d958908ca55072aab5a29ff3e6a73b75a02de898",
-          "source_sha256": "aadb0c46e562c50703d84bd6d958908ca55072aab5a29ff3e6a73b75a02de898",
+          "sha256": "56a5e889d0c26ad4e748de9c1e20256edac45cdc37e5cec377c4120f77a3fe76",
+          "source_sha256": "56a5e889d0c26ad4e748de9c1e20256edac45cdc37e5cec377c4120f77a3fe76",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "0c555eee53809752b670de10eb9080ef619938eaadb9586a8197aa5478c1dbf3"
+          "original_sha256": "ae9e4e20f067fd10ab22e248c4a01550e1b878d5d3915e04d963015c48f981ae"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448875,17 +448875,17 @@
         {
           "file": "terrain-glint29.png",
           "role": "base",
-          "sha256": "572b085da9815051a86a09fc8fad3cd10ba7b098f28d9bbe30a7717a3e862918",
-          "source_sha256": "572b085da9815051a86a09fc8fad3cd10ba7b098f28d9bbe30a7717a3e862918",
+          "sha256": "cd32ccf0d3df49530ccc2d271ecc8293b3002b09857d52b19bfd414385800175",
+          "source_sha256": "cd32ccf0d3df49530ccc2d271ecc8293b3002b09857d52b19bfd414385800175",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "8137bb7c17ab2e87bb28159f7d5149d59536ef152642e0d5c262fbfa612a45f3"
+          "original_sha256": "a0e03b1a4256ed9c35a572768f5db52d14bebcb193d53db2a970ac9232b64962"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448899,17 +448899,17 @@
         {
           "file": "terrain-glint30.png",
           "role": "base",
-          "sha256": "1654edb3bdc96b5563d0334630cf222633cc9492a38b811d02cccf0a6db6bc39",
-          "source_sha256": "1654edb3bdc96b5563d0334630cf222633cc9492a38b811d02cccf0a6db6bc39",
+          "sha256": "1a948adc71970e4ee712bf5257c9a38ab25f390a082214c1b5b590dc66b8db26",
+          "source_sha256": "1a948adc71970e4ee712bf5257c9a38ab25f390a082214c1b5b590dc66b8db26",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "352355e8d9c7abed92061be074efe8592b8640cbc22e7d05ce171d0d8c878264"
+          "original_sha256": "beb377c1c273d8ffc1e8d01fb64ff2ca938e7e1f058a5405bd4036ef5de3776d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -448923,17 +448923,17 @@
         {
           "file": "terrain-glint31.png",
           "role": "base",
-          "sha256": "44e90828c15b7865369017546fe4e5d5c6e284c076ae1ff0060bac5a191e5f92",
-          "source_sha256": "44e90828c15b7865369017546fe4e5d5c6e284c076ae1ff0060bac5a191e5f92",
+          "sha256": "71ea4c65b7421e613a91ba56e1e83480b863ff0d156e243439c47000cf0d3263",
+          "source_sha256": "71ea4c65b7421e613a91ba56e1e83480b863ff0d156e243439c47000cf0d3263",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "7545a61062b1a7716348152acd2f76236dcb6644149c7b4e3ebd051c0037c373"
+          "original_sha256": "f890d107e0a889b0f9a1a4335cf4cf5a14064361b105f92a0c50aeba4381ea3d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_glints.py",
-          "sha256": "df3f85c358d8579fae1835d5bae779c30eea92100b713f1e48583c6fcf915db8"
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     },
@@ -1058950,6 +1058950,1542 @@
         {
           "path": "tools/artwork/terrain_packs/_grass.py",
           "sha256": "6f1fb9e71aa55bae4945d610ac606e7a67003fbfaa5a79822c75d8e67ac4669c"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint32",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint32.png",
+          "role": "base",
+          "sha256": "1a719d536d4cde69809ac4a47011b25f3e346d13a3845f81a4643fb983fb5576",
+          "source_sha256": "1a719d536d4cde69809ac4a47011b25f3e346d13a3845f81a4643fb983fb5576",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "c38019b14e062ccb1355710cf73b39774dc9aeaea7daf3f319371efc64083d3a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint33",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint33.png",
+          "role": "base",
+          "sha256": "dd14dee8a88c442b8d525ea49728e1a42fca140face69b4000f5f81eef622779",
+          "source_sha256": "dd14dee8a88c442b8d525ea49728e1a42fca140face69b4000f5f81eef622779",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "c67316c05a63f7e3436c4abc8d105b52ee8d3a4c8003728f261ca507a7ecd577"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint34",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint34.png",
+          "role": "base",
+          "sha256": "2e720cd8586cd8d19db7b56aa638bf645bee1263b664eac228f459c394dccb29",
+          "source_sha256": "2e720cd8586cd8d19db7b56aa638bf645bee1263b664eac228f459c394dccb29",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "ef5a735c42544a28246acba2afcafd6e6b822e8a39024799e93e48a05c952401"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint35",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint35.png",
+          "role": "base",
+          "sha256": "24775b4b1a6f3de2bf983356d6e7103965cfe2fe4f6477c62674bcae2337023c",
+          "source_sha256": "24775b4b1a6f3de2bf983356d6e7103965cfe2fe4f6477c62674bcae2337023c",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "da0043fe5e56ed0696f69fabd75893416e26f09ff733f79cf34445a50a65e14d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint36",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint36.png",
+          "role": "base",
+          "sha256": "0ac6d34e0fca637081ce6a195e0757324f1bdffa403170a09b5ce98e47ba2459",
+          "source_sha256": "0ac6d34e0fca637081ce6a195e0757324f1bdffa403170a09b5ce98e47ba2459",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "b874bc22def811a7c6b56e4e1fb9912b921b1bfe3e7a8a1e9b1b30cfb47527c3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint37",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint37.png",
+          "role": "base",
+          "sha256": "52da0d6da4051427c91ad16e2255bfc67d3f27307d1a068f71647e6f32224b81",
+          "source_sha256": "52da0d6da4051427c91ad16e2255bfc67d3f27307d1a068f71647e6f32224b81",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "d114f16cf22b2c889e160ad02022f7d9e76d9ede443dc4f19f3f4592ae0f2c98"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint38",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint38.png",
+          "role": "base",
+          "sha256": "e38c167f0a02eba13181c49009cd4764c7f2eaba295b5716c879098e78370be2",
+          "source_sha256": "e38c167f0a02eba13181c49009cd4764c7f2eaba295b5716c879098e78370be2",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "f501d0022d51886095d4a9a20cf0216eb7ab50a2cf468ef4d90604657e98b412"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint39",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint39.png",
+          "role": "base",
+          "sha256": "5d1599eea135d93b53cc8f85d092a7af800be4050dd696223cf515b740b6b32e",
+          "source_sha256": "5d1599eea135d93b53cc8f85d092a7af800be4050dd696223cf515b740b6b32e",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "b83f08427d778b5f99a9b24caafd3bf0b8e914aea06474a26025f09e5bcac907"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint40",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint40.png",
+          "role": "base",
+          "sha256": "f024b513c31f799556d0b8a7001c3784ca8f34aaccbd2c823b34bed2c4dc4caa",
+          "source_sha256": "f024b513c31f799556d0b8a7001c3784ca8f34aaccbd2c823b34bed2c4dc4caa",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a3e70ca2a531a9b3f7e8146834b73e25fdf280a3306237b120c9d929b80dcba9"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint41",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint41.png",
+          "role": "base",
+          "sha256": "fd51213cf8b5d4b34ea56b50185dd577c33c28a2622eb6cc7e89becda967d1d1",
+          "source_sha256": "fd51213cf8b5d4b34ea56b50185dd577c33c28a2622eb6cc7e89becda967d1d1",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "63cd58e37e88bcac69ad4c35ff4a1d1b514659b71865aba6a739c1a2e8af2846"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint42",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint42.png",
+          "role": "base",
+          "sha256": "dc4f114d7e8702e251de2cadb6a1e91e8aa6314bc42d6025a4861e22b6569ce6",
+          "source_sha256": "dc4f114d7e8702e251de2cadb6a1e91e8aa6314bc42d6025a4861e22b6569ce6",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "acf322ca9a360db388a132db073e0c9f7cddce37b76fffabbf733f4a772ec442"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint43",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint43.png",
+          "role": "base",
+          "sha256": "1181688119910439168ea804120ab1a7cdc662e958b354474d897485bdad9022",
+          "source_sha256": "1181688119910439168ea804120ab1a7cdc662e958b354474d897485bdad9022",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "4ee82dd6284d44191de49bac6cafa96e076c2f24f3c396fe083f1ccf7111038a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint44",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint44.png",
+          "role": "base",
+          "sha256": "c19762452a657fc59193529b2f13f54379b2ff08ca19d5b3753fa42f5125c947",
+          "source_sha256": "c19762452a657fc59193529b2f13f54379b2ff08ca19d5b3753fa42f5125c947",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "6e31c85107d9231ba24a3f1f58a01c38f3e400928a22cdf751a3b3b577a755e7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint45",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint45.png",
+          "role": "base",
+          "sha256": "79e0cd135665baf27f755b65030bcbaebdc7297397d6d993ed4ab841f52eaead",
+          "source_sha256": "79e0cd135665baf27f755b65030bcbaebdc7297397d6d993ed4ab841f52eaead",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "dfecb38447a57ace195636942ed3f91504c5ea6d1677d2781bec657581457903"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint46",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint46.png",
+          "role": "base",
+          "sha256": "0cab47ae7dd47d6b232af94a327b8ca575be86b6bc2f206168c98e276af0aed1",
+          "source_sha256": "0cab47ae7dd47d6b232af94a327b8ca575be86b6bc2f206168c98e276af0aed1",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "792fa76b5e64dbfe3f116c7c0f35ada48742cf9420ad31227a097146e9f2d88a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint47",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint47.png",
+          "role": "base",
+          "sha256": "a7c9d50c085eadf7bd9b7dd22c127e375c4eef29ed8569381c821f83d7546065",
+          "source_sha256": "a7c9d50c085eadf7bd9b7dd22c127e375c4eef29ed8569381c821f83d7546065",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "b38708f1e00c4c66e20e8ad7a832773f8f0c3c50a5af56b26e024f6be604f957"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint48",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint48.png",
+          "role": "base",
+          "sha256": "176490a495bc6e69a34f9a1459b61354200ab52e6427511b4e00f65fd000f5e5",
+          "source_sha256": "176490a495bc6e69a34f9a1459b61354200ab52e6427511b4e00f65fd000f5e5",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "e914fe64b8f76acde54761f3e690b2ecc98e6fab1f8a0a67da8534e762af7920"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint49",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint49.png",
+          "role": "base",
+          "sha256": "bf31eca50f50e785c55c51342886772279978cb2defc65861aa0305d146d52e1",
+          "source_sha256": "bf31eca50f50e785c55c51342886772279978cb2defc65861aa0305d146d52e1",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "530210e220051f76d525d0d4e100bc580550bc83863e6b8cae9b4def73c16254"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint50",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint50.png",
+          "role": "base",
+          "sha256": "ae3de7d715e875566a6446f996558fbe7c23631c29ba73e54eda3021d3ff8fde",
+          "source_sha256": "ae3de7d715e875566a6446f996558fbe7c23631c29ba73e54eda3021d3ff8fde",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "f16003cbf8067b9951a2c7be7c4a39968b878349d6610051e79bcb84fc19f6e9"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint51",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint51.png",
+          "role": "base",
+          "sha256": "c3a3c7fd8dde2bc8951db903d128d9859fe9280d62e00f9f0e814dbe7f9a4d4a",
+          "source_sha256": "c3a3c7fd8dde2bc8951db903d128d9859fe9280d62e00f9f0e814dbe7f9a4d4a",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "acb6ae8c21d4ce581a483ce59d5cef9549a05199a0e09f2b90fa02c8ca128eb4"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint52",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint52.png",
+          "role": "base",
+          "sha256": "08fd9314b9f75bf7ec61ca375fdc5b3da45a22246de7ecdd5d122a2a8302e5a7",
+          "source_sha256": "08fd9314b9f75bf7ec61ca375fdc5b3da45a22246de7ecdd5d122a2a8302e5a7",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "6bb0cab78ff21ab22a2bebc7522cd2c143a0fdde913e9091a02d1f0fad253579"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint53",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint53.png",
+          "role": "base",
+          "sha256": "b06feb7c73f4b463bcea2a959d0d1da580c93f6fd888c600c8691f88230c34cc",
+          "source_sha256": "b06feb7c73f4b463bcea2a959d0d1da580c93f6fd888c600c8691f88230c34cc",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "03b30813a9f428fd680ac4347477fe5547c458eedee6c2c3b622082a906ef634"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint54",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint54.png",
+          "role": "base",
+          "sha256": "e399806953430427e93688bd07d90a361102ed0606fec37a692b451112a809e6",
+          "source_sha256": "e399806953430427e93688bd07d90a361102ed0606fec37a692b451112a809e6",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "bdbd1d2d3d814c9c38d2faaf739d73d9268732d474dd661f35065549f2f6b71d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint55",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint55.png",
+          "role": "base",
+          "sha256": "4990fac795a9b7b1d8918a8309e2fb20da660b6bafae7a5e2d02c77c1b1edcdb",
+          "source_sha256": "4990fac795a9b7b1d8918a8309e2fb20da660b6bafae7a5e2d02c77c1b1edcdb",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a22fd29088d3e495cfcb25ac79234b0492eef65bdeb928350072d60fefa2a4de"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint56",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint56.png",
+          "role": "base",
+          "sha256": "f1db2f29853171931414c81ebc3b273c43c2d59bbeadb20afbebed57e7f764fe",
+          "source_sha256": "f1db2f29853171931414c81ebc3b273c43c2d59bbeadb20afbebed57e7f764fe",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "0a9baf98886d11db9abc5ab94b8c75215510bab5a4d75d88d8a618ef6d0414ff"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint57",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint57.png",
+          "role": "base",
+          "sha256": "ea7867f989c69eb389365cd10c6b26786b29cd48e1b9572bb245fa1d8586bd15",
+          "source_sha256": "ea7867f989c69eb389365cd10c6b26786b29cd48e1b9572bb245fa1d8586bd15",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "0d245f68943a0da4c23de9187afd3f3ad3af48dbcaa3697b1ef4ae79189977cc"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint58",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint58.png",
+          "role": "base",
+          "sha256": "dc9c858ed3f5ff9b9baf64a224f91006ab5234da1fa4b7e657336fe1933ebc25",
+          "source_sha256": "dc9c858ed3f5ff9b9baf64a224f91006ab5234da1fa4b7e657336fe1933ebc25",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "71559b5fe1957a204bf8e9142a79a71abb6ad4e06f3e1044d48505add7a24daf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint59",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint59.png",
+          "role": "base",
+          "sha256": "0beb0d8501923d3b269b02063c7d69e1cfd196a32d413c78fbf00148cc704bb3",
+          "source_sha256": "0beb0d8501923d3b269b02063c7d69e1cfd196a32d413c78fbf00148cc704bb3",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "0d18b3ac724ca5bba24ed0c55d88e174aab12472a6090850eff8a14dc5bd7f21"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint60",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint60.png",
+          "role": "base",
+          "sha256": "e7150956dc869ebc6f4e611051e22f161f6b64e918afe4040f0c6717b9ff7789",
+          "source_sha256": "e7150956dc869ebc6f4e611051e22f161f6b64e918afe4040f0c6717b9ff7789",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "3337607d68a1f379a3df783af1dac0612406ef56ed2244a216dd5dd4eaf8a9a2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint61",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint61.png",
+          "role": "base",
+          "sha256": "93ce6ca3773646af71d23fed342193f3e0701e5175408df43680519cd9336449",
+          "source_sha256": "93ce6ca3773646af71d23fed342193f3e0701e5175408df43680519cd9336449",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "79a4a4ae9427def03549a9f4a5714bbcd613cc7c13557d327680e3fc710337ad"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint62",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint62.png",
+          "role": "base",
+          "sha256": "e4789ee053ff037d71f3157060e537804c8ab853287544d2a12e74ccf2282900",
+          "source_sha256": "e4789ee053ff037d71f3157060e537804c8ab853287544d2a12e74ccf2282900",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "19c0fcf1dd1cf5a79c058b918c2f509f7c80d3a3ef4d8eb4b1c24060118f536f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint63",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint63.png",
+          "role": "base",
+          "sha256": "d3a1b7d1010aa18caca5bc94d4d8ed89d1aac56d7e8b1a8ba7ad9f50ac9978d0",
+          "source_sha256": "d3a1b7d1010aa18caca5bc94d4d8ed89d1aac56d7e8b1a8ba7ad9f50ac9978d0",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "79e6d029a70b783c02ab509a5b87ffe9fd8c73cc10101cd50afcbadd5ab78191"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint64",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint64.png",
+          "role": "base",
+          "sha256": "c530300255a9ea1d15c97c135e76805e01503d28afd213a975a160342aa8de99",
+          "source_sha256": "c530300255a9ea1d15c97c135e76805e01503d28afd213a975a160342aa8de99",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "c0bbedb6c7cbd1368491e405ff4a4e26ccaa400c7b6c68493556c2f368864df6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint65",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint65.png",
+          "role": "base",
+          "sha256": "2a557e93305d921ab87ba38f4b1407c7b650767e51282bac89cf22a0e08e9086",
+          "source_sha256": "2a557e93305d921ab87ba38f4b1407c7b650767e51282bac89cf22a0e08e9086",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "4c648cf78f3d25a642d72e30ba3a642994912a8efc1ac7ec3f691413de518c1f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint66",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint66.png",
+          "role": "base",
+          "sha256": "1dc9fa768137cbec41010ee6e63cb70135f3eb2fb31ffd056429b9b1117ba3fe",
+          "source_sha256": "1dc9fa768137cbec41010ee6e63cb70135f3eb2fb31ffd056429b9b1117ba3fe",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "49d679041777f70cee7d8f522dd0aed28315f1824102ad796a3f752234d29485"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint67",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint67.png",
+          "role": "base",
+          "sha256": "0464c271004f38937f8c24b604490c4d619b3e214f03154b455c013c5229bbd4",
+          "source_sha256": "0464c271004f38937f8c24b604490c4d619b3e214f03154b455c013c5229bbd4",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "5a468e69f93b6e9acc92787671ba958cf1eaf75f71a368dfe336107e960e0fad"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint68",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint68.png",
+          "role": "base",
+          "sha256": "5b082adc2af91f158adac80d9687fb626f15343e048e69a0b38270bac6698ef1",
+          "source_sha256": "5b082adc2af91f158adac80d9687fb626f15343e048e69a0b38270bac6698ef1",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "e40779ec2151e27463d1fa31a44db3f0027c8b6a3a0a52d12e37765663c947c9"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint69",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint69.png",
+          "role": "base",
+          "sha256": "f9953e6d5940a94be501db6c9cce22761c2cdf94448475b8932c3e6243cf5358",
+          "source_sha256": "f9953e6d5940a94be501db6c9cce22761c2cdf94448475b8932c3e6243cf5358",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "3da1cf8ca84412b95232fbcb32a74e6eb147ca4a7aaf2d0a41a8e472deb848a4"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint70",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint70.png",
+          "role": "base",
+          "sha256": "efd26088dc01426c5a16f44069072a452edccf07324b55c8eddef95b04aff351",
+          "source_sha256": "efd26088dc01426c5a16f44069072a452edccf07324b55c8eddef95b04aff351",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "b7a6909aa03f201ebffc0b752c112843fea2826976292b1cdbd763ab23d2d6de"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint71",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint71.png",
+          "role": "base",
+          "sha256": "467fb86519910ea3c5425c204bc8acc7f14422b49832c1260f26a4a8d9ef6ad5",
+          "source_sha256": "467fb86519910ea3c5425c204bc8acc7f14422b49832c1260f26a4a8d9ef6ad5",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "97271d3ce8635be40b0062c6612f219a086a285660098255b24c0d3e0198f751"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint72",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint72.png",
+          "role": "base",
+          "sha256": "a6ddb9d6f0677221a80689348f4036d465c2aa8c7c5fe84aed67a98e4716e44a",
+          "source_sha256": "a6ddb9d6f0677221a80689348f4036d465c2aa8c7c5fe84aed67a98e4716e44a",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a7abdd6fee15572c296e19bd714d8a60934e95e81c6867751b92b8bca55d32cd"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint73",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint73.png",
+          "role": "base",
+          "sha256": "5ae6c69dbfdbc4ac7cdd0a67707f807a12d38c10b56cdc42329596b6fee88955",
+          "source_sha256": "5ae6c69dbfdbc4ac7cdd0a67707f807a12d38c10b56cdc42329596b6fee88955",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "d27e8e5e936635591d0851eb2ee2e957a2357250b536fc39f94175e827381d93"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint74",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint74.png",
+          "role": "base",
+          "sha256": "5790395b1b9c1f841b5264431897a6b3f3a1dee4265c0d0b55784a374b96180e",
+          "source_sha256": "5790395b1b9c1f841b5264431897a6b3f3a1dee4265c0d0b55784a374b96180e",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "2326a713dcc9e99cc7641b8e1efc0a5af02fa720543852367367c9af9155a1c6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint75",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint75.png",
+          "role": "base",
+          "sha256": "c399806ce4bf822dbfeb5860cda4f250dc1728ff3e3b834883c68597a5e7aef3",
+          "source_sha256": "c399806ce4bf822dbfeb5860cda4f250dc1728ff3e3b834883c68597a5e7aef3",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "16a65d8bd9e2c0e695771182f98ff4531d9d02b8b8dec4a5f33c93c5b0421452"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint76",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint76.png",
+          "role": "base",
+          "sha256": "21b71878700c2910cc8648eb7802957ecf24e71d0f9da6a38addc860377286e6",
+          "source_sha256": "21b71878700c2910cc8648eb7802957ecf24e71d0f9da6a38addc860377286e6",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "5564dee06b284ee2d376bb355fef972ebc3b432037093dee1330fb50ae930474"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint77",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint77.png",
+          "role": "base",
+          "sha256": "21e826ea60f4b5f5a4b81c33940152ebc2eb61595817b4cb4f24d5d96d7fa7de",
+          "source_sha256": "21e826ea60f4b5f5a4b81c33940152ebc2eb61595817b4cb4f24d5d96d7fa7de",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "14be0a4882946bf5e232c7f45bc93221538e8f268dbb2c7ee42b69d4a53c1ce6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint78",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint78.png",
+          "role": "base",
+          "sha256": "2ee9ead2360dfccfe125271d6382ba97c582c6ebd854376c3444eabad989b0cb",
+          "source_sha256": "2ee9ead2360dfccfe125271d6382ba97c582c6ebd854376c3444eabad989b0cb",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "21a4413ff97b5ece7b561a2c521d8e34e5cb6162f08ce7c223cd29c7019d5bba"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint79",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint79.png",
+          "role": "base",
+          "sha256": "06def44307d153fe6cbf2e2f8e296cb2acece072eb3396da799f205c0fde4603",
+          "source_sha256": "06def44307d153fe6cbf2e2f8e296cb2acece072eb3396da799f205c0fde4603",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "8ef74ad22ba1418d96062d94c1c17e9a270c0549d45e8a82c5e0e2bdb69e2068"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint80",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint80.png",
+          "role": "base",
+          "sha256": "75eb8d6c9e9a530502e8a963f3751c3c567a6366ab257ba87b3d9dc510a9891d",
+          "source_sha256": "75eb8d6c9e9a530502e8a963f3751c3c567a6366ab257ba87b3d9dc510a9891d",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "21b38f5aab9581afedd9801216512f89302853bdde618fb864451254163c7b64"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint81",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint81.png",
+          "role": "base",
+          "sha256": "60c47ee20827896b134950054f832eec623b34e6e130f3f8a7ffc034fb74fab8",
+          "source_sha256": "60c47ee20827896b134950054f832eec623b34e6e130f3f8a7ffc034fb74fab8",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "614ce97a09fc1ad840ece5dc158490b222b8fa68cdafd8f8c6fe7386ddac6ba5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint82",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint82.png",
+          "role": "base",
+          "sha256": "ff02e069a442a52640f0e9edc764665bc49c22e9716971a077083a1ee2535a66",
+          "source_sha256": "ff02e069a442a52640f0e9edc764665bc49c22e9716971a077083a1ee2535a66",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "5cbdc350178a4c457dbba4a66592e827cacd80e975745c36e9fc138aaada226f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint83",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint83.png",
+          "role": "base",
+          "sha256": "8d0e676eb2785fc8093c71c53beff8e261a6bb44c064305f4ecaf5d1d90697f8",
+          "source_sha256": "8d0e676eb2785fc8093c71c53beff8e261a6bb44c064305f4ecaf5d1d90697f8",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a6e6ad7bc475a12558d5a159f3146464a42ba0cb6dfd9e7184379b0319778651"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint84",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint84.png",
+          "role": "base",
+          "sha256": "2067708f3605cc7c0df807e2a85a82a41df4b1339ce16d23ce7cd9bb2eb1c452",
+          "source_sha256": "2067708f3605cc7c0df807e2a85a82a41df4b1339ce16d23ce7cd9bb2eb1c452",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "bad944e4fe2a78a2859f8037f9827b82d378f356e7dc4f28553743faea49678c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint85",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint85.png",
+          "role": "base",
+          "sha256": "9809dfcbac5ce35d00fd0ec0b0364048e7cdc409b01ceb7c9812fa400a10ba85",
+          "source_sha256": "9809dfcbac5ce35d00fd0ec0b0364048e7cdc409b01ceb7c9812fa400a10ba85",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "37dd1c48822b5f501416bcb43e540a5b4cd267f035775d2d5c1dd52024d972b0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint86",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint86.png",
+          "role": "base",
+          "sha256": "5fdf050cffb7c83bdb863da117a4b65edc658e432089b6a678006f44a5421e5c",
+          "source_sha256": "5fdf050cffb7c83bdb863da117a4b65edc658e432089b6a678006f44a5421e5c",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "65a69352997a9323c8fc6e90a7e8feb6fcc3b28981e9900ca4c8032b40973d24"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint87",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint87.png",
+          "role": "base",
+          "sha256": "669fe334c0b3d68d582a40d7de08e97e1a407b3046c5223d8c3cb87a886d558c",
+          "source_sha256": "669fe334c0b3d68d582a40d7de08e97e1a407b3046c5223d8c3cb87a886d558c",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "cd07ac154895600740cfbf7e1ab24cc18b9607364730af647cfcaa481b1bebf3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint88",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint88.png",
+          "role": "base",
+          "sha256": "c902b91d79b58ec01a4769abe797606edac9b2737d4bfa47467e9f6ea46f79c9",
+          "source_sha256": "c902b91d79b58ec01a4769abe797606edac9b2737d4bfa47467e9f6ea46f79c9",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "5dfc03c40471924146d01cb5c78c632c98fc586e5a5874078f6118d317400f92"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint89",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint89.png",
+          "role": "base",
+          "sha256": "a01dcca9a5bc6e407eeed6ad3540afe254097aaa7226e402e6ee8138d2203ada",
+          "source_sha256": "a01dcca9a5bc6e407eeed6ad3540afe254097aaa7226e402e6ee8138d2203ada",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "47ace860a6589597cb9f51a2178f3946b7060896aeb6ca6ebbe5503f44905421"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint90",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint90.png",
+          "role": "base",
+          "sha256": "f455b67c9f1c918ad683aea8221dbc330d9a4281ba291bb373f8c93cc318a3d8",
+          "source_sha256": "f455b67c9f1c918ad683aea8221dbc330d9a4281ba291bb373f8c93cc318a3d8",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "c5a143e7cbb5f2905fe94186a98aa569d5583206e1ff55d8ce21cc9312721841"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint91",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint91.png",
+          "role": "base",
+          "sha256": "b059c552e979c787b5d52ef007d4ad27f90959c658fe985d72c68b93e72f038d",
+          "source_sha256": "b059c552e979c787b5d52ef007d4ad27f90959c658fe985d72c68b93e72f038d",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "756b5a52a17c5ba580da8fc8e3e43a0aa7fbdf295e16caab4759937832c7cce1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint92",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint92.png",
+          "role": "base",
+          "sha256": "285b4e2b476fa8d7492638841b8cb73f19d80e9b1293951c81abf677ba8e0133",
+          "source_sha256": "285b4e2b476fa8d7492638841b8cb73f19d80e9b1293951c81abf677ba8e0133",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "8189d80fd00c5f66f38812aa5ec96f431534ca7804559a0624a06229c8bd2dcf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint93",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint93.png",
+          "role": "base",
+          "sha256": "71e4bdac23fd2e4386abeb62853a6f7ff02a04d734423f2505719c06cf8cdb45",
+          "source_sha256": "71e4bdac23fd2e4386abeb62853a6f7ff02a04d734423f2505719c06cf8cdb45",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "9c7f643019ade513a17cbd69d4d56257f65fa27c3791afe73f1bad31ab69b100"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint94",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint94.png",
+          "role": "base",
+          "sha256": "ceb040b7fb5fcc82c16a2b17545ccd98cdb024c9ce5f3fec210648df68a53709",
+          "source_sha256": "ceb040b7fb5fcc82c16a2b17545ccd98cdb024c9ce5f3fec210648df68a53709",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "e70dff2fe067ed9d63d1e14a672d6eff5a02ae9a4c9ae3d72537ca237dceae86"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
+        }
+      ]
+    },
+    {
+      "id": "terrain-glint95",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "procedural terrain glints v1",
+      "layers": [
+        {
+          "file": "terrain-glint95.png",
+          "role": "base",
+          "sha256": "3bcebf378fab5ce5c50ca0c36c779fb9f84f13ba9e8ca184116360df8130769f",
+          "source_sha256": "3bcebf378fab5ce5c50ca0c36c779fb9f84f13ba9e8ca184116360df8130769f",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "26ceab7085030600ece643e7ed7b5cf42be5ffb9686117ad9243b7481a274131"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/terrain_glints.py",
+          "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
     }
