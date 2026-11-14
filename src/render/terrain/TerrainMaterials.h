@@ -97,6 +97,13 @@ struct Surf
 // direct terrain shader (libs/gag/include/DirectTerrainShader.h).
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3], int land = 256);
+// applySurf in two parts for composing many samples at one time: the phase of
+// a material's wash at `time`, the margin beyond which surf changes nothing,
+// and the sample update for a margin within that reach. Identical results.
+int surfPhase(const Surf &, unsigned time);
+int surfReach(const Surf &, bool surfSide);
+void applySurfAt(const Surf &, bool surfSide, int margin, int wx, int wy, int phase,
+				 unsigned value[3], int land = 256);
 // Share of each wash (of 1024) spent rushing up the beach; the rest drains back
 // more slowly. Mirrored as washIn in libs/gag/shaders/terrain-compose-fragment.glsl.
 constexpr int SurfWashInQ10 = 224;

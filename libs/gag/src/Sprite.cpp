@@ -16,6 +16,7 @@
 #include <cstring>
 #include <SpriteLoad.h>
 #include <SteadyClock.h>
+#include <DetailHysteresis.h>
 #include <chrono>
 #include <AssetLoader.h>
 #ifdef __GLIBC__
@@ -77,13 +78,13 @@ namespace GAGCore
     // Sprites whose HD frames were discarded with their textures; see
     // discardUnbackedHighResolution().
     static std::set<Sprite*> lostHighResolution;
-    // The detail band (mip levels left out) frames are loaded at, and since when
-    // the view has wanted a lower one (steady clock nanoseconds, 0 when not).
-    static unsigned highResolutionSkip = 0;
+    // The detail band (mip levels left out) frames are loaded at. A view takes
+    // a sharper band at once and a coarser one only after wanting it for
+    // lowerDetailDelay, so zooming across a band edge does not re-decode.
+    static DetailHysteresis highResolutionSkip;
     static bool highResolutionSkipChosen = false;
     static std::int64_t lowerDetailDelay = 10'000'000'000;
     static unsigned detailSkipFor(double density) { return density > 2 ? 0 : density > 1 ? 1 : 2; }
-    static std::int64_t lowerDetailWantedSince = 0;
     // A band change re-decodes every banded sprite on the asset workers; once
     // the last is published, their freed buffers go back to the system.
     static bool trimAfterBandReload = false;
@@ -92,6 +93,10 @@ namespace GAGCore
     static std::deque<Sprite*> bandReloadQueue;
     static Sprite *bandReloading = nullptr;
     static std::set<std::string> deferredHighResolutionNames;
+    // Names whose HD layers something sampled through baseFrame; on-demand
+    // backends load only these (see Sprite::demandHighResolution).
+    static std::set<std::string> demandedHighResolutionNames;
+    static bool requestedHighResolutionOnDemand = false;
     static std::set<std::string> atlasSkippedHighResolutionNames, pixelSampledHighResolutionNames;
     // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
     static bool highResolutionAtlasWanted(const std::string& name)
@@ -132,6 +137,19 @@ namespace GAGCore
     static bool highResolutionFramesSupported()
     {
         return _gc && _gc->rendererCapabilities().textureFiltering;
+    }
+    // Legacy OpenGL draws sprite frames from their HD layers directly. Every
+    // other backend reaches them only through Sprite::baseFrame.
+    static bool highResolutionOnDemand()
+    {
+        return !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU);
+    }
+    // On-demand backends sample only uncolored base layers (baseFrame), so
+    // they neither decode nor retain team-colour layers.
+    static std::vector<std::string> wantedLayers(const PackEntry& entry)
+    {
+        if (highResolutionOnDemand()) return {entry.base};
+        return {entry.base, entry.team};
     }
     static bool highResolutionPackageReady(const std::string& name, const std::string& directory)
     {
@@ -233,12 +251,9 @@ namespace GAGCore
 	
     void Sprite::registerLoaded() {
         loadedSprites.insert(this);
-        if (highResolutionNeedsAsyncLoad(fileName, images.size())) {
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = fileName;
-            prepared->dynamicTeamColor = dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(this, HighResolutionReload{
-                prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0, true});
+        if ((!highResolutionOnDemand() || demandedHighResolutionNames.contains(fileName)) &&
+            highResolutionNeedsAsyncLoad(fileName, images.size())) {
+            queueHighResolutionReload(true);
         }
         for (std::size_t index=0;index<images.size();++index) if(images[index]) {
             images[index]->spriteSource=this; images[index]->spriteFrame=index;
@@ -695,21 +710,15 @@ namespace GAGCore
         return false;
 #endif
     }
-    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip; }
+    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip.level(); }
     void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
+    std::int64_t Sprite::highResolutionDetailDelay() { return lowerDetailDelay; }
     void Sprite::setHighResolutionDensity(double density)
     {
         // HD frames hold four texels for each logical pixel; each band halves that.
         const unsigned wanted = detailSkipFor(density);
         highResolutionSkipChosen = true;
-        const auto now = GAGCore::steadyClockNanoseconds();
-        if (wanted >= highResolutionSkip) {
-            if (wanted == highResolutionSkip) { lowerDetailWantedSince = 0; return; }
-            if (!lowerDetailWantedSince) lowerDetailWantedSince = now;
-            if (now - lowerDetailWantedSince < lowerDetailDelay) return;
-        }
-        lowerDetailWantedSince = 0;
-        highResolutionSkip = wanted;
+        if (!highResolutionSkip.update(wanted, GAGCore::steadyClockNanoseconds(), lowerDetailDelay)) return;
         if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
         trimAfterBandReload = true;
         bandReloadQueue.clear();
@@ -742,11 +751,7 @@ namespace GAGCore
             auto *sprite = bandReloadQueue.front();
             bandReloadQueue.pop_front();
             if (!loadedSprites.contains(sprite)) continue;
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, true});
+            sprite->queueHighResolutionReload(true);
             bandReloading = sprite;
             return;
         }
@@ -815,7 +820,11 @@ namespace GAGCore
     }
     void Sprite::setHighResolutionFrames(std::span<const unsigned> indices)
     {
-        if (!highResolutionDeferred(fileName)) return;
+        if (!highResolutionDeferred(fileName)) {
+            // Declaring a window over ordinary frames is a request for them.
+            if (!indices.empty() && !highResolutionDemanded) demandHighResolution();
+            return;
+        }
         std::set<unsigned> wanted;
         for (unsigned frame : indices) if (frame < images.size()) wanted.insert(frame);
         auto &stream = deferredHighResolution[this];
@@ -869,7 +878,7 @@ namespace GAGCore
             if (entry == packEntries->end()) continue;
             auto &inputs = stream.pending[frame];
             stream.queued.push_back(frame);
-            for (const auto &file : {entry->second.base, entry->second.team})
+            for (const auto &file : wantedLayers(entry->second))
                 if (validHighResolutionFile(file)) inputs.add(directory + '/' + file, mipmaps);
         }
     }
@@ -902,13 +911,8 @@ namespace GAGCore
                 stream.wanted.clear();
                 sprite->releaseRetiredHighResolution(true);
                 sprite->setHighResolutionFrames(wanted);
-            } else {
-                auto prepared = std::make_unique<Sprite>();
-                prepared->fileName = sprite->fileName;
-                prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-                pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                    prefetchHighResolutionIncremental(spriteName, sprite->images.size()),
-                    std::move(prepared), 0, true});
+            } else if (!requestedHighResolutionOnDemand || demandedHighResolutionNames.contains(spriteName)) {
+                sprite->queueHighResolutionReload(true);
             }
         }
         // The application invalidated the file cache for this installation.
@@ -922,6 +926,7 @@ namespace GAGCore
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         const bool mipmaps = _gc && _gc->rendererCapabilities().textureMipmaps;
         requestedHighResolutionCPUChain = mipmaps && _gc && _gc->renderDevice();
+        const bool onDemand = highResolutionOnDemand();
         const bool sameSource = highResolutionEnabled == enabled &&
             requestedHighResolutionGeneration == Toolkit::assets().sourceGeneration() &&
             requestedHighResolutionDirectory == directory;
@@ -930,9 +935,11 @@ namespace GAGCore
             !ApplicationHost::assetPackageReady("hd"))
             ApplicationHost::requestAssetPackage("hd");
 #endif
-        if (sameSource && requestedHighResolutionMipmaps == mipmaps) return;
+        if (sameSource && requestedHighResolutionMipmaps == mipmaps &&
+            requestedHighResolutionOnDemand == onDemand) return;
         const bool retainPublishedOnFailure = sameSource;
         requestedHighResolutionMipmaps = mipmaps;
+        requestedHighResolutionOnDemand = onDemand;
         highResolutionEnabled = enabled;
         packIndexes.clear();
         pendingHighResolution.clear();
@@ -953,12 +960,62 @@ namespace GAGCore
                 sprite->setHighResolutionFrames(wanted);
                 continue;
             }
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.emplace(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, retainPublishedOnFailure});
+            if (onDemand && !demandedHighResolutionNames.contains(sprite->fileName)) {
+                // Nothing on this backend samples these layers; a later
+                // baseFrame request loads them again.
+                sprite->releaseHighResolution();
+                continue;
+            }
+            sprite->queueHighResolutionReload(retainPublishedOnFailure);
         }
+    }
+    bool Sprite::demandHighResolution()
+    {
+        if (highResolutionDemanded) return false;
+        highResolutionDemanded = true;
+        demandedHighResolutionNames.insert(fileName);
+        // Eager backends, deferred banks and queued reloads need nothing more.
+        if (!requestedHighResolutionOnDemand || !loadedSprites.contains(this) ||
+            highResolutionDeferred(fileName) || pendingHighResolution.contains(this)) return false;
+        if (std::any_of(experimentImages.begin(), experimentImages.end(), [](auto *image) { return image; }) ||
+            std::any_of(experimentRotated.begin(), experimentRotated.end(), [](auto *image) { return image; }))
+            return false;
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return false;
+        queueHighResolutionReload(true);
+        return true;
+    }
+    // Every reload, whatever started it, decodes into a fresh sprite that is
+    // published frame by frame. Replaces a reload already queued for it.
+    void Sprite::queueHighResolutionReload(bool retainPublishedOnFailure)
+    {
+        auto prepared = std::make_unique<Sprite>();
+        prepared->fileName = fileName;
+        prepared->dynamicTeamColor = dynamicTeamColor;
+        pendingHighResolution.insert_or_assign(this, HighResolutionReload{
+            prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0,
+            retainPublishedOnFailure});
+    }
+    void Sprite::releaseHighResolutionDemand()
+    {
+        if (!highResolutionDemanded || !requestedHighResolutionOnDemand || highResolutionDeferred(fileName)) return;
+        highResolutionDemanded = false;
+        demandedHighResolutionNames.erase(fileName);
+        // Cancel every route that would load the layers again: a queued or
+        // running reload, a band change and a lost-texture reload.
+        pendingHighResolution.erase(this);
+        lostHighResolution.erase(this);
+        std::erase(bandReloadQueue, this);
+        if (bandReloading == this) bandReloading = nullptr;
+        releaseHighResolution();
+    }
+    void Sprite::releaseHighResolution()
+    {
+        clearTeamColorCache();
+        for (auto *&image : experimentImages) { delete image; image = nullptr; }
+        for (auto *&image : experimentRotated) { delete image; image = nullptr; }
+        highResolutionAtlas.reset();
+        recomputeBlockCompleteHD();
     }
     void Sprite::refreshHighResolutionForRenderer()
     {
@@ -1017,12 +1074,7 @@ namespace GAGCore
         // Reload what a context rebuild discarded, under the renderer now active.
         for (auto *sprite : lostHighResolution) {
             if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()),
-                std::move(prepared), 0, true});
+            sprite->queueHighResolutionReload(true);
         }
         lostHighResolution.clear();
         const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
@@ -1119,9 +1171,9 @@ namespace GAGCore
         requestHighResolution(enabled);
         finishHighResolution();
     }
-    void Sprite::finishHighResolution()
+    void Sprite::finishHighResolution(const Sprite *only)
     {
-        while (!pollHighResolution(4)) {
+        while (!pollHighResolution(4) && (!only || pendingHighResolution.contains(const_cast<Sprite*>(only)))) {
             Toolkit::assets().poll();
 #ifdef __EMSCRIPTEN__
             if (Toolkit::assets().browserVideoPending()) break;
@@ -1266,7 +1318,7 @@ namespace GAGCore
         for (size_t i = 0; i < frames; ++i) {
             auto found = packEntries->find(prefix + std::to_string(i));
             if (found == packEntries->end()) continue;
-            for (const auto& file : {found->second.base, found->second.team}) {
+            for (const auto& file : wantedLayers(found->second)) {
                 if (!validHighResolutionFile(file)) continue;
                 firstFrame = std::min(firstFrame, i);
                 add(directory + '/' + file, mipmaps);
@@ -1301,12 +1353,12 @@ namespace GAGCore
         for (size_t frame = index; frame < index + lookahead; ++frame) {
             auto entry = packEntries->find(prefix + std::to_string(frame));
             if (entry == packEntries->end()) continue;
-            for (const auto& file : {entry->second.base, entry->second.team})
+            for (const auto& file : wantedLayers(entry->second))
                 if (validHighResolutionFile(file)) inputs.request(Toolkit::assets(), directory + '/' + file, mipmaps);
         }
         auto found = packEntries->find(prefix + std::to_string(index));
         if (found == packEntries->end()) return true;
-        for (const auto& file : {found->second.base, found->second.team})
+        for (const auto& file : wantedLayers(found->second))
             if (validHighResolutionFile(file) && inputs.pending(directory + '/' + file, mipmaps)) return false;
         return true;
     }
@@ -1355,7 +1407,7 @@ namespace GAGCore
         // Before any map view chooses a band, the display's scale does: the
         // interface draws sprites at their logical size.
         if (banded && !highResolutionSkipChosen) {
-            highResolutionSkip = detailSkipFor(_gc->getRasterScale());
+            highResolutionSkip = DetailHysteresis(detailSkipFor(_gc->getRasterScale()));
             highResolutionSkipChosen = true;
         }
         auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
@@ -1370,18 +1422,20 @@ namespace GAGCore
             if (surface->w != width || surface->h != height) return nullptr;
             auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
             result->highResolutionSampling = true;
-            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip);
+            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip.level());
             // Deferred terrain feeds CPU composition; only composed pages need
-            // GPU textures. A direct draw can still upload this source lazily.
-            if (!deferred) result->prepareTexture();
+            // GPU textures. On-demand backends reach HD layers through baseFrame,
+            // mostly for CPU composition too. A direct draw uploads lazily.
+            if (!deferred && !highResolutionOnDemand()) result->prepareTexture();
             if (release) result->releasePixels();
             return result.release();
         };
+        const bool team = !highResolutionOnDemand();
         // A unit's base layer is recoloured with its team layer without the shader.
         auto *normal = load(entry.base, images[index], dynamicTeamColor ? releaseTeam : releaseBase);
-        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr, releaseTeam);
-        if ((entry.base != "-" && !normal) || (entry.team != "-" && !colored) ||
-            (images[index] && entry.base == "-") || (rotated[index] && entry.team == "-")) {
+        auto *colored = team ? load(entry.team, rotated[index] ? rotated[index]->orig : nullptr, releaseTeam) : nullptr;
+        if ((entry.base != "-" && !normal) || (team && entry.team != "-" && !colored) ||
+            (images[index] && entry.base == "-") || (team && rotated[index] && entry.team == "-")) {
             delete normal; delete colored; return;
         }
         target.experimentImages[index] = normal;

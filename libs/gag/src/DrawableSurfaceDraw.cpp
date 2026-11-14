@@ -8,6 +8,13 @@
 
 namespace GAGCore
 {
+	void DrawableSurface::markPixelsChanged(std::span<const SDL_Rect> dirty)
+	{
+		const auto previous = pixelRevision++;
+		if (_gc && _gc->portableRenderer && sdlsurface && !dirty.empty())
+			_gc->portableRenderer->prepareTextureRegions(this, sdlsurface, pixelRevision, previous, dirty,
+				highResolutionSampling);
+	}
 	void DrawableSurface::drawPixel(int x, int y, const Color& color)
 	{
 		prepareDraw();

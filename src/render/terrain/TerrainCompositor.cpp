@@ -8,10 +8,12 @@
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
+#include <SteadyClock.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
 #include <bitset>
 #endif
+#include <set>
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
@@ -363,13 +365,25 @@ void Compositor::requestMapTerrain(const SceneMap& map)
 }
 #endif
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
-                                int left, int top, int right, int bottom, bool nativeComposition)
+                                int left, int top, int right, int bottom, bool nativeComposition,
+                                bool decor)
 {
 #ifdef __EMSCRIPTEN__
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
     const auto usage = visibleUsage(map, left, top, right, bottom);
-    prepareSelected(hd, time, &usage, nativeComposition);
+    prepareSelected(hd, time, &usage, nativeComposition, decor);
+}
+bool Compositor::highResolutionPages(double density)
+{
+    if (pageDetail.update(density > 1 ? 0 : 1, GAGCore::steadyClockNanoseconds(),
+                          GAGCore::Sprite::highResolutionDetailDelay()) &&
+        pageDetail.level())
+        // Deferred banks retire their frames when the next window declares
+        // none; whole sheets that a baseFrame demanded drop theirs here.
+        for (auto *sprite : std::set<GAGCore::Sprite *>(sprites.begin(), sprites.end()))
+            if (sprite) sprite->releaseHighResolutionDemand();
+    return pageDetail.level() == 0;
 }
 void Compositor::declareVisible(int time, const SceneMap &map, int left, int top, int right, int bottom,
                                 bool frames)
@@ -499,7 +513,8 @@ void Compositor::declareWindows(bool materials, bool decor, int time, const Usag
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 }
-void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition)
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition,
+                                 bool decor)
 {
     Usage normalized;
     if (requested)
@@ -508,7 +523,13 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
         includeBoundarySources(normalized);
         requested = &normalized;
     }
-    declareWindows(hd, hd, time, requested);
+    declareWindows(hd, hd && decor, time, requested);
+    // A renderer that never draws HD decor also drops windows declared before
+    // it took over (a switch from legacy OpenGL), retiring their frames.
+    if (!decor)
+        for (auto *sprite : decorSprites)
+            if (sprite && std::find(sprites.begin(), sprites.end(), sprite) == sprites.end())
+                sprite->setHighResolutionFrames({});
     texturesPrepared = true;
 
     // Keep the existing stream window ready for the next zoom level while
@@ -1244,6 +1265,42 @@ void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 	if (!liquidCalm)
 		r.calm = {};
 }
+Compositor::PreparedMaterialView Compositor::decimated(MaterialId id, const PreparedMaterialView &view,
+                                                       int scale,
+                                                       std::shared_ptr<const MaterialPixels> &hold) const
+{
+    const int size = 32 * scale;
+    std::lock_guard lock(decimationMutex);
+    auto &entry = decimations[{id, view.variant, scale}];
+    if (!entry.pixels || entry.revision != view.revision || entry.source != view.pixels.data() ||
+        entry.sourceSize != view.size)
+    {
+        if (!entry.pixels)
+        {
+            // Bound the copies; every entry is rebuilt on demand from its source.
+            const auto bytes = std::size_t(size) * size * 4;
+            if (decimationBytes + bytes > 16u * 1024 * 1024)
+            {
+                for (auto &[key, other] : decimations) other = Decimated{};
+                decimationBytes = 0;
+            }
+            decimationBytes += bytes;
+        }
+        // Always a fresh copy: a composition in progress (another palette slot
+        // of the same cell, or another thread) may still read the old one
+        // through its hold, so neither eviction nor a rebuild frees it.
+        auto pixels = std::make_shared<MaterialPixels>(std::size_t(size) * size);
+        for (int y = 0; y < size; ++y)
+            for (int x = 0; x < size; ++x)
+                (*pixels)[std::size_t(y) * size + x] = view.pixels[std::size_t(y) * view.step * view.size + x * view.step];
+        entry.pixels = std::move(pixels);
+        entry.revision = view.revision;
+        entry.source = view.pixels.data();
+        entry.sourceSize = view.size;
+    }
+    hold = entry.pixels;
+    return {view.variant, view.revision, size, *hold, 1};
+}
 Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
 {
     const unsigned variant = definitions.variantIndex(id, recipe.x, recipe.y, recipe.seed);
@@ -1415,7 +1472,8 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
     compose(recipe, target, scale, scratch, mask);
 }
 void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target, int scale,
-                                       CpuScratch &scratch, const CellMask *mask) const
+                                       CpuScratch &scratch, const CellMask *mask,
+                                       const Refresh *refresh) const
 {
     scratch.sources.resize(definitions->materials.size());
     auto &sources = scratch.sources;
@@ -1440,7 +1498,8 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         buildMask(*definitions, *stones, recipe, scale, scratch.mask);
         mask = &scratch.mask;
     }
-    composePixels(*definitions, *stones, recipe, target, 0, 0, scale, sources, mask, surfTime);
+    composePixels(*definitions, *stones, recipe, target, 0, 0, scale, sources, mask, surfTime,
+                  mask ? refresh : nullptr);
 }
 Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
 {
@@ -1449,24 +1508,109 @@ Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int sc
     return result;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
-						 const CellMask *mask) const
+						 const CellMask *mask, const Refresh *refresh) const
 {
     thread_local std::vector<PreparedMaterialView> sources;
     sources.resize(definitions.materials.size());
     std::array<MaterialId, 4> palette;
+    // Keeps decimated copies alive while this cell reads them.
+    std::array<std::shared_ptr<const MaterialPixels>, 4> decimatedPixels;
     for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
     {
         const auto id = palette[i];
         sources[id] = preparedMaterial(r, id);
         sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
+        if (sources[id].step > 1)
+            sources[id] = decimated(id, sources[id], scale, decimatedPixels[i]);
     }
-    composePixels(definitions, *stoneMaps, r, target, ox, oy, scale, sources, mask, preparedTime);
+    composePixels(definitions, *stoneMaps, r, target, ox, oy, scale, sources, mask, preparedTime,
+                  mask ? refresh : nullptr);
+}
+namespace
+{
+// A mixed-cell sample's weights per palette slot, from its mask encoding.
+struct SampleWeights
+{
+	unsigned weight[4];
+	unsigned largest;
+	explicit SampleWeights(const Compositor::CellMask::Sample &sample)
+	{
+		largest = sample.slots & 3;
+		unsigned rest = 65536;
+		for (unsigned slot = 0, other = 0; slot < 4; ++slot)
+			if (slot != largest)
+			{
+				weight[slot] = sample.others[other++];
+				rest -= weight[slot];
+			}
+		weight[largest] = rest;
+	}
+};
+// The seam shade and fringe tint of a sample (see composePixels).
+std::pair<int, int> seamTone(const Material &dominant, const Material &neighbor, int margin)
+{
+	const auto &self = dominant.seam;
+	const auto &other = neighbor.seam;
+	int shade = 256, tint = 0;
+	// Connected canopies supply their own raised edge and contact shadow.
+	// Casting again from the rough undergrowth contour makes teeth and
+	// hairlines protrude beyond the foliage.
+	if (neighbor.decor.connected.empty() && other.cast && other.height > self.height &&
+		margin < other.castWidth)
+		shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
+	if (other.fringe && margin < other.fringeWidth)
+		tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
+	return {shade, tint};
+}
+bool surfReaches(const Material &dominant, const Material &neighbor, int margin)
+{
+	const bool surfSide = dominant.surf.period > 0;
+	return surfSide != (neighbor.surf.period > 0) &&
+		margin < surfReach(surfSide ? dominant.surf : neighbor.surf, surfSide);
+}
+// animatedSamples entries: the sample index, then flags.
+constexpr std::uint32_t AnimatedIndexMask = 0xffffff, AnimatedSingle = 1u << 24;
+constexpr int AnimatedSlotShift = 25;
+} // namespace
+unsigned Compositor::animatedSlots(const CellMask &cell) const
+{
+	unsigned slots = 0;
+	for (unsigned slot = 0; slot < cell.colors; ++slot)
+		slots |= unsigned(animated(cell.palette[slot])) << slot;
+	return slots;
+}
+std::vector<std::uint32_t> Compositor::animatedSamples(const CellMask &cell) const
+{
+	std::vector<std::uint32_t> result;
+	const unsigned animatedMask = animatedSlots(cell);
+	for (std::size_t i = 0; i < cell.samples.size(); ++i)
+	{
+		const auto &sample = cell.samples[i];
+		const SampleWeights weights(sample);
+		const unsigned dominantSlot = sample.slots >> 2 & 3, neighborSlot = sample.slots >> 4 & 3;
+		const auto &dominant = definitions.materials[cell.palette[dominantSlot]];
+		const auto &neighbor = definitions.materials[cell.palette[neighborSlot]];
+		const bool surf = surfReaches(dominant, neighbor, sample.margin);
+		bool textured = false;
+		for (unsigned slot = 0; slot < cell.colors; ++slot)
+			textured |= weights.weight[slot] && (animatedMask >> slot & 1);
+		if (!surf && !textured)
+			continue;
+		// One material covering the sample without seam toning or surf: its
+		// (calmed) texel is the pixel whenever that texel is opaque.
+		const bool single = !surf && weights.weight[weights.largest] == 65536 &&
+			(dominantSlot == neighborSlot ||
+			 seamTone(dominant, neighbor, sample.margin) == std::pair<int, int>{256, 0});
+		result.push_back(std::uint32_t(i) | (single ? AnimatedSingle : 0) |
+						 std::uint32_t(weights.largest) << AnimatedSlotShift);
+	}
+	return result;
 }
 void Compositor::composePixels(const Catalog &definitions, const StoneMaps &stones, const Recipe &r,
                                SDL_Surface *target,
                                int ox, int oy, int scale,
                                std::span<const PreparedMaterialView> prepared, const CellMask *mask,
-                               unsigned surfTime)
+                               unsigned surfTime, const Refresh *refresh)
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
@@ -1477,16 +1621,39 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 	const bool uniform = r.uniform();
 	// Q8 shore calm of a sample, for animated liquids near land.
 	const unsigned calmStrength = 256 - ShoreCalmContrastQ8;
-	const auto calmAt = [&](int x, int y)
+	// applyShoreCalm's `keep` for each sample of a calmed cell: shoreCalm's
+	// bilinear sum, regrouped exactly by row, then the same integer arithmetic.
+	thread_local std::vector<unsigned> keepStorage, axisStorage;
+	const auto prepareKeep = [&]
 	{
-		return shoreCalm(r.calm, unsigned(2 * x + 1) * 128 / size, unsigned(2 * y + 1) * 128 / size);
+		keepStorage.resize(std::size_t(size) * size);
+		axisStorage.resize(size);
+		for (int i = 0; i < size; ++i)
+			axisStorage[i] = unsigned(2 * i + 1) * 128 / size;
+		for (int y = 0; y < size; ++y)
+		{
+			const unsigned fy = axisStorage[y];
+			const unsigned left = r.calm[0] * (256 - fy) + r.calm[2] * fy;
+			const unsigned right = r.calm[1] * (256 - fy) + r.calm[3] * fy;
+			for (int x = 0; x < size; ++x)
+			{
+				const unsigned fx = axisStorage[x];
+				const unsigned calm = (left * (256 - fx) + right * fx + 32768) >> 16;
+				keepStorage[std::size_t(y) * size + x] = 256 - calm * calmStrength / 255;
+			}
+		}
+		return keepStorage.data();
 	};
+	const auto calmed = [](unsigned value, unsigned keep, unsigned mean)
+	{ return (value * keep + mean * (256 - keep) + 128) / 256; };
 	if (uniform)
 	{
 		const auto &texture = sources[r.corners[0]];
 		const auto &material = definitions.materials[r.corners[0]];
 		if (material.shoreCalm && r.calmed() && !texture.pixels.empty())
 		{
+			const unsigned *keep = prepareKeep();
+			const auto &mean = material.calmMean;
 			for (int y = 0; y < size; ++y)
 			{
 				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -1496,9 +1663,9 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 					const int sx = texture.step ? x * texture.step : x * texture.size / size;
 					const int sy = texture.step ? y * texture.step : y * texture.size / size;
 					const auto *p = texture.pixels[sy * texture.size + sx].data();
-					unsigned rgb[3] = {p[0], p[1], p[2]};
-					applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, rgb);
-					row[x] = (unsigned(p[3]) << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+					const unsigned k = keep[y * size + x];
+					row[x] = (unsigned(p[3]) << 24) | (calmed(p[0], k, mean[0]) << 16) |
+						(calmed(p[1], k, mean[1]) << 8) | calmed(p[2], k, mean[2]);
 				}
 			}
 			return;
@@ -1550,85 +1717,150 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 	const auto &cell = mask ? *mask : scratch;
 	if (cell.recipe != r || cell.scale != scale)
 		throw std::runtime_error("Terrain cell mask does not match its recipe");
+	// Per-cell constants, hoisted from the per-sample arithmetic below. Every
+	// sample still evaluates the same integer expressions as applyShoreCalm,
+	// shoreCalm and applySurf, so pixels are identical.
+	struct Slot
+	{
+		const PreparedMaterialView *texture = nullptr; // Null: no pixels to blend.
+		const Material *material = nullptr;
+		bool calm = false;
+		int surfPhase = 0;
+	};
+	std::array<Slot, 4> slots{};
+	bool anyCalm = false;
+	for (unsigned slot = 0; slot < cell.colors; ++slot)
+	{
+		const auto id = cell.palette[slot];
+		auto &info = slots[slot];
+		info.material = &definitions.materials[id];
+		info.texture = sources[id].pixels.empty() ? nullptr : &sources[id];
+		info.calm = info.material->shoreCalm && r.calmed();
+		anyCalm |= info.calm;
+		if (info.material->surf.period > 0)
+			info.surfPhase = surfPhase(info.material->surf, surfTime);
+	}
+	const unsigned *const keep = anyCalm ? prepareKeep() : nullptr;
+	const auto texel = [&](unsigned slot, int x, int y)
+	{
+		const auto &t = *slots[slot].texture;
+		const int sx = t.step ? x * t.step : x * t.size / size;
+		const int sy = t.step ? y * t.step : y * t.size / size;
+		return t.pixels[sy * t.size + sx].data();
+	};
+	const auto source = [&](unsigned slot, const unsigned char *p, int x, int y, unsigned out[3])
+	{
+		if (slots[slot].calm)
+		{
+			const auto &mean = slots[slot].material->calmMean;
+			const unsigned k = keep[y * size + x];
+			for (int c = 0; c < 3; ++c)
+				out[c] = calmed(p[c], k, mean[c]);
+		}
+		else
+			for (int c = 0; c < 3; ++c)
+				out[c] = p[c];
+	};
+	const auto pixel = [&](int x, int y) -> Uint32 &
+	{
+		return reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+										  (oy + y) * target->pitch)[ox + x];
+	};
+	constexpr unsigned opaqueAlpha = 255u * 65536;
+	// The complete sample: blend, seam, then surf.
+	const auto composeSample = [&](int x, int y, const CellMask::Sample &sample, const SampleWeights &weights)
+	{
+		const unsigned dominantSlot = sample.slots >> 2 & 3, neighborSlot = sample.slots >> 4 & 3;
+		const auto &dominantMaterial = *slots[dominantSlot].material;
+		const auto &neighborMaterial = *slots[neighborSlot].material;
+		const int margin = sample.margin;
+		std::uint64_t rgb[3] = {};
+		unsigned alpha = 0;
+		for (unsigned slot = 0; slot < cell.colors; ++slot)
+			if (weights.weight[slot] && slots[slot].texture)
+			{
+				const auto *p = texel(slot, x, y);
+				const unsigned a = weights.weight[slot] * p[3];
+				alpha += a;
+				unsigned channels[3];
+				source(slot, p, x, y, channels);
+				for (int k = 0; k < 3; ++k)
+					rgb[k] += std::uint64_t(channels[k]) * a;
+			}
+		// Seam treatment: the dominant material darkens under a higher
+		// neighbor's edge and takes that neighbor's fringe tint. Textures are
+		// never blended across the seam; only the contact band is toned.
+		int shade = 256, tint = 0;
+		if (dominantSlot != neighborSlot)
+			std::tie(shade, tint) = seamTone(dominantMaterial, neighborMaterial, margin);
+		const auto &fringe = neighborMaterial.seam.fringeColor;
+		unsigned value[3];
+		for (int k = 0; k < 3; ++k)
+		{
+			// Opaque materials have a constant denominator. Keep the exact
+			// integer result while avoiding three variable-width divisions
+			// per sample when an animated terrain page is re-blended.
+			const unsigned blended = alpha == opaqueAlpha ? unsigned(rgb[k] / opaqueAlpha)
+				: unsigned(alpha ? rgb[k] / alpha : 0);
+			const unsigned shaded = blended * shade >> 8;
+			value[k] = shaded + (unsigned(fringe[k]) - shaded) * tint / 256;
+		}
+		if (surfReaches(dominantMaterial, neighborMaterial, margin))
+		{
+			// Q8 world pixels of the sample centre, as the coverage samples it.
+			const bool surfSide = dominantMaterial.surf.period > 0;
+			const auto &liquid = surfSide ? dominantMaterial : neighborMaterial;
+			const auto land = (surfSide ? neighborMaterial : dominantMaterial).shoreWash;
+			applySurfAt(liquid.surf, surfSide, margin, r.x * 8192 + (2 * x + 1) * 4096 / size,
+						r.y * 8192 + (2 * y + 1) * 4096 / size,
+						slots[surfSide ? dominantSlot : neighborSlot].surfPhase, value, land);
+		}
+		pixel(x, y) = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
+	};
+	if (refresh && refresh->samples)
+	{
+		// Only the samples animation can change, prepared from this same mask.
+		for (const auto entry : *refresh->samples)
+		{
+			const unsigned index = entry & AnimatedIndexMask;
+			const int x = int(index % unsigned(size)), y = int(index / unsigned(size));
+			const unsigned slot = entry >> AnimatedSlotShift & 3;
+			if ((entry & AnimatedSingle) && slots[slot].texture)
+			{
+				const auto *p = texel(slot, x, y);
+				if (p[3] == 255)
+				{
+					// The weighted mean of one full opaque weight is its texel.
+					unsigned value[3];
+					source(slot, p, x, y, value);
+					pixel(x, y) = 0xff000000u | (value[0] << 16) | (value[1] << 8) | value[2];
+					continue;
+				}
+			}
+			const auto &sample = cell.samples[index];
+			composeSample(x, y, sample, SampleWeights(sample));
+		}
+		return;
+	}
 	const auto *sample = cell.samples.data();
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x, ++sample)
 		{
-			unsigned weights[4];
-			const unsigned largest = sample->slots & 3;
-			unsigned rest = 65536;
-			for (unsigned slot = 0, other = 0; slot < 4; ++slot)
-				if (slot != largest)
-				{
-					weights[slot] = sample->others[other++];
-					rest -= weights[slot];
-				}
-			weights[largest] = rest;
-			std::uint64_t rgb[3] = {};
-			unsigned alpha = 0;
-			for (unsigned slot = 0; slot < cell.colors; ++slot)
-                if (weights[slot] && !sources[cell.palette[slot]].pixels.empty())
-				{
-					const auto &t = sources[cell.palette[slot]];
-					const int sx = t.step ? x * t.step : x * t.size / size;
-					const int sy = t.step ? y * t.step : y * t.size / size;
-					const auto *p = t.pixels[sy * t.size + sx].data();
-					const unsigned a = weights[slot] * p[3];
-					alpha += a;
-					unsigned source[3] = {p[0], p[1], p[2]};
-					const auto &material = definitions.materials[cell.palette[slot]];
-					if (material.shoreCalm && r.calmed())
-						applyShoreCalm(calmAt(x, y), calmStrength, material.calmMean, source);
-					for (int k = 0; k < 3; ++k)
-						rgb[k] += std::uint64_t(source[k]) * a;
-				}
-			auto *p = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
-												 (oy + y) * target->pitch) +
-					  ox + x;
-			// Seam treatment: the dominant material darkens under a higher
-			// neighbor's edge and takes that neighbor's fringe tint. Textures are
-			// never blended across the seam; only the contact band is toned.
-			const auto dominant = cell.palette[sample->slots >> 2 & 3];
-			const auto neighbor = cell.palette[sample->slots >> 4 & 3];
-			const int margin = sample->margin;
-			const auto &self = definitions.materials[dominant].seam;
-			const auto &other = definitions.materials[neighbor].seam;
-			int shade = 256, tint = 0;
-			if (neighbor != dominant)
+			const SampleWeights weights(*sample);
+			if (refresh)
 			{
-				// Connected canopies supply their own raised edge and contact shadow.
-				// Casting again from the rough undergrowth contour makes teeth and
-				// hairlines protrude beyond the foliage.
-				if (definitions.materials[neighbor].decor.connected.empty() && other.cast &&
-					other.height > self.height && margin < other.castWidth)
-					shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
-				if (other.fringe && margin < other.fringeWidth)
-					tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
+				// Surf and textures that did not change leave the pixel as it is.
+				const unsigned dominantSlot = sample->slots >> 2 & 3, neighborSlot = sample->slots >> 4 & 3;
+				const auto &dominant = *slots[dominantSlot].material;
+				const auto &neighbor = *slots[neighborSlot].material;
+				const unsigned surfSlot = dominant.surf.period > 0 ? dominantSlot : neighborSlot;
+				bool changed = (refresh->surf >> surfSlot & 1) && surfReaches(dominant, neighbor, sample->margin);
+				for (unsigned slot = 0; slot < cell.colors && !changed; ++slot)
+					changed = weights.weight[slot] && (refresh->textures >> slot & 1);
+				if (!changed)
+					continue;
 			}
-			const auto channel = [&](int k)
-			{
-				// Opaque materials have a constant denominator. Keep the exact
-				// integer result while avoiding three variable-width divisions
-				// per sample when an animated terrain page is re-blended.
-				constexpr unsigned opaqueAlpha = 255u * 65536;
-				const unsigned blended = alpha == opaqueAlpha ? unsigned(rgb[k] / opaqueAlpha)
-					: unsigned(alpha ? rgb[k] / alpha : 0);
-				unsigned value = blended * shade >> 8;
-				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
-			};
-			unsigned value[3] = {channel(0), channel(1), channel(2)};
-			const auto &selfSurf = definitions.materials[dominant].surf;
-			const auto &otherSurf = definitions.materials[neighbor].surf;
-			if ((selfSurf.period > 0) != (otherSurf.period > 0))
-			{
-				// Q8 world pixels of the sample centre, as the coverage samples it.
-				const int wx = r.x * 8192 + (2 * x + 1) * 4096 / size;
-				const int wy = r.y * 8192 + (2 * y + 1) * 4096 / size;
-				const auto land = definitions.materials[selfSurf.period ? neighbor : dominant].shoreWash;
-				applySurf(selfSurf.period ? selfSurf : otherSurf, selfSurf.period > 0, margin, wx,
-						  wy, surfTime, value, land);
-			}
-			*p = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
+			composeSample(x, y, *sample, weights);
 		}
 }
 Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const

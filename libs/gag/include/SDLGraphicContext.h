@@ -19,6 +19,7 @@
 #include <array>
 #include <functional>
 #include <map>
+#include <span>
 #include <utility>
 #include <vector>
 #include <string>
@@ -111,6 +112,10 @@ namespace GAGCore
 		//! Positive UTF-8 byte ends of indivisible shaping clusters, in logical order.
 		//! Legacy fonts default to code points; shaped fonts override this contract.
 		virtual std::vector<std::size_t> getStringClusterEnds(const std::string &text);
+
+		//! Changes whenever measurements of the same text and style may change
+		//! (reload, script language). Callers memoize layout by this value.
+		virtual std::uint64_t metricsRevision() const { return 0; }
 
 		// width and height
 		virtual int getStringWidth(const std::string string) = 0;
@@ -254,6 +259,10 @@ namespace GAGCore
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
+        //! Marks raw writes confined to `dirty` (surface pixel rectangles). The
+        //! portable renderer then updates only those rectangles of a texture
+        //! holding the previous revision; other backends upload as usual.
+        void markPixelsChanged(std::span<const SDL_Rect> dirty);
         bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 		//! Decoded pixels and upload staging that live surfaces hold in memory.
@@ -909,6 +918,7 @@ namespace GAGCore
 		std::vector <RotatedImage *> rotated;
 		std::unique_ptr<Sprite> highResolutionAtlas;
 		void createHighResolutionAtlas(HighResolutionInputs& inputs);
+		bool highResolutionDemanded = false;
 		std::vector <DrawableSurface *> experimentImages;
 		std::vector <RotatedImage *> experimentRotated;
 
@@ -982,10 +992,24 @@ namespace GAGCore
         // The uncolored layer may be retained beneath replacement geometry
         // (unit sheets store their ground shadows here). The caller sizes it
         // to the native logical canvas, even when an HD surface is returned.
+        // Asking for a base frame demands the sprite's HD layers (see
+        // demandHighResolution), so the first answers can be native frames.
         DrawableSurface *baseFrame(unsigned index)
         {
-            return checkBound(index) ? prepareDrawSurface(index, false, true) : nullptr;
+            if (!checkBound(index)) return nullptr;
+            if (!highResolutionDemanded) demandHighResolution();
+            return prepareDrawSurface(index, false, true);
         }
+        //! Only legacy OpenGL draws sprite frames from their HD layers; other
+        //! backends sample them solely through baseFrame (terrain composition,
+        //! skin shadows, editor swatches). There, a sprite loads its HD layers
+        //! once something demands them. Returns true when this queued a reload.
+        bool demandHighResolution();
+        //! On those backends, drops the HD layers a demand loaded (or cancels
+        //! their reload) until the next baseFrame demands them again. Deferred
+        //! banks retire frames through their windows instead; elsewhere this
+        //! does nothing.
+        void releaseHighResolutionDemand();
 
         //! The frame's shape filled with one colour, for effects drawn over the
         //! sprite at its logical size: opaque wherever either layer is, or only
@@ -1011,6 +1035,8 @@ namespace GAGCore
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
         void appendHighResolutionFrame(size_t index, Sprite& target,
             HighResolutionInputs& inputs);
+        void releaseHighResolution();
+        void queueHighResolutionReload(bool retainPublishedOnFailure);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
@@ -1057,14 +1083,18 @@ namespace GAGCore
         static unsigned highResolutionDetailSkip();
         //! How long the view must want less detail before the band drops (tests shorten it).
         static void setHighResolutionDetailDelay(std::int64_t nanoseconds);
+        //! The same delay, for other views that lower their detail on its clock
+        //! (the portable renderer's terrain pages).
+        static std::int64_t highResolutionDetailDelay();
         //! Called when legacy OpenGL textures are freed: HD frames whose pixels
         //! were released have nothing left, so their sprites drop back to
         //! native artwork and reload HD in the background at the next poll.
         static void discardUnbackedHighResolution();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
-        // Blocks until every requested HD frame, deferred windows included, is published.
-        static void finishHighResolution();
+        // Blocks until every requested HD frame, deferred windows included, is
+        // published; with a sprite, only until that sprite's reload is.
+        static void finishHighResolution(const Sprite *only = nullptr);
 		static void flushBatches(GraphicContext *gc);
     private:
         //! Forget this sprite's retired frames; destroy also deletes them.
